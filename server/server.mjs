@@ -125,7 +125,7 @@ function readBody(req) {
   });
 }
 function userFromRequest(req) {
-  const token = parseCookies(req.headers.cookie || {}).hof_session;
+  const token = parseCookies(req.headers.cookie || "").hof_session;
   if (!token) return null;
   const session = getOne("SELECT user_id, expires_at FROM sessions WHERE token_hash = ?", hashToken(token));
   if (!session || new Date(session.expires_at) <= new Date()) return null;
@@ -153,7 +153,7 @@ function setSession(res, userId) {
   res.setHeader("set-cookie", `hof_session=${encodeURIComponent(token)}; Max-Age=${SESSION_DAYS * 86400}; Path=/; HttpOnly; SameSite=Lax`);
 }
 function clearSession(req, res) {
-  const token = parseCookies(req.headers.cookie || {}).hof_session;
+  const token = parseCookies(req.headers.cookie || "").hof_session;
   if (token) run("DELETE FROM sessions WHERE token_hash = ?", hashToken(token));
   res.setHeader("set-cookie", "hof_session=; Max-Age=0; Path=/; HttpOnly; SameSite=Lax");
 }
