@@ -159,7 +159,7 @@ function clearSession(req, res) {
 }
 function pathSegments(url) { return new URL(url, `http://${HOST}:${PORT}`).pathname.split("/").filter(Boolean).map(decodeURIComponent); }
 function spreadsheetId(sheetUrl) {
-  const match = String(sheetUrl || "").match(/\/spreadsheets\/d\/([^/]+)/);
+  const match = String(sheetUrl || "").trim().match(/\/spreadsheets\/(?:u\/\d+\/)?d\/([^/?#]+)/i);
   if (!match) throw new Error("Geçerli bir Google Sheets bağlantısı girilmedi.");
   return match[1];
 }
