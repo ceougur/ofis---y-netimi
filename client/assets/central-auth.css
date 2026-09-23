@@ -1,0 +1,17 @@
+html.hof-auth-required #root { visibility: hidden !important; }
+.hof-central-login-backdrop { position: fixed; inset: 0; z-index: 99999; display: grid; place-items: center; padding: 20px; background: linear-gradient(135deg, #e8f2eb, #f7f5f0 52%, #e9eee9); font-family: Manrope, ui-sans-serif, system-ui, sans-serif; }
+.hof-central-login-card { width: min(420px, 100%); padding: 34px; border: 1px solid #d5e5d9; border-radius: 24px; background: rgba(255,255,255,.96); box-shadow: 0 28px 80px rgba(23,62,43,.18); color: #18352a; }
+.hof-central-mark { display: grid; width: 46px; height: 46px; margin-bottom: 18px; place-items: center; border-radius: 14px; background: linear-gradient(145deg,#2f8061,#1d5b45); color: white; font-size: 22px; font-weight: 900; box-shadow: 0 8px 18px rgba(36,107,82,.2); }
+.hof-central-kicker { margin: 0 0 8px; color: #609077; font-size: 10px; font-weight: 900; letter-spacing: .15em; }
+.hof-central-login-card h1 { margin: 0; color: #15372a; font-size: 26px; letter-spacing: -.04em; }
+.hof-central-help { margin: 10px 0 24px; color: #708279; font-size: 12px; line-height: 1.55; }
+.hof-central-login-card form { display: grid; gap: 13px; }
+.hof-central-login-card label { display: grid; gap: 6px; color: #507164; font-size: 11px; font-weight: 800; }
+.hof-central-login-card input { box-sizing: border-box; width: 100%; border: 1px solid #d3e3d7; border-radius: 10px; padding: 12px; outline: none; background: #fff; color: #203b2d; font: inherit; font-size: 13px; }
+.hof-central-login-card input:focus { border-color: #75a985; box-shadow: 0 0 0 3px rgba(117,169,133,.15); }
+.hof-central-login-card button { border: 0; border-radius: 10px; padding: 12px 14px; background: #246b52; color: #fff; cursor: pointer; font: inherit; font-size: 13px; font-weight: 800; }
+.hof-central-login-card button:hover { background: #1b5540; }
+.hof-central-login-card button:disabled { opacity: .6; cursor: wait; }
+.hof-central-error { min-height: 16px; margin: 0; color: #a14f42; font-size: 11px; }
+.hof-central-login-card small { display: block; margin-top: 20px; color: #87978e; font-size: 10px; line-height: 1.4; }
+@media (max-width: 480px) { .hof-central-login-card { padding: 25px 20px; } }

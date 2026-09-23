@@ -1,0 +1,14 @@
+{
+  "name": "hukuk-ofisi-merkezi",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Hukuk Ofisi merkezi server/client sürümü",
+  "type": "module",
+  "engines": { "node": ">=22.13.0" },
+  "scripts": {
+    "start": "node server/server.mjs",
+    "start:local": "HOST=127.0.0.1 PORT=5123 node server/server.mjs",
+    "check": "node --check server/server.mjs && node --check client/assets/central-auth.js",
+    "backup": "node tools/backup.mjs"
+  }
+}

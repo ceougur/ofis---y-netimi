@@ -1,0 +1,15 @@
+import { DatabaseSync } from "node:sqlite";
+import { mkdirSync, copyFileSync, readdirSync, unlinkSync } from "node:fs";
+import path from "node:path";
+const root = path.resolve(new URL("..", import.meta.url).pathname, "..");
+const dataDir = path.resolve(process.env.HUKUK_DATA_DIR || path.join(root, "data"));
+const backupDir = path.resolve(process.env.HUKUK_BACKUP_DIR || path.join(root, "backups"));
+mkdirSync(backupDir, { recursive: true });
+const dbPath = path.join(dataDir, "hukuk-ofisi.sqlite");
+const db = new DatabaseSync(dbPath);
+db.exec("PRAGMA wal_checkpoint(TRUNCATE);");
+const target = path.join(backupDir, `hukuk-ofisi-${new Date().toISOString().replace(/[:.]/g, "-")}.sqlite`);
+copyFileSync(dbPath, target);
+readdirSync(backupDir).filter(name => name.endsWith(".sqlite")).sort().reverse().slice(30).forEach(name => unlinkSync(path.join(backupDir, name)));
+db.close();
+console.log(target);
