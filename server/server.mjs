@@ -248,11 +248,15 @@ async function handle(req, res) {
   if (req.method === "GET" && url.pathname === "/api/auth/me") { const user = userFromRequest(req); return user ? ok(res, { id: user.id, username: user.username, name: user.display_name, role: user.role }) : fail(res, 401, "Oturum gerekli."); }
   if (req.method === "GET" && url.pathname === "/api/trpc/sheets.getRows") {
     try {
-      const raw = url.searchParams.get("input"); const input = raw ? json(decodeURIComponent(raw)) : {}; const sheetUrl = text(input?.json?.sheetUrl || input?.sheetUrl);
+      const raw = url.searchParams.get("input"); const input = raw ? json(decodeURIComponent(raw)) : {};
+      const batchInput = input?.json || input?.["0"]?.json || input?.[0]?.json || input?.["0"] || input?.[0] || {};
+      const sheetUrl = text(batchInput.sheetUrl || input?.sheetUrl);
       const result = await readGoogleSheet(sheetUrl);
-      return send(res, 200, { result: { data: { json: result } } });
+      const payload = { result: { data: { json: result } } };
+      return send(res, 200, url.searchParams.get("batch") === "1" ? [payload] : payload);
     } catch (error) {
-      return send(res, 200, { result: { data: { json: { connected: false, sourceUrl: "", syncedAt: null, rows: [], tabs: [], message: error.message || "Google Sheets okunamadı. Bağlantı ve paylaşım iznini kontrol edin." } } } });
+      const payload = { result: { data: { json: { connected: false, sourceUrl: "", syncedAt: null, rows: [], tabs: [], message: error.message || "Google Sheets okunamadı. Bağlantı ve paylaşım iznini kontrol edin." } } } };
+      return send(res, 200, url.searchParams.get("batch") === "1" ? [payload] : payload);
     }
   }
   if (req.method === "POST" && url.pathname === "/api/auth/change-password") {
