@@ -8,7 +8,7 @@
   "scripts": {
     "start": "node server/server.mjs",
     "start:local": "HOST=127.0.0.1 PORT=5123 node server/server.mjs",
-    "check": "node --check server/server.mjs && node --check client/assets/central-auth.js",
+    "check": "node --check server/server.mjs && node --check client/assets/central-auth.js && node --check client/assets/admin.js",
     "backup": "node tools/backup.mjs"
   }
 }

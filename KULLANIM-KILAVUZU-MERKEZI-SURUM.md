@@ -60,11 +60,13 @@ http://192.168.1.50:5123
 open-client.cmd http://192.168.1.50:5123
 ```
 
+Yönetici kullanıcı yönetimi için aynı server üzerinde `http://SERVER-IP:5123/admin.html` adresini açın. Bu ekranda yeni kullanıcı oluşturabilir, kullanıcıları pasifleştirebilir ve kendi parolanızı değiştirebilirsiniz.
+
 Her client kendi tarayıcısında kullanıcı hesabıyla giriş yapar. Tüm client’lar aynı merkezi dosya ve operasyon kayıtlarını görür.
 
 ## 4. Kullanıcı oluşturma
 
-İlk kullanıcıyla admin olarak giriş yaptıktan sonra uygulama arayüzünde kullanıcı yönetimi ekranı bulunmuyorsa yönetici API’si kullanılabilir. Tarayıcı geliştirici konsolunda aşağıdaki örnek çağrı çalıştırılabilir veya daha sonra yönetim ekranı eklenebilir:
+İlk kullanıcıyla admin olarak giriş yaptıktan sonra `admin.html` yönetim ekranını kullanın. Ekran açılmıyorsa veya teknik bakım gerekiyorsa yönetici API’si aşağıdaki örnek çağrıyla da kullanılabilir:
 
 ```javascript
 fetch('/api/admin/users', {

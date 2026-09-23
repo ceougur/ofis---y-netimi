@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hukuk Ofisi · Yönetim</title>
+  <link rel="stylesheet" href="/assets/admin.css">
+</head>
+<body>
+  <main class="admin-shell">
+    <header class="admin-header"><div><p class="eyebrow">HUKUK OFİSİ MERKEZİ</p><h1>Kullanıcı yönetimi</h1><p class="muted">Merkezi server’a bağlı kullanıcıları ve rollerini yönetin.</p></div><a href="/">Dosya takip ekranına dön</a></header>
+    <section id="notice" class="notice" hidden></section>
+    <section id="login-card" class="card" hidden><h2>Yönetici girişi</h2><form id="login-form"><label>Kullanıcı adı<input name="username" required autocomplete="username"></label><label>Parola<input name="password" type="password" required autocomplete="current-password"></label><button>Giriş yap</button></form></section>
+    <section id="app" hidden>
+      <div class="grid">
+        <section class="card"><h2>Yeni kullanıcı</h2><form id="user-form"><label>Kullanıcı adı<input name="username" required></label><label>Görünen ad<input name="name" required></label><label>Rol<select name="role"><option value="personel">Personel</option><option value="avukat">Avukat</option><option value="muhasebe">Muhasebe</option><option value="admin">Yönetici</option></select></label><label>İlk parola<input name="password" type="password" minlength="10" required></label><button>Kullanıcı oluştur</button></form></section>
+        <section class="card"><h2>Parolamı değiştir</h2><form id="password-form"><label>Mevcut parola<input name="currentPassword" type="password" required></label><label>Yeni parola<input name="newPassword" type="password" minlength="10" required></label><button>Parolayı değiştir</button></form></section>
+      </div>
+      <section class="card"><div class="section-heading"><h2>Kullanıcılar</h2><button id="refresh">Yenile</button></div><div class="table-wrap"><table><thead><tr><th>Ad</th><th>Kullanıcı</th><th>Rol</th><th>Durum</th><th>İşlem</th></tr></thead><tbody id="users"></tbody></table></div></section>
+    </section>
+  </main>
+  <script src="/assets/admin.js"></script>
+</body>
+</html>

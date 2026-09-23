@@ -108,3 +108,7 @@ Bu sürüm, merkezi server/client mimarisini ve mevcut kullanıcı deneyimini ç
 ## 10. Çalışır sürümü koruma kararı
 
 Orijinal `hukuk-ofisi-windows-kategorili-final-2026-09-23-phone-rollback.zip` dosyasına, PDF teslimine ve önceki analiz raporuna dokunulmamıştır. Yeni merkezi sürüm ayrı klasörde geliştirilmiş ve ayrı ZIP olarak paketlenecektir. Bu sayede merkezi sürümde sorun çıkarsa önceki çalışır teslim korunur.
+
+## 11. Git repository durumu
+
+Merkezi sürüm yerel Git geçmişiyle düzenlenmiş ve kullanıcı tarafından bağlanan `ceougur/ofis---y-netimi` repository’sine gönderilmiştir. `master` dalındaki son commit, client bağlantı kısayolunu da içeren merkezi ilk sürümdür. Çalışma verileri, SQLite dosyaları, yedekler ve `.git` klasörü dağıtım ZIP’ine alınmamıştır; kaynak geçmişi repository’de, temiz dağıtım snapshot’ı ZIP’te tutulmaktadır.
