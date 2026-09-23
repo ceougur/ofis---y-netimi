@@ -91,6 +91,20 @@ Giriş yaptıktan sonra mevcut dosya takip arayüzü açılır. Arama alanından
 
 Yapılan işlemler artık yalnızca o bilgisayarda değil, merkezi server veritabanında tutulur. Başka bir client sayfayı yenilediğinde aynı değişiklikleri görür.
 
+### Google Sheets bağlantısı
+
+Yeni tablo yükleme bölümüne Google Sheets’in tarayıcı adres çubuğundaki tam bağlantısını yapıştırın. Sheet’in Google hesabı dışından okunabilmesi için Google Sheets’te **Paylaş → Genel erişim → Bağlantıya sahip olan herkes → Görüntüleyici** seçeneğini uygulayın. Kurum politikası bu seçeneğe izin vermiyorsa server’ın kullandığı Google hesabına görüntüleme yetkisi verilmelidir; yalnızca özel hesapta açık bırakılan bir Sheet anonim server isteğiyle okunamaz.
+
+Geçerli bağlantı şu biçimde olmalıdır:
+
+```text
+https://docs.google.com/spreadsheets/d/SHEET_ID/edit?gid=0
+```
+
+`/spreadsheets/d/` içermeyen genel Google Drive klasör bağlantıları, Excel dosyası bağlantıları veya yalnızca paylaşım penceresi bağlantıları Sheet olarak okunmaz. Paylaşım değiştirildikten sonra yeni bağlantıyı yapıştırıp **Sheet’i analiz et** düğmesine yeniden basın.
+
+Başarısız olursa önce server bilgisayarında tarayıcıyla Sheet’i açıp erişimin gerçekten açık olduğunu kontrol edin. Uygulamadaki “Google Sheets okunamadı” uyarısı çoğunlukla paylaşım izni, yanlış URL veya Sheet’in kuruluş dışı erişimi engellemesi anlamına gelir.
+
 Hücre düzeltmelerinde iki kullanıcı aynı alanı aynı anda değiştirirse, eski sürümün üzerine sessizce yazmak yerine çakışma yanıtı üretilir. Bu durumda sayfayı yenileyip en güncel veriyi kontrol edin.
 
 ## 6. Server’ın durumu

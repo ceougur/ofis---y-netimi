@@ -112,3 +112,7 @@ Orijinal `hukuk-ofisi-windows-kategorili-final-2026-09-23-phone-rollback.zip` do
 ## 11. Git repository durumu
 
 Merkezi sürüm yerel Git geçmişiyle düzenlenmiş ve kullanıcı tarafından bağlanan `ceougur/ofis---y-netimi` repository’sine gönderilmiştir. `master` dalındaki son commit, client bağlantı kısayolunu da içeren merkezi ilk sürümdür. Çalışma verileri, SQLite dosyaları, yedekler ve `.git` klasörü dağıtım ZIP’ine alınmamıştır; kaynak geçmişi repository’de, temiz dağıtım snapshot’ı ZIP’te tutulmaktadır.
+
+## 12. Google Sheets endpoint düzeltmesi
+
+İlk merkezi paketlemede arayüzün çağırdığı `/api/trpc/sheets.getRows` endpoint’i merkezi server’a taşınmamıştı. Bu nedenle doğru Sheet bağlantısı girilse bile arayüz “Google Sheets okunamadı” uyarısı gösterebiliyordu. Güncel hotfix bu endpoint’i ekleyerek Sheet ID çıkarma, sekme keşfi, Google CSV okuma, Türkçe CSV alan dönüşümü ve kullanıcıya anlamlı paylaşım hatası mesajını merkezi server’a taşımıştır. Sheet’in anonim görüntülenebilir veya server’ın erişebildiği bir hesapla paylaşılmış olması hâlâ gereklidir.

@@ -158,6 +158,43 @@ function clearSession(req, res) {
   res.setHeader("set-cookie", "hof_session=; Max-Age=0; Path=/; HttpOnly; SameSite=Lax");
 }
 function pathSegments(url) { return new URL(url, `http://${HOST}:${PORT}`).pathname.split("/").filter(Boolean).map(decodeURIComponent); }
+function spreadsheetId(sheetUrl) {
+  const match = String(sheetUrl || "").match(/\/spreadsheets\/d\/([^/]+)/);
+  if (!match) throw new Error("Geçerli bir Google Sheets bağlantısı girilmedi.");
+  return match[1];
+}
+function googleCsvUrl(sheetUrl, gid = "0") {
+  return `https://docs.google.com/spreadsheets/d/${spreadsheetId(sheetUrl)}/gviz/tq?tqx=out:csv&gid=${encodeURIComponent(gid)}`;
+}
+function parseCsv(csv) {
+  const rows = []; let row = []; let cell = ""; let quoted = false;
+  for (let index = 0; index < csv.length; index += 1) {
+    const char = csv[index]; const next = csv[index + 1];
+    if (char === '"' && quoted && next === '"') { cell += '"'; index += 1; }
+    else if (char === '"') quoted = !quoted;
+    else if (char === "," && !quoted) { row.push(cell.trim()); cell = ""; }
+    else if ((char === "\n" || char === "\r") && !quoted) { if (char === "\r" && next === "\n") index += 1; row.push(cell.trim()); if (row.some(value => value.length > 0)) rows.push(row); row = []; cell = ""; }
+    else cell += char;
+  }
+  if (cell.length > 0 || row.length > 0) { row.push(cell.trim()); if (row.some(value => value.length > 0)) rows.push(row); }
+  return rows;
+}
+function csvToRecords(csv, tabTitle = "") {
+  const matrix = parseCsv(csv); const headers = matrix[0] || [];
+  return matrix.slice(1).map(values => headers.reduce((record, header, index) => { if (header.trim()) record[header.trim()] = values[index]?.trim() || ""; if (tabTitle) record.__sheet = tabTitle; return record; }, {})).filter(record => Object.entries(record).some(([key, value]) => key !== "__sheet" && Boolean(value)));
+}
+async function readGoogleSheet(sheetUrl) {
+  const sourceUrl = String(sheetUrl || "").trim();
+  const id = spreadsheetId(sourceUrl);
+  const documentResponse = await fetch(`https://docs.google.com/spreadsheets/d/${id}/edit`, { headers: { Accept: "text/html" } });
+  if (!documentResponse.ok) return { connected: false, sourceUrl, syncedAt: null, rows: [], tabs: [], message: `Google Sheets erişimi başarısız (${documentResponse.status}). Sheet paylaşım iznini kontrol edin.` };
+  const html = await documentResponse.text(); const tabs = [];
+  const patterns = [/"gid"\s*:\s*"?(\d+)"?[^{}]{0,240}?"(?:name|title)"\s*:\s*"([^"\\]+)"/g, /"(?:name|title)"\s*:\s*"([^"\\]+)"[^{}]{0,240}?"gid"\s*:\s*"?(\d+)"?/g];
+  for (const pattern of patterns) { let match; while ((match = pattern.exec(html))) { const gid = pattern === patterns[0] ? match[1] : match[2]; const title = pattern === patterns[0] ? match[2] : match[1]; if (gid && title && !tabs.some(tab => tab.gid === gid)) tabs.push({ gid, title }); } }
+  const fallbackGid = new URL(sourceUrl).searchParams.get("gid") || "0"; const targets = tabs.length ? tabs : [{ gid: fallbackGid, title: "" }]; const rows = [];
+  for (const tab of targets) { const response = await fetch(googleCsvUrl(sourceUrl, tab.gid), { headers: { Accept: "text/csv" } }); if (!response.ok) return { connected: false, sourceUrl, syncedAt: null, rows: [], tabs, message: `"${tab.title || "Sheet"}" sekmesi okunamadı (${response.status}). Sheet'i görüntüleme izni olan kişilerle paylaşın.` }; rows.push(...csvToRecords(await response.text(), tab.title)); }
+  return { connected: true, sourceUrl, syncedAt: now(), rows, tabs: targets, message: `${targets.length} sekmeden ${rows.length} kayıt okundu.` };
+}
 function sourceName(body, fallback = "Çalışma tablosu") { return text(body.sourceName, fallback); }
 function caseKey(body) { return text(body.caseKey || body.case_key); }
 function parseValues(record) { return typeof record === "object" && record ? record : {}; }
@@ -209,6 +246,15 @@ async function handle(req, res) {
   }
   if (req.method === "POST" && url.pathname === "/api/auth/logout") { clearSession(req, res); return ok(res, true); }
   if (req.method === "GET" && url.pathname === "/api/auth/me") { const user = userFromRequest(req); return user ? ok(res, { id: user.id, username: user.username, name: user.display_name, role: user.role }) : fail(res, 401, "Oturum gerekli."); }
+  if (req.method === "GET" && url.pathname === "/api/trpc/sheets.getRows") {
+    try {
+      const raw = url.searchParams.get("input"); const input = raw ? json(decodeURIComponent(raw)) : {}; const sheetUrl = text(input?.json?.sheetUrl || input?.sheetUrl);
+      const result = await readGoogleSheet(sheetUrl);
+      return send(res, 200, { result: { data: { json: result } } });
+    } catch (error) {
+      return send(res, 200, { result: { data: { json: { connected: false, sourceUrl: "", syncedAt: null, rows: [], tabs: [], message: error.message || "Google Sheets okunamadı. Bağlantı ve paylaşım iznini kontrol edin." } } } });
+    }
+  }
   if (req.method === "POST" && url.pathname === "/api/auth/change-password") {
     const user = requireUser(req, res); if (!user) return;
     try { const body = await readBody(req); const current = getOne("SELECT password_hash FROM users WHERE id = ?", user.id); if (!verifyPassword(String(body.currentPassword || ""), current.password_hash)) return fail(res, 400, "Mevcut parola hatalı."); if (String(body.newPassword || "").length < 10) return fail(res, 400, "Yeni parola en az 10 karakter olmalı."); run("UPDATE users SET password_hash = ?, updated_at = ? WHERE id = ?", passwordHash(String(body.newPassword)), now(), user.id); audit(user, "profile.password_changed", user.id); return ok(res, true); } catch (error) { return fail(res, 400, error.message); }
