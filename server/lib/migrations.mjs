@@ -1,9 +1,12 @@
 // Veritabanı şema sürümleme. PRAGMA user_version = uygulanan son göç numarası.
-// Kural: göçler yalnızca EKLEYİCİ olur (sütun/tablo/indeks ekleme, veri normalleştirme);
-// böylece bir güncelleme geri alınsa bile eski sürüm veritabanını okuyabilir.
+// Kural: göçler mümkün olduğunca EKLEYİCİ olur (sütun/tablo/indeks ekleme, veri normalleştirme). Bir göç mevcut
+// kayıtları yeniden anahtarlıyorsa (göç 4) geri dönüş, güncelleme öncesi alınan tam yedeğe dönülerek yapılır:
+// güncelleme düzeni yeni sürüm açılamazsa şema sürümü değiştiği için veritabanını kendiliğinden yedekten geri yükler.
 import { randomUUID } from "node:crypto";
 import { createBackup } from "./backup.mjs";
 import { DEFAULT_ADMIN_PASSWORD } from "./config.mjs";
+import { rowHash, rowIdentities } from "./dataset-identity.mjs";
+import { parseJson } from "./http.mjs";
 import { verifyPassword } from "./passwords.mjs";
 
 const columnExists = (store, table, column) => store.all(`PRAGMA table_info(${table})`).some(item => item.name === column);
@@ -207,6 +210,84 @@ export const MIGRATIONS = [
       }
       // Taşınan eski mesajlar okunmuş sayılır; güncellemeden sonra rozet patlaması olmaz.
       for (const user of users) store.run("INSERT OR IGNORE INTO chat_members (conversation_id, user_id, joined_at, last_read_at) VALUES ('conversation-office', ?, ?, ?)", user.id, timestamp, timestamp);
+    },
+  },
+  {
+    version: 4,
+    name: "v1.5.0 kalıcı çalışma verisi",
+    up(store) {
+      store.exec(`
+        CREATE TABLE IF NOT EXISTS dataset_rows (
+          dataset_key TEXT NOT NULL,
+          row_id TEXT NOT NULL,
+          case_key TEXT NOT NULL,
+          tab TEXT NOT NULL DEFAULT '',
+          position INTEGER NOT NULL,
+          values_json TEXT NOT NULL,
+          row_hash TEXT NOT NULL,
+          origin TEXT NOT NULL,
+          created_at TEXT NOT NULL,
+          updated_at TEXT NOT NULL,
+          missing_since TEXT,
+          PRIMARY KEY (dataset_key, row_id)
+        );
+        CREATE INDEX IF NOT EXISTS idx_dataset_rows_position ON dataset_rows(dataset_key, position);
+        CREATE INDEX IF NOT EXISTS idx_dataset_rows_case ON dataset_rows(dataset_key, case_key);
+        CREATE TABLE IF NOT EXISTS dataset_imports (
+          id TEXT PRIMARY KEY,
+          dataset_key TEXT NOT NULL,
+          kind TEXT NOT NULL,
+          mode TEXT NOT NULL,
+          label TEXT NOT NULL DEFAULT '',
+          source_url TEXT,
+          row_count INTEGER NOT NULL DEFAULT 0,
+          added INTEGER NOT NULL DEFAULT 0,
+          updated INTEGER NOT NULL DEFAULT 0,
+          unchanged INTEGER NOT NULL DEFAULT 0,
+          removed INTEGER NOT NULL DEFAULT 0,
+          missing INTEGER NOT NULL DEFAULT 0,
+          backup_name TEXT,
+          created_by TEXT NOT NULL,
+          created_at TEXT NOT NULL
+        );
+        CREATE INDEX IF NOT EXISTS idx_dataset_imports_created ON dataset_imports(dataset_key, created_at);
+      `);
+      // Etkin kaynak (Excel dosyası veya Google Sheets bağlantısı) kalıcı çalışma verisine dönüşür. Ofisin o kaynaktaki
+      // düzeltmeleri, silmeleri ve yeni kayıtları artık dosya adına/bağlantıya değil çalışma verisine bağlıdır.
+      const key = "dataset://ofis";
+      const active = String(store.get("SELECT value FROM settings WHERE key = 'client.sheetUrl'")?.value || "").trim();
+      if (!active) return;
+      const timestamp = new Date().toISOString();
+      for (const table of ["overrides", "deleted_records", "records"]) store.run(`UPDATE ${table} SET source_name = ? WHERE source_name = ?`, key, active);
+      const setSetting = (name, value) =>
+        store.run("INSERT INTO settings (key, value, updated_at, updated_by) VALUES (?, ?, ?, NULL) ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = excluded.updated_at", name, String(value), timestamp);
+      const logImport = (kind, label, url, rows, by) =>
+        store.run(
+          "INSERT INTO dataset_imports (id, dataset_key, kind, mode, label, source_url, row_count, added, created_by, created_at) VALUES (?, ?, ?, 'migration', ?, ?, ?, ?, ?, ?)",
+          `import-${randomUUID()}`, key, kind, label, url, rows, rows, by || "system", timestamp,
+        );
+      if (active.startsWith("excel://")) {
+        const snapshot = store.get("SELECT file_name, rows_json, uploaded_by, uploaded_at FROM source_snapshots WHERE source_key = ?", active);
+        if (!snapshot) return;
+        const rows = parseJson(snapshot.rows_json, []).filter(row => row && typeof row === "object" && !Array.isArray(row));
+        const identities = rowIdentities(rows);
+        rows.forEach((values, index) => {
+          const identity = identities[index];
+          store.run(
+            "INSERT OR IGNORE INTO dataset_rows (dataset_key, row_id, case_key, tab, position, values_json, row_hash, origin, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, 'excel', ?, ?)",
+            key, identity.id, identity.caseKey, identity.tab, index, JSON.stringify(values), rowHash(values), snapshot.uploaded_at || timestamp, timestamp,
+          );
+        });
+        setSetting("dataset.label", snapshot.file_name);
+        setSetting("dataset.changedAt", snapshot.uploaded_at || timestamp);
+        logImport("excel", snapshot.file_name, null, rows.length, snapshot.uploaded_by);
+      } else if (/^https?:\/\//i.test(active)) {
+        // Sheet'in satırları göç sırasında okunamaz (internet gerekir); sunucu açılınca ilk eşitlemede kaydedilir.
+        setSetting("dataset.linkedSheetUrl", active);
+        setSetting("dataset.needsInitialSync", "1");
+        setSetting("dataset.label", "Google Sheets");
+        logImport("sheets", "Google Sheets", active, 0, "system");
+      }
     },
   },
 ];

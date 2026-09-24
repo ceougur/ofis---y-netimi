@@ -71,6 +71,19 @@ export function discoverTabs(html) {
   return tabs;
 }
 
+// Belgenin adı (<title>): "Önemli Dosyalar - Google E-Tablolar" → "Önemli Dosyalar".
+const ENTITIES = { amp: "&", lt: "<", gt: ">", quot: '"', "#39": "'", apos: "'" };
+export function documentTitle(html) {
+  const raw = /<title[^>]*>([^<]*)<\/title>/i.exec(String(html || ""))?.[1] || "";
+  return raw
+    .replace(/&(amp|lt|gt|quot|#39|apos);/g, (_, name) => ENTITIES[name])
+    .replace(/&#(\d+);/g, (_, code) => String.fromCodePoint(Number(code)))
+    .replace(/\s+-\s+Google\s.*$/i, "")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, 200);
+}
+
 export function createSheetsReader({ fetchImpl, cacheMs = 45_000, timeoutMs = 20_000 }) {
   const cache = new Map();
   const inflight = new Map();
@@ -83,7 +96,9 @@ export function createSheetsReader({ fetchImpl, cacheMs = 45_000, timeoutMs = 20
     if (!documentResponse.ok) {
       return { connected: false, sourceUrl, syncedAt: null, rows: [], tabs: [], message: `Google Sheets erişimi başarısız (${documentResponse.status}). Sheet paylaşım iznini kontrol edin.` };
     }
-    const tabs = discoverTabs(await documentResponse.text());
+    const html = await documentResponse.text();
+    const tabs = discoverTabs(html);
+    const title = documentTitle(html);
     let fallbackGid = "0";
     try {
       fallbackGid = new URL(sourceUrl).searchParams.get("gid") || new URL(sourceUrl).hash.match(/gid=(\d+)/)?.[1] || "0";
@@ -105,7 +120,7 @@ export function createSheetsReader({ fetchImpl, cacheMs = 45_000, timeoutMs = 20
       if (parsed.sections.length > 1) sectionCount += parsed.sections.length;
     }
     const detail = sectionCount ? ` (alt tablolar ayrı bölümler olarak gösteriliyor)` : "";
-    return { connected: true, sourceUrl, syncedAt: new Date().toISOString(), rows, tabs: labels.length ? labels : targets, message: `${targets.length} sekmeden ${rows.length} kayıt okundu${detail}.` };
+    return { connected: true, sourceUrl, title, syncedAt: new Date().toISOString(), rows, tabs: labels.length ? labels : targets, message: `${targets.length} sekmeden ${rows.length} kayıt okundu${detail}.` };
   }
 
   // Önce hücreleri göründüğü gibi veren export CSV'si, olmazsa gviz CSV'si.

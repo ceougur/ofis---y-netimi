@@ -4,11 +4,29 @@ import { canonicalCaseKey, columnOrder } from "../server/lib/sources.mjs";
 import { csvToRecords, discoverTabs, parseCsv } from "../server/lib/sheets.mjs";
 import { createUser, loginAdmin, startTestServer } from "./helpers.mjs";
 
-const trpcUrl = (sheetUrl, batch = false) => {
+const trpcUrl = (sheetUrl = "dataset://ofis", batch = false) => {
   const input = batch ? { 0: { json: { sheetUrl } } } : { json: { sheetUrl } };
   return `/api/trpc/sheets.getRows?${batch ? "batch=1&" : ""}input=${encodeURIComponent(JSON.stringify(input))}`;
 };
 const rowsOf = response => (Array.isArray(response.data) ? response.data[0] : response.data).result.data.json;
+// Excel satırlarını (sekme etiketli nesneler) içeri alma biçimine (sayfa matrisleri) çevirir.
+const sheetsOf = rows => {
+  const byTab = new Map();
+  for (const row of rows) {
+    const tab = row.__sheet || "Sayfa1";
+    if (!byTab.has(tab)) byTab.set(tab, []);
+    byTab.get(tab).push(row);
+  }
+  return [...byTab].map(([name, items]) => {
+    const columns = [...new Set(items.flatMap(item => Object.keys(item).filter(key => key !== "__sheet")))];
+    return { name, matrix: [columns, ...items.map(item => columns.map(column => item[column] ?? ""))] };
+  });
+};
+async function importData(client, body, mode = "replace", link = true) {
+  const staged = await client.post("/api/workspace/dataset/stage", body);
+  if (staged.status !== 200) return staged;
+  return client.post("/api/workspace/dataset/commit", { stageId: staged.data.data.stageId, mode, link });
+}
 
 describe("kaynak birleştirme birimleri", () => {
   it("dosya kimliğini ilk yyyy/sayı kalıbından çıkarır (v1.0.0 kuralı)", () => {
@@ -53,43 +71,47 @@ describe("merkezi Excel ve birleşik görünüm", () => {
     { __sheet: "Kapanan", "DOSYA NO": "2025/9", BORÇLU: "Can Demir", "ÖDEME SÖZÜ": "" },
   ];
 
-  it("Excel tablosunu yükler ve ofis kaynağı yapar", async () => {
-    const upload = await admin.post("/api/workspace/sources/excel", { fileName: "Dosyalar.xlsx", tabs: ["Aktif", "Kapanan"], rows: excelRows });
-    assert.equal(upload.status, 200);
-    assert.equal(upload.data.data.sourceKey, "excel://Dosyalar.xlsx");
+  it("Excel tablosunu yükler; ofisin kalıcı çalışma verisi olur", async () => {
+    const upload = await importData(admin, { kind: "excel", fileName: "Dosyalar.xlsx", sheets: sheetsOf(excelRows) });
+    assert.equal(upload.status, 200, JSON.stringify(upload.data));
+    assert.equal(upload.data.data.mode, "initial");
     assert.equal(upload.data.data.rowCount, 3);
     const state = await personel.get("/api/workspace/client-state");
-    assert.equal(state.data.data.settings.sheetUrl, "excel://Dosyalar.xlsx");
+    assert.equal(state.data.data.settings.sheetUrl, "dataset://ofis");
     assert.equal(state.data.data.settings.activeSourceLabel, "Dosyalar.xlsx");
   });
 
-  it("tüm bilgisayarlar aynı satırları kimlikleriyle görür", async () => {
-    const result = rowsOf(await personel.get(trpcUrl("excel://Dosyalar.xlsx")));
-    assert.equal(result.connected, true);
-    assert.equal(result.rows.length, 3);
-    assert.deepEqual(result.rows.map(row => row.__hofKey), ["2026/1", "2026/2", "2025/9"]);
-    assert.deepEqual(result.tabs.map(tab => tab.title), ["Aktif", "Kapanan"]);
+  it("tüm bilgisayarlar aynı satırları kimlikleriyle görür (arayüzün gönderdiği adres ne olursa olsun)", async () => {
+    for (const address of ["dataset://ofis", "excel://Dosyalar.xlsx", ""]) {
+      const result = rowsOf(await personel.get(trpcUrl(address)));
+      assert.equal(result.connected, true);
+      assert.deepEqual(result.rows.map(row => row.__hofKey), ["2026/1", "2026/2", "2025/9"]);
+      assert.deepEqual(result.tabs.map(tab => tab.title), ["Aktif", "Kapanan"]);
+    }
   });
 
   it("düzeltme, silme ve yeni kayıt birleşik görünüme yansır", async () => {
-    const sourceName = "excel://Dosyalar.xlsx";
+    const sourceName = "dataset://ofis";
     await personel.post("/api/workspace/overrides", { sourceName, caseKey: "2026/1", field: "ÖDEME SÖZÜ", value: "" });
     await admin.post("/api/workspace/deleted", { sourceName, caseKey: "2026/2" });
-    await personel.post("/api/workspace/records", { sourceName, values: { "DOSYA NO": "2026/3", BORÇLU: "Yeni Borçlu" } });
+    // Güncelleme sırasında açık kalmış eski sayfa eski kaynak adını gönderse de kayıt çalışma verisine bağlanır.
+    await personel.post("/api/workspace/records", { sourceName: "excel://Dosyalar.xlsx", values: { "DOSYA NO": "2026/3", BORÇLU: "Yeni Borçlu" } });
     const result = rowsOf(await personel.get(trpcUrl(sourceName, true)));
     assert.deepEqual(result.rows.map(row => row.__hofKey), ["2026/3", "2026/1", "2025/9"]);
     assert.equal(result.rows[1]["ÖDEME SÖZÜ"], "");
     assert.ok(result.rows[0].__hofRecord.startsWith("record-"));
     const restore = await admin.post("/api/workspace/deleted/restore", { sourceName, caseKey: "2026/2" });
     assert.equal(restore.status, 200);
-    const restored = rowsOf(await personel.get(trpcUrl(sourceName)));
+    const restored = rowsOf(await personel.get(trpcUrl()));
     assert.equal(restored.rows.length, 4);
   });
 
-  it("aynı dosya adıyla yeniden yükleme düzeltmeleri korur", async () => {
+  it("başka adla yüklenen dosya 'devamı olarak' eklenince düzeltmeler korunur", async () => {
     const updated = excelRows.map(row => ({ ...row, BORÇLU: `${row.BORÇLU} (güncel)` }));
-    await admin.post("/api/workspace/sources/excel", { fileName: "Dosyalar.xlsx", tabs: ["Aktif", "Kapanan"], rows: updated });
-    const result = rowsOf(await personel.get(trpcUrl("excel://Dosyalar.xlsx")));
+    const upload = await importData(admin, { kind: "excel", fileName: "Dosyalar-Ekim.xlsx", sheets: sheetsOf(updated) }, "merge");
+    assert.equal(upload.status, 200, JSON.stringify(upload.data));
+    assert.deepEqual(upload.data.data.counts, { added: 0, updated: 3, unchanged: 0, removed: 0, missing: 0 });
+    const result = rowsOf(await personel.get(trpcUrl()));
     const first = result.rows.find(row => row.__hofKey === "2026/1");
     assert.equal(first.BORÇLU, "Ali Veli (güncel)");
     assert.equal(first["ÖDEME SÖZÜ"], "", "önceki düzeltme yeni yüklemede de geçerli");
@@ -101,29 +123,29 @@ describe("merkezi Excel ve birleşik görünüm", () => {
   });
 
   it("oturumsuz tRPC isteği tRPC hata biçiminde 401 döner", async () => {
-    const result = await server.client().get(trpcUrl("excel://Dosyalar.xlsx", true));
+    const result = await server.client().get(trpcUrl("dataset://ofis", true));
     assert.equal(result.status, 401);
     assert.equal(result.data[0].error.json.data.code, "UNAUTHORIZED");
   });
 
-  it("bilinmeyen Excel kaynağı anlaşılır mesaj verir", async () => {
-    const result = rowsOf(await personel.get(trpcUrl("excel://Yok.xlsx")));
-    assert.equal(result.connected, false);
-    assert.match(result.message, /bulunamadı/);
+  it("1.4.0 kaynak uçları veriyi değiştirmez, sayfanın yenilenmesini ister", async () => {
+    const before = rowsOf(await admin.get(trpcUrl())).rows.length;
+    assert.equal((await admin.post("/api/workspace/sources/excel", { fileName: "Eski.xlsx", rows: [{ A: "1" }] })).status, 409);
+    assert.equal((await admin.del("/api/workspace/sources/active")).status, 409);
+    assert.equal((await admin.put("/api/workspace/client-state", { key: "sheetUrl", value: "" })).status, 409);
+    assert.equal(rowsOf(await admin.get(trpcUrl())).rows.length, before);
   });
 });
 
 describe("Google Sheets (sahte ağ ile)", () => {
   let server;
   let admin;
-  let calls = 0;
-  const html = '<script>"gid":"0","name":"Aktif" "gid":"12","name":"Kapanan"</script>';
+  const html = '<title>Takip Tablosu - Google E-Tablolar</title><script>"gid":"0","name":"Aktif" "gid":"12","name":"Kapanan"</script>';
   const csv = { 0: "DOSYA NO,BORÇLU\n2026/10,Hakan\n2026/11,Elif\n", 12: "DOSYA NO,BORÇLU\n2024/5,Kemal\n" };
   const fetchImpl = async url => {
-    calls += 1;
     const target = String(url);
-    if (target.includes("/edit")) return new Response(html, { status: 200 });
     if (target.includes("SIFIRYETKI")) return new Response("", { status: 403 });
+    if (target.includes("/edit")) return new Response(html, { status: 200 });
     const gid = new URL(target).searchParams.get("gid");
     return new Response(csv[gid] ?? "", { status: 200 });
   };
@@ -135,24 +157,30 @@ describe("Google Sheets (sahte ağ ile)", () => {
   });
   after(() => server.close());
 
-  it("tüm sekmeleri okur ve sonucu kısa süre önbellekte tutar", async () => {
-    const first = rowsOf(await admin.get(trpcUrl(sheetUrl)));
+  it("tüm sekmeleri okur; belgenin adı verinin adı olur", async () => {
+    const staged = await admin.post("/api/workspace/dataset/stage", { kind: "sheets", url: sheetUrl });
+    assert.equal(staged.status, 200, JSON.stringify(staged.data));
+    assert.equal(staged.data.data.label, "Takip Tablosu");
+    assert.equal(staged.data.data.rowCount, 3);
+    await admin.post("/api/workspace/dataset/commit", { stageId: staged.data.data.stageId, mode: "replace" });
+    const first = rowsOf(await admin.get(trpcUrl()));
     assert.equal(first.connected, true);
     assert.deepEqual(first.rows.map(row => `${row.__sheet}:${row.__hofKey}`), ["Aktif:2026/10", "Aktif:2026/11", "Kapanan:2024/5"]);
-    const before = calls;
-    rowsOf(await admin.get(trpcUrl(sheetUrl)));
-    assert.equal(calls, before, "ikinci istek önbellekten gelmeli");
+    const state = (await admin.get("/api/workspace/client-state")).data.data.settings;
+    assert.equal(state.linkedSheetUrl, sheetUrl);
+    assert.equal(state.activeSourceLabel, "Takip Tablosu");
   });
 
   it("geçersiz bağlantıda anlaşılır mesaj verir", async () => {
-    const result = rowsOf(await admin.get(trpcUrl("https://drive.google.com/klasor")));
-    assert.equal(result.connected, false);
-    assert.match(result.message, /Geçerli bir Google Sheets/);
+    const result = await admin.post("/api/workspace/dataset/stage", { kind: "sheets", url: "https://drive.google.com/klasor" });
+    assert.equal(result.status, 400);
+    assert.match(result.data.error, /Google Sheets bağlantısı/);
   });
 
   it("izin hatasını kullanıcıya açıklar", async () => {
-    const result = rowsOf(await admin.get(trpcUrl("https://docs.google.com/spreadsheets/d/SIFIRYETKI/edit")));
-    assert.equal(result.connected, false);
+    const result = await admin.post("/api/workspace/dataset/stage", { kind: "sheets", url: "https://docs.google.com/spreadsheets/d/SIFIRYETKI/edit" });
+    assert.equal(result.status, 502);
+    assert.match(result.data.error, /paylaşım/);
   });
 });
 
@@ -187,36 +215,37 @@ describe("alt tablolu kaynaklar (Excel matrisi ve Google export)", () => {
   after(() => server.close());
 
   it("Excel matrisindeki alt tabloları sunucuda ayırır; etiketler sekme listesine girer", async () => {
-    const upload = await admin.post("/api/workspace/sources/excel", { fileName: "Bolumlu.xlsx", tabs: ["ÖNEMLİ"], sheets: [{ name: "ÖNEMLİ", matrix }] });
-    assert.equal(upload.status, 200, JSON.stringify(upload.data));
-    assert.equal(upload.data.data.rowCount, 3);
-    assert.deepEqual(upload.data.data.tabs, [`ÖNEMLİ${S}GAYRİMENKUL SATIŞ DOSYALARI`, `ÖNEMLİ${S}ÇEK CEZASI DOSYALARI`]);
-    const result = rowsOf(await admin.get(trpcUrl("excel://Bolumlu.xlsx")));
+    const staged = await admin.post("/api/workspace/dataset/stage", { kind: "excel", fileName: "Bolumlu.xlsx", sheets: [{ name: "ÖNEMLİ", matrix }] });
+    assert.equal(staged.status, 200, JSON.stringify(staged.data));
+    assert.equal(staged.data.data.rowCount, 3);
+    assert.deepEqual(staged.data.data.tabs, [`ÖNEMLİ${S}GAYRİMENKUL SATIŞ DOSYALARI`, `ÖNEMLİ${S}ÇEK CEZASI DOSYALARI`]);
+    await admin.post("/api/workspace/dataset/commit", { stageId: staged.data.data.stageId, mode: "replace" });
+    const result = rowsOf(await admin.get(trpcUrl()));
     assert.deepEqual(result.rows.map(row => `${row.__sheet}|${row.__hofKey}`), [`ÖNEMLİ${S}GAYRİMENKUL SATIŞ DOSYALARI|2018/10236`, `ÖNEMLİ${S}GAYRİMENKUL SATIŞ DOSYALARI|2017/12039`, `ÖNEMLİ${S}ÇEK CEZASI DOSYALARI|2024/170`]);
     assert.equal(result.rows[2].MÜVEKKİL, "Müvekkil C");
-    assert.deepEqual(result.tabs.map(tab => tab.title), upload.data.data.tabs);
+    assert.deepEqual(result.tabs.map(tab => tab.title), staged.data.data.tabs);
   });
 
   it("Google Sheets'i önce export CSV ile okur ve alt tabloları ayırır", async () => {
     requests.length = 0;
-    const result = rowsOf(await admin.get(trpcUrl("https://docs.google.com/spreadsheets/d/BOLUM/edit")));
-    assert.equal(result.connected, true, result.message);
+    const staged = await admin.post("/api/workspace/dataset/stage", { kind: "sheets", url: "https://docs.google.com/spreadsheets/d/BOLUM/edit" });
+    assert.equal(staged.status, 200, JSON.stringify(staged.data));
     assert.deepEqual(requests, ["edit", "export"]);
-    assert.deepEqual(result.tabs.map(tab => tab.title), [`ÖNEMLİ${S}GAYRİMENKUL SATIŞ DOSYALARI`, `ÖNEMLİ${S}ÇEK CEZASI DOSYALARI`]);
-    assert.equal(result.rows.length, 3);
-    assert.match(result.message, /alt tablolar/);
+    assert.deepEqual(staged.data.data.tabs, [`ÖNEMLİ${S}GAYRİMENKUL SATIŞ DOSYALARI`, `ÖNEMLİ${S}ÇEK CEZASI DOSYALARI`]);
+    assert.equal(staged.data.data.rowCount, 3);
+    assert.deepEqual(staged.data.data.preview.merge, { added: 0, updated: 0, unchanged: 3, kept: 0 }, "aynı içerik: değişiklik yok");
   });
 
   it("export alınamazsa (giriş sayfası) gviz CSV'sine düşer", async () => {
     requests.length = 0;
-    const result = rowsOf(await admin.get(trpcUrl("https://docs.google.com/spreadsheets/d/GIRIS/edit")));
-    assert.equal(result.connected, true, result.message);
+    const staged = await admin.post("/api/workspace/dataset/stage", { kind: "sheets", url: "https://docs.google.com/spreadsheets/d/GIRIS/edit" });
+    assert.equal(staged.status, 200, JSON.stringify(staged.data));
     assert.deepEqual(requests, ["edit", "export", "gviz"]);
-    assert.equal(result.rows.length, 3);
+    assert.equal(staged.data.data.rowCount, 3);
   });
 
   it("kolon adı değişince (eski birleşik başlık) ofisin düzeltmesi yeni kolona taşınır", async () => {
-    const sourceName = "excel://Bolumlu.xlsx";
+    const sourceName = "dataset://ofis";
     await admin.post("/api/workspace/overrides", { sourceName, caseKey: "2018/10236", field: "GAYRİMENKUL SATIŞ DOSYALARI HACİZ TARİHİ", value: "09.11.2022" });
     const result = rowsOf(await admin.get(trpcUrl(sourceName, true)));
     const row = result.rows.find(item => item.__hofKey === "2018/10236");

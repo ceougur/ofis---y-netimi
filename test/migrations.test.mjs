@@ -23,7 +23,7 @@ describe("v1.0.0 veritabanından yükseltme", () => {
 
   it("şemayı son sürüme yükseltir ve öncesinde yedek alır", () => {
     assert.equal(server.app.store.get("PRAGMA user_version").user_version, LATEST_VERSION);
-    assert.deepEqual(server.app.migration.applied, [1, 2, 3]);
+    assert.deepEqual(server.app.migration.applied, [1, 2, 3, 4]);
     const backups = readdirSync(server.backupDir);
     assert.ok(backups.some(name => name.includes("pre-migration")), `yedekler: ${backups}`);
   });

@@ -20,6 +20,11 @@
     "source.row.restored": "Silinen kaydı geri aldı",
     "source.cell.updated": "Hücre düzeltti",
     "source.excel.uploaded": "Excel tablosu yükledi",
+    "dataset.imported": "Veri içeri aldı",
+    "dataset.removed": "Veriyi kaldırdı",
+    "dataset.unlinked": "Sheet bağlantısını kaldırdı",
+    "dataset.missing.remove": "Sheet'te olmayan kayıtları kaldırdı",
+    "dataset.missing.keep": "Sheet'te olmayan kayıtları tuttu",
     "case.note.created": "Dosyaya not ekledi",
     "case.phone.created": "Telefon ekledi",
     "case.payment.created": "Tahsilat işledi",
@@ -183,6 +188,12 @@
     if (payload.field) parts.push(`${payload.field}: "${payload.previousValue ?? ""}" → "${payload.value ?? ""}"`);
     if (payload.username) parts.push(`${payload.username} (${HOF.roleLabels[payload.role] || payload.role || ""})`);
     if (payload.fileName) parts.push(`${payload.fileName} · ${payload.rows} kayıt`);
+    if (event.type === "dataset.imported") {
+      const modes = { initial: "ilk yükleme", merge: "devamı olarak", replace: "yerine koyarak" };
+      parts.push(`${payload.label || ""} · ${modes[payload.mode] || payload.mode} · ${payload.rows} kayıt (${payload.added || 0} yeni, ${payload.updated || 0} güncellendi${payload.removed ? `, ${payload.removed} kaldırıldı` : ""})`);
+    }
+    if (event.type === "dataset.removed") parts.push(`${payload.removed} kayıt`);
+    if (event.type.startsWith("dataset.missing.")) parts.push(`${payload.rows} kayıt`);
     if (payload.amount) parts.push(HOF.formatMoney(payload.amount));
     if (payload.title) parts.push(payload.title);
     if (payload.recipient) parts.push(`Alıcı: ${payload.recipient}`);

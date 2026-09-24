@@ -73,7 +73,7 @@ Arayüzün ana gövdesi Manus/Vite çıkışı derlenmiş bir React paketidir (k
 | `hof-chat.js` | Sohbet paneli: ofis kanalı + özel yazışmalar, okunmamış rozeti/sekme başlığı, okundu bilgisi, bildirim ve ses, dosya numarası bağlantısı |
 | `hof-table.js` | Yüzen düzenle/sil düğmeleri, geri alınabilir silme, yeni kayıt, sayfalama (20 satır; 1…6 penceresi; sekme/arama değişince ilk sayfa) |
 | `hof-sections.js` | "Sekme › Bölüm" etiketli kategorileri gruplar: React'in düğmelerini gizleyip sekme + alt tablo şeridi gösterir, tıklamaları gizli React düğmelerine aktarır |
-| `hof-sources.js` | Merkezi Excel yükleme (Worker'da ayrıştırma), kaynak kaldırma, yetkiye göre menü gizleme |
+| `hof-sources.js` | Veri yokken "başlayalım" kartı, Ayarlar → Veri penceresi (Excel/Sheets içeri alma, devamı/yerine seçimi, eşitleme, geçmiş, Sheet'te olmayanlar, kaldırma), paketin yükleme girişlerini yönlendirme, yetkiye göre menü gizleme |
 | `hof-promises.js`, `hof-search.js` | Ödeme sözleri şeridi, akıllı arama |
 
 **Depo köprüsü:** React paketi ayarlarını `localStorage`'da tutar. `hof-boot.js` açılışta bu anahtarları sunucudaki ofis ayarlarıyla doldurur ve paketin yaptığı yazmaları sunucuya iletir (`hukuk-ofisi-sheet-url`, `-sync-minutes`, `-ai-mapping`, `-notlar`). Böylece derlenmiş pakete dokunmadan ayarlar ve notlar merkezileşir.
@@ -82,19 +82,21 @@ Arayüzün ana gövdesi Manus/Vite çıkışı derlenmiş bir React paketidir (k
 
 ## Birleşik görünüm (sunucu tarafı)
 
-`/api/trpc/sheets.getRows` kaynağı (Google Sheets veya sunucudaki Excel anlık görüntüsü) okur ve ofisin verisini uygular:
+**Kalıcı çalışma verisi (v1.5, `server/lib/dataset.mjs`).** Ofisin tek verisi `dataset://ofis` anahtarıyla sunucuda saklanır (`dataset_rows`); `/api/trpc/sheets.getRows` arayüz hangi adresi gönderirse göndersin bu veriyi döndürür. Düzeltmeler, silmeler ve yeni kayıtlar da bu anahtara bağlıdır (dosya adından/bağlantıdan bağımsız):
 
-1. **Dosya kimliği** (`__hofKey`): satırdaki ilk `yyyy/sayı` kalıbı (v1.0.0 kuralıyla uyumlu); yoksa "Dosya No" değeri; o da yoksa satır içeriğinin özeti.
-2. **Silinenler** çıkarılır, **düzeltmeler** (override) uygulanır, **yeni kayıtlar** en üste eklenir.
-3. Paket `__` ile başlayan alanları kolon saymaz; satırlar `data-hof-key` taşır.
+1. **Dosya kimliği** (`__hofKey`, notların ve düzeltmelerin anahtarı): satırdaki ilk `yyyy/sayı` kalıbı (v1.0.0 kuralı); yoksa "Dosya No" değeri; o da yoksa satır içeriğinin özeti. İçeri alma anında hesaplanıp satırla saklanır.
+2. **Satır kimliği** (`dataset-identity.mjs`, içeri almada eşleşme için): kimlikli satırda `sekme + dosya kimliği + o sekmedeki kaçıncı tekrar`, kimliksiz satırda `sekme + kimliksiz satırlar arasındaki sıra`. Satır içeriğinin özeti (`row_hash`) değişmeyen satırın yeniden yazılmasını önler.
+3. Görünüm: **yeni kayıtlar** en üstte, sonra içeri alınan satırlar kaynak sırasıyla; **silinenler** çıkarılır, **düzeltmeler** uygulanır; bağlı Sheet'te artık olmayan satır `__hofMissing` taşır. Paket `__` ile başlayan alanları kolon saymaz; satırlar `data-hof-key` taşır.
 
-Google Sheets sonuçları 45 sn önbelleklenir; aynı anda gelen istekler birleştirilir. Sekmeler önce `export?format=csv` ile (hücreler ekranda göründüğü gibi) okunur; gviz CSV'si kolon türünü tahmin edip türe uymayan hücreleri boşalttığı ve çok satırlı başlıkları birleştirdiği için yalnızca yedek yoldur.
+İçeri alma iki adımlıdır: `POST /api/workspace/dataset/stage` dosyayı/bağlantıyı okuyup mevcut veriyle karşılaştırır (hiçbir şey yazılmaz; önizleme 30 dk bellekte), `POST …/commit {mode: merge|replace, link}` yöneticinin seçimini uygular. Her değişiklikten önce `VACUUM INTO` yedeği alınır. Modlar: **merge** (yeni eklenir, değişen güncellenir, olmayan korunur), **replace** (olmayan kalkar), **sync** (bağlı Sheet eşitlemesi: olmayan silinmez, `origin = sheets` ise `missing_since` işaretlenir; yönetici "tut" derse `origin = local` olur). Zamanlayıcı dakikada bir bakar, `client.syncMinutes` dolunca eşitler. Emniyet: Sheet boş dönerse ya da (≥20 satırda) satırların %30'undan fazlası birden hem "yeni" hem "kayıp" görünürse eşitleme uygulanmaz, `dataset.syncHold` ile yönetici kararı beklenir. Google'a ulaşılamazsa son kaydedilen veri kullanılır. Veri yükleme/kaldırma yalnızca `sources.manage` (yönetici). Göç 4, 1.4.0'daki etkin kaynağı (Excel anlık görüntüsü veya Sheet bağlantısı) bu modele taşır ve düzeltmeleri/silmeleri/yeni kayıtları `dataset://ofis`'e yeniden anahtarlar; Sheet satırları ilk açılışta okunup kaydedilir.
+
+Google Sheets istekleri 45 sn önbelleklenir; aynı anda gelen istekler birleştirilir. Sekmeler önce `export?format=csv` ile (hücreler ekranda göründüğü gibi) okunur; gviz CSV'si kolon türünü tahmin edip türe uymayan hücreleri boşalttığı ve çok satırlı başlıkları birleştirdiği için yalnızca yedek yoldur. Belgenin adı (`<title>`) verinin adı olur.
 
 **Alt tablolar** (`server/lib/sections.mjs`, Google ve Excel için ortak): tek hücreli başlık satırı + tanıdık kelimeli (TR/EN) ve tür karşıtlığı gösteren kolon başlığı satırı yeni bölüm açar; ilk kolonu çoğunlukla veri olan tabloda en az iki grup etiketi satırı bölüm sayılır; tekrarlanan başlık satırı atlanır; başlığı boş ama verisi olan kolon `Kolon N` olur. Emin olunamazsa eski davranış. Tek bölümlü sekmede `__sheet` = sekme adı (eski düzeltmeler bağlı kalır); çok bölümde `Sekme › Bölüm`. Excel yüklemede tarayıcı ham matrisi gönderir, ayrıştırma sunucudadır. Kolon adı değişen düzeltmeler (eski birleşik başlık → yeni başlık) sonek eşleşmesiyle taşınır.
 
 ## Veri modeli
 
-`users`, `sessions`, `settings`, `records`, `overrides`, `deleted_records`, `notes`, `phones`, `payments`, `liens`, `tasks`, `messages`, `audit_events` (v1.0.0) + `case_notes`, `source_snapshots` (v1.1.0) + `chat_conversations`, `chat_members` (okunma zamanı), `chat_messages` ve `tasks.assignee_id` (v1.4.0, göç 3: eski `messages` kayıtları sohbete taşınır, eski tablo geri dönüş için silinmez; görevler adları tek bir kullanıcıya denk geliyorsa o kullanıcının kimliğine bağlanır, belirsiz veya serbest adlarda ad eşleşmesi sürer). Görünen adlar benzersizdir (`server/lib/names.mjs`: Türkçe harf kuralı, boşluk ve Unicode yazım farkı yok sayılarak karşılaştırılır).
+`users`, `sessions`, `settings`, `records`, `overrides`, `deleted_records`, `notes`, `phones`, `payments`, `liens`, `tasks`, `messages`, `audit_events` (v1.0.0) + `case_notes`, `source_snapshots` (v1.1.0) + `dataset_rows`, `dataset_imports` (v1.5.0, göç 4: kalıcı çalışma verisi ve içeri alma geçmişi; `source_snapshots` artık yalnızca geçmiştir) + `chat_conversations`, `chat_members` (okunma zamanı), `chat_messages` ve `tasks.assignee_id` (v1.4.0, göç 3: eski `messages` kayıtları sohbete taşınır, eski tablo geri dönüş için silinmez; görevler adları tek bir kullanıcıya denk geliyorsa o kullanıcının kimliğine bağlanır, belirsiz veya serbest adlarda ad eşleşmesi sürer). Görünen adlar benzersizdir (`server/lib/names.mjs`: Türkçe harf kuralı, boşluk ve Unicode yazım farkı yok sayılarak karşılaştırılır).
 
 ## Canlı olaylar ve sohbet (v1.4)
 
@@ -102,7 +104,7 @@ Google Sheets sonuçları 45 sn önbelleklenir; aynı anda gelen istekler birle�
 - Servis yöneticisinin HTTP kapısı akışı olduğu gibi borular; SSE istekleri ortak soket havuzunu tüketmesin diye ayrı bağlantı kullanır, tarayıcı kapanınca uygulama tarafı da kapanır. Güncelleme sırasında akış kopar, istemci bakım bitince yeniden bağlanır ve `hello` içindeki sürümle yenileme şeridi gösterir.
 - `server/lib/chat.mjs`: ofis kanalı (`conversation-office`) ve iki kişilik özel yazışmalar (`direct_key` = sıralı kullanıcı kimlikleri). Özel yazışmaya üye olmayan (yönetici dahil) 404 alır; denetim kaydına içerik yazılmaz; dakikada 30 mesaj sınırı; mesajdaki `yyyy/sayı` dosya kimliği olarak bağlanır. Eski `/api/workspace/messages` uçları sohbete bağlıdır ve yalnızca kişinin yazışmalarını döndürür.
 
-**Göçler** (`server/lib/migrations.mjs`): `PRAGMA user_version` ile sürümlenir, her biri tek işlemde uygulanır, öncesinde `VACUUM INTO` ile tam yedek alınır. Kural: göçler yalnızca ekleyicidir; eski sürüm yeni şemayı okuyabilir (güncelleme geri alınabilirliği için).
+**Göçler** (`server/lib/migrations.mjs`): `PRAGMA user_version` ile sürümlenir, her biri tek işlemde uygulanır, öncesinde `VACUUM INTO` ile tam yedek alınır. Kural: göçler mümkün olduğunca ekleyicidir. Kayıtları yeniden anahtarlayan göçlerde (göç 4) geri dönüş, güncelleme düzeninin yeni sürüm açılamazsa şema sürümü değiştiği için veritabanını güncelleme öncesi yedeğe döndürmesiyle sağlanır.
 
 ## Güvenlik
 

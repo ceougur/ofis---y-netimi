@@ -52,8 +52,8 @@ Yönetim paneli: kenar çubuğundaki kullanıcı kartında **Yönetim** (veya `h
 
 | Rol | Yapabildikleri |
 |---|---|
-| Yönetici | Her şey: kullanıcılar, yedekler, sistem, veri kaynağı, silme, görev atama, performans raporu |
-| Avukat | Tüm dosya işlemleri, kayıt silme, veri kaynağı yönetimi, görev atama, herkesin görevleri, performans raporu, değişiklik geçmişi |
+| Yönetici | Her şey: veri yükleme ve kaldırma, kullanıcılar, yedekler, sistem, silme, görev atama, performans raporu |
+| Avukat | Tüm dosya işlemleri, kayıt silme, görev atama, herkesin görevleri, performans raporu, değişiklik geçmişi (veri yükleyemez) |
 | Personel | Not, telefon, tahsilat, haciz, mesaj, yeni kayıt, hücre düzeltme; kendisine atanan görevleri görür ve tamamlar |
 | Muhasebe | Personel ile aynı yetkiler |
 
@@ -65,13 +65,18 @@ Görünen adlar benzersizdir: iki hesap aynı adı taşıyamaz (büyük/küçük
 
 **Sistem** sekmesinde **ofis adını** girin: giriş ekranında ve personel bilgisayarlarının yaptığı sunucu aramasında bu ad görünür. Aynı sekme sürümü, veritabanı boyutunu, son yedeği ve bağlantı adreslerini gösterir.
 
-## 6. Veri kaynağı (Excel veya Google Sheets)
+## 6. Çalışma verisi (Excel veya Google Sheets)
 
-Kaynak **ofis geneli tek ayardır**; yönetici veya avukat bir kez tanımlar, herkes aynı tabloyu görür.
+Veri **ofis geneli tektir** ve sunucuda kalıcı olarak saklanır: yönetici bir kez yükler, herkes aynı tabloyu görür. Yüklenen veri, yönetici kaldırmadıkça korunur; sonradan yapılan düzeltmeler, silmeler, yeni kayıtlar, notlar ve görevlerle birlikte devam eder. Dosyanın adı değişse, Google Sheets'e ulaşılamasa ya da Sheet'ten satır silinse bile tablo kaybolmaz. Veriyi yükleme, değiştirme ve kaldırma **yalnızca yönetici** hesabındadır.
 
-- **Excel/CSV:** Sol menü → *Tabloyu değiştir* → dosya seçin. Dosya sunucuya yüklenir. Aynı adla yeniden yüklenen dosya, ofisin düzeltmelerini koruyarak tabloyu günceller.
-- **Google Sheets:** Sheet'in tam bağlantısını yapıştırıp *Sheet'i analiz et*. Sheet'te *Paylaş → Bağlantıya sahip olan herkes → Görüntüleyici* açık olmalıdır.
-- Kaynak dosyanın kendisi hiçbir zaman değiştirilmez; düzeltmeler, silmeler ve yeni kayıtlar sunucuda saklanır ve tabloya işlenir.
+- **İlk yükleme:** Veri yokken panelin ortasında *"Excelini yükle ya da Google Sheets linkini yapıştır, başlayalım"* kartı çıkar. Excel dosyasını sürükleyip bırakın veya seçin; ya da Sheet bağlantısını yapıştırıp **Bağla**'ya basın. Diğer kullanıcılar bu sırada "Yöneticiniz veri yüklediğinde tablo burada görünecek" yazısını görür; veri gelince ekranları kendiliğinden açılır.
+- **Sonraki yüklemeler:** Sol menü → **Ayarlar** → *Veri ve eşitleme*. Mevcut veri varken yeni bir Excel veya Sheet bağlantısı verilince DestekOfis önce dosyayı mevcut veriyle karşılaştırır ve sorar:
+  - **Mevcut verinin devamı olarak ekle** (önerilen): yeni kayıtlar eklenir, aynı dosya numaralı kayıtlar yeni bilgilerle güncellenir, yeni dosyada olmayan kayıtlar silinmez. Ofiste elle yapılan düzeltmeler korunur.
+  - **Mevcut verinin yerine koy:** tablo yeni dosyayla değiştirilir; yeni dosyada olmayan kayıtlar tablodan kalkar (ek onay istenir). Notlar, görevler ve işlem geçmişi silinmez; aynı dosya numarası tekrar gelirse yeniden bağlanır.
+  Karar vermeden önce kaç kaydın ekleneceği, güncelleneceği ve kalkacağı (örnek dosya numaralarıyla) gösterilir. Her değişiklikten önce veritabanının tam yedeği alınır (`...-veri-oncesi-ekleme.sqlite`, `...-veri-oncesi-degistirme.sqlite`).
+- **Google Sheets bağlantısı:** Sheet'te *Paylaş → Bağlantıya sahip olan herkes → Görüntüleyici* açık olmalıdır. Bağlı Sheet'teki yeni ve değişen satırlar seçilen sıklıkta (5 dk, 15 dk veya saatte bir) kendiliğinden eklenir; *Şimdi eşitle* ile hemen alınabilir. Sheet'ten silinen satırlar DestekOfis'ten kendiliğinden silinmez: tabloda üstü çizili görünür ve *Ayarlar → Veri*'de "Sheet'te artık olmayan kayıtlar" listesinde **Tut** veya **Kaldır** diye karar verilir. Sheet'in yapısı toptan değişmiş görünürse (ör. başlık satırı eklenmiş, sekme adı değişmiş; satırların çoğu birden "yeni" ve "kayıp" görünür) otomatik eşitleme veri çoğalmasın diye durur ve yöneticiden karar ister. Google'a ulaşılamazsa son eşitlenen veri kullanılmaya devam eder.
+- **Bağlantıyı kaldır:** eşitleme durur, veri yerinde kalır. **Veriyi kaldır:** içeri alınan satırlar tablodan kalkar (öncesinde yedek alınır); notlar, görevler ve uygulamada eklenen kayıtlar kalır.
+- Kaynak dosyanın kendisi hiçbir zaman değiştirilmez. İçeri almaların geçmişi *Ayarlar → Veri*'de ve yönetim panelindeki değişiklik geçmişinde görünür.
 
 **Alt tablolar (bir sekmede birden çok tablo).** Bir sekmede alt alta birden çok tablo varsa DestekOfis bunları kendiliğinden ayırır; Google Sheets'te de, yüklenen Excel'de de aynı kurallar geçerlidir ve sayfa adlarına bağlı değildir:
 
@@ -127,8 +132,11 @@ Alt tabloları olan sekme, sekme şeridinde ▸ işaretiyle görünür; tıklay�
 | Varsayılan parolayla giriş reddedildi | İlk giriş yalnızca sunucu bilgisayarın kendisinden yapılabilir. |
 | Giriş kilitlendi | 15 dakika bekleyin veya yöneticiden parolanızı sıfırlamasını isteyin (sıfırlama kilidi hemen kaldırır). |
 | Personel bilgisayarında "servis kuruldu ancak başlatılamadı" uyarısı | Kurulumda yanlışlıkla *Sunucu bilgisayar* seçilmiş. DestekOfis'i o bilgisayardan kaldırıp *Personel bilgisayarı* ile yeniden kurun. |
-| Tablo görünmüyor | Yönetici/avukatın veri kaynağı tanımlaması gerekir. Sheets için paylaşım iznini kontrol edin. |
-| "Veri kaynağı değiştirildi" uyarısı | Başka bir kullanıcı kaynağı değiştirdi; *Yenile*'ye basın. |
+| Tablo görünmüyor, ortada "başlayalım" kartı var | Henüz veri yüklenmemiş. Yönetici Excel yükler veya Google Sheets bağlantısını yapıştırır. |
+| "Veri kaynağı değiştirildi" uyarısı | Yönetici veriyi değiştirdi; *Yenile*'ye basın. |
+| Bazı satırların üstü çizili | Bağlı Google Sheets'te artık yoklar. Yönetici *Ayarlar → Veri → Listeyi gör* ile tutar veya kaldırır. |
+| "Sheet'in yapısı değişmiş görünüyor" uyarısı | Sheet'e başlık satırı eklenmiş veya sekme adı değişmiş olabilir. *İncele ve karar ver* ile "devamı olarak ekle" ya da "yerine koy" seçin. |
+| "Google Sheets'e şu an ulaşılamıyor" | İnternet veya Sheet paylaşım izni sorunu. Tablo son eşitlenen veriyle çalışmaya devam eder. |
 | "DestekOfis … sürümüne güncellendi" şeridi | Sunucu yeni sürüme geçti. Yazmakta olduğunuz notu kaydedip *Yenile*'ye basın. |
 | Mesajlar panelinde "Bağlantı bekleniyor…" | Canlı bağlantı kısa süreliğine koptu (ağ, sunucu güncellemesi); kendiliğinden yeniden bağlanır, kaçırılan mesajlar gelir. Sürerse sayfayı yenileyin. Bazı antivirüslerin "web koruması" canlı akışı geciktirebilir; o durumda sunucu adresini istisnalara ekleyin. |
 | Bir alt tablo ayrı görünmüyor | Başlık satırı tek hücrede (birleştirilmiş) olmalı ve hemen altında kolon başlıkları bulunmalı. Tanınmayan düzende tablo bozulmaz, tek tablo olarak görünür. |

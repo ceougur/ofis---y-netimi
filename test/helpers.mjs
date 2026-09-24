@@ -16,7 +16,8 @@ export async function startTestServer(options = {}) {
     backupDir,
     logLevel: "silent",
     scheduleBackups: false,
-    env: { HUKUK_ADMIN_PASSWORD: options.adminPassword ?? ADMIN_PASSWORD, ...(options.env || {}) },
+    // Zamanlanmış Sheet eşitlemesi testlerde kapalıdır (gerekirse ortam değişkeniyle açılır).
+    env: { HUKUK_ADMIN_PASSWORD: options.adminPassword ?? ADMIN_PASSWORD, HUKUK_DATASET_AUTOSYNC: "0", ...(options.env || {}) },
     fetchImpl: options.fetchImpl,
   });
   const address = await app.listen(0, "127.0.0.1");

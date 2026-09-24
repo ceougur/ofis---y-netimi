@@ -105,7 +105,7 @@
     if (MANAGED.has(key) && !HOF.can("sources.manage")) {
       if (previous == null) localRemove(Object.keys(SETTING_KEYS).find(name => SETTING_KEYS[name] === key));
       else localSet(Object.keys(SETTING_KEYS).find(name => SETTING_KEYS[name] === key), previous);
-      HOF.toast("Veri kaynağı ayarlarını yalnızca yönetici veya avukat değiştirebilir.", { type: "error" });
+      HOF.toast("Veri kaynağı ayarlarını yalnızca yönetici değiştirebilir.", { type: "error" });
       return;
     }
     if (!MANAGED.has(key)) return;
@@ -113,6 +113,10 @@
       const state = await HOF.api("/api/workspace/client-state", { method: "PUT", body: { key, value } });
       HOF.applyClientState(state);
     } catch (error) {
+      // Sunucu kabul etmediyse (ör. veri kaynağı artık Ayarlar → Veri'den yönetilir) tarayıcıdaki değer eski hâline döner.
+      const storageKey = Object.keys(SETTING_KEYS).find(name => SETTING_KEYS[name] === key);
+      if (previous == null) localRemove(storageKey);
+      else localSet(storageKey, previous);
       HOF.toastError(error);
     }
   }
@@ -157,9 +161,12 @@
         showReloadBanner(`DestekOfis ${state.appVersion} sürümüne güncellendi. Yenilikleri görmek için sayfayı yenileyin.`);
       }
       if (state.version !== clientVersion) {
+        const wasEmpty = !HOF.settings.sheetUrl;
         const sourceChanged = (state.settings.sheetUrl || "") !== (HOF.settings.sheetUrl || "");
         HOF.applyClientState(state);
-        if (sourceChanged && appLoaded) showReloadBanner("Veri kaynağı değiştirildi. Güncel tabloyu görmek için yenileyin.");
+        // Boş ekrandayken yönetici veri yüklediyse kaybedilecek bir şey yok: sayfa kendiliğinden açılır.
+        if (sourceChanged && appLoaded && wasEmpty && !HOF.hasOpenModal()) location.reload();
+        else if (sourceChanged && appLoaded) showReloadBanner("Veri kaynağı değiştirildi. Güncel tabloyu görmek için yenileyin.");
       }
       const notes = await HOF.api(`/api/workspace/case-notes?since=${encodeURIComponent(notesCursor)}`);
       if (notes.notes.length) {
@@ -191,7 +198,8 @@
   HOF.on("live:workspace.changed", change => {
     if (!change) return;
     if (change.kind === "records") refreshTableSoon();
-    if (change.kind === "note" || change.kind === "source") HOF.syncNow();
+    // Çalışma verisi içeri alındı/kaldırıldı/eşitlendi: veri adı, bağlantı ve boş/dolu durumu da değişmiş olabilir.
+    if (change.kind === "note" || change.kind === "source" || change.dataset) HOF.syncNow();
   });
   HOF.on("live:resync", () => {
     HOF.syncNow();

@@ -99,22 +99,24 @@ try {
     expect(user.includes("Ofis yöneticisi"), "kullanıcı kartı");
   });
 
-  await step("kaynak yokken yol gösterici not görünür", async () => {
-    await admin.waitForSelector("#hof-source-empty");
+  await step("veri yokken ortada 'başlayalım' kartı; paketin yükleme düğmeleri gizli", async () => {
+    await admin.waitForSelector("#hof-start .hof-drop");
+    const heading = await admin.textContent("#hof-start h2");
+    expect(heading.includes("Excelini yükle ya da Google Sheets linkini yapıştır"), `başlık: ${heading}`);
+    const visibleUploads = await admin.$$eval("button", nodes => nodes.filter(node => /Yeni tablo yükle|Tabloyu değiştir/.test(node.textContent) && node.offsetParent).length);
+    expect(visibleUploads === 0, `görünen eski yükleme düğmesi: ${visibleUploads}`);
     await admin.screenshot({ path: path.join(artifacts, "02-bos-kaynak.png") });
   });
 
-  await step("Excel yüklenir ve ofisin ortak kaynağı olur", async () => {
-    await admin.click('#hof-source-empty button');
-    await admin.waitForSelector(".settings-modal .source-dropzone input[type=file]", { state: "attached" });
-    await admin.waitForSelector(".settings-modal .hof-source-tools");
-    const input = await admin.$(".settings-modal .source-dropzone input[type=file]");
+  await step("Excel başlangıç kartından yüklenir ve ofisin kalıcı verisi olur", async () => {
+    const input = await admin.$("#hof-start .hof-drop input[type=file]");
     await Promise.all([admin.waitForEvent("load", { timeout: 30000 }), input.setInputFiles(fixture)]);
     await waitForApp(admin);
     await admin.waitForFunction(() => document.querySelectorAll(".dynamic-table tbody tr").length > 0, null, { timeout: 15000 });
     expect((await rowCount(admin)) === 30, `satır sayısı ${await rowCount(admin)}`);
     const flash = await toastText(admin);
-    expect(flash.includes("merkezi sunucuya yüklendi"), `bildirim: ${flash}`);
+    expect(flash.includes("yüklendi") && flash.includes("Tüm bilgisayarlar"), `bildirim: ${flash}`);
+    expect(!(await admin.$("#hof-start")), "veri gelince başlangıç kartı kalkmalı");
     const title = await admin.textContent(".page-title");
     expect(title.includes("ornek-dosyalar"), `başlık: ${title}`);
     await admin.screenshot({ path: path.join(artifacts, "03-excel-yuklendi.png") });
@@ -219,7 +221,9 @@ try {
     await admin.click("#adm-backup-now");
     await admin.waitForFunction(() => document.querySelector("#adm-backups")?.textContent.includes("manuel"));
     await admin.click('.adm-tabs [data-tab="audit"]');
-    await admin.waitForFunction(() => document.querySelector("#adm-audit")?.textContent.includes("Excel tablosu yükledi"));
+    await admin.waitForFunction(() => document.querySelector("#adm-audit")?.textContent.includes("Veri içeri aldı"));
+    const auditText = await admin.textContent("#adm-audit");
+    expect(auditText.includes("ornek-dosyalar.xlsx · ilk yükleme · 30 kayıt (30 yeni, 0 güncellendi)"), `geçmiş ayrıntısı: ${auditText.slice(0, 300)}`);
     await admin.click('.adm-tabs [data-tab="system"]');
     await admin.waitForFunction(() => document.querySelector("#adm-system")?.textContent.includes("Şema sürümü"));
   });
@@ -320,11 +324,17 @@ try {
     await staff.click('#hof-chat [data-act="close"]').catch(() => {});
   });
 
-  await step("alt tablolu Excel: sekme içindeki tablolar kendi kolonlarıyla bölüm olarak görünür", async () => {
-    await admin.click('.sidebar .nav-item:has-text("Tabloyu değiştir")');
-    await admin.waitForSelector(".settings-modal .source-dropzone input[type=file]", { state: "attached" });
-    const input = await admin.$(".settings-modal .source-dropzone input[type=file]");
-    await Promise.all([admin.waitForEvent("load", { timeout: 30000 }), input.setInputFiles(path.join(here, "..", "fixtures", "bolumlu-sayfalar.xlsx"))]);
+  await step("alt tablolu Excel 'yerine koy' ile yüklenir; sekme içindeki tablolar kendi kolonlarıyla bölüm olur", async () => {
+    await admin.click('.sidebar .nav-item:has-text("Ayarlar")');
+    await admin.waitForSelector(".hof-modal-backdrop.is-visible .hof-data-summary");
+    const input = await admin.$(".hof-modal .hof-drop input[type=file]");
+    await input.setInputFiles(path.join(here, "..", "fixtures", "bolumlu-sayfalar.xlsx"));
+    await admin.waitForSelector(".hof-modal-backdrop.is-visible .hof-choice-grid", { timeout: 20000 });
+    const choice = await admin.$eval(".hof-choice-grid", node => node.innerText.replace(/\s+/g, " "));
+    expect(choice.includes("52 yeni kayıt eklenir") && choice.includes("Yeni dosyada olmayan 30 kayıt tablodan kalkar"), `önizleme: ${choice}`);
+    await admin.click('.hof-choice [data-mode="replace"]');
+    await admin.waitForSelector('.hof-modal [data-answer="yes"]');
+    await Promise.all([admin.waitForEvent("load", { timeout: 30000 }), admin.click('.hof-modal [data-answer="yes"]')]);
     await admin.waitForSelector('.hof-category-tabs [data-group="ÖNEMLİ İCRA"]', { timeout: 15000 });
     await admin.click('.hof-category-tabs [data-group="ÖNEMLİ İCRA"]');
     await admin.waitForSelector(".hof-section-tabs .hof-section-tab.active");
@@ -339,6 +349,22 @@ try {
     await admin.screenshot({ path: path.join(artifacts, "08-alt-tablolar.png") });
   });
 
+  await step("yeni ay dosyası 'devamı olarak' eklenir: yeniler eklenir, değişen güncellenir, olmayan korunur", async () => {
+    await admin.click('.sidebar .nav-item:has-text("Ayarlar")');
+    await admin.waitForSelector(".hof-modal-backdrop.is-visible .hof-data-summary");
+    const input = await admin.$(".hof-modal .hof-drop input[type=file]");
+    await input.setInputFiles(path.join(here, "..", "fixtures", "veri-devam.xlsx"));
+    await admin.waitForSelector(".hof-modal-backdrop.is-visible .hof-choice-grid", { timeout: 20000 });
+    const choice = await admin.$eval(".hof-choice-grid", node => node.innerText.replace(/\s+/g, " "));
+    expect(choice.includes("2 yeni kayıt eklenir") && choice.includes("1 kayıt yeni bilgilerle güncellenir") && choice.includes("28 kayıt silinmez"), `önizleme: ${choice}`);
+    await Promise.all([admin.waitForEvent("load", { timeout: 30000 }), admin.click('.hof-choice [data-mode="merge"]')]);
+    await waitForApp(admin);
+    const flash = await toastText(admin);
+    expect(flash.includes("devamı olarak eklendi: 2 yeni, 1 güncellendi"), `bildirim: ${flash}`);
+    const dataset = (await admin.evaluate(() => fetch("/api/workspace/dataset").then(response => response.json()))).data;
+    expect(dataset.rowCount === 54 && dataset.imports[0].mode === "merge", `veri: ${dataset.rowCount} ${dataset.imports[0]?.mode}`);
+  });
+
   await step("oturum kapanınca giriş ekranı ofis adıyla gelir", async () => {
     await staff.keyboard.press("Escape");
     await staff.click('#hof-sidecard [data-action="logout"]');
@@ -349,7 +375,8 @@ try {
 
   await step("v1.0.0 tarayıcısındaki kaynak ve notlar ilk girişte ofise taşınır", async () => {
     const legacyRoot = mkdtempSync(path.join(tmpdir(), "destekofis-e2e-eski-"));
-    const legacyApp = createApp({ dataDir: path.join(legacyRoot, "data"), backupDir: path.join(legacyRoot, "backups"), logLevel: "warn", scheduleBackups: false, env: { HUKUK_ADMIN_PASSWORD: ADMIN_PASSWORD }, fetchImpl: async () => new Response("", { status: 404 }) });
+    const legacySheet = async url => (String(url).includes("/edit") ? new Response('<script>"gid":"0","name":"Eski"</script>') : new Response("DOSYA NO,BORÇLU\n2024/77,Eski Borçlu", { headers: { "content-type": "text/csv" } }));
+    const legacyApp = createApp({ dataDir: path.join(legacyRoot, "data"), backupDir: path.join(legacyRoot, "backups"), logLevel: "warn", scheduleBackups: false, env: { HUKUK_ADMIN_PASSWORD: ADMIN_PASSWORD, HUKUK_DATASET_AUTOSYNC: "0" }, fetchImpl: legacySheet });
     const legacyPort = (await legacyApp.listen(0, "127.0.0.1")).port;
     try {
       const context = await browser.newContext({ viewport: { width: 1280, height: 800 } });
@@ -366,7 +393,8 @@ try {
       await page.fill("#hof-auth input[name=password]", ADMIN_PASSWORD);
       await Promise.all([page.waitForLoadState("load"), page.click('#hof-auth button[type="submit"]')]);
       await waitForApp(page);
-      expect(legacyApp.store.setting("client.sheetUrl") === "https://docs.google.com/spreadsheets/d/ESKI-KAYNAK/edit", "kaynak ofise taşınmalı");
+      expect(legacyApp.store.setting("dataset.linkedSheetUrl") === "https://docs.google.com/spreadsheets/d/ESKI-KAYNAK/edit", "kaynak ofise bağlanmalı");
+      expect(legacyApp.store.get("SELECT COUNT(*) AS count FROM dataset_rows").count === 1, "Sheet satırları sunucuya kaydedilmeli");
       const note = legacyApp.store.get("SELECT note FROM case_notes WHERE case_key = '2024/77'");
       expect(note && note.note === "Eski tarayıcı notu", "eski not aktarılmalı");
       await context.close();

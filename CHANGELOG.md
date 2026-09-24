@@ -2,6 +2,15 @@
 
 Sürümler [anlamsal sürümleme](https://semver.org/lang/tr/) kurallarına uyar.
 
+## 1.5.0 — Kalıcı çalışma verisi
+
+- **Veri artık sunucuda kalıcı:** Yüklenen Excel veya Google Sheets verisi sunucunun veritabanında saklanır ve yönetici kaldırmadıkça korunur; sonradan yapılan düzeltmeler, silmeler, yeni kayıtlar, notlar ve görevlerle birlikte devam eder. Önceden Google Sheets'e ulaşılamadığında tablo boş kalabiliyor, farklı adla yüklenen Excel'de ofisin düzeltmeleri yeni tabloya bağlanmıyordu; ikisi de giderildi.
+- **Devamı mı, yerine mi?** Veri varken yeni Excel veya Sheet bağlantısı verilince önce dosya mevcut veriyle karşılaştırılır; "X yeni, Y güncellenecek, Z aynı, W yeni dosyada yok" önizlemesiyle **devamı olarak ekle** (hiçbir şey silinmez, ofisin düzeltmeleri korunur) ya da **yerine koy** (olmayanlar tablodan kalkar; notlar ve geçmiş kalır) seçilir. Her değişiklikten önce tam yedek alınır.
+- **Google Sheets bağlı çalışır:** Sheet'teki yeni ve değişen satırlar seçilen sıklıkta kendiliğinden eklenir; Sheet'ten silinen satırlar DestekOfis'ten silinmez, üstü çizili görünür ve yönetici "tut" ya da "kaldır" der. Sheet'in yapısı toptan değişmiş görünürse eşitleme veri çoğalmasın diye durur ve yönetici kararı bekler. İnternet yokken son veriyle çalışılır.
+- **Başlangıç kartı:** Veri yokken panelin ortasında "Excelini yükle ya da Google Sheets linkini yapıştır, başlayalım" kartı çıkar; yükleme ve bağlantı yapıştırma doğrudan buradan yapılır. Diğer bilgisayarlar veri gelince kendiliğinden açılır.
+- **Yetki:** Veri yükleme, değiştirme ve kaldırma yalnızca yönetici hesabında (avukattan kaldırıldı). Üstteki "Yeni tablo yükle" düğmesi ve "Tabloyu değiştir" bağlantıları kaldırıldı; veri **Ayarlar → Veri ve eşitleme**'den yönetilir (özet, eşitleme sıklığı, şimdi eşitle, içeri alma geçmişi, bağlantıyı/veriyi kaldırma).
+- 1.4.0'daki etkin kaynak (Excel veya Sheet bağlantısı) güncellemede kendiliğinden kalıcı veriye dönüşür; düzeltmeler, silmeler ve uygulamada eklenen kayıtlar yerinde kalır.
+
 ## 1.4.0 — Sohbet paneli, alt tablolar ve anlık güncellemeler
 
 - **Sohbet paneli:** "Mesajlar" artık sağdan açılan bir sohbet paneli. *Ofis geneli* kanalı ve kişiye özel yazışmalar; mesajlar sayfa yenilemeden anında gelir, okunmamış sayısı rozette ve sekme başlığında görünür, köşede bildirim ve (kapatılabilir) ses çıkar, *✓ İletildi / ✓✓ Okundu* bilgisi gösterilir. Mesajdaki dosya numarasına tıklayınca o dosya tabloda açılır.

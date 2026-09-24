@@ -101,21 +101,22 @@ describe("çalışma alanı işlemleri", () => {
     assert.equal(map["2026/99"], "Yerel not");
   });
 
-  it("ofis geneli ayarları sürümleyerek saklar", async () => {
+  it("ofis geneli ayarları sürümleyerek saklar; veri kaynağı yalnızca Veri bölümünden değişir", async () => {
     const initial = await personel.get("/api/workspace/client-state");
-    assert.equal(initial.data.data.sheetUrlSet, false);
     const { VERSION } = await import("../server/lib/config.mjs");
     assert.equal(initial.data.data.appVersion, VERSION, "açık ekranlar sunucu sürümünü görebilmeli");
-    const updated = await admin.put("/api/workspace/client-state", { key: "sheetUrl", value: source });
+    // Bu testte yalnızca uygulamada oluşturulmuş kayıtlar var: veri sayılır, arayüz çalışma verisini ister.
+    assert.equal(initial.data.data.sheetUrlSet, true);
+    assert.equal(initial.data.data.settings.sheetUrl, "dataset://ofis");
+    const updated = await admin.put("/api/workspace/client-state", { key: "syncMinutes", value: "15" });
     assert.equal(updated.status, 200);
-    assert.equal(updated.data.data.settings.sheetUrl, source);
-    assert.equal(updated.data.data.settings.activeSourceLabel, "Google Sheets");
+    assert.equal(updated.data.data.settings.syncMinutes, "15");
     assert.ok(updated.data.data.version > initial.data.data.version);
     assert.equal((await admin.put("/api/workspace/client-state", { key: "syncMinutes", value: "0" })).status, 400);
     assert.equal((await admin.put("/api/workspace/client-state", { key: "bilinmeyen", value: "x" })).status, 400);
-    const cleared = await admin.del("/api/workspace/sources/active");
-    assert.equal(cleared.data.data.settings.sheetUrl, "");
-    assert.equal(cleared.data.data.sheetUrlSet, true);
+    assert.equal((await admin.put("/api/workspace/client-state", { key: "sheetUrl", value: "dataset://ofis" })).status, 200, "arayüzün aynı değeri geri yazması sorun değil");
+    assert.equal((await admin.put("/api/workspace/client-state", { key: "sheetUrl", value: source })).status, 409, "veri varken bağlantı buradan değiştirilemez");
+    assert.equal((await personel.put("/api/workspace/client-state", { key: "syncMinutes", value: "5" })).status, 403);
   });
 
   it("personel adını değiştirebilir; işlemler yeni adla görünür", async () => {

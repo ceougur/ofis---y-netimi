@@ -41,11 +41,14 @@ describe("rol bazlı yetkiler", () => {
     assert.equal((await personel.post("/api/workspace/sources/excel", { fileName: "a.xlsx", rows: [] })).status, 403);
   });
 
-  it("performans raporunu yalnızca avukat ve yönetici görür; avukat kayıt silebilir", async () => {
+  it("performans raporunu yalnızca avukat ve yönetici görür; avukat kayıt silebilir ama veri yükleyemez", async () => {
     assert.equal((await muhasebe.get("/api/workspace/reports")).status, 403);
     assert.equal((await avukat.get("/api/workspace/reports")).status, 200);
     assert.equal((await avukat.post("/api/workspace/deleted", { sourceName: source, caseKey: "2026/1" })).status, 200);
-    assert.equal((await avukat.put("/api/workspace/client-state", { key: "syncMinutes", value: "15" })).status, 200);
+    // v1.5.0: veri yükleme, kaldırma ve eşitleme ayarları yalnızca yöneticide.
+    assert.equal((await avukat.put("/api/workspace/client-state", { key: "syncMinutes", value: "15" })).status, 403);
+    assert.equal((await avukat.post("/api/workspace/dataset/stage", { kind: "excel", fileName: "a.xlsx", sheets: [] })).status, 403);
+    assert.equal((await admin.put("/api/workspace/client-state", { key: "syncMinutes", value: "15" })).status, 200);
   });
 
   it("görev atama ve herkesin görevleri yalnızca avukat ve yöneticide; personel kendi görevini görür ve tamamlar", async () => {

@@ -47,6 +47,9 @@ export function loadConfig(overrides = {}) {
     eventsPingMs: number(overrides.eventsPingMs ?? env.HUKUK_EVENTS_PING_MS, 25_000),
     // Canlı bağlantı ömrü: süre dolunca akış kapanır, tarayıcı kaldığı yerden devam eder (bkz. events.mjs).
     eventsMaxAgeMs: number(overrides.eventsMaxAgeMs ?? env.HUKUK_EVENTS_MAX_AGE_MS, 5 * 60_000),
+    // Bağlı Google Sheets'in zamanlanmış eşitlemesi (sıklık yönetim ayarlarından; denetim dakikada bir).
+    datasetAutoSync: (overrides.datasetAutoSync ?? env.HUKUK_DATASET_AUTOSYNC ?? "1") !== "0" && overrides.datasetAutoSync !== false,
+    datasetTickMs: number(overrides.datasetTickMs ?? env.HUKUK_DATASET_TICK_MS, 60_000),
     fetchImpl: overrides.fetchImpl || ((...args) => globalThis.fetch(...args)),
     scheduleBackups: overrides.scheduleBackups ?? true,
   });

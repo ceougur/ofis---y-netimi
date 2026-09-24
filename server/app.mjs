@@ -8,6 +8,7 @@ import { createEventHub } from "./lib/events.mjs";
 import { startBackupScheduler } from "./lib/backup.mjs";
 import { createClientState } from "./lib/client-state.mjs";
 import { DEFAULT_ADMIN_PASSWORD, loadConfig } from "./lib/config.mjs";
+import { createDatasetService } from "./lib/dataset.mjs";
 import { createStore, openDatabase } from "./lib/db.mjs";
 import { HttpError, SECURITY_HEADERS, assertSameOrigin, fail, ok, send } from "./lib/http.mjs";
 import { createLogger } from "./lib/logger.mjs";
@@ -15,12 +16,12 @@ import { runMigrations } from "./lib/migrations.mjs";
 import { hashPassword } from "./lib/passwords.mjs";
 import { createRouter } from "./lib/router.mjs";
 import { createSheetsReader } from "./lib/sheets.mjs";
-import { createSourceService } from "./lib/sources.mjs";
 import { createStaticHandler, notFoundPage } from "./lib/static.mjs";
 import { createSupervisorLink } from "./lib/supervisor-link.mjs";
 import { registerAdminRoutes } from "./routes/admin.mjs";
 import { registerAuthRoutes } from "./routes/auth.mjs";
 import { registerChatRoutes } from "./routes/chat.mjs";
+import { registerDatasetRoutes } from "./routes/dataset.mjs";
 import { registerTrpcRoutes } from "./routes/trpc.mjs";
 import { registerWorkspaceRoutes } from "./routes/workspace.mjs";
 
@@ -51,13 +52,27 @@ export function createApp(overrides = {}) {
   const auth = createAuth({ store, config, audit });
   const clientState = createClientState({ store, audit });
   const readGoogleSheet = createSheetsReader({ fetchImpl: config.fetchImpl, cacheMs: config.sheetsCacheMs });
-  const sources = createSourceService({ store, audit, readGoogleSheet, bumpClientState: clientState.bump });
   const serveStatic = createStaticHandler(config.publicDir);
   const supervisorLink = overrides.supervisorLink ?? (config.supervised ? createSupervisorLink(process) : null);
   // Canlı olay kanalı: oturumu kapanan (çıkış, parola değişikliği, pasifleştirme) bağlantılar ping turunda düşer.
   const events = createEventHub({ log, pingMs: config.eventsPingMs, maxAgeMs: config.eventsMaxAgeMs, isValid: client => auth.sessionAlive(client.tokenHash) });
   const chat = createChat({ store, events, audit });
-  const context = { config, log, store, auth, audit, sources, clientState, startedAt, supervisorLink, events, chat };
+  // Kalıcı çalışma verisi: içeri alınan Excel/Sheets satırları + bağlı Sheet'in zamanlanmış eşitlemesi.
+  const dataset = createDatasetService({
+    store,
+    audit,
+    readGoogleSheet,
+    bumpClientState: clientState.bump,
+    events,
+    log,
+    backupDir: config.backupDir,
+    backupKeep: config.backupKeep,
+    autoSync: config.datasetAutoSync,
+    tickMs: config.datasetTickMs,
+  });
+  clientState.useDataset(() => dataset.info());
+  dataset.start();
+  const context = { config, log, store, auth, audit, clientState, startedAt, supervisorLink, events, chat, dataset };
 
   const router = createRouter();
   router.get("/api/health", async ({ res }) => ok(res, { service: "destekofis-merkezi", status: "ok", version: config.version, time: new Date().toISOString(), uptimeSeconds: Math.round(process.uptime()) }));
@@ -65,6 +80,7 @@ export function createApp(overrides = {}) {
   registerAdminRoutes(router, context);
   registerWorkspaceRoutes(router, context);
   registerChatRoutes(router, context);
+  registerDatasetRoutes(router, context);
   registerTrpcRoutes(router, context);
 
   async function handle(req, res) {
@@ -153,6 +169,7 @@ export function createApp(overrides = {}) {
       stopBackups();
       clearInterval(sessionTimer);
       auth.limiter.stop();
+      dataset.stop();
       events.stop();
       await new Promise(resolve => {
         server.close(() => resolve());

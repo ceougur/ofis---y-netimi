@@ -19,7 +19,7 @@ export const PERMISSIONS = Object.freeze({
   "messages.create": ALL,
   "reports.view": ["admin", "avukat"],
   "audit.view": ["admin", "avukat"],
-  "sources.manage": ["admin", "avukat"],
+  "sources.manage": ["admin"],
   "users.manage": ["admin"],
   "system.manage": ["admin"],
 });

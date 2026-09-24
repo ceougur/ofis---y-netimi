@@ -125,7 +125,7 @@ describe("1.4.0 göçü: belirsiz adlar ve görev bağlama", () => {
 
   it("göç hatasız biter; belirsiz alıcı ofis kanalına, tek eşleşme özel yazışmaya gider", () => {
     const { store } = server.app;
-    assert.deepEqual(server.app.migration.applied, [3]);
+    assert.deepEqual(server.app.migration.applied, [3, 4]);
     const where = id => ({ ...store.get("SELECT c.kind, m.body FROM chat_messages m JOIN chat_conversations c ON c.id = m.conversation_id WHERE m.id = ?", `chat-${id}`) });
     assert.deepEqual(where("m1"), { kind: "office", body: "→ ali kaya: Belirsiz alıcı" });
     assert.equal(where("m2").kind, "direct");

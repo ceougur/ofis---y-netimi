@@ -1,12 +1,13 @@
 // Ortak çalışma alanı: dosya işlemleri, görevler, mesajlar, raporlar, merkezi notlar ve veri kaynağı.
-import { EXCEL_PREFIX, columnOrder } from "../lib/sources.mjs";
+import { DATASET_KEY } from "../lib/dataset.mjs";
+import { columnOrder } from "../lib/sources.mjs";
 import { HttpError, limited, ok, parseJson, readJson, text } from "../lib/http.mjs";
 import { foldName, nameConflict, resolveUserByName } from "../lib/names.mjs";
 import { can } from "../lib/permissions.mjs";
 
 const CASE_KEY_MAX = 300;
 
-export function registerWorkspaceRoutes(router, { store, auth, audit, sources, clientState, config, events, chat }) {
+export function registerWorkspaceRoutes(router, { store, auth, audit, dataset, clientState, config, events, chat }) {
   const now = () => new Date().toISOString();
   // Görev kişiye kimliğiyle bağlıysa yalnızca kimlik belirler (ad değiştirerek başkasının görevi görülemez);
   // serbest yazılmış, kişiye bağlanamamış eski görevlerde ad eşleşmesi geçerlidir.
@@ -29,7 +30,9 @@ export function registerWorkspaceRoutes(router, { store, auth, audit, sources, c
     if (!key) throw new HttpError(400, `${label} gerekli.`);
     return key;
   };
-  const sourceNameOf = body => limited(body.sourceName, 2000, "Kaynak adı") || "Çalışma tablosu";
+  // v1.5.0: tek ve kalıcı çalışma verisi var; arayüzün gönderdiği kaynak adı ne olursa olsun düzeltmeler, silmeler ve
+  // yeni kayıtlar ona bağlanır (güncelleme sırasında açık kalan eski sayfalar eski kaynak adını gönderse bile).
+  const sourceNameOf = () => DATASET_KEY;
 
   const parseAmount = value => {
     if (typeof value === "number") return value;
@@ -103,7 +106,7 @@ export function registerWorkspaceRoutes(router, { store, auth, audit, sources, c
 
   router.get("/api/workspace/records", async ({ req, res, url }) => {
     auth.requireUser(req);
-    const source = text(url.searchParams.get("sourceName"));
+    const source = text(url.searchParams.get("sourceName")) ? DATASET_KEY : "";
     const rows = store.all("SELECT id, source_name AS sourceName, case_key AS caseKey, values_json AS valuesJson, version, created_at AS createdAt, updated_at AS updatedAt FROM records WHERE (? = '' OR source_name = ?) ORDER BY created_at DESC", source, source);
     ok(res, rows.map(({ valuesJson, ...row }) => ({ ...row, values: parseJson(valuesJson) })));
   });
@@ -124,7 +127,7 @@ export function registerWorkspaceRoutes(router, { store, auth, audit, sources, c
 
   router.get("/api/workspace/deleted", async ({ req, res, url }) => {
     auth.requireUser(req);
-    const source = text(url.searchParams.get("sourceName"));
+    const source = text(url.searchParams.get("sourceName")) ? DATASET_KEY : "";
     ok(res, store.all(`SELECT d.id, d.case_key AS caseKey, d.source_name AS sourceName, d.deleted_by AS deletedBy, COALESCE(u.display_name, '') AS actorName, d.deleted_at AS deletedAt FROM deleted_records d LEFT JOIN users u ON u.id = d.deleted_by WHERE (? = '' OR d.source_name = ?) ORDER BY d.deleted_at DESC`, source, source));
   });
 
@@ -155,7 +158,7 @@ export function registerWorkspaceRoutes(router, { store, auth, audit, sources, c
 
   router.get("/api/workspace/overrides", async ({ req, res, url }) => {
     auth.requireUser(req);
-    const source = text(url.searchParams.get("sourceName"));
+    const source = text(url.searchParams.get("sourceName")) ? DATASET_KEY : "";
     const key = text(url.searchParams.get("caseKey"));
     ok(res, store.all(`SELECT o.id, o.case_key AS caseKey, o.source_name AS sourceName, o.field, o.value, o.version, o.updated_by AS updatedBy, COALESCE(u.display_name, '') AS actorName, o.updated_at AS updatedAt FROM overrides o LEFT JOIN users u ON u.id = o.updated_by WHERE (? = '' OR o.source_name = ?) AND (? = '' OR o.case_key = ?) ORDER BY o.updated_at DESC`, source, source, key, key));
   });
@@ -360,31 +363,37 @@ export function registerWorkspaceRoutes(router, { store, auth, audit, sources, c
   router.put("/api/workspace/client-state", async ({ req, res }) => {
     const user = auth.requirePermission(req, "sources.manage");
     const body = await readJson(req, { limit: 200_000 });
-    const result = clientState.update(user, text(body.key), body.value);
+    const key = text(body.key);
+    if (key === "sheetUrl") {
+      // Arayüzün kaynak yazması: v1.0.0 tarayıcısından gelen Sheet bağlantısı (veri yokken) çalışma verisine bağlanır;
+      // aksi hâlde veri kaynağı Ayarlar → Veri bölümünden yönetilir.
+      const adopted = await dataset.adoptLegacySheetUrl(user, body.value);
+      if (adopted.adopted) changed(user, "source");
+      ok(res, clientState.read());
+      return;
+    }
+    const result = clientState.update(user, key, body.value);
     changed(user, "source");
     ok(res, result);
   });
 
-  router.delete("/api/workspace/sources/active", async ({ req, res }) => {
-    const user = auth.requirePermission(req, "sources.manage");
-    const result = clientState.update(user, "sheetUrl", "");
-    changed(user, "source");
-    ok(res, result);
+  // 1.4.0 ve öncesinin kaynak uçları: güncelleme sırasında açık kalmış eski sayfalar içindir; veriyi değiştirmez.
+  const refreshRequired = () => {
+    throw new HttpError(409, "DestekOfis güncellendi. Sayfayı yenileyip veriyi Ayarlar → Veri bölümünden yönetin.");
+  };
+  router.delete("/api/workspace/sources/active", async ({ req }) => {
+    auth.requirePermission(req, "sources.manage");
+    refreshRequired();
+  });
+  router.post("/api/workspace/sources/excel", async ({ req }) => {
+    auth.requirePermission(req, "sources.manage");
+    refreshRequired();
   });
 
-  router.post("/api/workspace/sources/excel", async ({ req, res }) => {
-    const user = auth.requirePermission(req, "sources.manage");
-    const body = await readJson(req, { limit: 80_000_000 });
-    const result = sources.saveExcel(user, body);
-    changed(user, "source");
-    ok(res, { ...result, state: clientState.read() });
-  });
-
-  router.get("/api/workspace/sources/columns", async ({ req, res, url }) => {
+  router.get("/api/workspace/sources/columns", async ({ req, res }) => {
     auth.requireUser(req);
-    const sheetUrl = text(url.searchParams.get("sheetUrl")) || store.setting("client.sheetUrl", "");
-    const view = await sources.view(sheetUrl);
-    ok(res, { sheetUrl, connected: view.connected, columns: columnOrder(view.rows || []), excel: sheetUrl.startsWith(EXCEL_PREFIX) });
+    const view = await dataset.view();
+    ok(res, { sheetUrl: view.rows.length ? DATASET_KEY : "", connected: view.connected, columns: columnOrder(view.rows || []), excel: false });
   });
 
   // ---- Merkezi dosya notları (arayüzdeki "Notu kaydet") ----
