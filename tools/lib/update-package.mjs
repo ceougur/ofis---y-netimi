@@ -25,7 +25,15 @@ export function releaseNotes(changelog, version) {
 export function plainNotes(markdown) {
   return String(markdown || "")
     .split(/\r?\n/)
-    .map(line => line.replace(/^(\s*)[-*]\s+/, "$1• ").replace(/\*\*(.+?)\*\*/g, "$1").replace(/__(.+?)__/g, "$1").replace(/`([^`]+)`/g, "$1"))
+    .map(line =>
+      line
+        .replace(/^(\s*)[-*]\s+/, "$1• ")
+        .replace(/\*\*(.+?)\*\*/g, "$1")
+        .replace(/__(.+?)__/g, "$1")
+        // Tek yıldızlı eğik yazı (*Ofis geneli*); çarpma işareti gibi boşlukla çevrili yıldızlara dokunulmaz.
+        .replace(/(^|[^\w*])\*(?=\S)([^*\n]*?\S)\*(?![\w*])/g, "$1$2")
+        .replace(/`([^`]+)`/g, "$1"),
+    )
     .join("\n");
 }
 

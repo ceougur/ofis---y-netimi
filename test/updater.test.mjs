@@ -88,6 +88,7 @@ describe("imzalı güncelleme bildirgesi", () => {
     assert.equal(releaseNotes(text, "1.3.0"), "1.3.0 — Eski\n\n- c");
     assert.equal(releaseNotes(text, "2.0.0"), "");
     assert.equal(plainNotes("1.3.3 — Başlık\n\n- **Kalın** metin ve `-kesfet-dosya`\n  - alt madde\n* yıldızlı"), "1.3.3 — Başlık\n\n• Kalın metin ve -kesfet-dosya\n  • alt madde\n• yıldızlı");
+    assert.equal(plainNotes("- *Ofis geneli* kanalı, *✓ İletildi / ✓✓ Okundu* bilgisi; 3 * 4 = 12, dosya_adı"), "• Ofis geneli kanalı, ✓ İletildi / ✓✓ Okundu bilgisi; 3 * 4 = 12, dosya_adı");
   });
 });
 
