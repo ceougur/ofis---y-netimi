@@ -189,8 +189,12 @@ async function readGoogleSheet(sheetUrl) {
   const documentResponse = await fetch(`https://docs.google.com/spreadsheets/d/${id}/edit`, { headers: { Accept: "text/html" } });
   if (!documentResponse.ok) return { connected: false, sourceUrl, syncedAt: null, rows: [], tabs: [], message: `Google Sheets erişimi başarısız (${documentResponse.status}). Sheet paylaşım iznini kontrol edin.` };
   const html = await documentResponse.text(); const tabs = [];
-  const patterns = [/"gid"\s*:\s*"?(\d+)"?[^{}]{0,240}?"(?:name|title)"\s*:\s*"([^"\\]+)"/g, /"(?:name|title)"\s*:\s*"([^"\\]+)"[^{}]{0,240}?"gid"\s*:\s*"?(\d+)"?/g];
-  for (const pattern of patterns) { let match; while ((match = pattern.exec(html))) { const gid = pattern === patterns[0] ? match[1] : match[2]; const title = pattern === patterns[0] ? match[2] : match[1]; if (gid && title && !tabs.some(tab => tab.gid === gid)) tabs.push({ gid, title }); } }
+  const patterns = [
+    /\[(\d+),0,\\"(\d+)\\",\[\{\\"1\\":\[\[0,0,\\"([^"\\]+)\\"/g,
+    /"gid"\s*:\s*"?(\d+)"?[^{}]{0,240}?"(?:name|title)"\s*:\s*"([^"\\]+)"/g,
+    /"(?:name|title)"\s*:\s*"([^"\\]+)"[^{}]{0,240}?"gid"\s*:\s*"?(\d+)"?/g,
+  ];
+  for (const [index, pattern] of patterns.entries()) { let match; while ((match = pattern.exec(html))) { const gid = index === 0 ? match[2] : index === 1 ? match[1] : match[2]; const title = index === 0 ? match[3] : index === 1 ? match[2] : match[1]; if (gid && title && !tabs.some(tab => tab.gid === gid)) tabs.push({ gid, title }); } }
   const fallbackGid = new URL(sourceUrl).searchParams.get("gid") || "0"; const targets = tabs.length ? tabs : [{ gid: fallbackGid, title: "" }]; const rows = [];
   for (const tab of targets) { const response = await fetch(googleCsvUrl(sourceUrl, tab.gid), { headers: { Accept: "text/csv" } }); if (!response.ok) return { connected: false, sourceUrl, syncedAt: null, rows: [], tabs, message: `"${tab.title || "Sheet"}" sekmesi okunamadı (${response.status}). Sheet'i görüntüleme izni olan kişilerle paylaşın.` }; rows.push(...csvToRecords(await response.text(), tab.title)); }
   return { connected: true, sourceUrl, syncedAt: now(), rows, tabs: targets, message: `${targets.length} sekmeden ${rows.length} kayıt okundu.` };

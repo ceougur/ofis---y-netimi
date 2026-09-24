@@ -194,7 +194,7 @@ button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px
 .hof-payment-promises-heading small { margin-left:2px; color:#88a095; font-size:9px; font-weight:600; }
 .hof-payment-promises-dot { width:7px; height:7px; border-radius:50%; background:#69a879; box-shadow:0 0 0 4px #dcefe1; }
 .hof-payment-promises-viewport { min-width:0; flex:1; overflow:hidden; mask-image:linear-gradient(90deg,transparent 0,#000 3%,#000 97%,transparent 100%); }
-.hof-payment-promises-track { display:flex; width:max-content; gap:10px; animation:hof-payment-drift 75s linear infinite; }
+.hof-payment-promises-track { display:flex; width:max-content; gap:10px; animation:hof-payment-drift 107.14s linear infinite; }
 .hof-payment-promises-viewport:hover .hof-payment-promises-track, .hof-payment-promises-viewport:focus-within .hof-payment-promises-track { animation-play-state:paused; }
 .hof-payment-pill { display:inline-flex; flex:0 0 auto; align-items:center; gap:8px; min-width:176px; max-width:280px; padding:7px 12px 7px 8px; border:1px solid #d4e7d8; border-radius:999px; background:#fff; color:#315d47; cursor:pointer; text-align:left; box-shadow:0 3px 9px rgba(33,82,53,.06); }
 .hof-payment-pill:hover, .hof-payment-pill:focus-visible { border-color:#8fc19c; background:#f8fdf8; outline:2px solid rgba(96,161,111,.2); outline-offset:1px; }
@@ -244,3 +244,10 @@ button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px
 @media (prefers-reduced-motion: reduce) { .hof-payment-promises-track { animation:none; } }
 @media (max-width:760px) { .hof-payment-promises { align-items:flex-start; flex-direction:column; gap:7px; padding:11px 12px; } .hof-payment-promises-viewport { width:100%; } }
 @media (max-width:650px) { .hof-record-form { grid-template-columns:1fr; } .hof-record-card { padding:20px 15px; } .hof-table-pagination { align-items:flex-start; flex-direction:column; } }
+
+/* 2026-09-24: geniş ekranlarda detay kartı sağdaki boşluğu da kullanır. */
+@media (min-width: 1100px) {
+  .workspace-grid { grid-template-columns: minmax(0, 1.28fr) minmax(440px, .72fr) !important; align-items: start; }
+  .detail-panel { min-width: 0; width: 100%; }
+  .detail-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+}
