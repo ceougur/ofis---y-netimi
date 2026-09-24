@@ -279,6 +279,13 @@
       return;
     }
     const busy = status.state !== "idle";
+    // Güncelleme bittiğinde (bakım ekranı görülmese bile) sayfa yeni sürümün arayüzüyle yeniden yüklenir.
+    const pageVersion = me?.product?.version;
+    if (!busy && pageVersion && status.currentVersion && status.currentVersion !== pageVersion && !renderUpdate.reloading) {
+      renderUpdate.reloading = true;
+      HOF.toast(`DestekOfis ${status.currentVersion} sürümüne güncellendi. Sayfa yenileniyor…`, { type: "success" });
+      setTimeout(() => location.reload(), 1500);
+    }
     summary.textContent = `Kurulu sürüm ${status.currentVersion} · ${CHANNEL_LABELS[status.channel] || status.channel} kanal · Son denetim: ${describeCheck(status.lastCheck)}`;
     const parts = [];
     if (status.state === "checking") parts.push('<p class="adm-update-note">Denetleniyor…</p>');

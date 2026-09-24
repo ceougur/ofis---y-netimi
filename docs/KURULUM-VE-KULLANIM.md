@@ -113,6 +113,7 @@ Kaynak **ofis geneli tek ayardır**; yönetici veya avukat bir kez tanımlar, he
 | Giriş kilitlendi | 15 dakika bekleyin veya yöneticiden parola sıfırlamasını isteyin. |
 | Tablo görünmüyor | Yönetici/avukatın veri kaynağı tanımlaması gerekir. Sheets için paylaşım iznini kontrol edin. |
 | "Veri kaynağı değiştirildi" uyarısı | Başka bir kullanıcı kaynağı değiştirdi; *Yenile*'ye basın. |
+| "DestekOfis … sürümüne güncellendi" şeridi | Sunucu yeni sürüme geçti. Yazmakta olduğunuz notu kaydedip *Yenile*'ye basın. |
 | Güncelleme denetlenemiyor | Sunucunun internete çıkabildiğini kontrol edin. Antivirüsün "SSL/HTTPS taraması" özelliği bağlantıyı engelliyor olabilir. Ayrıntı: `logs\servis.log`. |
 | "Sürüm açılamadı; önceki sürüme dönüldü" | Sistem güvendedir ve önceki sürümle çalışır. Panelden *Yine de kur* ile yeniden deneyebilir veya destek isteyebilirsiniz. |
 | Sağlık kontrolü | `http://SUNUCU:5123/api/health` → `"status":"ok"` |
@@ -126,7 +127,7 @@ Kaynak **ofis geneli tek ayardır**; yönetici veya avukat bir kez tanımlar, he
 
 ## 12. Güncelleme
 
-**Otomatik (önerilen, varsayılan):** Sunucu her açıldığında yeni sürüm olup olmadığına bakar. Yeni sürüm varsa DestekOfis çalışmaya devam ederken arka planda indirilir ve doğrulanır; ardından yaklaşık bir dakikalık bir geçişle yeni sürüme geçilir. Bu sırada kullanıcılar *"Sistem güncelleniyor, lütfen 1 dakika sonra tekrar deneyin."* sayfasını görür; sistem hazır olunca ekranlar kendiliğinden yenilenir.
+**Otomatik (önerilen, varsayılan):** Sunucu her açıldığında yeni sürüm olup olmadığına bakar. Yeni sürüm varsa DestekOfis çalışmaya devam ederken arka planda indirilir ve doğrulanır; ardından yaklaşık bir dakikalık bir geçişle yeni sürüme geçilir. Bu sırada kullanıcılar *"Sistem güncelleniyor, lütfen 1 dakika sonra tekrar deneyin."* sayfasını görür; sistem hazır olunca ekranlar kendiliğinden yenilenir. Geçiş çok kısa sürdüyse yönetim paneli kendiliğinden yenilenir; dosya takip ekranında ise yazılan not kaybolmasın diye *"DestekOfis … sürümüne güncellendi"* şeridi çıkar, *Yenile*'ye basmanız yeterlidir.
 
 - Güncelleme yalnızca sunucu açılışında yapılır; gün içinde çalışırken kendiliğinden güncellenmez.
 - `data` ve `backups` klasörlerine dokunulmaz. Geçişten hemen önce veritabanının tam yedeği alınır (`backups\...-guncelleme-oncesi-<sürüm>.sqlite`).

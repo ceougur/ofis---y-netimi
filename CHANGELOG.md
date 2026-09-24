@@ -2,6 +2,11 @@
 
 Sürümler [anlamsal sürümleme](https://semver.org/lang/tr/) kurallarına uyar.
 
+## 1.3.2 — Güncelleme sonrası ekran yenileme
+
+- Güncelleme çok hızlı bittiğinde yönetim panelindeki sürüm, çalışma süresi ve son yedek kutucukları eski bilgiyi göstermeye devam ediyordu. Artık güncelleme bitince yönetim paneli yeni sürümle kendiliğinden yeniden yüklenir.
+- Dosya takip ekranı açık olan bilgisayarlar sunucunun güncellendiğini fark eder ve "DestekOfis … sürümüne güncellendi" şeridiyle sayfayı yenilemeyi önerir (yazılmakta olan bir not kaybolmasın diye kendiliğinden yenilemez).
+
 ## 1.3.1 — Otomatik güncelleme denemesi
 
 - Otomatik güncelleme zincirini gerçek bir kurulumda sınamak için yayımlanan sürüm: 1.3.0 kurulu sunucular bu sürüme kendiliğinden geçer. İşlevsel bir değişiklik yoktur.

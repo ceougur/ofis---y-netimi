@@ -104,6 +104,8 @@ describe("çalışma alanı işlemleri", () => {
   it("ofis geneli ayarları sürümleyerek saklar", async () => {
     const initial = await personel.get("/api/workspace/client-state");
     assert.equal(initial.data.data.sheetUrlSet, false);
+    const { VERSION } = await import("../server/lib/config.mjs");
+    assert.equal(initial.data.data.appVersion, VERSION, "açık ekranlar sunucu sürümünü görebilmeli");
     const updated = await admin.put("/api/workspace/client-state", { key: "sheetUrl", value: source });
     assert.equal(updated.status, 200);
     assert.equal(updated.data.data.settings.sheetUrl, source);

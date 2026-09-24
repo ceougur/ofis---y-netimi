@@ -5,7 +5,7 @@ import { can } from "../lib/permissions.mjs";
 
 const CASE_KEY_MAX = 300;
 
-export function registerWorkspaceRoutes(router, { store, auth, audit, sources, clientState }) {
+export function registerWorkspaceRoutes(router, { store, auth, audit, sources, clientState, config }) {
   const now = () => new Date().toISOString();
   const newId = prefix => auth.newId(prefix);
   const caseKeyOf = (value, label = "Dosya kimliği") => {
@@ -320,7 +320,8 @@ export function registerWorkspaceRoutes(router, { store, auth, audit, sources, c
   // ---- Ofis geneli istemci ayarları (veri kaynağı, senkron sıklığı, kolon eşlemesi) ----
   router.get("/api/workspace/client-state", async ({ req, res }) => {
     auth.requireUser(req);
-    ok(res, clientState.read());
+    // appVersion: açık ekranlar sunucu güncellendiğinde bunu fark edip yenilenmeyi önerir.
+    ok(res, { ...clientState.read(), appVersion: config?.version || null });
   });
 
   router.put("/api/workspace/client-state", async ({ req, res }) => {

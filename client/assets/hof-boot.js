@@ -151,6 +151,11 @@
     if (document.hidden) return;
     try {
       const state = await HOF.api("/api/workspace/client-state");
+      // Sunucu arada güncellendiyse (bakım ekranı görülmeden bile) eski arayüzle çalışmamak için yenileme öner.
+      const bootVersion = HOF.user?.product?.version;
+      if (state.appVersion && bootVersion && state.appVersion !== bootVersion) {
+        showReloadBanner(`DestekOfis ${state.appVersion} sürümüne güncellendi. Yenilikleri görmek için sayfayı yenileyin.`);
+      }
       if (state.version !== clientVersion) {
         const sourceChanged = (state.settings.sheetUrl || "") !== (HOF.settings.sheetUrl || "");
         HOF.applyClientState(state);
