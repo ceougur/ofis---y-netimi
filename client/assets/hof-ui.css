@@ -1541,3 +1541,10 @@ body.hof-chat-open .hof-toasts {
     transition: none;
   }
 }
+
+/* Başlıklarda sıkı harf aralığı büyük harfli sekme/alt tablo adlarında kelimeleri bitişik gösteriyordu
+   ("GAYRİMENKUL SATIŞ" → "GAYRİMENKULSATIŞ"); kelime arası biraz açılır. */
+.page-title,
+.panel-title {
+  word-spacing: 0.12em;
+}
