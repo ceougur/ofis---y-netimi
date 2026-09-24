@@ -1,6 +1,8 @@
 # DestekOfis
 
-Hukuk ofisleri için merkezi dosya takip sistemi. Ofisteki bir bilgisayar **sunucu** olur; diğer bilgisayarlar ona bağlanır ve herkes aynı dosyaları, notları, tahsilatları, hacizleri, görevleri ve değişiklik geçmişini görür.
+Ofisler için merkezi kayıt takip ve yönetim sistemi. Ofisteki bir bilgisayar **sunucu** olur; diğer bilgisayarlar ona bağlanır ve herkes aynı kayıtları, notları, görevleri, mesajları ve değişiklik geçmişini görür.
+
+Sektörden bağımsızdır: yüklenen Excel veya Google Sheets verisini sunucuda (internete göndermeden) çözümler, kolon türlerini doğrular, 142 sektörlük listeden sektörünü kanıtlarıyla önerir ve yönetici onaylayınca başlıklarını, rol adlarını ve araçlarını (ör. hukukta tahsilat ve haciz) buna göre ayarlar. Başlıklar kalemle kalıcı olarak değiştirilebilir.
 
 - Sunucu: Windows servisi (nssm) · gömülü Node.js 24 LTS (dış bağımlılık yok) · SQLite
 - Personel bilgisayarı: sunucuyu UDP ile kendiliğinden bulan başlatıcı (Edge/Chrome uygulama penceresi)
@@ -33,7 +35,7 @@ node tools/patch-bundle.mjs   # arayüz paketine yamaları yeniden uygular
 
 Windows kurulum dosyası için: Go 1.22+, `x86_64-w64-mingw32-windres` (simge/sürüm bilgisi), Inno Setup 6 (Windows) veya Wine (Linux; `npm install` Inno Setup'ı getirir). GitHub Actions `windows.yml` kurulum dosyasını derler ve gerçek Windows'ta kurma → servis → keşif → yeniden kurma → kaldırma testlerini çalıştırır.
 
-Ortam değişkenleri: `PORT`, `HOST`, `HUKUK_DATA_DIR`, `HUKUK_BACKUP_DIR`, `HUKUK_ADMIN_USERNAME`, `HUKUK_ADMIN_PASSWORD`, `HUKUK_BACKUP_INTERVAL_HOURS`, `HUKUK_BACKUP_KEEP`, `HUKUK_LOG_LEVEL`, `HUKUK_DISCOVERY_PORT`, `HUKUK_TRUST_PROXY`, `HUKUK_UPDATES` (`0` otomatik güncellemeyi kapatır).
+Ortam değişkenleri (adları uyumluluk için değişmedi): `PORT`, `HOST`, `HUKUK_DATA_DIR`, `HUKUK_BACKUP_DIR`, `HUKUK_ADMIN_USERNAME`, `HUKUK_ADMIN_PASSWORD`, `HUKUK_BACKUP_INTERVAL_HOURS`, `HUKUK_BACKUP_KEEP`, `HUKUK_LOG_LEVEL`, `HUKUK_DISCOVERY_PORT`, `HUKUK_TRUST_PROXY`, `HUKUK_UPDATES` (`0` otomatik güncellemeyi kapatır).
 
 ## Klasör yapısı
 

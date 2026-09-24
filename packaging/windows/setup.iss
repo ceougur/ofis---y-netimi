@@ -31,7 +31,8 @@ AppSupportURL={#AppURL}
 AppUpdatesURL={#AppURL}
 AppContact=bilgi.ugurcetin@gmail.com
 ; Yeni kurulumlar sektörden bağımsız klasöre; mevcut kurulumlar (aynı AppId) önceki klasörlerinde güncellenir.
-DefaultDirName=C:\DestekOfis
+; Önceki kayıt yoksa (kaldırılıp yeniden kurulan sunucu, eski elle kurulum) verisi olan klasör seçilir: DefaultAppDir.
+DefaultDirName={code:DefaultAppDir}
 UsePreviousAppDir=yes
 ; Klasör kaldırmadan sonra da (veriler korunduğu için) kalır; "klasör zaten var" sorusu gereksiz kafa karıştırır.
 DirExistsWarning=no
@@ -134,6 +135,20 @@ var
 function IsServer: Boolean;
 begin
   Result := WizardIsComponentSelected('sunucu');
+end;
+
+// Varsayılan kurulum klasörü. Kaldırma verileri (data, backups) silmez ve Windows'taki önceki kurulum kaydını siler;
+// böyle bir sunucu yeniden kurulurken ya da eski elle kurulumdan (v1.0/v1.1) geçilirken verinin olduğu klasör
+// seçilmezse sunucu boş bir veritabanıyla açılırdı. Sıra: yeni klasörde veri varsa o, yoksa 1.6.0 öncesi klasörde
+// veri varsa o, hiçbiri yoksa yeni klasör.
+function DefaultAppDir(Param: String): String;
+begin
+  if DirExists('C:\DestekOfis\data') then
+    Result := 'C:\DestekOfis'
+  else if DirExists('C:\HukukOfisiMerkezi\data') then
+    Result := 'C:\HukukOfisiMerkezi'
+  else
+    Result := 'C:\DestekOfis';
 end;
 
 // Bu bilgisayarda kurulu bir DestekOfis sunucusu (Windows servisi) var mı? Varsa bu bir güncelleme kurulumudur.

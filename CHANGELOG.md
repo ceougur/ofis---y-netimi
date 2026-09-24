@@ -2,6 +2,28 @@
 
 Sürümler [anlamsal sürümleme](https://semver.org/lang/tr/) kurallarına uyar.
 
+## 1.6.0 — Verinizi tanıyan DestekOfis
+
+- **Her sektöre uyum:** DestekOfis artık yalnızca hukuk ofisleri için değil. Yüklenen Excel veya Google Sheets sunucuda çözümlenir; veri internete gönderilmez. Kolonların ne taşıdığı bulunur ve doğrulanır: T.C. kimlik no, vergi no ve IBAN kontrol hanesiyle, telefon, tarih ve tutarlar biçimleriyle denetlenir. Ardından önem sırası çıkarılır ve 22 grupta 142 sektörlük listeden sektör önerilir. Öneri kanıtlarıyla ("“BORÇLU” kolonu", "“İCRA DAİRESİ” kolonunda icra dairesi adları") ve güven düzeyiyle gösterilir, **hiçbir zaman kendiliğinden uygulanmaz**. Veri belirgin bir sektöre işaret etmiyorsa sektör atanmaz, *Genel* görünüm önerilir.
+- **Sektör seçici:** Öneri yanlışsa doğru sektör listeden seçilir: kelimeyle aranır (birden çok kelime de olur) ya da gruplara ayrılmış liste kaydırılır; klavyeyle de kullanılır. Sektör *Ayarlar → Sektör ve görünüm*'den istendiği zaman değiştirilir, analiz yeniden gösterilir.
+- **Sektörün dili ve araçları:** Onaylanan sektöre göre şunlar değişir: kayıtların adı (dosya, hasta, poliçe, sipariş, öğrenci…), kenar çubuğu alt başlığı ve giriş ekranı, ikinci rolün adı (Avukat, Hekim, Emlak danışmanı…) ve araçlar. *Haciz* yalnızca hukuk sektörlerinde, *Tahsilat* ödeme alınan sektörlerde görünür; ofiste o araçla kaydı olan bir araç her sektörde görünmeye devam eder. Yetkiler değişmez.
+- **Kalemle başlık değiştirme:** Yönetici sayfa, tablo ve özet başlıkları, açıklamalar ve menü başlıkları gibi 10 başlığı kalem simgesiyle kalıcı olarak değiştirebilir. Değişiklik tüm bilgisayarlara anında yansır ve *Varsayılana dön* ile geri alınır. Diğer kullanıcılar kalemi görmez.
+- **Akıllı özet kartları:** Özet başlığının altındaki kartlar yalnızca türü doğrulanmış kolonlardan, kolonun kendi adıyla hesaplanır: toplam kayıt, tutar toplamı, yaklaşan ve geçmiş tarihler, bu ayın kayıtları, durum ve sorumlu dağılımları. Birim fiyatlar ve farklı para birimleri toplanmaz. Kartlar seçili sekmeye göre değişir. Karta tıklayınca ilgili kayıtlar listelenir, seçilen kayıt tabloda açılır. Kenar çubuğundaki **Bu ay** sayısı da gerçek veriden gelir.
+- **Veri sağlığı:** Şu sorunlar bulunur ve kayıt listeleriyle gösterilir: boş kimlik veya ad, aynı sekmede tekrar eden kimlik, kontrol hanesi tutmayan T.C./IBAN/vergi no, biçimi tutmayan telefon, tarih ve tutarlar. Kaynak veri değiştirilmez.
+- **Kalıcı kayıt kimliği:** Dosya numarası taşımayan verilerde kimlik kolonu (hasta no, sipariş no, plaka, üye no…) kendiliğinden bulunur. Satırın telefonu veya adresi değişse de notlar, görevler ve düzeltmeler kayda bağlı kalır. Aynı kimlikle ikinci bir kayıt eklenemez. Dosya numaralı veride eski kural aynen geçerlidir.
+- **Arama kutusu** verideki gerçek kolon adlarını önerir (ör. "Hasta no, ad soyad veya telefon ara…").
+- **Genel adlandırma:** Yeni kurulumlar `C:\DestekOfis` klasörüne kurulur; veritabanının adı `destekofis.sqlite`, yedeklerinki `destekofis-…` olur. Mevcut kurulumlar olduğu yerde, eski adlarla kalır (`C:\HukukOfisiMerkezi`, `hukuk-ofisi.sqlite`); eski yedekler de listelenir ve geri yüklenebilir.
+- **Mevcut ofisler:** Güncellenen ve verisi olan sunucular hukuk ofisi görünümüyle açılır, ekranlar güncellemeden önceki gibi kalır. Yöneticiye bir kez "Yeni: DestekOfis verinizi tanıyor" kartı çıkar; *Mevcut görünümü koru* denirse hiçbir şey değişmez.
+
+### 1.3'ten güncellenen kurulumlar: 1.4.0 ve 1.5.0'daki yenilikler de bu sürümdedir
+
+- **Sohbet paneli:** Ofis geneli kanalı ve kişiye özel yazışmalar; mesajlar anında gelir, okundu bilgisi gösterilir. Özel yazışmayı yalnızca iki taraf görür.
+- **Anlık güncellemeler:** Başka bilgisayarda eklenen not, görev ve düzeltmeler açık ekranlara kendiliğinden yansır; size görev atanınca bildirim çıkar.
+- **Veri sunucuda kalıcı:** Yüklenen Excel veya Google Sheets verisi, yönetici kaldırmadıkça ofisin düzeltmeleriyle birlikte korunur. Yeni dosya *devamı olarak ekle* ya da *yerine koy* önizlemesiyle alınır. Bağlı Google Sheets seçilen sıklıkta eşitlenir; Sheet'ten silinen satırlar yönetici karar verene kadar silinmez. Veri yükleme ve kaldırma yalnızca yönetici hesabındadır.
+- **Excel ve Sheets okuma:** Hücreler göründüğü gibi okunur (13.10.2025, 40.000,00 TL); alt alta birden çok tablo içeren sekmeler ayrı bölümler olarak tanınır.
+- **Yetkiler ve güvenlik:** Görev atama ve performans raporu yalnızca yönetici ve ikinci rolde. İki hesap aynı adı taşıyamaz. Çıkışta veya hesap kapatılınca oturum anında kesilir.
+- Güncellemede veritabanı, öncesinde tam yedek alınarak yeni yapıya taşınır. Notlar, görevler, düzeltmeler ve etkin veri kaynağı korunur. Ayrıntılar bu değişiklik günlüğünün 1.4.0 ve 1.5.0 bölümlerindedir.
+
 ## 1.5.0 — Kalıcı çalışma verisi
 
 - **Veri artık sunucuda kalıcı:** Yüklenen Excel veya Google Sheets verisi sunucunun veritabanında saklanır ve yönetici kaldırmadıkça korunur; sonradan yapılan düzeltmeler, silmeler, yeni kayıtlar, notlar ve görevlerle birlikte devam eder. Önceden Google Sheets'e ulaşılamadığında tablo boş kalabiliyor, farklı adla yüklenen Excel'de ofisin düzeltmeleri yeni tabloya bağlanmıyordu; ikisi de giderildi.

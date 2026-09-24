@@ -1,8 +1,10 @@
-# DestekOfis — Kurulum ve Kullanım Kılavuzu (v1.4)
+# DestekOfis — Kurulum ve Kullanım Kılavuzu (v1.6)
 
 ## 1. Sistem düzeni
 
 Ofisteki bir bilgisayar **sunucu** olur: veriler bu bilgisayarda tutulur ve DestekOfis burada bir Windows servisi olarak çalışır. Diğer bilgisayarlar **personel bilgisayarı**dır; yalnızca sunucuyu kendiliğinden bulan küçük bir başlatıcı kurulur, veri tutmazlar.
+
+DestekOfis belirli bir sektöre bağlı değildir: yüklediğiniz tabloyu inceler, sektörünüzü önerir ve siz onaylayınca başlıklarını, rol adlarını ve araçlarını buna göre ayarlar (bkz. bölüm 7).
 
 - Sunucu bilgisayar açık kaldığı sürece sistem çalışır; kimsenin oturum açmasına gerek yoktur.
 - Windows ağ profili **Özel (Private)** olmalıdır (kurulum bunu sizin için ayarlayabilir).
@@ -14,7 +16,7 @@ Ofisteki bir bilgisayar **sunucu** olur: veriler bu bilgisayarda tutulur ve Dest
 2. Kurulum türü olarak **Sunucu bilgisayar**ı seçin.
 3. İsteğe bağlı görevler: *Masaüstüne kısayol* ve *Ağ profili 'Ortak' ise 'Özel' yap* (önerilir).
 4. Kurulum şunları kendiliğinden yapar:
-   - Programı `C:\HukukOfisiMerkezi` klasörüne kurar (Node.js çalışma zamanı dahil; ayrıca bir şey kurmanız gerekmez).
+   - Programı `C:\DestekOfis` klasörüne kurar (Node.js çalışma zamanı dahil; ayrıca bir şey kurmanız gerekmez). 1.6 öncesinde kurulmuş sunucular kendi klasörlerinde (ör. `C:\HukukOfisiMerkezi`) güncellenmeye devam eder; klasör taşınmaz.
    - **DestekOfis Sunucu** Windows servisini oluşturur: bilgisayar açılınca oturum açılmadan, penceresiz başlar; kapanırsa kendiliğinden yeniden başlar.
    - Güvenlik duvarına yalnızca Özel/Etki alanı ağları için TCP ve UDP **5123** izni ekler.
    - Servisi başlatıp çalıştığını doğrular.
@@ -24,7 +26,7 @@ Klasörler:
 
 | Klasör | İçerik |
 |---|---|
-| `data\` | Veritabanı (`hukuk-ofisi.sqlite`). Güncelleme ve kaldırmada **silinmez**. |
+| `data\` | Veritabanı (`destekofis.sqlite`; 1.6 öncesi kurulumlarda `hukuk-ofisi.sqlite` adıyla kalır). Güncelleme ve kaldırmada **silinmez**. |
 | `backups\` | Otomatik ve elle alınan yedekler. **Silinmez**. |
 | `logs\` | Servis ve kurulum günlükleri. |
 | `app\`, `runtime\`, `bin\`, `launcher\` | Program dosyaları. |
@@ -37,7 +39,7 @@ Klasörler:
 
 İsterseniz tarayıcıdan doğrudan da bağlanabilirsiniz: yönetim panelindeki **Sistem** sekmesi sunucunun adreslerini gösterir (ör. `http://192.168.1.50:5123`).
 
-Başlatıcıya adresi elle vermek için (nadiren gerekir): `C:\HukukOfisiMerkezi\launcher\DestekOfis.exe -sunucu 192.168.1.50`. Kayıtlı adresi unutturmak için: `DestekOfis.exe -sifirla`.
+Başlatıcıya adresi elle vermek için (nadiren gerekir): `C:\DestekOfis\launcher\DestekOfis.exe -sunucu 192.168.1.50` (eski kurulumlarda `C:\HukukOfisiMerkezi\launcher\…`). Kayıtlı adresi unutturmak için: `DestekOfis.exe -sifirla`.
 
 ## 4. İlk giriş ve güvenlik
 
@@ -52,12 +54,12 @@ Yönetim paneli: kenar çubuğundaki kullanıcı kartında **Yönetim** (veya `h
 
 | Rol | Yapabildikleri |
 |---|---|
-| Yönetici | Her şey: veri yükleme ve kaldırma, kullanıcılar, yedekler, sistem, silme, görev atama, performans raporu |
-| Avukat | Tüm dosya işlemleri, kayıt silme, görev atama, herkesin görevleri, performans raporu, değişiklik geçmişi (veri yükleyemez) |
+| Yönetici | Her şey: veri yükleme ve kaldırma, sektör ve başlıklar, kullanıcılar, yedekler, sistem, silme, görev atama, performans raporu |
+| Uzman (sektöre göre adı: Avukat, Hekim, Emlak danışmanı, Öğretmen…) | Tüm kayıt işlemleri, kayıt silme, görev atama, herkesin görevleri, performans raporu, değişiklik geçmişi (veri yükleyemez) |
 | Personel | Not, telefon, tahsilat, haciz, mesaj, yeni kayıt, hücre düzeltme; kendisine atanan görevleri görür ve tamamlar |
 | Muhasebe | Personel ile aynı yetkiler |
 
-Görev atama, "Tüm açık görevler" listesi ve *Personel raporu* (performans/KPI) yalnızca avukat ve yönetici hesaplarında görünür; kısıtlamayı sunucu da uygular (personel başkasının görevini göremez ve tamamlayamaz).
+İkinci rolün yetkileri her sektörde aynıdır; yalnızca ekranda görünen adı ofisin sektörüne göre değişir (sektör seçilmemişse *Uzman*, hukuk ofisinde *Avukat*). Görev atama, "Tüm açık görevler" listesi ve *Personel raporu* (performans/KPI) yalnızca bu rol ile yönetici hesaplarında görünür; kısıtlamayı sunucu da uygular (personel başkasının görevini göremez ve tamamlayamaz).
 
 Yeni kullanıcıya verilen ilk parola, kullanıcının ilk girişinde değiştirilir (önerilen ayar). Kullanıcıyı pasifleştirmek kayıtlarını silmez; açık oturumlarını ve canlı bağlantısını hemen kapatır, ekranı birkaç saniye içinde giriş ekranına döner.
 
@@ -71,12 +73,13 @@ Veri **ofis geneli tektir** ve sunucuda kalıcı olarak saklanır: yönetici bir
 
 - **İlk yükleme:** Veri yokken panelin ortasında *"Excelini yükle ya da Google Sheets linkini yapıştır, başlayalım"* kartı çıkar. Excel dosyasını sürükleyip bırakın veya seçin; ya da Sheet bağlantısını yapıştırıp **Bağla**'ya basın. Diğer kullanıcılar bu sırada "Yöneticiniz veri yüklediğinde tablo burada görünecek" yazısını görür; veri gelince ekranları kendiliğinden açılır.
 - **Sonraki yüklemeler:** Sol menü → **Ayarlar** → *Veri ve eşitleme*. Mevcut veri varken yeni bir Excel veya Sheet bağlantısı verilince DestekOfis önce dosyayı mevcut veriyle karşılaştırır ve sorar:
-  - **Mevcut verinin devamı olarak ekle** (önerilen): yeni kayıtlar eklenir, aynı dosya numaralı kayıtlar yeni bilgilerle güncellenir, yeni dosyada olmayan kayıtlar silinmez. Ofiste elle yapılan düzeltmeler korunur.
-  - **Mevcut verinin yerine koy:** tablo yeni dosyayla değiştirilir; yeni dosyada olmayan kayıtlar tablodan kalkar (ek onay istenir). Notlar, görevler ve işlem geçmişi silinmez; aynı dosya numarası tekrar gelirse yeniden bağlanır.
+  - **Mevcut verinin devamı olarak ekle** (önerilen): yeni kayıtlar eklenir, aynı kimlikli (dosya no, hasta no, sipariş no…) kayıtlar yeni bilgilerle güncellenir, yeni dosyada olmayan kayıtlar silinmez. Ofiste elle yapılan düzeltmeler korunur.
+  - **Mevcut verinin yerine koy:** tablo yeni dosyayla değiştirilir; yeni dosyada olmayan kayıtlar tablodan kalkar (ek onay istenir). Notlar, görevler ve işlem geçmişi silinmez; aynı kimlik tekrar gelirse yeniden bağlanır.
   Karar vermeden önce kaç kaydın ekleneceği, güncelleneceği ve kalkacağı (örnek dosya numaralarıyla) gösterilir. Her değişiklikten önce veritabanının tam yedeği alınır (`...-veri-oncesi-ekleme.sqlite`, `...-veri-oncesi-degistirme.sqlite`).
 - **Google Sheets bağlantısı:** Sheet'te *Paylaş → Bağlantıya sahip olan herkes → Görüntüleyici* açık olmalıdır. Bağlı Sheet'teki yeni ve değişen satırlar seçilen sıklıkta (5 dk, 15 dk veya saatte bir) kendiliğinden eklenir; *Şimdi eşitle* ile hemen alınabilir. Sheet'ten silinen satırlar DestekOfis'ten kendiliğinden silinmez: tabloda üstü çizili görünür ve *Ayarlar → Veri*'de "Sheet'te artık olmayan kayıtlar" listesinde **Tut** veya **Kaldır** diye karar verilir. Sheet'in yapısı toptan değişmiş görünürse (ör. başlık satırı eklenmiş, sekme adı değişmiş; satırların çoğu birden "yeni" ve "kayıp" görünür) otomatik eşitleme veri çoğalmasın diye durur ve yöneticiden karar ister. Google'a ulaşılamazsa son eşitlenen veri kullanılmaya devam eder.
 - **Bağlantıyı kaldır:** eşitleme durur, veri yerinde kalır. **Veriyi kaldır:** içeri alınan satırlar tablodan kalkar (öncesinde yedek alınır); notlar, görevler ve uygulamada eklenen kayıtlar kalır.
 - Kaynak dosyanın kendisi hiçbir zaman değiştirilmez. İçeri almaların geçmişi *Ayarlar → Veri*'de ve yönetim panelindeki değişiklik geçmişinde görünür.
+- **Kayıt kimliği:** Her satırın kalıcı bir kimliği vardır; notlar, görevler ve düzeltmeler bu kimliğe bağlanır. Dosya numarası (ör. 2025/1234) olan tablolarda kimlik dosya numarasıdır. Dosya numarası olmayan tablolarda DestekOfis her satırda dolu ve tekrarsız bir kimlik kolonu arar (ör. *HASTA NO*, *SİPARİŞ NO*, *PLAKA*, *ÜYE NO*); bulursa kimlik o kolondan gelir ve satırın başka bir hücresi (telefon, adres…) değişse de notlar kaybolmaz. Yeni kayıt eklenirken aynı kimlik ikinci kez verilemez.
 
 **Alt tablolar (bir sekmede birden çok tablo).** Bir sekmede alt alta birden çok tablo varsa DestekOfis bunları kendiliğinden ayırır; Google Sheets'te de, yüklenen Excel'de de aynı kurallar geçerlidir ve sayfa adlarına bağlı değildir:
 
@@ -87,21 +90,64 @@ Veri **ofis geneli tektir** ve sunucuda kalıcı olarak saklanır: yönetici bir
 
 Alt tabloları olan sekme, sekme şeridinde ▸ işaretiyle görünür; tıklayınca altında **Alt tablolar** şeridi açılır ve her alt tablo kendi kolonları ve kayıt sayısıyla seçilir. Emin olunamayan düzenlerde eski davranış geçerlidir (ilk satır kolon başlığı sayılır); böylece düzgün bir tablo yanlışlıkla bölünmez. Bir alt tablo tanınmıyorsa başlık satırının tek hücrede (birleştirilmiş) olduğundan ve hemen altında kolon başlıklarının bulunduğundan emin olun.
 
-## 7. Günlük kullanım
+## 7. Verinizi tanıyan DestekOfis: sektör, özet kartları, veri sağlığı
 
-- **Arama:** Dosya no, borçlu, müvekkil veya telefon yazın; *Enter* ilk sonuca gider, *Ctrl+K* aramaya odaklanır.
-- **Dosya işlemleri:** Detay panelindeki *WhatsApp, Not, Telefon, Tahsilat, Görev, Haciz, Düzenle* düğmeleri. Tüm işlemler detayın altındaki **İşlem geçmişi**nde işlemi yapanla birlikte görünür.
+Excel ya da Google Sheets ilk kez yüklendiğinde (ve *yerine koy* ile değiştirildiğinde) yöneticiye kısa bir **"Verinizi tanıyoruz"** ekranı gösterilir. Analiz tamamen bu sunucuda yapılır; verileriniz internete gönderilmez.
+
+1. **Kayıtlar okunur:** kaç kayıt, kolon ve sekme olduğu.
+2. **Veri türleri doğrulanır:** her kolonun ne taşıdığı bulunur (kimlik, kişi/kurum, telefon, tarih, tutar, durum…). T.C. kimlik no, vergi no ve IBAN kontrol hanesiyle doğrulanır; telefon, tarih ve tutarlar biçimleriyle denetlenir.
+3. **Önem sırası çıkarılır:** kimlik ve kişi en önde, sıra numarası en sonda.
+4. **Sektör belirlenir:** kolon adları, değerler ve dosya/sekme adları 22 grupta 142 sektörlük listeyle karşılaştırılır. Öneri, *Neden bu sektör?* başlığı altında kanıtlarıyla (ör. "“BORÇLU” kolonu", "“İCRA DAİRESİ” kolonunda icra dairesi adları") ve güven düzeyiyle (*Yüksek* / *Orta*) gösterilir.
+5. **Çalışma alanı hazırlanır.**
+
+**Öneri hiçbir zaman kendiliğinden uygulanmaz.** Yönetici *Evet, uygula*, *Başka sektör seç* ya da *Genel kullan* der. Veri belirgin bir sektöre işaret etmiyorsa sektör atanmaz; *Genel* görünümle ya da listeden seçerek devam edilir. Sektör seçmek verinize ve yetkilere dokunmaz; yalnızca görünen dili ve araçları değiştirir ve istendiği zaman geri alınır:
+
+- Kayıtlara verilen ad (dosya, hasta, poliçe, sipariş, öğrenci…): *Tüm hastalar*, *Yeni hasta*, *Hasta özeti*.
+- Kenar çubuğundaki alt başlık (ör. *Hukuk ofisi yönetimi*, *Klinik yönetimi*); giriş ekranında ofis adı yoksa bu yazı görünür.
+- İkinci rolün adı (Avukat, Hekim, Emlak danışmanı…).
+- Araçlar: *Haciz* yalnızca hukuk sektörlerinde görünür (ofiste haciz kaydı varsa her sektörde görünmeye devam eder). *Tahsilat* ödeme alınan sektörlerde görünür.
+
+**Sektör listesi:** *Ayarlar → Sektör ve görünüm → Sektörü değiştir*. Arama kutusuna kelime yazın (ör. *klinik*, *emlak*, *galeri*, *sigorta*; birden çok kelime de olur: *hasta diş*) ya da listeyi kaydırın; ↑ ↓ ile gezip Enter ile seçebilirsiniz. *Verimi analiz et* analizi istediğiniz zaman yeniden gösterir.
+
+**Akıllı özet kartları:** Özet başlığının altındaki kartlar yalnızca türü doğrulanmış kolonlardan, kolonun kendi adıyla hesaplanır. Örneğin *Tutar toplamı*, *Ödeme sözü · 7 gün içinde*, *Durum* dağılımı, *Sorumlu* dağılımı ve *Veri sağlığı*. Kartlar seçili sekmeye göre değişir. Tutar kartı yalnızca tutar kolonlarında görünür; birim fiyatlar ve farklı para birimleri toplanmaz. Karta tıklayınca ilgili kayıtlar listelenir ve tıklanan kayıt tabloda açılır. Kenar çubuğundaki **Bu ay** sayısı da aynı tarih kolonundan gelir ve tıklanınca bu ayın kayıtlarını listeler.
+
+**Veri sağlığı:** Kontrol edilen hücrelerin sorunsuz olanlarının oranıdır. Bulgular şunlardır: kimliği veya kişi adı boş kayıtlar, aynı sekmede tekrar eden kimlik, kontrol hanesi tutmayan T.C./IBAN/vergi no, biçimi tutmayan telefon, tarih ve tutarlar. Her bulgu, tıklanıp açılabilen kayıt listesiyle gösterilir. Kaynak veriniz değiştirilmez; düzeltmeyi tablodan yapabilirsiniz.
+
+**Arama kutusu** verinizdeki gerçek kolon adlarını önerir (ör. "Hasta no, ad soyad veya telefon ara…").
+
+1.6'ya güncellenen ve verisi olan sunucular hukuk ofisi görünümüyle açılır; görünüm güncellemeden önceki gibi kalır. Yöneticiye bir kez *"Yeni: DestekOfis verinizi tanıyor"* kartı çıkar. *Analizi gör* ile öneri incelenir; *Mevcut görünümü koru* ya da *Kapat* ile hiçbir şey değişmez.
+
+## 8. Başlıkları değiştirme (kalem simgesi)
+
+Yönetici sayfadaki başlıkların üzerine gelince yanlarında küçük bir **kalem (✎)** simgesi görür. Tıklayınca başlık yazılır, *Kaydet* (veya Enter) ile **tüm bilgisayarlarda kalıcı olarak** değişir; açık ekranlara hemen yansır. *Varsayılana dön* eski başlığı geri getirir.
+
+Değiştirilebilen başlıklar:
+
+- Kenar çubuğu alt başlığı
+- *ÇALIŞMA ALANI* ve *VERİ KAYNAĞI* menü başlıkları
+- *OPERASYON MERKEZİ*
+- Sayfa başlığı ve tablo başlığı: verinin adı; tablo başlığına ayrıca bir ad verilmezse sayfa başlığını izler.
+- Özet başlığı ve açıklaması
+- Sekmeler başlığı
+- Tablo açıklaması
+
+Öncelik: yöneticinin yazdığı başlık, sonra sektörün başlığı, sonra programın varsayılanı. Değiştirilen başlıkların listesi ve toplu *varsayılana döndür* düğmesi *Ayarlar → Sektör ve görünüm*'dedir. Dokunmatik ekranlarda kalemler hafif görünür durur. Diğer kullanıcılar kalemi görmez.
+
+## 9. Günlük kullanım
+
+- **Arama:** Kimlik, ad veya telefon yazın (kutudaki ipucu verinizin kolonlarını söyler); *Enter* ilk sonuca gider, *Ctrl+K* aramaya odaklanır.
+- **Kayıt işlemleri:** Detay panelindeki *WhatsApp, Not, Telefon, Tahsilat, Görev, Haciz, Düzenle* düğmeleri (*Tahsilat* ve *Haciz* sektöre göre). Tüm işlemler detayın altındaki **İşlem geçmişi**nde işlemi yapanla birlikte görünür.
 - **Hücre düzeltme:** Tablo hücresinin üzerine gelince çıkan ✎ düğmesi. Aynı alanı iki kişi aynı anda değiştirirse sistem uyarır.
 - **Satır silme:** Satırın solundaki × (yönetici/avukat). Silme geri alınabilir.
 - **Görevler:** Kenar çubuğu → *Görevler*; size atananlar rozetle gösterilir. Görev atama yalnızca avukat ve yönetici hesaplarındadır; size görev atandığında ekranınızda anında bildirim çıkar.
-- **Mesajlar (sohbet):** Kenar çubuğu → *Mesajlar* sağdan sohbet panelini açar. *Ofis geneli* kanalını herkes görür; bir kişiye tıklayınca **özel yazışma** açılır — onu yalnızca iki taraf görür (yönetici dahil başka kimse okuyamaz). Yeni mesaj sayfayı yenilemeden gelir: *Mesajlar* rozetinde ve sekme başlığında okunmamış sayısı, ekranın köşesinde kısa bir bildirim ve ses (paneldeki 🔔 ile kapatılır). Kendi son mesajınızın altında *✓ İletildi* / *✓✓ Okundu* görünür. Mesajdaki dosya numarasına (ör. 2024/11710) tıklayınca o dosya tabloda açılır; "Seçili dosyayı ekle" ile açık dosyayı mesaja bağlayabilirsiniz. *Enter* gönderir, *Shift+Enter* yeni satır.
+- **Mesajlar (sohbet):** Kenar çubuğu → *Mesajlar* sağdan sohbet panelini açar. *Ofis geneli* kanalını herkes görür; bir kişiye tıklayınca **özel yazışma** açılır — onu yalnızca iki taraf görür (yönetici dahil başka kimse okuyamaz). Yeni mesaj sayfayı yenilemeden gelir: *Mesajlar* rozetinde ve sekme başlığında okunmamış sayısı, ekranın köşesinde kısa bir bildirim ve ses (paneldeki 🔔 ile kapatılır). Kendi son mesajınızın altında *✓ İletildi* / *✓✓ Okundu* görünür. Mesajdaki dosya numarasına (ör. 2024/11710) tıklayınca o dosya tabloda açılır; "Seçili kaydı ekle" ile açık kaydı mesaja bağlayabilirsiniz. *Enter* gönderir, *Shift+Enter* yeni satır.
 - **Anlık güncellemeler:** Başka bir bilgisayarda eklenen not, telefon, tahsilat, görev ve hücre düzeltmeleri açık ekranlara kendiliğinden yansır (açık dosyanın işlem geçmişi yenilenir, tablo yeniden çekilir).
 - **Haciz uyarıları:** Bir yılını dolduracak hacizler 30 gün önceden listelenir, son 7 gün vurgulanır.
 - **Ödeme sözleri:** Tabloda ödeme sözü kolonu varsa aktif sözler üstte kayan şeritte görünür; *Ödendi / İptal* ile kapatılır.
 
-## 8. Yedekleme ve geri dönüş
+## 10. Yedekleme ve geri dönüş
 
-- Sunucu açıkken 6 saatte bir otomatik yedek alınır; açılışta son yedek eskiyse hemen alınır. Son 30 yedek `C:\HukukOfisiMerkezi\backups` klasöründe saklanır.
+- Sunucu açıkken 6 saatte bir otomatik yedek alınır; açılışta son yedek eskiyse hemen alınır. Son 30 yedek kurulum klasöründeki `backups` klasöründe saklanır (`C:\DestekOfis\backups`; eski kurulumlarda `C:\HukukOfisiMerkezi\backups`). Yedek adları `destekofis-<tarih>-….sqlite` biçimindedir; 1.6 öncesinden kalan `hukuk-ofisi-…` yedekler de listelenir, geri yüklenebilir ve zaman sırasıyla temizlenir.
 - Elle yedek: yönetim paneli → *Yedekler* → *Şimdi yedek al* (indirilebilir) veya Başlat menüsü → DestekOfis → *Yedek al*.
 - Sürüm yükseltmelerinde veritabanı değişmeden önce otomatik tam yedek alınır (`...-pre-migration-...sqlite`).
 - `backups` klasörünü düzenli olarak harici diske veya NAS'a kopyalayın.
@@ -109,19 +155,19 @@ Alt tabloları olan sekme, sekme şeridinde ▸ işaretiyle görünür; tıklay�
 **Yedekten dönüş:**
 
 1. Servisi durdurun: Başlat → *Hizmetler* (services.msc) → **DestekOfis Sunucu** → *Durdur* (veya yönetici komut isteminde `net stop DestekOfis`).
-2. `data\hukuk-ofisi.sqlite` dosyasını güvenli bir adla saklayın; varsa yanındaki `-wal` ve `-shm` dosyalarını da taşıyın.
-3. Seçtiğiniz yedeği `data\hukuk-ofisi.sqlite` adıyla kopyalayın.
+2. `data` klasöründeki veritabanı dosyasını (`destekofis.sqlite`, 1.6 öncesi kurulumlarda `hukuk-ofisi.sqlite`) güvenli bir adla saklayın; varsa yanındaki `-wal` ve `-shm` dosyalarını da taşıyın.
+3. Seçtiğiniz yedeği aynı adla (`destekofis.sqlite` veya `hukuk-ofisi.sqlite`) `data` klasörüne kopyalayın.
 4. Servisi başlatın (`net start DestekOfis`).
 
-## 9. Servis yönetimi
+## 11. Servis yönetimi
 
 - Servis adı **DestekOfis Sunucu** (kısa adı `DestekOfis`). Hizmetler penceresinden durdurulup başlatılabilir.
 - Servis güvenlik için kısıtlı bir sanal hesapla (`NT SERVICE\DestekOfis`) çalışır; yalnızca kendi veri, yedek ve günlük klasörlerine yazabilir.
-- Günlükler: `C:\HukukOfisiMerkezi\logs\servis.log` (1 MB'ı aşınca servis açılışında kenara ayrılır, son 10 günlük saklanır) ve `logs\kurulum.log`.
-- Servis ayarları bozulduysa: yönetici komut isteminde `C:\HukukOfisiMerkezi\bin\servis-kur.cmd` servisi onarır.
+- Günlükler: kurulum klasöründe `logs\servis.log` (1 MB'ı aşınca servis açılışında kenara ayrılır, son 10 günlük saklanır) ve `logs\kurulum.log`.
+- Servis ayarları bozulduysa: yönetici komut isteminde `<kurulum klasörü>\bin\servis-kur.cmd` (ör. `C:\DestekOfis\bin\servis-kur.cmd`) servisi onarır.
 - Uygulama beklenmedik biçimde kapanırsa servis yöneticisi onu birkaç saniye içinde yeniden başlatır; bu sırada kullanıcılar kendiliğinden yenilenen bir bakım sayfası görür.
 
-## 10. Sorun giderme
+## 12. Sorun giderme
 
 | Belirti | Kontrol |
 |---|---|
@@ -138,20 +184,24 @@ Alt tabloları olan sekme, sekme şeridinde ▸ işaretiyle görünür; tıklay�
 | "Sheet'in yapısı değişmiş görünüyor" uyarısı | Sheet'e başlık satırı eklenmiş veya sekme adı değişmiş olabilir. *İncele ve karar ver* ile "devamı olarak ekle" ya da "yerine koy" seçin. |
 | "Google Sheets'e şu an ulaşılamıyor" | İnternet veya Sheet paylaşım izni sorunu. Tablo son eşitlenen veriyle çalışmaya devam eder. |
 | "DestekOfis … sürümüne güncellendi" şeridi | Sunucu yeni sürüme geçti. Yazmakta olduğunuz notu kaydedip *Yenile*'ye basın. |
+| Önerilen sektör yanlış | *Başka sektör seç* ile listeden doğrusunu seçin ya da *Genel kullan* deyin. Sonradan *Ayarlar → Sektör ve görünüm*'den değiştirilebilir. |
+| "Kesin olarak belirlenemedi" | Kolon adları belirgin bir sektöre işaret etmiyor; bu bir hata değildir. Listeden sektörünüzü seçin veya Genel ile devam edin. |
+| Özet kartlarında tutar kartı yok | Tutar kolonu bulunamadı ya da kolonda birden çok para birimi var (farklı para birimleri toplanmaz; *Veri sağlığı* raporunda yazar). Kolon başlığının "Tutar", "Bedel", "Ücret" gibi olduğundan emin olun. |
+| Kalem simgesi görünmüyor | Başlıkları yalnızca yönetici değiştirebilir; fareyi başlığın üzerine getirin. |
 | Mesajlar panelinde "Bağlantı bekleniyor…" | Canlı bağlantı kısa süreliğine koptu (ağ, sunucu güncellemesi); kendiliğinden yeniden bağlanır, kaçırılan mesajlar gelir. Sürerse sayfayı yenileyin. Bazı antivirüslerin "web koruması" canlı akışı geciktirebilir; o durumda sunucu adresini istisnalara ekleyin. |
 | Bir alt tablo ayrı görünmüyor | Başlık satırı tek hücrede (birleştirilmiş) olmalı ve hemen altında kolon başlıkları bulunmalı. Tanınmayan düzende tablo bozulmaz, tek tablo olarak görünür. |
 | Güncelleme denetlenemiyor | Sunucunun internete çıkabildiğini kontrol edin. Antivirüsün "SSL/HTTPS taraması" özelliği bağlantıyı engelliyor olabilir. Ayrıntı: `logs\servis.log`. |
 | "Sürüm açılamadı; önceki sürüme dönüldü" | Sistem güvendedir ve önceki sürümle çalışır. Panelden *Yine de kur* ile yeniden deneyebilir veya destek isteyebilirsiniz. |
 | Sağlık kontrolü | `http://SUNUCU:5123/api/health` → `"status":"ok"` |
 
-## 11. Güvenlik kuralları
+## 13. Güvenlik kuralları
 
 - 5123 portunu internete açmayın (modemde port yönlendirme yapmayın); sistem yalnızca ofis ağında (LAN) kullanılmalıdır.
 - Kullanılmayan hesapları pasifleştirin.
 - Sunucu bilgisayar uyku moduna geçmemeli (Güç seçenekleri → Uyku: Hiçbir zaman).
 - `backups` ve `data` klasörlerini ağda paylaşıma açmayın.
 
-## 12. Güncelleme
+## 14. Güncelleme
 
 **Otomatik (önerilen, varsayılan):** Sunucu her açıldığında yeni sürüm olup olmadığına bakar. Yeni sürüm varsa DestekOfis çalışmaya devam ederken arka planda indirilir ve doğrulanır; ardından yaklaşık bir dakikalık bir geçişle yeni sürüme geçilir. Bu sırada kullanıcılar *"Sistem güncelleniyor, lütfen 1 dakika sonra tekrar deneyin."* sayfasını görür; sistem hazır olunca ekranlar kendiliğinden yenilenir. Geçiş çok kısa sürdüyse yönetim paneli kendiliğinden yenilenir; dosya takip ekranında ise yazılan not kaybolmasın diye *"DestekOfis … sürümüne güncellendi"* şeridi çıkar, *Yenile*'ye basmanız yeterlidir.
 
@@ -171,10 +221,10 @@ Alt tabloları olan sekme, sekme şeridinde ▸ işaretiyle görünür; tıklay�
 
 Güncelleme için sunucunun internete (github.com) erişebilmesi gerekir. İnternet yoksa sistem mevcut sürümle normal çalışmaya devam eder.
 
-## 13. Kaldırma
+## 15. Kaldırma
 
-Ayarlar → Uygulamalar → **DestekOfis** → Kaldır. Servis ve güvenlik duvarı kuralları kaldırılır; **veriler ve yedekler korunur** (`C:\HukukOfisiMerkezi\data`, `backups`). Yeniden kurduğunuzda kaldığınız yerden devam edersiniz. Verileri de silmek istiyorsanız klasörü kaldırmadan sonra elle silin.
+Ayarlar → Uygulamalar → **DestekOfis** → Kaldır. Servis ve güvenlik duvarı kuralları kaldırılır; **veriler ve yedekler korunur** (kurulum klasöründeki `data` ve `backups`). Yeniden kurduğunuzda kaldığınız yerden devam edersiniz. Verileri de silmek istiyorsanız klasörü kaldırmadan sonra elle silin.
 
-## 14. Eski kurulumdan (v1.0 / v1.1 elle kurulum) geçiş
+## 16. Eski kurulumdan (v1.0 / v1.1 elle kurulum) geçiş
 
-Kurulum dosyasını aynı bilgisayarda çalıştırıp **Sunucu bilgisayar** seçmeniz yeterlidir. Kurulum `C:\HukukOfisiMerkezi` klasörünü kullanır; eski `data\hukuk-ofisi.sqlite` veritabanı olduğu gibi kullanılır ve gerekiyorsa yedek alınarak yükseltilir. Eski zamanlanmış görev ("Hukuk Ofisi Merkezi Server") ve eski güvenlik duvarı kuralı kendiliğinden kaldırılır. Eski sürüm farklı bir klasördeyse önce onu durdurup `data` klasörünü `C:\HukukOfisiMerkezi\data` içine kopyalayın.
+Kurulum dosyasını aynı bilgisayarda çalıştırıp **Sunucu bilgisayar** seçin. Eski zamanlanmış görev ("Hukuk Ofisi Merkezi Server") ve eski güvenlik duvarı kuralı kendiliğinden kaldırılır. Eski veritabanını kullanmak için önce eski sürümü durdurun, sonra eski `data` klasörünü kurulum klasörünün `data` klasörüne kopyalayın (ör. `C:\DestekOfis\data`). Veritabanının adı `hukuk-ofisi.sqlite` kalabilir; DestekOfis onu tanır, gerekiyorsa yedek alarak yükseltir. İsterseniz kurulum sırasında klasör olarak eski klasörü de seçebilirsiniz.

@@ -278,7 +278,7 @@
     return `${lastImport?.kind === "sheets" ? "Google Sheets'ten alındı (bağlı değil)" : "Excel'den yüklendi"}${data.changedAt ? ` · ${HOF.formatDateTime(data.changedAt)}` : ""}`;
   }
 
-  const MODE_LABELS = { initial: "ilk yükleme", merge: "devamı olarak eklendi", replace: "yerine konuldu", sync: "eşitlendi", migration: "1.5.0'a geçiş", remove: "veri kaldırıldı", keep: "Sheet'te olmayanlar tutuldu" };
+  const MODE_LABELS = { initial: "ilk yükleme", merge: "devamı olarak eklendi", replace: "yerine konuldu", sync: "eşitlendi", migration: "kalıcı veriye geçiş", remove: "veri kaldırıldı", keep: "Sheet'te olmayanlar tutuldu" };
   function historyHtml(imports) {
     if (!imports?.length) return '<p class="hof-empty">Henüz içeri alma yok.</p>';
     return imports

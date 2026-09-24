@@ -21,12 +21,13 @@ export function releaseNotes(changelog, version) {
 }
 
 // Bildirgedeki notlar yönetim panelinde düz metin olarak gösterilir (eski sürümler de dahil):
-// Markdown işaretleri (**kalın**, `kod`, "- " maddeler) okunur düz metne çevrilir.
+// Markdown işaretleri (**kalın**, `kod`, "- " maddeler, "### " ara başlıklar) okunur düz metne çevrilir.
 export function plainNotes(markdown) {
   return String(markdown || "")
     .split(/\r?\n/)
     .map(line =>
       line
+        .replace(/^\s{0,3}#{1,6}\s+(.*?)\s*#*\s*$/, "$1")
         .replace(/^(\s*)[-*]\s+/, "$1• ")
         .replace(/\*\*(.+?)\*\*/g, "$1")
         .replace(/__(.+?)__/g, "$1")

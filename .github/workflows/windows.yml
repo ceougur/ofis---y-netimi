@@ -123,7 +123,36 @@ jobs:
           if (-not (Test-Path 'C:\DestekOfis\data\destekofis.sqlite')) { throw 'Kaldırmada veri silinmiş' }
           if (Get-NetFirewallRule -DisplayName 'DestekOfis*' -ErrorAction SilentlyContinue) { throw 'Güvenlik duvarı kuralları kaldırılmadı' }
 
+      - name: Kaldırılan sunucu yeniden kurulunca aynı veriyle açılır
+        run: |
+          # Kaldırma Windows'taki kurulum kaydını siler; kurulum verinin olduğu klasörü kendisi seçmeli.
+          $setup = Get-ChildItem dist -Filter 'DestekOfis-Kurulum-*.exe' | Select-Object -First 1
+          $p = Start-Process $setup.FullName -ArgumentList '/VERYSILENT','/SUPPRESSMSGBOXES','/NORESTART','/TYPE=sunucu','/LOG=yeniden.log' -Wait -PassThru
+          if ($p.ExitCode -ne 0) { Get-Content yeniden.log -Tail 60; throw "Yeniden kurulum çıkış kodu $($p.ExitCode)" }
+          if (-not (Test-Path 'C:\DestekOfis\app')) { throw 'Kaldırmadan sonra yeniden kurulum başka klasöre gitti' }
+          $login = Invoke-RestMethod -Method Post -Uri http://127.0.0.1:5123/api/auth/login -ContentType 'application/json' -Body '{"username":"kalici","password":"Kalici-Parola-2026"}'
+          if ($login.data.username -ne 'kalici') { throw 'Kaldırıp yeniden kurunca veri kullanılmadı' }
+          $p = Start-Process 'C:\DestekOfis\unins000.exe' -ArgumentList '/VERYSILENT','/SUPPRESSMSGBOXES','/NORESTART' -Wait -PassThru
+          Start-Sleep 3
+
+      - name: 1.6.0 öncesi klasör ve veritabanı adıyla kalan veri kullanılır
+        run: |
+          # Eski kurulum (C:\HukukOfisiMerkezi, data\hukuk-ofisi.sqlite) kaldırılmış ya da elle kurulmuş gibi.
+          Move-Item 'C:\DestekOfis' 'C:\HukukOfisiMerkezi'
+          Get-ChildItem 'C:\HukukOfisiMerkezi\data' -Filter 'destekofis.sqlite*' | ForEach-Object { Rename-Item $_.FullName ($_.Name -replace '^destekofis', 'hukuk-ofisi') }
+          $setup = Get-ChildItem dist -Filter 'DestekOfis-Kurulum-*.exe' | Select-Object -First 1
+          $p = Start-Process $setup.FullName -ArgumentList '/VERYSILENT','/SUPPRESSMSGBOXES','/NORESTART','/TYPE=sunucu','/LOG=eski-klasor.log' -Wait -PassThru
+          if ($p.ExitCode -ne 0) { Get-Content eski-klasor.log -Tail 60; throw "Kurulum çıkış kodu $($p.ExitCode)" }
+          if (-not (Test-Path 'C:\HukukOfisiMerkezi\app')) { throw 'Kurulum eski klasörü kullanmadı' }
+          if (Test-Path 'C:\DestekOfis') { throw 'Eski klasörde veri varken yeni klasör oluşturuldu' }
+          $login = Invoke-RestMethod -Method Post -Uri http://127.0.0.1:5123/api/auth/login -ContentType 'application/json' -Body '{"username":"kalici","password":"Kalici-Parola-2026"}'
+          if ($login.data.username -ne 'kalici') { throw 'Eski veritabanı kullanılmadı' }
+          if (Test-Path 'C:\HukukOfisiMerkezi\data\destekofis.sqlite') { throw 'Eski adlı veritabanının yanında yeni boş veritabanı oluştu' }
+          $p = Start-Process 'C:\HukukOfisiMerkezi\unins000.exe' -ArgumentList '/VERYSILENT','/SUPPRESSMSGBOXES','/NORESTART' -Wait -PassThru
+          Start-Sleep 3
+          if (-not (Test-Path 'C:\HukukOfisiMerkezi\data\hukuk-ofisi.sqlite')) { throw 'Kaldırmada veri silinmiş' }
+
       - name: Günlükler
         if: always()
         run: |
-          Get-ChildItem C:\DestekOfis\logs -ErrorAction SilentlyContinue | ForEach-Object { "==== $($_.Name)"; Get-Content $_.FullName -Tail 120 }
+          Get-ChildItem C:\DestekOfis\logs, C:\HukukOfisiMerkezi\logs -ErrorAction SilentlyContinue | ForEach-Object { "==== $($_.FullName)"; Get-Content $_.FullName -Tail 120 }

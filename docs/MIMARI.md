@@ -1,4 +1,4 @@
-# DestekOfis — Mimari (v1.4)
+# DestekOfis — Mimari (v1.6)
 
 ## Genel bakış
 
@@ -6,17 +6,18 @@
 Tarayıcı (Chrome/Edge)                         Sunucu bilgisayarı
 ┌──────────────────────────────┐   HTTP    ┌────────────────────────────────────┐
 │ app-<özet>.js  (React paketi) │ ───────► │ server/app.mjs  (node:http)         │
-│ hof-*.js       (eklentiler)   │  /api/*  │  ├─ routes/  auth · admin ·          │
+│ hof-*.js       (eklentiler)   │  /api/*  │  ├─ routes/  auth · admin · insight · │
 │ admin.html     (yönetim)      │ ◄─────── │  │           workspace · trpc        │
 └──────────────────────────────┘   JSON    │  ├─ lib/     auth · izinler · kaynak │
                                             │  │           birleştirme · yedek ·    │
-                                            │  │           göç · statik · zip       │
-                                            │  └─ data/hukuk-ofisi.sqlite (WAL)     │
+                                            │  │           göç · profil · insight/ │
+                                            │  └─ data/destekofis.sqlite (WAL)      │
                                             └────────────────────────────────────┘
 ```
 
 - **Sunucu** dış bağımlılık kullanmaz (Node 22+ yerleşik `node:http`, `node:sqlite`, `node:zlib`, `node:crypto`). Bu, kurulumu ve ileride otomatik güncellemeyi basitleştirir.
 - **Veritabanına** yalnızca sunucu süreci erişir; istemciler HTTP API kullanır.
+- **Adlandırma (v1.6):** ürün sektörden bağımsızdır. Yeni kurulumlar `C:\DestekOfis` klasörüne, veritabanı `data\destekofis.sqlite` adıyla kurulur. Eski kurulumlar yerinde kalır: Inno Setup `UsePreviousAppDir` ile önceki klasörü (`C:\HukukOfisiMerkezi`) kullanır, `server/lib/db-path.mjs` (`resolveDbPath`) yeni ad yoksa eski `hukuk-ofisi.sqlite`'ı seçer (uygulama, servis yöneticisi ve yedek aracı her kullanımda aynı çözümlemeyi yapar; dosya taşınmaz). Uyumluluk için değişmeyenler: keşif iletisi `HukukOfisiServerNerede`, `HUKUK_*` ortam değişkenleri, tarayıcıdaki `hukuk-ofisi-*` anahtarları ve `packaging/windows/bootstrap.mjs`.
 
 ## Windows dağıtımı (v1.2)
 
@@ -74,7 +75,8 @@ Arayüzün ana gövdesi Manus/Vite çıkışı derlenmiş bir React paketidir (k
 | `hof-table.js` | Yüzen düzenle/sil düğmeleri, geri alınabilir silme, yeni kayıt, sayfalama (20 satır; 1…6 penceresi; sekme/arama değişince ilk sayfa) |
 | `hof-sections.js` | "Sekme › Bölüm" etiketli kategorileri gruplar: React'in düğmelerini gizleyip sekme + alt tablo şeridi gösterir, tıklamaları gizli React düğmelerine aktarır |
 | `hof-sources.js` | Veri yokken "başlayalım" kartı, Ayarlar → Veri penceresi (Excel/Sheets içeri alma, devamı/yerine seçimi, eşitleme, geçmiş, Sheet'te olmayanlar, kaldırma), paketin yükleme girişlerini yönlendirme, yetkiye göre menü gizleme |
-| `hof-promises.js`, `hof-search.js` | Ödeme sözleri şeridi, akıllı arama |
+| `hof-insight.js` | Ofis profili (sektörün kelime dağarcığı, rol adları, modüller), "Verinizi tanıyoruz" analiz ekranı, aranabilir sektör seçici, akıllı özet kartları, veri sağlığı raporu, "Bu ay", kalemle başlık düzenleme (metin düğümü üzerinden, React yeniden çizince yeniden uygulanır), Ayarlar → Sektör ve görünüm |
+| `hof-promises.js`, `hof-search.js` | Ödeme sözleri şeridi, akıllı arama (ipucu verideki kolon adlarından) |
 
 **Depo köprüsü:** React paketi ayarlarını `localStorage`'da tutar. `hof-boot.js` açılışta bu anahtarları sunucudaki ofis ayarlarıyla doldurur ve paketin yaptığı yazmaları sunucuya iletir (`hukuk-ofisi-sheet-url`, `-sync-minutes`, `-ai-mapping`, `-notlar`). Böylece derlenmiş pakete dokunmadan ayarlar ve notlar merkezileşir.
 
@@ -84,7 +86,7 @@ Arayüzün ana gövdesi Manus/Vite çıkışı derlenmiş bir React paketidir (k
 
 **Kalıcı çalışma verisi (v1.5, `server/lib/dataset.mjs`).** Ofisin tek verisi `dataset://ofis` anahtarıyla sunucuda saklanır (`dataset_rows`); `/api/trpc/sheets.getRows` arayüz hangi adresi gönderirse göndersin bu veriyi döndürür. Düzeltmeler, silmeler ve yeni kayıtlar da bu anahtara bağlıdır (dosya adından/bağlantıdan bağımsız):
 
-1. **Dosya kimliği** (`__hofKey`, notların ve düzeltmelerin anahtarı): satırdaki ilk `yyyy/sayı` kalıbı (v1.0.0 kuralı); yoksa "Dosya No" değeri; o da yoksa satır içeriğinin özeti. İçeri alma anında hesaplanıp satırla saklanır.
+1. **Dosya kimliği** (`__hofKey`, notların ve düzeltmelerin anahtarı): satırdaki ilk `yyyy/sayı` kalıbı (v1.0.0 kuralı); yoksa "Dosya No" değeri; o da yoksa satır içeriğinin özeti. İçeri alma anında hesaplanıp satırla saklanır. **v1.6 kimlik kolonu:** dosya numarası taşımayan veride `detectIdentity` kesin bir kimlik kolonu arar (satırların ≥%90'ında kolon var, ≥%95'inde dolu, aynı sekmede tekrar ≤%2, en uzun değer ≤60 karakter, rolü kimlik/plaka/T.C./VKN/IBAN/e-posta; başlığı "no/kod/numara" diyen önce). Bulunursa `{mode: "column", column}` `dataset.identity` ayarına yazılır ve kimlik o kolondan gelir (telefon veya adres değişse de notlar bağlı kalır). Satırların yarısından çoğunda eski kural kimlik buluyorsa (hukuk verisi) `legacy` kipi aynen sürer. *merge* ve eşitleme mevcut kuralı korur; *replace* kolon hâlâ varsa kolon kipini korur, yoksa yeniden belirler. Uygulamada eklenen kayıt kimlik kolonunun değerini anahtar alır, aynı kimlik ikinci kez verilemez (409).
 2. **Satır kimliği** (`dataset-identity.mjs`, içeri almada eşleşme için): kimlikli satırda `sekme + dosya kimliği + o sekmedeki kaçıncı tekrar`, kimliksiz satırda `sekme + kimliksiz satırlar arasındaki sıra`. Satır içeriğinin özeti (`row_hash`) değişmeyen satırın yeniden yazılmasını önler.
 3. Görünüm: **yeni kayıtlar** en üstte, sonra içeri alınan satırlar kaynak sırasıyla; **silinenler** çıkarılır, **düzeltmeler** uygulanır; bağlı Sheet'te artık olmayan satır `__hofMissing` taşır. Paket `__` ile başlayan alanları kolon saymaz; satırlar `data-hof-key` taşır.
 
@@ -94,9 +96,26 @@ Google Sheets istekleri 45 sn önbelleklenir; aynı anda gelen istekler birleşt
 
 **Alt tablolar** (`server/lib/sections.mjs`, Google ve Excel için ortak): tek hücreli başlık satırı + tanıdık kelimeli (TR/EN) ve tür karşıtlığı gösteren kolon başlığı satırı yeni bölüm açar; ilk kolonu çoğunlukla veri olan tabloda en az iki grup etiketi satırı bölüm sayılır; tekrarlanan başlık satırı atlanır; başlığı boş ama verisi olan kolon `Kolon N` olur. Emin olunamazsa eski davranış. Tek bölümlü sekmede `__sheet` = sekme adı (eski düzeltmeler bağlı kalır); çok bölümde `Sekme › Bölüm`. Excel yüklemede tarayıcı ham matrisi gönderir, ayrıştırma sunucudadır. Kolon adı değişen düzeltmeler (eski birleşik başlık → yeni başlık) sonek eşleşmesiyle taşınır.
 
+## Akıllı veri motoru ve ofis profili (v1.6)
+
+`server/lib/insight/` saf fonksiyonlardan oluşur: internete çıkmaz, veritabanına yazmaz, aynı girdiye aynı çıktıyı verir. Sonuç, verinin parmak izine (satır/düzeltme/kayıt sayıları ve son değişiklik zamanları, verinin adı, yerel gün) göre bellekte önbelleklenir. Veri değişince (`dataset.onChange`) önbellek düşer. 200 bin satır yaklaşık 1,5 sn'de çözümlenir.
+
+| Modül | Görev |
+|---|---|
+| `validators.mjs` | T.C. kimlik no ve VKN (kontrol haneleri), IBAN (mod 97), Türkiye telefonu, e-posta, URL, plaka, 81 il, Türkçe tarih ve tutar ayrıştırma |
+| `columns.mjs` | Kolon rolü: başlık sözlüğü + değer istatistikleri + doğrulayıcılar. Roller: kimlik (dosya/sayısal/kod), kişi, kurum, sorumlu, tutar (tutar/birim fiyat; para birimi, karışık birim), tarih (son tarih/olay/doğum; ileri tarih oranı), durum, kategori, telefon, e-posta, adres, not, T.C., VKN, IBAN, il, plaka, URL, sıra no. Her rol `verified` ve `validRate` taşır; önem puanı ve ana kolonlar (`primaryColumns`) buradan gelir |
+| `sectors.mjs` | 22 grup, 142 sektör: her sektörün kelime dağarcığı (kayıt/kayıtlar/uzman/alt başlık), modülleri (tahsilat, haciz) ve sinyalleri. Başlık sinyali ağırlığı (güçlü 3, normal 2, zayıf 1) o ifadeyi paylaşan sektör sayısının kareköküne bölünür; değer kalıbı (oran ≥%10 → 1,5, ≥%30 → 3), rol ve dosya/sekme adı sinyalleri eklenir. Güven: **yüksek** = puan ≥7, ≥3 kolon, ≥1 güçlü sinyal, başka gruptaki en yakın sektöre oran ≥1,8; **orta** = puan ≥4, ≥2 kolon, oran ≥1,4; aynı grupta yakın rakip varsa (≥%80) grubun genel sektörü önerilir. Aksi hâlde öneri *Genel*'dir |
+| `quality.mjs` | Veri sağlığı: kontrol edilen hücrelerin sorunsuz oranı (≥%95 iyi, ≥%80 orta). Bulgular: boş kimlik/kişi, aynı sekmede tekrar eden kimlik, doğrulanamayan T.C./VKN/IBAN, biçimi tutmayan değerler, karışık para birimi. Her bulgu en çok 50 örnek kayıtla döner |
+| `kpi.mjs` | Göstergeler tüm veri ve her sekme için: toplam, tutar toplamı (tek para birimi), son tarih (bugün/7/30 gün/geçmiş), olay (bu ay), "Bu ay" (son tarih yoksa olay tarihi), durum ve sorumlu dağılımları; tıklanınca açılan kayıt listeleri |
+| `analyze.mjs` | Hepsini tek geçişte birleştirir (`ANALYSIS_VERSION`), arama ipucu kolonlarını seçer |
+
+**Ofis profili** (`server/lib/profile.mjs`) ayarlarda tutulur (şema göçü yok): `insight.sector` {id, source: confirmed|manual|legacy, at, by}, `ui.labels` (kalemle değiştirilen başlıklar, yuva başına uzunluk sınırı), `insight.intro` (pending|done), `insight.initialized`. İlk açılışta kullanılmış kurulum (verisi veya kaydı, notu, görevi, haczi, tahsilatı olan) `hukuk-buro` + `legacy` + tanıtım bekliyor olarak işaretlenir: 1.6 öncesi ürün yalnızca hukuk ofisleri içindi, görünüm değişmez. Boş yeni kurulum *Genel* ile açılır. `profile()` sektörü, kelime dağarcığını, rol adlarını (`avukat` rolünün görünen adı = sektörün uzmanı), modülleri (sektör istemese de ofiste o modülde kayıt varsa açık) ve başlıkları döndürür; giriş, `/api/auth/me` ve `/api/public/info` (`tagline`) ile istemciye gider. Değişiklikler `workspace.changed {kind: "profile"}` ile açık ekranlara yansır ve denetim kaydına yazılır (`profile.sector`, `profile.label`, `profile.labels.reset`).
+
+Uçlar (`server/routes/insight.mjs`): `GET /api/workspace/profile`, `GET /api/workspace/sectors` (katalog), `GET /api/workspace/insight` (analiz + profil; sektör önerisi ve kanıtları yalnızca `profile.manage` yetkisine), `POST …/insight/sector`, `POST …/insight/intro`, `PUT|DELETE /api/workspace/labels`. Değiştirici uçlar `profile.manage` (yalnızca yönetici) ister. **Öneri hiçbir zaman kendiliğinden uygulanmaz**; sektör yalnızca yöneticinin onayı veya seçimiyle değişir.
+
 ## Veri modeli
 
-`users`, `sessions`, `settings`, `records`, `overrides`, `deleted_records`, `notes`, `phones`, `payments`, `liens`, `tasks`, `messages`, `audit_events` (v1.0.0) + `case_notes`, `source_snapshots` (v1.1.0) + `dataset_rows`, `dataset_imports` (v1.5.0, göç 4: kalıcı çalışma verisi ve içeri alma geçmişi; `source_snapshots` artık yalnızca geçmiştir) + `chat_conversations`, `chat_members` (okunma zamanı), `chat_messages` ve `tasks.assignee_id` (v1.4.0, göç 3: eski `messages` kayıtları sohbete taşınır, eski tablo geri dönüş için silinmez; görevler adları tek bir kullanıcıya denk geliyorsa o kullanıcının kimliğine bağlanır, belirsiz veya serbest adlarda ad eşleşmesi sürer). Görünen adlar benzersizdir (`server/lib/names.mjs`: Türkçe harf kuralı, boşluk ve Unicode yazım farkı yok sayılarak karşılaştırılır).
+`users`, `sessions`, `settings` (v1.6 ofis profili ve `dataset.identity` burada), `records`, `overrides`, `deleted_records`, `notes`, `phones`, `payments`, `liens`, `tasks`, `messages`, `audit_events` (v1.0.0) + `case_notes`, `source_snapshots` (v1.1.0) + `dataset_rows`, `dataset_imports` (v1.5.0, göç 4: kalıcı çalışma verisi ve içeri alma geçmişi; `source_snapshots` artık yalnızca geçmiştir) + `chat_conversations`, `chat_members` (okunma zamanı), `chat_messages` ve `tasks.assignee_id` (v1.4.0, göç 3: eski `messages` kayıtları sohbete taşınır, eski tablo geri dönüş için silinmez; görevler adları tek bir kullanıcıya denk geliyorsa o kullanıcının kimliğine bağlanır, belirsiz veya serbest adlarda ad eşleşmesi sürer). Görünen adlar benzersizdir (`server/lib/names.mjs`: Türkçe harf kuralı, boşluk ve Unicode yazım farkı yok sayılarak karşılaştırılır).
 
 ## Canlı olaylar ve sohbet (v1.4)
 
@@ -109,7 +128,7 @@ Google Sheets istekleri 45 sn önbelleklenir; aynı anda gelen istekler birleşt
 ## Güvenlik
 
 - Parolalar scrypt + tuz; oturum belirteci yalnızca HttpOnly/SameSite=Lax çerezde, veritabanında SHA-256 özeti.
-- Rol matrisi `server/lib/permissions.mjs`; her uç yetki denetler, arayüz yalnızca görünürlüğü ayarlar. Görev atama (`tasks.create`), herkesin görevleri (`tasks.viewAll`) ve performans raporu (`reports.view`) yalnızca yönetici ve avukattadır; diğer roller yalnızca kendilerine atanan görevleri görür/tamamlar.
+- Rol matrisi `server/lib/permissions.mjs`; her uç yetki denetler, arayüz yalnızca görünürlüğü ayarlar. Görev atama (`tasks.create`), herkesin görevleri (`tasks.viewAll`) ve performans raporu (`reports.view`) yalnızca yönetici ve ikinci roldedir (iç adı `avukat`; ekranda sektörün uzman adıyla görünür). Diğer roller yalnızca kendilerine atanan görevleri görür/tamamlar. Sektör ve başlık değişikliği (`profile.manage`) ile veri yükleme (`sources.manage`) yalnızca yöneticidedir.
 - Giriş deneme sınırı, zorunlu parola değişimi, parola politikası, oturum iptalleri.
 - CSRF: değiştirici isteklerde Origin denetimi + yalnızca JSON gövde.
 - CSP: `script-src 'self'` (satır içi betik yok), `frame-ancestors 'none'`, güvenlik başlıkları.
@@ -118,16 +137,17 @@ Google Sheets istekleri 45 sn önbelleklenir; aynı anda gelen istekler birleşt
 
 ## Yedekleme
 
-`VACUUM INTO` ile tutarlı anlık kopya; açılışta ve 6 saatte bir (son yedek eskiyse), son 30 yedek. Elle: yönetim paneli veya `npm run backup` (salt okunur bağlantı, sunucu çalışırken güvenli).
+`VACUUM INTO` ile tutarlı anlık kopya; açılışta ve 6 saatte bir (son yedek eskiyse), son 30 yedek. Elle: yönetim paneli veya `npm run backup` (salt okunur bağlantı, sunucu çalışırken güvenli). Yedek adları `destekofis-<zaman>[-<neden>].sqlite`. 1.6 öncesinden kalan `hukuk-ofisi-…` yedekler de listelenir, geri yüklenir ve adına göre değil zaman damgasına göre sıralanıp temizlenir.
 
 ## Test
 
 - `npm test`: kimlik, yetki, çalışma alanı, kaynak birleştirme, Google Sheets (sahte ağ), göç (gerçek v1.0.0 veritabanı), yedek, statik dosya, zip, servis yöneticisi (vekil, bakım sayfası, çökme sonrası yeniden başlatma, öksüz süreç), UDP keşif, kurulum düzeni (bootstrap, sürüm geri dönüşü, `etkinlestir`) ve Go başlatıcı (keşif, kayıt, Windows derlemesi) testleri.
 - Güncelleme: imza/bildirge/uyumluluk birim testleri; sahte GitHub sunucusuyla denetim, indirme, özet uyuşmazlığı, sahte imza, etiket uyuşmazlığı, kanal; gerçek servis yöneticisi ve uygulama süreçleriyle uçtan uca akış (açılışta güncelleme ve bakım sayfası, veri korunumu, bozuk sürümde veritabanı ve sürüm geri dönüşü, yönetici panelinden kurulum, elektrik kesintisi sonrası deneme açılışı, ağ yokken normal açılış).
 - Alt tablolar (farklı düzenler, TR/EN başlıklar, tutucu davranış), sohbet (gizlilik, okunmamış, okundu, eski uçlar) ve canlı kanal (iletim, yalnızca ilgililere, oturum kapanınca kopma, kapıdan geçiş) testleri.
-- `npm run test:e2e`: Playwright ile iki kullanıcılı uçtan uca senaryo (Excel yükleme, düzeltme, silme/geri alma, yeni kayıt, notlar, yetkiler, yönetim paneli, zorunlu parola değişimi, canlı görev bildirimi, sohbet ve okundu bilgisi, alt tablolu Excel, CSP ihlali denetimi).
+- Akıllı veri motoru (`test/insight.test.mjs`): doğrulayıcılar, kolon rolleri (gerçek hukuk tablosunda kolon kolon beklenen harita), 63 sektörlük örnek derlem (her biri beklenen sektör veya grup ve en az orta güven), gerçek hukuk tablosu (yüksek güvenle icra), yanıltıcı tablolar (kişi listesi, karışık kolonlar: yanlış sektör önerilmez), belirlenebilirlik, veri sağlığı ve göstergeler, 200 bin satır süre sınırı, kimlik kolonu belirleme ve klinik verisiyle notların kimliğe bağlı kalması, profil uçları ve yetkiler, v1.0.0 veritabanından gelen kurulumun hukuk profiliyle açılması.
+- `npm run test:e2e`: Playwright ile iki kullanıcılı uçtan uca senaryo (Excel yükleme, analiz ekranı ve sektör seçici, özet kartları, kalemle başlık değiştirme ve varsayılana dönüş, personelin kalemi görmemesi, düzeltme, silme/geri alma, yeni kayıt, notlar, yetkiler, yönetim paneli, zorunlu parola değişimi, canlı görev bildirimi, sohbet ve okundu bilgisi, alt tablolu Excel, klinik verisiyle ikinci kurulum, CSP ihlali denetimi).
 - GitHub Actions: `ci.yml` (Ubuntu/Windows × Node 22/24, e2e, paket) ve `windows.yml` (kurulum dosyasını derler; gerçek Windows'ta sessiz kurulum, servis hesabı/başlangıç türü, sağlık, UDP keşif, başlatıcı, servis yeniden başlatma ve yeniden kurulumda veri korunumu, kaldırma).
 
 ## Yol haritası
 
-Faz 1 Windows servisi + setup.exe + UDP sunucu keşfi ✓ · Faz 2 GitHub'dan otomatik güncelleme ✓ · Faz 3 lisans motoru · Faz 4 Supabase + Vercel lisans servisi, operatör paneli ve web sitesi.
+Faz 1 Windows servisi + setup.exe + UDP sunucu keşfi ✓ · Faz 2 GitHub'dan otomatik güncelleme ✓ · Ara sürümler 1.4 (sohbet, canlı olaylar), 1.5 (kalıcı veri), 1.6 (akıllı veri motoru, sektörden bağımsız ürün) ✓ · Faz 3 lisans motoru · Faz 4 Supabase + Vercel lisans servisi, operatör paneli, web sitesi ve yapay zekâ seslendirmeli tanıtım videosu.
