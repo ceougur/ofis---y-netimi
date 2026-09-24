@@ -1,1 +1,198 @@
-*{box-sizing:border-box}body{margin:0;background:#f4f7f4;color:#18352a;font:14px/1.5 Manrope,ui-sans-serif,system-ui,sans-serif}.admin-shell{width:min(1080px,calc(100% - 36px));margin:0 auto;padding:42px 0 70px}.admin-header{display:flex;justify-content:space-between;gap:30px;align-items:flex-start;margin-bottom:26px}.eyebrow{margin:0 0 8px;color:#609077;font-size:10px;font-weight:900;letter-spacing:.15em}.admin-header h1{margin:0;font-size:32px;letter-spacing:-.05em}.muted{margin:8px 0 0;color:#718279}.admin-header a{color:#246b52;font-weight:800;text-decoration:none}.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px}.card{padding:24px;border:1px solid #d9e7dc;border-radius:18px;background:#fff;box-shadow:0 10px 30px rgba(29,75,51,.06);margin-bottom:18px}.card h2{margin:0 0 18px;font-size:18px;letter-spacing:-.03em}.card form{display:grid;gap:12px}.card label{display:grid;gap:6px;color:#527364;font-size:11px;font-weight:800}.card input,.card select{width:100%;padding:11px;border:1px solid #d5e4d9;border-radius:9px;background:#fff;color:#1b3c2c;font:inherit;outline:none}.card input:focus,.card select:focus{border-color:#75a985;box-shadow:0 0 0 3px rgba(117,169,133,.15)}button{border:0;border-radius:9px;padding:11px 14px;background:#246b52;color:white;cursor:pointer;font:inherit;font-weight:800}button:hover{background:#1b5540}button.secondary,.section-heading button{background:#e8f1ea;color:#246b52}.section-heading{display:flex;align-items:center;justify-content:space-between}.section-heading h2{margin:0}.table-wrap{overflow:auto}table{width:100%;border-collapse:collapse;font-size:13px}th,td{padding:12px 8px;border-bottom:1px solid #e8efe9;text-align:left}th{color:#6d8276;font-size:10px;letter-spacing:.08em;text-transform:uppercase}td button{padding:7px 9px;font-size:11px}.notice{padding:12px 15px;border-radius:10px;background:#eaf5ec;color:#246b52;font-weight:700;margin-bottom:18px}.notice.error{background:#fff0ee;color:#a14f42}@media(max-width:700px){.admin-header{display:block}.admin-header a{display:inline-block;margin-top:16px}.grid{grid-template-columns:1fr}.admin-shell{width:min(100% - 24px,1080px);padding-top:24px}}
+/* DestekOfis — yönetim paneli düzeni (bileşenler hof-ui.css'ten gelir). */
+.adm-body {
+  margin: 0;
+  min-height: 100vh;
+  background: radial-gradient(circle at 90% 0%, rgba(201, 229, 211, 0.45), transparent 32%), var(--do-bg);
+  color: var(--do-ink);
+  font: 14px/1.5 var(--do-font);
+}
+.adm-top {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px max(18px, calc((100vw - 1180px) / 2));
+  border-bottom: 1px solid var(--do-border);
+  background: rgba(255, 255, 255, 0.86);
+  backdrop-filter: blur(12px);
+}
+.adm-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: inherit;
+  text-decoration: none;
+}
+.adm-brand img {
+  border-radius: 10px;
+}
+.adm-brand strong,
+.adm-brand small {
+  display: block;
+  line-height: 1.2;
+}
+.adm-brand small {
+  color: var(--do-faint);
+  font-size: 11px;
+  font-weight: 700;
+}
+.adm-top-right {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+.adm-user {
+  color: var(--do-muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+.adm-shell {
+  width: min(1180px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 26px 0 70px;
+}
+.adm-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 22px;
+}
+.adm-tabs button {
+  padding: 9px 15px;
+  border: 1px solid var(--do-border);
+  border-radius: 99px;
+  background: #fff;
+  color: var(--do-muted);
+  font: 700 13px var(--do-font);
+  cursor: pointer;
+}
+.adm-tabs button[aria-selected="true"] {
+  border-color: var(--do-accent);
+  background: var(--do-accent);
+  color: #fff;
+}
+.adm-panel-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+.adm-panel-head h1 {
+  margin: 0;
+  font-size: 28px;
+  letter-spacing: -0.045em;
+}
+.adm-panel-head p {
+  max-width: 680px;
+  margin: 6px 0 0;
+  color: var(--do-muted);
+}
+.adm-card {
+  margin-bottom: 16px;
+  padding: 18px;
+  border: 1px solid var(--do-border);
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: var(--do-shadow);
+}
+.adm-card h2 {
+  margin: 0 0 10px;
+  font-size: 16px;
+}
+.adm-table-wrap {
+  overflow-x: auto;
+}
+.adm-right {
+  text-align: right !important;
+  white-space: nowrap;
+}
+.adm-muted {
+  color: var(--do-faint);
+}
+.adm-role {
+  padding: 6px 8px;
+  border: 1px solid var(--do-border-strong);
+  border-radius: 8px;
+  background: #fff;
+  font: 600 13px var(--do-font);
+}
+.adm-status {
+  padding: 5px 11px;
+  border: 1px solid #efd3cd;
+  border-radius: 99px;
+  background: var(--do-danger-soft);
+  color: var(--do-danger);
+  font: 800 11px var(--do-font);
+  cursor: pointer;
+}
+.adm-status.is-active {
+  border-color: #cde6d6;
+  background: var(--do-accent-soft);
+  color: var(--do-accent);
+}
+.adm-status:disabled,
+.adm-role:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+.adm-roles ul {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding-left: 18px;
+  color: var(--do-ink-soft);
+}
+.adm-filter {
+  min-width: 220px;
+}
+.adm-detail {
+  max-width: 460px;
+  color: var(--do-muted);
+  word-break: break-word;
+}
+.adm-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 14px;
+}
+.adm-tile {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+}
+.adm-tile span {
+  color: var(--do-faint);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.adm-tile strong {
+  font-size: 19px;
+  letter-spacing: -0.02em;
+  word-break: break-word;
+}
+.adm-tile small {
+  color: var(--do-muted);
+  word-break: break-word;
+}
+.adm-denied {
+  max-width: 520px;
+  margin: 40px auto;
+}
+code {
+  font-size: 12px;
+}
+@media (max-width: 720px) {
+  .adm-top {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

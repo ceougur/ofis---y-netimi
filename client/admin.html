@@ -3,22 +3,75 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Hukuk Ofisi · Yönetim</title>
+  <meta name="theme-color" content="#1f6a50">
+  <title>DestekOfis · Yönetim</title>
+  <link rel="icon" href="/assets/brand/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="/assets/brand/favicon.ico" sizes="16x16 32x32 48x48">
+  <link rel="stylesheet" href="/assets/hof-ui.css">
   <link rel="stylesheet" href="/assets/admin.css">
+  <script defer src="/assets/hof-core.js"></script>
+  <script defer src="/assets/hof-auth.js"></script>
+  <script defer src="/assets/admin.js"></script>
 </head>
-<body>
-  <main class="admin-shell">
-    <header class="admin-header"><div><p class="eyebrow">HUKUK OFİSİ MERKEZİ</p><h1>Kullanıcı yönetimi</h1><p class="muted">Merkezi server’a bağlı kullanıcıları ve rollerini yönetin.</p></div><a href="/">Dosya takip ekranına dön</a></header>
-    <section id="notice" class="notice" hidden></section>
-    <section id="login-card" class="card" hidden><h2>Yönetici girişi</h2><form id="login-form"><label>Kullanıcı adı<input name="username" required autocomplete="username"></label><label>Parola<input name="password" type="password" required autocomplete="current-password"></label><button>Giriş yap</button></form></section>
-    <section id="app" hidden>
-      <div class="grid">
-        <section class="card"><h2>Yeni kullanıcı</h2><form id="user-form"><label>Kullanıcı adı<input name="username" required></label><label>Görünen ad<input name="name" required></label><label>Rol<select name="role"><option value="personel">Personel</option><option value="avukat">Avukat</option><option value="muhasebe">Muhasebe</option><option value="admin">Yönetici</option></select></label><label>İlk parola<input name="password" type="password" minlength="10" required></label><button>Kullanıcı oluştur</button></form></section>
-        <section class="card"><h2>Parolamı değiştir</h2><form id="password-form"><label>Mevcut parola<input name="currentPassword" type="password" required></label><label>Yeni parola<input name="newPassword" type="password" minlength="10" required></label><button>Parolayı değiştir</button></form></section>
+<body class="adm-body">
+  <div id="hof-splash" class="hof-splash" role="status"><img src="/assets/brand/destekofis-mark.svg" alt="" width="56" height="56"><p>Yönetim paneli açılıyor…</p></div>
+  <header class="adm-top">
+    <a class="adm-brand" href="/"><img src="/assets/brand/destekofis-mark.svg" alt="" width="36" height="36"><span><strong>DestekOfis</strong><small>Yönetim paneli</small></span></a>
+    <div class="adm-top-right">
+      <a class="hof-button hof-button-ghost hof-button-small" href="/">Dosya takip ekranı</a>
+      <span class="adm-user" id="adm-user"></span>
+      <button type="button" class="hof-button hof-button-ghost hof-button-small" id="adm-password">Parolam</button>
+      <button type="button" class="hof-button hof-button-small" id="adm-logout">Çıkış</button>
+    </div>
+  </header>
+  <main class="adm-shell" id="adm-app" hidden>
+    <nav class="adm-tabs" role="tablist" aria-label="Yönetim bölümleri">
+      <button type="button" role="tab" data-tab="users" data-requires="users.manage" aria-selected="true">Kullanıcılar</button>
+      <button type="button" role="tab" data-tab="backups" data-requires="system.manage" aria-selected="false">Yedekler</button>
+      <button type="button" role="tab" data-tab="audit" data-requires="audit.view" aria-selected="false">Değişiklik geçmişi</button>
+      <button type="button" role="tab" data-tab="system" data-requires="system.manage" aria-selected="false">Sistem</button>
+    </nav>
+
+    <section class="adm-panel" data-panel="users" role="tabpanel">
+      <div class="adm-panel-head">
+        <div><h1>Kullanıcılar</h1><p>Ofis sunucusuna bağlanan hesapları, rollerini ve erişimlerini yönetin.</p></div>
+        <button type="button" class="hof-button" id="adm-new-user">+ Yeni kullanıcı</button>
       </div>
-      <section class="card"><div class="section-heading"><h2>Kullanıcılar</h2><button id="refresh">Yenile</button></div><div class="table-wrap"><table><thead><tr><th>Ad</th><th>Kullanıcı</th><th>Rol</th><th>Durum</th><th>İşlem</th></tr></thead><tbody id="users"></tbody></table></div></section>
+      <div class="adm-card"><div class="adm-table-wrap"><table class="hof-table adm-table"><thead><tr><th>Ad</th><th>Kullanıcı adı</th><th>Rol</th><th>Durum</th><th>Son giriş</th><th class="adm-right">İşlemler</th></tr></thead><tbody id="adm-users"><tr><td colspan="6">Yükleniyor…</td></tr></tbody></table></div></div>
+      <div class="adm-card adm-roles">
+        <h2>Roller ne yapabilir?</h2>
+        <ul>
+          <li><b>Yönetici:</b> her şey; kullanıcı yönetimi, yedekler ve sistem ayarları.</li>
+          <li><b>Avukat:</b> tüm dosya işlemleri, kayıt silme, veri kaynağı yönetimi, raporlar.</li>
+          <li><b>Personel:</b> not, telefon, tahsilat, haciz, görev, mesaj ve yeni kayıt; silme ve rapor yok.</li>
+          <li><b>Muhasebe:</b> personel yetkilerine ek olarak raporları görür.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="adm-panel" data-panel="backups" role="tabpanel" hidden>
+      <div class="adm-panel-head">
+        <div><h1>Yedekler</h1><p>Sunucu açıkken 6 saatte bir otomatik yedek alınır; son 30 yedek saklanır. Yedekleri düzenli olarak harici diske kopyalayın.</p></div>
+        <button type="button" class="hof-button" id="adm-backup-now">Şimdi yedek al</button>
+      </div>
+      <div class="adm-card"><div class="adm-table-wrap"><table class="hof-table"><thead><tr><th>Yedek dosyası</th><th>Tarih</th><th class="adm-right">Boyut</th><th class="adm-right">İndir</th></tr></thead><tbody id="adm-backups"></tbody></table></div></div>
+    </section>
+
+    <section class="adm-panel" data-panel="audit" role="tabpanel" hidden>
+      <div class="adm-panel-head">
+        <div><h1>Değişiklik geçmişi</h1><p>Kim, ne zaman, hangi işlemi yaptı. Kayıtlar değiştirilemez.</p></div>
+        <label class="hof-field adm-filter"><span>İşlem türü</span><select id="adm-audit-type"><option value="">Tümü</option><option value="auth.">Girişler</option><option value="user.">Kullanıcılar</option><option value="source.">Tablo değişiklikleri</option><option value="case.">Dosya işlemleri</option><option value="task.">Görevler</option><option value="message.">Mesajlar</option><option value="settings.">Ayarlar</option><option value="system.">Sistem</option></select></label>
+      </div>
+      <div class="adm-card"><div class="adm-table-wrap"><table class="hof-table"><thead><tr><th>Zaman</th><th>Kişi</th><th>İşlem</th><th>Ayrıntı</th></tr></thead><tbody id="adm-audit"></tbody></table></div></div>
+    </section>
+
+    <section class="adm-panel" data-panel="system" role="tabpanel" hidden>
+      <div class="adm-panel-head"><div><h1>Sistem</h1><p>Sunucu sürümü, veritabanı ve yedek durumu.</p></div></div>
+      <div class="adm-grid" id="adm-system"></div>
     </section>
   </main>
-  <script src="/assets/admin.js"></script>
+  <main class="adm-shell" id="adm-denied" hidden>
+    <div class="adm-card adm-denied"><h1>Bu sayfa yöneticiler içindir</h1><p>Hesabınızın yönetim yetkisi yok. Dosya takip ekranına dönebilirsiniz.</p><a class="hof-button" href="/">Dosya takip ekranı</a></div>
+  </main>
 </body>
 </html>

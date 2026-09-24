@@ -1,0 +1,15 @@
+{
+  "name": "DestekOfis",
+  "short_name": "DestekOfis",
+  "description": "Hukuk ofisi dosya takip ve yönetim sistemi",
+  "lang": "tr",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f7f5f0",
+  "theme_color": "#1f6a50",
+  "icons": [
+    { "src": "/assets/brand/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/assets/brand/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/assets/brand/favicon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}

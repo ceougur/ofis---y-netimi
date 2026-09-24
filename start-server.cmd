@@ -1,10 +1,10 @@
 @echo off
 setlocal
+chcp 65001 >nul
 cd /d "%~dp0"
+title DestekOfis Merkezi Sunucu
 if "%PORT%"=="" set PORT=5123
 if "%HOST%"=="" set HOST=0.0.0.0
-if "%HUKUK_ADMIN_USERNAME%"=="" set HUKUK_ADMIN_USERNAME=admin
-if "%HUKUK_ADMIN_PASSWORD%"=="" set HUKUK_ADMIN_PASSWORD=Ofis2026!
 where node >nul 2>nul
 if errorlevel 1 (
   echo Node.js 22 veya daha yeni bir surum bulunamadi.
@@ -12,5 +12,6 @@ if errorlevel 1 (
   pause
   exit /b 1
 )
-node server\server.mjs
+echo DestekOfis baslatiliyor... Tarayicidan http://127.0.0.1:%PORT% adresini acin.
+node --disable-warning=ExperimentalWarning server\server.mjs
 pause

@@ -1,15 +1,26 @@
-import { DatabaseSync } from "node:sqlite";
-import { mkdirSync, copyFileSync, readdirSync, unlinkSync } from "node:fs";
+// Elle yedek alma: npm run backup
+// Sunucu çalışırken de güvenlidir; veritabanı salt okunur açılır ve VACUUM INTO ile tutarlı kopya alınır.
+// v1.0.0'daki hata düzeltildi: proje kökü bir üst klasör olarak hesaplanıyordu.
+import { existsSync } from "node:fs";
 import path from "node:path";
-const root = path.resolve(new URL("..", import.meta.url).pathname, "..");
+import { fileURLToPath } from "node:url";
+import { createBackup } from "../server/lib/backup.mjs";
+import { openDatabase } from "../server/lib/db.mjs";
+
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const dataDir = path.resolve(process.env.HUKUK_DATA_DIR || path.join(root, "data"));
 const backupDir = path.resolve(process.env.HUKUK_BACKUP_DIR || path.join(root, "backups"));
-mkdirSync(backupDir, { recursive: true });
+const keep = Math.max(3, Number(process.env.HUKUK_BACKUP_KEEP || 30));
 const dbPath = path.join(dataDir, "hukuk-ofisi.sqlite");
-const db = new DatabaseSync(dbPath);
-db.exec("PRAGMA wal_checkpoint(TRUNCATE);");
-const target = path.join(backupDir, `hukuk-ofisi-${new Date().toISOString().replace(/[:.]/g, "-")}.sqlite`);
-copyFileSync(dbPath, target);
-readdirSync(backupDir).filter(name => name.endsWith(".sqlite")).sort().reverse().slice(30).forEach(name => unlinkSync(path.join(backupDir, name)));
-db.close();
-console.log(target);
+
+if (!existsSync(dbPath)) {
+  console.error(`Veritabanı bulunamadı: ${dbPath}`);
+  process.exit(1);
+}
+const db = openDatabase(dbPath, { readOnly: true });
+try {
+  const result = createBackup(db, backupDir, { label: "manuel", keep });
+  console.log(result.path);
+} finally {
+  db.close();
+}

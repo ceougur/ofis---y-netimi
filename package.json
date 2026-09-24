@@ -1,14 +1,22 @@
 {
-  "name": "hukuk-ofisi-merkezi",
-  "version": "1.0.0",
+  "name": "destekofis",
+  "version": "1.1.0",
   "private": true,
-  "description": "Hukuk Ofisi merkezi server/client sürümü",
+  "description": "DestekOfis — hukuk ofisleri için merkezi dosya takip sunucusu (server/client)",
   "type": "module",
-  "engines": { "node": ">=22.13.0" },
+  "engines": {
+    "node": ">=22.13.0"
+  },
   "scripts": {
-    "start": "node server/server.mjs",
-    "start:local": "HOST=127.0.0.1 PORT=5123 node server/server.mjs",
-    "check": "node --check server/server.mjs && node --check client/assets/central-auth.js && node --check client/assets/admin.js",
-    "backup": "node tools/backup.mjs"
+    "start": "node --disable-warning=ExperimentalWarning server/server.mjs",
+    "start:local": "node --disable-warning=ExperimentalWarning --env-file-if-exists=.env server/server.mjs",
+    "test": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 \"test/**/*.test.mjs\"",
+    "test:e2e": "node --disable-warning=ExperimentalWarning test/e2e/run.mjs",
+    "check": "node tools/check-syntax.mjs",
+    "backup": "node --disable-warning=ExperimentalWarning tools/backup.mjs",
+    "package": "node tools/package.mjs"
+  },
+  "devDependencies": {
+    "playwright": "1.56.0"
   }
 }

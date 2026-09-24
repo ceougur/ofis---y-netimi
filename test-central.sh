@@ -13,7 +13,7 @@ health=$(curl -fsS "$BASE/api/health")
 echo "HEALTH $health"
 login=$(curl -fsS -c "$JAR1" -H 'content-type: application/json' -d '{"username":"admin","password":"Test-Admin-2026!"}' "$BASE/api/auth/login")
 echo "LOGIN $login"
-user=$(curl -fsS -b "$JAR1" -H 'content-type: application/json' -d '{"username":"personel1","name":"Test Personel","role":"personel","password":"Personel-2026!"}' "$BASE/api/admin/users")
+user=$(curl -fsS -b "$JAR1" -H 'content-type: application/json' -d '{"username":"personel1","name":"Test Personel","role":"personel","password":"Personel-2026!","mustChangePassword":false}' "$BASE/api/admin/users")
 echo "USER $user"
 login2=$(curl -fsS -c "$JAR2" -H 'content-type: application/json' -d '{"username":"personel1","password":"Personel-2026!"}' "$BASE/api/auth/login")
 echo "LOGIN2 $login2"
@@ -33,11 +33,11 @@ reports=$(curl -fsS -b "$JAR1" "$BASE/api/workspace/reports")
 echo "REPORT $(printf '%s' "$reports" | json_field data totals events) EVENTS"
 state2=$(curl -fsS -b "$JAR2" "$BASE/api/workspace/state")
 echo "STATE2 $(printf '%s' "$state2" | json_field data records 0 caseKey)"
-BASE="$BASE" node tools/backup.mjs >/tmp/hof-backup-path.txt
+BASE="$BASE" node --disable-warning=ExperimentalWarning tools/backup.mjs >/tmp/hof-backup-path.txt
 backup=$(cat /tmp/hof-backup-path.txt)
 test -s "$backup"
 echo "BACKUP $backup"
-static=$(curl -fsS "$BASE/" | grep -o 'central-auth.js' | head -1)
-test "$static" = "central-auth.js"
+static=$(curl -fsS "$BASE/" | grep -o 'hof-boot.js' | head -1)
+test "$static" = "hof-boot.js"
 echo "STATIC AUTH $static"
 echo "ALL CENTRAL TESTS PASSED"

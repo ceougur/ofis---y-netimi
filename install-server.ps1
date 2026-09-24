@@ -1,4 +1,4 @@
-# Hukuk Ofisi Merkezi - Windows server kurulumu
+# DestekOfis - Windows sunucu kurulumu (gecici; Faz 1'de Windows servisi + setup.exe ile degisecek)
 # PowerShell'i yönetici olarak çalıştırın.
 param(
   [int]$Port = 5123,
@@ -20,4 +20,4 @@ Register-ScheduledTask -TaskName $taskName -Action $action -Trigger $trigger -Pr
 Write-Host "Kurulum tamamlandı. Port: $Port"
 Write-Host "Server adresini görmek için: ipconfig"
 Write-Host "Client adresi örneği: http://SERVER-IP:$Port"
-Write-Host "İlk giriş: admin / Ofis2026! (ilk girişten sonra parolayı değiştirin)"
+Write-Host "İlk giriş: admin / Ofis2026! (sistem ilk girişte yeni parola ister)"
