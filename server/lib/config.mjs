@@ -39,6 +39,8 @@ export function loadConfig(overrides = {}) {
     backupKeep: Math.max(3, number(env.HUKUK_BACKUP_KEEP, 30)),
     backupOnStartDelayMs: number(overrides.backupOnStartDelayMs ?? env.HUKUK_BACKUP_START_DELAY_MS, 60_000),
     trustProxy: (overrides.trustProxy ?? env.HUKUK_TRUST_PROXY) === "1" || overrides.trustProxy === true,
+    // Servis yöneticisi (supervisor.mjs) altında mı çalışıyor? Güncelleme işlemleri IPC ile ona iletilir.
+    supervised: (overrides.supervised ?? env.HUKUK_SUPERVISED) === "1" || overrides.supervised === true,
     logLevel: overrides.logLevel ?? env.HUKUK_LOG_LEVEL ?? "info",
     sheetsCacheMs: number(env.HUKUK_SHEETS_CACHE_MS, 45_000),
     fetchImpl: overrides.fetchImpl || ((...args) => globalThis.fetch(...args)),

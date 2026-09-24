@@ -153,7 +153,7 @@ begin
   WizardForm.StatusLabel.Caption := 'Windows servisi kuruluyor ve başlatılıyor (en fazla 1-2 dakika)...';
   WizardForm.ProgressGauge.Style := npbstMarquee;
   try
-    if not Exec(ExpandConstant('{cmd}'), '/C ""' + ExpandConstant('{app}\bin\servis-kur.cmd') + '""', ExpandConstant('{app}'), SW_HIDE, ewWaitUntilTerminated, ResultCode) then
+    if not Exec(ExpandConstant('{cmd}'), '/C ""' + ExpandConstant('{app}\bin\servis-kur.cmd') + '" {#AppVersion}"', ExpandConstant('{app}'), SW_HIDE, ewWaitUntilTerminated, ResultCode) then
       ResultCode := -1;
   finally
     WizardForm.ProgressGauge.Style := npbstNormal;

@@ -228,6 +228,8 @@ try {
     await admin.waitForFunction(() => document.querySelector("#adm-addresses li code") || document.querySelector("#adm-addresses")?.textContent.includes("bulunamadı"));
     const system = await admin.textContent("#adm-system");
     expect(system.includes("Çalışma biçimi") && system.includes("Doğrudan"), `çalışma biçimi görünmeli: ${system}`);
+    await admin.waitForFunction(() => document.querySelector("#adm-update-summary")?.textContent.includes("kurulum dosyasıyla kurulan"));
+    expect(await admin.isHidden("#adm-update-apply"), "servis dışında 'Şimdi güncelle' görünmemeli");
     await admin.fill("#adm-office-name", "Deneme Hukuk Bürosu");
     await admin.click("#adm-office-save");
     await admin.waitForFunction(() => [...document.querySelectorAll(".hof-toast")].some(node => node.textContent.includes("Ofis adı kaydedildi")));

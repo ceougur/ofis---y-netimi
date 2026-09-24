@@ -35,7 +35,7 @@ function stageInstall(installRoot, versions = [version]) {
 
 async function startService(installRoot, port) {
   const child = spawn(process.execPath, ["--disable-warning=ExperimentalWarning", path.join(installRoot, "bootstrap.mjs")], {
-    env: { ...process.env, PORT: String(port), HOST: "127.0.0.1", HUKUK_DISCOVERY_PORT: "0", HUKUK_LOG_LEVEL: "warn", HUKUK_ADMIN_PASSWORD: "Test-Admin-2026!", HUKUK_DATA_DIR: "", HUKUK_BACKUP_DIR: "" },
+    env: { ...process.env, PORT: String(port), HOST: "127.0.0.1", HUKUK_DISCOVERY_PORT: "0", HUKUK_LOG_LEVEL: "warn", HUKUK_ADMIN_PASSWORD: "Test-Admin-2026!", HUKUK_DATA_DIR: "", HUKUK_BACKUP_DIR: "", HUKUK_UPDATES: "0" },
     stdio: ["ignore", "pipe", "pipe"],
   });
   let output = "";
@@ -54,6 +54,58 @@ async function startService(installRoot, port) {
   child.kill("SIGKILL");
   throw new Error(`Servis açılmadı:\n${output}`);
 }
+
+describe("kurulum sonrası sürüm etkinleştirme (bootstrap etkinlestir)", () => {
+  const bootstrap = path.join(root, "packaging", "windows", "bootstrap.mjs");
+  const fakeInstall = versions => {
+    const dir = mkdtempSync(path.join(tmpdir(), "destekofis-etkin-"));
+    cpSync(bootstrap, path.join(dir, "bootstrap.mjs"));
+    for (const item of versions) {
+      mkdirSync(path.join(dir, "app", item, "server"), { recursive: true });
+      writeFileSync(path.join(dir, "app", item, "server", "supervisor.mjs"), "");
+    }
+    return dir;
+  };
+  const activate = async (dir, target) => (await run(process.execPath, [path.join(dir, "bootstrap.mjs"), "etkinlestir", target])).stdout;
+  const current = dir => JSON.parse(readFileSync(path.join(dir, "app", "current.json"), "utf8"));
+
+  it("ilk kurulumda kurulan sürümü etkinleştirir", async () => {
+    const dir = fakeInstall(["1.3.0"]);
+    try {
+      await activate(dir, "1.3.0");
+      assert.equal(current(dir).version, "1.3.0");
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it("yükseltmede yeni sürümü etkinleştirir, öncekini saklar, daha eskileri siler", async () => {
+    const dir = fakeInstall(["1.1.0", "1.2.0", "1.3.0"]);
+    try {
+      writeFileSync(path.join(dir, "app", "current.json"), JSON.stringify({ version: "1.2.0", previous: "1.1.0" }));
+      await activate(dir, "1.3.0");
+      assert.equal(current(dir).version, "1.3.0");
+      assert.equal(current(dir).previous, "1.2.0");
+      assert.deepEqual(readdirSync(path.join(dir, "app")).filter(name => /^\d/.test(name)).sort(), ["1.2.0", "1.3.0"]);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it("otomatik güncellemeyle gelmiş daha yeni sürümü eski kurulum dosyası geri almaz", async () => {
+    const dir = fakeInstall(["1.3.0", "1.3.1"]);
+    try {
+      writeFileSync(path.join(dir, "app", "current.json"), JSON.stringify({ version: "1.3.1", previous: "1.3.0" }));
+      const output = await activate(dir, "1.3.0");
+      assert.match(output, /Daha yeni bir sürüm etkin/);
+      assert.equal(current(dir).version, "1.3.1");
+      assert.ok(existsSync(path.join(dir, "app", "1.3.0")));
+      await assert.rejects(activate(dir, "9.9.9"), error => error.code === 2);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+});
 
 describe("Windows kurulum düzeni (bootstrap)", () => {
   let installRoot;
@@ -82,6 +134,26 @@ describe("Windows kurulum düzeni (bootstrap)", () => {
     assert.equal(stdout.trim(), version);
     await run(process.execPath, ["--disable-warning=ExperimentalWarning", path.join(installRoot, "bootstrap.mjs"), "yedek"], { env: { ...process.env, HUKUK_DATA_DIR: "", HUKUK_BACKUP_DIR: "" } });
     assert.ok(readdirSync(path.join(installRoot, "backups")).some(name => name.endsWith("-manuel.sqlite")));
+  });
+
+  it("etkin sürüm açılamazsa önceki sürüme dönülür ve açılamayan sürüm işaretlenir", async () => {
+    const broken = path.join(installRoot, "app", "99.0.0", "server");
+    mkdirSync(broken, { recursive: true });
+    writeFileSync(path.join(broken, "supervisor.mjs"), 'throw new Error("bozuk sürüm");\n');
+    writeFileSync(path.join(installRoot, "app", "current.json"), JSON.stringify({ version: "99.0.0", previous: version, pending: true }));
+    const port = await freePort();
+    const service = await startService(installRoot, port);
+    try {
+      const health = await (await fetch(`http://127.0.0.1:${port}/api/health`)).json();
+      assert.equal(health.data.version, version);
+      const current = JSON.parse(readFileSync(path.join(installRoot, "app", "current.json"), "utf8"));
+      assert.equal(current.version, version);
+      assert.equal(current.fallbackFrom, "99.0.0");
+    } finally {
+      service.child.kill("SIGTERM");
+      await new Promise(resolve => service.child.once("exit", resolve));
+      rmSync(path.join(installRoot, "app", "99.0.0"), { recursive: true, force: true });
+    }
   });
 
   it("current.json bozuk veya olmayan sürümü gösteriyorsa kurulu en yeni sürümle açılır", async () => {

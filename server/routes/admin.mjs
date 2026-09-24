@@ -22,7 +22,7 @@ function lanAddresses(port) {
 }
 
 export function registerAdminRoutes(router, context) {
-  const { store, auth, audit, config, startedAt } = context;
+  const { store, auth, audit, config, startedAt, supervisorLink } = context;
   const notifyInfoChange = () => context.notifyInfoChange?.();
   const now = () => new Date().toISOString();
   const activeAdmins = () => store.get("SELECT COUNT(*) AS count FROM users WHERE role = 'admin' AND active = 1").count;
@@ -165,6 +165,44 @@ export function registerAdminRoutes(router, context) {
     ok(res, { name });
   });
 
+  // ---------- Güncellemeler (servis yöneticisi üzerinden) ----------
+  const NOT_SUPERVISED = "Otomatik güncelleme yalnızca kurulum dosyasıyla kurulan (Windows servisi olarak çalışan) sunucularda kullanılabilir.";
+  const updateLink = () => {
+    if (!supervisorLink?.supervised) throw new HttpError(409, NOT_SUPERVISED);
+    return supervisorLink;
+  };
+
+  router.get("/api/admin/update", async ({ req, res }) => {
+    auth.requirePermission(req, "system.manage");
+    if (!supervisorLink?.supervised) return ok(res, { enabled: false, reason: NOT_SUPERVISED, currentVersion: config.version });
+    ok(res, await supervisorLink.request("update:status", {}, { timeoutMs: 10_000 }));
+  });
+
+  router.post("/api/admin/update/check", async ({ req, res }) => {
+    const admin = auth.requirePermission(req, "system.manage");
+    const status = await updateLink().request("update:check", {}, { timeoutMs: 90_000 });
+    audit(admin, "system.update_checked", "update", { available: status.available?.version || null, result: status.lastCheck?.status || null });
+    ok(res, status);
+  });
+
+  router.post("/api/admin/update/apply", async ({ req, res }) => {
+    const admin = auth.requirePermission(req, "system.manage");
+    const result = await updateLink().request("update:apply", {}, { timeoutMs: 90_000 });
+    audit(admin, "system.update_requested", "update", { version: result.version || null });
+    ok(res, result);
+  });
+
+  router.put("/api/admin/update/settings", async ({ req, res }) => {
+    const admin = auth.requirePermission(req, "system.manage");
+    const body = await readJson(req);
+    const payload = {};
+    if (body.autoUpdate !== undefined) payload.enabled = Boolean(body.autoUpdate);
+    if (body.channel !== undefined) payload.channel = text(body.channel);
+    const status = await updateLink().request("update:config", payload, { timeoutMs: 10_000 });
+    audit(admin, "system.update_settings", "update", payload);
+    ok(res, status);
+  });
+
   router.get("/api/admin/system", async ({ req, res }) => {
     auth.requirePermission(req, "system.manage");
     // WAL kipinde veri bir süre "-wal" dosyasında durur; gerçek boyut ikisinin toplamıdır.
@@ -190,7 +228,7 @@ export function registerAdminRoutes(router, context) {
       lastBackup: latest ? { name: latest.name, size: latest.size, createdAt: latest.createdAt } : null,
       users: store.get("SELECT COUNT(*) AS count FROM users WHERE active = 1").count,
       officeName: store.setting("office.name", ""),
-      supervised: Boolean(process.send),
+      supervised: Boolean(supervisorLink?.supervised),
       hostname: os.hostname(),
       port: config.publicPort,
       addresses: lanAddresses(config.publicPort),

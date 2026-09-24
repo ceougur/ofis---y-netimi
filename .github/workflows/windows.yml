@@ -3,8 +3,9 @@ name: Windows kurulum paketi
 on:
   push:
     branches: [master]
-    tags: ["v*"]
   workflow_dispatch:
+  # release.yml sürüm yayımlamadan önce bu iş akışını çağırır (kurulum dosyası gerçek Windows'ta sınanmadan yayın yok).
+  workflow_call:
 
 jobs:
   build:

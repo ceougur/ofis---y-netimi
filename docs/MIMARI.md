@@ -1,4 +1,4 @@
-# DestekOfis — Mimari (v1.2)
+# DestekOfis — Mimari (v1.3)
 
 ## Genel bakış
 
@@ -36,6 +36,28 @@ nssm (Windows servisi "DestekOfis", NT SERVICE\DestekOfis, otomatik başlatma)
 - **Kurulum** (`packaging/windows/setup.iss`, Inno Setup 6): sunucu/personel türleri; gömülü Node.js (Authenticode/özet doğrulamalı) ve nssm; `bin\servis-kur.cmd` servisi kurar, eski v1.0 zamanlanmış görevini ve eski güvenlik duvarı kuralını temizler, izinleri SID ile ayarlar (kök: yöneticiler; `data/backups/logs/config`: yalnızca SYSTEM, yöneticiler ve servis hesabı; `app`: servis hesabına yazma — Faz 2 güncellemeleri için), güvenlik duvarına yalnızca `node.exe` ve Özel/Etki alanı profilleri için izin verir ve sağlık kontrolüyle bitirir. Kaldırma veriyi korur.
 - **Sürümlü uygulama klasörleri** (`app\<sürüm>`): bootstrap etkin sürüm açılamazsa kurulu diğer sürümlere döner ve `current.json`'ı düzeltir. Faz 2'deki otomatik güncelleme bu düzen üzerine kuruludur.
 - `NODE_OPTIONS=--use-system-ca`: SSL denetimi yapan antivirüs/güvenlik duvarı olan ağlarda Windows sertifika deposuna güvenilir.
+
+## Otomatik güncelleme (v1.3)
+
+```
+servis açılışı ─► uygulama hemen başlar (eski sürüm)
+             └─► GitHub Releases: /repos/ceougur/ofis---y-netimi/releases (ağ yoksa 1, 3, 10, 20. dakikada yeniden)
+                   en yeni uygun etiket ─► destekofis-guncelleme.json ─► Ed25519 imza + etiket/sürüm + uyumluluk
+                   ─► paket indirilir (uygulama çalışırken; boyut + SHA-256) ─► app\.<sürüm>-xxxx.tmp ─► app\<sürüm>
+bakım penceresi ("Sistem güncelleniyor…"):
+   eski sürüm durdurulur ─► VACUUM INTO yedek ─► current.json {version: yeni, previous, pending: true}
+   ─► yeni sürüm deneme kipinde (çökerse yeniden başlatılmaz, "hazır" olsa da bakım sayfası kalır)
+   ─► /api/health (sürüm eşleşmeli) + arayüz ─► onay: pending kaldırılır, eski sürümler temizlenir (etkin + önceki kalır)
+                                             └► başarısız: şema değiştiyse yedeğe dön, current.json = önceki, sürüm "başarısız" listesine
+```
+
+- Modüller: `server/lib/updater.mjs` (kaynak, denetim, indirme, paket açma, durum dosyası), `update-envelope.mjs` (bildirge biçimi, imza, uyumluluk), `update-orchestrator.mjs` (akış, deneme/onay/geri dönüş, yeniden denemeler), `app-layout.mjs` (`current.json`, sürüm klasörleri), `supervisor-link.mjs` (uygulama → servis yöneticisi IPC istekleri).
+- **Kaynak:** varsayılan `github:ceougur/ofis---y-netimi`; `config\guncelleme.json` içindeki `feed` alanı imzalı bir bildirge adresine (ör. ileride destekofis.net) yönlendirilebilir. İmza zorunlu olduğundan kaynak değişikliği güveni zayıflatmaz. `enabled` ve `channel` (stable/beta) aynı dosyadadır; yönetim paneli değiştirir.
+- **Durum:** `app\update-state.json` (son denetim, başarısız sürümler, son 30 olay). Servis hesabı yalnızca `app` (ve veri) klasörlerine yazabildiğinden güncelleme `runtime\node.exe`, `bootstrap.mjs` ve servis ayarlarına dokunamaz.
+- **Gereksinimler:** bildirgedeki `requires.node`, `requires.bootstrap` (bootstrap.mjs `BOOTSTRAP_VERSION`, ortamda `HUKUK_BOOTSTRAP_VERSION`) ve `requires.minVersion` karşılanmıyorsa sürüm otomatik kurulmaz, panel kurulum dosyasını önerir.
+- **Servis yöneticisi sürümü:** yeni sürümün uygulama süreci hemen çalışır; yeni servis yöneticisi kodu bir sonraki servis açılışında devreye girer (IPC protokolü geriye uyumlu tutulur). Bootstrap, açılamayan bir sürümden önceki sürüme dönerse `current.json`'a `fallbackFrom` yazar; o sürüm başarısız sayılır.
+- **Kurulum dosyası ile birlikte:** kurulum sonunda `bootstrap.mjs etkinlestir <sürüm>` çalışır; yalnızca kurulan sürüm etkin sürümden yeni veya aynıysa etkinleştirir.
+- **Yayın:** `tools/release.mjs` (imzalı paket), `.github/workflows/release.yml` (etiket → test → Windows kurulum testi → yayın). Ayrıntılar: [SURUM-YAYIMLAMA.md](SURUM-YAYIMLAMA.md).
 
 ## İstemci katmanları
 
@@ -87,10 +109,11 @@ Google Sheets sonuçları 45 sn önbelleklenir; aynı anda gelen istekler birle�
 
 ## Test
 
-- `npm test`: kimlik, yetki, çalışma alanı, kaynak birleştirme, Google Sheets (sahte ağ), göç (gerçek v1.0.0 veritabanı), yedek, statik dosya, zip, servis yöneticisi (vekil, bakım sayfası, çökme sonrası yeniden başlatma, öksüz süreç), UDP keşif, kurulum düzeni (bootstrap, sürüm geri dönüşü) ve Go başlatıcı (keşif, kayıt, Windows derlemesi) testleri.
+- `npm test`: kimlik, yetki, çalışma alanı, kaynak birleştirme, Google Sheets (sahte ağ), göç (gerçek v1.0.0 veritabanı), yedek, statik dosya, zip, servis yöneticisi (vekil, bakım sayfası, çökme sonrası yeniden başlatma, öksüz süreç), UDP keşif, kurulum düzeni (bootstrap, sürüm geri dönüşü, `etkinlestir`) ve Go başlatıcı (keşif, kayıt, Windows derlemesi) testleri.
+- Güncelleme: imza/bildirge/uyumluluk birim testleri; sahte GitHub sunucusuyla denetim, indirme, özet uyuşmazlığı, sahte imza, etiket uyuşmazlığı, kanal; gerçek servis yöneticisi ve uygulama süreçleriyle uçtan uca akış (açılışta güncelleme ve bakım sayfası, veri korunumu, bozuk sürümde veritabanı ve sürüm geri dönüşü, yönetici panelinden kurulum, elektrik kesintisi sonrası deneme açılışı, ağ yokken normal açılış).
 - `npm run test:e2e`: Playwright ile iki kullanıcılı uçtan uca senaryo (Excel yükleme, düzeltme, silme/geri alma, yeni kayıt, notlar, yetkiler, yönetim paneli, zorunlu parola değişimi, CSP ihlali denetimi).
 - GitHub Actions: `ci.yml` (Ubuntu/Windows × Node 22/24, e2e, paket) ve `windows.yml` (kurulum dosyasını derler; gerçek Windows'ta sessiz kurulum, servis hesabı/başlangıç türü, sağlık, UDP keşif, başlatıcı, servis yeniden başlatma ve yeniden kurulumda veri korunumu, kaldırma).
 
 ## Yol haritası
 
-Faz 1 Windows servisi + setup.exe + UDP sunucu keşfi · Faz 2 GitHub'dan otomatik güncelleme · Faz 3 lisans motoru · Faz 4 Supabase + Vercel lisans servisi, operatör paneli ve web sitesi.
+Faz 1 Windows servisi + setup.exe + UDP sunucu keşfi ✓ · Faz 2 GitHub'dan otomatik güncelleme ✓ · Faz 3 lisans motoru · Faz 4 Supabase + Vercel lisans servisi, operatör paneli ve web sitesi.

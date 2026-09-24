@@ -10,6 +10,7 @@ import { createHash } from "node:crypto";
 import { cpSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { collectAppFiles } from "./lib/app-files.mjs";
 import { ensureNodeRuntime } from "./lib/node-runtime.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -26,11 +27,10 @@ const step = message => console.log(`• ${message}`);
 const toCrlf = text => text.replace(/\r?\n/g, "\r\n");
 
 function copyApp(target) {
-  for (const item of ["server", "client", "docs", "package.json", "CHANGELOG.md", "README.md"]) {
-    cpSync(path.join(root, item), path.join(target, item), { recursive: true, filter: source => !/(\.DS_Store|Thumbs\.db)$/.test(source) });
+  for (const file of collectAppFiles(root)) {
+    mkdirSync(path.dirname(path.join(target, file.relative)), { recursive: true });
+    cpSync(file.full, path.join(target, file.relative));
   }
-  mkdirSync(path.join(target, "tools"), { recursive: true });
-  cpSync(path.join(root, "tools", "backup.mjs"), path.join(target, "tools", "backup.mjs"));
 }
 
 function buildLauncher(outputDir) {
@@ -164,7 +164,8 @@ async function main() {
 
   step("Uygulama dosyaları hazırlanıyor");
   copyApp(path.join(stage, "app", version));
-  writeFileSync(path.join(stage, "app", "current.json"), `${JSON.stringify({ version, selectedAt: new Date().toISOString() }, null, 2)}\n`);
+  // current.json pakete girmez: kurulum sonunda "bootstrap.mjs etkinlestir" yazar (otomatik güncellemeyle gelmiş
+  // daha yeni bir sürümü eski bir kurulum dosyasının geri almaması için).
   cpSync(path.join(packaging, "bootstrap.mjs"), path.join(stage, "bootstrap.mjs"));
   mkdirSync(path.join(stage, "bin"), { recursive: true });
   for (const name of readdirSync(path.join(packaging, "bin"))) writeFileSync(path.join(stage, "bin", name), toCrlf(readFileSync(path.join(packaging, "bin", name), "utf8")));

@@ -33,6 +33,9 @@
     "settings.office.updated": "Ofis adını değiştirdi",
     "system.backup_created": "Yedek aldı",
     "system.backup_downloaded": "Yedek indirdi",
+    "system.update_checked": "Güncellemeleri denetledi",
+    "system.update_requested": "Güncellemeyi başlattı",
+    "system.update_settings": "Güncelleme ayarını değiştirdi",
   };
 
   const formatSize = bytes => {
@@ -249,7 +252,121 @@
     }
   });
 
+  // ---------- Güncellemeler ----------
+  let updateStatus = null;
+  let updateTimer = null;
+  const CHANNEL_LABELS = { stable: "Kararlı", beta: "Deneme (beta)" };
+  const describeCheck = check => {
+    if (!check) return "henüz denetlenmedi";
+    const when = HOF.formatDateTime(check.at);
+    if (check.status === "available") return `${when} — ${check.version} sürümü bulundu`;
+    if (check.status === "up-to-date") return `${when} — sistem güncel`;
+    if (check.status === "incompatible") return `${when} — kurulum dosyası gerekiyor`;
+    return `${when} — denetlenemedi`;
+  };
+
+  function renderUpdate(status) {
+    updateStatus = status;
+    const summary = $("#adm-update-summary");
+    const body = $("#adm-update-body");
+    const checkButton = $("#adm-update-check");
+    const applyButton = $("#adm-update-apply");
+    const settings = $("#adm-update-settings");
+    if (!status.enabled) {
+      summary.textContent = status.reason || "Otomatik güncelleme kullanılamıyor.";
+      body.innerHTML = "";
+      checkButton.hidden = applyButton.hidden = settings.hidden = true;
+      return;
+    }
+    const busy = status.state !== "idle";
+    summary.textContent = `Kurulu sürüm ${status.currentVersion} · ${CHANNEL_LABELS[status.channel] || status.channel} kanal · Son denetim: ${describeCheck(status.lastCheck)}`;
+    const parts = [];
+    if (status.state === "checking") parts.push('<p class="adm-update-note">Denetleniyor…</p>');
+    if (status.state === "downloading" && status.progress) {
+      const percent = status.progress.total ? Math.floor((status.progress.received / status.progress.total) * 100) : 0;
+      parts.push(`<div class="adm-update-progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${percent}"><span style="width:${percent}%"></span></div><p class="adm-update-note">Yeni sürüm indiriliyor · %${percent} (${formatSize(status.progress.received)} / ${formatSize(status.progress.total)})</p>`);
+    }
+    if (status.state === "installing" || status.state === "switching") parts.push('<p class="adm-update-note">Kuruluyor… Sistem birazdan kısa bir süreliğine yeniden başlayacak.</p>');
+    if (status.available && !busy) {
+      const date = status.available.releasedAt ? ` · ${HOF.formatDateTime(status.available.releasedAt)}` : "";
+      parts.push(`<div class="adm-update-available"><strong>Yeni sürüm hazır: DestekOfis ${esc(status.available.version)}</strong><small>${formatSize(status.available.size)}${esc(date)}${status.autoUpdate ? " · Sunucu yeniden başladığında kendiliğinden de kurulur." : ""}</small>${status.available.notes ? `<pre class="adm-update-notes">${esc(status.available.notes)}</pre>` : ""}</div>`);
+    }
+    if (status.incompatible) parts.push(`<p class="adm-update-warn">${esc(status.incompatible.reason)}</p>`);
+    if (status.skippedVersions?.length && !busy) parts.push(`<p class="adm-update-warn">${esc(status.skippedVersions.join(", "))} sürümü daha önce açılamadığı için atlandı. <button type="button" class="hof-button hof-button-ghost hof-button-small" id="adm-update-retry">Yine de kur</button></p>`);
+    const last = status.lastResult;
+    if (last?.outcome === "success") parts.push(`<p class="adm-update-ok">✓ ${esc(last.version)} sürümüne güncellendi · ${esc(HOF.formatDateTime(last.at))}</p>`);
+    else if (last?.outcome === "rolled-back") parts.push(`<p class="adm-update-warn">${esc(last.version)} sürümü açılamadı; ${esc(last.previous || "önceki")} sürümüne dönüldü. ${esc(last.reason || "")}</p>`);
+    else if (last?.outcome === "failed") parts.push(`<p class="adm-update-warn">Güncelleme tamamlanamadı: ${esc(last.reason || "")}</p>`);
+    if (status.lastError && !status.available && !busy) parts.push(`<p class="adm-update-warn">Son denetim başarısız: ${esc(status.lastError)}</p>`);
+    body.innerHTML = parts.join("");
+    checkButton.hidden = false;
+    checkButton.disabled = busy;
+    applyButton.hidden = !status.available || busy;
+    settings.hidden = false;
+    $("#adm-update-auto").checked = Boolean(status.autoUpdate);
+    $("#adm-update-channel").value = status.channel;
+    clearTimeout(updateTimer);
+    if (busy && !document.querySelector('[data-panel="system"]').hidden) updateTimer = setTimeout(loadUpdate, 1500);
+  }
+
+  async function loadUpdate() {
+    try {
+      renderUpdate(await HOF.api("/api/admin/update"));
+    } catch (error) {
+      if (error.status !== 503) $("#adm-update-summary").textContent = error.message;
+    }
+  }
+
+  async function applyUpdate(retryFailed = false) {
+    const version = retryFailed ? updateStatus?.skippedVersions?.[0] : updateStatus?.available?.version;
+    const ok = await HOF.confirm({
+      title: "Güncelleme kurulsun mu?",
+      message: `DestekOfis ${version || "yeni"} sürümüne güncellenecek. Önce veritabanının yedeği alınır; geçiş sırasında sistem yaklaşık 1 dakika kullanılamaz ve açık ekranlar kendiliğinden yenilenir. Yeni sürüm açılamazsa önceki sürüme kendiliğinden dönülür.`,
+      confirmLabel: "Şimdi güncelle",
+    });
+    if (!ok) return;
+    try {
+      renderUpdate(await HOF.api("/api/admin/update/apply", { method: "POST", body: retryFailed ? { retryFailed: true } : {}, timeoutMs: 95_000 }));
+      HOF.toast("Güncelleme başladı. Sistem hazır olunca sayfa kendiliğinden yenilenecek.");
+      clearTimeout(updateTimer);
+      updateTimer = setTimeout(loadUpdate, 1000);
+    } catch (error) {
+      HOF.toastError(error);
+    }
+  }
+
+  $("#adm-update-check").addEventListener("click", async () => {
+    const button = $("#adm-update-check");
+    button.disabled = true;
+    $("#adm-update-body").insertAdjacentHTML("afterbegin", '<p class="adm-update-note">Denetleniyor…</p>');
+    try {
+      const status = await HOF.api("/api/admin/update/check", { method: "POST", timeoutMs: 95_000 });
+      renderUpdate(status);
+      if (status.available) HOF.toast(`Yeni sürüm bulundu: ${status.available.version}`);
+      else if (status.lastCheck?.status === "up-to-date") HOF.toast("Sistem güncel.", { type: "success" });
+    } catch (error) {
+      HOF.toastError(error);
+      loadUpdate();
+    }
+  });
+  $("#adm-update-apply").addEventListener("click", () => applyUpdate(false));
+  $("#adm-update-body").addEventListener("click", event => {
+    if (event.target.closest("#adm-update-retry")) applyUpdate(true);
+  });
+  const saveUpdateSettings = async changes => {
+    try {
+      renderUpdate(await HOF.api("/api/admin/update/settings", { method: "PUT", body: changes }));
+      HOF.toast("Güncelleme ayarı kaydedildi.", { type: "success" });
+    } catch (error) {
+      HOF.toastError(error);
+      loadUpdate();
+    }
+  };
+  $("#adm-update-auto").addEventListener("change", event => saveUpdateSettings({ autoUpdate: event.target.checked }));
+  $("#adm-update-channel").addEventListener("change", event => saveUpdateSettings({ channel: event.target.value }));
+
   async function loadSystem() {
+    loadUpdate();
     const target = $("#adm-system");
     try {
       const info = await HOF.api("/api/admin/system");

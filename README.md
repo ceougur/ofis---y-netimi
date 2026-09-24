@@ -27,12 +27,13 @@ npm run check          # tüm betiklerin sözdizimi denetimi
 npm run backup         # elle yedek (sunucu çalışırken de güvenli)
 npm run package        # dist/destekofis-<sürüm>.zip taşınabilir paket
 npm run build:windows  # dist/DestekOfis-Kurulum-<sürüm>.exe (Go, Inno Setup; Linux'ta Wine)
+npm run release -- --anahtar <gizli.pem>   # dist/guncelleme: imzalı otomatik güncelleme paketi
 node tools/patch-bundle.mjs   # arayüz paketine yamaları yeniden uygular
 ```
 
 Windows kurulum dosyası için: Go 1.22+, `x86_64-w64-mingw32-windres` (simge/sürüm bilgisi), Inno Setup 6 (Windows) veya Wine (Linux; `npm install` Inno Setup'ı getirir). GitHub Actions `windows.yml` kurulum dosyasını derler ve gerçek Windows'ta kurma → servis → keşif → yeniden kurma → kaldırma testlerini çalıştırır.
 
-Ortam değişkenleri: `PORT`, `HOST`, `HUKUK_DATA_DIR`, `HUKUK_BACKUP_DIR`, `HUKUK_ADMIN_USERNAME`, `HUKUK_ADMIN_PASSWORD`, `HUKUK_BACKUP_INTERVAL_HOURS`, `HUKUK_BACKUP_KEEP`, `HUKUK_LOG_LEVEL`, `HUKUK_DISCOVERY_PORT`, `HUKUK_TRUST_PROXY`.
+Ortam değişkenleri: `PORT`, `HOST`, `HUKUK_DATA_DIR`, `HUKUK_BACKUP_DIR`, `HUKUK_ADMIN_USERNAME`, `HUKUK_ADMIN_PASSWORD`, `HUKUK_BACKUP_INTERVAL_HOURS`, `HUKUK_BACKUP_KEEP`, `HUKUK_LOG_LEVEL`, `HUKUK_DISCOVERY_PORT`, `HUKUK_TRUST_PROXY`, `HUKUK_UPDATES` (`0` otomatik güncellemeyi kapatır).
 
 ## Klasör yapısı
 
@@ -47,5 +48,7 @@ test/              otomatik testler ve e2e
 docs/              kurulum/kullanım ve mimari belgeleri
 data/, backups/    çalışma verisi ve yedekler (pakete ve depoya girmez)
 ```
+
+Kurulumlar sunucu açılışında GitHub Releases'tan imzalı güncellemeleri kendiliğinden alır; sürüm yayımlama: [docs/SURUM-YAYIMLAMA.md](docs/SURUM-YAYIMLAMA.md).
 
 Mimari ayrıntılar: [docs/MIMARI.md](docs/MIMARI.md) · Sürüm notları: [CHANGELOG.md](CHANGELOG.md)

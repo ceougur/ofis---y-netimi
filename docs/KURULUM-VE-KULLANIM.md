@@ -1,4 +1,4 @@
-# DestekOfis — Kurulum ve Kullanım Kılavuzu (v1.2)
+# DestekOfis — Kurulum ve Kullanım Kılavuzu (v1.3)
 
 ## 1. Sistem düzeni
 
@@ -113,6 +113,8 @@ Kaynak **ofis geneli tek ayardır**; yönetici veya avukat bir kez tanımlar, he
 | Giriş kilitlendi | 15 dakika bekleyin veya yöneticiden parola sıfırlamasını isteyin. |
 | Tablo görünmüyor | Yönetici/avukatın veri kaynağı tanımlaması gerekir. Sheets için paylaşım iznini kontrol edin. |
 | "Veri kaynağı değiştirildi" uyarısı | Başka bir kullanıcı kaynağı değiştirdi; *Yenile*'ye basın. |
+| Güncelleme denetlenemiyor | Sunucunun internete çıkabildiğini kontrol edin. Antivirüsün "SSL/HTTPS taraması" özelliği bağlantıyı engelliyor olabilir. Ayrıntı: `logs\servis.log`. |
+| "Sürüm açılamadı; önceki sürüme dönüldü" | Sistem güvendedir ve önceki sürümle çalışır. Panelden *Yine de kur* ile yeniden deneyebilir veya destek isteyebilirsiniz. |
 | Sağlık kontrolü | `http://SUNUCU:5123/api/health` → `"status":"ok"` |
 
 ## 11. Güvenlik kuralları
@@ -124,7 +126,23 @@ Kaynak **ofis geneli tek ayardır**; yönetici veya avukat bir kez tanımlar, he
 
 ## 12. Güncelleme
 
-Yeni sürümün kurulum dosyasını sunucuda çalıştırın: aynı klasöre kurulur, servis kısa süre durup yeni sürümle başlar. `data` ve `backups` klasörlerine dokunulmaz; veritabanı gerekiyorsa otomatik yükseltilir (öncesinde yedek alınır). Personel bilgisayarlarında başlatıcıyı güncellemek genellikle gerekmez.
+**Otomatik (önerilen, varsayılan):** Sunucu her açıldığında yeni sürüm olup olmadığına bakar. Yeni sürüm varsa DestekOfis çalışmaya devam ederken arka planda indirilir ve doğrulanır; ardından yaklaşık bir dakikalık bir geçişle yeni sürüme geçilir. Bu sırada kullanıcılar *"Sistem güncelleniyor, lütfen 1 dakika sonra tekrar deneyin."* sayfasını görür; sistem hazır olunca ekranlar kendiliğinden yenilenir.
+
+- Güncelleme yalnızca sunucu açılışında yapılır; gün içinde çalışırken kendiliğinden güncellenmez.
+- `data` ve `backups` klasörlerine dokunulmaz. Geçişten hemen önce veritabanının tam yedeği alınır (`backups\...-guncelleme-oncesi-<sürüm>.sqlite`).
+- Yeni sürüm açılamazsa sistem **kendiliğinden önceki sürüme döner** ve o sürümü bir daha denemez; yönetim paneli durumu bildirir.
+- Güncellemeler dijital olarak imzalıdır; imzası veya içeriği tutmayan paketler kurulmaz.
+
+**Yönetim paneli → Sistem → Güncellemeler:** kurulu sürümü, son denetimi ve bulunan yeni sürümün notlarını gösterir.
+
+- *Güncellemeleri denetle* ile hemen bakabilir, *Şimdi güncelle* ile beklemeden kurabilirsiniz (kullanıcıların az olduğu bir saatte yapın).
+- *Sunucu açılışında yeni sürümü kendiliğinden kur* seçeneğini kapatırsanız güncellemeler yalnızca siz *Şimdi güncelle* dediğinizde kurulur.
+- *Güncelleme kanalı*: **Kararlı** (önerilen) veya **Deneme (beta)**. Beta kanalı yeni özellikleri herkesten önce alır; üretimde kararlı kanal önerilir.
+- Bir sürüm çalışma zamanı değişikliği gerektiriyorsa panel bunu bildirir; o sürümü kurulum dosyasıyla kurun.
+
+**Kurulum dosyasıyla (elle):** Yeni sürümün kurulum dosyasını sunucuda çalıştırın: aynı klasöre kurulur, servis kısa süre durup yeni sürümle başlar, veriler korunur. Eski bir kurulum dosyası, otomatik güncellemeyle gelmiş daha yeni bir sürümü geri almaz. Personel bilgisayarlarında başlatıcıyı güncellemek genellikle gerekmez.
+
+Güncelleme için sunucunun internete (github.com) erişebilmesi gerekir. İnternet yoksa sistem mevcut sürümle normal çalışmaya devam eder.
 
 ## 13. Kaldırma
 

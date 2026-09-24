@@ -2,6 +2,26 @@
 
 Sürümler [anlamsal sürümleme](https://semver.org/lang/tr/) kurallarına uyar.
 
+## 1.3.0 — GitHub'dan otomatik güncelleme (Faz 2)
+
+### Otomatik güncelleme
+- Sunucu her açılışta GitHub Releases'ta yeni sürüm olup olmadığına bakar. Varsa uygulama çalışmaya devam ederken arka planda indirilir ve doğrulanır; ardından kısa bir bakım penceresinde ("Sistem güncelleniyor, lütfen 1 dakika sonra tekrar deneyin.") yeni sürüme geçilir. Açık ekranlar sistem hazır olunca kendiliğinden yenilenir.
+- Gün içinde kendiliğinden güncelleme yapılmaz. İnternet açılışta henüz hazır değilse ilk 30 dakika içinde birkaç kez yeniden denenir.
+- `data` ve `backups` klasörlerine dokunulmaz; geçişten hemen önce veritabanının tam yedeği alınır (`...-guncelleme-oncesi-<sürüm>.sqlite`).
+- Yeni sürüm açılamaz veya sağlık kontrolünden geçemezse önceki sürüme kendiliğinden dönülür (gerekirse veritabanı da güncelleme öncesi hâline alınır) ve o sürüm bir daha kendiliğinden denenmez. Geçiş sırasında elektrik kesilirse sonraki açılışta aynı denetim yapılır.
+
+### Güvenlik
+- Güncellemeler Ed25519 ile imzalanır; uygulama yalnızca kendine gömülü anahtarla imzalanmış bildirgeleri kabul eder. Paket boyutu ve SHA-256 özeti birebir denetlenir, eski sürüme düşürme yapılmaz, zip içeriği güvenli yollarla açılır.
+- Servis hesabı yalnızca `app` klasörüne yazabildiğinden güncellemeler çalışma zamanına (Node.js) ve servis ayarlarına dokunamaz; bunlar yalnızca kurulum dosyasıyla değişir. Daha yeni bir çalışma zamanı gerektiren sürümler için yönetim paneli kurulum dosyasıyla güncellemeyi önerir.
+
+### Yönetim paneli
+- **Sistem → Güncellemeler**: kurulu sürüm, son denetim, bulunan yeni sürüm ve sürüm notları; *Güncellemeleri denetle* ve *Şimdi güncelle* düğmeleri, indirme ilerlemesi, son güncellemenin sonucu.
+- Açılışta otomatik güncellemeyi kapatma/açma ve **Deneme (beta)** kanalı: ön sürüm olarak yayımlanan sürümler yalnızca beta kanalındaki kurulumlara gider.
+
+### Kurulum ve yayın
+- Eski bir kurulum dosyası, otomatik güncellemeyle gelmiş daha yeni sürümü geri almaz; kurulum yalnızca daha yeni veya aynı sürümü etkinleştirir.
+- `npm run release` imzalı güncelleme paketini üretir; `v*` etiketiyle GitHub Actions testleri, gerçek Windows'ta kurulum testini ve yayımlamayı kendiliğinden yapar.
+
 ## 1.2.0 — Tek tıkla kurulum ve Windows servisi (Faz 1)
 
 ### Kurulum

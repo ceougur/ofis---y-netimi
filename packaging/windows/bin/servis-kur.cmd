@@ -1,6 +1,7 @@
 @echo off
 rem DestekOfis - Windows servisini kurar/gunceller ve baslatir (kurulum programi tarafindan calistirilir).
 rem Elle calistirmak icin: yonetici komut isteminde  C:\HukukOfisiMerkezi\bin\servis-kur.cmd
+rem Kurulum programi kurulan surumu parametre olarak verir (servis-kur.cmd 1.3.0).
 setlocal EnableExtensions
 set "ROOT=%~dp0.."
 for %%I in ("%ROOT%") do set "ROOT=%%~fI"
@@ -10,13 +11,18 @@ set "SVC=DestekOfis"
 set "ACCOUNT=NT SERVICE\DestekOfis"
 set "LOG=%ROOT%\logs\kurulum.log"
 if not exist "%ROOT%\logs" mkdir "%ROOT%\logs"
-call :main >> "%LOG%" 2>&1
+call :main %* >> "%LOG%" 2>&1
 exit /b %ERRORLEVEL%
 
 :main
 echo ==== %DATE% %TIME% DestekOfis servis kurulumu ====
 if not exist "%NSSM%" (echo nssm bulunamadi: %NSSM% & exit /b 2)
 if not exist "%NODE%" (echo node bulunamadi: %NODE% & exit /b 3)
+
+rem 0) Kurulan surumu etkinlestir (otomatik guncellemeyle daha yeni bir surume gecildiyse ona dokunulmaz).
+if not "%~1"=="" (
+  "%NODE%" --disable-warning=ExperimentalWarning "%ROOT%\bootstrap.mjs" etkinlestir %~1 || exit /b 5
+)
 
 rem 1) Eski kurulumlarin izlerini temizle (v1.0 zamanlanmis gorev, portu tutan eski surec).
 schtasks /Delete /TN "Hukuk Ofisi Merkezi Server" /F >nul 2>&1

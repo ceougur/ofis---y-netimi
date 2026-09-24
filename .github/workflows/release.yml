@@ -1,0 +1,83 @@
+name: Sürüm yayımla
+
+# "v1.3.1" gibi bir etiket gönderildiğinde: testler → Windows kurulum dosyası (gerçek Windows'ta kurulum testiyle)
+# → imzalı güncelleme paketi → GitHub Release. Kurulumlar sunucu açılışında bu yayını bulup kendiliğinden güncellenir.
+# Gerekli gizli değişken: DESTEKOFIS_RELEASE_KEY (Ed25519 gizli anahtar, PEM). Etiket "-beta" gibi bir ek içeriyorsa
+# yayın "ön sürüm" olarak işaretlenir ve yalnızca deneme (beta) kanalındaki kurulumlara gider.
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  test:
+    name: Testler
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.24"
+      - name: Etiket ile package.json sürümü aynı mı?
+        run: |
+          version=$(node -p "require('./package.json').version")
+          test "v$version" = "$GITHUB_REF_NAME" || { echo "Etiket $GITHUB_REF_NAME, package.json $version"; exit 1; }
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run check
+      - run: npm test
+      - run: npm run test:e2e
+
+  windows:
+    name: Windows kurulum paketi
+    needs: test
+    uses: ./.github/workflows/windows.yml
+
+  publish:
+    name: Yayımla
+    needs: windows
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - uses: actions/download-artifact@v4
+        with:
+          name: destekofis-kurulum
+          path: dist
+      # Yayın elle (web arayüzünden, imzalı dosyalarla) oluşturulmuşsa güncelleme paketine dokunulmaz;
+      # yalnızca bu iş akışında gerçek Windows'ta sınanan kurulum dosyası eksikse eklenir.
+      - name: Yayımla
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          DESTEKOFIS_RELEASE_KEY: ${{ secrets.DESTEKOFIS_RELEASE_KEY }}
+        run: |
+          tag="$GITHUB_REF_NAME"
+          version="${tag#v}"
+          if gh release view "$tag" >/dev/null 2>&1; then
+            echo "::notice::$tag yayını zaten var; güncelleme paketine dokunulmadan yalnızca eksik kurulum dosyaları eklenecek."
+            existing="$(gh release view "$tag" --json assets --jq '.assets[].name')"
+            for file in dist/DestekOfis-Kurulum-*.exe dist/DestekOfis-Kurulum-*.exe.sha256; do
+              name="$(basename "$file")"
+              if printf '%s\n' "$existing" | grep -qxF "$name"; then echo "Zaten var: $name"; else gh release upload "$tag" "$file"; fi
+            done
+            exit 0
+          fi
+          test -n "$DESTEKOFIS_RELEASE_KEY" || { echo "::error::DESTEKOFIS_RELEASE_KEY gizli değişkeni tanımlı değil; imzalı güncelleme paketi üretilemez."; exit 1; }
+          channel=stable
+          flags=""
+          case "$tag" in *-*) channel=beta; flags="--prerelease" ;; esac
+          node tools/release.mjs --kanal "$channel" --cikti dist/guncelleme
+          gh release create "$tag" $flags \
+            --title "DestekOfis $version" \
+            --notes-file dist/guncelleme/SURUM-NOTLARI.md \
+            dist/DestekOfis-Kurulum-*.exe dist/DestekOfis-Kurulum-*.exe.sha256 \
+            dist/guncelleme/destekofis-guncelleme-*.zip dist/guncelleme/destekofis-guncelleme.json dist/guncelleme/SHA256SUMS

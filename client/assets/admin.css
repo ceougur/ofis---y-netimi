@@ -1,4 +1,8 @@
 /* DestekOfis — yönetim paneli düzeni (bileşenler hof-ui.css'ten gelir). */
+/* Yönetim sayfası tamamen bizim: "hidden" özniteliği bileşen stillerindeki display değerini her zaman ezer. */
+[hidden] {
+  display: none !important;
+}
 .adm-body {
   margin: 0;
   min-height: 100vh;
@@ -227,6 +231,118 @@
   font-size: 13px;
   font-weight: 700;
   word-break: break-all;
+}
+.adm-update {
+  margin-bottom: 14px;
+}
+.adm-update-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+.adm-update-head p {
+  margin: 0;
+  font-size: 13px;
+}
+.adm-update-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.adm-update-body:not(:empty) {
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+}
+.adm-update-body p {
+  margin: 0;
+  font-size: 13.5px;
+}
+.adm-update-note {
+  color: var(--do-muted);
+}
+.adm-update-ok {
+  color: var(--do-accent);
+  font-weight: 700;
+}
+.adm-update-warn {
+  padding: 10px 12px;
+  border: 1px solid #f0dcb5;
+  border-radius: 12px;
+  background: #fdf7ea;
+  color: #7a5412;
+}
+.adm-update-available {
+  display: grid;
+  gap: 4px;
+  padding: 12px 14px;
+  border: 1px solid #cde6d6;
+  border-radius: 14px;
+  background: var(--do-accent-soft);
+}
+.adm-update-available small {
+  color: var(--do-muted);
+}
+.adm-update-notes {
+  max-height: 220px;
+  margin: 8px 0 0;
+  overflow: auto;
+  color: var(--do-ink-soft);
+  font: 13px/1.55 var(--do-font);
+  white-space: pre-wrap;
+}
+.adm-update-progress {
+  height: 8px;
+  overflow: hidden;
+  border-radius: 99px;
+  background: #e7efe9;
+}
+.adm-update-progress span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #2f8465, #7fbf9c);
+  transition: width 0.3s ease;
+}
+.adm-update-settings {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 20px;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--do-border);
+}
+.adm-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.adm-check input {
+  width: 17px;
+  height: 17px;
+  accent-color: var(--do-accent);
+}
+.adm-update-channel {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--do-muted);
+  font-size: 13px;
+  font-weight: 700;
+}
+.adm-update-channel select {
+  padding: 8px 32px 8px 12px;
+  border: 1px solid var(--do-border-strong);
+  border-radius: 10px;
+  background: #fff;
+  color: var(--do-ink);
+  font: 600 13.5px var(--do-font);
 }
 .adm-denied {
   max-width: 520px;

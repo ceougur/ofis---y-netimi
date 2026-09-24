@@ -82,6 +82,23 @@
           <ul class="adm-addresses" id="adm-addresses"><li class="adm-muted">Yükleniyor…</li></ul>
         </div>
       </div>
+      <section class="adm-card adm-update" id="adm-update" aria-labelledby="adm-update-title">
+        <div class="adm-update-head">
+          <div>
+            <h2 id="adm-update-title">Güncellemeler</h2>
+            <p class="adm-muted" id="adm-update-summary">Yükleniyor…</p>
+          </div>
+          <div class="adm-update-actions">
+            <button type="button" class="hof-button hof-button-ghost" id="adm-update-check" hidden>Güncellemeleri denetle</button>
+            <button type="button" class="hof-button" id="adm-update-apply" hidden>Şimdi güncelle</button>
+          </div>
+        </div>
+        <div class="adm-update-body" id="adm-update-body" aria-live="polite"></div>
+        <div class="adm-update-settings" id="adm-update-settings" hidden>
+          <label class="adm-check"><input type="checkbox" id="adm-update-auto"><span>Sunucu açılışında yeni sürümü kendiliğinden kur</span></label>
+          <label class="adm-update-channel"><span>Güncelleme kanalı</span><select id="adm-update-channel"><option value="stable">Kararlı (önerilen)</option><option value="beta">Deneme (beta)</option></select></label>
+        </div>
+      </section>
       <div class="adm-grid" id="adm-system"></div>
     </section>
   </main>

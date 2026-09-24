@@ -15,6 +15,7 @@ import { createRouter } from "./lib/router.mjs";
 import { createSheetsReader } from "./lib/sheets.mjs";
 import { createSourceService } from "./lib/sources.mjs";
 import { createStaticHandler, notFoundPage } from "./lib/static.mjs";
+import { createSupervisorLink } from "./lib/supervisor-link.mjs";
 import { registerAdminRoutes } from "./routes/admin.mjs";
 import { registerAuthRoutes } from "./routes/auth.mjs";
 import { registerTrpcRoutes } from "./routes/trpc.mjs";
@@ -49,7 +50,8 @@ export function createApp(overrides = {}) {
   const readGoogleSheet = createSheetsReader({ fetchImpl: config.fetchImpl, cacheMs: config.sheetsCacheMs });
   const sources = createSourceService({ store, audit, readGoogleSheet, bumpClientState: clientState.bump });
   const serveStatic = createStaticHandler(config.publicDir);
-  const context = { config, log, store, auth, audit, sources, clientState, startedAt };
+  const supervisorLink = overrides.supervisorLink ?? (config.supervised ? createSupervisorLink(process) : null);
+  const context = { config, log, store, auth, audit, sources, clientState, startedAt, supervisorLink };
 
   const router = createRouter();
   router.get("/api/health", async ({ res }) => ok(res, { service: "destekofis-merkezi", status: "ok", version: config.version, time: new Date().toISOString(), uptimeSeconds: Math.round(process.uptime()) }));

@@ -1089,6 +1089,12 @@ html:not(.hof-can-audit-view) [data-requires="audit.view"] {
   display: none !important;
 }
 
+.hof-maintenance-detail {
+  margin: 10px 0 0;
+  color: var(--do-faint);
+  font-size: 13px;
+  font-weight: 700;
+}
 .hof-maintenance .hof-progress {
   margin-top: 18px;
 }

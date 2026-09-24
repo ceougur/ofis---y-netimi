@@ -198,26 +198,6 @@
     };
   };
 
-  // Sunucu güncellenirken/yeniden başlarken: bakım katmanı gösterilir, sunucu dönünce sayfa yenilenir.
-  let maintenanceShown = false;
-  function showMaintenance(payload = {}) {
-    if (maintenanceShown) return;
-    maintenanceShown = true;
-    const updating = payload.phase === "updating";
-    const node = HOF.el("div", { class: "hof-auth hof-maintenance", role: "status", "aria-live": "polite" }, `<section class="hof-auth-card">${HOF.brandHtml}<h1>${updating ? "Sistem güncelleniyor" : "Sunucu yeniden başlatılıyor"}</h1><p class="hof-auth-help">${updating ? "Sistem güncelleniyor, lütfen 1 dakika sonra tekrar deneyin." : "Sunucu kısa bir süre için yeniden başlatılıyor."} Hazır olunca sayfa kendiliğinden yenilenecek; yaptığınız kayıtlar sunucuda güvende.</p><div class="hof-progress"><span></span></div></section>`);
-    document.body.appendChild(node);
-    const check = async () => {
-      try {
-        const response = await HOF.nativeFetch("/api/health", { cache: "no-store" });
-        if (response.ok) return location.reload();
-      } catch {
-        // Sunucu henüz dönmedi.
-      }
-      setTimeout(check, 3000);
-    };
-    setTimeout(check, 3000);
-  }
-  HOF.on("maintenance", showMaintenance);
 
   HOF.on("unauthorized", () => {
     if (appLoaded) HOF.showLogin("Oturumunuz sona erdi. Lütfen tekrar giriş yapın.");
@@ -260,7 +240,7 @@
       if (error.status === 401) return HOF.showLogin();
       if (error.status === 503 && error.data.code === "MAINTENANCE") {
         hideSplash();
-        return showMaintenance(error.data);
+        return HOF.showMaintenance(error.data);
       }
       return showFatal(error.status ? error.message : "Merkezi sunucuya ulaşılamadı. Sunucu bilgisayarın açık olduğundan emin olun.");
     }

@@ -127,4 +127,33 @@
   };
 
   HOF.brandHtml = brand;
+
+  // ---------- Bakım katmanı ----------
+  // Sunucu güncellenirken/yeniden başlarken API 503 MAINTENANCE döner: katman gösterilir, sunucu dönünce sayfa yenilenir.
+  let maintenanceShown = false;
+  HOF.showMaintenance = (payload = {}) => {
+    if (maintenanceShown) return;
+    maintenanceShown = true;
+    hideSplash();
+    const updating = payload.phase === "updating";
+    const title = updating ? "Sistem güncelleniyor" : payload.phase === "starting" ? "Sistem başlatılıyor" : "Sunucu yeniden başlatılıyor";
+    const text = updating ? "Sistem güncelleniyor, lütfen 1 dakika sonra tekrar deneyin." : "Sunucu kısa bir süre için yeniden başlatılıyor.";
+    const node = HOF.el(
+      "div",
+      { class: "hof-auth hof-maintenance", role: "status", "aria-live": "polite" },
+      `<section class="hof-auth-card">${brand}<h1>${title}</h1><p class="hof-auth-help">${text} Hazır olunca sayfa kendiliğinden yenilenecek; yaptığınız kayıtlar sunucuda güvende.</p>${payload.detail ? `<p class="hof-maintenance-detail">${HOF.esc(payload.detail)}</p>` : ""}<div class="hof-progress"><span></span></div></section>`,
+    );
+    document.body.appendChild(node);
+    const check = async () => {
+      try {
+        const response = await HOF.nativeFetch("/api/health", { cache: "no-store" });
+        if (response.ok) return location.reload();
+      } catch {
+        // Sunucu henüz dönmedi.
+      }
+      setTimeout(check, 3000);
+    };
+    setTimeout(check, 3000);
+  };
+  HOF.on("maintenance", HOF.showMaintenance);
 })();
