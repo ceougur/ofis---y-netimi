@@ -2,21 +2,22 @@
  * Ayrıştırma ana sayfadan yalıtılmış bir Worker'da yapılır: büyük dosyalar arayüzü dondurmaz ve
  * SheetJS 0.18.5'teki bilinen "prototype pollution" / ReDoS açıkları ana sayfayı etkileyemez.
  * Her sayfa ham hücre matrisi olarak gönderilir; kolon başlıklarını ve sayfadaki alt tabloları (bölümleri)
- * sunucu ayırır — Google Sheets ile aynı kurallar. */
+ * sunucu ayırır — Google Sheets ile aynı kurallar. Hücreler Excel'de göründüğü gibi, Türkçe düzende metne
+ * çevrilir (hof-excel-format.js). CSV değerleri olduğu gibi alınır: "0532…" telefonlarının baştaki sıfırı ve
+ * "2025/1" gibi dosya numaraları bozulmaz. */
 import * as XLSX from "/assets/xlsx-DGuHH-KN.js";
+import { decodeCsv, sheetMatrix } from "/assets/hof-excel-format.js";
 
 self.onmessage = event => {
   try {
-    const workbook = XLSX.read(event.data.buffer, { type: "array", cellDates: false });
+    const csv = /\.csv$/i.test(event.data.name || "");
+    const workbook = csv ? XLSX.read(decodeCsv(event.data.buffer), { type: "string", raw: true }) : XLSX.read(event.data.buffer, { type: "array", cellDates: false, cellNF: true });
+    const date1904 = Boolean(workbook.Workbook?.WBProps?.date1904);
     const sheets = [];
     let rowCount = 0;
     for (const sheetName of workbook.SheetNames) {
-      const matrix = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], { header: 1, defval: "", blankrows: false }).map(line => {
-        const cells = line.map(cell => String(cell ?? "").trim());
-        while (cells.length && !cells[cells.length - 1]) cells.pop();
-        return cells;
-      });
-      rowCount += Math.max(0, matrix.filter(cells => cells.length).length - 1);
+      const matrix = sheetMatrix(XLSX, workbook.Sheets[sheetName], date1904);
+      rowCount += Math.max(0, matrix.length - 1);
       sheets.push({ name: sheetName, matrix });
     }
     self.postMessage({ ok: true, sheets, tabs: workbook.SheetNames, rowCount });

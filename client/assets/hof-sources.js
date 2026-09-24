@@ -52,7 +52,7 @@
         worker.terminate();
         reject(new Error(event.message || "Excel dosyası okunamadı. XLSX, XLS veya CSV dosyası seçin."));
       };
-      file.arrayBuffer().then(buffer => worker.postMessage({ buffer }, [buffer]), reject);
+      file.arrayBuffer().then(buffer => worker.postMessage({ buffer, name: file.name }, [buffer]), reject);
     });
 
   // ---------- İçeri alma akışı ----------
