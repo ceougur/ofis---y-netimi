@@ -8,7 +8,7 @@ import { parseAmount, parseDate } from "./validators.mjs";
 const DAY = 86_400_000;
 const LIST_LIMIT = 200;
 
-const emptyGroup = () => ({ total: 0, money: null, deadline: null, event: null, status: null, responsible: null, _status: null, _responsible: null });
+const emptyGroup = () => ({ total: 0, money: null, deadline: null, event: null, month: null, status: null, responsible: null, _status: null, _responsible: null });
 
 export function computeKpis(rows, analyses, primary, { now = new Date() } = {}) {
   const today = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
@@ -23,7 +23,9 @@ export function computeKpis(rows, analyses, primary, { now = new Date() } = {}) 
     if (!groups.has(tab)) groups.set(tab, emptyGroup());
     return groups.get(tab);
   };
-  const lists = { upcoming: [], passed: [], topAmount: [] };
+  const lists = { upcoming: [], passed: [], topAmount: [], month: [] };
+  // "Bu ay": son tarih kolonu varsa o, yoksa olay tarihi (kayıt, sipariş…) kolonu.
+  const monthColumn = primary.deadline || primary.event;
 
   for (const row of rows) {
     const tab = String(row.__sheet || "");
@@ -72,6 +74,16 @@ export function computeKpis(rows, analyses, primary, { now = new Date() } = {}) 
         }
       }
     }
+    if (monthColumn) {
+      const date = parseDate(row[monthColumn]);
+      if (date && date.getUTCFullYear() === year && date.getUTCMonth() === month) {
+        for (const group of targets) {
+          group.month ??= { column: monthColumn, count: 0 };
+          group.month.count += 1;
+        }
+        lists.month.push({ key: String(row.__hofKey || ""), title: recordTitle(row, primary), date: String(row[monthColumn]).trim(), day: date.getUTCDate(), tab });
+      } else if (date) for (const group of targets) group.month ??= { column: monthColumn, count: 0 };
+    }
     if (primary.status) {
       const value = String(row[primary.status] ?? "").trim();
       if (value) for (const group of targets) {
@@ -104,11 +116,12 @@ export function computeKpis(rows, analyses, primary, { now = new Date() } = {}) 
   lists.upcoming.sort((a, b) => a.days - b.days || a.title.localeCompare(b.title, "tr"));
   lists.passed.sort((a, b) => b.days - a.days || a.title.localeCompare(b.title, "tr"));
   lists.topAmount.sort((a, b) => b.amount - a.amount);
+  lists.month.sort((a, b) => a.day - b.day || a.title.localeCompare(b.title, "tr"));
   return {
     today: new Date(today).toISOString().slice(0, 10),
     currency,
     all,
     tabs,
-    lists: { upcoming: lists.upcoming.slice(0, LIST_LIMIT), passed: lists.passed.slice(0, LIST_LIMIT), topAmount: lists.topAmount.slice(0, 50) },
+    lists: { upcoming: lists.upcoming.slice(0, LIST_LIMIT), passed: lists.passed.slice(0, LIST_LIMIT), topAmount: lists.topAmount.slice(0, 50), month: lists.month.slice(0, LIST_LIMIT) },
   };
 }

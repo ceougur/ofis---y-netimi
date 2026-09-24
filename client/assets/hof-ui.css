@@ -1914,3 +1914,710 @@ html.hof-no-data .main-shell .content-wrap > :not(#hof-start) {
     padding-top: 12px;
   }
 }
+
+/* ---------- 1.6.0: akıllı özet kartları ---------- */
+.hof-summary {
+  display: grid;
+  grid-template-columns: repeat(var(--hof-summary-count, 4), minmax(0, 1fr));
+  gap: 12px;
+  margin: 18px 0 14px;
+}
+.hof-summary-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  min-width: 0;
+  padding: 15px 16px;
+  border: 1px solid var(--do-border);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 8px 26px rgba(23, 56, 44, 0.05);
+  color: var(--do-ink);
+  font: inherit;
+  text-align: left;
+}
+button.hof-summary-card {
+  cursor: pointer;
+  transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease;
+}
+button.hof-summary-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--do-border-strong);
+  box-shadow: 0 14px 30px rgba(23, 56, 44, 0.1);
+}
+button.hof-summary-card:focus-visible {
+  outline: 3px solid rgba(31, 106, 80, 0.25);
+  outline-offset: 2px;
+}
+.hof-summary-icon {
+  display: grid;
+  flex: 0 0 auto;
+  width: 36px;
+  height: 36px;
+  place-items: center;
+  border-radius: 11px;
+  background: var(--do-accent-soft);
+  color: var(--do-accent);
+}
+.hof-summary-card.is-warn .hof-summary-icon {
+  background: var(--do-gold-soft);
+  color: var(--do-warn);
+}
+.hof-summary-card.is-bad .hof-summary-icon {
+  background: var(--do-danger-soft);
+  color: var(--do-danger);
+}
+.hof-summary-text {
+  display: grid;
+  min-width: 0;
+  gap: 3px;
+}
+.hof-summary-label {
+  overflow: hidden;
+  color: var(--do-muted);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.hof-summary-value {
+  overflow: hidden;
+  color: var(--do-ink);
+  font: 800 21px/1.2 var(--do-display);
+  letter-spacing: -0.03em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.hof-summary-help {
+  overflow: hidden;
+  color: var(--do-faint);
+  font-size: 11px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+@media (max-width: 1100px) {
+  .hof-summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 480px) {
+  .hof-summary {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  .hof-summary-value {
+    font-size: 19px;
+  }
+}
+
+/* ---------- 1.6.0: modüller verinin sektörüne göre ---------- */
+html.hof-no-haciz [data-case-action="lien"],
+html.hof-no-haciz #hof-sidecard [data-action="liens"],
+html.hof-no-tahsilat [data-case-action="payment"] {
+  display: none !important;
+}
+
+/* ---------- 1.6.0: kalemle değiştirilen başlıklar ---------- */
+.hof-label-pencil {
+  display: inline-grid;
+  width: 24px;
+  height: 24px;
+  margin-left: 0.35em;
+  place-items: center;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--do-faint);
+  font-size: 12px;
+  letter-spacing: 0;
+  text-transform: none;
+  vertical-align: middle;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.15s ease, background 0.15s ease, color 0.15s ease;
+}
+.hof-label-slot:hover > .hof-label-pencil,
+.hof-label-pencil:focus-visible {
+  opacity: 1;
+}
+.hof-label-pencil:hover,
+.hof-label-pencil:focus-visible {
+  border-color: var(--do-border);
+  background: #fff;
+  color: var(--do-accent);
+  outline: none;
+  box-shadow: 0 3px 10px rgba(20, 52, 40, 0.1);
+}
+@media (hover: none) {
+  .hof-label-pencil {
+    opacity: 0.55;
+  }
+}
+.hof-label-editor {
+  position: fixed;
+  z-index: 70;
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+  border: 1px solid var(--do-border);
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: var(--do-shadow-strong);
+  color: var(--do-ink);
+  font: 13px/1.4 var(--do-font);
+  animation: hof-pop 0.14s ease;
+}
+.hof-label-editor-field {
+  display: grid;
+  gap: 6px;
+}
+.hof-label-editor-field span {
+  color: var(--do-muted);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.hof-label-editor input,
+.hof-label-editor textarea {
+  width: 100%;
+  padding: 9px 11px;
+  border: 1px solid var(--do-border-strong);
+  border-radius: 10px;
+  color: var(--do-ink);
+  font: 600 14px var(--do-font);
+  resize: vertical;
+}
+.hof-label-editor input:focus,
+.hof-label-editor textarea:focus {
+  border-color: var(--do-accent);
+  outline: 3px solid rgba(31, 106, 80, 0.15);
+}
+.hof-label-editor-help {
+  color: var(--do-faint);
+  font-size: 11px;
+}
+.hof-label-editor-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.hof-label-editor-actions > span {
+  display: flex;
+  gap: 6px;
+}
+@keyframes hof-pop {
+  from {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.98);
+  }
+}
+
+/* ---------- 1.6.0: adım adım analiz ---------- */
+.hof-steps {
+  display: grid;
+  gap: 4px;
+  margin: 4px 0 10px;
+  padding: 0;
+  list-style: none;
+}
+.hof-steps li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 8px 10px;
+  border-radius: 12px;
+  color: var(--do-faint);
+  transition: background 0.2s ease, color 0.2s ease;
+}
+.hof-steps li[data-status="active"] {
+  background: var(--do-surface-soft);
+  color: var(--do-ink);
+}
+.hof-steps li[data-status="done"] {
+  color: var(--do-ink);
+}
+.hof-step-mark {
+  position: relative;
+  flex: 0 0 auto;
+  width: 22px;
+  height: 22px;
+  margin-top: 1px;
+  border: 2px solid var(--do-border-strong);
+  border-radius: 50%;
+}
+.hof-steps li[data-status="active"] .hof-step-mark {
+  border-color: var(--do-accent-soft);
+  border-top-color: var(--do-accent);
+  animation: hof-spin 0.8s linear infinite;
+}
+.hof-steps li[data-status="done"] .hof-step-mark {
+  border-color: var(--do-accent);
+  background: var(--do-accent);
+}
+.hof-steps li[data-status="done"] .hof-step-mark::after {
+  content: "";
+  position: absolute;
+  top: 4px;
+  left: 7px;
+  width: 5px;
+  height: 9px;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+.hof-step-text {
+  display: grid;
+  gap: 2px;
+}
+.hof-step-text b {
+  font-size: 14px;
+}
+.hof-step-text small {
+  color: var(--do-muted);
+  font-size: 12px;
+}
+.hof-step-text small:empty {
+  display: none;
+}
+@keyframes hof-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hof-steps li[data-status="active"] .hof-step-mark {
+    animation: none;
+  }
+}
+.hof-analysis-result {
+  display: grid;
+  gap: 12px;
+  margin-top: 6px;
+  animation: hof-pop 0.2s ease;
+}
+.hof-sector-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 18px;
+  border: 1px solid #cfe3d6;
+  border-radius: 18px;
+  background: linear-gradient(120deg, #f4faf6, #fff 55%, #fdf8ee);
+}
+.hof-sector-card.is-unsure {
+  border-color: var(--do-border);
+  background: var(--do-surface-soft);
+}
+.hof-sector-icon {
+  display: grid;
+  flex: 0 0 auto;
+  width: 46px;
+  height: 46px;
+  place-items: center;
+  border-radius: 14px;
+  background: var(--do-accent);
+  color: #fff;
+  box-shadow: 0 8px 20px rgba(31, 106, 80, 0.25);
+}
+.hof-sector-card.is-unsure .hof-sector-icon {
+  background: #fff;
+  color: var(--do-muted);
+  box-shadow: none;
+}
+.hof-sector-main {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+.hof-sector-main small {
+  color: var(--do-muted);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.hof-sector-main b {
+  font: 800 20px/1.2 var(--do-display);
+  letter-spacing: -0.02em;
+}
+.hof-sector-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+.hof-confidence {
+  padding: 2px 9px;
+  border-radius: 99px;
+  font-size: 11px;
+  font-weight: 800;
+}
+.hof-confidence.is-high {
+  background: var(--do-accent-soft);
+  color: var(--do-accent);
+}
+.hof-confidence.is-medium {
+  background: var(--do-gold-soft);
+  color: var(--do-warn);
+}
+.hof-confidence.is-low {
+  background: #eef1ef;
+  color: var(--do-muted);
+}
+.hof-evidence-title {
+  margin: 0;
+  color: var(--do-muted);
+  font-size: 12px;
+  font-weight: 800;
+}
+.hof-evidence {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: -4px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.hof-evidence li {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 10px;
+  border: 1px solid var(--do-border);
+  border-radius: 99px;
+  background: #fff;
+  color: var(--do-ink-soft);
+  font-size: 12px;
+}
+.hof-evidence li svg {
+  color: var(--do-accent);
+}
+.hof-apply-preview,
+.hof-quality-line {
+  margin: 0;
+  color: var(--do-ink-soft);
+  font-size: 13px;
+  line-height: 1.55;
+}
+.hof-quality-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: var(--do-surface-soft);
+}
+.hof-quality-line svg {
+  color: var(--do-accent);
+}
+.hof-link {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--do-accent);
+  font: inherit;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+.hof-link:hover {
+  color: var(--do-accent-hover);
+}
+
+/* ---------- 1.6.0: sektör seçici ---------- */
+.hof-picker {
+  display: grid;
+  gap: 8px;
+}
+.hof-picker-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 12px;
+  border: 1px solid var(--do-border-strong);
+  border-radius: 12px;
+  background: #fff;
+  color: var(--do-faint);
+}
+.hof-picker-search:focus-within {
+  border-color: var(--do-accent);
+  outline: 3px solid rgba(31, 106, 80, 0.15);
+}
+.hof-picker-search input {
+  flex: 1;
+  min-width: 0;
+  padding: 12px 0;
+  border: 0;
+  background: transparent;
+  color: var(--do-ink);
+  font: 600 15px var(--do-font);
+  outline: none;
+}
+.hof-picker-list {
+  max-height: min(380px, 52vh);
+  overflow: auto;
+  border: 1px solid var(--do-border);
+  border-radius: 14px;
+  background: #fff;
+  overscroll-behavior: contain;
+}
+.hof-picker-group {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  padding: 7px 14px;
+  border-bottom: 1px solid var(--do-border);
+  background: #f6faf7;
+  color: var(--do-muted);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.hof-picker-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 14px;
+  border-bottom: 1px solid #f0f4f1;
+  cursor: pointer;
+}
+.hof-picker-option.is-active {
+  background: var(--do-accent-soft);
+}
+.hof-picker-name {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+.hof-picker-name b {
+  font-size: 14px;
+}
+.hof-picker-option small {
+  flex: 0 0 auto;
+  color: var(--do-faint);
+  font-size: 11px;
+}
+.hof-chip-accent {
+  background: var(--do-gold-soft);
+  color: var(--do-warn);
+}
+.hof-picker-count {
+  margin: 0;
+  color: var(--do-faint);
+  font-size: 11px;
+  text-align: right;
+}
+.hof-picker-list .hof-empty {
+  padding: 18px 16px;
+}
+@media (max-width: 560px) {
+  .hof-picker-option {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 2px;
+  }
+}
+
+/* ---------- 1.6.0: kayıt listeleri, dağılım, veri sağlığı ---------- */
+.hof-record-list {
+  display: grid;
+  gap: 6px;
+  max-height: 52vh;
+  margin: 0;
+  padding: 0;
+  overflow: auto;
+  list-style: none;
+}
+.hof-record-list button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--do-border);
+  border-radius: 12px;
+  background: #fff;
+  color: var(--do-ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.hof-record-list button:hover,
+.hof-record-list button:focus-visible {
+  border-color: var(--do-accent);
+  background: var(--do-surface-soft);
+  outline: none;
+}
+.hof-record-list b {
+  overflow: hidden;
+  font-size: 13px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.hof-record-list span {
+  flex: 0 0 auto;
+  color: var(--do-muted);
+  font-size: 12px;
+}
+.hof-bars {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.hof-bars li {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 4px 10px;
+  font-size: 13px;
+}
+.hof-bars i {
+  grid-column: 1 / -1;
+  height: 8px;
+  border-radius: 99px;
+  background: linear-gradient(90deg, var(--do-accent) var(--hof-bar), #edf3ef var(--hof-bar));
+}
+.hof-issue {
+  margin-bottom: 8px;
+  padding: 10px 12px;
+  border: 1px solid var(--do-border);
+  border-radius: 12px;
+  background: #fff;
+}
+.hof-issue summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 13px;
+}
+.hof-issue p {
+  margin: 8px 0;
+  color: var(--do-muted);
+  font-size: 12px;
+}
+.hof-issue-dot {
+  flex: 0 0 auto;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--do-faint);
+}
+.hof-issue.is-warn .hof-issue-dot {
+  background: var(--do-gold);
+}
+
+/* ---------- 1.6.0: güncelleme sonrası tanıtım kartı ---------- */
+.hof-intro {
+  position: fixed;
+  right: 22px;
+  bottom: 22px;
+  z-index: 60;
+  display: flex;
+  gap: 12px;
+  width: min(380px, calc(100vw - 32px));
+  padding: 16px;
+  border: 1px solid #cfe3d6;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #fff, #f3faf5);
+  box-shadow: var(--do-shadow-strong);
+  animation: hof-intro-in 0.35s ease;
+}
+.hof-intro-icon {
+  display: grid;
+  flex: 0 0 auto;
+  width: 38px;
+  height: 38px;
+  place-items: center;
+  border-radius: 12px;
+  background: var(--do-accent);
+  color: #fff;
+}
+.hof-intro b {
+  color: var(--do-ink);
+  font-size: 14px;
+}
+.hof-intro p {
+  margin: 4px 0 10px;
+  color: var(--do-muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+.hof-intro-actions {
+  display: flex;
+  gap: 6px;
+}
+@keyframes hof-intro-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+
+/* ---------- 1.6.0: Ayarlar → Sektör ve görünüm ---------- */
+.hof-profile-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.hof-profile-row > div:first-child {
+  display: grid;
+  gap: 2px;
+}
+.hof-profile-row b {
+  font-size: 15px;
+}
+.hof-profile-row small {
+  color: var(--do-faint);
+  font-size: 12px;
+}
+.hof-profile-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.hof-label-list {
+  display: grid;
+  gap: 6px;
+  margin: 8px 0;
+  padding: 0;
+  list-style: none;
+}
+.hof-label-list li {
+  display: grid;
+  grid-template-columns: minmax(120px, auto) 1fr auto;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: var(--do-surface-soft);
+  font-size: 12px;
+}
+.hof-label-list li span {
+  color: var(--do-muted);
+}
+.hof-label-list li b {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.hof-steps.is-complete {
+  gap: 0;
+}
+.hof-steps.is-complete li {
+  padding-top: 5px;
+  padding-bottom: 5px;
+}

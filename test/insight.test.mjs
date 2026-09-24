@@ -130,6 +130,13 @@ describe("kolon tanıma", () => {
     assert.equal(roleOf(analyses, "Başvuru Son Tarihi").kind, "deadline", "güçlü 'son tarih' ifadesi olay sözcüğüne üstün gelir");
   });
 
+  it("aynı türden iki tarih kolonundan ileri tarihleri taşıyan son tarih seçilir", () => {
+    const rows = Array.from({ length: 10 }, (_, i) => ({ "MUAYENE TARİHİ": `${String(1 + i).padStart(2, "0")}.09.2026`, "RANDEVU TARİHİ": `${String(1 + i).padStart(2, "0")}.10.2026` }));
+    const analyses = analyzeColumns(rows, Object.keys(rows[0]), { now: new Date(2026, 8, 25) });
+    assert.equal(roleOf(analyses, "MUAYENE TARİHİ").kind, "deadline");
+    assert.equal(primaryColumns(analyses).deadline, "RANDEVU TARİHİ", "geçmiş tarihli muayene değil, ileri tarihli randevu");
+  });
+
   it("T.C. kolonu yalnızca sağlaması tutuyorsa doğrulanmış sayılır", () => {
     const valid = ["10000000146", "12345678950", "11111111110", "22222222220", "33333333330"];
     const good = analyzeColumn(valid.map(value => ({ "T.C. KİMLİK NO": value })), "T.C. KİMLİK NO");
@@ -225,6 +232,8 @@ describe("veri sağlığı ve göstergeler", () => {
     assert.equal(kpis.tabs["Ödeme"].money.sum, 750);
     assert.deepEqual(kpis.lists.upcoming.map(item => [item.key, item.days]), [["K4", 1], ["K1", 2], ["K2", 10]]);
     assert.deepEqual(kpis.lists.passed.map(item => item.key), ["K3"]);
+    assert.deepEqual(kpis.all.month, { column: "SON ÖDEME TARİHİ", count: 4 });
+    assert.deepEqual(kpis.lists.month.map(item => item.key), ["K3", "K4", "K1", "K2"], "bu ayın kayıtları gün sırasıyla");
     assert.equal(kpis.lists.topAmount[0].key, "K2");
   });
 

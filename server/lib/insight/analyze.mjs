@@ -35,7 +35,7 @@ export function analyzeDataset({ rows, label = "", tabs = [], now = new Date() }
   const started = performance.now();
   const data = Array.isArray(rows) ? rows : [];
   const columns = columnOrder(data);
-  const analyses = analyzeColumns(data, columns);
+  const analyses = analyzeColumns(data, columns, { now });
   const primary = primaryColumns(analyses);
   const sector = classifySector({ analyses, rows: data, label, tabs });
   const quality = assessQuality(data, analyses, primary);

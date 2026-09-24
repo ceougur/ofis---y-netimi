@@ -14,7 +14,10 @@
   HOF.esc = value => String(value ?? "").replace(/[&<>"']/g, char => ESCAPES[char]);
   HOF.normalize = value => String(value ?? "").toLocaleLowerCase("tr-TR").replace(/[İI]/g, "i").replace(/ı/g, "i").replace(/\s+/g, " ").trim();
   HOF.initials = name => String(name || "?").trim().split(/\s+/).slice(0, 2).map(part => part[0] || "").join("").toLocaleUpperCase("tr-TR") || "?";
-  HOF.roleLabels = { admin: "Yönetici", avukat: "Avukat", personel: "Personel", muhasebe: "Muhasebe" };
+  // Rol adları ve kayıtlara verilen ad seçili sektöre göre değişir (hof-insight.js); bunlar sektör seçilmemiş hâlidir.
+  HOF.roleLabels = { admin: "Yönetici", avukat: "Uzman", personel: "Personel", muhasebe: "Muhasebe" };
+  HOF.vocab = { record: "kayıt", records: "kayıtlar", Record: "Kayıt", Records: "Kayıtlar", expert: "Uzman", subtitle: "Ofis yönetimi" };
+  HOF.modules = { tahsilat: true, haciz: false };
 
   const dateFormat = new Intl.DateTimeFormat("tr-TR", { day: "2-digit", month: "2-digit", year: "numeric" });
   const dateTimeFormat = new Intl.DateTimeFormat("tr-TR", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" });

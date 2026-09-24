@@ -6,7 +6,7 @@
   const hideSplash = () => document.getElementById("hof-splash")?.remove();
 
   // ---------- Giriş ekranı ----------
-  const brand = `<div class="hof-auth-brand"><img src="/assets/brand/destekofis-mark.svg" alt="" width="48" height="48"><div><strong>DestekOfis</strong><span>Hukuk ofisi yönetimi</span></div></div>`;
+  const brand = `<div class="hof-auth-brand"><img src="/assets/brand/destekofis-mark.svg" alt="" width="48" height="48"><div><strong>DestekOfis</strong><span>Ofis yönetimi</span></div></div>`;
 
   HOF.showLogin = function showLogin(message = "") {
     if (document.getElementById("hof-auth")) return;
@@ -31,10 +31,11 @@
     document.body.appendChild(node);
     HOF.api("/api/public/info")
       .then(info => {
+        // Alt satır: ofis adı; yoksa seçili sektörün alt başlığı ("Hukuk ofisi yönetimi", "Klinik yönetimi"…).
         const name = info?.office?.name;
-        if (!name) return;
-        node.querySelector(".hof-auth-brand span").textContent = name;
-        document.title = `${name} · DestekOfis`;
+        const text = name || info?.tagline;
+        if (text) node.querySelector(".hof-auth-brand span").textContent = text;
+        document.title = name ? `${name} · DestekOfis` : `DestekOfis${info?.tagline ? ` · ${info.tagline}` : ""}`;
       })
       .catch(() => {});
     const form = node.querySelector("form");

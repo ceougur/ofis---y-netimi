@@ -176,7 +176,7 @@ function isSequence(values) {
 const round = value => Math.round(value * 100) / 100;
 
 // ---------- Kolon çözümlemesi ----------
-export function analyzeColumn(rows, column) {
+export function analyzeColumn(rows, column, { now = new Date() } = {}) {
   const hits = headerHits(column);
   const { values, present, nonEmpty } = sampleValues(rows, column);
   const distinct = new Set(values).size;
@@ -215,7 +215,14 @@ export function analyzeColumn(rows, column) {
   if (enough && (date >= 0.8 || (hits.date && date >= 0.5))) {
     // Alt tür: son tarih (yaklaşan/tarihi geçen anlamlı), olay tarihi (bu ay eklenen), doğum tarihi, diğer.
     const kind = hits.birth ? "birth" : hits.deadlineStrong ? "deadline" : hits.event ? "event" : hits.deadline ? "deadline" : "other";
-    return result("date", date + (hits.date ? 0.1 : 0), { validRate: round(date), kind });
+    // İleri tarihli değerlerin oranı: aynı türden iki kolon varsa (ör. "Muayene tarihi" ve "Randevu tarihi") önümüzdeki
+    // günleri taşıyanı son tarih olarak seçmek için.
+    const today = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
+    const futureRate = rate(values, value => {
+      const parsed = parseDate(value);
+      return Boolean(parsed) && parsed.getTime() >= today;
+    });
+    return result("date", date + (hits.date ? 0.1 : 0), { validRate: round(date), kind, strong: Boolean(hits.deadlineStrong), futureRate: round(futureRate) });
   }
   const numeric = rate(values, value => parseAmount(value) !== null);
   const percentSigned = rate(values, value => /%/.test(value) && parseAmount(value.replace(/%/g, "")) !== null);
@@ -281,9 +288,9 @@ export function importance(analysis) {
   return Math.round(base * (0.35 + 0.65 * analysis.stats.fill));
 }
 
-export function analyzeColumns(rows, columns) {
+export function analyzeColumns(rows, columns, options = {}) {
   return columns.map(column => {
-    const analysis = analyzeColumn(rows, column);
+    const analysis = analyzeColumn(rows, column, options);
     return { ...analysis, importance: importance(analysis) };
   });
 }
@@ -308,7 +315,7 @@ export function primaryColumns(analyses) {
     id: best(item => item.role === "id", item => (item.kind === "case" ? 1e9 : 0) + item.stats.uniqueness * 1e6 + filled(item)),
     person: best(item => item.role === "person" || item.role === "org", item => (item.header.includes("party") ? 2e9 : 0) + (item.header.includes("person") ? 1e9 : 0) + item.stats.uniqueness * 1e6 + filled(item)),
     money: best(item => item.role === "money" && item.kind === "amount" && item.currency !== "mixed", item => (item.header.includes("money") ? 1e9 : 0) + filled(item)),
-    deadline: best(item => item.role === "date" && item.kind === "deadline", filled),
+    deadline: best(item => item.role === "date" && item.kind === "deadline", item => (item.strong ? 1e9 : 0) + (item.futureRate || 0) * 1e6 + filled(item)),
     event: best(item => item.role === "date" && item.kind === "event", filled),
     status: best(item => item.role === "status", item => (item.header.includes("status") ? 1e9 : 0) + filled(item)),
     responsible: best(item => item.role === "responsible", filled),

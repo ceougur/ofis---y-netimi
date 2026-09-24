@@ -20,7 +20,7 @@
       await HOF.api("/api/workspace/overrides", { method: "POST", body: { sourceName: HOF.sourceName(), caseKey: record.key, field: record.header, value: "", action } });
       closeCard();
       HOF.toast(action === "paid" ? "Ödeme sözü ödendi olarak kapatıldı." : "Ödeme sözü iptal edildi.", { type: "success" });
-      if (action === "paid") HOF.toast("Tahsilatı kaydetmek için dosyanın “Tahsilat” düğmesini kullanabilirsiniz.");
+      if (action === "paid" && HOF.modules?.tahsilat !== false) HOF.toast("Tahsilatı kaydetmek için kaydın “Tahsilat” düğmesini kullanabilirsiniz.");
       HOF.refreshData();
     } catch (error) {
       button.disabled = false;
@@ -93,7 +93,8 @@
       copy.tabIndex = -1;
       track.appendChild(copy);
     });
-    const anchor = document.querySelector(".welcome-row");
+    // Akıllı özet kartları varsa şerit onların altına gelir.
+    const anchor = document.getElementById("hof-summary") || document.querySelector(".welcome-row");
     if (anchor) anchor.after(band);
     else table.closest(".dynamic-table-wrap")?.before(band);
   }

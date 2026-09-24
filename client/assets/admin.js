@@ -25,11 +25,14 @@
     "dataset.unlinked": "Sheet bağlantısını kaldırdı",
     "dataset.missing.remove": "Sheet'te olmayan kayıtları kaldırdı",
     "dataset.missing.keep": "Sheet'te olmayan kayıtları tuttu",
-    "case.note.created": "Dosyaya not ekledi",
+    "profile.sector": "Sektörü değiştirdi",
+    "profile.label": "Başlığı değiştirdi",
+    "profile.labels.reset": "Başlıkları varsayılana döndürdü",
+    "case.note.created": "Not ekledi",
     "case.phone.created": "Telefon ekledi",
     "case.payment.created": "Tahsilat işledi",
     "case.lien.created": "Haciz kaydetti",
-    "case.status_note.updated": "Dosya notunu güncelledi",
+    "case.status_note.updated": "Kayıt notunu güncelledi",
     "case.status_note.imported": "Yerel notları aktardı",
     "task.created": "Görev atadı",
     "task.completed": "Görevi tamamladı",
@@ -184,7 +187,7 @@
   const detail = event => {
     const payload = event.payload || {};
     const parts = [];
-    if (payload.caseKey) parts.push(`Dosya ${payload.caseKey}`);
+    if (payload.caseKey) parts.push(`Kayıt ${payload.caseKey}`);
     if (payload.field) parts.push(`${payload.field}: "${payload.previousValue ?? ""}" → "${payload.value ?? ""}"`);
     if (payload.username) parts.push(`${payload.username} (${HOF.roleLabels[payload.role] || payload.role || ""})`);
     if (payload.fileName) parts.push(`${payload.fileName} · ${payload.rows} kayıt`);
@@ -193,6 +196,8 @@
       parts.push(`${payload.label || ""} · ${modes[payload.mode] || payload.mode} · ${payload.rows} kayıt (${payload.added || 0} yeni, ${payload.updated || 0} güncellendi${payload.removed ? `, ${payload.removed} kaldırıldı` : ""})`);
     }
     if (event.type === "dataset.removed") parts.push(`${payload.removed} kayıt`);
+    if (event.type === "profile.sector") parts.push(`${payload.name}${payload.source === "confirmed" ? " (analiz önerisi onaylandı)" : ""}`);
+    if (event.type === "profile.label") parts.push(`${payload.name}: "${payload.previous || "varsayılan"}" → "${payload.value || "varsayılan"}"`);
     if (event.type.startsWith("dataset.missing.")) parts.push(`${payload.rows} kayıt`);
     if (payload.amount) parts.push(HOF.formatMoney(payload.amount));
     if (payload.title) parts.push(payload.title);
@@ -434,6 +439,11 @@
       return HOF.toastError(error);
     }
     HOF.user = me;
+    // Rol adları ofisin sektörüne göre (ör. "Avukat", "Hekim", "Emlak danışmanı"; sektörsüz "Uzman").
+    if (me.profile?.roleLabels) Object.assign(HOF.roleLabels, me.profile.roleLabels);
+    document.querySelectorAll("[data-role-label]").forEach(node => {
+      node.textContent = HOF.roleLabels[node.dataset.roleLabel] || node.textContent;
+    });
     for (const permission of me.permissions) document.documentElement.classList.add(`hof-can-${permission.replace(/\./g, "-")}`);
     document.getElementById("hof-splash")?.remove();
     if (me.mustChangePassword) {

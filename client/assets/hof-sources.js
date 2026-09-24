@@ -81,6 +81,8 @@
       : `${name} mevcut verinin yerine kondu: ${detail}.`;
     HOF.applyClientState(result.state);
     sessionStorage.setItem("hof-flash", `${head} Tüm bilgisayarlar aynı veriyi görür.${result.linked ? " Google Sheets bağlı; değişiklikler kendiliğinden eklenir." : ""}`);
+    // İlk yüklemede ve "yerine koy"da veri baştan değişti: sayfa açılınca akıllı analiz ekranı gösterilir (hof-insight.js).
+    if (result.mode === "initial" || result.mode === "replace") sessionStorage.setItem("hof-analyze", result.mode);
     location.reload();
   }
 
@@ -295,6 +297,15 @@
     }
     const data = (await loadSummary()) || {};
     const minutes = Number(data.syncMinutes || 5);
+    // Diğer modüllerin bölümleri (ör. "Sektör ve görünüm", hof-insight.js) veri özetinin altına eklenir.
+    const extensions = (HOF.settingsExtensions || []).map(extension => {
+      try {
+        return extension.html() || "";
+      } catch (error) {
+        console.error("[DestekOfis]", error);
+        return "";
+      }
+    }).join("");
     const modal = HOF.modal({
       title: "Veri ve eşitleme",
       eyebrow: "AYARLAR",
@@ -305,6 +316,7 @@
           ${data.syncHold ? `<p class="hof-alert">Sheet'in yapısı değişmiş görünüyor (${number(data.syncHold.added)} yeni, ${number(data.syncHold.missing)} kayıp satır). Yanlışlıkla veri çoğalmasın diye otomatik eşitleme durduruldu. <button type="button" class="hof-button hof-button-small" data-review>İncele ve karar ver</button></p>` : ""}
           ${data.missingCount ? `<p class="hof-alert hof-alert-soft">${number(data.missingCount)} kayıt bağlı Sheet'te artık yok; tabloda duruyor. <button type="button" class="hof-button hof-button-small hof-button-ghost" data-missing>Listeyi gör</button></p>` : ""}
         </section>
+        ${data.rowCount || data.recordCount ? extensions : ""}
         <section class="hof-data-section">
           <h3>Veri ekle veya değiştir</h3>
           <div class="hof-data-import">${dropHtml(true)}${linkHtml}</div>
@@ -333,6 +345,13 @@
           : ""}`,
     });
     const dialog = modal.dialog;
+    for (const extension of HOF.settingsExtensions || []) {
+      try {
+        extension.wire?.(modal);
+      } catch (error) {
+        console.error("[DestekOfis]", error);
+      }
+    }
     const zone = dialog.querySelector(".hof-drop");
     if (zone) {
       wireDrop(zone);
@@ -504,7 +523,8 @@
       if (label === "Ayarlar") setHidden(button, !manage);
     });
     document.querySelectorAll(".sidebar .nav-label").forEach(label => {
-      if (navLabel(label) === "VERİ KAYNAĞI") setHidden(label, !manage);
+      // Başlık kalemle değiştirilmiş olabilir; arayüzün asıl metnine bakılır.
+      if ((HOF.labels?.original(label) ?? navLabel(label)) === "VERİ KAYNAĞI") setHidden(label, !manage);
     });
     document.querySelectorAll(".button-row button").forEach(button => {
       if (navLabel(button).includes("Yeni tablo yükle")) setHidden(button, true);

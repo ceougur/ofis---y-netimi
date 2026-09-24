@@ -3,12 +3,18 @@
   "use strict";
   const HOF = window.HOF;
 
+  // İpucu verideki gerçek kolon adlarından gelir ("Hasta no, ad soyad veya telefon ara…"; hof-insight.js).
+  const placeholder = () => (HOF.searchPlaceholder ? HOF.searchPlaceholder() : "Tabloda ara…");
   function install() {
     const input = document.querySelector(".search-field input");
-    if (!input || input.dataset.hofSearch) return;
+    if (!input) return;
+    const text = placeholder();
+    if (input.placeholder !== text) {
+      input.placeholder = text;
+      input.setAttribute("aria-label", text.replace(/…$/, ""));
+    }
+    if (input.dataset.hofSearch) return;
     input.dataset.hofSearch = "1";
-    input.placeholder = "Dosya no, müvekkil, borçlu veya telefon ara…";
-    input.setAttribute("aria-label", "Dosya numarası, müvekkil, borçlu veya telefon ara");
     const field = input.closest(".search-field");
     if (field && !field.querySelector(".smart-search-hint")) field.appendChild(HOF.el("span", { class: "smart-search-hint", text: "Enter · ilk sonuca git  ·  Ctrl+K" }));
     input.addEventListener("keydown", event => {
@@ -35,5 +41,6 @@
       input.select();
     }
   });
+  HOF.on("insight", install);
   HOF.whenReady(() => HOF.onDom(install));
 })();

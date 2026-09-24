@@ -129,7 +129,7 @@
 
   async function editCell(cell) {
     const info = describeCell(cell);
-    if (!info.key) return HOF.toast("Bu satırın dosya kimliği bulunamadı.", { type: "error" });
+    if (!info.key) return HOF.toast("Bu satırın kimliği bulunamadı.", { type: "error" });
     let current = null;
     try {
       const overrides = await HOF.api(`/api/workspace/overrides?sourceName=${encodeURIComponent(HOF.sourceName())}&caseKey=${encodeURIComponent(info.key)}`);
@@ -160,7 +160,7 @@
   // Detay panelindeki tüm alanları tek pencerede düzenleme (klavyeyle de erişilebilir).
   async function editCase() {
     const selected = HOF.selectedCase();
-    if (!selected) return HOF.toast("Önce tablodan bir dosya seçin.", { type: "error" });
+    if (!selected) return HOF.toast(`Önce tablodan bir ${HOF.vocab.record} seçin.`, { type: "error" });
     const cells = [...selected.panel.querySelectorAll(".dynamic-detail-grid > div")];
     const fields = cells.map((cell, index) => {
       const label = cell.querySelector(".detail-label")?.textContent?.trim() || `Alan ${index + 1}`;
@@ -169,7 +169,7 @@
     });
     if (!fields.length) return;
     HOF.formModal({
-      title: "Dosya bilgilerini düzenle",
+      title: `${HOF.vocab.Record} bilgilerini düzenle`,
       eyebrow: selected.title,
       size: "wide",
       intro: "Yalnızca değiştirdiğiniz alanlar kaydedilir. Kaynak dosya değişmez.",
@@ -189,7 +189,7 @@
 
   async function deleteRow(row) {
     const key = HOF.rowKey(row);
-    if (!key) return HOF.toast("Bu satırın dosya kimliği bulunamadı.", { type: "error" });
+    if (!key) return HOF.toast("Bu satırın kimliği bulunamadı.", { type: "error" });
     const name = row.querySelector("strong")?.textContent?.trim() || key;
     const ok = await HOF.confirm({ title: "Kaydı sil", message: `"${name}" kaydı tüm bilgisayarlarda tablodan kaldırılacak. Kaynak dosya değişmez ve işlem geri alınabilir.`, confirmLabel: "Sil", danger: true });
     if (!ok) return;
@@ -231,12 +231,12 @@
         title: "Önce bir veri kaynağı gerekli",
         eyebrow: "YENİ KAYIT",
         size: "small",
-        body: `<p class="hof-modal-text">Yeni kayıt formu, ofisin tablosundaki kolonlara göre oluşturulur. ${HOF.can("sources.manage") ? "Sol menüdeki <b>Tabloyu değiştir</b> bölümünden Excel yükleyin veya Google Sheets bağlayın." : "Yöneticinizden veya avukattan veri kaynağı eklemesini isteyin."}</p>`,
+        body: `<p class="hof-modal-text">Yeni kayıt formu, ofisin tablosundaki kolonlara göre oluşturulur. ${HOF.can("sources.manage") ? "Sol menüdeki <b>Ayarlar</b> bölümünden Excel yükleyin veya Google Sheets bağlayın." : "Yöneticinizden veri yüklemesini isteyin."}</p>`,
       });
     }
     const modal = HOF.formModal({
       title: "Yeni kayıt oluştur",
-      eyebrow: "YENİ DOSYA",
+      eyebrow: `YENİ ${HOF.vocab.record.toLocaleUpperCase("tr-TR")}`,
       size: "wide",
       intro: `Form, tablonuzun <b>${columns.length}</b> kolonuna göre oluşturuldu. Yalnızca doldurduğunuz alanlar kaydedilir; kayıt tüm bilgisayarlarda görünür.`,
       fields: columns.map((column, index) => ({ name: `c${index}`, label: column, autofocus: index === 0, maxlength: 20000 })),

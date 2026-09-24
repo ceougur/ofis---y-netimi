@@ -30,7 +30,7 @@
 
   const requireCase = () => {
     const selected = HOF.selectedCase();
-    if (!selected) HOF.toast("Önce tablodan bir dosya seçin.", { type: "error" });
+    if (!selected) HOF.toast(`Önce tablodan bir ${HOF.vocab.record} seçin.`, { type: "error" });
     return selected;
   };
   const caseUrl = (key, suffix) => `/api/workspace/cases/${encodeURIComponent(key)}/${suffix}`;
@@ -46,13 +46,13 @@
       const selected = requireCase();
       if (!selected) return;
       HOF.formModal({
-        title: "Dosyaya not ekle",
+        title: "Not ekle",
         eyebrow: selected.title,
-        fields: [{ name: "note", label: "Not", type: "textarea", required: true, maxlength: 5000, placeholder: "Bu dosyada yapılan son işlemi yazın…" }],
+        fields: [{ name: "note", label: "Not", type: "textarea", required: true, maxlength: 5000, placeholder: "Yapılan son işlemi yazın…" }],
         submitLabel: "Notu kaydet",
         onSubmit: async data => {
           await HOF.api(caseUrl(selected.key, "notes"), { method: "POST", body: data });
-          HOF.toast("Not dosyaya işlendi.", { type: "success" });
+          HOF.toast("Not kaydedildi.", { type: "success" });
           afterCaseChange();
         },
       });
@@ -115,7 +115,7 @@
     },
     async task() {
       if (!HOF.can("tasks.create")) {
-        HOF.toast("Görev atama yalnızca avukat ve yönetici hesaplarında kullanılabilir.", { type: "error" });
+        HOF.toast(`Görev atama yalnızca yönetici ve ${HOF.roleLabels.avukat.toLocaleLowerCase("tr-TR")} hesaplarında kullanılabilir.`, { type: "error" });
         return;
       }
       const selected = HOF.selectedCase();
@@ -124,11 +124,11 @@
         title: "Görev ata",
         eyebrow: selected ? selected.title : "OPERASYON",
         fields: [
-          { name: "title", label: "Görev", required: true, maxlength: 300, placeholder: "Örn. haciz yenileme evrakını kontrol et" },
+          { name: "title", label: "Görev", required: true, maxlength: 300, placeholder: HOF.modules.haciz ? "Örn. haciz yenileme evrakını kontrol et" : "Örn. eksik belgeleri tamamla ve bilgi ver" },
           { name: "assignee", label: "Atanacak kişi", list: userNames(), value: HOF.user.name, placeholder: "Personel adı" },
           { name: "dueDate", label: "Son tarih", type: "date" },
           { name: "priority", label: "Öncelik", type: "select", value: "normal", options: [{ value: "normal", label: "Normal" }, { value: "high", label: "Yüksek" }, { value: "urgent", label: "Acil" }] },
-          ...(selected ? [{ name: "linkCase", label: `Görevi "${selected.title}" dosyasına bağla`, type: "checkbox", value: true }] : []),
+          ...(selected ? [{ name: "linkCase", label: `Görevi "${selected.title}" kaydına bağla`, type: "checkbox", value: true }] : []),
         ],
         submitLabel: "Görevi ata",
         onSubmit: async data => {
@@ -144,7 +144,7 @@
       const selected = requireCase();
       if (!selected) return;
       const number = extractPhones(selected.panel.innerText)[0];
-      if (!number) return HOF.toast("Bu dosyada cep telefonu bulunamadı.", { type: "error" });
+      if (!number) return HOF.toast("Bu kayıtta cep telefonu bulunamadı.", { type: "error" });
       openWhatsApp(number);
     },
   };
@@ -166,7 +166,7 @@
         const query = view === "mine" ? "status=open&mine=1" : `status=${view}`;
         const tasks = await HOF.api(`/api/workspace/tasks?${query}`);
         list.innerHTML = tasks.length
-          ? tasks.map(task => `<article class="hof-list-item"><header><b>${esc(task.title)}</b><span class="hof-chip ${task.priority !== "normal" ? `hof-chip-${esc(task.priority)}` : ""}">${esc(priorityLabel[task.priority] || task.priority)}</span></header><small>${esc(task.assignee)}${task.dueDate ? ` · son tarih ${esc(HOF.formatDate(task.dueDate))}` : ""}${task.caseKey ? ` · dosya ${esc(task.caseKey)}` : ""} · ${esc(task.actorName)} tarafından</small>${task.status === "open" && HOF.can("tasks.complete") ? `<div class="hof-actions"><button type="button" class="hof-button hof-button-small" data-complete="${esc(task.id)}">Tamamlandı</button></div>` : task.completedAt ? `<small>✓ ${esc(task.completedByName || "")} · ${esc(HOF.formatDateTime(task.completedAt))}</small>` : ""}</article>`).join("")
+          ? tasks.map(task => `<article class="hof-list-item"><header><b>${esc(task.title)}</b><span class="hof-chip ${task.priority !== "normal" ? `hof-chip-${esc(task.priority)}` : ""}">${esc(priorityLabel[task.priority] || task.priority)}</span></header><small>${esc(task.assignee)}${task.dueDate ? ` · son tarih ${esc(HOF.formatDate(task.dueDate))}` : ""}${task.caseKey ? ` · ${esc(HOF.vocab.record)} ${esc(task.caseKey)}` : ""} · ${esc(task.actorName)} tarafından</small>${task.status === "open" && HOF.can("tasks.complete") ? `<div class="hof-actions"><button type="button" class="hof-button hof-button-small" data-complete="${esc(task.id)}">Tamamlandı</button></div>` : task.completedAt ? `<small>✓ ${esc(task.completedByName || "")} · ${esc(HOF.formatDateTime(task.completedAt))}</small>` : ""}</article>`).join("")
           : `<p class="hof-empty">${view === "mine" ? "Size atanmış açık görev yok." : "Görev bulunmuyor."}</p>`;
       } catch (error) {
         list.innerHTML = `<p class="hof-empty">${esc(error.message)}</p>`;
@@ -265,7 +265,7 @@
       ${sideItem("tasks", "✓", "Görevler")}
       ${sideItem("messages", "✉", "Mesajlar")}
       ${sideItem("newTask", "+", "Görev ata", "", "tasks.create")}
-      ${sideItem("newRecord", "+", "Yeni kayıt")}
+      ${sideItem("newRecord", "+", `Yeni ${esc(HOF.vocab.record)}`)}
       ${sideItem("liens", "!", "Haciz uyarıları", "warn")}
       ${sideItem("reports", "↗", "Personel raporu", "", "reports.view")}
       <div class="hof-user"></div>`,
@@ -335,7 +335,9 @@
     try {
       const result = await HOF.api(caseUrl(selected.key, "activity"));
       if (request !== activityRequest) return;
-      box.innerHTML = `<div class="hof-activity-head"><h3>İŞLEM GEÇMİŞİ</h3>${result.paidTotal ? `<span>Toplam tahsilat ${esc(HOF.formatMoney(result.paidTotal))}</span>` : ""}</div>${result.items.length ? `<ol>${result.items.slice(0, 30).map(item => `<li data-type="${esc(item.type)}"><span class="hof-activity-icon" aria-hidden="true">${ACTIVITY_ICONS[item.type] || "•"}</span><span class="hof-activity-main"><b>${describe(item)}</b><small>${esc(item.actorName || "—")} · ${esc(HOF.formatDateTime(item.createdAt))}</small></span></li>`).join("")}</ol>` : '<p class="hof-empty">Bu dosyada henüz işlem kaydı yok. Yukarıdaki düğmelerle not, telefon, tahsilat veya haciz ekleyebilirsiniz.</p>'}`;
+      const tools = ["not", "telefon", HOF.modules.tahsilat ? "tahsilat" : "", HOF.modules.haciz ? "haciz" : ""].filter(Boolean);
+      const toolsText = `${tools.slice(0, -1).join(", ")} veya ${tools[tools.length - 1]}`;
+      box.innerHTML = `<div class="hof-activity-head"><h3>İŞLEM GEÇMİŞİ</h3>${result.paidTotal ? `<span>Toplam tahsilat ${esc(HOF.formatMoney(result.paidTotal))}</span>` : ""}</div>${result.items.length ? `<ol>${result.items.slice(0, 30).map(item => `<li data-type="${esc(item.type)}"><span class="hof-activity-icon" aria-hidden="true">${ACTIVITY_ICONS[item.type] || "•"}</span><span class="hof-activity-main"><b>${describe(item)}</b><small>${esc(item.actorName || "—")} · ${esc(HOF.formatDateTime(item.createdAt))}</small></span></li>`).join("")}</ol>` : `<p class="hof-empty">Bu kayıtta henüz işlem yok. Yukarıdaki düğmelerle ${toolsText} ekleyebilirsiniz.</p>`}`;
     } catch (error) {
       if (request === activityRequest) box.innerHTML = `<p class="hof-empty">${esc(error.message)}</p>`;
     }
@@ -347,7 +349,7 @@
     if (!header) return;
     let row = panel.querySelector(".hof-case-actions");
     if (!row) {
-      row = HOF.el("div", { class: "hof-case-actions", role: "toolbar", "aria-label": "Dosya işlemleri" }, `<button type="button" class="hof-whatsapp" data-case-action="whatsapp">WhatsApp</button><button type="button" data-case-action="note">Not</button><button type="button" data-case-action="phone">Telefon</button><button type="button" data-case-action="payment">Tahsilat</button><button type="button" data-case-action="task" data-requires="tasks.create">Görev</button><button type="button" data-case-action="lien">Haciz</button>`);
+      row = HOF.el("div", { class: "hof-case-actions", role: "toolbar", "aria-label": "Kayıt işlemleri" }, `<button type="button" class="hof-whatsapp" data-case-action="whatsapp">WhatsApp</button><button type="button" data-case-action="note">Not</button><button type="button" data-case-action="phone">Telefon</button><button type="button" data-case-action="payment">Tahsilat</button><button type="button" data-case-action="task" data-requires="tasks.create">Görev</button><button type="button" data-case-action="lien">Haciz</button>`);
       row.addEventListener("click", event => {
         const action = event.target.closest("[data-case-action]")?.dataset.caseAction;
         if (action && actions[action]) actions[action]();
@@ -392,6 +394,13 @@
   });
   HOF.on("live:resync", () => {
     refreshBadges();
+    refreshActivity();
+  });
+  // Sektör değişince (bu veya başka bir bilgisayarda) kenar çubuğu ve işlem geçmişi yeni dili kullanır.
+  HOF.on("profile", () => {
+    const newRecord = document.querySelector('#hof-sidecard [data-action="newRecord"] .hof-side-text');
+    if (newRecord) newRecord.textContent = `Yeni ${HOF.vocab.record}`;
+    renderUser();
     refreshActivity();
   });
 
