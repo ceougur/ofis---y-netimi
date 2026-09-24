@@ -2,6 +2,11 @@
 
 Sürümler [anlamsal sürümleme](https://semver.org/lang/tr/) kurallarına uyar.
 
+## 1.3.1 — Otomatik güncelleme denemesi
+
+- Otomatik güncelleme zincirini gerçek bir kurulumda sınamak için yayımlanan sürüm: 1.3.0 kurulu sunucular bu sürüme kendiliğinden geçer. İşlevsel bir değişiklik yoktur.
+- Yönetim paneli → Sistem → Güncellemeler kartında "1.3.1 sürümüne güncellendi" yazısı görünür.
+
 ## 1.3.0 — GitHub'dan otomatik güncelleme (Faz 2)
 
 ### Otomatik güncelleme
