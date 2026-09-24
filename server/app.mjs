@@ -9,6 +9,7 @@ import { startBackupScheduler } from "./lib/backup.mjs";
 import { createClientState } from "./lib/client-state.mjs";
 import { DEFAULT_ADMIN_PASSWORD, loadConfig } from "./lib/config.mjs";
 import { createDatasetService } from "./lib/dataset.mjs";
+import { createProfileService } from "./lib/profile.mjs";
 import { createStore, openDatabase } from "./lib/db.mjs";
 import { HttpError, SECURITY_HEADERS, assertSameOrigin, fail, ok, send } from "./lib/http.mjs";
 import { createLogger } from "./lib/logger.mjs";
@@ -22,6 +23,7 @@ import { registerAdminRoutes } from "./routes/admin.mjs";
 import { registerAuthRoutes } from "./routes/auth.mjs";
 import { registerChatRoutes } from "./routes/chat.mjs";
 import { registerDatasetRoutes } from "./routes/dataset.mjs";
+import { registerInsightRoutes } from "./routes/insight.mjs";
 import { registerTrpcRoutes } from "./routes/trpc.mjs";
 import { registerWorkspaceRoutes } from "./routes/workspace.mjs";
 
@@ -71,8 +73,12 @@ export function createApp(overrides = {}) {
     tickMs: config.datasetTickMs,
   });
   clientState.useDataset(() => dataset.info());
+  // Ofis profili: sektör, kelime dağarcığı, kalemle değiştirilen başlıklar ve verinin önbellekli analizi.
+  const profile = createProfileService({ store, dataset, audit, events, log });
+  profile.init();
+  dataset.onChange(() => profile.invalidate());
   dataset.start();
-  const context = { config, log, store, auth, audit, clientState, startedAt, supervisorLink, events, chat, dataset };
+  const context = { config, log, store, auth, audit, clientState, startedAt, supervisorLink, events, chat, dataset, profile };
 
   const router = createRouter();
   router.get("/api/health", async ({ res }) => ok(res, { service: "destekofis-merkezi", status: "ok", version: config.version, time: new Date().toISOString(), uptimeSeconds: Math.round(process.uptime()) }));
@@ -81,6 +87,7 @@ export function createApp(overrides = {}) {
   registerWorkspaceRoutes(router, context);
   registerChatRoutes(router, context);
   registerDatasetRoutes(router, context);
+  registerInsightRoutes(router, context);
   registerTrpcRoutes(router, context);
 
   async function handle(req, res) {

@@ -1,7 +1,7 @@
 {
   "name": "DestekOfis",
   "short_name": "DestekOfis",
-  "description": "Hukuk ofisi dosya takip ve yönetim sistemi",
+  "description": "Ofis kayıt takip ve yönetim sistemi",
   "lang": "tr",
   "start_url": "/",
   "display": "standalone",

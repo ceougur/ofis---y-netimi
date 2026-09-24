@@ -93,9 +93,14 @@ export function registerWorkspaceRoutes(router, { store, auth, audit, dataset, c
       if (name && !name.startsWith("__") && content) clean[name] = content;
     }
     if (!Object.keys(clean).length) throw new HttpError(400, "En az bir bilgi girilmelidir.");
-    const fallbackKey = clean.ESAS || clean["DOSYA NO"] || clean["Dosya No"] || clean["Dosya no"];
-    const key = limited(requestedKey || fallbackKey || newId("case"), CASE_KEY_MAX, "Dosya kimliği");
-    if (store.get("SELECT id FROM records WHERE source_name = ? AND case_key = ?", source, key)) throw new HttpError(409, `"${key}" kimlikli bir kayıt bu tabloda zaten var.`);
+    // Kimlik: verinin kimlik kolonu (1.6.0, ör. "HASTA NO"), yoksa dosya numarası kolonları, o da yoksa yeni kimlik.
+    const identity = dataset.identity?.();
+    const identityValue = identity?.mode === "column" ? String(clean[identity.column] || "").trim().replace(/\s+/g, " ") : "";
+    const fallbackKey = identityValue || clean.ESAS || clean["DOSYA NO"] || clean["Dosya No"] || clean["Dosya no"];
+    const key = limited(requestedKey || fallbackKey || newId("case"), CASE_KEY_MAX, "Kayıt kimliği");
+    if (store.get("SELECT id FROM records WHERE source_name = ? AND case_key = ?", source, key) || store.get("SELECT 1 AS found FROM dataset_rows WHERE dataset_key = ? AND case_key = ? LIMIT 1", source, key)) {
+      throw new HttpError(409, `"${key}" kimlikli bir kayıt tabloda zaten var.`);
+    }
     const recordId = newId("record");
     const timestamp = now();
     store.run("INSERT INTO records (id, source_name, case_key, values_json, created_by, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)", recordId, source, key, JSON.stringify(clean), user.id, timestamp, timestamp);

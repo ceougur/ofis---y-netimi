@@ -1,12 +1,13 @@
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
-import { existsSync, mkdtempSync, rmSync } from "node:fs";
+import { existsSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { DatabaseSync } from "node:sqlite";
 import { after, before, describe, it } from "node:test";
 import { createBackup, listBackups, pruneBackups } from "../server/lib/backup.mjs";
+import { resolveDbPath } from "../server/lib/db-path.mjs";
 import { LATEST_VERSION } from "../server/lib/migrations.mjs";
 import { loginAdmin, startTestServer } from "./helpers.mjs";
 
@@ -32,6 +33,36 @@ describe("yedekleme", () => {
       const copy = new DatabaseSync(path.join(dir, listBackups(dir)[0].name), { readOnly: true });
       assert.equal(copy.prepare("SELECT COUNT(*) AS count FROM chat_messages").get().count, 1);
       copy.close();
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it("yeni yedekler sektörden bağımsız adla alınır; eski adlı yedekler tanınır ve zamanına göre sıralanır", () => {
+    const dir = mkdtempSync(path.join(tmpdir(), "yedek-ad-"));
+    try {
+      // 1.6.0 öncesinden kalmış iki yedek (eski önek) + yeni bir yedek.
+      writeFileSync(path.join(dir, "hukuk-ofisi-2026-09-20T10-00-00-000Z.sqlite"), "eski");
+      writeFileSync(path.join(dir, "hukuk-ofisi-2026-09-21T10-00-00-000Z-guncelleme-oncesi.sqlite"), "eski");
+      const fresh = createBackup(server.app.db, dir, { keep: 100, label: "elle" });
+      assert.match(fresh.name, /^destekofis-\d{4}-\d{2}-\d{2}T[\d-]+Z-elle\.sqlite$/);
+      assert.deepEqual(listBackups(dir).map(item => item.name.slice(0, 16)), ["destekofis-" + fresh.name.slice(11, 16), "hukuk-ofisi-2026", "hukuk-ofisi-2026"]);
+      assert.equal(listBackups(dir)[2].name, "hukuk-ofisi-2026-09-20T10-00-00-000Z.sqlite", "en eski en sonda");
+      // Temizlik en eskileri siler, yeni önekli yedeği değil.
+      pruneBackups(dir, 2);
+      assert.deepEqual(listBackups(dir).map(item => item.name), [fresh.name, "hukuk-ofisi-2026-09-21T10-00-00-000Z-guncelleme-oncesi.sqlite"]);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it("veritabanı dosyası: yeni kurulumda destekofis.sqlite, eski kurulumda hukuk-ofisi.sqlite korunur", () => {
+    const dir = mkdtempSync(path.join(tmpdir(), "vt-ad-"));
+    try {
+      assert.equal(resolveDbPath(dir), path.join(dir, "destekofis.sqlite"));
+      writeFileSync(path.join(dir, "hukuk-ofisi.sqlite"), "");
+      assert.equal(resolveDbPath(dir), path.join(dir, "hukuk-ofisi.sqlite"));
+      assert.equal(path.basename(server.app.config.dbPath), "destekofis.sqlite", "test sunucusu yeni kurulum gibi");
     } finally {
       rmSync(dir, { recursive: true, force: true });
     }

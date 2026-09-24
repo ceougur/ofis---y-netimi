@@ -150,7 +150,9 @@ describe("otomatik güncelleme akışı", () => {
   it("yeni sürüm açılamazsa veritabanı ve sürüm geri alınır; o sürüm bir daha denenmez", async () => {
     // Bozuk sürüm: veritabanı şemasını değiştirip çöker (başarısız bir göçü taklit eder).
     const broken = `import { DatabaseSync } from "node:sqlite";
-const db = new DatabaseSync(process.env.HUKUK_DATA_DIR + "/hukuk-ofisi.sqlite");
+import { existsSync } from "node:fs";
+const dir = process.env.HUKUK_DATA_DIR;
+const db = new DatabaseSync(existsSync(dir + "/hukuk-ofisi.sqlite") ? dir + "/hukuk-ofisi.sqlite" : dir + "/destekofis.sqlite");
 db.exec("PRAGMA user_version = 99");
 db.close();
 process.exit(3);
@@ -170,7 +172,7 @@ process.exit(3);
       const current = readJson(path.join(installRoot, "app", "current.json"));
       assert.equal(current.version, "9.0.0");
       assert.equal(current.rolledBackFrom, "9.0.1");
-      assert.equal(schemaOf(path.join(installRoot, "data", "hukuk-ofisi.sqlite")), LATEST_VERSION, "veritabanı güncelleme öncesi hâline dönmeli");
+      assert.equal(schemaOf(path.join(installRoot, "data", "destekofis.sqlite")), LATEST_VERSION, "veritabanı güncelleme öncesi hâline dönmeli");
       assert.ok(readdirSync(path.join(installRoot, "backups")).some(name => name.includes("basarisiz-guncelleme-9-0-1")));
       assert.ok(readJson(path.join(installRoot, "app", "update-state.json")).failed["9.0.1"]);
       assert.equal((await login(base, "kalici", "Kalici-Parola-2026")).status, 200);

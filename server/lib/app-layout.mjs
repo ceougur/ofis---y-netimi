@@ -1,4 +1,5 @@
-// Kurulum düzeni: C:\HukukOfisiMerkezi\app\<sürüm>\ klasörleri ve etkin sürümü gösteren app\current.json.
+// Kurulum düzeni: <kurulum kökü>\app\<sürüm>\ klasörleri (yeni kurulumlarda C:\DestekOfis, eskilerde C:\HukukOfisiMerkezi)
+// ve etkin sürümü gösteren app\current.json.
 //
 // current.json: { version, previous?, pending?, backup?, schemaBefore?, selectedAt, confirmedAt?, fallbackFrom?, rolledBackFrom? }
 //   pending: true  → sürüm yeni etkinleştirildi, ilk başarılı açılışta onaylanır; açılamazsa "previous"a dönülür.

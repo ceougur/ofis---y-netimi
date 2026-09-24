@@ -2,7 +2,7 @@
   "name": "destekofis",
   "version": "1.5.0",
   "private": true,
-  "description": "DestekOfis — hukuk ofisleri için merkezi dosya takip sunucusu (server/client)",
+  "description": "DestekOfis — ofisler için merkezi kayıt takip ve yönetim sunucusu (server/client); yüklenen veriye göre sektöre uyum sağlar",
   "type": "module",
   "engines": {
     "node": ">=22.13.0"

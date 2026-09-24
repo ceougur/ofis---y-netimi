@@ -15,6 +15,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { detectInstall, packageVersion } from "./lib/app-layout.mjs";
 import { BACKUP_NAME, createBackup } from "./lib/backup.mjs";
+import { resolveDbPath } from "./lib/db-path.mjs";
 import { openDatabase } from "./lib/db.mjs";
 import { startDiscoveryResponder } from "./lib/discovery.mjs";
 import { createLogger } from "./lib/logger.mjs";
@@ -103,7 +104,8 @@ export async function startSupervisor(options = {}) {
   const dataDir = path.resolve(options.dataDir || env.HUKUK_DATA_DIR || path.join(installRoot, "data"));
   const backupDir = path.resolve(options.backupDir || env.HUKUK_BACKUP_DIR || path.join(installRoot, "backups"));
   const configDir = path.resolve(options.configDir || path.join(installRoot, "config"));
-  const dbPath = path.join(dataDir, "hukuk-ofisi.sqlite");
+  // Veritabanı yolu her kullanımda çözülür (yeni kurulumda dosyayı uygulama oluşturur; eski kurulum eski adı korur).
+  const dbPath = () => resolveDbPath(dataDir);
   const backupKeep = Math.max(3, Number(env.HUKUK_BACKUP_KEEP || 30));
   const port = Number(options.port ?? env.PORT ?? 5123);
   const host = options.host || env.HOST || "0.0.0.0";
@@ -224,8 +226,9 @@ export async function startSupervisor(options = {}) {
 
   // ---------- Veritabanı (yalnızca uygulama durmuşken, güncelleme sırasında) ----------
   function withDatabase(fn) {
-    if (!existsSync(dbPath)) return null;
-    const db = openDatabase(dbPath, { readOnly: true });
+    const file = dbPath();
+    if (!existsSync(file)) return null;
+    const db = openDatabase(file, { readOnly: true });
     try {
       return fn(db);
     } finally {
@@ -237,10 +240,11 @@ export async function startSupervisor(options = {}) {
     if (!BACKUP_NAME.test(String(name))) throw new Error(`Geçersiz yedek adı: ${name}`);
     const source = path.join(backupDir, name);
     if (!existsSync(source)) throw new Error(`Yedek bulunamadı: ${name}`);
-    const temp = `${dbPath}.geri-yukleniyor`;
+    const file = dbPath();
+    const temp = `${file}.geri-yukleniyor`;
     copyFileSync(source, temp);
-    for (const suffix of ["-wal", "-shm"]) rmSync(`${dbPath}${suffix}`, { force: true });
-    renameSync(temp, dbPath);
+    for (const suffix of ["-wal", "-shm"]) rmSync(`${file}${suffix}`, { force: true });
+    renameSync(temp, file);
   }
 
   async function probeChild(version) {

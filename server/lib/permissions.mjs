@@ -20,6 +20,8 @@ export const PERMISSIONS = Object.freeze({
   "reports.view": ["admin", "avukat"],
   "audit.view": ["admin", "avukat"],
   "sources.manage": ["admin"],
+  // Sektör seçimi ve kalemle başlık değiştirme (v1.6.0).
+  "profile.manage": ["admin"],
   "users.manage": ["admin"],
   "system.manage": ["admin"],
 });

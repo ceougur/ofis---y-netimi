@@ -1,7 +1,8 @@
 ; DestekOfis — Windows kurulum betiği (Inno Setup 6)
 ; Derleme: node tools/build-windows.mjs  (ISCC /DAppVersion=x.y.z /DStageDir=... setup.iss)
 ;
-; Sunucu kurulumu: C:\HukukOfisiMerkezi altına gömülü Node.js çalışma zamanı + uygulama + nssm kurar,
+; Sunucu kurulumu: C:\DestekOfis altına (1.6.0 öncesi kurulumlar kendi klasöründe, ör. C:\HukukOfisiMerkezi, kalır)
+; gömülü Node.js çalışma zamanı + uygulama + nssm kurar,
 ; "DestekOfis" Windows servisini (otomatik başlatma, oturum açılmadan, penceresiz) oluşturur,
 ; güvenlik duvarına TCP/UDP 5123 izni ekler ve masaüstüne kısayol koyar.
 ; İstemci kurulumu: yalnızca sunucuyu kendiliğinden bulan başlatıcıyı ve kısayolu kurar.
@@ -29,7 +30,8 @@ AppPublisherURL={#AppURL}
 AppSupportURL={#AppURL}
 AppUpdatesURL={#AppURL}
 AppContact=bilgi.ugurcetin@gmail.com
-DefaultDirName=C:\HukukOfisiMerkezi
+; Yeni kurulumlar sektörden bağımsız klasöre; mevcut kurulumlar (aynı AppId) önceki klasörlerinde güncellenir.
+DefaultDirName=C:\DestekOfis
 UsePreviousAppDir=yes
 ; Klasör kaldırmadan sonra da (veriler korunduğu için) kalır; "klasör zaten var" sorusu gereksiz kafa karıştırır.
 DirExistsWarning=no

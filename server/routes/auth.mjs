@@ -2,17 +2,18 @@
 import { publicUser } from "../lib/auth.mjs";
 import { ok, readJson } from "../lib/http.mjs";
 
-export function registerAuthRoutes(router, { auth, config, store, events }) {
+export function registerAuthRoutes(router, { auth, config, store, events, profile }) {
   const product = { name: config.productName, version: config.version };
   const office = () => ({ name: store.setting("office.name", "") });
 
-  // Giriş ekranı için oturum gerektirmeyen bilgi. Ofis adı zaten ağ keşfinde yayınlandığından gizli değildir.
-  router.get("/api/public/info", async ({ res }) => ok(res, { product, office: office() }));
+  // Giriş ekranı için oturum gerektirmeyen bilgi. Ofis adı zaten ağ keşfinde yayınlandığından gizli değildir;
+  // alt başlık ("Hukuk ofisi yönetimi", "Klinik yönetimi"…) seçili sektörden ya da yöneticinin yazdığından gelir.
+  router.get("/api/public/info", async ({ res }) => ok(res, { product, office: office(), tagline: profile?.tagline() || "Ofis yönetimi" }));
 
   router.post("/api/auth/login", async ({ req, res }) => {
     const body = await readJson(req);
     const user = auth.login(req, res, body.username, body.password);
-    ok(res, { ...user, product, office: office() });
+    ok(res, { ...user, product, office: office(), profile: profile?.profile() });
   });
 
   router.post("/api/auth/logout", async ({ req, res }) => {
@@ -25,7 +26,7 @@ export function registerAuthRoutes(router, { auth, config, store, events }) {
 
   router.get("/api/auth/me", async ({ req, res }) => {
     const user = auth.requireUser(req, { allowPasswordChange: true });
-    ok(res, { ...publicUser(user), product, office: office() });
+    ok(res, { ...publicUser(user), product, office: office(), profile: profile?.profile() });
   });
 
   router.post("/api/auth/change-password", async ({ req, res }) => {

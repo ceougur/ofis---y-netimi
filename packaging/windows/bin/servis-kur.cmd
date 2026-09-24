@@ -1,6 +1,6 @@
 @echo off
 rem DestekOfis - Windows servisini kurar/gunceller ve baslatir (kurulum programi tarafindan calistirilir).
-rem Elle calistirmak icin: yonetici komut isteminde  C:\HukukOfisiMerkezi\bin\servis-kur.cmd
+rem Elle calistirmak icin: yonetici komut isteminde  <kurulum klasoru>\bin\servis-kur.cmd  (yeni kurulumlarda C:\DestekOfis)
 rem Kurulum programi kurulan surumu parametre olarak verir (servis-kur.cmd 1.3.0).
 setlocal EnableExtensions
 set "ROOT=%~dp0.."
@@ -38,7 +38,7 @@ if errorlevel 1 (
 "%NSSM%" set %SVC% AppParameters "--disable-warning=ExperimentalWarning ""%ROOT%\bootstrap.mjs"""
 "%NSSM%" set %SVC% AppDirectory "%ROOT%"
 "%NSSM%" set %SVC% DisplayName "DestekOfis Sunucu"
-"%NSSM%" set %SVC% Description "DestekOfis hukuk ofisi merkezi sunucusu (HTTP ve UDP 5123). Bilgisayar acildiginda oturum acilmadan calisir."
+"%NSSM%" set %SVC% Description "DestekOfis ofis sunucusu (HTTP ve UDP 5123). Bilgisayar acildiginda oturum acilmadan calisir."
 "%NSSM%" set %SVC% Start SERVICE_AUTO_START
 "%NSSM%" set %SVC% ObjectName "%ACCOUNT%"
 rem --use-system-ca: Windows sertifika deposuna da guvenilir (SSL denetimi yapan antivirus/guvenlik duvari olan aglarda

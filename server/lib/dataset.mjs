@@ -13,7 +13,8 @@ import { HttpError, parseJson } from "./http.mjs";
 import { matrixToRecords } from "./sections.mjs";
 import { spreadsheetId } from "./sheets.mjs";
 import { applyPatch } from "./sources.mjs";
-import { rowHash, rowIdentities } from "./dataset-identity.mjs";
+import { LEGACY_IDENTITY, detectIdentity, rowHash, rowIdentities, sameIdentity } from "./dataset-identity.mjs";
+import { columnOrder } from "./sources.mjs";
 
 export const DATASET_KEY = "dataset://ofis";
 export const MAX_ROWS = 200_000;
@@ -30,6 +31,7 @@ const S = {
   needsInitialSync: "dataset.needsInitialSync",
   syncHold: "dataset.syncHold",
   changedAt: "dataset.changedAt",
+  identity: "dataset.identity",
 };
 
 const isSheetUrl = value => /^https:\/\/docs\.google\.com\/spreadsheets\//i.test(String(value || "").trim());
@@ -153,9 +155,29 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
     while (stages.size >= MAX_STAGES) stages.delete(stages.keys().next().value);
   }
 
-  function toEntries(rows) {
-    const identities = rowIdentities(rows);
+  function toEntries(rows, identity) {
+    const identities = rowIdentities(rows, identity);
     return rows.map((values, index) => ({ ...identities[index], values, hash: rowHash(values), position: index }));
+  }
+
+  // Kayıt kimliği kuralı (dataset-identity.mjs). Mevcut veri 1.6.0 öncesinden geliyorsa (kayıtlı kural yok) eski kural
+  // geçerlidir. "Devamı olarak ekle" ve eşitleme mevcut kuralla eşleştirir; "yerine koy" kimlik kolonu yeni veride de
+  // varsa onu korur (notlar bağlı kalsın), yoksa yeni verinin kendi kuralını kullanır.
+  function currentIdentity() {
+    const stored = parseJson(setting(S.identity, ""), null);
+    if (stored && (stored.mode === "legacy" || (stored.mode === "column" && stored.column))) return stored;
+    return loadRows().rows.length ? LEGACY_IDENTITY : null;
+  }
+  function identitiesFor(rows) {
+    const detected = detectIdentity(rows);
+    const current = currentIdentity();
+    if (!current) return { merge: detected, replace: detected };
+    const columns = columnOrder(rows);
+    const usable = current.mode === "legacy" || columns.includes(current.column);
+    return {
+      merge: usable ? current : detected,
+      replace: current.mode === "column" && usable ? current : detected,
+    };
   }
 
   function parseExcelSheets(sheets) {
@@ -240,23 +262,27 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
     } else throw new HttpError(400, "Bilinmeyen içeri alma türü.");
     rows = cleanRows(rows);
     if (!rows.length) throw new HttpError(400, "Tabloda okunabilir kayıt bulunamadı. Tablonun kolon başlıklarıyla başladığından emin olun.");
-    const entries = toEntries(rows);
+    const identity = identitiesFor(rows);
+    const entries = { merge: toEntries(rows, identity.merge) };
+    entries.replace = sameIdentity(identity.merge, identity.replace) ? entries.merge : toEntries(rows, identity.replace);
     const id = `stage-${randomUUID()}`;
-    stages.set(id, { id, userId: user.id, kind, label, url, entries, tabs, createdAt: Date.now() });
-    const changes = diff(entries);
+    stages.set(id, { id, userId: user.id, kind, label, url, entries, identity, tabs, createdAt: Date.now() });
+    const mergeChanges = diff(entries.merge);
+    const replaceChanges = entries.replace === entries.merge ? mergeChanges : diff(entries.replace);
     return {
       stageId: id,
       kind,
       label,
       url,
-      rowCount: entries.length,
+      rowCount: rows.length,
       tabs,
       hasData: loadRows().rows.length > 0,
       current: { rowCount: loadRows().rows.length, label: setting(S.label, ""), linked: Boolean(linkedUrl()) },
+      identity: identity.replace,
       preview: {
-        merge: { added: changes.added, updated: changes.updated, unchanged: changes.unchanged, kept: changes.others },
-        replace: { added: changes.added, updated: changes.updated, unchanged: changes.unchanged, removed: changes.others },
-        samples: changes.samples,
+        merge: { added: mergeChanges.added, updated: mergeChanges.updated, unchanged: mergeChanges.unchanged, kept: mergeChanges.others },
+        replace: { added: replaceChanges.added, updated: replaceChanges.updated, unchanged: replaceChanges.unchanged, removed: replaceChanges.others },
+        samples: entries.replace === entries.merge ? mergeChanges.samples : replaceChanges.samples,
       },
     };
   }
@@ -347,10 +373,18 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
 
   const changedSomething = counts => counts.added + counts.updated + counts.removed + counts.missing > 0;
 
-  function afterChange(actor) {
+  const listeners = new Set();
+  function afterChange(actor, detail = {}) {
     invalidate();
     store.setSetting(S.changedAt, now(), actor.id === "system" ? null : actor.id);
     bumpClientState(actor.id === "system" ? null : actor.id);
+    for (const listener of listeners) {
+      try {
+        listener({ actor, ...detail });
+      } catch (error) {
+        log?.warn?.("Veri değişikliği dinleyicisi hata verdi", error);
+      }
+    }
     // Tüm açık ekranlar tabloyu yeniler (işlemi yapan dahil; onun sayfası zaten yeniden yüklenir).
     events?.publish("workspace.changed", { kind: "records", actorId: actor.id, actorName: actor.display_name, dataset: true });
   }
@@ -373,9 +407,12 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
     if (!["merge", "replace"].includes(effective)) throw new HttpError(400, "Devamı olarak ekle ya da yerine koy seçilmelidir.");
     const backupName = backup(effective === "merge" ? "veri-oncesi-ekleme" : "veri-oncesi-degistirme");
     const origin = staged.kind === "sheets" ? "sheets" : "excel";
+    const entries = effective === "merge" ? staged.entries.merge : staged.entries.replace;
+    const identity = effective === "merge" ? staged.identity.merge : staged.identity.replace;
     let counts;
     store.tx(() => {
-      counts = apply(staged.entries, { mode: effective, origin });
+      counts = apply(entries, { mode: effective, origin });
+      store.setSetting(S.identity, JSON.stringify(identity), user.id);
       if (staged.kind === "sheets" && link) {
         store.setSetting(S.linkedUrl, staged.url, user.id);
         store.setSetting(S.lastSyncAt, now(), user.id);
@@ -388,11 +425,11 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
       store.setSetting(S.needsInitialSync, "0", user.id);
       store.setSetting(S.syncHold, "", user.id);
       if (effective === "replace" || empty || !setting(S.label, "")) store.setSetting(S.label, staged.label, user.id);
-      logImport(user, { kind: staged.kind, mode: empty ? "initial" : effective, label: staged.label, url: staged.url, rowCount: staged.entries.length, counts, backupName });
-      audit(user, "dataset.imported", staged.id, { kind: staged.kind, mode: empty ? "initial" : effective, label: staged.label, rows: staged.entries.length, ...counts, backupName });
+      logImport(user, { kind: staged.kind, mode: empty ? "initial" : effective, label: staged.label, url: staged.url, rowCount: entries.length, counts, backupName });
+      audit(user, "dataset.imported", staged.id, { kind: staged.kind, mode: empty ? "initial" : effective, label: staged.label, rows: entries.length, ...counts, backupName });
     });
     stages.delete(staged.id);
-    afterChange(user);
+    afterChange(user, { imported: true, mode: empty ? "initial" : effective });
     return { mode: empty ? "initial" : effective, counts, rowCount: loadRows().rows.length, label: setting(S.label, ""), sourceLabel: staged.label, linked: Boolean(linkedUrl()), backupName };
   }
 
@@ -410,7 +447,8 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
         return { ok: false, message: result.message };
       }
       const rows = cleanRows(result.rows);
-      const entries = toEntries(rows);
+      const identity = identitiesFor(rows).merge;
+      const entries = toEntries(rows, identity);
       const { rows: currentRows } = loadRows();
       const fromSheet = currentRows.filter(row => row.origin === "sheets" && !row.missingSince);
       const changes = diff(entries);
@@ -429,6 +467,7 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
       let counts;
       store.tx(() => {
         counts = apply(entries, { mode: "sync", origin: "sheets" });
+        store.setSetting(S.identity, JSON.stringify(identity));
         store.setSetting(S.lastSyncOkAt, started);
         store.setSetting(S.lastSyncError, "");
         store.setSetting(S.needsInitialSync, "0");
@@ -463,7 +502,7 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
     let removed = 0;
     store.tx(() => {
       removed = store.run("DELETE FROM dataset_rows WHERE dataset_key = ?", DATASET_KEY).changes;
-      for (const key of [S.linkedUrl, S.label, S.syncHold, S.lastSyncError, S.lastSyncOkAt]) store.setSetting(key, "", user.id);
+      for (const key of [S.linkedUrl, S.label, S.syncHold, S.lastSyncError, S.lastSyncOkAt, S.identity]) store.setSetting(key, "", user.id);
       store.setSetting(S.needsInitialSync, "0", user.id);
       logImport(user, { kind: "remove", mode: "remove", label: "", rowCount: 0, counts: { removed }, backupName });
       audit(user, "dataset.removed", DATASET_KEY, { removed, backupName });
@@ -536,6 +575,11 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
 
   // İstemci ayarları için hafif özet (satırları okumaz).
   const info = () => ({ hasData: hasData(), label: setting(S.label, ""), linkedUrl: linkedUrl() });
+  const onChange = listener => {
+    listeners.add(listener);
+    return () => listeners.delete(listener);
+  };
+  const identity = () => currentIdentity();
 
-  return { view, summary, info, stage, commit, sync, unlink, remove, missingRows, resolveMissing, adoptLegacySheetUrl, hasData, start, stop, invalidate };
+  return { view, summary, info, stage, commit, sync, unlink, remove, missingRows, resolveMissing, adoptLegacySheetUrl, hasData, start, stop, invalidate, onChange, identity };
 }

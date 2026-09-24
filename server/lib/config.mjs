@@ -3,6 +3,7 @@
 import path from "node:path";
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
+import { resolveDbPath } from "./db-path.mjs";
 
 export const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
 export const DEFAULT_ADMIN_PASSWORD = "Ofis2026!";
@@ -27,7 +28,7 @@ export function loadConfig(overrides = {}) {
     dataDir,
     backupDir,
     publicDir: path.resolve(overrides.publicDir ?? path.join(ROOT, "client")),
-    dbPath: path.join(dataDir, "hukuk-ofisi.sqlite"),
+    dbPath: resolveDbPath(dataDir),
     port: number(overrides.port ?? env.PORT, 5123),
     // Servis yöneticisi altında uygulama iç bir portta çalışır; kullanıcıların bağlandığı port budur.
     publicPort: number(overrides.publicPort ?? env.HUKUK_PUBLIC_PORT, number(overrides.port ?? env.PORT, 5123)),

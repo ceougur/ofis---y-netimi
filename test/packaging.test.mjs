@@ -122,7 +122,8 @@ describe("Windows kurulum düzeni (bootstrap)", () => {
     try {
       const health = await (await fetch(`http://127.0.0.1:${port}/api/health`)).json();
       assert.equal(health.data.version, version);
-      assert.ok(existsSync(path.join(installRoot, "data", "hukuk-ofisi.sqlite")), "veritabanı kurulum kökündeki data klasöründe olmalı");
+      assert.ok(existsSync(path.join(installRoot, "data", "destekofis.sqlite")), "yeni kurulumun veritabanı kurulum kökündeki data klasöründe, sektörden bağımsız adla");
+      assert.ok(!existsSync(path.join(installRoot, "data", "hukuk-ofisi.sqlite")), "yeni kurulumda eski adlı dosya oluşmaz");
       assert.ok(!existsSync(path.join(installRoot, "app", version, "data")), "uygulama klasörüne veri yazılmamalı");
     } finally {
       service.child.kill("SIGTERM");
