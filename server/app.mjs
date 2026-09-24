@@ -55,7 +55,7 @@ export function createApp(overrides = {}) {
   const serveStatic = createStaticHandler(config.publicDir);
   const supervisorLink = overrides.supervisorLink ?? (config.supervised ? createSupervisorLink(process) : null);
   // Canlı olay kanalı: oturumu kapanan (çıkış, parola değişikliği, pasifleştirme) bağlantılar ping turunda düşer.
-  const events = createEventHub({ log, pingMs: config.eventsPingMs, isValid: client => auth.sessionAlive(client.tokenHash) });
+  const events = createEventHub({ log, pingMs: config.eventsPingMs, maxAgeMs: config.eventsMaxAgeMs, isValid: client => auth.sessionAlive(client.tokenHash) });
   const chat = createChat({ store, events, audit });
   const context = { config, log, store, auth, audit, sources, clientState, startedAt, supervisorLink, events, chat };
 

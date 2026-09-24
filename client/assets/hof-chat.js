@@ -396,7 +396,8 @@
 
   function addMessage(conversationId, message) {
     const thread = state.threads.get(conversationId);
-    if (thread?.loaded) thread.messages = mergeMessages(thread.messages, [message]);
+    // Yazışma o an yükleniyor olsa da eklenir: yükleme sonucu kimliğe göre birleştirildiğinden mesaj kaybolmaz.
+    if (thread) thread.messages = mergeMessages(thread.messages, [message]);
     const conversation = conversationById(conversationId);
     if (conversation) conversation.lastMessage = message;
     if (state.open && state.active === conversationId && state.view === "thread") renderThread();

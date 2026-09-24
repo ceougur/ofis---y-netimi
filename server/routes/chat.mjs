@@ -3,9 +3,11 @@ import { HttpError, ok, readJson } from "../lib/http.mjs";
 
 export function registerChatRoutes(router, { auth, chat, events, config }) {
   // Canlı olaylar (Server-Sent Events). Bağlantı açık kaldığı sürece yanıt bitmez.
-  router.get("/api/events", async ({ req, res }) => {
+  router.get("/api/events", async ({ req, res, url }) => {
     const user = auth.requireUser(req);
-    events.connect(req, res, { userId: user.id, tokenHash: auth.sessionHash(req), hello: { version: config.version, userId: user.id } });
+    // Tarayıcı kendiliğinden yeniden bağlanırken Last-Event-ID başlığını, sayfa yeni bağlantı açarken "last" parametresini gönderir.
+    const lastEventId = req.headers["last-event-id"] || url.searchParams.get("last") || null;
+    events.connect(req, res, { userId: user.id, tokenHash: auth.sessionHash(req), hello: { version: config.version, userId: user.id }, lastEventId });
   });
 
   router.get("/api/chat", async ({ req, res }) => {

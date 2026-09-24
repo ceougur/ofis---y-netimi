@@ -45,6 +45,8 @@ export function loadConfig(overrides = {}) {
     sheetsCacheMs: number(env.HUKUK_SHEETS_CACHE_MS, 45_000),
     // Canlı olay kanalında boşta bağlantıyı canlı tutan ve kapanmış oturumları düşüren tur aralığı.
     eventsPingMs: number(overrides.eventsPingMs ?? env.HUKUK_EVENTS_PING_MS, 25_000),
+    // Canlı bağlantı ömrü: süre dolunca akış kapanır, tarayıcı kaldığı yerden devam eder (bkz. events.mjs).
+    eventsMaxAgeMs: number(overrides.eventsMaxAgeMs ?? env.HUKUK_EVENTS_MAX_AGE_MS, 5 * 60_000),
     fetchImpl: overrides.fetchImpl || ((...args) => globalThis.fetch(...args)),
     scheduleBackups: overrides.scheduleBackups ?? true,
   });
