@@ -84,6 +84,7 @@
       const error = new ApiError(payload.error || "İşlem tamamlanamadı.", response.status, payload);
       if (response.status === 401) HOF.emit("unauthorized", error);
       else if (payload.code === "PASSWORD_CHANGE_REQUIRED") HOF.emit("password-required", error);
+      else if (response.status === 503 && payload.code === "MAINTENANCE") HOF.emit("maintenance", payload);
       throw error;
     }
     return payload.data === undefined ? payload : payload.data;

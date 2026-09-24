@@ -1,4 +1,4 @@
-# DestekOfis — Mimari (v1.1)
+# DestekOfis — Mimari (v1.2)
 
 ## Genel bakış
 
@@ -17,6 +17,25 @@ Tarayıcı (Chrome/Edge)                         Sunucu bilgisayarı
 
 - **Sunucu** dış bağımlılık kullanmaz (Node 22+ yerleşik `node:http`, `node:sqlite`, `node:zlib`, `node:crypto`). Bu, kurulumu ve ileride otomatik güncellemeyi basitleştirir.
 - **Veritabanına** yalnızca sunucu süreci erişir; istemciler HTTP API kullanır.
+
+## Windows dağıtımı (v1.2)
+
+```
+nssm (Windows servisi "DestekOfis", NT SERVICE\DestekOfis, otomatik başlatma)
+ └─ runtime\node.exe bootstrap.mjs            ← kurulum kökünde sabit; app\current.json'daki sürümü seçer
+     └─ app\<sürüm>\server\supervisor.mjs      ← servis yöneticisi (aynı süreç)
+         ├─ HTTP kapısı :5123 ──proxy──► 127.0.0.1:<boş port>  app\<sürüm>\server\server.mjs (alt süreç, IPC)
+         ├─ UDP keşif   :5123  "HukukOfisiServerNerede" → JSON {address, port, url, name, instanceId, version, state}
+         └─ bakım sayfası (503 + Retry-After): başlatılıyor · yeniden başlatılıyor · güncelleniyor · başlatılamadı
+```
+
+- **Servis yöneticisi** uygulamayı alt süreç olarak çalıştırır. Uygulama hazır olana kadar (ve çökme/yeniden başlatma sırasında) istemcilere kendiliğinden yenilenen markalı bir bakım sayfası, `/api/*` isteklerine `503 MAINTENANCE` JSON'u döner; arayüz bunu görünce bakım katmanını gösterip sağlık ucunu yoklar. Çökmeler artan beklemeyle (1–30 sn) yeniden başlatılır; 5 dakikada 5 çökmede "başlatılamadı" durumuna geçilir. Alt süreç IPC kanalı koparsa kendini kapatır (öksüz süreç kalmaz).
+- Uygulama yalnızca `127.0.0.1`'i dinler; gerçek istemci IP'si `x-forwarded-for` ile iletilir ve yalnızca servis yöneticisi altında (`HUKUK_TRUST_PROXY=1`) dikkate alınır. Varsayılan parolayla ilk giriş yalnızca sunucunun kendisinden yapılabilir.
+- **Keşif protokolü:** istemci UDP 5123'e yayın (broadcast) olarak `HukukOfisiServerNerede` gönderir; sunucu, isteğin geldiği alt ağdaki kendi IP'siyle yanıt verir. Saniyede en fazla 5 yanıt, 512 bayttan büyük veya tanınmayan paketler yok sayılır.
+- **Başlatıcı** (`launcher/`, Go, yalnızca standart kütüphane, `-H=windowsgui`): kayıtlı adres → bu bilgisayar → UDP keşif (kayıtlı kurulum kimliği öncelikli) → bilgisayar adı sırasıyla sunucuyu bulur, `%APPDATA%\DestekOfis\istemci.json`'a kaydeder ve Edge/Chrome'u `--app` penceresinde açar.
+- **Kurulum** (`packaging/windows/setup.iss`, Inno Setup 6): sunucu/personel türleri; gömülü Node.js (Authenticode/özet doğrulamalı) ve nssm; `bin\servis-kur.cmd` servisi kurar, eski v1.0 zamanlanmış görevini ve eski güvenlik duvarı kuralını temizler, izinleri SID ile ayarlar (kök: yöneticiler; `data/backups/logs/config`: yalnızca SYSTEM, yöneticiler ve servis hesabı; `app`: servis hesabına yazma — Faz 2 güncellemeleri için), güvenlik duvarına yalnızca `node.exe` ve Özel/Etki alanı profilleri için izin verir ve sağlık kontrolüyle bitirir. Kaldırma veriyi korur.
+- **Sürümlü uygulama klasörleri** (`app\<sürüm>`): bootstrap etkin sürüm açılamazsa kurulu diğer sürümlere döner ve `current.json`'ı düzeltir. Faz 2'deki otomatik güncelleme bu düzen üzerine kuruludur.
+- `NODE_OPTIONS=--use-system-ca`: SSL denetimi yapan antivirüs/güvenlik duvarı olan ağlarda Windows sertifika deposuna güvenilir.
 
 ## İstemci katmanları
 
@@ -68,8 +87,9 @@ Google Sheets sonuçları 45 sn önbelleklenir; aynı anda gelen istekler birle�
 
 ## Test
 
-- `npm test`: kimlik, yetki, çalışma alanı, kaynak birleştirme, Google Sheets (sahte ağ), göç (gerçek v1.0.0 veritabanı), yedek, statik dosya ve zip testleri.
+- `npm test`: kimlik, yetki, çalışma alanı, kaynak birleştirme, Google Sheets (sahte ağ), göç (gerçek v1.0.0 veritabanı), yedek, statik dosya, zip, servis yöneticisi (vekil, bakım sayfası, çökme sonrası yeniden başlatma, öksüz süreç), UDP keşif, kurulum düzeni (bootstrap, sürüm geri dönüşü) ve Go başlatıcı (keşif, kayıt, Windows derlemesi) testleri.
 - `npm run test:e2e`: Playwright ile iki kullanıcılı uçtan uca senaryo (Excel yükleme, düzeltme, silme/geri alma, yeni kayıt, notlar, yetkiler, yönetim paneli, zorunlu parola değişimi, CSP ihlali denetimi).
+- GitHub Actions: `ci.yml` (Ubuntu/Windows × Node 22/24, e2e, paket) ve `windows.yml` (kurulum dosyasını derler; gerçek Windows'ta sessiz kurulum, servis hesabı/başlangıç türü, sağlık, UDP keşif, başlatıcı, servis yeniden başlatma ve yeniden kurulumda veri korunumu, kaldırma).
 
 ## Yol haritası
 

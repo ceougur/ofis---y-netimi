@@ -1088,3 +1088,7 @@ html:not(.hof-can-system-manage) [data-requires="system.manage"],
 html:not(.hof-can-audit-view) [data-requires="audit.view"] {
   display: none !important;
 }
+
+.hof-maintenance .hof-progress {
+  margin-top: 18px;
+}

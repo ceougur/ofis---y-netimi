@@ -64,5 +64,29 @@ describe("yedekleme", () => {
     assert.equal(info.status, 200);
     assert.equal(info.data.data.schemaVersion, 2);
     assert.ok(info.data.data.lastBackup);
+    assert.equal(info.data.data.port, server.app.config.publicPort);
+    assert.ok(Array.isArray(info.data.data.addresses));
+    for (const address of info.data.data.addresses) assert.match(address, /^http:\/\/\d+\.\d+\.\d+\.\d+:\d+$/);
+    assert.equal(typeof info.data.data.hostname, "string");
+  });
+
+  it("ofis adı kaydedilir, keşif bilgisine ve giriş ekranına yansır, geçmişe yazılır", async () => {
+    let changes = 0;
+    const stop = server.app.onInfoChange(() => (changes += 1));
+    try {
+      const saved = await admin.put("/api/admin/office", { name: "  Çetin Hukuk Bürosu  " });
+      assert.equal(saved.status, 200);
+      assert.equal(saved.data.data.name, "Çetin Hukuk Bürosu");
+      assert.equal((await admin.get("/api/admin/office")).data.data.name, "Çetin Hukuk Bürosu");
+      assert.equal(server.app.info().officeName, "Çetin Hukuk Bürosu");
+      assert.ok(changes >= 1, "keşif yanıtı güncellenmeli");
+      assert.equal((await admin.get("/api/auth/me")).data.data.office.name, "Çetin Hukuk Bürosu");
+      const events = await admin.get("/api/admin/audit?type=settings.office");
+      assert.equal(events.data.data[0].payload.name, "Çetin Hukuk Bürosu");
+      const tooLong = await admin.put("/api/admin/office", { name: "x".repeat(121) });
+      assert.equal(tooLong.status, 400);
+    } finally {
+      stop?.();
+    }
   });
 });

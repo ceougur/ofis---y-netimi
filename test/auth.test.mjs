@@ -115,3 +115,19 @@ describe("varsayılan parola zorunlu değişimi", () => {
     assert.equal(oldPassword.status, 401);
   });
 });
+
+describe("ilk kurulum güvenliği", () => {
+  let server;
+  before(async () => {
+    server = await startTestServer({ adminPassword: "Ofis2026!", env: { HUKUK_TRUST_PROXY: "1" } });
+  });
+  after(() => server.close());
+
+  it("varsayılan parolayla ilk giriş yalnızca sunucu bilgisayarından yapılabilir", async () => {
+    const remote = await server.client().post("/api/auth/login", { username: "admin", password: "Ofis2026!" }, { "x-forwarded-for": "192.168.1.44" });
+    assert.equal(remote.status, 403);
+    assert.equal(remote.data.code, "FIRST_LOGIN_LOCAL_ONLY");
+    const local = await server.client().login("admin", "Ofis2026!");
+    assert.equal(local.status, 200);
+  });
+});

@@ -1,11 +1,14 @@
 // Oturum yönetimi, giriş deneme sınırı ve yetki denetimi.
 import { createHash, randomBytes, randomUUID } from "node:crypto";
 import { HttpError, clientIp, parseCookies } from "./http.mjs";
+import { DEFAULT_ADMIN_PASSWORD } from "./config.mjs";
 import { DUMMY_HASH, hashPassword, passwordProblem, verifyPassword } from "./passwords.mjs";
 import { can, permissionsFor } from "./permissions.mjs";
 
 export const SESSION_COOKIE = "hof_session";
 const hashToken = token => createHash("sha256").update(token).digest("hex");
+const LOCAL_ADDRESSES = new Set(["127.0.0.1", "::1", "::ffff:127.0.0.1", "localhost"]);
+export const isLocalAddress = ip => LOCAL_ADDRESSES.has(String(ip || "").trim());
 const now = () => new Date().toISOString();
 
 // Kullanıcı adı + IP başına 15 dakikada 5 hatalı deneme; IP başına 20 deneme.
@@ -99,6 +102,12 @@ export function createAuth({ store, config, audit }) {
       limiter.fail(ip, key);
       audit({ id: "anonymous", display_name: username || "bilinmiyor" }, "auth.login_failed", user?.id || "unknown", { ip });
       throw new HttpError(401, !user || !valid ? "Kullanıcı adı veya parola hatalı." : "Bu hesap pasif durumda. Yöneticinize başvurun.");
+    }
+    // Varsayılan parola hâlâ geçerliyken ilk giriş yalnızca sunucu bilgisayarının kendisinden yapılabilir;
+    // böylece kurulumla ilk giriş arasında ağdaki biri yönetici hesabını ele geçiremez.
+    if (user.must_change_password && password === DEFAULT_ADMIN_PASSWORD && !isLocalAddress(ip)) {
+      audit(user, "auth.login_blocked_remote_default", user.id, { ip });
+      throw new HttpError(403, "İlk kurulum henüz tamamlanmadı. Güvenlik için ilk girişi sunucu bilgisayarından (bu programın kurulu olduğu bilgisayar) yapın ve yeni parola belirleyin.", { code: "FIRST_LOGIN_LOCAL_ONLY" });
     }
     limiter.success(ip, key);
     startSession(res, user.id);

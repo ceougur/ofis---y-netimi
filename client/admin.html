@@ -66,7 +66,22 @@
     </section>
 
     <section class="adm-panel" data-panel="system" role="tabpanel" hidden>
-      <div class="adm-panel-head"><div><h1>Sistem</h1><p>Sunucu sürümü, veritabanı ve yedek durumu.</p></div></div>
+      <div class="adm-panel-head"><div><h1>Sistem</h1><p>Ofis bilgileri, bağlantı adresleri, sunucu sürümü ve yedek durumu.</p></div></div>
+      <div class="adm-split">
+        <form class="adm-card adm-office" id="adm-office" novalidate>
+          <h2>Ofis adı</h2>
+          <p class="adm-muted">Giriş ekranında ve personel bilgisayarlarının yaptığı sunucu aramasında bu ad görünür.</p>
+          <div class="adm-inline">
+            <label class="hof-field"><span>Ofis adı</span><input id="adm-office-name" name="name" maxlength="120" autocomplete="organization" placeholder="Örn. Çetin Hukuk Bürosu"></label>
+            <button type="submit" class="hof-button" id="adm-office-save">Kaydet</button>
+          </div>
+        </form>
+        <div class="adm-card adm-connect" id="adm-connect">
+          <h2>Personel bilgisayarları nasıl bağlanır?</h2>
+          <p class="adm-muted">Personel bilgisayarlarına aynı kurulum dosyasıyla <b>Personel bilgisayarı</b> kurulumu yapın; masaüstündeki DestekOfis simgesi bu sunucuyu ağda kendiliğinden bulur. Tarayıcıyla bağlanmak isterseniz:</p>
+          <ul class="adm-addresses" id="adm-addresses"><li class="adm-muted">Yükleniyor…</li></ul>
+        </div>
+      </div>
       <div class="adm-grid" id="adm-system"></div>
     </section>
   </main>

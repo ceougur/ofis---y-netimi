@@ -1,12 +1,29 @@
 // Yönetici işlemleri: kullanıcılar, yedekler, değişiklik geçmişi ve sistem bilgisi.
 import { createReadStream, statSync } from "node:fs";
+import os from "node:os";
 import path from "node:path";
 import { BACKUP_NAME, createBackup, listBackups } from "../lib/backup.mjs";
 import { HttpError, SECURITY_HEADERS, limited, ok, parseJson, readJson, text } from "../lib/http.mjs";
 import { hashPassword, passwordProblem } from "../lib/passwords.mjs";
 import { ROLES } from "../lib/permissions.mjs";
 
-export function registerAdminRoutes(router, { store, auth, audit, config, startedAt }) {
+// Personel bilgisayarlarının bağlanabileceği yerel ağ adresleri (sanal/yerel bağdaştırıcılar hariç).
+function lanAddresses(port) {
+  const result = [];
+  for (const [name, entries] of Object.entries(os.networkInterfaces())) {
+    if (/vethernet|virtualbox|vmware|docker|loopback|hyper-v|wsl/i.test(name)) continue;
+    for (const entry of entries || []) {
+      if (entry.family !== "IPv4" && entry.family !== 4) continue;
+      if (entry.internal || entry.address.startsWith("169.254.")) continue;
+      result.push(`http://${entry.address}:${port}`);
+    }
+  }
+  return [...new Set(result)];
+}
+
+export function registerAdminRoutes(router, context) {
+  const { store, auth, audit, config, startedAt } = context;
+  const notifyInfoChange = () => context.notifyInfoChange?.();
   const now = () => new Date().toISOString();
   const activeAdmins = () => store.get("SELECT COUNT(*) AS count FROM users WHERE role = 'admin' AND active = 1").count;
 
@@ -133,6 +150,21 @@ export function registerAdminRoutes(router, { store, auth, audit, config, starte
     ok(res, rows.map(({ payloadJson, ...row }) => ({ ...row, payload: parseJson(payloadJson) })));
   });
 
+  router.get("/api/admin/office", async ({ req, res }) => {
+    auth.requirePermission(req, "system.manage");
+    ok(res, { name: store.setting("office.name", "") });
+  });
+
+  router.put("/api/admin/office", async ({ req, res }) => {
+    const admin = auth.requirePermission(req, "system.manage");
+    const body = await readJson(req);
+    const name = limited(body.name, 120, "Ofis adı");
+    store.setSetting("office.name", name, admin.id);
+    audit(admin, "settings.office.updated", "office", { name });
+    notifyInfoChange();
+    ok(res, { name });
+  });
+
   router.get("/api/admin/system", async ({ req, res }) => {
     auth.requirePermission(req, "system.manage");
     // WAL kipinde veri bir süre "-wal" dosyasında durur; gerçek boyut ikisinin toplamıdır.
@@ -157,6 +189,11 @@ export function registerAdminRoutes(router, { store, auth, audit, config, starte
       backupDir: config.backupDir,
       lastBackup: latest ? { name: latest.name, size: latest.size, createdAt: latest.createdAt } : null,
       users: store.get("SELECT COUNT(*) AS count FROM users WHERE active = 1").count,
+      officeName: store.setting("office.name", ""),
+      supervised: Boolean(process.send),
+      hostname: os.hostname(),
+      port: config.publicPort,
+      addresses: lanAddresses(config.publicPort),
     });
   });
 }

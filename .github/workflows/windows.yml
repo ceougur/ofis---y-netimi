@@ -1,0 +1,121 @@
+name: Windows kurulum paketi
+
+on:
+  push:
+    branches: [master]
+    tags: ["v*"]
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Kurulum dosyasını derle
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.24"
+      - name: Wine, windres ve osslsigncode
+        run: |
+          sudo dpkg --add-architecture i386
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq --no-install-recommends wine32:i386 binutils-mingw-w64-x86-64 osslsigncode
+      - run: npm ci
+      - run: node tools/build-windows.mjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: destekofis-kurulum
+          path: dist/DestekOfis-Kurulum-*
+          if-no-files-found: error
+
+  install-test:
+    name: Windows'ta kurulum, servis ve kaldırma testi
+    needs: build
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: destekofis-kurulum
+          path: dist
+
+      - name: Sessiz sunucu kurulumu
+        run: |
+          $setup = Get-ChildItem dist -Filter 'DestekOfis-Kurulum-*.exe' | Select-Object -First 1
+          $p = Start-Process $setup.FullName -ArgumentList '/VERYSILENT','/SUPPRESSMSGBOXES','/NORESTART','/TYPE=sunucu','/TASKS=masaustu','/LOG=kurulum.log' -Wait -PassThru
+          Get-Content kurulum.log -Tail 40
+          if ($p.ExitCode -ne 0) { throw "Kurulum çıkış kodu $($p.ExitCode)" }
+
+      - name: Servis otomatik başlatmalı, sanal hesapla çalışmalı ve sağlıklı olmalı
+        run: |
+          $svc = Get-CimInstance Win32_Service -Filter "Name='DestekOfis'"
+          $svc | Format-List Name, DisplayName, StartMode, StartName, State, PathName
+          if ($svc.State -ne 'Running') { throw "Servis çalışmıyor: $($svc.State)" }
+          if ($svc.StartMode -ne 'Auto') { throw "Başlangıç türü otomatik değil: $($svc.StartMode)" }
+          if ($svc.StartName -ne 'NT SERVICE\DestekOfis') { throw "Servis hesabı beklenmedik: $($svc.StartName)" }
+          $health = Invoke-RestMethod http://127.0.0.1:5123/api/health
+          if ($health.data.status -ne 'ok') { throw 'Sağlık kontrolü başarısız' }
+          if (-not (Test-Path 'C:\HukukOfisiMerkezi\data\hukuk-ofisi.sqlite')) { throw 'Veritabanı oluşmadı' }
+          Get-NetFirewallRule -DisplayName 'DestekOfis*' | Format-Table DisplayName, Enabled, Profile, Direction
+          if (-not (Test-Path "$env:PUBLIC\Desktop\DestekOfis.lnk")) { throw 'Masaüstü kısayolu yok' }
+
+      - name: UDP keşif yanıtı
+        run: |
+          $udp = New-Object System.Net.Sockets.UdpClient 0
+          $udp.Client.ReceiveTimeout = 3000
+          $bytes = [Text.Encoding]::ASCII.GetBytes('HukukOfisiServerNerede')
+          [void]$udp.Send($bytes, $bytes.Length, '127.0.0.1', 5123)
+          $endpoint = New-Object System.Net.IPEndPoint([System.Net.IPAddress]::Any, 0)
+          $reply = [Text.Encoding]::UTF8.GetString($udp.Receive([ref]$endpoint)) | ConvertFrom-Json
+          $reply | Format-List
+          if ($reply.magic -ne 'HukukOfisiServerBurada' -or $reply.port -ne 5123) { throw 'Keşif yanıtı hatalı' }
+
+      - name: İstemci başlatıcısı sunucuyu bulur
+        run: |
+          $p = Start-Process 'C:\HukukOfisiMerkezi\launcher\DestekOfis.exe' -ArgumentList '-kesfet','-hedef','127.0.0.1' -RedirectStandardOutput kesif.json -Wait -PassThru -NoNewWindow
+          Get-Content kesif.json
+          $found = Get-Content kesif.json -Raw | ConvertFrom-Json
+          if ($found.Count -lt 1) { throw 'Başlatıcı sunucuyu bulamadı' }
+
+      - name: İlk giriş yalnızca yerelden; parola değişimi ve veri kaydı
+        run: |
+          $session = New-Object Microsoft.PowerShell.Commands.WebRequestSession
+          $login = Invoke-RestMethod -Method Post -Uri http://127.0.0.1:5123/api/auth/login -ContentType 'application/json' -Body '{"username":"admin","password":"Ofis2026!"}' -WebSession $session
+          if (-not $login.data.mustChangePassword) { throw 'Zorunlu parola değişimi bekleniyordu' }
+          Invoke-RestMethod -Method Post -Uri http://127.0.0.1:5123/api/auth/change-password -ContentType 'application/json' -Body '{"currentPassword":"Ofis2026!","newPassword":"Windows-Testi-2026"}' -WebSession $session | Out-Null
+          Invoke-RestMethod -Method Post -Uri http://127.0.0.1:5123/api/admin/users -ContentType 'application/json; charset=utf-8' -Body '{"username":"kalici","name":"Kalıcı Kullanıcı","role":"personel","password":"Kalici-Parola-2026","mustChangePassword":false}' -WebSession $session | Out-Null
+
+      - name: Servis yeniden başlatılınca veri korunur
+        run: |
+          Restart-Service DestekOfis
+          for ($i = 0; $i -lt 60; $i++) { try { if ((Invoke-WebRequest -UseBasicParsing http://127.0.0.1:5123/api/health).StatusCode -eq 200) { break } } catch {}; Start-Sleep 1 }
+          $login = Invoke-RestMethod -Method Post -Uri http://127.0.0.1:5123/api/auth/login -ContentType 'application/json' -Body '{"username":"kalici","password":"Kalici-Parola-2026"}'
+          if ($login.data.username -ne 'kalici') { throw 'Kullanıcı kaybolmuş' }
+          if ($login.data.name -ne 'Kalıcı Kullanıcı') { throw "Türkçe karakterler bozulmuş: $($login.data.name)" }
+
+      - name: Aynı paketle yeniden kurulum (güncelleme) veriyi korur
+        run: |
+          $setup = Get-ChildItem dist -Filter 'DestekOfis-Kurulum-*.exe' | Select-Object -First 1
+          $p = Start-Process $setup.FullName -ArgumentList '/VERYSILENT','/SUPPRESSMSGBOXES','/NORESTART','/LOG=guncelleme.log' -Wait -PassThru
+          if ($p.ExitCode -ne 0) { Get-Content guncelleme.log -Tail 60; throw "Yeniden kurulum çıkış kodu $($p.ExitCode)" }
+          $login = Invoke-RestMethod -Method Post -Uri http://127.0.0.1:5123/api/auth/login -ContentType 'application/json' -Body '{"username":"kalici","password":"Kalici-Parola-2026"}'
+          if ($login.data.username -ne 'kalici') { throw 'Güncellemede veri kaybolmuş' }
+
+      - name: Kaldırma servisi siler, verileri korur
+        run: |
+          $p = Start-Process 'C:\HukukOfisiMerkezi\unins000.exe' -ArgumentList '/VERYSILENT','/SUPPRESSMSGBOXES','/NORESTART' -Wait -PassThru
+          Start-Sleep 3
+          if (Get-Service DestekOfis -ErrorAction SilentlyContinue) { throw 'Servis kaldırılmadı' }
+          if (-not (Test-Path 'C:\HukukOfisiMerkezi\data\hukuk-ofisi.sqlite')) { throw 'Kaldırmada veri silinmiş' }
+          if (Get-NetFirewallRule -DisplayName 'DestekOfis*' -ErrorAction SilentlyContinue) { throw 'Güvenlik duvarı kuralları kaldırılmadı' }
+
+      - name: Günlükler
+        if: always()
+        run: |
+          Get-ChildItem C:\HukukOfisiMerkezi\logs -ErrorAction SilentlyContinue | ForEach-Object { "==== $($_.Name)"; Get-Content $_.FullName -Tail 120 }

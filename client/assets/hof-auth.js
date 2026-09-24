@@ -29,6 +29,14 @@
       </section>`,
     );
     document.body.appendChild(node);
+    HOF.api("/api/public/info")
+      .then(info => {
+        const name = info?.office?.name;
+        if (!name) return;
+        node.querySelector(".hof-auth-brand span").textContent = name;
+        document.title = `${name} · DestekOfis`;
+      })
+      .catch(() => {});
     const form = node.querySelector("form");
     const error = form.querySelector(".hof-form-error");
     const toggle = form.querySelector(".hof-password-toggle");

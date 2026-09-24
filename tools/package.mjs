@@ -8,7 +8,7 @@ import { createZip, readZip } from "../server/lib/zip.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const pkg = JSON.parse(readFileSync(path.join(root, "package.json"), "utf8"));
-const INCLUDE = ["server", "client", "docs", "tools/backup.mjs", "package.json", "README.md", "CHANGELOG.md", "start-server.cmd", "open-client.cmd", "install-server.ps1"];
+const INCLUDE = ["server", "client", "docs", "tools/backup.mjs", "package.json", "README.md", "CHANGELOG.md", "start-server.cmd", "open-client.cmd"];
 const EXCLUDE = /(^|\/)(\.DS_Store|Thumbs\.db|.*\.log)$/;
 
 const files = [];

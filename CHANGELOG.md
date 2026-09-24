@@ -2,6 +2,26 @@
 
 Sürümler [anlamsal sürümleme](https://semver.org/lang/tr/) kurallarına uyar.
 
+## 1.2.0 — Tek tıkla kurulum ve Windows servisi (Faz 1)
+
+### Kurulum
+- **DestekOfis-Kurulum.exe** (Inno Setup, Türkçe): *Sunucu bilgisayar* veya *Personel bilgisayarı* seçilir. Node.js çalışma zamanı pakete gömülü; ayrıca bir şey kurmak gerekmiyor. Varsayılan klasör `C:\HukukOfisiMerkezi`.
+- Sunucu **DestekOfis Sunucu** Windows servisi olarak çalışır: bilgisayar açılınca oturum açılmadan ve penceresiz başlar, kapanırsa kendiliğinden yeniden başlar. Servis kısıtlı bir sanal hesapla (`NT SERVICE\DestekOfis`) çalışır ve yalnızca kendi veri/yedek/günlük klasörlerine yazabilir.
+- Güvenlik duvarına yalnızca Özel/Etki alanı ağları ve yalnızca DestekOfis çalışma zamanı için TCP/UDP 5123 izni eklenir; istenirse ağ profili Özel yapılır.
+- Güncelleme kurulumu ve kaldırma `data` ve `backups` klasörlerine dokunmaz. v1.0/v1.1 elle kurulumdan geçişte eski veritabanı olduğu gibi kullanılır; eski zamanlanmış görev ve güvenlik duvarı kuralı temizlenir.
+
+### Sunucu keşfi ve başlatıcı
+- Personel bilgisayarlarındaki **DestekOfis** simgesi sunucuyu ağda UDP yayınıyla (`HukukOfisiServerNerede`) kendiliğinden bulur, adresi hatırlar ve DestekOfis'i Edge/Chrome uygulama penceresinde açar. IP adresi değişse de yeniden bulur.
+
+### Servis yöneticisi
+- Açılış, yeniden başlatma ve çökme sırasında kullanıcılar kendiliğinden yenilenen markalı bir bakım sayfası görür; uygulama çökerse birkaç saniye içinde yeniden başlatılır.
+- Varsayılan parolayla ilk giriş güvenlik için yalnızca sunucu bilgisayarın kendisinden yapılabilir.
+- Eski servis günlükleri otomatik temizlenir (son 10 günlük saklanır).
+- SSL denetimi yapan antivirüs/güvenlik duvarı olan ağlarda Google Sheets bağlantısı için Windows sertifika deposuna da güvenilir.
+
+### Yönetim paneli
+- **Sistem** sekmesinde ofis adı düzenlenebiliyor (giriş ekranında ve ağ keşfinde görünür); personel bilgisayarlarının bağlanabileceği adresler kopyalanabilir biçimde listeleniyor; servis altında çalışma durumu gösteriliyor.
+
 ## 1.1.0 — Sağlamlaştırma (Faz 0)
 
 Ürün adı **DestekOfis** oldu. Veritabanı otomatik olarak yükseltilir; yükseltmeden önce `backups/` altına tam yedek alınır.

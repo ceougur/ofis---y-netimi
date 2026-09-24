@@ -30,6 +30,7 @@
     "task.completed": "Görevi tamamladı",
     "message.created": "Mesaj gönderdi",
     "settings.client.updated": "Ofis ayarını değiştirdi",
+    "settings.office.updated": "Ofis adını değiştirdi",
     "system.backup_created": "Yedek aldı",
     "system.backup_downloaded": "Yedek indirdi",
   };
@@ -201,14 +202,65 @@
   $("#adm-audit-type").addEventListener("change", loadAudit);
 
   // ---------- Sistem ----------
+  async function copyText(value) {
+    try {
+      await navigator.clipboard.writeText(value);
+      return true;
+    } catch {
+      // Yerel ağda (http) tarayıcı pano iznini vermeyebilir; eski yöntem denenir.
+      const area = HOF.el("textarea", { text: value, readonly: true });
+      area.style.cssText = "position:fixed;opacity:0;pointer-events:none";
+      document.body.append(area);
+      area.select();
+      const done = document.execCommand("copy");
+      area.remove();
+      return done;
+    }
+  }
+
+  function renderAddresses(info) {
+    const list = $("#adm-addresses");
+    const items = [...(info.addresses || [])];
+    if (info.hostname) items.push(`http://${info.hostname}:${info.port}`);
+    list.innerHTML = items.length
+      ? items.map(url => `<li><code>${esc(url)}</code><button type="button" class="hof-button hof-button-ghost hof-button-small" data-copy="${esc(url)}">Kopyala</button></li>`).join("")
+      : '<li class="adm-muted">Ağ bağlantısı bulunamadı. Sunucu bilgisayarın ağa bağlı olduğundan emin olun.</li>';
+  }
+  $("#adm-addresses").addEventListener("click", async event => {
+    const button = event.target.closest("[data-copy]");
+    if (!button) return;
+    if (await copyText(button.dataset.copy)) HOF.toast("Adres kopyalandı.");
+    else HOF.toast("Kopyalanamadı; adresi seçip elle kopyalayın.", { type: "error" });
+  });
+
+  $("#adm-office").addEventListener("submit", async event => {
+    event.preventDefault();
+    const input = $("#adm-office-name");
+    const button = $("#adm-office-save");
+    button.disabled = true;
+    try {
+      const result = await HOF.api("/api/admin/office", { method: "PUT", body: { name: input.value.trim() } });
+      input.value = result.name;
+      HOF.toast(result.name ? "Ofis adı kaydedildi." : "Ofis adı kaldırıldı.");
+    } catch (error) {
+      HOF.toastError(error);
+    } finally {
+      button.disabled = false;
+    }
+  });
+
   async function loadSystem() {
     const target = $("#adm-system");
     try {
       const info = await HOF.api("/api/admin/system");
+      const nameInput = $("#adm-office-name");
+      if (document.activeElement !== nameInput) nameInput.value = info.officeName || "";
+      renderAddresses(info);
       const tile = (label, value, hint = "") => `<div class="adm-card adm-tile"><span>${esc(label)}</span><strong>${esc(value)}</strong>${hint ? `<small>${esc(hint)}</small>` : ""}</div>`;
       const hours = Math.floor(info.uptimeSeconds / 3600);
       target.innerHTML = [
         tile("Sürüm", `${info.product} ${info.version}`, `Node.js ${info.node}`),
+        tile("Çalışma biçimi", info.supervised ? "Windows servisi" : "Doğrudan", info.supervised ? "Bilgisayar açılınca oturum açılmadan başlar; çökerse kendiliğinden yeniden başlar." : "Sunucu bir komut penceresinden çalışıyor."),
         tile("Çalışma süresi", hours ? `${hours} saat` : `${Math.round(info.uptimeSeconds / 60)} dakika`, `Başlangıç ${HOF.formatDateTime(info.startedAt)}`),
         tile("Veritabanı", formatSize(info.dbSize), `Şema sürümü ${info.schemaVersion}`),
         tile("Son yedek", info.lastBackup ? HOF.formatDateTime(info.lastBackup.createdAt) : "Henüz yok", info.lastBackup ? formatSize(info.lastBackup.size) : "Yedekler sekmesinden hemen alabilirsiniz"),

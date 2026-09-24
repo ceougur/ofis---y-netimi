@@ -224,6 +224,18 @@ try {
     await admin.waitForFunction(() => document.querySelector("#adm-system")?.textContent.includes("Şema sürümü"));
   });
 
+  await step("yönetim panelinde ofis adı kaydedilir, bağlantı adresleri listelenir", async () => {
+    await admin.waitForFunction(() => document.querySelector("#adm-addresses li code") || document.querySelector("#adm-addresses")?.textContent.includes("bulunamadı"));
+    const system = await admin.textContent("#adm-system");
+    expect(system.includes("Çalışma biçimi") && system.includes("Doğrudan"), `çalışma biçimi görünmeli: ${system}`);
+    await admin.fill("#adm-office-name", "Deneme Hukuk Bürosu");
+    await admin.click("#adm-office-save");
+    await admin.waitForFunction(() => [...document.querySelectorAll(".hof-toast")].some(node => node.textContent.includes("Ofis adı kaydedildi")));
+    await admin.reload();
+    await admin.waitForFunction(() => document.querySelector("#adm-office-name")?.value === "Deneme Hukuk Bürosu");
+    await admin.screenshot({ path: path.join(artifacts, "05b-sistem.png") });
+  });
+
   const staff = await newPage("personel");
   lawyerContext.page = staff;
   await step("yeni personel ilk girişte parolasını değiştirmek zorunda", async () => {
@@ -276,10 +288,12 @@ try {
     await staff.waitForFunction(() => document.querySelector(".hof-modal [data-list]")?.textContent.includes("açık görev yok"));
   });
 
-  await step("oturum kapanınca giriş ekranı gelir", async () => {
+  await step("oturum kapanınca giriş ekranı ofis adıyla gelir", async () => {
     await staff.keyboard.press("Escape");
     await staff.click('#hof-sidecard [data-action="logout"]');
     await staff.waitForSelector("#hof-auth", { timeout: 10000 });
+    await staff.waitForFunction(() => document.querySelector("#hof-auth .hof-auth-brand span")?.textContent === "Deneme Hukuk Bürosu");
+    expect((await staff.title()).startsWith("Deneme Hukuk Bürosu"), "sekme başlığında ofis adı görünmeli");
   });
 
   await step("v1.0.0 tarayıcısındaki kaynak ve notlar ilk girişte ofise taşınır", async () => {

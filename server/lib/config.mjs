@@ -29,6 +29,8 @@ export function loadConfig(overrides = {}) {
     publicDir: path.resolve(overrides.publicDir ?? path.join(ROOT, "client")),
     dbPath: path.join(dataDir, "hukuk-ofisi.sqlite"),
     port: number(overrides.port ?? env.PORT, 5123),
+    // Servis yöneticisi altında uygulama iç bir portta çalışır; kullanıcıların bağlandığı port budur.
+    publicPort: number(overrides.publicPort ?? env.HUKUK_PUBLIC_PORT, number(overrides.port ?? env.PORT, 5123)),
     host: overrides.host ?? env.HOST ?? "0.0.0.0",
     adminUsername: env.HUKUK_ADMIN_USERNAME || "admin",
     adminPassword: env.HUKUK_ADMIN_PASSWORD || DEFAULT_ADMIN_PASSWORD,

@@ -1,40 +1,54 @@
-# DestekOfis — Kurulum ve Kullanım Kılavuzu (v1.1)
+# DestekOfis — Kurulum ve Kullanım Kılavuzu (v1.2)
 
 ## 1. Sistem düzeni
 
-Bir bilgisayar **sunucu** olarak seçilir. Sürekli açık kalmalı, Windows ağ profili **Özel (Private)** olmalı ve düzenli yedeklenmelidir. Diğer bilgisayarlar **istemci** olarak yalnızca tarayıcıyla bağlanır; istemcilere Node.js veya veritabanı kurulmaz.
+Ofisteki bir bilgisayar **sunucu** olur: veriler bu bilgisayarda tutulur ve DestekOfis burada bir Windows servisi olarak çalışır. Diğer bilgisayarlar **personel bilgisayarı**dır; yalnızca sunucuyu kendiliğinden bulan küçük bir başlatıcı kurulur, veri tutmazlar.
 
-```text
-Sunucu IP : 192.168.1.50   (modemde sabit IP / DHCP rezervasyonu önerilir)
-Adres     : http://192.168.1.50:5123
-```
+- Sunucu bilgisayar açık kaldığı sürece sistem çalışır; kimsenin oturum açmasına gerek yoktur.
+- Windows ağ profili **Özel (Private)** olmalıdır (kurulum bunu sizin için ayarlayabilir).
+- Modemde sunucuya sabit IP (DHCP rezervasyonu) vermek önerilir ama zorunlu değildir: personel bilgisayarları sunucuyu ağda kendiliğinden bulur.
 
 ## 2. Sunucu kurulumu
 
-1. Paketi kalıcı bir klasöre çıkarın: `C:\HukukOfisiMerkezi`.
-2. Node.js 22 veya üzeri LTS sürümünü kurun.
-3. Ağ profilinin **Özel** olduğunu kontrol edin.
-4. İlk test: `start-server.cmd` → tarayıcıda `http://127.0.0.1:5123`.
-5. Açılışta otomatik çalışma ve güvenlik duvarı kuralı için PowerShell'i **yönetici olarak** açıp:
+1. `DestekOfis-Kurulum-<sürüm>.exe` dosyasını sunucu olacak bilgisayarda çalıştırın (yönetici izni ister).
+2. Kurulum türü olarak **Sunucu bilgisayar**ı seçin.
+3. İsteğe bağlı görevler: *Masaüstüne kısayol* ve *Ağ profili 'Ortak' ise 'Özel' yap* (önerilir).
+4. Kurulum şunları kendiliğinden yapar:
+   - Programı `C:\HukukOfisiMerkezi` klasörüne kurar (Node.js çalışma zamanı dahil; ayrıca bir şey kurmanız gerekmez).
+   - **DestekOfis Sunucu** Windows servisini oluşturur: bilgisayar açılınca oturum açılmadan, penceresiz başlar; kapanırsa kendiliğinden yeniden başlar.
+   - Güvenlik duvarına yalnızca Özel/Etki alanı ağları için TCP ve UDP **5123** izni ekler.
+   - Servisi başlatıp çalıştığını doğrular.
+5. Son ekranda *DestekOfis'i şimdi aç* ile giriş ekranına geçin.
 
-```powershell
-cd C:\HukukOfisiMerkezi
-Set-ExecutionPolicy -Scope Process Bypass
-.\install-server.ps1
-```
+Klasörler:
 
-> Faz 1 ile bu adımlar tek bir `setup.exe` ile otomatikleşecek ve sunucu Windows servisi olarak oturum açılmadan çalışacak.
+| Klasör | İçerik |
+|---|---|
+| `data\` | Veritabanı (`hukuk-ofisi.sqlite`). Güncelleme ve kaldırmada **silinmez**. |
+| `backups\` | Otomatik ve elle alınan yedekler. **Silinmez**. |
+| `logs\` | Servis ve kurulum günlükleri. |
+| `app\`, `runtime\`, `bin\`, `launcher\` | Program dosyaları. |
 
-## 3. İlk giriş ve güvenlik
+## 3. Personel bilgisayarı kurulumu
 
-- İlk hesap: **admin / Ofis2026!**. Sistem ilk girişte yeni parola belirlemenizi **zorunlu** tutar.
+1. Aynı kurulum dosyasını personel bilgisayarında çalıştırın ve **Personel bilgisayarı**nı seçin.
+2. Masaüstündeki **DestekOfis** simgesine çift tıklayın. Başlatıcı sunucuyu ağda bulur ve DestekOfis'i uygulama penceresinde (Edge veya Chrome) açar. Bulduğu adresi hatırlar; sonraki açılışlar anında olur.
+3. Sunucu bulunamazsa "Yeniden dene" penceresi çıkar: sunucunun açık ve aynı ağda olduğunu kontrol edin.
+
+İsterseniz tarayıcıdan doğrudan da bağlanabilirsiniz: yönetim panelindeki **Sistem** sekmesi sunucunun adreslerini gösterir (ör. `http://192.168.1.50:5123`).
+
+Başlatıcıya adresi elle vermek için (nadiren gerekir): `C:\HukukOfisiMerkezi\launcher\DestekOfis.exe -sunucu 192.168.1.50`. Kayıtlı adresi unutturmak için: `DestekOfis.exe -sifirla`.
+
+## 4. İlk giriş ve güvenlik
+
+- İlk hesap: **admin / Ofis2026!**. Bu varsayılan parolayla giriş, güvenlik için **yalnızca sunucu bilgisayarın kendisinden** yapılabilir; sistem ilk girişte yeni parola belirlemenizi zorunlu tutar.
 - Parolalar en az 10 karakter olmalı ve harf ile rakam içermelidir.
 - Aynı kullanıcı adıyla 5 hatalı denemeden sonra giriş 15 dakika kilitlenir.
 - Parola değişince diğer cihazlardaki oturumlar kapanır.
 
-## 4. Kullanıcılar ve roller
+## 5. Kullanıcılar, roller ve ofis adı
 
-Yönetim paneli: `http://SUNUCU-IP:5123/admin.html` (kenar çubuğundaki kullanıcı kartında **Yönetim**).
+Yönetim paneli: kenar çubuğundaki kullanıcı kartında **Yönetim** (veya `http://SUNUCU:5123/admin.html`). Sunucu bilgisayarda Başlat menüsü → *DestekOfis yönetim paneli*.
 
 | Rol | Yapabildikleri |
 |---|---|
@@ -45,7 +59,9 @@ Yönetim paneli: `http://SUNUCU-IP:5123/admin.html` (kenar çubuğundaki kullan�
 
 Yeni kullanıcıya verilen ilk parola, kullanıcının ilk girişinde değiştirilir (önerilen ayar). Kullanıcıyı pasifleştirmek kayıtlarını silmez; açık oturumlarını kapatır.
 
-## 5. Veri kaynağı (Excel veya Google Sheets)
+**Sistem** sekmesinde **ofis adını** girin: giriş ekranında ve personel bilgisayarlarının yaptığı sunucu aramasında bu ad görünür. Aynı sekme sürümü, veritabanı boyutunu, son yedeği ve bağlantı adreslerini gösterir.
+
+## 6. Veri kaynağı (Excel veya Google Sheets)
 
 Kaynak **ofis geneli tek ayardır**; yönetici veya avukat bir kez tanımlar, herkes aynı tabloyu görür.
 
@@ -53,7 +69,7 @@ Kaynak **ofis geneli tek ayardır**; yönetici veya avukat bir kez tanımlar, he
 - **Google Sheets:** Sheet'in tam bağlantısını yapıştırıp *Sheet'i analiz et*. Sheet'te *Paylaş → Bağlantıya sahip olan herkes → Görüntüleyici* açık olmalıdır.
 - Kaynak dosyanın kendisi hiçbir zaman değiştirilmez; düzeltmeler, silmeler ve yeni kayıtlar sunucuda saklanır ve tabloya işlenir.
 
-## 6. Günlük kullanım
+## 7. Günlük kullanım
 
 - **Arama:** Dosya no, borçlu, müvekkil veya telefon yazın; *Enter* ilk sonuca gider, *Ctrl+K* aramaya odaklanır.
 - **Dosya işlemleri:** Detay panelindeki *WhatsApp, Not, Telefon, Tahsilat, Görev, Haciz, Düzenle* düğmeleri. Tüm işlemler detayın altındaki **İşlem geçmişi**nde işlemi yapanla birlikte görünür.
@@ -63,36 +79,57 @@ Kaynak **ofis geneli tek ayardır**; yönetici veya avukat bir kez tanımlar, he
 - **Haciz uyarıları:** Bir yılını dolduracak hacizler 30 gün önceden listelenir, son 7 gün vurgulanır.
 - **Ödeme sözleri:** Tabloda ödeme sözü kolonu varsa aktif sözler üstte kayan şeritte görünür; *Ödendi / İptal* ile kapatılır.
 
-## 7. Yedekleme ve geri dönüş
+## 8. Yedekleme ve geri dönüş
 
-- Sunucu açıkken 6 saatte bir otomatik yedek alınır; açılışta son yedek eskiyse hemen alınır. Son 30 yedek saklanır.
-- Yönetim paneli → *Yedekler*: anında yedek alın ve indirin. Komutla: `npm run backup`.
+- Sunucu açıkken 6 saatte bir otomatik yedek alınır; açılışta son yedek eskiyse hemen alınır. Son 30 yedek `C:\HukukOfisiMerkezi\backups` klasöründe saklanır.
+- Elle yedek: yönetim paneli → *Yedekler* → *Şimdi yedek al* (indirilebilir) veya Başlat menüsü → DestekOfis → *Yedek al*.
 - Sürüm yükseltmelerinde veritabanı değişmeden önce otomatik tam yedek alınır (`...-pre-migration-...sqlite`).
 - `backups` klasörünü düzenli olarak harici diske veya NAS'a kopyalayın.
 
-**Yedekten dönüş:** sunucuyu kapatın → `data\hukuk-ofisi.sqlite` dosyasını güvenli bir adla saklayın → seçtiğiniz yedeği `data\hukuk-ofisi.sqlite` olarak kopyalayın → sunucuyu başlatın.
+**Yedekten dönüş:**
 
-## 8. Sorun giderme
+1. Servisi durdurun: Başlat → *Hizmetler* (services.msc) → **DestekOfis Sunucu** → *Durdur* (veya yönetici komut isteminde `net stop DestekOfis`).
+2. `data\hukuk-ofisi.sqlite` dosyasını güvenli bir adla saklayın; varsa yanındaki `-wal` ve `-shm` dosyalarını da taşıyın.
+3. Seçtiğiniz yedeği `data\hukuk-ofisi.sqlite` adıyla kopyalayın.
+4. Servisi başlatın (`net start DestekOfis`).
+
+## 9. Servis yönetimi
+
+- Servis adı **DestekOfis Sunucu** (kısa adı `DestekOfis`). Hizmetler penceresinden durdurulup başlatılabilir.
+- Servis güvenlik için kısıtlı bir sanal hesapla (`NT SERVICE\DestekOfis`) çalışır; yalnızca kendi veri, yedek ve günlük klasörlerine yazabilir.
+- Günlükler: `C:\HukukOfisiMerkezi\logs\servis.log` (1 MB'ı aşınca servis açılışında kenara ayrılır, son 10 günlük saklanır) ve `logs\kurulum.log`.
+- Servis ayarları bozulduysa: yönetici komut isteminde `C:\HukukOfisiMerkezi\bin\servis-kur.cmd` servisi onarır.
+- Uygulama beklenmedik biçimde kapanırsa servis yöneticisi onu birkaç saniye içinde yeniden başlatır; bu sırada kullanıcılar kendiliğinden yenilenen bir bakım sayfası görür.
+
+## 10. Sorun giderme
 
 | Belirti | Kontrol |
 |---|---|
-| Sunucu açılmıyor | Node.js 22+ kurulu mu? `start-server.cmd` penceresindeki mesaj; port 5123 başka programda mı? |
-| İstemci bağlanamıyor | Sunucu IP'si doğru mu, ağ profili Özel mi, güvenlik duvarında 5123 izni var mı? |
+| Başlatıcı "sunucu bulunamadı" diyor | Sunucu bilgisayar açık mı? Aynı ağda mısınız? Sunucuda ağ profili Özel mi? Sunucuda Hizmetler'de *DestekOfis Sunucu* çalışıyor mu? |
+| Tarayıcı bağlanamıyor | Yönetim paneli → Sistem'deki adresi deneyin; güvenlik duvarında *DestekOfis HTTP (TCP 5123)* kuralı açık mı? |
+| "Sistem başlatılıyor / yeniden başlatılıyor" sayfası | Birkaç saniye bekleyin; sayfa kendiliğinden yenilenir. Uzun sürerse `logs\servis.log` dosyasına bakın. |
+| "Sunucu başlatılamadı" sayfası | Sunucu bilgisayarı yeniden başlatın; sürerse `logs\servis.log` ile destek isteyin. |
+| Varsayılan parolayla giriş reddedildi | İlk giriş yalnızca sunucu bilgisayarın kendisinden yapılabilir. |
 | Giriş kilitlendi | 15 dakika bekleyin veya yöneticiden parola sıfırlamasını isteyin. |
 | Tablo görünmüyor | Yönetici/avukatın veri kaynağı tanımlaması gerekir. Sheets için paylaşım iznini kontrol edin. |
 | "Veri kaynağı değiştirildi" uyarısı | Başka bir kullanıcı kaynağı değiştirdi; *Yenile*'ye basın. |
-| Sağlık kontrolü | `http://SUNUCU-IP:5123/api/health` → `"status":"ok"` |
+| Sağlık kontrolü | `http://SUNUCU:5123/api/health` → `"status":"ok"` |
 
-## 9. Güvenlik kuralları
+## 11. Güvenlik kuralları
 
-- 5123 portunu internete açmayın; sistem yalnızca ofis ağında (LAN) kullanılmalıdır.
+- 5123 portunu internete açmayın (modemde port yönlendirme yapmayın); sistem yalnızca ofis ağında (LAN) kullanılmalıdır.
 - Kullanılmayan hesapları pasifleştirin.
-- Sunucu bilgisayarı uyku moduna geçmemeli; `backups` klasörü istemcilere yazılabilir paylaşılmamalıdır.
+- Sunucu bilgisayar uyku moduna geçmemeli (Güç seçenekleri → Uyku: Hiçbir zaman).
+- `backups` ve `data` klasörlerini ağda paylaşıma açmayın.
 
-## 10. Güncelleme (elle, Faz 2'ye kadar)
+## 12. Güncelleme
 
-1. Kullanıcıları bilgilendirin ve yönetim panelinden yedek alın.
-2. Sunucuyu kapatın.
-3. Yeni paketi ayrı bir klasöre çıkarın; `data` ve `backups` klasörlerini yeni klasöre taşıyın.
-4. Sunucuyu başlatın; veritabanı otomatik yükseltilir (öncesinde yedek alınır).
-5. `/api/health` ve bir kullanıcıyla giriş yaparak kontrol edin.
+Yeni sürümün kurulum dosyasını sunucuda çalıştırın: aynı klasöre kurulur, servis kısa süre durup yeni sürümle başlar. `data` ve `backups` klasörlerine dokunulmaz; veritabanı gerekiyorsa otomatik yükseltilir (öncesinde yedek alınır). Personel bilgisayarlarında başlatıcıyı güncellemek genellikle gerekmez.
+
+## 13. Kaldırma
+
+Ayarlar → Uygulamalar → **DestekOfis** → Kaldır. Servis ve güvenlik duvarı kuralları kaldırılır; **veriler ve yedekler korunur** (`C:\HukukOfisiMerkezi\data`, `backups`). Yeniden kurduğunuzda kaldığınız yerden devam edersiniz. Verileri de silmek istiyorsanız klasörü kaldırmadan sonra elle silin.
+
+## 14. Eski kurulumdan (v1.0 / v1.1 elle kurulum) geçiş
+
+Kurulum dosyasını aynı bilgisayarda çalıştırıp **Sunucu bilgisayar** seçmeniz yeterlidir. Kurulum `C:\HukukOfisiMerkezi` klasörünü kullanır; eski `data\hukuk-ofisi.sqlite` veritabanı olduğu gibi kullanılır ve gerekiyorsa yedek alınarak yükseltilir. Eski zamanlanmış görev ("Hukuk Ofisi Merkezi Server") ve eski güvenlik duvarı kuralı kendiliğinden kaldırılır. Eski sürüm farklı bir klasördeyse önce onu durdurup `data` klasörünü `C:\HukukOfisiMerkezi\data` içine kopyalayın.

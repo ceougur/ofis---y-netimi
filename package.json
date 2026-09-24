@@ -1,6 +1,6 @@
 {
   "name": "destekofis",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "private": true,
   "description": "DestekOfis — hukuk ofisleri için merkezi dosya takip sunucusu (server/client)",
   "type": "module",
@@ -14,9 +14,13 @@
     "test:e2e": "node --disable-warning=ExperimentalWarning test/e2e/run.mjs",
     "check": "node tools/check-syntax.mjs",
     "backup": "node --disable-warning=ExperimentalWarning tools/backup.mjs",
-    "package": "node tools/package.mjs"
+    "package": "node tools/package.mjs",
+    "start:service": "node --disable-warning=ExperimentalWarning server/supervisor.mjs",
+    "build:windows": "node tools/build-windows.mjs"
   },
   "devDependencies": {
+    "innosetup": "6.4.1",
+    "marked": "^16.4.2",
     "playwright": "1.56.0"
   }
 }

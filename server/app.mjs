@@ -103,6 +103,18 @@ export function createApp(overrides = {}) {
   const sessionTimer = setInterval(() => auth.purgeExpiredSessions(), 3_600_000);
   sessionTimer.unref();
 
+  // Servis yöneticisine (supervisor) iletilen özet bilgi: keşif yanıtlarında ofis adı ve sürüm görünür.
+  const infoListeners = new Set();
+  const info = () => ({
+    version: config.version,
+    instanceId: store.setting("meta.instanceId"),
+    officeName: store.setting("office.name", ""),
+    schemaVersion: store.get("PRAGMA user_version").user_version,
+  });
+  context.notifyInfoChange = () => {
+    for (const listener of infoListeners) listener(info());
+  };
+
   let closed = false;
   return {
     config,
@@ -111,6 +123,11 @@ export function createApp(overrides = {}) {
     db,
     server,
     migration,
+    info,
+    onInfoChange(listener) {
+      infoListeners.add(listener);
+      return () => infoListeners.delete(listener);
+    },
     listen(port = config.port, host = config.host) {
       return new Promise((resolve, reject) => {
         server.once("error", reject);

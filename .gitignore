@@ -11,3 +11,7 @@ node_modules/
 test/e2e/artifacts/
 dist/
 scratch-dbg/
+build/
+launcher/winres/destekofis.manifest
+launcher/winres/destekofis.rc
+launcher/*.syso
