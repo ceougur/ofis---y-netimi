@@ -43,6 +43,22 @@ describe("kimlik doğrulama", () => {
     const locked = await client.login("kilitlenecek", "yanlis-parola-1");
     assert.equal(locked.status, 429);
     assert.ok(Number(locked.headers.get("retry-after")) > 0);
+    assert.match(locked.data.error, /yöneticinizden parolanızı sıfırlamasını/);
+  });
+
+  it("yönetici parolayı sıfırlayınca kilit hemen kalkar", async () => {
+    const admin = await loginAdmin(server);
+    const created = await admin.post("/api/admin/users", { username: "Deneme1", name: "Deneme", role: "personel", password: "Ilk-Parola-2026", mustChangePassword: false });
+    assert.equal(created.status, 200);
+    const staff = server.client();
+    for (let attempt = 0; attempt < 5; attempt += 1) assert.equal((await staff.login("deneme1", "yanlis-parola-9")).status, 401);
+    assert.equal((await staff.login("DENEME1", "Ilk-Parola-2026")).status, 429, "doğru parola da kilit süresince reddedilir");
+    const other = await server.client().login("kilitlenecek-degil", "yanlis");
+    assert.equal(other.status, 401, "kilit yalnızca o kullanıcı adına uygulanır");
+    const reset = await admin.post(`/api/admin/users/${created.data.data.id}/reset-password`, { password: "Yeni-Parola-2026", mustChangePassword: false });
+    assert.equal(reset.status, 200);
+    const login = await staff.login("deneme1", "Yeni-Parola-2026");
+    assert.equal(login.status, 200, JSON.stringify(login.data));
   });
 
   it("oturumsuz korumalı uçlar 401 döner", async () => {

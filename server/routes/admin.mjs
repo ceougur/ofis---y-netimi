@@ -94,6 +94,8 @@ export function registerAdminRoutes(router, context) {
       store.run("UPDATE users SET password_hash = ?, must_change_password = ?, password_changed_at = ?, updated_at = ? WHERE id = ?", hashPassword(body.password), mustChange, now(), now(), target.id);
       if (target.id !== admin.id) store.run("DELETE FROM sessions WHERE user_id = ?", target.id);
     });
+    // Hatalı denemelerle kilitlenmiş kullanıcı, yeni parolasıyla beklemeden girebilsin.
+    auth.clearLoginLocks(target.username);
     audit(admin, "user.password_reset", target.id, { mustChangePassword: Boolean(mustChange) });
     ok(res, true);
   });

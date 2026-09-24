@@ -60,6 +60,19 @@ describe("istemci başlatıcısı (Go)", { skip: !hasGo && "Go kurulu değil" },
     assert.equal(replies[0].port, port);
   });
 
+  it("'-kesfet-dosya' sonucu kurulum sihirbazının okuyacağı dosyaya yazar", async () => {
+    const file = path.join(work, "kesif.json");
+    await run(binary, ["-kesfet-dosya", file, "-port", String(port), "-hedef", "127.0.0.1"], { env: env() });
+    const text = readFileSync(file, "utf8");
+    // Kurulum sihirbazı (Inno Setup) alanları '"host": "' ve '"from": "' kalıplarıyla arar.
+    assert.match(text, /"host": "[^"]*"/);
+    assert.match(text, /"from": "127\.0\.0\.1"/);
+    assert.equal(JSON.parse(text)[0].instanceId, "kurulum-abc");
+    const none = path.join(work, "kesif-bos.json");
+    await run(binary, ["-kesfet-dosya", none, "-port", "9", "-hedef", "127.0.0.1"], { env: env() });
+    assert.deepEqual(JSON.parse(readFileSync(none, "utf8")), [], "sunucu yoksa boş liste yazılır");
+  });
+
   it("bulunan sunucuyu kaydeder ve sonraki açılışta doğrudan kullanır", async () => {
     const first = JSON.parse((await run(binary, ["-sifirla", "-acma", "-port", String(port), "-hedef", "127.0.0.1"], { env: env() })).stdout);
     assert.equal(first.url, `http://127.0.0.1:${port}`);

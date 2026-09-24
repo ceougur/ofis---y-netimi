@@ -68,6 +68,7 @@ func locate(cfg Config, port int, targets []string) (located, bool) {
 
 func main() {
 	discoverOnly := flag.Bool("kesfet", false, "Ağdaki DestekOfis sunucularını bulup JSON olarak yazdırır")
+	discoverFile := flag.String("kesfet-dosya", "", "Ağdaki sunucuları bulup JSON olarak bu dosyaya yazar (kurulum sihirbazı kullanır; GUI alt sisteminde stdout yönlendirmesine gerek kalmaz)")
 	server := flag.String("sunucu", "", "Sunucu adresini elle ayarlar (ör. 192.168.1.50 veya http://192.168.1.50:5123)")
 	reset := flag.Bool("sifirla", false, "Kayıtlı sunucu bilgisini siler")
 	port := flag.Int("port", 5123, "Sunucu portu (HTTP ve UDP keşif)")
@@ -89,7 +90,7 @@ func main() {
 	if *reset {
 		_ = os.Remove(configPath())
 	}
-	if *discoverOnly {
+	if *discoverOnly || *discoverFile != "" {
 		replies, err := discover(*port, 1500*time.Millisecond, targets)
 		if err != nil {
 			fmt.Fprintln(os.Stderr, err)
@@ -99,6 +100,13 @@ func main() {
 			replies = []Reply{}
 		}
 		output, _ := json.MarshalIndent(replies, "", "  ")
+		if *discoverFile != "" {
+			if err := os.WriteFile(*discoverFile, append(output, '\n'), 0o644); err != nil {
+				fmt.Fprintln(os.Stderr, err)
+				os.Exit(1)
+			}
+			return
+		}
 		fmt.Println(string(output))
 		return
 	}

@@ -2,6 +2,17 @@
 
 Sürümler [anlamsal sürümleme](https://semver.org/lang/tr/) kurallarına uyar.
 
+## 1.3.3 — Kurulum düzeltmeleri ve ikinci sunucu koruması
+
+- **Yanlış "servis başlatılamadı" uyarısı giderildi.** Sunucu kurulumunun sonunda, servis aslında sorunsuz açılırken de bu uyarı çıkıyordu: Windows servisi ilk açılışta birkaç saniye "başlatılıyor" durumunda kaldığı için başlatma komutu bunu hata sayıyordu. Artık karar sağlık kontrolüne bırakılır; sağlık kontrolü PowerShell yerine paketteki Node.js ile yapılır. Servis "çalışıyor" bildirimini de daha erken verir.
+- Servis gerçekten başlatılamazsa hata penceresi nedenini (ör. antivirüs engeli) ve kurulum günlüğünün son satırlarını gösterir.
+- Güvenlik duvarı kuralı eklenemezse (başka bir güvenlik yazılımı güvenlik duvarını yönetiyorsa) kurulum yarıda kalmaz: servis çalışır, kullanıcıya hangi portlara izin vermesi gerektiği söylenir.
+- **İkinci sunucu koruması:** Kurulum sihirbazı ağda çalışan bir DestekOfis sunucusu bulursa kurulum türü olarak *Personel bilgisayarı*nı seçili getirir ve bulunan sunucuyu gösterir. Yine de *Sunucu bilgisayar* seçilirse, ikinci bir sunucunun ayrı ve boş bir veritabanıyla çalışacağı söylenerek onay istenir. (Gerçek testte personel bilgisayarına yanlışlıkla sunucu kurulmuştu.) Sunucu bilgisayarında yeniden kurulumda tarama yapılmaz.
+- Kurulum klasörü zaten varsa (veriler korunduğu için kaldırmadan sonra da kalır) "klasör zaten var" sorusu sorulmaz.
+- Yönetici bir kullanıcının parolasını sıfırladığında, hatalı denemeler yüzünden konan 15 dakikalık giriş kilidi hemen kalkar. Kilit iletisi bu seçeneği de söyler.
+- Başlatıcıya kurulum sihirbazının kullandığı `-kesfet-dosya` seçeneği eklendi. Windows otomatik testleri, kurulum programının servis doğrulamasının hatasız bittiğini de denetler.
+- 1.3.2'deki düzeltmeyi de içerir: güncelleme bitince yönetim paneli kendiliğinden yenilenir, açık dosya takip ekranlarında "DestekOfis … sürümüne güncellendi" şeridi çıkar.
+
 ## 1.3.2 — Güncelleme sonrası ekran yenileme
 
 - Güncelleme çok hızlı bittiğinde yönetim panelindeki sürüm, çalışma süresi ve son yedek kutucukları eski bilgiyi göstermeye devam ediyordu. Artık güncelleme bitince yönetim paneli yeni sürümle kendiliğinden yeniden yüklenir.

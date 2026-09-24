@@ -51,7 +51,9 @@ rem Google Sheets ve guncelleme baglantilari icin gerekli).
 "%NSSM%" set %SVC% AppRotateBytes 1048576
 "%NSSM%" set %SVC% AppExit Default Restart
 "%NSSM%" set %SVC% AppRestartDelay 3000
-"%NSSM%" set %SVC% AppThrottle 15000
+rem AppThrottle: nssm, servisi "calisiyor" diye bildirmeden once uygulamanin bu kadar sure acik kalmasini bekler.
+rem 15 sn gibi uzun bir deger "nssm start"in SERVICE_START_PENDING hatasiyla donmesine yol aciyordu (servis yine de acilir).
+"%NSSM%" set %SVC% AppThrottle 5000
 "%NSSM%" set %SVC% AppStopMethodConsole 10000
 "%NSSM%" set %SVC% AppStopMethodWindow 5000
 "%NSSM%" set %SVC% AppKillProcessTree 1
@@ -69,16 +71,24 @@ for %%D in (data backups logs config) do (
 icacls "%ROOT%\app" /grant "%ACCOUNT%:(OI)(CI)M" /T /Q >nul || exit /b 22
 
 rem 4) Guvenlik duvari: yalnizca Ozel ve Etki alani aglarinda, yalnizca DestekOfis calisma zamanina izin.
+rem    Kural eklenemezse (ornegin guvenlik duvarini baska bir guvenlik yazilimi yonetiyorsa) kurulum durmaz:
+rem    servis yine baslatilir, sonunda 60 koduyla "calisiyor ama guvenlik duvari kurali eklenemedi" bildirilir.
+set "FWWARN="
 netsh advfirewall firewall delete rule name="DestekOfis HTTP (TCP 5123)" >nul 2>&1
 netsh advfirewall firewall delete rule name="DestekOfis Kesif (UDP 5123)" >nul 2>&1
 netsh advfirewall firewall delete rule name="Hukuk Ofisi Merkezi" >nul 2>&1
-netsh advfirewall firewall add rule name="DestekOfis HTTP (TCP 5123)" dir=in action=allow protocol=TCP localport=5123 profile=private,domain program="%NODE%" enable=yes || exit /b 30
-netsh advfirewall firewall add rule name="DestekOfis Kesif (UDP 5123)" dir=in action=allow protocol=UDP localport=5123 profile=private,domain program="%NODE%" enable=yes || exit /b 31
+netsh advfirewall firewall add rule name="DestekOfis HTTP (TCP 5123)" dir=in action=allow protocol=TCP localport=5123 profile=private,domain program="%NODE%" enable=yes || set "FWWARN=1"
+netsh advfirewall firewall add rule name="DestekOfis Kesif (UDP 5123)" dir=in action=allow protocol=UDP localport=5123 profile=private,domain program="%NODE%" enable=yes || set "FWWARN=1"
+if defined FWWARN echo UYARI: Guvenlik duvari kurali eklenemedi; servis yine de baslatilacak.
 
-rem 5) Baslat ve saglik kontrolu (en fazla 120 sn). Servis ilk acilista guncelleme indiriyorsa bakim yaniti (503)
-rem    verir; bu da servisin calistigini gosterir. Yalnizca "baslatilamadi" durumu hata sayilir.
-"%NSSM%" start %SVC% || exit /b 40
-powershell -NoProfile -ExecutionPolicy Bypass -Command "$last=''; $sw=[Diagnostics.Stopwatch]::StartNew(); while ($sw.Elapsed.TotalSeconds -lt 120) { try { $r = Invoke-WebRequest -UseBasicParsing -Uri 'http://127.0.0.1:5123/api/health' -TimeoutSec 3; if ($r.StatusCode -eq 200) { Write-Output 'Saglik kontrolu basarili'; exit 0 } } catch { $resp = $_.Exception.Response; if ($resp -and [int]$resp.StatusCode -eq 503) { $body = (New-Object IO.StreamReader($resp.GetResponseStream())).ReadToEnd(); if ($body -match 'failed') { $last='hata' } else { $last='bakim' } } }; Start-Sleep -Seconds 1 }; if ($last -eq 'bakim') { Write-Output 'Servis calisiyor; acilis veya guncelleme suruyor.'; exit 0 }; exit 1"
-if errorlevel 1 (echo Servis 120 sn icinde hazir olmadi. & "%NSSM%" status %SVC% & exit /b 50)
+rem 5) Servisi baslat. "nssm start", servis henuz "baslatiliyor" durumundayken hata koduyla donebilir
+rem    ("Unexpected status SERVICE_START_PENDING"); bu hata sayilmaz, asil karari saglik kontrolu verir.
+"%NSSM%" start %SVC% || echo Not: nssm start servis tamamen acilmadan dondu; saglik kontrolu bekleniyor.
+rem 6) Saglik kontrolu (en fazla 120 sn) paketteki Node.js ile yapilir; PowerShell kisitli bilgisayarlarda da calisir.
+rem    Servis ilk acilista guncelleme indiriyorsa bakim yaniti (503) verir; bu da servisin calistigini gosterir.
+rem    Cikis kodlari: 0 tamam, 60 calisiyor ama guvenlik duvari kurali eklenemedi, digerleri hata (setup.iss aciklar).
+"%NODE%" --disable-warning=ExperimentalWarning "%ROOT%\bootstrap.mjs" saglik 120
+if errorlevel 1 ("%NSSM%" status %SVC% & exit /b 50)
+if defined FWWARN (echo Kurulum tamamlandi; guvenlik duvari kurali eklenemedi. & exit /b 60)
 echo Kurulum tamamlandi.
 exit /b 0

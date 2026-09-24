@@ -10,6 +10,7 @@
 //   yedek                     elle yedek alır
 //   surum                     etkin sürümü yazdırır
 //   etkinlestir <sürüm>       kurulum sonrası: kurulan sürümü etkinleştirir (daha yeni bir sürüm etkinse ona dokunmaz)
+//   saglik [saniye]           kurulum sonrası: servis hazır olana kadar bekler (PowerShell'e gerek kalmadan)
 import { existsSync, readdirSync, readFileSync, renameSync, rmSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
@@ -147,7 +148,43 @@ function activateInstalled(target) {
   }
 }
 
+// Kurulum sonrası sağlık kontrolü: /api/health 200 dönerse veya servis "bakım" yanıtı veriyorsa (açılışta güncelleme
+// indiriyor) başarılı sayılır. Hazır olmazsa servis günlüğünün son satırlarını yazdırır (kurulum.log'a düşer).
+async function waitHealthy(seconds) {
+  const port = Number(process.env.PORT || 5123);
+  const deadline = Date.now() + Math.max(1, seconds) * 1000;
+  let last = "bağlantı yok";
+  while (Date.now() < deadline) {
+    try {
+      const response = await fetch(`http://127.0.0.1:${port}/api/health`, { signal: AbortSignal.timeout(3000) });
+      if (response.status === 200) {
+        console.log("Saglik kontrolu basarili.");
+        return 0;
+      }
+      const body = await response.json().catch(() => ({}));
+      last = response.status === 503 ? (body.phase === "failed" ? "başlatılamadı" : "bakım") : `HTTP ${response.status}`;
+    } catch {
+      last = "bağlantı yok";
+    }
+    await new Promise(resolve => setTimeout(resolve, 1000));
+  }
+  if (last === "bakım") {
+    console.log("Servis calisiyor; acilis veya guncelleme suruyor.");
+    return 0;
+  }
+  console.log(`Servis ${seconds} sn icinde hazir olmadi (son durum: ${last}).`);
+  try {
+    const logFile = path.join(installRoot, "logs", "servis.log");
+    const tail = readFileSync(logFile, "utf8").split(/\r?\n/).filter(Boolean).slice(-15);
+    if (tail.length) console.log(`--- servis.log (son satirlar) ---\n${tail.join("\n")}`);
+  } catch {
+    // Servis günlüğü yoksa servis hiç başlamamıştır.
+  }
+  return 1;
+}
+
 if (command === "yedek") await runBackup();
 else if (command === "surum") console.log(currentVersion() || "yok");
 else if (command === "etkinlestir") activateInstalled(process.argv[3]);
+else if (command === "saglik") process.exit(await waitHealthy(Number(process.argv[3]) || 120));
 else await runService();

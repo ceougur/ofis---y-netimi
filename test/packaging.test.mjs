@@ -2,6 +2,7 @@
 import assert from "node:assert/strict";
 import { execFile, spawn } from "node:child_process";
 import { cpSync, existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import http from "node:http";
 import net from "node:net";
 import { tmpdir } from "node:os";
 import path from "node:path";
@@ -167,5 +168,62 @@ describe("Windows kurulum düzeni (bootstrap)", () => {
       service.child.kill("SIGTERM");
       await new Promise(resolve => service.child.once("exit", resolve));
     }
+  });
+});
+
+describe("kurulum sonrası sağlık kontrolü (bootstrap saglik)", () => {
+  const bootstrap = path.join(root, "packaging", "windows", "bootstrap.mjs");
+  let dir;
+  before(() => {
+    dir = mkdtempSync(path.join(tmpdir(), "destekofis-saglik-"));
+    cpSync(bootstrap, path.join(dir, "bootstrap.mjs"));
+    mkdirSync(path.join(dir, "logs"));
+    writeFileSync(path.join(dir, "logs", "servis.log"), "ilk satir\nError: listen EADDRINUSE 127.0.0.1:5123\n");
+  });
+  after(() => rmSync(dir, { recursive: true, force: true }));
+
+  // Belirtilen yanıtı veren sahte sunucuyla "saglik" alt komutunu çalıştırır; çıkış kodu ve çıktıyı döndürür.
+  async function check(respond, seconds = 2) {
+    const server = respond
+      ? await new Promise(resolve => {
+          const created = http.createServer((req, res) => respond(res));
+          created.listen(0, "127.0.0.1", () => resolve(created));
+        })
+      : null;
+    const port = server ? server.address().port : await freePort();
+    try {
+      const { stdout } = await run(process.execPath, [path.join(dir, "bootstrap.mjs"), "saglik", String(seconds)], { env: { ...process.env, PORT: String(port) } });
+      return { code: 0, stdout };
+    } catch (error) {
+      return { code: error.code, stdout: error.stdout };
+    } finally {
+      server?.close();
+    }
+  }
+  const json = (status, body) => res => {
+    res.writeHead(status, { "content-type": "application/json" });
+    res.end(JSON.stringify(body));
+  };
+
+  it("sağlık ucu 200 dönünce hemen başarılı olur", async () => {
+    const result = await check(json(200, { ok: true, data: { status: "ok" } }));
+    assert.equal(result.code, 0);
+    assert.match(result.stdout, /basarili/);
+  });
+
+  it("servis bakım yanıtı veriyorsa (açılışta güncelleme) çalışıyor sayılır", async () => {
+    const result = await check(json(503, { ok: false, code: "MAINTENANCE", phase: "updating" }));
+    assert.equal(result.code, 0);
+    assert.match(result.stdout, /suruyor/);
+  });
+
+  it("servis başlatılamadıysa veya hiç yanıt yoksa başarısız olur ve servis günlüğünü yazdırır", async () => {
+    const failed = await check(json(503, { ok: false, code: "MAINTENANCE", phase: "failed" }));
+    assert.equal(failed.code, 1);
+    assert.match(failed.stdout, /başlatılamadı/);
+    assert.match(failed.stdout, /EADDRINUSE/, "hata nedeni kurulum günlüğüne düşmeli");
+    const none = await check(null);
+    assert.equal(none.code, 1);
+    assert.match(none.stdout, /bağlantı yok/);
   });
 });

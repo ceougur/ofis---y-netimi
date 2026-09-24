@@ -31,7 +31,7 @@ Klasörler:
 
 ## 3. Personel bilgisayarı kurulumu
 
-1. Aynı kurulum dosyasını personel bilgisayarında çalıştırın ve **Personel bilgisayarı**nı seçin.
+1. Aynı kurulum dosyasını personel bilgisayarında çalıştırın ve **Personel bilgisayarı**nı seçin. Sihirbaz ağda çalışan sunucuyu bulursa bu seçenek kendiliğinden seçili gelir ve bulunan sunucuyu gösterir; yanlışlıkla *Sunucu bilgisayar* seçilirse ikinci bir sunucu kurulmadan önce uyarır.
 2. Masaüstündeki **DestekOfis** simgesine çift tıklayın. Başlatıcı sunucuyu ağda bulur ve DestekOfis'i uygulama penceresinde (Edge veya Chrome) açar. Bulduğu adresi hatırlar; sonraki açılışlar anında olur.
 3. Sunucu bulunamazsa "Yeniden dene" penceresi çıkar: sunucunun açık ve aynı ağda olduğunu kontrol edin.
 
@@ -43,7 +43,7 @@ Başlatıcıya adresi elle vermek için (nadiren gerekir): `C:\HukukOfisiMerkezi
 
 - İlk hesap: **admin / Ofis2026!**. Bu varsayılan parolayla giriş, güvenlik için **yalnızca sunucu bilgisayarın kendisinden** yapılabilir; sistem ilk girişte yeni parola belirlemenizi zorunlu tutar.
 - Parolalar en az 10 karakter olmalı ve harf ile rakam içermelidir.
-- Aynı kullanıcı adıyla 5 hatalı denemeden sonra giriş 15 dakika kilitlenir.
+- Aynı bilgisayardan aynı kullanıcı adıyla 5 hatalı denemeden sonra giriş 15 dakika kilitlenir (diğer bilgisayarlar ve kullanıcılar etkilenmez). Yönetici o kullanıcının parolasını sıfırlarsa kilit hemen kalkar.
 - Parola değişince diğer cihazlardaki oturumlar kapanır.
 
 ## 5. Kullanıcılar, roller ve ofis adı
@@ -110,7 +110,8 @@ Kaynak **ofis geneli tek ayardır**; yönetici veya avukat bir kez tanımlar, he
 | "Sistem başlatılıyor / yeniden başlatılıyor" sayfası | Birkaç saniye bekleyin; sayfa kendiliğinden yenilenir. Uzun sürerse `logs\servis.log` dosyasına bakın. |
 | "Sunucu başlatılamadı" sayfası | Sunucu bilgisayarı yeniden başlatın; sürerse `logs\servis.log` ile destek isteyin. |
 | Varsayılan parolayla giriş reddedildi | İlk giriş yalnızca sunucu bilgisayarın kendisinden yapılabilir. |
-| Giriş kilitlendi | 15 dakika bekleyin veya yöneticiden parola sıfırlamasını isteyin. |
+| Giriş kilitlendi | 15 dakika bekleyin veya yöneticiden parolanızı sıfırlamasını isteyin (sıfırlama kilidi hemen kaldırır). |
+| Personel bilgisayarında "servis kuruldu ancak başlatılamadı" uyarısı | Kurulumda yanlışlıkla *Sunucu bilgisayar* seçilmiş. DestekOfis'i o bilgisayardan kaldırıp *Personel bilgisayarı* ile yeniden kurun. |
 | Tablo görünmüyor | Yönetici/avukatın veri kaynağı tanımlaması gerekir. Sheets için paylaşım iznini kontrol edin. |
 | "Veri kaynağı değiştirildi" uyarısı | Başka bir kullanıcı kaynağı değiştirdi; *Yenile*'ye basın. |
 | "DestekOfis … sürümüne güncellendi" şeridi | Sunucu yeni sürüme geçti. Yazmakta olduğunuz notu kaydedip *Yenile*'ye basın. |
