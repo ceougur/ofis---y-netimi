@@ -12,6 +12,7 @@ import { analyzeColumn, analyzeColumns, primaryColumns } from "../server/lib/ins
 import { computeKpis } from "../server/lib/insight/kpi.mjs";
 import { assessQuality } from "../server/lib/insight/quality.mjs";
 import { classifySector, SECTOR_GROUPS, SECTORS, sectorCatalog } from "../server/lib/insight/sectors.mjs";
+import { createProfileService } from "../server/lib/profile.mjs";
 import { isIban, isPlate, isProvince, isTckn, isTrPhone, isVkn, parseAmount, parseDate } from "../server/lib/insight/validators.mjs";
 import { matrixToRecords } from "../server/lib/sections.mjs";
 import { columnOrder } from "../server/lib/sources.mjs";
@@ -341,6 +342,34 @@ describe("ofis profili", () => {
     await admin.post("/api/workspace/overrides", { caseKey: "2026/100", field: "TUTAR", value: "1.000.000,00 TL" });
     const after = (await personel.get("/api/workspace/insight")).data.data.analysis;
     assert.equal(after.kpis.all.money.sum, 78000 - 1000 + 1_000_000);
+  });
+
+  it("analiz önbelleği: veri okunurken değişirse eski sonuç yeni verinin anahtarıyla saklanmaz", async () => {
+    let rowsCount = 1;
+    let views = 0;
+    const settings = new Map();
+    const store = {
+      setting: (key, fallback = null) => (settings.has(key) ? settings.get(key) : fallback),
+      setSetting: (key, value) => settings.set(key, value),
+      tx: fn => fn(),
+      get: sql => (sql.includes("rowsCount") ? { rowsCount, overridesState: "0/", recordsState: "0/", deletedCount: 0 } : { count: 0 }),
+    };
+    const dataset = {
+      hasData: () => true,
+      view: async () => {
+        views += 1;
+        if (views === 1) rowsCount += 1; // ilk okuma sırasında veri değişti (ör. eşitleme ya da aynı anda düzeltme)
+        return { rows: [{ "DOSYA NO": `2026/${views}`, BORÇLU: "Ali Veli" }], tabs: [] };
+      },
+    };
+    const service = createProfileService({ store, dataset, audit() {}, events: null });
+    assert.equal((await service.analysis()).rowCount, 1);
+    await service.analysis(); // durulmuş veriyle yeniden hesaplanır ve önbelleğe alınır
+    await service.analysis(); // önbellekten
+    assert.equal(views, 2);
+    rowsCount += 1;
+    await service.analysis();
+    assert.equal(views, 3, "veri değişince yeniden hesaplanır");
   });
 
   it("sektör seçimi yalnızca yöneticide; bilinmeyen sektör reddedilir; rol adı, dağarcık ve alt başlık değişir", async () => {

@@ -161,9 +161,12 @@ export function createProfileService({ store, dataset, audit, events, log, clock
     if (computing && computing.fingerprint === key) return computing.promise;
     const promise = (async () => {
       const view = await dataset.view();
+      // Görünüm okunurken veri değiştiyse (ör. ilk Sheet eşitlemesi ya da aynı anda yapılan bir düzeltme) sonuç bu
+      // istek için döner ama önbelleğe alınmaz: bir sonraki istek durulmuş veriyle yeniden hesaplar. Böylece eski
+      // veriden hesaplanmış bir analiz yeni verinin anahtarıyla saklanamaz. (Analiz eşzamanlıdır; araya iş giremez.)
+      const settled = fingerprint() === key;
       const result = analyzeDataset({ rows: view.rows || [], label: store.setting("dataset.label", ""), tabs: (view.tabs || []).map(tab => tab.title).filter(Boolean), now: clock() });
-      // Analiz sırasında veri değiştiyse (ör. ilk Sheet eşitlemesi) güncel anahtarla saklanır.
-      cache = { fingerprint: fingerprint(), analysis: result };
+      if (settled) cache = { fingerprint: key, analysis: result };
       if (result.ms > 1500) log?.info?.(`Veri analizi ${result.ms} ms sürdü (${result.rowCount} kayıt)`);
       return result;
     })().finally(() => {
