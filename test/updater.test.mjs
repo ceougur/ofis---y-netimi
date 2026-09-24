@@ -10,7 +10,7 @@ import { assessManifest, signManifest, verifyEnvelope } from "../server/lib/upda
 import { TRUSTED_UPDATE_KEYS } from "../server/lib/update-keys.mjs";
 import { createUpdater } from "../server/lib/updater.mjs";
 import { createZip } from "../server/lib/zip.mjs";
-import { releaseNotes } from "../tools/lib/update-package.mjs";
+import { plainNotes, releaseNotes } from "../tools/lib/update-package.mjs";
 import { buildRelease, makeKeys, makeVersion, releaseFiles, startMockGithub } from "./update-helpers.mjs";
 
 const baseManifest = (overrides = {}) => ({
@@ -87,6 +87,7 @@ describe("imzalı güncelleme bildirgesi", () => {
     assert.equal(releaseNotes(text, "1.4.0"), "1.4.0 — Yeni\n\n- a\n- b");
     assert.equal(releaseNotes(text, "1.3.0"), "1.3.0 — Eski\n\n- c");
     assert.equal(releaseNotes(text, "2.0.0"), "");
+    assert.equal(plainNotes("1.3.3 — Başlık\n\n- **Kalın** metin ve `-kesfet-dosya`\n  - alt madde\n* yıldızlı"), "1.3.3 — Başlık\n\n• Kalın metin ve -kesfet-dosya\n  • alt madde\n• yıldızlı");
   });
 });
 

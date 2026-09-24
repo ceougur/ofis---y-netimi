@@ -20,6 +20,15 @@ export function releaseNotes(changelog, version) {
   return `${heading}\n\n${body}`.trim();
 }
 
+// Bildirgedeki notlar yönetim panelinde düz metin olarak gösterilir (eski sürümler de dahil):
+// Markdown işaretleri (**kalın**, `kod`, "- " maddeler) okunur düz metne çevrilir.
+export function plainNotes(markdown) {
+  return String(markdown || "")
+    .split(/\r?\n/)
+    .map(line => line.replace(/^(\s*)[-*]\s+/, "$1• ").replace(/\*\*(.+?)\*\*/g, "$1").replace(/__(.+?)__/g, "$1").replace(/`([^`]+)`/g, "$1"))
+    .join("\n");
+}
+
 // Gizli anahtarın açık kısmını güvenilen anahtar listesinde arar; eşleşen anahtar kimliğini döndürür.
 export function keyIdFor(privateKeyPem, trustedKeys) {
   const spki = createPublicKey(createPrivateKey(privateKeyPem)).export({ format: "der", type: "spki" }).toString("base64");
@@ -49,14 +58,15 @@ export function buildUpdatePackage({ root, outDir, privateKeyPem, keyId, trusted
     version,
     channel,
     releasedAt,
-    notes: releaseNotes(changelog, version),
+    notes: plainNotes(releaseNotes(changelog, version)),
     package: { name: zipName, size: zip.length, sha256 },
     requires: { ...(minVersion ? { minVersion } : {}), ...(node ? { node } : {}), bootstrap },
   };
   const envelope = signManifest(manifest, privateKeyPem, keyId);
   if (trustedKeys) verifyEnvelope(envelope, trustedKeys); // uygulamanın doğrulayamayacağı bir sürüm yayımlanmasın
   writeFileSync(path.join(outDir, MANIFEST_ASSET), `${JSON.stringify(envelope, null, 2)}\n`);
-  writeFileSync(path.join(outDir, "SURUM-NOTLARI.md"), `${manifest.notes || `DestekOfis ${version}`}\n`);
+  // GitHub yayın açıklaması Markdown'ı işler; orada biçimli sürüm kullanılır.
+  writeFileSync(path.join(outDir, "SURUM-NOTLARI.md"), `${releaseNotes(changelog, version) || `DestekOfis ${version}`}\n`);
   const manifestSha = createHash("sha256").update(readFileSync(path.join(outDir, MANIFEST_ASSET))).digest("hex");
   writeFileSync(path.join(outDir, "SHA256SUMS"), `${sha256}  ${zipName}\n${manifestSha}  ${MANIFEST_ASSET}\n`);
   return { version, manifest, zipPath: path.join(outDir, zipName), manifestPath: path.join(outDir, MANIFEST_ASSET), sha256, size: zip.length, files: files.length };
