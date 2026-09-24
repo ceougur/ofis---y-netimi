@@ -279,7 +279,7 @@ async function handle(req, res) {
     const safePath = path.resolve(filePath);
     if (!safePath.startsWith(path.resolve(PUBLIC_DIR)) || !existsSync(safePath)) return send(res, 404, { error: "Sayfa bulunamadı." });
     const ext = path.extname(safePath); const contentType = { ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".css": "text/css; charset=utf-8", ".json": "application/json" }[ext] || "application/octet-stream";
-    res.writeHead(200, { "content-type": contentType, "cache-control": ext === ".html" ? "no-store" : "public, max-age=3600" }); return res.end(readFileSync(safePath));
+    res.writeHead(200, { "content-type": contentType, "cache-control": [".html", ".js", ".css"].includes(ext) ? "no-store, no-cache, must-revalidate" : "public, max-age=3600" }); return res.end(readFileSync(safePath));
   }
   const user = requireUser(req, res); if (!user) return;
   try {
