@@ -114,6 +114,10 @@
       });
     },
     async task() {
+      if (!HOF.can("tasks.create")) {
+        HOF.toast("Görev atama yalnızca avukat ve yönetici hesaplarında kullanılabilir.", { type: "error" });
+        return;
+      }
       const selected = HOF.selectedCase();
       await loadUsers();
       HOF.formModal({
@@ -148,7 +152,12 @@
   // ---------- Operasyon pencereleri ----------
   async function openTasks(initial = "mine") {
     let view = initial;
-    const modal = HOF.modal({ title: "Görevler", eyebrow: "OPERASYON", size: "wide", body: `<div class="hof-tabs" role="group" aria-label="Görev filtresi"><button type="button" data-view="mine">Bana atananlar</button><button type="button" data-view="open">Tüm açık görevler</button><button type="button" data-view="completed">Tamamlananlar</button></div><div class="hof-list" data-list><p class="hof-empty">Yükleniyor…</p></div><div class="hof-actions"><button type="button" class="hof-button hof-button-ghost" data-new>Yeni görev</button><button type="button" class="hof-button" data-close>Kapat</button></div>` });
+    // Herkesin görevlerini yalnızca avukat ve yönetici görür; diğerleri kendi görevlerini (sunucu da süzer).
+    const everyone = HOF.can("tasks.viewAll");
+    const tabs = everyone
+      ? '<button type="button" data-view="mine">Bana atananlar</button><button type="button" data-view="open">Tüm açık görevler</button><button type="button" data-view="completed">Tamamlananlar</button>'
+      : '<button type="button" data-view="mine">Açık görevlerim</button><button type="button" data-view="completed">Tamamladıklarım</button>';
+    const modal = HOF.modal({ title: "Görevler", eyebrow: "OPERASYON", size: "wide", body: `<div class="hof-tabs" role="group" aria-label="Görev filtresi">${tabs}</div><div class="hof-list" data-list><p class="hof-empty">Yükleniyor…</p></div><div class="hof-actions">${HOF.can("tasks.create") ? '<button type="button" class="hof-button hof-button-ghost" data-new>Yeni görev</button>' : ""}<button type="button" class="hof-button" data-close>Kapat</button></div>` });
     const list = modal.dialog.querySelector("[data-list]");
     const render = async () => {
       modal.dialog.querySelectorAll("[data-view]").forEach(button => button.setAttribute("aria-pressed", String(button.dataset.view === view)));
@@ -188,47 +197,8 @@
     render();
   }
 
-  async function openMessages() {
-    await loadUsers();
-    const modal = HOF.modal({
-      title: "Ofis içi mesajlar",
-      eyebrow: "İLETİŞİM",
-      size: "wide",
-      body: `<div class="hof-list" data-list><p class="hof-empty">Yükleniyor…</p></div><form class="hof-form" novalidate>${HOF.fieldHtml({ name: "to", label: "Alıcı", required: true, list: userNames(), placeholder: "Personel adı" })}${HOF.fieldHtml({ name: "message", label: "Mesaj", type: "textarea", rows: 3, required: true, maxlength: 2000, placeholder: "Kısa ve net bir not yazın…" })}<p class="hof-form-error" role="alert"></p><div class="hof-actions"><button type="button" class="hof-button hof-button-ghost" data-close>Kapat</button><button type="submit" class="hof-button">Mesaj gönder</button></div></form>`,
-    });
-    const list = modal.dialog.querySelector("[data-list]");
-    const render = async () => {
-      try {
-        const messages = await HOF.api("/api/workspace/messages?limit=40");
-        list.innerHTML = messages.length
-          ? messages.map(item => `<article class="hof-list-item ${item.toMe ? "is-highlight" : ""}"><header><b>${esc(item.actorName)} → ${esc(item.to)}</b><small>${esc(HOF.relativeTime(item.createdAt))}</small></header><p>${esc(item.message)}</p>${item.caseKey ? `<small>Dosya: ${esc(item.caseKey)}</small>` : ""}</article>`).join("")
-          : '<p class="hof-empty">Henüz mesaj yok.</p>';
-      } catch (error) {
-        list.innerHTML = `<p class="hof-empty">${esc(error.message)}</p>`;
-      }
-    };
-    const form = modal.dialog.querySelector("form");
-    form.querySelector("[data-close]").onclick = () => modal.close();
-    form.addEventListener("submit", async event => {
-      event.preventDefault();
-      const error = form.querySelector(".hof-form-error");
-      const body = { to: form.elements.to.value.trim(), message: form.elements.message.value.trim(), caseKey: HOF.selectedCase()?.key || "" };
-      if (!body.to || !body.message) {
-        error.textContent = "Alıcı ve mesaj gerekli.";
-        return;
-      }
-      try {
-        await HOF.api("/api/workspace/messages", { method: "POST", body });
-        form.elements.message.value = "";
-        error.textContent = "";
-        HOF.toast("Mesaj gönderildi.", { type: "success" });
-        render();
-      } catch (failure) {
-        error.textContent = failure.message;
-      }
-    });
-    render();
-  }
+  // Eski "Mesajlar" penceresinin yerini sağdan açılan sohbet paneli aldı (hof-chat.js).
+  const openMessages = () => HOF.chat?.open();
 
   async function openReports() {
     try {
@@ -294,7 +264,7 @@
       `<p class="hof-sidecard-label">OPERASYON MERKEZİ</p>
       ${sideItem("tasks", "✓", "Görevler")}
       ${sideItem("messages", "✉", "Mesajlar")}
-      ${sideItem("newTask", "+", "Görev ata")}
+      ${sideItem("newTask", "+", "Görev ata", "", "tasks.create")}
       ${sideItem("newRecord", "+", "Yeni kayıt")}
       ${sideItem("liens", "!", "Haciz uyarıları", "warn")}
       ${sideItem("reports", "↗", "Personel raporu", "", "reports.view")}
@@ -308,7 +278,7 @@
       const action = event.target.closest("[data-action]")?.dataset.action;
       if (!action) return;
       if (action === "tasks") openTasks();
-      else if (action === "messages") openMessages();
+      else if (action === "messages") HOF.chat ? HOF.chat.toggle() : openMessages();
       else if (action === "newTask") actions.task();
       else if (action === "newRecord") HOF.emit("new-record");
       else if (action === "liens") openLiens();
@@ -377,7 +347,7 @@
     if (!header) return;
     let row = panel.querySelector(".hof-case-actions");
     if (!row) {
-      row = HOF.el("div", { class: "hof-case-actions", role: "toolbar", "aria-label": "Dosya işlemleri" }, `<button type="button" class="hof-whatsapp" data-case-action="whatsapp">WhatsApp</button><button type="button" data-case-action="note">Not</button><button type="button" data-case-action="phone">Telefon</button><button type="button" data-case-action="payment">Tahsilat</button><button type="button" data-case-action="task">Görev</button><button type="button" data-case-action="lien">Haciz</button>`);
+      row = HOF.el("div", { class: "hof-case-actions", role: "toolbar", "aria-label": "Dosya işlemleri" }, `<button type="button" class="hof-whatsapp" data-case-action="whatsapp">WhatsApp</button><button type="button" data-case-action="note">Not</button><button type="button" data-case-action="phone">Telefon</button><button type="button" data-case-action="payment">Tahsilat</button><button type="button" data-case-action="task" data-requires="tasks.create">Görev</button><button type="button" data-case-action="lien">Haciz</button>`);
       row.addEventListener("click", event => {
         const action = event.target.closest("[data-case-action]")?.dataset.caseAction;
         if (action && actions[action]) actions[action]();
@@ -401,6 +371,30 @@
     HOF.toast("WhatsApp açılıyor…");
   });
 
+  // Açık dosyanın işlem geçmişini yeniden çeker (başka bir bilgisayar not/işlem eklediğinde).
+  function refreshActivity() {
+    activityKey = "";
+    renderActivity();
+  }
+
+  // ---------- Canlı değişiklikler (hof-live.js) ----------
+  HOF.on("live:workspace.changed", change => {
+    if (!change) return;
+    if (change.kind === "task") {
+      refreshBadges();
+      // Kişiye kimliğiyle bağlı görevde kimlik, serbest yazılmış görevde ad karşılaştırılır.
+      const mine = change.assigneeId ? change.assigneeId === HOF.user?.id : Boolean(change.assignee) && HOF.normalize(change.assignee) === HOF.normalize(HOF.user?.name || "");
+      if (mine) {
+        HOF.toast(`${change.actorName || "Bir kullanıcı"} size görev atadı: ${change.title || ""}`, { action: { label: "Görevler", onClick: () => openTasks("mine") }, timeout: 8000 });
+      }
+    }
+    if ((change.kind === "activity" || change.kind === "task") && change.caseKey && HOF.selectedCase()?.key === change.caseKey) refreshActivity();
+  });
+  HOF.on("live:resync", () => {
+    refreshBadges();
+    refreshActivity();
+  });
+
   HOF.whenReady(() => {
     loadUsers();
     HOF.onDom(() => {
@@ -410,5 +404,5 @@
     });
     setInterval(refreshBadges, 120_000);
   });
-  HOF.workspace = { openTasks, openMessages, openReports, openLiens, refreshBadges, extractPhones };
+  HOF.workspace = { openTasks, openMessages, openReports, openLiens, refreshBadges, refreshActivity, extractPhones };
 })();

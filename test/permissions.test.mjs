@@ -41,10 +41,38 @@ describe("rol bazlı yetkiler", () => {
     assert.equal((await personel.post("/api/workspace/sources/excel", { fileName: "a.xlsx", rows: [] })).status, 403);
   });
 
-  it("muhasebe raporları görebilir, avukat kayıt silebilir", async () => {
-    assert.equal((await muhasebe.get("/api/workspace/reports")).status, 200);
+  it("performans raporunu yalnızca avukat ve yönetici görür; avukat kayıt silebilir", async () => {
+    assert.equal((await muhasebe.get("/api/workspace/reports")).status, 403);
+    assert.equal((await avukat.get("/api/workspace/reports")).status, 200);
     assert.equal((await avukat.post("/api/workspace/deleted", { sourceName: source, caseKey: "2026/1" })).status, 200);
     assert.equal((await avukat.put("/api/workspace/client-state", { key: "syncMinutes", value: "15" })).status, 200);
+  });
+
+  it("görev atama ve herkesin görevleri yalnızca avukat ve yöneticide; personel kendi görevini görür ve tamamlar", async () => {
+    const me = name => ({ title: `Görev: ${name}`, assignee: name });
+    assert.equal((await personel.post("/api/workspace/tasks", me("Personel Bir"))).status, 403, "personel görev atayamaz");
+    assert.equal((await muhasebe.post("/api/workspace/tasks", me("Personel Bir"))).status, 403, "muhasebe görev atayamaz");
+    const own = await avukat.post("/api/workspace/tasks", { title: "Tebligatı kontrol et", assignee: "personel1" });
+    const other = await avukat.post("/api/workspace/tasks", { title: "Avukatın kendi işi", assignee: "Av. Test" });
+    assert.equal(own.status, 200);
+    assert.equal(other.status, 200);
+    const personelOpen = (await personel.get("/api/workspace/tasks?status=open")).data.data.map(task => task.title);
+    assert.ok(personelOpen.includes("Tebligatı kontrol et"));
+    assert.ok(!personelOpen.includes("Avukatın kendi işi"), "personel başkasının görevini görmez");
+    const state = (await personel.get("/api/workspace/state")).data.data;
+    assert.ok(!state.tasks.some(task => task.title === "Avukatın kendi işi"), "uyumluluk ucu da süzer");
+    const avukatOpen = (await avukat.get("/api/workspace/tasks?status=open")).data.data.map(task => task.title);
+    assert.ok(avukatOpen.includes("Avukatın kendi işi") && avukatOpen.includes("Tebligatı kontrol et"));
+    // Dosya geçmişi de aynı kurala uyar: personel dosyadaki başkasına ait görevi görmez.
+    await avukat.post("/api/workspace/tasks", { title: "Dosyada avukat görevi", assignee: "Av. Test", caseKey: "2026/2" });
+    await avukat.post("/api/workspace/tasks", { title: "Dosyada personel görevi", assignee: "personel1", caseKey: "2026/2" });
+    const activityTasks = async client => (await client.get(`/api/workspace/cases/${encodeURIComponent("2026/2")}/activity`)).data.data.items.filter(item => item.type === "task").map(item => item.title).sort();
+    assert.deepEqual(await activityTasks(personel), ["Dosyada personel görevi"]);
+    assert.deepEqual(await activityTasks(avukat), ["Dosyada avukat görevi", "Dosyada personel görevi"]);
+    assert.equal((await personel.post(`/api/workspace/tasks/${other.data.data.id}/complete`)).status, 404, "başkasının görevini tamamlayamaz");
+    assert.equal((await personel.post(`/api/workspace/tasks/${own.data.data.id}/complete`)).status, 200);
+    const me2 = (await personel.get("/api/auth/me")).data.data;
+    assert.ok(!me2.permissions.includes("tasks.create") && !me2.permissions.includes("reports.view") && me2.permissions.includes("tasks.complete"));
   });
 
   it("yönetici kendini pasifleştiremez ve son yönetici korunur", async () => {

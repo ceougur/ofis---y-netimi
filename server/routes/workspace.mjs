@@ -1,12 +1,28 @@
 // Ortak çalışma alanı: dosya işlemleri, görevler, mesajlar, raporlar, merkezi notlar ve veri kaynağı.
 import { EXCEL_PREFIX, columnOrder } from "../lib/sources.mjs";
 import { HttpError, limited, ok, parseJson, readJson, text } from "../lib/http.mjs";
+import { foldName, nameConflict, resolveUserByName } from "../lib/names.mjs";
 import { can } from "../lib/permissions.mjs";
 
 const CASE_KEY_MAX = 300;
 
-export function registerWorkspaceRoutes(router, { store, auth, audit, sources, clientState, config }) {
+export function registerWorkspaceRoutes(router, { store, auth, audit, sources, clientState, config, events, chat }) {
   const now = () => new Date().toISOString();
+  // Görev kişiye kimliğiyle bağlıysa yalnızca kimlik belirler (ad değiştirerek başkasının görevi görülemez);
+  // serbest yazılmış, kişiye bağlanamamış eski görevlerde ad eşleşmesi geçerlidir.
+  const assignedTo = (user, task) => {
+    const assigneeId = task.assigneeId ?? task.assignee_id ?? null;
+    return assigneeId ? assigneeId === user.id : Boolean(foldName(task.assignee)) && foldName(task.assignee) === foldName(user.display_name);
+  };
+  const ownTask = (user, task) => assignedTo(user, task) || (task.actorId ?? task.created_by) === user.id;
+  const visibleTasks = (user, rows) => (can(user.role, "tasks.viewAll") ? rows : rows.filter(row => ownTask(user, row)));
+  // Diğer bilgisayarlardaki açık ekranlar değişikliği anında görsün (işlemi yapan hariç; onun ekranı zaten güncel).
+  const changed = (user, kind, detail = {}, users = null) => events?.publish("workspace.changed", { kind, actorId: user.id, actorName: user.display_name, ...detail }, { except: user.id, users });
+  // Görev olayları (başlık, atanan) yalnızca o görevi görebilenlere gider: tüm görevleri görme yetkisi olanlar,
+  // görevin atandığı ve görevi oluşturan kişi. Personel başkalarının görevlerini canlı kanaldan da öğrenemez.
+  const taskAudience = task => store.all("SELECT id, role, display_name FROM users WHERE active = 1")
+    .filter(member => can(member.role, "tasks.viewAll") || ownTask(member, task))
+    .map(member => member.id);
   const newId = prefix => auth.newId(prefix);
   const caseKeyOf = (value, label = "Dosya kimliği") => {
     const key = limited(value, CASE_KEY_MAX, label);
@@ -35,8 +51,9 @@ export function registerWorkspaceRoutes(router, { store, auth, audit, sources, c
       records,
       overrides: rows(`SELECT o.id, o.case_key AS caseKey, o.source_name AS sourceName, o.field, o.value, o.version, o.updated_by AS updatedBy, COALESCE(u.display_name, '') AS actorName, o.updated_at AS updatedAt FROM overrides o LEFT JOIN users u ON u.id = o.updated_by ORDER BY o.updated_at DESC`),
       deletedRecords: rows(`SELECT d.id, d.case_key AS caseKey, d.source_name AS sourceName, d.deleted_by AS deletedBy, COALESCE(u.display_name, '') AS actorName, d.deleted_at AS deletedAt FROM deleted_records d LEFT JOIN users u ON u.id = d.deleted_by ORDER BY d.deleted_at DESC`),
-      messages: rows(`SELECT m.id, m.recipient AS "to", m.message, m.case_key AS caseKey, m.created_by AS actorId, COALESCE(u.display_name, '') AS actorName, m.created_at AS createdAt FROM messages m LEFT JOIN users u ON u.id = m.created_by ORDER BY m.created_at DESC LIMIT 100`),
-      tasks: rows(`SELECT t.id, t.title, t.case_key AS caseKey, t.assignee, t.due_date AS dueDate, t.priority, t.status, t.created_by AS actorId, COALESCE(u.display_name, '') AS actorName, t.created_at AS createdAt, t.completed_at AS completedAt, t.completed_by AS completedBy, COALESCE(c.display_name, t.completed_by) AS completedByName FROM tasks t LEFT JOIN users u ON u.id = t.created_by LEFT JOIN users c ON c.id = t.completed_by ORDER BY t.created_at DESC`),
+      // Mesajlar artık sohbetten ve yalnızca kişinin taraf olduğu yazışmalardan gelir (eski tablo herkese açıktı).
+      messages: chat.legacyList(user, 100),
+      tasks: visibleTasks(user, rows(`SELECT t.id, t.title, t.case_key AS caseKey, COALESCE(a.display_name, t.assignee) AS assignee, t.assignee_id AS assigneeId, t.due_date AS dueDate, t.priority, t.status, t.created_by AS actorId, COALESCE(u.display_name, '') AS actorName, t.created_at AS createdAt, t.completed_at AS completedAt, t.completed_by AS completedBy, COALESCE(c.display_name, t.completed_by) AS completedByName FROM tasks t LEFT JOIN users u ON u.id = t.created_by LEFT JOIN users c ON c.id = t.completed_by LEFT JOIN users a ON a.id = t.assignee_id ORDER BY t.created_at DESC`)),
       notes: rows(`SELECT n.id, n.case_key AS caseKey, n.note, n.created_by AS actorId, COALESCE(u.display_name, '') AS actorName, n.created_at AS createdAt FROM notes n LEFT JOIN users u ON u.id = n.created_by ORDER BY n.created_at DESC`),
       phones: rows(`SELECT p.id, p.case_key AS caseKey, p.phone, p.label, p.created_by AS actorId, COALESCE(u.display_name, '') AS actorName, p.created_at AS createdAt FROM phones p LEFT JOIN users u ON u.id = p.created_by ORDER BY p.created_at DESC`),
       payments: rows(`SELECT p.id, p.case_key AS caseKey, p.amount, p.date, p.note, p.created_by AS actorId, COALESCE(u.display_name, '') AS actorName, p.created_at AS createdAt FROM payments p LEFT JOIN users u ON u.id = p.created_by ORDER BY p.created_at DESC`),
@@ -52,6 +69,8 @@ export function registerWorkspaceRoutes(router, { store, auth, audit, sources, c
     const body = await readJson(req);
     const name = limited(body.name, 120, "Ad soyad");
     if (!name) throw new HttpError(400, "Personel adı gerekli.");
+    const conflict = nameConflict(store, { name, exceptId: user.id });
+    if (conflict) throw new HttpError(409, conflict);
     store.run("UPDATE users SET display_name = ?, updated_at = ? WHERE id = ?", name, now(), user.id);
     audit({ ...user, display_name: name }, "profile.updated", user.id, { name });
     ok(res, { id: user.id, name, role: user.role });
@@ -78,6 +97,7 @@ export function registerWorkspaceRoutes(router, { store, auth, audit, sources, c
     const timestamp = now();
     store.run("INSERT INTO records (id, source_name, case_key, values_json, created_by, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)", recordId, source, key, JSON.stringify(clean), user.id, timestamp, timestamp);
     audit(user, "source.row.created", recordId, { sourceName: source, caseKey: key });
+    changed(user, "records", { caseKey: key });
     return { id: recordId, sourceName: source, caseKey: key, values: clean, createdAt: timestamp };
   };
 
@@ -117,6 +137,7 @@ export function registerWorkspaceRoutes(router, { store, auth, audit, sources, c
     const recordId = existing?.id || newId("deleted");
     store.run("INSERT INTO deleted_records (id, source_name, case_key, deleted_by, deleted_at) VALUES (?, ?, ?, ?, ?) ON CONFLICT(source_name, case_key) DO UPDATE SET deleted_by = excluded.deleted_by, deleted_at = excluded.deleted_at", recordId, source, key, user.id, now());
     audit(user, "source.row.deleted", recordId, { sourceName: source, caseKey: key });
+    changed(user, "records", { caseKey: key });
     ok(res, { id: recordId, sourceName: source, caseKey: key });
   });
 
@@ -128,6 +149,7 @@ export function registerWorkspaceRoutes(router, { store, auth, audit, sources, c
     const removed = store.run("DELETE FROM deleted_records WHERE source_name = ? AND case_key = ?", source, key).changes;
     if (!removed) throw new HttpError(404, "Silinmiş kayıt bulunamadı.");
     audit(user, "source.row.restored", key, { sourceName: source, caseKey: key });
+    changed(user, "records", { caseKey: key });
     ok(res, true);
   });
 
@@ -153,12 +175,13 @@ export function registerWorkspaceRoutes(router, { store, auth, audit, sources, c
     const version = (old?.version || 0) + 1;
     store.run("INSERT INTO overrides (id, source_name, case_key, field, value, version, updated_by, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?) ON CONFLICT(source_name, case_key, field) DO UPDATE SET value = excluded.value, version = excluded.version, updated_by = excluded.updated_by, updated_at = excluded.updated_at", itemId, source, key, field, value, version, user.id, now());
     audit(user, "source.cell.updated", itemId, { sourceName: source, caseKey: key, field, previousValue: old?.value || "", value, version, action: text(body.action) || undefined });
+    changed(user, "records", { caseKey: key });
     ok(res, { id: itemId, version });
   });
 
   // ---- Dosya işlemleri ----
   router.get("/api/workspace/cases/:key/activity", async ({ req, res, params }) => {
-    auth.requireUser(req);
+    const user = auth.requireUser(req);
     const key = caseKeyOf(params.key);
     const list = (sql, type) => store.all(sql, key).map(row => ({ ...row, type }));
     const items = [
@@ -166,7 +189,8 @@ export function registerWorkspaceRoutes(router, { store, auth, audit, sources, c
       ...list(`SELECT p.id, p.phone, p.label, p.created_at AS createdAt, COALESCE(u.display_name, '') AS actorName FROM phones p LEFT JOIN users u ON u.id = p.created_by WHERE p.case_key = ?`, "phone"),
       ...list(`SELECT p.id, p.amount, p.date, p.note, p.created_at AS createdAt, COALESCE(u.display_name, '') AS actorName FROM payments p LEFT JOIN users u ON u.id = p.created_by WHERE p.case_key = ?`, "payment"),
       ...list(`SELECT l.id, l.title, l.placed_at AS placedAt, l.expires_at AS expiresAt, l.status, l.created_at AS createdAt, COALESCE(u.display_name, '') AS actorName FROM liens l LEFT JOIN users u ON u.id = l.created_by WHERE l.case_key = ?`, "lien"),
-      ...list(`SELECT t.id, t.title, t.assignee, t.due_date AS dueDate, t.priority, t.status, t.created_at AS createdAt, COALESCE(u.display_name, '') AS actorName FROM tasks t LEFT JOIN users u ON u.id = t.created_by WHERE t.case_key = ?`, "task"),
+      // Dosya geçmişindeki görevler de görev yetkisine uyar (personel yalnızca kendi görevlerini görür).
+      ...visibleTasks(user, list(`SELECT t.id, t.title, COALESCE(a.display_name, t.assignee) AS assignee, t.assignee_id AS assigneeId, t.due_date AS dueDate, t.priority, t.status, t.created_by AS actorId, t.created_at AS createdAt, COALESCE(u.display_name, '') AS actorName FROM tasks t LEFT JOIN users u ON u.id = t.created_by LEFT JOIN users a ON a.id = t.assignee_id WHERE t.case_key = ?`, "task")),
     ].sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
     const totals = store.get("SELECT COALESCE(SUM(amount), 0) AS paid FROM payments WHERE case_key = ?", key);
     ok(res, { caseKey: key, items, paidTotal: totals.paid });
@@ -181,6 +205,7 @@ export function registerWorkspaceRoutes(router, { store, auth, audit, sources, c
     const itemId = newId("note");
     store.run("INSERT INTO notes (id, case_key, note, created_by, created_at) VALUES (?, ?, ?, ?, ?)", itemId, key, note, user.id, now());
     audit(user, "case.note.created", itemId, { caseKey: key });
+    changed(user, "activity", { caseKey: key });
     ok(res, { id: itemId });
   });
 
@@ -193,6 +218,7 @@ export function registerWorkspaceRoutes(router, { store, auth, audit, sources, c
     const itemId = newId("phone");
     store.run("INSERT INTO phones (id, case_key, phone, label, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?)", itemId, key, phone, limited(body.label, 60, "Etiket") || "Telefon", user.id, now());
     audit(user, "case.phone.created", itemId, { caseKey: key });
+    changed(user, "activity", { caseKey: key });
     ok(res, { id: itemId });
   });
 
@@ -207,6 +233,7 @@ export function registerWorkspaceRoutes(router, { store, auth, audit, sources, c
     const itemId = newId("payment");
     store.run("INSERT INTO payments (id, case_key, amount, date, note, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)", itemId, key, Math.round(amount * 100) / 100, date, limited(body.note, 500, "Açıklama"), user.id, now());
     audit(user, "case.payment.created", itemId, { caseKey: key, amount });
+    changed(user, "activity", { caseKey: key });
     ok(res, { id: itemId });
   });
 
@@ -221,6 +248,7 @@ export function registerWorkspaceRoutes(router, { store, auth, audit, sources, c
     const itemId = newId("lien");
     store.run("INSERT INTO liens (id, case_key, title, placed_at, expires_at, status, created_by, created_at) VALUES (?, ?, ?, ?, ?, 'active', ?, ?)", itemId, key, limited(body.title, 200, "Haciz başlığı") || "Haciz", placed.toISOString(), expires.toISOString(), user.id, now());
     audit(user, "case.lien.created", itemId, { caseKey: key, expiresAt: expires.toISOString() });
+    changed(user, "activity", { caseKey: key });
     ok(res, { id: itemId, expiresAt: expires.toISOString() });
   });
 
@@ -242,9 +270,8 @@ export function registerWorkspaceRoutes(router, { store, auth, audit, sources, c
     const user = auth.requireUser(req);
     const status = text(url.searchParams.get("status")) || "open";
     const mine = url.searchParams.get("mine") === "1";
-    const rows = store.all(`SELECT t.id, t.title, t.case_key AS caseKey, t.assignee, t.due_date AS dueDate, t.priority, t.status, COALESCE(u.display_name, '') AS actorName, t.created_at AS createdAt, t.completed_at AS completedAt, COALESCE(c.display_name, t.completed_by) AS completedByName FROM tasks t LEFT JOIN users u ON u.id = t.created_by LEFT JOIN users c ON c.id = t.completed_by WHERE (? = 'all' OR t.status = ?) ORDER BY CASE t.priority WHEN 'urgent' THEN 0 WHEN 'high' THEN 1 ELSE 2 END, CASE WHEN t.due_date = '' THEN 1 ELSE 0 END, t.due_date, t.created_at DESC LIMIT 500`, status, status);
-    const name = user.display_name.toLocaleLowerCase("tr-TR");
-    ok(res, mine ? rows.filter(row => row.assignee.toLocaleLowerCase("tr-TR") === name) : rows);
+    const rows = store.all(`SELECT t.id, t.title, t.case_key AS caseKey, COALESCE(a.display_name, t.assignee) AS assignee, t.assignee_id AS assigneeId, t.due_date AS dueDate, t.priority, t.status, t.created_by AS actorId, COALESCE(u.display_name, '') AS actorName, t.created_at AS createdAt, t.completed_at AS completedAt, COALESCE(c.display_name, t.completed_by) AS completedByName FROM tasks t LEFT JOIN users u ON u.id = t.created_by LEFT JOIN users c ON c.id = t.completed_by LEFT JOIN users a ON a.id = t.assignee_id WHERE (? = 'all' OR t.status = ?) ORDER BY CASE t.priority WHEN 'urgent' THEN 0 WHEN 'high' THEN 1 ELSE 2 END, CASE WHEN t.due_date = '' THEN 1 ELSE 0 END, t.due_date, t.created_at DESC LIMIT 500`, status, status);
+    ok(res, mine ? rows.filter(row => assignedTo(user, row)) : visibleTasks(user, rows));
   });
 
   router.post("/api/workspace/tasks", async ({ req, res }) => {
@@ -255,26 +282,33 @@ export function registerWorkspaceRoutes(router, { store, auth, audit, sources, c
     const priority = ["normal", "high", "urgent"].includes(text(body.priority)) ? text(body.priority) : "normal";
     const itemId = newId("task");
     const key = limited(body.caseKey || body.case_key, CASE_KEY_MAX, "Dosya kimliği");
-    store.run("INSERT INTO tasks (id, title, case_key, assignee, due_date, priority, status, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, 'open', ?, ?)", itemId, title, key, limited(body.assignee, 120, "Atanan kişi") || user.display_name, text(body.dueDate).slice(0, 10), priority, user.id, now());
-    audit(user, "task.created", itemId, { title, caseKey: key });
+    const typed = limited(body.assignee, 120, "Atanan kişi") || user.display_name;
+    // Yazılan ad tek bir kullanıcıya denk geliyorsa görev o kişiye kimliğiyle bağlanır ve adı düzgün yazılır.
+    const person = resolveUserByName(store, typed);
+    const assignee = person?.display_name || typed;
+    const assigneeId = person?.id || null;
+    store.run("INSERT INTO tasks (id, title, case_key, assignee, assignee_id, due_date, priority, status, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, 'open', ?, ?)", itemId, title, key, assignee, assigneeId, text(body.dueDate).slice(0, 10), priority, user.id, now());
+    audit(user, "task.created", itemId, { title, caseKey: key, assignee });
+    changed(user, "task", { caseKey: key || null, title, assignee, assigneeId }, taskAudience({ assignee, assignee_id: assigneeId, created_by: user.id }));
     ok(res, { id: itemId });
   });
 
   router.post("/api/workspace/tasks/:id/complete", async ({ req, res, params }) => {
     const user = auth.requirePermission(req, "tasks.complete");
-    const item = store.get("SELECT id, status FROM tasks WHERE id = ?", params.id);
-    if (!item) throw new HttpError(404, "Görev bulunamadı.");
+    const item = store.get("SELECT id, status, assignee, assignee_id, created_by, case_key FROM tasks WHERE id = ?", params.id);
+    // Tüm görevleri görme yetkisi olmayan yalnızca kendisine atanan görevi tamamlayabilir (varlığı da gizlenir).
+    if (!item || (!can(user.role, "tasks.viewAll") && !ownTask(user, item))) throw new HttpError(404, "Görev bulunamadı.");
     store.run("UPDATE tasks SET status = 'completed', completed_at = ?, completed_by = ? WHERE id = ?", now(), user.id, params.id);
     audit(user, "task.completed", params.id);
+    changed(user, "task", { caseKey: item.case_key || null }, taskAudience(item));
     ok(res, true);
   });
 
+  // Eski "Mesajlar" uçları: güncelleme sırasında açık kalan eski sayfalar için. Artık sohbet tablolarını kullanır ve
+  // yalnızca kullanıcının taraf olduğu yazışmaları (ve ofis kanalını) döndürür.
   router.get("/api/workspace/messages", async ({ req, res, url }) => {
     const user = auth.requireUser(req);
-    const limit = Math.max(1, Math.min(200, Number(url.searchParams.get("limit") || 50)));
-    const name = user.display_name.toLocaleLowerCase("tr-TR");
-    const rows = store.all(`SELECT m.id, m.recipient AS "to", m.message, m.case_key AS caseKey, m.created_by AS actorId, COALESCE(u.display_name, '') AS actorName, m.created_at AS createdAt FROM messages m LEFT JOIN users u ON u.id = m.created_by ORDER BY m.created_at DESC LIMIT ?`, limit);
-    ok(res, rows.map(row => ({ ...row, toMe: row.to.toLocaleLowerCase("tr-TR") === name, mine: row.actorId === user.id })));
+    ok(res, chat.legacyList(user, url.searchParams.get("limit") || 50));
   });
 
   router.post("/api/workspace/messages", async ({ req, res }) => {
@@ -283,10 +317,8 @@ export function registerWorkspaceRoutes(router, { store, auth, audit, sources, c
     const recipient = limited(body.to, 120, "Alıcı");
     const message = limited(body.message, 2000, "Mesaj");
     if (!recipient || !message) throw new HttpError(400, "Alıcı ve mesaj gerekli.");
-    const itemId = newId("message");
-    store.run("INSERT INTO messages (id, recipient, message, case_key, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?)", itemId, recipient, message, limited(body.caseKey || body.case_key, CASE_KEY_MAX, "Dosya kimliği"), user.id, now());
-    audit(user, "message.created", itemId, { recipient });
-    ok(res, { id: itemId });
+    const sent = chat.legacySend(user, { to: recipient, message, caseKey: limited(body.caseKey || body.case_key, CASE_KEY_MAX, "Dosya kimliği") });
+    ok(res, { id: sent.id });
   });
 
   router.get("/api/workspace/reports", async ({ req, res }) => {
@@ -303,6 +335,7 @@ export function registerWorkspaceRoutes(router, { store, auth, audit, sources, c
       calls: count("SELECT COUNT(*) AS count FROM phones WHERE created_by = ?", item.id).count,
       collections: count("SELECT COALESCE(SUM(amount), 0) AS total FROM payments WHERE created_by = ?", item.id).total,
       dataEntries: count("SELECT COUNT(*) AS count FROM audit_events WHERE actor_id = ?", item.id).count,
+      messages: count("SELECT COUNT(*) AS count FROM chat_messages WHERE sender_id = ?", item.id).count,
     }));
     ok(res, {
       generatedAt: now(),
@@ -327,18 +360,23 @@ export function registerWorkspaceRoutes(router, { store, auth, audit, sources, c
   router.put("/api/workspace/client-state", async ({ req, res }) => {
     const user = auth.requirePermission(req, "sources.manage");
     const body = await readJson(req, { limit: 200_000 });
-    ok(res, clientState.update(user, text(body.key), body.value));
+    const result = clientState.update(user, text(body.key), body.value);
+    changed(user, "source");
+    ok(res, result);
   });
 
   router.delete("/api/workspace/sources/active", async ({ req, res }) => {
     const user = auth.requirePermission(req, "sources.manage");
-    ok(res, clientState.update(user, "sheetUrl", ""));
+    const result = clientState.update(user, "sheetUrl", "");
+    changed(user, "source");
+    ok(res, result);
   });
 
   router.post("/api/workspace/sources/excel", async ({ req, res }) => {
     const user = auth.requirePermission(req, "sources.manage");
     const body = await readJson(req, { limit: 80_000_000 });
     const result = sources.saveExcel(user, body);
+    changed(user, "source");
     ok(res, { ...result, state: clientState.read() });
   });
 
@@ -366,6 +404,7 @@ export function registerWorkspaceRoutes(router, { store, auth, audit, sources, c
     const version = (old?.version || 0) + 1;
     store.run("INSERT INTO case_notes (case_key, note, version, updated_by, updated_at) VALUES (?, ?, ?, ?, ?) ON CONFLICT(case_key) DO UPDATE SET note = excluded.note, version = excluded.version, updated_by = excluded.updated_by, updated_at = excluded.updated_at", key, note, version, user.id, now());
     audit(user, "case.status_note.updated", key, { caseKey: key, previous: old?.note ?? null, length: note.length });
+    changed(user, "note", { caseKey: key });
     ok(res, { caseKey: key, version });
   });
 

@@ -2,6 +2,18 @@
 
 Sürümler [anlamsal sürümleme](https://semver.org/lang/tr/) kurallarına uyar.
 
+## 1.4.0 — Sohbet paneli, alt tablolar ve anlık güncellemeler
+
+- **Sohbet paneli:** "Mesajlar" artık sağdan açılan bir sohbet paneli. *Ofis geneli* kanalı ve kişiye özel yazışmalar; mesajlar sayfa yenilemeden anında gelir, okunmamış sayısı rozette ve sekme başlığında görünür, köşede bildirim ve (kapatılabilir) ses çıkar, *✓ İletildi / ✓✓ Okundu* bilgisi gösterilir. Mesajdaki dosya numarasına tıklayınca o dosya tabloda açılır.
+- **Gizlilik:** Özel yazışmayı yalnızca iki taraf görür; yönetici dahil başka kimse okuyamaz. (Eski "Mesajlar" penceresinde herkes herkesin mesajını görüyordu.) Eski mesajlar sohbete taşındı.
+- **Anlık güncellemeler:** Başka bilgisayarda eklenen not, telefon, tahsilat, görev ve düzeltmeler açık ekranlara kendiliğinden yansır; size görev atandığında anında bildirim çıkar. Sunucu güncellendiğinde açık ekranlar bunu hemen fark eder.
+- **Alt tablolar:** Bir Sheets sekmesinde veya Excel sayfasında alt alta birden çok tablo varsa (başlık satırı + kendi kolon başlıkları, ya da grup satırları) her biri ayrı bir bölüm olarak tanınır ve sekmenin içinde kendi kolonlarıyla seçilir; başlık satırları kayıt gibi görünmez. Kurallar sayfaya özgü değildir; emin olunamazsa eski davranış geçerlidir.
+- **Google Sheets okuma:** Hücreler ekranda göründüğü gibi okunur. Eski yöntem bir kolondaki farklı türden değerleri (ör. tarih kolonundaki "RPÇY") boş gösterebiliyordu. Tek sekmesinde yaklaşık 100 binden fazla satır olan tablolar artık hatasız okunur.
+- **Yetkiler:** Görev atama, herkesin görev listesi ve performans raporu (KPI) yalnızca avukat ve yönetici hesaplarında. Personel ve muhasebe kendilerine atanan görevleri görür ve tamamlar; kısıtlamayı sunucu da uygular (dosya geçmişi ve anlık bildirimler dahil: başkasına atanan görev personele hiçbir yoldan gönderilmez).
+- **Ad çakışması koruması:** İki hesap aynı görünen adı taşıyamaz (büyük/küçük harf ve boşluk farkı sayılmaz); personel kendi adını başka birinin adıyla değiştiremez, böylece sohbette veya kayıtlarda başkası gibi görünemez. Görevler kişiye kullanıcı kimliğiyle bağlanır: kişi adını değiştirse de görev onda kalır, boşalan eski adı alan biri o görevi göremez. Mevcut görevler güncellemede adlarıyla eşleştirilerek bağlanır.
+- **Oturum güvenliği:** Çıkış yapıldığında, yönetici bir kullanıcının oturumlarını kapattığında veya hesabı pasifleştirdiğinde o kullanıcının canlı bağlantısı anında kesilir ve ekranı birkaç saniye içinde giriş ekranına döner.
+- **Sayfalama:** 1 2 3 4 5 6 … › düzeni; sekme, alt tablo veya arama değişince ilk sayfaya dönülür.
+
 ## 1.3.3 — Kurulum düzeltmeleri ve ikinci sunucu koruması
 
 - **Yanlış "servis başlatılamadı" uyarısı giderildi.** Sunucu kurulumunun sonunda, servis aslında sorunsuz açılırken de bu uyarı çıkıyordu: Windows servisi ilk açılışta birkaç saniye "başlatılıyor" durumunda kaldığı için başlatma komutu bunu hata sayıyordu. Artık karar sağlık kontrolüne bırakılır; sağlık kontrolü PowerShell yerine paketteki Node.js ile yapılır. Servis "çalışıyor" bildirimini de daha erken verir.

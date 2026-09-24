@@ -173,12 +173,38 @@
     }
   }
 
+  // Canlı kanal (hof-live.js): sürüm değişikliği, başka bilgisayarlardaki değişiklikler ve yeniden bağlanma.
+  let syncTimer = 0;
+  let refreshTimer = 0;
+  HOF.syncNow = () => {
+    clearTimeout(syncTimer);
+    syncTimer = setTimeout(poll, 400);
+  };
+  const refreshTableSoon = () => {
+    clearTimeout(refreshTimer);
+    refreshTimer = setTimeout(() => HOF.refreshData(), 800);
+  };
+  HOF.on("live:hello", data => {
+    const bootVersion = HOF.user?.product?.version;
+    if (data?.version && bootVersion && data.version !== bootVersion) showReloadBanner(`DestekOfis ${data.version} sürümüne güncellendi. Yenilikleri görmek için sayfayı yenileyin.`);
+  });
+  HOF.on("live:workspace.changed", change => {
+    if (!change) return;
+    if (change.kind === "records") refreshTableSoon();
+    if (change.kind === "note" || change.kind === "source") HOF.syncNow();
+  });
+  HOF.on("live:resync", () => {
+    HOF.syncNow();
+    refreshTableSoon();
+  });
+
   function showReloadBanner(message) {
     if (document.getElementById("hof-reload-banner")) return;
     const node = HOF.el("div", { id: "hof-reload-banner", class: "hof-banner", role: "status" }, `<span>${HOF.esc(message)}</span><button type="button" class="hof-button hof-button-small">Yenile</button>`);
     node.querySelector("button").onclick = () => location.reload();
     document.body.appendChild(node);
   }
+  HOF.showReloadBanner = showReloadBanner;
 
   // ---------- Açılış ----------
   const applyRoleClasses = user => {

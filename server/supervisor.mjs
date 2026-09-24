@@ -372,8 +372,11 @@ export async function startSupervisor(options = {}) {
 
   function proxy(req, res) {
     const headers = { ...req.headers, "x-forwarded-for": req.socket.remoteAddress || "", "x-forwarded-host": req.headers.host || "", "x-forwarded-proto": "http" };
-    const upstream = http.request({ host: "127.0.0.1", port: state.childPort, method: req.method, path: req.url, headers, agent }, upstreamResponse => {
+    // Canlı olay akışı (SSE) uzun süre açık kalır: ortak bağlantı havuzundan soket tüketmesin diye ayrı bağlantı kullanır.
+    const streaming = String(req.headers.accept || "").includes("text/event-stream");
+    const upstream = http.request({ host: "127.0.0.1", port: state.childPort, method: req.method, path: req.url, headers, agent: streaming ? false : agent }, upstreamResponse => {
       res.writeHead(upstreamResponse.statusCode || 502, upstreamResponse.headers);
+      if (streaming) res.flushHeaders?.();
       upstreamResponse.pipe(res);
       upstreamResponse.on("error", () => res.destroy());
     });
@@ -382,6 +385,10 @@ export async function startSupervisor(options = {}) {
       else res.destroy();
     });
     req.on("aborted", () => upstream.destroy());
+    // Tarayıcı bağlantıyı kapatınca (sekme kapandı, sayfa yenilendi) uygulamaya giden istek de kapanır.
+    res.on("close", () => {
+      if (!res.writableFinished) upstream.destroy();
+    });
     req.pipe(upstream);
   }
 

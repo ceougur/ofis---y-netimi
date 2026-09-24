@@ -160,5 +160,11 @@ export function createAuth({ store, config, audit }) {
   }
 
   const clearLoginLocks = username => limiter.clearUser(username);
-  return { currentUser, login, logout, changePassword, requireUser, requirePermission, purgeExpiredSessions, startSession, limiter, clearLoginLocks, newId: prefix => `${prefix}-${randomUUID()}` };
+  // Canlı olay kanalı: bağlantı hangi oturuma aitse o oturum kapanınca (çıkış, parola değişikliği, pasifleştirme) düşer.
+  const sessionHash = req => {
+    const token = sessionToken(req);
+    return token ? hashToken(token) : "";
+  };
+  const sessionAlive = hash => Boolean(hash && store.get("SELECT 1 AS found FROM sessions s JOIN users u ON u.id = s.user_id WHERE s.token_hash = ? AND s.expires_at > ? AND u.active = 1", hash, now()));
+  return { currentUser, login, logout, changePassword, requireUser, requirePermission, purgeExpiredSessions, startSession, limiter, clearLoginLocks, sessionHash, sessionAlive, newId: prefix => `${prefix}-${randomUUID()}` };
 }

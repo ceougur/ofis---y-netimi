@@ -1,4 +1,4 @@
-# DestekOfis — Kurulum ve Kullanım Kılavuzu (v1.3)
+# DestekOfis — Kurulum ve Kullanım Kılavuzu (v1.4)
 
 ## 1. Sistem düzeni
 
@@ -52,12 +52,16 @@ Yönetim paneli: kenar çubuğundaki kullanıcı kartında **Yönetim** (veya `h
 
 | Rol | Yapabildikleri |
 |---|---|
-| Yönetici | Her şey: kullanıcılar, yedekler, sistem, veri kaynağı, silme, raporlar |
-| Avukat | Tüm dosya işlemleri, kayıt silme, veri kaynağı yönetimi, raporlar, değişiklik geçmişi |
-| Personel | Not, telefon, tahsilat, haciz, görev, mesaj, yeni kayıt, hücre düzeltme |
-| Muhasebe | Personel yetkileri + raporlar |
+| Yönetici | Her şey: kullanıcılar, yedekler, sistem, veri kaynağı, silme, görev atama, performans raporu |
+| Avukat | Tüm dosya işlemleri, kayıt silme, veri kaynağı yönetimi, görev atama, herkesin görevleri, performans raporu, değişiklik geçmişi |
+| Personel | Not, telefon, tahsilat, haciz, mesaj, yeni kayıt, hücre düzeltme; kendisine atanan görevleri görür ve tamamlar |
+| Muhasebe | Personel ile aynı yetkiler |
 
-Yeni kullanıcıya verilen ilk parola, kullanıcının ilk girişinde değiştirilir (önerilen ayar). Kullanıcıyı pasifleştirmek kayıtlarını silmez; açık oturumlarını kapatır.
+Görev atama, "Tüm açık görevler" listesi ve *Personel raporu* (performans/KPI) yalnızca avukat ve yönetici hesaplarında görünür; kısıtlamayı sunucu da uygular (personel başkasının görevini göremez ve tamamlayamaz).
+
+Yeni kullanıcıya verilen ilk parola, kullanıcının ilk girişinde değiştirilir (önerilen ayar). Kullanıcıyı pasifleştirmek kayıtlarını silmez; açık oturumlarını ve canlı bağlantısını hemen kapatır, ekranı birkaç saniye içinde giriş ekranına döner.
+
+Görünen adlar benzersizdir: iki hesap aynı adı taşıyamaz (büyük/küçük harf ve boşluk farkı sayılmaz, pasif hesaplar dahil). Personel *Profil*'den adını düzeltebilir ama başka birinin adını alamaz. Aynı adlı iki çalışan varsa ayırt edici bir ek kullanın (ör. "Ali Kaya" ve "Ali K. Demir"). Görev atanırken yazılan ad bir kullanıcıya denk geliyorsa görev o kişiye bağlanır; kişi adını değiştirse de görev onda kalır.
 
 **Sistem** sekmesinde **ofis adını** girin: giriş ekranında ve personel bilgisayarlarının yaptığı sunucu aramasında bu ad görünür. Aynı sekme sürümü, veritabanı boyutunu, son yedeği ve bağlantı adreslerini gösterir.
 
@@ -69,13 +73,24 @@ Kaynak **ofis geneli tek ayardır**; yönetici veya avukat bir kez tanımlar, he
 - **Google Sheets:** Sheet'in tam bağlantısını yapıştırıp *Sheet'i analiz et*. Sheet'te *Paylaş → Bağlantıya sahip olan herkes → Görüntüleyici* açık olmalıdır.
 - Kaynak dosyanın kendisi hiçbir zaman değiştirilmez; düzeltmeler, silmeler ve yeni kayıtlar sunucuda saklanır ve tabloya işlenir.
 
+**Alt tablolar (bir sekmede birden çok tablo).** Bir sekmede alt alta birden çok tablo varsa DestekOfis bunları kendiliğinden ayırır; Google Sheets'te de, yüklenen Excel'de de aynı kurallar geçerlidir ve sayfa adlarına bağlı değildir:
+
+- Sekmenin en üstündeki başlık satırı (ör. *ÖNEMLİ İCRA DOSYALARI*) kolon başlığı sanılmaz.
+- Ortada **başlık satırı + yeni kolon başlıkları** gelirse (ör. *GAYRİMENKUL SATIŞ DOSYALARI* / *SIRA, ALACAKLI, BORÇLU…*) yeni bir alt tablo başlar; kolonları öncekinden farklı olabilir.
+- Aynı kolonların arasına konmuş grup satırları (ör. *MUHASEBE*, *HUKUK*) alt başlık olur.
+- Araya yeniden konmuş kolon başlığı satırları kayıt sayılmaz.
+
+Alt tabloları olan sekme, sekme şeridinde ▸ işaretiyle görünür; tıklayınca altında **Alt tablolar** şeridi açılır ve her alt tablo kendi kolonları ve kayıt sayısıyla seçilir. Emin olunamayan düzenlerde eski davranış geçerlidir (ilk satır kolon başlığı sayılır); böylece düzgün bir tablo yanlışlıkla bölünmez. Bir alt tablo tanınmıyorsa başlık satırının tek hücrede (birleştirilmiş) olduğundan ve hemen altında kolon başlıklarının bulunduğundan emin olun.
+
 ## 7. Günlük kullanım
 
 - **Arama:** Dosya no, borçlu, müvekkil veya telefon yazın; *Enter* ilk sonuca gider, *Ctrl+K* aramaya odaklanır.
 - **Dosya işlemleri:** Detay panelindeki *WhatsApp, Not, Telefon, Tahsilat, Görev, Haciz, Düzenle* düğmeleri. Tüm işlemler detayın altındaki **İşlem geçmişi**nde işlemi yapanla birlikte görünür.
 - **Hücre düzeltme:** Tablo hücresinin üzerine gelince çıkan ✎ düğmesi. Aynı alanı iki kişi aynı anda değiştirirse sistem uyarır.
 - **Satır silme:** Satırın solundaki × (yönetici/avukat). Silme geri alınabilir.
-- **Görevler:** Kenar çubuğu → *Görevler*; size atananlar rozetle gösterilir.
+- **Görevler:** Kenar çubuğu → *Görevler*; size atananlar rozetle gösterilir. Görev atama yalnızca avukat ve yönetici hesaplarındadır; size görev atandığında ekranınızda anında bildirim çıkar.
+- **Mesajlar (sohbet):** Kenar çubuğu → *Mesajlar* sağdan sohbet panelini açar. *Ofis geneli* kanalını herkes görür; bir kişiye tıklayınca **özel yazışma** açılır — onu yalnızca iki taraf görür (yönetici dahil başka kimse okuyamaz). Yeni mesaj sayfayı yenilemeden gelir: *Mesajlar* rozetinde ve sekme başlığında okunmamış sayısı, ekranın köşesinde kısa bir bildirim ve ses (paneldeki 🔔 ile kapatılır). Kendi son mesajınızın altında *✓ İletildi* / *✓✓ Okundu* görünür. Mesajdaki dosya numarasına (ör. 2024/11710) tıklayınca o dosya tabloda açılır; "Seçili dosyayı ekle" ile açık dosyayı mesaja bağlayabilirsiniz. *Enter* gönderir, *Shift+Enter* yeni satır.
+- **Anlık güncellemeler:** Başka bir bilgisayarda eklenen not, telefon, tahsilat, görev ve hücre düzeltmeleri açık ekranlara kendiliğinden yansır (açık dosyanın işlem geçmişi yenilenir, tablo yeniden çekilir).
 - **Haciz uyarıları:** Bir yılını dolduracak hacizler 30 gün önceden listelenir, son 7 gün vurgulanır.
 - **Ödeme sözleri:** Tabloda ödeme sözü kolonu varsa aktif sözler üstte kayan şeritte görünür; *Ödendi / İptal* ile kapatılır.
 
@@ -115,6 +130,8 @@ Kaynak **ofis geneli tek ayardır**; yönetici veya avukat bir kez tanımlar, he
 | Tablo görünmüyor | Yönetici/avukatın veri kaynağı tanımlaması gerekir. Sheets için paylaşım iznini kontrol edin. |
 | "Veri kaynağı değiştirildi" uyarısı | Başka bir kullanıcı kaynağı değiştirdi; *Yenile*'ye basın. |
 | "DestekOfis … sürümüne güncellendi" şeridi | Sunucu yeni sürüme geçti. Yazmakta olduğunuz notu kaydedip *Yenile*'ye basın. |
+| Mesajlar panelinde "Bağlantı bekleniyor…" | Canlı bağlantı kısa süreliğine koptu (ağ, sunucu güncellemesi); kendiliğinden yeniden bağlanır, kaçırılan mesajlar gelir. Sürerse sayfayı yenileyin. Bazı antivirüslerin "web koruması" canlı akışı geciktirebilir; o durumda sunucu adresini istisnalara ekleyin. |
+| Bir alt tablo ayrı görünmüyor | Başlık satırı tek hücrede (birleştirilmiş) olmalı ve hemen altında kolon başlıkları bulunmalı. Tanınmayan düzende tablo bozulmaz, tek tablo olarak görünür. |
 | Güncelleme denetlenemiyor | Sunucunun internete çıkabildiğini kontrol edin. Antivirüsün "SSL/HTTPS taraması" özelliği bağlantıyı engelliyor olabilir. Ayrıntı: `logs\servis.log`. |
 | "Sürüm açılamadı; önceki sürüme dönüldü" | Sistem güvendedir ve önceki sürümle çalışır. Panelden *Yine de kur* ile yeniden deneyebilir veya destek isteyebilirsiniz. |
 | Sağlık kontrolü | `http://SUNUCU:5123/api/health` → `"status":"ok"` |

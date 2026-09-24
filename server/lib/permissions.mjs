@@ -11,10 +11,13 @@ export const PERMISSIONS = Object.freeze({
   "phones.create": ALL,
   "payments.create": ALL,
   "liens.create": ALL,
-  "tasks.create": ALL,
+  // Görev atama, herkesin görevleri ve performans raporu (KPI) yalnızca avukat ve yönetici içindir;
+  // personel ve muhasebe kendilerine atanan görevleri görür ve tamamlar.
+  "tasks.create": ["admin", "avukat"],
+  "tasks.viewAll": ["admin", "avukat"],
   "tasks.complete": ALL,
   "messages.create": ALL,
-  "reports.view": ["admin", "avukat", "muhasebe"],
+  "reports.view": ["admin", "avukat"],
   "audit.view": ["admin", "avukat"],
   "sources.manage": ["admin", "avukat"],
   "users.manage": ["admin"],

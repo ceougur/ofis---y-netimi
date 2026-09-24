@@ -7,6 +7,7 @@ import { fileURLToPath } from "node:url";
 import { DatabaseSync } from "node:sqlite";
 import { after, before, describe, it } from "node:test";
 import { createBackup, listBackups, pruneBackups } from "../server/lib/backup.mjs";
+import { LATEST_VERSION } from "../server/lib/migrations.mjs";
 import { loginAdmin, startTestServer } from "./helpers.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -29,7 +30,7 @@ describe("yedekleme", () => {
       pruneBackups(dir, 3);
       assert.equal(listBackups(dir).length, 3);
       const copy = new DatabaseSync(path.join(dir, listBackups(dir)[0].name), { readOnly: true });
-      assert.equal(copy.prepare("SELECT COUNT(*) AS count FROM messages").get().count, 1);
+      assert.equal(copy.prepare("SELECT COUNT(*) AS count FROM chat_messages").get().count, 1);
       copy.close();
     } finally {
       rmSync(dir, { recursive: true, force: true });
@@ -62,7 +63,7 @@ describe("yedekleme", () => {
   it("sistem bilgisini döndürür", async () => {
     const info = await admin.get("/api/admin/system");
     assert.equal(info.status, 200);
-    assert.equal(info.data.data.schemaVersion, 2);
+    assert.equal(info.data.data.schemaVersion, LATEST_VERSION);
     assert.ok(info.data.data.lastBackup);
     assert.equal(info.data.data.port, server.app.config.publicPort);
     assert.ok(Array.isArray(info.data.data.addresses));

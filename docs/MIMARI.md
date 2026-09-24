@@ -1,4 +1,4 @@
-# DestekOfis — Mimari (v1.3)
+# DestekOfis — Mimari (v1.4)
 
 ## Genel bakış
 
@@ -68,8 +68,11 @@ Arayüzün ana gövdesi Manus/Vite çıkışı derlenmiş bir React paketidir (k
 | `hof-core.js` | API, bildirim, erişilebilir pencere, form, tek toplu DOM izleyici, dosya kimliği çözümleme |
 | `hof-auth.js` | Giriş ekranı, parola değişimi, çıkış (uygulama + yönetim) |
 | `hof-boot.js` | Açılış sırası: oturum → ofis ayarları + merkezi notlar → depo köprüsü → React paketini yükleme; 60 sn'de bir eşitleme |
-| `hof-workspace.js` | Operasyon kartı, kullanıcı kartı, dosya işlemleri, işlem geçmişi, görevler, mesajlar, rapor, haciz uyarıları |
-| `hof-table.js` | Yüzen düzenle/sil düğmeleri, geri alınabilir silme, yeni kayıt, sayfalama |
+| `hof-live.js` | Canlı bağlantı (`EventSource /api/events`): olayları `live:*` HOF olaylarına çevirir; bakım/oturum sonu sonrası artan beklemeyle yeniden bağlanır; sayfa 1 dk'dan uzun arka plandaysa bağlantıyı kapatır, dönünce eşitler |
+| `hof-workspace.js` | Operasyon kartı, kullanıcı kartı, dosya işlemleri, işlem geçmişi (canlı yenilenir), görevler, rapor, haciz uyarıları |
+| `hof-chat.js` | Sohbet paneli: ofis kanalı + özel yazışmalar, okunmamış rozeti/sekme başlığı, okundu bilgisi, bildirim ve ses, dosya numarası bağlantısı |
+| `hof-table.js` | Yüzen düzenle/sil düğmeleri, geri alınabilir silme, yeni kayıt, sayfalama (20 satır; 1…6 penceresi; sekme/arama değişince ilk sayfa) |
+| `hof-sections.js` | "Sekme › Bölüm" etiketli kategorileri gruplar: React'in düğmelerini gizleyip sekme + alt tablo şeridi gösterir, tıklamaları gizli React düğmelerine aktarır |
 | `hof-sources.js` | Merkezi Excel yükleme (Worker'da ayrıştırma), kaynak kaldırma, yetkiye göre menü gizleme |
 | `hof-promises.js`, `hof-search.js` | Ödeme sözleri şeridi, akıllı arama |
 
@@ -85,18 +88,26 @@ Arayüzün ana gövdesi Manus/Vite çıkışı derlenmiş bir React paketidir (k
 2. **Silinenler** çıkarılır, **düzeltmeler** (override) uygulanır, **yeni kayıtlar** en üste eklenir.
 3. Paket `__` ile başlayan alanları kolon saymaz; satırlar `data-hof-key` taşır.
 
-Google Sheets sonuçları 45 sn önbelleklenir; aynı anda gelen istekler birleştirilir.
+Google Sheets sonuçları 45 sn önbelleklenir; aynı anda gelen istekler birleştirilir. Sekmeler önce `export?format=csv` ile (hücreler ekranda göründüğü gibi) okunur; gviz CSV'si kolon türünü tahmin edip türe uymayan hücreleri boşalttığı ve çok satırlı başlıkları birleştirdiği için yalnızca yedek yoldur.
+
+**Alt tablolar** (`server/lib/sections.mjs`, Google ve Excel için ortak): tek hücreli başlık satırı + tanıdık kelimeli (TR/EN) ve tür karşıtlığı gösteren kolon başlığı satırı yeni bölüm açar; ilk kolonu çoğunlukla veri olan tabloda en az iki grup etiketi satırı bölüm sayılır; tekrarlanan başlık satırı atlanır; başlığı boş ama verisi olan kolon `Kolon N` olur. Emin olunamazsa eski davranış. Tek bölümlü sekmede `__sheet` = sekme adı (eski düzeltmeler bağlı kalır); çok bölümde `Sekme › Bölüm`. Excel yüklemede tarayıcı ham matrisi gönderir, ayrıştırma sunucudadır. Kolon adı değişen düzeltmeler (eski birleşik başlık → yeni başlık) sonek eşleşmesiyle taşınır.
 
 ## Veri modeli
 
-`users`, `sessions`, `settings`, `records`, `overrides`, `deleted_records`, `notes`, `phones`, `payments`, `liens`, `tasks`, `messages`, `audit_events` (v1.0.0) + `case_notes`, `source_snapshots` (v1.1.0).
+`users`, `sessions`, `settings`, `records`, `overrides`, `deleted_records`, `notes`, `phones`, `payments`, `liens`, `tasks`, `messages`, `audit_events` (v1.0.0) + `case_notes`, `source_snapshots` (v1.1.0) + `chat_conversations`, `chat_members` (okunma zamanı), `chat_messages` ve `tasks.assignee_id` (v1.4.0, göç 3: eski `messages` kayıtları sohbete taşınır, eski tablo geri dönüş için silinmez; görevler adları tek bir kullanıcıya denk geliyorsa o kullanıcının kimliğine bağlanır, belirsiz veya serbest adlarda ad eşleşmesi sürer). Görünen adlar benzersizdir (`server/lib/names.mjs`: Türkçe harf kuralı, boşluk ve Unicode yazım farkı yok sayılarak karşılaştırılır).
+
+## Canlı olaylar ve sohbet (v1.4)
+
+- `server/lib/events.mjs`: Server-Sent Events merkezi. `GET /api/events` oturum ister; `hello` (sürüm, çevrimiçi kullanıcılar), `presence`, `chat.message`, `chat.read`, `workspace.changed` ({kind: activity|note|task|records|source, caseKey, actorName}) olayları. 25 sn'de bir `: ping` ve aynı turda oturumu kapanmış bağlantıların düşürülmesi; çıkış, yöneticinin oturumları kapatması, parola sıfırlama ve pasifleştirmede ilgili bağlantılar beklemeden kapatılır (istemci 401 alınca giriş ekranını gösterir). Kullanıcı başına en fazla 12, toplam 600 bağlantı; okumayan istemcinin tamponu 1 MB'ı geçerse bağlantısı kesilir. Görev olayları yalnızca görevi görebilenlere (`tasks.viewAll`, atanan, oluşturan) gönderilir.
+- Servis yöneticisinin HTTP kapısı akışı olduğu gibi borular; SSE istekleri ortak soket havuzunu tüketmesin diye ayrı bağlantı kullanır, tarayıcı kapanınca uygulama tarafı da kapanır. Güncelleme sırasında akış kopar, istemci bakım bitince yeniden bağlanır ve `hello` içindeki sürümle yenileme şeridi gösterir.
+- `server/lib/chat.mjs`: ofis kanalı (`conversation-office`) ve iki kişilik özel yazışmalar (`direct_key` = sıralı kullanıcı kimlikleri). Özel yazışmaya üye olmayan (yönetici dahil) 404 alır; denetim kaydına içerik yazılmaz; dakikada 30 mesaj sınırı; mesajdaki `yyyy/sayı` dosya kimliği olarak bağlanır. Eski `/api/workspace/messages` uçları sohbete bağlıdır ve yalnızca kişinin yazışmalarını döndürür.
 
 **Göçler** (`server/lib/migrations.mjs`): `PRAGMA user_version` ile sürümlenir, her biri tek işlemde uygulanır, öncesinde `VACUUM INTO` ile tam yedek alınır. Kural: göçler yalnızca ekleyicidir; eski sürüm yeni şemayı okuyabilir (güncelleme geri alınabilirliği için).
 
 ## Güvenlik
 
 - Parolalar scrypt + tuz; oturum belirteci yalnızca HttpOnly/SameSite=Lax çerezde, veritabanında SHA-256 özeti.
-- Rol matrisi `server/lib/permissions.mjs`; her uç yetki denetler, arayüz yalnızca görünürlüğü ayarlar.
+- Rol matrisi `server/lib/permissions.mjs`; her uç yetki denetler, arayüz yalnızca görünürlüğü ayarlar. Görev atama (`tasks.create`), herkesin görevleri (`tasks.viewAll`) ve performans raporu (`reports.view`) yalnızca yönetici ve avukattadır; diğer roller yalnızca kendilerine atanan görevleri görür/tamamlar.
 - Giriş deneme sınırı, zorunlu parola değişimi, parola politikası, oturum iptalleri.
 - CSRF: değiştirici isteklerde Origin denetimi + yalnızca JSON gövde.
 - CSP: `script-src 'self'` (satır içi betik yok), `frame-ancestors 'none'`, güvenlik başlıkları.
@@ -111,7 +122,8 @@ Google Sheets sonuçları 45 sn önbelleklenir; aynı anda gelen istekler birle�
 
 - `npm test`: kimlik, yetki, çalışma alanı, kaynak birleştirme, Google Sheets (sahte ağ), göç (gerçek v1.0.0 veritabanı), yedek, statik dosya, zip, servis yöneticisi (vekil, bakım sayfası, çökme sonrası yeniden başlatma, öksüz süreç), UDP keşif, kurulum düzeni (bootstrap, sürüm geri dönüşü, `etkinlestir`) ve Go başlatıcı (keşif, kayıt, Windows derlemesi) testleri.
 - Güncelleme: imza/bildirge/uyumluluk birim testleri; sahte GitHub sunucusuyla denetim, indirme, özet uyuşmazlığı, sahte imza, etiket uyuşmazlığı, kanal; gerçek servis yöneticisi ve uygulama süreçleriyle uçtan uca akış (açılışta güncelleme ve bakım sayfası, veri korunumu, bozuk sürümde veritabanı ve sürüm geri dönüşü, yönetici panelinden kurulum, elektrik kesintisi sonrası deneme açılışı, ağ yokken normal açılış).
-- `npm run test:e2e`: Playwright ile iki kullanıcılı uçtan uca senaryo (Excel yükleme, düzeltme, silme/geri alma, yeni kayıt, notlar, yetkiler, yönetim paneli, zorunlu parola değişimi, CSP ihlali denetimi).
+- Alt tablolar (farklı düzenler, TR/EN başlıklar, tutucu davranış), sohbet (gizlilik, okunmamış, okundu, eski uçlar) ve canlı kanal (iletim, yalnızca ilgililere, oturum kapanınca kopma, kapıdan geçiş) testleri.
+- `npm run test:e2e`: Playwright ile iki kullanıcılı uçtan uca senaryo (Excel yükleme, düzeltme, silme/geri alma, yeni kayıt, notlar, yetkiler, yönetim paneli, zorunlu parola değişimi, canlı görev bildirimi, sohbet ve okundu bilgisi, alt tablolu Excel, CSP ihlali denetimi).
 - GitHub Actions: `ci.yml` (Ubuntu/Windows × Node 22/24, e2e, paket) ve `windows.yml` (kurulum dosyasını derler; gerçek Windows'ta sessiz kurulum, servis hesabı/başlangıç türü, sağlık, UDP keşif, başlatıcı, servis yeniden başlatma ve yeniden kurulumda veri korunumu, kaldırma).
 
 ## Yol haritası

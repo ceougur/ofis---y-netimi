@@ -1,9 +1,17 @@
-// Google Sheets okuma: sekme keşfi, CSV dışa aktarımı, Türkçe alan dönüşümü ve kısa süreli önbellek.
+// Google Sheets okuma: sekme keşfi, CSV dışa aktarımı, alt tabloların (bölümlerin) ayrılması ve kısa süreli önbellek.
+import { matrixToRecords } from "./sections.mjs";
 
 export function spreadsheetId(sheetUrl) {
   const match = String(sheetUrl || "").trim().match(/\/spreadsheets\/(?:u\/\d+\/)?d\/([^/?#]+)/i);
   if (!match) throw new Error("Geçerli bir Google Sheets bağlantısı girilmedi.");
   return match[1];
+}
+
+// gviz CSV'si kolon türünü tahmin eder ve türe uymayan hücreleri (ör. tarih kolonundaki "RPÇY", sayı kolonundaki alt
+// tablo başlıkları) BOŞ döndürür, birden çok başlık satırını da birleştirir. Bu yüzden önce hücreleri ekranda
+// göründüğü gibi veren "export" CSV'si denenir; alınamazsa gviz'e düşülür.
+export function googleExportUrl(sheetUrl, gid = "0") {
+  return `https://docs.google.com/spreadsheets/d/${spreadsheetId(sheetUrl)}/export?format=csv&gid=${encodeURIComponent(gid)}`;
 }
 
 export function googleCsvUrl(sheetUrl, gid = "0") {
@@ -40,19 +48,9 @@ export function parseCsv(csv) {
   return rows;
 }
 
+// CSV → kayıtlar. Sekmedeki alt tablolar ayrı bölümler olarak ayrılır (bkz. sections.mjs).
 export function csvToRecords(csv, tabTitle = "") {
-  const matrix = parseCsv(csv);
-  const headers = matrix[0] || [];
-  return matrix
-    .slice(1)
-    .map(values =>
-      headers.reduce((record, header, index) => {
-        if (header.trim()) record[header.trim()] = values[index]?.trim() || "";
-        if (tabTitle) record.__sheet = tabTitle;
-        return record;
-      }, {}),
-    )
-    .filter(record => Object.entries(record).some(([key, value]) => key !== "__sheet" && Boolean(value)));
+  return matrixToRecords(parseCsv(csv), tabTitle).rows;
 }
 
 export function discoverTabs(html) {
@@ -94,14 +92,37 @@ export function createSheetsReader({ fetchImpl, cacheMs = 45_000, timeoutMs = 20
     }
     const targets = tabs.length ? tabs : [{ gid: fallbackGid, title: "" }];
     const rows = [];
+    const labels = [];
+    let sectionCount = 0;
     for (const tab of targets) {
-      const response = await fetchImpl(googleCsvUrl(sourceUrl, tab.gid), { headers: { Accept: "text/csv" }, signal: signal() });
-      if (!response.ok) {
-        return { connected: false, sourceUrl, syncedAt: null, rows: [], tabs, message: `"${tab.title || "Sheet"}" sekmesi okunamadı (${response.status}). Sheet'i görüntüleme izni olan kişilerle paylaşın.` };
+      const csv = await readTabCsv(sourceUrl, tab.gid, signal);
+      if (!csv.ok) {
+        return { connected: false, sourceUrl, syncedAt: null, rows: [], tabs, message: `"${tab.title || "Sheet"}" sekmesi okunamadı (${csv.status}). Sheet'i görüntüleme izni olan kişilerle paylaşın.` };
       }
-      rows.push(...csvToRecords(await response.text(), tab.title));
+      const parsed = matrixToRecords(parseCsv(csv.text), tab.title);
+      for (const row of parsed.rows) rows.push(row); // yayma (...) büyük sekmelerde çağrı yığınını taşırır
+      for (const label of parsed.tabs) labels.push({ gid: tab.gid, title: label });
+      if (parsed.sections.length > 1) sectionCount += parsed.sections.length;
     }
-    return { connected: true, sourceUrl, syncedAt: new Date().toISOString(), rows, tabs: targets, message: `${targets.length} sekmeden ${rows.length} kayıt okundu.` };
+    const detail = sectionCount ? ` (alt tablolar ayrı bölümler olarak gösteriliyor)` : "";
+    return { connected: true, sourceUrl, syncedAt: new Date().toISOString(), rows, tabs: labels.length ? labels : targets, message: `${targets.length} sekmeden ${rows.length} kayıt okundu${detail}.` };
+  }
+
+  // Önce hücreleri göründüğü gibi veren export CSV'si, olmazsa gviz CSV'si.
+  async function readTabCsv(sourceUrl, gid, signal) {
+    try {
+      const response = await fetchImpl(googleExportUrl(sourceUrl, gid), { headers: { Accept: "text/csv" }, signal: signal(), redirect: "follow" });
+      const type = response.headers.get("content-type") || "";
+      if (response.ok && !type.includes("html")) {
+        const text = await response.text();
+        if (!text.trimStart().startsWith("<")) return { ok: true, text };
+      }
+    } catch (error) {
+      if (error?.name === "TimeoutError") throw error;
+    }
+    const response = await fetchImpl(googleCsvUrl(sourceUrl, gid), { headers: { Accept: "text/csv" }, signal: signal() });
+    if (!response.ok) return { ok: false, status: response.status };
+    return { ok: true, text: await response.text() };
   }
 
   // Aynı Sheet için eşzamanlı istekler tek istekte birleştirilir; sonuç kısa süre önbellekte tutulur.

@@ -1047,6 +1047,7 @@ html.hof-auth-required #root {
 /* ---------- Yetkiye göre görünürlük ---------- */
 html:not(.hof-can-records-delete) .hof-float-delete,
 html:not(.hof-can-reports-view) [data-requires="reports.view"],
+html:not(.hof-can-tasks-create) [data-requires="tasks.create"],
 html:not(.hof-can-users-manage) [data-requires="users.manage"],
 html:not(.hof-can-sources-manage) [data-requires="sources.manage"] {
   display: none !important;
@@ -1097,4 +1098,446 @@ html:not(.hof-can-audit-view) [data-requires="audit.view"] {
 }
 .hof-maintenance .hof-progress {
   margin-top: 18px;
+}
+
+/* ---------- Sekme içindeki alt tablolar (hof-sections.js) ---------- */
+.category-bar:has(> .hof-category-tabs) > .category-tabs:not(.hof-category-tabs) {
+  display: none;
+}
+.hof-group-tab i {
+  margin-left: 6px;
+  font-style: normal;
+  opacity: 0.75;
+}
+.hof-section-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+  padding: 8px 10px;
+  border: 1px dashed var(--do-border-strong);
+  border-radius: 12px;
+  background: var(--do-surface-soft);
+}
+.hof-section-label {
+  margin-right: 4px;
+  color: var(--do-muted);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.hof-section-tab {
+  max-width: 360px;
+  overflow: hidden;
+  padding: 6px 12px;
+  border: 1px solid var(--do-border);
+  border-radius: 999px;
+  background: var(--do-surface);
+  color: var(--do-ink-soft);
+  font-size: 11.5px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+.hof-section-tab span {
+  margin-left: 6px;
+  color: var(--do-faint);
+  font-size: 10.5px;
+}
+.hof-section-tab:hover {
+  border-color: var(--do-border-strong);
+}
+.hof-section-tab.active {
+  border-color: var(--do-accent);
+  background: var(--do-accent-soft);
+  color: var(--do-accent);
+  font-weight: 700;
+}
+.hof-section-tab.active span {
+  color: var(--do-accent);
+}
+.hof-section-tab:focus-visible,
+.hof-group-tab:focus-visible {
+  outline: none;
+  box-shadow: var(--do-focus);
+}
+
+/* ---------- Ofis içi sohbet paneli (hof-chat.js) ---------- */
+.hof-chat {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 99960;
+  display: flex;
+  flex-direction: column;
+  width: min(420px, 100vw);
+  border-left: 1px solid var(--do-border);
+  background: var(--do-surface);
+  box-shadow: var(--do-shadow-strong);
+  color: var(--do-ink);
+  transform: translateX(104%);
+  transition: transform 0.2s ease;
+}
+.hof-chat.is-open {
+  transform: none;
+}
+body.hof-chat-open .hof-toasts {
+  right: calc(min(420px, 100vw) + 18px);
+}
+.hof-chat-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 16px 14px 20px;
+  border-bottom: 1px solid var(--do-border);
+}
+.hof-chat-head strong {
+  display: block;
+  font-family: var(--do-display);
+  font-size: 18px;
+  letter-spacing: -0.02em;
+}
+.hof-chat-head small {
+  color: var(--do-warn);
+  font-size: 11px;
+}
+.hof-chat-head-actions {
+  display: flex;
+  gap: 6px;
+}
+.hof-chat-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--do-border);
+  border-radius: 10px;
+  background: var(--do-surface);
+  color: var(--do-ink-soft);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+}
+.hof-chat-icon:hover {
+  border-color: var(--do-border-strong);
+  background: var(--do-surface-soft);
+}
+.hof-chat-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+}
+.hof-chat-search {
+  padding: 12px 16px 6px;
+}
+.hof-chat-search input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--do-border);
+  border-radius: 10px;
+  background: var(--do-surface-soft);
+  color: var(--do-ink);
+  font-size: 13px;
+}
+.hof-chat-search input:focus,
+.hof-chat-composer textarea:focus {
+  border-color: var(--do-accent);
+  outline: none;
+  box-shadow: var(--do-focus);
+}
+.hof-chat-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 4px 8px 16px;
+}
+.hof-chat-section {
+  margin: 12px 12px 4px;
+  color: var(--do-faint);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+.hof-chat-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 10px 12px;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.hof-chat-item:hover,
+.hof-chat-item:focus-visible {
+  outline: none;
+  background: var(--do-surface-soft);
+}
+.hof-chat-item-main {
+  display: grid;
+  flex: 1;
+  gap: 3px;
+  min-width: 0;
+}
+.hof-chat-item-top,
+.hof-chat-item-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-width: 0;
+}
+.hof-chat-item-top b {
+  overflow: hidden;
+  font-size: 13.5px;
+  font-weight: 600;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.hof-chat-item-top small {
+  flex: none;
+  color: var(--do-faint);
+  font-size: 11px;
+}
+.hof-chat-item-bottom span {
+  overflow: hidden;
+  color: var(--do-muted);
+  font-size: 12.5px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.hof-chat-item-bottom em {
+  flex: none;
+  min-width: 20px;
+  padding: 2px 6px;
+  border-radius: 999px;
+  background: var(--do-accent);
+  color: #fff;
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 700;
+  text-align: center;
+}
+.hof-chat-item.has-unread .hof-chat-item-top b,
+.hof-chat-item.has-unread .hof-chat-item-bottom span {
+  color: var(--do-ink);
+  font-weight: 700;
+}
+.hof-chat-avatar {
+  position: relative;
+  display: inline-grid;
+  flex: none;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  color: var(--do-ink-soft);
+  font-size: 13px;
+  font-weight: 700;
+}
+.hof-chat-avatar i {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 11px;
+  height: 11px;
+  border: 2px solid var(--do-surface);
+  border-radius: 50%;
+  background: #c7d0cc;
+}
+.hof-chat-avatar i.is-online {
+  background: #2fa36b;
+}
+.hof-chat-avatar-office {
+  background: linear-gradient(135deg, #1f6a50, #15473a);
+  color: #fff;
+  font-size: 16px;
+}
+.hof-chat-empty,
+.hof-chat-readonly {
+  margin: 24px 20px;
+  color: var(--do-muted);
+  font-size: 13px;
+  text-align: center;
+}
+.hof-chat-thread-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--do-border);
+}
+.hof-chat-thread-head > span:last-child {
+  display: grid;
+  min-width: 0;
+}
+.hof-chat-thread-head b {
+  overflow: hidden;
+  font-size: 14px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.hof-chat-thread-head small {
+  color: var(--do-faint);
+  font-size: 11.5px;
+}
+.hof-chat-thread-head small.is-online {
+  color: #2f8a5e;
+}
+.hof-chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px 16px 16px;
+  background: var(--do-bg);
+}
+.hof-chat-day {
+  margin: 14px 0 10px;
+  text-align: center;
+}
+.hof-chat-day span {
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: rgba(20, 43, 37, 0.06);
+  color: var(--do-muted);
+  font-size: 11px;
+  font-weight: 600;
+}
+.hof-chat-older {
+  display: block;
+  margin: 4px auto 8px;
+  padding: 6px 12px;
+  border: 1px solid var(--do-border);
+  border-radius: 999px;
+  background: var(--do-surface);
+  color: var(--do-accent);
+  font-size: 12px;
+  cursor: pointer;
+}
+.hof-chat-msg {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin: 3px 0;
+}
+.hof-chat-msg.is-mine {
+  align-items: flex-end;
+}
+.hof-chat-sender {
+  margin: 6px 0 2px 10px;
+  color: var(--do-accent);
+  font-size: 11.5px;
+  font-weight: 700;
+}
+.hof-chat-bubble {
+  max-width: 84%;
+  padding: 8px 12px 6px;
+  border: 1px solid var(--do-border);
+  border-radius: 16px 16px 16px 5px;
+  background: var(--do-surface);
+  box-shadow: 0 1px 2px rgba(20, 43, 37, 0.05);
+}
+.hof-chat-msg.is-mine .hof-chat-bubble {
+  border-color: transparent;
+  border-radius: 16px 16px 5px 16px;
+  background: var(--do-accent);
+  color: #fff;
+}
+.hof-chat-bubble p {
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.45;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.hof-chat-bubble time {
+  display: block;
+  margin-top: 3px;
+  opacity: 0.65;
+  font-size: 10.5px;
+  text-align: right;
+}
+.hof-chat-case {
+  display: inline;
+  margin: 0 1px;
+  padding: 0 4px;
+  border: 0;
+  border-radius: 5px;
+  background: rgba(31, 106, 80, 0.12);
+  color: var(--do-accent);
+  font: inherit;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+.hof-chat-bubble > .hof-chat-case {
+  display: inline-block;
+  margin-top: 6px;
+  font-size: 12px;
+}
+.hof-chat-msg.is-mine .hof-chat-case {
+  background: rgba(255, 255, 255, 0.18);
+  color: #fff;
+}
+.hof-chat-receipt {
+  margin: 2px 4px 0;
+  color: var(--do-faint);
+  font-size: 11px;
+  text-align: right;
+}
+.hof-chat-receipt.is-read {
+  color: var(--do-accent);
+}
+.hof-chat-composer {
+  padding: 10px 12px 12px;
+  border-top: 1px solid var(--do-border);
+  background: var(--do-surface);
+}
+.hof-chat-attach {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 4px 8px;
+  color: var(--do-muted);
+  font-size: 12px;
+}
+.hof-chat-compose-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+}
+.hof-chat-composer textarea {
+  flex: 1;
+  min-height: 40px;
+  max-height: 140px;
+  padding: 10px 12px;
+  border: 1px solid var(--do-border);
+  border-radius: 12px;
+  background: var(--do-surface-soft);
+  color: var(--do-ink);
+  font-size: 13.5px;
+  line-height: 1.4;
+  resize: none;
+}
+@media (max-width: 600px) {
+  .hof-chat {
+    width: 100vw;
+  }
+  body.hof-chat-open .hof-toasts {
+    right: 18px;
+    bottom: 96px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hof-chat {
+    transition: none;
+  }
 }

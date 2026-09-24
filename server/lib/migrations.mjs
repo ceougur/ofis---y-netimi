@@ -1,6 +1,7 @@
 // Veritabanı şema sürümleme. PRAGMA user_version = uygulanan son göç numarası.
 // Kural: göçler yalnızca EKLEYİCİ olur (sütun/tablo/indeks ekleme, veri normalleştirme);
 // böylece bir güncelleme geri alınsa bile eski sürüm veritabanını okuyabilir.
+import { randomUUID } from "node:crypto";
 import { createBackup } from "./backup.mjs";
 import { DEFAULT_ADMIN_PASSWORD } from "./config.mjs";
 import { verifyPassword } from "./passwords.mjs";
@@ -126,6 +127,86 @@ export const MIGRATIONS = [
         WHERE completed_by IS NOT NULL AND completed_by NOT LIKE 'user-%'
           AND EXISTS (SELECT 1 FROM users u WHERE u.display_name = tasks.completed_by);
       `);
+    },
+  },
+  {
+    version: 3,
+    name: "v1.4.0 ofis içi sohbet",
+    up(store) {
+      store.exec(`
+        CREATE TABLE IF NOT EXISTS chat_conversations (
+          id TEXT PRIMARY KEY,
+          kind TEXT NOT NULL CHECK (kind IN ('office', 'direct')),
+          direct_key TEXT UNIQUE,
+          title TEXT,
+          created_at TEXT NOT NULL,
+          last_message_at TEXT
+        );
+        CREATE TABLE IF NOT EXISTS chat_members (
+          conversation_id TEXT NOT NULL,
+          user_id TEXT NOT NULL,
+          joined_at TEXT NOT NULL,
+          last_read_at TEXT,
+          PRIMARY KEY (conversation_id, user_id)
+        );
+        CREATE TABLE IF NOT EXISTS chat_messages (
+          id TEXT PRIMARY KEY,
+          conversation_id TEXT NOT NULL,
+          sender_id TEXT NOT NULL,
+          body TEXT NOT NULL,
+          case_key TEXT,
+          created_at TEXT NOT NULL
+        );
+        CREATE INDEX IF NOT EXISTS idx_chat_messages_conversation ON chat_messages(conversation_id, created_at);
+        CREATE INDEX IF NOT EXISTS idx_chat_members_user ON chat_members(user_id);
+      `);
+      const timestamp = new Date().toISOString();
+      store.run("INSERT OR IGNORE INTO chat_conversations (id, kind, title, created_at) VALUES ('conversation-office', 'office', 'Ofis geneli', ?)", timestamp);
+      // Adla kişi bulma (bu göçe sabitlenmiş kopya): önce görünen ad (aktif hesaplar öncelikli), yoksa kullanıcı adı;
+      // birden çok aday varsa (eski kurulumlarda aynı adlı iki hesap olabilir) kimse seçilmez.
+      const fold = value => String(value ?? "").normalize("NFC").trim().replace(/\s+/g, " ").toLocaleLowerCase("tr-TR");
+      const users = store.all("SELECT id, username, display_name, active FROM users");
+      const resolve = value => {
+        const wanted = fold(value);
+        if (!wanted) return null;
+        const single = list => (list.length === 1 ? list[0].id : null);
+        const byName = users.filter(user => fold(user.display_name) === wanted);
+        if (byName.length) return single(byName.filter(user => user.active).length ? byName.filter(user => user.active) : byName);
+        return single(users.filter(user => fold(user.username) === wanted));
+      };
+      // Görevin kime atandığı artık kullanıcı kimliğiyle de tutulur: ad değişse de görev kişide kalır ve başkası
+      // adını değiştirerek o görevi göremez. Kişiye bağlanamayan (serbest yazılmış) görevlerde ad eşleşmesi sürer.
+      addColumn(store, "tasks", "assignee_id", "TEXT");
+      for (const task of store.all("SELECT id, assignee FROM tasks WHERE assignee_id IS NULL")) {
+        const assigneeId = resolve(task.assignee);
+        if (assigneeId) store.run("UPDATE tasks SET assignee_id = ? WHERE id = ?", assigneeId, task.id);
+      }
+      store.exec("CREATE INDEX IF NOT EXISTS idx_tasks_assignee ON tasks(assignee_id)");
+      // Eski "Mesajlar" kayıtları sohbete taşınır: alıcı adı tek bir kullanıcıya denk geliyorsa özel yazışmaya,
+      // gelmiyorsa (veya belirsizse) "→ ad:" önekiyle ofis kanalına; eski ekranda da herkes görüyordu.
+      // Eski tablo silinmez (geri dönüşte eski sürüm onu okur).
+      const directs = new Map();
+      for (const row of store.all("SELECT * FROM messages ORDER BY created_at")) {
+        const target = resolve(row.recipient);
+        let conversationId = "conversation-office";
+        let body = row.message;
+        if (target && target !== row.created_by) {
+          const key = [row.created_by, target].sort().join("|");
+          conversationId = directs.get(key) || store.get("SELECT id FROM chat_conversations WHERE direct_key = ?", key)?.id;
+          if (!conversationId) {
+            conversationId = `conversation-${randomUUID()}`;
+            store.run("INSERT INTO chat_conversations (id, kind, direct_key, title, created_at) VALUES (?, 'direct', ?, NULL, ?)", conversationId, key, row.created_at);
+            for (const member of [row.created_by, target]) store.run("INSERT OR IGNORE INTO chat_members (conversation_id, user_id, joined_at, last_read_at) VALUES (?, ?, ?, ?)", conversationId, member, row.created_at, timestamp);
+          }
+          directs.set(key, conversationId);
+        } else if (!target && fold(row.recipient)) {
+          body = `→ ${String(row.recipient).trim()}: ${row.message}`;
+        }
+        store.run("INSERT OR IGNORE INTO chat_messages (id, conversation_id, sender_id, body, case_key, created_at) VALUES (?, ?, ?, ?, ?, ?)", `chat-${row.id}`, conversationId, row.created_by, body, row.case_key || null, row.created_at);
+        store.run("UPDATE chat_conversations SET last_message_at = ? WHERE id = ? AND (last_message_at IS NULL OR last_message_at < ?)", row.created_at, conversationId, row.created_at);
+      }
+      // Taşınan eski mesajlar okunmuş sayılır; güncellemeden sonra rozet patlaması olmaz.
+      for (const user of users) store.run("INSERT OR IGNORE INTO chat_members (conversation_id, user_id, joined_at, last_read_at) VALUES ('conversation-office', ?, ?, ?)", user.id, timestamp, timestamp);
     },
   },
 ];

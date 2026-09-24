@@ -3,6 +3,7 @@
 // uygulayarak TEK bir birleşik görünüm üretir; tüm bilgisayarlar aynı tabloyu görür.
 import { createHash, randomUUID } from "node:crypto";
 import { HttpError, parseJson } from "./http.mjs";
+import { fold, matrixToRecords } from "./sections.mjs";
 
 export const EXCEL_PREFIX = "excel://";
 export const CASE_KEY_PATTERN = /\b(?:19|20)\d{2}\/\d+\b/;
@@ -42,6 +43,24 @@ export function canonicalCaseKey(row, columns) {
   return `satir:${createHash("sha1").update(fingerprint).digest("hex").slice(0, 16)}`;
 }
 
+// Kolon adı değiştiyse (ör. eski okuyucu üst başlıkla kolon başlığını birleştirip "GAYRİMENKUL … SIRA" diyordu,
+// yeni okuyucu yalnızca "SIRA" diyor) ofisin o kolondaki düzeltmesi kaybolmasın: eski ad yeni adla bitiyorsa taşınır.
+function applyPatch(row, patch) {
+  const result = { ...row };
+  let keys = null;
+  for (const [field, value] of Object.entries(patch)) {
+    if (field in row || field.startsWith("__")) {
+      result[field] = value;
+      continue;
+    }
+    keys ??= Object.keys(row).filter(key => !key.startsWith("__")).map(key => [key, fold(key)]);
+    const folded = fold(field);
+    const matches = keys.filter(([, name]) => name && (folded === name || folded.endsWith(` ${name}`)));
+    result[matches.length === 1 ? matches[0][0] : field] = value;
+  }
+  return result;
+}
+
 export function mergeView(store, sourceName, rows) {
   const columns = columnOrder(rows);
   const overrides = new Map();
@@ -60,7 +79,7 @@ export function mergeView(store, sourceName, rows) {
     const key = canonicalCaseKey(row, columns);
     if (deleted.has(key)) continue;
     const patch = overrides.get(key);
-    merged.push(patch ? { ...row, ...patch, __hofKey: key } : { ...row, __hofKey: key });
+    merged.push(patch ? { ...applyPatch(row, patch), __hofKey: key } : { ...row, __hofKey: key });
   }
   return merged;
 }
@@ -108,10 +127,29 @@ export function createSourceService({ store, audit, readGoogleSheet, bumpClientS
     const fileName = String(body.fileName || "").trim().replace(/[\\/]+/g, "_");
     if (!fileName) throw new HttpError(400, "Dosya adı gerekli.");
     if (fileName.length > 180) throw new HttpError(400, "Dosya adı çok uzun.");
-    if (!Array.isArray(body.rows)) throw new HttpError(400, "Tablo satırları okunamadı.");
-    if (body.rows.length > 200_000) throw new HttpError(400, "Tablo en fazla 200.000 satır içerebilir.");
+    // Yeni istemci sayfaları ham hücre matrisi olarak gönderir; sunucu alt tabloları (bölümleri) ayırır.
+    // Eski istemci (güncelleme sırasında açık kalmış sayfa) satırları hazır gönderir; o da kabul edilir.
+    let incoming = body.rows;
+    let parsedTabs = null;
+    if (Array.isArray(body.sheets)) {
+      if (body.sheets.length > 200) throw new HttpError(400, "Dosyada en fazla 200 sayfa olabilir.");
+      incoming = [];
+      parsedTabs = [];
+      let cells = 0;
+      for (const sheet of body.sheets) {
+        const name = String(sheet?.name ?? "").trim().slice(0, 200);
+        const matrix = Array.isArray(sheet?.matrix) ? sheet.matrix.slice(0, 200_001).map(line => (Array.isArray(line) ? line.slice(0, 500).map(cell => String(cell ?? "").slice(0, 20_000)) : [])) : [];
+        cells += matrix.reduce((total, line) => total + line.length, 0);
+        if (cells > 20_000_000) throw new HttpError(400, "Tablo çok büyük (en fazla 20 milyon hücre).");
+        const parsed = matrixToRecords(matrix, name);
+        for (const row of parsed.rows) incoming.push(row); // yayma (...) büyük sayfalarda çağrı yığınını taşırır
+        for (const label of parsed.tabs) if (label && !parsedTabs.includes(label)) parsedTabs.push(label);
+      }
+    }
+    if (!Array.isArray(incoming)) throw new HttpError(400, "Tablo satırları okunamadı.");
+    if (incoming.length > 200_000) throw new HttpError(400, "Tablo en fazla 200.000 satır içerebilir.");
     const rows = [];
-    for (const item of body.rows) {
+    for (const item of incoming) {
       if (!item || typeof item !== "object" || Array.isArray(item)) continue;
       const entries = Object.entries(item).slice(0, 500);
       const row = {};
@@ -122,7 +160,7 @@ export function createSourceService({ store, audit, readGoogleSheet, bumpClientS
       }
       if (Object.entries(row).some(([key, value]) => key !== "__sheet" && value.trim())) rows.push(row);
     }
-    const tabs = Array.isArray(body.tabs) ? body.tabs.map(item => String(item).slice(0, 200)).filter(Boolean).slice(0, 200) : [];
+    const tabs = parsedTabs ?? (Array.isArray(body.tabs) ? body.tabs.map(item => String(item).slice(0, 200)).filter(Boolean).slice(0, 200) : []);
     const sourceKey = `${EXCEL_PREFIX}${fileName}`;
     const rowsJson = JSON.stringify(rows);
     const timestamp = new Date().toISOString();

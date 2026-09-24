@@ -6,7 +6,9 @@
   const HOF = window.HOF;
   const { esc } = HOF;
   const PAGE_SIZE = 20;
+  const PAGE_WINDOW = 6;
   let page = 1;
+  let pageContext = "";
 
   // ---------- Yüzen düğmeler ----------
   let pencil;
@@ -257,11 +259,19 @@
   HOF.on("new-record", newRecord);
 
   // ---------- Sayfalama ----------
+  // En fazla 6 sayfa numarası (bulunulan sayfanın çevresi), ayrıca ilk ve son sayfa: 1 2 3 4 5 6 … 79 ›
   const pageList = (current, total) => {
-    const pages = new Set([1, total, current, current - 1, current + 1]);
-    if (current <= 3) [2, 3, 4].forEach(item => pages.add(item));
-    if (current >= total - 2) [total - 1, total - 2, total - 3].forEach(item => pages.add(item));
-    return [...pages].filter(item => item >= 1 && item <= total).sort((a, b) => a - b);
+    if (total <= PAGE_WINDOW + 1) return Array.from({ length: total }, (_, index) => index + 1);
+    const start = Math.max(1, Math.min(current - 2, total - PAGE_WINDOW + 1));
+    const pages = new Set([1, total]);
+    for (let item = start; item < start + PAGE_WINDOW; item += 1) pages.add(item);
+    return [...pages].sort((a, b) => a - b);
+  };
+  // Sekme, alt tablo veya arama değişince ilk sayfaya dönülür.
+  const currentContext = () => {
+    const tab = document.querySelector(".category-bar > .category-tabs:not(.hof-category-tabs) .category-tab.active");
+    const search = document.querySelector(".search-field input");
+    return `${tab ? tab.getAttribute("title") || tab.textContent.replace(/\s*\d+\s*$/, "") : ""}|${search ? search.value : ""}`;
   };
 
   function paginate() {
@@ -273,6 +283,11 @@
       return;
     }
     const rows = [...(table.tBodies[0]?.rows || [])];
+    const context = currentContext();
+    if (context !== pageContext) {
+      pageContext = context;
+      page = 1;
+    }
     const total = Math.max(1, Math.ceil(rows.length / PAGE_SIZE));
     if (page > total) page = total;
     const start = (page - 1) * PAGE_SIZE;

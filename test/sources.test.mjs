@@ -155,3 +155,72 @@ describe("Google Sheets (sahte ağ ile)", () => {
     assert.equal(result.connected, false);
   });
 });
+
+describe("alt tablolu kaynaklar (Excel matrisi ve Google export)", () => {
+  let server;
+  let admin;
+  const S = " › ";
+  const matrix = [
+    ["GAYRİMENKUL SATIŞ DOSYALARI"],
+    ["SIRA", "ALACAKLI", "DOSYA NO", "HACİZ TARİHİ"],
+    ["1", "Alacaklı A", "2018/10236", "8.11.2022"],
+    ["2", "Alacaklı B", "2017/12039", "19.01.2023"],
+    ["ÇEK CEZASI DOSYALARI"],
+    ["SIRA", "MÜVEKKİL", "ESAS", "SON DURUM"],
+    ["1", "Müvekkil C", "2024/170", "ARANMASI VAR."],
+  ];
+  const exportCsv = matrix.map(line => line.map(cell => `"${cell}"`).join(",")).join("\n");
+  const requests = [];
+  const fetchImpl = async url => {
+    const target = String(url);
+    requests.push(target.includes("/export?") ? "export" : target.includes("/gviz/") ? "gviz" : "edit");
+    if (target.includes("/edit")) return new Response('<script>"gid":"7","name":"ÖNEMLİ"</script>', { status: 200 });
+    // İlk Sheet'te export HTML (giriş sayfası) döner → gviz'e düşülmeli.
+    if (target.includes("GIRIS") && target.includes("/export?")) return new Response("<html>giriş</html>", { status: 200, headers: { "content-type": "text/html" } });
+    return new Response(exportCsv, { status: 200, headers: { "content-type": "text/csv; charset=utf-8" } });
+  };
+
+  before(async () => {
+    server = await startTestServer({ fetchImpl });
+    admin = await loginAdmin(server);
+  });
+  after(() => server.close());
+
+  it("Excel matrisindeki alt tabloları sunucuda ayırır; etiketler sekme listesine girer", async () => {
+    const upload = await admin.post("/api/workspace/sources/excel", { fileName: "Bolumlu.xlsx", tabs: ["ÖNEMLİ"], sheets: [{ name: "ÖNEMLİ", matrix }] });
+    assert.equal(upload.status, 200, JSON.stringify(upload.data));
+    assert.equal(upload.data.data.rowCount, 3);
+    assert.deepEqual(upload.data.data.tabs, [`ÖNEMLİ${S}GAYRİMENKUL SATIŞ DOSYALARI`, `ÖNEMLİ${S}ÇEK CEZASI DOSYALARI`]);
+    const result = rowsOf(await admin.get(trpcUrl("excel://Bolumlu.xlsx")));
+    assert.deepEqual(result.rows.map(row => `${row.__sheet}|${row.__hofKey}`), [`ÖNEMLİ${S}GAYRİMENKUL SATIŞ DOSYALARI|2018/10236`, `ÖNEMLİ${S}GAYRİMENKUL SATIŞ DOSYALARI|2017/12039`, `ÖNEMLİ${S}ÇEK CEZASI DOSYALARI|2024/170`]);
+    assert.equal(result.rows[2].MÜVEKKİL, "Müvekkil C");
+    assert.deepEqual(result.tabs.map(tab => tab.title), upload.data.data.tabs);
+  });
+
+  it("Google Sheets'i önce export CSV ile okur ve alt tabloları ayırır", async () => {
+    requests.length = 0;
+    const result = rowsOf(await admin.get(trpcUrl("https://docs.google.com/spreadsheets/d/BOLUM/edit")));
+    assert.equal(result.connected, true, result.message);
+    assert.deepEqual(requests, ["edit", "export"]);
+    assert.deepEqual(result.tabs.map(tab => tab.title), [`ÖNEMLİ${S}GAYRİMENKUL SATIŞ DOSYALARI`, `ÖNEMLİ${S}ÇEK CEZASI DOSYALARI`]);
+    assert.equal(result.rows.length, 3);
+    assert.match(result.message, /alt tablolar/);
+  });
+
+  it("export alınamazsa (giriş sayfası) gviz CSV'sine düşer", async () => {
+    requests.length = 0;
+    const result = rowsOf(await admin.get(trpcUrl("https://docs.google.com/spreadsheets/d/GIRIS/edit")));
+    assert.equal(result.connected, true, result.message);
+    assert.deepEqual(requests, ["edit", "export", "gviz"]);
+    assert.equal(result.rows.length, 3);
+  });
+
+  it("kolon adı değişince (eski birleşik başlık) ofisin düzeltmesi yeni kolona taşınır", async () => {
+    const sourceName = "excel://Bolumlu.xlsx";
+    await admin.post("/api/workspace/overrides", { sourceName, caseKey: "2018/10236", field: "GAYRİMENKUL SATIŞ DOSYALARI HACİZ TARİHİ", value: "09.11.2022" });
+    const result = rowsOf(await admin.get(trpcUrl(sourceName, true)));
+    const row = result.rows.find(item => item.__hofKey === "2018/10236");
+    assert.equal(row["HACİZ TARİHİ"], "09.11.2022");
+    assert.equal(row["GAYRİMENKUL SATIŞ DOSYALARI HACİZ TARİHİ"], undefined, "eski adla ayrı kolon oluşmamalı");
+  });
+});

@@ -4,6 +4,7 @@ import os from "node:os";
 import path from "node:path";
 import { BACKUP_NAME, createBackup, listBackups } from "../lib/backup.mjs";
 import { HttpError, SECURITY_HEADERS, limited, ok, parseJson, readJson, text } from "../lib/http.mjs";
+import { nameConflict } from "../lib/names.mjs";
 import { hashPassword, passwordProblem } from "../lib/passwords.mjs";
 import { ROLES } from "../lib/permissions.mjs";
 
@@ -22,8 +23,10 @@ function lanAddresses(port) {
 }
 
 export function registerAdminRoutes(router, context) {
-  const { store, auth, audit, config, startedAt, supervisorLink } = context;
+  const { store, auth, audit, config, startedAt, supervisorLink, events } = context;
   const notifyInfoChange = () => context.notifyInfoChange?.();
+  // Oturumları silinen kullanıcının açık canlı bağlantıları da hemen kapanır.
+  const dropLive = userId => events?.closeWhere(client => client.userId === userId);
   const now = () => new Date().toISOString();
   const activeAdmins = () => store.get("SELECT COUNT(*) AS count FROM users WHERE role = 'admin' AND active = 1").count;
 
@@ -51,6 +54,8 @@ export function registerAdminRoutes(router, context) {
     const problem = passwordProblem(password, { username });
     if (problem) throw new HttpError(400, problem);
     if (store.get("SELECT id FROM users WHERE username = ? COLLATE NOCASE", username)) throw new HttpError(409, "Bu kullanıcı adı zaten kayıtlı.");
+    const conflict = nameConflict(store, { name, username });
+    if (conflict) throw new HttpError(409, conflict);
     const mustChange = body.mustChangePassword === false ? 0 : 1;
     const timestamp = now();
     const userId = auth.newId("user");
@@ -71,6 +76,10 @@ export function registerAdminRoutes(router, context) {
     const active = body.active === undefined ? target.active : body.active === false ? 0 : 1;
     const name = body.name === undefined ? null : limited(body.name, 120, "Görünen ad");
     if (!ROLES.includes(role)) throw new HttpError(400, "Geçersiz rol.");
+    if (name) {
+      const conflict = nameConflict(store, { name, exceptId: target.id });
+      if (conflict) throw new HttpError(409, conflict);
+    }
     if (target.id === admin.id && (!active || role !== "admin")) throw new HttpError(400, "Kendi hesabınızı pasifleştiremez veya yöneticilikten çıkaramazsınız.");
     const losesAdmin = target.role === "admin" && target.active && (role !== "admin" || !active);
     if (losesAdmin && activeAdmins() <= 1) throw new HttpError(400, "Sistemde en az bir aktif yönetici kalmalı.");
@@ -78,6 +87,7 @@ export function registerAdminRoutes(router, context) {
       store.run("UPDATE users SET role = ?, active = ?, display_name = COALESCE(?, display_name), updated_at = ? WHERE id = ?", role, active, name || null, now(), target.id);
       if (!active) store.run("DELETE FROM sessions WHERE user_id = ?", target.id);
     });
+    if (!active) dropLive(target.id);
     audit(admin, "user.updated", target.id, { role, active: Boolean(active), name: name || undefined });
     ok(res, true);
   });
@@ -94,6 +104,7 @@ export function registerAdminRoutes(router, context) {
       store.run("UPDATE users SET password_hash = ?, must_change_password = ?, password_changed_at = ?, updated_at = ? WHERE id = ?", hashPassword(body.password), mustChange, now(), now(), target.id);
       if (target.id !== admin.id) store.run("DELETE FROM sessions WHERE user_id = ?", target.id);
     });
+    if (target.id !== admin.id) dropLive(target.id);
     // Hatalı denemelerle kilitlenmiş kullanıcı, yeni parolasıyla beklemeden girebilsin.
     auth.clearLoginLocks(target.username);
     audit(admin, "user.password_reset", target.id, { mustChangePassword: Boolean(mustChange) });
@@ -103,6 +114,7 @@ export function registerAdminRoutes(router, context) {
   router.post("/api/admin/users/:id/logout-all", async ({ req, res, params }) => {
     const admin = auth.requirePermission(req, "users.manage");
     const removed = store.run("DELETE FROM sessions WHERE user_id = ?", params.id).changes;
+    dropLive(params.id);
     audit(admin, "user.sessions_revoked", params.id, { removed });
     ok(res, { removed });
   });

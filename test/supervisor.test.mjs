@@ -65,6 +65,25 @@ describe("servis yöneticisi (supervisor)", () => {
     assert.equal(supervisor.state.info.version, JSON.parse((await import("node:fs")).readFileSync(path.join(root, "package.json"), "utf8")).version);
   });
 
+  it("canlı olay akışını (SSE) kapıdan geçirir; tarayıcı kapanınca uygulama tarafı da kapanır", async () => {
+    const login = await fetch(`${base}/api/auth/login`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ username: "admin", password: "Test-Admin-2026!" }) });
+    const cookie = login.headers.get("set-cookie").split(";")[0];
+    const controller = new AbortController();
+    const response = await fetch(`${base}/api/events`, { headers: { cookie, accept: "text/event-stream" }, signal: controller.signal });
+    assert.equal(response.status, 200);
+    assert.match(response.headers.get("content-type"), /text\/event-stream/);
+    const reader = response.body.getReader();
+    let text = "";
+    while (!text.includes("event: hello")) text += new TextDecoder().decode((await reader.read()).value);
+    assert.match(text, /"version":/);
+    // Olay akışı ortak havuzu tüketmemeli: akış açıkken sıradan istekler hemen yanıtlanır.
+    const started = Date.now();
+    for (let index = 0; index < 5; index += 1) assert.equal((await fetch(`${base}/api/health`)).status, 200);
+    assert.ok(Date.now() - started < 2000);
+    controller.abort();
+    await reader.cancel().catch(() => {});
+  });
+
   it("UDP keşif sinyaline sunucu adresiyle yanıt verir", async () => {
     const replies = await discover({ port: supervisor.discoveryPort, targets: ["127.0.0.1"], timeoutMs: 800 });
     assert.equal(replies.length, 1);

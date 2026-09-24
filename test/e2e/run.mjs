@@ -201,7 +201,7 @@ try {
     await admin.waitForFunction(() => document.querySelectorAll(".hof-payment-promises .hof-payment-pill:not([aria-hidden])").length === 2, null, { timeout: 10000 });
   });
 
-  await step("yönetici avukat hesabı oluşturur (yönetim paneli)", async () => {
+  await step("yönetici personel hesabı oluşturur (yönetim paneli)", async () => {
     await admin.goto(BASE + "/admin.html");
     await admin.waitForSelector("#adm-users tr[data-id]");
     await admin.click("#adm-new-user");
@@ -269,10 +269,14 @@ try {
     expect(!deleteVisible, "silme düğmesi görünmemeli");
     const reports = await staff.$('#hof-sidecard [data-action="reports"]');
     expect(!(await reports.isVisible()), "rapor düğmesi görünmemeli");
+    const assign = await staff.$('#hof-sidecard [data-action="newTask"]');
+    expect(!(await assign.isVisible()), "görev atama yalnızca avukat ve yöneticide görünmeli");
+    const caseTask = await staff.$('.hof-case-actions [data-case-action="task"]');
+    expect(!caseTask || !(await caseTask.isVisible()), "dosyadaki Görev işlemi personelde gizli olmalı");
     await staff.screenshot({ path: path.join(artifacts, "06-personel.png") });
   });
 
-  await step("yönetici görev atar, personel rozet ve listede görür, tamamlar", async () => {
+  await step("yönetici görev atar, personel sayfayı yenilemeden rozet ve bildirim alır, tamamlar", async () => {
     await admin.goto(BASE + "/");
     await waitForApp(admin);
     await admin.click('#hof-sidecard [data-action="newTask"]');
@@ -281,13 +285,58 @@ try {
     await admin.selectOption('.hof-modal select[name="priority"]', "urgent");
     await admin.click('.hof-modal button[type="submit"]');
     await admin.waitForFunction(() => [...document.querySelectorAll(".hof-toast")].some(node => node.textContent.includes("Görev atandı")));
-    await staff.reload();
-    await waitForApp(staff);
+    // Canlı kanal: personel ekranı yenilemeden rozeti ve "size görev atadı" bildirimini görür.
     await staff.waitForFunction(() => document.querySelector('[data-badge="tasks"]')?.textContent === "1", null, { timeout: 10000 });
+    await staff.waitForFunction(() => [...document.querySelectorAll(".hof-toast")].some(node => node.textContent.includes("size görev atadı")), null, { timeout: 10000 });
     await staff.click('#hof-sidecard [data-action="tasks"]');
     await staff.waitForSelector(".hof-modal [data-complete]");
+    const tabs = await staff.$$eval(".hof-modal [data-view]", nodes => nodes.map(node => node.textContent));
+    expect(tabs.join("|") === "Açık görevlerim|Tamamladıklarım", `personel yalnızca kendi görevlerini görmeli: ${tabs}`);
+    expect(!(await staff.$(".hof-modal [data-new]")), "personel yeni görev açamamalı");
     await staff.click(".hof-modal [data-complete]");
     await staff.waitForFunction(() => document.querySelector(".hof-modal [data-list]")?.textContent.includes("açık görev yok"));
+  });
+
+  await step("sohbet: özel mesaj anında gelir, okundu görünür, dosya numarası dosyayı açar", async () => {
+    // Önceki adımda açık kalan "Görevler" penceresi kapatılır.
+    if (await staff.$(".hof-modal [data-close]")) await staff.click(".hof-modal [data-close]");
+    await staff.waitForFunction(() => !document.querySelector(".hof-modal"));
+    await admin.click('#hof-sidecard [data-action="messages"]');
+    await admin.waitForSelector("#hof-chat.is-open .hof-chat-item[data-user]");
+    await admin.click('#hof-chat .hof-chat-item[data-user]:has-text("Av. Deniz Yıldırım")');
+    await admin.fill("#hof-chat [data-composer]", "2026/103 dosyasındaki satış talebine bakar mısın?");
+    await admin.press("#hof-chat [data-composer]", "Enter");
+    await staff.waitForFunction(() => document.querySelector('[data-badge="messages"]')?.textContent === "1", null, { timeout: 10000 });
+    await staff.click('.hof-toast:has-text("satış talebine") .hof-toast-action');
+    await staff.waitForSelector('#hof-chat.is-open .hof-chat-msg:has-text("satış talebine")');
+    await admin.waitForSelector("#hof-chat .hof-chat-receipt.is-read", { timeout: 10000 });
+    await staff.fill("#hof-chat [data-composer]", "Bakıyorum.");
+    await staff.press("#hof-chat [data-composer]", "Enter");
+    await admin.waitForSelector('#hof-chat .hof-chat-msg:not(.is-mine):has-text("Bakıyorum.")', { timeout: 10000 });
+    await staff.click('#hof-chat .hof-chat-case[data-case="2026/103"]');
+    await staff.waitForFunction(() => document.querySelector(".detail-panel")?.innerText.includes("2026/103"), null, { timeout: 10000 });
+    await admin.screenshot({ path: path.join(artifacts, "07-sohbet.png") });
+    await admin.click('#hof-chat [data-act="close"]');
+    await staff.click('#hof-chat [data-act="close"]').catch(() => {});
+  });
+
+  await step("alt tablolu Excel: sekme içindeki tablolar kendi kolonlarıyla bölüm olarak görünür", async () => {
+    await admin.click('.sidebar .nav-item:has-text("Tabloyu değiştir")');
+    await admin.waitForSelector(".settings-modal .source-dropzone input[type=file]", { state: "attached" });
+    const input = await admin.$(".settings-modal .source-dropzone input[type=file]");
+    await Promise.all([admin.waitForEvent("load", { timeout: 30000 }), input.setInputFiles(path.join(here, "..", "fixtures", "bolumlu-sayfalar.xlsx"))]);
+    await admin.waitForSelector('.hof-category-tabs [data-group="ÖNEMLİ İCRA"]', { timeout: 15000 });
+    await admin.click('.hof-category-tabs [data-group="ÖNEMLİ İCRA"]');
+    await admin.waitForSelector(".hof-section-tabs .hof-section-tab.active");
+    const sections = await admin.$$eval(".hof-section-tabs .hof-section-tab", nodes => nodes.map(node => node.textContent.trim()));
+    expect(sections.length === 3 && sections[0].startsWith("Gayrimenkul Satış") && sections[0].endsWith("16"), `bölümler: ${sections}`);
+    await admin.click(".hof-section-tabs .hof-section-tab:nth-of-type(3)");
+    await admin.waitForFunction(() => [...document.querySelectorAll(".dynamic-table thead th")].some(th => th.textContent.includes("MÜVEKKİL")), null, { timeout: 10000 });
+    const rows = await rowCount(admin);
+    expect(rows === 4, `çek cezası bölümü satır sayısı ${rows}`);
+    const headerRow = await admin.$$eval(".dynamic-table tbody tr", items => items.some(row => row.textContent.includes("SIRA")));
+    expect(!headerRow, "alt tablo başlık satırı kayıt gibi görünmemeli");
+    await admin.screenshot({ path: path.join(artifacts, "08-alt-tablolar.png") });
   });
 
   await step("oturum kapanınca giriş ekranı ofis adıyla gelir", async () => {

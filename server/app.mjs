@@ -3,6 +3,8 @@ import { createServer } from "node:http";
 import { mkdirSync } from "node:fs";
 import { createAudit } from "./lib/audit.mjs";
 import { createAuth } from "./lib/auth.mjs";
+import { createChat } from "./lib/chat.mjs";
+import { createEventHub } from "./lib/events.mjs";
 import { startBackupScheduler } from "./lib/backup.mjs";
 import { createClientState } from "./lib/client-state.mjs";
 import { DEFAULT_ADMIN_PASSWORD, loadConfig } from "./lib/config.mjs";
@@ -18,6 +20,7 @@ import { createStaticHandler, notFoundPage } from "./lib/static.mjs";
 import { createSupervisorLink } from "./lib/supervisor-link.mjs";
 import { registerAdminRoutes } from "./routes/admin.mjs";
 import { registerAuthRoutes } from "./routes/auth.mjs";
+import { registerChatRoutes } from "./routes/chat.mjs";
 import { registerTrpcRoutes } from "./routes/trpc.mjs";
 import { registerWorkspaceRoutes } from "./routes/workspace.mjs";
 
@@ -51,13 +54,17 @@ export function createApp(overrides = {}) {
   const sources = createSourceService({ store, audit, readGoogleSheet, bumpClientState: clientState.bump });
   const serveStatic = createStaticHandler(config.publicDir);
   const supervisorLink = overrides.supervisorLink ?? (config.supervised ? createSupervisorLink(process) : null);
-  const context = { config, log, store, auth, audit, sources, clientState, startedAt, supervisorLink };
+  // Canlı olay kanalı: oturumu kapanan (çıkış, parola değişikliği, pasifleştirme) bağlantılar ping turunda düşer.
+  const events = createEventHub({ log, pingMs: config.eventsPingMs, isValid: client => auth.sessionAlive(client.tokenHash) });
+  const chat = createChat({ store, events, audit });
+  const context = { config, log, store, auth, audit, sources, clientState, startedAt, supervisorLink, events, chat };
 
   const router = createRouter();
   router.get("/api/health", async ({ res }) => ok(res, { service: "destekofis-merkezi", status: "ok", version: config.version, time: new Date().toISOString(), uptimeSeconds: Math.round(process.uptime()) }));
   registerAuthRoutes(router, context);
   registerAdminRoutes(router, context);
   registerWorkspaceRoutes(router, context);
+  registerChatRoutes(router, context);
   registerTrpcRoutes(router, context);
 
   async function handle(req, res) {
@@ -125,6 +132,7 @@ export function createApp(overrides = {}) {
     db,
     server,
     migration,
+    events,
     info,
     onInfoChange(listener) {
       infoListeners.add(listener);
@@ -145,6 +153,7 @@ export function createApp(overrides = {}) {
       stopBackups();
       clearInterval(sessionTimer);
       auth.limiter.stop();
+      events.stop();
       await new Promise(resolve => {
         server.close(() => resolve());
         server.closeAllConnections?.();

@@ -1,5 +1,6 @@
 // Uçtan uca güncelleme akışı: gerçek servis yöneticisi + gerçek uygulama süreçleri + sahte GitHub Releases.
 import assert from "node:assert/strict";
+import { LATEST_VERSION } from "../server/lib/migrations.mjs";
 import { existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
@@ -169,7 +170,7 @@ process.exit(3);
       const current = readJson(path.join(installRoot, "app", "current.json"));
       assert.equal(current.version, "9.0.0");
       assert.equal(current.rolledBackFrom, "9.0.1");
-      assert.equal(schemaOf(path.join(installRoot, "data", "hukuk-ofisi.sqlite")), 2, "veritabanı güncelleme öncesi hâline dönmeli");
+      assert.equal(schemaOf(path.join(installRoot, "data", "hukuk-ofisi.sqlite")), LATEST_VERSION, "veritabanı güncelleme öncesi hâline dönmeli");
       assert.ok(readdirSync(path.join(installRoot, "backups")).some(name => name.includes("basarisiz-guncelleme-9-0-1")));
       assert.ok(readJson(path.join(installRoot, "app", "update-state.json")).failed["9.0.1"]);
       assert.equal((await login(base, "kalici", "Kalici-Parola-2026")).status, 200);

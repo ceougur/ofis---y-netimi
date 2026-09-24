@@ -54,11 +54,13 @@
     };
     try {
       const parsed = await parseInWorker(file);
-      if (!parsed.rows.length) throw new Error("Dosyada okunabilir kayıt bulunamadı. İlk satırın kolon başlıkları olduğundan emin olun.");
-      status(`${parsed.rows.length} kayıt sunucuya kaydediliyor…`);
-      const result = await HOF.api("/api/workspace/sources/excel", { method: "POST", body: { fileName: file.name, tabs: parsed.tabs, rows: parsed.rows }, timeoutMs: 180_000 });
+      if (!parsed.rowCount) throw new Error("Dosyada okunabilir kayıt bulunamadı. Tablonun kolon başlıklarıyla başladığından emin olun.");
+      status(`Yaklaşık ${parsed.rowCount} satır sunucuya kaydediliyor…`);
+      const result = await HOF.api("/api/workspace/sources/excel", { method: "POST", body: { fileName: file.name, tabs: parsed.tabs, sheets: parsed.sheets }, timeoutMs: 180_000 });
+      if (!result.rowCount) throw new Error("Dosyada okunabilir kayıt bulunamadı. Tablonun kolon başlıklarıyla başladığından emin olun.");
       HOF.applyClientState(result.state);
-      sessionStorage.setItem("hof-flash", `"${result.fileName}" merkezi sunucuya yüklendi (${result.rowCount} kayıt, ${result.tabs.length} sayfa). Tüm bilgisayarlar aynı tabloyu görür.`);
+      const sections = result.tabs.length > parsed.tabs.length ? `, alt tablolarla ${result.tabs.length} bölüm` : `, ${result.tabs.length} sayfa`;
+      sessionStorage.setItem("hof-flash", `"${result.fileName}" merkezi sunucuya yüklendi (${result.rowCount} kayıt${sections}). Tüm bilgisayarlar aynı tabloyu görür.`);
       location.reload();
     } catch (error) {
       modal.close();

@@ -2,7 +2,7 @@
 import { publicUser } from "../lib/auth.mjs";
 import { ok, readJson } from "../lib/http.mjs";
 
-export function registerAuthRoutes(router, { auth, config, store }) {
+export function registerAuthRoutes(router, { auth, config, store, events }) {
   const product = { name: config.productName, version: config.version };
   const office = () => ({ name: store.setting("office.name", "") });
 
@@ -16,7 +16,10 @@ export function registerAuthRoutes(router, { auth, config, store }) {
   });
 
   router.post("/api/auth/logout", async ({ req, res }) => {
+    const hash = auth.sessionHash(req);
     auth.logout(req, res);
+    // Bu oturumun canlı bağlantıları da hemen kapansın (sonraki ping'i beklemeden).
+    if (hash) events?.closeWhere(client => client.tokenHash === hash);
     ok(res, true);
   });
 

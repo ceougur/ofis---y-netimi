@@ -43,6 +43,8 @@ export function loadConfig(overrides = {}) {
     supervised: (overrides.supervised ?? env.HUKUK_SUPERVISED) === "1" || overrides.supervised === true,
     logLevel: overrides.logLevel ?? env.HUKUK_LOG_LEVEL ?? "info",
     sheetsCacheMs: number(env.HUKUK_SHEETS_CACHE_MS, 45_000),
+    // Canlı olay kanalında boşta bağlantıyı canlı tutan ve kapanmış oturumları düşüren tur aralığı.
+    eventsPingMs: number(overrides.eventsPingMs ?? env.HUKUK_EVENTS_PING_MS, 25_000),
     fetchImpl: overrides.fetchImpl || ((...args) => globalThis.fetch(...args)),
     scheduleBackups: overrides.scheduleBackups ?? true,
   });
