@@ -14,7 +14,7 @@ Sürümler [anlamsal sürümleme](https://semver.org/lang/tr/) kurallarına uyar
 - **Arama kutusu** verideki gerçek kolon adlarını önerir (ör. "Hasta no, ad soyad veya telefon ara…").
 - **Büyük tablolar daha hızlı:** Ödeme sözleri şeridi yalnızca gereken hücreleri okur. 40'tan fazla sözde en yakın 40'ı gösterilir; tamamı özet kartındaki listededir. 20 bin satırlık tablo belirgin biçimde daha hızlı açılır, arama ve düzenleme sırasında takılma azalır.
 - **Genel adlandırma:** Yeni kurulumlar `C:\DestekOfis` klasörüne kurulur; veritabanının adı `destekofis.sqlite`, yedeklerinki `destekofis-…` olur. Mevcut kurulumlar olduğu yerde, eski adlarla kalır (`C:\HukukOfisiMerkezi`, `hukuk-ofisi.sqlite`); eski yedekler de listelenir ve geri yüklenebilir.
-- **Mevcut ofisler:** Güncellenen ve verisi olan sunucular hukuk ofisi görünümüyle açılır: başlıklar, adlar ve araçlar güncellemeden önceki gibi kalır; yalnızca özet kartları ve veri sağlığı eklenir. Yöneticiye bir kez "Yeni: DestekOfis verinizi tanıyor" kartı çıkar; *Mevcut görünümü koru* denirse hiçbir şey değişmez.
+- **Mevcut ofisler:** Güncellenen ve verisi olan sunucular hukuk ofisi görünümüyle açılır. Başlıklar, rol adları ve araçlar aynı kalır; genel ifadeler "dosya" olur (ör. "Tüm dosyalar", "Yeni dosya"). Özet kartları ve veri sağlığı eklenir. Yöneticiye bir kez "Yeni: DestekOfis verinizi tanıyor" kartı çıkar; *Mevcut görünümü koru* denirse hiçbir şey değişmez.
 
 ### 1.3'ten güncellenen kurulumlar: 1.4.0 ve 1.5.0'daki yenilikler de bu sürümdedir
 
