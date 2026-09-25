@@ -53,11 +53,13 @@ jobs:
           Get-Content kurulum.log -Tail 40
           if ($p.ExitCode -ne 0) { throw "Kurulum çıkış kodu $($p.ExitCode)" }
           # Kurulum programının kendi servis doğrulaması da hatasız bitmeli (sessiz kurulumda hata penceresi görünmez).
-          # Servis kurulumu klasörü kilitler (icacls); yalnızca testte günlüğü okuyabilmek için yöneticilere erişim verilir.
-          takeown /F C:\DestekOfis\logs /R /A /D Y *> $null; icacls C:\DestekOfis\logs /grant '*S-1-5-32-544:(OI)(CI)F' /T /C /Q *> $null
-          Get-Content 'C:\DestekOfis\logs\kurulum.log'
+          # Servis kurulumu klasörü kilitler (icacls). Test günlüğü yedekleme kipinde (robocopy /B) kopyalayıp oradan okur;
+          # kopyalanamazsa nedenini görmek için izinler ve oturumun grupları yazdırılır.
+          robocopy C:\DestekOfis\logs "$env:RUNNER_TEMP\ofis-logs" /B /E /NFL /NDL /NJH /NJS /R:0 /W:0 *> $null; $global:LASTEXITCODE = 0
+          if (-not (Test-Path "$env:RUNNER_TEMP\ofis-logs\kurulum.log")) { icacls C:\DestekOfis\logs; icacls C:\DestekOfis\logs\kurulum.log; whoami /groups; throw 'kurulum.log okunamadı' }
+          Get-Content "$env:RUNNER_TEMP\ofis-logs\kurulum.log"
           if (Select-String -Path kurulum.log -Pattern 'SERVIS-KURULUM-HATASI|SERVIS-GUVENLIK-DUVARI-UYARISI' -Quiet) { throw 'Kurulum programı servis kurulumunu hatalı/uyarılı bildirdi (kurulum.log)' }
-          if (-not (Select-String -Path 'C:\DestekOfis\logs\kurulum.log' -SimpleMatch 'Kurulum tamamlandi' -Quiet)) { throw 'servis-kur.cmd "Kurulum tamamlandi" yazmadı' }
+          if (-not (Select-String -Path "$env:RUNNER_TEMP\ofis-logs\kurulum.log" -SimpleMatch 'Kurulum tamamlandi' -Quiet)) { throw 'servis-kur.cmd "Kurulum tamamlandi" yazmadı' }
 
       - name: Servis otomatik başlatmalı, sanal hesapla çalışmalı ve sağlıklı olmalı
         run: |
@@ -111,7 +113,7 @@ jobs:
           $setup = Get-ChildItem dist -Filter 'DestekOfis-Kurulum-*.exe' | Select-Object -First 1
           $p = Start-Process $setup.FullName -ArgumentList '/VERYSILENT','/SUPPRESSMSGBOXES','/NORESTART','/LOG=guncelleme.log' -Wait -PassThru
           if ($p.ExitCode -ne 0) { Get-Content guncelleme.log -Tail 60; throw "Yeniden kurulum çıkış kodu $($p.ExitCode)" }
-          if (Select-String -Path guncelleme.log -Pattern 'SERVIS-KURULUM-HATASI|SERVIS-GUVENLIK-DUVARI-UYARISI' -Quiet) { takeown /F C:\DestekOfis\logs /R /A /D Y *> $null; icacls C:\DestekOfis\logs /grant '*S-1-5-32-544:(OI)(CI)F' /T /C /Q *> $null; Get-Content 'C:\DestekOfis\logs\kurulum.log' -Tail 40; throw 'Yeniden kurulumda servis doğrulaması hatalı' }
+          if (Select-String -Path guncelleme.log -Pattern 'SERVIS-KURULUM-HATASI|SERVIS-GUVENLIK-DUVARI-UYARISI' -Quiet) { robocopy C:\DestekOfis\logs "$env:RUNNER_TEMP\ofis-logs" /B /E /NFL /NDL /NJH /NJS /R:0 /W:0 *> $null; $global:LASTEXITCODE = 0; Get-Content "$env:RUNNER_TEMP\ofis-logs\kurulum.log" -Tail 40; throw 'Yeniden kurulumda servis doğrulaması hatalı' }
           # Sunucu bilgisayarında yeniden kurulumda kurulum türü "sunucu" kalmalı (ağ taraması yapılmaz).
           if (-not (Get-Service DestekOfis -ErrorAction SilentlyContinue)) { throw 'Yeniden kurulumdan sonra servis yok' }
           $login = Invoke-RestMethod -Method Post -Uri http://127.0.0.1:5123/api/auth/login -ContentType 'application/json' -Body '{"username":"kalici","password":"Kalici-Parola-2026"}'
@@ -157,5 +159,5 @@ jobs:
       - name: Günlükler
         if: always()
         run: |
-          takeown /F C:\DestekOfis\logs /R /A /D Y *> $null; icacls C:\DestekOfis\logs /grant '*S-1-5-32-544:(OI)(CI)F' /T /C /Q *> $null; 
-          Get-ChildItem C:\DestekOfis\logs, C:\HukukOfisiMerkezi\logs -ErrorAction SilentlyContinue | ForEach-Object { "==== $($_.FullName)"; Get-Content $_.FullName -Tail 120 }
+          robocopy C:\DestekOfis\logs "$env:RUNNER_TEMP\ofis-logs" /B /E /NFL /NDL /NJH /NJS /R:0 /W:0 *> $null; $global:LASTEXITCODE = 0
+          Get-ChildItem "$env:RUNNER_TEMP\ofis-logs", C:\HukukOfisiMerkezi\logs -ErrorAction SilentlyContinue | ForEach-Object { "==== $($_.FullName)"; Get-Content $_.FullName -Tail 120 }
