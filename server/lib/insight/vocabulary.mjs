@@ -36,11 +36,22 @@ const CONCEPTS = [
 ];
 const CONCEPT_OF = new Map(CONCEPTS.flatMap((terms, index) => terms.map(term => [term, index])));
 // Tek başına olumsuzluk bildiren kelimeler: "Uygun değil", "Bila tebliğ" ayrı seçeneklerdir.
-const NEGATION_WORDS = new Set(["degil", "yok", "olmayan", "olmadi", "olmaz", "bila", "gayri", "edilmedi", "edilemedi", "yapilmadi", "yapilamadi", "alinmadi", "gelmedi", "verilmedi"]);
+const NEGATION_WORDS = new Set(["degil", "yok", "olmayan", "olmadi", "olmaz", "bila", "gayri", "edilmedi", "edilemedi", "yapilmadi", "yapilamadi", "alinmadi", "gelmedi", "verilmedi", "kismi", "kismen", "arti", "eksi"]);
+// Anlamı değiştirmeyen yardımcı fiiller: "Tebliğ edildi" ile "Tebligat yapıldı", "Haciz konuldu" ile "Hacizli" aynı durumdur.
+const LIGHT_VERBS = new Set(["edildi", "yapildi", "konuldu", "konuldu", "verildi", "alindi", "oldu", "olundu", "gerceklesti", "gerceklestirildi", "edilmis", "yapilmis", "konulmus", "verilmis"]);
+// Kişi değil birim bildiren kelimeler: "Hukuk Birimi", "Muhasebe Servisi" kişi sayılmaz.
+const UNIT_WORDS = new Set(["birim", "birimi", "servis", "servisi", "mudurluk", "mudurlugu", "departman", "departmani", "bolum", "bolumu", "sube", "subesi", "ekip", "ekibi", "merkez", "merkezi", "ofis", "ofisi", "masa", "masasi", "kalem", "kalemi", "daire", "dairesi", "grup", "grubu", "takim", "takimi", "komisyon", "kurul", "kurulu", "bankasi", "sirketi", "ltd", "sti", "as"]);
 // Kişi adlarının önündeki unvanlar kişi karşılaştırmasında sayılmaz ("Av. Ayşe Kaya" = "Ayşe Kaya" olabilir).
 const TITLES = new Set(["av", "avukat", "dr", "doktor", "uzm", "op", "prof", "doc", "sn", "bay", "bayan", "hanim", "bey", "ogr", "gor", "muh", "smmm", "stj", "stajyer", "ecz", "vet", "dt", "psk"]);
 
-export const labelKey = value => foldText(value);
+// Seçenek anahtarı: büyük/küçük harf, Türkçe karakter ve noktalama farkı aynı seçenektir; ama "+" ve kelimeye bitişik "-"
+// anlam taşır ("A Rh+" / "A Rh-", "A+" / "A-"), kelime olarak korunur.
+export const labelKey = value =>
+  foldText(
+    String(value ?? "")
+      .replace(/\+/g, " arti ")
+      .replace(/(\S)-(?=\s|$)/g, "$1 eksi "),
+  );
 
 // Etiket gibi okunan değer: kısa, tek satır, tarih/tutar/telefon/tarih içeren metin değil. Rakam içerebilir
 // ("İstanbul 5. İcra Dairesi", "1. aşama") ama salt sayı olamaz.
@@ -63,10 +74,12 @@ const commonPrefix = (a, b) => {
 // Olumsuzluk bir ayrımdır: ortak kökten sonra bir tarafta olumsuzluk eki, diğer tarafta aynı ekin olumlusu var:
 // "öden|di" / "öden|me|di", "edil|di" / "edil|eme|di", "gel|iyor" / "gel|m|iyor", "ilam|lı" / "ilam|sız".
 function stripNegation(rest) {
-  for (const morpheme of ["eme", "ama", "me", "ma"]) if (rest.startsWith(morpheme)) return rest.slice(morpheme.length);
+  for (const morpheme of ["eme", "ama", "me", "ma"]) if (rest.startsWith(morpheme) && rest.length > morpheme.length) return rest.slice(morpheme.length);
   if (/^m[iu]yor/.test(rest)) return rest.slice(1);
   return null;
 }
+// Ek karşılaştırması ses uyumundan bağımsız: "di" = "dı" = "du" = "ti", "miş" = "muş".
+const suffixShape = text => text.replace(/[iu]/g, "i").replace(/[ea]/g, "a").replace(/t/g, "d").replace(/c/g, "c");
 function negationPair(a, b) {
   const shared = commonPrefix(a, b);
   if (shared < 2) return false;
@@ -74,11 +87,22 @@ function negationPair(a, b) {
     if (/^(?:siz|suz)/.test(negative) && /^(?:li|lu)/.test(positive)) return true;
     if (/^(?:mez|maz)$/.test(negative) && /^[aeiu]r$/.test(positive)) return true;
     const stripped = stripNegation(negative);
-    return stripped !== null && stripped === positive;
+    return stripped !== null && suffixShape(stripped) === suffixShape(positive);
   };
-  const restA = a.slice(shared);
-  const restB = b.slice(shared);
-  return check(restA, restB) || check(restB, restA);
+  // Ortak kısım olumsuzluk ekinin ilk harfini yutabilir ("ödenm|iş" / "ödenm|emiş"): bir-iki harf geri çekilerek de bakılır.
+  for (let back = 0; back <= 2 && shared - back >= 2; back += 1) {
+    const restA = a.slice(shared - back);
+    const restB = b.slice(shared - back);
+    if (check(restA, restB) || check(restB, restA)) return true;
+  }
+  return false;
+}
+// "E" / "Evet", "K" / "Kadın", "Şhs" / "Şahıs": kısa kelime uzun kelimenin kısaltması olabilir.
+function abbreviation(short, long) {
+  if (short.length > 3 || long.length < short.length + 1 || short[0] !== long[0] || /\d/.test(short + long)) return false;
+  let index = 0;
+  for (const char of long) if (char === short[index]) index += 1;
+  return index === short.length;
 }
 // Damerau–Levenshtein (bitişik harf yer değişimi dahil), `limit`i aşınca erken biter.
 export function editDistance(a, b, limit = 2) {
@@ -124,15 +148,29 @@ export function overlapReason(keyA, keyB, { person = false } = {}) {
   }
   // Farkı bir sayı olan seçenekler ayrıdır: "1. aşama" / "2. aşama", "İstanbul 5. İcra" / "İstanbul 6. İcra".
   if ([...onlyA, ...onlyB].some(token => /\d/.test(token))) return null;
+  const sameStem = (x, y) => {
+    const shared = commonPrefix(x, y);
+    return shared >= 4 && shared >= 0.6 * Math.min(x.length, y.length) && !negationPair(x, y);
+  };
   if (onlyA.length === 1 && onlyB.length === 1) {
     const [x] = onlyA;
     const [y] = onlyB;
     if (!person && negationPair(x, y)) return null;
-    const shared = commonPrefix(x, y);
     const shortest = Math.min(x.length, y.length);
-    if (shared >= 4 && shared >= 0.6 * shortest) return "kök";
+    if (sameStem(x, y)) return "kök";
+    if (!person && (abbreviation(x, y) || abbreviation(y, x))) return "kısaltma";
     // Yazım farkı yalnızca yeterince uzun kelimelerde aranır: "Şube A" / "Şube B" bir yazım hatası değildir.
-    if (shortest >= 4 && editDistance(x, y, 2) <= (shortest >= 8 ? 2 : 1)) return "yazım";
+    if (shortest >= (person ? 5 : 4) && editDistance(x, y, 2) <= (shortest >= 8 ? 2 : 1)) return "yazım";
+  } else if (!person) {
+    // Çok kelimeli: aynı kökten bir kelime çifti ve geri kalanı yalnızca yardımcı fiil ("Tebliğ edildi" / "Tebligat yapıldı").
+    for (const x of onlyA) {
+      for (const y of onlyB) {
+        if (!sameStem(x, y)) continue;
+        const restA = onlyA.filter(token => token !== x);
+        const restB = onlyB.filter(token => token !== y);
+        if ([...restA, ...restB].every(token => LIGHT_VERBS.has(token))) return "kök";
+      }
+    }
   }
   if (!person && CONCEPT_OF.has(keyA) && CONCEPT_OF.get(keyA) === CONCEPT_OF.get(keyB)) return "eş anlam";
   return null;
@@ -142,6 +180,7 @@ const REASON_TEXT = {
   içeriyor: (a, b) => `“${a}” ile “${b}” birbirini içeriyor; aynı durumu mu anlatıyor belli değil`,
   kök: (a, b) => `“${a}” ile “${b}” aynı kökten; aynı durumu mu anlatıyor belli değil`,
   yazım: (a, b) => `“${a}” ile “${b}” arasında yalnızca yazım farkı var`,
+  kısaltma: (a, b) => `“${a}” ile “${b}” aynı şeyin kısaltması olabilir`,
   "eş anlam": (a, b) => `“${a}” ile “${b}” aynı anlama gelebilir`,
 };
 export const overlapText = (reason, a, b) => (REASON_TEXT[reason] || REASON_TEXT.içeriyor)(a, b);
@@ -154,6 +193,7 @@ export function looksLikePersonLabel(text) {
   const words = value.split(/\s+/).filter(Boolean);
   if (!/^[\p{L}.'’\s-]+$/u.test(value)) return false;
   const bare = words.filter(word => !TITLES.has(foldText(word)));
+  if (bare.some(word => UNIT_WORDS.has(foldText(word)))) return false;
   return bare.length >= 2 && bare.length <= 4;
 }
 
@@ -206,7 +246,15 @@ export function assessVocabulary(values, { maxLabels = 12, minFilled = 6, single
     kinds[kind] += group.count;
   }
   const breakdown = Object.entries(kinds).filter(([, count]) => count).sort((x, y) => y[1] - x[1]).map(([name, count]) => `${name} ${count}`).join(", ");
-  // Örtüşen seçenekler: önce asıl seçenekler arasında; nedene somut örnek vermek için tek geçen etiketler de taranır.
+  if (kinds.sayı >= filled * 0.5) return fail("numeric", "değerler sayı; ne anlama geldikleri bilinmediği için dağılım gösterilmez", result.otherExamples);
+  if (kinds.tarih >= filled * 0.5) return fail("dates", "değerlerin çoğu tarih; seçenek listesi değil", result.otherExamples);
+  if (main.length < 2) {
+    if (groups.size === 1) return fail("single", `tüm dolu hücrelerde aynı değer var (“${labels[0]?.value || display([...groups.values()][0])}”)`);
+    return fail("freetext", `değerler serbest yazılmış; sabit seçenekler yok (${breakdown})`, result.otherExamples);
+  }
+  if (main.length > maxLabels) return fail("many", `çok fazla farklı değer (${main.length}); birkaç sabit seçenekten oluşmuyor`);
+  // Örtüşen seçenekler: önce asıl seçenekler arasında; nedene somut örnek vermek için tek geçen etiketler de taranır
+  // (en çok 60 değer: çok değerli kolonlar yukarıda zaten elenmiştir).
   const findOverlap = list => {
     for (let i = 0; i < list.length; i += 1) {
       for (let j = i + 1; j < list.length; j += 1) {
@@ -219,14 +267,6 @@ export function assessVocabulary(values, { maxLabels = 12, minFilled = 6, single
   const mainOverlap = findOverlap(main);
   const anyOverlap = mainOverlap || findOverlap([...main, ...tail.filter(group => group.labelish)].slice(0, 60));
   const alsoOverlap = anyOverlap ? `; ayrıca ${anyOverlap.text}` : "";
-
-  if (kinds.sayı >= filled * 0.5) return fail("numeric", "değerler sayı; ne anlama geldikleri bilinmediği için dağılım gösterilmez", result.otherExamples);
-  if (kinds.tarih >= filled * 0.5) return fail("dates", "değerlerin çoğu tarih; seçenek listesi değil", result.otherExamples);
-  if (main.length < 2) {
-    if (groups.size === 1) return fail("single", `tüm dolu hücrelerde aynı değer var (“${labels[0]?.value || display([...groups.values()][0])}”)`);
-    return fail("freetext", `değerler serbest yazılmış; sabit seçenekler yok (${breakdown})${alsoOverlap}`, anyOverlap?.examples || result.otherExamples);
-  }
-  if (main.length > maxLabels) return fail("many", `çok fazla farklı değer (${main.length}); birkaç sabit seçenekten oluşmuyor`);
   if (other > filled * (1 - CERTAINTY)) {
     return fail("freetext", `hücrelerin ${percentOf(other, filled)} sabit seçeneklerin dışında (${breakdown})${alsoOverlap}`, anyOverlap?.examples || result.otherExamples);
   }

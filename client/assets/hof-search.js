@@ -42,7 +42,7 @@
       const hits = (HOF.data?.rows || []).filter(row => row.__hofKey && Object.values(row).join(" ").toLocaleLowerCase("tr-TR").includes(exact));
       if (!hits.length) return HOF.toast("Eşleşen kayıt bulunamadı.");
       hits.sort((a, b) => rank(a) - rank(b));
-      await HOF.revealRecord?.(hits[0].__hofKey, { keepSearch: true });
+      await HOF.revealRecord?.(hits[0].__hofKey, { keepSearch: true, tab: String(hits[0].__sheet || "").trim() });
     });
   }
 

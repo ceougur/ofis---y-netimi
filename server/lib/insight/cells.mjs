@@ -75,7 +75,7 @@ export function readCell(value) {
   // telefon sanılmasın.
   if (!/[.,]/.test(text) && (/^[+(0]/.test(text) || /\d\s+\d/.test(text)) && isTrPhone(text)) return { kind: "phone", text, digits };
   const amount = parseAmount(text);
-  if (amount !== null) return { kind: "amount", amount, currency: currencyOf(text), identifier: looksLikeIdentifier(text), text, digits };
+  if (amount !== null) return { kind: "amount", amount, currency: currencyOf(text), identifier: looksLikeIdentifier(text), percent: /%/.test(text), text, digits };
   return { kind: "mixed", text, digits, dates: embeddedDates(text) };
 }
 
@@ -89,16 +89,75 @@ export function headerCurrency(header) {
   return null;
 }
 
-// "TOPLAM", "Genel toplam" gibi satırlar kayıt değil, toplam satırıdır: tutar toplamına katılmaz.
-const TOTAL_LABELS = new Set(["toplam", "toplamlar", "genel toplam", "ara toplam", "toplam tutar", "total", "grand total", "sub total", "subtotal", "yekun", "genel yekun"]);
+// "TOPLAM", "Genel toplam", "Toplam (40 dosya)", "TOPLAM ALACAK" gibi satırlar kayıt değil, toplam satırıdır: tutar
+// toplamına katılmaz. Etiket kısa olmalı ve bu kelimelerle başlamalı ("Toplam 3 dosya kapandı" gibi uzun metin değil).
+const TOTAL_PREFIXES = ["toplam", "toplamlar", "genel toplam", "ara toplam", "total", "grand total", "sub total", "subtotal", "yekun", "genel yekun"];
+export function isTotalLabel(value) {
+  const text = String(value ?? "").trim();
+  if (!text || text.length > 40) return false;
+  const folded = foldText(text);
+  return TOTAL_PREFIXES.some(prefix => folded === prefix || folded.startsWith(`${prefix} `));
+}
 export function isTotalRow(row, skipColumn) {
   for (const [key, value] of Object.entries(row)) {
     if (key === skipColumn || key.startsWith("__")) continue;
-    const text = String(value ?? "");
-    if (text.length > 24 || /\d/.test(text)) continue;
-    if (TOTAL_LABELS.has(foldText(text))) return true;
+    if (isTotalLabel(value)) return true;
   }
   return false;
+}
+
+// ---------- Sayı yazımı ----------
+// Aynı yazım iki farklı sayı olarak okunabilir: "1.500" Türkçe'de bin beş yüz, İngilizce'de bir buçuk; "1,500" tersi.
+// Kolon, belirsiz olmayan hücrelerindeki yazıma göre okunur; iki yazım karışıksa ya da yazım belirlenemiyorsa sayı
+// kesin sayılmaz.
+//   tr        : 1.500,00 · 1.500.000 · 12,5
+//   us        : 1,500.00 · 1,500,000
+//   ambiguous : tek ayraç ve ardından tam üç hane (1.500 · 1,500)
+//   neutral   : ayraçsız ya da iki yazımda da aynı okunan (12.5)
+const GROUPED = /^\d{1,3}(?:[.,]\d{3})+$/;
+function splitNumber(core) {
+  const dots = (core.match(/\./g) || []).length;
+  const commas = (core.match(/,/g) || []).length;
+  return { dots, commas, lastDot: core.lastIndexOf("."), lastComma: core.lastIndexOf(",") };
+}
+export function numberStyle(core) {
+  const { dots, commas, lastDot, lastComma } = splitNumber(core);
+  if (!dots && !commas) return "neutral";
+  if (dots && commas) return lastComma > lastDot ? "tr" : "us";
+  const after = core.length - Math.max(lastDot, lastComma) - 1;
+  if (commas) return commas > 1 ? "us" : after === 3 ? "ambiguous" : "tr";
+  return dots > 1 ? "tr" : after === 3 ? "ambiguous" : "neutral";
+}
+function parseStyled(core, style) {
+  const decimal = style === "us" ? "." : ",";
+  const group = style === "us" ? "," : ".";
+  const [whole, fraction, extra] = core.split(decimal);
+  if (extra !== undefined) return null;
+  if (whole.includes(group) && !GROUPED.test(whole.replaceAll(group, ","))) return null;
+  const digits = whole.replaceAll(group, "");
+  if (!/^\d+$/.test(digits) || (fraction !== undefined && !/^\d+$/.test(fraction))) return null;
+  return Number(fraction === undefined ? digits : `${digits}.${fraction}`);
+}
+// Hücredeki sayı: iki okuması (Türkçe ve İngilizce yazım), yazım türü, para birimi, yüzde ve işaret. Sayı değilse null.
+export function readNumber(value) {
+  let text = String(value ?? "").trim().replace(/(\d)[.,]-{1,2}$/, "$1");
+  if (!text || text.length > 40) return null;
+  const negative = /^\(.*\)$/.test(text) || /^-/.test(text) || /-$/.test(text);
+  let core = text.replace(/[()]/g, "").replace(/\s+/g, "").replace(/^-|-$/g, "");
+  core = core.replace(/^(₺|TL|TRY|\$|USD|€|EUR|£|GBP)/i, "").replace(/(₺|TL|TRY|\$|USD|€|EUR|£|GBP|%)$/i, "");
+  if (!/^\d[\d.,]*$/.test(core) || /[.,]$/.test(core)) return null;
+  const style = numberStyle(core);
+  const sign = negative ? -1 : 1;
+  let tr = null;
+  let us = null;
+  if (style === "neutral") tr = us = parseStyled(core, "us") ?? parseStyled(core, "tr");
+  else {
+    if (style !== "us") tr = parseStyled(core, "tr");
+    if (style !== "tr") us = parseStyled(core, "us");
+  }
+  if (tr === null && us === null) return null;
+  const separator = style === "ambiguous" ? (core.includes(",") ? "," : ".") : null;
+  return { style, separator, tr: tr === null ? null : sign * tr, us: us === null ? null : sign * us, percent: /%/.test(text), currency: currencyOf(text), identifier: looksLikeIdentifier(text) };
 }
 
 // Örnek değerler: raporda gösterilecek en fazla `limit` farklı değer (kısaltılmış).

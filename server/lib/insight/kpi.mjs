@@ -27,8 +27,9 @@ export function scopeKeys(rows, tabs = []) {
 export function splitScopes(rows, keys) {
   const groups = new Map(keys.map(key => [key, []]));
   for (const row of rows) {
-    const tab = String(row.__sheet || "");
-    (groups.get(tab) || groups.get("")).push(row);
+    // Önbellekteki analizde olmayan bir sekmenin satırı (analizden sonra eklenmiş) atlanır.
+    const group = groups.get(String(row.__sheet || "")) ?? groups.get("");
+    if (group) group.push(row);
   }
   return groups;
 }
@@ -38,9 +39,9 @@ export function analyzeScope(rows, { now = new Date() } = {}) {
   const columns = columnOrder(rows);
   const analyses = analyzeColumns(rows, columns, { now });
   const primary = primaryColumns(analyses);
-  const { cards, rejected, month } = buildCards(rows, analyses, { now });
+  const { cards, rejected, month, records, grouped } = buildCards(rows, analyses, { now });
   const quality = assessQuality(rows, analyses, primary);
-  return { total: rows.length, columnCount: columns.length, primary, cards, rejected, month, quality };
+  return { total: rows.length, records, grouped, columnCount: columns.length, primary, cards, rejected, month, quality };
 }
 
 export function computeKpis(rows, { tabs = [], now = new Date() } = {}) {

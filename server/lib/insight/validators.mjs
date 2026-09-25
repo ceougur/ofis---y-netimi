@@ -95,7 +95,8 @@ export function parseDate(value) {
 
 // Tutar/sayı: Türkçe (1.234,56) ve İngilizce (1,234.56) yazımlar, para birimi ve yüzde işaretleri. Sayı değilse null.
 export function parseAmount(value) {
-  let text = String(value ?? "").trim();
+  // "1.500,-" kuruşsuz yazımdır (eksi değil).
+  let text = String(value ?? "").trim().replace(/(\d)[.,]-{1,2}$/, "$1");
   if (!text || text.length > 40) return null;
   const negative = /^\(.*\)$/.test(text) || /^-/.test(text) || /-$/.test(text);
   text = text.replace(/[()]/g, "").replace(/\s+/g, "").replace(/^-|-$/g, "");

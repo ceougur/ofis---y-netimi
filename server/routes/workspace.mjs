@@ -183,6 +183,8 @@ export function registerWorkspaceRoutes(router, { store, auth, audit, dataset, c
     const key = caseKeyOf(body.caseKey || body.case_key, "Dosya kimliği");
     const field = limited(body.field, 200, "Alan adı");
     if (!field) throw new HttpError(400, "Dosya ve alan bilgisi gerekli.");
+    // "__sheet", "__hofKey" gibi iç alanlar düzenlenemez (kaydı başka sekmeye taşıyamaz).
+    if (String(field).trim().startsWith("__")) throw new HttpError(400, "Bu alan düzenlenemez.");
     const value = limited(body.value ?? "", 20_000, "Değer");
     const old = store.get("SELECT id, value, version FROM overrides WHERE source_name = ? AND case_key = ? AND field = ?", source, key, field);
     const expectedVersion = body.expectedVersion == null ? null : Number(body.expectedVersion);

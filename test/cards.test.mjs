@@ -4,7 +4,7 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import { analyzeDataset } from "../server/lib/insight/analyze.mjs";
-import { buildCards, verifyDates, verifyMoney, verifyVocabulary } from "../server/lib/insight/cards.mjs";
+import { buildCards, recordUnits, verifyMoney as verifyMoneyUnits, verifyVocabulary as verifyVocabularyUnits, verifyDates as verifyDatesUnits } from "../server/lib/insight/cards.mjs";
 import { embeddedDates, isTotalRow, phonesIn, readCell } from "../server/lib/insight/cells.mjs";
 import { analyzeColumns } from "../server/lib/insight/columns.mjs";
 import { assessQuality } from "../server/lib/insight/quality.mjs";
@@ -20,6 +20,10 @@ const day = offset => {
 };
 const repeat = (list, length) => Array.from({ length }, (_, index) => list[index % list.length]);
 const column = (name, values, extra = {}) => values.map((value, index) => ({ __sheet: "Sekme", __hofKey: `K${index}`, ...extra, [name]: value }));
+const unitsOf = rows => recordUnits(rows).units;
+const verifyMoney = (rows, column) => verifyMoneyUnits(unitsOf(rows), column);
+const verifyVocabulary = (rows, column, mode) => verifyVocabularyUnits(unitsOf(rows), column, mode);
+const verifyDates = (rows, item, now, mode) => verifyDatesUnits(unitsOf(rows), item, now, mode);
 const cardsOf = (rows, now = NOW) => buildCards(rows, analyzeColumns(rows, columnOrder(rows), { now }), { now });
 
 describe("hücre okuma", () => {
@@ -51,7 +55,8 @@ describe("hücre okuma", () => {
   it("toplam satırı tanınır", () => {
     assert.equal(isTotalRow({ A: "GENEL TOPLAM", TUTAR: "10.000" }, "TUTAR"), true);
     assert.equal(isTotalRow({ A: "Toplam", TUTAR: "10.000" }, "TUTAR"), true);
-    assert.equal(isTotalRow({ A: "Toplam 3 dosya", TUTAR: "10.000" }, "TUTAR"), false);
+    assert.equal(isTotalRow({ A: "Toplam (3 dosya)", TUTAR: "10.000" }, "TUTAR"), true);
+    assert.equal(isTotalRow({ A: "Toplam 3 dosya kapandı, 2 dosya takipte devam ediyor", TUTAR: "10.000" }, "TUTAR"), false, "uzun metin etiket değil");
     assert.equal(isTotalRow({ A: "Ayşe Kaya", TUTAR: "10.000" }, "TUTAR"), false);
   });
 
@@ -237,6 +242,75 @@ describe("kart doğrulaması", () => {
     assert.equal(scopes.Aktif.columnCount, 3, "Aktif sekmesi yalnızca kendi kolonlarıyla");
     assert.equal(scopes["Arşiv"].columnCount, 3);
     assert.equal(analysis.quality.checked, scopes.Aktif.quality.checked + scopes["Arşiv"].quality.checked, "genel veri sağlığı sekmelerin toplamı");
+  });
+});
+
+describe("kart doğrulaması: inceleme bulguları", () => {
+  const amounts = (values, name = "TUTAR", extra = {}) => column(name, values, extra);
+  it("para birimi: yalnızca bazı hücrelerde yabancı para birimi ya da başlıkla çelişen para birimi reddedilir; kısmi TL kabul", () => {
+    assert.equal(verifyMoney(amounts([...Array.from({ length: 20 }, (_, i) => `${1000 + i},00`), "$200"]), "TUTAR").ok, false);
+    assert.equal(verifyMoney(amounts([...Array.from({ length: 20 }, (_, i) => `${1000 + i},00`), "€500"], "Tutar (TL)"), "Tutar (TL)").ok, false);
+    const partial = verifyMoney(amounts([...Array.from({ length: 20 }, (_, i) => `${1000 + i},00`), "500 TL"]), "TUTAR");
+    assert.equal(partial.ok, true);
+    assert.equal(partial.card.currency, "TRY");
+    assert.ok(partial.card.explain.some(line => /bir kısmında yazılı/.test(line)));
+  });
+  it("toplam satırları: 'TOPLAM ALACAK', 'Toplam (40 dosya)' ve etiketsiz toplam satırı toplanmaz", () => {
+    const values = Array.from({ length: 10 }, (_, i) => `${(i + 1) * 1000} TL`);
+    const labelled = [...amounts(values), { __sheet: "Sekme", __hofKey: "T", AD: "Toplam (10 dosya)", TUTAR: "55.000 TL" }];
+    assert.equal(verifyMoney(labelled, "TUTAR").card.sum, 55000);
+    const unlabelled = [...amounts(values), { __sheet: "Sekme", __hofKey: "T", TUTAR: "55.000 TL" }];
+    const result = verifyMoney(unlabelled, "TUTAR");
+    assert.equal(result.card.sum, 55000);
+    assert.equal(result.card.totals, 1);
+  });
+  it("bir kayıt birden çok satırdaysa tutar kayıt başına bir kez; satırlarda farklı tutar varsa kart yok", () => {
+    const rows = [];
+    for (let file = 1; file <= 12; file += 1) for (const role of ["Borçlu", "Kefil"]) rows.push({ __sheet: "S", __hofKey: `2025/${file}`, TARAF: role, TUTAR: `${file * 10_000} TL` });
+    const grouped = verifyMoneyUnits(recordUnits(rows).units, "TUTAR", { grouped: true });
+    assert.equal(grouped.card.sum, 780_000);
+    assert.equal(grouped.card.count, 12);
+    rows[1].TUTAR = "5.000 TL";
+    assert.equal(verifyMoneyUnits(recordUnits(rows).units, "TUTAR").ok, false);
+  });
+  it("sayı yazımı: kuruşsuz yazım eksi değil; iki yazım karışıksa ya da belirsizse kesin değil; yüzde tutar değil", () => {
+    assert.equal(verifyMoney(amounts(["1.500,-", "2.000,-", "3.000,-", "4.000,-"]), "TUTAR").card.sum, 10500);
+    assert.match(verifyMoney(amounts(["1.500,00", "2.000,00", "1,500.00", "3.000,00"]), "TUTAR").reason, /iki farklı yazım/);
+    const us = verifyMoney(amounts(["1,500.00", "25,000", "1,250.50", "3,000"]), "TUTAR");
+    assert.equal(us.card.sum, 30750.5, "İngilizce yazımlı kolon İngilizce okunur");
+    assert.equal(verifyMoney(amounts(["1,500", "2,500", "3,500", "4,500"]), "TUTAR").ok, false, "yalnızca belirsiz '1,500' yazımı");
+    assert.equal(verifyMoney(amounts(["1.500", "2.500", "3.500", "4.500"]), "TUTAR").card.sum, 12000, "Türkçe '1.500' bin beş yüz");
+    assert.equal(verifyMoney(amounts([...Array.from({ length: 60 }, (_, i) => `${100 + i} TL`), "10%"]), "TUTAR").card.unclear, 1, "yüzde tutar diye toplanmaz");
+  });
+  it("para bildirmeyen sayısal kolonlar tutar kartı olmaz; güçlü başlık birimle birlikte de tutardır", () => {
+    for (const name of ["Kalan Gün", "Toplam Dosya", "Kredi Notu", "USD Kuru", "Kira Süresi (Ay)"]) assert.equal(verifyMoney(amounts(["10", "20", "30", "40"], name), name).ok, false, name);
+    assert.equal(verifyMoney(amounts(["100", "200", "300", "400"], "Dosya Masrafı"), "Dosya Masrafı").ok, true);
+    assert.equal(verifyMoney(amounts(["100,00", "200,00", "300,00", "400,00"], "KALAN"), "KALAN").ok, true, "zayıf başlık + kuruşlu yazım");
+  });
+  it("sembol taşıyan seçenekler birleşmez; olumsuzluk ve kısaltmalar doğru ayrılır", () => {
+    const blood = assessVocabulary(repeat(["A Rh+", "A Rh-", "0 Rh+"], 30));
+    assert.equal(blood.ok, true, blood.reason);
+    assert.equal(blood.labels.length, 3);
+    assert.equal(assessVocabulary(repeat(["A+", "A", "A-"], 30)).ok, true);
+    for (const [a, b] of [["odenmis", "odenmemis"], ["kesinlesti", "kesinlesmedi"], ["okundu", "okunmadi"], ["bulundu", "bulunamadi"]]) assert.equal(overlapReason(a, b), null, `${a}/${b}`);
+    assert.equal(overlapReason("e", "evet"), "kısaltma");
+    assert.equal(overlapReason("evt", "evet"), "kısaltma");
+    assert.equal(overlapReason("teblig edildi", "tebligat yapildi"), "kök");
+    assert.equal(overlapReason("haciz konuldu", "hacizli"), "kök");
+    assert.equal(overlapReason("mahkeme karari bekleniyor", "mahkemeye gonderildi"), null);
+    assert.notEqual(overlapReason("bekle", "bekleme"), null);
+    assert.equal(overlapReason("ayse kaya", "ayse kara", { person: true }), null, "farklı kişiler");
+  });
+  it("sorumlu kolonunda birim adları kişi sayılmaz; tarihlerde ay/gün sırası belirsizse kart yok", () => {
+    const units = verifyVocabulary(column("SORUMLU BİRİM", repeat(["Hukuk Birimi", "Muhasebe Servisi", "İcra Masası"], 30)), "SORUMLU BİRİM", "responsible");
+    assert.equal(units.ok, false);
+    const item = { column: "VADE", strong: true };
+    assert.equal(verifyDates(column("VADE", ["03/04/2026", "05/06/2026", "03/15/2026", "07/08/2026"]), item, NOW, "deadline").ok, false);
+  });
+  it("büyük seçenek listesi hızla elenir", () => {
+    const started = performance.now();
+    assert.equal(assessVocabulary(Array.from({ length: 12000 }, (_, i) => `Ürün ${i % 4000} model`)).code, "many");
+    assert.ok(performance.now() - started < 1500, `${Math.round(performance.now() - started)} ms`);
   });
 });
 

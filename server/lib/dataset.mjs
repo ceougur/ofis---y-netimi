@@ -158,6 +158,7 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
     const { rows } = loadRows();
     const overrides = new Map();
     for (const item of store.all("SELECT case_key, field, value FROM overrides WHERE source_name = ?", DATASET_KEY)) {
+      if (String(item.field).startsWith("__")) continue; // iç alanlar (eski sürümlerde yazılmış olabilir) uygulanmaz
       if (!overrides.has(item.case_key)) overrides.set(item.case_key, {});
       overrides.get(item.case_key)[item.field] = item.value;
     }
@@ -197,7 +198,8 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
       sourceUrl: DATASET_KEY,
       syncedAt: setting(S.lastSyncOkAt, "") || setting(S.changedAt, "") || null,
       rows: merged,
-      tabs: [...tabsOf(rows), ...extraTabs].map(title => ({ gid: "", title })),
+      // Yalnızca görünen satırı olan sekmeler (tüm satırları silinmiş sekme listelenmez, varsayılan da olamaz).
+      tabs: [...tabsOf(rows), ...extraTabs].filter(title => merged.some(row => row.__sheet === title)).map(title => ({ gid: "", title })),
       message: error ? `${label} · ${merged.length} kayıt · Google Sheets'e şu an ulaşılamıyor, son eşitlenen veri gösteriliyor.` : `${label} · ${merged.length} kayıt`,
     };
   }

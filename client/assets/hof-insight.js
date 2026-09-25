@@ -202,7 +202,9 @@
       if (!element) continue;
       writeText(element, original => labelFor(slot, original));
       if (!element.classList.contains("hof-label-slot")) element.classList.add("hof-label-slot");
-      if (manage) ensurePencil(element, slot);
+      // Birden çok sekmede tablo başlığı sekmenin adıdır; kalem yalnızca başlık değiştirilebildiğinde görünür.
+      if (manage && (!slot.when || slot.when())) ensurePencil(element, slot);
+      else element.querySelector(":scope > .hof-label-pencil")?.remove();
     }
     for (const slot of VOCAB_SLOTS) {
       if (!roots.has(slot.root)) roots.set(slot.root, document.querySelector(slot.root));
@@ -378,13 +380,14 @@
     }
     return check();
   }
-  HOF.revealRecord = async (target, { keepSearch = false } = {}) => {
+  // tab: kaydın bulunduğu sekme biliniyorsa (listelerden gelirken); aynı kimlik farklı sekmelerde geçebilir.
+  HOF.revealRecord = async (target, { keepSearch = false, tab = "" } = {}) => {
     const key = resolveKey(target);
-    let row = rowFor(key);
-    if (!row) {
-      const tab = HOF.tabOfKey ? HOF.tabOfKey(key) : null;
-      if (tab && HOF.selectTab?.(tab)) row = await waitFor(() => rowFor(key));
-    }
+    const wanted = tab || (HOF.tabOfKey ? HOF.tabOfKey(key) : null);
+    let row = null;
+    if (wanted && HOF.activeTab && HOF.activeTab() && HOF.activeTab() !== wanted) {
+      if (HOF.selectTab?.(wanted)) row = await waitFor(() => rowFor(key));
+    } else row = rowFor(key) || (await waitFor(() => rowFor(key), 4));
     if (!row && !keepSearch) {
       const search = document.querySelector(".search-field input");
       if (search && search.value) {
@@ -458,6 +461,13 @@
     const hasTable = Boolean(document.querySelector(".dynamic-table-wrap"));
     if (!welcome || !insight || !insight.rowCount || !hasTable || !insight.kpis?.scopes) {
       strip?.remove();
+      return;
+    }
+    // Açık sekme analizde henüz yoksa (ör. yeni eklenen kaydın sekmesi) başka sekmenin kartları gösterilmez.
+    const open = HOF.activeTab ? HOF.activeTab() : "";
+    if (open && !scopeKeys().includes(open)) {
+      strip?.remove();
+      refreshInsightSoon(800);
       return;
     }
     const key = activeScope();
@@ -541,14 +551,14 @@
   const moreNote = result => (result.total > result.items.length ? `<p class="hof-inline-note">İlk ${number(result.items.length)} kayıt gösteriliyor (toplam ${number(result.total)}). Hepsi için tabloda sıralayın ya da arayın.</p>` : "");
   const recordList = (items, detail, { showTab = false } = {}) =>
     items.length
-      ? `<ul class="hof-record-list">${items.map(item => `<li><button type="button" data-open="${esc(item.key)}"><b>${esc(item.title || item.key)}</b><span>${esc([detail(item), showTab && item.tab ? item.tab : ""].filter(Boolean).join(" · "))}</span></button></li>`).join("")}</ul>`
+      ? `<ul class="hof-record-list">${items.map(item => `<li><button type="button" data-open="${esc(item.key)}" data-tab="${esc(item.tab || "")}"><b>${esc(item.title || item.key)}</b><span>${esc([detail(item), showTab && item.tab ? item.tab : ""].filter(Boolean).join(" · "))}</span></button></li>`).join("")}</ul>`
       : '<p class="hof-empty">Kayıt yok.</p>';
   const wireOpen = modal =>
     modal.dialog.addEventListener("click", async event => {
       const button = event.target.closest("[data-open]");
       if (!button) return;
       modal.close();
-      await HOF.revealRecord(button.dataset.open);
+      await HOF.revealRecord(button.dataset.open, { tab: button.dataset.tab || "" });
     });
   const explainHtml = lines => (lines?.length ? `<details class="hof-explain"><summary>Nasıl hesaplandı?</summary><ul>${lines.map(line => `<li>${esc(line)}</li>`).join("")}</ul></details>` : "");
   const eyebrow = (text, key) => (multiScope() && key ? `${text} · ${key}` : text);

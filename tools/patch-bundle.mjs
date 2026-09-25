@@ -73,7 +73,7 @@ export const PATCHES = [
     why: "Tümü birleşik görünümü yerine her zaman bir sekme; sekme sırası sunucunun; aramada sekme başına eşleşme sayısı.",
     find: 'st=C.useMemo(()=>{const Z=new Set;for(const gt of it)gt.__sheet?.trim()&&Z.add(gt.__sheet.trim());for(const gt of tt?.tabs??[])gt.title.trim()&&Z.add(gt.title.trim());return Array.from(Z)},[it,tt?.tabs]),ut=C.useMemo(()=>P==="Tümü"?it:it.filter(Z=>Z.__sheet===P),[it,P]),w=C.useMemo(()=>dT(ut,P==="Tümü"?nt:P),[ut,P,nt])',
     replace:
-      'st=C.useMemo(()=>{const Z=new Set;for(const gt of tt?.tabs??[])gt.title.trim()&&Z.add(gt.title.trim());for(const gt of it)gt.__sheet?.trim()&&Z.add(gt.__sheet.trim());return Array.from(Z)},[it,tt?.tabs]),hofP=st.includes(P)?P:st[0]??"Tümü",hofQ=n.trim().toLocaleLowerCase("tr-TR"),hofText=C.useMemo(()=>hofQ?it.map(Z=>Object.values(Z).join(" ").toLocaleLowerCase("tr-TR")):null,[it,!!hofQ]),hofHits=C.useMemo(()=>{const Z=new Map;let gt=0;it.forEach((Yt,Dt)=>{if(hofQ&&!hofText[Dt].includes(hofQ))return;const xe=Yt.__sheet?.trim()||"";Z.set(xe,(Z.get(xe)||0)+1),gt++});return{total:gt,count:Yt=>Z.get(Yt)||0}},[it,hofText,hofQ]),ut=C.useMemo(()=>hofP==="Tümü"?it:it.filter(Z=>Z.__sheet===hofP),[it,hofP]),w=C.useMemo(()=>dT(ut,nt),[ut,nt])',
+      'st=C.useMemo(()=>{const Z=new Set;for(const gt of tt?.tabs??[])gt.title.trim()&&Z.add(gt.title.trim());for(const gt of it)gt.__sheet?.trim()&&Z.add(gt.__sheet.trim());return Array.from(Z)},[it,tt?.tabs]),hofP=st.includes(P)?P:st[0]??null,hofQ=n.trim().toLocaleLowerCase("tr-TR"),hofText=C.useMemo(()=>hofQ?it.map(Z=>Object.values(Z).join(" ").toLocaleLowerCase("tr-TR")):null,[it,!!hofQ]),hofHits=C.useMemo(()=>{const Z=new Map;let gt=0;it.forEach((Yt,Dt)=>{if(hofQ&&!hofText[Dt].includes(hofQ))return;const xe=Yt.__sheet?.trim()||"";Z.set(xe,(Z.get(xe)||0)+1),gt++});return{total:gt,count:Yt=>Z.get(Yt)||0}},[it,hofText,hofQ]),ut=C.useMemo(()=>hofP===null?it:it.filter(Z=>Z.__sheet===hofP),[it,hofP]),w=C.useMemo(()=>dT(ut,nt),[ut,nt])',
   },
   {
     id: "sekme-hatirla",
@@ -98,13 +98,13 @@ export const PATCHES = [
     id: "tablo-basligi-sekme",
     why: "Sayfa başlığı verinin adı, tablo başlığı açık sekmenin adı.",
     find: 'className:"panel-title",children:w.title',
-    replace: 'className:"panel-title",children:st.length>1&&hofP!=="Tümü"?hofP:w.title',
+    replace: 'className:"panel-title",children:st.length>1?hofP:w.title',
   },
   {
     id: "disa-aktar-sekme-adi",
     why: "Dışa aktarılan dosya açık sekmenin kayıtlarıdır; dosya adında sekmenin adı da yazar.",
     find: 'Yt.download=`${w.title||"tablo"}.csv`,Yt.click(),URL.revokeObjectURL(gt),ja.success("Analiz edilen tablo CSV olarak indirildi")',
-    replace: 'Yt.download=`${w.title||"tablo"}${st.length>1&&hofP!=="Tümü"?` - ${hofP.replace(/[\\\\/:*?"<>|]+/g," ")}`:""}.csv`,Yt.click(),URL.revokeObjectURL(gt),ja.success(st.length>1?`“${hofP}” sekmesi CSV olarak indirildi`:"Analiz edilen tablo CSV olarak indirildi")',
+    replace: 'Yt.download=`${w.title||"tablo"}${st.length>1?` - ${hofP.replace(/[\\\\/:*?"<>|]+/g," ")}`:""}.csv`,Yt.click(),URL.revokeObjectURL(gt),ja.success(st.length>1?`“${hofP}” sekmesi CSV olarak indirildi`:"Analiz edilen tablo CSV olarak indirildi")',
   },
   {
     id: "tum-kayitlar-sayisi",
