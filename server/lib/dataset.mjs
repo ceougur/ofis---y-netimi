@@ -39,7 +39,7 @@ const S = {
 
 const isSheetUrl = value => /^https:\/\/docs\.google\.com\/spreadsheets\//i.test(String(value || "").trim());
 
-export function createDatasetService({ store, audit, readGoogleSheet, bumpClientState, events, log, backupDir, backupKeep = 30, autoSync = true, tickMs = 60_000 }) {
+export function createDatasetService({ store, audit, readGoogleSheet, bumpClientState, events, log, backupDir, backupKeep = 30, autoSync = true, tickMs = 60_000, canWrite = () => true }) {
   const stages = new Map();
   let cache = null; // { rows, byId } — veritabanındaki satırların ayrıştırılmış hâli
   let syncing = null;
@@ -617,7 +617,8 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
     if (!autoSync || timer) return;
     const tick = () => {
       const url = linkedUrl();
-      if (!url || syncing) return;
+      // Lisans salt okunurken (süre doldu, engellendi…) bağlı Sheet eşitlenmez: veri olduğu gibi kalır.
+      if (!url || syncing || !canWrite()) return;
       const minutes = Math.max(1, Number(setting("client.syncMinutes", "5")) || 5);
       const last = Date.parse(setting(S.lastSyncAt, "")) || 0;
       if (setting(S.needsInitialSync) !== "1" && Date.now() - last < minutes * 60_000) return;

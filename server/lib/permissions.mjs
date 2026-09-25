@@ -24,6 +24,8 @@ export const PERMISSIONS = Object.freeze({
   "profile.manage": ["admin"],
   "users.manage": ["admin"],
   "system.manage": ["admin"],
+  // Lisans etkinleştirme ve doğrulama (v2.0.0).
+  "license.manage": ["admin"],
 });
 
 export const can = (role, permission) => Boolean(PERMISSIONS[permission]?.includes(role));

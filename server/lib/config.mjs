@@ -4,6 +4,7 @@ import path from "node:path";
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { resolveDbPath } from "./db-path.mjs";
+import { DEFAULT_LICENSE_SERVICES } from "./license.mjs";
 
 export const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
 export const DEFAULT_ADMIN_PASSWORD = "Ofis2026!";
@@ -51,6 +52,8 @@ export function loadConfig(overrides = {}) {
     // Bağlı Google Sheets'in zamanlanmış eşitlemesi (sıklık yönetim ayarlarından; denetim dakikada bir).
     datasetAutoSync: (overrides.datasetAutoSync ?? env.HUKUK_DATASET_AUTOSYNC ?? "1") !== "0" && overrides.datasetAutoSync !== false,
     datasetTickMs: number(overrides.datasetTickMs ?? env.HUKUK_DATASET_TICK_MS, 60_000),
+    // Lisans servisi adresleri (virgülle birden çok). Yanıtlar imzalı olduğundan adres değişikliği güveni zayıflatmaz.
+    licenseServices: (overrides.licenseServices ?? env.HUKUK_LICENSE_URL ?? DEFAULT_LICENSE_SERVICES.join(",")).toString(),
     fetchImpl: overrides.fetchImpl || ((...args) => globalThis.fetch(...args)),
     scheduleBackups: overrides.scheduleBackups ?? true,
   });

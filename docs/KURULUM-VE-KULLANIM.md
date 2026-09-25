@@ -1,4 +1,4 @@
-# DestekOfis — Kurulum ve Kullanım Kılavuzu (v1.6)
+# DestekOfis — Kurulum ve Kullanım Kılavuzu (v2.0)
 
 ## 1. Sistem düzeni
 
@@ -47,6 +47,19 @@ Başlatıcıya adresi elle vermek için (nadiren gerekir): `C:\DestekOfis\launch
 - Parolalar en az 10 karakter olmalı ve harf ile rakam içermelidir.
 - Aynı bilgisayardan aynı kullanıcı adıyla 5 hatalı denemeden sonra giriş 15 dakika kilitlenir (diğer bilgisayarlar ve kullanıcılar etkilenmez). Yönetici o kullanıcının parolasını sıfırlarsa kilit hemen kalkar.
 - Parola değişince diğer cihazlardaki oturumlar kapanır.
+- Yeni kurulumda ilk girişten sonra lisans ekranı açılır: ücretsiz denemeyi başlatın veya lisansınızı girin (bkz. bölüm 4a). O zamana kadar program salt okunurdur.
+
+## 4a. Lisans: ücretsiz deneme, lisans anahtarı, internetsiz etkinleştirme
+
+Lisans ekranı: yönetim paneli → **Lisans**. Lisans sunucu bilgisayara bağlıdır; personel bilgisayarları için ayrıca lisans gerekmez.
+
+- **Ücretsiz deneme:** *Ücretsiz denemeyi başlat*'a basın (sunucu internete bağlı olmalı). Deneme süresi o an başlar ve her bilgisayara bir kez verilir; programı kaldırıp yeniden kurmak denemeyi yenilemez. Ofis adı, e-posta ve telefon isteğe bağlıdır.
+- **Lisans anahtarı:** Satın aldığınızda verilen `DO-XXXXX-XXXXX-XXXXX-XXXXX` anahtarını girip *Lisansı etkinleştir*'e basın. Deneme kendiliğinden lisanslıya döner; veriler olduğu gibi kalır. Bir anahtar tek sunucu bilgisayarda çalışır; sunucuyu değiştirecekseniz satıcınızdan taşıma isteyin.
+- **İnternetsiz etkinleştirme:** Sunucu internete çıkamıyorsa ekrandaki **kurulum kodunu** (*Kopyala*) satıcınıza iletin; size verilen `DOLIS1.…` kodunu *Etkinleştirme kodu* kutusuna yapıştırıp *Kodu uygula*'ya basın. Kod yalnızca o bilgisayarda çalışır.
+- **Süre dolunca:** Program **salt okunur** olur: kayıtlar görüntülenir, aranır, dışa aktarılır ve yedeklenir; yeni kayıt, düzeltme, not, tahsilat, görev, mesaj ve veri yükleme yapılamaz. Yönetim paneli ve yedekler çalışır. Lisans girilince her şey kaldığı yerden devam eder; veri kaybolmaz.
+- **İnternet:** Sunucu lisansı düzenli aralıklarla doğrular. İnternet kesilirse 7 gün sorunsuz çalışır, son 3 günde uyarı çıkar; daha uzun sürerse bağlantı gelene kadar salt okunur olur. *Şimdi doğrula* beklemeden dener. İnternetsiz etkinleştirme koduyla açılan lisans doğrulama beklemez.
+- **Tarih ve saat:** Sunucunun saati bir günden fazla geri alınırsa program saat düzelene kadar durur (Windows → Ayarlar → Saat ve dil → *Saati otomatik ayarla*).
+- **2.0'a güncellenen ofisler:** 30 günlük geçiş döneminde kesintisiz çalışır; ekranda kalan gün yazar. Bu sürede lisansı etkinleştirin.
 
 ## 5. Kullanıcılar, roller ve ofis adı
 
@@ -192,6 +205,11 @@ Değiştirilebilen başlıklar:
 | Bir alt tablo ayrı görünmüyor | Başlık satırı tek hücrede (birleştirilmiş) olmalı ve hemen altında kolon başlıkları bulunmalı. Tanınmayan düzende tablo bozulmaz, tek tablo olarak görünür. |
 | Güncelleme denetlenemiyor | Sunucunun internete çıkabildiğini kontrol edin. Antivirüsün "SSL/HTTPS taraması" özelliği bağlantıyı engelliyor olabilir. Ayrıntı: `logs\servis.log`. |
 | "Sürüm açılamadı; önceki sürüme dönüldü" | Sistem güvendedir ve önceki sürümle çalışır. Panelden *Yine de kur* ile yeniden deneyebilir veya destek isteyebilirsiniz. |
+| "Lisans etkinleştirilmedi" / "Deneme süresi doldu" / "Lisans süresi doldu" | Program salt okunurdur. Yönetici yönetim paneli → Lisans'tan denemeyi başlatır veya lisans anahtarını girer. |
+| "Lisans doğrulanamadı" | Sunucu 7 günden uzun süredir internete çıkamadı. İnterneti düzeltip Lisans → *Şimdi doğrula*'ya basın; antivirüsün SSL taraması engelliyor olabilir. |
+| "Bilgisayar saati geri alınmış" | Sunucunun tarih/saatini düzeltin (*Saati otomatik ayarla*); birkaç dakika içinde ya da *Şimdi doğrula* ile kendiliğinden açılır. |
+| "Lisans engellendi" | Satıcınızla görüşün; engel kaldırılınca *Şimdi doğrula* ile açılır. |
+| "Bu kod başka bir bilgisayar için üretilmiş" | Etkinleştirme kodu başka sunucunun kurulum koduyla üretilmiş. Bu ekrandaki kurulum kodunu satıcıya yeniden iletin. |
 | Sağlık kontrolü | `http://SUNUCU:5123/api/health` → `"status":"ok"` |
 
 ## 13. Güvenlik kuralları

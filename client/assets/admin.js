@@ -44,6 +44,13 @@
     "system.update_checked": "Güncellemeleri denetledi",
     "system.update_requested": "Güncellemeyi başlattı",
     "system.update_settings": "Güncelleme ayarını değiştirdi",
+    "license.trial_started": "Ücretsiz denemeyi başlattı",
+    "license.activated": "Lisansı etkinleştirdi",
+    "license.code_applied": "Etkinleştirme kodu uyguladı",
+    "license.checked": "Lisansı doğruladı",
+    "license.state_changed": "Lisans durumu değişti",
+    "license.transition_started": "Lisans geçiş dönemi başladı",
+    "license.tamper": "Lisans kaydında değişiklik fark edildi",
   };
 
   const formatSize = bytes => {
@@ -412,8 +419,88 @@
     }
   }
 
+  // ---------- Lisans ----------
+  const STATE_LABELS = { none: "Etkinleştirilmedi", transition: "Geçiş dönemi", trial: "Deneme", licensed: "Lisanslı", expired: "Süresi doldu", blocked: "Engellendi", verify: "Doğrulanamadı", clock: "Saat hatası" };
+  function renderLicense(status) {
+    const tone = !status.writable ? "error" : status.severity === "warn" ? "warn" : "ok";
+    const row = (label, value) => (value ? `<div><dt>${esc(label)}</dt><dd>${esc(value)}</dd></div>` : "");
+    const lastCheck = status.lastCheck ? `${HOF.formatDateTime(status.lastCheck.at)} · ${status.lastCheck.ok ? "başarılı" : `başarısız (${status.lastCheck.message || "bilinmeyen hata"})`}` : "";
+    $("#adm-license-status").className = `adm-card adm-license-status is-${tone}`;
+    $("#adm-license-status").innerHTML = `
+      <div class="adm-license-head">
+        <div><span class="adm-license-badge">${esc(STATE_LABELS[status.state] || status.state)}</span><h2>${esc(status.title)}</h2><p>${esc(status.message)}</p></div>
+        ${status.kind && !status.offline ? '<button type="button" class="hof-button hof-button-ghost" id="adm-license-check">Şimdi doğrula</button>' : ""}
+      </div>
+      <dl class="adm-license-facts">
+        ${row("Tür", status.kind === "trial" ? "Ücretsiz deneme" : status.kind === "license" ? (status.offline ? "Lisans (internetsiz)" : "Lisans") : "")}
+        ${row("Lisans sahibi", status.customer)}
+        ${row("Lisans no", status.licenseId)}
+        ${row("Bitiş", status.expiresAt ? HOF.formatDate(status.expiresAt) : status.kind === "license" ? "Süresiz" : "")}
+        ${row("Kalan", status.daysLeft != null && status.writable ? `${status.daysLeft} gün` : "")}
+        ${row("Geçiş dönemi sonu", status.state === "transition" ? HOF.formatDate(status.transitionEndsAt) : "")}
+        ${row("Son doğrulama", lastCheck)}
+        ${row("İnternetsiz çalışma sınırı", status.graceUntil && status.writable ? HOF.formatDateTime(status.graceUntil) : "")}
+      </dl>
+      ${status.tampered ? '<p class="adm-update-warn">Lisans kaydında elle değişiklik fark edildi; lisans servisiyle doğrulanana kadar en sıkı kurallar uygulanıyor.</p>' : ""}`;
+    $("#adm-install-code").textContent = status.installCode || "—";
+    // Deneme yalnızca hiç etkinleştirilmemiş kurulumda anlamlıdır; süresi dolmuş deneme ikinci kez verilmez.
+    $("#adm-license-trial").hidden = !status.canStartTrial;
+  }
+  async function loadLicense() {
+    try {
+      renderLicense(await HOF.api("/api/license"));
+    } catch (error) {
+      $("#adm-license-status").innerHTML = `<p class="adm-update-warn">${esc(error.message)}</p>`;
+    }
+  }
+  const licenseAction = async (form, path, body, success) => {
+    const button = form?.querySelector('button[type="submit"]');
+    if (button) button.disabled = true;
+    try {
+      const status = await HOF.api(path, { method: "POST", body, timeoutMs: 45_000 });
+      renderLicense(status);
+      HOF.toast(success(status), { type: status.writable ? "success" : "info", timeout: 6000 });
+      form?.reset();
+      return status;
+    } catch (error) {
+      HOF.toastError(error);
+      if (error.data?.license) renderLicense({ ...error.data.license, installCode: $("#adm-install-code").textContent });
+      else loadLicense();
+      return null;
+    } finally {
+      if (button) button.disabled = false;
+    }
+  };
+  $("#adm-license-trial").addEventListener("submit", event => {
+    event.preventDefault();
+    const form = event.currentTarget;
+    const data = Object.fromEntries(new FormData(form));
+    licenseAction(form, "/api/license/trial", data, status => (status.state === "trial" ? `Ücretsiz deneme başladı: ${status.daysLeft} gün.` : status.title));
+  });
+  $("#adm-license-key").addEventListener("submit", event => {
+    event.preventDefault();
+    const form = event.currentTarget;
+    const key = form.elements.key.value.trim();
+    if (!key) return HOF.toast("Lisans anahtarını yazın.", { type: "error" });
+    licenseAction(form, "/api/license/activate", { key }, status => `Lisans etkinleştirildi${status.customer ? `: ${status.customer}` : ""}.`);
+  });
+  $("#adm-license-code").addEventListener("submit", event => {
+    event.preventDefault();
+    const form = event.currentTarget;
+    const code = form.elements.code.value.trim();
+    if (!code) return HOF.toast("Etkinleştirme kodunu yapıştırın.", { type: "error" });
+    licenseAction(form, "/api/license/code", { code }, status => status.title);
+  });
+  $("#adm-license-status").addEventListener("click", event => {
+    if (event.target.closest("#adm-license-check")) licenseAction(null, "/api/license/check", {}, status => (status.writable ? "Lisans doğrulandı." : status.title));
+  });
+  $("#adm-install-copy").addEventListener("click", async () => {
+    const value = $("#adm-install-code").textContent.trim();
+    if (value && value !== "—" && (await copyText(value))) HOF.toast("Kurulum kodu kopyalandı.", { type: "success" });
+  });
+
   // ---------- Sekmeler ----------
-  const loaders = { users: loadUsers, backups: loadBackups, audit: loadAudit, system: loadSystem };
+  const loaders = { users: loadUsers, backups: loadBackups, audit: loadAudit, system: loadSystem, license: loadLicense };
   function selectTab(name) {
     document.querySelectorAll(".adm-tabs [data-tab]").forEach(button => button.setAttribute("aria-selected", String(button.dataset.tab === name)));
     document.querySelectorAll(".adm-panel").forEach(panel => {
@@ -458,7 +545,9 @@
     $("#adm-app").hidden = false;
     const visible = [...document.querySelectorAll(".adm-tabs [data-tab]")].filter(button => getComputedStyle(button).display !== "none").map(button => button.dataset.tab);
     const requested = location.hash.slice(1);
-    selectTab(visible.includes(requested) ? requested : visible[0]);
+    // Lisans etkinleştirilmemiş veya salt okunurken yönetici önce Lisans sekmesini görür.
+    const needsLicense = me.license && !me.license.writable && visible.includes("license");
+    selectTab(visible.includes(requested) ? requested : needsLicense ? "license" : visible[0]);
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot, { once: true });
   else boot();

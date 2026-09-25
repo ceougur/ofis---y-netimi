@@ -232,6 +232,9 @@
         HOF.emit("unauthorized");
       } else if (response.status === 503 && target.includes("/api/")) {
         response.clone().json().then(payload => payload.code === "MAINTENANCE" && HOF.emit("maintenance", payload), () => {});
+      } else if (response.status === 403 && target.includes("/api/")) {
+        // Lisans salt okunurken arayüz paketinin kendi yazma istekleri de açıklanır (hof-license.js).
+        response.clone().json().then(payload => payload.code === "LICENSE_READ_ONLY" && HOF.emit("license-read-only", payload), () => {});
       }
       return response;
     };

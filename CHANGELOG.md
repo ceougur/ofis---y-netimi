@@ -2,6 +2,19 @@
 
 Sürümler [anlamsal sürümleme](https://semver.org/lang/tr/) kurallarına uyar.
 
+## 2.0.0 — Lisans motoru: ücretsiz deneme, lisans ve salt okunur mod
+
+- **Deneme ve lisans aynı programda:** Ayrı kurulum yoktur. Yönetici *Yönetim → Lisans* ekranından **ücretsiz denemeyi** başlatır; süre (şu an 30 gün) düğmeye basıldığı anda başlar ve **her bilgisayara bir kez** verilir: program kaldırılıp yeniden kurulsa da deneme yeniden başlamaz. Lisans alınınca **lisans anahtarı** (`DO-XXXXX-XXXXX-XXXXX-XXXXX`) aynı ekrandan girilir; deneme kendiliğinden lisanslıya döner, veriler olduğu gibi kalır.
+- **Süre dolunca program durur, veriler kaybolmaz:** Deneme veya lisans süresi dolunca, lisans engellenince ya da doğrulanamayınca program **salt okunur** çalışır: kayıtlar görüntülenir, aranır, dışa aktarılır ve yedeklenir; yeni kayıt, düzeltme, not, tahsilat, görev, mesaj ve veri yükleme yapılamaz, bağlı Google Sheets eşitlenmez. Yönetim paneli (kullanıcılar, yedekler, güncelleme) ve lisans ekranı çalışmaya devam eder. Lisans girilince her şey kaldığı yerden sürer.
+- **Lisans servisi ve imza:** Lisans bilgisi lisans servisinden (Faz 4'te Vercel) **imzalı** gelir ve programa gömülü açık anahtarla doğrulanır; elle değiştirilemez, başka bir bilgisayara kopyalanamaz (lisans sunucu bilgisayarın kimliğine bağlıdır). Personel bilgisayarları için ayrıca lisans gerekmez.
+- **İnternet kesintisine tolerans:** Sunucu lisansını düzenli aralıklarla doğrular. İnternet kesilirse **7 gün** sorunsuz çalışır; son 3 günde uyarı çıkar; daha uzun sürerse bağlantı gelene kadar salt okunur olur. *Şimdi doğrula* düğmesi beklemeden dener.
+- **Saat geri alma koruması:** Sunucunun görülen en ileri tarihi saklanır; bilgisayarın saati geri alınarak süre uzatılamaz. Saat bir günden fazla geri alınırsa program saat düzeltilene kadar durur. Lisans servisine her başarılı bağlantı ve satıcının ürettiği her yeni etkinleştirme kodu imzalı, güvenilir bir zaman getirir; yanlışlıkla ileri alınıp düzeltilen saat de böylece takılı kalmaz, eski kodlarla zaman geri alınamaz.
+- **İnternetsiz etkinleştirme:** İnternete çıkamayan ofisler için ekrandaki **kurulum kodu** satıcıya iletilir; satıcının ürettiği etkinleştirme kodu (`DOLIS1.…`) yapıştırılır. Kod yalnızca o bilgisayarda çalışır.
+- **Engellenen lisans:** Satıcı bir lisansı engellerse program bir sonraki doğrulamada salt okunur olur ve satıcının mesajını gösterir; engel kaldırılınca *Şimdi doğrula* ile açılır.
+- **Mevcut ofisler için geçiş dönemi:** 2.0.0'a güncellenen ve kullanılmakta olan kurulumlar **30 gün** kesintisiz çalışır; ekranda kalan gün yazar. Bu sürede lisans etkinleştirilmelidir.
+- **Ekranlar:** Ana ekranın altında lisans şeridi (deneme kalan günü yalnızca yöneticiye; uyarı ve salt okunur durum herkese), salt okunurken açılışta ve yazma denendiğinde açıklayıcı pencere; yönetim panelinde yeni **Lisans** sekmesi (durum, deneme, anahtar, internetsiz kod, kurulum kodu, doğrulama). Lisans olayları değişiklik geçmişinde *Lisans* türüyle listelenir.
+- **Operatör araçları:** `tools/lisans-kodu.mjs` (internetsiz kod), `tools/lisans-servisi.mjs` (başvuru lisans servisi ve lisans oluşturma/engelleme/uzatma/taşıma komutları; Faz 4'te Vercel'e taşınacak), `tools/lisans-anahtar-uret.mjs`. Protokol ve işletim: [docs/LISANS.md](docs/LISANS.md).
+
 ## 1.7.0 — Doğru analiz, sekme sekme çalışma, belirgin seçili satır
 
 - **Özet kartları yalnızca doğruysa görünür:** Kartlar artık kolon adına ya da çoğunluğa bakarak değil, sekmedeki her hücre tek tek okunarak hesaplanır. Hücrelerin en az %98'i kesin yorumlanamıyorsa kart gösterilmez. Kesin okunamayan birkaç hücre varsa kartta ve açıklamasında yazar.

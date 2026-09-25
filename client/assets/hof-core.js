@@ -93,6 +93,7 @@
       if (response.status === 401) HOF.emit("unauthorized", error);
       else if (payload.code === "PASSWORD_CHANGE_REQUIRED") HOF.emit("password-required", error);
       else if (response.status === 503 && payload.code === "MAINTENANCE") HOF.emit("maintenance", payload);
+      else if (response.status === 403 && payload.code === "LICENSE_READ_ONLY") HOF.emit("license-read-only", payload);
       throw error;
     }
     return payload.data === undefined ? payload : payload.data;

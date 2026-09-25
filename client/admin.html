@@ -30,6 +30,7 @@
       <button type="button" role="tab" data-tab="backups" data-requires="system.manage" aria-selected="false">Yedekler</button>
       <button type="button" role="tab" data-tab="audit" data-requires="audit.view" aria-selected="false">Değişiklik geçmişi</button>
       <button type="button" role="tab" data-tab="system" data-requires="system.manage" aria-selected="false">Sistem</button>
+      <button type="button" role="tab" data-tab="license" data-requires="license.manage" aria-selected="false">Lisans</button>
     </nav>
 
     <section class="adm-panel" data-panel="users" role="tabpanel">
@@ -60,7 +61,7 @@
     <section class="adm-panel" data-panel="audit" role="tabpanel" hidden>
       <div class="adm-panel-head">
         <div><h1>Değişiklik geçmişi</h1><p>Kim, ne zaman, hangi işlemi yaptı. Kayıtlar değiştirilemez.</p></div>
-        <label class="hof-field adm-filter"><span>İşlem türü</span><select id="adm-audit-type"><option value="">Tümü</option><option value="auth.">Girişler</option><option value="user.">Kullanıcılar</option><option value="source.">Tablo değişiklikleri</option><option value="case.">Dosya işlemleri</option><option value="task.">Görevler</option><option value="message.">Mesajlar</option><option value="settings.">Ayarlar</option><option value="system.">Sistem</option></select></label>
+        <label class="hof-field adm-filter"><span>İşlem türü</span><select id="adm-audit-type"><option value="">Tümü</option><option value="auth.">Girişler</option><option value="user.">Kullanıcılar</option><option value="source.">Tablo değişiklikleri</option><option value="case.">Dosya işlemleri</option><option value="task.">Görevler</option><option value="message.">Mesajlar</option><option value="settings.">Ayarlar</option><option value="system.">Sistem</option><option value="license.">Lisans</option></select></label>
       </div>
       <div class="adm-card"><div class="adm-table-wrap"><table class="hof-table"><thead><tr><th>Zaman</th><th>Kişi</th><th>İşlem</th><th>Ayrıntı</th></tr></thead><tbody id="adm-audit"></tbody></table></div></div>
     </section>
@@ -100,6 +101,46 @@
         </div>
       </section>
       <div class="adm-grid" id="adm-system"></div>
+    </section>
+
+    <section class="adm-panel" data-panel="license" role="tabpanel" hidden>
+      <div class="adm-panel-head"><div><h1>Lisans</h1><p>Deneme süresi, lisans ve lisans servisiyle doğrulama. Lisans bu sunucu bilgisayarına bağlıdır; personel bilgisayarları için ayrıca lisans gerekmez.</p></div></div>
+      <section class="adm-card adm-license-status" id="adm-license-status" aria-live="polite"><p class="adm-muted">Yükleniyor…</p></section>
+      <div class="adm-license-grid">
+        <form class="adm-card adm-license-box" id="adm-license-trial" novalidate>
+          <h2>Ücretsiz deneme</h2>
+          <p class="adm-muted">Deneme süresi bu düğmeye bastığınız anda başlar ve her bilgisayara bir kez verilir. Sunucunun internete bağlı olması gerekir. Bilgiler isteğe bağlıdır; satıcınızın size ulaşması içindir.</p>
+          <label class="hof-field"><span>Ofis adı</span><input name="officeName" maxlength="120" autocomplete="organization"></label>
+          <label class="hof-field"><span>Yetkili kişi</span><input name="contact" maxlength="120" autocomplete="name"></label>
+          <div class="adm-inline">
+            <label class="hof-field"><span>E-posta</span><input name="email" type="email" maxlength="160" autocomplete="email"></label>
+            <label class="hof-field"><span>Telefon</span><input name="phone" type="tel" maxlength="40" autocomplete="tel"></label>
+          </div>
+          <button type="submit" class="hof-button">Ücretsiz denemeyi başlat</button>
+        </form>
+        <form class="adm-card adm-license-box" id="adm-license-key" novalidate>
+          <h2>Lisans anahtarı</h2>
+          <p class="adm-muted">Satın aldığınızda size verilen anahtarı girin. Anahtar bu sunucuya bağlanır; sunucu internete bağlı olmalıdır.</p>
+          <label class="hof-field"><span>Lisans anahtarı</span><input name="key" maxlength="40" autocomplete="off" spellcheck="false" placeholder="DO-XXXXX-XXXXX-XXXXX-XXXXX"></label>
+          <button type="submit" class="hof-button">Lisansı etkinleştir</button>
+        </form>
+        <form class="adm-card adm-license-box" id="adm-license-code" novalidate>
+          <h2>İnternetsiz etkinleştirme</h2>
+          <p class="adm-muted">Sunucu internete bağlanamıyorsa aşağıdaki <b>kurulum kodunu</b> satıcınıza iletin; size verilen etkinleştirme kodunu buraya yapıştırın.</p>
+          <div class="adm-install-code"><span>Kurulum kodu</span><code id="adm-install-code">—</code><button type="button" class="hof-button hof-button-ghost hof-button-small" id="adm-install-copy">Kopyala</button></div>
+          <label class="hof-field"><span>Etkinleştirme kodu</span><textarea name="code" rows="4" spellcheck="false" placeholder="DOLIS1.…"></textarea></label>
+          <button type="submit" class="hof-button">Kodu uygula</button>
+        </form>
+      </div>
+      <div class="adm-card adm-roles">
+        <h2>Lisans nasıl çalışır?</h2>
+        <ul>
+          <li><b>Deneme ve lisans aynı programdır:</b> ayrı kurulum gerekmez; lisansı girince deneme kendiliğinden lisanslıya döner.</li>
+          <li><b>Süre dolunca veriler kaybolmaz:</b> program salt okunur çalışır; kayıtlar görüntülenir, dışa aktarılır ve yedeklenir, yalnızca yeni işlem yapılamaz. Lisans girilince her şey kaldığı yerden devam eder.</li>
+          <li><b>İnternet:</b> sunucu lisansını günde birkaç kez lisans servisinden doğrular. İnternet kesilirse 7 gün sorunsuz çalışır; daha uzun sürerse bağlantı gelene kadar salt okunur olur.</li>
+          <li><b>Tarih ve saat:</b> sunucu bilgisayarın saati geri alınırsa program durur; saati düzeltmek yeterlidir.</li>
+        </ul>
+      </div>
     </section>
   </main>
   <main class="adm-shell" id="adm-denied" hidden>

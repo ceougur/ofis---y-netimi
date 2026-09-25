@@ -7,7 +7,9 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
+import { generateKeyPairSync } from "node:crypto";
 import { createApp } from "../../server/app.mjs";
+import { createReferenceLicenseService } from "../../tools/lib/license-service.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const artifacts = path.join(here, "artifacts");
@@ -15,8 +17,19 @@ mkdirSync(artifacts, { recursive: true });
 const fixture = path.join(here, "..", "fixtures", "ornek-dosyalar.xlsx");
 const ADMIN_PASSWORD = "Test-Admin-2026!";
 
+// Lisans (v2.0.0): test anahtarıyla imzalayan başvuru lisans servisi; saat ileri alınarak süre dolumu sınanır.
+const licenseKeys = generateKeyPairSync("ed25519");
+const LICENSE_TRUST = { "e2e-lisans": licenseKeys.publicKey.export({ format: "der", type: "spki" }).toString("base64") };
+const licenseClock = { offset: 0 };
+const licenseNow = () => Date.now() + licenseClock.offset;
+const licenseService = createReferenceLicenseService({ privateKeyPem: licenseKeys.privateKey.export({ format: "pem", type: "pkcs8" }), keyId: "e2e-lisans", now: licenseNow });
+const E2E_MACHINE = "e2e0e2e0e2e0e2e0e2e0e2e0e2e0e2e0";
+const licenseOptions = { trustedKeys: LICENSE_TRUST, services: ["https://lisans.test/api/lisans"], fetchImpl: licenseService.fetch, machineId: E2E_MACHINE, now: licenseNow, firstCheckDelayMs: 3_600_000 };
+// Başka özellikleri sınayan ek sunucular lisanslı gibi çalışır.
+const unlicensed = { enforce: false, machineId: E2E_MACHINE };
+
 const root = mkdtempSync(path.join(tmpdir(), "destekofis-e2e-"));
-const app = createApp({ dataDir: path.join(root, "data"), backupDir: path.join(root, "backups"), logLevel: "warn", scheduleBackups: false, env: { HUKUK_ADMIN_PASSWORD: ADMIN_PASSWORD } });
+const app = createApp({ dataDir: path.join(root, "data"), backupDir: path.join(root, "backups"), logLevel: "warn", scheduleBackups: false, env: { HUKUK_ADMIN_PASSWORD: ADMIN_PASSWORD }, license: licenseOptions });
 const { port } = await app.listen(0, "127.0.0.1");
 const BASE = `http://127.0.0.1:${port}`;
 const browser = await chromium.launch();
@@ -98,6 +111,32 @@ try {
     expect(brand.includes("DestekOfis"), `marka adı: ${brand}`);
     const user = await admin.textContent("#hof-sidecard .hof-user");
     expect(user.includes("Ofis yöneticisi"), "kullanıcı kartı");
+  });
+
+  await step("lisans etkinleştirilmeden salt okunur; yönetim → Lisans'tan ücretsiz deneme başlar", async () => {
+    await admin.waitForSelector("#hof-license-bar.is-error", { timeout: 10000 });
+    await admin.waitForSelector(".hof-modal-title", { timeout: 10000 });
+    const title = await admin.textContent(".hof-modal-title");
+    expect(title.includes("Lisans etkinleştirilmedi"), `pencere başlığı: ${title}`);
+    const permissions = await admin.evaluate(() => window.HOF.user.permissions);
+    expect(!permissions.includes("records.create") && permissions.includes("license.manage"), `yetkiler: ${permissions}`);
+    await admin.screenshot({ path: path.join(artifacts, "02a-lisans-etkinlestirilmedi.png") });
+    await admin.goto(BASE + "/admin.html");
+    await admin.waitForSelector('[data-tab="license"][aria-selected="true"]', { timeout: 10000 });
+    const installCode = await admin.textContent("#adm-install-code");
+    expect(installCode === "E2E0-E2E0-E2E0-E2E0-E2E0-E2E0-E2E0-E2E0", `kurulum kodu: ${installCode}`);
+    await admin.fill('#adm-license-trial input[name="officeName"]', "E2E Hukuk");
+    await admin.click('#adm-license-trial button[type="submit"]');
+    await admin.waitForFunction(() => document.querySelector("#adm-license-status .adm-license-badge")?.textContent === "Deneme", null, { timeout: 10000 });
+    const status = await admin.textContent("#adm-license-status h2");
+    expect(status.includes("30 gün kaldı"), `durum: ${status}`);
+    expect(await admin.$eval("#adm-license-trial", node => node.hidden), "deneme başladıktan sonra deneme formu gizlenir");
+    await admin.screenshot({ path: path.join(artifacts, "02b-lisans-deneme.png"), fullPage: true });
+    await admin.goto(BASE + "/");
+    await waitForApp(admin);
+    await admin.waitForSelector("#hof-license-bar.is-info", { timeout: 10000 });
+    await admin.click("#hof-license-bar [data-license-close]");
+    expect(!(await admin.$("#hof-license-bar")), "şerit gizlenebilir");
   });
 
   await step("veri yokken ortada 'başlayalım' kartı; paketin yükleme düğmeleri gizli", async () => {
@@ -577,7 +616,7 @@ try {
   await step("v1.0.0 tarayıcısındaki kaynak ve notlar ilk girişte ofise taşınır", async () => {
     const legacyRoot = mkdtempSync(path.join(tmpdir(), "destekofis-e2e-eski-"));
     const legacySheet = async url => (String(url).includes("/edit") ? new Response('<script>"gid":"0","name":"Eski"</script>') : new Response("DOSYA NO,BORÇLU\n2024/77,Eski Borçlu", { headers: { "content-type": "text/csv" } }));
-    const legacyApp = createApp({ dataDir: path.join(legacyRoot, "data"), backupDir: path.join(legacyRoot, "backups"), logLevel: "warn", scheduleBackups: false, env: { HUKUK_ADMIN_PASSWORD: ADMIN_PASSWORD, HUKUK_DATASET_AUTOSYNC: "0" }, fetchImpl: legacySheet });
+    const legacyApp = createApp({ dataDir: path.join(legacyRoot, "data"), backupDir: path.join(legacyRoot, "backups"), logLevel: "warn", scheduleBackups: false, env: { HUKUK_ADMIN_PASSWORD: ADMIN_PASSWORD, HUKUK_DATASET_AUTOSYNC: "0" }, fetchImpl: legacySheet, license: unlicensed });
     const legacyPort = (await legacyApp.listen(0, "127.0.0.1")).port;
     try {
       const context = await browser.newContext({ viewport: { width: 1280, height: 800 } });
@@ -607,7 +646,7 @@ try {
 
   await step("hukuk dışı veri: klinik tablosu Klinik önerir; seçilince dil 'hasta'ya döner, haciz gizlenir", async () => {
     const clinicRoot = mkdtempSync(path.join(tmpdir(), "destekofis-e2e-klinik-"));
-    const clinicApp = createApp({ dataDir: path.join(clinicRoot, "data"), backupDir: path.join(clinicRoot, "backups"), logLevel: "warn", scheduleBackups: false, env: { HUKUK_ADMIN_PASSWORD: ADMIN_PASSWORD, HUKUK_DATASET_AUTOSYNC: "0" } });
+    const clinicApp = createApp({ dataDir: path.join(clinicRoot, "data"), backupDir: path.join(clinicRoot, "backups"), logLevel: "warn", scheduleBackups: false, env: { HUKUK_ADMIN_PASSWORD: ADMIN_PASSWORD, HUKUK_DATASET_AUTOSYNC: "0" }, license: unlicensed });
     const clinicPort = (await clinicApp.listen(0, "127.0.0.1")).port;
     const context = await browser.newContext({ viewport: { width: 1440, height: 900 }, locale: "tr-TR" });
     try {
@@ -648,6 +687,38 @@ try {
   });
 
   const csp = problems.filter(item => /Content Security Policy|Refused to/.test(item));
+  await step("deneme süresi dolunca program durur: şerit, açıklama, yazma engeli; lisans anahtarıyla kaldığı yerden devam eder", async () => {
+    const before = problems.length;
+    licenseClock.offset = 31 * 86_400_000;
+    await admin.goto(BASE + "/");
+    await waitForApp(admin);
+    await admin.waitForSelector("#hof-license-bar.is-error", { timeout: 10000 });
+    await admin.waitForSelector(".hof-modal-title", { timeout: 10000 });
+    const title = await admin.textContent(".hof-modal-title");
+    expect(title.includes("Deneme süresi doldu"), `pencere: ${title}`);
+    await admin.screenshot({ path: path.join(artifacts, "30-lisans-suresi-doldu.png") });
+    await admin.click(".hof-modal [data-close]");
+    const rows = await rowCount(admin);
+    expect(rows > 0, "kayıtlar görüntülenmeye devam eder");
+    const write = await admin.evaluate(() => fetch("/api/workspace/records", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ sourceName: "dataset://ofis", values: { "DOSYA NO": "2026/9999" } }) }).then(response => response.json().then(body => ({ status: response.status, code: body.code }))));
+    expect(write.status === 403 && write.code === "LICENSE_READ_ONLY", `yazma denemesi: ${JSON.stringify(write)}`);
+    const { key } = licenseService.admin.createLicense({ customer: "E2E Hukuk Bürosu", expiresAt: null });
+    await admin.goto(BASE + "/admin.html#license");
+    await admin.waitForSelector('[data-tab="license"][aria-selected="true"]');
+    await admin.fill('#adm-license-key input[name="key"]', key);
+    await admin.click('#adm-license-key button[type="submit"]');
+    await admin.waitForFunction(() => document.querySelector("#adm-license-status .adm-license-badge")?.textContent === "Lisanslı", null, { timeout: 10000 });
+    await admin.screenshot({ path: path.join(artifacts, "31-lisansli.png"), fullPage: true });
+    await admin.goto(BASE + "/");
+    await waitForApp(admin);
+    await admin.waitForTimeout(800);
+    expect(!(await admin.$("#hof-license-bar")), "lisanslıyken şerit yok");
+    const permissions = await admin.evaluate(() => window.HOF.user.permissions);
+    expect(permissions.includes("records.create"), "yazma yetkileri geri gelir");
+    // Bu adımdaki bilinçli 403 yanıtları konsol hatası sayılmaz.
+    for (let index = problems.length - 1; index >= before; index -= 1) if (/403/.test(problems[index])) problems.splice(index, 1);
+  });
+
   await step("tarayıcı konsolunda hata ve CSP ihlali yok", async () => {
     expect(!csp.length, csp.join("\n"));
     const other = problems.filter(item => !/401 \(Unauthorized\)|status of 401|status of 400|status of 403/.test(item));

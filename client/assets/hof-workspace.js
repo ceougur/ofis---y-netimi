@@ -349,7 +349,7 @@
     if (!header) return;
     let row = panel.querySelector(".hof-case-actions");
     if (!row) {
-      row = HOF.el("div", { class: "hof-case-actions", role: "toolbar", "aria-label": "Kayıt işlemleri" }, `<button type="button" class="hof-whatsapp" data-case-action="whatsapp">WhatsApp</button><button type="button" data-case-action="note">Not</button><button type="button" data-case-action="phone">Telefon</button><button type="button" data-case-action="payment">Tahsilat</button><button type="button" data-case-action="task" data-requires="tasks.create">Görev</button><button type="button" data-case-action="lien">Haciz</button>`);
+      row = HOF.el("div", { class: "hof-case-actions", role: "toolbar", "aria-label": "Kayıt işlemleri" }, `<button type="button" class="hof-whatsapp" data-case-action="whatsapp">WhatsApp</button><button type="button" data-case-action="note" data-requires="notes.write">Not</button><button type="button" data-case-action="phone" data-requires="phones.create">Telefon</button><button type="button" data-case-action="payment" data-requires="payments.create">Tahsilat</button><button type="button" data-case-action="task" data-requires="tasks.create">Görev</button><button type="button" data-case-action="lien" data-requires="liens.create">Haciz</button>`);
       row.addEventListener("click", event => {
         const action = event.target.closest("[data-case-action]")?.dataset.caseAction;
         if (action && actions[action]) actions[action]();

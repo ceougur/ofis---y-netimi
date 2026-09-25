@@ -10,6 +10,7 @@ import { createClientState } from "./lib/client-state.mjs";
 import { DEFAULT_ADMIN_PASSWORD, loadConfig } from "./lib/config.mjs";
 import { createDatasetService } from "./lib/dataset.mjs";
 import { createProfileService } from "./lib/profile.mjs";
+import { createLicenseService } from "./lib/license.mjs";
 import { createStore, openDatabase } from "./lib/db.mjs";
 import { HttpError, SECURITY_HEADERS, assertSameOrigin, fail, ok, send } from "./lib/http.mjs";
 import { createLogger } from "./lib/logger.mjs";
@@ -24,6 +25,7 @@ import { registerAuthRoutes } from "./routes/auth.mjs";
 import { registerChatRoutes } from "./routes/chat.mjs";
 import { registerDatasetRoutes } from "./routes/dataset.mjs";
 import { registerInsightRoutes } from "./routes/insight.mjs";
+import { registerLicenseRoutes } from "./routes/license.mjs";
 import { registerTrpcRoutes } from "./routes/trpc.mjs";
 import { registerWorkspaceRoutes } from "./routes/workspace.mjs";
 
@@ -59,6 +61,9 @@ export function createApp(overrides = {}) {
   // Canlı olay kanalı: oturumu kapanan (çıkış, parola değişikliği, pasifleştirme) bağlantılar ping turunda düşer.
   const events = createEventHub({ log, pingMs: config.eventsPingMs, maxAgeMs: config.eventsMaxAgeMs, isValid: client => auth.sessionAlive(client.tokenHash) });
   const chat = createChat({ store, events, audit });
+  // Lisans (Faz 3): süresi dolan, engellenen veya doğrulanamayan kurulum salt okunur çalışır. Veri eşitlemesi de
+  // o sürede durur. Uygulama nesnesi aşağıda kurulduğundan eşitleme denetimi geç bağlanır.
+  let license = null;
   // Kalıcı çalışma verisi: içeri alınan Excel/Sheets satırları + bağlı Sheet'in zamanlanmış eşitlemesi.
   const dataset = createDatasetService({
     store,
@@ -71,14 +76,29 @@ export function createApp(overrides = {}) {
     backupKeep: config.backupKeep,
     autoSync: config.datasetAutoSync,
     tickMs: config.datasetTickMs,
+    canWrite: () => !license || license.writable(),
   });
   clientState.useDataset(() => dataset.info());
   // Ofis profili: sektör, kelime dağarcığı, kalemle değiştirilen başlıklar ve verinin önbellekli analizi.
   const profile = createProfileService({ store, dataset, audit, events, log });
   profile.init();
   dataset.onChange(() => profile.invalidate());
+  const licenseOptions = overrides.license || {};
+  license = createLicenseService({
+    store,
+    audit,
+    events,
+    log,
+    dataDir: config.dataDir,
+    version: config.version,
+    services: config.licenseServices,
+    fetchImpl: config.fetchImpl,
+    usedBefore: () => profile.usedBefore(),
+    ...licenseOptions,
+  });
+  license.init();
   dataset.start();
-  const context = { config, log, store, auth, audit, clientState, startedAt, supervisorLink, events, chat, dataset, profile };
+  const context = { config, log, store, auth, audit, clientState, startedAt, supervisorLink, events, chat, dataset, profile, license };
 
   const router = createRouter();
   router.get("/api/health", async ({ res }) => ok(res, { service: "destekofis-merkezi", status: "ok", version: config.version, time: new Date().toISOString(), uptimeSeconds: Math.round(process.uptime()) }));
@@ -88,6 +108,7 @@ export function createApp(overrides = {}) {
   registerChatRoutes(router, context);
   registerDatasetRoutes(router, context);
   registerInsightRoutes(router, context);
+  registerLicenseRoutes(router, context);
   registerTrpcRoutes(router, context);
 
   async function handle(req, res) {
@@ -95,7 +116,10 @@ export function createApp(overrides = {}) {
     const pathname = url.pathname;
     try {
       if (pathname.startsWith("/api/")) {
-        if (!["GET", "HEAD"].includes(req.method)) assertSameOrigin(req, config.trustProxy);
+        if (!["GET", "HEAD"].includes(req.method)) {
+          assertSameOrigin(req, config.trustProxy);
+          license.assertWritable(req.method, pathname);
+        }
         const matched = router.match(req.method, pathname);
         if (!matched) throw new HttpError(404, "Endpoint bulunamadı.");
         if (matched.methodNotAllowed) throw new HttpError(405, "Bu yöntem desteklenmiyor.");
@@ -131,6 +155,7 @@ export function createApp(overrides = {}) {
   const stopBackups = config.scheduleBackups
     ? startBackupScheduler({ db, backupDir: config.backupDir, intervalHours: config.backupIntervalHours, keep: config.backupKeep, startDelayMs: config.backupOnStartDelayMs, log })
     : () => {};
+  if (overrides.startLicenseTimers !== false) license.start();
   auth.purgeExpiredSessions();
   const sessionTimer = setInterval(() => auth.purgeExpiredSessions(), 3_600_000);
   sessionTimer.unref();
@@ -142,6 +167,7 @@ export function createApp(overrides = {}) {
     instanceId: store.setting("meta.instanceId"),
     officeName: store.setting("office.name", ""),
     schemaVersion: store.get("PRAGMA user_version").user_version,
+    license: license.status().state,
   });
   context.notifyInfoChange = () => {
     for (const listener of infoListeners) listener(info());
@@ -156,6 +182,7 @@ export function createApp(overrides = {}) {
     server,
     migration,
     events,
+    license,
     info,
     onInfoChange(listener) {
       infoListeners.add(listener);
@@ -177,6 +204,7 @@ export function createApp(overrides = {}) {
       clearInterval(sessionTimer);
       auth.limiter.stop();
       dataset.stop();
+      license.stop();
       events.stop();
       await new Promise(resolve => {
         server.close(() => resolve());

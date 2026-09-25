@@ -362,3 +362,27 @@ code {
     align-items: flex-start;
   }
 }
+
+/* ---------- Lisans (v2.0.0) ---------- */
+.adm-license-status { border-left: 6px solid var(--do-accent); }
+.adm-license-status.is-warn { border-left-color: var(--do-gold); }
+.adm-license-status.is-error { border-left-color: var(--do-danger); background: var(--do-danger-soft); }
+.adm-license-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+.adm-license-head h2 { margin: 8px 0 6px; font: 800 20px var(--do-display); }
+.adm-license-head p { margin: 0; color: var(--do-ink-soft); line-height: 1.55; max-width: 72ch; }
+.adm-license-badge { display: inline-block; padding: 3px 10px; border-radius: 999px; background: var(--do-accent-soft); color: var(--do-accent); font: 800 11px var(--do-font); letter-spacing: 0.04em; text-transform: uppercase; }
+.is-warn .adm-license-badge { background: var(--do-warn-soft); color: var(--do-warn); }
+.is-error .adm-license-badge { background: #f6d5cf; color: var(--do-danger); }
+.adm-license-facts { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 12px 20px; margin: 18px 0 0; }
+.adm-license-facts div { display: grid; gap: 2px; }
+.adm-license-facts dt { color: var(--do-muted); font-size: 12px; }
+.adm-license-facts dd { margin: 0; font-weight: 700; overflow-wrap: anywhere; }
+.adm-license-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; margin-top: 16px; }
+.adm-license-box { display: flex; flex-direction: column; gap: 12px; }
+.adm-license-box h2 { margin: 0; }
+.adm-license-box p { margin: 0; }
+.adm-license-box > .hof-button { align-self: flex-start; margin-top: auto; }
+.adm-license-box textarea { font: 12px ui-monospace, SFMono-Regular, Consolas, monospace; resize: vertical; }
+.adm-install-code { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 10px 12px; border: 1px dashed var(--do-border-strong); border-radius: 10px; background: var(--do-surface-soft); }
+.adm-install-code span { color: var(--do-muted); font-size: 12px; }
+.adm-install-code code { font: 700 13px ui-monospace, SFMono-Regular, Consolas, monospace; letter-spacing: 0.02em; overflow-wrap: anywhere; }

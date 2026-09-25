@@ -19,6 +19,9 @@ export async function startTestServer(options = {}) {
     // Zamanlanmış Sheet eşitlemesi testlerde kapalıdır (gerekirse ortam değişkeniyle açılır).
     env: { HUKUK_ADMIN_PASSWORD: options.adminPassword ?? ADMIN_PASSWORD, HUKUK_DATASET_AUTOSYNC: "0", ...(options.env || {}) },
     fetchImpl: options.fetchImpl,
+    // Lisans kilidi yalnızca lisans testlerinde uygulanır (test/license.test.mjs); diğer testler lisanslı gibi çalışır.
+    license: options.license ?? { enforce: false, machineId: "0123456789abcdef0123456789abcdef" },
+    startLicenseTimers: options.startLicenseTimers ?? false,
   });
   const address = await app.listen(0, "127.0.0.1");
   const base = `http://127.0.0.1:${address.port}`;

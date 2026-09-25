@@ -1,4 +1,4 @@
-# DestekOfis — Mimari (v1.6)
+# DestekOfis — Mimari (v2.0)
 
 ## Genel bakış
 
@@ -76,6 +76,7 @@ Arayüzün ana gövdesi Manus/Vite çıkışı derlenmiş bir React paketidir (k
 | `hof-sections.js` | "Sekme › Bölüm" etiketli kategorileri gruplar: React'in düğmelerini gizleyip sekme + alt tablo şeridi gösterir, tıklamaları gizli React düğmelerine aktarır |
 | `hof-sources.js` | Veri yokken "başlayalım" kartı, Ayarlar → Veri penceresi (Excel/Sheets içeri alma, devamı/yerine seçimi, eşitleme, geçmiş, Sheet'te olmayanlar, kaldırma), paketin yükleme girişlerini yönlendirme, yetkiye göre menü gizleme |
 | `hof-insight.js` | Ofis profili (sektörün kelime dağarcığı, rol adları, modüller), "Verinizi tanıyoruz" analiz ekranı, aranabilir sektör seçici, akıllı özet kartları, veri sağlığı raporu, "Bu ay", kalemle başlık düzenleme (metin düğümü üzerinden, React yeniden çizince yeniden uygulanır), Ayarlar → Sektör ve görünüm |
+| `hof-license.js` | Lisans şeridi (deneme kalan günü yalnızca yöneticiye; uyarı ve salt okunur durum herkese), salt okunur açıklama penceresi (açılışta ve 403 `LICENSE_READ_ONLY` yanıtında), `live:license.changed` ile tazeleme |
 | `hof-promises.js`, `hof-search.js` | Ödeme sözleri şeridi (yalnızca gereken hücreleri okur, değişikliği kısa özetle anlar; 40'tan fazla sözde en yakın 40'ı), akıllı arama (ipucu verideki kolon adlarından) |
 
 **Depo köprüsü:** React paketi ayarlarını `localStorage`'da tutar. `hof-boot.js` açılışta bu anahtarları sunucudaki ofis ayarlarıyla doldurur ve paketin yaptığı yazmaları sunucuya iletir (`hukuk-ofisi-sheet-url`, `-sync-minutes`, `-ai-mapping`, `-notlar`). Böylece derlenmiş pakete dokunmadan ayarlar ve notlar merkezileşir.
@@ -112,6 +113,24 @@ Google Sheets istekleri 45 sn önbelleklenir; aynı anda gelen istekler birleşt
 **Ofis profili** (`server/lib/profile.mjs`) ayarlarda tutulur (şema göçü yok): `insight.sector` {id, source: confirmed|manual|legacy, at, by}, `ui.labels` (kalemle değiştirilen başlıklar, yuva başına uzunluk sınırı), `insight.intro` (pending|done), `insight.initialized`. İlk açılışta kullanılmış kurulum (verisi veya kaydı, notu, görevi, haczi, tahsilatı olan) `hukuk-buro` + `legacy` + tanıtım bekliyor olarak işaretlenir: 1.6 öncesi ürün yalnızca hukuk ofisleri içindi, görünüm değişmez. Boş yeni kurulum *Genel* ile açılır. `profile()` sektörü, kelime dağarcığını, rol adlarını (`avukat` rolünün görünen adı = sektörün uzmanı), modülleri (sektör istemese de ofiste o modülde kayıt varsa açık) ve başlıkları döndürür; giriş, `/api/auth/me` ve `/api/public/info` (`tagline`) ile istemciye gider. Değişiklikler `workspace.changed {kind: "profile"}` ile açık ekranlara yansır ve denetim kaydına yazılır (`profile.sector`, `profile.label`, `profile.labels.reset`).
 
 Uçlar (`server/routes/insight.mjs`): `GET /api/workspace/profile`, `GET /api/workspace/sectors` (katalog), `GET /api/workspace/insight` (analiz + profil; sektör önerisi ve kanıtları yalnızca `profile.manage` yetkisine), `GET …/insight/records?list=upcoming|passed|topAmount|month&tab=&limit=` (kart penceresi: kartla aynı kapsam ve kural, `total` listenin tamamı, en çok 500 kayıt), `POST …/insight/sector`, `POST …/insight/intro`, `PUT|DELETE /api/workspace/labels`. Analiz önbelleği parmak izine ek olarak tabloyu değiştiren her işlemde (`workspace.changed` kind `records|source`, içeri alma, eşitleme) açıkça geçersizleştirilir. Biçim denetimleri 300 karakterden uzun değerlere uygulanmaz ve düzenli ifadeler doğrusaldır (uzun hücreler analizi kilitleyemez). Değiştirici uçlar `profile.manage` (yalnızca yönetici) ister. **Öneri hiçbir zaman kendiliğinden uygulanmaz**; sektör yalnızca yöneticinin onayı veya seçimiyle değişir.
+
+## Lisans motoru (v2.0)
+
+Ayrıntı ve servis protokolü: [LISANS.md](LISANS.md).
+
+```
+Yönetim → Lisans ─► /api/license/{trial,activate,code,check} ─► license.mjs ─► lisans servisi (Vercel, Faz 4)
+                                                                     │           /v1/activate · /v1/check
+                                                                     │           ◄── imzalı belirteç (Ed25519)
+            her değiştirici /api isteği ─► assertWritable ◄──────────┤  evaluateLicense(belirteç, yerel durum, saat)
+            /api/auth/me ─► yetkiler (salt okunurken yazma yetkileri çıkarılır) + lisans özeti
+```
+
+- Belirteç sunucu bilgisayarın kimliğine (Windows `MachineGuid` özeti, "kurulum kodu") bağlıdır; `license-keys.mjs`'deki açık anahtarla doğrulanır. İnternetsiz etkinleştirme kodu aynı belirtecin tek satırlık hâlidir.
+- Durumlar: `none`, `transition` (2.0 öncesinden gelen kullanılmış kurulum, 30 gün), `trial`, `licensed`, `expired`, `blocked`, `verify` (7 günden uzun doğrulanamadı), `clock` (saat 24 saatten fazla geri). Yalnızca `transition`, `trial`, `licensed` yazılabilir.
+- Salt okunurken izinli değiştirici istekler: `/api/auth/*`, `/api/license/*`, `/api/admin/*`, sohbette okundu, tanıtım kartını kapatma; diğerleri 403 `LICENSE_READ_ONLY`. Bağlı Sheet'in zamanlanmış eşitlemesi durur (`dataset` `canWrite`).
+- Etkin zaman = max(saat, görülen en ileri zaman); servisin `issuedAt`'ı güvenilir zamandır. Yerel durum `settings.license.local`'da kurulum kimliğine bağlı HMAC ile saklanır.
+- Testler bağımsızdır: `createApp({ license: { trustedKeys, services, fetchImpl, machineId, now, enforce } })`. Test yardımcısı varsayılan olarak kilidi kapatır (`enforce: false`); `test/license.test.mjs` ve e2e kilidi başvuru lisans servisiyle (`tools/lib/license-service.mjs`) gerçek hâliyle sınar. Üretimde bu seçenekler ortam değişkeniyle verilemez.
 
 ## Veri modeli
 
@@ -150,4 +169,4 @@ Uçlar (`server/routes/insight.mjs`): `GET /api/workspace/profile`, `GET /api/wo
 
 ## Yol haritası
 
-Faz 1 Windows servisi + setup.exe + UDP sunucu keşfi ✓ · Faz 2 GitHub'dan otomatik güncelleme ✓ · Ara sürümler 1.4 (sohbet, canlı olaylar), 1.5 (kalıcı veri), 1.6 (akıllı veri motoru, sektörden bağımsız ürün) ✓ · Faz 3 lisans motoru · Faz 4 Supabase + Vercel lisans servisi, operatör paneli, web sitesi ve yapay zekâ seslendirmeli tanıtım videosu.
+Faz 1 Windows servisi + setup.exe + UDP sunucu keşfi ✓ · Faz 2 GitHub'dan otomatik güncelleme ✓ · Ara sürümler 1.4 (sohbet, canlı olaylar), 1.5 (kalıcı veri), 1.6 (akıllı veri motoru, sektörden bağımsız ürün), 1.7 (doğrulanmış kartlar) ✓ · Faz 3 lisans motoru (2.0.0) ✓ · Faz 4 Supabase + Vercel lisans servisi (protokol: LISANS.md), operatör paneli, web sitesi ve yapay zekâ seslendirmeli tanıtım videosu.

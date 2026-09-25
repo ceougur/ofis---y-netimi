@@ -1049,7 +1049,12 @@ html:not(.hof-can-records-delete) .hof-float-delete,
 html:not(.hof-can-reports-view) [data-requires="reports.view"],
 html:not(.hof-can-tasks-create) [data-requires="tasks.create"],
 html:not(.hof-can-users-manage) [data-requires="users.manage"],
-html:not(.hof-can-sources-manage) [data-requires="sources.manage"] {
+html:not(.hof-can-sources-manage) [data-requires="sources.manage"],
+/* Lisans salt okunurken (v2.0.0) yazma yetkileri oturumda yoktur; kayıt işlem düğmeleri de gizlenir. */
+html:not(.hof-can-notes-write) [data-requires="notes.write"],
+html:not(.hof-can-phones-create) [data-requires="phones.create"],
+html:not(.hof-can-payments-create) [data-requires="payments.create"],
+html:not(.hof-can-liens-create) [data-requires="liens.create"] {
   display: none !important;
 }
 
@@ -2821,4 +2826,54 @@ html.hof-no-tahsilat [data-case-action="payment"] {
 .hof-payment-go:focus-visible {
   background: var(--do-accent-soft);
   outline: none;
+}
+
+/* ---------- Lisans şeridi (v2.0.0, hof-license.js) ---------- */
+.hof-license-bar {
+  position: fixed;
+  left: 50%;
+  bottom: 16px;
+  z-index: 99960;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: min(760px, calc(100vw - 32px));
+  padding: 12px 12px 12px 18px;
+  border: 1px solid var(--do-border-strong);
+  border-radius: var(--do-radius);
+  background: var(--do-surface);
+  box-shadow: var(--do-shadow-strong);
+  color: var(--do-ink);
+  font: 500 13px/1.45 var(--do-font);
+  transform: translateX(-50%);
+}
+.hof-license-bar::before {
+  content: "";
+  flex: 0 0 6px;
+  align-self: stretch;
+  border-radius: 6px;
+  background: var(--do-accent);
+}
+.hof-license-bar.is-warn::before { background: var(--do-gold); }
+.hof-license-bar.is-error { border-color: #e7b9b2; background: var(--do-danger-soft); }
+.hof-license-bar.is-error::before { background: var(--do-danger); }
+.hof-license-text { display: grid; gap: 2px; flex: 1; min-width: 0; }
+.hof-license-text strong { font: 800 14px var(--do-display); }
+.hof-license-text span { color: var(--do-ink-soft); }
+.hof-license-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+.hof-license-close {
+  width: 30px;
+  height: 30px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--do-muted);
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+}
+.hof-license-close:hover { background: var(--do-surface-soft); color: var(--do-ink); }
+@media (max-width: 640px) {
+  .hof-license-bar { flex-wrap: wrap; bottom: 8px; }
+  .hof-license-actions { width: 100%; }
 }

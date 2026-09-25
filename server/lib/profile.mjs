@@ -203,5 +203,5 @@ export function createProfileService({ store, dataset, audit, events, log, clock
     computing = null;
   };
 
-  return { init, profile, tagline, setSector, dismissIntro, setLabel, resetLabels, analysis, records, invalidate };
+  return { init, profile, tagline, setSector, dismissIntro, setLabel, resetLabels, analysis, records, invalidate, usedBefore };
 }
