@@ -186,11 +186,11 @@ export function createProfileService({ store, dataset, audit, events, log, clock
   }
 
   // Kart penceresindeki kayıt listesi: güncel görünümden, kartla aynı kapsamda (sekme ya da tüm veri) ve aynı kuralla.
-  async function records(list, tab = "") {
+  async function records(list, tab = "", limit = 500) {
     if (!RECORD_LISTS.includes(list)) throw new HttpError(400, "Bilinmeyen liste.");
     const result = await analysis();
     const view = await dataset.view();
-    return listRecords(view.rows || [], result.primary, { list, tab: String(tab || "").slice(0, 300), currency: result.kpis?.currency || "TRY", now: clock() });
+    return listRecords(view.rows || [], result.primary, { list, tab: String(tab || "").slice(0, 300), currency: result.kpis?.currency || "TRY", now: clock(), limit });
   }
 
   // Veri değişince (içeri alma, eşitleme, düzeltme, silme, geri alma, yeni kayıt) çağrılır. Parmak izi her değişikliği

@@ -92,63 +92,96 @@
   // Yuvalar: React'in çizdiği başlıklar ve bizim kartımızın başlığı. Metin düğümünün değeri değiştirilir; React aynı
   // öğeyi yeniden çizerse (ör. veri değişince) bir sonraki karede tekrar uygulanır.
   const sectorChosen = () => Boolean(profile?.sector?.id && profile.sector.id !== "genel");
+  // "Tümü 12": JavaScript'te \b yalnızca İngilizce harfleri tanır ("ü"den sonra sınır bulmaz); harf ya da rakam
+  // olmayan her şey sınır sayılır.
+  const ALL_TAB = /^Tümü(?![\p{L}\p{N}])/u;
+  const REACT_TABS = ":scope > .category-tabs:not(.hof-category-tabs) .category-tab";
+  const reactTabs = () => [...(document.querySelector(".category-bar")?.querySelectorAll(REACT_TABS) || [])];
+  const activeReactTab = () => document.querySelector(".category-bar")?.querySelector(`${REACT_TABS}.active`) || null;
   const allTab = () => {
-    const active = document.querySelector(".category-bar > .category-tabs:not(.hof-category-tabs) .category-tab.active");
-    return !active || /^Tümü\b/.test(active.textContent.trim());
+    const active = activeReactTab();
+    return !active || ALL_TAB.test(active.textContent.trim());
   };
+  // Her yuva önce kökünü (sayfanın başında, küçük bir bölge), sonra içindeki öğeyi arar: büyük tablolarda (20 bin satır)
+  // tüm sayfayı her DOM değişikliğinde taramamak için.
   const SLOTS = [
-    { key: "brand.subtitle", selector: ".sidebar .brand-subtitle", sector: () => HOF.vocab.subtitle },
-    { key: "nav.workspace", selector: ".sidebar nav .nav-label", index: 0 },
-    { key: "nav.source", selector: ".sidebar nav .nav-label", index: 1 },
-    { key: "side.title", selector: "#hof-sidecard .hof-sidecard-label" },
-    { key: "page.title", selector: ".topbar .page-title", when: allTab },
+    { key: "brand.subtitle", root: ".sidebar", selector: ".brand-subtitle", sector: () => HOF.vocab.subtitle },
+    { key: "nav.workspace", root: ".sidebar", selector: "nav .nav-label", index: 0 },
+    { key: "nav.source", root: ".sidebar", selector: "nav .nav-label", index: 1 },
+    { key: "side.title", root: "#hof-sidecard", selector: ".hof-sidecard-label" },
+    { key: "page.title", root: ".topbar", selector: ".page-title", when: allTab },
     // Genel sektörde arayüzün kendi başlığı ("Tablo özeti") kalır.
-    { key: "summary.title", selector: ".welcome-row .section-title", sector: () => (sectorChosen() ? `${HOF.vocab.Record} özeti` : null) },
-    { key: "summary.subtitle", selector: ".welcome-row .section-description" },
-    { key: "categories.title", selector: ".category-bar .category-heading > span" },
-    { key: "table.title", selector: ".cases-panel .panel-title", when: allTab },
-    { key: "table.subtitle", selector: ".cases-panel .panel-meta" },
+    { key: "summary.title", root: ".welcome-row", selector: ".section-title", sector: () => (sectorChosen() ? `${HOF.vocab.Record} özeti` : null) },
+    { key: "summary.subtitle", root: ".welcome-row", selector: ".section-description" },
+    { key: "categories.title", root: ".category-bar", selector: ".category-heading > span" },
+    { key: "table.title", root: ".cases-panel", selector: ".panel-title", when: allTab },
+    { key: "table.subtitle", root: ".cases-panel", selector: ".panel-meta" },
   ];
   // Kalemsiz, yalnızca sektör dilinde değişen yerler.
-  const VOCAB_SLOTS = [{ selector: ".sidebar nav .nav-item", original: "Tüm kayıtlar", sector: () => (sectorChosen() ? `Tüm ${HOF.vocab.records}` : null) }];
+  const VOCAB_SLOTS = [{ root: ".sidebar", selector: "nav .nav-item", original: "Tüm kayıtlar", sector: () => (sectorChosen() ? `Tüm ${HOF.vocab.records}` : null) }];
 
-  const state = new WeakMap(); // öğe → { original, applied }
+  // Metin katmanı. Öğe → { originals: düğüm → React'in yazdığı değer, written: düğüm → bizim yazdığımız, applied }.
+  // Başlık değiştirilince ilk dolu metin düğümüne başlık, diğerlerine boş yazılır. React kendi düğümlerinden birini
+  // güncellerse (ör. kayıt sayısı) o düğümün asıl değeri yenilenir ve başlık yeniden uygulanır. Varsayılana dönünce her
+  // düğüm kendi asıl değerine döner; React'in düğümleri ve sonraki güncellemeleri bozulmaz.
+  const state = new WeakMap();
   const ownTexts = element => [...element.childNodes].filter(node => node.nodeType === 3);
   const textOf = nodes => nodes.map(node => node.nodeValue).join("");
+  const clean = text => text.replace(/\s+/g, " ").trim();
+  function textState(element) {
+    let entry = state.get(element);
+    if (!entry) state.set(element, (entry = { originals: new Map(), written: new Map(), applied: null }));
+    const nodes = ownTexts(element);
+    for (const node of [...entry.originals.keys()]) {
+      if (nodes.includes(node)) continue;
+      entry.originals.delete(node);
+      entry.written.delete(node);
+    }
+    for (const node of nodes) {
+      if (entry.written.has(node) && entry.written.get(node) === node.nodeValue) continue; // bizim yazdığımız, React dokunmadı
+      entry.originals.set(node, node.nodeValue);
+      entry.written.delete(node);
+    }
+    return { entry, nodes, original: clean(nodes.map(node => entry.originals.get(node)).join("")) };
+  }
   HOF.labels = {
     // Yuvanın React'in yazdığı asıl metni (başka betikler metin eşleştirmesi için kullanır).
-    original: element => state.get(element)?.original ?? element.textContent.trim(),
+    original: element => (state.has(element) ? textState(element).original : element.textContent.trim()),
   };
 
   function writeText(element, desired) {
-    const nodes = ownTexts(element).filter((node, index, list) => node.nodeValue.trim() || list.length === 1);
+    const { entry, nodes, original } = textState(element);
     if (!nodes.length) return;
-    const current = textOf(nodes);
-    let entry = state.get(element);
-    if (!entry || current !== entry.applied) {
-      entry = { original: current.replace(/\s+/g, " ").trim(), applied: null };
-      state.set(element, entry);
-    }
-    const target = desired(entry.original);
-    if (target == null || target === entry.original) {
-      if (entry.applied !== null) {
-        nodes[0].nodeValue = entry.original;
-        for (const node of nodes.slice(1)) node.nodeValue = "";
-        entry.applied = null;
-        // Birden çok metin düğümlü öğede asıl metin tek düğüme toplandı; React bir sonraki çizimde kendi düğümlerini yazar.
+    const target = desired(original);
+    if (target == null || target === original) {
+      for (const node of nodes) {
+        if (!entry.written.has(node)) continue;
+        const value = entry.originals.get(node);
+        if (node.nodeValue !== value) node.nodeValue = value;
+        entry.written.delete(node);
       }
+      entry.applied = null;
       return;
     }
-    if (current !== target) {
-      nodes[0].nodeValue = target;
-      for (const node of nodes.slice(1)) node.nodeValue = "";
+    // Başlık ilk dolu düğüme, o düğümün baş/son boşluklarıyla yazılır (" Tüm kayıtlar " → " Tüm hastalar ");
+    // yalnızca boşluktan oluşan düğümlere dokunulmaz, diğer dolu düğümler boşaltılır.
+    const lead = nodes.find(node => entry.originals.get(node).trim()) || nodes[0];
+    const leadOriginal = entry.originals.get(lead);
+    const [pre, post] = leadOriginal.trim() ? [/^\s*/.exec(leadOriginal)[0], /\s*$/.exec(leadOriginal)[0]] : ["", ""];
+    for (const node of nodes) {
+      if (node !== lead && !entry.originals.get(node).trim()) continue;
+      const value = node === lead ? `${pre}${target}${post}` : "";
+      if (node.nodeValue !== value) node.nodeValue = value;
+      entry.written.set(node, value);
     }
     entry.applied = target;
   }
 
-  const slotElement = slot => {
-    const list = document.querySelectorAll(slot.selector);
-    return slot.index != null ? list[slot.index] || null : list[0] || null;
+  const slotElement = (slot, roots) => {
+    if (!roots.has(slot.root)) roots.set(slot.root, document.querySelector(slot.root));
+    const root = roots.get(slot.root);
+    if (!root) return null;
+    return slot.index != null ? root.querySelectorAll(slot.selector)[slot.index] || null : root.querySelector(slot.selector);
   };
   const labelFor = (slot, original) => {
     const manual = profile?.labels?.[slot.key];
@@ -160,16 +193,19 @@
   };
 
   function applyLabels() {
+    const roots = new Map();
+    const manage = canManage();
     for (const slot of SLOTS) {
-      const element = slotElement(slot);
+      const element = slotElement(slot, roots);
       if (!element) continue;
       writeText(element, original => labelFor(slot, original));
-      element.classList.add("hof-label-slot");
-      if (canManage()) ensurePencil(element, slot);
+      if (!element.classList.contains("hof-label-slot")) element.classList.add("hof-label-slot");
+      if (manage) ensurePencil(element, slot);
     }
     for (const slot of VOCAB_SLOTS) {
-      for (const element of document.querySelectorAll(slot.selector)) {
-        const original = state.get(element)?.original ?? textOf(ownTexts(element)).replace(/\s+/g, " ").trim();
+      if (!roots.has(slot.root)) roots.set(slot.root, document.querySelector(slot.root));
+      for (const element of roots.get(slot.root)?.querySelectorAll(slot.selector) || []) {
+        const original = state.has(element) ? textState(element).original : clean(textOf(ownTexts(element)));
         if (original !== slot.original) continue;
         writeText(element, () => slot.sector() || original);
       }
@@ -206,8 +242,7 @@
   function openLabelEditor(slot, element) {
     closeLabelEditor();
     const meta = profile?.slots?.[slot.key] || { max: 80, name: "Başlık" };
-    const entry = state.get(element);
-    const original = entry?.original ?? element.textContent.trim();
+    const original = HOF.labels.original(element);
     const fallback = (slot.sector ? slot.sector() : null) || original;
     const manual = profile?.labels?.[slot.key] || "";
     const editor = HOF.el(
@@ -256,7 +291,8 @@
         event.stopPropagation();
         closeLabelEditor();
         element.querySelector(".hof-label-pencil")?.focus();
-      } else if (event.key === "Enter" && !(event.target.tagName === "TEXTAREA" && event.shiftKey)) {
+      } else if (event.key === "Enter" && event.target === input && !(input.tagName === "TEXTAREA" && event.shiftKey)) {
+        // Yalnızca yazı alanında: düğmelerde (İptal, Varsayılana dön) Enter o düğmeye basar.
         event.preventDefault();
         editor.querySelector("[data-save]").click();
       }
@@ -325,7 +361,7 @@
     const find = () => [...document.querySelectorAll(".dynamic-table tbody tr")].find(row => row.dataset.hofKey === key);
     let row = find();
     if (!row) {
-      const all = [...document.querySelectorAll(".category-bar > .category-tabs:not(.hof-category-tabs) .category-tab")].find(button => /^Tümü\b/.test(button.textContent.trim()));
+      const all = reactTabs().find(button => ALL_TAB.test(button.textContent.trim()));
       if (all && !all.classList.contains("active")) all.click();
       const search = document.querySelector(".search-field input");
       if (search && search.value) {
@@ -349,7 +385,7 @@
 
   // ---------- Akıllı özet kartları ----------
   const activeTab = () => {
-    const active = document.querySelector(".category-bar > .category-tabs:not(.hof-category-tabs) .category-tab.active");
+    const active = activeReactTab();
     if (!active) return "";
     const label = active.getAttribute("title") || active.textContent.replace(/\s*\d[\d.]*\s*$/, "").trim();
     return /^Tümü$/.test(label) ? "" : label;
@@ -426,7 +462,7 @@
   // Kenar çubuğundaki "Bu ay": sayısı doğrulanmış tarih kolonundan (son tarih, yoksa olay tarihi) gelir;
   // tıklanınca bu ayın kayıtları listelenir.
   function applyMonthNav() {
-    const item = [...document.querySelectorAll(".sidebar nav .nav-item")].find(element => textOf(ownTexts(element)).trim() === "Bu ay");
+    const item = [...(document.querySelector(".sidebar")?.querySelectorAll("nav .nav-item") || [])].find(element => textOf(ownTexts(element)).trim() === "Bu ay");
     if (!item) return;
     const month = insight?.kpis?.all?.month;
     const count = item.querySelector(".nav-count");
@@ -442,18 +478,34 @@
     }
   }
 
-  function openMonth() {
+  // Kenar çubuğundaki sayı tüm veriden gelir; liste de tüm veriden (sekmeden bağımsız).
+  async function openMonth() {
     const month = insight?.kpis?.all?.month;
     if (!month) return HOF.toast("Tabloda ay bazında izlenebilecek bir tarih kolonu bulunamadı.");
-    const tab = activeTab();
-    const items = insight.kpis.lists.month.filter(item => !tab || !insight.kpis.tabs?.[tab] || item.tab === tab || String(item.tab || "").startsWith(`${tab} › `));
+    const result = await fetchList("month", "");
+    if (!result) return undefined;
     const label = new Intl.DateTimeFormat("tr-TR", { month: "long", year: "numeric" }).format(new Date());
-    const modal = HOF.modal({ title: `${nice(month.column)}: ${label}`, eyebrow: "BU AY", body: `<p class="hof-modal-text">${number(items.length)} kayıt. Kayda gitmek için tıklayın.</p>${recordList(items, item => item.date)}` });
+    const modal = HOF.modal({ title: `${nice(result.column || month.column)}: ${label}`, eyebrow: "BU AY", body: `<p class="hof-modal-text">${number(result.total)} kayıt. Kayda gitmek için tıklayın.</p>${recordList(result.items, item => item.date)}${moreNote(result)}` });
     wireOpen(modal);
     return undefined;
   }
 
   // ---------- Kayıt listesi pencereleri ----------
+  // Listeler sunucudan, kartla aynı kapsamda (seçili sekme ya da tüm veri) ve tamamı sayılarak gelir.
+  let listBusy = false;
+  async function fetchList(list, tab, limit = 500) {
+    if (listBusy) return null;
+    listBusy = true;
+    try {
+      return await HOF.api(`/api/workspace/insight/records?list=${encodeURIComponent(list)}&tab=${encodeURIComponent(tab || "")}&limit=${limit}`);
+    } catch (error) {
+      HOF.toastError(error);
+      return null;
+    } finally {
+      listBusy = false;
+    }
+  }
+  const moreNote = result => (result.total > result.items.length ? `<p class="hof-inline-note">İlk ${number(result.items.length)} kayıt gösteriliyor (toplam ${number(result.total)}). Tümü için tabloda sıralayın ya da arayın.</p>` : "");
   const recordList = (items, detail) =>
     items.length
       ? `<ul class="hof-record-list">${items.map(item => `<li><button type="button" data-open="${esc(item.key)}"><b>${esc(item.title || item.key)}</b><span>${esc(detail(item))}</span></button></li>`).join("")}</ul>`
@@ -466,31 +518,33 @@
       await HOF.revealRecord(button.dataset.open);
     });
 
-  function openKpi(id) {
+  async function openKpi(id) {
     const tab = activeTab();
-    const inTab = item => !tab || !insight.kpis.tabs?.[tab] || item.tab === tab || String(item.tab || "").startsWith(`${tab} › `);
     const group = groupFor(tab);
     if (id === "quality") return openQuality();
     if (id === "money" && group.money) {
-      const items = insight.kpis.lists.topAmount.filter(inTab).slice(0, 30);
-      const modal = HOF.modal({ title: `${nice(group.money.column)}: en yüksek ${number(items.length)} kayıt`, eyebrow: "AKILLI ÖZET", body: `<p class="hof-modal-text">Toplam <b>${esc(money(group.money.sum, group.money.currency))}</b> · ${number(group.money.count)} kayıtta dolu. Kayda gitmek için tıklayın.</p>${recordList(items, item => money(item.amount, group.money.currency))}` });
+      const result = await fetchList("topAmount", tab, 30);
+      if (!result) return undefined;
+      const modal = HOF.modal({ title: `${nice(group.money.column)}: en yüksek ${number(result.items.length)} kayıt`, eyebrow: "AKILLI ÖZET", body: `<p class="hof-modal-text">Toplam <b>${esc(money(group.money.sum, group.money.currency))}</b> · ${number(group.money.count)} kayıtta dolu. Kayda gitmek için tıklayın.</p>${recordList(result.items, item => money(item.amount, group.money.currency))}` });
       return wireOpen(modal);
     }
     if (id === "deadline" && group.deadline) {
-      const upcoming = insight.kpis.lists.upcoming.filter(inTab);
-      const passed = insight.kpis.lists.passed.filter(inTab);
+      const upcoming = await fetchList("upcoming", tab);
+      const passed = upcoming && (await fetchList("passed", tab));
+      if (!upcoming || !passed) return undefined;
       const when = item => (item.days === 0 ? `${item.date} · bugün` : item.days > 0 ? `${item.date} · ${number(item.days)} gün sonra` : `${item.date} · ${number(-item.days)} gün önce`);
+      const listFor = result => `${recordList(result.items, when)}${moreNote(result)}`;
       const modal = HOF.modal({
         title: nice(group.deadline.column),
         eyebrow: "AKILLI ÖZET",
         size: "wide",
-        body: `<div class="hof-tabs" role="group" aria-label="Tarih filtresi"><button type="button" data-view="upcoming" aria-pressed="true">Önümüzdeki 30 gün (${number(upcoming.length)})</button><button type="button" data-view="passed" aria-pressed="false">Tarihi geçen (${number(passed.length)})</button></div><div data-list>${recordList(upcoming, when)}</div>`,
+        body: `<div class="hof-tabs" role="group" aria-label="Tarih filtresi"><button type="button" data-view="upcoming" aria-pressed="true">Önümüzdeki 30 gün (${number(upcoming.total)})</button><button type="button" data-view="passed" aria-pressed="false">Tarihi geçen (${number(passed.total)})</button></div><div data-list>${listFor(upcoming)}</div>`,
       });
       modal.dialog.addEventListener("click", event => {
         const view = event.target.closest("[data-view]")?.dataset.view;
         if (!view) return;
         modal.dialog.querySelectorAll("[data-view]").forEach(button => button.setAttribute("aria-pressed", String(button.dataset.view === view)));
-        modal.dialog.querySelector("[data-list]").innerHTML = recordList(view === "upcoming" ? upcoming : passed, when);
+        modal.dialog.querySelector("[data-list]").innerHTML = listFor(view === "upcoming" ? upcoming : passed);
       });
       return wireOpen(modal);
     }
@@ -540,7 +594,12 @@
 
   // Aranabilir ve kaydırılabilir sektör seçici (klavyeyle: ↑ ↓ Enter Esc).
   async function pickSector({ title = "Sektörünüzü seçin", suggested = "", intro = "" } = {}) {
-    await loadCatalog();
+    try {
+      await loadCatalog();
+    } catch (error) {
+      HOF.toastError(error);
+      return null;
+    }
     const current = profile?.sector?.id || "genel";
     return new Promise(resolve => {
       let chosen = null;
@@ -811,9 +870,11 @@
     });
   }
 
-  // 1.6.0'a güncellenen kurulumda yöneticiye bir kez, sayfayı kapatmayan bir kart.
+  // 1.6.0'a güncellenen kurulumda yöneticiye bir kez, sayfayı kapatmayan bir kart. Kapatılınca (sunucu yanıtını
+  // beklemeden) bu sayfada bir daha gösterilmez; bir pencere açıkken de gösterilmez.
+  let introClosed = false;
   function showIntro() {
-    if (!canManage() || !profile?.introPending || document.getElementById("hof-intro")) return;
+    if (introClosed || !canManage() || !profile?.introPending || HOF.hasOpenModal() || document.getElementById("hof-intro")) return;
     const card = HOF.el(
       "aside",
       { id: "hof-intro", class: "hof-intro", role: "status" },
@@ -823,9 +884,11 @@
     );
     card.addEventListener("click", async event => {
       if (event.target.closest("[data-run]")) {
+        introClosed = true;
         card.remove();
         runAnalysis({ reason: "intro" });
       } else if (event.target.closest("[data-later]")) {
+        introClosed = true;
         card.remove();
         try {
           applyProfile(await HOF.api("/api/workspace/insight/intro", { method: "POST" }));

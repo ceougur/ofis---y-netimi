@@ -39,7 +39,8 @@ export function registerInsightRoutes(router, { auth, profile }) {
   // Kart penceresi: yaklaşan/tarihi geçen, en yüksek tutarlı ve bu ayın kayıtları (seçili sekme için, tamamı sayılarak).
   router.get("/api/workspace/insight/records", async ({ req, res, url }) => {
     auth.requireUser(req);
-    ok(res, await profile.records(text(url.searchParams.get("list")), text(url.searchParams.get("tab"))));
+    const limit = Math.max(1, Math.min(500, Math.floor(Number(url.searchParams.get("limit")) || 500)));
+    ok(res, await profile.records(text(url.searchParams.get("list")), text(url.searchParams.get("tab")), limit));
   });
 
   router.post("/api/workspace/insight/sector", async ({ req, res }) => {

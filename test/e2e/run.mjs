@@ -21,6 +21,7 @@ const { port } = await app.listen(0, "127.0.0.1");
 const BASE = `http://127.0.0.1:${port}`;
 const browser = await chromium.launch();
 const problems = [];
+let tableMeta = "";
 let passed = 0;
 
 async function step(name, fn) {
@@ -199,6 +200,34 @@ try {
     await admin.click(".sidebar .brand-subtitle .hof-label-pencil");
     await admin.click(".hof-label-editor [data-reset]");
     await admin.waitForFunction(() => document.querySelector(".brand-subtitle")?.firstChild?.nodeValue === "Hukuk ofisi yönetimi", null, { timeout: 5000 });
+    // Sayfa başlığı ("Tümü" sekmesinde) değişir, tablo başlığı onu izler.
+    const ownText = selector => admin.evaluate(sel => [...(document.querySelector(sel)?.childNodes || [])].filter(node => node.nodeType === 3).map(node => node.nodeValue).join("").replace(/\s+/g, " ").trim(), selector);
+    const pageTitle = await ownText(".topbar .page-title");
+    await admin.hover(".topbar .page-title");
+    await admin.click(".topbar .page-title .hof-label-pencil");
+    await admin.fill(".hof-label-editor input", "Tüm şubeler");
+    await admin.click(".hof-label-editor [data-save]");
+    await admin.waitForFunction(() => document.querySelector(".topbar .page-title")?.textContent.trim() === "Tüm şubeler" && document.querySelector(".cases-panel .panel-title")?.textContent.trim() === "Tüm şubeler", null, { timeout: 5000 });
+    // Düzenleyicide İptal düğmesindeyken Enter kaydetmez.
+    await admin.click(".topbar .page-title .hof-label-pencil");
+    await admin.fill(".hof-label-editor input", "Yanlışlıkla");
+    await admin.focus(".hof-label-editor [data-cancel]");
+    await admin.keyboard.press("Enter");
+    await admin.waitForSelector(".hof-label-editor", { state: "detached", timeout: 3000 });
+    expect((await ownText(".topbar .page-title")) === "Tüm şubeler", "İptal'de Enter başlığı kaydetmemeli");
+    await admin.click(".topbar .page-title .hof-label-pencil");
+    await admin.click(".hof-label-editor [data-reset]");
+    await admin.waitForFunction(title => document.querySelector(".topbar .page-title")?.textContent.trim() === title, pageTitle, { timeout: 5000 });
+    // Birden çok metin parçalı başlık (tablo açıklaması): varsayılana dönünce metin aynen geri gelir.
+    tableMeta = await ownText(".cases-panel .panel-meta");
+    await admin.hover(".cases-panel .panel-meta");
+    await admin.click(".cases-panel .panel-meta .hof-label-pencil");
+    await admin.fill(".hof-label-editor textarea", "Özel tablo açıklaması");
+    await admin.click(".hof-label-editor [data-save]");
+    await admin.waitForFunction(() => document.querySelector(".cases-panel .panel-meta")?.textContent.trim() === "Özel tablo açıklaması", null, { timeout: 5000 });
+    await admin.click(".cases-panel .panel-meta .hof-label-pencil");
+    await admin.click(".hof-label-editor [data-reset]");
+    await admin.waitForFunction(text => [...document.querySelector(".cases-panel .panel-meta").childNodes].filter(node => node.nodeType === 3).map(node => node.nodeValue).join("").replace(/\s+/g, " ").trim() === text, tableMeta, { timeout: 5000 });
   });
 
   await step("satırlar sunucu kimliği taşır, sayfalama 20 satır gösterir", async () => {
@@ -251,6 +280,9 @@ try {
     await admin.fill('.hof-modal input[name="c1"]', "Test Borçlu");
     await admin.click('.hof-modal button[type="submit"]');
     await admin.waitForFunction(() => document.querySelector(".dynamic-table tbody tr")?.dataset.hofKey === "2026/999", null, { timeout: 10000 });
+    // Varsayılana dönülmüş çok parçalı başlık, React sayıyı güncelleyince bozulmaz (yalnızca sayı kalmaz).
+    const meta = await admin.textContent(".cases-panel .panel-meta");
+    expect(meta.replace(/\d+/g, "#").trim() === tableMeta.replace(/\d+/g, "#"), `tablo açıklaması: "${meta}" (önce "${tableMeta}")`);
   });
 
   await step("dosyaya not eklenir; işlem geçmişinde işlemi yapanla görünür", async () => {
