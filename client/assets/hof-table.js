@@ -218,11 +218,14 @@
   }
 
   // ---------- Yeni kayıt ----------
+  // v1.7.0: form açık sekmenin kolonlarıyla oluşturulur ve kayıt o sekmeye eklenir (farklı kolonlu sekmelerin
+  // kolonları karışmaz). Sekme şeridi yoksa (tek sekme ya da sekmesiz veri) tüm kolonlar.
   async function newRecord() {
     if (!HOF.can("records.create")) return HOF.toast("Kayıt ekleme yetkiniz yok.", { type: "error" });
+    const tab = (HOF.activeTab && HOF.activeTab()) || (HOF.data?.tabs?.length === 1 ? HOF.data.tabs[0] : "");
     let columns = [];
     try {
-      columns = (await HOF.api("/api/workspace/sources/columns")).columns;
+      columns = (await HOF.api(`/api/workspace/sources/columns${tab ? `?tab=${encodeURIComponent(tab)}` : ""}`)).columns;
     } catch (error) {
       return HOF.toastError(error);
     }
@@ -236,9 +239,9 @@
     }
     const modal = HOF.formModal({
       title: "Yeni kayıt oluştur",
-      eyebrow: `YENİ ${HOF.vocab.record.toLocaleUpperCase("tr-TR")}`,
+      eyebrow: `YENİ ${HOF.vocab.record.toLocaleUpperCase("tr-TR")}${tab ? ` · ${tab.toLocaleUpperCase("tr-TR")}` : ""}`,
       size: "wide",
-      intro: `Form, tablonuzun <b>${columns.length}</b> kolonuna göre oluşturuldu. Yalnızca doldurduğunuz alanlar kaydedilir; kayıt tüm bilgisayarlarda görünür.`,
+      intro: tab ? `Kayıt <b>${esc(tab)}</b> sekmesine eklenir; form bu sekmenin <b>${columns.length}</b> kolonuna göre oluşturuldu. Yalnızca doldurduğunuz alanlar kaydedilir; kayıt tüm bilgisayarlarda görünür.` : `Form, tablonuzun <b>${columns.length}</b> kolonuna göre oluşturuldu. Yalnızca doldurduğunuz alanlar kaydedilir; kayıt tüm bilgisayarlarda görünür.`,
       fields: columns.map((column, index) => ({ name: `c${index}`, label: column, autofocus: index === 0, maxlength: 20000 })),
       submitLabel: "Kaydı oluştur",
       onSubmit: async data => {
@@ -248,9 +251,20 @@
           if (value) values[column] = value;
         });
         if (!Object.keys(values).length) throw new Error("En az bir alan doldurun.");
-        await HOF.api("/api/workspace/records", { method: "POST", body: { sourceName: HOF.sourceName(), values } });
+        const created = await HOF.api("/api/workspace/records", { method: "POST", body: { sourceName: HOF.sourceName(), values, sheet: tab } });
         HOF.toast("Yeni kayıt oluşturuldu.", { type: "success" });
         page = 1;
+        // Tablo yenilenince yeni kayıt seçilir ve vurgulanır.
+        const key = created?.caseKey;
+        if (key) {
+          let stop = () => {};
+          stop = HOF.on("rows", data => {
+            if (!data?.rows?.some(row => row.__hofKey === key)) return;
+            stop();
+            setTimeout(() => HOF.revealRecord?.(key), 120);
+          });
+          setTimeout(() => stop(), 15_000);
+        }
         HOF.refreshData();
       },
     });

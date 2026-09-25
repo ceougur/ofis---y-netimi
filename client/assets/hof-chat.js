@@ -405,25 +405,10 @@
   }
 
   // ---------- Dosyaya git ----------
-  function revealCase(key, retried = false) {
-    const rows = [...document.querySelectorAll(".dynamic-table tbody tr")];
-    const row = rows.find(item => item.dataset.hofKey === key) || rows.find(item => (item.textContent || "").includes(key));
-    if (!row) {
-      const all = [...document.querySelectorAll(".category-bar > .category-tabs:not(.hof-category-tabs) .category-tab")].find(button => /^Tümü\b/.test(button.textContent.trim()));
-      if (!retried && all && !all.classList.contains("active")) {
-        all.click();
-        setTimeout(() => revealCase(key, true), 300);
-        return;
-      }
-      HOF.toast(`${key} tabloda bulunamadı.`, { type: "error" });
-      return;
-    }
-    HOF.table?.revealRow(row);
-    row.scrollIntoView({ behavior: "smooth", block: "center" });
-    row.click();
-    row.classList.add("smart-search-hit");
-    setTimeout(() => row.classList.remove("smart-search-hit"), 1600);
-    if (window.innerWidth < 1100) close();
+  // Mesajdaki kayda gider: kayıt başka bir sekmedeyse o sekme açılır (HOF.revealRecord, hof-insight.js).
+  async function revealCase(key) {
+    const shown = HOF.revealRecord ? await HOF.revealRecord(key) : false;
+    if (shown && window.innerWidth < 1100) close();
   }
 
   // ---------- Olaylar ----------

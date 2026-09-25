@@ -1,14 +1,15 @@
-/* DestekOfis — sekme içindeki alt tablolar (bölümler).
+/* DestekOfis — sekmeler ve sekme içindeki alt tablolar (bölümler).
  * Sunucu, bir sekmedeki alt alta tabloları "Sekme › Bölüm" etiketli ayrı kategoriler olarak verir. Bu betik
  * React'in düz kategori düğmelerini gizleyip yerine gruplanmış bir şerit gösterir: sekme düğmesi ve sekme
  * seçiliyken altında o sekmenin alt tabloları. Tıklamalar React'in kendi (gizli) düğmelerine aktarılır; böylece
- * filtreleme, kolonlar, arama ve sayfalama React'te kalır. Betik çalışmazsa React'in düğmeleri olduğu gibi görünür. */
+ * filtreleme, kolonlar, arama ve sayfalama React'te kalır. Betik çalışmazsa React'in düğmeleri olduğu gibi görünür.
+ * v1.7.0: "Tümü" sekmesi yok; her zaman bir sekme açıktır. Başka betikler sekmeyi HOF.activeTab() ile okur ve bir
+ * kayda giderken HOF.selectTab(ad) ile değiştirir. Aramada eşleşmesi olmayan sekmeler soluk görünür. */
 (() => {
   "use strict";
   const HOF = window.HOF;
   const { esc } = HOF;
   const SEP = " › ";
-  const ALL = "Tümü";
   const lastSection = new Map(); // sekme → en son seçilen alt tablo etiketi
 
   // "GAYRİMENKUL SATIŞ DOSYALARI" → "Gayrimenkul Satış Dosyaları" (yalnızca tamamı büyük harfse).
@@ -25,6 +26,7 @@
       label: labelOf(button),
       count: Number(button.querySelector("span")?.textContent?.trim()) || 0,
       active: button.classList.contains("active"),
+      nohit: button.classList.contains("hof-tab-nohit"),
     }));
 
   function model(items) {
@@ -33,7 +35,7 @@
     for (const item of items) {
       const cut = item.label.indexOf(SEP);
       if (cut < 0) {
-        top.push({ kind: item.label === ALL ? "all" : "tab", ...item });
+        top.push({ kind: "tab", ...item });
         continue;
       }
       const parent = item.label.slice(0, cut);
@@ -46,6 +48,7 @@
       group.sections.push({ ...item, name: item.label.slice(cut + SEP.length) });
       group.count += item.count;
       group.active ||= item.active;
+      group.nohit = group.sections.every(section => section.nohit);
     }
     // Aynı adlı düz sekme (ör. bölümler tanınmadan önce eklenmiş kayıtlar) grubun içine "Diğer kayıtlar" olarak girer.
     return top.filter(item => {
@@ -54,6 +57,7 @@
       group.sections.push({ ...item, name: "Diğer kayıtlar" });
       group.count += item.count;
       group.active ||= item.active;
+      group.nohit = group.sections.every(section => section.nohit);
       return false;
     });
   }
@@ -91,7 +95,7 @@
     }
     const top = model(items);
     const activeGroup = top.find(item => item.kind === "group" && item.active);
-    const signature = JSON.stringify(top.map(item => [item.kind, item.label, item.count, item.active, item.sections?.map(section => [section.name, section.count, section.active])]));
+    const signature = JSON.stringify(top.map(item => [item.kind, item.label, item.count, item.active, item.nohit, item.sections?.map(section => [section.name, section.count, section.active, section.nohit])]));
     const placed = strip && strip.previousElementSibling === container && (activeGroup ? sub && strip.nextElementSibling === sub : !sub);
     if (placed && strip.dataset.signature === signature) return;
 
@@ -107,8 +111,8 @@
     strip.innerHTML = top
       .map(item =>
         item.kind === "group"
-          ? `<button type="button" class="category-tab hof-group-tab${item.active ? " active" : ""}" data-group="${esc(item.label)}" title="${esc(item.label)} — ${item.sections.length} alt tablo" aria-expanded="${item.active}">${esc(item.label)} <span>${item.count}</span><i aria-hidden="true">${item.active ? "▾" : "▸"}</i></button>`
-          : `<button type="button" class="category-tab${item.active ? " active" : ""}" data-label="${esc(item.label)}" ${item.kind === "tab" ? `title="${esc(item.label)}"` : ""} aria-pressed="${item.active}">${esc(item.label)} <span>${item.count}</span></button>`,
+          ? `<button type="button" class="category-tab hof-group-tab${item.active ? " active" : ""}${item.nohit ? " hof-tab-nohit" : ""}" data-group="${esc(item.label)}" title="${esc(item.label)} — ${item.sections.length} alt tablo" aria-expanded="${item.active}">${esc(item.label)} <span>${item.count}</span><i aria-hidden="true">${item.active ? "▾" : "▸"}</i></button>`
+          : `<button type="button" class="category-tab${item.active ? " active" : ""}${item.nohit ? " hof-tab-nohit" : ""}" data-label="${esc(item.label)}" ${item.kind === "tab" ? `title="${esc(item.label)}"` : ""} aria-pressed="${item.active}">${esc(item.label)} <span>${item.count}</span></button>`,
       )
       .join("");
     if (strip.previousElementSibling !== container) container.after(strip);
@@ -126,10 +130,29 @@
     }
     sub.setAttribute("aria-label", `${activeGroup.label} alt tabloları`);
     sub.innerHTML = `<span class="hof-section-label">Alt tablolar</span>${activeGroup.sections
-      .map(section => `<button type="button" class="hof-section-tab${section.active ? " active" : ""}" data-label="${esc(section.label)}" title="${esc(section.name)}" aria-pressed="${section.active}">${esc(pretty(section.name))} <span>${section.count}</span></button>`)
+      .map(section => `<button type="button" class="hof-section-tab${section.active ? " active" : ""}${section.nohit ? " hof-tab-nohit" : ""}" data-label="${esc(section.label)}" title="${esc(section.name)}" aria-pressed="${section.active}">${esc(pretty(section.name))} <span>${section.count}</span></button>`)
       .join("")}`;
     if (strip.nextElementSibling !== sub) strip.after(sub);
   }
+
+  // Açık sekmenin adı ("Sekme › Bölüm" dahil); sekme şeridi yoksa (tek sekme ya da sekmesiz veri) boş.
+  HOF.activeTab = () => {
+    const container = liveContainer();
+    const active = container && reactButtons(container).find(button => button.classList.contains("active"));
+    return active ? labelOf(active) : "";
+  };
+  HOF.tabLabels = () => {
+    const container = liveContainer();
+    return container ? reactButtons(container).map(labelOf) : [];
+  };
+  // Sekmeyi değiştirir; sekme yoksa ya da zaten açıksa false.
+  HOF.selectTab = label => {
+    if (!label || HOF.activeTab() === label) return false;
+    const container = liveContainer();
+    if (!container || !reactButtons(container).some(button => labelOf(button) === label)) return false;
+    select(label);
+    return true;
+  };
 
   HOF.whenReady(() => HOF.onDom(render));
   HOF.sections = { pretty, render, SEP };

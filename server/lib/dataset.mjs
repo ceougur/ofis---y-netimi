@@ -18,6 +18,9 @@ import { columnOrder } from "./sources.mjs";
 
 export const DATASET_KEY = "dataset://ofis";
 export const MAX_ROWS = 200_000;
+// Sekmeli veride hiçbir sekmeyle ortak alanı olmayan kayıtların sekmeleri (v1.7.0: "Tümü" sekmesi kaldırıldı).
+export const APP_TAB = "Uygulamada eklenenler";
+export const UNTABBED_TAB = "Sekmesiz kayıtlar";
 const STAGE_TTL_MS = 30 * 60_000;
 const MAX_STAGES = 3;
 const SYSTEM_ACTOR = { id: "system", display_name: "Otomatik eşitleme", role: "admin" };
@@ -53,8 +56,47 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
     const rows = store
       .all("SELECT row_id AS rowId, case_key AS caseKey, tab, position, values_json AS valuesJson, row_hash AS hash, origin, missing_since AS missingSince FROM dataset_rows WHERE dataset_key = ? ORDER BY position, created_at", DATASET_KEY)
       .map(({ valuesJson, ...row }) => ({ ...row, values: parseJson(valuesJson, {}) }));
-    cache = { rows, byId: new Map(rows.map(row => [row.rowId, row])) };
+    cache = { rows, byId: new Map(rows.map(row => [row.rowId, row])), columnsByTab: null };
     return cache;
+  }
+  // Sekme → o sekmenin kolonları (sekme sırasıyla). Yeni kayıtların hangi sekmede görüneceğine karar vermek için.
+  function tabColumns() {
+    const loaded = loadRows();
+    if (loaded.columnsByTab) return loaded.columnsByTab;
+    const map = new Map();
+    for (const row of loaded.rows) {
+      const tab = row.tab || row.values?.__sheet || "";
+      if (!tab) continue;
+      if (!map.has(tab)) map.set(tab, new Set());
+      const set = map.get(tab);
+      for (const key of Object.keys(row.values)) if (!key.startsWith("__")) set.add(key);
+    }
+    loaded.columnsByTab = map;
+    return map;
+  }
+  // Uygulamada eklenen (ya da sekmesiz gelen) bir kaydın sekmesi: eklendiği sekme hâlâ varsa o; yoksa doldurulan
+  // alanları en çok hangi sekmenin kolonlarında geçiyorsa o (eşitlikte kolonlarının daha büyük kısmını dolduran, sonra
+  // ilk sekme); hiçbir sekmeyle ortak alanı yoksa ayrı bir sekme. Böylece "Tümü" olmadan her kayıt bir sekmede görünür.
+  function placeRecord(values, fallback) {
+    const tabs = tabColumns();
+    if (!tabs.size) return "";
+    const stored = String(values.__sheet || "").trim();
+    if (stored && (tabs.has(stored) || stored === fallback)) return stored;
+    let best = "";
+    let bestScore = 0;
+    let bestRatio = 0;
+    const filled = Object.keys(values).filter(key => !key.startsWith("__") && String(values[key] ?? "").trim());
+    for (const [tab, columns] of tabs) {
+      let score = 0;
+      for (const key of filled) if (columns.has(key)) score += 1;
+      const ratio = columns.size ? score / columns.size : 0;
+      if (score > bestScore || (score === bestScore && score > 0 && ratio > bestRatio)) {
+        best = tab;
+        bestScore = score;
+        bestRatio = ratio;
+      }
+    }
+    return bestScore > 0 ? best : fallback;
   }
   const invalidate = () => {
     cache = null;
@@ -121,14 +163,26 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
     }
     const deleted = new Set(store.all("SELECT case_key FROM deleted_records WHERE source_name = ?", DATASET_KEY).map(item => item.case_key));
     const merged = [];
+    const extraTabs = new Set();
     for (const record of store.all("SELECT id, case_key, values_json FROM records WHERE source_name = ? ORDER BY created_at DESC", DATASET_KEY)) {
       if (deleted.has(record.case_key)) continue;
-      merged.push({ ...parseJson(record.values_json), ...(overrides.get(record.case_key) || {}), __hofKey: record.case_key, __hofRecord: record.id });
+      const values = parseJson(record.values_json, {});
+      const tab = placeRecord(values, APP_TAB);
+      if (tab === APP_TAB) extraTabs.add(APP_TAB);
+      const { __sheet: ignored, ...rest } = values;
+      merged.push({ ...rest, ...(overrides.get(record.case_key) || {}), ...(tab ? { __sheet: tab } : {}), __hofKey: record.case_key, __hofRecord: record.id });
     }
+    const tabbed = tabColumns().size > 0;
     for (const row of rows) {
       if (deleted.has(row.caseKey)) continue;
       const patch = overrides.get(row.caseKey);
       const values = patch ? applyPatch(row.values, patch) : { ...row.values };
+      // Sekmeli veride sekmesiz satır (eski sürümlerden kalmış olabilir) en uygun sekmeye yerleşir.
+      if (tabbed) {
+        const tab = String(values.__sheet || row.tab || "").trim();
+        values.__sheet = tab || placeRecord(values, UNTABBED_TAB);
+        if (values.__sheet === UNTABBED_TAB) extraTabs.add(UNTABBED_TAB);
+      }
       values.__hofKey = row.caseKey;
       if (row.missingSince) values.__hofMissing = row.missingSince;
       merged.push(values);
@@ -143,7 +197,7 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
       sourceUrl: DATASET_KEY,
       syncedAt: setting(S.lastSyncOkAt, "") || setting(S.changedAt, "") || null,
       rows: merged,
-      tabs: tabsOf(rows).map(title => ({ gid: "", title })),
+      tabs: [...tabsOf(rows), ...extraTabs].map(title => ({ gid: "", title })),
       message: error ? `${label} · ${merged.length} kayıt · Google Sheets'e şu an ulaşılamıyor, son eşitlenen veri gösteriliyor.` : `${label} · ${merged.length} kayıt`,
     };
   }

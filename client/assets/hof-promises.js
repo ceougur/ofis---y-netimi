@@ -65,9 +65,14 @@
     const card = HOF.el(
       "div",
       { class: "hof-payment-action-card", role: "dialog", "aria-label": "Ödeme sözünü kapat" },
-      `<button type="button" class="hof-payment-action-close" aria-label="Kapat">×</button><div class="hof-payment-action-title">Ödeme sözünü kapat</div><div class="hof-payment-action-help">${esc(record.person || record.caseNo || "Bu kayıt")} · ${esc(record.promise)}</div><div class="hof-payment-action-buttons"><button type="button" data-action="paid" class="hof-payment-paid">Ödendi</button><button type="button" data-action="cancelled" class="hof-payment-cancelled">Ödeme iptal</button></div>`,
+      `<button type="button" class="hof-payment-action-close" aria-label="Kapat">×</button><div class="hof-payment-action-title">Ödeme sözünü kapat</div><div class="hof-payment-action-help">${esc(record.person || record.caseNo || "Bu kayıt")} · ${esc(record.promise)}</div><div class="hof-payment-action-buttons"><button type="button" data-action="paid" class="hof-payment-paid">Ödendi</button><button type="button" data-action="cancelled" class="hof-payment-cancelled">Ödeme iptal</button></div><button type="button" class="hof-payment-go" data-go>Kayda git →</button>`,
     );
     card.querySelector(".hof-payment-action-close").onclick = closeCard;
+    // Kayda git: satır seçilir ve kısa bir süre vurgulanır (v1.7.0).
+    card.querySelector("[data-go]").onclick = () => {
+      closeCard();
+      HOF.revealRecord?.(record.key);
+    };
     card.querySelectorAll("[data-action]").forEach(button => {
       button.onclick = () => closePromise(record, button.dataset.action, button);
     });

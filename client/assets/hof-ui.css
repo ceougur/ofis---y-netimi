@@ -2621,3 +2621,204 @@ html.hof-no-tahsilat [data-case-action="payment"] {
   padding-top: 5px;
   padding-bottom: 5px;
 }
+
+/* ---------- 1.7.0: seçili satır ve yönlendirme vurgusu ----------
+ * Seçili satır tam satır renkle, üst ve alt çizgiyle (tablo yana kaydırılmış olsa da görünür) ve satır başında kalın bir
+ * vurgu çizgisiyle ayrılır; üzerine gelinen satır daha açık bir tonla gösterilir (ikisi karışmaz). Başka bir yerden
+ * (arama, kart listesi, veri sağlığı, sohbet, yeni kayıt) gidilen satır kısa bir süre altın rengi bir bantla parlar,
+ * sonra seçili görünümüne yumuşakça döner. Yazı kalınlaşmaz: satır yüksekliği ve kolon genişlikleri değişmez. */
+.dynamic-table tbody tr {
+  transition: background-color 0.15s ease;
+}
+.dynamic-table tbody tr:hover {
+  background: #f5f9f6;
+}
+.dynamic-table tbody tr.selected,
+.dynamic-table tbody tr.selected:hover {
+  background: #e2f0e7;
+}
+.dynamic-table tbody tr.selected td {
+  --hof-cell-rest: inset 0 1px 0 #a9cfb8;
+  border-bottom-color: #a9cfb8;
+  box-shadow: var(--hof-cell-rest);
+  color: var(--do-ink-soft);
+}
+.dynamic-table tbody tr.selected td:first-child {
+  --hof-cell-rest: inset 4px 0 0 var(--do-accent), inset 0 1px 0 #a9cfb8;
+}
+.dynamic-table tbody tr.selected td strong {
+  color: var(--do-ink);
+}
+.dynamic-table tbody tr.hof-row-flash td {
+  animation: hof-row-flash 2s ease-out forwards;
+}
+.dynamic-table tbody tr.hof-row-flash td:first-child {
+  animation-name: hof-row-flash-first;
+}
+@keyframes hof-row-flash {
+  0%,
+  55% {
+    background-color: #fff0c7;
+    box-shadow: inset 0 2px 0 #dcae57, inset 0 -2px 0 #dcae57;
+  }
+  100% {
+    background-color: transparent;
+    box-shadow: var(--hof-cell-rest, inset 0 0 0 transparent);
+  }
+}
+@keyframes hof-row-flash-first {
+  0%,
+  55% {
+    background-color: #fff0c7;
+    box-shadow: inset 4px 0 0 #c48a2c, inset 0 2px 0 #dcae57, inset 0 -2px 0 #dcae57;
+  }
+  100% {
+    background-color: transparent;
+    box-shadow: var(--hof-cell-rest, inset 0 0 0 transparent);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .dynamic-table tbody tr.hof-row-flash td,
+  .dynamic-table tbody tr.hof-row-flash td:first-child {
+    animation: none;
+    background-color: #fff0c7;
+  }
+}
+
+/* ---------- 1.7.0: sekmeler (Tümü yok) ve aramada eşleşmesi olmayan sekmeler ---------- */
+.category-tab.hof-tab-nohit,
+.hof-section-tab.hof-tab-nohit {
+  opacity: 0.45;
+}
+.category-tab.hof-tab-nohit.active,
+.hof-section-tab.hof-tab-nohit.active {
+  opacity: 1;
+}
+
+/* ---------- 1.7.0: kart açıklaması, tıklanabilir dağılım, kart raporu ---------- */
+.hof-summary-card {
+  cursor: pointer;
+}
+.hof-explain {
+  margin-top: 14px;
+  padding: 10px 14px;
+  border: 1px solid var(--do-border);
+  border-radius: 12px;
+  background: var(--do-surface-soft);
+}
+.hof-explain summary {
+  color: var(--do-ink-soft);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.hof-explain ul {
+  margin: 8px 0 2px;
+  padding-left: 18px;
+  color: var(--do-muted);
+  font-size: 12px;
+  line-height: 1.55;
+}
+.hof-explain li + li {
+  margin-top: 4px;
+}
+.hof-bars-clickable {
+  gap: 4px;
+}
+.hof-bars-clickable li {
+  display: block;
+}
+.hof-bars-clickable button {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 4px 10px;
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background: none;
+  color: var(--do-ink);
+  font: inherit;
+  font-size: 13px;
+  text-align: left;
+  cursor: pointer;
+}
+.hof-bars-clickable button:hover,
+.hof-bars-clickable button:focus-visible {
+  border-color: var(--do-border);
+  background: var(--do-surface-soft);
+  outline: none;
+}
+.hof-bars-clickable i {
+  grid-column: 1 / -1;
+  height: 8px;
+  border-radius: 99px;
+  background: linear-gradient(90deg, var(--do-accent) var(--hof-bar), #edf3ef var(--hof-bar));
+}
+.hof-scope-report {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--do-border);
+}
+.hof-scope-report h3 {
+  margin: 0 0 2px;
+  color: var(--do-ink);
+  font-size: 14px;
+}
+.hof-report-title {
+  margin: 12px 0 6px;
+  color: var(--do-faint);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.hof-report-list {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.hof-report-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  color: var(--do-muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+.hof-report-list li.is-ok svg {
+  flex: 0 0 auto;
+  margin-top: 3px;
+  color: var(--do-accent);
+}
+.hof-report-list b {
+  color: var(--do-ink);
+}
+.hof-report-dot {
+  flex: 0 0 auto;
+  width: 8px;
+  height: 8px;
+  margin-top: 6px;
+  border-radius: 50%;
+  background: var(--do-gold);
+}
+.hof-payment-go {
+  display: block;
+  width: 100%;
+  margin-top: 8px;
+  padding: 7px;
+  border: 1px solid #d4e5d8;
+  border-radius: 8px;
+  background: #fff;
+  color: var(--do-accent);
+  font-size: 11px;
+  font-weight: 800;
+  cursor: pointer;
+}
+.hof-payment-go:hover,
+.hof-payment-go:focus-visible {
+  background: var(--do-accent-soft);
+  outline: none;
+}

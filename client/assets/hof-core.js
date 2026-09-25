@@ -43,7 +43,12 @@
 
   // ---------- Olay yolu ----------
   const bus = new EventTarget();
-  HOF.on = (name, handler) => bus.addEventListener(name, event => handler(event.detail));
+  // Aboneliği bırakan bir işlev döner.
+  HOF.on = (name, handler) => {
+    const listener = event => handler(event.detail);
+    bus.addEventListener(name, listener);
+    return () => bus.removeEventListener(name, listener);
+  };
   HOF.emit = (name, detail) => bus.dispatchEvent(new CustomEvent(name, { detail }));
   // Açılış tamamlandığında (veya tamamlanmışsa hemen) çalışır.
   HOF.isReady = false;
@@ -338,7 +343,47 @@
       }
     };
     promise.then(done, done);
+    // Tablonun gösterdiği satırların bir kopyası: bir kayda gidilirken (arama, sohbet, kart listeleri) kaydın hangi
+    // sekmede olduğunu bilmek için. Paket her istekte yanıtı ayrıca okur; burada klonu okunur.
+    promise
+      .then(response => (response.ok ? response.clone().json() : null))
+      .then(payload => {
+        const result = (Array.isArray(payload) ? payload[0] : payload)?.result?.data;
+        const data = result?.json ?? result;
+        if (!data || !Array.isArray(data.rows)) return;
+        HOF.data = { rows: data.rows, tabs: (data.tabs || []).map(tab => tab.title).filter(Boolean), at: Date.now() };
+        HOF.emit("rows", HOF.data);
+      })
+      .catch(() => {});
     return promise;
+  };
+  HOF.data = { rows: [], tabs: [], at: 0 };
+  // Kaydın sekmesi (tabloda birden çok satırı olan kayıtta ilk satırınki); bilinmiyorsa null.
+  HOF.tabOfKey = key => {
+    const row = HOF.data.rows.find(item => item.__hofKey === key);
+    return row ? String(row.__sheet || "").trim() : null;
+  };
+
+  // ---------- Satırı belirginleştirme ----------
+  // Başka bir yerden (arama, kart listesi, sohbet, veri sağlığı) gidilen satır görünür alana kaydırılır, seçilir ve
+  // kısa bir süre vurgulanır. Seçili satırın kalıcı görünümü CSS'tedir (hof-ui.css: "Seçili satır").
+  HOF.flashRow = row => {
+    if (!row || !row.isConnected) return;
+    const key = row.dataset.hofKey || "";
+    const reduced = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+    row.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "center" });
+    // React seçimi işledikten sonra (satırın sınıfını yeniden yazar) vurgu eklenir.
+    requestAnimationFrame(() =>
+      requestAnimationFrame(() => {
+        const target = row.isConnected ? row : key ? [...document.querySelectorAll(".dynamic-table tbody tr")].find(item => item.dataset.hofKey === key) : null;
+        if (!target) return;
+        target.classList.remove("hof-row-flash");
+        void target.offsetWidth; // aynı satıra tekrar gidilince animasyon yeniden başlasın
+        target.classList.add("hof-row-flash");
+        clearTimeout(target.hofFlashTimer);
+        target.hofFlashTimer = setTimeout(() => target.classList.remove("hof-row-flash"), 2200);
+      }),
+    );
   };
   HOF.refreshData = () => {
     if (rowsInFlight) refreshPending = true;

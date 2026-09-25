@@ -89,7 +89,9 @@ export function registerWorkspaceRoutes(router, { store, auth, audit, dataset, c
   });
 
   // ---- Kaynak satırları: yeni kayıt, silme, hücre düzeltme ----
-  const createRecord = (user, source, values, requestedKey) => {
+  // sheet: kaydın eklendiği sekme (v1.7.0). Kayıt o sekmede görünür; sekme sonradan kaldırılırsa alanlarının en çok
+  // örtüştüğü sekmeye yerleşir (dataset.view).
+  const createRecord = (user, source, values, requestedKey, sheet = "") => {
     const clean = {};
     for (const [key, value] of Object.entries(values || {}).slice(0, 500)) {
       const name = String(key).trim().slice(0, 200);
@@ -97,6 +99,7 @@ export function registerWorkspaceRoutes(router, { store, auth, audit, dataset, c
       if (name && !name.startsWith("__") && content) clean[name] = content;
     }
     if (!Object.keys(clean).length) throw new HttpError(400, "En az bir bilgi girilmelidir.");
+    const tab = String(sheet || "").trim().slice(0, 200);
     // Kimlik: verinin kimlik kolonu (1.6.0, ör. "HASTA NO"), yoksa dosya numarası kolonları, o da yoksa yeni kimlik.
     const identity = dataset.identity?.();
     const identityValue = identity?.mode === "column" ? String(clean[identity.column] || "").trim().replace(/\s+/g, " ") : "";
@@ -107,10 +110,11 @@ export function registerWorkspaceRoutes(router, { store, auth, audit, dataset, c
     }
     const recordId = newId("record");
     const timestamp = now();
-    store.run("INSERT INTO records (id, source_name, case_key, values_json, created_by, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)", recordId, source, key, JSON.stringify(clean), user.id, timestamp, timestamp);
-    audit(user, "source.row.created", recordId, { sourceName: source, caseKey: key });
+    const stored = tab ? { ...clean, __sheet: tab } : clean;
+    store.run("INSERT INTO records (id, source_name, case_key, values_json, created_by, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)", recordId, source, key, JSON.stringify(stored), user.id, timestamp, timestamp);
+    audit(user, "source.row.created", recordId, { sourceName: source, caseKey: key, ...(tab ? { sheet: tab } : {}) });
     changed(user, "records", { caseKey: key });
-    return { id: recordId, sourceName: source, caseKey: key, values: clean, createdAt: timestamp };
+    return { id: recordId, sourceName: source, caseKey: key, values: clean, sheet: tab, createdAt: timestamp };
   };
 
   router.get("/api/workspace/records", async ({ req, res, url }) => {
@@ -123,7 +127,7 @@ export function registerWorkspaceRoutes(router, { store, auth, audit, dataset, c
   router.post("/api/workspace/records", async ({ req, res }) => {
     const user = auth.requirePermission(req, "records.create");
     const body = await readJson(req);
-    ok(res, createRecord(user, sourceNameOf(body), body.values, text(body.caseKey || body.case_key)));
+    ok(res, createRecord(user, sourceNameOf(body), body.values, text(body.caseKey || body.case_key), text(body.sheet)));
   });
 
   // v1.0.0 "Yeni kayıt" penceresinin sabit alanları için uyumluluk ucu.
@@ -399,10 +403,16 @@ export function registerWorkspaceRoutes(router, { store, auth, audit, dataset, c
     refreshRequired();
   });
 
-  router.get("/api/workspace/sources/columns", async ({ req, res }) => {
+  // Yeni kayıt formunun kolonları: sekme verilirse yalnızca o sekmenin kolonları (sayfanın kendi sırasıyla, uygulamada
+  // eklenen kayıtların fazladan alanları sonda); verilmezse tüm kolonlar.
+  router.get("/api/workspace/sources/columns", async ({ req, res, url }) => {
     auth.requireUser(req);
     const view = await dataset.view();
-    ok(res, { sheetUrl: view.rows.length ? DATASET_KEY : "", connected: view.connected, columns: columnOrder(view.rows || []), excel: false });
+    const tab = text(url.searchParams.get("tab"));
+    const rows = view.rows || [];
+    const scoped = tab ? rows.filter(row => String(row.__sheet || "") === tab) : rows;
+    const ordered = [...scoped.filter(row => !row.__hofRecord), ...scoped.filter(row => row.__hofRecord)];
+    ok(res, { sheetUrl: rows.length ? DATASET_KEY : "", connected: view.connected, tab: tab && scoped.length ? tab : "", columns: columnOrder(ordered.length ? ordered : rows), excel: false });
   });
 
   // ---- Merkezi dosya notları (arayüzdeki "Notu kaydet") ----

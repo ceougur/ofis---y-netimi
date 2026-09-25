@@ -1,4 +1,5 @@
-/* DestekOfis — akıllı arama: Türkçe karakter duyarsız eşleşme, Enter ile ilk sonuca gitme, Ctrl+K kısayolu. */
+/* DestekOfis — akıllı arama: Türkçe karakter duyarsız eşleşme, Enter ile ilk sonuca gitme (gerekirse sonucun sekmesine
+ * geçerek), Ctrl+K kısayolu. */
 (() => {
   "use strict";
   const HOF = window.HOF;
@@ -17,18 +18,31 @@
     input.dataset.hofSearch = "1";
     const field = input.closest(".search-field");
     if (field && !field.querySelector(".smart-search-hint")) field.appendChild(HOF.el("span", { class: "smart-search-hint", text: "Enter · ilk sonuca git  ·  Ctrl+K" }));
-    input.addEventListener("keydown", event => {
+    // Enter: açık sekmedeki ilk sonuca, açık sekmede sonuç yoksa sonucu olan ilk sekmedeki ilk kayda gider (v1.7.0: "Tümü"
+    // sekmesi olmadığından arama her sekmeyi tarar; sekme düğmeleri eşleşme sayısını gösterir).
+    input.addEventListener("keydown", async event => {
       if (event.key !== "Enter") return;
       const query = HOF.normalize(input.value);
       if (!query) return;
       const rows = [...document.querySelectorAll(".dynamic-table tbody tr")];
       const match = rows.find(row => HOF.normalize(row.textContent).includes(query));
-      if (!match) return HOF.toast("Eşleşen kayıt bulunamadı.");
-      HOF.table?.revealRow(match);
-      match.scrollIntoView({ behavior: "smooth", block: "center" });
-      match.click();
-      match.classList.add("smart-search-hit");
-      setTimeout(() => match.classList.remove("smart-search-hit"), 1600);
+      if (match) {
+        HOF.table?.revealRow(match);
+        if (!match.classList.contains("selected")) match.click();
+        HOF.flashRow(match);
+        return;
+      }
+      // Paketin arama kuralıyla aynı: küçük harfe çevrilmiş değerlerde geçiyor mu (sekmeye geçince tabloda görünsün).
+      const exact = input.value.trim().toLocaleLowerCase("tr-TR");
+      const order = HOF.tabLabels ? HOF.tabLabels() : [];
+      const rank = row => {
+        const index = order.indexOf(String(row.__sheet || "").trim());
+        return index < 0 ? order.length : index;
+      };
+      const hits = (HOF.data?.rows || []).filter(row => row.__hofKey && Object.values(row).join(" ").toLocaleLowerCase("tr-TR").includes(exact));
+      if (!hits.length) return HOF.toast("Eşleşen kayıt bulunamadı.");
+      hits.sort((a, b) => rank(a) - rank(b));
+      await HOF.revealRecord?.(hits[0].__hofKey, { keepSearch: true });
     });
   }
 

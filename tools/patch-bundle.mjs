@@ -64,6 +64,54 @@ export const PATCHES = [
     find: 'children:"Akıllı tablo otomasyonu"',
     replace: 'children:"Hukuk ofisi yönetimi"',
   },
+  // ---- v1.7.0: "Tümü" sekmesi kaldırıldı ----
+  // Farklı kolonlu sekmeleri tek tabloya zorlamak boş kolonlar üretiyordu (ör. çek sekmesinde "icra dairesi"). Artık her
+  // zaman bir sekme açıktır: varsayılan ilk sekme (sunucunun sırasıyla), sayfa yenilenince en son açılan sekme. Arama
+  // kutusu dolunca her sekmenin düğmesi o sekmedeki eşleşme sayısını gösterir; eşleşmesi olmayan sekmeler soluklaşır.
+  {
+    id: "tumu-yok-kapsam",
+    why: "Tümü birleşik görünümü yerine her zaman bir sekme; sekme sırası sunucunun; aramada sekme başına eşleşme sayısı.",
+    find: 'st=C.useMemo(()=>{const Z=new Set;for(const gt of it)gt.__sheet?.trim()&&Z.add(gt.__sheet.trim());for(const gt of tt?.tabs??[])gt.title.trim()&&Z.add(gt.title.trim());return Array.from(Z)},[it,tt?.tabs]),ut=C.useMemo(()=>P==="Tümü"?it:it.filter(Z=>Z.__sheet===P),[it,P]),w=C.useMemo(()=>dT(ut,P==="Tümü"?nt:P),[ut,P,nt])',
+    replace:
+      'st=C.useMemo(()=>{const Z=new Set;for(const gt of tt?.tabs??[])gt.title.trim()&&Z.add(gt.title.trim());for(const gt of it)gt.__sheet?.trim()&&Z.add(gt.__sheet.trim());return Array.from(Z)},[it,tt?.tabs]),hofP=st.includes(P)?P:st[0]??"Tümü",hofQ=n.trim().toLocaleLowerCase("tr-TR"),hofText=C.useMemo(()=>hofQ?it.map(Z=>Object.values(Z).join(" ").toLocaleLowerCase("tr-TR")):null,[it,!!hofQ]),hofHits=C.useMemo(()=>{const Z=new Map;let gt=0;it.forEach((Yt,Dt)=>{if(hofQ&&!hofText[Dt].includes(hofQ))return;const xe=Yt.__sheet?.trim()||"";Z.set(xe,(Z.get(xe)||0)+1),gt++});return{total:gt,count:Yt=>Z.get(Yt)||0}},[it,hofText,hofQ]),ut=C.useMemo(()=>hofP==="Tümü"?it:it.filter(Z=>Z.__sheet===hofP),[it,hofP]),w=C.useMemo(()=>dT(ut,nt),[ut,nt])',
+  },
+  {
+    id: "sekme-hatirla",
+    why: "Sayfa yenilenince (ör. güncellemeden sonra) en son açılan sekme açılır.",
+    find: '[P,M]=C.useState("Tümü")',
+    replace: '[P,M]=C.useState(()=>{try{return sessionStorage.getItem("hof-tab")||"Tümü"}catch{return"Tümü"}})',
+  },
+  {
+    id: "tumu-dugmesi-yok",
+    why: "Tümü düğmesi kaldırıldı; sekme düğmeleri aramada eşleşme sayısını gösterir.",
+    find: 'children:P==="Tümü"?`${it.length} toplam kayıt`:`${ut.length} kayıt`})]}),x.jsxs("div",{"data-loc":"client/src/pages/Home.tsx:86",className:"category-tabs",children:[x.jsxs("button",{"data-loc":"client/src/pages/Home.tsx:86",className:P==="Tümü"?"category-tab active":"category-tab",onClick:()=>M("Tümü"),children:["Tümü ",x.jsx("span",{"data-loc":"client/src/pages/Home.tsx:86",children:it.length})]}),st.map(Z=>x.jsxs("button",{"data-loc":"client/src/pages/Home.tsx:86",className:P===Z?"category-tab active":"category-tab",onClick:()=>M(Z),title:Z,children:[Z," ",x.jsx("span",{"data-loc":"client/src/pages/Home.tsx:86",children:it.filter(gt=>gt.__sheet===Z).length})]},Z))]})',
+    replace:
+      'children:hofQ?`${hofHits.total} sonuç · tüm sekmelerde`:st.length>1?`${ut.length} kayıt · toplam ${it.length}`:`${ut.length} kayıt`})]}),x.jsxs("div",{"data-loc":"client/src/pages/Home.tsx:86",className:"category-tabs",children:[st.map(Z=>{const hofN=hofHits.count(Z);return x.jsxs("button",{"data-loc":"client/src/pages/Home.tsx:86",className:(hofP===Z?"category-tab active":"category-tab")+(hofQ&&!hofN?" hof-tab-nohit":""),onClick:()=>{M(Z);try{sessionStorage.setItem("hof-tab",Z)}catch{}},title:Z,"aria-pressed":hofP===Z,children:[Z," ",x.jsx("span",{"data-loc":"client/src/pages/Home.tsx:86",children:hofN})]},Z)})]})',
+  },
+  {
+    id: "tek-sekmede-serit-yok",
+    why: "Tek sekmeli veride sekme şeridi gereksiz yer kaplamasın.",
+    find: 'st.length>0&&x.jsxs("section",{"data-loc":"client/src/pages/Home.tsx:86",className:"category-bar"',
+    replace: 'st.length>1&&x.jsxs("section",{"data-loc":"client/src/pages/Home.tsx:86",className:"category-bar"',
+  },
+  {
+    id: "tablo-basligi-sekme",
+    why: "Sayfa başlığı verinin adı, tablo başlığı açık sekmenin adı.",
+    find: 'className:"panel-title",children:w.title',
+    replace: 'className:"panel-title",children:st.length>1&&hofP!=="Tümü"?hofP:w.title',
+  },
+  {
+    id: "disa-aktar-sekme-adi",
+    why: "Dışa aktarılan dosya açık sekmenin kayıtlarıdır; dosya adında sekmenin adı da yazar.",
+    find: 'Yt.download=`${w.title||"tablo"}.csv`,Yt.click(),URL.revokeObjectURL(gt),ja.success("Analiz edilen tablo CSV olarak indirildi")',
+    replace: 'Yt.download=`${w.title||"tablo"}${st.length>1&&hofP!=="Tümü"?` - ${hofP.replace(/[\\\\/:*?"<>|]+/g," ")}`:""}.csv`,Yt.click(),URL.revokeObjectURL(gt),ja.success(st.length>1?`“${hofP}” sekmesi CSV olarak indirildi`:"Analiz edilen tablo CSV olarak indirildi")',
+  },
+  {
+    id: "tum-kayitlar-sayisi",
+    why: "Kenar çubuğundaki 'Tüm kayıtlar' sayısı açık sekmenin değil, tüm verinin kayıt sayısı.",
+    find: '" Tüm kayıtlar ",x.jsx("span",{"data-loc":"client/src/pages/Home.tsx:82",className:"nav-count",children:w.rows.length})',
+    replace: '" Tüm kayıtlar ",x.jsx("span",{"data-loc":"client/src/pages/Home.tsx:82",className:"nav-count",children:it.length})',
+  },
 ];
 
 // Stil dosyası: Google Fonts'a giden dış @import kaldırılır (yazı tipleri artık sunucudan, çevrimdışı çalışır).
