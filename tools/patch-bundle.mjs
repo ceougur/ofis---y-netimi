@@ -62,7 +62,7 @@ export const PATCHES = [
     id: "marka-alt-baslik",
     why: "Ürün alt başlığı.",
     find: 'children:"Akıllı tablo otomasyonu"',
-    replace: 'children:"Hukuk ofisi yönetimi"',
+    replace: 'children:"Ofis yönetimi"',
   },
   // ---- v1.7.0: "Tümü" sekmesi kaldırıldı ----
   // Farklı kolonlu sekmeleri tek tabloya zorlamak boş kolonlar üretiyordu (ör. çek sekmesinde "icra dairesi"). Artık her
@@ -111,6 +111,19 @@ export const PATCHES = [
     why: "Kenar çubuğundaki 'Tüm kayıtlar' sayısı açık sekmenin değil, tüm verinin kayıt sayısı.",
     find: '" Tüm kayıtlar ",x.jsx("span",{"data-loc":"client/src/pages/Home.tsx:82",className:"nav-count",children:w.rows.length})',
     replace: '" Tüm kayıtlar ",x.jsx("span",{"data-loc":"client/src/pages/Home.tsx:82",className:"nav-count",children:it.length})',
+  },
+  // ---- v2.0.0: sektörden bağımsız varsayılanlar ----
+  {
+    id: "notr-varsayilanlar",
+    why: "Paketin iç kayıt özeti eksik alanlarda hukuka özgü metin (borçlu, icra, gayrimenkul satış) üretiyordu.",
+    find: 'client:u||"Borçlu belirtilmemiş",creditor:s,type:d||"Gayrimenkul satış dosyası",court:f||"İcra bilgisi belirtilmemiş"',
+    replace: 'client:u||"Belirtilmemiş",creditor:s,type:d||"Kayıt",court:f||"Belirtilmemiş"',
+  },
+  {
+    id: "hukuk-suzgeci-yalniz-hukukta",
+    why: "Dosya/borçlu/icra kolonu görünce açılan durum süzgeci (İcra aşamasında, Kapanmış) yalnızca hukuk profilinde çalışsın.",
+    find: 'z=!!(q.length&&w.columns.some(Z=>/dosya|borçlu|borclu|icra/i.test(Z.label)))',
+    replace: 'z=!!(window.HOF?.modules?.haciz&&q.length&&w.columns.some(Z=>/dosya|borçlu|borclu|icra/i.test(Z.label)))',
   },
 ];
 

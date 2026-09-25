@@ -2883,3 +2883,7 @@ html.hof-no-tahsilat [data-case-action="payment"] {
 .hof-license-contact span { font-size: 13px; opacity: .85; }
 .hof-license-contact-links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
 .hof-license-phone { font-weight: 700; white-space: nowrap; color: inherit; text-decoration: underline; text-underline-offset: 3px; align-self: center; }
+
+/* Hukuk dışı profillerde paketin hukuka özgü durum süzgeci görünmez (profil sonradan değişirse de). */
+html.hof-no-haciz .filter-button,
+html.hof-no-haciz .filter-strip { display: none !important; }
