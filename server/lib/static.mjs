@@ -16,6 +16,7 @@ const TYPES = {
   ".ico": "image/x-icon",
   ".woff2": "font/woff2",
   ".txt": "text/plain; charset=utf-8",
+  ".pdf": "application/pdf",
 };
 const COMPRESSIBLE = new Set([".html", ".js", ".mjs", ".css", ".json", ".svg", ".webmanifest", ".txt"]);
 const HIDDEN = /(^|\/)(\.|__manus__)/;

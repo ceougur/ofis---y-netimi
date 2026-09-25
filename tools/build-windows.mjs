@@ -172,6 +172,8 @@ async function main() {
   mkdirSync(path.join(stage, "docs"), { recursive: true });
   cpSync(path.join(root, "docs", "KURULUM-VE-KULLANIM.md"), path.join(stage, "docs", "KURULUM-VE-KULLANIM.md"));
   await renderGuide(path.join(stage, "docs"));
+  // Resimli kullanım kılavuzu (PDF): Başlat menüsünde ve kurulum sonunda açılır; programın içinden de açılır (/kilavuz/).
+  cpSync(path.join(root, "client", "kilavuz", "DestekOfis-Kullanim-Kilavuzu.pdf"), path.join(stage, "docs", "DestekOfis-Kullanim-Kilavuzu.pdf"));
 
   step("Çalışma zamanı: Node.js ve nssm");
   mkdirSync(path.join(stage, "runtime"), { recursive: true });

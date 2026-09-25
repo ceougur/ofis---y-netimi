@@ -1,0 +1,53 @@
+@page { size: A4; margin: 16mm 15mm 18mm; }
+:root {
+  --ink: #142b25; --soft: #2c4a40; --muted: #5d6f68; --line: #d9e6de; --bg: #f7f5f0;
+  --accent: #1f6a50; --accent-soft: #e6f3eb; --gold: #b07d22; --gold-soft: #fbf3e2; --red: #b3473a; --red-soft: #fdeeeb;
+}
+* { box-sizing: border-box; }
+html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+body { margin: 0; font: 11pt/1.55 "DejaVu Sans", "Segoe UI", system-ui, sans-serif; color: var(--ink); background: #fff; }
+main { max-width: 780px; margin: 0 auto; padding: 24px 20px 40px; }
+h1 { font-size: 22pt; line-height: 1.15; margin: 0 0 6px; letter-spacing: -0.01em; }
+h2 { font-size: 15pt; margin: 30px 0 10px; padding-top: 6px; border-top: 2px solid var(--line); break-after: avoid; }
+h3 { font-size: 12pt; margin: 18px 0 6px; break-after: avoid; }
+p { margin: 6px 0 10px; }
+ul, ol { margin: 6px 0 12px; padding-left: 22px; }
+li { margin: 3px 0; }
+.sub { color: var(--muted); font-size: 10.5pt; margin-bottom: 18px; }
+.cover { border-radius: 16px; padding: 22px 24px; background: linear-gradient(135deg, #1f6a50, #17563f); color: #fff; margin-bottom: 18px; }
+.cover h1 { color: #fff; }
+.cover .sub { color: #d7ece2; margin: 0; }
+.brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 11pt; margin-bottom: 14px; }
+.brand b { display: inline-grid; place-items: center; width: 30px; height: 30px; border-radius: 8px; background: #fff; color: var(--accent); font-size: 15pt; }
+.cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 14px 0 6px; }
+.card { border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; background: #fff; break-inside: avoid; }
+.card small { display: block; color: var(--muted); font-size: 8.5pt; text-transform: uppercase; letter-spacing: 0.04em; }
+.card strong { display: block; font-size: 16pt; margin: 2px 0; }
+.card span { color: var(--soft); font-size: 9.5pt; }
+.box { border-radius: 12px; padding: 12px 14px; margin: 12px 0; break-inside: avoid; border: 1px solid var(--line); background: #fbfdfb; }
+.box.tip { background: var(--accent-soft); border-color: #bfdccc; }
+.box.warn { background: var(--gold-soft); border-color: #ecd9ad; }
+.box.stop { background: var(--red-soft); border-color: #eec2bb; }
+.box b.t { display: block; margin-bottom: 4px; }
+table { width: 100%; border-collapse: collapse; margin: 8px 0 14px; font-size: 9.8pt; break-inside: auto; }
+th, td { text-align: left; vertical-align: top; padding: 6px 8px; border-bottom: 1px solid var(--line); }
+th { background: #eef5f0; font-size: 9pt; color: var(--soft); }
+tr { break-inside: avoid; }
+code, .mono { font-family: "DejaVu Sans Mono", Consolas, monospace; font-size: 9pt; background: #f1f4f2; padding: 1px 4px; border-radius: 4px; }
+pre { font-family: "DejaVu Sans Mono", Consolas, monospace; font-size: 8.4pt; background: #f4f7f5; border: 1px solid var(--line); border-radius: 8px; padding: 10px; white-space: pre-wrap; word-break: break-word; }
+figure { margin: 10px 0 16px; break-inside: avoid; }
+figure img { width: 100%; border: 1px solid var(--line); border-radius: 10px; display: block; }
+figure.half img { width: 62%; margin: 0 auto; }
+figcaption { color: var(--muted); font-size: 9pt; margin-top: 4px; text-align: center; }
+.steps { counter-reset: s; list-style: none; padding: 0; }
+.steps > li { counter-increment: s; position: relative; padding-left: 36px; margin: 10px 0; break-inside: avoid; }
+.steps > li::before { content: counter(s); position: absolute; left: 0; top: 0; width: 24px; height: 24px; border-radius: 50%; background: var(--accent); color: #fff; font-weight: 800; font-size: 10pt; display: grid; place-items: center; }
+.pill { display: inline-block; padding: 1px 8px; border-radius: 999px; font-size: 8.5pt; font-weight: 700; }
+.pill.g { background: var(--accent-soft); color: var(--accent); }
+.pill.y { background: var(--gold-soft); color: var(--gold); }
+.pill.r { background: var(--red-soft); color: var(--red); }
+.toc { columns: 2; font-size: 10pt; }
+.toc li { break-inside: avoid; }
+.foot { margin-top: 28px; color: var(--muted); font-size: 8.5pt; border-top: 1px solid var(--line); padding-top: 8px; }
+.pb { break-before: page; }
+svg text { font-family: "DejaVu Sans", sans-serif; }

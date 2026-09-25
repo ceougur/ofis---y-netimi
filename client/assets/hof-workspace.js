@@ -268,6 +268,7 @@
       ${sideItem("newRecord", "+", `Yeni ${esc(HOF.vocab.record)}`)}
       ${sideItem("liens", "!", "Haciz uyarıları", "warn")}
       ${sideItem("reports", "↗", "Personel raporu", "", "reports.view")}
+      ${sideItem("guide", "?", "Kullanım kılavuzu")}
       <div class="hof-user"></div>`,
     );
     const bottom = sidebar.querySelector(".sidebar-bottom");
@@ -282,6 +283,7 @@
       else if (action === "newTask") actions.task();
       else if (action === "newRecord") HOF.emit("new-record");
       else if (action === "liens") openLiens();
+      else if (action === "guide") window.open("/kilavuz/DestekOfis-Kullanim-Kilavuzu.pdf", "_blank", "noopener");
       else if (action === "reports") openReports();
       else if (action === "profile") openProfile();
       else if (action === "password") HOF.changePassword();

@@ -2887,3 +2887,6 @@ html.hof-no-tahsilat [data-case-action="payment"] {
 /* Hukuk dışı profillerde paketin hukuka özgü durum süzgeci görünmez (profil sonradan değişirse de). */
 html.hof-no-haciz .filter-button,
 html.hof-no-haciz .filter-strip { display: none !important; }
+
+.hof-start-guide { margin-top: 14px; font-size: 14px; opacity: .85; }
+.hof-start-guide a { font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }

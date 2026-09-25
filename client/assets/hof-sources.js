@@ -257,6 +257,7 @@
           ${canManage()
             ? `<div class="hof-start-actions">${dropHtml(false)}<div class="hof-start-or"><span>veya</span></div>${linkHtml}<small class="hof-start-hint">Sheet paylaşımı "Bağlantıya sahip olan herkes görüntüleyebilir" olmalıdır.</small></div>`
             : '<p class="hof-start-wait">Yöneticiniz veri yüklediğinde tablo burada görünecek.</p>'}
+          <p class="hof-start-guide">İlk kez mi kullanıyorsunuz? <a href="/kilavuz/DestekOfis-Kullanim-Kilavuzu.pdf" target="_blank" rel="noopener">Resimli kullanım kılavuzunu açın</a>.</p>
         </div>`;
       const zone = card.querySelector(".hof-drop");
       if (zone) wireDrop(zone);

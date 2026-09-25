@@ -145,6 +145,11 @@ try {
     expect(heading.includes("Excelini yükle ya da Google Sheets linkini yapıştır"), `başlık: ${heading}`);
     const visibleUploads = await admin.$$eval("button", nodes => nodes.filter(node => /Yeni tablo yükle|Tabloyu değiştir/.test(node.textContent) && node.offsetParent).length);
     expect(visibleUploads === 0, `görünen eski yükleme düğmesi: ${visibleUploads}`);
+    const guideHref = await admin.getAttribute("#hof-start .hof-start-guide a", "href");
+    expect(guideHref === "/kilavuz/DestekOfis-Kullanim-Kilavuzu.pdf", `kılavuz bağlantısı: ${guideHref}`);
+    const guide = await admin.evaluate(href => fetch(href).then(response => ({ status: response.status, type: response.headers.get("content-type") })), guideHref);
+    expect(guide.status === 200 && guide.type === "application/pdf", `kılavuz: ${JSON.stringify(guide)}`);
+    expect(await admin.$('#hof-sidecard [data-action="guide"]'), "operasyon merkezinde kılavuz bağlantısı");
     await admin.screenshot({ path: path.join(artifacts, "02-bos-kaynak.png") });
   });
 

@@ -103,7 +103,8 @@ Source: "{#StageDir}\docs\*"; DestDir: "{app}\belgeler"; Flags: ignoreversion re
 Name: "{autodesktop}\DestekOfis"; Filename: "{app}\launcher\{#AppExe}"; Tasks: masaustu; Comment: "DestekOfis'i aç"
 Name: "{group}\DestekOfis"; Filename: "{app}\launcher\{#AppExe}"; Comment: "DestekOfis'i aç"
 Name: "{group}\Yedek al"; Filename: "{app}\bin\yedek-al.cmd"; Components: sunucu
-Name: "{group}\Kullanım kılavuzu"; Filename: "{app}\belgeler\KURULUM-VE-KULLANIM.html"
+Name: "{group}\Kullanım kılavuzu"; Filename: "{app}\belgeler\DestekOfis-Kullanim-Kilavuzu.pdf"
+Name: "{group}\Kurulum ve teknik notlar"; Filename: "{app}\belgeler\KURULUM-VE-KULLANIM.html"
 Name: "{group}\DestekOfis'i kaldır"; Filename: "{uninstallexe}"
 
 [INI]
@@ -111,6 +112,7 @@ Filename: "{group}\DestekOfis yönetim paneli.url"; Section: "InternetShortcut";
 
 [Run]
 Filename: "{app}\launcher\{#AppExe}"; Description: "DestekOfis'i şimdi aç"; Flags: postinstall nowait skipifsilent
+Filename: "{app}\belgeler\DestekOfis-Kullanim-Kilavuzu.pdf"; Description: "Kullanım kılavuzunu aç (resimli, adım adım)"; Flags: postinstall shellexec nowait skipifsilent
 
 [UninstallRun]
 Filename: "{cmd}"; Parameters: "/C ""{app}\bin\servis-kaldir.cmd"""; Flags: runhidden waituntilterminated; RunOnceId: "DestekOfisServisKaldir"; Components: sunucu

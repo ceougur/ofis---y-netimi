@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<title>DestekOfis Kullanım Kılavuzu (2.0)</title>
+<link rel="stylesheet" href="ortak.css">
+</head>
+<body>
+<main>
+
+<section class="cover">
+  <div class="brand"><b>D</b> DestekOfis</div>
+  <h1>Kullanım Kılavuzu</h1>
+  <p class="sub">Sürüm 2.0 · Bilgisayar bilgisi gerektirmeyen, adım adım anlatım · Eylül 2026</p>
+</section>
+
+<p>Bu kılavuz DestekOfis'i ilk kez kullanacak biri için yazıldı. Teknik terim kullanmamaya çalıştık; kullandığımız birkaç kelimenin ne demek olduğu hemen aşağıda. Her bölümde önce <b>ne işe yaradığını</b>, sonra <b>nasıl yapıldığını</b> anlatıyoruz.</p>
+
+<ol class="toc">
+  <li>DestekOfis nedir, nasıl çalışır?</li>
+  <li>Bilmeniz gereken birkaç kelime</li>
+  <li>Kurulum</li>
+  <li>İlk giriş</li>
+  <li>Lisans: deneme, lisans anahtarı, internetsiz kod</li>
+  <li>Verinizi yükleme</li>
+  <li>Günlük kullanım</li>
+  <li>Yönetim: kullanıcılar ve yedekler</li>
+  <li>Ekrandaki uyarılar ne demek?</li>
+  <li>Sık sorulan sorular</li>
+</ol>
+
+<h2>1. DestekOfis nedir, nasıl çalışır?</h2>
+<p>DestekOfis, ofisinizdeki kayıtları (dosyalar, müşteriler, portföyler, hastalar, siparişler…) <b>tek bir yerde</b> toplayan bir programdır. Zaten Excel'de veya Google Sheets'te tuttuğunuz tabloyu yüklersiniz; program tabloyu okur, sütunlarınızı tanır ve ekranları ona göre kendisi hazırlar. Sonra ofisteki herkes aynı kayıtları görür, not ekler, tahsilat işler, görev verir.</p>
+
+<figure>
+<svg viewBox="0 0 760 250" width="100%" role="img" aria-label="Sunucu bilgisayar, personel bilgisayarları ve lisans servisi">
+  <rect x="270" y="70" width="220" height="110" rx="14" fill="#1f6a50"/>
+  <text x="380" y="108" text-anchor="middle" fill="#fff" font-size="17" font-weight="700">Sunucu bilgisayar</text>
+  <text x="380" y="132" text-anchor="middle" fill="#d7ece2" font-size="12">Kayıtlar burada saklanır</text>
+  <text x="380" y="152" text-anchor="middle" fill="#d7ece2" font-size="12">Lisans buna bağlıdır</text>
+  <g fill="#fff" stroke="#c3d8cb" stroke-width="2">
+    <rect x="20" y="20" width="170" height="56" rx="12"/><rect x="20" y="97" width="170" height="56" rx="12"/><rect x="20" y="174" width="170" height="56" rx="12"/>
+  </g>
+  <g font-size="13" fill="#142b25" text-anchor="middle">
+    <text x="105" y="53">Personel bilgisayarı</text><text x="105" y="130">Personel bilgisayarı</text><text x="105" y="207">Personel bilgisayarı</text>
+  </g>
+  <g stroke="#8fb9a5" stroke-width="2.5"><line x1="190" y1="48" x2="270" y2="110"/><line x1="190" y1="125" x2="270" y2="125"/><line x1="190" y1="202" x2="270" y2="140"/></g>
+  <text x="230" y="238" text-anchor="middle" fill="#5d6f68" font-size="11">ofis ağı</text>
+  <rect x="580" y="92" width="160" height="66" rx="14" fill="#fbf3e2" stroke="#ecd9ad" stroke-width="2"/>
+  <text x="660" y="120" text-anchor="middle" fill="#6b4d12" font-size="14" font-weight="700">Lisans servisi</text>
+  <text x="660" y="140" text-anchor="middle" fill="#6b4d12" font-size="11">(internette)</text>
+  <line x1="490" y1="125" x2="580" y2="125" stroke="#cf9f4b" stroke-width="2.5" stroke-dasharray="6 5"/>
+  <text x="535" y="116" text-anchor="middle" fill="#5d6f68" font-size="10">günde birkaç kez</text>
+</svg>
+<figcaption>Kayıtlar tek bir bilgisayarda (sunucu) durur. Diğer bilgisayarlar ona bağlanır. Sunucu, lisansı zaman zaman internetten doğrular.</figcaption>
+</figure>
+
+<ul>
+  <li><b>Kayıtlarınız ofisinizde kalır.</b> Program bulutta değil, ofisteki bir bilgisayarda çalışır. Verileriniz başka bir yere gönderilmez; tablonuzun incelenmesi de sunucuda yapılır.</li>
+  <li><b>Excel dosyanız bozulmaz.</b> Program yüklediğiniz dosyayı değiştirmez; yaptığınız işlemler ayrıca saklanır.</li>
+  <li><b>Kim ne yaptı, görünür.</b> Her not, düzeltme ve tahsilat, yapan kişinin adı ve saatiyle kaydedilir.</li>
+</ul>
+
+<h2>2. Bilmeniz gereken birkaç kelime</h2>
+<table>
+  <tr><th style="width:26%">Kelime</th><th>Anlamı</th></tr>
+  <tr><td><b>Sunucu bilgisayar</b></td><td>Kayıtların saklandığı, ofiste hep açık duran bilgisayar. Programın "merkezi". Lisans bu bilgisayara bağlıdır.</td></tr>
+  <tr><td><b>Personel bilgisayarı</b></td><td>Çalışanların kullandığı diğer bilgisayarlar. Bunlar için ayrıca lisans gerekmez.</td></tr>
+  <tr><td><b>Yönetici</b></td><td>Programı kuran ve ayarlayan kişi (genelde ofis sahibi). Kullanıcı ekler, veri yükler, lisansı girer.</td></tr>
+  <tr><td><b>Deneme (demo)</b></td><td>Programı satın almadan önce ücretsiz kullanabildiğiniz süre (30 gün).</td></tr>
+  <tr><td><b>Lisans</b></td><td>Programı satın aldığınızı gösteren kullanım hakkı. Size <b>lisans anahtarı</b> olarak verilir: <code>DO-XXXXX-XXXXX-XXXXX-XXXXX</code>.</td></tr>
+  <tr><td><b>Salt okunur</b></td><td>"Sadece bakılabilir" demek. Kayıtları görür, arar, yazdırır ve yedeklersiniz; ama yeni bir şey ekleyemez, değiştiremezsiniz.</td></tr>
+  <tr><td><b>Kurulum kodu</b></td><td>Sunucu bilgisayarınızın kimlik numarası gibi bir kod. Lisans ekranında görünür; internetsiz lisans için bize iletilir.</td></tr>
+</table>
+
+<h2>3. Kurulum</h2>
+<p>Tek bir kurulum dosyası var: <code>DestekOfis-Kurulum-2.0.0.exe</code>. Deneme ve lisanslı sürüm aynı dosyadır. Programın çalışması için başka hiçbir şey kurmanız gerekmez.</p>
+<h3>Sunucu bilgisayara</h3>
+<ol class="steps">
+  <li>Kurulum dosyasına çift tıklayın. Windows "Bu uygulamanın cihazınızda değişiklik yapmasına izin verilsin mi?" diye sorarsa <b>Evet</b> deyin.<br><small>Windows mavi bir "Windows kişisel bilgisayarınızı korudu" penceresi gösterirse <b>Ek bilgi → Yine de çalıştır</b>'a basın. Bu uyarı programın henüz dijital imzası olmadığı için çıkar.</small></li>
+  <li>Kurulum türü olarak <b>Sunucu bilgisayar</b>'ı seçin, <b>İleri</b> deyin.</li>
+  <li>"Masaüstüne kısayol" ve "Ağ profilini Özel yap" kutuları işaretli kalsın. <b>Kur</b>'a basın.</li>
+  <li>Son ekranda <b>DestekOfis'i şimdi aç</b> işaretliyken <b>Son</b>'a basın. Giriş ekranı açılır.</li>
+</ol>
+<h3>Personel bilgisayarlarına</h3>
+<ol class="steps">
+  <li>Aynı kurulum dosyasını çalıştırın. Program ağdaki sunucuyu kendisi bulur ve <b>Personel bilgisayarı</b>'nı seçili getirir.</li>
+  <li><b>Kur</b> ve <b>Son</b>. Masaüstündeki <b>DestekOfis</b> simgesine çift tıklamanız yeterli.</li>
+</ol>
+<div class="box tip"><b class="t">İpucu</b>Sunucu bilgisayar kapalıysa diğer bilgisayarlar programa bağlanamaz. Sunucunun gün boyu açık kalmasını ve uykuya geçmemesini sağlayın.</div>
+
+<h2>4. İlk giriş</h2>
+<figure class="half"><img src="ekran/01-giris.jpg" alt="Giriş ekranı"><figcaption>Giriş ekranı</figcaption></figure>
+<ol class="steps">
+  <li>İlk girişi <b>sunucu bilgisayarın kendisinden</b> yapın. Kullanıcı adı: <code>admin</code>, parola: <code>Ofis2026!</code></li>
+  <li>Program sizden yeni bir parola ister. En az 10 karakter, içinde harf ve rakam olsun. Bu parolayı bir yere not edin.</li>
+  <li>Hepsi bu kadar: <b>30 günlük ücretsiz deneme kendiliğinden başlamıştır</b>. Ekranın altında yeşil "Deneme sürümü · 30 gün kaldı" şeridi görünür. Hiçbir düğmeye basmanız gerekmez.</li>
+</ol>
+
+<h2 class="pb">5. Lisans</h2>
+<p><b>Mantığı kısaca:</b> Program kurulup ilk açıldığında <b>30 günlük ücretsiz deneme kendiliğinden başlar</b> (sunucu bilgisayarın internete bağlı olması yeterli). Deneme süresince program eksiksiz çalışır. Denemenin 3. gününde program size firma bilgilerinizi sorar. Deneme bitince veya lisans süresi dolunca program <b>durur</b> ama <b>hiçbir veri silinmez</b>: lisansınız tanımlandığı an her şey kaldığı yerden devam eder.</p>
+
+<h3>Lisans ekranına nasıl ulaşılır?</h3>
+<p>Sol alttaki adınızın olduğu kartta <b>Yönetim</b>'e, açılan sayfada üstteki <b>Lisans</b> sekmesine tıklayın. Burada denemenin kaç gün kaldığını, lisans anahtarı kutusunu ve kurulum kodunu görürsünüz.</p>
+<figure><img src="ekran/03-lisans-ekrani.jpg" alt="Lisans ekranı"><figcaption>Lisans ekranı: üstte durum kartı (deneme kendiliğinden başlamış), altında lisans anahtarı ve internetsiz etkinleştirme.</figcaption></figure>
+
+<h3>A) Ücretsiz deneme kendiliğinden başlar</h3>
+<ol class="steps">
+  <li>Programı kurup ilk kez açtığınızda deneme birkaç saniye içinde kendiliğinden başlar. Bunun için sunucu bilgisayarın internete bağlı olması yeterlidir.</li>
+  <li>Kurulum sırasında internet yoksa ekranda "Ücretsiz deneme henüz başlamadı" yazar. İnterneti bağlayın: program birkaç dakikada bir yeniden dener ve deneme kendiliğinden başlar. Beklemek istemezseniz <b>Yönetim → Lisans → Denemeyi şimdi başlat</b>'a basın.</li>
+</ol>
+<figure><img src="ekran/05-deneme-basladi.jpg" alt="Deneme başladı"><figcaption>Deneme başladı: bitiş tarihi ve kalan gün görünür.</figcaption></figure>
+<div class="box warn"><b class="t">Bilmeniz gereken</b>Deneme <b>her bilgisayara bir kez</b> verilir. Programı silip yeniden kursanız bile deneme baştan başlamaz.</div>
+
+<h3>Denemenin 3. günü: firma bilgileriniz</h3>
+<p>Denemenin 3. gününde programı açtığınızda küçük bir pencere firma adınızı, yetkili kişiyi ve telefon ya da e-postanızı sorar. Bu bilgiler yalnızca deneme süresince size destek olabilmemiz ve süre bitmeden sizi bilgilendirebilmemiz içindir. <b>Bilgileri gönder</b>'e basarsanız bir daha sorulmaz; <b>Daha sonra</b> derseniz birkaç gün sonra yeniden sorar.</p>
+<figure><img src="ekran/18-ucuncu-gun-firma-bilgisi.jpg" alt="Firma bilgileri penceresi"><figcaption>Denemenin 3. gününde açılan firma bilgileri penceresi</figcaption></figure>
+
+<h3>B) Lisans anahtarını girmek (satın aldıktan sonra)</h3>
+<ol class="steps">
+  <li>Size verilen anahtarı (<code>DO-</code> ile başlar) <b>Lisans anahtarı</b> kutusuna yazın veya yapıştırın. Büyük/küçük harf ve tireler önemli değildir.</li>
+  <li><b>Lisansı etkinleştir</b>'e basın. Kart "Lisanslı" olur ve ofisinizin adı görünür.</li>
+</ol>
+<figure><img src="ekran/16-anahtar-gir.jpg" alt="Lisans anahtarı girişi"><figcaption>Lisans anahtarı ve internetsiz etkinleştirme kutuları</figcaption></figure>
+<figure><img src="ekran/17-lisansli.jpg" alt="Lisanslı"><figcaption>Lisans etkinleşti. Deneme sırasında girdiğiniz tüm kayıtlar aynen durur.</figcaption></figure>
+<p>Bir lisans anahtarı <b>tek sunucu bilgisayarda</b> çalışır. Sunucu bilgisayarınızı değiştirirseniz bizi arayın (0532 605 05 87); lisansı yeni bilgisayara taşırız.</p>
+
+<h3>C) Sunucunun interneti yoksa: internetsiz etkinleştirme</h3>
+<ol class="steps">
+  <li>Lisans ekranındaki <b>Kurulum kodu</b>'nun yanındaki <b>Kopyala</b>'ya basın ve kodu bize (WhatsApp veya e-posta: bilgi.ugurcetin@gmail.com) gönderin.</li>
+  <li>Size <code>DOLIS1.</code> ile başlayan uzun bir <b>etkinleştirme kodu</b> göndeririz.</li>
+  <li>Bu kodu <b>Etkinleştirme kodu</b> kutusuna yapıştırıp <b>Kodu uygula</b>'ya basın.</li>
+</ol>
+<p>Bu kod yalnızca kurulum kodunu gönderdiğiniz bilgisayarda çalışır; başka bilgisayara yapıştırılırsa "Bu kod başka bir bilgisayar için üretilmiş" uyarısı çıkar.</p>
+
+<h3>Deneme veya lisans süresi dolunca ne olur?</h3>
+<figure><img src="ekran/13-suresi-doldu.jpg" alt="Süre doldu penceresi"><figcaption>Süre dolunca açılışta bu pencere çıkar.</figcaption></figure>
+<figure><img src="ekran/14-salt-okunur-serit.jpg" alt="Salt okunur şerit"><figcaption>Ekranın altındaki kırmızı şerit programın durduğunu hatırlatır. Kayıtlar görünmeye devam eder; ekleme ve değiştirme düğmeleri gizlenir.</figcaption></figure>
+<table>
+  <tr><th style="width:50%">Süre dolunca yapabildikleriniz</th><th>Yapamadıklarınız</th></tr>
+  <tr><td>✓ Kayıtlara bakmak, aramak<br>✓ Dışa aktarmak (Excel'e almak)<br>✓ Yedek almak ve indirmek<br>✓ Kullanıcıları yönetmek<br>✓ Lisansı girmek</td><td>✗ Yeni kayıt eklemek<br>✗ Kayıt düzeltmek veya silmek<br>✗ Not, telefon, tahsilat, görev, mesaj<br>✗ Yeni tablo yüklemek</td></tr>
+</table>
+<div class="box tip"><b class="t">Verileriniz güvende</b>Süre dolması hiçbir kaydı silmez. Lisansı girdiğiniz an program kaldığı yerden devam eder.</div>
+
+<h3>İnternet bağlantısı ve saat</h3>
+<ul>
+  <li>Sunucu, lisansını internetten <b>günde birkaç kez</b> kendiliğinden doğrular; sizin bir şey yapmanız gerekmez.</li>
+  <li>İnternet kesilirse program <b>7 gün</b> boyunca normal çalışır. Son 3 günde ekranda sarı uyarı çıkar. 7 günü geçerse, internet gelene kadar program durur. İnternet gelince Lisans ekranında <b>Şimdi doğrula</b>'ya basmanız yeterli.</li>
+  <li>Sunucu bilgisayarın <b>tarihi veya saati geri alınırsa</b> program durur. Windows'ta tarihi düzeltin: <i>Başlat → Ayarlar → Saat ve dil → Saati otomatik ayarla</i> açık olsun.</li>
+  <li>İnternetsiz koddan (C yolu) gelen lisanslar internet doğrulaması beklemez.</li>
+</ul>
+
+<h3>Ekranın altındaki lisans şeridi</h3>
+<table>
+  <tr><th style="width:30%">Şerit</th><th>Anlamı</th><th style="width:28%">Ne yapmalı?</th></tr>
+  <tr><td><span class="pill g">Yeşil</span> Deneme sürümü · X gün kaldı</td><td>Deneme devam ediyor. (Yalnızca yöneticiye görünür, × ile kapatılabilir.)</td><td>Bir şey gerekmez.</td></tr>
+  <tr><td><span class="pill y">Sarı</span> … gün kaldı / doğrulanamadı</td><td>Süre bitmek üzere veya internet birkaç gündür yok.</td><td>Lisans alın / interneti kontrol edin.</td></tr>
+  <tr><td><span class="pill r">Kırmızı</span> Süresi doldu / Engellendi / Doğrulanamadı / Saat</td><td>Program durdu (salt okunur).</td><td>Yönetici Lisans ekranını açar.</td></tr>
+</table>
+<p><b>Mevcut ofisler için:</b> DestekOfis'i daha önce kullanan bir ofis 2.0'a güncellenince program <b>30 gün boyunca kesintisiz</b> çalışır ("Lisans geçiş dönemi" yazar). Bu süre içinde lisansı girmeniz yeterli.</p>
+
+<h2 class="pb">6. Verinizi yükleme</h2>
+<p>Deneme veya lisans etkinleşince ana ekranın ortasında "başlayalım" kartı görünür.</p>
+<figure><img src="ekran/06-baslayalim.jpg" alt="Başlayalım kartı"><figcaption>Excel dosyanızı kutuya sürükleyin veya "Excel dosyası seçin"e tıklayın. Google Sheets kullanıyorsanız bağlantıyı alttaki kutuya yapıştırıp "Bağla"ya basın.</figcaption></figure>
+<p>Program tablonuzu okur ve size ne bulduğunu gösterir: hangi sütunun telefon, tarih, tutar olduğunu, ofisinizin sektörünü tahmin eder. <b>Önerisini siz onaylamadan hiçbir şey değişmez.</b></p>
+<figure><img src="ekran/07-verinizi-taniyoruz.jpg" alt="Verinizi tanıyoruz ekranı"><figcaption>Öneri doğruysa <b>Evet, uygula</b>; yanlışsa <b>Başka sektör seç</b>; emin değilseniz <b>Genel kullan</b>.</figcaption></figure>
+
+<h2>7. Günlük kullanım</h2>
+<figure><img src="ekran/09-secili-kayit.jpg" alt="Ana ekran ve seçili kayıt"><figcaption>Soldaki tabloda bir satıra tıklayın; sağda o kaydın tüm bilgileri ve işlem düğmeleri açılır. Seçili satır yeşil renkle belirginleşir.</figcaption></figure>
+<ul>
+  <li><b>Kayıt bulmak:</b> Tablonun üstündeki arama kutusuna numara, isim veya telefon yazın. Birden çok sekme varsa her sekmede kaç sonuç olduğu yazar.</li>
+  <li><b>Not eklemek:</b> Kaydı seçin → <b>Not</b> → yazın → <b>Notu kaydet</b>. Not, adınız ve saatle kaydın geçmişine eklenir; herkes görür.</li>
+  <li><b>Telefon, tahsilat, görev:</b> Aynı yerden <b>Telefon</b>, <b>Tahsilat</b>, <b>Görev</b> düğmeleriyle.</li>
+  <li><b>WhatsApp:</b> <b>WhatsApp</b> düğmesi kayıttaki telefona mesaj penceresini açar.</li>
+  <li><b>Bilgi düzeltmek:</b> Tablodaki hücrenin üzerine gelince çıkan kalem (✎) simgesine basın.</li>
+  <li><b>Sohbet:</b> Sol menüdeki <b>Mesajlar</b> ile ofis içinde yazışabilirsiniz.</li>
+</ul>
+<figure><img src="ekran/10-not-ekle.jpg" alt="Not ekleme penceresi"><figcaption>Not ekleme penceresi</figcaption></figure>
+
+<h2>8. Yönetim: kullanıcılar ve yedekler</h2>
+<p>Yönetim sayfasına sol alttaki kartta <b>Yönetim</b> ile girilir. Bu sayfayı yalnızca yönetici görür.</p>
+<figure><img src="ekran/11-kullanicilar.jpg" alt="Kullanıcılar"><figcaption><b>+ Yeni kullanıcı</b> ile çalışan ekleyin; rolünü seçin. Program çalışana ilk girişte parolasını değiştirtir.</figcaption></figure>
+<figure><img src="ekran/12-yedekler.jpg" alt="Yedekler"><figcaption>Program 6 saatte bir kendiliğinden yedek alır. <b>Şimdi yedek al</b> ile istediğiniz an yedekleyip indirebilirsiniz. Yedekleri ayda bir harici diske kopyalayın.</figcaption></figure>
+
+<h2>9. Ekrandaki uyarılar ne demek?</h2>
+<table>
+  <tr><th style="width:36%">Uyarı</th><th>Ne yapmalı?</th></tr>
+  <tr><td>Ücretsiz deneme henüz başlamadı</td><td>Sunucunun internetini kontrol edin; deneme bağlantı gelince kendiliğinden başlar. İsterseniz Yönetim → Lisans → <b>Denemeyi şimdi başlat</b>.</td></tr>
+  <tr><td>Deneme süresi doldu / Lisans süresi doldu</td><td>Bizi arayın: 0532 605 05 87. Lisansınızı tanımlarız; program kaldığı yerden devam eder.</td></tr>
+  <tr><td>Lisans doğrulanamadı</td><td>Sunucunun internetini kontrol edin, sonra Lisans → <b>Şimdi doğrula</b>.</td></tr>
+  <tr><td>Bilgisayar saati geri alınmış</td><td>Sunucunun tarih/saatini düzeltin (Saati otomatik ayarla). Saat daha önce yanlışlıkla <b>ileri</b> alınmışsa: internetli lisansta Lisans → <b>Şimdi doğrula</b>; internetsiz lisansta bizden yeni etkinleştirme kodu isteyin.</td></tr>
+  <tr><td>Lisans engellendi</td><td>Bizi arayın (0532 605 05 87). Sorun çözülünce <b>Şimdi doğrula</b> ile açılır.</td></tr>
+  <tr><td>Bu kod başka bir bilgisayar için üretilmiş</td><td>Bu bilgisayarın kurulum kodunu bize yeniden gönderin.</td></tr>
+  <tr><td>Bu işlem yapılamadı (salt okunur)</td><td>Program durmuş durumda; yukarıdaki lisans uyarılarından birine bakın.</td></tr>
+  <tr><td>"DestekOfis … sürümüne güncellendi"</td><td>Program kendini güncelledi. Yazdığınız notu kaydedip <b>Yenile</b>'ye basın.</td></tr>
+</table>
+
+<h2>10. Sık sorulan sorular</h2>
+<p><b>Deneme bitince kayıtlarım silinir mi?</b><br>Hayır. Program yalnızca yeni işlem yapılmasını durdurur. Kayıtlarınızı görebilir, dışa aktarabilir ve yedekleyebilirsiniz.</p>
+<p><b>Her bilgisayar için ayrı lisans mı alacağım?</b><br>Hayır. Lisans yalnızca sunucu bilgisayar içindir. Personel bilgisayarları ücretsiz bağlanır.</p>
+<p><b>Programı silip yeniden kurarsam deneme yeniden başlar mı?</b><br>Hayır. Deneme her bilgisayara bir kez verilir.</p>
+<p><b>İnternet kesilirse çalışamaz mıyız?</b><br>Çalışırsınız. Program 7 gün boyunca internet olmadan normal çalışır.</p>
+<p><b>Sunucu bilgisayarımı değiştirmek istiyorum.</b><br>Yeni bilgisayara programı kurun, eski bilgisayardan aldığınız yedeği geri yükleyin ve bizden (0532 605 05 87) lisansı yeni bilgisayara taşımamızı isteyin (yeni bilgisayarın kurulum kodunu gönderin).</p>
+<p><b>Lisansımı başkası kullanabilir mi?</b><br>Hayır. Lisans sunucu bilgisayarınızın kimliğine bağlıdır; başka bir bilgisayara kopyalanınca çalışmaz.</p>
+
+<p class="foot">DestekOfis 2.0 · Kullanım Kılavuzu · Ekran görüntüleri örnek verilerle hazırlanmıştır.</p>
+</main>
+</body>
+</html>
