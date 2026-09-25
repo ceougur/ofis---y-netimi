@@ -78,6 +78,44 @@
     });
   }
 
+  // Denemenin 3. günü: programı hâlâ kullanan yöneticiden firma ve iletişim bilgisi istenir. "Daha sonra" denirse
+  // bu tarayıcıda 3 gün sonra yeniden sorulur; bilgi gönderilince sunucu bir daha sormaz.
+  const CONTACT_SNOOZE_KEY = "hof-contact-asked";
+  const CONTACT_SNOOZE_MS = 3 * 86_400_000;
+  let contactShown = false;
+  function askContact(status = license) {
+    if (!status?.askContact || !isAdmin() || contactShown || HOF.hasOpenModal()) return;
+    try {
+      const last = Number(localStorage.getItem(CONTACT_SNOOZE_KEY) || 0);
+      if (Date.now() - last < CONTACT_SNOOZE_MS) return;
+      localStorage.setItem(CONTACT_SNOOZE_KEY, String(Date.now()));
+    } catch {
+      // depolama kapalıysa oturum başına bir kez sorulur
+    }
+    contactShown = true;
+    const c = contactOf(status);
+    const modal = HOF.formModal({
+      title: "DestekOfis'i kullanmaya devam ettiğiniz için teşekkürler",
+      eyebrow: "DENEMENİN 3. GÜNÜ",
+      intro: `Deneme süresince size destek olabilmemiz ve süre bitmeden sizi bilgilendirebilmemiz için firma bilgilerinizi bırakır mısınız? Deneme ${HOF.esc(String(status.daysLeft ?? ""))} gün daha sürecek.`,
+      fields: [
+        { name: "companyName", label: "Firma adı", required: true, maxlength: 120, value: status.companyName || "", autocomplete: "organization" },
+        { name: "contact", label: "Yetkili kişi", maxlength: 120, autocomplete: "name" },
+        { name: "phone", label: "Telefon", type: "tel", maxlength: 40, autocomplete: "tel" },
+        { name: "email", label: "E-posta", type: "email", maxlength: 160, autocomplete: "email" },
+      ],
+      extraHtml: `<p class="hof-inline-note">Telefon veya e-postadan en az birini yazın. Bilgileriniz yalnızca size ulaşmak için kullanılır (<a href="https://destek-ofis.vercel.app/kvkk" target="_blank" rel="noopener">KVKK aydınlatma metni</a>). Sorunuz olursa: ${HOF.esc(c.phone)} · ${HOF.esc(c.email)}</p>`,
+      submitLabel: "Bilgileri gönder",
+      onSubmit: async data => {
+        const next = await HOF.api("/api/license/contact", { method: "POST", body: data });
+        render(next);
+        HOF.toast?.("Teşekkürler! Bilgileriniz bize ulaştı.", { type: "success" });
+      },
+    });
+    const cancel = modal?.dialog?.querySelector("[data-cancel]");
+    if (cancel) cancel.textContent = "Daha sonra";
+  }
+
   async function refresh() {
     try {
       const status = await HOF.api("/api/license");
@@ -93,6 +131,7 @@
   HOF.whenReady(user => {
     render(user?.license || null);
     if (license && !license.writable) setTimeout(() => explain(license), 1200);
+    else if (license?.askContact) setTimeout(() => askContact(license), 2500);
   });
   HOF.on("license-read-only", payload => {
     if (payload?.license) render({ ...license, ...payload.license });

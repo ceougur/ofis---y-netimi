@@ -44,10 +44,11 @@
     "system.update_checked": "Güncellemeleri denetledi",
     "system.update_requested": "Güncellemeyi başlattı",
     "system.update_settings": "Güncelleme ayarını değiştirdi",
-    "license.trial_started": "Ücretsiz denemeyi başlattı",
+    "license.trial_started": "Ücretsiz deneme başladı",
     "license.activated": "Lisansı etkinleştirdi",
     "license.code_applied": "Etkinleştirme kodu uyguladı",
     "license.assigned": "Lisans servisten tanımlandı",
+    "license.contact_sent": "Firma bilgilerini gönderdi",
     "license.checked": "Lisansı doğruladı",
     "license.state_changed": "Lisans durumu değişti",
     "license.transition_started": "Lisans geçiş dönemi başladı",
@@ -442,6 +443,7 @@
         ${row("Son doğrulama", lastCheck)}
         ${row("İnternetsiz çalışma sınırı", status.graceUntil && status.writable ? HOF.formatDateTime(status.graceUntil) : "")}
       </dl>
+      ${status.autoTrial?.lastError ? `<p class="adm-update-warn">Deneme kendiliğinden başlatılamadı (${esc(status.autoTrial.lastError)}). Program birkaç dakikada bir yeniden dener; internet bağlantısını kontrol edin veya aşağıdaki “Denemeyi şimdi başlat” düğmesine basın.</p>` : ""}
       ${status.tampered ? '<p class="adm-update-warn">Lisans kaydında elle değişiklik fark edildi; lisans servisiyle doğrulanana kadar en sıkı kurallar uygulanıyor.</p>' : ""}`;
     $("#adm-install-code").textContent = status.installCode || "—";
     // Deneme yalnızca hiç etkinleştirilmemiş kurulumda anlamlıdır; süresi dolmuş deneme ikinci kez verilmez.

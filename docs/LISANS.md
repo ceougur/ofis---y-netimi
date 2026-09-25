@@ -95,7 +95,11 @@ Zarf (güncelleme bildirgesiyle aynı yapı):
 > (`supabase/lisans.sql`) ve operatör merkezi (`/admin`) `ceougur/destekofis` deposundadır. `/v1/check` bilgisayar
 > odaklıdır: bilgisayara bağlı geçerli bir lisans varsa (operatörün panelden verdiği dahil) istenen numaradan farklı
 > olsa da o lisansın belirtecini döndürür; program farklı numaralı **lisans** belirtecini kabul eder. Başka bilgisayara
-> taşınan lisansın eski bilgisayarına "blocked" durumlu belirteç döner.
+> taşınan lisansın eski bilgisayarına "blocked" durumlu belirteç döner. Denemenin 3. gününde program aynı uca
+> `office: { name, contact, email, phone }` ekler; servis bunu kurulum kaydına yazar (operatör merkezinde görünür).
+>
+> **Kendiliğinden deneme:** yeni kurulumda (belirteç ve geçiş dönemi yoksa) program açılınca `/v1/activate`
+> (`kind: "trial"`) kendiliğinden çağrılır; hata olursa 3 sn, 2 dk, 10 dk, sonra 30 dk arayla yeniden denenir.
 
 Tüm istekler `POST`, gövde JSON. Program her isteğe `product`, `version`, `machine`, `instanceId` ekler. Başarılı yanıt
 `200 { "ok": true, "token": <zarf> }`; ret `4xx { "ok": false, "code": "<KOD>", "error": "<açıklama>" }`. Program yalnızca imzası

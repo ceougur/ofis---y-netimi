@@ -158,8 +158,8 @@ export function evaluateLicense({
   if (tokenProblem) return { ...base, reason: "machine", title: "Lisans bu bilgisayara ait değil", message: `${tokenProblem} ${readOnly}` };
   return {
     ...base,
-    title: "Lisans etkinleştirilmedi",
-    message: `DestekOfis'i kullanmaya başlamak için yönetici Yönetim → Lisans bölümünden ücretsiz denemeyi başlatmalı ya da lisansını girmeli. O zamana kadar ${readOnly.charAt(0).toLocaleLowerCase("tr-TR")}${readOnly.slice(1)}`,
+    title: "Ücretsiz deneme henüz başlamadı",
+    message: `30 günlük ücretsiz deneme, sunucu bilgisayar internete bağlanınca kendiliğinden başlar. İnternet bağlantısını kontrol edin; sorun sürerse bizi arayın: ${CONTACT_TEXT}. O zamana kadar ${readOnly.charAt(0).toLocaleLowerCase("tr-TR")}${readOnly.slice(1)}`,
   };
 }
 
@@ -211,9 +211,12 @@ export function createLicenseService({
   firstCheckDelayMs = 30_000,
   tickMs = 10 * 60_000,
   requestTimeoutMs = 15_000,
+  autoTrial = true,
+  autoTrialDelaysMs = [3_000, 2 * 60_000, 10 * 60_000],
+  contactAfterDays = 2,
   onChange = () => {},
 }) {
-  const S = { token: "license.token", local: "license.local", initialized: "license.initialized", machine: "license.machine" };
+  const S = { token: "license.token", local: "license.local", initialized: "license.initialized", machine: "license.machine", contact: "license.contact" };
   const instanceId = () => store.setting("meta.instanceId", "") || "";
   const macKey = () => `DestekOfis|lisans-yerel|1|${instanceId()}`;
   const macOf = fields => createHmac("sha256", macKey()).update(JSON.stringify([fields.highWater ?? null, fields.lastOnlineAt ?? null, fields.transitionStart ?? null, fields.trustedAt ?? null])).digest("hex");
@@ -445,7 +448,7 @@ export function createLicenseService({
     trustTime(claims.issuedAt, { fromService: true });
     local.lastCheck = { at: iso(now()), ok: true };
     saveLocal();
-    audit(user, "license.trial_started", claims.licenseId, { expiresAt: claims.expiresAt, office: office.name });
+    audit(user, "license.trial_started", claims.licenseId, { expiresAt: claims.expiresAt, office: office.name, auto: !user });
     return status();
   }
 
@@ -465,6 +468,79 @@ export function createLicenseService({
     saveLocal();
     audit(user, "license.activated", claims.licenseId, { customer: claims.customer, expiresAt: claims.expiresAt });
     return status();
+  }
+
+  // ---------- Denemenin 3. gününde iletişim bilgisi ----------
+  // Programı denemenin 3. gününde hâlâ açan yöneticiye firma adı ve iletişim bilgisi sorulur (kullanmaya devam etme
+  // isteğinin işareti). Bilgi doğrulama isteğiyle lisans servisine gider ve operatör merkezinde görünür.
+  const contactInfo = () => {
+    try {
+      return JSON.parse(store.setting(S.contact, "") || "null");
+    } catch {
+      return null;
+    }
+  };
+  function askContact(current = evaluate()) {
+    if (!enforce || !token || token.kind !== "trial" || current.state !== "trial" || contactInfo()) return false;
+    const started = toTime(token.startsAt);
+    return started != null && now() - started >= contactAfterDays * DAY;
+  }
+  async function submitContact(details = {}, user) {
+    if (!token) throw new HttpError(409, "Önce ücretsiz denemenin başlaması gerekir.");
+    const office = {
+      name: String(details.companyName ?? "").trim().slice(0, 120),
+      contact: String(details.contact ?? "").trim().slice(0, 120),
+      email: String(details.email ?? "").trim().slice(0, 160),
+      phone: String(details.phone ?? "").trim().slice(0, 40),
+    };
+    if (!office.name) throw new HttpError(400, "Firma adını yazın.");
+    if (!office.phone && !office.email) throw new HttpError(400, "Size ulaşabilmemiz için telefon veya e-posta yazın.");
+    if (office.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(office.email)) throw new HttpError(400, "E-posta adresi geçerli görünmüyor.");
+    let payload;
+    try {
+      payload = await callService("/v1/check", { licenseId: token.licenseId, kind: token.kind, office });
+    } catch (error) {
+      throw new HttpError(error.code === "NETWORK" || error.code === "SERVICE_RESPONSE" || error.code === "NO_SERVICE" ? 502 : 409, `Bilgiler gönderilemedi: ${error.message}`, { code: error.code });
+    }
+    const claims = acceptServiceToken(payload.token);
+    if (claims.licenseId !== token.licenseId && claims.kind !== "license") throw new HttpError(502, "Lisans servisinin yanıtı bu lisansa ait değil.");
+    storeToken(payload.token, claims);
+    trustTime(claims.issuedAt, { fromService: true });
+    local.lastCheck = { at: iso(now()), ok: true };
+    saveLocal();
+    store.setSetting(S.contact, JSON.stringify({ at: iso(now()), name: office.name }));
+    if (!String(store.setting("office.name", "") || "").trim()) store.setSetting("office.name", office.name);
+    audit(user, "license.contact_sent", claims.licenseId, { company: office.name });
+    return status();
+  }
+
+  // ---------- Kendiliğinden başlayan deneme ----------
+  // Yeni kurulumda (lisans ve geçiş dönemi yoksa) 30 günlük deneme program açılınca kendiliğinden başlar; internet
+  // yoksa artan aralıklarla (3 sn, 2 dk, 10 dk, sonra 30 dk'da bir) yeniden denenir.
+  const autoState = { attempts: 0, lastError: null, lastAt: null, running: false };
+  const shouldAutoTrial = () => enforce && autoTrial && !token && local.transitionStart == null;
+  let autoTimer = null;
+  function scheduleAutoTrial(delay) {
+    clearTimeout(autoTimer);
+    if (!shouldAutoTrial()) return;
+    autoTimer = setTimeout(async () => {
+      if (!shouldAutoTrial() || autoState.running) return;
+      autoState.running = true;
+      autoState.attempts += 1;
+      autoState.lastAt = iso(now());
+      try {
+        await startTrial({}, null);
+        autoState.lastError = null;
+        log.info?.("Ücretsiz deneme kendiliğinden başladı.");
+      } catch (error) {
+        autoState.lastError = error.message;
+        log.warn?.(`Ücretsiz deneme başlatılamadı: ${error.message}`);
+        scheduleAutoTrial(autoTrialDelaysMs[autoState.attempts] ?? retryMs);
+      } finally {
+        autoState.running = false;
+      }
+    }, delay);
+    autoTimer.unref?.();
   }
 
   // İnternetsiz etkinleştirme kodu (operatör aracıyla bu bilgisayarın kurulum koduna üretilir).
@@ -510,9 +586,11 @@ export function createLicenseService({
     }, tickMs);
     tickTimer.unref?.();
     scheduleCheck(firstCheckDelayMs);
+    scheduleAutoTrial(autoTrialDelaysMs[0] ?? 3_000);
   }
   function stop() {
     clearTimeout(checkTimer);
+    clearTimeout(autoTimer);
     clearInterval(tickTimer);
     tickTimer = null;
     try {
@@ -551,6 +629,10 @@ export function createLicenseService({
       tampered,
       enforced: enforce,
       canStartTrial: !token || current.state === "none",
+      autoTrial: shouldAutoTrial() ? { attempts: autoState.attempts, lastError: autoState.lastError, lastAt: autoState.lastAt } : null,
+      askContact: askContact(current),
+      contactGiven: Boolean(contactInfo()),
+      companyName: String(store.setting("office.name", "") || ""),
     };
   }
   // Salt okunur modda yazma yetkileri ekranlarda gösterilmez.
@@ -562,5 +644,5 @@ export function createLicenseService({
     throw new HttpError(403, `${current.title}. Program salt okunur çalışıyor; bu işlem yapılamaz.`, { code: "LICENSE_READ_ONLY", license: summaryFor(null) });
   }
 
-  return { init, start, stop, status, writable, summary: summaryFor, permissionsFor, assertWritable, check, startTrial, activateKey, applyCode, machine: () => ({ ...machine, installCode: formatInstallCode(machine.id) }) };
+  return { init, start, stop, status, writable, summary: summaryFor, permissionsFor, assertWritable, check, startTrial, activateKey, applyCode, submitContact, machine: () => ({ ...machine, installCode: formatInstallCode(machine.id) }) };
 }

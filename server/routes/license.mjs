@@ -37,6 +37,15 @@ export function registerLicenseRoutes(router, { auth, license, events }) {
     respond(res, user);
   });
 
+  // Denemenin 3. gününde sorulan firma ve iletişim bilgisi (lisans servisine gider).
+  router.post("/api/license/contact", async ({ req, res }) => {
+    const user = auth.requirePermission(req, "license.manage");
+    const body = await readJson(req, { limit: 8_000 });
+    await license.submitContact(body, user);
+    changed();
+    respond(res, user);
+  });
+
   router.post("/api/license/check", async ({ req, res }) => {
     const user = auth.requirePermission(req, "license.manage");
     await license.check({ manual: true, user });

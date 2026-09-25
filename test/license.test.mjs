@@ -104,7 +104,7 @@ describe("lisans durumu (saf değerlendirme)", () => {
     const status = evaluate(null, T0);
     assert.equal(status.state, "none");
     assert.equal(status.writable, false);
-    assert.match(status.message, /ücretsiz denemeyi başlatmalı/);
+    assert.match(status.message, /deneme, sunucu bilgisayar internete bağlanınca kendiliğinden başlar/);
   });
 
   it("deneme: kalan gün, son 7 günde uyarı, süre dolunca salt okunur", () => {
@@ -396,6 +396,78 @@ describe("lisans motoru — sunucu", () => {
     } finally {
       rmSync(dataDir, { recursive: true, force: true });
     }
+  });
+
+  const waitFor = async (test, label, timeoutMs = 5000) => {
+    const until = Date.now() + timeoutMs;
+    while (Date.now() < until) {
+      if (await test()) return;
+      await new Promise(resolve => setTimeout(resolve, 20));
+    }
+    assert.fail(`beklenen durum oluşmadı: ${label}`);
+  };
+
+  it("demo program açılınca kendiliğinden başlar; internet yoksa kendiliğinden yeniden dener", async () => {
+    clock.now = T0;
+    online = false;
+    const machineId = "c0c1c2c3c4c5c6c7c8c9cacbcccdcecf";
+    const server = await startTestServer({ startLicenseTimers: true, license: { ...licenseOptions(machineId), autoTrialDelaysMs: [10, 30, 30, 30, 30, 30], retryMs: 30 } });
+    servers.push(server);
+    const admin = await loginAdmin(server);
+    await waitFor(async () => (await admin.get("/api/license")).data.data.autoTrial?.lastError, "ilk deneme hatası");
+    const waiting = (await admin.get("/api/license")).data.data;
+    assert.equal(waiting.state, "none");
+    assert.equal(waiting.title, "Ücretsiz deneme henüz başlamadı");
+    assert.match(waiting.message, /kendiliğinden başlar/);
+    assert.match(waiting.message, /0532 605 05 87/);
+    online = true;
+    await waitFor(async () => (await admin.get("/api/license")).data.data.state === "trial", "deneme başladı");
+    const started = (await admin.get("/api/license")).data.data;
+    assert.equal(started.daysLeft, 30);
+    assert.equal(started.autoTrial, null, "deneme başlayınca otomatik başlatma durur");
+    const audit = (await admin.get("/api/admin/audit?type=license.")).data.data;
+    assert.ok(audit.some(item => item.type === "license.trial_started"), "kayıt defterine yazılır");
+  });
+
+  it("geçiş dönemindeki (2.0 öncesi) kuruluma deneme kendiliğinden başlatılmaz", async () => {
+    clock.now = T0;
+    online = true;
+    const dataDir = mkdtempSync(path.join(tmpdir(), "gecis-oto-"));
+    copyFileSync(path.join(here, "fixtures", "v1.0.0.sqlite"), path.join(dataDir, "hukuk-ofisi.sqlite"));
+    const server = await startTestServer({ dataDir, startLicenseTimers: true, license: { ...licenseOptions("d0d1d2d3d4d5d6d7d8d9dadbdcdddedf"), autoTrialDelaysMs: [10] } });
+    try {
+      await new Promise(resolve => setTimeout(resolve, 150));
+      assert.equal(server.app.license.status().state, "transition");
+      assert.equal(server.app.license.summary({ role: "admin" }).autoTrial, null);
+    } finally {
+      await server.close();
+      rmSync(dataDir, { recursive: true, force: true });
+    }
+  });
+
+  it("denemenin 3. gününde yöneticiden firma bilgisi istenir; gönderilince bir daha sorulmaz", async () => {
+    clock.now = T0;
+    online = true;
+    const server = await start({ machineId: "e0e1e2e3e4e5e6e7e8e9eaebecedeeef" });
+    const admin = await loginAdmin(server);
+    assert.equal((await admin.post("/api/license/trial", {})).status, 200);
+    let lic = (await admin.get("/api/license")).data.data;
+    assert.equal(lic.askContact, false, "ilk gün sorulmaz");
+    clock.now = T0 + 2 * DAY + 3_600_000;
+    lic = (await admin.get("/api/license")).data.data;
+    assert.equal(lic.askContact, true, "3. gün sorulur");
+    const staff = await createUser(server, admin, { username: "personel3", role: "personel" });
+    assert.equal((await staff.get("/api/license")).data.data.askContact, undefined, "personele sorulmaz");
+    const missing = await admin.post("/api/license/contact", { companyName: "Deneme Ltd." });
+    assert.equal(missing.status, 400);
+    assert.match(missing.data.error, /telefon veya e-posta/);
+    assert.equal((await admin.post("/api/license/contact", { phone: "0555" })).status, 400, "firma adı zorunlu");
+    const sent = await admin.post("/api/license/contact", { companyName: "Deneme Ltd.", phone: "0555 000 00 00" });
+    assert.equal(sent.status, 200, JSON.stringify(sent.data));
+    assert.equal(sent.data.data.askContact, false);
+    assert.equal(sent.data.data.contactGiven, true);
+    assert.equal(sent.data.data.companyName, "Deneme Ltd.", "boş firma adı ayarı doldurulur");
+    assert.equal((await staff.post("/api/license/contact", { companyName: "X", phone: "1" })).status, 403);
   });
 
   it("salt okunur modda yazma yetkileri gizlenir, okuma yetkileri kalır", () => {

@@ -113,28 +113,28 @@ try {
     expect(user.includes("Ofis yöneticisi"), "kullanıcı kartı");
   });
 
-  await step("lisans etkinleştirilmeden salt okunur; yönetim → Lisans'tan ücretsiz deneme başlar", async () => {
-    await admin.waitForSelector("#hof-license-bar.is-error", { timeout: 10000 });
-    await admin.waitForSelector(".hof-modal-title", { timeout: 10000 });
-    const title = await admin.textContent(".hof-modal-title");
-    expect(title.includes("Lisans etkinleştirilmedi"), `pencere başlığı: ${title}`);
-    const permissions = await admin.evaluate(() => window.HOF.user.permissions);
-    expect(!permissions.includes("records.create") && permissions.includes("license.manage"), `yetkiler: ${permissions}`);
-    await admin.screenshot({ path: path.join(artifacts, "02a-lisans-etkinlestirilmedi.png") });
-    await admin.goto(BASE + "/admin.html");
+  await step("ücretsiz deneme program açılınca kendiliğinden başlar; lisans ekranı sadeleşir", async () => {
+    const until = Date.now() + 15000;
+    let state = "";
+    while (Date.now() < until) {
+      state = await admin.evaluate(() => fetch("/api/license").then(response => response.json()).then(body => body.data.state));
+      if (state === "trial") break;
+      await admin.waitForTimeout(200);
+    }
+    expect(state === "trial", `durum: ${state}`);
+    await admin.goto(BASE + "/admin.html#license");
     await admin.waitForSelector('[data-tab="license"][aria-selected="true"]', { timeout: 10000 });
     const installCode = await admin.textContent("#adm-install-code");
     expect(installCode === "E2E0-E2E0-E2E0-E2E0-E2E0-E2E0-E2E0-E2E0", `kurulum kodu: ${installCode}`);
-    await admin.fill('#adm-license-trial input[name="officeName"]', "E2E Hukuk");
-    await admin.click('#adm-license-trial button[type="submit"]');
     await admin.waitForFunction(() => document.querySelector("#adm-license-status .adm-license-badge")?.textContent === "Deneme", null, { timeout: 10000 });
     const status = await admin.textContent("#adm-license-status h2");
     expect(status.includes("30 gün kaldı"), `durum: ${status}`);
-    expect(await admin.$eval("#adm-license-trial", node => node.hidden), "deneme başladıktan sonra deneme formu gizlenir");
+    expect(await admin.$eval("#adm-license-trial", node => node.hidden), "deneme başlayınca 'Denemeyi şimdi başlat' gizlenir");
     await admin.screenshot({ path: path.join(artifacts, "02b-lisans-deneme.png"), fullPage: true });
     await admin.goto(BASE + "/");
     await waitForApp(admin);
     await admin.waitForSelector("#hof-license-bar.is-info", { timeout: 10000 });
+    expect(!(await admin.$(".hof-modal-title")), "ilk gün iletişim penceresi açılmaz");
     await admin.click("#hof-license-bar [data-license-close]");
     expect(!(await admin.$("#hof-license-bar")), "şerit gizlenebilir");
   });
@@ -487,6 +487,7 @@ try {
     const notes = await staff.evaluate(() => localStorage.getItem("hukuk-ofisi-notlar"));
     expect(notes.includes("Merkezi not denemesi"), "merkezi not personelde görünmeli");
     await staff.waitForSelector("#hof-summary .hof-summary-card", { timeout: 10000 });
+    await staff.waitForFunction(() => document.querySelector(".welcome-row .section-title")?.firstChild?.nodeValue === "İcra dosyaları özeti", null, { timeout: 8000 }).catch(() => {});
     const view = await staff.evaluate(() => ({ label: document.querySelector(".welcome-row .section-title")?.firstChild?.nodeValue, pencils: document.querySelectorAll(".hof-label-pencil").length, subtitle: document.querySelector(".brand-subtitle")?.firstChild?.nodeValue }));
     expect(view.label === "İcra dosyaları özeti" && view.subtitle === "Hukuk ofisi yönetimi" && view.pencils === 0, `personel görünümü: ${JSON.stringify(view)}`);
   });
@@ -687,6 +688,29 @@ try {
   });
 
   const csp = problems.filter(item => /Content Security Policy|Refused to/.test(item));
+  await step("denemenin 3. gününde yöneticiden firma bilgisi istenir; gönderilince bir daha sorulmaz", async () => {
+    licenseClock.offset = 2 * 86_400_000 + 3_600_000;
+    await admin.goto(BASE + "/");
+    await waitForApp(admin);
+    await admin.waitForFunction(() => document.querySelector(".hof-modal-title")?.textContent.includes("kullanmaya devam ettiğiniz için teşekkürler"), null, { timeout: 10000 });
+    const company = await admin.inputValue('.hof-modal input[name="companyName"]');
+    await admin.screenshot({ path: path.join(artifacts, "29-ucuncu-gun-firma-bilgisi.png") });
+    expect(await admin.textContent(".hof-modal [data-cancel]") === "Daha sonra", "vazgeç düğmesi 'Daha sonra'");
+    if (!company) await admin.fill('.hof-modal input[name="companyName"]', "E2E Hukuk");
+    await admin.click('.hof-modal button[type="submit"]');
+    await admin.waitForFunction(() => document.querySelector(".hof-modal .hof-form-error")?.textContent.includes("telefon veya e-posta"), null, { timeout: 5000 });
+    await admin.fill('.hof-modal input[name="phone"]', "0532 000 00 00");
+    await admin.click('.hof-modal button[type="submit"]');
+    await admin.waitForFunction(() => !document.querySelector(".hof-modal-backdrop"), null, { timeout: 8000 });
+    const given = await admin.evaluate(() => fetch("/api/license").then(response => response.json()).then(body => body.data));
+    expect(given.contactGiven === true && given.askContact === false, `iletişim: ${JSON.stringify({ contactGiven: given.contactGiven, askContact: given.askContact })}`);
+    await admin.evaluate(() => localStorage.removeItem("hof-contact-asked"));
+    await admin.goto(BASE + "/");
+    await waitForApp(admin);
+    await admin.waitForTimeout(3000);
+    expect(!(await admin.$(".hof-modal-title")), "gönderildikten sonra yeniden sorulmaz");
+  });
+
   await step("deneme süresi dolunca program durur: şerit, açıklama, yazma engeli; lisans anahtarıyla kaldığı yerden devam eder", async () => {
     const before = problems.length;
     licenseClock.offset = 31 * 86_400_000;
