@@ -20,6 +20,9 @@ import { TRUSTED_LICENSE_KEYS } from "./license-keys.mjs";
 import { LicenseError, PRODUCT, decodeCode, formatInstallCode, normalizeMachineId, verifyToken } from "./license-token.mjs";
 import { resolveMachineId } from "./machine.mjs";
 
+// Lisans uyarılarında gösterilen iletişim bilgisi (deneme/lisans bitişi, engel, taşıma).
+export const SUPPORT_CONTACT = Object.freeze({ name: "Destek Ofis", phone: "0532 605 05 87", phoneHref: "tel:+905326050587", email: "bilgi.ugurcetin@gmail.com" });
+const CONTACT_TEXT = `${SUPPORT_CONTACT.name}: ${SUPPORT_CONTACT.phone} · ${SUPPORT_CONTACT.email}`;
 export const GRACE_DAYS = 7;
 export const TRANSITION_DAYS = 30;
 export const WARN_DAYS = 7;
@@ -86,10 +89,10 @@ export function evaluateLicense({
     const common = { ...base, kind: token.kind, expiresAt: token.expiresAt, customer: token.customer, licenseId: token.licenseId, offline: token.offline };
     const kindName = token.kind === "trial" ? "Deneme süresi" : "Lisans süresi";
     if (token.status === "blocked") {
-      return { ...common, state: "blocked", title: "Lisans engellendi", message: `${token.message || "Bu lisans lisans servisi tarafından engellendi. Satıcınızla görüşün."} ${readOnly}` };
+      return { ...common, state: "blocked", title: "Lisans engellendi", message: `${token.message || `Bu lisans lisans servisi tarafından engellendi. Bizimle görüşün: ${CONTACT_TEXT}.`} ${readOnly}` };
     }
     if (expiresAt != null && effective >= expiresAt) {
-      return { ...common, state: "expired", daysLeft: 0, title: `${kindName} doldu`, message: `${kindName} ${new Date(expiresAt).toLocaleDateString("tr-TR")} tarihinde doldu. ${stopped} Verileriniz silinmez; lisans alıp Yönetim → Lisans bölümünden etkinleştirince kaldığınız yerden devam edersiniz.` };
+      return { ...common, state: "expired", daysLeft: 0, title: `${kindName} doldu`, message: `${kindName} ${new Date(expiresAt).toLocaleDateString("tr-TR")} tarihinde doldu. ${stopped} Verileriniz silinmez. Kullanmaya devam etmek için bizimle görüşün: ${CONTACT_TEXT}. Lisansınız tanımlanınca kaldığınız yerden devam edersiniz.` };
     }
     if (clockBack) return { ...common, ...clockState() };
     const daysLeft = expiresAt == null ? null : daysBetween(effective, expiresAt);
@@ -115,14 +118,14 @@ export function evaluateLicense({
     if (token.kind === "trial") {
       active.severity = daysLeft <= warnDays ? "warn" : "info";
       active.title = `Deneme sürümü · ${daysLeft} gün kaldı`;
-      active.message = `Ücretsiz deneme ${new Date(expiresAt).toLocaleDateString("tr-TR")} tarihinde bitiyor. Süre dolunca program salt okunur olur; verileriniz kaybolmaz. Lisans almak için satıcınızla görüşün.`;
+      active.message = `Ücretsiz deneme ${new Date(expiresAt).toLocaleDateString("tr-TR")} tarihinde bitiyor. Süre dolunca program salt okunur olur; verileriniz kaybolmaz. Kullanmaya devam etmek için bizimle görüşün: ${CONTACT_TEXT}.`;
     } else {
       active.title = token.customer ? `Lisanslı · ${token.customer}` : "Lisanslı";
       active.message = expiresAt == null ? "Süresiz lisans." : `Lisans ${new Date(expiresAt).toLocaleDateString("tr-TR")} tarihine kadar geçerli.`;
       if (daysLeft != null && daysLeft <= warnDays) {
         active.severity = "warn";
         active.title = `Lisansın bitmesine ${daysLeft} gün kaldı`;
-        active.message = `Lisans ${new Date(expiresAt).toLocaleDateString("tr-TR")} tarihinde bitiyor. Yenilemek için satıcınızla görüşün; yenilenen lisans Yönetim → Lisans → "Şimdi doğrula" ile hemen gelir.`;
+        active.message = `Lisans ${new Date(expiresAt).toLocaleDateString("tr-TR")} tarihinde bitiyor. Yenilemek için bizimle görüşün (${CONTACT_TEXT}); yenilenen lisans Yönetim → Lisans → "Şimdi doğrula" ile hemen gelir.`;
       }
     }
     if (graceLeft != null && graceLeft <= 3) {
@@ -150,7 +153,7 @@ export function evaluateLicense({
         message: `Bu kurulum lisans sisteminden önce kurulduğu için ${new Date(endsAt).toLocaleDateString("tr-TR")} tarihine kadar kesintisiz çalışır. Bu tarihten önce yönetici Yönetim → Lisans bölümünden lisansı etkinleştirmeli; aksi hâlde program salt okunur olur.`,
       };
     }
-    return { ...base, transitionEndsAt: iso(endsAt), reason: "transition-ended", title: "Geçiş dönemi doldu", message: `Lisans geçiş dönemi ${new Date(endsAt).toLocaleDateString("tr-TR")} tarihinde doldu. ${stopped} Yönetici Yönetim → Lisans bölümünden lisansı etkinleştirmeli.` };
+    return { ...base, transitionEndsAt: iso(endsAt), reason: "transition-ended", title: "Geçiş dönemi doldu", message: `Lisans geçiş dönemi ${new Date(endsAt).toLocaleDateString("tr-TR")} tarihinde doldu. ${stopped} Yönetici Yönetim → Lisans bölümünden lisansı etkinleştirmeli. Lisans için: ${CONTACT_TEXT}.` };
   }
   if (tokenProblem) return { ...base, reason: "machine", title: "Lisans bu bilgisayara ait değil", message: `${tokenProblem} ${readOnly}` };
   return {
@@ -164,9 +167,9 @@ export function evaluateLicense({
 const SERVICE_MESSAGES = {
   TRIAL_USED: "Bu bilgisayarda ücretsiz deneme daha önce kullanılmış.",
   LICENSE_NOT_FOUND: "Lisans anahtarı bulunamadı. Anahtarı eksiksiz yazdığınızdan emin olun.",
-  LICENSE_IN_USE: "Bu lisans anahtarı başka bir bilgisayarda etkin. Taşımak için satıcınızla görüşün.",
-  LICENSE_BLOCKED: "Bu lisans engellenmiş. Satıcınızla görüşün.",
-  LICENSE_EXPIRED: "Bu lisansın süresi dolmuş. Yenilemek için satıcınızla görüşün.",
+  LICENSE_IN_USE: `Bu lisans anahtarı başka bir bilgisayarda etkin. Taşımak için bizimle görüşün: ${CONTACT_TEXT}.`,
+  LICENSE_BLOCKED: `Bu lisans engellenmiş. Bizimle görüşün: ${CONTACT_TEXT}.`,
+  LICENSE_EXPIRED: `Bu lisansın süresi dolmuş. Yenilemek için bizimle görüşün: ${CONTACT_TEXT}.`,
   RATE_LIMITED: "Çok sık deneme yapıldı. Birkaç dakika sonra tekrar deneyin.",
 };
 const networkMessage = error => {
@@ -267,7 +270,7 @@ export function createLicenseService({
     try {
       const { claims } = verifyToken(JSON.parse(raw), trustedKeys);
       if (claims.machine !== machine.id) {
-        tokenProblem = "Kayıtlı lisans başka bir bilgisayara ait. Sunucu başka bir bilgisayara taşındıysa lisansı bu bilgisayarda yeniden etkinleştirin (lisans taşıma için satıcınızla görüşün).";
+        tokenProblem = `Kayıtlı lisans başka bir bilgisayara ait. Sunucu başka bir bilgisayara taşındıysa lisansı bu bilgisayarda yeniden etkinleştirin (lisans taşıma için: ${CONTACT_TEXT}).`;
         return;
       }
       token = claims;
@@ -390,8 +393,16 @@ export function createLicenseService({
       const at = iso(now());
       try {
         const payload = await callService("/v1/check", { licenseId: token.licenseId, kind: token.kind });
-        const claims = acceptServiceToken(payload.token, { licenseId: token.licenseId });
+        // Operatör bu bilgisayara panelden lisans verdiyse servis farklı numaralı bir LİSANS belirteci döndürür:
+        // deneme lisansa, eski lisans yenisine dönüşür (bilgisayar ve imza yine denetlenir). Deneme belirteci ise
+        // yalnızca aynı numarayla kabul edilir.
+        const claims = acceptServiceToken(payload.token);
+        if (claims.licenseId !== token.licenseId && claims.kind !== "license") {
+          throw new LicenseError("Lisans servisinin yanıtı bu lisansa ait değil.", "LICENSE_MISMATCH");
+        }
+        const previous = token.licenseId;
         storeToken(payload.token, claims);
+        if (claims.licenseId !== previous) audit(user, "license.assigned", claims.licenseId, { previous, customer: claims.customer, expiresAt: claims.expiresAt });
         trustTime(claims.issuedAt, { fromService: true });
         local.lastCheck = { at, ok: true };
         saveLocal();
@@ -468,7 +479,7 @@ export function createLicenseService({
     }
     if (claims.machine !== machine.id) throw new HttpError(400, `Bu kod başka bir bilgisayar için üretilmiş. Bu sunucunun kurulum kodu: ${formatInstallCode(machine.id)}`);
     if (token && claims.licenseId === token.licenseId && Date.parse(claims.issuedAt) < Date.parse(token.issuedAt)) {
-      throw new HttpError(409, "Bu kod, kurulu lisanstan daha eski. Satıcınızdan güncel kodu isteyin.");
+      throw new HttpError(409, `Bu kod, kurulu lisanstan daha eski. Güncel kodu bizden isteyin: ${CONTACT_TEXT}.`);
     }
     storeToken(envelope, claims);
     // Kod da imzalıdır: içindeki zaman saat geri alma denetiminde kullanılır. Kod internetli bir lisans içinse
@@ -524,6 +535,7 @@ export function createLicenseService({
       expiresAt: current.expiresAt,
       customer: current.customer,
       transitionEndsAt: current.transitionEndsAt,
+      contact: SUPPORT_CONTACT,
     };
     if (!user || user.role !== "admin") return brief;
     return {

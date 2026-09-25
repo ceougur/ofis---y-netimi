@@ -2877,3 +2877,9 @@ html.hof-no-tahsilat [data-case-action="payment"] {
   .hof-license-bar { flex-wrap: wrap; bottom: 8px; }
   .hof-license-actions { width: 100%; }
 }
+
+/* Lisans uyarısındaki iletişim kartı */
+.hof-license-contact { margin: 4px 0 12px; padding: 12px 14px; border-radius: 12px; border: 1px solid color-mix(in srgb, #1f7a57 30%, transparent); background: color-mix(in srgb, #1f7a57 8%, transparent); display: flex; flex-direction: column; gap: 4px; }
+.hof-license-contact span { font-size: 13px; opacity: .85; }
+.hof-license-contact-links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
+.hof-license-phone { font-weight: 700; white-space: nowrap; color: inherit; text-decoration: underline; text-underline-offset: 3px; align-self: center; }

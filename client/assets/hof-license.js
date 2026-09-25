@@ -13,6 +13,14 @@
   let lastModalAt = 0;
 
   const isAdmin = () => HOF.can("license.manage");
+  // Deneme/lisans bitişi, engel ve taşıma durumlarında gösterilen iletişim bilgisi (sunucudan gelir).
+  const FALLBACK_CONTACT = { name: "Destek Ofis", phone: "0532 605 05 87", phoneHref: "tel:+905326050587", email: "bilgi.ugurcetin@gmail.com" };
+  const contactOf = status => ({ ...FALLBACK_CONTACT, ...(status?.contact || {}) });
+  const needsContact = status => Boolean(status) && (!status.writable || status.severity === "warn" || ["trial", "expired", "blocked"].includes(status.state));
+  const contactCard = status => {
+    const c = contactOf(status);
+    return `<div class="hof-license-contact"><strong>${HOF.esc(c.name)} ile iletişim</strong><span>Kullanmaya devam etmek, lisans almak veya yenilemek için bize ulaşın.</span><div class="hof-license-contact-links"><a class="hof-button hof-button-small" href="${HOF.esc(c.phoneHref)}">${HOF.esc(c.phone)}</a><a class="hof-button hof-button-ghost hof-button-small" href="mailto:${HOF.esc(c.email)}?subject=${encodeURIComponent("Destek Ofis lisans")}">${HOF.esc(c.email)}</a></div></div>`;
+  };
   const adminLink = () => (isAdmin() ? '<a class="hof-button hof-button-small" href="/admin.html#license">Lisans ekranını aç</a>' : "");
 
   function snoozed(status) {
@@ -39,7 +47,7 @@
       "aside",
       { id: "hof-license-bar", class: `hof-license-bar is-${tone}`, role: status.writable ? "status" : "alert", "aria-live": "polite" },
       `<div class="hof-license-text"><strong>${HOF.esc(status.title)}</strong><span>${HOF.esc(status.writable ? status.message : "Program salt okunur: kayıtları görebilir, dışa aktarabilir ve yedekleyebilirsiniz; yeni işlem yapılamaz.")}</span></div>
-       <div class="hof-license-actions">${status.writable ? "" : '<button type="button" class="hof-button hof-button-ghost hof-button-small" data-license-more>Ayrıntı</button>'}${adminLink()}${status.writable ? '<button type="button" class="hof-license-close" aria-label="Şeridi gizle" data-license-close>×</button>' : ""}</div>`,
+       <div class="hof-license-actions">${needsContact(status) && status.severity !== "info" ? `<a class="hof-license-phone" href="${HOF.esc(contactOf(status).phoneHref)}">${HOF.esc(contactOf(status).phone)}</a>` : ""}${status.writable ? "" : '<button type="button" class="hof-button hof-button-ghost hof-button-small" data-license-more>Ayrıntı</button>'}${adminLink()}${status.writable ? '<button type="button" class="hof-license-close" aria-label="Şeridi gizle" data-license-close>×</button>' : ""}</div>`,
     );
     bar.addEventListener("click", event => {
       if (event.target.closest("[data-license-close]")) {
@@ -65,7 +73,7 @@
       title: status.title,
       eyebrow: "LİSANS",
       size: "small",
-      body: `<div class="hof-modal-text">${lead}<p>${HOF.esc(status.message)}</p>${hint}</div><div class="hof-actions"><button type="button" class="hof-button hof-button-ghost" data-close>Tamam</button>${adminLink()}</div>`,
+      body: `<div class="hof-modal-text">${lead}<p>${HOF.esc(status.message)}</p>${hint}</div>${needsContact(status) ? contactCard(status) : ""}<div class="hof-actions"><button type="button" class="hof-button hof-button-ghost" data-close>Tamam</button>${adminLink()}</div>`,
       onOpen: modal => modal.dialog.querySelector("[data-close]").addEventListener("click", () => modal.close()),
     });
   }

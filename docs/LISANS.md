@@ -89,7 +89,13 @@ Zarf (güncelleme bildirgesiyle aynı yapı):
 | `offline` | mantıksal | `true`: internetsiz lisans (doğrulama gerekmez, uzaktan engellenemez). Servis yanıtlarında `false`. |
 | `message` | metin | Ekranda gösterilecek not (ör. engelleme nedeni, satıcının telefonu), en çok 300. |
 
-## 4. Servis protokolü (Faz 4 Vercel API)
+## 4. Servis protokolü (Vercel API)
+
+> **Yayında:** servis `https://destek-ofis.vercel.app/api/lisans` adresinde çalışır; kaynak kodu, veritabanı şeması
+> (`supabase/lisans.sql`) ve operatör merkezi (`/admin`) `ceougur/destekofis` deposundadır. `/v1/check` bilgisayar
+> odaklıdır: bilgisayara bağlı geçerli bir lisans varsa (operatörün panelden verdiği dahil) istenen numaradan farklı
+> olsa da o lisansın belirtecini döndürür; program farklı numaralı **lisans** belirtecini kabul eder. Başka bilgisayara
+> taşınan lisansın eski bilgisayarına "blocked" durumlu belirteç döner.
 
 Tüm istekler `POST`, gövde JSON. Program her isteğe `product`, `version`, `machine`, `instanceId` ekler. Başarılı yanıt
 `200 { "ok": true, "token": <zarf> }`; ret `4xx { "ok": false, "code": "<KOD>", "error": "<açıklama>" }`. Program yalnızca imzası

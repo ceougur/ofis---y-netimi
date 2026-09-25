@@ -47,6 +47,7 @@
     "license.trial_started": "Ücretsiz denemeyi başlattı",
     "license.activated": "Lisansı etkinleştirdi",
     "license.code_applied": "Etkinleştirme kodu uyguladı",
+    "license.assigned": "Lisans servisten tanımlandı",
     "license.checked": "Lisansı doğruladı",
     "license.state_changed": "Lisans durumu değişti",
     "license.transition_started": "Lisans geçiş dönemi başladı",
