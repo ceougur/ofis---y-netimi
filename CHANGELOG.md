@@ -2,6 +2,21 @@
 
 Sürümler [anlamsal sürümleme](https://semver.org/lang/tr/) kurallarına uyar.
 
+## 1.7.0 — Doğru analiz, sekme sekme çalışma, belirgin seçili satır
+
+- **Özet kartları yalnızca doğruysa görünür:** Kartlar artık kolon adına ya da çoğunluğa bakarak değil, sekmedeki her hücre tek tek okunarak hesaplanır. Hücrelerin en az %98'i kesin yorumlanamıyorsa kart gösterilmez. Kesin okunamayan birkaç hücre varsa kartta ve açıklamasında yazar.
+  - **Durum/tür dağılımı:** Yalnızca birkaç sabit seçenekten oluşan kolonlardan çıkarılır. Aynı anlamı farklı biçimde taşıyan değerler varsa kart gösterilmez: birbirini içeren ("tebliğ" / "her ikisinde tebliğ"), aynı kökten ("Haciz" / "Hacizli"), yazım farklı ("Derdest" / "Derdset"), kısaltma ("E" / "Evet") ya da eş anlamlı ("Beklemede" / "Bekliyor") değerler, tarih ve not karışmış hücreler. Olumsuzluk bir ayrımdır: "Ödendi" / "Ödenmedi", "Tebliğ edildi" / "Tebliğ edilemedi", "İlamlı" / "İlamsız" ayrı seçenektir.
+  - **Tutar toplamı:** Kolon gerçekten para bildirmeli ("Kalan gün", "Toplam dosya", "USD kuru" toplanmaz). Sayı yazımı kolondan çıkarılır (1.500 / 1,500), karışıksa toplam gösterilmez. Farklı para birimleri, başlıkla çelişen para birimi, "Toplam" satırları (etiketli ya da diğer satırların toplamına eşit), yüzdeler ve "1.500 TL + faiz" gibi hücreler toplanmaz. "1.500,-" kuruşsuz yazım olarak okunur.
+  - **Tarihler:** "12.03.2025 ertelendi" gibi not eklenmiş ya da iki tarihli hücreler kesin sayılmaz; gün/ay sırası belirsiz yazım (03/15/2026) kart vermez. Tarih yerine not yazılmış hücreler ("belli değil") sayılmaz ama hata da sayılmaz.
+  - **Bir kayıt birden çok satırda** tutuluyorsa (taraflar alt alta) kartlar kayıt başına sayar.
+- **"Nasıl hesaplandı?":** Her kartın penceresinde hangi kolonun, kaç hücrenin, hangi kurallarla sayıldığı ve neyin neden dışarıda kaldığı yazar. **Toplam** kartı sekmenin kart raporunu açar: doğrulanan kartlar ve gösterilmeyen kartların nedenleri, örnek hücrelerle. Durum kartındaki bir seçeneğe tıklayınca o kayıtlar listelenir.
+- **"Tümü" sekmesi kaldırıldı:** Farklı kolonlu sekmeler tek tabloya zorlanmaz, boş kolonlar oluşmaz. Her zaman bir sekme açıktır (ilk sekme; sayfa yenilenince en son açılan). Kartlar, veri sağlığı ve yeni kayıt formu açık sekmenin kolonlarıyla çalışır. Kenar çubuğundaki *Tüm kayıtlar* sayısı tüm veridir.
+- **Arama tüm sekmelerde:** Arama kutusu dolunca her sekmenin düğmesinde o sekmedeki eşleşme sayısı yazar, eşleşmesi olmayan sekmeler soluklaşır. Enter, açık sekmede sonuç yoksa sonucu olan sekmeye geçer.
+- **Yeni kayıt açık sekmeye eklenir** ve eklenince seçilir. Önceki sürümlerde sekmesiz eklenmiş kayıtlar, alanlarının örtüştüğü sekmede; hiçbir sekmeyle ortak alanı olmayanlar *Uygulamada eklenenler* sekmesinde görünür.
+- **Seçili satır belirgin:** Tam satır renk, üst/alt çizgi ve satır başında kalın vurgu çizgisi (tablo yana kaydırılmış olsa da görünür). Arama, kart listeleri, veri sağlığı raporu, sohbet ya da ödeme sözü kartından (*Kayda git*) gidilen kayıt kendi sekmesinde açılır, seçilir ve kısa bir süre altın rengiyle parlar.
+- **Veri sağlığı daha doğru:** Not yazılmış tarih/tutar/telefon hücreleri hata sayılmaz; iki numaralı ya da yanında not olan telefon ve "(eşi)" notlu T.C. numarası geçerlidir. Bir kaydı birden çok satırda tutan tablo "tekrar eden kimlik" uyarısı vermez.
+- *Dışa aktar* açık sekmenin kayıtlarını indirir; dosya adında sekmenin adı yazar.
+
 ## 1.6.0 — Verinizi tanıyan DestekOfis
 
 - **Her sektöre uyum:** DestekOfis artık yalnızca hukuk ofisleri için değil. Yüklenen Excel veya Google Sheets sunucuda çözümlenir; veri internete gönderilmez. Kolonların ne taşıdığı bulunur ve doğrulanır: T.C. kimlik no, vergi no ve IBAN kontrol hanesiyle, telefon, tarih ve tutarlar biçimleriyle denetlenir. Ardından önem sırası çıkarılır ve 22 grupta 142 sektörlük listeden sektör önerilir. Öneri kanıtlarıyla ("“BORÇLU” kolonu", "“İCRA DAİRESİ” kolonunda icra dairesi adları") ve güven düzeyiyle gösterilir, **hiçbir zaman kendiliğinden uygulanmaz**. Veri belirgin bir sektöre işaret etmiyorsa sektör atanmaz, *Genel* görünüm önerilir.
