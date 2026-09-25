@@ -94,8 +94,10 @@ jobs:
 
       - name: İlk giriş yalnızca yerelden; parola değişimi ve veri kaydı
         run: |
+          # Giriş yanıtında yalnızca harf büyüklüğüyle ayrılan alanlar var (record/Record); PowerShell bunları
+          # varsayılan ayrıştırmayla okuyamaz, bu yüzden yanıt -AsHashtable ile ayrıştırılır.
           $session = New-Object Microsoft.PowerShell.Commands.WebRequestSession
-          $login = Invoke-RestMethod -Method Post -Uri http://127.0.0.1:5123/api/auth/login -ContentType 'application/json' -Body '{"username":"admin","password":"Ofis2026!"}' -WebSession $session
+          $login = (Invoke-WebRequest -Method Post -Uri http://127.0.0.1:5123/api/auth/login -ContentType 'application/json' -Body '{"username":"admin","password":"Ofis2026!"}' -WebSession $session).Content | ConvertFrom-Json -AsHashtable
           if (-not $login.data.mustChangePassword) { throw 'Zorunlu parola değişimi bekleniyordu' }
           Invoke-RestMethod -Method Post -Uri http://127.0.0.1:5123/api/auth/change-password -ContentType 'application/json' -Body '{"currentPassword":"Ofis2026!","newPassword":"Windows-Testi-2026"}' -WebSession $session | Out-Null
           Invoke-RestMethod -Method Post -Uri http://127.0.0.1:5123/api/admin/users -ContentType 'application/json; charset=utf-8' -Body '{"username":"kalici","name":"Kalıcı Kullanıcı","role":"personel","password":"Kalici-Parola-2026","mustChangePassword":false}' -WebSession $session | Out-Null
@@ -104,7 +106,7 @@ jobs:
         run: |
           Restart-Service DestekOfis
           for ($i = 0; $i -lt 60; $i++) { try { if ((Invoke-WebRequest -UseBasicParsing http://127.0.0.1:5123/api/health).StatusCode -eq 200) { break } } catch {}; Start-Sleep 1 }
-          $login = Invoke-RestMethod -Method Post -Uri http://127.0.0.1:5123/api/auth/login -ContentType 'application/json' -Body '{"username":"kalici","password":"Kalici-Parola-2026"}'
+          $login = (Invoke-WebRequest -Method Post -Uri http://127.0.0.1:5123/api/auth/login -ContentType 'application/json' -Body '{"username":"kalici","password":"Kalici-Parola-2026"}').Content | ConvertFrom-Json -AsHashtable
           if ($login.data.username -ne 'kalici') { throw 'Kullanıcı kaybolmuş' }
           if ($login.data.name -ne 'Kalıcı Kullanıcı') { throw "Türkçe karakterler bozulmuş: $($login.data.name)" }
 
@@ -116,7 +118,7 @@ jobs:
           if (Select-String -Path guncelleme.log -Pattern 'SERVIS-KURULUM-HATASI|SERVIS-GUVENLIK-DUVARI-UYARISI' -Quiet) { robocopy C:\DestekOfis\logs "$env:RUNNER_TEMP\ofis-logs" /B /E /NFL /NDL /NJH /NJS /R:0 /W:0 *> $null; $global:LASTEXITCODE = 0; Get-Content "$env:RUNNER_TEMP\ofis-logs\kurulum.log" -Tail 40; throw 'Yeniden kurulumda servis doğrulaması hatalı' }
           # Sunucu bilgisayarında yeniden kurulumda kurulum türü "sunucu" kalmalı (ağ taraması yapılmaz).
           if (-not (Get-Service DestekOfis -ErrorAction SilentlyContinue)) { throw 'Yeniden kurulumdan sonra servis yok' }
-          $login = Invoke-RestMethod -Method Post -Uri http://127.0.0.1:5123/api/auth/login -ContentType 'application/json' -Body '{"username":"kalici","password":"Kalici-Parola-2026"}'
+          $login = (Invoke-WebRequest -Method Post -Uri http://127.0.0.1:5123/api/auth/login -ContentType 'application/json' -Body '{"username":"kalici","password":"Kalici-Parola-2026"}').Content | ConvertFrom-Json -AsHashtable
           if ($login.data.username -ne 'kalici') { throw 'Güncellemede veri kaybolmuş' }
 
       - name: Kaldırma servisi siler, verileri korur
@@ -134,7 +136,7 @@ jobs:
           $p = Start-Process $setup.FullName -ArgumentList '/VERYSILENT','/SUPPRESSMSGBOXES','/NORESTART','/TYPE=sunucu','/LOG=yeniden.log' -Wait -PassThru
           if ($p.ExitCode -ne 0) { Get-Content yeniden.log -Tail 60; throw "Yeniden kurulum çıkış kodu $($p.ExitCode)" }
           if (-not (Test-Path 'C:\DestekOfis\app')) { throw 'Kaldırmadan sonra yeniden kurulum başka klasöre gitti' }
-          $login = Invoke-RestMethod -Method Post -Uri http://127.0.0.1:5123/api/auth/login -ContentType 'application/json' -Body '{"username":"kalici","password":"Kalici-Parola-2026"}'
+          $login = (Invoke-WebRequest -Method Post -Uri http://127.0.0.1:5123/api/auth/login -ContentType 'application/json' -Body '{"username":"kalici","password":"Kalici-Parola-2026"}').Content | ConvertFrom-Json -AsHashtable
           if ($login.data.username -ne 'kalici') { throw 'Kaldırıp yeniden kurunca veri kullanılmadı' }
           $p = Start-Process 'C:\DestekOfis\unins000.exe' -ArgumentList '/VERYSILENT','/SUPPRESSMSGBOXES','/NORESTART' -Wait -PassThru
           Start-Sleep 3
@@ -149,7 +151,7 @@ jobs:
           if ($p.ExitCode -ne 0) { Get-Content eski-klasor.log -Tail 60; throw "Kurulum çıkış kodu $($p.ExitCode)" }
           if (-not (Test-Path 'C:\HukukOfisiMerkezi\app')) { throw 'Kurulum eski klasörü kullanmadı' }
           if (Test-Path 'C:\DestekOfis') { throw 'Eski klasörde veri varken yeni klasör oluşturuldu' }
-          $login = Invoke-RestMethod -Method Post -Uri http://127.0.0.1:5123/api/auth/login -ContentType 'application/json' -Body '{"username":"kalici","password":"Kalici-Parola-2026"}'
+          $login = (Invoke-WebRequest -Method Post -Uri http://127.0.0.1:5123/api/auth/login -ContentType 'application/json' -Body '{"username":"kalici","password":"Kalici-Parola-2026"}').Content | ConvertFrom-Json -AsHashtable
           if ($login.data.username -ne 'kalici') { throw 'Eski veritabanı kullanılmadı' }
           if (Test-Path 'C:\HukukOfisiMerkezi\data\destekofis.sqlite') { throw 'Eski adlı veritabanının yanında yeni boş veritabanı oluştu' }
           $p = Start-Process 'C:\HukukOfisiMerkezi\unins000.exe' -ArgumentList '/VERYSILENT','/SUPPRESSMSGBOXES','/NORESTART' -Wait -PassThru
