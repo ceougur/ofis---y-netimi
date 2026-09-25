@@ -118,6 +118,10 @@ jobs:
           if (Select-String -Path guncelleme.log -Pattern 'SERVIS-KURULUM-HATASI|SERVIS-GUVENLIK-DUVARI-UYARISI' -Quiet) { robocopy C:\DestekOfis\logs "$env:RUNNER_TEMP\ofis-logs" /B /E /NFL /NDL /NJH /NJS /R:0 /W:0 *> $null; $global:LASTEXITCODE = 0; Get-Content "$env:RUNNER_TEMP\ofis-logs\kurulum.log" -Tail 40; throw 'Yeniden kurulumda servis doğrulaması hatalı' }
           # Sunucu bilgisayarında yeniden kurulumda kurulum türü "sunucu" kalmalı (ağ taraması yapılmaz).
           if (-not (Get-Service DestekOfis -ErrorAction SilentlyContinue)) { throw 'Yeniden kurulumdan sonra servis yok' }
+          Select-String -Path guncelleme.log -Pattern 'Setup type|Selected|servis-kur|SERVIS|Installation process|Need to restart|Exception|Error' | Select-Object -Last 30 | ForEach-Object { $_.Line }
+          (Get-Service DestekOfis).Status
+          $ok = $false; for ($i = 0; $i -lt 90; $i++) { try { if ((Invoke-WebRequest -UseBasicParsing http://127.0.0.1:5123/api/health).StatusCode -eq 200) { $ok = $true; break } } catch {}; Start-Sleep 1 }
+          if (-not $ok) { Get-Content guncelleme.log -Tail 80; throw 'Yeniden kurulumdan sonra servis 90 sn içinde yanıt vermedi' }
           $login = (Invoke-WebRequest -Method Post -Uri http://127.0.0.1:5123/api/auth/login -ContentType 'application/json' -Body '{"username":"kalici","password":"Kalici-Parola-2026"}').Content | ConvertFrom-Json -AsHashtable
           if ($login.data.username -ne 'kalici') { throw 'Güncellemede veri kaybolmuş' }
 
