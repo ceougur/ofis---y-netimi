@@ -206,45 +206,44 @@ describe("veri sağlığı ve göstergeler", () => {
   const rows = [
     { __sheet: "Aktif", __hofKey: "K1", "DOSYA NO": "2026/1", BORÇLU: "Ayşe Kaya", "T.C. KİMLİK NO": "10000000146", TUTAR: "1.000,00 TL", "SON ÖDEME TARİHİ": "12.10.2026", DURUM: "Açık" },
     { __sheet: "Aktif", __hofKey: "K2", "DOSYA NO": "2026/2", BORÇLU: "Can Demir", "T.C. KİMLİK NO": "10000000147", TUTAR: "2.500,50 TL", "SON ÖDEME TARİHİ": "20.10.2026", DURUM: "Açık" },
-    { __sheet: "Aktif", __hofKey: "K3", "DOSYA NO": "2026/2", BORÇLU: "Elif Şahin", "T.C. KİMLİK NO": "12345678950", TUTAR: "500 TL", "SON ÖDEME TARİHİ": "01.10.2026", DURUM: "Kapalı" },
+    { __sheet: "Aktif", __hofKey: "K3", "DOSYA NO": "2026/2", BORÇLU: "Elif Şahin", "T.C. KİMLİK NO": "12345678950", TUTAR: "500 TL", "SON ÖDEME TARİHİ": "31.02.2026", DURUM: "Kapalı" },
     { __sheet: "Ödeme", __hofKey: "K4", "DOSYA NO": "2026/1", BORÇLU: "Ayşe Kaya", "T.C. KİMLİK NO": "11111111110", TUTAR: "750 TL", "SON ÖDEME TARİHİ": "11.10.2026", DURUM: "Açık" },
     { __sheet: "Ödeme", __hofKey: "K5", "DOSYA NO": "", BORÇLU: "", "T.C. KİMLİK NO": "22222222220", TUTAR: "", "SON ÖDEME TARİHİ": "bekleniyor", DURUM: "Açık" },
   ];
   const analyses = analyzeColumns(rows, columnOrder(rows));
   const primary = primaryColumns(analyses);
 
-  it("geçersiz T.C., aynı sekmede tekrar eden kimlik ve boş kimlik bulunur; farklı sekmede tekrar sorun sayılmaz", () => {
+  it("geçersiz T.C., aynı sekmede tekrar eden kimlik, boş kimlik ve takvimde olmayan tarih bulunur; not ve farklı sekmede tekrar sorun sayılmaz", () => {
     const quality = assessQuality(rows, analyses, primary);
     const byId = Object.fromEntries(quality.issues.map(issue => [issue.id.split(":")[0], issue]));
     assert.deepEqual(byId["invalid-tckn"].items.map(item => item.key), ["K2"]);
     assert.deepEqual(byId["duplicate-id"].items.map(item => item.key).sort(), ["K2", "K3"], "2026/1 iki farklı sekmede: sorun değil");
     assert.deepEqual(byId["empty-id"].items.map(item => item.key), ["K5"]);
-    assert.deepEqual(byId["invalid-date"].items.map(item => item.key), ["K5"]);
+    assert.deepEqual(byId["invalid-date"].items.map(item => item.key), ["K3"], "31.02.2026 takvimde yok; 'bekleniyor' bir not, hata değil");
     assert.ok(quality.score > 0 && quality.score < 100);
     assert.equal(quality.issues[0].severity, "warn", "önce uyarılar");
   });
 
-  it("tutar toplamı, yaklaşan ve tarihi geçen kayıtlar; her sekme için ayrı", () => {
-    const kpis = computeKpis(rows, analyses, primary, { now: new Date(2026, 9, 10, 15, 0) });
-    assert.deepEqual(kpis.all.money, { column: "TUTAR", sum: 4750.5, count: 4, currency: "TRY" });
-    assert.deepEqual(kpis.all.deadline, { column: "SON ÖDEME TARİHİ", today: 0, next7: 2, next30: 3, passed: 1, dated: 4 });
-    assert.deepEqual(kpis.all.status.top, [{ value: "Açık", count: 4 }, { value: "Kapalı", count: 1 }]);
-    assert.equal(kpis.tabs.Aktif.total, 3);
-    assert.equal(kpis.tabs["Ödeme"].money.sum, 750);
-    assert.deepEqual(kpis.lists.upcoming.map(item => [item.key, item.days]), [["K4", 1], ["K1", 2], ["K2", 10]]);
-    assert.deepEqual(kpis.lists.passed.map(item => item.key), ["K3"]);
-    assert.deepEqual(kpis.all.month, { column: "SON ÖDEME TARİHİ", count: 4 });
-    assert.deepEqual(kpis.lists.month.map(item => item.key), ["K3", "K4", "K1", "K2"], "bu ayın kayıtları gün sırasıyla");
-    assert.equal(kpis.lists.topAmount[0].key, "K2");
+  it("göstergeler her sekme için ayrı kapsamda; az veriyle kart doğrulanmaz, nedeni yazılır", () => {
+    const kpis = computeKpis(rows, { tabs: ["Aktif", "Ödeme"], now: new Date(2026, 9, 10, 15, 0) });
+    assert.deepEqual(kpis.order, ["Aktif", "Ödeme"]);
+    assert.equal(kpis.total, 5);
+    assert.equal(kpis.scopes.Aktif.total, 3);
+    const money = kpis.scopes.Aktif.cards.find(card => card.id === "money");
+    assert.deepEqual([money.column, money.sum, money.count, money.currency], ["TUTAR", 4000.5, 3, "TRY"]);
+    assert.equal(kpis.scopes["Ödeme"].cards.length, 0, "iki satırlık sekmede tutar/tarih kolonu doğrulanamaz");
+    assert.ok(kpis.scopes.Aktif.rejected.some(item => item.id === "status" && /yalnızca 3 dolu hücre/.test(item.reason)), "3 hücreden dağılım çıkarılmaz");
   });
 
-  it("karışık para biriminde toplam gösterilmez, bilgi olarak yazılır", () => {
+  it("karışık para biriminde toplam gösterilmez; nedeni ve veri sağlığında bilgi yazılır", () => {
     const mixed = [{ TUTAR: "100 TL" }, { TUTAR: "200 USD" }, { TUTAR: "300 TL" }, { TUTAR: "50 EUR" }];
     const items = analyzeColumns(mixed, ["TUTAR"]);
     assert.equal(items[0].currency, "mixed");
     const main = primaryColumns(items);
     assert.equal(main.money, null);
-    assert.equal(computeKpis(mixed, items, main).all.money, null);
+    const scope = computeKpis(mixed).scopes[""];
+    assert.equal(scope.cards.find(card => card.id === "money"), undefined);
+    assert.match(scope.rejected.find(item => item.id === "money").reason, /birden çok para birimi/);
     assert.ok(assessQuality(mixed, items, main).issues.some(issue => issue.id.startsWith("mixed-currency")));
   });
 
@@ -254,8 +253,10 @@ describe("veri sağlığı ve göstergeler", () => {
     const result = analyzeDataset({ rows: big, label: "buyuk.xlsx", tabs: ["A", "B"] });
     const elapsed = performance.now() - started;
     assert.equal(result.rowCount, 200_000);
-    assert.equal(result.kpis.all.total, 200_000);
-    assert.ok(elapsed < 6000, `${Math.round(elapsed)} ms`);
+    assert.equal(result.kpis.total, 200_000);
+    assert.equal(result.kpis.scopes.A.total + result.kpis.scopes.B.total, 200_000);
+    assert.ok(result.kpis.scopes.A.cards.some(card => card.id === "money"));
+    assert.ok(elapsed < 8000, `${Math.round(elapsed)} ms`);
   });
 
   it("çok uzun hücreler analizi yavaşlatmaz (düzenli ifadeler doğrusal, biçim denetimi uzunlukla sınırlı)", () => {
@@ -276,7 +277,7 @@ describe("veri sağlığı ve göstergeler", () => {
     assert.ok(performance.now() - started < 1000, `analiz ${Math.round(performance.now() - started)} ms`);
   });
 
-  it("kart listesi: kartla aynı kapsam (seçili sekme) ve kural; toplam listenin tamamı, en fazla sınır kadar kayıt döner", () => {
+  it("kart listesi: kartla aynı kapsam (sekme), kolon ve okuma; toplam listenin tamamı, en fazla sınır kadar kayıt döner", () => {
     const now = new Date(2026, 8, 25, 10);
     const day = offset => {
       const date = new Date(2026, 8, 25 + offset);
@@ -286,26 +287,27 @@ describe("veri sağlığı ve göstergeler", () => {
     const small = Array.from({ length: 10 }, (_, i) => ({ __sheet: "Küçük", __hofKey: `2026/9${i}`, "DOSYA NO": `2026/9${i}`, BORÇLU: `Küçük ${i} Kişi`, TUTAR: `${100 + i},00 TL`, "SON ÖDEME TARİHİ": i < 4 ? day(-3 - i) : day(10 + i) }));
     const all = [...big, ...small];
     const analysis = analyzeDataset({ rows: all, tabs: ["Büyük", "Küçük"], now });
-    const { primary } = analysis;
-    const tabKpi = analysis.kpis.tabs["Küçük"];
-    const upcoming = listRecords(all, primary, { list: "upcoming", tab: "Küçük", now, currency: analysis.kpis.currency });
-    assert.equal(upcoming.total, tabKpi.deadline.next30);
+    const { kpis } = analysis;
+    const deadline = kpis.scopes["Küçük"].cards.find(card => card.id === "deadline");
+    const upcoming = listRecords(all, kpis, { list: "upcoming", tab: "Küçük", now });
+    assert.equal(upcoming.total, deadline.next30);
     assert.ok(upcoming.items.every(item => item.tab === "Küçük"));
-    const passed = listRecords(all, primary, { list: "passed", tab: "Küçük", now });
-    assert.equal(passed.total, tabKpi.deadline.passed);
+    const passed = listRecords(all, kpis, { list: "passed", tab: "Küçük", now });
+    assert.equal(passed.total, deadline.passed);
     assert.deepEqual(passed.items.map(item => item.days), [-3, -4, -5, -6], "en yakın geçmiş önce");
-    const top = listRecords(all, primary, { list: "topAmount", tab: "Küçük", now, limit: 30 });
+    const top = listRecords(all, kpis, { list: "topAmount", tab: "Küçük", now, limit: 30 });
     assert.equal(top.total, 10);
     assert.equal(top.items[0].amount, 109);
-    const everything = listRecords(all, primary, { list: "upcoming", tab: "", now, limit: 500 });
-    assert.equal(everything.total, analysis.kpis.all.deadline.next30);
-    assert.equal(everything.total, 266, "200 sınırına takılmadan sayılır");
-    const limited = listRecords(all, primary, { list: "upcoming", tab: "Yok böyle sekme", now, limit: 50 });
-    assert.equal(limited.tab, "", "bilinmeyen sekmede tüm veri (kartlar gibi)");
-    assert.equal(limited.total, 266);
+    const everything = listRecords(all, kpis, { list: "upcoming", tab: "Büyük", now, limit: 500 });
+    assert.equal(everything.total, kpis.scopes["Büyük"].cards.find(card => card.id === "deadline").next30);
+    assert.equal(everything.total, 260, "200 sınırına takılmadan sayılır");
+    const limited = listRecords(all, kpis, { list: "upcoming", tab: "Yok böyle sekme", now, limit: 50 });
+    assert.equal(limited.tab, "Büyük", "bilinmeyen sekmede ilk sekme (arayüz de öyle açar)");
+    assert.equal(limited.total, 260);
     assert.equal(limited.items.length, 50);
-    const month = listRecords(all, primary, { list: "month", now, limit: 500 });
-    assert.equal(month.total, analysis.kpis.all.month.count);
+    const month = listRecords(all, kpis, { list: "month", now, limit: 500 });
+    assert.equal(month.total, kpis.month.count, "kenar çubuğunun 'Bu ay' listesi tüm sekmelerden");
+    assert.ok(month.items.some(item => item.tab === "Büyük") && month.items.some(item => item.tab === "Küçük"));
   });
 });
 
@@ -380,18 +382,20 @@ describe("ofis profili", () => {
     assert.equal(forAdmin.analysis.sector.suggestion, "hukuk-icra");
     assert.equal(forAdmin.analysis.sector.level, "high");
     assert.equal(forAdmin.analysis.sector.suggestionSector.vocab.expert, "Avukat");
-    assert.equal(forAdmin.analysis.kpis.all.money.sum, 78000);
+    const cardOf = (analysis, id) => analysis.kpis.scopes.Aktif.cards.find(card => card.id === id);
+    assert.equal(cardOf(forAdmin.analysis, "money").sum, 78000);
+    assert.deepEqual(cardOf(forAdmin.analysis, "status").labels.map(label => [label.value, label.count]), [["Takipte", 9], ["Haciz", 3]]);
     assert.deepEqual(forAdmin.analysis.search, ["DOSYA NO", "BORÇLU"]);
     const forStaff = (await personel.get("/api/workspace/insight")).data.data;
     assert.equal(forStaff.analysis.sector, undefined, "personel sektör önerisini görmez");
-    assert.equal(forStaff.analysis.kpis.all.total, 12);
+    assert.equal(forStaff.analysis.kpis.total, 12);
     assert.equal(forStaff.profile.sector.id, "genel", "öneri kendiliğinden uygulanmaz");
   });
 
   it("analiz önbelleği: düzeltmeden sonra göstergeler yeniden hesaplanır", async () => {
     await admin.post("/api/workspace/overrides", { caseKey: "2026/100", field: "TUTAR", value: "1.000.000,00 TL" });
     const after = (await personel.get("/api/workspace/insight")).data.data.analysis;
-    assert.equal(after.kpis.all.money.sum, 78000 - 1000 + 1_000_000);
+    assert.equal(after.kpis.scopes.Aktif.cards.find(card => card.id === "money").sum, 78000 - 1000 + 1_000_000);
   });
 
   it("analiz önbelleği: bir kayıt silinip başka biri geri alınınca (sayılar aynı kalsa da) göstergeler yenilenir", async () => {
@@ -400,8 +404,9 @@ describe("ofis profili", () => {
     await admin.post("/api/workspace/deleted", { caseKey: "2026/102" });
     await admin.post("/api/workspace/deleted/restore", { caseKey: "2026/101" });
     const after = (await personel.get("/api/workspace/insight")).data.data.analysis;
-    assert.equal(after.kpis.all.total, before.kpis.all.total);
-    assert.equal(after.kpis.all.money.sum, before.kpis.all.money.sum - 3000 + 2000, "2026/102 (3.000) çıktı, 2026/101 (2.000) geri geldi");
+    const moneyOf = analysis => analysis.kpis.scopes.Aktif.cards.find(card => card.id === "money").sum;
+    assert.equal(after.kpis.total, before.kpis.total);
+    assert.equal(moneyOf(after), moneyOf(before) - 3000 + 2000, "2026/102 (3.000) çıktı, 2026/101 (2.000) geri geldi");
     const top = (await personel.get("/api/workspace/insight/records?list=topAmount")).data.data;
     assert.ok(!top.items.some(item => item.key === "2026/102"), "silinen kayıt listede yok");
     assert.ok(top.items.some(item => item.key === "2026/101"));
@@ -414,6 +419,10 @@ describe("ofis profili", () => {
     assert.equal(upcoming.data.data.tab, "Aktif");
     assert.equal(upcoming.data.data.column, "ÖDEME SÖZÜ");
     assert.equal((await personel.get("/api/workspace/insight/records?list=yok")).status, 400);
+    assert.equal((await personel.get("/api/workspace/insight/records?list=value&card=money&value=x")).status, 400, "seçenek listesi yalnızca dağılım kartlarında");
+    const haciz = (await personel.get(`/api/workspace/insight/records?list=value&card=status&value=${encodeURIComponent("HACİZ")}&tab=Aktif`)).data.data;
+    assert.equal(haciz.column, "DURUM");
+    assert.equal(haciz.total, 3, "büyük/küçük harf farkı aynı seçenek");
     assert.equal((await server.client().get("/api/workspace/insight/records?list=upcoming")).status, 401);
   });
 

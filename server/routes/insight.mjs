@@ -36,11 +36,13 @@ export function registerInsightRoutes(router, { auth, profile }) {
     ok(res, { analysis: shapeAnalysis(analysis, { manage: can(user.role, "profile.manage") }), profile: profile.profile() });
   });
 
-  // Kart penceresi: yaklaşan/tarihi geçen, en yüksek tutarlı ve bu ayın kayıtları (seçili sekme için, tamamı sayılarak).
+  // Kart penceresi: yaklaşan/tarihi geçen, en yüksek tutarlı, bu ayın ve bir seçeneğin (durum, tür, sorumlu) kayıtları;
+  // kartın sekmesi için, kartla aynı kuralla ve tamamı sayılarak.
   router.get("/api/workspace/insight/records", async ({ req, res, url }) => {
     auth.requireUser(req);
     const limit = Math.max(1, Math.min(500, Math.floor(Number(url.searchParams.get("limit")) || 500)));
-    ok(res, await profile.records(text(url.searchParams.get("list")), text(url.searchParams.get("tab")), limit));
+    const param = name => text(url.searchParams.get(name));
+    ok(res, await profile.records(param("list"), param("tab"), limit, { card: param("card"), value: param("value") }));
   });
 
   router.post("/api/workspace/insight/sector", async ({ req, res }) => {

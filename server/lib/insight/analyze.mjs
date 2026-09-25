@@ -1,12 +1,14 @@
-// Verinin tamamını tek geçişte çözümler: kolon türleri ve önemleri, ana kolonlar, sektör önerisi, veri sağlığı ve
-// göstergeler. Saf fonksiyondur (girdi aynıysa çıktı aynı); internete çıkmaz, veritabanına yazmaz.
+// Verinin tamamını çözümler: kolon türleri ve önemleri, ana kolonlar, sektör önerisi, veri sağlığı ve göstergeler.
+// Saf fonksiyondur (girdi aynıysa çıktı aynı); internete çıkmaz, veritabanına yazmaz.
+//
+// v1.7.0: sektör önerisi ve arama ipucu tüm veriden; kartlar ve veri sağlığı her sekme için o sekmenin kendi
+// kolonlarından (kpi.mjs). Kartlar hücre hücre doğrulanır (cards.mjs); doğrulanamayan kart gösterilmez, nedeni yazılır.
 import { columnOrder } from "../sources.mjs";
 import { analyzeColumns, primaryColumns } from "./columns.mjs";
 import { computeKpis } from "./kpi.mjs";
-import { assessQuality } from "./quality.mjs";
 import { classifySector } from "./sectors.mjs";
 
-export const ANALYSIS_VERSION = 1;
+export const ANALYSIS_VERSION = 2;
 
 // Arama kutusu ipucu: verideki gerçek kolon adlarından (kimlik, kişi, telefon/plaka).
 export function searchColumns(primary) {
@@ -38,8 +40,8 @@ export function analyzeDataset({ rows, label = "", tabs = [], now = new Date() }
   const analyses = analyzeColumns(data, columns, { now });
   const primary = primaryColumns(analyses);
   const sector = classifySector({ analyses, rows: data, label, tabs });
-  const quality = assessQuality(data, analyses, primary);
-  const kpis = computeKpis(data, analyses, primary, { now });
+  const kpis = computeKpis(data, { tabs, now });
+  const { quality, ...indicators } = kpis;
   const order = analyses
     .filter(item => item.role !== "empty" && item.role !== "sequence")
     .slice()
@@ -58,6 +60,6 @@ export function analyzeDataset({ rows, label = "", tabs = [], now = new Date() }
     search: searchColumns(primary),
     sector,
     quality,
-    kpis,
+    kpis: indicators,
   };
 }

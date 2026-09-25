@@ -27,6 +27,7 @@ export const LABEL_SLOTS = Object.freeze({
 });
 
 const K = { sector: "insight.sector", labels: "ui.labels", intro: "insight.intro", initialized: "insight.initialized" };
+const VALUE_CARDS = new Set(["status", "category", "responsible"]);
 const SOURCES = new Set(["confirmed", "manual"]);
 
 const cleanLabel = (value, max) =>
@@ -185,12 +186,13 @@ export function createProfileService({ store, dataset, audit, events, log, clock
     return promise;
   }
 
-  // Kart penceresindeki kayıt listesi: güncel görünümden, kartla aynı kapsamda (sekme ya da tüm veri) ve aynı kuralla.
-  async function records(list, tab = "", limit = 500) {
+  // Kart penceresindeki kayıt listesi: güncel görünümden, kartla aynı kapsamda (sekme) ve aynı kuralla.
+  async function records(list, tab = "", limit = 500, { card = "", value = "" } = {}) {
     if (!RECORD_LISTS.includes(list)) throw new HttpError(400, "Bilinmeyen liste.");
+    if (list === "value" && !VALUE_CARDS.has(card)) throw new HttpError(400, "Bilinmeyen kart.");
     const result = await analysis();
     const view = await dataset.view();
-    return listRecords(view.rows || [], result.primary, { list, tab: String(tab || "").slice(0, 300), currency: result.kpis?.currency || "TRY", now: clock(), limit });
+    return listRecords(view.rows || [], result.kpis, { list, tab: String(tab || "").slice(0, 300), card, value: String(value || "").slice(0, 300), now: clock(), limit });
   }
 
   // Veri değişince (içeri alma, eşitleme, düzeltme, silme, geri alma, yeni kayıt) çağrılır. Parmak izi her değişikliği
