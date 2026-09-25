@@ -370,6 +370,8 @@ describe("lisans motoru — sunucu", () => {
       assert.equal(server.app.license.status().state, "none");
       assert.equal(server.app.license.status().reason, "transition-ended");
     } finally {
+      await server.close().catch(() => {});
+      servers = servers.filter(item => item !== server);
       rmSync(dataDir, { recursive: true, force: true });
     }
   });
@@ -377,6 +379,7 @@ describe("lisans motoru — sunucu", () => {
   it("yerel kayıt elle değiştirilirse en sıkı varsayım kullanılır", async () => {
     clock.now = T0 + 70 * DAY;
     const dataDir = mkdtempSync(path.join(tmpdir(), "kurcalama-"));
+    let second;
     try {
       const first = await start({ dataDir });
       assert.equal(first.app.license.summary({ role: "admin" }).tampered, false);
@@ -389,11 +392,15 @@ describe("lisans motoru — sunucu", () => {
       const local = JSON.parse(store.setting("license.local"));
       store.setSetting("license.local", JSON.stringify({ ...local, highWater: T0 }));
       db.close();
-      const second = await start({ dataDir });
+      second = await start({ dataDir });
       assert.equal(second.app.license.summary({ role: "admin" }).tampered, true);
       const audit = await (await loginAdmin(second)).get("/api/admin/audit?type=license.tamper");
       assert.equal(audit.data.data.length, 1);
     } finally {
+      if (second) {
+        await second.close().catch(() => {});
+        servers = servers.filter(item => item !== second);
+      }
       rmSync(dataDir, { recursive: true, force: true });
     }
   });
