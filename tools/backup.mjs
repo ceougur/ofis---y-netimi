@@ -1,7 +1,8 @@
 import { DatabaseSync } from "node:sqlite";
 import { mkdirSync, copyFileSync, readdirSync, unlinkSync } from "node:fs";
 import path from "node:path";
-const root = path.resolve(new URL("..", import.meta.url).pathname, "..");
+import { fileURLToPath } from "node:url";
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const dataDir = path.resolve(process.env.HUKUK_DATA_DIR || path.join(root, "data"));
 const backupDir = path.resolve(process.env.HUKUK_BACKUP_DIR || path.join(root, "backups"));
 mkdirSync(backupDir, { recursive: true });

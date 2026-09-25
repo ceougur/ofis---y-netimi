@@ -10,6 +10,7 @@ Bu paket, Hukuk Ofisi dosya takip uygulamasının ofis ağı üzerinde çalışa
 - Test: `./test-central.sh`
 - Mimari rapor: `PROJE-RAPORU-MERKEZI-SURUM.md`
 - Kullanım kılavuzu: `KULLANIM-KILAVUZU-MERKEZI-SURUM.md`
+- Yeni başlayanlar için adım adım kurulum: `KURULUM-REHBERI-ADIM-ADIM.md`
 
 Server veritabanı `data/hukuk-ofisi.sqlite` altında tutulur. Client bilgisayarlar veritabanı dosyasına değil, yalnızca HTTP API’ye bağlanır. İlk admin hesabı `admin / Ofis2026!` olarak oluşturulur; ilk girişten sonra parola değiştirilmelidir.
 
