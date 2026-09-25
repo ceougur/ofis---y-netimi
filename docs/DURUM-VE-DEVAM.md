@@ -33,19 +33,24 @@ Yeni bir oturum bu belgeyi okuyarak kaldığı yerden devam eder. Son güncellem
 
 ## Kalanlar (öncelik sırasıyla)
 
-1. **İmzalı güncelleme paketi (2.0.0).**
+1. **Önce: kurulum dosyasıyla güncelleme servisi başlatmıyor.**
+   - Windows testinin 9. adımı bunu gösterdi. Mevcut sunucunun üstüne `/VERYSILENT` ile, `/TYPE` verilmeden yeniden kurulumda `PrepareToInstall` servisi durduruyor ve dosyalar yenileniyor.
+   - Ama `servis-kur.cmd` çalışmıyor: `kurulum.log`'a yeni kayıt düşmüyor ve servis `Stopped` kalıyor.
+   - Muhtemel neden: `CurStepChanged(ssPostInstall)` içinde `IsServer` yanlış dönüyor. `setup.iss`'te güncelleme kurulumunda `ExistingServerInstall` varsa sunucu türü zorlanmalı ve servis kurulmalı.
+   - Veri kaybı yok. Düzeltilene kadar HUKUK10 kurulum dosyasıyla güncellenmemeli.
+2. **İmzalı güncelleme paketi (2.0.0).**
    - v2.0.0 yayınında `destekofis-guncelleme.json` yok. Bu yüzden 1.6/1.7 kurulumlar (HUKUK10 dahil) kendiliğinden güncellenmez.
    - Paket güncelleme imza anahtarıyla üretilir (`docs/SURUM-YAYIMLAMA.md`). Anahtar depoda yoktur; kullanıcı oturuma yükler.
-2. **Faz 4 kalanı: alan adı.**
+3. **Faz 4 kalanı: alan adı.**
    - `destekofis.net` alınıp Vercel'e bağlanacak.
    - Ardından KVKK veri sorumlusu ve adresi güncellenecek. Şu an "Uğur Çetin, Karatay / Konya / Türkiye".
    - `destek-ofis.vercel.app` açık kalmalı, çünkü program lisans servisine bu adresten bağlanır. Yeni adres bir sonraki sürümde `DEFAULT_LICENSE_SERVICES`'e ikinci adres olarak eklenir.
-3. **Faz 4 kalanı: site içerikleri.** Fiyat ve satın alma yolu, video oynatıcı, sürüm notları vb. Kullanıcıyla konuşulacak.
-4. **Windows kurulum testi** (`.github/workflows/windows.yml`).
+4. **Faz 4 kalanı: site içerikleri.** Fiyat ve satın alma yolu, video oynatıcı, sürüm notları vb. Kullanıcıyla konuşulacak.
+5. **Windows kurulum testi** (`.github/workflows/windows.yml`).
    - Kurulumun kendisi başarılı; test betiği, `servis-kur.cmd`'nin kilitlediği `C:\DestekOfis\logs` altındaki günlüğü okuyamıyordu.
-   - Betik artık günlüğü `robocopy /B` ile kopyalayıp okuyor. Hâlâ kırmızıysa, betiğin yazdırdığı `icacls` ve `whoami /groups` çıktısına bakılmalı.
-5. **Tanıtım videosu.** Ses kararı bekleniyor.
-6. **Ticari hazırlık.**
+   - Betikteki okuma sorunları giderildi (günlük `robocopy /B` ile, giriş yanıtı `-AsHashtable` ile okunur). 1–8. adımlar geçiyor; 9. adım yukarıdaki 1. maddedeki gerçek hatayı yakalıyor.
+6. **Tanıtım videosu.** Ses kararı bekleniyor.
+7. **Ticari hazırlık.**
    - Kod imzalama sertifikası.
    - Depoyu gizliye alma. Önce demo indirme bağlantısı ve güncelleme kaynağı başka yere taşınmalı.
 
