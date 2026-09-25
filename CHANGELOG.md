@@ -13,7 +13,7 @@ Sürümler [anlamsal sürümleme](https://semver.org/lang/tr/) kurallarına uyar
 - **Kalıcı kayıt kimliği:** Dosya numarası taşımayan verilerde kimlik kolonu (hasta no, sipariş no, plaka, üye no…) kendiliğinden bulunur. Satırın telefonu veya adresi değişse de notlar, görevler ve düzeltmeler kayda bağlı kalır. Aynı kimlikle ikinci bir kayıt eklenemez. Dosya numaralı veride eski kural aynen geçerlidir.
 - **Arama kutusu** verideki gerçek kolon adlarını önerir (ör. "Hasta no, ad soyad veya telefon ara…").
 - **Genel adlandırma:** Yeni kurulumlar `C:\DestekOfis` klasörüne kurulur; veritabanının adı `destekofis.sqlite`, yedeklerinki `destekofis-…` olur. Mevcut kurulumlar olduğu yerde, eski adlarla kalır (`C:\HukukOfisiMerkezi`, `hukuk-ofisi.sqlite`); eski yedekler de listelenir ve geri yüklenebilir.
-- **Mevcut ofisler:** Güncellenen ve verisi olan sunucular hukuk ofisi görünümüyle açılır, ekranlar güncellemeden önceki gibi kalır. Yöneticiye bir kez "Yeni: DestekOfis verinizi tanıyor" kartı çıkar; *Mevcut görünümü koru* denirse hiçbir şey değişmez.
+- **Mevcut ofisler:** Güncellenen ve verisi olan sunucular hukuk ofisi görünümüyle açılır: başlıklar, adlar ve araçlar güncellemeden önceki gibi kalır; yalnızca özet kartları ve veri sağlığı eklenir. Yöneticiye bir kez "Yeni: DestekOfis verinizi tanıyor" kartı çıkar; *Mevcut görünümü koru* denirse hiçbir şey değişmez.
 
 ### 1.3'ten güncellenen kurulumlar: 1.4.0 ve 1.5.0'daki yenilikler de bu sürümdedir
 

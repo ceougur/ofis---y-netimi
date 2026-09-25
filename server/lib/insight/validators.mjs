@@ -53,7 +53,18 @@ export function isTrPhone(value) {
 }
 
 export const isEmail = value => /^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i.test(String(value ?? "").trim());
-export const isUrl = value => /^(https?:\/\/|www\.)[^\s]+\.[^\s]+$/i.test(String(value ?? "").trim());
+// Doğrusal denetim (düzenli ifadedeki iç içe tekrarlar uzun değerlerde sunucuyu kilitleyebilirdi): önek, boşluksuz
+// devam ve baştan/sondan olmayan en az bir nokta.
+export function isUrl(value) {
+  const text = String(value ?? "").trim();
+  if (text.length > 2048) return false;
+  const prefix = /^(?:https?:\/\/|www\.)/i.exec(text);
+  if (!prefix) return false;
+  const rest = text.slice(prefix[0].length);
+  if (!rest || /\s/.test(rest)) return false;
+  const dot = rest.indexOf(".", 1);
+  return dot > 0 && dot < rest.length - 1;
+}
 
 // Türkiye araç plakası: 01-81 il kodu + 1-3 harf + 2-4 rakam (boşluklu veya bitişik).
 export function isPlate(value) {

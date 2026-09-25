@@ -9,6 +9,7 @@ import { DATASET_KEY } from "./dataset.mjs";
 import { HttpError, parseJson } from "./http.mjs";
 import { ROLE_LABELS } from "./permissions.mjs";
 import { analyzeDataset } from "./insight/analyze.mjs";
+import { listRecords, RECORD_LISTS } from "./insight/kpi.mjs";
 import { GENERAL_ID, LEGACY_ID, sectorById } from "./insight/sectors.mjs";
 
 // Kalemle düzenlenebilen başlıklar: anahtar → en fazla uzunluk ve yönetici ekranındaki adı.
@@ -38,6 +39,7 @@ const cleanLabel = (value, max) =>
 export function createProfileService({ store, dataset, audit, events, log, clock = () => new Date() }) {
   let cache = null; // { fingerprint, analysis }
   let computing = null;
+  let generation = 0; // her geçersizleştirmede artar
 
   const iso = () => clock().toISOString();
   const readLabels = () => {
@@ -54,10 +56,14 @@ export function createProfileService({ store, dataset, audit, events, log, clock
   function init() {
     if (store.setting(K.initialized)) return;
     store.tx(() => {
-      if (!readSector() && usedBefore()) {
+      const used = usedBefore();
+      if (used && !readSector()) {
         store.setSetting(K.sector, JSON.stringify({ id: LEGACY_ID, source: "legacy", at: iso() }));
         store.setSetting(K.intro, "pending");
       }
+      // Notlar, düzeltmeler ve silmeler dosya numarasına bağlı: kayıt kimliği kuralı eski kurala sabitlenir. Böylece
+      // ilk Sheet eşitlemesi ve sonraki içeri almalar kayıtları başka bir kolona göre yeniden anahtarlayamaz.
+      if (used) dataset.pinLegacyIdentity?.();
       store.setSetting(K.initialized, "1");
     });
   }
@@ -113,7 +119,9 @@ export function createProfileService({ store, dataset, audit, events, log, clock
   }
 
   function setLabel(user, key, value) {
-    const slot = LABEL_SLOTS[String(key || "")];
+    const name = String(key || "");
+    // Yalnızca tanımlı yuvalar: "constructor", "toString" gibi nesnenin kalıtılan adları yuva sayılmaz.
+    const slot = Object.hasOwn(LABEL_SLOTS, name) ? LABEL_SLOTS[name] : null;
     if (!slot) throw new HttpError(400, "Bu başlık değiştirilemez.");
     const text = cleanLabel(value, slot.max);
     const labels = readLabels();
@@ -159,26 +167,39 @@ export function createProfileService({ store, dataset, audit, events, log, clock
     const key = fingerprint();
     if (cache && cache.fingerprint === key) return cache.analysis;
     if (computing && computing.fingerprint === key) return computing.promise;
+    const started = generation;
     const promise = (async () => {
       const view = await dataset.view();
       // Görünüm okunurken veri değiştiyse (ör. ilk Sheet eşitlemesi ya da aynı anda yapılan bir düzeltme) sonuç bu
       // istek için döner ama önbelleğe alınmaz: bir sonraki istek durulmuş veriyle yeniden hesaplar. Böylece eski
       // veriden hesaplanmış bir analiz yeni verinin anahtarıyla saklanamaz. (Analiz eşzamanlıdır; araya iş giremez.)
-      const settled = fingerprint() === key;
+      const settled = fingerprint() === key && generation === started;
       const result = analyzeDataset({ rows: view.rows || [], label: store.setting("dataset.label", ""), tabs: (view.tabs || []).map(tab => tab.title).filter(Boolean), now: clock() });
       if (settled) cache = { fingerprint: key, analysis: result };
       if (result.ms > 1500) log?.info?.(`Veri analizi ${result.ms} ms sürdü (${result.rowCount} kayıt)`);
       return result;
     })().finally(() => {
-      computing = null;
+      if (computing?.promise === promise) computing = null;
     });
     computing = { fingerprint: key, promise };
     return promise;
   }
 
+  // Kart penceresindeki kayıt listesi: güncel görünümden, kartla aynı kapsamda (sekme ya da tüm veri) ve aynı kuralla.
+  async function records(list, tab = "") {
+    if (!RECORD_LISTS.includes(list)) throw new HttpError(400, "Bilinmeyen liste.");
+    const result = await analysis();
+    const view = await dataset.view();
+    return listRecords(view.rows || [], result.primary, { list, tab: String(tab || "").slice(0, 300), currency: result.kpis?.currency || "TRY", now: clock() });
+  }
+
+  // Veri değişince (içeri alma, eşitleme, düzeltme, silme, geri alma, yeni kayıt) çağrılır. Parmak izi her değişikliği
+  // yakalayamaz (ör. bir kayıt silinip başka biri geri alınınca sayılar aynı kalır); açık geçersizleştirme bunu kapatır.
   const invalidate = () => {
+    generation += 1;
     cache = null;
+    computing = null;
   };
 
-  return { init, profile, tagline, setSector, dismissIntro, setLabel, resetLabels, analysis, invalidate };
+  return { init, profile, tagline, setSector, dismissIntro, setLabel, resetLabels, analysis, records, invalidate };
 }

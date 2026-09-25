@@ -2,16 +2,18 @@
 // ("TUTAR toplamı", "ÖDEME SÖZÜ · 7 gün içinde"). Tüm veri ve her sekme için ayrı ayrı; tıklanınca açılacak kayıt
 // listeleriyle. Tarih karşılaştırmaları sunucunun yerel takvim gününe göredir (ofis saati).
 import { recordTitle } from "./quality.mjs";
-import { currencyOf } from "./columns.mjs";
+import { cell, currencyOf } from "./columns.mjs";
 import { parseAmount, parseDate } from "./validators.mjs";
 
 const DAY = 86_400_000;
 const LIST_LIMIT = 200;
+const dayStart = now => Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
+const byTitle = (a, b) => a.title.localeCompare(b.title, "tr");
 
 const emptyGroup = () => ({ total: 0, money: null, deadline: null, event: null, month: null, status: null, responsible: null, _status: null, _responsible: null });
 
 export function computeKpis(rows, analyses, primary, { now = new Date() } = {}) {
-  const today = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
+  const today = dayStart(now);
   const month = now.getMonth();
   const year = now.getFullYear();
   const byColumn = new Map(analyses.map(item => [item.column, item]));
@@ -33,7 +35,7 @@ export function computeKpis(rows, analyses, primary, { now = new Date() } = {}) 
     for (const group of targets) group.total += 1;
 
     if (primary.money) {
-      const raw = row[primary.money];
+      const raw = cell(row, primary.money);
       const amount = raw == null || raw === "" ? null : parseAmount(raw);
       // Açıkça başka para birimiyle yazılmış değer toplanmaz.
       const other = amount !== null && currencyOf(raw) && currencyOf(raw) !== currency;
@@ -47,7 +49,7 @@ export function computeKpis(rows, analyses, primary, { now = new Date() } = {}) 
       }
     }
     if (primary.deadline) {
-      const date = parseDate(row[primary.deadline]);
+      const date = parseDate(cell(row, primary.deadline));
       if (date) {
         const days = Math.round((date.getTime() - today) / DAY);
         for (const group of targets) {
@@ -58,13 +60,13 @@ export function computeKpis(rows, analyses, primary, { now = new Date() } = {}) 
           if (days >= 0 && days <= 30) group.deadline.next30 += 1;
           if (days < 0) group.deadline.passed += 1;
         }
-        const entry = { key: String(row.__hofKey || ""), title: recordTitle(row, primary), date: String(row[primary.deadline]).trim(), days, tab };
+        const entry = { key: String(row.__hofKey || ""), title: recordTitle(row, primary), date: String(cell(row, primary.deadline)).trim(), days, tab };
         if (days >= 0 && days <= 30) lists.upcoming.push(entry);
         else if (days < 0) lists.passed.push(entry);
       }
     }
     if (primary.event) {
-      const date = parseDate(row[primary.event]);
+      const date = parseDate(cell(row, primary.event));
       if (date) {
         const thisMonth = date.getUTCFullYear() === year && date.getUTCMonth() === month;
         for (const group of targets) {
@@ -75,24 +77,24 @@ export function computeKpis(rows, analyses, primary, { now = new Date() } = {}) 
       }
     }
     if (monthColumn) {
-      const date = parseDate(row[monthColumn]);
+      const date = parseDate(cell(row, monthColumn));
       if (date && date.getUTCFullYear() === year && date.getUTCMonth() === month) {
         for (const group of targets) {
           group.month ??= { column: monthColumn, count: 0 };
           group.month.count += 1;
         }
-        lists.month.push({ key: String(row.__hofKey || ""), title: recordTitle(row, primary), date: String(row[monthColumn]).trim(), day: date.getUTCDate(), tab });
+        lists.month.push({ key: String(row.__hofKey || ""), title: recordTitle(row, primary), date: String(cell(row, monthColumn)).trim(), day: date.getUTCDate(), tab });
       } else if (date) for (const group of targets) group.month ??= { column: monthColumn, count: 0 };
     }
     if (primary.status) {
-      const value = String(row[primary.status] ?? "").trim();
+      const value = String(cell(row, primary.status) ?? "").trim();
       if (value) for (const group of targets) {
         group._status ??= new Map();
         group._status.set(value, (group._status.get(value) || 0) + 1);
       }
     }
     if (primary.responsible) {
-      const value = String(row[primary.responsible] ?? "").trim();
+      const value = String(cell(row, primary.responsible) ?? "").trim();
       if (value) for (const group of targets) {
         group._responsible ??= new Map();
         group._responsible.set(value, (group._responsible.get(value) || 0) + 1);
@@ -124,4 +126,52 @@ export function computeKpis(rows, analyses, primary, { now = new Date() } = {}) 
     tabs,
     lists: { upcoming: lists.upcoming.slice(0, LIST_LIMIT), passed: lists.passed.slice(0, LIST_LIMIT), topAmount: lists.topAmount.slice(0, 50), month: lists.month.slice(0, LIST_LIMIT) },
   };
+}
+
+// Kart penceresindeki kayıt listesi. Kartın sayısıyla aynı kural ve aynı kapsam (seçili sekme ya da tüm veri) üzerinden
+// sayılır: "toplam" listenin tamamıdır, en fazla `limit` kayıt döner. Sekme verideki bir sekme değilse (kartlar da o
+// durumda tüm veriyi gösterir) tüm veri kullanılır.
+export const RECORD_LISTS = Object.freeze(["upcoming", "passed", "topAmount", "month"]);
+export function listRecords(rows, primary, { list, tab = "", currency = "TRY", now = new Date(), limit = 500 } = {}) {
+  const known = Boolean(tab) && rows.some(row => String(row.__sheet || "") === tab);
+  const scope = known ? rows.filter(row => String(row.__sheet || "") === tab) : rows;
+  const today = dayStart(now);
+  const items = [];
+  let column = null;
+  if (list === "upcoming" || list === "passed") {
+    column = primary.deadline || null;
+    if (column) {
+      for (const row of scope) {
+        const date = parseDate(cell(row, column));
+        if (!date) continue;
+        const days = Math.round((date.getTime() - today) / DAY);
+        const wanted = list === "upcoming" ? days >= 0 && days <= 30 : days < 0;
+        if (wanted) items.push({ key: String(row.__hofKey || ""), title: recordTitle(row, primary), date: String(cell(row, column)).trim(), days, tab: String(row.__sheet || "") });
+      }
+      items.sort(list === "upcoming" ? (a, b) => a.days - b.days || byTitle(a, b) : (a, b) => b.days - a.days || byTitle(a, b));
+    }
+  } else if (list === "topAmount") {
+    column = primary.money || null;
+    if (column) {
+      for (const row of scope) {
+        const raw = cell(row, column);
+        const amount = raw == null || raw === "" ? null : parseAmount(raw);
+        if (amount === null || amount <= 0) continue;
+        if (currencyOf(raw) && currencyOf(raw) !== currency) continue;
+        items.push({ key: String(row.__hofKey || ""), title: recordTitle(row, primary), amount, tab: String(row.__sheet || "") });
+      }
+      items.sort((a, b) => b.amount - a.amount || byTitle(a, b));
+    }
+  } else if (list === "month") {
+    column = primary.deadline || primary.event || null;
+    if (column) {
+      for (const row of scope) {
+        const date = parseDate(cell(row, column));
+        if (!date || date.getUTCFullYear() !== now.getFullYear() || date.getUTCMonth() !== now.getMonth()) continue;
+        items.push({ key: String(row.__hofKey || ""), title: recordTitle(row, primary), date: String(cell(row, column)).trim(), day: date.getUTCDate(), tab: String(row.__sheet || "") });
+      }
+      items.sort((a, b) => a.day - b.day || byTitle(a, b));
+    }
+  }
+  return { list, tab: known ? tab : "", column, total: items.length, limit, items: items.slice(0, limit) };
 }

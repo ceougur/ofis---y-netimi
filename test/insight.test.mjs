@@ -8,12 +8,12 @@ import { after, before, describe, it } from "node:test";
 import { sheetMatrix } from "../client/assets/hof-excel-format.js";
 import { detectIdentity } from "../server/lib/dataset-identity.mjs";
 import { analyzeDataset } from "../server/lib/insight/analyze.mjs";
-import { analyzeColumn, analyzeColumns, primaryColumns } from "../server/lib/insight/columns.mjs";
-import { computeKpis } from "../server/lib/insight/kpi.mjs";
+import { analyzeColumn, analyzeColumns, CASE_NO, primaryColumns } from "../server/lib/insight/columns.mjs";
+import { computeKpis, listRecords } from "../server/lib/insight/kpi.mjs";
 import { assessQuality } from "../server/lib/insight/quality.mjs";
 import { classifySector, SECTOR_GROUPS, SECTORS, sectorCatalog } from "../server/lib/insight/sectors.mjs";
 import { createProfileService } from "../server/lib/profile.mjs";
-import { isIban, isPlate, isProvince, isTckn, isTrPhone, isVkn, parseAmount, parseDate } from "../server/lib/insight/validators.mjs";
+import { isIban, isPlate, isProvince, isTckn, isTrPhone, isUrl, isVkn, parseAmount, parseDate } from "../server/lib/insight/validators.mjs";
 import { matrixToRecords } from "../server/lib/sections.mjs";
 import { columnOrder } from "../server/lib/sources.mjs";
 import { CORPUS, corpusRows } from "./fixtures/sector-corpus.mjs";
@@ -257,6 +257,56 @@ describe("veri sağlığı ve göstergeler", () => {
     assert.equal(result.kpis.all.total, 200_000);
     assert.ok(elapsed < 6000, `${Math.round(elapsed)} ms`);
   });
+
+  it("çok uzun hücreler analizi yavaşlatmaz (düzenli ifadeler doğrusal, biçim denetimi uzunlukla sınırlı)", () => {
+    const evil = `2025/1${" ".repeat(19_990)}!`;
+    const dotted = `www.${"a.".repeat(10_000)} x`;
+    let started = performance.now();
+    assert.equal(CASE_NO.test(evil), false);
+    assert.equal(isUrl(dotted), false);
+    assert.ok(performance.now() - started < 50, `düzenli ifadeler ${Math.round(performance.now() - started)} ms`);
+    assert.equal(isUrl("https://destekofis.net/indir"), true);
+    assert.equal(isUrl("www.ornek.com.tr"), true);
+    assert.equal(isUrl("http://."), false);
+    assert.equal(isUrl("www.ornek"), false);
+    const rows = Array.from({ length: 3 }, (_, i) => Object.fromEntries(Array.from({ length: 45 }, (_, c) => [`ALAN ${c}`, c % 2 ? dotted : evil]).concat([["__hofKey", `K${i}`]])));
+    started = performance.now();
+    const result = analyzeDataset({ rows });
+    assert.equal(result.rowCount, 3);
+    assert.ok(performance.now() - started < 1000, `analiz ${Math.round(performance.now() - started)} ms`);
+  });
+
+  it("kart listesi: kartla aynı kapsam (seçili sekme) ve kural; toplam listenin tamamı, en fazla sınır kadar kayıt döner", () => {
+    const now = new Date(2026, 8, 25, 10);
+    const day = offset => {
+      const date = new Date(2026, 8, 25 + offset);
+      return `${String(date.getDate()).padStart(2, "0")}.${String(date.getMonth() + 1).padStart(2, "0")}.${date.getFullYear()}`;
+    };
+    const big = Array.from({ length: 260 }, (_, i) => ({ __sheet: "Büyük", __hofKey: `2026/${i}`, "DOSYA NO": `2026/${i}`, BORÇLU: `Borçlu ${i} Kişi`, TUTAR: `${10_000 + i},00 TL`, "SON ÖDEME TARİHİ": day(i % 5) }));
+    const small = Array.from({ length: 10 }, (_, i) => ({ __sheet: "Küçük", __hofKey: `2026/9${i}`, "DOSYA NO": `2026/9${i}`, BORÇLU: `Küçük ${i} Kişi`, TUTAR: `${100 + i},00 TL`, "SON ÖDEME TARİHİ": i < 4 ? day(-3 - i) : day(10 + i) }));
+    const all = [...big, ...small];
+    const analysis = analyzeDataset({ rows: all, tabs: ["Büyük", "Küçük"], now });
+    const { primary } = analysis;
+    const tabKpi = analysis.kpis.tabs["Küçük"];
+    const upcoming = listRecords(all, primary, { list: "upcoming", tab: "Küçük", now, currency: analysis.kpis.currency });
+    assert.equal(upcoming.total, tabKpi.deadline.next30);
+    assert.ok(upcoming.items.every(item => item.tab === "Küçük"));
+    const passed = listRecords(all, primary, { list: "passed", tab: "Küçük", now });
+    assert.equal(passed.total, tabKpi.deadline.passed);
+    assert.deepEqual(passed.items.map(item => item.days), [-3, -4, -5, -6], "en yakın geçmiş önce");
+    const top = listRecords(all, primary, { list: "topAmount", tab: "Küçük", now, limit: 30 });
+    assert.equal(top.total, 10);
+    assert.equal(top.items[0].amount, 109);
+    const everything = listRecords(all, primary, { list: "upcoming", tab: "", now, limit: 500 });
+    assert.equal(everything.total, analysis.kpis.all.deadline.next30);
+    assert.equal(everything.total, 266, "200 sınırına takılmadan sayılır");
+    const limited = listRecords(all, primary, { list: "upcoming", tab: "Yok böyle sekme", now, limit: 50 });
+    assert.equal(limited.tab, "", "bilinmeyen sekmede tüm veri (kartlar gibi)");
+    assert.equal(limited.total, 266);
+    assert.equal(limited.items.length, 50);
+    const month = listRecords(all, primary, { list: "month", now, limit: 500 });
+    assert.equal(month.total, analysis.kpis.all.month.count);
+  });
 });
 
 describe("kayıt kimliği", () => {
@@ -344,6 +394,29 @@ describe("ofis profili", () => {
     assert.equal(after.kpis.all.money.sum, 78000 - 1000 + 1_000_000);
   });
 
+  it("analiz önbelleği: bir kayıt silinip başka biri geri alınınca (sayılar aynı kalsa da) göstergeler yenilenir", async () => {
+    await admin.post("/api/workspace/deleted", { caseKey: "2026/101" });
+    const before = (await personel.get("/api/workspace/insight")).data.data.analysis;
+    await admin.post("/api/workspace/deleted", { caseKey: "2026/102" });
+    await admin.post("/api/workspace/deleted/restore", { caseKey: "2026/101" });
+    const after = (await personel.get("/api/workspace/insight")).data.data.analysis;
+    assert.equal(after.kpis.all.total, before.kpis.all.total);
+    assert.equal(after.kpis.all.money.sum, before.kpis.all.money.sum - 3000 + 2000, "2026/102 (3.000) çıktı, 2026/101 (2.000) geri geldi");
+    const top = (await personel.get("/api/workspace/insight/records?list=topAmount")).data.data;
+    assert.ok(!top.items.some(item => item.key === "2026/102"), "silinen kayıt listede yok");
+    assert.ok(top.items.some(item => item.key === "2026/101"));
+    await admin.post("/api/workspace/deleted/restore", { caseKey: "2026/102" });
+  });
+
+  it("kart listesi ucu: herkese açık, bilinmeyen liste reddedilir, sekme kapsamı uygulanır", async () => {
+    const upcoming = await personel.get("/api/workspace/insight/records?list=upcoming&tab=Aktif");
+    assert.equal(upcoming.status, 200);
+    assert.equal(upcoming.data.data.tab, "Aktif");
+    assert.equal(upcoming.data.data.column, "ÖDEME SÖZÜ");
+    assert.equal((await personel.get("/api/workspace/insight/records?list=yok")).status, 400);
+    assert.equal((await server.client().get("/api/workspace/insight/records?list=upcoming")).status, 401);
+  });
+
   it("analiz önbelleği: veri okunurken değişirse eski sonuç yeni verinin anahtarıyla saklanmaz", async () => {
     let rowsCount = 1;
     let views = 0;
@@ -395,6 +468,13 @@ describe("ofis profili", () => {
   it("haciz modülü: sektör istemese de ofisin haciz kaydı varsa açık kalır", async () => {
     await admin.post(`/api/workspace/cases/${encodeURIComponent("2026/101")}/liens`, { title: "Araç haczi", placedAt: "2026-01-10" });
     assert.equal((await personel.get("/api/workspace/profile")).data.data.modules.haciz, true);
+  });
+
+  it("başlık anahtarı: nesnenin kalıtılan adları (constructor, toString, __proto__) yuva sayılmaz", async () => {
+    for (const key of ["constructor", "toString", "hasOwnProperty", "__proto__"]) {
+      assert.equal((await admin.put("/api/workspace/labels", { key, value: "x".repeat(5000) })).status, 400, key);
+    }
+    assert.deepEqual((await admin.get("/api/workspace/profile")).data.data.labels, {});
   });
 
   it("başlıklar: yalnızca yönetici; izinli anahtarlar; uzunluk sınırı; boş değer varsayılana döner; tümünü sıfırla", async () => {

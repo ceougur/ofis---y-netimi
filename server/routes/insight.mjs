@@ -36,6 +36,12 @@ export function registerInsightRoutes(router, { auth, profile }) {
     ok(res, { analysis: shapeAnalysis(analysis, { manage: can(user.role, "profile.manage") }), profile: profile.profile() });
   });
 
+  // Kart penceresi: yaklaşan/tarihi geçen, en yüksek tutarlı ve bu ayın kayıtları (seçili sekme için, tamamı sayılarak).
+  router.get("/api/workspace/insight/records", async ({ req, res, url }) => {
+    auth.requireUser(req);
+    ok(res, await profile.records(text(url.searchParams.get("list")), text(url.searchParams.get("tab"))));
+  });
+
   router.post("/api/workspace/insight/sector", async ({ req, res }) => {
     const user = auth.requirePermission(req, "profile.manage");
     const body = await readJson(req);

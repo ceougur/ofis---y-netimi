@@ -11,10 +11,12 @@
 // 1.6.0: Dosya numarası taşımayan verilerde (klinik, mağaza, okul…) her satırın kendi kimlik kolonu vardır ("HASTA NO",
 // "SİPARİŞ NO", "PLAKA"). Böyle bir kolon kesin biçimde bulunursa (neredeyse her satırda dolu ve aynı sekmede
 // tekrarsız) kimlik o kolondan alınır ("column" kipi); satırın başka bir hücresi değişse de notlar ve düzeltmeler
-// kaybolmaz. Hukuk verisi gibi dosya numaralı verilerde eski kural ("legacy" kipi) aynen geçerlidir.
+// kaybolmaz. Hukuk verisi gibi dosya numaralı verilerde eski kural ("legacy" kipi) aynen geçerlidir; 1.6.0 öncesinden
+// gelen kurulumlar bu kurala sabitlenir (dataset.mjs, profile.mjs).
 import { createHash } from "node:crypto";
 import { analyzeColumn } from "./insight/columns.mjs";
-import { canonicalCaseKey, columnOrder } from "./sources.mjs";
+import { foldText } from "./insight/validators.mjs";
+import { CASE_KEY_PATTERN, canonicalCaseKey, columnOrder } from "./sources.mjs";
 
 export const FINGERPRINT_PREFIX = "satir:";
 export const LEGACY_IDENTITY = Object.freeze({ mode: "legacy" });
@@ -40,22 +42,52 @@ export function rowIdentities(rows, identity = LEGACY_IDENTITY) {
   });
 }
 
-// Veriye uygun kimlik kuralı. Dosya numaralı veri (satırların yarısından çoğunda eski kural bir kimlik buluyor ve bu
-// kimlikler büyük ölçüde tekrarsız) eski kuralla kalır. Aksi hâlde kesin bir kimlik kolonu aranır; bulunamazsa eski
-// kural (içerik parmak izi) kullanılır.
-const ID_ROLES = ["id", "plate", "tckn", "vkn", "iban", "email"];
-export function detectIdentity(rows) {
-  if (!Array.isArray(rows) || rows.length < 3) return LEGACY_IDENTITY;
-  const columns = columnOrder(rows);
+// Eski kuralın (dosya numarası) bu satırlarda bulduğu kimlikler: kimlik bulunan satır sayısı ve farklı kimlik sayısı.
+export function legacyCoverage(rows, columns = columnOrder(rows)) {
   let keyed = 0;
-  const legacyKeys = new Set();
+  const keys = new Set();
   for (const row of rows) {
     const key = canonicalCaseKey(row, columns);
     if (key.startsWith(FINGERPRINT_PREFIX)) continue;
     keyed += 1;
-    legacyKeys.add(`${row.__sheet || ""}\u0000${key}`);
+    keys.add(`${row.__sheet || ""}\u0000${key}`);
   }
-  if (keyed >= rows.length * 0.5 && legacyKeys.size >= keyed * 0.5) return LEGACY_IDENTITY;
+  return { keyed, distinct: keys.size };
+}
+
+// Satırların çoğunda dosya numarası var mı? ("Yerine koy" ile gelen yeni dosya da dosya numaralıysa ofisin notları ve
+// düzeltmeleri aynı kuralla eşleşmeye devam eder.)
+export const legacyFits = rows => Array.isArray(rows) && rows.length > 0 && legacyCoverage(rows).keyed >= rows.length * 0.5;
+
+// Hukuk tablosunda bir dosya birden çok satır olabilir (borçlu ve kefiller): dosya numaraları tekrar eder ama kaydın
+// kimliği yine dosya numarasıdır. Başlığı dosya/esas/takip/icra/dava diyen ve dolu değerleri çoğunlukla "yyyy/sayı"
+// olan bir kolon bunu gösterir. (Başlık şartı, "DÖNEM 2025/1" gibi tekrar eden dönem kolonlarını dışarıda bırakır.)
+const CASE_HEADER = /\b(dosya|esas|takip|icra|dava)\b/;
+function hasCaseColumn(rows, columns) {
+  return columns.some(column => {
+    if (!CASE_HEADER.test(foldText(column))) return false;
+    let filled = 0;
+    let matched = 0;
+    for (const row of rows) {
+      if (!Object.hasOwn(row, column)) continue;
+      const value = String(row[column] ?? "").trim();
+      if (!value) continue;
+      filled += 1;
+      if (value.length <= 64 && CASE_KEY_PATTERN.test(value)) matched += 1;
+    }
+    return filled >= rows.length * 0.3 && matched >= filled * 0.8;
+  });
+}
+
+// Veriye uygun kimlik kuralı. Dosya numaralı veri (satırların yarısından çoğunda eski kural bir kimlik buluyor; bu
+// kimlikler büyük ölçüde tekrarsız ya da bir dosya numarası kolonundan geliyor) eski kuralla kalır. Aksi hâlde kesin
+// bir kimlik kolonu aranır; bulunamazsa eski kural (içerik parmak izi) kullanılır.
+const ID_ROLES = ["id", "plate", "tckn", "vkn", "iban", "email"];
+export function detectIdentity(rows) {
+  if (!Array.isArray(rows) || rows.length < 3) return LEGACY_IDENTITY;
+  const columns = columnOrder(rows);
+  const { keyed, distinct } = legacyCoverage(rows, columns);
+  if (keyed >= rows.length * 0.5 && (distinct >= keyed * 0.5 || hasCaseColumn(rows, columns))) return LEGACY_IDENTITY;
 
   const candidates = [];
   for (const column of columns) {
@@ -65,7 +97,7 @@ export function detectIdentity(rows) {
     const values = new Set();
     let duplicates = 0;
     for (const row of rows) {
-      if (!(column in row)) continue;
+      if (!Object.hasOwn(row, column)) continue;
       present += 1;
       const value = String(row[column] ?? "").trim();
       if (!value) continue;

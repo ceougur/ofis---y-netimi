@@ -7,7 +7,7 @@ import { can } from "../lib/permissions.mjs";
 
 const CASE_KEY_MAX = 300;
 
-export function registerWorkspaceRoutes(router, { store, auth, audit, dataset, clientState, config, events, chat }) {
+export function registerWorkspaceRoutes(router, { store, auth, audit, dataset, clientState, config, events, chat, profile }) {
   const now = () => new Date().toISOString();
   // Görev kişiye kimliğiyle bağlıysa yalnızca kimlik belirler (ad değiştirerek başkasının görevi görülemez);
   // serbest yazılmış, kişiye bağlanamamış eski görevlerde ad eşleşmesi geçerlidir.
@@ -18,7 +18,11 @@ export function registerWorkspaceRoutes(router, { store, auth, audit, dataset, c
   const ownTask = (user, task) => assignedTo(user, task) || (task.actorId ?? task.created_by) === user.id;
   const visibleTasks = (user, rows) => (can(user.role, "tasks.viewAll") ? rows : rows.filter(row => ownTask(user, row)));
   // Diğer bilgisayarlardaki açık ekranlar değişikliği anında görsün (işlemi yapan hariç; onun ekranı zaten güncel).
-  const changed = (user, kind, detail = {}, users = null) => events?.publish("workspace.changed", { kind, actorId: user.id, actorName: user.display_name, ...detail }, { except: user.id, users });
+  const changed = (user, kind, detail = {}, users = null) => {
+    // Tablo görünümünü değiştiren işlemler (düzeltme, silme, geri alma, yeni kayıt, kaynak) analizi de eskitir.
+    if (kind === "records" || kind === "source") profile?.invalidate();
+    return events?.publish("workspace.changed", { kind, actorId: user.id, actorName: user.display_name, ...detail }, { except: user.id, users });
+  };
   // Görev olayları (başlık, atanan) yalnızca o görevi görebilenlere gider: tüm görevleri görme yetkisi olanlar,
   // görevin atandığı ve görevi oluşturan kişi. Personel başkalarının görevlerini canlı kanaldan da öğrenemez.
   const taskAudience = task => store.all("SELECT id, role, display_name FROM users WHERE active = 1")

@@ -3,14 +3,14 @@
 //
 // Puan tanımı (raporda da yazar): kontrol edilen hücrelerin sorunsuz olanlarının oranı. Kontroller: kimlik ve taraf
 // kolonlarının doluluğu, kimliğin aynı sekmede tekrar etmemesi, doğrulanabilen/biçimli kolonlarda değerin geçerliliği.
-import { isBlank } from "./columns.mjs";
+import { cell, isBlank } from "./columns.mjs";
 import { isIban, isTckn, isTrPhone, isVkn, parseAmount, parseDate } from "./validators.mjs";
 
 const LIST_LIMIT = 50;
 
 export function recordTitle(row, primary) {
-  const person = primary.person ? String(row[primary.person] ?? "").trim() : "";
-  const id = primary.id ? String(row[primary.id] ?? "").trim() : "";
+  const person = primary.person ? String(cell(row, primary.person) ?? "").trim() : "";
+  const id = primary.id ? String(cell(row, primary.id) ?? "").trim() : "";
   return person || id || String(row.__hofKey || "");
 }
 
@@ -68,7 +68,7 @@ export function assessQuality(rows, analyses, primary) {
 
   const seen = new Map();
   for (const row of rows) {
-    if (idColumn && idColumn in row) {
+    if (idColumn && Object.hasOwn(row, idColumn)) {
       const value = String(row[idColumn] ?? "").trim();
       const blank = isBlank(value);
       count(!blank);
@@ -89,13 +89,13 @@ export function assessQuality(rows, analyses, primary) {
         }
       }
     }
-    if (personColumn && personColumn in row) {
+    if (personColumn && Object.hasOwn(row, personColumn)) {
       const blank = isBlank(row[personColumn]);
       count(!blank);
       if (blank) emptyPerson.add(row, primary);
     }
     for (const check of formatted) {
-      const value = row[check.item.column];
+      const value = cell(row, check.item.column);
       if (isBlank(value)) continue;
       const ok = check.test(String(value).trim());
       count(ok);

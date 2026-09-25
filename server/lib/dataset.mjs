@@ -13,7 +13,7 @@ import { HttpError, parseJson } from "./http.mjs";
 import { matrixToRecords } from "./sections.mjs";
 import { spreadsheetId } from "./sheets.mjs";
 import { applyPatch } from "./sources.mjs";
-import { LEGACY_IDENTITY, detectIdentity, rowHash, rowIdentities, sameIdentity } from "./dataset-identity.mjs";
+import { LEGACY_IDENTITY, detectIdentity, legacyFits, rowHash, rowIdentities, sameIdentity } from "./dataset-identity.mjs";
 import { columnOrder } from "./sources.mjs";
 
 export const DATASET_KEY = "dataset://ofis";
@@ -160,24 +160,31 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
     return rows.map((values, index) => ({ ...identities[index], values, hash: rowHash(values), position: index }));
   }
 
-  // Kayıt kimliği kuralı (dataset-identity.mjs). Mevcut veri 1.6.0 öncesinden geliyorsa (kayıtlı kural yok) eski kural
-  // geçerlidir. "Devamı olarak ekle" ve eşitleme mevcut kuralla eşleştirir; "yerine koy" kimlik kolonu yeni veride de
-  // varsa onu korur (notlar bağlı kalsın), yoksa yeni verinin kendi kuralını kullanır.
+  // Kayıt kimliği kuralı (dataset-identity.mjs). Kayıtlı kural yoksa ve veri 1.6.0 öncesinden geliyorsa (satırlar ya da
+  // göç 4'ün bıraktığı ilk Sheet eşitlemesi) eski kural geçerlidir; 1.6.0 öncesinden gelen kurulumlarda kural ayrıca
+  // açılışta sabitlenir (pinLegacyIdentity). "Devamı olarak ekle" ve eşitleme mevcut kuralla eşleştirir; kural hiçbir
+  // zaman kendiliğinden (otomatik eşitlemede) değişmez.
   function currentIdentity() {
     const stored = parseJson(setting(S.identity, ""), null);
     if (stored && (stored.mode === "legacy" || (stored.mode === "column" && stored.column))) return stored;
-    return loadRows().rows.length ? LEGACY_IDENTITY : null;
+    return loadRows().rows.length || setting(S.needsInitialSync) === "1" ? LEGACY_IDENTITY : null;
   }
   function identitiesFor(rows) {
     const detected = detectIdentity(rows);
     const current = currentIdentity();
     if (!current) return { merge: detected, replace: detected };
-    const columns = columnOrder(rows);
-    const usable = current.mode === "legacy" || columns.includes(current.column);
-    return {
-      merge: usable ? current : detected,
-      replace: current.mode === "column" && usable ? current : detected,
-    };
+    if (current.mode === "legacy") {
+      // Notlar ve düzeltmeler dosya numarasına bağlı. "Yerine koy" ile gelen dosya da çoğunlukla dosya numaralıysa eski
+      // kuralla eşleştirilir (aynı dosyayı yeniden yüklemek kayıtları koparmaz); değilse yeni veri kendi kuralını alır.
+      return { merge: current, replace: legacyFits(rows) ? current : detected };
+    }
+    // Kimlik kolonu yeni veride de varsa korunur (notlar bağlı kalsın), yoksa yeni verinin kendi kuralı kullanılır.
+    const usable = columnOrder(rows).includes(current.column);
+    return { merge: usable ? current : detected, replace: usable ? current : detected };
+  }
+  // 1.6.0 öncesinden gelen ve kullanılmış kurulum: kayıtlar dosya numarasına bağlıdır; kural eski kurala sabitlenir.
+  function pinLegacyIdentity() {
+    if (!parseJson(setting(S.identity, ""), null)) store.setSetting(S.identity, JSON.stringify(LEGACY_IDENTITY));
   }
 
   function parseExcelSheets(sheets) {
@@ -581,5 +588,5 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
   };
   const identity = () => currentIdentity();
 
-  return { view, summary, info, stage, commit, sync, unlink, remove, missingRows, resolveMissing, adoptLegacySheetUrl, hasData, start, stop, invalidate, onChange, identity };
+  return { view, summary, info, stage, commit, sync, unlink, remove, missingRows, resolveMissing, adoptLegacySheetUrl, hasData, start, stop, invalidate, onChange, identity, pinLegacyIdentity };
 }

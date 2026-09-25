@@ -115,7 +115,7 @@ Excel ya da Google Sheets ilk kez yüklendiğinde (ve *yerine koy* ile değişti
 
 **Arama kutusu** verinizdeki gerçek kolon adlarını önerir (ör. "Hasta no, ad soyad veya telefon ara…").
 
-1.6'ya güncellenen ve verisi olan sunucular hukuk ofisi görünümüyle açılır; görünüm güncellemeden önceki gibi kalır. Yöneticiye bir kez *"Yeni: DestekOfis verinizi tanıyor"* kartı çıkar. *Analizi gör* ile öneri incelenir; *Mevcut görünümü koru* ya da *Kapat* ile hiçbir şey değişmez.
+1.6'ya güncellenen ve verisi olan sunucular hukuk ofisi görünümüyle açılır: başlıklar, adlar ve araçlar güncellemeden önceki gibi kalır; yalnızca özet kartları ve veri sağlığı eklenir. Yöneticiye bir kez *"Yeni: DestekOfis verinizi tanıyor"* kartı çıkar. *Analizi gör* ile öneri incelenir; *Mevcut görünümü koru* ya da *Kapat* ile hiçbir şey değişmez.
 
 ## 8. Başlıkları değiştirme (kalem simgesi)
 

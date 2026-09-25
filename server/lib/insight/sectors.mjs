@@ -6,7 +6,7 @@
 // gönderilmez. Kanıt yetersiz ya da iki sektör birbirine yakınsa "Genel" önerilir. Öneri hiçbir zaman kendiliğinden
 // uygulanmaz: yönetici onaylar, başka bir sektör seçer ya da Genel ile devam eder.
 import { foldText } from "./validators.mjs";
-import { phraseAt } from "./columns.mjs";
+import { cell, phraseAt } from "./columns.mjs";
 
 // Başlık sinyali ağırlıkları: "!" güçlü (3), öneksiz orta (2), "~" zayıf (1).
 const WEIGHTS = { "!": 3, "": 2, "~": 1 };
@@ -296,8 +296,9 @@ export function classifySector({ analyses, rows, label = "", tabs = [] }) {
     const samples = new Map(textColumns.map(column => [column, []]));
     for (let index = 0; index < rows.length; index += step) {
       for (const column of textColumns) {
-        const value = rows[index][column];
-        if (value && String(value).trim()) samples.get(column).push(foldText(value));
+        const value = cell(rows[index], column);
+        // Uzun metinlerin yalnızca başı: kalıplar (ör. "icra dairesi") kısa değerlerde aranır, analiz süresi sınırlı kalır.
+        if (value && String(value).trim()) samples.get(column).push(foldText(String(value).slice(0, 300)));
       }
     }
     for (const sector of SECTORS) {

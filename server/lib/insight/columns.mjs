@@ -8,8 +8,15 @@
 import { foldText, isEmail, isIban, isPlate, isProvince, isTckn, isTrPhone, isUrl, isVkn, parseAmount, parseDate } from "./validators.mjs";
 
 const SAMPLE = 4000;
-// "2025/1234", "İstanbul 2025/1234", "2025/1234 E." gibi dosya/esas numaraları.
-export const CASE_NO = /^\s*(?:\S+\s+)?(?:19|20)\d{2}\/\d+(?:\s*[a-zçğıöşü.]{0,6})?\s*$/i;
+// "2025/1234", "İstanbul 2025/1234", "2025/1234 E." gibi dosya/esas numaraları. Ek kısmı en az bir harf ister: iki
+// ardışık isteğe bağlı boşluk grubu uzun değerlerde üstel geri izlemeye yol açardı.
+export const CASE_NO = /^\s*(?:\S+\s+)?(?:19|20)\d{2}\/\d+(?:\s*[a-zçğıöşü.]{1,6})?\s*$/i;
+export const isCaseNo = value => String(value ?? "").length <= 64 && CASE_NO.test(String(value ?? ""));
+// Satırın kendi alanı (kolon adı "constructor" gibi bir ad olsa bile nesnenin kalıtılan özelliği okunmaz).
+export const cell = (row, column) => (row && Object.hasOwn(row, column) ? row[column] : undefined);
+// Biçim denetimleri bu uzunluğa kadar yapılır: daha uzun değer kimlik, tarih, tutar, telefon… olamaz; denetimi
+// atlamak kötü niyetli ya da bozuk uzun hücrelerin analizi yavaşlatmasını da önler.
+const MAX_FORMAT_LENGTH = 300;
 
 // ---------- Başlık sözlüğü ----------
 // Tek kelimeler ek almış hâlleriyle de eşleşir (4+ harfliyse): "tarihi" → "tarih", "borçlusu" → "borclu".
@@ -128,7 +135,7 @@ function sampleValues(rows, column) {
   let present = 0;
   let nonEmpty = 0;
   for (const row of rows) {
-    if (!(column in row)) continue;
+    if (!Object.hasOwn(row, column)) continue;
     present += 1;
     const value = String(row[column] ?? "").trim();
     if (isBlank(value)) continue;
@@ -145,7 +152,7 @@ function sampleValues(rows, column) {
 const rate = (values, test) => {
   if (!values.length) return 0;
   let hits = 0;
-  for (const value of values) if (test(value)) hits += 1;
+  for (const value of values) if (value.length <= MAX_FORMAT_LENGTH && test(value)) hits += 1;
   return hits / values.length;
 };
 
@@ -209,7 +216,7 @@ export function analyzeColumn(rows, column, { now = new Date() } = {}) {
   if (enough && (plate >= 0.85 || (hits.plate && plate >= 0.6))) return result("plate", plate, { validRate: round(plate) });
   const phone = rate(values, isTrPhone);
   if (enough && (phone >= 0.8 || (hits.phone && phone >= 0.5))) return result("phone", phone + (hits.phone ? 0.1 : 0), { validRate: round(phone) });
-  const caseNo = rate(values, value => CASE_NO.test(value));
+  const caseNo = rate(values, isCaseNo);
   if (enough && caseNo >= 0.8) return result("id", caseNo, { kind: "case" });
   const date = rate(values, value => Boolean(parseDate(value)));
   if (enough && (date >= 0.8 || (hits.date && date >= 0.5))) {
