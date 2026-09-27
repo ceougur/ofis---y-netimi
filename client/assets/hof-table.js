@@ -220,11 +220,25 @@
       extraHtml: current ? `<p class="hof-edit-meta">Son düzenleyen: ${esc(current.actorName || "—")} · ${esc(HOF.formatDateTime(current.updatedAt))}</p>` : "",
       submitLabel: "Değişikliği kaydet",
       onSubmit: async data => {
+        const body = { sourceName: HOF.sourceName(), caseKey: info.key, field: info.field, value: data.value, expectedVersion: current ? current.version : 0, previous: current ? current.value : info.value };
         try {
-          await HOF.api("/api/workspace/overrides", { method: "POST", body: { sourceName: HOF.sourceName(), caseKey: info.key, field: info.field, value: data.value, expectedVersion: current ? current.version : 0 } });
+          await HOF.api("/api/workspace/overrides", { method: "POST", body });
         } catch (error) {
-          if (error.status === 409) throw new Error(`Bu alanı az önce başka biri değiştirdi (yeni değer: "${error.data.currentValue ?? ""}"). Pencereyi kapatıp tekrar deneyin.`);
-          throw error;
+          if (error.status !== 409) throw error;
+          // Çakışma (v2.0.2): başkası bu alanı az önce değiştirdi. Kullanıcı güncel değeri görür; üzerine yazmayı seçebilir.
+          const currentValue = error.data?.currentValue ?? "";
+          const who = error.data?.by ? ` (${error.data.by})` : "";
+          const overwrite = await HOF.confirm({
+            title: "Bu alan siz bakarken değişti",
+            message: `Başka bir kullanıcı${who} bu alanı "${currentValue}" yaptı. Sizin yazdığınız: "${data.value}". Üzerine yazmak istiyor musunuz?`,
+            confirmLabel: "Üzerine yaz",
+            cancelLabel: "Vazgeç, güncel değeri göster",
+          });
+          if (!overwrite) {
+            HOF.refreshData();
+            return;
+          }
+          await HOF.api("/api/workspace/overrides", { method: "POST", body: { ...body, expectedVersion: undefined, force: true } });
         }
         HOF.toast(`${shownName} güncellendi.`, { type: "success" });
         HOF.refreshData();

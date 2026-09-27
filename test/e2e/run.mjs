@@ -14,6 +14,13 @@ import { createReferenceLicenseService } from "../../tools/lib/license-service.m
 import { okulServisiXlsx } from "../fixtures/okul-servisi-ornek.mjs";
 import { acilirListelerXlsx } from "../fixtures/acilir-listeler.mjs";
 
+// v2.0.2: ilk yüklemede veri doğrudan yazılmaz; "Ön izleme ve eşleme" penceresi açılır, "Yükle" ile onaylanır.
+async function firstUpload(page, input, files) {
+  await input.setInputFiles(files);
+  await page.waitForSelector(".hof-modal-backdrop.is-visible .hof-mapping", { timeout: 30000 });
+  await Promise.all([page.waitForEvent("load", { timeout: 30000 }), page.click('.hof-modal-backdrop.is-visible [data-mode="replace"]')]);
+}
+
 const here = path.dirname(fileURLToPath(import.meta.url));
 const artifacts = path.join(here, "artifacts");
 mkdirSync(artifacts, { recursive: true });
@@ -158,7 +165,7 @@ try {
 
   await step("Excel başlangıç kartından yüklenir ve ofisin kalıcı verisi olur", async () => {
     const input = await admin.$("#hof-start .hof-drop input[type=file]");
-    await Promise.all([admin.waitForEvent("load", { timeout: 30000 }), input.setInputFiles(fixture)]);
+    await firstUpload(admin, input, fixture);
     await waitForApp(admin);
     await admin.waitForFunction(() => document.querySelectorAll(".dynamic-table tbody tr").length > 0, null, { timeout: 15000 });
     // v1.7.0: "Tümü" sekmesi yok; ilk sekme açılır, her sekme kendi kolonlarıyla.
@@ -782,7 +789,7 @@ try {
       await Promise.all([page.waitForEvent("load"), page.click('#hof-auth button[type="submit"]')]);
       await page.waitForSelector("#hof-start .hof-drop");
       const input = await page.$("#hof-start .hof-drop input[type=file]");
-      await Promise.all([page.waitForEvent("load", { timeout: 30000 }), input.setInputFiles(path.join(here, "..", "fixtures", "klinik.xlsx"))]);
+      await firstUpload(page, input, path.join(here, "..", "fixtures", "klinik.xlsx"));
       await page.waitForSelector(".hof-analysis-result:not([hidden])", { timeout: 20000 });
       const result = await page.$eval(".hof-analysis-result", node => node.innerText.replace(/\s+/g, " "));
       expect(result.includes("Klinik ve poliklinik") && result.includes("Hekim"), `klinik önerisi: ${result}`);
@@ -824,7 +831,7 @@ try {
       await Promise.all([page.waitForEvent("load"), page.click('#hof-auth button[type="submit"]')]);
       await page.waitForSelector("#hof-start .hof-drop");
       const input = await page.$("#hof-start .hof-drop input[type=file]");
-      await Promise.all([page.waitForEvent("load", { timeout: 30000 }), input.setInputFiles(schoolFile)]);
+      await firstUpload(page, input, schoolFile);
       await page.waitForSelector(".hof-analysis-result:not([hidden])", { timeout: 20000 });
       const result = await page.$eval(".hof-analysis-result", node => node.innerText.replace(/\s+/g, " "));
       expect(result.includes("Okul servisi"), `okul servisi önerisi: ${result}`);
@@ -917,7 +924,7 @@ try {
       await page.fill("#hof-auth input[name=password]", ADMIN_PASSWORD);
       await Promise.all([page.waitForEvent("load"), page.click('#hof-auth button[type="submit"]')]);
       await page.waitForSelector("#hof-start .hof-drop");
-      await Promise.all([page.waitForEvent("load", { timeout: 30000 }), (await page.$("#hof-start .hof-drop input[type=file]")).setInputFiles(listFile)]);
+      await firstUpload(page, (await page.$("#hof-start .hof-drop input[type=file]")), listFile);
       await page.waitForSelector(".hof-analysis-result:not([hidden])", { timeout: 20000 });
       // Kendi sektörü: seçicide aranan yoksa oluşturulur ve uygulanır.
       await page.click(".hof-analysis-result [data-pick]");
@@ -960,7 +967,7 @@ try {
       await Promise.all([page.waitForEvent("load"), page.click('#hof-auth button[type="submit"]')]);
       await page.waitForSelector("#hof-start .hof-drop");
       const input = await page.$("#hof-start .hof-drop input[type=file]");
-      await Promise.all([page.waitForEvent("load", { timeout: 30000 }), input.setInputFiles(path.join(here, "..", "fixtures", "formullu-taksitler.xlsx"))]);
+      await firstUpload(page, input, path.join(here, "..", "fixtures", "formullu-taksitler.xlsx"));
       await page.waitForSelector(".hof-analysis-result:not([hidden])", { timeout: 20000 });
       await page.click(".hof-analysis-result [data-apply], .hof-analysis-result [data-done]");
       await page.waitForFunction(() => !document.querySelector(".hof-modal-backdrop"), null, { timeout: 8000 });
@@ -1003,7 +1010,7 @@ try {
       await Promise.all([page.waitForEvent("load"), page.click('#hof-auth button[type="submit"]')]);
       await page.waitForSelector("#hof-start .hof-drop");
       const input = await page.$("#hof-start .hof-drop input[type=file]");
-      await Promise.all([page.waitForEvent("load", { timeout: 30000 }), input.setInputFiles(path.join(here, "..", "fixtures", "akilli-denetim.xlsx"))]);
+      await firstUpload(page, input, path.join(here, "..", "fixtures", "akilli-denetim.xlsx"));
       await page.waitForSelector(".hof-analysis-result:not([hidden])", { timeout: 20000 });
       const summary = await page.$eval(".hof-analysis-result", node => node.innerText.replace(/\s+/g, " "));
       expect(summary.includes("Akıllı denetim: 1 hesap kuralı öğrenildi") && summary.includes("4 olası tutarsızlık"), `analiz: ${summary}`);
@@ -1101,7 +1108,7 @@ try {
       await Promise.all([page.waitForEvent("load"), page.click('#hof-auth button[type="submit"]')]);
       await page.waitForSelector("#hof-start .hof-drop");
       const input = await page.$("#hof-start .hof-drop input[type=file]");
-      await Promise.all([page.waitForEvent("load", { timeout: 30000 }), input.setInputFiles(path.join(here, "..", "fixtures", "akilli-denetim.xlsx"))]);
+      await firstUpload(page, input, path.join(here, "..", "fixtures", "akilli-denetim.xlsx"));
       await page.waitForSelector(".hof-analysis-result:not([hidden])", { timeout: 20000 });
       await page.click(".hof-analysis-result [data-apply], .hof-analysis-result [data-done]");
       await page.waitForFunction(() => !document.querySelector(".hof-modal-backdrop"), null, { timeout: 8000 });

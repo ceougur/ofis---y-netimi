@@ -13,6 +13,8 @@ import { applyIndexedCombos, cleanChoices, comboRulesFromParts, listOnlySheets, 
 import { HttpError, parseJson } from "./http.mjs";
 import { attachFormulas, sourceTagOf } from "./formula/bind.mjs";
 import { computeFormulas } from "./formula/compute.mjs";
+import { analyzeColumns } from "./insight/columns.mjs";
+import { brokenRowReason, cellCheck, typedColumnsOf } from "./insight/quality.mjs";
 import { matchColumns, renameKeys } from "./schema-map.mjs";
 import { healNote, healRows } from "./heal.mjs";
 import { matrixToRecords } from "./sections.mjs";
@@ -50,7 +52,11 @@ const S = {
   tabHidden: "dataset.tabs.hidden",
   // v2.0.2: Excel/Sheets açılır listeleri ({sekme etiketi: {kolon: {options, strict}}}).
   choices: "dataset.choices",
+  // v2.0.2: kullanıcının "Sorun yok" dediği işaretli kayıtlar ({kayıt anahtarı: {by, at}}).
+  unflagged: "dataset.unflagged",
 };
+const ROLE_TEXT = { id: "kimlik", person: "kişi", org: "kurum", money: "tutar", date: "tarih", status: "durum", category: "kategori", phone: "telefon", email: "e-posta", address: "adres", note: "not", tckn: "T.C. kimlik no", vkn: "vergi no", iban: "IBAN", city: "il", plate: "plaka", url: "bağlantı", number: "sayı", percent: "oran", sequence: "sıra no", responsible: "sorumlu", text: "metin" };
+const FLAG_TEXT = { shifted: "Hücreler yan kolona kaymış görünüyor (telefon tarih kolonunda, tarih tutar kolonunda)", invalid: "Biçimli hücrelerin çoğu geçersiz (tarih, telefon ya da tutar okunamıyor)" };
 // Alt tablolu sekmelerde kayıt "Sekme › Alt tablo" adını taşır (sections.mjs).
 const TAB_SEP = " › ";
 
@@ -294,6 +300,7 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
   // Arayüzün beklediği birleşik görünüm: yeni kayıtlar + içeri alınan satırlar, ofisin düzeltmeleri uygulanmış,
   // silinenler çıkarılmış. Her satır dosya kimliğini (__hofKey) taşır.
   async function view() {
+    const unflagged = readUnflagged();
     if (linkedUrl() && sget(S.needsInitialSync) === "1") await sync().catch(error => log?.warn?.("İlk eşitleme yapılamadı", error));
     const { rows } = loadRows();
     const overrides = new Map();
@@ -331,6 +338,7 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
         if (values.__sheet === UNTABBED_TAB) extraTabs.add(UNTABBED_TAB);
       }
       values.__hofKey = row.caseKey;
+      if (values.__hofFlag && unflagged[row.caseKey]) delete values.__hofFlag;
       if (row.missingSince) values.__hofMissing = row.missingSince;
       merged.push(values);
     }
@@ -608,6 +616,15 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
       reading.notes = [...(reading.notes || []), healNote(healed)];
     }
     if (!rows.length) throw new HttpError(400, "Tabloda okunabilir kayıt bulunamadı. Tablonun kolon başlıklarıyla başladığından emin olun.");
+    // Hata toleransı (v2.0.2): bozuk satırlar (kaymış, çoğu hücresi geçersiz) sistemi durdurmaz; işaretlenir,
+    // "İşaretlenen hatalar" sekmesinde görünür, takvim ve göstergelere girmez; kalan sağlam veriyle iş sürer.
+    const { flagged, analyses: stagedAnalyses } = flagBrokenRows(rows);
+    const preview = buildPreview(rows, stagedAnalyses);
+    if (flagged) {
+      reading = reading || { coverage: 1, cells: 0, lost: 0, notes: [], skipped: [], skippedTotal: 0, shapes: [] };
+      reading.flagged = flagged;
+      reading.notes = [...(reading.notes || []), `${flagged} satır bozuk göründüğü için “İşaretlenen hatalar” sekmesine alındı; düzeltip “Sorun yok” diyebilirsiniz.`];
+    }
     const identity = identitiesFor(rows);
     const entries = { merge: toEntries(rows, identity.merge) };
     entries.replace = sameIdentity(identity.merge, identity.replace) ? entries.merge : toEntries(rows, identity.replace);
@@ -626,7 +643,8 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
     const shared = incoming.filter(column => existing.has(column)).length + (schema?.renamed.length || 0);
     const similarity = existing.size && incoming.length ? shared / Math.min(existing.size, incoming.length) : null;
     const id = `stage-${randomUUID()}`;
-    stages.set(id, { id, userId: user.id, datasetKey: activeKey(), kind, label, url, entries, identity, tabs, choices, listSheets, schema, createdAt: Date.now() });
+    // Anlık görüntü (v2.0.2): önizleme hazırlanırken başka biri veriyi değiştirirse kaydetme reddedilir (409).
+    stages.set(id, { id, userId: user.id, datasetKey: activeKey(), kind, label, url, entries, identity, tabs, choices, listSheets, schema, snapshot: datasetStamp(), createdAt: Date.now() });
     const mergeChanges = diff(entries.merge);
     const replaceChanges = entries.replace === entries.merge ? mergeChanges : diff(entries.replace);
     return {
@@ -644,6 +662,7 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
       differentTopic: similarity !== null && similarity < 0.5,
       reading,
       schema: schema ? { renamed: schema.renamed, added: schema.added, removed: schema.removed } : null,
+      mapping: preview,
       preview: {
         merge: { added: mergeChanges.added, updated: mergeChanges.updated, unchanged: mergeChanges.unchanged, kept: mergeChanges.others },
         replace: { added: replaceChanges.added, updated: replaceChanges.updated, unchanged: replaceChanges.unchanged, removed: replaceChanges.others },
@@ -845,7 +864,78 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
     audit(user, "dataset.schema.migrated", source, { renamed: renamed.map(item => `${item.from} → ${item.to}`), mode });
   }
 
+  // Verinin o anki damgası: satır sayısı + son değişiklik zamanı (aşama anlık görüntüsü için).
+  const datasetStamp = () => `${loadRows().rows.length}|${sget(S.changedAt, "")}`;
+
+  /** Bozuk satırları yerinde işaretler (__hofFlag); işaretlenen sayısını ve kolon analizlerini döndürür. En çok 5.000
+   *  satırdan tür öğrenilir. */
+  function flagBrokenRows(rows) {
+    let analyses = [];
+    try {
+      analyses = analyzeColumns(rows.slice(0, 5000), columnOrder(rows), { now: new Date() });
+    } catch {
+      return { flagged: 0, analyses: [] };
+    }
+    const typed = typedColumnsOf(analyses);
+    if (rows.length < 3 || typed.length < 2) return { flagged: 0, analyses };
+    let count = 0;
+    for (const row of rows) {
+      const reason = brokenRowReason(row, analyses, typed);
+      if (!reason) continue;
+      row.__hofFlag = FLAG_TEXT[reason] || reason;
+      count += 1;
+    }
+    return { flagged: count, analyses };
+  }
+
+  // Ön izleme ve eşleme (v2.0.2): veritabanına yazmadan önce kolonların ne sayıldığı, kesinliği ve ilk satırlar; biçimi
+  // uymayan hücreler ve belirsiz kolonlar sarı gösterilir. Kullanıcı rol seçerse kaydetmede oturuma yazılır.
+  function buildPreview(rows, analyses) {
+    const columns = analyses
+      .filter(item => item.role !== "empty")
+      .map(item => ({ name: item.column, role: item.role, kind: item.kind ?? null, certainty: item.certainty || "belirsiz", warning: item.warning ?? null, evidence: (item.evidence || []).slice(0, 3), fill: item.stats?.fill ?? 0 }));
+    const sample = rows.slice(0, 8);
+    const suspicious = [];
+    sample.forEach((row, index) => {
+      for (const item of analyses) {
+        const value = String(row[item.column] ?? "").trim();
+        if (!value) continue;
+        const check = cellCheck(item.role, value);
+        // Ön izlemede "şüpheli" veri sağlığındakinden geniştir: tarih/tutar kolonunda düz metin de sarıdır (not olabilir,
+        // ama kullanıcı görsün); veri sağlığı bunu hata saymaz.
+        if (check === "bad" || (check === "skip" && (item.role === "date" || item.role === "money"))) suspicious.push({ row: index, column: item.column, reason: `“${item.column}” kolonu ${ROLE_TEXT[item.role] || item.role} sayıldı; bu hücre öyle okunamıyor` });
+        else if (item.warning === "scientific" || item.warning === "serial") suspicious.push({ row: index, column: item.column, reason: item.warning === "serial" ? "Excel seri tarih sayısı; toplu düzeltmeyle tarihe çevrilir" : "Excel sayıya çevirmiş; rakamlar dosyada yok" });
+      }
+      if (row.__hofFlag) suspicious.push({ row: index, column: "", reason: row.__hofFlag });
+    });
+    return { columns, rows: sample.map(row => Object.fromEntries(columns.map(item => [item.name, String(row[item.name] ?? "")]).concat(row.__hofFlag ? [["__hofFlag", row.__hofFlag]] : []))), suspicious, unsure: columns.filter(item => item.certainty === "belirsiz").length, total: rows.length };
+  }
+  const readUnflagged = () => parseJson(sget(S.unflagged, ""), {});
+  /** "Sorun yok": işaret görünümden kalkar; kayıt takvim ve göstergelere döner. Kaynak yeniden yüklense de karar kalır. */
+  function unflag(user, caseKey) {
+    const key = String(caseKey || "").trim();
+    if (!key) throw new HttpError(400, "Kayıt kimliği gerekli.");
+    const marks = readUnflagged();
+    if (marks[key]) return { key, already: true };
+    marks[key] = { by: user.id, at: now() };
+    const keys = Object.keys(marks);
+    if (keys.length > 20_000) for (const old of keys.slice(0, keys.length - 20_000)) delete marks[old];
+    sset(S.unflagged, JSON.stringify(marks), user.id);
+    audit(user, "source.row.unflagged", key, { caseKey: key });
+    return { key, already: false };
+  }
+
+  /** Kaynaktaki (düzeltmesiz) hücre değeri: iyimser kilit karşılaştırması için. Kayıt yoksa null. */
+  function baseValue(caseKey, field) {
+    const row = loadRows().rows.find(item => item.caseKey === caseKey);
+    if (!row) return null;
+    return String(row.values?.[field] ?? "");
+  }
+
   function commitInto(user, staged, { mode, link = true } = {}) {
+    if (staged.snapshot && staged.datasetKey === activeKey() && staged.snapshot !== datasetStamp()) {
+      throw new HttpError(409, "Bu önizleme hazırlanırken veri değişti (başka bir kullanıcı yüklemiş ya da düzenlemiş olabilir). Pencereyi kapatıp dosyayı yeniden bırakın.", { code: "STALE_STAGE" });
+    }
     const empty = loadRows().rows.length === 0;
     const effective = empty ? "replace" : mode;
     if (!["merge", "replace"].includes(effective)) throw new HttpError(400, "Devamı olarak ekle ya da yerine koy seçilmelidir.");
@@ -1163,7 +1253,7 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
 
   return {
     view, summary, info, stage, commit, sync, unlink, remove, missingRows, resolveMissing, adoptLegacySheetUrl, hasData, start, stop, invalidate, onChange, identity, pinLegacyIdentity,
-    sessions, selectSession, renameSession, deleteSession, currentKey: activeKey, settingKey: name => sk(name), withKey, setFreeProvider, dataTabs,
+    sessions, selectSession, renameSession, deleteSession, currentKey: activeKey, settingKey: name => sk(name), withKey, setFreeProvider, dataTabs, baseValue, unflag,
     renameTab, hideTab, unhideTab, hiddenTabs, originalTab,
   };
 }

@@ -203,6 +203,18 @@ Görünüme (`dataset.view`) yalnızca elle değer yazılmış satırlar `serbes
 
 **Kendi kendini onarma** (`server/lib/heal.mjs`): `repairMojibake` (Windows-1254 ters tablosu + katı UTF-8 çözme), görünmez karakter/NBSP temizliği, yer tutucu → boş; `healRows` özet, `healNote` okuma raporu notu.
 
+**Hata toleransı — işaretlenen hatalar** (`dataset.mjs → flagBrokenRows`, `quality.mjs → brokenRowReason`, `cells.mjs → isFlaggedRow`).
+- Aşamada (stage) kolon türleri öğrenilir; "shifted" (≥ 2 biçimli hücre uyumsuz ve kaydırınca yerine oturuyor) ya da "invalid" (≥ 2 dolu biçimli hücrenin ≥ %60'ı geçersiz) satırlara `__hofFlag` yazılır. Kayıt saklanır; takvim/son tarih/KPI `isFlaggedRow` ile dışlar. Paket yaması sanal sekme "⚠ İşaretlenen hatalar" ve `hof-row-flagged` sınıfı ekler. `POST /records/:key/unflag` → `dataset.unflagged` ayarı; `view()` bu anahtarlarda işareti kaldırır.
+
+**Veri temizleme** (`validators.mjs → isSerialDate/serialToDate`, `columns.mjs` seri tarih kolonu, `fixes.mjs → serialToText`, `heal.mjs` hata değerleri).
+
+**Eşzamanlılık** (`db.mjs`, `routes/workspace.mjs`, `dataset.mjs`, `routes/insight.mjs`).
+- SQLite WAL + `busy_timeout 10 s`; her yazım `store.tx` içinde; tek sunucu süreci.
+- Düzeltme (override): sürüm (`expectedVersion`) ve değer tabanlı iyimser kilit (`previous`): eşleşmezse 409 `CONFLICT {currentValue, by, at}`; istemci "Üzerine yaz" ile `force` gönderir.
+- Aşama anlık görüntüsü: `stage` satır sayısı + `changedAt` damgasını saklar; aynı oturumda `commit` damga değiştiyse 409 `STALE_STAGE`.
+- Toplu düzeltme önerileri oturum + parmak iziyle; parmak izi değiştiyse 409.
+- Olaylar: her değişiklik `workspace.changed` ile diğer ekranlara; takvim önbelleği parmak iziyle; gün dönümü `alerts.refresh`.
+
 **Silinenler** (göç 6, `server/lib/trash.mjs`, `server/routes/trash.mjs`).
 - Kaynaklar: silinen kayıt, gizlenen sekme, belge, serbest sayfa/satır/kolon, tahsilat ve kasa hareketi.
 - Geri yükleme eski konuma araya ekler; ad çakışırsa "(geri yüklendi)" eki alır.

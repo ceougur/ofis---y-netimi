@@ -103,6 +103,7 @@
       }
     }
     const selected = HOF.selectedCase?.();
+    if (selected?.panel) flagBox(selected);
     if (selected?.panel) {
       for (const cell of selected.panel.querySelectorAll(".dynamic-detail-grid > div")) {
         const value = cell.querySelector(".detail-value");
@@ -115,6 +116,35 @@
       }
     }
     densityButton();
+  }
+
+  // ---------- İşaretlenen hata kaydı (v2.0.2) ----------
+  // İçeri almada bozuk bulunan kayıt detay kartının üstünde sarı kutuyla görünür: neden ve "Sorun yok" (işareti kaldırır).
+  function flagBox(selected) {
+    const panel = selected.panel;
+    const row = (HOF.data?.rows || []).find(item => item.__hofKey === selected.key);
+    let box = panel.querySelector(":scope .hof-flag-box");
+    if (!row?.__hofFlag) {
+      box?.remove();
+      return;
+    }
+    if (box && box.dataset.key === selected.key) return;
+    box?.remove();
+    box = HOF.el("div", { class: "hof-flag-box", "data-hof-ui": "", "data-key": selected.key });
+    box.innerHTML = `<b>⚠ Bu kayıt içeri alınırken işaretlendi:</b> <span>${HOF.esc(row.__hofFlag)}</span><small>Kayıt takvime, son tarih uyarılarına ve göstergelere girmez. Değerleri düzeltin; doğruysa <b>Sorun yok</b> deyin.</small>${HOF.can("records.edit") ? '<button type="button" class="hof-button hof-button-small" data-unflag>Sorun yok</button>' : ""}`;
+    box.querySelector("[data-unflag]")?.addEventListener("click", async () => {
+      try {
+        await HOF.api(`/api/workspace/records/${encodeURIComponent(selected.key)}/unflag`, { method: "POST", body: {} });
+        HOF.toast("İşaret kaldırıldı; kayıt olağan akışa girdi.", { type: "success" });
+        HOF.refreshData();
+        HOF.refreshInsight?.();
+      } catch (error) {
+        HOF.toastError(error);
+      }
+    });
+    const grid = panel.querySelector(".dynamic-detail-grid");
+    if (grid) grid.before(box);
+    else panel.appendChild(box);
   }
 
   // ---------- Satır sıklığı ----------

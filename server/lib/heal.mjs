@@ -39,7 +39,8 @@ export function repairMojibake(text) {
 
 const INVISIBLE = /[​‌‍⁠﻿­]/g;
 const NBSP = /[   ]/g;
-const PLACEHOLDER = /^(?:-{1,3}|—|–|\.|\?|n\/a|na|yok|null|none|#yok|#n\/a)$/i;
+// Excel/Sheets hata değerleri de boş sayılır: #SAYI/0!, #DIV/0!, #REF!, #BAŞV!, #DEĞER!, #AD?, #YOK…
+const PLACEHOLDER = /^(?:-{1,3}|—|–|\.|\?|n\/a|na|yok|null|none|#yok|#n\/a|#(?:div|sayı|sayi)\/0!|#ref!|#başv!|#basv!|#value!|#değer!|#deger!|#name\?|#ad\?|#num!|#sayı!|#sayi!|#null!|#boş!|#bos!|#error!|#hata!|#spill!|#taşma!|#tasma!|#calc!)$/i;
 
 /** Tek hücre: görünmez karakterler, NBSP, fazla boşluk; yer tutucu boş sayılır. Döner: { value, kind|null }. */
 export function healCell(value) {

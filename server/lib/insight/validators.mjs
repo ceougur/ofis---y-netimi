@@ -160,3 +160,19 @@ export const isProvince = value => {
   const key = foldText(value).replace(/\s+/g, "");
   return PROVINCE_SET.has(PROVINCE_ALIASES[key] || key);
 };
+
+// Excel seri tarih sayısı (v2.0.2): 1900 tarih sistemi, 1 = 01.01.1900; 45000 = 15.03.2023. Kolon başlığı tarih
+// söylüyor ama hücreler "Genel" biçimde sayı kaldıysa (kullanıcı biçimi bozmuştur) bu sayılar tarihe çevrilir.
+export const SERIAL_MIN = 20_000; // 1954
+export const SERIAL_MAX = 80_000; // 2119
+export function isSerialDate(value) {
+  const text = String(value ?? "").trim();
+  if (!/^\d{5}$/.test(text)) return false;
+  const number = Number(text);
+  return number >= SERIAL_MIN && number <= SERIAL_MAX;
+}
+export function serialToDate(value) {
+  if (!isSerialDate(value)) return null;
+  const utc = new Date(Date.UTC(1899, 11, 30) + Number(String(value).trim()) * 86_400_000);
+  return new Date(utc.getUTCFullYear(), utc.getUTCMonth(), utc.getUTCDate());
+}

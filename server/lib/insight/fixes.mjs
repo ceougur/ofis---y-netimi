@@ -9,7 +9,7 @@
 //   amount  — ABD yazımlı tutar: "1,500.00" → "1.500,00" (yalnızca iki ayraçlı, belirsiz olmayan yazımlar)
 //   status  — aynı değerin farklı yazımları: "aktif", "AKTİF", " Aktif " → en sık görülen "Aktif"
 //   space   — baştaki/sondaki/çift boşluk
-import { foldText, isTrPhone, parseDate } from "./validators.mjs";
+import { foldText, isSerialDate, isTrPhone, parseDate, serialToDate } from "./validators.mjs";
 
 export const FIX_LIMITS = { changes: 20_000, samples: 5 };
 
@@ -25,6 +25,12 @@ export function canonicalPhone(value) {
   if (digits.length !== 11 || !digits.startsWith("05")) return null;
   const out = `${digits.slice(0, 4)} ${digits.slice(4, 7)} ${digits.slice(7, 9)} ${digits.slice(9, 11)}`;
   return isTrPhone(out) ? out : null;
+}
+
+/** Excel seri sayısını (45000) gg.aa.yyyy tarihe çevirir; seri değilse null. */
+export function serialToText(value) {
+  const date = serialToDate(value);
+  return date ? `${pad(date.getDate())}.${pad(date.getMonth() + 1)}.${date.getFullYear()}` : null;
 }
 
 /** Tarihi gg.aa.yyyy (varsa ss:dd) yazımına getirir; okunamıyorsa null. */
@@ -85,6 +91,8 @@ export function proposeFixes({ rows, analyses }) {
     const column = item.column;
     if (item.role === "phone" && !item.warning) {
       propose("phone", column, n => `"${column}": ${n} telefon tek yazıma getirilsin`, "Telefonlar “0532 111 11 11” yazımına çevrilir; WhatsApp ve arama bağlantıları hepsinde çalışır.", canonicalPhone);
+    } else if (item.role === "date" && item.warning === "serial") {
+      propose("serial", column, n => `"${column}": ${n} Excel seri sayısı gerçek tarihe çevrilsin`, "Excel bu hücreleri tarih yerine sayı (45000 gibi) olarak saklamış. Sayılar gg.aa.yyyy tarihe çevrilir; son tarih uyarıları ancak bundan sonra çalışır.", text => (isSerialDate(text) ? serialToText(text) : null));
     } else if (item.role === "date") {
       propose("date", column, n => `"${column}": ${n} tarih gg.aa.yyyy yazımına getirilsin`, "Farklı yazılmış tarihler (5.3.2024, 2024-03-05, 5 Mart 2024) tek biçime çevrilir; sıralama ve son tarih uyarıları hepsinde çalışır.", canonicalDate);
     } else if (item.role === "money") {

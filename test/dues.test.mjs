@@ -354,3 +354,19 @@ describe("ay kolonu yazımları ve tek vadeli tutar (v2.0.2)", () => {
     assert.deepEqual(items.map(item => [item.person, item.amount, item.state]), [["Ali Veli", 10000, "overdue"], ["Ayşe Kaya", 5000, "upcoming"]]);
   });
 });
+
+describe("eşleme ekranı ve takvim (v2.0.2)", () => {
+  it("'Son tarih / Vade' seçilen kolon başlığı ne olursa olsun takvime girer; 'Yoksay' seçilen kolon girmez", async () => {
+    const { computeDues } = await import("../server/lib/insight/dues.mjs");
+    const now = new Date("2026-09-27T09:00:00");
+    const rows = [
+      { __hofKey: "1", __sheet: "S", Müvekkil: "Ali Veli", "Tarih 2": "29.09.2026", Tutar: "1.500", "Ödeme sözü": "30.09.2026" },
+      { __hofKey: "2", __sheet: "S", Müvekkil: "Ayşe Kaya", "Tarih 2": "25.09.2026", Tutar: "2.000", "Ödeme sözü": "01.10.2026" },
+    ];
+    const auto = computeDues({ rows, tabs: ["S"], now });
+    assert.ok(auto.items.every(item => item.label !== "Tarih 2"), "belirsiz başlık otomatik takvime girmez");
+    const forced = computeDues({ rows, tabs: ["S"], now, forced: { "Tarih 2": "deadline", "Ödeme sözü": "ignore" } });
+    assert.ok(forced.items.some(item => item.label === "Tarih 2"), JSON.stringify(forced.items.map(item => item.label)));
+    assert.ok(forced.items.every(item => item.label !== "Ödeme sözü"), "yoksayılan kolon takvime girmez");
+  });
+});

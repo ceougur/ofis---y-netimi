@@ -114,6 +114,10 @@ export function isTotalLabel(value) {
   const folded = foldText(text);
   return TOTAL_PREFIXES.some(prefix => folded === prefix || folded.startsWith(`${prefix} `));
 }
+// İşaretlenen hata satırı (v2.0.2): içeri almada bozuk bulunan (kaymış, çoğu hücresi geçersiz) kayıt. Görünümde
+// "İşaretlenen hatalar" sekmesinde durur; takvim, son tarih ve göstergelere girmez; kullanıcı düzeltip "Sorun yok" der.
+export const isFlaggedRow = row => Boolean(row && row.__hofFlag);
+
 export function isTotalRow(row, skipColumn) {
   for (const [key, value] of Object.entries(row)) {
     if (key === skipColumn || key.startsWith("__")) continue;

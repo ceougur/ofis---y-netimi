@@ -5,6 +5,7 @@
 // Sektör yalnızca yönetici onayıyla değişir. Analizin önerisi hiçbir zaman kendiliğinden uygulanmaz.
 // 1.6.0 öncesinden gelen kurulum (verisi olan) "Hukuk bürosu" profiliyle açılır: arayüzü güncellemeden önceki gibi kalır;
 // yöneticiye bir kez analiz sonucu gösterilir.
+import { FORCED_ROLES } from "./insight/columns.mjs";
 import { DATASET_KEY } from "./dataset.mjs";
 import { HttpError, parseJson } from "./http.mjs";
 import { ROLE_LABELS } from "./permissions.mjs";
@@ -39,7 +40,7 @@ export const LABEL_SLOTS = Object.freeze({
   "table.subtitle": { max: 160, name: "Tablo açıklaması" },
 });
 
-const K = { sector: "insight.sector", labels: "ui.labels", intro: "insight.intro", initialized: "insight.initialized", columns: "ui.columns", dismissed: "insight.dismissed" };
+const K = { sector: "insight.sector", labels: "ui.labels", intro: "insight.intro", initialized: "insight.initialized", columns: "ui.columns", dismissed: "insight.dismissed", roles: "insight.roles" };
 const MAX_DISMISSED = 5000;
 const REASONING_LIST = 50;
 // Metindeki kolon adlarını ofisin verdiği adlarla değiştirir (yalnızca kelime sınırında; "No" "Notlar"ı bozmaz).
@@ -109,6 +110,30 @@ export function createProfileService({ store, dataset, audit, events, log, free 
   const findSector = id => sectorById(id) || customSectors.get(id);
   const readSector = () => parseJson(store.setting(sessionKey(K.sector), ""), null);
   const readColumns = () => readObject(sessionKey(K.columns));
+  // Eşleme ekranında seçilen kolon rolleri ({kolon: rol}); analiz ve takvim otomatik kararın üstüne yazar (v2.0.2).
+  const readRoles = () => readObject(sessionKey(K.roles));
+  function setRoles(user, values, known = []) {
+    if (!values || typeof values !== "object" || Array.isArray(values)) throw new HttpError(400, "Kolon rolleri okunamadı.");
+    const columns = new Set(known);
+    const roles = readRoles();
+    const changes = [];
+    for (const [column, value] of Object.entries(values).slice(0, 500)) {
+      if (known.length && !columns.has(column)) continue;
+      const role = String(value || "").trim();
+      const previous = roles[column] || "";
+      if (role && role !== "auto" && !FORCED_ROLES[role]) throw new HttpError(400, `“${role}” bilinen bir kolon rolü değil.`);
+      const next = role && role !== "auto" ? role : "";
+      if (previous === next) continue;
+      if (next) roles[column] = next;
+      else delete roles[column];
+      changes.push({ column, role: next, previous });
+    }
+    if (!changes.length) return { changed: 0, roles };
+    store.setSetting(sessionKey(K.roles), Object.keys(roles).length ? JSON.stringify(roles) : "", user.id);
+    audit?.(user, "insight.roles.updated", current(), { changes });
+    invalidate();
+    return { changed: changes.length, roles };
+  }
   const readDismissed = () => readObject(sessionKey(K.dismissed));
 
   // İlk açılış: 1.6.0 öncesinden gelen ve kullanılmış kurulum (verisi, kaydı, notu, görevi… olan) hukuk profiliyle
@@ -294,7 +319,8 @@ export function createProfileService({ store, dataset, audit, events, log, free 
     );
     const day = clock();
     const custom = store.setting("sectors.custom", "") || "";
-    return [current(), row.rowsCount, row.overridesState, row.recordsState, row.deletedCount, store.setting(sessionKey("dataset.changedAt"), ""), store.setting(sessionKey("dataset.label"), ""), `${day.getFullYear()}-${day.getMonth()}-${day.getDate()}`, free ? free.fingerprint() : "", `${custom.length}:${custom.slice(-48)}`].join("|");
+    const roles = store.setting(sessionKey(K.roles), "") || "";
+    return [current(), row.rowsCount, row.overridesState, row.recordsState, row.deletedCount, store.setting(sessionKey("dataset.changedAt"), ""), store.setting(sessionKey("dataset.label"), ""), `${day.getFullYear()}-${day.getMonth()}-${day.getDate()}`, free ? free.fingerprint() : "", `${custom.length}:${custom.slice(-48)}`, `${roles.length}:${roles.slice(-64)}`, store.setting(sessionKey("dataset.unflagged"), "").length].join("|");
   }
 
   async function analysis() {
@@ -310,7 +336,7 @@ export function createProfileService({ store, dataset, audit, events, log, free 
       // Görünüm okunurken ya da analiz iş parçacığında sürerken veri değiştiyse (ör. ilk Sheet eşitlemesi ya da aynı
       // anda yapılan bir düzeltme) sonuç bu istek için döner ama önbelleğe alınmaz: bir sonraki istek durulmuş veriyle
       // yeniden hesaplar. Böylece eski veriden hesaplanmış bir analiz yeni verinin anahtarıyla saklanamaz.
-      const result = await analysisRunner.run({ rows: view.rows || [], label: store.setting(sessionKey("dataset.label"), ""), tabs: (view.tabs || []).map(tab => tab.title).filter(Boolean), now: clock(), sectors: customSectors.all() });
+      const result = await analysisRunner.run({ rows: view.rows || [], label: store.setting(sessionKey("dataset.label"), ""), tabs: (view.tabs || []).map(tab => tab.title).filter(Boolean), now: clock(), sectors: customSectors.all(), forced: readRoles() });
       const settled = fingerprint() === key && generation === started;
       if (settled) caches.set(session, { fingerprint: key, analysis: result });
       if (result.ms > 1500) log?.info?.(`Veri analizi ${result.ms} ms sürdü (${result.rowCount} kayıt)`);
@@ -463,5 +489,5 @@ export function createProfileService({ store, dataset, audit, events, log, free 
     running.clear();
   };
 
-  return { init, profile, tagline, setSector, findSector, customSectors, dismissIntro, setLabel, setLabels, setColumns, resetLabels, analysis, records, invalidate, usedBefore, reasoningSummary, checks, dismiss, fingerprint, close: () => analysisRunner.close(), runnerStats: () => analysisRunner.stats() };
+  return { init, profile, tagline, setSector, findSector, customSectors, dismissIntro, setLabel, setLabels, setColumns, resetLabels, setRoles, roles: readRoles, analysis, records, invalidate, usedBefore, reasoningSummary, checks, dismiss, fingerprint, close: () => analysisRunner.close(), runnerStats: () => analysisRunner.stats() };
 }

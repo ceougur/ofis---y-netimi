@@ -91,3 +91,23 @@ describe("zor değerler (v2.0.2)", async () => {
     assert.equal(analyzeColumn([{ "Sözleşme bitiş": "30.09.2026 (uzatıldı)" }, { "Sözleşme bitiş": "10 Mart 2027" }, { "Sözleşme bitiş": "Mart 2027" }], "Sözleşme bitiş").role, "date");
   });
 });
+
+describe("eşleme ekranı: kullanıcı rolleri (v2.0.2)", () => {
+  it("seçilen rol otomatik kararın üstüne yazar; 'Yoksay' önemi sıfırlar; kanıt ve kesinlik bunu söyler", async () => {
+    const { analyzeColumns } = await import("../server/lib/insight/columns.mjs");
+    const rows = [
+      { "Tarih 2": "01.10.2026", "Kolon 3": "Ali Veli", Not: "x" },
+      { "Tarih 2": "02.10.2026", "Kolon 3": "Ayşe Kaya", Not: "y" },
+      { "Tarih 2": "03.10.2026", "Kolon 3": "Can Er", Not: "z" },
+    ];
+    const auto = analyzeColumns(rows, ["Tarih 2", "Kolon 3", "Not"], { now: new Date("2026-09-27") });
+    assert.notEqual(auto.find(item => item.column === "Tarih 2").kind, "deadline", "başlık belirsiz: otomatik karar son tarih değildir");
+    const forced = analyzeColumns(rows, ["Tarih 2", "Kolon 3", "Not"], { now: new Date("2026-09-27"), forced: { "Tarih 2": "deadline", "Kolon 3": "person", Not: "ignore" } });
+    const date = forced.find(item => item.column === "Tarih 2");
+    assert.deepEqual([date.role, date.kind, date.meaning, date.strong, date.certainty], ["date", "deadline", "expiry", true, "kesin"]);
+    assert.ok(date.evidence[0].includes("eşleme ekranında seçildi"));
+    assert.equal(forced.find(item => item.column === "Kolon 3").role, "person");
+    const note = forced.find(item => item.column === "Not");
+    assert.deepEqual([note.role, note.ignored, note.importance], ["text", true, 0]);
+  });
+});

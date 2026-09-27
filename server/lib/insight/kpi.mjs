@@ -6,7 +6,7 @@
 // göstergeler üretir. Tarih karşılaştırmaları sunucunun yerel takvim gününe göredir (ofis saati).
 import { columnOrder } from "../sources.mjs";
 import { buildCards, cardItems, dayStart } from "./cards.mjs";
-import { isBlankRecord, isTotalRow } from "./cells.mjs";
+import { isBlankRecord, isFlaggedRow, isTotalRow } from "./cells.mjs";
 import { analyzeColumns, primaryColumns } from "./columns.mjs";
 import { assessQuality, mergeQuality, recordTitle } from "./quality.mjs";
 
@@ -36,25 +36,25 @@ export function splitScopes(rows, keys) {
 }
 
 // Bir kapsamın çözümlemesi: istemciye giden özet ve listeler için gereken ana kolonlar.
-export function analyzeScope(rows, { now = new Date() } = {}) {
+export function analyzeScope(rows, { now = new Date(), forced = null } = {}) {
   const columns = columnOrder(rows);
-  const analyses = analyzeColumns(rows, columns, { now });
+  const analyses = analyzeColumns(rows, columns, { now, forced });
   const primary = primaryColumns(analyses);
   const { cards, rejected, month, records, grouped } = buildCards(rows, analyses, { now });
   const quality = assessQuality(rows, analyses, primary);
   return { total: rows.length, records, grouped, columnCount: columns.length, primary, cards, rejected, month, quality };
 }
 
-export function computeKpis(allRows, { tabs = [], now = new Date() } = {}) {
+export function computeKpis(allRows, { tabs = [], now = new Date(), forced = null } = {}) {
   // Boş şablon satırları (yalnız sıra numarası) ve toplam satırları ("TOPLAM", "Ara toplam") kayıt sayılmaz (v2.0.2).
-  const rows = allRows.filter(row => !isBlankRecord(row) && !isTotalRow(row));
+  const rows = allRows.filter(row => !isBlankRecord(row) && !isTotalRow(row) && !isFlaggedRow(row));
   const keys = scopeKeys(rows, tabs);
   const groups = splitScopes(rows, keys);
   const scopes = {};
   let monthCount = 0;
   const monthParts = [];
   for (const key of keys) {
-    const scope = analyzeScope(groups.get(key), { now });
+    const scope = analyzeScope(groups.get(key), { now, forced });
     scopes[key] = { tab: key, ...scope };
     if (scope.month) {
       monthCount += scope.month.count;

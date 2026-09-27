@@ -230,8 +230,17 @@ export function registerWorkspaceRoutes(router, { store, auth, audit, dataset, c
       changed(user, "records", { caseKey: key, free: sheet.id });
       return ok(res, { id: key, version: 0, free: sheet.id });
     }
-    const old = store.get("SELECT id, value, version FROM overrides WHERE source_name = ? AND case_key = ? AND field = ?", source, key, field);
+    const old = store.get("SELECT id, value, version, updated_by, updated_at FROM overrides WHERE source_name = ? AND case_key = ? AND field = ?", source, key, field);
     const expectedVersion = body.expectedVersion == null ? null : Number(body.expectedVersion);
+    // Değer tabanlı iyimser kilit (v2.0.2): istemci ekranda gördüğü değeri "previous" olarak gönderir; o arada başkası
+    // değiştirdiyse (düzeltme ya da kaynak) üzerine yazılmaz, 409 ile güncel değer ve kim/ne zaman döner.
+    if (typeof body.previous === "string" && !body.force) {
+      const current = old ? old.value : dataset.baseValue?.(key, field);
+      if (current !== null && current !== undefined && current !== body.previous) {
+        const by = old?.updated_by ? store.get("SELECT display_name AS name FROM users WHERE id = ?", old.updated_by)?.name || "" : "";
+        throw new HttpError(409, `Bu alan siz bakarken değişti${by ? ` (${by})` : ""}. Güncel değer: “${current}”.`, { code: "CONFLICT", currentValue: current, by, at: old?.updated_at || null });
+      }
+    }
     if (old && expectedVersion !== null && old.version !== expectedVersion) throw new HttpError(409, "Bu alan başka bir kullanıcı tarafından değiştirildi. Sayfayı yenileyip tekrar deneyin.", { code: "CONFLICT", currentValue: old.value, currentVersion: old.version });
     const itemId = old?.id || newId("override");
     const version = (old?.version || 0) + 1;
@@ -239,6 +248,15 @@ export function registerWorkspaceRoutes(router, { store, auth, audit, dataset, c
     audit(user, "source.cell.updated", itemId, { sourceName: source, caseKey: key, field, previousValue: old?.value || "", value, version, action: text(body.action) || undefined });
     changed(user, "records", { caseKey: key });
     ok(res, { id: itemId, version });
+  });
+
+  // İşaretlenen hata kaydı için "Sorun yok" (v2.0.2).
+  router.post("/api/workspace/records/:key/unflag", async ({ req, res, params }) => {
+    const user = auth.requirePermission(req, "records.edit");
+    const result = dataset.unflag(user, decodeURIComponent(params.key));
+    profile?.invalidate?.();
+    changed(user, "records", { caseKey: result.key });
+    ok(res, result);
   });
 
   // ---- Dosya işlemleri ----

@@ -81,6 +81,43 @@ const DETAILS = {
 const STRUCTURAL_REPEAT = 0.3;
 const STRUCTURAL_MIN_IDS = 3;
 
+// Biçimi denetlenebilen kolonlar (telefon, tarih, T.C., IBAN…): yeterince dolu ve çoğunlukla geçerli.
+export const typedColumnsOf = analyses => analyses.filter(item => CHECKS[item.role] && item.stats.nonEmpty >= 3 && (item.validRate ?? 1) >= 0.8);
+
+/**
+ * Bozuk satır nedeni (v2.0.2, içeri almada işaretleme için): "shifted" — en az iki biçimli kolonda uyumsuz değer var ve
+ * bir kolon kaydırınca en az ikisi yerine oturuyor; "invalid" — en az iki biçimli hücre dolu ve ≥ %60'ı geçersiz;
+ * null — sağlam.
+ */
+export function brokenRowReason(row, analyses, typedColumns = typedColumnsOf(analyses)) {
+  if (typedColumns.length < 2) return null;
+  const typedIndex = new Set(typedColumns.map(item => item.column));
+  let filled = 0;
+  const bad = [];
+  for (const item of typedColumns) {
+    const value = String(row[item.column] ?? "").trim();
+    if (!value) continue;
+    filled += 1;
+    if (CHECKS[item.role](value) === "bad") bad.push({ item, value });
+  }
+  if (bad.length < 2) return null;
+  let fits = 0;
+  for (const { item, value } of bad) {
+    const at = analyses.indexOf(item);
+    for (const neighbor of [analyses[at - 1], analyses[at + 1]]) {
+      if (neighbor && typedIndex.has(neighbor.column) && CHECKS[neighbor.role](value) === "ok") {
+        fits += 1;
+        break;
+      }
+    }
+  }
+  if (fits >= 2) return "shifted";
+  return bad.length / filled >= 0.6 ? "invalid" : null;
+}
+
+/** Tek hücre denetimi: "ok" | "bad" | "skip" | null (rolün denetimi yok). Ön izleme ekranındaki sarı hücreler için. */
+export const cellCheck = (role, value) => (CHECKS[role] ? CHECKS[role](String(value ?? "").trim()) : null);
+
 export function assessQuality(rows, analyses, primary) {
   const checks = { total: 0, passed: 0 };
   const count = ok => {
@@ -124,28 +161,9 @@ export function assessQuality(rows, analyses, primary) {
   // Kaymış satır (v2.0.2): bir hücre eksik ya da fazla girilince değerler yan kolona kayar — telefon tarih kolonunda,
   // tarih tutar kolonunda görünür. En az iki biçimli kolonda uyumsuz değer varsa ve bir kolon kaydırınca en az ikisi
   // yerine oturuyorsa satır "kaymış" sayılır; nokta atışı öneriyle listelenir.
-  const typedColumns = analyses.filter(item => CHECKS[item.role] && item.stats.nonEmpty >= 3 && (item.validRate ?? 1) >= 0.8);
-  const typedIndex = new Map(typedColumns.map(item => [item.column, item]));
+  const typedColumns = typedColumnsOf(analyses);
   const shifted = typedColumns.length >= 2 ? make("shifted-rows", "warn", n => `${n} kayıtta hücreler yan kolona kaymış görünüyor`, "Bir hücre eksik ya da fazla girilince değerler yan kolona kayar (telefon tarih kolonunda, tarih tutar kolonunda). Excel'de o satırı düzeltip yeniden yükleyin ya da detay kartında değerleri doğru alana taşıyın.", typedColumns[0].column) : null;
-  const shiftedRow = row => {
-    const bad = typedColumns.filter(item => {
-      const value = String(row[item.column] ?? "").trim();
-      return value && CHECKS[item.role](value) === "bad";
-    });
-    if (bad.length < 2) return false;
-    let fits = 0;
-    for (const item of bad) {
-      const at = analyses.indexOf(item);
-      const value = String(row[item.column] ?? "").trim();
-      for (const neighbor of [analyses[at - 1], analyses[at + 1]]) {
-        if (neighbor && typedIndex.has(neighbor.column) && CHECKS[neighbor.role](value) === "ok") {
-          fits += 1;
-          break;
-        }
-      }
-    }
-    return fits >= 2;
-  };
+  const shiftedRow = row => brokenRowReason(row, analyses, typedColumns) === "shifted";
 
   const ids = new Map(); // sekme + kimlik → satırlar (farklı sekmelerde aynı kimlik sorun değildir)
   let idFilled = 0;

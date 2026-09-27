@@ -53,3 +53,34 @@ describe("toplu düzeltme önerileri", () => {
     assert.deepEqual(proposeFixes({ rows, analyses }).map(fix => fix.id), []);
   });
 });
+
+describe("veri temizleme kütüphanesi: Excel seri tarihleri ve hata değerleri (v2.0.2)", () => {
+  it("başlığı tarih olan beş haneli sayı kolonu seri tarih sayılır; toplu düzeltme gerçek tarihe çevirir; takvim çevrilene dek uyarı üretmez", async () => {
+    const { serialToText } = await import("../server/lib/insight/fixes.mjs");
+    const { serialToDate } = await import("../server/lib/insight/validators.mjs");
+    assert.equal(serialToText("45000"), "15.03.2023");
+    assert.equal(serialToText("46000"), "09.12.2025");
+    assert.equal(serialToText("1500"), null, "dört haneli sayı seri değildir");
+    assert.equal(serialToDate("99999"), null);
+    const rows = [
+      { __hofKey: "1", Müvekkil: "Ali Veli", Vade: "46000", Tutar: "1.500" },
+      { __hofKey: "2", Müvekkil: "Ayşe Kaya", Vade: "46010", Tutar: "2.000" },
+      { __hofKey: "3", Müvekkil: "Can Er", Vade: "46020", Tutar: "750" },
+      { __hofKey: "4", Müvekkil: "Deniz Ay", Vade: "", Tutar: "900" },
+    ];
+    const analyses = analyzeColumns(rows, ["Müvekkil", "Vade", "Tutar"], { now: new Date("2026-09-27") });
+    const vade = analyses.find(item => item.column === "Vade");
+    assert.equal(vade.role, "date");
+    assert.equal(vade.warning, "serial");
+    assert.ok(vade.evidence.some(text => /seri tarih/.test(text)), vade.evidence.join(" | "));
+    const fix = proposeFixes({ rows, analyses }).find(item => item.kind === "serial");
+    assert.ok(fix, "seri tarih düzeltmesi önerilmeli");
+    assert.deepEqual(fix.changes.map(item => [item.key, item.value]), [["1", "09.12.2025"], ["2", "19.12.2025"], ["3", "29.12.2025"]]);
+  });
+
+  it("Excel hata değerleri boş sayılır", async () => {
+    const { healCell } = await import("../server/lib/heal.mjs");
+    for (const value of ["#DIV/0!", "#SAYI/0!", "#REF!", "#BAŞV!", "#DEĞER!", "#AD?", "#N/A", "#YOK", "#NULL!"]) assert.deepEqual(healCell(value), { value: "", kind: "placeholder" }, value);
+    assert.deepEqual(healCell("#123"), { value: "#123", kind: null }, "sayı işaretli metin hata değeri değildir");
+  });
+});

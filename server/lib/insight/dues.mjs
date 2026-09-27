@@ -11,7 +11,7 @@
 //    tahsilat kapatır). Vadesinden en çok 20 gün önce girilen tahsilat da sayılır.
 import { columnOrder as columnsOf } from "../sources.mjs";
 import { analyzeColumns, cell, primaryColumns } from "./columns.mjs";
-import { embeddedDates, isBlankRecord, isEmptyCell, isSequenceHeader, isTotalRow } from "./cells.mjs";
+import { embeddedDates, isBlankRecord, isEmptyCell, isFlaggedRow, isSequenceHeader, isTotalRow } from "./cells.mjs";
 import { dateMeaning, ordinalOf, subjectOf } from "./temporal.mjs";
 import { foldText, parseAmount, parseDate } from "./validators.mjs";
 
@@ -122,14 +122,18 @@ export function amountInText(text) {
   return value && value > 0 ? value : null;
 }
 
-function classifyColumns(rows, columns, analyses, now) {
+function classifyColumns(rows, columns, analyses, now, forced = null) {
   const today = dayOf(new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate())));
   const due = [];
   const recurring = [];
   for (const column of columns) {
     const folded = foldText(column);
-    if (!folded || PAST.test(folded)) continue;
-    const strong = STRONG.test(folded);
+    // Eşleme ekranı (v2.0.2): "Yoksay" denen kolon takvime girmez; "Son tarih / Vade" denen kolon başlığı ne olursa olsun
+    // güçlü vade kolonudur (başlık "Tarih 2" bile olsa).
+    const chosen = forced?.[column];
+    if (chosen === "ignore") continue;
+    if (!folded || (PAST.test(folded) && chosen !== "deadline")) continue;
+    const strong = chosen === "deadline" || STRONG.test(folded);
     if (!strong && !WEAK.test(folded)) continue;
     let filled = 0;
     let dated = 0;
@@ -287,7 +291,7 @@ const monthLabel = time => {
  * @param {Record<string, object>} [input.settled] elle "ödendi say" denen kalemler (kimlik → bilgi)
  * @param {Date} [input.now]
  */
-export function computeDues({ rows, tabs = [], payments = [], settled = {}, now = new Date() }) {
+export function computeDues({ rows, tabs = [], payments = [], settled = {}, now = new Date(), forced = null }) {
   const today = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
   const monthStart = Date.UTC(now.getFullYear(), now.getMonth(), 1);
   const monthEnd = Date.UTC(now.getFullYear(), now.getMonth() + 1, 0);
@@ -308,9 +312,9 @@ export function computeDues({ rows, tabs = [], payments = [], settled = {}, now 
   for (const tab of order) {
     const scope = groups.get(tab);
     const columns = columnsOf(scope);
-    const analyses = analyzeColumns(scope, columns, { now });
+    const analyses = analyzeColumns(scope, columns, { now, forced });
     const primary = primaryColumns(analyses);
-    const { due, recurring, monthly, debt } = classifyColumns(scope, columns, analyses, now);
+    const { due, recurring, monthly, debt } = classifyColumns(scope, columns, analyses, now, forced);
     if (!due.length && !recurring.length && !monthly.length) continue;
     const statusColumns = analyses.filter(item => item.role === "status" || /\b(durum\w*|asama\w*|sonuc\w*)\b/.test(foldText(item.column))).map(item => item.column);
     sources.push({ tab, columns: [...due, ...recurring, ...monthly].map(item => item.column) });
@@ -321,7 +325,7 @@ export function computeDues({ rows, tabs = [], payments = [], settled = {}, now 
     const startColumn = monthly.length ? dateColumn(START_DATE) : null;
     const endColumn = monthly.length ? dateColumn(END_DATE) : null;
     for (const row of scope) {
-      if (isTotalRow(row)) continue;
+      if (isTotalRow(row) || isFlaggedRow(row)) continue;
       if (statusColumns.some(column => isSettledText(cell(row, column)) || INACTIVE.test(foldText(cell(row, column))))) continue;
       const person = primary.person ? String(cell(row, primary.person) ?? "").trim() : "";
       const caseNo = idColumn ? String(cell(row, idColumn) ?? "").trim() : "";
@@ -459,7 +463,7 @@ export function computeDues({ rows, tabs = [], payments = [], settled = {}, now 
 
 // Son tarihi yaklaşan işler (bildirim için): ödeme takvimi dışındaki son tarih kolonları (yenileme, bitiş, teslim,
 // duruşma…) bugünden itibaren `aheadDays` gün içinde.
-export function computeDeadlines({ rows, tabs = [], now = new Date(), aheadDays = 7, pastDays = 30, exclude = [] }) {
+export function computeDeadlines({ rows, tabs = [], now = new Date(), aheadDays = 7, pastDays = 30, exclude = [], forced = null }) {
   const today = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
   const since = today - pastDays * DAY;
   const until = today + aheadDays * DAY;
@@ -474,7 +478,7 @@ export function computeDeadlines({ rows, tabs = [], now = new Date(), aheadDays 
   const out = [];
   for (const [tab, scope] of groups) {
     const columns = columnsOf(scope);
-    const analyses = analyzeColumns(scope, columns, { now });
+    const analyses = analyzeColumns(scope, columns, { now, forced });
     const primary = primaryColumns(analyses);
     // Tarihin anlamı tek yerden gelir (temporal.mjs, kolon analizi): bitiş/son gün yaklaşınca ve geçince, planlı tarih
     // (randevu, duruşma, sınav, teslim) yalnız yaklaşınca bildirilir; kayıt/olay tarihi ("Muayene tarihi" klinikte,
@@ -498,7 +502,7 @@ export function computeDeadlines({ rows, tabs = [], now = new Date(), aheadDays 
       .filter(column => subjectOf(column) && !skip.has(`${tab}\u0000${column}`))
       .map(column => ({ column, subject: subjectOf(column), meaning: analyses.find(item => item.column === column && item.role === "date")?.meaning || dateMeaning(column, 0).meaning }));
     for (const row of scope) {
-      if (isTotalRow(row) || isBlankRecord(row, columns)) continue;
+      if (isTotalRow(row) || isFlaggedRow(row) || isBlankRecord(row, columns)) continue;
       if (statusColumns.some(column => isSettledText(cell(row, column)) || DONE_STATE.test(foldText(cell(row, column))) || INACTIVE.test(foldText(cell(row, column))))) continue;
       for (const item of dated) {
         const value = cell(row, item.column);

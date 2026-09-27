@@ -6,7 +6,7 @@
 // kabul edilir. Başlık tek başına bir kolona tür biçmez; yalnızca değerlerin söylediğini güçlendirir veya ayırt eder
 // (ör. aynı sayısal kolon "TUTAR" başlığıyla tutar, "ADET" başlığıyla miktardır).
 import { dateMeaning, kindOfMeaning } from "./temporal.mjs";
-import { foldText, isEmail, isIban, isPlate, isProvince, isTckn, isTrPhone, isUrl, isVkn, parseAmount, parseDate } from "./validators.mjs";
+import { isSerialDate, serialToDate, foldText, isEmail, isIban, isPlate, isProvince, isTckn, isTrPhone, isUrl, isVkn, parseAmount, parseDate } from "./validators.mjs";
 
 const SAMPLE = 4000;
 // "2025/1234", "İstanbul 2025/1234", "2025/1234 E." gibi dosya/esas numaraları. Ek kısmı en az bir harf ister: iki
@@ -194,9 +194,46 @@ function isSequence(values) {
 const round = value => Math.round(value * 100) / 100;
 
 // ---------- Kolon çözümlemesi ----------
-export function analyzeColumn(rows, column, { now = new Date() } = {}) {
+// Kullanıcının eşleme ekranında seçtiği roller (v2.0.2): otomatik kararın üstüne yazar.
+export const FORCED_ROLES = {
+  ignore: { role: "text", extra: { ignored: true }, label: "Yoksay" },
+  id: { role: "id", extra: { kind: "code" }, label: "Kimlik / No" },
+  person: { role: "person", extra: {}, label: "Kişi" },
+  org: { role: "org", extra: {}, label: "Kurum" },
+  phone: { role: "phone", extra: {}, label: "Telefon" },
+  email: { role: "email", extra: {}, label: "E-posta" },
+  money: { role: "money", extra: { kind: "amount" }, label: "Tutar" },
+  deadline: { role: "date", extra: { kind: "deadline", meaning: "expiry", strong: true, meaningReason: "eşleme ekranında son tarih seçildi" }, label: "Son tarih / Vade" },
+  date: { role: "date", extra: { kind: "event", meaning: "record", meaningReason: "eşleme ekranında olay tarihi seçildi" }, label: "Tarih (olay)" },
+  status: { role: "status", extra: {}, label: "Durum" },
+  category: { role: "category", extra: {}, label: "Kategori" },
+  note: { role: "note", extra: {}, label: "Not" },
+};
+
+export function analyzeColumn(rows, column, { now = new Date(), forced = null } = {}) {
   const hits = headerHits(column);
   const { values, present, nonEmpty } = sampleValues(rows, column);
+  const chosen = forced && FORCED_ROLES[forced[column]];
+  if (chosen) {
+    const distinctCount = new Set(values).size;
+    const stats = { present, nonEmpty, fill: present ? round(nonEmpty / present) : 0, distinct: distinctCount, uniqueness: values.length ? round(distinctCount / values.length) : 0, avgLength: 0 };
+    const extra = { ...chosen.extra };
+    if (chosen.role === "status" || chosen.role === "category") extra.values = topValues(values, 6);
+    if (chosen.role === "date") {
+      const today = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
+      let dated = 0;
+      let future = 0;
+      for (const value of values) {
+        const parsed = parseDate(value);
+        if (!parsed) continue;
+        dated += 1;
+        if (parsed.getTime() >= today) future += 1;
+      }
+      extra.validRate = values.length ? round(dated / values.length) : 0;
+      extra.futureRate = dated ? round(future / dated) : 0;
+    }
+    return { column, role: chosen.role, confidence: 1, verified: false, forced: forced[column], ...extra, stats, header: Object.keys(hits) };
+  }
   const distinct = new Set(values).size;
   let totalLength = 0;
   for (const value of values) totalLength += value.length;
@@ -244,6 +281,23 @@ export function analyzeColumn(rows, column, { now = new Date() } = {}) {
   // Başlık tarih diyorsa "30.09.2026 (uzatıldı)" gibi tarih + not hücreleri de tarih sayılır.
   const dateHint = hits.date || hits.deadlineStrong || hits.deadline;
   const date = rate(values, value => Boolean(parseDate(value)) || (dateHint && embeddedDate(value)));
+  // Excel seri tarihleri (45000): başlık tarih diyor, hücreler beş haneli sayı. Kolon tarih sayılır; değerler
+  // toplu düzeltmeyle gerçek tarihe çevrilir (fixes.mjs); çevrilene kadar takvim bu kolondan uyarı üretmez.
+  const serial = dateHint ? rate(values, isSerialDate) : 0;
+  if (serial >= 0.6 && date < 0.5) {
+    const today = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
+    let dated = 0;
+    let future = 0;
+    for (const value of values) {
+      const parsed = serialToDate(value);
+      if (!parsed) continue;
+      dated += 1;
+      if (parsed.getTime() >= today) future += 1;
+    }
+    const futureRate = dated ? future / dated : 0;
+    const { meaning, reason } = dateMeaning(column, futureRate);
+    return result("date", 0.7, { validRate: 0, warning: "serial", kind: kindOfMeaning(meaning), meaning, meaningReason: reason, strong: false, futureRate: round(futureRate), serialRate: round(serial) });
+  }
   if (pass(date, 0.8, dateHint, 0.5)) {
     // İleri tarihli değerlerin oranı (dolu tarihler içinde): anlamı başlıktan çıkmayan kolonlarda karar verir.
     const today = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
@@ -333,7 +387,7 @@ export function importance(analysis) {
 export function analyzeColumns(rows, columns, options = {}) {
   const analyses = columns.map(column => {
     const analysis = analyzeColumn(rows, column, options);
-    return { ...analysis, importance: importance(analysis) };
+    return { ...analysis, importance: analysis.ignored ? 0 : importance(analysis) };
   });
   inferAcrossColumns(rows, analyses);
   for (const item of analyses) {
@@ -358,7 +412,7 @@ function inferAcrossColumns(rows, analyses) {
     const parsed = new Map(dates.map(item => [item.column, rows.map(row => parseDate(row[item.column]))]));
     for (const a of dates) {
       for (const b of dates) {
-        if (a === b || (a.meaning !== "other" && b.meaning !== "other")) continue;
+        if (a === b || a.forced || b.forced || (a.meaning !== "other" && b.meaning !== "other")) continue;
         const left = parsed.get(a.column);
         const right = parsed.get(b.column);
         let both = 0;
@@ -382,6 +436,7 @@ function inferAcrossColumns(rows, analyses) {
 
 function explain(item) {
   const out = [];
+  if (item.forced) out.push(`eşleme ekranında seçildi: ${FORCED_ROLES[item.forced]?.label || item.forced}`);
   const hits = (item.header || []).map(key => HIT_TR[key]).filter(Boolean);
   if (hits.length) out.push(`başlık kelimesi: ${[...new Set(hits)].join(", ")}`);
   const rate = item.validRate ?? null;
@@ -396,12 +451,13 @@ function explain(item) {
   if ((item.role === "status" || item.role === "category") && item.values?.length) out.push(`${item.stats.distinct} farklı değer: ${item.values.slice(0, 4).join(", ")}${item.stats.distinct > 4 ? "…" : ""}`);
   if (item.role === "responsible" && item.values?.length) out.push(`az sayıda kişi tekrar ediyor: ${item.values.slice(0, 3).join(", ")}`);
   if (item.warning === "scientific") out.push("değerler Excel'de sayıya dönüşmüş (bilimsel gösterim)");
+  if (item.warning === "serial") out.push(`değerlerin %${Math.round((item.serialRate || 0) * 100)}'i Excel seri tarih sayısı (45000 gibi): toplu düzeltmeyle tarihe çevrilir`);
   if (item.stats.fill < 0.5 && item.role !== "empty") out.push(`satırların yalnız %${Math.round(item.stats.fill * 100)}'inde dolu`);
   return out;
 }
 
 function certaintyOf(item) {
-  if (item.role === "empty") return "kesin";
+  if (item.role === "empty" || item.forced) return "kesin";
   const rate = item.validRate ?? null;
   if (item.warning) return "belirsiz";
   if ((item.verified && rate >= 0.9) || (VALIDATED.has(item.role) && rate !== null && rate >= 0.95) || item.confidence >= 0.9) return "kesin";
