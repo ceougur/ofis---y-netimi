@@ -1054,7 +1054,10 @@ html:not(.hof-can-sources-manage) [data-requires="sources.manage"],
 html:not(.hof-can-notes-write) [data-requires="notes.write"],
 html:not(.hof-can-phones-create) [data-requires="phones.create"],
 html:not(.hof-can-payments-create) [data-requires="payments.create"],
-html:not(.hof-can-liens-create) [data-requires="liens.create"] {
+html:not(.hof-can-liens-create) [data-requires="liens.create"],
+html:not(.hof-can-cash-view) [data-requires="cash.view"],
+html:not(.hof-can-documents-upload) [data-requires="documents.upload"],
+html:not(.hof-can-profile-manage) [data-requires="profile.manage"] {
   display: none !important;
 }
 
@@ -2890,3 +2893,1069 @@ html.hof-no-haciz .filter-strip { display: none !important; }
 
 .hof-start-guide { margin-top: 14px; font-size: 14px; opacity: .85; }
 .hof-start-guide a { font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+
+/* ---------- Tahsilat düzelt/sil ve Kasa (v2.0.1) ---------- */
+.hof-activity li:has(.hof-activity-tools) {
+  grid-template-columns: 26px 1fr auto;
+}
+.hof-activity-tools {
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+}
+.hof-mini {
+  display: inline-grid;
+  width: 26px;
+  height: 26px;
+  place-items: center;
+  border: 1px solid var(--do-border);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--do-soft, #4c6158);
+  font-size: 13px;
+  line-height: 1;
+  cursor: pointer;
+}
+.hof-mini:hover {
+  border-color: #9cc5ad;
+  color: var(--do-accent);
+}
+.hof-mini-danger:hover {
+  border-color: #e4b4ac;
+  color: #b3473a;
+}
+.hof-cash-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.hof-cash-bar .hof-tabs {
+  margin: 0;
+}
+.hof-cash-add {
+  display: flex;
+  gap: 6px;
+}
+.hof-cash-kpis .hof-cash-balance {
+  border-color: #9cc5ad;
+  background: var(--do-accent-soft);
+}
+.hof-cash-kpis .hof-cash-balance strong {
+  color: var(--do-accent);
+}
+.hof-cash-list {
+  max-height: min(52vh, 460px);
+  overflow: auto;
+  border: 1px solid var(--do-border);
+  border-radius: 12px;
+}
+.hof-cash-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: #f4f8f5;
+}
+.hof-cash-table th.num {
+  text-align: right;
+}
+.hof-cash-table td b {
+  display: block;
+  font-weight: 700;
+}
+.hof-cash-table td small {
+  color: var(--do-faint);
+  font-size: 11px;
+}
+.hof-cash-table td.hof-cash-in {
+  color: #177245;
+  font-weight: 700;
+}
+.hof-cash-table td.hof-cash-out {
+  color: #b3473a;
+  font-weight: 700;
+}
+.hof-cash-table .hof-cash-opening td {
+  background: #fafcfb;
+}
+.hof-cash-actions {
+  width: 64px;
+  white-space: nowrap;
+  text-align: right;
+}
+@media (max-width: 720px) {
+  .hof-cash-kpis {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* ---------- Formüller (v2.0.1) ---------- */
+.dynamic-detail-grid > div.hof-has-fx {
+  position: relative;
+}
+.hof-fx {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  display: inline-grid;
+  width: 20px;
+  height: 20px;
+  place-items: center;
+  border-radius: 6px;
+  background: var(--do-accent-soft);
+  color: var(--do-accent);
+  font: italic 700 13px/1 Georgia, "Times New Roman", serif;
+  cursor: help;
+}
+.hof-fx[data-state="calc"] {
+  background: var(--do-accent);
+  color: #fff;
+}
+.hof-fx[data-state="unsupported"],
+.hof-fx[data-state="stale"] {
+  background: var(--do-warn-soft);
+  color: var(--do-warn);
+}
+.hof-fx[data-state="manual"] {
+  background: #f1f1ef;
+  color: #7c8580;
+}
+.hof-field-badge {
+  margin-left: 4px;
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: var(--do-accent-soft);
+  color: var(--do-accent);
+  font-size: 10px;
+  font-style: italic;
+  font-weight: 700;
+}
+.hof-field.is-readonly input,
+.hof-field.is-readonly textarea {
+  background: #f4f7f5;
+  color: #54665e;
+  cursor: not-allowed;
+}
+
+/* ---------- Operasyon merkezi: köşedeki kalem (v2.0.1) ---------- */
+.hof-sidecard {
+  position: relative;
+}
+.hof-sidecard-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.hof-sidecard-head .hof-sidecard-label {
+  min-width: 0;
+  text-transform: uppercase;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.hof-sidecard-edit {
+  display: inline-grid;
+  flex: none;
+  width: 26px;
+  height: 26px;
+  margin: -4px -4px 0 0;
+  place-items: center;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: #8a9a93;
+  opacity: 0.55;
+  cursor: pointer;
+  transition: opacity 0.15s ease, background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+.hof-sidecard:hover .hof-sidecard-edit,
+.hof-sidecard-edit:focus-visible {
+  opacity: 1;
+}
+.hof-sidecard-edit:hover,
+.hof-sidecard-edit:focus-visible {
+  border-color: #cfe3d7;
+  background: var(--do-accent-soft);
+  color: var(--do-accent);
+  outline: none;
+}
+.hof-side-editor-reset {
+  display: flex;
+  justify-content: flex-start;
+  margin: 2px 0 4px;
+}
+.hof-side-editor .hof-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 14px;
+}
+.hof-side-editor .hof-form > .hof-field:first-child,
+.hof-side-editor .hof-form > .hof-side-editor-reset,
+.hof-side-editor .hof-form > .hof-form-error,
+.hof-side-editor .hof-form > .hof-actions {
+  grid-column: 1 / -1;
+}
+@media (max-width: 640px) {
+  .hof-side-editor .hof-form {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* ---------- Veri oturumları (v2.0.1) ---------- */
+.hof-choice.hof-choice-session {
+  margin-bottom: 12px;
+}
+.hof-choice-session-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 10px;
+}
+.hof-choice-session-row .hof-field {
+  flex: 1 1 260px;
+  margin: 0;
+}
+.hof-choice-session-row .hof-button {
+  flex: none;
+}
+/* Oturum seçici: kenar çubuğunda marka ile menü arasında */
+.hof-session {
+  position: relative;
+  margin: 22px 0 0;
+}
+.sidebar.hof-has-session > nav.mt-10 {
+  margin-top: 18px;
+}
+.hof-session-current {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px 8px 8px;
+  border: 1px solid var(--do-border);
+  border-radius: 13px;
+  background: linear-gradient(160deg, #fff, #f3f9f5);
+  color: var(--do-ink);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.16s ease, box-shadow 0.16s ease;
+}
+.hof-session-current:hover {
+  border-color: var(--do-border-strong);
+  box-shadow: 0 6px 18px rgba(20, 52, 40, 0.07);
+}
+.hof-session-current:focus-visible {
+  outline: none;
+  box-shadow: var(--do-focus);
+}
+.hof-session-icon {
+  display: inline-grid;
+  flex: none;
+  width: 32px;
+  height: 32px;
+  place-items: center;
+  border-radius: 10px;
+  background: var(--do-accent-soft);
+  color: var(--do-accent);
+}
+.hof-session-text {
+  display: grid;
+  flex: 1;
+  min-width: 0;
+  gap: 1px;
+}
+.hof-session-text small {
+  color: #7a8d85;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.hof-session-text strong {
+  overflow: hidden;
+  font-size: 14px;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.hof-session-count {
+  flex: none;
+  min-width: 22px;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: var(--do-accent-soft);
+  color: var(--do-accent);
+  font-size: 11px;
+  font-weight: 800;
+  text-align: center;
+}
+.hof-session-chevron {
+  display: inline-grid;
+  flex: none;
+  color: var(--do-faint);
+  transition: transform 0.18s ease;
+}
+.hof-session.is-open .hof-session-chevron {
+  transform: rotate(180deg);
+}
+.hof-session-menu {
+  position: absolute;
+  z-index: 70;
+  top: calc(100% + 6px);
+  left: 0;
+  width: min(320px, calc(100vw - 32px));
+  padding: 8px;
+  border: 1px solid var(--do-border);
+  border-radius: 14px;
+  background: var(--do-surface);
+  box-shadow: 0 18px 50px rgba(16, 40, 30, 0.16);
+}
+.hof-session-menu[hidden] {
+  display: none;
+}
+.hof-session-menu-title {
+  margin: 4px 8px 6px;
+  color: #7a8d85;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.hof-session-list {
+  display: grid;
+  max-height: min(340px, 50vh);
+  margin: 0;
+  padding: 0;
+  gap: 2px;
+  overflow-y: auto;
+  list-style: none;
+}
+.hof-session-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border-radius: 10px;
+}
+.hof-session-row.is-current {
+  background: var(--do-accent-soft);
+}
+.hof-session-pick {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--do-ink);
+  text-align: left;
+  cursor: pointer;
+}
+.hof-session-row:not(.is-current) .hof-session-pick:hover {
+  background: var(--do-surface-soft);
+}
+.hof-session-pick:focus-visible {
+  outline: none;
+  box-shadow: var(--do-focus);
+}
+.hof-session-pick.is-busy {
+  opacity: 0.6;
+  cursor: progress;
+}
+.hof-session-dot {
+  flex: none;
+  width: 9px;
+  height: 9px;
+  border: 2px solid var(--do-border-strong);
+  border-radius: 50%;
+}
+.hof-session-row.is-current .hof-session-dot {
+  border-color: var(--do-accent);
+  background: var(--do-accent);
+}
+.hof-session-info {
+  display: grid;
+  flex: 1;
+  min-width: 0;
+}
+.hof-session-info b {
+  overflow: hidden;
+  font-size: 13.5px;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.hof-session-info small {
+  overflow: hidden;
+  color: var(--do-muted);
+  font-size: 11.5px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.hof-session-now {
+  flex: none;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: #fff;
+  color: var(--do-accent);
+  font-size: 10.5px;
+  font-weight: 800;
+}
+.hof-session-rename {
+  display: inline-grid;
+  flex: none;
+  width: 28px;
+  height: 28px;
+  margin-right: 4px;
+  place-items: center;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: #8a9a93;
+  opacity: 0.6;
+  cursor: pointer;
+}
+.hof-session-rename:hover,
+.hof-session-rename:focus-visible {
+  border-color: #cfe3d7;
+  background: #fff;
+  color: var(--do-accent);
+  opacity: 1;
+  outline: none;
+}
+.hof-session-edit {
+  display: grid;
+  flex: 1;
+  gap: 6px;
+  padding: 6px;
+}
+.hof-session-edit input {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid var(--do-border-strong);
+  border-radius: 9px;
+  background: #fff;
+  color: var(--do-ink);
+  font-size: 13.5px;
+}
+.hof-session-edit input:focus {
+  border-color: var(--do-accent);
+  outline: none;
+  box-shadow: var(--do-focus);
+}
+.hof-session-edit div {
+  display: flex;
+  gap: 6px;
+}
+.hof-session-foot {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 6px 0 0;
+  padding: 8px 6px 2px;
+  border-top: 1px solid var(--do-border);
+}
+.hof-session-foot button {
+  padding: 6px 8px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.hof-session-new {
+  color: var(--do-accent);
+}
+.hof-session-manage {
+  color: var(--do-muted);
+}
+.hof-session-foot button:hover,
+.hof-session-foot button:focus-visible {
+  background: var(--do-surface-soft);
+  outline: none;
+}
+.hof-session-note {
+  margin: 4px 8px 2px;
+  color: var(--do-faint);
+  font-size: 11.5px;
+}
+/* Ayarlar → Veri → Oturumlar */
+.hof-session-admin {
+  display: grid;
+  margin: 0 0 12px;
+  padding: 0;
+  gap: 8px;
+  list-style: none;
+}
+.hof-session-admin li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--do-border);
+  border-radius: 12px;
+  background: var(--do-surface);
+}
+.hof-session-admin-info {
+  min-width: 0;
+}
+.hof-session-admin-info b {
+  font-size: 14px;
+}
+.hof-session-admin-info .hof-chip {
+  margin-left: 8px;
+}
+.hof-session-admin-info small {
+  display: block;
+  margin-top: 2px;
+  color: var(--do-muted);
+  font-size: 12px;
+}
+.hof-session-admin-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.hof-session-shared {
+  margin: 0 0 12px;
+  padding: 9px 12px;
+  border-radius: 10px;
+  background: var(--do-accent-soft);
+  color: var(--do-ink-soft);
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+
+/* ---------- Dışa aktar menüsü (v2.0.1) ---------- */
+.hof-export-menu {
+  position: fixed;
+  z-index: 80;
+  width: min(330px, calc(100vw - 24px));
+  padding: 8px;
+  border: 1px solid var(--do-border);
+  border-radius: 14px;
+  background: var(--do-surface);
+  box-shadow: 0 18px 50px rgba(16, 40, 30, 0.16);
+  animation: hof-pop 0.14s ease-out;
+}
+@keyframes hof-pop {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+.hof-export-title {
+  margin: 4px 8px 6px;
+  color: #7a8d85;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.hof-export-menu hr {
+  margin: 6px 4px;
+  border: 0;
+  border-top: 1px solid var(--do-border);
+}
+.hof-export-item {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 10px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--do-ink);
+  text-align: left;
+  cursor: pointer;
+}
+.hof-export-item:hover,
+.hof-export-item:focus-visible {
+  background: var(--do-surface-soft);
+  outline: none;
+}
+.hof-export-item:focus-visible {
+  box-shadow: var(--do-focus);
+}
+.hof-export-icon {
+  display: inline-grid;
+  flex: none;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border-radius: 10px;
+  background: var(--do-accent-soft);
+  color: var(--do-accent);
+}
+.hof-export-item.is-muted .hof-export-icon {
+  background: #f1f4f2;
+  color: var(--do-muted);
+}
+.hof-export-text {
+  display: grid;
+  min-width: 0;
+  gap: 1px;
+}
+.hof-export-text b {
+  font-size: 13.5px;
+  font-weight: 700;
+}
+.hof-export-text small {
+  overflow: hidden;
+  color: var(--do-muted);
+  font-size: 11.5px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.button-row button.is-busy {
+  opacity: 0.65;
+  cursor: progress;
+}
+
+/* ---------- Kayıt belgeleri (v2.0.1) ---------- */
+.hof-documents {
+  position: relative;
+  padding: 16px 22px 6px;
+  border-top: 1px solid #eef1ef;
+}
+.hof-documents .hof-activity-head h3 em {
+  margin-left: 6px;
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: var(--do-accent-soft);
+  color: var(--do-accent);
+  font-style: normal;
+  letter-spacing: 0;
+}
+.hof-doc-add {
+  padding: 5px 10px;
+  border: 1px solid var(--do-border);
+  border-radius: 9px;
+  background: #fff;
+  color: var(--do-accent);
+  font: 700 12px var(--do-font);
+  cursor: pointer;
+}
+.hof-doc-add:hover,
+.hof-doc-add:focus-visible {
+  border-color: #9cc5ad;
+  background: var(--do-surface-soft);
+  outline: none;
+}
+.hof-doc-list {
+  display: grid;
+  gap: 6px;
+  margin: 0 0 10px;
+  padding: 0;
+  list-style: none;
+}
+.hof-doc-list li {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border: 1px solid #e6efe9;
+  border-radius: 11px;
+  background: #fff;
+}
+.hof-doc-icon {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border-radius: 9px;
+  background: #eef3f0;
+  color: var(--do-ink-soft);
+}
+.hof-doc-list li[data-kind="pdf"] .hof-doc-icon {
+  background: #fdeeeb;
+  color: #b3473a;
+}
+.hof-doc-list li[data-kind="image"] .hof-doc-icon {
+  background: #eaf2fb;
+  color: #2f6da8;
+}
+.hof-doc-list li[data-kind="doc"] .hof-doc-icon {
+  background: #e9effb;
+  color: #2b579a;
+}
+.hof-doc-list li[data-kind="sheet"] .hof-doc-icon {
+  background: var(--do-accent-soft);
+  color: var(--do-accent);
+}
+.hof-doc-list li[data-kind="slide"] .hof-doc-icon,
+.hof-doc-list li[data-kind="udf"] .hof-doc-icon {
+  background: var(--do-gold-soft);
+  color: #8a6420;
+}
+.hof-doc-main {
+  display: grid;
+  min-width: 0;
+  gap: 1px;
+}
+.hof-doc-name {
+  overflow: hidden;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--do-ink);
+  font: 700 13px var(--do-font);
+  text-align: left;
+  text-decoration: none;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.hof-doc-name:hover,
+.hof-doc-name:focus-visible {
+  color: var(--do-accent);
+  text-decoration: underline;
+  outline: none;
+}
+.hof-doc-main small,
+.hof-doc-main b {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.hof-doc-main small {
+  color: var(--do-faint);
+  font-size: 11px;
+}
+.hof-doc-main b {
+  font-size: 13px;
+}
+.hof-doc-tools {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.hof-doc-tools a.hof-mini {
+  display: inline-grid;
+  place-items: center;
+  color: inherit;
+  text-decoration: none;
+}
+.hof-doc-tools small {
+  color: var(--do-muted);
+  font-size: 11px;
+  font-weight: 700;
+}
+.hof-doc-progress {
+  display: block;
+  height: 4px;
+  margin-top: 5px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #e6efe9;
+}
+.hof-doc-progress span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--do-accent);
+  transition: width 0.2s ease;
+}
+.hof-doc-empty {
+  margin: 0 0 10px;
+  padding: 10px 12px;
+  border: 1px dashed var(--do-border-strong);
+  border-radius: 11px;
+  color: var(--do-muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+.hof-doc-drop {
+  position: absolute;
+  inset: 8px 12px 4px;
+  display: none;
+  place-items: center;
+  border: 2px dashed var(--do-accent);
+  border-radius: 14px;
+  background: rgba(230, 243, 235, 0.92);
+  color: var(--do-accent);
+  font-size: 13px;
+  font-weight: 800;
+  pointer-events: none;
+}
+.hof-documents.is-over .hof-doc-drop {
+  display: grid;
+}
+.hof-doc-paste {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 12px;
+  line-height: 1.55;
+  margin: 10px 0;
+  padding: 10px 12px;
+  border: 1px solid var(--do-border);
+  border-radius: 11px;
+  background: var(--do-surface-soft);
+  color: var(--do-ink-soft);
+  font-size: 12.5px;
+}
+.hof-doc-paste-keys {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--do-muted);
+  font-weight: 700;
+  white-space: nowrap;
+}
+.hof-doc-paste kbd,
+.hof-doc-paste span kbd {
+  padding: 1px 6px;
+  border: 1px solid var(--do-border-strong);
+  border-bottom-width: 2px;
+  border-radius: 6px;
+  background: #fff;
+  font: 700 11px var(--do-font);
+}
+.hof-doc-modal.hof-modal {
+  width: min(1100px, calc(100vw - 32px));
+}
+.hof-doc-viewer {
+  display: grid;
+  height: min(72vh, 900px);
+  place-items: center;
+  overflow: hidden;
+  border: 1px solid var(--do-border);
+  border-radius: 12px;
+  background: #f1f4f2;
+}
+.hof-doc-viewer iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: #fff;
+}
+.hof-doc-viewer img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+.hof-doc-viewer-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 12px;
+  color: var(--do-muted);
+  font-size: 12px;
+}
+.hof-doc-viewer-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+@media (max-width: 640px) {
+  .hof-doc-viewer {
+    height: 60vh;
+  }
+}
+
+/* ---------- Kolon başlıklarını adlandırma (v2.0.1) ---------- */
+.hof-col-edit {
+  display: inline-grid;
+  width: 20px;
+  height: 20px;
+  margin: -3px 0 -3px 5px;
+  place-items: center;
+  vertical-align: middle;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: transparent;
+  color: #8a9a93;
+  opacity: 0;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+.dynamic-detail-grid > div:hover .hof-col-edit,
+.hof-col-edit:focus-visible {
+  opacity: 0.8;
+}
+.hof-col-edit:hover,
+.hof-col-edit:focus-visible {
+  border-color: #cfe3d7;
+  background: var(--do-accent-soft);
+  color: var(--do-accent);
+  opacity: 1;
+  outline: none;
+}
+@media (hover: none) {
+  .hof-col-edit {
+    opacity: 0.6;
+  }
+}
+.hof-column-editor .hof-field > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.hof-side-editor.hof-column-editor .hof-form > .hof-field:first-child {
+  grid-column: auto;
+}
+
+/* ---------- Akıllı denetim (v2.0.1) ---------- */
+.hof-checks {
+  margin: 0 22px 14px;
+  padding: 12px 14px;
+  border: 1px solid #f0d9a8;
+  border-radius: 14px;
+  background: linear-gradient(160deg, #fffaf0, #fdf4e3);
+}
+.hof-checks.is-info {
+  border-color: #cfe0ea;
+  background: linear-gradient(160deg, #f7fbfd, #eef5f9);
+}
+.hof-checks header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+.hof-checks-icon {
+  display: inline-grid;
+  width: 26px;
+  height: 26px;
+  place-items: center;
+  border-radius: 8px;
+  background: #fff;
+  color: var(--do-warn);
+  box-shadow: 0 2px 6px rgba(168, 107, 18, 0.12);
+}
+.hof-checks.is-info .hof-checks-icon {
+  color: #2f6da8;
+  box-shadow: 0 2px 6px rgba(47, 109, 168, 0.12);
+}
+.hof-checks header b {
+  color: var(--do-ink);
+  font-size: 13px;
+}
+.hof-checks header small {
+  color: var(--do-muted);
+  font-size: 12px;
+}
+.hof-checks ul {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.hof-checks li {
+  padding: 9px 11px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.78);
+}
+.hof-check-text {
+  margin: 0;
+  color: var(--do-ink);
+  font-size: 13px;
+  line-height: 1.45;
+}
+.hof-check-rule {
+  display: block;
+  margin-bottom: 2px;
+  color: var(--do-warn);
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.hof-checks li.is-info .hof-check-rule {
+  color: #2f6da8;
+}
+.hof-checks details {
+  margin-top: 4px;
+  color: var(--do-muted);
+  font-size: 12px;
+}
+.hof-checks details summary {
+  width: max-content;
+  color: var(--do-muted);
+  font-weight: 700;
+  cursor: pointer;
+}
+.hof-checks details p {
+  margin: 4px 0 0;
+  line-height: 1.5;
+}
+.hof-check-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+.hof-check-actions:empty {
+  display: none;
+}
+.hof-checks-more {
+  margin-top: 6px;
+}
+/* Tabloda şüpheli satır: ilk hücrenin başında küçük altın nokta */
+.dynamic-table tbody tr.hof-row-check td:first-child {
+  position: relative;
+}
+.dynamic-table tbody tr.hof-row-check td:first-child::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 6px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--do-gold);
+  box-shadow: 0 0 0 3px rgba(207, 159, 75, 0.2);
+  transform: translateY(-50%);
+}
+.hof-reasoning {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid var(--do-border);
+}
+.hof-reasoning h3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 6px;
+  color: var(--do-ink);
+  font-size: 15px;
+}
+.hof-rules {
+  display: grid;
+  gap: 6px;
+  margin: 8px 0 12px;
+  padding: 0;
+  list-style: none;
+}
+.hof-rules li {
+  display: grid;
+  gap: 2px;
+  padding: 9px 12px;
+  border: 1px solid var(--do-border);
+  border-radius: 10px;
+  background: var(--do-surface-soft);
+}
+.hof-rules b {
+  color: var(--do-ink);
+  font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+  font-size: 12.5px;
+}
+.hof-rules small {
+  color: var(--do-muted);
+  font-size: 11.5px;
+}

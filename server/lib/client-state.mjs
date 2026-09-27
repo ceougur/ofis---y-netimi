@@ -31,8 +31,11 @@ export function createClientState({ store, audit }) {
       instanceId: store.setting("meta.instanceId"),
       version: Number(store.setting("meta.clientStateVersion", "0")),
       sheetUrlSet: info.hasData,
+      // Seçili veri oturumu (v2.0.1): canlı olaylar bu anahtara göre süzülür, oturum seçici gösterilir.
+      datasetKey: info.key || DATASET_KEY,
+      sessionCount: info.sessionCount || 1,
       settings: {
-        sheetUrl: info.hasData ? DATASET_KEY : "",
+        sheetUrl: info.hasData ? info.key || DATASET_KEY : "",
         syncMinutes: store.setting(KEYS.syncMinutes.setting, "5"),
         aiMapping: store.setting(KEYS.aiMapping.setting, ""),
         activeSourceLabel: info.hasData ? info.label || "Çalışma verisi" : "",

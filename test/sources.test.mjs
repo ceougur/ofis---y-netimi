@@ -230,7 +230,8 @@ describe("alt tablolu kaynaklar (Excel matrisi ve Google export)", () => {
     requests.length = 0;
     const staged = await admin.post("/api/workspace/dataset/stage", { kind: "sheets", url: "https://docs.google.com/spreadsheets/d/BOLUM/edit" });
     assert.equal(staged.status, 200, JSON.stringify(staged.data));
-    assert.deepEqual(requests, ["edit", "export"]);
+    // edit sayfası, sekmenin export CSV'si ve (v2.0.1) formüller için belgenin xlsx dışa aktarımı.
+    assert.deepEqual(requests, ["edit", "export", "export"]);
     assert.deepEqual(staged.data.data.tabs, [`ÖNEMLİ${S}GAYRİMENKUL SATIŞ DOSYALARI`, `ÖNEMLİ${S}ÇEK CEZASI DOSYALARI`]);
     assert.equal(staged.data.data.rowCount, 3);
     assert.deepEqual(staged.data.data.preview.merge, { added: 0, updated: 0, unchanged: 3, kept: 0 }, "aynı içerik: değişiklik yok");

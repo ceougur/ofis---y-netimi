@@ -42,6 +42,27 @@ export function send(res, status, payload, headers = {}) {
   res.end(body);
 }
 
+// Dosya adı Content-Disposition için: ASCII yedek ad + RFC 5987 UTF-8 ad (Türkçe harfler korunur).
+export function contentDisposition(name, { inline = false } = {}) {
+  const safe = String(name || "dosya").replace(/[\u0000-\u001f"\\/:*?<>|]+/g, " ").replace(/\s+/g, " ").trim().slice(0, 180) || "dosya";
+  const ascii = safe.normalize("NFKD").replace(/[^\x20-\x7e]/g, "").replace(/\s+/g, " ").trim() || "dosya";
+  return `${inline ? "inline" : "attachment"}; filename="${ascii}"; filename*=UTF-8''${encodeURIComponent(safe).replace(/['()]/g, char => `%${char.charCodeAt(0).toString(16).toUpperCase()}`)}`;
+}
+
+// İkili yanıt (Excel dışa aktarımı, belgeler). body: Buffer.
+export function sendBuffer(res, body, { type = "application/octet-stream", name = "dosya", inline = false, headers = {} } = {}) {
+  if (res.headersSent) return;
+  res.writeHead(200, {
+    ...SECURITY_HEADERS,
+    "content-type": type,
+    "content-length": body.length,
+    "content-disposition": contentDisposition(name, { inline }),
+    "cache-control": "private, no-store",
+    ...headers,
+  });
+  res.end(body);
+}
+
 export const ok = (res, data, headers) => send(res, 200, { ok: true, data }, headers);
 export const fail = (res, status, message, extra = {}) => send(res, status, { ok: false, error: message, ...extra });
 
@@ -85,6 +106,45 @@ export function readJson(req, { limit = 1_000_000 } = {}) {
         finish(new HttpError(400, "Geçersiz JSON."));
       }
     });
+    req.on("error", error => finish(error));
+  });
+}
+
+// Ham gövde (belge yükleme, v2.0.1). Çapraz site form gönderimine karşı özel başlık istenir (tarayıcı, başka siteden
+// özel başlıklı isteği ön denetimsiz gönderemez).
+export function readBuffer(req, { limit = 25 * 1024 * 1024 } = {}) {
+  return new Promise((resolve, reject) => {
+    if (req.headers["x-hof-upload"] !== "1") {
+      req.resume();
+      reject(new HttpError(400, "Dosya yükleme isteği tanınmadı."));
+      return;
+    }
+    const declared = Number(req.headers["content-length"] || 0);
+    if (declared > limit) {
+      req.resume();
+      reject(new HttpError(413, `Dosya çok büyük (en fazla ${Math.round(limit / 1024 / 1024)} MB).`));
+      return;
+    }
+    const chunks = [];
+    let size = 0;
+    let settled = false;
+    const finish = (error, value) => {
+      if (settled) return;
+      settled = true;
+      if (error) reject(error);
+      else resolve(value);
+    };
+    req.on("data", chunk => {
+      if (settled) return;
+      size += chunk.length;
+      if (size > limit) {
+        finish(new HttpError(413, `Dosya çok büyük (en fazla ${Math.round(limit / 1024 / 1024)} MB).`));
+        req.resume();
+        return;
+      }
+      chunks.push(chunk);
+    });
+    req.on("end", () => finish(null, Buffer.concat(chunks)));
     req.on("error", error => finish(error));
   });
 }

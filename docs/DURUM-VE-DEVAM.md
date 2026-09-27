@@ -1,6 +1,6 @@
 # DestekOfis — durum ve devam notu
 
-Yeni bir oturum bu belgeyi okuyarak kaldığı yerden devam eder. Son güncelleme: 25.09.2026 (sürüm 2.0.0).
+Yeni bir oturum bu belgeyi okuyarak kaldığı yerden devam eder. Son güncelleme: 27.09.2026 (sürüm 2.0.1, yayın bekliyor).
 
 ## Nerede ne var
 
@@ -29,30 +29,33 @@ Yeni bir oturum bu belgeyi okuyarak kaldığı yerden devam eder. Son güncellem
   - Supabase şeması ve RPC'ler.
   - Operatör merkezi `/admin` (Özet, Kullananlar, Lisanslar, Hareketler, Ayarlar).
   - Site yalnızca demoyu anlatır; demo ve kullanım kılavuzu indirme, KVKK sayfası, iletişim bilgileri var.
-- v2.0.0 GitHub'da yayımlı ("Latest"). Sitedeki demo düğmesi `releases/latest/download/DestekOfis-Kurulum.exe` adresine gider.
+- v2.0.0 GitHub'da yayımlı ("Latest"). Sitedeki demo düğmesi `releases/latest/download/DestekOfis-Kurulum.exe` adresine gider. Kullanıcı imzalı güncelleme paketini (`destekofis-guncelleme.json` + zip, anahtar `destekofis-2026-1`) v2.0.0 yayınına ekledi; imza ve içerik doğrulandı. 1.6/1.7 kurulumlar artık 2.0.0'a kendiliğinden güncellenir.
+- **2.0.1 (hazır, dal `claude/nice-euler-jvajxv`):**
+  - Veri oturumları: farklı konudaki Excel/Sheet yeni oturumda açılır; kişiye özel oturum seçici; ad değiştirme, silme. Kullanıcılar, görevler, notlar, tahsilatlar ve Kasa oturumdan bağımsızdır (`docs/MIMARI.md` → *Veri oturumları*).
+  - Excel/Sheets formülleri programda çalışır (`server/lib/formula/`).
+  - Tahsilat düzeltme/silme, Kasa (göç 5), işlem geçmişi eskiden yeniye, Türkçe tutar okuma.
+  - Operasyon Merkezi adları kalemle değişir.
+  - Kurulum düzeltmesi: sunucunun üstüne yeniden kurulumda servis yeniden kurulur ve başlar (`setup.iss`, `ExistingServerInstall`).
+  - `release.yml`: web arayüzünden açılan yayına da imzalı paket, `DestekOfis-Kurulum.exe` ve kılavuz eklenir (`DESTEKOFIS_RELEASE_KEY` sırrı gerekli).
+  - Sitede indirme kartı ve Kasa tanıtımı (`destekofis` deposu, yerel commit; gönderilmedi).
 
 ## Kalanlar (öncelik sırasıyla)
 
-1. **Önce: kurulum dosyasıyla güncelleme servisi başlatmıyor.**
-   - Windows testinin 9. adımı bunu gösterdi. Mevcut sunucunun üstüne `/VERYSILENT` ile, `/TYPE` verilmeden yeniden kurulumda `PrepareToInstall` servisi durduruyor ve dosyalar yenileniyor.
-   - Ama `servis-kur.cmd` çalışmıyor: `kurulum.log`'a yeni kayıt düşmüyor ve servis `Stopped` kalıyor.
-   - Muhtemel neden: `CurStepChanged(ssPostInstall)` içinde `IsServer` yanlış dönüyor. `setup.iss`'te güncelleme kurulumunda `ExistingServerInstall` varsa sunucu türü zorlanmalı ve servis kurulmalı.
-   - Veri kaybı yok. Düzeltilene kadar HUKUK10 kurulum dosyasıyla güncellenmemeli.
-2. **İmzalı güncelleme paketi (2.0.0).**
-   - v2.0.0 yayınında `destekofis-guncelleme.json` yok. Bu yüzden 1.6/1.7 kurulumlar (HUKUK10 dahil) kendiliğinden güncellenmez.
-   - Paket güncelleme imza anahtarıyla üretilir (`docs/SURUM-YAYIMLAMA.md`). Anahtar depoda yoktur; kullanıcı oturuma yükler.
-3. **Faz 4 kalanı: alan adı.**
+1. **2.0.1'i yayımlamak (kullanıcı onayıyla).**
+   - Dal `master`'a birleştirilir; site deposu (`destekofis`) `main`'e gönderilir.
+   - GitHub → depo → *Settings → Secrets and variables → Actions* → `DESTEKOFIS_RELEASE_KEY` = güncelleme `.pem` dosyasının tüm içeriği (bir kez).
+   - GitHub → *Releases → Draft a new release* → etiket `v2.0.1` (hedef `master`) → *Publish release*. `release.yml` testlerden sonra imzalı paketi, kurulum dosyalarını ve kılavuzu ekler; 2.0.0 kurulumlar kendiliğinden 2.0.1'e geçer.
+   - Sır tanımlanmazsa: `node tools/release.mjs --anahtar <pem>` ile paket yerelde üretilip yayına elle yüklenir (`docs/SURUM-YAYIMLAMA.md` → B).
+2. **Faz 4 kalanı: alan adı.**
    - `destekofis.net` alınıp Vercel'e bağlanacak.
    - Ardından KVKK veri sorumlusu ve adresi güncellenecek. Şu an "Uğur Çetin, Karatay / Konya / Türkiye".
    - `destek-ofis.vercel.app` açık kalmalı, çünkü program lisans servisine bu adresten bağlanır. Yeni adres bir sonraki sürümde `DEFAULT_LICENSE_SERVICES`'e ikinci adres olarak eklenir.
-4. **Faz 4 kalanı: site içerikleri.** Fiyat ve satın alma yolu, video oynatıcı, sürüm notları vb. Kullanıcıyla konuşulacak.
-5. **Windows kurulum testi** (`.github/workflows/windows.yml`).
-   - Kurulumun kendisi başarılı; test betiği, `servis-kur.cmd`'nin kilitlediği `C:\DestekOfis\logs` altındaki günlüğü okuyamıyordu.
-   - Betikteki okuma sorunları giderildi (günlük `robocopy /B` ile, giriş yanıtı `-AsHashtable` ile okunur). 1–8. adımlar geçiyor; 9. adım yukarıdaki 1. maddedeki gerçek hatayı yakalıyor.
-6. **Tanıtım videosu.** Ses kararı bekleniyor.
-7. **Ticari hazırlık.**
-   - Kod imzalama sertifikası.
+3. **Faz 4 kalanı: site içerikleri.** Fiyat ve satın alma yolu, video oynatıcı, sürüm notları vb. Kullanıcıyla konuşulacak.
+4. **Tanıtım videosu.** Ses kararı bekleniyor.
+5. **Ticari hazırlık.**
+   - Kod imzalama sertifikası (Windows "tanınmayan uygulama" uyarısı için).
    - Depoyu gizliye alma. Önce demo indirme bağlantısı ve güncelleme kaynağı başka yere taşınmalı.
+6. **İsteğe bağlı:** Tabloda uygulamada eklenen yeni kayıtlar şu an sekmenin en üstünde görünür (kullanıcı "alta eklensin" isteğini işlem geçmişi ve kasa için onayladı); istenirse tablo için de değiştirilebilir.
 
 ## Kalıcı kurallar
 

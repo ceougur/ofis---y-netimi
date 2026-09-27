@@ -82,11 +82,12 @@ Görünen adlar benzersizdir: iki hesap aynı adı taşıyamaz (büyük/küçük
 
 ## 6. Çalışma verisi (Excel veya Google Sheets)
 
-Veri **ofis geneli tektir** ve sunucuda kalıcı olarak saklanır: yönetici bir kez yükler, herkes aynı tabloyu görür. Yüklenen veri, yönetici kaldırmadıkça korunur; sonradan yapılan düzeltmeler, silmeler, yeni kayıtlar, notlar ve görevlerle birlikte devam eder. Dosyanın adı değişse, Google Sheets'e ulaşılamasa ya da Sheet'ten satır silinse bile tablo kaybolmaz. Veriyi yükleme, değiştirme ve kaldırma **yalnızca yönetici** hesabındadır.
+Veri sunucuda kalıcı olarak saklanır: yönetici bir kez yükler, herkes aynı tabloyu görür. Farklı konudaki tablolar (ör. hukuk dosyalarının yanında taksit listesi) karışmasın diye ayrı **oturumlarda** tutulabilir (bkz. 6a). Yüklenen veri, yönetici kaldırmadıkça korunur; sonradan yapılan düzeltmeler, silmeler, yeni kayıtlar, notlar ve görevlerle birlikte devam eder. Dosyanın adı değişse, Google Sheets'e ulaşılamasa ya da Sheet'ten satır silinse bile tablo kaybolmaz. Veriyi yükleme, değiştirme ve kaldırma **yalnızca yönetici** hesabındadır.
 
 - **İlk yükleme:** Veri yokken panelin ortasında *"Excelini yükle ya da Google Sheets linkini yapıştır, başlayalım"* kartı çıkar. Excel dosyasını sürükleyip bırakın veya seçin; ya da Sheet bağlantısını yapıştırıp **Bağla**'ya basın. Diğer kullanıcılar bu sırada "Yöneticiniz veri yüklediğinde tablo burada görünecek" yazısını görür; veri gelince ekranları kendiliğinden açılır.
 - **Sonraki yüklemeler:** Sol menü → **Ayarlar** → *Veri ve eşitleme*. Mevcut veri varken yeni bir Excel veya Sheet bağlantısı verilince DestekOfis önce dosyayı mevcut veriyle karşılaştırır ve sorar:
-  - **Mevcut verinin devamı olarak ekle** (önerilen): yeni kayıtlar eklenir, aynı kimlikli (dosya no, hasta no, sipariş no…) kayıtlar yeni bilgilerle güncellenir, yeni dosyada olmayan kayıtlar silinmez. Ofiste elle yapılan düzeltmeler korunur.
+  - **Yeni oturumda aç:** dosya ayrı bir çalışma alanında açılır, şu anki veri olduğu gibi kalır. Oturuma bir ad verirsiniz (ör. *Taksit takibi 2026*). Dosyanın kolonları mevcut veriyle az örtüşüyorsa DestekOfis bunu fark eder ve bu seçeneği önerir.
+  - **Mevcut verinin devamı olarak ekle** (aynı konudaki dosyalarda önerilen): yeni kayıtlar eklenir, aynı kimlikli (dosya no, hasta no, sipariş no…) kayıtlar yeni bilgilerle güncellenir, yeni dosyada olmayan kayıtlar silinmez. Ofiste elle yapılan düzeltmeler korunur.
   - **Mevcut verinin yerine koy:** tablo yeni dosyayla değiştirilir; yeni dosyada olmayan kayıtlar tablodan kalkar (ek onay istenir). Notlar, görevler ve işlem geçmişi silinmez; aynı kimlik tekrar gelirse yeniden bağlanır.
   Karar vermeden önce kaç kaydın ekleneceği, güncelleneceği ve kalkacağı (örnek dosya numaralarıyla) gösterilir. Her değişiklikten önce veritabanının tam yedeği alınır (`...-veri-oncesi-ekleme.sqlite`, `...-veri-oncesi-degistirme.sqlite`).
 - **Google Sheets bağlantısı:** Sheet'te *Paylaş → Bağlantıya sahip olan herkes → Görüntüleyici* açık olmalıdır. Bağlı Sheet'teki yeni ve değişen satırlar seçilen sıklıkta (5 dk, 15 dk veya saatte bir) kendiliğinden eklenir; *Şimdi eşitle* ile hemen alınabilir. Sheet'ten silinen satırlar DestekOfis'ten kendiliğinden silinmez: tabloda üstü çizili görünür ve *Ayarlar → Veri*'de "Sheet'te artık olmayan kayıtlar" listesinde **Tut** veya **Kaldır** diye karar verilir. Sheet'in yapısı toptan değişmiş görünürse (ör. başlık satırı eklenmiş, sekme adı değişmiş; satırların çoğu birden "yeni" ve "kayıp" görünür) otomatik eşitleme veri çoğalmasın diye durur ve yöneticiden karar ister. Google'a ulaşılamazsa son eşitlenen veri kullanılmaya devam eder.
@@ -102,6 +103,19 @@ Veri **ofis geneli tektir** ve sunucuda kalıcı olarak saklanır: yönetici bir
 - Araya yeniden konmuş kolon başlığı satırları kayıt sayılmaz.
 
 Alt tabloları olan sekme, sekme şeridinde ▸ işaretiyle görünür; tıklayınca altında **Alt tablolar** şeridi açılır ve her alt tablo kendi kolonları ve kayıt sayısıyla seçilir. Emin olunamayan düzenlerde eski davranış geçerlidir (ilk satır kolon başlığı sayılır); böylece düzgün bir tablo yanlışlıkla bölünmez. Bir alt tablo tanınmıyorsa başlık satırının tek hücrede (birleştirilmiş) olduğundan ve hemen altında kolon başlıklarının bulunduğundan emin olun.
+
+**Formüller.** Excel veya Google Sheets'teki formüller (ör. `Kalan = Tutar − Taksit 1 − Taksit 2 − …`, `Durum = EĞER(Kalan=0;"Ödendi";"Borçlu")`) veriyle birlikte alınır ve programda çalışmaya devam eder. Detay kartında *Düzenle* ile boş bir taksit doldurulunca ya da tutar düzeltilince, o alana bağlı formüller kendiliğinden yeniden hesaplanır. Formüllü alanların köşesinde **ƒ** işareti vardır (üzerine gelince formül görünür); *Düzenle* penceresinde bu alanlar kilitlidir, çünkü değerleri formülden gelir. Programda eklenen yeni kayıtta, o sekmedeki satırların ortak formülü uygulanır. Google Sheets'e özgü bazı işlevler (QUERY, IMPORTRANGE gibi) hesaplanmaz; o alanda Sheet'ten gelen son değer kalır.
+
+## 6a. Veri oturumları
+
+Her oturum ayrı bir çalışma alanıdır: tablosu, düzeltmeleri, uygulamada eklenen kayıtları, tablo başlıkları ve sektörü diğer oturumlardan ayrıdır.
+
+- **Oturum seçici:** Sol menünün üstünde açık oturumun adı yazar (birden çok oturum varsa yanında sayısı). Tıklayınca oturumlar kayıt sayılarıyla listelenir; istediğinize tıklayınca o oturuma geçersiniz. Seçim **kişiye özeldir**: siz oturum değiştirince başka bilgisayarlardaki ekranlar değişmez. Program bir sonraki açılışta sizi en son seçtiğiniz oturumla açar.
+- **Oturumun adı:** Yeni oturumu açan kişi adını verir. Yönetici adı oturum seçicideki kalemle (✎) ya da *Ayarlar → Veri → Oturumlar* → *Adını değiştir* ile değiştirir; yeni ad tüm bilgisayarlarda görünür.
+- **Yeni oturum:** Oturum seçici → *+ Yeni oturum aç* (ya da *Ayarlar → Veri*'de dosya yükleyip *Yeni oturumda aç*).
+- **Oturumu silme:** *Ayarlar → Veri → Oturumlar* → *Sil*. Oturumun tablosu, düzeltmeleri ve uygulamada eklenen kayıtları silinir; öncesinde tam yedek alınır. O oturumda çalışan kişiler ilk oturuma döner. İlk oturum silinmez (verisi *Veriyi kaldır* ile boşaltılabilir).
+- **Tüm oturumlarda ortak olanlar:** kullanıcılar ve personel, yetkiler, görevler, mesajlar, notlar, tahsilatlar ve **Kasa**, ofis adı, Operasyon Merkezi düğme adları, yedekler ve lisans. Oturum değiştirmek ya da silmek bunları etkilemez.
+- Yeni eklenen kullanıcılar en son açılan oturumla başlar. Oturum açma, ad değiştirme ve silme yalnızca veriyi yöneten yöneticidedir; oturumlar arasında geçişi herkes yapabilir.
 
 ## 7. Verinizi tanıyan DestekOfis: sektör, özet kartları, veri sağlığı
 
@@ -150,6 +164,10 @@ Değiştirilebilen başlıklar:
 
 - **Arama:** Kimlik, ad veya telefon yazın (kutudaki ipucu verinizin kolonlarını söyler); *Enter* ilk sonuca gider, *Ctrl+K* aramaya odaklanır.
 - **Kayıt işlemleri:** Detay panelindeki *WhatsApp, Not, Telefon, Tahsilat, Görev, Haciz, Düzenle* düğmeleri (*Tahsilat* ve *Haciz* sektöre göre). Tüm işlemler detayın altındaki **İşlem geçmişi**nde işlemi yapanla birlikte görünür.
+- **İşlem geçmişi eskiden yeniye sıralanır:** yeni eklenen not, telefon, tahsilat ve görev en altta görünür.
+- **Tahsilat düzeltme ve silme:** İşlem geçmişindeki tahsilatın yanındaki ✎ (düzelt) ve × (sil). Herkes kendi girdiği tahsilatı; yönetici, ikinci rol ve muhasebe tüm tahsilatları düzeltip silebilir. Tutarlar Türkçe yazılır: *1.250* bin iki yüz elli liradır.
+- **Kasa:** Operasyon Merkezi → *Kasa*. Güncel kasa, seçilen dönemin (*Bu ay, Geçen ay, Bu yıl, Tümü*) tahsilat, ödeme ve farkı; hareketler eskiden yeniye, her satırda o ana kadarki kasa ve dönem başında devreden kasa. Detay kartından girilen tahsilatlar kasaya kendiliğinden düşer; kayda bağlı olmayan tahsilatlar ve kasadan çıkan ödemeler (kira, fatura, maaş, masraf) *+ Tahsilat* / *− Ödeme* ile eklenir, düzeltilir, silinir. Kasayı yönetici, ikinci rol ve muhasebe görür. Kasa ofisin tek kasasıdır; oturum değiştirmek kasayı sıfırlamaz.
+- **Operasyon Merkezi adları:** Kartın sağ üst köşesindeki kalemle (yalnızca yönetici) kartın başlığı ve düğme adları değiştirilir (ör. *Kasa* yerine *Vezne*); boş bırakılan ad varsayılana döner.
 - **Hücre düzeltme:** Tablo hücresinin üzerine gelince çıkan ✎ düğmesi. Aynı alanı iki kişi aynı anda değiştirirse sistem uyarır.
 - **Satır silme:** Satırın solundaki × (yönetici/avukat). Silme geri alınabilir.
 - **Görevler:** Kenar çubuğu → *Görevler*; size atananlar rozetle gösterilir. Görev atama yalnızca avukat ve yönetici hesaplarındadır; size görev atandığında ekranınızda anında bildirim çıkar.

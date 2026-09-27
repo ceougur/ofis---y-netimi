@@ -50,7 +50,7 @@ export function createUpdater({
   const statePath = path.join(appsDir, "update-state.json");
   const configPath = path.join(configDir, "guncelleme.json");
   const downloadDir = path.join(appsDir, ".indirilen");
-  const userAgent = `DestekOfis-Guncelleyici/${currentVersion} (+https://destekofis.vercel.app)`;
+  const userAgent = `DestekOfis-Guncelleyici/${currentVersion} (+https://destek-ofis.vercel.app)`;
 
   // ---------- Ayarlar ve kalıcı durum ----------
   function config() {

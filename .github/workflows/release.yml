@@ -52,32 +52,44 @@ jobs:
         with:
           name: destekofis-kurulum
           path: dist
-      # Yayın elle (web arayüzünden, imzalı dosyalarla) oluşturulmuşsa güncelleme paketine dokunulmaz;
-      # yalnızca bu iş akışında gerçek Windows'ta sınanan kurulum dosyası eksikse eklenir.
+      # Yayın web arayüzünden elle açıldıysa (etiket orada oluşturulduysa) eksik dosyalar eklenir: Windows'ta sınanmış
+      # kurulum dosyası (sürümlü ve sitenin indirdiği sürümsüz adla), kullanım kılavuzu ve — DESTEKOFIS_RELEASE_KEY
+      # tanımlıysa ve yayında yoksa — imzalı güncelleme paketi. Yayında zaten olan dosyalara dokunulmaz.
       - name: Yayımla
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
           DESTEKOFIS_RELEASE_KEY: ${{ secrets.DESTEKOFIS_RELEASE_KEY }}
         run: |
+          set -euo pipefail
           tag="$GITHUB_REF_NAME"
           version="${tag#v}"
+          channel=stable
+          flags=""
+          case "$tag" in *-*) channel=beta; flags="--prerelease" ;; esac
+          cp "dist/DestekOfis-Kurulum-$version.exe" dist/DestekOfis-Kurulum.exe
+          cp client/kilavuz/DestekOfis-Kullanim-Kilavuzu.pdf dist/DestekOfis-Kullanim-Kilavuzu.pdf
+          signed=""
+          if [ -n "$DESTEKOFIS_RELEASE_KEY" ]; then
+            node tools/release.mjs --kanal "$channel" --cikti dist/guncelleme
+            signed="dist/guncelleme/destekofis-guncelleme-$version.zip dist/guncelleme/destekofis-guncelleme.json dist/guncelleme/SHA256SUMS"
+          else
+            echo "::warning::DESTEKOFIS_RELEASE_KEY gizli değişkeni tanımlı değil; imzalı güncelleme paketi eklenemedi. Kurulumlar bu sürüme kendiliğinden geçmez."
+          fi
+          files="dist/DestekOfis-Kurulum-$version.exe dist/DestekOfis-Kurulum-$version.exe.sha256 dist/DestekOfis-Kurulum.exe dist/DestekOfis-Kullanim-Kilavuzu.pdf $signed"
           if gh release view "$tag" >/dev/null 2>&1; then
-            echo "::notice::$tag yayını zaten var; güncelleme paketine dokunulmadan yalnızca eksik kurulum dosyaları eklenecek."
             existing="$(gh release view "$tag" --json assets --jq '.assets[].name')"
-            for file in dist/DestekOfis-Kurulum-*.exe dist/DestekOfis-Kurulum-*.exe.sha256; do
+            # Bildirge ve paketi birlikte ele alınır: yalnızca biri varsa (elle yüklenmiş) ikisine de dokunulmaz.
+            if printf '%s\n' "$existing" | grep -qx 'destekofis-guncelleme.json\|destekofis-guncelleme-.*\.zip'; then signed_present=1; else signed_present=0; fi
+            for file in $files; do
               name="$(basename "$file")"
+              case "$name" in destekofis-guncelleme*|SHA256SUMS) [ "$signed_present" = 1 ] && { echo "Güncelleme paketi zaten var, dokunulmadı: $name"; continue; } ;; esac
               if printf '%s\n' "$existing" | grep -qxF "$name"; then echo "Zaten var: $name"; else gh release upload "$tag" "$file"; fi
             done
             exit 0
           fi
-          test -n "$DESTEKOFIS_RELEASE_KEY" || { echo "::error::DESTEKOFIS_RELEASE_KEY gizli değişkeni tanımlı değil; imzalı güncelleme paketi üretilemez."; exit 1; }
-          channel=stable
-          flags=""
-          case "$tag" in *-*) channel=beta; flags="--prerelease" ;; esac
-          node tools/release.mjs --kanal "$channel" --cikti dist/guncelleme
+          test -n "$signed" || { echo "::error::DESTEKOFIS_RELEASE_KEY gizli değişkeni tanımlı değil; imzalı güncelleme paketi olmadan yeni yayın açılmaz."; exit 1; }
           gh release create "$tag" $flags \
             --title "DestekOfis $version" \
             --notes-file dist/guncelleme/SURUM-NOTLARI.md \
-            dist/DestekOfis-Kurulum-*.exe dist/DestekOfis-Kurulum-*.exe.sha256 \
-            dist/guncelleme/destekofis-guncelleme-*.zip dist/guncelleme/destekofis-guncelleme.json dist/guncelleme/SHA256SUMS
+            $files

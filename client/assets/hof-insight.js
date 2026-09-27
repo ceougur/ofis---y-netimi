@@ -24,6 +24,9 @@
   const nice = column => {
     const text = String(column || "").replace(/\s+/g, " ").trim();
     if (!text) return "";
+    // Ofisin kalemle verdiği kolon adı (v2.0.1, hof-columns.js) her yerde asıl adın yerine geçer.
+    const alias = HOF.columnLabel ? HOF.columnLabel(text) : text;
+    if (alias !== text) return alias;
     if (/[a-zçğıöşü]/.test(text)) return text;
     const words = text.split(" ").map(word => {
       const bare = word.replace(/[^\p{L}\p{N}.]/gu, "");
@@ -72,6 +75,8 @@
   HOF.vocab = { ...DEFAULT_VOCAB };
   HOF.modules = { tahsilat: true, haciz: false };
   HOF.profile = () => profile;
+  // Kalemle verilen başlık (yoksa varsayılan). Operasyon merkezi gibi bizim çizdiğimiz yerler için.
+  HOF.uiLabel = (key, fallback) => profile?.labels?.[key] || fallback;
 
   function applyProfile(next) {
     if (!next) return;
@@ -88,6 +93,7 @@
     labelsTouched();
     HOF.emit("profile", next);
   }
+  HOF.applyProfile = applyProfile;
 
   async function loadProfile() {
     try {
@@ -110,7 +116,7 @@
     { key: "brand.subtitle", root: ".sidebar", selector: ".brand-subtitle", sector: () => HOF.vocab.subtitle },
     { key: "nav.workspace", root: ".sidebar", selector: "nav .nav-label", index: 0 },
     { key: "nav.source", root: ".sidebar", selector: "nav .nav-label", index: 1 },
-    { key: "side.title", root: "#hof-sidecard", selector: ".hof-sidecard-label" },
+    // side.title ve düğme adları (v2.0.1) Operasyon merkezinin kendi düzenleyicisindedir (hof-workspace.js).
     { key: "page.title", root: ".topbar", selector: ".page-title" },
     // Genel sektörde arayüzün kendi başlığı ("Tablo özeti") kalır.
     { key: "summary.title", root: ".welcome-row", selector: ".section-title", sector: () => (sectorChosen() ? `${HOF.vocab.Record} özeti` : null) },
@@ -149,6 +155,8 @@
   HOF.labels = {
     // Yuvanın React'in yazdığı asıl metni (başka betikler metin eşleştirmesi için kullanır).
     original: element => (state.has(element) ? textState(element).original : element.textContent.trim()),
+    // Öğenin metnini değiştirir; desired(asılMetin) → yazılacak metin ya da asıl metne dönmek için null.
+    write: (element, desired) => writeText(element, desired),
   };
 
   function writeText(element, desired) {
@@ -334,6 +342,7 @@
     return insightRequest;
   }
   HOF.insight = () => insight;
+  HOF.refreshInsight = (delay = 300) => refreshInsightSoon(delay);
   let refreshTimer = 0;
   const refreshInsightSoon = (delay = 1200) => {
     clearTimeout(refreshTimer);
@@ -344,6 +353,7 @@
   // Cümle içinde: ilk harf de küçük (kısaltmalar hariç).
   const lowerNice = column => {
     const text = nice(column);
+    if (HOF.columnLabel && HOF.columnLabel(String(column || "").trim()) !== String(column || "").trim()) return text;
     if (/[a-zçğıöşü]/.test(String(column || ""))) return text;
     const first = text.split(" ")[0].replace(/[^\p{L}\p{N}.]/gu, "");
     return ACRONYMS.has(first) || /\p{L}\.\p{L}/u.test(first) ? text : text.charAt(0).toLocaleLowerCase("tr-TR") + text.slice(1);
@@ -450,7 +460,7 @@
     for (const card of scope.cards.slice(0, 2)) cards.push(cardView(card));
     const quality = scope.quality;
     const warnings = quality.issues.filter(issue => issue.severity === "warn").length;
-    cards.push({ id: "quality", icon: "pulse", label: "Veri sağlığı", value: `${LEVELS[quality.level] || "—"} · %${quality.score}`, help: quality.issues.length ? `${warnings ? `${number(warnings)} uyarı · ` : ""}${number(quality.issues.length)} bulgu` : "Sorun bulunmadı", tone: quality.level === "iyi" ? "good" : quality.level === "zayif" ? "bad" : "warn" });
+    cards.push({ id: "quality", icon: "pulse", label: "Veri sağlığı", value: `${LEVELS[quality.level] || "—"} · %${quality.score}`, help: [quality.issues.length ? `${warnings ? `${number(warnings)} uyarı · ` : ""}${number(quality.issues.length)} bulgu` : "", insight?.reasoning?.count ? `${number(insight.reasoning.count)} akıllı denetim bulgusu` : ""].filter(Boolean).join(" · ") || "Sorun bulunmadı", tone: quality.level === "iyi" ? "good" : quality.level === "zayif" ? "bad" : "warn" });
     return cards;
   }
 
@@ -675,11 +685,35 @@
       eyebrow: key ? eyebrow("VERİ SAĞLIĞI", key) : multiScope() ? "VERİ SAĞLIĞI · TÜM SEKMELER" : "VERİ SAĞLIĞI",
       size: "wide",
       body: `<p class="hof-modal-text">Kontrol edilen <b>${number(quality.checked)}</b> hücrenin <b>${percentWord(quality.score)}</b> sorunsuz. Kontroller: kimlik ve kişi kolonlarının doluluğu, kimliğin aynı sekmede tekrar etmemesi, T.C./IBAN/VKN sağlaması ve telefon, tarih, tutar biçimleri. Not olarak yazılmış hücreler (ör. “ertelendi”) hata sayılmaz. Kaynak veriniz değiştirilmez; düzeltmeyi tablodan yapabilirsiniz.</p>
-        ${issues || '<p class="hof-empty">Sorun bulunmadı.</p>'}`,
+        ${issues || '<p class="hof-empty">Biçim ve doluluk sorunu bulunmadı.</p>'}
+        ${reasoningHtml(insight?.reasoning)}`,
     });
     wireOpen(modal);
   }
   HOF.openQuality = openQuality;
+
+  // Akıllı denetim (v2.0.1): öğrenilen kurallar ve onlara uymayan kayıtlar.
+  function reasoningHtml(reasoning) {
+    if (!reasoning) return "";
+    const rules = reasoning.relations || [];
+    const issues = reasoning.issues || [];
+    const pretty = tab => (HOF.sections?.pretty ? HOF.sections.pretty(tab) : tab);
+    return `<section class="hof-reasoning">
+        <h3>${icon("sparkle", 16)} Akıllı denetim</h3>
+        <p class="hof-modal-text">Program verinizden kurallar öğrenir (ör. kalan tutarın nasıl hesaplandığı, hangi tarihin önce geldiği) ve kurala uymayan kayıtları işaretler. Kural ancak kayıtların büyük çoğunluğunda tutuyorsa öğrenilir; internete bir şey gönderilmez.</p>
+        ${rules.length ? `<ul class="hof-rules">${rules.map(rule => `<li><b>${esc(rule.text)}</b><small>${rule.tab ? `${esc(pretty(rule.tab))} · ` : ""}kayıtların ${percentWord(Math.round(rule.support * 100))} bu kurala uyuyor (${number(rule.rows)} kayıt)</small></li>`).join("")}</ul>` : '<p class="hof-empty">Bu veride hesap kuralı öğrenilmedi (tutar kolonları arasında düzenli bir ilişki yok).</p>'}
+        ${issues
+          .map(
+            issue => `<details class="hof-issue is-${esc(issue.severity)}">
+            <summary><span class="hof-issue-dot" aria-hidden="true"></span><b>${esc(issue.title)}: ${number(issue.count)} kayıt</b></summary>
+            ${recordList(issue.items, item => item.message)}
+            ${issue.more ? `<p class="hof-inline-note">…ve ${number(issue.more)} kayıt daha.</p>` : ""}
+          </details>`,
+          )
+          .join("") || '<p class="hof-empty">Kurallara uymayan kayıt bulunmadı.</p>'}
+        ${reasoning.dismissed ? `<p class="hof-inline-note">${number(reasoning.dismissed)} bulgu kullanıcılar tarafından yoksayıldı.</p>` : ""}
+      </section>`;
+  }
 
   // ---------- Sektör listesi ----------
   async function loadCatalog() {
@@ -875,6 +909,7 @@
     const analysis = result.analysis;
     insight = analysis;
     if (result.profile) applyProfile(result.profile);
+    HOF.emit("insight", insight);
     renderKpis();
     const s = analysis.sector;
     const details = {
@@ -928,6 +963,8 @@
     const skipped = skippedCards(analysis);
     html += `<p class="hof-quality-line">${icon("sparkle", 16)} Özet kartları: <b>${number(verifiedCards(analysis))}</b> kart doğrulandı${skipped ? ` · ${number(skipped)} aday kart kesinleşmediği için gösterilmiyor` : ""} <button type="button" class="hof-link" data-cards>${skipped ? "Nedenleri gör" : "Raporu gör"}</button></p>`;
     html += `<p class="hof-quality-line">${icon("pulse", 16)} Veri sağlığı: <b>${esc(levelText)}</b> · kontrol edilen ${number(quality.checked)} hücrenin ${percentWord(quality.score)} sorunsuz${quality.issues.length ? ` · ${number(quality.issues.length)} bulgu` : ""} <button type="button" class="hof-link" data-quality>Raporu gör</button></p>`;
+    const reasoning = analysis.reasoning;
+    if (reasoning) html += `<p class="hof-quality-line">${icon("sparkle", 16)} Akıllı denetim: <b>${number(reasoning.relations.length)}</b> hesap kuralı öğrenildi · ${reasoning.count ? `<b>${number(reasoning.count)}</b> olası tutarsızlık` : "tutarsızlık bulunmadı"} <button type="button" class="hof-link" data-quality>Ayrıntılar</button></p>`;
     const buttons = [];
     if (unsure) {
       buttons.push('<button type="button" class="hof-button hof-button-ghost" data-general>Genel ile devam et</button>', '<button type="button" class="hof-button" data-pick>Sektörümü seç</button>');

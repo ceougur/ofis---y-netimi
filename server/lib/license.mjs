@@ -35,7 +35,7 @@ const WRITABLE = new Set(["transition", "trial", "licensed"]);
 
 // Salt okunur modda ekranlardan gizlenen yetkiler (sunucu zaten her yazma isteğini reddeder).
 export const WRITE_PERMISSIONS = Object.freeze([
-  "records.create", "records.edit", "records.delete", "notes.write", "phones.create", "payments.create", "liens.create",
+  "records.create", "records.edit", "records.delete", "notes.write", "phones.create", "payments.create", "liens.create", "cash.manage", "documents.upload", "documents.manage",
   "tasks.create", "tasks.complete", "messages.create", "sources.manage", "profile.manage",
 ]);
 
@@ -47,6 +47,8 @@ const READ_ONLY_ALLOWED = [
   /^\/api\/admin\//,
   /^\/api\/chat\/conversations\/[^/]+\/read$/,
   /^\/api\/workspace\/insight\/intro$/,
+  // Oturumlar arasında geçiş veri değiştirmez (v2.0.1).
+  /^\/api\/workspace\/sessions\/select$/,
 ];
 export const allowedWhenReadOnly = pathname => READ_ONLY_ALLOWED.some(pattern => pattern.test(pathname));
 

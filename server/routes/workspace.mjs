@@ -1,8 +1,9 @@
 // Ortak çalışma alanı: dosya işlemleri, görevler, mesajlar, raporlar, merkezi notlar ve veri kaynağı.
-import { DATASET_KEY } from "../lib/dataset.mjs";
 import { columnOrder } from "../lib/sources.mjs";
-import { HttpError, limited, ok, parseJson, readJson, text } from "../lib/http.mjs";
+import { HttpError, limited, ok, parseJson, readJson, sendBuffer, text } from "../lib/http.mjs";
+import { buildXlsx } from "../lib/xlsx-write.mjs";
 import { foldName, nameConflict, resolveUserByName } from "../lib/names.mjs";
+import { parseAmount, roundMoney } from "../lib/money.mjs";
 import { can } from "../lib/permissions.mjs";
 
 const CASE_KEY_MAX = 300;
@@ -21,7 +22,9 @@ export function registerWorkspaceRoutes(router, { store, auth, audit, dataset, c
   const changed = (user, kind, detail = {}, users = null) => {
     // Tablo görünümünü değiştiren işlemler (düzeltme, silme, geri alma, yeni kayıt, kaynak) analizi de eskitir.
     if (kind === "records" || kind === "source") profile?.invalidate();
-    return events?.publish("workspace.changed", { kind, actorId: user.id, actorName: user.display_name, ...detail }, { except: user.id, users });
+    // Veri oturumuna özgü değişiklikler oturum anahtarını taşır; başka oturumdaki ekranlar boşuna yenilenmez (v2.0.1).
+    const scoped = kind === "records" || kind === "source" ? { datasetKey: dataset.currentKey() } : {};
+    return events?.publish("workspace.changed", { kind, actorId: user.id, actorName: user.display_name, ...scoped, ...detail }, { except: user.id, users });
   };
   // Görev olayları (başlık, atanan) yalnızca o görevi görebilenlere gider: tüm görevleri görme yetkisi olanlar,
   // görevin atandığı ve görevi oluşturan kişi. Personel başkalarının görevlerini canlı kanaldan da öğrenemez.
@@ -36,14 +39,16 @@ export function registerWorkspaceRoutes(router, { store, auth, audit, dataset, c
   };
   // v1.5.0: tek ve kalıcı çalışma verisi var; arayüzün gönderdiği kaynak adı ne olursa olsun düzeltmeler, silmeler ve
   // yeni kayıtlar ona bağlanır (güncelleme sırasında açık kalan eski sayfalar eski kaynak adını gönderse bile).
-  const sourceNameOf = () => DATASET_KEY;
+  const sourceNameOf = () => dataset.currentKey();
 
-  const parseAmount = value => {
-    if (typeof value === "number") return value;
-    let raw = String(value ?? "").trim().replace(/[₺\s]/g, "");
-    if (raw.includes(",")) raw = raw.replace(/\./g, "").replace(",", ".");
-    return Number(raw);
+  const paymentInput = body => {
+    const amount = parseAmount(body.amount);
+    if (!Number.isFinite(amount) || amount <= 0 || amount > 1e12) throw new HttpError(400, "Geçerli bir tahsilat tutarı gerekli.");
+    const date = text(body.date) || new Date().toISOString().slice(0, 10);
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || Number.isNaN(new Date(date).getTime())) throw new HttpError(400, "Geçerli bir tahsilat tarihi gerekli.");
+    return { amount: roundMoney(amount), date };
   };
+
 
   // ---- Geriye dönük uyumlu toplu durum ----
   router.get("/api/workspace/state", async ({ req, res }) => {
@@ -119,7 +124,7 @@ export function registerWorkspaceRoutes(router, { store, auth, audit, dataset, c
 
   router.get("/api/workspace/records", async ({ req, res, url }) => {
     auth.requireUser(req);
-    const source = text(url.searchParams.get("sourceName")) ? DATASET_KEY : "";
+    const source = text(url.searchParams.get("sourceName")) ? dataset.currentKey() : "";
     const rows = store.all("SELECT id, source_name AS sourceName, case_key AS caseKey, values_json AS valuesJson, version, created_at AS createdAt, updated_at AS updatedAt FROM records WHERE (? = '' OR source_name = ?) ORDER BY created_at DESC", source, source);
     ok(res, rows.map(({ valuesJson, ...row }) => ({ ...row, values: parseJson(valuesJson) })));
   });
@@ -140,7 +145,7 @@ export function registerWorkspaceRoutes(router, { store, auth, audit, dataset, c
 
   router.get("/api/workspace/deleted", async ({ req, res, url }) => {
     auth.requireUser(req);
-    const source = text(url.searchParams.get("sourceName")) ? DATASET_KEY : "";
+    const source = text(url.searchParams.get("sourceName")) ? dataset.currentKey() : "";
     ok(res, store.all(`SELECT d.id, d.case_key AS caseKey, d.source_name AS sourceName, d.deleted_by AS deletedBy, COALESCE(u.display_name, '') AS actorName, d.deleted_at AS deletedAt FROM deleted_records d LEFT JOIN users u ON u.id = d.deleted_by WHERE (? = '' OR d.source_name = ?) ORDER BY d.deleted_at DESC`, source, source));
   });
 
@@ -171,7 +176,7 @@ export function registerWorkspaceRoutes(router, { store, auth, audit, dataset, c
 
   router.get("/api/workspace/overrides", async ({ req, res, url }) => {
     auth.requireUser(req);
-    const source = text(url.searchParams.get("sourceName")) ? DATASET_KEY : "";
+    const source = text(url.searchParams.get("sourceName")) ? dataset.currentKey() : "";
     const key = text(url.searchParams.get("caseKey"));
     ok(res, store.all(`SELECT o.id, o.case_key AS caseKey, o.source_name AS sourceName, o.field, o.value, o.version, o.updated_by AS updatedBy, COALESCE(u.display_name, '') AS actorName, o.updated_at AS updatedAt FROM overrides o LEFT JOIN users u ON u.id = o.updated_by WHERE (? = '' OR o.source_name = ?) AND (? = '' OR o.case_key = ?) ORDER BY o.updated_at DESC`, source, source, key, key));
   });
@@ -205,11 +210,12 @@ export function registerWorkspaceRoutes(router, { store, auth, audit, dataset, c
     const items = [
       ...list(`SELECT n.id, n.note AS text, n.created_at AS createdAt, COALESCE(u.display_name, '') AS actorName FROM notes n LEFT JOIN users u ON u.id = n.created_by WHERE n.case_key = ?`, "note"),
       ...list(`SELECT p.id, p.phone, p.label, p.created_at AS createdAt, COALESCE(u.display_name, '') AS actorName FROM phones p LEFT JOIN users u ON u.id = p.created_by WHERE p.case_key = ?`, "phone"),
-      ...list(`SELECT p.id, p.amount, p.date, p.note, p.created_at AS createdAt, COALESCE(u.display_name, '') AS actorName FROM payments p LEFT JOIN users u ON u.id = p.created_by WHERE p.case_key = ?`, "payment"),
+      ...list(`SELECT p.id, p.amount, p.date, p.note, p.created_by AS actorId, p.created_at AS createdAt, p.updated_at AS updatedAt, COALESCE(u.display_name, '') AS actorName, COALESCE(e.display_name, '') AS updatedByName FROM payments p LEFT JOIN users u ON u.id = p.created_by LEFT JOIN users e ON e.id = p.updated_by WHERE p.case_key = ?`, "payment"),
       ...list(`SELECT l.id, l.title, l.placed_at AS placedAt, l.expires_at AS expiresAt, l.status, l.created_at AS createdAt, COALESCE(u.display_name, '') AS actorName FROM liens l LEFT JOIN users u ON u.id = l.created_by WHERE l.case_key = ?`, "lien"),
       // Dosya geçmişindeki görevler de görev yetkisine uyar (personel yalnızca kendi görevlerini görür).
       ...visibleTasks(user, list(`SELECT t.id, t.title, COALESCE(a.display_name, t.assignee) AS assignee, t.assignee_id AS assigneeId, t.due_date AS dueDate, t.priority, t.status, t.created_by AS actorId, t.created_at AS createdAt, COALESCE(u.display_name, '') AS actorName FROM tasks t LEFT JOIN users u ON u.id = t.created_by LEFT JOIN users a ON a.id = t.assignee_id WHERE t.case_key = ?`, "task")),
-    ].sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
+      // v2.0.1: eskiden yeniye (yeni eklenen en altta), tıpkı bir defter gibi.
+    ].sort((a, b) => (a.createdAt < b.createdAt ? -1 : a.createdAt > b.createdAt ? 1 : 0));
     const totals = store.get("SELECT COALESCE(SUM(amount), 0) AS paid FROM payments WHERE case_key = ?", key);
     ok(res, { caseKey: key, items, paidTotal: totals.paid });
   });
@@ -244,15 +250,45 @@ export function registerWorkspaceRoutes(router, { store, auth, audit, dataset, c
     const user = auth.requirePermission(req, "payments.create");
     const body = await readJson(req);
     const key = caseKeyOf(params.key);
-    const amount = parseAmount(body.amount);
-    if (!Number.isFinite(amount) || amount <= 0 || amount > 1e12) throw new HttpError(400, "Geçerli bir tahsilat tutarı gerekli.");
-    const date = text(body.date) || new Date().toISOString().slice(0, 10);
-    if (Number.isNaN(new Date(date).getTime())) throw new HttpError(400, "Geçerli bir tahsilat tarihi gerekli.");
+    const { amount, date } = paymentInput(body);
     const itemId = newId("payment");
-    store.run("INSERT INTO payments (id, case_key, amount, date, note, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)", itemId, key, Math.round(amount * 100) / 100, date, limited(body.note, 500, "Açıklama"), user.id, now());
+    store.run(
+      "INSERT INTO payments (id, case_key, amount, date, note, case_title, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+      itemId, key, amount, date, limited(body.note, 500, "Açıklama"), limited(body.caseTitle, 200, "Kayıt adı"), user.id, now(),
+    );
     audit(user, "case.payment.created", itemId, { caseKey: key, amount });
     changed(user, "activity", { caseKey: key });
+    changed(user, "cash");
     ok(res, { id: itemId });
+  });
+
+  // Tahsilat düzeltme ve silme (v2.0.1). Herkes kendi girdiği tahsilatı, kasa yetkisi olanlar tüm tahsilatları
+  // düzeltebilir/silebilir. Eski ve yeni değerler denetim kaydına yazılır.
+  const editablePayment = (req, id) => {
+    const user = auth.requirePermission(req, "payments.create");
+    const payment = store.get("SELECT id, case_key AS caseKey, amount, date, note, created_by AS createdBy FROM payments WHERE id = ?", limited(id, 120, "Tahsilat"));
+    if (!payment) throw new HttpError(404, "Tahsilat bulunamadı. Başka biri silmiş olabilir.");
+    if (payment.createdBy !== user.id && !can(user.role, "cash.manage")) throw new HttpError(403, "Başkasının girdiği tahsilatı yalnızca kasa yetkisi olanlar (yönetici, muhasebe) değiştirebilir.");
+    return { user, payment };
+  };
+  router.put("/api/workspace/payments/:id", async ({ req, res, params }) => {
+    const { user, payment } = editablePayment(req, params.id);
+    const body = await readJson(req);
+    const { amount, date } = paymentInput(body);
+    const note = limited(body.note, 500, "Açıklama");
+    store.run("UPDATE payments SET amount = ?, date = ?, note = ?, updated_by = ?, updated_at = ? WHERE id = ?", amount, date, note, user.id, now(), payment.id);
+    audit(user, "case.payment.updated", payment.id, { caseKey: payment.caseKey, previous: { amount: payment.amount, date: payment.date, note: payment.note }, amount, date, note });
+    changed(user, "activity", { caseKey: payment.caseKey });
+    changed(user, "cash");
+    ok(res, { id: payment.id });
+  });
+  router.delete("/api/workspace/payments/:id", async ({ req, res, params }) => {
+    const { user, payment } = editablePayment(req, params.id);
+    store.run("DELETE FROM payments WHERE id = ?", payment.id);
+    audit(user, "case.payment.deleted", payment.id, { caseKey: payment.caseKey, amount: payment.amount, date: payment.date, note: payment.note });
+    changed(user, "activity", { caseKey: payment.caseKey });
+    changed(user, "cash");
+    ok(res, { id: payment.id });
   });
 
   router.post("/api/workspace/cases/:key/liens", async ({ req, res, params }) => {
@@ -414,7 +450,48 @@ export function registerWorkspaceRoutes(router, { store, auth, audit, dataset, c
     const rows = view.rows || [];
     const scoped = tab ? rows.filter(row => String(row.__sheet || "") === tab) : rows;
     const ordered = [...scoped.filter(row => !row.__hofRecord), ...scoped.filter(row => row.__hofRecord)];
-    ok(res, { sheetUrl: rows.length ? DATASET_KEY : "", connected: view.connected, tab: tab && scoped.length ? tab : "", columns: columnOrder(ordered.length ? ordered : rows), excel: false });
+    ok(res, { sheetUrl: rows.length ? dataset.currentKey() : "", connected: view.connected, tab: tab && scoped.length ? tab : "", columns: columnOrder(ordered.length ? ordered : rows), excel: false });
+  });
+
+  // ---- Excel'e dışa aktarma (v2.0.1) ----
+  // Tabloda görünen birleşik veri (düzeltmeler, yeni kayıtlar, hesaplanan formüller dahil). tab: yalnızca o sekme;
+  // all=1: her sekme ayrı sayfada; ikisi de yoksa tüm kayıtlar tek sayfada.
+  router.get("/api/workspace/export.xlsx", async ({ req, res, url }) => {
+    const user = auth.requireUser(req);
+    const view = await dataset.view();
+    const rows = view.rows || [];
+    if (!rows.length) throw new HttpError(404, "Dışa aktarılacak kayıt yok.");
+    const tab = text(url.searchParams.get("tab"));
+    const all = url.searchParams.get("all") === "1";
+    const label = String(dataset.info?.().label || "DestekOfis").replace(/\.(xlsx|xls|csv)$/i, "") || "DestekOfis";
+    const groups = new Map();
+    for (const title of (view.tabs || []).map(item => item.title)) groups.set(title, []);
+    for (const row of rows) {
+      const key = String(row.__sheet || "");
+      if (!groups.has(key)) groups.set(key, []);
+      groups.get(key).push(row);
+    }
+    let sheets;
+    if (all) sheets = [...groups].filter(([, list]) => list.length).map(([name, list]) => ({ name: name || "Kayıtlar", rows: list }));
+    else if (tab) {
+      if (!groups.get(tab)?.length) throw new HttpError(404, "Sekme bulunamadı; sayfayı yenileyip tekrar deneyin.");
+      sheets = [{ name: tab, rows: groups.get(tab) }];
+    } else sheets = [{ name: label, rows }];
+    // Başlıklarda ofisin verdiği kolon adları (kalemle değiştirilen) kullanılır.
+    const aliases = profile?.profile?.().columns || {};
+    for (const sheet of sheets) {
+      sheet.columns = columnOrder(sheet.rows);
+      sheet.headers = sheet.columns.map(column => aliases[column] || column);
+    }
+    const total = sheets.reduce((sum, sheet) => sum + sheet.rows.length, 0);
+    const file = buildXlsx(sheets, { title: label });
+    audit(user, "dataset.exported", dataset.currentKey(), { tab: all ? "" : tab, all, rows: total, sheets: sheets.length });
+    const suffix = all ? "tüm sekmeler" : tab && sheets[0].name !== label ? sheets[0].name : "";
+    sendBuffer(res, file, {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      name: `${label}${suffix ? ` - ${suffix}` : ""}.xlsx`,
+      headers: { "x-hof-rows": String(total) },
+    });
   });
 
   // ---- Merkezi dosya notları (arayüzdeki "Notu kaydet") ----

@@ -56,7 +56,17 @@ export function createClient(base) {
     const data = type.includes("json") ? await response.json() : await response.text();
     return { status: response.status, data, headers: response.headers };
   };
+  // İkili istek/yanıt (Excel dışa aktarımı, belgeler): gövde Buffer olabilir, yanıt Buffer olarak döner.
+  const raw = async (method, url, { body, headers = {} } = {}) => {
+    const response = await fetch(base + url, { method, headers: { ...(cookie ? { cookie } : {}), ...headers }, body, redirect: "manual" });
+    const buffer = Buffer.from(await response.arrayBuffer());
+    const type = response.headers.get("content-type") || "";
+    let data = null;
+    if (type.includes("json")) data = JSON.parse(buffer.toString("utf8"));
+    return { status: response.status, buffer, data, headers: response.headers };
+  };
   return {
+    raw,
     get: (url, headers) => request("GET", url, undefined, headers),
     post: (url, body = {}, headers) => request("POST", url, body, headers),
     put: (url, body = {}, headers) => request("PUT", url, body, headers),

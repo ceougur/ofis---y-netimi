@@ -7,7 +7,7 @@ Kurulumlar sunucu açılışında `ceougur/ofis---y-netimi` deposunun **GitHub R
 | `destekofis-guncelleme-<sürüm>.zip` | Uygulama sürümü (sunucu + arayüz). Node.js çalışma zamanı ve servis ayarları içinde **yoktur**. |
 | `destekofis-guncelleme.json` | İmzalı bildirge: sürüm, kanal, sürüm notları, paket boyutu ve SHA-256 özeti, gereksinimler. |
 
-İsteğe bağlı olarak kurulum dosyası (`DestekOfis-Kurulum-<sürüm>.exe`) da eklenir; yeni müşteriler ve elle güncelleme için.
+İsteğe bağlı olarak kurulum dosyası (`DestekOfis-Kurulum-<sürüm>.exe`) da eklenir; yeni müşteriler ve elle güncelleme için. Otomatik yayın ayrıca sitenin "Demoyu indir" düğmesinin indirdiği sürümsüz `DestekOfis-Kurulum.exe` ile kullanım kılavuzunu (`DestekOfis-Kullanim-Kilavuzu.pdf`) ekler.
 
 Kurulum, yayın etiketindeki sürüm (`v1.3.1` → `1.3.1`) kendi sürümünden yeniyse bildirgeyi indirir, **imzayı uygulamaya gömülü açık anahtarla doğrular**, etiket ile bildirge sürümünün aynı olduğunu, paket boyutunu ve özetini denetler; ancak ondan sonra kurar.
 
@@ -25,6 +25,8 @@ Kurulum, yayın etiketindeki sürüm (`v1.3.1` → `1.3.1`) kendi sürümünden 
 2. Değişiklikleri gönderin, ardından etiketleyin: `git tag v1.3.1 && git push origin v1.3.1`.
 3. `release.yml` sırasıyla: testler → e2e → Windows kurulum dosyası + gerçek Windows'ta kurulum/servis/kaldırma testi → imzalı güncelleme paketi → GitHub Release. Herhangi bir adım başarısızsa yayın yapılmaz.
 
+**Terminal olmadan (web arayüzünden, v2.0.1):** `DESTEKOFIS_RELEASE_KEY` sırrı tanımlıysa GitHub → **Releases → Draft a new release** → *Choose a tag* alanına `v2.0.1` yazıp *Create new tag* (hedef: `master`) → başlık `DestekOfis 2.0.1` → **Publish release** yeterlidir; dosya yüklemeyin. Etiket oluşunca `release.yml` testleri ve gerçek Windows kurulum testini çalıştırır, ardından imzalı güncelleme paketini, bildirgeyi, kurulum dosyalarını ve kılavuzu **mevcut yayına ekler** (yaklaşık 30–40 dk). Bu dosyalar eklenene kadar kurulumlar yayını görmez; eklenince bir sonraki denetimde (açılışta ve 6 saatte bir) kendiliğinden güncellenir. Testlerden biri başarısız olursa hiçbir dosya eklenmez; *Actions* sekmesinde kırmızı görünür ve yayın kurulumlara ulaşmaz.
+
 Etiket `-beta.1` gibi bir ek içeriyorsa (ör. `v1.4.0-beta.1`) yayın **ön sürüm** olarak işaretlenir ve yalnızca *Deneme (beta)* kanalındaki kurulumlara gider.
 
 ## B) Elle yayın
@@ -36,7 +38,7 @@ Etiket `-beta.1` gibi bir ek içeriyorsa (ör. `v1.4.0-beta.1`) yayın **ön sü
 5. `destekofis-guncelleme-1.3.1.zip` ve `destekofis-guncelleme.json` dosyalarını sürükleyip bırakın (isteğe bağlı: kurulum dosyası).
 6. Beta ise *Set as a pre-release* kutusunu işaretleyin. **Publish release**.
 
-Etiket GitHub'da oluştuğunda `release.yml` yine çalışır: testleri ve gerçek Windows kurulum testini yapar. Yayın zaten varsa (elle oluşturulmuşsa) güncelleme dosyalarına **dokunmaz**; yalnızca Windows'ta sınanmış kurulum dosyası yayında yoksa ekler. Yayını önce *taslak* (draft) olarak kaydederseniz kurulumlar onu görmez; hazır olduğunuzda *Publish release* ile yayımlarsınız.
+Etiket GitHub'da oluştuğunda `release.yml` yine çalışır: testleri ve gerçek Windows kurulum testini yapar. Yayında imzalı güncelleme dosyaları zaten varsa (elle yüklenmişse) onlara **dokunmaz**; yalnızca eksik olanları (Windows'ta sınanmış kurulum dosyası, kılavuz; sır tanımlıysa ve yüklenmemişse imzalı paket) ekler. Yayını önce *taslak* (draft) olarak kaydederseniz kurulumlar onu görmez; hazır olduğunuzda *Publish release* ile yayımlarsınız.
 
 ## Kurallar
 

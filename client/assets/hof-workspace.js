@@ -88,8 +88,8 @@
         ],
         submitLabel: "Tahsilatı kaydet",
         onSubmit: async data => {
-          await HOF.api(caseUrl(selected.key, "payments"), { method: "POST", body: data });
-          HOF.toast("Tahsilat kaydedildi.", { type: "success" });
+          await HOF.api(caseUrl(selected.key, "payments"), { method: "POST", body: { ...data, caseTitle: selected.title } });
+          HOF.toast("Tahsilat kaydedildi. Kasaya tahsilat olarak işlendi.", { type: "success" });
           afterCaseChange();
         },
       });
@@ -148,6 +148,179 @@
       openWhatsApp(number);
     },
   };
+
+  // ---------- Tahsilat düzeltme ve silme (v2.0.1) ----------
+  // Herkes kendi girdiği tahsilatı; kasa yetkisi olanlar (yönetici, muhasebe) tüm tahsilatları düzeltip silebilir.
+  const canEditPayment = item => HOF.can("cash.manage") || (HOF.can("payments.create") && item.actorId === HOF.user?.id);
+  const isoDate = value => String(value || "").slice(0, 10);
+  const amountText = value => new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(Number(value) || 0);
+
+  function editPayment(item, { title = "", after } = {}) {
+    HOF.formModal({
+      title: "Tahsilatı düzelt",
+      eyebrow: title || "TAHSİLAT",
+      intro: "Düzeltme kasaya da yansır. Eski ve yeni değer işlem kayıtlarında saklanır.",
+      fields: [
+        { name: "amount", label: "Tutar (₺)", required: true, inputmode: "decimal", value: amountText(item.amount) },
+        { name: "date", label: "Tahsilat tarihi", type: "date", required: true, value: isoDate(item.date) },
+        { name: "note", label: "Açıklama", maxlength: 500, value: item.note ?? item.description ?? "" },
+      ],
+      submitLabel: "Düzeltmeyi kaydet",
+      onSubmit: async data => {
+        await HOF.api(`/api/workspace/payments/${encodeURIComponent(item.id)}`, { method: "PUT", body: data });
+        HOF.toast("Tahsilat düzeltildi.", { type: "success" });
+        after?.();
+      },
+    });
+  }
+
+  async function deletePayment(item, { title = "", after } = {}) {
+    const ok = await HOF.confirm({
+      title: "Tahsilatı sil",
+      message: `${HOF.formatMoney(item.amount)} tutarındaki tahsilat${title ? ` (${title})` : ""} silinecek ve kasadan düşülecek. Silme işlem kayıtlarında saklanır.`,
+      confirmLabel: "Sil",
+      danger: true,
+    });
+    if (!ok) return;
+    try {
+      await HOF.api(`/api/workspace/payments/${encodeURIComponent(item.id)}`, { method: "DELETE" });
+      HOF.toast("Tahsilat silindi.", { type: "success" });
+      after?.();
+    } catch (error) {
+      HOF.toastError(error);
+    }
+  }
+
+  // ---------- Kasa (v2.0.1) ----------
+  const pad2 = value => String(value).padStart(2, "0");
+  const dayText = date => `${date.getFullYear()}-${pad2(date.getMonth() + 1)}-${pad2(date.getDate())}`;
+  const PERIODS = [
+    { id: "month", label: "Bu ay" },
+    { id: "last", label: "Geçen ay" },
+    { id: "year", label: "Bu yıl" },
+    { id: "all", label: "Tümü" },
+  ];
+  const periodRange = id => {
+    const today = new Date();
+    if (id === "month") return { from: dayText(new Date(today.getFullYear(), today.getMonth(), 1)), to: dayText(new Date(today.getFullYear(), today.getMonth() + 1, 0)) };
+    if (id === "last") return { from: dayText(new Date(today.getFullYear(), today.getMonth() - 1, 1)), to: dayText(new Date(today.getFullYear(), today.getMonth(), 0)) };
+    if (id === "year") return { from: `${today.getFullYear()}-01-01`, to: `${today.getFullYear()}-12-31` };
+    return { from: "", to: "" };
+  };
+  let cashModal = null;
+
+  function editCashEntry(entry, kind, after) {
+    const incoming = (entry?.kind || kind) === "in";
+    HOF.formModal({
+      title: entry ? (incoming ? "Tahsilatı düzelt" : "Ödemeyi düzelt") : incoming ? "Kasaya tahsilat ekle" : "Kasadan ödeme ekle",
+      eyebrow: "KASA",
+      intro: incoming ? "Bir kayda bağlı olmayan tahsilatlar için (ör. danışmanlık ücreti). Kayda bağlı tahsilatı detay kartındaki Tahsilat düğmesiyle girin; kasaya kendiliğinden düşer." : "Kira, fatura, maaş, masraf gibi kasadan çıkan ödemeler.",
+      fields: [
+        { name: "amount", label: "Tutar (₺)", required: true, inputmode: "decimal", placeholder: "Örn. 1.250,00", value: entry ? amountText(entry.amount) : "" },
+        { name: "date", label: "Tarih", type: "date", required: true, value: entry ? isoDate(entry.date) : dayText(new Date()) },
+        { name: "description", label: "Açıklama", required: true, maxlength: 300, placeholder: incoming ? "Kimden / ne için" : "Kime / ne için", value: entry?.description || "", list: incoming ? [] : ["Kira", "Elektrik faturası", "Su faturası", "İnternet", "Maaş", "Kırtasiye", "Vergi", "Masraf"] },
+      ],
+      submitLabel: entry ? "Düzeltmeyi kaydet" : incoming ? "Tahsilatı ekle" : "Ödemeyi ekle",
+      onSubmit: async data => {
+        const body = { ...data, kind: entry?.kind || kind };
+        if (entry) await HOF.api(`/api/workspace/cash/${encodeURIComponent(entry.id)}`, { method: "PUT", body });
+        else await HOF.api("/api/workspace/cash", { method: "POST", body });
+        HOF.toast(entry ? "Kasa hareketi düzeltildi." : incoming ? "Tahsilat kasaya eklendi." : "Ödeme kasaya işlendi.", { type: "success" });
+        after?.();
+      },
+    });
+  }
+
+  async function deleteCashEntry(entry, after) {
+    const ok = await HOF.confirm({ title: "Kasa hareketini sil", message: `${HOF.formatMoney(entry.amount)} tutarındaki ${entry.kind === "in" ? "tahsilat" : "ödeme"} (${entry.description}) silinecek. Silme işlem kayıtlarında saklanır.`, confirmLabel: "Sil", danger: true });
+    if (!ok) return;
+    try {
+      await HOF.api(`/api/workspace/cash/${encodeURIComponent(entry.id)}`, { method: "DELETE" });
+      HOF.toast("Kasa hareketi silindi.", { type: "success" });
+      after?.();
+    } catch (error) {
+      HOF.toastError(error);
+    }
+  }
+
+  function openCash() {
+    if (!HOF.can("cash.view")) return HOF.toast(`Kasayı yalnızca yönetici, ${HOF.roleLabels.avukat.toLocaleLowerCase("tr-TR")} ve muhasebe hesapları görebilir.`, { type: "error" });
+    if (cashModal) return;
+    let period = "month";
+    let data = null;
+    const manage = HOF.can("cash.manage");
+    const modal = HOF.modal({
+      title: "Kasa",
+      eyebrow: "OPERASYON",
+      size: "wide",
+      body: `<div class="hof-kpis hof-cash-kpis" data-kpis></div>
+        <div class="hof-cash-bar"><div class="hof-tabs" role="group" aria-label="Dönem">${PERIODS.map(item => `<button type="button" data-period="${item.id}">${item.label}</button>`).join("")}</div>
+        ${manage ? '<div class="hof-cash-add"><button type="button" class="hof-button hof-button-small" data-add="in">+ Tahsilat</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-add="out">− Ödeme</button></div>' : ""}</div>
+        <div class="hof-cash-list" data-list><p class="hof-empty">Yükleniyor…</p></div>
+        <p class="hof-edit-meta">Detay kartında girilen tahsilatlar kasaya kendiliğinden tahsilat olarak düşer. Hareketler eskiden yeniye sıralıdır; en yeni en altta. Kasa ofisin tek kasasıdır: tüm oturumlardaki tahsilatları içerir, oturum değiştirmek ya da silmek kasayı sıfırlamaz.</p>
+        <div class="hof-actions"><button type="button" class="hof-button" data-close>Kapat</button></div>`,
+      onClose: () => {
+        cashModal = null;
+      },
+    });
+    cashModal = { modal, reload: () => load() };
+    const kpis = modal.dialog.querySelector("[data-kpis]");
+    const list = modal.dialog.querySelector("[data-list]");
+    const row = entry => {
+      const payment = entry.source === "payment";
+      const title = payment ? entry.caseTitle || (String(entry.caseKey).startsWith("satir:") ? "" : entry.caseKey) : "";
+      const text = payment ? `Tahsilat${title ? ` · ${title}` : ""}${entry.description ? ` · ${entry.description}` : ""}` : entry.description;
+      const actions = entry.editable ? `<button type="button" class="hof-mini" data-edit="${esc(entry.id)}" title="Düzelt" aria-label="Düzelt">✎</button><button type="button" class="hof-mini hof-mini-danger" data-delete="${esc(entry.id)}" title="Sil" aria-label="Sil">×</button>` : "";
+      return `<tr data-kind="${esc(entry.kind)}"><td>${esc(HOF.formatDate(entry.date))}</td><td><b>${esc(text)}</b><small>${payment ? "Detay kartından" : entry.kind === "in" ? "Kasaya elle" : "Ödeme"} · ${esc(entry.actorName || "—")}</small></td><td class="num hof-cash-in">${entry.kind === "in" ? esc(HOF.formatMoney(entry.amount)) : ""}</td><td class="num hof-cash-out">${entry.kind === "out" ? esc(HOF.formatMoney(entry.amount)) : ""}</td><td class="num"><b>${esc(HOF.formatMoney(entry.balance))}</b></td><td class="hof-cash-actions">${actions}</td></tr>`;
+    };
+    const render = () => {
+      modal.dialog.querySelectorAll("[data-period]").forEach(button => button.setAttribute("aria-pressed", String(button.dataset.period === period)));
+      if (!data) return;
+      const label = PERIODS.find(item => item.id === period)?.label || "";
+      kpis.innerHTML = `<div class="hof-cash-balance"><strong>${esc(HOF.formatMoney(data.totals.balance))}</strong><span>Güncel kasa</span></div><div><strong>${esc(HOF.formatMoney(data.period.in))}</strong><span>${esc(label)} tahsilat</span></div><div><strong>${esc(HOF.formatMoney(data.period.out))}</strong><span>${esc(label)} ödeme</span></div><div><strong>${esc(HOF.formatMoney(data.period.net))}</strong><span>${esc(label)} fark</span></div>`;
+      const opening = period !== "all" ? `<tr class="hof-cash-opening"><td></td><td><b>Devreden kasa</b><small>Dönem başındaki bakiye</small></td><td></td><td></td><td class="num"><b>${esc(HOF.formatMoney(data.opening))}</b></td><td></td></tr>` : "";
+      list.innerHTML = data.entries.length || opening
+        ? `<table class="hof-table hof-cash-table"><thead><tr><th>Tarih</th><th>Açıklama</th><th class="num">Tahsilat</th><th class="num">Ödeme</th><th class="num">Kasa</th><th></th></tr></thead><tbody>${opening}${data.entries.map(row).join("")}</tbody></table>${data.entries.length ? "" : '<p class="hof-empty">Bu dönemde kasa hareketi yok.</p>'}`
+        : '<p class="hof-empty">Henüz kasa hareketi yok. Detay kartında tahsilat girildiğinde ya da yukarıdan tahsilat/ödeme eklendiğinde burada görünür.</p>';
+      list.scrollTop = list.scrollHeight; // en yeni hareket en altta: listeyi oraya kaydır
+    };
+    async function load() {
+      const range = periodRange(period);
+      try {
+        data = await HOF.api(`/api/workspace/cash?from=${range.from}&to=${range.to}`);
+        render();
+      } catch (error) {
+        list.innerHTML = `<p class="hof-empty">${esc(error.message)}</p>`;
+      }
+    }
+    const byId = id => data?.entries.find(entry => entry.id === id);
+    const afterChange = () => {
+      load();
+      refreshActivity();
+    };
+    modal.dialog.addEventListener("click", event => {
+      const target = event.target.closest("button");
+      if (!target) return;
+      if (target.dataset.period) {
+        period = target.dataset.period;
+        render();
+        load();
+      } else if (target.dataset.add) editCashEntry(null, target.dataset.add, load);
+      else if (target.dataset.edit) {
+        const entry = byId(target.dataset.edit);
+        if (!entry) return;
+        if (entry.source === "payment") editPayment({ ...entry, note: entry.description }, { title: entry.caseTitle, after: afterChange });
+        else editCashEntry(entry, entry.kind, load);
+      } else if (target.dataset.delete) {
+        const entry = byId(target.dataset.delete);
+        if (!entry) return;
+        if (entry.source === "payment") deletePayment(entry, { title: entry.caseTitle, after: afterChange });
+        else deleteCashEntry(entry, load);
+      } else if ("close" in target.dataset) modal.close();
+    });
+    render();
+    load();
+  }
 
   // ---------- Operasyon pencereleri ----------
   async function openTasks(initial = "mine") {
@@ -247,6 +420,74 @@
 
   // ---------- Kenar çubuğu ----------
   const sideItem = (action, icon, label, badge = "", requires = "") => `<button type="button" class="hof-side-item" data-action="${action}" ${requires ? `data-requires="${requires}"` : ""}><span class="hof-side-icon" aria-hidden="true">${icon}</span><span class="hof-side-text">${label}</span><span class="hof-badge ${badge === "warn" ? "hof-badge-warn" : ""}" data-badge="${action}"></span></button>`;
+  // Operasyon merkezi düğmeleri. Adları yönetici kartın köşesindeki kalemle değiştirebilir (ofis geneli, v2.0.1).
+  const SIDE_ITEMS = [
+    { action: "tasks", icon: "✓", key: "side.tasks", label: () => "Görevler" },
+    { action: "messages", icon: "✉", key: "side.messages", label: () => "Mesajlar" },
+    { action: "newTask", icon: "+", key: "side.newTask", label: () => "Görev ata", requires: "tasks.create" },
+    { action: "newRecord", icon: "+", key: "side.newRecord", label: () => `Yeni ${HOF.vocab.record}` },
+    { action: "cash", icon: "₺", key: "side.cash", label: () => "Kasa", requires: "cash.view" },
+    { action: "liens", icon: "!", key: "side.liens", label: () => "Haciz uyarıları", badge: "warn", module: "haciz" },
+    { action: "reports", icon: "↗", key: "side.reports", label: () => "Personel raporu", requires: "reports.view" },
+    { action: "guide", icon: "?", key: "side.guide", label: () => "Kullanım kılavuzu" },
+  ];
+  const sideTitle = () => HOF.uiLabel?.("side.title", "OPERASYON MERKEZİ") || "OPERASYON MERKEZİ";
+  const sideLabel = item => HOF.uiLabel?.(item.key, item.label()) || item.label();
+  const PENCIL = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg>';
+
+  function renderSideLabels() {
+    const card = document.getElementById("hof-sidecard");
+    if (!card) return;
+    const title = card.querySelector(".hof-sidecard-label");
+    if (title && title.textContent !== sideTitle()) title.textContent = sideTitle();
+    for (const item of SIDE_ITEMS) {
+      const text = card.querySelector(`[data-action="${item.action}"] .hof-side-text`);
+      const value = sideLabel(item);
+      if (text && text.textContent !== value) text.textContent = value;
+    }
+  }
+
+  // Kalem: kartın başlığı ve düğme adları tek pencerede. Boş bırakılan ya da varsayılana eşit alan varsayılana döner.
+  function openSideEditor() {
+    if (!HOF.can("profile.manage")) return;
+    const items = SIDE_ITEMS.filter(item => !item.module || HOF.modules[item.module]);
+    const rows = [{ key: "side.title", label: "Kartın başlığı", fallback: "OPERASYON MERKEZİ" }, ...items.map(item => ({ key: item.key, label: item.label(), fallback: item.label(), icon: item.icon }))];
+    const current = HOF.profile?.()?.labels || {};
+    const modal = HOF.formModal({
+      title: "Operasyon merkezini düzenle",
+      eyebrow: "GÖRÜNÜM",
+      size: "wide",
+      intro: "Düğmelerin adlarını ofisinize göre değiştirin (ör. <b>Kasa</b> yerine <b>Vezne</b>). Değişiklik tüm bilgisayarlarda görünür; boş bırakılan ad varsayılana döner.",
+      fields: rows.map((row, index) => ({
+        name: `l${index}`,
+        label: row.icon ? `${row.icon}  ${row.fallback}` : row.label,
+        value: current[row.key] || "",
+        placeholder: row.fallback,
+        maxlength: row.key === "side.title" ? 40 : 32,
+        autofocus: index === 1,
+      })),
+      extraHtml: '<div class="hof-side-editor-reset"><button type="button" class="hof-button hof-button-small hof-button-ghost" data-reset-all>Tümünü varsayılana döndür</button></div>',
+      submitLabel: "Adları kaydet",
+      onSubmit: async data => {
+        const labels = {};
+        rows.forEach((row, index) => {
+          const value = String(data[`l${index}`] || "").replace(/\s+/g, " ").trim();
+          const normalized = value.toLocaleLowerCase("tr-TR") === row.fallback.toLocaleLowerCase("tr-TR") ? "" : value;
+          if ((current[row.key] || "") !== normalized) labels[row.key] = normalized;
+        });
+        if (!Object.keys(labels).length) return;
+        const next = await HOF.api("/api/workspace/labels/batch", { method: "PUT", body: { labels } });
+        HOF.applyProfile?.(next);
+        renderSideLabels();
+        HOF.toast("Operasyon merkezi güncellendi; tüm bilgisayarlarda görünür.", { type: "success" });
+      },
+    });
+    modal.dialog.classList.add("hof-side-editor");
+    modal.dialog.querySelector("[data-reset-all]")?.addEventListener("click", () => {
+      modal.dialog.querySelectorAll('.hof-form input[name^="l"]').forEach(input => (input.value = ""));
+      modal.dialog.querySelector('.hof-form input[name^="l"]')?.focus();
+    });
+  }
 
   function renderUser() {
     const target = document.querySelector("#hof-sidecard .hof-user");
@@ -261,14 +502,8 @@
     const card = HOF.el(
       "div",
       { id: "hof-sidecard", class: "hof-sidecard" },
-      `<p class="hof-sidecard-label">OPERASYON MERKEZİ</p>
-      ${sideItem("tasks", "✓", "Görevler")}
-      ${sideItem("messages", "✉", "Mesajlar")}
-      ${sideItem("newTask", "+", "Görev ata", "", "tasks.create")}
-      ${sideItem("newRecord", "+", `Yeni ${esc(HOF.vocab.record)}`)}
-      ${sideItem("liens", "!", "Haciz uyarıları", "warn")}
-      ${sideItem("reports", "↗", "Personel raporu", "", "reports.view")}
-      ${sideItem("guide", "?", "Kullanım kılavuzu")}
+      `<div class="hof-sidecard-head"><p class="hof-sidecard-label">${esc(sideTitle())}</p><button type="button" class="hof-sidecard-edit" data-action="editSide" data-requires="profile.manage" title="Düğme adlarını değiştir" aria-label="Operasyon merkezindeki düğme adlarını değiştir">${PENCIL}</button></div>
+      ${SIDE_ITEMS.map(item => sideItem(item.action, item.icon, esc(sideLabel(item)), item.badge || "", item.requires || "")).join("")}
       <div class="hof-user"></div>`,
     );
     const bottom = sidebar.querySelector(".sidebar-bottom");
@@ -283,6 +518,8 @@
       else if (action === "newTask") actions.task();
       else if (action === "newRecord") HOF.emit("new-record");
       else if (action === "liens") openLiens();
+      else if (action === "cash") openCash();
+      else if (action === "editSide") openSideEditor();
       else if (action === "guide") window.open("/kilavuz/DestekOfis-Kullanim-Kilavuzu.pdf", "_blank", "noopener");
       else if (action === "reports") openReports();
       else if (action === "profile") openProfile();
@@ -317,6 +554,18 @@
     return "";
   };
 
+  let activityItems = new Map();
+  // İşlem geçmişindeki tahsilatın düzelt/sil düğmeleri (liste her çizimde yenilendiği için tek dinleyici).
+  document.addEventListener("click", event => {
+    const button = event.target.closest("#hof-activity [data-payment-edit], #hof-activity [data-payment-delete]");
+    if (!button) return;
+    const item = activityItems.get(button.dataset.paymentEdit || button.dataset.paymentDelete);
+    if (!item) return;
+    const title = HOF.selectedCase()?.title || "";
+    if (button.dataset.paymentEdit) editPayment(item, { title, after: afterCaseChange });
+    else deletePayment(item, { title, after: afterCaseChange });
+  });
+
   async function renderActivity() {
     const selected = HOF.selectedCase();
     const panel = HOF.detailPanel();
@@ -339,7 +588,13 @@
       if (request !== activityRequest) return;
       const tools = ["not", "telefon", HOF.modules.tahsilat ? "tahsilat" : "", HOF.modules.haciz ? "haciz" : ""].filter(Boolean);
       const toolsText = `${tools.slice(0, -1).join(", ")} veya ${tools[tools.length - 1]}`;
-      box.innerHTML = `<div class="hof-activity-head"><h3>İŞLEM GEÇMİŞİ</h3>${result.paidTotal ? `<span>Toplam tahsilat ${esc(HOF.formatMoney(result.paidTotal))}</span>` : ""}</div>${result.items.length ? `<ol>${result.items.slice(0, 30).map(item => `<li data-type="${esc(item.type)}"><span class="hof-activity-icon" aria-hidden="true">${ACTIVITY_ICONS[item.type] || "•"}</span><span class="hof-activity-main"><b>${describe(item)}</b><small>${esc(item.actorName || "—")} · ${esc(HOF.formatDateTime(item.createdAt))}</small></span></li>`).join("")}</ol>` : `<p class="hof-empty">Bu kayıtta henüz işlem yok. Yukarıdaki düğmelerle ${toolsText} ekleyebilirsiniz.</p>`}`;
+      // Eskiden yeniye (v2.0.1): yeni eklenen işlem en altta; uzun geçmişte son 30 işlem gösterilir.
+      const shown = result.items.slice(-30);
+      const hidden = result.items.length - shown.length;
+      activityItems = new Map(shown.map(item => [item.id, item]));
+      const itemActions = item => (item.type === "payment" && canEditPayment(item) ? `<span class="hof-activity-tools"><button type="button" class="hof-mini" data-payment-edit="${esc(item.id)}" title="Tahsilatı düzelt" aria-label="Tahsilatı düzelt">✎</button><button type="button" class="hof-mini hof-mini-danger" data-payment-delete="${esc(item.id)}" title="Tahsilatı sil" aria-label="Tahsilatı sil">×</button></span>` : "");
+      const edited = item => (item.updatedAt ? ` · düzeltildi${item.updatedByName ? ` (${esc(item.updatedByName)})` : ""}` : "");
+      box.innerHTML = `<div class="hof-activity-head"><h3>İŞLEM GEÇMİŞİ</h3>${result.paidTotal ? `<span>Toplam tahsilat ${esc(HOF.formatMoney(result.paidTotal))}</span>` : ""}</div>${result.items.length ? `${hidden ? `<p class="hof-empty">Önceki ${hidden} işlem gösterilmiyor.</p>` : ""}<ol>${shown.map(item => `<li data-type="${esc(item.type)}"><span class="hof-activity-icon" aria-hidden="true">${ACTIVITY_ICONS[item.type] || "•"}</span><span class="hof-activity-main"><b>${describe(item)}</b><small>${esc(item.actorName || "—")} · ${esc(HOF.formatDateTime(item.createdAt))}${edited(item)}</small></span>${itemActions(item)}</li>`).join("")}</ol>` : `<p class="hof-empty">Bu kayıtta henüz işlem yok. Yukarıdaki düğmelerle ${toolsText} ekleyebilirsiniz.</p>`}`;
     } catch (error) {
       if (request === activityRequest) box.innerHTML = `<p class="hof-empty">${esc(error.message)}</p>`;
     }
@@ -366,7 +621,7 @@
     if (!target || event.target.closest("button, a, [data-hof-ui]")) return;
     const cell = target.closest("td");
     const header = cell ? HOF.tableHeaders(cell.closest("table"))[cell.cellIndex] || "" : "";
-    const label = target.querySelector?.(".detail-label")?.textContent || "";
+    const label = HOF.columnOf(target.querySelector?.(".detail-label"));
     if (!/(telefon|tel\b|gsm|cep)/i.test(`${header} ${label}`)) return;
     const number = extractPhones(target.textContent)[0];
     if (!number) return;
@@ -379,6 +634,7 @@
   function refreshActivity() {
     activityKey = "";
     renderActivity();
+    HOF.emit("activity-changed");
   }
 
   // ---------- Canlı değişiklikler (hof-live.js) ----------
@@ -393,6 +649,7 @@
       }
     }
     if ((change.kind === "activity" || change.kind === "task") && change.caseKey && HOF.selectedCase()?.key === change.caseKey) refreshActivity();
+    if (change.kind === "cash" && cashModal) cashModal.reload();
   });
   HOF.on("live:resync", () => {
     refreshBadges();
@@ -400,8 +657,7 @@
   });
   // Sektör değişince (bu veya başka bir bilgisayarda) kenar çubuğu ve işlem geçmişi yeni dili kullanır.
   HOF.on("profile", () => {
-    const newRecord = document.querySelector('#hof-sidecard [data-action="newRecord"] .hof-side-text');
-    if (newRecord) newRecord.textContent = `Yeni ${HOF.vocab.record}`;
+    renderSideLabels();
     renderUser();
     refreshActivity();
   });
@@ -415,5 +671,5 @@
     });
     setInterval(refreshBadges, 120_000);
   });
-  HOF.workspace = { openTasks, openMessages, openReports, openLiens, refreshBadges, refreshActivity, extractPhones };
+  HOF.workspace = { openTasks, openMessages, openReports, openLiens, openCash, refreshBadges, refreshActivity, extractPhones };
 })();

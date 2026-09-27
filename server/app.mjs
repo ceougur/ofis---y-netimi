@@ -20,8 +20,11 @@ import { createRouter } from "./lib/router.mjs";
 import { createSheetsReader } from "./lib/sheets.mjs";
 import { createStaticHandler, notFoundPage } from "./lib/static.mjs";
 import { createSupervisorLink } from "./lib/supervisor-link.mjs";
+import { runScoped } from "./lib/session-scope.mjs";
 import { registerAdminRoutes } from "./routes/admin.mjs";
 import { registerAuthRoutes } from "./routes/auth.mjs";
+import { registerCashRoutes } from "./routes/cash.mjs";
+import { registerDocumentRoutes } from "./routes/documents.mjs";
 import { registerChatRoutes } from "./routes/chat.mjs";
 import { registerDatasetRoutes } from "./routes/dataset.mjs";
 import { registerInsightRoutes } from "./routes/insight.mjs";
@@ -105,6 +108,8 @@ export function createApp(overrides = {}) {
   registerAuthRoutes(router, context);
   registerAdminRoutes(router, context);
   registerWorkspaceRoutes(router, context);
+  registerCashRoutes(router, context);
+  const documents = registerDocumentRoutes(router, context);
   registerChatRoutes(router, context);
   registerDatasetRoutes(router, context);
   registerInsightRoutes(router, context);
@@ -142,8 +147,13 @@ export function createApp(overrides = {}) {
     }
   }
 
+  // Her istek, isteği yapan kullanıcının seçtiği veri oturumunda çalışır (v2.0.1; kullanıcı gerektiğinde bir kez okunur).
+  const scoped = (req, res) => {
+    let resolved;
+    return runScoped({ user: () => (resolved === undefined ? (resolved = auth.currentUser(req) || null) : resolved) }, () => handle(req, res));
+  };
   const server = createServer((req, res) => {
-    handle(req, res).catch(error => {
+    scoped(req, res).catch(error => {
       log.error("Beklenmeyen hata", error);
       if (!res.headersSent) send(res, 500, { ok: false, error: "Sunucu işlemi tamamlayamadı." }, SECURITY_HEADERS);
     });
@@ -204,6 +214,7 @@ export function createApp(overrides = {}) {
       clearInterval(sessionTimer);
       auth.limiter.stop();
       dataset.stop();
+      documents.stop();
       license.stop();
       events.stop();
       await new Promise(resolve => {

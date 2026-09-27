@@ -56,7 +56,10 @@
     for (const type of TYPES) {
       source.addEventListener(type, event => {
         if (event.lastEventId) lastId = event.lastEventId;
-        HOF.emit(`live:${type}`, parse(event));
+        const data = parse(event);
+        // Başka bir veri oturumundaki tablo değişikliği bu ekranı ilgilendirmez (v2.0.1).
+        if (type === "workspace.changed" && data?.datasetKey && HOF.datasetKey && data.datasetKey !== HOF.datasetKey) return;
+        HOF.emit(`live:${type}`, data);
       });
     }
     source.onerror = () => {

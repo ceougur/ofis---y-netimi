@@ -11,6 +11,14 @@ export const PERMISSIONS = Object.freeze({
   "phones.create": ALL,
   "payments.create": ALL,
   "liens.create": ALL,
+  // Kayda belge ekleme (v2.0.1): herkes ekler ve görür; kendi eklediğini siler. Başkasının eklediğini silmek
+  // yönetici ve ikinci rol (avukat) yetkisidir.
+  "documents.upload": ALL,
+  "documents.manage": ["admin", "avukat"],
+  // Kasa (v2.0.1): tahsilat ve ödeme hareketleri, güncel kasa durumu. Başkasının girdiği tahsilatı düzeltmek veya
+  // silmek de kasa yetkisidir; herkes kendi girdiği tahsilatı düzeltebilir.
+  "cash.view": ["admin", "avukat", "muhasebe"],
+  "cash.manage": ["admin", "avukat", "muhasebe"],
   // Görev atama, herkesin görevleri ve performans raporu (KPI) yalnızca avukat ve yönetici içindir;
   // personel ve muhasebe kendilerine atanan görevleri görür ve tamamlar.
   "tasks.create": ["admin", "avukat"],

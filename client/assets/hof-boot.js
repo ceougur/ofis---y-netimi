@@ -50,6 +50,9 @@
   };
   HOF.applyClientState = state => {
     clientVersion = state.version;
+    // Seçili veri oturumu (v2.0.1; hof-live.js başka oturumun olaylarını süzer, hof-sessions.js seçiciyi çizer).
+    if (state.datasetKey) HOF.datasetKey = state.datasetKey;
+    if (state.sessionCount) HOF.sessionCount = state.sessionCount;
     applySettings(state.settings);
     HOF.emit("settings", HOF.settings);
   };

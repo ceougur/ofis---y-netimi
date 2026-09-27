@@ -499,7 +499,7 @@ describe("ofis profili", () => {
     assert.equal(profile.tagline, "Klinik yönetimi");
     profile = (await admin.del("/api/workspace/labels")).data.data;
     assert.deepEqual(profile.labels, {});
-    assert.deepEqual(Object.keys(profile.slots).sort(), ["brand.subtitle", "categories.title", "nav.source", "nav.workspace", "page.title", "side.title", "summary.subtitle", "summary.title", "table.subtitle", "table.title"]);
+    assert.deepEqual(Object.keys(profile.slots).sort(), ["brand.subtitle", "categories.title", "nav.source", "nav.workspace", "page.title", "side.cash", "side.guide", "side.liens", "side.messages", "side.newRecord", "side.newTask", "side.reports", "side.tasks", "side.title", "summary.subtitle", "summary.title", "table.subtitle", "table.title"]);
   });
 });
 

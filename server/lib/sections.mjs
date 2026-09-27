@@ -132,12 +132,19 @@ function columnNames(header, lines) {
 /**
  * @param {Array<Array<unknown>>} matrix  Sekmenin satırları (hücre değerleri); boş satırlar atlanır.
  * @param {string} tabTitle               Sekme adı ("" olabilir).
- * @returns {{ rows: Array<Record<string,string>>, tabs: string[], sections: Array<{ title: string, label: string, columns: string[], count: number }> }}
+ * @param {{ layout?: boolean }} [options] layout: her kaydın matristeki satır sırası ve kolon adları da döner
+ *                                         (formülleri kayıtlara bağlamak için, v2.0.1).
+ * @returns {{ rows: Array<Record<string,string>>, tabs: string[], sections: Array<{ title: string, label: string, columns: string[], count: number }>, layout?: Array<{ record: object, line: number, names: string[] }> }}
  */
-export function matrixToRecords(matrix, tabTitle = "") {
+export function matrixToRecords(matrix, tabTitle = "", options = {}) {
   const tab = String(tabTitle || "").trim();
-  const lines = (Array.isArray(matrix) ? matrix : []).map(values => analyze(Array.isArray(values) ? values : [])).filter(row => row.count > 0);
-  if (!lines.length) return { rows: [], tabs: tab ? [tab] : [], sections: [] };
+  const lines = [];
+  (Array.isArray(matrix) ? matrix : []).forEach((values, index) => {
+    const row = analyze(Array.isArray(values) ? values : []);
+    row.index = index;
+    if (row.count > 0) lines.push(row);
+  });
+  if (!lines.length) return { rows: [], tabs: tab ? [tab] : [], sections: [], ...(options.layout ? { layout: [] } : {}) };
 
   let firstColumn = Infinity;
   for (const row of lines) firstColumn = Math.min(firstColumn, row.filled[0]);
@@ -199,6 +206,7 @@ export function matrixToRecords(matrix, tabTitle = "") {
   const rows = [];
   const tabs = [];
   const summary = [];
+  const layout = options.layout ? [] : null;
   const usedLabels = new Map();
   filledSections.forEach((section, position) => {
     const names = columnNames(section.header, section.lines);
@@ -219,11 +227,12 @@ export function matrixToRecords(matrix, tabTitle = "") {
       if (!Object.values(record).some(Boolean)) continue;
       if (label) record.__sheet = label;
       rows.push(record);
+      layout?.push({ record, line: line.index, names });
       count += 1;
     }
     if (!count) return;
     if (label && !tabs.includes(label)) tabs.push(label);
     summary.push({ title: section.title || "", label, columns: names.filter(Boolean), count });
   });
-  return { rows, tabs: tabs.length ? tabs : tab ? [tab] : [], sections: summary };
+  return { rows, tabs: tabs.length ? tabs : tab ? [tab] : [], sections: summary, ...(layout ? { layout } : {}) };
 }
