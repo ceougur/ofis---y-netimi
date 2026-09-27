@@ -388,8 +388,10 @@
   }
 
   // Yeni (bugün gösterilmemiş) bildirimleri kuyruğa ekler. Sayfa açılışında çoksa ilk birkaçı ve bir özet gelir.
+  let lastRefreshAt = Date.now();
   function enqueue() {
     if (!HOF.user || muted()) return;
+    lastRefreshAt = Date.now();
     const all = alerts();
     updateBadge(all);
     // Yeni tur (3 saatte bir): yine ilk birkaç bildirim ve bir özet.
@@ -544,12 +546,23 @@
     // Kaldırılanlar önce gelir; ilk bildirim kuyruğu kaldırılanları göstermesin.
     loadDismissed().finally(() => setTimeout(loadTasks, 2500));
     HOF.on("dues", () => setTimeout(enqueue, 300));
+    // Olay tabanlı akış (v2.0.2): gün dönümünde sunucu "alerts.refresh" gönderir; takvim yeniden alınır (sunucuda
+    // parmak izi değiştiği için bir kez hesaplanır). Sekme uzun süre arka planda kaldıysa görünür olunca da yenilenir.
+    HOF.on("live:alerts.refresh", () => {
+      HOF.emit("dues:refresh");
+      setTimeout(enqueue, 800);
+    });
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden || !HOF.user) return;
+      if (Date.now() - lastRefreshAt > 10 * 60_000) HOF.emit("dues:refresh");
+    });
     HOF.on("live:workspace.changed", change => {
       if (change?.kind === "task") tasksSoon();
     });
     HOF.onDom(() => updateBadge());
     // Program açık kaldıkça 3 saati dolan bildirimler yeniden kuyruğa girer.
-    setInterval(enqueue, 5 * 60_000);
+    // Yedek anket: olaylar kaçarsa (uzun kopukluk) 30 dakikada bir; olağan akış olaylarla yürür.
+    setInterval(enqueue, 30 * 60_000);
   });
   HOF.alerts = { open: openPanel, list: alerts, enqueue };
 })();

@@ -9,7 +9,7 @@
 (() => {
   "use strict";
   const HOF = window.HOF;
-  const TYPES = ["chat.message", "chat.read", "workspace.changed", "license.changed"];
+  const TYPES = ["chat.message", "chat.read", "workspace.changed", "license.changed", "alerts.refresh"];
   let source = null;
   let retry = 0;
   let retryTimer = 0;

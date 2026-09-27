@@ -13,6 +13,7 @@ import { applyIndexedCombos, cleanChoices, comboRulesFromParts, listOnlySheets, 
 import { HttpError, parseJson } from "./http.mjs";
 import { attachFormulas, sourceTagOf } from "./formula/bind.mjs";
 import { computeFormulas } from "./formula/compute.mjs";
+import { matchColumns, renameKeys } from "./schema-map.mjs";
 import { healNote, healRows } from "./heal.mjs";
 import { matrixToRecords } from "./sections.mjs";
 import { currentScope, runScoped } from "./session-scope.mjs";
@@ -615,11 +616,17 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
     entries.session = sameIdentity(identity.session, identity.replace) ? entries.replace : toEntries(rows, identity.session);
     // Konu benzerliği: yeni dosyanın kolonlarının mevcut veride de olma oranı. Düşükse (farklı konu) yeni oturum önerilir.
     const incoming = columnOrder(rows);
-    const existing = new Set(columnOrder(loadRows().rows.map(row => row.values)));
-    const shared = incoming.filter(column => existing.has(column)).length;
+    const existingRows = loadRows().rows.map(row => row.values);
+    const existingColumns = columnOrder(existingRows);
+    const existing = new Set(existingColumns);
+    // Şemaya esnek uyum (v2.0.2): yeniden adlandırılmış kolonlar ad benzerliği ve değer örtüşmesiyle eşlenir; kaydedince
+    // düzeltmeler, kolon adları, listeler ve saklı satırlar yeni ada taşınır. Eşlenen kolon "ortak" sayılır.
+    const sampleValues = (list, columns) => new Map(columns.map(column => [column, list.slice(0, 500).map(row => row[column])]));
+    const schema = existingColumns.length && incoming.length ? matchColumns(existingColumns, incoming, { prevValues: sampleValues(existingRows, existingColumns), nextValues: sampleValues(rows, incoming) }) : null;
+    const shared = incoming.filter(column => existing.has(column)).length + (schema?.renamed.length || 0);
     const similarity = existing.size && incoming.length ? shared / Math.min(existing.size, incoming.length) : null;
     const id = `stage-${randomUUID()}`;
-    stages.set(id, { id, userId: user.id, datasetKey: activeKey(), kind, label, url, entries, identity, tabs, choices, listSheets, createdAt: Date.now() });
+    stages.set(id, { id, userId: user.id, datasetKey: activeKey(), kind, label, url, entries, identity, tabs, choices, listSheets, schema, createdAt: Date.now() });
     const mergeChanges = diff(entries.merge);
     const replaceChanges = entries.replace === entries.merge ? mergeChanges : diff(entries.replace);
     return {
@@ -636,6 +643,7 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
       similarity,
       differentTopic: similarity !== null && similarity < 0.5,
       reading,
+      schema: schema ? { renamed: schema.renamed, added: schema.added, removed: schema.removed } : null,
       preview: {
         merge: { added: mergeChanges.added, updated: mergeChanges.updated, unchanged: mergeChanges.unchanged, kept: mergeChanges.others },
         replace: { added: replaceChanges.added, updated: replaceChanges.updated, unchanged: replaceChanges.unchanged, removed: replaceChanges.others },
@@ -788,6 +796,55 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
     return { ...result, mode: "session", session: { key: datasetKey, name: title } };
   }
 
+  // Yeniden adlandırılan kolonlar (v2.0.2): düzeltmeler, kolon takma adları, açılır listeler ve (devamı olarak eklemede)
+  // saklı satırların anahtarları yeni ada taşınır; böylece eski kayıtlar ile yeni dosya aynı kolonda buluşur.
+  function migrateSchema(user, renamed, mode) {
+    const source = activeKey();
+    for (const { from, to } of renamed) {
+      // Düzeltmeler: hedef alanda zaten düzeltme olan kayıtlar atlanır (yeni ad kazanır).
+      store.run(
+        "UPDATE overrides SET field = ? WHERE source_name = ? AND field = ? AND NOT EXISTS (SELECT 1 FROM overrides o2 WHERE o2.source_name = overrides.source_name AND o2.case_key = overrides.case_key AND o2.field = ?)",
+        to, source, from, to,
+      );
+      store.run("DELETE FROM overrides WHERE source_name = ? AND field = ?", source, from);
+    }
+    const aliases = parseJson(sget("ui.columns", ""), {});
+    let aliasChanged = false;
+    for (const { from, to } of renamed) {
+      if (aliases[from] !== undefined && aliases[to] === undefined) {
+        aliases[to] = aliases[from];
+        delete aliases[from];
+        aliasChanged = true;
+      }
+    }
+    if (aliasChanged) sset("ui.columns", JSON.stringify(aliases), user.id);
+    const lists = parseJson(sget(S.choices, ""), {});
+    let listChanged = false;
+    for (const tab of Object.keys(lists)) {
+      for (const { from, to } of renamed) {
+        if (lists[tab]?.[from] && !lists[tab][to]) {
+          lists[tab][to] = lists[tab][from];
+          delete lists[tab][from];
+          listChanged = true;
+        }
+      }
+    }
+    if (listChanged) sset(S.choices, JSON.stringify(lists), user.id);
+    if (mode === "merge") {
+      const { rows } = loadRows();
+      const timestamp = now();
+      let moved = 0;
+      for (const row of rows) {
+        if (!renamed.some(item => item.from in row.values)) continue;
+        const values = renameKeys(row.values, renamed);
+        store.run("UPDATE dataset_rows SET values_json = ?, updated_at = ? WHERE dataset_key = ? AND row_id = ?", JSON.stringify(values), timestamp, source, row.rowId);
+        moved += 1;
+      }
+      if (moved) caches.delete(source);
+    }
+    audit(user, "dataset.schema.migrated", source, { renamed: renamed.map(item => `${item.from} → ${item.to}`), mode });
+  }
+
   function commitInto(user, staged, { mode, link = true } = {}) {
     const empty = loadRows().rows.length === 0;
     const effective = empty ? "replace" : mode;
@@ -798,6 +855,7 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
     const identity = effective === "merge" ? staged.identity.merge : staged.identity.replace;
     let counts;
     store.tx(() => {
+      if (staged.schema?.renamed?.length) migrateSchema(user, staged.schema.renamed, effective);
       counts = apply(entries, { mode: effective, origin });
       sset(S.identity, JSON.stringify(identity), user.id);
       // Açılır listeler: yerine koymada dosyanınkiler, eklemede dosyadaki sekmelerinki yenilenir (v2.0.2).

@@ -674,11 +674,52 @@
       size: "wide",
       body: `<p class="hof-modal-text">Kontrol edilen <b>${number(quality.checked)}</b> hücrenin <b>${percentWord(quality.score)}</b> sorunsuz. Kontroller: kimlik ve kişi kolonlarının doluluğu, kimliğin aynı sekmede tekrar etmemesi, T.C./IBAN/VKN sağlaması ve telefon, tarih, tutar biçimleri. Not olarak yazılmış hücreler (ör. “ertelendi”) hata sayılmaz. Kaynak veriniz değiştirilmez; düzeltmeyi tablodan yapabilirsiniz.</p>
         ${issues || '<p class="hof-empty">Biçim ve doluluk sorunu bulunmadı.</p>'}
+        <section class="hof-fixes" data-fixes><h3>${icon("sparkle", 16)} Toplu düzeltmeler</h3><p class="hof-empty">Öneriler hazırlanıyor…</p></section>
         ${reasoningHtml(insight?.reasoning)}`,
     });
     wireOpen(modal);
+    loadFixes(modal);
   }
   HOF.openQuality = openQuality;
+
+  // Toplu düzeltmeler (v2.0.2): tek tıkla uygulanır, 15 dakika geri alınabilir.
+  async function loadFixes(modal) {
+    const box = modal.dialog.querySelector("[data-fixes]");
+    if (!box) return;
+    let data;
+    try {
+      data = await HOF.api("/api/workspace/insight/fixes");
+    } catch (error) {
+      box.innerHTML = `<h3>${icon("sparkle", 16)} Toplu düzeltmeler</h3><p class="hof-empty">Öneriler alınamadı: ${esc(error.message)}</p>`;
+      return;
+    }
+    const canEdit = HOF.can("records.edit");
+    const list = data.fixes || [];
+    box.innerHTML = `<h3>${icon("sparkle", 16)} Toplu düzeltmeler</h3>
+      <p class="hof-modal-text">Aynı türden hücreler farklı yazılmışsa (telefon, tarih, tutar, durum) program tek yazıma çevirmeyi önerir. Değerin anlamı değişmez; Excel'deki asıl hücreye dokunulmaz, düzeltme programda saklanır ve <b>Geri al</b> ile döner.</p>
+      ${list.length ? `<ul class="hof-fix-list">${list.map(fix => `<li data-fix="${esc(fix.id)}"><div><b>${esc(fix.title)}</b><p>${esc(fix.detail)}</p><small>${fix.samples.map(item => `“${esc(item.from)}” → “${esc(item.to)}”`).join(" · ")}</small></div>${canEdit ? `<button type="button" class="hof-button hof-button-small" data-apply-fix="${esc(fix.id)}">Uygula (${number(fix.count)})</button>` : ""}</li>`).join("")}</ul>` : '<p class="hof-empty">Toplu düzeltme gerektiren yazım farkı bulunmadı.</p>'}`;
+    box.querySelectorAll("[data-apply-fix]").forEach(button => {
+      button.addEventListener("click", async () => {
+        button.disabled = true;
+        button.textContent = "Uygulanıyor…";
+        try {
+          const result = await HOF.api("/api/workspace/insight/fixes/apply", { method: "POST", body: { id: button.dataset.applyFix } });
+          button.closest("li")?.remove();
+          if (!box.querySelector("li")) box.querySelector(".hof-fix-list")?.replaceWith(Object.assign(document.createElement("p"), { className: "hof-empty", textContent: "Tüm öneriler uygulandı." }));
+          HOF.toast(`${number(result.count)} hücre düzeltildi (“${nice(result.column)}”).`, {
+            type: "success",
+            action: { label: "Geri al", run: () => HOF.api("/api/workspace/insight/fixes/undo", { method: "POST", body: { batchId: result.batchId } }).then(() => { HOF.toast("Toplu düzeltme geri alındı."); HOF.refreshData(); HOF.refreshInsight?.(); }).catch(HOF.toastError) },
+          });
+          HOF.refreshData();
+          HOF.refreshInsight?.();
+        } catch (error) {
+          button.disabled = false;
+          button.textContent = "Uygula";
+          HOF.toastError(error);
+        }
+      });
+    });
+  }
 
   // Akıllı denetim (v2.0.1): öğrenilen kurallar ve onlara uymayan kayıtlar.
   function reasoningHtml(reasoning) {

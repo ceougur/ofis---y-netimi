@@ -13,6 +13,7 @@ import { DEFAULT_ADMIN_PASSWORD, loadConfig } from "./lib/config.mjs";
 import { createDatasetService } from "./lib/dataset.mjs";
 import { createProfileService } from "./lib/profile.mjs";
 import { createAnalysisRunner } from "./lib/insight/worker.mjs";
+import { createAlertScheduler } from "./lib/alerts.mjs";
 import { createLicenseService } from "./lib/license.mjs";
 import { createStore, openDatabase } from "./lib/db.mjs";
 import { HttpError, SECURITY_HEADERS, assertSameOrigin, fail, ok, send } from "./lib/http.mjs";
@@ -185,6 +186,9 @@ export function createApp(overrides = {}) {
     ? startBackupScheduler({ db, backupDir: config.backupDir, intervalHours: config.backupIntervalHours, keep: config.backupKeep, startDelayMs: config.backupOnStartDelayMs, log })
     : () => {};
   if (overrides.startLicenseTimers !== false) license.start();
+  // Gün dönümünde tüm ekranlara "alerts.refresh" (olay tabanlı uyarı akışı, v2.0.2).
+  const alertScheduler = createAlertScheduler({ events, log });
+  if (overrides.alertScheduler !== false) alertScheduler.start();
   auth.purgeExpiredSessions();
   const sessionTimer = setInterval(() => auth.purgeExpiredSessions(), 3_600_000);
   sessionTimer.unref();
@@ -245,6 +249,7 @@ export function createApp(overrides = {}) {
       clearInterval(sessionTimer);
       clearTimeout(archiveStart);
       clearInterval(archiveTimer);
+      alertScheduler.stop();
       auth.limiter.stop();
       dataset.stop();
       documents.stop();

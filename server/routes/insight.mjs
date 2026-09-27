@@ -1,7 +1,9 @@
 // Akıllı veri motoru ve ofis profili uçları (v1.6.0): analiz (göstergeler, veri sağlığı, kolon türleri), sektör listesi,
 // sektör seçimi ve kalemle düzenlenen başlıklar. Sektör ve başlık değişikliği yalnızca yöneticidedir (profile.manage);
 // sektör önerisi ve kanıtları da yalnızca yöneticiye gösterilir.
-import { ok, readJson, text } from "../lib/http.mjs";
+import { analyzeColumns } from "../lib/insight/columns.mjs";
+import { proposeFixes, summarizeFix } from "../lib/insight/fixes.mjs";
+import { HttpError, ok, readJson, text } from "../lib/http.mjs";
 import { columnOrder } from "../lib/sources.mjs";
 import { can } from "../lib/permissions.mjs";
 import { sectorById, sectorCatalog } from "../lib/insight/sectors.mjs";
@@ -20,7 +22,84 @@ export function shapeAnalysis(analysis, { manage, find = sectorById }) {
   };
 }
 
-export function registerInsightRoutes(router, { auth, profile, dataset }) {
+export function registerInsightRoutes(router, { auth, profile, dataset, store, audit, events }) {
+  // ---------- Veri Sağlık Kontrolü: toplu düzeltmeler (v2.0.2) ----------
+  // Öneriler analizden üretilir ve oturum + parmak izi anahtarıyla sunucuda tutulur; istemciye yalnız özet gider.
+  // Uygulama tek işlemde (transaction) düzeltme (override) yazar, tek denetim kaydı bırakır ve 15 dakika geri alınabilir.
+  const proposals = new Map(); // oturum → { key, fixes }
+  const batches = new Map(); // batchId → { userId, at, previous: [{key, field, value|null}] }
+  const BATCH_TTL = 15 * 60_000;
+  async function currentFixes() {
+    const key = profile.fingerprint();
+    const session = dataset.currentKey();
+    const hit = proposals.get(session);
+    if (hit && hit.key === key) return hit.fixes;
+    const analysis = await profile.analysis();
+    const view = await dataset.view();
+    const rows = (view.rows || []).filter(row => !String(row.__hofKey || "").startsWith("free:"));
+    const analyses = analyzeColumns(rows, columnOrder(rows), { now: new Date() });
+    const fixes = proposeFixes({ rows, analyses: analyses.map(item => ({ ...item, warning: analysis.columns?.find(column => column.column === item.column)?.warning ?? item.warning })) });
+    proposals.set(session, { key, fixes });
+    if (proposals.size > 20) proposals.delete(proposals.keys().next().value);
+    return fixes;
+  }
+  const changed = (user, detail = {}) => events?.publish("workspace.changed", { kind: "records", actorId: user.id, actorName: user.display_name, datasetKey: dataset.currentKey(), ...detail }, { except: user.id });
+
+  router.get("/api/workspace/insight/fixes", async ({ req, res }) => {
+    auth.requireUser(req);
+    const fixes = await currentFixes();
+    ok(res, { fixes: fixes.map(summarizeFix), total: fixes.reduce((sum, fix) => sum + fix.count, 0) });
+  });
+
+  router.post("/api/workspace/insight/fixes/apply", async ({ req, res }) => {
+    const user = auth.requirePermission(req, "records.edit");
+    const body = await readJson(req);
+    const id = text(body.id);
+    const fix = (await currentFixes()).find(item => item.id === id);
+    if (!fix) throw new HttpError(409, "Bu öneri artık geçerli değil (veri değişmiş olabilir). Pencereyi kapatıp yeniden açın.");
+    const source = dataset.currentKey();
+    const stamp = new Date().toISOString();
+    const previous = [];
+    store.tx(() => {
+      for (const change of fix.changes) {
+        const old = store.get("SELECT id, value, version FROM overrides WHERE source_name = ? AND case_key = ? AND field = ?", source, change.key, change.field);
+        previous.push({ key: change.key, field: change.field, value: old ? old.value : null });
+        store.run(
+          "INSERT INTO overrides (id, source_name, case_key, field, value, version, updated_by, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?) ON CONFLICT(source_name, case_key, field) DO UPDATE SET value = excluded.value, version = excluded.version, updated_by = excluded.updated_by, updated_at = excluded.updated_at",
+          old?.id || auth.newId("override"), source, change.key, change.field, change.value, (old?.version || 0) + 1, user.id, stamp,
+        );
+      }
+    });
+    const batchId = auth.newId("fixbatch");
+    batches.set(batchId, { userId: user.id, at: Date.now(), previous, source });
+    for (const [key, item] of batches) if (Date.now() - item.at > BATCH_TTL) batches.delete(key);
+    proposals.delete(source);
+    profile.invalidate?.();
+    audit(user, "source.cells.bulk_fixed", batchId, { sourceName: source, fix: fix.id, column: fix.column, kind: fix.kind, count: fix.changes.length, samples: fix.samples });
+    changed(user, { bulk: fix.id });
+    ok(res, { batchId, count: fix.changes.length, column: fix.column });
+  });
+
+  router.post("/api/workspace/insight/fixes/undo", async ({ req, res }) => {
+    const user = auth.requirePermission(req, "records.edit");
+    const body = await readJson(req);
+    const batch = batches.get(text(body.batchId));
+    if (!batch) throw new HttpError(410, "Geri alma süresi doldu ya da bu düzeltme bulunamadı.");
+    const stamp = new Date().toISOString();
+    store.tx(() => {
+      for (const item of batch.previous) {
+        if (item.value === null) store.run("DELETE FROM overrides WHERE source_name = ? AND case_key = ? AND field = ?", batch.source, item.key, item.field);
+        else store.run("UPDATE overrides SET value = ?, version = version + 1, updated_by = ?, updated_at = ? WHERE source_name = ? AND case_key = ? AND field = ?", item.value, user.id, stamp, batch.source, item.key, item.field);
+      }
+    });
+    batches.delete(text(body.batchId));
+    proposals.delete(batch.source);
+    profile.invalidate?.();
+    audit(user, "source.cells.bulk_fix_undone", text(body.batchId), { sourceName: batch.source, count: batch.previous.length });
+    changed(user, { bulkUndo: true });
+    ok(res, { count: batch.previous.length });
+  });
+
   router.get("/api/workspace/profile", async ({ req, res }) => {
     auth.requireUser(req);
     ok(res, profile.profile());

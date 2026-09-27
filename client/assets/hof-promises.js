@@ -213,6 +213,8 @@
     HOF.on("rows", () => reloadSoon(900));
     HOF.on("case-activity", () => reloadSoon(400));
     HOF.on("payment-saved", () => reloadSoon(200));
+    // Olay tabanlı yenileme (v2.0.2): gün dönümü ya da uzun arka plan sonrası takvim yeniden alınır.
+    HOF.on("dues:refresh", () => load());
     HOF.on("live:workspace.changed", change => {
       if (!change) return;
       if (["dues", "activity", "cash", "records", "source"].includes(change.kind) || change.dataset) reloadSoon(800);

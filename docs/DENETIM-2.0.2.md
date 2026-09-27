@@ -118,6 +118,17 @@ Bu turda programa alınanlar (UI): durum/kategori renkleri (Airtable/monday) ve 
 
 Bilerek alınmayanlar: pivot tablo ve koşullu biçimlendirme içe alma (görünüm programındır), OCR ile taranmış belge okuma, hesaplanan listeler (`DOLAYLI`) ve kodla doldurulan kutular (Excel dışında da çözülemez).
 
+## 5b. Bu turda eklenen mimari katmanlar (Airtable / Notion / ERP felsefesi)
+
+| İstek | Yapılan | Kanıt |
+| --- | --- | --- |
+| Derin anlamsal normalizasyon | Kolon kararı başlık + değer karakteristiği + çapraz kolon ilişkisi; her kolon için kanıt listesi ve kesinlik ("Neden?") | `test/columns.test.mjs`, `test/analysis-worker.test.mjs` (Vade → kesin), analiz penceresi |
+| Kendi kendini iyileştirme | Bozuk Türkçe karakter, görünmez boşluk, yer tutucu onarımı; kaymış satır tespiti; bilimsel gösterim uyarısı; okuma raporu | `test/heal.test.mjs`, `test/fixes.test.mjs`, harness `bilimsel-telefon` |
+| Yerel performans | Analiz ayrı iş parçacığında, zaman aşımı ve çökmede ana iş parçacığına düşüş; takvim parmak izi önbelleği; olay tabanlı yenileme | `test/analysis-worker.test.mjs` (olay döngüsü akar), `test/alerts.test.mjs` |
+| Şemaya esnek uyum | Kolon eşleme (ad benzerliği, yazım farkı, değer örtüşmesi); düzeltme/ad/liste/satır taşıma | `test/schema-map.test.mjs`, `test/schema-flex.test.mjs` |
+| Veri Sağlık Kontrolü | Kırmızı hücreler, nokta atışı neden; toplu düzeltme ve 15 dk geri alma | `test/fixes.test.mjs`, `test/schema-flex.test.mjs`, e2e veri sağlığı adımı |
+| Olay tabanlı uyarı akışı | Gün dönümü olayı, veri değişikliği olayı, görünürlük yenilemesi, 30 dk yedek anket | `test/alerts.test.mjs`, `hof-alerts.js` |
+
 ## 6. Bilinen sınırlar
 
 - Aynı kolonda hem `1.500` (bin beş yüz) hem `1,500.00` yazımı varsa kolon **metin** kalır: iki yazım birbirine karşıt olduğu için yanlış toplam vermektense susulur. Kullanıcı kolonu Excel'de tek yazıma çevirdiğinde tutar olur.

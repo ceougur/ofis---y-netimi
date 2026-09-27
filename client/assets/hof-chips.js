@@ -28,10 +28,42 @@
 
   // Analizin verdiği roller: kolon adı → rol. Analiz henüz gelmediyse boş; gelince yeniden çizilir.
   let roles = new Map();
+  // Veri sağlığı bulguları: kayıt anahtarı → (kolon → neden). Yalnız kolonu belli olan biçim bulguları (listelenen kayıtlar).
+  let issuesByKey = new Map();
   const readRoles = analysis => {
     roles = new Map();
     for (const item of analysis?.columns || []) if (COLORED_ROLES.has(item.role)) roles.set(item.column, item.role);
+    issuesByKey = new Map();
+    for (const issue of analysis?.quality?.issues || []) {
+      if (!issue.column || !/^(invalid-|scientific|shifted)/.test(issue.id || "")) continue;
+      for (const item of issue.items || []) {
+        if (!item.key) continue;
+        if (!issuesByKey.has(item.key)) issuesByKey.set(item.key, new Map());
+        issuesByKey.get(item.key).set(issue.column, issue.title.replace(/^[^·]*· /, ""));
+      }
+    }
   };
+  // Satırın kayıt anahtarı: React satırı data-key taşımaz; HOF.data satır sırası tabloyla aynı değildir. Bu yüzden ilk
+  // hücrenin metniyle kayıt bulunur (kimlik ya da ad); eşleşme yoksa işaret konmaz.
+  function rowKeys(rows) {
+    const data = HOF.data?.rows || [];
+    if (!data.length || !issuesByKey.size) return [];
+    const wanted = new Map();
+    for (const row of data) if (row.__hofKey && issuesByKey.has(row.__hofKey)) wanted.set(row.__hofKey, row);
+    if (!wanted.size) return [];
+    const heads = [...(rows[0]?.closest("table")?.querySelectorAll("thead th") || [])].map(th => HOF.columnOf(th));
+    return [...rows].map(tr => {
+      const cells = tr.children;
+      for (const [key, row] of wanted) {
+        let match = 0;
+        for (let index = 0; index < Math.min(3, cells.length, heads.length); index += 1) {
+          if (String(row[heads[index]] ?? "").trim() === cells[index].textContent.trim()) match += 1;
+        }
+        if (match >= Math.min(2, cells.length)) return key;
+      }
+      return "";
+    });
+  }
   HOF.on("insight", analysis => {
     readRoles(analysis);
     paint();
@@ -43,15 +75,30 @@
     const table = document.querySelector(".cases-panel .dynamic-table") || document.querySelector(".dynamic-table");
     if (table && !document.body.classList.contains("hof-free-mode")) {
       const heads = [...table.querySelectorAll("thead th")];
-      const colored = heads.map(th => (roles.size ? roles.has(HOF.columnOf(th)) : false));
-      for (const row of table.querySelectorAll("tbody tr")) {
-        const cells = row.children;
+      const names = heads.map(th => HOF.columnOf(th));
+      const colored = names.map(name => (roles.size ? roles.has(name) : false));
+      const rows = table.querySelectorAll("tbody tr");
+      const keys = rowKeys(rows);
+      for (let r = 0; r < rows.length; r += 1) {
+        const cells = rows[r].children;
+        const bad = keys[r] ? issuesByKey.get(keys[r]) : null;
         for (let index = 0; index < cells.length; index += 1) {
           const cell = cells[index];
           const tone = colored[index] ? toneOf(cell.textContent) : "";
           if (tone) {
             if (cell.dataset.tone !== tone) cell.dataset.tone = tone;
           } else if (cell.dataset.tone) delete cell.dataset.tone;
+          // Veri Sağlık Kontrolü (v2.0.2): biçimi bozuk hücre kırmızı işaretlenir, üzerine gelince neden yazar.
+          const problem = bad?.get(names[index]);
+          if (problem) {
+            if (cell.dataset.bad !== problem) {
+              cell.dataset.bad = problem;
+              cell.title = problem;
+            }
+          } else if (cell.dataset.bad) {
+            delete cell.dataset.bad;
+            cell.removeAttribute("title");
+          }
         }
       }
     }

@@ -183,6 +183,26 @@ Görünüme (`dataset.view`) yalnızca elle değer yazılmış satırlar `serbes
 - *Dayanıklılık:* `test/fuzz-sections.test.mjs` tohumlu rastgele düzenler (başlık, boş satır, ara toplam, dipnot, çöp hücreler, form, yan çevrilmiş, başlıksız) üretir ve değişmezleri denetler: istisna yok, kayıt sayısı korunur, kapsam 0–1, 50.000 satır < 2 sn. Fuzz'ın bulduğu üç zayıflık (seyrek kayıt satırının başlık sanılması, soyadı "Ay"ın başlık kelimesi sayılması, iki kolonlu tablonun form sanılması) 2.0.2'de kapatıldı.
 - *Deneme seti:* 23 zor düzen tam yığından (stage → commit → görünüm → analiz → takvim) geçirilir; sonuçlar `docs/DENETIM-2.0.2.md`'de.
 
+**Şemaya esnek uyum** (`server/lib/schema-map.mjs`).
+- `matchColumns(eski, yeni, {prevValues, nextValues})`: katlanmış ad eşitliği 1, kapsama 0.85, tek harflik yazım farkı 0.8, kelime Jaccard'ı, değer örtüşmesi (yeni kolonun ayrık değerlerinin eskisinde bulunma oranı × 0.9), aynı konum +0.05; eşik 0.6; açgözlü bire bir. Sonuç: `renamed / added / removed / same`.
+- `dataset.stage` eşlemeyi hesaplayıp `schema` olarak döndürür (yükleme penceresi gösterir) ve aşamada saklar. `commitInto` → `migrateSchema`: `overrides.field` (hedefte düzeltme yoksa), `ui.columns` takma adları, `dataset.choices`, devamı olarak eklemede `dataset_rows.values_json` anahtarları yeni ada taşınır; denetim kaydı `dataset.schema.migrated`.
+
+**Veri Sağlık Kontrolü** (`server/lib/insight/fixes.mjs`, `routes/insight.mjs`, `hof-chips.js`).
+- `proposeFixes({rows, analyses})`: tek doğru karşılığı olan yazım farkları — telefon, tarih, ABD tutar, durum/kategori/il yazımı, boşluk. Değişiklik listesi sunucuda (oturum + parmak izi), istemciye özet.
+- `POST /insight/fixes/apply` tek işlemde override yazar, `source.cells.bulk_fixed` denetim kaydı; `POST …/undo` 15 dk içinde eski değerleri döndürür. `hof-chips.js` biçim bulgularının kayıtlarını tabloda `data-bad` ile kırmızı işaretler.
+- Kaymış satır (`quality.mjs`): ≥ 2 biçimli kolonda uyumsuz değer ve bir kolon kaydırınca ≥ 2'si yerine oturuyorsa.
+
+**Olay tabanlı uyarılar** (`server/lib/alerts.mjs`).
+- Veri değişikliği zaten `workspace.changed` olayıyla yayılır; `createAlertScheduler` yerel gece yarısı + 2 sn'de `alerts.refresh {reason:"day", today}` yayımlar ve kendini yeniden kurar. İstemci (`hof-alerts.js`, `hof-promises.js`) `live:alerts.refresh` ile takvimi yeniler, sekme görünür olunca 10 dk'dan eskiyse yeniler; yedek anket 30 dk. Takvim sonucu sunucuda parmak izi (veri, tahsilat, kapatılanlar, sekmeler, gün) ile önbelleklidir.
+
+**Analiz iş parçacığı** (`server/lib/insight/worker.mjs`, `worker-entry.mjs`).
+- Tek kalıcı worker (`unref`), işler sırayla; 120 sn zaman aşımı ya da çökmede ana iş parçacığında hesap; `app.close` sonlandırır. `profile.analysis` sonucu parmak izi hâlâ aynıysa önbelleğe alır (worker sürerken veri değiştiyse almaz).
+
+**Kanıtlı kolon kararları** (`columns.mjs → analyzeColumns`).
+- `inferAcrossColumns`: iki tarih kolonundan biri ötekinden ≥ %95 satırda sonra ise (≥ 5 satır) belirsiz olanın anlamı bitiş (expiry) / kayıt (record) olur. `explain` her kolon için kanıt satırları, `certaintyOf` kesin / olası / belirsiz; analiz penceresinde "Neden?".
+
+**Kendi kendini onarma** (`server/lib/heal.mjs`): `repairMojibake` (Windows-1254 ters tablosu + katı UTF-8 çözme), görünmez karakter/NBSP temizliği, yer tutucu → boş; `healRows` özet, `healNote` okuma raporu notu.
+
 **Silinenler** (göç 6, `server/lib/trash.mjs`, `server/routes/trash.mjs`).
 - Kaynaklar: silinen kayıt, gizlenen sekme, belge, serbest sayfa/satır/kolon, tahsilat ve kasa hareketi.
 - Geri yükleme eski konuma araya ekler; ad çakışırsa "(geri yüklendi)" eki alır.

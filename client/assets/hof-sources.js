@@ -59,6 +59,16 @@
   // Okuma raporu (v2.0.2): sayfa hangi şekilde okundu, hangi satırlar kayıt sayılmadı, kapsam ne. Kullanıcı yüklemeden
   // önce görür; kapsam %90'ın altındaysa uyarı tonunda.
   const SKIP_LABELS = { title: "başlık", note: "not", footnote: "dipnot", group: "grup etiketi", "repeat-header": "yinelenen başlık", unnamed: "adsız kolon", "empty-record": "boş satır" };
+  // Kolon eşleme (v2.0.2): dosyadaki kolon adları değiştiyse program hangi eski kolonla eşlediğini söyler; düzeltmeler,
+  // adlar ve listeler eşlenen kolona taşınır. Eşleme yanlışsa kullanıcı dosyadaki başlığı eski adına döndürebilir.
+  function schemaHtml(schema) {
+    if (!schema || (!schema.renamed?.length && !schema.added?.length && !schema.removed?.length)) return "";
+    const parts = [];
+    if (schema.renamed?.length) parts.push(`<p><b>Yeniden adlandırılan kolonlar</b> (düzeltmeler ve ayarlar yeni ada taşınır): ${schema.renamed.map(item => `“${esc(item.from)}” → “${esc(item.to)}”<small> · ${esc(item.why)}</small>`).join(", ")}</p>`);
+    if (schema.added?.length) parts.push(`<p><b>Yeni kolonlar:</b> ${schema.added.map(esc).join(", ")}</p>`);
+    if (schema.removed?.length) parts.push(`<p><b>Bu dosyada olmayan kolonlar:</b> ${schema.removed.map(esc).join(", ")}<small> · “devamı olarak” eklemede mevcut kayıtlarda kalır, “yerine koy”da kalkar</small></p>`);
+    return `<div class="hof-reading hof-schema">${parts.join("")}</div>`;
+  }
   function readingHtml(reading) {
     if (!reading || !reading.cells) return "";
     const percent = Math.round((reading.coverage ?? 1) * 100);
@@ -157,6 +167,7 @@
       size: "wide",
       body: `<p class="hof-modal-text">${number(staged.rowCount)} kayıt okundu${staged.tabs.length ? ` (${number(staged.tabs.length)} sekme)` : ""}. Şu anki oturum: <b>${esc(staged.session?.current || staged.current.label || "Çalışma verisi")}</b>, ${number(staged.current.rowCount)} kayıt. Nasıl açılsın?</p>
         ${readingHtml(staged.reading)}
+        ${schemaHtml(staged.schema)}
         ${different ? `<div class="hof-alert">Bu dosya şu anki veriden <b>farklı bir konuda</b> görünüyor${esc(overlap)}. Veriler birbirine karışmasın diye <b>yeni oturumda açmanızı</b> öneririz.</div>` : ""}
         <article class="hof-choice hof-choice-session ${preferSession ? "is-recommended" : ""}">
           <header><b>Yeni oturumda aç</b>${preferSession ? '<span class="hof-chip">Önerilen</span>' : ""}</header>
