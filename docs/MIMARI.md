@@ -203,6 +203,11 @@ Görünüme (`dataset.view`) yalnızca elle değer yazılmış satırlar `serbes
 
 **Kendi kendini onarma** (`server/lib/heal.mjs`): `repairMojibake` (Windows-1254 ters tablosu + katı UTF-8 çözme), görünmez karakter/NBSP temizliği, yer tutucu → boş; `healRows` özet, `healNote` okuma raporu notu.
 
+**Ön izleme ve eşleme** (`dataset.mjs → buildPreview`, `profile.mjs → setRoles/roles`, `columns.mjs → FORCED_ROLES`).
+- Aşamada kolon analizleri (`analyzeColumns`, ≤ 5.000 satır) `mapping` olarak döner: kolon rolü, kesinlik, kanıt, ilk 8 satır, şüpheli hücreler (`cellCheck` "bad", tarih/tutar kolonunda düz metin, seri/bilimsel uyarılar, işaretli satır).
+- `POST dataset/commit {roles}` → `profile.setRoles` → `insight.roles` (oturum ayarı, parmak izinde). `analyzeColumn(..., {forced})` seçilen rolü uygular (`FORCED_ROLES`: ignore, id, person, org, phone, email, money, deadline, date, status, category, note); `analyzeDataset`, `computeKpis`, `computeDues` (`classifyColumns`: deadline → güçlü vade, ignore → atla) ve `computeDeadlines` aynı `forced`'ı alır.
+- İstemci: `hof-sources.js → mappingHtml` (rol seçici, sarı hücreler), `firstImport` (ilk yüklemede onay).
+
 **Hata toleransı — işaretlenen hatalar** (`dataset.mjs → flagBrokenRows`, `quality.mjs → brokenRowReason`, `cells.mjs → isFlaggedRow`).
 - Aşamada (stage) kolon türleri öğrenilir; "shifted" (≥ 2 biçimli hücre uyumsuz ve kaydırınca yerine oturuyor) ya da "invalid" (≥ 2 dolu biçimli hücrenin ≥ %60'ı geçersiz) satırlara `__hofFlag` yazılır. Kayıt saklanır; takvim/son tarih/KPI `isFlaggedRow` ile dışlar. Paket yaması sanal sekme "⚠ İşaretlenen hatalar" ve `hof-row-flagged` sınıfı ekler. `POST /records/:key/unflag` → `dataset.unflagged` ayarı; `view()` bu anahtarlarda işareti kaldırır.
 

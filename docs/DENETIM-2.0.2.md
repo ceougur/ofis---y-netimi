@@ -128,6 +128,10 @@ Bilerek alınmayanlar: pivot tablo ve koşullu biçimlendirme içe alma (görün
 | Şemaya esnek uyum | Kolon eşleme (ad benzerliği, yazım farkı, değer örtüşmesi); düzeltme/ad/liste/satır taşıma | `test/schema-map.test.mjs`, `test/schema-flex.test.mjs` |
 | Veri Sağlık Kontrolü | Kırmızı hücreler, nokta atışı neden; toplu düzeltme ve 15 dk geri alma | `test/fixes.test.mjs`, `test/schema-flex.test.mjs`, e2e veri sağlığı adımı |
 | Olay tabanlı uyarı akışı | Gün dönümü olayı, veri değişikliği olayı, görünürlük yenilemesi, 30 dk yedek anket | `test/alerts.test.mjs`, `hof-alerts.js` |
+| Ön izleme ve eşleme | Veri yazılmadan önce kolon rolleri + kesinlik + sarı şüpheliler; kullanıcı rol seçer; roller analiz/KPI/takvime uygulanır | `test/columns.test.mjs` (forced), `test/dues.test.mjs` (forced), `test/schema-flex.test.mjs` (ön izleme), e2e ilk yükleme adımları |
+| Hata toleransı | Kaymış / çoğu geçersiz satırlar "⚠ İşaretlenen hatalar" sekmesinde; takvim/KPI dışı; "Sorun yok" | `test/schema-flex.test.mjs` (işaretleme, unflag) |
+| Veri temizleme | Excel seri tarihleri (45000) tanınır, toplu düzeltmeyle tarihe çevrilir; hata değerleri boş; bozuk Türkçe/boşluk onarımı | `test/fixes.test.mjs`, `test/heal.test.mjs` |
+| Ekip çakışma önleme | Aşama anlık görüntüsü (409 STALE_STAGE), değer tabanlı iyimser kilit (409 CONFLICT) + "Üzerine yaz", SQLite WAL, olayla yayılım | `test/schema-flex.test.mjs` (çakışma), `hof-table.js` |
 
 ## 6. Bilinen sınırlar
 
