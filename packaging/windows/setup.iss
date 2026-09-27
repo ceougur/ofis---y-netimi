@@ -29,7 +29,7 @@ AppPublisher={#AppPublisher}
 AppPublisherURL={#AppURL}
 AppSupportURL={#AppURL}
 AppUpdatesURL={#AppURL}
-AppContact=bilgi.ugurcetin@gmail.com
+AppContact=destekofis@proton.me
 ; Yeni kurulumlar sektörden bağımsız klasöre; mevcut kurulumlar (aynı AppId) önceki klasörlerinde güncellenir.
 ; Önceki kayıt yoksa (kaldırılıp yeniden kurulan sunucu, eski elle kurulum) verisi olan klasör seçilir: DefaultAppDir.
 DefaultDirName={code:DefaultAppDir}

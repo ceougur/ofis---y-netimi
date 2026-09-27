@@ -14,7 +14,7 @@
 
   const isAdmin = () => HOF.can("license.manage");
   // Deneme/lisans bitişi, engel ve taşıma durumlarında gösterilen iletişim bilgisi (sunucudan gelir).
-  const FALLBACK_CONTACT = { name: "Destek Ofis", phone: "0532 605 05 87", phoneHref: "tel:+905326050587", email: "bilgi.ugurcetin@gmail.com" };
+  const FALLBACK_CONTACT = { name: "Destek Ofis", phone: "0532 605 05 87", phoneHref: "tel:+905326050587", email: "destekofis@proton.me" };
   const contactOf = status => ({ ...FALLBACK_CONTACT, ...(status?.contact || {}) });
   const needsContact = status => Boolean(status) && (!status.writable || status.severity === "warn" || ["trial", "expired", "blocked"].includes(status.state));
   const contactCard = status => {

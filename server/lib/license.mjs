@@ -21,7 +21,7 @@ import { LicenseError, PRODUCT, decodeCode, formatInstallCode, normalizeMachineI
 import { resolveMachineId } from "./machine.mjs";
 
 // Lisans uyarılarında gösterilen iletişim bilgisi (deneme/lisans bitişi, engel, taşıma).
-export const SUPPORT_CONTACT = Object.freeze({ name: "Destek Ofis", phone: "0532 605 05 87", phoneHref: "tel:+905326050587", email: "bilgi.ugurcetin@gmail.com" });
+export const SUPPORT_CONTACT = Object.freeze({ name: "Destek Ofis", phone: "0532 605 05 87", phoneHref: "tel:+905326050587", email: "destekofis@proton.me" });
 const CONTACT_TEXT = `${SUPPORT_CONTACT.name}: ${SUPPORT_CONTACT.phone} · ${SUPPORT_CONTACT.email}`;
 export const GRACE_DAYS = 7;
 export const TRANSITION_DAYS = 30;
