@@ -357,7 +357,8 @@ export function createProfileService({ store, dataset, audit, events, log, clock
     const dismissed = readDismissed();
     const aliases = readColumns();
     const own = (result.reasoning?.findings || []).filter(finding => finding.key === key && (!tab || finding.tab === tab));
-    const live = await paymentChecks(key, tab, result);
+    // Kayıttaki hesap tutmuyorsa önce o düzeltilmeli: yanlış Kalan'a dayanan tahsilat önerisi verilmez.
+    const live = own.some(finding => finding.rule === "relation" && !dismissed[finding.signature]) ? [] : await paymentChecks(key, tab, result);
     return { findings: [...own, ...live].filter(finding => !dismissed[finding.signature]).map(finding => shapeFinding(finding, aliases)) };
   }
 

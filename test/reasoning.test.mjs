@@ -63,6 +63,49 @@ describe("mantık denetimi: kural öğrenme", () => {
     assert.ok(!result.findings.some(item => (item.fields || []).includes("Telefon")));
   });
 
+  it("satış fiyatı alıştan düşükse, 'Kargoda' ama takip no boşsa söyler (bilgi olarak)", () => {
+    const cars = Array.from({ length: 20 }, (_, i) => ({ __hofKey: `C${i}`, Plaka: `34 AB ${100 + i}`, "Model yılı": String(2015 + (i % 8)), Kilometre: `${40 + i}.000`, "Alış fiyatı": `${600 + i * 10}.000 TL`, "Satış fiyatı": `${660 + i * 10}.000 TL` }));
+    cars[6]["Satış fiyatı"] = "610.000 TL";
+    cars[9].Kilometre = "0";
+    const found = reasonAbout(cars).findings;
+    assert.deepEqual(found.map(item => `${item.rule}:${item.key}:${item.severity}`), ["compare:C6:info"], "yalnızca satış < alış; kilometre ile model yılı karşılaştırılmaz");
+    assert.match(found[0].message, /Satış fiyatı 610\.000 TL, Alış fiyatı 660\.000 TL/);
+
+    const orders = Array.from({ length: 24 }, (_, i) => ({ __hofKey: `S${i}`, "Sipariş no": `SP-${i}`, Durum: i % 2 ? "Kargoda" : "Hazırlanıyor", "Takip no": i % 2 ? `78120${String(i).padStart(5, "0")}` : "" }));
+    orders[5]["Takip no"] = "";
+    const required = reasonAbout(orders).findings;
+    assert.deepEqual(required.map(item => `${item.rule}:${item.key}`), ["required:S5"]);
+    assert.match(required[0].message, /Durum “Kargoda” ama Takip no boş/);
+  });
+
+  it("fazladan ya da eksik sıfırı doğru değer önerisiyle bulur; ölçeği farklı meşru değeri yalnızca dikkat olarak söyler", () => {
+    const rows = Array.from({ length: 30 }, (_, i) => ({ __hofKey: `K${i}`, Tür: "Kiralık", Fiyat: `${18 + (i % 9)}.${i % 2 ? 500 : "000"} TL` }));
+    rows[3].Fiyat = "215.000 TL"; // fazladan sıfır (21.500)
+    rows[8].Fiyat = "2.050 TL"; // eksik sıfır (20.500)
+    rows[12] = { __hofKey: "K12", Tür: "Satılık", Fiyat: "3.250.000 TL" }; // meşru, farklı ölçek
+    const found = Object.fromEntries(reasonAbout(rows).findings.map(item => [item.key, item]));
+    assert.equal(found.K3.severity, "warn");
+    assert.equal(found.K3.suggest.value, "21.500 TL");
+    assert.equal(found.K8.severity, "warn");
+    assert.equal(found.K8.suggest.value, "20.500 TL");
+    assert.equal(found.K12.severity, "info", "10/100/1000'e bölünce olağan aralığa oturmuyor: yalnızca dikkat");
+    assert.equal(found.K12.suggest, undefined);
+  });
+
+  it("gerçekçi rastgele tablolarda yanlış alarm vermez", () => {
+    let seed = 42;
+    const random = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
+    for (let table = 0; table < 25; table += 1) {
+      const rows = Array.from({ length: 60 + table * 7 }, (_, i) => {
+        const amount = Math.round(Math.exp(8 + random() * 2.5));
+        const day = 1 + Math.floor(random() * 28);
+        return { __hofKey: `R${table}-${i}`, No: `${2020 + (i % 6)}/${i}`, Ad: `Kişi ${i}`, Tutar: `${amount.toLocaleString("tr-TR")} TL`, Ödenen: `${Math.round(amount * random()).toLocaleString("tr-TR")} TL`, Tarih: `${String(day).padStart(2, "0")}.${String(1 + Math.floor(random() * 12)).padStart(2, "0")}.${2023 + Math.floor(random() * 3)}`, Durum: ["Açık", "Takipte", "Kapandı", "Beklemede"][Math.floor(random() * 4)], Adet: String(1 + Math.floor(random() * 9)) };
+      });
+      const warns = reasonAbout(rows, { now: new Date("2026-09-27") }).findings.filter(item => item.severity === "warn");
+      assert.deepEqual(warns.map(item => `${item.rule}: ${item.message}`), [], `tablo ${table}`);
+    }
+  });
+
   it("200 bin satırda makul sürede biter", () => {
     const big = [];
     for (let i = 0; i < 200_000; i += 1) {

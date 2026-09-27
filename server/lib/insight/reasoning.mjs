@@ -28,7 +28,9 @@ const RULE_TITLES = {
   order: "Tarih sırası ters",
   year: "Yıl yanlış yazılmış olabilir",
   future: "İleri tarih",
-  outlier: "Olağan dışı büyük değer",
+  outlier: "Olağan dışı değer",
+  compare: "Değerler ters görünüyor",
+  required: "Eksik bilgi",
   payment: "Tahsilat ile tablo uyuşmuyor",
 };
 export const ruleTitle = rule => RULE_TITLES[rule] || "Olası tutarsızlık";
@@ -301,18 +303,29 @@ export function reasonTab(rows, columns, { now = new Date(), titleOf = row => St
     });
   }
 
+  // ---------- Durum kolonları ----------
+  // Az sayıda (≤12) farklı, rakamsız kısa değer taşıyan ve kayıtların çoğunda dolu kolonlar (Durum, Aşama, Tür…).
+  const statusColumns = texts.filter(column => {
+    const seen = new Set();
+    let filled = 0;
+    for (const row of data) {
+      const raw = row[column];
+      if (empty(raw)) continue;
+      const text = String(raw).trim();
+      if (text.length > 40 || /\d/.test(text)) return false;
+      filled += 1;
+      seen.add(foldText(text));
+      if (seen.size > 12) return false;
+    }
+    return filled >= 5 && filled / data.length >= 0.6 && seen.size >= 2;
+  });
+
   // ---------- Durum ile bakiye ----------
   if (balanceColumn) {
     const B = values.get(balanceColumn);
-    for (const column of texts) {
-      // Ön eleme (ilk 600 kayıt): az sayıda farklı değer ve durum sözcüğü yoksa kolon durum kolonu değildir.
-      const preview = new Set();
-      for (const row of data.length > 600 ? data.slice(0, 600) : data) {
-        const raw = row[column];
-        if (!empty(raw)) preview.add(String(raw).trim());
-        if (preview.size > 12) break;
-      }
-      if (preview.size > 12 || ![...preview].some(value => CLOSED.test(foldText(value)) || OPEN.test(foldText(value)))) continue;
+    for (const column of statusColumns) {
+      const preview = new Set(data.slice(0, 600).map(row => String(row[column] ?? "").trim()).filter(Boolean));
+      if (![...preview].some(value => CLOSED.test(foldText(value)) || OPEN.test(foldText(value)))) continue;
       const statuses = new Map();
       let filled = 0;
       for (let index = 0; index < data.length; index += 1) {
@@ -369,6 +382,23 @@ export function reasonTab(rows, columns, { now = new Date(), titleOf = row => St
       }),
     );
   }
+  // Yıl yazım hatası (2062, 1926): önce bulunur; aynı kayıttaki tarih sırası uyarısı bunun sonucudur, tekrarlanmaz.
+  const today = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
+  const typos = new Set(); // "satır|kolon"
+  for (const column of dates) {
+    const list = dateValues.get(column);
+    const years = list.filter(Boolean).map(date => date.getUTCFullYear()).sort((a, b) => a - b);
+    if (years.length < 10) continue;
+    const median = years[Math.floor(years.length / 2)];
+    const spread = years[Math.floor(years.length * 0.75)] - years[Math.floor(years.length * 0.25)];
+    const far = year => Math.abs(year - median) >= Math.max(20, spread * 4);
+    if (spread > 12 || years.filter(far).length > years.length * 0.05) continue;
+    list.forEach((date, index) => {
+      if (!date || !far(date.getUTCFullYear())) return;
+      typos.add(`${index}|${column}`);
+      add(data[index], "year", "warn", `${column} ${dateText(date)} görünüyor.`, `Bu kolondaki tarihler çoğunlukla ${years[Math.floor(years.length * 0.05)]}–${years[Math.floor(years.length * 0.95)]} arasında; yıl yanlış yazılmış olabilir.`, [column]);
+    });
+  }
   // Sıra: kayıtların neredeyse hepsinde A, B'den önceyse tersi işaretlenir.
   for (const first of dates) {
     for (const second of dates) {
@@ -389,41 +419,117 @@ export function reasonTab(rows, columns, { now = new Date(), titleOf = row => St
       if (decided < 8 || !after || same > decided || before / decided < 0.9) continue;
       for (let index = 0; index < data.length; index += 1) {
         if (!A[index] || !B[index] || A[index] <= B[index]) continue;
+        if (typos.has(`${index}|${first}`) || typos.has(`${index}|${second}`)) continue;
         add(
           data[index],
           "order",
           "warn",
-          `${second} (${dateText(B[index])}), ${first} tarihinden (${dateText(A[index])}) önce görünüyor.`,
-          `Bu sekmedeki kayıtların ${percentIn(before / decided)} ${first}, ${second} tarihinden önce. Tarihlerden biri yanlış yazılmış olabilir.`,
+          `Tarih sırası ters: ${first} ${dateText(A[index])}, ${second} ise ${dateText(B[index])}.`,
+          `Bu sekmedeki kayıtların ${percentIn(before / decided)} ${first} daha önce (${before}/${decided} kayıt). Tarihlerden biri yanlış yazılmış olabilir.`,
           [first, second],
         );
       }
     }
   }
-  // Yıl yazım hatası ve geçmiş tarih kolonunda ileri tarih.
-  const today = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
+  // Hep geçmiş tarih taşıyan kolonda ileri tarih.
   for (const column of dates) {
     const list = dateValues.get(column);
-    const years = list.filter(Boolean).map(date => date.getUTCFullYear()).sort((a, b) => a - b);
-    if (years.length < 10) continue;
-    const median = years[Math.floor(years.length / 2)];
-    const q1 = years[Math.floor(years.length * 0.25)];
-    const q3 = years[Math.floor(years.length * 0.75)];
-    const spread = q3 - q1;
-    const odd = years.filter(year => Math.abs(year - median) >= Math.max(20, spread * 4)).length;
-    const pastShare = list.filter(date => date && date.getTime() <= today).length / years.length;
+    const filled = list.filter(Boolean).length;
+    if (filled < 10) continue;
+    const pastShare = list.filter(date => date && date.getTime() <= today).length / filled;
+    if (pastShare < 0.97) continue;
     list.forEach((date, index) => {
-      if (!date) return;
-      const year = date.getUTCFullYear();
-      if (spread <= 12 && odd <= years.length * 0.05 && Math.abs(year - median) >= Math.max(20, spread * 4)) {
-        add(data[index], "year", "warn", `${column} ${dateText(date)} görünüyor.`, `Bu kolondaki tarihler çoğunlukla ${years[Math.floor(years.length * 0.05)]}–${years[Math.floor(years.length * 0.95)]} arasında; yıl yanlış yazılmış olabilir.`, [column]);
-      } else if (pastShare >= 0.97 && date.getTime() > today + 30 * DAY) {
-        add(data[index], "future", "info", `${column} ileri bir tarih: ${dateText(date)}.`, `Bu kolondaki tarihlerin ${percentOf(pastShare)} geçmişte; ileri tarih yazım hatası olabilir.`, [column]);
-      }
+      if (!date || date.getTime() <= today + 30 * DAY || typos.has(`${index}|${column}`)) return;
+      add(data[index], "future", "info", `${column} ileri bir tarih: ${dateText(date)}.`, `Bu kolondaki tarihlerin ${percentOf(pastShare)} geçmişte; ileri tarih yazım hatası olabilir.`, [column]);
     });
   }
 
-  // ---------- Olağan dışı büyük değerler (fazladan sıfır) ----------
+  // ---------- Sayısal sıra (ör. satış fiyatı hep alıştan yüksek) ----------
+  // Yalnızca aynı türden (ikisi de para) ve benzer ölçekteki kolonlar karşılaştırılır; kilometre ile model yılı gibi
+  // ölçeği farklı kolonlar karşılaştırılmaz. Hesap ilişkisiyle zaten denetlenen çiftler atlanır.
+  const MONEY_NAME = /\b(fiyat|fiyati|tutar|tutari|bedel|bedeli|ucret|ucreti|borc|kalan|bakiye|taksit|odeme|odenen|maliyet|alis|satis|prim|maas|alacak|kira|kapora|avans|toplam|net|brut)\b/;
+  const moneyLike = column => {
+    if (MONEY_NAME.test(foldText(column))) return true;
+    let marked = 0;
+    let filled = 0;
+    for (const row of data.length > 400 ? data.slice(0, 400) : data) {
+      const value = row[column];
+      if (empty(value)) continue;
+      filled += 1;
+      if (/[₺$€£]|\b(tl|try|usd|eur)\b/i.test(String(value))) marked += 1;
+    }
+    return filled > 0 && marked / filled >= 0.5;
+  };
+  const medianOf = column => {
+    const list = [...values.get(column)].filter(Number.isFinite).sort((a, b) => a - b);
+    return list.length ? list[Math.floor(list.length / 2)] : Number.NaN;
+  };
+  const moneyCols = numericCols.filter(moneyLike);
+  const related = new Set(relations.flatMap(relation => [relation.target, relation.base, ...relation.parts].filter(Boolean)));
+  for (const low of moneyCols) {
+    for (const high of moneyCols) {
+      if (low === high || (related.has(low) && related.has(high))) continue;
+      const ratio = medianOf(high) / medianOf(low);
+      if (!(ratio > 0) || ratio > 20 || ratio < 1) continue;
+      const L = values.get(low);
+      const H = values.get(high);
+      let below = 0;
+      let above = 0;
+      for (let index = 0; index < data.length; index += 1) {
+        if (!Number.isFinite(L[index]) || !Number.isFinite(H[index])) continue;
+        if (L[index] < H[index] - 0.011) below += 1;
+        else if (L[index] > H[index] + 0.011) above += 1;
+      }
+      const decided = below + above;
+      if (decided < 8 || !above || below / decided < 0.95) continue;
+      for (let index = 0; index < data.length; index += 1) {
+        if (!(L[index] > H[index] + 0.011)) continue;
+        add(
+          data[index],
+          "compare",
+          "info",
+          `${high} ${money(high, H[index])}, ${low} ${money(low, L[index])}: bu kayıtta ${high} daha düşük.`,
+          `Bu sekmedeki kayıtların ${percentIn(below / decided)} ${high} daha yüksek (${below}/${decided} kayıt). Değerlerden biri yanlış yazılmış olabilir; bilerek böyleyse yoksayabilirsiniz.`,
+          [high, low],
+        );
+      }
+    }
+  }
+
+  // ---------- Duruma göre boş kalmaması gereken alan ----------
+  // Ör. "Kargoda" durumundaki siparişlerin hepsinde takip no varsa, takip no'su boş "Kargoda" kaydı işaretlenir. Alan o
+  // duruma özgü olmalı (diğer durumlarda çoğunlukla boş); her yerde dolu olan alanın eksiği veri sağlığının konusudur.
+  for (const column of statusColumns) {
+    const groups = new Map();
+    data.forEach((row, index) => {
+      const raw = row[column];
+      if (empty(raw)) return;
+      const key = foldText(String(raw)).replace(/\s+/g, " ").trim();
+      if (!groups.has(key)) groups.set(key, { raw: String(raw).trim(), rows: [] });
+      groups.get(key).rows.push(index);
+    });
+    for (const other of columns) {
+      if (other === column || statusColumns.includes(other)) continue;
+      const filledAt = index => !empty(data[index][other]);
+      let totalFilled = 0;
+      for (let index = 0; index < data.length; index += 1) if (filledAt(index)) totalFilled += 1;
+      for (const [, group] of groups) {
+        if (group.rows.length < 5) continue;
+        const inside = group.rows.filter(filledAt).length;
+        const outsideCount = data.length - group.rows.length;
+        const outside = totalFilled - inside;
+        if (inside / group.rows.length < 0.9 || inside === group.rows.length || outsideCount < 3 || outside / outsideCount > 0.6) continue;
+        for (const index of group.rows) {
+          if (filledAt(index)) continue;
+          add(data[index], "required", "info", `${column} “${group.raw}” ama ${other} boş.`, `“${group.raw}” durumundaki kayıtların ${percentIn(inside / group.rows.length)} ${other} dolu (${inside}/${group.rows.length} kayıt); diğer durumlarda çoğunlukla boş. Bu kayıtta eksik kalmış olabilir.`, [column, other]);
+        }
+      }
+    }
+  }
+
+  // ---------- Olağan dışı değerler (fazladan ya da eksik sıfır) ----------
+  // Değer kolonun geri kalanından çok uzakta ve yalnız olmalı (hemen altında/üstünde yakın bir değer yok). 10, 100 ya da
+  // 1000'e bölününce (çarpılınca) olağan aralığa oturuyorsa "fazladan/eksik sıfır" uyarısı; oturmuyorsa yalnızca dikkat.
   const outlierRows = new Map(); // kolon → uç değerli satırlar
   const derivedFrom = new Map(relations.filter(relation => relation.base).map(relation => [relation.target, relation.base]));
   const ordered = [...numericCols].sort((a, b) => (derivedFrom.has(a) ? 1 : 0) - (derivedFrom.has(b) ? 1 : 0));
@@ -432,21 +538,36 @@ export function reasonTab(rows, columns, { now = new Date(), titleOf = row => St
     const positives = [...V].filter(value => Number.isFinite(value) && value > 0).sort((a, b) => a - b);
     if (positives.length < 12) continue;
     const median = positives[Math.floor(positives.length / 2)];
+    const p10 = positives[Math.floor(positives.length * 0.1)];
     const p90 = positives[Math.floor(positives.length * 0.9) - 1];
     if (!(median > 0)) continue;
+    const inRange = value => value >= p10 && value <= p90;
     const flagged = new Set();
     outlierRows.set(column, flagged);
     V.forEach((value, index) => {
-      if (!(value >= 20 * median && value >= 5 * p90)) return;
+      if (!(value > 0)) return;
+      const high = value >= 8 * median && value >= 5 * p90;
+      // Eksik sıfır yalnızca değerleri belli bir aralıkta toplanan kolonda aranır (sıfıra yayılan kolonda küçük değer olağandır).
+      const low = positives.length >= 20 && p10 >= median / 3 && value <= median / 8 && value <= p10 / 5;
+      if (!high && !low) return;
+      // Yalnızlık: en yakın komşusu (sıralı listede) en az 5 kat uzakta.
+      const at = positives.indexOf(value);
+      const neighbour = high ? positives[at - 1] : positives[at + 1];
+      if (neighbour !== undefined && (high ? value / neighbour : neighbour / value) < 5) return;
       flagged.add(index);
       if (outlierRows.get(derivedFrom.get(column))?.has(index)) return; // tabanı zaten işaretlendi
+      const zeroFix = [10, 100, 1000].find(factor => inRange(high ? value / factor : value * factor));
+      const range = `Bu kolondaki değerlerin çoğu ${money(column, p10)} ile ${money(column, p90)} arasında.`;
       add(
         data[index],
         "outlier",
-        "warn",
-        `${column} ${money(column, value)} — bu kolondaki diğer değerlerin çok üstünde.`,
-        `Bu kolondaki değerlerin çoğu ${money(column, positives[Math.floor(positives.length * 0.1)])} ile ${money(column, p90)} arasında. Fazladan bir sıfır yazılmış olabilir.`,
+        zeroFix ? "warn" : "info",
+        `${column} ${money(column, value)} — bu kolondaki diğer değerlerin çok ${high ? "üstünde" : "altında"}.`,
+        zeroFix
+          ? `${range} ${high ? "Fazladan" : "Eksik"} ${zeroFix === 10 ? "bir" : zeroFix === 100 ? "iki" : "üç"} sıfır yazılmış olabilir (doğrusu ${money(column, high ? value / zeroFix : value * zeroFix)} olabilir).`
+          : `${range} Değer doğruysa yoksayabilirsiniz.`,
         [column],
+        zeroFix ? { suggest: { field: column, value: money(column, high ? value / zeroFix : value * zeroFix) } } : {},
       );
     });
   }
@@ -490,7 +611,7 @@ export function reasonAbout(rows, { tabs = [], now = new Date(), titleOf } = {})
     if (finding.severity === "warn") entry.warn += 1;
     counts.set(finding.rule, entry);
   }
-  const order = ["relation", "status", "negative", "order", "year", "outlier", "future"];
+  const order = ["relation", "status", "negative", "order", "year", "outlier", "compare", "required", "future"];
   findings.sort((a, b) => (a.severity === b.severity ? order.indexOf(a.rule) - order.indexOf(b.rule) : a.severity === "warn" ? -1 : 1));
   return { version: REASONING_VERSION, relations, findings: findings.slice(0, MAX_FINDINGS), rules: [...counts.values()].sort((a, b) => order.indexOf(a.rule) - order.indexOf(b.rule)), count: findings.length };
 }

@@ -360,11 +360,14 @@ try {
     expect(stillSelected === "2026/103", `yenileme sonrası seçim: ${stillSelected}`);
     // Seçili satır tam satır renkle ve solda vurgu çizgisiyle diğerlerinden ayrılır; üzerine gelinen satırdan da farklıdır.
     await admin.mouse.move(5, 5);
+    // Üzerine gelme renginden çıkış geçişi (transition) bitsin; renkler tek biçime çevrilir (rgba(…, 1) = rgb(…)).
+    await admin.waitForTimeout(400);
     const look = await admin.evaluate(() => {
+      const color = value => value.replace(/^rgba\((\d+), (\d+), (\d+), 1\)$/, "rgb($1, $2, $3)");
       const rows = [...document.querySelectorAll(".dynamic-table tbody tr")];
       const selected = rows.find(row => row.classList.contains("selected"));
       const other = rows.find(row => !row.classList.contains("selected"));
-      return { selected: getComputedStyle(selected).backgroundColor, other: getComputedStyle(other).backgroundColor, bar: getComputedStyle(selected.cells[0]).boxShadow, count: rows.filter(row => row.classList.contains("selected")).length };
+      return { selected: color(getComputedStyle(selected).backgroundColor), other: color(getComputedStyle(other).backgroundColor), bar: getComputedStyle(selected.cells[0]).boxShadow, count: rows.filter(row => row.classList.contains("selected")).length };
     });
     expect(look.count === 1 && look.selected === "rgb(226, 240, 231)" && look.other !== look.selected && /inset/.test(look.bar) && /4px/.test(look.bar), `seçili satır görünümü: ${JSON.stringify(look)}`);
     await admin.screenshot({ path: path.join(artifacts, "03e-secili-satir.png") });
@@ -850,7 +853,7 @@ try {
       await Promise.all([page.waitForEvent("load", { timeout: 30000 }), input.setInputFiles(path.join(here, "..", "fixtures", "akilli-denetim.xlsx"))]);
       await page.waitForSelector(".hof-analysis-result:not([hidden])", { timeout: 20000 });
       const summary = await page.$eval(".hof-analysis-result", node => node.innerText.replace(/\s+/g, " "));
-      expect(summary.includes("Akıllı denetim: 1 hesap kuralı öğrenildi") && summary.includes("5 olası tutarsızlık"), `analiz: ${summary}`);
+      expect(summary.includes("Akıllı denetim: 1 hesap kuralı öğrenildi") && summary.includes("4 olası tutarsızlık"), `analiz: ${summary}`);
       await page.click(".hof-analysis-result [data-apply], .hof-analysis-result [data-done]");
       await page.waitForFunction(() => !document.querySelector(".hof-modal-backdrop"), null, { timeout: 8000 });
       await page.waitForFunction(() => document.querySelectorAll(".dynamic-table tbody tr.hof-row-check").length === 4, null, { timeout: 10000 });

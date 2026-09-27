@@ -223,6 +223,31 @@
       }
     }
   }
+  // Detay kartı başlığı (v2.0.1): kayıt kimliği (ör. "M-102", "2024/11710") yerine kişinin/kaydın adı; kimlik üst satırda
+  // ("HESAP · M-102"). Ad yoksa ya da kimlikle aynıysa arayüzün kendi başlığı kalır. Tahsilat ve belgeler de bu adla kaydedilir.
+  function applyDetailTitle() {
+    const panel = HOF.detailPanel();
+    const title = panel?.querySelector(".detail-header .detail-title");
+    if (!title) return;
+    const eyebrowNode = panel.querySelector(".detail-header .eyebrow");
+    const person = insight?.primary?.person;
+    const key = panel.dataset.hofKey || "";
+    const tab = (HOF.activeTab && HOF.activeTab()) || "";
+    // Büyük tablolarda satır her ekran yenilemesinde aranmasın: kayıt, sekme ve veri değişene kadar önbellekte.
+    const cacheKey = `${key}|${tab}|${person}|${HOF.data?.at}`;
+    if (titleCache.key !== cacheKey) {
+      const rows = HOF.data?.rows || [];
+      const row = person && key ? rows.find(item => item.__hofKey === key && (!tab || item.__sheet === tab)) || rows.find(item => item.__hofKey === key) : null;
+      titleCache = { key: cacheKey, name: row ? String(row[person] ?? "").replace(/\s+/g, " ").trim() : "" };
+    }
+    const name = titleCache.name;
+    const id = HOF.labels.original(title);
+    const useName = Boolean(name) && name.length <= 80 && name !== id && !/^[-—–?]+$/.test(name);
+    writeText(title, () => (useName ? name : null));
+    if (eyebrowNode) writeText(eyebrowNode, () => (useName && id ? `${HOF.vocab.Record} · ${id}`.toLocaleUpperCase("tr-TR") : null));
+  }
+  let titleCache = { key: "", name: "" };
+
   let labelsQueued = false;
   function labelsTouched() {
     if (labelsQueued) return;
@@ -1121,6 +1146,7 @@
     if (HOF.settings?.sheetUrl) loadInsight();
     HOF.onDom(() => {
       applyLabels();
+      applyDetailTitle();
       renderKpis();
       applyMonthNav();
       if (pendingAnalysis && canManage() && document.querySelector(".dynamic-table") && !HOF.hasOpenModal()) {

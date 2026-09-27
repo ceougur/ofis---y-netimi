@@ -615,11 +615,20 @@
     if (header.nextSibling !== row) header.after(row);
   }
 
+  let selectedAtPress = "";
+  document.addEventListener("pointerdown", () => (selectedAtPress = HOF.selectedCase()?.key || ""), true);
   // Tablo veya detaydaki telefon hücresine tıklayınca WhatsApp açılır.
   document.addEventListener("click", event => {
     const target = event.target.closest(".dynamic-table td, .dynamic-detail-grid > div");
     if (!target || event.target.closest("button, a, [data-hof-ui]")) return;
     const cell = target.closest("td");
+    // Tabloda ilk tıklama satırı seçer; WhatsApp yalnızca zaten seçili olan satırın telefonuna tıklanınca açılır
+    // (v2.0.1). Seçim, tıklama başlamadan önceki hâlinden okunur (arayüz seçimi tıklama sırasında günceller).
+    if (cell) {
+      const row = cell.closest("tr");
+      const key = row?.dataset.hofKey || HOF.rowKey?.(row) || "";
+      if (!key || selectedAtPress !== key) return;
+    }
     const header = cell ? HOF.tableHeaders(cell.closest("table"))[cell.cellIndex] || "" : "";
     const label = HOF.columnOf(target.querySelector?.(".detail-label"));
     if (!/(telefon|tel\b|gsm|cep)/i.test(`${header} ${label}`)) return;

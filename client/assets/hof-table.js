@@ -439,6 +439,19 @@
     row.appendChild(button);
   }
 
+  // Dar ekranda (telefon, tablet) detay kartı tablonun altında kalır: satır seçilince karta yumuşakça kaydırılır.
+  document.addEventListener("click", event => {
+    if (window.innerWidth > 1100) return;
+    const row = event.target.closest(".dynamic-table tbody tr");
+    if (!row || event.target.closest("button, a, input, [data-hof-ui]")) return;
+    setTimeout(() => {
+      const panel = HOF.detailPanel();
+      if (!panel) return;
+      const top = panel.getBoundingClientRect().top;
+      if (top > window.innerHeight * 0.6 || top < 0) panel.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
+    }, 120);
+  });
+
   HOF.whenReady(() => {
     HOF.onDom(() => {
       paginate();
