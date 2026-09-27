@@ -25,6 +25,8 @@ import { registerAdminRoutes } from "./routes/admin.mjs";
 import { registerAuthRoutes } from "./routes/auth.mjs";
 import { registerCashRoutes } from "./routes/cash.mjs";
 import { registerDocumentRoutes } from "./routes/documents.mjs";
+import { registerFreeRoutes } from "./routes/free.mjs";
+import { createFreeSheets } from "./lib/free-sheets.mjs";
 import { registerChatRoutes } from "./routes/chat.mjs";
 import { registerDatasetRoutes } from "./routes/dataset.mjs";
 import { registerInsightRoutes } from "./routes/insight.mjs";
@@ -82,8 +84,11 @@ export function createApp(overrides = {}) {
     canWrite: () => !license || license.writable(),
   });
   clientState.useDataset(() => dataset.info());
+  // Serbest sayfalar (v2.0.1): kullanıcının "+" ile açtığı Excel benzeri sekmeler; tablo görünümüne satır olarak girer.
+  const free = createFreeSheets({ store, audit, dataset });
+  dataset.setFreeProvider(free);
   // Ofis profili: sektör, kelime dağarcığı, kalemle değiştirilen başlıklar ve verinin önbellekli analizi.
-  const profile = createProfileService({ store, dataset, audit, events, log });
+  const profile = createProfileService({ store, dataset, audit, events, log, free });
   profile.init();
   dataset.onChange(() => profile.invalidate());
   const licenseOptions = overrides.license || {};
@@ -101,7 +106,7 @@ export function createApp(overrides = {}) {
   });
   license.init();
   dataset.start();
-  const context = { config, log, store, auth, audit, clientState, startedAt, supervisorLink, events, chat, dataset, profile, license };
+  const context = { config, log, store, auth, audit, clientState, startedAt, supervisorLink, events, chat, dataset, profile, license, free };
 
   const router = createRouter();
   router.get("/api/health", async ({ res }) => ok(res, { service: "destekofis-merkezi", status: "ok", version: config.version, time: new Date().toISOString(), uptimeSeconds: Math.round(process.uptime()) }));
@@ -110,6 +115,7 @@ export function createApp(overrides = {}) {
   registerWorkspaceRoutes(router, context);
   registerCashRoutes(router, context);
   const documents = registerDocumentRoutes(router, context);
+  registerFreeRoutes(router, context);
   registerChatRoutes(router, context);
   registerDatasetRoutes(router, context);
   registerInsightRoutes(router, context);

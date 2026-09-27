@@ -237,16 +237,23 @@
     const cacheKey = `${key}|${tab}|${person}|${HOF.data?.at}`;
     if (titleCache.key !== cacheKey) {
       const rows = HOF.data?.rows || [];
-      const row = person && key ? rows.find(item => item.__hofKey === key && (!tab || item.__sheet === tab)) || rows.find(item => item.__hofKey === key) : null;
-      titleCache = { key: cacheKey, name: row ? String(row[person] ?? "").replace(/\s+/g, " ").trim() : "" };
+      if (key.startsWith("serbest:")) {
+        // Serbest sayfa satırı (v2.0.1): başlık satırın ilk metin değeri (sayı/tarih değil), üst satır "SAYFA · 3. SATIR".
+        const row = rows.find(item => item.__hofKey === key);
+        const text = row ? Object.entries(row).find(([field, value]) => !field.startsWith("__") && /\p{L}/u.test(String(value ?? "")) && !/^#/.test(String(value)))?.[1] : "";
+        titleCache = { key: cacheKey, name: String(text ?? "").replace(/\s+/g, " ").trim(), eyebrow: row ? `${row.__sheet || ""} · ${row.__hofRow || "?"}. satır`.toLocaleUpperCase("tr-TR") : "" };
+      } else {
+        const row = person && key ? rows.find(item => item.__hofKey === key && (!tab || item.__sheet === tab)) || rows.find(item => item.__hofKey === key) : null;
+        titleCache = { key: cacheKey, name: row ? String(row[person] ?? "").replace(/\s+/g, " ").trim() : "", eyebrow: "" };
+      }
     }
     const name = titleCache.name;
     const id = HOF.labels.original(title);
     const useName = Boolean(name) && name.length <= 80 && name !== id && !/^[-—–?]+$/.test(name);
     writeText(title, () => (useName ? name : null));
-    if (eyebrowNode) writeText(eyebrowNode, () => (useName && id ? `${HOF.vocab.Record} · ${id}`.toLocaleUpperCase("tr-TR") : null));
+    if (eyebrowNode) writeText(eyebrowNode, () => (titleCache.eyebrow ? titleCache.eyebrow : useName && id ? `${HOF.vocab.Record} · ${id}`.toLocaleUpperCase("tr-TR") : null));
   }
-  let titleCache = { key: "", name: "" };
+  let titleCache = { key: "", name: "", eyebrow: "" };
 
   let labelsQueued = false;
   function labelsTouched() {

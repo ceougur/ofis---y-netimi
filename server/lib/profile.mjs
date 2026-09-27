@@ -67,7 +67,7 @@ const cleanLabel = (value, max) =>
     .trim()
     .slice(0, max);
 
-export function createProfileService({ store, dataset, audit, events, log, clock = () => new Date() }) {
+export function createProfileService({ store, dataset, audit, events, log, free = null, clock = () => new Date() }) {
   const caches = new Map(); // oturum → { fingerprint, analysis }
   const running = new Map(); // oturum → { fingerprint, promise }
   let generation = 0; // her geçersizleştirmede artar
@@ -285,7 +285,7 @@ export function createProfileService({ store, dataset, audit, events, log, clock
       current(), current(), current(), current(),
     );
     const day = clock();
-    return [current(), row.rowsCount, row.overridesState, row.recordsState, row.deletedCount, store.setting(sessionKey("dataset.changedAt"), ""), store.setting(sessionKey("dataset.label"), ""), `${day.getFullYear()}-${day.getMonth()}-${day.getDate()}`].join("|");
+    return [current(), row.rowsCount, row.overridesState, row.recordsState, row.deletedCount, store.setting(sessionKey("dataset.changedAt"), ""), store.setting(sessionKey("dataset.label"), ""), `${day.getFullYear()}-${day.getMonth()}-${day.getDate()}`, free ? free.fingerprint() : ""].join("|");
   }
 
   async function analysis() {

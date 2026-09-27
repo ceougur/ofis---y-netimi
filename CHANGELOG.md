@@ -2,7 +2,44 @@
 
 Sürümler [anlamsal sürümleme](https://semver.org/lang/tr/) kurallarına uyar.
 
-## 2.0.1 — Veri oturumları, Excel/Sheets formülleri, Kasa, tahsilat düzeltme
+## 2.0.1 — Serbest sayfalar, akıllı denetim, veri oturumları, formüller, Kasa, belgeler, Excel'e aktarma
+
+- **Serbest sayfalar: Excel gibi doldurulan yeni sekmeler.** Sekme şeridinin sonundaki **+ Sayfa** düğmesi, yüklenen Excel/Sheets'in sekmelerinin yanına istenen adla yeni bir sayfa ekler. Açılırken kolon ve satır sayısı ile istenirse kolon başlıkları yazılır. Tek sekmeli veride de şerit bu düğme için görünür.
+  - **Yazın ve geçin:** Sayfa açılınca tablonun yerini Excel benzeri bir ızgara alır: kolon harfleri (A, B, C…), başlık satırı ve numaralı satırlar. Hücreye yazmaya başlamak onu doldurur; **Enter** (aşağı), **Tab** (sağa), yön tuşları ya da fareyle başka hücreye geçince değer kendiliğinden kaydedilir. **F2**, çift tık ya da hücredeki kalem (✎) düzeltmeye açar, **Esc** vazgeçer. Başlıklar da aynı biçimde yazılır ve kalemle düzeltilir. Son satırda Enter alta yeni satır açar.
+  - **Silme:** Hücredeki ×, başlıktaki × (kolon) ve satır numarasındaki × (satır) siler; **Delete** seçili hücreleri temizler. Değer içeren satırı/kolonu yönetici ve ikinci rol siler; yanlışlıkla eklenen boş satırı/kolonu ekleme yetkisi olan herkes siler. Her silme *Geri al* ile geri alınır.
+  - **Ekleme:** *+ Satır* / *+ Kolon* seçili hücrenin altına/sağına ekler, sondaki *+* kolon, *+ Satır ekle* / *+ 10 satır* sona satır ekler. Sağ tık menüsünde üste/alta satır, sola/sağa kolon ekleme, silme, doldurma ve temizleme vardır.
+  - **Formüller:** `=` ile başlar; Türkçe (`=TOPLA(B1:B9)`, `=EĞER(D2>1000;"Yüksek";"Normal")`, `;` ayraç, ondalık virgül) ya da İngilizce yazım. Adres kolon harfi + satır numarasıdır (`B1` ilk satır; başlık satırı numaralanmaz), aralık `B1:B9`, kolonun tamamı `B:B`, sabit adres `$B$1`. Formül yazarken hücreye tıklamak adresini ekler, sürüklemek aralık ekler; başvurulan hücreler renkle vurgulanır, işlev adı yazılırken öneri listesi açılır. Üstte ad kutusu ve formül çubuğu vardır. Sonuç girdinin biçimini alır (`37,50 ₺`); tarih döndüren formüller (`=BUGÜN()+30`) tarih, `=YIL(…)` düz sayı olarak görünür. Hata kodları Türkçedir (`#SAYI/0!`, `#DEĞER!`, `#BAŞV!`, `#AD?`, kendine başvuran formülde `#DÖNGÜ!`). Satır/kolon eklenip silinince formüllerdeki adresler Excel'deki gibi kayar.
+  - **Σ Alt toplam** sayısal kolonların altına toplam satırı ekler (tarih kolonları toplanmaz). **Σ Yan toplam** her satırın toplamını gösteren *Toplam* kolonu ekler: seçili kolonları, seçim yoksa para kolonlarını toplar; farklı birimler (₺ ile gün sayısı) karışmaz. **↓ Doldur / → Doldur** seçili hücredeki formülü alttaki satırlara / sağdaki kolonlara uygular; elle yazılmış değerlere ve toplam satırına dokunmaz. Bir kolonun satırları aynı formülü taşıyorsa (ör. `Tutar = Adet × Birim fiyat`) yeni satıra da uygulanır.
+  - **Kopyala / yapıştır:** Excel'den kopyalanan tablo **Ctrl+V** ile yapıştırılır; gerekirse satır ve kolon eklenir. Programın içinde kopyalanan formülün adresleri yeni yerine göre kayar. Tek değer seçili aralığın tamamına yapıştırılır.
+  - **Geri al:** **Ctrl+Z** ya da *↶ Geri al* bu ekranda yapılan son işlemi geri alır: hücre, başlık, satır/kolon ekleme-silme, toplam, doldurma ve yapıştırma. Başka bir kullanıcının sonradan yaptığı değişikliği silecekse geri alma yapılmaz ve nedeni yazılır.
+  - **Diğer sekmeler gibi çalışır:** Değer yazılmış her satır bir kayıttır. Seçilince detay kartı açılır; kartın başlığı satırın adıdır (ör. *Kargo*, üstte *MASRAFLAR · 2. SATIR*). Not, telefon, tahsilat, görev, belge, işlem geçmişi, arama, özet kartları, akıllı denetim ve Excel'e aktarma diğer sekmelerdeki gibidir. Detay kartından yapılan düzeltme doğrudan hücreye yazılır; formüllü alanlar kilitlidir, *Yeni kayıt* formu sayfanın ilk boş satırına yazar. Yalnızca kolondan gelen formül taşıyan boş satırlar kayıt sayılmaz.
+  - **Ortak çalışma:** Değişiklikler tüm bilgisayarlara anında yansır; iki kişi aynı sayfada farklı hücrelere yazsa da birbirinin değerini ezmez. Ağ bir an koparsa hücre kaydı yeniden denenir; ekranın üstünde *Tüm değişiklikler kaydedildi* / *Kaydediliyor…* yazar.
+  - **Sayfa işlemleri:** Sayfanın adı kalemle değiştirilir; ⋯ menüsünden sayfa Excel olarak indirilir ya da silinir (yönetici, ikinci rol; *Geri al* ile hemen geri alınır). **⤢** ızgarayı genişletip detay kartını alta alır. Serbest sayfalar açıldıkları veri oturumuna aittir. Bir sayfada en fazla 2000 satır ve 60 kolon, bir oturumda en fazla 30 serbest sayfa olur.
+  - Telefonda ve tablette ilk dokunuş hücreyi seçer, seçili hücreye yeniden dokunmak klavyeyi açar.
+- **Akıllı denetim:** Program verinizden kurallar öğrenir ve kurala uymayan kayıtları arka planda bulur; internete bir şey göndermez. Örneğin tablodaki kayıtların çoğunda `Kalan = Tutar − (Taksit 1 + Taksit 2 + …)` tutuyorsa, tutmayan kayıtta doğru değeri önerir ve tek tıkla uygular. Bunların yanında şunları da bulur:
+  - "Ödendi" durumunda olduğu hâlde borcu görünen kayıt;
+  - bitiş tarihi başlangıçtan önce olan kayıt;
+  - yazım hatası gibi duran yıl (2062);
+  - fazladan ya da eksik sıfır (215.000 yerine 21.500): doğru değer de önerilir;
+  - hep artı olan kolonda eksi değer;
+  - satış fiyatı alıştan düşük kayıt;
+  - duruma göre boş kalmaması gereken alan ("Kargoda" ama takip no boş);
+  - tahsilat penceresinden girilip tabloya yansımamış ödeme: boş taksit alanına yazmayı önerir;
+  - borcu aşan tahsilat.
+
+  Bir kural ancak kayıtların büyük çoğunluğunda tutuyorsa öğrenilir; örnek dosyalarda ve rastgele tablolarda yanlış alarm vermez. Seçilen kayıtta bir şey varsa detay kartının üstünde kısa bir kutu çıkar. Kutuda bulgu, *Neden?* açıklaması, öneri ve *Yoksay* yer alır. Tabloda şüpheli satırın başında küçük bir işaret görünür. *Veri sağlığı* raporunda öğrenilen kurallar ve bulgular listelenir. *Yoksay* bulguyu herkes için kapatır; değer değişirse bulgu yeniden değerlendirilir.
+- **Kayda belge ekleme:** Detay kartında *Belge* düğmesi ve *Belgeler* bölümü. Eklenebilen türler:
+  - PDF;
+  - resim (JPG, PNG, WEBP, GIF, TIFF); ekran görüntüsü *Ctrl+V* ile yapıştırılır;
+  - Word, Excel, PowerPoint;
+  - UYAP (.udf);
+  - metin.
+
+  Dosya başına en fazla 25 MB; birden çok dosya bir arada seçilebilir ya da karta sürüklenip bırakılabilir. PDF ve resimler program içinde önizlenir (önceki/sonraki), tüm belgeler indirilebilir. Kişi kendi eklediği belgeyi siler; başkasınınkini yönetici ve ikinci rol siler. Tür yalnızca uzantıdan değil dosyanın içeriğinden de doğrulanır; HTML, SVG ve çalıştırılabilir dosyalar kabul edilmez. Belgeler sunucunun veri klasöründe (`belgeler/`) saklanır, aynı dosya iki kez yer kaplamaz.
+- **Dışa aktar → Excel:** Tablonun üstündeki *Dışa aktar* küçük bir menü açar. Seçenekler: açık sekme, tüm sekmeler (her sekme ayrı sayfada) ya da eski CSV. Excel dosyasında tutarlar, tarihler ve yüzdeler hesap yapılabilir gerçek sayılardır ve görünüşleri korunur (`20.000,00 ₺`, `12.03.2026`). Telefon, T.C. kimlik ve dosya no metin olarak kalır. Başlık satırı kalın, sabit ve süzgeçlidir; düzeltmeler ve formül sonuçları dahildir. Dışa aktarma değişiklik geçmişine yazılır.
+- **Kolon başlıklarını adlandırma:** Detay kartındaki her başlığın yanındaki kalemle (yalnızca yönetici) Excel/Sheets'ten gelen başlıklar ofise göre adlandırılır (ör. `TKST_1` → *1. Taksit*). Yalnızca görünen ad değişir; kaynak dosya, Sheet eşitlemesi, formüller ve notlar asıl adla çalışır. Adlar tabloda, formlarda, özet kartlarında, aramada ve Excel çıktısında görünür; her oturumda ayrıdır.
+- **Detay kartı başlığı:** Kaydın kimliği (ör. `M-102`, `2024/11710`) yerine kişinin ya da kaydın adı büyük başlıkta görünür, kimlik üst satırda yer alır. Tahsilat ve belgeler de bu adla kaydedilir.
+- **Telefon ve tablet:** Satır seçilince ekran detay kartına kayar. Tablodaki telefon hücresine ilk dokunuş satırı seçer; WhatsApp yalnızca seçili satırın telefonuna dokununca açılır.
 
 - **Veri oturumları: farklı konudaki tablolar karışmaz.** Yeni bir Excel dosyası ya da Google Sheets bağlantısı yüklenirken artık üç seçenek vardır: **Yeni oturumda aç**, *devamı olarak ekle*, *yerine koy*. Dosyanın kolonları mevcut veriyle az örtüşüyorsa (ör. hukuk dosyalarının yanına taksit listesi) program bunu fark eder ve yeni oturumu önerir. Yeni oturum sunucuda ayrı bir çalışma alanı olarak saklanır; tabloları, düzeltmeleri, uygulamada eklenen kayıtları, tablo başlıkları ve sektörü diğer oturumlardan ayrıdır. Oturumun adını açan kişi belirler; veri yöneticisi adı sonradan değiştirebilir.
 - **Oturum seçici:** Sol menünün üstünde açık oturumun adı görünür. Tıklayınca oturumlar kayıt sayılarıyla listelenir, istenen oturuma tek tıkla geçilir. Seçim kişiye özeldir: bir kullanıcının oturum değiştirmesi başka bilgisayarlardaki ekranları değiştirmez. Veri yöneticisi aynı listeden adı kalemle değiştirir, *Yeni oturum aç* ve *Oturumları yönet* bağlantılarını kullanır. *Ayarlar → Veri → Oturumlar* bölümünde oturumlar listelenir, adları değiştirilir, oturumlar silinir. Silmeden önce tam yedek alınır; silinen oturumda çalışanlar ilk oturuma döner. İlk oturum silinmez.

@@ -90,9 +90,9 @@ export const PATCHES = [
   },
   {
     id: "tek-sekmede-serit-yok",
-    why: "Tek sekmeli veride sekme şeridi gereksiz yer kaplamasın.",
+    why: "Tek sekmeli veride sekme şeridi gereksiz yer kaplamasın; sayfa ekleyebilen kullanıcıda (v2.0.1, hof-free.js) şerit \"+ Sayfa\" düğmesi için her zaman görünür.",
     find: 'st.length>0&&x.jsxs("section",{"data-loc":"client/src/pages/Home.tsx:86",className:"category-bar"',
-    replace: 'st.length>1&&x.jsxs("section",{"data-loc":"client/src/pages/Home.tsx:86",className:"category-bar"',
+    replace: '(st.length>1||st.length>0&&window.hofAlwaysTabs===!0)&&x.jsxs("section",{"data-loc":"client/src/pages/Home.tsx:86",className:"category-bar"',
   },
   {
     id: "tablo-basligi-sekme",

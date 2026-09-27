@@ -21,11 +21,18 @@
   function apply() {
     const write = HOF.labels?.write;
     if (!write) return;
-    for (const th of document.querySelectorAll(".dynamic-table thead th")) write(th, desired);
+    // Serbest sayfada (v2.0.1) başlıklar sayfanın kendi başlıklarıdır ve ızgarada adlandırılır: takma ad ve kalem yok.
+    const free = Boolean(HOF.free?.isActive());
+    const shown = free ? () => null : desired;
+    for (const th of document.querySelectorAll(".dynamic-table thead th")) write(th, shown);
     const panel = HOF.detailPanel();
     if (!panel) return;
     for (const label of panel.querySelectorAll(".dynamic-detail-grid .detail-label")) {
-      write(label, desired);
+      write(label, shown);
+      if (free) {
+        label.querySelector(":scope > .hof-col-edit")?.remove();
+        continue;
+      }
       if (!canEdit()) continue;
       // Kalem başlığın hemen yanında (başlık öğesinin içinde); React başlığı yeniden yazarsa bir sonraki karede geri gelir.
       if (!label.querySelector(":scope > .hof-col-edit")) {

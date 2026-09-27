@@ -441,7 +441,7 @@
 
   // Dar ekranda (telefon, tablet) detay kartı tablonun altında kalır: satır seçilince karta yumuşakça kaydırılır.
   document.addEventListener("click", event => {
-    if (window.innerWidth > 1100) return;
+    if (window.innerWidth > 1100 || HOF.quietSelect) return; // serbest sayfa ızgarası kaydı arka planda seçer
     const row = event.target.closest(".dynamic-table tbody tr");
     if (!row || event.target.closest("button, a, input, [data-hof-ui]")) return;
     setTimeout(() => {

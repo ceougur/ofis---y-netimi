@@ -8,7 +8,7 @@ import { can } from "../lib/permissions.mjs";
 
 const CASE_KEY_MAX = 300;
 
-export function registerWorkspaceRoutes(router, { store, auth, audit, dataset, clientState, config, events, chat, profile }) {
+export function registerWorkspaceRoutes(router, { store, auth, audit, dataset, clientState, config, events, chat, profile, free }) {
   const now = () => new Date().toISOString();
   // Görev kişiye kimliğiyle bağlıysa yalnızca kimlik belirler (ad değiştirerek başkasının görevi görülemez);
   // serbest yazılmış, kişiye bağlanamamış eski görevlerde ad eşleşmesi geçerlidir.
@@ -132,6 +132,12 @@ export function registerWorkspaceRoutes(router, { store, auth, audit, dataset, c
   router.post("/api/workspace/records", async ({ req, res }) => {
     const user = auth.requirePermission(req, "records.create");
     const body = await readJson(req);
+    // Serbest sayfada "Yeni kayıt": sayfanın ilk boş satırına yazılır (v2.0.1).
+    const freeRecord = free && text(body.sheet) ? free.addRecord(user, text(body.sheet), body.values) : null;
+    if (freeRecord) {
+      changed(user, "records", { caseKey: freeRecord.caseKey });
+      return ok(res, { caseKey: freeRecord.caseKey, sheet: text(body.sheet) });
+    }
     ok(res, createRecord(user, sourceNameOf(body), body.values, text(body.caseKey || body.case_key), text(body.sheet)));
   });
 
@@ -154,6 +160,7 @@ export function registerWorkspaceRoutes(router, { store, auth, audit, dataset, c
     const body = await readJson(req);
     const source = sourceNameOf(body);
     const key = caseKeyOf(body.caseKey || body.case_key, "Silinecek kayıt kimliği");
+    if (free?.isFreeKey(key)) throw new HttpError(400, "Serbest sayfanın satırı sayfanın kendi × düğmesiyle silinir.");
     const existing = store.get("SELECT id FROM deleted_records WHERE source_name = ? AND case_key = ?", source, key);
     const recordId = existing?.id || newId("deleted");
     store.run("INSERT INTO deleted_records (id, source_name, case_key, deleted_by, deleted_at) VALUES (?, ?, ?, ?, ?) ON CONFLICT(source_name, case_key) DO UPDATE SET deleted_by = excluded.deleted_by, deleted_at = excluded.deleted_at", recordId, source, key, user.id, now());
@@ -178,6 +185,8 @@ export function registerWorkspaceRoutes(router, { store, auth, audit, dataset, c
     auth.requireUser(req);
     const source = text(url.searchParams.get("sourceName")) ? dataset.currentKey() : "";
     const key = text(url.searchParams.get("caseKey"));
+    // Serbest sayfa satırı: alanların ham değerleri (formüller "=..." olarak) doğrudan hücrelerden.
+    if (key && free?.isFreeKey(key)) return ok(res, free.rawByKey(key));
     ok(res, store.all(`SELECT o.id, o.case_key AS caseKey, o.source_name AS sourceName, o.field, o.value, o.version, o.updated_by AS updatedBy, COALESCE(u.display_name, '') AS actorName, o.updated_at AS updatedAt FROM overrides o LEFT JOIN users u ON u.id = o.updated_by WHERE (? = '' OR o.source_name = ?) AND (? = '' OR o.case_key = ?) ORDER BY o.updated_at DESC`, source, source, key, key));
   });
 
@@ -191,6 +200,12 @@ export function registerWorkspaceRoutes(router, { store, auth, audit, dataset, c
     // "__sheet", "__hofKey" gibi iç alanlar düzenlenemez (kaydı başka sekmeye taşıyamaz).
     if (String(field).trim().startsWith("__")) throw new HttpError(400, "Bu alan düzenlenemez.");
     const value = limited(body.value ?? "", 20_000, "Değer");
+    // Serbest sayfanın satırı: düzeltme doğrudan hücreye yazılır (tek doğru kaynak sayfanın kendisidir).
+    if (free?.isFreeKey(key)) {
+      const sheet = free.setByField(user, key, field, value);
+      changed(user, "records", { caseKey: key, free: sheet.id });
+      return ok(res, { id: key, version: 0, free: sheet.id });
+    }
     const old = store.get("SELECT id, value, version FROM overrides WHERE source_name = ? AND case_key = ? AND field = ?", source, key, field);
     const expectedVersion = body.expectedVersion == null ? null : Number(body.expectedVersion);
     if (old && expectedVersion !== null && old.version !== expectedVersion) throw new HttpError(409, "Bu alan başka bir kullanıcı tarafından değiştirildi. Sayfayı yenileyip tekrar deneyin.", { code: "CONFLICT", currentValue: old.value, currentVersion: old.version });
@@ -448,6 +463,9 @@ export function registerWorkspaceRoutes(router, { store, auth, audit, dataset, c
     const view = await dataset.view();
     const tab = text(url.searchParams.get("tab"));
     const rows = view.rows || [];
+    // Serbest sayfa: kolonlar sayfanın kendi başlıklarıdır (sayfa henüz boş olsa da).
+    const freeHeaders = free && tab ? free.headersByName(tab) : null;
+    if (freeHeaders) return ok(res, { sheetUrl: rows.length ? dataset.currentKey() : "", connected: view.connected, tab, columns: freeHeaders, excel: false, free: true });
     const scoped = tab ? rows.filter(row => String(row.__sheet || "") === tab) : rows;
     const ordered = [...scoped.filter(row => !row.__hofRecord), ...scoped.filter(row => row.__hofRecord)];
     ok(res, { sheetUrl: rows.length ? dataset.currentKey() : "", connected: view.connected, tab: tab && scoped.length ? tab : "", columns: columnOrder(ordered.length ? ordered : rows), excel: false });

@@ -1,4 +1,4 @@
-# DestekOfis — Kurulum ve Kullanım Kılavuzu (v2.0)
+# DestekOfis — Kurulum ve Kullanım Kılavuzu (v2.0.1)
 
 ## 1. Sistem düzeni
 
@@ -167,6 +167,10 @@ Değiştirilebilen başlıklar:
 - **İşlem geçmişi eskiden yeniye sıralanır:** yeni eklenen not, telefon, tahsilat ve görev en altta görünür.
 - **Tahsilat düzeltme ve silme:** İşlem geçmişindeki tahsilatın yanındaki ✎ (düzelt) ve × (sil). Herkes kendi girdiği tahsilatı; yönetici, ikinci rol ve muhasebe tüm tahsilatları düzeltip silebilir. Tutarlar Türkçe yazılır: *1.250* bin iki yüz elli liradır.
 - **Kasa:** Operasyon Merkezi → *Kasa*. Güncel kasa, seçilen dönemin (*Bu ay, Geçen ay, Bu yıl, Tümü*) tahsilat, ödeme ve farkı; hareketler eskiden yeniye, her satırda o ana kadarki kasa ve dönem başında devreden kasa. Detay kartından girilen tahsilatlar kasaya kendiliğinden düşer; kayda bağlı olmayan tahsilatlar ve kasadan çıkan ödemeler (kira, fatura, maaş, masraf) *+ Tahsilat* / *− Ödeme* ile eklenir, düzeltilir, silinir. Kasayı yönetici, ikinci rol ve muhasebe görür. Kasa ofisin tek kasasıdır; oturum değiştirmek kasayı sıfırlamaz.
+- **Belgeler:** Detay kartındaki *Belge* düğmesi ya da *Belgeler* bölümü. PDF, resim (JPG, PNG, WEBP, GIF, TIFF), Word, Excel, PowerPoint, UYAP (.udf) ve metin dosyası eklenir; ekran görüntüsü *Ctrl+V* ile yapıştırılır, dosyalar karta sürüklenip bırakılabilir (dosya başına en çok 25 MB). PDF ve resimler programda önizlenir, hepsi indirilebilir. Kişi kendi eklediği belgeyi, yönetici ve ikinci rol tüm belgeleri siler.
+- **Excel'e aktarma:** *Dışa aktar* → *Açık sekme (Excel)*, *Tüm sekmeler (Excel)* ya da *CSV*. Excel dosyasında tutarlar, tarihler ve yüzdeler hesap yapılabilir sayılardır; düzeltmeler ve formül sonuçları dahildir.
+- **Kolon başlıklarını adlandırma:** Detay kartındaki başlığın yanındaki kalemle (yalnızca yönetici) Excel/Sheets'ten gelen kolon adı ofise göre adlandırılır (ör. *TKST_1* → *1. Taksit*). Yalnızca görünen ad değişir; eşitleme ve formüller asıl adla çalışır.
+- **Akıllı denetim:** Program verinin kurallarını öğrenir (ör. *Kalan = Tutar − taksitler*) ve uymayan kaydı bulur. Seçilen kayıtta bir şey varsa detay kartının üstünde kısa bir kutu çıkar: bulgu, *Neden?*, önerilen değer (*Uygula*) ve *Yoksay*. Şüpheli satırın başında küçük bir işaret görünür; tümü *Veri sağlığı* raporunda listelenir.
 - **Operasyon Merkezi adları:** Kartın sağ üst köşesindeki kalemle (yalnızca yönetici) kartın başlığı ve düğme adları değiştirilir (ör. *Kasa* yerine *Vezne*); boş bırakılan ad varsayılana döner.
 - **Hücre düzeltme:** Tablo hücresinin üzerine gelince çıkan ✎ düğmesi. Aynı alanı iki kişi aynı anda değiştirirse sistem uyarır.
 - **Satır silme:** Satırın solundaki × (yönetici/avukat). Silme geri alınabilir.
@@ -175,6 +179,24 @@ Değiştirilebilen başlıklar:
 - **Anlık güncellemeler:** Başka bir bilgisayarda eklenen not, telefon, tahsilat, görev ve hücre düzeltmeleri açık ekranlara kendiliğinden yansır (açık dosyanın işlem geçmişi yenilenir, tablo yeniden çekilir).
 - **Haciz uyarıları:** Bir yılını dolduracak hacizler 30 gün önceden listelenir, son 7 gün vurgulanır.
 - **Ödeme sözleri:** Tabloda ödeme sözü kolonu varsa aktif sözler üstte kayan şeritte görünür; *Ödendi / İptal* ile kapatılır. 40'tan fazla söz varsa şeritte en yakın 40'ı gösterilir; tamamı özet kartındaki listededir.
+
+## 9a. Serbest sayfalar (Excel gibi kendi tablonuz)
+
+Yüklenen Excel/Sheets'in sekmelerinin yanına istediğiniz adla boş bir sayfa ekleyip Excel gibi doldurabilirsiniz (masraf listesi, takip çizelgesi, aylık tablo…).
+
+1. Sekme şeridinin sonundaki **+ Sayfa** düğmesine basın. Sayfa adını, kolon ve satır sayısını yazın; isterseniz kolon başlıklarını da (virgülle ayırarak) yazın. *Sayfayı oluştur* ile yeni sekme açılır.
+2. **Yazın ve geçin:** Tablonun yerinde Excel benzeri bir ızgara açılır. Üstte kolon harfleri (A, B, C…), altında başlık satırı, solda satır numaraları vardır. Bir hücreyi seçip yazmaya başlayın; **Enter** (aşağı), **Tab** (sağa), yön tuşları ya da fareyle başka hücreye geçince değer kendiliğinden kaydedilir. Başlıkları da aynı biçimde yazın. Üstte *Tüm değişiklikler kaydedildi* yazar.
+3. **Düzeltme:** Seçili hücredeki kalem (✎), **F2** ya da çift tık hücreyi düzeltmeye açar; **Esc** vazgeçer. Başlığın kalemi başlığı, sayfa adının yanındaki kalem sayfanın adını değiştirir. Üstteki formül çubuğundan da yazılabilir.
+4. **Silme:** Hücredeki × hücreyi, başlığın üzerindeki × kolonu, satır numarasının üzerine gelince çıkan × satırı siler; **Delete** seçili hücreleri temizler. Her silme *Geri al* ile geri alınır.
+5. **Ekleme:** *+ Satır* / *+ Kolon* seçili hücrenin altına/sağına ekler; tablonun altındaki *+ Satır ekle* ve *+ 10 satır*, kolon harflerinin sonundaki **+** sona ekler. Sağ tık menüsünde üste/alta satır, sola/sağa kolon ekleme, silme ve doldurma vardır. Son satırda Enter alta yeni satır açar.
+6. **Formüller:** `=` ile başlayın. Adres kolon harfi ve satır numarasıdır: `B1` ilk satırın B kolonudur (başlık satırı numaralanmaz). Aralık `B1:B9`, kolonun tamamı `B:B`, kaymayan adres `$B$1`. Türkçe yazım (`=TOPLA(B1:B9)`, `=EĞER(D2>1000;"Yüksek";"Normal")`, ayraç `;`, ondalık `,`) ya da İngilizce (`=SUM(B1:B9)`) kullanılabilir. Formül yazarken bir hücreye tıklamak adresini ekler, sürüklemek aralık ekler; işlev adı yazarken öneri listesi açılır (*Tab* seçer). Tüm işlevler ve kısayollar **ƒx Formüller** düğmesindedir.
+7. **Toplamlar ve doldurma:** **Σ Alt toplam** sayısal kolonların altına toplam satırı ekler. **Σ Yan toplam** her satırın toplamını gösteren *Toplam* kolonu ekler: önce kolonları seçerseniz yalnızca onları, seçmezseniz para kolonlarını toplar. **↓ Doldur / → Doldur** seçili hücredeki formülü alttaki satırlara / sağdaki kolonlara uygular. Bir kolonun satırları aynı formülü taşıyorsa (ör. *Tutar = Adet × Birim fiyat*) yeni satıra da kendiliğinden uygulanır.
+8. **Kopyala / yapıştır:** Excel'den kopyaladığınız tabloyu seçili hücreye **Ctrl+V** ile yapıştırın; yetmezse satır ve kolon eklenir. **Ctrl+C / Ctrl+X** programın içinde de çalışır; kopyalanan formülün adresleri yeni yerine göre kayar.
+9. **Geri al:** **Ctrl+Z** ya da *↶ Geri al* bu ekranda yaptığınız son işlemi geri alır. Aradan başka bir kullanıcı sayfada değişiklik yaptıysa, onun değişikliğini silmemek için geri alma yapılmaz ve nedeni yazılır.
+10. **Detay kartı:** Değer yazılmış her satır bir kayıttır. Satırı seçince sağda detay kartı açılır; not, telefon, tahsilat, görev ve belge diğer sekmelerdeki gibi eklenir, arama ve özet kartları bu sayfayı da kapsar. Detay kartından yapılan düzeltme hücreye yazılır. Kartta gösterilen satırın numarası ızgarada yeşil çizgiyle işaretlidir. **⤢** düğmesi ızgarayı genişletip detay kartını alta alır.
+11. **Sayfayı silme:** ⋯ → *Sayfayı sil* (yönetici ve ikinci rol). Bildirimdeki *Geri al* ile hemen geri getirilir. Aynı menüden sayfa Excel olarak indirilir.
+
+Yetkiler: hücre ve başlık yazmayı herkes, satır/kolon/sayfa eklemeyi ekleme yetkisi olanlar yapar. Değer içeren satır/kolonu ve sayfayı yönetici ile ikinci rol siler; yanlışlıkla eklenen boş satırı/kolonu ekleme yetkisi olan da silebilir. Değişiklikler tüm bilgisayarlara anında yansır; iki kişi aynı sayfada farklı hücrelere aynı anda yazabilir. Serbest sayfalar açıldıkları veri oturumuna aittir. Sınırlar: sayfada 2000 satır ve 60 kolon, oturumda 30 serbest sayfa.
 
 ## 10. Yedekleme ve geri dönüş
 

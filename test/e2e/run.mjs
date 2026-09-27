@@ -914,6 +914,101 @@ try {
     }
   });
 
+  await step("serbest sayfa: '+ Sayfa' ile açılır; Excel gibi yazılır, geçince kaydedilir; formül, alt toplam, detay kartı ve geri alma çalışır", async () => {
+    const freeRoot = mkdtempSync(path.join(tmpdir(), "destekofis-e2e-serbest-"));
+    const freeApp = createApp({ dataDir: path.join(freeRoot, "data"), backupDir: path.join(freeRoot, "backups"), logLevel: "warn", scheduleBackups: false, env: { HUKUK_ADMIN_PASSWORD: ADMIN_PASSWORD, HUKUK_DATASET_AUTOSYNC: "0" }, license: unlicensed });
+    const freePort = (await freeApp.listen(0, "127.0.0.1")).port;
+    const context = await browser.newContext({ viewport: { width: 1440, height: 900 }, locale: "tr-TR" });
+    try {
+      const page = await context.newPage();
+      page.on("pageerror", error => problems.push(`[serbest] pageerror: ${error.message}`));
+      page.on("console", message => message.type() === "error" && !/401|favicon/.test(message.text()) && problems.push(`[serbest] console: ${message.text()}`));
+      await page.goto(`http://127.0.0.1:${freePort}/`);
+      await page.fill("#hof-auth input[name=username]", "admin");
+      await page.fill("#hof-auth input[name=password]", ADMIN_PASSWORD);
+      await Promise.all([page.waitForEvent("load"), page.click('#hof-auth button[type="submit"]')]);
+      await page.waitForSelector("#hof-start .hof-drop");
+      const input = await page.$("#hof-start .hof-drop input[type=file]");
+      await Promise.all([page.waitForEvent("load", { timeout: 30000 }), input.setInputFiles(path.join(here, "..", "fixtures", "akilli-denetim.xlsx"))]);
+      await page.waitForSelector(".hof-analysis-result:not([hidden])", { timeout: 20000 });
+      await page.click(".hof-analysis-result [data-apply], .hof-analysis-result [data-done]");
+      await page.waitForFunction(() => !document.querySelector(".hof-modal-backdrop"), null, { timeout: 8000 });
+
+      // Tek sekmeli veride de şerit ve "+ Sayfa" görünür.
+      await page.waitForSelector(".category-bar #hof-free-add", { timeout: 10000 });
+      await page.click("#hof-free-add");
+      await page.fill(".hof-modal input[name=name]", "Masraflar");
+      await page.fill(".hof-modal input[name=columns]", "4");
+      await page.fill(".hof-modal input[name=rows]", "5");
+      await page.click('.hof-modal button[type="submit"]');
+      await page.waitForSelector("#hof-free .hof-free-grid tbody tr", { timeout: 10000 });
+      await page.waitForFunction(() => window.HOF.activeTab() === "Masraflar" && document.activeElement?.classList.contains("hof-free-editor"), null, { timeout: 8000 });
+      const saved = () => page.waitForFunction(() => document.querySelector(".hof-free-status")?.dataset.tone === "ok", null, { timeout: 8000 });
+      const cellText = (r, c) => page.$eval(`#hof-free .hof-free-grid tbody tr:nth-child(${r}) td:nth-child(${c + 1})`, td => (td.firstChild?.nodeType === 3 ? td.firstChild.nodeValue : ""));
+
+      // Başlıklar ve satırlar klavyeyle: Tab sağa, Enter aşağı; geçince kaydedilir.
+      for (const [index, name] of ["Kalem", "Adet", "Birim fiyat", "Tutar"].entries()) {
+        await page.keyboard.type(name);
+        await page.keyboard.press(index === 3 ? "Enter" : "Tab");
+      }
+      await page.keyboard.press("Home");
+      for (const line of [["Kırtasiye", "3", "12,50 ₺", "=B1*C1"], ["Kargo", "2", "40,00 ₺", "=b2*c2"]]) {
+        for (const [index, value] of line.entries()) {
+          await page.keyboard.type(value);
+          await page.keyboard.press(index === 3 ? "Enter" : "Tab");
+        }
+        await page.keyboard.press("Home");
+      }
+      await saved();
+      await page.waitForFunction(() => document.querySelector("#hof-free .hof-free-grid tbody tr:nth-child(2) td:nth-child(5)")?.firstChild?.nodeValue === "80,00 ₺", null, { timeout: 8000 });
+      expect((await cellText(1, 4)) === "37,50 ₺", `formül: ${await cellText(1, 4)}`);
+      const heads = await page.$$eval("#hof-free .hof-free-heads .hof-free-headtext", nodes => nodes.map(node => node.textContent));
+      expect(heads.join("|") === "Kalem|Adet|Birim fiyat|Tutar", `başlıklar: ${heads}`);
+
+      // Satır seçilince detay kartı o kaydı gösterir.
+      await page.click("#hof-free .hof-free-grid tbody tr:nth-child(2) td:nth-child(2)");
+      await page.waitForFunction(() => document.querySelector(".detail-panel .detail-title")?.textContent.trim() === "Kargo", null, { timeout: 8000 });
+
+      // Formül yazarken hücreye tıklamak adresini ekler.
+      await page.click("#hof-free .hof-free-grid tbody tr:nth-child(3) td:nth-child(5)");
+      await page.keyboard.type("=");
+      await page.click("#hof-free .hof-free-grid tbody tr:nth-child(1) td:nth-child(5)");
+      await page.keyboard.type("+");
+      await page.click("#hof-free .hof-free-grid tbody tr:nth-child(2) td:nth-child(5)");
+      expect((await page.$eval(".hof-free-editor", node => node.value)) === "=D1+D2", "tıklanan hücreler formüle eklenmeli");
+      await page.keyboard.press("Escape");
+
+      // Σ Alt toplam
+      await page.click('#hof-free [data-act="total-row"]');
+      await page.waitForFunction(() => document.querySelector("#hof-free .hof-free-grid tbody tr:nth-child(3) td:nth-child(5)")?.firstChild?.nodeValue === "117,50 ₺", null, { timeout: 8000 });
+      expect((await cellText(3, 1)) === "Toplam" && (await cellText(3, 2)) === "5", "toplam satırı");
+
+      // Hücre × ile temizlenir, Ctrl+Z geri getirir.
+      await page.click("#hof-free .hof-free-grid tbody tr:nth-child(1) td:nth-child(2)");
+      await page.click('#hof-free td.is-active [data-act="clear-cell"]');
+      await page.waitForFunction(() => !document.querySelector("#hof-free .hof-free-grid tbody tr:nth-child(1) td:nth-child(2)")?.firstChild?.nodeValue, null, { timeout: 8000 });
+      await saved();
+      await page.keyboard.press("Control+z");
+      await page.waitForFunction(() => document.querySelector("#hof-free .hof-free-grid tbody tr:nth-child(1) td:nth-child(2)")?.firstChild?.nodeValue === "Kırtasiye", null, { timeout: 8000 });
+
+      // Boş satır × ile silinir.
+      await saved();
+      const before = await page.$$eval("#hof-free .hof-free-grid tbody tr", rows => rows.length);
+      await page.hover("#hof-free .hof-free-grid tbody tr:last-child th");
+      await page.click('#hof-free .hof-free-grid tbody tr:last-child th [data-act="delete-row"]');
+      await page.waitForFunction(count => document.querySelectorAll("#hof-free .hof-free-grid tbody tr").length === count - 1, before, { timeout: 8000 });
+      await page.screenshot({ path: path.join(artifacts, "13-serbest-sayfa.png") });
+
+      // Veri sekmesine dönülünce tablo normal görünür.
+      await page.click('.category-bar .category-tab[title="Taksitler"]');
+      await page.waitForFunction(() => !document.body.classList.contains("hof-free-mode") && getComputedStyle(document.querySelector(".dynamic-table-wrap")).display !== "none", null, { timeout: 8000 });
+    } finally {
+      await context.close();
+      await freeApp.close();
+      rmSync(freeRoot, { recursive: true, force: true });
+    }
+  });
+
   const csp = problems.filter(item => /Content Security Policy|Refused to/.test(item));
   await step("denemenin 3. gününde yöneticiden firma bilgisi istenir; gönderilince bir daha sorulmaz", async () => {
     licenseClock.offset = 2 * 86_400_000 + 3_600_000;

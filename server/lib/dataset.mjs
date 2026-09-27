@@ -252,13 +252,25 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
     if (!merged.length && !rows.length) {
       return { connected: false, sourceUrl: activeKey(), syncedAt: null, rows: [], tabs: [], message: error || "Henüz veri yüklenmedi." };
     }
+    // Serbest sayfalar (v2.0.1): verinin sekmelerinden sonra; boş olsalar da sekme olarak görünürler.
+    let freeTabs = [];
+    if (freeProvider) {
+      try {
+        freeTabs = freeProvider.list();
+        merged.push(...freeProvider.viewRows());
+      } catch (failure) {
+        log?.warn?.("Serbest sayfalar okunamadı", failure);
+        freeTabs = [];
+      }
+    }
     return {
       connected: true,
       sourceUrl: activeKey(),
       syncedAt: sget(S.lastSyncOkAt, "") || sget(S.changedAt, "") || null,
       rows: merged,
       // Yalnızca görünen satırı olan sekmeler (tüm satırları silinmiş sekme listelenmez, varsayılan da olamaz).
-      tabs: [...tabsOf(rows), ...extraTabs].filter(title => merged.some(row => row.__sheet === title)).map(title => ({ gid: "", title })),
+      // Serbest sayfanın sekmesi "free" (sayfa kimliği) taşır; arayüz o sekmede tablo yerine düzenlenebilir ızgara açar.
+      tabs: [...[...tabsOf(rows), ...extraTabs].filter(title => merged.some(row => row.__sheet === title)).map(title => ({ gid: "", title })), ...freeTabs.map(sheet => ({ gid: "", title: sheet.name, free: sheet.id }))],
       message: error ? `${label} · ${merged.length} kayıt · Google Sheets'e şu an ulaşılamıyor, son eşitlenen veri gösteriliyor.` : `${label} · ${merged.length} kayıt`,
     };
   }
@@ -849,6 +861,7 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
       removed = store.run("DELETE FROM dataset_rows WHERE dataset_key = ?", target).changes;
       store.run("DELETE FROM dataset_imports WHERE dataset_key = ?", target);
       for (const table of ["overrides", "deleted_records", "records"]) store.run(`DELETE FROM ${table} WHERE source_name = ?`, target);
+      freeProvider?.purgeSession?.(target);
       store.run("DELETE FROM settings WHERE substr(key, -?) = ?", suffix.length, suffix);
       for (const row of store.all("SELECT key FROM settings WHERE key LIKE 'dataset.session.user.%' AND value = ?", target)) store.run("DELETE FROM settings WHERE key = ?", row.key);
       store.setSetting(REG.sessions, JSON.stringify(sessionList().filter(item => item.key !== target)), user.id);
@@ -862,6 +875,13 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
     events?.publish("workspace.changed", { kind: "sessions", actorId: user.id, actorName: user.display_name });
     return { removed, backupName };
   }
+  // Serbest sayfa sağlayıcısı (free-sheets.mjs): görünüme satır ve sekme ekler.
+  let freeProvider = null;
+  const setFreeProvider = provider => {
+    freeProvider = provider;
+  };
+  // Verinin (içeri alınan) sekmeleri: serbest sayfa adı bunlarla çakışamaz.
+  const dataTabs = () => [...tabsOf(loadRows().rows), APP_TAB, UNTABBED_TAB];
   const onChange = listener => {
     listeners.add(listener);
     return () => listeners.delete(listener);
@@ -870,6 +890,6 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
 
   return {
     view, summary, info, stage, commit, sync, unlink, remove, missingRows, resolveMissing, adoptLegacySheetUrl, hasData, start, stop, invalidate, onChange, identity, pinLegacyIdentity,
-    sessions, selectSession, renameSession, deleteSession, currentKey: activeKey, settingKey: name => sk(name), withKey,
+    sessions, selectSession, renameSession, deleteSession, currentKey: activeKey, settingKey: name => sk(name), withKey, setFreeProvider, dataTabs,
   };
 }

@@ -292,7 +292,7 @@ export const MIGRATIONS = [
   },
   {
     version: 5,
-    name: "v2.0.1 kasa, tahsilat düzeltmeleri ve dosya belgeleri",
+    name: "v2.0.1 kasa, tahsilat düzeltmeleri, dosya belgeleri ve serbest sayfalar",
     up(store) {
       // Yalnızca ekleyici: 2.0.0 bu şemayla da çalışır (yeni tabloyu ve kolonları kullanmaz).
       const columns = new Set(store.all("PRAGMA table_info(payments)").map(column => column.name));
@@ -330,6 +330,48 @@ export const MIGRATIONS = [
         );
         CREATE INDEX IF NOT EXISTS idx_case_documents_case ON case_documents(case_key, created_at);
         CREATE INDEX IF NOT EXISTS idx_case_documents_sha ON case_documents(sha256);
+        -- Serbest sayfalar: kullanıcının programda kurduğu Excel benzeri sekmeler (veri oturumuna özel).
+        CREATE TABLE IF NOT EXISTS free_sheets (
+          id TEXT PRIMARY KEY,
+          dataset_key TEXT NOT NULL,
+          name TEXT NOT NULL,
+          position INTEGER NOT NULL,
+          columns_json TEXT NOT NULL,
+          created_by TEXT NOT NULL,
+          created_at TEXT NOT NULL,
+          updated_by TEXT,
+          updated_at TEXT NOT NULL,
+          deleted_by TEXT,
+          deleted_at TEXT
+        );
+        CREATE INDEX IF NOT EXISTS idx_free_sheets_key ON free_sheets(dataset_key, position);
+        CREATE TABLE IF NOT EXISTS free_rows (
+          id TEXT PRIMARY KEY,
+          sheet_id TEXT NOT NULL,
+          position INTEGER NOT NULL,
+          created_by TEXT NOT NULL,
+          created_at TEXT NOT NULL
+        );
+        CREATE INDEX IF NOT EXISTS idx_free_rows_sheet ON free_rows(sheet_id, position);
+        CREATE TABLE IF NOT EXISTS free_cells (
+          row_id TEXT NOT NULL,
+          col_id TEXT NOT NULL,
+          sheet_id TEXT NOT NULL,
+          raw TEXT NOT NULL,
+          updated_by TEXT NOT NULL,
+          updated_at TEXT NOT NULL,
+          PRIMARY KEY (row_id, col_id)
+        );
+        CREATE INDEX IF NOT EXISTS idx_free_cells_sheet ON free_cells(sheet_id);
+        CREATE TABLE IF NOT EXISTS free_history (
+          id TEXT PRIMARY KEY,
+          sheet_id TEXT NOT NULL,
+          label TEXT NOT NULL,
+          snapshot_json TEXT NOT NULL,
+          created_by TEXT NOT NULL,
+          created_at TEXT NOT NULL
+        );
+        CREATE INDEX IF NOT EXISTS idx_free_history_sheet ON free_history(sheet_id, created_at);
       `);
     },
   },

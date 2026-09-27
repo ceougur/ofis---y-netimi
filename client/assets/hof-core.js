@@ -352,13 +352,15 @@
         const result = (Array.isArray(payload) ? payload[0] : payload)?.result?.data;
         const data = result?.json ?? result;
         if (!data || !Array.isArray(data.rows)) return;
-        HOF.data = { rows: data.rows, tabs: (data.tabs || []).map(tab => tab.title).filter(Boolean), at: Date.now() };
+        // freeTabs: serbest sayfaların sekme adı → sayfa kimliği (v2.0.1, hof-free.js).
+        const freeTabs = new Map((data.tabs || []).filter(tab => tab && tab.free && tab.title).map(tab => [tab.title, tab.free]));
+        HOF.data = { rows: data.rows, tabs: (data.tabs || []).map(tab => tab.title).filter(Boolean), freeTabs, at: Date.now() };
         HOF.emit("rows", HOF.data);
       })
       .catch(() => {});
     return promise;
   };
-  HOF.data = { rows: [], tabs: [], at: 0 };
+  HOF.data = { rows: [], tabs: [], freeTabs: new Map(), at: 0 };
   // Kaydın sekmesi (tabloda birden çok satırı olan kayıtta ilk satırınki); bilinmiyorsa null.
   HOF.tabOfKey = key => {
     const row = HOF.data.rows.find(item => item.__hofKey === key);

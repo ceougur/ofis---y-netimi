@@ -35,6 +35,9 @@ Yeni bir oturum bu belgeyi okuyarak kaldığı yerden devam eder. Son güncellem
   - Excel/Sheets formülleri programda çalışır (`server/lib/formula/`).
   - Tahsilat düzeltme/silme, Kasa (göç 5), işlem geçmişi eskiden yeniye, Türkçe tutar okuma.
   - Operasyon Merkezi adları kalemle değişir.
+  - Serbest sayfalar: sekme şeridinde "+ Sayfa", Excel benzeri ızgara, Türkçe formüller, Σ toplamlar, doldurma, yapıştırma, geri alma; satırlar kayıt olarak detay kartında çalışır (`docs/MIMARI.md` → *Serbest sayfalar*).
+  - Kayda belge ekleme, Excel'e aktarma, kolon başlıklarını adlandırma, akıllı denetim (`docs/MIMARI.md` → *Belgeler*, *Akıllı denetim*).
+  - Notlar ve belgeler kayıt kimliğine bağlıdır; aynı kimliği taşıyan kayıt farklı oturumlarda aynı notları ve belgeleri görür.
   - Kurulum düzeltmesi: sunucunun üstüne yeniden kurulumda servis yeniden kurulur ve başlar (`setup.iss`, `ExistingServerInstall`).
   - `release.yml`: web arayüzünden açılan yayına da imzalı paket, `DestekOfis-Kurulum.exe` ve kılavuz eklenir (`DESTEKOFIS_RELEASE_KEY` sırrı gerekli).
   - Sitede indirme kartı ve Kasa tanıtımı (`destekofis` deposu, yerel commit; gönderilmedi).
@@ -46,16 +49,17 @@ Yeni bir oturum bu belgeyi okuyarak kaldığı yerden devam eder. Son güncellem
    - GitHub → depo → *Settings → Secrets and variables → Actions* → `DESTEKOFIS_RELEASE_KEY` = güncelleme `.pem` dosyasının tüm içeriği (bir kez).
    - GitHub → *Releases → Draft a new release* → etiket `v2.0.1` (hedef `master`) → *Publish release*. `release.yml` testlerden sonra imzalı paketi, kurulum dosyalarını ve kılavuzu ekler; 2.0.0 kurulumlar kendiliğinden 2.0.1'e geçer.
    - Sır tanımlanmazsa: `node tools/release.mjs --anahtar <pem>` ile paket yerelde üretilip yayına elle yüklenir (`docs/SURUM-YAYIMLAMA.md` → B).
-2. **Faz 4 kalanı: alan adı.**
+2. **2.1.0 — ofis dışından erişim (kullanıcı erteledi, talimat bekleniyor).** Lisanslı kullanıcı ofis dışından (başka bilgisayar, telefon) kendi sunucusuna bağlanıp veri girebilsin. Bugün "Personel bilgisayarı" kurulumu sunucuyu yalnızca ofis ağında (UDP keşfi) bulur. Önerilen yol: satıcı tarafında tek ücretsiz Cloudflare hesabı + alan adı (`destekofis.net` alınınca) ile her ofise Cloudflare Tunnel alt adresi; müşteriye ek maliyet ve modem ayarı yok, CGNAT'ta da çalışır. Programda: yöneticinin açıp kapattığı uzaktan erişim, kullanıcı bazlı izin, uzaktan girişte iki adımlı doğrulama, oturum listesi/kapatma, tünelin sunucuyla başlatılması, lisans servisinde ofis adresi, demoda "Ofisime bağlan", telefonda ana ekrana eklenebilen uygulama; KVKK metnine Cloudflare üzerinden şifreli geçiş eklenmeli. Modem port yönlendirmesi (gerçek IP gerekir) ve hesapsız hızlı tünel (deneme amaçlı, adres değişir) yedek seçenek olarak konuşuldu.
+3. **Faz 4 kalanı: alan adı.**
    - `destekofis.net` alınıp Vercel'e bağlanacak.
    - Ardından KVKK veri sorumlusu ve adresi güncellenecek. Şu an "Uğur Çetin, Karatay / Konya / Türkiye".
    - `destek-ofis.vercel.app` açık kalmalı, çünkü program lisans servisine bu adresten bağlanır. Yeni adres bir sonraki sürümde `DEFAULT_LICENSE_SERVICES`'e ikinci adres olarak eklenir.
-3. **Faz 4 kalanı: site içerikleri.** Fiyat ve satın alma yolu, video oynatıcı, sürüm notları vb. Kullanıcıyla konuşulacak.
-4. **Tanıtım videosu.** Ses kararı bekleniyor.
-5. **Ticari hazırlık.**
+4. **Faz 4 kalanı: site içerikleri.** Fiyat ve satın alma yolu, video oynatıcı, sürüm notları vb. Kullanıcıyla konuşulacak.
+5. **Tanıtım videosu.** Ses kararı bekleniyor.
+6. **Ticari hazırlık.**
    - Kod imzalama sertifikası (Windows "tanınmayan uygulama" uyarısı için).
    - Depoyu gizliye alma. Önce demo indirme bağlantısı ve güncelleme kaynağı başka yere taşınmalı.
-6. **İsteğe bağlı:** Tabloda uygulamada eklenen yeni kayıtlar şu an sekmenin en üstünde görünür (kullanıcı "alta eklensin" isteğini işlem geçmişi ve kasa için onayladı); istenirse tablo için de değiştirilebilir.
+7. **İsteğe bağlı:** Tabloda uygulamada eklenen yeni kayıtlar şu an sekmenin en üstünde görünür (kullanıcı "alta eklensin" isteğini işlem geçmişi ve kasa için onayladı); istenirse tablo için de değiştirilebilir.
 
 ## Kalıcı kurallar
 
