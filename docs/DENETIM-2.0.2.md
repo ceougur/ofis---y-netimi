@@ -9,6 +9,7 @@ Tarih: 27.09.2026 · Kapsam: 2.0.1 yayınından sonra istenen her düzenleme, zo
 | Birim testleri | `npm test` — 38 dosya, Node 22 ve Node 24.21 | **432 / 432** geçti (iki sürümde de) |
 | Uçtan uca tarayıcı testi | `npm run test:e2e` — gerçek sunucu + Chromium, 43 adım | **43 / 43** geçti |
 | Zor veri deneme seti | 17 zor Excel/Sheets düzeni tam yığından (yükle → kaydet → görünüm → analiz → takvim → son tarihler) geçirildi | hepsi doğru okundu (bkz. §3) |
+| Program geneli regresyon | Teslimdeki 9 örnek çalışma kitabı (8 sektör örneği + zor düzenler) Excel işçisinin yoluyla (SheetJS → `sheetMatrix`, birleştirme doldurma dâhil) okunup tam yığından geçirildi | **9 / 9** sorunsuz; sektörler, roller ve takvim korundu |
 | Kod taraması | 132 API ucunun yetki denetimi, HTML kaçışları, zamanlayıcılar, önbellek anahtarları, süreç hataları, sınırlar | 1 eksik bulundu ve kapatıldı (§4) |
 | Güncelleme provası | 2.0.1, 2.0.0 ve 1.7.0 kurulumlarından 2.0.2'ye güncelleme; şema 6'ya geçiş, yedek | geçti |
 
@@ -60,6 +61,8 @@ Excel/Sheets kullanıcılarının gerçekte gönderdiği düzenler tek tek denen
 | Üç satırlı üst yapı (başlık + grup + asıl başlık) ve dikey birleştirilmiş müvekkil | Kayıtlar kişisiz kalmaz | ✔ Ali Veli iki dosya, Ayşe Kaya bir dosya; takvim doğru |
 | Aynı kolonda `1.250,00 TL`, `₺980`, `2.300 TL`, `1.100` ve araya giren boş satırlar | Tutar; boş satırlar atlanır | ✔ 4 kayıt, takvim 2 kalem |
 | Tek kolonluk liste, tamamen boş sekme, ilk satırda uzak not | Liste kişi; boş sekme yok sayılır; not tabloyu bozmaz | ✔ |
+
+İyileştirmelerin tamamı ortak motordadır; Excel yükleme (tarayıcı işçisi), Google Sheets eşitleme, serbest sayfa ve elle girilen kayıtlar aynı ayrıştırıcı, kolon tanıma ve takvim kodundan geçer. Bunu göstermek için teslimdeki dokuz örnek çalışma kitabı da aynı yoldan koşuldu (`4-denetim/ornek-dosyalar-tam-yigin-sonuc.txt`): finans-tahsilat, e-ticaret, emlak, icra (iki sekme), kişi rehberi, klinik, oto galeri ve zor düzenler; sektör önerileri, kolon rolleri ve takvim kalemleri beklendiği gibi.
 
 Bu turda yapılan muhakeme iyileştirmeleri: gruplu başlık, uzak not, dipnot/toplam ayrımı, yan yana tablolar, birleştirilmiş hücreler (Excel `!merges`, Sheets `mergeCells`), hata değerleri, küçük tablolarda tür, ay adı/ABD sırası tarihler, ay kolonu kısaltmaları, tek vadeli tutar, "Şoför/Avukat" tek kelimelik adlar, İngilizce başlık ve ödeme/kapanış sözcükleri, yan yana tabloda formül bağlama. Hepsi birim testine bağlandı (`test/sections.test.mjs`, `columns.test.mjs`, `dues.test.mjs`, `choices.test.mjs`, `excel-format.test.mjs`).
 
