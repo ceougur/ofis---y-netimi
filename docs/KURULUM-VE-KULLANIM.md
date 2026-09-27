@@ -124,7 +124,7 @@ Excel ya da Google Sheets ilk kez yüklendiğinde (ve *yerine koy* ile değişti
 1. **Kayıtlar okunur:** kaç kayıt, kolon ve sekme olduğu.
 2. **Veri türleri doğrulanır:** her kolonun ne taşıdığı bulunur (kimlik, kişi/kurum, telefon, tarih, tutar, durum…). T.C. kimlik no, vergi no ve IBAN kontrol hanesiyle doğrulanır; telefon, tarih ve tutarlar biçimleriyle denetlenir.
 3. **Önem sırası çıkarılır:** kimlik ve kişi en önde, sıra numarası en sonda.
-4. **Sektör belirlenir:** kolon adları, değerler ve dosya/sekme adları 22 grupta 142 sektörlük listeyle karşılaştırılır. Öneri, *Neden bu sektör?* başlığı altında kanıtlarıyla (ör. "“BORÇLU” kolonu", "“İCRA DAİRESİ” kolonunda icra dairesi adları") ve güven düzeyiyle (*Yüksek* / *Orta*) gösterilir.
+4. **Sektör belirlenir:** kolon adları, değerler ve dosya/sekme adları 22 grupta 143 sektörlük listeyle karşılaştırılır. Öneri, *Neden bu sektör?* başlığı altında kanıtlarıyla (ör. "“BORÇLU” kolonu", "“İCRA DAİRESİ” kolonunda icra dairesi adları") ve güven düzeyiyle (*Yüksek* / *Orta*) gösterilir.
 5. **Çalışma alanı hazırlanır.**
 
 **Öneri hiçbir zaman kendiliğinden uygulanmaz.** Yönetici *Evet, uygula*, *Başka sektör seç* ya da *Genel kullan* der. Veri belirgin bir sektöre işaret etmiyorsa sektör atanmaz; *Genel* görünümle ya da listeden seçerek devam edilir. Sektör seçmek verinize ve yetkilere dokunmaz; yalnızca görünen dili ve araçları değiştirir ve istendiği zaman geri alınır:
@@ -166,7 +166,8 @@ Değiştirilebilen başlıklar:
 - **Kayıt işlemleri:** Detay panelindeki *WhatsApp, Not, Telefon, Tahsilat, Görev, Haciz, Düzenle* düğmeleri (*Tahsilat* ve *Haciz* sektöre göre). Tüm işlemler detayın altındaki **İşlem geçmişi**nde işlemi yapanla birlikte görünür.
 - **İşlem geçmişi eskiden yeniye sıralanır:** yeni eklenen not, telefon, tahsilat ve görev en altta görünür.
 - **Tahsilat düzeltme ve silme:** İşlem geçmişindeki tahsilatın yanındaki ✎ (düzelt) ve × (sil). Herkes kendi girdiği tahsilatı; yönetici, ikinci rol ve muhasebe tüm tahsilatları düzeltip silebilir. Tutarlar Türkçe yazılır: *1.250* bin iki yüz elli liradır.
-- **Kasa:** Operasyon Merkezi → *Kasa*. Güncel kasa, seçilen dönemin (*Bu ay, Geçen ay, Bu yıl, Tümü*) tahsilat, ödeme ve farkı; hareketler eskiden yeniye, her satırda o ana kadarki kasa ve dönem başında devreden kasa. Detay kartından girilen tahsilatlar kasaya kendiliğinden düşer; kayda bağlı olmayan tahsilatlar ve kasadan çıkan ödemeler (kira, fatura, maaş, masraf) *+ Tahsilat* / *− Ödeme* ile eklenir, düzeltilir, silinir. Kasayı yönetici, ikinci rol ve muhasebe görür. Kasa ofisin tek kasasıdır; oturum değiştirmek kasayı sıfırlamaz.
+- **Kasa:** Operasyon Merkezi → *Kasa*. Güncel kasa, seçilen dönemin (*Bu ay, Geçen ay, Bu yıl, Tümü, Aralık*) tahsilat, ödeme ve farkı; hareketler eskiden yeniye, her satırda o ana kadarki kasa ve dönem başında devreden kasa. Detay kartından girilen tahsilatlar kasaya kendiliğinden düşer; kayda bağlı olmayan tahsilatlar ve kasadan çıkan ödemeler (kira, fatura, maaş, masraf) *+ Tahsilat* / *− Ödeme* ile eklenir, düzeltilir, silinir. Kasayı yönetici, ikinci rol ve muhasebe görür. Kasa ofisin tek kasasıdır; oturum değiştirmek kasayı sıfırlamaz.
+- **Kasa aralığı ve PDF:** Kasada *Aralık* seçilince başlangıç ve bitiş tarihi girilir (ör. 01.09.2026 – 25.09.2026); göstergeler ve liste o aralığa göre hesaplanır, aralık öncesi *Devreden kasa* olarak yazar. **PDF indir** seçili dönemin kasa dökümünü indirir: ofis adı, aralık, devreden kasa, dönem tahsilatı ve ödemesi, dönem sonu kasa, her hareketin tarihi, açıklaması, tutarı ve yürüyen bakiyesi, dönem toplamı, sayfa numaraları. Dosya adı *Kasa-dokumu 01.09.2026-25.09.2026.pdf* biçimindedir. İndirme değişiklik geçmişine yazılır.
 - **Belgeler:** Detay kartındaki *Belge* düğmesi ya da *Belgeler* bölümü. PDF, resim (JPG, PNG, WEBP, GIF, TIFF), Word, Excel, PowerPoint, UYAP (.udf) ve metin dosyası eklenir; ekran görüntüsü *Ctrl+V* ile yapıştırılır, dosyalar karta sürüklenip bırakılabilir (dosya başına en çok 25 MB). PDF ve resimler programda önizlenir, hepsi indirilebilir. Kişi kendi eklediği belgeyi, yönetici ve ikinci rol tüm belgeleri siler.
 - **Excel'e aktarma:** *Dışa aktar* → *Açık sekme (Excel)*, *Tüm sekmeler (Excel)* ya da *CSV*. Excel dosyasında tutarlar, tarihler ve yüzdeler hesap yapılabilir sayılardır; düzeltmeler ve formül sonuçları dahildir.
 - **Kolon başlıklarını adlandırma:** Detay kartındaki başlığın yanındaki kalemle (yalnızca yönetici) Excel/Sheets'ten gelen kolon adı ofise göre adlandırılır (ör. *TKST_1* → *1. Taksit*). Yalnızca görünen ad değişir; eşitleme ve formüller asıl adla çalışır.
@@ -178,7 +179,24 @@ Değiştirilebilen başlıklar:
 - **Mesajlar (sohbet):** Kenar çubuğu → *Mesajlar* sağdan sohbet panelini açar. *Ofis geneli* kanalını herkes görür; bir kişiye tıklayınca **özel yazışma** açılır — onu yalnızca iki taraf görür (yönetici dahil başka kimse okuyamaz). Yeni mesaj sayfayı yenilemeden gelir: *Mesajlar* rozetinde ve sekme başlığında okunmamış sayısı, ekranın köşesinde kısa bir bildirim ve ses (paneldeki 🔔 ile kapatılır). Kendi son mesajınızın altında *✓ İletildi* / *✓✓ Okundu* görünür. Mesajdaki dosya numarasına (ör. 2024/11710) tıklayınca o dosya tabloda açılır; "Seçili kaydı ekle" ile açık kaydı mesaja bağlayabilirsiniz. *Enter* gönderir, *Shift+Enter* yeni satır.
 - **Anlık güncellemeler:** Başka bir bilgisayarda eklenen not, telefon, tahsilat, görev ve hücre düzeltmeleri açık ekranlara kendiliğinden yansır (açık dosyanın işlem geçmişi yenilenir, tablo yeniden çekilir).
 - **Haciz uyarıları:** Bir yılını dolduracak hacizler 30 gün önceden listelenir, son 7 gün vurgulanır.
-- **Ödeme sözleri:** Tabloda ödeme sözü kolonu varsa aktif sözler üstte kayan şeritte görünür; *Ödendi / İptal* ile kapatılır. 40'tan fazla söz varsa şeritte en yakın 40'ı gösterilir; tamamı özet kartındaki listededir.
+- **Tahsilat takvimi (kayan piller):** Program verinizin tüm sekmelerinde ödenmesi beklenen kalemleri bulur ve üstteki şeritte kaydırır. Tanıdığı yazımlar:
+  - ödeme sözü, taahhüt, vade, son ödeme tarihi (tarih ve tutar aynı hücrede de olabilir: *15.09.2026 - 5.000 TL*);
+  - *1. Taksit Tarihi / 1. Taksit Tutarı* gibi taksit kolonları;
+  - ay olarak yazılan vade (*Eylül 2026*): ayın 1'inden itibaren beklenir;
+  - aylık ücret kolonları (*Eylül*, *Ekim 2026*): hücre boşsa, *ödenmedi* ya da *0* yazıyorsa ödenmemiş; ücretten az bir tutar yazıyorsa kalanı beklenir;
+  - ayın belli günü ödenen kira/aidat (*Ödeme günü: 5*).
+
+  Satırın durumu *Ödendi, Kapandı, İptal* ise kalem beklenmez. Şeritte gecikenler (kırmızı), bugün ve bu ay ödenecekler, 7 gün içinde gelecekler ve 30 gün içindeki açık ödeme sözleri görünür. Pile tıklayınca beklenen tutar, kalan borç ve sekme görünür. Kartın düğmeleri:
+  - *Tahsilat gir*: tutar ve açıklama hazır gelir; kaydedince pil kaybolur ve tutar Kasa'ya düşer;
+  - *Ödendi say*: tahsilat girmeden kapatır (ör. başka yoldan ödendi);
+  - *Söz iptal*: yalnız ödeme sözlerinde;
+  - *Kayda git*.
+
+  Girilen tahsilat kişinin kalemlerine vade sırasıyla sayılır: tutar yetmezse pilde kalan görünür (*kısmen ödendi*), fazlası sonraki kaleme geçer. Programda eklediğiniz yeni satırlar ve serbest sayfalar da izlenir.
+- **Sağ alt bildirimler ve zil:** Ödemesi gelmiş ama tahsil edilmemiş kalemler *Tahsilat alınmadı* başlığıyla, kim, hangi vade ya da ay için, ne kadar olduğu yazılarak ekranın sağ altında bildirilir. Son günü yaklaşan işler de 1 hafta önceden bildirilir: bitiş, yenileme, muayene, sigorta, kasko, vize, SRC, psikoteknik, ehliyet gibi tarihler ve size atanmış görevler. Süresi geçen belgeler 30 gün boyunca bildirilir.
+  - Bildirimler tek tek gelir. Her biri 10 saniye durur, üst üste binmez; üzerine gelince bekler.
+  - Tahsilat girilene ya da iş bitene kadar her 3 saatte bir yinelenir.
+  - Üst çubuktaki **zil** tüm uyarıları gruplu listeler: *Tahsilat alınmadı*, *Son günü yaklaşan ya da geçen işler*, *Görevler*, *Yaklaşan tahsilatlar*. Açılır bildirimler bu listenin altındaki kutuyla kapatılıp açılır.
 
 ## 9a. Serbest sayfalar (Excel gibi kendi tablonuz)
 

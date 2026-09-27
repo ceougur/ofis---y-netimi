@@ -24,6 +24,7 @@ import { runScoped } from "./lib/session-scope.mjs";
 import { registerAdminRoutes } from "./routes/admin.mjs";
 import { registerAuthRoutes } from "./routes/auth.mjs";
 import { registerCashRoutes } from "./routes/cash.mjs";
+import { registerDueRoutes } from "./routes/dues.mjs";
 import { registerDocumentRoutes } from "./routes/documents.mjs";
 import { registerFreeRoutes } from "./routes/free.mjs";
 import { createFreeSheets } from "./lib/free-sheets.mjs";
@@ -114,6 +115,7 @@ export function createApp(overrides = {}) {
   registerAdminRoutes(router, context);
   registerWorkspaceRoutes(router, context);
   registerCashRoutes(router, context);
+  registerDueRoutes(router, context);
   const documents = registerDocumentRoutes(router, context);
   registerFreeRoutes(router, context);
   registerChatRoutes(router, context);

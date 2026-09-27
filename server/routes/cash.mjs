@@ -2,7 +2,8 @@
 // Detay kartından girilen tahsilatlar (payments) kasaya kendiliğinden tahsilat olarak düşer; kasaya ayrıca kayda
 // bağlı olmayan tahsilat (ör. danışmanlık ücreti) ve ödeme (kira, fatura, masraf) elle girilir (cash_entries).
 // Hareketler eskiden yeniye sıralanır; her satırda o ana kadarki kasa bakiyesi yazar.
-import { HttpError, limited, ok, readJson, text } from "../lib/http.mjs";
+import { cashPdf, cashPdfName, rangeLabel } from "../lib/cash-report.mjs";
+import { HttpError, limited, ok, readJson, sendBuffer, text } from "../lib/http.mjs";
 import { parseAmount, roundMoney } from "../lib/money.mjs";
 import { can } from "../lib/permissions.mjs";
 
@@ -28,11 +29,10 @@ export function registerCashRoutes(router, { store, auth, audit, events }) {
     return [...payments, ...manual].sort((a, b) => (a.date === b.date ? (a.createdAt < b.createdAt ? -1 : a.createdAt > b.createdAt ? 1 : 0) : a.date < b.date ? -1 : 1));
   }
 
-  router.get("/api/workspace/cash", async ({ req, res, url }) => {
-    const user = auth.requirePermission(req, "cash.view");
-    const from = text(url.searchParams.get("from"));
-    const to = text(url.searchParams.get("to"));
+  // Seçilen aralığın hareketleri; "from" öncesi devreden kasa olarak özetlenir.
+  function report(user, from, to) {
     if ((from && !validDate(from)) || (to && !validDate(to))) throw new HttpError(400, "Geçerli bir tarih aralığı seçin.");
+    if (from && to && from > to) throw new HttpError(400, "Başlangıç tarihi bitiş tarihinden sonra olamaz.");
     let balance = 0;
     let opening = 0;
     const period = { in: 0, out: 0 };
@@ -52,13 +52,29 @@ export function registerCashRoutes(router, { store, auth, audit, events }) {
       const editable = can(user.role, "cash.manage") || (entry.source === "payment" && own && can(user.role, "payments.create"));
       list.push({ ...entry, balance, editable });
     }
-    ok(res, {
+    return {
       entries: list,
       opening: from ? opening : 0,
       period: { ...period, net: roundMoney(period.in - period.out) },
       totals: { ...totals, balance: roundMoney(totals.in - totals.out) },
       canManage: can(user.role, "cash.manage"),
-    });
+    };
+  }
+
+  router.get("/api/workspace/cash", async ({ req, res, url }) => {
+    const user = auth.requirePermission(req, "cash.view");
+    ok(res, report(user, text(url.searchParams.get("from")), text(url.searchParams.get("to"))));
+  });
+
+  // Kasa dökümü PDF olarak (ör. 01.09.2026 – 25.09.2026 arası hareketler).
+  router.get("/api/workspace/cash.pdf", async ({ req, res, url }) => {
+    const user = auth.requirePermission(req, "cash.view");
+    const from = text(url.searchParams.get("from"));
+    const to = text(url.searchParams.get("to"));
+    const data = report(user, from, to);
+    const pdf = cashPdf(data, { from, to, officeName: store.setting("office.name", ""), userName: user.display_name || user.username || "" });
+    audit(user, "cash.exported", rangeLabel(from, to), { from, to, count: data.entries.length });
+    sendBuffer(res, pdf, { type: "application/pdf", name: cashPdfName(from, to), inline: url.searchParams.get("download") !== "1" });
   });
 
   const input = body => {

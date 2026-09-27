@@ -2,7 +2,29 @@
 
 Sürümler [anlamsal sürümleme](https://semver.org/lang/tr/) kurallarına uyar.
 
-## 2.0.1 — Serbest sayfalar, akıllı denetim, veri oturumları, formüller, Kasa, belgeler, Excel'e aktarma
+## 2.0.1 — Tahsilat takvimi, bildirimler, Kasa PDF, serbest sayfalar, akıllı denetim, veri oturumları, formüller, Kasa, belgeler, Excel'e aktarma
+
+- **Tahsilat takvimi: her Excel/Sheets'te kayan ödeme pilleri.** Program yüklenen verinin tüm sekmelerinde ödenmesi beklenen kalemleri kendisi bulur; yalnız "Ödeme sözleri" sayfasında değil. Tanıdığı yazımlar:
+  - ödeme sözü, taahhüt, vade, son ödeme tarihi kolonları (tarih ve tutar aynı hücrede de olabilir: `15.09.2026 - 5.000 TL`);
+  - `1. Taksit Tarihi` / `1. Taksit Tutarı` gibi taksit çiftleri;
+  - ay olarak yazılan vadeler (`Eylül 2026`): ayın ilk gününden itibaren beklenir;
+  - aylık ücret kolonları (`Eylül`, `Ekim 2026`, `Kasım ödemesi`): boş, `ödenmedi`, `0` ya da ücretten az yazılmışsa (kısmi ödeme) ödenmemiş sayılır;
+  - ayın belli günü ödenen kira/aidat (`Ödeme günü: 5`).
+
+  Durum kolonu *Ödendi / Kapandı / İptal* olan satır ve gelecek ayın ücreti beklenmez. Ekranın üstündeki şeritte gecikenler, bugün/bu ay ödenecekler, 7 gün içinde gelecekler ve 30 gün içindeki açık ödeme sözleri kayar; pilin rengi ve etiketi durumu gösterir (*12 gün gecikti*, *Bu ay*, *Yarın*). Pile tıklanınca kişinin beklenen tutarı, kalan borcu ve sekmesi açılır. Kartta şu düğmeler vardır: *Tahsilat gir* (tutar ve açıklama hazır gelir), *Ödendi say*, *Söz iptal*, *Kayda git*. Programda girilen tahsilatlar kişinin kalemlerine vade sırasıyla sayılır; tutar yetmezse kalan görünür, fazlası sonraki kaleme geçer. Tahsilat girilince ya da *Ödendi say* denince pil kaybolur (*Geri al* ile döner). Programda eklenen yeni satırlar ve serbest sayfalar da aynı kuralla izlenir.
+- **Sağ alt bildirimler ve zil.** Ekranın sağ altında sırayla bildirim çıkar; her biri 10 saniye durur, üst üste binmez, üzerine gelince bekler. İki tür bildirim vardır:
+  - **Tahsilat alınmadı:** Kim, hangi vade ya da ay için, ne kadar (ör. *Mert Çelik · Ağustos ödemesi · Ağustos 2026 · ₺4.500,00*). Ay olarak yazılanlar ayın 1'inden, tarih olarak yazılanlar o günden itibaren bildirilir.
+  - **Son günü yaklaşan işler:** Son gün, bitiş, yenileme, muayene, sigorta, kasko, vize, SRC, psikoteknik, ehliyet gibi tarihler 1 hafta önceden; süresi geçen belgeler 30 gün boyunca bildirilir. Kişiye atanmış görevler de bu listededir.
+
+  Tahsilat girilene ya da iş kapanana kadar bildirim **her 3 saatte bir** yinelenir. Bildirimde *Tahsilat gir* ve *Kayda git* düğmeleri vardır. Üst çubuktaki **zil** tüm uyarıları gruplu listeler ve sayısını gösterir. Bildirimler zil listesinden kapatılabilir.
+- **Okul servisi sektörü:** Öğrenci, veli, okul, güzergâh, plaka ve aylık ücret kolonları tanınır; görünüm *öğrenci* diline geçer. Araç belgeleri (muayene, sigorta, kasko, güzergâh izni) plakayla, şoför belgeleri (SRC, psikoteknik, ehliyet) şoför adıyla bildirilir. Toplam 143 sektör.
+- **Kasa: tarih aralığı ve PDF.** Kasa penceresinde *Bu ay / Geçen ay / Bu yıl / Tümü* yanında **Aralık** seçilir (ör. 01.09.2026 – 25.09.2026). Göstergeler ve liste o aralığa göre hesaplanır; aralık öncesi *Devreden kasa* olarak yazar. **PDF indir** seçili dönemin kasa dökümünü indirir. Dökümde şunlar bulunur:
+  - ofis adı, aralık, oluşturma zamanı ve hazırlayan;
+  - devreden kasa, dönem tahsilatı, dönem ödemesi ve dönem sonu kasa;
+  - her harekette tarih, açıklama, tahsilat, ödeme ve yürüyen kasa bakiyesi;
+  - dönem toplamı ve sayfa numaraları.
+
+  PDF sunucuda hazırlanır, Türkçe harfler gömülü yazı tipiyle (Liberation Sans, SIL OFL) her görüntüleyicide doğru çıkar. Metin seçilip aranabilir. İndirme değişiklik geçmişine yazılır.
 
 - **Serbest sayfalar: Excel gibi doldurulan yeni sekmeler.** Sekme şeridinin sonundaki **+ Sayfa** düğmesi, yüklenen Excel/Sheets'in sekmelerinin yanına istenen adla yeni bir sayfa ekler. Açılırken kolon ve satır sayısı ile istenirse kolon başlıkları yazılır. Tek sekmeli veride de şerit bu düğme için görünür.
   - **Yazın ve geçin:** Sayfa açılınca tablonun yerini Excel benzeri bir ızgara alır: kolon harfleri (A, B, C…), başlık satırı ve numaralı satırlar. Hücreye yazmaya başlamak onu doldurur; **Enter** (aşağı), **Tab** (sağa), yön tuşları ya da fareyle başka hücreye geçince değer kendiliğinden kaydedilir. **F2**, çift tık ya da hücredeki kalem (✎) düzeltmeye açar, **Esc** vazgeçer. Başlıklar da aynı biçimde yazılır ve kalemle düzeltilir. Son satırda Enter alta yeni satır açar.

@@ -2,7 +2,7 @@
 // Gerçek sunucuyu geçici klasörlerle başlatır, iki farklı kullanıcıyla aynı anda çalışarak
 // merkezi Excel, hücre düzeltme, silme/geri alma, yeni kayıt, notlar, yetkiler ve yönetim panelini sınar.
 // Çalıştırma: npm run test:e2e   (ekran görüntüleri test/e2e/artifacts/ altına yazılır)
-import { mkdirSync, mkdtempSync, rmSync } from "node:fs";
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -10,6 +10,7 @@ import { chromium } from "playwright";
 import { generateKeyPairSync } from "node:crypto";
 import { createApp } from "../../server/app.mjs";
 import { createReferenceLicenseService } from "../../tools/lib/license-service.mjs";
+import { okulServisiXlsx } from "../fixtures/okul-servisi-ornek.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const artifacts = path.join(here, "artifacts");
@@ -455,13 +456,13 @@ try {
     expect(notes.some(item => item.note === "Merkezi not denemesi"), `notlar: ${JSON.stringify(notes)}`);
   });
 
-  await step("ödeme sözleri şeridi görünür ve söz kapatılabilir", async () => {
+  await step("tahsilat takvimi şeridi ödeme sözlerini gösterir; söz 'ödendi say' ile kapanır", async () => {
     await admin.waitForSelector(".hof-payment-promises .hof-payment-pill");
-    const pills = await admin.$$eval(".hof-payment-promises .hof-payment-pill:not([aria-hidden])", nodes => nodes.length);
-    expect(pills === 3, `söz sayısı ${pills}`);
+    const pills = await admin.$$eval(".hof-payment-promises .hof-payment-pill:not([aria-hidden])", nodes => nodes.map(node => node.innerText.replace(/\s+/g, " ")));
+    expect(pills.length === 3 && pills.every(text => text.includes("Ödeme sözü")), `söz pilleri: ${pills.join(" | ")}`);
     await admin.hover(".hof-payment-promises-viewport");
-    await admin.click(".hof-payment-promises .hof-payment-pill:not([aria-hidden])");
-    await admin.click('.hof-payment-action-card [data-action="paid"]');
+    await admin.$eval(".hof-payment-promises .hof-payment-pill:not([aria-hidden])", node => node.click());
+    await admin.click('.hof-payment-action-card [data-act="paid"]');
     await admin.waitForFunction(() => document.querySelectorAll(".hof-payment-promises .hof-payment-pill:not([aria-hidden])").length === 2, null, { timeout: 10000 });
   });
 
@@ -790,6 +791,85 @@ try {
       await context.close();
       await clinicApp.close();
       rmSync(clinicRoot, { recursive: true, force: true });
+    }
+  });
+
+  await step("okul servisi: sektör tanınır; ödenmeyen aylar şeritte ve sağ alt bildirimde; pilden tahsilat girilince pil kaybolur; belge son günleri zilde; kasa aralığı PDF iner", async () => {
+    const schoolRoot = mkdtempSync(path.join(tmpdir(), "destekofis-e2e-okul-"));
+    const schoolFile = path.join(schoolRoot, "okul-servisi-ornek.xlsx");
+    writeFileSync(schoolFile, okulServisiXlsx());
+    const schoolApp = createApp({ dataDir: path.join(schoolRoot, "data"), backupDir: path.join(schoolRoot, "backups"), logLevel: "warn", scheduleBackups: false, env: { HUKUK_ADMIN_PASSWORD: ADMIN_PASSWORD, HUKUK_DATASET_AUTOSYNC: "0" }, license: unlicensed });
+    const schoolPort = (await schoolApp.listen(0, "127.0.0.1")).port;
+    const context = await browser.newContext({ viewport: { width: 1440, height: 900 }, locale: "tr-TR", acceptDownloads: true });
+    try {
+      const page = await context.newPage();
+      page.on("pageerror", error => problems.push(`[okul] pageerror: ${error.message}`));
+      await page.goto(`http://127.0.0.1:${schoolPort}/`);
+      await page.fill("#hof-auth input[name=username]", "admin");
+      await page.fill("#hof-auth input[name=password]", ADMIN_PASSWORD);
+      await Promise.all([page.waitForEvent("load"), page.click('#hof-auth button[type="submit"]')]);
+      await page.waitForSelector("#hof-start .hof-drop");
+      const input = await page.$("#hof-start .hof-drop input[type=file]");
+      await Promise.all([page.waitForEvent("load", { timeout: 30000 }), input.setInputFiles(schoolFile)]);
+      await page.waitForSelector(".hof-analysis-result:not([hidden])", { timeout: 20000 });
+      const result = await page.$eval(".hof-analysis-result", node => node.innerText.replace(/\s+/g, " "));
+      expect(result.includes("Okul servisi"), `okul servisi önerisi: ${result}`);
+      await page.click(".hof-analysis-result [data-apply]");
+      await page.waitForFunction(() => document.querySelector(".brand-subtitle")?.firstChild?.nodeValue === "Okul servisi yönetimi", null, { timeout: 5000 });
+
+      // Şerit: geçen ayın ödenmeyen ücretleri gecikmiş, bu ayınkiler "bu ay"; gelecek ay beklenmez.
+      await page.waitForSelector(".hof-payment-promises .hof-payment-pill", { timeout: 10000 });
+      const heading = await page.$eval(".hof-payment-promises-heading", node => node.innerText.replace(/\s+/g, " "));
+      expect(/2 gecikmiş/.test(heading) && /4 bugün\/bu ay/.test(heading), `şerit başlığı: ${heading}`);
+      const pills = await page.$$eval(".hof-payment-pill:not([aria-hidden])", nodes => nodes.map(node => node.innerText.replace(/\s+/g, " ")));
+      expect(pills.some(text => text.includes("Can Öztürk") && text.includes("1.900")), `kısmi ödeme kalanı: ${pills.join(" | ")}`);
+
+      // Sağ alt bildirim: tek tek, kim/hangi ay/ne kadar yazar.
+      await page.waitForSelector(".hof-notice.is-visible", { timeout: 10000 });
+      const notice = await page.$eval(".hof-notice", node => node.innerText.replace(/\s+/g, " "));
+      expect(/TAHSİLAT ALINMADI/.test(notice) && /₺/.test(notice), `bildirim: ${notice}`);
+      expect((await page.$$(".hof-notice")).length === 1, "bildirimler üst üste binmez");
+      await page.screenshot({ path: path.join(artifacts, "10b-okul-servisi.png") });
+      await page.evaluate(() => document.querySelectorAll(".hof-notice").forEach(node => node.remove()));
+
+      // Pilden tahsilat: tutar hazır gelir; kaydedince pil kaybolur.
+      const target = await page.$eval(".hof-payment-pill:not([aria-hidden])", node => node.querySelector("b").textContent);
+      const before = pills.length;
+      await page.$eval(".hof-payment-pill:not([aria-hidden])", node => node.click());
+      await page.click('.hof-payment-action-card [data-act="pay"]');
+      await page.waitForSelector('.hof-modal-backdrop.is-visible input[name="amount"]');
+      const amount = await page.inputValue('.hof-modal input[name="amount"]');
+      expect(Number(amount.replace(/\./g, "").replace(",", ".")) > 0, `tutar hazır gelmeli: ${amount}`);
+      await page.click('.hof-modal button[type="submit"]');
+      await page.waitForFunction(count => document.querySelectorAll(".hof-payment-pill:not([aria-hidden])").length === count - 1, before, { timeout: 10000 });
+
+      // Zil: belge son günleri (araç plakasıyla) ve alınmayan tahsilatlar gruplu listelenir.
+      await page.click(".topbar .top-actions > .icon-button");
+      await page.waitForSelector(".hof-alert-list");
+      const panel = await page.$eval(".hof-alert-list", node => node.innerText.replace(/\s+/g, " "));
+      expect(panel.includes("Tahsilat alınmadı") && panel.includes("34 SRV 101") && panel.includes("Muayene"), `zil listesi: ${panel.slice(0, 400)}`);
+      await page.keyboard.press("Escape");
+
+      // Kasa: tarih aralığı seçilir, PDF iner.
+      await page.evaluate(() => HOF.workspace.openCash());
+      await page.waitForSelector(".hof-cash-table");
+      await page.click('.hof-modal [data-period="range"]');
+      const today = new Date();
+      const iso = date => `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+      await page.fill(".hof-modal [data-from]", iso(new Date(today.getFullYear(), today.getMonth(), 1)));
+      await page.$eval(".hof-modal [data-from]", node => node.dispatchEvent(new Event("change", { bubbles: true })));
+      await page.waitForFunction(() => document.querySelectorAll(".hof-cash-table tbody tr:not(.hof-cash-opening)").length === 1, null, { timeout: 10000 });
+      const ledger = await page.$eval(".hof-cash-table tbody tr:not(.hof-cash-opening)", node => node.innerText);
+      expect(ledger.includes(target), `kasa satırı: ${ledger}`);
+      const [download] = await Promise.all([page.waitForEvent("download"), page.click(".hof-modal [data-pdf]")]);
+      expect(/^Kasa-dokumu \d{2}\.\d{2}\.\d{4}-\d{2}\.\d{2}\.\d{4}\.pdf$/.test(download.suggestedFilename()), `PDF adı: ${download.suggestedFilename()}`);
+      const pdfPath = path.join(schoolRoot, "kasa.pdf");
+      await download.saveAs(pdfPath);
+      expect(readFileSync(pdfPath).subarray(0, 8).toString("latin1") === "%PDF-1.7", "PDF dosyası");
+    } finally {
+      await context.close();
+      await schoolApp.close();
+      rmSync(schoolRoot, { recursive: true, force: true });
     }
   });
 

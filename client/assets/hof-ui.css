@@ -2939,6 +2939,44 @@ html.hof-no-haciz .filter-strip { display: none !important; }
   display: flex;
   gap: 6px;
 }
+.hof-cash-range {
+  flex-basis: 100%;
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  color: var(--do-faint);
+}
+.hof-cash-range[hidden] {
+  display: none;
+}
+.hof-cash-range label {
+  display: grid;
+  gap: 2px;
+  font-size: 11px;
+  font-weight: 600;
+}
+.hof-cash-range input {
+  height: 32px;
+  padding: 0 8px;
+  border: 1px solid var(--do-border);
+  border-radius: 8px;
+  background: #fff;
+  font: inherit;
+  font-size: 13px;
+  color: var(--do-ink);
+}
+.hof-cash-range input:focus-visible {
+  outline: 2px solid var(--do-accent);
+  outline-offset: 1px;
+}
+.hof-cash-range > span {
+  padding-bottom: 7px;
+}
+@media (max-width: 720px) {
+  .hof-cash-range {
+    flex-wrap: wrap;
+  }
+}
 .hof-cash-kpis .hof-cash-balance {
   border-color: #9cc5ad;
   background: var(--do-accent-soft);
@@ -4686,3 +4724,161 @@ body.hof-free-wide .hof-free-wrap {
     visibility: hidden;
   }
 }
+
+/* ---------- Tahsilat takvimi şeridi (v2.0.1, hof-promises.js) ---------- */
+.hof-payment-promises-dot.is-late { background: #d0533f; box-shadow: 0 0 0 4px #f7ddd8; }
+.hof-payment-pill { position: relative; }
+.hof-payment-pill-state {
+  flex: 0 0 auto;
+  margin-left: 2px;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: #e4f3e7;
+  color: #2f6b49;
+  font-size: 9px;
+  font-style: normal;
+  font-weight: 800;
+  white-space: nowrap;
+}
+.hof-payment-pill.is-overdue { border-color: #efc9c1; }
+.hof-payment-pill.is-overdue .hof-payment-pill-icon { background: #fbe4df; color: #b3473a; }
+.hof-payment-pill.is-overdue .hof-payment-pill-state { background: #fbe4df; color: #b3473a; }
+.hof-payment-pill.is-today .hof-payment-pill-icon,
+.hof-payment-pill.is-month .hof-payment-pill-icon { background: #fdf0d8; color: #a86b12; }
+.hof-payment-pill.is-today .hof-payment-pill-state,
+.hof-payment-pill.is-month .hof-payment-pill-state { background: #fdf0d8; color: #a86b12; }
+.hof-due-facts { display: grid; gap: 4px; margin: 10px 0 0; }
+.hof-due-facts > div { display: flex; justify-content: space-between; gap: 10px; font-size: 10.5px; }
+.hof-due-facts dt { color: #789086; }
+.hof-due-facts dd { margin: 0; color: #24573e; font-weight: 800; text-align: right; }
+.hof-due-facts dd small { color: #88a095; font-weight: 600; }
+.hof-due-facts dd.is-overdue { color: #b3473a; }
+.hof-due-facts dd.is-today, .hof-due-facts dd.is-month { color: #a86b12; }
+.hof-payment-mark { background: #f4f8f5; color: #2d5f45; }
+.hof-payment-go { display: block; width: 100%; margin-top: 8px; padding: 6px; border: 0; border-radius: 8px; background: transparent; color: #2d6747; font-size: 10.5px; font-weight: 800; cursor: pointer; }
+.hof-payment-go:hover { background: #edf7ef; }
+
+/* ---------- Sağ alt bildirimler (v2.0.1, hof-alerts.js) ---------- */
+.hof-notices {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  z-index: 99970;
+  display: grid;
+  width: min(372px, calc(100vw - 36px));
+  pointer-events: none;
+}
+body.hof-chat-open .hof-notices { right: calc(min(420px, 100vw) + 18px); }
+/* Kısa bildirimler (toast) açık bildirimin üstünde durur; üst üste binmez. */
+body.hof-notice-open .hof-toasts { bottom: 170px; }
+.hof-notice {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 12px;
+  padding: 14px 12px 16px 14px;
+  overflow: hidden;
+  border: 1px solid var(--do-border-strong);
+  border-left: 4px solid var(--do-accent);
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 18px 44px rgba(16, 40, 30, 0.22);
+  color: var(--do-ink);
+  opacity: 0;
+  pointer-events: auto;
+  transform: translateY(18px) scale(0.98);
+  transition: opacity 0.24s ease, transform 0.24s ease;
+}
+.hof-notice.is-visible { opacity: 1; transform: none; }
+.hof-notice.is-leaving { opacity: 0; transform: translateX(24px); }
+.hof-notice.is-late { border-left-color: #c9503d; }
+.hof-notice.is-soon { border-left-color: #cf9f4b; }
+.hof-notice-icon {
+  display: grid;
+  width: 36px;
+  height: 36px;
+  place-items: center;
+  border-radius: 11px;
+  background: var(--do-accent-soft);
+  color: var(--do-accent);
+  font-size: 16px;
+  font-weight: 900;
+}
+.hof-notice.is-late .hof-notice-icon { background: #fbe4df; color: #b3473a; }
+.hof-notice.is-soon .hof-notice-icon { background: #fdf0d8; color: #a86b12; }
+.hof-notice-body { min-width: 0; }
+.hof-notice-eyebrow { margin: 0 0 3px; color: var(--do-muted); font-size: 9.5px; font-weight: 800; letter-spacing: 0.06em; }
+.hof-notice.is-late .hof-notice-eyebrow { color: #b3473a; }
+.hof-notice.is-soon .hof-notice-eyebrow { color: #a86b12; }
+.hof-notice-title { display: block; overflow: hidden; font-size: 14px; text-overflow: ellipsis; white-space: nowrap; }
+.hof-notice-text { margin: 3px 0 0; color: var(--do-ink-soft); font-size: 12px; line-height: 1.45; }
+.hof-notice-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 9px; }
+.hof-notice-actions:empty { display: none; }
+.hof-notice-actions button {
+  padding: 5px 10px;
+  border: 1px solid var(--do-border);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--do-accent-hover);
+  font-size: 11px;
+  font-weight: 800;
+  cursor: pointer;
+}
+.hof-notice-actions button:first-child { border-color: var(--do-accent); background: var(--do-accent); color: #fff; }
+.hof-notice-actions button:hover { filter: brightness(0.96); }
+.hof-notice-side { display: flex; flex-direction: column; align-items: flex-end; justify-content: space-between; }
+.hof-notice-close { width: 24px; height: 24px; border: 0; border-radius: 7px; background: transparent; color: var(--do-faint); font-size: 17px; line-height: 1; cursor: pointer; }
+.hof-notice-close:hover { background: var(--do-surface-soft); color: var(--do-ink); }
+.hof-notice-count { color: var(--do-faint); font-size: 9.5px; font-weight: 800; }
+.hof-notice-progress { position: absolute; right: 0; bottom: 0; left: 0; height: 3px; background: rgba(31, 106, 80, 0.08); }
+.hof-notice-progress i { display: block; height: 100%; background: var(--do-accent); transform-origin: left; animation: hof-notice-time var(--hof-notice-ms, 10s) linear forwards; }
+.hof-notice.is-late .hof-notice-progress i { background: #c9503d; }
+.hof-notice.is-soon .hof-notice-progress i { background: #cf9f4b; }
+.hof-notice.is-paused .hof-notice-progress i { animation-play-state: paused; }
+@keyframes hof-notice-time { from { transform: scaleX(1); } to { transform: scaleX(0); } }
+@media (prefers-reduced-motion: reduce) {
+  .hof-notice { transition: none; }
+}
+@media (max-width: 560px) {
+  .hof-notices { right: 10px; bottom: 10px; width: calc(100vw - 20px); }
+  body.hof-notice-open .hof-toasts { bottom: 190px; }
+}
+.topbar .top-actions > .icon-button { position: relative; }
+.hof-bell-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  display: grid;
+  min-width: 18px;
+  height: 18px;
+  place-items: center;
+  padding: 0 5px;
+  border: 2px solid #fff;
+  border-radius: 999px;
+  background: var(--do-accent);
+  color: #fff;
+  font-size: 9.5px;
+  font-weight: 900;
+  line-height: 1;
+}
+.hof-bell-badge.is-late { background: #c9503d; }
+.hof-alert-list { display: grid; gap: 16px; max-height: min(60vh, 560px); overflow: auto; }
+.hof-alert-group h3 { display: flex; align-items: center; gap: 8px; margin: 0 0 8px; font-size: 13px; }
+.hof-alert-group h3 span { padding: 1px 8px; border-radius: 999px; background: var(--do-surface-soft); color: var(--do-muted); font-size: 11px; }
+.hof-alert-group ul { display: grid; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.hof-alert-group li { display: grid; grid-template-columns: 118px 1fr auto; align-items: center; gap: 10px; padding: 8px 10px; border: 1px solid var(--do-border); border-left: 3px solid var(--do-accent); border-radius: 10px; }
+.hof-alert-group li.is-late { border-left-color: #c9503d; }
+.hof-alert-group li.is-soon { border-left-color: #cf9f4b; }
+.hof-alert-when { color: var(--do-muted); font-size: 11px; font-weight: 800; }
+.hof-alert-group li.is-late .hof-alert-when { color: #b3473a; }
+.hof-alert-main { display: grid; min-width: 0; }
+.hof-alert-main b { overflow: hidden; font-size: 12.5px; text-overflow: ellipsis; white-space: nowrap; }
+.hof-alert-main small { color: var(--do-muted); font-size: 11.5px; }
+.hof-alert-buttons { display: flex; gap: 6px; justify-content: flex-end; }
+.hof-alert-mute { margin-top: 14px; }
+@media (max-width: 560px) {
+  .hof-alert-group li { grid-template-columns: 1fr; }
+}
+
+/* Pil kartı: pilin altında sabit konumda (v2.0.1). */
+body > .hof-payment-action-card { position: fixed; z-index: 99960; transform: none; width: min(320px, calc(100vw - 20px)); }

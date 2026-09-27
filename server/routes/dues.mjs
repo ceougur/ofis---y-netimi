@@ -1,0 +1,68 @@
+// Tahsilat takvimi ve son tarihi yaklaşan işler (v2.0.1). Kayan ödeme şeridi ve sağ alt bildirimler bunu kullanır.
+// Sonuç; veri, tahsilatlar, elle kapatılan kalemler ve gün değişene kadar oturum başına önbellektedir.
+import { HttpError, ok, readJson, text } from "../lib/http.mjs";
+import { computeDeadlines, computeDues } from "../lib/insight/dues.mjs";
+
+const SETTLED_KEY = "dues.settled";
+const MAX_SETTLED = 5000;
+
+export function registerDueRoutes(router, { auth, store, dataset, profile, events, audit }) {
+  const cache = new Map(); // oturum → { key, result }
+  const settingKey = () => (dataset.settingKey ? dataset.settingKey(SETTLED_KEY) : SETTLED_KEY);
+  const readSettled = () => {
+    try {
+      const value = JSON.parse(store.setting(settingKey(), "{}") || "{}");
+      return value && typeof value === "object" ? value : {};
+    } catch {
+      return {};
+    }
+  };
+  const paymentsState = () => {
+    const row = store.get("SELECT COUNT(*) AS count, COALESCE(MAX(COALESCE(updated_at, created_at)), '') AS at FROM payments");
+    return `${row.count}/${row.at}`;
+  };
+
+  async function compute() {
+    const now = new Date();
+    const settledRaw = store.setting(settingKey(), "{}") || "{}";
+    const key = [profile.fingerprint(), paymentsState(), settledRaw.length, settledRaw.slice(-64), now.toDateString()].join("|");
+    const session = dataset.currentKey();
+    const hit = cache.get(session);
+    if (hit && hit.key === key) return hit.result;
+    const view = await dataset.view();
+    const rows = view.rows || [];
+    const tabs = (view.tabs || []).map(item => item.title);
+    const keys = new Set(rows.map(row => row.__hofKey).filter(Boolean));
+    const payments = store.all("SELECT case_key AS caseKey, amount, date FROM payments").filter(item => keys.has(item.caseKey));
+    const { items, sources } = computeDues({ rows, tabs, payments, settled: readSettled(), now });
+    const deadlines = computeDeadlines({ rows, tabs, now, exclude: sources });
+    const local = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+    const result = { items, deadlines, sources, today: local, generatedAt: now.toISOString() };
+    cache.set(session, { key, result });
+    return result;
+  }
+
+  router.get("/api/workspace/dues", async ({ req, res }) => {
+    auth.requireUser(req);
+    ok(res, await compute());
+  });
+
+  // "Ödendi say" / "İptal": kalem, tahsilat girilmeden kapatılır (veri değişmez; kim, ne zaman kaydedilir).
+  router.post("/api/workspace/dues/settle", async ({ req, res }) => {
+    const user = auth.requirePermission(req, "records.edit");
+    const body = await readJson(req);
+    const id = text(body.id).slice(0, 600);
+    if (!id.startsWith("due|")) throw new HttpError(400, "Kalem tanınmadı.");
+    const reason = body.reason === "cancelled" ? "cancelled" : "paid";
+    const map = readSettled();
+    if (body.undo) delete map[id];
+    else map[id] = { reason, by: user.id, at: new Date().toISOString() };
+    let entries = Object.entries(map);
+    if (entries.length > MAX_SETTLED) entries = entries.sort((a, b) => String(a[1].at).localeCompare(String(b[1].at))).slice(-MAX_SETTLED);
+    store.setSetting(settingKey(), JSON.stringify(Object.fromEntries(entries)), user.id);
+    const caseKey = id.split("|")[2] || "";
+    audit(user, body.undo ? "dues.reopened" : reason === "paid" ? "dues.settled" : "dues.cancelled", caseKey, { id });
+    events?.publish("workspace.changed", { kind: "dues", caseKey, actorId: user.id, actorName: user.display_name, datasetKey: dataset.currentKey() }, { except: user.id });
+    ok(res, { ok: true });
+  });
+}

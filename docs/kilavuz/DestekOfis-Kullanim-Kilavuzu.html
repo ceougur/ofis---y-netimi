@@ -25,6 +25,7 @@
   <li>Verinizi yükleme</li>
   <li>Günlük kullanım: kayıt, formül, belge, akıllı denetim, Excel'e aktarma</li>
   <li>Serbest sayfalar: Excel gibi kendi tablonuz</li>
+  <li>Tahsilat takvimi ve bildirimler</li>
   <li>Kasa ve Operasyon Merkezi</li>
   <li>Veri oturumları ve kolon adları</li>
   <li>Yönetim: kullanıcılar ve yedekler</li>
@@ -224,24 +225,46 @@
 <figure class="half"><img src="ekran/33-serbest-menu.jpg" alt="Sağ tık menüsü"><figcaption>Sağ tık menüsü</figcaption></figure>
 <p>Yaptığınız her değişiklik ofisteki diğer bilgisayarlara anında yansır; iki kişi aynı sayfada farklı hücrelere aynı anda yazabilir. Sayfayı silmek için <b>⋯ → Sayfayı sil</b> (yönetici); bildirimdeki <b>Geri al</b> ile hemen geri gelir.</p>
 
-<h2 class="pb">9. Kasa ve Operasyon Merkezi</h2>
-<figure><img src="ekran/22-kasa.jpg" alt="Kasa penceresi"><figcaption>Sol menüde Operasyon Merkezi → <b>Kasa</b>: güncel kasa, seçtiğiniz dönemin (Bu ay, Geçen ay, Bu yıl, Tümü) tahsilat, ödeme ve farkı. Detay kartından girilen tahsilatlar kasaya kendiliğinden düşer; kira, fatura, maaş gibi ödemeleri <b>− Ödeme</b> ile eklersiniz. Her satırda o ana kadarki kasa yazar.</figcaption></figure>
+<h2 class="pb">9. Tahsilat takvimi ve bildirimler</h2>
+<p>Program, yüklediğiniz tablonun <b>tüm sekmelerinde</b> ödenmesi beklenen tutarları kendisi bulur: ödeme sözleri, taksitler (<i>1. Taksit Tarihi / Tutarı</i>), "Eylül 2026" gibi ay olarak yazılmış vadeler, aylık ücret kolonları (<i>Eylül</i>, <i>Ekim</i>…) ve her ayın belli günü ödenen kira ya da aidat. Satırın durumu <i>Ödendi</i>, <i>Kapandı</i> ya da <i>İptal</i> ise o satır beklenmez.</p>
+<figure><img src="ekran/35-tahsilat-serit.jpg" alt="Tahsilat takvimi şeridi"><figcaption>Ekranın üstündeki <b>Tahsilat takvimi</b> şeridinde gecikenler (kırmızı), bu ay ödenecekler ve yaklaşanlar kayar. Bir pile tıklayınca beklenen tutar ve durum görünür: <b>Tahsilat gir</b>, <b>Ödendi say</b> (başka yoldan ödendiyse) ya da <b>Kayda git</b>.</figcaption></figure>
+<ul>
+  <li><b>Ay olarak yazılan</b> vade (ör. <i>Eylül 2026</i>) ayın 1'inden, <b>tarih olarak yazılan</b> vade o günden itibaren "tahsilat alınmadı" sayılır.</li>
+  <li>Aylık ücret kolonunda hücre boşsa ya da <i>ödenmedi</i>, <i>0</i> yazıyorsa o ay ödenmemiştir. Ücretten az bir tutar yazıyorsa kalanı beklenir (<i>kısmen ödendi</i>).</li>
+  <li>Açık ödeme sözleri 30 gün öncesinden, taksit ve kiralar bu ay ve 7 gün içindekiler şeritte görünür.</li>
+  <li>Programda eklediğiniz yeni satırlar ve serbest sayfalar da aynı şekilde izlenir.</li>
+</ul>
+<figure class="half"><img src="ekran/37-pilden-tahsilat.jpg" alt="Pilden tahsilat girme"><figcaption><b>Tahsilat gir</b> dediğinizde tutar ve açıklama hazır gelir. Kaydedince pil kaybolur ve tutar Kasa'ya tahsilat olarak düşer. Tutar yetmezse pilde kalanı görünür; fazlası sonraki taksite sayılır.</figcaption></figure>
+<h3>Sağ alttaki bildirimler</h3>
+<figure class="half"><img src="ekran/36-bildirim.jpg" alt="Sağ alt bildirim"><figcaption>Tahsilatı gelmiş ama alınmamış her kalem için ekranın sağ altında kim, hangi ay ya da vade için, ne kadar yazan bir bildirim çıkar.</figcaption></figure>
+<ul>
+  <li>Bildirimler <b>tek tek</b> gelir, her biri <b>10 saniye</b> durur ve üst üste binmez. Fareyle üzerine gelirseniz bekler.</li>
+  <li>Tahsilat girilene ya da iş bitene kadar <b>3 saatte bir</b> yeniden hatırlatılır.</li>
+  <li><b>Son günü yaklaşan işler</b> 1 hafta önceden bildirilir: sözleşme bitişi, yenileme, muayene, sigorta, kasko, vize, SRC, psikoteknik, ehliyet gibi tarihler ve size atanmış görevler. Süresi geçen belgeler 30 gün boyunca hatırlatılır. Araç belgelerinde başlık plakadır.</li>
+</ul>
+<figure><img src="ekran/38-zil.jpg" alt="Bildirim listesi"><figcaption>Üst çubuktaki <b>zil</b> tüm uyarıları gruplu listeler; üzerindeki sayı bekleyen uyarıları gösterir. Listeden doğrudan <b>Tahsilat gir</b> ya da <b>Kayda git</b> denir. Alttaki kutuyla sağ alt bildirimleri kapatıp açabilirsiniz.</figcaption></figure>
+
+<h2 class="pb">10. Kasa ve Operasyon Merkezi</h2>
+<figure><img src="ekran/22-kasa.jpg" alt="Kasa penceresi"><figcaption>Sol menüde Operasyon Merkezi → <b>Kasa</b>: güncel kasa, seçtiğiniz dönemin (Bu ay, Geçen ay, Bu yıl, Tümü, Aralık) tahsilat, ödeme ve farkı. Detay kartından girilen tahsilatlar kasaya kendiliğinden düşer; kira, fatura, maaş gibi ödemeleri <b>− Ödeme</b> ile eklersiniz. Her satırda o ana kadarki kasa yazar.</figcaption></figure>
 <p>Kasayı yönetici, ikinci rol ve muhasebe görür. Kasa ofisin tek kasasıdır: farklı veri oturumlarına geçmek kasayı sıfırlamaz.</p>
+<h3>Tarih aralığı ve PDF</h3>
+<figure><img src="ekran/39-kasa-aralik.jpg" alt="Kasa tarih aralığı"><figcaption><b>Aralık</b>'ı seçip başlangıç ve bitiş tarihini girin (ör. 01.09.2026 – 25.09.2026). Göstergeler ve liste o aralığa göre hesaplanır; aralıktan önceki bakiye <i>Devreden kasa</i> olarak yazar. <b>PDF indir</b> seçili dönemin kasa dökümünü indirir.</figcaption></figure>
+<figure class="half"><img src="ekran/40-kasa-pdf.jpg" alt="Kasa dökümü PDF"><figcaption>Kasa dökümü: ofis adı, aralık, devreden kasa, dönem tahsilatı ve ödemesi, dönem sonu kasa, her hareketin tarihi, açıklaması, tutarı ve yürüyen bakiyesi. Dosya <i>Kasa-dokumu 01.09.2026-25.09.2026.pdf</i> adıyla iner; yazdırılabilir ya da e-postayla gönderilebilir.</figcaption></figure>
 <figure class="narrow"><img src="ekran/23-operasyon-kalem.jpg" alt="Operasyon Merkezi kalemi"><figcaption>Operasyon Merkezi kartının köşesindeki kalem (yalnızca yönetici)…</figcaption></figure>
 <figure><img src="ekran/24-operasyon-adlari.jpg" alt="Operasyon Merkezi adları"><figcaption>…kartın başlığını ve düğmelerin adlarını değiştirir (ör. <i>Kasa</i> yerine <i>Vezne</i>). Değişiklik tüm bilgisayarlara anında yansır.</figcaption></figure>
 
-<h2>10. Veri oturumları ve kolon adları</h2>
+<h2>11. Veri oturumları ve kolon adları</h2>
 <p>Farklı konudaki bir Excel'i (ör. hukuk dosyalarının yanına bir taksit listesi) yüklerken <b>Yeni oturumda aç</b>'ı seçin; iki tablo birbirine karışmaz. Oturumlar arasında sol üstteki <b>Çalışma oturumu</b> kutusundan geçilir. Seçtiğiniz oturum yalnızca sizin ekranınızı değiştirir.</p>
 <figure class="narrow"><img src="ekran/34-oturum-secici.jpg" alt="Oturum seçici"><figcaption>Oturum listesi, kayıt sayılarıyla. Kalemle oturumun adı değiştirilir.</figcaption></figure>
 <p>Kullanıcılar, görevler, notlar, tahsilatlar, Kasa ve yedekler tüm oturumlarda ortaktır; oturum değiştirmek bunları etkilemez.</p>
 <figure class="narrow"><img src="ekran/28-kolon-kalem.jpg" alt="Kolon adını değiştirme"><figcaption>Excel'den gelen kolon başlığını ofisinize göre adlandırmak için detay kartındaki başlığın yanındaki kalemi kullanın (yalnızca yönetici; ör. <i>TKST_1</i> → <i>1. Taksit</i>). Excel dosyanız değişmez.</figcaption></figure>
 
-<h2 class="pb">11. Yönetim: kullanıcılar ve yedekler</h2>
+<h2 class="pb">12. Yönetim: kullanıcılar ve yedekler</h2>
 <p>Yönetim sayfasına sol alttaki kartta <b>Yönetim</b> ile girilir. Bu sayfayı yalnızca yönetici görür.</p>
 <figure><img src="ekran/11-kullanicilar.jpg" alt="Kullanıcılar"><figcaption><b>+ Yeni kullanıcı</b> ile çalışan ekleyin; rolünü seçin. Program çalışana ilk girişte parolasını değiştirtir.</figcaption></figure>
 <figure><img src="ekran/12-yedekler.jpg" alt="Yedekler"><figcaption>Program 6 saatte bir kendiliğinden yedek alır. <b>Şimdi yedek al</b> ile istediğiniz an yedekleyip indirebilirsiniz. Yedekleri ayda bir harici diske kopyalayın.</figcaption></figure>
 
-<h2>12. Ekrandaki uyarılar ne demek?</h2>
+<h2>13. Ekrandaki uyarılar ne demek?</h2>
 <table>
   <tr><th style="width:36%">Uyarı</th><th>Ne yapmalı?</th></tr>
   <tr><td>Ücretsiz deneme henüz başlamadı</td><td>Sunucunun internetini kontrol edin; deneme bağlantı gelince kendiliğinden başlar. İsterseniz Yönetim → Lisans → <b>Denemeyi şimdi başlat</b>.</td></tr>
@@ -254,7 +277,7 @@
   <tr><td>"DestekOfis … sürümüne güncellendi"</td><td>Program kendini güncelledi. Yazdığınız notu kaydedip <b>Yenile</b>'ye basın.</td></tr>
 </table>
 
-<h2>13. Sık sorulan sorular</h2>
+<h2>14. Sık sorulan sorular</h2>
 <p><b>Deneme bitince kayıtlarım silinir mi?</b><br>Hayır. Program yalnızca yeni işlem yapılmasını durdurur. Kayıtlarınızı görebilir, dışa aktarabilir ve yedekleyebilirsiniz.</p>
 <p><b>Her bilgisayar için ayrı lisans mı alacağım?</b><br>Hayır. Lisans yalnızca sunucu bilgisayar içindir. Personel bilgisayarları ücretsiz bağlanır.</p>
 <p><b>Programı silip yeniden kurarsam deneme yeniden başlar mı?</b><br>Hayır. Deneme her bilgisayara bir kez verilir.</p>

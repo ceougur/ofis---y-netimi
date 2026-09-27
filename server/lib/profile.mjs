@@ -454,5 +454,5 @@ export function createProfileService({ store, dataset, audit, events, log, free 
     running.clear();
   };
 
-  return { init, profile, tagline, setSector, dismissIntro, setLabel, setLabels, setColumns, resetLabels, analysis, records, invalidate, usedBefore, reasoningSummary, checks, dismiss };
+  return { init, profile, tagline, setSector, dismissIntro, setLabel, setLabels, setColumns, resetLabels, analysis, records, invalidate, usedBefore, reasoningSummary, checks, dismiss, fingerprint };
 }
