@@ -65,4 +65,34 @@ export function registerDueRoutes(router, { auth, store, dataset, profile, event
     events?.publish("workspace.changed", { kind: "dues", caseKey, actorId: user.id, actorName: user.display_name, datasetKey: dataset.currentKey() }, { except: user.id });
     ok(res, { ok: true });
   });
+
+  // Zil listesinden kaldırılan bildirimler (v2.0.2): kişiye özeldir, tüm bilgisayarlarda geçerlidir. Kalem kapanmaz
+  // (şerit ve diğer kullanıcılar etkilenmez); yalnızca bu kişinin zil listesinde ve sağ alt bildirimlerinde görünmez.
+  const dismissedKey = user => `alerts.dismissed.${user.id}`;
+  const readDismissed = user => {
+    try {
+      const value = JSON.parse(store.setting(dismissedKey(user), "{}") || "{}");
+      return value && typeof value === "object" && !Array.isArray(value) ? value : {};
+    } catch {
+      return {};
+    }
+  };
+  router.get("/api/workspace/alerts/dismissed", async ({ req, res }) => {
+    const user = auth.requireUser(req);
+    ok(res, { ids: Object.keys(readDismissed(user)) });
+  });
+  router.post("/api/workspace/alerts/dismiss", async ({ req, res }) => {
+    const user = auth.requireUser(req);
+    const body = await readJson(req);
+    const id = text(body.id).slice(0, 700);
+    if (!id) throw new HttpError(400, "Bildirim seçilmedi.");
+    const map = readDismissed(user);
+    if (body.undo) delete map[id];
+    else map[id] = new Date().toISOString();
+    // En yeni 3000 kaldırma saklanır; bir yıldan eskiler düşer.
+    const cutoff = new Date(Date.now() - 400 * 86_400_000).toISOString();
+    const entries = Object.entries(map).filter(([, at]) => at >= cutoff).sort((a, b) => a[1].localeCompare(b[1])).slice(-3000);
+    store.setSetting(dismissedKey(user), JSON.stringify(Object.fromEntries(entries)), user.id);
+    ok(res, { ids: entries.map(([key]) => key) });
+  });
 }

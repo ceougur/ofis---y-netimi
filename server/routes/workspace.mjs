@@ -8,7 +8,7 @@ import { can } from "../lib/permissions.mjs";
 
 const CASE_KEY_MAX = 300;
 
-export function registerWorkspaceRoutes(router, { store, auth, audit, dataset, clientState, config, events, chat, profile, free }) {
+export function registerWorkspaceRoutes(router, { store, auth, audit, dataset, clientState, config, events, chat, profile, free, trash }) {
   const now = () => new Date().toISOString();
   // Görev kişiye kimliğiyle bağlıysa yalnızca kimlik belirler (ad değiştirerek başkasının görevi görülemez);
   // serbest yazılmış, kişiye bağlanamamış eski görevlerde ad eşleşmesi geçerlidir.
@@ -299,7 +299,10 @@ export function registerWorkspaceRoutes(router, { store, auth, audit, dataset, c
   });
   router.delete("/api/workspace/payments/:id", async ({ req, res, params }) => {
     const { user, payment } = editablePayment(req, params.id);
+    const full = store.get("SELECT id, case_key AS caseKey, case_title AS caseTitle, amount, date, note, created_by AS createdBy, created_at AS createdAt FROM payments WHERE id = ?", payment.id);
     store.run("DELETE FROM payments WHERE id = ?", payment.id);
+    // Silinenler (v2.0.2): yönetim panelinden geri yüklenebilir.
+    trash?.add({ kind: "payment", ref: payment.id, title: full.caseTitle || full.caseKey || "Tahsilat", detail: full.note, payload: full, user });
     audit(user, "case.payment.deleted", payment.id, { caseKey: payment.caseKey, amount: payment.amount, date: payment.date, note: payment.note });
     changed(user, "activity", { caseKey: payment.caseKey });
     changed(user, "cash");

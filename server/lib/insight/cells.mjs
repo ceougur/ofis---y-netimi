@@ -26,6 +26,22 @@ export const isEmptyCell = value => {
   return isBlank(text) || PLACEHOLDER.test(text);
 };
 
+// Sıra numarası kolonu ("Sıra", "No", "#", "SN"): kayıt bilgisi değildir (v2.0.2).
+export const isSequenceHeader = column => /^(sira|sira no|sira numarasi|no|#|s no|sn|nr|numara|satir|satir no)$/.test(foldText(column).replace(/[.:]/g, "").trim());
+
+// Boş şablon satırı (v2.0.2): sıra numarası dışında gerçek bilgi yok (boş, "–", 0, 0,00 ₺). Excel şablonlarında önceden
+// numaralanmış ama doldurulmamış satırlar; özet kartları, sayımlar, tahsilat takvimi ve bildirimler bunları saymaz.
+export function isBlankRecord(row, columns = Object.keys(row || {})) {
+  for (const column of columns) {
+    if (column.startsWith("__") || isSequenceHeader(column)) continue;
+    const value = row?.[column];
+    if (isEmptyCell(value)) continue;
+    if (parseAmount(value) === 0) continue;
+    return false;
+  }
+  return true;
+}
+
 // Metindeki geçerli tarihler (en fazla 6).
 export function embeddedDates(text) {
   const dates = [];

@@ -19,8 +19,7 @@ import { GENERAL_ID, LEGACY_ID, sectorById } from "./insight/sectors.mjs";
 // Kalemle düzenlenebilen başlıklar: anahtar → en fazla uzunluk ve yönetici ekranındaki adı.
 export const LABEL_SLOTS = Object.freeze({
   "brand.subtitle": { max: 60, name: "Kenar çubuğu alt başlığı" },
-  "nav.workspace": { max: 40, name: "Menü başlığı: Çalışma alanı" },
-  "nav.source": { max: 40, name: "Menü başlığı: Veri kaynağı" },
+  // v2.0.2: "nav.workspace" ve "nav.source" menü başlıkları kaldırıldı; kayıtlı eski değerler yok sayılır.
   "side.title": { max: 40, name: "Operasyon merkezi başlığı" },
   // Operasyon merkezi düğmeleri (v2.0.1): kartın köşesindeki kalemle hepsi birlikte değiştirilir.
   "side.tasks": { max: 32, name: "Operasyon merkezi: Görevler" },
@@ -80,10 +79,12 @@ export function createProfileService({ store, dataset, audit, events, log, free 
     const parsed = parseJson(store.setting(name, ""), {});
     return parsed && typeof parsed === "object" && !Array.isArray(parsed) ? parsed : {};
   };
+  // Yalnız tanımlı yuvalar: kaldırılmış bir yuvanın (ör. v2.0.2'de menü başlıkları) kayıtlı değeri yok sayılır.
+  const known = labels => Object.fromEntries(Object.entries(labels).filter(([key]) => Object.hasOwn(LABEL_SLOTS, key)));
   const readLabels = () => {
-    const office = readObject(K.labels);
+    const office = known(readObject(K.labels));
     if (firstSession()) return office;
-    const own = readObject(sessionKey(K.labels));
+    const own = known(readObject(sessionKey(K.labels)));
     const merged = {};
     for (const [key, value] of Object.entries(office)) if (!DATA_LABELS.has(key)) merged[key] = value;
     for (const [key, value] of Object.entries(own)) if (DATA_LABELS.has(key)) merged[key] = value;

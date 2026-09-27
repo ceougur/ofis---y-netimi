@@ -4882,3 +4882,58 @@ body.hof-notice-open .hof-toasts { bottom: 170px; }
 
 /* Pil kartı: pilin altında sabit konumda (v2.0.1). */
 body > .hof-payment-action-card { position: fixed; z-index: 99960; transform: none; width: min(320px, calc(100vw - 20px)); }
+
+/* ---------- Kenar çubuğu kaydırma (v2.0.2) ----------
+ * Kenar çubuğu ekrana sabittir; içerik (oturum kartı, Ayarlar, Operasyon merkezi) ekrandan uzunsa kendi içinde kayar.
+ * Kullanıcı kartı (Profil, Parola, Yönetim, Çıkış) kaydırırken ekranın altında görünür kalır. */
+.sidebar {
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: #cfdcd5 transparent;
+}
+#hof-sidecard .hof-user {
+  position: sticky;
+  bottom: -11px;
+  z-index: 2;
+  margin: 10px -10px -10px;
+  padding: 10px 14px 10px;
+  border-radius: 0 0 16px 16px;
+  background: #f4f9f6;
+}
+.sidebar > nav.mt-10:not(:has(.nav-item:not([style*="display: none"]))) {
+  display: none;
+}
+/* Sekme şeridinin başlığında sayaç yazılmaz (v2.0.2): arama eşleşmeleri sekme pillerinin içinde görünür. */
+.category-heading > strong {
+  display: none;
+}
+/* Zil listesinde bildirimi kaldırma (v2.0.2) */
+.hof-alert-dismiss {
+  display: inline-grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  border: 1px solid var(--do-border);
+  border-radius: 9px;
+  background: #fff;
+  color: var(--do-faint);
+  font-size: 13px;
+  cursor: pointer;
+}
+.hof-alert-dismiss:hover,
+.hof-alert-dismiss:focus-visible {
+  border-color: #e4b4ac;
+  color: #b3473a;
+}
+.hof-alert-group li {
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+.hof-alert-group li.is-leaving {
+  opacity: 0;
+  transform: translateX(12px);
+}
+.hof-alert-buttons {
+  align-items: center;
+}

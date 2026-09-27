@@ -28,6 +28,8 @@ import { registerDueRoutes } from "./routes/dues.mjs";
 import { registerDocumentRoutes } from "./routes/documents.mjs";
 import { registerFreeRoutes } from "./routes/free.mjs";
 import { createFreeSheets } from "./lib/free-sheets.mjs";
+import { createTrash } from "./lib/trash.mjs";
+import { registerTrashRoutes } from "./routes/trash.mjs";
 import { registerChatRoutes } from "./routes/chat.mjs";
 import { registerDatasetRoutes } from "./routes/dataset.mjs";
 import { registerInsightRoutes } from "./routes/insight.mjs";
@@ -86,7 +88,8 @@ export function createApp(overrides = {}) {
   });
   clientState.useDataset(() => dataset.info());
   // Serbest sayfalar (v2.0.1): kullanıcının "+" ile açtığı Excel benzeri sekmeler; tablo görünümüne satır olarak girer.
-  const free = createFreeSheets({ store, audit, dataset });
+  const trash = createTrash(store);
+  const free = createFreeSheets({ store, audit, dataset, trash });
   dataset.setFreeProvider(free);
   // Ofis profili: sektör, kelime dağarcığı, kalemle değiştirilen başlıklar ve verinin önbellekli analizi.
   const profile = createProfileService({ store, dataset, audit, events, log, free });
@@ -107,7 +110,7 @@ export function createApp(overrides = {}) {
   });
   license.init();
   dataset.start();
-  const context = { config, log, store, auth, audit, clientState, startedAt, supervisorLink, events, chat, dataset, profile, license, free };
+  const context = { config, log, store, auth, audit, clientState, startedAt, supervisorLink, events, chat, dataset, profile, license, free, trash };
 
   const router = createRouter();
   router.get("/api/health", async ({ res }) => ok(res, { service: "destekofis-merkezi", status: "ok", version: config.version, time: new Date().toISOString(), uptimeSeconds: Math.round(process.uptime()) }));
@@ -117,6 +120,7 @@ export function createApp(overrides = {}) {
   registerCashRoutes(router, context);
   registerDueRoutes(router, context);
   const documents = registerDocumentRoutes(router, context);
+  registerTrashRoutes(router, { ...context, documents });
   registerFreeRoutes(router, context);
   registerChatRoutes(router, context);
   registerDatasetRoutes(router, context);

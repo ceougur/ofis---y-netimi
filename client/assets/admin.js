@@ -31,6 +31,15 @@
     "dataset.session.deleted": "Veri oturumunu sildi",
     "case.document.created": "Belge ekledi",
     "case.document.deleted": "Belgeyi sildi",
+    "case.document.restored": "Belgeyi geri yükledi",
+    "case.payment.restored": "Tahsilatı geri yükledi",
+    "cash.entry.restored": "Kasa hareketini geri yükledi",
+    "free.sheet.deleted": "Serbest sayfayı sildi",
+    "free.sheet.restored": "Serbest sayfayı geri yükledi",
+    "free.row.deleted": "Serbest sayfada satır sildi",
+    "free.row.restored": "Serbest sayfada satırı geri yükledi",
+    "free.column.deleted": "Serbest sayfada kolon sildi",
+    "free.column.restored": "Serbest sayfada kolonu geri yükledi",
     "profile.sector": "Sektörü değiştirdi",
     "profile.label": "Başlığı değiştirdi",
     "profile.labels.reset": "Başlıkları varsayılana döndürdü",
@@ -243,6 +252,45 @@
     }
   }
   $("#adm-audit-type").addEventListener("change", loadAudit);
+
+  // ---------- Silinenler (v2.0.2) ----------
+  const TRASH_GROUPS = { row: ["row"], document: ["document"], free: ["free-sheet", "free-row", "free-column"], money: ["payment", "cash"] };
+  let trashItems = [];
+  function renderTrash() {
+    const body = $("#adm-trash");
+    const group = TRASH_GROUPS[$("#adm-trash-kind").value];
+    const items = group ? trashItems.filter(item => group.includes(item.kind)) : trashItems;
+    body.innerHTML = items.length
+      ? items
+          .map(
+            item => `<tr data-id="${esc(item.id)}"><td>${esc(HOF.formatDateTime(item.deletedAt))}</td><td>${esc(item.actorName || "—")}</td><td><span class="adm-kind">${esc(item.kindLabel)}</span></td><td class="adm-detail"><b>${esc(item.title || "—")}</b>${item.detail ? `<small>${esc(item.detail)}</small>` : ""}<small class="adm-trash-note${item.restorable ? "" : " is-blocked"}">${esc(item.note || "")}</small></td><td class="adm-right">${item.restorable ? '<button type="button" class="hof-button hof-button-small" data-restore>Geri yükle</button>' : ""}</td></tr>`,
+          )
+          .join("")
+      : `<tr><td colspan="5">${trashItems.length ? "Bu türde silinen yok." : "Silinen bir şey yok."}</td></tr>`;
+  }
+  async function loadTrash() {
+    try {
+      trashItems = await HOF.api("/api/admin/trash");
+      renderTrash();
+    } catch (error) {
+      $("#adm-trash").innerHTML = `<tr><td colspan="5">${esc(error.message)}</td></tr>`;
+    }
+  }
+  $("#adm-trash-kind").addEventListener("change", renderTrash);
+  $("#adm-trash").addEventListener("click", async event => {
+    const button = event.target.closest("[data-restore]");
+    if (!button) return;
+    const id = button.closest("tr").dataset.id;
+    button.disabled = true;
+    try {
+      const result = await HOF.api("/api/admin/trash/restore", { method: "POST", body: { id } });
+      HOF.toast(result.message || "Geri yüklendi.", { type: "success" });
+      loadTrash();
+    } catch (error) {
+      button.disabled = false;
+      HOF.toastError(error);
+    }
+  });
 
   // ---------- Sistem ----------
   async function copyText(value) {
@@ -518,7 +566,7 @@
   });
 
   // ---------- Sekmeler ----------
-  const loaders = { users: loadUsers, backups: loadBackups, audit: loadAudit, system: loadSystem, license: loadLicense };
+  const loaders = { users: loadUsers, backups: loadBackups, audit: loadAudit, trash: loadTrash, system: loadSystem, license: loadLicense };
   function selectTab(name) {
     document.querySelectorAll(".adm-tabs [data-tab]").forEach(button => button.setAttribute("aria-selected", String(button.dataset.tab === name)));
     document.querySelectorAll(".adm-panel").forEach(panel => {

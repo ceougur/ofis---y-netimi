@@ -557,10 +557,6 @@
       if (label === "Tabloyu değiştir") setHidden(button, true);
       if (label === "Ayarlar") setHidden(button, !manage);
     });
-    document.querySelectorAll(".sidebar .nav-label").forEach(label => {
-      // Başlık kalemle değiştirilmiş olabilir; arayüzün asıl metnine bakılır.
-      if ((HOF.labels?.original(label) ?? navLabel(label)) === "VERİ KAYNAĞI") setHidden(label, !manage);
-    });
     document.querySelectorAll(".button-row button").forEach(button => {
       if (navLabel(button).includes("Yeni tablo yükle")) setHidden(button, true);
     });

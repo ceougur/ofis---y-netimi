@@ -114,8 +114,6 @@
   // tüm sayfayı her DOM değişikliğinde taramamak için.
   const SLOTS = [
     { key: "brand.subtitle", root: ".sidebar", selector: ".brand-subtitle", sector: () => HOF.vocab.subtitle },
-    { key: "nav.workspace", root: ".sidebar", selector: "nav .nav-label", index: 0 },
-    { key: "nav.source", root: ".sidebar", selector: "nav .nav-label", index: 1 },
     // side.title ve düğme adları (v2.0.1) Operasyon merkezinin kendi düzenleyicisindedir (hof-workspace.js).
     { key: "page.title", root: ".topbar", selector: ".page-title" },
     // Genel sektörde arayüzün kendi başlığı ("Tablo özeti") kalır.
@@ -125,8 +123,6 @@
     { key: "table.title", root: ".cases-panel", selector: ".panel-title", when: singleScope },
     { key: "table.subtitle", root: ".cases-panel", selector: ".panel-meta" },
   ];
-  // Kalemsiz, yalnızca sektör dilinde değişen yerler.
-  const VOCAB_SLOTS = [{ root: ".sidebar", selector: "nav .nav-item", original: "Tüm kayıtlar", sector: () => (sectorChosen() ? `Tüm ${HOF.vocab.records}` : null) }];
 
   // Metin katmanı. Öğe → { originals: düğüm → React'in yazdığı değer, written: düğüm → bizim yazdığımız, applied }.
   // Başlık değiştirilince ilk dolu metin düğümüne başlık, diğerlerine boş yazılır. React kendi düğümlerinden birini
@@ -213,14 +209,6 @@
       // Birden çok sekmede tablo başlığı sekmenin adıdır; kalem yalnızca başlık değiştirilebildiğinde görünür.
       if (manage && (!slot.when || slot.when())) ensurePencil(element, slot);
       else element.querySelector(":scope > .hof-label-pencil")?.remove();
-    }
-    for (const slot of VOCAB_SLOTS) {
-      if (!roots.has(slot.root)) roots.set(slot.root, document.querySelector(slot.root));
-      for (const element of roots.get(slot.root)?.querySelectorAll(slot.selector) || []) {
-        const original = state.has(element) ? textState(element).original : clean(textOf(ownTexts(element)));
-        if (original !== slot.original) continue;
-        writeText(element, () => slot.sector() || original);
-      }
     }
   }
   // Detay kartı başlığı (v2.0.1): kayıt kimliği (ör. "M-102", "2024/11710") yerine kişinin/kaydın adı; kimlik üst satırda
@@ -474,7 +462,9 @@
     if (card.id === "deadline") {
       // En yakın anlamlı pencere gösterilir: 7 gün, yoksa 30 gün; ikisi de boşsa yaklaşan yoktur.
       const span = card.next7 ? { label: "7 gün içinde", value: card.next7, help: `Bugün ${number(card.today)} · 30 gün içinde ${number(card.next30)}` } : card.next30 ? { label: "30 gün içinde", value: card.next30, help: "7 gün içinde yok" } : { label: "yaklaşan", value: 0, help: "30 gün içinde tarih yok" };
-      return { id: "deadline", icon: "calendar", label: `${label} · ${span.label}`, value: number(span.value), help: `${span.help} · tarihi geçen ${number(card.passed)}${card.unclear ? ` · ${number(card.unclear)} belirsiz` : ""}`, tone: card.next7 ? "warn" : "" };
+      // Planlı tarihte (randevu, duruşma) geçmiş olanlar "tarihi geçmiş" değil, olmuş bitmiştir (v2.0.2).
+      const passedLabel = card.meaning === "schedule" ? "geçmiş" : "tarihi geçen";
+      return { id: "deadline", icon: "calendar", label: `${label} · ${span.label}`, value: number(span.value), help: `${span.help} · ${passedLabel} ${number(card.passed)}${card.unclear ? ` · ${number(card.unclear)} belirsiz` : ""}`, tone: card.next7 ? "warn" : "" };
     }
     if (card.id === "event") return { id: "event", icon: "calendar", label: `${label} · bu ay`, value: number(card.thisMonth), help: `${number(card.dated)} kayıtta tarih${card.unclear ? ` · ${number(card.unclear)} belirsiz` : ""}` };
     if (card.id === "responsible") {
@@ -538,40 +528,6 @@
       .join("");
   }
 
-  // Kenar çubuğundaki "Bu ay": her sekmenin doğrulanmış tarih kolonundan (son tarih, yoksa olay tarihi); hiçbir sekmede
-  // doğrulanmış tarih kolonu yoksa sayı gösterilmez (arayüzün kendi tahmini de gösterilmez).
-  function applyMonthNav() {
-    const item = [...(document.querySelector(".sidebar")?.querySelectorAll("nav .nav-item") || [])].find(element => textOf(ownTexts(element)).trim() === "Bu ay");
-    if (!item) return;
-    const month = insight?.kpis?.month;
-    const count = item.querySelector(".nav-count");
-    if (count && insight) {
-      const text = month ? number(month.count) : "";
-      if (count.textContent !== text) count.textContent = text;
-      if (count.hidden !== !month) count.hidden = !month;
-      const columns = [...new Set((month?.parts || []).map(part => nice(part.column)))];
-      const title = month ? `${columns.join(", ")} bu ay olan kayıtlar` : "Tabloda ay bazında izlenebilecek doğrulanmış bir tarih kolonu yok";
-      if (item.title !== title) item.title = title;
-    }
-    if (!item.dataset.hofMonth) {
-      item.dataset.hofMonth = "1";
-      item.addEventListener("click", () => openMonth());
-    }
-  }
-
-  // Kenar çubuğundaki sayı tüm sekmelerden gelir; liste de tüm sekmelerden.
-  async function openMonth() {
-    const month = insight?.kpis?.month;
-    if (!month) return HOF.toast("Tabloda ay bazında izlenebilecek doğrulanmış bir tarih kolonu yok.");
-    const result = await fetchList({ list: "month", tab: "" });
-    if (!result) return undefined;
-    const label = new Intl.DateTimeFormat("tr-TR", { month: "long", year: "numeric" }).format(new Date());
-    const columns = [...new Set(month.parts.map(part => nice(part.column)))].join(", ");
-    const modal = HOF.modal({ title: `Bu ay: ${label}`, eyebrow: "BU AY", body: `<p class="hof-modal-text">${number(result.total)} kayıt (${esc(columns)}). Kayda gitmek için tıklayın.</p>${recordList(result.items, item => item.date, { showTab: multiScope() })}${moreNote(result)}` });
-    wireOpen(modal);
-    return undefined;
-  }
-
   // ---------- Kayıt listesi pencereleri ----------
   // Listeler sunucudan, kartla aynı kapsamda (sekme), aynı kolon ve kuralla ve tamamı sayılarak gelir.
   let listBusy = false;
@@ -630,7 +586,7 @@
         title,
         eyebrow: eyebrow("AKILLI ÖZET", key),
         size: "wide",
-        body: `<div class="hof-tabs" role="group" aria-label="Tarih filtresi"><button type="button" data-view="upcoming" aria-pressed="true">Önümüzdeki 30 gün (${number(upcoming.total)})</button><button type="button" data-view="passed" aria-pressed="false">Tarihi geçen (${number(passed.total)})</button></div><div data-list>${listFor(upcoming)}</div>${explainHtml(card.explain)}`,
+        body: `<div class="hof-tabs" role="group" aria-label="Tarih filtresi"><button type="button" data-view="upcoming" aria-pressed="true">Önümüzdeki 30 gün (${number(upcoming.total)})</button><button type="button" data-view="passed" aria-pressed="false">${card.meaning === "schedule" ? "Geçmiş" : "Tarihi geçen"} (${number(passed.total)})</button></div><div data-list>${listFor(upcoming)}</div>${explainHtml(card.explain)}`,
       });
       modal.dialog.addEventListener("click", event => {
         const view = event.target.closest("[data-view]")?.dataset.view;
@@ -1155,7 +1111,6 @@
       applyLabels();
       applyDetailTitle();
       renderKpis();
-      applyMonthNav();
       if (pendingAnalysis && canManage() && document.querySelector(".dynamic-table") && !HOF.hasOpenModal()) {
         pendingAnalysis = null;
         setTimeout(() => runAnalysis({ reason: "import" }), 350);

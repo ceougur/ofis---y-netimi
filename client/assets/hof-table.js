@@ -315,7 +315,7 @@
     }
     const modal = HOF.formModal({
       title: "Yeni kayıt oluştur",
-      eyebrow: `YENİ ${HOF.vocab.record.toLocaleUpperCase("tr-TR")}${tab ? ` · ${tab.toLocaleUpperCase("tr-TR")}` : ""}`,
+      eyebrow: `YENİ KAYIT${tab ? ` · ${tab.toLocaleUpperCase("tr-TR")}` : ""}`,
       size: "wide",
       intro: tab ? `Kayıt <b>${esc(tab)}</b> sekmesine eklenir; form bu sekmenin <b>${columns.length}</b> kolonuna göre oluşturuldu. Yalnızca doldurduğunuz alanlar kaydedilir; kayıt tüm bilgisayarlarda görünür.` : `Form, tablonuzun <b>${columns.length}</b> kolonuna göre oluşturuldu. Yalnızca doldurduğunuz alanlar kaydedilir; kayıt tüm bilgisayarlarda görünür.`,
       fields: (() => {

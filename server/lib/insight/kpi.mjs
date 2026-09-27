@@ -6,6 +6,7 @@
 // göstergeler üretir. Tarih karşılaştırmaları sunucunun yerel takvim gününe göredir (ofis saati).
 import { columnOrder } from "../sources.mjs";
 import { buildCards, cardItems, dayStart } from "./cards.mjs";
+import { isBlankRecord } from "./cells.mjs";
 import { analyzeColumns, primaryColumns } from "./columns.mjs";
 import { assessQuality, mergeQuality, recordTitle } from "./quality.mjs";
 
@@ -44,7 +45,9 @@ export function analyzeScope(rows, { now = new Date() } = {}) {
   return { total: rows.length, records, grouped, columnCount: columns.length, primary, cards, rejected, month, quality };
 }
 
-export function computeKpis(rows, { tabs = [], now = new Date() } = {}) {
+export function computeKpis(allRows, { tabs = [], now = new Date() } = {}) {
+  // Boş şablon satırları (yalnız sıra numarası) kayıt sayılmaz (v2.0.2).
+  const rows = allRows.filter(row => !isBlankRecord(row));
   const keys = scopeKeys(rows, tabs);
   const groups = splitScopes(rows, keys);
   const scopes = {};

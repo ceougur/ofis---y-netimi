@@ -90,6 +90,32 @@
     return out;
   }
 
+  // Zil listesinden kaldırılanlar (kişiye özel, sunucuda; v2.0.2).
+  let dismissed = new Set();
+  async function loadDismissed() {
+    try {
+      dismissed = new Set((await HOF.api("/api/workspace/alerts/dismissed")).ids || []);
+      updateBadge();
+    } catch {
+      // okunamazsa hiçbiri kaldırılmamış sayılır
+    }
+  }
+  async function dismiss(item, undo = false) {
+    if (undo) dismissed.delete(item.id);
+    else dismissed.add(item.id);
+    updateBadge();
+    try {
+      const result = await HOF.api("/api/workspace/alerts/dismiss", { method: "POST", body: { id: item.id, undo } });
+      dismissed = new Set(result.ids || []);
+    } catch (error) {
+      HOF.toastError(error);
+    }
+    updateBadge();
+    if (!undo) {
+      HOF.toast(`${item.title} bildirimi listenizden kaldırıldı.`, { action: { label: "Geri al", onClick: () => dismiss(item, true) } });
+    }
+  }
+
   function alerts() {
     const data = HOF.dues?.data() || { items: [], deadlines: [] };
     const out = [];
@@ -121,21 +147,26 @@
       });
     }
     for (const item of data.deadlines || []) {
+      // Planlı tarih (randevu, duruşma, sınav, teslim): "son gün" değil, yaklaşan bir olaydır (v2.0.2).
+      const planned = item.type === "event";
+      const soon = item.days === 0 ? "BUGÜN" : item.days === 1 ? "YARIN" : `${item.days} GÜN SONRA`;
       out.push({
         id: `deadline|${item.id}`,
-        type: "deadline",
+        type: planned ? "event" : "deadline",
         tone: item.days < 0 ? "late" : item.days <= 1 ? "soon" : "info",
-        eyebrow: item.days < 0 ? `SÜRESİ GEÇTİ · ${Math.abs(item.days)} GÜN` : item.days === 0 ? "SON GÜN BUGÜN" : item.days === 1 ? "SON GÜN YARIN" : `SON GÜNE ${item.days} GÜN`,
+        eyebrow: planned ? `${soon} · ${item.label.toLocaleUpperCase("tr-TR")}` : item.days < 0 ? `SÜRESİ GEÇTİ · ${Math.abs(item.days)} GÜN` : item.days === 0 ? "SON GÜN BUGÜN" : item.days === 1 ? "SON GÜN YARIN" : `SON GÜNE ${item.days} GÜN`,
         title: who(item),
-        when: item.days < 0 ? `Süresi ${Math.abs(item.days)} gün önce geçti` : item.days === 0 ? "Bugün" : item.days === 1 ? "Yarın" : `${item.days} gün kaldı`,
+        when: planned ? (item.days === 0 ? "Bugün" : item.days === 1 ? "Yarın" : `${item.days} gün sonra`) : item.days < 0 ? `Süresi ${Math.abs(item.days)} gün önce geçti` : item.days === 0 ? "Bugün" : item.days === 1 ? "Yarın" : `${item.days} gün kaldı`,
         text: `${item.caseNo && item.person ? `${item.caseNo} · ` : ""}${item.label} · ${item.dueText}`,
         caseKey: item.caseKey,
         tab: item.tab,
         days: item.days,
-        rank: item.days < 0 ? 1 : 2,
+        rank: planned ? 3 : item.days < 0 ? 1 : 2,
       });
     }
     out.push(...taskAlerts());
+    // Kişinin zil listesinden kaldırdıkları (v2.0.2) ne listede ne sağ altta görünür.
+    for (let index = out.length - 1; index >= 0; index -= 1) if (dismissed.has(out[index].id)) out.splice(index, 1);
     // Önce alınmayan tahsilatlar (en çok gecikenden), sonra geciken görevler, son günler, yaklaşanlar.
     out.sort((a, b) => a.rank - b.rank || (a.rank === 0 ? a.days - b.days : a.days - b.days) || a.title.localeCompare(b.title, "tr"));
     return out;
@@ -302,6 +333,7 @@
     const groups = [
       ["Tahsilat alınmadı", list.filter(item => item.type === "unpaid")],
       ["Son günü yaklaşan ya da geçen işler", list.filter(item => item.type === "deadline")],
+      ["Yaklaşan randevu ve planlı tarihler", list.filter(item => item.type === "event")],
       ["Görevler", list.filter(item => item.type === "task")],
       ["Yaklaşan tahsilatlar (7 gün)", list.filter(item => item.type === "upcoming")],
     ].filter(([, items]) => items.length);
@@ -310,7 +342,7 @@
           .map(
             ([title, items]) => `<section class="hof-alert-group"><h3>${esc(title)} <span>${items.length}</span></h3><ul>${items
               .map(
-                (item, index) => `<li class="is-${esc(item.tone)}"><span class="hof-alert-when">${esc(item.when || "")}</span><span class="hof-alert-main"><b>${esc(item.title)}</b><small>${esc(item.text)}</small></span><span class="hof-alert-buttons">${item.due && canPay() ? `<button type="button" class="hof-button hof-button-small" data-pay="${esc(title)}|${index}">Tahsilat gir</button>` : ""}${item.caseKey ? `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-go="${esc(title)}|${index}">Kayda git</button>` : ""}</span></li>`,
+                (item, index) => `<li class="is-${esc(item.tone)}"><span class="hof-alert-when">${esc(item.when || "")}</span><span class="hof-alert-main"><b>${esc(item.title)}</b><small>${esc(item.text)}</small></span><span class="hof-alert-buttons"><button type="button" class="hof-alert-dismiss" data-dismiss="${esc(title)}|${index}" title="Bu bildirimi listemden kaldır" aria-label="Bildirimi kaldır">✕</button>${item.due && canPay() ? `<button type="button" class="hof-button hof-button-small" data-pay="${esc(title)}|${index}">Tahsilat gir</button>` : ""}${item.caseKey ? `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-go="${esc(title)}|${index}">Kayda git</button>` : ""}</span></li>`,
               )
               .join("")}</ul></section>`,
           )
@@ -323,11 +355,27 @@
       body: `<div class="hof-alert-list">${body}</div><label class="hof-check hof-alert-mute"><input type="checkbox" ${muted() ? "" : "checked"}><span>Sağ altta açılır bildirim göster (10 saniye; tahsilat girilene ya da iş bitene kadar 3 saatte bir)</span></label>`,
     });
     modal.dialog.addEventListener("click", event => {
-      const button = event.target.closest("[data-go], [data-pay]");
+      const button = event.target.closest("[data-go], [data-pay], [data-dismiss]");
       if (!button) return;
-      const [title, index] = (button.dataset.go || button.dataset.pay).split("|");
+      const [title, index] = (button.dataset.go || button.dataset.pay || button.dataset.dismiss).split("|");
       const item = groups.find(([name]) => name === title)?.[1][Number(index)];
       if (!item) return;
+      if (button.dataset.dismiss) {
+        const row = button.closest("li");
+        row?.classList.add("is-leaving");
+        setTimeout(() => {
+          const list = row?.parentElement;
+          row?.remove();
+          const group = list?.closest(".hof-alert-group");
+          if (group) {
+            const left = group.querySelectorAll("li").length;
+            if (!left) group.remove();
+            else group.querySelector("h3 span").textContent = String(left);
+          }
+        }, 180);
+        dismiss(item);
+        return;
+      }
       modal.close();
       if (button.dataset.pay) pay(item.due);
       else HOF.revealRecord?.(item.caseKey, { tab: item.tab || "" });
@@ -371,7 +419,8 @@
 
   HOF.whenReady(() => {
     // Açılışta ekran yerleşsin diye bir süre beklenir; takvim geldikçe yeni bildirimler kuyruğa girer.
-    setTimeout(loadTasks, 2500);
+    // Kaldırılanlar önce gelir; ilk bildirim kuyruğu kaldırılanları göstermesin.
+    loadDismissed().finally(() => setTimeout(loadTasks, 2500));
     HOF.on("dues", () => setTimeout(enqueue, 300));
     HOF.on("live:workspace.changed", change => {
       if (change?.kind === "task") tasksSoon();

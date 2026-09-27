@@ -5,6 +5,7 @@
 // sağlamayla kesinleşir ("verified"); tutar, tarih, telefon gibi türler değerlerin büyük çoğunluğu gerçekten o biçimdeyse
 // kabul edilir. Başlık tek başına bir kolona tür biçmez; yalnızca değerlerin söylediğini güçlendirir veya ayırt eder
 // (ör. aynı sayısal kolon "TUTAR" başlığıyla tutar, "ADET" başlığıyla miktardır).
+import { dateMeaning, kindOfMeaning } from "./temporal.mjs";
 import { foldText, isEmail, isIban, isPlate, isProvince, isTckn, isTrPhone, isUrl, isVkn, parseAmount, parseDate } from "./validators.mjs";
 
 const SAMPLE = 4000;
@@ -220,16 +221,21 @@ export function analyzeColumn(rows, column, { now = new Date() } = {}) {
   if (enough && caseNo >= 0.8) return result("id", caseNo, { kind: "case" });
   const date = rate(values, value => Boolean(parseDate(value)));
   if (enough && (date >= 0.8 || (hits.date && date >= 0.5))) {
-    // Alt tür: son tarih (yaklaşan/tarihi geçen anlamlı), olay tarihi (bu ay eklenen), doğum tarihi, diğer.
-    const kind = hits.birth ? "birth" : hits.deadlineStrong ? "deadline" : hits.event ? "event" : hits.deadline ? "deadline" : "other";
-    // İleri tarihli değerlerin oranı: aynı türden iki kolon varsa (ör. "Muayene tarihi" ve "Randevu tarihi") önümüzdeki
-    // günleri taşıyanı son tarih olarak seçmek için.
+    // İleri tarihli değerlerin oranı (dolu tarihler içinde): anlamı başlıktan çıkmayan kolonlarda karar verir.
     const today = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
-    const futureRate = rate(values, value => {
+    let dated = 0;
+    let future = 0;
+    for (const value of values) {
       const parsed = parseDate(value);
-      return Boolean(parsed) && parsed.getTime() >= today;
-    });
-    return result("date", date + (hits.date ? 0.1 : 0), { validRate: round(date), kind, strong: Boolean(hits.deadlineStrong), futureRate: round(futureRate) });
+      if (!parsed) continue;
+      dated += 1;
+      if (parsed.getTime() >= today) future += 1;
+    }
+    const futureRate = dated ? future / dated : 0;
+    // Anlam (v2.0.2, temporal.mjs): bitiş / planlı / kayıt / doğum / belirsiz. "kind" eski adıyla sürer: son tarih kartı
+    // (deadline) bitiş ve planlı tarihlerden, "Bu ay" (event) kayıt tarihlerinden kurulur.
+    const { meaning, reason } = dateMeaning(column, futureRate);
+    return result("date", date + (hits.date ? 0.1 : 0), { validRate: round(date), kind: kindOfMeaning(meaning), meaning, meaningReason: reason, strong: meaning === "expiry", futureRate: round(futureRate) });
   }
   const numeric = rate(values, value => parseAmount(value) !== null);
   const percentSigned = rate(values, value => /%/.test(value) && parseAmount(value.replace(/%/g, "")) !== null);

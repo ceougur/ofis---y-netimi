@@ -92,5 +92,7 @@ export function registerDocumentRoutes(router, { store, auth, audit, events, con
     ok(res, { id: row.id });
   });
 
-  return { stop: () => clearTimeout(purgeTimer) };
+  // Silinenler (v2.0.2): 30 gün içinde silinen belge, dosyası duruyorsa geri yüklenir.
+  const hasFile = row => Boolean(files.read(row.sha256));
+  return { stop: () => clearTimeout(purgeTimer), hasFile, notify: changed };
 }

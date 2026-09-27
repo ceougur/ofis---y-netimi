@@ -134,7 +134,10 @@ describe("kolon tanıma", () => {
   it("aynı türden iki tarih kolonundan ileri tarihleri taşıyan son tarih seçilir", () => {
     const rows = Array.from({ length: 10 }, (_, i) => ({ "MUAYENE TARİHİ": `${String(1 + i).padStart(2, "0")}.09.2026`, "RANDEVU TARİHİ": `${String(1 + i).padStart(2, "0")}.10.2026` }));
     const analyses = analyzeColumns(rows, Object.keys(rows[0]), { now: new Date(2026, 8, 25) });
-    assert.equal(roleOf(analyses, "MUAYENE TARİHİ").kind, "deadline");
+    // v2.0.2: değerleri geçmişte olan "Muayene tarihi" muayenenin yapıldığı gündür (olay), son tarih değil.
+    assert.equal(roleOf(analyses, "MUAYENE TARİHİ").kind, "event");
+    assert.equal(roleOf(analyses, "MUAYENE TARİHİ").meaning, "record");
+    assert.equal(roleOf(analyses, "RANDEVU TARİHİ").meaning, "schedule");
     assert.equal(primaryColumns(analyses).deadline, "RANDEVU TARİHİ", "geçmiş tarihli muayene değil, ileri tarihli randevu");
   });
 
@@ -499,7 +502,7 @@ describe("ofis profili", () => {
     assert.equal(profile.tagline, "Klinik yönetimi");
     profile = (await admin.del("/api/workspace/labels")).data.data;
     assert.deepEqual(profile.labels, {});
-    assert.deepEqual(Object.keys(profile.slots).sort(), ["brand.subtitle", "categories.title", "nav.source", "nav.workspace", "page.title", "side.cash", "side.guide", "side.liens", "side.messages", "side.newRecord", "side.newTask", "side.reports", "side.tasks", "side.title", "summary.subtitle", "summary.title", "table.subtitle", "table.title"]);
+    assert.deepEqual(Object.keys(profile.slots).sort(), ["brand.subtitle", "categories.title", "page.title", "side.cash", "side.guide", "side.liens", "side.messages", "side.newRecord", "side.newTask", "side.reports", "side.tasks", "side.title", "summary.subtitle", "summary.title", "table.subtitle", "table.title"]);
   });
 });
 
