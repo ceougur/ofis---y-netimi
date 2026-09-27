@@ -9,8 +9,10 @@ import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
 import { generateKeyPairSync } from "node:crypto";
 import { createApp } from "../../server/app.mjs";
+import { readZip } from "../../server/lib/zip.mjs";
 import { createReferenceLicenseService } from "../../tools/lib/license-service.mjs";
 import { okulServisiXlsx } from "../fixtures/okul-servisi-ornek.mjs";
+import { acilirListelerXlsx } from "../fixtures/acilir-listeler.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const artifacts = path.join(here, "artifacts");
@@ -163,8 +165,12 @@ try {
     expect((await rowCount(admin)) === 26, `ilk sekmenin satır sayısı ${await rowCount(admin)}`);
     const tabs = await admin.$$eval(".category-bar .category-tabs:not(.hof-category-tabs) .category-tab", nodes => nodes.map(node => `${node.textContent.replace(/\s+/g, " ").trim()}${node.classList.contains("active") ? " *" : ""}`));
     expect(tabs.join("|") === "Aktif 26 *|Kapanan 4", `sekmeler: ${tabs}`);
-    const allCount = await admin.$eval('.sidebar .nav-item:has-text("Tüm kayıtlar") .nav-count', node => node.textContent.trim());
-    expect(allCount === "30", `'Tüm kayıtlar' sayısı tüm veriden: ${allCount}`);
+    // v2.0.2: sol menü sade (Çalışma alanı / Dinamik görünüm / Tüm kayıtlar / Bu ay / Veri kaynağı yok; Ayarlar yerinde).
+    const sidebar = await admin.$eval(".sidebar", node => node.innerText.replace(/\s+/g, " "));
+    expect(!/ÇALIŞMA ALANI|Dinamik görünüm|Tüm kayıtlar|Bu ay\b|VERİ KAYNAĞI/.test(sidebar) && /Ayarlar/.test(sidebar), `sol menü: ${sidebar.slice(0, 300)}`);
+    // v2.0.2: tabloda dolu kolonların hepsi (önceden ilk 7).
+    const headers = await admin.$$eval(".dynamic-table thead th", nodes => nodes.length);
+    expect(headers === 8, `tablo kolonları: ${headers}`);
     const flash = await toastText(admin);
     expect(flash.includes("yüklendi") && flash.includes("Tüm bilgisayarlar"), `bildirim: ${flash}`);
     expect(!(await admin.$("#hof-start")), "veri gelince başlangıç kartı kalkmalı");
@@ -227,7 +233,8 @@ try {
       cards: [...document.querySelectorAll("#hof-summary .hof-summary-card")].map(node => node.innerText.replace(/\s+/g, " ")),
       title: document.title,
     }));
-    expect(view.summary === "Dosya özeti" && view.nav.some(item => item.startsWith("Tüm dosyalar")) && view.newRecord === "Yeni dosya", `dil: ${JSON.stringify(view)}`);
+    // Operasyon Merkezi'nde "Yeni kayıt" sabittir (sektöre göre değişmez, v2.0.2).
+    expect(view.summary === "Dosya özeti" && !view.nav.some(item => item.startsWith("Tüm dosyalar")) && view.newRecord === "Yeni kayıt", `dil: ${JSON.stringify(view)}`);
     expect(view.search === "Dosya no, borçlu veya telefon ara…", `arama ipucu: ${view.search}`);
     expect(view.cards.length === 4 && view.cards[1].includes("Tutar toplamı") && view.cards[1].includes("438.750") && view.cards[3].includes("Veri sağlığı"), `kartlar: ${view.cards}`);
     await admin.screenshot({ path: path.join(artifacts, "03c-akilli-ozet.png") });
@@ -333,8 +340,9 @@ try {
     await admin.waitForFunction(() => document.querySelector(".category-bar .category-tab.hof-tab-nohit")?.textContent.includes("Aktif"), null, { timeout: 5000 });
     const counts = await admin.$$eval(".category-bar .category-tabs:not(.hof-category-tabs) .category-tab", nodes => nodes.map(node => node.textContent.replace(/\s+/g, " ").trim()));
     expect(counts.join("|") === "Aktif 0|Kapanan 1", `aramada sekme sayıları: ${counts}`);
-    const heading = await admin.textContent(".category-heading strong");
-    expect(heading.includes("1 sonuç · tüm sekmelerde"), `şerit başlığı: ${heading}`);
+    // v2.0.2: sekme şeridinin sağında sayaç/analiz yazısı yok.
+    const strip = await admin.$eval(".category-bar", node => node.innerText.replace(/\s+/g, " "));
+    expect(!/sonuç|toplam|kayıt ·/.test(strip), `sekme şeridi: ${strip}`);
     await admin.press(".search-field input", "Enter");
     await admin.waitForFunction(() => document.querySelector(".detail-panel")?.dataset.hofKey === "2025/1", null, { timeout: 5000 });
     await admin.waitForSelector('.category-bar .category-tab.active:has-text("Kapanan")');
@@ -346,7 +354,7 @@ try {
 
   await step("hücre düzenlenir; tablo yenilenir ve seçim korunur", async () => {
     const row = admin.locator(".dynamic-table tbody tr").nth(2);
-    await row.click();
+    await row.locator("td").first().click({ position: { x: 12, y: 10 } });
     const selectedKey = await admin.getAttribute(".detail-panel", "data-hof-key");
     expect(selectedKey === "2026/103", `seçili: ${selectedKey}`);
     const cell = row.locator("td").nth(6);
@@ -406,7 +414,7 @@ try {
   });
 
   await step("dosyaya not eklenir; işlem geçmişinde işlemi yapanla görünür", async () => {
-    await admin.locator(".dynamic-table tbody tr").nth(1).click();
+    await admin.locator(".dynamic-table tbody tr").nth(1).locator("td").first().click({ position: { x: 12, y: 10 } });
     await admin.click('.hof-case-actions [data-case-action="note"]');
     await admin.fill(".hof-modal textarea", "Borçlu arandı, ödeme sözü alındı");
     await admin.click('.hof-modal button[type="submit"]');
@@ -774,7 +782,7 @@ try {
       expect(result.includes("Klinik ve poliklinik") && result.includes("Hekim"), `klinik önerisi: ${result}`);
       await page.click(".hof-analysis-result [data-apply]");
       await page.waitForFunction(() => document.querySelector(".brand-subtitle")?.firstChild?.nodeValue === "Klinik yönetimi", null, { timeout: 5000 });
-      await page.click(".dynamic-table tbody tr");
+      await page.locator(".dynamic-table tbody tr td").first().click({ position: { x: 12, y: 10 } });
       const view = await page.evaluate(() => ({
         summary: document.querySelector(".welcome-row .section-title")?.firstChild?.nodeValue,
         newRecord: document.querySelector('[data-action="newRecord"] .hof-side-text')?.textContent,
@@ -783,7 +791,7 @@ try {
         search: document.querySelector(".search-field input")?.placeholder,
         keys: [...document.querySelectorAll(".dynamic-table tbody tr")].slice(0, 2).map(row => row.dataset.hofKey),
       }));
-      expect(view.summary === "Hasta özeti" && view.newRecord === "Yeni hasta" && view.liens === "none" && view.lienAction === "none", `klinik görünümü: ${JSON.stringify(view)}`);
+      expect(view.summary === "Hasta özeti" && view.newRecord === "Yeni kayıt" && view.liens === "none" && view.lienAction === "none", `klinik görünümü: ${JSON.stringify(view)}`);
       expect(view.search === "Hasta no, ad soyad veya telefon ara…", `arama ipucu: ${view.search}`);
       expect(view.keys.join() === "H-1001,H-1002", `kayıt kimlikleri kimlik kolonundan: ${view.keys}`);
       await page.screenshot({ path: path.join(artifacts, "10-klinik.png") });
@@ -829,6 +837,9 @@ try {
       const notice = await page.$eval(".hof-notice", node => node.innerText.replace(/\s+/g, " "));
       expect(/TAHSİLAT ALINMADI/.test(notice) && /₺/.test(notice), `bildirim: ${notice}`);
       expect((await page.$$(".hof-notice")).length === 1, "bildirimler üst üste binmez");
+      // v2.0.2: iş yapıldıysa "Gerçekleştirildi" (ilgili hücreye yazar); kart 20 sn görünür.
+      expect(/Gerçekleştirildi/.test(notice) && /hücresine/.test(notice), `Gerçekleştirildi düğmesi: ${notice}`);
+      expect((await page.$eval(".hof-notice", node => node.style.getPropertyValue("--hof-notice-ms"))) === "20000ms", "20 saniye");
       await page.screenshot({ path: path.join(artifacts, "10b-okul-servisi.png") });
       await page.evaluate(() => document.querySelectorAll(".hof-notice").forEach(node => node.remove()));
 
@@ -873,6 +884,50 @@ try {
     }
   });
 
+  await step("Excel açılır listeleri tarayıcıda okunur; kartta ▾ ile seçilir; gizli liste sayfası sekme olmaz; kendi sektörü oluşturulur", async () => {
+    const listRoot = mkdtempSync(path.join(tmpdir(), "destekofis-e2e-liste-"));
+    const listFile = path.join(listRoot, "acilir-listeler.xlsx");
+    writeFileSync(listFile, acilirListelerXlsx());
+    const listApp = createApp({ dataDir: path.join(listRoot, "data"), backupDir: path.join(listRoot, "backups"), logLevel: "warn", scheduleBackups: false, env: { HUKUK_ADMIN_PASSWORD: ADMIN_PASSWORD, HUKUK_DATASET_AUTOSYNC: "0" }, license: unlicensed });
+    const listPort = (await listApp.listen(0, "127.0.0.1")).port;
+    const context = await browser.newContext({ viewport: { width: 1440, height: 900 }, locale: "tr-TR" });
+    try {
+      const page = await context.newPage();
+      page.on("pageerror", error => problems.push(`[liste] pageerror: ${error.message}`));
+      await page.goto(`http://127.0.0.1:${listPort}/`);
+      await page.fill("#hof-auth input[name=username]", "admin");
+      await page.fill("#hof-auth input[name=password]", ADMIN_PASSWORD);
+      await Promise.all([page.waitForEvent("load"), page.click('#hof-auth button[type="submit"]')]);
+      await page.waitForSelector("#hof-start .hof-drop");
+      await Promise.all([page.waitForEvent("load", { timeout: 30000 }), (await page.$("#hof-start .hof-drop input[type=file]")).setInputFiles(listFile)]);
+      await page.waitForSelector(".hof-analysis-result:not([hidden])", { timeout: 20000 });
+      // Kendi sektörü: seçicide aranan yoksa oluşturulur ve uygulanır.
+      await page.click(".hof-analysis-result [data-pick]");
+      await page.fill(".hof-picker-search input", "hukuk arşivi");
+      await page.click(".hof-picker-list [data-create]");
+      await page.waitForSelector(".hof-sector-form");
+      expect((await page.inputValue('.hof-sector-form [name="name"]')) === "Hukuk arşivi", "ad aramadan gelir");
+      await page.fill('.hof-sector-form [name="record"]', "dosya");
+      expect((await page.inputValue('.hof-sector-form [name="records"]')) === "dosyalar", "çoğul kendiliğinden");
+      await page.click('.hof-sector-form button[type="submit"]');
+      await page.waitForFunction(() => document.querySelector(".brand-subtitle")?.firstChild?.nodeValue === "Hukuk arşivi yönetimi", null, { timeout: 8000 });
+      await page.waitForFunction(() => !document.querySelector(".hof-modal-backdrop"), null, { timeout: 8000 });
+      // Açılır listeler (tarayıcıdaki Excel okuyucu → sunucu): gizli liste sayfası sekme olmaz.
+      const data = await page.evaluate(() => ({ choices: HOF.data.choices, tabs: HOF.data.tabs }));
+      expect(JSON.stringify(data.tabs) === '["Kayıtlar"]', `sekmeler: ${data.tabs}`);
+      expect(data.choices["Kayıtlar"]?.Durum?.options.join() === "Aktif,Beklemede,Kapandı" && data.choices["Kayıtlar"]["Ödeme türü"]?.options.length === 3, `listeler: ${JSON.stringify(data.choices)}`);
+      await page.locator(".dynamic-table tbody tr td").first().click({ position: { x: 12, y: 10 } });
+      await page.click('.hof-choice-pill[data-column="Durum"]');
+      await page.click('.hof-choice-menu button[data-value="Kapandı"]');
+      await page.waitForFunction(() => document.querySelector('.hof-choice-pill[data-column="Durum"]')?.dataset.value === "Kapandı", null, { timeout: 8000 });
+      await page.screenshot({ path: path.join(artifacts, "10c-acilir-liste.png") });
+    } finally {
+      await context.close();
+      await listApp.close();
+      rmSync(listRoot, { recursive: true, force: true });
+    }
+  });
+
   await step("formüllü Excel: detay kartında taksit girilince Kalan ve Durum yeniden hesaplanır", async () => {
     const formulaRoot = mkdtempSync(path.join(tmpdir(), "destekofis-e2e-formul-"));
     const formulaApp = createApp({ dataDir: path.join(formulaRoot, "data"), backupDir: path.join(formulaRoot, "backups"), logLevel: "warn", scheduleBackups: false, env: { HUKUK_ADMIN_PASSWORD: ADMIN_PASSWORD, HUKUK_DATASET_AUTOSYNC: "0" }, license: unlicensed });
@@ -891,7 +946,7 @@ try {
       await page.waitForSelector(".hof-analysis-result:not([hidden])", { timeout: 20000 });
       await page.click(".hof-analysis-result [data-apply], .hof-analysis-result [data-done]");
       await page.waitForFunction(() => !document.querySelector(".hof-modal-backdrop"), null, { timeout: 8000 });
-      await page.locator(".dynamic-table tbody tr", { hasText: "Ayşe Kara" }).first().click();
+      await page.locator(".dynamic-table tbody tr", { hasText: "Ayşe Kara" }).first().locator("td").first().click({ position: { x: 12, y: 10 } });
       await page.waitForFunction(() => document.querySelector(".detail-panel .hof-fx"), null, { timeout: 10000 });
       const badge = await page.$eval(".detail-panel .hof-fx", node => node.title);
       expect(badge.includes("=[Tutar]-SUM([Taksit 1]:[Taksit 3])"), `formül işareti: ${badge}`);
@@ -939,7 +994,7 @@ try {
       await page.waitForFunction(() => document.querySelectorAll(".dynamic-table tbody tr.hof-row-check").length === 4, null, { timeout: 10000 });
 
       // Akıllı denetim: hesap tutmayan Kalan, tek tıkla önerilen değere düzeltilir.
-      await page.locator(".dynamic-table tbody tr", { hasText: "Ayşe Kara" }).first().click();
+      await page.locator(".dynamic-table tbody tr", { hasText: "Ayşe Kara" }).first().locator("td").first().click({ position: { x: 12, y: 10 } });
       await page.waitForSelector("#hof-checks:not([hidden]) li", { timeout: 10000 });
       const check = await page.$eval("#hof-checks", node => node.innerText.replace(/\s+/g, " "));
       expect(check.includes("Kalan 21.000,00 ₺ görünüyor") && check.includes("8.500,00 ₺ olmalı"), `denetim: ${check}`);
@@ -960,9 +1015,21 @@ try {
       await page.waitForFunction(() => document.querySelectorAll("#hof-documents .hof-doc-list li:not(.is-uploading)").length === 2, null, { timeout: 15000 });
       const names = await page.$$eval("#hof-documents .hof-doc-name", nodes => nodes.map(node => node.textContent.trim()));
       expect(names.join("|") === "Sözleşme.pdf|Ekran görüntüsü.png", `belgeler: ${names}`);
-      await page.click('#hof-documents li[data-kind="image"] [data-doc-view].hof-doc-name');
+      await page.click('#hof-documents li[data-kind="image"] .hof-mini[data-doc-view]');
       await page.waitForSelector(".hof-doc-viewer img");
       expect(await page.$eval(".hof-doc-viewer img", node => node.complete && node.naturalWidth === 1), "resim önizlemesi yüklenmeli");
+      await page.keyboard.press("Escape");
+      await page.waitForFunction(() => !document.querySelector(".hof-modal-backdrop"), null, { timeout: 5000 });
+      // v2.0.2: birden çok belgede ad belge kartını açar; belgeler yan yana, seçilenler .zip olarak iner.
+      await page.click('#hof-documents li[data-kind="pdf"] .hof-doc-name');
+      await page.waitForSelector(".hof-doc-gallery-modal .hof-tile");
+      expect((await page.$$(".hof-doc-gallery-modal .hof-tile")).length === 2, "belge kartında iki belge");
+      await page.check(".hof-doc-gallery-modal [data-pick-all]");
+      const [archive] = await Promise.all([page.waitForEvent("download"), page.click(".hof-doc-gallery-modal [data-bulk-download]")]);
+      // Başsız tarayıcı Türkçe harfli dosya adını "download" diye bildirir; içerik doğrulanır.
+      expect(archive.url().includes("/documents/archive?ids="), `toplu indirme: ${archive.url()}`);
+      const zipped = readZip(readFileSync(await archive.path())).filter(entry => !entry.directory).map(entry => entry.name).sort();
+      expect(zipped.join("|") === "Ekran görüntüsü.png|Sözleşme.pdf", `.zip içeriği: ${zipped}`);
       await page.keyboard.press("Escape");
       await page.waitForFunction(() => !document.querySelector(".hof-modal-backdrop"), null, { timeout: 5000 });
 
@@ -983,8 +1050,6 @@ try {
       expect(download.suggestedFilename().endsWith(".xlsx"), `dosya adı: ${download.suggestedFilename()}`);
       const saved = path.join(smartRoot, "cikti.xlsx");
       await download.saveAs(saved);
-      const { readFileSync } = await import("node:fs");
-      const { readZip } = await import("../../server/lib/zip.mjs");
       const sheet = readZip(readFileSync(saved)).find(entry => entry.name === "xl/worksheets/sheet1.xml").data.toString("utf8");
       expect(sheet.includes("<t>Borç tutarı</t>") && /<c r="H3" s="\d+"><v>8500<\/v><\/c>/.test(sheet), "Excel: başlıkta verilen ad, düzeltilen Kalan sayı olarak");
     } finally {

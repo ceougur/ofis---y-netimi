@@ -2,6 +2,56 @@
 
 Sürümler [anlamsal sürümleme](https://semver.org/lang/tr/) kurallarına uyar.
 
+## 2.0.2 — Açılır listeler, belge kartı, uyarıda "Gerçekleştirildi", tüm kolonlar, kendi sektörü, tarihlerin anlamı, silinenler
+
+- **Excel/Sheets açılır listeleri programda da açılır liste.** Veri doğrulama listeleri okunur: satır içi liste (`"Aktif,Pasif"`), aynı ya da başka sayfadaki aralık, tanımlı ad, Excel 2010+ biçimi (`x14`). Excel'in **birleşik giriş kutuları** da okunur:
+  - Form denetimi kutusu: bağlı hücredeki sıra numarası kutuda görünen metne çevrilir.
+  - ActiveX kutusu.
+  - Eski VML biçimi.
+
+  Listeler kolonlara bağlanır. Detay kartında değer **▾ pil** olarak görünür; tıklanınca liste açılır ve seçim kaydedilir. Hücre düzenleme, *Düzenle* ve *Yeni kayıt* formlarında aynı liste gelir. Listede olmayan eski değer "(listede yok)" diye korunur. Excel'de listeye bağlı olmayan listelerde *Başka bir değer yaz…* seçeneği vardır. Excel'de gizli olup yalnızca listelere kaynaklık eden sayfa programda da gizlenir; *Silinenler*'den geri getirilebilir. Google Sheets'in açılır listeleri eşitlemede güncellenir. Hesaplanan listeler (DOLAYLI) ve kodla doldurulan kutular okunamaz.
+- **Belgeler: adet sınırı yok, belge kartı.**
+  - Dosyalar üçer üçer paralel yüklenir; dosya başına sınır 25 MB.
+  - Birden çok belgede **Yan yana gör** ile belge kartı açılır. Belgeler 1–4 sütun yan yana görünür (tercih hatırlanır). Önizlemeler göründükçe yüklenir.
+  - Her belge kendi biçimiyle indirilir; seçilenler tek **.zip** içinde, aynı adlılar "(2)" ekiyle.
+  - PDF, resim ve metin belgeleri yeni sekme açmadan **doğrudan yazdırılır**. Birden çok resim tek yazdırma işinde çıkar, PDF'ler sırayla. Word/Excel/UYAP için nedeni yazılır.
+  - Belge kartı ✕ ile kapanır. Kartta 6'dan fazla belge varsa *+N belge daha* bağlantısı görünür.
+- **Uyarı kartında "Gerçekleştirildi".** İş yapıldıysa tek tıkla kapatılır ve uyarı tekrarlanmaz. Kalem türüne göre:
+  - Son tarih ve tarihli taksit: uyarıya sebep olan hücreye *Gerçekleştirildi · 15.10.2026* yazılır, tarih silinmez.
+  - Aylık ödeme hücresi: *Gerçekleştirildi* yazılır.
+  - Her ay tekrarlayan ödeme günü: ayar hücresine dokunulmaz, yalnız o ayın kalemi kapanır.
+  - Görev: tamamlanır.
+
+  Hepsi *Geri al* ile döner; düğme zil listesinde de vardır. Uyarı kartı **20 saniye** görünür ve iki uyarı arasında **10 saniye** boşluk olur. Bir pencere açıkken uyarı gelmez. Kısa bildirimler açık uyarının gerçek yüksekliği kadar yukarıda durur; hiçbir zaman üst üste binmez.
+- **Ana tabloda tüm kolonlar.** Önceden ilk 7 kolon gösteriliyordu; artık Excel/Sheets'teki dolu kolonların hepsi görünür.
+  - Kolon genişlikleri içeriğe göre ayarlanır.
+  - İlk kolon (kaydın adı/numarası) Excel'deki gibi solda sabit kalır.
+  - Tablonun altında ekrana yapışan, sürüklenebilen yatay kaydırma çubuğu vardır; oklar bir ekran kaydırır, tekerlek ve klavye de çalışır. Sağda devam varsa kenar solar.
+  - Serbest sayfada kolon sınırı 60'tan **500**'e çıktı; akıcılık için toplam hücre en fazla 250.000.
+- **Kendi sektörünüz.** Aranan sektör listede yoksa **Kendi sektörünü oluştur** kartı açılır. Alanlar mevcut sektörlerle aynıdır: ad, kayda ne dendiği (çoğul Türkçe ünlü uyumuyla kendiliğinden), uzman rolü, alt başlık, tahsilat/haciz modülleri. İsteğe bağlı tanıtıcı kolon başlıkları sonraki yüklemelerde bu sektörün önerilmesini sağlar. Kartta canlı önizleme vardır. Kaydedince sektör uygulanır ve veri ekranına dönülür. Seçicide ve analiz ekranında her zaman görünür; aranan bulunamazsa arama metniyle önerilir. *Ayarlar → Sektör ve görünüm*'den düzenlenir ya da silinir.
+- **Sohbet gün gün.** Açılışta son 24 saatin mesajları gelir. *Önceki günün mesajlarını yükle* her basışta bir gün daha getirir; boş günler atlanır. **30 günden eski mesajlar** veri klasöründe `mesaj-arsivi/<yazışma>/<yıl-ay ay>.txt` dosyasına yazılır (Not Defteri ile açılır), sonra programdan silinir. Önce dosya yazılır, sonra silinir; yarıda kalan tur aynı mesajı ikinci kez yazmaz. Kişi kendi yazışmasının arşivini sohbet penceresinden indirir; özel yazışmayı yalnız iki taraf indirir. Arşivin yeri *Yönetim → Sistem*'de yazar.
+- **Tarihlerin anlamı (tüm program).** Tarih kolonunun başlığı ve değerleri birlikte okunur. Sadece ileriye dönük tarihler uyarı verir:
+  - Uyarı veren: bitiş, son gün, yenileme, vade.
+  - Yalnız yaklaşınca bildirilen: randevu, duruşma, teslim.
+  - Asla uyarı vermeyen: kayıt ve olay tarihleri (muayene tarihi, kayıt tarihi, işlem tarihi).
+
+  Türkçe ekler (*-dığı, -acak*) ve sıra sayıları (*1., 2nci, üçüncü*) tanınır. Satır bağlamına da bakılır: durum *tamamlandı/yenilendi/gerçekleştirildi*, *yapıldı mı? evet* ya da aynı konuda daha yeni bir tarih varsa uyarı verilmez. Tek bir geçmiş tarih ödeme planı ya da taksit sayılmaz.
+- **Tahsilat takvimi.**
+  - Şablonda duran boş satırlar ve öğrencinin başlamadan önceki boş ayları borç sayılmaz. Başlangıç tarihi kolonu ya da ilk dolu ay esas alınır.
+  - Ay kolonlarının yılı sıradan çıkarılır.
+  - Kalan borcu açıkça 0 olan satırdan tahsilat beklenmez.
+- **Silinenler (Yönetim).** Silinen kayıt, sekme, belge, serbest sayfa/satır/kolon, tahsilat ve kasa hareketleri listelenir. **Geri yükle** eski yerine getirir, o arada eklenenlerin üzerine yazmaz. Ad çakışırsa "(geri yüklendi)" eki alır.
+- **Sekmeler kalemle yeniden adlandırılır ve silinir.** Excel dosyası ve eşitleme asıl adla çalışır; silinen sekme *Silinenler*'den döner. Belge silme görünür hâle geldi ve geri alınabilir.
+- **Sadeleşen ekran.**
+  - Sol menüden *Çalışma alanı, Dinamik görünüm, Tüm kayıtlar, Bu ay* ve *Veri kaynağı* başlığı kalktı; menü kaydırılabilir ve kullanıcı kartı hep görünür.
+  - Sekme şeridindeki *N kayıt · toplam M* yazısı kalktı.
+  - Operasyon Merkezi'nde **Yeni kayıt** sabittir.
+  - Kasa'da *Aralık* → **Tarih aralığı**; göstergeler dönemi yazar.
+  - Zil listesinde ✕ ile bildirim kişinin listesinden kaldırılır.
+- **Kısa kullanım kılavuzu:** 34 sayfadan 8 sayfaya indi; yalnızca bilmeniz gerekenler ve 2.0.2 ekran görüntüleri.
+- İndirilen dosyaların Türkçe harfli adları eski tarayıcılar için doğru karşılığa çevrilir (*kaydı → kaydi*).
+- Veritabanı şeması 6 (silinenler tablosu); güncellemede kendiliğinden geçer, öncesinde yedek alınır.
+
 ## 2.0.1 — Tahsilat takvimi, bildirimler, Kasa PDF, serbest sayfalar, akıllı denetim, veri oturumları, formüller, Kasa, belgeler, Excel'e aktarma
 
 - **Tahsilat takvimi: her Excel/Sheets'te kayan ödeme pilleri.** Program yüklenen verinin tüm sekmelerinde ödenmesi beklenen kalemleri kendisi bulur; yalnız "Ödeme sözleri" sayfasında değil. Tanıdığı yazımlar:

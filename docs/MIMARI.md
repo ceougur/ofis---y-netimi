@@ -125,6 +125,57 @@ Görünüme (`dataset.view`) yalnızca elle değer yazılmış satırlar `serbes
 
 **Kasa** (`server/routes/cash.mjs`, göç 5). `payments` (detay kartından; `case_title`, `updated_by/at` eklendi) + `cash_entries` (elle giriş/ödeme). `GET /api/workspace/cash?from&to`: eskiden yeniye hareketler ve her birinde o ana kadarki kasa, dönem başı devreden, dönem ve genel toplamlar. Yazma `cash.manage` (yönetici, ikinci rol, muhasebe); tahsilatı giren kişi kendi tahsilatını düzeltip silebilir. Tutarlar Türkçe okunur (`money.mjs`: "1.250" = bin iki yüz elli). `GET /api/workspace/cash.pdf?from&to[&download=1]` (`cash.view`) aynı hesabı kasa dökümü PDF'i olarak verir (`server/lib/cash-report.mjs`). Denetim türü `cash.exported`. PDF yazıcı (`server/lib/pdf-write.mjs`) bağımlılıksızdır. TrueType yazı tipini Type0/CIDFontType2 (Identity-H) olarak gömer. Alt küme glif numaralarını korur: kullanılmayan gliflerin çizimi boşaltılır, bileşik glifler dahil edilir. ToUnicode eşlemesi metnin seçilip aranmasını sağlar; içerik akışları sıkıştırılır. Yazı tipi `server/assets/fonts/` (Liberation Sans 2.1.5, SIL OFL; ₺ glifi olmadığından tutarlar "TL" ile yazılır). İndirme adı ASCII'dir (bazı tarayıcılar `download` adındaki Türkçe harfleri reddediyor).
 
+## 2.0.2 eklemeleri
+
+**Açılır listeler** (`server/lib/choices.mjs`, `client/assets/hof-choices.js`).
+- *Excel yolu:* tarayıcı işçisi (`hof-excel-worker.js`, SheetJS `bookFiles`) sayfa XML'lerinden yalnız `<dataValidations>` ve `<controls>`/`<legacyDrawing>` parçalarını, kutuların `ctrlProps`/VML dosyalarını ve tanımlı adları gönderir. Liste varsa tüm sayfalar boş satırlarıyla ve başlangıç adresiyle gelir; satır ve kolon adresleri tutar.
+- *Google yolu:* formüller için zaten indirilen `export?format=xlsx` aynı okuyucuyla (`readXlsxLists`) okunur.
+- *Çözüm:* `resolveChoices` seçenekleri sayfa matrisinden okur (hücrenin programda görünen metni). Kaynaklar: satır içi liste, aralık, tanımlı ad, x14.
+- *Kolona bağlama:* kurallar `matrixToRecords`'un kayıt bloklarıyla (`blocks`: etiket, satır aralığı, kolon adları) eşleşir. Bir kural bloktaki kayıtların en az yarısını kapsıyorsa kolonun listesi olur.
+- *Form denetimi kutusu:* bağlı hücredeki sıra numarası kayıtlar oluşturulmadan önce metne çevrilir (`applyIndexedCombos`).
+- *Saklama ve görünüm:* sonuç oturum ayarında durur (`dataset.choices`, sekme → kolon → `{options, strict}`). Yerine koymada değişir; eklemede ve eşitlemede kaynaktaki sekmeler için yenilenir. `view()` görünen sekme adlarıyla `choices` döndürür.
+- *Gizli liste sayfası:* yalnızca liste kaynağı olan gizli sayfa içeri almada `dataset.tabs.hidden`'a `reason: "list"` ile yazılır.
+
+**Belge kartı** (`hof-documents.js`).
+- `GET /api/workspace/cases/:key/documents/archive?ids=` seçilenleri özgün adlarıyla .zip yapar (sınır 1 GB, adet sınırı yok).
+- Yazdırma gizli bir çerçevede yapılır. PDF tarayıcının görüntüleyicisiyle yazdırılır. Resim ve metin tek `srcdoc` belgesinde, her biri ayrı sayfa olarak basılır; PDF'ler sıra çubuğuyla birer birer.
+
+**Uyarılarda "Gerçekleştirildi"** (`hof-alerts.js`).
+- Kalem türüne göre işlem:
+  - Tarih ve aylık kalem: ilgili hücreye düzeltme olarak "Gerçekleştirildi · <eski değer>" yazılır (`/api/workspace/overrides`, `action: alert.done`).
+  - Tekrarlayan ödeme günü: `dues/settle` ile yalnız o ay kapanır.
+  - Görev: `tasks/:id/complete`.
+- `dues.mjs` "gerçekleştirildi"yi kapanmış kalem, `DONE_STATE`'i yapılmış iş sayar.
+- Kuyruk: bildirim 20 sn görünür, sonrakiyle arası 10 sn; pencere açıkken bekler. Toast'lar `--hof-notice-space` kadar yukarıda durur.
+
+**Ana tablo** (`hof-grid.js`).
+- Paket yamaları `tum-kolonlar-basliklar/hucreler` 7 kolon sınırını kaldırır.
+- Genişlik: `<th>`'lere başlık ve hücrelerin %90'lık dilimine göre (canvas ölçümü) verilir; tablo `table-layout: fixed`'dır.
+- İlk kolon `position: sticky`. `.cases-panel` `overflow: clip` olur (`hidden` kaydırma kabı oluşturup yapışkanlığı bozuyordu).
+- Kaydırma çubuğu: özel, yapışkan, sürüklenebilir; yerel çubuk bazı sistemlerde gizlendiği için kullanılır.
+
+**Kendi sektörü** (`server/lib/custom-sectors.mjs`).
+- Ofis geneli `sectors.custom` ayarında durur. `customSector()` yerleşik biçime çevirir; kimlikler `ozel-` ile başlar.
+- `classifySector({ extra })` tanıtıcı başlıkları `!` sinyali olarak kullanır; özgüllük ağırlığıyla yerleşiklerle yarışır.
+- Uçlar: `POST/PUT/DELETE /api/workspace/sectors/custom`. Silinen sektörü kullanan oturum Genel'e döner. Profil parmak izi özel sektör değişince analizi yeniler.
+
+**Sohbet arşivi** (`server/lib/chat-archive.mjs`).
+- `GET …/messages?window=day`: açılışta son 24 saat. `before` verilince daha eski en yeni mesajdan geriye 24 saat getirir (boş günler atlanır). Gün başına en çok 500 mesaj.
+- Açılıştan 20 sn sonra ve 6 saatte bir 30 günden eski mesajlar `<veri>/mesaj-arsivi/<yazışma>/<yyyy-aa Ay>.txt` dosyasına yazılır, sonra silinir.
+- Klasör adı: özel yazışmada iki ad + değişmeyen 4 haneli etiket.
+- Dosyanın ilk satırı son arşivlenen zamanı taşır. Yazım geçici dosya + yeniden adlandırma ile yapılır; yarıda kalan tur tekrar yazmaz.
+- `GET …/archive` kişinin kendi yazışmasının arşivini verir (sohbet erişim kuralıyla).
+
+**Tarih anlamı** (`server/lib/insight/temporal.mjs`).
+- `dateMeaning(kolon, ileri tarih oranı)` şu sınıflardan birini döndürür: expiry, schedule, record, birth, other.
+- Kaynaklar: kelime listeleri, Türkçe ekler, sıra sayıları (`ordinalOf`).
+- Uyarı yalnız expiry (öncesi ve sonrası) ve schedule (yalnız yaklaşınca) için verilir. Satır bağlamı (durum, evet/hayır kolonu, aynı konuda daha yeni tarih) uyarıyı susturur.
+
+**Silinenler** (göç 6, `server/lib/trash.mjs`, `server/routes/trash.mjs`).
+- Kaynaklar: silinen kayıt, gizlenen sekme, belge, serbest sayfa/satır/kolon, tahsilat ve kasa hareketi.
+- Geri yükleme eski konuma araya ekler; ad çakışırsa "(geri yüklendi)" eki alır.
+- Sekme adları ve gizleme oturum ayarındadır (`dataset.tabs.alias/hidden`). Satırlar asıl adı `__hofSheet`'te taşır; takvim kimlikleri asıl adla kalır.
+
 ## Akıllı veri motoru ve ofis profili (v1.6)
 
 `server/lib/insight/` saf fonksiyonlardan oluşur: internete çıkmaz, veritabanına yazmaz, aynı girdiye aynı çıktıyı verir. Sonuç, verinin parmak izine (satır/düzeltme/kayıt sayıları ve son değişiklik zamanları, verinin adı, yerel gün) göre bellekte önbelleklenir. Veri değişince (`dataset.onChange`) önbellek düşer. 200 bin satır yaklaşık 1,5 sn'de çözümlenir.

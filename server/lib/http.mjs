@@ -43,9 +43,11 @@ export function send(res, status, payload, headers = {}) {
 }
 
 // Dosya adı Content-Disposition için: ASCII yedek ad + RFC 5987 UTF-8 ad (Türkçe harfler korunur).
+const ASCII_TR = { ı: "i", İ: "I", ş: "s", Ş: "S", ğ: "g", Ğ: "G", ç: "c", Ç: "C", ö: "o", Ö: "O", ü: "u", Ü: "U", "₺": "TL" };
 export function contentDisposition(name, { inline = false } = {}) {
   const safe = String(name || "dosya").replace(/[\u0000-\u001f"\\/:*?<>|]+/g, " ").replace(/\s+/g, " ").trim().slice(0, 180) || "dosya";
-  const ascii = safe.normalize("NFKD").replace(/[^\x20-\x7e]/g, "").replace(/\s+/g, " ").trim() || "dosya";
+  // Eski tarayıcılar için ASCII ad: Türkçe harfler karşılığıyla ("kaydı" → "kaydi"; NFKD "ı"yı ayrıştırmaz).
+  const ascii = safe.replace(/[ıİşŞğĞçÇöÖüÜ₺]/g, char => ASCII_TR[char]).normalize("NFKD").replace(/[^\x20-\x7e]/g, "").replace(/\s+/g, " ").trim() || "dosya";
   return `${inline ? "inline" : "attachment"}; filename="${ascii}"; filename*=UTF-8''${encodeURIComponent(safe).replace(/['()]/g, char => `%${char.charCodeAt(0).toString(16).toUpperCase()}`)}`;
 }
 
