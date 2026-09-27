@@ -216,6 +216,10 @@ export function analyzeColumn(rows, column, { now = new Date() } = {}) {
   };
   const repeated = distinct <= Math.max(12, values.length * 0.05) && values.length / Math.max(distinct, 1) >= 3 && avgLength <= 40;
 
+  // Excel'in sayıya çevirdiği telefon/T.C. (5.32E+09): rakamlar dosyada yitmiştir; rol başlıktan verilir, uyarı yazılır.
+  const scientific = rate(values, text => /^\d(?:[.,]\d+)?E\+\d{1,2}$/i.test(text));
+  if (scientific >= 0.3 && (hits.phone || hits.tckn)) return result(hits.tckn ? "tckn" : "phone", 0.6, { warning: "scientific", validRate: 0 });
+
   // 1) Doğrulanabilen türler: matematiksel sağlama.
   const tckn = rate(values, isTckn);
   if (pass(tckn, 0.9, hits.tckn, 0.6)) return result("tckn", tckn, { verified: true, validRate: round(tckn) });
@@ -327,10 +331,82 @@ export function importance(analysis) {
 }
 
 export function analyzeColumns(rows, columns, options = {}) {
-  return columns.map(column => {
+  const analyses = columns.map(column => {
     const analysis = analyzeColumn(rows, column, options);
     return { ...analysis, importance: importance(analysis) };
   });
+  inferAcrossColumns(rows, analyses);
+  for (const item of analyses) {
+    item.evidence = explain(item);
+    item.certainty = certaintyOf(item);
+  }
+  return analyses;
+}
+
+// ---------- Çapraz kolon çıkarımı ve kanıt (v2.0.2) ----------
+// Kolonun ne olduğuna yalnız başlığı değil değerleri ve öteki kolonlarla ilişkisi karar verir; her karar kanıtlarıyla
+// (analiz penceresinde "neden?") ve bir kesinlik derecesiyle döner: kesin / olası / belirsiz.
+const ROLE_TR = { id: "kimlik", person: "kişi", org: "kurum", money: "tutar", date: "tarih", status: "durum", category: "kategori", phone: "telefon", email: "e-posta", address: "adres", note: "not", tckn: "T.C. kimlik no", vkn: "vergi no", iban: "IBAN", city: "il", plate: "plaka", url: "bağlantı", number: "sayı", percent: "oran", sequence: "sıra no", responsible: "sorumlu", text: "metin", empty: "boş" };
+const HIT_TR = { id: "kimlik", person: "kişi", party: "taraf", name: "ad", money: "tutar", price: "fiyat", quantity: "miktar", percent: "oran", date: "tarih", deadlineStrong: "son tarih", deadline: "son tarih", event: "olay tarihi", birth: "doğum", status: "durum", category: "kategori", phone: "telefon", email: "e-posta", address: "adres", note: "not", tckn: "T.C.", vkn: "vergi no", iban: "IBAN", city: "il", plate: "plaka", url: "bağlantı", sequence: "sıra", responsible: "sorumlu", item: "öğe", itemName: "öğe adı" };
+const VALIDATED = new Set(["date", "money", "phone", "email", "plate", "tckn", "iban", "vkn", "url", "percent", "number"]);
+
+// İki tarih kolonu: biri hep ötekinden sonra geliyorsa (≥ %95, en az 5 satır) ve başlığı belirsizse, sonraki bitiş /
+// son tarih, önceki başlangıç / kayıt tarihidir ("Tarih 1 / Tarih 2" gibi başlıklarda insan da böyle düşünür).
+function inferAcrossColumns(rows, analyses) {
+  const dates = analyses.filter(item => item.role === "date" && item.stats.nonEmpty >= 5);
+  if (dates.length >= 2 && rows.length <= 50_000) {
+    const parsed = new Map(dates.map(item => [item.column, rows.map(row => parseDate(row[item.column]))]));
+    for (const a of dates) {
+      for (const b of dates) {
+        if (a === b || (a.meaning !== "other" && b.meaning !== "other")) continue;
+        const left = parsed.get(a.column);
+        const right = parsed.get(b.column);
+        let both = 0;
+        let after = 0;
+        for (let index = 0; index < rows.length; index += 1) {
+          if (!left[index] || !right[index]) continue;
+          both += 1;
+          if (right[index].getTime() >= left[index].getTime()) after += 1;
+        }
+        if (both < 5 || after / both < 0.95) continue;
+        if (b.meaning === "other" && !b.inferred) {
+          Object.assign(b, { meaning: "expiry", kind: "deadline", strong: false, inferred: `değerleri “${a.column}” tarihinden hep sonra: bitiş / son tarih` });
+        }
+        if (a.meaning === "other" && !a.inferred) {
+          Object.assign(a, { meaning: "record", kind: "event", inferred: `değerleri “${b.column}” tarihinden hep önce: başlangıç / kayıt tarihi` });
+        }
+      }
+    }
+  }
+}
+
+function explain(item) {
+  const out = [];
+  const hits = (item.header || []).map(key => HIT_TR[key]).filter(Boolean);
+  if (hits.length) out.push(`başlık kelimesi: ${[...new Set(hits)].join(", ")}`);
+  const rate = item.validRate ?? null;
+  if (rate !== null && VALIDATED.has(item.role)) out.push(`değerlerin %${Math.round(rate * 100)}'i geçerli ${ROLE_TR[item.role] || item.role}${item.verified ? " (sağlama tuttu)" : ""}`);
+  if (item.role === "date") {
+    if (item.futureRate !== undefined) out.push(`%${Math.round(item.futureRate * 100)}'i ileri tarihli`);
+    if (item.inferred) out.push(item.inferred);
+    else if (item.meaningReason) out.push(item.meaningReason);
+  }
+  if (item.currency) out.push(`para birimi ${item.currency}`);
+  if ((item.role === "id" || item.role === "person" || item.role === "org") && item.stats.uniqueness >= 0.95) out.push("her satırda farklı değer");
+  if ((item.role === "status" || item.role === "category") && item.values?.length) out.push(`${item.stats.distinct} farklı değer: ${item.values.slice(0, 4).join(", ")}${item.stats.distinct > 4 ? "…" : ""}`);
+  if (item.role === "responsible" && item.values?.length) out.push(`az sayıda kişi tekrar ediyor: ${item.values.slice(0, 3).join(", ")}`);
+  if (item.warning === "scientific") out.push("değerler Excel'de sayıya dönüşmüş (bilimsel gösterim)");
+  if (item.stats.fill < 0.5 && item.role !== "empty") out.push(`satırların yalnız %${Math.round(item.stats.fill * 100)}'inde dolu`);
+  return out;
+}
+
+function certaintyOf(item) {
+  if (item.role === "empty") return "kesin";
+  const rate = item.validRate ?? null;
+  if (item.warning) return "belirsiz";
+  if ((item.verified && rate >= 0.9) || (VALIDATED.has(item.role) && rate !== null && rate >= 0.95) || item.confidence >= 0.9) return "kesin";
+  if (item.confidence >= 0.7 || (rate !== null && rate >= 0.7)) return "olası";
+  return "belirsiz";
 }
 
 // Görünümün ana kolonları: göstergeler, arama ipucu, kayıt kimliği ve sektör tahmini bunları kullanır.

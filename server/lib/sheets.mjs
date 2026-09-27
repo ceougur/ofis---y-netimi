@@ -182,6 +182,7 @@ export function createSheetsReader({ fetchImpl, cacheMs = 45_000, timeoutMs = 20
     const rows = [];
     const labels = [];
     const parsedTabs = [];
+    const reports = [];
     const hash = createHash("sha1");
     let sectionCount = 0;
     const csvs = [];
@@ -211,6 +212,7 @@ export function createSheetsReader({ fetchImpl, cacheMs = 45_000, timeoutMs = 20
       const matrix = parseCsv(csv.text, { keepEmpty: csv.export });
       if (csv.export && lists?.merges?.has(tab.title)) fillMerges(matrix, lists.merges.get(tab.title));
       const parsed = matrixToRecords(matrix, tab.title, { layout: csv.export });
+      if (parsed.report) reports.push({ sheet: tab.title || "Sheet", ...parsed.report });
       for (const row of parsed.rows) rows.push(row); // yayma (...) büyük sekmelerde çağrı yığınını taşırır
       for (const label of parsed.tabs) labels.push({ gid: tab.gid, title: label });
       if (parsed.sections.length > 1) sectionCount += parsed.sections.length;
@@ -233,7 +235,20 @@ export function createSheetsReader({ fetchImpl, cacheMs = 45_000, timeoutMs = 20
       }
     }
     const detail = sectionCount ? ` (alt tablolar ayrı bölümler olarak gösteriliyor)` : "";
-    return { connected: true, sourceUrl, title, syncedAt: new Date().toISOString(), rows, tabs: labels.length ? labels : targets, formulasUnavailable, ...(choices ? { choices, listSheets } : {}), message: `${targets.length} sekmeden ${rows.length} kayıt okundu${detail}.` };
+    const cells = reports.reduce((sum, item) => sum + item.cells, 0);
+    const lost = reports.reduce((sum, item) => sum + item.lost, 0);
+    const reading = reports.length
+      ? {
+          coverage: cells ? Math.round((1 - lost / cells) * 1000) / 1000 : 1,
+          cells,
+          lost,
+          notes: reports.flatMap(item => (item.notes || []).map(note => (reports.length > 1 ? `“${item.sheet}”: ${note}` : note))).slice(0, 12),
+          skipped: reports.flatMap(item => (item.skipped || []).map(entry => ({ sheet: reports.length > 1 ? item.sheet : "", ...entry }))).slice(0, 40),
+          skippedTotal: reports.reduce((sum, item) => sum + (item.skipped?.length || 0), 0),
+          shapes: reports.map(item => ({ sheet: item.sheet, shape: item.shape })),
+        }
+      : null;
+    return { connected: true, sourceUrl, title, syncedAt: new Date().toISOString(), rows, tabs: labels.length ? labels : targets, formulasUnavailable, reading, ...(choices ? { choices, listSheets } : {}), message: `${targets.length} sekmeden ${rows.length} kayıt okundu${detail}.` };
   }
 
   // Önce hücreleri göründüğü gibi veren export CSV'si, olmazsa gviz CSV'si.

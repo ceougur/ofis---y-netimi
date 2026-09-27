@@ -56,6 +56,23 @@
     });
 
   // ---------- İçeri alma akışı ----------
+  // Okuma raporu (v2.0.2): sayfa hangi şekilde okundu, hangi satırlar kayıt sayılmadı, kapsam ne. Kullanıcı yüklemeden
+  // önce görür; kapsam %90'ın altındaysa uyarı tonunda.
+  const SKIP_LABELS = { title: "başlık", note: "not", footnote: "dipnot", group: "grup etiketi", "repeat-header": "yinelenen başlık", unnamed: "adsız kolon", "empty-record": "boş satır" };
+  function readingHtml(reading) {
+    if (!reading || !reading.cells) return "";
+    const percent = Math.round((reading.coverage ?? 1) * 100);
+    const counts = new Map();
+    for (const item of reading.skipped || []) counts.set(item.kind, (counts.get(item.kind) || 0) + 1);
+    const summary = [...counts].map(([kind, count]) => `${count} ${SKIP_LABELS[kind] || kind}`).join(", ");
+    const warn = percent < 90;
+    const lines = (reading.skipped || []).map(item => `<li><b>${esc(item.sheet ? `${item.sheet} · ` : "")}${item.line}. satır</b> · ${esc(SKIP_LABELS[item.kind] || item.kind)}${item.text ? ` · <span>${esc(item.text)}</span>` : ""}</li>`).join("");
+    return `<div class="hof-reading ${warn ? "is-warn" : ""}">
+      <p><b>Okuma raporu:</b> hücrelerin %${percent}'i kayda girdi${reading.skippedTotal ? ` · ${number(reading.skippedTotal)} satır kayıt sayılmadı (${esc(summary)})` : " · her satır kayıt oldu"}.${warn ? " <b>Dosyanın önemli bir bölümü kayda giremedi;</b> atlanan satırları kontrol edin, gerekirse Excel'de başlık satırını düzeltip yeniden yükleyin." : ""}</p>
+      ${(reading.notes || []).map(note => `<p class="hof-reading-note">${esc(note)}</p>`).join("")}
+      ${lines ? `<details><summary>Kayıt sayılmayan satırlar${reading.skippedTotal > (reading.skipped || []).length ? ` (ilk ${(reading.skipped || []).length})` : ""}</summary><ul>${lines}</ul></details>` : ""}
+    </div>`;
+  }
   function progress(title, text) {
     const modal = HOF.modal({ title, eyebrow: "VERİ", size: "small", dismissible: false, body: `<p class="hof-modal-text" data-status>${esc(text)}</p><div class="hof-progress"><span></span></div>` });
     return {
@@ -139,6 +156,7 @@
       eyebrow: "VERİ",
       size: "wide",
       body: `<p class="hof-modal-text">${number(staged.rowCount)} kayıt okundu${staged.tabs.length ? ` (${number(staged.tabs.length)} sekme)` : ""}. Şu anki oturum: <b>${esc(staged.session?.current || staged.current.label || "Çalışma verisi")}</b>, ${number(staged.current.rowCount)} kayıt. Nasıl açılsın?</p>
+        ${readingHtml(staged.reading)}
         ${different ? `<div class="hof-alert">Bu dosya şu anki veriden <b>farklı bir konuda</b> görünüyor${esc(overlap)}. Veriler birbirine karışmasın diye <b>yeni oturumda açmanızı</b> öneririz.</div>` : ""}
         <article class="hof-choice hof-choice-session ${preferSession ? "is-recommended" : ""}">
           <header><b>Yeni oturumda aç</b>${preferSession ? '<span class="hof-chip">Önerilen</span>' : ""}</header>

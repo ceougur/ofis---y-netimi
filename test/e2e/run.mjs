@@ -638,6 +638,12 @@ try {
     await admin.waitForSelector(".hof-modal-backdrop.is-visible .hof-choice-grid", { timeout: 20000 });
     const choice = await admin.$eval(".hof-choice-grid", node => node.innerText.replace(/\s+/g, " "));
     expect(choice.includes("52 yeni kayıt eklenir") && choice.includes("Yeni dosyada olmayan 30 kayıt tablodan kalkar"), `önizleme: ${choice}`);
+    // v2.0.2: okuma raporu — kapsam, kayıt sayılmayan satırlar (alt tablo başlıkları) ve nedenleri yüklemeden önce görünür.
+    const reading = await admin.$eval(".hof-modal-backdrop.is-visible .hof-reading", node => node.innerText.replace(/\s+/g, " "));
+    expect(/Okuma raporu: hücrelerin %\d+'i kayda girdi/.test(reading) && /kayıt sayılmadı/.test(reading) && /başlık/.test(reading), `okuma raporu: ${reading}`);
+    await admin.click(".hof-modal-backdrop.is-visible .hof-reading summary");
+    const skippedLines = await admin.$$eval(".hof-modal-backdrop.is-visible .hof-reading li", nodes => nodes.map(node => node.innerText.replace(/\s+/g, " ")));
+    expect(skippedLines.length >= 3 && skippedLines.every(line => /\d+\. satır/.test(line)), `atlanan satırlar: ${skippedLines.slice(0, 3).join(" | ")}`);
     await admin.click('.hof-choice [data-mode="replace"]');
     await admin.waitForSelector('.hof-modal [data-answer="yes"]');
     await Promise.all([admin.waitForEvent("load", { timeout: 30000 }), admin.click('.hof-modal [data-answer="yes"]')]);

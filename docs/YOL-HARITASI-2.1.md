@@ -16,7 +16,7 @@ Baş mimar / baş mühendis notu · 27.09.2026. Amaç: programı yalnızca "çal
 | **Logo / Mikro (TR muhasebe)** | Yoğun ızgara, klavyeyle hızlı giriş, fiş/dekont çıktısı | Serbest sayfa Excel gibi; Kasa PDF var | P1 tahsilat makbuzu PDF (dekont) · P2 tablo içinde klavye gezinme (↑↓ Enter) |
 | **WhatsApp Web / Slack** | Sohbette dosya, yanıt, arama; dışa aktarma | Arşiv ve dosya numarası bağlantısı var; sohbette dosya/görsel yok | P2 sohbete belge ekleme (belge modülü hazır) |
 | **Windows / macOS bildirim merkezi** | Sırayla, üst üste binmeyen bildirimler; sistem bildirimi | 20 sn / 10 sn kuyruğu yapıldı | P1 sekme arkadayken tarayıcı sistem bildirimi (Notification API, izinle) |
-| **Power Query** | "Aşağı doldur", "ilk satırı başlık yap", tür algılama, hata değerleri | **P0 yapıldı:** birleştirilmiş hücre doldurma, gruplu başlık, hata değerleri, toplam satırı | P1 içe alma önizlemesinde "bu satır başlık mı?" düzeltme düğmesi |
+| **Power Query** | "Aşağı doldur", "ilk satırı başlık yap", "çevir (transpose)", tür algılama, hata değerleri | **P0 yapıldı:** birleştirilmiş hücre doldurma, gruplu/bölünmüş başlık, başlıksız tablo, yan çevrilmiş sayfa, form, hata değerleri, toplam satırı, okuma raporu | P1 içe alma önizlemesinde "bu satır başlık mı?" düzeltme düğmesi |
 
 ## 2. UI/UX değerlendirmesi (2.0.2 ekranları)
 
@@ -50,7 +50,7 @@ Bulgular ve adımlar:
 4. **Mesaj şablonları.** Sektör kataloğuna `templates: [{id, title, text}]`; yer tutucular `{ad} {tutar} {vade}`; WhatsApp bağlantısına metin eklenir. Kendi sektörü kartına şablon alanı.
 5. **Tahsilat makbuzu PDF.** Var olan bağımlılıksız PDF yazıcı (Kasa dökümü) ile tek tahsilat için makbuz; numara `M-2026-000123`, ofis adı ve imza alanı.
 6. **Sistem bildirimi.** `Notification` izniyle sekme arkadayken uyarı; kuyruğun aynı kalemi iki kez göstermemesi korunur.
-7. **İçe alma önizlemesinde düzeltme.** Yükleme kartında "başlık satırı bu mu?" ve "bu sayfayı alma" seçenekleri; sunucu `matrixToRecords`'a `headerRow` ipucu. Zor düzenlerde kalan %1'i kullanıcı iki tıkla çözer.
+7. **İçe alma önizlemesinde düzeltme.** *Yapılan (2.0.2):* okuma raporu — kapsam, atlanan satırlar ve nedenleri, sayfa şekli yükleme penceresinde görünür. *Kalan:* "başlık satırı bu mu?" ve "bu sayfayı alma" seçenekleri; sunucu `matrixToRecords`'a `headerRow` ipucu. Zor düzenlerde kalan %1'i kullanıcı iki tıkla çözer.
 8. **Yenilikler penceresi.** Güncelleme şeridine ek olarak sürüm notlarının ilk 5 maddesi (CHANGELOG'dan üretilir) bir kez gösterilir.
 
 ### P2 — 2.1 sonrası

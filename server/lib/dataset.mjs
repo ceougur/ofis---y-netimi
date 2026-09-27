@@ -13,6 +13,7 @@ import { applyIndexedCombos, cleanChoices, comboRulesFromParts, listOnlySheets, 
 import { HttpError, parseJson } from "./http.mjs";
 import { attachFormulas, sourceTagOf } from "./formula/bind.mjs";
 import { computeFormulas } from "./formula/compute.mjs";
+import { healNote, healRows } from "./heal.mjs";
 import { matrixToRecords } from "./sections.mjs";
 import { currentScope, runScoped } from "./session-scope.mjs";
 import { spreadsheetId } from "./sheets.mjs";
@@ -478,14 +479,17 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
         log?.warn?.("Birleşik giriş kutusu değerleri çevrilemedi", error);
       }
     }
-    // 2) Kayıtlar.
+    // 2) Kayıtlar (ve okuma raporu: şekil, atlanan satırlar, kapsam).
+    const reports = [];
     for (const sheet of parsedSheets) {
       const parsed = matrixToRecords(sheet.matrix, sheet.name, { layout: sheet.formulas.length > 0 || sheet.rules.length > 0 });
       for (const row of parsed.rows) rows.push(row); // yayma (...) büyük sayfalarda çağrı yığınını taşırır
       for (const label of parsed.tabs) if (label && !tabs.includes(label)) tabs.push(label);
       if (sheet.formulas.length) sheet.layout = parsed.layout;
       sheet.blocks = parsed.blocks || [];
+      if (parsed.report) reports.push({ sheet: sheet.name, ...parsed.report });
     }
+    const reading = summarizeReading(reports);
     if (parsedSheets.some(sheet => sheet.formulas.length)) {
       try {
         attachFormulas(parsedSheets, { sourceTag: sourceTagOf(`excel:${fileName}`) });
@@ -504,7 +508,19 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
         log?.warn?.("Excel açılır listeleri okunamadı; değerler olduğu gibi alındı", error);
       }
     }
-    return { rows, tabs, choices, listSheets };
+    return { rows, tabs, choices, listSheets, reading };
+  }
+  // Okuma raporu özeti (v2.0.2): sayfa başına şekil ve notlar, toplam kapsam, kayıt sayılmayan satırlar (en çok 40).
+  function summarizeReading(reports) {
+    if (!reports.length) return null;
+    const cells = reports.reduce((sum, item) => sum + item.cells, 0);
+    const lost = reports.reduce((sum, item) => sum + item.lost, 0);
+    const notes = [];
+    for (const item of reports) for (const note of item.notes || []) notes.push(reports.length > 1 ? `“${item.sheet}”: ${note}` : note);
+    const skipped = [];
+    for (const item of reports) for (const entry of item.skipped || []) if (skipped.length < 40) skipped.push({ sheet: reports.length > 1 ? item.sheet : "", ...entry });
+    const skippedTotal = reports.reduce((sum, item) => sum + (item.skipped?.length || 0), 0);
+    return { coverage: cells ? Math.round((1 - lost / cells) * 1000) / 1000 : 1, cells, lost, notes: notes.slice(0, 12), skipped, skippedTotal, shapes: reports.map(item => ({ sheet: item.sheet, shape: item.shape })) };
   }
   const cleanFormulas = list =>
     Array.isArray(list)
@@ -560,6 +576,7 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
     let label;
     let choices = {};
     let listSheets = [];
+    let reading = null;
     let url = null;
     const kind = String(body?.kind || "");
     if (kind === "sheets") {
@@ -572,15 +589,23 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
       tabs = result.tabs.map(tab => tab.title).filter(Boolean);
       choices = result.choices || {};
       listSheets = result.listSheets || [];
+      reading = result.reading || null;
       label = String(result.title || "").trim().slice(0, 200) || "Google Sheets";
     } else if (kind === "excel") {
       const fileName = String(body.fileName || "").trim().replace(/[\\/]+/g, "_");
       if (!fileName) throw new HttpError(400, "Dosya adı gerekli.");
       if (fileName.length > 180) throw new HttpError(400, "Dosya adı çok uzun.");
-      ({ rows, tabs, choices, listSheets } = parseExcelSheets(body.sheets, fileName, body.definedNames));
+      ({ rows, tabs, choices, listSheets, reading } = parseExcelSheets(body.sheets, fileName, body.definedNames));
       label = fileName;
     } else throw new HttpError(400, "Bilinmeyen içeri alma türü.");
     rows = cleanRows(rows);
+    // Kendi kendini onarma: bozuk Türkçe karakter, görünmez boşluk, "boş" anlamına gelen işaretler (heal.mjs).
+    const healed = healRows(rows);
+    if (healed.cells) {
+      reading = reading || { coverage: 1, cells: 0, lost: 0, notes: [], skipped: [], skippedTotal: 0, shapes: [] };
+      reading.healed = healed;
+      reading.notes = [...(reading.notes || []), healNote(healed)];
+    }
     if (!rows.length) throw new HttpError(400, "Tabloda okunabilir kayıt bulunamadı. Tablonun kolon başlıklarıyla başladığından emin olun.");
     const identity = identitiesFor(rows);
     const entries = { merge: toEntries(rows, identity.merge) };
@@ -610,6 +635,7 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
       session: { current: sessions().find(item => item.current)?.name || "", count: sessionList().length + 1 },
       similarity,
       differentTopic: similarity !== null && similarity < 0.5,
+      reading,
       preview: {
         merge: { added: mergeChanges.added, updated: mergeChanges.updated, unchanged: mergeChanges.unchanged, kept: mergeChanges.others },
         replace: { added: replaceChanges.added, updated: replaceChanges.updated, unchanged: replaceChanges.unchanged, removed: replaceChanges.others },

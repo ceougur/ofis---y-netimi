@@ -110,6 +110,10 @@ export function assessQuality(rows, analyses, primary) {
   // Başlığı T.C./IBAN/VKN diyen ama değerleri sağlamayı tutmayan kolon: kolon düzeyinde tek bir bilgi.
   const unverified = [];
   for (const item of analyses) {
+    if (item.warning === "scientific") {
+      unverified.push({ id: `scientific:${item.column}`, severity: "warn", title: `"${item.column}" kolonundaki numaralar Excel'de sayıya dönüşmüş (5.32E+09)`, detail: "Excel bu hücreleri sayı sayıp bilimsel gösterime çevirmiş; rakamların bir kısmı dosyada yok. Excel'de kolonu Metin biçimine çevirip numaraları yeniden yazın ya da başına kesme işareti (') koyun, sonra dosyayı yeniden yükleyin.", column: item.column, count: 0, items: [], more: 0 });
+      continue;
+    }
     for (const [role, name] of [["tckn", "T.C. kimlik no"], ["iban", "IBAN"], ["vkn", "vergi no"]]) {
       if (item.header.includes(role) && item.role !== role && item.stats.nonEmpty >= 3) {
         unverified.push({ id: `unverified-${role}:${item.column}`, severity: "info", title: `"${item.column}" kolonundaki değerler geçerli ${name} değil`, detail: "Başlık bu türü söylüyor ama değerlerin çoğu sağlamayı tutmuyor (deneme verisi ya da farklı bir numara olabilir). Göstergelerde kullanılmadı.", column: item.column, count: item.stats.nonEmpty, items: [], more: 0 });
@@ -117,9 +121,36 @@ export function assessQuality(rows, analyses, primary) {
     }
   }
 
+  // Kaymış satır (v2.0.2): bir hücre eksik ya da fazla girilince değerler yan kolona kayar — telefon tarih kolonunda,
+  // tarih tutar kolonunda görünür. En az iki biçimli kolonda uyumsuz değer varsa ve bir kolon kaydırınca en az ikisi
+  // yerine oturuyorsa satır "kaymış" sayılır; nokta atışı öneriyle listelenir.
+  const typedColumns = analyses.filter(item => CHECKS[item.role] && item.stats.nonEmpty >= 3 && (item.validRate ?? 1) >= 0.8);
+  const typedIndex = new Map(typedColumns.map(item => [item.column, item]));
+  const shifted = typedColumns.length >= 2 ? make("shifted-rows", "warn", n => `${n} kayıtta hücreler yan kolona kaymış görünüyor`, "Bir hücre eksik ya da fazla girilince değerler yan kolona kayar (telefon tarih kolonunda, tarih tutar kolonunda). Excel'de o satırı düzeltip yeniden yükleyin ya da detay kartında değerleri doğru alana taşıyın.", typedColumns[0].column) : null;
+  const shiftedRow = row => {
+    const bad = typedColumns.filter(item => {
+      const value = String(row[item.column] ?? "").trim();
+      return value && CHECKS[item.role](value) === "bad";
+    });
+    if (bad.length < 2) return false;
+    let fits = 0;
+    for (const item of bad) {
+      const at = analyses.indexOf(item);
+      const value = String(row[item.column] ?? "").trim();
+      for (const neighbor of [analyses[at - 1], analyses[at + 1]]) {
+        if (neighbor && typedIndex.has(neighbor.column) && CHECKS[neighbor.role](value) === "ok") {
+          fits += 1;
+          break;
+        }
+      }
+    }
+    return fits >= 2;
+  };
+
   const ids = new Map(); // sekme + kimlik → satırlar (farklı sekmelerde aynı kimlik sorun değildir)
   let idFilled = 0;
   for (const row of rows) {
+    if (shifted && shiftedRow(row)) shifted.add(row, primary);
     if (idColumn && Object.hasOwn(row, idColumn)) {
       const value = String(row[idColumn] ?? "").trim();
       if (isEmptyCell(value)) {

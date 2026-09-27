@@ -5,6 +5,7 @@ import { SECTION_SEPARATOR, hasHeaderWord, matrixToRecords } from "../server/lib
 
 const S = SECTION_SEPARATOR;
 const labels = result => [...new Set(result.rows.map(row => row.__sheet))];
+const stripReport = ({ report, ...rest }) => rest;
 
 // Gerçek bir ofis sayfasının yapısı (kişisel bilgiler uydurma): birleşik gri başlıklar, her birinin altında kendi
 // kolon başlıkları; üçüncü tablonun kolonları farklı; tarih kolonunda metin (RPÇY), çok satırlı "son durum" hücreleri.
@@ -147,7 +148,7 @@ describe("alt tablolar (bölümler)", () => {
   });
 
   it("boş veya bozuk girdide hata vermez", () => {
-    assert.deepEqual(matrixToRecords([], "X"), { rows: [], tabs: ["X"], sections: [] });
+    assert.deepEqual(stripReport(matrixToRecords([], "X")), { rows: [], tabs: ["X"], sections: [] });
     assert.deepEqual(matrixToRecords(null, "").rows, []);
     assert.equal(matrixToRecords([["TEK BAŞLIK"], ["veri"]], "X").rows.length, 1);
   });
@@ -191,5 +192,63 @@ describe("zor düzenler (v2.0.2): gruplu başlık, dipnot, toplam, yan yana tabl
     const layout = matrixToRecords([["A", "B", "", "C", "D"], ["1", "2", "", "3", "4"], ["5", "6", "", "", ""]], "S", { layout: true });
     assert.equal(layout.layout.length, 3, "yan yana bloklarda her kayıt kendi satır düzenini taşır");
     assert.deepEqual(layout.layout[0].names, ["A", "B", "", "", ""]);
+  });
+});
+
+describe("sayfa şekilleri ve okuma raporu (v2.0.2): form, yan çevrilmiş, başlıksız, bölünmüş başlık", () => {
+  it("solda alan adı sağda değer olan form tek kayıt olur", () => {
+    const result = matrixToRecords([["MÜVEKKİL BİLGİ FORMU"], ["Ad Soyad:", "Ali Veli"], ["Telefon:", "0532 111 11 11"], ["Dosya No", "2026/12"], ["Vade", "01.10.2026"], ["Tutar", "1.500,00 TL"], [], ["Hazırlayan: Selin"]], "Form");
+    assert.equal(result.report.shape, "form");
+    assert.deepEqual(result.rows, [{ "Ad Soyad": "Ali Veli", Telefon: "0532 111 11 11", "Dosya No": "2026/12", Vade: "01.10.2026", Tutar: "1.500,00 TL", __sheet: "Form" }]);
+    assert.ok(result.report.skipped.some(item => item.kind === "title" && item.line === 1));
+  });
+
+  it("alanları aşağı, kayıtları sağa yazılmış sayfa yan çevrilerek okunur", () => {
+    const result = matrixToRecords([
+      ["Ad Soyad", "Ali Veli", "Ayşe Kaya", "Can Er"],
+      ["Telefon", "0532 111 11 11", "0533 222 22 22", "0534 333 33 33"],
+      ["Vade", "01.10.2026", "02.10.2026", "03.10.2026"],
+      ["Tutar", "1.500", "2.000", "750"],
+    ], "Liste");
+    assert.equal(result.report.shape, "transposed");
+    assert.equal(result.rows.length, 3);
+    assert.deepEqual(result.rows[1], { "Ad Soyad": "Ayşe Kaya", Telefon: "0533 222 22 22", Vade: "02.10.2026", Tutar: "2.000", __sheet: "Liste" });
+    // Kalem / ay tablosu (ilk kolon başlık kelimesi olsa da üstte dönem başlıkları var): olağan tablo kalır.
+    const months = matrixToRecords([["Kalem", "Ocak", "Şubat"], ["Kira", "1.000", "1.000"], ["Aidat", "200", "200"], ["Faiz", "50", "60"]], "Aylık");
+    assert.equal(months.report.shape, "table");
+    assert.equal(months.rows.length, 3);
+  });
+
+  it("başlık satırı olmayan tabloda kolon adları içerikten türetilir ve ilk satır da kayıt olur", () => {
+    const result = matrixToRecords([
+      ["Ali Veli", "0532 111 11 11", "01.10.2026", "1.500,00 TL", "ali@ornek.com"],
+      ["Ayşe Kaya", "0533 222 22 22", "02.10.2026", "2.000,00 TL", "ayse@ornek.com"],
+      ["Can Er", "0534 333 33 33", "03.10.2026", "750,00 TL", "can@ornek.com"],
+    ], "Sayfa1");
+    assert.equal(result.report.shape, "headerless");
+    assert.equal(result.rows.length, 3);
+    assert.deepEqual(Object.keys(result.rows[0]), ["Ad Soyad", "Telefon", "Tarih", "Tutar", "E-posta", "__sheet"]);
+    // Yıl başlıkları veri sanılmaz: ["Öğrenci", "2024", "2025"] olağan başlıktır.
+    const years = matrixToRecords([["Öğrenci", "2024", "2025"], ["Ali", "3.000", "3.000"], ["Ayşe", "2.500", ""], ["Can", "", "1.000"]], "Yıllar");
+    assert.equal(years.report.shape, "table");
+    // Yalnız rakamdan oluşan başlık "2024." olur: JavaScript sayısal anahtarları öne dizmesin, kolon sırası korunsun.
+    assert.deepEqual(Object.keys(years.rows[0]), ["Öğrenci", "2024.", "2025.", "__sheet"]);
+  });
+
+  it("iki satıra bölünmüş başlık birleştirilir; metin içerikli ilk kayıt başlıkla birleştirilmez", () => {
+    const split = matrixToRecords([["Dosya", "Müvekkil", "Ödeme", "Sözleşme"], ["No", "Adı", "Tarihi", "Bitiş"], ["2026/1", "Ali Veli", "01.10.2026", "31.12.2026"], ["2026/2", "Ayşe Kaya", "02.10.2026", "31.12.2026"]], "Bölünmüş");
+    assert.deepEqual(Object.keys(split.rows[0]), ["Dosya No", "Müvekkil Adı", "Ödeme Tarihi", "Sözleşme Bitiş", "__sheet"]);
+    assert.equal(split.rows.length, 2);
+    const plain = matrixToRecords([["Müvekkil", "Şehir", "Durum"], ["Ali Veli", "İstanbul", "Aktif"], ["Ayşe Kaya", "Ankara", "Pasif"], ["Can Er", "İzmir", "Aktif"]], "Düz");
+    assert.equal(plain.rows.length, 3);
+    assert.deepEqual(Object.keys(plain.rows[0]), ["Müvekkil", "Şehir", "Durum", "__sheet"]);
+  });
+
+  it("okuma raporu: atlanan satırlar türüyle listelenir, kapsam kayda giren hücre oranıdır", () => {
+    const result = matrixToRecords([["ABC Hukuk"], ["Dosya No", "Borçlu", "Tutar"], ["2026/1", "Ali", "1.000"], ["", "", "", "", "", "", "", "sağ köşe notu"], ["Dosya No", "Borçlu", "Tutar"], ["2026/2", "Ayşe", "2.000"], ["* dipnot"]], "Rapor");
+    assert.equal(result.rows.length, 3, "sağ köşedeki not tek başına kayıt olmaz ama hücresi adsız kolonda kaldığı için rapora düşer");
+    const kinds = result.report.skipped.map(item => item.kind);
+    assert.ok(kinds.includes("title") && kinds.includes("repeat-header") && kinds.includes("footnote"), kinds.join(","));
+    assert.ok(result.report.coverage > 0.8 && result.report.coverage < 1, String(result.report.coverage));
   });
 });

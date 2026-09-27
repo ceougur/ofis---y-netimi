@@ -916,6 +916,14 @@
     if (item.kind === "title") return `Dosya/sekme adı: “${item.signal}”`;
     return item.signal;
   };
+  const ROLE_LABEL = { id: "kimlik", person: "kişi", org: "kurum", money: "tutar", date: "tarih", status: "durum", category: "kategori", phone: "telefon", email: "e-posta", address: "adres", note: "not", tckn: "T.C. kimlik no", vkn: "vergi no", iban: "IBAN", city: "il", plate: "plaka", url: "bağlantı", number: "sayı", percent: "oran", sequence: "sıra no", responsible: "sorumlu", text: "metin" };
+  const roleLabel = item => {
+    const base = ROLE_LABEL[item.role] || item.role;
+    if (item.role === "date") return item.kind === "deadline" ? "son tarih" : item.kind === "event" ? "olay tarihi" : item.kind === "birth" ? "doğum tarihi" : "tarih";
+    if (item.role === "money" && item.kind === "amount") return "tutar";
+    if (item.role === "id" && item.kind) return `kimlik (${item.kind === "case" ? "dosya no" : "kod"})`;
+    return base;
+  };
   function typesSummary(analysis) {
     const chips = [];
     const byColumn = new Map(analysis.columns.map(item => [item.column, item]));
@@ -992,6 +1000,19 @@
       setStep(id, "active");
       await wait(pace);
       setStep(id, "done", details[id]);
+    }
+    // Neden? — her kolon için kararın kanıtları ve kesinlik derecesi (v2.0.2). Program kararını gizlemez.
+    const typesNode = dialog.querySelector('[data-step="types"] .hof-step-text');
+    if (typesNode && !typesNode.querySelector(".hof-evidence")) {
+      const CERTAINTY = { kesin: "kesin", olasi: "olası", olası: "olası", belirsiz: "belirsiz" };
+      const items = analysis.columns.filter(item => item.role !== "empty");
+      const unsure = items.filter(item => item.certainty === "belirsiz").length;
+      const box = document.createElement("details");
+      box.className = "hof-evidence";
+      box.innerHTML = `<summary>Neden? Kolon kararları ve kanıtları${unsure ? ` · ${number(unsure)} belirsiz` : ""}</summary><ul>${items
+        .map(item => `<li data-certainty="${esc(item.certainty)}"><b>${esc(nice(item.column))}</b> → ${esc(roleLabel(item))} <em>${esc(CERTAINTY[item.certainty] || item.certainty)}</em>${item.evidence?.length ? `<small>${item.evidence.map(esc).join(" · ")}</small>` : ""}</li>`)
+        .join("")}</ul>`;
+      typesNode.appendChild(box);
     }
     dialog.querySelector(".hof-steps")?.classList.add("is-complete");
     showResult(modal, analysis);

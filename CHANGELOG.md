@@ -59,6 +59,15 @@ Sürümler [anlamsal sürümleme](https://semver.org/lang/tr/) kurallarına uyar
   - 1–2 satırlık tablolarda tür başlıkla verilir (iki satırlık "Plaka / Muayene bitiş" de tanınır). "Şoför", "Avukat" gibi başlıklarda tek kelimelik adlar kişi sayılır.
   - **İngilizce başlıklar** (Customer, Amount, Due Date, Status, Notes…) tanınır; *Due Date* takvime, *Paid/Closed* kapanışa girer.
   - Tek vadeli tabloda ("Alacak / Son ödeme") tutar borç kolonundan alınır; takvim tutarsız kalmaz.
+- **Okuma motoru: sayfa şekilleri ve okuma raporu.** Her Excel/Sheets sayfası "üstte başlık, altta kayıt" değildir; program artık dört şekli tanır:
+  - **Form** (solda alan adı, sağda değer): tek kayıt olarak okunur.
+  - **Yan çevrilmiş sayfa** (alan adları aşağı, kayıtlar sağa doğru): çevrilerek okunur.
+  - **Başlıksız tablo** (ilk satır da kayıt): kolon adları içerikten türetilir (*Tarih, Telefon, Tutar, E-posta, Plaka, T.C. Kimlik No, Sıra, Ad Soyad*); hiçbir satır kaybolmaz.
+  - **İki satıra bölünmüş başlık** ("Ödeme" / "Tarihi" → *Ödeme Tarihi*) birleştirilir. Tek kolonlu sayfada başlık doğru satırdan alınır. Yalnız rakamdan oluşan başlıklar ("2025") kolon sırasını bozmaz.
+
+  Yükleme penceresinde **okuma raporu** görünür: hücrelerin yüzde kaçı kayda girdi, hangi satırlar neden kayıt sayılmadı (başlık, not, dipnot, grup etiketi, yinelenen başlık, adsız kolon), sayfa hangi şekilde okundu. Kapsam %90'ın altındaysa uyarır. Program emin olmadığını söyler; sessizce yanlış okumaz.
+- **Excel'in sayıya çevirdiği telefon/T.C. numaraları** (5.32E+09) tanınır; veri sağlığında nasıl düzeltileceği yazılır.
+- **Ayrıştırıcı dayanıklılık sınaması:** yüzlerce rastgele "saçma" düzen (başlık, boş satır, ara toplam, dipnot, çöp hücre, form, yan çevrilmiş, başlıksız) her sürümde otomatik denenir; bulunan üç zayıflık kapatıldı.
 - **Durum ve kategori renkleri.** Analizin durum ya da kategori dediği kolonlarda değerler renkli noktayla görünür (tablo ve detay kartı): *ödendi, aktif, tamamlandı* yeşil; *iptal, pasif, gecikmiş* kırmızı; *bekliyor, kısmen* sarı; diğer değerler (ilçe, sınıf, marka) kendi sabit rengini alır. Airtable/monday.com alışkanlığı.
 - **Sık / rahat görünüm.** Tablo başlığındaki düğme satır yüksekliğini daraltır (iki kat daha çok kayıt bir ekrana sığar); tercih bu bilgisayarda hatırlanır.
 - İleriye dönük mimari ve ürün yol haritası: `docs/YOL-HARITASI-2.1.md` (yaygın programlardan öğrenilenler, UI/UX bulguları, P1–P3 adımlar).

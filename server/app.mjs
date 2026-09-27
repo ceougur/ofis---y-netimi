@@ -12,6 +12,7 @@ import { createClientState } from "./lib/client-state.mjs";
 import { DEFAULT_ADMIN_PASSWORD, loadConfig } from "./lib/config.mjs";
 import { createDatasetService } from "./lib/dataset.mjs";
 import { createProfileService } from "./lib/profile.mjs";
+import { createAnalysisRunner } from "./lib/insight/worker.mjs";
 import { createLicenseService } from "./lib/license.mjs";
 import { createStore, openDatabase } from "./lib/db.mjs";
 import { HttpError, SECURITY_HEADERS, assertSameOrigin, fail, ok, send } from "./lib/http.mjs";
@@ -96,7 +97,9 @@ export function createApp(overrides = {}) {
   const free = createFreeSheets({ store, audit, dataset, trash });
   dataset.setFreeProvider(free);
   // Ofis profili: sektör, kelime dağarcığı, kalemle değiştirilen başlıklar ve verinin önbellekli analizi.
-  const profile = createProfileService({ store, dataset, audit, events, log, free });
+  // Analiz ayrı iş parçacığında koşar; sunucu bu sırada istekleri yanıtlar (yerel-önce: ofis bilgisayarı kilitlenmez).
+  const analysisRunner = createAnalysisRunner({ log, enabled: overrides.analysisWorker !== false });
+  const profile = createProfileService({ store, dataset, audit, events, log, free, runner: analysisRunner });
   profile.init();
   dataset.onChange(() => profile.invalidate());
   const licenseOptions = overrides.license || {};
@@ -251,6 +254,7 @@ export function createApp(overrides = {}) {
         server.close(() => resolve());
         server.closeAllConnections?.();
       });
+      await analysisRunner.close();
       db.close();
     },
   };

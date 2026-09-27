@@ -67,10 +67,12 @@ const cleanLabel = (value, max) =>
     .trim()
     .slice(0, max);
 
-export function createProfileService({ store, dataset, audit, events, log, free = null, clock = () => new Date() }) {
+export function createProfileService({ store, dataset, audit, events, log, free = null, clock = () => new Date(), runner = null }) {
   const caches = new Map(); // oturum → { fingerprint, analysis }
   const running = new Map(); // oturum → { fingerprint, promise }
   let generation = 0; // her geçersizleştirmede artar
+  // Analiz ayrı iş parçacığında koşar (worker.mjs); verilmediyse ana iş parçacığında (testler, küçük veriler).
+  const analysisRunner = runner || { run: payload => Promise.resolve(analyzeDataset(payload)), close: async () => {}, stats: () => ({ inlineOnly: true }) };
 
   const iso = () => clock().toISOString();
   // Oturuma ait ayar adı (ilk oturumda eski ad; diğerlerinde "@<kimlik>" ekli).
@@ -305,11 +307,11 @@ export function createProfileService({ store, dataset, audit, events, log, free 
     const started = generation;
     const promise = (async () => {
       const view = await dataset.view();
-      // Görünüm okunurken veri değiştiyse (ör. ilk Sheet eşitlemesi ya da aynı anda yapılan bir düzeltme) sonuç bu
-      // istek için döner ama önbelleğe alınmaz: bir sonraki istek durulmuş veriyle yeniden hesaplar. Böylece eski
-      // veriden hesaplanmış bir analiz yeni verinin anahtarıyla saklanamaz. (Analiz eşzamanlıdır; araya iş giremez.)
+      // Görünüm okunurken ya da analiz iş parçacığında sürerken veri değiştiyse (ör. ilk Sheet eşitlemesi ya da aynı
+      // anda yapılan bir düzeltme) sonuç bu istek için döner ama önbelleğe alınmaz: bir sonraki istek durulmuş veriyle
+      // yeniden hesaplar. Böylece eski veriden hesaplanmış bir analiz yeni verinin anahtarıyla saklanamaz.
+      const result = await analysisRunner.run({ rows: view.rows || [], label: store.setting(sessionKey("dataset.label"), ""), tabs: (view.tabs || []).map(tab => tab.title).filter(Boolean), now: clock(), sectors: customSectors.all() });
       const settled = fingerprint() === key && generation === started;
-      const result = analyzeDataset({ rows: view.rows || [], label: store.setting(sessionKey("dataset.label"), ""), tabs: (view.tabs || []).map(tab => tab.title).filter(Boolean), now: clock(), sectors: customSectors.all() });
       if (settled) caches.set(session, { fingerprint: key, analysis: result });
       if (result.ms > 1500) log?.info?.(`Veri analizi ${result.ms} ms sürdü (${result.rowCount} kayıt)`);
       return result;
@@ -461,5 +463,5 @@ export function createProfileService({ store, dataset, audit, events, log, free 
     running.clear();
   };
 
-  return { init, profile, tagline, setSector, findSector, customSectors, dismissIntro, setLabel, setLabels, setColumns, resetLabels, analysis, records, invalidate, usedBefore, reasoningSummary, checks, dismiss, fingerprint };
+  return { init, profile, tagline, setSector, findSector, customSectors, dismissIntro, setLabel, setLabels, setColumns, resetLabels, analysis, records, invalidate, usedBefore, reasoningSummary, checks, dismiss, fingerprint, close: () => analysisRunner.close(), runnerStats: () => analysisRunner.stats() };
 }
