@@ -29,7 +29,12 @@ export function attachFormulas(sheets, { sourceTag = "" } = {}) {
   const bySheet = new Map();
   for (const sheet of sheets) {
     const rows = new Map();
-    for (const item of sheet.layout || []) rows.set(item.line, item);
+    // Aynı satırda birden çok kayıt olabilir (yan yana tablolar): hücrenin kolonu hangi kaydın adlarındaysa o seçilir.
+    for (const item of sheet.layout || []) {
+      const list = rows.get(item.line);
+      if (list) list.push(item);
+      else rows.set(item.line, [item]);
+    }
     bySheet.set(String(sheet.name).toLocaleLowerCase("tr-TR"), { sheet, rows, start: sheet.start || { r: 0, c: 0 } });
   }
   const keyOf = (sheet, absoluteRow) => `${sourceTag}|${sheet.name}!${absoluteRow + 1}`;
@@ -41,7 +46,8 @@ export function attachFormulas(sheets, { sourceTag = "" } = {}) {
     const own = bySheet.get(String(sheet.name).toLocaleLowerCase("tr-TR"));
     const start = own.start;
     for (const [absoluteRow, absoluteCol, text] of sheet.formulas.slice(0, MAX_FORMULAS)) {
-      const info = own.rows.get(absoluteRow - start.r);
+      const candidates = own.rows.get(absoluteRow - start.r) || [];
+      const info = candidates.find(item => item.names[absoluteCol - start.c]) || candidates[0];
       const field = info?.names[absoluteCol - start.c];
       if (!info || !field) continue; // kayıt dışı hücredeki formül (başlık, toplam satırı değilse) bağlanmaz
       stats.formulas += 1;
@@ -110,7 +116,8 @@ function resolveCell(sheetName, absoluteRow, absoluteCol, context) {
   const target = targetSheet(sheetName, context);
   const line = absoluteRow - target.start.r;
   const column = absoluteCol - target.start.c;
-  const info = target.rows.get(line);
+  const candidates = target.rows.get(line) || [];
+  const info = candidates.find(item => item.names[column]) || candidates[0];
   const field = info?.names[column];
   if (info && field) {
     if (target.sheet === context.sheet && absoluteRow === context.absoluteRow) return { t: "f", f: field };

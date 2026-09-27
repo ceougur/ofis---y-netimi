@@ -338,3 +338,19 @@ describe("bildirimde “Gerçekleştirildi” (v2.0.2)", () => {
     assert.ok(items.length && items.every(item => item.recurring), JSON.stringify(items));
   });
 });
+
+describe("ay kolonu yazımları ve tek vadeli tutar (v2.0.2)", () => {
+  it("Eyl.26, Ekim'26, 2026-11, 12/2026 ay kolonu sayılır; 'Marka' ve 'Ara toplam' sayılmaz", () => {
+    const months = monthColumns(["Öğrenci", "Eyl.26", "Ekim'26", "2026-11", "12/2026", "Marka", "Ara toplam"], NOW);
+    assert.deepEqual(months.map(item => `${item.column}=${new Date(item.time).toISOString().slice(0, 7)}`), ["Eyl.26=2026-09", "Ekim'26=2026-10", "2026-11=2026-11", "12/2026=2026-12"]);
+  });
+  it("tek vade kolonlu tabloda beklenen tutar borç/tutar kolonundan gelir", () => {
+    const rows = [
+      { __hofKey: "2026/1", __sheet: "Aktif", "Dosya No": "2026/1", Borçlu: "Ali Veli", Alacak: "10.000,00", "Son ödeme": "17.09.2026" },
+      { __hofKey: "2026/2", __sheet: "Aktif", "Dosya No": "2026/2", Borçlu: "Ayşe Kaya", Alacak: "5.000,00", "Son ödeme": "29.09.2026" },
+      { __hofKey: "TOPLAM", __sheet: "Aktif", "Dosya No": "TOPLAM", Borçlu: "", Alacak: "15.000,00", "Son ödeme": "" },
+    ];
+    const { items } = computeDues({ rows, tabs: ["Aktif"], now: NOW });
+    assert.deepEqual(items.map(item => [item.person, item.amount, item.state]), [["Ali Veli", 10000, "overdue"], ["Ayşe Kaya", 5000, "upcoming"]]);
+  });
+});

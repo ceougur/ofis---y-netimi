@@ -14,6 +14,7 @@
 // kaybolmaz. Hukuk verisi gibi dosya numaralı verilerde eski kural ("legacy" kipi) aynen geçerlidir; 1.6.0 öncesinden
 // gelen kurulumlar bu kurala sabitlenir (dataset.mjs, profile.mjs).
 import { createHash } from "node:crypto";
+import { isTotalLabel } from "./insight/cells.mjs";
 import { analyzeColumn } from "./insight/columns.mjs";
 import { foldText } from "./insight/validators.mjs";
 import { CASE_KEY_PATTERN, canonicalCaseKey, columnOrder } from "./sources.mjs";
@@ -24,7 +25,8 @@ export const LEGACY_IDENTITY = Object.freeze({ mode: "legacy" });
 const keyFor = (row, columns, identity) => {
   if (identity?.mode === "column") {
     const value = String(row[identity.column] ?? "").trim().replace(/\s+/g, " ");
-    if (value) return value.slice(0, 300);
+    // "TOPLAM" satırı kimlik olamaz (notlar, tahsilatlar ona bağlanmasın): parmak iziyle anahtarlanır.
+    if (value && !isTotalLabel(value)) return value.slice(0, 300);
   }
   return canonicalCaseKey(row, columns);
 };

@@ -108,7 +108,7 @@ function repeatsHeader(row, header) {
   return same >= 2 && same >= Math.ceil(Math.max(row.count, header.count) * 0.6);
 }
 
-function columnNames(header, lines) {
+function columnNames(header, lines, group = null) {
   // Döngüyle: yayma (...) çok satırlı tablolarda çağrı yığınını taşırır.
   let width = header.cells.length;
   for (const row of lines) width = Math.max(width, row.cells.length);
@@ -116,6 +116,8 @@ function columnNames(header, lines) {
   const used = new Map();
   for (let index = 0; index < width; index += 1) {
     let name = (header.cells[index] || "").replace(/\s+/g, " ").trim();
+    // Gruplu başlıkta alt başlığı boş kolon üst grubun adını alır ("Ödeme" grubunda tek kolon).
+    if (!name && group?.cells[index]) name = group.cells[index].replace(/\s+/g, " ").trim();
     // Başlığı boş ama altında veri olan kolon kaybolmasın.
     if (!name && lines.some(row => row.cells[index])) name = `Kolon ${index + 1}`;
     if (!name) {
@@ -128,6 +130,22 @@ function columnNames(header, lines) {
   }
   return names;
 }
+
+// Toplam satırı: ilk dolu hücre "TOPLAM", "Ara toplam", "Genel toplam", "Total"… Kayıt olarak kalır (formüllü toplam
+// satırı programda yeniden hesaplanır) ama kimlik, sayım ve takvimde kayıt sayılmaz; grup kipi oranına da katılmaz.
+const TOTAL_PREFIXES = ["toplam", "toplamlar", "genel toplam", "ara toplam", "total", "grand total", "sub total", "subtotal", "yekun", "genel yekun"];
+const isTotalText = text => {
+  const folded = fold(text);
+  return text.length <= 40 && TOTAL_PREFIXES.some(prefix => folded === prefix || folded.startsWith(`${prefix} `));
+};
+const isTotalRow = row => row.count > 0 && isTotalText(row.cells[row.filled[0]]);
+// Dipnot: tablonun sonundaki tek hücreli açıklama ("* Kırmızı satırlar…", "Hazırlayan: Selin", "Not: liste güncellenecek").
+const FOOTNOTE = /^(\*|not\b|notlar\b|aciklama\b|kaynak\b|hazirlayan\b|guncelleme\b|guncellenme\b|son guncelleme\b|dipnot\b|uyari\b|onemli\b)/;
+const isFootnote = (row, firstColumn) => {
+  if (row.count !== 1 || looksLikeData(row.cells[row.filled[0]])) return false;
+  const text = row.cells[row.filled[0]];
+  return row.filled[0] !== firstColumn || FOOTNOTE.test(fold(text)) || /:/.test(text) || text.startsWith("*");
+};
 
 /**
  * @param {Array<Array<unknown>>} matrix  Sekmenin satırları (hücre değerleri); boş satırlar atlanır.
@@ -153,26 +171,43 @@ export function matrixToRecords(matrix, tabTitle = "", options = {}) {
     const text = textOf(row);
     return text.length >= 2 && text.length <= MAX_TITLE && !CASE_KEY.test(text) && !DATE.test(text) && !ISO_DATE.test(text) && !NUMBERISH.test(text) && !/[\r\n]/.test(text);
   };
+  // Tablonun üstünde, ilk kolonda olmayan tek hücreli not ("Güncelleme: 12.09.2026" sağ köşede): başlık değildir.
+  const strayNote = (row, next, after) => row.count === 1 && Boolean(next) && next.count >= 2 && next.data === 0 && headerScore(next, after, true) >= 4;
 
   const sections = [];
   let current = null;
-  const open = (title, header, at = header?.index ?? 0) => {
-    current = { title, header, lines: [], at };
+  const open = (title, header, at = header?.index ?? 0, group = null) => {
+    current = { title, header, group, lines: [], at };
     sections.push(current);
   };
+
+  // Gruplu (iki satırlı) başlık: üstte birleştirilmiş grup adları ("Kişi bilgileri", "Ödeme"), altta asıl başlıklar.
+  // Alt satır veri içermiyor, üsttekinden belirgin biçimde daha dolu ve daha çok başlık kelimesi taşıyorsa asıl başlık odur.
+  // Grup satırı ilk kolonda başlamayan tek bir hücre de olabilir; o zaman uzak not değil grup adıdır.
+  const groupedHeader = (top, below, after) =>
+    Boolean(top && below) && top.data === 0 && below.data === 0 && below.count >= 2 && top.count * 2 <= below.count + 1 && keywordsOf(below) >= keywordsOf(top) && headerScore(below, after, true) >= 4 && !headingText(top);
 
   // 1) En üstteki başlık satırları, ardından ilk kolon başlığı (eski davranış: ilk geniş satır başlıktır).
   let index = 0;
   const topTitles = [];
   if (lines.some(row => row.count >= 2)) {
-    while (index < lines.length - 1 && headingText(lines[index])) topTitles.push(textOf(lines[index++]));
+    while (index < lines.length - 1 && (headingText(lines[index]) || (strayNote(lines[index], lines[index + 1], lines[index + 2]) && !groupedHeader(lines[index], lines[index + 1], lines[index + 2])))) {
+      if (headingText(lines[index])) topTitles.push(textOf(lines[index]));
+      index += 1;
+    }
   }
-  open(topTitles.length ? topTitles[topTitles.length - 1] : null, lines[index]);
-  index += 1;
+  if (groupedHeader(lines[index], lines[index + 1], lines[index + 2])) {
+    open(topTitles.length ? topTitles[topTitles.length - 1] : null, lines[index + 1], lines[index + 1].index, lines[index]);
+    index += 2;
+  } else {
+    open(topTitles.length ? topTitles[topTitles.length - 1] : null, lines[index]);
+    index += 1;
+  }
 
   // Grup etiketi kipi: ilk kolonu çoğunlukla veri (sıra no, dosya no, tarih…) olan bir tabloda, o kolonda duran tek
   // hücreli metin satırları ve en az iki tane. Böylece yarım doldurulmuş tek bir kayıt yanlışlıkla bölüm sayılmaz.
-  const firstColumnValues = lines.slice(index).filter(row => row.count >= 2 && row.cells[firstColumn]).map(row => row.cells[firstColumn]);
+  // Toplam satırları ("Ara toplam") bu orana katılmaz.
+  const firstColumnValues = lines.slice(index).filter(row => row.count >= 2 && row.cells[firstColumn] && !isTotalRow(row)).map(row => row.cells[firstColumn]);
   const firstColumnIsData = firstColumnValues.length >= 3 && firstColumnValues.filter(looksLikeData).length / firstColumnValues.length >= 0.7;
   const groupCandidates = lines.slice(index).filter((row, offset, rest) => headingText(row) && rest[offset + 1] && !headingText(rest[offset + 1]) && headerScore(rest[offset + 1], rest[offset + 2], true) < 4);
   const groupMode = firstColumnIsData && groupCandidates.length >= 2;
@@ -199,10 +234,14 @@ export function matrixToRecords(matrix, tabTitle = "", options = {}) {
     }
     current.lines.push(row);
   }
+  // Bölüm sonundaki dipnotlar kayıt değildir (tek kolonlu listelerde her satır tek hücrelidir; onlara dokunulmaz).
+  for (const section of sections) {
+    if (section.header.count < 2) continue;
+    while (section.lines.length && isFootnote(section.lines[section.lines.length - 1], firstColumn)) section.lines.pop();
+  }
 
   // 3) Kayıtlar ve etiketler.
   const filledSections = sections.filter(section => section.lines.length > 0);
-  const multiple = filledSections.length > 1;
   const rows = [];
   const tabs = [];
   const summary = [];
@@ -210,11 +249,15 @@ export function matrixToRecords(matrix, tabTitle = "", options = {}) {
   // Kayıt blokları (açılır listeleri kolonlara bağlamak için, v2.0.2): bloğun matris satır aralığı ve kolon adları.
   const blocks = options.layout ? [] : null;
   const usedLabels = new Map();
-  filledSections.forEach((section, position) => {
-    const names = columnNames(section.header, section.lines);
+  // Her bölüm, yan yana tablolara bölünebilir: aralarında tamamen boş kolon(lar) bulunan, kendi başlıkları olan bloklar.
+  const parts = [];
+  for (const section of filledSections) for (const part of splitSideBySide(section)) parts.push(part);
+  const multiple = parts.length > 1;
+  parts.forEach((part, position) => {
+    const { section, names, lines: partLines } = part;
     let label = tab;
     if (multiple) {
-      let name = section.title || `Bölüm ${position + 1}`;
+      let name = part.title || section.title || `Bölüm ${position + 1}`;
       const seen = usedLabels.get(name) || 0;
       usedLabels.set(name, seen + 1);
       if (seen) name = `${name} (${seen + 1})`;
@@ -222,7 +265,7 @@ export function matrixToRecords(matrix, tabTitle = "", options = {}) {
     }
     let count = 0;
     const lineIndexes = [];
-    for (const line of section.lines) {
+    for (const line of partLines) {
       const record = {};
       names.forEach((name, column) => {
         if (name) record[name] = line.cells[column] || "";
@@ -235,12 +278,46 @@ export function matrixToRecords(matrix, tabTitle = "", options = {}) {
       count += 1;
     }
     if (!count) return;
+    if (label && !tabs.includes(label)) tabs.push(label);
+    summary.push({ title: part.title || section.title || "", label, columns: names.filter(Boolean), count });
     if (blocks) {
       const next = sections[sections.indexOf(section) + 1];
       blocks.push({ label, from: section.at + (section.header && section.header.index === section.at ? 1 : 0), to: next ? next.at - 1 : Infinity, names, lines: lineIndexes });
     }
-    if (label && !tabs.includes(label)) tabs.push(label);
-    summary.push({ title: section.title || "", label, columns: names.filter(Boolean), count });
   });
   return { rows, tabs: tabs.length ? tabs : tab ? [tab] : [], sections: summary, ...(layout ? { layout, blocks } : {}) };
+}
+
+// Yan yana tablolar: başlık satırında ve tüm satırlarda boş kalan kolon(lar) tabloları ayırır. Her blokta en az iki
+// başlık olmalı ve satır dolulukları farklı olmalı (bir tabloda dolu, diğerinde boş satır var); yoksa tek tablodur
+// (içinde boş bir ayraç kolonu bulunan tablo bölünmez). Blok adı ilk başlığıdır ("Öğrenci", "Şoför").
+function splitSideBySide(section) {
+  const header = section.header;
+  const names = columnNames(header, section.lines, section.group);
+  const whole = [{ section, names, lines: section.lines, title: "" }];
+  let width = header.cells.length;
+  for (const row of section.lines) width = Math.max(width, row.cells.length);
+  const runs = [];
+  let run = null;
+  for (let column = 0; column < width; column += 1) {
+    const empty = !header.cells[column] && section.lines.every(row => !row.cells[column]);
+    if (empty) run = null;
+    else if (run) run.to = column;
+    else runs.push((run = { from: column, to: column }));
+  }
+  if (runs.length < 2) return whole;
+  const headed = runs.map(item => ({ ...item, headers: header.filled.filter(column => column >= item.from && column <= item.to).length }));
+  if (headed.some(item => item.headers < 2)) return whole;
+  const filledIn = (row, block) => row.filled.some(column => column >= block.from && column <= block.to);
+  const differs = section.lines.some(row => {
+    const flags = headed.map(block => filledIn(row, block));
+    return flags.some(Boolean) && !flags.every(Boolean);
+  });
+  if (!differs) return whole;
+  return headed.map(block => ({
+    section,
+    title: header.cells[header.filled.find(column => column >= block.from && column <= block.to)].replace(/\s+/g, " ").trim(),
+    names: names.map((name, column) => (column >= block.from && column <= block.to ? name : "")),
+    lines: section.lines.filter(row => filledIn(row, block)),
+  }));
 }

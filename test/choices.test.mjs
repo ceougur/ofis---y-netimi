@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { after, before, describe, it } from "node:test";
-import { applyIndexedCombos, comboRulesFromParts, controlsXml, inlineOptions, listRulesFromXml, mergeChoices, parseArea, parseRangeRef, readXlsxLists, resolveChoices, validationXml } from "../server/lib/choices.mjs";
+import { applyIndexedCombos, comboRulesFromParts, controlsXml, fillMerges, inlineOptions, listRulesFromXml, mergeChoices, mergesFromXml, parseArea, parseRangeRef, readXlsxLists, resolveChoices, validationXml } from "../server/lib/choices.mjs";
 import { matrixToRecords } from "../server/lib/sections.mjs";
 import { readZip } from "../server/lib/zip.mjs";
 import { KAYITLAR, KUTULU, KUTU_LISTELERI, LISTELER, acilirListelerXlsx, birlesikKutuXlsx } from "./fixtures/acilir-listeler.mjs";
@@ -187,5 +187,21 @@ describe("açılır listeler: içeri alma ve görünüm (v2.0.2)", () => {
     assert.equal((await admin.del("/api/workspace/dataset")).status, 200);
     const after = await view();
     assert.ok(!after.choices || !Object.keys(after.choices).length);
+  });
+});
+
+describe("birleştirilmiş hücreler (v2.0.2)", () => {
+  it("xlsx'teki mergeCell alanları okunur ve dikey birleştirme CSV matrisine yazılır", () => {
+    const merges = mergesFromXml('<sheetData/><mergeCells count="2"><mergeCell ref="A3:A5"/><mergeCell ref="B1:C1"/></mergeCells>');
+    assert.deepEqual(merges, [
+      { s: { r: 2, c: 0 }, e: { r: 4, c: 0 } },
+      { s: { r: 0, c: 1 }, e: { r: 0, c: 2 } },
+    ]);
+    const matrix = [["", "Kişi", ""], ["Müvekkil", "Dosya", "Tutar"], ["Ali Veli", "2026/1", "1500"], ["", "2026/2", "2000"], ["", "2026/3", "750"], ["Ayşe", "2026/4", "900"]];
+    fillMerges(matrix, merges);
+    assert.deepEqual(matrix.map(row => row[0]), ["", "Müvekkil", "Ali Veli", "Ali Veli", "Ali Veli", "Ayşe"]);
+    assert.deepEqual(matrix[0], ["", "Kişi", ""], "yatay birleştirme dokunulmaz");
+    // Dosyada birleştirme yoksa liste okuyucu boş bir harita döndürür.
+    assert.equal(readXlsxLists(acilirListelerXlsx()).merges.size, 0);
   });
 });

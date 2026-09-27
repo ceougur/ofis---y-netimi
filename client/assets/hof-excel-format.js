@@ -106,14 +106,31 @@ export function cellText(XLSX, cell, date1904 = false) {
   return String(cell.w ?? cell.v).trim();
 }
 
+// Birleştirilmiş hücreler (v2.0.2): Excel değeri yalnız sol üst hücrede saklar. Dikey birleştirmede ("Ali Veli" üç
+// dosya satırına yayılmış) değer birleşen her satırın ilk kolonuna yazılır; kullanıcı sayfada böyle görür ve kayıt
+// satırları kişisiz kalmaz. Yatay birleştirme (gruplu başlık "Kişi bilgileri") olduğu gibi kalır.
+const MAX_MERGES = 50_000;
+export function mergedFills(XLSX, sheet, date1904 = false) {
+  const fills = new Map();
+  const merges = Array.isArray(sheet?.["!merges"]) ? sheet["!merges"].slice(0, MAX_MERGES) : [];
+  for (const merge of merges) {
+    if (!merge?.s || !merge?.e || !(merge.e.r > merge.s.r)) continue;
+    const text = cellText(XLSX, sheet[XLSX.utils.encode_cell(merge.s)], date1904);
+    if (!text) continue;
+    for (let r = merge.s.r + 1; r <= Math.min(merge.e.r, merge.s.r + 10_000); r += 1) fills.set(`${r},${merge.s.c}`, text);
+  }
+  return fills;
+}
+
 // keepEmpty: boş satırlar da (boş dizi olarak) kalır; böylece matristeki sıra = sayfadaki satır (formüller için).
 export function sheetMatrix(XLSX, sheet, date1904 = false, { keepEmpty = false } = {}) {
   if (!sheet || !sheet["!ref"]) return [];
   const range = XLSX.utils.decode_range(sheet["!ref"]);
   const rows = [];
+  const fills = mergedFills(XLSX, sheet, date1904);
   for (let r = range.s.r; r <= range.e.r; r += 1) {
     const cells = [];
-    for (let c = range.s.c; c <= range.e.c; c += 1) cells.push(cellText(XLSX, sheet[XLSX.utils.encode_cell({ r, c })], date1904));
+    for (let c = range.s.c; c <= range.e.c; c += 1) cells.push(fills.get(`${r},${c}`) ?? cellText(XLSX, sheet[XLSX.utils.encode_cell({ r, c })], date1904));
     while (cells.length && !cells[cells.length - 1]) cells.pop();
     if (cells.length || keepEmpty) rows.push(cells);
   }

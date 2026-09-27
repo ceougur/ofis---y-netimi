@@ -21,14 +21,14 @@ const MONTHS = { ocak: 1, subat: 2, mart: 3, nisan: 4, mayis: 5, haziran: 6, tem
 const MONTH_NAMES = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"];
 
 // Başlık sınıfları (katlanmış metin üzerinde).
-const PAST = /\b(yapilan|odenen|odendigi|odenmis|tahsil edilen|gerceklesen|son odeme yapilan|son tahsilat|son islem)\b/;
-const STRONG = /\b(odeme sozu|sozu|soz tarihi|soz|taahhut\w*|vade\w*|son odeme|taksit tarihi|taksit vadesi|planlanan odeme|odenecek tarih\w*|odeme plani|tahsil tarihi|tahsilat tarihi|odeme gunu|vade gunu|taksit gunu|kira gunu|aidat gunu|her ayin)\b/;
-const WEAK = /\b(odeme tarihi|odeme|tahsil\w*|taksit\w*)\b/;
+const PAST = /\b(yapilan|odenen|odendigi|odenmis|tahsil edilen|gerceklesen|son odeme yapilan|son tahsilat|son islem|paid on|last payment|date paid)\b/;
+const STRONG = /\b(odeme sozu|sozu|soz tarihi|soz|taahhut\w*|vade\w*|son odeme|taksit tarihi|taksit vadesi|planlanan odeme|odenecek tarih\w*|odeme plani|tahsil tarihi|tahsilat tarihi|odeme gunu|vade gunu|taksit gunu|kira gunu|aidat gunu|her ayin|due date|due|payment due|pay by|installment date)\b/;
+const WEAK = /\b(odeme tarihi|odeme|tahsil\w*|taksit\w*|payment date|payment|installment\w*)\b/;
 const DAY_OF_MONTH = /\b(odeme gunu|vade gunu|taksit gunu|kira gunu|aidat gunu|her ayin)\b/;
 const PROMISE = /\b(soz\w*|taahhut\w*)\b/;
-const INSTALLMENT = /\btaksit\w*\b/;
+const INSTALLMENT = /\b(taksit\w*|installment\w*)\b/;
 // Sıra sayılı ödeme kolonları ("1. Ödeme Tarihi" / "1. Ödeme Tutarı", "Birinci Ödeme") taksit dizisidir (v2.0.2).
-const SERIES_PAYMENT = /\b(odeme\w*|tahsilat\w*|aidat\w*|kira\w*)\b/;
+const SERIES_PAYMENT = /\b(odeme\w*|tahsilat\w*|aidat\w*|kira\w*|payment\w*|installment\w*)\b/;
 const installmentOf = (column, folded = foldText(column)) => {
   const n = numberIn(column);
   if (n === null) return null;
@@ -36,12 +36,36 @@ const installmentOf = (column, folded = foldText(column)) => {
 };
 // Satırı kapatan durumlar ("kısmen ödendi" kapatmaz).
 // "Gerçekleştirildi": bildirimdeki düğmeyle hücreye yazılan ibare (v2.0.2) — kalem kapanır, uyarı tekrarlanmaz.
-const SETTLED = /\b(odendi|odenmistir|odeme alindi|tahsil edildi|tahsilat yapildi|kapandi|kapali|kapatildi|iptal\w*|tamamlandi|sonuclandi|bitti|feragat|infaz|gerceklestirildi|gerceklestirilmistir)\b/;
+const SETTLED = /\b(odendi|odenmistir|odeme alindi|tahsil edildi|tahsilat yapildi|kapandi|kapali|kapatildi|iptal\w*|tamamlandi|sonuclandi|bitti|feragat|infaz|gerceklestirildi|gerceklestirilmistir|paid|closed|cancelled|canceled|completed|done|settled)\b/;
 const PARTIAL = /\b(kismen|kismi|eksik)\b/;
 // Tutar kolonları: kalemin kendi tutarı ve bağlam olarak kalan borç.
 const AMOUNT_OWN = /\b(soz tutari|taahhut tutari|taksit tutari|taksit miktari|aylik taksit|aylik odeme|odenecek|odenecek tutar|kira bedeli|kira|aidat|aylik|aylik ucret|servis ucreti|ucret|ucreti|ayligi)\b/;
 // Aylık ödeme kolonları ("Eylül", "Ekim 2026", "Kasım ödemesi"): hücrede ödeme işareti ya da tutar varsa o ay ödenmiştir.
-const MONTH_HEADER = /^(ocak|subat|mart|nisan|mayis|haziran|temmuz|agustos|eylul|ekim|kasim|aralik)(?:\s+(\d{4}|\d{2}))?(?:\s+(odemesi|odeme|ucreti|ucret|taksiti|aidati|kirasi|tahsilat))?$/;
+// Yazımlar (katlanmış metin): "Eylül", "Ekim 2026", "Eyl.26" → "eyl 26", "Ekim'26" → "ekim 26", "2026-11" → "2026 11",
+// "11/2026" → "11 2026", "Kasım ödemesi". Kısaltmalar yalnız tam eşleşir ("mar" evet, "marka" hayır).
+const MONTH_HEADER = /^(?:(ocak|oca|subat|sub|mart|mar|nisan|nis|mayis|may|haziran|haz|temmuz|tem|agustos|agu|eylul|eyl|ekim|eki|kasim|kas|aralik|ara)(?:\s+(\d{4}|\d{2}))?|(\d{4})\s+(\d{1,2})|(\d{1,2})\s+(\d{4}))(?:\s+(odemesi|odeme|ucreti|ucret|taksiti|aidati|kirasi|tahsilat))?$/;
+const MONTH_ABBR = { oca: "ocak", sub: "subat", mar: "mart", nis: "nisan", may: "mayis", haz: "haziran", tem: "temmuz", agu: "agustos", eyl: "eylul", eki: "ekim", kas: "kasim", ara: "aralik" };
+// Eşleşmeyi {month, year, suffix} olarak okur; sayısal ay 1–12 dışındaysa eşleşme sayılmaz.
+function monthHeader(column) {
+  const match = MONTH_HEADER.exec(foldText(column));
+  if (!match) return null;
+  let month;
+  let year = null;
+  if (match[1]) {
+    month = MONTHS[MONTH_ABBR[match[1]] || match[1]];
+    if (match[2]) year = Number(match[2]);
+  } else if (match[3]) {
+    year = Number(match[3]);
+    month = Number(match[4]);
+  } else {
+    month = Number(match[5]);
+    year = Number(match[6]);
+  }
+  if (!month || month < 1 || month > 12) return null;
+  if (year !== null && year < 100) year += 2000;
+  if (year !== null && (year < 1990 || year > 2100)) return null;
+  return { month, year, suffix: match[7] || "" };
+}
 const UNPAID_MARK = /^(0|0 00|yok|odenmedi|odemedi|odenmemis|borc|borclu|bekliyor|gecikti|gecikme|x|hayir|h)$/;
 const AMOUNT_DEBT = /\b(kalan|bakiye|borc\w*|alacak\w*|toplam borc)\b/;
 // v2.0.2: şablon satırları ve öğrencinin (üyenin) hizmet dönemi.
@@ -149,7 +173,11 @@ function classifyColumns(rows, columns, analyses, now) {
   const own = moneyLike.find(column => AMOUNT_OWN.test(foldText(column)) && !due.some(item => item.column === column)) || null;
   // Kalan borç: tutar kolonu olarak tanınmış, ya da başlığı kalan/bakiye/borç olan ve tutar yazılmış (seyrek de olsa) kolon.
   const debt = moneyLike.find(column => AMOUNT_DEBT.test(foldText(column))) || columns.find(column => AMOUNT_DEBT.test(foldText(column)) && rows.some(row => parseAmount(cell(row, column)) !== null)) || null;
-  for (const entry of due) entry.amountColumn = pairFor(entry) || (entry.installment === null ? own : null);
+  // Tek vadeli tabloda ("Alacak / Son ödeme", "Tutar / Vade") kalemin tutarı, kendi tutar kolonu yoksa borç ya da
+  // tablodaki tek tutar kolonudur; birden çok tutar kolonu varsa (borç, ödenen, kalan) yalnız kalan borç kullanılır.
+  const single = due.filter(entry => entry.installment === null).length === 1 && !monthly.length && !recurring.length;
+  const fallback = single ? debt || (moneyLike.filter(column => !due.some(item => item.column === column)).length === 1 ? moneyLike.find(column => !due.some(item => item.column === column)) : null) : null;
+  for (const entry of due) entry.amountColumn = pairFor(entry) || (entry.installment === null ? own || fallback : null);
   for (const entry of monthly) entry.amountColumn = own;
   for (const entry of recurring) {
     entry.amountColumn = own;
@@ -167,13 +195,9 @@ function classifyColumns(rows, columns, analyses, now) {
 // (24 aydan uzun) dizilerde her ay bugünden önceki en yakın hâlini alır.
 export function monthColumns(columns, now) {
   const found = columns
-    .map(column => ({ column, match: MONTH_HEADER.exec(foldText(column)) }))
+    .map(column => ({ column, match: monthHeader(column) }))
     .filter(item => item.match)
-    .map(item => {
-      let year = item.match[2] ? Number(item.match[2]) : null;
-      if (year !== null && year < 100) year += 2000;
-      return { column: item.column, month: MONTHS[item.match[1]], year };
-    });
+    .map(item => ({ column: item.column, month: item.match.month, year: item.match.year }));
   if (found.length < 2) return [];
   const offsets = [];
   let offset = 0;
@@ -210,7 +234,7 @@ export function monthColumns(columns, now) {
 const PAYMENT_MARK = /^(odendi|odenmistir|odeme alindi|alindi|tahsil edildi|tamam|ok|evet|e|var|\+|✓|✔|☑|x|yok|odenmedi|odemedi|odenmemis|bekliyor|borc|borclu|gecikti|hayir|h|kismen|kismi|eksik)$/;
 function paymentMonths(rows, columns, months, analyses) {
   if (!months.length) return [];
-  if (months.some(entry => MONTH_HEADER.exec(foldText(entry.column))?.[3])) return months;
+  if (months.some(entry => monthHeader(entry.column)?.suffix)) return months;
   const feeColumn = analyses.some(item => (item.role === "money" || item.role === "number") && AMOUNT_OWN.test(foldText(item.column)) && !months.some(entry => entry.column === item.column));
   if (feeColumn) return months;
   let filled = 0;

@@ -4,7 +4,7 @@ import { createHash } from "node:crypto";
 import { attachFormulas, sourceTagOf } from "./formula/bind.mjs";
 import { describeFormat, parseCellText } from "./formula/values.mjs";
 import { readXlsxFormulas } from "./formula/xlsx.mjs";
-import { listOnlySheets, readXlsxLists, resolveChoices } from "./choices.mjs";
+import { fillMerges, listOnlySheets, readXlsxLists, resolveChoices } from "./choices.mjs";
 import { matrixToRecords } from "./sections.mjs";
 
 export function spreadsheetId(sheetUrl) {
@@ -184,26 +184,42 @@ export function createSheetsReader({ fetchImpl, cacheMs = 45_000, timeoutMs = 20
     const parsedTabs = [];
     const hash = createHash("sha1");
     let sectionCount = 0;
+    const csvs = [];
     for (const tab of targets) {
       const csv = await readTabCsv(sourceUrl, tab.gid, signal);
       if (!csv.ok) {
         return { connected: false, sourceUrl, syncedAt: null, rows: [], tabs, message: `"${tab.title || "Sheet"}" sekmesi okunamadı (${csv.status}). Sheet'i görüntüleme izni olan kişilerle paylaşın.` };
       }
       hash.update(`${tab.title}\u0000${csv.text}\u0000`);
+      csvs.push({ tab, csv });
+    }
+    // Formüller, açılır listeler ve birleştirilmiş hücreler xlsx kopyasından okunur (CSV'de yoktur). Birleştirilmiş
+    // hücreler kayıtlar çıkarılmadan önce doldurulur; xlsx alınamazsa değerler yine gelir.
+    let formulasUnavailable = false;
+    let workbook = null;
+    let lists = null;
+    const digest = hash.digest("hex");
+    if (formulas && csvs.some(item => item.csv.export && item.tab.title)) {
+      try {
+        ({ workbook, lists } = await readFormulas(id, digest));
+      } catch {
+        formulasUnavailable = true;
+      }
+    }
+    for (const { tab, csv } of csvs) {
       // Export CSV'sinde satır sırası sayfadaki satırdır (boş satırlar korunur); gviz yedek yolunda bu garanti yoktur.
       const matrix = parseCsv(csv.text, { keepEmpty: csv.export });
+      if (csv.export && lists?.merges?.has(tab.title)) fillMerges(matrix, lists.merges.get(tab.title));
       const parsed = matrixToRecords(matrix, tab.title, { layout: csv.export });
       for (const row of parsed.rows) rows.push(row); // yayma (...) büyük sekmelerde çağrı yığınını taşırır
       for (const label of parsed.tabs) labels.push({ gid: tab.gid, title: label });
       if (parsed.sections.length > 1) sectionCount += parsed.sections.length;
       if (csv.export && tab.title) parsedTabs.push({ title: tab.title, matrix, layout: parsed.layout, blocks: parsed.blocks });
     }
-    let formulasUnavailable = false;
     let choices;
     let listSheets = [];
-    if (formulas && parsedTabs.length) {
+    if (workbook && parsedTabs.length) {
       try {
-        const { workbook, lists } = await readFormulas(id, hash.digest("hex"));
         bindSheetFormulas(parsedTabs, workbook, sourceTagOf(`sheets:${id}`));
         if (lists) {
           const sheets = parsedTabs.map(tab => ({ name: tab.title, matrix: tab.matrix, start: { r: 0, c: 0 }, rules: lists.sheets.get(tab.title) || [], blocks: tab.blocks || [], hidden: lists.hidden.has(tab.title) }));

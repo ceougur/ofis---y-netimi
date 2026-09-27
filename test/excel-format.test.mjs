@@ -32,6 +32,30 @@ describe("Excel hücre biçimleri", () => {
     for (const [value, format, expected] of cases) assert.equal(formatNumber(value, format), expected, `${value} ${format}`);
   });
 
+  it("birleştirilmiş hücreler (v2.0.2): dikey birleştirme her satıra yazılır, yatay (gruplu başlık) olduğu gibi kalır", () => {
+    const sheet = XLSX.utils.aoa_to_sheet([
+      ["", "Kişi bilgileri", "", "Ödeme"],
+      ["Müvekkil", "Dosya", "Telefon", "Tutar"],
+      ["Ali Veli", "2026/1", "0532", 1500],
+      ["", "2026/2", "", 2000],
+      ["", "2026/3", "", 750],
+      ["Ayşe Kaya", "2026/4", "0533", 900],
+    ]);
+    sheet["!merges"] = [
+      { s: { r: 0, c: 1 }, e: { r: 0, c: 2 } }, // yatay: grup başlığı
+      { s: { r: 2, c: 0 }, e: { r: 4, c: 0 } }, // dikey: aynı müvekkilin üç dosyası
+      { s: { r: 2, c: 2 }, e: { r: 4, c: 2 } }, // dikey: telefon
+    ];
+    assert.deepEqual(sheetMatrix(XLSX, sheet), [
+      ["", "Kişi bilgileri", "", "Ödeme"],
+      ["Müvekkil", "Dosya", "Telefon", "Tutar"],
+      ["Ali Veli", "2026/1", "0532", "1500"],
+      ["Ali Veli", "2026/2", "0532", "2000"],
+      ["Ali Veli", "2026/3", "0532", "750"],
+      ["Ayşe Kaya", "2026/4", "0533", "900"],
+    ]);
+  });
+
   it("CSV: UTF-8 (BOM'lu) ve Türkçe Windows kodlaması doğru okunur; değerler olduğu gibi kalır", () => {
     const utf8 = new TextEncoder().encode("﻿DOSYA NO;TELEFON;TARİH\n2025/1;05321234567;13.10.2025\n");
     const windows = Uint8Array.from([0x49, 0x4c, 0x3b, 0xdd, 0x4c, 0xc7, 0x45, 0x0a, 0x4b, 0x6f, 0x6e, 0x79, 0x61, 0x3b, 0xdd, 0x7a, 0x6d, 0x69, 0x72, 0x0a]);

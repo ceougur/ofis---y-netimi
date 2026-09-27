@@ -154,6 +154,7 @@ export function readXlsxLists(buffer) {
     if (item.Id && item.Target) rels.set(item.Id, item.Target.replace(/^\/?xl\//, "").replace(/^\//, ""));
   }
   const sheets = new Map();
+  const merges = new Map();
   const order = [];
   for (const match of workbook.matchAll(/<sheet\b([^>]*)\/?>/g)) {
     const item = attrs(match[1]);
@@ -162,6 +163,10 @@ export function readXlsxLists(buffer) {
     const target = rels.get(item["r:id"]);
     if (!item.name || !target) continue;
     const xml = text(`xl/${target}`);
+    if (/<mergeCell\b/.test(xml)) {
+      const list = mergesFromXml(xml);
+      if (list.length) merges.set(item.name, list);
+    }
     const rules = /dataValidation/.test(xml) ? listRulesFromXml(validationXml(xml)) : [];
     if (/<control\b|<legacyDrawing\b/.test(xml)) {
       const dir = `xl/${target}`.replace(/[^/]+$/, "");
@@ -180,7 +185,36 @@ export function readXlsxLists(buffer) {
     if (!sheets.has(sheet)) sheets.set(sheet, []);
     sheets.get(sheet).push(rule);
   }
-  return { sheets, names: definedNamesFromXml(workbook, order), hidden };
+  return { sheets, names: definedNamesFromXml(workbook, order), hidden, merges };
+}
+
+// Sayfadaki birleştirilmiş alanlar: <mergeCell ref="A2:A4"/> → {s:{r:1,c:0}, e:{r:3,c:0}} (0 tabanlı).
+const MAX_MERGES = 50_000;
+export function mergesFromXml(xml) {
+  const out = [];
+  for (const match of String(xml || "").matchAll(/<mergeCell\b[^>]*\bref="([^"]+)"/g)) {
+    const area = parseArea(match[1]);
+    if (!area || area.r2 === null || area.c2 === null) continue;
+    out.push({ s: { r: area.r1, c: area.c1 }, e: { r: area.r2, c: area.c2 } });
+    if (out.length >= MAX_MERGES) break;
+  }
+  return out;
+}
+
+/** Dikey birleştirmelerin değerini birleşen satırlara yazar (Excel işçisindeki mergedFills'in matris karşılığı). */
+export function fillMerges(matrix, merges) {
+  if (!Array.isArray(merges) || !merges.length) return matrix;
+  for (const merge of merges) {
+    if (!(merge.e.r > merge.s.r)) continue;
+    const value = matrix[merge.s.r]?.[merge.s.c];
+    if (value === undefined || value === null || value === "") continue;
+    for (let r = merge.s.r + 1; r <= Math.min(merge.e.r, merge.s.r + 10_000); r += 1) {
+      if (!matrix[r]) matrix[r] = [];
+      while (matrix[r].length < merge.s.c) matrix[r].push("");
+      if (!matrix[r][merge.s.c]) matrix[r][merge.s.c] = value;
+    }
+  }
+  return matrix;
 }
 
 // "xl/worksheets/" + "../ctrlProps/ctrlProp1.xml" → "xl/ctrlProps/ctrlProp1.xml"

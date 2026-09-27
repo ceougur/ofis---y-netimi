@@ -72,7 +72,18 @@ export function isPlate(value) {
   return Boolean(match) && Number(match[1]) >= 1 && Number(match[1]) <= 81;
 }
 
-// Tarih: gg.aa.yyyy, g.a.yy, gg/aa/yyyy, yyyy-aa-gg (isteğe bağlı saat). Takvimde gerçekten var olmalıdır.
+// Ay adları (Türkçe ve İngilizce, kısaltmalarıyla): "10 Mart 2027", "10 Mar 27", "Mart 2027" (ayın 1'i), "Sept 2027".
+export const MONTH_WORDS = {
+  ocak: 1, oca: 1, subat: 2, sub: 2, mart: 3, mar: 3, nisan: 4, nis: 4, mayis: 5, may: 5, haziran: 6, haz: 6, temmuz: 7, tem: 7, agustos: 8, agu: 8,
+  eylul: 9, eyl: 9, ekim: 10, eki: 10, kasim: 11, kas: 11, aralik: 12, ara: 12,
+  january: 1, jan: 1, february: 2, feb: 2, march: 3, april: 4, apr: 4, june: 6, jun: 6, july: 7, jul: 7, august: 8, aug: 8,
+  september: 9, sep: 9, sept: 9, october: 10, oct: 10, november: 11, nov: 11, december: 12, dec: 12,
+};
+const monthWord = word => MONTH_WORDS[foldText(word).replace(/\s+/g, "")] ?? null;
+
+// Tarih: gg.aa.yyyy, g.a.yy, gg/aa/yyyy, yyyy-aa-gg (isteğe bağlı saat), "10 Mart 2027", "Mart 2027". Takvimde
+// gerçekten var olmalıdır. Amerikan sırası (aa/gg/yyyy) yalnızca başka türlü okunamayan değerlerde kabul edilir
+// ("03/25/2027"); iki türlü okunabilenler ("11/02/2027") gün/ay sayılır.
 export function parseDate(value) {
   const text = String(value ?? "").trim();
   let day;
@@ -82,11 +93,21 @@ export function parseDate(value) {
   if (match) {
     [, day, month, year] = match.map(Number);
     if (match[3].length === 2) year += year < 70 ? 2000 : 1900;
-  } else {
-    match = /^(\d{4})-(\d{1,2})-(\d{1,2})(?:[T\s](\d{1,2}):(\d{2}).*)?$/.exec(text);
-    if (!match) return null;
+    if (month > 12 && day >= 1 && day <= 12) [day, month] = [month, day];
+  } else if ((match = /^(\d{4})-(\d{1,2})-(\d{1,2})(?:[T\s](\d{1,2}):(\d{2}).*)?$/.exec(text))) {
     [, year, month, day] = match.map(Number);
-  }
+  } else if ((match = /^(\d{1,2})\s+(\p{L}+)\.?\s+(\d{4}|\d{2})$/u.exec(text))) {
+    day = Number(match[1]);
+    month = monthWord(match[2]);
+    year = Number(match[3]);
+    if (match[3].length === 2) year += year < 70 ? 2000 : 1900;
+    if (!month) return null;
+  } else if ((match = /^(\p{L}+)\.?\s+(\d{4})$/u.exec(text))) {
+    month = monthWord(match[1]);
+    year = Number(match[2]);
+    day = 1;
+    if (!month) return null;
+  } else return null;
   if (year < 1900 || year > 2100 || month < 1 || month > 12 || day < 1) return null;
   const date = new Date(Date.UTC(year, month - 1, day));
   if (date.getUTCDate() !== day || date.getUTCMonth() !== month - 1) return null;
