@@ -216,10 +216,71 @@
       const result = await HOF.api("/api/admin/backups", { method: "POST" });
       HOF.toast(`Yedek alındı: ${result.name}`, { type: "success" });
       loadBackups();
+      loadCloud();
     } catch (error) {
       HOF.toastError(error);
     } finally {
       button.disabled = false;
+    }
+  });
+
+  // ---------- Drive'a yedek (v2.0.2) ----------
+  async function loadCloud() {
+    const status = $("#adm-cloud-status");
+    if (!status) return;
+    try {
+      const info = await HOF.api("/api/admin/backups/cloud");
+      if (!info.enabled) {
+        status.textContent = "Bağlı değil. Yedekler yalnızca bu bilgisayarda tutuluyor.";
+        status.className = "adm-muted";
+        return;
+      }
+      const where = info.mode === "folder" ? `Klasör: ${info.path}` : `Drive klasörü: ${info.folderId}`;
+      const last = info.lastAt ? `Son kopya: ${HOF.formatDateTime(info.lastAt)} (${info.lastName})` : "Henüz kopya alınmadı; ilk yedekte alınır.";
+      status.innerHTML = `<b>${esc(where)}</b> · ${esc(last)} · ${esc(String(info.copies))} kopya${info.lastError ? `<br><span class="adm-error">Son hata: ${esc(info.lastError)}</span>` : ""}`;
+      status.className = info.lastError ? "adm-warn" : "adm-ok";
+      const input = $("#adm-cloud-target");
+      if (input && !input.value) input.value = info.value || "";
+    } catch (error) {
+      status.textContent = error.message;
+    }
+  }
+  $("#adm-cloud-form")?.addEventListener("submit", async event => {
+    event.preventDefault();
+    const button = event.currentTarget.querySelector('button[type="submit"]');
+    button.disabled = true;
+    try {
+      await HOF.api("/api/admin/backups/cloud", { method: "POST", body: { target: $("#adm-cloud-target").value } });
+      HOF.toast("Drive yedeği bağlandı. Bir sonraki yedek oraya da kopyalanacak.", { type: "success" });
+      loadCloud();
+    } catch (error) {
+      HOF.toastError(error);
+    } finally {
+      button.disabled = false;
+    }
+  });
+  $("#adm-cloud-test")?.addEventListener("click", async event => {
+    const button = event.currentTarget;
+    button.disabled = true;
+    try {
+      const result = await HOF.api("/api/admin/backups/cloud/test", { method: "POST" });
+      HOF.toast(result.ok ? `Deneme başarılı: ${result.name}` : `Kopya alınamadı: ${result.error}`, { type: result.ok ? "success" : "error" });
+      loadCloud();
+      loadBackups();
+    } catch (error) {
+      HOF.toastError(error);
+    } finally {
+      button.disabled = false;
+    }
+  });
+  $("#adm-cloud-off")?.addEventListener("click", async () => {
+    try {
+      await HOF.api("/api/admin/backups/cloud", { method: "POST", body: { target: "" } });
+      $("#adm-cloud-target").value = "";
+      HOF.toast("Drive yedeği kaldırıldı.");
+      loadCloud();
+    } catch (error) {
+      HOF.toastError(error);
     }
   });
 

@@ -8,6 +8,7 @@ import { createChat } from "./lib/chat.mjs";
 import { createChatArchive } from "./lib/chat-archive.mjs";
 import { createEventHub } from "./lib/events.mjs";
 import { startBackupScheduler } from "./lib/backup.mjs";
+import { createCloudBackup } from "./lib/cloud-backup.mjs";
 import { createClientState } from "./lib/client-state.mjs";
 import { DEFAULT_ADMIN_PASSWORD, loadConfig } from "./lib/config.mjs";
 import { createDatasetService } from "./lib/dataset.mjs";
@@ -37,6 +38,7 @@ import { registerTrashRoutes } from "./routes/trash.mjs";
 import { registerChatRoutes } from "./routes/chat.mjs";
 import { registerDatasetRoutes } from "./routes/dataset.mjs";
 import { registerInsightRoutes } from "./routes/insight.mjs";
+import { registerReportRoutes } from "./routes/reports.mjs";
 import { registerLicenseRoutes } from "./routes/license.mjs";
 import { registerTrpcRoutes } from "./routes/trpc.mjs";
 import { registerWorkspaceRoutes } from "./routes/workspace.mjs";
@@ -78,6 +80,13 @@ export function createApp(overrides = {}) {
   // Lisans (Faz 3): süresi dolan, engellenen veya doğrulanamayan kurulum salt okunur çalışır. Veri eşitlemesi de
   // o sürede durur. Uygulama nesnesi aşağıda kurulduğundan eşitleme denetimi geç bağlanır.
   let license = null;
+  // Drive'a yedek (v2.0.2): kullanıcı Drive bağlantısı/klasörü bağladıysa her yedek oraya da kopyalanır. Lisans nesnesi
+  // aşağıda kurulduğundan geç bağlanır; kopya hatası yerel yedeği hiçbir zaman engellemez.
+  const cloudBackup = createCloudBackup({ store, log, services: config.licenseServices.split(",").map(item => item.trim()).filter(Boolean), keep: config.backupKeep, license: { summary: () => license?.summary?.() } });
+  const mirrorBackup = result => {
+    if (!result?.path) return;
+    cloudBackup.mirror(result).catch(error => log.warn(`Drive kopyası başarısız: ${error.message}`));
+  };
   // Kalıcı çalışma verisi: içeri alınan Excel/Sheets satırları + bağlı Sheet'in zamanlanmış eşitlemesi.
   const dataset = createDatasetService({
     store,
@@ -91,6 +100,7 @@ export function createApp(overrides = {}) {
     autoSync: config.datasetAutoSync,
     tickMs: config.datasetTickMs,
     canWrite: () => !license || license.writable(),
+    afterBackup: mirrorBackup,
   });
   clientState.useDataset(() => dataset.info());
   // Serbest sayfalar (v2.0.1): kullanıcının "+" ile açtığı Excel benzeri sekmeler; tablo görünümüne satır olarak girer.
@@ -118,7 +128,7 @@ export function createApp(overrides = {}) {
   });
   license.init();
   dataset.start();
-  const context = { config, log, store, auth, audit, clientState, startedAt, supervisorLink, events, chat, chatArchive, dataset, profile, license, free, trash };
+  const context = { config, log, store, auth, audit, clientState, startedAt, supervisorLink, events, chat, chatArchive, dataset, profile, license, free, trash, cloudBackup };
 
   const router = createRouter();
   router.get("/api/health", async ({ res }) => ok(res, { service: "destekofis-merkezi", status: "ok", version: config.version, time: new Date().toISOString(), uptimeSeconds: Math.round(process.uptime()) }));
@@ -133,6 +143,7 @@ export function createApp(overrides = {}) {
   registerChatRoutes(router, context);
   registerDatasetRoutes(router, context);
   registerInsightRoutes(router, context);
+  registerReportRoutes(router, context);
   registerLicenseRoutes(router, context);
   registerTrpcRoutes(router, context);
 
@@ -183,7 +194,7 @@ export function createApp(overrides = {}) {
   server.requestTimeout = 5 * 60_000;
 
   const stopBackups = config.scheduleBackups
-    ? startBackupScheduler({ db, backupDir: config.backupDir, intervalHours: config.backupIntervalHours, keep: config.backupKeep, startDelayMs: config.backupOnStartDelayMs, log })
+    ? startBackupScheduler({ db, backupDir: config.backupDir, intervalHours: config.backupIntervalHours, keep: config.backupKeep, startDelayMs: config.backupOnStartDelayMs, log, onBackup: mirrorBackup })
     : () => {};
   if (overrides.startLicenseTimers !== false) license.start();
   // Gün dönümünde tüm ekranlara "alerts.refresh" (olay tabanlı uyarı akışı, v2.0.2).

@@ -4,6 +4,13 @@ Sürümler [anlamsal sürümleme](https://semver.org/lang/tr/) kurallarına uyar
 
 ## 2.0.2 — Açılır listeler, belge kartı, uyarıda "Gerçekleştirildi", tüm kolonlar, kendi sektörü, tarihlerin anlamı, silinenler
 
+- **Raporlar (sol menü): dinamik ve esnek raporlama.** Sabit şablon yok. Program bütün oturumlardaki veriyi ortak omurgaya indirger (cari, tutar, kalan/borç, vade, durum, telefon + dosyaya özgü diğer kolonlar) ve üç raporu tek pencerede sunar:
+  - **Cari ekstre:** farklı Excel dosyalarından gelen aynı kişi/firma satırları ad (ya da telefon) ile eşlenir (*cross-match*); borç, tahsilat ve yürüyen bakiye tek dökümde; dosyaya özgü kolonlar ("Ürün", "Dosya No"…) kod değişikliği olmadan rapora sütun olarak gelir.
+  - **Vade takip:** gecikmiş / bugün / yaklaşan / kapalı; gün farkı; oturum ve sekme adıyla.
+  - **Nakit akış:** gün / hafta / ay dilimleriyle beklenen tahsilat, gerçekleşen tahsilat, kasa giriş-çıkışı, net ve birikimli tahmin.
+
+  Filtreler: tarih aralığı, cari, durum, oturum, sekme, en az tutar, dönem. Her rapor **Excel (.xlsx)** ya da **PDF** olarak indirilir ya da **Yazdır** ile doğrudan yazıcıya gider. Raporu görmek için *reports.view* izni gerekir (yönetici ve çalışan rollerinde açık).
+- **Drive'a da yedekle.** *Yönetim → Yedekler → Drive'a da yedekle:* Google Drive klasör bağlantısını ya da bilgisayardaki Drive/OneDrive/Dropbox klasörünün yolunu yapıştırın. Program orada **DestekOfis Yedekleri** klasörünü açar; bundan sonra alınan her yedek (6 saatlik, elle, veri değişikliği öncesi) oraya da kopyalanır. Kopya başarısız olsa bile yerel yedek alınır; son kopya ve hata panelde yazar. **Şimdi dene** ile anında sınanır. Bağlantı kipi lisans servisi üzerinden yüklenir (`docs/DRIVE-YEDEK.md`); servis o ucu vermiyorsa masaüstü klasör yolu kullanılır.
 - **Excel/Sheets açılır listeleri programda da açılır liste.** Veri doğrulama listeleri okunur: satır içi liste (`"Aktif,Pasif"`), aynı ya da başka sayfadaki aralık, tanımlı ad, Excel 2010+ biçimi (`x14`). Excel'in **birleşik giriş kutuları** da okunur:
   - Form denetimi kutusu: bağlı hücredeki sıra numarası kutuda görünen metne çevrilir.
   - ActiveX kutusu.

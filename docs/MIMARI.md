@@ -220,6 +220,16 @@ Görünüme (`dataset.view`) yalnızca elle değer yazılmış satırlar `serbes
 - Toplu düzeltme önerileri oturum + parmak iziyle; parmak izi değiştiyse 409.
 - Olaylar: her değişiklik `workspace.changed` ile diğer ekranlara; takvim önbelleği parmak iziyle; gün dönümü `alerts.refresh`.
 
+**Raporlama modülü** (`server/lib/reports.mjs`, `server/lib/report-pdf.mjs`, `server/routes/reports.mjs`, `client/assets/hof-reports.js`).
+- *Ortak omurga:* `normalizeRecords` her oturumun satırlarını kolon analizleriyle (`analyzeColumns`) `{cari, cariKey, amount, debt, deadline, status, phone, fields}` biçimine indirger; `cariKey` ad katlaması (`n:`) ya da 10 haneli telefon (`p:`); toplam/işaretli/serbest satırlar dışarıda. `dynamicColumns` omurga dışındaki dolu kolonları rapora sütun olarak ekler (kod değişikliği gerekmez).
+- *Sorgu motoru:* `normalizeFilters` (tarih aralığı, cari, durum, oturum, sekme, en az tutar, dönem) → `cariEkstre` (oturumlar arası eşleme, yürüyen bakiye, `crossMatched`), `vadeTakip` (gecikmiş/bugün/yaklaşan/kapalı/belirsiz, takvim kalemleriyle), `nakitAkis` (dönem dilimleri; beklenen, tahsil edilen, kasa giriş/çıkış, net, birikimli, tahmin). Her rapor `{summary, table{columns, rows}}` döner; `flattenTable` dışa aktarım için.
+- *Uçlar:* `GET /api/workspace/reports/:kind` (izin `reports.view`; tüm oturumlar `dataset.withKey` ile sırayla, ≤ 5.000 satır/oturum), `POST …/export {format: xlsx|pdf}` (`buildXlsx`, `tablePdf`: > 7 sütunda yatay sayfa, p90 genişlik, özet kartları, sayfa numarası). Yazdırma istemcide gizli iframe ile.
+- İstemci penceresi: tür sekmeleri, filtre formu, özet kartları, tablo; olay `workspace.changed` sonrası yeniden sorgu.
+
+**Drive'a yedek** (`server/lib/cloud-backup.mjs`, `docs/DRIVE-YEDEK.md`).
+- Ayar `backup.cloud` (JSON): kip `folder` (bilgisayardaki Drive/OneDrive/Dropbox klasörü → içinde `DestekOfis Yedekleri`, en fazla `backupKeep` kopya) ya da `link` (Drive klasör kimliği → lisans servisi `POST /v1/yedek/oturum` ile Google *resumable upload* adresi, dosya doğrudan Google'a PUT; sır programda yok).
+- Kanca: `createBackup` sonrası `mirror(result)` — zamanlayıcı (`startBackupScheduler {onBackup}`), veri seti (`afterBackup`), elle ve deneme yedeği (`routes/admin.mjs`). Asla fırlatmaz; son kopya/hata ayarda ve panelde. Aynı ad ikinci kez kopyalanmaz.
+
 **Silinenler** (göç 6, `server/lib/trash.mjs`, `server/routes/trash.mjs`).
 - Kaynaklar: silinen kayıt, gizlenen sekme, belge, serbest sayfa/satır/kolon, tahsilat ve kasa hareketi.
 - Geri yükleme eski konuma araya ekler; ad çakışırsa "(geri yüklendi)" eki alır.
@@ -283,6 +293,8 @@ Yönetim → Lisans ─► /api/license/{trial,activate,code,check} ─► licen
 - Excel ayrıştırma Worker'da; zip okuyucu zip-slip ve CRC denetimi yapar.
 
 ## Yedekleme
+
+Drive'a kopya (v2.0.2): yukarıdaki *Drive'a yedek* başlığı; her yerel yedekten sonra bağlanan klasöre/Drive'a kopyalanır.
 
 `VACUUM INTO` ile tutarlı anlık kopya; açılışta ve 6 saatte bir (son yedek eskiyse), son 30 yedek. Elle: yönetim paneli veya `npm run backup` (salt okunur bağlantı, sunucu çalışırken güvenli). Yedek adları `destekofis-<zaman>[-<neden>].sqlite`. 1.6 öncesinden kalan `hukuk-ofisi-…` yedekler de listelenir, geri yüklenir ve adına göre değil zaman damgasına göre sıralanıp temizlenir.
 

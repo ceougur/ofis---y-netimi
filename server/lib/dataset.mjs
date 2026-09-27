@@ -62,7 +62,7 @@ const TAB_SEP = " › ";
 
 const isSheetUrl = value => /^https:\/\/docs\.google\.com\/spreadsheets\//i.test(String(value || "").trim());
 
-export function createDatasetService({ store, audit, readGoogleSheet, bumpClientState, events, log, backupDir, backupKeep = 30, autoSync = true, tickMs = 60_000, canWrite = () => true }) {
+export function createDatasetService({ store, audit, readGoogleSheet, bumpClientState, events, log, backupDir, backupKeep = 30, autoSync = true, tickMs = 60_000, canWrite = () => true, afterBackup = null }) {
   const stages = new Map();
   const caches = new Map(); // oturum → { rows, byId } — veritabanındaki satırların ayrıştırılmış hâli
   const syncing = new Map(); // oturum → süren eşitleme
@@ -776,7 +776,9 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
   function backup(label) {
     if (!backupDir || !rowCount()) return null;
     try {
-      return createBackup(store.db, backupDir, { label, keep: backupKeep }).name;
+      const result = createBackup(store.db, backupDir, { label, keep: backupKeep });
+      afterBackup?.(result); // Drive'a kopya (v2.0.2); arka planda, asla fırlatmaz
+      return result.name;
     } catch (error) {
       log?.error?.("Veri değişikliği öncesi yedek alınamadı", error);
       throw new HttpError(500, "Değişiklikten önce yedek alınamadı; işlem yapılmadı. Disk alanını kontrol edin.");
@@ -1212,7 +1214,9 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
     if (!sessionList().some(item => item.key === target)) throw new HttpError(404, "Oturum bulunamadı.");
     const backupName = backupDir ? (() => {
       try {
-        return createBackup(store.db, backupDir, { label: "oturum-silme-oncesi", keep: backupKeep }).name;
+        const result = createBackup(store.db, backupDir, { label: "oturum-silme-oncesi", keep: backupKeep });
+        afterBackup?.(result);
+        return result.name;
       } catch (error) {
         log?.error?.("Oturum silmeden önce yedek alınamadı", error);
         throw new HttpError(500, "Silmeden önce yedek alınamadı; işlem yapılmadı. Disk alanını kontrol edin.");

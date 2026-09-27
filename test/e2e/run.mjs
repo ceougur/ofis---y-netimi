@@ -1037,6 +1037,19 @@ try {
       await page.keyboard.press("Escape");
       await page.waitForFunction(() => !document.querySelector(".hof-modal-backdrop"), null, { timeout: 5000 });
 
+      // v2.0.2: Raporlar — sol menüden açılır; cari ekstre tablo ve özet kartlarıyla gelir; Excel dışa aktarılır.
+      await page.click('.hof-side-item[data-action="analytics"]');
+      await page.waitForSelector(".hof-modal-backdrop.is-visible .hof-report-kinds", { timeout: 10000 });
+      await page.waitForFunction(() => document.querySelector(".hof-modal-backdrop.is-visible .hof-report-table, .hof-modal-backdrop.is-visible [data-report-body] .hof-empty"), null, { timeout: 15000 });
+      const reportText = await page.$eval(".hof-modal-backdrop.is-visible .hof-modal", node => node.innerText.replace(/\s+/g, " "));
+      expect(/Cari ekstre/.test(reportText) && /Toplam borç/.test(reportText), `rapor penceresi: ${reportText.slice(0, 160)}`);
+      await page.click('.hof-modal-backdrop.is-visible [data-kind="vade-takip"]');
+      await page.waitForFunction(() => /Gecikmiş|Kalem/.test(document.querySelector(".hof-modal-backdrop.is-visible .hof-report-summary")?.textContent || ""), null, { timeout: 15000 });
+      const [reportDownload] = await Promise.all([page.waitForEvent("download", { timeout: 20000 }), page.click('.hof-modal-backdrop.is-visible [data-export="xlsx"]')]);
+      expect(/\.xlsx$/i.test(reportDownload.suggestedFilename()) || (await reportDownload.path()), `rapor Excel indirildi: ${reportDownload.suggestedFilename()}`);
+      await page.keyboard.press("Escape");
+      await page.waitForFunction(() => !document.querySelector(".hof-modal-backdrop"), null, { timeout: 5000 });
+
       // Belge: PDF ve ekran görüntüsü eklenir, liste eskiden yeniye, resim programda önizlenir.
       await page.click('.hof-case-actions [data-case-action="document"]');
       await page.waitForSelector(".hof-modal .hof-doc-picker");

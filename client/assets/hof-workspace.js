@@ -505,6 +505,7 @@
     { action: "newRecord", icon: "+", key: "side.newRecord", label: () => "Yeni kayıt" },
     { action: "cash", icon: "₺", key: "side.cash", label: () => "Kasa", requires: "cash.view" },
     { action: "liens", icon: "!", key: "side.liens", label: () => "Haciz uyarıları", badge: "warn", module: "haciz" },
+    { action: "analytics", icon: "▤", key: "side.analytics", label: () => "Raporlar", requires: "reports.view" },
     { action: "reports", icon: "↗", key: "side.reports", label: () => "Personel raporu", requires: "reports.view" },
     { action: "guide", icon: "?", key: "side.guide", label: () => "Kullanım kılavuzu" },
   ];
@@ -599,6 +600,7 @@
       else if (action === "editSide") openSideEditor();
       else if (action === "guide") window.open("/kilavuz/DestekOfis-Kullanim-Kilavuzu.pdf", "_blank", "noopener");
       else if (action === "reports") openReports();
+      else if (action === "analytics") HOF.reports?.open();
       else if (action === "profile") openProfile();
       else if (action === "password") HOF.changePassword();
       else if (action === "logout") HOF.logout();
