@@ -505,6 +505,26 @@
     return String(cellAt(r, c).display ?? "");
   }
 
+  // Kolon genişliği içeriğe göre (Excel'deki "sığdır" gibi): başlık ve ilk 300 satırın en uzun metni; 84–280 piksel.
+  let measure = null;
+  function columnWidths() {
+    if (!measure) measure = document.createElement("canvas").getContext("2d");
+    const family = getComputedStyle(document.body).fontFamily || "sans-serif";
+    const width = (text, font) => {
+      measure.font = font;
+      return measure.measureText(text).width;
+    };
+    return cols().map((column, c) => {
+      let widest = width(column.header, `800 11.5px ${family}`) + 26;
+      const limit = Math.min(rows().length, 300);
+      for (let r = 0; r < limit; r += 1) {
+        const text = cellText(r, c);
+        if (text) widest = Math.max(widest, width(text.length > 60 ? text.slice(0, 60) : text, `12.5px ${family}`) + 24);
+      }
+      return Math.round(clampValue(widest, 84, 280));
+    });
+  }
+
   function renderGrid() {
     if (!dom || !state.sheet) return;
     const create = canCreate();
@@ -528,7 +548,8 @@
         return `<tr class="${row.record ? "" : "is-blank"}"><th class="hof-free-rowhead" scope="row"><span>${row.number}</span>${removable ? `<button type="button" class="hof-free-mini hof-free-danger" data-act="delete-row" data-r="${r}" title="${row.number}. satırı sil" aria-label="${row.number}. satırı sil">×</button>` : ""}</th>${cells}${create ? '<td class="hof-free-pad" aria-hidden="true"></td>' : ""}</tr>`;
       })
       .join("");
-    dom.table.innerHTML = `<colgroup><col class="hof-free-numcol">${columns.map(() => '<col class="hof-free-col">').join("")}${create ? '<col class="hof-free-addcol">' : ""}</colgroup>
+    const widths = columnWidths();
+    dom.table.innerHTML = `<colgroup><col class="hof-free-numcol">${columns.map((_, c) => `<col class="hof-free-col" style="width:${widths[c]}px">`).join("")}${create ? '<col class="hof-free-addcol">' : ""}</colgroup>
       <thead>
         <tr class="hof-free-letters"><th class="hof-free-corner" aria-hidden="true"></th>${columns.map((column, c) => `<th class="hof-free-letter" data-c="${c}" scope="col">${esc(column.letter)}</th>`).join("")}${create ? '<th class="hof-free-letter hof-free-plus"><button type="button" data-act="append-col" title="Sona kolon ekle" aria-label="Sona kolon ekle">+</button></th>' : ""}</tr>
         <tr class="hof-free-heads"><th class="hof-free-rowhead hof-free-headlabel" scope="row" title="Kolon başlıkları">Başlık</th>${head}${create ? '<th class="hof-free-pad" aria-hidden="true"></th>' : ""}</tr>

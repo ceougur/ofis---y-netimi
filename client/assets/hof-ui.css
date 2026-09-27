@@ -4666,9 +4666,6 @@ body.hof-free-wide .hof-free-wrap {
   .hof-free-status {
     display: none;
   }
-  .hof-free-grid col.hof-free-col {
-    width: 128px;
-  }
   .hof-free-wrap {
     max-height: 60vh;
   }
