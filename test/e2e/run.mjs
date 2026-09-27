@@ -1021,6 +1021,15 @@ try {
       await page.waitForFunction(() => [...document.querySelectorAll(".detail-panel .dynamic-detail-grid > div")].some(cell => cell.textContent.includes("8.500,00 ₺")), null, { timeout: 10000 });
       await page.waitForFunction(() => document.getElementById("hof-checks")?.hidden, null, { timeout: 10000 });
 
+      // v2.0.2: Veri Sağlık Kontrolü — özet karttan açılır; toplu düzeltme bölümü ve analiz "Neden?" kanıtları sunulur.
+      await page.click('#hof-summary .hof-summary-card[data-kpi="quality"]');
+      await page.waitForSelector(".hof-modal-backdrop.is-visible .hof-fixes", { timeout: 10000 });
+      await page.waitForFunction(() => !/hazırlanıyor/.test(document.querySelector(".hof-modal-backdrop.is-visible .hof-fixes")?.textContent || ""), null, { timeout: 10000 });
+      const health = await page.$eval(".hof-modal-backdrop.is-visible .hof-modal", node => node.innerText.replace(/\s+/g, " "));
+      expect(/Toplu düzeltmeler/.test(health) && /Veri sağlığı/.test(health), `veri sağlığı penceresi: ${health.slice(0, 200)}`);
+      await page.keyboard.press("Escape");
+      await page.waitForFunction(() => !document.querySelector(".hof-modal-backdrop"), null, { timeout: 5000 });
+
       // Belge: PDF ve ekran görüntüsü eklenir, liste eskiden yeniye, resim programda önizlenir.
       await page.click('.hof-case-actions [data-case-action="document"]');
       await page.waitForSelector(".hof-modal .hof-doc-picker");
