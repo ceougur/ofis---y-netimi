@@ -20,8 +20,14 @@ import { createRouter } from "./lib/router.mjs";
 import { createSheetsReader } from "./lib/sheets.mjs";
 import { createStaticHandler, notFoundPage } from "./lib/static.mjs";
 import { createSupervisorLink } from "./lib/supervisor-link.mjs";
+import { runScoped } from "./lib/session-scope.mjs";
 import { registerAdminRoutes } from "./routes/admin.mjs";
 import { registerAuthRoutes } from "./routes/auth.mjs";
+import { registerCashRoutes } from "./routes/cash.mjs";
+import { registerDueRoutes } from "./routes/dues.mjs";
+import { registerDocumentRoutes } from "./routes/documents.mjs";
+import { registerFreeRoutes } from "./routes/free.mjs";
+import { createFreeSheets } from "./lib/free-sheets.mjs";
 import { registerChatRoutes } from "./routes/chat.mjs";
 import { registerDatasetRoutes } from "./routes/dataset.mjs";
 import { registerInsightRoutes } from "./routes/insight.mjs";
@@ -79,8 +85,11 @@ export function createApp(overrides = {}) {
     canWrite: () => !license || license.writable(),
   });
   clientState.useDataset(() => dataset.info());
+  // Serbest sayfalar (v2.0.1): kullanıcının "+" ile açtığı Excel benzeri sekmeler; tablo görünümüne satır olarak girer.
+  const free = createFreeSheets({ store, audit, dataset });
+  dataset.setFreeProvider(free);
   // Ofis profili: sektör, kelime dağarcığı, kalemle değiştirilen başlıklar ve verinin önbellekli analizi.
-  const profile = createProfileService({ store, dataset, audit, events, log });
+  const profile = createProfileService({ store, dataset, audit, events, log, free });
   profile.init();
   dataset.onChange(() => profile.invalidate());
   const licenseOptions = overrides.license || {};
@@ -98,13 +107,17 @@ export function createApp(overrides = {}) {
   });
   license.init();
   dataset.start();
-  const context = { config, log, store, auth, audit, clientState, startedAt, supervisorLink, events, chat, dataset, profile, license };
+  const context = { config, log, store, auth, audit, clientState, startedAt, supervisorLink, events, chat, dataset, profile, license, free };
 
   const router = createRouter();
   router.get("/api/health", async ({ res }) => ok(res, { service: "destekofis-merkezi", status: "ok", version: config.version, time: new Date().toISOString(), uptimeSeconds: Math.round(process.uptime()) }));
   registerAuthRoutes(router, context);
   registerAdminRoutes(router, context);
   registerWorkspaceRoutes(router, context);
+  registerCashRoutes(router, context);
+  registerDueRoutes(router, context);
+  const documents = registerDocumentRoutes(router, context);
+  registerFreeRoutes(router, context);
   registerChatRoutes(router, context);
   registerDatasetRoutes(router, context);
   registerInsightRoutes(router, context);
@@ -142,8 +155,13 @@ export function createApp(overrides = {}) {
     }
   }
 
+  // Her istek, isteği yapan kullanıcının seçtiği veri oturumunda çalışır (v2.0.1; kullanıcı gerektiğinde bir kez okunur).
+  const scoped = (req, res) => {
+    let resolved;
+    return runScoped({ user: () => (resolved === undefined ? (resolved = auth.currentUser(req) || null) : resolved) }, () => handle(req, res));
+  };
   const server = createServer((req, res) => {
-    handle(req, res).catch(error => {
+    scoped(req, res).catch(error => {
       log.error("Beklenmeyen hata", error);
       if (!res.headersSent) send(res, 500, { ok: false, error: "Sunucu işlemi tamamlayamadı." }, SECURITY_HEADERS);
     });
@@ -204,6 +222,7 @@ export function createApp(overrides = {}) {
       clearInterval(sessionTimer);
       auth.limiter.stop();
       dataset.stop();
+      documents.stop();
       license.stop();
       events.stop();
       await new Promise(resolve => {

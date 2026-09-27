@@ -106,7 +106,8 @@ export function cellText(XLSX, cell, date1904 = false) {
   return String(cell.w ?? cell.v).trim();
 }
 
-export function sheetMatrix(XLSX, sheet, date1904 = false) {
+// keepEmpty: boş satırlar da (boş dizi olarak) kalır; böylece matristeki sıra = sayfadaki satır (formüller için).
+export function sheetMatrix(XLSX, sheet, date1904 = false, { keepEmpty = false } = {}) {
   if (!sheet || !sheet["!ref"]) return [];
   const range = XLSX.utils.decode_range(sheet["!ref"]);
   const rows = [];
@@ -114,9 +115,26 @@ export function sheetMatrix(XLSX, sheet, date1904 = false) {
     const cells = [];
     for (let c = range.s.c; c <= range.e.c; c += 1) cells.push(cellText(XLSX, sheet[XLSX.utils.encode_cell({ r, c })], date1904));
     while (cells.length && !cells[cells.length - 1]) cells.pop();
-    if (cells.length) rows.push(cells);
+    if (cells.length || keepEmpty) rows.push(cells);
   }
+  if (keepEmpty) while (rows.length && !rows[rows.length - 1].length) rows.pop();
   return rows;
+}
+
+// Sayfadaki formüller (v2.0.1): [satır, kolon, formül] — 0 tabanlı sayfa koordinatları, formül "=" olmadan ve
+// dosyadaki gibi İngilizce işlev adlarıyla. SheetJS paylaşılan formülleri her hücre için açar.
+export function sheetFormulas(XLSX, sheet, limit = 200_000) {
+  const out = [];
+  if (!sheet || !sheet["!ref"]) return out;
+  for (const address of Object.keys(sheet)) {
+    if (address[0] === "!") continue;
+    const cell = sheet[address];
+    if (!cell || typeof cell.f !== "string" || !cell.f) continue;
+    const { r, c } = XLSX.utils.decode_cell(address);
+    out.push([r, c, cell.f]);
+    if (out.length >= limit) break;
+  }
+  return out;
 }
 
 // CSV baytlarını metne çevirir: önce UTF-8 (BOM'lu/BOM'suz), olmazsa Türkçe Windows kodlaması (Excel'in TR CSV'si).

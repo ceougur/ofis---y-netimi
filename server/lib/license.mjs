@@ -21,7 +21,7 @@ import { LicenseError, PRODUCT, decodeCode, formatInstallCode, normalizeMachineI
 import { resolveMachineId } from "./machine.mjs";
 
 // Lisans uyarılarında gösterilen iletişim bilgisi (deneme/lisans bitişi, engel, taşıma).
-export const SUPPORT_CONTACT = Object.freeze({ name: "Destek Ofis", phone: "0532 605 05 87", phoneHref: "tel:+905326050587", email: "bilgi.ugurcetin@gmail.com" });
+export const SUPPORT_CONTACT = Object.freeze({ name: "Destek Ofis", phone: "0532 605 05 87", phoneHref: "tel:+905326050587", email: "destekofis@proton.me" });
 const CONTACT_TEXT = `${SUPPORT_CONTACT.name}: ${SUPPORT_CONTACT.phone} · ${SUPPORT_CONTACT.email}`;
 export const GRACE_DAYS = 7;
 export const TRANSITION_DAYS = 30;
@@ -35,7 +35,7 @@ const WRITABLE = new Set(["transition", "trial", "licensed"]);
 
 // Salt okunur modda ekranlardan gizlenen yetkiler (sunucu zaten her yazma isteğini reddeder).
 export const WRITE_PERMISSIONS = Object.freeze([
-  "records.create", "records.edit", "records.delete", "notes.write", "phones.create", "payments.create", "liens.create",
+  "records.create", "records.edit", "records.delete", "notes.write", "phones.create", "payments.create", "liens.create", "cash.manage", "documents.upload", "documents.manage",
   "tasks.create", "tasks.complete", "messages.create", "sources.manage", "profile.manage",
 ]);
 
@@ -47,6 +47,8 @@ const READ_ONLY_ALLOWED = [
   /^\/api\/admin\//,
   /^\/api\/chat\/conversations\/[^/]+\/read$/,
   /^\/api\/workspace\/insight\/intro$/,
+  // Oturumlar arasında geçiş veri değiştirmez (v2.0.1).
+  /^\/api\/workspace\/sessions\/select$/,
 ];
 export const allowedWhenReadOnly = pathname => READ_ONLY_ALLOWED.some(pattern => pattern.test(pathname));
 

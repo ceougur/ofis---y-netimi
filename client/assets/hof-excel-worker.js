@@ -4,9 +4,9 @@
  * Her sayfa ham hücre matrisi olarak gönderilir; kolon başlıklarını ve sayfadaki alt tabloları (bölümleri)
  * sunucu ayırır — Google Sheets ile aynı kurallar. Hücreler Excel'de göründüğü gibi, Türkçe düzende metne
  * çevrilir (hof-excel-format.js). CSV değerleri olduğu gibi alınır: "0532…" telefonlarının baştaki sıfırı ve
- * "2025/1" gibi dosya numaraları bozulmaz. */
+ * "2025/1" gibi dosya numaraları bozulmaz. v2.0.1: formüller de hücre adresleriyle gönderilir. */
 import * as XLSX from "/assets/xlsx-DGuHH-KN.js";
-import { decodeCsv, sheetMatrix } from "/assets/hof-excel-format.js";
+import { decodeCsv, sheetFormulas, sheetMatrix } from "/assets/hof-excel-format.js";
 
 self.onmessage = event => {
   try {
@@ -16,9 +16,14 @@ self.onmessage = event => {
     const sheets = [];
     let rowCount = 0;
     for (const sheetName of workbook.SheetNames) {
-      const matrix = sheetMatrix(XLSX, workbook.Sheets[sheetName], date1904);
-      rowCount += Math.max(0, matrix.length - 1);
-      sheets.push({ name: sheetName, matrix });
+      const sheet = workbook.Sheets[sheetName];
+      // Formüllü sayfada boş satırlar da gönderilir (matristeki sıra = sayfadaki satır); sunucu formülleri kayıtlara
+      // bağlar ve programda değişen değerlerle yeniden hesaplar (v2.0.1).
+      const formulas = csv ? [] : sheetFormulas(XLSX, sheet);
+      const matrix = sheetMatrix(XLSX, sheet, date1904, { keepEmpty: formulas.length > 0 });
+      rowCount += Math.max(0, matrix.filter(line => line.length).length - 1);
+      const start = sheet && sheet["!ref"] ? XLSX.utils.decode_range(sheet["!ref"]).s : { r: 0, c: 0 };
+      sheets.push(formulas.length ? { name: sheetName, matrix, start: { r: start.r, c: start.c }, formulas } : { name: sheetName, matrix });
     }
     self.postMessage({ ok: true, sheets, tabs: workbook.SheetNames, rowCount });
   } catch (error) {

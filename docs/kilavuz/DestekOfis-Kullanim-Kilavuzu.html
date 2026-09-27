@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
 <meta charset="utf-8">
-<title>DestekOfis Kullanım Kılavuzu (2.0)</title>
+<title>DestekOfis Kullanım Kılavuzu (2.0.1)</title>
 <link rel="stylesheet" href="ortak.css">
 </head>
 <body>
@@ -11,7 +11,7 @@
 <section class="cover">
   <div class="brand"><b>D</b> DestekOfis</div>
   <h1>Kullanım Kılavuzu</h1>
-  <p class="sub">Sürüm 2.0 · Bilgisayar bilgisi gerektirmeyen, adım adım anlatım · Eylül 2026</p>
+  <p class="sub">Sürüm 2.0.1 · Bilgisayar bilgisi gerektirmeyen, adım adım anlatım · Eylül 2026</p>
 </section>
 
 <p>Bu kılavuz DestekOfis'i ilk kez kullanacak biri için yazıldı. Teknik terim kullanmamaya çalıştık; kullandığımız birkaç kelimenin ne demek olduğu hemen aşağıda. Her bölümde önce <b>ne işe yaradığını</b>, sonra <b>nasıl yapıldığını</b> anlatıyoruz.</p>
@@ -23,7 +23,11 @@
   <li>İlk giriş</li>
   <li>Lisans: deneme, lisans anahtarı, internetsiz kod</li>
   <li>Verinizi yükleme</li>
-  <li>Günlük kullanım</li>
+  <li>Günlük kullanım: kayıt, formül, belge, akıllı denetim, Excel'e aktarma</li>
+  <li>Serbest sayfalar: Excel gibi kendi tablonuz</li>
+  <li>Tahsilat takvimi ve bildirimler</li>
+  <li>Kasa ve Operasyon Merkezi</li>
+  <li>Veri oturumları ve kolon adları</li>
   <li>Yönetim: kullanıcılar ve yedekler</li>
   <li>Ekrandaki uyarılar ne demek?</li>
   <li>Sık sorulan sorular</li>
@@ -127,7 +131,7 @@
 
 <h3>C) Sunucunun interneti yoksa: internetsiz etkinleştirme</h3>
 <ol class="steps">
-  <li>Lisans ekranındaki <b>Kurulum kodu</b>'nun yanındaki <b>Kopyala</b>'ya basın ve kodu bize (WhatsApp veya e-posta: bilgi.ugurcetin@gmail.com) gönderin.</li>
+  <li>Lisans ekranındaki <b>Kurulum kodu</b>'nun yanındaki <b>Kopyala</b>'ya basın ve kodu bize (WhatsApp veya e-posta: destekofis@proton.me) gönderin.</li>
   <li>Size <code>DOLIS1.</code> ile başlayan uzun bir <b>etkinleştirme kodu</b> göndeririz.</li>
   <li>Bu kodu <b>Etkinleştirme kodu</b> kutusuna yapıştırıp <b>Kodu uygula</b>'ya basın.</li>
 </ol>
@@ -170,19 +174,97 @@
 <ul>
   <li><b>Kayıt bulmak:</b> Tablonun üstündeki arama kutusuna numara, isim veya telefon yazın. Birden çok sekme varsa her sekmede kaç sonuç olduğu yazar.</li>
   <li><b>Not eklemek:</b> Kaydı seçin → <b>Not</b> → yazın → <b>Notu kaydet</b>. Not, adınız ve saatle kaydın geçmişine eklenir; herkes görür.</li>
-  <li><b>Telefon, tahsilat, görev:</b> Aynı yerden <b>Telefon</b>, <b>Tahsilat</b>, <b>Görev</b> düğmeleriyle.</li>
+  <li><b>Telefon, tahsilat, görev:</b> Aynı yerden <b>Telefon</b>, <b>Tahsilat</b>, <b>Görev</b> düğmeleriyle. İşlem geçmişi eskiden yeniye sıralanır; yeni eklenen en altta görünür.</li>
   <li><b>WhatsApp:</b> <b>WhatsApp</b> düğmesi kayıttaki telefona mesaj penceresini açar.</li>
-  <li><b>Bilgi düzeltmek:</b> Tablodaki hücrenin üzerine gelince çıkan kalem (✎) simgesine basın.</li>
+  <li><b>Bilgi düzeltmek:</b> Tablodaki hücrenin üzerine gelince çıkan kalem (✎) simgesine basın ya da detay kartında <b>Düzenle</b>'ye tıklayın.</li>
   <li><b>Sohbet:</b> Sol menüdeki <b>Mesajlar</b> ile ofis içinde yazışabilirsiniz.</li>
 </ul>
 <figure><img src="ekran/10-not-ekle.jpg" alt="Not ekleme penceresi"><figcaption>Not ekleme penceresi</figcaption></figure>
 
-<h2>8. Yönetim: kullanıcılar ve yedekler</h2>
+<h3>Formüller: Excel'deki hesaplar programda da çalışır</h3>
+<p>Excel veya Google Sheets'teki formüller (ör. <i>Kalan = Tutar − Taksit 1 − Taksit 2</i>) veriyle birlikte gelir. Detay kartında boş bir taksiti doldurduğunuzda ya da bir tutarı düzelttiğinizde, o alana bağlı alanlar (Kalan, Durum, toplam…) kendiliğinden yeniden hesaplanır.</p>
+<figure><img src="ekran/19-formul-duzenle.jpg" alt="Formüllü alanları düzenleme"><figcaption><b>Düzenle</b> penceresinde formülle hesaplanan alanlar kilitlidir (<b>ƒ formül</b>); siz yalnızca girdileri yazarsınız.</figcaption></figure>
+<figure class="narrow"><img src="ekran/20-formul-hesaplandi.jpg" alt="Formül yeniden hesaplandı"><figcaption>Formüllü alanların köşesinde <b>ƒ</b> işareti vardır; üzerine gelince formül görünür.</figcaption></figure>
+
+<h3>Tahsilatı düzeltmek veya silmek</h3>
+<figure class="half"><img src="ekran/21-tahsilat-gecmis.jpg" alt="İşlem geçmişinde tahsilat"><figcaption>İşlem geçmişindeki tahsilatın yanındaki <b>✎</b> düzeltir, <b>×</b> siler. Herkes kendi girdiği tahsilatı; yönetici, ikinci rol ve muhasebe tüm tahsilatları düzeltebilir. Tutarı Türkçe yazın: <b>1.250</b> bin iki yüz elli liradır.</figcaption></figure>
+
+<h3>Kayda belge eklemek</h3>
+<p>Detay kartındaki <b>Belge</b> düğmesine basın ya da dosyayı kartın üzerine sürükleyip bırakın. PDF, resim (JPG, PNG…), Word, Excel, PowerPoint, UYAP (.udf) ve metin dosyası eklenebilir; ekran görüntüsünü <b>Ctrl+V</b> ile yapıştırabilirsiniz. Dosya başına en çok 25 MB.</p>
+<figure><img src="ekran/25-belge-ekle.jpg" alt="Belge ekleme penceresi"><figcaption>Birden çok dosyayı bir arada seçebilirsiniz; yükleme ilerlemesi görünür.</figcaption></figure>
+<figure class="narrow"><img src="ekran/26-belgeler-kart.jpg" alt="Detay kartında belgeler"><figcaption><b>Belgeler</b> bölümünde göz simgesi PDF ve resimleri programda açar, ok simgesi indirir, × siler. Kendi eklediğiniz belgeyi silebilirsiniz; başkasınınkini yönetici siler.</figcaption></figure>
+
+<h3>Akıllı denetim</h3>
+<p>Program verinizin kurallarını kendisi öğrenir (ör. <i>Kalan = Tutar − taksitler</i>) ve kurala uymayan kaydı bulur. İnternete bir şey göndermez; sizi meşgul etmez.</p>
+<figure><img src="ekran/29-akilli-denetim.jpg" alt="Akıllı denetim kutusu"><figcaption>Seçtiğiniz kayıtta bir tutarsızlık varsa detay kartının üstünde kısa bir kutu çıkar: ne olduğu, <b>Neden?</b> açıklaması ve önerilen değer. <b>Uygula</b> değeri düzeltir, <b>Yoksay</b> uyarıyı kapatır. Tabloda şüpheli satırın başında küçük turuncu bir nokta görünür.</figcaption></figure>
+
+<h3>Excel'e aktarmak</h3>
+<figure><img src="ekran/27-disa-aktar.jpg" alt="Dışa aktar menüsü"><figcaption>Sağ üstteki <b>Dışa aktar</b>: açık sekmeyi ya da tüm sekmeleri (her sekme ayrı sayfada) Excel dosyası olarak indirir. Tutarlar ve tarihler Excel'de hesap yapılabilir sayılardır; düzeltmeleriniz ve formül sonuçları dahildir.</figcaption></figure>
+
+<h2 class="pb">8. Serbest sayfalar: Excel gibi kendi tablonuz</h2>
+<p>Yüklediğiniz Excel'in sekmelerinin yanına istediğiniz adla boş bir sayfa ekleyip Excel gibi doldurabilirsiniz: masraf listesi, takip çizelgesi, aylık tablo…</p>
+<figure><img src="ekran/30-serbest-yeni-sayfa.jpg" alt="Yeni sayfa penceresi"><figcaption>Sekmelerin sonundaki <b>+ Sayfa</b> düğmesine basın. Sayfa adını, kolon ve satır sayısını yazın; isterseniz kolon başlıklarını da virgülle ayırarak yazın.</figcaption></figure>
+<ol class="steps">
+  <li><b>Yazın ve geçin.</b> Bir hücreyi seçip yazmaya başlayın. <b>Enter</b> (aşağı), <b>Tab</b> (sağa), yön tuşları ya da fareyle başka hücreye geçtiğinizde değer <b>kendiliğinden kaydedilir</b>; üstte <i>Tüm değişiklikler kaydedildi</i> yazar. Başlıkları da aynı biçimde yazın.</li>
+  <li><b>Düzeltin.</b> Seçili hücredeki kalem (✎), <b>F2</b> ya da çift tık hücreyi düzeltmeye açar; <b>Esc</b> vazgeçer. Başlığın kalemi başlığı, sayfa adının yanındaki kalem sayfanın adını değiştirir.</li>
+  <li><b>Silin.</b> Hücredeki <b>×</b> hücreyi, başlıktaki <b>×</b> kolonu, satır numarasının üzerine gelince çıkan <b>×</b> satırı siler. <b>Delete</b> seçili hücreleri temizler. Yanlışlıkla sildiyseniz bildirimdeki <b>Geri al</b> ya da <b>Ctrl+Z</b>.</li>
+  <li><b>Ekleyin.</b> <b>+ Satır</b> / <b>+ Kolon</b> seçili hücrenin altına/sağına ekler; tablonun altındaki <b>+ Satır ekle</b> sona ekler. Son satırda Enter'a basınca alta yeni satır açılır.</li>
+</ol>
+<h3>Formül yazmak</h3>
+<p>Formül <b>=</b> ile başlar. Hücre adresi <b>kolon harfi + satır numarası</b>dır: <b>B1</b> ilk satırın B kolonudur (başlık satırı numaralanmaz). Türkçe yazabilirsiniz: <code>=B1*C1</code>, <code>=TOPLA(D1:D9)</code>, <code>=EĞER(D2&gt;1000;"Yüksek";"Normal")</code>. Formül yazarken bir hücreye <b>tıklamak adresini ekler</b>, sürüklemek aralık ekler; kullandığınız hücreler renkle işaretlenir.</p>
+<figure><img src="ekran/31-serbest-formul.jpg" alt="Formül yazarken"><figcaption>D6'ya <code>=TOPLA(</code> yazıp D1'den D4'e sürüklemek aralığı ekler. Tüm işlevler ve kısayollar <b>ƒx Formüller</b> düğmesindedir.</figcaption></figure>
+<h3>Toplamlar, doldurma, kopyala-yapıştır</h3>
+<ul>
+  <li><b>Σ Alt toplam:</b> sayısal kolonların altına toplam satırı ekler.</li>
+  <li><b>Σ Yan toplam:</b> her satırın toplamını gösteren <i>Toplam</i> kolonu ekler. Önce toplamak istediğiniz kolonları seçerseniz yalnızca onları toplar.</li>
+  <li><b>↓ Doldur / → Doldur:</b> seçili hücredeki formülü alttaki satırlara / sağdaki kolonlara uygular. Bir kolonun satırları aynı formülü taşıyorsa (ör. <i>Tutar = Adet × Birim fiyat</i>) yeni satırlara kendiliğinden uygulanır.</li>
+  <li><b>Excel'den kopyala-yapıştır:</b> Excel'de seçip kopyaladığınız tabloyu seçili hücreye <b>Ctrl+V</b> ile yapıştırın; yetmezse satır ve kolon eklenir.</li>
+  <li><b>Sağ tık:</b> üste/alta satır, sola/sağa kolon ekleme, silme ve doldurma.</li>
+</ul>
+<figure><img src="ekran/32-serbest-sayfa.jpg" alt="Serbest sayfa ve detay kartı"><figcaption>Değer yazılmış her satır bir kayıttır: seçince sağda detay kartı açılır. Not, tahsilat, görev ve belge diğer sekmelerdeki gibi eklenir; kartta gösterilen satırın numarası yeşil çizgiyle işaretlidir. <b>⤢</b> ızgarayı genişletip kartı alta alır.</figcaption></figure>
+<figure class="half"><img src="ekran/33-serbest-menu.jpg" alt="Sağ tık menüsü"><figcaption>Sağ tık menüsü</figcaption></figure>
+<p>Yaptığınız her değişiklik ofisteki diğer bilgisayarlara anında yansır; iki kişi aynı sayfada farklı hücrelere aynı anda yazabilir. Sayfayı silmek için <b>⋯ → Sayfayı sil</b> (yönetici); bildirimdeki <b>Geri al</b> ile hemen geri gelir.</p>
+
+<h2 class="pb">9. Tahsilat takvimi ve bildirimler</h2>
+<p>Program, yüklediğiniz tablonun <b>tüm sekmelerinde</b> ödenmesi beklenen tutarları kendisi bulur: ödeme sözleri, taksitler (<i>1. Taksit Tarihi / Tutarı</i>), "Eylül 2026" gibi ay olarak yazılmış vadeler, aylık ücret kolonları (<i>Eylül</i>, <i>Ekim</i>…) ve her ayın belli günü ödenen kira ya da aidat. Satırın durumu <i>Ödendi</i>, <i>Kapandı</i> ya da <i>İptal</i> ise o satır beklenmez.</p>
+<figure><img src="ekran/35-tahsilat-serit.jpg" alt="Tahsilat takvimi şeridi"><figcaption>Ekranın üstündeki <b>Tahsilat takvimi</b> şeridinde gecikenler (kırmızı), bu ay ödenecekler ve yaklaşanlar kayar. Bir pile tıklayınca beklenen tutar ve durum görünür: <b>Tahsilat gir</b>, <b>Ödendi say</b> (başka yoldan ödendiyse) ya da <b>Kayda git</b>.</figcaption></figure>
+<ul>
+  <li><b>Ay olarak yazılan</b> vade (ör. <i>Eylül 2026</i>) ayın 1'inden, <b>tarih olarak yazılan</b> vade o günden itibaren "tahsilat alınmadı" sayılır.</li>
+  <li>Aylık ücret kolonunda hücre boşsa ya da <i>ödenmedi</i>, <i>0</i> yazıyorsa o ay ödenmemiştir. Ücretten az bir tutar yazıyorsa kalanı beklenir (<i>kısmen ödendi</i>).</li>
+  <li>Açık ödeme sözleri 30 gün öncesinden, taksit ve kiralar bu ay ve 7 gün içindekiler şeritte görünür.</li>
+  <li>Programda eklediğiniz yeni satırlar ve serbest sayfalar da aynı şekilde izlenir.</li>
+</ul>
+<figure class="half"><img src="ekran/37-pilden-tahsilat.jpg" alt="Pilden tahsilat girme"><figcaption><b>Tahsilat gir</b> dediğinizde tutar ve açıklama hazır gelir. Kaydedince pil kaybolur ve tutar Kasa'ya tahsilat olarak düşer. Tutar yetmezse pilde kalanı görünür; fazlası sonraki taksite sayılır.</figcaption></figure>
+<h3>Sağ alttaki bildirimler</h3>
+<figure class="half"><img src="ekran/36-bildirim.jpg" alt="Sağ alt bildirim"><figcaption>Tahsilatı gelmiş ama alınmamış her kalem için ekranın sağ altında kim, hangi ay ya da vade için, ne kadar yazan bir bildirim çıkar.</figcaption></figure>
+<ul>
+  <li>Bildirimler <b>tek tek</b> gelir, her biri <b>10 saniye</b> durur ve üst üste binmez. Fareyle üzerine gelirseniz bekler.</li>
+  <li>Tahsilat girilene ya da iş bitene kadar <b>3 saatte bir</b> yeniden hatırlatılır.</li>
+  <li><b>Son günü yaklaşan işler</b> 1 hafta önceden bildirilir: sözleşme bitişi, yenileme, muayene, sigorta, kasko, vize, SRC, psikoteknik, ehliyet gibi tarihler ve size atanmış görevler. Süresi geçen belgeler 30 gün boyunca hatırlatılır. Araç belgelerinde başlık plakadır.</li>
+</ul>
+<figure><img src="ekran/38-zil.jpg" alt="Bildirim listesi"><figcaption>Üst çubuktaki <b>zil</b> tüm uyarıları gruplu listeler; üzerindeki sayı bekleyen uyarıları gösterir. Listeden doğrudan <b>Tahsilat gir</b> ya da <b>Kayda git</b> denir. Alttaki kutuyla sağ alt bildirimleri kapatıp açabilirsiniz.</figcaption></figure>
+
+<h2 class="pb">10. Kasa ve Operasyon Merkezi</h2>
+<figure><img src="ekran/22-kasa.jpg" alt="Kasa penceresi"><figcaption>Sol menüde Operasyon Merkezi → <b>Kasa</b>: güncel kasa, seçtiğiniz dönemin (Bu ay, Geçen ay, Bu yıl, Tümü, Aralık) tahsilat, ödeme ve farkı. Detay kartından girilen tahsilatlar kasaya kendiliğinden düşer; kira, fatura, maaş gibi ödemeleri <b>− Ödeme</b> ile eklersiniz. Her satırda o ana kadarki kasa yazar.</figcaption></figure>
+<p>Kasayı yönetici, ikinci rol ve muhasebe görür. Kasa ofisin tek kasasıdır: farklı veri oturumlarına geçmek kasayı sıfırlamaz.</p>
+<h3>Tarih aralığı ve PDF</h3>
+<figure><img src="ekran/39-kasa-aralik.jpg" alt="Kasa tarih aralığı"><figcaption><b>Aralık</b>'ı seçip başlangıç ve bitiş tarihini girin (ör. 01.09.2026 – 25.09.2026). Göstergeler ve liste o aralığa göre hesaplanır; aralıktan önceki bakiye <i>Devreden kasa</i> olarak yazar. <b>PDF indir</b> seçili dönemin kasa dökümünü indirir.</figcaption></figure>
+<figure class="half"><img src="ekran/40-kasa-pdf.jpg" alt="Kasa dökümü PDF"><figcaption>Kasa dökümü: ofis adı, aralık, devreden kasa, dönem tahsilatı ve ödemesi, dönem sonu kasa, her hareketin tarihi, açıklaması, tutarı ve yürüyen bakiyesi. Dosya <i>Kasa-dokumu 01.09.2026-25.09.2026.pdf</i> adıyla iner; yazdırılabilir ya da e-postayla gönderilebilir.</figcaption></figure>
+<figure class="narrow"><img src="ekran/23-operasyon-kalem.jpg" alt="Operasyon Merkezi kalemi"><figcaption>Operasyon Merkezi kartının köşesindeki kalem (yalnızca yönetici)…</figcaption></figure>
+<figure><img src="ekran/24-operasyon-adlari.jpg" alt="Operasyon Merkezi adları"><figcaption>…kartın başlığını ve düğmelerin adlarını değiştirir (ör. <i>Kasa</i> yerine <i>Vezne</i>). Değişiklik tüm bilgisayarlara anında yansır.</figcaption></figure>
+
+<h2>11. Veri oturumları ve kolon adları</h2>
+<p>Farklı konudaki bir Excel'i (ör. hukuk dosyalarının yanına bir taksit listesi) yüklerken <b>Yeni oturumda aç</b>'ı seçin; iki tablo birbirine karışmaz. Oturumlar arasında sol üstteki <b>Çalışma oturumu</b> kutusundan geçilir. Seçtiğiniz oturum yalnızca sizin ekranınızı değiştirir.</p>
+<figure class="narrow"><img src="ekran/34-oturum-secici.jpg" alt="Oturum seçici"><figcaption>Oturum listesi, kayıt sayılarıyla. Kalemle oturumun adı değiştirilir.</figcaption></figure>
+<p>Kullanıcılar, görevler, notlar, tahsilatlar, Kasa ve yedekler tüm oturumlarda ortaktır; oturum değiştirmek bunları etkilemez.</p>
+<figure class="narrow"><img src="ekran/28-kolon-kalem.jpg" alt="Kolon adını değiştirme"><figcaption>Excel'den gelen kolon başlığını ofisinize göre adlandırmak için detay kartındaki başlığın yanındaki kalemi kullanın (yalnızca yönetici; ör. <i>TKST_1</i> → <i>1. Taksit</i>). Excel dosyanız değişmez.</figcaption></figure>
+
+<h2 class="pb">12. Yönetim: kullanıcılar ve yedekler</h2>
 <p>Yönetim sayfasına sol alttaki kartta <b>Yönetim</b> ile girilir. Bu sayfayı yalnızca yönetici görür.</p>
 <figure><img src="ekran/11-kullanicilar.jpg" alt="Kullanıcılar"><figcaption><b>+ Yeni kullanıcı</b> ile çalışan ekleyin; rolünü seçin. Program çalışana ilk girişte parolasını değiştirtir.</figcaption></figure>
 <figure><img src="ekran/12-yedekler.jpg" alt="Yedekler"><figcaption>Program 6 saatte bir kendiliğinden yedek alır. <b>Şimdi yedek al</b> ile istediğiniz an yedekleyip indirebilirsiniz. Yedekleri ayda bir harici diske kopyalayın.</figcaption></figure>
 
-<h2>9. Ekrandaki uyarılar ne demek?</h2>
+<h2>13. Ekrandaki uyarılar ne demek?</h2>
 <table>
   <tr><th style="width:36%">Uyarı</th><th>Ne yapmalı?</th></tr>
   <tr><td>Ücretsiz deneme henüz başlamadı</td><td>Sunucunun internetini kontrol edin; deneme bağlantı gelince kendiliğinden başlar. İsterseniz Yönetim → Lisans → <b>Denemeyi şimdi başlat</b>.</td></tr>
@@ -195,15 +277,17 @@
   <tr><td>"DestekOfis … sürümüne güncellendi"</td><td>Program kendini güncelledi. Yazdığınız notu kaydedip <b>Yenile</b>'ye basın.</td></tr>
 </table>
 
-<h2>10. Sık sorulan sorular</h2>
+<h2>14. Sık sorulan sorular</h2>
 <p><b>Deneme bitince kayıtlarım silinir mi?</b><br>Hayır. Program yalnızca yeni işlem yapılmasını durdurur. Kayıtlarınızı görebilir, dışa aktarabilir ve yedekleyebilirsiniz.</p>
 <p><b>Her bilgisayar için ayrı lisans mı alacağım?</b><br>Hayır. Lisans yalnızca sunucu bilgisayar içindir. Personel bilgisayarları ücretsiz bağlanır.</p>
 <p><b>Programı silip yeniden kurarsam deneme yeniden başlar mı?</b><br>Hayır. Deneme her bilgisayara bir kez verilir.</p>
 <p><b>İnternet kesilirse çalışamaz mıyız?</b><br>Çalışırsınız. Program 7 gün boyunca internet olmadan normal çalışır.</p>
 <p><b>Sunucu bilgisayarımı değiştirmek istiyorum.</b><br>Yeni bilgisayara programı kurun, eski bilgisayardan aldığınız yedeği geri yükleyin ve bizden (0532 605 05 87) lisansı yeni bilgisayara taşımamızı isteyin (yeni bilgisayarın kurulum kodunu gönderin).</p>
+<p><b>Programı kaldırıp yeniden kurarsam verilerim kaybolur mu?</b><br>Hayır. Sunucu bilgisayarda program kaldırılsa da kayıtlarınız ve yedekleriniz silinmez (kaldırma sonunda nerede durduklarını yazar). Aynı bilgisayara yeniden kurduğunuzda kaldığınız yerden devam edersiniz; lisansınız da geri gelir.</p>
+<p><b>Serbest sayfada yaptığım değişiklik kaydedildi mi?</b><br>Başka hücreye geçtiğiniz anda kaydedilir. Sayfanın üstünde <i>Tüm değişiklikler kaydedildi</i> yazıyorsa her şey sunucudadır. İnternet ya da ağ bir an koparsa program yeniden dener.</p>
 <p><b>Lisansımı başkası kullanabilir mi?</b><br>Hayır. Lisans sunucu bilgisayarınızın kimliğine bağlıdır; başka bir bilgisayara kopyalanınca çalışmaz.</p>
 
-<p class="foot">DestekOfis 2.0 · Kullanım Kılavuzu · Ekran görüntüleri örnek verilerle hazırlanmıştır.</p>
+<p class="foot">DestekOfis 2.0.1 · Kullanım Kılavuzu · Ekran görüntüleri örnek verilerle hazırlanmıştır.</p>
 </main>
 </body>
 </html>

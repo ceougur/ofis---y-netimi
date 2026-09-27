@@ -2,7 +2,7 @@
 
 Ofisler için merkezi kayıt takip ve yönetim sistemi. Ofisteki bir bilgisayar **sunucu** olur; diğer bilgisayarlar ona bağlanır ve herkes aynı kayıtları, notları, görevleri, mesajları ve değişiklik geçmişini görür.
 
-Sektörden bağımsızdır: yüklenen Excel veya Google Sheets verisini sunucuda (internete göndermeden) çözümler, kolon türlerini doğrular, 142 sektörlük listeden sektörünü kanıtlarıyla önerir ve yönetici onaylayınca başlıklarını, rol adlarını ve araçlarını (ör. hukukta tahsilat ve haciz) buna göre ayarlar. Başlıklar kalemle kalıcı olarak değiştirilebilir.
+Sektörden bağımsızdır: yüklenen Excel veya Google Sheets verisini sunucuda (internete göndermeden) çözümler, kolon türlerini doğrular, 143 sektörlük listeden sektörünü kanıtlarıyla önerir ve yönetici onaylayınca başlıklarını, rol adlarını ve araçlarını (ör. hukukta tahsilat ve haciz) buna göre ayarlar. Başlıklar kalemle kalıcı olarak değiştirilebilir.
 
 - Sunucu: Windows servisi (nssm) · gömülü Node.js 24 LTS (dış bağımlılık yok) · SQLite
 - Personel bilgisayarı: sunucuyu UDP ile kendiliğinden bulan başlatıcı (Edge/Chrome uygulama penceresi)

@@ -241,7 +241,7 @@
   // Alan tanımlarından erişilebilir form penceresi üretir.
   HOF.fieldHtml = field => {
     const id = `hof-f-${field.name}-${Math.random().toString(36).slice(2, 7)}`;
-    const common = `id="${id}" name="${HOF.esc(field.name)}" ${field.required ? "required" : ""} ${field.autofocus ? "autofocus" : ""} ${field.maxlength ? `maxlength="${field.maxlength}"` : ""}`;
+    const common = `id="${id}" name="${HOF.esc(field.name)}" ${field.required ? "required" : ""} ${field.autofocus ? "autofocus" : ""} ${field.readonly ? 'readonly aria-readonly="true"' : ""} ${field.maxlength ? `maxlength="${field.maxlength}"` : ""}`;
     let control;
     if (field.type === "textarea") control = `<textarea ${common} rows="${field.rows || 4}" placeholder="${HOF.esc(field.placeholder || "")}">${HOF.esc(field.value || "")}</textarea>`;
     else if (field.type === "select")
@@ -251,7 +251,7 @@
       const list = field.list && field.list.length ? `${id}-list` : "";
       control = `<input ${common} type="${field.type || "text"}" value="${HOF.esc(field.value ?? "")}" placeholder="${HOF.esc(field.placeholder || "")}" ${field.inputmode ? `inputmode="${field.inputmode}"` : ""} ${field.step ? `step="${field.step}"` : ""} ${field.min != null ? `min="${field.min}"` : ""} ${list ? `list="${list}"` : ""} autocomplete="${field.autocomplete || "off"}">${list ? `<datalist id="${list}">${field.list.map(item => `<option value="${HOF.esc(item)}"></option>`).join("")}</datalist>` : ""}`;
     }
-    return `<label class="hof-field" for="${id}"><span>${HOF.esc(field.label)}${field.required ? ' <i aria-hidden="true">*</i>' : ""}</span>${control}${field.help ? `<small>${HOF.esc(field.help)}</small>` : ""}</label>`;
+    return `<label class="hof-field${field.readonly ? " is-readonly" : ""}" for="${id}"><span>${HOF.esc(field.label)}${field.required ? ' <i aria-hidden="true">*</i>' : ""}${field.badge ? ` <em class="hof-field-badge">${HOF.esc(field.badge)}</em>` : ""}</span>${control}${field.help ? `<small>${HOF.esc(field.help)}</small>` : ""}</label>`;
   };
 
   HOF.formModal = ({ title, eyebrow, intro = "", fields = [], submitLabel = "Kaydet", size = "", onSubmit, extraHtml = "" }) =>
@@ -352,13 +352,15 @@
         const result = (Array.isArray(payload) ? payload[0] : payload)?.result?.data;
         const data = result?.json ?? result;
         if (!data || !Array.isArray(data.rows)) return;
-        HOF.data = { rows: data.rows, tabs: (data.tabs || []).map(tab => tab.title).filter(Boolean), at: Date.now() };
+        // freeTabs: serbest sayfaların sekme adı → sayfa kimliği (v2.0.1, hof-free.js).
+        const freeTabs = new Map((data.tabs || []).filter(tab => tab && tab.free && tab.title).map(tab => [tab.title, tab.free]));
+        HOF.data = { rows: data.rows, tabs: (data.tabs || []).map(tab => tab.title).filter(Boolean), freeTabs, at: Date.now() };
         HOF.emit("rows", HOF.data);
       })
       .catch(() => {});
     return promise;
   };
-  HOF.data = { rows: [], tabs: [], at: 0 };
+  HOF.data = { rows: [], tabs: [], freeTabs: new Map(), at: 0 };
   // Kaydın sekmesi (tabloda birden çok satırı olan kayıtta ilk satırınki); bilinmiyorsa null.
   HOF.tabOfKey = key => {
     const row = HOF.data.rows.find(item => item.__hofKey === key);
@@ -410,5 +412,9 @@
     const title = panel.querySelector(".detail-title")?.textContent?.trim() || key;
     return { key, title, panel };
   };
-  HOF.tableHeaders = table => [...(table?.querySelectorAll("thead th") || [])].map(th => th.textContent.trim());
+  // Kolonun asıl (Excel/Sheets'teki) adı: başlık ekranda ofisin verdiği adla görünse bile (v2.0.1, hof-columns.js)
+  // düzeltmeler, formüller ve eşleştirmeler asıl adla çalışır.
+  HOF.columnOf = element => (element ? (HOF.labels?.original ? HOF.labels.original(element) : element.textContent.trim()) : "");
+  HOF.columnLabel = HOF.columnLabel || (name => name);
+  HOF.tableHeaders = table => [...(table?.querySelectorAll("thead th") || [])].map(th => HOF.columnOf(th));
 })();

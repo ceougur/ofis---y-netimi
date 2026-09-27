@@ -290,6 +290,91 @@ export const MIGRATIONS = [
       }
     },
   },
+  {
+    version: 5,
+    name: "v2.0.1 kasa, tahsilat düzeltmeleri, dosya belgeleri ve serbest sayfalar",
+    up(store) {
+      // Yalnızca ekleyici: 2.0.0 bu şemayla da çalışır (yeni tabloyu ve kolonları kullanmaz).
+      const columns = new Set(store.all("PRAGMA table_info(payments)").map(column => column.name));
+      if (!columns.has("case_title")) store.exec("ALTER TABLE payments ADD COLUMN case_title TEXT NOT NULL DEFAULT ''");
+      if (!columns.has("updated_by")) store.exec("ALTER TABLE payments ADD COLUMN updated_by TEXT");
+      if (!columns.has("updated_at")) store.exec("ALTER TABLE payments ADD COLUMN updated_at TEXT");
+      store.exec(`
+        CREATE TABLE IF NOT EXISTS cash_entries (
+          id TEXT PRIMARY KEY,
+          kind TEXT NOT NULL CHECK (kind IN ('in', 'out')),
+          amount REAL NOT NULL,
+          date TEXT NOT NULL,
+          description TEXT NOT NULL DEFAULT '',
+          created_by TEXT NOT NULL,
+          created_at TEXT NOT NULL,
+          updated_by TEXT,
+          updated_at TEXT
+        );
+        CREATE INDEX IF NOT EXISTS idx_cash_entries_date ON cash_entries(date, created_at);
+        CREATE INDEX IF NOT EXISTS idx_payments_date ON payments(date, created_at);
+        -- Kayda eklenen belgeler: dosyanın kendisi veri klasöründe (belgeler/), içerik özetiyle saklanır.
+        CREATE TABLE IF NOT EXISTS case_documents (
+          id TEXT PRIMARY KEY,
+          case_key TEXT NOT NULL,
+          case_title TEXT NOT NULL DEFAULT '',
+          name TEXT NOT NULL,
+          kind TEXT NOT NULL,
+          mime TEXT NOT NULL,
+          size INTEGER NOT NULL,
+          sha256 TEXT NOT NULL,
+          created_by TEXT NOT NULL,
+          created_at TEXT NOT NULL,
+          deleted_by TEXT,
+          deleted_at TEXT
+        );
+        CREATE INDEX IF NOT EXISTS idx_case_documents_case ON case_documents(case_key, created_at);
+        CREATE INDEX IF NOT EXISTS idx_case_documents_sha ON case_documents(sha256);
+        -- Serbest sayfalar: kullanıcının programda kurduğu Excel benzeri sekmeler (veri oturumuna özel).
+        CREATE TABLE IF NOT EXISTS free_sheets (
+          id TEXT PRIMARY KEY,
+          dataset_key TEXT NOT NULL,
+          name TEXT NOT NULL,
+          position INTEGER NOT NULL,
+          columns_json TEXT NOT NULL,
+          created_by TEXT NOT NULL,
+          created_at TEXT NOT NULL,
+          updated_by TEXT,
+          updated_at TEXT NOT NULL,
+          deleted_by TEXT,
+          deleted_at TEXT
+        );
+        CREATE INDEX IF NOT EXISTS idx_free_sheets_key ON free_sheets(dataset_key, position);
+        CREATE TABLE IF NOT EXISTS free_rows (
+          id TEXT PRIMARY KEY,
+          sheet_id TEXT NOT NULL,
+          position INTEGER NOT NULL,
+          created_by TEXT NOT NULL,
+          created_at TEXT NOT NULL
+        );
+        CREATE INDEX IF NOT EXISTS idx_free_rows_sheet ON free_rows(sheet_id, position);
+        CREATE TABLE IF NOT EXISTS free_cells (
+          row_id TEXT NOT NULL,
+          col_id TEXT NOT NULL,
+          sheet_id TEXT NOT NULL,
+          raw TEXT NOT NULL,
+          updated_by TEXT NOT NULL,
+          updated_at TEXT NOT NULL,
+          PRIMARY KEY (row_id, col_id)
+        );
+        CREATE INDEX IF NOT EXISTS idx_free_cells_sheet ON free_cells(sheet_id);
+        CREATE TABLE IF NOT EXISTS free_history (
+          id TEXT PRIMARY KEY,
+          sheet_id TEXT NOT NULL,
+          label TEXT NOT NULL,
+          snapshot_json TEXT NOT NULL,
+          created_by TEXT NOT NULL,
+          created_at TEXT NOT NULL
+        );
+        CREATE INDEX IF NOT EXISTS idx_free_history_sheet ON free_history(sheet_id, created_at);
+      `);
+    },
+  },
 ];
 
 export const LATEST_VERSION = MIGRATIONS.at(-1).version;

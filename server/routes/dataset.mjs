@@ -20,7 +20,7 @@ export function registerDatasetRoutes(router, { auth, dataset, clientState }) {
   router.post("/api/workspace/dataset/commit", async ({ req, res }) => {
     const user = auth.requirePermission(req, "sources.manage");
     const body = await readJson(req);
-    const result = dataset.commit(user, text(body.stageId), { mode: text(body.mode), link: body.link !== false });
+    const result = dataset.commit(user, text(body.stageId), { mode: text(body.mode), link: body.link !== false, name: text(body.name) });
     ok(res, { ...result, state: clientState.read() });
   });
 
@@ -40,6 +40,34 @@ export function registerDatasetRoutes(router, { auth, dataset, clientState }) {
     const user = auth.requirePermission(req, "sources.manage");
     const result = dataset.remove(user);
     ok(res, { ...result, state: clientState.read() });
+  });
+
+  // ---- Veri oturumları (v2.0.1) ----
+  // Herkes oturumları görür ve kendi çalışacağı oturumu seçer; oturum açmak (yeni veri yükleyerek), adını değiştirmek
+  // ve silmek veri yönetimi yetkisindedir.
+  router.get("/api/workspace/sessions", async ({ req, res }) => {
+    const user = auth.requireUser(req);
+    ok(res, { current: dataset.currentKey(), sessions: dataset.sessions(), canManage: can(user.role, "sources.manage") });
+  });
+
+  router.post("/api/workspace/sessions/select", async ({ req, res }) => {
+    const user = auth.requireUser(req);
+    const body = await readJson(req);
+    const result = dataset.selectSession(user, text(body.key));
+    ok(res, { ...result, state: clientState.read() });
+  });
+
+  router.post("/api/workspace/sessions/rename", async ({ req, res }) => {
+    const user = auth.requirePermission(req, "sources.manage");
+    const body = await readJson(req);
+    ok(res, dataset.renameSession(user, text(body.key), text(body.name)));
+  });
+
+  router.post("/api/workspace/sessions/delete", async ({ req, res }) => {
+    const user = auth.requirePermission(req, "sources.manage");
+    const body = await readJson(req);
+    const result = dataset.deleteSession(user, text(body.key));
+    ok(res, { ...result, current: dataset.currentKey() });
   });
 
   router.get("/api/workspace/dataset/missing", async ({ req, res }) => {

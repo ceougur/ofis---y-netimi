@@ -6,9 +6,11 @@
 import { columnOrder } from "../sources.mjs";
 import { analyzeColumns, primaryColumns } from "./columns.mjs";
 import { computeKpis } from "./kpi.mjs";
+import { recordTitle } from "./quality.mjs";
+import { reasonAbout } from "./reasoning.mjs";
 import { classifySector } from "./sectors.mjs";
 
-export const ANALYSIS_VERSION = 2;
+export const ANALYSIS_VERSION = 3;
 
 // Arama kutusu ipucu: verideki gerçek kolon adlarından (kimlik, kişi, telefon/plaka).
 export function searchColumns(primary) {
@@ -42,6 +44,8 @@ export function analyzeDataset({ rows, label = "", tabs = [], now = new Date() }
   const sector = classifySector({ analyses, rows: data, label, tabs });
   const kpis = computeKpis(data, { tabs, now });
   const { quality, ...indicators } = kpis;
+  // Mantık denetimi (v2.0.1): verinin kendi kurallarını öğrenir, uymayan kayıtları bulur (reasoning.mjs).
+  const reasoning = reasonAbout(data, { tabs, now, titleOf: row => recordTitle(row, primary) });
   const order = analyses
     .filter(item => item.role !== "empty" && item.role !== "sequence")
     .slice()
@@ -60,6 +64,7 @@ export function analyzeDataset({ rows, label = "", tabs = [], now = new Date() }
     search: searchColumns(primary),
     sector,
     quality,
+    reasoning,
     kpis: indicators,
   };
 }

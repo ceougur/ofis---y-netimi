@@ -29,7 +29,7 @@ AppPublisher={#AppPublisher}
 AppPublisherURL={#AppURL}
 AppSupportURL={#AppURL}
 AppUpdatesURL={#AppURL}
-AppContact=bilgi.ugurcetin@gmail.com
+AppContact=destekofis@proton.me
 ; Yeni kurulumlar sektörden bağımsız klasöre; mevcut kurulumlar (aynı AppId) önceki klasörlerinde güncellenir.
 ; Önceki kayıt yoksa (kaldırılıp yeniden kurulan sunucu, eski elle kurulum) verisi olan klasör seçilir: DefaultAppDir.
 DefaultDirName={code:DefaultAppDir}
@@ -363,6 +363,7 @@ var
 begin
   WizardForm.StatusLabel.Caption := 'Windows servisi kuruluyor ve başlatılıyor (en fazla 1-2 dakika)...';
   WizardForm.ProgressGauge.Style := npbstMarquee;
+  Log('servis-kur.cmd çalıştırılıyor…');
   try
     if not Exec(ExpandConstant('{cmd}'), '/C ""' + ExpandConstant('{app}\bin\servis-kur.cmd') + '" {#AppVersion}"', ExpandConstant('{app}'), SW_HIDE, ewWaitUntilTerminated, ResultCode) then
       ResultCode := -1;
@@ -370,6 +371,7 @@ begin
     WizardForm.ProgressGauge.Style := npbstNormal;
   end;
   LogFile := ExpandConstant('{app}\logs\kurulum.log');
+  Log('servis-kur.cmd çıkış kodu: ' + IntToStr(ResultCode));
   if ResultCode = 60 then
   begin
     // Servis çalışıyor; yalnızca güvenlik duvarı kuralı eklenemedi.
@@ -391,11 +393,24 @@ begin
   end;
 end;
 
-procedure CurStepChanged(CurStep: TSetupStep);
+function YesNo(Value: Boolean): String;
 begin
-  if (CurStep = ssPostInstall) and IsServer then
+  if Value then Result := 'evet' else Result := 'hayır';
+end;
+
+// Kurulum sonrası: sunucu seçildiyse ya da bu bilgisayarda zaten DestekOfis servisi varsa (güncelleme/onarım
+// kurulumu) servis kurulur ve başlatılır. PrepareToInstall mevcut servisi her durumda durdurduğundan, servis varken
+// bu adım atlanırsa servis kapalı kalırdı (2.0.0'da aynı kurulum dosyasıyla sessiz yeniden kurulumda görüldü).
+procedure CurStepChanged(CurStep: TSetupStep);
+var
+  Existing: Boolean;
+begin
+  if CurStep <> ssPostInstall then Exit;
+  Existing := ExistingServerInstall;
+  Log('Kurulum türü: ' + WizardSetupType(False) + ' · sunucu bileşeni: ' + YesNo(IsServer) + ' · mevcut servis: ' + YesNo(Existing));
+  if IsServer or Existing then
   begin
-    if WizardIsTaskSelected('agprofili') then
+    if IsServer and WizardIsTaskSelected('agprofili') then
       SetNetworkPrivate;
     InstallService;
   end;

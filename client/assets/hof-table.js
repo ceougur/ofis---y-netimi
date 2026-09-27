@@ -122,10 +122,78 @@
       return { key: HOF.rowKey(row), field: label, value: raw != null ? raw : cell.textContent.trim(), title: row.querySelector("strong")?.textContent?.trim() || HOF.rowKey(row) };
     }
     const selected = HOF.selectedCase();
-    const label = cell.querySelector(".detail-label")?.textContent?.trim() || "Bilgi";
+    const label = HOF.columnOf(cell.querySelector(".detail-label")) || "Bilgi";
     const shown = cell.querySelector(".detail-value")?.textContent?.trim() ?? "";
     return { key: selected?.key || "", field: label, value: shown === "—" ? "" : shown, title: selected?.title || "" };
   };
+
+  // ---------- Formüller (v2.0.1) ----------
+  // Sunucu her satırla, Excel/Sheets'ten gelen formüllerin özetini gönderir (__hofFx: alan → {d: formül, s: durum}).
+  const FORMULA_STATE = {
+    calc: "Programda girilen değerlerle yeniden hesaplandı.",
+    source: "Excel/Sheets'te hesaplanan değer; bağlı alanlar değişince program yeniden hesaplar.",
+    manual: "Elle değiştirildi; bu kayıtta formül yerine yazılan değer kullanılıyor.",
+    unsupported: "Bu formül programda hesaplanamıyor; Excel/Sheets'teki son değer gösteriliyor.",
+    stale: "Formül hesaplanamadı; son değer gösteriliyor.",
+  };
+  const formulaMap = row => {
+    if (!row?.__hofFx) return null;
+    try {
+      return JSON.parse(row.__hofFx);
+    } catch {
+      return null;
+    }
+  };
+  const rowFor = key => {
+    const rows = HOF.data?.rows || [];
+    const tab = (HOF.activeTab && HOF.activeTab()) || "";
+    return rows.find(item => item.__hofKey === key && (!tab || item.__sheet === tab)) || rows.find(item => item.__hofKey === key) || null;
+  };
+  const formulaOf = (key, field) => formulaMap(rowFor(key))?.[field] || null;
+  const computed = formula => Boolean(formula) && formula.s !== "manual";
+  const formulaHelp = formula => `Formül: ${formula.d} · ${FORMULA_STATE[formula.s] || ""}`;
+  const tabFormulas = tab => {
+    const out = {};
+    for (const row of HOF.data?.rows || []) {
+      if (tab && row.__sheet !== tab) continue;
+      const map = formulaMap(row);
+      if (!map) continue;
+      for (const [field, info] of Object.entries(map)) if (!out[field] && info.s !== "unsupported") out[field] = info;
+    }
+    return out;
+  };
+  HOF.formulaOf = formulaOf;
+
+  // Detay kartında formüllü alanların köşesine "ƒ" işareti (üzerine gelince formül ve durumu).
+  // Sayfa her değiştiğinde çalıştığından seçili kaydın formülleri, veri ve seçim değişene kadar önbellekte tutulur
+  // (büyük tablolarda tüm satırları her seferinde taramamak için).
+  let fxCache = { at: -1, key: "", tab: "", map: {} };
+  function decorateFormulas() {
+    const selected = HOF.selectedCase();
+    if (!selected) return;
+    const tab = (HOF.activeTab && HOF.activeTab()) || "";
+    if (fxCache.at !== HOF.data?.at || fxCache.key !== selected.key || fxCache.tab !== tab) {
+      fxCache = { at: HOF.data?.at, key: selected.key, tab, map: formulaMap(rowFor(selected.key)) || {} };
+    }
+    const map = fxCache.map;
+    for (const cell of selected.panel.querySelectorAll(".dynamic-detail-grid > div")) {
+      const label = HOF.columnOf(cell.querySelector(".detail-label"));
+      const formula = map[label];
+      let badge = cell.querySelector(":scope > .hof-fx");
+      if (!formula) {
+        badge?.remove();
+        continue;
+      }
+      const title = formulaHelp(formula);
+      if (!badge) {
+        badge = HOF.el("span", { class: "hof-fx", "data-hof-ui": "", "aria-label": title, text: "ƒ" });
+        cell.classList.add("hof-has-fx");
+        cell.appendChild(badge);
+      }
+      if (badge.title !== title) badge.title = title;
+      badge.dataset.state = formula.s;
+    }
+  }
 
   async function editCell(cell) {
     const info = describeCell(cell);
@@ -137,11 +205,15 @@
     } catch {
       current = null;
     }
+    const formula = formulaOf(info.key, info.field);
+    const shownName = HOF.columnLabel(info.field);
     HOF.formModal({
-      title: `${info.field} düzenle`,
+      title: `${shownName} düzenle`,
       eyebrow: info.title || info.key,
-      intro: "Bu değişiklik kaynak Excel/Sheets dosyasını bozmaz; ofisin ortak çalışma alanında saklanır ve kimin yaptığı kaydedilir.",
-      fields: [{ name: "value", label: info.field, type: "textarea", value: current ? current.value : info.value, rows: 4, maxlength: 20000 }],
+      intro: computed(formula)
+        ? `<b>Bu alan formülle hesaplanıyor</b> (${esc(formula.d)}). Normalde değiştirmeniz gerekmez: formüldeki alanları düzeltin, bu alan kendiliğinden güncellenir. Buraya değer yazarsanız bu kayıtta formül yerine sizin değeriniz kullanılır.`
+        : "Bu değişiklik kaynak Excel/Sheets dosyasını bozmaz; ofisin ortak çalışma alanında saklanır ve kimin yaptığı kaydedilir.",
+      fields: [{ name: "value", label: shownName, type: "textarea", value: current ? current.value : info.value, rows: 4, maxlength: 20000 }],
       extraHtml: current ? `<p class="hof-edit-meta">Son düzenleyen: ${esc(current.actorName || "—")} · ${esc(HOF.formatDateTime(current.updatedAt))}</p>` : "",
       submitLabel: "Değişikliği kaydet",
       onSubmit: async data => {
@@ -151,7 +223,7 @@
           if (error.status === 409) throw new Error(`Bu alanı az önce başka biri değiştirdi (yeni değer: "${error.data.currentValue ?? ""}"). Pencereyi kapatıp tekrar deneyin.`);
           throw error;
         }
-        HOF.toast(`${info.field} güncellendi.`, { type: "success" });
+        HOF.toast(`${shownName} güncellendi.`, { type: "success" });
         HOF.refreshData();
       },
     });
@@ -163,23 +235,27 @@
     if (!selected) return HOF.toast(`Önce tablodan bir ${HOF.vocab.record} seçin.`, { type: "error" });
     const cells = [...selected.panel.querySelectorAll(".dynamic-detail-grid > div")];
     const fields = cells.map((cell, index) => {
-      const label = cell.querySelector(".detail-label")?.textContent?.trim() || `Alan ${index + 1}`;
+      const column = HOF.columnOf(cell.querySelector(".detail-label")) || `Alan ${index + 1}`;
+      const label = HOF.columnLabel(column);
       const shown = cell.querySelector(".detail-value")?.textContent?.trim() ?? "";
-      return { name: `f${index}`, label, value: shown === "—" ? "" : shown, original: shown === "—" ? "" : shown };
+      const formula = formulaOf(selected.key, column);
+      // Formülle hesaplanan alan kilitlidir: kaydedince bağlı olduğu alanlardan yeniden hesaplanır.
+      const locked = computed(formula) ? { readonly: true, badge: "ƒ formül", help: `${formula.d} · kaydedince kendiliğinden hesaplanır` } : {};
+      return { name: `f${index}`, label, column, value: shown === "—" ? "" : shown, original: shown === "—" ? "" : shown, ...locked };
     });
     if (!fields.length) return;
     HOF.formModal({
       title: `${HOF.vocab.Record} bilgilerini düzenle`,
       eyebrow: selected.title,
       size: "wide",
-      intro: "Yalnızca değiştirdiğiniz alanlar kaydedilir. Kaynak dosya değişmez.",
-      fields: fields.map(({ original, ...field }) => ({ ...field, maxlength: 20000 })),
+      intro: fields.some(field => field.readonly) ? "Yalnızca değiştirdiğiniz alanlar kaydedilir. Kaynak dosya değişmez. <b>ƒ formül</b> işaretli alanlar Excel/Sheets'teki formülle kendiliğinden hesaplanır." : "Yalnızca değiştirdiğiniz alanlar kaydedilir. Kaynak dosya değişmez.",
+      fields: fields.map(({ original, column, ...field }) => ({ ...field, maxlength: 20000 })),
       submitLabel: "Değişiklikleri kaydet",
       onSubmit: async data => {
-        const changed = fields.filter(field => (data[field.name] ?? "") !== field.original);
+        const changed = fields.filter(field => !field.readonly && (data[field.name] ?? "") !== field.original);
         if (!changed.length) return;
         for (const field of changed) {
-          await HOF.api("/api/workspace/overrides", { method: "POST", body: { sourceName: HOF.sourceName(), caseKey: selected.key, field: field.label, value: data[field.name] } });
+          await HOF.api("/api/workspace/overrides", { method: "POST", body: { sourceName: HOF.sourceName(), caseKey: selected.key, field: field.column, value: data[field.name] } });
         }
         HOF.toast(`${changed.length} alan güncellendi.`, { type: "success" });
         HOF.refreshData();
@@ -242,7 +318,16 @@
       eyebrow: `YENİ ${HOF.vocab.record.toLocaleUpperCase("tr-TR")}${tab ? ` · ${tab.toLocaleUpperCase("tr-TR")}` : ""}`,
       size: "wide",
       intro: tab ? `Kayıt <b>${esc(tab)}</b> sekmesine eklenir; form bu sekmenin <b>${columns.length}</b> kolonuna göre oluşturuldu. Yalnızca doldurduğunuz alanlar kaydedilir; kayıt tüm bilgisayarlarda görünür.` : `Form, tablonuzun <b>${columns.length}</b> kolonuna göre oluşturuldu. Yalnızca doldurduğunuz alanlar kaydedilir; kayıt tüm bilgisayarlarda görünür.`,
-      fields: columns.map((column, index) => ({ name: `c${index}`, label: column, autofocus: index === 0, maxlength: 20000 })),
+      fields: (() => {
+        const formulas = tabFormulas(tab);
+        return columns.map((column, index) => ({
+          name: `c${index}`,
+          label: HOF.columnLabel(column),
+          autofocus: index === 0,
+          maxlength: 20000,
+          ...(formulas[column] ? { badge: "ƒ formül", placeholder: "Boş bırakın; kendiliğinden hesaplanır", help: formulas[column].d } : {}),
+        }));
+      })(),
       submitLabel: "Kaydı oluştur",
       onSubmit: async data => {
         const values = {};
@@ -354,11 +439,26 @@
     row.appendChild(button);
   }
 
+  // Dar ekranda (telefon, tablet) detay kartı tablonun altında kalır: satır seçilince karta yumuşakça kaydırılır.
+  document.addEventListener("click", event => {
+    if (window.innerWidth > 1100 || HOF.quietSelect) return; // serbest sayfa ızgarası kaydı arka planda seçer
+    const row = event.target.closest(".dynamic-table tbody tr");
+    if (!row || event.target.closest("button, a, input, [data-hof-ui]")) return;
+    setTimeout(() => {
+      const panel = HOF.detailPanel();
+      if (!panel) return;
+      const top = panel.getBoundingClientRect().top;
+      if (top > window.innerHeight * 0.6 || top < 0) panel.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
+    }, 120);
+  });
+
   HOF.whenReady(() => {
     HOF.onDom(() => {
       paginate();
       installCaseEdit();
+      decorateFormulas();
     });
+    HOF.on("rows", () => decorateFormulas());
   });
   HOF.table = { revealRow, newRecord, editCase, paginate };
 })();

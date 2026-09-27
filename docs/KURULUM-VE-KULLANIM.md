@@ -1,4 +1,4 @@
-# DestekOfis — Kurulum ve Kullanım Kılavuzu (v2.0)
+# DestekOfis — Kurulum ve Kullanım Kılavuzu (v2.0.1)
 
 ## 1. Sistem düzeni
 
@@ -82,11 +82,12 @@ Görünen adlar benzersizdir: iki hesap aynı adı taşıyamaz (büyük/küçük
 
 ## 6. Çalışma verisi (Excel veya Google Sheets)
 
-Veri **ofis geneli tektir** ve sunucuda kalıcı olarak saklanır: yönetici bir kez yükler, herkes aynı tabloyu görür. Yüklenen veri, yönetici kaldırmadıkça korunur; sonradan yapılan düzeltmeler, silmeler, yeni kayıtlar, notlar ve görevlerle birlikte devam eder. Dosyanın adı değişse, Google Sheets'e ulaşılamasa ya da Sheet'ten satır silinse bile tablo kaybolmaz. Veriyi yükleme, değiştirme ve kaldırma **yalnızca yönetici** hesabındadır.
+Veri sunucuda kalıcı olarak saklanır: yönetici bir kez yükler, herkes aynı tabloyu görür. Farklı konudaki tablolar (ör. hukuk dosyalarının yanında taksit listesi) karışmasın diye ayrı **oturumlarda** tutulabilir (bkz. 6a). Yüklenen veri, yönetici kaldırmadıkça korunur; sonradan yapılan düzeltmeler, silmeler, yeni kayıtlar, notlar ve görevlerle birlikte devam eder. Dosyanın adı değişse, Google Sheets'e ulaşılamasa ya da Sheet'ten satır silinse bile tablo kaybolmaz. Veriyi yükleme, değiştirme ve kaldırma **yalnızca yönetici** hesabındadır.
 
 - **İlk yükleme:** Veri yokken panelin ortasında *"Excelini yükle ya da Google Sheets linkini yapıştır, başlayalım"* kartı çıkar. Excel dosyasını sürükleyip bırakın veya seçin; ya da Sheet bağlantısını yapıştırıp **Bağla**'ya basın. Diğer kullanıcılar bu sırada "Yöneticiniz veri yüklediğinde tablo burada görünecek" yazısını görür; veri gelince ekranları kendiliğinden açılır.
 - **Sonraki yüklemeler:** Sol menü → **Ayarlar** → *Veri ve eşitleme*. Mevcut veri varken yeni bir Excel veya Sheet bağlantısı verilince DestekOfis önce dosyayı mevcut veriyle karşılaştırır ve sorar:
-  - **Mevcut verinin devamı olarak ekle** (önerilen): yeni kayıtlar eklenir, aynı kimlikli (dosya no, hasta no, sipariş no…) kayıtlar yeni bilgilerle güncellenir, yeni dosyada olmayan kayıtlar silinmez. Ofiste elle yapılan düzeltmeler korunur.
+  - **Yeni oturumda aç:** dosya ayrı bir çalışma alanında açılır, şu anki veri olduğu gibi kalır. Oturuma bir ad verirsiniz (ör. *Taksit takibi 2026*). Dosyanın kolonları mevcut veriyle az örtüşüyorsa DestekOfis bunu fark eder ve bu seçeneği önerir.
+  - **Mevcut verinin devamı olarak ekle** (aynı konudaki dosyalarda önerilen): yeni kayıtlar eklenir, aynı kimlikli (dosya no, hasta no, sipariş no…) kayıtlar yeni bilgilerle güncellenir, yeni dosyada olmayan kayıtlar silinmez. Ofiste elle yapılan düzeltmeler korunur.
   - **Mevcut verinin yerine koy:** tablo yeni dosyayla değiştirilir; yeni dosyada olmayan kayıtlar tablodan kalkar (ek onay istenir). Notlar, görevler ve işlem geçmişi silinmez; aynı kimlik tekrar gelirse yeniden bağlanır.
   Karar vermeden önce kaç kaydın ekleneceği, güncelleneceği ve kalkacağı (örnek dosya numaralarıyla) gösterilir. Her değişiklikten önce veritabanının tam yedeği alınır (`...-veri-oncesi-ekleme.sqlite`, `...-veri-oncesi-degistirme.sqlite`).
 - **Google Sheets bağlantısı:** Sheet'te *Paylaş → Bağlantıya sahip olan herkes → Görüntüleyici* açık olmalıdır. Bağlı Sheet'teki yeni ve değişen satırlar seçilen sıklıkta (5 dk, 15 dk veya saatte bir) kendiliğinden eklenir; *Şimdi eşitle* ile hemen alınabilir. Sheet'ten silinen satırlar DestekOfis'ten kendiliğinden silinmez: tabloda üstü çizili görünür ve *Ayarlar → Veri*'de "Sheet'te artık olmayan kayıtlar" listesinde **Tut** veya **Kaldır** diye karar verilir. Sheet'in yapısı toptan değişmiş görünürse (ör. başlık satırı eklenmiş, sekme adı değişmiş; satırların çoğu birden "yeni" ve "kayıp" görünür) otomatik eşitleme veri çoğalmasın diye durur ve yöneticiden karar ister. Google'a ulaşılamazsa son eşitlenen veri kullanılmaya devam eder.
@@ -103,6 +104,19 @@ Veri **ofis geneli tektir** ve sunucuda kalıcı olarak saklanır: yönetici bir
 
 Alt tabloları olan sekme, sekme şeridinde ▸ işaretiyle görünür; tıklayınca altında **Alt tablolar** şeridi açılır ve her alt tablo kendi kolonları ve kayıt sayısıyla seçilir. Emin olunamayan düzenlerde eski davranış geçerlidir (ilk satır kolon başlığı sayılır); böylece düzgün bir tablo yanlışlıkla bölünmez. Bir alt tablo tanınmıyorsa başlık satırının tek hücrede (birleştirilmiş) olduğundan ve hemen altında kolon başlıklarının bulunduğundan emin olun.
 
+**Formüller.** Excel veya Google Sheets'teki formüller (ör. `Kalan = Tutar − Taksit 1 − Taksit 2 − …`, `Durum = EĞER(Kalan=0;"Ödendi";"Borçlu")`) veriyle birlikte alınır ve programda çalışmaya devam eder. Detay kartında *Düzenle* ile boş bir taksit doldurulunca ya da tutar düzeltilince, o alana bağlı formüller kendiliğinden yeniden hesaplanır. Formüllü alanların köşesinde **ƒ** işareti vardır (üzerine gelince formül görünür); *Düzenle* penceresinde bu alanlar kilitlidir, çünkü değerleri formülden gelir. Programda eklenen yeni kayıtta, o sekmedeki satırların ortak formülü uygulanır. Google Sheets'e özgü bazı işlevler (QUERY, IMPORTRANGE gibi) hesaplanmaz; o alanda Sheet'ten gelen son değer kalır.
+
+## 6a. Veri oturumları
+
+Her oturum ayrı bir çalışma alanıdır: tablosu, düzeltmeleri, uygulamada eklenen kayıtları, tablo başlıkları ve sektörü diğer oturumlardan ayrıdır.
+
+- **Oturum seçici:** Sol menünün üstünde açık oturumun adı yazar (birden çok oturum varsa yanında sayısı). Tıklayınca oturumlar kayıt sayılarıyla listelenir; istediğinize tıklayınca o oturuma geçersiniz. Seçim **kişiye özeldir**: siz oturum değiştirince başka bilgisayarlardaki ekranlar değişmez. Program bir sonraki açılışta sizi en son seçtiğiniz oturumla açar.
+- **Oturumun adı:** Yeni oturumu açan kişi adını verir. Yönetici adı oturum seçicideki kalemle (✎) ya da *Ayarlar → Veri → Oturumlar* → *Adını değiştir* ile değiştirir; yeni ad tüm bilgisayarlarda görünür.
+- **Yeni oturum:** Oturum seçici → *+ Yeni oturum aç* (ya da *Ayarlar → Veri*'de dosya yükleyip *Yeni oturumda aç*).
+- **Oturumu silme:** *Ayarlar → Veri → Oturumlar* → *Sil*. Oturumun tablosu, düzeltmeleri ve uygulamada eklenen kayıtları silinir; öncesinde tam yedek alınır. O oturumda çalışan kişiler ilk oturuma döner. İlk oturum silinmez (verisi *Veriyi kaldır* ile boşaltılabilir).
+- **Tüm oturumlarda ortak olanlar:** kullanıcılar ve personel, yetkiler, görevler, mesajlar, notlar, tahsilatlar ve **Kasa**, ofis adı, Operasyon Merkezi düğme adları, yedekler ve lisans. Oturum değiştirmek ya da silmek bunları etkilemez.
+- Yeni eklenen kullanıcılar en son açılan oturumla başlar. Oturum açma, ad değiştirme ve silme yalnızca veriyi yöneten yöneticidedir; oturumlar arasında geçişi herkes yapabilir.
+
 ## 7. Verinizi tanıyan DestekOfis: sektör, özet kartları, veri sağlığı
 
 Excel ya da Google Sheets ilk kez yüklendiğinde (ve *yerine koy* ile değiştirildiğinde) yöneticiye kısa bir **"Verinizi tanıyoruz"** ekranı gösterilir. Analiz tamamen bu sunucuda yapılır; verileriniz internete gönderilmez.
@@ -110,7 +124,7 @@ Excel ya da Google Sheets ilk kez yüklendiğinde (ve *yerine koy* ile değişti
 1. **Kayıtlar okunur:** kaç kayıt, kolon ve sekme olduğu.
 2. **Veri türleri doğrulanır:** her kolonun ne taşıdığı bulunur (kimlik, kişi/kurum, telefon, tarih, tutar, durum…). T.C. kimlik no, vergi no ve IBAN kontrol hanesiyle doğrulanır; telefon, tarih ve tutarlar biçimleriyle denetlenir.
 3. **Önem sırası çıkarılır:** kimlik ve kişi en önde, sıra numarası en sonda.
-4. **Sektör belirlenir:** kolon adları, değerler ve dosya/sekme adları 22 grupta 142 sektörlük listeyle karşılaştırılır. Öneri, *Neden bu sektör?* başlığı altında kanıtlarıyla (ör. "“BORÇLU” kolonu", "“İCRA DAİRESİ” kolonunda icra dairesi adları") ve güven düzeyiyle (*Yüksek* / *Orta*) gösterilir.
+4. **Sektör belirlenir:** kolon adları, değerler ve dosya/sekme adları 22 grupta 143 sektörlük listeyle karşılaştırılır. Öneri, *Neden bu sektör?* başlığı altında kanıtlarıyla (ör. "“BORÇLU” kolonu", "“İCRA DAİRESİ” kolonunda icra dairesi adları") ve güven düzeyiyle (*Yüksek* / *Orta*) gösterilir.
 5. **Çalışma alanı hazırlanır.**
 
 **Öneri hiçbir zaman kendiliğinden uygulanmaz.** Yönetici *Evet, uygula*, *Başka sektör seç* ya da *Genel kullan* der. Veri belirgin bir sektöre işaret etmiyorsa sektör atanmaz; *Genel* görünümle ya da listeden seçerek devam edilir. Sektör seçmek verinize ve yetkilere dokunmaz; yalnızca görünen dili ve araçları değiştirir ve istendiği zaman geri alınır:
@@ -150,13 +164,57 @@ Değiştirilebilen başlıklar:
 
 - **Arama:** Kimlik, ad veya telefon yazın (kutudaki ipucu verinizin kolonlarını söyler); *Enter* ilk sonuca gider, *Ctrl+K* aramaya odaklanır.
 - **Kayıt işlemleri:** Detay panelindeki *WhatsApp, Not, Telefon, Tahsilat, Görev, Haciz, Düzenle* düğmeleri (*Tahsilat* ve *Haciz* sektöre göre). Tüm işlemler detayın altındaki **İşlem geçmişi**nde işlemi yapanla birlikte görünür.
+- **İşlem geçmişi eskiden yeniye sıralanır:** yeni eklenen not, telefon, tahsilat ve görev en altta görünür.
+- **Tahsilat düzeltme ve silme:** İşlem geçmişindeki tahsilatın yanındaki ✎ (düzelt) ve × (sil). Herkes kendi girdiği tahsilatı; yönetici, ikinci rol ve muhasebe tüm tahsilatları düzeltip silebilir. Tutarlar Türkçe yazılır: *1.250* bin iki yüz elli liradır.
+- **Kasa:** Operasyon Merkezi → *Kasa*. Güncel kasa, seçilen dönemin (*Bu ay, Geçen ay, Bu yıl, Tümü, Aralık*) tahsilat, ödeme ve farkı; hareketler eskiden yeniye, her satırda o ana kadarki kasa ve dönem başında devreden kasa. Detay kartından girilen tahsilatlar kasaya kendiliğinden düşer; kayda bağlı olmayan tahsilatlar ve kasadan çıkan ödemeler (kira, fatura, maaş, masraf) *+ Tahsilat* / *− Ödeme* ile eklenir, düzeltilir, silinir. Kasayı yönetici, ikinci rol ve muhasebe görür. Kasa ofisin tek kasasıdır; oturum değiştirmek kasayı sıfırlamaz.
+- **Kasa aralığı ve PDF:** Kasada *Aralık* seçilince başlangıç ve bitiş tarihi girilir (ör. 01.09.2026 – 25.09.2026); göstergeler ve liste o aralığa göre hesaplanır, aralık öncesi *Devreden kasa* olarak yazar. **PDF indir** seçili dönemin kasa dökümünü indirir: ofis adı, aralık, devreden kasa, dönem tahsilatı ve ödemesi, dönem sonu kasa, her hareketin tarihi, açıklaması, tutarı ve yürüyen bakiyesi, dönem toplamı, sayfa numaraları. Dosya adı *Kasa-dokumu 01.09.2026-25.09.2026.pdf* biçimindedir. İndirme değişiklik geçmişine yazılır.
+- **Belgeler:** Detay kartındaki *Belge* düğmesi ya da *Belgeler* bölümü. PDF, resim (JPG, PNG, WEBP, GIF, TIFF), Word, Excel, PowerPoint, UYAP (.udf) ve metin dosyası eklenir; ekran görüntüsü *Ctrl+V* ile yapıştırılır, dosyalar karta sürüklenip bırakılabilir (dosya başına en çok 25 MB). PDF ve resimler programda önizlenir, hepsi indirilebilir. Kişi kendi eklediği belgeyi, yönetici ve ikinci rol tüm belgeleri siler.
+- **Excel'e aktarma:** *Dışa aktar* → *Açık sekme (Excel)*, *Tüm sekmeler (Excel)* ya da *CSV*. Excel dosyasında tutarlar, tarihler ve yüzdeler hesap yapılabilir sayılardır; düzeltmeler ve formül sonuçları dahildir.
+- **Kolon başlıklarını adlandırma:** Detay kartındaki başlığın yanındaki kalemle (yalnızca yönetici) Excel/Sheets'ten gelen kolon adı ofise göre adlandırılır (ör. *TKST_1* → *1. Taksit*). Yalnızca görünen ad değişir; eşitleme ve formüller asıl adla çalışır.
+- **Akıllı denetim:** Program verinin kurallarını öğrenir (ör. *Kalan = Tutar − taksitler*) ve uymayan kaydı bulur. Seçilen kayıtta bir şey varsa detay kartının üstünde kısa bir kutu çıkar: bulgu, *Neden?*, önerilen değer (*Uygula*) ve *Yoksay*. Şüpheli satırın başında küçük bir işaret görünür; tümü *Veri sağlığı* raporunda listelenir.
+- **Operasyon Merkezi adları:** Kartın sağ üst köşesindeki kalemle (yalnızca yönetici) kartın başlığı ve düğme adları değiştirilir (ör. *Kasa* yerine *Vezne*); boş bırakılan ad varsayılana döner.
 - **Hücre düzeltme:** Tablo hücresinin üzerine gelince çıkan ✎ düğmesi. Aynı alanı iki kişi aynı anda değiştirirse sistem uyarır.
 - **Satır silme:** Satırın solundaki × (yönetici/avukat). Silme geri alınabilir.
 - **Görevler:** Kenar çubuğu → *Görevler*; size atananlar rozetle gösterilir. Görev atama yalnızca avukat ve yönetici hesaplarındadır; size görev atandığında ekranınızda anında bildirim çıkar.
 - **Mesajlar (sohbet):** Kenar çubuğu → *Mesajlar* sağdan sohbet panelini açar. *Ofis geneli* kanalını herkes görür; bir kişiye tıklayınca **özel yazışma** açılır — onu yalnızca iki taraf görür (yönetici dahil başka kimse okuyamaz). Yeni mesaj sayfayı yenilemeden gelir: *Mesajlar* rozetinde ve sekme başlığında okunmamış sayısı, ekranın köşesinde kısa bir bildirim ve ses (paneldeki 🔔 ile kapatılır). Kendi son mesajınızın altında *✓ İletildi* / *✓✓ Okundu* görünür. Mesajdaki dosya numarasına (ör. 2024/11710) tıklayınca o dosya tabloda açılır; "Seçili kaydı ekle" ile açık kaydı mesaja bağlayabilirsiniz. *Enter* gönderir, *Shift+Enter* yeni satır.
 - **Anlık güncellemeler:** Başka bir bilgisayarda eklenen not, telefon, tahsilat, görev ve hücre düzeltmeleri açık ekranlara kendiliğinden yansır (açık dosyanın işlem geçmişi yenilenir, tablo yeniden çekilir).
 - **Haciz uyarıları:** Bir yılını dolduracak hacizler 30 gün önceden listelenir, son 7 gün vurgulanır.
-- **Ödeme sözleri:** Tabloda ödeme sözü kolonu varsa aktif sözler üstte kayan şeritte görünür; *Ödendi / İptal* ile kapatılır. 40'tan fazla söz varsa şeritte en yakın 40'ı gösterilir; tamamı özet kartındaki listededir.
+- **Tahsilat takvimi (kayan piller):** Program verinizin tüm sekmelerinde ödenmesi beklenen kalemleri bulur ve üstteki şeritte kaydırır. Tanıdığı yazımlar:
+  - ödeme sözü, taahhüt, vade, son ödeme tarihi (tarih ve tutar aynı hücrede de olabilir: *15.09.2026 - 5.000 TL*);
+  - *1. Taksit Tarihi / 1. Taksit Tutarı* gibi taksit kolonları;
+  - ay olarak yazılan vade (*Eylül 2026*): ayın 1'inden itibaren beklenir;
+  - aylık ücret kolonları (*Eylül*, *Ekim 2026*): hücre boşsa, *ödenmedi* ya da *0* yazıyorsa ödenmemiş; ücretten az bir tutar yazıyorsa kalanı beklenir;
+  - ayın belli günü ödenen kira/aidat (*Ödeme günü: 5*).
+
+  Satırın durumu *Ödendi, Kapandı, İptal* ise kalem beklenmez. Şeritte gecikenler (kırmızı), bugün ve bu ay ödenecekler, 7 gün içinde gelecekler ve 30 gün içindeki açık ödeme sözleri görünür. Pile tıklayınca beklenen tutar, kalan borç ve sekme görünür. Kartın düğmeleri:
+  - *Tahsilat gir*: tutar ve açıklama hazır gelir; kaydedince pil kaybolur ve tutar Kasa'ya düşer;
+  - *Ödendi say*: tahsilat girmeden kapatır (ör. başka yoldan ödendi);
+  - *Söz iptal*: yalnız ödeme sözlerinde;
+  - *Kayda git*.
+
+  Girilen tahsilat kişinin kalemlerine vade sırasıyla sayılır: tutar yetmezse pilde kalan görünür (*kısmen ödendi*), fazlası sonraki kaleme geçer. Programda eklediğiniz yeni satırlar ve serbest sayfalar da izlenir.
+- **Sağ alt bildirimler ve zil:** Ödemesi gelmiş ama tahsil edilmemiş kalemler *Tahsilat alınmadı* başlığıyla, kim, hangi vade ya da ay için, ne kadar olduğu yazılarak ekranın sağ altında bildirilir. Son günü yaklaşan işler de 1 hafta önceden bildirilir: bitiş, yenileme, muayene, sigorta, kasko, vize, SRC, psikoteknik, ehliyet gibi tarihler ve size atanmış görevler. Süresi geçen belgeler 30 gün boyunca bildirilir.
+  - Bildirimler tek tek gelir. Her biri 10 saniye durur, üst üste binmez; üzerine gelince bekler.
+  - Tahsilat girilene ya da iş bitene kadar her 3 saatte bir yinelenir.
+  - Üst çubuktaki **zil** tüm uyarıları gruplu listeler: *Tahsilat alınmadı*, *Son günü yaklaşan ya da geçen işler*, *Görevler*, *Yaklaşan tahsilatlar*. Açılır bildirimler bu listenin altındaki kutuyla kapatılıp açılır.
+
+## 9a. Serbest sayfalar (Excel gibi kendi tablonuz)
+
+Yüklenen Excel/Sheets'in sekmelerinin yanına istediğiniz adla boş bir sayfa ekleyip Excel gibi doldurabilirsiniz (masraf listesi, takip çizelgesi, aylık tablo…).
+
+1. Sekme şeridinin sonundaki **+ Sayfa** düğmesine basın. Sayfa adını, kolon ve satır sayısını yazın; isterseniz kolon başlıklarını da (virgülle ayırarak) yazın. *Sayfayı oluştur* ile yeni sekme açılır.
+2. **Yazın ve geçin:** Tablonun yerinde Excel benzeri bir ızgara açılır. Üstte kolon harfleri (A, B, C…), altında başlık satırı, solda satır numaraları vardır. Bir hücreyi seçip yazmaya başlayın; **Enter** (aşağı), **Tab** (sağa), yön tuşları ya da fareyle başka hücreye geçince değer kendiliğinden kaydedilir. Başlıkları da aynı biçimde yazın. Üstte *Tüm değişiklikler kaydedildi* yazar.
+3. **Düzeltme:** Seçili hücredeki kalem (✎), **F2** ya da çift tık hücreyi düzeltmeye açar; **Esc** vazgeçer. Başlığın kalemi başlığı, sayfa adının yanındaki kalem sayfanın adını değiştirir. Üstteki formül çubuğundan da yazılabilir.
+4. **Silme:** Hücredeki × hücreyi, başlığın üzerindeki × kolonu, satır numarasının üzerine gelince çıkan × satırı siler; **Delete** seçili hücreleri temizler. Her silme *Geri al* ile geri alınır.
+5. **Ekleme:** *+ Satır* / *+ Kolon* seçili hücrenin altına/sağına ekler; tablonun altındaki *+ Satır ekle* ve *+ 10 satır*, kolon harflerinin sonundaki **+** sona ekler. Sağ tık menüsünde üste/alta satır, sola/sağa kolon ekleme, silme ve doldurma vardır. Son satırda Enter alta yeni satır açar.
+6. **Formüller:** `=` ile başlayın. Adres kolon harfi ve satır numarasıdır: `B1` ilk satırın B kolonudur (başlık satırı numaralanmaz). Aralık `B1:B9`, kolonun tamamı `B:B`, kaymayan adres `$B$1`. Türkçe yazım (`=TOPLA(B1:B9)`, `=EĞER(D2>1000;"Yüksek";"Normal")`, ayraç `;`, ondalık `,`) ya da İngilizce (`=SUM(B1:B9)`) kullanılabilir. Formül yazarken bir hücreye tıklamak adresini ekler, sürüklemek aralık ekler; işlev adı yazarken öneri listesi açılır (*Tab* seçer). Tüm işlevler ve kısayollar **ƒx Formüller** düğmesindedir.
+7. **Toplamlar ve doldurma:** **Σ Alt toplam** sayısal kolonların altına toplam satırı ekler. **Σ Yan toplam** her satırın toplamını gösteren *Toplam* kolonu ekler: önce kolonları seçerseniz yalnızca onları, seçmezseniz para kolonlarını toplar. **↓ Doldur / → Doldur** seçili hücredeki formülü alttaki satırlara / sağdaki kolonlara uygular. Bir kolonun satırları aynı formülü taşıyorsa (ör. *Tutar = Adet × Birim fiyat*) yeni satıra da kendiliğinden uygulanır.
+8. **Kopyala / yapıştır:** Excel'den kopyaladığınız tabloyu seçili hücreye **Ctrl+V** ile yapıştırın; yetmezse satır ve kolon eklenir. **Ctrl+C / Ctrl+X** programın içinde de çalışır; kopyalanan formülün adresleri yeni yerine göre kayar.
+9. **Geri al:** **Ctrl+Z** ya da *↶ Geri al* bu ekranda yaptığınız son işlemi geri alır. Aradan başka bir kullanıcı sayfada değişiklik yaptıysa, onun değişikliğini silmemek için geri alma yapılmaz ve nedeni yazılır.
+10. **Detay kartı:** Değer yazılmış her satır bir kayıttır. Satırı seçince sağda detay kartı açılır; not, telefon, tahsilat, görev ve belge diğer sekmelerdeki gibi eklenir, arama ve özet kartları bu sayfayı da kapsar. Detay kartından yapılan düzeltme hücreye yazılır. Kartta gösterilen satırın numarası ızgarada yeşil çizgiyle işaretlidir. **⤢** düğmesi ızgarayı genişletip detay kartını alta alır.
+11. **Sayfayı silme:** ⋯ → *Sayfayı sil* (yönetici ve ikinci rol). Bildirimdeki *Geri al* ile hemen geri getirilir. Aynı menüden sayfa Excel olarak indirilir.
+
+Yetkiler: hücre ve başlık yazmayı herkes, satır/kolon/sayfa eklemeyi ekleme yetkisi olanlar yapar. Değer içeren satır/kolonu ve sayfayı yönetici ile ikinci rol siler; yanlışlıkla eklenen boş satırı/kolonu ekleme yetkisi olan da silebilir. Değişiklikler tüm bilgisayarlara anında yansır; iki kişi aynı sayfada farklı hücrelere aynı anda yazabilir. Serbest sayfalar açıldıkları veri oturumuna aittir. Sınırlar: sayfada 2000 satır ve 60 kolon, oturumda 30 serbest sayfa.
 
 ## 10. Yedekleme ve geri dönüş
 
