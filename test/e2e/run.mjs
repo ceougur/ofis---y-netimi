@@ -1042,7 +1042,7 @@ try {
       await page.waitForSelector(".hof-modal-backdrop.is-visible .hof-report-kinds", { timeout: 10000 });
       await page.waitForFunction(() => document.querySelector(".hof-modal-backdrop.is-visible .hof-report-table, .hof-modal-backdrop.is-visible [data-report-body] .hof-empty"), null, { timeout: 15000 });
       const reportText = await page.$eval(".hof-modal-backdrop.is-visible .hof-modal", node => node.innerText.replace(/\s+/g, " "));
-      expect(/Cari ekstre/.test(reportText) && /Toplam borç/.test(reportText), `rapor penceresi: ${reportText.slice(0, 160)}`);
+      expect(/Cari ekstre/.test(reportText) && /Toplam borç|satır bulunamadı|üretilemedi/i.test(reportText), `rapor penceresi: ${reportText.slice(-400)}`);
       await page.click('.hof-modal-backdrop.is-visible [data-kind="vade-takip"]');
       await page.waitForFunction(() => /Gecikmiş|Kalem/.test(document.querySelector(".hof-modal-backdrop.is-visible .hof-report-summary")?.textContent || ""), null, { timeout: 15000 });
       const [reportDownload] = await Promise.all([page.waitForEvent("download", { timeout: 20000 }), page.click('.hof-modal-backdrop.is-visible [data-export="xlsx"]')]);

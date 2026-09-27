@@ -58,7 +58,7 @@ describe("raporlama motoru", () => {
     ];
     const report = vadeTakip({ records, items, filters: normalizeFilters({}), now: NOW });
     assert.deepEqual(report.rows.map(row => [row.cari, row.state, row.days]), [["Ali Veli", "gecikmis", -2], ["Ayşe Kaya", "bugun", 0], ["Can Er", "kapali", 6], ["Ece", "belirsiz", null]]);
-    assert.deepEqual(report.totals, { count: 4, overdue: 1, upcoming: 1, amount: 13000, overdueAmount: 6000 });
+    assert.deepEqual(report.totals, { count: 4, dormant: 0, overdue: 1, upcoming: 1, amount: 13000, overdueAmount: 6000 });
     assert.deepEqual(vadeTakip({ records, items, filters: normalizeFilters({ status: ["gecikmis"] }), now: NOW }).rows.map(row => row.cari), ["Ali Veli"]);
     assert.equal(report.table.columns.find(column => column.key === "state").label, "Durum");
     assert.equal(report.table.rows[0].state, "Gecikmiş");

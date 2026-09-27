@@ -54,7 +54,7 @@
   function summaryHtml(report) {
     const card = (label, value) => `<div class="hof-report-card"><small>${esc(label)}</small><b>${esc(value)}</b></div>`;
     if (report.kind === "cari-ekstre") return card("Cari", number(report.totals.caris)) + card("Toplam borç", money(report.totals.debit)) + card("Toplam alacak", money(report.totals.credit)) + card("Bakiye", money(report.totals.balance)) + (report.totals.crossMatched ? card("Birden çok dosyada", number(report.totals.crossMatched)) : "");
-    if (report.kind === "vade-takip") return card("Kalem", number(report.totals.count)) + card("Gecikmiş", `${number(report.totals.overdue)} · ${money(report.totals.overdueAmount)}`) + card("Yaklaşan / bugün", number(report.totals.upcoming)) + card("Toplam tutar", money(report.totals.amount));
+    if (report.kind === "vade-takip") return card("Kalem", number(report.totals.count)) + card("Gecikmiş", `${number(report.totals.overdue)} · ${money(report.totals.overdueAmount)}`) + card("Yaklaşan / bugün", number(report.totals.upcoming)) + card("Toplam tutar", money(report.totals.amount)) + (report.totals.dormant ? card("Ödeme kesilmiş olabilir", number(report.totals.dormant)) : "");
     return card("Beklenen tahsilat", money(report.totals.expected)) + card("Gerçekleşen tahsilat", money(report.totals.collected)) + card("Kasa giriş", money(report.totals.cashIn)) + card("Kasa çıkış", money(report.totals.cashOut)) + card("Net", money(report.totals.net));
   }
 
@@ -94,7 +94,7 @@
     const status = dialog.querySelector('[data-filter="status"]');
     if (status && !status.dataset.ready) {
       status.dataset.ready = "1";
-      const options = state.kind === "vade-takip" ? [["gecikmis", "Gecikmiş"], ["bugun", "Bugün"], ["yaklasan", "Yaklaşan"], ["kapali", "Kapalı"]] : data.statuses.map(item => [item, item]);
+      const options = state.kind === "vade-takip" ? [["gecikmis", "Gecikmiş"], ["bugun", "Bugün"], ["yaklasan", "Yaklaşan"], ["kapali", "Kapalı"], ["durgun", "Durgun (ödeme kesilmiş olabilir)"]] : data.statuses.map(item => [item, item]);
       status.innerHTML = `<option value="">Tüm durumlar</option>${options.map(([value, label]) => `<option value="${esc(value)}">${esc(label)}</option>`).join("")}`;
     }
     dialog.querySelector("[data-granularity-row]").hidden = state.kind !== "nakit-akis";

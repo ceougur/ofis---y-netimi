@@ -220,6 +220,11 @@ Görünüme (`dataset.view`) yalnızca elle değer yazılmış satırlar `serbes
 - Toplu düzeltme önerileri oturum + parmak iziyle; parmak izi değiştiyse 409.
 - Olaylar: her değişiklik `workspace.changed` ile diğer ekranlara; takvim önbelleği parmak iziyle; gün dönümü `alerts.refresh`.
 
+**Ay matrisi → taksit defteri** (`server/lib/insight/installments.mjs`, `dues.mjs → computeDues`).
+- `installmentLedger({row, months, startColumn, endColumn, now})` → `{start, end, open, dormant, rows[{column, time, state: paid|partial|due, fee, paidAmount, amount}]}`. Aralık dışı aylar için satır üretilmez; `cellState` hücreyi ödendi / kısmi / ödenmedi / ücret yok ("–", "muaf") olarak okur.
+- Durgunluk kuralı `LEDGER.dormantMonths = 3`: son yazılı ay ile bu ay arasında (bu ay hariç) ≥ 3 tam boş ay → `dormant {lastWritten, emptyMonths}`; `computeDues` bu kayıtları `dormant` listesinde döndürür (`/api/workspace/dues` ve raporlar). Bitiş tarihi kolonu varsa kural devreye girmez.
+- Takvim motoru yalnız defterin `due`/`partial` satırlarını aday yapar (pencere: `DUE_WINDOW.pastDays`); önceki "hizmet dönemi" hesabı defterle değiştirildi.
+
 **Raporlama modülü** (`server/lib/reports.mjs`, `server/lib/report-pdf.mjs`, `server/routes/reports.mjs`, `client/assets/hof-reports.js`).
 - *Ortak omurga:* `normalizeRecords` her oturumun satırlarını kolon analizleriyle (`analyzeColumns`) `{cari, cariKey, amount, debt, deadline, status, phone, fields}` biçimine indirger; `cariKey` ad katlaması (`n:`) ya da 10 haneli telefon (`p:`); toplam/işaretli/serbest satırlar dışarıda. `dynamicColumns` omurga dışındaki dolu kolonları rapora sütun olarak ekler (kod değişikliği gerekmez).
 - *Sorgu motoru:* `normalizeFilters` (tarih aralığı, cari, durum, oturum, sekme, en az tutar, dönem) → `cariEkstre` (oturumlar arası eşleme, yürüyen bakiye, `crossMatched`), `vadeTakip` (gecikmiş/bugün/yaklaşan/kapalı/belirsiz, takvim kalemleriyle), `nakitAkis` (dönem dilimleri; beklenen, tahsil edilen, kasa giriş/çıkış, net, birikimli, tahmin). Her rapor `{summary, table{columns, rows}}` döner; `flattenTable` dışa aktarım için.

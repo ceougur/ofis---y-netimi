@@ -191,7 +191,7 @@ export function cariEkstre({ records, payments = [], filters = normalizeFilters(
 
 // ---------- Vade takip ----------
 /** items: takvim motorunun kalemleri (computeDues) + son tarihler (computeDeadlines), oturum adıyla zenginleştirilmiş. */
-export function vadeTakip({ records, items = [], filters = normalizeFilters(), now = new Date() }) {
+export function vadeTakip({ records, items = [], dormant = [], filters = normalizeFilters(), now = new Date() }) {
   const today = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
   const byKey = new Map(records.map(record => [`${record.session}\u0000${record.key}`, record]));
   const rows = [];
@@ -212,9 +212,22 @@ export function vadeTakip({ records, items = [], filters = normalizeFilters(), n
     if (rows.length >= filters.limit) break;
   }
   rows.sort((a, b) => (a.date ?? Infinity) - (b.date ?? Infinity) || a.cari.localeCompare(b.cari, "tr"));
+  // Durgun kayıtlar (ay matrisinde son yazılı aydan sonra üst üste boş aylar): uyarı değil, "ödeme kesilmiş olabilir" satırı.
+  if (!filters.status.length || filters.status.includes("durgun")) {
+    for (const item of dormant) {
+      const record = byKey.get(`${item.session}\u0000${item.caseKey}`) || null;
+      const cari = record?.cari || item.person || item.caseKey;
+      if (filters.cari && !foldText(`${cari} ${item.caseKey}`).includes(filters.cari)) continue;
+      if (filters.sessions.length && !filters.sessions.includes(item.session)) continue;
+      if (filters.tabs.length && item.tab && !filters.tabs.includes(item.tab)) continue;
+      const date = parseIsoDay(item.lastPaid);
+      if (!inRange(date, filters)) continue;
+      rows.push({ cari, caseKey: item.caseKey, label: `Ödeme kesilmiş olabilir (son: ${item.lastPaidText}, ${item.emptyMonths} boş ay)`, date, days: null, amount: null, state: "durgun", session: item.sessionName || item.session, tab: item.tab || record?.tab || "", status: record?.status || "", fields: record?.fields || {} });
+    }
+  }
   const columns = dynamicColumns(rows.map(row => ({ fields: row.fields })));
-  const STATE_TR = { gecikmis: "Gecikmiş", bugun: "Bugün", yaklasan: "Yaklaşan", kapali: "Kapalı", belirsiz: "Tarihsiz" };
-  const totals = { count: rows.length, overdue: rows.filter(row => row.state === "gecikmis").length, upcoming: rows.filter(row => row.state === "yaklasan" || row.state === "bugun").length, amount: rows.reduce((sum, row) => sum + (row.amount || 0), 0), overdueAmount: rows.filter(row => row.state === "gecikmis").reduce((sum, row) => sum + (row.amount || 0), 0) };
+  const STATE_TR = { gecikmis: "Gecikmiş", bugun: "Bugün", yaklasan: "Yaklaşan", kapali: "Kapalı", belirsiz: "Tarihsiz", durgun: "Durgun" };
+  const totals = { count: rows.length, dormant: rows.filter(row => row.state === "durgun").length, overdue: rows.filter(row => row.state === "gecikmis").length, upcoming: rows.filter(row => row.state === "yaklasan" || row.state === "bugun").length, amount: rows.reduce((sum, row) => sum + (row.amount || 0), 0), overdueAmount: rows.filter(row => row.state === "gecikmis").reduce((sum, row) => sum + (row.amount || 0), 0) };
   const table = {
     columns: [
       { key: "cari", label: "Cari" }, { key: "label", label: "Kalem" }, { key: "date", label: "Vade", type: "date" }, { key: "days", label: "Gün", type: "number" },

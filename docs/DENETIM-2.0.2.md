@@ -134,6 +134,7 @@ Bilerek alınmayanlar: pivot tablo ve koşullu biçimlendirme içe alma (görün
 | Ekip çakışma önleme | Aşama anlık görüntüsü (409 STALE_STAGE), değer tabanlı iyimser kilit (409 CONFLICT) + "Üzerine yaz", SQLite WAL, olayla yayılım | `test/schema-flex.test.mjs` (çakışma), `hof-table.js` |
 | Dinamik raporlama modülü | Ortak omurga (cari, tutar, kalan, vade, durum + dosyaya özgü kolonlar) üzerinde sorgu; oturumlar arası cari eşleme (cross-match); Cari ekstre / Vade takip / Nakit akış tek pencerede; dinamik kolonlar; Excel, PDF, yazdır | `test/reports.test.mjs` (engine 5 + uç 1: iki oturum birleşir, "ÜRÜN" dinamik kolon, xlsx/pdf 200), e2e "Raporlar" adımı |
 | Drive'a yedek | Bağlantı ya da klasör yolu yapıştırılır; `DestekOfis Yedekleri` klasörü açılır; her yedek oraya da kopyalanır; hata yerel yedeği engellemez; "Şimdi dene" | `test/cloud-backup.test.mjs` (3), `test/backup.test.mjs` "Drive klasörü bağlar…" |
+| Ay matrisi → taksit defteri | Yatay ay hücreleri yalnız geçerlilik aralığında taksit satırı olur; girişten önce / çıkıştan sonra boş hücre için satır yok; 3 tam boş ay → durgun (uyarı yok, raporda listelenir) | `test/dues.test.mjs` "ay matrisi → taksit defteri" (2), korpus regresyonu (9 dosya, takvim sayıları değişmedi) |
 
 ## 6. Bilinen sınırlar
 

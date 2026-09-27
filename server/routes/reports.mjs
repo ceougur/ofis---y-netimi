@@ -26,6 +26,7 @@ export function registerReportRoutes(router, { auth, store, dataset, profile }) 
     const sessions = dataset.sessions().filter(item => !filters.sessions.length || filters.sessions.includes(item.key));
     const records = [];
     const items = [];
+    const dormant = [];
     const columnsBySession = {};
     for (const session of sessions) {
       await dataset.withKey(session.key, async () => {
@@ -42,13 +43,14 @@ export function registerReportRoutes(router, { auth, store, dataset, profile }) 
         const payments = store.all("SELECT case_key AS caseKey, amount, date FROM payments").filter(item => keys.has(item.caseKey));
         const settled = parseSettled(dataset.settingKey("dues.settled"));
         const dues = computeDues({ rows, tabs, payments, settled, now, forced });
+        for (const item of dues.dormant || []) dormant.push({ ...item, session: session.key, sessionName: session.name });
         for (const item of dues.items) items.push({ ...item, session: session.key, sessionName: session.name, tab: item.tab || String(rows.find(row => row.__hofKey === item.caseKey)?.__sheet || "") });
         for (const item of computeDeadlines({ rows, tabs, now, exclude: dues.sources, forced })) items.push({ ...item, session: session.key, sessionName: session.name, deadline: true });
       });
     }
     const payments = store.all("SELECT case_key AS caseKey, amount, date, note FROM payments");
     const cashEntries = store.all("SELECT kind, amount, date FROM cash_entries");
-    return { sessions: sessions.map(item => ({ key: item.key, name: item.name, rowCount: item.rowCount })), records, items, payments, cashEntries, columnsBySession };
+    return { sessions: sessions.map(item => ({ key: item.key, name: item.name, rowCount: item.rowCount })), records, items, dormant, payments, cashEntries, columnsBySession };
   }
 
   async function build(kind, input) {
@@ -58,7 +60,7 @@ export function registerReportRoutes(router, { auth, store, dataset, profile }) 
     const data = await backbone(filters, now);
     let report;
     if (kind === "cari-ekstre") report = cariEkstre({ records: data.records, payments: data.payments, filters, now });
-    else if (kind === "vade-takip") report = vadeTakip({ records: data.records, items: data.items, filters, now });
+    else if (kind === "vade-takip") report = vadeTakip({ records: data.records, items: data.items, dormant: data.dormant, filters, now });
     else report = nakitAkis({ items: data.items, payments: data.payments, cashEntries: data.cashEntries, filters, now });
     const tabs = [...new Set(data.records.map(record => record.tab).filter(Boolean))].sort((a, b) => a.localeCompare(b, "tr"));
     const statuses = [...new Set(data.records.map(record => record.status).filter(Boolean))].slice(0, 30);

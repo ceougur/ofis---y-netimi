@@ -37,10 +37,10 @@ export function registerDueRoutes(router, { auth, store, dataset, profile, event
     const keys = new Set(rows.map(row => row.__hofKey).filter(Boolean));
     const payments = store.all("SELECT case_key AS caseKey, amount, date FROM payments").filter(item => keys.has(item.caseKey));
     const forced = profile.roles ? profile.roles() : null;
-    const { items, sources } = computeDues({ rows, tabs, payments, settled: readSettled(), now, forced });
+    const { items, sources, dormant } = computeDues({ rows, tabs, payments, settled: readSettled(), now, forced });
     const deadlines = computeDeadlines({ rows, tabs, now, exclude: sources, forced });
     const local = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
-    const result = { items, deadlines, sources, today: local, generatedAt: now.toISOString() };
+    const result = { items, deadlines, sources, dormant, today: local, generatedAt: now.toISOString() };
     cache.set(session, { key, result });
     return result;
   }

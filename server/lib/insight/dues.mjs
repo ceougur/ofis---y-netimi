@@ -14,6 +14,7 @@ import { analyzeColumns, cell, primaryColumns } from "./columns.mjs";
 import { embeddedDates, isBlankRecord, isEmptyCell, isFlaggedRow, isSequenceHeader, isTotalRow } from "./cells.mjs";
 import { dateMeaning, ordinalOf, subjectOf } from "./temporal.mjs";
 import { foldText, parseAmount, parseDate } from "./validators.mjs";
+import { installmentLedger } from "./installments.mjs";
 
 const DAY = 86_400_000;
 export const DUE_WINDOW = { pastDays: 90, aheadDays: 7, promiseDays: 30, earlyPaymentDays: 20 };
@@ -259,15 +260,6 @@ const DONE_STATE = /\b(tamamlandi|tamamlanmistir|yapildi|yapilmistir|geldi|katil
 const FLAG_HEADER = /(\b(mi|mu)\b|\b(yapildi|yenilendi|tamamlandi|geldi|teslim edildi|odendi)\b)/;
 const YES_MARK = /^(evet|e|var|yapildi|yenilendi|tamam|tamamlandi|ok|✓|✔|☑|yes|true|1)$/;
 
-// Kaydın hizmet dönemi (ay başı zamanı olarak): başlangıç ve bitiş tarihi kolonlarından.
-function serviceBounds(row, startColumn, endColumn) {
-  const monthOf = value => {
-    const date = parseDate(value);
-    return date ? Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), 1) : null;
-  };
-  return { start: startColumn ? monthOf(cell(row, startColumn)) : null, end: endColumn ? monthOf(cell(row, endColumn)) : null };
-}
-
 function labelFor(column) {
   const text = String(column).replace(/\s+/g, " ").trim();
   const folded = foldText(text);
@@ -309,6 +301,7 @@ export function computeDues({ rows, tabs = [], payments = [], settled = {}, now 
   const order = [...tabs.filter(tab => groups.has(tab)), ...[...groups.keys()].filter(tab => !tabs.includes(tab))];
   const candidates = [];
   const sources = [];
+  const dormant = [];
   for (const tab of order) {
     const scope = groups.get(tab);
     const columns = columnsOf(scope);
@@ -344,30 +337,15 @@ export function computeDues({ rows, tabs = [], payments = [], settled = {}, now 
         const amount = ownAmount && ownAmount > 0 ? ownAmount : amountInText(read.rest);
         candidates.push({ ...base, column: entry.column, label: entry.label, promise: entry.promise, kind: read.kind, time: read.time, amount: amount || null });
       }
-      // Hizmet dönemi: başlangıç tarihi kolonu, yoksa ilk dolu ay. Öncesindeki boş aylar borç değildir (ör. Ekim'de gelen
-      // öğrencinin Eylül'ü). Hiçbir ayı dolu olmayan yeni kayıt için yalnızca bu ay beklenir.
-      const bounds = monthly.length ? serviceBounds(row, startColumn, endColumn) : { start: null, end: null };
-      let serviceStart = bounds.start;
-      if (monthly.length && serviceStart === null) {
-        const filled = monthly.filter(entry => {
-          const text = String(cell(row, entry.column) ?? "").trim();
-          return text && !isEmptyCell(text) && !notDue(text);
-        });
-        serviceStart = filled.length ? Math.min(...filled.map(entry => entry.time)) : monthStart;
-      }
-      for (const entry of monthly) {
-        if (entry.time > today || entry.time < from) continue;
-        if (serviceStart !== null && entry.time < serviceStart) continue;
-        if (bounds.end !== null && entry.time > bounds.end) continue;
-        const value = String(cell(row, entry.column) ?? "").trim();
-        if (notDue(value) || isSettledText(value)) continue;
-        const fee = entry.amountColumn ? parseAmount(cell(row, entry.amountColumn)) : null;
-        const folded = foldText(value);
-        const paidAmount = value && !UNPAID_MARK.test(folded) ? parseAmount(value) : null;
-        // Boş, "ödenmedi", "0" → ödenmedi; tutar ücretten azsa kalanı beklenir; başka bir işaret (✓, Ödendi, tarih) ödenmiş sayılır.
-        if (value && !UNPAID_MARK.test(folded) && !isEmptyCell(value) && (paidAmount === null || !fee || paidAmount >= fee - 0.01)) continue;
-        const amount = fee && fee > 0 ? (paidAmount && paidAmount > 0 ? fee - paidAmount : fee) : null;
-        candidates.push({ ...base, column: entry.column, label: entry.label, promise: false, kind: "month", time: entry.time, amount, monthly: true, cellPaid: amount !== null && paidAmount > 0 });
+      // Ay matrisi → taksit defteri (v2.0.2, installments.mjs): yalnız geçerlilik aralığındaki aylar taksit satırı olur;
+      // girişten önceki ve çıkıştan sonraki boş hücreler için satır açılmaz. Üst üste 3 boş ay → "durgun" (uyarı yok, listede).
+      if (monthly.length) {
+        const ledger = installmentLedger({ row, months: monthly, startColumn, endColumn, now });
+        if (ledger.dormant) dormant.push({ ...base, lastPaid: iso(ledger.dormant.lastWritten), lastPaidText: monthLabel(ledger.dormant.lastWritten), emptyMonths: ledger.dormant.emptyMonths });
+        for (const line of ledger.rows) {
+          if (line.state === "paid" || line.time > today || line.time < from) continue;
+          candidates.push({ ...base, column: line.column, label: line.label, promise: false, kind: "month", time: line.time, amount: line.amount, monthly: true, cellPaid: line.state === "partial" });
+        }
       }
       for (const entry of recurring) {
         const day = Number(String(cell(row, entry.column)).trim());
@@ -458,7 +436,7 @@ export function computeDues({ rows, tabs = [], payments = [], settled = {}, now 
   // Önce gecikenler (en eskiden), sonra bugün, bu ay ve yaklaşanlar (en yakından).
   const rank = item => (item.state === "overdue" ? 0 : item.state === "month" || item.state === "today" ? 1 : 2);
   out.sort((a, b) => rank(a) - rank(b) || a.days - b.days || a.person.localeCompare(b.person, "tr"));
-  return { items: out, sources };
+  return { items: out, sources, dormant };
 }
 
 // Son tarihi yaklaşan işler (bildirim için): ödeme takvimi dışındaki son tarih kolonları (yenileme, bitiş, teslim,

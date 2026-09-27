@@ -6,6 +6,7 @@ import { after, before, describe, it } from "node:test";
 import { inflateSync } from "node:zlib";
 import { cashPdf, cashPdfName, rangeLabel } from "../server/lib/cash-report.mjs";
 import { computeDeadlines, computeDues, monthColumns, readDue } from "../server/lib/insight/dues.mjs";
+import { installmentLedger } from "../server/lib/insight/installments.mjs";
 import { PdfDocument, loadFont, subsetFont } from "../server/lib/pdf-write.mjs";
 import { okulServisiWorkbook } from "./fixtures/okul-servisi-ornek.mjs";
 import { tahsilatWorkbook } from "./fixtures/tahsilat-ornek.mjs";
@@ -368,5 +369,48 @@ describe("eşleme ekranı ve takvim (v2.0.2)", () => {
     const forced = computeDues({ rows, tabs: ["S"], now, forced: { "Tarih 2": "deadline", "Ödeme sözü": "ignore" } });
     assert.ok(forced.items.some(item => item.label === "Tarih 2"), JSON.stringify(forced.items.map(item => item.label)));
     assert.ok(forced.items.every(item => item.label !== "Ödeme sözü"), "yoksayılan kolon takvime girmez");
+  });
+});
+
+describe("ay matrisi → taksit defteri (v2.0.2)", () => {
+  const CAL = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"];
+  const now = new Date(2026, 8, 27); // 27 Eylül 2026
+  const member = (key, name, months, extra = {}) => ({ __hofKey: key, __sheet: "Aidat", Üye: name, "Aylık aidat": "500 TL", ...Object.fromEntries(CAL.map(m => [m, months[m] ?? ""])), ...extra });
+
+  it("girişten önceki ve çıkıştan sonraki boş aylar taksit değildir; aradaki boş ay ödenmemiştir; durgun kayıt uyarı üretmez", () => {
+    const rows = [
+      member("a", "Ali", { Mart: "500", Nisan: "500", Mayıs: "500", Haziran: "500", Temmuz: "", Ağustos: "500" }), // aktif: Temmuz atlandı, Eylül bu ay
+      member("b", "Ayşe", { Ocak: "500", Şubat: "500", Mart: "500" }), // Mart'tan beri boş: ayrıldı (durgun)
+      member("c", "Can", { Haziran: "500", Temmuz: "500", Ağustos: "500", Eylül: "500" }), // her şey ödenmiş
+      member("d", "Deniz", { Ocak: "500", Şubat: "500" }, { "Ayrılış tarihi": "15.02.2026" }), // bitiş kolonu
+      member("e", "Efe", {}), // hiç ay yok, ücret var → yalnız bu ay
+      member("f", "Filiz", { Ağustos: "500", Eylül: "250" }), // Eylül kısmi
+    ];
+    const { items, dormant } = computeDues({ rows, tabs: ["Aidat"], now });
+    const by = name => items.filter(item => item.person === name).map(item => `${item.dueText}${item.partial ? "*" : ""}`).sort();
+    assert.deepEqual(by("Ali"), ["Eylül 2026", "Temmuz 2026"].sort(), "Mart öncesi boş aylar yok; Temmuz boş → borç; Eylül bu ay");
+    assert.deepEqual(by("Ayşe"), [], "Mart'tan sonra 5 tam boş ay: ayrılmış sayılır, uyarı yok");
+    assert.deepEqual(dormant.map(item => `${item.person} ${item.lastPaidText} ${item.emptyMonths}`), ["Ayşe Mart 2026 5"]);
+    assert.deepEqual(by("Can"), []);
+    assert.deepEqual(by("Deniz"), [], "ayrılış tarihi Şubat: Mart ve sonrası taksit değil");
+    assert.deepEqual(by("Efe"), ["Eylül 2026"]);
+    assert.deepEqual(by("Filiz"), ["Eylül 2026*"]);
+    assert.equal(items.find(item => item.person === "Filiz").amount, 250);
+    assert.equal(items.find(item => item.person === "Ali" && item.dueText === "Temmuz 2026").state, "overdue");
+  });
+
+  it("defter: aralık dışı için satır açılmaz; 2 tam boş ay hâlâ aktiftir, 3 tam boş ay durgundur", () => {
+    const months = CAL.map((column, index) => ({ column, time: Date.UTC(2026, index, 1), label: `${column} ödemesi`, amountColumn: "Aylık aidat" }));
+    const active = installmentLedger({ row: member("x", "X", { Nisan: "500", Mayıs: "500", Haziran: "500", Temmuz: "" }), months, now });
+    assert.deepEqual(active.rows.map(line => `${line.column}:${line.state}`), ["Nisan:paid", "Mayıs:paid", "Haziran:paid", "Temmuz:due", "Ağustos:due", "Eylül:due"], "Temmuz ve Ağustos tam boş, Eylül bu ay: hâlâ aktif");
+    assert.equal(active.open, true);
+    const gone = installmentLedger({ row: member("y", "Y", { Nisan: "500", Mayıs: "500" }), months, now });
+    assert.deepEqual(gone.rows.map(line => line.column), ["Nisan", "Mayıs"], "Haziran–Eylül için satır açılmaz");
+    assert.equal(gone.open, false);
+    assert.equal(gone.dormant.emptyMonths, 3);
+    const none = installmentLedger({ row: { __hofKey: "z", Üye: "Z", "Aylık aidat": "" }, months, now });
+    assert.deepEqual(none.rows, [], "ücret de ay da yoksa taksit yok");
+    const exempt = installmentLedger({ row: member("w", "W", { Temmuz: "muaf", Ağustos: "500" }), months, now });
+    assert.deepEqual(exempt.rows.map(line => `${line.column}:${line.state}`), ["Ağustos:paid", "Eylül:due"], "'muaf' ay başlangıcı belirler ama satır açmaz");
   });
 });
