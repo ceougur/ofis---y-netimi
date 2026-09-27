@@ -5710,3 +5710,79 @@ body > .hof-payment-action-card { position: fixed; z-index: 99960; transform: no
   line-height: 1.45;
   text-align: center;
 }
+
+/* ---------- 2.0.2: durum/kategori renkleri ve satır sıklığı (hof-chips.js) ----------
+ * Renkli nokta + tonlu yazı: hücrenin metni React'in bıraktığı gibi kalır; yalnız data-tone yazılır. */
+.dynamic-table td[data-tone],
+.detail-value[data-tone] {
+  --hof-tone: #6b7a75;
+  --hof-tone-bg: #eef1ef;
+}
+.dynamic-table td[data-tone]::before,
+.detail-value[data-tone]::before {
+  content: "";
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--hof-tone);
+  box-shadow: 0 0 0 3px var(--hof-tone-bg);
+  margin-right: 8px;
+  vertical-align: 1px;
+}
+.dynamic-table td[data-tone] {
+  color: #4b5a56;
+}
+[data-tone="good"] { --hof-tone: #1f8a4c; --hof-tone-bg: #dcf2e4; }
+[data-tone="bad"] { --hof-tone: #c53d3d; --hof-tone-bg: #f9dede; }
+[data-tone="warn"] { --hof-tone: #c98a12; --hof-tone-bg: #fbeed0; }
+[data-tone="h0"] { --hof-tone: #3b6fd9; --hof-tone-bg: #dfe8fb; }
+[data-tone="h1"] { --hof-tone: #7a4fc9; --hof-tone-bg: #eae1fa; }
+[data-tone="h2"] { --hof-tone: #0f8a8a; --hof-tone-bg: #d7f0f0; }
+[data-tone="h3"] { --hof-tone: #c2557a; --hof-tone-bg: #f9dfe8; }
+[data-tone="h4"] { --hof-tone: #8a6d1f; --hof-tone-bg: #f1e9cf; }
+[data-tone="h5"] { --hof-tone: #2f7d5b; --hof-tone-bg: #dbeee4; }
+[data-tone="h6"] { --hof-tone: #a45a1e; --hof-tone-bg: #f7e3d3; }
+[data-tone="h7"] { --hof-tone: #5c6b9c; --hof-tone-bg: #e2e6f3; }
+
+/* Sık görünüm: Excel/Sheets/Airtable'daki "compact" satırlar; iki kat daha çok kayıt bir ekrana sığar. */
+body.hof-dense .dynamic-table td {
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
+body.hof-dense .dynamic-table th {
+  padding-top: 7px;
+  padding-bottom: 7px;
+}
+.cases-panel > .panel-heading {
+  position: relative;
+}
+.hof-density {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  margin-left: 6px;
+  border: 1px solid #e3e8e5;
+  border-radius: 10px;
+  background: #fff;
+  color: #6b7a75;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+.hof-density:hover,
+.hof-density[aria-pressed="true"] {
+  color: var(--do-accent, #1f6f4a);
+  border-color: #bcd8c8;
+  background: #eef6f1;
+}
+.hof-density:focus-visible {
+  outline: 2px solid var(--do-accent, #1f6f4a);
+  outline-offset: 2px;
+}
+
+/* Kasa penceresinde hareket listesi ile açıklama arasında nefes payı. */
+.hof-cash-list + .hof-edit-meta {
+  margin-top: 14px;
+}

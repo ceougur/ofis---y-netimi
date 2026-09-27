@@ -59,6 +59,9 @@ Sürümler [anlamsal sürümleme](https://semver.org/lang/tr/) kurallarına uyar
   - 1–2 satırlık tablolarda tür başlıkla verilir (iki satırlık "Plaka / Muayene bitiş" de tanınır). "Şoför", "Avukat" gibi başlıklarda tek kelimelik adlar kişi sayılır.
   - **İngilizce başlıklar** (Customer, Amount, Due Date, Status, Notes…) tanınır; *Due Date* takvime, *Paid/Closed* kapanışa girer.
   - Tek vadeli tabloda ("Alacak / Son ödeme") tutar borç kolonundan alınır; takvim tutarsız kalmaz.
+- **Durum ve kategori renkleri.** Analizin durum ya da kategori dediği kolonlarda değerler renkli noktayla görünür (tablo ve detay kartı): *ödendi, aktif, tamamlandı* yeşil; *iptal, pasif, gecikmiş* kırmızı; *bekliyor, kısmen* sarı; diğer değerler (ilçe, sınıf, marka) kendi sabit rengini alır. Airtable/monday.com alışkanlığı.
+- **Sık / rahat görünüm.** Tablo başlığındaki düğme satır yüksekliğini daraltır (iki kat daha çok kayıt bir ekrana sığar); tercih bu bilgisayarda hatırlanır.
+- İleriye dönük mimari ve ürün yol haritası: `docs/YOL-HARITASI-2.1.md` (yaygın programlardan öğrenilenler, UI/UX bulguları, P1–P3 adımlar).
 - Sunucu, sahipsiz söz reddini günlüğe yazıp çalışmayı sürdürür; yakalanmamış hatada düzgün kapanır, servis yöneticisi yeniden başlatır.
 - İndirilen dosyaların Türkçe harfli adları eski tarayıcılar için doğru karşılığa çevrilir (*kaydı → kaydi*).
 - Veritabanı şeması 6 (silinenler tablosu); güncellemede kendiliğinden geçer, öncesinde yedek alınır.

@@ -12,6 +12,8 @@ Yeni bir oturum bu belgeyi okuyarak kaldığı yerden devam eder. Son güncellem
 | Lisans servisi adresi (programda sabit) | `https://destek-ofis.vercel.app/api/lisans` (`server/lib/license.mjs`, `DEFAULT_LICENSE_SERVICES`) |
 | Lisans ayrıntıları | `docs/LISANS.md` |
 | Sürüm yayımlama | `docs/SURUM-YAYIMLAMA.md` |
+| 2.0.2 denetim raporu (istek doğrulama, zor veri, kod taraması) | `docs/DENETIM-2.0.2.md` |
+| İleriye dönük yol haritası (yaygın programlardan öğrenilenler, UI/UX bulguları, P1–P3 mimari adımlar) | `docs/YOL-HARITASI-2.1.md` |
 | Operatör merkezi ve API işletimi, sır yenileme | `destekofis/README.md` |
 
 ## Tamamlananlar

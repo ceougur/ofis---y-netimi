@@ -825,6 +825,18 @@ try {
       await page.click(".hof-analysis-result [data-apply]");
       await page.waitForFunction(() => document.querySelector(".brand-subtitle")?.firstChild?.nodeValue === "Okul servisi yönetimi", null, { timeout: 5000 });
 
+      // v2.0.2: durum/kategori hücreleri renkli nokta alır (analiz gelince); sık görünüm düğmesi satırları daraltır ve hatırlanır.
+      await page.waitForSelector(".dynamic-table td[data-tone]", { timeout: 15000 });
+      const tones = await page.$$eval(".dynamic-table td[data-tone]", nodes => nodes.map(node => `${node.textContent.trim()}=${node.dataset.tone}`));
+      expect(tones.some(item => /^Aktif=good$/.test(item)), `durum renkleri: ${tones.slice(0, 6).join(" | ")}`);
+      const rowBefore = await page.$eval(".dynamic-table tbody tr", node => node.getBoundingClientRect().height);
+      await page.click(".cases-panel .hof-density");
+      await page.waitForFunction(() => document.body.classList.contains("hof-dense"), null, { timeout: 3000 });
+      const rowAfter = await page.$eval(".dynamic-table tbody tr", node => node.getBoundingClientRect().height);
+      expect(rowAfter < rowBefore, `sık görünüm satırı daraltır: ${rowBefore} → ${rowAfter}`);
+      expect((await page.evaluate(() => localStorage.getItem("hof.density"))) === "dense", "sıklık tercihi hatırlanır");
+      await page.click(".cases-panel .hof-density");
+
       // Şerit: geçen ayın ödenmeyen ücretleri gecikmiş, bu ayınkiler "bu ay"; gelecek ay beklenmez.
       await page.waitForSelector(".hof-payment-promises .hof-payment-pill", { timeout: 10000 });
       const heading = await page.$eval(".hof-payment-promises-heading", node => node.innerText.replace(/\s+/g, " "));

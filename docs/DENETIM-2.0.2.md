@@ -106,6 +106,8 @@ Bu turda yapılan muhakeme iyileştirmeleri: gruplu başlık, uzak not, dipnot/t
 | Slack / WhatsApp — dışa aktarma | Yazışma dosyası | Aylık düz metin arşiv, kişi kendi yazışmasını indirir |
 | CRM'ler (HubSpot, Pipedrive) — "İngilizce şablon" içe alma | Başlık eşleştirme | İngilizce başlık eş anlamlıları kendiliğinden tanınır |
 
+Bu turda programa alınanlar (UI): durum/kategori renkleri (Airtable/monday) ve sık/rahat satır görünümü (Excel/Sheets/Airtable) — `client/assets/hof-chips.js`; uçtan uca testte doğrulanır. Ayrıntılı UI/UX değerlendirmesi ve ileriye dönük adımlar `docs/YOL-HARITASI-2.1.md`'dedir.
+
 Bilerek alınmayanlar: pivot tablo ve koşullu biçimlendirme içe alma (görünüm programındır), OCR ile taranmış belge okuma, hesaplanan listeler (`DOLAYLI`) ve kodla doldurulan kutular (Excel dışında da çözülemez).
 
 ## 6. Bilinen sınırlar
