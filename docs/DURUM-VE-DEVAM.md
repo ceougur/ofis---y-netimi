@@ -1,6 +1,6 @@
 # DestekOfis — durum ve devam notu
 
-Yeni bir oturum bu belgeyi okuyarak kaldığı yerden devam eder. Son güncelleme: 27.09.2026 (sürüm 2.0.2, yayın kullanıcı onayı bekliyor; 2.0.1 yayımlı).
+Yeni bir oturum bu belgeyi okuyarak kaldığı yerden devam eder. Son güncelleme: 27.09.2026 (sürüm 2.0.2 denetimden geçti — `docs/DENETIM-2.0.2.md`; yayın kullanıcı onayı bekliyor; 2.0.1 yayımlı).
 
 ## Nerede ne var
 

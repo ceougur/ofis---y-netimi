@@ -49,6 +49,17 @@ Sürümler [anlamsal sürümleme](https://semver.org/lang/tr/) kurallarına uyar
   - Kasa'da *Aralık* → **Tarih aralığı**; göstergeler dönemi yazar.
   - Zil listesinde ✕ ile bildirim kişinin listesinden kaldırılır.
 - **Kısa kullanım kılavuzu:** 34 sayfadan 8 sayfaya indi; yalnızca bilmeniz gerekenler ve 2.0.2 ekran görüntüleri.
+- **Zor Excel/Sheets düzenleri daha doğru okunur.** Kullanıcıların gerçekte gönderdiği türden dosyalarla (17 zor durumluk deneme seti) sınandı:
+  - İki satırlı **gruplu başlık** (üstte birleştirilmiş "Kişi bilgileri / Ödeme", altta asıl başlıklar): asıl başlıklar alt satırdan alınır; boş alt başlık grubun adını alır. Üstteki başlık satırları ve uzak kolondaki notlar ("Güncelleme: 12.09.2026") tabloyu bozmaz.
+  - **Yan yana iki tablo** aynı sayfada ayrı bölüm olur ("Sayfa1 › Öğrenci", "Sayfa1 › Şoför").
+  - **Toplam / ara toplam / genel toplam** satırları ve alttaki **dipnotlar** kayıt sayılmaz; kimlik, KPI, takvim ve kolon tanımaya girmez (formül toplamları korunur).
+  - **Birleştirilmiş hücreler:** dikey birleştirme ("Ali Veli" üç dosya satırına yayılmış) her satıra yazılır; kayıtlar kişisiz kalmaz. Excel'de doğrudan, Google Sheets'te xlsx kopyasından okunur.
+  - Excel **hata değerleri** (#SAYI/0!, #DIV/0!, #REF!, #YOK…) boş sayılır; kolonun türünü bozmaz, toplama girmez.
+  - Tarihler: *10 Mart 2027*, *Mart 2027*, *Sept 2027*, ABD sırası (*03/25/2027*), *5.3.24*; ay kolonu yazımları *Eyl.26*, *Ekim'26*, *2026-11*, *12/2026*.
+  - 1–2 satırlık tablolarda tür başlıkla verilir (iki satırlık "Plaka / Muayene bitiş" de tanınır). "Şoför", "Avukat" gibi başlıklarda tek kelimelik adlar kişi sayılır.
+  - **İngilizce başlıklar** (Customer, Amount, Due Date, Status, Notes…) tanınır; *Due Date* takvime, *Paid/Closed* kapanışa girer.
+  - Tek vadeli tabloda ("Alacak / Son ödeme") tutar borç kolonundan alınır; takvim tutarsız kalmaz.
+- Sunucu, sahipsiz söz reddini günlüğe yazıp çalışmayı sürdürür; yakalanmamış hatada düzgün kapanır, servis yöneticisi yeniden başlatır.
 - İndirilen dosyaların Türkçe harfli adları eski tarayıcılar için doğru karşılığa çevrilir (*kaydı → kaydi*).
 - Veritabanı şeması 6 (silinenler tablosu); güncellemede kendiliğinden geçer, öncesinde yedek alınır.
 

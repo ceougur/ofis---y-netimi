@@ -23,6 +23,19 @@ const shutdown = async reason => {
 process.on("SIGINT", () => shutdown("SIGINT"));
 process.on("SIGTERM", () => shutdown("SIGTERM"));
 process.on("SIGBREAK", () => shutdown("SIGBREAK"));
+// Beklenmedik hatalar (v2.0.2): sahipsiz bir söz reddi günlüğe yazılır, sunucu çalışmayı sürdürür; yakalanmamış
+// istisna ise süreç durumunu güvenilmez kılar — günlüğe yazılıp düzgün kapanılır, servis yöneticisi yeniden başlatır.
+process.on("unhandledRejection", reason => {
+  app.log.error("Sahipsiz söz reddi (istek sürüyor)", reason instanceof Error ? reason : new Error(String(reason)));
+});
+process.on("uncaughtException", error => {
+  app.log.error("Yakalanmamış hata; sunucu yeniden başlatılmak üzere kapanıyor", error);
+  if (stopping) return;
+  stopping = true;
+  const force = setTimeout(() => process.exit(1), 3000);
+  force.unref();
+  app.close().catch(() => {}).finally(() => process.exit(1));
+});
 
 if (process.send) {
   const report = () => process.send?.({ type: "info", ...app.info() });

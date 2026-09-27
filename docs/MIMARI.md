@@ -171,6 +171,15 @@ Görünüme (`dataset.view`) yalnızca elle değer yazılmış satırlar `serbes
 - Kaynaklar: kelime listeleri, Türkçe ekler, sıra sayıları (`ordinalOf`).
 - Uyarı yalnız expiry (öncesi ve sonrası) ve schedule (yalnız yaklaşınca) için verilir. Satır bağlamı (durum, evet/hayır kolonu, aynı konuda daha yeni tarih) uyarıyı susturur.
 
+**Zor veri düzenleri** (`server/lib/sections.mjs`, `server/lib/insight/columns.mjs`, `validators.mjs`, `dues.mjs`, `choices.mjs`).
+- *Gruplu başlık:* `groupedHeader(üst, alt)` — iki satır da veri taşımıyor, alt satır üsttekinden belirgin dolu ve en az onun kadar başlık kelimesi taşıyorsa asıl başlık alttır; boş alt başlık grubun adını alır (`columnNames`). Uzak not satırı (`strayNote`) grup satırıyla karışmasın diye önce gruplu başlık denenir.
+- *Yan yana tablolar:* `splitSideBySide` boş ayırıcı kolonlarla bölünen, her biri ≥2 başlıklı ve doluluk deseni farklı blokları ayrı bölüm yapar; etiketi ilk başlıktır. Formül bağlama aynı satırdaki birden çok kayıttan kolonu taşıyanı seçer.
+- *Toplam ve dipnot:* `isTotalRow` (toplam, ara toplam, genel toplam…) satırları kayıt olarak kalır (formül toplamları) ama kimlik (`dataset-identity`), KPI, takvim ve kolon tanıma (`analyzeDataset` gövde satırlarını kullanır) dışında tutulur. Bölüm sonundaki tek hücreli notlar (`isFootnote`) atılır.
+- *Birleştirilmiş hücreler:* Excel işçisinde `mergedFills` (`sheet["!merges"]`) dikey birleştirmeyi birleşen her satırın ilk kolonuna yazar; Google Sheets'te `readXlsxLists` sayfa XML'inden `<mergeCell>` alanlarını (`merges`) verir ve `fillMerges` CSV matrisine uygular. Yatay birleştirme (gruplu başlık) dokunulmaz.
+- *Değerler:* Excel hata değerleri (`isErrorValue`) boş sayılır. Küçük tablolarda (1–2 değer) tür ancak tüm değerler uyuyor ve başlık o türü söylüyorsa verilir (`pass`). Tarihler: ay adı/kısaltması, "Mart 2027" (ayın 1'i), ABD sırası (ay > 12 ise). Ay kolonları: `monthHeader` kısaltma, `yyyy-mm`, `mm/yyyy`.
+- *Takvim:* tek vadeli tabloda (`single`) tutar borç ya da tek para kolonundan alınır. İngilizce başlıklar `LEXICON`, `STRONG/WEAK/SETTLED` listelerinde eş anlamlılarıyla vardır.
+- *Deneme seti:* 17 zor düzen tam yığından (stage → commit → görünüm → analiz → takvim) geçirilir; sonuçlar `docs/DENETIM-2.0.2.md`'de.
+
 **Silinenler** (göç 6, `server/lib/trash.mjs`, `server/routes/trash.mjs`).
 - Kaynaklar: silinen kayıt, gizlenen sekme, belge, serbest sayfa/satır/kolon, tahsilat ve kasa hareketi.
 - Geri yükleme eski konuma araya ekler; ad çakışırsa "(geri yüklendi)" eki alır.
