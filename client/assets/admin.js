@@ -18,6 +18,9 @@
     "source.row.created": "Yeni kayıt ekledi",
     "source.row.deleted": "Kayıt sildi",
     "source.row.restored": "Silinen kaydı geri aldı",
+    "source.tab.renamed": "Sekmeyi yeniden adlandırdı",
+    "source.tab.hidden": "Sekmeyi sildi",
+    "source.tab.restored": "Sekmeyi geri yükledi",
     "source.cell.updated": "Hücre düzeltti",
     "source.excel.uploaded": "Excel tablosu yükledi",
     "dataset.imported": "Veri içeri aldı",
@@ -32,6 +35,7 @@
     "case.document.created": "Belge ekledi",
     "case.document.deleted": "Belgeyi sildi",
     "case.document.restored": "Belgeyi geri yükledi",
+    "case.document.exported": "Belgeleri dışa aktardı (.zip)",
     "case.payment.restored": "Tahsilatı geri yükledi",
     "cash.entry.restored": "Kasa hareketini geri yükledi",
     "free.sheet.deleted": "Serbest sayfayı sildi",
@@ -41,6 +45,9 @@
     "free.column.deleted": "Serbest sayfada kolon sildi",
     "free.column.restored": "Serbest sayfada kolonu geri yükledi",
     "profile.sector": "Sektörü değiştirdi",
+    "profile.sector.custom.created": "Kendi sektörünü oluşturdu",
+    "profile.sector.custom.updated": "Kendi sektörünü düzenledi",
+    "profile.sector.custom.deleted": "Kendi sektörünü sildi",
     "profile.label": "Başlığı değiştirdi",
     "profile.labels.reset": "Başlıkları varsayılana döndürdü",
     "case.note.created": "Not ekledi",
@@ -229,6 +236,7 @@
       parts.push(`${payload.label || ""} · ${modes[payload.mode] || payload.mode} · ${payload.rows} kayıt (${payload.added || 0} yeni, ${payload.updated || 0} güncellendi${payload.removed ? `, ${payload.removed} kaldırıldı` : ""})`);
     }
     if (event.type === "dataset.removed") parts.push(`${payload.removed} kayıt`);
+    if (event.type.startsWith("profile.sector.custom")) parts.push(payload.name || "");
     if (event.type === "profile.sector") parts.push(`${payload.name}${payload.source === "confirmed" ? " (analiz önerisi onaylandı)" : ""}`);
     if (event.type === "profile.label") parts.push(`${payload.name}: "${payload.previous || "varsayılan"}" → "${payload.value || "varsayılan"}"`);
     if (event.type.startsWith("dataset.missing.")) parts.push(`${payload.rows} kayıt`);
@@ -254,7 +262,7 @@
   $("#adm-audit-type").addEventListener("change", loadAudit);
 
   // ---------- Silinenler (v2.0.2) ----------
-  const TRASH_GROUPS = { row: ["row"], document: ["document"], free: ["free-sheet", "free-row", "free-column"], money: ["payment", "cash"] };
+  const TRASH_GROUPS = { row: ["row", "tab"], document: ["document"], free: ["free-sheet", "free-row", "free-column"], money: ["payment", "cash"] };
   let trashItems = [];
   function renderTrash() {
     const body = $("#adm-trash");
@@ -478,6 +486,7 @@
         tile("Son yedek", info.lastBackup ? HOF.formatDateTime(info.lastBackup.createdAt) : "Henüz yok", info.lastBackup ? formatSize(info.lastBackup.size) : "Yedekler sekmesinden hemen alabilirsiniz"),
         tile("Aktif kullanıcı", String(info.users)),
         tile("Veri klasörü", info.dataDir, `Yedekler: ${info.backupDir}`),
+        info.chatArchive ? tile("Mesaj arşivi", info.chatArchive.files ? `${info.chatArchive.files} dosya · ${formatSize(info.chatArchive.bytes)}` : "Henüz yok", `${info.chatArchive.days} günden eski sohbet mesajları programdan kaldırılır ve buraya ay ay metin dosyası olarak yazılır (Not Defteri ile açılır): ${info.chatArchive.dir}. Kişiler kendi yazışmalarının arşivini sohbet penceresinden de indirebilir.`) : "",
       ].join("");
     } catch (error) {
       target.innerHTML = `<div class="adm-card">${esc(error.message)}</div>`;

@@ -9,6 +9,7 @@ import { HttpError, ok, readJson, text } from "../lib/http.mjs";
 
 const KIND_LABELS = {
   row: "Tablo kaydı",
+  tab: "Sekme",
   document: "Belge",
   "free-sheet": "Serbest sayfa",
   "free-row": "Serbest sayfa satırı",
@@ -84,6 +85,19 @@ export function registerTrashRoutes(router, { store, auth, audit, events, datase
         note: present ? "Kaydın belgelerine geri döner. Silinen belgeler 30 gün saklanır." : "Dosya artık yok.",
       });
     }
+    for (const item of dataset.hiddenTabs ? dataset.hiddenTabs() : []) {
+      const actor = store.get("SELECT display_name AS name FROM users WHERE id = ?", item.by);
+      items.push({
+        id: `tab:${item.datasetKey}\u0000${item.original}`,
+        kind: "tab",
+        title: item.name || item.original,
+        detail: [item.reason === "list" ? "Excel/Sheets'te gizli liste sayfası (açılır listeler buradan okunur)" : "", `${item.rows || 0} kayıt`, item.name && item.name !== item.original ? `Excel'deki adı: ${item.original}` : "", where(item.datasetKey)].filter(Boolean).join(" · "),
+        deletedAt: item.at,
+        actorName: actor?.name || "",
+        restorable: true,
+        note: "Sekme ve kayıtları eski yerinde yeniden görünür. Veriler silinmemişti.",
+      });
+    }
     for (const item of free?.deletedSheets ? free.deletedSheets() : []) {
       items.push({
         id: `free-sheet:${item.id}`,
@@ -144,6 +158,15 @@ export function registerTrashRoutes(router, { store, auth, audit, events, datase
       profile?.invalidate();
       publish(user, { kind: "records", datasetKey: item.source_name, caseKey: item.case_key });
       return ok(res, { restored: "row", message: "Kayıt eski yerinde yeniden görünüyor." });
+    }
+
+    if (source === "tab") {
+      const [datasetKey, original] = ref.split("\u0000");
+      if (!datasetKey || !original) throw new HttpError(400, "Sekme tanınmadı.");
+      const result = dataset.withKey(datasetKey, () => dataset.unhideTab(user, original));
+      profile?.invalidate();
+      publish(user, { kind: "source", datasetKey });
+      return ok(res, { restored: "tab", message: `“${result.name}” sekmesi geri geldi.` });
     }
 
     if (source === "document") {

@@ -11,12 +11,12 @@ const CATALOG = sectorCatalog();
 const sectorSummary = sector =>
   sector ? { id: sector.id, name: sector.name, group: sector.group, groupName: sector.groupName, vocab: sector.vocab, modules: sector.modules } : null;
 
-export function shapeAnalysis(analysis, { manage }) {
+export function shapeAnalysis(analysis, { manage, find = sectorById }) {
   const { sector, ...rest } = analysis;
   if (!manage) return rest;
   return {
     ...rest,
-    sector: { ...sector, suggestionSector: sectorSummary(sectorById(sector.suggestion)), topSector: sectorSummary(sectorById(sector.top?.id)) },
+    sector: { ...sector, suggestionSector: sectorSummary(find(sector.suggestion)), topSector: sectorSummary(find(sector.top?.id)) },
   };
 }
 
@@ -26,16 +26,34 @@ export function registerInsightRoutes(router, { auth, profile, dataset }) {
     ok(res, profile.profile());
   });
 
+  // Kendi sektörleriniz (v2.0.2) listenin başında.
   router.get("/api/workspace/sectors", async ({ req, res }) => {
     auth.requireUser(req);
-    ok(res, CATALOG);
+    const own = profile.customSectors.catalogGroup();
+    ok(res, own ? { groups: [own, ...CATALOG.groups] } : CATALOG);
+  });
+
+  router.post("/api/workspace/sectors/custom", async ({ req, res }) => {
+    const user = auth.requirePermission(req, "profile.manage");
+    const sector = profile.customSectors.create(user, await readJson(req));
+    ok(res, { sector: sectorSummary(sector) });
+  });
+  router.put("/api/workspace/sectors/custom/:id", async ({ req, res, params }) => {
+    const user = auth.requirePermission(req, "profile.manage");
+    const sector = profile.customSectors.update(user, text(params.id), await readJson(req));
+    ok(res, { sector: sectorSummary(sector), profile: profile.profile() });
+  });
+  router.delete("/api/workspace/sectors/custom/:id", async ({ req, res, params }) => {
+    const user = auth.requirePermission(req, "profile.manage");
+    profile.customSectors.remove(user, text(params.id));
+    ok(res, { profile: profile.profile() });
   });
 
   router.get("/api/workspace/insight", async ({ req, res }) => {
     const user = auth.requireUser(req);
     const analysis = await profile.analysis();
     // Mantık denetiminin tam bulgu listesi sunucuda kalır; istemciye özet (kurallar, gruplar, işaretli kayıtlar) gider.
-    const shaped = shapeAnalysis(analysis, { manage: can(user.role, "profile.manage") });
+    const shaped = shapeAnalysis(analysis, { manage: can(user.role, "profile.manage"), find: profile.findSector });
     ok(res, { analysis: { ...shaped, reasoning: profile.reasoningSummary(analysis.reasoning) }, profile: profile.profile() });
   });
 

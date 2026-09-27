@@ -239,6 +239,26 @@ describe("serbest sayfalar", () => {
     assert.equal((await staff.put(`/api/workspace/free/${sheet.id}/cells`, { grow: true, cells: [{ r: 99, c: 0, raw: "x" }] })).status, 200, "personel ekleme yetkisiyle yapıştırabilir");
   });
 
+  it("kolon sayısı 500'e kadar; toplam hücre sınırı açık bir iletiyle söylenir (v2.0.2)", async () => {
+    const wide = await admin.post("/api/workspace/free", { name: "Geniş sayfa", columns: 200, rows: 50 });
+    assert.equal(wide.status, 200, JSON.stringify(wide.data));
+    assert.equal(wide.data.data.columns.length, 200);
+    const more = await admin.post(`/api/workspace/free/${wide.data.data.id}/columns`, { index: 200, count: 100 });
+    assert.equal(more.status, 200, JSON.stringify(more.data));
+    assert.equal(more.data.data.columns.length, 300);
+    const tooMany = await admin.post("/api/workspace/free", { name: "Çok geniş", columns: 500, rows: 600 });
+    assert.equal(tooMany.status, 400);
+    assert.match(tooMany.data.error, /en fazla 250\.000 hücre/);
+    assert.equal((await admin.post("/api/workspace/free", { name: "En geniş", columns: 500, rows: 10 })).status, 200);
+    const over = await admin.post(`/api/workspace/free/${(await admin.get("/api/workspace/free")).data.data.sheets.find(item => item.name === "En geniş").id}/columns`, { count: 1 });
+    assert.equal(over.status, 400);
+    assert.match(over.data.error, /en fazla 500 kolon/);
+    for (const name of ["Geniş sayfa", "En geniş"]) {
+      const sheet = (await admin.get("/api/workspace/free")).data.data.sheets.find(item => item.name === name);
+      assert.equal((await admin.del(`/api/workspace/free/${sheet.id}`)).status, 200);
+    }
+  });
+
   it("sayfa yeniden adlandırılır, silinir ve geri alınır; Excel'e aktarmada sayfa olarak yer alır", async () => {
     assert.equal((await admin.raw("PATCH", `/api/workspace/free/${sheet.id}`, { body: JSON.stringify({ name: "Giderler" }), headers: { "content-type": "application/json" } })).status, 200);
     const exported = await admin.raw("GET", "/api/workspace/export.xlsx?all=1");

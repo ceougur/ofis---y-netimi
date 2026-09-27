@@ -144,7 +144,7 @@ export function matrixToRecords(matrix, tabTitle = "", options = {}) {
     row.index = index;
     if (row.count > 0) lines.push(row);
   });
-  if (!lines.length) return { rows: [], tabs: tab ? [tab] : [], sections: [], ...(options.layout ? { layout: [] } : {}) };
+  if (!lines.length) return { rows: [], tabs: tab ? [tab] : [], sections: [], ...(options.layout ? { layout: [], blocks: [] } : {}) };
 
   let firstColumn = Infinity;
   for (const row of lines) firstColumn = Math.min(firstColumn, row.filled[0]);
@@ -156,8 +156,8 @@ export function matrixToRecords(matrix, tabTitle = "", options = {}) {
 
   const sections = [];
   let current = null;
-  const open = (title, header) => {
-    current = { title, header, lines: [] };
+  const open = (title, header, at = header?.index ?? 0) => {
+    current = { title, header, lines: [], at };
     sections.push(current);
   };
 
@@ -188,7 +188,7 @@ export function matrixToRecords(matrix, tabTitle = "", options = {}) {
         continue;
       }
       if (groupMode && !headingText(next)) {
-        open(textOf(row), current.header); // grup etiketi: kolonlar aynı
+        open(textOf(row), current.header, row.index); // grup etiketi: kolonlar aynı
         continue;
       }
     }
@@ -207,6 +207,8 @@ export function matrixToRecords(matrix, tabTitle = "", options = {}) {
   const tabs = [];
   const summary = [];
   const layout = options.layout ? [] : null;
+  // Kayıt blokları (açılır listeleri kolonlara bağlamak için, v2.0.2): bloğun matris satır aralığı ve kolon adları.
+  const blocks = options.layout ? [] : null;
   const usedLabels = new Map();
   filledSections.forEach((section, position) => {
     const names = columnNames(section.header, section.lines);
@@ -219,6 +221,7 @@ export function matrixToRecords(matrix, tabTitle = "", options = {}) {
       label = tab ? `${tab}${SECTION_SEPARATOR}${name}` : name;
     }
     let count = 0;
+    const lineIndexes = [];
     for (const line of section.lines) {
       const record = {};
       names.forEach((name, column) => {
@@ -228,11 +231,16 @@ export function matrixToRecords(matrix, tabTitle = "", options = {}) {
       if (label) record.__sheet = label;
       rows.push(record);
       layout?.push({ record, line: line.index, names });
+      lineIndexes.push(line.index);
       count += 1;
     }
     if (!count) return;
+    if (blocks) {
+      const next = sections[sections.indexOf(section) + 1];
+      blocks.push({ label, from: section.at + (section.header && section.header.index === section.at ? 1 : 0), to: next ? next.at - 1 : Infinity, names, lines: lineIndexes });
+    }
     if (label && !tabs.includes(label)) tabs.push(label);
     summary.push({ title: section.title || "", label, columns: names.filter(Boolean), count });
   });
-  return { rows, tabs: tabs.length ? tabs : tab ? [tab] : [], sections: summary, ...(layout ? { layout } : {}) };
+  return { rows, tabs: tabs.length ? tabs : tab ? [tab] : [], sections: summary, ...(layout ? { layout, blocks } : {}) };
 }

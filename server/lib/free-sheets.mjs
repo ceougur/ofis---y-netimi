@@ -14,7 +14,16 @@ import { computeSheet, mapReferences, rewriteReferences, shiftReferences } from 
 import { Cell } from "./formula/values.mjs";
 
 export const FREE_PREFIX = "serbest:";
-export const FREE_LIMITS = Object.freeze({ sheets: 30, rows: 2000, columns: 60, raw: 5000, name: 60, history: 30 });
+// v2.0.2: kolon sınırı 60 → 500 (Excel içeri almadaki sınırla aynı). Izgaranın akıcı kalması için toplam hücre
+// 250.000'i geçmez (ör. 500 kolon × 500 satır ya da 125 kolon × 2000 satır).
+export const FREE_LIMITS = Object.freeze({ sheets: 30, rows: 2000, columns: 500, cells: 250_000, raw: 5000, name: 60, history: 30 });
+const tooManyColumns = () => new HttpError(400, `Bir sayfada en fazla ${FREE_LIMITS.columns} kolon olabilir.`);
+const tooManyCells = (rows, columns) => new HttpError(400, `Sayfa çok büyük olur (${(rows * columns).toLocaleString("tr-TR")} hücre). Bir sayfada en fazla ${FREE_LIMITS.cells.toLocaleString("tr-TR")} hücre olabilir (ör. ${FREE_LIMITS.columns} kolon × ${Math.floor(FREE_LIMITS.cells / FREE_LIMITS.columns)} satır). Boş satırları silin ya da yeni bir sayfa açın.`);
+// Satır × kolon sınırı; rows ve columns yeni (değişiklik sonrası) sayılardır.
+const checkSize = (rows, columns) => {
+  if (columns > FREE_LIMITS.columns) throw tooManyColumns();
+  if (rows * columns > FREE_LIMITS.cells) throw tooManyCells(rows, columns);
+};
 const SEP = " › ";
 const id = prefix => `${prefix}${randomUUID().replace(/-/g, "").slice(0, 14)}`;
 const clean = (value, max) =>
@@ -141,6 +150,7 @@ export function createFreeSheets({ store, audit, dataset, trash = null }) {
   const addRowRecords = (sheet, index, count, user) => {
     const existing = rowsOf(sheet.id);
     if (existing.length + count > FREE_LIMITS.rows) throw new HttpError(400, `Bir sayfada en fazla ${FREE_LIMITS.rows} satır olabilir.`);
+    checkSize(existing.length + count, columnsOf(sheet).length);
     const at = Math.max(0, Math.min(index ?? existing.length, existing.length));
     const created = [];
     for (let n = 0; n < count; n += 1) {
@@ -180,6 +190,7 @@ export function createFreeSheets({ store, audit, dataset, trash = null }) {
     }
     const columnCount = Math.max(1, given.length, Math.min(FREE_LIMITS.columns, Math.floor(Number(columns) || 4)));
     const rowCount = Math.max(1, Math.min(FREE_LIMITS.rows, Math.floor(Number(rows) || 10)));
+    checkSize(rowCount, columnCount);
     const sheetId = id("fs");
     const position = (store.get("SELECT MAX(position) AS max FROM free_sheets WHERE dataset_key = ?", current()).max ?? -1) + 1;
     store.tx(() => {
@@ -239,7 +250,7 @@ export function createFreeSheets({ store, audit, dataset, trash = null }) {
         const needRows = Math.max(0, ...updates.map(item => (Number.isInteger(item.r) ? item.r + 1 : 0))) - rows.length;
         const needCols = Math.max(0, ...updates.map(item => (Number.isInteger(item.c) ? item.c + 1 : 0))) - columns.length;
         if (needCols > 0) {
-          if (columns.length + needCols > FREE_LIMITS.columns) throw new HttpError(400, `Bir sayfada en fazla ${FREE_LIMITS.columns} kolon olabilir.`);
+          checkSize(Math.max(rows.length, rows.length + needRows), columns.length + needCols);
           snapId = snapshot(sheet, "yapıştırma", user);
           columns = [...columns, ...Array.from({ length: needCols }, () => ({ id: id("fc"), name: "" }))];
           saveColumns(sheet, columns, user);
@@ -291,8 +302,8 @@ export function createFreeSheets({ store, audit, dataset, trash = null }) {
   function addColumns(user, sheetId, { index, count = 1, names = [] } = {}) {
     const sheet = requireSheet(sheetId);
     const columns = columnsOf(sheet);
-    const amount = Math.max(1, Math.min(20, Math.floor(Number(count) || 1)));
-    if (columns.length + amount > FREE_LIMITS.columns) throw new HttpError(400, `Bir sayfada en fazla ${FREE_LIMITS.columns} kolon olabilir.`);
+    const amount = Math.max(1, Math.min(100, Math.floor(Number(count) || 1)));
+    checkSize(rowsOf(sheet.id).length, columns.length + amount);
     const at = Math.max(0, Math.min(Number.isInteger(index) ? index : columns.length, columns.length));
     const taken = new Set(headersOf(columns).map(fold));
     const fresh = Array.from({ length: amount }, (_, n) => {
@@ -443,7 +454,7 @@ export function createFreeSheets({ store, audit, dataset, trash = null }) {
   function restoreColumn(user, payload) {
     const sheet = requireSheet(payload.sheetId);
     const columns = columnsOf(sheet);
-    if (columns.length + 1 > FREE_LIMITS.columns) throw new HttpError(400, `Bir sayfada en fazla ${FREE_LIMITS.columns} kolon olabilir.`);
+    checkSize(rowsOf(sheet.id).length, columns.length + 1);
     const at = Math.max(0, Math.min(Number(payload.index) || 0, columns.length));
     const taken = new Set(headersOf(columns).map(fold));
     let name = columnName(payload.column?.name || "");
@@ -597,7 +608,7 @@ export function createFreeSheets({ store, audit, dataset, trash = null }) {
           else setCell(sheet.id, target, column.id, "", user);
         });
       } else {
-        if (columns.length + 1 > FREE_LIMITS.columns) throw new HttpError(400, `Bir sayfada en fazla ${FREE_LIMITS.columns} kolon olabilir.`);
+        checkSize(rowsOf(sheet.id).length, columns.length + 1);
         let picked;
         if (Number.isInteger(from) && Number.isInteger(to) && to > from) {
           picked = columns.map((_, c) => c).filter(c => c >= from && c <= to && (kinds[c] === "money" || kinds[c] === "number"));

@@ -240,6 +240,8 @@ export function registerAdminRoutes(router, context) {
       dataDir: config.dataDir,
       backupDir: config.backupDir,
       lastBackup: latest ? { name: latest.name, size: latest.size, createdAt: latest.createdAt } : null,
+      // 30 günden eski sohbet mesajlarının arşivi (v2.0.2).
+      chatArchive: context.chatArchive ? context.chatArchive.info() : null,
       users: store.get("SELECT COUNT(*) AS count FROM users WHERE active = 1").count,
       officeName: store.setting("office.name", ""),
       supervised: Boolean(supervisorLink?.supervised),

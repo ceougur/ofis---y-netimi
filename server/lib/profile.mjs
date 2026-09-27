@@ -15,6 +15,7 @@ import { ruleTitle } from "./insight/reasoning.mjs";
 import { isEmptyCell } from "./insight/cells.mjs";
 import { formatValue, parseNumberText } from "./formula/values.mjs";
 import { GENERAL_ID, LEGACY_ID, sectorById } from "./insight/sectors.mjs";
+import { createCustomSectors } from "./custom-sectors.mjs";
 
 // Kalemle düzenlenebilen başlıklar: anahtar → en fazla uzunluk ve yönetici ekranındaki adı.
 export const LABEL_SLOTS = Object.freeze({
@@ -101,6 +102,9 @@ export function createProfileService({ store, dataset, audit, events, log, free 
     store.setSetting(K.labels, JSON.stringify(office), userId);
     store.setSetting(sessionKey(K.labels), JSON.stringify(own), userId);
   };
+  // Ofisin kendi sektörleri (v2.0.2): yerleşiklerle aynı biçim; kimlikleri "ozel-" ile başlar.
+  const customSectors = createCustomSectors({ store, audit });
+  const findSector = id => sectorById(id) || customSectors.get(id);
   const readSector = () => parseJson(store.setting(sessionKey(K.sector), ""), null);
   const readColumns = () => readObject(sessionKey(K.columns));
   const readDismissed = () => readObject(sessionKey(K.dismissed));
@@ -128,7 +132,7 @@ export function createProfileService({ store, dataset, audit, events, log, free 
 
   function profile() {
     const stored = readSector();
-    const sector = sectorById(stored?.id) || sectorById(GENERAL_ID);
+    const sector = findSector(stored?.id) || sectorById(GENERAL_ID);
     const labels = readLabels();
     // Modüller veriye bağlıdır: sektör istemese bile ofisin o modülde kaydı varsa gizlenmez.
     const liens = store.get("SELECT COUNT(*) AS count FROM liens").count;
@@ -139,6 +143,7 @@ export function createProfileService({ store, dataset, audit, events, log, free 
         name: sector.name,
         group: sector.group,
         groupName: sector.groupName,
+        custom: Boolean(sector.custom),
         source: stored?.source || "default",
         at: stored?.at || null,
         byName: stored?.byName || "",
@@ -160,7 +165,7 @@ export function createProfileService({ store, dataset, audit, events, log, free 
   const publish = (user, detail = {}) => events?.publish("workspace.changed", { kind: "profile", actorId: user.id, actorName: user.display_name, ...detail });
 
   function setSector(user, id, source = "manual") {
-    const sector = sectorById(id);
+    const sector = findSector(id);
     if (!sector) throw new HttpError(400, "Bilinmeyen sektör.");
     const value = { id: sector.id, source: SOURCES.has(source) ? source : "manual", at: iso(), by: user.id, byName: user.display_name };
     store.tx(() => {
@@ -286,7 +291,8 @@ export function createProfileService({ store, dataset, audit, events, log, free 
       current(), current(), current(), current(),
     );
     const day = clock();
-    return [current(), row.rowsCount, row.overridesState, row.recordsState, row.deletedCount, store.setting(sessionKey("dataset.changedAt"), ""), store.setting(sessionKey("dataset.label"), ""), `${day.getFullYear()}-${day.getMonth()}-${day.getDate()}`, free ? free.fingerprint() : ""].join("|");
+    const custom = store.setting("sectors.custom", "") || "";
+    return [current(), row.rowsCount, row.overridesState, row.recordsState, row.deletedCount, store.setting(sessionKey("dataset.changedAt"), ""), store.setting(sessionKey("dataset.label"), ""), `${day.getFullYear()}-${day.getMonth()}-${day.getDate()}`, free ? free.fingerprint() : "", `${custom.length}:${custom.slice(-48)}`].join("|");
   }
 
   async function analysis() {
@@ -303,7 +309,7 @@ export function createProfileService({ store, dataset, audit, events, log, free 
       // istek için döner ama önbelleğe alınmaz: bir sonraki istek durulmuş veriyle yeniden hesaplar. Böylece eski
       // veriden hesaplanmış bir analiz yeni verinin anahtarıyla saklanamaz. (Analiz eşzamanlıdır; araya iş giremez.)
       const settled = fingerprint() === key && generation === started;
-      const result = analyzeDataset({ rows: view.rows || [], label: store.setting(sessionKey("dataset.label"), ""), tabs: (view.tabs || []).map(tab => tab.title).filter(Boolean), now: clock() });
+      const result = analyzeDataset({ rows: view.rows || [], label: store.setting(sessionKey("dataset.label"), ""), tabs: (view.tabs || []).map(tab => tab.title).filter(Boolean), now: clock(), sectors: customSectors.all() });
       if (settled) caches.set(session, { fingerprint: key, analysis: result });
       if (result.ms > 1500) log?.info?.(`Veri analizi ${result.ms} ms sürdü (${result.rowCount} kayıt)`);
       return result;
@@ -455,5 +461,5 @@ export function createProfileService({ store, dataset, audit, events, log, free 
     running.clear();
   };
 
-  return { init, profile, tagline, setSector, dismissIntro, setLabel, setLabels, setColumns, resetLabels, analysis, records, invalidate, usedBefore, reasoningSummary, checks, dismiss, fingerprint };
+  return { init, profile, tagline, setSector, findSector, customSectors, dismissIntro, setLabel, setLabels, setColumns, resetLabels, analysis, records, invalidate, usedBefore, reasoningSummary, checks, dismiss, fingerprint };
 }

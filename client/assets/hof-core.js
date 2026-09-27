@@ -246,7 +246,14 @@
     if (field.type === "textarea") control = `<textarea ${common} rows="${field.rows || 4}" placeholder="${HOF.esc(field.placeholder || "")}">${HOF.esc(field.value || "")}</textarea>`;
     else if (field.type === "select")
       control = `<select ${common}>${(field.options || []).map(option => `<option value="${HOF.esc(option.value)}" ${String(option.value) === String(field.value ?? "") ? "selected" : ""}>${HOF.esc(option.label)}</option>`).join("")}</select>`;
-    else if (field.type === "checkbox") return `<label class="hof-check"><input type="checkbox" ${common} ${field.value ? "checked" : ""}><span>${HOF.esc(field.label)}</span></label>`;
+    // Açılır liste (Excel/Sheets veri doğrulaması, v2.0.2): listede olmayan eski değer "(listede yok)" diye korunur;
+    // Excel'de listeye bağlı olmayan (uyarı/bilgi türü) listelerde başka bir değer de yazılabilir.
+    else if (field.type === "choice") {
+      const value = String(field.value ?? "");
+      const options = field.options || [];
+      const known = !value || options.includes(value);
+      control = `<select ${common} data-choice>${`<option value="">${HOF.esc(field.blankLabel || "— Seçin —")}</option>`}${options.map(option => `<option value="${HOF.esc(option)}" ${option === value ? "selected" : ""}>${HOF.esc(option)}</option>`).join("")}${known ? "" : `<option value="${HOF.esc(value)}" selected>${HOF.esc(value)} (listede yok)</option>`}${field.strict ? "" : `<option value="${OTHER_CHOICE}">Başka bir değer yaz…</option>`}</select>`;
+    } else if (field.type === "checkbox") return `<label class="hof-check"><input type="checkbox" ${common} ${field.value ? "checked" : ""}><span>${HOF.esc(field.label)}</span></label>`;
     else {
       const list = field.list && field.list.length ? `${id}-list` : "";
       control = `<input ${common} type="${field.type || "text"}" value="${HOF.esc(field.value ?? "")}" placeholder="${HOF.esc(field.placeholder || "")}" ${field.inputmode ? `inputmode="${field.inputmode}"` : ""} ${field.step ? `step="${field.step}"` : ""} ${field.min != null ? `min="${field.min}"` : ""} ${list ? `list="${list}"` : ""} autocomplete="${field.autocomplete || "off"}">${list ? `<datalist id="${list}">${field.list.map(item => `<option value="${HOF.esc(item)}"></option>`).join("")}</datalist>` : ""}`;
@@ -254,16 +261,31 @@
     return `<label class="hof-field${field.readonly ? " is-readonly" : ""}" for="${id}"><span>${HOF.esc(field.label)}${field.required ? ' <i aria-hidden="true">*</i>' : ""}${field.badge ? ` <em class="hof-field-badge">${HOF.esc(field.badge)}</em>` : ""}</span>${control}${field.help ? `<small>${HOF.esc(field.help)}</small>` : ""}</label>`;
   };
 
-  HOF.formModal = ({ title, eyebrow, intro = "", fields = [], submitLabel = "Kaydet", size = "", onSubmit, extraHtml = "" }) =>
+  const OTHER_CHOICE = "\u0001başka";
+  HOF.OTHER_CHOICE = OTHER_CHOICE;
+  // "Başka bir değer yaz…" seçilince liste, aynı adla bir metin kutusuna dönüşür.
+  HOF.freeChoice = select => {
+    const input = HOF.el("input", { type: "text", id: select.id, name: select.name, maxlength: 20000, autocomplete: "off", placeholder: "Değeri yazın" });
+    select.replaceWith(input);
+    input.focus();
+    return input;
+  };
+
+  HOF.formModal = ({ title, eyebrow, intro = "", fields = [], submitLabel = "Kaydet", size = "", onSubmit, extraHtml = "", onClose }) =>
     HOF.modal({
       title,
       eyebrow,
       size,
+      onClose,
       body: `${intro ? `<p class="hof-modal-text">${intro}</p>` : ""}<form class="hof-form" novalidate>${fields.map(HOF.fieldHtml).join("")}${extraHtml}<p class="hof-form-error" role="alert"></p><div class="hof-actions"><button type="button" class="hof-button hof-button-ghost" data-cancel>Vazgeç</button><button type="submit" class="hof-button">${HOF.esc(submitLabel)}</button></div></form>`,
       onOpen: modal => {
         const form = modal.dialog.querySelector("form");
         const error = form.querySelector(".hof-form-error");
         form.querySelector("[data-cancel]").onclick = () => modal.close();
+        form.addEventListener("change", event => {
+          const select = event.target.closest?.("select[data-choice]");
+          if (select && select.value === OTHER_CHOICE) HOF.freeChoice(select);
+        });
         form.addEventListener("submit", async event => {
           event.preventDefault();
           error.textContent = "";
@@ -354,13 +376,14 @@
         if (!data || !Array.isArray(data.rows)) return;
         // freeTabs: serbest sayfaların sekme adı → sayfa kimliği (v2.0.1, hof-free.js).
         const freeTabs = new Map((data.tabs || []).filter(tab => tab && tab.free && tab.title).map(tab => [tab.title, tab.free]));
-        HOF.data = { rows: data.rows, tabs: (data.tabs || []).map(tab => tab.title).filter(Boolean), freeTabs, at: Date.now() };
+        // choices: Excel/Sheets açılır listeleri, sekme → kolon → {options, strict} (v2.0.2, hof-choices.js).
+        HOF.data = { rows: data.rows, tabs: (data.tabs || []).map(tab => tab.title).filter(Boolean), freeTabs, choices: data.choices && typeof data.choices === "object" ? data.choices : {}, at: Date.now() };
         HOF.emit("rows", HOF.data);
       })
       .catch(() => {});
     return promise;
   };
-  HOF.data = { rows: [], tabs: [], freeTabs: new Map(), at: 0 };
+  HOF.data = { rows: [], tabs: [], freeTabs: new Map(), choices: {}, at: 0 };
   // Kaydın sekmesi (tabloda birden çok satırı olan kayıtta ilk satırınki); bilinmiyorsa null.
   HOF.tabOfKey = key => {
     const row = HOF.data.rows.find(item => item.__hofKey === key);

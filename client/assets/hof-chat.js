@@ -91,18 +91,24 @@
     else state.summary.conversations.push(item);
   }
 
+  // v2.0.2: gün gün. Açılışta son 24 saat; "Önceki günün mesajları" her tıklamada bir gün daha (boş günler atlanır).
+  // thread.from: yüklenen en eski günün başı (bir sonraki isteğin sınırı). 30 günden eskiler arşivdedir.
   async function loadThread(id, { older = false } = {}) {
-    const thread = state.threads.get(id) || { messages: [], hasMore: false, loaded: false, loading: false };
+    const thread = state.threads.get(id) || { messages: [], hasMore: false, loaded: false, loading: false, from: null, archivedMonths: 0 };
     state.threads.set(id, thread);
     if (thread.loading) return thread;
     thread.loading = true;
     try {
-      const before = older && thread.messages[0] ? `&before=${encodeURIComponent(thread.messages[0].createdAt)}` : "";
-      const result = await HOF.api(`/api/chat/conversations/${encodeURIComponent(id)}/messages?limit=50${before}`);
+      const before = older && thread.from ? `&before=${encodeURIComponent(thread.from)}` : "";
+      const result = await HOF.api(`/api/chat/conversations/${encodeURIComponent(id)}/messages?window=day${before}`);
       const known = new Set(thread.messages.map(message => message.id));
       const fresh = result.messages.filter(message => !known.has(message.id));
       thread.messages = older ? [...fresh, ...thread.messages] : mergeMessages(thread.messages, result.messages);
-      if (!older || !thread.loaded) thread.hasMore = result.hasMore;
+      if (older || !thread.loaded || !thread.from || (result.from && result.from < thread.from)) {
+        thread.hasMore = result.hasMore;
+        thread.from = result.from || thread.from;
+      }
+      thread.archivedMonths = result.archivedMonths || 0;
       thread.loaded = true;
       upsertConversation(result.conversation);
     } finally {
@@ -307,9 +313,17 @@
 
   function messagesHtml(thread, conversation) {
     if (!thread?.loaded) return '<p class="hof-chat-empty">Yükleniyor…</p>';
-    if (!thread.messages.length) return `<p class="hof-chat-empty">${conversation.kind === "office" ? "Ofise ilk mesajı siz yazın." : "Henüz mesaj yok. İlk mesajı yazın."}</p>`;
+    const older = thread.hasMore
+      ? '<button type="button" class="hof-chat-older" data-act="older">↑ Önceki günün mesajlarını yükle</button>'
+      : thread.archivedMonths
+        ? `<p class="hof-chat-archive">30 günden eski mesajlar programdan kaldırılıp arşivlendi. <button type="button" class="hof-link" data-act="archive">Arşivi indir (${thread.archivedMonths} ay)</button></p>`
+        : "";
+    if (!thread.messages.length) {
+      if (thread.hasMore || thread.archivedMonths) return `${older}<p class="hof-chat-empty">Son 24 saatte mesaj yok.</p>`;
+      return `<p class="hof-chat-empty">${conversation.kind === "office" ? "Ofise ilk mesajı siz yazın." : "Henüz mesaj yok. İlk mesajı yazın."}</p>`;
+    }
     const parts = [];
-    if (thread.hasMore) parts.push('<button type="button" class="hof-chat-older" data-act="older">Daha eski mesajlar</button>');
+    if (older) parts.push(older);
     let lastDay = "";
     thread.messages.forEach((message, index) => {
       const day = dayLabel(message.createdAt);
@@ -427,7 +441,21 @@
     } else if (act === "older") {
       const id = state.active;
       target.disabled = true;
-      loadThread(id, { older: true }).then(() => state.active === id && renderThread(), HOF.toastError);
+      target.textContent = "Yükleniyor…";
+      // Yüklenen eski mesajlar eklenince okunan yer kaymasın: listenin altına olan uzaklık korunur.
+      const list = document.querySelector(".hof-chat-messages");
+      const fromBottom = list ? list.scrollHeight - list.scrollTop : 0;
+      loadThread(id, { older: true }).then(() => {
+        if (state.active !== id) return;
+        renderThread();
+        const next = document.querySelector(".hof-chat-messages");
+        if (next && fromBottom) next.scrollTop = next.scrollHeight - fromBottom;
+      }, HOF.toastError);
+    } else if (act === "archive") {
+      const link = HOF.el("a", { href: `/api/chat/conversations/${encodeURIComponent(state.active)}/archive`, download: "", hidden: true });
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
     } else if (target.dataset.case) revealCase(target.dataset.case);
     else if (target.dataset.conversation) openThread(target.dataset.conversation);
     else if (target.dataset.user) openUser(target.dataset.user);

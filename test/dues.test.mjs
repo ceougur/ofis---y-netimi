@@ -308,3 +308,33 @@ describe("tahsilat takvimi ve kasa PDF uç noktaları (v2.0.1)", () => {
     assert.equal(body.subarray(0, 8).toString("latin1"), "%PDF-1.7");
   });
 });
+
+describe("bildirimde “Gerçekleştirildi” (v2.0.2)", () => {
+  it("hücreye yazılan “Gerçekleştirildi” kalemi kapatır; tarih hücrede kalır; aylık kısmi ödeme de kapanır", () => {
+    const rows = [
+      { __hofKey: "1", __sheet: "Araçlar", Plaka: "34 ABC 12", Şoför: "Ali Veli", "Sigorta bitiş": "30.09.2026", "Muayene bitiş": "02.10.2026" },
+      { __hofKey: "2", __sheet: "Araçlar", Plaka: "34 DEF 34", Şoför: "Can Er", "Sigorta bitiş": "Gerçekleştirildi · 29.09.2026", "Muayene bitiş": "01.10.2026" },
+      { __hofKey: "3", __sheet: "Araçlar", Plaka: "06 GHI 56", Şoför: "Ece Ak", "Sigorta bitiş": "15.12.2026", "Muayene bitiş": "15.12.2026" },
+    ];
+    const deadlines = computeDeadlines({ rows, tabs: ["Araçlar"], now: NOW });
+    const labels = deadlines.map(item => `${item.person}|${item.column}`);
+    assert.ok(labels.includes("34 ABC 12|Sigorta bitiş"));
+    assert.ok(!labels.includes("34 DEF 34|Sigorta bitiş"), "Gerçekleştirildi yazılan tarih uyarı vermez");
+    assert.ok(labels.includes("34 DEF 34|Muayene bitiş"), "aynı satırın başka işi etkilenmez");
+    assert.equal(deadlines.find(item => item.person === "34 ABC 12").column, "Sigorta bitiş", "hücreye yazmak için kolon adı gelir");
+
+    const student = (key, name, september) => ({ __hofKey: key, __sheet: "Öğrenciler", "Öğrenci": name, "Aylık ücret": "1.000 TL", Ağustos: "1.000 TL", Eylül: september, Ekim: "" });
+    const students = [student("s1", "Deniz", ""), student("s2", "Ege", "Gerçekleştirildi"), student("s3", "Ada", "Gerçekleştirildi · 500 TL"), student("s4", "Can", "500 TL"), student("s5", "Efe", "1.000 TL")];
+    const { items } = computeDues({ rows: students, tabs: ["Öğrenciler"], now: NOW });
+    assert.deepEqual(items.filter(item => item.label === "Eylül ödemesi").map(item => item.person).sort(), ["Can", "Deniz"]);
+    assert.equal(items.find(item => item.person === "Can").amount, 500, "yalnızca kısmi ödeme yazılan kalem kalanı bekler");
+    assert.equal(items.find(item => item.person === "Deniz").column, "Eylül");
+    assert.equal(items.find(item => item.person === "Deniz").recurring, false);
+  });
+
+  it("her ay tekrarlayan ödeme günü kalemi ‘recurring’ olarak işaretlenir (ayar hücresine yazılmaz)", () => {
+    const rows = [{ __hofKey: "k1", __sheet: "Kiracılar", "Kiracı": "Selin", "Kira günü": "5", "Kira tutarı": "10.000" }];
+    const { items } = computeDues({ rows, tabs: ["Kiracılar"], now: NOW });
+    assert.ok(items.length && items.every(item => item.recurring), JSON.stringify(items));
+  });
+});

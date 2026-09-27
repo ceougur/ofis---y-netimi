@@ -35,7 +35,8 @@ const installmentOf = (column, folded = foldText(column)) => {
   return INSTALLMENT.test(folded) || SERIES_PAYMENT.test(folded) ? n : null;
 };
 // Satırı kapatan durumlar ("kısmen ödendi" kapatmaz).
-const SETTLED = /\b(odendi|odenmistir|odeme alindi|tahsil edildi|tahsilat yapildi|kapandi|kapali|kapatildi|iptal\w*|tamamlandi|sonuclandi|bitti|feragat|infaz)\b/;
+// "Gerçekleştirildi": bildirimdeki düğmeyle hücreye yazılan ibare (v2.0.2) — kalem kapanır, uyarı tekrarlanmaz.
+const SETTLED = /\b(odendi|odenmistir|odeme alindi|tahsil edildi|tahsilat yapildi|kapandi|kapali|kapatildi|iptal\w*|tamamlandi|sonuclandi|bitti|feragat|infaz|gerceklestirildi|gerceklestirilmistir)\b/;
 const PARTIAL = /\b(kismen|kismi|eksik)\b/;
 // Tutar kolonları: kalemin kendi tutarı ve bağlam olarak kalan borç.
 const AMOUNT_OWN = /\b(soz tutari|taahhut tutari|taksit tutari|taksit miktari|aylik taksit|aylik odeme|odenecek|odenecek tutar|kira bedeli|kira|aidat|aylik|aylik ucret|servis ucreti|ucret|ucreti|ayligi)\b/;
@@ -226,7 +227,7 @@ function paymentMonths(rows, columns, months, analyses) {
 }
 
 // Satır bağlamı (v2.0.2): işin bittiğini söyleyen durumlar ve evet/hayır kolonları.
-const DONE_STATE = /\b(tamamlandi|tamamlanmistir|yapildi|yapilmistir|geldi|katildi|teslim edildi|teslim alindi|yenilendi|yenilenmistir|kapandi|kapatildi|sonuclandi|bitti|ertelendi|gerceklesti|iptal\w*)\b/;
+const DONE_STATE = /\b(tamamlandi|tamamlanmistir|yapildi|yapilmistir|geldi|katildi|teslim edildi|teslim alindi|yenilendi|yenilenmistir|kapandi|kapatildi|sonuclandi|bitti|ertelendi|gerceklesti|gerceklestirildi|gerceklestirilmistir|iptal\w*)\b/;
 const FLAG_HEADER = /(\b(mi|mu)\b|\b(yapildi|yenilendi|tamamlandi|geldi|teslim edildi|odendi)\b)/;
 const YES_MARK = /^(evet|e|var|yapildi|yenilendi|tamam|tamamlandi|ok|✓|✔|☑|yes|true|1)$/;
 
@@ -306,7 +307,8 @@ export function computeDues({ rows, tabs = [], payments = [], settled = {}, now 
       const debtAmount = debt ? parseAmount(cell(row, debt)) : null;
       // Satır bağlamı: kalan borç / bakiye açıkça 0 ise o kayıttan tahsilat beklenmez (v2.0.2).
       if (debt && debtAmount === 0 && !isEmptyCell(cell(row, debt))) continue;
-      const base = { caseKey: row.__hofKey, tab, person, caseNo, debt: debtAmount && debtAmount > 0 ? debtAmount : null };
+      // Kimlikte sekmenin asıl adı: sekme kalemle yeniden adlandırılınca kapatılan kalemler geri açılmaz (v2.0.2).
+      const base = { caseKey: row.__hofKey, tab, sheet: row.__hofSheet || tab, person, caseNo, debt: debtAmount && debtAmount > 0 ? debtAmount : null };
       for (const entry of due) {
         const read = readDue(cell(row, entry.column), now);
         if (!read || read.settled) continue;
@@ -330,7 +332,7 @@ export function computeDues({ rows, tabs = [], payments = [], settled = {}, now 
         if (serviceStart !== null && entry.time < serviceStart) continue;
         if (bounds.end !== null && entry.time > bounds.end) continue;
         const value = String(cell(row, entry.column) ?? "").trim();
-        if (notDue(value)) continue;
+        if (notDue(value) || isSettledText(value)) continue;
         const fee = entry.amountColumn ? parseAmount(cell(row, entry.amountColumn)) : null;
         const folded = foldText(value);
         const paidAmount = value && !UNPAID_MARK.test(folded) ? parseAmount(value) : null;
@@ -355,7 +357,7 @@ export function computeDues({ rows, tabs = [], payments = [], settled = {}, now 
   // Tahsilatlar kaydın kalemlerine vade sırasıyla sayılır.
   const byCase = new Map();
   for (const item of candidates) {
-    item.id = `due|${item.tab}|${item.caseKey}|${item.column}|${iso(item.time)}`;
+    item.id = `due|${item.sheet || item.tab}|${item.caseKey}|${item.column}|${iso(item.time)}`;
     if (!byCase.has(item.caseKey)) byCase.set(item.caseKey, []);
     byCase.get(item.caseKey).push(item);
   }
@@ -413,6 +415,7 @@ export function computeDues({ rows, tabs = [], payments = [], settled = {}, now 
       column: item.column,
       promise: item.promise,
       kind: item.kind,
+      recurring: Boolean(item.recurring),
       due: iso(item.time),
       dueText: item.kind === "month" ? monthLabel(item.time) : iso(item.time).split("-").reverse().join("."),
       days,
@@ -501,12 +504,13 @@ export function computeDeadlines({ rows, tabs = [], now = new Date(), aheadDays 
         const plate = vehicle ? String(cell(row, primary.plate) ?? "").trim() : "";
         const person = primary.person ? String(cell(row, primary.person) ?? "").trim() : "";
         out.push({
-          id: `deadline|${tab}|${row.__hofKey}|${item.column}|${iso(time)}`,
+          id: `deadline|${row.__hofSheet || tab}|${row.__hofKey}|${item.column}|${iso(time)}`,
           caseKey: row.__hofKey,
           tab,
           person: plate || person,
           caseNo: plate ? person : primary.id && primary.id !== primary.person ? String(cell(row, primary.id) ?? "").trim() : "",
           label: String(item.column).trim(),
+          column: item.column,
           due: iso(time),
           dueText: iso(time).split("-").reverse().join("."),
           days: Math.round((time - today) / DAY),

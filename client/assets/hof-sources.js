@@ -100,7 +100,7 @@
         const parsed = await parseInWorker(body.file);
         if (!parsed.rowCount) throw new Error("Dosyada okunabilir kayıt bulunamadı. Tablonun kolon başlıklarıyla başladığından emin olun.");
         busy.set(`Yaklaşık ${number(parsed.rowCount)} satır mevcut veriyle karşılaştırılıyor…`);
-        staged = await HOF.api("/api/workspace/dataset/stage", { method: "POST", body: { kind: "excel", fileName: body.file.name, sheets: parsed.sheets }, timeoutMs: 180_000 });
+        staged = await HOF.api("/api/workspace/dataset/stage", { method: "POST", body: { kind: "excel", fileName: body.file.name, sheets: parsed.sheets, ...(parsed.definedNames ? { definedNames: parsed.definedNames } : {}) }, timeoutMs: 180_000 });
       } else {
         staged = await HOF.api("/api/workspace/dataset/stage", { method: "POST", body: { kind: "sheets", url: body.url }, timeoutMs: 120_000 });
       }

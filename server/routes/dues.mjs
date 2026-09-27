@@ -25,7 +25,9 @@ export function registerDueRoutes(router, { auth, store, dataset, profile, event
   async function compute() {
     const now = new Date();
     const settledRaw = store.setting(settingKey(), "{}") || "{}";
-    const key = [profile.fingerprint(), paymentsState(), settledRaw.length, settledRaw.slice(-64), now.toDateString()].join("|");
+    // Sekme adları ve gizlenen sekmeler (v2.0.2) görünümü değiştirir; anahtara girer.
+    const tabState = ["dataset.tabs.alias", "dataset.tabs.hidden"].map(name => store.setting(dataset.settingKey ? dataset.settingKey(name) : name, "") || "").join("|");
+    const key = [profile.fingerprint(), paymentsState(), settledRaw.length, settledRaw.slice(-64), tabState, now.toDateString()].join("|");
     const session = dataset.currentKey();
     const hit = cache.get(session);
     if (hit && hit.key === key) return hit.result;

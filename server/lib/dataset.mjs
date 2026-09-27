@@ -9,6 +9,7 @@
 // yönetici onayı beklenir.
 import { randomUUID } from "node:crypto";
 import { createBackup } from "./backup.mjs";
+import { applyIndexedCombos, cleanChoices, comboRulesFromParts, listOnlySheets, listRulesFromXml, mergeChoices, resolveChoices } from "./choices.mjs";
 import { HttpError, parseJson } from "./http.mjs";
 import { attachFormulas, sourceTagOf } from "./formula/bind.mjs";
 import { computeFormulas } from "./formula/compute.mjs";
@@ -42,7 +43,14 @@ const S = {
   syncHold: "dataset.syncHold",
   changedAt: "dataset.changedAt",
   identity: "dataset.identity",
+  // v2.0.2: kalemle verilen sekme adları ({asıl ad: görünen ad}) ve silinen (gizlenen) sekmeler ({asıl ad: {by, at}}).
+  tabAlias: "dataset.tabs.alias",
+  tabHidden: "dataset.tabs.hidden",
+  // v2.0.2: Excel/Sheets açılır listeleri ({sekme etiketi: {kolon: {options, strict}}}).
+  choices: "dataset.choices",
 };
+// Alt tablolu sekmelerde kayıt "Sekme › Alt tablo" adını taşır (sections.mjs).
+const TAB_SEP = " › ";
 
 const isSheetUrl = value => /^https:\/\/docs\.google\.com\/spreadsheets\//i.test(String(value || "").trim());
 
@@ -144,6 +152,93 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
   const invalidate = (datasetKey = activeKey()) => {
     caches.delete(datasetKey);
   };
+
+  // ---------- Sekme adları ve gizlenen sekmeler (v2.0.2) ----------
+  // Asıl ad Excel/Sheets'teki addır; eşitleme ve kimlikler onunla çalışır. Görünümde (tablo, kartlar, takvim, dışa
+  // aktarma) kalemle verilen ad görünür. Ad tam yola ("Sekme › Alt tablo") ya da üst sekmeye verilebilir.
+  const tabSettings = () => ({ alias: parseJson(sget(S.tabAlias, ""), {}) || {}, hidden: parseJson(sget(S.tabHidden, ""), {}) || {} });
+  const topOf = tab => String(tab).split(TAB_SEP)[0];
+  const displayTab = (tab, alias) => {
+    if (!tab) return tab;
+    if (alias[tab]) return alias[tab];
+    const [top, ...rest] = String(tab).split(TAB_SEP);
+    return alias[top] ? [alias[top], ...rest].join(TAB_SEP) : tab;
+  };
+  const isHiddenTab = (tab, hidden) => Boolean(tab && (hidden[tab] || hidden[topOf(tab)]));
+  // Görünen addan asıl ada (yeni kayıt formu görünen adı gönderir).
+  function originalTab(display) {
+    const name = String(display || "");
+    if (!name) return name;
+    const { alias } = tabSettings();
+    for (const [original, shown] of Object.entries(alias)) if (shown === name) return original;
+    const [top, ...rest] = name.split(TAB_SEP);
+    for (const [original, shown] of Object.entries(alias)) if (shown === top && !original.includes(TAB_SEP)) return [original, ...rest].join(TAB_SEP);
+    return name;
+  }
+  // Verinin (gizliler dahil) sekme adları: asıl ve görünen hâlleriyle (ad çakışması denetimi için).
+  function tabNamesInUse() {
+    const { alias } = tabSettings();
+    const names = new Set();
+    for (const tab of [...tabsOf(loadRows().rows), APP_TAB, UNTABBED_TAB]) {
+      names.add(tab);
+      names.add(topOf(tab));
+      names.add(displayTab(tab, alias));
+      names.add(topOf(displayTab(tab, alias)));
+    }
+    return [...names];
+  }
+  const fold = value => String(value).toLocaleLowerCase("tr-TR").trim();
+  function renameTab(user, display, name) {
+    const original = originalTab(display);
+    if (!tabsOf(loadRows().rows).some(tab => tab === original || topOf(tab) === original)) throw new HttpError(404, "Sekme bulunamadı. Sayfayı yenileyin.");
+    const clean = String(name ?? "").replace(/[\u0000-\u001F\u007F]+/g, "").replace(/\s+/g, " ").trim().slice(0, 80);
+    if (clean.includes(TAB_SEP.trim())) throw new HttpError(400, "Sekme adında “›” işareti kullanılamaz.");
+    const { alias } = tabSettings();
+    const previous = displayTab(original, alias);
+    if (clean && clean !== original) {
+      const taken = new Set([...tabNamesInUse().filter(item => item !== original && item !== previous && topOf(item) !== original), ...(freeProvider ? freeProvider.list().map(sheet => sheet.name) : [])].map(fold));
+      if (taken.has(fold(clean))) throw new HttpError(409, `“${clean}” adında bir sekme zaten var. Farklı bir ad yazın.`);
+      alias[original] = clean;
+    } else delete alias[original];
+    sset(S.tabAlias, JSON.stringify(alias), user.id);
+    audit?.(user, "source.tab.renamed", original, { original, previous, name: clean || original });
+    invalidate();
+    return { original, name: clean || original, previous };
+  }
+  function hideTab(user, display) {
+    const original = originalTab(display);
+    const rows = loadRows().rows.filter(row => {
+      const tab = row.tab || row.values?.__sheet || "";
+      return tab === original || topOf(tab) === original;
+    });
+    if (!rows.length) throw new HttpError(404, "Sekme bulunamadı. Sayfayı yenileyin.");
+    const { hidden, alias } = tabSettings();
+    hidden[original] = { by: user.id, at: new Date().toISOString(), rows: rows.length, name: displayTab(original, alias) };
+    sset(S.tabHidden, JSON.stringify(hidden), user.id);
+    audit?.(user, "source.tab.hidden", original, { original, name: hidden[original].name, rows: rows.length });
+    invalidate();
+    return { original, name: hidden[original].name, rows: rows.length };
+  }
+  function unhideTab(user, original) {
+    const { hidden } = tabSettings();
+    const entry = hidden[original];
+    if (!entry) throw new HttpError(404, "Bu sekme zaten görünüyor.");
+    delete hidden[original];
+    sset(S.tabHidden, JSON.stringify(hidden), user.id);
+    audit?.(user, "source.tab.restored", original, { original, name: entry.name });
+    invalidate();
+    return { original, name: entry.name };
+  }
+  // Silinenler listesi için tüm oturumlardaki gizli sekmeler.
+  function hiddenTabs() {
+    const out = [];
+    for (const item of sessions()) {
+      withKey(item.key, () => {
+        for (const [original, entry] of Object.entries(tabSettings().hidden)) out.push({ datasetKey: item.key, session: item.name || item.label || "", original, ...entry });
+      });
+    }
+    return out;
+  }
 
   const recordCount = () => store.get("SELECT COUNT(*) AS count FROM records WHERE source_name = ?", activeKey()).count;
   const rowCount = () => store.get("SELECT COUNT(*) AS count FROM dataset_rows WHERE dataset_key = ?", activeKey()).count;
@@ -247,9 +342,25 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
         delete row.__hofAt;
       }
     }
+    // Sekme adları ve gizlenen sekmeler (v2.0.2). Asıl ad "__hofSheet" iç alanında kalır (takvim kimlikleri onu kullanır).
+    const { alias, hidden } = tabSettings();
+    let shownRows = merged;
+    if (Object.keys(alias).length || Object.keys(hidden).length) {
+      shownRows = [];
+      for (const row of merged) {
+        const tab = String(row.__sheet || "");
+        if (isHiddenTab(tab, hidden)) continue;
+        const name = displayTab(tab, alias);
+        if (name !== tab) {
+          row.__hofSheet = tab;
+          row.__sheet = name;
+        }
+        shownRows.push(row);
+      }
+    }
     const label = sget(S.label, "") || "Çalışma verisi";
     const error = linkedUrl() ? sget(S.lastSyncError, "") : "";
-    if (!merged.length && !rows.length) {
+    if (!shownRows.length && !rows.length) {
       return { connected: false, sourceUrl: activeKey(), syncedAt: null, rows: [], tabs: [], message: error || "Henüz veri yüklenmedi." };
     }
     // Serbest sayfalar (v2.0.1): verinin sekmelerinden sonra; boş olsalar da sekme olarak görünürler.
@@ -257,21 +368,31 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
     if (freeProvider) {
       try {
         freeTabs = freeProvider.list();
-        merged.push(...freeProvider.viewRows());
+        shownRows.push(...freeProvider.viewRows());
       } catch (failure) {
         log?.warn?.("Serbest sayfalar okunamadı", failure);
         freeTabs = [];
       }
     }
+    // Açılır listeler (v2.0.2): görünen sekme adlarıyla; silinen sekmelerinkiler gönderilmez.
+    const choices = {};
+    for (const [tab, columns] of Object.entries(cleanChoices(parseJson(sget(S.choices, ""), {})))) {
+      if (isHiddenTab(tab, hidden)) continue;
+      choices[displayTab(tab, alias)] = columns;
+    }
     return {
       connected: true,
       sourceUrl: activeKey(),
       syncedAt: sget(S.lastSyncOkAt, "") || sget(S.changedAt, "") || null,
-      rows: merged,
+      rows: shownRows,
+      choices,
       // Yalnızca görünen satırı olan sekmeler (tüm satırları silinmiş sekme listelenmez, varsayılan da olamaz).
       // Serbest sayfanın sekmesi "free" (sayfa kimliği) taşır; arayüz o sekmede tablo yerine düzenlenebilir ızgara açar.
-      tabs: [...[...tabsOf(rows), ...extraTabs].filter(title => merged.some(row => row.__sheet === title)).map(title => ({ gid: "", title })), ...freeTabs.map(sheet => ({ gid: "", title: sheet.name, free: sheet.id }))],
-      message: error ? `${label} · ${merged.length} kayıt · Google Sheets'e şu an ulaşılamıyor, son eşitlenen veri gösteriliyor.` : `${label} · ${merged.length} kayıt`,
+      tabs: [
+        ...[...new Set([...tabsOf(rows), ...extraTabs].filter(title => !isHiddenTab(title, hidden)).map(title => displayTab(title, alias)))].filter(title => shownRows.some(row => row.__sheet === title)).map(title => ({ gid: "", title })),
+        ...freeTabs.map(sheet => ({ gid: "", title: sheet.name, free: sheet.id })),
+      ],
+      message: error ? `${label} · ${shownRows.length} kayıt · Google Sheets'e şu an ulaşılamıyor, son eşitlenen veri gösteriliyor.` : `${label} · ${shownRows.length} kayıt`,
     };
   }
 
@@ -318,25 +439,52 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
 
   // Excel sayfaları → kayıtlar. v2.0.1: tarayıcı formülleri de gönderir (sayfa koordinatlarıyla); formüller
   // kayıtlara bağlanır ki programda değişen değerlerle yeniden hesaplanabilsin (formula/bind.mjs).
-  function parseExcelSheets(sheets, fileName = "") {
+  // v2.0.2: açılır listeler (veri doğrulama) da gelir: sayfanın <dataValidations> parçası ve tanımlı adlar (choices.mjs).
+  function parseExcelSheets(sheets, fileName = "", definedNames = []) {
     if (!Array.isArray(sheets)) throw new HttpError(400, "Tablo sayfaları okunamadı.");
     if (sheets.length > 200) throw new HttpError(400, "Dosyada en fazla 200 sayfa olabilir.");
     const rows = [];
     const tabs = [];
     const parsedSheets = [];
+    const combos = [];
     let cells = 0;
+    // 1) Hücreler, formüller, açılır liste ve birleşik giriş kutusu kuralları.
     for (const sheet of sheets) {
       const name = String(sheet?.name ?? "").trim().slice(0, 200);
       const matrix = Array.isArray(sheet?.matrix) ? sheet.matrix.slice(0, MAX_ROWS + 1).map(line => (Array.isArray(line) ? line.slice(0, 500).map(cell => String(cell ?? "").slice(0, 20_000)) : [])) : [];
       cells += matrix.reduce((total, line) => total + line.length, 0);
       if (cells > 20_000_000) throw new HttpError(400, "Tablo çok büyük (en fazla 20 milyon hücre).");
       const formulas = cleanFormulas(sheet?.formulas);
+      const rules = typeof sheet?.validations === "string" ? listRulesFromXml(sheet.validations) : [];
+      if (sheet?.controls && typeof sheet.controls === "object") {
+        try {
+          const parts = {};
+          for (const [key, value] of Object.entries(sheet.controls.parts || {}).slice(0, 500)) if (typeof value === "string") parts[String(key)] = value;
+          for (const rule of comboRulesFromParts({ xml: String(sheet.controls.xml || ""), rels: String(sheet.controls.rels || ""), parts })) combos.push({ ...rule, sheet: rule.sheet || name });
+        } catch (error) {
+          log?.warn?.("Excel birleşik giriş kutuları okunamadı", error);
+        }
+      }
       const start = { r: Math.max(0, Number(sheet?.start?.r) || 0), c: Math.max(0, Number(sheet?.start?.c) || 0) };
-      const parsed = matrixToRecords(matrix, name, { layout: formulas.length > 0 });
+      parsedSheets.push({ name, matrix, start, formulas, layout: [], rules, blocks: [], hidden: sheet?.hidden === true });
+    }
+    for (const { sheet, ...rule } of combos) parsedSheets.find(item => item.name === sheet)?.rules.push(rule);
+    const names = (Array.isArray(definedNames) ? definedNames : []).slice(0, 2_000).filter(item => item && typeof item.name === "string" && typeof item.ref === "string").map(item => ({ name: item.name.slice(0, 255), ref: item.ref.slice(0, 2_000), sheet: typeof item.sheet === "string" ? item.sheet : null }));
+    // Form denetimi kutusunun bağlı hücresindeki sıra numarası, kutuda görünen metne çevrilir.
+    if (combos.some(rule => rule.index)) {
+      try {
+        applyIndexedCombos(parsedSheets, names);
+      } catch (error) {
+        log?.warn?.("Birleşik giriş kutusu değerleri çevrilemedi", error);
+      }
+    }
+    // 2) Kayıtlar.
+    for (const sheet of parsedSheets) {
+      const parsed = matrixToRecords(sheet.matrix, sheet.name, { layout: sheet.formulas.length > 0 || sheet.rules.length > 0 });
       for (const row of parsed.rows) rows.push(row); // yayma (...) büyük sayfalarda çağrı yığınını taşırır
       for (const label of parsed.tabs) if (label && !tabs.includes(label)) tabs.push(label);
-      if (formulas.length) parsedSheets.push({ name, matrix, start, formulas, layout: parsed.layout });
-      else parsedSheets.push({ name, matrix, start, formulas: [], layout: [] });
+      if (sheet.formulas.length) sheet.layout = parsed.layout;
+      sheet.blocks = parsed.blocks || [];
     }
     if (parsedSheets.some(sheet => sheet.formulas.length)) {
       try {
@@ -345,7 +493,18 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
         log?.warn?.("Excel formülleri bağlanamadı; değerler olduğu gibi alındı", error);
       }
     }
-    return { rows, tabs };
+    let choices = {};
+    let listSheets = [];
+    if (parsedSheets.some(sheet => sheet.rules.length)) {
+      try {
+        const sources = new Set();
+        choices = resolveChoices(parsedSheets, names, sources);
+        listSheets = listOnlySheets(parsedSheets, sources);
+      } catch (error) {
+        log?.warn?.("Excel açılır listeleri okunamadı; değerler olduğu gibi alındı", error);
+      }
+    }
+    return { rows, tabs, choices, listSheets };
   }
   const cleanFormulas = list =>
     Array.isArray(list)
@@ -399,6 +558,8 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
     let rows;
     let tabs;
     let label;
+    let choices = {};
+    let listSheets = [];
     let url = null;
     const kind = String(body?.kind || "");
     if (kind === "sheets") {
@@ -409,12 +570,14 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
       if (!result.connected) throw new HttpError(502, result.message || "Google Sheets okunamadı. Bağlantıyı ve paylaşım iznini kontrol edin.");
       rows = result.rows;
       tabs = result.tabs.map(tab => tab.title).filter(Boolean);
+      choices = result.choices || {};
+      listSheets = result.listSheets || [];
       label = String(result.title || "").trim().slice(0, 200) || "Google Sheets";
     } else if (kind === "excel") {
       const fileName = String(body.fileName || "").trim().replace(/[\\/]+/g, "_");
       if (!fileName) throw new HttpError(400, "Dosya adı gerekli.");
       if (fileName.length > 180) throw new HttpError(400, "Dosya adı çok uzun.");
-      ({ rows, tabs } = parseExcelSheets(body.sheets, fileName));
+      ({ rows, tabs, choices, listSheets } = parseExcelSheets(body.sheets, fileName, body.definedNames));
       label = fileName;
     } else throw new HttpError(400, "Bilinmeyen içeri alma türü.");
     rows = cleanRows(rows);
@@ -431,7 +594,7 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
     const shared = incoming.filter(column => existing.has(column)).length;
     const similarity = existing.size && incoming.length ? shared / Math.min(existing.size, incoming.length) : null;
     const id = `stage-${randomUUID()}`;
-    stages.set(id, { id, userId: user.id, datasetKey: activeKey(), kind, label, url, entries, identity, tabs, createdAt: Date.now() });
+    stages.set(id, { id, userId: user.id, datasetKey: activeKey(), kind, label, url, entries, identity, tabs, choices, listSheets, createdAt: Date.now() });
     const mergeChanges = diff(entries.merge);
     const replaceChanges = entries.replace === entries.merge ? mergeChanges : diff(entries.replace);
     return {
@@ -611,6 +774,27 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
     store.tx(() => {
       counts = apply(entries, { mode: effective, origin });
       sset(S.identity, JSON.stringify(identity), user.id);
+      // Açılır listeler: yerine koymada dosyanınkiler, eklemede dosyadaki sekmelerinki yenilenir (v2.0.2).
+      const lists = effective === "replace" ? cleanChoices(staged.choices) : mergeChoices(parseJson(sget(S.choices, ""), {}), staged.choices, staged.tabs);
+      sset(S.choices, Object.keys(lists).length ? JSON.stringify(lists) : "", user.id);
+      // Excel/Sheets'te gizli liste sayfaları programda da gizlenir (yalnızca içeri almada; eşitleme dokunmaz ve
+      // kullanıcının geri getirdiği sekme yeniden gizlenmez). Yönetim → Silinenler'den geri gelir.
+      if (staged.listSheets?.length) {
+        const { hidden, alias } = tabSettings();
+        const sizes = new Map();
+        for (const entry of entries) {
+          const tab = topOf(entry.values?.__sheet || "");
+          sizes.set(tab, (sizes.get(tab) || 0) + 1);
+        }
+        let changed = false;
+        for (const name of staged.listSheets) {
+          if (hidden[name] || !sizes.get(name)) continue;
+          hidden[name] = { by: user.id, at: now(), rows: sizes.get(name), name: displayTab(name, alias), reason: "list" };
+          changed = true;
+          audit(user, "source.tab.hidden", name, { original: name, name, rows: sizes.get(name), reason: "list" });
+        }
+        if (changed) sset(S.tabHidden, JSON.stringify(hidden), user.id);
+      }
       if (staged.kind === "sheets" && link) {
         sset(S.linkedUrl, staged.url, user.id);
         sset(S.lastSyncAt, now(), user.id);
@@ -678,6 +862,11 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
       store.tx(() => {
         counts = apply(entries, { mode: "sync", origin: "sheets" });
         sset(S.identity, JSON.stringify(identity));
+        // Listeler bu kez okunamadıysa (xlsx indirilemedi) kayıtlı listeler korunur.
+        if (result.choices) {
+          const lists = mergeChoices(parseJson(sget(S.choices, ""), {}), result.choices, result.tabs.map(tab => tab.title));
+          sset(S.choices, Object.keys(lists).length ? JSON.stringify(lists) : "");
+        }
         sset(S.lastSyncOkAt, started);
         sset(S.lastSyncError, "");
         sset(S.needsInitialSync, "0");
@@ -713,7 +902,7 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
     let removed = 0;
     store.tx(() => {
       removed = store.run("DELETE FROM dataset_rows WHERE dataset_key = ?", activeKey()).changes;
-      for (const name of [S.linkedUrl, S.label, S.syncHold, S.lastSyncError, S.lastSyncOkAt, S.identity]) sset(name, "", user.id);
+      for (const name of [S.linkedUrl, S.label, S.syncHold, S.lastSyncError, S.lastSyncOkAt, S.identity, S.choices]) sset(name, "", user.id);
       sset(S.needsInitialSync, "0", user.id);
       logImport(user, { kind: "remove", mode: "remove", label: "", rowCount: 0, counts: { removed }, backupName });
       audit(user, "dataset.removed", activeKey(), { removed, backupName });
@@ -881,7 +1070,7 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
     freeProvider = provider;
   };
   // Verinin (içeri alınan) sekmeleri: serbest sayfa adı bunlarla çakışamaz.
-  const dataTabs = () => [...tabsOf(loadRows().rows), APP_TAB, UNTABBED_TAB];
+  const dataTabs = () => tabNamesInUse();
   const onChange = listener => {
     listeners.add(listener);
     return () => listeners.delete(listener);
@@ -891,5 +1080,6 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
   return {
     view, summary, info, stage, commit, sync, unlink, remove, missingRows, resolveMissing, adoptLegacySheetUrl, hasData, start, stop, invalidate, onChange, identity, pinLegacyIdentity,
     sessions, selectSession, renameSession, deleteSession, currentKey: activeKey, settingKey: name => sk(name), withKey, setFreeProvider, dataTabs,
+    renameTab, hideTab, unhideTab, hiddenTabs, originalTab,
   };
 }

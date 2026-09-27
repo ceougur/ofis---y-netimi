@@ -35,13 +35,13 @@ const slim = item => ({
 /**
  * @param {{ rows: Array<Record<string,string>>, label?: string, tabs?: string[], now?: Date }} input
  */
-export function analyzeDataset({ rows, label = "", tabs = [], now = new Date() }) {
+export function analyzeDataset({ rows, label = "", tabs = [], now = new Date(), sectors = [] }) {
   const started = performance.now();
   const data = Array.isArray(rows) ? rows : [];
   const columns = columnOrder(data);
   const analyses = analyzeColumns(data, columns, { now });
   const primary = primaryColumns(analyses);
-  const sector = classifySector({ analyses, rows: data, label, tabs });
+  const sector = classifySector({ analyses, rows: data, label, tabs, extra: sectors });
   const kpis = computeKpis(data, { tabs, now });
   const { quality, ...indicators } = kpis;
   // Mantık denetimi (v2.0.1): verinin kendi kurallarını öğrenir, uymayan kayıtları bulur (reasoning.mjs).

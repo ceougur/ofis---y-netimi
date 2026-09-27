@@ -1,9 +1,11 @@
 // DestekOfis merkezi sunucusu: uygulamayı kurar, göçleri çalıştırır ve HTTP isteklerini yönlendirir.
 import { createServer } from "node:http";
 import { mkdirSync } from "node:fs";
+import path from "node:path";
 import { createAudit } from "./lib/audit.mjs";
 import { createAuth } from "./lib/auth.mjs";
 import { createChat } from "./lib/chat.mjs";
+import { createChatArchive } from "./lib/chat-archive.mjs";
 import { createEventHub } from "./lib/events.mjs";
 import { startBackupScheduler } from "./lib/backup.mjs";
 import { createClientState } from "./lib/client-state.mjs";
@@ -69,6 +71,8 @@ export function createApp(overrides = {}) {
   // Canlı olay kanalı: oturumu kapanan (çıkış, parola değişikliği, pasifleştirme) bağlantılar ping turunda düşer.
   const events = createEventHub({ log, pingMs: config.eventsPingMs, maxAgeMs: config.eventsMaxAgeMs, isValid: client => auth.sessionAlive(client.tokenHash) });
   const chat = createChat({ store, events, audit });
+  // 30 günden eski sohbet mesajları veri klasöründeki mesaj-arsivi/ klasörüne taşınır (v2.0.2).
+  const chatArchive = createChatArchive({ store, dir: path.join(config.dataDir, "mesaj-arsivi"), log });
   // Lisans (Faz 3): süresi dolan, engellenen veya doğrulanamayan kurulum salt okunur çalışır. Veri eşitlemesi de
   // o sürede durur. Uygulama nesnesi aşağıda kurulduğundan eşitleme denetimi geç bağlanır.
   let license = null;
@@ -110,7 +114,7 @@ export function createApp(overrides = {}) {
   });
   license.init();
   dataset.start();
-  const context = { config, log, store, auth, audit, clientState, startedAt, supervisorLink, events, chat, dataset, profile, license, free, trash };
+  const context = { config, log, store, auth, audit, clientState, startedAt, supervisorLink, events, chat, chatArchive, dataset, profile, license, free, trash };
 
   const router = createRouter();
   router.get("/api/health", async ({ res }) => ok(res, { service: "destekofis-merkezi", status: "ok", version: config.version, time: new Date().toISOString(), uptimeSeconds: Math.round(process.uptime()) }));
@@ -181,6 +185,18 @@ export function createApp(overrides = {}) {
   auth.purgeExpiredSessions();
   const sessionTimer = setInterval(() => auth.purgeExpiredSessions(), 3_600_000);
   sessionTimer.unref();
+  // Sohbet arşivi: açılıştan kısa süre sonra ve 6 saatte bir (v2.0.2).
+  const archiveChat = () => {
+    try {
+      chatArchive.run();
+    } catch (error) {
+      log.error("Sohbet arşivi çalışmadı", error);
+    }
+  };
+  const archiveStart = overrides.chatArchive === false ? null : setTimeout(archiveChat, 20_000);
+  archiveStart?.unref?.();
+  const archiveTimer = overrides.chatArchive === false ? null : setInterval(archiveChat, 6 * 3_600_000);
+  archiveTimer?.unref?.();
 
   // Servis yöneticisine (supervisor) iletilen özet bilgi: keşif yanıtlarında ofis adı ve sürüm görünür.
   const infoListeners = new Set();
@@ -224,6 +240,8 @@ export function createApp(overrides = {}) {
       closed = true;
       stopBackups();
       clearInterval(sessionTimer);
+      clearTimeout(archiveStart);
+      clearInterval(archiveTimer);
       auth.limiter.stop();
       dataset.stop();
       documents.stop();

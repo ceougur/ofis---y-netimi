@@ -711,6 +711,75 @@
   const allSectors = () => catalog.groups.flatMap(group => group.sectors.map(sector => ({ ...sector, group: group.id, groupName: group.name })));
   const sectorName = id => allSectors().find(sector => sector.id === id)?.name || id;
 
+  // ---------- Kendi sektörünü oluştur (v2.0.2) ----------
+  // Aranan sektör listede yoksa: mevcut sektörlerle aynı değerler (ad, kayda ne dendiği, uzman rolü, alt başlık,
+  // modüller) ve isteğe bağlı tanıtıcı kolon başlıkları. Kaydedilen sektör seçicide "Kendi sektörleriniz"de durur.
+  const pluralOf = word => {
+    const text = String(word || "").trim();
+    if (!text) return "";
+    const vowels = text.toLocaleLowerCase("tr-TR").match(/[aıoueiöü]/g);
+    return `${text}${"aıou".includes(vowels ? vowels[vowels.length - 1] : "e") ? "lar" : "ler"}`;
+  };
+  const upperFirst = text => (text ? text.charAt(0).toLocaleUpperCase("tr-TR") + text.slice(1) : text);
+  // Verinin öne çıkan kolonları: tanıtıcı başlık önerisi (sonraki yüklemelerde bu sektör önerilsin).
+  const dataHeaders = () => (insight?.order || []).slice(0, 5);
+
+  function sectorForm({ initial = {}, editing = null } = {}) {
+    return new Promise(resolve => {
+      let result = null;
+      const headers = initial.headers ?? dataHeaders();
+      const modal = HOF.formModal({
+        title: editing ? "Sektörü düzenle" : "Kendi sektörünüzü oluşturun",
+        eyebrow: "SEKTÖR",
+        size: "wide",
+        intro: editing ? "Değişiklik bu sektörü kullanan tüm görünümlere uygulanır." : "Listede olmayan işinizi kendiniz tanımlayın. Kaydedince arayüz sizin kelimelerinizle konuşur; verileriniz değişmez.",
+        fields: [
+          { name: "name", label: "Sektörünüzün adı", value: initial.name || "", required: true, autofocus: true, maxlength: 60, placeholder: "ör. Tekne kiralama" },
+          { name: "record", label: "Bir kayda ne diyorsunuz?", value: initial.record || "", required: true, maxlength: 30, placeholder: "ör. tekne, öğrenci, hasta, sözleşme" },
+          { name: "records", label: "Çoğulu", value: initial.records || "", maxlength: 30, placeholder: "kendiliğinden yazılır", help: "Tablo ve kartlarda kullanılır." },
+          { name: "expert", label: "Uzman / sorumlu rolü", value: initial.expert || "", maxlength: 40, placeholder: "ör. Kaptan, Öğretmen, Danışman", help: "Boş bırakılırsa “Sorumlu”." },
+          { name: "subtitle", label: "Kenar çubuğu alt başlığı", value: initial.subtitle || "", maxlength: 60, placeholder: "ör. Tekne kiralama yönetimi" },
+          { name: "tahsilat", label: "Tahsilat ve kasa takibi", type: "checkbox", value: initial.modules ? initial.modules.tahsilat !== false : true },
+          { name: "haciz", label: "Haciz takibi", type: "checkbox", value: Boolean(initial.modules?.haciz) },
+          { name: "headers", label: "Bu sektörü tanıtan kolon başlıkları (isteğe bağlı)", type: "textarea", rows: 2, maxlength: 1500, value: headers.join(", "), placeholder: "ör. Tekne adı, Liman, Kaptan", help: "Virgülle ayırın. Sonraki Excel/Sheets yüklemelerinde program bu sektörü kendisi önerir." },
+        ],
+        extraHtml: '<div class="hof-sector-preview" aria-live="polite"><small>Önizleme</small><div data-preview></div></div>',
+        submitLabel: editing ? "Kaydet" : "Kaydet ve uygula",
+        onClose: () => resolve(result),
+        onSubmit: async data => {
+          const body = { name: data.name, record: data.record, records: data.records, expert: data.expert, subtitle: data.subtitle, modules: { tahsilat: Boolean(data.tahsilat), haciz: Boolean(data.haciz) }, headers: data.headers };
+          const response = editing
+            ? await HOF.api(`/api/workspace/sectors/custom/${encodeURIComponent(editing)}`, { method: "PUT", body })
+            : await HOF.api("/api/workspace/sectors/custom", { method: "POST", body });
+          catalog = null;
+          if (response.profile) applyProfile(response.profile);
+          result = response.sector;
+          return undefined;
+        },
+      });
+      const dialog = modal.dialog;
+      const form = dialog.querySelector("form");
+      form.classList.add("hof-sector-form");
+      const field = name => form.querySelector(`[name="${name}"]`);
+      const plural = field("records");
+      let pluralTouched = Boolean(initial.records);
+      plural.addEventListener("input", () => (pluralTouched = Boolean(plural.value.trim())));
+      const preview = () => {
+        const name = field("name").value.trim() || "Sektörünüz";
+        const record = field("record").value.trim().toLocaleLowerCase("tr-TR") || "kayıt";
+        if (!pluralTouched) plural.value = field("record").value.trim() ? pluralOf(record) : "";
+        const records = plural.value.trim() || pluralOf(record);
+        const expert = field("expert").value.trim() || "Sorumlu";
+        const subtitle = field("subtitle").value.trim() || `${name} yönetimi`;
+        field("subtitle").placeholder = `${name} yönetimi`;
+        dialog.querySelector("[data-preview]").innerHTML = `<span class="hof-preview-brand"><b>DestekOfis</b><small>${esc(subtitle)}</small></span><span class="hof-preview-chip">${esc(upperFirst(record))} özeti</span><span class="hof-preview-chip">Toplam ${esc(record)}</span><span class="hof-preview-chip">${esc(upperFirst(records))}</span><span class="hof-preview-chip">${esc(expert)}</span>`;
+      };
+      form.addEventListener("input", preview);
+      preview();
+    });
+  }
+  HOF.createSector = options => sectorForm(options);
+
   // Aranabilir ve kaydırılabilir sektör seçici (klavyeyle: ↑ ↓ Enter Esc).
   async function pickSector({ title = "Sektörünüzü seçin", suggested = "", intro = "" } = {}) {
     try {
@@ -732,6 +801,7 @@
             <label class="hof-picker-search">${icon("search", 16)}<input type="search" role="combobox" aria-expanded="true" aria-controls="${listId}" aria-autocomplete="list" placeholder="Sektör ara… (ör. klinik, emlak, sigorta, galeri, okul)" autocomplete="off" autofocus></label>
             <div class="hof-picker-list" id="${listId}" role="listbox" aria-label="Sektörler" tabindex="-1"></div>
             <p class="hof-picker-count" aria-live="polite"></p>
+            ${canManage() ? '<div class="hof-picker-create"><span><b>Aradığınız sektör listede yok mu?</b> Kendi sektörünüzü birkaç saniyede oluşturun.</span><button type="button" class="hof-button hof-button-small" data-create>+ Kendi sektörünü oluştur</button></div>' : ""}
           </div>`,
         onClose: () => resolve(chosen),
       });
@@ -741,7 +811,7 @@
       const sectors = allSectors();
       const haystack = new Map(sectors.map(sector => [sector.id, fold([sector.name, sector.groupName, sector.record, sector.expert, ...(sector.keys || [])].join(" ")).split(" ")]));
       const option = (sector, extraClass = "") => {
-        const chips = [sector.id === suggested ? '<span class="hof-chip hof-chip-accent">Önerilen</span>' : "", sector.id === current ? '<span class="hof-chip">Şu an</span>' : ""].join("");
+        const chips = [sector.id === suggested ? '<span class="hof-chip hof-chip-accent">Önerilen</span>' : "", sector.id === current ? '<span class="hof-chip">Şu an</span>' : "", sector.custom ? '<span class="hof-chip hof-chip-own">Sizin</span>' : ""].join("");
         return `<div role="option" id="${listId}-${sector.id}" class="hof-picker-option ${extraClass}" data-id="${esc(sector.id)}" aria-selected="false"><span class="hof-picker-name"><b>${esc(sector.name)}</b>${chips}</span><small>${esc(sector.record)} · ${esc(sector.expert)}</small></div>`;
       };
       const render = () => {
@@ -759,7 +829,9 @@
           html += `<div class="hof-picker-group" role="presentation">${esc(group.name)}</div>${items.map(sector => option(sector)).join("")}`;
           shown += items.length;
         }
-        list.innerHTML = html || `<p class="hof-empty">“${esc(input.value)}” için sonuç yok. Daha genel bir kelime deneyin ya da <button type="button" class="hof-link" data-id="genel">Genel</button> ile devam edin.</p>`;
+        list.innerHTML =
+          html ||
+          `<div class="hof-empty hof-picker-none"><p>“${esc(input.value)}” listede yok.</p>${canManage() ? `<button type="button" class="hof-button" data-create>+ “${esc(input.value.trim())}” adıyla kendi sektörünüzü oluşturun</button><small>ya da daha genel bir kelime deneyin · <button type="button" class="hof-link" data-id="genel">Genel ile devam edin</button></small>` : `<small>Daha genel bir kelime deneyin ya da <button type="button" class="hof-link" data-id="genel">Genel</button> ile devam edin.</small>`}</div>`;
         count.textContent = tokens.length ? `${number(shown)} sektör bulundu` : `${number(sectors.length)} sektör, ${number(catalog.groups.length)} grup`;
         setActive(list.querySelector(".hof-picker-option"));
       };
@@ -805,7 +877,16 @@
         const node = event.target.closest(".hof-picker-option");
         if (node && node !== active) setActive(node);
       });
-      list.addEventListener("click", event => choose(event.target.closest("[data-id]")?.dataset.id));
+      list.addEventListener("click", event => {
+        if (event.target.closest("[data-create]")) return;
+        choose(event.target.closest("[data-id]")?.dataset.id);
+      });
+      // Kendi sektörü: kart seçicinin üstünde açılır; kaydedilince seçici o sektörle kapanır.
+      modal.dialog.addEventListener("click", async event => {
+        if (!event.target.closest("[data-create]")) return;
+        const sector = await sectorForm({ initial: { name: upperFirst(input.value.trim()) } });
+        if (sector) choose(sector.id);
+      });
       render();
     });
   }
@@ -955,7 +1036,7 @@
     if (reasoning) html += `<p class="hof-quality-line">${icon("sparkle", 16)} Akıllı denetim: <b>${number(reasoning.relations.length)}</b> hesap kuralı öğrenildi · ${reasoning.count ? `<b>${number(reasoning.count)}</b> olası tutarsızlık` : "tutarsızlık bulunmadı"} <button type="button" class="hof-link" data-quality>Ayrıntılar</button></p>`;
     const buttons = [];
     if (unsure) {
-      buttons.push('<button type="button" class="hof-button hof-button-ghost" data-general>Genel ile devam et</button>', '<button type="button" class="hof-button" data-pick>Sektörümü seç</button>');
+      buttons.push('<button type="button" class="hof-button hof-button-ghost" data-general>Genel ile devam et</button>', '<button type="button" class="hof-button hof-button-ghost" data-create-sector>Kendi sektörümü oluştur</button>', '<button type="button" class="hof-button" data-pick>Sektörümü seç</button>');
     } else if (!same) {
       buttons.push('<button type="button" class="hof-button hof-button-ghost" data-pick>Başka sektör seç</button>');
       if (current !== "genel") buttons.push('<button type="button" class="hof-button hof-button-ghost" data-keep>Mevcut görünümü koru</button>');
@@ -992,6 +1073,9 @@
       } else if ("pick" in target.dataset) {
         const id = await pickSector({ suggested: s.suggestion !== "genel" ? s.suggestion : "", intro: "Kelimeyle arayın ya da listeyi kaydırarak sektörünüzü bulun." });
         if (id && (await applySector(id, id === s.suggestion ? "confirmed" : "manual"))) finish();
+      } else if ("createSector" in target.dataset) {
+        const sector = await sectorForm({ initial: { headers: (analysis.order || []).slice(0, 5) } });
+        if (sector && (await applySector(sector.id, "manual"))) finish();
       } else if ("general" in target.dataset) {
         if (current === "genel" || (await applySector("genel", "manual"))) finish();
       } else if ("keep" in target.dataset || "done" in target.dataset) finish();
@@ -1043,6 +1127,7 @@
             <div class="hof-profile-actions"><button type="button" class="hof-button hof-button-small hof-button-ghost" data-profile-analyze>Verimi analiz et</button><button type="button" class="hof-button hof-button-small" data-profile-pick>Sektörü değiştir</button></div>
           </div>
           <p class="hof-modal-text hof-muted">Kayıtlara <b>${esc(HOF.vocab.record)}</b>, uzman rolüne <b>${esc(HOF.vocab.expert)}</b> deniyor. Başlıkları sayfadaki kalem (✎) simgesiyle değiştirebilirsiniz.</p>
+          <div class="hof-custom-sectors"><div class="hof-custom-sectors-head"><b>Kendi sektörleriniz</b><button type="button" class="hof-button hof-button-small hof-button-ghost" data-create-sector>+ Kendi sektörünü oluştur</button></div><ul data-custom-list><li class="hof-muted">Yükleniyor…</li></ul></div>
           ${labels.length ? `<ul class="hof-label-list">${labels.map(([key, value]) => `<li><span>${esc(profile.slots?.[key]?.name || key)}</span><b>${esc(value)}</b><button type="button" class="hof-link" data-label-reset="${esc(key)}">Varsayılana dön</button></li>`).join("")}</ul><button type="button" class="hof-button hof-button-small hof-button-ghost" data-labels-reset>Tüm başlıkları varsayılana döndür</button>` : ""}
         </section>`;
     },
@@ -1056,6 +1141,54 @@
         modal.close();
         const id = await pickSector({ suggested: insight?.sector?.suggestion !== "genel" ? insight?.sector?.suggestion || "" : "" });
         if (id) applySector(id, "manual");
+      });
+      // Kendi sektörleri: oluştur, düzenle, sil (v2.0.2).
+      const customList = dialog.querySelector("[data-custom-list]");
+      const drawCustom = async () => {
+        if (!customList) return;
+        try {
+          catalog = null;
+          await loadCatalog();
+        } catch {
+          customList.innerHTML = '<li class="hof-muted">Liste alınamadı.</li>';
+          return;
+        }
+        const own = catalog.groups.find(group => group.custom)?.sectors || [];
+        customList.innerHTML = own.length
+          ? own.map(item => `<li><span><b>${esc(item.name)}</b><small>${esc(item.fields.record)} / ${esc(item.fields.records)} · ${esc(item.fields.expert)}${item.id === profile?.sector?.id ? " · şu an kullanılıyor" : ""}</small></span><span class="hof-custom-actions">${item.id === profile?.sector?.id ? "" : `<button type="button" class="hof-link" data-use="${esc(item.id)}">Uygula</button>`}<button type="button" class="hof-link" data-edit="${esc(item.id)}">Düzenle</button><button type="button" class="hof-link hof-link-danger" data-delete="${esc(item.id)}">Sil</button></span></li>`).join("")
+          : '<li class="hof-muted">Henüz yok. Aradığınız sektör listede yoksa buradan ya da sektör seçiciden oluşturun.</li>';
+      };
+      drawCustom();
+      dialog.querySelector("[data-create-sector]")?.addEventListener("click", async () => {
+        const sector = await sectorForm();
+        if (sector && (await applySector(sector.id, "manual"))) modal.close();
+        else drawCustom();
+      });
+      customList?.addEventListener("click", async event => {
+        const button = event.target.closest("[data-use], [data-edit], [data-delete]");
+        if (!button) return;
+        const own = catalog?.groups.find(group => group.custom)?.sectors || [];
+        const item = own.find(entry => entry.id === (button.dataset.use || button.dataset.edit || button.dataset.delete));
+        if (!item) return;
+        if (button.dataset.use) {
+          if (await applySector(item.id, "manual")) modal.close();
+        } else if (button.dataset.edit) {
+          if (await sectorForm({ initial: item.fields, editing: item.id })) HOF.toast(`“${item.name}” güncellendi.`, { type: "success" });
+          drawCustom();
+        } else {
+          const inUse = item.id === profile?.sector?.id;
+          const yes = await HOF.confirm({ title: `“${item.name}” silinsin mi?`, message: `${inUse ? "Bu sektör şu an kullanılıyor; silinince görünüm Genel'e döner. " : ""}Verileriniz değişmez.`, confirmLabel: "Sektörü sil", danger: true });
+          if (!yes) return;
+          try {
+            const result = await HOF.api(`/api/workspace/sectors/custom/${encodeURIComponent(item.id)}`, { method: "DELETE" });
+            if (result.profile) applyProfile(result.profile);
+            catalog = null;
+            HOF.toast(`“${item.name}” silindi.`, { type: "success" });
+            drawCustom();
+          } catch (error) {
+            HOF.toastError(error);
+          }
+        }
       });
       dialog.querySelectorAll("[data-label-reset]").forEach(button =>
         button.addEventListener("click", async () => {

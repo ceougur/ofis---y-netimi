@@ -218,7 +218,7 @@
       intro: "Sayfa, verinizin sekmelerinin yanına eklenir ve Excel gibi doldurulur: başlıkları ve hücreleri yazın, siz başka hücreye geçince kaydedilir. Satır, kolon ve formül (Alt toplam, Yan toplam…) sonradan da eklenir.",
       fields: [
         { name: "name", label: "Sayfa adı", required: true, autofocus: true, maxlength: 60, placeholder: "ör. Masraflar" },
-        { name: "columns", label: "Kolon sayısı", type: "number", value: "5", min: 1, step: 1, inputmode: "numeric" },
+        { name: "columns", label: "Kolon sayısı", type: "number", value: "5", min: 1, step: 1, inputmode: "numeric", help: "İstediğiniz kadar kolon (500'e kadar); sonradan da ekleyebilirsiniz." },
         { name: "rows", label: "Satır sayısı", type: "number", value: "20", min: 1, step: 1, inputmode: "numeric" },
         { name: "names", label: "Kolon başlıkları (isteğe bağlı)", type: "textarea", rows: 3, maxlength: 4000, placeholder: "Virgülle ayırın ya da her satıra bir başlık yazın: Tarih, Açıklama, Tutar", help: "Boş bırakırsanız başlıkları sayfada yazarsınız." },
       ],
@@ -230,9 +230,11 @@
           .filter(Boolean);
         const columns = Math.floor(Number(data.columns));
         const rowCount = Math.floor(Number(data.rows));
-        if (!Number.isFinite(columns) || columns < 1 || columns > 60) throw new Error("Kolon sayısı 1 ile 60 arasında olmalı.");
-        if (!Number.isFinite(rowCount) || rowCount < 1 || rowCount > 2000) throw new Error("Satır sayısı 1 ile 2000 arasında olmalı.");
-        if (names.length > 60) throw new Error("En fazla 60 kolon başlığı yazılabilir.");
+        const limits = { columns: 500, rows: 2000, cells: 250_000 }; // sunucudaki FREE_LIMITS ile aynı
+        if (!Number.isFinite(columns) || columns < 1 || columns > limits.columns) throw new Error(`Kolon sayısı 1 ile ${limits.columns} arasında olmalı.`);
+        if (!Number.isFinite(rowCount) || rowCount < 1 || rowCount > limits.rows) throw new Error(`Satır sayısı 1 ile ${limits.rows} arasında olmalı.`);
+        if (names.length > limits.columns) throw new Error(`En fazla ${limits.columns} kolon başlığı yazılabilir.`);
+        if (Math.max(columns, names.length) * rowCount > limits.cells) throw new Error(`Sayfa çok büyük olur: kolon × satır en fazla ${limits.cells.toLocaleString("tr-TR")} olabilir (ör. 500 kolon × 500 satır). Satır sayısını azaltın; satırlar sonradan da eklenir.`);
         const sheet = await HOF.api(API, { method: "POST", body: { name: data.name, columns: Math.max(columns, names.length), rows: rowCount, names } });
         HOF.toast(`“${sheet.name}” sayfası eklendi. Başlıkları ve hücreleri yazmaya başlayın.`, { type: "success" });
         startAt = names.length ? { r: 0, c: 0 } : { r: -1, c: 0 };

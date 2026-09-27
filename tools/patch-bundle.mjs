@@ -126,6 +126,24 @@ export const PATCHES = [
     find: "x.jsx(\"p\",{\"data-loc\":\"client/src/pages/Home.tsx:82\",className:\"nav-label\",children:\"ÇALIŞMA ALANI\"}),x.jsxs(\"button\",{\"data-loc\":\"client/src/pages/Home.tsx:82\",className:\"nav-item active\",children:[x.jsx(S_,{\"data-loc\":\"client/src/pages/Home.tsx:82\",size:17}),\" Dinamik görünüm\"]}),x.jsxs(\"button\",{\"data-loc\":\"client/src/pages/Home.tsx:82\",className:\"nav-item\",children:[x.jsx(rv,{\"data-loc\":\"client/src/pages/Home.tsx:82\",size:17}),\" Tüm kayıtlar \",x.jsx(\"span\",{\"data-loc\":\"client/src/pages/Home.tsx:82\",className:\"nav-count\",children:w.rows.length})]}),x.jsxs(\"button\",{\"data-loc\":\"client/src/pages/Home.tsx:82\",className:\"nav-item\",children:[x.jsx(tv,{\"data-loc\":\"client/src/pages/Home.tsx:82\",size:17}),\" Bu ay \",x.jsx(\"span\",{\"data-loc\":\"client/src/pages/Home.tsx:82\",className:\"nav-count soft\",children:w.currentMonthRows.length})]}),x.jsx(\"p\",{\"data-loc\":\"client/src/pages/Home.tsx:82\",className:\"nav-label mt-8\",children:\"VERİ KAYNAĞI\"}),",
     replace: "",
   },
+  {
+    id: "tum-kolonlar-basliklar",
+    why: "v2.0.2: tablo yalnızca ilk 7 kolonu gösteriyordu; Excel/Sheets'teki dolu tüm kolonlar gösterilir (yatay kaydırma, hof-grid.js).",
+    find: 'children:w.columns.slice(0,7).map(Z=>x.jsx("th"',
+    replace: 'children:w.columns.map(Z=>x.jsx("th"',
+  },
+  {
+    id: "tum-kolonlar-hucreler",
+    why: "v2.0.2: satırlarda da tüm kolonlar.",
+    find: 'children:w.columns.slice(0,7).map(Dt=>',
+    replace: 'children:w.columns.map(Dt=>',
+  },
+  {
+    id: "tablo-alt-basligi",
+    why: "v2.0.2: tablo artık tüm kolonları gösterir; \"öncelikli kayıt\" ifadesi yanıltıcıydı.",
+    find: 'w.displayRows.length," öncelikli kayıt · ",w.columns.length," kolon otomatik oluşturuldu"',
+    replace: 'w.displayRows.length," kayıt · ",w.columns.length," kolon"',
+  },
 ];
 
 // Stil dosyası: Google Fonts'a giden dış @import kaldırılır (yazı tipleri artık sunucudan, çevrimdışı çalışır).

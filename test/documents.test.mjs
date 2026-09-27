@@ -4,6 +4,7 @@ import { existsSync, readdirSync, utimesSync } from "node:fs";
 import path from "node:path";
 import { after, before, describe, it } from "node:test";
 import { cleanDocumentName, createDocumentStore, detectDocumentType } from "../server/lib/documents.mjs";
+import { readZip } from "../server/lib/zip.mjs";
 import { createUser, loginAdmin, startTestServer } from "./helpers.mjs";
 
 const PDF = Buffer.from("%PDF-1.4\n1 0 obj<<>>endobj\ntrailer<<>>\n%%EOF\n");
@@ -87,6 +88,29 @@ describe("kayıt belgeleri", () => {
     assert.deepEqual(names, ["not.txt"]);
     const audit = JSON.stringify((await admin.get("/api/admin/audit?type=case.document.deleted")).data);
     assert.match(audit, /Dilekçe 2026\.pdf/);
+  });
+
+  it("adet sınırı yok; seçilen belgeler özgün biçimleriyle tek .zip olarak iner, aynı adlar çakışmaz (v2.0.2)", async () => {
+    const many = "2026/777";
+    for (let index = 0; index < 30; index += 1) assert.equal((await upload(staff, many, `Tarama ${index + 1}.png`, PNG, "&title=Can%20Er")).status, 200);
+    assert.equal((await upload(staff, many, "Tarama 1.png", PNG)).status, 200, "aynı ad yeniden eklenebilir");
+    const list = (await admin.get(`/api/workspace/cases/${encodeURIComponent(many)}/documents`)).data.data.documents;
+    assert.equal(list.length, 31);
+    const ids = [list[0].id, list[5].id, list[30].id];
+    const response = await other.raw("GET", `/api/workspace/cases/${encodeURIComponent(many)}/documents/archive?ids=${ids.join(",")}`);
+    assert.equal(response.status, 200);
+    assert.equal(response.headers.get("content-type"), "application/zip");
+    assert.match(response.headers.get("content-disposition"), /Belgeler%20-%20Can%20Er\.zip/);
+    const entries = readZip(response.buffer).filter(entry => !entry.directory);
+    assert.deepEqual(entries.map(entry => entry.name), ["Tarama 1.png", "Tarama 6.png", "Tarama 1 (2).png"]);
+    assert.deepEqual(entries[0].data, PNG, "dosya aynen");
+    const all = await admin.raw("GET", `/api/workspace/cases/${encodeURIComponent(many)}/documents/archive`);
+    assert.equal(readZip(all.buffer).length, 31, "seçim yoksa tümü");
+    assert.equal((await admin.raw("GET", `/api/workspace/cases/${encodeURIComponent("yok/1")}/documents/archive`)).status, 404);
+    const event = server.app.store.get("SELECT payload_json FROM audit_events WHERE type = 'case.document.exported' ORDER BY created_at DESC LIMIT 1");
+    assert.equal(JSON.parse(event.payload_json).count, 31);
+    // Aşağıdaki temizlik testi yalnızca ilk kaydın belgelerini sayar.
+    server.app.store.run("DELETE FROM case_documents WHERE case_key = ?", many);
   });
 
   it("aynı dosya iki kez yer kaplamaz; silinen belgenin dosyası 30 gün sonra temizlenir", () => {

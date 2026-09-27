@@ -104,7 +104,8 @@ export function registerWorkspaceRoutes(router, { store, auth, audit, dataset, c
       if (name && !name.startsWith("__") && content) clean[name] = content;
     }
     if (!Object.keys(clean).length) throw new HttpError(400, "En az bir bilgi girilmelidir.");
-    const tab = String(sheet || "").trim().slice(0, 200);
+    // Form görünen sekme adını gönderir; kayıt asıl (Excel'deki) sekme adıyla saklanır (v2.0.2).
+    const tab = String((dataset.originalTab ? dataset.originalTab(String(sheet || "").trim()) : sheet) || "").trim().slice(0, 200);
     // Kimlik: verinin kimlik kolonu (1.6.0, ör. "HASTA NO"), yoksa dosya numarası kolonları, o da yoksa yeni kimlik.
     const identity = dataset.identity?.();
     const identityValue = identity?.mode === "column" ? String(clean[identity.column] || "").trim().replace(/\s+/g, " ") : "";
@@ -147,6 +148,29 @@ export function registerWorkspaceRoutes(router, { store, auth, audit, dataset, c
     const body = await readJson(req);
     const values = { "DOSYA NO": body.caseKey, "BORÇLU": body.client, "ALACAKLI": body.creditor, "İCRA DAİRESİ": body.court, "TELEFON": body.phone };
     ok(res, createRecord(user, sourceNameOf(body), values, text(body.caseKey)));
+  });
+
+  // ---- Sekmeler (v2.0.2): kalemle yeniden adlandırma ve silme (gizleme; Yönetim → Silinenler'den geri gelir) ----
+  router.post("/api/workspace/tabs/rename", async ({ req, res }) => {
+    const user = auth.requirePermission(req, "sources.manage");
+    const body = await readJson(req);
+    const result = dataset.renameTab(user, text(body.tab).slice(0, 300), body.name);
+    changed(user, "source", { tab: result.name });
+    ok(res, result);
+  });
+  router.post("/api/workspace/tabs/hide", async ({ req, res }) => {
+    const user = auth.requirePermission(req, "sources.manage");
+    const body = await readJson(req);
+    const result = dataset.hideTab(user, text(body.tab).slice(0, 300));
+    changed(user, "source", { tab: result.name });
+    ok(res, result);
+  });
+  router.post("/api/workspace/tabs/unhide", async ({ req, res }) => {
+    const user = auth.requirePermission(req, "sources.manage");
+    const body = await readJson(req);
+    const result = dataset.unhideTab(user, text(body.original).slice(0, 300));
+    changed(user, "source", { tab: result.name });
+    ok(res, result);
   });
 
   router.get("/api/workspace/deleted", async ({ req, res, url }) => {
