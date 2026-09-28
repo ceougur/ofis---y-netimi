@@ -12,6 +12,7 @@ import { can } from "../lib/permissions.mjs";
 import { receiptPdf } from "../lib/plan-report.mjs";
 import { dayText, isoDay, parseDay } from "../lib/plans.mjs";
 import { tablePdf, tl } from "../lib/report-pdf.mjs";
+import { readSheetMatrices } from "../lib/sheets.mjs";
 import { buildXlsx } from "../lib/xlsx-write.mjs";
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
@@ -21,7 +22,7 @@ const MAX_FIELDS = 60;
 const EPS = 0.005;
 const KIND_TEXT = { debt: "Borç", credit: "Alacak", in: "Tahsilat", out: "Ödeme" };
 
-export function registerAccountRoutes(router, { store, auth, audit, events, trash, dataset = null, plans = () => null }) {
+export function registerAccountRoutes(router, { store, auth, audit, events, trash, config = {}, dataset = null, plans = () => null }) {
   const now = () => new Date().toISOString();
   const today = () => isoDay(new Date());
   const newId = prefix => `${prefix}-${randomUUID()}`;
@@ -284,11 +285,13 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     }
     return String(max + 1);
   };
+  // Numara başka bir caride kullanılıyorsa sıradaki numara verilir (iki carinin aynı numarası olmaz).
+  const freeRef = refNo => (refNo && !store.get("SELECT 1 AS found FROM accounts WHERE deleted_at IS NULL AND ref_no = ?", refNo) ? refNo : "");
   function insertAccount(user, input) {
     const id = newId("account");
     store.run(
       "INSERT INTO accounts (id, ref_no, type, name, phone, email, address, registered_on, group_id, subgroup_id, note, fields_json, case_key, case_source, case_title, status, created_by, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-      id, input.refNo || nextRef(), input.type || "customer", input.name, input.phone || "", input.email || "", input.address || "", input.registeredOn || today(), input.groupId || null, input.subgroupId || null, input.note || "", JSON.stringify(input.fields || []),
+      id, freeRef(input.refNo) || nextRef(), input.type || "customer", input.name, input.phone || "", input.email || "", input.address || "", input.registeredOn || today(), input.groupId || null, input.subgroupId || null, input.note || "", JSON.stringify(input.fields || []),
       input.caseKey || "", input.caseKey ? input.caseSource || currentSource() : "", input.caseKey ? input.caseTitle || "" : "", input.status || "active", user.id, now(), now(),
     );
     return id;
@@ -314,6 +317,8 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     const previous = accountRow(params.id);
     const body = await readJson(req);
     const result = store.tx(() => {
+      const wantedRef = limited(body.refNo, 30, "Cari No");
+      if (wantedRef && wantedRef !== previous.refNo && store.get("SELECT 1 AS found FROM accounts WHERE deleted_at IS NULL AND ref_no = ? AND id <> ?", wantedRef, previous.id)) throw new HttpError(409, `${wantedRef} numarası başka bir caride kullanılıyor.`);
       // Görünen grup adları birleştirilmez: grup boşaltılınca eski adla yeniden açılmasın.
       const input = accountInput({ ...previous, groupName: "", subgroupName: "", ...body }, user, previous);
       store.run(
@@ -521,6 +526,23 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     ok(res, detail(params.id, user));
   });
 
+  // ---------- Google Sheets'ten toplu alım (Cari, Stok, Taksitler ortak) ----------
+  // Sunucu Sheet'in sekmelerini hücre matrisi olarak okur; tarayıcı Excel'deki gibi sayfayı seçip kolonları eşler.
+  router.post("/api/workspace/import/google-sheet", async ({ req, res }) => {
+    const user = auth.requireUser(req);
+    if (!["accounts.manage", "stock.manage", "plans.manage"].some(permission => can(user.role, permission))) throw new HttpError(403, "Toplu yükleme yönetici, uzman ve muhasebe yetkisidir.");
+    const body = await readJson(req);
+    const url = limited(body.url, 2000, "Bağlantı");
+    if (!url) throw new HttpError(400, "Google Sheets bağlantısını yapıştırın.");
+    try {
+      const result = await readSheetMatrices(url, { fetchImpl: config.fetchImpl || fetch });
+      audit(user, "import.sheet.read", "google-sheet", { tabs: result.sheets.length, rows: result.sheets.reduce((sum, sheet) => sum + sheet.matrix.length, 0) });
+      ok(res, result);
+    } catch (error) {
+      throw new HttpError(400, error.message || "Google Sheets okunamadı.");
+    }
+  });
+
   // ---------- Excel'den (ya da açık tablodan) toplu alım ----------
   // Tarayıcı dosyayı okur (hof-excel-worker.js) ya da açık tablonun satırlarını gönderir; başlıklar rollerle eşlenir.
   // Taksit sorulmaz. Aynı cari (tablodaki kayıt, Cari No ya da ad + telefon) varsa "atla" ya da "güncelle".
@@ -538,8 +560,10 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
       const found = store.get("SELECT id FROM accounts WHERE deleted_at IS NULL AND case_key = ? AND case_source = ?", caseKey, caseSource);
       if (found) return found.id;
     }
+    // Cari No tek başına kimlik sayılmaz (Excel'deki "S.N" satır numarasıdır, başka carinin numarasıyla çakışabilir):
+    // aynı numara ancak ad da aynıysa aynı cari.
     if (refNo) {
-      const found = store.get("SELECT id FROM accounts WHERE deleted_at IS NULL AND ref_no = ?", refNo);
+      const found = store.get("SELECT id FROM accounts WHERE deleted_at IS NULL AND ref_no = ? AND name = ? COLLATE NOCASE", refNo, name);
       if (found) return found.id;
     }
     const phoneDigits = digits(phone);
@@ -572,7 +596,7 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     const source = currentSource();
     const cell = (row, index) => (index >= 0 ? String(row[index] ?? "").trim() : "");
     const rows = matrix.slice(headerAt + 1, headerAt + 1 + MAX_IMPORT);
-    const report = { created: 0, updated: 0, skipped: [], groups: 0, balances: 0, linked: 0 };
+    const report = { created: 0, updated: 0, skipped: [], groups: 0, balances: 0, linked: 0, renumbered: 0 };
     const skip = (index, reason) => report.skipped.push({ row: headerAt + index + 2, reason });
     const ensure = (name, parentId = null) => (name && plans()?.resolveGroups ? plans().resolveGroups(parentId ? { groupId: parentId, subgroupName: name } : { groupName: name }, user)[parentId ? "subgroupId" : "groupId"] : null);
     const before = store.get("SELECT COUNT(*) AS n FROM plan_groups").n;
@@ -627,7 +651,14 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
           report.updated += 1;
           return;
         }
-        const id = insertAccount(user, { ...person, refNo: person.refNo || String((autoRef += 1)), groupId, subgroupId });
+        // Numara: Excel'deki boş değilse ve başka caride yoksa o; değilse sıradaki boş numara (tablo taranmadan).
+        let wanted = person.refNo && freeRef(person.refNo) ? person.refNo : "";
+        if (!wanted) {
+          if (person.refNo) report.renumbered += 1;
+          do wanted = String((autoRef += 1));
+          while (!freeRef(wanted));
+        }
+        const id = insertAccount(user, { ...person, refNo: wanted, groupId, subgroupId });
         if (person.caseKey) report.linked += 1;
         const opening = parseAmount(cell(row, col.balance));
         if (Number.isFinite(opening) && Math.abs(opening) > EPS) {

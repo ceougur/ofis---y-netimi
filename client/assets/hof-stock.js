@@ -1,0 +1,433 @@
+/* DestekOfis — Stok (v2.0.6): Kasa mantığıyla çalışan basit stok.
+ * LİSTE: arama, kategori, durum (Tümü / Kritik / Tükenen), sıralama; göstergeler (ürün, kritik, tükenen, stok değeri);
+ * satırda hızlı "+ Giriş" / "− Çıkış"; PDF, Yazdır, Excel. KART: ürün bilgileri, göstergeler ve yürüyen miktarlı hareketler.
+ * Hareket formu: miktar × birim fiyat = tutar (anında hesaplanır). Para isteğe bağlı: Kasa'dan ödendi / Kasa'ya tahsil
+ * edildi ya da cariye yazıldı (tedarikçiye alacak, müşteriye borç). Sunucu: server/routes/stock.mjs. */
+(() => {
+  "use strict";
+  const HOF = window.HOF;
+  const { esc } = HOF;
+  const money = value => HOF.formatMoney(value);
+  const office = () => HOF.office || {};
+  const qtyText = value => new Intl.NumberFormat("tr-TR", { maximumFractionDigits: 3 }).format(Number(value) || 0);
+  const parseNumber = value => {
+    let text = String(value ?? "").trim().replace(/\s+/g, "").replace(/[^\d.,-]/g, "");
+    if (!text) return Number.NaN;
+    if (/^-?\d{1,3}(\.\d{3})+(,\d+)?$/.test(text)) text = text.replace(/\./g, "").replace(",", ".");
+    else text = text.replace(",", ".");
+    return Number(text);
+  };
+  const UNITS = ["adet", "paket", "kutu", "koli", "kg", "gr", "lt", "ml", "metre", "top", "çift", "takım"];
+  const STATES = [
+    { id: "all", label: "Tümü" },
+    { id: "low", label: "Kritik" },
+    { id: "out", label: "Tükenen" },
+  ];
+  const SORTS = [
+    ["name", "Ada göre"],
+    ["code", "Koda göre"],
+    ["category", "Kategoriye göre"],
+    ["qty", "Mevcuda göre (azdan çoğa)"],
+    ["value", "Değere göre (çoktan aza)"],
+  ];
+  const canManage = () => HOF.can("stock.manage");
+  const canMove = () => HOF.can("stock.move");
+  const moduleName = () => HOF.uiLabel?.("side.stock", "Stok") || "Stok";
+  const stateBadge = item =>
+    item.qty <= 0 && (item.minQty > 0 || item.qtyIn > 0) ? '<span class="hof-plan-badge is-late">Tükendi</span>' : item.low ? '<span class="hof-plan-badge is-soon">Kritik</span>' : "";
+
+  let modal = null;
+  const view = { mode: "list", id: "", q: "", category: "", state: "all", sort: "name", list: null, item: null, limit: 200 };
+  // Binlerce kalemde ekran hızlı kalsın: 200'er satır çizilir; arama ve süzgeç tümünde çalışır.
+  const PAGE = 200;
+  let listRequest = 0;
+  const body = () => modal?.dialog.querySelector("[data-stock]");
+  const query = () => new URLSearchParams({ q: view.q, category: view.category, state: view.state, sort: view.sort });
+  const listPdfUrl = () => `/api/workspace/stock/liste.pdf?${query()}&title=${encodeURIComponent(moduleName())}`;
+  const listXlsxUrl = () => `/api/workspace/stock/export.xlsx?${query()}&title=${encodeURIComponent(moduleName())}`;
+  const cardPdfUrl = item => `/api/workspace/stock/${encodeURIComponent(item.id)}/hareketler.pdf`;
+
+  async function loadList() {
+    const ticket = ++listRequest;
+    try {
+      const data = await HOF.api(`/api/workspace/stock?${query()}`);
+      if (ticket !== listRequest) return;
+      view.list = data;
+      if (view.mode === "list") renderList();
+    } catch (error) {
+      if (ticket === listRequest && view.mode === "list" && body()) body().innerHTML = `<p class="hof-empty">${esc(error.message)}</p>`;
+    }
+  }
+  async function loadItem(id) {
+    try {
+      view.item = await HOF.api(`/api/workspace/stock/${encodeURIComponent(id)}`);
+      view.id = id;
+      view.mode = "card";
+      renderCard();
+    } catch (error) {
+      HOF.toastError(error);
+      view.mode = "list";
+      renderList();
+      loadList();
+    }
+  }
+  const applyItem = data => {
+    view.item = data;
+    if (modal) {
+      if (view.mode === "card" && view.id === data.id) renderCard();
+      loadList();
+    }
+    HOF.emit("stock-changed", { itemId: data.id });
+  };
+
+  function open(itemId = "") {
+    if (!HOF.can("stock.view")) return HOF.toast(`${moduleName()} için yetkiniz yok.`, { type: "error" });
+    if (modal) {
+      if (itemId) loadItem(itemId);
+      return;
+    }
+    modal = HOF.modal({
+      title: moduleName(),
+      eyebrow: "OPERASYON",
+      size: "wide",
+      body: '<div class="hof-plans hof-stock" data-stock><p class="hof-empty">Yükleniyor…</p></div>',
+      onClose: () => {
+        modal = null;
+        view.mode = "list";
+        view.id = "";
+      },
+    });
+    modal.dialog.classList.add("hof-plans-modal", "hof-stock-modal");
+    modal.dialog.addEventListener("click", onClick);
+    modal.dialog.addEventListener("change", onChange);
+    modal.dialog.addEventListener("input", onInput);
+    modal.dialog.addEventListener("keydown", event => {
+      const row = event.target.closest?.("tr[data-item]");
+      if (row && event.key === "Enter" && view.mode === "list" && !event.target.closest("button")) loadItem(row.dataset.item);
+    });
+    if (itemId) loadItem(itemId);
+    else {
+      renderList();
+      loadList();
+    }
+  }
+
+  // ---------- Liste ----------
+  function renderList() {
+    const root = body();
+    if (!root) return;
+    const data = view.list;
+    const manage = canManage();
+    const move = canMove();
+    const filtered = Boolean(view.q || view.category || view.state !== "all");
+    const row = item => `<tr data-item="${esc(item.id)}" class="${item.low ? "is-overdue" : ""}" tabindex="0"><td class="hof-plan-no">${esc(item.code || "")}</td><td><b>${esc(item.name)}</b> ${stateBadge(item)}<small>${esc(item.category || "Kategorisiz")}${item.note ? ` · ${esc(item.note)}` : ""}</small></td><td class="num"><b class="hof-stock-qty${item.qty <= 0 ? " is-out" : item.low ? " is-low" : ""}">${esc(qtyText(item.qty))}</b> <small>${esc(item.unit)}</small></td><td class="num">${item.minQty ? `${esc(qtyText(item.minQty))} <small>${esc(item.unit)}</small>` : '<small class="hof-muted">—</small>'}</td><td class="num">${item.unitPrice ? esc(money(item.unitPrice)) : '<small class="hof-muted">—</small>'}</td><td class="num">${esc(money(item.value))}</td><td>${item.lastMove ? esc(HOF.formatDate(item.lastMove)) : '<small class="hof-muted">—</small>'}</td><td class="hof-cash-actions">${move ? `<button type="button" class="hof-mini hof-mini-text" data-quick="in" data-id="${esc(item.id)}" title="Giriş (alım, gelen)">+ Giriş</button><button type="button" class="hof-mini hof-mini-text" data-quick="out" data-id="${esc(item.id)}" title="Çıkış (kullanım, satış)">− Çıkış</button>` : ""}</td></tr>`;
+    root.innerHTML = `<div class="hof-cash-bar"><div class="hof-tabs" role="group" aria-label="Durum">${STATES.map(item => `<button type="button" data-state="${item.id}" aria-pressed="${String(item.id === view.state)}">${item.label}${data && item.id !== "all" ? ` <b>${item.id === "low" ? data.totals.low : ""}</b>` : ""}</button>`).join("")}</div>
+      <div class="hof-cash-add">${manage ? '<button type="button" class="hof-button hof-button-small" data-act="new">+ Yeni ürün</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="import" title="Excel dosyasından ya da Google Sheets’ten ürünleri ve mevcut miktarları tek seferde aç">Excel / Sheets’ten yükle</button>' : ""}</div></div>
+      <div class="hof-plans-filters"><input type="search" data-filter="q" value="${esc(view.q)}" placeholder="Ürün adı, kod, kategori ara…" aria-label="Ara"><select data-filter="category" aria-label="Kategori"><option value="">Tüm kategoriler</option>${(data?.categories || []).map(name => `<option value="${esc(name)}" ${name === view.category ? "selected" : ""}>${esc(name)}</option>`).join("")}</select><select data-filter="sort" aria-label="Sıralama">${SORTS.map(([id, label]) => `<option value="${id}" ${id === view.sort ? "selected" : ""}>${label}</option>`).join("")}</select>${office().outputButtons ? office().outputButtons(listPdfUrl(), "list").replace(/<\/span>$/, `<a class="hof-button hof-button-small hof-button-ghost" href="${esc(listXlsxUrl())}" title="Stok durumunu Excel olarak indir">Excel</a></span>`) : ""}</div>
+      <div class="hof-kpis hof-plans-kpis">${data ? `<div><strong>${data.totals.count}</strong><span>Ürün</span></div><div class="${data.totals.low ? "is-late" : ""}"><strong>${data.totals.low}</strong><span>Kritik seviyede</span></div><div class="${data.totals.out ? "is-late" : ""}"><strong>${data.totals.out}</strong><span>Tükenen</span></div><div class="hof-cash-balance"><strong>${esc(money(data.totals.value))}</strong><span>Stok değeri</span></div>` : ""}</div>
+      <div class="hof-cash-list hof-plans-list">${
+        !data
+          ? '<p class="hof-empty">Yükleniyor…</p>'
+          : data.items.length
+            ? `<table class="hof-table hof-cash-table hof-plans-table hof-stock-table"><thead><tr><th class="hof-plan-no">Kod</th><th>Ürün</th><th class="num">Mevcut</th><th class="num">Kritik seviye</th><th class="num">Birim fiyat</th><th class="num">Değer</th><th>Son hareket</th><th></th></tr></thead><tbody>${data.items.slice(0, view.limit).map(row).join("")}</tbody></table>${data.items.length > view.limit ? `<div class="hof-more"><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="more">Daha fazla göster · ${data.items.length - view.limit} ürün daha</button></div>` : ""}`
+            : `<p class="hof-empty">${filtered ? "Bu süzgeçte ürün yok." : "Henüz ürün yok."}${manage && !filtered ? " <b>+ Yeni ürün</b> ile açın ya da <b>Excel’den yükle</b> ile listenizi aktarın (ör. Çay, Şeker, Motor yağı)." : ""}</p>`
+      }</div>
+      <p class="hof-edit-meta">Mevcut = girişler − çıkışlar. Kritik seviyenin altına düşen ürün en üstte ve sol menüde uyarıyla görünür. Tutar = miktar × birim fiyat; istenirse Kasa’ya ya da cariye yazılır.</p>
+      <div class="hof-actions"><button type="button" class="hof-button" data-close>Kapat</button></div>`;
+  }
+
+  // ---------- Kart ----------
+  const payText = move => (move.pay === "cash" ? (move.kind === "in" ? "Kasa’dan ödendi" : "Kasa’ya tahsil edildi") : move.pay === "account" ? `Cari: ${move.accountName || "—"}` : "");
+  function renderCard() {
+    const root = body();
+    const item = view.item;
+    if (!root || !item) return;
+    const manage = item.canManage;
+    const move = item.canMove;
+    const moveRow = row => `<tr data-kind="${esc(row.kind)}"><td>${esc(HOF.formatDate(row.date))}</td><td><b>${row.kind === "in" ? "Giriş" : "Çıkış"}</b><small>${esc([row.note, payText(row), row.actorName].filter(Boolean).join(" · "))}${row.updatedAt ? " · düzeltildi" : ""}</small></td><td class="num hof-cash-in">${row.kind === "in" ? esc(qtyText(row.qty)) : ""}</td><td class="num hof-cash-out">${row.kind === "out" ? esc(qtyText(row.qty)) : ""}</td><td class="num"><b>${esc(qtyText(row.balance))}</b></td><td class="num">${row.unitPrice ? esc(money(row.unitPrice)) : ""}</td><td class="num">${row.amount ? esc(money(row.amount)) : ""}</td><td class="hof-cash-actions">${row.pay === "account" && row.accountId ? `<button type="button" class="hof-mini" data-account="${esc(row.accountId)}" title="Cari kartını aç" aria-label="Cari kartını aç">↗</button>` : ""}${row.editable ? `<button type="button" class="hof-mini" data-edit-move="${esc(row.id)}" title="Düzelt" aria-label="Düzelt">✎</button><button type="button" class="hof-mini hof-mini-danger" data-delete-move="${esc(row.id)}" title="Sil" aria-label="Sil">×</button>` : ""}</td></tr>`;
+    root.innerHTML = `<div class="hof-plan-head">
+        <div class="hof-plan-headline"><button type="button" class="hof-plan-back" data-act="back" title="Listeye dön">← Liste</button>
+          <div class="hof-plan-title"><h3>${item.code ? `<span class="hof-plan-refno" title="Kod">${esc(item.code)}</span>` : ""}${esc(item.name)} ${stateBadge(item)}</h3><small>${esc(item.category || "Kategorisiz")} · birim: ${esc(item.unit)}</small></div></div>
+        <div class="hof-plan-actions" role="toolbar" aria-label="Ürün işlemleri">
+          <span class="hof-plan-toolgroup">${move ? '<button type="button" class="hof-button hof-button-small" data-move="in">+ Giriş</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-move="out">− Çıkış</button>' : ""}</span>
+          <span class="hof-plan-toolgroup">${office().outputButtons ? office().outputButtons(cardPdfUrl(item), "card") : ""}</span>
+          ${manage ? '<span class="hof-plan-toolgroup"><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="edit">Düzenle</button><button type="button" class="hof-button hof-button-small hof-button-ghost hof-button-danger-ghost" data-act="delete">Sil</button></span>' : ""}
+        </div></div>
+      <div class="hof-kpis hof-plans-kpis"><div class="hof-cash-balance ${item.low ? "is-late" : ""}"><strong>${esc(qtyText(item.qty))} ${esc(item.unit)}</strong><span>Mevcut${item.minQty ? ` · kritik ${esc(qtyText(item.minQty))}` : ""}</span></div><div><strong class="hof-cash-in">${esc(qtyText(item.qtyIn))}</strong><span>Toplam giriş · ${esc(money(item.inAmount))}</span></div><div><strong class="hof-cash-out">${esc(qtyText(item.qtyOut))}</strong><span>Toplam çıkış · ${esc(money(item.outAmount))}</span></div><div><strong>${esc(money(item.value))}</strong><span>Değer · birim ${esc(money(item.unitPrice))}</span></div></div>
+      ${item.note ? `<p class="hof-edit-meta">${esc(item.note)}</p>` : ""}
+      <div class="hof-plan-section"><h4>Hareketler <span>${item.moves.length}</span></h4></div>
+      <div class="hof-cash-list hof-plans-entries">${item.moves.length ? `<table class="hof-table hof-cash-table"><thead><tr><th>Tarih</th><th>İşlem</th><th class="num">Giriş</th><th class="num">Çıkış</th><th class="num">Kalan</th><th class="num">Birim fiyat</th><th class="num">Tutar</th><th></th></tr></thead><tbody>${item.moves.map(moveRow).join("")}</tbody></table>` : '<p class="hof-empty">Henüz hareket yok. <b>+ Giriş</b> ile alınanı, <b>− Çıkış</b> ile kullanılanı ya da satılanı girin.</p>'}</div>
+      <div class="hof-actions"><button type="button" class="hof-button hof-button-ghost" data-act="back">Listeye dön</button><button type="button" class="hof-button" data-close>Kapat</button></div>`;
+  }
+
+  // ---------- Formlar ----------
+  function editItem(item) {
+    const categories = view.list?.categories || [];
+    HOF.formModal({
+      title: item ? "Ürünü düzenle" : "Yeni ürün",
+      eyebrow: moduleName().toLocaleUpperCase("tr-TR"),
+      fields: [
+        { name: "name", label: "Ürün adı", required: true, maxlength: 160, value: item?.name || "", autofocus: true, placeholder: "Ör. Çay, Şeker, Motor yağı 5W-30" },
+        { name: "unit", label: "Birim", maxlength: 20, value: item?.unit || "adet", list: UNITS },
+        { name: "code", label: "Kod", maxlength: 60, value: item?.code || "", placeholder: "İsteğe bağlı (barkod, stok kodu)" },
+        { name: "category", label: "Kategori", maxlength: 80, value: item?.category || "", list: categories, placeholder: "Ör. Mutfak, Araç, Kırtasiye" },
+        { name: "minQty", label: "Kritik seviye", inputmode: "decimal", value: item?.minQty ? qtyText(item.minQty) : "", placeholder: "Bu miktara inince uyarı verir (boş: uyarı yok)" },
+        { name: "unitPrice", label: "Birim fiyat (₺)", inputmode: "decimal", value: item?.unitPrice ? office().amountText?.(item.unitPrice) || item.unitPrice : "", placeholder: "Son alış fiyatı (stok değeri için)" },
+        ...(item ? [] : [{ name: "openingQty", label: "Elde olan miktar (açılış stoku)", inputmode: "decimal", placeholder: "Ör. 10 (para yazılmaz)" }]),
+        { name: "note", label: "Not", type: "textarea", rows: 2, maxlength: 1000, value: item?.note || "" },
+      ],
+      submitLabel: item ? "Kaydet" : "Ürünü aç",
+      onSubmit: async data => {
+        const result = item ? await HOF.api(`/api/workspace/stock/${encodeURIComponent(item.id)}`, { method: "PUT", body: data }) : await HOF.api("/api/workspace/stock", { method: "POST", body: data });
+        HOF.toast(item ? "Ürün güncellendi." : "Ürün açıldı.", { type: "success" });
+        if (!modal) open(result.id);
+        view.id = result.id;
+        view.mode = "card";
+        applyItem(result);
+      },
+    });
+  }
+  // Hareket formu: tutar anında hesaplanır; para seçenekleri yalnız yetkili rolde.
+  function editMove(item, { kind = "in", move = null } = {}) {
+    const type = move?.kind || kind;
+    const incoming = type === "in";
+    const manage = canManage();
+    const payOptions = [
+      { value: "none", label: "Yalnız miktar (para yazılmaz)" },
+      ...(manage ? [{ value: "cash", label: incoming ? "Kasa’dan ödendi (Kasa’ya gider yazılır)" : "Kasa’ya tahsil edildi (satış, Kasa’ya giriş)" }, { value: "account", label: incoming ? "Cariye yaz (tedarikçiye borçlanılır)" : "Cariye yaz (müşteri borçlanır, veresiye)" }] : []),
+    ];
+    let accountField = null;
+    const send = async (data, force = false) => {
+      const url = `/api/workspace/stock/${encodeURIComponent(item.id)}/moves${move ? `/${encodeURIComponent(move.id)}` : ""}`;
+      return HOF.api(url, { method: move ? "PUT" : "POST", body: { ...data, kind: type, force } });
+    };
+    HOF.formModal({
+      title: move ? (incoming ? "Girişi düzelt" : "Çıkışı düzelt") : incoming ? "Stok girişi" : "Stok çıkışı",
+      eyebrow: `${item.name} · mevcut ${qtyText(item.qty)} ${item.unit}`,
+      fields: [
+        { name: "qty", label: `Miktar (${item.unit})`, required: true, inputmode: "decimal", value: move ? qtyText(move.qty) : "", autofocus: true, placeholder: incoming ? "Ör. 10" : "Ör. 2" },
+        { name: "unitPrice", label: "Birim fiyat (₺)", inputmode: "decimal", value: move ? (move.unitPrice ? office().amountText?.(move.unitPrice) : "") : item.unitPrice ? office().amountText?.(item.unitPrice) : "", placeholder: "İsteğe bağlı" },
+        { name: "pay", label: "Para", type: "select", value: move?.pay || "none", options: payOptions },
+        { name: "date", label: "Tarih", type: "date", value: move?.date || office().todayIso?.() || "" },
+        { name: "note", label: "Açıklama", maxlength: 300, value: move?.note || "", placeholder: incoming ? "Ör. Toplu alım, market" : "Ör. Ofis tüketimi, 42 C 1070 yağ değişimi" },
+      ],
+      extraHtml: '<p class="hof-stock-total" data-total aria-live="polite"></p>',
+      submitLabel: move ? "Kaydet" : incoming ? "Girişi kaydet" : "Çıkışı kaydet",
+      onOpen: dialog => {
+        const qty = dialog.querySelector('input[name="qty"]');
+        const price = dialog.querySelector('input[name="unitPrice"]');
+        const pay = dialog.querySelector('select[name="pay"]');
+        const total = dialog.querySelector("[data-total]");
+        accountField = HOF.accounts?.picker?.({ value: move?.accountId ? { id: move.accountId, name: move.accountName } : {}, label: incoming ? "Tedarikçi carisi" : "Müşteri carisi", type: "", required: true });
+        if (accountField) pay.closest(".hof-field").after(accountField);
+        const sync = () => {
+          const amount = (parseNumber(qty.value) || 0) * (parseNumber(price.value) || 0);
+          const after = (item.qty || 0) + (incoming ? 1 : -1) * (parseNumber(qty.value) || 0) - (move ? (move.kind === "in" ? move.qty : -move.qty) : 0);
+          total.innerHTML = `${amount > 0 ? `Tutar: <b>${esc(money(amount))}</b> · ` : ""}Hareketten sonra: <b class="${after < 0 ? "hof-cash-out" : ""}">${esc(qtyText(after))} ${esc(item.unit)}</b>`;
+          if (accountField) accountField.hidden = pay.value !== "account";
+        };
+        [qty, price].forEach(input => input.addEventListener("input", sync));
+        pay.addEventListener("change", sync);
+        sync();
+      },
+      onSubmit: async data => {
+        if (data.pay !== "account") delete data.accountId;
+        let result;
+        try {
+          result = await send(data);
+        } catch (error) {
+          // Stok eksiye düşecekse sorulur (sayım farkı olabilir); onaylanırsa kaydedilir.
+          if (!/eksiye/.test(error.message)) throw error;
+          const ok = await HOF.confirm({ title: "Stok eksiye düşecek", message: `${error.message} Sayım farkı olabilir. Yine de kaydedilsin mi?`, confirmLabel: "Yine de kaydet", danger: true });
+          if (!ok) return true;
+          result = await send(data, true);
+        }
+        applyItem(result);
+        if (data.pay === "cash") HOF.emit("cash-changed");
+        HOF.toast(`${incoming ? "Giriş" : "Çıkış"} kaydedildi. Mevcut: ${qtyText(result.qty)} ${result.unit}${result.low ? " · kritik seviyede" : ""}.`, { type: result.low ? "error" : "success" });
+        refreshAlerts();
+      },
+    });
+  }
+  async function deleteMove(item, move) {
+    const ok = await HOF.confirm({ title: "Hareketi sil", message: `${move.kind === "in" ? "Giriş" : "Çıkış"} (${qtyText(move.qty)} ${item.unit}) silinecek; mevcut miktar${move.pay === "cash" ? ", Kasa" : move.pay === "account" ? " ve cari bakiyesi" : ""} yeniden hesaplanır. Yönetim → Silinenler’den geri yüklenebilir.`, confirmLabel: "Sil", danger: true });
+    if (!ok) return;
+    try {
+      applyItem(await HOF.api(`/api/workspace/stock/${encodeURIComponent(item.id)}/moves/${encodeURIComponent(move.id)}`, { method: "DELETE" }));
+      HOF.toast("Hareket silindi.", { type: "success" });
+      refreshAlerts();
+    } catch (error) {
+      HOF.toastError(error);
+    }
+  }
+  async function deleteItem(item) {
+    const ok = await HOF.confirm({ title: "Ürünü sil", message: `“${item.name}” silinecek. Ödenmiş/tahsil edilmiş tutarlar Kasa’da ve caride kalır. Yönetim → Silinenler’den geri yüklenebilir.`, confirmLabel: "Sil", danger: true });
+    if (!ok) return;
+    try {
+      await HOF.api(`/api/workspace/stock/${encodeURIComponent(item.id)}`, { method: "DELETE" });
+      HOF.toast("Ürün silindi.", { type: "success" });
+      view.mode = "list";
+      view.id = "";
+      renderList();
+      loadList();
+      refreshAlerts();
+    } catch (error) {
+      HOF.toastError(error);
+    }
+  }
+  async function quickMove(id, kind) {
+    try {
+      editMove(await HOF.api(`/api/workspace/stock/${encodeURIComponent(id)}`), { kind });
+    } catch (error) {
+      HOF.toastError(error);
+    }
+  }
+
+  // ---------- Excel'den yükleme ----------
+  const ROLE_OPTIONS = [["", "— Kullanma —"], ["extra", "Ek bilgi (kartta saklanır)"], ["name", "Ürün adı *"], ["code", "Kod"], ["unit", "Birim"], ["category", "Kategori"], ["qty", "Mevcut miktar (açılış stoku)"], ["price", "Birim fiyat"], ["min", "Kritik seviye"], ["note", "Not"]];
+  async function importFromExcel() {
+    const source = await office().chooseSheet?.({ title: "Ürünleri toplu yükle", eyebrow: moduleName().toLocaleUpperCase("tr-TR"), hint: "Binlerce kalem tek seferde açılır; miktar kolonu açılış stoku olur. Kolonları bir sonraki adımda eşlersiniz." });
+    if (!source) return;
+    try {
+      const preview = await HOF.api("/api/workspace/stock/import/preview", { method: "POST", body: { matrix: source.matrix } });
+      const sample = source.matrix[preview.headerAt + 1] || [];
+      HOF.formModal({
+        title: "Ürünleri yükle: kolonları eşle",
+        eyebrow: source.fileName,
+        size: "wide",
+        intro: `${preview.rows} satır bulundu. Her satır bir ürün olur; miktar kolonu açılış stoku olarak girilir (para yazılmaz). Aynı kodla ya da aynı ad ve birimle ürün varsa atlanır ya da güncellenir.`,
+        fields: [
+          ...preview.headers.map((header, index) => ({ name: `c${index}`, label: `${header || `${index + 1}. kolon`}${sample[index] !== undefined && String(sample[index]).trim() ? ` — ör. ${String(sample[index]).slice(0, 30)}` : ""}`, type: "select", value: preview.roles[index] || "", options: ROLE_OPTIONS.map(([value, label]) => ({ value, label })) })),
+          { name: "unit", label: "Birim kolonu yoksa", value: "adet", list: UNITS, maxlength: 20 },
+          { name: "mode", label: "Aynı ürün zaten varsa", type: "select", value: "skip", options: [{ value: "skip", label: "Atla" }, { value: "update", label: "Bilgilerini güncelle (miktar eklenmez)" }] },
+        ],
+        submitLabel: "Ürünleri oluştur",
+        onOpen: dialog => dialog.classList.add("hof-import-form"),
+        onSubmit: async data => {
+          const roles = {};
+          preview.headers.forEach((_, index) => {
+            if (data[`c${index}`]) roles[index] = data[`c${index}`];
+          });
+          if (!Object.values(roles).includes("name")) throw new Error("Ürün adı kolonunu seçin.");
+          const result = await HOF.api("/api/workspace/stock/import", { method: "POST", body: { matrix: source.matrix, headerAt: preview.headerAt, roles, unit: data.unit, mode: data.mode, fileName: source.fileName } });
+          view.mode = "list";
+          if (!modal) open();
+          else {
+            renderList();
+            loadList();
+          }
+          refreshAlerts();
+          const skipped = result.skipped.length ? ` ${result.skipped.length} satır atlandı (${[...new Set(result.skipped.map(item => item.reason))].join("; ")}).` : "";
+          HOF.toast(`${result.created} ürün açıldı${result.opening ? `, ${result.opening} ürüne açılış stoku yazıldı` : ""}${result.updated ? `, ${result.updated} ürün güncellendi` : ""}.${skipped}`, { type: result.created || result.updated ? "success" : "error", timeout: 9000 });
+        },
+      });
+    } catch (error) {
+      HOF.toastError(error);
+    }
+  }
+
+  // ---------- Kritik stok uyarısı ----------
+  // Sol menüde Stok rozeti; gün içinde ilk açılışta bir kez kısa bildirim (hangi ürünler kritik).
+  const ALERT_DAY = "hof.stock.alerted";
+  async function refreshAlerts() {
+    if (!HOF.can("stock.view")) return;
+    let alerts = [];
+    try {
+      alerts = await HOF.api("/api/workspace/stock/alerts");
+    } catch {
+      return;
+    }
+    const badge = document.querySelector('[data-badge="stock"]');
+    if (badge) badge.textContent = alerts.length ? String(alerts.length) : "";
+    if (!alerts.length) return;
+    const today = new Date().toISOString().slice(0, 10);
+    let shown = "";
+    try {
+      shown = localStorage.getItem(ALERT_DAY) || "";
+    } catch {
+      shown = today;
+    }
+    if (shown === today) return;
+    try {
+      localStorage.setItem(ALERT_DAY, today);
+    } catch {
+      // saklanamazsa her açılışta bir kez gösterilir
+    }
+    const names = alerts.slice(0, 4).map(item => `${item.name} (${qtyText(item.qty)} ${item.unit})`).join(", ");
+    HOF.toast(`Kritik stok: ${names}${alerts.length > 4 ? ` ve ${alerts.length - 4} ürün daha` : ""}.`, { type: "error", timeout: 12000, action: { label: moduleName(), onClick: () => open() } });
+  }
+
+  // ---------- Olaylar ----------
+  function onClick(event) {
+    const quick = event.target.closest("[data-quick]");
+    if (quick) return quickMove(quick.dataset.id, quick.dataset.quick);
+    const row = event.target.closest("tr[data-item]");
+    if (row && view.mode === "list" && !event.target.closest("button, a")) return loadItem(row.dataset.item);
+    const button = event.target.closest("button, a[data-act]");
+    if (!button) return;
+    const item = view.item;
+    if (button.dataset.state) {
+      view.state = button.dataset.state;
+      view.limit = PAGE;
+      renderList();
+      return loadList();
+    }
+    if (button.dataset.print) return office().printPdf?.(button.dataset.print === "list" ? listPdfUrl() : cardPdfUrl(item));
+    if ("close" in button.dataset) return modal.close();
+    if (button.dataset.account) {
+      modal.close();
+      return HOF.accounts?.open(button.dataset.account);
+    }
+    const act = button.dataset.act;
+    if (act === "back") {
+      view.mode = "list";
+      view.id = "";
+      renderList();
+      return loadList();
+    }
+    if (act === "more") {
+      view.limit += PAGE * 5;
+      return renderList();
+    }
+    if (act === "new") return editItem(null);
+    if (act === "import") return importFromExcel();
+    if (!item) return;
+    if (button.dataset.move) return editMove(item, { kind: button.dataset.move });
+    if (act === "edit") return editItem(item);
+    if (act === "delete") return deleteItem(item);
+    const moveOf = id => item.moves.find(move => move.id === id);
+    if (button.dataset.editMove) return editMove(item, { move: moveOf(button.dataset.editMove) });
+    if (button.dataset.deleteMove) return deleteMove(item, moveOf(button.dataset.deleteMove));
+  }
+  function onChange(event) {
+    const select = event.target.closest("select[data-filter]");
+    if (!select) return;
+    view[select.dataset.filter] = select.value;
+    view.limit = PAGE;
+    renderList();
+    loadList();
+  }
+  const onInput = (() => {
+    let timer = 0;
+    return event => {
+      const input = event.target.closest('input[data-filter="q"]');
+      if (!input) return;
+      view.q = input.value;
+      view.limit = PAGE;
+      clearTimeout(timer);
+      timer = setTimeout(loadList, 250);
+    };
+  })();
+
+  HOF.whenReady(() => {
+    setTimeout(refreshAlerts, 1500);
+    HOF.on("live:workspace.changed", change => {
+      if (change?.kind !== "stock") return;
+      refreshAlerts();
+      if (!modal) return;
+      if (view.mode === "card" && view.id && (!change.itemId || change.itemId === view.id)) loadItem(view.id);
+      else if (view.mode === "list") loadList();
+    });
+  });
+  HOF.stock = { open, refreshAlerts };
+})();

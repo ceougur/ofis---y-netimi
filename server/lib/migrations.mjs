@@ -590,6 +590,9 @@ export const MIGRATIONS = [
         CREATE INDEX IF NOT EXISTS idx_accounts_deleted ON accounts(deleted_at);
         CREATE INDEX IF NOT EXISTS idx_accounts_case ON accounts(case_source, case_key);
         CREATE INDEX IF NOT EXISTS idx_accounts_group ON accounts(group_id, subgroup_id);
+        -- Binlerce satırlık Excel/Sheets alımında eşleşme aramaları (ad, Cari No, ürün adı/kodu) indeksten okunur.
+        CREATE INDEX IF NOT EXISTS idx_accounts_name ON accounts(name COLLATE NOCASE);
+        CREATE INDEX IF NOT EXISTS idx_accounts_ref ON accounts(ref_no);
         -- Cari hareketleri: borç (debt), alacak (credit), tahsilat (in → Kasa'ya giriş), ödeme (out → Kasa'dan çıkış).
         -- source = 'stock' olan satır bir stok hareketinden gelir (source_id = stock_moves.id) ve oradan düzeltilir.
         CREATE TABLE IF NOT EXISTS account_entries (
@@ -627,6 +630,8 @@ export const MIGRATIONS = [
           deleted_at TEXT
         );
         CREATE INDEX IF NOT EXISTS idx_stock_items_deleted ON stock_items(deleted_at);
+        CREATE INDEX IF NOT EXISTS idx_stock_items_name ON stock_items(name COLLATE NOCASE, unit COLLATE NOCASE);
+        CREATE INDEX IF NOT EXISTS idx_stock_items_code ON stock_items(code);
         -- Stok hareketleri: giriş (in) / çıkış (out). pay: 'none' (yalnız miktar), 'cash' (Kasa'dan ödendi / Kasa'ya
         -- tahsil edildi), 'account' (cariye yazıldı; account_entries.source_id bu hareketi gösterir).
         CREATE TABLE IF NOT EXISTS stock_moves (

@@ -39,7 +39,9 @@
   <li>Kayıtla çalışmak</li>
   <li>Uyarılar</li>
   <li>Kasa</li>
+  <li>Cari</li>
   <li>Taksitler</li>
+  <li>Stok</li>
   <li>Raporlar</li>
   <li>Belgeler ve mesajlar</li>
   <li>Yönetici için</li>
@@ -105,7 +107,21 @@
 <p>Sol menüden <b>Kasa</b>. Kayıtlara girdiğiniz tahsilatlar kasaya kendiliğinden gelir. Diğer gelir ve giderleri <b>+ Tahsilat</b> ve <b>− Ödeme</b> ile ekleyin. Dönemi <b>Bu ay, Geçen ay, Bu yıl</b> ya da <b>Tarih aralığı</b> ile seçin; <b>PDF indir</b> ile kasa dökümünü alın.</p>
 <figure class="w80"><img src="ekran/k08-kasa.jpg" alt="Kasa"></figure>
 
-<h2>7. Taksitler</h2>
+<h2>7. Cari</h2>
+<p>Sol menüden <b>Cari</b>. Müşteri, öğrenci, veli, site sakini, hasta, tedarikçi: kiminle para alışverişi yapıyorsanız onun kartı. Fatura ve KDV yoktur; her sektöre uyar. Taksit kartları bir cariye aittir.</p>
+<ol class="steps">
+  <li><b>Carileri toplu açın:</b> <b>Excel / Sheets’ten yükle</b> ile Excel dosyanızı seçin ya da Google Sheets bağlantısını yapıştırın (Sheet’i “bağlantıya sahip olan herkes: görüntüleyen” paylaşın); binlerce kişi tek seferde gelir ya da <b>Tablodan al</b> ile ortadaki tablonun açık sekmesindeki kişileri alın. Program ad, telefon, adres, kayıt tarihi, grup kolonlarını tanır; <b>Excel’de ne varsa</b> (Veli, Okul, Plaka, Servis ücreti…) kartta aynı adla görünür. Taksit sorulmaz. Aynı kişi ikinci kez açılmaz; emin olunamayan satır yeni cari olur, başkasının hesabına yazılmaz. <b>Tablodan al</b> ile gelen her cari kendi kaydına bağlanır.</li>
+  <li><b>Toplu taksitlendirin:</b> listede soldaki kutularla carileri seçin (başlıktaki kutu görünenlerin hepsini seçer) → <b>Seçilenlere taksit planı</b>. Tutar herkese aynı olabilir ya da her carinin kartındaki alandan okunur (ör. <i>SERVİS ÜCRETİ</i>). Taksit sayısı, ilk vade ve aralığı yazın. Açık taksit kartı olan cari atlanır, çift plan açılmaz.</li>
+  <li><b>Hareket girin:</b> kartta <b>+ Tahsilat</b> (Kasa’ya girer, makbuzu alınır), <b>Borç yaz</b> (cari size borçlanır), <b>Alacak yaz</b> (siz cariye borçlanırsınız), <b>− Ödeme</b> (Kasa’dan çıkar). Açık taksit kartı varsa <b>+ Tahsilat</b> önce sorar: <b>taksite yaz</b> (taksitten düşer) ya da <b>taksit dışı</b>.</li>
+</ol>
+<ul>
+  <li><b>Bakiye:</b> borç − alacak. <b>borçlu</b> cari size borçlu, <b>alacaklı</b> siz cariye borçlusunuz. Taksit planı carinin borcuna, taksit tahsilatı alacağına yazılır; karttaki <b>Hareketler</b> yürüyen bakiyeyle ekstre gibi okunur.</li>
+  <li><b>Arama ve süzgeç:</b> ad, telefonun rakamları, cari no, adres ve ek alanlarda arar; tür, grup, bakiye (bize borçlu, bizim borcumuz, taksidi geciken) ve sıralama.</li>
+  <li><b>Çıktı:</b> listede <b>PDF</b>, <b>Yazdır</b> ve <b>Excel</b>: süzgeç yoksa tüm cariler, süzgeç varsa yalnız süzülenler (Excel’de tüm ek alanlar); kartta cari ekstre PDF’i.</li>
+  <li>Ortadaki tablodaki kişinin kartında carisinin bakiyesi görünür; <b>Cari kartı</b> ile açılır. Cari açma, borç/alacak/ödeme ve toplu taksit yönetici, uzman ve muhasebe yetkisidir; herkes tahsilat girer.</li>
+</ul>
+
+<h2>8. Taksitler</h2>
 <p>Sol menüden <b>Taksitler</b>. Öğrenci, veli, site sakini, müşteri gibi kişilerin taksitli borçlarını Excel'den bağımsız takip eder. Kartlar <b>Grup › Alt grup</b> ile düzenlenir: servis plakası › güzergâh, site › blok, okul › sınıf gibi. Üstteki süzgeçlerle "42 C 1070 plakasının 15 Temmuz güzergâhına kimler gidiyor" listesini anında alırsınız.</p>
 <ol class="steps">
   <li><b>Kart açın:</b> <b>+ Yeni kart</b> → ad soyad, <b>kayıt tarihi</b> (bugün hazır gelir), telefon, toplam tutar, grup ve alt grup (yoksa "Yeni grup yaz" ile o anda tanımlanır), bilgi notu. Kayıt bitince taksit sorulmaz; kutuyu işaretlerseniz toplam hemen eşit taksitlere bölünür.</li>
@@ -124,7 +140,16 @@
   <li>Kartları ve grupları yönetici, uzman ve muhasebe açar; herkes tahsilat girer. Silinen kart ve hareketler <b>Yönetim → Silinenler</b>'den geri gelir.</li>
 </ul>
 
-<h2>8. Raporlar</h2>
+<h2>9. Stok</h2>
+<p>Sol menüden <b>Stok</b>. Kasa gibi çalışır: ürün (çay, şeker, yağ, kâğıt…) ve giriş/çıkış hareketleri. <b>Mevcut</b> = girişler − çıkışlar.</p>
+<ol class="steps">
+  <li><b>Ürünleri açın:</b> <b>+ Yeni ürün</b> (ad, birim, kategori, kritik seviye, birim fiyat, elde olan miktar) ya da <b>Excel / Sheets’ten yükle</b> (Excel dosyası ya da Google Sheets bağlantısı; binlerce kalem tek seferde); miktar kolonu açılış stoku olur.</li>
+  <li><b>Giriş / çıkış:</b> satırdaki <b>+ Giriş</b> / <b>− Çıkış</b> ya da kartın düğmeleri. Miktar ve birim fiyatı yazınca <b>tutar</b> kendiliğinden hesaplanır. <b>Para</b>: yalnız miktar, <b>Kasa’dan ödendi</b> (Kasa’ya gider) / <b>Kasa’ya tahsil edildi</b> (satış) ya da <b>cariye yaz</b> (tedarikçiye borçlanılır, müşteri borçlanır).</li>
+  <li><b>Kritik seviye:</b> ürün bu miktara inince listede en üstte kırmızı/turuncu görünür, sol menüde <b>Stok</b> rozeti çıkar ve günde bir kez bildirim gelir.</li>
+</ol>
+<p>Stok eksiye düşecekse program sorar (sayım farkı olabilir). Listenin <b>PDF</b>, <b>Yazdır</b> ve <b>Excel</b> çıktısı (süzgeç yoksa tüm stok, varsa yalnız süzülenler: kategori, kritik, tükenen, arama), ürünün hareket dökümü PDF’i vardır. Silinen ürün ve hareket <b>Yönetim → Silinenler</b>’den geri gelir; ödenmiş tutarlar Kasa’da kalır.</p>
+
+<h2>10. Raporlar</h2>
 <p>Sol menüden <b>Raporlar</b>. Üç rapor tek penceredir; üstteki sekmeden seçin:</p>
 <ul>
   <li><b>Cari ekstre:</b> aynı kişi ya da firma farklı Excel dosyalarında geçiyorsa satırları birleşir; borç, tahsilat ve kalan bakiye alt alta. Dosyanızdaki başka kolonlar ("Ürün", "Dosya No") kendiliğinden sütun olur.</li>
@@ -133,13 +158,13 @@
 </ul>
 <p>Üstteki kutularla <b>tarih aralığı, cari, durum, oturum, sekme</b> ve <b>en az tutar</b> filtresi koyun. <b>Excel</b> ya da <b>PDF</b> ile indirin; <b>Yazdır</b> doğrudan yazıcıya gönderir.</p>
 
-<h2>9. Belgeler ve mesajlar</h2>
+<h2>11. Belgeler ve mesajlar</h2>
 <p><b>Belge eklemek:</b> kartta <b>Belge</b>'ye basın ya da dosyaları kartın üzerine sürükleyin; ekran görüntüsünü <b>Ctrl+V</b> ile yapıştırın. PDF, resim, Word, Excel ve UYAP dosyaları eklenir; adet sınırı yoktur.</p>
 <p><b>Birden çok belge varsa</b> <b>Yan yana gör</b> ile belge kartı açılır: belgeler yan yana (1–4 sütun) görünür; istediğinizi <b>indirir</b> (seçtikleriniz tek .zip içinde, kendi biçimlerinde) ya da doğrudan <b>yazdırırsınız</b>. Kart ✕ ile kapanır.</p>
 <figure><img src="ekran/k07-belge-karti.jpg" alt="Belge kartı"></figure>
 <p><b>Mesajlar:</b> <b>Ofis geneli</b> herkese açıktır; kişiye yazdığınızı yalnızca o kişi görür. Açılışta son 24 saatin mesajları gelir; <b>Önceki günün mesajlarını yükle</b> her basışta bir gün daha getirir. 30 günden eski mesajlar sunucudaki arşive taşınır; sohbet penceresinden <b>Arşivi indir</b> ile açabilirsiniz.</p>
 
-<h2>10. Yönetici için</h2>
+<h2>12. Yönetici için</h2>
 <ul>
   <li><b>Kullanıcılar:</b> sol alttaki kartta <b>Yönetim → + Yeni kullanıcı</b>; rolünü seçin. Çalışan ilk girişte kendi parolasını belirler.</li>
   <li><b>Yedekler:</b> program 6 saatte bir kendiliğinden yedek alır. <b>Yönetim → Yedekler</b>'den yedek alıp indirin; ayda bir harici diske kopyalayın.</li>
@@ -149,7 +174,7 @@
   <li><b>Sektör ve görünüm:</b> <b>Ayarlar → Sektör ve görünüm</b>'den sektörü değiştirin ya da kendi sektörünüzü oluşturup düzenleyin.</li>
 </ul>
 
-<h2>11. Bir sorun mu var?</h2>
+<h2>13. Bir sorun mu var?</h2>
 <table>
   <thead><tr><th>Durum</th><th>Ne yapmalı?</th></tr></thead>
   <tbody>

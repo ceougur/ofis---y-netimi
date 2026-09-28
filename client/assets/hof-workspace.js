@@ -142,25 +142,32 @@
     casePlanKey = selected.key;
     box.dataset.caseKey = selected.key;
     const stamp = ++casePlanStamp;
-    let data;
-    try {
-      data = await HOF.plans.forCase(selected.key);
-    } catch {
-      data = { plans: [] };
-    }
+    // Kayda bağlı cari (v2.0.6) taksit kartlarıyla birlikte okunur: bölümün üstünde carinin bakiyesi durur.
+    const [data, linked] = await Promise.all([
+      HOF.plans.forCase(selected.key).catch(() => ({ plans: [] })),
+      HOF.accounts?.forCase && HOF.can("accounts.view") ? HOF.accounts.forCase(selected.key).catch(() => null) : null,
+    ]);
     if (stamp !== casePlanStamp || HOF.selectedCase()?.key !== selected.key || box.dataset.caseKey !== selected.key) return;
     casePlans = (data.plans || []).filter(plan => plan.status === "active" && plan.caseKey === selected.key);
-    if (!casePlans.length) {
+    caseAccount = linked?.account || null;
+    if (!casePlans.length && !caseAccount) {
       box.hidden = true;
       box.innerHTML = "";
       return;
     }
-    box.innerHTML = casePlans.map(plan => casePlanHtml(plan, data)).join("");
+    box.innerHTML = (caseAccount ? caseAccountHtml(caseAccount) : "") + casePlans.map(plan => casePlanHtml(plan, data)).join("");
     box.hidden = false;
   }
+  let caseAccount = null;
+  function caseAccountHtml(account) {
+    const balance = account.totals.balance;
+    const side = balance > 0.005 ? "borçlu" : balance < -0.005 ? "alacaklı" : "";
+    return `<div class="hof-case-account"><div><h3>CARİ</h3><b>${esc(account.name)}</b>${account.refNo ? ` <small>· No ${esc(account.refNo)}</small>` : ""}</div><div class="hof-case-account-balance"><span>Bakiye</span><b class="${balance > 0.005 ? "hof-cash-out" : balance < -0.005 ? "hof-cash-in" : ""}">${esc(HOF.formatMoney(Math.abs(balance)))}${side ? ` <small>${side}</small>` : ""}</b></div><button type="button" class="hof-button hof-button-small hof-button-ghost" data-open-account="${esc(account.id)}">Cari kartı</button></div>`;
+  }
   document.addEventListener("click", event => {
-    const button = event.target.closest("#hof-case-plan [data-case-collect], #hof-case-plan [data-open-plan]");
+    const button = event.target.closest("#hof-case-plan [data-case-collect], #hof-case-plan [data-open-plan], #hof-case-plan [data-open-account]");
     if (!button) return;
+    if (button.dataset.openAccount) return HOF.accounts?.open(button.dataset.openAccount);
     if (button.dataset.openPlan) return HOF.plans?.open(button.dataset.openPlan);
     const plan = casePlans.find(item => item.id === button.dataset.plan);
     if (!plan || plan.caseKey !== HOF.selectedCase()?.key) return;
@@ -471,6 +478,13 @@
     const row = entry => {
       const payment = entry.source === "payment";
       const plan = entry.source === "plan";
+      // Cari ve stok hareketleri (v2.0.6) kendi kartlarından düzeltilir; buradan kart açılır.
+      if (entry.source === "account" || entry.source === "stock") {
+        const account = entry.source === "account";
+        const label = account ? `${entry.kind === "in" ? "Cari tahsilat" : "Cariye ödeme"} · ${entry.accountName}${entry.description ? ` · ${entry.description}` : ""}` : entry.description;
+        const open = account ? `<button type="button" class="hof-mini" data-account="${esc(entry.accountId)}" title="Cari kartını aç" aria-label="Cari kartını aç">↗</button>` : `<button type="button" class="hof-mini" data-stock="${esc(entry.itemId)}" title="Stok kartını aç" aria-label="Stok kartını aç">↗</button>`;
+        return `<tr data-kind="${esc(entry.kind)}"><td>${esc(HOF.formatDate(entry.date))}</td><td><b>${esc(label)}</b><small>${account ? "Cari kartından" : "Stok hareketinden"} · ${esc(entry.actorName || "—")}</small></td><td class="num hof-cash-in">${entry.kind === "in" ? esc(HOF.formatMoney(entry.amount)) : ""}</td><td class="num hof-cash-out">${entry.kind === "out" ? esc(HOF.formatMoney(entry.amount)) : ""}</td><td class="num"><b>${esc(HOF.formatMoney(entry.balance))}</b></td><td class="hof-cash-actions">${open}</td></tr>`;
+      }
       const title = payment ? entry.caseTitle || (String(entry.caseKey).startsWith("satir:") ? "" : entry.caseKey) : "";
       const text = payment ? `Tahsilat${title ? ` · ${title}` : ""}${entry.description ? ` · ${entry.description}` : ""}` : plan ? `${entry.kind === "in" ? "Taksit tahsilatı" : "Taksit ödemesi/iadesi"} · ${entry.planName}${entry.description ? ` · ${entry.description}` : ""}` : entry.description;
       // Taksit kartı hareketleri (v2.0.4) kartın kendisinden düzeltilir; buradan kart açılır.
@@ -534,6 +548,8 @@
       } else if ("pdf" in target.dataset) downloadCashPdf(periodRange(period, custom), rangeError(), target);
       else if (target.dataset.add) editCashEntry(null, target.dataset.add, load);
       else if (target.dataset.plan) HOF.plans?.open(target.dataset.plan);
+      else if (target.dataset.account) HOF.accounts?.open(target.dataset.account);
+      else if (target.dataset.stock) HOF.stock?.open(target.dataset.stock);
       else if (target.dataset.edit) {
         const entry = byId(target.dataset.edit);
         if (!entry) return;
@@ -657,7 +673,10 @@
     { action: "newRecord", icon: "+", key: "side.newRecord", label: () => "Yeni kayıt" },
     { action: "cash", icon: "₺", key: "side.cash", label: () => "Kasa", requires: "cash.view" },
     // Taksitler (v2.0.4): grup › alt grup, taksit kartı, tahsilat, gecikme uyarısı (hof-plans.js).
+    // Cari ve Stok (v2.0.6): müşteri/tedarikçi kartları (taksitler cariye bağlı) ve Kasa mantığıyla stok.
+    { action: "accounts", icon: "☰", key: "side.accounts", label: () => "Cari", requires: "accounts.view" },
     { action: "plans", icon: "▤", key: "side.plans", label: () => "Taksitler", requires: "plans.view", badge: "warn" },
+    { action: "stock", icon: "▦", key: "side.stock", label: () => "Stok", requires: "stock.view", badge: "warn" },
     { action: "liens", icon: "!", key: "side.liens", label: () => "Haciz uyarıları", badge: "warn", module: "haciz" },
     { action: "analytics", icon: "▤", key: "side.analytics", label: () => "Raporlar", requires: "reports.view" },
     { action: "reports", icon: "↗", key: "side.reports", label: () => "Personel raporu", requires: "reports.view" },
@@ -752,6 +771,8 @@
       else if (action === "liens") openLiens();
       else if (action === "cash") openCash();
       else if (action === "plans") HOF.plans?.open();
+      else if (action === "accounts") HOF.accounts?.open();
+      else if (action === "stock") HOF.stock?.open();
       else if (action === "editSide") openSideEditor();
       else if (action === "guide") window.open("/kilavuz/DestekOfis-Kullanim-Kilavuzu.pdf", "_blank", "noopener");
       else if (action === "reports") openReports();
@@ -776,6 +797,7 @@
       setBadge("liens", liens.total);
       // Taksitler rozeti: geciken taksiti olan kart sayısı.
       setBadge("plans", plans ? plans.plans.length : 0);
+      HOF.stock?.refreshAlerts?.();
     } catch {
       // Rozetler kritik değil; bir sonraki turda yeniden denenir.
     }
@@ -909,12 +931,13 @@
       }
     }
     if ((change.kind === "activity" || change.kind === "task") && change.caseKey && HOF.selectedCase()?.key === change.caseKey) refreshActivity();
-    if (change.kind === "plans" || (change.kind === "activity" && change.caseKey && HOF.selectedCase()?.key === change.caseKey)) renderCasePlan(true);
+    if (change.kind === "plans" || change.kind === "accounts" || (change.kind === "activity" && change.caseKey && HOF.selectedCase()?.key === change.caseKey)) renderCasePlan(true);
     if (change.kind === "cash" && cashModal) cashModal.reload();
     if (change.kind === "plans" || change.kind === "cash") refreshBadges();
   });
   HOF.on("plans-changed", refreshBadges);
   HOF.on("plans-changed", () => renderCasePlan(true));
+  HOF.on("accounts-changed", () => renderCasePlan(true));
   HOF.on("payment-saved", detail => {
     if (!detail?.planId) return;
     afterCaseChange();

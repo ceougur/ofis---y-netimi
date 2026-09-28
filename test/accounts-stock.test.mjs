@@ -328,3 +328,107 @@ describe("göç 12: eski taksit kartları cariye dönüşür (karışmadan)", ()
     }
   });
 });
+
+describe("Google Sheets'ten ve binlerce satırlık toplu alım (v2.0.6)", () => {
+  let server;
+  let admin;
+  const SHEET = "https://docs.google.com/spreadsheets/d/cari-sheet-123/edit#gid=0";
+  // Sahte Google: belge sayfası iki sekme ("Cariler", "Stok") bildirir, her sekmenin CSV'si ayrı döner.
+  const csv = { 0: 'CARİ KODU,ÜNVAN,TELEFON,İL,VERGİ NO\n120.01,"Yıldız Gıda Ltd.",0332 111 22 33,Konya,1234567890\n120.02,Ak Tarım,0532 444 55 66,Karaman,9876543210\n', 7: "Stok Kodu,Ürün Adı,Birim,Miktar,Birim Fiyat,Kritik\nY-01,Ayçiçek yağı 5 lt,adet,40,410,10\nS-02,Şeker 50 kg,çuval,3,1900,1\n" };
+  const fetchImpl = async url => {
+    const text = String(url);
+    if (!text.includes("cari-sheet-123")) return new Response("Bulunamadı", { status: 404, headers: { "content-type": "text/html" } });
+    if (text.includes("/edit")) return new Response('<html><head><title>Toptan Müşteriler - Google E-Tablolar</title></head><body>"gid":"0","name":"Cariler" "gid":"7","name":"Stok"</body></html>', { status: 200, headers: { "content-type": "text/html" } });
+    const gid = /gid=(\d+)/.exec(text)?.[1];
+    if (text.includes("export?format=csv") && csv[gid]) return new Response(csv[gid], { status: 200, headers: { "content-type": "text/csv" } });
+    return new Response("yok", { status: 404 });
+  };
+  before(async () => {
+    server = await startTestServer({ fetchImpl });
+    admin = await loginAdmin(server);
+  });
+  after(() => server.close());
+
+  it("Sheets bağlantısından sekmeler matris olarak gelir; cari ve stok aynı eşlemeyle yüklenir", async () => {
+    const read = await admin.post("/api/workspace/import/google-sheet", { url: SHEET });
+    assert.equal(read.status, 200, JSON.stringify(read.data));
+    assert.equal(read.data.data.title, "Toptan Müşteriler");
+    assert.deepEqual(read.data.data.sheets.map(sheet => sheet.name), ["Cariler", "Stok"]);
+    const cariler = read.data.data.sheets[0].matrix;
+    const preview = (await admin.post("/api/workspace/accounts/import/preview", { matrix: cariler })).data.data;
+    assert.equal(preview.roles[0], "seq");
+    assert.equal(preview.roles[1], "name");
+    const done = (await admin.post("/api/workspace/accounts/import", { matrix: cariler, headerAt: preview.headerAt, roles: preview.roles, type: "customer", fileName: "Toptan Müşteriler" })).data.data;
+    assert.equal(done.created, 2);
+    const yildiz = (await admin.get("/api/workspace/accounts?q=yıldız")).data.data.accounts[0];
+    assert.equal(yildiz.refNo, "120.01");
+    assert.deepEqual(yildiz.extra, [{ label: "İL", value: "Konya" }, { label: "VERGİ NO", value: "1234567890" }]);
+    const stok = read.data.data.sheets[1].matrix;
+    const sp = (await admin.post("/api/workspace/stock/import/preview", { matrix: stok })).data.data;
+    const stockDone = (await admin.post("/api/workspace/stock/import", { matrix: stok, headerAt: sp.headerAt, roles: sp.roles })).data.data;
+    assert.equal(stockDone.created, 2);
+    const yag = (await admin.get("/api/workspace/stock?q=yağ")).data.data.items[0];
+    assert.equal(yag.qty, 40);
+    assert.equal(yag.value, 16400);
+  });
+
+  it("paylaşılmamış ya da hatalı bağlantı anlaşılır hata verir; personel toplu yükleme yapamaz", async () => {
+    const bad = await admin.post("/api/workspace/import/google-sheet", { url: "https://ornek.com/tablo" });
+    assert.equal(bad.status, 400);
+    assert.match(bad.data.error, /Google Sheets/);
+    const missing = await admin.post("/api/workspace/import/google-sheet", { url: "https://docs.google.com/spreadsheets/d/baska-belge/edit#gid=99" });
+    assert.equal(missing.status, 400);
+    assert.match(missing.data.error, /paylaş/i);
+    const staff = await createUser(server, admin, { username: "okur", role: "personel" });
+    assert.equal((await staff.post("/api/workspace/import/google-sheet", { url: SHEET })).status, 403);
+  });
+
+  it("10 bin cari ve 10 bin ürün tek seferde yüklenir (numara çakışmaları taramasız çözülür); ikinci yükleme çift açmaz", async () => {
+    const accounts = [["S.N", "Ad Soyad", "Telefon", "Adres", "Bölge", "Servis ücreti"]];
+    for (let i = 1; i <= 10000; i += 1) accounts.push([String(i), `Müşteri ${i}`, `0532 ${String(1000000 + i).slice(-7)}`, `Mahalle ${i % 97}`, `Bölge ${i % 12}`, String(1000 + (i % 50) * 10)]);
+    const preview = (await admin.post("/api/workspace/accounts/import/preview", { matrix: accounts })).data.data;
+    let started = Date.now();
+    const done = (await admin.post("/api/workspace/accounts/import", { matrix: accounts, headerAt: 0, roles: preview.roles })).data.data;
+    const accountMs = Date.now() - started;
+    assert.equal(done.created, 10000);
+    assert.equal(done.renumbered, 0, "S.N 1…10000 önceki carilerin numaralarıyla (120.01, 120.02) çakışmaz");
+    started = Date.now();
+    const again = (await admin.post("/api/workspace/accounts/import", { matrix: accounts, headerAt: 0, roles: preview.roles })).data.data;
+    const againMs = Date.now() - started;
+    assert.equal(again.created, 0);
+    assert.equal(again.skipped.length, 10000);
+    started = Date.now();
+    const list = (await admin.get("/api/workspace/accounts?q=Müşteri 9999")).data.data;
+    const listMs = Date.now() - started;
+    assert.equal(list.accounts.length, 1);
+    const items = [["Kod", "Ürün", "Birim", "Miktar", "Fiyat", "Kritik"]];
+    for (let i = 1; i <= 10000; i += 1) items.push([`K${i}`, `Ürün ${i}`, i % 2 ? "adet" : "kg", String(i % 40), String(10 + (i % 90)), "5"]);
+    const sp = (await admin.post("/api/workspace/stock/import/preview", { matrix: items })).data.data;
+    started = Date.now();
+    const stock = (await admin.post("/api/workspace/stock/import", { matrix: items, headerAt: 0, roles: sp.roles })).data.data;
+    const stockMs = Date.now() - started;
+    assert.equal(stock.created, 10000);
+    started = Date.now();
+    const stockList = (await admin.get("/api/workspace/stock")).data.data;
+    const stockListMs = Date.now() - started;
+    assert.equal(stockList.totals.count, 10002);
+    // Tüm liste ve süzülmüş liste PDF ve Excel olarak (10 bin satır).
+    started = Date.now();
+    const allPdf = await admin.raw("GET", "/api/workspace/accounts/liste.pdf?status=all");
+    const allXlsx = await admin.raw("GET", "/api/workspace/accounts/export.xlsx?status=all");
+    const stockPdf = await admin.raw("GET", "/api/workspace/stock/liste.pdf");
+    const stockXlsx = await admin.raw("GET", "/api/workspace/stock/export.xlsx");
+    const exportMs = Date.now() - started;
+    assert.ok(allPdf.status === 200 && allPdf.buffer.subarray(0, 4).toString() === "%PDF", "tüm cari PDF");
+    assert.ok(allXlsx.status === 200 && allXlsx.buffer.subarray(0, 2).toString() === "PK", "tüm cari Excel");
+    assert.ok(stockPdf.status === 200 && stockXlsx.status === 200, "tüm stok PDF ve Excel");
+    const filteredPdf = await admin.raw("GET", `/api/workspace/stock/liste.pdf?q=${encodeURIComponent("Ürün 99")}`);
+    const filteredXlsx = await admin.raw("GET", `/api/workspace/stock/export.xlsx?q=${encodeURIComponent("Ürün 99")}`);
+    assert.ok(filteredPdf.buffer.length < stockPdf.buffer.length / 20, "süzülen stok PDF'i yalnız süzülenler");
+    assert.ok(filteredXlsx.buffer.length < stockXlsx.buffer.length / 5, "süzülen stok Excel'i yalnız süzülenler");
+    console.log(`# döküm: 10 bin cari + 10 bin ürün PDF ve Excel ${exportMs} ms (cari PDF ${Math.round(allPdf.buffer.length / 1024)} KB, Excel ${Math.round(allXlsx.buffer.length / 1024)} KB)`);
+    console.log(`# süre: 10 bin cari ${accountMs} ms, tekrar ${againMs} ms, arama ${listMs} ms; 10 bin ürün ${stockMs} ms, liste ${stockListMs} ms`);
+    for (const ms of [accountMs, againMs, stockMs]) assert.ok(ms < 30000, `yükleme ${ms} ms`);
+    assert.ok(listMs < 5000 && stockListMs < 5000, "liste birkaç saniyenin altında");
+  });
+});

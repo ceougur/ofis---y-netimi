@@ -134,6 +134,53 @@ export function documentTitle(html) {
     .slice(0, 200);
 }
 
+// Toplu alım (v2.0.6, Cari/Stok/Taksitler): Google Sheets belgesinin sekmeleri olduğu gibi hücre matrisi olarak.
+// Kayıt çıkarma, formül ve eşitleme yoktur; kolonlar içe alma ekranında rollerle eşlenir. Sheet "bağlantıya sahip olan
+// herkes görüntüleyebilir" paylaşılmalıdır.
+export async function readSheetMatrices(sheetUrl, { fetchImpl = fetch, timeoutMs = 30_000, maxTabs = 30 } = {}) {
+  const sourceUrl = String(sheetUrl || "").trim();
+  const id = spreadsheetId(sourceUrl);
+  if (!id) throw new Error("Google Sheets bağlantısı tanınmadı. Tarayıcının adres çubuğundaki bağlantıyı yapıştırın.");
+  const signal = () => AbortSignal.timeout(timeoutMs);
+  let html = "";
+  try {
+    const page = await fetchImpl(`https://docs.google.com/spreadsheets/d/${id}/edit`, { headers: { Accept: "text/html" }, signal: signal(), redirect: "follow" });
+    if (page.ok) html = await page.text();
+    else if (page.status === 401 || page.status === 403 || page.status === 404) throw new Error("Sheet açılamadı. Paylaş → “Bağlantıya sahip olan herkes: Görüntüleyen” seçip yeniden deneyin.");
+  } catch (error) {
+    if (error?.name === "TimeoutError") throw new Error("Google Sheets zaman aşımına uğradı. İnternet bağlantısını kontrol edin.");
+    if (/Sheet açılamadı/.test(error?.message || "")) throw error;
+  }
+  let gid = "0";
+  try {
+    gid = new URL(sourceUrl).searchParams.get("gid") || new URL(sourceUrl).hash.match(/gid=(\d+)/)?.[1] || "0";
+  } catch {
+    gid = "0";
+  }
+  const tabs = (html ? discoverTabs(html) : []).slice(0, maxTabs);
+  const targets = tabs.length ? tabs : [{ gid, title: "Sayfa1" }];
+  const sheets = [];
+  for (const tab of targets) {
+    let text = "";
+    for (const url of [googleExportUrl(sourceUrl, tab.gid), googleCsvUrl(sourceUrl, tab.gid)]) {
+      try {
+        const response = await fetchImpl(url, { headers: { Accept: "text/csv" }, signal: signal(), redirect: "follow" });
+        const type = response.headers.get("content-type") || "";
+        if (!response.ok || type.includes("html")) continue;
+        const body = await response.text();
+        if (body.trimStart().startsWith("<")) continue;
+        text = body;
+        break;
+      } catch (error) {
+        if (error?.name === "TimeoutError") throw new Error("Google Sheets zaman aşımına uğradı. İnternet bağlantısını kontrol edin.");
+      }
+    }
+    if (!text) throw new Error(`“${tab.title || "Sayfa"}” sekmesi okunamadı. Sheet’i “Bağlantıya sahip olan herkes: Görüntüleyen” olarak paylaşın.`);
+    sheets.push({ name: tab.title || "Sayfa1", matrix: parseCsv(text, { keepEmpty: true }) });
+  }
+  return { title: html ? documentTitle(html) : "", sheets };
+}
+
 export function createSheetsReader({ fetchImpl, cacheMs = 45_000, timeoutMs = 20_000, formulas = true }) {
   const cache = new Map();
   const inflight = new Map();

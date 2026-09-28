@@ -407,7 +407,8 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
         if (!name) return skip(index, "Ürün adı boş");
         const input = { name, code: cell(row, col.code).slice(0, 60), unit: (cell(row, col.unit) || defaultUnit).slice(0, 20), category: cell(row, col.category).slice(0, 80), minQty: number(row, col.min), unitPrice: money(row, col.price), note: cell(row, col.note).slice(0, 1000) };
         const fields = extraColumns.map(column => ({ label: headers[column].slice(0, 80), value: cell(row, column).slice(0, 1000) })).filter(field => field.value);
-        const existing = store.get("SELECT id FROM stock_items WHERE deleted_at IS NULL AND ((? <> '' AND code = ?) OR (name = ? COLLATE NOCASE AND unit = ? COLLATE NOCASE))", input.code, input.code, input.name, input.unit);
+        // İki ayrı indeksli arama (kodla, sonra ad + birimle): binlerce satırda da hızlı.
+        const existing = (input.code && store.get("SELECT id FROM stock_items WHERE deleted_at IS NULL AND code = ?", input.code)) || store.get("SELECT id FROM stock_items WHERE deleted_at IS NULL AND name = ? COLLATE NOCASE AND unit = ? COLLATE NOCASE", input.name, input.unit);
         if (existing && mode === "skip") return skip(index, "Bu ürün zaten var");
         if (existing) {
           store.run(

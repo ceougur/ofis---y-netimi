@@ -139,8 +139,9 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
   // ---------- Kart okuma ----------
   const PLAN_SQL = `SELECT p.id, p.account_id AS accountId, p.ref_no AS refNo, p.registered_on AS registeredOn, p.case_key AS caseKey, p.case_source AS caseSource, p.case_title AS caseTitle, p.group_id AS groupId, p.subgroup_id AS subgroupId, p.name, p.note, p.phone, p.total, p.status,
       p.created_by AS createdBy, p.created_at AS createdAt, p.updated_at AS updatedAt, COALESCE(u.display_name, '') AS actorName,
-      COALESCE(g.name, '') AS groupName, COALESCE(s.name, '') AS subgroupName
-    FROM plans p LEFT JOIN users u ON u.id = p.created_by LEFT JOIN plan_groups g ON g.id = p.group_id LEFT JOIN plan_groups s ON s.id = p.subgroup_id`;
+      COALESCE(g.name, '') AS groupName, COALESCE(s.name, '') AS subgroupName, COALESCE(ac.name, '') AS accountName, COALESCE(ac.ref_no, '') AS accountRef
+    FROM plans p LEFT JOIN users u ON u.id = p.created_by LEFT JOIN plan_groups g ON g.id = p.group_id LEFT JOIN plan_groups s ON s.id = p.subgroup_id
+      LEFT JOIN accounts ac ON ac.id = p.account_id AND ac.deleted_at IS NULL`;
   const itemsOf = planId => store.all("SELECT id, seq, due_date AS dueDate, amount, note FROM plan_items WHERE plan_id = ? ORDER BY due_date, seq", planId);
   const entriesOf = planId =>
     store.all(
@@ -245,6 +246,7 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
       out.push({
         id: plan.id,
         accountId: plan.accountId || "",
+        accountName: plan.accountName || "",
         refNo: plan.refNo || "",
         registeredOn: plan.registeredOn || "",
         caseKey: plan.caseKey || "",

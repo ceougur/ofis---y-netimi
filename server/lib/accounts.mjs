@@ -157,7 +157,7 @@ const ACCOUNT_ROLE_TESTS = [
   ["balance", t => /(^| )(bakiye|acilis bakiyesi|devir|devreden|borc|borcu|kalan borc|alacak)( |$)/.test(t) && !/(taksit|tarih)/.test(t)],
   ["type", t => /^(tur|turu|tip|tipi|cari turu|cari tipi)$/.test(t)],
   ["note", t => /(^| )(not|notu|notlar|bilgi|bilgi notu|aciklama)( |$)/.test(t)],
-  ["name", t => /(^| )adi? ?soyadi?( |$)|adisoyadi|(^| )(isim|ismi|ogrenci|ogrencinin adi|musteri|musteri adi|kisi|cari|cari adi|unvan|unvani|firma|firma adi|sakin|uye|hasta|ad)( |$)/.test(t) && !/(veli|anne|baba)/.test(t)],
+  ["name", t => /(^| )adi? ?soyadi?( |$)|adisoyadi|(^| )(isim|ismi|ogrenci|ogrencinin adi|musteri|musteri adi|kisi|cari|cari adi|unvan|unvani|firma|firma adi|sakin|uye|hasta|danisan|abone|alici|kiraci|borclu|borclunun adi|muvekkil|ad)( |$)/.test(t) && !/(veli|anne|baba|avukat|vekil)/.test(t)],
 ];
 export const ACCOUNT_ROLES = Object.freeze(["seq", "name", "phone", "email", "address", "registered", "group", "subgroup", "balance", "type", "note", "extra"]);
 
@@ -190,6 +190,11 @@ function mapWith(tests, headers) {
 }
 export function mapAccountHeaders(headers) {
   const roles = mapWith(ACCOUNT_ROLE_TESTS, headers);
+  // Ad kolonu bulunamadıysa kişi adı taşıyan ilk kolon (Veli, Yetkili…) ad sayılır; kullanıcı eşlemede değiştirebilir.
+  if (!Object.values(roles).includes("name")) {
+    const index = headers.findIndex(header => /(^| )(veli|veli adi|yetkili|sorumlu|sahibi|ilgili kisi)( |$)/.test(plainHeader(header)));
+    if (index >= 0) roles[index] = "name";
+  }
   // Yalnız alt grup kolonu bulunduysa (ör. tek "Okul" kolonu) o kolon grup sayılır.
   const values = Object.values(roles);
   if (values.includes("subgroup") && !values.includes("group")) roles[Object.keys(roles).find(key => roles[key] === "subgroup")] = "group";
