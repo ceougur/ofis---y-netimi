@@ -50,7 +50,11 @@ export function createUpdater({
   const statePath = path.join(appsDir, "update-state.json");
   const configPath = path.join(configDir, "guncelleme.json");
   const downloadDir = path.join(appsDir, ".indirilen");
-  const userAgent = `DestekOfis-Guncelleyici/${currentVersion} (+https://destek-ofis.vercel.app)`;
+  // Kurulu sürüm her denetimde yeniden okunur (işlev verilebilir): servis yöneticisi yeniden başlamadan yeni sürüme
+  // geçildiğinde de doğru sürümle karşılaştırılır. (2.0.6 sahada: açılıştaki sürüm akılda tutulduğu için kurulu
+  // sürüm yeniden "yeni sürüm" sanıldı ve çalışan sürümün klasörü yeniden açılmaya çalışıldı.)
+  const installed = () => normalizeVersion(typeof currentVersion === "function" ? currentVersion() : currentVersion);
+  const userAgent = () => `DestekOfis-Guncelleyici/${installed() || "0.0.0"} (+https://destek-ofis.vercel.app)`;
 
   // ---------- Ayarlar ve kalıcı durum ----------
   function config() {
@@ -107,7 +111,7 @@ export function createUpdater({
   async function request(url, { accept = "application/json", timeoutMs = requestTimeoutMs, signal } = {}) {
     const signals = [AbortSignal.timeout(timeoutMs), signal].filter(Boolean);
     try {
-      return await fetchImpl(url, { headers: { accept, "user-agent": userAgent, "x-github-api-version": "2022-11-28" }, redirect: "follow", signal: signals.length > 1 ? AbortSignal.any(signals) : signals[0] });
+      return await fetchImpl(url, { headers: { accept, "user-agent": userAgent(), "x-github-api-version": "2022-11-28" }, redirect: "follow", signal: signals.length > 1 ? AbortSignal.any(signals) : signals[0] });
     } catch (error) {
       if (signal?.aborted) throw new UpdateError("Güncelleme durduruldu.", "ABORTED");
       throw new UpdateError(describeNetworkError(error), "NETWORK", { retryable: true });
@@ -173,6 +177,7 @@ export function createUpdater({
 
   // ---------- Denetleme ----------
   async function check({ signal } = {}) {
+    const currentVersion = installed();
     const cfg = config();
     const failed = state().failed;
     const checkedAt = new Date().toISOString();
@@ -316,9 +321,16 @@ export function createUpdater({
   }
 
   // ---------- Paketi açma ----------
-  function stage(found, zipPath) {
+  function stage(found, zipPath, { protectedDirs = [] } = {}) {
     const { manifest } = found;
     const version = manifest.version;
+    const current = installed();
+    if (current && compareVersions(version, current) <= 0) throw new UpdateError(`${version} sürümü zaten kurulu (kurulu sürüm ${current}); kurulacak yeni bir sürüm yok.`, "NOT_NEWER");
+    const target = path.join(appsDir, version);
+    // Çalışan ya da etkin sürümün klasörüne asla dokunulmaz.
+    if (protectedDirs.filter(Boolean).some(dir => path.resolve(dir).toLowerCase() === path.resolve(target).toLowerCase()) || readCurrent(appsDir)?.version === version) {
+      throw new UpdateError(`${version} sürümü şu an kullanımda; üzerine yeniden açılmaz.`, "IN_USE");
+    }
     const temp = path.join(appsDir, `.${version}-${randomBytes(4).toString("hex")}.tmp`);
     try {
       if (sha256File(zipPath) !== manifest.package.sha256) throw new UpdateError("Güncelleme paketinin özeti tutmuyor.", "HASH_MISMATCH");
@@ -339,8 +351,17 @@ export function createUpdater({
       const declared = normalizeVersion(readJsonFile(path.join(temp, "package.json"), {})?.version);
       if (declared !== version) throw new UpdateError(`Paketin kendi sürümü (${declared || "yok"}) bildirgedeki sürümle (${version}) aynı değil.`, "PACKAGE_INVALID");
       writeFileSync(path.join(temp, ".paket.json"), `${JSON.stringify({ version, sha256: manifest.package.sha256, keyId: found.keyId || null, stagedAt: new Date().toISOString() }, null, 2)}\n`);
-      const target = path.join(appsDir, version);
-      if (existsSync(target)) rmSync(target, { recursive: true, force: true, maxRetries: 5 });
+      if (existsSync(target)) {
+        // Yarım kalmış eski bir açılım: önce tek hamlede kenara alınır (kilitliyse hiçbir dosyası silinmeden hata
+        // verir), sonra silinir. Yerinde özyinelemeli silme kullanımdaki bir klasörü yarım bırakabilirdi.
+        const aside = path.join(appsDir, `.${version}-eski-${randomBytes(4).toString("hex")}.tmp`);
+        try {
+          renameWithRetry(target, aside, 4);
+        } catch (error) {
+          throw new UpdateError(`${version} klasörü kullanımda olduğu için yenilenemedi (${error.code || error.message}). Sunucu bilgisayarını yeniden başlatıp tekrar deneyin.`, "IN_USE");
+        }
+        rmSync(aside, { recursive: true, force: true, maxRetries: 3 });
+      }
       renameWithRetry(temp, target);
       rmSync(downloadDir, { recursive: true, force: true });
       return target;

@@ -7,6 +7,7 @@ import { HttpError, SECURITY_HEADERS, limited, ok, parseJson, readJson, text } f
 import { nameConflict } from "../lib/names.mjs";
 import { hashPassword, passwordProblem } from "../lib/passwords.mjs";
 import { GRANTABLE, ROLES, grantsOf } from "../lib/permissions.mjs";
+import { compareVersions } from "../lib/semver.mjs";
 
 // Personel bilgisayarlarının bağlanabileceği yerel ağ adresleri (sanal/yerel bağdaştırıcılar hariç).
 function lanAddresses(port) {
@@ -226,21 +227,35 @@ export function registerAdminRoutes(router, context) {
     return supervisorLink;
   };
 
+  // Servis yöneticisi yeni sürüme yeniden başlamadan geçtiyse (2.0.6 ve öncesi) çalışan sürümü eski sanıp aynı
+  // sürümü "yeni" diye önerebilir. Uygulama kendi sürümünden yeni olmayan öneriyi göstermez ve kurdurmaz.
+  const isNewer = version => Boolean(version) && Boolean(config.version) && compareVersions(version, config.version) > 0;
+  function sanitizeUpdate(status) {
+    if (!status || typeof status !== "object") return status;
+    const next = { ...status, currentVersion: config.version || status.currentVersion };
+    if (next.available && !isNewer(next.available.version)) next.available = null;
+    if (next.lastCheck?.status === "available" && !isNewer(next.lastCheck.version)) next.lastCheck = { ...next.lastCheck, status: "up-to-date", version: config.version, reason: null };
+    return next;
+  }
+
   router.get("/api/admin/update", async ({ req, res }) => {
     auth.requirePermission(req, "system.manage");
     if (!supervisorLink?.supervised) return ok(res, { enabled: false, reason: NOT_SUPERVISED, currentVersion: config.version });
-    ok(res, await supervisorLink.request("update:status", {}, { timeoutMs: 10_000 }));
+    ok(res, sanitizeUpdate(await supervisorLink.request("update:status", {}, { timeoutMs: 10_000 })));
   });
 
   router.post("/api/admin/update/check", async ({ req, res }) => {
     const admin = auth.requirePermission(req, "system.manage");
-    const status = await updateLink().request("update:check", {}, { timeoutMs: 90_000 });
+    const status = sanitizeUpdate(await updateLink().request("update:check", {}, { timeoutMs: 90_000 }));
     audit(admin, "system.update_checked", "update", { available: status.available?.version || null, result: status.lastCheck?.status || null });
     ok(res, status);
   });
 
   router.post("/api/admin/update/apply", async ({ req, res }) => {
     const admin = auth.requirePermission(req, "system.manage");
+    // Önce taze denetim: yalnızca çalışan sürümden yeni bir sürüm varsa kurulum başlatılır.
+    const fresh = sanitizeUpdate(await updateLink().request("update:check", {}, { timeoutMs: 90_000 }));
+    if (!fresh.available) throw new HttpError(409, fresh.incompatible?.reason || (fresh.lastCheck?.status === "error" && fresh.lastCheck.reason) || `Kurulacak yeni bir sürüm yok; sistem güncel (${config.version}).`);
     const result = await updateLink().request("update:apply", {}, { timeoutMs: 90_000 });
     audit(admin, "system.update_requested", "update", { version: result.version || null });
     ok(res, result);
@@ -252,7 +267,7 @@ export function registerAdminRoutes(router, context) {
     const payload = {};
     if (body.autoUpdate !== undefined) payload.enabled = Boolean(body.autoUpdate);
     if (body.channel !== undefined) payload.channel = text(body.channel);
-    const status = await updateLink().request("update:config", payload, { timeoutMs: 10_000 });
+    const status = sanitizeUpdate(await updateLink().request("update:config", payload, { timeoutMs: 10_000 }));
     audit(admin, "system.update_settings", "update", payload);
     ok(res, status);
   });

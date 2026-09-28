@@ -7,6 +7,7 @@
 //            bir daha kendiliğinden denenmez. Gün içinde kendiliğinden güncelleme yapılmaz; yönetici panelden
 //            "Şimdi güncelle" diyebilir.
 import { isInstalledVersion, pruneVersions, readCurrent, versionDir, writeCurrent } from "./app-layout.mjs";
+import { compareVersions } from "./semver.mjs";
 import { UpdateError } from "./update-envelope.mjs";
 
 const RECENT_CHECK_MS = 10 * 60_000;
@@ -16,7 +17,7 @@ const summarize = found =>
     ? { version: found.version, notes: found.manifest.notes, releasedAt: found.manifest.releasedAt, size: found.manifest.package.size, channel: found.manifest.channel, releaseUrl: found.releaseUrl || null }
     : null;
 
-export function createUpdateOrchestrator({ updater, controller, appsDir, runningVersion, log, retryDelays = [60_000, 180_000, 600_000, 1_200_000], trialTimeoutMs = 90_000, applyDelayMs = 400 }) {
+export function createUpdateOrchestrator({ updater, controller, appsDir, runningVersion, runningDir = null, log, retryDelays = [60_000, 180_000, 600_000, 1_200_000], trialTimeoutMs = 90_000, applyDelayMs = 400 }) {
   const status = { state: "idle", progress: null, lastFound: null, lastFoundAt: 0, lastResult: null, incompatible: null, lastError: null, skipped: [] };
   const aborter = new AbortController();
   let job = null;
@@ -26,6 +27,8 @@ export function createUpdateOrchestrator({ updater, controller, appsDir, running
   let retryIndex = 0;
   let stopped = false;
   const now = () => new Date().toISOString();
+  // Bulunan sürüm çalışan uygulamadan gerçekten yeni mi? (Servis yöneticisi yeniden başlamadan sürüm değişmiş olabilir.)
+  const newer = found => Boolean(found?.version) && compareVersions(found.version, controller.appVersion()) > 0;
 
   function publicStatus() {
     const cfg = updater.config();
@@ -37,7 +40,7 @@ export function createUpdateOrchestrator({ updater, controller, appsDir, running
       currentVersion: controller.appVersion(),
       state: status.state,
       progress: status.progress,
-      available: summarize(status.lastFound),
+      available: newer(status.lastFound) ? summarize(status.lastFound) : null,
       incompatible: status.incompatible,
       lastCheck: saved.lastCheck,
       lastResult: status.lastResult,
@@ -65,7 +68,7 @@ export function createUpdateOrchestrator({ updater, controller, appsDir, running
       status.state = "checking";
       try {
         const result = await updater.check({ signal: aborter.signal });
-        status.lastFound = result.status === "available" ? result : null;
+        status.lastFound = result.status === "available" && newer(result) ? result : null;
         status.lastFoundAt = Date.now();
         status.incompatible = result.status === "incompatible" ? { version: result.version, reason: result.reason } : null;
         status.lastError = result.status === "error" ? result.reason : null;
@@ -78,7 +81,7 @@ export function createUpdateOrchestrator({ updater, controller, appsDir, running
     })();
     const result = await checking;
     if (auto && !stopped) {
-      if (result.status === "available") install(result);
+      if (result.status === "available" && newer(result)) install(result);
       else if (result.status === "error" && result.retryable) scheduleRetry();
     }
     return result;
@@ -132,6 +135,11 @@ export function createUpdateOrchestrator({ updater, controller, appsDir, running
 
   function install(found) {
     if (job) return job;
+    if (!newer(found)) {
+      log.info(`${found?.version} sürümü zaten çalışıyor; kurulum atlandı.`);
+      status.lastFound = null;
+      return Promise.resolve();
+    }
     job = (async () => {
       const from = controller.appVersion();
       const fromDir = controller.appDir();
@@ -144,7 +152,7 @@ export function createUpdateOrchestrator({ updater, controller, appsDir, running
         const zip = await updater.download(found, { signal: aborter.signal, onProgress: progress => (status.progress = progress) });
         status.state = "installing";
         status.progress = null;
-        const dir = updater.stage(found, zip);
+        const dir = updater.stage(found, zip, { protectedDirs: [fromDir, runningDir] });
         if (stopped || controller.stopping()) return;
         // Eski sürüm hâlâ açılıyorsa (ör. veritabanı göçü) yarıda kesmemek için hazır olmasını bekle.
         await controller.waitReady?.(30_000);
@@ -219,12 +227,12 @@ export function createUpdateOrchestrator({ updater, controller, appsDir, running
         for (const version of Object.keys(updater.state().failed)) updater.clearFailure(version);
         status.lastFound = null;
       }
-      let found = status.lastFound && Date.now() - status.lastFoundAt < RECENT_CHECK_MS ? status.lastFound : null;
+      let found = status.lastFound && Date.now() - status.lastFoundAt < RECENT_CHECK_MS && newer(status.lastFound) ? status.lastFound : null;
       if (!found) {
         const result = await runCheck();
         found = result.status === "available" ? result : null;
       }
-      if (!found) throw new UpdateError(status.incompatible?.reason || status.lastError || "Kurulacak yeni bir sürüm yok.", "NOTHING_TO_INSTALL");
+      if (!newer(found)) throw new UpdateError(status.incompatible?.reason || status.lastError || `Kurulacak yeni bir sürüm yok; sistem güncel (${controller.appVersion()}).`, "NOTHING_TO_INSTALL");
       // Yanıt yöneticinin tarayıcısına ulaşsın diye kurulum kısa bir gecikmeyle başlar.
       clearTimeout(applyTimer);
       applyTimer = setTimeout(() => install(found), applyDelayMs);
