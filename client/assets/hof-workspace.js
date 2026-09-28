@@ -28,6 +28,145 @@
   };
   const openWhatsApp = number => window.open(`https://wa.me/${number}`, "_blank", "noopener");
 
+  // Plansız tahsilat penceresi (kaydın kendi tahsilat defteri). Kart yöneten kişiye taksit planı kısa yolu gösterilir.
+  function paymentForm(selected, target, { plain = false } = {}) {
+    const suggested = target && Number(target.amount) > 0 ? new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(target.amount) : "";
+    const offerPlan = !plain && !(target && Number(target.amount) > 0) && Boolean(HOF.plans?.openNew) && HOF.can("plans.manage");
+    HOF.formModal({
+      title: "Tahsilat işle",
+      eyebrow: selected.title,
+      intro: target && target.intro ? target.intro : "",
+      fields: [
+        { name: "amount", label: "Tutar (₺)", required: true, inputmode: "decimal", placeholder: "Örn. 1.250,00", value: suggested },
+        { name: "date", label: "Tahsilat tarihi", type: "date", value: new Date().toISOString().slice(0, 10) },
+        { name: "note", label: "Açıklama", placeholder: "Ödeme kanalı veya açıklama", maxlength: 500, value: (target && target.note) || "" },
+      ],
+      extraHtml: offerPlan ? '<p class="hof-form-aside">Bu kişi taksitle mi ödüyor? <button type="button" class="hof-link" data-new-plan>Taksit planı oluşturun</button>; sonra tahsilatlar taksitten düşer ve kartında görünür.</p>' : "",
+      submitLabel: "Tahsilatı kaydet",
+      onOpen: (dialog, modal) => {
+        dialog.querySelector("[data-new-plan]")?.addEventListener("click", () => {
+          modal.close();
+          const row = (HOF.data?.rows || []).find(item => item.__hofKey === selected.key) || null;
+          HOF.plans.openNew({ caseKey: selected.key, caseTitle: row ? HOF.plans.recordLabel(row) : selected.title, name: row ? HOF.plans.personOf(row) || selected.title : selected.title, phone: row ? HOF.plans.phoneOf(row) : "" });
+        });
+      },
+      onSubmit: async data => {
+        await HOF.api(caseUrl(selected.key, "payments"), { method: "POST", body: { ...data, caseTitle: selected.title } });
+        HOF.toast("Tahsilat kaydedildi. Kasaya tahsilat olarak işlendi.", { type: "success" });
+        afterCaseChange();
+        HOF.emit("payment-saved", { key: selected.key });
+      },
+    });
+  }
+
+  // ---------- Kayda bağlı taksit planı (v2.0.6) ----------
+  const ITEM_STATE = { paid: "Ödendi", partial: "Kısmen", overdue: "Gecikti", today: "Bugün", upcoming: "Yaklaşıyor", open: "Bekliyor", closed: "Kapalı" };
+  const itemState = item => (item.state === "overdue" && item.days < 0 ? `${-item.days} gün gecikti` : ITEM_STATE[item.state] || item.state);
+  // Tahsilat penceresi: kaydın açık kartlarındaki taksitler; "Tahsil et" o taksite, serbest tutar en eski açık taksite.
+  function openPlanCollect(selected, plans, linked) {
+    const money = HOF.formatMoney;
+    const canCollect = Boolean(linked.canCollect) && HOF.can("plans.collect");
+    const block = plan => {
+      const openItems = plan.items.filter(item => item.remaining > 0.005);
+      const rows = plan.items
+        .map(item => `<tr class="is-${esc(item.state)}${item.remaining > 0.005 ? "" : " is-paid"}"><td>${item.seq}.</td><td>${esc(HOF.formatDate(item.dueDate))}<small>${esc(itemState(item))}</small></td><td class="num">${esc(money(item.amount))}</td><td class="num">${esc(money(item.paid))}</td><td class="num${item.remaining > 0.005 ? " hof-cash-out" : ""}">${esc(money(item.remaining))}</td><td class="hof-right">${canCollect && item.remaining > 0.005 ? `<button type="button" class="hof-button hof-button-small" data-collect="${esc(item.id)}" data-plan="${esc(plan.id)}">Tahsil et</button>` : ""}</td></tr>`)
+        .join("");
+      return `<section class="hof-plan-collect" data-plan-block="${esc(plan.id)}"><header><div><b>${esc(plan.name)}</b><small>${esc([plan.groupName, plan.subgroupName].filter(Boolean).join(" › ") || "Taksit kartı")}${plan.refNo ? ` · No ${esc(plan.refNo)}` : ""}</small></div><div class="hof-plan-collect-sums"><span>Toplam<b>${esc(money(plan.totals.total))}</b></span><span>Ödenen<b class="hof-cash-in">${esc(money(plan.totals.paid))}</b></span><span>Kalan<b class="hof-cash-out">${esc(money(plan.totals.remaining))}</b></span>${plan.next ? `<span>Sıradaki<b>${plan.next.seq}. taksit · ${esc(HOF.formatDate(plan.next.dueDate))}</b></span>` : ""}</div></header>
+        ${plan.items.length ? `<div class="hof-cash-list"><table class="hof-table hof-cash-table hof-plan-items"><thead><tr><th>No</th><th>Vade</th><th class="num">Tutar</th><th class="num">Ödenen</th><th class="num">Kalan</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>` : '<p class="hof-empty">Bu kartta taksit kurulmamış; tahsilat kalan tutardan düşer.</p>'}
+        <div class="hof-plan-collect-tools">${canCollect ? `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-collect="" data-plan="${esc(plan.id)}">${openItems.length ? "Serbest tutar (en eski açık taksite)" : "Tahsilat gir"}</button>` : ""}<button type="button" class="hof-button hof-button-small hof-button-ghost" data-open-plan="${esc(plan.id)}">Taksit kartını aç</button></div></section>`;
+    };
+    const modal = HOF.modal({
+      title: "Tahsilat",
+      eyebrow: selected.title,
+      size: "wide",
+      body: `<p class="hof-modal-text">Bu kaydın taksit planı var. Taksitin yanındaki <b>Tahsil et</b> tutarı o taksite yazar; Kasa'ya tek tahsilat olarak düşer, makbuzu alınır.</p>${plans.map(block).join("")}<div class="hof-actions"><button type="button" class="hof-button hof-button-ghost" data-plain title="Taksit planına bağlı olmayan tahsilat (kaydın kendi defterine)">Plansız tahsilat kaydet</button><button type="button" class="hof-button" data-close>Kapat</button></div>`,
+    });
+    modal.dialog.classList.add("hof-plan-collect-modal");
+    modal.dialog.addEventListener("click", event => {
+      const button = event.target.closest("[data-collect], [data-open-plan], [data-plain], [data-close]");
+      if (!button) return;
+      if ("close" in button.dataset) return modal.close();
+      if ("plain" in button.dataset) {
+        modal.close();
+        return paymentForm(selected, null, { plain: true });
+      }
+      if (button.dataset.openPlan) {
+        modal.close();
+        return HOF.plans.open(button.dataset.openPlan);
+      }
+      const plan = plans.find(item => item.id === button.dataset.plan);
+      const item = plan?.items.find(row => row.id === button.dataset.collect) || null;
+      modal.close();
+      if (plan) HOF.plans.collect(plan, item);
+    });
+  }
+  // Kişinin kartındaki "Taksit planı" bölümü: kartın hemen altında; taksitler, ödenen, kalan, sıradaki vade.
+  let casePlanKey = "";
+  let casePlanStamp = 0;
+  let casePlans = [];
+  function casePlanHtml(plan, data) {
+    const money = HOF.formatMoney;
+    const t = plan.totals;
+    const share = t.total > 0 ? Math.max(0, Math.min(100, Math.round((t.paid / t.total) * 100))) : 0;
+    const canCollect = Boolean(data.canCollect) && HOF.can("plans.collect");
+    const rows = plan.items
+      .map(item => `<tr class="is-${esc(item.state)}${item.remaining > 0.005 ? "" : " is-paid"}"><td>${item.seq}.</td><td>${esc(HOF.formatDate(item.dueDate))}</td><td class="num">${esc(money(item.amount))}</td><td class="num${item.remaining > 0.005 ? " hof-cash-out" : ""}">${esc(money(item.remaining))}</td><td><span class="hof-chip hof-chip-${esc(item.state)}">${esc(itemState(item))}</span></td><td class="hof-right">${canCollect && item.remaining > 0.005 ? `<button type="button" class="hof-mini" data-case-collect="${esc(item.id)}" data-plan="${esc(plan.id)}" title="Bu taksite tahsilat gir" aria-label="Bu taksite tahsilat gir">₺</button>` : ""}</td></tr>`)
+      .join("");
+    return `<div class="hof-case-plan-head"><h3>TAKSİT PLANI</h3><span>${esc(plan.name)}${plan.refNo ? ` · No ${esc(plan.refNo)}` : ""}${t.overdueCount ? ` · <b class="is-late">${t.overdueCount} taksit gecikti</b>` : ""}</span></div>
+      <div class="hof-case-plan-kpis"><div><b>${esc(money(t.total))}</b><span>Taksitlendirilen tutar</span></div><div><b class="hof-cash-in">${esc(money(t.paid))}</b><span>Ödenen · %${share}</span></div><div><b class="hof-cash-out">${esc(money(t.remaining))}</b><span>Güncel bakiye</span></div><div><b>${plan.next ? `${plan.next.seq}. taksit` : "—"}</b><span>${plan.next ? `${esc(HOF.formatDate(plan.next.dueDate))} · ${esc(money(plan.next.remaining))}` : "Sıradaki taksit yok"}</span></div></div>
+      <span class="hof-plan-progress" aria-hidden="true"><i style="width:${share}%"></i></span>
+      ${plan.items.length ? `<div class="hof-case-plan-list"><table class="hof-table hof-cash-table"><thead><tr><th>No</th><th>Vade</th><th class="num">Tutar</th><th class="num">Kalan</th><th>Durum</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>` : '<p class="hof-empty">Taksit kurulmamış; tahsilat kalan tutardan düşer.</p>'}
+      <div class="hof-case-plan-tools">${canCollect ? `<button type="button" class="hof-button hof-button-small" data-case-collect="" data-plan="${esc(plan.id)}">+ Tahsilat</button>` : ""}<button type="button" class="hof-button hof-button-small hof-button-ghost" data-open-plan="${esc(plan.id)}">Taksit kartını aç</button></div>`;
+  }
+  async function renderCasePlan(force = false) {
+    const selected = HOF.selectedCase();
+    const panel = HOF.detailPanel();
+    let box = document.getElementById("hof-case-plan");
+    if (!selected || !panel || !HOF.plans?.forCase || !HOF.can("plans.view")) {
+      if (box) box.hidden = true;
+      casePlanKey = "";
+      return;
+    }
+    const anchor = panel.querySelector(".hof-case-actions");
+    if (!box) box = HOF.el("section", { id: "hof-case-plan", class: "hof-case-plan", "data-hof-ui": "", "aria-label": "Taksit planı" });
+    if (!box.innerHTML) box.hidden = true;
+    if (anchor && anchor.nextSibling !== box) anchor.after(box);
+    if (!force && casePlanKey === selected.key) return;
+    // Başka kayda geçildiyse önceki kaydın planı bir an bile görünmez: bölüm hemen boşaltılır, sonuç geldiğinde
+    // seçili kayıt hâlâ aynıysa yazılır (yarış koruması: damga + kayıt anahtarı).
+    if (casePlanKey !== selected.key) {
+      box.hidden = true;
+      box.innerHTML = "";
+      casePlans = [];
+    }
+    casePlanKey = selected.key;
+    box.dataset.caseKey = selected.key;
+    const stamp = ++casePlanStamp;
+    let data;
+    try {
+      data = await HOF.plans.forCase(selected.key);
+    } catch {
+      data = { plans: [] };
+    }
+    if (stamp !== casePlanStamp || HOF.selectedCase()?.key !== selected.key || box.dataset.caseKey !== selected.key) return;
+    casePlans = (data.plans || []).filter(plan => plan.status === "active" && plan.caseKey === selected.key);
+    if (!casePlans.length) {
+      box.hidden = true;
+      box.innerHTML = "";
+      return;
+    }
+    box.innerHTML = casePlans.map(plan => casePlanHtml(plan, data)).join("");
+    box.hidden = false;
+  }
+  document.addEventListener("click", event => {
+    const button = event.target.closest("#hof-case-plan [data-case-collect], #hof-case-plan [data-open-plan]");
+    if (!button) return;
+    if (button.dataset.openPlan) return HOF.plans?.open(button.dataset.openPlan);
+    const plan = casePlans.find(item => item.id === button.dataset.plan);
+    if (!plan || plan.caseKey !== HOF.selectedCase()?.key) return;
+    HOF.plans.collect(plan, plan.items.find(item => item.id === button.dataset.caseCollect) || null);
+  });
+
   const requireCase = () => {
     const selected = HOF.selectedCase();
     if (!selected) HOF.toast(`Önce tablodan bir ${HOF.vocab.record} seçin.`, { type: "error" });
@@ -89,27 +228,22 @@
       });
     },
     // target: kayan ödeme şeridinden ya da bildirimden gelinince { key, title, amount, note } (kayıt seçili olmasa da).
-    payment(target) {
+    // v2.0.6: kayda bağlı taksit kartı varsa tahsilat taksitten düşer (taksit seçici); Excel takviminden tutarla gelen
+    // istek ve plansız kayıtlar eski pencereye gider.
+    async payment(target) {
       const selected = target && target.key ? target : requireCase();
       if (!selected) return;
-      const suggested = target && Number(target.amount) > 0 ? new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(target.amount) : "";
-      HOF.formModal({
-        title: "Tahsilat işle",
-        eyebrow: selected.title,
-        intro: target && target.intro ? target.intro : "",
-        fields: [
-          { name: "amount", label: "Tutar (₺)", required: true, inputmode: "decimal", placeholder: "Örn. 1.250,00", value: suggested },
-          { name: "date", label: "Tahsilat tarihi", type: "date", value: new Date().toISOString().slice(0, 10) },
-          { name: "note", label: "Açıklama", placeholder: "Ödeme kanalı veya açıklama", maxlength: 500, value: (target && target.note) || "" },
-        ],
-        submitLabel: "Tahsilatı kaydet",
-        onSubmit: async data => {
-          await HOF.api(caseUrl(selected.key, "payments"), { method: "POST", body: { ...data, caseTitle: selected.title } });
-          HOF.toast("Tahsilat kaydedildi. Kasaya tahsilat olarak işlendi.", { type: "success" });
-          afterCaseChange();
-          HOF.emit("payment-saved", { key: selected.key });
-        },
-      });
+      const fromStrip = Boolean(target && Number(target.amount) > 0);
+      if (!fromStrip && HOF.plans?.forCase && HOF.can("plans.view")) {
+        try {
+          const linked = await HOF.plans.forCase(selected.key);
+          const active = (linked.plans || []).filter(plan => plan.status === "active");
+          if (active.length) return openPlanCollect(selected, active, linked);
+        } catch {
+          // kartlar okunamadıysa eski pencere
+        }
+      }
+      paymentForm(selected, target);
     },
     lien() {
       const selected = requireCase();
@@ -648,11 +782,16 @@
   }
 
   // ---------- Detay paneli: işlem düğmeleri ve geçmiş ----------
-  const ACTIVITY_ICONS = { note: "✎", phone: "☎", payment: "₺", lien: "⚖", task: "✓" };
+  const ACTIVITY_ICONS = { note: "✎", phone: "☎", payment: "₺", "plan-entry": "₺", lien: "⚖", task: "✓" };
   const describe = item => {
     if (item.type === "note") return esc(item.text);
     if (item.type === "phone") return `${esc(item.label)}: ${esc(item.phone)}`;
     if (item.type === "payment") return `${esc(HOF.formatMoney(item.amount))} tahsilat${item.note ? ` · ${esc(item.note)}` : ""} (${esc(HOF.formatDate(item.date))})`;
+    // Kayda bağlı taksit kartının hareketi (v2.0.6): Kasa'ya kart üzerinden düşmüştür, burada ayrıca sayılmaz.
+    if (item.type === "plan-entry")
+      return item.kind === "in"
+        ? `${esc(HOF.formatMoney(item.amount))} taksit tahsilatı${item.itemSeq ? ` · ${esc(item.itemSeq)}. taksit` : ""}${item.note ? ` · ${esc(item.note)}` : ""}${item.receiptNo ? ` · Makbuz No ${esc(item.receiptNo)}` : ""} (${esc(HOF.formatDate(item.date))})`
+        : `${esc(HOF.formatMoney(item.amount))} taksit ödemesi / iadesi${item.note ? ` · ${esc(item.note)}` : ""} (${esc(HOF.formatDate(item.date))})`;
     if (item.type === "lien") return `${esc(item.title)} · düşüm ${esc(HOF.formatDate(item.expiresAt))}`;
     if (item.type === "task") return `${item.priority === "urgent" && item.status !== "completed" ? '<span class="hof-chip hof-chip-urgent">Acil</span> ' : item.priority === "high" && item.status !== "completed" ? '<span class="hof-chip hof-chip-high">Yüksek</span> ' : ""}Görev: ${esc(item.title)} → ${esc(item.assignee)}${item.status === "completed" ? " ✓" : ""}`;
     return "";
@@ -696,7 +835,12 @@
       const shown = result.items.slice(-30);
       const hidden = result.items.length - shown.length;
       activityItems = new Map(shown.map(item => [item.id, item]));
-      const itemActions = item => (item.type === "payment" && canEditPayment(item) ? `<span class="hof-activity-tools"><button type="button" class="hof-mini" data-payment-edit="${esc(item.id)}" title="Tahsilatı düzelt" aria-label="Tahsilatı düzelt">✎</button><button type="button" class="hof-mini hof-mini-danger" data-payment-delete="${esc(item.id)}" title="Tahsilatı sil" aria-label="Tahsilatı sil">×</button></span>` : "");
+      const itemActions = item =>
+        item.type === "payment" && canEditPayment(item)
+          ? `<span class="hof-activity-tools"><button type="button" class="hof-mini" data-payment-edit="${esc(item.id)}" title="Tahsilatı düzelt" aria-label="Tahsilatı düzelt">✎</button><button type="button" class="hof-mini hof-mini-danger" data-payment-delete="${esc(item.id)}" title="Tahsilatı sil" aria-label="Tahsilatı sil">×</button></span>`
+          : item.type === "plan-entry" && item.kind === "in"
+            ? `<span class="hof-activity-tools"><a class="hof-mini hof-mini-text" href="/api/workspace/plans/${encodeURIComponent(item.planId)}/entries/${encodeURIComponent(item.id)}/makbuz.pdf" target="_blank" rel="noopener" title="Makbuz PDF">Makbuz</a></span>`
+            : "";
       const edited = item => (item.updatedAt ? ` · düzeltildi${item.updatedByName ? ` (${esc(item.updatedByName)})` : ""}` : "");
       box.innerHTML = `<div class="hof-activity-head"><h3>İŞLEM GEÇMİŞİ</h3>${result.paidTotal ? `<span>Toplam tahsilat ${esc(HOF.formatMoney(result.paidTotal))}</span>` : ""}</div>${result.items.length ? `${hidden ? `<p class="hof-empty">Önceki ${hidden} işlem gösterilmiyor.</p>` : ""}<ol>${shown.map(item => `<li data-type="${esc(item.type)}"${item.type === "task" && item.priority === "urgent" && item.status !== "completed" ? ' data-urgent=""' : ""}><span class="hof-activity-icon" aria-hidden="true">${ACTIVITY_ICONS[item.type] || "•"}</span><span class="hof-activity-main"><b>${describe(item)}</b><small>${esc(item.actorName || "—")} · ${esc(HOF.formatDateTime(item.createdAt))}${edited(item)}</small></span>${itemActions(item)}</li>`).join("")}</ol>` : `<p class="hof-empty">Bu kayıtta henüz işlem yok. Yukarıdaki düğmelerle ${toolsText} ekleyebilirsiniz.</p>`}`;
     } catch (error) {
@@ -765,10 +909,17 @@
       }
     }
     if ((change.kind === "activity" || change.kind === "task") && change.caseKey && HOF.selectedCase()?.key === change.caseKey) refreshActivity();
+    if (change.kind === "plans" || (change.kind === "activity" && change.caseKey && HOF.selectedCase()?.key === change.caseKey)) renderCasePlan(true);
     if (change.kind === "cash" && cashModal) cashModal.reload();
     if (change.kind === "plans" || change.kind === "cash") refreshBadges();
   });
   HOF.on("plans-changed", refreshBadges);
+  HOF.on("plans-changed", () => renderCasePlan(true));
+  HOF.on("payment-saved", detail => {
+    if (!detail?.planId) return;
+    afterCaseChange();
+    renderCasePlan(true);
+  });
   HOF.on("live:resync", () => {
     refreshBadges();
     refreshActivity();
@@ -786,6 +937,7 @@
       installSidebar();
       installDetailActions();
       renderActivity();
+      renderCasePlan();
     });
     setInterval(refreshBadges, 120_000);
   });

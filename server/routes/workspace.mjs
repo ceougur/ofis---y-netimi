@@ -8,7 +8,7 @@ import { can } from "../lib/permissions.mjs";
 
 const CASE_KEY_MAX = 300;
 
-export function registerWorkspaceRoutes(router, { store, auth, audit, dataset, clientState, config, events, chat, profile, free, trash }) {
+export function registerWorkspaceRoutes(router, { store, auth, audit, dataset, clientState, config, events, chat, profile, free, trash, plans = () => null }) {
   const now = () => new Date().toISOString();
   // Görev kişiye kimliğiyle bağlıysa yalnızca kimlik belirler (ad değiştirerek başkasının görevi görülemez);
   // serbest yazılmış, kişiye bağlanamamış eski görevlerde ad eşleşmesi geçerlidir.
@@ -307,6 +307,7 @@ export function registerWorkspaceRoutes(router, { store, auth, audit, dataset, c
     const user = auth.requireUser(req);
     const key = caseKeyOf(params.key);
     const list = (sql, type) => store.all(sql, key).map(row => ({ ...row, type }));
+    const planEntries = plans()?.entriesForCase ? plans().entriesForCase(key, dataset.currentKey()) : [];
     const items = [
       ...list(`SELECT n.id, n.note AS text, n.created_at AS createdAt, COALESCE(u.display_name, '') AS actorName FROM notes n LEFT JOIN users u ON u.id = n.created_by WHERE n.case_key = ?`, "note"),
       ...list(`SELECT p.id, p.phone, p.label, p.created_at AS createdAt, COALESCE(u.display_name, '') AS actorName FROM phones p LEFT JOIN users u ON u.id = p.created_by WHERE p.case_key = ?`, "phone"),
@@ -314,10 +315,13 @@ export function registerWorkspaceRoutes(router, { store, auth, audit, dataset, c
       ...list(`SELECT l.id, l.title, l.placed_at AS placedAt, l.expires_at AS expiresAt, l.status, l.created_at AS createdAt, COALESCE(u.display_name, '') AS actorName FROM liens l LEFT JOIN users u ON u.id = l.created_by WHERE l.case_key = ?`, "lien"),
       // Dosya geçmişindeki görevler de görev yetkisine uyar (personel yalnızca kendi görevlerini görür).
       ...visibleTasks(user, list(`SELECT t.id, t.title, COALESCE(a.display_name, t.assignee) AS assignee, t.assignee_id AS assigneeId, t.due_date AS dueDate, t.priority, t.status, t.created_by AS actorId, t.created_at AS createdAt, COALESCE(u.display_name, '') AS actorName FROM tasks t LEFT JOIN users u ON u.id = t.created_by LEFT JOIN users a ON a.id = t.assignee_id WHERE t.case_key = ?`, "task")),
+      // Kayda bağlı taksit kartlarının tahsilat ve ödemeleri (v2.0.6): karttan girilen tahsilat kişinin geçmişinde de görünür.
+      ...planEntries.map(entry => ({ ...entry, type: "plan-entry" })),
       // v2.0.1: eskiden yeniye (yeni eklenen en altta), tıpkı bir defter gibi.
     ].sort((a, b) => (a.createdAt < b.createdAt ? -1 : a.createdAt > b.createdAt ? 1 : 0));
     const totals = store.get("SELECT COALESCE(SUM(amount), 0) AS paid FROM payments WHERE case_key = ?", key);
-    ok(res, { caseKey: key, items, paidTotal: totals.paid });
+    const planPaid = planEntries.reduce((sum, entry) => sum + (entry.kind === "in" ? entry.amount : -entry.amount), 0);
+    ok(res, { caseKey: key, items, paidTotal: Math.round((totals.paid + planPaid) * 100) / 100, planPaid: Math.round(planPaid * 100) / 100 });
   });
 
   router.post("/api/workspace/cases/:key/notes", async ({ req, res, params }) => {

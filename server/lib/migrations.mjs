@@ -543,6 +543,18 @@ export const MIGRATIONS = [
       }
     },
   },
+  {
+    version: 11,
+    name: "v2.0.6 taksit kartı tablodaki kayda bağlanır",
+    up(store) {
+      // Kart, bir veri oturumundaki kayda (Excel satırı) bağlanabilir: kişinin kartında taksitler, tahsilat ve kalan görünür,
+      // karttan girilen tahsilat taksitten düşer. Yalnızca ekleyici; bağsız kartlar olduğu gibi çalışır.
+      addColumn(store, "plans", "case_key", "TEXT NOT NULL DEFAULT ''");
+      addColumn(store, "plans", "case_source", "TEXT NOT NULL DEFAULT ''");
+      addColumn(store, "plans", "case_title", "TEXT NOT NULL DEFAULT ''");
+      store.exec("CREATE INDEX IF NOT EXISTS idx_plans_case ON plans(case_source, case_key)");
+    },
+  },
 ];
 
 export const LATEST_VERSION = MIGRATIONS.at(-1).version;

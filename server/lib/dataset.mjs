@@ -112,6 +112,11 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
   const linkedUrl = () => sget(S.linkedUrl, "").trim();
 
   // ---------- Okuma ----------
+  // Kayıt açık veri oturumunda var mı? (Taksit kartı bağlanırken; başka oturumun ya da yanlış yazılmış bir anahtar bağlanamaz.)
+  function hasRecord(caseKey) {
+    const key = String(caseKey || "").trim();
+    return Boolean(key) && Boolean(store.get("SELECT 1 AS one FROM dataset_rows WHERE dataset_key = ? AND case_key = ? LIMIT 1", activeKey(), key));
+  }
   function loadRows() {
     const datasetKey = activeKey();
     if (caches.has(datasetKey)) return caches.get(datasetKey);
@@ -1417,7 +1422,7 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
 
   return {
     view, summary, info, stage, commit, sync, unlink, remove, missingRows, resolveMissing, adoptLegacySheetUrl, hasData, start, stop, invalidate, onChange, identity, pinLegacyIdentity,
-    sessions, selectSession, renameSession, deleteSession, currentKey: activeKey, settingKey: name => sk(name), withKey, setFreeProvider, dataTabs, baseValue, unflag,
+    sessions, selectSession, renameSession, deleteSession, currentKey: activeKey, settingKey: name => sk(name), withKey, setFreeProvider, dataTabs, baseValue, unflag, hasRecord,
     renameTab, hideTab, unhideTab, hiddenTabs, originalTab,
     addColumn, hideColumn, unhideColumn, hiddenColumns, layoutTab, columnLayout: readLayout,
   };

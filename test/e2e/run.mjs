@@ -572,6 +572,63 @@ try {
     await admin.waitForFunction(() => document.querySelector('#hof-sidecard [data-badge="plans"]')?.textContent === "", null, { timeout: 10000 });
   });
 
+  await step("taksit kartı tablodaki kayda bağlanır; kişinin kartından taksit tahsilatı taksitten düşer ve Kasa'ya tek kayıt iner (v2.0.6)", async () => {
+    // Taksit penceresini kapat, kaydı tabloda aç.
+    if (await admin.$(".hof-plans [data-close]")) {
+      await admin.click(".hof-plans [data-close]");
+      await admin.waitForFunction(() => !document.querySelector(".hof-plans-modal"), null, { timeout: 5000 });
+    }
+    expect(await admin.evaluate(() => window.HOF.revealRecord("2026/101")), "kayıt tabloda açıldı");
+    await admin.waitForFunction(() => window.HOF.selectedCase()?.key === "2026/101", null, { timeout: 8000 });
+    // Plan yokken Tahsilat: eski pencere + "Taksit planı oluşturun" kısa yolu → kart formu kayda bağlı, ad kayıttan.
+    await admin.click('.hof-case-actions [data-case-action="payment"]');
+    await admin.waitForSelector(".hof-modal [data-new-plan]", { timeout: 8000 });
+    await admin.click(".hof-modal [data-new-plan]");
+    await admin.waitForSelector('.hof-plan-form input[name="caseKey"]', { state: "attached", timeout: 8000 });
+    expect((await admin.inputValue('.hof-plan-form input[name="caseKey"]')) === "2026/101", "kart formu kayda bağlı açıldı");
+    const prefilled = await admin.inputValue('.hof-plan-form input[name="name"]');
+    expect(prefilled.length > 0, `ad kayıttan geldi: ${prefilled}`);
+    expect(await admin.$eval(".hof-case-picker", node => node.classList.contains("is-linked")), "arama kutusu bağlı görünümde");
+    await admin.fill('.hof-plan-form input[name="total"]', "3.000");
+    await admin.check('.hof-plan-form input[name="auto"]');
+    await admin.fill('.hof-plan-form input[name="count"]', "3");
+    await admin.fill('.hof-plan-form input[name="firstDue"]', "2026-02-05");
+    await admin.click('.hof-plan-form button[type="submit"]');
+    await admin.waitForSelector(".hof-plans .hof-plan-head", { timeout: 10000 });
+    const facts = await admin.$eval(".hof-plans .hof-plan-profile", node => node.innerText.replace(/\s+/g, " "));
+    expect(facts.toLocaleUpperCase("tr-TR").includes("TABLODAKİ KAYIT") && facts.includes("2026/101"), `kartta tablodaki kayıt: ${facts}`);
+    await admin.click(".hof-plans [data-close]");
+    await admin.waitForFunction(() => !document.querySelector(".hof-plans-modal"), null, { timeout: 5000 });
+    // Kişinin kartında Taksit planı bölümü (3 taksit, kalan 3.000).
+    await admin.waitForFunction(() => { const box = document.querySelector("#hof-case-plan"); return box && !box.hidden && box.querySelectorAll("tbody tr").length === 3; }, null, { timeout: 10000 });
+    expect((await admin.$eval("#hof-case-plan", node => node.innerText)).includes("3.000,00"), "bölümde kalan 3.000");
+    // Tahsilat → taksit seçici → 1. taksite Tahsil et → tutar taksit kadar hazır → kaydet.
+    await admin.click('.hof-case-actions [data-case-action="payment"]');
+    await admin.waitForSelector(".hof-plan-collect-modal [data-collect]", { timeout: 8000 });
+    await admin.click('.hof-plan-collect-modal tbody tr:first-child [data-collect]');
+    await admin.waitForSelector('.hof-modal-backdrop.is-visible input[name="amount"]', { timeout: 8000 });
+    expect((await admin.inputValue('.hof-modal-backdrop.is-visible input[name="amount"]')) === "1.000,00", "tutar 1. taksit kadar hazır");
+    await admin.click('.hof-modal-backdrop.is-visible .hof-form button[type="submit"]');
+    await admin.waitForFunction(() => document.querySelector("#hof-activity")?.textContent.includes("taksit tahsilatı"), null, { timeout: 10000 });
+    await admin.waitForFunction(() => document.querySelector("#hof-case-plan")?.textContent.includes("2.000,00"), null, { timeout: 10000 });
+    const cash = (await admin.evaluate(() => fetch("/api/workspace/cash?period=all").then(response => response.json()))).data;
+    expect(cash.entries.filter(entry => entry.amount === 1000 && entry.source === "plan").length === 1 && !cash.entries.some(entry => entry.amount === 1000 && entry.source === "payment"), "Kasa'da tek kayıt (taksit tahsilatı)");
+    const activity = (await admin.evaluate(() => fetch("/api/workspace/cases/2026%2F101/activity").then(response => response.json()))).data;
+    expect(activity.items.some(item => item.type === "plan-entry" && item.amount === 1000 && item.itemSeq === 1), "işlem geçmişinde 1. taksit tahsilatı");
+    // Başka kayıtta bölüm görünmez (kayıtlar birbirine karışmaz); geri dönünce yeniden gelir.
+    expect(await admin.evaluate(() => window.HOF.revealRecord("2026/103")), "başka kayda geçildi");
+    await admin.waitForFunction(() => window.HOF.selectedCase()?.key === "2026/103" && (document.querySelector("#hof-case-plan")?.hidden ?? true), null, { timeout: 8000 });
+    expect(await admin.evaluate(() => window.HOF.revealRecord("2026/101")), "kayda dönüldü");
+    await admin.waitForFunction(() => window.HOF.selectedCase()?.key === "2026/101" && document.querySelector("#hof-case-plan")?.hidden === false, null, { timeout: 8000 });
+    // Bölümdeki "Taksit kartını aç" kartı açar; kart kapatılınca bölüm kalkar (sonraki adımların takvimini etkilemesin).
+    await admin.click("#hof-case-plan [data-open-plan]");
+    await admin.waitForSelector('.hof-plans [data-act="close"]', { timeout: 10000 });
+    await admin.click('.hof-plans [data-act="close"]');
+    await admin.waitForSelector('.hof-plans [data-act="reopen"]', { timeout: 10000 });
+    await admin.click(".hof-plans [data-close]");
+    await admin.waitForFunction(() => !document.querySelector(".hof-modal-backdrop") && document.querySelector("#hof-case-plan")?.hidden === true, null, { timeout: 8000 });
+  });
+
   await step("detaydaki 'Notu kaydet' merkezi sunucuya yazılır", async () => {
     await admin.fill(".note-section textarea", "Merkezi not denemesi");
     await admin.click(".note-section .save-note");

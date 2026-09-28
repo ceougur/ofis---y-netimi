@@ -135,7 +135,8 @@ export function createApp(overrides = {}) {
   router.get("/api/health", async ({ res }) => ok(res, { service: "destekofis-merkezi", status: "ok", version: config.version, time: new Date().toISOString(), uptimeSeconds: Math.round(process.uptime()) }));
   registerAuthRoutes(router, context);
   registerAdminRoutes(router, context);
-  registerWorkspaceRoutes(router, context);
+  // Taksit servisi (context.plans) daha sonra kurulur; işlem geçmişi ona istek anında ulaşır (v2.0.6).
+  registerWorkspaceRoutes(router, { ...context, plans: () => context.plans });
   registerCashRoutes(router, context);
   // Taksitler (v2.0.4): Kasa ve tahsilat takvimi bu servisin hareketlerini ve gecikmelerini okur.
   context.plans = registerPlanRoutes(router, context);

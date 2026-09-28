@@ -6871,3 +6871,246 @@ body.hof-dense .dynamic-table th {
     background-color: transparent;
   }
 }
+
+/* ---------- Taksit kartı ↔ tablodaki kayıt (v2.0.6) ---------- */
+.hof-case-picker {
+  position: relative;
+}
+.hof-case-picker-box {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.hof-case-picker-box input {
+  flex: 1;
+  min-width: 0;
+}
+.hof-case-picker-clear {
+  flex: 0 0 auto;
+  width: 32px;
+  height: 36px;
+  border: 1px solid var(--do-border-strong);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--do-danger);
+  font-size: 16px;
+  cursor: pointer;
+}
+.hof-case-picker.is-linked input[name="caseTitle"] {
+  border-color: var(--do-accent);
+  background: var(--do-accent-soft);
+  font-weight: 600;
+}
+.hof-case-picker-list {
+  position: absolute;
+  top: calc(100% - 22px);
+  right: 0;
+  left: 0;
+  z-index: 6;
+  margin: 0;
+  padding: 4px;
+  list-style: none;
+  border: 1px solid var(--do-border-strong);
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 10px 24px rgba(20, 52, 40, 0.16);
+  max-height: 260px;
+  overflow: auto;
+}
+.hof-case-picker-list li {
+  display: flex;
+  flex-direction: column;
+  padding: 7px 10px;
+  border-radius: 7px;
+  cursor: pointer;
+}
+.hof-case-picker-list li:hover {
+  background: var(--do-accent-soft);
+}
+.hof-case-picker-list li small {
+  color: #6b7a74;
+  font-size: 11px;
+}
+.hof-case-picker-list li.is-empty {
+  color: #6b7a74;
+  cursor: default;
+}
+.hof-muted {
+  color: #8a9a93;
+}
+.hof-form-aside {
+  margin: 2px 0 12px;
+  color: #45544e;
+  font-size: 12.5px;
+}
+.hof-link {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--do-accent);
+  font: inherit;
+  font-weight: 600;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.hof-right {
+  text-align: right;
+}
+.hof-mini-text {
+  width: auto;
+  padding: 0 7px;
+  font-size: 11px;
+  text-decoration: none;
+}
+.hof-case-plan {
+  margin: 12px 0 4px;
+  padding: 12px 14px;
+  border: 1px solid #cfe3d7;
+  border-radius: 12px;
+  background: #f6fbf8;
+}
+.hof-case-plan-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+.hof-case-plan-head h3 {
+  margin: 0;
+  color: #5c796a;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+}
+.hof-case-plan-head span {
+  color: #45544e;
+  font-size: 12px;
+}
+.hof-case-plan-head .is-late {
+  color: var(--do-danger);
+}
+.hof-case-plan-kpis {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  margin: 10px 0 8px;
+}
+.hof-case-plan-kpis > div {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+  padding: 8px 10px;
+  border: 1px solid #e3ede7;
+  border-radius: 9px;
+  background: #fff;
+}
+.hof-case-plan-kpis b {
+  overflow: hidden;
+  font-size: 14px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.hof-case-plan-kpis span {
+  color: #6b7a74;
+  font-size: 11px;
+}
+.hof-case-plan .hof-plan-progress {
+  display: block;
+  height: 6px;
+  margin: 0 0 4px;
+  border-radius: 999px;
+  background: #e3ede7;
+  overflow: hidden;
+}
+.hof-case-plan .hof-plan-progress i {
+  display: block;
+  height: 100%;
+  background: var(--do-accent);
+}
+.hof-case-plan-list {
+  max-height: 224px;
+  margin-top: 8px;
+  overflow: auto;
+  border: 1px solid #e3ede7;
+  border-radius: 9px;
+  background: #fff;
+}
+.hof-case-plan-list table {
+  width: 100%;
+}
+.hof-case-plan-list tr.is-overdue td:nth-child(2) {
+  color: var(--do-danger);
+  font-weight: 600;
+}
+.hof-case-plan-list tr.is-paid td {
+  color: #8a9a93;
+}
+.hof-case-plan-tools,
+.hof-plan-collect-tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+.hof-case-plan .hof-chip {
+  display: inline-block;
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: #eef2f0;
+  font-size: 11px;
+  white-space: nowrap;
+}
+.hof-case-plan .hof-chip-overdue {
+  background: var(--do-danger-soft);
+  color: var(--do-danger);
+}
+.hof-case-plan .hof-chip-paid {
+  background: var(--do-accent-soft);
+  color: var(--do-accent);
+}
+.hof-case-plan .hof-chip-today,
+.hof-case-plan .hof-chip-partial {
+  background: #fff3d6;
+  color: #7a5a10;
+}
+.hof-plan-collect {
+  margin: 0 0 12px;
+  padding: 12px 14px;
+  border: 1px solid #dfe7e2;
+  border-radius: 12px;
+}
+.hof-plan-collect header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+.hof-plan-collect header small {
+  display: block;
+  color: #6b7a74;
+  font-size: 12px;
+}
+.hof-plan-collect-sums {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  color: #6b7a74;
+  font-size: 11px;
+}
+.hof-plan-collect-sums b {
+  display: block;
+  color: var(--do-text, #1c2a31);
+  font-size: 14px;
+}
+.hof-plan-collect td small {
+  display: block;
+  color: #6b7a74;
+  font-size: 11px;
+}
+.hof-plan-collect tr.is-overdue td small {
+  color: var(--do-danger);
+}
+.hof-plan-collect tr.is-paid td {
+  color: #8a9a93;
+}
