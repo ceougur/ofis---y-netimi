@@ -11,7 +11,7 @@ import { buildXlsx } from "../lib/xlsx-write.mjs";
 const TITLES = { "cari-ekstre": "Cari ekstre", "vade-takip": "Vade takip", "nakit-akis": "Nakit akış" };
 const ascii = value => String(value).replace(/[ıİşŞğĞçÇöÖüÜ]/g, char => ({ ı: "i", İ: "I", ş: "s", Ş: "S", ğ: "g", Ğ: "G", ç: "c", Ç: "C", ö: "o", Ö: "O", ü: "u", Ü: "U" })[char]);
 
-export function registerReportRoutes(router, { auth, store, dataset, profile }) {
+export function registerReportRoutes(router, { auth, store, dataset, profile, plans }) {
   const parseSettled = key => {
     try {
       const value = JSON.parse(store.setting(key, "{}") || "{}");
@@ -49,7 +49,8 @@ export function registerReportRoutes(router, { auth, store, dataset, profile }) 
       });
     }
     const payments = store.all("SELECT case_key AS caseKey, amount, date, note FROM payments");
-    const cashEntries = store.all("SELECT kind, amount, date FROM cash_entries");
+    // Nakit akışta taksit kartı hareketleri de kasa giriş/çıkışıdır (v2.0.4).
+    const cashEntries = [...store.all("SELECT kind, amount, date FROM cash_entries"), ...(plans?.cashEntries ? plans.cashEntries().map(entry => ({ kind: entry.kind, amount: entry.amount, date: entry.date })) : [])];
     return { sessions: sessions.map(item => ({ key: item.key, name: item.name, rowCount: item.rowCount })), records, items, dormant, payments, cashEntries, columnsBySession };
   }
 

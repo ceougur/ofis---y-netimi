@@ -19,6 +19,11 @@ export const PERMISSIONS = Object.freeze({
   // silmek de kasa yetkisidir; herkes kendi girdiği tahsilatı düzeltebilir.
   "cash.view": ["admin", "avukat", "muhasebe"],
   "cash.manage": ["admin", "avukat", "muhasebe"],
+  // Taksitler (v2.0.4): herkes kartları görür ve tahsilat girer; kart açma/düzenleme/silme, grup tanımı ve Excel'den
+  // yükleme kasa yetkisiyle aynı hesaplarda. Başkasının girdiği hareketi düzeltmek/silmek de yönetim yetkisidir.
+  "plans.view": ALL,
+  "plans.collect": ALL,
+  "plans.manage": ["admin", "avukat", "muhasebe"],
   // Görev atama, herkesin görevleri ve performans raporu (KPI) yalnızca avukat ve yönetici içindir;
   // personel ve muhasebe kendilerine atanan görevleri görür ve tamamlar.
   "tasks.create": ["admin", "avukat"],

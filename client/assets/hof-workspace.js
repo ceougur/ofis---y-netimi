@@ -336,10 +336,14 @@
     const list = modal.dialog.querySelector("[data-list]");
     const row = entry => {
       const payment = entry.source === "payment";
+      const plan = entry.source === "plan";
       const title = payment ? entry.caseTitle || (String(entry.caseKey).startsWith("satir:") ? "" : entry.caseKey) : "";
-      const text = payment ? `Tahsilat${title ? ` · ${title}` : ""}${entry.description ? ` · ${entry.description}` : ""}` : entry.description;
-      const actions = entry.editable ? `<button type="button" class="hof-mini" data-edit="${esc(entry.id)}" title="Düzelt" aria-label="Düzelt">✎</button><button type="button" class="hof-mini hof-mini-danger" data-delete="${esc(entry.id)}" title="Sil" aria-label="Sil">×</button>` : "";
-      return `<tr data-kind="${esc(entry.kind)}"><td>${esc(HOF.formatDate(entry.date))}</td><td><b>${esc(text)}</b><small>${payment ? "Detay kartından" : entry.kind === "in" ? "Kasaya elle" : "Ödeme"} · ${esc(entry.actorName || "—")}</small></td><td class="num hof-cash-in">${entry.kind === "in" ? esc(HOF.formatMoney(entry.amount)) : ""}</td><td class="num hof-cash-out">${entry.kind === "out" ? esc(HOF.formatMoney(entry.amount)) : ""}</td><td class="num"><b>${esc(HOF.formatMoney(entry.balance))}</b></td><td class="hof-cash-actions">${actions}</td></tr>`;
+      const text = payment ? `Tahsilat${title ? ` · ${title}` : ""}${entry.description ? ` · ${entry.description}` : ""}` : plan ? `${entry.kind === "in" ? "Taksit tahsilatı" : "Taksit ödemesi/iadesi"} · ${entry.planName}${entry.description ? ` · ${entry.description}` : ""}` : entry.description;
+      // Taksit kartı hareketleri (v2.0.4) kartın kendisinden düzeltilir; buradan kart açılır.
+      const actions = plan
+        ? `<button type="button" class="hof-mini" data-plan="${esc(entry.planId)}" title="Taksit kartını aç" aria-label="Taksit kartını aç">↗</button>`
+        : entry.editable ? `<button type="button" class="hof-mini" data-edit="${esc(entry.id)}" title="Düzelt" aria-label="Düzelt">✎</button><button type="button" class="hof-mini hof-mini-danger" data-delete="${esc(entry.id)}" title="Sil" aria-label="Sil">×</button>` : "";
+      return `<tr data-kind="${esc(entry.kind)}"><td>${esc(HOF.formatDate(entry.date))}</td><td><b>${esc(text)}</b><small>${payment ? "Detay kartından" : plan ? "Taksit kartından" : entry.kind === "in" ? "Kasaya elle" : "Ödeme"} · ${esc(entry.actorName || "—")}</small></td><td class="num hof-cash-in">${entry.kind === "in" ? esc(HOF.formatMoney(entry.amount)) : ""}</td><td class="num hof-cash-out">${entry.kind === "out" ? esc(HOF.formatMoney(entry.amount)) : ""}</td><td class="num"><b>${esc(HOF.formatMoney(entry.balance))}</b></td><td class="hof-cash-actions">${actions}</td></tr>`;
     };
     const render = () => {
       modal.dialog.querySelectorAll("[data-period]").forEach(button => button.setAttribute("aria-pressed", String(button.dataset.period === period)));
@@ -395,6 +399,7 @@
         load();
       } else if ("pdf" in target.dataset) downloadCashPdf(periodRange(period, custom), rangeError(), target);
       else if (target.dataset.add) editCashEntry(null, target.dataset.add, load);
+      else if (target.dataset.plan) HOF.plans?.open(target.dataset.plan);
       else if (target.dataset.edit) {
         const entry = byId(target.dataset.edit);
         if (!entry) return;
@@ -517,6 +522,8 @@
     // Sabit "Yeni kayıt" (v2.0.2): açık sekme araç, kasa ya da öğrenci listesi olabilir; sektör sözcüğü yanıltır.
     { action: "newRecord", icon: "+", key: "side.newRecord", label: () => "Yeni kayıt" },
     { action: "cash", icon: "₺", key: "side.cash", label: () => "Kasa", requires: "cash.view" },
+    // Taksitler (v2.0.4): grup › alt grup, taksit kartı, tahsilat, gecikme uyarısı (hof-plans.js).
+    { action: "plans", icon: "▤", key: "side.plans", label: () => "Taksitler", requires: "plans.view", badge: "warn" },
     { action: "liens", icon: "!", key: "side.liens", label: () => "Haciz uyarıları", badge: "warn", module: "haciz" },
     { action: "analytics", icon: "▤", key: "side.analytics", label: () => "Raporlar", requires: "reports.view" },
     { action: "reports", icon: "↗", key: "side.reports", label: () => "Personel raporu", requires: "reports.view" },
@@ -610,6 +617,7 @@
       else if (action === "newRecord") HOF.emit("new-record");
       else if (action === "liens") openLiens();
       else if (action === "cash") openCash();
+      else if (action === "plans") HOF.plans?.open();
       else if (action === "editSide") openSideEditor();
       else if (action === "guide") window.open("/kilavuz/DestekOfis-Kullanim-Kilavuzu.pdf", "_blank", "noopener");
       else if (action === "reports") openReports();
@@ -627,9 +635,11 @@
       if (node) node.textContent = value ? String(value) : "";
     };
     try {
-      const [tasks, liens] = await Promise.all([HOF.api("/api/workspace/tasks?status=open&mine=1"), HOF.api("/api/workspace/liens?days=7")]);
+      const [tasks, liens, plans] = await Promise.all([HOF.api("/api/workspace/tasks?status=open&mine=1"), HOF.api("/api/workspace/liens?days=7"), HOF.can("plans.view") ? HOF.api("/api/workspace/plans?status=overdue").catch(() => null) : null]);
       setBadge("tasks", tasks.length);
       setBadge("liens", liens.total);
+      // Taksitler rozeti: geciken taksiti olan kart sayısı.
+      setBadge("plans", plans ? plans.plans.length : 0);
     } catch {
       // Rozetler kritik değil; bir sonraki turda yeniden denenir.
     }
@@ -751,7 +761,9 @@
     }
     if ((change.kind === "activity" || change.kind === "task") && change.caseKey && HOF.selectedCase()?.key === change.caseKey) refreshActivity();
     if (change.kind === "cash" && cashModal) cashModal.reload();
+    if (change.kind === "plans" || change.kind === "cash") refreshBadges();
   });
+  HOF.on("plans-changed", refreshBadges);
   HOF.on("live:resync", () => {
     refreshBadges();
     refreshActivity();

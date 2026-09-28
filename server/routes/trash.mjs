@@ -16,6 +16,8 @@ const KIND_LABELS = {
   "free-column": "Serbest sayfa kolonu",
   payment: "Tahsilat",
   cash: "Kasa hareketi",
+  plan: "Taksit kartı",
+  "plan-entry": "Taksit hareketi",
 };
 const SEQUENCE = /^(sıra|sira|sıra no|no|#|sn|s\.?\s?no|nr)$/i;
 
@@ -110,16 +112,29 @@ export function registerTrashRoutes(router, { store, auth, audit, events, datase
         note: "Sekmelerin sonuna geri gelir; adı başka bir sekmede kullanılıyorsa “(geri yüklendi)” eklenir.",
       });
     }
+    // Silinen taksit kartları (v2.0.4): taksitleri ve hareketleri yerinde durur; geri yüklenince Kasa'ya döner.
+    for (const item of store.all("SELECT p.id, p.name, p.total, p.deleted_at AS deletedAt, COALESCE(u.display_name, '') AS actorName, COALESCE(g.name, '') AS groupName FROM plans p LEFT JOIN users u ON u.id = p.deleted_by LEFT JOIN plan_groups g ON g.id = p.group_id WHERE p.deleted_at IS NOT NULL")) {
+      items.push({
+        id: `plan:${item.id}`,
+        kind: "plan",
+        title: item.name,
+        detail: [item.groupName ? `Grup: ${item.groupName}` : "", `Toplam ${new Intl.NumberFormat("tr-TR", { style: "currency", currency: "TRY" }).format(item.total || 0)}`].filter(Boolean).join(" · "),
+        deletedAt: item.deletedAt,
+        actorName: item.actorName,
+        restorable: true,
+        note: "Taksitleri ve hareketleriyle Taksitler listesine geri döner; Kasa yeniden hesaplanır.",
+      });
+    }
     for (const item of trash.open()) {
       const payload = JSON.parse(item.payload_json || "{}");
-      const money = item.kind === "payment" || item.kind === "cash";
+      const money = item.kind === "payment" || item.kind === "cash" || item.kind === "plan-entry";
       items.push({
         id: `trash:${item.id}`,
         kind: item.kind,
         title: item.title,
         detail: [
           money ? `${new Intl.NumberFormat("tr-TR", { style: "currency", currency: "TRY" }).format(payload.amount || 0)} · ${String(payload.date || "").split("-").reverse().join(".")}` : "",
-          item.kind === "cash" ? (payload.kind === "in" ? "Tahsilat" : "Ödeme") : "",
+          item.kind === "cash" || item.kind === "plan-entry" ? (payload.kind === "in" ? "Tahsilat" : "Ödeme") : "",
           item.detail,
           where(item.dataset_key),
         ]
@@ -190,6 +205,18 @@ export function registerTrashRoutes(router, { store, auth, audit, events, datase
       return ok(res, { restored: "free-sheet", message: result.renamed ? `Sayfa “${result.name}” adıyla geri geldi (eski adı başka bir sekmede kullanılıyor).` : `“${result.name}” sayfası geri geldi.` });
     }
 
+    if (source === "plan") {
+      const plan = store.get("SELECT id, name FROM plans WHERE id = ? AND deleted_at IS NOT NULL", ref);
+      if (!plan) throw new HttpError(404, "Bu taksit kartı zaten geri yüklenmiş.");
+      store.tx(() => {
+        store.run("UPDATE plans SET deleted_at = NULL, deleted_by = NULL, updated_by = ?, updated_at = ? WHERE id = ?", user.id, now(), plan.id);
+        audit(user, "plan.restored", plan.id, { name: plan.name });
+      });
+      publish(user, { kind: "plans", planId: plan.id });
+      publish(user, { kind: "cash" });
+      return ok(res, { restored: "plan", message: `“${plan.name}” taksit kartı geri geldi.` });
+    }
+
     if (source !== "trash") throw new HttpError(400, "Bilinmeyen öğe.");
     const item = trash.get(ref);
     if (!item) throw new HttpError(404, "Bu öğe zaten geri yüklenmiş.");
@@ -241,6 +268,25 @@ export function registerTrashRoutes(router, { store, auth, audit, events, datase
       });
       publish(user, { kind: "cash" });
       message = "Kasa hareketi geri eklendi.";
+    } else if (item.kind === "plan-entry") {
+      if (!["in", "out"].includes(payload.kind)) throw new HttpError(409, "Hareketin bilgisi eksik; geri yüklenemez.");
+      const plan = store.get("SELECT id, deleted_at AS deletedAt FROM plans WHERE id = ?", payload.planId);
+      if (!plan) throw new HttpError(409, "Hareketin taksit kartı artık yok; geri yüklenemez.");
+      if (plan.deletedAt) throw new HttpError(409, `“${payload.planName}” kartı silinmiş. Önce kartı geri yükleyin.`);
+      store.tx(() => {
+        if (!store.get("SELECT 1 AS found FROM plan_entries WHERE id = ?", item.ref)) {
+          const itemId = payload.itemId && store.get("SELECT 1 AS found FROM plan_items WHERE id = ?", payload.itemId) ? payload.itemId : null;
+          store.run(
+            "INSERT INTO plan_entries (id, plan_id, item_id, kind, amount, date, note, receipt_no, created_by, created_at, updated_by, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            item.ref, plan.id, itemId, payload.kind, Number(payload.amount) || 0, payload.date, payload.note || "", payload.receiptNo || null, payload.createdBy || user.id, payload.createdAt || now(), user.id, now(),
+          );
+        }
+        trash.markRestored(item.id, user);
+        audit(user, "plan.entry.restored", item.ref, { planId: plan.id, kind: payload.kind, amount: payload.amount, date: payload.date });
+      });
+      publish(user, { kind: "plans", planId: plan.id });
+      publish(user, { kind: "cash" });
+      message = "Taksit hareketi geri eklendi; kart ve Kasa yeniden hesaplandı.";
     } else if (item.kind === "free-row" || item.kind === "free-column") {
       const sheet = store.get("SELECT deleted_at FROM free_sheets WHERE id = ?", payload.sheetId);
       if (!sheet) throw new HttpError(409, "Satırın sayfası artık yok; geri yüklenemez.");

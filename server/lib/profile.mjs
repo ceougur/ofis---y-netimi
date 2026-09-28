@@ -29,6 +29,7 @@ export const LABEL_SLOTS = Object.freeze({
   "side.newTask": { max: 32, name: "Operasyon merkezi: Görev ata" },
   "side.newRecord": { max: 32, name: "Operasyon merkezi: Yeni kayıt" },
   "side.cash": { max: 32, name: "Operasyon merkezi: Kasa" },
+  "side.plans": { max: 32, name: "Operasyon merkezi: Taksitler" },
   "side.liens": { max: 32, name: "Operasyon merkezi: Haciz uyarıları" },
   "side.reports": { max: 32, name: "Operasyon merkezi: Personel raporu" },
   "side.guide": { max: 32, name: "Operasyon merkezi: Kullanım kılavuzu" },

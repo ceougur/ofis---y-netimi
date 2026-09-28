@@ -424,6 +424,74 @@ export const MIGRATIONS = [
       }
     },
   },
+  {
+    version: 7,
+    name: "v2.0.4 taksit modülü",
+    up(store) {
+      // Yalnızca ekleyici: 2.0.3 bu şemayla da çalışır (yeni tabloları kullanmaz).
+      // Gruplar tek tabloda: parent_id boş olan "grup" (ör. servis plakası "42 C 1070", site adı), dolu olan onun
+      // "alt grubu" (güzergâh "15 Temmuz", blok "A Blok"). Taksit kartı ikisine de bağlanabilir.
+      store.exec(`
+        CREATE TABLE IF NOT EXISTS plan_groups (
+          id TEXT PRIMARY KEY,
+          parent_id TEXT,
+          name TEXT NOT NULL,
+          position INTEGER NOT NULL DEFAULT 0,
+          created_by TEXT NOT NULL,
+          created_at TEXT NOT NULL,
+          updated_at TEXT NOT NULL
+        );
+        CREATE INDEX IF NOT EXISTS idx_plan_groups_parent ON plan_groups(parent_id, position);
+        CREATE TABLE IF NOT EXISTS plans (
+          id TEXT PRIMARY KEY,
+          group_id TEXT,
+          subgroup_id TEXT,
+          name TEXT NOT NULL,
+          note TEXT NOT NULL DEFAULT '',
+          phone TEXT NOT NULL DEFAULT '',
+          total REAL NOT NULL DEFAULT 0,
+          status TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'closed')),
+          created_by TEXT NOT NULL,
+          created_at TEXT NOT NULL,
+          updated_by TEXT,
+          updated_at TEXT NOT NULL,
+          deleted_by TEXT,
+          deleted_at TEXT
+        );
+        CREATE INDEX IF NOT EXISTS idx_plans_group ON plans(group_id, subgroup_id);
+        CREATE INDEX IF NOT EXISTS idx_plans_deleted ON plans(deleted_at);
+        -- Taksitler: vade ve tutar. Ödenen tutar saklanmaz; hareketlerden hesaplanır (tahsilat sil/düzelt bozmaz).
+        CREATE TABLE IF NOT EXISTS plan_items (
+          id TEXT PRIMARY KEY,
+          plan_id TEXT NOT NULL,
+          seq INTEGER NOT NULL,
+          due_date TEXT NOT NULL,
+          amount REAL NOT NULL,
+          note TEXT NOT NULL DEFAULT '',
+          created_at TEXT NOT NULL,
+          updated_at TEXT NOT NULL
+        );
+        CREATE INDEX IF NOT EXISTS idx_plan_items_plan ON plan_items(plan_id, due_date, seq);
+        -- Hareketler: tahsilat (in) ve ödeme/iade (out). item_id doluysa o taksite sayılır, boşsa en eski açık taksite.
+        CREATE TABLE IF NOT EXISTS plan_entries (
+          id TEXT PRIMARY KEY,
+          plan_id TEXT NOT NULL,
+          item_id TEXT,
+          kind TEXT NOT NULL CHECK (kind IN ('in', 'out')),
+          amount REAL NOT NULL,
+          date TEXT NOT NULL,
+          note TEXT NOT NULL DEFAULT '',
+          receipt_no INTEGER,
+          created_by TEXT NOT NULL,
+          created_at TEXT NOT NULL,
+          updated_by TEXT,
+          updated_at TEXT
+        );
+        CREATE INDEX IF NOT EXISTS idx_plan_entries_plan ON plan_entries(plan_id, date, created_at);
+        CREATE INDEX IF NOT EXISTS idx_plan_entries_date ON plan_entries(date, created_at);
+      `);
+    },
+  },
 ];
 
 export const LATEST_VERSION = MIGRATIONS.at(-1).version;

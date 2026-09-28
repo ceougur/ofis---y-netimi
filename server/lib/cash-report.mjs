@@ -25,6 +25,7 @@ export function rangeLabel(from, to) {
 }
 
 const describe = entry => {
+  if (entry.source === "plan") return { text: [entry.kind === "in" ? "Taksit tahsilatı" : "Taksit ödemesi/iadesi", entry.planName, entry.description].filter(Boolean).join(" · "), origin: "Taksit kartından" };
   if (entry.source !== "payment") return { text: entry.description || "", origin: entry.kind === "in" ? "Kasaya elle girilen tahsilat" : "Ödeme" };
   const title = entry.caseTitle || (String(entry.caseKey || "").startsWith("satir:") ? "" : entry.caseKey || "");
   return { text: ["Tahsilat", title, entry.description].filter(Boolean).join(" · "), origin: "Detay kartından tahsilat" };
