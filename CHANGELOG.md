@@ -2,6 +2,12 @@
 
 Sürümler [anlamsal sürümleme](https://semver.org/lang/tr/) kurallarına uyar.
 
+## 2.0.4 — Kurulum dosyasıyla güncelleme, Telefon düğmesi, kolon genişlikleri
+
+- **Kurulum dosyası mevcut sunucunun üstüne çalıştırılınca servis artık başlıyor.** 2.0.0'dan beri: kurulum betiği klasör izinlerini içindeki dosyalara da yazıyor, bu izin dosyalarda geçersiz kalıp dosyayı herkese kapatıyordu. Servis kendi günlüğünü açamayınca hemen duruyordu, kurulum günlüğü de okunamıyordu. İzin artık yalnızca klasöre verilir, dosyalar klasörden miras alır; yeni kurulum dosyası eski kurulumlardaki bozuk izinleri de onarır. Kurulum programı ayrıca servisin gerçekten yanıt verdiğini denetler; vermiyorsa yeniden başlatır, yine olmazsa hatayı gösterir.
+- **Telefon düğmesi kayıttaki numarayı gösterir.** Kart detayındaki *Telefon* penceresi tablodaki telefon numaralarını **Ara** ve **WhatsApp** düğmeleriyle listeler; altında yeni numara ekleme formu durur. Önceden yalnızca numara ekleme formu açılıyor, tabloya yazılan numara görünmüyordu.
+- **Kolon genişlikleri elle ayarlanır.** Tabloda başlığın sağ kenarındaki tutamaç sürüklenerek her kolon daraltılıp genişletilir; ayar bu bilgisayarda hatırlanır. Tutamaca çift tıklayınca kolon otomatik genişliğe döner. "Sıra" gibi kısa kolonlar için varsayılan en az genişlik düşürüldü.
+
 ## 2.0.3 — Ay sütunundaki taksit, kart detayındaki tahsilatla kapanır
 
 - **Ay hücresindeki tutar artık kendiliğinden "ödendi" sayılmaz.** Tabloda ayrı bir *Aylık ücret / aidat* kolonu yoksa ay hücresine yazılan tutar (ör. *Eylül taksiti 10.000*, *Ekim taksiti 10.000*, *Toplam 20.000*) **ödenecek taksittir**. O ay uyarı verir ve kayan şeritte görünür. Ay şu durumlarda kapanır:
