@@ -15,3 +15,4 @@ build/
 launcher/winres/destekofis.manifest
 launcher/winres/destekofis.rc
 launcher/*.syso
+docs/kilavuz/*.pdf
