@@ -191,7 +191,9 @@ try {
     expect(after < before - 20, `kolon daraldı: ${Math.round(before)} → ${Math.round(after)}`);
     const remembered = await admin.evaluate(() => Object.keys(JSON.parse(localStorage.getItem("hof.colw") || "{}")).length);
     expect(remembered === 1, "kolon genişliği hatırlandı");
-    await admin.dblclick(".dynamic-table thead th:nth-child(2) .hof-col-grip");
+    // Playwright'ın kararlılık denetimi yapışkan başlıkta takılabiliyor; olay doğrudan tutamaca gönderilir.
+    await admin.dispatchEvent(".dynamic-table thead th:nth-child(2) .hof-col-grip", "dblclick");
+    await admin.waitForTimeout(300);
     const reset = await admin.$eval(".dynamic-table thead th:nth-child(2)", th => th.getBoundingClientRect().width);
     expect(Math.abs(reset - before) < 3, `çift tık otomatik genişliğe döndürür: ${Math.round(reset)} ≈ ${Math.round(before)}`);
     const flash = await toastText(admin);
