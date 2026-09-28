@@ -145,30 +145,47 @@ export function allocate(plan, items, entries, { today = isoDay(new Date()), soo
 
 // Excel'den ilk yükleme: başlık satırındaki kolonları rollerle eşler (Türkçe, esnek yazım).
 const fold = value => String(value ?? "").normalize("NFC").toLocaleLowerCase("tr-TR").replace(/[̇]/g, "").replace(/\s+/g, " ").trim();
-const HEADER_RULES = [
-  ["subgroup", /^(alt ?grup|alt ?grubu|güzergah|güzergâh|guzergah|blok|hat|sınıf|sinif|şube|sube|alt)$/],
-  ["group", /^(grup|grubu|plaka|araç|arac|servis|site|grup adı|okul|kurum)$/],
-  ["name", /^(ad[ıi]? ?soyad[ıi]?|adı soyadı|ad soyad|adi soyadi|isim|öğrenci|ogrenci|müşteri|musteri|kişi|kisi|veli|sakin|cari|ünvan|unvan|ad)$/],
-  ["phone", /^(telefon|tel|gsm|cep|cep telefonu|telefonu|veli telefonu|iletişim|iletisim)$/],
-  ["total", /^(toplam|toplam tutar|tutar|ücret|ucret|borç|borc|bedel|yıllık ücret|yillik ucret|sözleşme tutarı|sozlesme tutari)$/],
-  ["count", /^(taksit|taksit sayısı|taksit sayisi|taksit adedi|adet|ay|ay sayısı|ay sayisi)$/],
-  ["firstDue", /^(ilk vade|ilk taksit|başlangıç|baslangic|başlangıç tarihi|baslangic tarihi|ilk ödeme|ilk odeme|vade|ilk taksit tarihi)$/],
-  ["installment", /^(taksit tutarı|taksit tutari|aylık|aylik|aylık ücret|aylik ucret|aylık tutar|aylik tutar)$/],
-  ["note", /^(not|notlar|bilgi|bilgi notu|açıklama|aciklama|adres|okul|sınıf)$/],
+// Başlıklar önce sadeleştirilir: küçük harf, Türkçe harfler ASCII'ye, parantez ve noktalama boşluğa
+// ("GRUBU (Plaka)" → "grubu plaka", "S.N" → "s n", "TOPLAM TAKSİT TUTARI" → "toplam taksit tutari").
+const ASCII = { ı: "i", i̇: "i", ş: "s", ğ: "g", ü: "u", ö: "o", ç: "c", â: "a", î: "i", û: "u" };
+const plain = value =>
+  String(value ?? "")
+    .toLocaleLowerCase("tr-TR")
+    .normalize("NFC")
+    .replace(/i̇/g, "i")
+    .replace(/[ışğüöçâîû]/g, char => ASCII[char] || char)
+    .replace(/[^a-z0-9#]+/g, " ")
+    .trim();
+// Her rol için başlığın o rolü taşıyıp taşımadığını söyleyen kural; sıra önceliktir (ör. "ara grubu" önce alt gruba,
+// "tek taksit ücreti" önce taksit tutarına bakar). Bir başlık birden çok role uyarsa ilk boş rolü alır.
+const ROLE_TESTS = [
+  ["seq", t => /^(#|s n|sn|s no|sira|sira no|sira nu|sira numarasi|no|nr|numara|kayit no|ogrenci no|musteri no|uye no|dosya no)$/.test(t) || (/(^| )(no|nr|numara|numarasi)$/.test(t) && !/(tel|tc|kimlik|iban|hesap|vergi|plaka|kapi)/.test(t))],
+  ["phone", t => /(^| )(tel|telefon|telefonu|telefonlari|gsm|cep|iletisim)( |$)/.test(t)],
+  ["subgroup", t => /(^| )(alt|ara) ?(grup|grubu|gruplar)( |$)|altgrup|(^| )(guzergah|guzergahi|blok|blogu|sube|subesi|hat|hatti|sinif|sinifi|okul|okulu|daire)( |$)/.test(t)],
+  ["group", t => /(^| )(grup|grubu|gruplar|plaka|plakasi|arac|araci|servis|site|sitesi|kurum|kurumu)( |$)/.test(t)],
+  ["installment", t => (/taksit/.test(t) && /(tutar|ucret|bedel|miktar)/.test(t) && !/(toplam|genel)/.test(t)) || /(^| )aylik( |$)/.test(t)],
+  ["count", t => (/taksit/.test(t) && /(adet|adedi|sayi|sayisi)/.test(t)) || /^(taksit|adet|ay sayisi|taksit say)$/.test(t)],
+  ["total", t => (/(toplam|genel)/.test(t) && /(tutar|ucret|bedel|borc|fiyat)/.test(t)) || /^(toplam|tutar|ucret|borc|bedel|fiyat|yillik ucret|sozlesme tutari|anlasma tutari)$/.test(t)],
+  ["firstDue", t => /(vade|baslangic|ilk taksit|ilk odeme|tarih)/.test(t)],
+  ["note", t => /(^| )(not|notu|notlar|bilgi|aciklama|adres|adresi)( |$)/.test(t)],
+  ["name", t => /(^| )adi? ?soyadi?( |$)|adisoyadi|(^| )(isim|ismi|ogrenci|ogrencinin adi|musteri|kisi|veli|veli adi|sakin|cari|unvan|ad)( |$)/.test(t)],
 ];
 export function mapHeaders(headers) {
   const roles = {};
   const taken = new Set();
   headers.forEach((header, index) => {
-    const key = fold(header);
+    const key = plain(header);
     if (!key) return;
-    for (const [role, pattern] of HEADER_RULES) {
-      if (taken.has(role) || !pattern.test(key)) continue;
-      roles[index] = role;
-      taken.add(role);
-      break;
-    }
+    const role = ROLE_TESTS.find(([name, test]) => !taken.has(name) && test(key))?.[0];
+    if (!role) return;
+    roles[index] = role;
+    taken.add(role);
   });
+  // Yalnız alt grup kolonu bulunduysa (ör. tek "Okul" kolonu) o kolon grup sayılır; alt grup gruba bağlıdır.
+  if (taken.has("subgroup") && !taken.has("group")) {
+    const index = Object.keys(roles).find(key => roles[key] === "subgroup");
+    roles[index] = "group";
+  }
   return roles;
 }
 

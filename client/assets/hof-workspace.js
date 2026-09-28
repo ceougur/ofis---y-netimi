@@ -433,7 +433,7 @@
         const query = view === "mine" ? "status=open&mine=1" : `status=${view}`;
         const tasks = await HOF.api(`/api/workspace/tasks?${query}`);
         list.innerHTML = tasks.length
-          ? tasks.map(task => `<article class="hof-list-item"><header><b>${esc(task.title)}</b><span class="hof-chip ${task.priority !== "normal" ? `hof-chip-${esc(task.priority)}` : ""}">${esc(priorityLabel[task.priority] || task.priority)}</span></header><small>${esc(task.assignee)}${task.dueDate ? ` · son tarih ${esc(HOF.formatDate(task.dueDate))}` : ""}${task.caseKey ? ` · ${esc(HOF.vocab.record)} ${esc(task.caseKey)}` : ""} · ${esc(task.actorName)} tarafından</small>${task.status === "open" && HOF.can("tasks.complete") ? `<div class="hof-actions"><button type="button" class="hof-button hof-button-small" data-complete="${esc(task.id)}">Tamamlandı</button></div>` : task.completedAt ? `<small>✓ ${esc(task.completedByName || "")} · ${esc(HOF.formatDateTime(task.completedAt))}</small>` : ""}</article>`).join("")
+          ? tasks.map(task => `<article class="hof-list-item${task.status === "open" && task.priority !== "normal" ? ` is-${esc(task.priority)}` : ""}"><header><b>${task.status === "open" && task.priority === "urgent" ? '<span class="hof-urgent-mark" aria-hidden="true">!</span>' : ""}${esc(task.title)}</b><span class="hof-chip ${task.priority !== "normal" ? `hof-chip-${esc(task.priority)}` : ""}">${esc(priorityLabel[task.priority] || task.priority)}</span></header><small>${esc(task.assignee)}${task.dueDate ? ` · son tarih ${esc(HOF.formatDate(task.dueDate))}` : ""}${task.caseKey ? ` · ${esc(HOF.vocab.record)} ${esc(task.caseKey)}` : ""} · ${esc(task.actorName)} tarafından</small>${task.status === "open" && HOF.can("tasks.complete") ? `<div class="hof-actions"><button type="button" class="hof-button hof-button-small" data-complete="${esc(task.id)}">Tamamlandı</button></div>` : task.completedAt ? `<small>✓ ${esc(task.completedByName || "")} · ${esc(HOF.formatDateTime(task.completedAt))}</small>` : ""}</article>`).join("")
           : `<p class="hof-empty">${view === "mine" ? "Size atanmış açık görev yok." : "Görev bulunmuyor."}</p>`;
       } catch (error) {
         list.innerHTML = `<p class="hof-empty">${esc(error.message)}</p>`;
@@ -637,6 +637,8 @@
     try {
       const [tasks, liens, plans] = await Promise.all([HOF.api("/api/workspace/tasks?status=open&mine=1"), HOF.api("/api/workspace/liens?days=7"), HOF.can("plans.view") ? HOF.api("/api/workspace/plans?status=overdue").catch(() => null) : null]);
       setBadge("tasks", tasks.length);
+      // Açık acil görev varsa Görevler rozeti kırmızıdır (v2.0.5).
+      document.querySelector('[data-badge="tasks"]')?.classList.toggle("hof-badge-danger", tasks.some(task => task.priority === "urgent"));
       setBadge("liens", liens.total);
       // Taksitler rozeti: geciken taksiti olan kart sayısı.
       setBadge("plans", plans ? plans.plans.length : 0);
@@ -652,7 +654,7 @@
     if (item.type === "phone") return `${esc(item.label)}: ${esc(item.phone)}`;
     if (item.type === "payment") return `${esc(HOF.formatMoney(item.amount))} tahsilat${item.note ? ` · ${esc(item.note)}` : ""} (${esc(HOF.formatDate(item.date))})`;
     if (item.type === "lien") return `${esc(item.title)} · düşüm ${esc(HOF.formatDate(item.expiresAt))}`;
-    if (item.type === "task") return `Görev: ${esc(item.title)} → ${esc(item.assignee)}${item.status === "completed" ? " ✓" : ""}`;
+    if (item.type === "task") return `${item.priority === "urgent" && item.status !== "completed" ? '<span class="hof-chip hof-chip-urgent">Acil</span> ' : item.priority === "high" && item.status !== "completed" ? '<span class="hof-chip hof-chip-high">Yüksek</span> ' : ""}Görev: ${esc(item.title)} → ${esc(item.assignee)}${item.status === "completed" ? " ✓" : ""}`;
     return "";
   };
 
@@ -696,7 +698,7 @@
       activityItems = new Map(shown.map(item => [item.id, item]));
       const itemActions = item => (item.type === "payment" && canEditPayment(item) ? `<span class="hof-activity-tools"><button type="button" class="hof-mini" data-payment-edit="${esc(item.id)}" title="Tahsilatı düzelt" aria-label="Tahsilatı düzelt">✎</button><button type="button" class="hof-mini hof-mini-danger" data-payment-delete="${esc(item.id)}" title="Tahsilatı sil" aria-label="Tahsilatı sil">×</button></span>` : "");
       const edited = item => (item.updatedAt ? ` · düzeltildi${item.updatedByName ? ` (${esc(item.updatedByName)})` : ""}` : "");
-      box.innerHTML = `<div class="hof-activity-head"><h3>İŞLEM GEÇMİŞİ</h3>${result.paidTotal ? `<span>Toplam tahsilat ${esc(HOF.formatMoney(result.paidTotal))}</span>` : ""}</div>${result.items.length ? `${hidden ? `<p class="hof-empty">Önceki ${hidden} işlem gösterilmiyor.</p>` : ""}<ol>${shown.map(item => `<li data-type="${esc(item.type)}"><span class="hof-activity-icon" aria-hidden="true">${ACTIVITY_ICONS[item.type] || "•"}</span><span class="hof-activity-main"><b>${describe(item)}</b><small>${esc(item.actorName || "—")} · ${esc(HOF.formatDateTime(item.createdAt))}${edited(item)}</small></span>${itemActions(item)}</li>`).join("")}</ol>` : `<p class="hof-empty">Bu kayıtta henüz işlem yok. Yukarıdaki düğmelerle ${toolsText} ekleyebilirsiniz.</p>`}`;
+      box.innerHTML = `<div class="hof-activity-head"><h3>İŞLEM GEÇMİŞİ</h3>${result.paidTotal ? `<span>Toplam tahsilat ${esc(HOF.formatMoney(result.paidTotal))}</span>` : ""}</div>${result.items.length ? `${hidden ? `<p class="hof-empty">Önceki ${hidden} işlem gösterilmiyor.</p>` : ""}<ol>${shown.map(item => `<li data-type="${esc(item.type)}"${item.type === "task" && item.priority === "urgent" && item.status !== "completed" ? ' data-urgent=""' : ""}><span class="hof-activity-icon" aria-hidden="true">${ACTIVITY_ICONS[item.type] || "•"}</span><span class="hof-activity-main"><b>${describe(item)}</b><small>${esc(item.actorName || "—")} · ${esc(HOF.formatDateTime(item.createdAt))}${edited(item)}</small></span>${itemActions(item)}</li>`).join("")}</ol>` : `<p class="hof-empty">Bu kayıtta henüz işlem yok. Yukarıdaki düğmelerle ${toolsText} ekleyebilirsiniz.</p>`}`;
     } catch (error) {
       if (request === activityRequest) box.innerHTML = `<p class="hof-empty">${esc(error.message)}</p>`;
     }
@@ -755,7 +757,10 @@
       refreshBadges();
       // Kişiye kimliğiyle bağlı görevde kimlik, serbest yazılmış görevde ad karşılaştırılır.
       const mine = change.assigneeId ? change.assigneeId === HOF.user?.id : Boolean(change.assignee) && HOF.normalize(change.assignee) === HOF.normalize(HOF.user?.name || "");
-      if (mine) {
+      if (mine && change.priority === "urgent") {
+        // Acil görev: kırmızı ve uzun süre görünen bildirim (sağ alttaki kırmızı "ACİL GÖREV" uyarısı da gelir).
+        HOF.toast(`ACİL GÖREV · ${change.actorName || "Bir kullanıcı"} size acil görev atadı: ${change.title || ""}`, { type: "error", action: { label: "Görevler", onClick: () => openTasks("mine") }, timeout: 15000 });
+      } else if (mine) {
         HOF.toast(`${change.actorName || "Bir kullanıcı"} size görev atadı: ${change.title || ""}`, { action: { label: "Görevler", onClick: () => openTasks("mine") }, timeout: 8000 });
       }
     }

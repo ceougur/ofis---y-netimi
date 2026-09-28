@@ -6459,3 +6459,316 @@ body.hof-dense .dynamic-table th {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
+
+/* ---------- Taksitler 2.0.5: geniş pencere, kişi paneli, süzgeçler, PDF/Yazdır ---------- */
+.hof-modal.hof-plans-modal {
+  width: min(1320px, 100%);
+  min-height: min(860px, calc(100vh - 36px));
+}
+.hof-plans-modal .hof-modal-close {
+  z-index: 6;
+}
+.hof-plans-filters {
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) auto;
+  align-items: center;
+}
+.hof-plan-output {
+  display: inline-flex;
+  gap: 6px;
+}
+.hof-plan-output .hof-button svg {
+  margin-right: 2px;
+}
+.hof-plans-list {
+  max-height: max(320px, calc(100vh - 430px));
+}
+.hof-plans-table .hof-plan-no {
+  width: 56px;
+  color: #6d8276;
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+}
+.hof-plans-table tbody tr:focus-visible td {
+  background: #eaf4ee;
+  outline: none;
+}
+.hof-plan-progress {
+  display: block;
+  height: 4px;
+  margin-top: 5px;
+  overflow: hidden;
+  border-radius: 99px;
+  background: #e6ede9;
+}
+.hof-plan-progress i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: #2f8a5b;
+}
+.hof-plan-progress-wide {
+  height: 6px;
+  margin: -6px 0 14px;
+}
+/* İşlem çubuğu kaydırırken pencerenin üstünde kalır. */
+.hof-plans-modal .hof-plan-head {
+  position: sticky;
+  top: -28px;
+  z-index: 5;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  margin: -6px -28px 14px;
+  padding: 10px 56px 12px 28px;
+  border-bottom: 1px solid #e3ede7;
+  background: #fff;
+  box-shadow: 0 8px 16px -14px rgba(20, 52, 40, 0.35);
+}
+.hof-plans-table td small {
+  display: block;
+  margin-top: 2px;
+  color: var(--do-faint);
+  font-size: 11px;
+}
+.hof-plans-table td .hof-plan-badge + small {
+  margin-top: 4px;
+}
+.hof-plan-headline {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+.hof-plan-headline .hof-plan-title {
+  min-width: 0;
+}
+.hof-plan-refno {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 7px;
+  background: #eef1ef;
+  color: #4c6158;
+  font-size: 12px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+.hof-plan-actions {
+  gap: 8px 14px;
+}
+.hof-plan-toolgroup {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.hof-plan-toolgroup + .hof-plan-toolgroup {
+  padding-left: 14px;
+  border-left: 1px solid #e3ede7;
+}
+.hof-plan-toolgroup:empty {
+  display: none;
+}
+.hof-plan-profile {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.hof-plan-facts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px 18px;
+  margin: 0;
+  padding: 14px 16px;
+  border: 1px solid var(--do-border);
+  border-radius: 13px;
+  background: #fff;
+}
+.hof-plan-facts dt {
+  color: #6d8276;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.hof-plan-facts dd {
+  margin: 3px 0 0;
+  color: var(--do-ink);
+  font-size: 13.5px;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+.hof-plan-facts dd a {
+  color: var(--do-accent);
+  text-decoration: none;
+}
+.hof-plan-note {
+  padding: 14px 16px;
+  border: 1px solid #ecdcb4;
+  border-radius: 13px;
+  background: #fffaf0;
+}
+.hof-plan-note h4 {
+  margin: 0 0 6px;
+  color: #8a6a1f;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.hof-plan-note p {
+  margin: 0;
+  color: var(--do-ink-soft);
+  font-size: 13.5px;
+  line-height: 1.5;
+  white-space: pre-line;
+}
+.hof-plan-note .hof-empty {
+  padding: 0;
+  text-align: left;
+}
+.hof-plans-modal .hof-plan-section {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 12px;
+  margin: 18px 0 8px;
+  color: inherit;
+  font-size: inherit;
+  letter-spacing: normal;
+  text-transform: none;
+}
+.hof-plan-section h4 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  color: #6d8276;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.hof-plan-section h4 span {
+  padding: 1px 7px;
+  border-radius: 99px;
+  background: #eef1ef;
+  font-size: 11px;
+}
+.hof-plan-chips {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+.hof-plan-chips button {
+  padding: 5px 10px;
+  border: 1px solid var(--do-border);
+  border-radius: 99px;
+  background: #fff;
+  color: var(--do-muted);
+  font: 700 12px var(--do-font);
+  cursor: pointer;
+}
+.hof-plan-chips button b {
+  margin-left: 2px;
+  color: #6d8276;
+  font-weight: 800;
+}
+.hof-plan-chips button[aria-pressed="true"] {
+  border-color: var(--do-accent);
+  background: var(--do-accent-soft);
+  color: var(--do-accent);
+}
+.hof-plans-modal .hof-plans-items,
+.hof-plans-modal .hof-plans-entries {
+  max-height: none;
+  overflow: visible;
+}
+.hof-plans-modal .hof-plans-items thead th,
+.hof-plans-modal .hof-plans-entries thead th {
+  position: static;
+}
+.hof-plans-modal tfoot td {
+  border-top: 2px solid #dfe9e3;
+  background: #f4f8f5;
+  font-weight: 800;
+}
+.hof-plan-receipt {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 1px 6px;
+  border-radius: 6px;
+  background: #eef1ef;
+  color: #6d8276;
+  font-size: 10.5px;
+  font-weight: 700;
+  vertical-align: 1px;
+}
+@media (max-width: 1100px) {
+  .hof-plans-filters {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .hof-plan-profile {
+    grid-template-columns: 1fr;
+  }
+  .hof-plan-facts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 720px) {
+  .hof-plans-filters,
+  .hof-plan-facts {
+    grid-template-columns: 1fr;
+  }
+  .hof-plan-toolgroup + .hof-plan-toolgroup {
+    padding-left: 0;
+    border-left: 0;
+  }
+}
+
+/* ---------- Acil görevler (v2.0.5) ---------- */
+.hof-list-item.is-urgent {
+  border-color: #e9b3aa;
+  border-left: 4px solid #c9503d;
+  background: #fdf3f1;
+}
+.hof-list-item.is-high {
+  border-left: 4px solid #cf9f4b;
+}
+.hof-urgent-mark {
+  display: inline-grid;
+  width: 18px;
+  height: 18px;
+  margin-right: 7px;
+  place-items: center;
+  border-radius: 50%;
+  background: #c9503d;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 900;
+  vertical-align: 1px;
+}
+.hof-activity li[data-urgent] {
+  border-color: #e9b3aa;
+  background: #fdf3f1;
+}
+.hof-activity li[data-urgent] .hof-activity-icon {
+  background: #fbe4df;
+  color: #b3473a;
+}
+.hof-activity .hof-chip {
+  margin-right: 4px;
+  vertical-align: 1px;
+}
+.hof-badge.hof-badge-danger {
+  background: #c9503d;
+  animation: hof-badge-pulse 1.6s ease-in-out 3;
+}
+@keyframes hof-badge-pulse {
+  50% {
+    box-shadow: 0 0 0 5px rgba(201, 80, 61, 0.25);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hof-badge.hof-badge-danger {
+    animation: none;
+  }
+}

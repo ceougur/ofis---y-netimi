@@ -48,7 +48,7 @@
 
 <h2>1. Kurulum ve ilk giriş</h2>
 <ol class="steps">
-  <li><b>Sunucu bilgisayara</b> kurulum dosyasını (<i>DestekOfis-Kurulum-2.0.4.exe</i>) çalıştırın, <b>Sunucu bilgisayar</b>'ı seçip <b>Kur</b>'a basın. Windows "bilgisayarınızı korudu" derse <b>Ek bilgi → Yine de çalıştır</b>.</li>
+  <li><b>Sunucu bilgisayara</b> kurulum dosyasını (<i>DestekOfis-Kurulum-2.0.5.exe</i>) çalıştırın, <b>Sunucu bilgisayar</b>'ı seçip <b>Kur</b>'a basın. Windows "bilgisayarınızı korudu" derse <b>Ek bilgi → Yine de çalıştır</b>.</li>
   <li><b>Personel bilgisayarlarına</b> aynı dosyayı kurun. Program sunucuyu ağda kendisi bulur; masaüstündeki DestekOfis simgesiyle açılır.</li>
   <li>İlk girişi sunucudan yapın: kullanıcı adı <b>admin</b>, parola <b>Ofis2026!</b>. Program yeni bir parola ister; not edin.</li>
 </ol>
@@ -96,6 +96,7 @@
   <li><b>Kayda git:</b> ilgili kaydı açar.</li>
 </ul>
 <p><b>Ay sütunlu tablolar (Ocak–Aralık):</b> ay hücresine taksit tutarını yazarsanız (Eylül 10.000, Ekim 10.000) program o ayı <b>ödenecek taksit</b> sayar ve ayı gelince uyarır. Ödendiğini kart detayındaki <b>Tahsilat</b>'tan anlar; tahsilat notuna ayı yazın ("eylül taksiti") ya da kayan pilden tahsilat girin. Hücreye "ödendi" yazmak ya da uyarıda <b>Gerçekleştirildi</b> demek de o ayı kapatır. Tablonuzda ayrı bir <b>Aylık ücret</b> kolonu varsa ay hücresine yazılan tutar ödenen para sayılır. İlk yazılı aydan önceki ve son taksitten sonraki boş aylar borç değildir.</p>
+<p><b>Acil görev:</b> size acil öncelikli görev atanınca ekranda kırmızı bildirim çıkar; sağ altta ve zilde <b>ACİL GÖREV</b> olarak görev tamamlanana kadar kalır. Görevler rozeti kırmızı olur.</p>
 <p>Uyarıların hepsini üstteki <b>zil</b>de görürsünüz. <b>✕</b> ile bir uyarıyı yalnızca kendi listenizden kaldırabilirsiniz.</p>
 
 <h2>6. Kasa</h2>
@@ -108,12 +109,14 @@
   <li><b>Kart açın:</b> <b>+ Yeni kart</b> → ad soyad, telefon, toplam tutar, grup ve alt grup (yoksa "Yeni grup yaz" ile o anda tanımlanır), bilgi notu. Kayıt bitince taksit sorulmaz; kutuyu işaretlerseniz toplam hemen eşit taksitlere bölünür.</li>
   <li><b>Taksitleri kurun:</b> kartın üstündeki <b>Otomatik dağıt</b> (taksit sayısı, ilk vade, aralık) toplamı eşit böler; her ay aynı gün, kuruş farkı son taksitte. İsterseniz <b>+ Taksit</b> ile serbest tutar ve tarihle tek tek girin; her taksit ✎ ile düzeltilir.</li>
   <li><b>Tahsilat girin:</b> <b>+ Tahsilat</b> ya da taksitin yanındaki <b>₺</b>. Tutar sıradaki taksit kadar hazır gelir; tahsilat en eski açık taksite sayılır, fazlası sonrakine geçer. Kaydedince <b>Kasa</b>'ya düşer ve hareketler listesinden <b>makbuz</b> (PDF) alınır. Müşteriye iade ya da onun adına ödeme için <b>− Ödeme / iade</b>.</li>
-  <li><b>Excel'den ilk yükleme:</b> listeniz Excel'deyse <b>Excel'den yükle</b>: dosyayı seçin, program kolonları tanır (Ad Soyad, Grup, Alt grup, Telefon, Toplam tutar, Taksit sayısı, İlk vade, Not); yanlışsa düzeltin, <b>Kartları oluştur</b>. Gruplar tanımlanır, taksitler dağıtılır; aynı adla açık kart varsa satır atlanır. Sonrasında Excel'e gerek kalmaz.</li>
+  <li><b>Excel'den ilk yükleme:</b> listeniz Excel'deyse <b>Excel'den yükle</b>: dosyayı seçin, program kolonları tanır (Sıra No, Ad Soyad, Grup, Alt grup, Telefon, Toplam tutar, Taksit ücreti, Taksit sayısı, İlk vade, Not); yanlışsa düzeltin, <b>Kartları oluştur</b>. Gruplar tanımlanır, taksitler dağıtılır; aynı adla açık kart varsa satır atlanır. Sonrasında Excel'e gerek kalmaz.</li>
 </ol>
 <ul>
   <li><b>Uyarı:</b> vadesi geçen taksit tahsilat takviminde, sağ alt bildirimlerde ve zilde <i>Tahsilat alınmadı</i> olarak görünür; <b>Taksit kartı</b> düğmesi kartı açar, <b>Tahsilat gir</b> doğrudan kaydeder. Sol menüdeki rozet geciken kart sayısını gösterir.</li>
   <li><b>Liste:</b> <i>Devam eden, Geciken, Biten, Kapalı, Tümü</i>; ad, telefon ya da nota göre arama; göstergelerde kalan alacak, geciken, bu ay beklenen ve tahsil edilen. Tahsilat girmeyi bırakan müşteri için kartı <b>Kapat</b>: uyarı vermez, kayıt durur.</li>
-  <li><b>Ekstre PDF:</b> kartın taksitleri, hareketleri ve özetiyle tek döküm; müşteriye verilebilir.</li>
+  <li><b>Kart düzeni:</b> üstte kişi bilgileri ve bilgi notu, altta taksitler ve hareketler. Listeleri <i>Açık, Geciken, Ödenen</i> ya da <i>Tahsilat, Ödeme</i> diye süzebilirsiniz.</li>
+  <li><b>PDF ve Yazdır:</b> kartta <b>PDF</b> ekstreyi açar, <b>Yazdır</b> doğrudan yazıcıya gönderir. Liste ekranındaki <b>PDF</b> ve <b>Yazdır</b> ekrandaki süzgeç ve sıralamayla hazırlanır (ör. yalnız 42 C 1070 plakasının gecikenleri).</li>
+  <li><b>Sıra No:</b> listenin ilk kolonudur ve Excel'deki sıradır; sıralamayı ad, vade ya da kalana göre de değiştirebilirsiniz.</li>
   <li><b>Adı size göre:</b> Operasyon Merkezi'nin köşesindeki kalemle "Taksitler" yerine <i>Aidatlar</i>, <i>Servis ücretleri</i> gibi bir ad verin; pencere başlığı ve menü o adla görünür, kayıtlar ve işleyiş değişmez.</li>
   <li>Kartları ve grupları yönetici, uzman ve muhasebe açar; herkes tahsilat girer. Silinen kart ve hareketler <b>Yönetim → Silinenler</b>'den geri gelir.</li>
 </ul>
