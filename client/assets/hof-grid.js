@@ -95,10 +95,16 @@
       const value = `${own ? Math.min(USER_MAX, Math.max(USER_MIN, own)) : widths[c]}px`;
       if (th.style.width !== value) th.style.width = value;
       th.classList.toggle("hof-col-user", Boolean(own));
-      if (!th.querySelector(".hof-col-grip")) th.appendChild(HOF.el("span", { class: "hof-col-grip", title: "Sürükleyerek daraltın/genişletin · çift tık: otomatik", "aria-hidden": "true" }));
     });
     applyTableWidth(table);
     table.classList.add("hof-sized");
+  }
+  // Tutamaçlar her güncellemede yerine konur: arayüz başlık satırını yeniden çizince (sıralama, veri yenileme)
+  // içindeki tutamaç silinir; genişlik hesabı ise başlıklar değişmedikçe yinelenmez.
+  function ensureGrips(table) {
+    for (const th of table.tHead?.rows[0]?.cells || []) {
+      if (!th.querySelector(":scope > .hof-col-grip")) th.appendChild(HOF.el("span", { class: "hof-col-grip", title: "Sürükleyerek daraltın/genişletin · çift tık: otomatik", "aria-hidden": "true" }));
+    }
   }
 
   // ---------- Kolon genişliğini sürükleme ----------
@@ -147,12 +153,14 @@
     event.preventDefault();
   });
   // Tutamaca tıklamak başlığın kendi tıklama işini (sıralama, kalem) tetiklemesin.
-  document.addEventListener("click", event => {
-    if (event.target.closest?.(".hof-col-grip")) {
-      event.preventDefault();
-      event.stopPropagation();
-    }
-  }, true);
+  for (const type of ["click", "mousedown", "mouseup"]) {
+    document.addEventListener(type, event => {
+      if (event.target.closest?.(".hof-col-grip")) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+    }, true);
+  }
 
   // ---------- Yapışkan yatay kaydırma çubuğu ----------
   // Tarayıcının kendi çubuğu bazı sistemlerde (macOS, dokunmatik) gizlenir; bu çubuk her zaman görünür: tutamaç
@@ -250,6 +258,7 @@
       return;
     }
     size(table);
+    ensureGrips(table);
     if (observed !== wrap) {
       observed?.removeEventListener("scroll", onWrapScroll);
       wrap.addEventListener("scroll", onWrapScroll, { passive: true });
