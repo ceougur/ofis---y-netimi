@@ -75,7 +75,9 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, cas
     // Kasa: Kasa ekranıyla aynı kaynak tanımlarından SQL toplamı (satırlar belleğe alınmaz). Bakiye, Kasa ekranındaki
     // "güncel kasa" gibi tüm hareketleri kapsar.
     const cashSummary = cash()?.summary ? cash().summary(day) : { balance: 0, today: { in: 0, out: 0 }, month: { in: 0, out: 0 }, futureEntries: 0 };
-    const cashBlock = { balance: cashSummary.balance, today: cashSummary.today, month: cashSummary.month, futureEntries: cashSummary.futureEntries };
+    // Kart "bugünkü kasa"yı gösterir (ileri tarihli kira/maaş henüz kasadan çıkmadı); nakit akışı da buradan başlar.
+    // Kasa ekranındaki "güncel kasa (tüm hareketler)" ileri tarihlileri de içerir; fark kartta ayrıca yazılır.
+    const cashBlock = { balance: cashSummary.balanceToday, allEntries: cashSummary.balance, today: cashSummary.today, month: cashSummary.month, futureEntries: cashSummary.futureEntries };
     // Stok: Stok listesiyle aynı sayım (hizmet kalemleri kritik/tükendi sayılmaz).
     const stockTotals = stock()?.list ? stock().list(admin, {}).totals : { count: 0, low: 0, out: 0, services: 0, value: 0 };
     const stockBlock = { critical: stockTotals.low, out: stockTotals.out, products: stockTotals.count - (stockTotals.services || 0), services: stockTotals.services || 0, value: stockTotals.value };

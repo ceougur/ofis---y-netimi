@@ -81,8 +81,8 @@
         label: "Kasa / Banka",
         value: moneyHtml(data.cash.balance, { compact: true }),
         tone: data.cash.balance < 0 ? "is-bad" : "",
-        sub: moved ? `Bugün <b class="hof-pulse-up">+${esc(shortMoney(t.in))}</b> · <b class="hof-pulse-down">−${esc(shortMoney(t.out))}</b>` : "Bugün hareket yok",
-        title: `Kasa ekranındaki güncel kasa: ${money(data.cash.balance)}. Bu ay giriş ${money(data.cash.month.in)}, çıkış ${money(data.cash.month.out)}.`,
+        sub: `${moved ? `Bugün <b class="hof-pulse-up">+${esc(shortMoney(t.in))}</b> · <b class="hof-pulse-down">−${esc(shortMoney(t.out))}</b>` : "Bugün hareket yok"}${data.cash.futureEntries ? `<br><span class="hof-pulse-flag">${ICONS.warn}${data.cash.futureEntries} ileri tarihli hareket hariç</span>` : ""}`,
+        title: `Bugüne kadarki kasa: ${money(data.cash.balance)}.${data.cash.futureEntries ? ` İleri tarihli ${data.cash.futureEntries} hareketle birlikte ${money(data.cash.allEntries)} (Kasa ekranındaki "tüm hareketler").` : ""} Bu ay giriş ${money(data.cash.month.in)}, çıkış ${money(data.cash.month.out)}.`,
       });
     }
     if (data.stock) {

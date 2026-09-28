@@ -152,8 +152,17 @@ export function registerChequeRoutes(router, { store, auth, audit, events, accou
     const listed = out.reduce((acc, row) => ({ count: acc.count + 1, amount: roundMoney(acc.amount + row.amount) }), { count: 0, amount: 0 });
     return { cheques: out, listed, summary: portfolioSummary(rows, day), today: day, canManage: can(user.role, "cheques.manage") };
   }
+  // Salt okunur liste ve dışa aktarım: çek yetkisi ya da ANLIK DURUM yetkisi (Rapor Al › Çek / Senet sekmesi) yeter.
+  const requireReader = req => {
+    try {
+      return auth.requirePermission(req, "cheques.view");
+    } catch (error) {
+      if (error?.status !== 403) throw error;
+      return auth.requirePermission(req, "overview.view");
+    }
+  };
   router.get("/api/workspace/cheques", async ({ req, res, url }) => {
-    const user = auth.requirePermission(req, "cheques.view");
+    const user = requireReader(req);
     const data = list(user, listQuery(url.searchParams));
     const limit = Math.min(5000, Math.max(1, Math.trunc(Number(url.searchParams.get("limit")) || 300)));
     const offset = Math.max(0, Math.trunc(Number(url.searchParams.get("offset")) || 0));
@@ -422,7 +431,7 @@ export function registerChequeRoutes(router, { store, auth, audit, events, accou
       .filter(Boolean)
       .join(" · ");
   router.get("/api/workspace/cheques/liste.pdf", async ({ req, res, url }) => {
-    const user = auth.requirePermission(req, "cheques.view");
+    const user = requireReader(req);
     const query = listQuery(url.searchParams);
     const data = list(user, query);
     const rows = data.cheques.slice(0, PDF_ROWS);
@@ -444,7 +453,7 @@ export function registerChequeRoutes(router, { store, auth, audit, events, accou
     sendBuffer(res, pdf, { type: "application/pdf", name: "Cek-Senet-Portfoyu.pdf", inline: url.searchParams.get("download") !== "1" });
   });
   router.get("/api/workspace/cheques/export.xlsx", async ({ req, res, url }) => {
-    const user = auth.requirePermission(req, "cheques.view");
+    const user = requireReader(req);
     const query = listQuery(url.searchParams);
     const data = list(user, query);
     const money = value => new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value || 0);

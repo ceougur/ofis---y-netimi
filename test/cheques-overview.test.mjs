@@ -386,7 +386,10 @@ describe("ANLIK DURUM: karttaki rakamlar ekranlarla birebir aynı (rastgele 400 
       const list = (await admin.get("/api/workspace/accounts?status=all&limit=5000")).data.data;
       const stock = (await admin.get("/api/workspace/stock")).data.data;
       const portfolio = (await admin.get("/api/workspace/cheques?limit=5000")).data.data;
-      near(view.cash.balance, cash.totals.balance, `${label}: Kasa`);
+      const today = new Date().toISOString().slice(0, 10);
+      const cashToday = cash.entries.filter(entry => entry.date <= today).reduce((sum, entry) => sum + (entry.kind === "in" ? entry.amount : -entry.amount), 0);
+      near(view.cash.balance, cashToday, `${label}: Kasa (bugüne kadar)`);
+      near(view.cash.allEntries, cash.totals.balance, `${label}: Kasa (tüm hareketler)`);
       near(view.receivable.accounts, list.totals.debtor, `${label}: cari alacak`);
       near(view.payable.accounts, list.totals.creditor, `${label}: cari borç`);
       near(view.receivable.cheques, portfolio.summary.in.open.amount, `${label}: portföy`);

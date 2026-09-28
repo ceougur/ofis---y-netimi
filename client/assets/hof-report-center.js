@@ -39,7 +39,8 @@
         lastMonth: { from: iso(y, m - 1, 1), to: iso(y, m, 0) },
         last30: { from: iso(y, m, d - 30), to: today },
         thisYear: { from: iso(y, 1, 1), to: iso(y, 12, 31) },
-        all: { from: "", to: "" },
+        // "Tüm zamanlar": açık tarih gönderilir (sunucu boş aralığı "bu ay" sayardı; kullanıcı yanlış dönem görürdü).
+        all: { from: iso(y - 50, 1, 1), to: today },
       }[preset] || { from: "", to: "" }
     );
   };

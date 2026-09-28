@@ -164,6 +164,8 @@ export function presetRange(preset, today) {
   };
   const addDays = days => iso(y, m, d + days);
   switch (preset) {
+    case "all":
+      return { from: iso(y - 50, 1, 1), to: today };
     case "next7":
       return { from: today, to: addDays(7) };
     case "next30":
