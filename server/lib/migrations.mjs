@@ -555,6 +555,128 @@ export const MIGRATIONS = [
       store.exec("CREATE INDEX IF NOT EXISTS idx_plans_case ON plans(case_source, case_key)");
     },
   },
+  {
+    version: 12,
+    name: "v2.0.6 cari ve stok modülleri",
+    up(store) {
+      // Cari (müşteri/tedarikçi) kartı merkezdedir: taksit kartları bir cariye bağlıdır (plans.account_id). Stok, Kasa
+      // mantığıyla giriş/çıkış hareketleri tutar; parası Kasa'ya ya da cariye yazılabilir. Yalnızca ekleyici: 2.0.5
+      // bu şemayla da açılır (yeni tabloları kullanmaz).
+      store.exec(`
+        CREATE TABLE IF NOT EXISTS accounts (
+          id TEXT PRIMARY KEY,
+          ref_no TEXT NOT NULL DEFAULT '',
+          type TEXT NOT NULL DEFAULT 'customer' CHECK (type IN ('customer', 'supplier', 'other')),
+          name TEXT NOT NULL,
+          phone TEXT NOT NULL DEFAULT '',
+          email TEXT NOT NULL DEFAULT '',
+          address TEXT NOT NULL DEFAULT '',
+          registered_on TEXT NOT NULL DEFAULT '',
+          group_id TEXT,
+          subgroup_id TEXT,
+          note TEXT NOT NULL DEFAULT '',
+          fields_json TEXT NOT NULL DEFAULT '[]',
+          case_key TEXT NOT NULL DEFAULT '',
+          case_source TEXT NOT NULL DEFAULT '',
+          case_title TEXT NOT NULL DEFAULT '',
+          status TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'passive')),
+          created_by TEXT NOT NULL,
+          created_at TEXT NOT NULL,
+          updated_by TEXT,
+          updated_at TEXT NOT NULL,
+          deleted_by TEXT,
+          deleted_at TEXT
+        );
+        CREATE INDEX IF NOT EXISTS idx_accounts_deleted ON accounts(deleted_at);
+        CREATE INDEX IF NOT EXISTS idx_accounts_case ON accounts(case_source, case_key);
+        CREATE INDEX IF NOT EXISTS idx_accounts_group ON accounts(group_id, subgroup_id);
+        -- Cari hareketleri: borç (debt), alacak (credit), tahsilat (in → Kasa'ya giriş), ödeme (out → Kasa'dan çıkış).
+        -- source = 'stock' olan satır bir stok hareketinden gelir (source_id = stock_moves.id) ve oradan düzeltilir.
+        CREATE TABLE IF NOT EXISTS account_entries (
+          id TEXT PRIMARY KEY,
+          account_id TEXT NOT NULL,
+          kind TEXT NOT NULL CHECK (kind IN ('debt', 'credit', 'in', 'out')),
+          amount REAL NOT NULL,
+          date TEXT NOT NULL,
+          note TEXT NOT NULL DEFAULT '',
+          receipt_no INTEGER,
+          source TEXT NOT NULL DEFAULT '',
+          source_id TEXT NOT NULL DEFAULT '',
+          created_by TEXT NOT NULL,
+          created_at TEXT NOT NULL,
+          updated_by TEXT,
+          updated_at TEXT
+        );
+        CREATE INDEX IF NOT EXISTS idx_account_entries_account ON account_entries(account_id, date, created_at);
+        CREATE INDEX IF NOT EXISTS idx_account_entries_source ON account_entries(source, source_id);
+        CREATE TABLE IF NOT EXISTS stock_items (
+          id TEXT PRIMARY KEY,
+          code TEXT NOT NULL DEFAULT '',
+          name TEXT NOT NULL,
+          unit TEXT NOT NULL DEFAULT 'adet',
+          category TEXT NOT NULL DEFAULT '',
+          min_qty REAL NOT NULL DEFAULT 0,
+          unit_price REAL NOT NULL DEFAULT 0,
+          note TEXT NOT NULL DEFAULT '',
+          fields_json TEXT NOT NULL DEFAULT '[]',
+          created_by TEXT NOT NULL,
+          created_at TEXT NOT NULL,
+          updated_by TEXT,
+          updated_at TEXT NOT NULL,
+          deleted_by TEXT,
+          deleted_at TEXT
+        );
+        CREATE INDEX IF NOT EXISTS idx_stock_items_deleted ON stock_items(deleted_at);
+        -- Stok hareketleri: giriş (in) / çıkış (out). pay: 'none' (yalnız miktar), 'cash' (Kasa'dan ödendi / Kasa'ya
+        -- tahsil edildi), 'account' (cariye yazıldı; account_entries.source_id bu hareketi gösterir).
+        CREATE TABLE IF NOT EXISTS stock_moves (
+          id TEXT PRIMARY KEY,
+          item_id TEXT NOT NULL,
+          kind TEXT NOT NULL CHECK (kind IN ('in', 'out')),
+          qty REAL NOT NULL,
+          unit_price REAL NOT NULL DEFAULT 0,
+          amount REAL NOT NULL DEFAULT 0,
+          date TEXT NOT NULL,
+          note TEXT NOT NULL DEFAULT '',
+          pay TEXT NOT NULL DEFAULT 'none' CHECK (pay IN ('none', 'cash', 'account')),
+          account_id TEXT NOT NULL DEFAULT '',
+          created_by TEXT NOT NULL,
+          created_at TEXT NOT NULL,
+          updated_by TEXT,
+          updated_at TEXT
+        );
+        CREATE INDEX IF NOT EXISTS idx_stock_moves_item ON stock_moves(item_id, date, created_at);
+        CREATE INDEX IF NOT EXISTS idx_stock_moves_date ON stock_moves(date, created_at);
+      `);
+      addColumn(store, "plans", "account_id", "TEXT NOT NULL DEFAULT ''");
+      store.exec("CREATE INDEX IF NOT EXISTS idx_plans_account ON plans(account_id)");
+      // Mevcut taksit kartları cariye dönüştürülür. Karışma olmasın diye yalnızca kesin eşleşmeler birleşir: aynı
+      // tablodaki kayda bağlı kartlar ya da aynı ad + aynı telefon (en az 7 hane). Diğer her kart kendi carisini alır.
+      const digits = value => String(value || "").replace(/\D/g, "");
+      const fold = value => String(value || "").toLocaleLowerCase("tr-TR").replace(/\s+/g, " ").trim();
+      const plans = store.all(
+        "SELECT id, ref_no AS refNo, registered_on AS registeredOn, case_key AS caseKey, case_source AS caseSource, case_title AS caseTitle, group_id AS groupId, subgroup_id AS subgroupId, name, note, phone, created_by AS createdBy, created_at AS createdAt FROM plans WHERE deleted_at IS NULL AND account_id = '' ORDER BY created_at, rowid",
+      );
+      const byKey = new Map();
+      let seq = (store.get("SELECT COUNT(*) AS n FROM accounts")?.n || 0);
+      const timestamp = new Date().toISOString();
+      for (const plan of plans) {
+        const phone = digits(plan.phone);
+        const key = plan.caseKey ? `case|${plan.caseSource}|${plan.caseKey}` : phone.length >= 7 ? `phone|${fold(plan.name)}|${phone}` : `plan|${plan.id}`;
+        let accountId = byKey.get(key);
+        if (!accountId) {
+          accountId = `account-${randomUUID()}`;
+          seq += 1;
+          store.run(
+            "INSERT INTO accounts (id, ref_no, type, name, phone, registered_on, group_id, subgroup_id, note, case_key, case_source, case_title, status, created_by, created_at, updated_at) VALUES (?, ?, 'customer', ?, ?, ?, ?, ?, ?, ?, ?, ?, 'active', ?, ?, ?)",
+            accountId, String(seq), plan.name, plan.phone || "", plan.registeredOn || String(plan.createdAt || timestamp).slice(0, 10), plan.groupId, plan.subgroupId, plan.note || "", plan.caseKey || "", plan.caseSource || "", plan.caseTitle || "", plan.createdBy || "system", plan.createdAt || timestamp, timestamp,
+          );
+          byKey.set(key, accountId);
+        }
+        store.run("UPDATE plans SET account_id = ? WHERE id = ?", accountId, plan.id);
+      }
+    },
+  },
 ];
 
 export const LATEST_VERSION = MIGRATIONS.at(-1).version;

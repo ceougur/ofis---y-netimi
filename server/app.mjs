@@ -31,6 +31,8 @@ import { registerAuthRoutes } from "./routes/auth.mjs";
 import { registerCashRoutes } from "./routes/cash.mjs";
 import { registerDueRoutes } from "./routes/dues.mjs";
 import { registerPlanRoutes } from "./routes/plans.mjs";
+import { registerAccountRoutes } from "./routes/accounts.mjs";
+import { registerStockRoutes } from "./routes/stock.mjs";
 import { registerDocumentRoutes } from "./routes/documents.mjs";
 import { registerFreeRoutes } from "./routes/free.mjs";
 import { createFreeSheets } from "./lib/free-sheets.mjs";
@@ -139,7 +141,11 @@ export function createApp(overrides = {}) {
   registerWorkspaceRoutes(router, { ...context, plans: () => context.plans });
   registerCashRoutes(router, context);
   // Taksitler (v2.0.4): Kasa ve tahsilat takvimi bu servisin hareketlerini ve gecikmelerini okur.
-  context.plans = registerPlanRoutes(router, context);
+  // Cari ve Stok (v2.0.6): taksit kartları cariye bağlıdır; stok hareketi Kasa'ya ya da cariye yazılabilir. Servisler
+  // birbirine istek anında ulaşır (kurulum sırası: taksit → cari → stok).
+  context.plans = registerPlanRoutes(router, { ...context, accounts: () => context.accounts });
+  context.accounts = registerAccountRoutes(router, { ...context, plans: () => context.plans });
+  context.stock = registerStockRoutes(router, { ...context, accounts: () => context.accounts });
   registerDueRoutes(router, context);
   const documents = registerDocumentRoutes(router, context);
   registerTrashRoutes(router, { ...context, documents });

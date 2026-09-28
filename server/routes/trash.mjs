@@ -19,10 +19,14 @@ const KIND_LABELS = {
   cash: "Kasa hareketi",
   plan: "Taksit kartı",
   "plan-entry": "Taksit hareketi",
+  account: "Cari",
+  "account-entry": "Cari hareketi",
+  stock: "Stok ürünü",
+  "stock-move": "Stok hareketi",
 };
 const SEQUENCE = /^(sıra|sira|sıra no|no|#|sn|s\.?\s?no|nr)$/i;
 
-export function registerTrashRoutes(router, { store, auth, audit, events, dataset, profile, free, trash, documents }) {
+export function registerTrashRoutes(router, { store, auth, audit, events, dataset, profile, free, trash, documents, accounts = null, stock = null }) {
   const now = () => new Date().toISOString();
   const publish = (user, detail) => events?.publish("workspace.changed", { actorId: user.id, actorName: user.display_name, ...detail }, { except: user.id });
   const sessionNames = () => {
@@ -140,16 +144,18 @@ export function registerTrashRoutes(router, { store, auth, audit, events, datase
         note: "Taksitleri ve hareketleriyle Taksitler listesine geri döner; Kasa yeniden hesaplanır.",
       });
     }
+    // Silinen cariler ve stok ürünleri (v2.0.6): hareketleri yerinde durur.
+    items.push(...(accounts?.deletedList ? accounts.deletedList() : []), ...(stock?.deletedList ? stock.deletedList() : []));
     for (const item of trash.open()) {
       const payload = JSON.parse(item.payload_json || "{}");
-      const money = item.kind === "payment" || item.kind === "cash" || item.kind === "plan-entry";
+      const money = item.kind === "payment" || item.kind === "cash" || item.kind === "plan-entry" || item.kind === "account-entry";
       items.push({
         id: `trash:${item.id}`,
         kind: item.kind,
         title: item.title,
         detail: [
           money ? `${new Intl.NumberFormat("tr-TR", { style: "currency", currency: "TRY" }).format(payload.amount || 0)} · ${String(payload.date || "").split("-").reverse().join(".")}` : "",
-          item.kind === "cash" || item.kind === "plan-entry" ? (payload.kind === "in" ? "Tahsilat" : "Ödeme") : "",
+          item.kind === "cash" || item.kind === "plan-entry" ? (payload.kind === "in" ? "Tahsilat" : "Ödeme") : item.kind === "account-entry" ? { debt: "Borç", credit: "Alacak", in: "Tahsilat", out: "Ödeme" }[payload.kind] || "" : "",
           item.detail,
           where(item.dataset_key),
         ]
@@ -158,7 +164,7 @@ export function registerTrashRoutes(router, { store, auth, audit, events, datase
         deletedAt: item.deleted_at,
         actorName: item.actor_name,
         restorable: true,
-        note: item.kind === "free-row" || item.kind === "free-column" ? "Eski sırasına araya eklenir; o arada eklenenler kayar, üzerine yazılmaz." : "Aynı tutar ve tarihle geri eklenir; Kasa yeniden hesaplanır.",
+        note: item.kind === "free-row" || item.kind === "free-column" ? "Eski sırasına araya eklenir; o arada eklenenler kayar, üzerine yazılmaz." : item.kind === "stock-move" ? "Aynı miktar ve tarihle geri eklenir; mevcut stok yeniden hesaplanır." : "Aynı tutar ve tarihle geri eklenir; Kasa yeniden hesaplanır.",
       });
     }
     items.sort((a, b) => (a.deletedAt < b.deletedAt ? 1 : -1));
@@ -234,11 +240,22 @@ export function registerTrashRoutes(router, { store, auth, audit, events, datase
       if (!plan) throw new HttpError(404, "Bu taksit kartı zaten geri yüklenmiş.");
       store.tx(() => {
         store.run("UPDATE plans SET deleted_at = NULL, deleted_by = NULL, updated_by = ?, updated_at = ? WHERE id = ?", user.id, now(), plan.id);
+        // Kartın carisi (v2.0.6) sonradan silindiyse o da geri gelir; kart sahipsiz kalmaz.
+        store.run("UPDATE accounts SET deleted_at = NULL, deleted_by = NULL, updated_by = ?, updated_at = ? WHERE deleted_at IS NOT NULL AND id = (SELECT account_id FROM plans WHERE id = ?)", user.id, now(), plan.id);
         audit(user, "plan.restored", plan.id, { name: plan.name });
       });
       publish(user, { kind: "plans", planId: plan.id });
       publish(user, { kind: "cash" });
       return ok(res, { restored: "plan", message: `“${plan.name}” taksit kartı geri geldi.` });
+    }
+
+    if (source === "account") {
+      if (!accounts?.restoreDeleted) throw new HttpError(400, "Bilinmeyen öğe.");
+      return ok(res, { restored: "account", message: accounts.restoreDeleted(user, ref) });
+    }
+    if (source === "stock") {
+      if (!stock?.restoreDeleted) throw new HttpError(400, "Bilinmeyen öğe.");
+      return ok(res, { restored: "stock", message: stock.restoreDeleted(user, ref) });
     }
 
     if (source !== "trash") throw new HttpError(400, "Bilinmeyen öğe.");
@@ -311,6 +328,10 @@ export function registerTrashRoutes(router, { store, auth, audit, events, datase
       publish(user, { kind: "plans", planId: plan.id });
       publish(user, { kind: "cash" });
       message = "Taksit hareketi geri eklendi; kart ve Kasa yeniden hesaplandı.";
+    } else if (item.kind === "account-entry" && accounts?.restoreEntry) {
+      message = accounts.restoreEntry(user, item, payload);
+    } else if (item.kind === "stock-move" && stock?.restoreMove) {
+      message = stock.restoreMove(user, item, payload);
     } else if (item.kind === "free-row" || item.kind === "free-column") {
       const sheet = store.get("SELECT deleted_at FROM free_sheets WHERE id = ?", payload.sheetId);
       if (!sheet) throw new HttpError(409, "Satırın sayfası artık yok; geri yüklenemez.");

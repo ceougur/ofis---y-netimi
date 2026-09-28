@@ -188,10 +188,11 @@ export function receiptPdf(plan, entry, { officeName = "", userName = "", now = 
     top += Math.max(1, wrapped.length) * (size + 3) + 7;
   };
   row(incoming ? "Kimden" : "Kime", plan.name, { bold: true, size: 11.5, lines: 2 });
-  if (plan.refNo) row("Sıra No", plan.refNo);
+  if (plan.refNo) row(plan.refLabel || "Sıra No", plan.refNo);
   if (where) row("Grup", where, { lines: 2 });
   if (plan.phone) row("Telefon", plan.phone);
-  row("Açıklama", `${item ? `${item.seq}. taksit (vade ${dayText(item.dueDate)})` : incoming ? "Taksit tahsilatı" : "Ödeme / iade"}${entry.note ? ` · ${entry.note}` : ""}`, { lines: 2 });
+  // Cari makbuzunda (v2.0.6) açıklama hareketin türünden gelir ("Cari tahsilat", "Cariye ödeme").
+  row("Açıklama", `${item ? `${item.seq}. taksit (vade ${dayText(item.dueDate)})` : entry.label || (incoming ? "Taksit tahsilatı" : "Ödeme / iade")}${entry.note ? ` · ${entry.note}` : ""}`, { lines: 2 });
   top += 2;
   // Tutar kutusu: rakamla ve yazıyla.
   const words = doc.wrap(`# ${amountInWords(entry.amount)} #`, W - P * 2 - 20, "regular", 8.5).slice(0, 2);
@@ -201,9 +202,12 @@ export function receiptPdf(plan, entry, { officeName = "", userName = "", now = 
   page.text(L + 10, top + 15, tl(entry.amount), { font: "bold", size: 16, color: incoming ? green : red, align: "right", width: W - P * 2 - 20 });
   words.forEach((line, index) => page.text(L + 10, top + 32 + index * 11, line, { size: 8.5, color: "#374151" }));
   top += boxHeight + 16;
-  row("Toplam borç", tl(plan.totals.total));
-  row("Tahsil edilen", tl(plan.totals.paid));
-  row("Kalan borç", tl(plan.totals.remaining), { bold: true });
+  if (plan.balanceOnly) row(plan.totals.remaining < 0 ? "Bakiye (alacaklı)" : "Güncel bakiye", tl(Math.abs(plan.totals.remaining)), { bold: true });
+  else {
+    row("Toplam borç", tl(plan.totals.total));
+    row("Tahsil edilen", tl(plan.totals.paid));
+    row("Kalan borç", tl(plan.totals.remaining), { bold: true });
+  }
   if (entry.actorName || userName) row("Tahsil eden", entry.actorName || userName);
   top += 18;
   const half = (W - P * 2 - 16) / 2;
