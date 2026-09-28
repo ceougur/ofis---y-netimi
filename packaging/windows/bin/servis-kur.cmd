@@ -96,11 +96,25 @@ if defined FWWARN echo UYARI: Guvenlik duvari kurali eklenemedi; servis yine de 
 rem 5) Servisi baslat. "nssm start", servis henuz "baslatiliyor" durumundayken hata koduyla donebilir
 rem    ("Unexpected status SERVICE_START_PENDING"); bu hata sayilmaz, asil karari saglik kontrolu verir.
 "%NSSM%" start %SVC% || echo Not: nssm start servis tamamen acilmadan dondu; saglik kontrolu bekleniyor.
+rem    Mevcut sunucunun ustune kurulumda eski servis sureci henuz tam kapanmamis olabilir: servis hemen durduysa
+rem    birkac saniye sonra bir kez daha baslatilir (durumu ve nssm'in olay kaydi hata halinde kurulum gunlugune yazilir).
+for /L %%N in (1,1,3) do (
+  "%NSSM%" status %SVC% 2>nul | findstr /C:"SERVICE_STOPPED" >nul && (
+    echo Servis durmus gorunuyor; %%N. yeniden baslatma denemesi.
+    timeout /t 4 /nobreak >nul
+    "%NSSM%" start %SVC% 2>&1
+  )
+)
 rem 6) Saglik kontrolu (en fazla 120 sn) paketteki Node.js ile yapilir; PowerShell kisitli bilgisayarlarda da calisir.
 rem    Servis ilk acilista guncelleme indiriyorsa bakim yaniti (503) verir; bu da servisin calistigini gosterir.
 rem    Cikis kodlari: 0 tamam, 60 calisiyor ama guvenlik duvari kurali eklenemedi, digerleri hata (setup.iss aciklar).
 "%NODE%" --disable-warning=ExperimentalWarning "%ROOT%\bootstrap.mjs" saglik 120
-if errorlevel 1 ("%NSSM%" status %SVC% & exit /b 50)
+if errorlevel 1 (
+  "%NSSM%" status %SVC%
+  echo --- nssm olay kayitlari ---
+  powershell -NoProfile -ExecutionPolicy Bypass -Command "Get-WinEvent -FilterHashtable @{LogName='Application'; ProviderName='nssm'} -MaxEvents 12 -ErrorAction SilentlyContinue | ForEach-Object { $_.TimeCreated.ToString('HH:mm:ss') + ' ' + $_.Message.Replace([char]10, ' ') }"
+  exit /b 50
+)
 if defined FWWARN (echo Kurulum tamamlandi; guvenlik duvari kurali eklenemedi. & exit /b 60)
 echo Kurulum tamamlandi.
 exit /b 0
