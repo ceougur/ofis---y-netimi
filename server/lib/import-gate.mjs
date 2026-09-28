@@ -13,6 +13,7 @@
 import { parseAmount } from "./money.mjs";
 import { parseDay } from "./plans.mjs";
 import { parseQty } from "./accounts.mjs";
+import { parseStatus } from "./cheques.mjs";
 
 const INVISIBLE = new RegExp("[\\u0000-\\u0008\\u000B\\u000C\\u000E-\\u001F\\u007F\\u200B-\\u200F\\u2028\\u2029\\u202A-\\u202E\\u2060\\uFEFF]", "g");
 const EXCEL_ERROR = /^#(N\/A|REF!|VALUE!|DIV\/0!|NAME\?|NUM!|NULL!|YOK|BAŞV!|DEĞER!|SAYI\/0!|AD\?|SAYI!|BOŞ!)$/i;
@@ -74,8 +75,13 @@ export function inferRolesByValues(headers, rows, roles, kind) {
       if (share(values, value => PHONE.test(value.replace(/\s/g, "")) || /^0\d{3}\s?\d{3}\s?\d{2}\s?\d{2}$/.test(value)) >= 0.7 && give("phone")) return;
       if (share(values, value => EMAIL.test(value)) >= 0.7 && give("email")) return;
       if (share(values, value => Boolean(parseDay(value))) >= 0.8 && give("registered")) return;
+    } else if (kind === "cheque") {
+      // Çek/senet: başlık tanınmadıysa tarih kolonu vade, tutar deseni tutar sayılır (ilk bulunan).
+      if (share(values, value => Boolean(parseDay(value))) >= 0.8 && (give("due") || give("issue"))) return;
+      if (share(values, value => /\d/.test(value) && Number.isFinite(parseAmount(value)) && parseAmount(value) > 0) >= 0.9 && /(tl|₺|tutar|bedel|miktar)/i.test(headers[index] || "") && give("amount")) return;
     } else if (kind === "stock") {
       if (share(values, value => /^(adet|kg|gr|lt|ml|paket|kutu|koli|metre|m|top|çift|takım|cuval|çuval|torba|şişe|sise|rulo|kg\.|lt\.)$/i.test(value)) >= 0.7 && give("unit")) return;
+      if (share(values, value => /^(ürün|urun|hizmet|mal|servis|malzeme)$/i.test(value)) >= 0.9 && give("kind")) return;
       if (share(values, value => Number.isFinite(parseQty(value))) >= 0.9 && !taken.has("qty") && /(stok|mevcut|miktar|adet|bakiye|envanter)/i.test(headers[index] || "") && give("qty")) return;
     }
     if (out[index] === undefined || out[index] === "") out[index] = headers[index] ? "extra" : "";
@@ -128,6 +134,37 @@ export function validateRows(headers, rows, roles, kind, { headerAt = 0 } = {}) 
         if (seen.has(key)) {
           if (phoneDigits.length >= 7) push("warning", index, "name", `Dosyada tekrar (ilk: ${seen.get(key)}. satır); aynı kişi ikinci kez açılmaz`, name);
           else push("warning", index, "name", `Aynı ad (ilk: ${seen.get(key)}. satır); telefon olmadığı için ayrı cari açılır`, name);
+        } else seen.set(key, headerAt + index + 2);
+      }
+    } else if (kind === "cheque") {
+      const amount = cell(row, "amount");
+      const value = parseAmount(amount);
+      if (!amount || !Number.isFinite(value) || value <= 0) {
+        push("error", index, "amount", "Tutar okunamadı; satır alınmaz", amount);
+        bad = true;
+      }
+      const due = cell(row, "due");
+      if (!due || !parseDay(due)) {
+        push("error", index, "due", "Vade tarihi okunamadı; satır alınmaz", due);
+        bad = true;
+      }
+      if (!cell(row, "drawer")) {
+        push("error", index, "drawer", "Keşideci / lehtar boş; satır alınmaz", "");
+        bad = true;
+      }
+      const issue = cell(row, "issue");
+      if (issue && !parseDay(issue)) push("warning", index, "issue", "Alış tarihi okunamadı; bugün yazılır", issue);
+      const status = parseStatus(cell(row, "status"));
+      if (status && status !== "open") {
+        push("warning", index, "status", "Kapanmış evrak (tahsil edildi / ödendi / ciro / karşılıksız); portföye alınmaz", cell(row, "status"));
+        bad = true;
+      }
+      const serial = cell(row, "serial");
+      if (serial && !bad) {
+        const key = `${cell(row, "direction").toLocaleLowerCase("tr-TR")}|${cell(row, "instrument").toLocaleLowerCase("tr-TR")}|${serial}|${cell(row, "bank").toLocaleLowerCase("tr-TR")}`;
+        if (seen.has(key)) {
+          push("warning", index, "serial", `Dosyada tekrar (ilk: ${seen.get(key)}. satır); ikinci satır atlanır`, serial);
+          bad = true;
         } else seen.set(key, headerAt + index + 2);
       }
     } else {

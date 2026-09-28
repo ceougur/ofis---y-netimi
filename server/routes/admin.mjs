@@ -6,7 +6,7 @@ import { BACKUP_NAME, createBackup, listBackups } from "../lib/backup.mjs";
 import { HttpError, SECURITY_HEADERS, limited, ok, parseJson, readJson, text } from "../lib/http.mjs";
 import { nameConflict } from "../lib/names.mjs";
 import { hashPassword, passwordProblem } from "../lib/passwords.mjs";
-import { ROLES } from "../lib/permissions.mjs";
+import { GRANTABLE, ROLES, grantsOf } from "../lib/permissions.mjs";
 
 // Personel bilgisayarlarının bağlanabileceği yerel ağ adresleri (sanal/yerel bağdaştırıcılar hariç).
 function lanAddresses(port) {
@@ -35,9 +35,9 @@ export function registerAdminRoutes(router, context) {
     ok(
       res,
       store.all(
-        `SELECT id, username, display_name AS name, role, active, must_change_password AS mustChangePassword,
+        `SELECT id, username, display_name AS name, role, active, must_change_password AS mustChangePassword, grants_json AS grantsJson,
                 last_login_at AS lastLoginAt, created_at AS createdAt FROM users ORDER BY display_name COLLATE NOCASE`,
-      ).map(user => ({ ...user, active: Boolean(user.active), mustChangePassword: Boolean(user.mustChangePassword) })),
+      ).map(({ grantsJson, ...user }) => ({ ...user, active: Boolean(user.active), mustChangePassword: Boolean(user.mustChangePassword), grants: grantsOf({ grantsJson }), grantable: GRANTABLE })),
     );
   });
 
@@ -75,6 +75,12 @@ export function registerAdminRoutes(router, context) {
     const role = body.role === undefined ? target.role : text(body.role);
     const active = body.active === undefined ? target.active : body.active === false ? 0 : 1;
     const name = body.name === undefined ? null : limited(body.name, 120, "Görünen ad");
+    // Kişiye özel ek yetkiler (v2.0.7): yalnız GRANTABLE listesindekiler; bilinmeyen yetki reddedilir.
+    let grants = null;
+    if (body.grants !== undefined) {
+      if (!Array.isArray(body.grants) || body.grants.some(permission => !Object.hasOwn(GRANTABLE, permission))) throw new HttpError(400, "Verilebilecek yetki tanınmadı.");
+      grants = [...new Set(body.grants)];
+    }
     if (!ROLES.includes(role)) throw new HttpError(400, "Geçersiz rol.");
     if (name) {
       const conflict = nameConflict(store, { name, exceptId: target.id });
@@ -84,11 +90,13 @@ export function registerAdminRoutes(router, context) {
     const losesAdmin = target.role === "admin" && target.active && (role !== "admin" || !active);
     if (losesAdmin && activeAdmins() <= 1) throw new HttpError(400, "Sistemde en az bir aktif yönetici kalmalı.");
     store.tx(() => {
-      store.run("UPDATE users SET role = ?, active = ?, display_name = COALESCE(?, display_name), updated_at = ? WHERE id = ?", role, active, name || null, now(), target.id);
+      store.run("UPDATE users SET role = ?, active = ?, display_name = COALESCE(?, display_name), grants_json = COALESCE(?, grants_json), updated_at = ? WHERE id = ?", role, active, name || null, grants ? JSON.stringify(grants) : null, now(), target.id);
       if (!active) store.run("DELETE FROM sessions WHERE user_id = ?", target.id);
     });
     if (!active) dropLive(target.id);
-    audit(admin, "user.updated", target.id, { role, active: Boolean(active), name: name || undefined });
+    audit(admin, "user.updated", target.id, { role, active: Boolean(active), name: name || undefined, grants: grants || undefined });
+    // Yetkisi değişen kişinin açık ekranı yetkilerini yeniden alsın.
+    if (grants) events?.publish("workspace.changed", { kind: "permissions", userId: target.id }, { users: [target.id] });
     ok(res, true);
   });
 

@@ -682,6 +682,72 @@ export const MIGRATIONS = [
       }
     },
   },
+  {
+    version: 13,
+    name: "v2.0.7 çek/senet portföyü, hizmet kalemi",
+    up(store) {
+      // Çek ve senet (v2.0.7). direction: 'in' = alınan (müşteriden, portföye girer), 'out' = verilen (kendi çekimiz/senedimiz).
+      // Durum: alınan → portfolio (portföyde) → collected (tahsil edildi) | endorsed (ciro edildi) | bounced (karşılıksız);
+      //        verilen → pending (ödenecek) → paid (ödendi).
+      // Her durum değişikliği cheque_events'e bir satır yazar; satırın defter etkileri (cari hareketi, taksit tahsilatı)
+      // aynı işlem bloğunda açılır ve effects_json'da tutulur. "Geri al" son olayın etkilerini birebir geri çevirir.
+      // Kasa'ya yalnız tahsil (collect) ve ödeme (pay) olayları düşer; çek alınınca/verilince Kasa değişmez.
+      store.exec(`
+        CREATE TABLE IF NOT EXISTS cheques (
+          id TEXT PRIMARY KEY,
+          direction TEXT NOT NULL CHECK (direction IN ('in', 'out')),
+          instrument TEXT NOT NULL CHECK (instrument IN ('cheque', 'note')),
+          serial_no TEXT NOT NULL DEFAULT '',
+          bank TEXT NOT NULL DEFAULT '',
+          drawer TEXT NOT NULL DEFAULT '',
+          account_id TEXT NOT NULL DEFAULT '',
+          plan_id TEXT NOT NULL DEFAULT '',
+          amount REAL NOT NULL CHECK (amount > 0),
+          issue_date TEXT NOT NULL,
+          due_date TEXT NOT NULL,
+          status TEXT NOT NULL CHECK (status IN ('portfolio', 'endorsed', 'collected', 'bounced', 'pending', 'paid')),
+          status_date TEXT NOT NULL DEFAULT '',
+          endorse_account_id TEXT NOT NULL DEFAULT '',
+          note TEXT NOT NULL DEFAULT '',
+          fields_json TEXT NOT NULL DEFAULT '[]',
+          created_by TEXT NOT NULL,
+          created_at TEXT NOT NULL,
+          updated_by TEXT,
+          updated_at TEXT NOT NULL,
+          deleted_by TEXT,
+          deleted_at TEXT
+        );
+        -- Vade sorguları (nakit akışı, bugün/7 gün, gecikmiş) ve durum süzgeci indeksten okunur.
+        CREATE INDEX IF NOT EXISTS idx_cheques_open ON cheques(deleted_at, status, due_date);
+        CREATE INDEX IF NOT EXISTS idx_cheques_due ON cheques(due_date);
+        CREATE INDEX IF NOT EXISTS idx_cheques_account ON cheques(account_id);
+        CREATE INDEX IF NOT EXISTS idx_cheques_serial ON cheques(serial_no);
+        CREATE TABLE IF NOT EXISTS cheque_events (
+          id TEXT PRIMARY KEY,
+          cheque_id TEXT NOT NULL,
+          kind TEXT NOT NULL CHECK (kind IN ('receive', 'issue', 'collect', 'endorse', 'pay', 'bounce')),
+          date TEXT NOT NULL,
+          amount REAL NOT NULL,
+          account_id TEXT NOT NULL DEFAULT '',
+          from_status TEXT NOT NULL DEFAULT '',
+          to_status TEXT NOT NULL,
+          note TEXT NOT NULL DEFAULT '',
+          effects_json TEXT NOT NULL DEFAULT '[]',
+          created_by TEXT NOT NULL,
+          created_at TEXT NOT NULL
+        );
+        CREATE INDEX IF NOT EXISTS idx_cheque_events_cheque ON cheque_events(cheque_id, created_at);
+        CREATE INDEX IF NOT EXISTS idx_cheque_events_kind ON cheque_events(kind, date);
+      `);
+      // Taksite çekle yapılan tahsilat: kartta tahsilat olarak görünür, Kasa'ya çek tahsil edilince düşer (çift sayılmaz).
+      addColumn(store, "plan_entries", "cheque_id", "TEXT NOT NULL DEFAULT ''");
+      store.exec("CREATE INDEX IF NOT EXISTS idx_plan_entries_cheque ON plan_entries(cheque_id)");
+      // Stok kartı türü: 'product' (stok tutulur) ya da 'service' (hizmet; miktar/kritik seviye izlenmez).
+      addColumn(store, "stock_items", "kind", "TEXT NOT NULL DEFAULT 'product'");
+      // Kişiye özel ek yetkiler (ör. ANLIK DURUM ve raporlar): yönetici her zaman görür, başkasına tek tek verir.
+      addColumn(store, "users", "grants_json", "TEXT NOT NULL DEFAULT '[]'");
+    },
+  },
 ];
 
 export const LATEST_VERSION = MIGRATIONS.at(-1).version;

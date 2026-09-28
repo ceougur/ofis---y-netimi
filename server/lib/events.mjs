@@ -118,7 +118,21 @@ export function createEventHub({ log, pingMs = 25_000, maxPerUser = 12, maxTotal
   }
 
   // users: yalnızca bu kullanıcılara; except: bu kullanıcı hariç herkese.
+  // Yayın dinleyicileri (v2.0.7): ör. ANLIK DURUM, para/stok değişikliklerinden sonra herkese (işlemi yapan dahil) tek
+  // "overview.changed" olayı yayımlar. Dinleyici hatası yayını bozmaz.
+  const taps = new Set();
+  function tap(listener) {
+    taps.add(listener);
+    return () => taps.delete(listener);
+  }
   function publish(event, data, { users = null, except = null } = {}) {
+    for (const listener of taps) {
+      try {
+        listener(event, data);
+      } catch (error) {
+        log?.warn?.("Olay dinleyicisi hata verdi.", { error: error.message });
+      }
+    }
     const seq = ++sequence;
     const chunk = frame(event, data, `${epoch}.${seq}`);
     const entry = { seq, chunk, users, except, at: Date.now() };
@@ -166,5 +180,5 @@ export function createEventHub({ log, pingMs = 25_000, maxPerUser = 12, maxTotal
     log?.debug?.("Canlı olay kanalı kapatıldı.");
   }
 
-  return { connect, publish, online, closeWhere, stop, size: () => clients.size };
+  return { connect, publish, tap, online, closeWhere, stop, size: () => clients.size };
 }

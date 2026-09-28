@@ -23,10 +23,11 @@ const KIND_LABELS = {
   "account-entry": "Cari hareketi",
   stock: "Stok ürünü",
   "stock-move": "Stok hareketi",
+  cheque: "Çek / senet",
 };
 const SEQUENCE = /^(sıra|sira|sıra no|no|#|sn|s\.?\s?no|nr)$/i;
 
-export function registerTrashRoutes(router, { store, auth, audit, events, dataset, profile, free, trash, documents, accounts = null, stock = null }) {
+export function registerTrashRoutes(router, { store, auth, audit, events, dataset, profile, free, trash, documents, accounts = null, stock = null, cheques = null }) {
   const now = () => new Date().toISOString();
   const publish = (user, detail) => events?.publish("workspace.changed", { actorId: user.id, actorName: user.display_name, ...detail }, { except: user.id });
   const sessionNames = () => {
@@ -146,6 +147,8 @@ export function registerTrashRoutes(router, { store, auth, audit, events, datase
     }
     // Silinen cariler ve stok ürünleri (v2.0.6): hareketleri yerinde durur.
     items.push(...(accounts?.deletedList ? accounts.deletedList() : []), ...(stock?.deletedList ? stock.deletedList() : []));
+    // Silinen çek/senet (v2.0.7): geri gelince cari/taksit hareketi yeniden yazılır.
+    items.push(...(cheques?.deletedList ? cheques.deletedList() : []));
     for (const item of trash.open()) {
       const payload = JSON.parse(item.payload_json || "{}");
       const money = item.kind === "payment" || item.kind === "cash" || item.kind === "plan-entry" || item.kind === "account-entry";
@@ -256,6 +259,10 @@ export function registerTrashRoutes(router, { store, auth, audit, events, datase
     if (source === "stock") {
       if (!stock?.restoreDeleted) throw new HttpError(400, "Bilinmeyen öğe.");
       return ok(res, { restored: "stock", message: stock.restoreDeleted(user, ref) });
+    }
+    if (source === "cheque") {
+      if (!cheques?.restoreDeleted) throw new HttpError(400, "Bilinmeyen öğe.");
+      return ok(res, { restored: "cheque", message: cheques.restoreDeleted(user, ref) });
     }
 
     if (source !== "trash") throw new HttpError(400, "Bilinmeyen öğe.");

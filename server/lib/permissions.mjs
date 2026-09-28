@@ -34,6 +34,12 @@ export const PERMISSIONS = Object.freeze({
   "stock.view": ALL,
   "stock.move": ALL,
   "stock.manage": ["admin", "avukat", "muhasebe"],
+  // Çek / Senet (v2.0.7): portföy, tahsil, ciro, ödeme; para ve cari bakiyesine dokunduğu için kasa yetkisiyle aynı hesaplar.
+  "cheques.view": ["admin", "avukat", "muhasebe"],
+  "cheques.manage": ["admin", "avukat", "muhasebe"],
+  // ANLIK DURUM kokpiti ve raporları (v2.0.7): kasa, alacak/borç, mizan ve nakit akışı. Yalnız yönetici; başka kişiye
+  // yönetici Yönetim → Kullanıcılar'dan tek tek verir (kişiye özel ek yetki, GRANTABLE).
+  "overview.view": ["admin"],
   // Görev atama, herkesin görevleri ve performans raporu (KPI) yalnızca avukat ve yönetici içindir;
   // personel ve muhasebe kendilerine atanan görevleri görür ve tamamlar.
   "tasks.create": ["admin", "avukat"],
@@ -53,3 +59,16 @@ export const PERMISSIONS = Object.freeze({
 
 export const can = (role, permission) => Boolean(PERMISSIONS[permission]?.includes(role));
 export const permissionsFor = role => Object.keys(PERMISSIONS).filter(permission => can(role, permission));
+
+// Kişiye özel verilebilen ek yetkiler (v2.0.7). Rolün yetkisine eklenir; rolün yetkisini daraltmaz.
+export const GRANTABLE = Object.freeze({ "overview.view": "ANLIK DURUM ve raporlar" });
+export function grantsOf(user) {
+  try {
+    const value = JSON.parse(user?.grants_json ?? user?.grantsJson ?? "[]");
+    return Array.isArray(value) ? value.filter(permission => Object.hasOwn(GRANTABLE, permission)) : [];
+  } catch {
+    return [];
+  }
+}
+export const canUser = (user, permission) => Boolean(user) && (can(user.role, permission) || grantsOf(user).includes(permission));
+export const permissionsForUser = user => [...new Set([...permissionsFor(user.role), ...grantsOf(user)])];

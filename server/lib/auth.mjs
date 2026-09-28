@@ -3,7 +3,7 @@ import { createHash, randomBytes, randomUUID } from "node:crypto";
 import { HttpError, clientIp, parseCookies } from "./http.mjs";
 import { DEFAULT_ADMIN_PASSWORD } from "./config.mjs";
 import { DUMMY_HASH, hashPassword, passwordProblem, verifyPassword } from "./passwords.mjs";
-import { can, permissionsFor } from "./permissions.mjs";
+import { canUser, grantsOf, permissionsForUser } from "./permissions.mjs";
 
 export const SESSION_COOKIE = "hof_session";
 const hashToken = token => createHash("sha256").update(token).digest("hex");
@@ -63,7 +63,8 @@ export function publicUser(user) {
     name: user.display_name,
     role: user.role,
     mustChangePassword: Boolean(user.must_change_password),
-    permissions: permissionsFor(user.role),
+    permissions: permissionsForUser(user),
+    grants: grantsOf(user),
   };
 }
 
@@ -77,7 +78,7 @@ export function createAuth({ store, config, audit }) {
     const token = sessionToken(req);
     if (!token) return null;
     const row = store.get(
-      `SELECT u.id, u.username, u.display_name, u.role, u.active, u.must_change_password, s.expires_at
+      `SELECT u.id, u.username, u.display_name, u.role, u.active, u.must_change_password, u.grants_json, s.expires_at
        FROM sessions s JOIN users u ON u.id = s.user_id WHERE s.token_hash = ?`,
       hashToken(token),
     );
@@ -101,7 +102,7 @@ export function createAuth({ store, config, audit }) {
     const wait = limiter.check(ip, key);
     if (wait) throw new HttpError(429, `Çok fazla hatalı deneme yapıldı. ${Math.ceil(wait / 60)} dakika sonra tekrar deneyin veya yöneticinizden parolanızı sıfırlamasını isteyin.`, { retryAfter: wait });
     if (!username || !password) throw new HttpError(400, "Kullanıcı adı ve parola gerekli.");
-    const user = store.get("SELECT id, username, display_name, role, active, must_change_password, password_hash FROM users WHERE username = ? COLLATE NOCASE", username);
+    const user = store.get("SELECT id, username, display_name, role, active, must_change_password, grants_json, password_hash FROM users WHERE username = ? COLLATE NOCASE", username);
     const valid = verifyPassword(password, user ? user.password_hash : DUMMY_HASH);
     if (!user || !valid || !user.active) {
       limiter.fail(ip, key);
@@ -151,7 +152,7 @@ export function createAuth({ store, config, audit }) {
 
   function requirePermission(req, permission) {
     const user = requireUser(req);
-    if (!can(user.role, permission)) throw new HttpError(403, "Bu işlem için yetkiniz yok.", { code: "FORBIDDEN", permission });
+    if (!canUser(user, permission)) throw new HttpError(403, "Bu işlem için yetkiniz yok.", { code: "FORBIDDEN", permission });
     return user;
   }
 

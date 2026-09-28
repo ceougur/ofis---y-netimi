@@ -2,11 +2,12 @@
 // Sonuç; veri, tahsilatlar, elle kapatılan kalemler ve gün değişene kadar oturum başına önbellektedir.
 import { HttpError, ok, readJson, text } from "../lib/http.mjs";
 import { computeDeadlines, computeDues } from "../lib/insight/dues.mjs";
+import { can } from "../lib/permissions.mjs";
 
 const SETTLED_KEY = "dues.settled";
 const MAX_SETTLED = 5000;
 
-export function registerDueRoutes(router, { auth, store, dataset, profile, events, audit, plans }) {
+export function registerDueRoutes(router, { auth, store, dataset, profile, events, audit, plans, cheques }) {
   const cache = new Map(); // oturum → { key, result }
   const settingKey = () => (dataset.settingKey ? dataset.settingKey(SETTLED_KEY) : SETTLED_KEY);
   const readSettled = () => {
@@ -27,7 +28,7 @@ export function registerDueRoutes(router, { auth, store, dataset, profile, event
     const settledRaw = store.setting(settingKey(), "{}") || "{}";
     // Sekme adları ve gizlenen sekmeler (v2.0.2) görünümü değiştirir; anahtara girer.
     const tabState = ["dataset.tabs.alias", "dataset.tabs.hidden"].map(name => store.setting(dataset.settingKey ? dataset.settingKey(name) : name, "") || "").join("|");
-    const key = [profile.fingerprint(), paymentsState(), settledRaw.length, settledRaw.slice(-64), tabState, plans?.fingerprint ? plans.fingerprint() : "", now.toDateString()].join("|");
+    const key = [profile.fingerprint(), paymentsState(), settledRaw.length, settledRaw.slice(-64), tabState, plans?.fingerprint ? plans.fingerprint() : "", cheques?.fingerprint ? cheques.fingerprint() : "", now.toDateString()].join("|");
     const session = dataset.currentKey();
     const hit = cache.get(session);
     if (hit && hit.key === key) return hit.result;
@@ -43,14 +44,18 @@ export function registerDueRoutes(router, { auth, store, dataset, profile, event
     // Taksit kartlarının vadesi gelen/geçen taksitleri (v2.0.4) aynı listeye girer: şerit ve bildirimler tek kaynaktan okur.
     // Kart oturumdan bağımsızdır (Kasa gibi); her oturumda görünür.
     const planItems = plans?.dueItems ? plans.dueItems(local) : [];
-    const result = { items: [...items, ...planItems], deadlines, sources, dormant, today: local, generatedAt: now.toISOString() };
+    // Çek/senet (v2.0.7): vadesi geçen, bugün ve 7 gün içinde tahsil edilecek (alınan) ya da ödenecek (verilen) evrak.
+    const chequeItems = cheques?.dueItems ? cheques.dueItems(local) : [];
+    const result = { items: [...items, ...planItems, ...chequeItems], deadlines, sources, dormant, today: local, generatedAt: now.toISOString() };
     cache.set(session, { key, result });
     return result;
   }
 
   router.get("/api/workspace/dues", async ({ req, res }) => {
-    auth.requireUser(req);
-    ok(res, await compute());
+    const user = auth.requireUser(req);
+    const data = await compute();
+    // Çek/senet kalemleri yalnız çekleri görebilenlere (kasa yetkisi olanlar) gider.
+    ok(res, can(user.role, "cheques.view") ? data : { ...data, items: data.items.filter(item => item.source !== "cheque") });
   });
 
   // "Ödendi say" / "İptal": kalem, tahsilat girilmeden kapatılır (veri değişmez; kim, ne zaman kaydedilir).

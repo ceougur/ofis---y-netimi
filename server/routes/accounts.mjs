@@ -26,7 +26,7 @@ const KIND_TEXT = { debt: "Borç", credit: "Alacak", in: "Tahsilat", out: "Ödem
 // Türkçe sıralama: Intl.Collator, localeCompare'den kat kat hızlıdır (200 bin caride saniyeler yerine yüz ms).
 const collator = new Intl.Collator("tr", { numeric: true, sensitivity: "base" });
 
-export function registerAccountRoutes(router, { store, auth, audit, events, trash, config = {}, dataset = null, plans = () => null }) {
+export function registerAccountRoutes(router, { store, auth, audit, events, trash, config = {}, dataset = null, plans = () => null, cheques = () => null }) {
   const now = () => new Date().toISOString();
   const today = () => isoDay(new Date());
   const newId = prefix => `${prefix}-${randomUUID()}`;
@@ -84,7 +84,8 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
   function detail(id, user) {
     const account = accountRow(id);
     const manage = can(user.role, "accounts.manage");
-    const entries = entriesOf(account.id).map(entry => ({ ...entry, editable: entry.source !== "stock" && (manage || (entry.createdBy === user.id && entry.kind === "in")) }));
+    // Stok ve çek/senetten gelen satırlar (v2.0.6, v2.0.7) kendi kartlarından düzeltilir.
+    const entries = entriesOf(account.id).map(entry => ({ ...entry, editable: entry.source === "" && (manage || (entry.createdBy === user.id && entry.kind === "in")) }));
     const planList = plans()?.forAccount ? plans().forAccount(account.id, user) : [];
     const ledger = accountLedger(entries, planList);
     return {
@@ -359,6 +360,8 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
       account.id,
     ).n;
     if (stockLinked) throw new HttpError(409, `Bu cariye yazılmış ${stockLinked} stok hareketi var. Önce stok hareketlerini düzeltin.`);
+    const chequeLinked = cheques()?.countForAccount ? cheques().countForAccount(account.id) : 0;
+    if (chequeLinked) throw new HttpError(409, `Bu cariye bağlı ${chequeLinked} çek/senet var. Önce Çek/Senet'ten evrakı silin ya da başka cariye taşıyın.`);
     store.tx(() => {
       // Yumuşak silme: hareketleri yerinde durur (Kasa'dan düşer); yönetim panelindeki Silinenler'den geri gelir.
       store.run("UPDATE accounts SET deleted_by = ?, deleted_at = ? WHERE id = ?", user.id, now(), account.id);
@@ -403,6 +406,7 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
   };
   const requireEntryRight = (user, entry) => {
     if (entry.source === "stock") throw new HttpError(409, "Bu hareket bir stok hareketinden geldi; Stok'taki hareketten düzeltin ya da silin.");
+    if (entry.source === "cheque") throw new HttpError(409, "Bu hareket bir çek/senetten geldi; Çek/Senet'teki evraktan düzeltin (geri al ya da sil).", { code: "cheque-linked", chequeId: entry.sourceId });
     if (entry.createdBy !== user.id && !can(user.role, "accounts.manage")) throw new HttpError(403, "Başkasının girdiği hareketi yalnızca yönetici, uzman ve muhasebe değiştirebilir.");
     requireKindRight(user, entry.kind);
   };
@@ -793,6 +797,20 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     const hits = phone.length >= 7 ? candidates.filter(row => digits(row.phone) === phone) : candidates.filter(row => !digits(row.phone) && (row.groupId || "") === (person.groupId || ""));
     return hits.length === 1 ? hits[0].id : "";
   }
+  // Mizan (v2.0.7): tüm carilerin defter satırları tek geçişte. Her carinin satırları Cari kartındaki defterle aynı
+  // kuraldan (accountLedger) gelir; mizan bakiyesi = Cari listesindeki bakiye.
+  function allLedgers() {
+    const rows = store.all(`${ACCOUNT_SQL} WHERE a.deleted_at IS NULL ORDER BY a.name COLLATE NOCASE`).map(({ fieldsJson, ...row }) => row);
+    const entries = new Map();
+    for (const entry of store.all("SELECT id, account_id AS accountId, kind, amount, date, note, receipt_no AS receiptNo, source, source_id AS sourceId, created_at AS createdAt FROM account_entries ORDER BY date, created_at, rowid")) {
+      if (!entries.has(entry.accountId)) entries.set(entry.accountId, []);
+      entries.get(entry.accountId).push(entry);
+    }
+    const planMap = plans()?.ledgerPlansByAccount ? plans().ledgerPlansByAccount() : new Map();
+    const lines = new Map();
+    for (const row of rows) lines.set(row.id, accountLedger(entries.get(row.id) || [], planMap.get(row.id) || []).lines);
+    return { accounts: rows, lines };
+  }
   // Kasa: cari tahsilatları (giriş) ve ödemeleri (çıkış). Silinen carinin hareketi Kasa'dan düşer (taksit kartıyla aynı).
   const cashEntries = () =>
     store.all(
@@ -864,5 +882,5 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     return "Cari hareketi geri eklendi; bakiye ve Kasa yeniden hesaplandı.";
   }
 
-  return { exists, createFromPlan, matchPerson, cashEntries, stockEntry, fingerprint, deletedList, restoreDeleted, restoreEntry, detail, list };
+  return { exists, createFromPlan, matchPerson, cashEntries, stockEntry, fingerprint, deletedList, restoreDeleted, restoreEntry, detail, list, allLedgers };
 }

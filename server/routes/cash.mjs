@@ -21,6 +21,8 @@ export function registerCashRoutes(router, context) {
     // Cari tahsilat/ödemeleri ve Kasa'dan ödenen/Kasa'ya tahsil edilen stok hareketleri (v2.0.6).
     const accounts = context.accounts?.cashEntries ? context.accounts.cashEntries() : [];
     const stock = context.stock?.cashEntries ? context.stock.cashEntries() : [];
+    // Çek/senet (v2.0.7): alınan evrak tahsil edilince giriş, verilen evrak ödenince çıkış. Alınca/verilince Kasa değişmez.
+    const cheques = context.cheques?.cashEntries ? context.cheques.cashEntries() : [];
     const payments = store.all(
       `SELECT p.id, 'in' AS kind, 'payment' AS source, p.amount, p.date, p.note AS description, p.case_key AS caseKey, p.case_title AS caseTitle,
               p.created_by AS actorId, COALESCE(u.display_name, '') AS actorName, p.created_at AS createdAt, p.updated_at AS updatedAt
@@ -32,10 +34,16 @@ export function registerCashRoutes(router, context) {
        FROM cash_entries c LEFT JOIN users u ON u.id = c.created_by`,
     );
     // Tarih sırası; aynı gün içinde giriş sırası (yeni eklenen en altta).
-    return [...payments, ...manual, ...plans, ...accounts, ...stock].sort((a, b) => (a.date === b.date ? (a.createdAt < b.createdAt ? -1 : a.createdAt > b.createdAt ? 1 : 0) : a.date < b.date ? -1 : 1));
+    return [...payments, ...manual, ...plans, ...accounts, ...stock, ...cheques].sort((a, b) => (a.date === b.date ? (a.createdAt < b.createdAt ? -1 : a.createdAt > b.createdAt ? 1 : 0) : a.date < b.date ? -1 : 1));
   }
 
   // Seçilen aralığın hareketleri; "from" öncesi devreden kasa olarak özetlenir.
+  // Tarihe kadarki kasa (dahil): ANLIK DURUM ve nakit akış projeksiyonu başlangıcı. Kasa ekranıyla aynı hareketlerden.
+  function balanceAt(day) {
+    let balance = 0;
+    for (const entry of entries()) if (!day || entry.date <= day) balance = roundMoney(balance + (entry.kind === "in" ? entry.amount : -entry.amount));
+    return balance;
+  }
   function report(user, from, to) {
     if ((from && !validDate(from)) || (to && !validDate(to))) throw new HttpError(400, "Geçerli bir tarih aralığı seçin.");
     if (from && to && from > to) throw new HttpError(400, "Başlangıç tarihi bitiş tarihinden sonra olamaz.");
@@ -60,6 +68,7 @@ export function registerCashRoutes(router, context) {
         entry.source === "plan" ? can(user.role, "plans.manage") || (own && can(user.role, "plans.collect"))
         : entry.source === "account" ? can(user.role, "accounts.manage") || (own && can(user.role, "accounts.collect"))
         : entry.source === "stock" ? can(user.role, "stock.manage")
+        : entry.source === "cheque" ? false
         : can(user.role, "cash.manage") || (entry.source === "payment" && own && can(user.role, "payments.create"));
       list.push({ ...entry, balance, editable });
     }
@@ -137,4 +146,7 @@ export function registerCashRoutes(router, context) {
     changed(user);
     ok(res, { id: previous.id });
   });
+
+  // ANLIK DURUM (v2.0.7): Kasa ekranıyla aynı hesap (tek kaynak).
+  return { entries, report, balanceAt };
 }
