@@ -266,10 +266,10 @@ export function verifyDates(units, item, now, mode, { grouped = false } = {}) {
   const explain =
     mode === "deadline"
       ? [
-          `${q(column)} kolonu son tarih olarak kullanıldı (başlığı ${item.strong ? "vade, termin, söz gibi bir son tarih bildiriyor" : "planlanan bir tarih bildiriyor"}); ${n(dated)} kayıtta tarih okundu.`,
-          `Günler bugüne (${todayText}) göre sayıldı: bugün ${n(counts.today)}, 7 gün içinde ${n(counts.next7)}, 30 gün içinde ${n(counts.next30)}, tarihi geçen ${n(counts.passed)}.`,
+          `${q(column)} kolonu ${item.meaning === "schedule" ? "planlı tarih" : "son tarih"} olarak kullanıldı (${item.meaningReason || (item.strong ? "başlık bir son tarih bildiriyor" : "başlık planlanan bir tarih bildiriyor")}); ${n(dated)} kayıtta tarih okundu.`,
+          `Günler bugüne (${todayText}) göre sayıldı: bugün ${n(counts.today)}, 7 gün içinde ${n(counts.next7)}, 30 gün içinde ${n(counts.next30)}, ${item.meaning === "schedule" ? "geçmiş" : "tarihi geçen"} ${n(counts.passed)}.`,
         ]
-      : [`${q(column)} kolonu olay tarihi olarak kullanıldı; ${n(dated)} kayıtta tarih okundu, bu ay ${n(counts.thisMonth)}.`];
+      : [`${q(column)} kolonu olay tarihi olarak kullanıldı${item.meaningReason ? ` (${item.meaningReason})` : ""}; ${n(dated)} kayıtta tarih okundu, bu ay ${n(counts.thisMonth)}.`];
   if (grouped) explain.push(GROUPED_NOTE);
   if (notes.length) explain.push(`${n(notes.length)} hücrede tarih yerine not var (ör. ${examples(notes)}); sayılmadı.`);
   if (unclear.length) explain.push(`Kesin okunamayan ${n(unclear.length)} hücre (ör. ${examples(unclear)}) sayılmadı.`);
@@ -277,7 +277,7 @@ export function verifyDates(units, item, now, mode, { grouped = false } = {}) {
   explain.push(`Denetim: dolu hücrelerin ${percentOf(filled - unclear.length, filled)} kesin okundu (takvimde olmayan tarihler geçersiz sayılır).`);
   const base = { column, dated, notes: notes.length, unclear: unclear.length, empty, explain };
   return mode === "deadline"
-    ? { ok: true, card: { id: "deadline", ...base, today: counts.today, next7: counts.next7, next30: counts.next30, passed: counts.passed, thisMonth: counts.thisMonth } }
+    ? { ok: true, card: { id: "deadline", ...base, meaning: item.meaning || "expiry", today: counts.today, next7: counts.next7, next30: counts.next30, passed: counts.passed, thisMonth: counts.thisMonth } }
     : { ok: true, card: { id: "event", ...base, thisMonth: counts.thisMonth } };
 }
 

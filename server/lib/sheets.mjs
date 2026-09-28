@@ -4,6 +4,7 @@ import { createHash } from "node:crypto";
 import { attachFormulas, sourceTagOf } from "./formula/bind.mjs";
 import { describeFormat, parseCellText } from "./formula/values.mjs";
 import { readXlsxFormulas } from "./formula/xlsx.mjs";
+import { fillMerges, listOnlySheets, readXlsxLists, resolveChoices } from "./choices.mjs";
 import { matrixToRecords } from "./sections.mjs";
 
 export function spreadsheetId(sheetUrl) {
@@ -139,16 +140,25 @@ export function createSheetsReader({ fetchImpl, cacheMs = 45_000, timeoutMs = 20
   // Belge kimliği → { hash (CSV'lerin özeti), byTab } : içerik değişmedikçe xlsx yeniden indirilmez.
   const formulaCache = new Map();
 
+  // xlsx'ten formüller ve açılır listeler (v2.0.2) birlikte okunur.
   async function readFormulas(id, hash) {
     const hit = formulaCache.get(id);
-    if (hit && hit.hash === hash) return hit.workbook;
+    if (hit && hit.hash === hash) return hit;
     const response = await fetchImpl(`https://docs.google.com/spreadsheets/d/${id}/export?format=xlsx`, { signal: AbortSignal.timeout(Math.max(timeoutMs, 30_000)), redirect: "follow" });
     const type = response.headers.get("content-type") || "";
     if (!response.ok || type.includes("html")) throw new Error(`xlsx alınamadı (${response.status})`);
-    const workbook = readXlsxFormulas(Buffer.from(await response.arrayBuffer()));
-    formulaCache.set(id, { hash, workbook });
+    const buffer = Buffer.from(await response.arrayBuffer());
+    const workbook = readXlsxFormulas(buffer);
+    let lists = null;
+    try {
+      lists = readXlsxLists(buffer);
+    } catch {
+      lists = null;
+    }
+    const entry = { hash, workbook, lists };
+    formulaCache.set(id, entry);
     if (formulaCache.size > 20) formulaCache.delete(formulaCache.keys().next().value);
-    return workbook;
+    return entry;
   }
 
   async function read(sheetUrl) {
@@ -172,34 +182,73 @@ export function createSheetsReader({ fetchImpl, cacheMs = 45_000, timeoutMs = 20
     const rows = [];
     const labels = [];
     const parsedTabs = [];
+    const reports = [];
     const hash = createHash("sha1");
     let sectionCount = 0;
+    const csvs = [];
     for (const tab of targets) {
       const csv = await readTabCsv(sourceUrl, tab.gid, signal);
       if (!csv.ok) {
         return { connected: false, sourceUrl, syncedAt: null, rows: [], tabs, message: `"${tab.title || "Sheet"}" sekmesi okunamadı (${csv.status}). Sheet'i görüntüleme izni olan kişilerle paylaşın.` };
       }
       hash.update(`${tab.title}\u0000${csv.text}\u0000`);
+      csvs.push({ tab, csv });
+    }
+    // Formüller, açılır listeler ve birleştirilmiş hücreler xlsx kopyasından okunur (CSV'de yoktur). Birleştirilmiş
+    // hücreler kayıtlar çıkarılmadan önce doldurulur; xlsx alınamazsa değerler yine gelir.
+    let formulasUnavailable = false;
+    let workbook = null;
+    let lists = null;
+    const digest = hash.digest("hex");
+    if (formulas && csvs.some(item => item.csv.export && item.tab.title)) {
+      try {
+        ({ workbook, lists } = await readFormulas(id, digest));
+      } catch {
+        formulasUnavailable = true;
+      }
+    }
+    for (const { tab, csv } of csvs) {
       // Export CSV'sinde satır sırası sayfadaki satırdır (boş satırlar korunur); gviz yedek yolunda bu garanti yoktur.
       const matrix = parseCsv(csv.text, { keepEmpty: csv.export });
+      if (csv.export && lists?.merges?.has(tab.title)) fillMerges(matrix, lists.merges.get(tab.title));
       const parsed = matrixToRecords(matrix, tab.title, { layout: csv.export });
+      if (parsed.report) reports.push({ sheet: tab.title || "Sheet", ...parsed.report });
       for (const row of parsed.rows) rows.push(row); // yayma (...) büyük sekmelerde çağrı yığınını taşırır
       for (const label of parsed.tabs) labels.push({ gid: tab.gid, title: label });
       if (parsed.sections.length > 1) sectionCount += parsed.sections.length;
-      if (csv.export && tab.title) parsedTabs.push({ title: tab.title, matrix, layout: parsed.layout });
+      if (csv.export && tab.title) parsedTabs.push({ title: tab.title, matrix, layout: parsed.layout, blocks: parsed.blocks });
     }
-    let formulasUnavailable = false;
-    if (formulas && parsedTabs.length) {
+    let choices;
+    let listSheets = [];
+    if (workbook && parsedTabs.length) {
       try {
-        const workbook = await readFormulas(id, hash.digest("hex"));
         bindSheetFormulas(parsedTabs, workbook, sourceTagOf(`sheets:${id}`));
+        if (lists) {
+          const sheets = parsedTabs.map(tab => ({ name: tab.title, matrix: tab.matrix, start: { r: 0, c: 0 }, rules: lists.sheets.get(tab.title) || [], blocks: tab.blocks || [], hidden: lists.hidden.has(tab.title) }));
+          const sources = new Set();
+          choices = resolveChoices(sheets, lists.names, sources);
+          listSheets = listOnlySheets(sheets, sources);
+        }
       } catch {
-        // xlsx alınamadıysa değerler yine gelir; eşitleme, kayıtlı formülleri korur (dataset.sync).
+        // xlsx alınamadıysa değerler yine gelir; eşitleme, kayıtlı formülleri ve listeleri korur (dataset.sync).
         formulasUnavailable = true;
       }
     }
     const detail = sectionCount ? ` (alt tablolar ayrı bölümler olarak gösteriliyor)` : "";
-    return { connected: true, sourceUrl, title, syncedAt: new Date().toISOString(), rows, tabs: labels.length ? labels : targets, formulasUnavailable, message: `${targets.length} sekmeden ${rows.length} kayıt okundu${detail}.` };
+    const cells = reports.reduce((sum, item) => sum + item.cells, 0);
+    const lost = reports.reduce((sum, item) => sum + item.lost, 0);
+    const reading = reports.length
+      ? {
+          coverage: cells ? Math.round((1 - lost / cells) * 1000) / 1000 : 1,
+          cells,
+          lost,
+          notes: reports.flatMap(item => (item.notes || []).map(note => (reports.length > 1 ? `“${item.sheet}”: ${note}` : note))).slice(0, 12),
+          skipped: reports.flatMap(item => (item.skipped || []).map(entry => ({ sheet: reports.length > 1 ? item.sheet : "", ...entry }))).slice(0, 40),
+          skippedTotal: reports.reduce((sum, item) => sum + (item.skipped?.length || 0), 0),
+          shapes: reports.map(item => ({ sheet: item.sheet, shape: item.shape })),
+        }
+      : null;
+    return { connected: true, sourceUrl, title, syncedAt: new Date().toISOString(), rows, tabs: labels.length ? labels : targets, formulasUnavailable, reading, ...(choices ? { choices, listSheets } : {}), message: `${targets.length} sekmeden ${rows.length} kayıt okundu${detail}.` };
   }
 
   // Önce hücreleri göründüğü gibi veren export CSV'si, olmazsa gviz CSV'si.

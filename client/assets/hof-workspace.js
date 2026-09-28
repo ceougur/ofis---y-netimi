@@ -203,8 +203,17 @@
     { id: "last", label: "Geçen ay" },
     { id: "year", label: "Bu yıl" },
     { id: "all", label: "Tümü" },
-    { id: "range", label: "Aralık" },
+    // "Aralık" aynı zamanda ay adı (December); karışmasın diye "Tarih aralığı".
+    { id: "range", label: "Tarih aralığı" },
   ];
+  // "01.09–27.09" (bu yıl içinde), yoksa yıllarıyla "01.09.2025–27.09.2026".
+  const rangeText = ({ from, to }) => {
+    const short = iso => `${iso.slice(8, 10)}.${iso.slice(5, 7)}`;
+    const full = iso => `${short(iso)}.${iso.slice(0, 4)}`;
+    const year = String(new Date().getFullYear());
+    if (!from || !to) return "Tarih aralığı";
+    return from.startsWith(year) && to.startsWith(year) ? `${short(from)}–${short(to)}` : `${full(from)}–${full(to)}`;
+  };
   const periodRange = (id, custom) => {
     const today = new Date();
     if (id === "range") return custom;
@@ -291,7 +300,7 @@
     let period = "month";
     let data = null;
     const today = new Date();
-    // "Aralık": ör. 01.09.2026 – 25.09.2026; ilk açılışta bu ayın başından bugüne.
+    // "Tarih aralığı": ör. 01.09.2026 – 25.09.2026; ilk açılışta bu ayın başından bugüne.
     const custom = { from: dayText(new Date(today.getFullYear(), today.getMonth(), 1)), to: dayText(today) };
     const manage = HOF.can("cash.manage");
     const modal = HOF.modal({
@@ -323,8 +332,9 @@
       modal.dialog.querySelectorAll("[data-period]").forEach(button => button.setAttribute("aria-pressed", String(button.dataset.period === period)));
       rangeBox.hidden = period !== "range";
       if (!data) return;
-      const label = period === "range" ? "Aralık" : PERIODS.find(item => item.id === period)?.label || "";
-      kpis.innerHTML = `<div class="hof-cash-balance"><strong>${esc(HOF.formatMoney(data.totals.balance))}</strong><span>Güncel kasa</span></div><div><strong>${esc(HOF.formatMoney(data.period.in))}</strong><span>${esc(label)} tahsilat</span></div><div><strong>${esc(HOF.formatMoney(data.period.out))}</strong><span>${esc(label)} ödeme</span></div><div><strong>${esc(HOF.formatMoney(data.period.net))}</strong><span>${esc(label)} fark</span></div>`;
+      // Göstergelerde dönemin adı; tarih aralığında tarihlerin kendisi (ör. 01.09–27.09).
+      const label = period === "range" ? rangeText(custom) : PERIODS.find(item => item.id === period)?.label || "";
+      kpis.innerHTML = `<div class="hof-cash-balance"><strong>${esc(HOF.formatMoney(data.totals.balance))}</strong><span>Güncel kasa</span></div><div><strong>${esc(HOF.formatMoney(data.period.in))}</strong><span>Tahsilat · ${esc(label)}</span></div><div><strong>${esc(HOF.formatMoney(data.period.out))}</strong><span>Ödeme · ${esc(label)}</span></div><div><strong>${esc(HOF.formatMoney(data.period.net))}</strong><span>Fark · ${esc(label)}</span></div>`;
       const opening = period !== "all" ? `<tr class="hof-cash-opening"><td></td><td><b>Devreden kasa</b><small>Dönem başındaki bakiye</small></td><td></td><td></td><td class="num"><b>${esc(HOF.formatMoney(data.opening))}</b></td><td></td></tr>` : "";
       list.innerHTML = data.entries.length || opening
         ? `<table class="hof-table hof-cash-table"><thead><tr><th>Tarih</th><th>Açıklama</th><th class="num">Tahsilat</th><th class="num">Ödeme</th><th class="num">Kasa</th><th></th></tr></thead><tbody>${opening}${data.entries.map(row).join("")}</tbody></table>${data.entries.length ? "" : '<p class="hof-empty">Bu dönemde kasa hareketi yok.</p>'}`
@@ -491,9 +501,11 @@
     { action: "tasks", icon: "✓", key: "side.tasks", label: () => "Görevler" },
     { action: "messages", icon: "✉", key: "side.messages", label: () => "Mesajlar" },
     { action: "newTask", icon: "+", key: "side.newTask", label: () => "Görev ata", requires: "tasks.create" },
-    { action: "newRecord", icon: "+", key: "side.newRecord", label: () => `Yeni ${HOF.vocab.record}` },
+    // Sabit "Yeni kayıt" (v2.0.2): açık sekme araç, kasa ya da öğrenci listesi olabilir; sektör sözcüğü yanıltır.
+    { action: "newRecord", icon: "+", key: "side.newRecord", label: () => "Yeni kayıt" },
     { action: "cash", icon: "₺", key: "side.cash", label: () => "Kasa", requires: "cash.view" },
     { action: "liens", icon: "!", key: "side.liens", label: () => "Haciz uyarıları", badge: "warn", module: "haciz" },
+    { action: "analytics", icon: "▤", key: "side.analytics", label: () => "Raporlar", requires: "reports.view" },
     { action: "reports", icon: "↗", key: "side.reports", label: () => "Personel raporu", requires: "reports.view" },
     { action: "guide", icon: "?", key: "side.guide", label: () => "Kullanım kılavuzu" },
   ];
@@ -588,6 +600,7 @@
       else if (action === "editSide") openSideEditor();
       else if (action === "guide") window.open("/kilavuz/DestekOfis-Kullanim-Kilavuzu.pdf", "_blank", "noopener");
       else if (action === "reports") openReports();
+      else if (action === "analytics") HOF.reports?.open();
       else if (action === "profile") openProfile();
       else if (action === "password") HOF.changePassword();
       else if (action === "logout") HOF.logout();

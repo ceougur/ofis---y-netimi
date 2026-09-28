@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
 <meta charset="utf-8">
-<title>DestekOfis Kullanım Kılavuzu (2.0.1)</title>
+<title>DestekOfis Kısa Kullanım Kılavuzu (2.0.2)</title>
 <link rel="stylesheet" href="ortak.css">
 </head>
 <body>
@@ -10,284 +10,137 @@
 
 <section class="cover">
   <div class="brand"><b>D</b> DestekOfis</div>
-  <h1>Kullanım Kılavuzu</h1>
-  <p class="sub">Sürüm 2.0.1 · Bilgisayar bilgisi gerektirmeyen, adım adım anlatım · Eylül 2026</p>
+  <h1>Kısa Kullanım Kılavuzu</h1>
+  <p class="sub">Sürüm 2.0.2 · Yalnızca bilmeniz gerekenler · 10 dakikada okunur</p>
 </section>
 
-<p>Bu kılavuz DestekOfis'i ilk kez kullanacak biri için yazıldı. Teknik terim kullanmamaya çalıştık; kullandığımız birkaç kelimenin ne demek olduğu hemen aşağıda. Her bölümde önce <b>ne işe yaradığını</b>, sonra <b>nasıl yapıldığını</b> anlatıyoruz.</p>
+<p>DestekOfis, Excel'de ya da Google Sheets'te tuttuğunuz tabloyu ofisteki herkesin aynı anda kullandığı bir çalışma alanına dönüştürür. Tablonuzu yüklersiniz; program kolonlarınızı tanır, ekranları ona göre kurar. Siz kayıtlara not, tahsilat, görev ve belge eklersiniz; <b>Excel dosyanız hiç bozulmaz</b>.</p>
 
-<ol class="toc">
-  <li>DestekOfis nedir, nasıl çalışır?</li>
-  <li>Bilmeniz gereken birkaç kelime</li>
-  <li>Kurulum</li>
-  <li>İlk giriş</li>
-  <li>Lisans: deneme, lisans anahtarı, internetsiz kod</li>
-  <li>Verinizi yükleme</li>
-  <li>Günlük kullanım: kayıt, formül, belge, akıllı denetim, Excel'e aktarma</li>
-  <li>Serbest sayfalar: Excel gibi kendi tablonuz</li>
-  <li>Tahsilat takvimi ve bildirimler</li>
-  <li>Kasa ve Operasyon Merkezi</li>
-  <li>Veri oturumları ve kolon adları</li>
-  <li>Yönetim: kullanıcılar ve yedekler</li>
-  <li>Ekrandaki uyarılar ne demek?</li>
-  <li>Sık sorulan sorular</li>
-</ol>
-
-<h2>1. DestekOfis nedir, nasıl çalışır?</h2>
-<p>DestekOfis, ofisinizdeki kayıtları (dosyalar, müşteriler, portföyler, hastalar, siparişler…) <b>tek bir yerde</b> toplayan bir programdır. Zaten Excel'de veya Google Sheets'te tuttuğunuz tabloyu yüklersiniz; program tabloyu okur, sütunlarınızı tanır ve ekranları ona göre kendisi hazırlar. Sonra ofisteki herkes aynı kayıtları görür, not ekler, tahsilat işler, görev verir.</p>
-
-<figure>
-<svg viewBox="0 0 760 250" width="100%" role="img" aria-label="Sunucu bilgisayar, personel bilgisayarları ve lisans servisi">
-  <rect x="270" y="70" width="220" height="110" rx="14" fill="#1f6a50"/>
-  <text x="380" y="108" text-anchor="middle" fill="#fff" font-size="17" font-weight="700">Sunucu bilgisayar</text>
-  <text x="380" y="132" text-anchor="middle" fill="#d7ece2" font-size="12">Kayıtlar burada saklanır</text>
-  <text x="380" y="152" text-anchor="middle" fill="#d7ece2" font-size="12">Lisans buna bağlıdır</text>
-  <g fill="#fff" stroke="#c3d8cb" stroke-width="2">
-    <rect x="20" y="20" width="170" height="56" rx="12"/><rect x="20" y="97" width="170" height="56" rx="12"/><rect x="20" y="174" width="170" height="56" rx="12"/>
-  </g>
-  <g font-size="13" fill="#142b25" text-anchor="middle">
-    <text x="105" y="53">Personel bilgisayarı</text><text x="105" y="130">Personel bilgisayarı</text><text x="105" y="207">Personel bilgisayarı</text>
-  </g>
-  <g stroke="#8fb9a5" stroke-width="2.5"><line x1="190" y1="48" x2="270" y2="110"/><line x1="190" y1="125" x2="270" y2="125"/><line x1="190" y1="202" x2="270" y2="140"/></g>
-  <text x="230" y="238" text-anchor="middle" fill="#5d6f68" font-size="11">ofis ağı</text>
-  <rect x="580" y="92" width="160" height="66" rx="14" fill="#fbf3e2" stroke="#ecd9ad" stroke-width="2"/>
-  <text x="660" y="120" text-anchor="middle" fill="#6b4d12" font-size="14" font-weight="700">Lisans servisi</text>
-  <text x="660" y="140" text-anchor="middle" fill="#6b4d12" font-size="11">(internette)</text>
-  <line x1="490" y1="125" x2="580" y2="125" stroke="#cf9f4b" stroke-width="2.5" stroke-dasharray="6 5"/>
-  <text x="535" y="116" text-anchor="middle" fill="#5d6f68" font-size="10">günde birkaç kez</text>
+<figure class="narrow-svg">
+<svg viewBox="0 0 760 170" width="100%" role="img" aria-label="Sunucu bilgisayar ve personel bilgisayarları">
+  <rect x="270" y="40" width="220" height="90" rx="14" fill="#1f6a50"/>
+  <text x="380" y="78" text-anchor="middle" fill="#fff" font-size="17" font-weight="700">Sunucu bilgisayar</text>
+  <text x="380" y="102" text-anchor="middle" fill="#d7ece2" font-size="12">Kayıtlar ve yedekler burada</text>
+  <g fill="#fff" stroke="#c3d8cb" stroke-width="2"><rect x="20" y="10" width="170" height="44" rx="12"/><rect x="20" y="63" width="170" height="44" rx="12"/><rect x="20" y="116" width="170" height="44" rx="12"/></g>
+  <g font-size="13" fill="#142b25" text-anchor="middle"><text x="105" y="37">Personel bilgisayarı</text><text x="105" y="90">Personel bilgisayarı</text><text x="105" y="143">Personel bilgisayarı</text></g>
+  <g stroke="#8fb9a5" stroke-width="2.5"><line x1="190" y1="32" x2="270" y2="70"/><line x1="190" y1="85" x2="270" y2="85"/><line x1="190" y1="138" x2="270" y2="100"/></g>
+  <rect x="580" y="52" width="160" height="66" rx="14" fill="#fbf3e2" stroke="#ecd9ad" stroke-width="2"/>
+  <text x="660" y="80" text-anchor="middle" fill="#6b4d12" font-size="14" font-weight="700">Lisans servisi</text>
+  <text x="660" y="100" text-anchor="middle" fill="#6b4d12" font-size="11">(internette)</text>
+  <line x1="490" y1="85" x2="580" y2="85" stroke="#cf9f4b" stroke-width="2.5" stroke-dasharray="6 5"/>
 </svg>
-<figcaption>Kayıtlar tek bir bilgisayarda (sunucu) durur. Diğer bilgisayarlar ona bağlanır. Sunucu, lisansı zaman zaman internetten doğrular.</figcaption>
+<figcaption>Kayıtlar tek bilgisayarda (sunucu) durur; diğer bilgisayarlar ona bağlanır. Sunucu gün boyu açık kalmalıdır.</figcaption>
 </figure>
 
+<ol class="toc">
+  <li>Kurulum ve ilk giriş</li>
+  <li>Verinizi yükleyin</li>
+  <li>Ana ekran</li>
+  <li>Kayıtla çalışmak</li>
+  <li>Uyarılar</li>
+  <li>Kasa</li>
+  <li>Raporlar</li>
+  <li>Belgeler ve mesajlar</li>
+  <li>Yönetici için</li>
+  <li>Bir sorun mu var?</li>
+</ol>
+
+<h2>1. Kurulum ve ilk giriş</h2>
+<ol class="steps">
+  <li><b>Sunucu bilgisayara</b> kurulum dosyasını (<i>DestekOfis-Kurulum-2.0.2.exe</i>) çalıştırın, <b>Sunucu bilgisayar</b>'ı seçip <b>Kur</b>'a basın. Windows "bilgisayarınızı korudu" derse <b>Ek bilgi → Yine de çalıştır</b>.</li>
+  <li><b>Personel bilgisayarlarına</b> aynı dosyayı kurun. Program sunucuyu ağda kendisi bulur; masaüstündeki DestekOfis simgesiyle açılır.</li>
+  <li>İlk girişi sunucudan yapın: kullanıcı adı <b>admin</b>, parola <b>Ofis2026!</b>. Program yeni bir parola ister; not edin.</li>
+</ol>
+<figure class="narrow"><img src="ekran/k01-giris.jpg" alt="Giriş ekranı"></figure>
+<div class="box tip"><b class="t">Deneme kendiliğinden başlar</b>Sunucu internete bağlıysa 30 günlük deneme birkaç saniyede başlar. Lisans anahtarınızı <b>Yönetim → Lisans</b>'a yazarsınız. Süre dolsa da hiçbir kayıt silinmez.</div>
+
+<h2>2. Verinizi yükleyin</h2>
+<ol class="steps">
+  <li>Excel dosyanızı ekrandaki kutuya <b>sürükleyin</b> ya da Google Sheets bağlantısını yapıştırıp <b>Bağla</b>'ya basın. Açılan <b>Ön izleme</b> penceresinde program her kolonu ne saydığını yazar; sarı olan kolon ya da hücre varsa bakın, gerekirse açılır listeden doğru türü seçin (ör. <i>Son tarih / Vade</i>), sonra <b>Yükle</b>'ye basın. Bozuk satırlar sizi durdurmaz: <b>İşaretlenen hatalar</b> sekmesine gider, düzeltip <b>Sorun yok</b> dersiniz.</li>
+  <li>Program tablonuzu okur ve sektörünüzü önerir. Doğruysa <b>Evet, uygula</b>; değilse <b>Başka sektör seç</b>.</li>
+  <li>Sektörünüz listede yoksa <b>Kendi sektörünü oluştur</b>: adını ve kayıtlarınıza ne dediğinizi (öğrenci, tekne, hasta…) yazın, <b>Kaydet ve uygula</b>. Ekranlar sizin kelimelerinizle konuşur.</li>
+</ol>
+<div class="pair">
+<figure><img src="ekran/k03-analiz.jpg" alt="Veri analizi ve sektör önerisi"><figcaption>Program ne bulduğunu ve neden o sektörü önerdiğini gösterir; siz onaylamadan hiçbir şey değişmez.</figcaption></figure>
+<figure><img src="ekran/k09-kendi-sektorun.jpg" alt="Kendi sektörünü oluşturma kartı"><figcaption>Kendi sektörünüz: alttaki önizleme ekranların nasıl görüneceğini gösterir.</figcaption></figure>
+</div>
+<div class="box"><b class="t">Excel'deki her şey gelir</b>Tüm sayfalar sekme olur; formüller programda da hesaplanır; Excel'deki <b>açılır listeler</b> ve birleşik giriş kutuları programda da açılır liste olur. Google Sheets bağlıysa değişiklikler kendiliğinden eşitlenir. Dosyanız "düzgün tablo" olmak zorunda değil: üstte açıklama satırları, iki satırlı ya da birleştirilmiş başlıklar, yan yana tablolar, toplam ve dipnot satırları, başlıksız listeler, yan çevrilmiş sayfalar ve formlar da doğru okunur. Yükleme penceresindeki <b>okuma raporu</b> hangi satırların neden kayıt sayılmadığını gösterir; bir şey ters giderse orada yazar. Dosyada kolon adını değiştirdiyseniz ("Müvekkil" → "Müvekkil Adı") program eski kolonla eşler ve düzeltmelerinizi taşır. Biçimi bozuk hücreler tabloda <b>kırmızı</b> görünür; <b>Veri sağlığı</b> kartındaki <b>Toplu düzeltmeler</b> aynı türden farklı yazılmış telefon, tarih ve durumları tek tıkla düzeltir (Geri al ile döner). Analiz penceresindeki <b>Neden?</b> her kolon için kararın kanıtlarını gösterir.</div>
+
+<h2>3. Ana ekran</h2>
+<figure><img src="ekran/k04-ana-ekran.jpg" alt="Ana ekran"></figure>
 <ul>
-  <li><b>Kayıtlarınız ofisinizde kalır.</b> Program bulutta değil, ofisteki bir bilgisayarda çalışır. Verileriniz başka bir yere gönderilmez; tablonuzun incelenmesi de sunucuda yapılır.</li>
-  <li><b>Excel dosyanız bozulmaz.</b> Program yüklediğiniz dosyayı değiştirmez; yaptığınız işlemler ayrıca saklanır.</li>
-  <li><b>Kim ne yaptı, görünür.</b> Her not, düzeltme ve tahsilat, yapan kişinin adı ve saatiyle kaydedilir.</li>
+  <li><b>Sol menü · Operasyon Merkezi:</b> Görevler, Mesajlar, Yeni kayıt, Kasa ve bu kılavuz.</li>
+  <li><b>Üstte zil:</b> bekleyen tahsilatlar, son günü yaklaşan işler ve görevleriniz.</li>
+  <li><b>Tahsilat takvimi şeridi:</b> vadesi gelen ödemeler; bir pile tıklayınca tahsilat girilir.</li>
+  <li><b>Sekmeler:</b> Excel'deki sayfalarınız. Seçili sekmenin yanındaki <b>✎</b> ile adını değiştirin ya da silin; <b>+ Sayfa</b> ile Excel gibi kendi tablonuzu açın.</li>
+  <li><b>Tablo:</b> tüm kolonlarınız burada. Sığmayanlar için tablonun altındaki <b>kaydırma çubuğunu</b> sağa çekin; ilk kolon hep görünür kalır.</li>
+  <li><b>Sağda detay kartı:</b> seçtiğiniz kaydın bütün bilgileri ve işlemleri.</li>
 </ul>
 
-<h2>2. Bilmeniz gereken birkaç kelime</h2>
+<h2>4. Kayıtla çalışmak</h2>
+<ol class="steps">
+  <li>Tablodan bir satıra tıklayın; sağda kaydın kartı açılır. Arama kutusu tüm sekmelerde arar.</li>
+  <li>Bir bilgiyi değiştirmek için üzerine gelip <b>✎</b>'ye basın ya da <b>Düzenle</b> ile hepsini birden değiştirin. Kim, ne zaman değiştirdi kaydedilir.</li>
+  <li><b>▾</b> işaretli alanlar açılır listedir: tıklayın, listeden seçin, kaydedilir.</li>
+  <li>Kartın düğmeleriyle <b>Not</b>, <b>Telefon</b>, <b>Tahsilat</b>, <b>Görev</b> ve <b>Belge</b> ekleyin. Yeni kayıt için sol menüden <b>Yeni kayıt</b>; tabloyu Excel'e almak için <b>Dışa aktar</b>.</li>
+</ol>
+<figure class="narrow"><img src="ekran/k05-detay-acilir-liste.jpg" alt="Detay kartında açılır liste"><figcaption>Excel'deki açılır liste kartta da açılır liste olarak çalışır.</figcaption></figure>
+
+<h2>5. Uyarılar</h2>
+<p>Vadesi gelen tahsilatlar, son günü yaklaşan işler (sigorta, muayene, sözleşme bitişi…) ve görevler ekranın sağ altında <b>tek tek</b> belirir. Her uyarı <b>20 saniye</b> kalır; iki uyarı arasında <b>10 saniye</b> boşluk olur. Üzerine gelirseniz bekler.</p>
+<figure class="half"><img src="ekran/k06-uyari.jpg" alt="Uyarı kartı"></figure>
+<ul>
+  <li><b>✓ Gerçekleştirildi:</b> iş yapıldıysa basın. Uyarıya sebep olan hücreye "Gerçekleştirildi" yazılır (tarih silinmez) ve uyarı bir daha gelmez. Yanlışlıkla bastıysanız çıkan bildirimdeki <b>Geri al</b>.</li>
+  <li><b>Tahsilat gir:</b> ödemeyi kaydeder; tutar kasaya da düşer.</li>
+  <li><b>Kayda git:</b> ilgili kaydı açar.</li>
+</ul>
+<p><b>Ay sütunlu tablolar (Ocak–Aralık):</b> uyarı yalnızca müşterinin dönemi içindeki aylar için gelir. İlk yazılı aydan önceki boş aylar borç değildir; son ödemeden sonra üst üste 3 ay boş kalan müşteri ayrılmış sayılır ve uyarı almaz (bu müşteriler <b>Raporlar → Vade takip</b>'te "Ödeme kesilmiş olabilir" olarak listelenir). Ayrılış tarihini bir kolona yazarsanız program onu kullanır. Dönemin içinde boş bırakılan ay ödenmemiş sayılır.</p>
+<p>Uyarıların hepsini üstteki <b>zil</b>de görürsünüz. <b>✕</b> ile bir uyarıyı yalnızca kendi listenizden kaldırabilirsiniz.</p>
+
+<h2>6. Kasa</h2>
+<p>Sol menüden <b>Kasa</b>. Kayıtlara girdiğiniz tahsilatlar kasaya kendiliğinden gelir. Diğer gelir ve giderleri <b>+ Tahsilat</b> ve <b>− Ödeme</b> ile ekleyin. Dönemi <b>Bu ay, Geçen ay, Bu yıl</b> ya da <b>Tarih aralığı</b> ile seçin; <b>PDF indir</b> ile kasa dökümünü alın.</p>
+<figure class="w80"><img src="ekran/k08-kasa.jpg" alt="Kasa"></figure>
+
+<h2>7. Raporlar</h2>
+<p>Sol menüden <b>Raporlar</b>. Üç rapor tek penceredir; üstteki sekmeden seçin:</p>
+<ul>
+  <li><b>Cari ekstre:</b> aynı kişi ya da firma farklı Excel dosyalarında geçiyorsa satırları birleşir; borç, tahsilat ve kalan bakiye alt alta. Dosyanızdaki başka kolonlar ("Ürün", "Dosya No") kendiliğinden sütun olur.</li>
+  <li><b>Vade takip:</b> gecikmiş, bugün, yaklaşan ve kapanmış vadeler; kaç gün kaldığı ya da geçtiği.</li>
+  <li><b>Nakit akış:</b> gün, hafta ya da ay dilimleriyle beklenen tahsilat, gerçekleşen tahsilat, kasa giriş-çıkışı ve birikimli tahmin.</li>
+</ul>
+<p>Üstteki kutularla <b>tarih aralığı, cari, durum, oturum, sekme</b> ve <b>en az tutar</b> filtresi koyun. <b>Excel</b> ya da <b>PDF</b> ile indirin; <b>Yazdır</b> doğrudan yazıcıya gönderir.</p>
+
+<h2>8. Belgeler ve mesajlar</h2>
+<p><b>Belge eklemek:</b> kartta <b>Belge</b>'ye basın ya da dosyaları kartın üzerine sürükleyin; ekran görüntüsünü <b>Ctrl+V</b> ile yapıştırın. PDF, resim, Word, Excel ve UYAP dosyaları eklenir; adet sınırı yoktur.</p>
+<p><b>Birden çok belge varsa</b> <b>Yan yana gör</b> ile belge kartı açılır: belgeler yan yana (1–4 sütun) görünür; istediğinizi <b>indirir</b> (seçtikleriniz tek .zip içinde, kendi biçimlerinde) ya da doğrudan <b>yazdırırsınız</b>. Kart ✕ ile kapanır.</p>
+<figure><img src="ekran/k07-belge-karti.jpg" alt="Belge kartı"></figure>
+<p><b>Mesajlar:</b> <b>Ofis geneli</b> herkese açıktır; kişiye yazdığınızı yalnızca o kişi görür. Açılışta son 24 saatin mesajları gelir; <b>Önceki günün mesajlarını yükle</b> her basışta bir gün daha getirir. 30 günden eski mesajlar sunucudaki arşive taşınır; sohbet penceresinden <b>Arşivi indir</b> ile açabilirsiniz.</p>
+
+<h2>9. Yönetici için</h2>
+<ul>
+  <li><b>Kullanıcılar:</b> sol alttaki kartta <b>Yönetim → + Yeni kullanıcı</b>; rolünü seçin. Çalışan ilk girişte kendi parolasını belirler.</li>
+  <li><b>Yedekler:</b> program 6 saatte bir kendiliğinden yedek alır. <b>Yönetim → Yedekler</b>'den yedek alıp indirin; ayda bir harici diske kopyalayın.</li>
+  <li><b>Drive'a da yedekle:</b> <b>Yönetim → Yedekler → Drive'a da yedekle</b> kutusuna Google Drive klasör bağlantısını ya da bilgisayarınızdaki Drive/OneDrive klasörünün yolunu yapıştırıp <b>Kaydet ve bağla</b> deyin. Program orada <b>DestekOfis Yedekleri</b> klasörünü açar; her yedek oraya da kopyalanır. <b>Şimdi dene</b> ile sınayın.</li>
+  <li><b>Silinenler:</b> silinen kayıt, sekme, belge, tahsilat ve kasa hareketleri <b>Yönetim → Silinenler</b>'de durur; <b>Geri yükle</b> eski yerine getirir, sonradan eklenenlerin üzerine yazmaz.</li>
+  <li><b>Güncelleme:</b> <b>Yönetim → Sistem → Güncellemeleri denetle → Şimdi güncelle</b>. Veriler ve lisans korunur; güncellemeden önce yedek alınır.</li>
+  <li><b>Sektör ve görünüm:</b> <b>Ayarlar → Sektör ve görünüm</b>'den sektörü değiştirin ya da kendi sektörünüzü oluşturup düzenleyin.</li>
+</ul>
+
+<h2>10. Bir sorun mu var?</h2>
 <table>
-  <tr><th style="width:26%">Kelime</th><th>Anlamı</th></tr>
-  <tr><td><b>Sunucu bilgisayar</b></td><td>Kayıtların saklandığı, ofiste hep açık duran bilgisayar. Programın "merkezi". Lisans bu bilgisayara bağlıdır.</td></tr>
-  <tr><td><b>Personel bilgisayarı</b></td><td>Çalışanların kullandığı diğer bilgisayarlar. Bunlar için ayrıca lisans gerekmez.</td></tr>
-  <tr><td><b>Yönetici</b></td><td>Programı kuran ve ayarlayan kişi (genelde ofis sahibi). Kullanıcı ekler, veri yükler, lisansı girer.</td></tr>
-  <tr><td><b>Deneme (demo)</b></td><td>Programı satın almadan önce ücretsiz kullanabildiğiniz süre (30 gün).</td></tr>
-  <tr><td><b>Lisans</b></td><td>Programı satın aldığınızı gösteren kullanım hakkı. Size <b>lisans anahtarı</b> olarak verilir: <code>DO-XXXXX-XXXXX-XXXXX-XXXXX</code>.</td></tr>
-  <tr><td><b>Salt okunur</b></td><td>"Sadece bakılabilir" demek. Kayıtları görür, arar, yazdırır ve yedeklersiniz; ama yeni bir şey ekleyemez, değiştiremezsiniz.</td></tr>
-  <tr><td><b>Kurulum kodu</b></td><td>Sunucu bilgisayarınızın kimlik numarası gibi bir kod. Lisans ekranında görünür; internetsiz lisans için bize iletilir.</td></tr>
+  <thead><tr><th>Durum</th><th>Ne yapmalı?</th></tr></thead>
+  <tbody>
+    <tr><td>Personel bilgisayarı bağlanamıyor</td><td>Sunucu bilgisayar açık ve aynı ağda mı? Sunucunun uykuya geçmediğinden emin olun.</td></tr>
+    <tr><td>"Deneme henüz başlamadı" / "Lisans doğrulanamadı"</td><td>Sunucunun internetini kontrol edin; ardından <b>Yönetim → Lisans → Şimdi doğrula</b>.</td></tr>
+    <tr><td>Süre doldu, program salt okunur</td><td>Kayıtlarınız duruyor. Bize ulaşın; lisansınız tanımlanınca kaldığınız yerden devam edersiniz.</td></tr>
+    <tr><td>"DestekOfis … sürümüne güncellendi"</td><td>Yazdığınızı kaydedip <b>Yenile</b>'ye basın.</td></tr>
+    <tr><td>Bir kaydı ya da sekmeyi yanlışlıkla sildim</td><td>Hemen çıkan bildirimdeki <b>Geri al</b>; sonra ise <b>Yönetim → Silinenler → Geri yükle</b>.</td></tr>
+    <tr><td>İnternet kesildi</td><td>Çalışmaya devam edin; program 7 gün internetsiz çalışır.</td></tr>
+  </tbody>
 </table>
+<div class="box tip"><b class="t">Destek</b>E-posta: <b>destekofis@proton.me</b> · Telefon: <b>0532 605 05 87</b></div>
 
-<h2>3. Kurulum</h2>
-<p>Tek bir kurulum dosyası var: <code>DestekOfis-Kurulum-2.0.0.exe</code>. Deneme ve lisanslı sürüm aynı dosyadır. Programın çalışması için başka hiçbir şey kurmanız gerekmez.</p>
-<h3>Sunucu bilgisayara</h3>
-<ol class="steps">
-  <li>Kurulum dosyasına çift tıklayın. Windows "Bu uygulamanın cihazınızda değişiklik yapmasına izin verilsin mi?" diye sorarsa <b>Evet</b> deyin.<br><small>Windows mavi bir "Windows kişisel bilgisayarınızı korudu" penceresi gösterirse <b>Ek bilgi → Yine de çalıştır</b>'a basın. Bu uyarı programın henüz dijital imzası olmadığı için çıkar.</small></li>
-  <li>Kurulum türü olarak <b>Sunucu bilgisayar</b>'ı seçin, <b>İleri</b> deyin.</li>
-  <li>"Masaüstüne kısayol" ve "Ağ profilini Özel yap" kutuları işaretli kalsın. <b>Kur</b>'a basın.</li>
-  <li>Son ekranda <b>DestekOfis'i şimdi aç</b> işaretliyken <b>Son</b>'a basın. Giriş ekranı açılır.</li>
-</ol>
-<h3>Personel bilgisayarlarına</h3>
-<ol class="steps">
-  <li>Aynı kurulum dosyasını çalıştırın. Program ağdaki sunucuyu kendisi bulur ve <b>Personel bilgisayarı</b>'nı seçili getirir.</li>
-  <li><b>Kur</b> ve <b>Son</b>. Masaüstündeki <b>DestekOfis</b> simgesine çift tıklamanız yeterli.</li>
-</ol>
-<div class="box tip"><b class="t">İpucu</b>Sunucu bilgisayar kapalıysa diğer bilgisayarlar programa bağlanamaz. Sunucunun gün boyu açık kalmasını ve uykuya geçmemesini sağlayın.</div>
-
-<h2>4. İlk giriş</h2>
-<figure class="half"><img src="ekran/01-giris.jpg" alt="Giriş ekranı"><figcaption>Giriş ekranı</figcaption></figure>
-<ol class="steps">
-  <li>İlk girişi <b>sunucu bilgisayarın kendisinden</b> yapın. Kullanıcı adı: <code>admin</code>, parola: <code>Ofis2026!</code></li>
-  <li>Program sizden yeni bir parola ister. En az 10 karakter, içinde harf ve rakam olsun. Bu parolayı bir yere not edin.</li>
-  <li>Hepsi bu kadar: <b>30 günlük ücretsiz deneme kendiliğinden başlamıştır</b>. Ekranın altında yeşil "Deneme sürümü · 30 gün kaldı" şeridi görünür. Hiçbir düğmeye basmanız gerekmez.</li>
-</ol>
-
-<h2 class="pb">5. Lisans</h2>
-<p><b>Mantığı kısaca:</b> Program kurulup ilk açıldığında <b>30 günlük ücretsiz deneme kendiliğinden başlar</b> (sunucu bilgisayarın internete bağlı olması yeterli). Deneme süresince program eksiksiz çalışır. Denemenin 3. gününde program size firma bilgilerinizi sorar. Deneme bitince veya lisans süresi dolunca program <b>durur</b> ama <b>hiçbir veri silinmez</b>: lisansınız tanımlandığı an her şey kaldığı yerden devam eder.</p>
-
-<h3>Lisans ekranına nasıl ulaşılır?</h3>
-<p>Sol alttaki adınızın olduğu kartta <b>Yönetim</b>'e, açılan sayfada üstteki <b>Lisans</b> sekmesine tıklayın. Burada denemenin kaç gün kaldığını, lisans anahtarı kutusunu ve kurulum kodunu görürsünüz.</p>
-<figure><img src="ekran/03-lisans-ekrani.jpg" alt="Lisans ekranı"><figcaption>Lisans ekranı: üstte durum kartı (deneme kendiliğinden başlamış), altında lisans anahtarı ve internetsiz etkinleştirme.</figcaption></figure>
-
-<h3>A) Ücretsiz deneme kendiliğinden başlar</h3>
-<ol class="steps">
-  <li>Programı kurup ilk kez açtığınızda deneme birkaç saniye içinde kendiliğinden başlar. Bunun için sunucu bilgisayarın internete bağlı olması yeterlidir.</li>
-  <li>Kurulum sırasında internet yoksa ekranda "Ücretsiz deneme henüz başlamadı" yazar. İnterneti bağlayın: program birkaç dakikada bir yeniden dener ve deneme kendiliğinden başlar. Beklemek istemezseniz <b>Yönetim → Lisans → Denemeyi şimdi başlat</b>'a basın.</li>
-</ol>
-<figure><img src="ekran/05-deneme-basladi.jpg" alt="Deneme başladı"><figcaption>Deneme başladı: bitiş tarihi ve kalan gün görünür.</figcaption></figure>
-<div class="box warn"><b class="t">Bilmeniz gereken</b>Deneme <b>her bilgisayara bir kez</b> verilir. Programı silip yeniden kursanız bile deneme baştan başlamaz.</div>
-
-<h3>Denemenin 3. günü: firma bilgileriniz</h3>
-<p>Denemenin 3. gününde programı açtığınızda küçük bir pencere firma adınızı, yetkili kişiyi ve telefon ya da e-postanızı sorar. Bu bilgiler yalnızca deneme süresince size destek olabilmemiz ve süre bitmeden sizi bilgilendirebilmemiz içindir. <b>Bilgileri gönder</b>'e basarsanız bir daha sorulmaz; <b>Daha sonra</b> derseniz birkaç gün sonra yeniden sorar.</p>
-<figure><img src="ekran/18-ucuncu-gun-firma-bilgisi.jpg" alt="Firma bilgileri penceresi"><figcaption>Denemenin 3. gününde açılan firma bilgileri penceresi</figcaption></figure>
-
-<h3>B) Lisans anahtarını girmek (satın aldıktan sonra)</h3>
-<ol class="steps">
-  <li>Size verilen anahtarı (<code>DO-</code> ile başlar) <b>Lisans anahtarı</b> kutusuna yazın veya yapıştırın. Büyük/küçük harf ve tireler önemli değildir.</li>
-  <li><b>Lisansı etkinleştir</b>'e basın. Kart "Lisanslı" olur ve ofisinizin adı görünür.</li>
-</ol>
-<figure><img src="ekran/16-anahtar-gir.jpg" alt="Lisans anahtarı girişi"><figcaption>Lisans anahtarı ve internetsiz etkinleştirme kutuları</figcaption></figure>
-<figure><img src="ekran/17-lisansli.jpg" alt="Lisanslı"><figcaption>Lisans etkinleşti. Deneme sırasında girdiğiniz tüm kayıtlar aynen durur.</figcaption></figure>
-<p>Bir lisans anahtarı <b>tek sunucu bilgisayarda</b> çalışır. Sunucu bilgisayarınızı değiştirirseniz bizi arayın (0532 605 05 87); lisansı yeni bilgisayara taşırız.</p>
-
-<h3>C) Sunucunun interneti yoksa: internetsiz etkinleştirme</h3>
-<ol class="steps">
-  <li>Lisans ekranındaki <b>Kurulum kodu</b>'nun yanındaki <b>Kopyala</b>'ya basın ve kodu bize (WhatsApp veya e-posta: destekofis@proton.me) gönderin.</li>
-  <li>Size <code>DOLIS1.</code> ile başlayan uzun bir <b>etkinleştirme kodu</b> göndeririz.</li>
-  <li>Bu kodu <b>Etkinleştirme kodu</b> kutusuna yapıştırıp <b>Kodu uygula</b>'ya basın.</li>
-</ol>
-<p>Bu kod yalnızca kurulum kodunu gönderdiğiniz bilgisayarda çalışır; başka bilgisayara yapıştırılırsa "Bu kod başka bir bilgisayar için üretilmiş" uyarısı çıkar.</p>
-
-<h3>Deneme veya lisans süresi dolunca ne olur?</h3>
-<figure><img src="ekran/13-suresi-doldu.jpg" alt="Süre doldu penceresi"><figcaption>Süre dolunca açılışta bu pencere çıkar.</figcaption></figure>
-<figure><img src="ekran/14-salt-okunur-serit.jpg" alt="Salt okunur şerit"><figcaption>Ekranın altındaki kırmızı şerit programın durduğunu hatırlatır. Kayıtlar görünmeye devam eder; ekleme ve değiştirme düğmeleri gizlenir.</figcaption></figure>
-<table>
-  <tr><th style="width:50%">Süre dolunca yapabildikleriniz</th><th>Yapamadıklarınız</th></tr>
-  <tr><td>✓ Kayıtlara bakmak, aramak<br>✓ Dışa aktarmak (Excel'e almak)<br>✓ Yedek almak ve indirmek<br>✓ Kullanıcıları yönetmek<br>✓ Lisansı girmek</td><td>✗ Yeni kayıt eklemek<br>✗ Kayıt düzeltmek veya silmek<br>✗ Not, telefon, tahsilat, görev, mesaj<br>✗ Yeni tablo yüklemek</td></tr>
-</table>
-<div class="box tip"><b class="t">Verileriniz güvende</b>Süre dolması hiçbir kaydı silmez. Lisansı girdiğiniz an program kaldığı yerden devam eder.</div>
-
-<h3>İnternet bağlantısı ve saat</h3>
-<ul>
-  <li>Sunucu, lisansını internetten <b>günde birkaç kez</b> kendiliğinden doğrular; sizin bir şey yapmanız gerekmez.</li>
-  <li>İnternet kesilirse program <b>7 gün</b> boyunca normal çalışır. Son 3 günde ekranda sarı uyarı çıkar. 7 günü geçerse, internet gelene kadar program durur. İnternet gelince Lisans ekranında <b>Şimdi doğrula</b>'ya basmanız yeterli.</li>
-  <li>Sunucu bilgisayarın <b>tarihi veya saati geri alınırsa</b> program durur. Windows'ta tarihi düzeltin: <i>Başlat → Ayarlar → Saat ve dil → Saati otomatik ayarla</i> açık olsun.</li>
-  <li>İnternetsiz koddan (C yolu) gelen lisanslar internet doğrulaması beklemez.</li>
-</ul>
-
-<h3>Ekranın altındaki lisans şeridi</h3>
-<table>
-  <tr><th style="width:30%">Şerit</th><th>Anlamı</th><th style="width:28%">Ne yapmalı?</th></tr>
-  <tr><td><span class="pill g">Yeşil</span> Deneme sürümü · X gün kaldı</td><td>Deneme devam ediyor. (Yalnızca yöneticiye görünür, × ile kapatılabilir.)</td><td>Bir şey gerekmez.</td></tr>
-  <tr><td><span class="pill y">Sarı</span> … gün kaldı / doğrulanamadı</td><td>Süre bitmek üzere veya internet birkaç gündür yok.</td><td>Lisans alın / interneti kontrol edin.</td></tr>
-  <tr><td><span class="pill r">Kırmızı</span> Süresi doldu / Engellendi / Doğrulanamadı / Saat</td><td>Program durdu (salt okunur).</td><td>Yönetici Lisans ekranını açar.</td></tr>
-</table>
-<p><b>Mevcut ofisler için:</b> DestekOfis'i daha önce kullanan bir ofis 2.0'a güncellenince program <b>30 gün boyunca kesintisiz</b> çalışır ("Lisans geçiş dönemi" yazar). Bu süre içinde lisansı girmeniz yeterli.</p>
-
-<h2 class="pb">6. Verinizi yükleme</h2>
-<p>Deneme veya lisans etkinleşince ana ekranın ortasında "başlayalım" kartı görünür.</p>
-<figure><img src="ekran/06-baslayalim.jpg" alt="Başlayalım kartı"><figcaption>Excel dosyanızı kutuya sürükleyin veya "Excel dosyası seçin"e tıklayın. Google Sheets kullanıyorsanız bağlantıyı alttaki kutuya yapıştırıp "Bağla"ya basın.</figcaption></figure>
-<p>Program tablonuzu okur ve size ne bulduğunu gösterir: hangi sütunun telefon, tarih, tutar olduğunu, ofisinizin sektörünü tahmin eder. <b>Önerisini siz onaylamadan hiçbir şey değişmez.</b></p>
-<figure><img src="ekran/07-verinizi-taniyoruz.jpg" alt="Verinizi tanıyoruz ekranı"><figcaption>Öneri doğruysa <b>Evet, uygula</b>; yanlışsa <b>Başka sektör seç</b>; emin değilseniz <b>Genel kullan</b>.</figcaption></figure>
-
-<h2>7. Günlük kullanım</h2>
-<figure><img src="ekran/09-secili-kayit.jpg" alt="Ana ekran ve seçili kayıt"><figcaption>Soldaki tabloda bir satıra tıklayın; sağda o kaydın tüm bilgileri ve işlem düğmeleri açılır. Seçili satır yeşil renkle belirginleşir.</figcaption></figure>
-<ul>
-  <li><b>Kayıt bulmak:</b> Tablonun üstündeki arama kutusuna numara, isim veya telefon yazın. Birden çok sekme varsa her sekmede kaç sonuç olduğu yazar.</li>
-  <li><b>Not eklemek:</b> Kaydı seçin → <b>Not</b> → yazın → <b>Notu kaydet</b>. Not, adınız ve saatle kaydın geçmişine eklenir; herkes görür.</li>
-  <li><b>Telefon, tahsilat, görev:</b> Aynı yerden <b>Telefon</b>, <b>Tahsilat</b>, <b>Görev</b> düğmeleriyle. İşlem geçmişi eskiden yeniye sıralanır; yeni eklenen en altta görünür.</li>
-  <li><b>WhatsApp:</b> <b>WhatsApp</b> düğmesi kayıttaki telefona mesaj penceresini açar.</li>
-  <li><b>Bilgi düzeltmek:</b> Tablodaki hücrenin üzerine gelince çıkan kalem (✎) simgesine basın ya da detay kartında <b>Düzenle</b>'ye tıklayın.</li>
-  <li><b>Sohbet:</b> Sol menüdeki <b>Mesajlar</b> ile ofis içinde yazışabilirsiniz.</li>
-</ul>
-<figure><img src="ekran/10-not-ekle.jpg" alt="Not ekleme penceresi"><figcaption>Not ekleme penceresi</figcaption></figure>
-
-<h3>Formüller: Excel'deki hesaplar programda da çalışır</h3>
-<p>Excel veya Google Sheets'teki formüller (ör. <i>Kalan = Tutar − Taksit 1 − Taksit 2</i>) veriyle birlikte gelir. Detay kartında boş bir taksiti doldurduğunuzda ya da bir tutarı düzelttiğinizde, o alana bağlı alanlar (Kalan, Durum, toplam…) kendiliğinden yeniden hesaplanır.</p>
-<figure><img src="ekran/19-formul-duzenle.jpg" alt="Formüllü alanları düzenleme"><figcaption><b>Düzenle</b> penceresinde formülle hesaplanan alanlar kilitlidir (<b>ƒ formül</b>); siz yalnızca girdileri yazarsınız.</figcaption></figure>
-<figure class="narrow"><img src="ekran/20-formul-hesaplandi.jpg" alt="Formül yeniden hesaplandı"><figcaption>Formüllü alanların köşesinde <b>ƒ</b> işareti vardır; üzerine gelince formül görünür.</figcaption></figure>
-
-<h3>Tahsilatı düzeltmek veya silmek</h3>
-<figure class="half"><img src="ekran/21-tahsilat-gecmis.jpg" alt="İşlem geçmişinde tahsilat"><figcaption>İşlem geçmişindeki tahsilatın yanındaki <b>✎</b> düzeltir, <b>×</b> siler. Herkes kendi girdiği tahsilatı; yönetici, ikinci rol ve muhasebe tüm tahsilatları düzeltebilir. Tutarı Türkçe yazın: <b>1.250</b> bin iki yüz elli liradır.</figcaption></figure>
-
-<h3>Kayda belge eklemek</h3>
-<p>Detay kartındaki <b>Belge</b> düğmesine basın ya da dosyayı kartın üzerine sürükleyip bırakın. PDF, resim (JPG, PNG…), Word, Excel, PowerPoint, UYAP (.udf) ve metin dosyası eklenebilir; ekran görüntüsünü <b>Ctrl+V</b> ile yapıştırabilirsiniz. Dosya başına en çok 25 MB.</p>
-<figure><img src="ekran/25-belge-ekle.jpg" alt="Belge ekleme penceresi"><figcaption>Birden çok dosyayı bir arada seçebilirsiniz; yükleme ilerlemesi görünür.</figcaption></figure>
-<figure class="narrow"><img src="ekran/26-belgeler-kart.jpg" alt="Detay kartında belgeler"><figcaption><b>Belgeler</b> bölümünde göz simgesi PDF ve resimleri programda açar, ok simgesi indirir, × siler. Kendi eklediğiniz belgeyi silebilirsiniz; başkasınınkini yönetici siler.</figcaption></figure>
-
-<h3>Akıllı denetim</h3>
-<p>Program verinizin kurallarını kendisi öğrenir (ör. <i>Kalan = Tutar − taksitler</i>) ve kurala uymayan kaydı bulur. İnternete bir şey göndermez; sizi meşgul etmez.</p>
-<figure><img src="ekran/29-akilli-denetim.jpg" alt="Akıllı denetim kutusu"><figcaption>Seçtiğiniz kayıtta bir tutarsızlık varsa detay kartının üstünde kısa bir kutu çıkar: ne olduğu, <b>Neden?</b> açıklaması ve önerilen değer. <b>Uygula</b> değeri düzeltir, <b>Yoksay</b> uyarıyı kapatır. Tabloda şüpheli satırın başında küçük turuncu bir nokta görünür.</figcaption></figure>
-
-<h3>Excel'e aktarmak</h3>
-<figure><img src="ekran/27-disa-aktar.jpg" alt="Dışa aktar menüsü"><figcaption>Sağ üstteki <b>Dışa aktar</b>: açık sekmeyi ya da tüm sekmeleri (her sekme ayrı sayfada) Excel dosyası olarak indirir. Tutarlar ve tarihler Excel'de hesap yapılabilir sayılardır; düzeltmeleriniz ve formül sonuçları dahildir.</figcaption></figure>
-
-<h2 class="pb">8. Serbest sayfalar: Excel gibi kendi tablonuz</h2>
-<p>Yüklediğiniz Excel'in sekmelerinin yanına istediğiniz adla boş bir sayfa ekleyip Excel gibi doldurabilirsiniz: masraf listesi, takip çizelgesi, aylık tablo…</p>
-<figure><img src="ekran/30-serbest-yeni-sayfa.jpg" alt="Yeni sayfa penceresi"><figcaption>Sekmelerin sonundaki <b>+ Sayfa</b> düğmesine basın. Sayfa adını, kolon ve satır sayısını yazın; isterseniz kolon başlıklarını da virgülle ayırarak yazın.</figcaption></figure>
-<ol class="steps">
-  <li><b>Yazın ve geçin.</b> Bir hücreyi seçip yazmaya başlayın. <b>Enter</b> (aşağı), <b>Tab</b> (sağa), yön tuşları ya da fareyle başka hücreye geçtiğinizde değer <b>kendiliğinden kaydedilir</b>; üstte <i>Tüm değişiklikler kaydedildi</i> yazar. Başlıkları da aynı biçimde yazın.</li>
-  <li><b>Düzeltin.</b> Seçili hücredeki kalem (✎), <b>F2</b> ya da çift tık hücreyi düzeltmeye açar; <b>Esc</b> vazgeçer. Başlığın kalemi başlığı, sayfa adının yanındaki kalem sayfanın adını değiştirir.</li>
-  <li><b>Silin.</b> Hücredeki <b>×</b> hücreyi, başlıktaki <b>×</b> kolonu, satır numarasının üzerine gelince çıkan <b>×</b> satırı siler. <b>Delete</b> seçili hücreleri temizler. Yanlışlıkla sildiyseniz bildirimdeki <b>Geri al</b> ya da <b>Ctrl+Z</b>.</li>
-  <li><b>Ekleyin.</b> <b>+ Satır</b> / <b>+ Kolon</b> seçili hücrenin altına/sağına ekler; tablonun altındaki <b>+ Satır ekle</b> sona ekler. Son satırda Enter'a basınca alta yeni satır açılır.</li>
-</ol>
-<h3>Formül yazmak</h3>
-<p>Formül <b>=</b> ile başlar. Hücre adresi <b>kolon harfi + satır numarası</b>dır: <b>B1</b> ilk satırın B kolonudur (başlık satırı numaralanmaz). Türkçe yazabilirsiniz: <code>=B1*C1</code>, <code>=TOPLA(D1:D9)</code>, <code>=EĞER(D2&gt;1000;"Yüksek";"Normal")</code>. Formül yazarken bir hücreye <b>tıklamak adresini ekler</b>, sürüklemek aralık ekler; kullandığınız hücreler renkle işaretlenir.</p>
-<figure><img src="ekran/31-serbest-formul.jpg" alt="Formül yazarken"><figcaption>D6'ya <code>=TOPLA(</code> yazıp D1'den D4'e sürüklemek aralığı ekler. Tüm işlevler ve kısayollar <b>ƒx Formüller</b> düğmesindedir.</figcaption></figure>
-<h3>Toplamlar, doldurma, kopyala-yapıştır</h3>
-<ul>
-  <li><b>Σ Alt toplam:</b> sayısal kolonların altına toplam satırı ekler.</li>
-  <li><b>Σ Yan toplam:</b> her satırın toplamını gösteren <i>Toplam</i> kolonu ekler. Önce toplamak istediğiniz kolonları seçerseniz yalnızca onları toplar.</li>
-  <li><b>↓ Doldur / → Doldur:</b> seçili hücredeki formülü alttaki satırlara / sağdaki kolonlara uygular. Bir kolonun satırları aynı formülü taşıyorsa (ör. <i>Tutar = Adet × Birim fiyat</i>) yeni satırlara kendiliğinden uygulanır.</li>
-  <li><b>Excel'den kopyala-yapıştır:</b> Excel'de seçip kopyaladığınız tabloyu seçili hücreye <b>Ctrl+V</b> ile yapıştırın; yetmezse satır ve kolon eklenir.</li>
-  <li><b>Sağ tık:</b> üste/alta satır, sola/sağa kolon ekleme, silme ve doldurma.</li>
-</ul>
-<figure><img src="ekran/32-serbest-sayfa.jpg" alt="Serbest sayfa ve detay kartı"><figcaption>Değer yazılmış her satır bir kayıttır: seçince sağda detay kartı açılır. Not, tahsilat, görev ve belge diğer sekmelerdeki gibi eklenir; kartta gösterilen satırın numarası yeşil çizgiyle işaretlidir. <b>⤢</b> ızgarayı genişletip kartı alta alır.</figcaption></figure>
-<figure class="half"><img src="ekran/33-serbest-menu.jpg" alt="Sağ tık menüsü"><figcaption>Sağ tık menüsü</figcaption></figure>
-<p>Yaptığınız her değişiklik ofisteki diğer bilgisayarlara anında yansır; iki kişi aynı sayfada farklı hücrelere aynı anda yazabilir. Sayfayı silmek için <b>⋯ → Sayfayı sil</b> (yönetici); bildirimdeki <b>Geri al</b> ile hemen geri gelir.</p>
-
-<h2 class="pb">9. Tahsilat takvimi ve bildirimler</h2>
-<p>Program, yüklediğiniz tablonun <b>tüm sekmelerinde</b> ödenmesi beklenen tutarları kendisi bulur: ödeme sözleri, taksitler (<i>1. Taksit Tarihi / Tutarı</i>), "Eylül 2026" gibi ay olarak yazılmış vadeler, aylık ücret kolonları (<i>Eylül</i>, <i>Ekim</i>…) ve her ayın belli günü ödenen kira ya da aidat. Satırın durumu <i>Ödendi</i>, <i>Kapandı</i> ya da <i>İptal</i> ise o satır beklenmez.</p>
-<figure><img src="ekran/35-tahsilat-serit.jpg" alt="Tahsilat takvimi şeridi"><figcaption>Ekranın üstündeki <b>Tahsilat takvimi</b> şeridinde gecikenler (kırmızı), bu ay ödenecekler ve yaklaşanlar kayar. Bir pile tıklayınca beklenen tutar ve durum görünür: <b>Tahsilat gir</b>, <b>Ödendi say</b> (başka yoldan ödendiyse) ya da <b>Kayda git</b>.</figcaption></figure>
-<ul>
-  <li><b>Ay olarak yazılan</b> vade (ör. <i>Eylül 2026</i>) ayın 1'inden, <b>tarih olarak yazılan</b> vade o günden itibaren "tahsilat alınmadı" sayılır.</li>
-  <li>Aylık ücret kolonunda hücre boşsa ya da <i>ödenmedi</i>, <i>0</i> yazıyorsa o ay ödenmemiştir. Ücretten az bir tutar yazıyorsa kalanı beklenir (<i>kısmen ödendi</i>).</li>
-  <li>Açık ödeme sözleri 30 gün öncesinden, taksit ve kiralar bu ay ve 7 gün içindekiler şeritte görünür.</li>
-  <li>Programda eklediğiniz yeni satırlar ve serbest sayfalar da aynı şekilde izlenir.</li>
-</ul>
-<figure class="half"><img src="ekran/37-pilden-tahsilat.jpg" alt="Pilden tahsilat girme"><figcaption><b>Tahsilat gir</b> dediğinizde tutar ve açıklama hazır gelir. Kaydedince pil kaybolur ve tutar Kasa'ya tahsilat olarak düşer. Tutar yetmezse pilde kalanı görünür; fazlası sonraki taksite sayılır.</figcaption></figure>
-<h3>Sağ alttaki bildirimler</h3>
-<figure class="half"><img src="ekran/36-bildirim.jpg" alt="Sağ alt bildirim"><figcaption>Tahsilatı gelmiş ama alınmamış her kalem için ekranın sağ altında kim, hangi ay ya da vade için, ne kadar yazan bir bildirim çıkar.</figcaption></figure>
-<ul>
-  <li>Bildirimler <b>tek tek</b> gelir, her biri <b>10 saniye</b> durur ve üst üste binmez. Fareyle üzerine gelirseniz bekler.</li>
-  <li>Tahsilat girilene ya da iş bitene kadar <b>3 saatte bir</b> yeniden hatırlatılır.</li>
-  <li><b>Son günü yaklaşan işler</b> 1 hafta önceden bildirilir: sözleşme bitişi, yenileme, muayene, sigorta, kasko, vize, SRC, psikoteknik, ehliyet gibi tarihler ve size atanmış görevler. Süresi geçen belgeler 30 gün boyunca hatırlatılır. Araç belgelerinde başlık plakadır.</li>
-</ul>
-<figure><img src="ekran/38-zil.jpg" alt="Bildirim listesi"><figcaption>Üst çubuktaki <b>zil</b> tüm uyarıları gruplu listeler; üzerindeki sayı bekleyen uyarıları gösterir. Listeden doğrudan <b>Tahsilat gir</b> ya da <b>Kayda git</b> denir. Alttaki kutuyla sağ alt bildirimleri kapatıp açabilirsiniz.</figcaption></figure>
-
-<h2 class="pb">10. Kasa ve Operasyon Merkezi</h2>
-<figure><img src="ekran/22-kasa.jpg" alt="Kasa penceresi"><figcaption>Sol menüde Operasyon Merkezi → <b>Kasa</b>: güncel kasa, seçtiğiniz dönemin (Bu ay, Geçen ay, Bu yıl, Tümü, Aralık) tahsilat, ödeme ve farkı. Detay kartından girilen tahsilatlar kasaya kendiliğinden düşer; kira, fatura, maaş gibi ödemeleri <b>− Ödeme</b> ile eklersiniz. Her satırda o ana kadarki kasa yazar.</figcaption></figure>
-<p>Kasayı yönetici, ikinci rol ve muhasebe görür. Kasa ofisin tek kasasıdır: farklı veri oturumlarına geçmek kasayı sıfırlamaz.</p>
-<h3>Tarih aralığı ve PDF</h3>
-<figure><img src="ekran/39-kasa-aralik.jpg" alt="Kasa tarih aralığı"><figcaption><b>Aralık</b>'ı seçip başlangıç ve bitiş tarihini girin (ör. 01.09.2026 – 25.09.2026). Göstergeler ve liste o aralığa göre hesaplanır; aralıktan önceki bakiye <i>Devreden kasa</i> olarak yazar. <b>PDF indir</b> seçili dönemin kasa dökümünü indirir.</figcaption></figure>
-<figure class="half"><img src="ekran/40-kasa-pdf.jpg" alt="Kasa dökümü PDF"><figcaption>Kasa dökümü: ofis adı, aralık, devreden kasa, dönem tahsilatı ve ödemesi, dönem sonu kasa, her hareketin tarihi, açıklaması, tutarı ve yürüyen bakiyesi. Dosya <i>Kasa-dokumu 01.09.2026-25.09.2026.pdf</i> adıyla iner; yazdırılabilir ya da e-postayla gönderilebilir.</figcaption></figure>
-<figure class="narrow"><img src="ekran/23-operasyon-kalem.jpg" alt="Operasyon Merkezi kalemi"><figcaption>Operasyon Merkezi kartının köşesindeki kalem (yalnızca yönetici)…</figcaption></figure>
-<figure><img src="ekran/24-operasyon-adlari.jpg" alt="Operasyon Merkezi adları"><figcaption>…kartın başlığını ve düğmelerin adlarını değiştirir (ör. <i>Kasa</i> yerine <i>Vezne</i>). Değişiklik tüm bilgisayarlara anında yansır.</figcaption></figure>
-
-<h2>11. Veri oturumları ve kolon adları</h2>
-<p>Farklı konudaki bir Excel'i (ör. hukuk dosyalarının yanına bir taksit listesi) yüklerken <b>Yeni oturumda aç</b>'ı seçin; iki tablo birbirine karışmaz. Oturumlar arasında sol üstteki <b>Çalışma oturumu</b> kutusundan geçilir. Seçtiğiniz oturum yalnızca sizin ekranınızı değiştirir.</p>
-<figure class="narrow"><img src="ekran/34-oturum-secici.jpg" alt="Oturum seçici"><figcaption>Oturum listesi, kayıt sayılarıyla. Kalemle oturumun adı değiştirilir.</figcaption></figure>
-<p>Kullanıcılar, görevler, notlar, tahsilatlar, Kasa ve yedekler tüm oturumlarda ortaktır; oturum değiştirmek bunları etkilemez.</p>
-<figure class="narrow"><img src="ekran/28-kolon-kalem.jpg" alt="Kolon adını değiştirme"><figcaption>Excel'den gelen kolon başlığını ofisinize göre adlandırmak için detay kartındaki başlığın yanındaki kalemi kullanın (yalnızca yönetici; ör. <i>TKST_1</i> → <i>1. Taksit</i>). Excel dosyanız değişmez.</figcaption></figure>
-
-<h2 class="pb">12. Yönetim: kullanıcılar ve yedekler</h2>
-<p>Yönetim sayfasına sol alttaki kartta <b>Yönetim</b> ile girilir. Bu sayfayı yalnızca yönetici görür.</p>
-<figure><img src="ekran/11-kullanicilar.jpg" alt="Kullanıcılar"><figcaption><b>+ Yeni kullanıcı</b> ile çalışan ekleyin; rolünü seçin. Program çalışana ilk girişte parolasını değiştirtir.</figcaption></figure>
-<figure><img src="ekran/12-yedekler.jpg" alt="Yedekler"><figcaption>Program 6 saatte bir kendiliğinden yedek alır. <b>Şimdi yedek al</b> ile istediğiniz an yedekleyip indirebilirsiniz. Yedekleri ayda bir harici diske kopyalayın.</figcaption></figure>
-
-<h2>13. Ekrandaki uyarılar ne demek?</h2>
-<table>
-  <tr><th style="width:36%">Uyarı</th><th>Ne yapmalı?</th></tr>
-  <tr><td>Ücretsiz deneme henüz başlamadı</td><td>Sunucunun internetini kontrol edin; deneme bağlantı gelince kendiliğinden başlar. İsterseniz Yönetim → Lisans → <b>Denemeyi şimdi başlat</b>.</td></tr>
-  <tr><td>Deneme süresi doldu / Lisans süresi doldu</td><td>Bizi arayın: 0532 605 05 87. Lisansınızı tanımlarız; program kaldığı yerden devam eder.</td></tr>
-  <tr><td>Lisans doğrulanamadı</td><td>Sunucunun internetini kontrol edin, sonra Lisans → <b>Şimdi doğrula</b>.</td></tr>
-  <tr><td>Bilgisayar saati geri alınmış</td><td>Sunucunun tarih/saatini düzeltin (Saati otomatik ayarla). Saat daha önce yanlışlıkla <b>ileri</b> alınmışsa: internetli lisansta Lisans → <b>Şimdi doğrula</b>; internetsiz lisansta bizden yeni etkinleştirme kodu isteyin.</td></tr>
-  <tr><td>Lisans engellendi</td><td>Bizi arayın (0532 605 05 87). Sorun çözülünce <b>Şimdi doğrula</b> ile açılır.</td></tr>
-  <tr><td>Bu kod başka bir bilgisayar için üretilmiş</td><td>Bu bilgisayarın kurulum kodunu bize yeniden gönderin.</td></tr>
-  <tr><td>Bu işlem yapılamadı (salt okunur)</td><td>Program durmuş durumda; yukarıdaki lisans uyarılarından birine bakın.</td></tr>
-  <tr><td>"DestekOfis … sürümüne güncellendi"</td><td>Program kendini güncelledi. Yazdığınız notu kaydedip <b>Yenile</b>'ye basın.</td></tr>
-</table>
-
-<h2>14. Sık sorulan sorular</h2>
-<p><b>Deneme bitince kayıtlarım silinir mi?</b><br>Hayır. Program yalnızca yeni işlem yapılmasını durdurur. Kayıtlarınızı görebilir, dışa aktarabilir ve yedekleyebilirsiniz.</p>
-<p><b>Her bilgisayar için ayrı lisans mı alacağım?</b><br>Hayır. Lisans yalnızca sunucu bilgisayar içindir. Personel bilgisayarları ücretsiz bağlanır.</p>
-<p><b>Programı silip yeniden kurarsam deneme yeniden başlar mı?</b><br>Hayır. Deneme her bilgisayara bir kez verilir.</p>
-<p><b>İnternet kesilirse çalışamaz mıyız?</b><br>Çalışırsınız. Program 7 gün boyunca internet olmadan normal çalışır.</p>
-<p><b>Sunucu bilgisayarımı değiştirmek istiyorum.</b><br>Yeni bilgisayara programı kurun, eski bilgisayardan aldığınız yedeği geri yükleyin ve bizden (0532 605 05 87) lisansı yeni bilgisayara taşımamızı isteyin (yeni bilgisayarın kurulum kodunu gönderin).</p>
-<p><b>Programı kaldırıp yeniden kurarsam verilerim kaybolur mu?</b><br>Hayır. Sunucu bilgisayarda program kaldırılsa da kayıtlarınız ve yedekleriniz silinmez (kaldırma sonunda nerede durduklarını yazar). Aynı bilgisayara yeniden kurduğunuzda kaldığınız yerden devam edersiniz; lisansınız da geri gelir.</p>
-<p><b>Serbest sayfada yaptığım değişiklik kaydedildi mi?</b><br>Başka hücreye geçtiğiniz anda kaydedilir. Sayfanın üstünde <i>Tüm değişiklikler kaydedildi</i> yazıyorsa her şey sunucudadır. İnternet ya da ağ bir an koparsa program yeniden dener.</p>
-<p><b>Lisansımı başkası kullanabilir mi?</b><br>Hayır. Lisans sunucu bilgisayarınızın kimliğine bağlıdır; başka bir bilgisayara kopyalanınca çalışmaz.</p>
-
-<p class="foot">DestekOfis 2.0.1 · Kullanım Kılavuzu · Ekran görüntüleri örnek verilerle hazırlanmıştır.</p>
+<p class="foot">DestekOfis 2.0.2 · Kısa Kullanım Kılavuzu · Ekran görüntüleri örnek verilerle hazırlanmıştır.</p>
 </main>
 </body>
 </html>

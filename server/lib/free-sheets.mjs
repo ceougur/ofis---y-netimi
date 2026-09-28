@@ -14,7 +14,16 @@ import { computeSheet, mapReferences, rewriteReferences, shiftReferences } from 
 import { Cell } from "./formula/values.mjs";
 
 export const FREE_PREFIX = "serbest:";
-export const FREE_LIMITS = Object.freeze({ sheets: 30, rows: 2000, columns: 60, raw: 5000, name: 60, history: 30 });
+// v2.0.2: kolon sınırı 60 → 500 (Excel içeri almadaki sınırla aynı). Izgaranın akıcı kalması için toplam hücre
+// 250.000'i geçmez (ör. 500 kolon × 500 satır ya da 125 kolon × 2000 satır).
+export const FREE_LIMITS = Object.freeze({ sheets: 30, rows: 2000, columns: 500, cells: 250_000, raw: 5000, name: 60, history: 30 });
+const tooManyColumns = () => new HttpError(400, `Bir sayfada en fazla ${FREE_LIMITS.columns} kolon olabilir.`);
+const tooManyCells = (rows, columns) => new HttpError(400, `Sayfa çok büyük olur (${(rows * columns).toLocaleString("tr-TR")} hücre). Bir sayfada en fazla ${FREE_LIMITS.cells.toLocaleString("tr-TR")} hücre olabilir (ör. ${FREE_LIMITS.columns} kolon × ${Math.floor(FREE_LIMITS.cells / FREE_LIMITS.columns)} satır). Boş satırları silin ya da yeni bir sayfa açın.`);
+// Satır × kolon sınırı; rows ve columns yeni (değişiklik sonrası) sayılardır.
+const checkSize = (rows, columns) => {
+  if (columns > FREE_LIMITS.columns) throw tooManyColumns();
+  if (rows * columns > FREE_LIMITS.cells) throw tooManyCells(rows, columns);
+};
 const SEP = " › ";
 const id = prefix => `${prefix}${randomUUID().replace(/-/g, "").slice(0, 14)}`;
 const clean = (value, max) =>
@@ -28,7 +37,7 @@ const isFormula = raw => String(raw ?? "").startsWith("=") && String(raw).length
 const fold = value => String(value).toLocaleLowerCase("tr-TR");
 const numericDisplay = text => typeof new Cell(text).value === "number";
 
-export function createFreeSheets({ store, audit, dataset }) {
+export function createFreeSheets({ store, audit, dataset, trash = null }) {
   const now = () => new Date().toISOString();
   const current = () => dataset.currentKey();
 
@@ -141,6 +150,7 @@ export function createFreeSheets({ store, audit, dataset }) {
   const addRowRecords = (sheet, index, count, user) => {
     const existing = rowsOf(sheet.id);
     if (existing.length + count > FREE_LIMITS.rows) throw new HttpError(400, `Bir sayfada en fazla ${FREE_LIMITS.rows} satır olabilir.`);
+    checkSize(existing.length + count, columnsOf(sheet).length);
     const at = Math.max(0, Math.min(index ?? existing.length, existing.length));
     const created = [];
     for (let n = 0; n < count; n += 1) {
@@ -180,6 +190,7 @@ export function createFreeSheets({ store, audit, dataset }) {
     }
     const columnCount = Math.max(1, given.length, Math.min(FREE_LIMITS.columns, Math.floor(Number(columns) || 4)));
     const rowCount = Math.max(1, Math.min(FREE_LIMITS.rows, Math.floor(Number(rows) || 10)));
+    checkSize(rowCount, columnCount);
     const sheetId = id("fs");
     const position = (store.get("SELECT MAX(position) AS max FROM free_sheets WHERE dataset_key = ?", current()).max ?? -1) + 1;
     store.tx(() => {
@@ -239,7 +250,7 @@ export function createFreeSheets({ store, audit, dataset }) {
         const needRows = Math.max(0, ...updates.map(item => (Number.isInteger(item.r) ? item.r + 1 : 0))) - rows.length;
         const needCols = Math.max(0, ...updates.map(item => (Number.isInteger(item.c) ? item.c + 1 : 0))) - columns.length;
         if (needCols > 0) {
-          if (columns.length + needCols > FREE_LIMITS.columns) throw new HttpError(400, `Bir sayfada en fazla ${FREE_LIMITS.columns} kolon olabilir.`);
+          checkSize(Math.max(rows.length, rows.length + needRows), columns.length + needCols);
           snapId = snapshot(sheet, "yapıştırma", user);
           columns = [...columns, ...Array.from({ length: needCols }, () => ({ id: id("fc"), name: "" }))];
           saveColumns(sheet, columns, user);
@@ -291,8 +302,8 @@ export function createFreeSheets({ store, audit, dataset }) {
   function addColumns(user, sheetId, { index, count = 1, names = [] } = {}) {
     const sheet = requireSheet(sheetId);
     const columns = columnsOf(sheet);
-    const amount = Math.max(1, Math.min(20, Math.floor(Number(count) || 1)));
-    if (columns.length + amount > FREE_LIMITS.columns) throw new HttpError(400, `Bir sayfada en fazla ${FREE_LIMITS.columns} kolon olabilir.`);
+    const amount = Math.max(1, Math.min(100, Math.floor(Number(count) || 1)));
+    checkSize(rowsOf(sheet.id).length, columns.length + amount);
     const at = Math.max(0, Math.min(Number.isInteger(index) ? index : columns.length, columns.length));
     const taken = new Set(headersOf(columns).map(fold));
     const fresh = Array.from({ length: amount }, (_, n) => {
@@ -321,9 +332,14 @@ export function createFreeSheets({ store, audit, dataset }) {
     if (index < 0) throw new HttpError(404, "Kolon bulunamadı.");
     if (columns.length === 1) throw new HttpError(400, "Sayfada en az bir kolon kalmalı.");
     const removedName = headersOf(columns)[index];
+    // Silinenler (v2.0.2): kolonun hücreleri saklanır; yönetim panelinden eski sırasına geri eklenir.
+    const removedCells = store.all("SELECT row_id, raw FROM free_cells WHERE sheet_id = ? AND col_id = ?", sheet.id, colId).map(cell => ({ row: cell.row_id, raw: cell.raw }));
     let snapId = null;
     store.tx(() => {
       snapId = snapshot(sheet, "kolon silme", user);
+      if (trash && removedCells.length) {
+        trash.add({ kind: "free-column", ref: colId, datasetKey: current(), title: `${sheet.name} · “${removedName}” kolonu`, detail: removedCells.slice(0, 3).map(cell => cell.raw).join(" · "), payload: { sheetId: sheet.id, sheetName: sheet.name, index, column: columns[index], header: removedName, cells: removedCells }, user });
+      }
       store.run("DELETE FROM free_cells WHERE sheet_id = ? AND col_id = ?", sheet.id, colId);
       columns.splice(index, 1);
       saveColumns(sheet, columns, user);
@@ -389,9 +405,16 @@ export function createFreeSheets({ store, audit, dataset }) {
     const rows = rowsOf(sheet.id);
     const index = rows.findIndex(row => row.id === rowId);
     if (index < 0) throw new HttpError(404, "Satır bulunamadı.");
+    const columns = columnsOf(sheet);
+    const headers = headersOf(columns);
+    const cells = cellsOf(sheet.id);
+    const removedCells = columns.map((column, c) => ({ col: column.id, header: headers[c], raw: cells.get(`${rowId}|${column.id}`) || "" })).filter(cell => cell.raw);
     let snapId = null;
     store.tx(() => {
       snapId = snapshot(sheet, "satır silme", user);
+      if (trash && removedCells.length) {
+        trash.add({ kind: "free-row", ref: rowId, datasetKey: current(), title: `${sheet.name} · ${index + 1}. satır`, detail: removedCells.filter(cell => !isFormula(cell.raw)).slice(0, 3).map(cell => cell.raw).join(" · "), payload: { sheetId: sheet.id, sheetName: sheet.name, index, cells: removedCells }, user });
+      }
       store.run("DELETE FROM free_cells WHERE row_id = ?", rowId);
       store.run("DELETE FROM free_rows WHERE id = ?", rowId);
       renumber(sheet.id);
@@ -401,6 +424,72 @@ export function createFreeSheets({ store, audit, dataset }) {
     });
     return { ...detail(sheet.id), snapshot: snapId };
   }
+
+  // ---------- Silinenlerden geri yükleme (v2.0.2) ----------
+  // Satır eski sırasına ARAYA eklenir: o arada eklenen satırlar aşağı kayar, hiçbir hücrenin üzerine yazılmaz. Sayfa o
+  // arada kısaldıysa sona eklenir. Kolonu silinmiş hücreler aynı adlı kolona, o da yoksa atlanır (lost).
+  function restoreRow(user, payload) {
+    const sheet = requireSheet(payload.sheetId);
+    const rows = rowsOf(sheet.id);
+    let result;
+    store.tx(() => {
+      const { created, at } = addRowRecords(sheet, Math.min(Number(payload.index) || 0, rows.length), 1, user);
+      const columns = columnsOf(sheet);
+      const headers = headersOf(columns);
+      const lost = [];
+      for (const item of payload.cells || []) {
+        const column = columns.find(entry => entry.id === item.col) || columns[headers.findIndex(name => fold(name) === fold(item.header || ""))];
+        if (column) setCell(sheet.id, created[0], column.id, item.raw, user);
+        else lost.push(item.header);
+      }
+      touch(sheet, user);
+      audit(user, "free.row.restored", sheet.id, { name: sheet.name, row: at + 1 });
+      result = { sheet: sheet.name, position: at + 1, lost };
+    });
+    return result;
+  }
+
+  // Kolon eski sırasına araya eklenir (sağdakiler kayar). Adı o arada başka bir kolona verildiyse "(geri yüklendi)" eklenir.
+  // Satırı silinmiş hücreler atlanır.
+  function restoreColumn(user, payload) {
+    const sheet = requireSheet(payload.sheetId);
+    const columns = columnsOf(sheet);
+    checkSize(rowsOf(sheet.id).length, columns.length + 1);
+    const at = Math.max(0, Math.min(Number(payload.index) || 0, columns.length));
+    const taken = new Set(headersOf(columns).map(fold));
+    let name = columnName(payload.column?.name || "");
+    if (name && taken.has(fold(name))) name = columnName(`${name} (geri yüklendi)`);
+    const colId = columns.some(item => item.id === payload.column?.id) ? id("fc") : payload.column?.id || id("fc");
+    const rowIds = new Set(rowsOf(sheet.id).map(row => row.id));
+    let result;
+    store.tx(() => {
+      if (at < columns.length) rewriteAll(sheet.id, { axis: "col", op: "insert", index: at, count: 1 }, user);
+      columns.splice(at, 0, { ...(payload.column || {}), id: colId, name });
+      saveColumns(sheet, columns, user);
+      let lost = 0;
+      for (const item of payload.cells || []) {
+        if (rowIds.has(item.row)) setCell(sheet.id, item.row, colId, item.raw, user);
+        else lost += 1;
+      }
+      audit(user, "free.column.restored", sheet.id, { name: sheet.name, column: name || payload.header });
+      result = { sheet: sheet.name, position: at + 1, column: name || payload.header, lost };
+    });
+    return result;
+  }
+
+  // Silinmiş sayfayı (başka oturumdan da) geri getirir; adı o arada başka bir sekmeye verildiyse "(geri yüklendi)" eklenir.
+  function restoreSheet(user, sheetId) {
+    const sheet = store.get("SELECT * FROM free_sheets WHERE id = ? AND dataset_key = ? AND deleted_at IS NOT NULL", String(sheetId || ""), current());
+    if (!sheet) throw new HttpError(404, "Geri yüklenecek sayfa bulunamadı.");
+    let name = sheet.name;
+    for (let n = 1; nameTaken(name, sheet.id); n += 1) name = cleanName(`${sheet.name} (geri yüklendi${n > 1 ? ` ${n}` : ""})`, FREE_LIMITS.name);
+    store.tx(() => {
+      store.run("UPDATE free_sheets SET name = ?, deleted_at = NULL, deleted_by = NULL, updated_at = ?, updated_by = ? WHERE id = ?", name, now(), user.id, sheet.id);
+      audit(user, "free.sheet.restored", sheet.id, { name, previous: sheet.name });
+    });
+    return { id: sheet.id, name, renamed: name !== sheet.name };
+  }
+  const deletedSheets = () => store.all("SELECT s.id, s.name, s.dataset_key AS datasetKey, s.deleted_at AS deletedAt, s.deleted_by AS deletedBy, COALESCE(u.display_name, '') AS actorName FROM free_sheets s LEFT JOIN users u ON u.id = s.deleted_by WHERE s.deleted_at IS NOT NULL ORDER BY s.deleted_at DESC");
 
   // Toplam satırı/kolonu: hücrelerinden biri kendi kolonunda (ya da satırında) birden çok hücreyi kapsayan bir aralığı
   // toplayan formül taşır (ör. D kolonunda =TOPLA(D1:D9)). Doldurma bunlara dokunmaz.
@@ -519,7 +608,7 @@ export function createFreeSheets({ store, audit, dataset }) {
           else setCell(sheet.id, target, column.id, "", user);
         });
       } else {
-        if (columns.length + 1 > FREE_LIMITS.columns) throw new HttpError(400, `Bir sayfada en fazla ${FREE_LIMITS.columns} kolon olabilir.`);
+        checkSize(rowsOf(sheet.id).length, columns.length + 1);
         let picked;
         if (Number.isInteger(from) && Number.isInteger(to) && to > from) {
           picked = columns.map((_, c) => c).filter(c => c >= from && c <= to && (kinds[c] === "money" || kinds[c] === "number"));
@@ -663,5 +752,5 @@ export function createFreeSheets({ store, audit, dataset }) {
     return `${row.sheets}|${row.cells}`;
   };
 
-  return { list, detail, viewRows, tabs, create, rename, remove, restore, setCells, renameColumn, addColumns, deleteColumn, addRows, deleteRow, fill, totals, undo, isFreeKey, setByField, addRecord, rawByKey, rowIsEmpty, columnIsEmpty, headersByName, purgeSession, fingerprint };
+  return { list, detail, viewRows, tabs, create, rename, remove, restore, restoreRow, restoreColumn, restoreSheet, deletedSheets, setCells, renameColumn, addColumns, deleteColumn, addRows, deleteRow, fill, totals, undo, isFreeKey, setByField, addRecord, rawByKey, rowIsEmpty, columnIsEmpty, headersByName, purgeSession, fingerprint };
 }

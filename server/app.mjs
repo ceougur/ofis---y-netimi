@@ -1,15 +1,20 @@
 // DestekOfis merkezi sunucusu: uygulamayı kurar, göçleri çalıştırır ve HTTP isteklerini yönlendirir.
 import { createServer } from "node:http";
 import { mkdirSync } from "node:fs";
+import path from "node:path";
 import { createAudit } from "./lib/audit.mjs";
 import { createAuth } from "./lib/auth.mjs";
 import { createChat } from "./lib/chat.mjs";
+import { createChatArchive } from "./lib/chat-archive.mjs";
 import { createEventHub } from "./lib/events.mjs";
 import { startBackupScheduler } from "./lib/backup.mjs";
+import { createCloudBackup } from "./lib/cloud-backup.mjs";
 import { createClientState } from "./lib/client-state.mjs";
 import { DEFAULT_ADMIN_PASSWORD, loadConfig } from "./lib/config.mjs";
 import { createDatasetService } from "./lib/dataset.mjs";
 import { createProfileService } from "./lib/profile.mjs";
+import { createAnalysisRunner } from "./lib/insight/worker.mjs";
+import { createAlertScheduler } from "./lib/alerts.mjs";
 import { createLicenseService } from "./lib/license.mjs";
 import { createStore, openDatabase } from "./lib/db.mjs";
 import { HttpError, SECURITY_HEADERS, assertSameOrigin, fail, ok, send } from "./lib/http.mjs";
@@ -28,9 +33,12 @@ import { registerDueRoutes } from "./routes/dues.mjs";
 import { registerDocumentRoutes } from "./routes/documents.mjs";
 import { registerFreeRoutes } from "./routes/free.mjs";
 import { createFreeSheets } from "./lib/free-sheets.mjs";
+import { createTrash } from "./lib/trash.mjs";
+import { registerTrashRoutes } from "./routes/trash.mjs";
 import { registerChatRoutes } from "./routes/chat.mjs";
 import { registerDatasetRoutes } from "./routes/dataset.mjs";
 import { registerInsightRoutes } from "./routes/insight.mjs";
+import { registerReportRoutes } from "./routes/reports.mjs";
 import { registerLicenseRoutes } from "./routes/license.mjs";
 import { registerTrpcRoutes } from "./routes/trpc.mjs";
 import { registerWorkspaceRoutes } from "./routes/workspace.mjs";
@@ -67,9 +75,18 @@ export function createApp(overrides = {}) {
   // Canlı olay kanalı: oturumu kapanan (çıkış, parola değişikliği, pasifleştirme) bağlantılar ping turunda düşer.
   const events = createEventHub({ log, pingMs: config.eventsPingMs, maxAgeMs: config.eventsMaxAgeMs, isValid: client => auth.sessionAlive(client.tokenHash) });
   const chat = createChat({ store, events, audit });
+  // 30 günden eski sohbet mesajları veri klasöründeki mesaj-arsivi/ klasörüne taşınır (v2.0.2).
+  const chatArchive = createChatArchive({ store, dir: path.join(config.dataDir, "mesaj-arsivi"), log });
   // Lisans (Faz 3): süresi dolan, engellenen veya doğrulanamayan kurulum salt okunur çalışır. Veri eşitlemesi de
   // o sürede durur. Uygulama nesnesi aşağıda kurulduğundan eşitleme denetimi geç bağlanır.
   let license = null;
+  // Drive'a yedek (v2.0.2): kullanıcı Drive bağlantısı/klasörü bağladıysa her yedek oraya da kopyalanır. Lisans nesnesi
+  // aşağıda kurulduğundan geç bağlanır; kopya hatası yerel yedeği hiçbir zaman engellemez.
+  const cloudBackup = createCloudBackup({ store, log, services: config.licenseServices.split(",").map(item => item.trim()).filter(Boolean), keep: config.backupKeep, license: { summary: () => license?.summary?.() } });
+  const mirrorBackup = result => {
+    if (!result?.path) return;
+    cloudBackup.mirror(result).catch(error => log.warn(`Drive kopyası başarısız: ${error.message}`));
+  };
   // Kalıcı çalışma verisi: içeri alınan Excel/Sheets satırları + bağlı Sheet'in zamanlanmış eşitlemesi.
   const dataset = createDatasetService({
     store,
@@ -83,13 +100,17 @@ export function createApp(overrides = {}) {
     autoSync: config.datasetAutoSync,
     tickMs: config.datasetTickMs,
     canWrite: () => !license || license.writable(),
+    afterBackup: mirrorBackup,
   });
   clientState.useDataset(() => dataset.info());
   // Serbest sayfalar (v2.0.1): kullanıcının "+" ile açtığı Excel benzeri sekmeler; tablo görünümüne satır olarak girer.
-  const free = createFreeSheets({ store, audit, dataset });
+  const trash = createTrash(store);
+  const free = createFreeSheets({ store, audit, dataset, trash });
   dataset.setFreeProvider(free);
   // Ofis profili: sektör, kelime dağarcığı, kalemle değiştirilen başlıklar ve verinin önbellekli analizi.
-  const profile = createProfileService({ store, dataset, audit, events, log, free });
+  // Analiz ayrı iş parçacığında koşar; sunucu bu sırada istekleri yanıtlar (yerel-önce: ofis bilgisayarı kilitlenmez).
+  const analysisRunner = createAnalysisRunner({ log, enabled: overrides.analysisWorker !== false });
+  const profile = createProfileService({ store, dataset, audit, events, log, free, runner: analysisRunner });
   profile.init();
   dataset.onChange(() => profile.invalidate());
   const licenseOptions = overrides.license || {};
@@ -107,7 +128,7 @@ export function createApp(overrides = {}) {
   });
   license.init();
   dataset.start();
-  const context = { config, log, store, auth, audit, clientState, startedAt, supervisorLink, events, chat, dataset, profile, license, free };
+  const context = { config, log, store, auth, audit, clientState, startedAt, supervisorLink, events, chat, chatArchive, dataset, profile, license, free, trash, cloudBackup };
 
   const router = createRouter();
   router.get("/api/health", async ({ res }) => ok(res, { service: "destekofis-merkezi", status: "ok", version: config.version, time: new Date().toISOString(), uptimeSeconds: Math.round(process.uptime()) }));
@@ -117,10 +138,12 @@ export function createApp(overrides = {}) {
   registerCashRoutes(router, context);
   registerDueRoutes(router, context);
   const documents = registerDocumentRoutes(router, context);
+  registerTrashRoutes(router, { ...context, documents });
   registerFreeRoutes(router, context);
   registerChatRoutes(router, context);
   registerDatasetRoutes(router, context);
   registerInsightRoutes(router, context);
+  registerReportRoutes(router, context);
   registerLicenseRoutes(router, context);
   registerTrpcRoutes(router, context);
 
@@ -171,12 +194,27 @@ export function createApp(overrides = {}) {
   server.requestTimeout = 5 * 60_000;
 
   const stopBackups = config.scheduleBackups
-    ? startBackupScheduler({ db, backupDir: config.backupDir, intervalHours: config.backupIntervalHours, keep: config.backupKeep, startDelayMs: config.backupOnStartDelayMs, log })
+    ? startBackupScheduler({ db, backupDir: config.backupDir, intervalHours: config.backupIntervalHours, keep: config.backupKeep, startDelayMs: config.backupOnStartDelayMs, log, onBackup: mirrorBackup })
     : () => {};
   if (overrides.startLicenseTimers !== false) license.start();
+  // Gün dönümünde tüm ekranlara "alerts.refresh" (olay tabanlı uyarı akışı, v2.0.2).
+  const alertScheduler = createAlertScheduler({ events, log });
+  if (overrides.alertScheduler !== false) alertScheduler.start();
   auth.purgeExpiredSessions();
   const sessionTimer = setInterval(() => auth.purgeExpiredSessions(), 3_600_000);
   sessionTimer.unref();
+  // Sohbet arşivi: açılıştan kısa süre sonra ve 6 saatte bir (v2.0.2).
+  const archiveChat = () => {
+    try {
+      chatArchive.run();
+    } catch (error) {
+      log.error("Sohbet arşivi çalışmadı", error);
+    }
+  };
+  const archiveStart = overrides.chatArchive === false ? null : setTimeout(archiveChat, 20_000);
+  archiveStart?.unref?.();
+  const archiveTimer = overrides.chatArchive === false ? null : setInterval(archiveChat, 6 * 3_600_000);
+  archiveTimer?.unref?.();
 
   // Servis yöneticisine (supervisor) iletilen özet bilgi: keşif yanıtlarında ofis adı ve sürüm görünür.
   const infoListeners = new Set();
@@ -220,6 +258,9 @@ export function createApp(overrides = {}) {
       closed = true;
       stopBackups();
       clearInterval(sessionTimer);
+      clearTimeout(archiveStart);
+      clearInterval(archiveTimer);
+      alertScheduler.stop();
       auth.limiter.stop();
       dataset.stop();
       documents.stop();
@@ -229,6 +270,7 @@ export function createApp(overrides = {}) {
         server.close(() => resolve());
         server.closeAllConnections?.();
       });
+      await analysisRunner.close();
       db.close();
     },
   };

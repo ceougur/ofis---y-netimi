@@ -26,7 +26,7 @@ export const PATCHES = [
     id: "satir-kimligi",
     why: "Her tablo satırı sunucunun hesapladığı dosya kimliğini taşısın (DOM'dan tahmin yerine).",
     find: 'className:u===Z?"selected":"",onClick:()=>G(Z,gt)',
-    replace: 'className:u===Z?"selected":"","data-hof-key":Z.__hofKey||"",onClick:()=>G(Z,gt)',
+    replace: 'className:(u===Z?"selected":"")+(Z.__hofFlag?" hof-row-flagged":""),"data-hof-key":Z.__hofKey||"",onClick:()=>G(Z,gt)',
   },
   {
     id: "detay-kimligi",
@@ -73,7 +73,7 @@ export const PATCHES = [
     why: "Tümü birleşik görünümü yerine her zaman bir sekme; sekme sırası sunucunun; aramada sekme başına eşleşme sayısı.",
     find: 'st=C.useMemo(()=>{const Z=new Set;for(const gt of it)gt.__sheet?.trim()&&Z.add(gt.__sheet.trim());for(const gt of tt?.tabs??[])gt.title.trim()&&Z.add(gt.title.trim());return Array.from(Z)},[it,tt?.tabs]),ut=C.useMemo(()=>P==="Tümü"?it:it.filter(Z=>Z.__sheet===P),[it,P]),w=C.useMemo(()=>dT(ut,P==="Tümü"?nt:P),[ut,P,nt])',
     replace:
-      'st=C.useMemo(()=>{const Z=new Set;for(const gt of tt?.tabs??[])gt.title.trim()&&Z.add(gt.title.trim());for(const gt of it)gt.__sheet?.trim()&&Z.add(gt.__sheet.trim());return Array.from(Z)},[it,tt?.tabs]),hofP=st.includes(P)?P:st[0]??null,hofQ=n.trim().toLocaleLowerCase("tr-TR"),hofText=C.useMemo(()=>hofQ?it.map(Z=>Object.values(Z).join(" ").toLocaleLowerCase("tr-TR")):null,[it,!!hofQ]),hofHits=C.useMemo(()=>{const Z=new Map;let gt=0;it.forEach((Yt,Dt)=>{if(hofQ&&!hofText[Dt].includes(hofQ))return;const xe=Yt.__sheet?.trim()||"";Z.set(xe,(Z.get(xe)||0)+1),gt++});return{total:gt,count:Yt=>Z.get(Yt)||0}},[it,hofText,hofQ]),ut=C.useMemo(()=>hofP===null?it:it.filter(Z=>Z.__sheet===hofP),[it,hofP]),w=C.useMemo(()=>dT(ut,nt),[ut,nt])',
+      'st=C.useMemo(()=>{const Z=new Set;for(const gt of tt?.tabs??[])gt.title.trim()&&Z.add(gt.title.trim());for(const gt of it)gt.__sheet?.trim()&&Z.add(gt.__sheet.trim());if(it.some(gt=>gt.__hofFlag))Z.add("⚠ İşaretlenen hatalar");return Array.from(Z)},[it,tt?.tabs]),hofP=st.includes(P)?P:st[0]??null,hofQ=n.trim().toLocaleLowerCase("tr-TR"),hofText=C.useMemo(()=>hofQ?it.map(Z=>Object.values(Z).join(" ").toLocaleLowerCase("tr-TR")):null,[it,!!hofQ]),hofHits=C.useMemo(()=>{const Z=new Map;let gt=0;it.forEach((Yt,Dt)=>{if(hofQ&&!hofText[Dt].includes(hofQ))return;const xe=Yt.__sheet?.trim()||"";Z.set(xe,(Z.get(xe)||0)+1),gt++;if(Yt.__hofFlag)Z.set("⚠ İşaretlenen hatalar",(Z.get("⚠ İşaretlenen hatalar")||0)+1)});return{total:gt,count:Yt=>Z.get(Yt)||0}},[it,hofText,hofQ]),ut=C.useMemo(()=>hofP===null?it:hofP==="⚠ İşaretlenen hatalar"?it.filter(Z=>Z.__hofFlag):it.filter(Z=>Z.__sheet===hofP),[it,hofP]),w=C.useMemo(()=>dT(ut,nt),[ut,nt])',
   },
   {
     id: "sekme-hatirla",
@@ -83,10 +83,10 @@ export const PATCHES = [
   },
   {
     id: "tumu-dugmesi-yok",
-    why: "Tümü düğmesi kaldırıldı; sekme düğmeleri aramada eşleşme sayısını gösterir.",
+    why: "Tümü düğmesi kaldırıldı; sekme düğmeleri aramada eşleşme sayısını gösterir. v2.0.2: şeridin sağındaki sayaç ('10 kayıt · toplam 30', aramada 'N sonuç') yazılmaz.",
     find: 'children:P==="Tümü"?`${it.length} toplam kayıt`:`${ut.length} kayıt`})]}),x.jsxs("div",{"data-loc":"client/src/pages/Home.tsx:86",className:"category-tabs",children:[x.jsxs("button",{"data-loc":"client/src/pages/Home.tsx:86",className:P==="Tümü"?"category-tab active":"category-tab",onClick:()=>M("Tümü"),children:["Tümü ",x.jsx("span",{"data-loc":"client/src/pages/Home.tsx:86",children:it.length})]}),st.map(Z=>x.jsxs("button",{"data-loc":"client/src/pages/Home.tsx:86",className:P===Z?"category-tab active":"category-tab",onClick:()=>M(Z),title:Z,children:[Z," ",x.jsx("span",{"data-loc":"client/src/pages/Home.tsx:86",children:it.filter(gt=>gt.__sheet===Z).length})]},Z))]})',
     replace:
-      'children:hofQ?`${hofHits.total} sonuç · tüm sekmelerde`:st.length>1?`${ut.length} kayıt · toplam ${it.length}`:`${ut.length} kayıt`})]}),x.jsxs("div",{"data-loc":"client/src/pages/Home.tsx:86",className:"category-tabs",children:[st.map(Z=>{const hofN=hofHits.count(Z);return x.jsxs("button",{"data-loc":"client/src/pages/Home.tsx:86",className:(hofP===Z?"category-tab active":"category-tab")+(hofQ&&!hofN?" hof-tab-nohit":""),onClick:()=>{M(Z);try{sessionStorage.setItem("hof-tab",Z)}catch{}},title:Z,"aria-pressed":hofP===Z,children:[Z," ",x.jsx("span",{"data-loc":"client/src/pages/Home.tsx:86",children:hofN})]},Z)})]})',
+      'children:null})]}),x.jsxs("div",{"data-loc":"client/src/pages/Home.tsx:86",className:"category-tabs",children:[st.map(Z=>{const hofN=hofHits.count(Z);return x.jsxs("button",{"data-loc":"client/src/pages/Home.tsx:86",className:(hofP===Z?"category-tab active":"category-tab")+(hofQ&&!hofN?" hof-tab-nohit":""),onClick:()=>{M(Z);try{sessionStorage.setItem("hof-tab",Z)}catch{}},title:Z,"aria-pressed":hofP===Z,children:[Z," ",x.jsx("span",{"data-loc":"client/src/pages/Home.tsx:86",children:hofN})]},Z)})]})',
   },
   {
     id: "tek-sekmede-serit-yok",
@@ -106,12 +106,6 @@ export const PATCHES = [
     find: 'Yt.download=`${w.title||"tablo"}.csv`,Yt.click(),URL.revokeObjectURL(gt),ja.success("Analiz edilen tablo CSV olarak indirildi")',
     replace: 'Yt.download=`${w.title||"tablo"}${st.length>1?` - ${hofP.replace(/[\\\\/:*?"<>|]+/g," ")}`:""}.csv`,Yt.click(),URL.revokeObjectURL(gt),ja.success(st.length>1?`“${hofP}” sekmesi CSV olarak indirildi`:"Analiz edilen tablo CSV olarak indirildi")',
   },
-  {
-    id: "tum-kayitlar-sayisi",
-    why: "Kenar çubuğundaki 'Tüm kayıtlar' sayısı açık sekmenin değil, tüm verinin kayıt sayısı.",
-    find: '" Tüm kayıtlar ",x.jsx("span",{"data-loc":"client/src/pages/Home.tsx:82",className:"nav-count",children:w.rows.length})',
-    replace: '" Tüm kayıtlar ",x.jsx("span",{"data-loc":"client/src/pages/Home.tsx:82",className:"nav-count",children:it.length})',
-  },
   // ---- v2.0.0: sektörden bağımsız varsayılanlar ----
   {
     id: "notr-varsayilanlar",
@@ -124,6 +118,31 @@ export const PATCHES = [
     why: "Dosya/borçlu/icra kolonu görünce açılan durum süzgeci (İcra aşamasında, Kapanmış) yalnızca hukuk profilinde çalışsın.",
     find: 'z=!!(q.length&&w.columns.some(Z=>/dosya|borçlu|borclu|icra/i.test(Z.label)))',
     replace: 'z=!!(window.HOF?.modules?.haciz&&q.length&&w.columns.some(Z=>/dosya|borçlu|borclu|icra/i.test(Z.label)))',
+  },
+  // ---- v2.0.2: sade kenar çubuğu ----
+  {
+    id: "kenar-cubugu-sade",
+    why: "Kenar çubuğundaki 'Çalışma alanı' ve 'Veri kaynağı' başlıkları, 'Dinamik görünüm' (işlevsiz), 'Tüm kayıtlar' (işlevsiz; tüm sekmelerin satırlarını sayan yanıltıcı sayı) ve 'Bu ay' (tahsilat takvimi ve zil aynı işi görüyor) kaldırıldı. 'Ayarlar' yerinde kalır.",
+    find: "x.jsx(\"p\",{\"data-loc\":\"client/src/pages/Home.tsx:82\",className:\"nav-label\",children:\"ÇALIŞMA ALANI\"}),x.jsxs(\"button\",{\"data-loc\":\"client/src/pages/Home.tsx:82\",className:\"nav-item active\",children:[x.jsx(S_,{\"data-loc\":\"client/src/pages/Home.tsx:82\",size:17}),\" Dinamik görünüm\"]}),x.jsxs(\"button\",{\"data-loc\":\"client/src/pages/Home.tsx:82\",className:\"nav-item\",children:[x.jsx(rv,{\"data-loc\":\"client/src/pages/Home.tsx:82\",size:17}),\" Tüm kayıtlar \",x.jsx(\"span\",{\"data-loc\":\"client/src/pages/Home.tsx:82\",className:\"nav-count\",children:w.rows.length})]}),x.jsxs(\"button\",{\"data-loc\":\"client/src/pages/Home.tsx:82\",className:\"nav-item\",children:[x.jsx(tv,{\"data-loc\":\"client/src/pages/Home.tsx:82\",size:17}),\" Bu ay \",x.jsx(\"span\",{\"data-loc\":\"client/src/pages/Home.tsx:82\",className:\"nav-count soft\",children:w.currentMonthRows.length})]}),x.jsx(\"p\",{\"data-loc\":\"client/src/pages/Home.tsx:82\",className:\"nav-label mt-8\",children:\"VERİ KAYNAĞI\"}),",
+    replace: "",
+  },
+  {
+    id: "tum-kolonlar-basliklar",
+    why: "v2.0.2: tablo yalnızca ilk 7 kolonu gösteriyordu; Excel/Sheets'teki dolu tüm kolonlar gösterilir (yatay kaydırma, hof-grid.js).",
+    find: 'children:w.columns.slice(0,7).map(Z=>x.jsx("th"',
+    replace: 'children:w.columns.map(Z=>x.jsx("th"',
+  },
+  {
+    id: "tum-kolonlar-hucreler",
+    why: "v2.0.2: satırlarda da tüm kolonlar.",
+    find: 'children:w.columns.slice(0,7).map(Dt=>',
+    replace: 'children:w.columns.map(Dt=>',
+  },
+  {
+    id: "tablo-alt-basligi",
+    why: "v2.0.2: tablo artık tüm kolonları gösterir; \"öncelikli kayıt\" ifadesi yanıltıcıydı.",
+    find: 'w.displayRows.length," öncelikli kayıt · ",w.columns.length," kolon otomatik oluşturuldu"',
+    replace: 'w.displayRows.length," kayıt · ",w.columns.length," kolon"',
   },
 ];
 

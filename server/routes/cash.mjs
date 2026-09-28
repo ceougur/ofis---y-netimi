@@ -10,7 +10,7 @@ import { can } from "../lib/permissions.mjs";
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 const validDate = value => DATE.test(value) && !Number.isNaN(new Date(value).getTime());
 
-export function registerCashRoutes(router, { store, auth, audit, events }) {
+export function registerCashRoutes(router, { store, auth, audit, events, trash }) {
   const now = () => new Date().toISOString();
   const changed = user => events?.publish("workspace.changed", { kind: "cash", actorId: user.id, actorName: user.display_name }, { except: user.id });
 
@@ -118,7 +118,10 @@ export function registerCashRoutes(router, { store, auth, audit, events }) {
   router.delete("/api/workspace/cash/:id", async ({ req, res, params }) => {
     const user = auth.requirePermission(req, "cash.manage");
     const previous = existing(params.id);
+    const full = store.get("SELECT id, kind, amount, date, description, created_by AS createdBy, created_at AS createdAt FROM cash_entries WHERE id = ?", previous.id);
     store.run("DELETE FROM cash_entries WHERE id = ?", previous.id);
+    // Silinenler (v2.0.2): yönetim panelinden geri yüklenebilir.
+    trash?.add({ kind: "cash", ref: previous.id, title: full.description || "Kasa hareketi", payload: full, user });
     audit(user, "cash.entry.deleted", previous.id, previous);
     changed(user);
     ok(res, { id: previous.id });

@@ -10,6 +10,8 @@ const CASE_KEY = /\b(?:19|20)\d{2}\/\d+\b/;
 const MAX_BODY = 2000;
 const RATE_WINDOW_MS = 60_000;
 const RATE_MAX = 30;
+const DAY_MS = 86_400_000;
+const DAY_MAX = 500;
 
 const fold = value => String(value ?? "").trim().toLocaleLowerCase("tr-TR").replace(/\s+/g, " ");
 
@@ -90,9 +92,36 @@ export function createChat({ store, events = null, audit = () => {}, now = () =>
     return { me: user.id, users, conversations, unreadTotal: conversations.reduce((total, item) => total + item.unread, 0), online: [...online] };
   }
 
-  function messages(user, conversationId, { before = null, limit = 50 } = {}) {
+  // v2.0.2: gün gün. İlk açılışta son 24 saat; "önceki gün" her istekte, daha eski en yeni mesajdan geriye 24 saat
+  // (boş günler atlanır, her tıklama bir şey getirir). "from" bir sonraki isteğin "before" değeridir.
+  function messagesByDay(user, conv, before) {
+    let from;
+    let until = null;
+    if (!before) from = new Date(Date.parse(now()) - DAY_MS).toISOString();
+    else {
+      until = String(before);
+      const anchor = store.get("SELECT created_at FROM chat_messages WHERE conversation_id = ? AND created_at < ? ORDER BY created_at DESC LIMIT 1", conv.id, until);
+      if (!anchor) return { conversation: describe(conv, user), messages: [], hasMore: false, from: until };
+      from = new Date(Date.parse(anchor.created_at) - DAY_MS).toISOString();
+    }
+    let rows = store.all(
+      `SELECT m.*, u.display_name AS sender_name FROM chat_messages m LEFT JOIN users u ON u.id = m.sender_id
+       WHERE m.conversation_id = ? AND m.created_at >= ? AND (? IS NULL OR m.created_at < ?) ORDER BY m.created_at DESC, m.id DESC LIMIT ?`,
+      conv.id, from, until, until, DAY_MAX + 1,
+    );
+    // Çok yoğun bir günde en yeni 500 mesaj; kalanı bir sonraki tıklamada.
+    if (rows.length > DAY_MAX) {
+      rows = rows.slice(0, DAY_MAX);
+      from = rows[rows.length - 1].created_at;
+    }
+    const hasMore = Boolean(store.get("SELECT 1 AS found FROM chat_messages WHERE conversation_id = ? AND created_at < ? LIMIT 1", conv.id, from));
+    return { conversation: describe(conv, user), messages: rows.reverse().map(messageRow), hasMore, from };
+  }
+
+  function messages(user, conversationId, { before = null, limit = 50, window = "" } = {}) {
     const conv = conversation(conversationId);
     assertAccess(user, conv);
+    if (window === "day") return messagesByDay(user, conv, before);
     const size = Math.max(1, Math.min(200, Number(limit) || 50));
     const cursor = before ? String(before) : null;
     const rows = store.all(
@@ -201,5 +230,12 @@ export function createChat({ store, events = null, audit = () => {}, now = () =>
     return send(user, OFFICE_CONVERSATION, { body: name && name !== fold(OFFICE_TITLE) && text ? `→ ${String(to).trim()}: ${text}` : text, caseKey });
   }
 
-  return { summary, messages, direct, send, markRead, legacyList, legacySend };
+  // Arşiv indirme gibi işlemler için: erişim denetimiyle yazışma (v2.0.2).
+  function access(user, conversationId) {
+    const conv = conversation(conversationId);
+    assertAccess(user, conv);
+    return conv;
+  }
+
+  return { summary, messages, direct, send, markRead, legacyList, legacySend, access };
 }

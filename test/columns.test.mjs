@@ -60,3 +60,54 @@ describe("kolon başlıklarını adlandırma", () => {
     assert.deepEqual((await staff.get("/api/workspace/profile")).data.data.columns, { AD_SOYAD: "Müşteri" }, "ilk oturumdaki personel kendi oturumunun adlarını görür");
   });
 });
+
+describe("zor değerler (v2.0.2)", async () => {
+  const { parseDate } = await import("../server/lib/insight/validators.mjs");
+  const { isBlank } = await import("../server/lib/insight/columns.mjs");
+  const { analyzeColumn } = await import("../server/lib/insight/columns.mjs");
+  it("ay adlı tarihler ve Amerikan sırası okunur; takvimde olmayan tarih okunmaz", () => {
+    assert.equal(parseDate("10 Mart 2027").toISOString().slice(0, 10), "2027-03-10");
+    assert.equal(parseDate("10 Mar 27").toISOString().slice(0, 10), "2027-03-10");
+    assert.equal(parseDate("Mart 2027").toISOString().slice(0, 10), "2027-03-01");
+    assert.equal(parseDate("Sept 2027").toISOString().slice(0, 10), "2027-09-01");
+    assert.equal(parseDate("03/25/2027").toISOString().slice(0, 10), "2027-03-25", "gün/ay okunamayınca ay/gün");
+    assert.equal(parseDate("11/02/2027").toISOString().slice(0, 10), "2027-02-11", "iki türlü okunan tarih gün/ay kalır");
+    assert.equal(parseDate("31.02.2026"), null);
+    assert.equal(parseDate("2024-13-01"), null);
+    assert.equal(parseDate("Marka 2027"), null);
+  });
+  it("Excel hata değerleri boş sayılır; küçük tablolarda başlık destekliyorsa tür verilir", () => {
+    for (const value of ["#DIV/0!", "#SAYI/0!", "#REF!", "#N/A", "#DEĞER!", "#BAŞV!", "#AD?", "#YOK"]) assert.ok(isBlank(value), value);
+    assert.ok(!isBlank("#1 Öncelik"));
+    const rows = [{ Plaka: "34 ABC 12", "Muayene bitiş": "01.10.2026", Tutar: "1.500", Ad: "Ali Veli" }, { Plaka: "06 DEF 34", "Muayene bitiş": "22.09.2026", Tutar: "#DIV/0!", Ad: "Can Er" }];
+    assert.equal(analyzeColumn(rows, "Plaka").role, "plate");
+    assert.equal(analyzeColumn(rows, "Muayene bitiş").role, "date");
+    assert.equal(analyzeColumn(rows, "Tutar").role, "money", "tek dolu değer ve tutar başlığı");
+    assert.equal(analyzeColumn(rows, "Ad").role, "person");
+    // Başlık desteği yoksa tek değerden tür çıkarılmaz.
+    assert.equal(analyzeColumn([{ X: "01.10.2026" }], "X").role, "text");
+    assert.equal(analyzeColumn([{ X: "01.10.2026" }, { X: "02.10.2026" }], "X").role, "date", "iki değer de aynı türde");
+    // Başlık tarih diyorsa "tarih + not" hücreleri de tarih sayılır.
+    assert.equal(analyzeColumn([{ "Sözleşme bitiş": "30.09.2026 (uzatıldı)" }, { "Sözleşme bitiş": "10 Mart 2027" }, { "Sözleşme bitiş": "Mart 2027" }], "Sözleşme bitiş").role, "date");
+  });
+});
+
+describe("eşleme ekranı: kullanıcı rolleri (v2.0.2)", () => {
+  it("seçilen rol otomatik kararın üstüne yazar; 'Yoksay' önemi sıfırlar; kanıt ve kesinlik bunu söyler", async () => {
+    const { analyzeColumns } = await import("../server/lib/insight/columns.mjs");
+    const rows = [
+      { "Tarih 2": "01.10.2026", "Kolon 3": "Ali Veli", Not: "x" },
+      { "Tarih 2": "02.10.2026", "Kolon 3": "Ayşe Kaya", Not: "y" },
+      { "Tarih 2": "03.10.2026", "Kolon 3": "Can Er", Not: "z" },
+    ];
+    const auto = analyzeColumns(rows, ["Tarih 2", "Kolon 3", "Not"], { now: new Date("2026-09-27") });
+    assert.notEqual(auto.find(item => item.column === "Tarih 2").kind, "deadline", "başlık belirsiz: otomatik karar son tarih değildir");
+    const forced = analyzeColumns(rows, ["Tarih 2", "Kolon 3", "Not"], { now: new Date("2026-09-27"), forced: { "Tarih 2": "deadline", "Kolon 3": "person", Not: "ignore" } });
+    const date = forced.find(item => item.column === "Tarih 2");
+    assert.deepEqual([date.role, date.kind, date.meaning, date.strong, date.certainty], ["date", "deadline", "expiry", true, "kesin"]);
+    assert.ok(date.evidence[0].includes("eşleme ekranında seçildi"));
+    assert.equal(forced.find(item => item.column === "Kolon 3").role, "person");
+    const note = forced.find(item => item.column === "Not");
+    assert.deepEqual([note.role, note.ignored, note.importance], ["text", true, 0]);
+  });
+});

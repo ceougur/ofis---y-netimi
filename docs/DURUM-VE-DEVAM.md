@@ -1,6 +1,6 @@
 # DestekOfis — durum ve devam notu
 
-Yeni bir oturum bu belgeyi okuyarak kaldığı yerden devam eder. Son güncelleme: 27.09.2026 (sürüm 2.0.1, yayın bekliyor).
+Yeni bir oturum bu belgeyi okuyarak kaldığı yerden devam eder. Son güncelleme: 27.09.2026 (sürüm 2.0.2 denetimden geçti — `docs/DENETIM-2.0.2.md`; okuma motoru, analiz iş parçacığı, kanıtlı kolon kararları, kendi kendini onarma, şemaya esnek kolon eşleme, Veri Sağlık Kontrolü ve olay tabanlı uyarılar eklendi — `docs/MIMARI.md` → *2.0.2 eklemeleri*; yayın kullanıcı onayı bekliyor; 2.0.1 yayımlı).
 
 ## Nerede ne var
 
@@ -12,6 +12,8 @@ Yeni bir oturum bu belgeyi okuyarak kaldığı yerden devam eder. Son güncellem
 | Lisans servisi adresi (programda sabit) | `https://destek-ofis.vercel.app/api/lisans` (`server/lib/license.mjs`, `DEFAULT_LICENSE_SERVICES`) |
 | Lisans ayrıntıları | `docs/LISANS.md` |
 | Sürüm yayımlama | `docs/SURUM-YAYIMLAMA.md` |
+| 2.0.2 denetim raporu (istek doğrulama, zor veri, kod taraması) | `docs/DENETIM-2.0.2.md` |
+| İleriye dönük yol haritası (yaygın programlardan öğrenilenler, UI/UX bulguları, P1–P3 mimari adımlar) | `docs/YOL-HARITASI-2.1.md` |
 | Operatör merkezi ve API işletimi, sır yenileme | `destekofis/README.md` |
 
 ## Tamamlananlar
@@ -46,13 +48,25 @@ Yeni bir oturum bu belgeyi okuyarak kaldığı yerden devam eder. Son güncellem
   - Doğrulama (27.09.2026, tahsilat takvimi ve Kasa PDF eklendikten sonra yeniden): birim 333/333 ve uçtan uca 42/42 (Node 22.22 ve kurulumdaki Node 24.21), 2.0.0 → 2.0.1 ve 1.7.0 → 2.0.1 gerçek imzalı paketle güncelleme provası (yedek, şema 4 → 5, veriler korunur, yeni özellikler çalışır).
   - Teslim paketi kullanıcıya verildi: imzalı güncelleme paketi + `.json`, `DestekOfis-Kurulum.exe`, kılavuz, kaynak kodu (git bundle), örnek veriler. Yayın kullanıcı onayı bekliyor.
 
+- **2.0.1 yayımlandı** (kullanıcı PR'ı `master`'a birleştirdi, `v2.0.1` yayını dört dosyayla açıldı; özetler doğrulandı).
+- **2.0.2 (hazır, dal `claude/nice-euler-jvajxv`, gönderilmedi):**
+  - Excel/Sheets açılır listeleri ve Excel birleşik giriş kutuları → programda açılır liste (`server/lib/choices.mjs`, `client/assets/hof-choices.js`); gizli liste sayfası programda da gizlenir.
+  - Belge kartı: adet sınırı yok, yan yana 1–4 sütun, seçilenleri .zip ile indirme (`/api/workspace/cases/:key/documents/archive`), PDF/resim/metin doğrudan yazdırma.
+  - Uyarı kartında "Gerçekleştirildi" (hücreye yazar, tarih korunur; tekrarlayan ödeme gününde yalnız o ay kapanır; görev tamamlanır); 20 sn görünür, aralarında 10 sn, kısa bildirimlerle üst üste binmez.
+  - Ana tabloda tüm kolonlar (paket yaması `tum-kolonlar-*`), içeriğe göre genişlik, dondurulmuş ilk kolon, yapışkan yatay kaydırma çubuğu (`hof-grid.js`); serbest sayfada 500 kolon.
+  - Kendi sektörü (`server/lib/custom-sectors.mjs`): oluştur/düzenle/sil, tanıtıcı başlıklarla öneri.
+  - Sohbet gün gün; 30 günden eskiler `veri/mesaj-arsivi/` altına ay ay metin olarak taşınır (`server/lib/chat-archive.mjs`).
+  - Tarih anlamı sınıflandırıcısı (`server/lib/insight/temporal.mjs`), satır bağlamı, tahsilat takvimi düzeltmeleri; Silinenler ve geri yükleme (göç 6); sekme adlandırma/silme; sade sol menü; kısa kılavuz (8 sayfa).
+  - Ay matrisi → taksit defteri (`server/lib/insight/installments.mjs`): geçerlilik aralığı dışındaki boş aylar taksit değil; 3 tam boş ay → durgun, raporda listelenir.
+  - Raporlar (sol menü): ortak omurga sorgu motoru, oturumlar arası cari eşleme, Cari ekstre / Vade takip / Nakit akış, dinamik kolonlar, Excel/PDF/yazdır (`server/lib/reports.mjs`, `client/assets/hof-reports.js`).
+  - Drive'a yedek: Yönetim → Yedekler; klasör yolu ya da Drive bağlantısı; `DestekOfis Yedekleri`; bağlantı kipi lisans servisindeki `/v1/yedek/oturum` ucunu bekler (`docs/DRIVE-YEDEK.md`, Vercel işlevi henüz yayımlanmadı).
+  - Doğrulama: birim ve uçtan uca testler, 2.0.1 → 2.0.2 ve eski sürümlerden güncelleme provası (ayrıntı `CHANGELOG.md`).
+
 ## Kalanlar (öncelik sırasıyla)
 
-1. **2.0.1'i yayımlamak (kullanıcı onayıyla).**
-   - Dal `master`'a birleştirilir; site deposu (`destekofis`) `main`'e gönderilir.
-   - GitHub → depo → *Settings → Secrets and variables → Actions* → `DESTEKOFIS_RELEASE_KEY` = güncelleme `.pem` dosyasının tüm içeriği (bir kez).
-   - GitHub → *Releases → Draft a new release* → etiket `v2.0.1` (hedef `master`) → *Publish release*. `release.yml` testlerden sonra imzalı paketi, kurulum dosyalarını ve kılavuzu ekler; 2.0.0 kurulumlar kendiliğinden 2.0.1'e geçer.
-   - Sır tanımlanmazsa: `node tools/release.mjs --anahtar <pem>` ile paket yerelde üretilip yayına elle yüklenir (`docs/SURUM-YAYIMLAMA.md` → B).
+1. **2.0.2'yi yayımlamak (kullanıcı onayıyla).**
+   - Dal `master`'a birleştirilir (PR), ardından *Releases → Draft a new release* → etiket `v2.0.2` (hedef `master`) → *Publish release*. `release.yml` imzalı paketi, kurulum dosyalarını ve kılavuzu ekler; 2.0.1 kurulumlar *Yönetim → Sistem → Güncellemeleri denetle* ile ya da kendiliğinden 2.0.2'ye geçer.
+   - Sır yoksa paket yerelde üretilip yayına elle yüklenir (`docs/SURUM-YAYIMLAMA.md` → B). Site deposunda kılavuz PDF'i ve sürüm notları güncellenir.
 2. **2.1.0 — ofis dışından erişim (kullanıcı erteledi, talimat bekleniyor).** Lisanslı kullanıcı ofis dışından (başka bilgisayar, telefon) kendi sunucusuna bağlanıp veri girebilsin. Bugün "Personel bilgisayarı" kurulumu sunucuyu yalnızca ofis ağında (UDP keşfi) bulur. Önerilen yol: satıcı tarafında tek ücretsiz Cloudflare hesabı + alan adı (`destekofis.net` alınınca) ile her ofise Cloudflare Tunnel alt adresi; müşteriye ek maliyet ve modem ayarı yok, CGNAT'ta da çalışır. Programda: yöneticinin açıp kapattığı uzaktan erişim, kullanıcı bazlı izin, uzaktan girişte iki adımlı doğrulama, oturum listesi/kapatma, tünelin sunucuyla başlatılması, lisans servisinde ofis adresi, demoda "Ofisime bağlan", telefonda ana ekrana eklenebilen uygulama; KVKK metnine Cloudflare üzerinden şifreli geçiş eklenmeli. Modem port yönlendirmesi (gerçek IP gerekir) ve hesapsız hızlı tünel (deneme amaçlı, adres değişir) yedek seçenek olarak konuşuldu.
 3. **Faz 4 kalanı: alan adı.**
    - `destekofis.net` alınıp Vercel'e bağlanacak.

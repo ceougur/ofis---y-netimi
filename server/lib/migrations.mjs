@@ -375,6 +375,55 @@ export const MIGRATIONS = [
       `);
     },
   },
+  {
+    version: 6,
+    name: "v2.0.2 silinenler (geri yükleme)",
+    up(store) {
+      // Tamamen silinen verinin (tahsilat, kasa hareketi, serbest sayfa satırı/kolonu) geri yüklenebilmesi için silinirken
+      // içeriği burada saklanır. Yumuşak silinenler (tablo satırı, belge, serbest sayfa) kendi tablolarından okunur.
+      store.exec(`
+        CREATE TABLE IF NOT EXISTS trash (
+          id TEXT PRIMARY KEY,
+          kind TEXT NOT NULL,
+          ref TEXT NOT NULL,
+          dataset_key TEXT NOT NULL DEFAULT '',
+          title TEXT NOT NULL DEFAULT '',
+          detail TEXT NOT NULL DEFAULT '',
+          payload_json TEXT NOT NULL DEFAULT '{}',
+          deleted_by TEXT NOT NULL DEFAULT '',
+          deleted_at TEXT NOT NULL,
+          restored_by TEXT,
+          restored_at TEXT
+        );
+        CREATE INDEX IF NOT EXISTS idx_trash_open ON trash(restored_at, deleted_at);
+      `);
+      // 2.0.1'de silinmiş ve hâlâ yerine konmamış tahsilat ve kasa hareketleri değişiklik geçmişinden alınır.
+      const events = store.all("SELECT id, type, entity_id, actor_id, payload_json, created_at FROM audit_events WHERE type IN ('case.payment.deleted', 'cash.entry.deleted') ORDER BY created_at");
+      const seen = new Set();
+      for (const event of events.reverse()) {
+        if (seen.has(event.entity_id)) continue;
+        seen.add(event.entity_id);
+        let payload = {};
+        try {
+          payload = JSON.parse(event.payload_json) || {};
+        } catch {
+          continue;
+        }
+        const amount = Number(payload.amount);
+        if (!Number.isFinite(amount) || amount <= 0 || !payload.date) continue;
+        if (event.type === "case.payment.deleted") {
+          if (store.get("SELECT 1 AS found FROM payments WHERE id = ?", event.entity_id)) continue;
+          const data = { id: event.entity_id, caseKey: payload.caseKey || "", caseTitle: payload.caseTitle || "", amount, date: payload.date, note: payload.note || "", createdBy: payload.createdBy || event.actor_id, createdAt: payload.createdAt || event.created_at };
+          store.run("INSERT INTO trash (id, kind, ref, title, detail, payload_json, deleted_by, deleted_at) VALUES (?, 'payment', ?, ?, ?, ?, ?, ?)", `trash-${event.id}`, event.entity_id, data.caseTitle || data.caseKey || "Tahsilat", data.note, JSON.stringify(data), event.actor_id, event.created_at);
+        } else {
+          if (store.get("SELECT 1 AS found FROM cash_entries WHERE id = ?", event.entity_id)) continue;
+          if (!["in", "out"].includes(payload.kind)) continue;
+          const data = { id: event.entity_id, kind: payload.kind, amount, date: payload.date, description: payload.description || "", createdBy: payload.createdBy || event.actor_id, createdAt: payload.createdAt || event.created_at };
+          store.run("INSERT INTO trash (id, kind, ref, title, detail, payload_json, deleted_by, deleted_at) VALUES (?, 'cash', ?, ?, '', ?, ?, ?)", `trash-${event.id}`, event.entity_id, data.description || "Kasa hareketi", JSON.stringify(data), event.actor_id, event.created_at);
+        }
+      }
+    },
+  },
 ];
 
 export const LATEST_VERSION = MIGRATIONS.at(-1).version;

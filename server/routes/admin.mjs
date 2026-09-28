@@ -128,7 +128,39 @@ export function registerAdminRoutes(router, context) {
     const admin = auth.requirePermission(req, "system.manage");
     const result = createBackup(store.db, config.backupDir, { label: "manuel", keep: config.backupKeep });
     audit(admin, "system.backup_created", result.name, { size: result.size });
-    ok(res, { name: result.name, size: result.size });
+    const cloud = context.cloudBackup ? await context.cloudBackup.mirror(result) : null;
+    ok(res, { name: result.name, size: result.size, cloud });
+  });
+
+  // Drive'a yedek (v2.0.2): bağlantı/klasör bağlama, durum ve deneme. ":name" yolundan önce kayıtlı olmalı.
+  router.get("/api/admin/backups/cloud", async ({ req, res }) => {
+    auth.requirePermission(req, "system.manage");
+    ok(res, context.cloudBackup ? context.cloudBackup.status() : { enabled: false });
+  });
+
+  router.post("/api/admin/backups/cloud", async ({ req, res }) => {
+    const admin = auth.requirePermission(req, "system.manage");
+    if (!context.cloudBackup) throw new HttpError(503, "Drive yedeği bu kurulumda kapalı.");
+    const body = await readJson(req);
+    const target = String(body.target ?? "").trim();
+    if (target.length > 500) throw new HttpError(400, "Bağlantı ya da yol çok uzun.");
+    let status;
+    try {
+      status = context.cloudBackup.configure(admin, target);
+    } catch (error) {
+      throw new HttpError(error.status || 400, error.message);
+    }
+    audit(admin, status.enabled ? "system.cloud_backup_set" : "system.cloud_backup_cleared", status.mode || "", { value: status.value || "" });
+    ok(res, status);
+  });
+
+  router.post("/api/admin/backups/cloud/test", async ({ req, res }) => {
+    const admin = auth.requirePermission(req, "system.manage");
+    if (!context.cloudBackup?.status().enabled) throw new HttpError(400, "Önce bir Drive bağlantısı ya da klasör yolu bağlayın.");
+    const result = createBackup(store.db, config.backupDir, { label: "drive-deneme", keep: config.backupKeep });
+    audit(admin, "system.backup_created", result.name, { size: result.size, test: true });
+    const cloud = await context.cloudBackup.mirror(result);
+    ok(res, { ok: Boolean(cloud?.ok), name: result.name, error: cloud?.error || null, status: context.cloudBackup.status() });
   });
 
   router.get("/api/admin/backups/:name", async ({ req, res, params }) => {
@@ -240,6 +272,8 @@ export function registerAdminRoutes(router, context) {
       dataDir: config.dataDir,
       backupDir: config.backupDir,
       lastBackup: latest ? { name: latest.name, size: latest.size, createdAt: latest.createdAt } : null,
+      // 30 günden eski sohbet mesajlarının arşivi (v2.0.2).
+      chatArchive: context.chatArchive ? context.chatArchive.info() : null,
       users: store.get("SELECT COUNT(*) AS count FROM users WHERE active = 1").count,
       officeName: store.setting("office.name", ""),
       supervised: Boolean(supervisorLink?.supervised),

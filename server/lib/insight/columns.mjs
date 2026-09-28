@@ -5,7 +5,8 @@
 // sağlamayla kesinleşir ("verified"); tutar, tarih, telefon gibi türler değerlerin büyük çoğunluğu gerçekten o biçimdeyse
 // kabul edilir. Başlık tek başına bir kolona tür biçmez; yalnızca değerlerin söylediğini güçlendirir veya ayırt eder
 // (ör. aynı sayısal kolon "TUTAR" başlığıyla tutar, "ADET" başlığıyla miktardır).
-import { foldText, isEmail, isIban, isPlate, isProvince, isTckn, isTrPhone, isUrl, isVkn, parseAmount, parseDate } from "./validators.mjs";
+import { dateMeaning, kindOfMeaning } from "./temporal.mjs";
+import { isSerialDate, serialToDate, foldText, isEmail, isIban, isPlate, isProvince, isTckn, isTrPhone, isUrl, isVkn, parseAmount, parseDate } from "./validators.mjs";
 
 const SAMPLE = 4000;
 // "2025/1234", "İstanbul 2025/1234", "2025/1234 E." gibi dosya/esas numaraları. Ek kısmı en az bir harf ister: iki
@@ -22,47 +23,49 @@ const MAX_FORMAT_LENGTH = 300;
 // Tek kelimeler ek almış hâlleriyle de eşleşir (4+ harfliyse): "tarihi" → "tarih", "borçlusu" → "borclu".
 // Birden çok kelimeli ifadeler kelime kelime aynı kuralla ve sırasıyla aranır.
 const LEXICON = {
-  id: ["no", "nr", "numara", "numarasi", "kod", "kodu", "id", "sicil", "ref", "referans", "barkod", "sku", "protokol", "esas", "seri", "kayit no", "takip no", "is emri"],
+  id: ["no", "nr", "numara", "numarasi", "kod", "kodu", "id", "sicil", "ref", "referans", "barkod", "sku", "protokol", "esas", "seri", "kayit no", "takip no", "is emri", "code", "number", "invoice", "order no", "case no", "file no"],
   sequence: ["sira", "sn", "sayac", "s no", "sira no"],
   // Ad kelimeleri ("Adı Soyadı") ile taraf kelimeleri ("Müşteri", "Borçlu") ayrı tutulur: "Ürün adı" kişi değildir.
-  name: ["ad", "adi", "soyad", "soyadi", "isim", "ismi", "adsoyad", "ad soyad", "adi soyadi"],
+  name: ["ad", "adi", "soyad", "soyadi", "isim", "ismi", "adsoyad", "ad soyad", "adi soyadi", "name", "full name", "first name", "last name", "surname"],
   party: [
     "muvekkil", "borclu", "alacakli", "hasta", "musteri", "ogrenci", "veli", "kisi", "kiraci", "malik", "surucu", "uye", "aday", "calisan", "personel",
     "davaci", "davali", "sanik", "tedarikci", "bayi", "firma", "sirket", "unvan", "unvani", "kurum", "cari", "alici", "satici", "gonderen", "gonderici",
     "misafir", "katilimci", "sigortali", "danisan", "kursiyer", "sporcu", "abone", "yolcu", "ortak", "bagisci", "mukellef", "sahibi", "karsi taraf",
-    "ev sahibi", "mulk sahibi", "sigorta ettiren",
+    "ev sahibi", "mulk sahibi", "sigorta ettiren", "client", "customer", "patient", "student", "tenant", "employee", "supplier", "vendor", "contact", "member", "guest", "debtor", "creditor", "owner", "driver", "landlord",
   ],
   item: ["urun", "hizmet", "proje", "etkinlik", "kurs", "ders", "paket", "model", "marka", "egitim", "tur", "oda", "menu", "kalem", "malzeme", "parca", "ilac", "dosya", "evrak", "belge", "program", "kampanya", "gorev", "sefer", "guzergah"],
   responsible: [
-    "sorumlu", "atanan", "temsilci", "avukat", "danisman", "hekim", "doktor", "ogretmen", "uzman", "eksper", "teknisyen", "sofor", "antrenor", "egitmen",
+    "sorumlu", "atanan", "temsilci", "avukat", "danisman", "hekim", "doktor", "ogretmen", "uzman", "eksper", "teknisyen", "sofor", "antrenor", "egitmen", "assigned", "owner", "responsible", "lawyer", "doctor", "teacher",
     "usta", "operator", "ilgili personel", "takip eden", "satis temsilcisi", "musteri temsilcisi", "sorumlu personel", "atanan kisi", "ilgili kisi",
   ],
   money: [
     "tutar", "tutari", "bedel", "bedeli", "fiyat", "fiyati", "ucret", "ucreti", "borc", "borcu", "alacak", "alacagi", "bakiye", "avans", "tahsilat",
     "tahsil", "odeme", "odenen", "kalan", "toplam", "kdv", "tl", "try", "usd", "eur", "doviz", "maliyet", "gelir", "gider", "ciro", "prim", "masraf",
     "harc", "faiz", "kira", "aidat", "depozito", "kapora", "maas", "kredi", "limit", "teminat", "hasar", "tazminat", "brut", "tahakkuk", "hakedis", "vergi",
+    "amount", "price", "total", "balance", "fee", "cost", "debt", "paid", "payment", "rent", "salary", "invoice total", "outstanding", "remaining",
   ],
   // Toplanması anlamsız fiyat kolonları (birim fiyatların toplamı bir şey ifade etmez).
   price: ["fiyat", "fiyati", "birim", "birim fiyat", "liste fiyati", "satis fiyati", "alis fiyati"],
-  quantity: ["adet", "miktar", "stok", "sayi", "sayisi", "puan", "yas", "kg", "gram", "gr", "litre", "lt", "metre", "m2", "metrekare", "km", "kilometre", "kapasite", "koli", "palet", "desi", "seans", "gece", "kisi sayisi"],
+  quantity: ["adet", "miktar", "stok", "sayi", "sayisi", "puan", "yas", "kg", "gram", "gr", "litre", "lt", "metre", "m2", "metrekare", "km", "kilometre", "kapasite", "koli", "palet", "desi", "seans", "gece", "kisi sayisi", "qty", "quantity", "count", "age", "score"],
   percent: ["oran", "orani", "yuzde", "iskonto", "marj", "percent"],
   date: ["tarih", "tarihi", "date", "zaman", "vade", "vadesi", "termin", "baslangic", "bitis", "dogum", "teslim", "durusma", "randevu", "donem", "giris", "cikis"],
   // Son tarih: yaklaşan ve tarihi geçen kayıtlar anlamlıdır. Güçlü ifadeler "olay" sözcüklerine üstün gelir
   // ("Başvuru son tarihi" bir son tarihtir), zayıflar gelmez ("Kayıt randevu" gibi belirsizlerde olay sayılır).
-  deadlineStrong: ["son tarih", "son gun", "son odeme", "son teslim", "son basvuru", "son kullanma", "vade", "vadesi", "termin", "teslim", "dusum", "bitis", "gecerlilik", "yenileme", "odeme sozu", "sozu", "taahhut"],
-  deadline: ["durusma", "randevu", "hatirlatma", "ihale", "sinav", "muayene", "planlanan", "hedef", "odeme tarihi"],
+  deadlineStrong: ["son tarih", "son gun", "son odeme", "son teslim", "son basvuru", "son kullanma", "vade", "vadesi", "termin", "teslim", "dusum", "bitis", "gecerlilik", "yenileme", "odeme sozu", "sozu", "taahhut", "due", "due date", "deadline", "expiry", "expires", "expiration", "valid until", "renewal", "end date"],
+  deadline: ["durusma", "randevu", "hatirlatma", "ihale", "sinav", "muayene", "planlanan", "hedef", "odeme tarihi", "appointment", "hearing", "reminder", "exam", "inspection", "scheduled", "target"],
   // Geçmişte olmuş bir olayın tarihi (son tarih değil): "Son işlem tarihi", "Kayıt tarihi".
-  event: ["kayit", "basvuru", "olusturma", "siparis", "giris", "acilis", "takip", "islem", "son islem", "son gorusme", "son ziyaret", "son guncelleme", "son giris", "ekleme", "kabul", "satis"],
+  event: ["kayit", "basvuru", "olusturma", "siparis", "giris", "acilis", "takip", "islem", "son islem", "son gorusme", "son ziyaret", "son guncelleme", "son giris", "ekleme", "kabul", "satis", "created", "registered", "last contact", "last visit", "updated", "start date"],
   birth: ["dogum"],
-  status: ["durum", "durumu", "asama", "asamasi", "statu", "statusu", "sonuc", "sonucu", "status", "state", "stage", "evre", "safha", "onay"],
+  status: ["durum", "durumu", "asama", "asamasi", "statu", "statusu", "sonuc", "sonucu", "status", "state", "stage", "evre", "safha", "onay", "result", "approved"],
   category: [
     "tur", "turu", "tip", "tipi", "kategori", "kategorisi", "grup", "grubu", "sinif", "sinifi", "sube", "subesi", "departman", "bolum", "birim", "kaynak",
     "kanal", "segment", "marka", "model", "cins", "brans", "hizmet", "urun", "proje", "mahkeme", "daire", "ilce", "bolge", "sektor", "cinsiyet", "oncelik", "etiket",
+    "type", "category", "group", "class", "branch", "department", "region", "priority", "tag", "gender",
   ],
   phone: ["tel", "telefon", "telefonu", "gsm", "cep", "mobil", "phone", "irtibat", "whatsapp", "faks", "fax"],
   email: ["e posta", "eposta", "email", "e mail", "mail"],
   address: ["adres", "adresi", "address", "mahalle", "cadde", "sokak"],
-  note: ["aciklama", "aciklamasi", "not", "notlar", "notu", "yorum", "gorus", "detay", "icerik", "bilgi", "ozet", "sikayet", "talep", "istek", "mesaj", "gerekce", "son durum", "son durumu"],
+  note: ["aciklama", "aciklamasi", "not", "notlar", "notu", "yorum", "gorus", "detay", "icerik", "bilgi", "ozet", "sikayet", "talep", "istek", "mesaj", "gerekce", "son durum", "son durumu", "notes", "comment", "comments", "description", "remarks", "details"],
   tckn: ["tc", "t c", "tckn", "tc no", "tc kimlik", "kimlik no", "kimlik"],
   vkn: ["vkn", "vergi no", "vergi numarasi", "vergi kimlik"],
   iban: ["iban", "hesap no"],
@@ -115,6 +118,8 @@ const looksLikeName = value => {
   const parts = value.split(/\s+/).filter(Boolean);
   return parts.length >= 2 && parts.length <= 5 && value.length <= 60 && /^[\p{L}.'’\s-]+$/u.test(value) && !isOrg(value);
 };
+// Tek kelimelik ad ("Mehmet", "Ayşe"): büyük harfle başlar, yalnız harf; başlık kişi söylüyorsa yeter.
+const looksLikeFirstName = value => value.length >= 2 && value.length <= 24 && /^\p{Lu}[\p{Ll}\p{Lu}'’-]*$/u.test(value);
 // Para birimi: ₺/TL/TRY → TRY; $/USD; €/EUR; £/GBP. İşaretsizse null.
 export function currencyOf(value) {
   const text = String(value ?? "");
@@ -125,9 +130,15 @@ export function currencyOf(value) {
   return null;
 }
 
+// Excel/Sheets hata değerleri (#SAYI/0!, #DIV/0!, #REF!, #N/A…) boş sayılır: kolonun türünü bozmaz, toplama girmez.
+const ERROR_VALUES = new Set(["#DIV/0!", "#REF!", "#N/A", "#VALUE!", "#NAME?", "#NUM!", "#NULL!", "#ERROR!", "#SPILL!", "#CALC!", "#SAYI/0!", "#BAŞV!", "#DEĞER!", "#AD?", "#YOK", "#SAYI!", "#BOŞ!", "#HATA!", "#TAŞMA!", "#DÖNGÜ!"]);
+export const isErrorValue = value => {
+  const text = String(value ?? "");
+  return text.charCodeAt(0) === 35 && ERROR_VALUES.has(text.trim().toLocaleUpperCase("tr-TR"));
+};
 export const isBlank = value => {
   const text = String(value ?? "").trim();
-  return !text || text === "-" || text === "—";
+  return !text || text === "-" || text === "—" || (text.charCodeAt(0) === 35 && isErrorValue(text));
 };
 
 function sampleValues(rows, column) {
@@ -183,9 +194,46 @@ function isSequence(values) {
 const round = value => Math.round(value * 100) / 100;
 
 // ---------- Kolon çözümlemesi ----------
-export function analyzeColumn(rows, column, { now = new Date() } = {}) {
+// Kullanıcının eşleme ekranında seçtiği roller (v2.0.2): otomatik kararın üstüne yazar.
+export const FORCED_ROLES = {
+  ignore: { role: "text", extra: { ignored: true }, label: "Yoksay" },
+  id: { role: "id", extra: { kind: "code" }, label: "Kimlik / No" },
+  person: { role: "person", extra: {}, label: "Kişi" },
+  org: { role: "org", extra: {}, label: "Kurum" },
+  phone: { role: "phone", extra: {}, label: "Telefon" },
+  email: { role: "email", extra: {}, label: "E-posta" },
+  money: { role: "money", extra: { kind: "amount" }, label: "Tutar" },
+  deadline: { role: "date", extra: { kind: "deadline", meaning: "expiry", strong: true, meaningReason: "eşleme ekranında son tarih seçildi" }, label: "Son tarih / Vade" },
+  date: { role: "date", extra: { kind: "event", meaning: "record", meaningReason: "eşleme ekranında olay tarihi seçildi" }, label: "Tarih (olay)" },
+  status: { role: "status", extra: {}, label: "Durum" },
+  category: { role: "category", extra: {}, label: "Kategori" },
+  note: { role: "note", extra: {}, label: "Not" },
+};
+
+export function analyzeColumn(rows, column, { now = new Date(), forced = null } = {}) {
   const hits = headerHits(column);
   const { values, present, nonEmpty } = sampleValues(rows, column);
+  const chosen = forced && FORCED_ROLES[forced[column]];
+  if (chosen) {
+    const distinctCount = new Set(values).size;
+    const stats = { present, nonEmpty, fill: present ? round(nonEmpty / present) : 0, distinct: distinctCount, uniqueness: values.length ? round(distinctCount / values.length) : 0, avgLength: 0 };
+    const extra = { ...chosen.extra };
+    if (chosen.role === "status" || chosen.role === "category") extra.values = topValues(values, 6);
+    if (chosen.role === "date") {
+      const today = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
+      let dated = 0;
+      let future = 0;
+      for (const value of values) {
+        const parsed = parseDate(value);
+        if (!parsed) continue;
+        dated += 1;
+        if (parsed.getTime() >= today) future += 1;
+      }
+      extra.validRate = values.length ? round(dated / values.length) : 0;
+      extra.futureRate = dated ? round(future / dated) : 0;
+    }
+    return { column, role: chosen.role, confidence: 1, verified: false, forced: forced[column], ...extra, stats, header: Object.keys(hits) };
+  }
   const distinct = new Set(values).size;
   let totalLength = 0;
   for (const value of values) totalLength += value.length;
@@ -194,51 +242,87 @@ export function analyzeColumn(rows, column, { now = new Date() } = {}) {
   const header = Object.keys(hits);
   const result = (role, confidence, extra = {}) => ({ column, role, confidence: round(Math.min(1, confidence)), verified: false, ...extra, stats, header });
   if (!nonEmpty) return result("empty", 1);
+  // Üç ve daha çok değerde oranlar yeter. Küçük tablolarda (1-2 değer) tür ancak tüm değerler kesin uyuyorsa ve
+  // başlık o türü söylüyorsa (ya da en az iki değer varsa) verilir: iki satırlık "Plaka / Muayene bitiş" tablosu da
+  // tarih ve plaka kolonu tanısın.
   const enough = values.length >= 3;
+  const pass = (score, threshold, hinted = false, hintThreshold = threshold) => (enough ? score >= threshold || (hinted && score >= hintThreshold) : score >= 1 && (hinted || values.length >= 2));
+  const embeddedDate = value => {
+    const found = /(?<!\d)(\d{1,2}[./-]\d{1,2}[./-](?:\d{4}|\d{2}))(?!\d)/.exec(value);
+    return Boolean(found && parseDate(found[1]));
+  };
   const repeated = distinct <= Math.max(12, values.length * 0.05) && values.length / Math.max(distinct, 1) >= 3 && avgLength <= 40;
+
+  // Excel'in sayıya çevirdiği telefon/T.C. (5.32E+09): rakamlar dosyada yitmiştir; rol başlıktan verilir, uyarı yazılır.
+  const scientific = rate(values, text => /^\d(?:[.,]\d+)?E\+\d{1,2}$/i.test(text));
+  if (scientific >= 0.3 && (hits.phone || hits.tckn)) return result(hits.tckn ? "tckn" : "phone", 0.6, { warning: "scientific", validRate: 0 });
 
   // 1) Doğrulanabilen türler: matematiksel sağlama.
   const tckn = rate(values, isTckn);
-  if (enough && (tckn >= 0.9 || (hits.tckn && tckn >= 0.6))) return result("tckn", tckn, { verified: true, validRate: round(tckn) });
+  if (pass(tckn, 0.9, hits.tckn, 0.6)) return result("tckn", tckn, { verified: true, validRate: round(tckn) });
   const iban = rate(values, isIban);
-  if (enough && (iban >= 0.9 || (hits.iban && iban >= 0.6))) return result("iban", iban, { verified: true, validRate: round(iban) });
+  if (pass(iban, 0.9, hits.iban, 0.6)) return result("iban", iban, { verified: true, validRate: round(iban) });
   if (hits.vkn) {
     const vkn = rate(values, isVkn);
-    if (enough && vkn >= 0.6) return result("vkn", vkn, { verified: true, validRate: round(vkn) });
+    if (pass(vkn, 0.6, true)) return result("vkn", vkn, { verified: true, validRate: round(vkn) });
   }
 
   // 2) Biçimi belirgin türler.
   const email = rate(values, isEmail);
-  if (enough && email >= 0.85) return result("email", email, { validRate: round(email) });
+  if (pass(email, 0.85, hits.email)) return result("email", email, { validRate: round(email) });
   const url = rate(values, isUrl);
-  if (enough && url >= 0.85) return result("url", url, { validRate: round(url) });
+  if (pass(url, 0.85, hits.url)) return result("url", url, { validRate: round(url) });
   const plate = rate(values, isPlate);
-  if (enough && (plate >= 0.85 || (hits.plate && plate >= 0.6))) return result("plate", plate, { validRate: round(plate) });
+  if (pass(plate, 0.85, hits.plate, 0.6)) return result("plate", plate, { validRate: round(plate) });
   const phone = rate(values, isTrPhone);
-  if (enough && (phone >= 0.8 || (hits.phone && phone >= 0.5))) return result("phone", phone + (hits.phone ? 0.1 : 0), { validRate: round(phone) });
+  if (pass(phone, 0.8, hits.phone, 0.5)) return result("phone", phone + (hits.phone ? 0.1 : 0), { validRate: round(phone) });
   const caseNo = rate(values, isCaseNo);
-  if (enough && caseNo >= 0.8) return result("id", caseNo, { kind: "case" });
-  const date = rate(values, value => Boolean(parseDate(value)));
-  if (enough && (date >= 0.8 || (hits.date && date >= 0.5))) {
-    // Alt tür: son tarih (yaklaşan/tarihi geçen anlamlı), olay tarihi (bu ay eklenen), doğum tarihi, diğer.
-    const kind = hits.birth ? "birth" : hits.deadlineStrong ? "deadline" : hits.event ? "event" : hits.deadline ? "deadline" : "other";
-    // İleri tarihli değerlerin oranı: aynı türden iki kolon varsa (ör. "Muayene tarihi" ve "Randevu tarihi") önümüzdeki
-    // günleri taşıyanı son tarih olarak seçmek için.
+  if (pass(caseNo, 0.8, hits.id)) return result("id", caseNo, { kind: "case" });
+  // Başlık tarih diyorsa "30.09.2026 (uzatıldı)" gibi tarih + not hücreleri de tarih sayılır.
+  const dateHint = hits.date || hits.deadlineStrong || hits.deadline;
+  const date = rate(values, value => Boolean(parseDate(value)) || (dateHint && embeddedDate(value)));
+  // Excel seri tarihleri (45000): başlık tarih diyor, hücreler beş haneli sayı. Kolon tarih sayılır; değerler
+  // toplu düzeltmeyle gerçek tarihe çevrilir (fixes.mjs); çevrilene kadar takvim bu kolondan uyarı üretmez.
+  const serial = dateHint ? rate(values, isSerialDate) : 0;
+  if (serial >= 0.6 && date < 0.5) {
     const today = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
-    const futureRate = rate(values, value => {
+    let dated = 0;
+    let future = 0;
+    for (const value of values) {
+      const parsed = serialToDate(value);
+      if (!parsed) continue;
+      dated += 1;
+      if (parsed.getTime() >= today) future += 1;
+    }
+    const futureRate = dated ? future / dated : 0;
+    const { meaning, reason } = dateMeaning(column, futureRate);
+    return result("date", 0.7, { validRate: 0, warning: "serial", kind: kindOfMeaning(meaning), meaning, meaningReason: reason, strong: false, futureRate: round(futureRate), serialRate: round(serial) });
+  }
+  if (pass(date, 0.8, dateHint, 0.5)) {
+    // İleri tarihli değerlerin oranı (dolu tarihler içinde): anlamı başlıktan çıkmayan kolonlarda karar verir.
+    const today = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
+    let dated = 0;
+    let future = 0;
+    for (const value of values) {
       const parsed = parseDate(value);
-      return Boolean(parsed) && parsed.getTime() >= today;
-    });
-    return result("date", date + (hits.date ? 0.1 : 0), { validRate: round(date), kind, strong: Boolean(hits.deadlineStrong), futureRate: round(futureRate) });
+      if (!parsed) continue;
+      dated += 1;
+      if (parsed.getTime() >= today) future += 1;
+    }
+    const futureRate = dated ? future / dated : 0;
+    // Anlam (v2.0.2, temporal.mjs): bitiş / planlı / kayıt / doğum / belirsiz. "kind" eski adıyla sürer: son tarih kartı
+    // (deadline) bitiş ve planlı tarihlerden, "Bu ay" (event) kayıt tarihlerinden kurulur.
+    const { meaning, reason } = dateMeaning(column, futureRate);
+    return result("date", date + (hits.date ? 0.1 : 0), { validRate: round(date), kind: kindOfMeaning(meaning), meaning, meaningReason: reason, strong: meaning === "expiry", futureRate: round(futureRate) });
   }
   const numeric = rate(values, value => parseAmount(value) !== null);
   const percentSigned = rate(values, value => /%/.test(value) && parseAmount(value.replace(/%/g, "")) !== null);
-  if (enough && (percentSigned >= 0.8 || (hits.percent && numeric >= 0.9))) return result("percent", Math.max(percentSigned, 0.8));
+  if (pass(percentSigned, 0.8, false) || (hits.percent && pass(numeric, 0.9, true))) return result("percent", Math.max(percentSigned, 0.8));
   const province = rate(values, isProvince);
-  if (enough && (province >= 0.8 || (hits.city && province >= 0.6))) return result("city", province, { values: topValues(values, 6) });
+  if (pass(province, 0.8, hits.city, 0.6)) return result("city", province, { values: topValues(values, 6) });
 
   // 3) Sayısal kolonlar: sıra no, tutar, miktar, sayısal kimlik.
-  if (enough && numeric >= 0.85) {
+  if (pass(numeric, 0.85, hits.money || hits.quantity || hits.percent || hits.id || hits.sequence)) {
     if ((hits.sequence || /^(no|nr)$/.test(foldText(column))) && isSequence(values)) return result("sequence", 0.95);
     const currencies = new Set();
     let marked = 0;
@@ -270,12 +354,17 @@ export function analyzeColumn(rows, column, { now = new Date() } = {}) {
   const org = rate(values, isOrg);
   const names = rate(values, looksLikeName);
   if (hits.responsible && stats.uniqueness <= 0.5 && names + org >= 0.5) return result("responsible", 0.6 + names * 0.4, { values: topValues(values, 6) });
+  // "Şoför", "Avukat" başlıklı kolonda her satır ayrı bir ad taşıyorsa (tek kelimelik adlar dahil) kolon o kişilerin
+  // listesidir: "Şoför / Telefon" tablosunda şoför kayıt sahibidir.
+  const firstNames = rate(values, looksLikeFirstName);
+  if (hits.responsible && !hits.id && (names + org >= 0.5 || firstNames >= 0.8)) return result("person", 0.55 + Math.max(names, firstNames) * 0.3, { kind: "responsible" });
   // "HASTA NO", "ÜYE NO": taraf kelimesi geçse de değerler ad değil koddur.
   const code = hits.id && names < 0.3 && org < 0.3 && stats.uniqueness >= 0.9 && avgLength <= 40;
   if (code) return result("id", 0.75, { kind: "code" });
   if ((hits.person && (names + org >= 0.4 || stats.uniqueness >= 0.5)) || (!hits.itemName && !hits.item && names >= 0.8)) {
     return result(org > names ? "org" : "person", 0.5 + Math.max(names, org) * 0.4 + (hits.person ? 0.1 : 0));
   }
+
   if (hits.id && stats.uniqueness >= 0.9 && avgLength <= 40) return result("id", 0.75, { kind: "code" });
   if (org >= 0.5) return result("org", org);
   if (hits.status) return result("status", 0.7, { values: topValues(values) });
@@ -296,10 +385,84 @@ export function importance(analysis) {
 }
 
 export function analyzeColumns(rows, columns, options = {}) {
-  return columns.map(column => {
+  const analyses = columns.map(column => {
     const analysis = analyzeColumn(rows, column, options);
-    return { ...analysis, importance: importance(analysis) };
+    return { ...analysis, importance: analysis.ignored ? 0 : importance(analysis) };
   });
+  inferAcrossColumns(rows, analyses);
+  for (const item of analyses) {
+    item.evidence = explain(item);
+    item.certainty = certaintyOf(item);
+  }
+  return analyses;
+}
+
+// ---------- Çapraz kolon çıkarımı ve kanıt (v2.0.2) ----------
+// Kolonun ne olduğuna yalnız başlığı değil değerleri ve öteki kolonlarla ilişkisi karar verir; her karar kanıtlarıyla
+// (analiz penceresinde "neden?") ve bir kesinlik derecesiyle döner: kesin / olası / belirsiz.
+const ROLE_TR = { id: "kimlik", person: "kişi", org: "kurum", money: "tutar", date: "tarih", status: "durum", category: "kategori", phone: "telefon", email: "e-posta", address: "adres", note: "not", tckn: "T.C. kimlik no", vkn: "vergi no", iban: "IBAN", city: "il", plate: "plaka", url: "bağlantı", number: "sayı", percent: "oran", sequence: "sıra no", responsible: "sorumlu", text: "metin", empty: "boş" };
+const HIT_TR = { id: "kimlik", person: "kişi", party: "taraf", name: "ad", money: "tutar", price: "fiyat", quantity: "miktar", percent: "oran", date: "tarih", deadlineStrong: "son tarih", deadline: "son tarih", event: "olay tarihi", birth: "doğum", status: "durum", category: "kategori", phone: "telefon", email: "e-posta", address: "adres", note: "not", tckn: "T.C.", vkn: "vergi no", iban: "IBAN", city: "il", plate: "plaka", url: "bağlantı", sequence: "sıra", responsible: "sorumlu", item: "öğe", itemName: "öğe adı" };
+const VALIDATED = new Set(["date", "money", "phone", "email", "plate", "tckn", "iban", "vkn", "url", "percent", "number"]);
+
+// İki tarih kolonu: biri hep ötekinden sonra geliyorsa (≥ %95, en az 5 satır) ve başlığı belirsizse, sonraki bitiş /
+// son tarih, önceki başlangıç / kayıt tarihidir ("Tarih 1 / Tarih 2" gibi başlıklarda insan da böyle düşünür).
+function inferAcrossColumns(rows, analyses) {
+  const dates = analyses.filter(item => item.role === "date" && item.stats.nonEmpty >= 5);
+  if (dates.length >= 2 && rows.length <= 50_000) {
+    const parsed = new Map(dates.map(item => [item.column, rows.map(row => parseDate(row[item.column]))]));
+    for (const a of dates) {
+      for (const b of dates) {
+        if (a === b || a.forced || b.forced || (a.meaning !== "other" && b.meaning !== "other")) continue;
+        const left = parsed.get(a.column);
+        const right = parsed.get(b.column);
+        let both = 0;
+        let after = 0;
+        for (let index = 0; index < rows.length; index += 1) {
+          if (!left[index] || !right[index]) continue;
+          both += 1;
+          if (right[index].getTime() >= left[index].getTime()) after += 1;
+        }
+        if (both < 5 || after / both < 0.95) continue;
+        if (b.meaning === "other" && !b.inferred) {
+          Object.assign(b, { meaning: "expiry", kind: "deadline", strong: false, inferred: `değerleri “${a.column}” tarihinden hep sonra: bitiş / son tarih` });
+        }
+        if (a.meaning === "other" && !a.inferred) {
+          Object.assign(a, { meaning: "record", kind: "event", inferred: `değerleri “${b.column}” tarihinden hep önce: başlangıç / kayıt tarihi` });
+        }
+      }
+    }
+  }
+}
+
+function explain(item) {
+  const out = [];
+  if (item.forced) out.push(`eşleme ekranında seçildi: ${FORCED_ROLES[item.forced]?.label || item.forced}`);
+  const hits = (item.header || []).map(key => HIT_TR[key]).filter(Boolean);
+  if (hits.length) out.push(`başlık kelimesi: ${[...new Set(hits)].join(", ")}`);
+  const rate = item.validRate ?? null;
+  if (rate !== null && VALIDATED.has(item.role)) out.push(`değerlerin %${Math.round(rate * 100)}'i geçerli ${ROLE_TR[item.role] || item.role}${item.verified ? " (sağlama tuttu)" : ""}`);
+  if (item.role === "date") {
+    if (item.futureRate !== undefined) out.push(`%${Math.round(item.futureRate * 100)}'i ileri tarihli`);
+    if (item.inferred) out.push(item.inferred);
+    else if (item.meaningReason) out.push(item.meaningReason);
+  }
+  if (item.currency) out.push(`para birimi ${item.currency}`);
+  if ((item.role === "id" || item.role === "person" || item.role === "org") && item.stats.uniqueness >= 0.95) out.push("her satırda farklı değer");
+  if ((item.role === "status" || item.role === "category") && item.values?.length) out.push(`${item.stats.distinct} farklı değer: ${item.values.slice(0, 4).join(", ")}${item.stats.distinct > 4 ? "…" : ""}`);
+  if (item.role === "responsible" && item.values?.length) out.push(`az sayıda kişi tekrar ediyor: ${item.values.slice(0, 3).join(", ")}`);
+  if (item.warning === "scientific") out.push("değerler Excel'de sayıya dönüşmüş (bilimsel gösterim)");
+  if (item.warning === "serial") out.push(`değerlerin %${Math.round((item.serialRate || 0) * 100)}'i Excel seri tarih sayısı (45000 gibi): toplu düzeltmeyle tarihe çevrilir`);
+  if (item.stats.fill < 0.5 && item.role !== "empty") out.push(`satırların yalnız %${Math.round(item.stats.fill * 100)}'inde dolu`);
+  return out;
+}
+
+function certaintyOf(item) {
+  if (item.role === "empty" || item.forced) return "kesin";
+  const rate = item.validRate ?? null;
+  if (item.warning) return "belirsiz";
+  if ((item.verified && rate >= 0.9) || (VALIDATED.has(item.role) && rate !== null && rate >= 0.95) || item.confidence >= 0.9) return "kesin";
+  if (item.confidence >= 0.7 || (rate !== null && rate >= 0.7)) return "olası";
+  return "belirsiz";
 }
 
 // Görünümün ana kolonları: göstergeler, arama ipucu, kayıt kimliği ve sektör tahmini bunları kullanır.

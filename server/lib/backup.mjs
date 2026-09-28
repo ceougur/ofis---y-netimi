@@ -55,7 +55,7 @@ export function createBackup(db, backupDir, { label = "", keep = 30 } = {}) {
 
 // Açılışta son yedek eskiyse kısa bir gecikmeyle yedek alır, sonra düzenli aralıkla kontrol eder.
 // (v1.0.0'da yalnızca 6 saatlik setInterval vardı; sunucu her akşam kapanıyorsa yedek hiç alınmayabiliyordu.)
-export function startBackupScheduler({ db, backupDir, intervalHours, keep, startDelayMs, log }) {
+export function startBackupScheduler({ db, backupDir, intervalHours, keep, startDelayMs, log, onBackup = null }) {
   const intervalMs = intervalHours * 3_600_000;
   const due = () => {
     const latest = listBackups(backupDir)[0];
@@ -66,6 +66,7 @@ export function startBackupScheduler({ db, backupDir, intervalHours, keep, start
     try {
       const result = createBackup(db, backupDir, { keep });
       log.info(`Yedek oluşturuldu: ${result.name}`);
+      onBackup?.(result); // Drive'a kopya (v2.0.2); asla fırlatmaz
     } catch (error) {
       log.error("Yedekleme hatası", error);
     }

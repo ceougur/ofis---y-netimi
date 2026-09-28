@@ -251,6 +251,31 @@ for (const sector of SECTORS) {
   for (const signal of sector.signals.headers) signal.weight = signal.base / Math.sqrt(PHRASE_SECTORS.get(signal.phrase).size);
 }
 
+/**
+ * Ofisin oluşturduğu sektörü yerleşik sektörlerle aynı biçime getirir (v2.0.2).
+ * @param {{ id: string, name: string, record: string, records: string, expert: string, subtitle: string, modules?: object, headers?: string[] }} entry
+ */
+export function customSector(entry) {
+  const headers = (entry.headers || []).map(item => {
+    const signal = parseSignal(`!${item}`);
+    // Özgüllük: ifade yerleşik sektörlerde de geçiyorsa ağırlığı düşer.
+    signal.weight = signal.base / Math.sqrt((PHRASE_SECTORS.get(signal.phrase)?.size || 0) + 1);
+    return signal;
+  });
+  return {
+    id: entry.id,
+    name: entry.name,
+    group: "ozel",
+    groupName: "Kendi sektörleriniz",
+    general: false,
+    custom: true,
+    vocab: { record: entry.record, records: entry.records, Record: capitalize(entry.record), Records: capitalize(entry.records), expert: entry.expert, subtitle: entry.subtitle },
+    modules: { tahsilat: true, haciz: false, ...(entry.modules || {}) },
+    keys: [entry.name, ...(entry.headers || [])],
+    signals: { headers, values: [], titles: [foldText(entry.name)].filter(Boolean), roles: {} },
+  };
+}
+
 // Seçici için sade liste (istemci arama ve gruplamayı kendisi yapar).
 export function sectorCatalog() {
   return {
@@ -265,7 +290,9 @@ const TEXT_ROLES = new Set(["text", "category", "status", "note", "org", "person
  * @param {{ analyses: Array<object>, rows: Array<Record<string,string>>, label?: string, tabs?: string[] }} input
  * @returns {{ suggestion: string, level: "high"|"medium"|"low", top: object|null, evidence: Array<object>, candidates: Array<object> }}
  */
-export function classifySector({ analyses, rows, label = "", tabs = [] }) {
+export function classifySector({ analyses, rows, label = "", tabs = [], extra = [] }) {
+  // Ofisin kendi oluşturduğu sektörler (v2.0.2, custom-sectors.mjs) de yarışır; tanıtıcı kolon başlıkları kanıttır.
+  const pool = extra.length ? [...SECTORS, ...extra] : SECTORS;
   const scores = new Map();
   const add = (sector, item) => {
     if (!scores.has(sector.id)) scores.set(sector.id, { sector, score: 0, evidence: [], columns: new Set(), strong: 0 });
@@ -278,7 +305,7 @@ export function classifySector({ analyses, rows, label = "", tabs = [] }) {
 
   // 1) Kolon başlıkları: her kolon, her sektöre en fazla bir kez (en güçlü eşleşmesiyle) katkı verir.
   const headerWords = analyses.map(item => ({ item, words: foldText(item.column).split(" ").filter(Boolean) }));
-  for (const sector of SECTORS) {
+  for (const sector of pool) {
     for (const { item, words } of headerWords) {
       if (item.role === "empty") continue;
       let best = null;
@@ -302,7 +329,7 @@ export function classifySector({ analyses, rows, label = "", tabs = [] }) {
         if (value && String(value).trim()) samples.get(column).push(foldText(String(value).slice(0, 300)));
       }
     }
-    for (const sector of SECTORS) {
+    for (const sector of pool) {
       for (const signal of sector.signals.values) {
         for (const [column, values] of samples) {
           if (values.length < 3) continue;
@@ -318,7 +345,7 @@ export function classifySector({ analyses, rows, label = "", tabs = [] }) {
   // 3) Doğrulanmış kolon türleri (ör. geçerli plakalar → araçla ilgili sektörler).
   const roleCount = {};
   for (const item of analyses) roleCount[item.role] = (roleCount[item.role] || 0) + 1;
-  for (const sector of SECTORS) {
+  for (const sector of pool) {
     for (const [role, weight] of Object.entries(sector.signals.roles)) {
       if (roleCount[role]) add(sector, { kind: "role", role, column: analyses.find(item => item.role === role)?.column, signal: role, weight, base: weight });
     }
@@ -326,7 +353,7 @@ export function classifySector({ analyses, rows, label = "", tabs = [] }) {
 
   // 4) Dosya ve sekme adları (zayıf kanıt, toplamda en fazla 1,5).
   const titleWords = [label.replace(/\.(xlsx?|csv)$/i, ""), ...tabs].map(text => foldText(text).split(" ").filter(Boolean));
-  for (const sector of SECTORS) {
+  for (const sector of pool) {
     const matched = sector.signals.titles.find(phrase => titleWords.some(words => phraseAt(words, phrase)));
     if (matched) add(sector, { kind: "title", signal: matched, weight: 1.5, base: 1.5 });
   }

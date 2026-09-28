@@ -207,21 +207,38 @@
     }
     const formula = formulaOf(info.key, info.field);
     const shownName = HOF.columnLabel(info.field);
+    // Excel/Sheets'te açılır listesi olan kolon: aynı liste (v2.0.2, hof-choices.js). Formüllü alan liste olmaz.
+    const base = { name: "value", label: shownName, type: "textarea", value: current ? current.value : info.value, rows: 4, maxlength: 20000 };
+    const field = HOF.choiceField && !computed(formula) ? HOF.choiceField(base, HOF.choicesForKey(info.key, info.field)) : base;
     HOF.formModal({
       title: `${shownName} düzenle`,
       eyebrow: info.title || info.key,
       intro: computed(formula)
         ? `<b>Bu alan formülle hesaplanıyor</b> (${esc(formula.d)}). Normalde değiştirmeniz gerekmez: formüldeki alanları düzeltin, bu alan kendiliğinden güncellenir. Buraya değer yazarsanız bu kayıtta formül yerine sizin değeriniz kullanılır.`
         : "Bu değişiklik kaynak Excel/Sheets dosyasını bozmaz; ofisin ortak çalışma alanında saklanır ve kimin yaptığı kaydedilir.",
-      fields: [{ name: "value", label: shownName, type: "textarea", value: current ? current.value : info.value, rows: 4, maxlength: 20000 }],
+      fields: [field],
       extraHtml: current ? `<p class="hof-edit-meta">Son düzenleyen: ${esc(current.actorName || "—")} · ${esc(HOF.formatDateTime(current.updatedAt))}</p>` : "",
       submitLabel: "Değişikliği kaydet",
       onSubmit: async data => {
+        const body = { sourceName: HOF.sourceName(), caseKey: info.key, field: info.field, value: data.value, expectedVersion: current ? current.version : 0, previous: current ? current.value : info.value };
         try {
-          await HOF.api("/api/workspace/overrides", { method: "POST", body: { sourceName: HOF.sourceName(), caseKey: info.key, field: info.field, value: data.value, expectedVersion: current ? current.version : 0 } });
+          await HOF.api("/api/workspace/overrides", { method: "POST", body });
         } catch (error) {
-          if (error.status === 409) throw new Error(`Bu alanı az önce başka biri değiştirdi (yeni değer: "${error.data.currentValue ?? ""}"). Pencereyi kapatıp tekrar deneyin.`);
-          throw error;
+          if (error.status !== 409) throw error;
+          // Çakışma (v2.0.2): başkası bu alanı az önce değiştirdi. Kullanıcı güncel değeri görür; üzerine yazmayı seçebilir.
+          const currentValue = error.data?.currentValue ?? "";
+          const who = error.data?.by ? ` (${error.data.by})` : "";
+          const overwrite = await HOF.confirm({
+            title: "Bu alan siz bakarken değişti",
+            message: `Başka bir kullanıcı${who} bu alanı "${currentValue}" yaptı. Sizin yazdığınız: "${data.value}". Üzerine yazmak istiyor musunuz?`,
+            confirmLabel: "Üzerine yaz",
+            cancelLabel: "Vazgeç, güncel değeri göster",
+          });
+          if (!overwrite) {
+            HOF.refreshData();
+            return;
+          }
+          await HOF.api("/api/workspace/overrides", { method: "POST", body: { ...body, expectedVersion: undefined, force: true } });
         }
         HOF.toast(`${shownName} güncellendi.`, { type: "success" });
         HOF.refreshData();
@@ -241,7 +258,8 @@
       const formula = formulaOf(selected.key, column);
       // Formülle hesaplanan alan kilitlidir: kaydedince bağlı olduğu alanlardan yeniden hesaplanır.
       const locked = computed(formula) ? { readonly: true, badge: "ƒ formül", help: `${formula.d} · kaydedince kendiliğinden hesaplanır` } : {};
-      return { name: `f${index}`, label, column, value: shown === "—" ? "" : shown, original: shown === "—" ? "" : shown, ...locked };
+      const field = { name: `f${index}`, label, column, value: shown === "—" ? "" : shown, original: shown === "—" ? "" : shown, ...locked };
+      return HOF.choiceField ? HOF.choiceField(field, HOF.choicesForKey(selected.key, column)) : field;
     });
     if (!fields.length) return;
     HOF.formModal({
@@ -315,18 +333,21 @@
     }
     const modal = HOF.formModal({
       title: "Yeni kayıt oluştur",
-      eyebrow: `YENİ ${HOF.vocab.record.toLocaleUpperCase("tr-TR")}${tab ? ` · ${tab.toLocaleUpperCase("tr-TR")}` : ""}`,
+      eyebrow: `YENİ KAYIT${tab ? ` · ${tab.toLocaleUpperCase("tr-TR")}` : ""}`,
       size: "wide",
       intro: tab ? `Kayıt <b>${esc(tab)}</b> sekmesine eklenir; form bu sekmenin <b>${columns.length}</b> kolonuna göre oluşturuldu. Yalnızca doldurduğunuz alanlar kaydedilir; kayıt tüm bilgisayarlarda görünür.` : `Form, tablonuzun <b>${columns.length}</b> kolonuna göre oluşturuldu. Yalnızca doldurduğunuz alanlar kaydedilir; kayıt tüm bilgisayarlarda görünür.`,
       fields: (() => {
         const formulas = tabFormulas(tab);
-        return columns.map((column, index) => ({
-          name: `c${index}`,
-          label: HOF.columnLabel(column),
-          autofocus: index === 0,
-          maxlength: 20000,
-          ...(formulas[column] ? { badge: "ƒ formül", placeholder: "Boş bırakın; kendiliğinden hesaplanır", help: formulas[column].d } : {}),
-        }));
+        return columns.map((column, index) => {
+          const field = {
+            name: `c${index}`,
+            label: HOF.columnLabel(column),
+            autofocus: index === 0,
+            maxlength: 20000,
+            ...(formulas[column] ? { badge: "ƒ formül", placeholder: "Boş bırakın; kendiliğinden hesaplanır", help: formulas[column].d } : {}),
+          };
+          return formulas[column] || !HOF.choiceField ? field : HOF.choiceField(field, HOF.choicesFor(column, tab));
+        });
       })(),
       submitLabel: "Kaydı oluştur",
       onSubmit: async data => {
@@ -408,7 +429,9 @@
         table.closest(".dynamic-table-wrap")?.scrollTo?.({ top: 0 });
       });
     }
-    if (wrap.nextSibling !== pager) wrap.after(pager);
+    // Yatay kaydırma çubuğu (hof-grid.js) tablonun hemen altındadır; sayfalama onun altına gelir.
+    const anchor = wrap.nextElementSibling?.classList.contains("hof-hscroll") ? wrap.nextElementSibling : wrap;
+    if (anchor.nextSibling !== pager) anchor.after(pager);
     const signature = `${page}/${total}/${rows.length}`;
     if (pager.dataset.signature === signature) return;
     pager.dataset.signature = signature;

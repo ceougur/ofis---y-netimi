@@ -1,0 +1,262 @@
+// Silinenler (v2.0.2): yönetim panelinde silinen verinin listesi ve geri yükleme.
+//  - Tablo satırı (Excel/Sheets kaydı ya da programda eklenen kayıt): satır verisi yerinde durur; silinenler listesinden
+//    çıkarılınca eski yerinde yeniden görünür. Excel o arada yeniden yüklenip satır kalktıysa geri yüklenemez.
+//  - Belge: 30 gün içinde, dosyası duruyorsa.
+//  - Serbest sayfa: adı o arada başka bir sekmeye verildiyse "(geri yüklendi)" ekiyle.
+//  - Serbest sayfa satırı/kolonu: eski sırasına ARAYA eklenir; o arada eklenenler kayar, üzerine yazılmaz.
+//  - Tahsilat ve kasa hareketi: aynı kimlikle geri eklenir (Kasa ve tahsilat takvimi yeniden hesaplanır).
+import { HttpError, ok, readJson, text } from "../lib/http.mjs";
+
+const KIND_LABELS = {
+  row: "Tablo kaydı",
+  tab: "Sekme",
+  document: "Belge",
+  "free-sheet": "Serbest sayfa",
+  "free-row": "Serbest sayfa satırı",
+  "free-column": "Serbest sayfa kolonu",
+  payment: "Tahsilat",
+  cash: "Kasa hareketi",
+};
+const SEQUENCE = /^(sıra|sira|sıra no|no|#|sn|s\.?\s?no|nr)$/i;
+
+export function registerTrashRoutes(router, { store, auth, audit, events, dataset, profile, free, trash, documents }) {
+  const now = () => new Date().toISOString();
+  const publish = (user, detail) => events?.publish("workspace.changed", { actorId: user.id, actorName: user.display_name, ...detail }, { except: user.id });
+  const sessionNames = () => {
+    const names = new Map();
+    try {
+      for (const item of dataset.sessions()) names.set(item.key, item.name || item.label || "");
+    } catch {
+      // oturum listesi okunamazsa ad yazılmaz
+    }
+    return names;
+  };
+  // Satırın okunur adı: sıra numarası dışındaki ilk iki dolu değer (ör. "Ali Veli · 2026/101").
+  const rowTitle = values => {
+    const parts = [];
+    for (const [column, value] of Object.entries(values || {})) {
+      if (column.startsWith("__") || SEQUENCE.test(column.trim())) continue;
+      const textValue = String(value ?? "").trim();
+      if (!textValue || /^[-–—]+$/.test(textValue)) continue;
+      parts.push(textValue.length > 40 ? `${textValue.slice(0, 38)}…` : textValue);
+      if (parts.length === 2) break;
+    }
+    return parts.join(" · ");
+  };
+  const rowOf = (datasetKey, caseKey) => {
+    const row = store.get("SELECT tab, values_json FROM dataset_rows WHERE dataset_key = ? AND case_key = ? LIMIT 1", datasetKey, caseKey);
+    if (row) return { tab: row.tab, values: JSON.parse(row.values_json || "{}") };
+    const created = store.get("SELECT values_json FROM records WHERE source_name = ? AND case_key = ?", datasetKey, caseKey);
+    if (created) {
+      const values = JSON.parse(created.values_json || "{}");
+      return { tab: values.__sheet || "", values };
+    }
+    return null;
+  };
+
+  function list() {
+    const names = sessionNames();
+    const multi = names.size > 1;
+    const where = key => (multi && names.get(key) ? `Oturum: ${names.get(key)}` : "");
+    const items = [];
+    for (const item of store.all("SELECT d.id, d.source_name AS datasetKey, d.case_key AS caseKey, d.deleted_at AS deletedAt, COALESCE(u.display_name, '') AS actorName FROM deleted_records d LEFT JOIN users u ON u.id = d.deleted_by")) {
+      const row = rowOf(item.datasetKey, item.caseKey);
+      items.push({
+        id: `row:${item.id}`,
+        kind: "row",
+        title: (row && rowTitle(row.values)) || item.caseKey,
+        detail: [row?.tab ? `Sekme: ${row.tab}` : "", where(item.datasetKey)].filter(Boolean).join(" · "),
+        deletedAt: item.deletedAt,
+        actorName: item.actorName,
+        restorable: Boolean(row),
+        note: row ? "Eski yerinde yeniden görünür." : "Bu kayıt artık yüklenen tabloda yok (Excel yeniden yüklenmiş olabilir).",
+      });
+    }
+    for (const item of store.all("SELECT d.id, d.case_key AS caseKey, d.case_title AS caseTitle, d.name, d.sha256, d.deleted_at AS deletedAt, COALESCE(u.display_name, '') AS actorName FROM case_documents d LEFT JOIN users u ON u.id = d.deleted_by WHERE d.deleted_at IS NOT NULL")) {
+      const present = documents?.hasFile ? documents.hasFile(item) : true;
+      items.push({
+        id: `document:${item.id}`,
+        kind: "document",
+        title: item.name,
+        detail: `Kayıt: ${item.caseTitle || item.caseKey}`,
+        deletedAt: item.deletedAt,
+        actorName: item.actorName,
+        restorable: present,
+        note: present ? "Kaydın belgelerine geri döner. Silinen belgeler 30 gün saklanır." : "Dosya artık yok.",
+      });
+    }
+    for (const item of dataset.hiddenTabs ? dataset.hiddenTabs() : []) {
+      const actor = store.get("SELECT display_name AS name FROM users WHERE id = ?", item.by);
+      items.push({
+        id: `tab:${item.datasetKey}\u0000${item.original}`,
+        kind: "tab",
+        title: item.name || item.original,
+        detail: [item.reason === "list" ? "Excel/Sheets'te gizli liste sayfası (açılır listeler buradan okunur)" : "", `${item.rows || 0} kayıt`, item.name && item.name !== item.original ? `Excel'deki adı: ${item.original}` : "", where(item.datasetKey)].filter(Boolean).join(" · "),
+        deletedAt: item.at,
+        actorName: actor?.name || "",
+        restorable: true,
+        note: "Sekme ve kayıtları eski yerinde yeniden görünür. Veriler silinmemişti.",
+      });
+    }
+    for (const item of free?.deletedSheets ? free.deletedSheets() : []) {
+      items.push({
+        id: `free-sheet:${item.id}`,
+        kind: "free-sheet",
+        title: item.name,
+        detail: where(item.datasetKey),
+        deletedAt: item.deletedAt,
+        actorName: item.actorName,
+        restorable: true,
+        note: "Sekmelerin sonuna geri gelir; adı başka bir sekmede kullanılıyorsa “(geri yüklendi)” eklenir.",
+      });
+    }
+    for (const item of trash.open()) {
+      const payload = JSON.parse(item.payload_json || "{}");
+      const money = item.kind === "payment" || item.kind === "cash";
+      items.push({
+        id: `trash:${item.id}`,
+        kind: item.kind,
+        title: item.title,
+        detail: [
+          money ? `${new Intl.NumberFormat("tr-TR", { style: "currency", currency: "TRY" }).format(payload.amount || 0)} · ${String(payload.date || "").split("-").reverse().join(".")}` : "",
+          item.kind === "cash" ? (payload.kind === "in" ? "Tahsilat" : "Ödeme") : "",
+          item.detail,
+          where(item.dataset_key),
+        ]
+          .filter(Boolean)
+          .join(" · "),
+        deletedAt: item.deleted_at,
+        actorName: item.actor_name,
+        restorable: true,
+        note: item.kind === "free-row" || item.kind === "free-column" ? "Eski sırasına araya eklenir; o arada eklenenler kayar, üzerine yazılmaz." : "Aynı tutar ve tarihle geri eklenir; Kasa yeniden hesaplanır.",
+      });
+    }
+    items.sort((a, b) => (a.deletedAt < b.deletedAt ? 1 : -1));
+    return items.map(item => ({ ...item, kindLabel: KIND_LABELS[item.kind] || item.kind }));
+  }
+
+  router.get("/api/admin/trash", async ({ req, res }) => {
+    auth.requirePermission(req, "records.delete");
+    ok(res, list());
+  });
+
+  router.post("/api/admin/trash/restore", async ({ req, res }) => {
+    const user = auth.requirePermission(req, "records.delete");
+    const body = await readJson(req);
+    const [source, ...rest] = text(body.id).split(":");
+    const ref = rest.join(":");
+    if (!source || !ref) throw new HttpError(400, "Geri yüklenecek öğe seçilmedi.");
+
+    if (source === "row") {
+      const item = store.get("SELECT * FROM deleted_records WHERE id = ?", ref);
+      if (!item) throw new HttpError(404, "Bu kayıt zaten geri yüklenmiş.");
+      if (!rowOf(item.source_name, item.case_key)) throw new HttpError(409, "Bu kayıt artık yüklenen tabloda yok; geri yüklenemez.");
+      store.tx(() => {
+        store.run("DELETE FROM deleted_records WHERE id = ?", item.id);
+        audit(user, "source.row.restored", item.case_key, { sourceName: item.source_name, caseKey: item.case_key, from: "trash" });
+      });
+      profile?.invalidate();
+      publish(user, { kind: "records", datasetKey: item.source_name, caseKey: item.case_key });
+      return ok(res, { restored: "row", message: "Kayıt eski yerinde yeniden görünüyor." });
+    }
+
+    if (source === "tab") {
+      const [datasetKey, original] = ref.split("\u0000");
+      if (!datasetKey || !original) throw new HttpError(400, "Sekme tanınmadı.");
+      const result = dataset.withKey(datasetKey, () => dataset.unhideTab(user, original));
+      profile?.invalidate();
+      publish(user, { kind: "source", datasetKey });
+      return ok(res, { restored: "tab", message: `“${result.name}” sekmesi geri geldi.` });
+    }
+
+    if (source === "document") {
+      const item = store.get("SELECT * FROM case_documents WHERE id = ? AND deleted_at IS NOT NULL", ref);
+      if (!item) throw new HttpError(404, "Bu belge zaten geri yüklenmiş ya da kalıcı olarak silinmiş.");
+      if (documents?.hasFile && !documents.hasFile(item)) throw new HttpError(409, "Belgenin dosyası artık yok; geri yüklenemez.");
+      store.tx(() => {
+        store.run("UPDATE case_documents SET deleted_at = NULL, deleted_by = NULL WHERE id = ?", item.id);
+        audit(user, "case.document.restored", item.id, { caseKey: item.case_key, name: item.name });
+      });
+      publish(user, { kind: "documents", caseKey: item.case_key });
+      return ok(res, { restored: "document", message: `“${item.name}” kaydın belgelerine geri döndü.` });
+    }
+
+    if (source === "free-sheet") {
+      const sheet = store.get("SELECT id, dataset_key FROM free_sheets WHERE id = ? AND deleted_at IS NOT NULL", ref);
+      if (!sheet) throw new HttpError(404, "Bu sayfa zaten geri yüklenmiş.");
+      const result = dataset.withKey(sheet.dataset_key, () => free.restoreSheet(user, sheet.id));
+      profile?.invalidate();
+      publish(user, { kind: "records", datasetKey: sheet.dataset_key, free: sheet.id });
+      return ok(res, { restored: "free-sheet", message: result.renamed ? `Sayfa “${result.name}” adıyla geri geldi (eski adı başka bir sekmede kullanılıyor).` : `“${result.name}” sayfası geri geldi.` });
+    }
+
+    if (source !== "trash") throw new HttpError(400, "Bilinmeyen öğe.");
+    const item = trash.get(ref);
+    if (!item) throw new HttpError(404, "Bu öğe zaten geri yüklenmiş.");
+    const payload = JSON.parse(item.payload_json || "{}");
+    let message = "";
+
+    if (item.kind === "payment") {
+      store.tx(() => {
+        if (!store.get("SELECT 1 AS found FROM payments WHERE id = ?", item.ref)) {
+          store.run(
+            "INSERT INTO payments (id, case_key, case_title, amount, date, note, created_by, created_at, updated_by, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            item.ref,
+            payload.caseKey || "",
+            payload.caseTitle || "",
+            Number(payload.amount) || 0,
+            payload.date,
+            payload.note || "",
+            payload.createdBy || user.id,
+            payload.createdAt || now(),
+            user.id,
+            now(),
+          );
+        }
+        trash.markRestored(item.id, user);
+        audit(user, "case.payment.restored", item.ref, { caseKey: payload.caseKey, amount: payload.amount, date: payload.date });
+      });
+      publish(user, { kind: "activity", caseKey: payload.caseKey });
+      publish(user, { kind: "cash" });
+      message = "Tahsilat geri eklendi; Kasa ve tahsilat takvimi güncellendi.";
+    } else if (item.kind === "cash") {
+      if (!["in", "out"].includes(payload.kind)) throw new HttpError(409, "Kasa hareketinin bilgisi eksik; geri yüklenemez.");
+      store.tx(() => {
+        if (!store.get("SELECT 1 AS found FROM cash_entries WHERE id = ?", item.ref)) {
+          store.run(
+            "INSERT INTO cash_entries (id, kind, amount, date, description, created_by, created_at, updated_by, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            item.ref,
+            payload.kind,
+            Number(payload.amount) || 0,
+            payload.date,
+            payload.description || "",
+            payload.createdBy || user.id,
+            payload.createdAt || now(),
+            user.id,
+            now(),
+          );
+        }
+        trash.markRestored(item.id, user);
+        audit(user, "cash.entry.restored", item.ref, { kind: payload.kind, amount: payload.amount, date: payload.date, description: payload.description });
+      });
+      publish(user, { kind: "cash" });
+      message = "Kasa hareketi geri eklendi.";
+    } else if (item.kind === "free-row" || item.kind === "free-column") {
+      const sheet = store.get("SELECT deleted_at FROM free_sheets WHERE id = ?", payload.sheetId);
+      if (!sheet) throw new HttpError(409, "Satırın sayfası artık yok; geri yüklenemez.");
+      if (sheet.deleted_at) throw new HttpError(409, `“${payload.sheetName}” sayfası silinmiş. Önce sayfayı geri yükleyin.`);
+      const result = dataset.withKey(item.dataset_key || dataset.currentKey(), () => {
+        const restored = item.kind === "free-row" ? free.restoreRow(user, payload) : free.restoreColumn(user, payload);
+        trash.markRestored(item.id, user);
+        return restored;
+      });
+      profile?.invalidate();
+      publish(user, { kind: "records", datasetKey: item.dataset_key, free: payload.sheetId });
+      message =
+        item.kind === "free-row"
+          ? `Satır “${result.sheet}” sayfasına ${result.position}. satır olarak eklendi${result.lost.length ? ` (${result.lost.join(", ")} kolonu artık yok)` : ""}.`
+          : `“${result.column}” kolonu “${result.sheet}” sayfasına ${result.position}. kolon olarak eklendi${result.lost ? ` (${result.lost} hücrenin satırı artık yok)` : ""}.`;
+    } else throw new HttpError(400, "Bu öğe geri yüklenemez.");
+    return ok(res, { restored: item.kind, message });
+  });
+}

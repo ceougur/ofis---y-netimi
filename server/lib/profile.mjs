@@ -5,6 +5,7 @@
 // Sektör yalnızca yönetici onayıyla değişir. Analizin önerisi hiçbir zaman kendiliğinden uygulanmaz.
 // 1.6.0 öncesinden gelen kurulum (verisi olan) "Hukuk bürosu" profiliyle açılır: arayüzü güncellemeden önceki gibi kalır;
 // yöneticiye bir kez analiz sonucu gösterilir.
+import { FORCED_ROLES } from "./insight/columns.mjs";
 import { DATASET_KEY } from "./dataset.mjs";
 import { HttpError, parseJson } from "./http.mjs";
 import { ROLE_LABELS } from "./permissions.mjs";
@@ -15,12 +16,12 @@ import { ruleTitle } from "./insight/reasoning.mjs";
 import { isEmptyCell } from "./insight/cells.mjs";
 import { formatValue, parseNumberText } from "./formula/values.mjs";
 import { GENERAL_ID, LEGACY_ID, sectorById } from "./insight/sectors.mjs";
+import { createCustomSectors } from "./custom-sectors.mjs";
 
 // Kalemle düzenlenebilen başlıklar: anahtar → en fazla uzunluk ve yönetici ekranındaki adı.
 export const LABEL_SLOTS = Object.freeze({
   "brand.subtitle": { max: 60, name: "Kenar çubuğu alt başlığı" },
-  "nav.workspace": { max: 40, name: "Menü başlığı: Çalışma alanı" },
-  "nav.source": { max: 40, name: "Menü başlığı: Veri kaynağı" },
+  // v2.0.2: "nav.workspace" ve "nav.source" menü başlıkları kaldırıldı; kayıtlı eski değerler yok sayılır.
   "side.title": { max: 40, name: "Operasyon merkezi başlığı" },
   // Operasyon merkezi düğmeleri (v2.0.1): kartın köşesindeki kalemle hepsi birlikte değiştirilir.
   "side.tasks": { max: 32, name: "Operasyon merkezi: Görevler" },
@@ -39,7 +40,7 @@ export const LABEL_SLOTS = Object.freeze({
   "table.subtitle": { max: 160, name: "Tablo açıklaması" },
 });
 
-const K = { sector: "insight.sector", labels: "ui.labels", intro: "insight.intro", initialized: "insight.initialized", columns: "ui.columns", dismissed: "insight.dismissed" };
+const K = { sector: "insight.sector", labels: "ui.labels", intro: "insight.intro", initialized: "insight.initialized", columns: "ui.columns", dismissed: "insight.dismissed", roles: "insight.roles" };
 const MAX_DISMISSED = 5000;
 const REASONING_LIST = 50;
 // Metindeki kolon adlarını ofisin verdiği adlarla değiştirir (yalnızca kelime sınırında; "No" "Notlar"ı bozmaz).
@@ -67,10 +68,12 @@ const cleanLabel = (value, max) =>
     .trim()
     .slice(0, max);
 
-export function createProfileService({ store, dataset, audit, events, log, free = null, clock = () => new Date() }) {
+export function createProfileService({ store, dataset, audit, events, log, free = null, clock = () => new Date(), runner = null }) {
   const caches = new Map(); // oturum → { fingerprint, analysis }
   const running = new Map(); // oturum → { fingerprint, promise }
   let generation = 0; // her geçersizleştirmede artar
+  // Analiz ayrı iş parçacığında koşar (worker.mjs); verilmediyse ana iş parçacığında (testler, küçük veriler).
+  const analysisRunner = runner || { run: payload => Promise.resolve(analyzeDataset(payload)), close: async () => {}, stats: () => ({ inlineOnly: true }) };
 
   const iso = () => clock().toISOString();
   // Oturuma ait ayar adı (ilk oturumda eski ad; diğerlerinde "@<kimlik>" ekli).
@@ -80,10 +83,12 @@ export function createProfileService({ store, dataset, audit, events, log, free 
     const parsed = parseJson(store.setting(name, ""), {});
     return parsed && typeof parsed === "object" && !Array.isArray(parsed) ? parsed : {};
   };
+  // Yalnız tanımlı yuvalar: kaldırılmış bir yuvanın (ör. v2.0.2'de menü başlıkları) kayıtlı değeri yok sayılır.
+  const known = labels => Object.fromEntries(Object.entries(labels).filter(([key]) => Object.hasOwn(LABEL_SLOTS, key)));
   const readLabels = () => {
-    const office = readObject(K.labels);
+    const office = known(readObject(K.labels));
     if (firstSession()) return office;
-    const own = readObject(sessionKey(K.labels));
+    const own = known(readObject(sessionKey(K.labels)));
     const merged = {};
     for (const [key, value] of Object.entries(office)) if (!DATA_LABELS.has(key)) merged[key] = value;
     for (const [key, value] of Object.entries(own)) if (DATA_LABELS.has(key)) merged[key] = value;
@@ -100,8 +105,35 @@ export function createProfileService({ store, dataset, audit, events, log, free 
     store.setSetting(K.labels, JSON.stringify(office), userId);
     store.setSetting(sessionKey(K.labels), JSON.stringify(own), userId);
   };
+  // Ofisin kendi sektörleri (v2.0.2): yerleşiklerle aynı biçim; kimlikleri "ozel-" ile başlar.
+  const customSectors = createCustomSectors({ store, audit });
+  const findSector = id => sectorById(id) || customSectors.get(id);
   const readSector = () => parseJson(store.setting(sessionKey(K.sector), ""), null);
   const readColumns = () => readObject(sessionKey(K.columns));
+  // Eşleme ekranında seçilen kolon rolleri ({kolon: rol}); analiz ve takvim otomatik kararın üstüne yazar (v2.0.2).
+  const readRoles = () => readObject(sessionKey(K.roles));
+  function setRoles(user, values, known = []) {
+    if (!values || typeof values !== "object" || Array.isArray(values)) throw new HttpError(400, "Kolon rolleri okunamadı.");
+    const columns = new Set(known);
+    const roles = readRoles();
+    const changes = [];
+    for (const [column, value] of Object.entries(values).slice(0, 500)) {
+      if (known.length && !columns.has(column)) continue;
+      const role = String(value || "").trim();
+      const previous = roles[column] || "";
+      if (role && role !== "auto" && !FORCED_ROLES[role]) throw new HttpError(400, `“${role}” bilinen bir kolon rolü değil.`);
+      const next = role && role !== "auto" ? role : "";
+      if (previous === next) continue;
+      if (next) roles[column] = next;
+      else delete roles[column];
+      changes.push({ column, role: next, previous });
+    }
+    if (!changes.length) return { changed: 0, roles };
+    store.setSetting(sessionKey(K.roles), Object.keys(roles).length ? JSON.stringify(roles) : "", user.id);
+    audit?.(user, "insight.roles.updated", current(), { changes });
+    invalidate();
+    return { changed: changes.length, roles };
+  }
   const readDismissed = () => readObject(sessionKey(K.dismissed));
 
   // İlk açılış: 1.6.0 öncesinden gelen ve kullanılmış kurulum (verisi, kaydı, notu, görevi… olan) hukuk profiliyle
@@ -127,7 +159,7 @@ export function createProfileService({ store, dataset, audit, events, log, free 
 
   function profile() {
     const stored = readSector();
-    const sector = sectorById(stored?.id) || sectorById(GENERAL_ID);
+    const sector = findSector(stored?.id) || sectorById(GENERAL_ID);
     const labels = readLabels();
     // Modüller veriye bağlıdır: sektör istemese bile ofisin o modülde kaydı varsa gizlenmez.
     const liens = store.get("SELECT COUNT(*) AS count FROM liens").count;
@@ -138,6 +170,7 @@ export function createProfileService({ store, dataset, audit, events, log, free 
         name: sector.name,
         group: sector.group,
         groupName: sector.groupName,
+        custom: Boolean(sector.custom),
         source: stored?.source || "default",
         at: stored?.at || null,
         byName: stored?.byName || "",
@@ -159,7 +192,7 @@ export function createProfileService({ store, dataset, audit, events, log, free 
   const publish = (user, detail = {}) => events?.publish("workspace.changed", { kind: "profile", actorId: user.id, actorName: user.display_name, ...detail });
 
   function setSector(user, id, source = "manual") {
-    const sector = sectorById(id);
+    const sector = findSector(id);
     if (!sector) throw new HttpError(400, "Bilinmeyen sektör.");
     const value = { id: sector.id, source: SOURCES.has(source) ? source : "manual", at: iso(), by: user.id, byName: user.display_name };
     store.tx(() => {
@@ -285,7 +318,9 @@ export function createProfileService({ store, dataset, audit, events, log, free 
       current(), current(), current(), current(),
     );
     const day = clock();
-    return [current(), row.rowsCount, row.overridesState, row.recordsState, row.deletedCount, store.setting(sessionKey("dataset.changedAt"), ""), store.setting(sessionKey("dataset.label"), ""), `${day.getFullYear()}-${day.getMonth()}-${day.getDate()}`, free ? free.fingerprint() : ""].join("|");
+    const custom = store.setting("sectors.custom", "") || "";
+    const roles = store.setting(sessionKey(K.roles), "") || "";
+    return [current(), row.rowsCount, row.overridesState, row.recordsState, row.deletedCount, store.setting(sessionKey("dataset.changedAt"), ""), store.setting(sessionKey("dataset.label"), ""), `${day.getFullYear()}-${day.getMonth()}-${day.getDate()}`, free ? free.fingerprint() : "", `${custom.length}:${custom.slice(-48)}`, `${roles.length}:${roles.slice(-64)}`, store.setting(sessionKey("dataset.unflagged"), "").length].join("|");
   }
 
   async function analysis() {
@@ -298,11 +333,11 @@ export function createProfileService({ store, dataset, audit, events, log, free 
     const started = generation;
     const promise = (async () => {
       const view = await dataset.view();
-      // Görünüm okunurken veri değiştiyse (ör. ilk Sheet eşitlemesi ya da aynı anda yapılan bir düzeltme) sonuç bu
-      // istek için döner ama önbelleğe alınmaz: bir sonraki istek durulmuş veriyle yeniden hesaplar. Böylece eski
-      // veriden hesaplanmış bir analiz yeni verinin anahtarıyla saklanamaz. (Analiz eşzamanlıdır; araya iş giremez.)
+      // Görünüm okunurken ya da analiz iş parçacığında sürerken veri değiştiyse (ör. ilk Sheet eşitlemesi ya da aynı
+      // anda yapılan bir düzeltme) sonuç bu istek için döner ama önbelleğe alınmaz: bir sonraki istek durulmuş veriyle
+      // yeniden hesaplar. Böylece eski veriden hesaplanmış bir analiz yeni verinin anahtarıyla saklanamaz.
+      const result = await analysisRunner.run({ rows: view.rows || [], label: store.setting(sessionKey("dataset.label"), ""), tabs: (view.tabs || []).map(tab => tab.title).filter(Boolean), now: clock(), sectors: customSectors.all(), forced: readRoles() });
       const settled = fingerprint() === key && generation === started;
-      const result = analyzeDataset({ rows: view.rows || [], label: store.setting(sessionKey("dataset.label"), ""), tabs: (view.tabs || []).map(tab => tab.title).filter(Boolean), now: clock() });
       if (settled) caches.set(session, { fingerprint: key, analysis: result });
       if (result.ms > 1500) log?.info?.(`Veri analizi ${result.ms} ms sürdü (${result.rowCount} kayıt)`);
       return result;
@@ -454,5 +489,5 @@ export function createProfileService({ store, dataset, audit, events, log, free 
     running.clear();
   };
 
-  return { init, profile, tagline, setSector, dismissIntro, setLabel, setLabels, setColumns, resetLabels, analysis, records, invalidate, usedBefore, reasoningSummary, checks, dismiss, fingerprint };
+  return { init, profile, tagline, setSector, findSector, customSectors, dismissIntro, setLabel, setLabels, setColumns, resetLabels, setRoles, roles: readRoles, analysis, records, invalidate, usedBefore, reasoningSummary, checks, dismiss, fingerprint, close: () => analysisRunner.close(), runnerStats: () => analysisRunner.stats() };
 }

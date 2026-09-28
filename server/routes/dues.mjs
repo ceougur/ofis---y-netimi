@@ -25,7 +25,9 @@ export function registerDueRoutes(router, { auth, store, dataset, profile, event
   async function compute() {
     const now = new Date();
     const settledRaw = store.setting(settingKey(), "{}") || "{}";
-    const key = [profile.fingerprint(), paymentsState(), settledRaw.length, settledRaw.slice(-64), now.toDateString()].join("|");
+    // Sekme adları ve gizlenen sekmeler (v2.0.2) görünümü değiştirir; anahtara girer.
+    const tabState = ["dataset.tabs.alias", "dataset.tabs.hidden"].map(name => store.setting(dataset.settingKey ? dataset.settingKey(name) : name, "") || "").join("|");
+    const key = [profile.fingerprint(), paymentsState(), settledRaw.length, settledRaw.slice(-64), tabState, now.toDateString()].join("|");
     const session = dataset.currentKey();
     const hit = cache.get(session);
     if (hit && hit.key === key) return hit.result;
@@ -34,10 +36,11 @@ export function registerDueRoutes(router, { auth, store, dataset, profile, event
     const tabs = (view.tabs || []).map(item => item.title);
     const keys = new Set(rows.map(row => row.__hofKey).filter(Boolean));
     const payments = store.all("SELECT case_key AS caseKey, amount, date FROM payments").filter(item => keys.has(item.caseKey));
-    const { items, sources } = computeDues({ rows, tabs, payments, settled: readSettled(), now });
-    const deadlines = computeDeadlines({ rows, tabs, now, exclude: sources });
+    const forced = profile.roles ? profile.roles() : null;
+    const { items, sources, dormant } = computeDues({ rows, tabs, payments, settled: readSettled(), now, forced });
+    const deadlines = computeDeadlines({ rows, tabs, now, exclude: sources, forced });
     const local = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
-    const result = { items, deadlines, sources, today: local, generatedAt: now.toISOString() };
+    const result = { items, deadlines, sources, dormant, today: local, generatedAt: now.toISOString() };
     cache.set(session, { key, result });
     return result;
   }
@@ -64,5 +67,35 @@ export function registerDueRoutes(router, { auth, store, dataset, profile, event
     audit(user, body.undo ? "dues.reopened" : reason === "paid" ? "dues.settled" : "dues.cancelled", caseKey, { id });
     events?.publish("workspace.changed", { kind: "dues", caseKey, actorId: user.id, actorName: user.display_name, datasetKey: dataset.currentKey() }, { except: user.id });
     ok(res, { ok: true });
+  });
+
+  // Zil listesinden kaldırılan bildirimler (v2.0.2): kişiye özeldir, tüm bilgisayarlarda geçerlidir. Kalem kapanmaz
+  // (şerit ve diğer kullanıcılar etkilenmez); yalnızca bu kişinin zil listesinde ve sağ alt bildirimlerinde görünmez.
+  const dismissedKey = user => `alerts.dismissed.${user.id}`;
+  const readDismissed = user => {
+    try {
+      const value = JSON.parse(store.setting(dismissedKey(user), "{}") || "{}");
+      return value && typeof value === "object" && !Array.isArray(value) ? value : {};
+    } catch {
+      return {};
+    }
+  };
+  router.get("/api/workspace/alerts/dismissed", async ({ req, res }) => {
+    const user = auth.requireUser(req);
+    ok(res, { ids: Object.keys(readDismissed(user)) });
+  });
+  router.post("/api/workspace/alerts/dismiss", async ({ req, res }) => {
+    const user = auth.requireUser(req);
+    const body = await readJson(req);
+    const id = text(body.id).slice(0, 700);
+    if (!id) throw new HttpError(400, "Bildirim seçilmedi.");
+    const map = readDismissed(user);
+    if (body.undo) delete map[id];
+    else map[id] = new Date().toISOString();
+    // En yeni 3000 kaldırma saklanır; bir yıldan eskiler düşer.
+    const cutoff = new Date(Date.now() - 400 * 86_400_000).toISOString();
+    const entries = Object.entries(map).filter(([, at]) => at >= cutoff).sort((a, b) => a[1].localeCompare(b[1])).slice(-3000);
+    store.setSetting(dismissedKey(user), JSON.stringify(Object.fromEntries(entries)), user.id);
+    ok(res, { ids: entries.map(([key]) => key) });
   });
 }

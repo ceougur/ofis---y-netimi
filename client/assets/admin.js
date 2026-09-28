@@ -18,6 +18,9 @@
     "source.row.created": "Yeni kayıt ekledi",
     "source.row.deleted": "Kayıt sildi",
     "source.row.restored": "Silinen kaydı geri aldı",
+    "source.tab.renamed": "Sekmeyi yeniden adlandırdı",
+    "source.tab.hidden": "Sekmeyi sildi",
+    "source.tab.restored": "Sekmeyi geri yükledi",
     "source.cell.updated": "Hücre düzeltti",
     "source.excel.uploaded": "Excel tablosu yükledi",
     "dataset.imported": "Veri içeri aldı",
@@ -31,7 +34,20 @@
     "dataset.session.deleted": "Veri oturumunu sildi",
     "case.document.created": "Belge ekledi",
     "case.document.deleted": "Belgeyi sildi",
+    "case.document.restored": "Belgeyi geri yükledi",
+    "case.document.exported": "Belgeleri dışa aktardı (.zip)",
+    "case.payment.restored": "Tahsilatı geri yükledi",
+    "cash.entry.restored": "Kasa hareketini geri yükledi",
+    "free.sheet.deleted": "Serbest sayfayı sildi",
+    "free.sheet.restored": "Serbest sayfayı geri yükledi",
+    "free.row.deleted": "Serbest sayfada satır sildi",
+    "free.row.restored": "Serbest sayfada satırı geri yükledi",
+    "free.column.deleted": "Serbest sayfada kolon sildi",
+    "free.column.restored": "Serbest sayfada kolonu geri yükledi",
     "profile.sector": "Sektörü değiştirdi",
+    "profile.sector.custom.created": "Kendi sektörünü oluşturdu",
+    "profile.sector.custom.updated": "Kendi sektörünü düzenledi",
+    "profile.sector.custom.deleted": "Kendi sektörünü sildi",
     "profile.label": "Başlığı değiştirdi",
     "profile.labels.reset": "Başlıkları varsayılana döndürdü",
     "case.note.created": "Not ekledi",
@@ -200,10 +216,71 @@
       const result = await HOF.api("/api/admin/backups", { method: "POST" });
       HOF.toast(`Yedek alındı: ${result.name}`, { type: "success" });
       loadBackups();
+      loadCloud();
     } catch (error) {
       HOF.toastError(error);
     } finally {
       button.disabled = false;
+    }
+  });
+
+  // ---------- Drive'a yedek (v2.0.2) ----------
+  async function loadCloud() {
+    const status = $("#adm-cloud-status");
+    if (!status) return;
+    try {
+      const info = await HOF.api("/api/admin/backups/cloud");
+      if (!info.enabled) {
+        status.textContent = "Bağlı değil. Yedekler yalnızca bu bilgisayarda tutuluyor.";
+        status.className = "adm-muted";
+        return;
+      }
+      const where = info.mode === "folder" ? `Klasör: ${info.path}` : `Drive klasörü: ${info.folderId}`;
+      const last = info.lastAt ? `Son kopya: ${HOF.formatDateTime(info.lastAt)} (${info.lastName})` : "Henüz kopya alınmadı; ilk yedekte alınır.";
+      status.innerHTML = `<b>${esc(where)}</b> · ${esc(last)} · ${esc(String(info.copies))} kopya${info.lastError ? `<br><span class="adm-error">Son hata: ${esc(info.lastError)}</span>` : ""}`;
+      status.className = info.lastError ? "adm-warn" : "adm-ok";
+      const input = $("#adm-cloud-target");
+      if (input && !input.value) input.value = info.value || "";
+    } catch (error) {
+      status.textContent = error.message;
+    }
+  }
+  $("#adm-cloud-form")?.addEventListener("submit", async event => {
+    event.preventDefault();
+    const button = event.currentTarget.querySelector('button[type="submit"]');
+    button.disabled = true;
+    try {
+      await HOF.api("/api/admin/backups/cloud", { method: "POST", body: { target: $("#adm-cloud-target").value } });
+      HOF.toast("Drive yedeği bağlandı. Bir sonraki yedek oraya da kopyalanacak.", { type: "success" });
+      loadCloud();
+    } catch (error) {
+      HOF.toastError(error);
+    } finally {
+      button.disabled = false;
+    }
+  });
+  $("#adm-cloud-test")?.addEventListener("click", async event => {
+    const button = event.currentTarget;
+    button.disabled = true;
+    try {
+      const result = await HOF.api("/api/admin/backups/cloud/test", { method: "POST" });
+      HOF.toast(result.ok ? `Deneme başarılı: ${result.name}` : `Kopya alınamadı: ${result.error}`, { type: result.ok ? "success" : "error" });
+      loadCloud();
+      loadBackups();
+    } catch (error) {
+      HOF.toastError(error);
+    } finally {
+      button.disabled = false;
+    }
+  });
+  $("#adm-cloud-off")?.addEventListener("click", async () => {
+    try {
+      await HOF.api("/api/admin/backups/cloud", { method: "POST", body: { target: "" } });
+      $("#adm-cloud-target").value = "";
+      HOF.toast("Drive yedeği kaldırıldı.");
+      loadCloud();
+    } catch (error) {
+      HOF.toastError(error);
     }
   });
 
@@ -220,6 +297,7 @@
       parts.push(`${payload.label || ""} · ${modes[payload.mode] || payload.mode} · ${payload.rows} kayıt (${payload.added || 0} yeni, ${payload.updated || 0} güncellendi${payload.removed ? `, ${payload.removed} kaldırıldı` : ""})`);
     }
     if (event.type === "dataset.removed") parts.push(`${payload.removed} kayıt`);
+    if (event.type.startsWith("profile.sector.custom")) parts.push(payload.name || "");
     if (event.type === "profile.sector") parts.push(`${payload.name}${payload.source === "confirmed" ? " (analiz önerisi onaylandı)" : ""}`);
     if (event.type === "profile.label") parts.push(`${payload.name}: "${payload.previous || "varsayılan"}" → "${payload.value || "varsayılan"}"`);
     if (event.type.startsWith("dataset.missing.")) parts.push(`${payload.rows} kayıt`);
@@ -243,6 +321,45 @@
     }
   }
   $("#adm-audit-type").addEventListener("change", loadAudit);
+
+  // ---------- Silinenler (v2.0.2) ----------
+  const TRASH_GROUPS = { row: ["row", "tab"], document: ["document"], free: ["free-sheet", "free-row", "free-column"], money: ["payment", "cash"] };
+  let trashItems = [];
+  function renderTrash() {
+    const body = $("#adm-trash");
+    const group = TRASH_GROUPS[$("#adm-trash-kind").value];
+    const items = group ? trashItems.filter(item => group.includes(item.kind)) : trashItems;
+    body.innerHTML = items.length
+      ? items
+          .map(
+            item => `<tr data-id="${esc(item.id)}"><td>${esc(HOF.formatDateTime(item.deletedAt))}</td><td>${esc(item.actorName || "—")}</td><td><span class="adm-kind">${esc(item.kindLabel)}</span></td><td class="adm-detail"><b>${esc(item.title || "—")}</b>${item.detail ? `<small>${esc(item.detail)}</small>` : ""}<small class="adm-trash-note${item.restorable ? "" : " is-blocked"}">${esc(item.note || "")}</small></td><td class="adm-right">${item.restorable ? '<button type="button" class="hof-button hof-button-small" data-restore>Geri yükle</button>' : ""}</td></tr>`,
+          )
+          .join("")
+      : `<tr><td colspan="5">${trashItems.length ? "Bu türde silinen yok." : "Silinen bir şey yok."}</td></tr>`;
+  }
+  async function loadTrash() {
+    try {
+      trashItems = await HOF.api("/api/admin/trash");
+      renderTrash();
+    } catch (error) {
+      $("#adm-trash").innerHTML = `<tr><td colspan="5">${esc(error.message)}</td></tr>`;
+    }
+  }
+  $("#adm-trash-kind").addEventListener("change", renderTrash);
+  $("#adm-trash").addEventListener("click", async event => {
+    const button = event.target.closest("[data-restore]");
+    if (!button) return;
+    const id = button.closest("tr").dataset.id;
+    button.disabled = true;
+    try {
+      const result = await HOF.api("/api/admin/trash/restore", { method: "POST", body: { id } });
+      HOF.toast(result.message || "Geri yüklendi.", { type: "success" });
+      loadTrash();
+    } catch (error) {
+      button.disabled = false;
+      HOF.toastError(error);
+    }
+  });
 
   // ---------- Sistem ----------
   async function copyText(value) {
@@ -430,6 +547,7 @@
         tile("Son yedek", info.lastBackup ? HOF.formatDateTime(info.lastBackup.createdAt) : "Henüz yok", info.lastBackup ? formatSize(info.lastBackup.size) : "Yedekler sekmesinden hemen alabilirsiniz"),
         tile("Aktif kullanıcı", String(info.users)),
         tile("Veri klasörü", info.dataDir, `Yedekler: ${info.backupDir}`),
+        info.chatArchive ? tile("Mesaj arşivi", info.chatArchive.files ? `${info.chatArchive.files} dosya · ${formatSize(info.chatArchive.bytes)}` : "Henüz yok", `${info.chatArchive.days} günden eski sohbet mesajları programdan kaldırılır ve buraya ay ay metin dosyası olarak yazılır (Not Defteri ile açılır): ${info.chatArchive.dir}. Kişiler kendi yazışmalarının arşivini sohbet penceresinden de indirebilir.`) : "",
       ].join("");
     } catch (error) {
       target.innerHTML = `<div class="adm-card">${esc(error.message)}</div>`;
@@ -518,7 +636,7 @@
   });
 
   // ---------- Sekmeler ----------
-  const loaders = { users: loadUsers, backups: loadBackups, audit: loadAudit, system: loadSystem, license: loadLicense };
+  const loaders = { users: loadUsers, backups: loadBackups, audit: loadAudit, trash: loadTrash, system: loadSystem, license: loadLicense };
   function selectTab(name) {
     document.querySelectorAll(".adm-tabs [data-tab]").forEach(button => button.setAttribute("aria-selected", String(button.dataset.tab === name)));
     document.querySelectorAll(".adm-panel").forEach(panel => {

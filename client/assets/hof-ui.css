@@ -4045,6 +4045,7 @@ body.hof-free-mode .cases-panel > .panel-heading,
 body.hof-free-mode .cases-panel > .toolbar,
 body.hof-free-mode .cases-panel > .filter-strip,
 body.hof-free-mode .cases-panel > .dynamic-table-wrap,
+body.hof-free-mode .cases-panel > .hof-hscroll,
 body.hof-free-mode .cases-panel > .panel-footer,
 body.hof-free-mode .cases-panel > .hof-pager {
   display: none !important;
@@ -4769,8 +4770,10 @@ body.hof-free-wide .hof-free-wrap {
   pointer-events: none;
 }
 body.hof-chat-open .hof-notices { right: calc(min(420px, 100vw) + 18px); }
-/* Kısa bildirimler (toast) açık bildirimin üstünde durur; üst üste binmez. */
-body.hof-notice-open .hof-toasts { bottom: 170px; }
+/* Kısa bildirimler (toast) açık bildirimin üstünde durur; üst üste binmez. Boşluk bildirimin gerçek yüksekliğidir
+   (--hof-notice-space, hof-alerts.js); geçiş yumuşaktır. */
+.hof-toasts { transition: bottom 0.24s ease; }
+body.hof-notice-open .hof-toasts { bottom: calc(18px + var(--hof-notice-space, 152px)); }
 .hof-notice {
   position: relative;
   display: grid;
@@ -4841,8 +4844,14 @@ body.hof-notice-open .hof-toasts { bottom: 170px; }
 }
 @media (max-width: 560px) {
   .hof-notices { right: 10px; bottom: 10px; width: calc(100vw - 20px); }
-  body.hof-notice-open .hof-toasts { bottom: 190px; }
+  body.hof-notice-open .hof-toasts { bottom: calc(10px + var(--hof-notice-space, 172px)); }
 }
+/* "Gerçekleştirildi" (v2.0.2) */
+.hof-notice-actions button.is-done { border-color: #9cc5ad; background: var(--do-accent-soft); color: var(--do-accent-hover); }
+.hof-notice-actions button.is-done:first-child { border-color: var(--do-accent); background: var(--do-accent); color: #fff; }
+.hof-notice-hint { margin: 7px 0 0; color: var(--do-muted); font-size: 11px; line-height: 1.4; }
+.hof-button-done { border-color: #9cc5ad; background: var(--do-accent-soft); color: var(--do-accent-hover); }
+.hof-button-done:hover { background: #d8eee1; }
 .topbar .top-actions > .icon-button { position: relative; }
 .hof-bell-badge {
   position: absolute;
@@ -4882,3 +4891,1310 @@ body.hof-notice-open .hof-toasts { bottom: 170px; }
 
 /* Pil kartı: pilin altında sabit konumda (v2.0.1). */
 body > .hof-payment-action-card { position: fixed; z-index: 99960; transform: none; width: min(320px, calc(100vw - 20px)); }
+
+/* ---------- Kenar çubuğu kaydırma (v2.0.2) ----------
+ * Kenar çubuğu ekrana sabittir; içerik (oturum kartı, Ayarlar, Operasyon merkezi) ekrandan uzunsa kendi içinde kayar.
+ * Kullanıcı kartı (Profil, Parola, Yönetim, Çıkış) kaydırırken ekranın altında görünür kalır. */
+.sidebar {
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: #cfdcd5 transparent;
+}
+#hof-sidecard .hof-user {
+  position: sticky;
+  bottom: -11px;
+  z-index: 2;
+  margin: 10px -10px -10px;
+  padding: 10px 14px 10px;
+  border-radius: 0 0 16px 16px;
+  background: #f4f9f6;
+}
+.sidebar > nav.mt-10:not(:has(.nav-item:not([style*="display: none"]))) {
+  display: none;
+}
+/* Sekme şeridinin başlığında sayaç yazılmaz (v2.0.2): arama eşleşmeleri sekme pillerinin içinde görünür. */
+.category-heading > strong {
+  display: none;
+}
+/* Zil listesinde bildirimi kaldırma (v2.0.2) */
+.hof-alert-dismiss {
+  display: inline-grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  border: 1px solid var(--do-border);
+  border-radius: 9px;
+  background: #fff;
+  color: var(--do-faint);
+  font-size: 13px;
+  cursor: pointer;
+}
+.hof-alert-dismiss:hover,
+.hof-alert-dismiss:focus-visible {
+  border-color: #e4b4ac;
+  color: #b3473a;
+}
+.hof-alert-group li {
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+.hof-alert-group li.is-leaving {
+  opacity: 0;
+  transform: translateX(12px);
+}
+.hof-alert-buttons {
+  align-items: center;
+}
+/* Sekme kalemi (v2.0.2): seçili sekme pilinin yanında */
+.hof-tab-edit {
+  display: inline-grid;
+  flex: none;
+  width: 28px;
+  height: 28px;
+  margin-left: -4px;
+  place-items: center;
+  align-self: center;
+  border: 1px solid var(--do-border);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--do-muted);
+  cursor: pointer;
+}
+.hof-tab-edit:hover,
+.hof-tab-edit:focus-visible {
+  border-color: #9cc5ad;
+  color: var(--do-accent);
+}
+.hof-tab-editor-extra {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 4px 0 6px;
+}
+.hof-link-danger {
+  color: #b3473a !important;
+}
+/* Belge silme (v2.0.2): listede çöp kutusu, önizlemede Sil */
+.hof-doc-delete {
+  color: #b3473a;
+}
+.hof-button-danger-ghost {
+  border: 1px solid #e4b4ac;
+  background: #fff;
+  color: #b3473a;
+}
+.hof-button-danger-ghost:hover {
+  background: #fbeeec;
+}
+
+/* ---------- Açılır listeler (Excel/Sheets veri doğrulaması, v2.0.2) ---------- */
+.dynamic-detail-grid > .hof-has-choice .detail-value {
+  display: none;
+}
+.hof-choice-pill {
+  display: inline-flex;
+  max-width: 100%;
+  min-height: 30px;
+  margin-top: 4px;
+  padding: 3px 8px 3px 11px;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--do-border-strong);
+  border-radius: 999px;
+  background: var(--do-surface);
+  color: var(--do-ink);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+}
+.hof-choice-pill > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.hof-choice-pill > i {
+  display: inline-grid;
+  width: 20px;
+  height: 20px;
+  flex: none;
+  place-items: center;
+  border-radius: 999px;
+  background: var(--do-accent-soft);
+  color: var(--do-accent);
+  font-size: 11px;
+  font-style: normal;
+}
+.hof-choice-pill:hover,
+.hof-choice-pill[aria-expanded="true"] {
+  border-color: #9cc5ad;
+  background: var(--do-surface-soft);
+}
+.hof-choice-pill:focus-visible {
+  outline: none;
+  box-shadow: var(--do-focus);
+}
+.hof-choice-pill.is-empty > span {
+  color: var(--do-faint);
+  font-weight: 500;
+}
+.hof-choice-pill.is-missing {
+  border-style: dashed;
+  border-color: #e0c28a;
+}
+.hof-choice-menu {
+  position: fixed;
+  z-index: 1300;
+  display: flex;
+  min-width: 200px;
+  max-width: min(360px, calc(100vw - 16px));
+  max-height: 320px;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--do-border);
+  border-radius: 12px;
+  background: var(--do-surface);
+  box-shadow: var(--do-shadow-strong);
+  font-family: var(--do-font);
+}
+.hof-choice-head {
+  padding: 9px 12px 7px;
+  border-bottom: 1px solid var(--do-border);
+  color: var(--do-muted);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.hof-choice-list {
+  overflow-y: auto;
+  padding: 4px;
+}
+.hof-choice-list > button {
+  display: flex;
+  width: 100%;
+  min-height: 34px;
+  padding: 6px 10px 6px 30px;
+  align-items: center;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--do-ink);
+  font: inherit;
+  font-size: 14px;
+  text-align: left;
+  cursor: pointer;
+  position: relative;
+}
+.hof-choice-list > button:hover:not([disabled]),
+.hof-choice-list > button:focus-visible {
+  outline: none;
+  background: var(--do-accent-soft);
+}
+.hof-choice-list > button[aria-selected="true"] {
+  font-weight: 700;
+}
+.hof-choice-list > button[aria-selected="true"]::before {
+  content: "✓";
+  position: absolute;
+  left: 11px;
+  color: var(--do-accent);
+}
+.hof-choice-list > button[disabled] {
+  cursor: default;
+  opacity: 0.85;
+}
+.hof-choice-list > button.is-missing small {
+  margin-left: 6px;
+  color: var(--do-warn);
+}
+.hof-choice-foot {
+  display: flex;
+  padding: 6px;
+  gap: 6px;
+  border-top: 1px solid var(--do-border);
+}
+.hof-choice-foot:empty {
+  display: none;
+}
+.hof-choice-foot > button {
+  flex: 1;
+  min-height: 32px;
+  border: 1px solid var(--do-border);
+  border-radius: 8px;
+  background: var(--do-surface);
+  color: var(--do-ink-soft);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+.hof-choice-foot > button:hover,
+.hof-choice-foot > button:focus-visible {
+  outline: none;
+  border-color: #9cc5ad;
+  color: var(--do-accent);
+}
+.hof-form select[data-choice] {
+  cursor: pointer;
+}
+
+/* ---------- Belge kartı: belgeler yan yana, indir, yazdır (v2.0.2) ---------- */
+.hof-doc-head-tools {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.hof-doc-gallery-open {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 9px;
+  border: 1px solid var(--do-border);
+  border-radius: 9px;
+  background: #fff;
+  color: var(--do-ink-soft);
+  font: 600 12px var(--do-font);
+  cursor: pointer;
+}
+.hof-doc-gallery-open:hover,
+.hof-doc-gallery-open:focus-visible {
+  border-color: #9cc5ad;
+  color: var(--do-accent);
+  outline: none;
+}
+.hof-doc-more {
+  display: block;
+  width: 100%;
+  margin: -4px 0 10px;
+  padding: 7px 10px;
+  border: 1px dashed var(--do-border-strong);
+  border-radius: 10px;
+  background: var(--do-surface-soft);
+  color: var(--do-accent);
+  font: 600 12px var(--do-font);
+  cursor: pointer;
+}
+.hof-doc-more:hover,
+.hof-doc-more:focus-visible {
+  border-style: solid;
+  outline: none;
+}
+.hof-modal.hof-doc-gallery-modal {
+  display: flex;
+  width: min(1480px, calc(100vw - 32px));
+  max-height: calc(100vh - 32px);
+  flex-direction: column;
+}
+.hof-doc-gallery-modal .hof-modal-body {
+  display: flex;
+  min-height: 0;
+  flex: 1;
+  flex-direction: column;
+  overflow: auto;
+}
+.hof-gallery-head {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: grid;
+  gap: 8px;
+  margin: 0 0 12px;
+  padding-bottom: 2px;
+  background: linear-gradient(#fff 85%, rgba(255, 255, 255, 0));
+}
+.hof-gallery-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+  padding: 10px 12px;
+  border: 1px solid var(--do-border);
+  border-radius: 12px;
+  background: #fff;
+}
+.hof-gallery-bar .hof-check {
+  margin: 0;
+}
+.hof-gallery-count {
+  flex: 1;
+  min-width: 140px;
+  color: var(--do-muted);
+  font-size: 12px;
+}
+.hof-gallery-actions {
+  display: inline-flex;
+  gap: 6px;
+}
+.hof-gallery-actions .hof-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.hof-gallery-cols {
+  display: inline-flex;
+  align-items: center;
+  overflow: hidden;
+  border: 1px solid var(--do-border);
+  border-radius: 9px;
+  background: #fff;
+}
+.hof-gallery-cols > span {
+  padding: 0 8px 0 10px;
+  color: var(--do-muted);
+  font-size: 12px;
+}
+.hof-gallery-cols button {
+  width: 30px;
+  height: 30px;
+  border: 0;
+  border-left: 1px solid var(--do-border);
+  background: transparent;
+  color: var(--do-ink-soft);
+  font: 700 12px var(--do-font);
+  cursor: pointer;
+}
+.hof-gallery-cols button[aria-pressed="true"] {
+  background: var(--do-accent);
+  color: #fff;
+}
+.hof-gallery-cols button:focus-visible {
+  outline: none;
+  box-shadow: inset var(--do-focus);
+}
+.hof-print-queue {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 9px 12px;
+  border: 1px solid #e8d3a6;
+  border-radius: 12px;
+  background: var(--do-gold-soft);
+  font-size: 13px;
+}
+.hof-print-queue[hidden] {
+  display: none;
+}
+.hof-print-queue > span:last-child {
+  display: inline-flex;
+  gap: 6px;
+}
+.hof-print-queue .hof-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.hof-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--cols, 3), minmax(0, 1fr));
+  gap: 14px;
+}
+.hof-tile {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--do-border);
+  border-radius: 14px;
+  background: #fff;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.hof-tile.is-picked {
+  border-color: var(--do-accent);
+  box-shadow: 0 0 0 2px rgba(31, 106, 80, 0.18);
+}
+.hof-tile.is-focus {
+  animation: hof-tile-focus 1.6s ease;
+}
+@keyframes hof-tile-focus {
+  0%,
+  40% {
+    box-shadow: 0 0 0 4px rgba(207, 159, 75, 0.45);
+  }
+  100% {
+    box-shadow: none;
+  }
+}
+.hof-tile > header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 11px;
+  border-bottom: 1px solid var(--do-border);
+}
+.hof-tile-check {
+  display: inline-grid;
+  place-items: center;
+}
+.hof-tile-check input {
+  width: 17px;
+  height: 17px;
+  accent-color: var(--do-accent);
+  cursor: pointer;
+}
+.hof-tile-title {
+  display: grid;
+  min-width: 0;
+}
+.hof-tile-title b {
+  overflow: hidden;
+  font-size: 13px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.hof-tile-title small {
+  color: var(--do-muted);
+  font-size: 11px;
+}
+.hof-tile-view {
+  display: grid;
+  aspect-ratio: 1 / 1.3;
+  place-items: center;
+  overflow: hidden;
+  background: #f1f4f2;
+}
+.hof-gallery-grid[data-layout="1"] .hof-tile-view {
+  aspect-ratio: auto;
+  height: 76vh;
+}
+.hof-tile-view iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: #fff;
+}
+.hof-tile-view img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+.hof-tile-loading,
+.hof-tile-placeholder {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  padding: 18px;
+  color: var(--do-faint);
+  text-align: center;
+}
+.hof-tile-placeholder svg {
+  width: 44px;
+  height: 44px;
+  color: var(--do-accent);
+}
+.hof-tile-placeholder b {
+  color: var(--do-ink-soft);
+}
+.hof-tile-placeholder small {
+  max-width: 220px;
+  font-size: 12px;
+  line-height: 1.4;
+}
+.hof-tile > footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 6px;
+  padding: 8px 10px;
+  border-top: 1px solid var(--do-border);
+}
+.hof-tile > footer a.hof-mini {
+  text-decoration: none;
+}
+.hof-mini.is-off {
+  cursor: not-allowed;
+  opacity: 0.35;
+}
+.hof-print-frame {
+  position: fixed;
+  top: 0;
+  left: -10000px;
+  width: 900px;
+  height: 1200px;
+  border: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+@media (max-width: 900px) {
+  .hof-gallery-grid:not([data-layout="1"]) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 600px) {
+  .hof-gallery-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .hof-gallery-cols {
+    display: none;
+  }
+}
+
+/* ---------- Ana tablo: tüm kolonlar, dondurulmuş ilk kolon, yatay kaydırma (v2.0.2, hof-grid.js) ---------- */
+.dynamic-table.hof-sized {
+  min-width: 100% !important;
+}
+/* Panelin köşe kırpması "clip" ile yapılır: "hidden" kaydırma kabı oluşturup yapışkan çubuğu bozuyordu. */
+.panel.cases-panel {
+  overflow: clip;
+}
+/* İlk kolon (kaydın adı/numarası) yana kayarken solda sabit kalır. Arka plan satırın durumunu izler. */
+.dynamic-table-wrap.hof-wide .dynamic-table th:first-child,
+.dynamic-table-wrap.hof-wide .dynamic-table td:first-child {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background: #fff;
+  background-clip: padding-box;
+}
+.dynamic-table-wrap.hof-wide .dynamic-table th:first-child {
+  z-index: 3;
+  background: #f5faf7;
+}
+.dynamic-table-wrap.hof-wide .dynamic-table tbody tr:hover td:first-child {
+  background: #f5f9f6;
+}
+.dynamic-table-wrap.hof-wide .dynamic-table tbody tr.selected td:first-child {
+  background: #e2f0e7;
+}
+.dynamic-table-wrap.hof-wide.hof-can-left .dynamic-table th:first-child,
+.dynamic-table-wrap.hof-wide.hof-can-left .dynamic-table td:first-child {
+  box-shadow: 8px 0 10px -8px rgba(20, 52, 40, 0.28);
+}
+.dynamic-table-wrap.hof-wide.hof-can-left .dynamic-table tbody tr.selected td:first-child {
+  box-shadow: var(--hof-cell-rest), 8px 0 10px -8px rgba(20, 52, 40, 0.28);
+}
+/* Sağda devamı var: kenar hafifçe solar. */
+.dynamic-table-wrap.hof-can-right {
+  -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 36px), rgba(0, 0, 0, 0.35));
+  mask-image: linear-gradient(to right, #000 calc(100% - 36px), rgba(0, 0, 0, 0.35));
+}
+/* Tarayıcının kendi yatay çubuğu yerine ekranın altına yapışan çubuk kullanılır. */
+.dynamic-table-wrap.hof-wide {
+  scrollbar-width: none;
+}
+.dynamic-table-wrap.hof-wide::-webkit-scrollbar {
+  height: 0;
+}
+.hof-hscroll {
+  position: sticky;
+  bottom: 0;
+  z-index: 6;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 2px;
+  padding: 6px 8px;
+  border: 1px solid var(--do-border);
+  border-top: 0;
+  border-radius: 0 0 14px 14px;
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 -6px 14px -10px rgba(20, 52, 40, 0.25);
+}
+.hof-hscroll-track {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  height: 12px;
+  border-radius: 999px;
+  background: #edf3ef;
+  cursor: pointer;
+  touch-action: none;
+}
+.hof-hscroll-track:focus-visible {
+  outline: none;
+  box-shadow: var(--do-focus);
+}
+.hof-hscroll-thumb {
+  position: absolute;
+  top: 2px;
+  bottom: 2px;
+  left: 0;
+  border-radius: 999px;
+  background: #8fbfa3;
+  cursor: grab;
+  transition: background-color 0.15s ease;
+}
+.hof-hscroll-track:hover .hof-hscroll-thumb,
+.hof-hscroll.is-dragging .hof-hscroll-thumb {
+  background: var(--do-accent);
+}
+.hof-hscroll.is-dragging .hof-hscroll-thumb {
+  cursor: grabbing;
+}
+.hof-hscroll.is-dragging {
+  user-select: none;
+}
+.hof-hscroll-step {
+  display: inline-grid;
+  width: 26px;
+  height: 22px;
+  flex: none;
+  place-items: center;
+  border: 1px solid var(--do-border);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--do-accent);
+  font: 700 15px/1 var(--do-font);
+  cursor: pointer;
+}
+.hof-hscroll-step:hover:not(:disabled),
+.hof-hscroll-step:focus-visible {
+  border-color: #9cc5ad;
+  background: var(--do-surface-soft);
+  outline: none;
+}
+.hof-hscroll-step:disabled {
+  cursor: default;
+  opacity: 0.35;
+}
+@media print {
+  .hof-hscroll {
+    display: none;
+  }
+}
+
+/* ---------- Kendi sektörü (v2.0.2) ---------- */
+.hof-picker-create {
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 10px;
+  padding: 12px 14px;
+  border: 1px dashed #9cc5ad;
+  border-radius: 12px;
+  background: var(--do-accent-soft);
+  font-size: 13px;
+}
+.hof-picker-create span {
+  color: var(--do-ink-soft);
+}
+.hof-picker-none {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  padding: 22px 12px;
+  text-align: center;
+}
+.hof-picker-none p {
+  margin: 0;
+  font-weight: 700;
+}
+.hof-picker-none small {
+  color: var(--do-muted);
+}
+.hof-chip-own {
+  border-color: #e8d3a6;
+  background: var(--do-gold-soft);
+  color: #8a5a10;
+}
+.hof-sector-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px 16px;
+}
+.hof-sector-form > .hof-field {
+  align-self: start;
+}
+.hof-sector-form > .hof-field:first-of-type,
+.hof-sector-form > .hof-field:has(textarea),
+.hof-sector-form > .hof-sector-preview,
+.hof-sector-form > .hof-form-error,
+.hof-sector-form > .hof-actions {
+  grid-column: 1 / -1;
+}
+.hof-sector-preview {
+  display: grid;
+  gap: 8px;
+  padding: 12px 14px;
+  border: 1px solid var(--do-border);
+  border-radius: 12px;
+  background: var(--do-surface-soft);
+}
+.hof-sector-preview > small {
+  color: var(--do-muted);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.hof-sector-preview [data-preview] {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.hof-preview-brand {
+  display: grid;
+  margin-right: 6px;
+  padding-right: 12px;
+  border-right: 1px solid var(--do-border);
+}
+.hof-preview-brand small {
+  color: var(--do-muted);
+  font-size: 11px;
+}
+.hof-preview-chip {
+  padding: 5px 10px;
+  border: 1px solid var(--do-border);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--do-ink-soft);
+  font-size: 12px;
+  font-weight: 600;
+}
+.hof-custom-sectors {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--do-border);
+}
+.hof-custom-sectors-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.hof-custom-sectors ul {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.hof-custom-sectors li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 10px;
+  border: 1px solid var(--do-border);
+  border-radius: 10px;
+  font-size: 13px;
+}
+.hof-custom-sectors li > span:first-child {
+  display: grid;
+}
+.hof-custom-sectors li small {
+  color: var(--do-muted);
+  font-size: 11px;
+}
+.hof-custom-actions {
+  display: inline-flex;
+  gap: 10px;
+}
+@media (max-width: 640px) {
+  .hof-sector-form {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* ---------- Sohbet arşivi (v2.0.2) ---------- */
+.hof-chat-archive {
+  margin: 4px 10px 10px;
+  padding: 8px 12px;
+  border: 1px dashed var(--do-border-strong);
+  border-radius: 12px;
+  background: var(--do-surface-soft);
+  color: var(--do-muted);
+  font-size: 12px;
+  line-height: 1.45;
+  text-align: center;
+}
+
+/* ---------- 2.0.2: durum/kategori renkleri ve satır sıklığı (hof-chips.js) ----------
+ * Renkli nokta + tonlu yazı: hücrenin metni React'in bıraktığı gibi kalır; yalnız data-tone yazılır. */
+.dynamic-table td[data-tone],
+.detail-value[data-tone] {
+  --hof-tone: #6b7a75;
+  --hof-tone-bg: #eef1ef;
+}
+.dynamic-table td[data-tone]::before,
+.detail-value[data-tone]::before {
+  content: "";
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--hof-tone);
+  box-shadow: 0 0 0 3px var(--hof-tone-bg);
+  margin-right: 8px;
+  vertical-align: 1px;
+}
+.dynamic-table td[data-tone] {
+  color: #4b5a56;
+}
+[data-tone="good"] { --hof-tone: #1f8a4c; --hof-tone-bg: #dcf2e4; }
+[data-tone="bad"] { --hof-tone: #c53d3d; --hof-tone-bg: #f9dede; }
+[data-tone="warn"] { --hof-tone: #c98a12; --hof-tone-bg: #fbeed0; }
+[data-tone="h0"] { --hof-tone: #3b6fd9; --hof-tone-bg: #dfe8fb; }
+[data-tone="h1"] { --hof-tone: #7a4fc9; --hof-tone-bg: #eae1fa; }
+[data-tone="h2"] { --hof-tone: #0f8a8a; --hof-tone-bg: #d7f0f0; }
+[data-tone="h3"] { --hof-tone: #c2557a; --hof-tone-bg: #f9dfe8; }
+[data-tone="h4"] { --hof-tone: #8a6d1f; --hof-tone-bg: #f1e9cf; }
+[data-tone="h5"] { --hof-tone: #2f7d5b; --hof-tone-bg: #dbeee4; }
+[data-tone="h6"] { --hof-tone: #a45a1e; --hof-tone-bg: #f7e3d3; }
+[data-tone="h7"] { --hof-tone: #5c6b9c; --hof-tone-bg: #e2e6f3; }
+
+/* Sık görünüm: Excel/Sheets/Airtable'daki "compact" satırlar; iki kat daha çok kayıt bir ekrana sığar. */
+body.hof-dense .dynamic-table td {
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
+body.hof-dense .dynamic-table th {
+  padding-top: 7px;
+  padding-bottom: 7px;
+}
+.cases-panel > .panel-heading {
+  position: relative;
+}
+.hof-density {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  margin-left: 6px;
+  border: 1px solid #e3e8e5;
+  border-radius: 10px;
+  background: #fff;
+  color: #6b7a75;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+.hof-density:hover,
+.hof-density[aria-pressed="true"] {
+  color: var(--do-accent, #1f6f4a);
+  border-color: #bcd8c8;
+  background: #eef6f1;
+}
+.hof-density:focus-visible {
+  outline: 2px solid var(--do-accent, #1f6f4a);
+  outline-offset: 2px;
+}
+
+/* Kasa penceresinde hareket listesi ile açıklama arasında nefes payı. */
+.hof-cash-list + .hof-edit-meta {
+  margin-top: 14px;
+}
+
+/* ---------- 2.0.2: okuma raporu (yükleme penceresi) ---------- */
+.hof-reading {
+  margin: 10px 0 14px;
+  padding: 10px 14px;
+  border: 1px solid #dfe7e2;
+  border-radius: 12px;
+  background: #f6faf7;
+  font-size: 12px;
+  color: #4b5a56;
+}
+.hof-reading.is-warn {
+  border-color: #efd2a6;
+  background: #fff7ea;
+}
+.hof-reading p {
+  margin: 0;
+}
+.hof-reading .hof-reading-note {
+  margin-top: 4px;
+  color: #2f6b4a;
+}
+.hof-reading.is-warn .hof-reading-note {
+  color: #8a5a12;
+}
+.hof-reading details {
+  margin-top: 6px;
+}
+.hof-reading summary {
+  cursor: pointer;
+  color: var(--do-accent, #1f6f4a);
+  font-weight: 600;
+}
+.hof-reading ul {
+  margin: 6px 0 0;
+  padding-left: 18px;
+  max-height: 180px;
+  overflow: auto;
+}
+.hof-reading li span {
+  color: #7a8883;
+}
+
+/* ---------- 2.0.2: analizde "Neden?" kanıt listesi ---------- */
+.hof-evidence {
+  margin-top: 6px;
+  font-size: 12px;
+}
+.hof-evidence summary {
+  cursor: pointer;
+  color: var(--do-accent, #1f6f4a);
+  font-weight: 600;
+}
+.hof-evidence ul {
+  margin: 6px 0 0;
+  padding-left: 16px;
+  max-height: 220px;
+  overflow: auto;
+}
+.hof-evidence li {
+  margin: 2px 0;
+  color: #4b5a56;
+}
+.hof-evidence li em {
+  font-style: normal;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-left: 6px;
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: #e2f0e7;
+  color: #1f6f4a;
+}
+.hof-evidence li[data-certainty="olası"] em {
+  background: #fbeed0;
+  color: #8a5a12;
+}
+.hof-evidence li[data-certainty="belirsiz"] em {
+  background: #f1f3f2;
+  color: #6b7a75;
+}
+.hof-evidence li small {
+  display: block;
+  color: #7a8883;
+}
+
+/* ---------- 2.0.2: Veri Sağlık Kontrolü — kırmızı hücre ve toplu düzeltmeler ---------- */
+.dynamic-table td[data-bad] {
+  box-shadow: inset 0 -2px 0 #e0564f;
+  background: #fff3f2;
+  color: #a32d27;
+}
+.dynamic-table td[data-bad]::after {
+  content: "!";
+  display: inline-block;
+  margin-left: 6px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #e0564f;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 14px;
+  text-align: center;
+}
+.hof-fixes {
+  margin-top: 16px;
+}
+.hof-fixes h3 {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 6px;
+  font-size: 14px;
+}
+.hof-fix-list {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+.hof-fix-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 12px;
+  border: 1px solid #dfe7e2;
+  border-radius: 12px;
+  background: #f6faf7;
+}
+.hof-fix-list li p {
+  margin: 2px 0;
+  font-size: 12px;
+  color: #4b5a56;
+}
+.hof-fix-list li small {
+  color: #7a8883;
+  font-size: 11px;
+}
+
+/* ---------- 2.0.2: işaretlenen hata satırı ve kutusu ---------- */
+.dynamic-table tbody tr.hof-row-flagged td {
+  background: #fff8e6;
+}
+.dynamic-table tbody tr.hof-row-flagged td:first-child {
+  box-shadow: inset 4px 0 0 #e0a800;
+}
+.hof-flag-box {
+  margin: 0 0 12px;
+  padding: 10px 12px;
+  border: 1px solid #efd2a6;
+  border-radius: 12px;
+  background: #fff7ea;
+  color: #5a4a1e;
+  font-size: 12px;
+  display: grid;
+  gap: 4px;
+}
+.hof-flag-box small {
+  color: #8a6d1f;
+}
+.hof-flag-box .hof-button {
+  justify-self: start;
+  margin-top: 4px;
+}
+
+/* ---------- 2.0.2: ön izleme ve eşleme ---------- */
+.hof-mapping {
+  margin: 10px 0 14px;
+  border: 1px solid #dfe7e2;
+  border-radius: 12px;
+  background: #fff;
+  padding: 8px 12px;
+  font-size: 12px;
+}
+.hof-mapping summary {
+  cursor: pointer;
+  color: #2f3f3a;
+}
+.hof-mapping-scroll {
+  overflow: auto;
+  max-height: 320px;
+  margin-top: 8px;
+  border: 1px solid #eef1ef;
+  border-radius: 10px;
+}
+.hof-mapping-table {
+  border-collapse: separate;
+  border-spacing: 0;
+  min-width: 100%;
+  font-size: 12px;
+}
+.hof-mapping-table th,
+.hof-mapping-table td {
+  padding: 6px 10px;
+  border-bottom: 1px solid #eef1ef;
+  white-space: nowrap;
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: left;
+  vertical-align: top;
+}
+.hof-mapping-table th {
+  position: sticky;
+  top: 0;
+  background: #fbfcfb;
+  z-index: 1;
+}
+.hof-mapping-table th.is-belirsiz {
+  background: #fff7dd;
+}
+.hof-mapping-table th.is-olası {
+  background: #fffbea;
+}
+.hof-map-head {
+  display: grid;
+  gap: 3px;
+}
+.hof-map-head b {
+  font-size: 12px;
+  color: #2f3f3a;
+}
+.hof-map-role {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #6b7a75;
+}
+.hof-map-head select {
+  font: inherit;
+  font-size: 11px;
+  padding: 3px 6px;
+  border: 1px solid #dfe7e2;
+  border-radius: 8px;
+  background: #fff;
+  max-width: 160px;
+}
+.hof-map-head small {
+  font-size: 10px;
+  color: #8a9590;
+  white-space: normal;
+  max-width: 200px;
+}
+.hof-mapping-table td.is-suspect {
+  background: #fff3c4;
+  box-shadow: inset 0 -2px 0 #e0a800;
+}
+.hof-mapping-table tr.is-flagged td {
+  background: #fff8e6;
+}
+
+/* ---------- 2.0.2: Raporlar ---------- */
+.hof-report-kinds {
+  display: flex;
+  gap: 6px;
+  margin: 0 0 10px;
+}
+.hof-report-kinds button {
+  font: inherit;
+  padding: 7px 14px;
+  border: 1px solid #dfe7e2;
+  border-radius: 999px;
+  background: #fff;
+  color: #4b5a56;
+  cursor: pointer;
+}
+.hof-report-kinds button[aria-selected="true"] {
+  background: var(--do-accent, #1f6f4a);
+  border-color: var(--do-accent, #1f6f4a);
+  color: #fff;
+}
+.hof-report-filters {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px 12px;
+  align-items: end;
+  padding: 12px;
+  border: 1px solid #dfe7e2;
+  border-radius: 12px;
+  background: #f6faf7;
+  margin-bottom: 10px;
+}
+.hof-report-filters label {
+  display: grid;
+  gap: 4px;
+  font-size: 11px;
+  color: #6b7a75;
+}
+.hof-report-filters input,
+.hof-report-filters select {
+  font: inherit;
+  font-size: 13px;
+  padding: 6px 8px;
+  border: 1px solid #dfe7e2;
+  border-radius: 8px;
+  background: #fff;
+}
+.hof-report-sessions {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  align-items: center;
+  font-size: 12px;
+  color: #6b7a75;
+}
+.hof-report-sessions > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+}
+.hof-report-actions {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 8px;
+}
+.hof-report-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin: 4px 0 8px;
+  font-size: 12px;
+}
+.hof-report-toolbar > span:last-child {
+  display: flex;
+  gap: 6px;
+}
+.hof-report-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.hof-report-card {
+  min-width: 140px;
+  padding: 8px 12px;
+  border: 1px solid #dfe7e2;
+  border-radius: 10px;
+  background: #fff;
+}
+.hof-report-card small {
+  display: block;
+  font-size: 10px;
+  color: #7a8883;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.hof-report-card b {
+  font-size: 15px;
+  color: #2f3f3a;
+}
+.hof-report-scroll {
+  overflow: auto;
+  max-height: 52vh;
+  border: 1px solid #eef1ef;
+  border-radius: 10px;
+}
+.hof-report-table {
+  border-collapse: separate;
+  border-spacing: 0;
+  min-width: 100%;
+  font-size: 12px;
+}
+.hof-report-table th,
+.hof-report-table td {
+  padding: 6px 10px;
+  border-bottom: 1px solid #eef1ef;
+  white-space: nowrap;
+  text-align: left;
+}
+.hof-report-table th {
+  position: sticky;
+  top: 0;
+  background: #fbfcfb;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #6b7a75;
+  z-index: 1;
+}
+.hof-report-table th.is-dynamic {
+  color: #2f6b4a;
+}
+.hof-report-table .is-num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.hof-state {
+  padding: 1px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  background: #eef1ef;
+}
+.hof-state-gecikmis {
+  background: #f9dede;
+  color: #a32d27;
+}
+.hof-state-bugun,
+.hof-state-yaklasan {
+  background: #fbeed0;
+  color: #8a5a12;
+}
+.hof-state-kapali {
+  background: #dcf2e4;
+  color: #1f6f4a;
+}

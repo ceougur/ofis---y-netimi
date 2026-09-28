@@ -56,6 +56,91 @@
     });
 
   // ---------- İçeri alma akışı ----------
+  // Okuma raporu (v2.0.2): sayfa hangi şekilde okundu, hangi satırlar kayıt sayılmadı, kapsam ne. Kullanıcı yüklemeden
+  // önce görür; kapsam %90'ın altındaysa uyarı tonunda.
+  const SKIP_LABELS = { title: "başlık", note: "not", footnote: "dipnot", group: "grup etiketi", "repeat-header": "yinelenen başlık", unnamed: "adsız kolon", "empty-record": "boş satır" };
+  // Ön izleme ve eşleme (v2.0.2): kolonların ne sayıldığı (rol + kesinlik), ilk satırlar; biçimi uymayan hücreler ve
+  // belirsiz kolonlar sarı. Kullanıcı kolonun rolünü seçebilir; seçim kaydetmede oturuma yazılır, analiz ve takvim uyar.
+  const ROLE_OPTIONS = [["auto", "Otomatik"], ["id", "Kimlik / No"], ["person", "Kişi"], ["org", "Kurum"], ["phone", "Telefon"], ["email", "E-posta"], ["money", "Tutar"], ["deadline", "Son tarih / Vade"], ["date", "Tarih (olay)"], ["status", "Durum"], ["category", "Kategori"], ["note", "Not"], ["ignore", "Yoksay"]];
+  const ROLE_TEXT = { id: "kimlik", person: "kişi", org: "kurum", money: "tutar", date: "tarih", status: "durum", category: "kategori", phone: "telefon", email: "e-posta", address: "adres", note: "not", tckn: "T.C. no", vkn: "vergi no", iban: "IBAN", city: "il", plate: "plaka", url: "bağlantı", number: "sayı", percent: "oran", sequence: "sıra", responsible: "sorumlu", text: "metin" };
+  const roleText = item => (item.role === "date" ? (item.kind === "deadline" ? "son tarih" : item.kind === "event" ? "olay tarihi" : "tarih") : ROLE_TEXT[item.role] || item.role);
+  function mappingHtml(mapping) {
+    if (!mapping?.columns?.length) return "";
+    const suspect = new Map();
+    for (const item of mapping.suspicious || []) suspect.set(`${item.row}\u0000${item.column}`, item.reason);
+    const head = mapping.columns
+      .map(item => `<th class="is-${esc(item.certainty)}"><div class="hof-map-head"><b title="${esc(item.name)}">${esc(item.name)}</b><span class="hof-map-role">${esc(roleText(item))} · ${esc(item.certainty)}</span><select data-role-for="${esc(item.name)}" aria-label="${esc(item.name)} kolonunun rolü">${ROLE_OPTIONS.map(([value, label]) => `<option value="${value}">${label}</option>`).join("")}</select>${item.evidence?.length ? `<small>${item.evidence.map(esc).join(" · ")}</small>` : ""}</div></th>`)
+      .join("");
+    const body = (mapping.rows || [])
+      .map((row, index) => `<tr class="${row.__hofFlag ? "is-flagged" : ""}">${mapping.columns.map(item => {
+        const reason = suspect.get(`${index}\u0000${item.name}`) || (row.__hofFlag ? suspect.get(`${index}\u0000`) : "");
+        return `<td class="${reason ? "is-suspect" : ""}" ${reason ? `title="${esc(reason)}"` : ""}>${esc(row[item.name] ?? "")}</td>`;
+      }).join("")}</tr>`)
+      .join("");
+    const unsure = mapping.unsure ? `${number(mapping.unsure)} kolonun türü belirsiz (sarı başlık) — açılır listeden seçebilirsiniz.` : "Kolon türleri kendiliğinden tanındı.";
+    const flagged = (mapping.rows || []).filter(row => row.__hofFlag).length;
+    return `<details class="hof-mapping" open>
+      <summary><b>Ön izleme ve eşleme</b> · ${number(mapping.total)} satırın ilk ${number((mapping.rows || []).length)}'i · ${esc(unsure)}${flagged ? ` · sarı satırlar “İşaretlenen hatalar”a gider` : ""}</summary>
+      <p class="hof-inline-note">Program her kolonu ne saydığını başlıkta yazar (kesin / olası / belirsiz). Yanlışsa açılır listeden doğrusunu seçin; <b>Son tarih / Vade</b> seçilen kolon takvime girer, <b>Yoksay</b> seçilen kolon uyarı üretmez. Sarı hücreler kolonun türüne uymayan değerlerdir; üzerine gelince neden yazar.</p>
+      <div class="hof-mapping-scroll"><table class="hof-mapping-table"><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div>
+    </details>`;
+  }
+  function chosenRoles(dialog) {
+    const roles = {};
+    for (const select of dialog.querySelectorAll("select[data-role-for]")) if (select.value && select.value !== "auto") roles[select.dataset.roleFor] = select.value;
+    return Object.keys(roles).length ? roles : undefined;
+  }
+  // İlk yükleme (henüz veri yok): ön izleme + tek düğme.
+  function firstImport(staged) {
+    const modal = HOF.modal({
+      title: `Yeni veri: ${staged.label}`,
+      eyebrow: "ÖN İZLEME",
+      size: "wide",
+      body: `<p class="hof-modal-text">${number(staged.rowCount)} kayıt okundu${staged.tabs.length ? ` (${number(staged.tabs.length)} sekme)` : ""}. Henüz hiçbir şey kaydedilmedi: aşağıda programın tabloyu nasıl anladığını görün, gerekirse kolon türlerini düzeltin, sonra <b>Yükle</b>'ye basın.</p>
+        ${readingHtml(staged.reading)}
+        ${mappingHtml(staged.mapping)}
+        <p class="hof-inline-note">Yüklemeden önce veritabanının yedeği alınır; Excel dosyanız değişmez.</p>
+        <div class="hof-actions"><button type="button" class="hof-button hof-button-ghost" data-cancel>Vazgeç</button><button type="button" class="hof-button" data-mode="replace" autofocus>Yükle</button></div>`,
+    });
+    modal.dialog.querySelector("[data-cancel]").onclick = () => modal.close();
+    modal.dialog.querySelector('[data-mode="replace"]').addEventListener("click", async event => {
+      const button = event.currentTarget;
+      modal.dialog.querySelectorAll("button, select").forEach(item => (item.disabled = true));
+      button.classList.add("is-busy");
+      button.textContent = "Yükleniyor…";
+      try {
+        finish(await HOF.api("/api/workspace/dataset/commit", { method: "POST", body: { stageId: staged.stageId, mode: "replace", link: true, roles: chosenRoles(modal.dialog) }, timeoutMs: 180_000 }));
+      } catch (error) {
+        modal.close();
+        HOF.toastError(error);
+      }
+    });
+  }
+
+  // Kolon eşleme (v2.0.2): dosyadaki kolon adları değiştiyse program hangi eski kolonla eşlediğini söyler; düzeltmeler,
+  // adlar ve listeler eşlenen kolona taşınır. Eşleme yanlışsa kullanıcı dosyadaki başlığı eski adına döndürebilir.
+  function schemaHtml(schema) {
+    if (!schema || (!schema.renamed?.length && !schema.added?.length && !schema.removed?.length)) return "";
+    const parts = [];
+    if (schema.renamed?.length) parts.push(`<p><b>Yeniden adlandırılan kolonlar</b> (düzeltmeler ve ayarlar yeni ada taşınır): ${schema.renamed.map(item => `“${esc(item.from)}” → “${esc(item.to)}”<small> · ${esc(item.why)}</small>`).join(", ")}</p>`);
+    if (schema.added?.length) parts.push(`<p><b>Yeni kolonlar:</b> ${schema.added.map(esc).join(", ")}</p>`);
+    if (schema.removed?.length) parts.push(`<p><b>Bu dosyada olmayan kolonlar:</b> ${schema.removed.map(esc).join(", ")}<small> · “devamı olarak” eklemede mevcut kayıtlarda kalır, “yerine koy”da kalkar</small></p>`);
+    return `<div class="hof-reading hof-schema">${parts.join("")}</div>`;
+  }
+  function readingHtml(reading) {
+    if (!reading || !reading.cells) return "";
+    const percent = Math.round((reading.coverage ?? 1) * 100);
+    const counts = new Map();
+    for (const item of reading.skipped || []) counts.set(item.kind, (counts.get(item.kind) || 0) + 1);
+    const summary = [...counts].map(([kind, count]) => `${count} ${SKIP_LABELS[kind] || kind}`).join(", ");
+    const warn = percent < 90;
+    const lines = (reading.skipped || []).map(item => `<li><b>${esc(item.sheet ? `${item.sheet} · ` : "")}${item.line}. satır</b> · ${esc(SKIP_LABELS[item.kind] || item.kind)}${item.text ? ` · <span>${esc(item.text)}</span>` : ""}</li>`).join("");
+    return `<div class="hof-reading ${warn ? "is-warn" : ""}">
+      <p><b>Okuma raporu:</b> hücrelerin %${percent}'i kayda girdi${reading.skippedTotal ? ` · ${number(reading.skippedTotal)} satır kayıt sayılmadı (${esc(summary)})` : " · her satır kayıt oldu"}.${warn ? " <b>Dosyanın önemli bir bölümü kayda giremedi;</b> atlanan satırları kontrol edin, gerekirse Excel'de başlık satırını düzeltip yeniden yükleyin." : ""}</p>
+      ${(reading.notes || []).map(note => `<p class="hof-reading-note">${esc(note)}</p>`).join("")}
+      ${lines ? `<details><summary>Kayıt sayılmayan satırlar${reading.skippedTotal > (reading.skipped || []).length ? ` (ilk ${(reading.skipped || []).length})` : ""}</summary><ul>${lines}</ul></details>` : ""}
+    </div>`;
+  }
   function progress(title, text) {
     const modal = HOF.modal({ title, eyebrow: "VERİ", size: "small", dismissible: false, body: `<p class="hof-modal-text" data-status>${esc(text)}</p><div class="hof-progress"><span></span></div>` });
     return {
@@ -100,7 +185,7 @@
         const parsed = await parseInWorker(body.file);
         if (!parsed.rowCount) throw new Error("Dosyada okunabilir kayıt bulunamadı. Tablonun kolon başlıklarıyla başladığından emin olun.");
         busy.set(`Yaklaşık ${number(parsed.rowCount)} satır mevcut veriyle karşılaştırılıyor…`);
-        staged = await HOF.api("/api/workspace/dataset/stage", { method: "POST", body: { kind: "excel", fileName: body.file.name, sheets: parsed.sheets }, timeoutMs: 180_000 });
+        staged = await HOF.api("/api/workspace/dataset/stage", { method: "POST", body: { kind: "excel", fileName: body.file.name, sheets: parsed.sheets, ...(parsed.definedNames ? { definedNames: parsed.definedNames } : {}) }, timeoutMs: 180_000 });
       } else {
         staged = await HOF.api("/api/workspace/dataset/stage", { method: "POST", body: { kind: "sheets", url: body.url }, timeoutMs: 120_000 });
       }
@@ -110,7 +195,12 @@
       return;
     }
     if (!staged.hasData) {
-      busy.set(`${number(staged.rowCount)} kayıt kaydediliyor…`);
+      // v2.0.2: ilk yüklemede de veri doğrudan yazılmaz; ön izleme ve eşleme ekranı açılır, kullanıcı onaylar.
+      busy.close();
+      firstImport(staged);
+      return;
+    }
+    if (false) {
       try {
         finish(await HOF.api("/api/workspace/dataset/commit", { method: "POST", body: { stageId: staged.stageId, mode: "replace", link: true }, timeoutMs: 180_000 }));
       } catch (error) {
@@ -139,6 +229,9 @@
       eyebrow: "VERİ",
       size: "wide",
       body: `<p class="hof-modal-text">${number(staged.rowCount)} kayıt okundu${staged.tabs.length ? ` (${number(staged.tabs.length)} sekme)` : ""}. Şu anki oturum: <b>${esc(staged.session?.current || staged.current.label || "Çalışma verisi")}</b>, ${number(staged.current.rowCount)} kayıt. Nasıl açılsın?</p>
+        ${readingHtml(staged.reading)}
+        ${schemaHtml(staged.schema)}
+        ${mappingHtml(staged.mapping)}
         ${different ? `<div class="hof-alert">Bu dosya şu anki veriden <b>farklı bir konuda</b> görünüyor${esc(overlap)}. Veriler birbirine karışmasın diye <b>yeni oturumda açmanızı</b> öneririz.</div>` : ""}
         <article class="hof-choice hof-choice-session ${preferSession ? "is-recommended" : ""}">
           <header><b>Yeni oturumda aç</b>${preferSession ? '<span class="hof-chip">Önerilen</span>' : ""}</header>
@@ -202,7 +295,7 @@
       button.classList.add("is-busy");
       button.textContent = mode === "session" ? "Oturum açılıyor…" : "Uygulanıyor…";
       try {
-        finish(await HOF.api("/api/workspace/dataset/commit", { method: "POST", body: { stageId: staged.stageId, mode, link, name }, timeoutMs: 180_000 }));
+        finish(await HOF.api("/api/workspace/dataset/commit", { method: "POST", body: { stageId: staged.stageId, mode, link, name, roles: chosenRoles(modal.dialog) }, timeoutMs: 180_000 }));
       } catch (error) {
         modal.close();
         HOF.toastError(error);
@@ -556,10 +649,6 @@
       const label = navLabel(button);
       if (label === "Tabloyu değiştir") setHidden(button, true);
       if (label === "Ayarlar") setHidden(button, !manage);
-    });
-    document.querySelectorAll(".sidebar .nav-label").forEach(label => {
-      // Başlık kalemle değiştirilmiş olabilir; arayüzün asıl metnine bakılır.
-      if ((HOF.labels?.original(label) ?? navLabel(label)) === "VERİ KAYNAĞI") setHidden(label, !manage);
     });
     document.querySelectorAll(".button-row button").forEach(button => {
       if (navLabel(button).includes("Yeni tablo yükle")) setHidden(button, true);

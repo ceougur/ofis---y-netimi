@@ -1,7 +1,7 @@
 // Ofis içi sohbet ve canlı olay kanalı uçları.
-import { HttpError, ok, readJson } from "../lib/http.mjs";
+import { HttpError, ok, readJson, sendBuffer } from "../lib/http.mjs";
 
-export function registerChatRoutes(router, { auth, chat, events, config }) {
+export function registerChatRoutes(router, { auth, chat, chatArchive, events, config }) {
   // Canlı olaylar (Server-Sent Events). Bağlantı açık kaldığı sürece yanıt bitmez.
   router.get("/api/events", async ({ req, res, url }) => {
     const user = auth.requireUser(req);
@@ -22,7 +22,23 @@ export function registerChatRoutes(router, { auth, chat, events, config }) {
 
   router.get("/api/chat/conversations/:id/messages", async ({ req, res, params, url }) => {
     const user = auth.requireUser(req);
-    ok(res, chat.messages(user, params.id, { before: url.searchParams.get("before"), limit: url.searchParams.get("limit") }));
+    const result = chat.messages(user, params.id, { before: url.searchParams.get("before"), limit: url.searchParams.get("limit"), window: url.searchParams.get("window") || "" });
+    // 30 günden eski mesajlar arşivde (v2.0.2): kaç aylık arşiv olduğu.
+    if (chatArchive) result.archivedMonths = chatArchive.months(chat.access(user, params.id));
+    ok(res, result);
+  });
+
+  // Kişinin kendi yazışmasının arşivi (özel yazışmada yalnızca iki taraf).
+  router.get("/api/chat/conversations/:id/archive", async ({ req, res, params }) => {
+    const user = auth.requireUser(req);
+    const file = chatArchive?.download(chat.access(user, params.id));
+    if (!file) throw new HttpError(404, "Bu yazışmanın arşivi yok.");
+    sendBuffer(res, file.body, { type: "text/plain; charset=utf-8", name: file.name });
+  });
+
+  router.get("/api/admin/chat-archive", async ({ req, res }) => {
+    auth.requirePermission(req, "users.manage");
+    ok(res, chatArchive ? chatArchive.info() : null);
   });
 
   router.post("/api/chat/conversations/:id/messages", async ({ req, res, params }) => {

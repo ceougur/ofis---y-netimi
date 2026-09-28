@@ -53,3 +53,6 @@ figcaption { color: var(--muted); font-size: 9pt; margin-top: 4px; text-align: c
 .foot { margin-top: 28px; color: var(--muted); font-size: 8.5pt; border-top: 1px solid var(--line); padding-top: 8px; }
 .pb { break-before: page; }
 svg text { font-family: "DejaVu Sans", sans-serif; }
+figure.w80 img { width: 80%; margin: 0 auto; }
+.pair { display: grid; grid-template-columns: 1.15fr 1fr; gap: 12px; align-items: start; break-inside: avoid; }
+.pair figure { margin: 6px 0 10px; }

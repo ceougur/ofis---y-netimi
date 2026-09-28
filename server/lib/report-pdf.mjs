@@ -1,0 +1,108 @@
+// Rapor PDF'i (v2.0.2): dinamik kolonlu tablo. Kolon genişlikleri içeriğe göre (başlık ve en uzun hücrelerin p90'ı),
+// sayfaya sığmayan geniş tablolarda yatay (landscape) sayfa; uzun hücreler satır içinde sarılır; her sayfada başlık
+// satırı ve altbilgi (sayfa no). Kasa dökümüyle aynı yazı tipi ve bağımlılıksız PDF yazıcı (pdf-write.mjs).
+import { fileURLToPath } from "node:url";
+import { dirname, join } from "node:path";
+import { A4, PdfDocument, loadFont } from "./pdf-write.mjs";
+
+const FONT_DIR = join(dirname(fileURLToPath(import.meta.url)), "..", "assets", "fonts");
+let fonts = null;
+const loadFonts = () => {
+  fonts ||= { regular: loadFont(join(FONT_DIR, "LiberationSans-Regular.ttf")), bold: loadFont(join(FONT_DIR, "LiberationSans-Bold.ttf")) };
+  return fonts;
+};
+const pad = value => String(value).padStart(2, "0");
+const tl = value => `${new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(Number(value) || 0)} TL`;
+
+/**
+ * @param {{ title: string, subtitle?: string, headers: string[], rows: string[][], types?: string[], summary?: Array<[string, string]>, officeName?: string, userName?: string, now?: Date }} input
+ */
+export function tablePdf({ title, subtitle = "", headers, rows, types = [], summary = [], officeName = "", userName = "", now = new Date() }) {
+  const M = 36;
+  const landscape = headers.length > 7;
+  const size = landscape ? { width: A4.height, height: A4.width } : A4;
+  const doc = new PdfDocument({ fonts: loadFonts(), size, title, author: officeName || "DestekOfis", subject: title });
+  const W = size.width - M * 2;
+  const bottomLimit = size.height - 48;
+  const muted = "#6b7280";
+  const ink = "#111827";
+  const fontSize = headers.length > 10 ? 7 : headers.length > 7 ? 7.5 : 8.5;
+  const cellPad = 4;
+
+  // Kolon genişlikleri: başlık ve hücre ölçümlerinin p90'ı, en az 40 ve en çok W/3; sonra sayfaya orantıla.
+  const widths = headers.map((header, index) => {
+    const samples = rows.slice(0, 400).map(row => doc.measure(String(row[index] ?? ""), "regular", fontSize)).sort((a, b) => a - b);
+    const p90 = samples.length ? samples[Math.min(samples.length - 1, Math.floor(samples.length * 0.9))] : 0;
+    return Math.min(W / 3, Math.max(40, Math.max(doc.measure(header, "bold", fontSize) + 6, p90) + cellPad * 2));
+  });
+  const total = widths.reduce((sum, width) => sum + width, 0);
+  const scale = total > W ? W / total : 1;
+  const cols = widths.map(width => width * scale);
+  const lefts = cols.map((_, index) => M + cols.slice(0, index).reduce((sum, width) => sum + width, 0));
+  const align = index => (types[index] === "money" || types[index] === "number" ? "right" : "left");
+
+  let page = null;
+  let top = 0;
+  const header = () => {
+    page.rect(M, top, W, 18, { fill: "#f3f4f6" });
+    headers.forEach((text, index) => page.text(lefts[index] + cellPad, top + 12, doc.fit(text, cols[index] - cellPad * 2, "bold", fontSize), { font: "bold", size: fontSize, color: "#374151", align: align(index), width: align(index) === "right" ? cols[index] - cellPad * 2 : undefined }));
+    top += 18;
+  };
+  const created = `${pad(now.getDate())}.${pad(now.getMonth() + 1)}.${now.getFullYear()} ${pad(now.getHours())}:${pad(now.getMinutes())}`;
+  const newPage = first => {
+    page = doc.addPage();
+    top = M;
+    if (first) {
+      if (officeName) page.text(M, top + 8, doc.fit(officeName, W * 0.6, "bold", 9), { font: "bold", size: 9, color: muted });
+      page.text(M, top + 30, title, { font: "bold", size: 18, color: ink });
+      if (subtitle) page.text(M, top + 46, doc.fit(subtitle, W, "regular", 10), { size: 10, color: "#374151" });
+      page.text(M, top + 8, `Oluşturma: ${created}`, { size: 8, color: muted, align: "right", width: W });
+      if (userName) page.text(M, top + 20, `Hazırlayan: ${doc.fit(userName, W * 0.35, "regular", 8)}`, { size: 8, color: muted, align: "right", width: W });
+      top += subtitle ? 58 : 44;
+      if (summary.length) {
+        const gap = 6;
+        const cardWidth = (W - gap * (summary.length - 1)) / summary.length;
+        summary.forEach(([label, value], index) => {
+          const left = M + index * (cardWidth + gap);
+          page.rect(left, top, cardWidth, 36, { fill: "#f9fafb", stroke: "#e5e7eb", radius: 5 });
+          page.text(left + 8, top + 13, doc.fit(label, cardWidth - 16, "regular", 7.5), { size: 7.5, color: muted });
+          page.text(left + 8, top + 28, doc.fit(value, cardWidth - 16, "bold", 10), { font: "bold", size: 10, color: ink });
+        });
+        top += 46;
+      }
+    } else {
+      page.text(M, top + 8, `${title}${subtitle ? ` · ${subtitle}` : ""}`, { font: "bold", size: 8, color: muted });
+      top += 18;
+    }
+    header();
+  };
+  newPage(true);
+  if (!rows.length) {
+    page.text(M + cellPad, top + 14, "Bu süzgeçlerle satır bulunamadı.", { size: 9, color: muted });
+    top += 22;
+  }
+  rows.forEach((row, rowIndex) => {
+    const wrapped = row.map((value, index) => {
+      const lines = doc.wrap(String(value ?? ""), cols[index] - cellPad * 2, "regular", fontSize);
+      return lines.length > 4 ? [...lines.slice(0, 3), doc.fit(`${lines[3]}…`, cols[index] - cellPad * 2, "regular", fontSize)] : lines.length ? lines : [""];
+    });
+    const height = 6 + Math.max(...wrapped.map(lines => lines.length)) * (fontSize + 3);
+    if (top + height > bottomLimit) newPage(false);
+    if (rowIndex % 2) page.rect(M, top, W, height, { fill: "#fcfcfd" });
+    wrapped.forEach((lines, index) => {
+      lines.forEach((line, lineIndex) => page.text(lefts[index] + cellPad, top + fontSize + 3 + lineIndex * (fontSize + 3), line, { size: fontSize, color: ink, align: align(index), width: align(index) === "right" ? cols[index] - cellPad * 2 : undefined }));
+    });
+    top += height;
+    page.line(M, top, M + W, top, { color: "#e5e7eb", width: 0.4 });
+  });
+  const count = doc.pages.length;
+  doc.pages.forEach((item, index) => {
+    const footer = size.height - 24;
+    item.line(M, footer - 10, M + W, footer - 10, { color: "#e5e7eb", width: 0.5 });
+    item.text(M, footer, `DestekOfis · ${title}`, { size: 7.5, color: muted });
+    item.text(M, footer, `Sayfa ${index + 1} / ${count}`, { size: 7.5, color: muted, align: "right", width: W });
+  });
+  return doc.toBuffer({ now });
+}
+
+export { tl };

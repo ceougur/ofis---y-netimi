@@ -3,7 +3,7 @@
 import { HttpError, ok, readJson, text } from "../lib/http.mjs";
 import { can } from "../lib/permissions.mjs";
 
-export function registerDatasetRoutes(router, { auth, dataset, clientState }) {
+export function registerDatasetRoutes(router, { auth, dataset, clientState, profile }) {
   router.get("/api/workspace/dataset", async ({ req, res }) => {
     const user = auth.requireUser(req);
     ok(res, dataset.summary({ detailed: can(user.role, "sources.manage") }));
@@ -21,7 +21,17 @@ export function registerDatasetRoutes(router, { auth, dataset, clientState }) {
     const user = auth.requirePermission(req, "sources.manage");
     const body = await readJson(req);
     const result = dataset.commit(user, text(body.stageId), { mode: text(body.mode), link: body.link !== false, name: text(body.name) });
-    ok(res, { ...result, state: clientState.read() });
+    // Eşleme ekranında seçilen kolon rolleri (v2.0.2): veri kaydedildikten sonra oturuma yazılır; analiz ve takvim uyar.
+    let roles = null;
+    if (body.roles && typeof body.roles === "object" && profile?.setRoles) {
+      try {
+        roles = profile.setRoles(user, body.roles, []);
+      } catch (error) {
+        if (!(error instanceof HttpError)) throw error;
+        roles = { error: error.message };
+      }
+    }
+    ok(res, { ...result, roles, state: clientState.read() });
   });
 
   router.post("/api/workspace/dataset/sync", async ({ req, res }) => {

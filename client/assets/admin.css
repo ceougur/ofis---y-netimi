@@ -386,3 +386,38 @@ code {
 .adm-install-code { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 10px 12px; border: 1px dashed var(--do-border-strong); border-radius: 10px; background: var(--do-surface-soft); }
 .adm-install-code span { color: var(--do-muted); font-size: 12px; }
 .adm-install-code code { font: 700 13px ui-monospace, SFMono-Regular, Consolas, monospace; letter-spacing: 0.02em; overflow-wrap: anywhere; }
+
+/* Silinenler (v2.0.2) */
+.adm-trash .adm-detail b {
+  display: block;
+  color: var(--do-ink, #142b25);
+}
+.adm-trash .adm-detail small {
+  display: block;
+  margin-top: 2px;
+}
+.adm-trash-note {
+  color: var(--do-faint, #8a9a93);
+}
+.adm-trash-note.is-blocked {
+  color: #b3473a;
+}
+.adm-kind {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #eef5f0;
+  color: #2c4a40;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* Drive'a yedek (v2.0.2) */
+.adm-hints { margin: 6px 0 12px; padding-left: 18px; color: var(--hof-muted, #5b6472); font-size: 13px; line-height: 1.5; }
+.adm-hints code { font-size: 12px; }
+.adm-inline-form { display: grid; gap: 10px; max-width: 720px; }
+.adm-inline-form .hof-field input { width: 100%; }
+.adm-ok { color: #1a7f4b; }
+.adm-warn { color: #a05a00; }
+.adm-error { color: #b42318; }

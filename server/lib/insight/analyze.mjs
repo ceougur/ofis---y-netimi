@@ -4,6 +4,7 @@
 // v1.7.0: sektör önerisi ve arama ipucu tüm veriden; kartlar ve veri sağlığı her sekme için o sekmenin kendi
 // kolonlarından (kpi.mjs). Kartlar hücre hücre doğrulanır (cards.mjs); doğrulanamayan kart gösterilmez, nedeni yazılır.
 import { columnOrder } from "../sources.mjs";
+import { isTotalRow } from "./cells.mjs";
 import { analyzeColumns, primaryColumns } from "./columns.mjs";
 import { computeKpis } from "./kpi.mjs";
 import { recordTitle } from "./quality.mjs";
@@ -23,6 +24,12 @@ const slim = item => ({
   kind: item.kind ?? null,
   confidence: item.confidence,
   verified: item.verified,
+  warning: item.warning ?? null,
+  forced: item.forced ?? null,
+  ignored: Boolean(item.ignored),
+  evidence: item.evidence || [],
+  certainty: item.certainty || "belirsiz",
+  inferred: item.inferred || null,
   validRate: item.validRate ?? null,
   currency: item.currency ?? null,
   importance: item.importance,
@@ -35,17 +42,21 @@ const slim = item => ({
 /**
  * @param {{ rows: Array<Record<string,string>>, label?: string, tabs?: string[], now?: Date }} input
  */
-export function analyzeDataset({ rows, label = "", tabs = [], now = new Date() }) {
+export function analyzeDataset({ rows, label = "", tabs = [], now = new Date(), sectors = [], forced = null }) {
   const started = performance.now();
   const data = Array.isArray(rows) ? rows : [];
   const columns = columnOrder(data);
-  const analyses = analyzeColumns(data, columns, { now });
+  // Toplam/ara toplam satırları kayıt değildir: kolon türünü ("Sıra" 1, 2, 3 … ile "Ara toplam" karışmasın) ve sektörü
+  // gövde satırları belirler; satırların kendisi görünümde kalır.
+  const body = data.filter(row => !isTotalRow(row));
+  const sample = body.length ? body : data;
+  const analyses = analyzeColumns(sample, columns, { now, forced });
   const primary = primaryColumns(analyses);
-  const sector = classifySector({ analyses, rows: data, label, tabs });
-  const kpis = computeKpis(data, { tabs, now });
+  const sector = classifySector({ analyses, rows: sample, label, tabs, extra: sectors });
+  const kpis = computeKpis(data, { tabs, now, forced });
   const { quality, ...indicators } = kpis;
   // Mantık denetimi (v2.0.1): verinin kendi kurallarını öğrenir, uymayan kayıtları bulur (reasoning.mjs).
-  const reasoning = reasonAbout(data, { tabs, now, titleOf: row => recordTitle(row, primary) });
+  const reasoning = reasonAbout(data, { tabs, now, titleOf: row => recordTitle(row, primary), forced });
   const order = analyses
     .filter(item => item.role !== "empty" && item.role !== "sequence")
     .slice()

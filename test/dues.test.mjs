@@ -5,7 +5,8 @@ import path from "node:path";
 import { after, before, describe, it } from "node:test";
 import { inflateSync } from "node:zlib";
 import { cashPdf, cashPdfName, rangeLabel } from "../server/lib/cash-report.mjs";
-import { computeDeadlines, computeDues, readDue } from "../server/lib/insight/dues.mjs";
+import { computeDeadlines, computeDues, monthColumns, readDue } from "../server/lib/insight/dues.mjs";
+import { installmentLedger } from "../server/lib/insight/installments.mjs";
 import { PdfDocument, loadFont, subsetFont } from "../server/lib/pdf-write.mjs";
 import { okulServisiWorkbook } from "./fixtures/okul-servisi-ornek.mjs";
 import { tahsilatWorkbook } from "./fixtures/tahsilat-ornek.mjs";
@@ -96,6 +97,94 @@ describe("tahsilat takvimi motoru (v2.0.1)", () => {
     const expired = deadlines.find(item => item.label === "Ehliyet Geçerlilik");
     assert.ok(expired && expired.days < 0, "süresi geçen belge de gelir");
     for (const label of ["Sigorta Bitiş", "Kasko Bitiş", "SRC Geçerlilik", "Psikoteknik Bitiş", "Güzergâh İzni Vize"]) assert.ok(deadlines.some(item => item.label === label), label);
+  });
+});
+
+describe("tahsilat takvimi: şablon satırları ve hizmet dönemi (v2.0.2)", () => {
+  const MONTHS = ["EYLÜL", "EKİM", "KASIM", "ARALIK", "OCAK", "ŞUBAT", "MART", "NİSAN", "MAYIS", "HAZİRAN", "TEMMUZ", "AĞUSTOS"].map(name => `${name} TAKSİTİ`);
+  const yearOf = (columns, now) => Object.fromEntries(monthColumns(columns, now).map(entry => [entry.column, new Date(entry.time).getUTCFullYear()]));
+
+  it("ay kolonlarının yılı kolon sırasından: Eylül–Ağustos okul yılında Temmuz ve Ağustos gelecek yılın", () => {
+    const years = yearOf(MONTHS, new Date(2026, 8, 27));
+    assert.equal(years["EYLÜL TAKSİTİ"], 2026);
+    assert.equal(years["ARALIK TAKSİTİ"], 2026);
+    assert.equal(years["OCAK TAKSİTİ"], 2027);
+    assert.equal(years["TEMMUZ TAKSİTİ"], 2027);
+    assert.equal(years["AĞUSTOS TAKSİTİ"], 2027);
+    // Ocak–Aralık takviminde Temmuz geçti.
+    const calendar = yearOf(["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"], new Date(2026, 8, 27));
+    assert.equal(calendar.Temmuz, 2026);
+    assert.equal(calendar.Aralık, 2026);
+    // Yaz tatilinde (Ağustos) Eylül–Haziran şablonu biten okul yılını gösterir.
+    const summer = yearOf(MONTHS.slice(0, 10), new Date(2026, 7, 10));
+    assert.equal(summer["EYLÜL TAKSİTİ"], 2025);
+    assert.equal(summer["HAZİRAN TAKSİTİ"], 2026);
+    // Yılı yazılı kolon diziyi yerleştirir.
+    const anchored = yearOf(["Kasım 2025", "Aralık", "Ocak"], new Date(2026, 8, 27));
+    assert.deepEqual(Object.values(anchored), [2025, 2025, 2026]);
+  });
+
+  it("boş şablon satırı, başlamadan önceki aylar, ayrılan öğrenci ve '–' işaretli ay borç sayılmaz", () => {
+    const now = new Date(2026, 10, 15); // 15 Kasım 2026
+    const columns = ["SIRA", "ÖĞRENCİ ADI", "TELEFON", "AYLIK ÜCRET", "TOPLAM TUTAR", ...MONTHS, "KAYIT TARİHİ", "DURUM"];
+    const row = (index, values) => ({ __hofKey: `plaka:${index}`, __sheet: "42 C 0594", SIRA: String(index), "ÖĞRENCİ ADI": "", TELEFON: "", "AYLIK ÜCRET": "", "TOPLAM TUTAR": "0,00 ₺", "KAYIT TARİHİ": "", DURUM: "", ...Object.fromEntries(MONTHS.map(month => [month, ""])), ...values });
+    const rows = [
+      row(1, { "ÖĞRENCİ ADI": "Ali Can", "AYLIK ÜCRET": "3.000 ₺", "EYLÜL TAKSİTİ": "3.000 ₺" }),
+      row(2, { "ÖĞRENCİ ADI": "Ayşe Nur", "AYLIK ÜCRET": "3.000 ₺", "EKİM TAKSİTİ": "Ödendi" }),
+      row(3, {}),
+      row(4, { "ÖĞRENCİ ADI": "Can Er", "AYLIK ÜCRET": "3.000 ₺" }),
+      row(5, { "ÖĞRENCİ ADI": "Deniz Ak", "AYLIK ÜCRET": "3.000 ₺", "EYLÜL TAKSİTİ": "3.000 ₺", DURUM: "Ayrıldı" }),
+      row(6, { "ÖĞRENCİ ADI": "Efe Su", "AYLIK ÜCRET": "3.000 ₺", "EYLÜL TAKSİTİ": "–", "EKİM TAKSİTİ": "3.000 ₺", "KASIM TAKSİTİ": "muaf" }),
+      row(7, { "ÖĞRENCİ ADI": "Fatma Gül", "AYLIK ÜCRET": "3.000 ₺", "KAYIT TARİHİ": "01.09.2026" }),
+      row(8, { "TOPLAM TUTAR": "0,00 ₺" }),
+    ];
+    const { items } = computeDues({ rows, tabs: ["42 C 0594"], payments: [], now });
+    const byPerson = person => items.filter(item => item.person === person).map(item => item.dueText).sort();
+    assert.ok(items.every(item => item.person), `isimsiz (şablon) satırdan kalem gelmez: ${items.filter(item => !item.person).map(item => item.caseKey)}`);
+    assert.deepEqual(byPerson("Ali Can"), ["Ekim 2026", "Kasım 2026"], "Eylül ödendi; Ekim gecikti, Kasım bu ay");
+    assert.deepEqual(byPerson("Ayşe Nur"), ["Kasım 2026"], "Ekim'de başladı: Eylül borç değil");
+    assert.deepEqual(byPerson("Can Er"), ["Kasım 2026"], "hiçbir ayı dolu olmayan yeni öğrenci: yalnız bu ay");
+    assert.deepEqual(byPerson("Deniz Ak"), [], "ayrılan öğrenci takip edilmez");
+    assert.deepEqual(byPerson("Efe Su"), [], "'–' ve 'muaf' o ay ücret yok demek");
+    assert.deepEqual(byPerson("Fatma Gül"), ["Ekim 2026", "Eylül 2026", "Kasım 2026"], "kayıt tarihi Eylül: Eylül'den beri beklenir");
+    assert.ok(!items.some(item => /Temmuz|Ağustos/.test(item.dueText)), "okul yılının Temmuz–Ağustos'u henüz gelmedi");
+    assert.equal(items.find(item => item.person === "Ali Can" && item.dueText === "Kasım 2026").amount, 3000);
+  });
+});
+
+describe("tahsilat takvimi: gerçek plan ile yapılmış işlem ayrımı (v2.0.2)", () => {
+  const now = new Date(2026, 8, 27, 10);
+  it("yapılmış ödemelerin listesi ('Ödeme Tarihi', son günlerde de olsa) ödeme planı sayılmaz", () => {
+    const rows = ["20.09.2026", "24.09.2026", "26.09.2026", "02.09.2026", "15.08.2026"].map((date, i) => ({ __hofKey: `p${i}`, __sheet: "Ödemeler", Müşteri: `Müşteri ${i}`, "Ödeme Tarihi": date, Tutar: "1.000 TL" }));
+    const { items, sources } = computeDues({ rows, tabs: ["Ödemeler"], now });
+    assert.deepEqual(items, []);
+    assert.deepEqual(sources, []);
+  });
+
+  it("aynı başlık ileri tarihliyse (plan) takvime girer", () => {
+    const rows = ["20.09.2026", "20.10.2026", "20.11.2026", "20.12.2026"].map((date, i) => ({ __hofKey: `t${i}`, __sheet: "Plan", Müşteri: `Müşteri ${i}`, "Ödeme Tarihi": date, Tutar: "1.000 TL" }));
+    const { items } = computeDues({ rows, tabs: ["Plan"], now });
+    assert.equal(items.length, 1, "geçmişte kalan tek ödeme gecikmiş, ileridekiler pencerede değil");
+    assert.equal(items[0].state, "overdue");
+  });
+
+  it("ay kolonlu satış ya da devam tablosu (ödeme kanıtı yok) aidat planı sayılmaz", () => {
+    const rows = Array.from({ length: 5 }, (_, i) => ({ __hofKey: `s${i}`, __sheet: "Satış", Temsilci: `Kişi ${i}`, Temmuz: String(10 + i), Ağustos: i % 2 ? "" : "12", Eylül: "" }));
+    assert.deepEqual(computeDues({ rows, tabs: ["Satış"], now }).items, []);
+  });
+
+  it("satır bağlamı: kalan borcu 0 olan kayıttan tahsilat beklenmez", () => {
+    const rows = [
+      { __hofKey: "a", __sheet: "Takip", Borçlu: "Ali", "Ödeme Sözü": "20.09.2026 - 5.000 TL", Kalan: "0,00 TL" },
+      { __hofKey: "b", __sheet: "Takip", Borçlu: "Ayşe", "Ödeme Sözü": "21.09.2026 - 2.000 TL", Kalan: "8.000 TL" },
+      { __hofKey: "c", __sheet: "Takip", Borçlu: "Can", "Ödeme Sözü": "22.09.2026 - 1.000 TL", Kalan: "" },
+    ];
+    assert.deepEqual(computeDues({ rows, tabs: ["Takip"], now }).items.map(item => item.person).sort(), ["Ayşe", "Can"]);
+  });
+
+  it("ay kolonlarında ödeme işareti varsa ya da ücret kolonu varsa aidat planıdır", () => {
+    const marks = Array.from({ length: 4 }, (_, i) => ({ __hofKey: `m${i}`, __sheet: "Aidat", Üye: `Üye ${i}`, Temmuz: "Ödendi", Ağustos: "✓", Eylül: i === 0 ? "" : "ödendi" }));
+    assert.deepEqual(computeDues({ rows: marks, tabs: ["Aidat"], now }).items.map(item => `${item.person} ${item.dueText}`), ["Üye 0 Eylül 2026"]);
   });
 });
 
@@ -218,5 +307,110 @@ describe("tahsilat takvimi ve kasa PDF uç noktaları (v2.0.1)", () => {
     assert.match(response.headers.get("content-disposition"), /^attachment; filename="Kasa-dokumu /);
     const body = response.buffer;
     assert.equal(body.subarray(0, 8).toString("latin1"), "%PDF-1.7");
+  });
+});
+
+describe("bildirimde “Gerçekleştirildi” (v2.0.2)", () => {
+  it("hücreye yazılan “Gerçekleştirildi” kalemi kapatır; tarih hücrede kalır; aylık kısmi ödeme de kapanır", () => {
+    const rows = [
+      { __hofKey: "1", __sheet: "Araçlar", Plaka: "34 ABC 12", Şoför: "Ali Veli", "Sigorta bitiş": "30.09.2026", "Muayene bitiş": "02.10.2026" },
+      { __hofKey: "2", __sheet: "Araçlar", Plaka: "34 DEF 34", Şoför: "Can Er", "Sigorta bitiş": "Gerçekleştirildi · 29.09.2026", "Muayene bitiş": "01.10.2026" },
+      { __hofKey: "3", __sheet: "Araçlar", Plaka: "06 GHI 56", Şoför: "Ece Ak", "Sigorta bitiş": "15.12.2026", "Muayene bitiş": "15.12.2026" },
+    ];
+    const deadlines = computeDeadlines({ rows, tabs: ["Araçlar"], now: NOW });
+    const labels = deadlines.map(item => `${item.person}|${item.column}`);
+    assert.ok(labels.includes("34 ABC 12|Sigorta bitiş"));
+    assert.ok(!labels.includes("34 DEF 34|Sigorta bitiş"), "Gerçekleştirildi yazılan tarih uyarı vermez");
+    assert.ok(labels.includes("34 DEF 34|Muayene bitiş"), "aynı satırın başka işi etkilenmez");
+    assert.equal(deadlines.find(item => item.person === "34 ABC 12").column, "Sigorta bitiş", "hücreye yazmak için kolon adı gelir");
+
+    const student = (key, name, september) => ({ __hofKey: key, __sheet: "Öğrenciler", "Öğrenci": name, "Aylık ücret": "1.000 TL", Ağustos: "1.000 TL", Eylül: september, Ekim: "" });
+    const students = [student("s1", "Deniz", ""), student("s2", "Ege", "Gerçekleştirildi"), student("s3", "Ada", "Gerçekleştirildi · 500 TL"), student("s4", "Can", "500 TL"), student("s5", "Efe", "1.000 TL")];
+    const { items } = computeDues({ rows: students, tabs: ["Öğrenciler"], now: NOW });
+    assert.deepEqual(items.filter(item => item.label === "Eylül ödemesi").map(item => item.person).sort(), ["Can", "Deniz"]);
+    assert.equal(items.find(item => item.person === "Can").amount, 500, "yalnızca kısmi ödeme yazılan kalem kalanı bekler");
+    assert.equal(items.find(item => item.person === "Deniz").column, "Eylül");
+    assert.equal(items.find(item => item.person === "Deniz").recurring, false);
+  });
+
+  it("her ay tekrarlayan ödeme günü kalemi ‘recurring’ olarak işaretlenir (ayar hücresine yazılmaz)", () => {
+    const rows = [{ __hofKey: "k1", __sheet: "Kiracılar", "Kiracı": "Selin", "Kira günü": "5", "Kira tutarı": "10.000" }];
+    const { items } = computeDues({ rows, tabs: ["Kiracılar"], now: NOW });
+    assert.ok(items.length && items.every(item => item.recurring), JSON.stringify(items));
+  });
+});
+
+describe("ay kolonu yazımları ve tek vadeli tutar (v2.0.2)", () => {
+  it("Eyl.26, Ekim'26, 2026-11, 12/2026 ay kolonu sayılır; 'Marka' ve 'Ara toplam' sayılmaz", () => {
+    const months = monthColumns(["Öğrenci", "Eyl.26", "Ekim'26", "2026-11", "12/2026", "Marka", "Ara toplam"], NOW);
+    assert.deepEqual(months.map(item => `${item.column}=${new Date(item.time).toISOString().slice(0, 7)}`), ["Eyl.26=2026-09", "Ekim'26=2026-10", "2026-11=2026-11", "12/2026=2026-12"]);
+  });
+  it("tek vade kolonlu tabloda beklenen tutar borç/tutar kolonundan gelir", () => {
+    const rows = [
+      { __hofKey: "2026/1", __sheet: "Aktif", "Dosya No": "2026/1", Borçlu: "Ali Veli", Alacak: "10.000,00", "Son ödeme": "17.09.2026" },
+      { __hofKey: "2026/2", __sheet: "Aktif", "Dosya No": "2026/2", Borçlu: "Ayşe Kaya", Alacak: "5.000,00", "Son ödeme": "29.09.2026" },
+      { __hofKey: "TOPLAM", __sheet: "Aktif", "Dosya No": "TOPLAM", Borçlu: "", Alacak: "15.000,00", "Son ödeme": "" },
+    ];
+    const { items } = computeDues({ rows, tabs: ["Aktif"], now: NOW });
+    assert.deepEqual(items.map(item => [item.person, item.amount, item.state]), [["Ali Veli", 10000, "overdue"], ["Ayşe Kaya", 5000, "upcoming"]]);
+  });
+});
+
+describe("eşleme ekranı ve takvim (v2.0.2)", () => {
+  it("'Son tarih / Vade' seçilen kolon başlığı ne olursa olsun takvime girer; 'Yoksay' seçilen kolon girmez", async () => {
+    const { computeDues } = await import("../server/lib/insight/dues.mjs");
+    const now = new Date("2026-09-27T09:00:00");
+    const rows = [
+      { __hofKey: "1", __sheet: "S", Müvekkil: "Ali Veli", "Tarih 2": "29.09.2026", Tutar: "1.500", "Ödeme sözü": "30.09.2026" },
+      { __hofKey: "2", __sheet: "S", Müvekkil: "Ayşe Kaya", "Tarih 2": "25.09.2026", Tutar: "2.000", "Ödeme sözü": "01.10.2026" },
+    ];
+    const auto = computeDues({ rows, tabs: ["S"], now });
+    assert.ok(auto.items.every(item => item.label !== "Tarih 2"), "belirsiz başlık otomatik takvime girmez");
+    const forced = computeDues({ rows, tabs: ["S"], now, forced: { "Tarih 2": "deadline", "Ödeme sözü": "ignore" } });
+    assert.ok(forced.items.some(item => item.label === "Tarih 2"), JSON.stringify(forced.items.map(item => item.label)));
+    assert.ok(forced.items.every(item => item.label !== "Ödeme sözü"), "yoksayılan kolon takvime girmez");
+  });
+});
+
+describe("ay matrisi → taksit defteri (v2.0.2)", () => {
+  const CAL = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"];
+  const now = new Date(2026, 8, 27); // 27 Eylül 2026
+  const member = (key, name, months, extra = {}) => ({ __hofKey: key, __sheet: "Aidat", Üye: name, "Aylık aidat": "500 TL", ...Object.fromEntries(CAL.map(m => [m, months[m] ?? ""])), ...extra });
+
+  it("girişten önceki ve çıkıştan sonraki boş aylar taksit değildir; aradaki boş ay ödenmemiştir; durgun kayıt uyarı üretmez", () => {
+    const rows = [
+      member("a", "Ali", { Mart: "500", Nisan: "500", Mayıs: "500", Haziran: "500", Temmuz: "", Ağustos: "500" }), // aktif: Temmuz atlandı, Eylül bu ay
+      member("b", "Ayşe", { Ocak: "500", Şubat: "500", Mart: "500" }), // Mart'tan beri boş: ayrıldı (durgun)
+      member("c", "Can", { Haziran: "500", Temmuz: "500", Ağustos: "500", Eylül: "500" }), // her şey ödenmiş
+      member("d", "Deniz", { Ocak: "500", Şubat: "500" }, { "Ayrılış tarihi": "15.02.2026" }), // bitiş kolonu
+      member("e", "Efe", {}), // hiç ay yok, ücret var → yalnız bu ay
+      member("f", "Filiz", { Ağustos: "500", Eylül: "250" }), // Eylül kısmi
+    ];
+    const { items, dormant } = computeDues({ rows, tabs: ["Aidat"], now });
+    const by = name => items.filter(item => item.person === name).map(item => `${item.dueText}${item.partial ? "*" : ""}`).sort();
+    assert.deepEqual(by("Ali"), ["Eylül 2026", "Temmuz 2026"].sort(), "Mart öncesi boş aylar yok; Temmuz boş → borç; Eylül bu ay");
+    assert.deepEqual(by("Ayşe"), [], "Mart'tan sonra 5 tam boş ay: ayrılmış sayılır, uyarı yok");
+    assert.deepEqual(dormant.map(item => `${item.person} ${item.lastPaidText} ${item.emptyMonths}`), ["Ayşe Mart 2026 5"]);
+    assert.deepEqual(by("Can"), []);
+    assert.deepEqual(by("Deniz"), [], "ayrılış tarihi Şubat: Mart ve sonrası taksit değil");
+    assert.deepEqual(by("Efe"), ["Eylül 2026"]);
+    assert.deepEqual(by("Filiz"), ["Eylül 2026*"]);
+    assert.equal(items.find(item => item.person === "Filiz").amount, 250);
+    assert.equal(items.find(item => item.person === "Ali" && item.dueText === "Temmuz 2026").state, "overdue");
+  });
+
+  it("defter: aralık dışı için satır açılmaz; 2 tam boş ay hâlâ aktiftir, 3 tam boş ay durgundur", () => {
+    const months = CAL.map((column, index) => ({ column, time: Date.UTC(2026, index, 1), label: `${column} ödemesi`, amountColumn: "Aylık aidat" }));
+    const active = installmentLedger({ row: member("x", "X", { Nisan: "500", Mayıs: "500", Haziran: "500", Temmuz: "" }), months, now });
+    assert.deepEqual(active.rows.map(line => `${line.column}:${line.state}`), ["Nisan:paid", "Mayıs:paid", "Haziran:paid", "Temmuz:due", "Ağustos:due", "Eylül:due"], "Temmuz ve Ağustos tam boş, Eylül bu ay: hâlâ aktif");
+    assert.equal(active.open, true);
+    const gone = installmentLedger({ row: member("y", "Y", { Nisan: "500", Mayıs: "500" }), months, now });
+    assert.deepEqual(gone.rows.map(line => line.column), ["Nisan", "Mayıs"], "Haziran–Eylül için satır açılmaz");
+    assert.equal(gone.open, false);
+    assert.equal(gone.dormant.emptyMonths, 3);
+    const none = installmentLedger({ row: { __hofKey: "z", Üye: "Z", "Aylık aidat": "" }, months, now });
+    assert.deepEqual(none.rows, [], "ücret de ay da yoksa taksit yok");
+    const exempt = installmentLedger({ row: member("w", "W", { Temmuz: "muaf", Ağustos: "500" }), months, now });
+    assert.deepEqual(exempt.rows.map(line => `${line.column}:${line.state}`), ["Ağustos:paid", "Eylül:due"], "'muaf' ay başlangıcı belirler ama satır açmaz");
   });
 });

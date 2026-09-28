@@ -5,6 +5,7 @@ import { randomUUID } from "node:crypto";
 import path from "node:path";
 import { HttpError, SECURITY_HEADERS, limited, ok, readBuffer, sendBuffer, text } from "../lib/http.mjs";
 import { MAX_DOCUMENT_BYTES, cleanDocumentName, createDocumentStore, detectDocumentType } from "../lib/documents.mjs";
+import { createZip } from "../lib/zip.mjs";
 import { can } from "../lib/permissions.mjs";
 
 const KINDS_VIEWABLE = new Set(["application/pdf", "image/jpeg", "image/png", "image/gif", "image/webp"]);
@@ -62,6 +63,39 @@ export function registerDocumentRoutes(router, { store, auth, audit, events, con
     ok(res, shape(user, store.get(`${SELECT} WHERE d.id = ?`, id)));
   });
 
+  // Toplu dışa aktarma (v2.0.2): seçilen belgeler özgün biçimleriyle tek .zip içinde. Adlar çakışırsa "(2)" eklenir.
+  // Toplam boyut sınırı belleği korur; adet sınırı yoktur.
+  const MAX_ARCHIVE_BYTES = 1024 * 1024 * 1024;
+  router.get("/api/workspace/cases/:key/documents/archive", async ({ req, res, params, url }) => {
+    const user = auth.requireUser(req);
+    const key = caseKeyOf(params.key);
+    const wanted = new Set(String(url.searchParams.get("ids") || "").split(",").map(item => item.trim()).filter(Boolean));
+    const rows = store.all(`${SELECT} WHERE d.case_key = ? AND d.deleted_at IS NULL ORDER BY d.created_at, d.id`, key).filter(row => !wanted.size || wanted.has(row.id));
+    if (!rows.length) throw new HttpError(404, "Dışa aktarılacak belge bulunamadı.");
+    const used = new Set();
+    const entries = [];
+    let total = 0;
+    for (const row of rows) {
+      const body = files.read(row.sha256);
+      if (!body) continue;
+      total += body.length;
+      if (total > MAX_ARCHIVE_BYTES) throw new HttpError(413, "Seçilen belgeler tek seferde indirilemeyecek kadar büyük (en fazla 1 GB). Daha az belge seçin.");
+      const dot = row.name.lastIndexOf(".");
+      const stem = dot > 0 ? row.name.slice(0, dot) : row.name;
+      const ext = dot > 0 ? row.name.slice(dot) : "";
+      let name = row.name;
+      for (let copy = 2; used.has(name.toLocaleLowerCase("tr-TR")); copy += 1) name = `${stem} (${copy})${ext}`;
+      used.add(name.toLocaleLowerCase("tr-TR"));
+      entries.push({ name, data: body, date: new Date(row.created_at) });
+    }
+    if (!entries.length) throw new HttpError(410, "Belgelerin dosyaları sunucuda bulunamadı.");
+    // PDF ve resimler zaten sıkıştırılmış: hızlı sıkıştırma yeterli.
+    const zip = createZip(entries, { level: 1 });
+    const title = cleanDocumentName(rows[0].case_title || key, "Belgeler").replace(/\.[a-z0-9]{1,5}$/i, "");
+    audit(user, "case.document.exported", key, { caseKey: key, count: entries.length, size: total });
+    sendBuffer(res, zip, { type: "application/zip", name: `Belgeler - ${title}.zip` });
+  });
+
   // Görüntüleme: PDF tarayıcının kendi görüntüleyicisinde, resimler doğrudan; diğer türler ve ?download=1 indirilir.
   router.get("/api/workspace/documents/:id/file", async ({ req, res, params, url }) => {
     auth.requireUser(req);
@@ -92,5 +126,20 @@ export function registerDocumentRoutes(router, { store, auth, audit, events, con
     ok(res, { id: row.id });
   });
 
-  return { stop: () => clearTimeout(purgeTimer) };
+  // Silmeyi geri al (v2.0.2): silen kişi ya da silme yetkisi olan, dosyası duruyorsa.
+  router.post("/api/workspace/documents/:id/restore", async ({ req, res, params }) => {
+    const user = auth.requireUser(req);
+    const row = store.get("SELECT * FROM case_documents WHERE id = ? AND deleted_at IS NOT NULL", text(params.id));
+    if (!row) throw new HttpError(404, "Geri alınacak belge bulunamadı.");
+    if (!canDelete(user, row)) throw new HttpError(403, "Bu belgeyi geri alma yetkiniz yok.");
+    if (!files.read(row.sha256)) throw new HttpError(409, "Belgenin dosyası artık yok.");
+    store.run("UPDATE case_documents SET deleted_at = NULL, deleted_by = NULL WHERE id = ?", row.id);
+    audit(user, "case.document.restored", row.id, { caseKey: row.case_key, name: row.name });
+    changed(user, row.case_key);
+    ok(res, { id: row.id });
+  });
+
+  // Silinenler (v2.0.2): 30 gün içinde silinen belge, dosyası duruyorsa geri yüklenir.
+  const hasFile = row => Boolean(files.read(row.sha256));
+  return { stop: () => clearTimeout(purgeTimer), hasFile, notify: changed };
 }

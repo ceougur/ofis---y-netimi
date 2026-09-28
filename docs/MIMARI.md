@@ -125,6 +125,121 @@ Görünüme (`dataset.view`) yalnızca elle değer yazılmış satırlar `serbes
 
 **Kasa** (`server/routes/cash.mjs`, göç 5). `payments` (detay kartından; `case_title`, `updated_by/at` eklendi) + `cash_entries` (elle giriş/ödeme). `GET /api/workspace/cash?from&to`: eskiden yeniye hareketler ve her birinde o ana kadarki kasa, dönem başı devreden, dönem ve genel toplamlar. Yazma `cash.manage` (yönetici, ikinci rol, muhasebe); tahsilatı giren kişi kendi tahsilatını düzeltip silebilir. Tutarlar Türkçe okunur (`money.mjs`: "1.250" = bin iki yüz elli). `GET /api/workspace/cash.pdf?from&to[&download=1]` (`cash.view`) aynı hesabı kasa dökümü PDF'i olarak verir (`server/lib/cash-report.mjs`). Denetim türü `cash.exported`. PDF yazıcı (`server/lib/pdf-write.mjs`) bağımlılıksızdır. TrueType yazı tipini Type0/CIDFontType2 (Identity-H) olarak gömer. Alt küme glif numaralarını korur: kullanılmayan gliflerin çizimi boşaltılır, bileşik glifler dahil edilir. ToUnicode eşlemesi metnin seçilip aranmasını sağlar; içerik akışları sıkıştırılır. Yazı tipi `server/assets/fonts/` (Liberation Sans 2.1.5, SIL OFL; ₺ glifi olmadığından tutarlar "TL" ile yazılır). İndirme adı ASCII'dir (bazı tarayıcılar `download` adındaki Türkçe harfleri reddediyor).
 
+## 2.0.2 eklemeleri
+
+**Açılır listeler** (`server/lib/choices.mjs`, `client/assets/hof-choices.js`).
+- *Excel yolu:* tarayıcı işçisi (`hof-excel-worker.js`, SheetJS `bookFiles`) sayfa XML'lerinden yalnız `<dataValidations>` ve `<controls>`/`<legacyDrawing>` parçalarını, kutuların `ctrlProps`/VML dosyalarını ve tanımlı adları gönderir. Liste varsa tüm sayfalar boş satırlarıyla ve başlangıç adresiyle gelir; satır ve kolon adresleri tutar.
+- *Google yolu:* formüller için zaten indirilen `export?format=xlsx` aynı okuyucuyla (`readXlsxLists`) okunur.
+- *Çözüm:* `resolveChoices` seçenekleri sayfa matrisinden okur (hücrenin programda görünen metni). Kaynaklar: satır içi liste, aralık, tanımlı ad, x14.
+- *Kolona bağlama:* kurallar `matrixToRecords`'un kayıt bloklarıyla (`blocks`: etiket, satır aralığı, kolon adları) eşleşir. Bir kural bloktaki kayıtların en az yarısını kapsıyorsa kolonun listesi olur.
+- *Form denetimi kutusu:* bağlı hücredeki sıra numarası kayıtlar oluşturulmadan önce metne çevrilir (`applyIndexedCombos`).
+- *Saklama ve görünüm:* sonuç oturum ayarında durur (`dataset.choices`, sekme → kolon → `{options, strict}`). Yerine koymada değişir; eklemede ve eşitlemede kaynaktaki sekmeler için yenilenir. `view()` görünen sekme adlarıyla `choices` döndürür.
+- *Gizli liste sayfası:* yalnızca liste kaynağı olan gizli sayfa içeri almada `dataset.tabs.hidden`'a `reason: "list"` ile yazılır.
+
+**Belge kartı** (`hof-documents.js`).
+- `GET /api/workspace/cases/:key/documents/archive?ids=` seçilenleri özgün adlarıyla .zip yapar (sınır 1 GB, adet sınırı yok).
+- Yazdırma gizli bir çerçevede yapılır. PDF tarayıcının görüntüleyicisiyle yazdırılır. Resim ve metin tek `srcdoc` belgesinde, her biri ayrı sayfa olarak basılır; PDF'ler sıra çubuğuyla birer birer.
+
+**Uyarılarda "Gerçekleştirildi"** (`hof-alerts.js`).
+- Kalem türüne göre işlem:
+  - Tarih ve aylık kalem: ilgili hücreye düzeltme olarak "Gerçekleştirildi · <eski değer>" yazılır (`/api/workspace/overrides`, `action: alert.done`).
+  - Tekrarlayan ödeme günü: `dues/settle` ile yalnız o ay kapanır.
+  - Görev: `tasks/:id/complete`.
+- `dues.mjs` "gerçekleştirildi"yi kapanmış kalem, `DONE_STATE`'i yapılmış iş sayar.
+- Kuyruk: bildirim 20 sn görünür, sonrakiyle arası 10 sn; pencere açıkken bekler. Toast'lar `--hof-notice-space` kadar yukarıda durur.
+
+**Ana tablo** (`hof-grid.js`).
+- Paket yamaları `tum-kolonlar-basliklar/hucreler` 7 kolon sınırını kaldırır.
+- Genişlik: `<th>`'lere başlık ve hücrelerin %90'lık dilimine göre (canvas ölçümü) verilir; tablo `table-layout: fixed`'dır.
+- İlk kolon `position: sticky`. `.cases-panel` `overflow: clip` olur (`hidden` kaydırma kabı oluşturup yapışkanlığı bozuyordu).
+- Kaydırma çubuğu: özel, yapışkan, sürüklenebilir; yerel çubuk bazı sistemlerde gizlendiği için kullanılır.
+
+**Kendi sektörü** (`server/lib/custom-sectors.mjs`).
+- Ofis geneli `sectors.custom` ayarında durur. `customSector()` yerleşik biçime çevirir; kimlikler `ozel-` ile başlar.
+- `classifySector({ extra })` tanıtıcı başlıkları `!` sinyali olarak kullanır; özgüllük ağırlığıyla yerleşiklerle yarışır.
+- Uçlar: `POST/PUT/DELETE /api/workspace/sectors/custom`. Silinen sektörü kullanan oturum Genel'e döner. Profil parmak izi özel sektör değişince analizi yeniler.
+
+**Sohbet arşivi** (`server/lib/chat-archive.mjs`).
+- `GET …/messages?window=day`: açılışta son 24 saat. `before` verilince daha eski en yeni mesajdan geriye 24 saat getirir (boş günler atlanır). Gün başına en çok 500 mesaj.
+- Açılıştan 20 sn sonra ve 6 saatte bir 30 günden eski mesajlar `<veri>/mesaj-arsivi/<yazışma>/<yyyy-aa Ay>.txt` dosyasına yazılır, sonra silinir.
+- Klasör adı: özel yazışmada iki ad + değişmeyen 4 haneli etiket.
+- Dosyanın ilk satırı son arşivlenen zamanı taşır. Yazım geçici dosya + yeniden adlandırma ile yapılır; yarıda kalan tur tekrar yazmaz.
+- `GET …/archive` kişinin kendi yazışmasının arşivini verir (sohbet erişim kuralıyla).
+
+**Tarih anlamı** (`server/lib/insight/temporal.mjs`).
+- `dateMeaning(kolon, ileri tarih oranı)` şu sınıflardan birini döndürür: expiry, schedule, record, birth, other.
+- Kaynaklar: kelime listeleri, Türkçe ekler, sıra sayıları (`ordinalOf`).
+- Uyarı yalnız expiry (öncesi ve sonrası) ve schedule (yalnız yaklaşınca) için verilir. Satır bağlamı (durum, evet/hayır kolonu, aynı konuda daha yeni tarih) uyarıyı susturur.
+
+**Zor veri düzenleri** (`server/lib/sections.mjs`, `server/lib/insight/columns.mjs`, `validators.mjs`, `dues.mjs`, `choices.mjs`).
+- *Gruplu başlık:* `groupedHeader(üst, alt)` — iki satır da veri taşımıyor, alt satır üsttekinden belirgin dolu ve en az onun kadar başlık kelimesi taşıyorsa asıl başlık alttır; boş alt başlık grubun adını alır (`columnNames`). Uzak not satırı (`strayNote`) grup satırıyla karışmasın diye önce gruplu başlık denenir.
+- *Yan yana tablolar:* `splitSideBySide` boş ayırıcı kolonlarla bölünen, her biri ≥2 başlıklı ve doluluk deseni farklı blokları ayrı bölüm yapar; etiketi ilk başlıktır. Formül bağlama aynı satırdaki birden çok kayıttan kolonu taşıyanı seçer.
+- *Toplam ve dipnot:* `isTotalRow` (toplam, ara toplam, genel toplam…) satırları kayıt olarak kalır (formül toplamları) ama kimlik (`dataset-identity`), KPI, takvim ve kolon tanıma (`analyzeDataset` gövde satırlarını kullanır) dışında tutulur. Bölüm sonundaki tek hücreli notlar (`isFootnote`) atılır.
+- *Birleştirilmiş hücreler:* Excel işçisinde `mergedFills` (`sheet["!merges"]`) dikey birleştirmeyi birleşen her satırın ilk kolonuna yazar; Google Sheets'te `readXlsxLists` sayfa XML'inden `<mergeCell>` alanlarını (`merges`) verir ve `fillMerges` CSV matrisine uygular. Yatay birleştirme (gruplu başlık) dokunulmaz.
+- *Değerler:* Excel hata değerleri (`isErrorValue`) boş sayılır. Küçük tablolarda (1–2 değer) tür ancak tüm değerler uyuyor ve başlık o türü söylüyorsa verilir (`pass`). Tarihler: ay adı/kısaltması, "Mart 2027" (ayın 1'i), ABD sırası (ay > 12 ise). Ay kolonları: `monthHeader` kısaltma, `yyyy-mm`, `mm/yyyy`.
+- *Takvim:* tek vadeli tabloda (`single`) tutar borç ya da tek para kolonundan alınır. İngilizce başlıklar `LEXICON`, `STRONG/WEAK/SETTLED` listelerinde eş anlamlılarıyla vardır.
+- *Sayfa şekilleri:* `matrixToRecords` önce sayfanın şeklini belirler — **form** (solda alan adı, sağda değer → tek kayıt), **yan çevrilmiş** (alan adları aşağı, kayıtlar sağa → matris çevrilip olağan yoldan okunur), **başlıksız** (ilk satır da kayıt → kolon adları `guessColumnName` ile içerikten: Tarih, Telefon, Tutar, E-posta, Plaka, T.C., Sıra, Ad Soyad, yoksa "Kolon N"), yoksa olağan **tablo**. İki satıra bölünmüş başlık ("Ödeme" / "Tarihi") birleştirilir (`splitHeader`, ek kelimeleri `SUFFIX_WORDS`). Tek kolonlu sayfada başlık, veri dizisinden önceki son metin satırıdır. Yalnız rakamdan oluşan başlık ("2025") "2025." olur; JavaScript sayısal anahtarları öne dizip kolon sırasını bozmasın.
+- *Okuma raporu:* her sonuç `report` taşır: `shape`, `coverage` (kayda giren hücre oranı), `skipped` (satır, tür: title/note/footnote/group/repeat-header/unnamed, metin), `notes`. `dataset.stage` ve `sheets.read` bunları `reading` olarak birleştirir; yükleme penceresi kapsamı ve atlanan satırları gösterir, kapsam %90'ın altındaysa uyarır (`hof-sources.js` → `readingHtml`). İlke: program emin olmadığını saklamaz, söyler.
+- *Dayanıklılık:* `test/fuzz-sections.test.mjs` tohumlu rastgele düzenler (başlık, boş satır, ara toplam, dipnot, çöp hücreler, form, yan çevrilmiş, başlıksız) üretir ve değişmezleri denetler: istisna yok, kayıt sayısı korunur, kapsam 0–1, 50.000 satır < 2 sn. Fuzz'ın bulduğu üç zayıflık (seyrek kayıt satırının başlık sanılması, soyadı "Ay"ın başlık kelimesi sayılması, iki kolonlu tablonun form sanılması) 2.0.2'de kapatıldı.
+- *Deneme seti:* 23 zor düzen tam yığından (stage → commit → görünüm → analiz → takvim) geçirilir; sonuçlar `docs/DENETIM-2.0.2.md`'de.
+
+**Şemaya esnek uyum** (`server/lib/schema-map.mjs`).
+- `matchColumns(eski, yeni, {prevValues, nextValues})`: katlanmış ad eşitliği 1, kapsama 0.85, tek harflik yazım farkı 0.8, kelime Jaccard'ı, değer örtüşmesi (yeni kolonun ayrık değerlerinin eskisinde bulunma oranı × 0.9), aynı konum +0.05; eşik 0.6; açgözlü bire bir. Sonuç: `renamed / added / removed / same`.
+- `dataset.stage` eşlemeyi hesaplayıp `schema` olarak döndürür (yükleme penceresi gösterir) ve aşamada saklar. `commitInto` → `migrateSchema`: `overrides.field` (hedefte düzeltme yoksa), `ui.columns` takma adları, `dataset.choices`, devamı olarak eklemede `dataset_rows.values_json` anahtarları yeni ada taşınır; denetim kaydı `dataset.schema.migrated`.
+
+**Veri Sağlık Kontrolü** (`server/lib/insight/fixes.mjs`, `routes/insight.mjs`, `hof-chips.js`).
+- `proposeFixes({rows, analyses})`: tek doğru karşılığı olan yazım farkları — telefon, tarih, ABD tutar, durum/kategori/il yazımı, boşluk. Değişiklik listesi sunucuda (oturum + parmak izi), istemciye özet.
+- `POST /insight/fixes/apply` tek işlemde override yazar, `source.cells.bulk_fixed` denetim kaydı; `POST …/undo` 15 dk içinde eski değerleri döndürür. `hof-chips.js` biçim bulgularının kayıtlarını tabloda `data-bad` ile kırmızı işaretler.
+- Kaymış satır (`quality.mjs`): ≥ 2 biçimli kolonda uyumsuz değer ve bir kolon kaydırınca ≥ 2'si yerine oturuyorsa.
+
+**Olay tabanlı uyarılar** (`server/lib/alerts.mjs`).
+- Veri değişikliği zaten `workspace.changed` olayıyla yayılır; `createAlertScheduler` yerel gece yarısı + 2 sn'de `alerts.refresh {reason:"day", today}` yayımlar ve kendini yeniden kurar. İstemci (`hof-alerts.js`, `hof-promises.js`) `live:alerts.refresh` ile takvimi yeniler, sekme görünür olunca 10 dk'dan eskiyse yeniler; yedek anket 30 dk. Takvim sonucu sunucuda parmak izi (veri, tahsilat, kapatılanlar, sekmeler, gün) ile önbelleklidir.
+
+**Analiz iş parçacığı** (`server/lib/insight/worker.mjs`, `worker-entry.mjs`).
+- Tek kalıcı worker (`unref`), işler sırayla; 120 sn zaman aşımı ya da çökmede ana iş parçacığında hesap; `app.close` sonlandırır. `profile.analysis` sonucu parmak izi hâlâ aynıysa önbelleğe alır (worker sürerken veri değiştiyse almaz).
+
+**Kanıtlı kolon kararları** (`columns.mjs → analyzeColumns`).
+- `inferAcrossColumns`: iki tarih kolonundan biri ötekinden ≥ %95 satırda sonra ise (≥ 5 satır) belirsiz olanın anlamı bitiş (expiry) / kayıt (record) olur. `explain` her kolon için kanıt satırları, `certaintyOf` kesin / olası / belirsiz; analiz penceresinde "Neden?".
+
+**Kendi kendini onarma** (`server/lib/heal.mjs`): `repairMojibake` (Windows-1254 ters tablosu + katı UTF-8 çözme), görünmez karakter/NBSP temizliği, yer tutucu → boş; `healRows` özet, `healNote` okuma raporu notu.
+
+**Ön izleme ve eşleme** (`dataset.mjs → buildPreview`, `profile.mjs → setRoles/roles`, `columns.mjs → FORCED_ROLES`).
+- Aşamada kolon analizleri (`analyzeColumns`, ≤ 5.000 satır) `mapping` olarak döner: kolon rolü, kesinlik, kanıt, ilk 8 satır, şüpheli hücreler (`cellCheck` "bad", tarih/tutar kolonunda düz metin, seri/bilimsel uyarılar, işaretli satır).
+- `POST dataset/commit {roles}` → `profile.setRoles` → `insight.roles` (oturum ayarı, parmak izinde). `analyzeColumn(..., {forced})` seçilen rolü uygular (`FORCED_ROLES`: ignore, id, person, org, phone, email, money, deadline, date, status, category, note); `analyzeDataset`, `computeKpis`, `computeDues` (`classifyColumns`: deadline → güçlü vade, ignore → atla) ve `computeDeadlines` aynı `forced`'ı alır.
+- İstemci: `hof-sources.js → mappingHtml` (rol seçici, sarı hücreler), `firstImport` (ilk yüklemede onay).
+
+**Hata toleransı — işaretlenen hatalar** (`dataset.mjs → flagBrokenRows`, `quality.mjs → brokenRowReason`, `cells.mjs → isFlaggedRow`).
+- Aşamada (stage) kolon türleri öğrenilir; "shifted" (≥ 2 biçimli hücre uyumsuz ve kaydırınca yerine oturuyor) ya da "invalid" (≥ 2 dolu biçimli hücrenin ≥ %60'ı geçersiz) satırlara `__hofFlag` yazılır. Kayıt saklanır; takvim/son tarih/KPI `isFlaggedRow` ile dışlar. Paket yaması sanal sekme "⚠ İşaretlenen hatalar" ve `hof-row-flagged` sınıfı ekler. `POST /records/:key/unflag` → `dataset.unflagged` ayarı; `view()` bu anahtarlarda işareti kaldırır.
+
+**Veri temizleme** (`validators.mjs → isSerialDate/serialToDate`, `columns.mjs` seri tarih kolonu, `fixes.mjs → serialToText`, `heal.mjs` hata değerleri).
+
+**Eşzamanlılık** (`db.mjs`, `routes/workspace.mjs`, `dataset.mjs`, `routes/insight.mjs`).
+- SQLite WAL + `busy_timeout 10 s`; her yazım `store.tx` içinde; tek sunucu süreci.
+- Düzeltme (override): sürüm (`expectedVersion`) ve değer tabanlı iyimser kilit (`previous`): eşleşmezse 409 `CONFLICT {currentValue, by, at}`; istemci "Üzerine yaz" ile `force` gönderir.
+- Aşama anlık görüntüsü: `stage` satır sayısı + `changedAt` damgasını saklar; aynı oturumda `commit` damga değiştiyse 409 `STALE_STAGE`.
+- Toplu düzeltme önerileri oturum + parmak iziyle; parmak izi değiştiyse 409.
+- Olaylar: her değişiklik `workspace.changed` ile diğer ekranlara; takvim önbelleği parmak iziyle; gün dönümü `alerts.refresh`.
+
+**Ay matrisi → taksit defteri** (`server/lib/insight/installments.mjs`, `dues.mjs → computeDues`).
+- `installmentLedger({row, months, startColumn, endColumn, now})` → `{start, end, open, dormant, rows[{column, time, state: paid|partial|due, fee, paidAmount, amount}]}`. Aralık dışı aylar için satır üretilmez; `cellState` hücreyi ödendi / kısmi / ödenmedi / ücret yok ("–", "muaf") olarak okur.
+- Durgunluk kuralı `LEDGER.dormantMonths = 3`: son yazılı ay ile bu ay arasında (bu ay hariç) ≥ 3 tam boş ay → `dormant {lastWritten, emptyMonths}`; `computeDues` bu kayıtları `dormant` listesinde döndürür (`/api/workspace/dues` ve raporlar). Bitiş tarihi kolonu varsa kural devreye girmez.
+- Takvim motoru yalnız defterin `due`/`partial` satırlarını aday yapar (pencere: `DUE_WINDOW.pastDays`); önceki "hizmet dönemi" hesabı defterle değiştirildi.
+
+**Raporlama modülü** (`server/lib/reports.mjs`, `server/lib/report-pdf.mjs`, `server/routes/reports.mjs`, `client/assets/hof-reports.js`).
+- *Ortak omurga:* `normalizeRecords` her oturumun satırlarını kolon analizleriyle (`analyzeColumns`) `{cari, cariKey, amount, debt, deadline, status, phone, fields}` biçimine indirger; `cariKey` ad katlaması (`n:`) ya da 10 haneli telefon (`p:`); toplam/işaretli/serbest satırlar dışarıda. `dynamicColumns` omurga dışındaki dolu kolonları rapora sütun olarak ekler (kod değişikliği gerekmez).
+- *Sorgu motoru:* `normalizeFilters` (tarih aralığı, cari, durum, oturum, sekme, en az tutar, dönem) → `cariEkstre` (oturumlar arası eşleme, yürüyen bakiye, `crossMatched`), `vadeTakip` (gecikmiş/bugün/yaklaşan/kapalı/belirsiz, takvim kalemleriyle), `nakitAkis` (dönem dilimleri; beklenen, tahsil edilen, kasa giriş/çıkış, net, birikimli, tahmin). Her rapor `{summary, table{columns, rows}}` döner; `flattenTable` dışa aktarım için.
+- *Uçlar:* `GET /api/workspace/reports/:kind` (izin `reports.view`; tüm oturumlar `dataset.withKey` ile sırayla, ≤ 5.000 satır/oturum), `POST …/export {format: xlsx|pdf}` (`buildXlsx`, `tablePdf`: > 7 sütunda yatay sayfa, p90 genişlik, özet kartları, sayfa numarası). Yazdırma istemcide gizli iframe ile.
+- İstemci penceresi: tür sekmeleri, filtre formu, özet kartları, tablo; olay `workspace.changed` sonrası yeniden sorgu.
+
+**Drive'a yedek** (`server/lib/cloud-backup.mjs`, `docs/DRIVE-YEDEK.md`).
+- Ayar `backup.cloud` (JSON): kip `folder` (bilgisayardaki Drive/OneDrive/Dropbox klasörü → içinde `DestekOfis Yedekleri`, en fazla `backupKeep` kopya) ya da `link` (Drive klasör kimliği → lisans servisi `POST /v1/yedek/oturum` ile Google *resumable upload* adresi, dosya doğrudan Google'a PUT; sır programda yok).
+- Kanca: `createBackup` sonrası `mirror(result)` — zamanlayıcı (`startBackupScheduler {onBackup}`), veri seti (`afterBackup`), elle ve deneme yedeği (`routes/admin.mjs`). Asla fırlatmaz; son kopya/hata ayarda ve panelde. Aynı ad ikinci kez kopyalanmaz.
+
+**Silinenler** (göç 6, `server/lib/trash.mjs`, `server/routes/trash.mjs`).
+- Kaynaklar: silinen kayıt, gizlenen sekme, belge, serbest sayfa/satır/kolon, tahsilat ve kasa hareketi.
+- Geri yükleme eski konuma araya ekler; ad çakışırsa "(geri yüklendi)" eki alır.
+- Sekme adları ve gizleme oturum ayarındadır (`dataset.tabs.alias/hidden`). Satırlar asıl adı `__hofSheet`'te taşır; takvim kimlikleri asıl adla kalır.
+
 ## Akıllı veri motoru ve ofis profili (v1.6)
 
 `server/lib/insight/` saf fonksiyonlardan oluşur: internete çıkmaz, veritabanına yazmaz, aynı girdiye aynı çıktıyı verir. Sonuç, verinin parmak izine (satır/düzeltme/kayıt sayıları ve son değişiklik zamanları, verinin adı, yerel gün) göre bellekte önbelleklenir. Veri değişince (`dataset.onChange`) önbellek düşer. 200 bin satır yaklaşık 1,5 sn'de çözümlenir.
@@ -183,6 +298,8 @@ Yönetim → Lisans ─► /api/license/{trial,activate,code,check} ─► licen
 - Excel ayrıştırma Worker'da; zip okuyucu zip-slip ve CRC denetimi yapar.
 
 ## Yedekleme
+
+Drive'a kopya (v2.0.2): yukarıdaki *Drive'a yedek* başlığı; her yerel yedekten sonra bağlanan klasöre/Drive'a kopyalanır.
 
 `VACUUM INTO` ile tutarlı anlık kopya; açılışta ve 6 saatte bir (son yedek eskiyse), son 30 yedek. Elle: yönetim paneli veya `npm run backup` (salt okunur bağlantı, sunucu çalışırken güvenli). Yedek adları `destekofis-<zaman>[-<neden>].sqlite`. 1.6 öncesinden kalan `hukuk-ofisi-…` yedekler de listelenir, geri yüklenir ve adına göre değil zaman damgasına göre sıralanıp temizlenir.
 
