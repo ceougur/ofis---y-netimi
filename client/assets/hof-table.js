@@ -19,7 +19,7 @@
 
   const ensureFloats = () => {
     if (pencil) return;
-    pencil = HOF.el("button", { type: "button", class: "hof-float", title: "Bu bilgiyi düzenle", "aria-label": "Bu bilgiyi düzenle", text: "✎" });
+    pencil = HOF.el("button", { type: "button", class: "hof-float", title: "Değeri düzenle", "aria-label": "Değeri düzenle", text: "✎" });
     remover = HOF.el("button", { type: "button", class: "hof-float hof-float-delete", title: "Kaydı sil", "aria-label": "Kaydı sil", text: "×" });
     document.body.append(pencil, remover);
     pencil.addEventListener("click", event => {
@@ -402,20 +402,35 @@
       pager?.remove();
       return;
     }
+    // v2.0.6: paket yalnız açık sayfanın satırlarını çizer (HOF.tableWindow); sayfa sayısı ve numarası oradan gelir.
+    // Pencere yoksa (eski paket) tüm satırlar DOM'dadır ve sayfa dışındakiler gizlenir.
+    const win = HOF.tableWindow;
     const rows = [...(table.tBodies[0]?.rows || [])];
-    const context = currentContext();
-    if (context !== pageContext) {
-      pageContext = context;
-      page = 1;
+    let total;
+    let count;
+    let size = PAGE_SIZE;
+    if (win) {
+      page = win.page;
+      total = win.pages;
+      count = win.total;
+      size = win.size;
+    } else {
+      const context = currentContext();
+      if (context !== pageContext) {
+        pageContext = context;
+        page = 1;
+      }
+      count = rows.length;
+      total = Math.max(1, Math.ceil(count / PAGE_SIZE));
+      if (page > total) page = total;
+      const first = (page - 1) * PAGE_SIZE;
+      rows.forEach((row, index) => {
+        const display = index >= first && index < first + PAGE_SIZE ? "" : "none";
+        if (row.style.display !== display) row.style.display = display;
+      });
     }
-    const total = Math.max(1, Math.ceil(rows.length / PAGE_SIZE));
-    if (page > total) page = total;
-    const start = (page - 1) * PAGE_SIZE;
-    rows.forEach((row, index) => {
-      const display = index >= start && index < start + PAGE_SIZE ? "" : "none";
-      if (row.style.display !== display) row.style.display = display;
-    });
-    if (rows.length <= PAGE_SIZE) {
+    const start = (page - 1) * size;
+    if (count <= size) {
       pager?.remove();
       return;
     }
@@ -424,15 +439,19 @@
       pager.addEventListener("click", event => {
         const target = event.target.closest("button[data-page]");
         if (!target || target.disabled) return;
-        page = Number(target.dataset.page);
-        paginate();
+        const next = Number(target.dataset.page);
+        if (HOF.tableWindow) HOF.tableWindow.setPage(next);
+        else {
+          page = next;
+          paginate();
+        }
         table.closest(".dynamic-table-wrap")?.scrollTo?.({ top: 0 });
       });
     }
     // Yatay kaydırma çubuğu (hof-grid.js) tablonun hemen altındadır; sayfalama onun altına gelir.
     const anchor = wrap.nextElementSibling?.classList.contains("hof-hscroll") ? wrap.nextElementSibling : wrap;
     if (anchor.nextSibling !== pager) anchor.after(pager);
-    const signature = `${page}/${total}/${rows.length}`;
+    const signature = `${page}/${total}/${count}`;
     if (pager.dataset.signature === signature) return;
     pager.dataset.signature = signature;
     let previous = 0;
@@ -441,11 +460,12 @@
       previous = item;
       return `${gap}<button type="button" data-page="${item}" ${item === page ? 'aria-current="page"' : ""}>${item}</button>`;
     }).join("");
-    pager.innerHTML = `<span>${start + 1}–${Math.min(start + PAGE_SIZE, rows.length)} / ${rows.length} kayıt</span><div class="hof-pager-buttons"><button type="button" data-page="${page - 1}" ${page === 1 ? "disabled" : ""} aria-label="Önceki sayfa">‹</button>${buttons}<button type="button" data-page="${page + 1}" ${page === total ? "disabled" : ""} aria-label="Sonraki sayfa">›</button></div>`;
+    pager.innerHTML = `<span>${start + 1}–${Math.min(start + size, count)} / ${count} kayıt</span><div class="hof-pager-buttons"><button type="button" data-page="${page - 1}" ${page === 1 ? "disabled" : ""} aria-label="Önceki sayfa">‹</button>${buttons}<button type="button" data-page="${page + 1}" ${page === total ? "disabled" : ""} aria-label="Sonraki sayfa">›</button></div>`;
   }
 
-  // Arama sonucu gibi gizli sayfadaki bir satıra gitmek için.
+  // Arama sonucu gibi gizli sayfadaki bir satıra gitmek için (pencereli pakette açık sayfadaki satır zaten görünür).
   function revealRow(row) {
+    if (HOF.tableWindow) return;
     const rows = [...(row.parentElement?.rows || [])];
     const index = rows.indexOf(row);
     if (index < 0) return;
@@ -481,7 +501,16 @@
       installCaseEdit();
       decorateFormulas();
     });
+    HOF.on("table-window", () => paginate());
     HOF.on("rows", () => decorateFormulas());
   });
-  HOF.table = { revealRow, newRecord, editCase, paginate };
+  // Seçili kaydın tek alanını düzenleme penceresi (asıl kolon adıyla); kolon adı penceresindeki kısa yol kullanır (v2.0.6).
+  function editField(column) {
+    const selected = HOF.selectedCase();
+    if (!selected || !column) return;
+    const cell = [...selected.panel.querySelectorAll(".dynamic-detail-grid > div")].find(item => HOF.columnOf(item.querySelector(".detail-label")) === column);
+    if (cell) editCell(cell);
+  }
+
+  HOF.table = { revealRow, newRecord, editCase, editField, paginate };
 })();

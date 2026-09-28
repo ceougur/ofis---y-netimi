@@ -61,7 +61,7 @@ const card = (page, doc, left, top, width, label, value, color = ink) => {
 
 /** plan: /api/workspace/plans/:id yanıtı ({ name, phone, note, groupName, subgroupName, items, entries, totals, state }). */
 export function planStatementPdf(plan, { officeName = "", userName = "", now = new Date() } = {}) {
-  const doc = new PdfDocument({ fonts: loadFonts(), title: `Taksit ekstresi · ${plan.name}`, author: officeName || "DestekOfis", subject: "Taksit ekstresi" });
+  const doc = new PdfDocument({ fonts: loadFonts(), title: `Taksit ekstresi · ${plan.name}`, author: officeName, subject: "Taksit ekstresi" });
   const M = 40;
   const W = A4.width - M * 2;
   const bottomLimit = A4.height - 54;
@@ -74,7 +74,7 @@ export function planStatementPdf(plan, { officeName = "", userName = "", now = n
     if (first) {
       if (officeName) page.text(M, top + 9, doc.fit(officeName, W * 0.6, "bold", 9), { font: "bold", size: 9, color: muted });
       page.text(M, top + 34, "Taksit ekstresi", { font: "bold", size: 20, color: ink });
-      page.text(M, top + 54, doc.fit(`${plan.refNo ? `No ${plan.refNo} · ` : ""}${plan.name}${where ? ` · ${where}` : ""}${plan.phone ? ` · ${plan.phone}` : ""}`, W, "regular", 11), { size: 11, color: "#374151" });
+      page.text(M, top + 54, doc.fit(`${plan.refNo ? `No ${plan.refNo} · ` : ""}${plan.name}${where ? ` · ${where}` : ""}${plan.phone ? ` · ${plan.phone}` : ""}${plan.registeredOn ? ` · kayıt ${dayText(plan.registeredOn)}` : ""}`, W, "regular", 11), { size: 11, color: "#374151" });
       page.text(M, top + 9, `Oluşturma: ${stamp(now)}`, { size: 8, color: muted, align: "right", width: W });
       if (userName) page.text(M, top + 21, `Hazırlayan: ${doc.fit(userName, W * 0.35, "regular", 8)}`, { size: 8, color: muted, align: "right", width: W });
       top += 70;
@@ -151,53 +151,73 @@ export function planStatementPdf(plan, { officeName = "", userName = "", now = n
   doc.pages.forEach((item, index) => {
     const footer = A4.height - 28;
     item.line(M, footer - 12, M + W, footer - 12, { color: "#e5e7eb", width: 0.5 });
-    item.text(M, footer, `DestekOfis · Taksit ekstresi · ${plan.name}`, { size: 7.5, color: muted });
+    item.text(M, footer, `${officeName ? `${officeName} · ` : ""}Taksit ekstresi · ${plan.name}`, { size: 7.5, color: muted });
     item.text(M, footer, `Sayfa ${index + 1} / ${total}`, { size: 7.5, color: muted, align: "right", width: W });
   });
   return doc.toBuffer({ now });
 }
 
-/** Tek tahsilatın makbuzu: kimden, ne için (kart ve taksit), tutar (rakam ve yazı), kalan, tahsil eden. */
+/** Tek tahsilatın makbuzu (v2.0.6): A5 dikey (148 × 210 mm); yazıcıya A5 kâğıt konur, kâğıt israf olmaz.
+ * Üstte yalnızca ofisin adı yazar (yönetimde verilen firma adı); ad verilmemişse boş kalır. Program adı basılmaz. */
+export const A5 = { width: 419.53, height: 595.28 };
 export function receiptPdf(plan, entry, { officeName = "", userName = "", now = new Date() } = {}) {
-  const doc = new PdfDocument({ fonts: loadFonts(), title: `Makbuz · ${plan.name}`, author: officeName || "DestekOfis", subject: "Tahsilat makbuzu" });
-  const M = 48;
-  const W = A4.width - M * 2;
+  const doc = new PdfDocument({ fonts: loadFonts(), size: A5, title: `Makbuz · ${plan.name}`, author: officeName, subject: "Tahsilat makbuzu" });
+  const M = 26;
+  const W = A5.width - M * 2;
+  const P = 16; // çerçeve içi boşluk
+  const L = M + P; // etiket kolonu
+  const V = M + P + 84; // değer kolonu
+  const VW = M + W - P - V;
   const page = doc.addPage();
   const item = entry.itemId ? plan.items.find(row => row.id === entry.itemId) : null;
   const incoming = entry.kind === "in";
   const where = [plan.groupName, plan.subgroupName].filter(Boolean).join(" › ");
-  let top = M;
-  page.rect(M, top, W, 300, { stroke: "#d1d5db", radius: 10 });
-  top += 26;
-  page.text(M + 20, top, officeName || "DestekOfis", { font: "bold", size: 12, color: ink });
-  page.text(M, top, incoming ? "TAHSİLAT MAKBUZU" : "ÖDEME / İADE MAKBUZU", { font: "bold", size: 13, color: ink, align: "right", width: W - 20 });
-  top += 16;
-  page.text(M, top, `${entry.receiptNo ? `Makbuz No: ${entry.receiptNo} · ` : ""}Tarih: ${dayText(entry.date)}`, { size: 9, color: muted, align: "right", width: W - 20 });
-  top += 24;
-  page.line(M + 20, top, M + W - 20, top, { color: "#e5e7eb" });
-  top += 24;
-  const row = (label, value, { bold = false, size = 10, color = ink } = {}) => {
-    page.text(M + 20, top, label, { size: 9, color: muted });
-    page.text(M + 130, top, doc.fit(String(value ?? ""), W - 170, bold ? "bold" : "regular", size), { font: bold ? "bold" : "regular", size, color });
-    top += 20;
+  let top = M + 26;
+  // Başlık: solda firma adı (en çok iki satır), sağda makbuz türü, numarası ve tarihi.
+  const office = String(officeName || "").trim();
+  if (office) doc.wrap(office, W / 2 - P, "bold", 12).slice(0, 2).forEach((line, index) => page.text(L, top + index * 14, line, { font: "bold", size: 12, color: ink }));
+  page.text(M, top, incoming ? "TAHSİLAT MAKBUZU" : "ÖDEME / İADE MAKBUZU", { font: "bold", size: 11.5, color: ink, align: "right", width: W - P });
+  page.text(M, top + 14, `${entry.receiptNo ? `No ${entry.receiptNo} · ` : ""}${dayText(entry.date)}`, { size: 9, color: muted, align: "right", width: W - P });
+  top += office && doc.wrap(office, W / 2 - P, "bold", 12).length > 1 ? 34 : 26;
+  page.line(L, top, M + W - P, top, { color: "#e5e7eb" });
+  top += 20;
+  const row = (label, value, { bold = false, size = 9.5, color = ink, lines = 1 } = {}) => {
+    page.text(L, top, label, { size: 8, color: muted });
+    const wrapped = doc.wrap(String(value ?? ""), VW, bold ? "bold" : "regular", size).slice(0, lines);
+    wrapped.forEach((line, index) => page.text(V, top + index * (size + 3), index === lines - 1 ? doc.fit(line, VW, bold ? "bold" : "regular", size) : line, { font: bold ? "bold" : "regular", size, color }));
+    top += Math.max(1, wrapped.length) * (size + 3) + 7;
   };
-  row(incoming ? "Kimden" : "Kime", plan.name, { bold: true, size: 12 });
-  if (where) row("Grup", where);
+  row(incoming ? "Kimden" : "Kime", plan.name, { bold: true, size: 11.5, lines: 2 });
+  if (plan.refNo) row(plan.refLabel || "Sıra No", plan.refNo);
+  if (where) row("Grup", where, { lines: 2 });
   if (plan.phone) row("Telefon", plan.phone);
-  row("Açıklama", `${item ? `${item.seq}. taksit (vade ${dayText(item.dueDate)})` : incoming ? "Taksit tahsilatı" : "Ödeme / iade"}${entry.note ? ` · ${entry.note}` : ""}`);
-  top += 6;
-  page.rect(M + 20, top - 14, W - 40, 40, { fill: "#f3f4f6", radius: 6 });
-  page.text(M + 30, top + 4, "Tutar", { size: 9, color: muted });
-  page.text(M + 130, top + 6, tl(entry.amount), { font: "bold", size: 16, color: incoming ? green : red });
-  top += 32;
-  row("Yazıyla", `# ${amountInWords(entry.amount)} #`);
-  row("Kalan borç", `${tl(plan.totals.remaining)} (toplam ${tl(plan.totals.total)}, tahsil edilen ${tl(plan.totals.paid)})`);
-  if (userName || entry.actorName) row("Tahsil eden", entry.actorName || userName);
-  top += 14;
-  page.text(M + 20, top, "Teslim eden", { size: 8.5, color: muted });
-  page.text(M + W / 2, top, "Teslim alan / Kaşe · İmza", { size: 8.5, color: muted });
-  page.line(M + 20, top + 28, M + W / 2 - 30, top + 28, { color: "#9ca3af" });
-  page.line(M + W / 2, top + 28, M + W - 20, top + 28, { color: "#9ca3af" });
-  page.text(M, A4.height - 40, `DestekOfis · ${stamp(now)}${entry.updatedAt ? " · düzeltilmiş hareket" : ""}`, { size: 7.5, color: muted });
+  // Cari makbuzunda (v2.0.6) açıklama hareketin türünden gelir ("Cari tahsilat", "Cariye ödeme").
+  row("Açıklama", `${item ? `${item.seq}. taksit (vade ${dayText(item.dueDate)})` : entry.label || (incoming ? "Taksit tahsilatı" : "Ödeme / iade")}${entry.note ? ` · ${entry.note}` : ""}`, { lines: 2 });
+  top += 2;
+  // Tutar kutusu: rakamla ve yazıyla.
+  const words = doc.wrap(`# ${amountInWords(entry.amount)} #`, W - P * 2 - 20, "regular", 8.5).slice(0, 2);
+  const boxHeight = 34 + words.length * 11;
+  page.rect(L, top, W - P * 2, boxHeight, { fill: "#f3f4f6", radius: 6 });
+  page.text(L + 10, top + 15, "Tutar", { size: 8, color: muted });
+  page.text(L + 10, top + 15, tl(entry.amount), { font: "bold", size: 16, color: incoming ? green : red, align: "right", width: W - P * 2 - 20 });
+  words.forEach((line, index) => page.text(L + 10, top + 32 + index * 11, line, { size: 8.5, color: "#374151" }));
+  top += boxHeight + 16;
+  if (plan.balanceOnly) row(plan.totals.remaining < 0 ? "Bakiye (alacaklı)" : "Güncel bakiye", tl(Math.abs(plan.totals.remaining)), { bold: true });
+  else {
+    row("Toplam borç", tl(plan.totals.total));
+    row("Tahsil edilen", tl(plan.totals.paid));
+    row("Kalan borç", tl(plan.totals.remaining), { bold: true });
+  }
+  if (entry.actorName || userName) row("Tahsil eden", entry.actorName || userName);
+  top += 18;
+  const half = (W - P * 2 - 16) / 2;
+  page.text(L, top, "Teslim eden", { size: 8, color: muted });
+  page.text(L + half + 16, top, "Teslim alan / Kaşe · İmza", { size: 8, color: muted });
+  page.line(L, top + 34, L + half, top + 34, { color: "#9ca3af" });
+  page.line(L + half + 16, top + 34, M + W - P, top + 34, { color: "#9ca3af" });
+  top += 50;
+  // Çerçeve içeriğe göre; altında yalnız düzenlenme tarihi (program adı yok).
+  page.rect(M, M, W, top - M, { stroke: "#d1d5db", radius: 10 });
+  page.text(M, top + 14, `Düzenlenme: ${stamp(now)}${entry.updatedAt ? " · düzeltilmiş hareket" : ""}`, { size: 7, color: muted, align: "right", width: W });
   return doc.toBuffer({ now });
 }

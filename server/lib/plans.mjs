@@ -166,6 +166,7 @@ const ROLE_TESTS = [
   ["installment", t => (/taksit/.test(t) && /(tutar|ucret|bedel|miktar)/.test(t) && !/(toplam|genel)/.test(t)) || /(^| )aylik( |$)/.test(t)],
   ["count", t => (/taksit/.test(t) && /(adet|adedi|sayi|sayisi)/.test(t)) || /^(taksit|adet|ay sayisi|taksit say)$/.test(t)],
   ["total", t => (/(toplam|genel)/.test(t) && /(tutar|ucret|bedel|borc|fiyat)/.test(t)) || /^(toplam|tutar|ucret|borc|bedel|fiyat|yillik ucret|sozlesme tutari|anlasma tutari)$/.test(t)],
+  ["registered", t => (/(^| )(kayit|giris|kaydolma|uyelik|basvuru|sozlesme)( |$)/.test(t) && /tarih/.test(t)) || /^(kayit|kayit tarihi|giris tarihi|kayit gunu)$/.test(t)],
   ["firstDue", t => /(vade|baslangic|ilk taksit|ilk odeme|tarih)/.test(t)],
   ["note", t => /(^| )(not|notu|notlar|bilgi|aciklama|adres|adresi)( |$)/.test(t)],
   ["name", t => /(^| )adi? ?soyadi?( |$)|adisoyadi|(^| )(isim|ismi|ogrenci|ogrencinin adi|musteri|kisi|veli|veli adi|sakin|cari|unvan|ad)( |$)/.test(t)],

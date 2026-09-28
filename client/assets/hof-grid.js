@@ -64,7 +64,14 @@
     if (!head || !body) return;
     const heads = [...head.cells];
     const rows = [...body.rows];
-    const signature = `${heads.map(th => th.textContent).join("|")}#${rows.length}#${HOF.data?.at || 0}#${Math.round(table.closest(".dynamic-table-wrap")?.clientWidth || 0)}`;
+    // v2.0.6: paket yalnız açık sayfayı çizdiğinden genişlik verinin kendisinden ölçülür (sayfa değişince kolonlar
+    // oynamaz); veri yoksa (serbest sayfa, eski paket) görünen satırlardan.
+    const tab = (HOF.activeTab && HOF.activeTab()) || "";
+    const all = HOF.tableWindow ? HOF.data?.rows || [] : [];
+    const scoped = tab ? all.filter(row => { const sheet = String(row.__sheet || "").trim(); return sheet === tab || sheet.startsWith(`${tab} › `); }) : all;
+    const dataSample = (scoped.length ? scoped : all).slice(0, SAMPLE);
+    const names = dataSample.length ? heads.map(th => HOF.columnOf(th)) : null;
+    const signature = `${heads.map(th => th.textContent).join("|")}#${dataSample.length || rows.length}#${HOF.data?.at || 0}#${tab}#${Math.round(table.closest(".dynamic-table-wrap")?.clientWidth || 0)}`;
     if (signature === sizedFor && table.classList.contains("hof-sized")) return;
     sizedFor = signature;
     const sample = rows.slice(0, SAMPLE);
@@ -77,14 +84,14 @@
       const label = th.textContent.trim().toLocaleUpperCase("tr-TR");
       const pad = c === 0 ? 50 : 32;
       const headNeed = textWidth(label, headFont) + label.length * headSpacing + pad;
-      const values = sample
-        .map(row => {
-          const cell = row.cells[c];
-          if (!cell) return 0;
-          const text = (cell.getAttribute("title") ?? cell.textContent ?? "").trim();
-          return text ? textWidth(text.length > 80 ? text.slice(0, 80) : text, cell.querySelector("strong") ? cellFont.replace(/^\d+/, "700") : cellFont) : 0;
-        })
-        .sort((a, b) => a - b);
+      const font = rows[0]?.cells[c]?.querySelector("strong") ? cellFont.replace(/^\d+/, "700") : cellFont;
+      const texts = names
+        ? dataSample.map(row => String(row[names[c]] ?? "").trim())
+        : sample.map(row => {
+            const cell = row.cells[c];
+            return cell ? (cell.getAttribute("title") ?? cell.textContent ?? "").trim() : "";
+          });
+      const values = texts.map(text => (text ? textWidth(text.length > 80 ? text.slice(0, 80) : text, font) : 0)).sort((a, b) => a - b);
       // Hücrelerin %90'ı sığsın (tek bir çok uzun değer kolonu şişirmesin).
       const p90 = values.length ? values[Math.min(values.length - 1, Math.floor(values.length * 0.9))] : 0;
       return Math.round(Math.min(MAX, Math.max(c === 0 ? FIRST_MIN : MIN, headNeed, p90 + pad)));

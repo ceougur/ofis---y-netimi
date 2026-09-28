@@ -3820,7 +3820,8 @@ html.hof-no-haciz .filter-strip { display: none !important; }
   cursor: pointer;
   transition: opacity 0.15s ease;
 }
-.dynamic-detail-grid > div:hover .hof-col-edit,
+/* v2.0.6: ad simgesi yalnız başlığın üzerine gelince görünür; hücrenin geri kalanında yalnız değeri düzenleyen ✎ çıkar. */
+.dynamic-detail-grid .detail-label:hover .hof-col-edit,
 .hof-col-edit:focus-visible {
   opacity: 0.8;
 }
@@ -6771,4 +6772,632 @@ body.hof-dense .dynamic-table th {
   .hof-badge.hof-badge-danger {
     animation: none;
   }
+}
+
+/* Taksit listesinde bilgi notu (v2.0.6): tek satır, sığmayan kısım "…" ile; tamamı üzerine gelince görünür. */
+.hof-plans-table td small.hof-plan-row-note {
+  max-width: 460px;
+  overflow: hidden;
+  color: #8a6a1f;
+  font-style: italic;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Kolon adı penceresi (v2.0.6): yalnız adı değiştirdiği en üstte, göze batan biçimde söylenir. */
+.hof-column-editor-warn {
+  display: grid;
+  gap: 8px;
+  justify-items: start;
+  margin: 0 0 14px;
+  padding: 11px 13px;
+  border: 1px solid #f0d9a8;
+  border-radius: 10px;
+  background: #fff8e8;
+  color: #6b4f12;
+  font-size: 13px;
+  line-height: 1.45;
+}
+.hof-column-editor-warn p {
+  margin: 0;
+}
+.hof-column-editor-warn b {
+  color: #5a3f06;
+}
+.hof-fixed-list {
+  margin: 4px 0 12px;
+  padding-left: 18px;
+  color: var(--do-text, #1c2a31);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+/* Tabloda sütun ekle / sil (v2.0.6): başlığın üst kenarında yüzen küçük çubuk. */
+.hof-colops {
+  position: fixed;
+  z-index: 61;
+  display: none;
+  align-items: center;
+  gap: 2px;
+  padding: 2px;
+  border: 1px solid var(--do-border-strong);
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: 0 4px 14px rgba(20, 52, 40, 0.16);
+}
+.hof-colops.is-visible {
+  display: inline-flex;
+}
+.hof-colops button {
+  height: 20px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 20px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.hof-colops .hof-colops-add {
+  color: var(--do-accent);
+}
+.hof-colops .hof-colops-add:hover,
+.hof-colops .hof-colops-add:focus-visible {
+  background: var(--do-accent-soft);
+  outline: none;
+}
+.hof-colops .hof-colops-del {
+  color: var(--do-danger);
+}
+.hof-colops .hof-colops-del:hover,
+.hof-colops .hof-colops-del:focus-visible {
+  background: var(--do-danger-soft);
+  outline: none;
+}
+.dynamic-table thead th.hof-colops-target {
+  box-shadow: inset 0 -2px 0 var(--do-accent);
+}
+.dynamic-table .hof-col-flash {
+  animation: hof-col-flash 1.8s ease-out;
+}
+@keyframes hof-col-flash {
+  0%, 35% {
+    background-color: #dff1e6;
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+/* ---------- Taksit kartı ↔ tablodaki kayıt (v2.0.6) ---------- */
+.hof-case-picker {
+  position: relative;
+}
+.hof-case-picker-box {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.hof-case-picker-box input {
+  flex: 1;
+  min-width: 0;
+}
+.hof-case-picker-clear {
+  flex: 0 0 auto;
+  width: 32px;
+  height: 36px;
+  border: 1px solid var(--do-border-strong);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--do-danger);
+  font-size: 16px;
+  cursor: pointer;
+}
+.hof-case-picker.is-linked input[name="caseTitle"] {
+  border-color: var(--do-accent);
+  background: var(--do-accent-soft);
+  font-weight: 600;
+}
+.hof-case-picker-list {
+  position: absolute;
+  top: calc(100% - 22px);
+  right: 0;
+  left: 0;
+  z-index: 6;
+  margin: 0;
+  padding: 4px;
+  list-style: none;
+  border: 1px solid var(--do-border-strong);
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 10px 24px rgba(20, 52, 40, 0.16);
+  max-height: 260px;
+  overflow: auto;
+}
+.hof-case-picker-list li {
+  display: flex;
+  flex-direction: column;
+  padding: 7px 10px;
+  border-radius: 7px;
+  cursor: pointer;
+}
+.hof-case-picker-list li:hover {
+  background: var(--do-accent-soft);
+}
+.hof-case-picker-list li small {
+  color: #6b7a74;
+  font-size: 11px;
+}
+.hof-case-picker-list li.is-empty {
+  color: #6b7a74;
+  cursor: default;
+}
+.hof-muted {
+  color: #8a9a93;
+}
+.hof-form-aside {
+  margin: 2px 0 12px;
+  color: #45544e;
+  font-size: 12.5px;
+}
+.hof-link {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--do-accent);
+  font: inherit;
+  font-weight: 600;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.hof-right {
+  text-align: right;
+}
+.hof-mini-text {
+  width: auto;
+  padding: 0 7px;
+  font-size: 11px;
+  text-decoration: none;
+}
+.hof-case-plan {
+  margin: 12px 0 4px;
+  padding: 12px 14px;
+  border: 1px solid #cfe3d7;
+  border-radius: 12px;
+  background: #f6fbf8;
+}
+.hof-case-plan-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+.hof-case-plan-head h3 {
+  margin: 0;
+  color: #5c796a;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+}
+.hof-case-plan-head span {
+  color: #45544e;
+  font-size: 12px;
+}
+.hof-case-plan-head .is-late {
+  color: var(--do-danger);
+}
+.hof-case-plan-kpis {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  margin: 10px 0 8px;
+}
+.hof-case-plan-kpis > div {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+  padding: 8px 10px;
+  border: 1px solid #e3ede7;
+  border-radius: 9px;
+  background: #fff;
+}
+.hof-case-plan-kpis b {
+  overflow: hidden;
+  font-size: 14px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.hof-case-plan-kpis span {
+  color: #6b7a74;
+  font-size: 11px;
+}
+.hof-case-plan .hof-plan-progress {
+  display: block;
+  height: 6px;
+  margin: 0 0 4px;
+  border-radius: 999px;
+  background: #e3ede7;
+  overflow: hidden;
+}
+.hof-case-plan .hof-plan-progress i {
+  display: block;
+  height: 100%;
+  background: var(--do-accent);
+}
+.hof-case-plan-list {
+  max-height: 224px;
+  margin-top: 8px;
+  overflow: auto;
+  border: 1px solid #e3ede7;
+  border-radius: 9px;
+  background: #fff;
+}
+.hof-case-plan-list table {
+  width: 100%;
+}
+.hof-case-plan-list tr.is-overdue td:nth-child(2) {
+  color: var(--do-danger);
+  font-weight: 600;
+}
+.hof-case-plan-list tr.is-paid td {
+  color: #8a9a93;
+}
+.hof-case-plan-tools,
+.hof-plan-collect-tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+.hof-case-plan .hof-chip {
+  display: inline-block;
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: #eef2f0;
+  font-size: 11px;
+  white-space: nowrap;
+}
+.hof-case-plan .hof-chip-overdue {
+  background: var(--do-danger-soft);
+  color: var(--do-danger);
+}
+.hof-case-plan .hof-chip-paid {
+  background: var(--do-accent-soft);
+  color: var(--do-accent);
+}
+.hof-case-plan .hof-chip-today,
+.hof-case-plan .hof-chip-partial {
+  background: #fff3d6;
+  color: #7a5a10;
+}
+.hof-plan-collect {
+  margin: 0 0 12px;
+  padding: 12px 14px;
+  border: 1px solid #dfe7e2;
+  border-radius: 12px;
+}
+.hof-plan-collect header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+.hof-plan-collect header small {
+  display: block;
+  color: #6b7a74;
+  font-size: 12px;
+}
+.hof-plan-collect-sums {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  color: #6b7a74;
+  font-size: 11px;
+}
+.hof-plan-collect-sums b {
+  display: block;
+  color: var(--do-text, #1c2a31);
+  font-size: 14px;
+}
+.hof-plan-collect td small {
+  display: block;
+  color: #6b7a74;
+  font-size: 11px;
+}
+.hof-plan-collect tr.is-overdue td small {
+  color: var(--do-danger);
+}
+.hof-plan-collect tr.is-paid td {
+  color: #8a9a93;
+}
+
+/* ---------- Cari ve Stok (v2.0.6) ---------- */
+.hof-acc-balance {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-end;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.hof-acc-balance small {
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+.hof-acc-balance.is-debtor {
+  color: #b3473a;
+}
+.hof-acc-balance.is-creditor {
+  color: #177245;
+}
+.hof-acc-balance.is-zero {
+  color: #6d8276;
+}
+.hof-acc-table .hof-acc-check,
+.hof-acc-table th.hof-acc-check {
+  width: 34px;
+  text-align: center;
+}
+.hof-acc-check input {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--do-accent);
+  cursor: pointer;
+}
+.hof-acc-table tr.is-passive td {
+  color: #8a9a93;
+}
+.hof-acc-extra {
+  color: #6b7a74;
+}
+.hof-acc-selbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  margin: 0 0 10px;
+  padding: 8px 12px;
+  border: 1px dashed #cfe3d7;
+  border-radius: 10px;
+  color: #5c6f66;
+  font-size: 12.5px;
+}
+.hof-acc-selbar.is-active {
+  border-style: solid;
+  border-color: var(--do-accent);
+  background: var(--do-accent-soft);
+  color: #1c2a31;
+}
+.hof-acc-selbar span {
+  flex: 1 1 260px;
+}
+.hof-plan-facts > div.is-wide {
+  grid-column: span 2;
+}
+.hof-acc-fields [data-fields] {
+  display: grid;
+  gap: 6px;
+  margin: 4px 0 8px;
+}
+.hof-acc-field-row {
+  display: grid;
+  grid-template-columns: minmax(120px, 0.8fr) minmax(0, 1.4fr) 32px;
+  gap: 6px;
+  align-items: center;
+}
+.hof-acc-field-row input {
+  min-width: 0;
+}
+.hof-acc-fields > span small {
+  color: #6b7a74;
+  font-weight: 400;
+}
+.hof-stock-qty.is-low {
+  color: #a86b12;
+}
+.hof-stock-qty.is-out {
+  color: #b3473a;
+}
+.hof-stock-total {
+  margin: 0 0 12px;
+  padding: 8px 12px;
+  border-radius: 9px;
+  background: #f4f7f5;
+  color: #45544e;
+  font-size: 13px;
+}
+.hof-stock-total:empty {
+  display: none;
+}
+.hof-stock-table .hof-cash-actions {
+  white-space: nowrap;
+}
+.hof-case-account {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 16px;
+  margin: 0 0 10px;
+  padding: 0 0 10px;
+  border-bottom: 1px solid #e3ede7;
+}
+.hof-case-account > div:first-child {
+  flex: 1 1 180px;
+  min-width: 0;
+}
+.hof-case-account h3 {
+  margin: 0 0 2px;
+  color: #5c796a;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+}
+.hof-case-account-balance {
+  display: grid;
+  justify-items: end;
+}
+.hof-case-account-balance span {
+  color: #6b7a74;
+  font-size: 11px;
+}
+.hof-case-account-balance b {
+  font-size: 15px;
+  font-variant-numeric: tabular-nums;
+}
+@media (max-width: 720px) {
+  .hof-plan-facts > div.is-wide {
+    grid-column: auto;
+  }
+  .hof-acc-field-row {
+    grid-template-columns: 1fr 1fr 32px;
+  }
+}
+.hof-acc-choices {
+  display: grid;
+  gap: 8px;
+  margin: 4px 0 14px;
+}
+.hof-acc-choice {
+  display: grid;
+  gap: 2px;
+  padding: 11px 14px;
+  border: 1px solid #cfe3d7;
+  border-radius: 10px;
+  background: #f6fbf8;
+  color: #1c2a31;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.hof-acc-choice:hover,
+.hof-acc-choice:focus-visible {
+  border-color: var(--do-accent);
+  background: var(--do-accent-soft);
+}
+.hof-acc-choice small {
+  color: #5c6f66;
+  font-size: 12px;
+}
+.hof-acc-choice.is-plain {
+  border-style: dashed;
+  background: #fff;
+}
+/* Toplu yükleme kaynağı: Excel dosyası ya da Google Sheets bağlantısı (v2.0.6). */
+.hof-source-choice {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  gap: 12px;
+  margin: 6px 0 4px;
+}
+.hof-source-card {
+  display: grid;
+  align-content: start;
+  gap: 6px;
+  padding: 16px;
+  border: 1px solid #cfe3d7;
+  border-radius: 12px;
+  background: #f6fbf8;
+  color: #1c2a31;
+  font: inherit;
+  text-align: left;
+}
+button.hof-source-card {
+  cursor: pointer;
+}
+button.hof-source-card:hover,
+button.hof-source-card:focus-visible {
+  border-color: var(--do-accent);
+  background: var(--do-accent-soft);
+}
+.hof-source-card svg {
+  color: var(--do-accent);
+}
+.hof-source-card > span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.hof-source-card b {
+  font-size: 14.5px;
+}
+.hof-source-card small {
+  color: #5c6f66;
+  font-size: 12px;
+  line-height: 1.45;
+}
+.hof-source-sheets input {
+  min-width: 0;
+  height: 36px;
+  padding: 0 10px;
+  border: 1px solid var(--do-border-strong);
+  border-radius: 8px;
+  font: inherit;
+  font-size: 12.5px;
+}
+.hof-source-sheets .hof-button {
+  justify-self: start;
+}
+@media (max-width: 640px) {
+  .hof-source-choice {
+    grid-template-columns: 1fr;
+  }
+}
+.hof-more {
+  display: flex;
+  justify-content: center;
+  padding: 10px;
+  border-top: 1px solid #e3ede7;
+}
+
+/* Toplu alım doğrulama kapısı (v2.0.6). */
+.hof-gate-field {
+  grid-column: 1 / -1;
+}
+.hof-gate {
+  padding: 10px 12px;
+  border: 1px solid #cfe3d7;
+  border-radius: 10px;
+  background: #f6fbf8;
+  font-size: 12.5px;
+}
+.hof-gate.is-warn {
+  border-color: #f0d9a0;
+  background: #fff8e6;
+}
+.hof-gate.is-error {
+  border-color: #efc3bb;
+  background: #fdf1ef;
+}
+.hof-gate-sum b {
+  font-size: 13.5px;
+}
+.hof-gate details {
+  margin-top: 6px;
+}
+.hof-gate summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+.hof-gate-list {
+  max-height: 220px;
+  margin-top: 6px;
+  overflow: auto;
+  border: 1px solid #e3ede7;
+  border-radius: 8px;
+  background: #fff;
+}
+.hof-gate-list table {
+  width: 100%;
+  font-size: 12px;
+}
+.hof-gate-list tr.is-error td:nth-child(3) {
+  color: var(--do-danger);
+  font-weight: 600;
+}
+.hof-gate-list tr.is-warning td:nth-child(3) {
+  color: #7a5a10;
 }

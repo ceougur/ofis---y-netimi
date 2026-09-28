@@ -18,6 +18,9 @@ export function registerCashRoutes(router, context) {
   function entries() {
     // Taksit kartlarının hareketleri (v2.0.4): kasaya tahsilat/ödeme olarak düşer; düzeltme kartın kendisinden yapılır.
     const plans = context.plans?.cashEntries ? context.plans.cashEntries() : [];
+    // Cari tahsilat/ödemeleri ve Kasa'dan ödenen/Kasa'ya tahsil edilen stok hareketleri (v2.0.6).
+    const accounts = context.accounts?.cashEntries ? context.accounts.cashEntries() : [];
+    const stock = context.stock?.cashEntries ? context.stock.cashEntries() : [];
     const payments = store.all(
       `SELECT p.id, 'in' AS kind, 'payment' AS source, p.amount, p.date, p.note AS description, p.case_key AS caseKey, p.case_title AS caseTitle,
               p.created_by AS actorId, COALESCE(u.display_name, '') AS actorName, p.created_at AS createdAt, p.updated_at AS updatedAt
@@ -29,7 +32,7 @@ export function registerCashRoutes(router, context) {
        FROM cash_entries c LEFT JOIN users u ON u.id = c.created_by`,
     );
     // Tarih sırası; aynı gün içinde giriş sırası (yeni eklenen en altta).
-    return [...payments, ...manual, ...plans].sort((a, b) => (a.date === b.date ? (a.createdAt < b.createdAt ? -1 : a.createdAt > b.createdAt ? 1 : 0) : a.date < b.date ? -1 : 1));
+    return [...payments, ...manual, ...plans, ...accounts, ...stock].sort((a, b) => (a.date === b.date ? (a.createdAt < b.createdAt ? -1 : a.createdAt > b.createdAt ? 1 : 0) : a.date < b.date ? -1 : 1));
   }
 
   // Seçilen aralığın hareketleri; "from" öncesi devreden kasa olarak özetlenir.
@@ -52,7 +55,12 @@ export function registerCashRoutes(router, context) {
       if (to && entry.date > to) continue;
       period[entry.kind] = roundMoney(period[entry.kind] + entry.amount);
       const own = entry.actorId === user.id;
-      const editable = entry.source === "plan" ? can(user.role, "plans.manage") || (own && can(user.role, "plans.collect")) : can(user.role, "cash.manage") || (entry.source === "payment" && own && can(user.role, "payments.create"));
+      // Taksit, cari ve stok hareketleri kendi kartlarından düzeltilir (Kasa'da yalnız kart açılır).
+      const editable =
+        entry.source === "plan" ? can(user.role, "plans.manage") || (own && can(user.role, "plans.collect"))
+        : entry.source === "account" ? can(user.role, "accounts.manage") || (own && can(user.role, "accounts.collect"))
+        : entry.source === "stock" ? can(user.role, "stock.manage")
+        : can(user.role, "cash.manage") || (entry.source === "payment" && own && can(user.role, "payments.create"));
       list.push({ ...entry, balance, editable });
     }
     return {

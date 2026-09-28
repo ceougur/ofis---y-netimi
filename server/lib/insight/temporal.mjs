@@ -55,6 +55,8 @@ const DOCUMENT = phrase([
   "kimlik\\w*", "takograf\\w*", "egzoz\\w*", "asi\\w*", "tahlil\\w*", "denetim\\w*", "yangin tupu", "vergi levhasi", "faaliyet belgesi",
 ]);
 const DOCUMENT_FUTURE_SHARE = 0.6;
+/** Başlık süreli bir belge ya da periyodik işlem mi ("Koltuk sigortası", "Egzoz emisyon", "Takograf", "SRC")? (v2.0.6) */
+export const isDocumentHeader = column => DOCUMENT.test(foldText(column));
 // Konu: süreli hizmet ve sözleşmeler. Yalın tarihi başlangıç günüdür; bitiş ancak nitelikle ("Üyelik bitiş").
 const SERVICE = phrase(["uyelik\\w*", "abonelik\\w*", "sozlesme\\w*", "kira\\w*", "vekalet\\w*", "hizmet\\w*", "kayit\\w*"]);
 // Konu: kayıt / olay tarihleri.

@@ -310,6 +310,26 @@ describe("tahsilat takvimi ve kasa PDF uç noktaları (v2.0.1)", () => {
   });
 });
 
+describe("seyrek belge kolonları (v2.0.6)", () => {
+  it("araç listesinde tek kayda yazılan sigorta, emisyon, takograf tarihi de uyarı verir", () => {
+    const header = ["SIRA", "PLAKA", "MARKA", "TRAFİK SİGORTASI", "KASKO BİTİŞ TARİHİ", "KOLTUK SİGORTASI", "EGZOZ EMİSYON", "TAKOGRAF", "SRC", "YAĞ BAKIM KM"];
+    const rows = Array.from({ length: 12 }, (_, index) => ({ __hofKey: `a${index}`, __sheet: "ARAÇ DETAYI", ...Object.fromEntries(header.map((column, n) => [column, n === 0 ? String(index + 1) : n === 1 ? `42 C ${100 + index}` : ""])) }));
+    ["TRAFİK SİGORTASI", "KASKO BİTİŞ TARİHİ", "KOLTUK SİGORTASI", "EGZOZ EMİSYON", "TAKOGRAF", "SRC"].forEach((column, index) => (rows[index][column] = "30.09.2026"));
+    rows[6]["YAĞ BAKIM KM"] = "15000";
+    const deadlines = computeDeadlines({ rows, tabs: ["ARAÇ DETAYI"], now: NOW });
+    assert.deepEqual(deadlines.map(item => item.column).sort(), ["EGZOZ EMİSYON", "KASKO BİTİŞ TARİHİ", "KOLTUK SİGORTASI", "SRC", "TAKOGRAF", "TRAFİK SİGORTASI"]);
+    assert.equal(deadlines.find(item => item.column === "KOLTUK SİGORTASI").person, "42 C 102");
+  });
+  it("belge başlığında tarih olmayan değer (şirket adı) tarih sayılmaz; geçmiş tek tarih uyarı vermez", () => {
+    const rows = [
+      { __hofKey: "1", __sheet: "A", PLAKA: "42 C 1", "KOLTUK SİGORTASI": "Anadolu Sigorta" },
+      { __hofKey: "2", __sheet: "A", PLAKA: "42 C 2", "KOLTUK SİGORTASI": "" },
+      { __hofKey: "3", __sheet: "B", PLAKA: "42 C 3", "EGZOZ EMİSYON": "01.06.2026" },
+    ];
+    assert.deepEqual(computeDeadlines({ rows, tabs: ["A", "B"], now: NOW }), []);
+  });
+});
+
 describe("bildirimde “Gerçekleştirildi” (v2.0.2)", () => {
   it("hücreye yazılan “Gerçekleştirildi” kalemi kapatır; tarih hücrede kalır; aylık kısmi ödeme de kapanır", () => {
     const rows = [

@@ -24,6 +24,16 @@ export const PERMISSIONS = Object.freeze({
   "plans.view": ALL,
   "plans.collect": ALL,
   "plans.manage": ["admin", "avukat", "muhasebe"],
+  // Cari (v2.0.6): herkes carileri görür ve tahsilat girer; cari açma/düzenleme/silme, borç/alacak/ödeme girişi,
+  // Excel'den yükleme ve toplu taksitlendirme (plans.manage) kasa yetkisiyle aynı hesaplarda.
+  "accounts.view": ALL,
+  "accounts.collect": ALL,
+  "accounts.manage": ["admin", "avukat", "muhasebe"],
+  // Stok (v2.0.6): herkes stoku görür ve miktar hareketi (giriş/çıkış) girer; ürün kartı, Excel'den yükleme ve
+  // Kasa'ya ya da cariye para yazan hareketler yönetim yetkisidir.
+  "stock.view": ALL,
+  "stock.move": ALL,
+  "stock.manage": ["admin", "avukat", "muhasebe"],
   // Görev atama, herkesin görevleri ve performans raporu (KPI) yalnızca avukat ve yönetici içindir;
   // personel ve muhasebe kendilerine atanan görevleri görür ve tamamlar.
   "tasks.create": ["admin", "avukat"],

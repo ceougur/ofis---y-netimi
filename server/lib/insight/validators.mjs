@@ -114,6 +114,13 @@ export function parseDate(value) {
   return date;
 }
 
+// Gün, ay ve yıl içeren tam tarih mi ("30.09.2026", "2026-09-30", "30 Eylül 2026")? "Mart 2027" gibi ay-yıl başlıkları
+// (aylık ödeme kolonları) sayılmaz. Kolon adının yerine yanlışlıkla yazılan değeri tanımak için (v2.0.6).
+export const isFullDate = value => {
+  const text = String(value ?? "").trim();
+  return Boolean(parseDate(text)) && !/^\p{L}+\.?\s+\d{4}$/u.test(text);
+};
+
 // Tutar/sayı: Türkçe (1.234,56) ve İngilizce (1,234.56) yazımlar, para birimi ve yüzde işaretleri. Sayı değilse null.
 export function parseAmount(value) {
   // "1.500,-" kuruşsuz yazımdır (eksi değil).

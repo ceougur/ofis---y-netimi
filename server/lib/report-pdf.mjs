@@ -15,9 +15,10 @@ const pad = value => String(value).padStart(2, "0");
 const tl = value => `${new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(Number(value) || 0)} TL`;
 
 /**
- * @param {{ title: string, subtitle?: string, headers: string[], rows: string[][], types?: string[], summary?: Array<[string, string]>, officeName?: string, userName?: string, now?: Date }} input
+ * @param {{ title: string, subtitle?: string, headers: string[], rows: string[][], types?: string[], summary?: Array<[string, string]>, officeName?: string, userName?: string, brand?: string, now?: Date }} input
+ * brand: altbilgideki ad (varsayılan "DestekOfis"); boş metin yalnız başlığı yazar (müşteriye verilen belgeler, v2.0.6).
  */
-export function tablePdf({ title, subtitle = "", headers, rows, types = [], summary = [], officeName = "", userName = "", now = new Date() }) {
+export function tablePdf({ title, subtitle = "", headers, rows, types = [], summary = [], officeName = "", userName = "", brand = "DestekOfis", now = new Date() }) {
   const M = 36;
   const landscape = headers.length > 7;
   const size = landscape ? { width: A4.height, height: A4.width } : A4;
@@ -29,15 +30,39 @@ export function tablePdf({ title, subtitle = "", headers, rows, types = [], summ
   const fontSize = headers.length > 10 ? 7 : headers.length > 7 ? 7.5 : 8.5;
   const cellPad = 4;
 
-  // Kolon genişlikleri: başlık ve hücre ölçümlerinin p90'ı, en az 40 ve en çok W/3; sonra sayfaya orantıla.
+  // Kolon genişlikleri: başlık ve hücre ölçümlerinin p90'ı, en az 40 ve en çok W/3.
+  const sample = rows.slice(0, 400);
   const widths = headers.map((header, index) => {
-    const samples = rows.slice(0, 400).map(row => doc.measure(String(row[index] ?? ""), "regular", fontSize)).sort((a, b) => a - b);
+    const samples = sample.map(row => doc.measure(String(row[index] ?? ""), "regular", fontSize)).sort((a, b) => a - b);
     const p90 = samples.length ? samples[Math.min(samples.length - 1, Math.floor(samples.length * 0.9))] : 0;
     return Math.min(W / 3, Math.max(40, Math.max(doc.measure(header, "bold", fontSize) + 6, p90) + cellPad * 2));
   });
-  const total = widths.reduce((sum, width) => sum + width, 0);
-  const scale = total > W ? W / total : 1;
-  const cols = widths.map(width => width * scale);
+  // Sayfaya sığmayınca (v2.0.6) yalnız sözcüklü metin kolonları (ad, grup, not) daralıp satır içinde sarılır; tutar, tarih,
+  // telefon gibi bölünmez değerler kendi genişliğinde kalır ("03.09.202 / 6" diye kırılmasın). Yetmezse hepsi orantılanır.
+  const sum = list => list.reduce((total, value) => total + value, 0);
+  const rigid = index => types[index] === "money" || types[index] === "number" || sample.every(row => !/\s/.test(String(row[index] ?? "").trim()));
+  const floor = index => Math.max(48, Math.min(widths[index], doc.measure(headers[index], "bold", fontSize) + 6 + cellPad * 2));
+  let cols = widths.slice();
+  if (sum(widths) > W) {
+    const flex = headers.map((_, index) => index).filter(index => !rigid(index));
+    let room = W - sum(widths.filter((_, index) => rigid(index)));
+    if (flex.length && room >= sum(flex.map(floor))) {
+      let pool = flex;
+      while (pool.length) {
+        const scale = room / sum(pool.map(index => widths[index]));
+        const under = pool.filter(index => widths[index] * scale < floor(index));
+        if (!under.length) {
+          pool.forEach(index => (cols[index] = widths[index] * scale));
+          break;
+        }
+        under.forEach(index => {
+          cols[index] = floor(index);
+          room -= cols[index];
+        });
+        pool = pool.filter(index => !under.includes(index));
+      }
+    } else cols = widths.map(width => (width * W) / sum(widths));
+  }
   const lefts = cols.map((_, index) => M + cols.slice(0, index).reduce((sum, width) => sum + width, 0));
   const align = index => (types[index] === "money" || types[index] === "number" ? "right" : "left");
 
@@ -99,7 +124,7 @@ export function tablePdf({ title, subtitle = "", headers, rows, types = [], summ
   doc.pages.forEach((item, index) => {
     const footer = size.height - 24;
     item.line(M, footer - 10, M + W, footer - 10, { color: "#e5e7eb", width: 0.5 });
-    item.text(M, footer, `DestekOfis · ${title}`, { size: 7.5, color: muted });
+    item.text(M, footer, brand ? `${brand} · ${title}` : title, { size: 7.5, color: muted });
     item.text(M, footer, `Sayfa ${index + 1} / ${count}`, { size: 7.5, color: muted, align: "right", width: W });
   });
   return doc.toBuffer({ now });

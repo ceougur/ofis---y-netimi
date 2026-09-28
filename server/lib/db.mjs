@@ -3,7 +3,9 @@ import { DatabaseSync } from "node:sqlite";
 
 export function openDatabase(dbPath, { readOnly = false } = {}) {
   const db = readOnly ? new DatabaseSync(dbPath, { readOnly: true }) : new DatabaseSync(dbPath);
-  if (!readOnly) db.exec("PRAGMA journal_mode = WAL; PRAGMA synchronous = NORMAL;");
+  // WAL + synchronous FULL (v2.0.6): her COMMIT diske işlenir; elektrik kesilse de tamamlanmış işlem kaybolmaz, yarım
+  // işlem kalmaz (geri alınır). Yerel ofis programında yazma sıklığı düşük; güvenlik hız maliyetine değer.
+  if (!readOnly) db.exec("PRAGMA journal_mode = WAL; PRAGMA synchronous = FULL;");
   db.exec("PRAGMA foreign_keys = ON; PRAGMA busy_timeout = 10000;");
   return db;
 }

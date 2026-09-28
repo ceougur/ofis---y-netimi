@@ -21,6 +21,9 @@
     "source.tab.renamed": "Sekmeyi yeniden adlandırdı",
     "source.tab.hidden": "Sekmeyi sildi",
     "source.tab.restored": "Sekmeyi geri yükledi",
+    "source.column.added": "Tabloya sütun ekledi",
+    "source.column.hidden": "Tablodan sütun sildi",
+    "source.column.restored": "Sütunu geri yükledi",
     "source.cell.updated": "Hücre düzeltti",
     "source.excel.uploaded": "Excel tablosu yükledi",
     "dataset.imported": "Veri içeri aldı",
@@ -323,7 +326,7 @@
   $("#adm-audit-type").addEventListener("change", loadAudit);
 
   // ---------- Silinenler (v2.0.2) ----------
-  const TRASH_GROUPS = { row: ["row", "tab"], document: ["document"], free: ["free-sheet", "free-row", "free-column"], money: ["payment", "cash", "plan", "plan-entry"] };
+  const TRASH_GROUPS = { row: ["row", "tab", "column"], document: ["document"], free: ["free-sheet", "free-row", "free-column"], money: ["payment", "cash", "plan", "plan-entry"] };
   let trashItems = [];
   function renderTrash() {
     const body = $("#adm-trash");

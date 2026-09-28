@@ -13,13 +13,19 @@ import { tablePdf, tl } from "../lib/report-pdf.mjs";
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 const validDate = value => DATE.test(value) && !Number.isNaN(new Date(value).getTime());
 const MAX_ITEMS = 360;
-const MAX_IMPORT = 5000;
+const MAX_IMPORT = 100_000;
 
-export function registerPlanRoutes(router, { store, auth, audit, events, trash }) {
+// accounts (v2.0.6): cari servisi daha sonra kurulur; her taksit kartı bir cariye aittir (plans.account_id).
+export function registerPlanRoutes(router, { store, auth, audit, events, trash, dataset = null, accounts = () => null }) {
   const now = () => new Date().toISOString();
   const today = () => isoDay(new Date());
   const newId = prefix => `${prefix}-${randomUUID()}`;
   const changed = (user, detail = {}) => events?.publish("workspace.changed", { kind: "plans", actorId: user.id, actorName: user.display_name, ...detail }, { except: user.id });
+  // Kayda bağlı kartın hareketi kişinin işlem geçmişini de değiştirir (v2.0.6): açık ekranlardaki kart yenilensin.
+  const touchedCase = (user, plan) => {
+    if (plan?.caseKey) changed(user, { kind: "activity", caseKey: plan.caseKey, datasetKey: plan.caseSource || "" });
+  };
+  const currentSource = () => (dataset?.currentKey ? dataset.currentKey() : "");
   const amountOf = (value, label = "Tutar") => {
     const amount = parseAmount(value);
     if (!Number.isFinite(amount) || amount < 0 || amount > 1e12) throw new HttpError(400, `${label} geçerli bir sayı olmalı.`);
@@ -131,10 +137,11 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash }
   });
 
   // ---------- Kart okuma ----------
-  const PLAN_SQL = `SELECT p.id, p.ref_no AS refNo, p.group_id AS groupId, p.subgroup_id AS subgroupId, p.name, p.note, p.phone, p.total, p.status,
+  const PLAN_SQL = `SELECT p.id, p.account_id AS accountId, p.ref_no AS refNo, p.registered_on AS registeredOn, p.case_key AS caseKey, p.case_source AS caseSource, p.case_title AS caseTitle, p.group_id AS groupId, p.subgroup_id AS subgroupId, p.name, p.note, p.phone, p.total, p.status,
       p.created_by AS createdBy, p.created_at AS createdAt, p.updated_at AS updatedAt, COALESCE(u.display_name, '') AS actorName,
-      COALESCE(g.name, '') AS groupName, COALESCE(s.name, '') AS subgroupName
-    FROM plans p LEFT JOIN users u ON u.id = p.created_by LEFT JOIN plan_groups g ON g.id = p.group_id LEFT JOIN plan_groups s ON s.id = p.subgroup_id`;
+      COALESCE(g.name, '') AS groupName, COALESCE(s.name, '') AS subgroupName, COALESCE(ac.name, '') AS accountName, COALESCE(ac.ref_no, '') AS accountRef
+    FROM plans p LEFT JOIN users u ON u.id = p.created_by LEFT JOIN plan_groups g ON g.id = p.group_id LEFT JOIN plan_groups s ON s.id = p.subgroup_id
+      LEFT JOIN accounts ac ON ac.id = p.account_id AND ac.deleted_at IS NULL`;
   const itemsOf = planId => store.all("SELECT id, seq, due_date AS dueDate, amount, note FROM plan_items WHERE plan_id = ? ORDER BY due_date, seq", planId);
   const entriesOf = planId =>
     store.all(
@@ -180,7 +187,7 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash }
     }
     return String(max + 1);
   };
-  const SORTS = new Set(["no", "name", "due", "remaining"]);
+  const SORTS = new Set(["no", "name", "due", "remaining", "registered"]);
   const STATUSES = new Set(["active", "overdue", "done", "closed", "all"]);
   const listQuery = params => ({
     q: text(params.get("q")).slice(0, 120),
@@ -188,11 +195,17 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash }
     subgroup: text(params.get("subgroup")),
     status: STATUSES.has(text(params.get("status"))) ? text(params.get("status")) : "active",
     sort: SORTS.has(text(params.get("sort"))) ? text(params.get("sort")) : "no",
+    // Kayda bağlı kartlar (v2.0.6): yalnız bu kaydın kartları (açık veri oturumunda).
+    caseKey: text(params.get("caseKey")).slice(0, 200),
+    // Carinin kartları (v2.0.6).
+    account: text(params.get("account")).slice(0, 120),
   });
 
   // Liste: her kart için özet (taksitler ve hareketler bellekte tek geçişte eşlenir; 5 bin kartta da hızlıdır).
-  function list(user, { q = "", group = "", subgroup = "", status = "active", sort = "no" } = {}) {
-    const plans = store.all(`${PLAN_SQL} WHERE p.deleted_at IS NULL ORDER BY p.name COLLATE NOCASE, p.created_at`);
+  function list(user, { q = "", group = "", subgroup = "", status = "active", sort = "no", caseKey = "", caseSource = "", account = "" } = {}) {
+    let plans = store.all(`${PLAN_SQL} WHERE p.deleted_at IS NULL ORDER BY p.name COLLATE NOCASE, p.created_at`);
+    if (caseKey) plans = plans.filter(plan => plan.caseKey === caseKey && (!caseSource || plan.caseSource === caseSource));
+    if (account) plans = plans.filter(plan => plan.accountId === account);
     const items = new Map();
     for (const item of store.all("SELECT id, plan_id AS planId, seq, due_date AS dueDate, amount FROM plan_items ORDER BY due_date, seq")) {
       if (!items.has(item.planId)) items.set(item.planId, []);
@@ -232,7 +245,13 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash }
       totals.count += 1;
       out.push({
         id: plan.id,
+        accountId: plan.accountId || "",
+        accountName: plan.accountName || "",
         refNo: plan.refNo || "",
+        registeredOn: plan.registeredOn || "",
+        caseKey: plan.caseKey || "",
+        caseSource: plan.caseSource || "",
+        caseTitle: plan.caseTitle || "",
         name: plan.name,
         phone: plan.phone,
         note: plan.note,
@@ -255,6 +274,7 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash }
       name: byName,
       due: (a, b) => rank(a) - rank(b) || (a.next?.days ?? 9e9) - (b.next?.days ?? 9e9) || byName(a, b),
       remaining: (a, b) => b.totals.remaining - a.totals.remaining || byName(a, b),
+      registered: (a, b) => String(b.registeredOn).localeCompare(String(a.registeredOn)) || refCompare(a, b),
     }[sort] || ((a, b) => refCompare(a, b) || byName(a, b));
     out.sort(compare);
     return { plans: out, totals, sort, canManage: can(user.role, "plans.manage"), canCollect: can(user.role, "plans.collect"), today: day };
@@ -262,7 +282,14 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash }
 
   router.get("/api/workspace/plans", async ({ req, res, url }) => {
     const user = auth.requirePermission(req, "plans.view");
-    ok(res, list(user, listQuery(url.searchParams)));
+    ok(res, list(user, { ...listQuery(url.searchParams), caseSource: currentSource() }));
+  });
+
+  // Kaydın taksit kartları (v2.0.6): kişinin kartındaki "Taksit planı" bölümü ve Tahsilat penceresi buradan okur.
+  router.get("/api/workspace/cases/:key/plans", async ({ req, res, params }) => {
+    const user = auth.requirePermission(req, "plans.view");
+    const key = limited(params.key, 200, "Kayıt");
+    ok(res, { plans: forCase(key, currentSource(), user), canManage: can(user.role, "plans.manage"), canCollect: can(user.role, "plans.collect") });
   });
 
   // Liste PDF'i (v2.0.5): ekrandaki süzgeçler ve sıralamayla (durum, grup › alt grup, arama). Yazdır düğmesi de bunu kullanır.
@@ -278,36 +305,54 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash }
     const pdf = tablePdf({
       title: `${title} listesi`,
       subtitle,
-      headers: ["No", "Ad Soyad", "Grup", "Telefon", "Toplam", "Ödenen", "Kalan", "Sıradaki vade", "Durum"],
-      types: ["text", "text", "text", "text", "money", "money", "money", "text", "text"],
+      // v2.0.6: kayıt tarihi ve bilgi notu da basılır (yatay sayfada notun yeri var; uzun not satır içinde sarılır).
+      headers: ["No", "Ad Soyad", "Grup", "Telefon", "Kayıt", "Toplam", "Ödenen", "Kalan", "Sıradaki vade", "Durum", "Bilgi notu"],
+      types: ["text", "text", "text", "text", "text", "money", "money", "money", "text", "text", "text"],
       rows: data.plans.map(plan => [
         plan.refNo,
         plan.name,
         [plan.groupName, plan.subgroupName].filter(Boolean).join(" › "),
         plan.phone,
+        dayText(plan.registeredOn),
         tl(plan.totals.total),
         tl(plan.totals.paid),
         tl(plan.totals.remaining),
         plan.next ? `${dayText(plan.next.dueDate)} · ${plan.next.seq}. taksit` : "",
         `${STATE_TEXT[plan.state] || ""}${plan.totals.overdueCount ? ` · ${plan.totals.overdueCount} taksit geciken` : ""}`,
+        plan.note || "",
       ]),
       summary: [["Kart", String(data.totals.count)], ["Kalan alacak", tl(data.totals.remaining)], ["Geciken", `${tl(data.totals.overdue)} · ${data.totals.overdueCount} taksit`], ["Bu ay beklenen", tl(data.totals.month)], ["Tahsil edilen", tl(data.totals.paid)]],
       officeName: office(),
       userName: user.display_name || user.username || "",
+      // Liste okula ya da veliye verilebilir: altbilgide program adı değil firma adı (v2.0.6).
+      brand: office(),
     });
     audit(user, "plan.list.exported", "list", { ...query, count: data.totals.count });
     sendBuffer(res, pdf, { type: "application/pdf", name: `${title}-listesi ${dayText(today())}.pdf`, inline: url.searchParams.get("download") !== "1" });
   });
 
   // ---------- Kart yazma ----------
-  const planInput = (body, user) => {
+  const planInput = (body, user, previous = null) => {
     const name = limited(body.name, 160, "Ad Soyad");
     if (!name) throw new HttpError(400, "Ad Soyad (ya da kurum adı) yazın.");
     const phone = limited(body.phone, 60, "Telefon");
     const note = limited(body.note, 1000, "Bilgi notu");
     const total = amountOf(body.total, "Toplam tutar");
     const refNo = limited(body.refNo, 30, "Sıra No");
-    return { name, phone, note, total, refNo, ...resolveGroups(body, user) };
+    // Kayıt tarihi: kişinin kaydedildiği gün; boş bırakılırsa bugün (v2.0.6).
+    const registeredOn = dateOf(body.registeredOn, "Kayıt tarihi", today());
+    // Tablodaki kayıt (v2.0.6): kart, açık veri oturumundaki bir kayda bağlanır; boş kimlik bağı kaldırır.
+    const caseKey = limited(body.caseKey, 200, "Kayıt");
+    const caseSource = caseKey ? limited(body.caseSource, 200, "Veri oturumu") || currentSource() : "";
+    const caseTitle = caseKey ? limited(body.caseTitle, 200, "Kayıt adı") : "";
+    // Yeni ya da değişen bağ, açık veri oturumundaki gerçek bir kayda gitmeli: başka oturumun anahtarı ya da yanlış yazılmış
+    // bir anahtar bağlanamaz (başka oturumda kurulmuş bağ, o kayıt bu oturumda olmadığı için olduğu gibi korunur).
+    const linkChanged = caseKey !== String(previous?.caseKey || "") || caseSource !== String(previous?.caseSource || "");
+    if (caseKey && linkChanged && caseSource === currentSource() && dataset?.hasRecord && !dataset.hasRecord(caseKey)) throw new HttpError(400, "Bağlanacak kayıt açık veri oturumunda bulunamadı. Tablodan seçerek bağlayın.");
+    // Cari (v2.0.6): kart bir cariye aittir. Verilmezse kart açılırken ad, telefon ve gruptan yeni cari açılır.
+    const accountId = limited(body.accountId, 120, "Cari");
+    if (accountId && accountId !== String(previous?.accountId || "") && !accounts()?.exists(accountId)) throw new HttpError(400, "Seçilen cari bulunamadı; silinmiş olabilir. Listeden yeniden seçin.");
+    return { name, phone, note, total, refNo, registeredOn, caseKey, caseSource, caseTitle, accountId, ...resolveGroups(body, user) };
   };
   // Taksitleri yeniden kurar: mevcut taksitler silinir; taksite bağlı hareketler serbest kalır (havuza düşer).
   function replaceItems(planId, items) {
@@ -333,16 +378,18 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash }
     const id = newId("plan");
     const result = store.tx(() => {
       const input = planInput(body, user);
+      const accountId = input.accountId || accounts()?.createFromPlan(user, input) || "";
       store.run(
-        "INSERT INTO plans (id, ref_no, group_id, subgroup_id, name, note, phone, total, status, created_by, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'active', ?, ?, ?)",
-        id, input.refNo || nextRef(), input.groupId, input.subgroupId, input.name, input.note, input.phone, input.total, user.id, now(), now(),
+        "INSERT INTO plans (id, account_id, ref_no, registered_on, case_key, case_source, case_title, group_id, subgroup_id, name, note, phone, total, status, created_by, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'active', ?, ?, ?)",
+        id, accountId, input.refNo || nextRef(), input.registeredOn, input.caseKey, input.caseSource, input.caseTitle, input.groupId, input.subgroupId, input.name, input.note, input.phone, input.total, user.id, now(), now(),
       );
       // Kayıt bitince taksit sorulmaz; "count" verilmişse (kartı açarken "otomatik dağıt" seçildiyse) kurulur.
       if (text(body.mode) === "auto" || Number(body.count) > 0) replaceItems(id, distributionInput(body, input.total));
-      audit(user, "plan.created", id, { name: input.name, total: input.total, groupId: input.groupId, subgroupId: input.subgroupId });
+      audit(user, "plan.created", id, { name: input.name, total: input.total, groupId: input.groupId, subgroupId: input.subgroupId, accountId });
       return detail(id, user);
     });
     changed(user, { planId: id });
+    changed(user, { kind: "accounts", accountId: result.accountId || "" });
     ok(res, result);
   });
 
@@ -356,16 +403,19 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash }
     const previous = planRow(params.id);
     const body = await readJson(req);
     const result = store.tx(() => {
-      const input = planInput({ ...previous, ...body }, user);
+      const input = planInput({ ...previous, ...body }, user, previous);
       const status = body.status === undefined ? previous.status : body.status === "closed" ? "closed" : "active";
+      // Cari boşaltılamaz: eski kartta (göç öncesinden kalma, cari yoksa) ilk düzenlemede cari açılır.
+      const accountId = input.accountId || previous.accountId || accounts()?.createFromPlan(user, input) || "";
       store.run(
-        "UPDATE plans SET ref_no = ?, group_id = ?, subgroup_id = ?, name = ?, note = ?, phone = ?, total = ?, status = ?, updated_by = ?, updated_at = ? WHERE id = ?",
-        input.refNo, input.groupId, input.subgroupId, input.name, input.note, input.phone, input.total, status, user.id, now(), previous.id,
+        "UPDATE plans SET account_id = ?, ref_no = ?, registered_on = ?, case_key = ?, case_source = ?, case_title = ?, group_id = ?, subgroup_id = ?, name = ?, note = ?, phone = ?, total = ?, status = ?, updated_by = ?, updated_at = ? WHERE id = ?",
+        accountId, input.refNo, input.registeredOn, input.caseKey, input.caseSource, input.caseTitle, input.groupId, input.subgroupId, input.name, input.note, input.phone, input.total, status, user.id, now(), previous.id,
       );
-      audit(user, "plan.updated", previous.id, { previous: { name: previous.name, total: previous.total, status: previous.status }, ...input, status });
+      audit(user, "plan.updated", previous.id, { previous: { name: previous.name, total: previous.total, status: previous.status, accountId: previous.accountId }, ...input, accountId, status });
       return detail(previous.id, user);
     });
     changed(user, { planId: previous.id });
+    changed(user, { kind: "accounts", accountId: result.accountId || "" });
     ok(res, result);
   });
 
@@ -489,6 +539,7 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash }
     });
     changed(user, { planId: plan.id });
     changed(user, { kind: "cash" });
+    touchedCase(user, plan);
     ok(res, { ...detail(plan.id, user), entryId: id });
   });
   router.put("/api/workspace/plans/:id/entries/:entryId", async ({ req, res, params }) => {
@@ -504,6 +555,7 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash }
     });
     changed(user, { planId: plan.id });
     changed(user, { kind: "cash" });
+    touchedCase(user, plan);
     ok(res, detail(plan.id, user));
   });
   router.delete("/api/workspace/plans/:id/entries/:entryId", async ({ req, res, params }) => {
@@ -518,6 +570,7 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash }
     });
     changed(user, { planId: plan.id });
     changed(user, { kind: "cash" });
+    touchedCase(user, plan);
     ok(res, detail(plan.id, user));
   });
 
@@ -562,13 +615,13 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash }
       const found = Object.entries(roles).find(([, value]) => value === role);
       return found ? Number(found[0]) : -1;
     };
-    const col = Object.fromEntries(["seq", "group", "subgroup", "name", "phone", "total", "count", "firstDue", "installment", "note"].map(role => [role, columnOf(role)]));
+    const col = Object.fromEntries(["seq", "registered", "group", "subgroup", "name", "phone", "total", "count", "firstDue", "installment", "note"].map(role => [role, columnOf(role)]));
     if (col.name < 0) throw new HttpError(400, "Ad Soyad kolonunu seçin.");
     if (col.total < 0 && col.installment < 0) throw new HttpError(400, "Toplam tutar (ya da taksit tutarı) kolonunu seçin.");
     const defaults = { count: Math.trunc(Number(body.defaultCount) || 0), firstDue: text(body.defaultFirstDue), groupName: limited(body.groupName, 80, "Grup adı"), subgroupName: limited(body.subgroupName, 80, "Alt grup adı") };
     const cell = (row, index) => (index >= 0 ? String(row[index] ?? "").trim() : "");
     const rows = matrix.slice(headerAt + 1, headerAt + 1 + MAX_IMPORT);
-    const report = { created: 0, skipped: [], groups: 0 };
+    const report = { created: 0, skipped: [], groups: 0, linked: 0 };
     const skip = (index, reason) => report.skipped.push({ row: headerAt + index + 2, reason });
     const before = store.get("SELECT COUNT(*) AS n FROM plan_groups").n;
     store.tx(() => {
@@ -594,9 +647,16 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash }
         const firstDue = parseDay(cell(row, col.firstDue)) || defaults.firstDue;
         const id = newId("plan");
         const refNo = cell(row, col.seq).slice(0, 30) || String((autoRef += 1));
+        // Kayıt tarihi kolonu yoksa ya da okunamıyorsa yükleme günü.
+        const registeredOn = parseDay(cell(row, col.registered)) || today();
+        const person = { name, phone: cell(row, col.phone).slice(0, 60), note: cell(row, col.note).slice(0, 1000), registeredOn, groupId, subgroupId, caseKey: "", caseSource: "", caseTitle: "" };
+        // Cari (v2.0.6): aynı ad ve telefonla (ya da telefonsuz aynı ad ve grupla) tek bir cari varsa ona bağlanır; yoksa açılır.
+        const matched = accounts()?.matchPerson(person) || "";
+        if (matched) report.linked += 1;
+        const accountId = matched || accounts()?.createFromPlan(user, person) || "";
         store.run(
-          "INSERT INTO plans (id, ref_no, group_id, subgroup_id, name, note, phone, total, status, created_by, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'active', ?, ?, ?)",
-          id, refNo, groupId, subgroupId, name, cell(row, col.note).slice(0, 1000), cell(row, col.phone).slice(0, 60), roundMoney(total), user.id, now(), now(),
+          "INSERT INTO plans (id, account_id, ref_no, registered_on, group_id, subgroup_id, name, note, phone, total, status, created_by, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'active', ?, ?, ?)",
+          id, accountId, refNo, registeredOn, groupId, subgroupId, name, person.note, person.phone, roundMoney(total), user.id, now(), now(),
         );
         if (count > 0 && total > 0 && validDate(firstDue)) replaceItems(id, distribute({ total, count: Math.min(count, MAX_ITEMS), firstDue }));
         report.created += 1;
@@ -605,6 +665,7 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash }
       audit(user, "plan.imported", "import", { created: report.created, skipped: report.skipped.length, groups: report.groups, file: limited(body.fileName, 200, "Dosya adı") });
     });
     changed(user, { groups: true });
+    changed(user, { kind: "accounts" });
     ok(res, report);
   });
 
@@ -643,7 +704,9 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash }
           itemId: item.id,
           person: plan.name,
           caseNo: where,
-          caseKey: "",
+          caseKey: plan.caseKey || "",
+          caseSource: plan.caseSource || "",
+          caseTitle: plan.caseTitle || "",
           tab: "",
           label: `${item.seq}. taksit`,
           kind: "date",
@@ -664,5 +727,76 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash }
     return `${row.e}|${row.i}|${row.p}`;
   };
 
-  return { cashEntries, dueItems, fingerprint, list, detail };
+  // Kayda bağlı kartlar (v2.0.6): kişinin kartı için taksitleriyle; açık olanlar önce.
+  function forCase(caseKey, caseSource, user) {
+    if (!caseKey) return [];
+    return store
+      .all(`${PLAN_SQL} WHERE p.deleted_at IS NULL AND p.case_key = ? AND (? = '' OR p.case_source = ?) ORDER BY (p.status = 'active') DESC, p.created_at`, caseKey, caseSource || "", caseSource || "")
+      .map(plan => shape(plan, user));
+  }
+  // Kayda bağlı kartların hareketleri: kişinin işlem geçmişinde tahsilat / ödeme olarak listelenir.
+  function entriesForCase(caseKey, caseSource) {
+    if (!caseKey) return [];
+    return store.all(
+      `SELECT e.id, e.plan_id AS planId, p.name AS planName, e.item_id AS itemId, i.seq AS itemSeq, e.kind, e.amount, e.date, e.note, e.receipt_no AS receiptNo,
+              e.created_by AS actorId, e.created_at AS createdAt, e.updated_at AS updatedAt, COALESCE(u.display_name, '') AS actorName
+       FROM plan_entries e JOIN plans p ON p.id = e.plan_id AND p.deleted_at IS NULL LEFT JOIN plan_items i ON i.id = e.item_id LEFT JOIN users u ON u.id = e.created_by
+       WHERE p.case_key = ? AND (? = '' OR p.case_source = ?)`,
+      caseKey, caseSource || "", caseSource || "",
+    );
+  }
+
+  // Cari (v2.0.6): carilerin taksit özetleri tek geçişte (liste ve bakiye için) ve bir carinin kartları ayrıntılı.
+  function summariesByAccount() {
+    const plans = store.all(`${PLAN_SQL} WHERE p.deleted_at IS NULL AND p.account_id <> ''`);
+    const out = new Map();
+    if (!plans.length) return out;
+    const items = new Map();
+    for (const item of store.all("SELECT id, plan_id AS planId, seq, due_date AS dueDate, amount FROM plan_items ORDER BY due_date, seq")) {
+      if (!items.has(item.planId)) items.set(item.planId, []);
+      items.get(item.planId).push(item);
+    }
+    const entries = new Map();
+    for (const entry of store.all("SELECT id, plan_id AS planId, item_id AS itemId, kind, amount, date FROM plan_entries ORDER BY date, created_at, rowid")) {
+      if (!entries.has(entry.planId)) entries.set(entry.planId, []);
+      entries.get(entry.planId).push(entry);
+    }
+    const day = today();
+    for (const plan of plans) {
+      const ledger = allocate(plan, items.get(plan.id) || [], entries.get(plan.id) || [], { today: day });
+      if (!out.has(plan.accountId)) out.set(plan.accountId, []);
+      out.get(plan.accountId).push({ id: plan.id, name: plan.name, total: plan.total, status: plan.status, state: ledger.state, totals: ledger.totals, next: ledger.next, itemCount: ledger.items.length });
+    }
+    return out;
+  }
+  function forAccount(accountId, user) {
+    if (!accountId) return [];
+    return store.all(`${PLAN_SQL} WHERE p.deleted_at IS NULL AND p.account_id = ? ORDER BY (p.status = 'active') DESC, p.created_at`, accountId).map(plan => {
+      const shaped = shape(plan, user);
+      const seqOf = new Map(shaped.items.map(item => [item.id, item.seq]));
+      return { ...shaped, itemCount: shaped.items.length, entries: shaped.entries.map(entry => ({ ...entry, itemSeq: entry.itemId ? seqOf.get(entry.itemId) || null : null })) };
+    });
+  }
+  // Carinin toplu taksitlendirmesi (routes/accounts.mjs): kartı cariye bağlı açar, isterse taksitleri dağıtır.
+  // refNo verilirse (toplu taksitlendirme sayacı) kart tablosu her kartta yeniden taranmaz.
+  function createForAccount(user, account, { total, count = 0, firstDue = "", everyMonths = 1, name = "", note = "", refNo = "" }) {
+    const id = newId("plan");
+    const amount = roundMoney(Number(total) || 0);
+    store.run(
+      "INSERT INTO plans (id, account_id, ref_no, registered_on, case_key, case_source, case_title, group_id, subgroup_id, name, note, phone, total, status, created_by, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'active', ?, ?, ?)",
+      id, account.id, refNo || nextRef(), today(), account.caseKey || "", account.caseSource || "", account.caseTitle || "", account.groupId || null, account.subgroupId || null, (name || account.name).slice(0, 160), (note || "").slice(0, 1000), account.phone || "", amount, user.id, now(), now(),
+    );
+    if (count > 0 && amount > 0) replaceItems(id, distribute({ total: amount, count: Math.min(count, MAX_ITEMS), firstDue, everyMonths }));
+    audit(user, "plan.created", id, { name: name || account.name, total: amount, accountId: account.id, bulk: true });
+    return id;
+  }
+  // Cari adı/telefonu değişince, adı/telefonu eski cariyle aynı olan kartlar da güncellenir (farklı adlı kart dokunulmaz).
+  function followAccount(accountId, previous, next) {
+    if (previous.name !== next.name) store.run("UPDATE plans SET name = ?, updated_at = ? WHERE account_id = ? AND name = ?", next.name, now(), accountId, previous.name);
+    if (previous.phone !== next.phone) store.run("UPDATE plans SET phone = ?, updated_at = ? WHERE account_id = ? AND phone = ?", next.phone, now(), accountId, previous.phone);
+  }
+  const countForAccount = accountId => store.get("SELECT COUNT(*) AS n FROM plans WHERE deleted_at IS NULL AND account_id = ?", accountId).n;
+  const receiptSeq = () => nextReceipt();
+
+  return { cashEntries, dueItems, fingerprint, list, detail, forCase, entriesForCase, summariesByAccount, forAccount, createForAccount, followAccount, countForAccount, receiptSeq, nextRef, validDistribution: distributionInput, resolveGroups, groupTree };
 }
