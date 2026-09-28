@@ -380,6 +380,11 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
     const result = store.tx(() => {
       const input = planInput(body, user);
       const accountId = input.accountId || accounts()?.createFromPlan(user, input) || "";
+      // v2.0.7: cari kayda bağlıysa kart da o kayda bağlanır (kişinin kartında taksitler görünsün).
+      if (accountId && !input.caseKey) {
+        const owner = store.get("SELECT case_key AS caseKey, case_source AS caseSource, case_title AS caseTitle FROM accounts WHERE id = ? AND deleted_at IS NULL", accountId);
+        if (owner?.caseKey) Object.assign(input, { caseKey: owner.caseKey, caseSource: owner.caseSource, caseTitle: owner.caseTitle });
+      }
       store.run(
         "INSERT INTO plans (id, account_id, ref_no, registered_on, case_key, case_source, case_title, group_id, subgroup_id, name, note, phone, total, status, created_by, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'active', ?, ?, ?)",
         id, accountId, input.refNo || nextRef(), input.registeredOn, input.caseKey, input.caseSource, input.caseTitle, input.groupId, input.subgroupId, input.name, input.note, input.phone, input.total, user.id, now(), now(),

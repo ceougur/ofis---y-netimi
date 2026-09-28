@@ -292,7 +292,9 @@
           error.textContent = "";
           const missing = [...form.querySelectorAll("[required]")].find(input => !String(input.value || "").trim());
           if (missing) {
-            error.textContent = "Lütfen zorunlu alanları doldurun.";
+            const label = missing.closest(".hof-field")?.querySelector("span")?.textContent.replace(/\s*\*\s*$/, "").trim();
+            error.textContent = label ? `"${label}" alanı boş bırakılamaz.` : "Lütfen zorunlu alanları doldurun.";
+            missing.closest(".hof-field")?.scrollIntoView({ block: "center" });
             missing.focus();
             return;
           }

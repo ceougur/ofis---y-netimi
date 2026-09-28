@@ -250,7 +250,7 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
   router.get("/api/workspace/accounts/search", async ({ req, res, url }) => {
     const user = auth.requirePermission(req, "accounts.view");
     const data = list(user, { q: text(url.searchParams.get("q")).slice(0, 120), status: "all", type: ACCOUNT_TYPES[text(url.searchParams.get("type"))] ? text(url.searchParams.get("type")) : "" });
-    ok(res, data.accounts.slice(0, 20).map(withExtra).map(item => ({ id: item.id, refNo: item.refNo, name: item.name, phone: item.phone, type: item.type, groupName: item.groupName, subgroupName: item.subgroupName, balance: item.balance, status: item.status })));
+    ok(res, data.accounts.slice(0, 20).map(withExtra).map(item => ({ id: item.id, refNo: item.refNo, name: item.name, phone: item.phone, type: item.type, groupName: item.groupName, subgroupName: item.subgroupName, balance: item.balance, status: item.status, caseKey: item.caseKey || "", caseSource: item.caseSource || "", caseTitle: item.caseTitle || "" })));
   });
 
   // ---------- Yazma ----------
@@ -277,6 +277,11 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     // Tablodaki kayda yeni ya da değişen bağ, açık veri oturumunda var olan kayda gitmeli (taksit kartıyla aynı kural).
     const linkChanged = caseKey !== String(previous?.caseKey || "") || caseSource !== String(previous?.caseSource || "");
     if (caseKey && linkChanged && caseSource === currentSource() && dataset?.hasRecord && !dataset.hasRecord(caseKey)) throw new HttpError(400, "Bağlanacak kayıt açık veri oturumunda bulunamadı. Tablodan seçerek bağlayın.");
+    // Bir kayda tek cari bağlanır (v2.0.7): aynı kişi iki carinin defterine bölünmesin.
+    if (caseKey && linkChanged) {
+      const taken = store.get("SELECT name FROM accounts WHERE deleted_at IS NULL AND case_key = ? AND case_source = ? AND id <> ?", caseKey, caseSource, previous?.id || "");
+      if (taken) throw new HttpError(409, `Bu kayda zaten "${taken.name}" carisi bağlı. Aynı kişiyse o cariyi kullanın.`);
+    }
     const groups = plans()?.resolveGroups ? plans().resolveGroups(body, user) : { groupId: null, subgroupId: null };
     return {
       name,
@@ -771,6 +776,39 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
 
   // ---------- Tablodaki kayıt ----------
   // Kişinin kartı (ortadaki tablo): kayda bağlı cari varsa özeti ve bakiyesi.
+  // Yeni kayıt formu (v2.0.7): "Cari kartı da aç". Kayda bağlı cari varsa o; aynı ad + telefon (ya da telefonsuz tek
+  // aynı ad) bağsız bir cari varsa kayda bağlanır; yoksa kayda bağlı yeni cari açılır. Kişi bir kez girilir.
+  router.post("/api/workspace/cases/:key/account", async ({ req, res, params }) => {
+    const user = auth.requirePermission(req, "accounts.manage");
+    const key = limited(params.key, 200, "Kayıt");
+    const body = await readJson(req);
+    const name = limited(body.name, 160, "Ad Soyad / Unvan");
+    if (!name) throw new HttpError(400, "Cari açmak için ad gerekli.");
+    const phone = limited(body.phone, 60, "Telefon");
+    const caseTitle = limited(body.caseTitle, 200, "Kayıt adı") || name;
+    if (dataset?.hasRecord && !dataset.hasRecord(key)) throw new HttpError(400, "Kayıt açık veri oturumunda bulunamadı.");
+    let outcome = "existing";
+    const id = store.tx(() => {
+      const linked = store.get("SELECT id FROM accounts WHERE deleted_at IS NULL AND case_key = ? AND case_source = ? ORDER BY created_at LIMIT 1", key, currentSource());
+      if (linked) return linked.id;
+      const matched = matchPerson({ name, phone, groupId: "" });
+      const free = matched && store.get("SELECT id FROM accounts WHERE id = ? AND case_key = ''", matched);
+      if (free) {
+        store.run("UPDATE accounts SET case_key = ?, case_source = ?, case_title = ?, updated_by = ?, updated_at = ? WHERE id = ?", key, currentSource(), caseTitle, user.id, now(), matched);
+        audit(user, "account.updated", matched, { linkedCase: key, from: "record" });
+        outcome = "linked";
+        return matched;
+      }
+      const created = insertAccount(user, { name, phone, caseKey: key, caseSource: currentSource(), caseTitle, type: ACCOUNT_TYPES[text(body.type)] ? text(body.type) : "customer", fields: [] });
+      audit(user, "account.created", created, { name, from: "record" });
+      outcome = "created";
+      return created;
+    });
+    changed(user, { accountId: id });
+    changed(user, { kind: "activity", caseKey: key, datasetKey: currentSource() });
+    ok(res, { ...detail(id, user), outcome });
+  });
+
   router.get("/api/workspace/cases/:key/account", async ({ req, res, params }) => {
     const user = auth.requirePermission(req, "accounts.view");
     const key = limited(params.key, 200, "Kayıt");
@@ -786,6 +824,12 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     if (person.caseKey) {
       const found = store.get("SELECT id FROM accounts WHERE deleted_at IS NULL AND case_key = ? AND case_source = ?", person.caseKey, person.caseSource || currentSource());
       if (found) return found.id;
+    }
+    // v2.0.7: aynı ad + aynı telefon (ya da telefonsuz, aynı grupta tek aynı ad) kesin eşleşirse o cari; boşa cari açılmaz.
+    const matched = matchPerson({ name: person.name, phone: person.phone, groupId: person.groupId || "" });
+    if (matched) {
+      if (person.caseKey) store.run("UPDATE accounts SET case_key = ?, case_source = ?, case_title = ?, updated_by = ?, updated_at = ? WHERE id = ? AND case_key = ''", person.caseKey, person.caseSource || currentSource(), person.caseTitle || person.name, user.id, now(), matched);
+      return matched;
     }
     const id = insertAccount(user, { name: person.name, phone: person.phone, note: person.note, registeredOn: person.registeredOn, groupId: person.groupId, subgroupId: person.subgroupId, caseKey: person.caseKey, caseSource: person.caseSource, caseTitle: person.caseTitle, type: "customer", fields: [] });
     audit(user, "account.created", id, { name: person.name, from: "plan" });

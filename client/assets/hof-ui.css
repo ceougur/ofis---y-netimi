@@ -921,6 +921,16 @@ html.hof-auth-required #root {
 .hof-record-grid .hof-field:first-child {
   grid-column: 1 / -1;
 }
+/* Yeni kayıt: "cari kartı da aç" (v2.0.7) — formun altında, tam satır. */
+.hof-record-grid .hof-record-account {
+  grid-column: 1 / -1;
+  margin-top: 6px;
+  padding: 11px 13px;
+  border: 1px solid var(--do-border);
+  border-radius: var(--do-radius-small);
+  background: var(--do-accent-soft);
+}
+
 
 /* ---------- Sayfalama ---------- */
 .hof-pager {

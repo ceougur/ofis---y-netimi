@@ -338,6 +338,14 @@
       hide();
       onPick?.(account || null);
     });
+    // Dışarıdan seçim (ad eşleşmesi önerisi, v2.0.7): { id, name } ya da null.
+    field.setAccount = account => {
+      hidden.value = account?.id || "";
+      input.value = account?.name || "";
+      state();
+      hide();
+      onPick?.(account || null);
+    };
     clear.addEventListener("click", () => {
       hidden.value = "";
       input.value = "";
@@ -402,6 +410,35 @@
           dialog.querySelector('textarea[name="address"]').closest(".hof-field").after(casePicker);
           HOF.plans.casePicker.wire(casePicker);
           casePicker.querySelector("small").textContent = "Bağlı kaydın kartında (ortadaki tablo) bu carinin bakiyesi görünür.";
+          // v2.0.7: ad yazılınca tabloda aynı adlı tek kayıt varsa öneri olarak seçilir; × ile kaldırılır.
+          if (!account && HOF.plans?.personOf) {
+            const nameInput = dialog.querySelector('input[name="name"]');
+            const keyInput = casePicker.querySelector('input[name="caseKey"]');
+            const titleInput = casePicker.querySelector('input[name="caseTitle"]');
+            const note = casePicker.querySelector("small");
+            let suggested = "";
+            const suggest = () => {
+              if (keyInput.value && keyInput.value !== suggested) return;
+              const wanted = HOF.normalize(nameInput.value);
+              const hits = wanted ? (HOF.data?.rows || []).filter(row => row.__hofKey && HOF.normalize(HOF.plans.personOf(row)) === wanted) : [];
+              if (hits.length === 1) {
+                suggested = hits[0].__hofKey;
+                keyInput.value = suggested;
+                titleInput.value = HOF.plans.recordLabel(hits[0]);
+                note.textContent = "Tabloda aynı adlı kayıt bulundu ve seçildi. Yanlışsa × ile kaldırın.";
+              } else if (suggested) {
+                suggested = "";
+                keyInput.value = "";
+                titleInput.value = "";
+                note.textContent = "Bağlı kaydın kartında (ortadaki tablo) bu carinin bakiyesi görünür.";
+              }
+              casePicker.classList.toggle("is-linked", Boolean(keyInput.value));
+              casePicker.querySelector("[data-unlink]").hidden = !keyInput.value;
+            };
+            nameInput.addEventListener("input", suggest);
+            nameInput.addEventListener("blur", suggest);
+            if (nameInput.value.trim()) suggest();
+          }
         }
         fieldsBox = fieldsEditor(account?.fields || []);
         dialog.querySelector('textarea[name="note"]').closest(".hof-field").before(fieldsBox);

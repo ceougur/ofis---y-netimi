@@ -513,7 +513,7 @@ try {
     await admin.fill('.hof-plan-form input[name="total"]', "9.000");
     await admin.selectOption('.hof-plan-form select[name="groupId"]', "\u0001yeni");
     await admin.fill('.hof-plan-form input[name="groupName"]', "42 C 1070");
-    await admin.check('.hof-plan-form input[name="auto"]');
+    await admin.selectOption('.hof-plan-form select[name="items"]', "auto");
     await admin.fill('.hof-plan-form input[name="count"]', "3");
     await admin.fill('.hof-plan-form input[name="firstDue"]', "2026-01-05");
     await admin.click('.hof-plan-form button[type="submit"]');
@@ -592,7 +592,7 @@ try {
     expect(prefilled.length > 0, `ad kayıttan geldi: ${prefilled}`);
     expect(await admin.$eval(".hof-case-picker:not(.hof-acc-picker)", node => node.classList.contains("is-linked")), "arama kutusu bağlı görünümde");
     await admin.fill('.hof-plan-form input[name="total"]', "3.000");
-    await admin.check('.hof-plan-form input[name="auto"]');
+    await admin.selectOption('.hof-plan-form select[name="items"]', "auto");
     await admin.fill('.hof-plan-form input[name="count"]', "3");
     await admin.fill('.hof-plan-form input[name="firstDue"]', "2026-02-05");
     await admin.click('.hof-plan-form button[type="submit"]');

@@ -108,4 +108,43 @@ describe("taksit kartı tablodaki kayda bağlanır (v2.0.6)", () => {
     assert.equal(linked.canManage, false);
     assert.equal((await staff.post(`/api/workspace/plans/${plan.id}/entries`, { kind: "in", amount: "1.000", date: "2026-03-01" })).status, 200);
   });
+
+  // v2.0.7: kişi bir kez girilir — kayıt ↔ cari ↔ taksit bütünlüğü.
+  it("yeni kayıt için cari: kayda bağlı cari yoksa açılır; aynı ad + telefonlu bağsız cari varsa bağlanır; ikinci istek aynı cariyi döner", async () => {
+    const ayse = rows.find(row => row["Dosya No"] === "2026/2");
+    const url = `/api/workspace/cases/${encodeURIComponent(ayse.__hofKey)}/account`;
+    // Önce bağsız bir cari açılmış olsun (kullanıcının yaptığı gibi): aynı ad + aynı telefon.
+    const loose = (await admin.post("/api/workspace/accounts", { name: "Ayşe Kaya", phone: "0532 222 22 22" })).data.data;
+    const linked = await admin.post(url, { name: "Ayşe Kaya", phone: "0532 222 22 22", caseTitle: "2026/2 · Ayşe Kaya" });
+    assert.equal(linked.status, 200, JSON.stringify(linked.data));
+    assert.equal(linked.data.data.outcome, "linked");
+    assert.equal(linked.data.data.id, loose.id, "yeni cari açılmaz, mevcut cari kayda bağlanır");
+    assert.equal(linked.data.data.caseKey, ayse.__hofKey);
+    const again = (await admin.post(url, { name: "Ayşe Kaya", phone: "" })).data.data;
+    assert.equal(again.outcome, "existing");
+    assert.equal(again.id, loose.id);
+    // Adı olmayan istek reddedilir; personel açamaz.
+    assert.equal((await admin.post(url, { name: "" })).status, 400);
+    assert.equal((await staff.post(url, { name: "Ayşe Kaya" })).status, 403);
+    // Bağsız cari yoksa yeni cari kayda bağlı açılır.
+    const fresh = (await admin.post(`/api/workspace/cases/${encodeURIComponent(rows[0].__hofKey)}/account`, { name: "Ali Veli", phone: "0532 111 11 11", caseTitle: "2026/1 · Ali Veli" })).data.data;
+    assert.ok(["created", "existing"].includes(fresh.outcome));
+    assert.equal(fresh.caseKey, rows[0].__hofKey);
+    assert.equal((await admin.get(`/api/workspace/cases/${encodeURIComponent(rows[0].__hofKey)}/account`)).data.data.account.id, fresh.id);
+  });
+
+  it("bir kayda ikinci cari bağlanmaz (409); taksit kartı carisiz açılınca aynı ad + telefonlu cari bulunur, boşa cari açılmaz", async () => {
+    const ayse = rows.find(row => row["Dosya No"] === "2026/2");
+    const other = await admin.post("/api/workspace/accounts", { name: "Başka Kişi", caseKey: ayse.__hofKey, caseTitle: "2026/2" });
+    assert.equal(other.status, 409, JSON.stringify(other.data));
+    assert.match(other.data.error, /zaten .* carisi bağlı/);
+    const before = (await admin.get("/api/workspace/accounts?status=all")).data.data.accounts.length;
+    const linkedAccount = (await admin.get(`/api/workspace/cases/${encodeURIComponent(ayse.__hofKey)}/account`)).data.data.account;
+    const plan2 = (await admin.post("/api/workspace/plans", { name: "Ayşe Kaya", phone: "0532 222 22 22", total: "4.500" })).data.data;
+    assert.equal(plan2.accountId, linkedAccount.id, "cari seçilmese de aynı ad + telefonlu cari kullanılır");
+    assert.equal((await admin.get("/api/workspace/accounts?status=all")).data.data.accounts.length, before, "yeni cari açılmadı");
+    // Telefonu farklı aynı ad: başka kişi olabilir; yeni cari açılır (yanlış deftere yazılmaz).
+    const plan3 = (await admin.post("/api/workspace/plans", { name: "Ayşe Kaya", phone: "0555 999 99 99", total: "100" })).data.data;
+    assert.notEqual(plan3.accountId, linkedAccount.id);
+  });
 });
