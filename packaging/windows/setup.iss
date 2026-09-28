@@ -350,28 +350,70 @@ begin
     10: Result := 'Windows servisi oluşturulamadı. Bir güvenlik yazılımı servis oluşturmayı engelliyor olabilir.';
     20, 21, 22: Result := 'Program klasörünün izinleri ayarlanamadı.';
     40: Result := 'Windows servisi başlatılamadı. Bir antivirüs programı nssm.exe veya node.exe dosyasını engelliyor olabilir.';
+    70: Result := 'Servis kurulum betiği çıktı dosyasını açamadı (geçici klasör yazılamıyor).';
     50: Result := 'Servis 2 dakika içinde hazır olmadı. Aşağıdaki son kayıtlar nedenini gösterir; bir antivirüs programı node.exe veya nssm.exe dosyasını engelliyor olabilir.';
   else
     Result := 'Servis kurulumu tamamlanamadı.';
   end;
 end;
 
-procedure InstallService;
+// servis-kur.cmd'nin bu çalıştırmadaki çıktısını kurulum günlüğüne (/LOG) satır satır yazar.
+procedure LogScriptOutput(const FileName: String);
+var
+  Lines: TArrayOfString;
+  I: Integer;
+begin
+  if not LoadStringsFromFile(FileName, Lines) then
+  begin
+    Log('servis-kur: çıktı dosyası okunamadı (' + FileName + ')');
+    Exit;
+  end;
+  for I := 0 to GetArrayLength(Lines) - 1 do
+    if Trim(Lines[I]) <> '' then
+      Log('servis-kur: ' + Trim(Lines[I]));
+end;
+
+// Servisin gerçekten yanıt verdiğini paketteki Node.js ile denetler (bootstrap.mjs saglik). 0: hazır.
+function ServiceHealthy(Seconds: Integer): Boolean;
 var
   ResultCode: Integer;
-  LogFile: String;
+begin
+  Result := False;
+  if not Exec(ExpandConstant('{app}\runtime\node.exe'), '--disable-warning=ExperimentalWarning "' + ExpandConstant('{app}\bootstrap.mjs') + '" saglik ' + IntToStr(Seconds),
+    ExpandConstant('{app}'), SW_HIDE, ewWaitUntilTerminated, ResultCode) then
+    ResultCode := -1;
+  Log('sağlık denetimi (' + IntToStr(Seconds) + ' sn) çıkış kodu: ' + IntToStr(ResultCode));
+  Result := ResultCode = 0;
+end;
+
+procedure InstallService;
+var
+  ResultCode, Dummy: Integer;
+  LogFile, OutFile: String;
 begin
   WizardForm.StatusLabel.Caption := 'Windows servisi kuruluyor ve başlatılıyor (en fazla 1-2 dakika)...';
   WizardForm.ProgressGauge.Style := npbstMarquee;
+  OutFile := ExpandConstant('{tmp}\servis-kur.out');
+  DeleteFile(OutFile);
   Log('servis-kur.cmd çalıştırılıyor…');
   try
-    if not Exec(ExpandConstant('{cmd}'), '/C ""' + ExpandConstant('{app}\bin\servis-kur.cmd') + '" {#AppVersion}"', ExpandConstant('{app}'), SW_HIDE, ewWaitUntilTerminated, ResultCode) then
+    if not Exec(ExpandConstant('{cmd}'), '/C ""' + ExpandConstant('{app}\bin\servis-kur.cmd') + '" {#AppVersion} "' + OutFile + '""', ExpandConstant('{app}'), SW_HIDE, ewWaitUntilTerminated, ResultCode) then
       ResultCode := -1;
+    Log('servis-kur.cmd çıkış kodu: ' + IntToStr(ResultCode));
+    LogScriptOutput(OutFile);
+    // Betik "tamam" dese de servis yanıt vermiyorsa (2.0.0–2.0.3: mevcut sunucunun üstüne kurulumda betik hiç
+    // çalışmadan 0 döndürüyordu) bir kez daha başlatılır ve beklenir; yine olmazsa hata olarak bildirilir.
+    if ((ResultCode = 0) or (ResultCode = 60)) and not ServiceHealthy(20) then
+    begin
+      Log('servis-kur.cmd başarılı döndü ama servis yanıt vermiyor; servis yeniden başlatılıyor.');
+      Exec(ExpandConstant('{app}\runtime\nssm.exe'), 'start {#ServiceName}', ExpandConstant('{app}'), SW_HIDE, ewWaitUntilTerminated, Dummy);
+      if not ServiceHealthy(90) then
+        ResultCode := 50;
+    end;
   finally
     WizardForm.ProgressGauge.Style := npbstNormal;
   end;
   LogFile := ExpandConstant('{app}\logs\kurulum.log');
-  Log('servis-kur.cmd çıkış kodu: ' + IntToStr(ResultCode));
   if ResultCode = 60 then
   begin
     // Servis çalışıyor; yalnızca güvenlik duvarı kuralı eklenemedi.

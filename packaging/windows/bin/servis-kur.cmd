@@ -10,12 +10,24 @@ set "NODE=%ROOT%\runtime\node.exe"
 set "SVC=DestekOfis"
 set "ACCOUNT=NT SERVICE\DestekOfis"
 set "LOG=%ROOT%\logs\kurulum.log"
-if not exist "%ROOT%\logs" mkdir "%ROOT%\logs"
-call :main %* >> "%LOG%" 2>&1
-exit /b %ERRORLEVEL%
+if not exist "%ROOT%\logs" mkdir "%ROOT%\logs" 2>nul
+rem Cikti once gecici bir dosyaya yazilir, sonra kurulum gunlugune eklenir. Gunluk klasoru yazilamiyorsa (izin,
+rem kilit) betik yine calisir ve cikti %TEMP% altinda kalir; eskiden yonlendirme basarisiz olunca betik hic
+rem calismadan 0 ile cikiyor, kurulum programi da "basarili" saniyordu (mevcut sunucunun ustune kurulumda goruldu).
+set "RUN=%TEMP%\destekofis-servis-kur-%RANDOM%%RANDOM%.log"
+call :main %* > "%RUN%" 2>&1
+set "RC=%ERRORLEVEL%"
+if not exist "%RUN%" (set "RC=70" & echo Cikti dosyasi acilamadi: %RUN%)
+type "%RUN%" >> "%LOG%" 2>nul || type "%RUN%" >> "%TEMP%\destekofis-kurulum.log" 2>nul
+rem Kurulum programi ikinci parametreyle bir dosya verirse betigin ciktisi oraya da kopyalanir (kurulum gunlugu icin).
+if not "%~2"=="" copy /y "%RUN%" "%~2" >nul 2>&1
+del "%RUN%" >nul 2>&1
+exit /b %RC%
 
 :main
 echo ==== %DATE% %TIME% DestekOfis servis kurulumu ====
+echo Betik: %~f0 ^| kok: %ROOT% ^| surum: %~1
+for /f "tokens=*" %%U in ('whoami 2^>nul') do echo Kullanici: %%U
 if not exist "%NSSM%" (echo nssm bulunamadi: %NSSM% & exit /b 2)
 if not exist "%NODE%" (echo node bulunamadi: %NODE% & exit /b 3)
 
