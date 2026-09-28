@@ -2,7 +2,9 @@
 
 Sürümler [anlamsal sürümleme](https://semver.org/lang/tr/) kurallarına uyar.
 
-## 2.0.6 — Tabloda sütun ekle/sil, A5 makbuz, kayıt tarihi, listede bilgi notu, kolon adına yazılan tarih
+## 2.0.6 — Büyük tabloda hızlı arama, sütun ekle/sil, A5 makbuz, kayıt tarihi, listede bilgi notu, kolon adına yazılan tarih
+
+- **Binlerce kayıtta arama artık takılmıyor.** Tablo, süzgeçten geçen bütün satırları çizip sonra sayfa dışındakileri gizliyordu: 9 bin kayıt × 24 kolonluk bir listede her tuşta 216 bin hücre yeniden çiziliyor, her tuş 0,6–1,1 saniye, aramayı temizlemek 14 saniye, sekmeye dönmek 16 saniye sürüyordu. Artık yalnız açık sayfanın 20 satırı çizilir; arama metni, sütun eşlemesi ve notlar satır başına bir kez hazırlanır. Aynı veride ölçüm: tuş başına 0,1 saniye, aramayı temizleme 0,1 saniye, sekmeye dönüş 1 saniye, ilk açılış 15 saniyeden 6 saniyeye (kalanı sunucudan 9 MB verinin gelmesi). Sayfalama, "Enter ile ilk sonuca git", uyarılardan ve kartlardan kayda gitme (kayıt başka sayfadaysa o sayfaya geçer), sütun genişlikleri (artık sayfa değiştirince oynamaz) aynen çalışır.
 
 - **Tabloda sütun ekleme ve silme.** Ortadaki tabloda yönetici bir sütun başlığının üzerine gelince başlığın üstünde küçük **+ Ekle** ve kırmızı **× Sil** çıkar.
   - **Ekle:** o sütunun hemen sağına, sekmedeki her satıra boş hücreyle yeni bir sütun ekler (adı sorulur). Değerleri kartta ✎ ya da **Düzenle** ile yazılır.

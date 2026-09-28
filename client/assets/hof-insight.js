@@ -394,6 +394,16 @@
     step(count);
   });
   const rowFor = key => [...document.querySelectorAll(".dynamic-table tbody tr")].find(row => row.dataset.hofKey === key);
+  // v2.0.6: paket yalnız açık sayfayı çizer; kayıt süzgeçten geçiyor ama başka sayfadaysa o sayfaya geçilir.
+  const inWindow = key => Boolean(HOF.tableWindow) && HOF.tableWindow.indexOf(key) >= 0;
+  const rowViaWindow = async key => {
+    const win = HOF.tableWindow;
+    const index = win ? win.indexOf(key) : -1;
+    if (index < 0) return null;
+    const target = Math.floor(index / win.size) + 1;
+    if (target !== win.page) win.setPage(target);
+    return waitFor(() => rowFor(key));
+  };
   // Tablodaki kaydın kimliği: kimlikle eşleşmezse (ör. mesajda geçen dosya numarası) değerlerinde bu metni taşıyan ilk kayıt.
   const resolveKey = key => {
     const rows = HOF.data?.rows || [];
@@ -415,15 +425,20 @@
     const key = resolveKey(target);
     const wanted = tab || (HOF.tabOfKey ? HOF.tabOfKey(key) : null);
     let row = null;
+    const settle = () => waitFor(() => Boolean(rowFor(key)) || inWindow(key));
     if (wanted && HOF.activeTab && HOF.activeTab() && HOF.activeTab() !== wanted) {
-      if (HOF.selectTab?.(wanted)) row = await waitFor(() => rowFor(key));
-    } else row = rowFor(key) || (await waitFor(() => rowFor(key), 4));
+      if (HOF.selectTab?.(wanted)) {
+        await settle();
+        row = rowFor(key) || (await rowViaWindow(key));
+      }
+    } else row = rowFor(key) || (await rowViaWindow(key)) || (await waitFor(() => rowFor(key), 4));
     if (!row && !keepSearch) {
       const search = document.querySelector(".search-field input");
       if (search && search.value) {
         nativeValue.call(search, "");
         search.dispatchEvent(new Event("input", { bubbles: true }));
-        row = await waitFor(() => rowFor(key));
+        await settle();
+        row = rowFor(key) || (await rowViaWindow(key));
       }
     }
     if (!row) {

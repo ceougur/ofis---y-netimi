@@ -73,7 +73,7 @@ export const PATCHES = [
     why: "Tümü birleşik görünümü yerine her zaman bir sekme; sekme sırası sunucunun; aramada sekme başına eşleşme sayısı.",
     find: 'st=C.useMemo(()=>{const Z=new Set;for(const gt of it)gt.__sheet?.trim()&&Z.add(gt.__sheet.trim());for(const gt of tt?.tabs??[])gt.title.trim()&&Z.add(gt.title.trim());return Array.from(Z)},[it,tt?.tabs]),ut=C.useMemo(()=>P==="Tümü"?it:it.filter(Z=>Z.__sheet===P),[it,P]),w=C.useMemo(()=>dT(ut,P==="Tümü"?nt:P),[ut,P,nt])',
     replace:
-      'st=C.useMemo(()=>{const Z=new Set;for(const gt of tt?.tabs??[])gt.title.trim()&&Z.add(gt.title.trim());for(const gt of it)gt.__sheet?.trim()&&Z.add(gt.__sheet.trim());if(it.some(gt=>gt.__hofFlag))Z.add("⚠ İşaretlenen hatalar");return Array.from(Z)},[it,tt?.tabs]),hofP=st.includes(P)?P:st[0]??null,hofQ=n.trim().toLocaleLowerCase("tr-TR"),hofText=C.useMemo(()=>hofQ?it.map(Z=>Object.values(Z).join(" ").toLocaleLowerCase("tr-TR")):null,[it,!!hofQ]),hofHits=C.useMemo(()=>{const Z=new Map;let gt=0;it.forEach((Yt,Dt)=>{if(hofQ&&!hofText[Dt].includes(hofQ))return;const xe=Yt.__sheet?.trim()||"";Z.set(xe,(Z.get(xe)||0)+1),gt++;if(Yt.__hofFlag)Z.set("⚠ İşaretlenen hatalar",(Z.get("⚠ İşaretlenen hatalar")||0)+1)});return{total:gt,count:Yt=>Z.get(Yt)||0}},[it,hofText,hofQ]),ut=C.useMemo(()=>hofP===null?it:hofP==="⚠ İşaretlenen hatalar"?it.filter(Z=>Z.__hofFlag):it.filter(Z=>Z.__sheet===hofP),[it,hofP]),w=C.useMemo(()=>dT(ut,nt),[ut,nt])',
+      'st=C.useMemo(()=>{const Z=new Set;for(const gt of tt?.tabs??[])gt.title.trim()&&Z.add(gt.title.trim());for(const gt of it)gt.__sheet?.trim()&&Z.add(gt.__sheet.trim());if(it.some(gt=>gt.__hofFlag))Z.add("⚠ İşaretlenen hatalar");return Array.from(Z)},[it,tt?.tabs]),hofP=st.includes(P)?P:st[0]??null,hofQ=n.trim().toLocaleLowerCase("tr-TR"),hofText=C.useMemo(()=>hofQ?it.map(hofTextOf):null,[it,!!hofQ]),hofHits=C.useMemo(()=>{const Z=new Map;let gt=0;it.forEach((Yt,Dt)=>{if(hofQ&&!hofText[Dt].includes(hofQ))return;const xe=Yt.__sheet?.trim()||"";Z.set(xe,(Z.get(xe)||0)+1),gt++;if(Yt.__hofFlag)Z.set("⚠ İşaretlenen hatalar",(Z.get("⚠ İşaretlenen hatalar")||0)+1)});return{total:gt,count:Yt=>Z.get(Yt)||0}},[it,hofText,hofQ]),ut=C.useMemo(()=>hofP===null?it:hofP==="⚠ İşaretlenen hatalar"?it.filter(Z=>Z.__hofFlag):it.filter(Z=>Z.__sheet===hofP),[it,hofP]),w=C.useMemo(()=>dT(ut,nt),[ut,nt])',
   },
   {
     id: "sekme-hatirla",
@@ -143,6 +143,64 @@ export const PATCHES = [
     why: "v2.0.2: tablo artık tüm kolonları gösterir; \"öncelikli kayıt\" ifadesi yanıltıcıydı.",
     find: 'w.displayRows.length," öncelikli kayıt · ",w.columns.length," kolon otomatik oluşturuldu"',
     replace: 'w.displayRows.length," kayıt · ",w.columns.length," kolon"',
+  },
+  // ---- v2.0.6: büyük tabloda arama hızı ----
+  // 9 bin satırlık veride her tuşta tüm satırlar yeniden çiziliyordu (9 bin satır × 24 kolon ≈ 216 bin hücre) ve her satırın
+  // metni yeniden küçük harfe çevriliyordu. Artık paket yalnız açık sayfanın satırlarını çizer (sayfa penceresi
+  // HOF.tableWindow ile kaplama modüllerine verilir; hof-table.js sayfalamayı, hof-insight.js kayda gitmeyi buradan
+  // yürütür) ve satır metinleri satır nesnesine bağlı önbellekte tutulur.
+  {
+    id: "arama-metni-onbellek",
+    why: "Satırın arama metni (küçük harfe çevrilmiş tüm değerler) her tuşta değil bir kez hesaplanır; sayfa penceresi durumu.",
+    find: 'function pT(){const[n,r]=C.useState("")',
+    replace:
+      'const hofRowText=new WeakMap,hofTextOf=Z=>{let v=hofRowText.get(Z);return v===void 0&&(v=Object.values(Z).join(" ").toLocaleLowerCase("tr-TR"),hofRowText.set(Z,v)),v},hofPageSize=20;function pT(){const[hofPg,hofSetPg]=C.useState(1),[n,r]=C.useState("")',
+  },
+  {
+    id: "arama-suzgeci-onbellekten",
+    why: "Arama süzgeci önbellekteki satır metnini kullanır.",
+    find: 'const Yt=Object.values(Z).join(" ").toLocaleLowerCase("tr-TR"),Dt=!n.trim()||Yt.includes(n.trim().toLocaleLowerCase("tr-TR")),xe=',
+    replace: 'const Dt=!hofQ||hofTextOf(Z).includes(hofQ),xe=',
+  },
+  {
+    id: "tablo-penceresi",
+    why: "Sayfa penceresi: arama/sekme/durum değişince 1. sayfa; pencere ve sayfa değiştirme kaplama modüllerine verilir.",
+    find: ",[w.displayRows,q,z,n,i]);",
+    replace:
+      ',[w.displayRows,q,z,n,i]),hofTotal=Math.max(1,Math.ceil(lt.length/hofPageSize)),hofCur=Math.min(hofPg,hofTotal);C.useEffect(()=>{hofSetPg(1)},[n,hofP,i]);C.useEffect(()=>{const H=window.HOF;if(!H)return;H.tableWindow={page:hofCur,size:hofPageSize,pages:hofTotal,total:lt.length,setPage:R=>hofSetPg(Math.max(1,Math.min(hofTotal,Number(R)||1))),indexOf:R=>lt.findIndex(Z=>Z.record.__hofKey===R)},H.emit&&H.emit("table-window")},[lt,hofCur,hofTotal]);',
+  },
+  {
+    id: "tablo-sayfasi-ciz",
+    why: "Tablo gövdesi yalnız açık sayfanın satırlarını çizer.",
+    find: 'x.jsx("tbody",{"data-loc":"client/src/pages/Home.tsx:90",children:lt.map(',
+    replace: 'x.jsx("tbody",{"data-loc":"client/src/pages/Home.tsx:90",children:lt.slice((hofCur-1)*hofPageSize,hofCur*hofPageSize).map(',
+  },
+  // Profil (9 bin satır, 24 kolon): zamanın dörtte üçü Ti'de (Türkçe küçük harf) — kayıt kartı için her satırda sütun adları
+  // ~11 kez yeniden normalize ediliyordu (~2,4 milyon çağrı, 5,5 sn). Sonuçlar önbelleğe alınır; rn aynı sütun kümesi ve
+  // aday listesi için eşleşen sütunu bir kez bulur; localStorage'daki notlar satır başına değil değişince ayrıştırılır.
+  {
+    id: "ti-onbellek",
+    why: "Türkçe küçük harfe çevirme (Ti) sonuçları önbellekte: sütun adları ve durum metinleri hep aynı.",
+    find: "function Ti(n){return n.trim().toLocaleLowerCase(\"tr-TR\").replace(/[İI]/g,\"i\").replace(/ı/g,\"i\")}",
+    replace: "const hofTiCache=new Map;function Ti(n){let v=hofTiCache.get(n);if(v===void 0){v=n.trim().toLocaleLowerCase(\"tr-TR\").replace(/[İI]/g,\"i\").replace(/ı/g,\"i\");if(hofTiCache.size>2e4)hofTiCache.clear();hofTiCache.set(n,v)}return v}",
+  },
+  {
+    id: "rn-onbellek",
+    why: "Alan eşleme (rn): sütun kümesi + aday listesi + eşleme ayarı için eşleşen sütun adı bir kez bulunur.",
+    find: "function rn(n,r){const i=r.map(Ti);try{const s=JSON.parse(window.localStorage.getItem(\"hukuk-ofisi-ai-mapping\")||\"{}\"),u=r.join(\"|\");const f=/Dosya No|Dosya Numarası|Dosya|Esas/i.test(u)?\"case_id\":/Alacaklı|Alacakli|Müvekkil/i.test(u)?\"creditor\":/Borçlu|Borclu|Ad Soyad/i.test(u)?\"debtor\":/İcra|Mahkeme|Daire/i.test(u)?\"court\":/Dosyanın Son Durumu|Son Durum|Açıklama|Not/i.test(u)?\"status\":/Ödeme|Avans|Tahsil|Alacak|Bakiye|Borç/i.test(u)?\"payment\":/Satış.*Tarihi|Takip Tarihi/i.test(u)?\"sale_date\":/Kıymet Takdiri/i.test(u)?\"valuation_date\":\"\";s[f]&&i.unshift(Ti(s[f]))}catch{}return Object.entries(n).find(([s])=>i.includes(Ti(s)))?.[1]?.trim()??\"\"}",
+    replace: "const hofRnCache=new Map;function rn(n,r){const m=window.localStorage.getItem(\"hukuk-ofisi-ai-mapping\")||\"{}\",keys=Object.keys(n),ck=keys.join(\"\\u0001\")+\"\\u0002\"+r.join(\"|\")+\"\\u0002\"+m;let key=hofRnCache.get(ck);if(key===void 0){const i=r.map(Ti);try{const s=JSON.parse(m),u=r.join(\"|\");const f=/Dosya No|Dosya Numarası|Dosya|Esas/i.test(u)?\"case_id\":/Alacaklı|Alacakli|Müvekkil/i.test(u)?\"creditor\":/Borçlu|Borclu|Ad Soyad/i.test(u)?\"debtor\":/İcra|Mahkeme|Daire/i.test(u)?\"court\":/Dosyanın Son Durumu|Son Durum|Açıklama|Not/i.test(u)?\"status\":/Ödeme|Avans|Tahsil|Alacak|Bakiye|Borç/i.test(u)?\"payment\":/Satış.*Tarihi|Takip Tarihi/i.test(u)?\"sale_date\":/Kıymet Takdiri/i.test(u)?\"valuation_date\":\"\";s[f]&&i.unshift(Ti(s[f]))}catch{}key=keys.find(s=>i.includes(Ti(s)))??\"\";if(hofRnCache.size>5e3)hofRnCache.clear();hofRnCache.set(ck,key)}return key?n[key]?.trim()??\"\":\"\"}",
+  },
+  {
+    id: "not-onbellek",
+    why: "Kayıt kartındaki not localStorage'dan satır başına değil, değer değişince ayrıştırılır.",
+    find: "note:(()=>{try{const Z=JSON.parse(window.localStorage.getItem(\"hukuk-ofisi-notlar\")||\"{}\");return Z[i||`Kayıt ${r+1}`]??h}catch{return h}})()",
+    replace: "note:hofNoteOf(i||`Kayıt ${r+1}`,h)",
+  },
+  {
+    id: "not-onbellek-yardimci",
+    why: "hofNoteOf yardımcısı.",
+    find: "function no(n,r){",
+    replace: "let hofNotesRaw=null,hofNotesObj={};function hofNoteOf(k,h){try{const raw=window.localStorage.getItem(\"hukuk-ofisi-notlar\")||\"{}\";if(raw!==hofNotesRaw){hofNotesRaw=raw;hofNotesObj=JSON.parse(raw)||{}}return hofNotesObj[k]??h}catch{return h}}function no(n,r){",
   },
 ];
 

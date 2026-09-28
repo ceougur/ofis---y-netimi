@@ -96,7 +96,8 @@ async function login(page, username, password) {
   await Promise.all([page.waitForEvent("load", { timeout: 15000 }), page.click('#hof-auth button[type="submit"]')]);
 }
 const waitForApp = page => page.waitForSelector(".sidebar #hof-sidecard", { timeout: 15000 });
-const rowCount = page => page.$$eval(".dynamic-table tbody tr", rows => rows.length);
+// Sekmedeki kayıt sayısı: paket yalnız açık sayfayı çizdiğinden (v2.0.6) pencereden; pencere yoksa DOM satırlarından.
+const rowCount = page => page.evaluate(() => window.HOF?.tableWindow?.total ?? document.querySelectorAll(".dynamic-table tbody tr").length);
 const toastText = page => page.$$eval(".hof-toast", nodes => nodes.map(node => node.textContent).join(" | "));
 
 try {
@@ -344,6 +345,10 @@ try {
   await step("satırlar sunucu kimliği taşır, sayfalama 20 satır gösterir", async () => {
     const keys = await admin.$$eval(".dynamic-table tbody tr", rows => rows.map(row => row.dataset.hofKey));
     expect(keys[0] === "2026/101" && keys.every(Boolean), `kimlikler: ${keys.slice(0, 3)}`);
+    // v2.0.6: paket yalnız açık sayfanın satırlarını çizer (26 kayıt → DOM'da 20 satır); pencere kaplama modüllerine verilir.
+    expect(keys.length === 20, `DOM'daki satır sayısı ${keys.length} (yalnız açık sayfa çizilmeli)`);
+    const win = await admin.evaluate(() => ({ ...window.HOF.tableWindow, setPage: undefined, indexOf: undefined }));
+    expect(win.page === 1 && win.size === 20 && win.total === 26 && win.pages === 2, `tablo penceresi: ${JSON.stringify(win)}`);
     const visible = await admin.$$eval(".dynamic-table tbody tr", rows => rows.filter(row => row.style.display !== "none").length);
     expect(visible === 20, `görünen satır ${visible}`);
     await admin.waitForSelector("#hof-pager");
@@ -355,11 +360,11 @@ try {
 
   await step("sekmeler kendi kolonlarıyla; arama tüm sekmeleri sayar, Enter başka sekmedeki kayda gider", async () => {
     await admin.click('.category-bar .category-tab:has-text("Kapanan")');
-    await admin.waitForFunction(() => document.querySelectorAll(".dynamic-table tbody tr").length === 4, null, { timeout: 5000 });
+    await admin.waitForFunction(() => (window.HOF?.tableWindow?.total ?? document.querySelectorAll(".dynamic-table tbody tr").length) === 4, null, { timeout: 5000 });
     await admin.waitForFunction(() => document.querySelector('#hof-summary [data-kpi="total"] .hof-summary-value')?.textContent.trim() === "4", null, { timeout: 5000 });
     expect((await admin.textContent(".cases-panel .panel-title")).trim() === "Kapanan", "tablo başlığı açık sekme");
     await admin.click('.category-bar .category-tab:has-text("Aktif")');
-    await admin.waitForFunction(() => document.querySelectorAll(".dynamic-table tbody tr").length === 26, null, { timeout: 5000 });
+    await admin.waitForFunction(() => (window.HOF?.tableWindow?.total ?? document.querySelectorAll(".dynamic-table tbody tr").length) === 26, null, { timeout: 5000 });
     // Aktif sekmedeyken yalnızca Kapanan'da geçen bir ad aranır.
     await admin.fill(".search-field input", "Fatma");
     await admin.waitForFunction(() => document.querySelector(".category-bar .category-tab.hof-tab-nohit")?.textContent.includes("Aktif"), null, { timeout: 5000 });
@@ -374,7 +379,7 @@ try {
     await admin.waitForSelector('.dynamic-table tbody tr.selected[data-hof-key="2025/1"]');
     await admin.fill(".search-field input", "");
     await admin.click('.category-bar .category-tab:has-text("Aktif")');
-    await admin.waitForFunction(() => document.querySelectorAll(".dynamic-table tbody tr").length === 26, null, { timeout: 5000 });
+    await admin.waitForFunction(() => (window.HOF?.tableWindow?.total ?? document.querySelectorAll(".dynamic-table tbody tr").length) === 26, null, { timeout: 5000 });
   });
 
   await step("hücre düzenlenir; tablo yenilenir ve seçim korunur", async () => {
@@ -414,9 +419,9 @@ try {
     await admin.waitForSelector(".hof-float-delete.is-visible");
     await admin.click(".hof-float-delete.is-visible");
     await admin.click('.hof-modal [data-answer="yes"]');
-    await admin.waitForFunction(count => document.querySelectorAll(".dynamic-table tbody tr").length === count - 1, before, { timeout: 10000 });
+    await admin.waitForFunction(count => (window.HOF?.tableWindow?.total ?? document.querySelectorAll(".dynamic-table tbody tr").length) === count - 1, before, { timeout: 10000 });
     await admin.click(".hof-toast-action");
-    await admin.waitForFunction(count => document.querySelectorAll(".dynamic-table tbody tr").length === count, before, { timeout: 10000 });
+    await admin.waitForFunction(count => (window.HOF?.tableWindow?.total ?? document.querySelectorAll(".dynamic-table tbody tr").length) === count, before, { timeout: 10000 });
   });
 
   await step("yeni kayıt açık sekmenin kolonlarıyla oluşturulur, o sekmede en üste gelir ve seçilir", async () => {

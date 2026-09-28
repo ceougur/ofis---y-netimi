@@ -53,7 +53,7 @@ Yeni bir oturum bu belgeyi okuyarak kaldığı yerden devam eder. Son güncellem
 - **2.0.3 yayımlandı** (PR ceougur/ofis---y-netimi#3, `v2.0.3`).
 - **2.0.4 yayımlandı** (PR ceougur/ofis---y-netimi#4, `v2.0.4`; dosyalar bayt bayt doğrulandı).
 - **2.0.5 (yayında):** geniş taksit kartı, kart ve liste PDF/Yazdır, süzgeçler; Excel Sıra No (göç 8) ve esnek başlık eşleme; acil görev kırmızı uyarı. Ayrıntı `CHANGELOG.md`.
-- **2.0.6 (hazırlanıyor):** tabloda sütun ekle/sil (`dataset.columns.layout`, Silinenler türü `column`); A5 makbuz (firma adı, program adı yok); taksit kartında kayıt tarihi (göç 9); listede ve PDF'te bilgi notu; kolon adına yazılan tarihin düzeltilmesi ve önlenmesi (göç 10); seyrek belge kolonlarından uyarı. Ayrıntı `CHANGELOG.md`.
+- **2.0.6 (hazırlanıyor):** büyük tabloda arama hızı (paket yalnız açık sayfayı çizer, `HOF.tableWindow`); tabloda sütun ekle/sil (`dataset.columns.layout`, Silinenler türü `column`); A5 makbuz (firma adı, program adı yok); taksit kartında kayıt tarihi (göç 9); listede ve PDF'te bilgi notu; kolon adına yazılan tarihin düzeltilmesi ve önlenmesi (göç 10); seyrek belge kolonlarından uyarı. Ayrıntı `CHANGELOG.md`.
 - **2.0.4 içeriği:** Taksit modülü (`docs/MIMARI.md` → *2.0.4 eklemeleri*), kurulum dosyasıyla mevcut sunucunun üstüne güncellemede servis düzeltmesi (kök neden: dosyalara yazılan klasör izni), Telefon düğmesi, kolon genişlikleri. Ayrıntı `CHANGELOG.md`.
 - **2.0.3 içeriği:** ay hücresindeki tutar aylık ücret kolonu yoksa ödenecek taksittir; kart detayındaki tahsilat (notundaki ay) o ayı kapatır. Ayrıntı `CHANGELOG.md`.
 - **2.0.2 içeriği:**
