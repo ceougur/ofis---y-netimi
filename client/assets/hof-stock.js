@@ -37,9 +37,9 @@
     item.qty <= 0 && (item.minQty > 0 || item.qtyIn > 0) ? '<span class="hof-plan-badge is-late">Tükendi</span>' : item.low ? '<span class="hof-plan-badge is-soon">Kritik</span>' : "";
 
   let modal = null;
-  const view = { mode: "list", id: "", q: "", category: "", state: "all", sort: "name", list: null, item: null, limit: 200 };
-  // Binlerce kalemde ekran hızlı kalsın: 200'er satır çizilir; arama ve süzgeç tümünde çalışır.
-  const PAGE = 200;
+  const view = { mode: "list", id: "", q: "", category: "", state: "all", sort: "name", list: null, item: null };
+  // Binlerce kalemde ekran hızlı kalsın: sunucu 300'er satır gönderir; arama, süzgeç ve toplamlar tümünde çalışır.
+  const PAGE = 300;
   let listRequest = 0;
   const body = () => modal?.dialog.querySelector("[data-stock]");
   const query = () => new URLSearchParams({ q: view.q, category: view.category, state: view.state, sort: view.sort });
@@ -47,24 +47,32 @@
   const listXlsxUrl = () => `/api/workspace/stock/export.xlsx?${query()}&title=${encodeURIComponent(moduleName())}`;
   const cardPdfUrl = item => `/api/workspace/stock/${encodeURIComponent(item.id)}/hareketler.pdf`;
 
-  async function loadList() {
+  async function loadList({ more = false } = {}) {
     const ticket = ++listRequest;
+    const offset = more && view.list ? view.list.items.length : 0;
     try {
-      const data = await HOF.api(`/api/workspace/stock?${query()}`);
+      const data = await HOF.api(`/api/workspace/stock?${query()}&limit=${PAGE}&offset=${offset}`);
       if (ticket !== listRequest) return;
-      view.list = data;
+      view.list = more && view.list ? { ...data, items: [...view.list.items, ...data.items] } : data;
       if (view.mode === "list") renderList();
     } catch (error) {
       if (ticket === listRequest && view.mode === "list" && body()) body().innerHTML = `<p class="hof-empty">${esc(error.message)}</p>`;
     }
   }
+  let cardRequest = 0;
   async function loadItem(id) {
+    const ticket = ++cardRequest;
+    const target = view.id;
     try {
-      view.item = await HOF.api(`/api/workspace/stock/${encodeURIComponent(id)}`);
+      const item = await HOF.api(`/api/workspace/stock/${encodeURIComponent(id)}`);
+      // Yanıt gelene kadar kullanıcı listeye döndü ya da başka ürün açtıysa eski kart geri gelmez.
+      if (ticket !== cardRequest || view.id !== target) return;
+      view.item = item;
       view.id = id;
       view.mode = "card";
       renderCard();
     } catch (error) {
+      if (ticket !== cardRequest) return;
       HOF.toastError(error);
       view.mode = "list";
       renderList();
@@ -72,7 +80,7 @@
     }
   }
   const applyItem = data => {
-    view.item = data;
+    if (view.id === data.id) view.item = data;
     if (modal) {
       if (view.mode === "card" && view.id === data.id) renderCard();
       loadList();
@@ -124,12 +132,12 @@
     root.innerHTML = `<div class="hof-cash-bar"><div class="hof-tabs" role="group" aria-label="Durum">${STATES.map(item => `<button type="button" data-state="${item.id}" aria-pressed="${String(item.id === view.state)}">${item.label}${data && item.id !== "all" ? ` <b>${item.id === "low" ? data.totals.low : ""}</b>` : ""}</button>`).join("")}</div>
       <div class="hof-cash-add">${manage ? '<button type="button" class="hof-button hof-button-small" data-act="new">+ Yeni ürün</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="import" title="Excel dosyasından ya da Google Sheets’ten ürünleri ve mevcut miktarları tek seferde aç">Excel / Sheets’ten yükle</button>' : ""}</div></div>
       <div class="hof-plans-filters"><input type="search" data-filter="q" value="${esc(view.q)}" placeholder="Ürün adı, kod, kategori ara…" aria-label="Ara"><select data-filter="category" aria-label="Kategori"><option value="">Tüm kategoriler</option>${(data?.categories || []).map(name => `<option value="${esc(name)}" ${name === view.category ? "selected" : ""}>${esc(name)}</option>`).join("")}</select><select data-filter="sort" aria-label="Sıralama">${SORTS.map(([id, label]) => `<option value="${id}" ${id === view.sort ? "selected" : ""}>${label}</option>`).join("")}</select>${office().outputButtons ? office().outputButtons(listPdfUrl(), "list").replace(/<\/span>$/, `<a class="hof-button hof-button-small hof-button-ghost" href="${esc(listXlsxUrl())}" title="Stok durumunu Excel olarak indir">Excel</a></span>`) : ""}</div>
-      <div class="hof-kpis hof-plans-kpis">${data ? `<div><strong>${data.totals.count}</strong><span>Ürün</span></div><div class="${data.totals.low ? "is-late" : ""}"><strong>${data.totals.low}</strong><span>Kritik seviyede</span></div><div class="${data.totals.out ? "is-late" : ""}"><strong>${data.totals.out}</strong><span>Tükenen</span></div><div class="hof-cash-balance"><strong>${esc(money(data.totals.value))}</strong><span>Stok değeri</span></div>` : ""}</div>
+      <div class="hof-kpis hof-plans-kpis">${data ? `<div><strong>${data.totals.count.toLocaleString("tr-TR")}</strong><span>Ürün</span></div><div class="${data.totals.low ? "is-late" : ""}"><strong>${data.totals.low}</strong><span>Kritik seviyede</span></div><div class="${data.totals.out ? "is-late" : ""}"><strong>${data.totals.out}</strong><span>Tükenen</span></div><div class="hof-cash-balance"><strong>${esc(money(data.totals.value))}</strong><span>Stok değeri</span></div>` : ""}</div>
       <div class="hof-cash-list hof-plans-list">${
         !data
           ? '<p class="hof-empty">Yükleniyor…</p>'
           : data.items.length
-            ? `<table class="hof-table hof-cash-table hof-plans-table hof-stock-table"><thead><tr><th class="hof-plan-no">Kod</th><th>Ürün</th><th class="num">Mevcut</th><th class="num">Kritik seviye</th><th class="num">Birim fiyat</th><th class="num">Değer</th><th>Son hareket</th><th></th></tr></thead><tbody>${data.items.slice(0, view.limit).map(row).join("")}</tbody></table>${data.items.length > view.limit ? `<div class="hof-more"><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="more">Daha fazla göster · ${data.items.length - view.limit} ürün daha</button></div>` : ""}`
+            ? `<table class="hof-table hof-cash-table hof-plans-table hof-stock-table"><thead><tr><th class="hof-plan-no">Kod</th><th>Ürün</th><th class="num">Mevcut</th><th class="num">Kritik seviye</th><th class="num">Birim fiyat</th><th class="num">Değer</th><th>Son hareket</th><th></th></tr></thead><tbody>${data.items.map(row).join("")}</tbody></table>${data.hasMore ? `<div class="hof-more"><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="more">Daha fazla göster · ${data.total - data.items.length} ürün daha</button></div>` : ""}`
             : `<p class="hof-empty">${filtered ? "Bu süzgeçte ürün yok." : "Henüz ürün yok."}${manage && !filtered ? " <b>+ Yeni ürün</b> ile açın ya da <b>Excel’den yükle</b> ile listenizi aktarın (ör. Çay, Şeker, Motor yağı)." : ""}</p>`
       }</div>
       <p class="hof-edit-meta">Mevcut = girişler − çıkışlar. Kritik seviyenin altına düşen ürün en üstte ve sol menüde uyarıyla görünür. Tutar = miktar × birim fiyat; istenirse Kasa’ya ya da cariye yazılır.</p>
@@ -207,7 +215,7 @@
       fields: [
         { name: "qty", label: `Miktar (${item.unit})`, required: true, inputmode: "decimal", value: move ? qtyText(move.qty) : "", autofocus: true, placeholder: incoming ? "Ör. 10" : "Ör. 2" },
         { name: "unitPrice", label: "Birim fiyat (₺)", inputmode: "decimal", value: move ? (move.unitPrice ? office().amountText?.(move.unitPrice) : "") : item.unitPrice ? office().amountText?.(item.unitPrice) : "", placeholder: "İsteğe bağlı" },
-        { name: "pay", label: "Para", type: "select", value: move?.pay || "none", options: payOptions },
+        { name: "pay", label: "Para hareketi", type: "select", value: move?.pay || "none", options: payOptions },
         { name: "date", label: "Tarih", type: "date", value: move?.date || office().todayIso?.() || "" },
         { name: "note", label: "Açıklama", maxlength: 300, value: move?.note || "", placeholder: incoming ? "Ör. Toplu alım, market" : "Ör. Ofis tüketimi, 42 C 1070 yağ değişimi" },
       ],
@@ -302,7 +310,10 @@
           { name: "mode", label: "Aynı ürün zaten varsa", type: "select", value: "skip", options: [{ value: "skip", label: "Atla" }, { value: "update", label: "Bilgilerini güncelle (miktar eklenmez)" }] },
         ],
         submitLabel: "Ürünleri oluştur",
-        onOpen: dialog => dialog.classList.add("hof-import-form"),
+        onOpen: dialog => {
+          dialog.classList.add("hof-import-form");
+          office().wireGate?.(dialog, preview, source.matrix, "/api/workspace/stock/import/preview");
+        },
         onSubmit: async data => {
           const roles = {};
           preview.headers.forEach((_, index) => {
@@ -317,7 +328,7 @@
             loadList();
           }
           refreshAlerts();
-          const skipped = result.skipped.length ? ` ${result.skipped.length} satır atlandı (${[...new Set(result.skipped.map(item => item.reason))].join("; ")}).` : "";
+          const skipped = result.skipped.length ? ` ${result.skippedTotal || result.skipped.length} satır atlandı (${[...new Set(result.skipped.map(item => item.reason))].join("; ")}).` : "";
           HOF.toast(`${result.created} ürün açıldı${result.opening ? `, ${result.opening} ürüne açılış stoku yazıldı` : ""}${result.updated ? `, ${result.updated} ürün güncellendi` : ""}.${skipped}`, { type: result.created || result.updated ? "success" : "error", timeout: 9000 });
         },
       });
@@ -368,7 +379,6 @@
     const item = view.item;
     if (button.dataset.state) {
       view.state = button.dataset.state;
-      view.limit = PAGE;
       renderList();
       return loadList();
     }
@@ -385,10 +395,7 @@
       renderList();
       return loadList();
     }
-    if (act === "more") {
-      view.limit += PAGE * 5;
-      return renderList();
-    }
+    if (act === "more") return loadList({ more: true });
     if (act === "new") return editItem(null);
     if (act === "import") return importFromExcel();
     if (!item) return;
@@ -403,7 +410,6 @@
     const select = event.target.closest("select[data-filter]");
     if (!select) return;
     view[select.dataset.filter] = select.value;
-    view.limit = PAGE;
     renderList();
     loadList();
   }
@@ -413,7 +419,6 @@
       const input = event.target.closest('input[data-filter="q"]');
       if (!input) return;
       view.q = input.value;
-      view.limit = PAGE;
       clearTimeout(timer);
       timer = setTimeout(loadList, 250);
     };

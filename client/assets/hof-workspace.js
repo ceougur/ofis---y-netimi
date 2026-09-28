@@ -250,6 +250,15 @@
           // kartlar okunamadıysa eski pencere
         }
       }
+      // Kayıt bir cariye bağlıysa tahsilat cari defterine yazılır (Kasa'ya iki kez düşmesin, cari borçlu kalmasın).
+      if (!fromStrip && HOF.accounts?.forCase && HOF.can("accounts.collect")) {
+        try {
+          const linked = await HOF.accounts.forCase(selected.key);
+          if (linked?.account?.id) return HOF.accounts.collect(linked.account.id);
+        } catch {
+          // cari okunamadıysa eski pencere
+        }
+      }
       paymentForm(selected, target);
     },
     lien() {

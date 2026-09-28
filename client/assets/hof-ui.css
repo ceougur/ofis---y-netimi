@@ -7352,3 +7352,52 @@ button.hof-source-card:focus-visible {
   padding: 10px;
   border-top: 1px solid #e3ede7;
 }
+
+/* Toplu alım doğrulama kapısı (v2.0.6). */
+.hof-gate-field {
+  grid-column: 1 / -1;
+}
+.hof-gate {
+  padding: 10px 12px;
+  border: 1px solid #cfe3d7;
+  border-radius: 10px;
+  background: #f6fbf8;
+  font-size: 12.5px;
+}
+.hof-gate.is-warn {
+  border-color: #f0d9a0;
+  background: #fff8e6;
+}
+.hof-gate.is-error {
+  border-color: #efc3bb;
+  background: #fdf1ef;
+}
+.hof-gate-sum b {
+  font-size: 13.5px;
+}
+.hof-gate details {
+  margin-top: 6px;
+}
+.hof-gate summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+.hof-gate-list {
+  max-height: 220px;
+  margin-top: 6px;
+  overflow: auto;
+  border: 1px solid #e3ede7;
+  border-radius: 8px;
+  background: #fff;
+}
+.hof-gate-list table {
+  width: 100%;
+  font-size: 12px;
+}
+.hof-gate-list tr.is-error td:nth-child(3) {
+  color: var(--do-danger);
+  font-weight: 600;
+}
+.hof-gate-list tr.is-warning td:nth-child(3) {
+  color: #7a5a10;
+}

@@ -62,40 +62,52 @@
   };
 
   let modal = null;
-  const view = { mode: "list", id: "", q: "", type: "", group: "", subgroup: "", status: "active", balance: "all", sort: stored(SORT_KEY, "no"), ledgerFilter: "all", list: null, account: null, selected: new Set(), limit: 200 };
-  // Binlerce caride ekran hızlı kalsın: liste 200'er satır çizilir ("Daha fazla göster"); arama ve süzgeç tümünde çalışır.
-  const PAGE = 200;
+  const view = { mode: "list", id: "", q: "", type: "", group: "", subgroup: "", status: "active", balance: "all", sort: stored(SORT_KEY, "no"), ledgerFilter: "all", list: null, account: null, selected: new Set(), selectAll: false, limit: 300 };
+  // Binlerce caride ekran hızlı kalsın: sunucu 300'er satır gönderir ("Daha fazla göster" sonrakini ekler); arama, süzgeç
+  // ve toplamlar sunucuda tümü üzerinde çalışır. "Hepsini seç" süzgeçteki bütün carileri (yüklenmemişler dahil) seçer.
+  const PAGE = 300;
   let listRequest = 0;
   const body = () => modal?.dialog.querySelector("[data-accounts]");
   const query = () => new URLSearchParams({ q: view.q, type: view.type, group: view.group, subgroup: view.subgroup, status: view.status, balance: view.balance, sort: view.sort });
+  const filterBody = () => ({ q: view.q, type: view.type, group: view.group, subgroup: view.subgroup, status: view.status, balance: view.balance });
   const listPdfUrl = () => `/api/workspace/accounts/liste.pdf?${query()}&title=${encodeURIComponent(moduleName())}`;
   const listXlsxUrl = () => `/api/workspace/accounts/export.xlsx?${query()}&title=${encodeURIComponent(moduleName())}`;
   const cardPdfUrl = account => `/api/workspace/accounts/${encodeURIComponent(account.id)}/ekstre.pdf`;
 
   // ---------- Veri ----------
-  async function loadList() {
+  async function loadList({ more = false } = {}) {
     const ticket = ++listRequest;
+    const offset = more && view.list ? view.list.accounts.length : 0;
     try {
-      const data = await HOF.api(`/api/workspace/accounts?${query()}`);
+      const data = await HOF.api(`/api/workspace/accounts?${query()}&limit=${PAGE}&offset=${offset}`);
       if (ticket !== listRequest) return;
-      view.list = data;
-      // Seçim yalnız görünen carilerde kalır (süzgeç değişince görünmeyen seçili kalmaz; yanlış kişiye plan açılmasın).
-      const visible = new Set(data.accounts.map(item => item.id));
-      for (const id of [...view.selected]) if (!visible.has(id)) view.selected.delete(id);
+      view.list = more && view.list ? { ...data, accounts: [...view.list.accounts, ...data.accounts] } : data;
+      // Süzgeç değişince seçim sıfırlanır (görünmeyen cari seçili kalmasın; yanlış kişiye plan açılmasın).
+      if (!more) {
+        const visible = new Set(view.list.accounts.map(item => item.id));
+        for (const id of [...view.selected]) if (!visible.has(id)) view.selected.delete(id);
+        view.selectAll = false;
+      }
       if (view.mode === "list") renderList();
     } catch (error) {
       if (ticket === listRequest && view.mode === "list" && body()) body().innerHTML = `<p class="hof-empty">${esc(error.message)}</p>`;
     }
   }
+  let cardRequest = 0;
   async function loadAccount(id) {
+    const ticket = ++cardRequest;
+    const target = view.id;
     try {
       const account = await HOF.api(`/api/workspace/accounts/${encodeURIComponent(id)}`);
+      // Yanıt gelene kadar kullanıcı listeye döndü ya da başka cari açtıysa eski kart geri gelmez.
+      if (ticket !== cardRequest || view.id !== target) return;
       if (id !== view.id) view.ledgerFilter = "all";
       view.account = account;
       view.id = id;
       view.mode = "card";
       renderCard();
     } catch (error) {
+      if (ticket !== cardRequest) return;
       HOF.toastError(error);
       view.mode = "list";
       renderList();
@@ -103,7 +115,8 @@
     }
   }
   const applyAccount = data => {
-    view.account = data;
+    // Başka carinin (gecikmiş) yanıtı açık kartın üstüne yazılmaz; düğmeler açık kartın carisine gider.
+    if (view.id === data.id) view.account = data;
     if (modal) {
       if (view.mode === "card" && view.id === data.id) renderCard();
       loadList();
@@ -152,9 +165,9 @@
       <select data-filter="subgroup" aria-label="Alt grup" ${subs.length ? "" : "disabled"}><option value="">${subs.length ? "Tüm alt gruplar" : "Alt grup"}</option>${subs.map(item => `<option value="${esc(item.id)}" ${item.id === view.subgroup ? "selected" : ""}>${esc(item.name)} (${item.count})</option>`).join("")}</select>`;
   };
   const selectBar = () => {
-    const count = view.selected.size;
+    const count = view.selectAll ? view.list?.total || 0 : view.selected.size;
     if (!canPlan()) return "";
-    return `<div class="hof-acc-selbar${count ? " is-active" : ""}" data-selbar><span>${count ? `<b>${count}</b> cari seçildi` : "Toplu taksitlendirmek için soldaki kutulardan carileri seçin; başlıktaki kutu süzgeçteki carilerin hepsini seçer (ör. önce grup ya da okul seçin)."}</span>${count ? '<button type="button" class="hof-button hof-button-small" data-act="bulkPlan">Seçilenlere taksit planı</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="clearSel">Seçimi temizle</button>' : ""}</div>`;
+    return `<div class="hof-acc-selbar${count ? " is-active" : ""}" data-selbar><span>${count ? `<b>${count}</b> cari seçildi${view.selectAll ? " (süzgeçteki hepsi)" : ""}` : "Toplu taksitlendirmek için soldaki kutulardan carileri seçin; başlıktaki kutu süzgeçteki carilerin hepsini seçer (ör. önce grup ya da okul seçin)."}</span>${count ? '<button type="button" class="hof-button hof-button-small" data-act="bulkPlan">Seçilenlere taksit planı</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="clearSel">Seçimi temizle</button>' : ""}</div>`;
   };
   function renderList() {
     const root = body();
@@ -170,17 +183,18 @@
       const extra = item.extra?.length ? `<small class="hof-acc-extra">${item.extra.map(field => `${esc(field.label)}: ${esc(field.value)}`).join(" · ")}</small>` : "";
       return `<tr data-account="${esc(item.id)}" class="${item.status === "passive" ? "is-passive" : ""}" tabindex="0">${planning ? `<td class="hof-acc-check"><input type="checkbox" data-select="${esc(item.id)}" aria-label="${esc(item.name)} seç" ${view.selected.has(item.id) ? "checked" : ""}></td>` : ""}<td class="hof-plan-no">${esc(item.refNo)}</td><td><b>${esc(item.name)}</b> ${item.type !== "customer" ? typeBadge(item.type) : ""}${item.status === "passive" ? badgeMuted("Pasif") : ""}<small>${esc(whereText(item) || "Grupsuz")}${item.phone ? ` · ${esc(item.phone)}` : ""}${item.caseKey ? " · tabloda kayıtlı" : ""}</small>${extra}</td><td class="num">${amountCell(item.debit)}</td><td class="num">${amountCell(item.credit, "hof-cash-in")}</td><td class="num">${balanceHtml(item.balance)}</td><td>${plansCell}</td></tr>`;
     };
-    const allChecked = data && data.accounts.length && data.accounts.every(item => view.selected.has(item.id));
+    const allChecked = view.selectAll || (data && data.accounts.length && data.accounts.every(item => view.selected.has(item.id)));
+    const total = data?.total ?? data?.accounts.length ?? 0;
     root.innerHTML = `<div class="hof-cash-bar"><div class="hof-tabs" role="group" aria-label="Durum">${STATUS_TABS.map(item => `<button type="button" data-status="${item.id}" aria-pressed="${String(item.id === view.status)}">${item.label}</button>`).join("")}</div>
       <div class="hof-cash-add">${manage ? `<button type="button" class="hof-button hof-button-small" data-act="new">+ Yeni cari</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="import" title="Excel dosyasından ya da Google Sheets’ten carileri tek seferde aç (taksit sorulmaz)">Excel / Sheets’ten yükle</button>${tableRows ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="fromTable" title="Ortadaki tablonun açık sekmesindeki kişileri cari yap; her cari kendi kaydına bağlanır">Tablodan al</button>' : ""}` : ""}</div></div>
       <div class="hof-plans-filters"><input type="search" data-filter="q" value="${esc(view.q)}" placeholder="Ad, telefon, cari no, adres, ek alan ara…" aria-label="Ara"><select data-filter="type" aria-label="Tür"><option value="">Tüm türler</option>${Object.entries(TYPES).map(([id, label]) => `<option value="${id}" ${id === view.type ? "selected" : ""}>${label}</option>`).join("")}</select>${groupOptions()}<select data-filter="balance" aria-label="Bakiye">${BALANCES.map(([id, label]) => `<option value="${id}" ${id === view.balance ? "selected" : ""}>${label}</option>`).join("")}</select><select data-filter="sort" aria-label="Sıralama">${SORTS.map(([id, label]) => `<option value="${id}" ${id === view.sort ? "selected" : ""}>${label}</option>`).join("")}</select>${outputs(listPdfUrl(), `<a class="hof-button hof-button-small hof-button-ghost" href="${esc(listXlsxUrl())}" data-xlsx title="Ekrandaki listeyi (ek alanlarıyla) Excel olarak indir">Excel</a>`)}</div>
-      <div class="hof-kpis hof-plans-kpis">${data ? `<div class="hof-cash-balance"><strong>${esc(money(data.totals.debtor))}</strong><span>Bize borçlu · ${data.totals.count} cari</span></div><div><strong>${esc(money(data.totals.creditor))}</strong><span>Bizim borcumuz</span></div><div><strong>${esc(money(data.totals.planRemaining))}</strong><span>Taksitlerden kalan</span></div><div class="${data.totals.overdueCount ? "is-late" : ""}"><strong>${esc(money(data.totals.overdue))}</strong><span>Geciken · ${data.totals.overdueCount} taksit</span></div>` : ""}</div>
+      <div class="hof-kpis hof-plans-kpis">${data ? `<div class="hof-cash-balance"><strong>${esc(money(data.totals.debtor))}</strong><span>Bize borçlu · ${data.totals.count.toLocaleString("tr-TR")} cari</span></div><div><strong>${esc(money(data.totals.creditor))}</strong><span>Bizim borcumuz</span></div><div><strong>${esc(money(data.totals.planRemaining))}</strong><span>Taksitlerden kalan</span></div><div class="${data.totals.overdueCount ? "is-late" : ""}"><strong>${esc(money(data.totals.overdue))}</strong><span>Geciken · ${data.totals.overdueCount} taksit</span></div>` : ""}</div>
       ${selectBar()}
       <div class="hof-cash-list hof-plans-list">${
         !data
           ? '<p class="hof-empty">Yükleniyor…</p>'
           : data.accounts.length
-            ? `<table class="hof-table hof-cash-table hof-plans-table hof-acc-table"><thead><tr>${planning ? `<th class="hof-acc-check"><input type="checkbox" data-select-all aria-label="Süzgeçteki ${data.accounts.length} carinin hepsini seç" title="Süzgeçteki ${data.accounts.length} carinin hepsini seç" ${allChecked ? "checked" : ""}></th>` : ""}<th class="hof-plan-no">No</th><th>Cari</th><th class="num">Borç</th><th class="num">Alacak</th><th class="num">Bakiye</th><th>Taksit</th></tr></thead><tbody>${data.accounts.slice(0, view.limit).map(row).join("")}</tbody></table>${data.accounts.length > view.limit ? `<div class="hof-more"><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="more">Daha fazla göster · ${data.accounts.length - view.limit} cari daha</button></div>` : ""}`
+            ? `<table class="hof-table hof-cash-table hof-plans-table hof-acc-table"><thead><tr>${planning ? `<th class="hof-acc-check"><input type="checkbox" data-select-all aria-label="Süzgeçteki ${total} carinin hepsini seç" title="Süzgeçteki ${total} carinin hepsini seç" ${allChecked ? "checked" : ""}></th>` : ""}<th class="hof-plan-no">No</th><th>Cari</th><th class="num">Borç</th><th class="num">Alacak</th><th class="num">Bakiye</th><th>Taksit</th></tr></thead><tbody>${data.accounts.map(row).join("")}</tbody></table>${data.hasMore ? `<div class="hof-more"><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="more">Daha fazla göster · ${total - data.accounts.length} cari daha</button></div>` : ""}`
             : `<p class="hof-empty">${filtered || view.status !== "all" ? "Bu süzgeçte cari yok." : "Henüz cari yok."}${manage && !filtered ? " <b>+ Yeni cari</b> ile tek kart açın, <b>Excel’den yükle</b> ile listenizi bir kerede aktarın ya da <b>Tablodan al</b> ile ortadaki tablodaki kişileri cari yapın." : ""}</p>`
       }</div>
       <p class="hof-edit-meta">Bakiye = borç − alacak. <b>borçlu</b>: cari size borçlu; <b>alacaklı</b>: siz cariye borçlusunuz. Taksit planları carinin borcuna, taksit tahsilatları alacağına yazılır. Tahsilat ve ödemeler Kasa’ya düşer.</p>
@@ -489,12 +503,14 @@
   // ---------- Toplu taksitlendirme ----------
   function bulkPlan() {
     const ids = [...view.selected];
-    if (!ids.length) return;
+    const all = view.selectAll;
+    const total = all ? view.list?.total || 0 : ids.length;
+    if (!total) return;
     const labels = view.list?.fieldLabels || [];
-    const names = view.list.accounts.filter(item => view.selected.has(item.id)).map(item => item.name);
+    const names = view.list.accounts.filter(item => all || view.selected.has(item.id)).map(item => item.name);
     HOF.formModal({
       title: "Seçilenlere taksit planı",
-      eyebrow: `${ids.length} CARİ`,
+      eyebrow: `${total} CARİ`,
       size: "wide",
       introHtml: `<p class="hof-modal-text">Her seçili cariye ayrı bir taksit kartı açılır ve taksitleri dağıtılır. Seçilenler: <b>${esc(names.slice(0, 6).join(", "))}${names.length > 6 ? ` ve ${names.length - 6} kişi daha` : ""}</b>.</p>`,
       fields: [
@@ -520,8 +536,9 @@
         sync();
       },
       onSubmit: async data => {
-        const result = await HOF.api("/api/workspace/accounts/bulk-plan", { method: "POST", body: { ids, ...data, skipExisting: Boolean(data.skipExisting) } });
+        const result = await HOF.api("/api/workspace/accounts/bulk-plan", { method: "POST", body: { ...(all ? { all: true, ...filterBody() } : { ids }), ...data, skipExisting: Boolean(data.skipExisting) } });
         view.selected.clear();
+        view.selectAll = false;
         loadList();
         HOF.emit("plans-changed", {});
         HOF.dues?.reloadSoon?.(300);
@@ -562,6 +579,36 @@
       HOF.toastError(error);
     }
   }
+
+  // Doğrulama kapısı (v2.0.6): eşleme değiştikçe sunucu satır bazlı raporu yeniler; hatalı satırlar alınmaz, uyarılılar alınır.
+  const gateHtml = gate => {
+    if (!gate) return "";
+    const tone = gate.errors ? "is-error" : gate.warnings ? "is-warn" : "is-ok";
+    const rows = gate.issues.slice(0, 30).map(issue => `<tr class="is-${esc(issue.level)}"><td>${issue.row}</td><td>${esc(issue.column)}</td><td>${esc(issue.problem)}</td><td>${esc(issue.value)}</td></tr>`).join("");
+    return `<div class="hof-gate ${tone}"><div class="hof-gate-sum"><b>${gate.ready.toLocaleString("tr-TR")}</b> satır hazır${gate.errors ? ` · <b class="hof-cash-out">${gate.errors.toLocaleString("tr-TR")}</b> satır hatalı (alınmaz)` : ""}${gate.warnings ? ` · <b>${gate.warnings.toLocaleString("tr-TR")}</b> uyarı (alınır, raporlanır)` : ""}${gate.empty ? ` · ${gate.empty} boş satır` : ""}</div>${gate.issues.length ? `<details ${gate.errors ? "open" : ""}><summary>Satır bazlı rapor${gate.truncated ? ` (ilk ${gate.issues.length})` : ""}</summary><div class="hof-gate-list"><table class="hof-table"><thead><tr><th>Satır</th><th>Kolon</th><th>Sorun</th><th>Değer</th></tr></thead><tbody>${rows}</tbody></table>${gate.issues.length > 30 ? `<p class="hof-muted">… ${gate.issueTotal - 30} sorun daha; yükleme sonrası raporda tamamı sayılır.</p>` : ""}</div></details>` : ""}</div>`;
+  };
+  const wireGate = (dialog, preview, matrix, url) => {
+    const box = HOF.el("div", { class: "hof-field hof-gate-field" }, gateHtml(preview.gate));
+    dialog.querySelector(".hof-form .hof-actions").before(box);
+    let timer = 0;
+    dialog.addEventListener("change", event => {
+      if (!event.target.closest('select[name^="c"]')) return;
+      clearTimeout(timer);
+      timer = setTimeout(async () => {
+        const roles = {};
+        preview.headers.forEach((_, index) => {
+          const value = dialog.querySelector(`select[name="c${index}"]`)?.value;
+          if (value) roles[index] = value;
+        });
+        try {
+          const next = await HOF.api(url, { method: "POST", body: { matrix, roles } });
+          box.innerHTML = gateHtml(next.gate);
+        } catch {
+          // kapı yenilenemezse eski rapor kalır
+        }
+      }, 300);
+    });
+  };
   function mappingForm({ fileName, matrix, preview, caseKeys = null, caseTitles = null }) {
     const sample = matrix[preview.headerAt + 1] || [];
     HOF.formModal({
@@ -576,7 +623,10 @@
         { name: "groupName", label: "Grup kolonu yoksa hepsi bu gruba", maxlength: 80, placeholder: "İsteğe bağlı" },
       ],
       submitLabel: "Carileri oluştur",
-      onOpen: dialog => dialog.classList.add("hof-import-form"),
+      onOpen: dialog => {
+        dialog.classList.add("hof-import-form");
+        wireGate(dialog, preview, matrix, "/api/workspace/accounts/import/preview");
+      },
       onSubmit: async data => {
         const roles = {};
         preview.headers.forEach((_, index) => {
@@ -595,9 +645,10 @@
         if (result.updated) parts.push(`${result.updated} güncellendi`);
         if (result.linked) parts.push(`${result.linked} kayda bağlandı`);
         if (result.balances) parts.push(`${result.balances} açılış bakiyesi yazıldı`);
+        if (result.truncated) parts.push(`${result.truncated} satır sınır dışı kaldı (tek seferde en çok 250.000 satır; kalanı ikinci yüklemede)`);
         if (result.renumbered) parts.push(`${result.renumbered} carinin numarası başka caride kullanıldığı için yeni numara verildi`);
         if (result.groups) parts.push(`${result.groups} grup tanımlandı`);
-        const skipped = result.skipped.length ? ` ${result.skipped.length} satır atlandı (${[...new Set(result.skipped.map(item => item.reason))].join("; ")}).` : "";
+        const skipped = result.skipped.length ? ` ${result.skippedTotal || result.skipped.length} satır atlandı (${[...new Set(result.skipped.map(item => item.reason))].join("; ")}).` : "";
         HOF.toast(`${parts.join(", ")}.${skipped}`, { type: result.created || result.updated ? "success" : "error", timeout: 10000 });
       },
     });
@@ -608,9 +659,11 @@
     const check = event.target.closest("input[data-select], input[data-select-all]");
     if (check) {
       if (check.dataset.selectAll !== undefined) {
+        view.selectAll = check.checked && Boolean(view.list?.hasMore);
         for (const item of view.list?.accounts || []) check.checked ? view.selected.add(item.id) : view.selected.delete(item.id);
         return renderList();
       }
+      view.selectAll = false;
       check.checked ? view.selected.add(check.dataset.select) : view.selected.delete(check.dataset.select);
       const bar = body()?.querySelector("[data-selbar]");
       if (bar) bar.outerHTML = selectBar();
@@ -629,7 +682,6 @@
     const account = view.account;
     if (button.dataset.status) {
       view.status = button.dataset.status;
-      view.limit = PAGE;
       renderList();
       return loadList();
     }
@@ -651,12 +703,10 @@
     if (act === "import") return importFromExcel();
     if (act === "fromTable") return importFromTable();
     if (act === "bulkPlan") return bulkPlan();
-    if (act === "more") {
-      view.limit += PAGE * 5;
-      return renderList();
-    }
+    if (act === "more") return loadList({ more: true });
     if (act === "clearSel") {
       view.selected.clear();
+      view.selectAll = false;
       return renderList();
     }
     if (!account) return;
@@ -682,7 +732,6 @@
     const select = event.target.closest("select[data-filter]");
     if (!select) return;
     view[select.dataset.filter] = select.value;
-    view.limit = PAGE;
     if (select.dataset.filter === "group") view.subgroup = "";
     if (select.dataset.filter === "sort") {
       try {
@@ -700,7 +749,6 @@
       const input = event.target.closest('input[data-filter="q"]');
       if (!input) return;
       view.q = input.value;
-      view.limit = PAGE;
       clearTimeout(timer);
       timer = setTimeout(loadList, 250);
     };
@@ -720,6 +768,7 @@
       else loadList();
     });
   });
+  HOF.office = Object.assign(HOF.office || {}, { gateHtml, wireGate });
   HOF.accounts = {
     open,
     picker,

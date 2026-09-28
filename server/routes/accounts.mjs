@@ -13,14 +13,18 @@ import { receiptPdf } from "../lib/plan-report.mjs";
 import { dayText, isoDay, parseDay } from "../lib/plans.mjs";
 import { tablePdf, tl } from "../lib/report-pdf.mjs";
 import { readSheetMatrices } from "../lib/sheets.mjs";
+import { inferRolesByValues, findHeaderRow, sanitizeCell, validateRows } from "../lib/import-gate.mjs";
 import { buildXlsx } from "../lib/xlsx-write.mjs";
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 const validDate = value => DATE.test(value) && !Number.isNaN(new Date(value).getTime());
-const MAX_IMPORT = 20_000;
+// Tek seferde en çok bu kadar satır (100 bin cari ~ 7 sn); fazlası raporda "kesildi" olarak bildirilir.
+const MAX_IMPORT = 250_000;
 const MAX_FIELDS = 60;
 const EPS = 0.005;
 const KIND_TEXT = { debt: "Borç", credit: "Alacak", in: "Tahsilat", out: "Ödeme" };
+// Türkçe sıralama: Intl.Collator, localeCompare'den kat kat hızlıdır (200 bin caride saniyeler yerine yüz ms).
+const collator = new Intl.Collator("tr", { numeric: true, sensitivity: "base" });
 
 export function registerAccountRoutes(router, { store, auth, audit, events, trash, config = {}, dataset = null, plans = () => null }) {
   const now = () => new Date().toISOString();
@@ -111,7 +115,11 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     const x = String(a.refNo || "");
     const y = String(b.refNo || "");
     if (!x || !y) return x ? -1 : y ? 1 : 0;
-    return x.localeCompare(y, "tr", { numeric: true });
+    return collator.compare(x, y);
+  };
+  const withExtra = item => {
+    const { fieldsJson, ...rest } = item;
+    return { ...rest, extra: parseFields(fieldsJson).slice(0, 3) };
   };
   function list(user, { q = "", group = "", subgroup = "", type = "", status = "active", balance = "all", sort = "no" } = {}) {
     const rows = store.all(`${ACCOUNT_SQL} WHERE a.deleted_at IS NULL ORDER BY a.name COLLATE NOCASE`);
@@ -131,13 +139,15 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
       if (type && row.type !== type) continue;
       if (group && row.groupId !== group) continue;
       if (subgroup && row.subgroupId !== subgroup) continue;
-      const fields = parseFields(row.fieldsJson);
       if (needle) {
-        const hay = `${row.name} ${row.note} ${row.address} ${row.email} ${row.groupName} ${row.subgroupName} ${row.caseTitle} ${fields.map(field => field.value).join(" ")}`.toLocaleLowerCase("tr-TR");
+        // Ek alanlar ham JSON metninde aranır (200 bin caride her satırı ayrıştırmadan); ad, not, adres, grup ayrıca.
+        const hay = `${row.name} ${row.note} ${row.address} ${row.email} ${row.groupName} ${row.subgroupName} ${row.caseTitle} ${row.fieldsJson}`.toLocaleLowerCase("tr-TR");
         const phoneHit = numbers.length >= 3 && digits(row.phone).includes(numbers);
         const refHit = String(row.refNo || "").toLocaleLowerCase("tr-TR") === needle;
         if (!hay.includes(needle) && !phoneHit && !refHit) continue;
       }
+      // Ek alanlar sayfaya girerken ayrıştırılır (200 bin satırda hepsini ayrıştırmak boşuna); etiketler ham metinden.
+      if (row.fieldsJson && row.fieldsJson !== "[]") for (const match of row.fieldsJson.matchAll(/"label":"((?:[^"\\]|\\.)*)"/g)) labels.add(JSON.parse(`"${match[1]}"`));
       const sum = sums.get(row.id) || { debt: 0, credit: 0, in: 0, out: 0 };
       const accountPlans = planMap.get(row.id) || [];
       let planDebit = 0;
@@ -166,7 +176,6 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
       if (balance === "creditor" && side !== "creditor") continue;
       if (balance === "zero" && side !== "zero") continue;
       if (balance === "overdue" && !overdueCount) continue;
-      fields.forEach(field => labels.add(field.label));
       totals.count += 1;
       totals.balance = roundMoney(totals.balance + bal);
       if (side === "debtor") totals.debtor = roundMoney(totals.debtor + bal);
@@ -202,10 +211,10 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
         overdue: roundMoney(overdue),
         overdueCount,
         next,
-        extra: fields.slice(0, 3),
+        fieldsJson: row.fieldsJson,
       });
     }
-    const byName = (a, b) => a.name.localeCompare(b.name, "tr");
+    const byName = (a, b) => collator.compare(a.name, b.name);
     const compare = {
       no: (a, b) => refCompare(a, b) || byName(a, b),
       name: byName,
@@ -224,15 +233,21 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     return { accounts: out, totals, sort, groups: tree, fieldLabels: [...labels].slice(0, 200), canManage: can(user.role, "accounts.manage"), canCollect: can(user.role, "accounts.collect"), canPlan: can(user.role, "plans.manage"), today: today() };
   }
 
+  // Liste sayfa sayfa gelir (200 bin caride tek yanıt 80 MB olurdu): limit/offset; toplamlar ve sayı tüm süzgeç için.
+  const pageOf = (data, key, params) => {
+    const limit = Math.min(5000, Math.max(1, Math.trunc(Number(params.get("limit")) || 300)));
+    const offset = Math.max(0, Math.trunc(Number(params.get("offset")) || 0));
+    return { ...data, [key]: data[key].slice(offset, offset + limit).map(withExtra), total: data[key].length, offset, limit, hasMore: offset + limit < data[key].length };
+  };
   router.get("/api/workspace/accounts", async ({ req, res, url }) => {
     const user = auth.requirePermission(req, "accounts.view");
-    ok(res, list(user, listQuery(url.searchParams)));
+    ok(res, pageOf(list(user, listQuery(url.searchParams)), "accounts", url.searchParams));
   });
   // Seçici (taksit kartı formu, stok hareketi): hafif arama, en çok 20 sonuç.
   router.get("/api/workspace/accounts/search", async ({ req, res, url }) => {
     const user = auth.requirePermission(req, "accounts.view");
     const data = list(user, { q: text(url.searchParams.get("q")).slice(0, 120), status: "all", type: ACCOUNT_TYPES[text(url.searchParams.get("type"))] ? text(url.searchParams.get("type")) : "" });
-    ok(res, data.accounts.slice(0, 20).map(item => ({ id: item.id, refNo: item.refNo, name: item.name, phone: item.phone, type: item.type, groupName: item.groupName, subgroupName: item.subgroupName, balance: item.balance, status: item.status })));
+    ok(res, data.accounts.slice(0, 20).map(withExtra).map(item => ({ id: item.id, refNo: item.refNo, name: item.name, phone: item.phone, type: item.type, groupName: item.groupName, subgroupName: item.subgroupName, balance: item.balance, status: item.status })));
   });
 
   // ---------- Yazma ----------
@@ -302,6 +317,7 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     const body = await readJson(req);
     const result = store.tx(() => {
       const input = accountInput(body, user);
+      if (input.refNo && !freeRef(input.refNo)) throw new HttpError(409, `${input.refNo} numarası başka bir caride kullanılıyor.`);
       const id = insertAccount(user, input);
       // Açılış bakiyesi: ör. önceki programdan devreden borç (+) ya da alacak (−).
       const opening = parseAmount(body.openingBalance);
@@ -338,7 +354,10 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     const account = accountRow(params.id);
     const planCount = plans()?.countForAccount ? plans().countForAccount(account.id) : 0;
     if (planCount) throw new HttpError(409, `Bu carinin ${planCount} taksit kartı var. Önce kartları silin ya da başka cariye taşıyın; kapatılan kartlar da sayılır.`);
-    const stockLinked = store.get("SELECT COUNT(*) AS n FROM account_entries WHERE account_id = ? AND source = 'stock'", account.id).n;
+    const stockLinked = store.get(
+      "SELECT COUNT(*) AS n FROM account_entries e JOIN stock_moves m ON m.id = e.source_id JOIN stock_items i ON i.id = m.item_id WHERE e.account_id = ? AND e.source = 'stock' AND i.deleted_at IS NULL",
+      account.id,
+    ).n;
     if (stockLinked) throw new HttpError(409, `Bu cariye yazılmış ${stockLinked} stok hareketi var. Önce stok hareketlerini düzeltin.`);
     store.tx(() => {
       // Yumuşak silme: hareketleri yerinde durur (Kasa'dan düşer); yönetim panelindeki Silinenler'den geri gelir.
@@ -464,14 +483,18 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     sendBuffer(res, pdf, { type: "application/pdf", name: `Makbuz ${entry.receiptNo ? `No ${entry.receiptNo} ` : ""}${account.name} ${dayText(entry.date)}.pdf`, inline: url.searchParams.get("download") !== "1" });
   });
   const STATUS_TEXT = { active: "Aktif", passive: "Pasif", all: "Tümü" };
+  // PDF'te en çok bu kadar satır basılır (kâğıt için anlamlı sınır; 200 bin satır 22 MB olurdu). Tamamı Excel'de.
+  const PDF_ROWS = 20_000;
   router.get("/api/workspace/accounts/liste.pdf", async ({ req, res, url }) => {
     const user = auth.requirePermission(req, "accounts.view");
     const query = listQuery(url.searchParams);
     const data = list(user, query);
+    const clipped = data.accounts.length > PDF_ROWS;
+    if (clipped) data.accounts = data.accounts.slice(0, PDF_ROWS);
     const title = limited(url.searchParams.get("title"), 60, "Başlık") || "Cari";
     const pdf = tablePdf({
       title: `${title} listesi`,
-      subtitle: [STATUS_TEXT[query.status], query.type ? ACCOUNT_TYPES[query.type] : "", query.q ? `“${query.q}”` : ""].filter(Boolean).join(" · "),
+      subtitle: [STATUS_TEXT[query.status], query.type ? ACCOUNT_TYPES[query.type] : "", query.q ? `“${query.q}”` : "", clipped ? `ilk ${PDF_ROWS.toLocaleString("tr-TR")} satır (tamamı Excel'de)` : ""].filter(Boolean).join(" · "),
       headers: ["No", "Ad / Unvan", "Tür", "Grup", "Telefon", "Kayıt", "Borç", "Alacak", "Bakiye", "Taksitten kalan", "Bilgi notu"],
       types: ["text", "text", "text", "text", "text", "text", "money", "money", "money", "money", "text"],
       rows: data.accounts.map(item => [item.refNo, item.name, ACCOUNT_TYPES[item.type] || "", [item.groupName, item.subgroupName].filter(Boolean).join(" › "), item.phone, dayText(item.registeredOn), tl(item.debit), tl(item.credit), `${tl(Math.abs(item.balance))} ${sideText(item.balance)}`.trim(), item.planRemaining ? tl(item.planRemaining) : "", item.note || ""]),
@@ -550,10 +573,13 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     auth.requirePermission(req, "accounts.manage");
     const body = await readJson(req, { limit: 40_000_000 });
     const matrix = Array.isArray(body.matrix) ? body.matrix : [];
-    const headerAt = matrix.findIndex(row => Array.isArray(row) && row.filter(cell => String(cell ?? "").trim()).length >= 2);
+    const headerAt = findHeaderRow(matrix, { mapper: mapAccountHeaders });
     if (headerAt < 0) throw new HttpError(400, "Sayfada başlık satırı bulunamadı.");
-    const headers = matrix[headerAt].map(cell => String(cell ?? "").trim());
-    ok(res, { headerAt, headers, roles: mapAccountHeaders(headers), rows: matrix.length - headerAt - 1 });
+    const headers = matrix[headerAt].map(sanitizeCell);
+    const rows = matrix.slice(headerAt + 1, headerAt + 1 + MAX_IMPORT);
+    // Eşleme: başlıktan, başlık tanınmadıysa değerlerden; kullanıcı eşlemeyi gönderirse (roles) yalnız kapı yeniden hesaplanır.
+    const roles = body.roles && typeof body.roles === "object" ? body.roles : inferRolesByValues(headers, rows, mapAccountHeaders(headers), "account");
+    ok(res, { headerAt, headers, roles, rows: matrix.length - headerAt - 1, gate: validateRows(headers, rows, roles, "account", { headerAt }) });
   });
   function matchExisting({ caseKey, caseSource, refNo, name, phone }) {
     if (caseKey) {
@@ -594,17 +620,23 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     const caseKeys = Array.isArray(body.caseKeys) ? body.caseKeys : [];
     const caseTitles = Array.isArray(body.caseTitles) ? body.caseTitles : [];
     const source = currentSource();
-    const cell = (row, index) => (index >= 0 ? String(row[index] ?? "").trim() : "");
+    const cell = (row, index) => (index >= 0 ? sanitizeCell(row[index]) : "");
     const rows = matrix.slice(headerAt + 1, headerAt + 1 + MAX_IMPORT);
-    const report = { created: 0, updated: 0, skipped: [], groups: 0, balances: 0, linked: 0, renumbered: 0 };
-    const skip = (index, reason) => report.skipped.push({ row: headerAt + index + 2, reason });
+    const report = { created: 0, updated: 0, skipped: [], groups: 0, balances: 0, linked: 0, renumbered: 0, truncated: Math.max(0, matrix.length - headerAt - 1 - MAX_IMPORT) };
+    let skippedTotal = 0;
+    // Atlanan satırların hepsi listelenmez (100 bin satırda yanıt şişmesin); sayı ve nedenler tam gelir.
+    const skip = (index, reason) => {
+      skippedTotal += 1;
+      if (report.skipped.length < 500) report.skipped.push({ row: headerAt + index + 2, reason });
+      report.skippedTotal = skippedTotal;
+    };
     const ensure = (name, parentId = null) => (name && plans()?.resolveGroups ? plans().resolveGroups(parentId ? { groupId: parentId, subgroupName: name } : { groupName: name }, user)[parentId ? "subgroupId" : "groupId"] : null);
     const before = store.get("SELECT COUNT(*) AS n FROM plan_groups").n;
     store.tx(() => {
       let autoRef = Number(nextRef()) - 1;
       rows.forEach((row, index) => {
-        if (!Array.isArray(row) || !row.some(value => String(value ?? "").trim())) return;
-        const name = cell(row, col.name).replace(/\s+/g, " ").slice(0, 160);
+        if (!Array.isArray(row) || !row.some(value => sanitizeCell(value))) return;
+        const name = cell(row, col.name).slice(0, 160);
         if (!name) return skip(index, "Ad boş");
         let caseKey = String(caseKeys[index] ?? "").slice(0, 200);
         if (caseKey && dataset?.hasRecord && !dataset.hasRecord(caseKey)) caseKey = "";
@@ -680,7 +712,9 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
   router.post("/api/workspace/accounts/bulk-plan", async ({ req, res }) => {
     const user = auth.requirePermission(req, "plans.manage");
     const body = await readJson(req, { limit: 5_000_000 });
-    const ids = [...new Set((Array.isArray(body.ids) ? body.ids : []).map(value => String(value || "").slice(0, 120)).filter(Boolean))];
+    // Seçim: kimlik listesi ya da "süzgeçteki hepsi" (all: true + liste süzgeçleri; 200 bin cari için kimlik taşınmaz).
+    const fromFilter = body.all === true ? list(user, { q: text(body.q).slice(0, 120), group: text(body.group), subgroup: text(body.subgroup), type: ACCOUNT_TYPES[text(body.type)] ? text(body.type) : "", status: ["active", "passive", "all"].includes(text(body.status)) ? text(body.status) : "active", balance: text(body.balance) || "all" }).accounts.map(item => item.id) : [];
+    const ids = [...new Set((body.all === true ? fromFilter : Array.isArray(body.ids) ? body.ids : []).map(value => String(value || "").slice(0, 120)).filter(Boolean))];
     if (!ids.length) throw new HttpError(400, "Taksitlendirilecek carileri seçin.");
     if (ids.length > MAX_IMPORT) throw new HttpError(400, `Tek seferde en çok ${MAX_IMPORT} cari seçilebilir.`);
     const byField = body.amountMode === "field";
@@ -697,6 +731,7 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     const report = { created: 0, skipped: [], total: 0 };
     store.tx(() => {
       const active = new Set(store.all("SELECT DISTINCT account_id AS id FROM plans WHERE deleted_at IS NULL AND status = 'active' AND account_id <> ''").map(row => row.id));
+      let refNo = Number(plans().nextRef()) - 1;
       for (const id of ids) {
         const found = store.get(`${ACCOUNT_SQL} WHERE a.id = ? AND a.deleted_at IS NULL`, id);
         if (!found) {
@@ -717,7 +752,7 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
             continue;
           }
         }
-        plans().createForAccount(user, account, { total, ...distribution, name: planName ? `${account.name} · ${planName}` : "", note });
+        plans().createForAccount(user, account, { total, ...distribution, name: planName ? `${account.name} · ${planName}` : "", note, refNo: String((refNo += 1)) });
         report.created += 1;
         report.total = roundMoney(report.total + total);
       }
@@ -732,7 +767,7 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
   // Kişinin kartı (ortadaki tablo): kayda bağlı cari varsa özeti ve bakiyesi.
   router.get("/api/workspace/cases/:key/account", async ({ req, res, params }) => {
     const user = auth.requirePermission(req, "accounts.view");
-    const key = limited(decodeURIComponent(params.key), 200, "Kayıt");
+    const key = limited(params.key, 200, "Kayıt");
     const found = store.get("SELECT id FROM accounts WHERE deleted_at IS NULL AND case_key = ? AND case_source = ? ORDER BY created_at LIMIT 1", key, currentSource());
     if (!found) return ok(res, { account: null, canManage: can(user.role, "accounts.manage") });
     const account = detail(found.id, user);
@@ -799,8 +834,11 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     const account = store.get("SELECT id, name FROM accounts WHERE id = ? AND deleted_at IS NOT NULL", id);
     if (!account) throw new HttpError(404, "Bu cari zaten geri yüklenmiş.");
     store.tx(() => {
-      store.run("UPDATE accounts SET deleted_at = NULL, deleted_by = NULL, updated_by = ?, updated_at = ? WHERE id = ?", user.id, now(), account.id);
-      audit(user, "account.restored", account.id, { name: account.name });
+      // Numara bu arada başka bir cariye verildiyse geri gelen cari sıradaki boş numarayı alır (iki carinin aynı numarası olmaz).
+      const current = store.get("SELECT ref_no AS refNo FROM accounts WHERE id = ?", account.id)?.refNo || "";
+      const refNo = freeRef(current) || nextRef();
+      store.run("UPDATE accounts SET deleted_at = NULL, deleted_by = NULL, ref_no = ?, updated_by = ?, updated_at = ? WHERE id = ?", refNo, user.id, now(), account.id);
+      audit(user, "account.restored", account.id, { name: account.name, refNo, renumbered: refNo !== current });
     });
     changed(user, { accountId: account.id });
     changed(user, { kind: "cash" });

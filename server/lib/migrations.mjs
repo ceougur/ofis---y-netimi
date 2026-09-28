@@ -660,7 +660,7 @@ export const MIGRATIONS = [
       const digits = value => String(value || "").replace(/\D/g, "");
       const fold = value => String(value || "").toLocaleLowerCase("tr-TR").replace(/\s+/g, " ").trim();
       const plans = store.all(
-        "SELECT id, ref_no AS refNo, registered_on AS registeredOn, case_key AS caseKey, case_source AS caseSource, case_title AS caseTitle, group_id AS groupId, subgroup_id AS subgroupId, name, note, phone, created_by AS createdBy, created_at AS createdAt FROM plans WHERE deleted_at IS NULL AND account_id = '' ORDER BY created_at, rowid",
+        "SELECT id, ref_no AS refNo, registered_on AS registeredOn, case_key AS caseKey, case_source AS caseSource, case_title AS caseTitle, group_id AS groupId, subgroup_id AS subgroupId, name, note, phone, created_by AS createdBy, created_at AS createdAt FROM plans WHERE account_id = '' ORDER BY created_at, rowid",
       );
       const byKey = new Map();
       let seq = (store.get("SELECT COUNT(*) AS n FROM accounts")?.n || 0);

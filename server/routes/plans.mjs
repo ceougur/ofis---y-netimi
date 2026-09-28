@@ -13,7 +13,7 @@ import { tablePdf, tl } from "../lib/report-pdf.mjs";
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 const validDate = value => DATE.test(value) && !Number.isNaN(new Date(value).getTime());
 const MAX_ITEMS = 360;
-const MAX_IMPORT = 5000;
+const MAX_IMPORT = 100_000;
 
 // accounts (v2.0.6): cari servisi daha sonra kurulur; her taksit kartı bir cariye aittir (plans.account_id).
 export function registerPlanRoutes(router, { store, auth, audit, events, trash, dataset = null, accounts = () => null }) {
@@ -288,7 +288,7 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
   // Kaydın taksit kartları (v2.0.6): kişinin kartındaki "Taksit planı" bölümü ve Tahsilat penceresi buradan okur.
   router.get("/api/workspace/cases/:key/plans", async ({ req, res, params }) => {
     const user = auth.requirePermission(req, "plans.view");
-    const key = limited(decodeURIComponent(params.key), 200, "Kayıt");
+    const key = limited(params.key, 200, "Kayıt");
     ok(res, { plans: forCase(key, currentSource(), user), canManage: can(user.role, "plans.manage"), canCollect: can(user.role, "plans.collect") });
   });
 
@@ -778,12 +778,13 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
     });
   }
   // Carinin toplu taksitlendirmesi (routes/accounts.mjs): kartı cariye bağlı açar, isterse taksitleri dağıtır.
-  function createForAccount(user, account, { total, count = 0, firstDue = "", everyMonths = 1, name = "", note = "" }) {
+  // refNo verilirse (toplu taksitlendirme sayacı) kart tablosu her kartta yeniden taranmaz.
+  function createForAccount(user, account, { total, count = 0, firstDue = "", everyMonths = 1, name = "", note = "", refNo = "" }) {
     const id = newId("plan");
     const amount = roundMoney(Number(total) || 0);
     store.run(
       "INSERT INTO plans (id, account_id, ref_no, registered_on, case_key, case_source, case_title, group_id, subgroup_id, name, note, phone, total, status, created_by, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'active', ?, ?, ?)",
-      id, account.id, nextRef(), today(), account.caseKey || "", account.caseSource || "", account.caseTitle || "", account.groupId || null, account.subgroupId || null, (name || account.name).slice(0, 160), (note || "").slice(0, 1000), account.phone || "", amount, user.id, now(), now(),
+      id, account.id, refNo || nextRef(), today(), account.caseKey || "", account.caseSource || "", account.caseTitle || "", account.groupId || null, account.subgroupId || null, (name || account.name).slice(0, 160), (note || "").slice(0, 1000), account.phone || "", amount, user.id, now(), now(),
     );
     if (count > 0 && amount > 0) replaceItems(id, distribute({ total: amount, count: Math.min(count, MAX_ITEMS), firstDue, everyMonths }));
     audit(user, "plan.created", id, { name: name || account.name, total: amount, accountId: account.id, bulk: true });
@@ -797,5 +798,5 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
   const countForAccount = accountId => store.get("SELECT COUNT(*) AS n FROM plans WHERE deleted_at IS NULL AND account_id = ?", accountId).n;
   const receiptSeq = () => nextReceipt();
 
-  return { cashEntries, dueItems, fingerprint, list, detail, forCase, entriesForCase, summariesByAccount, forAccount, createForAccount, followAccount, countForAccount, receiptSeq, validDistribution: distributionInput, resolveGroups, groupTree };
+  return { cashEntries, dueItems, fingerprint, list, detail, forCase, entriesForCase, summariesByAccount, forAccount, createForAccount, followAccount, countForAccount, receiptSeq, nextRef, validDistribution: distributionInput, resolveGroups, groupTree };
 }

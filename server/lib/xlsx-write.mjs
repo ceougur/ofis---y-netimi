@@ -31,9 +31,24 @@ function numberFormatCode(format) {
 }
 
 // Tek hücre: { value, format } (sayı) ya da { text }.
+// Hızlı yol (v2.0.6, 200 bin satırlık dökümler): rakam içermeyen metin sayı olamaz, ayrıştırıcıya girmez; aynı metin
+// tekrarlanıyorsa ("Müşteri", "adet", "0,00") sonuç önbellekten gelir.
+const typedCache = new Map();
 export function typedCell(text) {
   const raw = clean(text).trim();
   if (!raw) return null;
+  if (!/\d/.test(raw)) return { text: raw };
+  if (raw.length <= 24) {
+    const hit = typedCache.get(raw);
+    if (hit) return hit;
+    const computed = typedCellSlow(raw);
+    if (typedCache.size > 5000) typedCache.clear();
+    typedCache.set(raw, computed);
+    return computed;
+  }
+  return typedCellSlow(raw);
+}
+function typedCellSlow(raw) {
   const parsed = parseCellText(raw);
   if (typeof parsed !== "number" || !Number.isFinite(parsed)) return { text: raw };
   const format = describeFormat(raw);
@@ -101,7 +116,7 @@ export function buildXlsx(sheets, { title = "DestekOfis", creator = "DestekOfis"
       const cells = columns
         .map((column, index) => {
           const content = typedCell(row[column]);
-          if (content) widths[index] = Math.min(60, Math.max(widths[index], Math.ceil(String(row[column]).trim().length * 1.1) + 2));
+          if (content && widths[index] < 60) widths[index] = Math.min(60, Math.max(widths[index], Math.ceil(String(row[column]).trim().length * 1.1) + 2));
           return cell(`${columnName(index)}${r}`, content);
         })
         .join("");

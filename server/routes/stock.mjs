@@ -6,6 +6,7 @@
 // Kritik seviyenin altına düşen ürün sol menüde rozet ve listede uyarı olarak görünür.
 import { randomUUID } from "node:crypto";
 import { mapStockHeaders, parseQty, roundQty, stockLevel } from "../lib/accounts.mjs";
+import { inferRolesByValues, findHeaderRow, sanitizeCell, validateRows } from "../lib/import-gate.mjs";
 import { HttpError, limited, ok, readJson, sendBuffer, text } from "../lib/http.mjs";
 import { parseAmount, roundMoney } from "../lib/money.mjs";
 import { can } from "../lib/permissions.mjs";
@@ -15,10 +16,11 @@ import { buildXlsx } from "../lib/xlsx-write.mjs";
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 const validDate = value => DATE.test(value) && !Number.isNaN(new Date(value).getTime());
-const MAX_IMPORT = 20_000;
+const MAX_IMPORT = 250_000;
 const MAX_QTY = 1e9;
 const PAY = new Set(["none", "cash", "account"]);
 const qtyText = value => new Intl.NumberFormat("tr-TR", { maximumFractionDigits: 3 }).format(Number(value) || 0);
+const collator = new Intl.Collator("tr", { numeric: true, sensitivity: "base" });
 
 export function registerStockRoutes(router, { store, auth, audit, events, trash, accounts = () => null }) {
   const now = () => new Date().toISOString();
@@ -111,22 +113,28 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
       totals.value = roundMoney(totals.value + level.value);
       out.push({ id: row.id, code: row.code, name: row.name, unit: row.unit, category: row.category, minQty: row.minQty, unitPrice: row.unitPrice, note: row.note, ...level, lastMove: own.at(-1)?.date || "" });
     }
+    const byName = (a, b) => collator.compare(a.name, b.name);
     const compare = {
-      name: (a, b) => a.name.localeCompare(b.name, "tr"),
-      code: (a, b) => String(a.code).localeCompare(String(b.code), "tr", { numeric: true }) || a.name.localeCompare(b.name, "tr"),
-      qty: (a, b) => a.qty - b.qty || a.name.localeCompare(b.name, "tr"),
-      value: (a, b) => b.value - a.value || a.name.localeCompare(b.name, "tr"),
-      category: (a, b) => String(a.category).localeCompare(String(b.category), "tr") || a.name.localeCompare(b.name, "tr"),
+      name: byName,
+      code: (a, b) => collator.compare(String(a.code), String(b.code)) || byName(a, b),
+      qty: (a, b) => a.qty - b.qty || byName(a, b),
+      value: (a, b) => b.value - a.value || byName(a, b),
+      category: (a, b) => collator.compare(String(a.category), String(b.category)) || byName(a, b),
     }[sort];
     // Kritik ürünler her sıralamada önce (göz önünde olsun).
     out.sort((a, b) => Number(b.low) - Number(a.low) || compare(a, b));
-    return { items: out, totals, categories: [...categories].sort((a, b) => a.localeCompare(b, "tr")), sort, canManage: can(user.role, "stock.manage"), canMove: can(user.role, "stock.move"), today: today() };
+    return { items: out, totals, categories: [...categories].sort(collator.compare), sort, canManage: can(user.role, "stock.manage"), canMove: can(user.role, "stock.move"), today: today() };
   }
 
+  // Liste sayfa sayfa (limit/offset); toplamlar ve kategori listesi tüm süzgeç için.
   router.get("/api/workspace/stock", async ({ req, res, url }) => {
     const user = auth.requirePermission(req, "stock.view");
-    ok(res, list(user, listQuery(url.searchParams)));
+    const data = list(user, listQuery(url.searchParams));
+    const limit = Math.min(5000, Math.max(1, Math.trunc(Number(url.searchParams.get("limit")) || 300)));
+    const offset = Math.max(0, Math.trunc(Number(url.searchParams.get("offset")) || 0));
+    ok(res, { ...data, items: data.items.slice(offset, offset + limit), total: data.items.length, offset, limit, hasMore: offset + limit < data.items.length });
   });
+  const PDF_ROWS = 20_000;
 
   router.get("/api/workspace/stock/alerts", async ({ req, res }) => {
     auth.requirePermission(req, "stock.view");
@@ -175,10 +183,12 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
     const user = auth.requirePermission(req, "stock.view");
     const query = listQuery(url.searchParams);
     const data = list(user, query);
+    const clipped = data.items.length > PDF_ROWS;
+    if (clipped) data.items = data.items.slice(0, PDF_ROWS);
     const title = limited(url.searchParams.get("title"), 60, "Başlık") || "Stok";
     const pdf = tablePdf({
       title: `${title} durumu`,
-      subtitle: [query.state === "low" ? "Kritik seviyede" : query.state === "out" ? "Tükenen" : "Tüm ürünler", query.category, query.q ? `“${query.q}”` : ""].filter(Boolean).join(" · "),
+      subtitle: [query.state === "low" ? "Kritik seviyede" : query.state === "out" ? "Tükenen" : "Tüm ürünler", query.category, query.q ? `“${query.q}”` : "", clipped ? `ilk ${PDF_ROWS.toLocaleString("tr-TR")} satır (tamamı Excel'de)` : ""].filter(Boolean).join(" · "),
       headers: ["Kod", "Ürün", "Kategori", "Mevcut", "Birim", "Kritik seviye", "Birim fiyat", "Değer", "Son hareket", "Durum"],
       types: ["text", "text", "text", "text", "text", "text", "money", "money", "text", "text"],
       rows: data.items.map(item => [item.code, item.name, item.category, qtyText(item.qty), item.unit, item.minQty ? qtyText(item.minQty) : "", tl(item.unitPrice), tl(item.value), dayText(item.lastMove), item.qty <= 0 ? "Tükendi" : item.low ? "Kritik" : ""]),
@@ -288,7 +298,7 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
       const moveId = insertMove(user, item.id, input);
       touched = syncAccount(user, item, moveId, input);
       // Alımda birim fiyat verildiyse ürünün son birim fiyatı güncellenir (stok değeri güncel kalsın).
-      if (input.kind === "in" && input.unitPrice > 0) store.run("UPDATE stock_items SET unit_price = ?, updated_at = ? WHERE id = ?", input.unitPrice, now(), item.id);
+      if (input.kind === "in" && input.unitPrice > 0 && can(user.role, "stock.manage")) store.run("UPDATE stock_items SET unit_price = ?, updated_at = ? WHERE id = ?", input.unitPrice, now(), item.id);
       audit(user, input.kind === "in" ? "stock.in" : "stock.out", moveId, { itemId: item.id, itemName: item.name, ...input });
       return moveId;
     });
@@ -367,10 +377,12 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
     auth.requirePermission(req, "stock.manage");
     const body = await readJson(req, { limit: 40_000_000 });
     const matrix = Array.isArray(body.matrix) ? body.matrix : [];
-    const headerAt = matrix.findIndex(row => Array.isArray(row) && row.filter(cell => String(cell ?? "").trim()).length >= 2);
+    const headerAt = findHeaderRow(matrix, { mapper: mapStockHeaders });
     if (headerAt < 0) throw new HttpError(400, "Sayfada başlık satırı bulunamadı.");
-    const headers = matrix[headerAt].map(cell => String(cell ?? "").trim());
-    ok(res, { headerAt, headers, roles: mapStockHeaders(headers), rows: matrix.length - headerAt - 1 });
+    const headers = matrix[headerAt].map(sanitizeCell);
+    const rows = matrix.slice(headerAt + 1, headerAt + 1 + MAX_IMPORT);
+    const roles = body.roles && typeof body.roles === "object" ? body.roles : inferRolesByValues(headers, rows, mapStockHeaders(headers), "stock");
+    ok(res, { headerAt, headers, roles, rows: matrix.length - headerAt - 1, gate: validateRows(headers, rows, roles, "stock", { headerAt }) });
   });
   router.post("/api/workspace/stock/import", async ({ req, res }) => {
     const user = auth.requirePermission(req, "stock.manage");
@@ -388,7 +400,7 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
     if (col.name < 0) throw new HttpError(400, "Ürün adı kolonunu seçin.");
     const mode = body.mode === "update" ? "update" : "skip";
     const defaultUnit = limited(body.unit, 20, "Birim") || "adet";
-    const cell = (row, index) => (index >= 0 ? String(row[index] ?? "").trim() : "");
+    const cell = (row, index) => (index >= 0 ? sanitizeCell(row[index]) : "");
     const number = (row, index) => {
       const value = parseQty(cell(row, index));
       return Number.isFinite(value) && value >= 0 && value <= MAX_QTY ? roundQty(value) : 0;
@@ -398,17 +410,23 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
       return Number.isFinite(value) && value >= 0 ? Math.round(value * 10000) / 10000 : 0;
     };
     const rows = matrix.slice(headerAt + 1, headerAt + 1 + MAX_IMPORT);
-    const report = { created: 0, updated: 0, skipped: [], opening: 0 };
-    const skip = (index, reason) => report.skipped.push({ row: headerAt + index + 2, reason });
+    const report = { created: 0, updated: 0, skipped: [], opening: 0, truncated: Math.max(0, matrix.length - headerAt - 1 - MAX_IMPORT) };
+    let skippedTotal = 0;
+    const skip = (index, reason) => {
+      skippedTotal += 1;
+      if (report.skipped.length < 500) report.skipped.push({ row: headerAt + index + 2, reason });
+      report.skippedTotal = skippedTotal;
+    };
     store.tx(() => {
       rows.forEach((row, index) => {
-        if (!Array.isArray(row) || !row.some(value => String(value ?? "").trim())) return;
-        const name = cell(row, col.name).replace(/\s+/g, " ").slice(0, 160);
+        if (!Array.isArray(row) || !row.some(value => sanitizeCell(value))) return;
+        const name = cell(row, col.name).slice(0, 160);
         if (!name) return skip(index, "Ürün adı boş");
         const input = { name, code: cell(row, col.code).slice(0, 60), unit: (cell(row, col.unit) || defaultUnit).slice(0, 20), category: cell(row, col.category).slice(0, 80), minQty: number(row, col.min), unitPrice: money(row, col.price), note: cell(row, col.note).slice(0, 1000) };
         const fields = extraColumns.map(column => ({ label: headers[column].slice(0, 80), value: cell(row, column).slice(0, 1000) })).filter(field => field.value);
         // İki ayrı indeksli arama (kodla, sonra ad + birimle): binlerce satırda da hızlı.
-        const existing = (input.code && store.get("SELECT id FROM stock_items WHERE deleted_at IS NULL AND code = ?", input.code)) || store.get("SELECT id FROM stock_items WHERE deleted_at IS NULL AND name = ? COLLATE NOCASE AND unit = ? COLLATE NOCASE", input.name, input.unit);
+        // Kod tek başına kimlik sayılmaz (Excel'deki sıra numarası olabilir): aynı kod ancak ad da aynıysa aynı ürün.
+        const existing = (input.code && store.get("SELECT id FROM stock_items WHERE deleted_at IS NULL AND code = ? AND name = ? COLLATE NOCASE", input.code, input.name)) || store.get("SELECT id FROM stock_items WHERE deleted_at IS NULL AND name = ? COLLATE NOCASE AND unit = ? COLLATE NOCASE", input.name, input.unit);
         if (existing && mode === "skip") return skip(index, "Bu ürün zaten var");
         if (existing) {
           store.run(

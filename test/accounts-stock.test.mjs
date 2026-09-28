@@ -396,7 +396,7 @@ describe("Google Sheets'ten ve binlerce satırlık toplu alım (v2.0.6)", () => 
     const again = (await admin.post("/api/workspace/accounts/import", { matrix: accounts, headerAt: 0, roles: preview.roles })).data.data;
     const againMs = Date.now() - started;
     assert.equal(again.created, 0);
-    assert.equal(again.skipped.length, 10000);
+    assert.equal(again.skippedTotal, 10000);
     started = Date.now();
     const list = (await admin.get("/api/workspace/accounts?q=Müşteri 9999")).data.data;
     const listMs = Date.now() - started;
@@ -430,5 +430,188 @@ describe("Google Sheets'ten ve binlerce satırlık toplu alım (v2.0.6)", () => 
     console.log(`# süre: 10 bin cari ${accountMs} ms, tekrar ${againMs} ms, arama ${listMs} ms; 10 bin ürün ${stockMs} ms, liste ${stockListMs} ms`);
     for (const ms of [accountMs, againMs, stockMs]) assert.ok(ms < 30000, `yükleme ${ms} ms`);
     assert.ok(listMs < 5000 && stockListMs < 5000, "liste birkaç saniyenin altında");
+  });
+});
+
+describe("toplu alım boru hattı: temizleme, değere göre eşleme, doğrulama kapısı, işlem bütünlüğü, tarih kararlılığı (v2.0.6)", () => {
+  it("görünmez karakterler, NBSP ve Excel hata değerleri temizlenir; tarih hücresi ISO olur", async () => {
+    const { sanitizeCell } = await import("../server/lib/import-gate.mjs");
+    assert.equal(sanitizeCell("​ Ali Veli ﻿"), "Ali Veli");
+    assert.equal(sanitizeCell("#N/A"), "");
+    assert.equal(sanitizeCell("#YOK"), "");
+    assert.equal(sanitizeCell(new Date(Date.UTC(2026, 8, 15, 12))), "2026-09-15");
+    assert.equal(sanitizeCell(null), "");
+  });
+  it("başlık tanınmasa da değerlerden telefon, e-posta ve tarih kolonu bulunur; stokta birim kolonu", async () => {
+    const { inferRolesByValues } = await import("../server/lib/import-gate.mjs");
+    const headers = ["Kişi", "Kolon B", "Kolon C", "Kolon D", "Not"];
+    const rows = Array.from({ length: 10 }, (_, i) => [`Ad ${i}`, `0532 11${i} 22 33`, `kisi${i}@ornek.com`, `1${i}.09.2026`, "x"]);
+    const roles = inferRolesByValues(headers, rows, { 0: "extra", 1: "extra", 2: "extra", 3: "extra", 4: "note" }, "account");
+    assert.deepEqual(roles, { 0: "extra", 1: "phone", 2: "email", 3: "registered", 4: "note" });
+    const stock = inferRolesByValues(["Ürün", "X", "Stok"], Array.from({ length: 6 }, (_, i) => [`Ü${i}`, i % 2 ? "kg" : "adet", String(i)]), { 0: "name", 1: "extra", 2: "extra" }, "stock");
+    assert.deepEqual(stock, { 0: "name", 1: "unit", 2: "qty" });
+  });
+  it("kapı: ad boş satır hata (alınmaz), okunamayan tarih/tutar uyarı (alınır), dosya içi tekrar uyarı; eşleme değişince yeniden hesaplanır", async () => {
+    const server = await startTestServer();
+    const admin = await loginAdmin(server);
+    try {
+      const matrix = [["Ad Soyad", "Telefon", "Kayıt Tarihi", "Bakiye"], ["Ali Veli", "0532 111 11 11", "01.09.2026", "1.500"], ["", "0532 222 22 22", "", ""], ["Ayşe Kaya", "123", "dün", "çok"], ["Ali Veli", "0532 111 11 11", "02.09.2026", ""], ["", "", "", ""]];
+      const preview = (await admin.post("/api/workspace/accounts/import/preview", { matrix })).data.data;
+      const gate = preview.gate;
+      assert.equal(gate.ready, 3);
+      assert.equal(gate.errors, 1);
+      assert.equal(gate.empty, 1);
+      assert.ok(gate.warnings >= 4, `uyarılar: ${gate.warnings}`);
+      assert.ok(gate.issues.some(issue => issue.row === 3 && issue.level === "error"));
+      assert.ok(gate.issues.some(issue => issue.row === 4 && /tarih/i.test(issue.problem)));
+      assert.ok(gate.issues.some(issue => issue.row === 5 && /tekrar/i.test(issue.problem)));
+      // Eşleme değişince: bakiye kolonu kullanılmazsa tutar uyarısı kalkar.
+      const again = (await admin.post("/api/workspace/accounts/import/preview", { matrix, roles: { ...preview.roles, 3: "" } })).data.data;
+      assert.ok(!again.gate.issues.some(issue => /bakiye/i.test(issue.problem)));
+      const done = (await admin.post("/api/workspace/accounts/import", { matrix, headerAt: 0, roles: preview.roles })).data.data;
+      assert.equal(done.created, 2, "hatalı satır alınmadı; dosya içi tekrar ikinci kez açılmadı");
+      assert.equal(done.skippedTotal, 2);
+    } finally {
+      await server.close();
+    }
+  });
+  it("işlem bütünlüğü: yükleme yarıda kesilirse hiçbir satır kalmaz (rollback)", async () => {
+    const server = await startTestServer();
+    const admin = await loginAdmin(server);
+    try {
+      const store = server.app.store;
+      const before = store.get("SELECT COUNT(*) AS n FROM accounts").n;
+      // Aynı işlem bloğu: 3 satır yazıldıktan sonra hata fırlatılır; ROLLBACK sonrası sayı değişmemeli.
+      assert.throws(() =>
+        store.tx(() => {
+          for (let i = 0; i < 3; i += 1) store.run("INSERT INTO accounts (id, name, created_by, created_at, updated_at) VALUES (?, ?, 'u', '2026-01-01', '2026-01-01')", `acc-tx-${i}`, `Kesilen ${i}`);
+          throw new Error("elektrik kesildi");
+        }),
+      );
+      assert.equal(store.get("SELECT COUNT(*) AS n FROM accounts").n, before);
+      assert.equal(store.get("PRAGMA journal_mode").journal_mode, "wal");
+      assert.equal(store.get("PRAGMA synchronous").synchronous, 2, "synchronous = FULL");
+      assert.equal((await admin.get("/api/workspace/accounts")).data.data.total, 0);
+    } finally {
+      await server.close();
+    }
+  });
+  it("vade hesabı saat diliminden bağımsız: gün farkı takvim günüyle, DST ve UTC sınırı yanlış alarm üretmez", async () => {
+    const { daysUntil, isoDay } = await import("../server/lib/plans.mjs");
+    assert.equal(daysUntil("2026-03-29", "2026-03-28"), 1, "yaz saati geçişi (29 Mart) gün sayısını bozmaz");
+    assert.equal(daysUntil("2026-10-25", "2026-10-24"), 1);
+    assert.equal(daysUntil("2027-01-01", "2026-12-31"), 1);
+    assert.equal(daysUntil("2026-09-15", "2026-09-15"), 0);
+    // Yerel takvim günü: Türkiye'de 28.09 01:30 (UTC 27.09 22:30) hâlâ 28 Eylül; UTC güne göre hesaplansa 27 Eylül sanılır.
+    const { execFileSync } = await import("node:child_process");
+    const day = tz => execFileSync(process.execPath, ["-e", 'import("./server/lib/plans.mjs").then(m => process.stdout.write(m.isoDay(new Date("2026-09-27T22:30:00Z"))))'], { env: { ...process.env, TZ: tz }, cwd: process.cwd() }).toString();
+    assert.equal(day("Europe/Istanbul"), "2026-09-28");
+    assert.equal(day("UTC"), "2026-09-27");
+    assert.equal(isoDay(new Date(2026, 8, 28, 23, 59)), "2026-09-28", "gün sonu yerel takvimde aynı gün");
+  });
+});
+
+describe("kod incelemesi düzeltmeleri (v2.0.6): numara, eşleşme, başlık satırı, yetki, silinmiş ürün", () => {
+  let server;
+  let admin;
+  before(async () => {
+    server = await startTestServer();
+    admin = await loginAdmin(server);
+  });
+  after(() => server.close());
+
+  it("silinen carinin numarası bu arada verildiyse geri gelen cari sıradaki boş numarayı alır", async () => {
+    const first = (await admin.post("/api/workspace/accounts", { name: "Silinecek Cari", refNo: "9001" })).data.data;
+    assert.equal((await admin.del(`/api/workspace/accounts/${first.id}`)).status, 200);
+    const second = (await admin.post("/api/workspace/accounts", { name: "Numarayı Alan", refNo: "9001" })).data.data;
+    assert.equal(second.refNo, "9001");
+    const trash = (await admin.get("/api/admin/trash")).data.data.find(item => item.kind === "account" && item.title === "Silinecek Cari");
+    assert.equal((await admin.post("/api/admin/trash/restore", { id: trash.id })).status, 200);
+    const restored = (await admin.get(`/api/workspace/accounts/${first.id}`)).data.data;
+    assert.notEqual(restored.refNo, "9001", "iki carinin aynı numarası olmaz");
+    assert.equal((await admin.get("/api/workspace/accounts?q=9001")).data.data.accounts.filter(item => item.refNo === "9001").length, 1);
+  });
+
+  it("stok içe aktarma: aynı kod ancak ad da aynıysa aynı ürün (S.No 1 başkasının kartını ezmez)", async () => {
+    const seker = (await admin.post("/api/workspace/stock", { name: "Şeker", code: "1", unit: "kg", unitPrice: 30 })).data.data;
+    const matrix = [["S.No", "Ürün", "Birim", "Fiyat"], ["1", "Çay", "kg", "45"], ["2", "Şeker", "kg", "32"]];
+    const preview = (await admin.post("/api/workspace/stock/import/preview", { matrix })).data.data;
+    const done = (await admin.post("/api/workspace/stock/import", { matrix, headerAt: preview.headerAt, roles: preview.roles, mode: "update" })).data.data;
+    assert.equal(done.created, 1, "Çay yeni ürün olarak açılır");
+    assert.equal(done.updated, 1, "Şeker adıyla eşleşip güncellenir");
+    const after = (await admin.get(`/api/workspace/stock/${seker.id}`)).data.data;
+    assert.equal(after.name, "Şeker");
+    assert.equal(after.unitPrice, 32);
+    const cay = (await admin.get("/api/workspace/stock?q=Çay")).data.data.items.find(item => item.name === "Çay");
+    assert.ok(cay && cay.unitPrice === 45);
+  });
+
+  it("başlık satırı: üstteki başlık/tarih satırı elenir; tek kolonlu liste de yüklenir", async () => {
+    const titled = [["Servis Listesi", "", "01.09.2026"], [], ["Ad Soyad", "Telefon", "Adres"], ["Başlıklı Cari", "0532 000 00 01", "Yol 1"]];
+    const preview = (await admin.post("/api/workspace/accounts/import/preview", { matrix: titled })).data.data;
+    assert.equal(preview.headerAt, 2);
+    assert.equal(preview.roles[0], "name");
+    assert.equal(preview.gate.ready, 1);
+    const single = [["Ad Soyad"], ["Tek Kolon Bir"], ["Tek Kolon İki"]];
+    const singlePreview = (await admin.post("/api/workspace/accounts/import/preview", { matrix: single })).data.data;
+    assert.equal(singlePreview.headerAt, 0);
+    assert.equal(singlePreview.gate.ready, 2);
+    const done = (await admin.post("/api/workspace/accounts/import", { matrix: single, headerAt: 0, roles: singlePreview.roles })).data.data;
+    assert.equal(done.created, 2);
+  });
+
+  it("kapı: telefonsuz aynı ad ayrı cari olarak uyarılır ve gerçekten iki cari açılır; telefonlu tekrar açılmaz", async () => {
+    const matrix = [["Ad", "Telefon"], ["Ayşe Kaya", ""], ["Ayşe Kaya", ""], ["Ali Can", "0532 777 66 55"], ["Ali Can", "0532 777 66 55"]];
+    const preview = (await admin.post("/api/workspace/accounts/import/preview", { matrix })).data.data;
+    const issues = preview.gate.issues;
+    assert.match(issues.find(issue => issue.row === 3).problem, /ayrı cari açılır/);
+    assert.match(issues.find(issue => issue.row === 5).problem, /ikinci kez açılmaz/);
+    const done = (await admin.post("/api/workspace/accounts/import", { matrix, headerAt: 0, roles: preview.roles })).data.data;
+    assert.equal(done.created, 3);
+    assert.equal(done.skippedTotal, 1);
+  });
+
+  it("personel yalnız miktar girer: birim fiyat göndermesi ürünün fiyatını değiştirmez", async () => {
+    const item = (await admin.post("/api/workspace/stock", { name: "Kalem", unit: "adet", unitPrice: 10 })).data.data;
+    const staff = await createUser(server, admin, { username: "depocu", role: "personel" });
+    const move = await staff.post(`/api/workspace/stock/${item.id}/moves`, { kind: "in", qty: 1, unitPrice: "99999", pay: "none" });
+    assert.equal(move.status, 200);
+    assert.equal((await admin.get(`/api/workspace/stock/${item.id}`)).data.data.unitPrice, 10);
+    const manager = await admin.post(`/api/workspace/stock/${item.id}/moves`, { kind: "in", qty: 1, unitPrice: "12", pay: "none" });
+    assert.equal(manager.status, 200);
+    assert.equal((await admin.get(`/api/workspace/stock/${item.id}`)).data.data.unitPrice, 12);
+  });
+
+  it("ürün silindikten sonra ona bağlı hareketler carinin silinmesini engellemez; kayıt anahtarı iki kez çözülmez", async () => {
+    const supplier = (await admin.post("/api/workspace/accounts", { name: "Silinecek Tedarikçi", type: "supplier" })).data.data;
+    const item = (await admin.post("/api/workspace/stock", { name: "Geçici Ürün", unit: "adet" })).data.data;
+    assert.equal((await admin.post(`/api/workspace/stock/${item.id}/moves`, { kind: "in", qty: 2, unitPrice: 5, pay: "account", accountId: supplier.id })).status, 200);
+    assert.equal((await admin.del(`/api/workspace/accounts/${supplier.id}`)).status, 409, "ürün dururken cari silinmez");
+    assert.equal((await admin.del(`/api/workspace/stock/${item.id}`)).status, 200);
+    assert.equal((await admin.del(`/api/workspace/accounts/${supplier.id}`)).status, 200, "ürün silinince cari de silinebilir");
+    const weird = await admin.get(`/api/workspace/cases/${encodeURIComponent("kayit %zz 50%")}/account`);
+    assert.equal(weird.status, 200, "yüzde işaretli anahtar 500 vermez");
+  });
+
+  it("göç 12: çöpteki taksit kartı da cari alır; geri yüklenince carisiyle gelir", async () => {
+    const { createStore, openDatabase } = await import("../server/lib/db.mjs");
+    const { runMigrations, MIGRATIONS: all } = await import("../server/lib/migrations.mjs");
+    const { mkdtempSync, rmSync } = await import("node:fs");
+    const { tmpdir } = await import("node:os");
+    const path = (await import("node:path")).default;
+    const root = mkdtempSync(path.join(tmpdir(), "destekofis-m12-"));
+    try {
+      const store = createStore(openDatabase(path.join(root, "d.sqlite")));
+      // Şema 11'e kadar göç, sonra çöpte bir kart, sonra 12.
+      for (const migration of all.filter(item => item.version <= 11)) store.tx(() => { migration.up(store); store.exec(`PRAGMA user_version = ${migration.version}`); });
+      store.run("INSERT INTO plans (id, ref_no, name, phone, total, registered_on, created_by, created_at, updated_at, deleted_at, deleted_by) VALUES ('p-trash', '1', 'Çöpteki Kart', '0532 111 22 33', 100, '2026-01-01', 'u', '2026-01-01', '2026-01-01', '2026-02-01', 'u')");
+      runMigrations(store, { backupDir: path.join(root, "b") });
+      const plan = store.get("SELECT account_id AS accountId FROM plans WHERE id = 'p-trash'");
+      assert.ok(plan.accountId, "çöpteki kartın carisi var");
+      assert.equal(store.get("SELECT name FROM accounts WHERE id = ?", plan.accountId).name, "Çöpteki Kart");
+      store.db.close();
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
   });
 });
