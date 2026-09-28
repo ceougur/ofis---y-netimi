@@ -492,6 +492,18 @@ export const MIGRATIONS = [
       `);
     },
   },
+  {
+    version: 8,
+    name: "v2.0.5 taksit kartında sıra no",
+    up(store) {
+      // Excel'deki "S.N / Sıra No" kolonu kartın sıra numarası olur; listede ilk kolon ve varsayılan sıralama.
+      // Yalnızca ekleyici: 2.0.4 bu kolonu okumaz.
+      addColumn(store, "plans", "ref_no", "TEXT NOT NULL DEFAULT ''");
+      // Var olan kartlara açılış sırasıyla numara verilir (Excel'den yüklenenler dosyadaki sırayla açılmıştır).
+      const plans = store.all("SELECT id FROM plans WHERE ref_no = '' ORDER BY created_at, rowid");
+      plans.forEach((plan, index) => store.run("UPDATE plans SET ref_no = ? WHERE id = ?", String(index + 1), plan.id));
+    },
+  },
 ];
 
 export const LATEST_VERSION = MIGRATIONS.at(-1).version;

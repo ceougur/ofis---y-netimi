@@ -73,27 +73,32 @@
   const muted = () => read(muteKey()) === true;
 
   // ---------- Bildirim listesi ----------
+  // Görevler: son tarihi 7 gün içinde olan ya da geçen görevler. Acil görev (v2.0.5) son tarihten bağımsız olarak
+  // tamamlanana kadar kırmızı uyarı verir ve listenin en üstünde durur.
   function taskAlerts() {
     const today = new Date(`${localDay()}T00:00:00`);
     const out = [];
     for (const task of tasks) {
-      if (!task.dueDate) continue;
-      const due = new Date(`${String(task.dueDate).slice(0, 10)}T00:00:00`);
-      if (Number.isNaN(due.getTime())) continue;
-      const days = Math.round((due - today) / 86_400_000);
-      if (days > TASK_AHEAD_DAYS || days < -30) continue;
+      const urgent = task.priority === "urgent";
+      const due = task.dueDate ? new Date(`${String(task.dueDate).slice(0, 10)}T00:00:00`) : null;
+      const dated = due && !Number.isNaN(due.getTime());
+      if (!dated && !urgent) continue;
+      const days = dated ? Math.round((due - today) / 86_400_000) : null;
+      if (!urgent && (days > TASK_AHEAD_DAYS || days < -30)) continue;
+      const dueText = !dated ? "" : days < 0 ? `${Math.abs(days)} GÜN GECİKTİ` : days === 0 ? "SON GÜN BUGÜN" : days === 1 ? "SON GÜN YARIN" : `SON GÜNE ${days} GÜN`;
       out.push({
-        id: `task|${task.id}|${task.dueDate}`,
+        id: `task|${task.id}|${task.dueDate || ""}${urgent ? "|acil" : ""}`,
         type: "task",
-        tone: days < 0 ? "late" : days <= 1 ? "soon" : "info",
-        eyebrow: days < 0 ? `GÖREV GECİKTİ · ${Math.abs(days)} GÜN` : days === 0 ? "GÖREVİN SON GÜNÜ BUGÜN" : `GÖREVİN SON GÜNÜNE ${days} GÜN`,
+        urgent,
+        tone: urgent || days < 0 ? "late" : days <= 1 ? "soon" : "info",
+        eyebrow: urgent ? `ACİL GÖREV${dueText ? ` · ${dueText}` : ""}` : days < 0 ? `GÖREV GECİKTİ · ${Math.abs(days)} GÜN` : days === 0 ? "GÖREVİN SON GÜNÜ BUGÜN" : `GÖREVİN SON GÜNÜNE ${days} GÜN`,
         title: task.title,
-        when: days < 0 ? `${Math.abs(days)} gün gecikti` : days === 0 ? "Bugün" : days === 1 ? "Yarın" : `${days} gün kaldı`,
-        text: `Son tarih ${due.toLocaleDateString("tr-TR")}${task.actorName ? ` · veren ${task.actorName}` : ""}`,
+        when: !dated ? "Acil" : days < 0 ? `${Math.abs(days)} gün gecikti` : days === 0 ? "Bugün" : days === 1 ? "Yarın" : `${days} gün kaldı`,
+        text: `${dated ? `Son tarih ${due.toLocaleDateString("tr-TR")}` : "Son tarih yok"}${task.actorName ? ` · veren ${task.actorName}` : ""}`,
         caseKey: task.caseKey || "",
         taskId: task.id,
-        days,
-        rank: days < 0 ? 1 : 3,
+        days: dated ? days : -9999,
+        rank: urgent ? -1 : days < 0 ? 1 : 3,
       });
     }
     return out;
@@ -313,7 +318,7 @@
     const node = HOF.el(
       "div",
       { class: `hof-notice is-${alert.tone}`, role: alert.tone === "late" ? "alert" : "status" },
-      `<span class="hof-notice-icon" aria-hidden="true">${alert.type === "unpaid" || alert.type === "upcoming" ? "₺" : alert.type === "task" ? "✓" : alert.summary ? "🔔" : "⏰"}</span>
+      `<span class="hof-notice-icon" aria-hidden="true">${alert.type === "unpaid" || alert.type === "upcoming" ? "₺" : alert.urgent ? "!" : alert.type === "task" ? "✓" : alert.summary ? "🔔" : "⏰"}</span>
       <div class="hof-notice-body">
         <p class="hof-notice-eyebrow">${esc(alert.eyebrow)}</p>
         <b class="hof-notice-title">${esc(alert.title)}</b>
@@ -411,8 +416,16 @@
     const queued = new Set(queue.map(item => item.id));
     const fresh = all.filter(item => !seen.has(item.id) && !queued.has(item.id) && item.id !== showing?.id && item.type !== "upcoming");
     const upcoming = all.filter(item => !seen.has(item.id) && !queued.has(item.id) && item.id !== showing?.id && item.type === "upcoming");
-    const candidates = [...fresh, ...upcoming];
-    if (!candidates.length) return;
+    // Acil görev (v2.0.5) tur sınırına takılmaz: kuyruğun başına girer ve sıradaki bildirim olarak gösterilir.
+    const urgent = fresh.filter(item => item.urgent);
+    if (urgent.length) {
+      queue = [...urgent.map((item, index) => ({ ...item, position: index + 1, total: urgent.length })), ...queue];
+    }
+    const candidates = [...fresh.filter(item => !item.urgent), ...upcoming];
+    if (!candidates.length) {
+      if (urgent.length) schedule();
+      return;
+    }
     const room = Math.max(0, FIRST_BATCH - shownThisLoad);
     const batch = candidates.slice(0, room);
     const rest = candidates.slice(room);
@@ -421,8 +434,8 @@
     shownThisLoad += batch.length;
     if (rest.length && !summaryShown) {
       summaryShown = true;
-      const late = rest.filter(item => item.type === "unpaid").length;
-      queue.push({ id: `summary|${roundStart}`, summary: true, tone: late ? "late" : "info", type: "summary", eyebrow: "BİLDİRİMLER", title: `${rest.length} bildirim daha var`, text: late ? `${late} tahsilat alınmadı; diğerleri son günü yaklaşan işler.` : "Son günü yaklaşan işler ve yaklaşan tahsilatlar." });
+      const late = rest.filter(item => item.type === "unpaid").length + rest.filter(item => item.urgent).length;
+      queue.push({ id: `summary|${roundStart}`, summary: true, tone: late ? "late" : "info", type: "summary", eyebrow: "BİLDİRİMLER", title: `${rest.length} bildirim daha var`, text: late ? `${late} acil iş ya da alınmayan tahsilat; diğerleri son günü yaklaşan işler.` : "Son günü yaklaşan işler ve yaklaşan tahsilatlar." });
       markSeen(rest.map(item => item.id));
     } else if (rest.length) markSeen(rest.map(item => item.id));
     schedule();
@@ -449,16 +462,17 @@
     }
     const text = count > 99 ? "99+" : String(count);
     if (badge.textContent !== text) badge.textContent = text;
-    badge.classList.toggle("is-late", list.some(item => item.type === "unpaid" && item.tone === "late"));
+    badge.classList.toggle("is-late", list.some(item => (item.type === "unpaid" && item.tone === "late") || item.urgent));
   }
 
   function openPanel() {
     const list = alerts();
     const groups = [
+      ["Acil görevler", list.filter(item => item.urgent)],
       ["Tahsilat alınmadı", list.filter(item => item.type === "unpaid")],
       ["Son günü yaklaşan ya da geçen işler", list.filter(item => item.type === "deadline")],
       ["Yaklaşan randevu ve planlı tarihler", list.filter(item => item.type === "event")],
-      ["Görevler", list.filter(item => item.type === "task")],
+      ["Görevler", list.filter(item => item.type === "task" && !item.urgent)],
       ["Yaklaşan tahsilatlar (7 gün)", list.filter(item => item.type === "upcoming")],
     ].filter(([, items]) => items.length);
     const body = groups.length

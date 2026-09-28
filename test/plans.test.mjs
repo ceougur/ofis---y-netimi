@@ -54,6 +54,10 @@ describe("taksit motoru (saf)", () => {
   it("Excel başlıklarını ve tarihleri tanır", () => {
     assert.deepEqual(mapHeaders(["Grup", "Alt Grup", "Adı Soyadı", "Bilgi Notu", "Telefonu", "Toplam Tutar", "Taksit Sayısı", "İlk Vade"]), { 0: "group", 1: "subgroup", 2: "name", 3: "note", 4: "phone", 5: "total", 6: "count", 7: "firstDue" });
     assert.deepEqual(mapHeaders(["PLAKA", "GÜZERGAH", "ÖĞRENCİ", "VELİ TELEFONU", "ÜCRET", "TAKSİT"]), { 0: "group", 1: "subgroup", 2: "name", 3: "phone", 4: "total", 5: "count" });
+    // Müşteri dosyası (Şahin Turizm): parantezli, noktalı ve çok kelimeli başlıklar (v2.0.5).
+    assert.deepEqual(mapHeaders(["S.N", "ADI SOYADI", "GRUBU (Plaka)", "ARA GRUBU (Okulu)", "TELEFONU", "Bilgi Notu - Adres", "TOPLAM TAKSİT TUTARI", "TEK TAKSİT ÜCRETİ", "TOPLAM TAKSİT ADETİ"]), { 0: "seq", 1: "name", 2: "group", 3: "subgroup", 4: "phone", 5: "note", 6: "total", 7: "installment", 8: "count" });
+    assert.deepEqual(mapHeaders(["Sıra No", "Okul", "Öğrenci Adı", "Taksit Tutarı", "İlk Taksit Tarihi", "Açıklama"]), { 0: "seq", 1: "group", 2: "name", 3: "installment", 4: "firstDue", 5: "note" }, "tek alt grup kolonu grup sayılır");
+    assert.equal(mapHeaders(["Telefon No", "Ad"])[0], "phone", "telefon numarası sıra no sayılmaz");
     assert.equal(parseDay("15.09.2026"), "2026-09-15");
     assert.equal(parseDay("2026-09-15"), "2026-09-15");
     assert.equal(parseDay("1/9/2026"), "2026-09-01");
@@ -223,5 +227,47 @@ describe("taksit modülü API (v2.0.4)", () => {
     assert.equal(can.next.dueDate, "2026-11-01");
     const groups = (await admin.get("/api/workspace/plans/groups")).data.data;
     assert.deepEqual(groups.map(group => group.name).sort(), ["42 C 1070"]);
+    // Sıra No: kolon yoksa mevcut en büyük numaradan devam eder; liste varsayılan olarak Sıra No'ya göre sıralanır.
+    assert.ok(Number(ayse.refNo) > 0 && Number(can.refNo) === Number(ayse.refNo) + 1, `sıra no: ${ayse.refNo}, ${can.refNo}`);
+  });
+
+  it("Sıra No: Excel'deki S.N kolonu kartın numarası olur; liste numaraya göre sıralanır, numarayla aranır; PDF süzgeçle iner", async () => {
+    const matrix = [
+      ["S.N", "ADI SOYADI", "GRUBU (Plaka)", "ARA GRUBU (Okulu)", "TELEFONU", "Bilgi Notu - Adres", "TOPLAM TAKSİT TUTARI", "TEK TAKSİT ÜCRETİ", "TOPLAM TAKSİT ADETİ"],
+      ["10", "Zeynep Ak", "42 C 0348", "Akabe İlk Okulu", "5537416138", "Süleyman Şah Siteleri", "9.000", "1.000", "9"],
+      ["2", "Beyza Öykü İçer", "42 C 0348", "Akabe İlk Okulu", "5530000000", "", "", "1.500", "6"],
+    ];
+    const preview = (await admin.post("/api/workspace/plans/import/preview", { matrix })).data.data;
+    assert.equal(preview.roles[0], "seq");
+    const result = (await admin.post("/api/workspace/plans/import", { matrix, headerAt: preview.headerAt, roles: preview.roles, defaultFirstDue: "2026-10-01" })).data.data;
+    assert.equal(result.created, 2, JSON.stringify(result));
+    const list = (await admin.get("/api/workspace/plans?status=all")).data.data;
+    const numbers = list.plans.map(plan => plan.refNo);
+    assert.equal(list.sort, "no");
+    assert.ok(numbers.indexOf("2") < numbers.indexOf("10"), `2, 10'dan önce: ${numbers.join(",")}`);
+    const beyza = list.plans.find(plan => plan.name === "Beyza Öykü İçer");
+    assert.equal(beyza.refNo, "2");
+    assert.equal(beyza.totals.total, 9000, "toplam boşsa taksit ücreti × adet");
+    assert.equal(beyza.itemCount, 6);
+    assert.equal(beyza.subgroupName, "Akabe İlk Okulu");
+    const zeynep = list.plans.find(plan => plan.name === "Zeynep Ak");
+    assert.equal(zeynep.note, "Süleyman Şah Siteleri");
+    assert.equal(zeynep.itemCount, 9);
+    const group = (await admin.get("/api/workspace/plans/groups")).data.data.find(item => item.name === "42 C 0348");
+    assert.deepEqual((await admin.get(`/api/workspace/plans?status=all&group=${group.id}&q=10`)).data.data.plans.map(plan => plan.name), ["Zeynep Ak"], "sıra numarasıyla arama");
+    const byName = (await admin.get("/api/workspace/plans?status=all&sort=name")).data.data.plans.map(plan => plan.name);
+    assert.deepEqual(byName, [...byName].sort((a, b) => a.localeCompare(b, "tr")));
+    // Yeni kartın numarası: en büyük numaradan bir sonraki; elle verilen numara korunur ve düzeltilir.
+    const created = (await admin.post("/api/workspace/plans", { name: "Yeni Öğrenci", total: "1.000" })).data.data;
+    assert.equal(created.refNo, "11");
+    const edited = (await admin.put(`/api/workspace/plans/${created.id}`, { refNo: "3A" })).data.data;
+    assert.equal(edited.refNo, "3A");
+    // Liste PDF'i ekrandaki süzgeçle (grup) hazırlanır.
+    const pdf = await personel.raw("GET", `/api/workspace/plans/liste.pdf?status=all&group=${group.id}&title=Aidatlar`);
+    assert.equal(pdf.status, 200);
+    assert.equal(pdf.buffer.subarray(0, 5).toString("latin1"), "%PDF-");
+    assert.match(pdf.headers.get("content-disposition"), /Aidatlar-listesi/);
+    const statement = await admin.raw("GET", `/api/workspace/plans/${zeynep.id}/ekstre.pdf`);
+    assert.equal(statement.status, 200);
   });
 });

@@ -74,7 +74,7 @@ export function planStatementPdf(plan, { officeName = "", userName = "", now = n
     if (first) {
       if (officeName) page.text(M, top + 9, doc.fit(officeName, W * 0.6, "bold", 9), { font: "bold", size: 9, color: muted });
       page.text(M, top + 34, "Taksit ekstresi", { font: "bold", size: 20, color: ink });
-      page.text(M, top + 54, doc.fit(`${plan.name}${where ? ` · ${where}` : ""}${plan.phone ? ` · ${plan.phone}` : ""}`, W, "regular", 11), { size: 11, color: "#374151" });
+      page.text(M, top + 54, doc.fit(`${plan.refNo ? `No ${plan.refNo} · ` : ""}${plan.name}${where ? ` · ${where}` : ""}${plan.phone ? ` · ${plan.phone}` : ""}`, W, "regular", 11), { size: 11, color: "#374151" });
       page.text(M, top + 9, `Oluşturma: ${stamp(now)}`, { size: 8, color: muted, align: "right", width: W });
       if (userName) page.text(M, top + 21, `Hazırlayan: ${doc.fit(userName, W * 0.35, "regular", 8)}`, { size: 8, color: muted, align: "right", width: W });
       top += 70;

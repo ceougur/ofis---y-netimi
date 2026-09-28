@@ -507,6 +507,15 @@ try {
     await admin.waitForFunction(() => document.querySelectorAll(".hof-plan-items tbody tr").length === 3, null, { timeout: 10000 });
     const head = await admin.$eval(".hof-plans .hof-plan-head", node => node.innerText.replace(/\s+/g, " "));
     expect(head.includes("Ayşe Yılmaz") && head.includes("42 C 1070") && head.includes("Gecikti"), `kart başlığı: ${head}`);
+    // v2.0.5: kişi paneli (sıra no, grup, telefon, not) üstte; taksit süzgeçleri; PDF ve Yazdır; geniş pencere.
+    const profile = await admin.$eval(".hof-plans .hof-plan-profile", node => node.innerText.replace(/\s+/g, " "));
+    expect(/SIRA NO 1\b/.test(profile.toLocaleUpperCase("tr-TR")) && profile.includes("0532 111 22 33") && profile.includes("3 taksit"), `kişi paneli: ${profile}`);
+    const width = await admin.$eval(".hof-plans-modal", node => node.getBoundingClientRect().width);
+    expect(width > 1000, `taksit penceresi geniş olmalı: ${width}`);
+    expect(await admin.$('.hof-plans [data-print="card"]') && (await admin.$eval('.hof-plans [data-pdf="card"]', node => node.getAttribute("href"))).endsWith("/ekstre.pdf"), "kartta PDF ve Yazdır");
+    await admin.click('.hof-plans [data-item-filter="overdue"]');
+    await admin.waitForFunction(() => document.querySelectorAll(".hof-plan-items tbody tr").length === 3 && document.querySelector('[data-item-filter="overdue"]')?.getAttribute("aria-pressed") === "true", null, { timeout: 5000 });
+    await admin.click('.hof-plans [data-item-filter="all"]');
     await admin.click('.hof-plans [data-act="pay"]');
     await admin.waitForSelector('.hof-modal-backdrop.is-visible input[name="amount"]');
     const suggested = await admin.inputValue('.hof-modal-backdrop.is-visible input[name="amount"]');
@@ -525,6 +534,10 @@ try {
     await admin.waitForSelector(".hof-plans-table tbody tr[data-plan]", { timeout: 10000 });
     const listRow = await admin.$eval(".hof-plans-table tbody tr[data-plan]", node => node.innerText.replace(/\s+/g, " "));
     expect(listRow.includes("Ayşe Yılmaz") && listRow.includes("6.000,00"), `liste satırı: ${listRow}`);
+    expect(/^1\b/.test(listRow.trim()), `listede ilk kolon sıra no: ${listRow}`);
+    const listPdf = await admin.$eval('.hof-plans [data-pdf="list"]', node => node.getAttribute("href"));
+    const pdfHead = await admin.evaluate(url => fetch(url).then(response => response.arrayBuffer()).then(buffer => new TextDecoder().decode(buffer.slice(0, 5))), listPdf);
+    expect(pdfHead === "%PDF-" && /status=active/.test(listPdf) && /sort=no/.test(listPdf), `liste PDF'i süzgeçle: ${listPdf}`);
     await admin.click('.hof-plans [data-close]');
     await admin.waitForFunction(() => !document.querySelector(".hof-modal-backdrop"), null, { timeout: 5000 });
     const cash = (await admin.evaluate(() => fetch("/api/workspace/cash").then(response => response.json()))).data;
@@ -680,14 +693,20 @@ try {
     await admin.waitForFunction(() => [...document.querySelectorAll(".hof-toast")].some(node => node.textContent.includes("Görev atandı")));
     // Canlı kanal: personel ekranı yenilemeden rozeti ve "size görev atadı" bildirimini görür.
     await staff.waitForFunction(() => document.querySelector('[data-badge="tasks"]')?.textContent === "1", null, { timeout: 10000 });
-    await staff.waitForFunction(() => [...document.querySelectorAll(".hof-toast")].some(node => node.textContent.includes("size görev atadı")), null, { timeout: 10000 });
+    await staff.waitForFunction(() => [...document.querySelectorAll(".hof-toast")].some(node => node.textContent.includes("size acil görev atadı")), null, { timeout: 10000 });
+    // v2.0.5: acil görev kırmızı: bildirim hata tonunda, rozet kırmızı, zil listesinde "Acil görevler" en üstte.
+    expect(await staff.$eval('.hof-toast:has-text("acil görev atadı")', node => node.classList.contains("hof-toast-error")), "acil görev bildirimi kırmızı olmalı");
+    await staff.waitForFunction(() => document.querySelector('[data-badge="tasks"]')?.classList.contains("hof-badge-danger"), null, { timeout: 10000 });
+    await staff.waitForFunction(() => window.HOF.alerts.list()[0]?.urgent === true && window.HOF.alerts.list()[0].tone === "late" && /ACİL GÖREV/.test(window.HOF.alerts.list()[0].eyebrow), null, { timeout: 10000 });
     await staff.click('#hof-sidecard [data-action="tasks"]');
     await staff.waitForSelector(".hof-modal [data-complete]");
+    expect(await staff.$eval(".hof-modal .hof-list-item", node => node.classList.contains("is-urgent")), "görev listesinde acil görev kırmızı olmalı");
     const tabs = await staff.$$eval(".hof-modal [data-view]", nodes => nodes.map(node => node.textContent));
     expect(tabs.join("|") === "Açık görevlerim|Tamamladıklarım", `personel yalnızca kendi görevlerini görmeli: ${tabs}`);
     expect(!(await staff.$(".hof-modal [data-new]")), "personel yeni görev açamamalı");
     await staff.click(".hof-modal [data-complete]");
     await staff.waitForFunction(() => document.querySelector(".hof-modal [data-list]")?.textContent.includes("açık görev yok"));
+    await staff.waitForFunction(() => !document.querySelector('[data-badge="tasks"]')?.classList.contains("hof-badge-danger"), null, { timeout: 10000 });
   });
 
   await step("sohbet: özel mesaj anında gelir, okundu görünür, dosya numarası dosyayı açar", async () => {

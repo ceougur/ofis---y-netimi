@@ -403,7 +403,8 @@ export function registerWorkspaceRoutes(router, { store, auth, audit, dataset, c
     const assigneeId = person?.id || null;
     store.run("INSERT INTO tasks (id, title, case_key, assignee, assignee_id, due_date, priority, status, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, 'open', ?, ?)", itemId, title, key, assignee, assigneeId, text(body.dueDate).slice(0, 10), priority, user.id, now());
     audit(user, "task.created", itemId, { title, caseKey: key, assignee });
-    changed(user, "task", { caseKey: key || null, title, assignee, assigneeId }, taskAudience({ assignee, assignee_id: assigneeId, created_by: user.id }));
+    // Öncelik ve son tarih olayda da gider: acil görev alan kişinin ekranında kırmızı uyarı çıkar (v2.0.5).
+    changed(user, "task", { caseKey: key || null, title, assignee, assigneeId, priority, dueDate: text(body.dueDate).slice(0, 10) }, taskAudience({ assignee, assignee_id: assigneeId, created_by: user.id }));
     ok(res, { id: itemId });
   });
 

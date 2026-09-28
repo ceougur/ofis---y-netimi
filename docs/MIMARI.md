@@ -253,6 +253,16 @@ Görünüme (`dataset.view`) yalnızca elle değer yazılmış satırlar `serbes
 
 **Kurulum (Windows).** `servis-kur.cmd` çıktısını önce `%TEMP%` dosyasına yazar, sonra kurulum günlüğüne ekler; klasör izinleri `/T` olmadan yalnızca klasöre verilir ve içindekiler `/reset` ile miras alır (2.0.0–2.0.3'te dosyalara yazılan `(OI)(CI)` izni dosyayı herkese kapatıyor, servis günlüğünü açamıyordu). `setup.iss` betiğin çıktısını günlükler, servis sağlığını `bootstrap.mjs saglik` ile doğrular, gerekirse yeniden başlatır ve `SERVIS-KURULUM-HATASI` gösterir. `windows.yml` mevcut kurulumun üstüne kurulumu da sınar.
 
+## 2.0.5 eklemeleri
+
+**Taksit kartı ve çıktı.** `hof-plans.js` kart görünümü: yapışkan işlem çubuğu (`.hof-plan-head`), kişi paneli (`.hof-plan-profile`: bilgiler + bilgi notu), göstergeler, istemci tarafı süzgeçler (`view.itemFilter`, `view.entryFilter`) ve toplam satırları. Çıktı: `GET /api/workspace/plans/:id/ekstre.pdf` (kart) ve `GET /api/workspace/plans/liste.pdf?q&group&subgroup&status&sort&title` (liste; `tablePdf`). Yazdır, PDF'i gizli çerçevede açıp `print()` çağırır; engellenirse yeni sekmede açılır. Liste sıralaması `sort=no|name|due|remaining` (varsayılan Sıra No; tarayıcıda hatırlanır).
+
+**Sıra No** (göç 8, `plans.ref_no`): Excel'deki "S.N" kolonu (`mapHeaders` rolü `seq`), yoksa en büyük sayısal numaradan devam; göç var olan kartlara açılış sırasıyla numara verir. Sayısal sıralama `localeCompare(..., { numeric: true })`.
+
+**Başlık eşleme.** `mapHeaders` başlıkları sadeleştirir (küçük harf, Türkçe harf → ASCII, noktalama ve parantez → boşluk) ve sıralı rol kurallarıyla eşler: `seq, phone, subgroup, group, installment, count, total, firstDue, note, name`. Her başlık ilk boş rolü alır; yalnız alt grup bulunursa grup sayılır.
+
+**Acil görev.** `POST /api/workspace/tasks` olayı `priority` ve `dueDate` taşır. İstemci: acil görev atanana kırmızı kısa bildirim (`hof-toast-error`), `hof-alerts.js` görevleri son tarihten bağımsız `urgent` uyarısı olarak üretir (`rank -1`, `tone late`, tur sınırına takılmaz, zilde "Acil görevler" grubu), Görevler rozeti `hof-badge-danger`, görev listesi `is-urgent`, işlem geçmişi `data-urgent`.
+
 ## Akıllı veri motoru ve ofis profili (v1.6)
 
 `server/lib/insight/` saf fonksiyonlardan oluşur: internete çıkmaz, veritabanına yazmaz, aynı girdiye aynı çıktıyı verir. Sonuç, verinin parmak izine (satır/düzeltme/kayıt sayıları ve son değişiklik zamanları, verinin adı, yerel gün) göre bellekte önbelleklenir. Veri değişince (`dataset.onChange`) önbellek düşer. 200 bin satır yaklaşık 1,5 sn'de çözümlenir.
