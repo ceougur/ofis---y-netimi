@@ -10,12 +10,24 @@ set "NODE=%ROOT%\runtime\node.exe"
 set "SVC=DestekOfis"
 set "ACCOUNT=NT SERVICE\DestekOfis"
 set "LOG=%ROOT%\logs\kurulum.log"
-if not exist "%ROOT%\logs" mkdir "%ROOT%\logs"
-call :main %* >> "%LOG%" 2>&1
-exit /b %ERRORLEVEL%
+if not exist "%ROOT%\logs" mkdir "%ROOT%\logs" 2>nul
+rem Cikti once gecici bir dosyaya yazilir, sonra kurulum gunlugune eklenir. Gunluk klasoru yazilamiyorsa (izin,
+rem kilit) betik yine calisir ve cikti %TEMP% altinda kalir; eskiden yonlendirme basarisiz olunca betik hic
+rem calismadan 0 ile cikiyor, kurulum programi da "basarili" saniyordu (mevcut sunucunun ustune kurulumda goruldu).
+set "RUN=%TEMP%\destekofis-servis-kur-%RANDOM%%RANDOM%.log"
+call :main %* > "%RUN%" 2>&1
+set "RC=%ERRORLEVEL%"
+if not exist "%RUN%" (set "RC=70" & echo Cikti dosyasi acilamadi: %RUN%)
+type "%RUN%" >> "%LOG%" 2>nul || type "%RUN%" >> "%TEMP%\destekofis-kurulum.log" 2>nul
+rem Kurulum programi ikinci parametreyle bir dosya verirse betigin ciktisi oraya da kopyalanir (kurulum gunlugu icin).
+if not "%~2"=="" copy /y "%RUN%" "%~2" >nul 2>&1
+del "%RUN%" >nul 2>&1
+exit /b %RC%
 
 :main
 echo ==== %DATE% %TIME% DestekOfis servis kurulumu ====
+echo Betik: %~f0 ^| kok: %ROOT% ^| surum: %~1
+for /f "tokens=*" %%U in ('whoami 2^>nul') do echo Kullanici: %%U
 if not exist "%NSSM%" (echo nssm bulunamadi: %NSSM% & exit /b 2)
 if not exist "%NODE%" (echo node bulunamadi: %NODE% & exit /b 3)
 
@@ -63,12 +75,18 @@ rem    yalnizca SYSTEM, Yoneticiler ve servis hesabi erisir (SID'ler Turkce Wind
 for %%D in (data backups logs config app) do (
   if not exist "%ROOT%\%%D" mkdir "%ROOT%\%%D"
 )
+rem    Izinler yalnizca KLASORE yazilir; icindeki dosyalar "/reset" ile klasorden miras alir. Eskiden klasor izni
+rem    "/T" ile dosyalara da uygulaniyordu: (OI)(CI) bayrakli izin bir DOSYAYA yazilinca gecersiz kaliyor ve dosya
+rem    herkese kapaniyordu (2.0.0-2.0.3: mevcut kurulumun ustune kurulumda servis kendi gunlugunu acamayip duruyor,
+rem    kurulum gunlugu okunamiyordu). Bu adim eski kurulumlardaki bozuk dosya izinlerini de onarir.
 icacls "%ROOT%" /inheritance:r /grant:r "*S-1-5-18:(OI)(CI)F" "*S-1-5-32-544:(OI)(CI)F" "*S-1-5-32-545:(OI)(CI)RX" "%ACCOUNT%:(OI)(CI)RX" /Q >nul || exit /b 20
-icacls "%ROOT%\*" /reset /T /C /Q >nul
+icacls "%ROOT%\*" /reset /T /C /Q >nul 2>&1
 for %%D in (data backups logs config) do (
-  icacls "%ROOT%\%%D" /inheritance:r /grant:r "*S-1-5-18:(OI)(CI)F" "*S-1-5-32-544:(OI)(CI)F" "%ACCOUNT%:(OI)(CI)M" /T /Q >nul || exit /b 21
+  icacls "%ROOT%\%%D" /inheritance:r /grant:r "*S-1-5-18:(OI)(CI)F" "*S-1-5-32-544:(OI)(CI)F" "%ACCOUNT%:(OI)(CI)M" /Q >nul || exit /b 21
+  icacls "%ROOT%\%%D\*" /reset /T /C /Q >nul 2>&1
 )
-icacls "%ROOT%\app" /grant "%ACCOUNT%:(OI)(CI)M" /T /Q >nul || exit /b 22
+icacls "%ROOT%\app" /grant "%ACCOUNT%:(OI)(CI)M" /Q >nul || exit /b 22
+icacls "%ROOT%\app\*" /reset /T /C /Q >nul 2>&1
 
 rem 4) Guvenlik duvari: yalnizca Ozel ve Etki alani aglarinda, yalnizca DestekOfis calisma zamanina izin.
 rem    Kural eklenemezse (ornegin guvenlik duvarini baska bir guvenlik yazilimi yonetiyorsa) kurulum durmaz:
@@ -84,11 +102,25 @@ if defined FWWARN echo UYARI: Guvenlik duvari kurali eklenemedi; servis yine de 
 rem 5) Servisi baslat. "nssm start", servis henuz "baslatiliyor" durumundayken hata koduyla donebilir
 rem    ("Unexpected status SERVICE_START_PENDING"); bu hata sayilmaz, asil karari saglik kontrolu verir.
 "%NSSM%" start %SVC% || echo Not: nssm start servis tamamen acilmadan dondu; saglik kontrolu bekleniyor.
+rem    Mevcut sunucunun ustune kurulumda eski servis sureci henuz tam kapanmamis olabilir: servis hemen durduysa
+rem    birkac saniye sonra bir kez daha baslatilir (durumu ve nssm'in olay kaydi hata halinde kurulum gunlugune yazilir).
+for /L %%N in (1,1,3) do (
+  "%NSSM%" status %SVC% 2>nul | findstr /C:"SERVICE_STOPPED" >nul && (
+    echo Servis durmus gorunuyor; %%N. yeniden baslatma denemesi.
+    timeout /t 4 /nobreak >nul
+    "%NSSM%" start %SVC% 2>&1
+  )
+)
 rem 6) Saglik kontrolu (en fazla 120 sn) paketteki Node.js ile yapilir; PowerShell kisitli bilgisayarlarda da calisir.
 rem    Servis ilk acilista guncelleme indiriyorsa bakim yaniti (503) verir; bu da servisin calistigini gosterir.
 rem    Cikis kodlari: 0 tamam, 60 calisiyor ama guvenlik duvari kurali eklenemedi, digerleri hata (setup.iss aciklar).
 "%NODE%" --disable-warning=ExperimentalWarning "%ROOT%\bootstrap.mjs" saglik 120
-if errorlevel 1 ("%NSSM%" status %SVC% & exit /b 50)
+if errorlevel 1 (
+  "%NSSM%" status %SVC%
+  echo --- nssm olay kayitlari ---
+  powershell -NoProfile -ExecutionPolicy Bypass -Command "Get-WinEvent -FilterHashtable @{LogName='Application'; ProviderName='nssm'} -MaxEvents 12 -ErrorAction SilentlyContinue | ForEach-Object { $_.TimeCreated.ToString('HH:mm:ss') + ' ' + $_.Message.Replace([char]10, ' ') }"
+  exit /b 50
+)
 if defined FWWARN (echo Kurulum tamamlandi; guvenlik duvari kurali eklenemedi. & exit /b 60)
 echo Kurulum tamamlandi.
 exit /b 0

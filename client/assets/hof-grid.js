@@ -9,10 +9,46 @@
 (() => {
   "use strict";
   const HOF = window.HOF;
-  const MIN = 96;
+  const MIN = 72;
   const MAX = 360;
-  const FIRST_MIN = 150;
+  const FIRST_MIN = 110;
   const SAMPLE = 250; // genişlik için bakılan en çok satır
+  // Kullanıcının elle verdiği genişlikler (v2.0.4): başlığın sağ kenarından sürüklenir, bu bilgisayarda hatırlanır
+  // (tablo başlıkları aynı kaldıkça). Tutamaca çift tıklayınca kolon içeriğe göre otomatik genişliğe döner.
+  const STORE_KEY = "hof.colw";
+  const USER_MIN = 44;
+  const USER_MAX = 720;
+  const readStore = () => {
+    try {
+      const value = JSON.parse(localStorage.getItem(STORE_KEY) || "{}");
+      return value && typeof value === "object" ? value : {};
+    } catch {
+      return {};
+    }
+  };
+  const writeStore = value => {
+    try {
+      localStorage.setItem(STORE_KEY, JSON.stringify(value));
+    } catch {
+      // gizli pencere ya da dolu depolama: genişlik yalnızca bu oturumda kalır
+    }
+  };
+  const layoutKey = heads => heads.map(th => th.textContent.trim()).join("|");
+  const savedWidths = heads => readStore()[layoutKey(heads)] || {};
+  const saveWidth = (heads, column, width) => {
+    const all = readStore();
+    const key = layoutKey(heads);
+    const entry = { ...(all[key] || {}) };
+    if (width === null) delete entry[column];
+    else entry[column] = width;
+    if (Object.keys(entry).length) all[key] = entry;
+    else delete all[key];
+    writeStore(all);
+  };
+  const applyTableWidth = table => {
+    const heads = [...(table.tHead?.rows[0]?.cells || [])];
+    table.style.width = `${heads.reduce((sum, th) => sum + (parseFloat(th.style.width) || th.offsetWidth), 0)}px`;
+  };
 
   const canvas = document.createElement("canvas");
   const context = canvas.getContext("2d");
@@ -53,13 +89,77 @@
       const p90 = values.length ? values[Math.min(values.length - 1, Math.floor(values.length * 0.9))] : 0;
       return Math.round(Math.min(MAX, Math.max(c === 0 ? FIRST_MIN : MIN, headNeed, p90 + pad)));
     });
+    const saved = savedWidths(heads);
     heads.forEach((th, c) => {
-      const value = `${widths[c]}px`;
+      const own = saved[th.textContent.trim()];
+      const value = `${own ? Math.min(USER_MAX, Math.max(USER_MIN, own)) : widths[c]}px`;
       if (th.style.width !== value) th.style.width = value;
+      th.classList.toggle("hof-col-user", Boolean(own));
     });
-    const total = widths.reduce((sum, value) => sum + value, 0);
-    table.style.width = `${total}px`;
+    applyTableWidth(table);
     table.classList.add("hof-sized");
+  }
+  // Tutamaçlar her güncellemede yerine konur: arayüz başlık satırını yeniden çizince (sıralama, veri yenileme)
+  // içindeki tutamaç silinir; genişlik hesabı ise başlıklar değişmedikçe yinelenmez.
+  function ensureGrips(table) {
+    for (const th of table.tHead?.rows[0]?.cells || []) {
+      if (!th.querySelector(":scope > .hof-col-grip")) th.appendChild(HOF.el("span", { class: "hof-col-grip", title: "Sürükleyerek daraltın/genişletin · çift tık: otomatik", "aria-hidden": "true" }));
+    }
+  }
+
+  // ---------- Kolon genişliğini sürükleme ----------
+  let grip = null;
+  document.addEventListener("pointerdown", event => {
+    const handle = event.target.closest?.(".hof-col-grip");
+    if (!handle || event.button !== 0) return;
+    const th = handle.closest("th");
+    const table = th?.closest("table");
+    if (!table) return;
+    grip = { th, table, x: event.clientX, width: th.getBoundingClientRect().width, id: event.pointerId, moved: false };
+    handle.setPointerCapture?.(event.pointerId);
+    table.classList.add("hof-col-dragging");
+    event.preventDefault();
+    event.stopPropagation();
+  }, true);
+  document.addEventListener("pointermove", event => {
+    if (!grip || event.pointerId !== grip.id) return;
+    const width = Math.round(Math.min(USER_MAX, Math.max(USER_MIN, grip.width + event.clientX - grip.x)));
+    if (Math.abs(event.clientX - grip.x) > 2) grip.moved = true;
+    grip.th.style.width = `${width}px`;
+    applyTableWidth(grip.table);
+  });
+  const endDrag = event => {
+    if (!grip || (event.pointerId !== undefined && event.pointerId !== grip.id)) return;
+    const { th, table, moved } = grip;
+    grip = null;
+    table.classList.remove("hof-col-dragging");
+    if (!moved) return;
+    const heads = [...table.tHead.rows[0].cells];
+    saveWidth(heads, th.textContent.trim(), parseFloat(th.style.width));
+    th.classList.add("hof-col-user");
+    requestAnimationFrame(update);
+  };
+  document.addEventListener("pointerup", endDrag);
+  document.addEventListener("pointercancel", endDrag);
+  document.addEventListener("dblclick", event => {
+    const handle = event.target.closest?.(".hof-col-grip");
+    if (!handle) return;
+    const th = handle.closest("th");
+    const table = th.closest("table");
+    saveWidth([...table.tHead.rows[0].cells], th.textContent.trim(), null);
+    th.classList.remove("hof-col-user");
+    sizedFor = "";
+    update();
+    event.preventDefault();
+  });
+  // Tutamaca tıklamak başlığın kendi tıklama işini (sıralama, kalem) tetiklemesin.
+  for (const type of ["click", "mousedown", "mouseup"]) {
+    document.addEventListener(type, event => {
+      if (event.target.closest?.(".hof-col-grip")) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+    }, true);
   }
 
   // ---------- Yapışkan yatay kaydırma çubuğu ----------
@@ -158,6 +258,7 @@
       return;
     }
     size(table);
+    ensureGrips(table);
     if (observed !== wrap) {
       observed?.removeEventListener("scroll", onWrapScroll);
       wrap.addEventListener("scroll", onWrapScroll, { passive: true });

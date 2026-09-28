@@ -85,6 +85,8 @@
   // Tahsilat penceresi: kayıt seçili olmasa da açılır; kalan tutar ve açıklama hazır gelir.
   function pay(item) {
     closeCard();
+    // Taksit kartı kalemi (v2.0.4): tahsilat kartın üstünden girilir.
+    if (item.source === "plan") return HOF.plans?.pay(item);
     if (!HOF.workspace?.payment) return;
     HOF.workspace.payment({
       key: item.caseKey,
@@ -97,8 +99,9 @@
 
   function openCard(item, pillNode) {
     closeCard();
-    const canPay = HOF.can("payments.create");
-    const canSettle = HOF.can("records.edit");
+    const plan = item.source === "plan";
+    const canPay = plan ? HOF.can("plans.collect") : HOF.can("payments.create");
+    const canSettle = !plan && HOF.can("records.edit");
     const card = HOF.el(
       "div",
       { class: "hof-payment-action-card", role: "dialog", "aria-label": `${who(item)} tahsilatı` },
@@ -116,7 +119,7 @@
         ${canSettle ? `<button type="button" data-act="paid" class="hof-payment-mark" title="Tahsilat girmeden kapatır (ör. başka yoldan ödendi)">Ödendi say</button>` : ""}
         ${canSettle && item.promise ? '<button type="button" data-act="cancelled" class="hof-payment-cancelled">Söz iptal</button>' : ""}
       </div>
-      <button type="button" class="hof-payment-go" data-act="go">Kayda git →</button>`,
+      <button type="button" class="hof-payment-go" data-act="go">${plan ? "Taksit kartını aç →" : "Kayda git →"}</button>`,
     );
     card.addEventListener("click", event => {
       const button = event.target.closest("[data-act]");
@@ -125,7 +128,8 @@
       if (act === "pay") pay(item);
       else if (act === "go") {
         closeCard();
-        HOF.revealRecord?.(item.caseKey, { tab: item.tab });
+        if (plan) HOF.plans?.open(item.planId);
+        else HOF.revealRecord?.(item.caseKey, { tab: item.tab });
       } else settle(item, act, button);
     });
     card.querySelector(".hof-payment-action-close").onclick = closeCard;
@@ -217,7 +221,7 @@
     HOF.on("dues:refresh", () => load());
     HOF.on("live:workspace.changed", change => {
       if (!change) return;
-      if (["dues", "activity", "cash", "records", "source"].includes(change.kind) || change.dataset) reloadSoon(800);
+      if (["dues", "activity", "cash", "records", "source", "plans"].includes(change.kind) || change.dataset) reloadSoon(800);
     });
     // Gün dönünce (sayfa uzun süre açık kalırsa) takvim yenilenir.
     setInterval(() => {

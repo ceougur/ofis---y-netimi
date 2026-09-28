@@ -6,7 +6,7 @@ import { computeDeadlines, computeDues } from "../lib/insight/dues.mjs";
 const SETTLED_KEY = "dues.settled";
 const MAX_SETTLED = 5000;
 
-export function registerDueRoutes(router, { auth, store, dataset, profile, events, audit }) {
+export function registerDueRoutes(router, { auth, store, dataset, profile, events, audit, plans }) {
   const cache = new Map(); // oturum → { key, result }
   const settingKey = () => (dataset.settingKey ? dataset.settingKey(SETTLED_KEY) : SETTLED_KEY);
   const readSettled = () => {
@@ -27,7 +27,7 @@ export function registerDueRoutes(router, { auth, store, dataset, profile, event
     const settledRaw = store.setting(settingKey(), "{}") || "{}";
     // Sekme adları ve gizlenen sekmeler (v2.0.2) görünümü değiştirir; anahtara girer.
     const tabState = ["dataset.tabs.alias", "dataset.tabs.hidden"].map(name => store.setting(dataset.settingKey ? dataset.settingKey(name) : name, "") || "").join("|");
-    const key = [profile.fingerprint(), paymentsState(), settledRaw.length, settledRaw.slice(-64), tabState, now.toDateString()].join("|");
+    const key = [profile.fingerprint(), paymentsState(), settledRaw.length, settledRaw.slice(-64), tabState, plans?.fingerprint ? plans.fingerprint() : "", now.toDateString()].join("|");
     const session = dataset.currentKey();
     const hit = cache.get(session);
     if (hit && hit.key === key) return hit.result;
@@ -40,7 +40,10 @@ export function registerDueRoutes(router, { auth, store, dataset, profile, event
     const { items, sources, dormant } = computeDues({ rows, tabs, payments, settled: readSettled(), now, forced });
     const deadlines = computeDeadlines({ rows, tabs, now, exclude: sources, forced });
     const local = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
-    const result = { items, deadlines, sources, dormant, today: local, generatedAt: now.toISOString() };
+    // Taksit kartlarının vadesi gelen/geçen taksitleri (v2.0.4) aynı listeye girer: şerit ve bildirimler tek kaynaktan okur.
+    // Kart oturumdan bağımsızdır (Kasa gibi); her oturumda görünür.
+    const planItems = plans?.dueItems ? plans.dueItems(local) : [];
+    const result = { items: [...items, ...planItems], deadlines, sources, dormant, today: local, generatedAt: now.toISOString() };
     cache.set(session, { key, result });
     return result;
   }

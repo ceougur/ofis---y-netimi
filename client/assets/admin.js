@@ -323,7 +323,7 @@
   $("#adm-audit-type").addEventListener("change", loadAudit);
 
   // ---------- Silinenler (v2.0.2) ----------
-  const TRASH_GROUPS = { row: ["row", "tab"], document: ["document"], free: ["free-sheet", "free-row", "free-column"], money: ["payment", "cash"] };
+  const TRASH_GROUPS = { row: ["row", "tab"], document: ["document"], free: ["free-sheet", "free-row", "free-column"], money: ["payment", "cash", "plan", "plan-entry"] };
   let trashItems = [];
   function renderTrash() {
     const body = $("#adm-trash");

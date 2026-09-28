@@ -30,6 +30,7 @@ import { registerAdminRoutes } from "./routes/admin.mjs";
 import { registerAuthRoutes } from "./routes/auth.mjs";
 import { registerCashRoutes } from "./routes/cash.mjs";
 import { registerDueRoutes } from "./routes/dues.mjs";
+import { registerPlanRoutes } from "./routes/plans.mjs";
 import { registerDocumentRoutes } from "./routes/documents.mjs";
 import { registerFreeRoutes } from "./routes/free.mjs";
 import { createFreeSheets } from "./lib/free-sheets.mjs";
@@ -136,6 +137,8 @@ export function createApp(overrides = {}) {
   registerAdminRoutes(router, context);
   registerWorkspaceRoutes(router, context);
   registerCashRoutes(router, context);
+  // Taksitler (v2.0.4): Kasa ve tahsilat takvimi bu servisin hareketlerini ve gecikmelerini okur.
+  context.plans = registerPlanRoutes(router, context);
   registerDueRoutes(router, context);
   const documents = registerDocumentRoutes(router, context);
   registerTrashRoutes(router, { ...context, documents });

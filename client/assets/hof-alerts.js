@@ -150,6 +150,7 @@
         text: `${item.caseNo && item.person ? `${item.caseNo} · ` : ""}${item.label} · ${item.kind === "month" ? item.dueText : `vade ${item.dueText}`} · ${amount}`,
         caseKey: item.caseKey,
         tab: item.tab,
+        planId: item.planId || "",
         due: item,
         item,
         days: item.days,
@@ -208,9 +209,13 @@
   }
 
   // Tahsilat penceresi tutar ve açıklama hazır açılır; kaydedince kalem takvimden düşer.
-  const canPay = () => HOF.can("payments.create") && Boolean(HOF.workspace?.payment);
+  // Taksit kartı kalemi (v2.0.4): tahsilat kartın üstünden girilir (hof-plans.js).
+  const isPlan = item => item?.source === "plan";
+  const canPay = item => (isPlan(item) ? HOF.can("plans.collect") && Boolean(HOF.plans) : HOF.can("payments.create") && Boolean(HOF.workspace?.payment));
   const pay = item =>
-    HOF.workspace.payment({ key: item.caseKey, title: who(item), amount: item.amount, note: `${item.label} · ${item.dueText}`, intro: `<b>${esc(item.label)}</b> · vade ${esc(item.dueText)}${item.amount ? ` · beklenen <b>${esc(money(item.amount))}</b>` : ""}.` });
+    isPlan(item)
+      ? HOF.plans.pay(item)
+      : HOF.workspace.payment({ key: item.caseKey, title: who(item), amount: item.amount, note: `${item.label} · ${item.dueText}`, intro: `<b>${esc(item.label)}</b> · vade ${esc(item.dueText)}${item.amount ? ` · beklenen <b>${esc(money(item.amount))}</b>` : ""}.` });
 
   // ---------- Gerçekleştirildi (v2.0.2) ----------
   const DONE_TEXT = "Gerçekleştirildi";
@@ -228,7 +233,7 @@
   };
   const canDone = alert => {
     if (alert.type === "task") return Boolean(alert.taskId) && HOF.can("tasks.complete");
-    if (!alert.item || !HOF.can("records.edit")) return false;
+    if (!alert.item || !HOF.can("records.edit") || isPlan(alert.item)) return false;
     return alert.item.recurring ? String(alert.item.id || "").startsWith("due|") : Boolean(alert.item.column);
   };
   const doneHint = alert =>
@@ -304,7 +309,7 @@
   function show(alert) {
     showing = alert;
     const index = alert.summary ? "" : `${alert.position}/${alert.total}`;
-    const canPayNow = alert.type === "unpaid" && canPay();
+    const canPayNow = alert.type === "unpaid" && canPay(alert.due);
     const node = HOF.el(
       "div",
       { class: `hof-notice is-${alert.tone}`, role: alert.tone === "late" ? "alert" : "status" },
@@ -317,6 +322,7 @@
           ${canPayNow ? '<button type="button" data-act="pay">Tahsilat gir</button>' : ""}
           ${canDone(alert) ? '<button type="button" class="is-done" data-act="done">✓ Gerçekleştirildi</button>' : ""}
           ${alert.caseKey ? '<button type="button" data-act="go">Kayda git</button>' : ""}
+          ${alert.planId ? '<button type="button" data-act="plan">Taksit kartı</button>' : ""}
           ${alert.summary ? '<button type="button" data-act="list">Tümünü gör</button>' : ""}
           ${alert.type === "task" && !alert.caseKey ? '<button type="button" data-act="tasks">Görevler</button>' : ""}
         </div>
@@ -335,6 +341,7 @@
       if (act === "done") markDone(alert);
       else if (act === "pay") pay(alert.due);
       else if (act === "go") HOF.revealRecord?.(alert.caseKey, { tab: alert.tab || "" });
+      else if (act === "plan") HOF.plans?.open(alert.planId);
       else if (act === "list") openPanel();
       else if (act === "tasks") HOF.workspace?.openTasks?.();
       hide(node);
@@ -459,7 +466,7 @@
           .map(
             ([title, items]) => `<section class="hof-alert-group"><h3>${esc(title)} <span>${items.length}</span></h3><ul>${items
               .map(
-                (item, index) => `<li class="is-${esc(item.tone)}"><span class="hof-alert-when">${esc(item.when || "")}</span><span class="hof-alert-main"><b>${esc(item.title)}</b><small>${esc(item.text)}</small></span><span class="hof-alert-buttons"><button type="button" class="hof-alert-dismiss" data-dismiss="${esc(title)}|${index}" title="Bu bildirimi listemden kaldır" aria-label="Bildirimi kaldır">✕</button>${canDone(item) ? `<button type="button" class="hof-button hof-button-small hof-button-done" data-done="${esc(title)}|${index}" title="${esc(doneHint(item))}">✓ Gerçekleştirildi</button>` : ""}${item.due && canPay() ? `<button type="button" class="hof-button hof-button-small" data-pay="${esc(title)}|${index}">Tahsilat gir</button>` : ""}${item.caseKey ? `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-go="${esc(title)}|${index}">Kayda git</button>` : ""}</span></li>`,
+                (item, index) => `<li class="is-${esc(item.tone)}"><span class="hof-alert-when">${esc(item.when || "")}</span><span class="hof-alert-main"><b>${esc(item.title)}</b><small>${esc(item.text)}</small></span><span class="hof-alert-buttons"><button type="button" class="hof-alert-dismiss" data-dismiss="${esc(title)}|${index}" title="Bu bildirimi listemden kaldır" aria-label="Bildirimi kaldır">✕</button>${canDone(item) ? `<button type="button" class="hof-button hof-button-small hof-button-done" data-done="${esc(title)}|${index}" title="${esc(doneHint(item))}">✓ Gerçekleştirildi</button>` : ""}${item.due && canPay(item.due) ? `<button type="button" class="hof-button hof-button-small" data-pay="${esc(title)}|${index}">Tahsilat gir</button>` : ""}${item.caseKey ? `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-go="${esc(title)}|${index}">Kayda git</button>` : ""}${item.planId ? `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-plan="${esc(title)}|${index}">Taksit kartı</button>` : ""}</span></li>`,
               )
               .join("")}</ul></section>`,
           )
@@ -472,9 +479,9 @@
       body: `<div class="hof-alert-list">${body}</div><label class="hof-check hof-alert-mute"><input type="checkbox" ${muted() ? "" : "checked"}><span>Sağ altta açılır bildirim göster (her biri 20 saniye, aralarında 10 saniye; tahsilat girilene ya da iş bitene kadar 3 saatte bir)</span></label>`,
     });
     modal.dialog.addEventListener("click", async event => {
-      const button = event.target.closest("[data-go], [data-pay], [data-dismiss], [data-done]");
+      const button = event.target.closest("[data-go], [data-pay], [data-dismiss], [data-done], [data-plan]");
       if (!button) return;
-      const [title, index] = (button.dataset.go || button.dataset.pay || button.dataset.dismiss || button.dataset.done).split("|");
+      const [title, index] = (button.dataset.go || button.dataset.pay || button.dataset.dismiss || button.dataset.done || button.dataset.plan).split("|");
       const item = groups.find(([name]) => name === title)?.[1][Number(index)];
       if (!item) return;
       if (button.dataset.dismiss || button.dataset.done) {
@@ -502,6 +509,7 @@
       }
       modal.close();
       if (button.dataset.pay) pay(item.due);
+      else if (button.dataset.plan) HOF.plans?.open(item.planId);
       else HOF.revealRecord?.(item.caseKey, { tab: item.tab || "" });
     });
     modal.dialog.querySelector(".hof-alert-mute input").addEventListener("change", event => {

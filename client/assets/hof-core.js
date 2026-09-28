@@ -271,17 +271,18 @@
     return input;
   };
 
-  HOF.formModal = ({ title, eyebrow, intro = "", fields = [], submitLabel = "Kaydet", size = "", onSubmit, extraHtml = "", onClose }) =>
+  HOF.formModal = ({ title, eyebrow, intro = "", introHtml = "", fields = [], submitLabel = "Kaydet", size = "", onSubmit, extraHtml = "", onClose, onOpen: afterOpen = null }) =>
     HOF.modal({
       title,
       eyebrow,
       size,
       onClose,
-      body: `${intro ? `<p class="hof-modal-text">${intro}</p>` : ""}<form class="hof-form" novalidate>${fields.map(HOF.fieldHtml).join("")}${extraHtml}<p class="hof-form-error" role="alert"></p><div class="hof-actions"><button type="button" class="hof-button hof-button-ghost" data-cancel>Vazgeç</button><button type="submit" class="hof-button">${HOF.esc(submitLabel)}</button></div></form>`,
+      body: `${introHtml}${intro ? `<p class="hof-modal-text">${intro}</p>` : ""}<form class="hof-form" novalidate>${fields.map(HOF.fieldHtml).join("")}${extraHtml}<p class="hof-form-error" role="alert"></p><div class="hof-actions"><button type="button" class="hof-button hof-button-ghost" data-cancel>Vazgeç</button><button type="submit" class="hof-button">${HOF.esc(submitLabel)}</button></div></form>`,
       onOpen: modal => {
         const form = modal.dialog.querySelector("form");
         const error = form.querySelector(".hof-form-error");
         form.querySelector("[data-cancel]").onclick = () => modal.close();
+        if (afterOpen) afterOpen(modal.dialog, modal);
         form.addEventListener("change", event => {
           const select = event.target.closest?.("select[data-choice]");
           if (select && select.value === OTHER_CHOICE) HOF.freeChoice(select);
