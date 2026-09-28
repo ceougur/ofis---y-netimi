@@ -75,12 +75,18 @@ rem    yalnizca SYSTEM, Yoneticiler ve servis hesabi erisir (SID'ler Turkce Wind
 for %%D in (data backups logs config app) do (
   if not exist "%ROOT%\%%D" mkdir "%ROOT%\%%D"
 )
+rem    Izinler yalnizca KLASORE yazilir; icindeki dosyalar "/reset" ile klasorden miras alir. Eskiden klasor izni
+rem    "/T" ile dosyalara da uygulaniyordu: (OI)(CI) bayrakli izin bir DOSYAYA yazilinca gecersiz kaliyor ve dosya
+rem    herkese kapaniyordu (2.0.0-2.0.3: mevcut kurulumun ustune kurulumda servis kendi gunlugunu acamayip duruyor,
+rem    kurulum gunlugu okunamiyordu). Bu adim eski kurulumlardaki bozuk dosya izinlerini de onarir.
 icacls "%ROOT%" /inheritance:r /grant:r "*S-1-5-18:(OI)(CI)F" "*S-1-5-32-544:(OI)(CI)F" "*S-1-5-32-545:(OI)(CI)RX" "%ACCOUNT%:(OI)(CI)RX" /Q >nul || exit /b 20
-icacls "%ROOT%\*" /reset /T /C /Q >nul
+icacls "%ROOT%\*" /reset /T /C /Q >nul 2>&1
 for %%D in (data backups logs config) do (
-  icacls "%ROOT%\%%D" /inheritance:r /grant:r "*S-1-5-18:(OI)(CI)F" "*S-1-5-32-544:(OI)(CI)F" "%ACCOUNT%:(OI)(CI)M" /T /Q >nul || exit /b 21
+  icacls "%ROOT%\%%D" /inheritance:r /grant:r "*S-1-5-18:(OI)(CI)F" "*S-1-5-32-544:(OI)(CI)F" "%ACCOUNT%:(OI)(CI)M" /Q >nul || exit /b 21
+  icacls "%ROOT%\%%D\*" /reset /T /C /Q >nul 2>&1
 )
-icacls "%ROOT%\app" /grant "%ACCOUNT%:(OI)(CI)M" /T /Q >nul || exit /b 22
+icacls "%ROOT%\app" /grant "%ACCOUNT%:(OI)(CI)M" /Q >nul || exit /b 22
+icacls "%ROOT%\app\*" /reset /T /C /Q >nul 2>&1
 
 rem 4) Guvenlik duvari: yalnizca Ozel ve Etki alani aglarinda, yalnizca DestekOfis calisma zamanina izin.
 rem    Kural eklenemezse (ornegin guvenlik duvarini baska bir guvenlik yazilimi yonetiyorsa) kurulum durmaz:
