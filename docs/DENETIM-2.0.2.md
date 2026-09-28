@@ -6,7 +6,7 @@ Tarih: 27.09.2026 · Kapsam: 2.0.1 yayınından sonra istenen her düzenleme, zo
 
 | Katman | Ne yapıldı | Sonuç |
 | --- | --- | --- |
-| Birim testleri | `npm test` — 38 dosya, Node 22 ve Node 24.21 | **432 / 432** geçti (iki sürümde de) |
+| Birim testleri | `npm test` — 47 dosya, Node 22.22 ve Node 24.21 | **479 / 479** geçti (iki sürümde de) |
 | Uçtan uca tarayıcı testi | `npm run test:e2e` — gerçek sunucu + Chromium, 43 adım | **43 / 43** geçti |
 | Zor veri deneme seti | 17 zor Excel/Sheets düzeni tam yığından (yükle → kaydet → görünüm → analiz → takvim → son tarihler) geçirildi | hepsi doğru okundu (bkz. §3) |
 | Program geneli regresyon | Teslimdeki 9 örnek çalışma kitabı (8 sektör örneği + zor düzenler) Excel işçisinin yoluyla (SheetJS → `sheetMatrix`, birleştirme doldurma dâhil) okunup tam yığından geçirildi | **9 / 9** sorunsuz; sektörler, roller ve takvim korundu |
