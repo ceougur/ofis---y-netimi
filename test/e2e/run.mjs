@@ -1220,6 +1220,27 @@ try {
       await download.saveAs(saved);
       const sheet = readZip(readFileSync(saved)).find(entry => entry.name === "xl/worksheets/sheet1.xml").data.toString("utf8");
       expect(sheet.includes("<t>Borç tutarı</t>") && /<c r="H3" s="\d+"><v>8500<\/v><\/c>/.test(sheet), "Excel: başlıkta verilen ad, düzeltilen Kalan sayı olarak");
+
+      // v2.0.6: sütun ekle / sil. Başlığın üzerine gelince küçük çubuk; ekle o sütunun sağına, sil tüm sütunu kaldırır.
+      const headers = () => page.evaluate(() => window.HOF.tableHeaders(document.querySelector(".dynamic-table")));
+      const before = await headers();
+      await page.locator(".dynamic-table thead th", { hasText: "Borç tutarı" }).first().hover();
+      await page.waitForSelector(".hof-colops.is-visible");
+      await page.click(".hof-colops [data-colop=add]");
+      await page.waitForSelector('.hof-modal input[name="name"]');
+      await page.fill('.hof-modal input[name="name"]', "Takip notu");
+      await page.click('.hof-modal button[type="submit"]');
+      await page.waitForFunction(() => window.HOF.tableHeaders(document.querySelector(".dynamic-table")).includes("Takip notu"), null, { timeout: 8000 });
+      const added = await headers();
+      expect(added.indexOf("Takip notu") === added.indexOf("Tutar") + 1 && added.length === before.length + 1, `yeni sütun Tutar'ın sağında: ${added.join(", ")}`);
+      await page.mouse.move(5, 5);
+      await page.locator(".dynamic-table thead th", { hasText: "Takip notu" }).first().hover();
+      await page.waitForSelector(".hof-colops.is-visible");
+      await page.click(".hof-colops [data-colop=del]");
+      await page.waitForFunction(() => !window.HOF.tableHeaders(document.querySelector(".dynamic-table")).includes("Takip notu"), null, { timeout: 8000 });
+      expect((await headers()).join("|") === before.join("|"), "boş sütun sorulmadan silindi, sütunlar sola kaydı");
+      await page.click('.hof-toast:has-text("“Takip notu” sütunu silindi") button:has-text("Geri al")');
+      await page.waitForFunction(() => window.HOF.tableHeaders(document.querySelector(".dynamic-table")).includes("Takip notu"), null, { timeout: 8000 });
     } finally {
       await context.close();
       await smartApp.close();

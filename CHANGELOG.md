@@ -2,7 +2,12 @@
 
 Sürümler [anlamsal sürümleme](https://semver.org/lang/tr/) kurallarına uyar.
 
-## 2.0.6 — A5 makbuz, kayıt tarihi, listede bilgi notu, kolon adına yazılan tarih
+## 2.0.6 — Tabloda sütun ekle/sil, A5 makbuz, kayıt tarihi, listede bilgi notu, kolon adına yazılan tarih
+
+- **Tabloda sütun ekleme ve silme.** Ortadaki tabloda yönetici bir sütun başlığının üzerine gelince başlığın üstünde küçük **+ Ekle** ve kırmızı **× Sil** çıkar.
+  - **Ekle:** o sütunun hemen sağına, sekmedeki her satıra boş hücreyle yeni bir sütun ekler (adı sorulur). Değerleri kartta ✎ ya da **Düzenle** ile yazılır.
+  - **Sil:** sütunun tamamını (başlık ve tüm satırlardaki hücreler) kaldırır; sağdaki sütunlar sola kayar, boşluk kalmaz. Sütunda dolu hücre varsa kaç kayıtta dolu olduğunu söyleyip onay ister; boş sütun hemen silinir.
+  - Silinen sütun tablodan, kartlardan, aramadan, uyarılardan ve Excel çıktısından kalkar. Kaynak Excel/Sheets dosyası değişmez, Google Sheets eşitlemesi sütunu geri getirmez. Bildirimdeki **Geri al** ya da *Yönetim → Silinenler* ile eski yerine döner. Ekleme ve silme işlem geçmişine yazılır.
 
 - **Makbuz A5 boyutunda ve firmanızın adıyla.** Tahsilat/ödeme makbuzu A5 dikey (148 × 210 mm) tek sayfadır; yazıcıya A5 kâğıt koyup yazdırırsınız, kâğıt boşa gitmez. Üstte firmanızın adı yazar (*Yönetim → Ofis adı*); ad girilmemişse o alan boş kalır. Makbuzda ve kart ekstresinde program adı ("DestekOfis") yazmaz.
 - **Taksit kartında kayıt tarihi.** Kişinin kaydedildiği gün kartta ve listede görünür. Programda yeni kart açarken bugünün tarihi hazır gelir, değiştirilebilir. Excel'den yüklemede "Kayıt tarihi" (ya da "Kayıt", "Sözleşme tarihi") kolonu okunur; kolon yoksa ya da hücre boşsa bugün yazılır. Liste kayıt tarihine göre de sıralanır (yeni önce). Önceden açılan kartlara açıldıkları gün yazıldı (veritabanı göçü 9).

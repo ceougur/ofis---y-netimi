@@ -10,6 +10,7 @@ import { HttpError, ok, readJson, text } from "../lib/http.mjs";
 const KIND_LABELS = {
   row: "Tablo kaydı",
   tab: "Sekme",
+  column: "Tablo sütunu",
   document: "Belge",
   "free-sheet": "Serbest sayfa",
   "free-row": "Serbest sayfa satırı",
@@ -100,6 +101,20 @@ export function registerTrashRoutes(router, { store, auth, audit, events, datase
         note: "Sekme ve kayıtları eski yerinde yeniden görünür. Veriler silinmemişti.",
       });
     }
+    // Silinen tablo sütunları (v2.0.6): verisi durur; geri yüklenince eski yerinde görünür.
+    for (const item of dataset.hiddenColumns ? dataset.hiddenColumns() : []) {
+      const actor = store.get("SELECT display_name AS name FROM users WHERE id = ?", item.by);
+      items.push({
+        id: `column:${item.datasetKey}\u0000${item.tab}\u0000${item.column}`,
+        kind: "column",
+        title: item.column,
+        detail: [item.tabName ? `Sekme: ${item.tabName}` : "", item.added ? "Programda eklenmiş sütun" : "", `${item.filled || 0} kayıtta bilgi vardı`, where(item.datasetKey)].filter(Boolean).join(" · "),
+        deletedAt: item.at,
+        actorName: actor?.name || "",
+        restorable: true,
+        note: "Sütun ve hücreleri eski yerinde yeniden görünür. Veriler silinmemişti.",
+      });
+    }
     for (const item of free?.deletedSheets ? free.deletedSheets() : []) {
       items.push({
         id: `free-sheet:${item.id}`,
@@ -173,6 +188,15 @@ export function registerTrashRoutes(router, { store, auth, audit, events, datase
       profile?.invalidate();
       publish(user, { kind: "records", datasetKey: item.source_name, caseKey: item.case_key });
       return ok(res, { restored: "row", message: "Kayıt eski yerinde yeniden görünüyor." });
+    }
+
+    if (source === "column") {
+      const [datasetKey, tab, column] = ref.split("\u0000");
+      if (!datasetKey || tab === undefined || !column) throw new HttpError(400, "Sütun tanınmadı.");
+      const result = dataset.withKey(datasetKey, () => dataset.unhideColumn(user, { tab, column }));
+      profile?.invalidate();
+      publish(user, { kind: "source", datasetKey });
+      return ok(res, { restored: "column", message: `“${result.column}” sütunu geri geldi.` });
     }
 
     if (source === "tab") {

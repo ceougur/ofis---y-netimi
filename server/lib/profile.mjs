@@ -339,7 +339,8 @@ export function createProfileService({ store, dataset, audit, events, log, free 
     const day = clock();
     const custom = store.setting("sectors.custom", "") || "";
     const roles = store.setting(sessionKey(K.roles), "") || "";
-    return [current(), row.rowsCount, row.overridesState, row.recordsState, row.deletedCount, store.setting(sessionKey("dataset.changedAt"), ""), store.setting(sessionKey("dataset.label"), ""), `${day.getFullYear()}-${day.getMonth()}-${day.getDate()}`, free ? free.fingerprint() : "", `${custom.length}:${custom.slice(-48)}`, `${roles.length}:${roles.slice(-64)}`, store.setting(sessionKey("dataset.unflagged"), "").length].join("|");
+    const layout = store.setting(sessionKey("dataset.columns.layout"), "") || "";
+    return [`${layout.length}:${layout.slice(-64)}`, current(), row.rowsCount, row.overridesState, row.recordsState, row.deletedCount, store.setting(sessionKey("dataset.changedAt"), ""), store.setting(sessionKey("dataset.label"), ""), `${day.getFullYear()}-${day.getMonth()}-${day.getDate()}`, free ? free.fingerprint() : "", `${custom.length}:${custom.slice(-48)}`, `${roles.length}:${roles.slice(-64)}`, store.setting(sessionKey("dataset.unflagged"), "").length].join("|");
   }
 
   async function analysis() {

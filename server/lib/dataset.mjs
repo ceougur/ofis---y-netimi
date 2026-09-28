@@ -54,7 +54,11 @@ const S = {
   choices: "dataset.choices",
   // v2.0.2: kullanıcının "Sorun yok" dediği işaretli kayıtlar ({kayıt anahtarı: {by, at}}).
   unflagged: "dataset.unflagged",
+  // v2.0.6: ortadaki tabloda eklenen ve silinen sütunlar ({asıl sekme: {added: [{name, after, by, at}], hidden: {kolon: {...}}}}).
+  columnLayout: "dataset.columns.layout",
 };
+const MAX_ADDED_COLUMNS = 60;
+const COLUMN_NAME_MAX = 60;
 const ROLE_TEXT = { id: "kimlik", person: "kişi", org: "kurum", money: "tutar", date: "tarih", status: "durum", category: "kategori", phone: "telefon", email: "e-posta", address: "adres", note: "not", tckn: "T.C. kimlik no", vkn: "vergi no", iban: "IBAN", city: "il", plate: "plaka", url: "bağlantı", number: "sayı", percent: "oran", sequence: "sıra no", responsible: "sorumlu", text: "metin" };
 const FLAG_TEXT = { shifted: "Hücreler yan kolona kaymış görünüyor (telefon tarih kolonunda, tarih tutar kolonunda)", invalid: "Biçimli hücrelerin çoğu geçersiz (tarih, telefon ya da tutar okunamıyor)" };
 // Alt tablolu sekmelerde kayıt "Sekme › Alt tablo" adını taşır (sections.mjs).
@@ -173,6 +177,131 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
     return alias[top] ? [alias[top], ...rest].join(TAB_SEP) : tab;
   };
   const isHiddenTab = (tab, hidden) => Boolean(tab && (hidden[tab] || hidden[topOf(tab)]));
+
+  // ---------- Sütun ekleme ve silme (v2.0.6) ----------
+  // Ortadaki tabloda bir sütunun tamamı (başlık ve sekmedeki her satırın hücresi) eklenir ya da silinir. Kaynak Excel/Sheets
+  // değişmez: silinen sütun görünümden (tablo, kart, arama, takvim, analiz, dışa aktarma) kalkar, verisi durur ve
+  // Yönetim → Silinenler'den geri gelir; Sheet eşitlemesi sütunu geri getirmez. Eklenen sütun yalnızca programdadır:
+  // seçilen sütunun hemen sağına yerleşir, hücreleri boş başlar, değerleri kartta ✎ / Düzenle ile yazılır (düzeltme olarak).
+  const readLayout = () => {
+    const value = parseJson(sget(S.columnLayout, ""), {});
+    return value && typeof value === "object" && !Array.isArray(value) ? value : {};
+  };
+  const writeLayout = (layout, user) => {
+    for (const [tab, entry] of Object.entries(layout)) if (!entry?.added?.length && !Object.keys(entry?.hidden || {}).length) delete layout[tab];
+    sset(S.columnLayout, JSON.stringify(layout), user.id);
+  };
+  const addedNames = entry => new Set((entry?.added || []).map(item => item.name));
+  // Satırın anahtarlarını sekmenin düzenine göre yeniden dizer: silinenler çıkar, eklenenler bağlı oldukları sütunun
+  // hemen sağına girer (bağlı olduğu sütun silinmişse onun yerine; hiç yoksa sona). İç alanlar ("__") olduğu gibi kalır.
+  function arrangeRow(row, entry) {
+    const hidden = entry.hidden || {};
+    const added = (entry.added || []).filter(item => !hidden[item.name]);
+    const own = addedNames(entry);
+    const anchors = new Map();
+    for (const item of added) {
+      if (!anchors.has(item.after)) anchors.set(item.after, []);
+      anchors.get(item.after).push(item.name);
+    }
+    const out = {};
+    const placed = new Set();
+    const place = key => {
+      for (const name of anchors.get(key) || []) {
+        if (placed.has(name)) continue;
+        placed.add(name);
+        out[name] = row[name] ?? "";
+        place(name);
+      }
+    };
+    for (const [key, value] of Object.entries(row)) {
+      if (key.startsWith("__")) {
+        out[key] = value;
+        continue;
+      }
+      if (own.has(key)) continue;
+      if (!hidden[key]) out[key] = value;
+      place(key);
+    }
+    for (const item of added) {
+      if (placed.has(item.name)) continue;
+      placed.add(item.name);
+      out[item.name] = row[item.name] ?? "";
+      place(item.name);
+    }
+    return out;
+  }
+  const cleanColumnName = value => String(value ?? "").replace(/[\u0000-\u001F\u007F]+/g, " ").replace(/\s+/g, " ").trim().slice(0, COLUMN_NAME_MAX);
+  // Görünen sekme adından düzenin anahtarı (asıl sekme adı). Tek sekmeli veride sekme şeridi görünmez; ad boş gelir.
+  function layoutTab(display) {
+    const original = originalTab(display);
+    if (original) return original;
+    const tabs = tabsOf(loadRows().rows);
+    return tabs.length === 1 ? tabs[0] : "";
+  }
+  function addColumn(user, { tab, after, name, existing = [], reserved = [] }) {
+    const key = layoutTab(tab);
+    const layout = readLayout();
+    const entry = layout[key] || { added: [], hidden: {} };
+    entry.added ||= [];
+    entry.hidden ||= {};
+    if (entry.added.length >= MAX_ADDED_COLUMNS) throw new HttpError(400, `Bir sekmeye en çok ${MAX_ADDED_COLUMNS} sütun eklenebilir.`);
+    const anchor = String(after ?? "");
+    if (anchor && !existing.includes(anchor)) throw new HttpError(404, `“${anchor}” sütunu bu sekmede yok. Sayfayı yenileyin.`);
+    const taken = new Set([...existing, ...Object.keys(entry.hidden), ...entry.added.map(item => item.name), ...reserved].map(fold));
+    let clean = cleanColumnName(name) || "Yeni sütun";
+    if (clean.startsWith("__")) throw new HttpError(400, "Sütun adı “__” ile başlayamaz.");
+    if (taken.has(fold(clean))) {
+      if (cleanColumnName(name)) throw new HttpError(409, `“${clean}” adında bir sütun bu sekmede zaten var (silinmiş olabilir). Farklı bir ad yazın.`);
+      let index = 2;
+      while (taken.has(fold(`${clean} ${index}`))) index += 1;
+      clean = `${clean} ${index}`;
+    }
+    entry.added.push({ name: clean, after: anchor, by: user.id, at: new Date().toISOString() });
+    layout[key] = entry;
+    writeLayout(layout, user);
+    audit?.(user, "source.column.added", clean, { tab: key, name: clean, after: anchor });
+    invalidate();
+    return { tab: key, name: clean, after: anchor };
+  }
+  function hideColumn(user, { tab, column, existing = [], filled = 0 }) {
+    const key = layoutTab(tab);
+    const name = String(column ?? "");
+    if (!name || name.startsWith("__") || !existing.includes(name)) throw new HttpError(404, `“${name}” sütunu bu sekmede yok. Sayfayı yenileyin.`);
+    if (existing.length <= 1) throw new HttpError(400, "Tabloda en az bir sütun kalmalı.");
+    const layout = readLayout();
+    const entry = layout[key] || { added: [], hidden: {} };
+    entry.hidden ||= {};
+    entry.hidden[name] = { by: user.id, at: new Date().toISOString(), filled: Math.max(0, Number(filled) || 0), added: addedNames(entry).has(name) };
+    layout[key] = entry;
+    writeLayout(layout, user);
+    audit?.(user, "source.column.hidden", name, { tab: key, column: name, filled: entry.hidden[name].filled });
+    invalidate();
+    return { tab: key, column: name };
+  }
+  function unhideColumn(user, { tab, column }) {
+    const key = String(tab ?? "");
+    const name = String(column ?? "");
+    const layout = readLayout();
+    if (!layout[key]?.hidden?.[name]) throw new HttpError(404, "Bu sütun zaten görünüyor.");
+    delete layout[key].hidden[name];
+    writeLayout(layout, user);
+    audit?.(user, "source.column.restored", name, { tab: key, column: name });
+    invalidate();
+    return { tab: key, column: name };
+  }
+  // Silinenler listesi için tüm oturumlardaki silinmiş sütunlar.
+  function hiddenColumns() {
+    const out = [];
+    for (const item of sessions()) {
+      withKey(item.key, () => {
+        const { alias } = tabSettings();
+        for (const [tab, entry] of Object.entries(readLayout())) {
+          for (const [column, info] of Object.entries(entry?.hidden || {})) out.push({ datasetKey: item.key, session: item.name || item.label || "", tab, tabName: displayTab(tab, alias), column, ...info });
+        }
+      });
+    }
+    return out;
+  }
   // Görünen addan asıl ada (yeni kayıt formu görünen adı gönderir).
   function originalTab(display) {
     const name = String(display || "");
@@ -322,10 +451,15 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
     }
     const tabbed = tabColumns().size > 0;
     const changedFields = new WeakMap(); // formüllü satırlarda programda değiştirilen alanlar (v2.0.1)
+    const layout = readLayout();
+    const hasLayout = Object.keys(layout).length > 0;
     for (const row of rows) {
       if (deleted.has(row.caseKey)) continue;
       const patch = overrides.get(row.caseKey);
-      const values = patch ? applyPatch(row.values, patch) : { ...row.values };
+      // Eklenen sütunun düzeltmesi benzer adlı başka bir kolona taşınmasın (applyPatch yalnız satırda olmayan alanı eşler).
+      const own = patch && hasLayout ? layout[String(row.tab || row.values.__sheet || "")]?.added : null;
+      const base = own?.length ? { ...row.values, ...Object.fromEntries(own.filter(item => !(item.name in row.values)).map(item => [item.name, ""])) } : row.values;
+      const values = patch ? applyPatch(base, patch) : { ...row.values };
       if (patch && (row.values.__hofF || row.values.__hofAt)) {
         const fields = new Set();
         for (const key of Object.keys(values)) if (!key.startsWith("__") && values[key] !== row.values[key]) fields.add(key);
@@ -350,6 +484,13 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
       for (const row of merged) {
         delete row.__hofF;
         delete row.__hofAt;
+      }
+    }
+    // Eklenen ve silinen sütunlar (v2.0.6): formüller hesaplandıktan sonra (silinen sütuna bağlı formül yine çalışır).
+    if (hasLayout) {
+      for (let index = 0; index < merged.length; index += 1) {
+        const entry = layout[String(merged[index].__sheet || "")];
+        if (entry) merged[index] = arrangeRow(merged[index], entry);
       }
     }
     // Sekme adları ve gizlenen sekmeler (v2.0.2). Asıl ad "__hofSheet" iç alanında kalır (takvim kimlikleri onu kullanır).
@@ -851,6 +992,25 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
       }
     }
     if (listChanged) sset(S.choices, JSON.stringify(lists), user.id);
+    // Silinen sütunlar ve eklenen sütunların bağlı olduğu sütun da yeni ada taşınır (v2.0.6).
+    const layout = readLayout();
+    let layoutChanged = false;
+    for (const entry of Object.values(layout)) {
+      for (const { from, to } of renamed) {
+        if (entry.hidden?.[from] && !entry.hidden[to]) {
+          entry.hidden[to] = entry.hidden[from];
+          delete entry.hidden[from];
+          layoutChanged = true;
+        }
+        for (const item of entry.added || []) {
+          if (item.after === from) {
+            item.after = to;
+            layoutChanged = true;
+          }
+        }
+      }
+    }
+    if (layoutChanged) sset(S.columnLayout, JSON.stringify(layout), user.id);
     if (mode === "merge") {
       const { rows } = loadRows();
       const timestamp = now();
@@ -1259,5 +1419,6 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
     view, summary, info, stage, commit, sync, unlink, remove, missingRows, resolveMissing, adoptLegacySheetUrl, hasData, start, stop, invalidate, onChange, identity, pinLegacyIdentity,
     sessions, selectSession, renameSession, deleteSession, currentKey: activeKey, settingKey: name => sk(name), withKey, setFreeProvider, dataTabs, baseValue, unflag,
     renameTab, hideTab, unhideTab, hiddenTabs, originalTab,
+    addColumn, hideColumn, unhideColumn, hiddenColumns, layoutTab, columnLayout: readLayout,
   };
 }

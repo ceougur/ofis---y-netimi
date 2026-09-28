@@ -173,6 +173,49 @@ export function registerWorkspaceRoutes(router, { store, auth, audit, dataset, c
     ok(res, result);
   });
 
+  // ---- Sütunlar (v2.0.6): ortadaki tabloda bir sütunun tamamını ekleme ve silme (silme gizlemedir; Silinenler'den geri gelir) ----
+  // Sekmenin görünen sütunları (sıralı) ve her sütunda dolu hücre sayısı.
+  async function tabColumnsOf(tab) {
+    const key = dataset.layoutTab(tab);
+    const rows = (await dataset.view()).rows.filter(row => String(row.__hofSheet || row.__sheet || "") === key);
+    const filled = new Map();
+    for (const row of rows) {
+      for (const [column, value] of Object.entries(row)) {
+        if (column.startsWith("__") || !column.trim()) continue;
+        if (!filled.has(column)) filled.set(column, 0);
+        if (String(value ?? "").trim()) filled.set(column, filled.get(column) + 1);
+      }
+    }
+    return { key, columns: [...filled.keys()], filled };
+  }
+  router.post("/api/workspace/columns/add", async ({ req, res }) => {
+    const user = auth.requirePermission(req, "sources.manage");
+    const body = await readJson(req);
+    const tab = text(body.tab).slice(0, 300);
+    const { columns } = await tabColumnsOf(tab);
+    const aliases = Object.values(profile?.profile?.().columns || {});
+    const result = dataset.addColumn(user, { tab, after: text(body.after).slice(0, 200), name: body.name, existing: columns, reserved: aliases });
+    changed(user, "source", { column: result.name });
+    ok(res, result);
+  });
+  router.post("/api/workspace/columns/hide", async ({ req, res }) => {
+    const user = auth.requirePermission(req, "sources.manage");
+    const body = await readJson(req);
+    const tab = text(body.tab).slice(0, 300);
+    const column = text(body.column).slice(0, 200);
+    const { columns, filled } = await tabColumnsOf(tab);
+    const result = dataset.hideColumn(user, { tab, column, existing: columns, filled: filled.get(column) || 0 });
+    changed(user, "source", { column });
+    ok(res, { ...result, filled: filled.get(column) || 0 });
+  });
+  router.post("/api/workspace/columns/unhide", async ({ req, res }) => {
+    const user = auth.requirePermission(req, "sources.manage");
+    const body = await readJson(req);
+    const result = dataset.unhideColumn(user, { tab: text(body.tab).slice(0, 300), column: text(body.column).slice(0, 200) });
+    changed(user, "source", { column: result.column });
+    ok(res, result);
+  });
+
   router.get("/api/workspace/deleted", async ({ req, res, url }) => {
     auth.requireUser(req);
     const source = text(url.searchParams.get("sourceName")) ? dataset.currentKey() : "";
