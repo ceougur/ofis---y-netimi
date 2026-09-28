@@ -35,7 +35,7 @@ export function registerDueRoutes(router, { auth, store, dataset, profile, event
     const rows = view.rows || [];
     const tabs = (view.tabs || []).map(item => item.title);
     const keys = new Set(rows.map(row => row.__hofKey).filter(Boolean));
-    const payments = store.all("SELECT case_key AS caseKey, amount, date FROM payments").filter(item => keys.has(item.caseKey));
+    const payments = store.all("SELECT case_key AS caseKey, amount, date, note FROM payments").filter(item => keys.has(item.caseKey));
     const forced = profile.roles ? profile.roles() : null;
     const { items, sources, dormant } = computeDues({ rows, tabs, payments, settled: readSettled(), now, forced });
     const deadlines = computeDeadlines({ rows, tabs, now, exclude: sources, forced });

@@ -6,7 +6,7 @@ import { after, before, describe, it } from "node:test";
 import { inflateSync } from "node:zlib";
 import { cashPdf, cashPdfName, rangeLabel } from "../server/lib/cash-report.mjs";
 import { computeDeadlines, computeDues, monthColumns, readDue } from "../server/lib/insight/dues.mjs";
-import { installmentLedger } from "../server/lib/insight/installments.mjs";
+import { installmentLedger, monthsInText } from "../server/lib/insight/installments.mjs";
 import { PdfDocument, loadFont, subsetFont } from "../server/lib/pdf-write.mjs";
 import { okulServisiWorkbook } from "./fixtures/okul-servisi-ornek.mjs";
 import { tahsilatWorkbook } from "./fixtures/tahsilat-ornek.mjs";
@@ -412,5 +412,137 @@ describe("ay matrisi → taksit defteri (v2.0.2)", () => {
     assert.deepEqual(none.rows, [], "ücret de ay da yoksa taksit yok");
     const exempt = installmentLedger({ row: member("w", "W", { Temmuz: "muaf", Ağustos: "500" }), months, now });
     assert.deepEqual(exempt.rows.map(line => `${line.column}:${line.state}`), ["Ağustos:paid", "Eylül:due"], "'muaf' ay başlangıcı belirler ama satır açmaz");
+  });
+});
+
+describe("ay hücresinde ödenecek taksit (plan kipi, v2.0.2)", () => {
+  const M = ["EYLÜL", "EKİM", "KASIM", "ARALIK", "OCAK", "ŞUBAT", "MART", "NİSAN", "MAYIS", "HAZİRAN", "TEMMUZ", "AĞUSTOS"].map(n => `${n} TAKSİTİ`);
+  const tab = "ARAÇ - ÖĞRENCİ BİLGİSİ";
+  const student = (key, name, months, extra = {}) => ({ __hofKey: key, __sheet: tab, SIRA: "42 C 0197", "ÖĞRENCİ ADI": name, TELEFON: "", "TOPLAM TUTAR": "20000", ...Object.fromEntries(M.map(m => [m, ""])), ...months, ...extra });
+  const september = new Date(2026, 8, 28);
+  const run = (rows, now = september, payments = []) => computeDues({ rows, tabs: [tab], payments, now }).items.map(item => `${item.person} ${item.dueText} ${item.amount} ${item.state}`);
+
+  it("Eylül 10.000 + Ekim 10.000 = Toplam 20.000: Eylül bu ay beklenir (ekrandaki örnek)", () => {
+    assert.deepEqual(run([student("a", "ali", { "EYLÜL TAKSİTİ": "10000", "EKİM TAKSİTİ": "10000" })]), ["ali Eylül 2026 10000 month"]);
+  });
+
+  it("programda tahsilat girilince, 'Ödenen' ya da Toplam − Kalan ile Eylül kapanır", () => {
+    const row = student("a", "ali", { "EYLÜL TAKSİTİ": "10000", "EKİM TAKSİTİ": "10000" });
+    assert.deepEqual(run([row], september, [{ caseKey: "a", amount: 10000, date: "2026-09-20" }]), []);
+    assert.deepEqual(run([{ ...row, "ÖDENEN": "10000" }]), []);
+    assert.deepEqual(run([{ ...row, KALAN: "15000" }]), ["ali Eylül 2026 5000 month"], "5.000 ödenmiş: Eylül'den 5.000 kalır");
+    assert.deepEqual(run([student("b", "can", { "EYLÜL TAKSİTİ": "10000 ödendi", "EKİM TAKSİTİ": "10000" })]), []);
+  });
+
+  it("aylar geçince ödenmeyen taksitler gecikir; planda boş ay ve plan bitişi borç sayılmaz", () => {
+    const rows = [
+      student("a", "ali", { "EYLÜL TAKSİTİ": "10000", "EKİM TAKSİTİ": "10000" }),
+      student("b", "veli", { "EKİM TAKSİTİ": "5000", "ARALIK TAKSİTİ": "5000" }, { "TOPLAM TUTAR": "10000" }),
+    ];
+    const november = new Date(2026, 10, 15);
+    assert.deepEqual(run(rows, november).sort(), ["ali Ekim 2026 10000 overdue", "ali Eylül 2026 10000 overdue", "veli Ekim 2026 5000 overdue"].sort(), "Kasım boş: veli için bu ay taksit yok; ali'nin planı Ekim'de bitti, Kasım borç değil");
+    assert.deepEqual(run(rows, new Date(2026, 11, 10)).filter(text => text.startsWith("veli")).sort(), ["veli Aralık 2026 5000 month", "veli Ekim 2026 5000 overdue"]);
+  });
+
+  it("başlıkta yazım hatası ('NİSAN TAKSTİ', 'Mayıs taksit') ay kolonu sayılır; tahsilat Eylül'ü kapatır", () => {
+    const columns = ["NİSAN TAKSTİ", "MAYIS TAKSİT", "HAZİRAN TAKSİTİ"];
+    assert.deepEqual(monthColumns(columns, september).map(entry => entry.column), columns);
+    const row = student("a", "ali", { "EYLÜL TAKSİTİ": "10000", "EKİM TAKSİTİ": "10000" });
+    assert.deepEqual(run([row], september, [{ caseKey: "a", amount: 10000, date: "2026-09-28" }]), []);
+    assert.deepEqual(run([row], new Date(2026, 9, 2), [{ caseKey: "a", amount: 10000, date: "2026-09-28" }]), ["ali Ekim 2026 10000 month"]);
+  });
+
+  it("uyarıdaki 'Gerçekleştirildi' Eylül'ü kapatır, tutar hücrede kalır; Ekim'de Ekim beklenir", () => {
+    const october = new Date(2026, 9, 10);
+    assert.deepEqual(run([student("a", "ali", { "EYLÜL TAKSİTİ": "Gerçekleştirildi · 10000", "EKİM TAKSİTİ": "10000" })], october), ["ali Ekim 2026 10000 month"]);
+    assert.deepEqual(run([student("a", "ali", { "EYLÜL TAKSİTİ": "10.000 TL ödendi", "EKİM TAKSİTİ": "10.000 TL" })], october), ["ali Ekim 2026 10000 month"]);
+  });
+
+  it("kart detayındaki tahsilat notunda ay yazıyorsa tahsilat o aya sayılır (kullanıcı önerisi, v2.0.3)", () => {
+    const row = student("a", "ali", { "EYLÜL TAKSİTİ": "10000", "EKİM TAKSİTİ": "10000" });
+    const october = new Date(2026, 9, 2);
+    // Pilden girilen tahsilatın notu: "Eylül ödemesi · Eylül 2026".
+    assert.deepEqual(run([row], september, [{ caseKey: "a", amount: 10000, date: "2026-09-28", note: "Eylül ödemesi · Eylül 2026" }]), []);
+    // Elle yazılmış not: "eylül taksiti".
+    assert.deepEqual(run([row], october, [{ caseKey: "a", amount: 10000, date: "2026-09-28", note: "eylül taksiti" }]), ["ali Ekim 2026 10000 month"]);
+    // 28 Eylül'de "ekim taksiti" diye girilen tahsilat Eylül'ü kapatmaz; Ekim gelince Ekim'e sayılır.
+    const early = [{ caseKey: "a", amount: 10000, date: "2026-09-28", note: "ekim taksiti" }];
+    assert.deepEqual(run([row], september, early), ["ali Eylül 2026 10000 month"]);
+    assert.deepEqual(run([row], october, early), ["ali Eylül 2026 10000 overdue"]);
+    // Notsuz tahsilat eskiden olduğu gibi en eski açık taksite sayılır.
+    assert.deepEqual(run([row], october, [{ caseKey: "a", amount: 10000, date: "2026-09-28", note: "" }]), ["ali Ekim 2026 10000 month"]);
+    // İki ay tek tahsilatta.
+    assert.deepEqual(run([row], october, [{ caseKey: "a", amount: 20000, date: "2026-10-01", note: "Eylül-Ekim 2026 taksitleri" }]), []);
+  });
+
+  it("bütün planlı aylar geçince de hücredeki tutar ödendi sayılmaz (tabloda aylık ücret kolonu yok)", () => {
+    const rows = [student("a", "ali", { "EYLÜL TAKSİTİ": "10000", "EKİM TAKSİTİ": "10000" }), student("b", "can", { "EYLÜL TAKSİTİ": "5000" }, { "TOPLAM TUTAR": "5000" })];
+    const november = new Date(2026, 10, 15);
+    assert.deepEqual(run(rows, november).sort(), ["ali Ekim 2026 10000 overdue", "ali Eylül 2026 10000 overdue", "can Eylül 2026 5000 overdue"].sort());
+    const paid = [{ caseKey: "a", amount: 10000, date: "2026-09-25", note: "Eylül taksiti" }, { caseKey: "b", amount: 5000, date: "2026-09-25", note: "" }];
+    assert.deepEqual(run(rows, november, paid), ["ali Ekim 2026 10000 overdue"]);
+  });
+
+  it("tahsilat notundaki aylar okunur", () => {
+    assert.deepEqual(monthsInText("eylül taksiti"), [{ month: 9, year: null }]);
+    assert.deepEqual(monthsInText("Eylül ödemesi · Eylül 2026"), [{ month: 9, year: 2026 }]);
+    assert.deepEqual(monthsInText("Kasım-Aralık 2026"), [{ month: 11, year: 2026 }, { month: 12, year: 2026 }]);
+    assert.deepEqual(monthsInText("2. taksit · 15.10.2026"), []);
+    assert.deepEqual(monthsInText(""), []);
+  });
+
+  it("aylık ücret kolonu varken gelecek aya yazılan tutar peşin ödemedir (plan sayılmaz)", () => {
+    const rows = [
+      { __hofKey: "1", __sheet: "Servis", Öğrenci: "Ada Yılmaz", "Aylık ücret": "3.500", "Eyl.26": "3.500", "Ekim'26": "" },
+      { __hofKey: "2", __sheet: "Servis", Öğrenci: "Efe Demir", "Aylık ücret": "3.500", "Eyl.26": "", "Ekim'26": "" },
+      { __hofKey: "3", __sheet: "Servis", Öğrenci: "Zeynep Ak", "Aylık ücret": "3.800", "Eyl.26": "3.800", "Ekim'26": "3.800" },
+    ];
+    assert.deepEqual(computeDues({ rows, tabs: ["Servis"], now: september }).items.map(item => `${item.person} ${item.dueText}`), ["Efe Demir Eylül 2026"]);
+  });
+
+  it("ödeme kipi korunur: aylık ücret kolonu varken ay hücresindeki tutar ödemedir", () => {
+    const rows = [{ __hofKey: "x", __sheet: "Servis", "ÖĞRENCİ ADI": "Ece", "AYLIK ÜCRET": "3.000 ₺", "EYLÜL TAKSİTİ": "3.000 ₺", "EKİM TAKSİTİ": "", "KASIM TAKSİTİ": "" }];
+    const items = computeDues({ rows, tabs: ["Servis"], now: new Date(2026, 10, 15) }).items.map(item => item.dueText).sort();
+    assert.deepEqual(items, ["Ekim 2026", "Kasım 2026"]);
+  });
+});
+
+describe("ay hücresinde taksit: kart detayındaki tahsilat (tam yığın, v2.0.3)", () => {
+  let server;
+  let admin;
+  before(async () => {
+    server = await startTestServer();
+    admin = await loginAdmin(server);
+  });
+  after(() => server.close());
+
+  it("yüklenen tabloda bu ayın taksiti uyarı verir; notu o ayı söyleyen tahsilat girilince kalkar, başka ayı söyleyen kapatmaz", async () => {
+    const NAMES = ["OCAK", "ŞUBAT", "MART", "NİSAN", "MAYIS", "HAZİRAN", "TEMMUZ", "AĞUSTOS", "EYLÜL", "EKİM", "KASIM", "ARALIK"];
+    const now = new Date();
+    const current = NAMES[now.getMonth()];
+    const next = NAMES[(now.getMonth() + 1) % 12];
+    const sheet = {
+      name: "ARAÇ - ÖĞRENCİ BİLGİSİ",
+      columns: ["SIRA", "ÖĞRENCİ ADI", "TELEFON", "TOPLAM TUTAR", `${current} TAKSİTİ`, `${next} TAKSİTİ`],
+      rows: [["42 C 0197", "ali", "", "20000", "10000", "10000"], ["42 C 0198", "veli", "", "20000", "10000", "10000"]],
+    };
+    const staged = await admin.post("/api/workspace/dataset/stage", { kind: "excel", fileName: "ŞAHİN TURİZM (1).xlsx", sheets: [{ name: sheet.name, matrix: matrix(sheet) }] });
+    assert.equal(staged.status, 200, JSON.stringify(staged.data));
+    assert.equal((await admin.post("/api/workspace/dataset/commit", { stageId: staged.data.data.stageId, mode: "replace" })).status, 200);
+
+    const first = (await admin.get("/api/workspace/dues")).data.data;
+    const items = first.items.filter(item => item.tab === sheet.name);
+    assert.deepEqual(items.map(item => `${item.person} ${item.amount} ${item.state}`).sort(), ["ali 10000 month", "veli 10000 month"], JSON.stringify(first.items));
+    const ali = items.find(item => item.person === "ali");
+    const veli = items.find(item => item.person === "veli");
+
+    // ali: kart detayında "<bu ay> taksiti" notuyla tahsilat → uyarı kalkar.
+    const note = `${current.toLocaleLowerCase("tr")} taksiti`;
+    assert.equal((await admin.post(`/api/workspace/cases/${encodeURIComponent(ali.caseKey)}/payments`, { amount: "10000", date: first.today, note })).status, 200);
+    // veli: "<gelecek ay> taksiti" notuyla tahsilat → bu ayın taksiti açık kalır.
+    assert.equal((await admin.post(`/api/workspace/cases/${encodeURIComponent(veli.caseKey)}/payments`, { amount: "10000", date: first.today, note: `${next.toLocaleLowerCase("tr")} taksiti` })).status, 200);
+
+    const after = (await admin.get("/api/workspace/dues")).data.data.items.filter(item => item.tab === sheet.name);
+    assert.deepEqual(after.map(item => `${item.person} ${item.amount} ${item.state}`), ["veli 10000 month"]);
   });
 });

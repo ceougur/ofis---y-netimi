@@ -40,7 +40,7 @@ export function registerReportRoutes(router, { auth, store, dataset, profile }) 
         columnsBySession[session.key] = normalized.columns;
         for (const record of normalized.records) records.push(record);
         const keys = new Set(rows.map(row => row.__hofKey));
-        const payments = store.all("SELECT case_key AS caseKey, amount, date FROM payments").filter(item => keys.has(item.caseKey));
+        const payments = store.all("SELECT case_key AS caseKey, amount, date, note FROM payments").filter(item => keys.has(item.caseKey));
         const settled = parseSettled(dataset.settingKey("dues.settled"));
         const dues = computeDues({ rows, tabs, payments, settled, now, forced });
         for (const item of dues.dormant || []) dormant.push({ ...item, session: session.key, sessionName: session.name });

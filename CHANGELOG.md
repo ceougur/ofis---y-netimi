@@ -2,6 +2,19 @@
 
 Sürümler [anlamsal sürümleme](https://semver.org/lang/tr/) kurallarına uyar.
 
+## 2.0.3 — Ay sütunundaki taksit, kart detayındaki tahsilatla kapanır
+
+- **Ay hücresindeki tutar artık kendiliğinden "ödendi" sayılmaz.** Tabloda ayrı bir *Aylık ücret / aidat* kolonu yoksa ay hücresine yazılan tutar (ör. *Eylül taksiti 10.000*, *Ekim taksiti 10.000*, *Toplam 20.000*) **ödenecek taksittir**. O ay uyarı verir ve kayan şeritte görünür. Ay şu durumlarda kapanır:
+  - kart detayında o aya düşen **tahsilat** girildiğinde,
+  - hücreye "ödendi", "✓" yazıldığında ya da uyarıdaki **Gerçekleştirildi** ile,
+  - tabloda *Ödenen* ya da *Kalan* kolonu varsa ondan (en eski taksitten başlayarak).
+
+  Önceki sürüm bu tutarı ödenmiş sayıyordu; bu yüzden *Eylül taksiti* uyarısı çıkmıyordu.
+- **Tahsilat doğru aya sayılır.** Tahsilat notunda ay yazıyorsa ("eylül taksiti", kayan pilden girilen "Eylül ödemesi · Eylül 2026", "Kasım-Aralık 2026") tahsilat o aya sayılır. 28 Eylül'de "ekim taksiti" diye girilen tahsilat Eylül'ü kapatmaz; Ekim gelince Ekim'e sayılır. Notunda ay olmayan tahsilat eskisi gibi en eski açık taksite sayılır.
+- *Aylık ücret* kolonu olan tablolar değişmedi: orada ay hücresine yazılan tutar ödenen miktardır, gelecek aya yazılan tutar peşin ödemedir.
+- Planda boş bırakılan ay taksit değildir. Plan bittikten sonraki aylar borç sayılmaz.
+- Başlıktaki küçük yazım hataları ay kolonu olarak tanınır ("NİSAN TAKSTİ", "Mayıs taksit").
+
 ## 2.0.2 — Açılır listeler, belge kartı, uyarıda "Gerçekleştirildi", tüm kolonlar, kendi sektörü, tarihlerin anlamı, silinenler
 
 - **Ay sütunları (Ocak–Aralık) artık taksit defterine çevrilir; boş dönemler uyarı üretmez.** Yatay ay hücreleri önce her kayıt için bağımsız taksit satırlarına indirgenir (`installments.mjs`). Defterde yalnızca kaydın geçerlilik aralığındaki aylar bulunur: başlangıç = kayıt/başlangıç tarihi kolonu ya da ilk yazılı ay; bitiş = ayrılış/bitiş tarihi kolonu, yoksa son yazılı aydan sonra üst üste **3 tam boş ay** geçmişse kayıt "durgun" sayılır (ayrılan müşteri) ve o ayda kapanır. Girişten önceki ve çıkıştan sonraki boş hücreler için hiçbir taksit açılmaz; aralığın içindeki boş ay ise ödenmemiş taksittir (Ocak ödendi, Şubat boş, Mart ödendi → Şubat gecikmiş). Uyarı motoru ve raporlar yalnız bu defteri sorgular. Durgun kayıtlar sessizce yutulmaz: *Raporlar → Vade takip* içinde "Ödeme kesilmiş olabilir (son: Mart 2026, 5 boş ay)" satırı ve özet kartı olarak görünür; durum süzgecinde **Durgun** seçilebilir.

@@ -49,7 +49,9 @@ Yeni bir oturum bu belgeyi okuyarak kaldığı yerden devam eder. Son güncellem
   - Teslim paketi kullanıcıya verildi: imzalı güncelleme paketi + `.json`, `DestekOfis-Kurulum.exe`, kılavuz, kaynak kodu (git bundle), örnek veriler. Yayın kullanıcı onayı bekliyor.
 
 - **2.0.1 yayımlandı** (kullanıcı PR'ı `master`'a birleştirdi, `v2.0.1` yayını dört dosyayla açıldı; özetler doğrulandı).
-- **2.0.2 (hazır, dal `claude/nice-euler-jvajxv`, gönderilmedi):**
+- **2.0.2 yayımlandı** (PR ceougur/ofis---y-netimi#2 birleşti, `v2.0.2` yayını beş dosyayla; dosyalar indirilip yereldeki derlemeyle bayt bayt doğrulandı).
+- **2.0.3 (hazırlanıyor):** ay hücresindeki tutar aylık ücret kolonu yoksa ödenecek taksittir; kart detayındaki tahsilat (notundaki ay) o ayı kapatır. Ayrıntı `CHANGELOG.md`.
+- **2.0.2 içeriği:**
   - Excel/Sheets açılır listeleri ve Excel birleşik giriş kutuları → programda açılır liste (`server/lib/choices.mjs`, `client/assets/hof-choices.js`); gizli liste sayfası programda da gizlenir.
   - Belge kartı: adet sınırı yok, yan yana 1–4 sütun, seçilenleri .zip ile indirme (`/api/workspace/cases/:key/documents/archive`), PDF/resim/metin doğrudan yazdırma.
   - Uyarı kartında "Gerçekleştirildi" (hücreye yazar, tarih korunur; tekrarlayan ödeme gününde yalnız o ay kapanır; görev tamamlanır); 20 sn görünür, aralarında 10 sn, kısa bildirimlerle üst üste binmez.

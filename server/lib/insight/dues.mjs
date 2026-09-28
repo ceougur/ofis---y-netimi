@@ -14,7 +14,7 @@ import { analyzeColumns, cell, primaryColumns } from "./columns.mjs";
 import { embeddedDates, isBlankRecord, isEmptyCell, isFlaggedRow, isSequenceHeader, isTotalRow } from "./cells.mjs";
 import { dateMeaning, ordinalOf, subjectOf } from "./temporal.mjs";
 import { foldText, parseAmount, parseDate } from "./validators.mjs";
-import { installmentLedger } from "./installments.mjs";
+import { detectMonthPlan, installmentLedger, monthsInText } from "./installments.mjs";
 
 const DAY = 86_400_000;
 export const DUE_WINDOW = { pastDays: 90, aheadDays: 7, promiseDays: 30, earlyPaymentDays: 20 };
@@ -44,7 +44,7 @@ const AMOUNT_OWN = /\b(soz tutari|taahhut tutari|taksit tutari|taksit miktari|ay
 // Aylık ödeme kolonları ("Eylül", "Ekim 2026", "Kasım ödemesi"): hücrede ödeme işareti ya da tutar varsa o ay ödenmiştir.
 // Yazımlar (katlanmış metin): "Eylül", "Ekim 2026", "Eyl.26" → "eyl 26", "Ekim'26" → "ekim 26", "2026-11" → "2026 11",
 // "11/2026" → "11 2026", "Kasım ödemesi". Kısaltmalar yalnız tam eşleşir ("mar" evet, "marka" hayır).
-const MONTH_HEADER = /^(?:(ocak|oca|subat|sub|mart|mar|nisan|nis|mayis|may|haziran|haz|temmuz|tem|agustos|agu|eylul|eyl|ekim|eki|kasim|kas|aralik|ara)(?:\s+(\d{4}|\d{2}))?|(\d{4})\s+(\d{1,2})|(\d{1,2})\s+(\d{4}))(?:\s+(odemesi|odeme|ucreti|ucret|taksiti|aidati|kirasi|tahsilat))?$/;
+const MONTH_HEADER = /^(?:(ocak|oca|subat|sub|mart|mar|nisan|nis|mayis|may|haziran|haz|temmuz|tem|agustos|agu|eylul|eyl|ekim|eki|kasim|kas|aralik|ara)(?:\s+(\d{4}|\d{2}))?|(\d{4})\s+(\d{1,2})|(\d{1,2})\s+(\d{4}))(?:\s+(odemesi|odeme|ucreti|ucret|taksiti|taksit|taksti|taksiti\w*|takst\w*|taks\w*|aidati|aidat|kirasi|kira|tahsilat\w*))?$/;
 const MONTH_ABBR = { oca: "ocak", sub: "subat", mar: "mart", nis: "nisan", may: "mayis", haz: "haziran", tem: "temmuz", agu: "agustos", eyl: "eylul", eki: "ekim", kas: "kasim", ara: "aralik" };
 // Eşleşmeyi {month, year, suffix} olarak okur; sayısal ay 1–12 dışındaysa eşleşme sayılmaz.
 function monthHeader(column) {
@@ -302,6 +302,7 @@ export function computeDues({ rows, tabs = [], payments = [], settled = {}, now 
   const candidates = [];
   const sources = [];
   const dormant = [];
+  const monthlyCases = new Set(); // ay kolonlu tablodaki kayıtlar: tahsilat notundaki ay o aya sayılır
   for (const tab of order) {
     const scope = groups.get(tab);
     const columns = columnsOf(scope);
@@ -317,6 +318,8 @@ export function computeDues({ rows, tabs = [], payments = [], settled = {}, now 
     const dateColumn = pattern => columns.find(column => pattern.test(foldText(column)) && !monthly.some(entry => entry.column === column)) || null;
     const startColumn = monthly.length ? dateColumn(START_DATE) : null;
     const endColumn = monthly.length ? dateColumn(END_DATE) : null;
+    // Ay hücreleri ödeme mi, ödenecek taksit planı mı (installments.mjs → detectMonthPlan)?
+    const plan = monthly.length ? detectMonthPlan({ rows: scope, months: monthly, columns, now }) : null;
     for (const row of scope) {
       if (isTotalRow(row) || isFlaggedRow(row)) continue;
       if (statusColumns.some(column => isSettledText(cell(row, column)) || INACTIVE.test(foldText(cell(row, column))))) continue;
@@ -340,7 +343,8 @@ export function computeDues({ rows, tabs = [], payments = [], settled = {}, now 
       // Ay matrisi → taksit defteri (v2.0.2, installments.mjs): yalnız geçerlilik aralığındaki aylar taksit satırı olur;
       // girişten önceki ve çıkıştan sonraki boş hücreler için satır açılmaz. Üst üste 3 boş ay → "durgun" (uyarı yok, listede).
       if (monthly.length) {
-        const ledger = installmentLedger({ row, months: monthly, startColumn, endColumn, now });
+        monthlyCases.add(row.__hofKey);
+        const ledger = installmentLedger({ row, months: monthly, startColumn, endColumn, now, plan });
         if (ledger.dormant) dormant.push({ ...base, lastPaid: iso(ledger.dormant.lastWritten), lastPaidText: monthLabel(ledger.dormant.lastWritten), emptyMonths: ledger.dormant.emptyMonths });
         for (const line of ledger.rows) {
           if (line.state === "paid" || line.time > today || line.time < from) continue;
@@ -372,8 +376,19 @@ export function computeDues({ rows, tabs = [], payments = [], settled = {}, now 
     const time = Date.parse(String(payment.date || "").slice(0, 10));
     if (!Number.isFinite(time) || !(Number(payment.amount) > 0)) continue;
     if (!paymentsByCase.has(payment.caseKey)) paymentsByCase.set(payment.caseKey, []);
-    paymentsByCase.get(payment.caseKey).push({ time, amount: Number(payment.amount) });
+    paymentsByCase.get(payment.caseKey).push({ time, amount: Number(payment.amount), months: monthsInText(payment.note) });
   }
+  const take = (item, left) => {
+    if (item.amount === null) {
+      item.closed = true;
+      item.paid += left;
+      return 0;
+    }
+    const used = Math.min(item.amount - item.paid, left);
+    item.paid += used;
+    if (item.paid >= item.amount - 0.01) item.closed = true;
+    return left - used;
+  };
   for (const [caseKey, items] of byCase) {
     items.sort((a, b) => a.time - b.time);
     for (const item of items) item.paid = 0;
@@ -381,6 +396,19 @@ export function computeDues({ rows, tabs = [], payments = [], settled = {}, now 
     for (const payment of list) {
       let left = payment.amount;
       let applied = false;
+      // Kart detayındaki tahsilatın notunda ay yazıyorsa ("eylül taksiti", pilden "Eylül ödemesi · Eylül 2026") tahsilat
+      // önce o aya sayılır (v2.0.3). O ayın kalemi şu an açık değilse (henüz gelmedi, zaten kapalı ya da pencere dışı)
+      // tahsilat başka bir aya sayılmaz; ay gelince o aya sayılır.
+      if (payment.months.length && monthlyCases.has(caseKey)) {
+        const named = items.filter(item => item.monthly && payment.months.some(want => new Date(item.time).getUTCMonth() + 1 === want.month && (want.year === null || new Date(item.time).getUTCFullYear() === want.year)));
+        if (!named.length) continue;
+        for (const item of named) {
+          if (left <= 0.004) break;
+          if (item.closed) continue;
+          left = take(item, left);
+        }
+        applied = true;
+      }
       for (const item of items) {
         if (left <= 0.004) break;
         if (item.closed) continue;
@@ -389,17 +417,7 @@ export function computeDues({ rows, tabs = [], payments = [], settled = {}, now 
         const opens = item.time - DUE_WINDOW.earlyPaymentDays * DAY;
         if (payment.time < opens && !applied) continue;
         applied = true;
-        if (item.amount === null) {
-          item.closed = true;
-          item.paid += left;
-          left = 0;
-          break;
-        }
-        const need = item.amount - item.paid;
-        const used = Math.min(need, left);
-        item.paid += used;
-        left -= used;
-        if (item.paid >= item.amount - 0.01) item.closed = true;
+        left = take(item, left);
       }
     }
   }
