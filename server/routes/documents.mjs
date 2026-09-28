@@ -41,7 +41,7 @@ export function registerDocumentRoutes(router, { store, auth, audit, events, con
     const user = auth.requireUser(req);
     const key = caseKeyOf(params.key);
     // Eskiden yeniye: yeni eklenen belge listenin sonunda.
-    const rows = store.all(`${SELECT} WHERE d.case_key = ? AND d.deleted_at IS NULL ORDER BY d.created_at, d.id`, key);
+    const rows = store.all(`${SELECT} WHERE d.case_key = ? AND d.deleted_at IS NULL ORDER BY d.created_at, d.rowid`, key);
     ok(res, { documents: rows.map(row => shape(user, row)), maxBytes: MAX_DOCUMENT_BYTES });
   });
 
@@ -70,7 +70,7 @@ export function registerDocumentRoutes(router, { store, auth, audit, events, con
     const user = auth.requireUser(req);
     const key = caseKeyOf(params.key);
     const wanted = new Set(String(url.searchParams.get("ids") || "").split(",").map(item => item.trim()).filter(Boolean));
-    const rows = store.all(`${SELECT} WHERE d.case_key = ? AND d.deleted_at IS NULL ORDER BY d.created_at, d.id`, key).filter(row => !wanted.size || wanted.has(row.id));
+    const rows = store.all(`${SELECT} WHERE d.case_key = ? AND d.deleted_at IS NULL ORDER BY d.created_at, d.rowid`, key).filter(row => !wanted.size || wanted.has(row.id));
     if (!rows.length) throw new HttpError(404, "Dışa aktarılacak belge bulunamadı.");
     const used = new Set();
     const entries = [];

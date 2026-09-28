@@ -90,6 +90,17 @@ describe("kayıt belgeleri", () => {
     assert.match(audit, /Dilekçe 2026\.pdf/);
   });
 
+  it("aynı anda eklenen belgeler eklenme sırasıyla listelenir ve zip'lenir (v2.0.3)", async () => {
+    const key = "2026/778";
+    for (const name of ["A.png", "B.png", "C.png", "D.png"]) assert.equal((await upload(staff, key, name, PNG)).status, 200);
+    // Hepsi aynı milisaniyede eklenmiş gibi: sıra kimliğe (rastgele) değil eklenme sırasına göre olmalı.
+    server.app.store.run("UPDATE case_documents SET created_at = '2026-09-28T04:00:00.000Z' WHERE case_key = ?", key);
+    const list = (await admin.get(`/api/workspace/cases/${encodeURIComponent(key)}/documents`)).data.data.documents;
+    assert.deepEqual(list.map(item => item.name ?? item.fileName ?? item.title), ["A.png", "B.png", "C.png", "D.png"]);
+    const zip = await admin.raw("GET", `/api/workspace/cases/${encodeURIComponent(key)}/documents/archive`);
+    assert.deepEqual(readZip(zip.buffer).filter(entry => !entry.directory).map(entry => entry.name), ["A.png", "B.png", "C.png", "D.png"]);
+  });
+
   it("adet sınırı yok; seçilen belgeler özgün biçimleriyle tek .zip olarak iner, aynı adlar çakışmaz (v2.0.2)", async () => {
     const many = "2026/777";
     for (let index = 0; index < 30; index += 1) assert.equal((await upload(staff, many, `Tarama ${index + 1}.png`, PNG, "&title=Can%20Er")).status, 200);

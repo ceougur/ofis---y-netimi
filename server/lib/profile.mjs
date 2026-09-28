@@ -398,7 +398,7 @@ export function createProfileService({ store, dataset, audit, events, log, free 
   }
 
   async function paymentChecks(key, tab, result) {
-    const payments = store.all("SELECT amount, date, created_at AS createdAt FROM payments WHERE case_key = ? ORDER BY created_at, id", key);
+    const payments = store.all("SELECT amount, date, created_at AS createdAt FROM payments WHERE case_key = ? ORDER BY created_at, rowid", key);
     if (!payments.length) return [];
     const rows = (await dataset.view()).rows || [];
     const row = rows.find(item => item.__hofKey === key && (!tab || item.__sheet === tab)) || rows.find(item => item.__hofKey === key);
