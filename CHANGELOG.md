@@ -14,6 +14,7 @@ Sürümler [anlamsal sürümleme](https://semver.org/lang/tr/) kurallarına uyar
 - *Aylık ücret* kolonu olan tablolar değişmedi: orada ay hücresine yazılan tutar ödenen miktardır, gelecek aya yazılan tutar peşin ödemedir.
 - Planda boş bırakılan ay taksit değildir. Plan bittikten sonraki aylar borç sayılmaz.
 - Başlıktaki küçük yazım hataları ay kolonu olarak tanınır ("NİSAN TAKSTİ", "Mayıs taksit").
+- Aynı anda eklenen belgeler kart detayında ve toplu indirmede eklenme sırasıyla görünür. Önceden aynı milisaniyede eklenenlerin sırası karışabiliyordu.
 
 ## 2.0.2 — Açılır listeler, belge kartı, uyarıda "Gerçekleştirildi", tüm kolonlar, kendi sektörü, tarihlerin anlamı, silinenler
 
