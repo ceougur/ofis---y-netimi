@@ -46,6 +46,9 @@
   const canManage = () => HOF.can("plans.manage");
   const canCollect = () => HOF.can("plans.collect");
 
+  // Modülün görünen adı: Operasyon Merkezi'ndeki kalemle değişir ("Taksitler" → "Aidatlar", "Servis ücretleri"…).
+  // İç anahtar (side.plans), yetkiler ve API adresleri değişmez; yalnızca kullanıcının gördüğü ad bu işlevden okunur.
+  const moduleName = () => HOF.uiLabel?.("side.plans", "Taksitler") || "Taksitler";
   let modal = null;
   const view = { mode: "list", planId: "", q: "", group: "", subgroup: "", status: "active", groups: [], list: null, plan: null };
   let listRequest = 0;
@@ -94,13 +97,13 @@
   // ---------- Pencere ----------
   const body = () => modal?.dialog.querySelector("[data-plans]");
   function open(planId = "") {
-    if (!HOF.can("plans.view")) return HOF.toast("Taksitler için yetkiniz yok.", { type: "error" });
+    if (!HOF.can("plans.view")) return HOF.toast(`${moduleName()} için yetkiniz yok.`, { type: "error" });
     if (modal) {
       if (planId) loadPlan(planId);
       return;
     }
     modal = HOF.modal({
-      title: HOF.uiLabel?.("side.plans", "Taksitler") || "Taksitler",
+      title: moduleName(),
       eyebrow: "OPERASYON",
       size: "wide",
       body: '<div class="hof-plans" data-plans><p class="hof-empty">Yükleniyor…</p></div>',
