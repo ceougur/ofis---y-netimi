@@ -216,9 +216,13 @@
   // Tahsilat penceresi tutar ve açıklama hazır açılır; kaydedince kalem takvimden düşer.
   // Taksit kartı kalemi (v2.0.4): tahsilat kartın üstünden girilir (hof-plans.js).
   const isPlan = item => item?.source === "plan";
-  const canPay = item => (isPlan(item) ? HOF.can("plans.collect") && Boolean(HOF.plans) : HOF.can("payments.create") && Boolean(HOF.workspace?.payment));
+  // Çek / senet kalemi (v2.0.7): tahsil ve ödeme evrak kartından yapılır (hof-cheques.js).
+  const isCheque = item => item?.source === "cheque";
+  const canPay = item => (isCheque(item) ? HOF.can("cheques.manage") && Boolean(HOF.cheques) : isPlan(item) ? HOF.can("plans.collect") && Boolean(HOF.plans) : HOF.can("payments.create") && Boolean(HOF.workspace?.payment));
   const pay = item =>
-    isPlan(item)
+    isCheque(item)
+      ? HOF.cheques.open({ id: item.chequeId })
+      : isPlan(item)
       ? HOF.plans.pay(item)
       : HOF.workspace.payment({ key: item.caseKey, title: who(item), amount: item.amount, note: `${item.label} · ${item.dueText}`, intro: `<b>${esc(item.label)}</b> · vade ${esc(item.dueText)}${item.amount ? ` · beklenen <b>${esc(money(item.amount))}</b>` : ""}.` });
 
@@ -238,7 +242,7 @@
   };
   const canDone = alert => {
     if (alert.type === "task") return Boolean(alert.taskId) && HOF.can("tasks.complete");
-    if (!alert.item || !HOF.can("records.edit") || isPlan(alert.item)) return false;
+    if (!alert.item || !HOF.can("records.edit") || isPlan(alert.item) || isCheque(alert.item)) return false;
     return alert.item.recurring ? String(alert.item.id || "").startsWith("due|") : Boolean(alert.item.column);
   };
   const doneHint = alert =>

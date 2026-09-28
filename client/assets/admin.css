@@ -421,3 +421,40 @@ code {
 .adm-ok { color: #1a7f4b; }
 .adm-warn { color: #a05a00; }
 .adm-error { color: #b42318; }
+
+/* Kişiye özel ek yetki (v2.0.7): ANLIK DURUM ve raporlar. Kapalı hali sade, açık hali marka yeşili; önünde durum noktası. */
+.adm-grant {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 12px 5px 10px;
+  border: 1px solid var(--do-border-strong);
+  border-radius: 99px;
+  background: #fff;
+  color: var(--do-muted);
+  font: 700 11.5px var(--do-font);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+.adm-grant::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #c9d6cf;
+  box-shadow: 0 0 0 3px #eef3f0;
+}
+.adm-grant:hover {
+  border-color: var(--do-accent);
+  color: var(--do-ink);
+}
+.adm-grant.is-on {
+  border-color: #cde6d6;
+  background: var(--do-accent-soft);
+  color: var(--do-accent);
+}
+.adm-grant.is-on::before {
+  background: var(--do-accent);
+  box-shadow: 0 0 0 3px #cfe8da;
+}

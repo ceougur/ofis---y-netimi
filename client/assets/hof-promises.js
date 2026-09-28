@@ -87,6 +87,8 @@
     closeCard();
     // Taksit kartı kalemi (v2.0.4): tahsilat kartın üstünden girilir.
     if (item.source === "plan") return HOF.plans?.pay(item);
+    // Çek / senet (v2.0.7): tahsil / ödeme evrak kartından.
+    if (item.source === "cheque") return HOF.cheques?.open({ id: item.chequeId });
     if (!HOF.workspace?.payment) return;
     HOF.workspace.payment({
       key: item.caseKey,
@@ -100,8 +102,9 @@
   function openCard(item, pillNode) {
     closeCard();
     const plan = item.source === "plan";
-    const canPay = plan ? HOF.can("plans.collect") : HOF.can("payments.create");
-    const canSettle = !plan && HOF.can("records.edit");
+    const cheque = item.source === "cheque";
+    const canPay = cheque ? HOF.can("cheques.manage") : plan ? HOF.can("plans.collect") : HOF.can("payments.create");
+    const canSettle = !plan && !cheque && HOF.can("records.edit");
     const card = HOF.el(
       "div",
       { class: "hof-payment-action-card", role: "dialog", "aria-label": `${who(item)} tahsilatı` },
@@ -115,11 +118,11 @@
         ${item.tab ? `<div><dt>Sekme</dt><dd>${esc(item.tab)}</dd></div>` : ""}
       </dl>
       <div class="hof-payment-action-buttons">
-        ${canPay ? '<button type="button" data-act="pay" class="hof-payment-paid">Tahsilat gir</button>' : ""}
+        ${canPay ? `<button type="button" data-act="pay" class="hof-payment-paid">${cheque ? (item.direction === "out" ? "Ödeme gir" : "Tahsil et") : "Tahsilat gir"}</button>` : ""}
         ${canSettle ? `<button type="button" data-act="paid" class="hof-payment-mark" title="Tahsilat girmeden kapatır (ör. başka yoldan ödendi)">Ödendi say</button>` : ""}
         ${canSettle && item.promise ? '<button type="button" data-act="cancelled" class="hof-payment-cancelled">Söz iptal</button>' : ""}
       </div>
-      <button type="button" class="hof-payment-go" data-act="go">${plan ? "Taksit kartını aç →" : "Kayda git →"}</button>`,
+      <button type="button" class="hof-payment-go" data-act="go">${cheque ? "Çek / senet kartını aç →" : plan ? "Taksit kartını aç →" : "Kayda git →"}</button>`,
     );
     card.addEventListener("click", event => {
       const button = event.target.closest("[data-act]");
@@ -128,7 +131,8 @@
       if (act === "pay") pay(item);
       else if (act === "go") {
         closeCard();
-        if (plan) HOF.plans?.open(item.planId);
+        if (cheque) HOF.cheques?.open({ id: item.chequeId });
+        else if (plan) HOF.plans?.open(item.planId);
         else HOF.revealRecord?.(item.caseKey, { tab: item.tab });
       } else settle(item, act, button);
     });

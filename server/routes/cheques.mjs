@@ -549,13 +549,16 @@ export function registerChequeRoutes(router, { store, auth, audit, events, accou
 
   // ---------- Diğer modüller için ----------
   // Kasa: tahsil edilen alınan evrak (giriş), ödenen verilen evrak (çıkış). Silinen evrakın olayları Kasa'dan düşer.
-  const cashEntries = () =>
+  // Kasa kaynağı: aynı tablo/koşul hem Kasa satırlarında hem Kasa toplamında (ANLIK DURUM) kullanılır.
+  const cashSource = { table: "cheque_events ev JOIN cheques c ON c.id = ev.cheque_id AND c.deleted_at IS NULL", where: "ev.kind IN ('collect', 'pay')", kind: "CASE ev.kind WHEN 'collect' THEN 'in' ELSE 'out' END", amount: "ev.amount", date: "ev.date" };
+  const cashEntries = (after = "") =>
     store
       .all(
         `SELECT ev.id, ev.kind AS eventKind, ev.amount, ev.date, ev.note, c.id AS chequeId, c.instrument, c.serial_no AS serialNo, c.drawer, COALESCE(a.name, '') AS accountName,
                 ev.created_by AS actorId, COALESCE(u.display_name, '') AS actorName, ev.created_at AS createdAt, ev.created_at AS updatedAt
-         FROM cheque_events ev JOIN cheques c ON c.id = ev.cheque_id AND c.deleted_at IS NULL LEFT JOIN accounts a ON a.id = c.account_id LEFT JOIN users u ON u.id = ev.created_by
-         WHERE ev.kind IN ('collect', 'pay')`,
+         FROM ${cashSource.table} LEFT JOIN accounts a ON a.id = c.account_id LEFT JOIN users u ON u.id = ev.created_by
+         WHERE ${cashSource.where}${after ? ` AND ${cashSource.date} > ?` : ""}`,
+        ...(after ? [after] : []),
       )
       .map(({ eventKind, instrument, serialNo, drawer, accountName, note, ...row }) => ({
         ...row,
@@ -646,5 +649,5 @@ export function registerChequeRoutes(router, { store, auth, audit, events, accou
     return `${INSTRUMENTS[raw.instrument]}${raw.serialNo ? ` No ${raw.serialNo}` : ""} geri geldi.`;
   }
 
-  return { cashEntries, summary, flows, dueItems, fingerprint, countForAccount, countForPlan, deletedList, restoreDeleted, list, detail };
+  return { cashEntries, cashSource, summary, flows, dueItems, fingerprint, countForAccount, countForPlan, deletedList, restoreDeleted, list, detail };
 }

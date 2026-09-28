@@ -28,6 +28,8 @@ const collator = new Intl.Collator("tr", { numeric: true, sensitivity: "base" })
 const TYPE_TEXT = { customer: "Müşteri", supplier: "Tedarikçi", other: "Diğer" };
 const SOURCE_TEXT = { plan: "Taksit", cheque: "Çek", note: "Senet", cash: "Kasa (ileri tarihli)" };
 
+const MONEY_FORMAT = new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
 export function registerOverviewRoutes(router, { store, auth, audit, events, cash = () => null, accounts = () => null, plans = () => null, stock = () => null, cheques = () => null, now: clock = () => new Date() }) {
   const today = () => isoDay(clock());
   const office = () => store.setting("office.name", "");
@@ -70,17 +72,10 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, cas
     if (cache.key === key && cache.value) return cache.value;
     const admin = { id: "", role: "admin" };
     const started = Date.now();
-    // Kasa: Kasa ekranıyla aynı hareketler.
-    const cashReport = cash()?.report ? cash().report(admin, "", "") : { entries: [], totals: { balance: 0 } };
-    const month = day.slice(0, 7);
-    const flow = { today: { in: 0, out: 0 }, month: { in: 0, out: 0 } };
-    let future = 0;
-    for (const entry of cashReport.entries) {
-      if (entry.date > day) future += 1;
-      if (entry.date === day) flow.today[entry.kind] = roundMoney(flow.today[entry.kind] + entry.amount);
-      if (entry.date.slice(0, 7) === month && entry.date <= day) flow.month[entry.kind] = roundMoney(flow.month[entry.kind] + entry.amount);
-    }
-    const cashBlock = { balance: cashReport.totals.balance, today: flow.today, month: flow.month, futureEntries: future };
+    // Kasa: Kasa ekranıyla aynı kaynak tanımlarından SQL toplamı (satırlar belleğe alınmaz). Bakiye, Kasa ekranındaki
+    // "güncel kasa" gibi tüm hareketleri kapsar.
+    const cashSummary = cash()?.summary ? cash().summary(day) : { balance: 0, today: { in: 0, out: 0 }, month: { in: 0, out: 0 }, futureEntries: 0 };
+    const cashBlock = { balance: cashSummary.balance, today: cashSummary.today, month: cashSummary.month, futureEntries: cashSummary.futureEntries };
     // Stok: Stok listesiyle aynı sayım (hizmet kalemleri kritik/tükendi sayılmaz).
     const stockTotals = stock()?.list ? stock().list(admin, {}).totals : { count: 0, low: 0, out: 0, services: 0, value: 0 };
     const stockBlock = { critical: stockTotals.low, out: stockTotals.out, products: stockTotals.count - (stockTotals.services || 0), services: stockTotals.services || 0, value: stockTotals.value };
@@ -184,7 +179,7 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, cas
   router.get("/api/workspace/overview/mizan.xlsx", async ({ req, res, url }) => {
     const user = auth.requirePermission(req, "overview.view");
     const data = mizan(url.searchParams);
-    const money = value => new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value || 0);
+    const money = value => MONEY_FORMAT.format(value || 0);
     const columns = ["Cari No", "Cari", "Tür", "Grup", "Devir", "Dönem borç", "Dönem alacak", "Bakiye", "Durum"];
     const rows = data.rows.map(row => ({ "Cari No": row.refNo, Cari: row.name, Tür: TYPE_TEXT[row.type] || "", Grup: [row.groupName, row.subgroupName].filter(Boolean).join(" › "), Devir: money(row.opening), "Dönem borç": money(row.debit), "Dönem alacak": money(row.credit), Bakiye: money(row.closing), Durum: sideText(row.closing) }));
     rows.push({ "Cari No": "", Cari: "TOPLAM", Tür: "", Grup: "", Devir: money(data.totals.opening), "Dönem borç": money(data.totals.debit), "Dönem alacak": money(data.totals.credit), Bakiye: money(data.totals.closing), Durum: `Bize borçlu ${money(data.totals.closingDebtor)} · Biz borçluyuz ${money(data.totals.closingCreditor)}` });
@@ -230,7 +225,7 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, cas
   router.get("/api/workspace/overview/ekstre.xlsx", async ({ req, res, url }) => {
     const user = auth.requirePermission(req, "overview.view");
     const data = ekstre(user, url.searchParams);
-    const money = value => new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value || 0);
+    const money = value => MONEY_FORMAT.format(value || 0);
     const columns = ["Tarih", "İşlem", "Açıklama", "Makbuz No", "Borç", "Alacak", "Bakiye"];
     const rows = [
       { Tarih: dayText(data.from), İşlem: "Devir", Açıklama: "Dönem başı bakiye", "Makbuz No": "", Borç: "", Alacak: "", Bakiye: money(data.opening) },
@@ -251,11 +246,10 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, cas
     if (plans()?.openItems) flows.push(...plans().openItems(day));
     if (cheques()?.flows) flows.push(...cheques().flows());
     // Kasa'ya ileri tarihle girilmiş hareketler (ör. kira, maaş): kendi tarihinde beklenen hareket sayılır.
-    const cashEntries = cash()?.entries ? cash().entries() : [];
-    let cashToday = 0;
-    for (const entry of cashEntries) {
-      if (entry.date <= day) cashToday = roundMoney(cashToday + (entry.kind === "in" ? entry.amount : -entry.amount));
-      else flows.push({ date: entry.date, direction: entry.kind === "out" ? "out" : "in", amount: entry.amount, source: "cash", label: entry.description || (entry.kind === "in" ? "Tahsilat" : "Ödeme"), party: entry.accountName || entry.planName || entry.caseTitle || "", ref: null });
+    // Bugünkü kasa SQL toplamından (Kasa ekranıyla aynı kaynaklar); yalnız ileri tarihli satırlar okunur.
+    const cashToday = cash()?.summary ? cash().summary(day).balanceToday : 0;
+    for (const entry of cash()?.entries ? cash().entries({ after: day }) : []) {
+      flows.push({ date: entry.date, direction: entry.kind === "out" ? "out" : "in", amount: entry.amount, source: "cash", label: entry.description || (entry.kind === "in" ? "Tahsilat" : "Ödeme"), party: entry.accountName || entry.planName || entry.caseTitle || "", ref: null });
     }
     const result = projection({ today: day, from: range.from, to: range.to, cashToday, flows, includeOverdue });
     return { ...result, requested: range };
@@ -300,7 +294,7 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, cas
   router.get("/api/workspace/overview/nakit-akisi.xlsx", async ({ req, res, url }) => {
     const user = auth.requirePermission(req, "overview.view");
     const data = cashflow(user, url.searchParams);
-    const money = value => new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value || 0);
+    const money = value => MONEY_FORMAT.format(value || 0);
     const columns = ["Vade", "Kaynak", "Açıklama", "Kimden / kime", "Giriş", "Çıkış", "Beklenen kasa"];
     const rows = [
       { Vade: dayText(data.from), Kaynak: "Başlangıç", Açıklama: "Bugünkü kasa" + (data.carried.in || data.carried.out ? " + başlangıca kadar beklenenler" : "") + (data.includeOverdue ? " + gecikmişler" : ""), "Kimden / kime": "", Giriş: "", Çıkış: "", "Beklenen kasa": money(data.opening) },

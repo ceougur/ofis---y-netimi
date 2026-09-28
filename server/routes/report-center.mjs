@@ -32,7 +32,8 @@ const CASH_SOURCE = { payment: "Kayıt tahsilatı", manual: "Kasa", plan: "Taksi
 const PRIORITY = { high: "Yüksek", normal: "Normal", low: "Düşük", urgent: "Acil" };
 const TASK_STATUS = { open: "Açık", done: "Tamamlandı", completed: "Tamamlandı", cancelled: "İptal" };
 const money = value => (value === "" || value === null || value === undefined ? "" : tl(value));
-const qty = value => new Intl.NumberFormat("tr-TR", { maximumFractionDigits: 3 }).format(Number(value) || 0);
+const QTY_FORMAT = new Intl.NumberFormat("tr-TR", { maximumFractionDigits: 3 });
+const qty = value => QTY_FORMAT.format(Number(value) || 0);
 const stamp = value => {
   if (!value) return "";
   const date = new Date(value);

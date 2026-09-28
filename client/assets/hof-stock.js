@@ -9,7 +9,8 @@
   const { esc } = HOF;
   const money = value => HOF.formatMoney(value);
   const office = () => HOF.office || {};
-  const qtyText = value => new Intl.NumberFormat("tr-TR", { maximumFractionDigits: 3 }).format(Number(value) || 0);
+  const QTY_FORMAT = new Intl.NumberFormat("tr-TR", { maximumFractionDigits: 3 });
+  const qtyText = value => QTY_FORMAT.format(Number(value) || 0);
   const parseNumber = value => {
     let text = String(value ?? "").trim().replace(/\s+/g, "").replace(/[^\d.,-]/g, "");
     if (!text) return Number.NaN;
@@ -34,7 +35,7 @@
   const canMove = () => HOF.can("stock.move");
   const moduleName = () => HOF.uiLabel?.("side.stock", "Stok") || "Stok";
   const stateBadge = item =>
-    item.qty <= 0 && (item.minQty > 0 || item.qtyIn > 0) ? '<span class="hof-plan-badge is-late">Tükendi</span>' : item.low ? '<span class="hof-plan-badge is-soon">Kritik</span>' : "";
+    item.kind === "service" ? '<span class="hof-plan-badge is-info" title="Hizmet kalemi: miktar ve kritik seviye izlenmez">Hizmet</span>' : item.qty <= 0 && (item.minQty > 0 || item.qtyIn > 0) ? '<span class="hof-plan-badge is-late">Tükendi</span>' : item.low ? '<span class="hof-plan-badge is-soon">Kritik</span>' : "";
 
   let modal = null;
   const view = { mode: "list", id: "", q: "", category: "", state: "all", sort: "name", list: null, item: null };
@@ -175,7 +176,8 @@
       title: item ? "Ürünü düzenle" : "Yeni ürün",
       eyebrow: moduleName().toLocaleUpperCase("tr-TR"),
       fields: [
-        { name: "name", label: "Ürün adı", required: true, maxlength: 160, value: item?.name || "", autofocus: true, placeholder: "Ör. Çay, Şeker, Motor yağı 5W-30" },
+        { name: "kind", label: "Kalem türü", type: "select", value: item?.kind || "product", options: [{ value: "product", label: "Ürün (stok tutulur)" }, { value: "service", label: "Hizmet (miktar ve kritik seviye izlenmez)" }], help: "Hizmet kalemleri kritik stok sayısına girmez; satış/alış tutarı Kasa'ya ya da cariye yine yazılabilir." },
+        { name: "name", label: "Ürün / hizmet adı", required: true, maxlength: 160, value: item?.name || "", autofocus: true, placeholder: "Ör. Çay, Motor yağı 5W-30, Servis ücreti" },
         { name: "unit", label: "Birim", maxlength: 20, value: item?.unit || "adet", list: UNITS },
         { name: "code", label: "Kod", maxlength: 60, value: item?.code || "", placeholder: "İsteğe bağlı (barkod, stok kodu)" },
         { name: "category", label: "Kategori", maxlength: 80, value: item?.category || "", list: categories, placeholder: "Ör. Mutfak, Araç, Kırtasiye" },

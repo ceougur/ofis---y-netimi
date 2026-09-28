@@ -675,12 +675,15 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
 
   // ---------- Diğer modüller için ----------
   // Kasa: taksit hareketleri (silinmemiş kartların) tahsilat/ödeme olarak.
-  const cashEntries = () =>
+  // Kasa kaynağı: aynı tablo/koşul hem Kasa satırlarında hem Kasa toplamında (ANLIK DURUM) kullanılır.
+  const cashSource = { table: "plan_entries e JOIN plans p ON p.id = e.plan_id AND p.deleted_at IS NULL", where: "e.cheque_id = ''", kind: "e.kind", amount: "e.amount", date: "e.date" };
+  const cashEntries = (after = "") =>
     store.all(
       `SELECT e.id, e.kind, 'plan' AS source, e.amount, e.date, e.note AS description, e.plan_id AS planId, p.name AS planName,
               e.created_by AS actorId, COALESCE(u.display_name, '') AS actorName, e.created_at AS createdAt, e.updated_at AS updatedAt
-       FROM plan_entries e JOIN plans p ON p.id = e.plan_id AND p.deleted_at IS NULL LEFT JOIN users u ON u.id = e.created_by
-       WHERE e.cheque_id = ''`,
+       FROM ${cashSource.table} LEFT JOIN users u ON u.id = e.created_by
+       WHERE ${cashSource.where}${after ? ` AND ${cashSource.date} > ?` : ""}`,
+      ...(after ? [after] : []),
     );
   // Tahsilat takvimi ve bildirimler: vadesi geçen, bugün ve 7 gün içinde gelecek açık taksitler.
   function dueItems(day = today()) {
@@ -851,5 +854,5 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
   const countForAccount = accountId => store.get("SELECT COUNT(*) AS n FROM plans WHERE deleted_at IS NULL AND account_id = ?", accountId).n;
   const receiptSeq = () => nextReceipt();
 
-  return { cashEntries, dueItems, openItems, fingerprint, ledgerPlansByAccount, list, detail, forCase, entriesForCase, summariesByAccount, forAccount, createForAccount, followAccount, countForAccount, receiptSeq, nextRef, validDistribution: distributionInput, resolveGroups, groupTree };
+  return { cashEntries, cashSource, dueItems, openItems, fingerprint, ledgerPlansByAccount, list, detail, forCase, entriesForCase, summariesByAccount, forAccount, createForAccount, followAccount, countForAccount, receiptSeq, nextRef, validDistribution: distributionInput, resolveGroups, groupTree };
 }

@@ -110,8 +110,18 @@ export function parseCellText(text) {
 }
 
 // ---------- Sonucu kolonun görünüşüne göre yazma ----------
-const trNumber = (value, decimals, grouping) =>
-  new Intl.NumberFormat("tr-TR", { minimumFractionDigits: decimals, maximumFractionDigits: decimals, useGrouping: grouping }).format(value);
+// Biçimlendiriciler seçenek başına bir kez kurulur (hücre başına kurmak binlerce satırda yavaştı).
+const FORMATS = new Map();
+export function trFormat(minimumFractionDigits, maximumFractionDigits, useGrouping) {
+  const key = `${minimumFractionDigits}|${maximumFractionDigits}|${useGrouping}`;
+  let format = FORMATS.get(key);
+  if (!format) {
+    format = new Intl.NumberFormat("tr-TR", { minimumFractionDigits, maximumFractionDigits, useGrouping });
+    if (FORMATS.size < 64) FORMATS.set(key, format);
+  }
+  return format;
+}
+const trNumber = (value, decimals, grouping) => trFormat(decimals, decimals, grouping).format(value);
 const pad = value => String(value).padStart(2, "0");
 
 // Örnek metinden biçim: tarih mi, yüzde mi, sayının önündeki/ardındaki metin, ondalık basamak, binlik ayraç.
@@ -168,7 +178,7 @@ export function formatValue(value, sample, { fallbackDecimals = 2 } = {}) {
     const body = trNumber(Math.abs(shown), decimals, format.grouping);
     return `${shown < 0 ? "-" : ""}${format.prefix}${body}${format.suffix}`;
   }
-  return new Intl.NumberFormat("tr-TR", { maximumFractionDigits: fallbackDecimals, useGrouping: false }).format(value);
+  return trFormat(0, fallbackDecimals, false).format(value);
 }
 
 // Hesaplanan sayı → Excel'in metin birleştirmede kullandığı hâl (Türkçe ondalık virgül, gereksiz sıfırsız).

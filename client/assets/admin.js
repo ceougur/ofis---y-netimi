@@ -117,13 +117,14 @@
             <td>${esc(user.username)}</td>
             <td><select class="adm-role" aria-label="${esc(user.name)} rolü" ${self ? "disabled" : ""}>${roles}</select></td>
             <td><button type="button" class="adm-status ${user.active ? "is-active" : ""}" data-toggle ${self ? "disabled" : ""}>${user.active ? "Aktif" : "Pasif"}</button></td>
+            <td>${user.role === "admin" ? '<span class="adm-muted" title="Yönetici ANLIK DURUM ve raporları her zaman görür">Tam yetki</span>' : Object.entries(user.grantable || {}).map(([permission, label]) => `<button type="button" class="adm-grant ${(user.grants || []).includes(permission) ? "is-on" : ""}" data-grant="${esc(permission)}" aria-pressed="${(user.grants || []).includes(permission)}" title="${(user.grants || []).includes(permission) ? "Açık: bu kişi görür. Kapatmak için tıklayın." : "Kapalı: bu kişi görmez. Açmak için tıklayın."}">${esc(label)}</button>`).join("")}</td>
             <td>${user.lastLoginAt ? `${esc(HOF.formatDateTime(user.lastLoginAt))}` : '<span class="adm-muted">Hiç giriş yapmadı</span>'}</td>
             <td class="adm-right"><button type="button" class="hof-button hof-button-ghost hof-button-small" data-reset>Parola sıfırla</button> <button type="button" class="hof-button hof-button-ghost hof-button-small" data-sessions ${self ? "disabled" : ""}>Oturumları kapat</button></td>
           </tr>`;
         })
         .join("");
     } catch (error) {
-      body.innerHTML = `<tr><td colspan="6">${esc(error.message)}</td></tr>`;
+      body.innerHTML = `<tr><td colspan="7">${esc(error.message)}</td></tr>`;
     }
   }
 
@@ -166,6 +167,18 @@
     const row = button.closest("tr");
     const id = row.dataset.id;
     const name = row.querySelector("b").textContent;
+    // Kişiye özel ek yetki (v2.0.7): ANLIK DURUM ve raporlar — yönetici tek tık ile açar/kapatır.
+    if (button.dataset.grant) {
+      const granted = [...row.querySelectorAll("[data-grant].is-on")].map(node => node.dataset.grant);
+      const next = button.classList.contains("is-on") ? granted.filter(item => item !== button.dataset.grant) : [...granted, button.dataset.grant];
+      try {
+        await HOF.api(`/api/admin/users/${encodeURIComponent(id)}`, { method: "PATCH", body: { grants: next } });
+        HOF.toast(next.includes(button.dataset.grant) ? `${name}: ${button.textContent} açıldı.` : `${name}: ${button.textContent} kapatıldı.`, { type: "success" });
+      } catch (error) {
+        HOF.toastError(error);
+      }
+      return loadUsers();
+    }
     try {
       if ("toggle" in button.dataset) {
         const activate = !button.classList.contains("is-active");

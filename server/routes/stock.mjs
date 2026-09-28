@@ -19,7 +19,9 @@ const validDate = value => DATE.test(value) && !Number.isNaN(new Date(value).get
 const MAX_IMPORT = 250_000;
 const MAX_QTY = 1e9;
 const PAY = new Set(["none", "cash", "account"]);
-const qtyText = value => new Intl.NumberFormat("tr-TR", { maximumFractionDigits: 3 }).format(Number(value) || 0);
+const qtyFormat = new Intl.NumberFormat("tr-TR", { maximumFractionDigits: 3 });
+const moneyFormat = new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const qtyText = value => qtyFormat.format(Number(value) || 0);
 const collator = new Intl.Collator("tr", { numeric: true, sensitivity: "base" });
 
 export function registerStockRoutes(router, { store, auth, audit, events, trash, accounts = () => null }) {
@@ -211,8 +213,8 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
     const user = auth.requirePermission(req, "stock.view");
     const data = list(user, listQuery(url.searchParams));
     const title = limited(url.searchParams.get("title"), 60, "Başlık") || "Stok";
-    const number = value => new Intl.NumberFormat("tr-TR", { maximumFractionDigits: 3 }).format(value || 0);
-    const money = value => new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value || 0);
+    const number = value => qtyFormat.format(value || 0);
+    const money = value => moneyFormat.format(value || 0);
     const columns = ["Kod", "Ürün", "Kategori", "Birim", "Mevcut", "Toplam giriş", "Toplam çıkış", "Kritik seviye", "Birim fiyat", "Değer", "Son hareket", "Not"];
     const rows = data.items.map(item => ({ Kod: item.code, Ürün: item.name, Kategori: item.category, Birim: item.unit, Mevcut: number(item.qty), "Toplam giriş": number(item.qtyIn), "Toplam çıkış": number(item.qtyOut), "Kritik seviye": number(item.minQty), "Birim fiyat": money(item.unitPrice), Değer: money(item.value), "Son hareket": dayText(item.lastMove), Not: item.note }));
     const buffer = buildXlsx([{ name: title.slice(0, 31), columns, rows }], { title: `${title} durumu` });
@@ -460,13 +462,17 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
 
   // ---------- Diğer modüller için ----------
   // Kasa: Kasa'dan ödenen alımlar (çıkış) ve Kasa'ya tahsil edilen satışlar (giriş). Ürün silinse de para gerçektir; kalır.
-  const cashEntries = () =>
+  // Kasa kaynağı: aynı tablo/koşul hem Kasa satırlarında hem Kasa toplamında (ANLIK DURUM) kullanılır.
+  // Stok girişi (alım) Kasa'dan çıkış, stok çıkışı (satış) Kasa'ya giriştir.
+  const cashSource = { table: "stock_moves m JOIN stock_items i ON i.id = m.item_id", where: "m.pay = 'cash' AND m.amount > 0", kind: "CASE m.kind WHEN 'in' THEN 'out' ELSE 'in' END", amount: "m.amount", date: "m.date" };
+  const cashEntries = (after = "") =>
     store
       .all(
         `SELECT m.id, m.kind AS moveKind, m.qty, m.note, m.amount, m.date, m.item_id AS itemId, i.name AS itemName, i.unit,
                 m.created_by AS actorId, COALESCE(u.display_name, '') AS actorName, m.created_at AS createdAt, m.updated_at AS updatedAt
-         FROM stock_moves m JOIN stock_items i ON i.id = m.item_id LEFT JOIN users u ON u.id = m.created_by
-         WHERE m.pay = 'cash' AND m.amount > 0`,
+         FROM ${cashSource.table} LEFT JOIN users u ON u.id = m.created_by
+         WHERE ${cashSource.where}${after ? ` AND ${cashSource.date} > ?` : ""}`,
+        ...(after ? [after] : []),
       )
       .map(({ moveKind, qty, note, unit, ...row }) => ({
         ...row,
@@ -528,5 +534,5 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
     return `${row.m}|${row.i}`;
   };
 
-  return { cashEntries, alerts, deletedList, restoreDeleted, restoreMove, fingerprint, list, detail };
+  return { cashEntries, cashSource, alerts, deletedList, restoreDeleted, restoreMove, fingerprint, list, detail };
 }

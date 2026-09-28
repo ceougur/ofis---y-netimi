@@ -26,6 +26,8 @@ const KIND_TEXT = { debt: "Borç", credit: "Alacak", in: "Tahsilat", out: "Ödem
 // Türkçe sıralama: Intl.Collator, localeCompare'den kat kat hızlıdır (200 bin caride saniyeler yerine yüz ms).
 const collator = new Intl.Collator("tr", { numeric: true, sensitivity: "base" });
 
+const MONEY_FORMAT = new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
 export function registerAccountRoutes(router, { store, auth, audit, events, trash, config = {}, dataset = null, plans = () => null, cheques = () => null }) {
   const now = () => new Date().toISOString();
   const today = () => isoDay(new Date());
@@ -518,7 +520,7 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     const fieldsById = new Map(store.all("SELECT id, fields_json AS fieldsJson FROM accounts WHERE deleted_at IS NULL").map(row => [row.id, parseFields(row.fieldsJson)]));
     const base = ["Cari No", "Ad / Unvan", "Tür", "Grup", "Alt grup", "Telefon", "E-posta", "Adres", "Kayıt tarihi", "Durum", "Borç", "Alacak", "Bakiye", "Taksitten kalan", "Geciken", "Bilgi notu"];
     const extras = [...new Set(data.accounts.flatMap(item => (fieldsById.get(item.id) || []).map(field => field.label)))].filter(label => !base.includes(label));
-    const money = value => new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value || 0);
+    const money = value => MONEY_FORMAT.format(value || 0);
     const rows = data.accounts.map(item => {
       const row = {
         "Cari No": item.refNo,
@@ -812,12 +814,15 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     return { accounts: rows, lines };
   }
   // Kasa: cari tahsilatları (giriş) ve ödemeleri (çıkış). Silinen carinin hareketi Kasa'dan düşer (taksit kartıyla aynı).
-  const cashEntries = () =>
+  // Kasa kaynağı: aynı tablo/koşul hem Kasa satırlarında hem Kasa toplamında (ANLIK DURUM) kullanılır.
+  const cashSource = { table: "account_entries e JOIN accounts a ON a.id = e.account_id AND a.deleted_at IS NULL", where: "e.kind IN ('in', 'out') AND e.source = ''", kind: "e.kind", amount: "e.amount", date: "e.date" };
+  const cashEntries = (after = "") =>
     store.all(
       `SELECT e.id, e.kind, 'account' AS source, e.amount, e.date, e.note AS description, e.account_id AS accountId, a.name AS accountName,
               e.created_by AS actorId, COALESCE(u.display_name, '') AS actorName, e.created_at AS createdAt, e.updated_at AS updatedAt
-       FROM account_entries e JOIN accounts a ON a.id = e.account_id AND a.deleted_at IS NULL LEFT JOIN users u ON u.id = e.created_by
-       WHERE e.kind IN ('in', 'out') AND e.source = ''`,
+       FROM ${cashSource.table} LEFT JOIN users u ON u.id = e.created_by
+       WHERE ${cashSource.where}${after ? ` AND ${cashSource.date} > ?` : ""}`,
+      ...(after ? [after] : []),
     );
   // Stok hareketi cariye yazılınca (routes/stock.mjs): borç/alacak satırı stok hareketine bağlı açılır, düzeltilir, silinir.
   const stockEntry = {
@@ -882,5 +887,5 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     return "Cari hareketi geri eklendi; bakiye ve Kasa yeniden hesaplandı.";
   }
 
-  return { exists, createFromPlan, matchPerson, cashEntries, stockEntry, fingerprint, deletedList, restoreDeleted, restoreEntry, detail, list, allLedgers };
+  return { exists, createFromPlan, matchPerson, cashEntries, cashSource, stockEntry, fingerprint, deletedList, restoreDeleted, restoreEntry, detail, list, allLedgers };
 }

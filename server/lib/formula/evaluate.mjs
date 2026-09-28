@@ -1,7 +1,7 @@
 // Formül hesaplayıcı (v2.0.1). Bağlanmış ağacı (bind.mjs) hesaplar; hücre değerlerini ortam (env) verir.
 // Desteklenen işlevler Excel'in İngilizce adlarıyladır (dosyada formüller böyle saklanır). Desteklenmeyen bir işlevde
 // UnsupportedFormula atılır: o formül hesaplanmaz, hücrede Excel/Sheets'ten gelen son değer kalır.
-import { Cell, CellError, ERR, isError, numberToText, partsFromSerial, serialFromParts, todaySerial, nowSerial } from "./values.mjs";
+import { Cell, CellError, ERR, isError, numberToText, partsFromSerial, serialFromParts, todaySerial, nowSerial, trFormat } from "./values.mjs";
 
 export class UnsupportedFormula extends Error {
   constructor(message) {
@@ -725,6 +725,6 @@ function textFormat(value, format) {
   const decimalSeparator = english ? "." : ",";
   const decimals = code.includes(decimalSeparator) ? (code.split(decimalSeparator).pop().match(/0/g) || []).length : 0;
   const grouping = english ? code.includes(",") : code.includes(".");
-  const body = new Intl.NumberFormat("tr-TR", { minimumFractionDigits: decimals, maximumFractionDigits: decimals, useGrouping: grouping }).format(percent ? value * 100 : value);
+  const body = trFormat(decimals, decimals, grouping).format(percent ? value * 100 : value);
   return `${body}${percent ? "%" : ""}`;
 }

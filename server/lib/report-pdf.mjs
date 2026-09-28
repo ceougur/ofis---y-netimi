@@ -12,7 +12,9 @@ const loadFonts = () => {
   return fonts;
 };
 const pad = value => String(value).padStart(2, "0");
-const tl = value => `${new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(Number(value) || 0)} TL`;
+// Biçimlendirici bir kez kurulur (her çağrıda kurmak büyük raporlarda saniyeler sürüyordu).
+const moneyFormat = new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const tl = value => `${moneyFormat.format(Number(value) || 0)} TL`;
 
 /**
  * @param {{ title: string, subtitle?: string, headers: string[], rows: string[][], types?: string[], summary?: Array<[string, string]>, officeName?: string, userName?: string, brand?: string, now?: Date }} input
