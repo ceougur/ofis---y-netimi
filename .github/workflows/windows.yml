@@ -115,7 +115,9 @@ jobs:
           $setup = Get-ChildItem dist -Filter 'DestekOfis-Kurulum-*.exe' | Select-Object -First 1
           $p = Start-Process $setup.FullName -ArgumentList '/VERYSILENT','/SUPPRESSMSGBOXES','/NORESTART','/LOG=guncelleme.log' -Wait -PassThru
           if ($p.ExitCode -ne 0) { Get-Content guncelleme.log -Tail 60; throw "Yeniden kurulum çıkış kodu $($p.ExitCode)" }
-          if (Select-String -Path guncelleme.log -Pattern 'SERVIS-KURULUM-HATASI|SERVIS-GUVENLIK-DUVARI-UYARISI' -Quiet) { robocopy C:\DestekOfis\logs "$env:RUNNER_TEMP\ofis-logs" /B /E /NFL /NDL /NJH /NJS /R:0 /W:0 *> $null; $global:LASTEXITCODE = 0; Get-Content "$env:RUNNER_TEMP\ofis-logs\kurulum.log" -Tail 40; throw 'Yeniden kurulumda servis doğrulaması hatalı' }
+          # Kurulum programının günlüğündeki servis satırları her durumda yazdırılır (betik çıktısı, sağlık denetimi, hata kodu).
+          Select-String -Path guncelleme.log -Pattern 'Kurulum türü|çıkış kodu|servis-kur|SERVIS|sağlık|yeniden başlatılıyor' | ForEach-Object { $_.Line }
+          if (Select-String -Path guncelleme.log -Pattern 'SERVIS-KURULUM-HATASI|SERVIS-GUVENLIK-DUVARI-UYARISI' -Quiet) { robocopy C:\DestekOfis\logs "$env:RUNNER_TEMP\ofis-logs" /B /E /NFL /NDL /NJH /NJS /R:0 /W:0 *> $null; $global:LASTEXITCODE = 0; Get-Content "$env:RUNNER_TEMP\ofis-logs\kurulum.log" -Tail 40; icacls C:\DestekOfis\logs; icacls C:\DestekOfis\logs\kurulum.log; Get-ChildItem "$env:TEMP\destekofis-*" -ErrorAction SilentlyContinue | ForEach-Object { "==== $($_.FullName)"; Get-Content $_.FullName -Tail 40 }; throw 'Yeniden kurulumda servis doğrulaması hatalı' }
           # Sunucu bilgisayarında yeniden kurulumda kurulum türü "sunucu" kalmalı (ağ taraması yapılmaz).
           if (-not (Get-Service DestekOfis -ErrorAction SilentlyContinue)) { throw 'Yeniden kurulumdan sonra servis yok' }
           Select-String -Path guncelleme.log -Pattern 'Kurulum türü|çıkış kodu|servis-kur|SERVIS|sağlık|Installation process|Need to restart|Exception|Error' | Select-Object -Last 60 | ForEach-Object { $_.Line }
