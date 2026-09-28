@@ -7,6 +7,7 @@ import { createBackup } from "./backup.mjs";
 import { DEFAULT_ADMIN_PASSWORD } from "./config.mjs";
 import { rowHash, rowIdentities } from "./dataset-identity.mjs";
 import { parseJson } from "./http.mjs";
+import { isFullDate } from "./insight/validators.mjs";
 import { verifyPassword } from "./passwords.mjs";
 
 const columnExists = (store, table, column) => store.all(`PRAGMA table_info(${table})`).some(item => item.name === column);
@@ -502,6 +503,44 @@ export const MIGRATIONS = [
       // Var olan kartlara açılış sırasıyla numara verilir (Excel'den yüklenenler dosyadaki sırayla açılmıştır).
       const plans = store.all("SELECT id FROM plans WHERE ref_no = '' ORDER BY created_at, rowid");
       plans.forEach((plan, index) => store.run("UPDATE plans SET ref_no = ? WHERE id = ?", String(index + 1), plan.id));
+    },
+  },
+  {
+    version: 9,
+    name: "v2.0.6 taksit kartında kayıt tarihi",
+    up(store) {
+      // Kişinin kaydedildiği gün (Excel'deki "Kayıt tarihi" kolonu ya da programda kartın açıldığı gün). Yalnızca ekleyici.
+      addColumn(store, "plans", "registered_on", "TEXT NOT NULL DEFAULT ''");
+      store.exec("UPDATE plans SET registered_on = substr(created_at, 1, 10) WHERE registered_on = ''");
+    },
+  },
+  {
+    version: 10,
+    name: "v2.0.6 kolon adına yazılmış tarihleri geri al",
+    up(store) {
+      // Detay kartında başlığın yanındaki kalem kolonun ADINI değiştirir; değer sanılıp oraya yazılan tarih ("30.09.2026")
+      // başlığı bozar, hücre boş kalır. Böyle adlar asıl adına döner; yöneticiye bir kez gösterilir (ui.columns.fixed),
+      // işlem geçmişine yazılır. Yalnızca görünen ad değişir: veri, düzeltmeler ve uyarılar kolonun asıl adıyla çalışır.
+      const timestamp = new Date().toISOString();
+      const upsert = (key, value) =>
+        store.run("INSERT INTO settings (key, value, updated_at, updated_by) VALUES (?, ?, ?, NULL) ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = excluded.updated_at", key, value, timestamp);
+      for (const row of store.all("SELECT key, value FROM settings WHERE key = 'ui.columns' OR key LIKE 'ui.columns@%'")) {
+        const aliases = parseJson(row.value, {});
+        if (!aliases || typeof aliases !== "object" || Array.isArray(aliases)) continue;
+        const fixed = Object.entries(aliases).filter(([, alias]) => isFullDate(alias)).map(([column, value]) => ({ column, value, at: timestamp }));
+        if (!fixed.length) continue;
+        for (const item of fixed) delete aliases[item.column];
+        upsert(row.key, JSON.stringify(aliases));
+        const noticeKey = `ui.columns.fixed${row.key.slice("ui.columns".length)}`;
+        const previous = parseJson(store.get("SELECT value FROM settings WHERE key = ?", noticeKey)?.value, []);
+        upsert(noticeKey, JSON.stringify([...(Array.isArray(previous) ? previous : []), ...fixed].slice(-50)));
+        for (const item of fixed) {
+          store.run(
+            "INSERT INTO audit_events (id, type, entity_id, actor_id, actor_name, payload_json, created_at) VALUES (?, 'profile.column', ?, 'system', 'Güncelleme', ?, ?)",
+            `event-${randomUUID()}`, item.column, JSON.stringify({ column: item.column, value: "", previous: item.value, reason: "Tarih kolon adı olamaz; asıl adına döndürüldü." }), timestamp,
+          );
+        }
+      }
     },
   },
 ];

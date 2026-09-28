@@ -1,6 +1,11 @@
 // Kolon başlıklarını adlandırma (v2.0.1): yalnızca görünen ad değişir; veri, düzeltmeler ve eşitleme asıl adla çalışır.
 import assert from "node:assert/strict";
 import { after, before, describe, it } from "node:test";
+import { mkdirSync } from "node:fs";
+import path from "node:path";
+import { createStore, openDatabase } from "../server/lib/db.mjs";
+import { MIGRATIONS } from "../server/lib/migrations.mjs";
+import { isFullDate } from "../server/lib/insight/validators.mjs";
 import { readZip } from "../server/lib/zip.mjs";
 import { createUser, loginAdmin, startTestServer } from "./helpers.mjs";
 
@@ -50,6 +55,18 @@ describe("kolon başlıklarını adlandırma", () => {
     assert.deepEqual(reset.data.data.columns, {});
     const audit = JSON.stringify((await admin.get("/api/admin/audit?type=profile.column")).data);
     assert.match(audit, /1\. Taksit/);
+  });
+
+  it("tarih kolon adı olamaz: değer sanılıp başlığa yazılan tarih reddedilir, ay-yıl başlığı kabul edilir (v2.0.6)", async () => {
+    for (const value of ["30.09.2026", "29/09/2026", "2026-09-30", "30 Eylül 2026", "30.09.26"]) {
+      const response = await admin.put("/api/workspace/columns", { columns: { TKST_1: value } });
+      assert.equal(response.status, 400, value);
+      assert.match(response.data.error, /bir tarih; kolon adı olamaz.*✎/, value);
+      assert.equal(response.data.column, "TKST_1");
+    }
+    assert.equal((await admin.put("/api/workspace/columns", { columns: { TKST_1: "Mart 2027" } })).status, 200, "aylık ödeme kolonu adı");
+    assert.equal((await admin.put("/api/workspace/columns", { columns: { TKST_1: "" } })).status, 200);
+    assert.ok(!isFullDate("2026") && !isFullDate("Ocak 2027") && !isFullDate("31.02.2026") && !isFullDate("1. Taksit"));
   });
 
   it("adlar veri oturumuna özeldir", async () => {
@@ -109,5 +126,46 @@ describe("eşleme ekranı: kullanıcı rolleri (v2.0.2)", () => {
     assert.equal(forced.find(item => item.column === "Kolon 3").role, "person");
     const note = forced.find(item => item.column === "Not");
     assert.deepEqual([note.role, note.ignored, note.importance], ["text", true, 0]);
+  });
+});
+
+describe("göç 10: kolon adına yazılmış tarihler asıl adına döner (v2.0.6)", () => {
+  let server;
+  before(async () => {
+    server = await startTestServer({
+      prepare: ({ dataDir }) => {
+        mkdirSync(dataDir, { recursive: true });
+        const db = openDatabase(path.join(dataDir, "hukuk-ofisi.sqlite"));
+        const store = createStore(db);
+        for (const migration of MIGRATIONS.filter(item => item.version <= 9)) {
+          migration.up(store);
+          store.exec(`PRAGMA user_version = ${migration.version}`);
+        }
+        store.setSetting("ui.columns", JSON.stringify({ "MUAYENE BİTİŞ TARİHİ": "30.09.2026", "EGZOZ BİTİŞ TARİHİ": "29.09.2026", MARKA: "Marka / Model" }));
+        store.setSetting("ui.columns@ikinci", JSON.stringify({ PLAKA: "Araç" }));
+        db.close();
+      },
+    });
+  });
+  after(() => server.close());
+
+  it("tarih adları kalkar, diğer adlar kalır; işlem geçmişine ve bir kerelik bildirime yazılır", async () => {
+    assert.deepEqual(server.app.migration.applied, [10]);
+    const { store } = server.app;
+    assert.deepEqual(JSON.parse(store.setting("ui.columns")), { MARKA: "Marka / Model" });
+    assert.deepEqual(JSON.parse(store.setting("ui.columns@ikinci")), { PLAKA: "Araç" }, "tarih olmayan oturuma dokunulmaz");
+    assert.equal(store.setting("ui.columns.fixed@ikinci", ""), "");
+    const audit = store.all("SELECT entity_id, actor_name, payload_json FROM audit_events WHERE type = 'profile.column' ORDER BY entity_id");
+    assert.deepEqual(audit.map(item => item.entity_id), ["EGZOZ BİTİŞ TARİHİ", "MUAYENE BİTİŞ TARİHİ"]);
+    assert.equal(JSON.parse(audit[1].payload_json).previous, "30.09.2026");
+
+    const admin = await loginAdmin(server);
+    const profile = (await admin.get("/api/workspace/profile")).data.data;
+    assert.deepEqual(profile.columnsFixed.map(item => `${item.column}=${item.value}`).sort(), ["EGZOZ BİTİŞ TARİHİ=29.09.2026", "MUAYENE BİTİŞ TARİHİ=30.09.2026"]);
+    const staff = await createUser(server, admin, { username: "ece", name: "Ece Ak", role: "personel" });
+    assert.equal((await staff.del("/api/workspace/columns/fixed")).status, 403);
+    const cleared = await admin.del("/api/workspace/columns/fixed");
+    assert.equal(cleared.status, 200);
+    assert.deepEqual(cleared.data.data.columnsFixed, []);
   });
 });

@@ -189,6 +189,12 @@ export function registerInsightRoutes(router, { auth, profile, dataset, store, a
     ok(res, profile.setColumns(user, body.columns, columnOrder(view.rows || [])));
   });
 
+  // Güncellemede asıl adına döndürülen tarih adları bildirimi okundu (v2.0.6).
+  router.delete("/api/workspace/columns/fixed", async ({ req, res }) => {
+    const user = auth.requirePermission(req, "profile.manage");
+    ok(res, profile.clearColumnsFixed(user));
+  });
+
   router.delete("/api/workspace/labels", async ({ req, res }) => {
     const user = auth.requirePermission(req, "profile.manage");
     ok(res, profile.resetLabels(user));

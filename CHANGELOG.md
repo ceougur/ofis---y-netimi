@@ -2,6 +2,17 @@
 
 Sürümler [anlamsal sürümleme](https://semver.org/lang/tr/) kurallarına uyar.
 
+## 2.0.6 — A5 makbuz, kayıt tarihi, listede bilgi notu, kolon adına yazılan tarih
+
+- **Makbuz A5 boyutunda ve firmanızın adıyla.** Tahsilat/ödeme makbuzu A5 dikey (148 × 210 mm) tek sayfadır; yazıcıya A5 kâğıt koyup yazdırırsınız, kâğıt boşa gitmez. Üstte firmanızın adı yazar (Ayarlar'daki firma adı); firma adı girilmemişse o alan boş kalır. Makbuzda ve kart ekstresinde program adı ("DestekOfis") yazmaz.
+- **Taksit kartında kayıt tarihi.** Kişinin kaydedildiği gün kartta ve listede görünür. Programda yeni kart açarken bugünün tarihi hazır gelir, değiştirilebilir. Excel'den yüklemede "Kayıt tarihi" (ya da "Kayıt", "Sözleşme tarihi") kolonu okunur; kolon yoksa ya da hücre boşsa bugün yazılır. Liste kayıt tarihine göre de sıralanır (yeni önce). Önceden açılan kartlara açıldıkları gün yazıldı (veritabanı göçü 9).
+- **Taksit listesinde bilgi notu.** Liste ekranında kişinin altında bilgi notu (sığmayan kısım "…", tamamı üzerine gelince), PDF'te ve çıktıda **Kayıt** ve **Bilgi notu** kolonları. Tarih, telefon ve tutar kolonları artık alt satıra kırılmaz; yer darsa yalnız ad, grup ve not kolonları sarılır. Listenin alt bilgisinde de program adı yerine firma adı yazar.
+- **Kolon adına yanlışlıkla yazılan tarih düzeltildi.** Detay kartında başlığın yanındaki simge kolonun *adını* değiştirir, değeri değil. Değer sanılıp oraya yazılan tarih ("30.09.2026") başlığı bozuyor, hücre boş kaldığı için uyarı da gelmiyordu; aynı tarih ikinci kolona yazılınca "adı başka bir kolonda da kullanılıyor" hatası çıkıyordu. Şimdi:
+  - Güncelleme, tarih yazılmış kolon adlarını asıl adlarına döndürür ve yöneticiye bir kez hangi kolonların düzeltildiğini gösterir (veritabanı göçü 10; işlem geçmişine yazılır).
+  - Ad penceresinde tarih yazılırsa ad olarak kaydedilmez; "Bu bir tarih, kolon adı değil — kayda yazılsın mı?" diye sorulur ve **Kayda yaz** ile tarih o kaydın alanına yazılır.
+  - Pencere en üstte "Bu pencere kolonların ADINI değiştirir, kayıttaki değeri değil" der ve açık karttaki değeri düzenlemeye tek tıkla geçirir. Başlık simgesi değeri düzenleyen ✎'den ayrıldı ve yalnız başlığın üzerine gelince görünür.
+- **Seyrek doldurulan belge kolonları da uyarı verir.** Araç listesinde "Koltuk sigortası", "Trafik sigortası", "Egzoz emisyon", "Takograf", "SRC" gibi başlıklarında "tarih/bitiş" geçmeyen kolonlara tek bir kayıtta yazılan tarih de artık tarih sayılır; ileri tarihse 7 gün kala ve geçince uyarı verir. Önceden bu kolonlar en az iki-üç kayıtta dolu değilse tanınmıyordu.
+
 ## 2.0.5 — Geniş taksit kartı, PDF ve yazdırma, Excel'deki Sıra No, acil görev uyarısı
 
 - **Taksit penceresi büyüdü; kart yeniden düzenlendi.** Pencere ekranın büyük kısmını kullanır. Kart açılınca üstte kişi bilgileri (Sıra No, grup, alt grup, telefon, taksit planı, kartı açan) ve **bilgi notu**, altında göstergeler ve ödeme çubuğu, en altta **taksitler** ve **hareketler** (tahsilat, ödeme/iade) alt alta durur. İşlem düğmeleri kaydırırken üstte kalır. Taksitler *Tümü / Açık / Geciken / Ödenen*, hareketler *Tümü / Tahsilat / Ödeme-iade* diye süzülür; her iki listenin altında toplam satırı var.

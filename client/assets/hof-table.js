@@ -19,7 +19,7 @@
 
   const ensureFloats = () => {
     if (pencil) return;
-    pencil = HOF.el("button", { type: "button", class: "hof-float", title: "Bu bilgiyi düzenle", "aria-label": "Bu bilgiyi düzenle", text: "✎" });
+    pencil = HOF.el("button", { type: "button", class: "hof-float", title: "Değeri düzenle", "aria-label": "Değeri düzenle", text: "✎" });
     remover = HOF.el("button", { type: "button", class: "hof-float hof-float-delete", title: "Kaydı sil", "aria-label": "Kaydı sil", text: "×" });
     document.body.append(pencil, remover);
     pencil.addEventListener("click", event => {
@@ -483,5 +483,13 @@
     });
     HOF.on("rows", () => decorateFormulas());
   });
-  HOF.table = { revealRow, newRecord, editCase, paginate };
+  // Seçili kaydın tek alanını düzenleme penceresi (asıl kolon adıyla); kolon adı penceresindeki kısa yol kullanır (v2.0.6).
+  function editField(column) {
+    const selected = HOF.selectedCase();
+    if (!selected || !column) return;
+    const cell = [...selected.panel.querySelectorAll(".dynamic-detail-grid > div")].find(item => HOF.columnOf(item.querySelector(".detail-label")) === column);
+    if (cell) editCell(cell);
+  }
+
+  HOF.table = { revealRow, newRecord, editCase, editField, paginate };
 })();

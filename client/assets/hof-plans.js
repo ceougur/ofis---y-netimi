@@ -182,6 +182,7 @@
     ["name", "Ada göre"],
     ["due", "Vadeye göre (geciken önce)"],
     ["remaining", "Kalana göre (çoktan aza)"],
+    ["registered", "Kayıt tarihine göre (yeni önce)"],
   ];
   const groupOptions = () => {
     const group = view.groups.find(item => item.id === view.group);
@@ -202,7 +203,7 @@
     const row = plan => {
       const [label, tone] = STATE[plan.state] || STATE.active;
       const next = plan.next ? `${HOF.formatDate(plan.next.dueDate)}<small>${esc(plan.next.seq)}. taksit · ${esc(dayLabel(plan.next.days))}</small>` : plan.itemCount ? "<small>—</small>" : '<small class="is-warn">Taksit girilmemiş</small>';
-      return `<tr data-plan="${esc(plan.id)}" class="is-${esc(plan.state)}" tabindex="0"><td class="hof-plan-no">${esc(plan.refNo || "")}</td><td><b>${esc(plan.name)}</b><small>${esc(whereText(plan) || "Grupsuz")}${plan.phone ? ` · ${esc(plan.phone)}` : ""}</small></td><td class="num">${esc(money(plan.totals.total))}</td><td class="num hof-cash-in">${esc(money(plan.totals.paid))}${progress(plan.totals)}</td><td class="num${plan.totals.remaining > 0 ? " hof-cash-out" : ""}">${esc(money(plan.totals.remaining))}</td><td>${next}</td><td>${badge(label, tone)}${plan.totals.overdueCount ? `<small>${plan.totals.overdueCount} taksit · ${esc(money(plan.totals.overdue))}</small>` : ""}</td></tr>`;
+      return `<tr data-plan="${esc(plan.id)}" class="is-${esc(plan.state)}" tabindex="0"><td class="hof-plan-no">${esc(plan.refNo || "")}</td><td><b>${esc(plan.name)}</b><small>${esc(whereText(plan) || "Grupsuz")}${plan.phone ? ` · ${esc(plan.phone)}` : ""}${plan.registeredOn ? ` · kayıt ${esc(HOF.formatDate(plan.registeredOn))}` : ""}</small>${plan.note ? `<small class="hof-plan-row-note" title="${esc(plan.note)}">${esc(plan.note)}</small>` : ""}</td><td class="num">${esc(money(plan.totals.total))}</td><td class="num hof-cash-in">${esc(money(plan.totals.paid))}${progress(plan.totals)}</td><td class="num${plan.totals.remaining > 0 ? " hof-cash-out" : ""}">${esc(money(plan.totals.remaining))}</td><td>${next}</td><td>${badge(label, tone)}${plan.totals.overdueCount ? `<small>${plan.totals.overdueCount} taksit · ${esc(money(plan.totals.overdue))}</small>` : ""}</td></tr>`;
     };
     root.innerHTML = `<div class="hof-cash-bar"><div class="hof-tabs" role="group" aria-label="Durum">${STATUS_TABS.map(item => `<button type="button" data-status="${item.id}" aria-pressed="${String(item.id === view.status)}">${item.label}</button>`).join("")}</div>
       <div class="hof-cash-add">${manage ? '<button type="button" class="hof-button hof-button-small" data-act="new">+ Yeni kart</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="import" title="Excel listesinden kartları ve grupları tek seferde oluştur">Excel’den yükle</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="groups">Gruplar</button>' : ""}</div></div>
@@ -271,6 +272,7 @@
           <div><dt>Alt grup</dt><dd>${esc(plan.subgroupName || "—")}</dd></div>
           <div><dt>Telefon</dt><dd>${plan.phone ? `${phone ? `<a href="tel:+${esc(phone)}">${esc(plan.phone)}</a>` : esc(plan.phone)}` : "—"}</dd></div>
           <div><dt>Taksit planı</dt><dd>${esc(span)}</dd></div>
+          <div><dt>Kayıt tarihi</dt><dd>${esc(plan.registeredOn ? HOF.formatDate(plan.registeredOn) : "—")}</dd></div>
           <div><dt>Kartı açan</dt><dd>${esc(plan.actorName || "—")} · ${esc(HOF.formatDate(plan.createdAt))}</dd></div>
         </dl>
         <div class="hof-plan-note"><h4>Bilgi notu</h4>${plan.note ? `<p>${esc(plan.note)}</p>` : `<p class="hof-empty">Not yok.${manage ? " <b>Düzenle</b> ile adres, okul, sınıf gibi bilgileri ekleyin." : ""}</p>`}</div>
@@ -332,6 +334,7 @@
       fields: [
         { name: "name", label: "Ad Soyad / Kurum", required: true, maxlength: 160, value: plan?.name || "", autofocus: true },
         { name: "refNo", label: "Sıra No", maxlength: 30, value: plan?.refNo || "", placeholder: plan ? "" : "Boş bırakılırsa sıradaki numara", help: plan ? "" : "Listede ilk kolon ve varsayılan sıralama." },
+        { name: "registeredOn", label: "Kayıt tarihi", type: "date", required: true, value: plan?.registeredOn || todayIso(), help: plan ? "" : "Kişinin kaydedildiği gün; bugün hazır gelir." },
         { name: "phone", label: "Telefon", type: "tel", inputmode: "tel", maxlength: 60, value: plan?.phone || "", placeholder: "05xx xxx xx xx" },
         { name: "total", label: "Toplam tutar (₺)", required: true, inputmode: "decimal", value: plan ? amountText(plan.total) : "", placeholder: "Örn. 12.000,00" },
         ...groupFields(plan || {}),
@@ -355,7 +358,7 @@
         }
       },
       onSubmit: async data => {
-        const payload = { name: data.name, refNo: data.refNo, phone: data.phone, total: data.total, note: data.note, ...groupBody(data) };
+        const payload = { name: data.name, refNo: data.refNo, registeredOn: data.registeredOn, phone: data.phone, total: data.total, note: data.note, ...groupBody(data) };
         if (!plan && data.auto) {
           if (!(Number(data.count) > 0) || !data.firstDue) throw new Error("Otomatik dağıtım için taksit sayısı ve ilk vade gerekli.");
           Object.assign(payload, { mode: "auto", count: data.count, firstDue: data.firstDue });
@@ -588,7 +591,7 @@
       };
       file.arrayBuffer().then(buffer => worker.postMessage({ buffer, name: file.name }, [buffer]), reject);
     });
-  const ROLE_OPTIONS = [["", "— Kullanma —"], ["seq", "Sıra No"], ["name", "Ad Soyad *"], ["group", "Grup (plaka, site…)"], ["subgroup", "Alt grup (güzergâh, blok…)"], ["phone", "Telefon"], ["total", "Toplam tutar *"], ["count", "Taksit sayısı"], ["firstDue", "İlk vade"], ["installment", "Taksit tutarı"], ["note", "Bilgi notu"]];
+  const ROLE_OPTIONS = [["", "— Kullanma —"], ["seq", "Sıra No"], ["name", "Ad Soyad *"], ["registered", "Kayıt tarihi"], ["group", "Grup (plaka, site…)"], ["subgroup", "Alt grup (güzergâh, blok…)"], ["phone", "Telefon"], ["total", "Toplam tutar *"], ["count", "Taksit sayısı"], ["firstDue", "İlk vade"], ["installment", "Taksit tutarı"], ["note", "Bilgi notu"]];
 
   function importFromExcel() {
     const input = HOF.el("input", { type: "file", accept: ".xlsx,.xls,.xlsm,.csv", hidden: true });
@@ -632,7 +635,7 @@
       title: "Excel’den yükle: kolonları eşle",
       eyebrow: fileName,
       size: "wide",
-      intro: `${preview.rows} satır bulundu. Her satır bir taksit kartı olur; Sıra No kolonu kartın numarası olur, grup ve alt grup adları tanımlanır, toplam tutar taksit sayısına bölünür. Aynı ad ve grupla açık kart varsa satır atlanır. Program başlıkları tanıdı; yanlışsa değiştirin.`,
+      intro: `${preview.rows} satır bulundu. Her satır bir taksit kartı olur; Sıra No kolonu kartın numarası olur, Kayıt tarihi kolonu yoksa bugün yazılır, grup ve alt grup adları tanımlanır, toplam tutar taksit sayısına bölünür. Aynı ad ve grupla açık kart varsa satır atlanır. Program başlıkları tanıdı; yanlışsa değiştirin.`,
       fields: [
         ...preview.headers.map((header, index) => ({ name: `c${index}`, label: `${header || `${index + 1}. kolon`}${sample[index] !== undefined && String(sample[index]).trim() ? ` — ör. ${String(sample[index]).slice(0, 30)}` : ""}`, type: "select", value: preview.roles[index] || "", options: ROLE_OPTIONS.map(([value, label]) => ({ value, label })) })),
         { name: "defaultCount", label: "Taksit sayısı yazılmayan satırlar için", inputmode: "numeric", placeholder: "Örn. 9 (boş: taksit kurulmaz)" },

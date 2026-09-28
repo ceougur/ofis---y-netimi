@@ -5,7 +5,7 @@
 // sağlamayla kesinleşir ("verified"); tutar, tarih, telefon gibi türler değerlerin büyük çoğunluğu gerçekten o biçimdeyse
 // kabul edilir. Başlık tek başına bir kolona tür biçmez; yalnızca değerlerin söylediğini güçlendirir veya ayırt eder
 // (ör. aynı sayısal kolon "TUTAR" başlığıyla tutar, "ADET" başlığıyla miktardır).
-import { dateMeaning, kindOfMeaning } from "./temporal.mjs";
+import { dateMeaning, isDocumentHeader, kindOfMeaning } from "./temporal.mjs";
 import { isSerialDate, serialToDate, foldText, isEmail, isIban, isPlate, isProvince, isTckn, isTrPhone, isUrl, isVkn, parseAmount, parseDate } from "./validators.mjs";
 
 const SAMPLE = 4000;
@@ -298,7 +298,10 @@ export function analyzeColumn(rows, column, { now = new Date(), forced = null } 
     const { meaning, reason } = dateMeaning(column, futureRate);
     return result("date", 0.7, { validRate: 0, warning: "serial", kind: kindOfMeaning(meaning), meaning, meaningReason: reason, strong: false, futureRate: round(futureRate), serialRate: round(serial) });
   }
-  if (pass(date, 0.8, dateHint, 0.5)) {
+  // Belge başlığı ("Koltuk sigortası", "Egzoz emisyon", "Takograf") da tarih ipucudur (v2.0.6): araç listesinde yalnız bir
+  // kayda yazılan sigorta bitişi de tarih kolonu sayılır ve uyarı üretir. Eşik düşmez; yalnız 1-2 değerli kolonlarda
+  // başlık, değerlerin hepsi tarihken türü belirler.
+  if (pass(date, 0.8, dateHint || isDocumentHeader(column), dateHint ? 0.5 : 0.8)) {
     // İleri tarihli değerlerin oranı (dolu tarihler içinde): anlamı başlıktan çıkmayan kolonlarda karar verir.
     const today = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
     let dated = 0;

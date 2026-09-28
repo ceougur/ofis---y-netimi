@@ -3820,7 +3820,8 @@ html.hof-no-haciz .filter-strip { display: none !important; }
   cursor: pointer;
   transition: opacity 0.15s ease;
 }
-.dynamic-detail-grid > div:hover .hof-col-edit,
+/* v2.0.6: ad simgesi yalnız başlığın üzerine gelince görünür; hücrenin geri kalanında yalnız değeri düzenleyen ✎ çıkar. */
+.dynamic-detail-grid .detail-label:hover .hof-col-edit,
 .hof-col-edit:focus-visible {
   opacity: 0.8;
 }
@@ -6771,4 +6772,42 @@ body.hof-dense .dynamic-table th {
   .hof-badge.hof-badge-danger {
     animation: none;
   }
+}
+
+/* Taksit listesinde bilgi notu (v2.0.6): tek satır, sığmayan kısım "…" ile; tamamı üzerine gelince görünür. */
+.hof-plans-table td small.hof-plan-row-note {
+  max-width: 460px;
+  overflow: hidden;
+  color: #8a6a1f;
+  font-style: italic;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Kolon adı penceresi (v2.0.6): yalnız adı değiştirdiği en üstte, göze batan biçimde söylenir. */
+.hof-column-editor-warn {
+  display: grid;
+  gap: 8px;
+  justify-items: start;
+  margin: 0 0 14px;
+  padding: 11px 13px;
+  border: 1px solid #f0d9a8;
+  border-radius: 10px;
+  background: #fff8e8;
+  color: #6b4f12;
+  font-size: 13px;
+  line-height: 1.45;
+}
+.hof-column-editor-warn p {
+  margin: 0;
+}
+.hof-column-editor-warn b {
+  color: #5a3f06;
+}
+.hof-fixed-list {
+  margin: 4px 0 12px;
+  padding-left: 18px;
+  color: var(--do-text, #1c2a31);
+  font-size: 13px;
+  line-height: 1.6;
 }

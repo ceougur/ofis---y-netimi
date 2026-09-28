@@ -263,6 +263,16 @@ Görünüme (`dataset.view`) yalnızca elle değer yazılmış satırlar `serbes
 
 **Acil görev.** `POST /api/workspace/tasks` olayı `priority` ve `dueDate` taşır. İstemci: acil görev atanana kırmızı kısa bildirim (`hof-toast-error`), `hof-alerts.js` görevleri son tarihten bağımsız `urgent` uyarısı olarak üretir (`rank -1`, `tone late`, tur sınırına takılmaz, zilde "Acil görevler" grubu), Görevler rozeti `hof-badge-danger`, görev listesi `is-urgent`, işlem geçmişi `data-urgent`.
 
+## 2.0.6 eklemeleri
+
+**Makbuz ve belgeler.** `receiptPdf` A5 dikey (`A5 = 419.53 × 595.28 pt`), tek sayfa, çerçeve içeriğe göre; başlıkta yalnız `office.name` (boşsa boş), altbilgide yalnız düzenlenme zamanı. `planStatementPdf` yazar ve altbilgide `office.name` kullanır. `tablePdf({ brand })`: altbilgideki ad (varsayılan "DestekOfis"; taksit listesinde `office.name`, boşsa yalnız başlık). Kolon genişlikleri: toplam sayfayı aşınca yalnız sözcüklü metin kolonları orantıyla daralır (alt sınır başlık genişliği, en az 48 pt); `money`/`number` türü ve boşluksuz değerli kolonlar (tarih, telefon) doğal genişliğinde kalır; yetmezse hepsi orantılanır.
+
+**Kayıt tarihi** (göç 9, `plans.registered_on`, `YYYY-AA-GG`): göç var olan kartlara `substr(created_at, 1, 10)` yazar. Yeni kartta boşsa bugün (`dateOf(body.registeredOn, "Kayıt tarihi", today())`), içeri almada `mapHeaders` rolü `registered` ("Kayıt tarihi", "Kayıt", "Giriş/Sözleşme/Başvuru tarihi"; `firstDue`'dan önce denenir), hücre boşsa bugün. Liste `sort=registered` (yeni önce, eşitlikte Sıra No). Liste PDF'i `Kayıt` ve `Bilgi notu` kolonlarını taşır.
+
+**Kolon adı koruması.** `validators.isFullDate` (gün+ay+yıl; "Mart 2027" gibi ay-yıl değil). `profile.setColumns` tam tarihi kolon adı olarak reddeder (400, `{ column, value }`). Göç 10: `settings` içindeki `ui.columns[@oturum]` eşlemelerinden tarih değerli adları siler, `ui.columns.fixed[@oturum]`'a (en çok 50) ve `audit_events`'e (`profile.column`, aktör `system`) yazar; `profile().columnsFixed` bunu döndürür, `DELETE /api/workspace/columns/fixed` (`profile.manage`) temizler. İstemci (`hof-columns.js`): başlık simgesi imleçli metin kutusu, yalnız `.detail-label:hover`'da; pencerede "yalnız ad değişir" uyarısı ve seçili kaydın alanını açan kısa yol (`HOF.table.editField(column)`); ada yazılan tarih kaydedilmez, onayla seçili kaydın alanına `POST /api/workspace/overrides` ile yazılır; güncelleme bildirimi yöneticiye bir kez gösterilir.
+
+**Seyrek belge kolonları.** `temporal.isDocumentHeader` (belge/periyodik işlem konusu: sigorta, muayene, egzoz, takograf, SRC, ruhsat…) `columns.mjs`'de tarih ipucudur: 1-2 değerli kolonda değerlerin hepsi tarihse kolon tarih sayılır (üç ve daha çok değerde eşik değişmez, %80). Anlamı `dateMeaning` verir (ileri tarihse bitiş → uyarı).
+
 ## Akıllı veri motoru ve ofis profili (v1.6)
 
 `server/lib/insight/` saf fonksiyonlardan oluşur: internete çıkmaz, veritabanına yazmaz, aynı girdiye aynı çıktıyı verir. Sonuç, verinin parmak izine (satır/düzeltme/kayıt sayıları ve son değişiklik zamanları, verinin adı, yerel gün) göre bellekte önbelleklenir. Veri değişince (`dataset.onChange`) önbellek düşer. 200 bin satır yaklaşık 1,5 sn'de çözümlenir.

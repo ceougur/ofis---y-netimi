@@ -1,8 +1,44 @@
 import assert from "node:assert/strict";
 import { after, before, describe, it } from "node:test";
+import { inflateSync } from "node:zlib";
 import { addMonths, allocate, distribute, mapHeaders, parseDay } from "../server/lib/plans.mjs";
 import { amountInWords } from "../server/lib/plan-report.mjs";
 import { createUser, loginAdmin, startTestServer } from "./helpers.mjs";
+
+// PDF'teki görünen metin: her yazı tipinin ToUnicode eşlemesiyle sayfa akışlarındaki glifler çözülür.
+function pdfText(buffer) {
+  const text = buffer.toString("latin1");
+  const objects = new Map([...text.matchAll(/(\d+) 0 obj\n?([\s\S]*?)\nendobj/g)].map(match => [Number(match[1]), match[2]]));
+  const stream = body => {
+    const match = /stream\n([\s\S]*?)\nendstream/.exec(body || "");
+    if (!match) return "";
+    try {
+      return /FlateDecode/.test(body) ? inflateSync(Buffer.from(match[1], "latin1")).toString("latin1") : match[1];
+    } catch {
+      return "";
+    }
+  };
+  const fonts = new Map();
+  for (const body of objects.values()) {
+    for (const [, name, id] of (/\/Font << ([^>]*) >>/.exec(body)?.[1] || "").matchAll(/\/(\w+) (\d+) 0 R/g)) {
+      if (fonts.has(name)) continue;
+      const cmap = new Map();
+      const unicode = /\/ToUnicode (\d+) 0 R/.exec(objects.get(Number(id)) || "");
+      for (const [, gid, hex] of stream(objects.get(Number(unicode?.[1]))).matchAll(/<([0-9A-F]{4})> <([0-9A-F]+)>/g)) cmap.set(gid, String.fromCodePoint(...hex.match(/.{4}/g).map(part => parseInt(part, 16))));
+      fonts.set(name, cmap);
+    }
+  }
+  const out = [];
+  for (const body of objects.values()) {
+    if (!/\/Length/.test(body) || /ToUnicode|FontFile|beginbfchar/.test(body)) continue;
+    for (const [, font, glyphs] of stream(body).matchAll(/\/(\w+) [\d.]+ Tf [^<]*<([0-9A-F]*)> Tj/g)) out.push((glyphs.match(/.{4}/g) || []).map(gid => fonts.get(font)?.get(gid) ?? "?").join(""));
+  }
+  return out.join("\n");
+}
+const localToday = () => {
+  const now = new Date();
+  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+};
 
 describe("taksit motoru (saf)", () => {
   it("toplamı eşit taksitlere böler; kuruş farkı son taksitte, her ay aynı gün", () => {
@@ -58,6 +94,11 @@ describe("taksit motoru (saf)", () => {
     assert.deepEqual(mapHeaders(["S.N", "ADI SOYADI", "GRUBU (Plaka)", "ARA GRUBU (Okulu)", "TELEFONU", "Bilgi Notu - Adres", "TOPLAM TAKSİT TUTARI", "TEK TAKSİT ÜCRETİ", "TOPLAM TAKSİT ADETİ"]), { 0: "seq", 1: "name", 2: "group", 3: "subgroup", 4: "phone", 5: "note", 6: "total", 7: "installment", 8: "count" });
     assert.deepEqual(mapHeaders(["Sıra No", "Okul", "Öğrenci Adı", "Taksit Tutarı", "İlk Taksit Tarihi", "Açıklama"]), { 0: "seq", 1: "group", 2: "name", 3: "installment", 4: "firstDue", 5: "note" }, "tek alt grup kolonu grup sayılır");
     assert.equal(mapHeaders(["Telefon No", "Ad"])[0], "phone", "telefon numarası sıra no sayılmaz");
+    // Kayıt tarihi (v2.0.6): ilk vadeyle karışmaz.
+    assert.deepEqual(mapHeaders(["Sıra No", "Adı Soyadı", "Kayıt Tarihi", "Toplam Tutar", "İlk Vade"]), { 0: "seq", 1: "name", 2: "registered", 3: "total", 4: "firstDue" });
+    assert.equal(mapHeaders(["KAYIT", "AD SOYAD"])[0], "registered");
+    assert.equal(mapHeaders(["Sözleşme Tarihi", "Öğrenci"])[0], "registered");
+    assert.equal(mapHeaders(["İlk Taksit Tarihi", "Öğrenci"])[0], "firstDue");
     assert.equal(parseDay("15.09.2026"), "2026-09-15");
     assert.equal(parseDay("2026-09-15"), "2026-09-15");
     assert.equal(parseDay("1/9/2026"), "2026-09-01");
@@ -174,6 +215,22 @@ describe("taksit modülü API (v2.0.4)", () => {
     const receipt = await personel.raw("GET", `/api/workspace/plans/${plan.id}/entries/${entry.id}/makbuz.pdf`);
     assert.equal(receipt.status, 200);
     assert.equal(receipt.buffer.subarray(0, 5).toString("latin1"), "%PDF-");
+    // v2.0.6: A5 dikey (148 × 210 mm), tek sayfa; firma adı yoksa üst boş kalır, program adı yazılmaz.
+    const raw = receipt.buffer.toString("latin1");
+    assert.match(raw, /\/MediaBox \[0 0 419\.53 595\.28\]/);
+    assert.match(raw, /\/Type \/Pages \/Kids \[[^\]]*\] \/Count 1/);
+    let text = pdfText(receipt.buffer);
+    assert.match(text, /TAHSİLAT MAKBUZU/);
+    assert.match(text, /Selin Kaya/, "tahsil eden");
+    assert.ok(!/DestekOfis/i.test(text), text);
+    server.app.store.setSetting("office.name", "Şahin Turizm");
+    text = pdfText((await personel.raw("GET", `/api/workspace/plans/${plan.id}/entries/${entry.id}/makbuz.pdf`)).buffer);
+    assert.match(text, /Şahin Turizm/);
+    assert.ok(!/DestekOfis/i.test(text));
+    const statementText = pdfText((await admin.raw("GET", `/api/workspace/plans/${plan.id}/ekstre.pdf`)).buffer);
+    assert.match(statementText, /Şahin Turizm · Taksit ekstresi/);
+    assert.ok(!/DestekOfis/i.test(statementText), "ekstre de program adı taşımaz");
+    server.app.store.setSetting("office.name", "");
   });
 
   it("hareket silinip geri yüklenir; kart silinip geri yüklenir; Kasa yeniden hesaplanır", async () => {
@@ -267,7 +324,38 @@ describe("taksit modülü API (v2.0.4)", () => {
     assert.equal(pdf.status, 200);
     assert.equal(pdf.buffer.subarray(0, 5).toString("latin1"), "%PDF-");
     assert.match(pdf.headers.get("content-disposition"), /Aidatlar-listesi/);
+    // v2.0.6: listenin sağındaki boşlukta kartın bilgi notu ve kayıt tarihi.
+    const listText = pdfText(pdf.buffer);
+    assert.match(listText, /Bilgi notu/);
+    assert.match(listText, /Kayıt/);
+    assert.match(listText, /Süleyman Şah Siteleri/);
     const statement = await admin.raw("GET", `/api/workspace/plans/${zeynep.id}/ekstre.pdf`);
     assert.equal(statement.status, 200);
+  });
+
+  it("kayıt tarihi: programda açılan kartta bugün, elle değişir; Excel'deki kolondan okunur; listede sıralanır (v2.0.6)", async () => {
+    const today = localToday();
+    const fresh = (await admin.post("/api/workspace/plans", { name: "Kayıt Deneme", total: "1.200" })).data.data;
+    assert.equal(fresh.registeredOn, today, "boşsa bugün");
+    const dated = (await admin.post("/api/workspace/plans", { name: "Eski Kayıt", total: "600", registeredOn: "2026-01-15" })).data.data;
+    assert.equal(dated.registeredOn, "2026-01-15");
+    assert.equal((await admin.put(`/api/workspace/plans/${dated.id}`, { registeredOn: "2026-02-01" })).data.data.registeredOn, "2026-02-01");
+    assert.equal((await admin.put(`/api/workspace/plans/${dated.id}`, { registeredOn: "2026-13-01" })).status, 400);
+    const matrix = [
+      ["Sıra No", "Adı Soyadı", "Kayıt Tarihi", "Toplam Tutar", "Taksit Sayısı"],
+      ["70", "Kayıtlı Öğrenci", "15.08.2026", "3.000", "3"],
+      ["71", "Tarihsiz Öğrenci", "", "3.000", "3"],
+    ];
+    const preview = (await admin.post("/api/workspace/plans/import/preview", { matrix })).data.data;
+    assert.equal(preview.roles[2], "registered");
+    const result = (await admin.post("/api/workspace/plans/import", { matrix, headerAt: preview.headerAt, roles: preview.roles, defaultFirstDue: "2026-10-01" })).data.data;
+    assert.equal(result.created, 2, JSON.stringify(result));
+    const list = (await admin.get("/api/workspace/plans?status=all&sort=registered")).data.data.plans;
+    const byName = name => list.find(item => item.name === name);
+    assert.equal(byName("Kayıtlı Öğrenci").registeredOn, "2026-08-15");
+    assert.equal(byName("Tarihsiz Öğrenci").registeredOn, today, "kolon boşsa bugün");
+    const order = list.map(item => item.registeredOn);
+    assert.deepEqual(order, [...order].sort().reverse(), "kayıt tarihine göre yeni önce");
+    assert.equal(byName("Eski Kayıt").registeredOn, "2026-02-01");
   });
 });

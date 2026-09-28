@@ -495,6 +495,13 @@ try {
     await admin.click('.hof-plans [data-act="new"]');
     await admin.waitForSelector('.hof-modal-backdrop.is-visible input[name="name"]');
     await admin.fill('.hof-plan-form input[name="name"]', "Ayşe Yılmaz");
+    // v2.0.6: kayıt tarihi bugünle hazır gelir.
+    const todayIso = await admin.evaluate(() => {
+      const now = new Date();
+      return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+    });
+    const registered = await admin.inputValue('.hof-plan-form input[name="registeredOn"]');
+    expect(registered === todayIso, `kayıt tarihi bugün: ${registered}`);
     await admin.fill('.hof-plan-form input[name="phone"]', "0532 111 22 33");
     await admin.fill('.hof-plan-form input[name="total"]', "9.000");
     await admin.selectOption('.hof-plan-form select[name="groupId"]', "\u0001yeni");
@@ -510,6 +517,7 @@ try {
     // v2.0.5: kişi paneli (sıra no, grup, telefon, not) üstte; taksit süzgeçleri; PDF ve Yazdır; geniş pencere.
     const profile = await admin.$eval(".hof-plans .hof-plan-profile", node => node.innerText.replace(/\s+/g, " "));
     expect(/SIRA NO 1\b/.test(profile.toLocaleUpperCase("tr-TR")) && profile.includes("0532 111 22 33") && profile.includes("3 taksit"), `kişi paneli: ${profile}`);
+    expect(profile.toLocaleUpperCase("tr-TR").includes("KAYIT TARİHİ") && profile.includes(todayIso.split("-").reverse().join(".")), `kişi panelinde kayıt tarihi: ${profile}`);
     const width = await admin.$eval(".hof-plans-modal", node => node.getBoundingClientRect().width);
     expect(width > 1000, `taksit penceresi geniş olmalı: ${width}`);
     expect(await admin.$('.hof-plans [data-print="card"]') && (await admin.$eval('.hof-plans [data-pdf="card"]', node => node.getAttribute("href"))).endsWith("/ekstre.pdf"), "kartta PDF ve Yazdır");
@@ -1184,10 +1192,21 @@ try {
 
       // Kolon adı: detay kartındaki kalemle; tablo başlığı ve kart değişir, veri asıl adla çalışır.
       const tutar = page.locator(".detail-panel .dynamic-detail-grid > div", { hasText: "Tutar" }).first();
-      await tutar.hover();
+      await tutar.locator(".detail-label").hover();
       await tutar.locator(".hof-col-edit").click();
       await page.waitForSelector(".hof-column-editor");
-      await page.locator(".hof-column-editor .hof-field", { hasText: "Tutar" }).locator("input").fill("Borç tutarı");
+      // v2.0.6: pencere yalnız adı değiştirdiğini söyler; ada yazılan tarih kaydedilmez, kayda yazılması önerilir.
+      expect(/ADINI değiştirir, kayıttaki değeri değil/.test(await page.textContent(".hof-column-editor .hof-column-editor-warn")), "ad penceresi uyarısı");
+      expect(await page.isVisible(".hof-column-editor [data-edit-value]"), "değeri düzenleme kısa yolu");
+      const tutarInput = page.locator(".hof-column-editor .hof-field", { hasText: "Tutar" }).locator("input");
+      await tutarInput.fill("30.09.2026");
+      await page.click('.hof-column-editor button[type="submit"]');
+      await page.waitForSelector('.hof-modal:has-text("Bu bir tarih, kolon adı değil")');
+      await page.click('.hof-modal:has-text("Bu bir tarih, kolon adı değil") [data-answer="no"]');
+      await page.waitForFunction(() => !document.querySelector('.hof-modal [data-answer]'), null, { timeout: 5000 });
+      expect(await page.isVisible(".hof-column-editor"), "Geri dön: ad penceresi açık kalır");
+      expect(!(await page.evaluate(() => Object.values(window.HOF.profile?.()?.columns || {}).includes("30.09.2026"))), "tarih ad olarak kaydedilmedi");
+      await tutarInput.fill("Borç tutarı");
       await page.click('.hof-column-editor button[type="submit"]');
       await page.waitForFunction(() => [...document.querySelectorAll(".dynamic-table thead th")].some(th => th.textContent.trim() === "Borç tutarı"), null, { timeout: 8000 });
       expect(await page.evaluate(() => window.HOF.tableHeaders(document.querySelector(".dynamic-table")).includes("Tutar")), "asıl kolon adı korunmalı");

@@ -14,6 +14,7 @@ import { listRecords, RECORD_LISTS } from "./insight/kpi.mjs";
 import { recordTitle } from "./insight/quality.mjs";
 import { ruleTitle } from "./insight/reasoning.mjs";
 import { isEmptyCell } from "./insight/cells.mjs";
+import { isFullDate } from "./insight/validators.mjs";
 import { formatValue, parseNumberText } from "./formula/values.mjs";
 import { GENERAL_ID, LEGACY_ID, sectorById } from "./insight/sectors.mjs";
 import { createCustomSectors } from "./custom-sectors.mjs";
@@ -41,7 +42,7 @@ export const LABEL_SLOTS = Object.freeze({
   "table.subtitle": { max: 160, name: "Tablo açıklaması" },
 });
 
-const K = { sector: "insight.sector", labels: "ui.labels", intro: "insight.intro", initialized: "insight.initialized", columns: "ui.columns", dismissed: "insight.dismissed", roles: "insight.roles" };
+const K = { sector: "insight.sector", labels: "ui.labels", intro: "insight.intro", initialized: "insight.initialized", columns: "ui.columns", columnsFixed: "ui.columns.fixed", dismissed: "insight.dismissed", roles: "insight.roles" };
 const MAX_DISMISSED = 5000;
 const REASONING_LIST = 50;
 // Metindeki kolon adlarını ofisin verdiği adlarla değiştirir (yalnızca kelime sınırında; "No" "Notlar"ı bozmaz).
@@ -111,6 +112,11 @@ export function createProfileService({ store, dataset, audit, events, log, free 
   const findSector = id => sectorById(id) || customSectors.get(id);
   const readSector = () => parseJson(store.setting(sessionKey(K.sector), ""), null);
   const readColumns = () => readObject(sessionKey(K.columns));
+  // Güncellemede (göç 10) asıl adına döndürülen, tarih yazılmış kolon adları: yöneticiye bir kez gösterilir.
+  const readColumnsFixed = () => {
+    const list = parseJson(store.setting(sessionKey(K.columnsFixed), ""), []);
+    return Array.isArray(list) ? list.filter(item => item && typeof item.column === "string").slice(0, 50) : [];
+  };
   // Eşleme ekranında seçilen kolon rolleri ({kolon: rol}); analiz ve takvim otomatik kararın üstüne yazar (v2.0.2).
   const readRoles = () => readObject(sessionKey(K.roles));
   function setRoles(user, values, known = []) {
@@ -181,6 +187,7 @@ export function createProfileService({ store, dataset, audit, events, log, free 
       modules: { tahsilat: Boolean(sector.modules.tahsilat || payments > 0), haciz: Boolean(sector.modules.haciz || liens > 0) },
       labels,
       columns: readColumns(),
+      columnsFixed: readColumnsFixed(),
       tagline: labels["brand.subtitle"] || sector.vocab.subtitle,
       introPending: store.setting(sessionKey(K.intro)) === "pending",
       slots: LABEL_SLOTS,
@@ -265,6 +272,10 @@ export function createProfileService({ store, dataset, audit, events, log, free 
       if (!columns.has(column)) throw new HttpError(400, `“${column}” kolonu bu veride yok; sayfayı yenileyip tekrar deneyin.`);
       let text = cleanLabel(value, COLUMN_ALIAS_MAX);
       if (text === column) text = "";
+      // Detay kartında değer sanılıp başlığa yazılan tarih (v2.0.6): kolon adı olmaz; değer kayda yazılmalıdır.
+      if (text && isFullDate(text)) {
+        throw new HttpError(400, `“${text}” bir tarih; kolon adı olamaz. Bu pencere kolonun adını değiştirir. Tarihi kayda yazmak için alanın sağındaki ✎ düğmesini ya da Düzenle'yi kullanın.`, { column, value: text });
+      }
       const previous = aliases[column] || "";
       if (previous === text) continue;
       if (text) aliases[column] = text;
@@ -291,6 +302,13 @@ export function createProfileService({ store, dataset, audit, events, log, free 
       for (const change of changes) audit(user, "profile.column", change.column, change);
     });
     publish(user, { columns: changes.length });
+    return profile();
+  }
+
+  // Güncelleme bildirimini (geri alınan tarih adları) kapatır.
+  function clearColumnsFixed(user) {
+    if (!readColumnsFixed().length) return profile();
+    store.setSetting(sessionKey(K.columnsFixed), "[]", user.id);
     return profile();
   }
 
@@ -490,5 +508,5 @@ export function createProfileService({ store, dataset, audit, events, log, free 
     running.clear();
   };
 
-  return { init, profile, tagline, setSector, findSector, customSectors, dismissIntro, setLabel, setLabels, setColumns, resetLabels, setRoles, roles: readRoles, analysis, records, invalidate, usedBefore, reasoningSummary, checks, dismiss, fingerprint, close: () => analysisRunner.close(), runnerStats: () => analysisRunner.stats() };
+  return { init, profile, tagline, setSector, findSector, customSectors, dismissIntro, setLabel, setLabels, setColumns, clearColumnsFixed, resetLabels, setRoles, roles: readRoles, analysis, records, invalidate, usedBefore, reasoningSummary, checks, dismiss, fingerprint, close: () => analysisRunner.close(), runnerStats: () => analysisRunner.stats() };
 }
