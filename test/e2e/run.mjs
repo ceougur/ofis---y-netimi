@@ -178,6 +178,22 @@ try {
     // v2.0.2: tabloda dolu kolonların hepsi (önceden ilk 7).
     const headers = await admin.$$eval(".dynamic-table thead th", nodes => nodes.length);
     expect(headers === 8, `tablo kolonları: ${headers}`);
+    // v2.0.4: kolon genişliği başlığın sağ kenarından sürüklenir ve bu bilgisayarda hatırlanır.
+    await admin.waitForSelector(".dynamic-table.hof-sized thead th:nth-child(2) .hof-col-grip", { timeout: 10000 });
+    const before = await admin.$eval(".dynamic-table thead th:nth-child(2)", th => th.getBoundingClientRect().width);
+    const gripBox = await admin.$eval(".dynamic-table thead th:nth-child(2) .hof-col-grip", node => { const b = node.getBoundingClientRect(); return { x: b.x + 3, y: b.y + b.height / 2, hit: document.elementFromPoint(b.x + 3, b.y + b.height / 2)?.className || "" }; });
+    expect(/hof-col-grip/.test(gripBox.hit), `tutamaç tıklanabilir: ${gripBox.hit}`);
+    await admin.mouse.move(gripBox.x, gripBox.y);
+    await admin.mouse.down();
+    await admin.mouse.move(gripBox.x - 30, gripBox.y, { steps: 5 });
+    await admin.mouse.up();
+    const after = await admin.$eval(".dynamic-table thead th:nth-child(2)", th => th.getBoundingClientRect().width);
+    expect(after < before - 20, `kolon daraldı: ${Math.round(before)} → ${Math.round(after)}`);
+    const remembered = await admin.evaluate(() => Object.keys(JSON.parse(localStorage.getItem("hof.colw") || "{}")).length);
+    expect(remembered === 1, "kolon genişliği hatırlandı");
+    await admin.dblclick(".dynamic-table thead th:nth-child(2) .hof-col-grip");
+    const reset = await admin.$eval(".dynamic-table thead th:nth-child(2)", th => th.getBoundingClientRect().width);
+    expect(Math.abs(reset - before) < 3, `çift tık otomatik genişliğe döndürür: ${Math.round(reset)} ≈ ${Math.round(before)}`);
     const flash = await toastText(admin);
     expect(flash.includes("yüklendi") && flash.includes("Tüm bilgisayarlar"), `bildirim: ${flash}`);
     expect(!(await admin.$("#hof-start")), "veri gelince başlangıç kartı kalkmalı");
@@ -428,6 +444,14 @@ try {
     await admin.waitForFunction(() => document.querySelector("#hof-activity")?.textContent.includes("ödeme sözü alındı"), null, { timeout: 10000 });
     const activity = await admin.textContent("#hof-activity");
     expect(activity.includes("Ofis yöneticisi"), "işlemi yapan görünmeli");
+    // v2.0.4: Telefon düğmesi kayıttaki numarayı Ara / WhatsApp ile gösterir; altında yeni numara ekleme formu.
+    await admin.click('.hof-case-actions [data-case-action="phone"]');
+    await admin.waitForSelector(".hof-modal-backdrop.is-visible .hof-phone-list, .hof-modal-backdrop.is-visible .hof-modal-text", { timeout: 5000 });
+    const phoneModal = await admin.$eval(".hof-modal-backdrop.is-visible .hof-modal", node => ({ text: node.innerText.replace(/\s+/g, " "), tel: node.querySelector('a[href^="tel:"]')?.getAttribute("href") || "", submit: node.querySelector('button[type="submit"]')?.textContent || "" }));
+    expect(/Yeni numara ekle/.test(phoneModal.submit), `telefon penceresi: ${phoneModal.text.slice(0, 160)}`);
+    expect(!phoneModal.tel || /^tel:\+90\d{10}$/.test(phoneModal.tel), `arama bağlantısı: ${phoneModal.tel}`);
+    await admin.keyboard.press("Escape");
+    await admin.waitForFunction(() => !document.querySelector(".hof-modal-backdrop"), null, { timeout: 5000 });
     await admin.screenshot({ path: path.join(artifacts, "04-detay-gecmis.png") });
   });
 

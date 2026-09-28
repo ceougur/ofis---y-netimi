@@ -57,17 +57,30 @@
         },
       });
     },
+    // Telefon (v2.0.4): kayıttaki numaralar (tablodaki telefon kolonu + programda eklenenler) ara/WhatsApp
+    // düğmeleriyle listelenir; altında yeni numara ekleme formu. Önceden düğme yalnız "numara ekle" formu açıyordu;
+    // kullanıcı tabloya yazdığı numarayı burada göremiyordu.
     phone() {
       const selected = requireCase();
       if (!selected) return;
+      const numbers = extractPhones(selected.panel.innerText);
+      const pretty = number => `0${number.slice(2, 5)} ${number.slice(5, 8)} ${number.slice(8, 10)} ${number.slice(10)}`;
+      const list = numbers.length
+        ? `<ul class="hof-phone-list">${numbers.map(number => `<li><strong>${HOF.esc(pretty(number))}</strong><span><a class="hof-button hof-button-small" href="tel:+${number}">Ara</a><button type="button" class="hof-button hof-button-small hof-whatsapp" data-wa="${number}">WhatsApp</button></span></li>`).join("")}</ul>`
+        : '<p class="hof-modal-text">Bu kayıtta telefon numarası yok. Aşağıdan ekleyin; numara kartta ve WhatsApp düğmesinde kullanılır.</p>';
       HOF.formModal({
-        title: "Telefon bilgisi ekle",
+        title: "Telefon",
         eyebrow: selected.title,
+        introHtml: list,
         fields: [
           { name: "phone", label: "Telefon", type: "tel", required: true, inputmode: "tel", placeholder: "05xx xxx xx xx" },
           { name: "label", label: "Etiket", placeholder: "Cep / iş / vekil", list: ["Cep", "İş", "Ev", "Vekil", "Yakını"] },
         ],
-        submitLabel: "Telefonu kaydet",
+        submitLabel: "Yeni numara ekle",
+        onOpen: dialog => dialog.addEventListener("click", event => {
+          const button = event.target.closest("[data-wa]");
+          if (button) openWhatsApp(button.dataset.wa);
+        }),
         onSubmit: async data => {
           await HOF.api(caseUrl(selected.key, "phones"), { method: "POST", body: data });
           HOF.toast("Telefon bilgisi kaydedildi.", { type: "success" });
