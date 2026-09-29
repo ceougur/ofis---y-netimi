@@ -70,7 +70,11 @@ kalan cihazlara yeni anahtar kendiliğinden gider, silinen cihaz bir sonraki gü
 - **Ayrı program yazılmaz:** aynı program, Pro özellikleri lisansla açılır (lisans belirtecine `plan: "pro"`).
 - Operatör merkezi: lisans verirken **Standart / Pro** seçimi; Altyapı limitleri kartına Cloudflare sayaçları (günlük
   Worker isteği, aylık R2 yazma) eklenir, %70'te uyarı.
-- Site: mevcut demonun yanına **"Pro demo"** düğmesi; aynı kurulum dosyası, deneme 30 gün Pro özellikleriyle açılır.
+- Site: mevcut demonun yanına **"Pro demo indir"** düğmesi; aynı kurulum dosyası, deneme 30 gün Pro özellikleriyle açılır.
+- **Sitede fiyat yazılmaz** (kullanıcı kararı, 29.09.2026): mevcut sürümde olduğu gibi yalnız demo indirilir; lisans almak
+  isteyen arar, fiyat telefonda bildirilir.
+- **Pro, Vercel'e konmaz** (kullanıcı kararı): telefon sayfası ve kapıcı yalnız Cloudflare'de çalışır; Vercel Hobby'nin
+  ticari kullanım riskine ve kotasına Pro trafiği eklenmez. Site ve lisans servisi şimdilik Vercel'de kalır.
 - Lisans süresi biter ya da engellenirse sunucu yüklemeyi durdurur, Worker o ofisin dosyasını vermez.
 
 ## Kapasite hesabı (1.000 ofis × 3 kullanıcı, ofis başına 1.000'er kasa/cari/taksit/stok)
@@ -93,7 +97,7 @@ ertesi gün sıfırlanır. Kalıcı çözüm Workers ücretli planı (aylık ~5 
 1. **Cloudflare hesabı** (ücretsiz, satıcı adına; iki adımlı giriş açık). Worker'ın API anahtarı gizli değişken olarak
    saklanır; hiçbir depoya, zip'e, belgeye girmez.
 2. **Alan adı** isteğe bağlı (`destekofis.net`); alınmazsa Cloudflare'in ücretsiz alt adresi kullanılır.
-3. **Pro fiyatı** ve Standart → Pro yükseltme yolu.
+3. **Pro fiyatı** sitede yazılmaz; telefonda bildirilir. Operatör merkezinde lisans verirken Standart / Pro seçilir.
 4. **KVKK metni ve kılavuz** için tek paragraf: "özet şifreli kopya olarak saklanır; anahtar yalnız ofiste ve eşlenmiş
    cihazlarda; satıcı içeriği okuyamaz".
 
