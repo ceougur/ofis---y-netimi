@@ -40,6 +40,8 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
     if (!Number.isFinite(qty) || qty < 0 || qty > MAX_QTY) throw new HttpError(400, `${label} geçerli bir sayı olmalı.`);
     return roundQty(qty);
   };
+  // Boş bırakılabilen miktar alanları (kritik seviye, açılış stoku): boş = 0.
+  const optionalQty = (value, label) => (value === undefined || value === null || String(value).trim() === "" ? 0 : qtyOf(value, label));
   const priceOf = (value, label = "Birim fiyat") => {
     if (value === undefined || value === null || String(value).trim() === "") return 0;
     const price = parseAmount(value);
@@ -159,7 +161,7 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
       code: limited(body.code, 60, "Kod"),
       unit: limited(body.unit, 20, "Birim") || previous?.unit || "adet",
       category: limited(body.category, 80, "Kategori"),
-      minQty: kind === "service" ? 0 : qtyOf(body.minQty ?? 0, "Kritik seviye"),
+      minQty: kind === "service" ? 0 : optionalQty(body.minQty, "Kritik seviye"),
       unitPrice: priceOf(body.unitPrice),
       note: limited(body.note, 1000, "Not"),
     };
@@ -183,7 +185,7 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
       const id = insertItem(user, input);
       // İlk miktar (v2.0.8): elde olan stok (açılış; para yazılmaz), ya da yeni alım — Kasa'dan ödendi (Kasa'ya "Stok
       // ödemesi" gideri: miktar × birim fiyat) veya tedarikçiye borç (cariye). Stok girişiyle aynı kural (moveInput).
-      const opening = input.kind === "service" ? 0 : qtyOf(body.openingQty ?? 0, "Açılış stoku");
+      const opening = input.kind === "service" ? 0 : optionalQty(body.openingQty, "Açılış stoku");
       if (opening > 0) {
         const pay = PAY.has(text(body.openingPay)) ? text(body.openingPay) : "none";
         openingMove =

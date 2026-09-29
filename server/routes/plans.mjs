@@ -7,6 +7,8 @@ import { HttpError, limited, ok, readJson, sendBuffer, text } from "../lib/http.
 import { parseAmount, roundMoney } from "../lib/money.mjs";
 import { can } from "../lib/permissions.mjs";
 import { allocate, dayText, distribute, isoDay, mapHeaders, parseDay } from "../lib/plans.mjs";
+import { extractSchedules, spreadPaid } from "../lib/insight/schedules.mjs";
+import { tabContext } from "../lib/insight/dues.mjs";
 import { planStatementPdf, receiptPdf } from "../lib/plan-report.mjs";
 import { tablePdf, tl } from "../lib/report-pdf.mjs";
 
@@ -609,6 +611,28 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
   // Tarayıcı dosyayı okur (hof-excel-worker.js) ve seçilen sayfanın hücre matrisini gönderir. Başlıklar rollerle
   // eşlenir (istemci düzeltebilir); her satır bir kart olur, grup/alt grup adları tanımlanır, taksitler dağıtılır.
   // Aynı ad + grup ile açık bir kart varsa satır atlanır (yeniden yükleme çift kart açmaz).
+  // v2.0.8: sayfadaki ay kolonları ("Eylül", "Ekim taksiti"…) ya da sıralı taksit kolonları ("1. Taksit Tarihi/Tutarı")
+  // gerçek vade ve tutarlarıyla okunur (tablodan aktarma ile aynı motor, insight/schedules.mjs); Ödenen / Kalan kolonu
+  // açılış (devir) olur; kartlar açık tablodaki aynı kişinin kaydına bağlanır.
+  const SHEET_KEY = "excel";
+  const matrixRows = (matrix, headerAt, headers) =>
+    matrix.slice(headerAt + 1, headerAt + 1 + MAX_IMPORT).map((row, index) => {
+      const object = { __sheet: SHEET_KEY, __hofSheet: SHEET_KEY, __hofKey: `excel-${index}`, __row: index };
+      if (!Array.isArray(row)) return object;
+      headers.forEach((header, column) => {
+        if (header) object[header] = row[column] ?? "";
+      });
+      return object;
+    });
+  const scheduleShape = (matrix, headerAt, headers, { dueDay = 1, firstDue = "" } = {}) => {
+    const objects = matrixRows(matrix, headerAt, headers);
+    const { tabs, records } = extractSchedules({ rows: objects, tabs: [SHEET_KEY], now: new Date(), dueDay, defaultFirstDue: firstDue });
+    const tab = tabs[0] || null;
+    // Toplam + taksit sayısı biçimi Excel yüklemesinde kullanıcının eşlemesiyle kurulur (aşağıdaki yol); motor yalnız
+    // ay ve sıralı taksit kolonları için kullanılır.
+    if (!tab || tab.shape === "summary") return { shape: null, records: new Map() };
+    return { shape: tab.shape, shapeText: tab.shapeText, monthMode: tab.monthMode, columns: tab.columns, records: new Map(records.map(record => [record.key, record])) };
+  };
   router.post("/api/workspace/plans/import/preview", async ({ req, res }) => {
     auth.requirePermission(req, "plans.manage");
     const body = await readJson(req, { limit: 20_000_000 });
@@ -616,8 +640,59 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
     const headerAt = matrix.findIndex(row => Array.isArray(row) && row.filter(cell => String(cell ?? "").trim()).length >= 2);
     if (headerAt < 0) throw new HttpError(400, "Sayfada başlık satırı bulunamadı.");
     const headers = matrix[headerAt].map(cell => String(cell ?? "").trim());
-    ok(res, { headerAt, headers, roles: mapHeaders(headers), rows: matrix.length - headerAt - 1 });
+    const roles = mapHeaders(headers);
+    const schedule = scheduleShape(matrix, headerAt, headers);
+    // Ay / taksit kolonları taksit olarak okunuyorsa "ilk vade", "taksit sayısı", "taksit tutarı" rolleri kullanılmaz;
+    // o kolonlar eşlemede "Kullanma" gösterilir (yanlışlıkla ilk vade sanılan "1. Taksit Tarihi" gibi).
+    if (schedule.shape) {
+      const scheduled = new Set(schedule.columns);
+      for (const [index, role] of Object.entries(roles)) if (scheduled.has(headers[Number(index)]) || ["firstDue", "count", "installment"].includes(role)) delete roles[index];
+    }
+    const hasTable = dataset?.hasData ? dataset.hasData() : false;
+    ok(res, { headerAt, headers, roles, rows: matrix.length - headerAt - 1, schedule: schedule.shape ? { shape: schedule.shape, shapeText: schedule.shapeText, monthMode: schedule.monthMode, columns: schedule.columns, count: schedule.records.size } : null, hasTable });
   });
+  // Açık tablodaki kayıtlar: ad (ve telefon) ile kesin eşleşen tek kayıt varsa kart ona bağlanır (kişi bir kez girilir).
+  async function recordIndex() {
+    if (!dataset?.view) return null;
+    let view;
+    try {
+      view = await dataset.view();
+    } catch {
+      return null;
+    }
+    const rows = (view.rows || []).filter(row => row?.__hofKey && !String(row.__hofKey).startsWith("free:"));
+    if (!rows.length) return null;
+    const byTab = new Map();
+    for (const row of rows) {
+      const tab = String(row.__sheet || "");
+      if (!byTab.has(tab)) byTab.set(tab, []);
+      byTab.get(tab).push(row);
+    }
+    const fold = value => String(value ?? "").normalize("NFC").toLocaleLowerCase("tr-TR").replace(/\s+/g, " ").trim();
+    const digits = value => String(value ?? "").replace(/\D/g, "");
+    const index = new Map();
+    const now = new Date();
+    for (const [tab, scope] of byTab) {
+      const context = tabContext(scope, { now });
+      const nameColumn = context.primary.person;
+      if (!nameColumn) continue;
+      for (const row of scope) {
+        const name = fold(row[nameColumn]);
+        if (!name) continue;
+        if (!index.has(name)) index.set(name, []);
+        index.get(name).push({ key: row.__hofKey, phone: digits(context.primary.phone ? row[context.primary.phone] : ""), title: String(row[nameColumn]).trim(), tab });
+      }
+    }
+    const carded = linkedCases(currentSource());
+    return {
+      find(name, phone) {
+        const hits = index.get(fold(name)) || [];
+        const wanted = digits(phone);
+        const matched = hits.filter(hit => !(wanted.length >= 7 && hit.phone.length >= 7) || hit.phone === wanted);
+        return matched.length === 1 ? { ...matched[0], carded: carded.has(matched[0].key) } : null;
+      },
+    };
+  }
   router.post("/api/workspace/plans/import", async ({ req, res }) => {
     const user = auth.requirePermission(req, "plans.manage");
     const body = await readJson(req, { limit: 20_000_000 });
@@ -628,57 +703,103 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
       const found = Object.entries(roles).find(([, value]) => value === role);
       return found ? Number(found[0]) : -1;
     };
-    const col = Object.fromEntries(["seq", "registered", "group", "subgroup", "name", "phone", "total", "count", "firstDue", "installment", "note"].map(role => [role, columnOf(role)]));
+    const col = Object.fromEntries(["seq", "registered", "group", "subgroup", "name", "phone", "total", "count", "firstDue", "installment", "note", "paid", "remaining"].map(role => [role, columnOf(role)]));
     if (col.name < 0) throw new HttpError(400, "Ad Soyad kolonunu seçin.");
-    if (col.total < 0 && col.installment < 0) throw new HttpError(400, "Toplam tutar (ya da taksit tutarı) kolonunu seçin.");
+    const headers = (Array.isArray(matrix[headerAt]) ? matrix[headerAt] : []).map(value => String(value ?? "").trim());
+    const dueDay = Math.min(28, Math.max(1, Math.trunc(Number(body.dueDay) || 1)));
     const defaults = { count: Math.trunc(Number(body.defaultCount) || 0), firstDue: text(body.defaultFirstDue), groupName: limited(body.groupName, 80, "Grup adı"), subgroupName: limited(body.subgroupName, 80, "Alt grup adı") };
+    // Ay / sıralı taksit kolonları (v2.0.8): taksitler oradan; yoksa toplam + taksit sayısı + ilk vade eşit bölünür.
+    const schedule = scheduleShape(matrix, headerAt, headers, { dueDay, firstDue: defaults.firstDue });
+    if (!schedule.shape && col.total < 0 && col.installment < 0) throw new HttpError(400, "Toplam tutar (ya da taksit tutarı) kolonunu seçin.");
+    // Tablodaki kayıtlara bağ (v2.0.8; varsayılan açık): aynı ad (+ telefon) ile tek kayıt.
+    const linkRecords = !(body.linkRecords === false || body.linkRecords === "0" || body.linkRecords === 0 || body.linkRecords === "false");
+    const records = linkRecords ? await recordIndex() : null;
     const cell = (row, index) => (index >= 0 ? String(row[index] ?? "").trim() : "");
     const rows = matrix.slice(headerAt + 1, headerAt + 1 + MAX_IMPORT);
-    const report = { created: 0, skipped: [], groups: 0, linked: 0 };
+    const report = { created: 0, skipped: [], groups: 0, linked: 0, records: 0, opening: 0, shape: schedule.shape || "summary", importId: "" };
     const skip = (index, reason) => report.skipped.push({ row: headerAt + index + 2, reason });
     const before = store.get("SELECT COUNT(*) AS n FROM plan_groups").n;
+    const source = currentSource();
+    const importId = newId("import");
+    const undo = { plans: [], openings: [], links: [], accounts: [], accountLinks: [], payments: [], groups: [], source };
     store.tx(() => {
       // Sıra No kolonu yoksa ya da hücre boşsa numara mevcut en büyük numaradan devam eder.
       let autoRef = Number(nextRef()) - 1;
+      const groupsBefore = new Set(store.all("SELECT id FROM plan_groups").map(row => row.id));
       rows.forEach((row, index) => {
         if (!Array.isArray(row) || !row.some(value => String(value ?? "").trim())) return;
         const name = cell(row, col.name).slice(0, 160);
         if (!name) return skip(index, "Ad Soyad boş");
         const groupName = (cell(row, col.group) || defaults.groupName).slice(0, 80);
         const subgroupName = (cell(row, col.subgroup) || defaults.subgroupName).slice(0, 80);
-        let count = Math.trunc(Number(cell(row, col.count).replace(/\D+/g, ""))) || defaults.count || 0;
-        const installment = col.installment >= 0 ? parseAmount(cell(row, col.installment)) : Number.NaN;
-        let total = col.total >= 0 ? parseAmount(cell(row, col.total)) : Number.NaN;
-        if (!Number.isFinite(total) && Number.isFinite(installment) && count > 0) total = roundMoney(installment * count);
-        if (!Number.isFinite(total) || total < 0) return skip(index, "Toplam tutar okunamadı");
-        if (!count && Number.isFinite(installment) && installment > 0) count = Math.max(1, Math.round(total / installment));
+        const phone = cell(row, col.phone).slice(0, 60);
+        // Taksitler: motordan (ay / sıralı kolonlar) ya da eşit bölme.
+        let items = [];
+        let total = Number.NaN;
+        const scheduled = schedule.shape ? schedule.records.get(`excel-${index}`) : null;
+        if (schedule.shape) {
+          if (!scheduled) return skip(index, "Taksit kolonları okunamadı");
+          const error = scheduled.issues.find(issue => issue.level === "error");
+          if (error) return skip(index, error.text);
+          items = scheduled.items.map(item => ({ dueDate: item.dueDate, amount: item.amount, paid: item.paid, label: item.label }));
+          total = scheduled.total;
+        } else {
+          let count = Math.trunc(Number(cell(row, col.count).replace(/\D+/g, ""))) || defaults.count || 0;
+          const installment = col.installment >= 0 ? parseAmount(cell(row, col.installment)) : Number.NaN;
+          total = col.total >= 0 ? parseAmount(cell(row, col.total)) : Number.NaN;
+          if (!Number.isFinite(total) && Number.isFinite(installment) && count > 0) total = roundMoney(installment * count);
+          if (!Number.isFinite(total) || total < 0) return skip(index, "Toplam tutar okunamadı");
+          if (!count && Number.isFinite(installment) && installment > 0) count = Math.max(1, Math.round(total / installment));
+          const firstDue = parseDay(cell(row, col.firstDue)) || defaults.firstDue;
+          if (count > 0 && total > 0 && validDate(firstDue)) items = distribute({ total, count: Math.min(count, MAX_ITEMS), firstDue }).map(item => ({ ...item, paid: 0, label: "" }));
+          // Ödenen (ya da Toplam − Kalan) açılış olarak en eski taksitten düşülür.
+          const paidValue = col.paid >= 0 ? parseAmount(cell(row, col.paid)) : Number.NaN;
+          const remainingValue = col.remaining >= 0 ? parseAmount(cell(row, col.remaining)) : Number.NaN;
+          const paid = Number.isFinite(paidValue) && paidValue > 0 ? paidValue : Number.isFinite(remainingValue) && remainingValue >= 0 && total >= remainingValue ? roundMoney(total - remainingValue) : 0;
+          if (paid > 0.004) {
+            if (!items.length) return skip(index, "Ödenen tutar var ama taksitler kurulamadı (taksit sayısı ve ilk vade gerekli)");
+            const left = spreadPaid(items, paid);
+            if (left > 0.004) return skip(index, `Ödenen tutar taksitlerin toplamından ${roundMoney(left)} fazla`);
+          }
+        }
         // Gruplar yalnızca kart açılacak satırlar için tanımlanır (atlanan satır boş grup bırakmaz).
         const groupId = groupName ? ensureGroup(user, groupName) : null;
         const subgroupId = groupId && subgroupName ? ensureGroup(user, subgroupName, groupId) : null;
         const duplicate = store.get("SELECT id FROM plans WHERE deleted_at IS NULL AND name = ? COLLATE NOCASE AND COALESCE(group_id, '') = ?", name, groupId || "");
         if (duplicate) return skip(index, "Aynı adla açık kart var");
-        const firstDue = parseDay(cell(row, col.firstDue)) || defaults.firstDue;
-        const id = newId("plan");
+        // Tablodaki kayıt: kesin tek eşleşme bağlanır; o kaydın kartı zaten varsa satır atlanır (çift kart yok).
+        const record = records ? records.find(name, phone) : null;
+        if (record?.carded) return skip(index, "Tablodaki kaydının taksit kartı zaten var");
         const refNo = cell(row, col.seq).slice(0, 30) || String((autoRef += 1));
         // Kayıt tarihi kolonu yoksa ya da okunamıyorsa yükleme günü.
-        const registeredOn = parseDay(cell(row, col.registered)) || today();
-        const person = { name, phone: cell(row, col.phone).slice(0, 60), note: cell(row, col.note).slice(0, 1000), registeredOn, groupId, subgroupId, caseKey: "", caseSource: "", caseTitle: "" };
+        const registeredOn = parseDay(cell(row, col.registered)) || (scheduled?.registeredOn || "") || today();
+        const person = { name, phone, note: cell(row, col.note).slice(0, 1000), registeredOn, groupId, subgroupId, caseKey: record?.key || "", caseSource: record ? source : "", caseTitle: record?.title || "" };
         // Cari (v2.0.6): aynı ad ve telefonla (ya da telefonsuz aynı ad ve grupla) tek bir cari varsa ona bağlanır; yoksa açılır.
-        const matched = accounts()?.matchPerson(person) || "";
-        if (matched) report.linked += 1;
-        const accountId = matched || accounts()?.createFromPlan(user, person) || "";
-        store.run(
-          "INSERT INTO plans (id, account_id, ref_no, registered_on, group_id, subgroup_id, name, note, phone, total, status, created_by, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'active', ?, ?, ?)",
-          id, accountId, refNo, registeredOn, groupId, subgroupId, name, person.note, person.phone, roundMoney(total), user.id, now(), now(),
-        );
-        if (count > 0 && total > 0 && validDate(firstDue)) replaceItems(id, distribute({ total, count: Math.min(count, MAX_ITEMS), firstDue }));
+        const outcome = {};
+        const accountId = accounts()?.createFromPlan(user, person, outcome) || "";
+        if (accountId && !outcome.created) report.linked += 1;
+        if (outcome.created) undo.accounts.push(accountId);
+        if (outcome.linked) undo.accountLinks.push({ accountId, caseKey: person.caseKey });
+        const created = createScheduled(user, { ...person, accountId, refNo, total }, { importId, items, openingDate: today(), openingNote: "Excel'de ödenmiş (açılış)" });
+        if (!items.length && total > 0) store.run("UPDATE plans SET total = ? WHERE id = ?", roundMoney(total), created.id);
+        undo.plans.push(created.id);
+        undo.openings.push(...created.openingIds);
+        if (record) report.records += 1;
+        report.opening = roundMoney(report.opening + items.reduce((sum, item) => sum + Math.min(Number(item.paid) || 0, Number(item.amount) || 0), 0));
         report.created += 1;
       });
       report.groups = store.get("SELECT COUNT(*) AS n FROM plan_groups").n - before;
-      audit(user, "plan.imported", "import", { created: report.created, skipped: report.skipped.length, groups: report.groups, file: limited(body.fileName, 200, "Dosya adı") });
+      undo.groups = store.all("SELECT id FROM plan_groups").map(row => row.id).filter(id => !groupsBefore.has(id));
+      if (report.created) {
+        report.importId = importId;
+        const summary = { created: report.created, linked: 0, accountsCreated: undo.accounts.length, paymentsMoved: 0, total: 0, opening: report.opening, remaining: 0, skipped: report.skipped.length };
+        store.run("INSERT INTO plan_imports (id, kind, source, title, summary_json, undo_json, created_by, created_at) VALUES (?, 'excel', ?, ?, ?, ?, ?, ?)", importId, source, `Excel: ${limited(body.fileName, 150, "Dosya adı") || "dosya"}`, JSON.stringify(summary), JSON.stringify(undo), user.id, now());
+      }
+      audit(user, "plan.imported", "import", { created: report.created, skipped: report.skipped.length, groups: report.groups, records: report.records, opening: report.opening, shape: report.shape, importId: report.importId, file: limited(body.fileName, 200, "Dosya adı") });
     });
     changed(user, { groups: true });
     changed(user, { kind: "accounts" });
+    if (report.records) changed(user, { kind: "dues", datasetKey: source });
     ok(res, report);
   });
 

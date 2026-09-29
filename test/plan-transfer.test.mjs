@@ -407,3 +407,132 @@ describe("tablodan taksit kartına aktarma (iş akışı)", () => {
     assert.notEqual(card.data.accountId, linked.data.id, "başka kaydın carisine yazılmadı");
   });
 });
+
+describe("Taksitler → Excel/Sheets'ten yükle (v2.0.8): gerçek vadeler, Ödenen/Kalan, tablo kaydına bağ, geri alma", () => {
+  let server;
+  let admin;
+  const get = async (url) => {
+    const response = await admin.get(url);
+    return { status: response.status, data: response.data?.data, error: response.data?.error };
+  };
+  const post = async (url, body) => {
+    const response = await admin.post(url, body);
+    return { status: response.status, data: response.data?.data, error: response.data?.error };
+  };
+  const dmy = value => value.split("-").reverse().join(".");
+  before(async () => {
+    server = await startTestServer();
+    admin = await loginAdmin(server);
+  });
+  after(() => server.close());
+
+  it("ay kolonlu Excel: taksitler ay kolonlarından, 'ödendi' yazan ay açılış; ilk vade/taksit sayısı rolleri kapatılır", async () => {
+    const matrix = [
+      ["S.N", "Adı Soyadı", "Telefon", header(-1), header(0), header(1), "Toplam", "Ödenen"],
+      ["1", "Ali Veli", "0532 111 22 33", "10.000", "10.000", "10.000", "30.000", "12.000"],
+      ["2", "Ayşe Kaya", "0532 444 55 66", "5.000 ödendi", "5.000", "", "10.000", ""],
+    ];
+    const preview = await post("/api/workspace/plans/import/preview", { matrix });
+    assert.equal(preview.status, 200, preview.error);
+    assert.equal(preview.data.schedule?.shape, "months");
+    assert.equal(preview.data.schedule.monthMode, "plan");
+    assert.ok(!Object.values(preview.data.roles).some(role => ["firstDue", "count", "installment"].includes(role)), "ay kolonları varken ilk vade/taksit sayısı rolü yok");
+    assert.equal(preview.data.roles[7], "paid");
+    const result = await post("/api/workspace/plans/import", { matrix, headerAt: preview.data.headerAt, roles: preview.data.roles, dueDay: 5, fileName: "okul.xlsx" });
+    assert.equal(result.status, 200, result.error);
+    assert.equal(result.data.created, 2);
+    assert.equal(result.data.shape, "months");
+    assert.equal(result.data.opening, 17000, "12.000 + 5.000 açılış");
+    assert.ok(result.data.importId);
+    const list = (await get("/api/workspace/plans?status=all")).data.plans;
+    const ali = list.find(plan => plan.name === "Ali Veli");
+    const detail = (await get(`/api/workspace/plans/${ali.id}`)).data;
+    assert.deepEqual(detail.items.map(item => [item.dueDate, item.amount, item.paid]), [[iso(-1, 5), 10000, 10000], [iso(0, 5), 10000, 2000], [iso(1, 5), 10000, 0]]);
+    assert.equal(detail.totals.remaining, 18000);
+    assert.equal(detail.entries.filter(entry => entry.opening).length, 2, "her ödenmiş taksit için bir açılış kaydı");
+    assert.equal((await get("/api/workspace/cash")).data.totals.balance, 0, "açılış Kasa'ya girmedi");
+    const ayse = list.find(plan => plan.name === "Ayşe Kaya");
+    assert.equal(ayse.itemCount, 2, "boş ay taksit değildir");
+    assert.equal(ayse.totals.remaining, 5000);
+  });
+
+  it("sıralı taksit kolonlu Excel ('1. Taksit Tarihi/Tutarı'): 'ilk vade' sanılmaz; gerçek vadeler; Kalan kolonundan ödenen", async () => {
+    const matrix = [
+      ["Borçlu", "1. Taksit Tarihi", "1. Taksit Tutarı", "2. Taksit Tarihi", "2. Taksit Tutarı", "3. Taksit Tarihi", "3. Taksit Tutarı", "Kalan"],
+      ["Mehmet Öz", dmy(iso(-2, 15)), "5.000", dmy(iso(-1, 15)), "5.000", dmy(iso(0, 15)), "5.000", "10.000"],
+      ["Hatalı Satır", "", "", "", "", "", "", "1.000"],
+    ];
+    const preview = (await post("/api/workspace/plans/import/preview", { matrix })).data;
+    assert.equal(preview.schedule?.shape, "series");
+    const result = (await post("/api/workspace/plans/import", { matrix, headerAt: preview.headerAt, roles: preview.roles, fileName: "senet.xlsx" })).data;
+    assert.equal(result.created, 1);
+    assert.equal(result.skipped.length, 1);
+    const mehmet = (await get("/api/workspace/plans?status=all&q=Mehmet")).data.plans[0];
+    const detail = (await get(`/api/workspace/plans/${mehmet.id}`)).data;
+    assert.deepEqual(detail.items.map(item => [item.dueDate, item.amount, item.paid]), [[iso(-2, 15), 5000, 5000], [iso(-1, 15), 5000, 0], [iso(0, 15), 5000, 0]]);
+    assert.equal(detail.totals.remaining, 10000);
+  });
+
+  it("toplam + taksit sayısı biçimi: Ödenen kolonu açılış olarak en eski taksitten düşülür; ödenen toplamı aşarsa satır atlanır", async () => {
+    const matrix = [
+      ["Ad Soyad", "Toplam Tutar", "Taksit Sayısı", "İlk Vade", "Ödenen"],
+      ["Hakan Arıkan", "12.000", "4", dmy(iso(-1, 1)), "3.500"],
+      ["Fazla Ödeyen", "1.000", "2", dmy(iso(-1, 1)), "5.000"],
+    ];
+    const preview = (await post("/api/workspace/plans/import/preview", { matrix })).data;
+    assert.equal(preview.schedule, null);
+    assert.equal(preview.roles[4], "paid");
+    const result = (await post("/api/workspace/plans/import", { matrix, headerAt: preview.headerAt, roles: preview.roles, fileName: "kartlar.xlsx" })).data;
+    assert.equal(result.created, 1);
+    assert.match(result.skipped[0].reason, /fazla/);
+    const hakan = (await get("/api/workspace/plans?status=all&q=Hakan")).data.plans[0];
+    const detail = (await get(`/api/workspace/plans/${hakan.id}`)).data;
+    assert.deepEqual(detail.items.map(item => item.paid), [3000, 500, 0, 0]);
+    assert.equal(detail.totals.remaining, 8500);
+  });
+
+  it("açık tablodaki aynı kişiye bağlanır; kartı olan kayıt için ikinci kart açılmaz; kapatılınca bağlanmaz", async () => {
+    const table = [["Ad Soyad", "Telefon", "Durum"], ["Zeynep Ak", "0541 000 00 01", "Aktif"], ["Deniz Ay", "", "Aktif"], ["Deniz Ay", "", "Aktif"], ["Ali Veli", "0532 111 22 33", "Aktif"]];
+    const staged = await post("/api/workspace/dataset/stage", { kind: "excel", fileName: "liste.xlsx", sheets: [{ name: "Liste", matrix: table }] });
+    assert.equal((await post("/api/workspace/dataset/commit", { stageId: staged.data.stageId, mode: "replace" })).status, 200);
+    const rows = (await admin.get(`/api/trpc/sheets.getRows?input=${encodeURIComponent(JSON.stringify({ json: {} }))}`)).data.result.data.json.rows;
+    const zeynepKey = rows.find(row => row["Ad Soyad"] === "Zeynep Ak").__hofKey;
+    const matrix = [
+      ["Ad Soyad", "Telefon", "Toplam Tutar", "Taksit Sayısı", "İlk Vade"],
+      ["Zeynep Ak", "0541 000 00 01", "4.000", "4", dmy(iso(0, 1))],
+      ["Deniz Ay", "", "2.000", "2", dmy(iso(0, 1))],
+      ["Ali Veli", "0532 111 22 33", "9.000", "3", dmy(iso(0, 1))],
+    ];
+    const preview = (await post("/api/workspace/plans/import/preview", { matrix })).data;
+    assert.equal(preview.hasTable, true);
+    const result = (await post("/api/workspace/plans/import", { matrix, headerAt: preview.headerAt, roles: preview.roles, linkRecords: true, fileName: "taksit.xlsx" })).data;
+    assert.equal(result.created, 2, JSON.stringify(result));
+    assert.equal(result.records, 1, "Zeynep bağlandı; iki Deniz belirsiz; Ali'nin grubu farklı olsa da adı aynı olduğundan kart zaten var");
+    assert.equal(result.skipped.length, 1);
+    assert.match(result.skipped[0].reason, /Aynı adla açık kart var/);
+    const zeynep = (await get(`/api/workspace/cases/${encodeURIComponent(zeynepKey)}/plans`)).data.plans;
+    assert.equal(zeynep.length, 1);
+    assert.equal(zeynep[0].name, "Zeynep Ak");
+    const account = (await get(`/api/workspace/cases/${encodeURIComponent(zeynepKey)}/account`)).data.account;
+    assert.ok(account, "cari de kayda bağlı");
+    // Bağ kapalıyken bağlanmaz.
+    const second = (await post("/api/workspace/plans/import", { matrix: [["Ad Soyad", "Toplam Tutar", "Taksit Sayısı", "İlk Vade"], ["Deniz Ay", "2.000", "2", dmy(iso(0, 1))]], headerAt: 0, roles: { 0: "name", 1: "total", 2: "count", 3: "firstDue" }, groupName: "B Grubu", linkRecords: false })).data;
+    assert.equal(second.created, 1);
+    assert.equal(second.records, 0);
+    // Kartı olan kayda ikinci yükleme kart açmaz.
+    const again = (await post("/api/workspace/plans/import", { matrix, headerAt: preview.headerAt, roles: preview.roles, groupName: "C Grubu", linkRecords: true })).data;
+    assert.ok(again.skipped.some(item => /kartı zaten var/.test(item.reason)), JSON.stringify(again.skipped));
+  });
+
+  it("Excel yüklemesi Son aktarımlar'dan geri alınır: kartlar, açılışlar ve aktarımın açtığı cariler kalkar", async () => {
+    const imports = (await get("/api/workspace/plans/imports")).data.imports;
+    const excel = imports.find(item => item.kind === "excel" && item.title.includes("okul.xlsx"));
+    assert.ok(excel);
+    const before = server.app.store.get("SELECT COUNT(*) AS n FROM plans WHERE deleted_at IS NULL").n;
+    const undone = await post(`/api/workspace/plans/imports/${excel.id}/undo`, {});
+    assert.equal(undone.status, 200, undone.error);
+    assert.equal(undone.data.plans, 2);
+    assert.equal(server.app.store.get("SELECT COUNT(*) AS n FROM plans WHERE deleted_at IS NULL").n, before - 2);
+    assert.equal(server.app.store.get("SELECT COUNT(*) AS n FROM plan_entries WHERE opening = 1 AND plan_id NOT IN (SELECT id FROM plans)").n, 0, "sahipsiz açılış kaydı kalmadı");
+  });
+});

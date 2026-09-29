@@ -82,7 +82,7 @@ async function newPage(label) {
   const context = await browser.newContext({ viewport: { width: 1440, height: 900 }, locale: "tr-TR" });
   const page = await context.newPage();
   page.on("console", message => {
-    if (message.type() === "error" && !/favicon/.test(message.text())) problems.push(`[${label}] console: ${message.text()}`);
+    if (message.type() === "error" && !/favicon/.test(message.text())) problems.push(`[${label}] console: ${message.text()} ${message.location?.()?.url || ""}`.trim());
   });
   page.on("pageerror", error => problems.push(`[${label}] pageerror: ${error.message}`));
   return page;
@@ -676,9 +676,18 @@ try {
     await admin.click(".hof-stock-modal [data-act=new]");
     await admin.waitForSelector('.hof-modal-backdrop.is-visible input[name="name"]', { timeout: 8000 });
     await admin.fill('.hof-modal-backdrop.is-visible input[name="name"]', "Çay");
-    await admin.fill('.hof-modal-backdrop.is-visible input[name="unit"]', "paket");
+    // v2.0.8: birim bir seçim listesi (kg, lt, metre, m², paket, koli, saat…); yalnız "adet" görünmez.
+    const units = await admin.$$eval('.hof-modal-backdrop.is-visible select[name="unit"] option', options => options.map(option => option.value));
+    expect(["adet", "paket", "koli", "kg", "lt", "metre", "m²", "saat"].every(unit => units.includes(unit)), `birim listesi geniş (${units.length} seçenek)`);
+    await admin.selectOption('.hof-modal-backdrop.is-visible select[name="unit"]', "paket");
     await admin.fill('.hof-modal-backdrop.is-visible input[name="minQty"]', "3");
+    await admin.fill('.hof-modal-backdrop.is-visible input[name="unitPrice"]', "40");
     await admin.fill('.hof-modal-backdrop.is-visible input[name="openingQty"]', "5");
+    // Kasa'ya kendiliğinden gider yazılmaz (kullanıcı kararı); "Kasa'ya yansıt" işaretlenince 5 × 40 = 200 Kasa'dan düşer.
+    expect((await admin.textContent(".hof-modal-backdrop.is-visible [data-opening-total]")).includes("Kasa’ya yazılmaz"), "kutu işaretsizken Kasa'ya yazılmayacağı söylenir");
+    await admin.check('.hof-modal-backdrop.is-visible input[name="openingCash"]');
+    const openingText = await admin.textContent(".hof-modal-backdrop.is-visible [data-opening-total]");
+    expect(openingText.includes("200,00") && openingText.includes("Stok ödemesi"), `yeni ürün: miktar × birim fiyat anında hesaplandı (${openingText})`);
     await admin.click('.hof-modal-backdrop.is-visible .hof-form button[type="submit"]');
     await admin.waitForSelector('.hof-stock-modal [data-move="out"]', { timeout: 10000 });
     await admin.click('.hof-stock-modal [data-move="out"]');
@@ -696,6 +705,7 @@ try {
     await admin.waitForFunction(() => document.querySelector('#hof-sidecard [data-badge="stock"]')?.textContent === "", null, { timeout: 10000 });
     const cash = (await admin.evaluate(() => fetch("/api/workspace/cash?period=all").then(response => response.json()))).data;
     expect(cash.entries.some(entry => entry.source === "stock" && entry.kind === "out" && entry.amount === 500), "stok alımı Kasa'ya gider");
+    expect(cash.entries.some(entry => entry.source === "stock" && entry.kind === "out" && entry.amount === 200 && /^Stok ödemesi/.test(entry.description)), "yeni ürünün ilk alımı Kasa'ya 'Stok ödemesi' gideri");
     const stock = (await admin.evaluate(() => fetch("/api/workspace/stock").then(response => response.json()))).data;
     expect(stock.items.find(item => item.name === "Çay")?.qty === 12, "mevcut 5 − 3 + 10 = 12");
     await admin.click(".hof-stock-modal [data-close]");
@@ -1165,8 +1175,15 @@ try {
       await page.waitForSelector(".hof-analysis-result:not([hidden])", { timeout: 20000 });
       const result = await page.$eval(".hof-analysis-result", node => node.innerText.replace(/\s+/g, " "));
       expect(result.includes("Okul servisi"), `okul servisi önerisi: ${result}`);
+      // v2.0.8: yükleme sonrası "ödeme planları Taksitler'e aktarılsın mı?" bildirimi (engellemeyen; düğmesi pencereyi açar).
+      // Bildirimler pencerelerin altında kaldığından soru, akıllı analiz penceresi kapanınca gelir.
+      await page.waitForTimeout(3500);
+      expect(!(await page.evaluate(() => [...document.querySelectorAll(".hof-toast")].some(node => /Taksitler'e aktarılsın mı/.test(node.textContent)))), "analiz penceresi açıkken aktarma sorusu sorulmaz");
       await page.click(".hof-analysis-result [data-apply]");
       await page.waitForFunction(() => document.querySelector(".brand-subtitle")?.firstChild?.nodeValue === "Okul servisi yönetimi", null, { timeout: 5000 });
+      await page.waitForFunction(() => [...document.querySelectorAll(".hof-toast")].some(node => /Taksitler'e aktarılsın mı/.test(node.textContent) && /6 kişinin ödeme planı/.test(node.textContent)), null, { timeout: 20000 });
+      expect(await page.$(".hof-toast .hof-toast-action"), "bildirimde 'Ön izle ve aktar' düğmesi var");
+      await page.evaluate(() => document.querySelectorAll(".hof-toast").forEach(node => node.remove()));
 
       // v2.0.2: durum/kategori hücreleri renkli nokta alır (analiz gelince); sık görünüm düğmesi satırları daraltır ve hatırlanır.
       await page.waitForSelector(".dynamic-table td[data-tone]", { timeout: 15000 });
@@ -1232,6 +1249,50 @@ try {
       const pdfPath = path.join(schoolRoot, "kasa.pdf");
       await download.saveAs(pdfPath);
       expect(readFileSync(pdfPath).subarray(0, 8).toString("latin1") === "%PDF-1.7", "PDF dosyası");
+      await page.keyboard.press("Escape");
+      await page.waitForFunction(() => !document.querySelector(".hof-modal-backdrop"), null, { timeout: 8000 });
+
+      // v2.0.8: Taksitler → Tablodan aktar. Ay kolonlu öğrenci tablosu (aylık ücret + ödenen) gerçek taksitlerle karta;
+      // pilden girilen tahsilat karta taşınır, Kasa değişmez; takvimde tablodan ikinci kez gelmez.
+      const cashBefore = (await page.evaluate(() => fetch("/api/workspace/cash?period=all").then(response => response.json()))).data.totals.balance;
+      await page.click('#hof-sidecard [data-action="plans"]');
+      await page.waitForSelector('.hof-plans [data-act="transfer"]', { timeout: 10000 });
+      await page.click('.hof-plans [data-act="transfer"]');
+      await page.waitForSelector(".hof-transfer-modal .hof-transfer-table", { timeout: 30000 });
+      const transferText = await page.$eval(".hof-transfer-modal", node => node.innerText.replace(/\s+/g, " "));
+      expect(/Öğrenciler/.test(transferText) && /aylık ücret \+ ödenen/.test(transferText), `sekme ve biçim: ${transferText.slice(0, 300)}`);
+      const rowsShown = await page.$$eval(".hof-transfer-table tbody tr[data-key]", nodes => nodes.map(node => node.innerText.replace(/\s+/g, " ")));
+      expect(rowsShown.length === 6, `6 öğrenci listelendi (${rowsShown.length})`);
+      // Can Öztürk: 3.800 × 4 ay (geçen 2 ay ödendi, bu ay 1.900 kısmi, gelecek ay açık) → ödenen 9.500, kalan 5.700.
+      const can = rowsShown.find(text => /Can Öztürk/.test(text)) || "";
+      expect(/4 taksit/.test(can) && /15\.200,00/.test(can) && /9\.500,00/.test(can) && /5\.700,00/.test(can), `Can Öztürk satırı: ${can}`);
+      const sumText = await page.$eval(".hof-transfer-sum", node => node.innerText.replace(/\s+/g, " "));
+      expect(/kayıt tahsilatı/.test(sumText), `pilden girilen tahsilat kayıt tahsilatı olarak sayılır: ${sumText}`);
+      await page.click(".hof-transfer-table tbody tr[data-key] [data-expand]");
+      await page.waitForSelector(".hof-transfer-detail .hof-transfer-items", { timeout: 5000 });
+      await page.screenshot({ path: path.join(artifacts, "10d-tablodan-aktar.png"), fullPage: true });
+      const commitText = await page.textContent(".hof-transfer-modal [data-commit]");
+      expect(/6 kişiyi aktar/.test(commitText), `aktar düğmesi: ${commitText}`);
+      await page.click(".hof-transfer-modal [data-commit]");
+      await page.waitForSelector('.hof-modal-backdrop.is-visible [data-answer="yes"]', { timeout: 8000 });
+      await page.click('.hof-modal-backdrop.is-visible [data-answer="yes"]');
+      await page.waitForFunction(() => [...document.querySelectorAll(".hof-modal-title")].some(node => node.textContent === "Aktarım tamamlandı"), null, { timeout: 60000 });
+      const resultText = await page.$eval(".hof-transfer-result", node => node.innerText.replace(/\s+/g, " "));
+      expect(/6 taksit kartı açıldı/.test(resultText) && /1 tahsilat/.test(resultText), `sonuç: ${resultText}`);
+      await page.screenshot({ path: path.join(artifacts, "10e-aktarim-sonucu.png") });
+      await page.click(".hof-modal-backdrop.is-visible [data-result-close]");
+      // "Tamam" aktarım penceresini de kapatır; yenilenmiş Taksitler listesinde 6 kart görünür.
+      await page.waitForFunction(() => !document.querySelector(".hof-transfer-modal"), null, { timeout: 8000 });
+      await page.waitForFunction(() => document.querySelectorAll(".hof-plans tr[data-plan]").length === 6, null, { timeout: 10000 });
+      const cashAfter = (await page.evaluate(() => fetch("/api/workspace/cash?period=all").then(response => response.json()))).data;
+      expect(cashAfter.totals.balance === cashBefore, `Kasa değişmedi: ${cashBefore} → ${cashAfter.totals.balance}`);
+      expect(cashAfter.entries.filter(entry => entry.source === "plan").length === 1 && !cashAfter.entries.some(entry => entry.source === "payment"), "tahsilat Kasa'da artık taksit tahsilatı olarak (tek kayıt)");
+      const plansNow = (await page.evaluate(() => fetch("/api/workspace/plans?status=all").then(response => response.json()))).data;
+      expect(plansNow.plans.length === 6 && plansNow.plans.every(plan => plan.caseKey && plan.accountId), "6 kart, hepsi kayda ve cariye bağlı");
+      const dues = (await page.evaluate(() => fetch("/api/workspace/dues").then(response => response.json()))).data;
+      expect(!dues.items.some(item => item.source !== "plan" && item.tab === "Öğrenciler"), "takvimde tablodan gelen öğrenci kalemi kalmadı (çift sayım yok)");
+      expect(dues.items.some(item => item.source === "plan"), "takvim kartların taksitlerini gösteriyor");
+      await page.keyboard.press("Escape");
     } finally {
       await context.close();
       await schoolApp.close();

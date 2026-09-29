@@ -8473,3 +8473,121 @@ button.hof-source-card:focus-visible {
   text-decoration: underline;
   cursor: pointer;
 }
+
+/* ---------- Tablodan taksit kartına aktarma (v2.0.8) ---------- */
+.hof-transfer-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 10px 14px;
+  align-items: end;
+  margin: 10px 0 12px;
+  padding: 12px 14px;
+  border: 1px solid #dbe7e0;
+  border-radius: 12px;
+  background: #f7faf8;
+}
+.hof-transfer-options .hof-field {
+  margin: 0;
+}
+.hof-transfer-options .hof-check {
+  grid-column: 1 / -1;
+  margin: 2px 0 0;
+}
+.hof-transfer-list {
+  max-height: min(52vh, 640px);
+  overflow: auto;
+}
+.hof-transfer-table th,
+.hof-transfer-table td {
+  vertical-align: top;
+}
+.hof-transfer-table td small {
+  display: block;
+  color: var(--do-muted, #6d8276);
+  font-size: 11.5px;
+}
+.hof-transfer-check {
+  width: 34px;
+  text-align: center;
+}
+.hof-transfer-table tr.is-error td:nth-child(2) b {
+  color: var(--do-danger);
+}
+.hof-transfer-table tr.is-exists td,
+.hof-transfer-table tr.is-closed td {
+  color: #6d8276;
+}
+.hof-transfer-first {
+  display: block;
+  max-width: 260px;
+  margin-top: 3px;
+  white-space: normal;
+}
+.hof-transfer-first.is-error {
+  color: var(--do-danger);
+}
+.hof-transfer-first.is-warning {
+  color: #7a5a10;
+}
+.hof-transfer-detail td {
+  padding: 8px 10px 12px;
+  background: #fbfcfb;
+}
+.hof-transfer-issues {
+  margin: 0 0 8px;
+  padding-left: 18px;
+  font-size: 12.5px;
+}
+.hof-transfer-issues li.is-error {
+  color: var(--do-danger);
+  font-weight: 600;
+}
+.hof-transfer-issues li.is-warning {
+  color: #7a5a10;
+}
+.hof-transfer-issues li.is-info {
+  color: #4f6a5c;
+}
+.hof-transfer-items {
+  width: auto;
+  min-width: 420px;
+  font-size: 12px;
+}
+.hof-transfer-sum {
+  margin: 10px 0 0;
+  font-size: 13px;
+}
+.hof-transfer-imports {
+  margin-top: 10px;
+  font-size: 12.5px;
+}
+.hof-transfer-imports summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+.hof-transfer-imports ul {
+  margin: 6px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.hof-transfer-imports li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 6px 0;
+  border-top: 1px solid #edf2ef;
+}
+.hof-transfer-imports li small {
+  display: block;
+  color: #6d8276;
+}
+.hof-transfer-result {
+  margin: 0 0 10px;
+  padding-left: 18px;
+  font-size: 13.5px;
+  line-height: 1.5;
+}
+.hof-plans-entries tr[data-opening] td:first-child {
+  border-left: 3px solid #cfd8d3;
+}

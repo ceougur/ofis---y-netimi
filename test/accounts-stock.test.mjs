@@ -286,6 +286,16 @@ describe("Stok modülü (v2.0.6)", () => {
     assert.equal((await admin.get(`/api/workspace/accounts/${supplier.id}`)).data.data.totals.balance, 0);
   });
 
+  it("yeni üründe kritik seviye ve miktar boş bırakılabilir (v2.0.8): boş = 0, hata vermez", async () => {
+    const created = await admin.post("/api/workspace/stock", { name: "Zımba teli", unit: "kutu", minQty: "", unitPrice: "", openingQty: "", openingCash: false, openingDate: "" });
+    assert.equal(created.status, 200, JSON.stringify(created.data));
+    assert.equal(created.data.data.minQty, 0);
+    assert.equal(created.data.data.qty, 0);
+    const bad = await admin.post("/api/workspace/stock", { name: "Zımba", unit: "kutu", minQty: "-5" });
+    assert.equal(bad.status, 400);
+    assert.match(bad.data.error, /Kritik seviye/);
+  });
+
   it("yeni ürünün ilk miktarı (v2.0.8): Kasa'dan ödendi → 'Stok ödemesi' gideri; tedarikçiye borç → cari; elde olan → para yazılmaz", async () => {
     const cashBefore = (await admin.get("/api/workspace/cash")).data.data;
     const bought = await admin.post("/api/workspace/stock", { name: "Toz şeker", unit: "kg", unitPrice: "42,50", openingQty: "20", openingPay: "cash", openingDate: "2026-09-25" });

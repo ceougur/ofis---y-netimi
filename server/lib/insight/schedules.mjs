@@ -47,7 +47,7 @@ export function dueDateIn(time, dueDay = 1) {
 }
 
 // Ödenen tutarı en eski taksitten başlayarak dağıtır (kısmen ödenmiş taksit kalır). Artan kısım döner.
-function spreadPaid(items, amount) {
+export function spreadPaid(items, amount) {
   let left = roundMoney(Math.max(0, Number(amount) || 0));
   for (const item of items) {
     if (left <= EPS) break;

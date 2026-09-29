@@ -837,7 +837,7 @@
     // Kayda bağlı taksit kartının hareketi (v2.0.6): Kasa'ya kart üzerinden düşmüştür, burada ayrıca sayılmaz.
     if (item.type === "plan-entry")
       return item.kind === "in"
-        ? `${esc(HOF.formatMoney(item.amount))} taksit tahsilatı${item.itemSeq ? ` · ${esc(item.itemSeq)}. taksit` : ""}${item.note ? ` · ${esc(item.note)}` : ""}${item.receiptNo ? ` · Makbuz No ${esc(item.receiptNo)}` : ""} (${esc(HOF.formatDate(item.date))})`
+        ? `${esc(HOF.formatMoney(item.amount))} ${item.opening ? "açılış (devir; Excel'de ödenmiş, Kasa'da yok)" : "taksit tahsilatı"}${item.itemSeq ? ` · ${esc(item.itemSeq)}. taksit` : ""}${item.note ? ` · ${esc(item.note)}` : ""}${item.receiptNo ? ` · Makbuz No ${esc(item.receiptNo)}` : ""} (${esc(HOF.formatDate(item.date))})`
         : `${esc(HOF.formatMoney(item.amount))} taksit ödemesi / iadesi${item.note ? ` · ${esc(item.note)}` : ""} (${esc(HOF.formatDate(item.date))})`;
     if (item.type === "lien") return `${esc(item.title)} · düşüm ${esc(HOF.formatDate(item.expiresAt))}`;
     if (item.type === "task") return `${item.priority === "urgent" && item.status !== "completed" ? '<span class="hof-chip hof-chip-urgent">Acil</span> ' : item.priority === "high" && item.status !== "completed" ? '<span class="hof-chip hof-chip-high">Yüksek</span> ' : ""}Görev: ${esc(item.title)} → ${esc(item.assignee)}${item.status === "completed" ? " ✓" : ""}`;
@@ -885,7 +885,7 @@
       const itemActions = item =>
         item.type === "payment" && canEditPayment(item)
           ? `<span class="hof-activity-tools"><button type="button" class="hof-mini" data-payment-edit="${esc(item.id)}" title="Tahsilatı düzelt" aria-label="Tahsilatı düzelt">✎</button><button type="button" class="hof-mini hof-mini-danger" data-payment-delete="${esc(item.id)}" title="Tahsilatı sil" aria-label="Tahsilatı sil">×</button></span>`
-          : item.type === "plan-entry" && item.kind === "in"
+          : item.type === "plan-entry" && item.kind === "in" && !item.opening
             ? `<span class="hof-activity-tools"><a class="hof-mini hof-mini-text" href="/api/workspace/plans/${encodeURIComponent(item.planId)}/entries/${encodeURIComponent(item.id)}/makbuz.pdf" target="_blank" rel="noopener" title="Makbuz PDF">Makbuz</a></span>`
             : "";
       const edited = item => (item.updatedAt ? ` · düzeltildi${item.updatedByName ? ` (${esc(item.updatedByName)})` : ""}` : "");
