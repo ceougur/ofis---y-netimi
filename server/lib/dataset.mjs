@@ -113,9 +113,13 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
 
   // ---------- Okuma ----------
   // Kayıt açık veri oturumunda var mı? (Taksit kartı bağlanırken; başka oturumun ya da yanlış yazılmış bir anahtar bağlanamaz.)
+  // Kayıt açık veri oturumunda var mı: Excel/Sheets satırları (dataset_rows) ya da programdan "Yeni kayıt" ile
+  // eklenenler (records). (2.0.7: yeni kayıt hemen ardından cari/taksit bağı kurulabilsin.)
   function hasRecord(caseKey) {
     const key = String(caseKey || "").trim();
-    return Boolean(key) && Boolean(store.get("SELECT 1 AS one FROM dataset_rows WHERE dataset_key = ? AND case_key = ? LIMIT 1", activeKey(), key));
+    if (!key) return false;
+    const datasetKey = activeKey();
+    return Boolean(store.get("SELECT 1 AS one FROM dataset_rows WHERE dataset_key = ? AND case_key = ? LIMIT 1", datasetKey, key)) || Boolean(store.get("SELECT 1 AS one FROM records r WHERE r.source_name = ? AND r.case_key = ? AND NOT EXISTS (SELECT 1 FROM deleted_records d WHERE d.source_name = r.source_name AND d.case_key = r.case_key) LIMIT 1", datasetKey, key));
   }
   function loadRows() {
     const datasetKey = activeKey();

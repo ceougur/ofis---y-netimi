@@ -6,7 +6,8 @@ import { BACKUP_NAME, createBackup, listBackups } from "../lib/backup.mjs";
 import { HttpError, SECURITY_HEADERS, limited, ok, parseJson, readJson, text } from "../lib/http.mjs";
 import { nameConflict } from "../lib/names.mjs";
 import { hashPassword, passwordProblem } from "../lib/passwords.mjs";
-import { ROLES } from "../lib/permissions.mjs";
+import { GRANTABLE, ROLES, grantsOf } from "../lib/permissions.mjs";
+import { compareVersions } from "../lib/semver.mjs";
 
 // Personel bilgisayarlarının bağlanabileceği yerel ağ adresleri (sanal/yerel bağdaştırıcılar hariç).
 function lanAddresses(port) {
@@ -35,9 +36,9 @@ export function registerAdminRoutes(router, context) {
     ok(
       res,
       store.all(
-        `SELECT id, username, display_name AS name, role, active, must_change_password AS mustChangePassword,
+        `SELECT id, username, display_name AS name, role, active, must_change_password AS mustChangePassword, grants_json AS grantsJson,
                 last_login_at AS lastLoginAt, created_at AS createdAt FROM users ORDER BY display_name COLLATE NOCASE`,
-      ).map(user => ({ ...user, active: Boolean(user.active), mustChangePassword: Boolean(user.mustChangePassword) })),
+      ).map(({ grantsJson, ...user }) => ({ ...user, active: Boolean(user.active), mustChangePassword: Boolean(user.mustChangePassword), grants: grantsOf({ grantsJson }), grantable: GRANTABLE })),
     );
   });
 
@@ -75,6 +76,12 @@ export function registerAdminRoutes(router, context) {
     const role = body.role === undefined ? target.role : text(body.role);
     const active = body.active === undefined ? target.active : body.active === false ? 0 : 1;
     const name = body.name === undefined ? null : limited(body.name, 120, "Görünen ad");
+    // Kişiye özel ek yetkiler (v2.0.7): yalnız GRANTABLE listesindekiler; bilinmeyen yetki reddedilir.
+    let grants = null;
+    if (body.grants !== undefined) {
+      if (!Array.isArray(body.grants) || body.grants.some(permission => !Object.hasOwn(GRANTABLE, permission))) throw new HttpError(400, "Verilebilecek yetki tanınmadı.");
+      grants = [...new Set(body.grants)];
+    }
     if (!ROLES.includes(role)) throw new HttpError(400, "Geçersiz rol.");
     if (name) {
       const conflict = nameConflict(store, { name, exceptId: target.id });
@@ -84,11 +91,13 @@ export function registerAdminRoutes(router, context) {
     const losesAdmin = target.role === "admin" && target.active && (role !== "admin" || !active);
     if (losesAdmin && activeAdmins() <= 1) throw new HttpError(400, "Sistemde en az bir aktif yönetici kalmalı.");
     store.tx(() => {
-      store.run("UPDATE users SET role = ?, active = ?, display_name = COALESCE(?, display_name), updated_at = ? WHERE id = ?", role, active, name || null, now(), target.id);
+      store.run("UPDATE users SET role = ?, active = ?, display_name = COALESCE(?, display_name), grants_json = COALESCE(?, grants_json), updated_at = ? WHERE id = ?", role, active, name || null, grants ? JSON.stringify(grants) : null, now(), target.id);
       if (!active) store.run("DELETE FROM sessions WHERE user_id = ?", target.id);
     });
     if (!active) dropLive(target.id);
-    audit(admin, "user.updated", target.id, { role, active: Boolean(active), name: name || undefined });
+    audit(admin, "user.updated", target.id, { role, active: Boolean(active), name: name || undefined, grants: grants || undefined });
+    // Yetkisi değişen kişinin açık ekranı yetkilerini yeniden alsın.
+    if (grants) events?.publish("workspace.changed", { kind: "permissions", userId: target.id }, { users: [target.id] });
     ok(res, true);
   });
 
@@ -218,21 +227,35 @@ export function registerAdminRoutes(router, context) {
     return supervisorLink;
   };
 
+  // Servis yöneticisi yeni sürüme yeniden başlamadan geçtiyse (2.0.6 ve öncesi) çalışan sürümü eski sanıp aynı
+  // sürümü "yeni" diye önerebilir. Uygulama kendi sürümünden yeni olmayan öneriyi göstermez ve kurdurmaz.
+  const isNewer = version => Boolean(version) && Boolean(config.version) && compareVersions(version, config.version) > 0;
+  function sanitizeUpdate(status) {
+    if (!status || typeof status !== "object") return status;
+    const next = { ...status, currentVersion: config.version || status.currentVersion };
+    if (next.available && !isNewer(next.available.version)) next.available = null;
+    if (next.lastCheck?.status === "available" && !isNewer(next.lastCheck.version)) next.lastCheck = { ...next.lastCheck, status: "up-to-date", version: config.version, reason: null };
+    return next;
+  }
+
   router.get("/api/admin/update", async ({ req, res }) => {
     auth.requirePermission(req, "system.manage");
     if (!supervisorLink?.supervised) return ok(res, { enabled: false, reason: NOT_SUPERVISED, currentVersion: config.version });
-    ok(res, await supervisorLink.request("update:status", {}, { timeoutMs: 10_000 }));
+    ok(res, sanitizeUpdate(await supervisorLink.request("update:status", {}, { timeoutMs: 10_000 })));
   });
 
   router.post("/api/admin/update/check", async ({ req, res }) => {
     const admin = auth.requirePermission(req, "system.manage");
-    const status = await updateLink().request("update:check", {}, { timeoutMs: 90_000 });
+    const status = sanitizeUpdate(await updateLink().request("update:check", {}, { timeoutMs: 90_000 }));
     audit(admin, "system.update_checked", "update", { available: status.available?.version || null, result: status.lastCheck?.status || null });
     ok(res, status);
   });
 
   router.post("/api/admin/update/apply", async ({ req, res }) => {
     const admin = auth.requirePermission(req, "system.manage");
+    // Önce taze denetim: yalnızca çalışan sürümden yeni bir sürüm varsa kurulum başlatılır.
+    const fresh = sanitizeUpdate(await updateLink().request("update:check", {}, { timeoutMs: 90_000 }));
+    if (!fresh.available) throw new HttpError(409, fresh.incompatible?.reason || (fresh.lastCheck?.status === "error" && fresh.lastCheck.reason) || `Kurulacak yeni bir sürüm yok; sistem güncel (${config.version}).`);
     const result = await updateLink().request("update:apply", {}, { timeoutMs: 90_000 });
     audit(admin, "system.update_requested", "update", { version: result.version || null });
     ok(res, result);
@@ -244,7 +267,7 @@ export function registerAdminRoutes(router, context) {
     const payload = {};
     if (body.autoUpdate !== undefined) payload.enabled = Boolean(body.autoUpdate);
     if (body.channel !== undefined) payload.channel = text(body.channel);
-    const status = await updateLink().request("update:config", payload, { timeoutMs: 10_000 });
+    const status = sanitizeUpdate(await updateLink().request("update:config", payload, { timeoutMs: 10_000 }));
     audit(admin, "system.update_settings", "update", payload);
     ok(res, status);
   });

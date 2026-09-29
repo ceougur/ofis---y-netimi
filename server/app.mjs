@@ -33,6 +33,9 @@ import { registerDueRoutes } from "./routes/dues.mjs";
 import { registerPlanRoutes } from "./routes/plans.mjs";
 import { registerAccountRoutes } from "./routes/accounts.mjs";
 import { registerStockRoutes } from "./routes/stock.mjs";
+import { registerChequeRoutes } from "./routes/cheques.mjs";
+import { registerOverviewRoutes } from "./routes/overview.mjs";
+import { registerReportCenter } from "./routes/report-center.mjs";
 import { registerDocumentRoutes } from "./routes/documents.mjs";
 import { registerFreeRoutes } from "./routes/free.mjs";
 import { createFreeSheets } from "./lib/free-sheets.mjs";
@@ -139,13 +142,19 @@ export function createApp(overrides = {}) {
   registerAdminRoutes(router, context);
   // Taksit servisi (context.plans) daha sonra kurulur; işlem geçmişi ona istek anında ulaşır (v2.0.6).
   registerWorkspaceRoutes(router, { ...context, plans: () => context.plans });
-  registerCashRoutes(router, context);
+  context.cash = registerCashRoutes(router, context);
   // Taksitler (v2.0.4): Kasa ve tahsilat takvimi bu servisin hareketlerini ve gecikmelerini okur.
   // Cari ve Stok (v2.0.6): taksit kartları cariye bağlıdır; stok hareketi Kasa'ya ya da cariye yazılabilir. Servisler
   // birbirine istek anında ulaşır (kurulum sırası: taksit → cari → stok).
-  context.plans = registerPlanRoutes(router, { ...context, accounts: () => context.accounts });
-  context.accounts = registerAccountRoutes(router, { ...context, plans: () => context.plans });
+  context.plans = registerPlanRoutes(router, { ...context, accounts: () => context.accounts, cheques: () => context.cheques });
+  context.accounts = registerAccountRoutes(router, { ...context, plans: () => context.plans, cheques: () => context.cheques });
   context.stock = registerStockRoutes(router, { ...context, accounts: () => context.accounts });
+  // Çek / Senet (v2.0.7): cari ve taksit defterine bağlı; Kasa tahsil/ödeme olaylarını okur.
+  context.cheques = registerChequeRoutes(router, { ...context, accounts: () => context.accounts, plans: () => context.plans });
+  // ANLIK DURUM (v2.0.7): Kasa, Cari, Stok ve Çek/Senet'in kendi hesaplarını okur (tek kaynak); raporlar.
+  context.overview = registerOverviewRoutes(router, { ...context, cash: () => context.cash, accounts: () => context.accounts, plans: () => context.plans, stock: () => context.stock, cheques: () => context.cheques });
+  // Rapor merkezi (v2.0.7): programdaki her bilginin hazır raporu; ekranda ön izleme, PDF ve Excel.
+  context.reportCenter = registerReportCenter(router, { ...context, cash: () => context.cash, accounts: () => context.accounts, plans: () => context.plans, stock: () => context.stock, cheques: () => context.cheques, overview: () => context.overview });
   registerDueRoutes(router, context);
   const documents = registerDocumentRoutes(router, context);
   registerTrashRoutes(router, { ...context, documents });

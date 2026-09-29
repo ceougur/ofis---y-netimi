@@ -181,6 +181,8 @@ try {
     expect(headers === 8, `tablo kolonları: ${headers}`);
     // v2.0.4: kolon genişliği başlığın sağ kenarından sürüklenir ve bu bilgisayarda hatırlanır.
     await admin.waitForSelector(".dynamic-table.hof-sized thead th:nth-child(2) .hof-col-grip", { timeout: 10000 });
+    // v2.0.7: ANLIK DURUM kartı başlığı aşağı iter; başlık ekranın altındaki yatay kaydırma çubuğunun altında kalmasın.
+    await admin.$eval(".dynamic-table thead", node => node.scrollIntoView({ block: "center" }));
     const before = await admin.$eval(".dynamic-table thead th:nth-child(2)", th => th.getBoundingClientRect().width);
     const gripBox = await admin.$eval(".dynamic-table thead th:nth-child(2) .hof-col-grip", node => { const b = node.getBoundingClientRect(); return { x: b.x + 3, y: b.y + b.height / 2, hit: document.elementFromPoint(b.x + 3, b.y + b.height / 2)?.className || "" }; });
     expect(/hof-col-grip/.test(gripBox.hit), `tutamaç tıklanabilir: ${gripBox.hit}`);
@@ -511,7 +513,7 @@ try {
     await admin.fill('.hof-plan-form input[name="total"]', "9.000");
     await admin.selectOption('.hof-plan-form select[name="groupId"]', "\u0001yeni");
     await admin.fill('.hof-plan-form input[name="groupName"]', "42 C 1070");
-    await admin.check('.hof-plan-form input[name="auto"]');
+    await admin.selectOption('.hof-plan-form select[name="items"]', "auto");
     await admin.fill('.hof-plan-form input[name="count"]', "3");
     await admin.fill('.hof-plan-form input[name="firstDue"]', "2026-01-05");
     await admin.click('.hof-plan-form button[type="submit"]');
@@ -590,7 +592,7 @@ try {
     expect(prefilled.length > 0, `ad kayıttan geldi: ${prefilled}`);
     expect(await admin.$eval(".hof-case-picker:not(.hof-acc-picker)", node => node.classList.contains("is-linked")), "arama kutusu bağlı görünümde");
     await admin.fill('.hof-plan-form input[name="total"]', "3.000");
-    await admin.check('.hof-plan-form input[name="auto"]');
+    await admin.selectOption('.hof-plan-form select[name="items"]', "auto");
     await admin.fill('.hof-plan-form input[name="count"]', "3");
     await admin.fill('.hof-plan-form input[name="firstDue"]', "2026-02-05");
     await admin.click('.hof-plan-form button[type="submit"]');
@@ -698,6 +700,74 @@ try {
     expect(stock.items.find(item => item.name === "Çay")?.qty === 12, "mevcut 5 − 3 + 10 = 12");
     await admin.click(".hof-stock-modal [data-close]");
     await admin.waitForFunction(() => !document.querySelector(".hof-stock-modal"), null, { timeout: 5000 });
+  });
+
+  await step("ANLIK DURUM (v2.0.7): kart canlı; arayüzden tahsil edilen çek Kasa'yı anında değiştirir; Rapor Al, nakit akışı grafiği, rapor merkezi PDF/Excel; kart küçülür ve öyle kalır", async () => {
+    await admin.waitForSelector("#hof-pulse .hof-pulse-tile", { timeout: 15000 });
+    const tiles = await admin.$$eval("#hof-pulse .hof-pulse-tile", nodes => nodes.map(node => node.dataset.pulseGo));
+    expect(tiles.join(",") === "cash,stock,receivable,payable", `kart kutuları: ${tiles}`);
+    const overview = async () => (await admin.evaluate(() => fetch("/api/workspace/overview").then(response => response.json()))).data;
+    const tileText = id => admin.$eval(`#hof-pulse [data-pulse-go="${id}"] .hof-pulse-value`, node => node.textContent.replace(/\s+/g, ""));
+    const before = await overview();
+    const cashShown = await tileText("cash");
+    const receivableShown = await tileText("receivable");
+    const due = new Date(Date.now() + 40 * 86_400_000).toISOString().slice(0, 10);
+    const cheque = await admin.evaluate(async dueDate => {
+      const response = await fetch("/api/workspace/cheques", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ direction: "in", instrument: "cheque", serialNo: "E2E-1", bank: "Deneme Bankası", drawer: "E2E Keşideci", amount: "1.750", dueDate }) });
+      if (!response.ok) throw new Error(await response.text());
+      return (await response.json()).data;
+    }, due);
+    // Portföye giren çek alacağı artırır; kart sayfa yenilenmeden değişir.
+    await admin.waitForFunction(previous => document.querySelector('#hof-pulse [data-pulse-go="receivable"] .hof-pulse-value')?.textContent.replace(/\s+/g, "") !== previous, receivableShown, { timeout: 10000 });
+    expect(Math.abs((await overview()).receivable.total - before.receivable.total - 1750) < 0.005, "alacak 1.750 arttı");
+    await admin.click('#hof-sidecard [data-action="cheques"]');
+    await admin.waitForSelector(`.hof-chq-table tr[data-cheque="${cheque.id}"]`, { timeout: 10000 });
+    await admin.click(`.hof-chq-table tr[data-cheque="${cheque.id}"]`);
+    await admin.waitForSelector(".hof-chq-actions [data-action='collect']", { timeout: 10000 });
+    await admin.click(".hof-chq-actions [data-action='collect']");
+    await admin.waitForSelector('.hof-modal-backdrop.is-visible form input[name="date"]', { timeout: 8000 });
+    await admin.click('.hof-modal-backdrop.is-visible form button[type="submit"]');
+    await admin.waitForFunction(() => document.querySelector(".hof-chq-history")?.textContent.includes("Tahsil edildi"), null, { timeout: 10000 });
+    await admin.keyboard.press("Escape");
+    await admin.waitForFunction(previous => document.querySelector('#hof-pulse [data-pulse-go="cash"] .hof-pulse-value')?.textContent.replace(/\s+/g, "") !== previous, cashShown, { timeout: 10000 });
+    const after = await overview();
+    expect(Math.abs(after.cash.balance - before.cash.balance - 1750) < 0.005, `Kasa 1.750 arttı: ${before.cash.balance} → ${after.cash.balance}`);
+    expect(Math.abs(after.receivable.total - before.receivable.total) < 0.005, "tahsil edilen çek alacaktan çıktı");
+    const kasa = (await admin.evaluate(() => fetch("/api/workspace/cash?period=all").then(response => response.json()))).data;
+    expect(Math.abs(kasa.totals.balance - after.cash.balance) < 0.005 && kasa.entries.some(entry => entry.source === "cheque" && entry.amount === 1750), "kart = Kasa ekranı; çek tahsili Kasa'da");
+    // Rapor Al: mizan → nakit akışı (grafik) → Detaylı raporlar (rapor merkezi).
+    await admin.click("#hof-pulse [data-pulse='report']");
+    await admin.waitForSelector(".hof-rep .hof-rep-mizan tbody tr", { timeout: 10000 });
+    await admin.click('.hof-rep [data-tab="flow"]');
+    await admin.waitForSelector(".hof-rep [data-chart] svg .hof-chart-line", { state: "attached", timeout: 10000 });
+    const ticks = await admin.$$eval(".hof-rep [data-chart] .hof-chart-tick", nodes => nodes.map(node => node.textContent));
+    expect(ticks.some(text => text === "0 ₺"), `eksen sıfırı içerir: ${ticks.join(" | ")}`);
+    await admin.screenshot({ path: path.join(artifacts, "04e-nakit-akisi.png") });
+    await admin.click(".hof-rep [data-center]");
+    const catalog = (await admin.evaluate(() => fetch("/api/workspace/report-center").then(response => response.json()))).data;
+    await admin.waitForFunction(count => document.querySelectorAll(".hof-rc-item").length === count, catalog.reports.length, { timeout: 10000 });
+    await admin.click('.hof-rc-item[data-report="cek-hareketleri"]');
+    await admin.waitForFunction(() => document.querySelector(".hof-rc-table")?.textContent.includes("E2E-1"), null, { timeout: 10000 });
+    const links = await admin.$$eval(".hof-rc-head .hof-rep-out", nodes => nodes.map(node => node.getAttribute("href")));
+    const files = await admin.evaluate(async hrefs => Promise.all(hrefs.map(async href => {
+      const response = await fetch(href);
+      const bytes = new Uint8Array(await response.arrayBuffer());
+      return { status: response.status, type: response.headers.get("content-type"), head: String.fromCharCode(...bytes.slice(0, 4)) };
+    })), links);
+    expect(files[0].status === 200 && files[0].head === "%PDF", `PDF: ${JSON.stringify(files[0])}`);
+    expect(files[1].status === 200 && files[1].head.startsWith("PK"), `Excel: ${JSON.stringify(files[1])}`);
+    await admin.screenshot({ path: path.join(artifacts, "04f-rapor-merkezi.png") });
+    await admin.keyboard.press("Escape");
+    await admin.keyboard.press("Escape");
+    await admin.waitForFunction(() => !document.querySelector(".hof-modal-backdrop.is-visible"), null, { timeout: 5000 });
+    // Küçült: tek satırlık şerit; sayfa yenilense de öyle kalır; Rapor Al yerinde.
+    await admin.click("#hof-pulse [data-pulse='toggle']");
+    await admin.waitForSelector("#hof-pulse.is-collapsed [data-pulse='report']", { timeout: 5000 });
+    await admin.reload();
+    await waitForApp(admin);
+    await admin.waitForSelector("#hof-pulse.is-collapsed .hof-pulse-mini", { timeout: 15000 });
+    await admin.click("#hof-pulse [data-pulse='toggle']");
+    await admin.waitForSelector("#hof-pulse:not(.is-collapsed) .hof-pulse-tile", { timeout: 5000 });
   });
 
   await step("detaydaki 'Notu kaydet' merkezi sunucuya yazılır", async () => {
@@ -821,6 +891,23 @@ try {
     const caseTask = await staff.$('.hof-case-actions [data-case-action="task"]');
     expect(!caseTask || !(await caseTask.isVisible()), "dosyadaki Görev işlemi personelde gizli olmalı");
     await staff.screenshot({ path: path.join(artifacts, "06-personel.png") });
+  });
+
+  await step("ANLIK DURUM yalnız yöneticide; yönetim panelinden 'Ek yetki' verilince personelde sayfa yenilenmeden açılır, geri alınınca kapanır (v2.0.7)", async () => {
+    expect(!(await staff.$("#hof-pulse")), "personel kartı görmemeli");
+    expect(!(await staff.isVisible('#hof-sidecard [data-action="cheques"]')), "Çek / Senet menüsü personelde gizli");
+    const denied = await staff.evaluate(() => fetch("/api/workspace/overview").then(response => response.status));
+    expect(denied === 403, `personel ANLIK DURUM verisini alamaz: ${denied}`);
+    await admin.goto(BASE + "/admin.html");
+    await admin.waitForSelector("#adm-users tr[data-id]");
+    const grant = admin.locator("#adm-users tr", { hasText: "deniz" }).locator('[data-grant="overview.view"]');
+    await grant.click();
+    await admin.waitForFunction(() => [...document.querySelectorAll("#adm-users tr")].find(row => row.textContent.includes("deniz"))?.querySelector('[data-grant="overview.view"].is-on'), null, { timeout: 8000 });
+    await staff.waitForSelector("#hof-pulse .hof-pulse-tile", { timeout: 15000 });
+    await staff.screenshot({ path: path.join(artifacts, "06b-personel-anlik-durum.png") });
+    await grant.click();
+    await admin.waitForFunction(() => ![...document.querySelectorAll("#adm-users tr")].find(row => row.textContent.includes("deniz"))?.querySelector('[data-grant="overview.view"].is-on'), null, { timeout: 8000 });
+    await staff.waitForFunction(() => !document.getElementById("hof-pulse"), null, { timeout: 15000 });
   });
 
   await step("yönetici görev atar, personel sayfayı yenilemeden rozet ve bildirim alır, tamamlar", async () => {
@@ -1185,6 +1272,8 @@ try {
       expect(JSON.stringify(data.tabs) === '["Kayıtlar"]', `sekmeler: ${data.tabs}`);
       expect(data.choices["Kayıtlar"]?.Durum?.options.join() === "Aktif,Beklemede,Kapandı" && data.choices["Kayıtlar"]["Ödeme türü"]?.options.length === 3, `listeler: ${JSON.stringify(data.choices)}`);
       await page.locator(".dynamic-table tbody tr td").first().click({ position: { x: 12, y: 10 } });
+      // v2.0.7: ANLIK DURUM kartı sayfayı uzatır; açılır menü alttaki lisans şeridinin altında kalmasın.
+      await page.$eval('.hof-choice-pill[data-column="Durum"]', node => node.scrollIntoView({ block: "center" }));
       await page.click('.hof-choice-pill[data-column="Durum"]');
       await page.click('.hof-choice-menu button[data-value="Kapandı"]');
       await page.waitForFunction(() => document.querySelector('.hof-choice-pill[data-column="Durum"]')?.dataset.value === "Kapandı", null, { timeout: 8000 });

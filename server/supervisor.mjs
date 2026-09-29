@@ -323,7 +323,8 @@ export async function startSupervisor(options = {}) {
     const updater = createUpdater({
       appsDir: layout.appsDir,
       configDir,
-      currentVersion: layout.version,
+      // Çalışan uygulamanın sürümü her denetimde okunur (yeniden başlamadan yeni sürüme geçilmiş olabilir).
+      currentVersion: () => controller.appVersion() || layout.version,
       fetchImpl: options.fetchImpl,
       trustedKeys: options.trustedKeys,
       githubApi: options.githubApi,
@@ -336,6 +337,7 @@ export async function startSupervisor(options = {}) {
       controller,
       appsDir: layout.appsDir,
       runningVersion: packageVersion(APP_ROOT),
+      runningDir: APP_ROOT,
       log,
       retryDelays: options.updateRetryDelays,
       trialTimeoutMs: options.trialTimeoutMs ?? readyTimeoutMs,

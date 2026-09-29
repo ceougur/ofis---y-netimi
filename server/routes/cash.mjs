@@ -8,6 +8,9 @@ import { parseAmount, roundMoney } from "../lib/money.mjs";
 import { can } from "../lib/permissions.mjs";
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
+// Kasa'nın kendi kaynakları (kayıt tahsilatları ve elle girilen hareketler); diğerleri modüllerin cashSource'u.
+const PAYMENTS = { table: "payments p", where: "1 = 1", kind: "'in'", amount: "p.amount", date: "p.date" };
+const MANUAL = { table: "cash_entries c", where: "1 = 1", kind: "c.kind", amount: "c.amount", date: "c.date" };
 const validDate = value => DATE.test(value) && !Number.isNaN(new Date(value).getTime());
 
 export function registerCashRoutes(router, context) {
@@ -15,27 +18,57 @@ export function registerCashRoutes(router, context) {
   const now = () => new Date().toISOString();
   const changed = user => events?.publish("workspace.changed", { kind: "cash", actorId: user.id, actorName: user.display_name }, { except: user.id });
 
-  function entries() {
+  // after: yalnız bu tarihten SONRAKİ hareketler (nakit akışı için ileri tarihli Kasa kayıtları).
+  function entries({ after = "" } = {}) {
     // Taksit kartlarının hareketleri (v2.0.4): kasaya tahsilat/ödeme olarak düşer; düzeltme kartın kendisinden yapılır.
-    const plans = context.plans?.cashEntries ? context.plans.cashEntries() : [];
+    const plans = context.plans?.cashEntries ? context.plans.cashEntries(after) : [];
     // Cari tahsilat/ödemeleri ve Kasa'dan ödenen/Kasa'ya tahsil edilen stok hareketleri (v2.0.6).
-    const accounts = context.accounts?.cashEntries ? context.accounts.cashEntries() : [];
-    const stock = context.stock?.cashEntries ? context.stock.cashEntries() : [];
+    const accounts = context.accounts?.cashEntries ? context.accounts.cashEntries(after) : [];
+    const stock = context.stock?.cashEntries ? context.stock.cashEntries(after) : [];
+    // Çek/senet (v2.0.7): alınan evrak tahsil edilince giriş, verilen evrak ödenince çıkış. Alınca/verilince Kasa değişmez.
+    const cheques = context.cheques?.cashEntries ? context.cheques.cashEntries(after) : [];
     const payments = store.all(
       `SELECT p.id, 'in' AS kind, 'payment' AS source, p.amount, p.date, p.note AS description, p.case_key AS caseKey, p.case_title AS caseTitle,
               p.created_by AS actorId, COALESCE(u.display_name, '') AS actorName, p.created_at AS createdAt, p.updated_at AS updatedAt
-       FROM payments p LEFT JOIN users u ON u.id = p.created_by`,
+       FROM ${PAYMENTS.table} LEFT JOIN users u ON u.id = p.created_by${after ? ` WHERE ${PAYMENTS.date} > ?` : ""}`,
+      ...(after ? [after] : []),
     );
     const manual = store.all(
       `SELECT c.id, c.kind, 'manual' AS source, c.amount, c.date, c.description, '' AS caseKey, '' AS caseTitle,
               c.created_by AS actorId, COALESCE(u.display_name, '') AS actorName, c.created_at AS createdAt, c.updated_at AS updatedAt
-       FROM cash_entries c LEFT JOIN users u ON u.id = c.created_by`,
+       FROM ${MANUAL.table} LEFT JOIN users u ON u.id = c.created_by${after ? ` WHERE ${MANUAL.date} > ?` : ""}`,
+      ...(after ? [after] : []),
     );
     // Tarih sırası; aynı gün içinde giriş sırası (yeni eklenen en altta).
-    return [...payments, ...manual, ...plans, ...accounts, ...stock].sort((a, b) => (a.date === b.date ? (a.createdAt < b.createdAt ? -1 : a.createdAt > b.createdAt ? 1 : 0) : a.date < b.date ? -1 : 1));
+    return [...payments, ...manual, ...plans, ...accounts, ...stock, ...cheques].sort((a, b) => (a.date === b.date ? (a.createdAt < b.createdAt ? -1 : a.createdAt > b.createdAt ? 1 : 0) : a.date < b.date ? -1 : 1));
   }
 
-  // Seçilen aralığın hareketleri; "from" öncesi devreden kasa olarak özetlenir.
+  // Kasa toplamları SQL'de, Kasa satırlarıyla aynı kaynak tanımlarından (tablo + koşul) hesaplanır; satırlar belleğe
+  // alınmaz. Kuruş tamsayısıyla toplanır (kayan nokta birikimi yok). ANLIK DURUM ve nakit akışı başlangıcı buradan okur.
+  function sources() {
+    return [PAYMENTS, MANUAL, context.plans?.cashSource, context.accounts?.cashSource, context.stock?.cashSource, context.cheques?.cashSource].filter(Boolean);
+  }
+  function summary(day, monthStart = `${day.slice(0, 7)}-01`) {
+    const union = sources()
+      .map(source => `SELECT ${source.kind} AS kind, CAST(ROUND(${source.amount} * 100) AS INTEGER) AS cents, ${source.date} AS date FROM ${source.table} WHERE ${source.where}`)
+      .join(" UNION ALL ");
+    const row = store.get(
+      `SELECT COALESCE(SUM(CASE WHEN kind = 'in' THEN cents ELSE -cents END), 0) AS balance,
+              COALESCE(SUM(CASE WHEN date <= ? THEN (CASE WHEN kind = 'in' THEN cents ELSE -cents END) END), 0) AS balanceToday,
+              COALESCE(SUM(CASE WHEN date = ? AND kind = 'in' THEN cents END), 0) AS todayIn,
+              COALESCE(SUM(CASE WHEN date = ? AND kind = 'out' THEN cents END), 0) AS todayOut,
+              COALESCE(SUM(CASE WHEN date >= ? AND date <= ? AND kind = 'in' THEN cents END), 0) AS monthIn,
+              COALESCE(SUM(CASE WHEN date >= ? AND date <= ? AND kind = 'out' THEN cents END), 0) AS monthOut,
+              COUNT(CASE WHEN date > ? THEN 1 END) AS future,
+              COUNT(*) AS count
+       FROM (${union})`,
+      day, day, day, monthStart, day, monthStart, day, day,
+    );
+    const tl = cents => roundMoney(Number(cents || 0) / 100);
+    return { balance: tl(row.balance), balanceToday: tl(row.balanceToday), today: { in: tl(row.todayIn), out: tl(row.todayOut) }, month: { in: tl(row.monthIn), out: tl(row.monthOut) }, futureEntries: row.future, count: row.count };
+  }
+  // Tarihe kadarki kasa (dahil): nakit akış projeksiyonunun başlangıcı. Kasa ekranıyla aynı hareketlerden.
+  const balanceAt = day => (day ? summary(day).balanceToday : summary("9999-12-31").balance);
   function report(user, from, to) {
     if ((from && !validDate(from)) || (to && !validDate(to))) throw new HttpError(400, "Geçerli bir tarih aralığı seçin.");
     if (from && to && from > to) throw new HttpError(400, "Başlangıç tarihi bitiş tarihinden sonra olamaz.");
@@ -60,6 +93,7 @@ export function registerCashRoutes(router, context) {
         entry.source === "plan" ? can(user.role, "plans.manage") || (own && can(user.role, "plans.collect"))
         : entry.source === "account" ? can(user.role, "accounts.manage") || (own && can(user.role, "accounts.collect"))
         : entry.source === "stock" ? can(user.role, "stock.manage")
+        : entry.source === "cheque" ? false
         : can(user.role, "cash.manage") || (entry.source === "payment" && own && can(user.role, "payments.create"));
       list.push({ ...entry, balance, editable });
     }
@@ -137,4 +171,7 @@ export function registerCashRoutes(router, context) {
     changed(user);
     ok(res, { id: previous.id });
   });
+
+  // ANLIK DURUM (v2.0.7): Kasa ekranıyla aynı hesap (tek kaynak).
+  return { entries, report, balanceAt, summary };
 }

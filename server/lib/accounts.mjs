@@ -2,8 +2,10 @@
 // routes/stock.mjs) ve testler doğrudan kullanır.
 //
 // Cari defteri (ledger)
-//   Borç tarafı  : borç yazma (debt), cariye yapılan ödeme (out), taksit planının toplamı, taksit iadesi.
-//   Alacak tarafı: alacak yazma (credit), cariden tahsilat (in), taksit tahsilatı; kapatılan kartın ödenmeyen kısmı.
+//   Borç tarafı  : borç yazma (debt), cariye yapılan ödeme (out), taksit planının toplamı, taksit iadesi; verilen ya da
+//                  ciro edilen çek/senet ve karşılıksız çıkan alınan çek (v2.0.7, source = 'cheque').
+//   Alacak tarafı: alacak yazma (credit), cariden tahsilat (in), taksit tahsilatı; kapatılan kartın ödenmeyen kısmı;
+//                  alınan çek/senet (taksite sayılmadıysa).
 //   Bakiye = Borç − Alacak. Artı: cari bize borçlu. Eksi: biz cariye borçluyuz. Satırlar tarih sırasıyla, yürüyen bakiyeyle.
 //
 // Stok
@@ -33,13 +35,15 @@ export function accountLedger(entries = [], plans = []) {
     const meta = ENTRY_KINDS[entry.kind];
     if (!meta) continue;
     const amount = roundMoney(Number(entry.amount) || 0);
+    const origin = entry.source === "stock" ? "stock" : entry.source === "cheque" ? "cheque" : "account";
     lines.push({
       id: entry.id,
-      origin: entry.source === "stock" ? "stock" : "account",
+      origin,
       kind: entry.kind,
       date: entry.date,
       at: entry.createdAt || "",
-      label: meta.label,
+      // Çek/senetten gelen satır (v2.0.7): alınan/ciro/karşılıksız açıklamada yazar; etiket evrak olduğunu söyler.
+      label: origin === "cheque" ? "Çek / senet" : meta.label,
       note: entry.note || "",
       receiptNo: entry.receiptNo || null,
       debit: meta.side === "debit" ? amount : 0,
@@ -115,6 +119,8 @@ export function stockLevel(item, moves = []) {
     else qtyOut += qty;
   }
   const qty = roundQty(qtyIn - qtyOut);
+  // Hizmet kalemi (v2.0.7): miktar izlenmez; kritik/tükendi sayılmaz, stok değeri yoktur.
+  if (item.kind === "service") return { qtyIn: roundQty(qtyIn), qtyOut: roundQty(qtyOut), qty, value: 0, state: "service", low: false };
   const min = Number(item.minQty) || 0;
   const state = qty <= 0 ? (min > 0 || qtyIn > 0 ? "out" : "empty") : min > 0 && qty <= min ? "low" : "ok";
   return { qtyIn: roundQty(qtyIn), qtyOut: roundQty(qtyOut), qty, value: roundMoney(Math.max(0, qty) * (Number(item.unitPrice) || 0)), state, low: state === "low" || (state === "out" && min > 0) };
@@ -172,7 +178,7 @@ const STOCK_ROLE_TESTS = [
   ["note", t => /(^| )(not|notu|aciklama|bilgi)( |$)/.test(t)],
   ["name", t => /(^| )(urun|urun adi|urunun adi|malzeme|malzeme adi|stok adi|ad|adi|isim|cinsi|mal|mal adi|kalem)( |$)/.test(t)],
 ];
-export const STOCK_ROLES = Object.freeze(["code", "name", "unit", "category", "qty", "price", "min", "note", "extra"]);
+export const STOCK_ROLES = Object.freeze(["kind", "code", "name", "unit", "category", "qty", "price", "min", "note", "extra"]);
 
 function mapWith(tests, headers) {
   const roles = {};

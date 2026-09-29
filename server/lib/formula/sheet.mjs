@@ -201,7 +201,8 @@ function referencedCells(raw) {
 const MONEY_MARK = /[₺$€£]|\b(tl|try|usd|eur)\b/i;
 // Excel'in "Genel" biçimi gibi: binlik ayracı yok (=YIL(BUGÜN()) → 2026), en çok 2 ondalık. Girdiler binlik ayraçlı
 // yazılmışsa sonuç da öyle görünür (biçim, kolonun ya da başvurulan hücrenin örneğinden gelir).
-const defaultNumber = value => new Intl.NumberFormat("tr-TR", { maximumFractionDigits: 2, useGrouping: false }).format(value);
+const DEFAULT_NUMBER = new Intl.NumberFormat("tr-TR", { maximumFractionDigits: 2, useGrouping: false });
+const defaultNumber = value => DEFAULT_NUMBER.format(value);
 // Tarih döndüren işlevler: sonuç Excel seri sayısıdır ama tarih olarak gösterilir (=BUGÜN()+30 → 27.10.2026).
 const DATE_FUNCTIONS = new Set(["TODAY", "DATE", "EDATE", "EOMONTH", "DATEVALUE", "WORKDAY"]);
 const DATE_SAMPLE = { date: "01.01.2000", datetime: "01.01.2000 00:00" };

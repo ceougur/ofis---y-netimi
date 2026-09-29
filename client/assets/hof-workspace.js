@@ -320,7 +320,8 @@
   // Herkes kendi girdiği tahsilatı; kasa yetkisi olanlar (yönetici, muhasebe) tüm tahsilatları düzeltip silebilir.
   const canEditPayment = item => HOF.can("cash.manage") || (HOF.can("payments.create") && item.actorId === HOF.user?.id);
   const isoDate = value => String(value || "").slice(0, 10);
-  const amountText = value => new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(Number(value) || 0);
+  const AMOUNT_FORMAT = new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const amountText = value => AMOUNT_FORMAT.format(Number(value) || 0);
 
   function editPayment(item, { title = "", after } = {}) {
     HOF.formModal({
@@ -488,6 +489,10 @@
       const payment = entry.source === "payment";
       const plan = entry.source === "plan";
       // Cari ve stok hareketleri (v2.0.6) kendi kartlarından düzeltilir; buradan kart açılır.
+      // Çek / senet (v2.0.7): tahsil edilen alınan evrak ve ödenen verilen evrak; evrak kartından geri alınır.
+      if (entry.source === "cheque") {
+        return `<tr data-kind="${esc(entry.kind)}"><td>${esc(HOF.formatDate(entry.date))}</td><td><b>${esc(entry.description)}</b><small>Çek / senet kartından · ${esc(entry.actorName || "—")}</small></td><td class="num hof-cash-in">${entry.kind === "in" ? esc(HOF.formatMoney(entry.amount)) : ""}</td><td class="num hof-cash-out">${entry.kind === "out" ? esc(HOF.formatMoney(entry.amount)) : ""}</td><td class="num"><b>${esc(HOF.formatMoney(entry.balance))}</b></td><td class="hof-cash-actions"><button type="button" class="hof-mini" data-cheque="${esc(entry.chequeId)}" title="Çek / senet kartını aç" aria-label="Çek / senet kartını aç">↗</button></td></tr>`;
+      }
       if (entry.source === "account" || entry.source === "stock") {
         const account = entry.source === "account";
         const label = account ? `${entry.kind === "in" ? "Cari tahsilat" : "Cariye ödeme"} · ${entry.accountName}${entry.description ? ` · ${entry.description}` : ""}` : entry.description;
@@ -559,6 +564,7 @@
       else if (target.dataset.plan) HOF.plans?.open(target.dataset.plan);
       else if (target.dataset.account) HOF.accounts?.open(target.dataset.account);
       else if (target.dataset.stock) HOF.stock?.open(target.dataset.stock);
+      else if (target.dataset.cheque) HOF.cheques?.open({ id: target.dataset.cheque });
       else if (target.dataset.edit) {
         const entry = byId(target.dataset.edit);
         if (!entry) return;
@@ -686,6 +692,8 @@
     { action: "accounts", icon: "☰", key: "side.accounts", label: () => "Cari", requires: "accounts.view" },
     { action: "plans", icon: "▤", key: "side.plans", label: () => "Taksitler", requires: "plans.view", badge: "warn" },
     { action: "stock", icon: "▦", key: "side.stock", label: () => "Stok", requires: "stock.view", badge: "warn" },
+    // Çek / Senet (v2.0.7): alınan portföy ve verilen evrak; rozet = vadesi geçen ve bugün vadesi gelen açık evrak.
+    { action: "cheques", icon: "✎", key: "side.cheques", label: () => "Çek / Senet", requires: "cheques.view", badge: "warn" },
     { action: "liens", icon: "!", key: "side.liens", label: () => "Haciz uyarıları", badge: "warn", module: "haciz" },
     { action: "analytics", icon: "▤", key: "side.analytics", label: () => "Raporlar", requires: "reports.view" },
     { action: "reports", icon: "↗", key: "side.reports", label: () => "Personel raporu", requires: "reports.view" },
@@ -782,6 +790,7 @@
       else if (action === "plans") HOF.plans?.open();
       else if (action === "accounts") HOF.accounts?.open();
       else if (action === "stock") HOF.stock?.open();
+      else if (action === "cheques") HOF.cheques?.open();
       else if (action === "editSide") openSideEditor();
       else if (action === "guide") window.open("/kilavuz/DestekOfis-Kullanim-Kilavuzu.pdf", "_blank", "noopener");
       else if (action === "reports") openReports();
@@ -799,7 +808,14 @@
       if (node) node.textContent = value ? String(value) : "";
     };
     try {
-      const [tasks, liens, plans] = await Promise.all([HOF.api("/api/workspace/tasks?status=open&mine=1"), HOF.api("/api/workspace/liens?days=7"), HOF.can("plans.view") ? HOF.api("/api/workspace/plans?status=overdue").catch(() => null) : null]);
+      const [tasks, liens, plans, cheques] = await Promise.all([
+        HOF.api("/api/workspace/tasks?status=open&mine=1"),
+        HOF.api("/api/workspace/liens?days=7"),
+        HOF.can("plans.view") ? HOF.api("/api/workspace/plans?status=overdue").catch(() => null) : null,
+        HOF.can("cheques.view") ? HOF.api("/api/workspace/cheques?status=open&limit=1").catch(() => null) : null,
+      ]);
+      // Çek / Senet rozeti: vadesi geçmiş ya da bugün vadesi gelen açık evrak sayısı (v2.0.7).
+      if (cheques) setBadge("cheques", cheques.summary.in.overdue.count + cheques.summary.in.today.count + cheques.summary.out.overdue.count + cheques.summary.out.today.count);
       setBadge("tasks", tasks.length);
       // Açık acil görev varsa Görevler rozeti kırmızıdır (v2.0.5).
       document.querySelector('[data-badge="tasks"]')?.classList.toggle("hof-badge-danger", tasks.some(task => task.priority === "urgent"));

@@ -26,7 +26,9 @@ const KIND_TEXT = { debt: "Borç", credit: "Alacak", in: "Tahsilat", out: "Ödem
 // Türkçe sıralama: Intl.Collator, localeCompare'den kat kat hızlıdır (200 bin caride saniyeler yerine yüz ms).
 const collator = new Intl.Collator("tr", { numeric: true, sensitivity: "base" });
 
-export function registerAccountRoutes(router, { store, auth, audit, events, trash, config = {}, dataset = null, plans = () => null }) {
+const MONEY_FORMAT = new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+export function registerAccountRoutes(router, { store, auth, audit, events, trash, config = {}, dataset = null, plans = () => null, cheques = () => null }) {
   const now = () => new Date().toISOString();
   const today = () => isoDay(new Date());
   const newId = prefix => `${prefix}-${randomUUID()}`;
@@ -84,7 +86,8 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
   function detail(id, user) {
     const account = accountRow(id);
     const manage = can(user.role, "accounts.manage");
-    const entries = entriesOf(account.id).map(entry => ({ ...entry, editable: entry.source !== "stock" && (manage || (entry.createdBy === user.id && entry.kind === "in")) }));
+    // Stok ve çek/senetten gelen satırlar (v2.0.6, v2.0.7) kendi kartlarından düzeltilir.
+    const entries = entriesOf(account.id).map(entry => ({ ...entry, editable: entry.source === "" && (manage || (entry.createdBy === user.id && entry.kind === "in")) }));
     const planList = plans()?.forAccount ? plans().forAccount(account.id, user) : [];
     const ledger = accountLedger(entries, planList);
     return {
@@ -247,7 +250,7 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
   router.get("/api/workspace/accounts/search", async ({ req, res, url }) => {
     const user = auth.requirePermission(req, "accounts.view");
     const data = list(user, { q: text(url.searchParams.get("q")).slice(0, 120), status: "all", type: ACCOUNT_TYPES[text(url.searchParams.get("type"))] ? text(url.searchParams.get("type")) : "" });
-    ok(res, data.accounts.slice(0, 20).map(withExtra).map(item => ({ id: item.id, refNo: item.refNo, name: item.name, phone: item.phone, type: item.type, groupName: item.groupName, subgroupName: item.subgroupName, balance: item.balance, status: item.status })));
+    ok(res, data.accounts.slice(0, 20).map(withExtra).map(item => ({ id: item.id, refNo: item.refNo, name: item.name, phone: item.phone, type: item.type, groupName: item.groupName, subgroupName: item.subgroupName, balance: item.balance, status: item.status, caseKey: item.caseKey || "", caseSource: item.caseSource || "", caseTitle: item.caseTitle || "" })));
   });
 
   // ---------- Yazma ----------
@@ -274,6 +277,11 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     // Tablodaki kayda yeni ya da değişen bağ, açık veri oturumunda var olan kayda gitmeli (taksit kartıyla aynı kural).
     const linkChanged = caseKey !== String(previous?.caseKey || "") || caseSource !== String(previous?.caseSource || "");
     if (caseKey && linkChanged && caseSource === currentSource() && dataset?.hasRecord && !dataset.hasRecord(caseKey)) throw new HttpError(400, "Bağlanacak kayıt açık veri oturumunda bulunamadı. Tablodan seçerek bağlayın.");
+    // Bir kayda tek cari bağlanır (v2.0.7): aynı kişi iki carinin defterine bölünmesin.
+    if (caseKey && linkChanged) {
+      const taken = store.get("SELECT name FROM accounts WHERE deleted_at IS NULL AND case_key = ? AND case_source = ? AND id <> ?", caseKey, caseSource, previous?.id || "");
+      if (taken) throw new HttpError(409, `Bu kayda zaten "${taken.name}" carisi bağlı. Aynı kişiyse o cariyi kullanın.`);
+    }
     const groups = plans()?.resolveGroups ? plans().resolveGroups(body, user) : { groupId: null, subgroupId: null };
     return {
       name,
@@ -359,6 +367,8 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
       account.id,
     ).n;
     if (stockLinked) throw new HttpError(409, `Bu cariye yazılmış ${stockLinked} stok hareketi var. Önce stok hareketlerini düzeltin.`);
+    const chequeLinked = cheques()?.countForAccount ? cheques().countForAccount(account.id) : 0;
+    if (chequeLinked) throw new HttpError(409, `Bu cariye bağlı ${chequeLinked} çek/senet var. Önce Çek/Senet'ten evrakı silin ya da başka cariye taşıyın.`);
     store.tx(() => {
       // Yumuşak silme: hareketleri yerinde durur (Kasa'dan düşer); yönetim panelindeki Silinenler'den geri gelir.
       store.run("UPDATE accounts SET deleted_by = ?, deleted_at = ? WHERE id = ?", user.id, now(), account.id);
@@ -403,6 +413,7 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
   };
   const requireEntryRight = (user, entry) => {
     if (entry.source === "stock") throw new HttpError(409, "Bu hareket bir stok hareketinden geldi; Stok'taki hareketten düzeltin ya da silin.");
+    if (entry.source === "cheque") throw new HttpError(409, "Bu hareket bir çek/senetten geldi; Çek/Senet'teki evraktan düzeltin (geri al ya da sil).", { code: "cheque-linked", chequeId: entry.sourceId });
     if (entry.createdBy !== user.id && !can(user.role, "accounts.manage")) throw new HttpError(403, "Başkasının girdiği hareketi yalnızca yönetici, uzman ve muhasebe değiştirebilir.");
     requireKindRight(user, entry.kind);
   };
@@ -514,7 +525,7 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     const fieldsById = new Map(store.all("SELECT id, fields_json AS fieldsJson FROM accounts WHERE deleted_at IS NULL").map(row => [row.id, parseFields(row.fieldsJson)]));
     const base = ["Cari No", "Ad / Unvan", "Tür", "Grup", "Alt grup", "Telefon", "E-posta", "Adres", "Kayıt tarihi", "Durum", "Borç", "Alacak", "Bakiye", "Taksitten kalan", "Geciken", "Bilgi notu"];
     const extras = [...new Set(data.accounts.flatMap(item => (fieldsById.get(item.id) || []).map(field => field.label)))].filter(label => !base.includes(label));
-    const money = value => new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value || 0);
+    const money = value => MONEY_FORMAT.format(value || 0);
     const rows = data.accounts.map(item => {
       const row = {
         "Cari No": item.refNo,
@@ -765,6 +776,39 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
 
   // ---------- Tablodaki kayıt ----------
   // Kişinin kartı (ortadaki tablo): kayda bağlı cari varsa özeti ve bakiyesi.
+  // Yeni kayıt formu (v2.0.7): "Cari kartı da aç". Kayda bağlı cari varsa o; aynı ad + telefon (ya da telefonsuz tek
+  // aynı ad) bağsız bir cari varsa kayda bağlanır; yoksa kayda bağlı yeni cari açılır. Kişi bir kez girilir.
+  router.post("/api/workspace/cases/:key/account", async ({ req, res, params }) => {
+    const user = auth.requirePermission(req, "accounts.manage");
+    const key = limited(params.key, 200, "Kayıt");
+    const body = await readJson(req);
+    const name = limited(body.name, 160, "Ad Soyad / Unvan");
+    if (!name) throw new HttpError(400, "Cari açmak için ad gerekli.");
+    const phone = limited(body.phone, 60, "Telefon");
+    const caseTitle = limited(body.caseTitle, 200, "Kayıt adı") || name;
+    if (dataset?.hasRecord && !dataset.hasRecord(key)) throw new HttpError(400, "Kayıt açık veri oturumunda bulunamadı.");
+    let outcome = "existing";
+    const id = store.tx(() => {
+      const linked = store.get("SELECT id FROM accounts WHERE deleted_at IS NULL AND case_key = ? AND case_source = ? ORDER BY created_at LIMIT 1", key, currentSource());
+      if (linked) return linked.id;
+      const matched = matchPerson({ name, phone, groupId: "" });
+      const free = matched && store.get("SELECT id FROM accounts WHERE id = ? AND case_key = ''", matched);
+      if (free) {
+        store.run("UPDATE accounts SET case_key = ?, case_source = ?, case_title = ?, updated_by = ?, updated_at = ? WHERE id = ?", key, currentSource(), caseTitle, user.id, now(), matched);
+        audit(user, "account.updated", matched, { linkedCase: key, from: "record" });
+        outcome = "linked";
+        return matched;
+      }
+      const created = insertAccount(user, { name, phone, caseKey: key, caseSource: currentSource(), caseTitle, type: ACCOUNT_TYPES[text(body.type)] ? text(body.type) : "customer", fields: [] });
+      audit(user, "account.created", created, { name, from: "record" });
+      outcome = "created";
+      return created;
+    });
+    changed(user, { accountId: id });
+    changed(user, { kind: "activity", caseKey: key, datasetKey: currentSource() });
+    ok(res, { ...detail(id, user), outcome });
+  });
+
   router.get("/api/workspace/cases/:key/account", async ({ req, res, params }) => {
     const user = auth.requirePermission(req, "accounts.view");
     const key = limited(params.key, 200, "Kayıt");
@@ -781,6 +825,12 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
       const found = store.get("SELECT id FROM accounts WHERE deleted_at IS NULL AND case_key = ? AND case_source = ?", person.caseKey, person.caseSource || currentSource());
       if (found) return found.id;
     }
+    // v2.0.7: aynı ad + aynı telefon (ya da telefonsuz, aynı grupta tek aynı ad) kesin eşleşirse o cari; boşa cari açılmaz.
+    const matched = matchPerson({ name: person.name, phone: person.phone, groupId: person.groupId || "" });
+    if (matched) {
+      if (person.caseKey) store.run("UPDATE accounts SET case_key = ?, case_source = ?, case_title = ?, updated_by = ?, updated_at = ? WHERE id = ? AND case_key = ''", person.caseKey, person.caseSource || currentSource(), person.caseTitle || person.name, user.id, now(), matched);
+      return matched;
+    }
     const id = insertAccount(user, { name: person.name, phone: person.phone, note: person.note, registeredOn: person.registeredOn, groupId: person.groupId, subgroupId: person.subgroupId, caseKey: person.caseKey, caseSource: person.caseSource, caseTitle: person.caseTitle, type: "customer", fields: [] });
     audit(user, "account.created", id, { name: person.name, from: "plan" });
     return id;
@@ -793,13 +843,30 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     const hits = phone.length >= 7 ? candidates.filter(row => digits(row.phone) === phone) : candidates.filter(row => !digits(row.phone) && (row.groupId || "") === (person.groupId || ""));
     return hits.length === 1 ? hits[0].id : "";
   }
+  // Mizan (v2.0.7): tüm carilerin defter satırları tek geçişte. Her carinin satırları Cari kartındaki defterle aynı
+  // kuraldan (accountLedger) gelir; mizan bakiyesi = Cari listesindeki bakiye.
+  function allLedgers() {
+    const rows = store.all(`${ACCOUNT_SQL} WHERE a.deleted_at IS NULL ORDER BY a.name COLLATE NOCASE`).map(({ fieldsJson, ...row }) => row);
+    const entries = new Map();
+    for (const entry of store.all("SELECT id, account_id AS accountId, kind, amount, date, note, receipt_no AS receiptNo, source, source_id AS sourceId, created_at AS createdAt FROM account_entries ORDER BY date, created_at, rowid")) {
+      if (!entries.has(entry.accountId)) entries.set(entry.accountId, []);
+      entries.get(entry.accountId).push(entry);
+    }
+    const planMap = plans()?.ledgerPlansByAccount ? plans().ledgerPlansByAccount() : new Map();
+    const lines = new Map();
+    for (const row of rows) lines.set(row.id, accountLedger(entries.get(row.id) || [], planMap.get(row.id) || []).lines);
+    return { accounts: rows, lines };
+  }
   // Kasa: cari tahsilatları (giriş) ve ödemeleri (çıkış). Silinen carinin hareketi Kasa'dan düşer (taksit kartıyla aynı).
-  const cashEntries = () =>
+  // Kasa kaynağı: aynı tablo/koşul hem Kasa satırlarında hem Kasa toplamında (ANLIK DURUM) kullanılır.
+  const cashSource = { table: "account_entries e JOIN accounts a ON a.id = e.account_id AND a.deleted_at IS NULL", where: "e.kind IN ('in', 'out') AND e.source = ''", kind: "e.kind", amount: "e.amount", date: "e.date" };
+  const cashEntries = (after = "") =>
     store.all(
       `SELECT e.id, e.kind, 'account' AS source, e.amount, e.date, e.note AS description, e.account_id AS accountId, a.name AS accountName,
               e.created_by AS actorId, COALESCE(u.display_name, '') AS actorName, e.created_at AS createdAt, e.updated_at AS updatedAt
-       FROM account_entries e JOIN accounts a ON a.id = e.account_id AND a.deleted_at IS NULL LEFT JOIN users u ON u.id = e.created_by
-       WHERE e.kind IN ('in', 'out') AND e.source = ''`,
+       FROM ${cashSource.table} LEFT JOIN users u ON u.id = e.created_by
+       WHERE ${cashSource.where}${after ? ` AND ${cashSource.date} > ?` : ""}`,
+      ...(after ? [after] : []),
     );
   // Stok hareketi cariye yazılınca (routes/stock.mjs): borç/alacak satırı stok hareketine bağlı açılır, düzeltilir, silinir.
   const stockEntry = {
@@ -864,5 +931,5 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     return "Cari hareketi geri eklendi; bakiye ve Kasa yeniden hesaplandı.";
   }
 
-  return { exists, createFromPlan, matchPerson, cashEntries, stockEntry, fingerprint, deletedList, restoreDeleted, restoreEntry, detail, list };
+  return { exists, createFromPlan, matchPerson, cashEntries, cashSource, stockEntry, fingerprint, deletedList, restoreDeleted, restoreEntry, detail, list, allLedgers };
 }

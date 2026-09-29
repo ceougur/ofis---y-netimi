@@ -227,6 +227,27 @@ process.exit(3);
       }, { timeoutMs: 60_000 });
       assert.equal(app.version, "9.0.1");
 
+      // Regresyon (2.0.6 sahada): servis yöneticisi yeniden başlamadan yeni sürüme geçildi. Yeniden denetimde aynı
+      // sürüm "yeni" diye önerilmemeli; "Şimdi güncelle" çalışan sürümün klasörünü silip yeniden açmaya kalkmamalı.
+      const marker = path.join(installRoot, "app", "9.0.1", "server", "app.mjs");
+      const markerBefore = readFileSync(marker, "utf8");
+      const relogin = await login(base, "admin", ADMIN_PASSWORD);
+      const recall = async (method, url) => {
+        const response = await fetch(`${base}${url}`, { method, headers: { cookie: relogin.cookie } });
+        return { status: response.status, body: await response.json() };
+      };
+      const rechecked = await recall("POST", "/api/admin/update/check");
+      assert.equal(rechecked.status, 200);
+      assert.equal(rechecked.body.data.currentVersion, "9.0.1");
+      assert.equal(rechecked.body.data.available, null, `kurulu sürüm yeniden önerilmemeli: ${JSON.stringify(rechecked.body.data.available)}`);
+      assert.equal(rechecked.body.data.lastCheck.status, "up-to-date");
+      const reapplied = await recall("POST", "/api/admin/update/apply");
+      assert.notEqual(reapplied.status, 200, "kurulacak yeni sürüm yokken güncelleme başlamamalı");
+      assert.match(reapplied.body.error, /yeni bir sürüm yok|güncel/i);
+      await sleep(600);
+      assert.equal(readFileSync(marker, "utf8"), markerBefore, "çalışan sürümün dosyaları yerinde kalmalı");
+      assert.equal((await appHealth())?.version, "9.0.1");
+
       const again = await login(base, "admin", ADMIN_PASSWORD);
       const settings = await fetch(`${base}/api/admin/update/settings`, { method: "PUT", headers: { cookie: again.cookie, "content-type": "application/json" }, body: JSON.stringify({ autoUpdate: true, channel: "beta" }) });
       const saved = (await settings.json()).data;

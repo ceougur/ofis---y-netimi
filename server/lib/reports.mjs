@@ -18,6 +18,8 @@ import { foldText, parseAmount, parseDate } from "./insight/validators.mjs";
 const DAY = 86_400_000;
 const BACKBONE = ["cari", "id", "amount", "debt", "deadline", "status", "phone"];
 const DEBT_HEADER = /\b(kalan|bakiye|borc|kalan borc|kalan tutar|odenecek)\b/;
+const MONEY_FORMAT = new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
 export const REPORT_KINDS = ["cari-ekstre", "vade-takip", "nakit-akis"];
 
 const phoneKey = value => {
@@ -314,7 +316,7 @@ export function nakitAkis({ items = [], payments = [], cashEntries = [], filters
 
 /** Dışa aktarma için düz tablo: hücre değerleri metin (tarih gg.aa.yyyy, tutar 1.234,56). */
 export function flattenTable(table) {
-  const money = value => (value === null || value === undefined ? "" : new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value));
+  const money = value => (value === null || value === undefined ? "" : MONEY_FORMAT.format(value));
   return {
     headers: table.columns.map(column => column.label),
     rows: table.rows.map(row => table.columns.map(column => {

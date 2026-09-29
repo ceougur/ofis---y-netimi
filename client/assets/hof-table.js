@@ -350,6 +350,9 @@
         });
       })(),
       submitLabel: "Kaydı oluştur",
+      // v2.0.7: kişi bir kez girilir — kayıtla birlikte cari kartı da açılır (ad ve telefon kayıttan). Aynı ad ve
+      // telefonlu bağsız cari varsa kayda bağlanır; kayda bağlı cari zaten varsa o kalır.
+      extraHtml: HOF.accounts && HOF.can("accounts.manage") && HOF.plans?.personOf ? '<label class="hof-check hof-record-account"><input type="checkbox" name="openAccount" checked><span>Bu kişi için <b>cari kartı</b> da aç (borç, tahsilat, taksit ve çek/senet takibi)</span></label>' : "",
       onSubmit: async data => {
         const values = {};
         columns.forEach((column, index) => {
@@ -357,8 +360,17 @@
           if (value) values[column] = value;
         });
         if (!Object.keys(values).length) throw new Error("En az bir alan doldurun.");
+        const person = data.openAccount ? HOF.plans.personOf(values) : "";
+        if (data.openAccount && !person) throw new Error("Cari kartı için kişinin adı gerekli: ad kolonunu doldurun ya da \"cari kartı da aç\" kutusunu kaldırın.");
         const created = await HOF.api("/api/workspace/records", { method: "POST", body: { sourceName: HOF.sourceName(), values, sheet: tab } });
-        HOF.toast("Yeni kayıt oluşturuldu.", { type: "success" });
+        if (person && created?.caseKey) {
+          try {
+            const account = await HOF.api(`/api/workspace/cases/${encodeURIComponent(created.caseKey)}/account`, { method: "POST", body: { name: person, phone: HOF.plans.phoneOf(values), caseTitle: HOF.plans.recordLabel(values) } });
+            HOF.toast(account.outcome === "created" ? `Kayıt oluşturuldu; "${account.name}" için cari kartı açıldı ve kayda bağlandı.` : account.outcome === "linked" ? `Kayıt oluşturuldu; mevcut "${account.name}" carisi bu kayda bağlandı.` : "Kayıt oluşturuldu; kayda bağlı cari zaten vardı.", { type: "success", timeout: 6000 });
+          } catch (error) {
+            HOF.toast(`Kayıt oluşturuldu ama cari açılamadı: ${error.message} Cari → Yeni cari ile açıp "Tablodaki kayıt" alanından bağlayabilirsiniz.`, { type: "error", timeout: 9000 });
+          }
+        } else HOF.toast("Yeni kayıt oluşturuldu.", { type: "success" });
         page = 1;
         // Tablo yenilenince yeni kayıt seçilir ve vurgulanır.
         const key = created?.caseKey;

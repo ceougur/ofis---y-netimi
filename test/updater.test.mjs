@@ -148,6 +148,39 @@ describe("güncelleyici (sahte GitHub ile)", () => {
     assert.ok(!readdirSync(path.dirname(dir)).some(name => name.endsWith(".tmp")));
   });
 
+  it("kurulu sürüm işlevle okunur: yerinde güncellemeden sonra aynı sürüm yeniden önerilmez; çalışan/etkin klasöre dokunulmaz (2.0.6 saha hatası)", async () => {
+    let running = "9.0.0";
+    const updater = updaterFor({ currentVersion: () => running });
+    const found = await updater.check();
+    assert.equal(found.version, "9.0.1");
+    const zip = await updater.download(found);
+    const appsDir = path.join(work, "kurulum", "app");
+    const dir = path.join(appsDir, "9.0.1");
+    rmSync(dir, { recursive: true, force: true });
+    // Çalışan sürümün klasörü korunur: kopya bile olsa silinmez, üzerine açılmaz.
+    mkdirSync(dir, { recursive: true });
+    writeFileSync(path.join(dir, "calisiyor.txt"), "canlı");
+    assert.throws(() => updater.stage(found, zip, { protectedDirs: [dir] }), error => error.code === "IN_USE");
+    assert.equal(readFileSync(path.join(dir, "calisiyor.txt"), "utf8"), "canlı");
+    // Etkin sürüm (current.json) de korunur.
+    writeCurrent(appsDir, { version: "9.0.1" });
+    assert.throws(() => updater.stage(found, zip), error => error.code === "IN_USE");
+    assert.equal(readFileSync(path.join(dir, "calisiyor.txt"), "utf8"), "canlı");
+    writeCurrent(appsDir, { version: "9.0.0" });
+    // Kullanımda olmayan yarım klasör önce kenara alınıp yenisiyle değiştirilir.
+    const staged = updater.stage(found, zip);
+    assert.equal(staged, dir);
+    assert.ok(!existsSync(path.join(dir, "calisiyor.txt")));
+    assert.ok(existsSync(path.join(dir, "server", "supervisor.mjs")));
+    assert.ok(!readdirSync(appsDir).some(name => name.endsWith(".tmp")), "kenara alınan klasör temizlenir");
+    // Servis yöneticisi yeniden başlamadan 9.0.1'e geçildi: artık öneri yok, açma da reddedilir.
+    running = "9.0.1";
+    const again = await updater.check();
+    assert.equal(again.status, "up-to-date");
+    assert.equal(again.currentVersion, "9.0.1");
+    assert.throws(() => updater.stage(found, zip), error => error.code === "NOT_NEWER");
+  });
+
   it("paket özeti tutmazsa hiçbir şey kurulmaz", async () => {
     const updater = updaterFor({ appsDir: path.join(work, "k2", "app") });
     mkdirSync(path.join(work, "k2", "app"), { recursive: true });

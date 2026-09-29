@@ -14,7 +14,8 @@
     const date = new Date();
     return `${date.getFullYear()}-${pad2(date.getMonth() + 1)}-${pad2(date.getDate())}`;
   };
-  const amountText = value => new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(Number(value) || 0);
+  const AMOUNT_FORMAT = new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const amountText = value => AMOUNT_FORMAT.format(Number(value) || 0);
   const STATUS_TABS = [
     { id: "active", label: "Devam eden" },
     { id: "overdue", label: "Geciken" },
@@ -374,7 +375,7 @@
     const items = plan.items.filter(itemTest);
     const entries = plan.entries.filter(entryTest);
     const itemRow = item => `<tr data-item="${esc(item.id)}" class="is-${esc(item.state)}"><td>${item.seq}.</td><td>${esc(HOF.formatDate(item.dueDate))}${item.note ? `<small>${esc(item.note)}</small>` : ""}<small>${item.state === "paid" ? "" : esc(dayLabel(item.days))}</small></td><td class="num">${esc(money(item.amount))}</td><td class="num hof-cash-in">${item.paid ? esc(money(item.paid)) : ""}</td><td class="num${item.remaining > 0 ? " hof-cash-out" : ""}">${esc(money(item.remaining))}</td><td>${itemBadge(item)}</td><td class="hof-cash-actions">${collect && item.remaining > 0 && active ? `<button type="button" class="hof-mini hof-mini-pay" data-pay-item="${esc(item.id)}" title="Bu taksite tahsilat gir" aria-label="${item.seq}. taksite tahsilat gir">₺</button>` : ""}${manage ? `<button type="button" class="hof-mini" data-edit-item="${esc(item.id)}" title="Taksiti düzelt" aria-label="${item.seq}. taksiti düzelt">✎</button><button type="button" class="hof-mini hof-mini-danger" data-delete-item="${esc(item.id)}" title="Taksiti sil" aria-label="${item.seq}. taksiti sil">×</button>` : ""}</td></tr>`;
-    const entryRow = entry => `<tr data-entry="${esc(entry.id)}" data-kind="${esc(entry.kind)}"><td>${esc(HOF.formatDate(entry.date))}</td><td><b>${entry.kind === "in" ? "Tahsilat" : "Ödeme / iade"}${entry.itemId ? ` · ${esc(plan.items.find(item => item.id === entry.itemId)?.seq || "?")}. taksit` : ""}${entry.receiptNo ? ` <span class="hof-plan-receipt">Makbuz ${esc(entry.receiptNo)}</span>` : ""}</b><small>${esc(entry.note || "")}${entry.note ? " · " : ""}${esc(entry.actorName || "—")}${entry.updatedAt ? " · düzeltildi" : ""}</small></td><td class="num hof-cash-in">${entry.kind === "in" ? esc(money(entry.amount)) : ""}</td><td class="num hof-cash-out">${entry.kind === "out" ? esc(money(entry.amount)) : ""}</td><td class="hof-cash-actions"><a class="hof-mini hof-mini-text" href="/api/workspace/plans/${encodeURIComponent(plan.id)}/entries/${encodeURIComponent(entry.id)}/makbuz.pdf" target="_blank" rel="noopener" title="Makbuz (PDF)" aria-label="Makbuz">Makbuz</a>${entry.editable ? `<button type="button" class="hof-mini" data-edit-entry="${esc(entry.id)}" title="Düzelt" aria-label="Düzelt">✎</button><button type="button" class="hof-mini hof-mini-danger" data-delete-entry="${esc(entry.id)}" title="Sil" aria-label="Sil">×</button>` : ""}</td></tr>`;
+    const entryRow = entry => `<tr data-entry="${esc(entry.id)}" data-kind="${esc(entry.kind)}"><td>${esc(HOF.formatDate(entry.date))}</td><td><b>${entry.kind === "in" ? "Tahsilat" : "Ödeme / iade"}${entry.itemId ? ` · ${esc(plan.items.find(item => item.id === entry.itemId)?.seq || "?")}. taksit` : ""}${entry.receiptNo ? ` <span class="hof-plan-receipt">Makbuz ${esc(entry.receiptNo)}</span>` : ""}${entry.chequeId ? ' <span class="hof-plan-badge is-info" title="Çek / senetle alındı; Kasa’ya evrak tahsil edilince girer">çek / senet</span>' : ""}</b><small>${esc(entry.note || "")}${entry.note ? " · " : ""}${esc(entry.actorName || "—")}${entry.updatedAt ? " · düzeltildi" : ""}</small></td><td class="num hof-cash-in">${entry.kind === "in" ? esc(money(entry.amount)) : ""}</td><td class="num hof-cash-out">${entry.kind === "out" ? esc(money(entry.amount)) : ""}</td><td class="hof-cash-actions"><a class="hof-mini hof-mini-text" href="/api/workspace/plans/${encodeURIComponent(plan.id)}/entries/${encodeURIComponent(entry.id)}/makbuz.pdf" target="_blank" rel="noopener" title="Makbuz (PDF)" aria-label="Makbuz">Makbuz</a>${entry.chequeId && HOF.can("cheques.view") ? `<button type="button" class="hof-mini" data-open-cheque="${esc(entry.chequeId)}" title="Çek / senet kartını aç (karşılıksız, geri al buradan)" aria-label="Çek / senet kartını aç">↗</button>` : ""}${entry.editable ? `<button type="button" class="hof-mini" data-edit-entry="${esc(entry.id)}" title="Düzelt" aria-label="Düzelt">✎</button><button type="button" class="hof-mini hof-mini-danger" data-delete-entry="${esc(entry.id)}" title="Sil" aria-label="Sil">×</button>` : ""}</td></tr>`;
     const planWarning = Math.abs(t.unplanned) > 0.005 && plan.items.length ? `<p class="hof-alert">Taksitlerin toplamı (${esc(money(t.planned))}) kartın toplam tutarından (${esc(money(t.total))}) ${t.unplanned > 0 ? "az" : "fazla"}: fark ${esc(money(Math.abs(t.unplanned)))}. Taksitleri düzeltin ya da toplam tutarı güncelleyin.</p>` : "";
     const noItems = !plan.items.length ? `<p class="hof-empty">Bu kartta taksit yok. ${manage ? "<b>Otomatik dağıt</b> ile toplamı eşit taksitlere bölün ya da <b>+ Taksit</b> ile tek tek girin." : ""}${t.paid ? ` Girilen tahsilatlar kalan tutardan düşülür (kalan ${esc(money(t.remaining))}).` : ""}</p>` : '<p class="hof-empty">Bu süzgeçte taksit yok.</p>';
     const span = plan.items.length ? `${plan.items.length} taksit · ${HOF.formatDate(plan.items[0].dueDate)} – ${HOF.formatDate(plan.items.at(-1).dueDate)}` : "Taksit kurulmadı";
@@ -469,7 +470,13 @@
         { name: "total", label: "Toplam tutar (₺)", required: true, inputmode: "decimal", value: plan ? amountText(plan.total) : "", placeholder: "Örn. 12.000,00", autofocus: Boolean(preset) },
         ...groupFields(plan || { groupId: preset?.groupId || "", subgroupId: preset?.subgroupId || "" }),
         { name: "note", label: "Bilgi notu", type: "textarea", rows: 3, maxlength: 1000, value: plan?.note || "", placeholder: "Adres, okul, sınıf, özel durum…" },
-        ...(plan ? [] : [{ name: "auto", label: "Toplamı hemen eşit taksitlere böl", type: "checkbox", value: false }, { name: "count", label: "Taksit sayısı", inputmode: "numeric", value: "" }, { name: "firstDue", label: "İlk vade", type: "date", value: "" }]),
+        ...(plan
+          ? []
+          : [
+              { name: "items", label: "Taksitler", type: "select", value: "auto", options: [{ value: "auto", label: "Toplamı eşit taksitlere böl (sayı ve ilk vade)" }, { value: "manual", label: "Elle gireceğim (kart açılınca tek tek)" }, { value: "none", label: "Şimdilik yok" }], help: "Elle girişte her taksitin vadesi ve tutarı sizin yazdığınız gibi olur." },
+              { name: "count", label: "Taksit sayısı", inputmode: "numeric", value: "" },
+              { name: "firstDue", label: "İlk vade", type: "date", value: "" },
+            ]),
       ],
       submitLabel: plan ? "Kaydet" : "Kartı aç",
       onOpen: dialog => {
@@ -480,41 +487,88 @@
         const accountField = HOF.accounts?.picker?.({
           value: owner,
           label: "Cari",
-          help: owner.id ? "Kart bu cariye ait; taksitleri ve tahsilatları carinin defterinde görünür." : "Seçilmezse kart açılırken bu ad ve telefonla yeni cari açılır.",
+          help: owner.id ? "Kart bu cariye ait; taksitleri ve tahsilatları carinin defterinde görünür." : "Kişinin carisi varsa seçin. Seçmezseniz aynı ad ve telefonlu cari varsa o kullanılır, yoksa bu adla yeni cari açılır.",
           onPick: account => {
             const form = dialog.querySelector("form");
             const name = form.querySelector('input[name="name"]');
             const phone = form.querySelector('input[name="phone"]');
             if (account && !name.value.trim()) name.value = account.name;
             if (account && !phone.value.trim()) phone.value = account.phone || "";
+            // Cari kayda bağlıysa kart da o kayda bağlanır.
+            if (account?.caseKey && !form.querySelector('input[name="caseKey"]').value) {
+              form.querySelector('input[name="caseKey"]').value = account.caseKey;
+              form.querySelector('input[name="caseSource"]').value = account.caseSource || "";
+              form.querySelector('input[name="caseTitle"]').value = account.caseTitle || account.name;
+              const box = form.querySelector(".hof-case-picker:not(.hof-acc-picker)");
+              box?.classList.add("is-linked");
+              const unlink = box?.querySelector("[data-unlink]");
+              if (unlink) unlink.hidden = false;
+            }
+            suggestedAccount = "";
           },
         });
         if (accountField) dialog.querySelector('input[name="name"]').closest(".hof-field").before(accountField);
+        // v2.0.7: ad yazılınca aynı adlı tek cari varsa öneri olarak seçilir (× ile kaldırılır); iki aynı ad varsa seçilmez.
+        let suggestedAccount = "";
+        if (accountField && !owner.id) {
+          const nameInput = dialog.querySelector('input[name="name"]');
+          const hiddenId = accountField.querySelector('input[name="accountId"]');
+          const note = accountField.querySelector("small");
+          let timer = 0;
+          const suggest = () => {
+            clearTimeout(timer);
+            if (hiddenId.value && hiddenId.value !== suggestedAccount) return;
+            const wanted = HOF.normalize(nameInput.value);
+            timer = setTimeout(async () => {
+              let hits = [];
+              try {
+                hits = wanted ? (await HOF.api(`/api/workspace/accounts/search?q=${encodeURIComponent(nameInput.value.trim())}`)).filter(item => HOF.normalize(item.name) === wanted) : [];
+              } catch {
+                hits = [];
+              }
+              if (HOF.normalize(nameInput.value) !== wanted) return;
+              if (hits.length === 1) {
+                suggestedAccount = hits[0].id;
+                accountField.setAccount(hits[0]);
+                note.textContent = "Aynı adlı cari bulundu ve seçildi; kart bu cariye açılır. Başka kişiyse × ile kaldırın.";
+              } else if (suggestedAccount) {
+                suggestedAccount = "";
+                accountField.setAccount(null);
+                note.textContent = hits.length > 1 ? "Aynı adlı birden fazla cari var; doğru olanı seçin." : "Kişinin carisi varsa seçin. Seçmezseniz aynı ad ve telefonlu cari varsa o kullanılır, yoksa bu adla yeni cari açılır.";
+              } else if (hits.length > 1) note.textContent = "Aynı adlı birden fazla cari var; doğru olanı seçin.";
+            }, 220);
+          };
+          nameInput.addEventListener("input", suggest);
+          if (nameInput.value.trim()) suggest();
+        }
         wireGroupFields(dialog);
-        const auto = dialog.querySelector('input[name="auto"]');
-        if (auto) {
+        const items = dialog.querySelector('select[name="items"]');
+        if (items) {
           const count = dialog.querySelector('input[name="count"]').closest(".hof-field");
           const first = dialog.querySelector('input[name="firstDue"]').closest(".hof-field");
           const sync = () => {
-            count.hidden = !auto.checked;
-            first.hidden = !auto.checked;
+            count.hidden = items.value !== "auto";
+            first.hidden = items.value !== "auto";
           };
-          auto.addEventListener("change", sync);
+          items.addEventListener("change", sync);
           sync();
         }
       },
       onSubmit: async data => {
         const payload = { name: data.name, refNo: data.refNo, registeredOn: data.registeredOn, phone: data.phone, total: data.total, note: data.note, caseKey: data.caseKey || "", caseSource: data.caseSource || "", caseTitle: data.caseKey ? data.caseTitle : "", ...(data.accountId !== undefined ? { accountId: data.accountId } : {}), ...groupBody(data) };
-        if (!plan && data.auto) {
-          if (!(Number(data.count) > 0) || !data.firstDue) throw new Error("Otomatik dağıtım için taksit sayısı ve ilk vade gerekli.");
+        if (!plan && data.items === "auto") {
+          if (!(Number(data.count) > 0)) throw new Error("Eşit bölmek için taksit sayısını yazın.");
+          if (!data.firstDue) throw new Error("Eşit bölmek için ilk vadeyi seçin.");
           Object.assign(payload, { mode: "auto", count: data.count, firstDue: data.firstDue });
         }
         const result = plan ? await HOF.api(`/api/workspace/plans/${encodeURIComponent(plan.id)}`, { method: "PUT", body: payload }) : await HOF.api("/api/workspace/plans", { method: "POST", body: payload });
         await loadGroups();
-        HOF.toast(plan ? "Kart güncellendi." : "Taksit kartı açıldı.", { type: "success" });
+        HOF.toast(plan ? "Kart güncellendi." : data.items === "manual" ? "Taksit kartı açıldı; şimdi taksitleri tek tek girin." : "Taksit kartı açıldı.", { type: "success" });
         view.planId = result.id;
         view.mode = "card";
         applyPlan(result);
+        // Elle giriş: kart açılır açılmaz ilk taksit formu gelir; sonrakiler "+ Taksit" ile.
+        if (!plan && data.items === "manual") setTimeout(() => editItem(result, null), 250);
       },
     });
   }
@@ -875,6 +929,10 @@
     if (row && view.mode === "list") return loadPlan(row.dataset.plan);
     const button = event.target.closest("button, a[data-act]");
     if (!button) return;
+    if (button.dataset.openCheque) {
+      modal?.close();
+      return HOF.cheques?.open({ id: button.dataset.openCheque });
+    }
     const plan = view.plan;
     if (button.dataset.status) {
       view.status = button.dataset.status;
