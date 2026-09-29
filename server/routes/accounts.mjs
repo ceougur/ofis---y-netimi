@@ -820,19 +820,28 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
 
   // ---------- Diğer modüller için ----------
   // Taksit kartı açılırken cari: tablodaki aynı kayda bağlı cari varsa o, yoksa kartın bilgileriyle yeni cari.
-  function createFromPlan(user, person) {
+  // outcome (isteğe bağlı): { created, linked } — aktarma geri alınırken yalnız kendi açtığı/bağladığı cariye dokunur.
+  function createFromPlan(user, person, outcome = null) {
+    const source = person.caseSource || currentSource();
     if (person.caseKey) {
-      const found = store.get("SELECT id FROM accounts WHERE deleted_at IS NULL AND case_key = ? AND case_source = ?", person.caseKey, person.caseSource || currentSource());
+      const found = store.get("SELECT id FROM accounts WHERE deleted_at IS NULL AND case_key = ? AND case_source = ?", person.caseKey, source);
       if (found) return found.id;
     }
     // v2.0.7: aynı ad + aynı telefon (ya da telefonsuz, aynı grupta tek aynı ad) kesin eşleşirse o cari; boşa cari açılmaz.
+    // v2.0.8: kart bir kayda bağlıysa, başka bir kayda bağlı cari kullanılmaz (aynı adlı iki kişinin hesabı karışmaz).
     const matched = matchPerson({ name: person.name, phone: person.phone, groupId: person.groupId || "" });
-    if (matched) {
-      if (person.caseKey) store.run("UPDATE accounts SET case_key = ?, case_source = ?, case_title = ?, updated_by = ?, updated_at = ? WHERE id = ? AND case_key = ''", person.caseKey, person.caseSource || currentSource(), person.caseTitle || person.name, user.id, now(), matched);
+    const owner = matched ? store.get("SELECT case_key AS caseKey, case_source AS caseSource FROM accounts WHERE id = ?", matched) : null;
+    const foreign = Boolean(person.caseKey && owner?.caseKey && (owner.caseKey !== person.caseKey || owner.caseSource !== source));
+    if (matched && !foreign) {
+      if (person.caseKey && !owner?.caseKey) {
+        store.run("UPDATE accounts SET case_key = ?, case_source = ?, case_title = ?, updated_by = ?, updated_at = ? WHERE id = ? AND case_key = ''", person.caseKey, source, person.caseTitle || person.name, user.id, now(), matched);
+        if (outcome) outcome.linked = true;
+      }
       return matched;
     }
-    const id = insertAccount(user, { name: person.name, phone: person.phone, note: person.note, registeredOn: person.registeredOn, groupId: person.groupId, subgroupId: person.subgroupId, caseKey: person.caseKey, caseSource: person.caseSource, caseTitle: person.caseTitle, type: "customer", fields: [] });
+    const id = insertAccount(user, { name: person.name, phone: person.phone, note: person.note, registeredOn: person.registeredOn, groupId: person.groupId, subgroupId: person.subgroupId, caseKey: person.caseKey, caseSource: person.caseKey ? source : "", caseTitle: person.caseTitle, type: "customer", fields: [] });
     audit(user, "account.created", id, { name: person.name, from: "plan" });
+    if (outcome) outcome.created = true;
     return id;
   }
   // Taksit Excel'inden gelen kişi için kesin eşleşme: aynı ad + aynı telefon (7+ hane) ya da telefonsuz aynı ad + aynı grup

@@ -487,6 +487,14 @@ export function registerWorkspaceRoutes(router, { store, auth, audit, dataset, c
     auth.requirePermission(req, "reports.view");
     const count = (sql, ...args) => store.get(sql, ...args);
     const users = store.all("SELECT id, display_name AS name, role FROM users WHERE active = 1 ORDER BY display_name");
+    // Tahsilat (v2.0.8): kişinin programda aldığı tüm tahsilatlar — kayıt kartı, taksit kartı ve cari; Kasa'ya giren
+    // tahsilatlarla aynı kaynaklar (çekle alınan ve açılış/devir kayıtları hariç). Önceden yalnız kayıt kartı sayılıyordu;
+    // tablodan taksit kartına aktarılan tahsilat da girenin adıyla sayılmaya devam eder.
+    const COLLECTED = `SELECT COALESCE(SUM(amount), 0) AS total FROM (
+        SELECT amount, created_by FROM payments
+        UNION ALL SELECT e.amount, e.created_by FROM plan_entries e JOIN plans p ON p.id = e.plan_id AND p.deleted_at IS NULL WHERE e.kind = 'in' AND e.opening = 0 AND e.cheque_id = ''
+        UNION ALL SELECT e.amount, e.created_by FROM account_entries e JOIN accounts a ON a.id = e.account_id AND a.deleted_at IS NULL WHERE e.kind = 'in' AND e.source = ''
+      )`;
     const report = users.map(item => ({
       userId: item.id,
       userName: item.name,
@@ -495,7 +503,7 @@ export function registerWorkspaceRoutes(router, { store, auth, audit, dataset, c
       tasksCompleted: count("SELECT COUNT(*) AS count FROM tasks WHERE completed_by = ? OR completed_by = ?", item.id, item.name).count,
       notes: count("SELECT COUNT(*) AS count FROM notes WHERE created_by = ?", item.id).count,
       calls: count("SELECT COUNT(*) AS count FROM phones WHERE created_by = ?", item.id).count,
-      collections: count("SELECT COALESCE(SUM(amount), 0) AS total FROM payments WHERE created_by = ?", item.id).total,
+      collections: count(`${COLLECTED} WHERE created_by = ?`, item.id).total,
       dataEntries: count("SELECT COUNT(*) AS count FROM audit_events WHERE actor_id = ?", item.id).count,
       messages: count("SELECT COUNT(*) AS count FROM chat_messages WHERE sender_id = ?", item.id).count,
     }));
@@ -506,7 +514,7 @@ export function registerWorkspaceRoutes(router, { store, auth, audit, dataset, c
         tasks: count("SELECT COUNT(*) AS count FROM tasks").count,
         completedTasks: count("SELECT COUNT(*) AS count FROM tasks WHERE status = 'completed'").count,
         notes: count("SELECT COUNT(*) AS count FROM notes").count,
-        payments: count("SELECT COALESCE(SUM(amount), 0) AS total FROM payments").total,
+        payments: count(COLLECTED).total,
         events: count("SELECT COUNT(*) AS count FROM audit_events").count,
       },
     });

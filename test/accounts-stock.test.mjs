@@ -249,7 +249,7 @@ describe("Stok modülü (v2.0.6)", () => {
     assert.equal(bought.data.data.unitPrice, 90, "son alış fiyatı karta yazılır");
     const cash = (await admin.get("/api/workspace/cash")).data.data.entries;
     assert.deepEqual(cash.map(entry => [entry.source, entry.kind, entry.amount]), [["stock", "out", 360]]);
-    assert.match(cash[0].description, /Stok alımı · Çay 4 paket/);
+    assert.match(cash[0].description, /Stok ödemesi \(alım\) · Çay 4 paket/);
     const used = await staff.post(`/api/workspace/stock/${cay.id}/moves`, { kind: "out", qty: "12", note: "Ofis tüketimi" });
     assert.equal(used.status, 200);
     assert.equal(used.data.data.qty, 2);
@@ -284,6 +284,44 @@ describe("Stok modülü (v2.0.6)", () => {
     // Tedarikçiye ödeme Kasa'dan çıkar ve borcu kapatır.
     await admin.post(`/api/workspace/accounts/${supplier.id}/entries`, { kind: "out", amount: "2400" });
     assert.equal((await admin.get(`/api/workspace/accounts/${supplier.id}`)).data.data.totals.balance, 0);
+  });
+
+  it("yeni ürünün ilk miktarı (v2.0.8): Kasa'dan ödendi → 'Stok ödemesi' gideri; tedarikçiye borç → cari; elde olan → para yazılmaz", async () => {
+    const cashBefore = (await admin.get("/api/workspace/cash")).data.data;
+    const bought = await admin.post("/api/workspace/stock", { name: "Toz şeker", unit: "kg", unitPrice: "42,50", openingQty: "20", openingPay: "cash", openingDate: "2026-09-25" });
+    assert.equal(bought.status, 200, JSON.stringify(bought.data));
+    assert.equal(bought.data.data.qty, 20);
+    assert.equal(bought.data.data.unit, "kg");
+    const cash = (await admin.get("/api/workspace/cash")).data.data;
+    const expense = cash.entries.find(entry => entry.source === "stock" && entry.description.includes("Toz şeker"));
+    assert.ok(expense, "Kasa'da gider");
+    assert.equal(expense.kind, "out");
+    assert.equal(expense.amount, 850, "20 kg × 42,50");
+    assert.equal(expense.date, "2026-09-25");
+    assert.match(expense.description, /^Stok ödemesi \(alım\) · Toz şeker 20 kg/);
+    assert.equal(Math.round((cashBefore.totals.balance - cash.totals.balance) * 100) / 100, 850, "Kasa 850 azaldı");
+    // Tedarikçiye borç: cari alacak (biz borçluyuz), Kasa değişmez.
+    const onCredit = await admin.post("/api/workspace/stock", { name: "Ayçiçek yağı", unit: "lt", unitPrice: "80", openingQty: "15", openingPay: "account", openingAccountId: supplier.id });
+    assert.equal(onCredit.status, 200, JSON.stringify(onCredit.data));
+    const account = (await admin.get(`/api/workspace/accounts/${supplier.id}`)).data.data;
+    assert.ok(account.entries.some(entry => entry.source === "stock" && entry.amount === 1200 && entry.kind === "credit"));
+    assert.equal((await admin.get("/api/workspace/cash")).data.data.totals.balance, cash.totals.balance, "cariye yazılan alım Kasa'yı değiştirmez");
+    // Elde olan (açılış): para yazılmaz.
+    const owned = await admin.post("/api/workspace/stock", { name: "Peçete", unit: "paket", unitPrice: "30", openingQty: "12", openingPay: "none" });
+    assert.equal(owned.status, 200);
+    assert.equal(owned.data.data.qty, 12);
+    assert.equal((await admin.get("/api/workspace/cash")).data.data.totals.balance, cash.totals.balance);
+    // Hatalı girişler hiçbir şey yazmaz (tek işlem bloğu).
+    const noPrice = await admin.post("/api/workspace/stock", { name: "Fiyatsız", unit: "adet", openingQty: "3", openingPay: "cash" });
+    assert.equal(noPrice.status, 400, "Kasa'ya yazmak için birim fiyat gerekir");
+    const noAccount = await admin.post("/api/workspace/stock", { name: "Carisiz", unit: "adet", unitPrice: "5", openingQty: "3", openingPay: "account" });
+    assert.equal(noAccount.status, 400, "cariye yazmak için cari seçilmeli");
+    const names = (await admin.get("/api/workspace/stock")).data.data.items.map(item => item.name);
+    assert.ok(!names.includes("Fiyatsız") && !names.includes("Carisiz"), "hatalı istek ürün de açmadı");
+    // Önceki istemciler (openingPay göndermeyen) eskisi gibi: açılış stoku, para yazılmaz.
+    const legacy = await admin.post("/api/workspace/stock", { name: "Kalem", unit: "adet", unitPrice: "10", openingQty: "5" });
+    assert.equal(legacy.status, 200);
+    assert.equal((await admin.get("/api/workspace/cash")).data.data.totals.balance, cash.totals.balance);
   });
 
   it("ürün silinse de ödenen para Kasa'da kalır; ürün Silinenler'den döner; PDF ve Excel döküm", async () => {

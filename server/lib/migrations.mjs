@@ -748,6 +748,36 @@ export const MIGRATIONS = [
       addColumn(store, "users", "grants_json", "TEXT NOT NULL DEFAULT '[]'");
     },
   },
+  {
+    version: 14,
+    name: "v2.0.8 tablodan taksit kartına aktarma, açılış bakiyesi",
+    up(store) {
+      // Yalnız ekleyici: mevcut hiçbir satır değişmez.
+      // Açılış (devir) kaydı: Excel'de programa girmeden önce ödenmiş kısım. Taksiti kapatır, carinin bakiyesine sayılır;
+      // Kasa'ya girmez (o para bu programın kasasından geçmedi), makbuzu olmaz.
+      addColumn(store, "plan_entries", "opening", "INTEGER NOT NULL DEFAULT 0");
+      // Kartı açan aktarım (tablodan ya da Excel'den): aktarım geri alınınca yalnız o aktarımın kartları kalkar.
+      addColumn(store, "plans", "import_id", "TEXT NOT NULL DEFAULT ''");
+      store.exec(`
+        CREATE TABLE IF NOT EXISTS plan_imports (
+          id TEXT PRIMARY KEY,
+          kind TEXT NOT NULL CHECK (kind IN ('table', 'excel')),
+          source TEXT NOT NULL DEFAULT '',
+          title TEXT NOT NULL DEFAULT '',
+          summary_json TEXT NOT NULL DEFAULT '{}',
+          undo_json TEXT NOT NULL DEFAULT '{}',
+          created_by TEXT NOT NULL,
+          created_at TEXT NOT NULL,
+          undone_by TEXT,
+          undone_at TEXT
+        );
+        CREATE INDEX IF NOT EXISTS idx_plan_imports_created ON plan_imports(created_at);
+        -- Kayda bağlı kartlar: takvim, kişinin kartı ve aktarma "bu kaydın kartı var mı?" diye sorar.
+        CREATE INDEX IF NOT EXISTS idx_plans_case ON plans(case_key, case_source);
+        CREATE INDEX IF NOT EXISTS idx_plans_import ON plans(import_id);
+      `);
+    },
+  },
 ];
 
 export const LATEST_VERSION = MIGRATIONS.at(-1).version;

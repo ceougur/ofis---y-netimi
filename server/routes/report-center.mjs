@@ -359,19 +359,23 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
       build(query) {
         const range = rangeOf(query, "thisMonth");
         const list = store.all(
-          `SELECT e.date, e.kind, e.amount, e.note, e.receipt_no AS receiptNo, e.cheque_id AS chequeId, p.name AS planName, COALESCE(a.name, '') AS accountName, i.seq, COALESCE(u.display_name, '') AS actorName
+          `SELECT e.date, e.kind, e.amount, e.note, e.receipt_no AS receiptNo, e.cheque_id AS chequeId, e.opening, p.name AS planName, COALESCE(a.name, '') AS accountName, i.seq, COALESCE(u.display_name, '') AS actorName
            FROM plan_entries e JOIN plans p ON p.id = e.plan_id AND p.deleted_at IS NULL LEFT JOIN accounts a ON a.id = p.account_id LEFT JOIN plan_items i ON i.id = e.item_id LEFT JOIN users u ON u.id = e.created_by
            WHERE (? = '' OR e.date >= ?) AND (? = '' OR e.date <= ?) ORDER BY e.date, e.created_at`,
           range.from, range.from, range.to, range.to,
         );
-        const total = { in: 0, out: 0 };
-        for (const row of list) total[row.kind] = roundMoney(total[row.kind] + row.amount);
+        // Açılış (devir, v2.0.8): programa girmeden önce ödenmiş kısım. Listede görünür, tahsilat toplamına girmez (Kasa'da yok).
+        const total = { in: 0, out: 0, opening: 0 };
+        for (const row of list) {
+          const key = row.opening ? "opening" : row.kind;
+          total[key] = roundMoney(total[key] + row.amount);
+        }
         return {
           subtitle: rangeText(range),
           headers: ["Tarih", "Makbuz", "Kart", "Cari", "Taksit", "Tür", "Yöntem", "Tutar", "Açıklama", "Giren"],
           types: ["", "", "", "", "", "", "", "money", "", ""],
-          rows: list.map(row => [dayText(row.date), row.receiptNo ? String(row.receiptNo) : "", row.planName, row.accountName, row.seq ? `${row.seq}. taksit` : "", row.kind === "in" ? "Tahsilat" : "İade / ödeme", row.chequeId ? "Çek / senet" : "Nakit / havale", money(row.amount), row.note, row.actorName]),
-          summary: [["Tahsilat", money(total.in)], ["İade / ödeme", money(total.out)], ["Net", money(roundMoney(total.in - total.out))]],
+          rows: list.map(row => [dayText(row.date), row.receiptNo ? String(row.receiptNo) : "", row.planName, row.accountName, row.seq ? `${row.seq}. taksit` : "", row.opening ? "Açılış (devir)" : row.kind === "in" ? "Tahsilat" : "İade / ödeme", row.opening ? "Excel'den" : row.chequeId ? "Çek / senet" : "Nakit / havale", money(row.amount), row.note, row.actorName]),
+          summary: [["Tahsilat", money(total.in)], ["İade / ödeme", money(total.out)], ["Net", money(roundMoney(total.in - total.out))], ...(total.opening ? [["Açılış (devir, Kasa dışı)", money(total.opening)]] : [])],
         };
       },
     },

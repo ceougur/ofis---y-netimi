@@ -275,6 +275,43 @@ const monthLabel = time => {
   return `${MONTH_NAMES[date.getUTCMonth()]} ${date.getUTCFullYear()}`;
 };
 
+// Sekmenin takvim bağlamı (v2.0.8: takvim ve "tablodan taksit kartına aktarma" aynı kuralı kullanır; iki ayrı doğru yok).
+// Kolon analizi, kimlik kolonları, ödeme kolonları (vade, gün, ay), kalan borç, durum kolonları ve hizmet dönemi kolonları.
+export function tabContext(scope, { now = new Date(), forced = null } = {}) {
+  const columns = columnsOf(scope);
+  const analyses = analyzeColumns(scope, columns, { now, forced });
+  const primary = primaryColumns(analyses);
+  const { due, recurring, monthly, debt } = classifyColumns(scope, columns, analyses, now, forced);
+  const statusColumns = analyses.filter(item => item.role === "status" || /\b(durum\w*|asama\w*|sonuc\w*)\b/.test(foldText(item.column))).map(item => item.column);
+  const sequence = new Set(columns.filter(isSequenceHeader));
+  const idColumn = primary.id && primary.id !== primary.person && !sequence.has(primary.id) ? primary.id : null;
+  const hasIdentity = Boolean(primary.person || idColumn);
+  const dateColumn = pattern => columns.find(column => pattern.test(foldText(column)) && !monthly.some(entry => entry.column === column)) || null;
+  const startColumn = monthly.length ? dateColumn(START_DATE) : null;
+  const endColumn = monthly.length ? dateColumn(END_DATE) : null;
+  // Ay hücreleri ödeme mi, ödenecek taksit planı mı (installments.mjs → detectMonthPlan)?
+  const plan = monthly.length ? detectMonthPlan({ rows: scope, months: monthly, columns, now }) : null;
+  return { columns, analyses, primary, due, recurring, monthly, debt, statusColumns, idColumn, hasIdentity, startColumn, endColumn, plan };
+}
+
+// Satır kayıt mı, kapanmış mı? null: toplam satırı, işaretli hata satırı, boş şablon ya da adı/kimliği yazılmamış satır.
+// closed: durum "Ödendi / Kapandı / İptal…"; inactive: "Ayrıldı / Pasif…"; paidOff: kalan borç kolonu açıkça 0.
+export function rowState(row, context) {
+  if (isTotalRow(row) || isFlaggedRow(row)) return null;
+  const closed = context.statusColumns.some(column => isSettledText(cell(row, column)));
+  const inactive = context.statusColumns.some(column => INACTIVE.test(foldText(cell(row, column))));
+  if (isBlankRecord(row, context.columns)) return null;
+  const person = context.primary.person ? String(cell(row, context.primary.person) ?? "").trim() : "";
+  const caseNo = context.idColumn ? String(cell(row, context.idColumn) ?? "").trim() : "";
+  if (context.hasIdentity && isEmptyCell(person) && isEmptyCell(caseNo)) return null;
+  const debtAmount = context.debt ? parseAmount(cell(row, context.debt)) : null;
+  const paidOff = Boolean(context.debt && debtAmount === 0 && !isEmptyCell(cell(row, context.debt)));
+  return { person, caseNo, closed, inactive, paidOff, debt: debtAmount && debtAmount > 0 ? debtAmount : null };
+}
+
+// Takvim kaleminin kimliği ("Ödendi say" bu kimlikle saklanır; aktarma da aynı kimlikle okur).
+export const dueId = (sheet, caseKey, column, time) => `due|${sheet}|${caseKey}|${column}|${iso(time)}`;
+
 /**
  * @param {object} input
  * @param {Array<object>} input.rows  birleşik görünümün satırları (__sheet, __hofKey)
@@ -305,34 +342,18 @@ export function computeDues({ rows, tabs = [], payments = [], settled = {}, now 
   const monthlyCases = new Set(); // ay kolonlu tablodaki kayıtlar: tahsilat notundaki ay o aya sayılır
   for (const tab of order) {
     const scope = groups.get(tab);
-    const columns = columnsOf(scope);
-    const analyses = analyzeColumns(scope, columns, { now, forced });
-    const primary = primaryColumns(analyses);
-    const { due, recurring, monthly, debt } = classifyColumns(scope, columns, analyses, now, forced);
+    const context = tabContext(scope, { now, forced });
+    const { due, recurring, monthly, startColumn, endColumn, plan } = context;
     if (!due.length && !recurring.length && !monthly.length) continue;
-    const statusColumns = analyses.filter(item => item.role === "status" || /\b(durum\w*|asama\w*|sonuc\w*)\b/.test(foldText(item.column))).map(item => item.column);
     sources.push({ tab, columns: [...due, ...recurring, ...monthly].map(item => item.column) });
-    const sequence = new Set(columns.filter(isSequenceHeader));
-    const idColumn = primary.id && primary.id !== primary.person && !sequence.has(primary.id) ? primary.id : null;
-    const hasIdentity = Boolean(primary.person || idColumn);
-    const dateColumn = pattern => columns.find(column => pattern.test(foldText(column)) && !monthly.some(entry => entry.column === column)) || null;
-    const startColumn = monthly.length ? dateColumn(START_DATE) : null;
-    const endColumn = monthly.length ? dateColumn(END_DATE) : null;
-    // Ay hücreleri ödeme mi, ödenecek taksit planı mı (installments.mjs → detectMonthPlan)?
-    const plan = monthly.length ? detectMonthPlan({ rows: scope, months: monthly, columns, now }) : null;
     for (const row of scope) {
-      if (isTotalRow(row) || isFlaggedRow(row)) continue;
-      if (statusColumns.some(column => isSettledText(cell(row, column)) || INACTIVE.test(foldText(cell(row, column))))) continue;
-      const person = primary.person ? String(cell(row, primary.person) ?? "").trim() : "";
-      const caseNo = idColumn ? String(cell(row, idColumn) ?? "").trim() : "";
-      // Boş şablon satırı (yalnız sıra numarası, ya da adı/kimliği yazılmamış satır) kayıt değildir.
-      if (isBlankRecord(row, columns)) continue;
-      if (hasIdentity && isEmptyCell(person) && isEmptyCell(caseNo)) continue;
-      const debtAmount = debt ? parseAmount(cell(row, debt)) : null;
-      // Satır bağlamı: kalan borç / bakiye açıkça 0 ise o kayıttan tahsilat beklenmez (v2.0.2).
-      if (debt && debtAmount === 0 && !isEmptyCell(cell(row, debt))) continue;
+      // Boş şablon satırı (yalnız sıra numarası, ya da adı/kimliği yazılmamış satır) kayıt değildir; durumu kapalı ya da
+      // takipten çıkmış satırdan ve kalan borcu açıkça 0 olan satırdan tahsilat beklenmez (v2.0.2).
+      const state = rowState(row, context);
+      if (!state || state.closed || state.inactive || state.paidOff) continue;
+      const { person, caseNo } = state;
       // Kimlikte sekmenin asıl adı: sekme kalemle yeniden adlandırılınca kapatılan kalemler geri açılmaz (v2.0.2).
-      const base = { caseKey: row.__hofKey, tab, sheet: row.__hofSheet || tab, person, caseNo, debt: debtAmount && debtAmount > 0 ? debtAmount : null };
+      const base = { caseKey: row.__hofKey, tab, sheet: row.__hofSheet || tab, person, caseNo, debt: state.debt };
       for (const entry of due) {
         const read = readDue(cell(row, entry.column), now);
         if (!read || read.settled) continue;
@@ -367,7 +388,7 @@ export function computeDues({ rows, tabs = [], payments = [], settled = {}, now 
   // Tahsilatlar kaydın kalemlerine vade sırasıyla sayılır.
   const byCase = new Map();
   for (const item of candidates) {
-    item.id = `due|${item.sheet || item.tab}|${item.caseKey}|${item.column}|${iso(item.time)}`;
+    item.id = dueId(item.sheet || item.tab, item.caseKey, item.column, item.time);
     if (!byCase.has(item.caseKey)) byCase.set(item.caseKey, []);
     byCase.get(item.caseKey).push(item);
   }

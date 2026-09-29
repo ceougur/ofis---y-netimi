@@ -31,6 +31,7 @@ import { registerAuthRoutes } from "./routes/auth.mjs";
 import { registerCashRoutes } from "./routes/cash.mjs";
 import { registerDueRoutes } from "./routes/dues.mjs";
 import { registerPlanRoutes } from "./routes/plans.mjs";
+import { registerPlanTransfer } from "./routes/plan-transfer.mjs";
 import { registerAccountRoutes } from "./routes/accounts.mjs";
 import { registerStockRoutes } from "./routes/stock.mjs";
 import { registerChequeRoutes } from "./routes/cheques.mjs";
@@ -146,6 +147,9 @@ export function createApp(overrides = {}) {
   // Taksitler (v2.0.4): Kasa ve tahsilat takvimi bu servisin hareketlerini ve gecikmelerini okur.
   // Cari ve Stok (v2.0.6): taksit kartları cariye bağlıdır; stok hareketi Kasa'ya ya da cariye yazılabilir. Servisler
   // birbirine istek anında ulaşır (kurulum sırası: taksit → cari → stok).
+  // Tablodan taksit kartına aktarma (v2.0.8): "/api/workspace/plans/from-table" ve "/imports" kalıpları kartın
+  // "/api/workspace/plans/:id" kalıbından önce kaydedilir (yönlendirici ilk eşleşeni seçer).
+  context.planTransfer = registerPlanTransfer(router, { ...context, plans: () => context.plans, accounts: () => context.accounts });
   context.plans = registerPlanRoutes(router, { ...context, accounts: () => context.accounts, cheques: () => context.cheques });
   context.accounts = registerAccountRoutes(router, { ...context, plans: () => context.plans, cheques: () => context.cheques });
   context.stock = registerStockRoutes(router, { ...context, accounts: () => context.accounts });

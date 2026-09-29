@@ -140,7 +140,8 @@ export function planStatementPdf(plan, { officeName = "", userName = "", now = n
   header(["TARİH", "AÇIKLAMA", "TAHSİLAT", "ÖDEME", "MAKBUZ"], entryWidths);
   if (!plan.entries.length) line(["", "Henüz hareket yok."], entryWidths);
   plan.entries.forEach((entry, index) =>
-    line([dayText(entry.date), `${entry.note || (entry.kind === "in" ? "Tahsilat" : "Ödeme / iade")}${entry.actorName ? ` · ${entry.actorName}` : ""}`, entry.kind === "in" ? tl(entry.amount) : "", entry.kind === "out" ? tl(entry.amount) : "", entry.receiptNo ? `No ${entry.receiptNo}` : ""], entryWidths, {
+    // Açılış (devir) kaydı (v2.0.8): programa girmeden önce ödenmiş kısım; ekstrede ayrı adla görünür.
+    line([dayText(entry.date), `${entry.opening ? `Açılış (devir)${entry.note ? ` · ${entry.note}` : ""}` : entry.note || (entry.kind === "in" ? "Tahsilat" : "Ödeme / iade")}${entry.actorName ? ` · ${entry.actorName}` : ""}`, entry.kind === "in" ? tl(entry.amount) : "", entry.kind === "out" ? tl(entry.amount) : "", entry.receiptNo ? `No ${entry.receiptNo}` : ""], entryWidths, {
       colors: [ink, ink, green, red, muted],
       fill: index % 2 ? "#fcfcfd" : null,
     }),

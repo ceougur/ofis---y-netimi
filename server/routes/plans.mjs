@@ -145,7 +145,7 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
   const itemsOf = planId => store.all("SELECT id, seq, due_date AS dueDate, amount, note FROM plan_items WHERE plan_id = ? ORDER BY due_date, seq", planId);
   const entriesOf = planId =>
     store.all(
-      `SELECT e.id, e.item_id AS itemId, e.kind, e.amount, e.date, e.note, e.receipt_no AS receiptNo, e.cheque_id AS chequeId, e.created_by AS createdBy, e.created_at AS createdAt, e.updated_at AS updatedAt,
+      `SELECT e.id, e.item_id AS itemId, e.kind, e.amount, e.date, e.note, e.receipt_no AS receiptNo, e.cheque_id AS chequeId, e.opening, e.created_by AS createdBy, e.created_at AS createdAt, e.updated_at AS updatedAt,
               COALESCE(u.display_name, '') AS actorName
        FROM plan_entries e LEFT JOIN users u ON u.id = e.created_by WHERE e.plan_id = ? ORDER BY e.date, e.created_at, e.rowid`,
       planId,
@@ -164,7 +164,8 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
       ...plan,
       ...ledger,
       // Çekle yapılan tahsilat (v2.0.7) çekin kartından yönetilir (tahsil/karşılıksız/geri al); burada düzeltilmez.
-      entries: entries.map(entry => ({ ...entry, editable: !entry.chequeId && (manage || entry.createdBy === user.id) })),
+      // Açılış (devir) kaydını (v2.0.8) yalnız kart yöneten roller düzeltir.
+      entries: entries.map(entry => ({ ...entry, opening: Boolean(entry.opening), editable: !entry.chequeId && (manage || (!entry.opening && entry.createdBy === user.id)) })),
       canManage: manage,
       canCollect: can(user.role, "plans.collect"),
     };
@@ -519,12 +520,13 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
     return { kind, amount, date, note, itemId };
   };
   const entryOf = (planId, entryId) => {
-    const entry = store.get("SELECT id, item_id AS itemId, kind, amount, date, note, receipt_no AS receiptNo, cheque_id AS chequeId, created_by AS createdBy, created_at AS createdAt FROM plan_entries WHERE plan_id = ? AND id = ?", planId, limited(entryId, 120, "Hareket"));
+    const entry = store.get("SELECT id, item_id AS itemId, kind, amount, date, note, receipt_no AS receiptNo, cheque_id AS chequeId, opening, created_by AS createdBy, created_at AS createdAt FROM plan_entries WHERE plan_id = ? AND id = ?", planId, limited(entryId, 120, "Hareket"));
     if (!entry) throw new HttpError(404, "Hareket bulunamadı. Başka biri silmiş olabilir.");
     return entry;
   };
   const requireEntryRight = (user, entry) => {
     if (entry.chequeId) throw new HttpError(409, "Bu tahsilat bir çek/senetten geldi; Çek/Senet'teki evraktan düzeltin (karşılıksız, geri al ya da sil).", { code: "cheque-linked", chequeId: entry.chequeId });
+    if (entry.opening && !can(user.role, "plans.manage")) throw new HttpError(403, "Açılış (devir) kaydını yalnızca yönetici, uzman ve muhasebe değiştirebilir.");
     if (entry.createdBy !== user.id && !can(user.role, "plans.manage")) throw new HttpError(403, "Başkasının girdiği hareketi yalnızca yönetici, uzman ve muhasebe değiştirebilir.");
   };
   // Makbuz numarası: ofis genelinde artan sayaç (tahsilatlarda). Silinen makbuzun numarası yeniden verilmez.
@@ -574,7 +576,7 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
     requireEntryRight(user, previous);
     store.tx(() => {
       store.run("DELETE FROM plan_entries WHERE id = ?", previous.id);
-      trash?.add({ kind: "plan-entry", ref: previous.id, title: plan.name, detail: previous.note || (previous.kind === "in" ? "Taksit tahsilatı" : "Taksit ödemesi/iadesi"), payload: { ...previous, planId: plan.id, planName: plan.name }, user });
+      trash?.add({ kind: "plan-entry", ref: previous.id, title: plan.name, detail: previous.note || (previous.opening ? "Açılış (devir)" : previous.kind === "in" ? "Taksit tahsilatı" : "Taksit ödemesi/iadesi"), payload: { ...previous, opening: previous.opening ? 1 : 0, planId: plan.id, planName: plan.name }, user });
       audit(user, "plan.entry.deleted", previous.id, { planId: plan.id, ...previous });
     });
     changed(user, { planId: plan.id });
@@ -597,6 +599,8 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
     const plan = detail(params.id, user);
     const entry = plan.entries.find(item => item.id === params.entryId);
     if (!entry) throw new HttpError(404, "Hareket bulunamadı.");
+    // Açılış (devir) kaydı programda alınmış bir tahsilat değildir; makbuzu kesilmez (v2.0.8).
+    if (entry.opening) throw new HttpError(409, "Açılış (devir) kaydının makbuzu olmaz: bu tutar programa girmeden önce ödenmişti.");
     const pdf = receiptPdf(plan, entry, { officeName: office(), userName: user.display_name || user.username || "" });
     sendBuffer(res, pdf, { type: "application/pdf", name: `Makbuz ${entry.receiptNo ? `No ${entry.receiptNo} ` : ""}${plan.name} ${dayText(entry.date)}.pdf`, inline: url.searchParams.get("download") !== "1" });
   });
@@ -681,7 +685,8 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
   // ---------- Diğer modüller için ----------
   // Kasa: taksit hareketleri (silinmemiş kartların) tahsilat/ödeme olarak.
   // Kasa kaynağı: aynı tablo/koşul hem Kasa satırlarında hem Kasa toplamında (ANLIK DURUM) kullanılır.
-  const cashSource = { table: "plan_entries e JOIN plans p ON p.id = e.plan_id AND p.deleted_at IS NULL", where: "e.cheque_id = ''", kind: "e.kind", amount: "e.amount", date: "e.date" };
+  // Açılış (devir) kaydı (v2.0.8) Kasa'ya girmez: o para bu programın kasasından geçmedi.
+  const cashSource = { table: "plan_entries e JOIN plans p ON p.id = e.plan_id AND p.deleted_at IS NULL", where: "e.cheque_id = '' AND e.opening = 0", kind: "e.kind", amount: "e.amount", date: "e.date" };
   const cashEntries = (after = "") =>
     store.all(
       `SELECT e.id, e.kind, 'plan' AS source, e.amount, e.date, e.note AS description, e.plan_id AS planId, p.name AS planName,
@@ -775,7 +780,7 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
   function entriesForCase(caseKey, caseSource) {
     if (!caseKey) return [];
     return store.all(
-      `SELECT e.id, e.plan_id AS planId, p.name AS planName, e.item_id AS itemId, i.seq AS itemSeq, e.kind, e.amount, e.date, e.note, e.receipt_no AS receiptNo,
+      `SELECT e.id, e.plan_id AS planId, p.name AS planName, e.item_id AS itemId, i.seq AS itemSeq, e.kind, e.amount, e.date, e.note, e.receipt_no AS receiptNo, e.opening,
               e.created_by AS actorId, e.created_at AS createdAt, e.updated_at AS updatedAt, COALESCE(u.display_name, '') AS actorName
        FROM plan_entries e JOIN plans p ON p.id = e.plan_id AND p.deleted_at IS NULL LEFT JOIN plan_items i ON i.id = e.item_id LEFT JOIN users u ON u.id = e.created_by
        WHERE p.case_key = ? AND (? = '' OR p.case_source = ?)`,
@@ -818,9 +823,9 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
       counts.set(item.planId, (counts.get(item.planId) || 0) + 1);
     }
     const entries = new Map();
-    for (const entry of store.all("SELECT id, plan_id AS planId, item_id AS itemId, kind, amount, date, note, receipt_no AS receiptNo, created_at AS createdAt FROM plan_entries ORDER BY date, created_at, rowid")) {
+    for (const entry of store.all("SELECT id, plan_id AS planId, item_id AS itemId, kind, amount, date, note, receipt_no AS receiptNo, opening, created_at AS createdAt FROM plan_entries ORDER BY date, created_at, rowid")) {
       if (!entries.has(entry.planId)) entries.set(entry.planId, []);
-      entries.get(entry.planId).push({ ...entry, itemSeq: entry.itemId ? seqs.get(entry.itemId) || null : null });
+      entries.get(entry.planId).push({ ...entry, opening: Boolean(entry.opening), itemSeq: entry.itemId ? seqs.get(entry.itemId) || null : null });
     }
     for (const plan of plans) {
       const own = entries.get(plan.id) || [];
@@ -859,5 +864,45 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
   const countForAccount = accountId => store.get("SELECT COUNT(*) AS n FROM plans WHERE deleted_at IS NULL AND account_id = ?", accountId).n;
   const receiptSeq = () => nextReceipt();
 
-  return { cashEntries, cashSource, dueItems, openItems, fingerprint, ledgerPlansByAccount, list, detail, forCase, entriesForCase, summariesByAccount, forAccount, createForAccount, followAccount, countForAccount, receiptSeq, nextRef, validDistribution: distributionInput, resolveGroups, groupTree };
+  // ---------- Aktarma (v2.0.8): tablodan ya da Excel'den kart ----------
+  // Kartı taksitleriyle açar; Excel'e göre ödenmiş kısım her taksit için bir açılış (devir) kaydıdır: taksiti kapatır,
+  // carinin bakiyesine sayılır, Kasa'ya girmez, makbuzu yoktur. Çağıran tek işlem bloğu (store.tx) içinde çağırır.
+  // items: [{ dueDate, amount, paid, label }] (vade sırasıyla). Dönüş: { id, openingIds }.
+  function createScheduled(user, input, { importId = "", items = [], openingDate = today(), openingNote = "Excel'de ödenmiş" } = {}) {
+    const id = newId("plan");
+    const total = roundMoney(items.reduce((sum, item) => sum + (Number(item.amount) || 0), 0));
+    store.run(
+      "INSERT INTO plans (id, account_id, ref_no, registered_on, case_key, case_source, case_title, group_id, subgroup_id, name, note, phone, total, status, import_id, created_by, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'active', ?, ?, ?, ?)",
+      id, input.accountId || "", input.refNo || nextRef(), input.registeredOn || today(), input.caseKey || "", input.caseKey ? input.caseSource || currentSource() : "", input.caseKey ? input.caseTitle || input.name : "", input.groupId || null, input.subgroupId || null, String(input.name).slice(0, 160), String(input.note || "").slice(0, 1000), String(input.phone || "").slice(0, 60), total, importId, user.id, now(), now(),
+    );
+    const openingIds = [];
+    const stamp = now();
+    items.slice(0, MAX_ITEMS).forEach((item, index) => {
+      const itemId = newId("item");
+      store.run("INSERT INTO plan_items (id, plan_id, seq, due_date, amount, note, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", itemId, id, index + 1, item.dueDate, roundMoney(item.amount), String(item.label || "").slice(0, 200), stamp, stamp);
+      const paid = roundMoney(Math.min(Number(item.paid) || 0, Number(item.amount) || 0));
+      if (paid > 0.004) {
+        const entryId = newId("entry");
+        store.run("INSERT INTO plan_entries (id, plan_id, item_id, kind, amount, date, note, receipt_no, opening, created_by, created_at) VALUES (?, ?, ?, 'in', ?, ?, ?, NULL, 1, ?, ?)", entryId, id, itemId, paid, openingDate, openingNote, user.id, stamp);
+        openingIds.push(entryId);
+      }
+    });
+    audit(user, "plan.created", id, { name: input.name, total, accountId: input.accountId || "", importId, items: items.length, opening: roundMoney(items.reduce((sum, item) => sum + Math.min(Number(item.paid) || 0, Number(item.amount) || 0), 0)) });
+    return { id, openingIds };
+  }
+  // Programda kayıt kartından girilmiş tahsilatı karta taşır (Kasa toplamı değişmez: kayıt tahsilatı olarak çıkar, taksit
+  // tahsilatı olarak aynı tarih ve tutarla girer; giren kişi ve giriş zamanı korunur).
+  function adoptPayment(user, planId, payment, itemId = null) {
+    const entryId = newId("entry");
+    store.run(
+      "INSERT INTO plan_entries (id, plan_id, item_id, kind, amount, date, note, receipt_no, opening, created_by, created_at, updated_by, updated_at) VALUES (?, ?, ?, 'in', ?, ?, ?, NULL, 0, ?, ?, ?, ?)",
+      entryId, planId, itemId, roundMoney(payment.amount), payment.date, String(payment.note || "Kayıt kartından tahsilat").slice(0, 300), payment.created_by || user.id, payment.created_at || now(), user.id, now(),
+    );
+    return entryId;
+  }
+  // Açık veri oturumunda kartı olan kayıtlar (silinmemiş kartlar): takvim bu kişilerin tablodaki ödeme kalemlerini
+  // ikinci kez saymaz; aktarma "kartı var" der.
+  const linkedCases = source => new Set(store.all("SELECT case_key AS k FROM plans WHERE deleted_at IS NULL AND case_key <> '' AND case_source = ?", source || "").map(row => row.k));
+
+  return { cashEntries, cashSource, dueItems, openItems, fingerprint, ledgerPlansByAccount, list, detail, forCase, entriesForCase, summariesByAccount, forAccount, createForAccount, followAccount, countForAccount, receiptSeq, nextRef, validDistribution: distributionInput, resolveGroups, groupTree, ensureGroup, createScheduled, adoptPayment, linkedCases };
 }

@@ -43,8 +43,10 @@ export function registerReportRoutes(router, { auth, store, dataset, profile, pl
         const payments = store.all("SELECT case_key AS caseKey, amount, date, note FROM payments").filter(item => keys.has(item.caseKey));
         const settled = parseSettled(dataset.settingKey("dues.settled"));
         const dues = computeDues({ rows, tabs, payments, settled, now, forced });
-        for (const item of dues.dormant || []) dormant.push({ ...item, session: session.key, sessionName: session.name });
-        for (const item of dues.items) items.push({ ...item, session: session.key, sessionName: session.name, tab: item.tab || String(rows.find(row => row.__hofKey === item.caseKey)?.__sheet || "") });
+        // Taksit kartı olan kişinin (v2.0.8) tablodaki ödeme kalemleri ikinci kez sayılmaz (takvimle aynı kural).
+        const carded = plans?.linkedCases ? plans.linkedCases(session.key) : new Set();
+        for (const item of dues.dormant || []) if (!carded.has(item.caseKey)) dormant.push({ ...item, session: session.key, sessionName: session.name });
+        for (const item of dues.items) if (item.promise || !carded.has(item.caseKey)) items.push({ ...item, session: session.key, sessionName: session.name, tab: item.tab || String(rows.find(row => row.__hofKey === item.caseKey)?.__sheet || "") });
         for (const item of computeDeadlines({ rows, tabs, now, exclude: dues.sources, forced })) items.push({ ...item, session: session.key, sessionName: session.name, deadline: true });
       });
     }

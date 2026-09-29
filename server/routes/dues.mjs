@@ -38,7 +38,13 @@ export function registerDueRoutes(router, { auth, store, dataset, profile, event
     const keys = new Set(rows.map(row => row.__hofKey).filter(Boolean));
     const payments = store.all("SELECT case_key AS caseKey, amount, date, note FROM payments").filter(item => keys.has(item.caseKey));
     const forced = profile.roles ? profile.roles() : null;
-    const { items, sources, dormant } = computeDues({ rows, tabs, payments, settled: readSettled(), now, forced });
+    const computed = computeDues({ rows, tabs, payments, settled: readSettled(), now, forced });
+    // Taksit kartı olan kişinin (v2.0.8) tablodaki ödeme kalemleri ikinci kez sayılmaz: taksitleri kartından gelir.
+    // Ödeme sözü kişiye özel bir taahhüttür, kalır; son tarihi yaklaşan işler (sözleşme, sigorta…) bundan etkilenmez.
+    const carded = plans?.linkedCases ? plans.linkedCases(session) : new Set();
+    const items = carded.size ? computed.items.filter(item => item.promise || !carded.has(item.caseKey)) : computed.items;
+    const dormant = carded.size ? computed.dormant.filter(item => !carded.has(item.caseKey)) : computed.dormant;
+    const { sources } = computed;
     const deadlines = computeDeadlines({ rows, tabs, now, exclude: sources, forced });
     const local = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
     // Taksit kartlarının vadesi gelen/geçen taksitleri (v2.0.4) aynı listeye girer: şerit ve bildirimler tek kaynaktan okur.
