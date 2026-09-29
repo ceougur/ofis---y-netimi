@@ -14,12 +14,12 @@
 
   const isAdmin = () => HOF.can("license.manage");
   // Deneme/lisans bitişi, engel ve taşıma durumlarında gösterilen iletişim bilgisi (sunucudan gelir).
-  const FALLBACK_CONTACT = { name: "Destek Ofis", phone: "0532 605 05 87", phoneHref: "tel:+905326050587", email: "destekofis@proton.me" };
+  const FALLBACK_CONTACT = { name: "Destek Ofis", label: "Teknik Destek ve Satın Alımlar İçin", phone: "0536 771 50 55", phoneHref: "tel:+905367715055", email: "destekofis@proton.me" };
   const contactOf = status => ({ ...FALLBACK_CONTACT, ...(status?.contact || {}) });
   const needsContact = status => Boolean(status) && (!status.writable || status.severity === "warn" || ["trial", "expired", "blocked"].includes(status.state));
   const contactCard = status => {
     const c = contactOf(status);
-    return `<div class="hof-license-contact"><strong>${HOF.esc(c.name)} ile iletişim</strong><span>Kullanmaya devam etmek, lisans almak veya yenilemek için bize ulaşın.</span><div class="hof-license-contact-links"><a class="hof-button hof-button-small" href="${HOF.esc(c.phoneHref)}">${HOF.esc(c.phone)}</a><a class="hof-button hof-button-ghost hof-button-small" href="mailto:${HOF.esc(c.email)}?subject=${encodeURIComponent("Destek Ofis lisans")}">${HOF.esc(c.email)}</a></div></div>`;
+    return `<div class="hof-license-contact"><strong>${HOF.esc(c.label || `${c.name} ile iletişim`)}</strong><span>Kullanmaya devam etmek, lisans almak veya yenilemek için bize ulaşın.</span><div class="hof-license-contact-links"><a class="hof-button hof-button-small" href="${HOF.esc(c.phoneHref)}">${HOF.esc(c.phone)}</a><a class="hof-button hof-button-ghost hof-button-small" href="mailto:${HOF.esc(c.email)}?subject=${encodeURIComponent("Destek Ofis lisans")}">${HOF.esc(c.email)}</a></div></div>`;
   };
   const adminLink = () => (isAdmin() ? '<a class="hof-button hof-button-small" href="/admin.html#license">Lisans ekranını aç</a>' : "");
 

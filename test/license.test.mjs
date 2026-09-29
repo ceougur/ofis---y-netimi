@@ -426,7 +426,8 @@ describe("lisans motoru — sunucu", () => {
     assert.equal(waiting.state, "none");
     assert.equal(waiting.title, "Ücretsiz deneme henüz başlamadı");
     assert.match(waiting.message, /kendiliğinden başlar/);
-    assert.match(waiting.message, /0532 605 05 87/);
+    assert.match(waiting.message, /0536 771 50 55/);
+    assert.deepEqual([waiting.contact.label, waiting.contact.phone, waiting.contact.phoneHref], ["Teknik Destek ve Satın Alımlar İçin", "0536 771 50 55", "tel:+905367715055"]);
     online = true;
     await waitFor(async () => (await admin.get("/api/license")).data.data.state === "trial", "deneme başladı");
     const started = (await admin.get("/api/license")).data.data;

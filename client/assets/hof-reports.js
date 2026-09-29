@@ -1,23 +1,26 @@
-/* DestekOfis — Dinamik ve esnek raporlama (v2.0.2).
- * Sol menüdeki "Raporlar": Cari ekstre, Vade takip, Nakit akış. Sabit şablon yoktur; kolonlar sunucunun ortak omurgadan
- * (cari, tutar, vade, durum + özel alanlar) ürettiği tablodan gelir. Farklı Excel dosyalarındaki (oturumlardaki) kayıtlar
- * cari adıyla birleştirilir. Süzgeçler: tarih aralığı, cari, durum, oturum, sekme, en az tutar, dönem (nakit akış).
+/* DestekOfis — Tablo raporları (v2.0.2; v2.0.9'dan beri Raporlar penceresinin "Tablo raporları" sekmesi).
+ * Excel/Sheets tablolarındaki (tüm veri oturumları) tutar, vade ve durum kolonlarından: Cari ekstre, Vade takip, Nakit
+ * akış. Sabit şablon yoktur; kolonlar sunucunun ortak omurgadan (cari, tutar, vade, durum + özel alanlar) ürettiği
+ * tablodan gelir. Farklı Excel dosyalarındaki (oturumlardaki) kayıtlar cari adıyla birleştirilir. Cari, Kasa, Taksit ve
+ * Çek/Senet defterlerinden gelen raporlar aynı penceredeki diğer sekmelerdedir (hof-overview.js).
+ * Süzgeçler: tarih aralığı, cari, durum, oturum, sekme, en az tutar, dönem (nakit akış).
  * Dışa aktarma: Excel (.xlsx), PDF; yazdırma tarayıcının yazdırma penceresiyle (rapor tablosu temiz bir sayfada). */
 (() => {
   const HOF = window.HOF;
   if (!HOF) return;
   const { esc } = HOF;
+  // Adlar Raporlar penceresinin defter sekmelerinden (Cari ekstre, Vade takip, Nakit akış) ayrılsın diye "tablodaki" ile.
   const KINDS = [
-    ["cari-ekstre", "Cari ekstre", "Cari başına borç, tahsilat ve yürüyen bakiye"],
-    ["vade-takip", "Vade takip", "Vadeler ve son tarihler: gecikmiş, bugün, yaklaşan"],
-    ["nakit-akis", "Nakit akış", "Dönem başına beklenen ve gerçekleşen tahsilat, kasa"],
+    ["cari-ekstre", "Tablodaki kişiler", "Kişi başına tablodaki tutar (borç), kayıt kartından tahsilat ve yürüyen bakiye"],
+    ["vade-takip", "Tablodaki vadeler", "Tablodaki vadeler ve son tarihler: gecikmiş, bugün, yaklaşan"],
+    ["nakit-akis", "Tablodaki nakit akışı", "Dönem başına tablodan beklenen ve gerçekleşen tahsilat, kasa"],
   ];
   const money = value => (value === null || value === undefined ? "" : `${new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value)} ₺`);
   const day = ms => (ms === null || ms === undefined || ms === "" ? "" : new Date(ms).toLocaleDateString("tr-TR", { timeZone: "UTC" }));
   const number = value => new Intl.NumberFormat("tr-TR").format(value || 0);
   const isoOf = date => `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
 
-  let modal = null;
+  let host = null; // sekmenin kök düğümü (Raporlar penceresinin içinde)
   let state = { kind: "cari-ekstre", filters: {}, data: null, busy: false };
 
   function filtersFromForm(dialog) {
@@ -59,8 +62,8 @@
   }
 
   async function load() {
-    if (!modal) return;
-    const dialog = modal.dialog;
+    if (!host || !host.isConnected) return;
+    const dialog = host;
     state.filters = filtersFromForm(dialog);
     const body = dialog.querySelector("[data-report-body]");
     body.innerHTML = '<p class="hof-empty">Rapor hazırlanıyor…</p>';
@@ -101,7 +104,7 @@
   }
 
   async function exportReport(format) {
-    if (!modal) return;
+    if (!host) return;
     const response = await fetch(`/api/workspace/reports/${state.kind}/export`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ format, filters: { ...state.filters, sessions: state.filters.sessions ? state.filters.sessions.split(",") : [], status: state.filters.status ? [state.filters.status] : [], tabs: state.filters.tabs ? [state.filters.tabs] : [] } }) });
     if (!response.ok) {
       let message = "Dışa aktarma başarısız.";
@@ -151,48 +154,38 @@
     };
   }
 
-  function open(kind = state.kind) {
-    if (!HOF.can("reports.view")) return HOF.toast("Raporlar yönetici ve uzman hesapları içindir.", { type: "error" });
-    if (modal) {
-      modal.close();
-      modal = null;
-    }
-    state = { kind: KINDS.some(([id]) => id === kind) ? kind : "cari-ekstre", filters: {}, data: null, busy: false };
+  // Sekmeyi verilen düğüme kurar; sekme her açıldığında süzgeçler korunur (aynı pencere içinde).
+  function mount(node, kind = state.kind) {
+    host = node;
+    if (!state.kind || !KINDS.some(([id]) => id === kind)) kind = "cari-ekstre";
+    state = { ...state, kind, data: null, busy: false };
     const today = new Date();
     const monthStart = new Date(today.getFullYear(), today.getMonth() - 2, 1);
-    modal = HOF.modal({
-      title: "Raporlar",
-      eyebrow: "DİNAMİK RAPORLAMA",
-      size: "wide",
-      className: "hof-reports-modal",
-      body: `<div class="hof-report-kinds" role="tablist">${KINDS.map(([id, label, hint]) => `<button type="button" role="tab" data-kind="${id}" aria-selected="${id === state.kind}" title="${esc(hint)}">${esc(label)}</button>`).join("")}</div>
-        <p class="hof-modal-text">Rapor, yüklediğiniz her Excel/Sheets'ten (tüm oturumlar) ortak alanlarla üretilir: cari, tutar, vade, durum ve verinizdeki diğer kolonlar. Aynı kişi birden çok dosyada varsa tek cari olarak birleşir. Kolonlar veriden türetilir; şablon yoktur.</p>
+    const previous = state.filters || {};
+    node.innerHTML = `<div class="hof-report-kinds" role="tablist" aria-label="Tablo raporları">${KINDS.map(([id, label, hint]) => `<button type="button" role="tab" data-kind="${id}" aria-selected="${id === state.kind}" title="${esc(hint)}">${esc(label)}</button>`).join("")}</div>
+        <p class="hof-modal-text hof-report-intro">Yalnız <b>Excel/Sheets tablolarınızdaki</b> tutar, vade ve durum kolonlarından üretilir (tüm veri oturumları). Aynı kişi birden çok dosyada varsa tek kişi olarak birleşir. Cari, Kasa, Taksit ve Çek/Senet defterlerindeki hareketler için diğer sekmeleri kullanın.</p>
         <form class="hof-report-filters" data-filters>
-          <label><span>Başlangıç</span><input type="date" data-filter="from" value="${isoOf(monthStart)}"></label>
-          <label><span>Bitiş</span><input type="date" data-filter="to" value=""></label>
-          <label><span>Cari / kimlik</span><input type="search" data-filter="cari" placeholder="Ad, dosya no, telefon"></label>
+          <label><span>Başlangıç</span><input type="date" data-filter="from" value="${esc(previous.from ?? isoOf(monthStart))}"></label>
+          <label><span>Bitiş</span><input type="date" data-filter="to" value="${esc(previous.to || "")}"></label>
+          <label><span>Kişi / kimlik</span><input type="search" data-filter="cari" placeholder="Ad, dosya no, telefon" value="${esc(previous.cari || "")}"></label>
           <label><span>Durum</span><select data-filter="status"><option value="">Tüm durumlar</option></select></label>
           <label><span>Sekme</span><select data-filter="tabs"><option value="">Tüm sekmeler</option></select></label>
-          <label><span>En az tutar</span><input type="number" data-filter="minAmount" min="0" step="1" placeholder="0"></label>
+          <label><span>En az tutar</span><input type="number" data-filter="minAmount" min="0" step="1" placeholder="0" value="${esc(previous.minAmount || "")}"></label>
           <label data-granularity-row hidden><span>Dönem</span><select data-filter="granularity"><option value="month">Ay</option><option value="week">Hafta</option><option value="day">Gün</option></select></label>
           <div class="hof-report-sessions"><span>Oturumlar</span><div data-filter="sessions"></div></div>
           <div class="hof-report-actions"><button type="submit" class="hof-button">Raporu getir</button><button type="button" class="hof-button hof-button-ghost" data-clear>Süzgeçleri temizle</button></div>
         </form>
         <div class="hof-report-toolbar"><span data-report-meta class="hof-muted"></span><span><button type="button" class="hof-button hof-button-small hof-button-ghost" data-export="xlsx">Excel</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-export="pdf">PDF</button><button type="button" class="hof-button hof-button-small" data-print>Yazdır</button></span></div>
-        <div data-report-body></div>`,
-      onClose: () => {
-        modal = null;
-      },
-    });
-    const dialog = modal.dialog;
+        <div data-report-body></div>`;
+    const dialog = node;
     dialog.querySelector("[data-filters]").addEventListener("submit", event => {
       event.preventDefault();
       load();
     });
     dialog.querySelector("[data-clear]").addEventListener("click", () => {
-      dialog.querySelectorAll("[data-filter]").forEach(node => {
-        if (node.tagName === "INPUT" && node.type !== "checkbox") node.value = "";
-        else if (node.tagName === "SELECT") node.selectedIndex = 0;
+      dialog.querySelectorAll("[data-filter]").forEach(item => {
+        if (item.tagName === "INPUT" && item.type !== "checkbox") item.value = "";
+        else if (item.tagName === "SELECT") item.selectedIndex = 0;
       });
       dialog.querySelectorAll('[data-filter="sessions"] input').forEach(input => (input.checked = true));
       load();
@@ -223,8 +216,13 @@
     );
     dialog.querySelector("[data-print]").addEventListener("click", print);
     load();
-    return modal;
   }
 
+  // Eski giriş noktası: sol menü ve eski bağlantılar birleşik Raporlar penceresini "Tablo raporları" sekmesinde açar.
+  const open = kind => {
+    if (kind) state.kind = kind;
+    return HOF.overview?.openReports ? HOF.overview.openReports("table") : null;
+  };
+  HOF.tableReports = { mount, print, exportReport };
   HOF.reports = { open, print, exportReport };
 })();

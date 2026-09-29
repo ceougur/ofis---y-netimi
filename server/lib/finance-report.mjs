@@ -186,3 +186,82 @@ export function presetRange(preset, today) {
       return null;
   }
 }
+
+// ---------- Vade takip (v2.0.9) ----------
+// Vadesi olan açık kalemler tek listede: taksit, çek/senet, ileri tarihli Kasa hareketi, tablodaki ödeme günü ve ödeme
+// sözü, son tarih. Kalemler yollarda modüllerin kendi hesabından toplanır; burada yalnız aralık, durum ve toplamlar.
+//   Aralık  : başlangıç ≤ vade ≤ bitiş. "late" açıkken başlangıçtan önce vadesi geçmiş (kapanmamış) kalemler de
+//             listelenir (gecikmiş kalem aralık dışında kalıp gözden kaçmaz).
+//   Durum   : vade < bugün → gecikmiş, = bugün → bugün, > bugün → yaklaşan (takvim günü). Tablodaki ay kalemi (ör.
+//             "Eylül ücreti", ayın ilk gününe yazılır) içinde bulunulan ayda "bu ay"dır, gecikmiş sayılmaz (takvimle
+//             aynı kural); toplamda "bugün / bu ay" kümesine girer.
+//   Toplam  : yön başına (tahsil edilecek / ödenecek) durum durum; tutarı olmayan kalem (son tarih, tutarsız ödeme günü)
+//             sayılır ama toplama girmez.
+const DAY_MS = 86_400_000;
+const dayNumber = date => Date.parse(`${date}T00:00:00Z`) / DAY_MS;
+
+/**
+ * @param {{ today: string, from?: string, to?: string, late?: boolean, items: Array<{ date: string, direction: "in"|"out"|"", amount: number|null, source: string, label: string, party?: string, detail?: string, ref?: object }> }} input
+ */
+export function dueList({ today, from = "", to = "", late = true, items = [] }) {
+  const rows = [];
+  for (const item of items) {
+    if (!item || !item.date) continue;
+    if (to && item.date > to) continue;
+    if (from && item.date < from && !(late && item.date < today)) continue;
+    const days = Math.round(dayNumber(item.date) - dayNumber(today));
+    const raw = item.amount === null || item.amount === undefined || item.amount === "" ? null : Number(item.amount);
+    const amount = raw === null || !Number.isFinite(raw) ? null : roundMoney(raw);
+    if (amount !== null && amount <= EPS) continue;
+    const state = days < 0 ? (item.month && item.date.slice(0, 7) === today.slice(0, 7) ? "month" : "overdue") : days === 0 ? "today" : "upcoming";
+    rows.push({ ...item, direction: item.direction === "out" ? "out" : item.direction === "in" ? "in" : "", amount, days, state });
+  }
+  rows.sort((a, b) => (a.date === b.date ? (a.direction === b.direction ? String(a.party || "").localeCompare(String(b.party || ""), "tr") : a.direction === "in" ? -1 : 1) : a.date < b.date ? -1 : 1));
+  const bucket = () => ({ count: 0, amount: 0 });
+  const side = () => ({ overdue: bucket(), today: bucket(), upcoming: bucket(), total: bucket() });
+  const totals = { in: side(), out: side(), noAmount: 0, count: rows.length };
+  for (const row of rows) {
+    if (row.amount === null || !row.direction) {
+      totals.noAmount += 1;
+      continue;
+    }
+    for (const key of [row.state === "month" ? "today" : row.state, "total"]) {
+      totals[row.direction][key].count += 1;
+      totals[row.direction][key].amount = roundMoney(totals[row.direction][key].amount + row.amount);
+    }
+  }
+  totals.net = roundMoney(totals.in.total.amount - totals.out.total.amount);
+  return { today, from, to, late: Boolean(late), rows, totals };
+}
+
+// ---------- Nakit akış dönemleri (v2.0.9) ----------
+// Projeksiyon satırları gün / hafta (pazartesi başlar) / ay dönemlerine toplanır; dönem sonu kasa = dönemin son
+// satırından sonraki beklenen kasa. Hareketi olmayan dönem yazılmaz (bakiye değişmez).
+const MONTHS = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"];
+export function periodOf(date, group) {
+  if (group === "month") return date.slice(0, 7);
+  if (group === "week") {
+    const time = Date.parse(`${date}T00:00:00Z`);
+    const weekday = (new Date(time).getUTCDay() + 6) % 7;
+    return new Date(time - weekday * DAY_MS).toISOString().slice(0, 10);
+  }
+  return date;
+}
+export function periodLabel(period, group) {
+  if (group === "month") return `${MONTHS[Number(period.slice(5, 7)) - 1]} ${period.slice(0, 4)}`;
+  const text = `${period.slice(8, 10)}.${period.slice(5, 7)}.${period.slice(0, 4)}`;
+  return group === "week" ? `${text} haftası` : text;
+}
+/** @param {{ opening: number, rows: Array<{ date, direction, amount, balance }> }} projected  projection() sonucu */
+export function groupFlows(projected, group = "month") {
+  const periods = new Map();
+  for (const row of projected.rows || []) {
+    const key = periodOf(row.date, group);
+    const period = periods.get(key) || { period: key, label: periodLabel(key, group), in: 0, out: 0, count: 0, closing: projected.opening };
+    period[row.direction === "out" ? "out" : "in"] = roundMoney(period[row.direction === "out" ? "out" : "in"] + row.amount);
+    period.count += 1;
+    period.closing = row.balance;
+    periods.set(key, period);
+  }
+  return [...periods.values()].map(period => ({ ...period, net: roundMoney(period.in - period.out) }));
+}

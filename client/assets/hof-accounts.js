@@ -816,6 +816,8 @@
     picker,
     forCase: key => HOF.api(`/api/workspace/cases/${encodeURIComponent(key)}/account`),
     newFor: preset => (canManage() ? editAccount(null, preset) : HOF.toast("Cari açmak yönetici, uzman ve muhasebe yetkisidir.", { type: "error" })),
+    // Raporlar (v2.0.9): cari defteri boşken "Tablodaki kişileri cari yap" (Cari → Tablodan al ile aynı akış).
+    fromTable: () => (canManage() ? importFromTable() : HOF.toast("Cari açmak yönetici, uzman ve muhasebe yetkisidir.", { type: "error" })),
     collect: async accountId => {
       try {
         collect(await HOF.api(`/api/workspace/accounts/${encodeURIComponent(accountId)}`));

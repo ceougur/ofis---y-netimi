@@ -1,6 +1,6 @@
 {
   "name": "destekofis",
-  "version": "2.0.8",
+  "version": "2.0.9",
   "private": true,
   "description": "DestekOfis — ofisler için merkezi kayıt takip ve yönetim sunucusu (server/client); yüklenen veriye göre sektöre uyum sağlar",
   "type": "module",
@@ -13,6 +13,8 @@
     "test": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 \"test/**/*.test.mjs\"",
     "test:e2e": "node --disable-warning=ExperimentalWarning test/e2e/run.mjs",
     "test:senaryo": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-tablodan-aktar.mjs",
+    "test:senaryo-rapor": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-raporlar.mjs",
+    "test:senaryo-taslak": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-taslak.mjs",
     "check": "node tools/check-syntax.mjs",
     "backup": "node --disable-warning=ExperimentalWarning tools/backup.mjs",
     "package": "node tools/package.mjs",

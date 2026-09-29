@@ -6,7 +6,7 @@
  * çevrilir (hof-excel-format.js). CSV değerleri olduğu gibi alınır: "0532…" telefonlarının baştaki sıfırı ve
  * "2025/1" gibi dosya numaraları bozulmaz. v2.0.1: formüller de hücre adresleriyle gönderilir. v2.0.2: açılır listeler. */
 import * as XLSX from "/assets/xlsx-DGuHH-KN.js";
-import { decodeCsv, sheetFormulas, sheetMatrix } from "/assets/hof-excel-format.js";
+import { decodeCsv, fitRange, sheetFormulas, sheetMatrix } from "/assets/hof-excel-format.js";
 
 // v2.0.2: açılır listeler (Veri doğrulama → Liste) ve birleşik giriş kutuları (Form denetimi / ActiveX). SheetJS
 // bunları okumaz; .xlsx içindeki sayfa XML'lerinden yalnızca <dataValidations> ve <controls> parçaları, kutuların
@@ -85,6 +85,7 @@ self.onmessage = event => {
     let rowCount = 0;
     for (const sheetName of workbook.SheetNames) {
       const sheet = workbook.Sheets[sheetName];
+      if (!csv) fitRange(XLSX, sheet);
       // Formüllü sayfada boş satırlar da gönderilir (matristeki sıra = sayfadaki satır); sunucu formülleri kayıtlara
       // bağlar ve programda değişen değerlerle yeniden hesaplar (v2.0.1). Açılır listeli dosyada tüm sayfalar böyle
       // gönderilir: liste kuralları ve başka sayfadaki liste aralıkları satır/kolon adresiyle çözülür (v2.0.2).

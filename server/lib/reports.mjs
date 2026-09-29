@@ -153,7 +153,7 @@ export function cariEkstre({ records, payments = [], filters = normalizeFilters(
     const debit = record.debt ?? record.amount;
     const date = record.deadline;
     if (debit !== null && inRange(date, filters) && (filters.minAmount === null || Math.abs(debit) >= filters.minAmount)) {
-      group.lines.push({ date, kind: "borc", description: [record.tab, record.id || record.key].filter(Boolean).join(" · "), session: record.sessionName, tab: record.tab, borc: debit, alacak: null, status: record.status, fields: record.fields, key: record.key });
+      group.lines.push({ date, kind: "borc", description: [record.tab, record.id].filter(Boolean).join(" · "), session: record.sessionName, tab: record.tab, borc: debit, alacak: null, status: record.status, fields: record.fields, key: record.key });
     }
     for (const payment of paid.get(record.key) || []) {
       const at = parseIsoDay(payment.date);

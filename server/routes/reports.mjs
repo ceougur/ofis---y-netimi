@@ -8,6 +8,9 @@ import { tablePdf } from "../lib/report-pdf.mjs";
 import { columnOrder } from "../lib/sources.mjs";
 import { buildXlsx } from "../lib/xlsx-write.mjs";
 
+// Raporlar ileriye bir yıl bakar (takvim ve bildirimler bu ay + 7 gün): açıkça tarihi yazılı ödeme ve sözler aralık
+// seçilince görünür. Geçmiş için takvimin kuralı geçerlidir (90 gün; son tarihler 30 gün).
+const AHEAD = Object.freeze({ aheadDays: 366, promiseDays: 366 });
 const TITLES = { "cari-ekstre": "Cari ekstre", "vade-takip": "Vade takip", "nakit-akis": "Nakit akış" };
 const ascii = value => String(value).replace(/[ıİşŞğĞçÇöÖüÜ]/g, char => ({ ı: "i", İ: "I", ş: "s", Ş: "S", ğ: "g", Ğ: "G", ç: "c", Ç: "C", ö: "o", Ö: "O", ü: "u", Ü: "U" })[char]);
 
@@ -21,8 +24,20 @@ export function registerReportRoutes(router, { auth, store, dataset, profile, pl
     }
   };
 
+  const paymentsState = () => {
+    const row = store.get("SELECT COUNT(*) AS count, COALESCE(MAX(COALESCE(updated_at, created_at)), '') AS at FROM payments");
+    return `${row.count}/${row.at}`;
+  };
+  // Oturumun takvimi etkileyen her şeyi: veri ve analiz (profil parmak izi), elle kapatılan kalemler, sekme adları.
+  const sessionState = session =>
+    dataset.withKey(session.key, () => {
+      const settled = store.setting(dataset.settingKey("dues.settled"), "") || "";
+      const tabs = ["dataset.tabs.alias", "dataset.tabs.hidden"].map(name => store.setting(dataset.settingKey(name), "") || "").join("~");
+      return [session.key, session.rowCount, session.recordCount, session.changedAt || "", profile.fingerprint ? profile.fingerprint() : "", `${settled.length}:${settled.slice(-64)}`, tabs].join(":");
+    });
+
   /** Seçilen oturumların omurgası: kayıtlar, takvim kalemleri ve son tarihler (oturum adıyla). */
-  async function backbone(filters, now) {
+  async function calendar(filters, now) {
     const sessions = dataset.sessions().filter(item => !filters.sessions.length || filters.sessions.includes(item.key));
     const records = [];
     const items = [];
@@ -42,18 +57,40 @@ export function registerReportRoutes(router, { auth, store, dataset, profile, pl
         const keys = new Set(rows.map(row => row.__hofKey));
         const payments = store.all("SELECT case_key AS caseKey, amount, date, note FROM payments").filter(item => keys.has(item.caseKey));
         const settled = parseSettled(dataset.settingKey("dues.settled"));
-        const dues = computeDues({ rows, tabs, payments, settled, now, forced });
+        const dues = computeDues({ rows, tabs, payments, settled, now, forced, window: AHEAD });
         // Taksit kartı olan kişinin (v2.0.8) tablodaki ödeme kalemleri ikinci kez sayılmaz (takvimle aynı kural).
         const carded = plans?.linkedCases ? plans.linkedCases(session.key) : new Set();
         for (const item of dues.dormant || []) if (!carded.has(item.caseKey)) dormant.push({ ...item, session: session.key, sessionName: session.name });
-        for (const item of dues.items) if (item.promise || !carded.has(item.caseKey)) items.push({ ...item, session: session.key, sessionName: session.name, tab: item.tab || String(rows.find(row => row.__hofKey === item.caseKey)?.__sheet || "") });
-        for (const item of computeDeadlines({ rows, tabs, now, exclude: dues.sources, forced })) items.push({ ...item, session: session.key, sessionName: session.name, deadline: true });
+        for (const item of dues.items) if (item.promise || !carded.has(item.caseKey)) items.push({ ...item, carded: carded.has(item.caseKey), session: session.key, sessionName: session.name, tab: item.tab || String(rows.find(row => row.__hofKey === item.caseKey)?.__sheet || "") });
+        for (const item of computeDeadlines({ rows, tabs, now, exclude: dues.sources, forced, aheadDays: AHEAD.aheadDays })) items.push({ ...item, session: session.key, sessionName: session.name, deadline: true });
       });
     }
+    return { sessions: sessions.map(item => ({ key: item.key, name: item.name, rowCount: item.rowCount })), records, items, dormant, columnsBySession };
+  }
+  // Tüm oturumların takvimi önbellekte: oturumlar, tahsilatlar, taksit kartları ve gün değişmedikçe yeniden hesaplanmaz
+  // (birleşik Vade takip ve Nakit akış her süzgeç değişiminde buradan okur).
+  let cache = { key: "", value: null, pending: null };
+  async function allCalendar(now = new Date()) {
+    const key = [now.toDateString(), paymentsState(), plans?.fingerprint ? plans.fingerprint() : "", ...dataset.sessions().map(sessionState)].join("|");
+    if (cache.key === key && cache.value) return cache.value;
+    if (cache.key === key && cache.pending) return cache.pending;
+    const pending = calendar(normalizeFilters({}), now);
+    cache = { key, value: null, pending };
+    try {
+      const value = await pending;
+      if (cache.pending === pending) cache = { key, value, pending: null };
+      return value;
+    } catch (error) {
+      if (cache.pending === pending) cache = { key: "", value: null, pending: null };
+      throw error;
+    }
+  }
+  async function backbone(filters, now) {
+    const data = filters.sessions.length ? await calendar(filters, now) : await allCalendar(now);
     const payments = store.all("SELECT case_key AS caseKey, amount, date, note FROM payments");
     // Nakit akışta taksit kartı hareketleri de kasa giriş/çıkışıdır (v2.0.4).
     const cashEntries = [...store.all("SELECT kind, amount, date FROM cash_entries"), ...(plans?.cashEntries ? plans.cashEntries().map(entry => ({ kind: entry.kind, amount: entry.amount, date: entry.date })) : [])];
-    return { sessions: sessions.map(item => ({ key: item.key, name: item.name, rowCount: item.rowCount })), records, items, dormant, payments, cashEntries, columnsBySession };
+    return { ...data, payments, cashEntries };
   }
 
   async function build(kind, input) {
@@ -113,4 +150,7 @@ export function registerReportRoutes(router, { auth, store, dataset, profile, pl
     }
     throw new HttpError(400, "Biçim xlsx ya da pdf olmalı.");
   });
+
+  // Birleşik raporlar (routes/overview.mjs): tüm oturumların tablo takvimi.
+  return { calendar: allCalendar };
 }

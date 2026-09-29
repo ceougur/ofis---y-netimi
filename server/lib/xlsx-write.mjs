@@ -81,6 +81,33 @@ const safeSheetName = (name, used) => {
  * @param {{ title?: string, creator?: string, now?: Date }} options
  * @returns {Buffer} .xlsx içeriği
  */
+// Veri doğrulama (Excel "Veri Doğrulama"): açılır liste en çok 255 karakter; yardım notu başlığı 32, metni 255 karakter.
+function validationsXml(list = []) {
+  const items = (list || []).filter(item => item && Number.isInteger(item.column));
+  if (!items.length) return "";
+  const cut = (text, max) => clean(text).slice(0, max);
+  const body = items
+    .map(item => {
+      const rows = item.rows || 2000;
+      const ref = `${columnName(item.column)}2:${columnName(item.column)}${rows + 1}`;
+      const prompt = item.prompt ? ` showInputMessage="1" promptTitle="${xml(cut(item.title || "", 32))}" prompt="${xml(cut(item.prompt, 255))}"` : "";
+      if (item.type === "list" && item.options?.length) {
+        const joined = item.options.map(option => String(option).replace(/[",]/g, " ").trim()).filter(Boolean).join(",").slice(0, 255);
+        // Liste dışı değer engellenmez (uyarı): kullanıcı listede olmayan bir durumu da yazabilsin.
+        return `<dataValidation type="list" errorStyle="information" allowBlank="1" showErrorMessage="1" errorTitle="Listede yok" error="Listede olmayan bir değer yazdınız; yine de kaydedebilirsiniz."${prompt} sqref="${ref}"><formula1>"${xml(joined)}"</formula1></dataValidation>`;
+      }
+      if (item.type === "whole") return `<dataValidation type="whole" operator="between" allowBlank="1" showErrorMessage="1" errorTitle="Geçersiz sayı" error="${xml(cut(item.error || `${item.min}–${item.max} arası bir sayı yazın.`, 255))}"${prompt} sqref="${ref}"><formula1>${Number(item.min) || 0}</formula1><formula2>${Number(item.max) || 0}</formula2></dataValidation>`;
+      return prompt ? `<dataValidation allowBlank="1"${prompt} sqref="${ref}"/>` : "";
+    })
+    .filter(Boolean);
+  return body.length ? `<dataValidations count="${body.length}">${body.join("")}</dataValidations>` : "";
+}
+
+// Taslak dosyalar (v2.0.9, sektöre uygun taslak Excel) için sayfa seçenekleri:
+//   formats: { [kolon sırası]: "dd.mm.yyyy" | "#,##0.00" | "0" | "@" }  → boş hücreler de o biçimde (kolonun stili)
+//   validations: [{ column, type: "list"|"whole"|"none", options?, min?, max?, title?, prompt?, rows? }]  → açılır
+//                liste, sayı aralığı ya da yalnız yardım notu (başlığa/hücreye tıklanınca görünür)
+//   widths: { [kolon sırası]: genişlik }
 export function buildXlsx(sheets, { title = "DestekOfis", creator = "DestekOfis", now = new Date() } = {}) {
   const list = sheets.length ? sheets : [{ name: "Sayfa1", columns: [], rows: [] }];
   const used = new Set();
@@ -101,7 +128,20 @@ export function buildXlsx(sheets, { title = "DestekOfis", creator = "DestekOfis"
     const name = safeSheetName(sheet.name, used);
     const columns = sheet.columns;
     const headers = sheet.headers || columns;
-    const widths = headers.map(header => Math.min(60, Math.max(10, String(header).length + 4)));
+    const widths = headers.map((header, index) => sheet.widths?.[index] || Math.min(60, Math.max(10, String(header).length + 4)));
+    // "@" (metin) yerleşik biçimdir (numFmtId 49): telefon ve numaralarda baştaki 0 korunur.
+    const colStyle = index => {
+      const code = sheet.formats?.[index];
+      if (!code) return 0;
+      if (code === "@") {
+        if (!styleOf.has(49)) {
+          styleOf.set(49, styles.length);
+          styles.push({ numFmtId: 49 });
+        }
+        return styleOf.get(49);
+      }
+      return styleFor(code);
+    };
     const rowsXml = [];
     const cell = (ref, content, style) => {
       if (content === null) return "";
@@ -127,9 +167,10 @@ export function buildXlsx(sheets, { title = "DestekOfis", creator = "DestekOfis"
 <dimension ref="A1:${last}"/>
 <sheetViews><sheetView workbookViewId="0"${sheetIndex === 0 ? ' tabSelected="1"' : ""}>${columns.length ? '<pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/><selection pane="bottomLeft" activeCell="A2" sqref="A2"/>' : ""}</sheetView></sheetViews>
 <sheetFormatPr defaultRowHeight="15"/>
-${columns.length ? `<cols>${widths.map((width, index) => `<col min="${index + 1}" max="${index + 1}" width="${width}" customWidth="1"/>`).join("")}</cols>` : ""}
+${columns.length ? `<cols>${widths.map((width, index) => { const style = colStyle(index); return `<col min="${index + 1}" max="${index + 1}" width="${width}"${style ? ` style="${style}"` : ""} customWidth="1"/>`; }).join("")}</cols>` : ""}
 <sheetData>${rowsXml.join("")}</sheetData>
 ${columns.length && sheet.rows.length ? `<autoFilter ref="A1:${last}"/>` : ""}
+${validationsXml(sheet.validations)}
 <pageMargins left="0.5" right="0.5" top="0.6" bottom="0.6" header="0.3" footer="0.3"/>
 </worksheet>`;
     return { name, body };

@@ -695,7 +695,9 @@
     // Çek / Senet (v2.0.7): alınan portföy ve verilen evrak; rozet = vadesi geçen ve bugün vadesi gelen açık evrak.
     { action: "cheques", icon: "✎", key: "side.cheques", label: () => "Çek / Senet", requires: "cheques.view", badge: "warn" },
     { action: "liens", icon: "!", key: "side.liens", label: () => "Haciz uyarıları", badge: "warn", module: "haciz" },
-    { action: "analytics", icon: "▤", key: "side.analytics", label: () => "Raporlar", requires: "reports.view" },
+    // Raporlar (v2.0.9): ANLIK DURUM'daki "Rapor Al" ile aynı pencere (Cari ekstre, Vade takip, Nakit akış, Çek/Senet,
+    // modül raporları, Tablo raporları). Rapor yetkisi ya da kişiye verilen ANLIK DURUM yetkisiyle görünür.
+    { action: "analytics", icon: "▤", key: "side.analytics", label: () => "Raporlar", requires: "reports.any" },
     { action: "reports", icon: "↗", key: "side.reports", label: () => "Personel raporu", requires: "reports.view" },
     { action: "guide", icon: "?", key: "side.guide", label: () => "Kullanım kılavuzu" },
   ];
@@ -794,7 +796,7 @@
       else if (action === "editSide") openSideEditor();
       else if (action === "guide") window.open("/kilavuz/DestekOfis-Kullanim-Kilavuzu.pdf", "_blank", "noopener");
       else if (action === "reports") openReports();
-      else if (action === "analytics") HOF.reports?.open();
+      else if (action === "analytics") HOF.overview?.openReports();
       else if (action === "profile") openProfile();
       else if (action === "password") HOF.changePassword();
       else if (action === "logout") HOF.logout();

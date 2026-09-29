@@ -46,6 +46,7 @@ import { registerChatRoutes } from "./routes/chat.mjs";
 import { registerDatasetRoutes } from "./routes/dataset.mjs";
 import { registerInsightRoutes } from "./routes/insight.mjs";
 import { registerReportRoutes } from "./routes/reports.mjs";
+import { registerTemplateRoutes } from "./routes/templates.mjs";
 import { registerLicenseRoutes } from "./routes/license.mjs";
 import { registerTrpcRoutes } from "./routes/trpc.mjs";
 import { registerWorkspaceRoutes } from "./routes/workspace.mjs";
@@ -156,7 +157,8 @@ export function createApp(overrides = {}) {
   // Çek / Senet (v2.0.7): cari ve taksit defterine bağlı; Kasa tahsil/ödeme olaylarını okur.
   context.cheques = registerChequeRoutes(router, { ...context, accounts: () => context.accounts, plans: () => context.plans });
   // ANLIK DURUM (v2.0.7): Kasa, Cari, Stok ve Çek/Senet'in kendi hesaplarını okur (tek kaynak); raporlar.
-  context.overview = registerOverviewRoutes(router, { ...context, cash: () => context.cash, accounts: () => context.accounts, plans: () => context.plans, stock: () => context.stock, cheques: () => context.cheques });
+  // Vade takip ve nakit akışı (v2.0.9) tablolardaki ödeme günlerini de okur (tüm veri oturumları; routes/reports.mjs).
+  context.overview = registerOverviewRoutes(router, { ...context, cash: () => context.cash, accounts: () => context.accounts, plans: () => context.plans, stock: () => context.stock, cheques: () => context.cheques, tables: () => context.tableReports });
   // Rapor merkezi (v2.0.7): programdaki her bilginin hazır raporu; ekranda ön izleme, PDF ve Excel.
   context.reportCenter = registerReportCenter(router, { ...context, cash: () => context.cash, accounts: () => context.accounts, plans: () => context.plans, stock: () => context.stock, cheques: () => context.cheques, overview: () => context.overview });
   registerDueRoutes(router, context);
@@ -166,7 +168,9 @@ export function createApp(overrides = {}) {
   registerChatRoutes(router, context);
   registerDatasetRoutes(router, context);
   registerInsightRoutes(router, context);
-  registerReportRoutes(router, context);
+  context.tableReports = registerReportRoutes(router, context);
+  // Sektöre uygun taslak Excel (v2.0.9): açılış ekranından indirilir.
+  registerTemplateRoutes(router, context);
   registerLicenseRoutes(router, context);
   registerTrpcRoutes(router, context);
 

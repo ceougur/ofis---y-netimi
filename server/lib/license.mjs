@@ -21,7 +21,8 @@ import { LicenseError, PRODUCT, decodeCode, formatInstallCode, normalizeMachineI
 import { resolveMachineId } from "./machine.mjs";
 
 // Lisans uyarılarında gösterilen iletişim bilgisi (deneme/lisans bitişi, engel, taşıma).
-export const SUPPORT_CONTACT = Object.freeze({ name: "Destek Ofis", phone: "0532 605 05 87", phoneHref: "tel:+905326050587", email: "destekofis@proton.me" });
+// Teknik destek ve satın alma hattı (v2.0.9). Genel telefon (0532 605 05 87) yalnız sitenin iletişim kartındadır.
+export const SUPPORT_CONTACT = Object.freeze({ name: "Destek Ofis", label: "Teknik Destek ve Satın Alımlar İçin", phone: "0536 771 50 55", phoneHref: "tel:+905367715055", email: "destekofis@proton.me" });
 const CONTACT_TEXT = `${SUPPORT_CONTACT.name}: ${SUPPORT_CONTACT.phone} · ${SUPPORT_CONTACT.email}`;
 export const GRACE_DAYS = 7;
 export const TRANSITION_DAYS = 30;

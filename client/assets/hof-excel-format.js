@@ -122,6 +122,26 @@ export function mergedFills(XLSX, sheet, date1904 = false) {
   return fills;
 }
 
+// Kullanılan alan (v2.0.9): SheetJS sayfanın <dimension> etiketine güvenir. Excel etiketi kaydederken günceller; ama
+// etiketi güncellemeyen programlarla doldurulan dosyada ("A1:T1" kalmış) alttaki dolu satırlar okunmaz. Alan, dolu
+// hücrelerin gerçek sınırlarına genişletilir (daraltılmaz).
+export function fitRange(XLSX, sheet) {
+  if (!sheet) return;
+  let range = sheet["!ref"] ? XLSX.utils.decode_range(sheet["!ref"]) : null;
+  for (const address of Object.keys(sheet)) {
+    if (address[0] === "!") continue;
+    const { r, c } = XLSX.utils.decode_cell(address);
+    if (!range) range = { s: { r, c }, e: { r, c } };
+    else {
+      if (r < range.s.r) range.s.r = r;
+      if (c < range.s.c) range.s.c = c;
+      if (r > range.e.r) range.e.r = r;
+      if (c > range.e.c) range.e.c = c;
+    }
+  }
+  if (range) sheet["!ref"] = XLSX.utils.encode_range(range);
+}
+
 // keepEmpty: boş satırlar da (boş dizi olarak) kalır; böylece matristeki sıra = sayfadaki satır (formüller için).
 export function sheetMatrix(XLSX, sheet, date1904 = false, { keepEmpty = false } = {}) {
   if (!sheet || !sheet["!ref"]) return [];

@@ -57,7 +57,7 @@ export function registerChequeRoutes(router, { store, auth, audit, events, accou
   const CHEQUE_SQL = `SELECT c.id, c.direction, c.instrument, c.serial_no AS serialNo, c.bank, c.drawer, c.account_id AS accountId, c.plan_id AS planId, c.amount,
       c.issue_date AS issueDate, c.due_date AS dueDate, c.status, c.status_date AS statusDate, c.endorse_account_id AS endorseAccountId, c.note,
       c.created_by AS createdBy, c.created_at AS createdAt, c.updated_at AS updatedAt, COALESCE(u.display_name, '') AS actorName,
-      COALESCE(a.name, '') AS accountName, COALESCE(a.ref_no, '') AS accountRef, COALESCE(e.name, '') AS endorseAccountName, COALESCE(p.name, '') AS planName
+      COALESCE(a.name, '') AS accountName, COALESCE(a.ref_no, '') AS accountRef, COALESCE(a.phone, '') AS accountPhone, COALESCE(e.name, '') AS endorseAccountName, COALESCE(p.name, '') AS planName
     FROM cheques c LEFT JOIN users u ON u.id = c.created_by LEFT JOIN accounts a ON a.id = c.account_id AND a.deleted_at IS NULL
       LEFT JOIN accounts e ON e.id = c.endorse_account_id AND e.deleted_at IS NULL LEFT JOIN plans p ON p.id = c.plan_id AND p.deleted_at IS NULL`;
   const party = cheque => cheque.accountName || cheque.drawer || "—";
@@ -586,6 +586,7 @@ export function registerChequeRoutes(router, { store, auth, audit, events, accou
       source: row.instrument === "note" ? "note" : "cheque",
       label: `${row.direction === "out" ? "Verilen" : "Alınan"} ${INSTRUMENTS[row.instrument].toLocaleLowerCase("tr-TR")}${row.serialNo ? ` · No ${row.serialNo}` : ""}${row.bank ? ` · ${row.bank}` : ""}`,
       party: party(row),
+      phone: row.accountPhone,
       ref: { type: "cheque", id: row.id },
     }));
   // Tahsilat takvimi ve bildirimler: vadesi geçen, bugün ve 7 gün içinde gelecek açık evrak.

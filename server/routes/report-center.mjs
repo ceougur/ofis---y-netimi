@@ -42,6 +42,24 @@ const stamp = value => {
 };
 const sideText = value => (value > 0.005 ? "Borçlu (bize borçlu)" : value < -0.005 ? "Alacaklı (biz borçluyuz)" : "Kapalı");
 const SEQUENCE = /^(sıra|sira|sıra no|no|#|sn|s\.?\s?no|nr)$/i;
+// Ay anahtarı (YYYY-AA) → "Eylül 2026"; aralıktaki aylar (v2.0.9 aylık raporlar).
+const MONTHS = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"];
+const monthLabel = key => `${MONTHS[Number(key.slice(5, 7)) - 1]} ${key.slice(0, 4)}`;
+function monthsBetween(first, last, max = 600) {
+  const out = [];
+  let [year, month] = first.split("-").map(Number);
+  const [endYear, endMonth] = last.split("-").map(Number);
+  while ((year < endYear || (year === endYear && month <= endMonth)) && out.length < max) {
+    out.push(`${year}-${String(month).padStart(2, "0")}`);
+    month += 1;
+    if (month > 12) {
+      month = 1;
+      year += 1;
+    }
+  }
+  return out;
+}
+const percent = (part, whole) => (whole > 0.005 ? `%${new Intl.NumberFormat("tr-TR", { maximumFractionDigits: 1 }).format((part / whole) * 100)}` : "");
 
 export function registerReportCenter(router, { store, auth, audit, dataset, cash = () => null, accounts = () => null, plans = () => null, stock = () => null, cheques = () => null, overview = () => null, now: clock = () => new Date() }) {
   const today = () => isoDay(clock());
@@ -175,6 +193,47 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
         };
       },
     },
+    {
+      id: "kasa-aylik",
+      group: "Kasa",
+      title: "Aylık kasa özeti",
+      description: "Her ay için toplam giriş, çıkış, net ve ay sonu kasa; kasanın yıl içindeki seyri (hareketsiz ay da yazılır).",
+      params: ["range"],
+      preset: "thisYear",
+      build(query) {
+        const range = rangeOf(query, "thisYear");
+        const data = cash().report(admin, range.from, range.to);
+        const months = new Map();
+        for (const entry of data.entries) {
+          const key = entry.date.slice(0, 7);
+          const month = months.get(key) || { in: 0, out: 0, count: 0, closing: 0 };
+          month[entry.kind] = roundMoney(month[entry.kind] + entry.amount);
+          month.count += 1;
+          month.closing = entry.balance;
+          months.set(key, month);
+        }
+        // Aylar: aralığın başından bugünkü aya (ya da son harekete) kadar; aralık sonunu geçmez.
+        const first = range.from ? range.from.slice(0, 7) : data.entries[0]?.date.slice(0, 7) || today().slice(0, 7);
+        const lastMove = data.entries.at(-1)?.date.slice(0, 7) || "";
+        let last = today().slice(0, 7) > lastMove ? today().slice(0, 7) : lastMove;
+        if (range.to && range.to.slice(0, 7) < last) last = range.to.slice(0, 7);
+        let balance = data.opening;
+        const rows = [];
+        for (const key of first <= last ? monthsBetween(first, last) : []) {
+          const month = months.get(key);
+          const opening = balance;
+          if (month) balance = month.closing;
+          rows.push([monthLabel(key), month ? String(month.count) : "0", money(opening), money(month?.in || 0), money(month?.out || 0), money(roundMoney((month?.in || 0) - (month?.out || 0))), money(balance)]);
+        }
+        return {
+          subtitle: rangeText(range),
+          headers: ["Ay", "Hareket", "Ay başı kasa", "Giriş", "Çıkış", "Net", "Ay sonu kasa"],
+          types: ["", "number", "money", "money", "money", "money", "money"],
+          rows,
+          summary: [["Devir", money(data.opening)], ["Toplam giriş", money(data.period.in)], ["Toplam çıkış", money(data.period.out)], ["Net", money(data.period.net)], ["Dönem sonu kasa", money(roundMoney(data.opening + data.period.in - data.period.out))]],
+        };
+      },
+    },
     // ===== Cari =====
     {
       id: "mizan",
@@ -268,6 +327,49 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
       },
     },
     {
+      id: "cari-tahsilat",
+      group: "Cari",
+      title: "Cari bazında tahsilat",
+      description: "Aralıkta her cariden alınan para: nakit / havale tahsilat, taksit tahsilatı, alınan çek / senet; toplam ve son tahsilat tarihi.",
+      params: ["range", "type"],
+      preset: "thisMonth",
+      build(query) {
+        const range = rangeOf(query, "thisMonth");
+        const ledgers = accounts().allLedgers();
+        const list = [];
+        const total = { cash: 0, plan: 0, cheque: 0, all: 0 };
+        for (const account of ledgers.accounts) {
+          if (query.type && TYPE_TEXT[query.type] && account.type !== query.type) continue;
+          const row = { account, cash: 0, plan: 0, cheque: 0, count: 0, last: "" };
+          for (const line of ledgers.lines.get(account.id) || []) {
+            if (!inRange(line.date, range) || !(line.credit > 0)) continue;
+            // Açılış (devir) Excel'de ödenmiş kısımdır; bu dönemin tahsilatı değildir.
+            let key = "";
+            if (line.kind === "in") key = "cash";
+            else if (line.kind === "plan-in" && !line.opening) key = line.cheque ? "cheque" : "plan";
+            else if (line.origin === "cheque" && line.kind === "credit") key = "cheque";
+            if (!key) continue;
+            row[key] = roundMoney(row[key] + line.credit);
+            row.count += 1;
+            if (line.date > row.last) row.last = line.date;
+          }
+          const sum = roundMoney(row.cash + row.plan + row.cheque);
+          if (!(sum > 0)) continue;
+          list.push({ ...row, sum });
+          for (const key of ["cash", "plan", "cheque"]) total[key] = roundMoney(total[key] + row[key]);
+          total.all = roundMoney(total.all + sum);
+        }
+        list.sort((a, b) => b.sum - a.sum || collator.compare(a.account.name, b.account.name));
+        return {
+          subtitle: [rangeText(range), query.type && TYPE_TEXT[query.type] ? TYPE_TEXT[query.type] : "Tüm cariler"].join(" · "),
+          headers: ["Cari No", "Cari", "Nakit / havale", "Taksit tahsilatı", "Çek / senet (alınan)", "Toplam", "İşlem", "Son tahsilat"],
+          types: ["", "", "money", "money", "money", "money", "number", ""],
+          rows: list.map(row => [row.account.refNo || "", row.account.name, row.cash ? money(row.cash) : "", row.plan ? money(row.plan) : "", row.cheque ? money(row.cheque) : "", money(row.sum), String(row.count), dayText(row.last)]),
+          summary: [["Cari", String(list.length)], ["Nakit / havale", money(total.cash)], ["Taksit tahsilatı", money(total.plan)], ["Çek / senet (alınan)", money(total.cheque)], ["Toplam", money(total.all)]],
+        };
+      },
+    },
+    {
       id: "alacak-yaslandirma",
       group: "Cari",
       title: "Alacak yaşlandırma",
@@ -350,6 +452,59 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
       },
     },
     {
+      id: "taksit-performans",
+      group: "Taksit",
+      title: "Taksit tahsilat performansı",
+      description: "Ay ay vadesi gelen taksit tutarı, bunun ne kadarının ödendiği, kalan, geciken ve tahsilat oranı (açık kartlar).",
+      params: ["range"],
+      preset: "thisYear",
+      build(query) {
+        const range = rangeOf(query, "thisYear");
+        const day = today();
+        const list = store.all("SELECT id, name, total, status FROM plans WHERE deleted_at IS NULL AND status = 'active'");
+        const items = new Map();
+        for (const item of store.all("SELECT id, plan_id AS planId, seq, due_date AS dueDate, amount FROM plan_items ORDER BY due_date, seq")) {
+          if (!items.has(item.planId)) items.set(item.planId, []);
+          items.get(item.planId).push(item);
+        }
+        const entries = new Map();
+        for (const entry of store.all("SELECT id, plan_id AS planId, item_id AS itemId, kind, amount, date FROM plan_entries ORDER BY date, created_at, rowid")) {
+          if (!entries.has(entry.planId)) entries.set(entry.planId, []);
+          entries.get(entry.planId).push(entry);
+        }
+        const months = new Map();
+        for (const plan of list) {
+          for (const item of allocate(plan, items.get(plan.id) || [], entries.get(plan.id) || [], { today: day }).items) {
+            if (!inRange(item.dueDate, range)) continue;
+            const key = item.dueDate.slice(0, 7);
+            const month = months.get(key) || { count: 0, amount: 0, paid: 0, remaining: 0, overdue: 0 };
+            month.count += 1;
+            month.amount = roundMoney(month.amount + item.amount);
+            month.paid = roundMoney(month.paid + item.paid);
+            month.remaining = roundMoney(month.remaining + item.remaining);
+            if (item.state === "overdue") month.overdue = roundMoney(month.overdue + item.remaining);
+            months.set(key, month);
+          }
+        }
+        const keys = [...months.keys()].sort();
+        const sum = key => roundMoney([...months.values()].reduce((total, month) => total + month[key], 0));
+        // Oran, vadesi gelmiş aylar için anlamlıdır; gelecek ayda "—" (henüz beklenmiyor).
+        const due = [...months.entries()].filter(([key]) => key <= day.slice(0, 7));
+        const dueAmount = roundMoney(due.reduce((total, [, month]) => total + month.amount, 0));
+        const duePaid = roundMoney(due.reduce((total, [, month]) => total + month.paid, 0));
+        return {
+          subtitle: `${rangeText(range)} · açık kartlar · ${dayText(day)} itibarıyla`,
+          headers: ["Ay", "Taksit", "Vadesi gelen", "Ödenen", "Kalan", "Geciken", "Tahsilat oranı"],
+          types: ["", "number", "money", "money", "money", "money", ""],
+          rows: keys.map(key => {
+            const month = months.get(key);
+            return [monthLabel(key), String(month.count), money(month.amount), money(month.paid), money(month.remaining), month.overdue ? money(month.overdue) : "", key <= day.slice(0, 7) ? percent(month.paid, month.amount) : "— (vadesi gelmedi)"];
+          }),
+          summary: [["Taksit", String(keys.reduce((total, key) => total + months.get(key).count, 0))], ["Vadesi gelen", money(sum("amount"))], ["Ödenen", money(sum("paid"))], ["Geciken", money(sum("overdue"))], ["Tahsilat oranı (vadesi gelmiş aylar)", percent(duePaid, dueAmount) || "—"]],
+        };
+      },
+    },
+    {
       id: "taksit-tahsilatlari",
       group: "Taksit",
       title: "Taksit tahsilatları",
@@ -422,6 +577,41 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
         };
       },
     },
+    {
+      id: "cek-vade-dagilimi",
+      group: "Çek / Senet",
+      title: "Çek / senet vade dağılımı",
+      description: "Açık evrakın vade ayına göre dağılımı: tahsil edilecek (portföydeki alınan) ve ödenecek (verilen); vadesi geçmişler ilk satırda.",
+      params: [],
+      build() {
+        const day = today();
+        const buckets = new Map();
+        for (const flow of cheques().flows()) {
+          const key = flow.date < day ? "late" : flow.date.slice(0, 7);
+          const bucket = buckets.get(key) || { inCount: 0, in: 0, outCount: 0, out: 0 };
+          if (flow.direction === "out") {
+            bucket.outCount += 1;
+            bucket.out = roundMoney(bucket.out + flow.amount);
+          } else {
+            bucket.inCount += 1;
+            bucket.in = roundMoney(bucket.in + flow.amount);
+          }
+          buckets.set(key, bucket);
+        }
+        const keys = [...buckets.keys()].sort((a, b) => (a === "late" ? -1 : b === "late" ? 1 : a < b ? -1 : 1));
+        const sum = key => roundMoney([...buckets.values()].reduce((total, bucket) => total + bucket[key], 0));
+        return {
+          subtitle: `${dayText(day)} itibarıyla açık evrak (portföydeki alınan, ödenecek verilen)`,
+          headers: ["Vade", "Alınan (adet)", "Tahsil edilecek", "Verilen (adet)", "Ödenecek", "Net"],
+          types: ["", "number", "money", "number", "money", "money"],
+          rows: keys.map(key => {
+            const bucket = buckets.get(key);
+            return [key === "late" ? "Vadesi geçmiş" : monthLabel(key), String(bucket.inCount), money(bucket.in), String(bucket.outCount), money(bucket.out), money(roundMoney(bucket.in - bucket.out))];
+          }),
+          summary: [["Tahsil edilecek", money(sum("in"))], ["Ödenecek", money(sum("out"))], ["Net", money(roundMoney(sum("in") - sum("out")))], ["Vadesi geçmiş", money(roundMoney((buckets.get("late")?.in || 0) + (buckets.get("late")?.out || 0)))]],
+        };
+      },
+    },
     // ===== Stok =====
     {
       id: "stok-durumu",
@@ -464,6 +654,47 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
           types: ["", "", "", "", "number", "", "money", "money", "", "", "", ""],
           rows: list.map(row => [dayText(row.date), row.code, row.name, row.kind === "in" ? "Giriş" : "Çıkış", qty(row.qty), row.unit, money(row.unitPrice), row.amount ? money(row.amount) : "", pay[row.pay] || row.pay, row.accountName, row.note, row.actorName]),
           summary: [["Hareket", String(list.length)], ["Giriş tutarı", money(total.in)], ["Çıkış tutarı", money(total.out)]],
+        };
+      },
+    },
+    {
+      id: "stok-ozet",
+      group: "Stok",
+      title: "Stok hareket özeti (envanter)",
+      description: "Her ürün için dönem başı miktar, dönem girişi, dönem çıkışı ve dönem sonu miktar; birim fiyat ve dönem sonu değer.",
+      params: ["range", "category"],
+      preset: "thisMonth",
+      build(query) {
+        const range = rangeOf(query, "thisMonth");
+        const category = limited(query.category, 80, "Kategori");
+        const items = stock().list(admin, { category, sort: "name" }).items.filter(item => item.kind !== "service");
+        const moves = new Map();
+        for (const row of store.all(
+          `SELECT item_id AS itemId,
+                  COALESCE(SUM(CASE WHEN ? <> '' AND date < ? THEN (CASE WHEN kind = 'in' THEN qty ELSE -qty END) END), 0) AS opening,
+                  COALESCE(SUM(CASE WHEN (? = '' OR date >= ?) AND (? = '' OR date <= ?) AND kind = 'in' THEN qty END), 0) AS qtyIn,
+                  COALESCE(SUM(CASE WHEN (? = '' OR date >= ?) AND (? = '' OR date <= ?) AND kind = 'out' THEN qty END), 0) AS qtyOut
+           FROM stock_moves GROUP BY item_id`,
+          range.from, range.from, range.from, range.from, range.to, range.to, range.from, range.from, range.to, range.to,
+        ))
+          moves.set(row.itemId, row);
+        const out = [];
+        let value = 0;
+        for (const item of items) {
+          const move = moves.get(item.id) || { opening: 0, qtyIn: 0, qtyOut: 0 };
+          const opening = Math.round(move.opening * 1000) / 1000;
+          const closing = Math.round((move.opening + move.qtyIn - move.qtyOut) * 1000) / 1000;
+          if (!opening && !move.qtyIn && !move.qtyOut) continue;
+          const worth = roundMoney(Math.max(0, closing) * (Number(item.unitPrice) || 0));
+          value = roundMoney(value + worth);
+          out.push([item.code, item.name, item.category, item.unit, qty(opening), qty(move.qtyIn), qty(move.qtyOut), qty(closing), money(item.unitPrice), money(worth)]);
+        }
+        return {
+          subtitle: [rangeText(range), category || "Tüm kategoriler"].join(" · "),
+          headers: ["Kod", "Ürün", "Kategori", "Birim", "Dönem başı", "Giriş", "Çıkış", "Dönem sonu", "Birim fiyat", "Dönem sonu değer"],
+          types: ["", "", "", "", "number", "number", "number", "number", "money", "money"],
+          rows: out,
+          summary: [["Ürün", String(out.length)], ["Dönem sonu değer", money(value)]],
         };
       },
     },

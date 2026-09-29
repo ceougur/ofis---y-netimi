@@ -67,6 +67,8 @@ export function accountLedger(entries = [], plans = []) {
         planId: plan.id,
         kind: incoming ? "plan-in" : "plan-out",
         opening: Boolean(entry.opening),
+        // Çek/senetle alınan taksit (v2.0.7): rapor "çekle tahsilat" olarak ayırır (v2.0.9, cari bazında tahsilat).
+        cheque: Boolean(entry.chequeId),
         date: entry.date,
         at: entry.createdAt || "",
         // Açılış (devir, v2.0.8): Excel'de programa girmeden önce ödenmiş kısım; alacak tarafına yazılır, Kasa'da yoktur.
