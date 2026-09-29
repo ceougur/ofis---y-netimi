@@ -151,7 +151,7 @@ blockquote{margin:14px 0;padding:10px 16px;border-left:4px solid #cf9f4b;backgro
 footer{max-width:880px;margin:0 auto;padding:0 24px 40px;color:var(--muted);font-size:13px}
 @media print{header{background:none;color:var(--ink);padding:0 0 12px}body{background:#fff}h2{break-after:avoid}table,pre{break-inside:avoid}}
 </style></head>
-<body><header><img src="${mark}" alt=""><div><h1>${title}</h1><p>DestekOfis ${version} · Destek: 0532 605 05 87 · destekofis@proton.me</p></div></header>
+<body><header><img src="${mark}" alt=""><div><h1>${title}</h1><p>DestekOfis ${version} · Teknik Destek ve Satın Alımlar İçin: 0536 771 50 55 · destekofis@proton.me</p></div></header>
 <main>${body}</main><footer>© 2026 DestekOfis</footer></body></html>
 `;
   writeFileSync(path.join(targetDir, "KURULUM-VE-KULLANIM.html"), html);

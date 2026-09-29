@@ -306,7 +306,8 @@ export function rowState(row, context) {
   if (context.hasIdentity && isEmptyCell(person) && isEmptyCell(caseNo)) return null;
   const debtAmount = context.debt ? parseAmount(cell(row, context.debt)) : null;
   const paidOff = Boolean(context.debt && debtAmount === 0 && !isEmptyCell(cell(row, context.debt)));
-  return { person, caseNo, closed, inactive, paidOff, debt: debtAmount && debtAmount > 0 ? debtAmount : null };
+  const phone = context.primary.phone ? String(cell(row, context.primary.phone) ?? "").trim() : "";
+  return { person, caseNo, phone, closed, inactive, paidOff, debt: debtAmount && debtAmount > 0 ? debtAmount : null };
 }
 
 // Takvim kaleminin kimliği ("Ödendi say" bu kimlikle saklanır; aktarma da aynı kimlikle okur).
@@ -320,14 +321,17 @@ export const dueId = (sheet, caseKey, column, time) => `due|${sheet}|${caseKey}|
  * @param {Record<string, object>} [input.settled] elle "ödendi say" denen kalemler (kimlik → bilgi)
  * @param {Date} [input.now]
  */
-export function computeDues({ rows, tabs = [], payments = [], settled = {}, now = new Date(), forced = null }) {
+export function computeDues({ rows, tabs = [], payments = [], settled = {}, now = new Date(), forced = null, window = null }) {
   const today = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
   const monthStart = Date.UTC(now.getFullYear(), now.getMonth(), 1);
   const monthEnd = Date.UTC(now.getFullYear(), now.getMonth() + 1, 0);
-  const from = today - DUE_WINDOW.pastDays * DAY;
-  const until = Math.max(monthEnd, today + DUE_WINDOW.aheadDays * DAY);
+  // Pencere: takvim ve bildirimler için DUE_WINDOW; raporlar (v2.0.9, Vade takip) ileri tarihli kalemleri de ister.
+  // Pencere yalnız çıktıyı süzer; tahsilatların kalemlere dağıtımı her zaman bütün kalemler üzerinden yapılır.
+  const span = { ...DUE_WINDOW, ...(window || {}) };
+  const from = today - span.pastDays * DAY;
+  const until = Math.max(monthEnd, today + span.aheadDays * DAY);
   // Ödeme sözü kişiye özel bir taahhüttür; açık sözler 30 gün öncesinden takvimde görünür (taksit ve kira bu ay + 7 gün).
-  const promiseUntil = Math.max(until, today + DUE_WINDOW.promiseDays * DAY);
+  const promiseUntil = Math.max(until, today + span.promiseDays * DAY);
   const groups = new Map();
   for (const row of rows) {
     if (!row || !row.__hofKey) continue;
@@ -353,7 +357,7 @@ export function computeDues({ rows, tabs = [], payments = [], settled = {}, now 
       if (!state || state.closed || state.inactive || state.paidOff) continue;
       const { person, caseNo } = state;
       // Kimlikte sekmenin asıl adı: sekme kalemle yeniden adlandırılınca kapatılan kalemler geri açılmaz (v2.0.2).
-      const base = { caseKey: row.__hofKey, tab, sheet: row.__hofSheet || tab, person, caseNo, debt: state.debt };
+      const base = { caseKey: row.__hofKey, tab, sheet: row.__hofSheet || tab, person, caseNo, phone: state.phone, debt: state.debt };
       for (const entry of due) {
         const read = readDue(cell(row, entry.column), now);
         if (!read || read.settled) continue;
@@ -456,6 +460,7 @@ export function computeDues({ rows, tabs = [], payments = [], settled = {}, now 
       tab: item.tab,
       person: item.person,
       caseNo: item.caseNo,
+      phone: item.phone || "",
       label: item.label,
       column: item.column,
       promise: item.promise,
@@ -554,6 +559,7 @@ export function computeDeadlines({ rows, tabs = [], now = new Date(), aheadDays 
           tab,
           person: plate || person,
           caseNo: plate ? person : primary.id && primary.id !== primary.person ? String(cell(row, primary.id) ?? "").trim() : "",
+          phone: primary.phone ? String(cell(row, primary.phone) ?? "").trim() : "",
           label: String(item.column).trim(),
           column: item.column,
           due: iso(time),

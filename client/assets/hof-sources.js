@@ -356,6 +356,23 @@
       <input type="url" name="url" inputmode="url" autocomplete="off" placeholder="Google Sheets bağlantısını yapıştırın" aria-label="Google Sheets bağlantısı">
       <button type="submit" class="hof-button">Bağla</button>
     </form>`;
+  // Sektöre uygun taslak Excel (v2.0.9): Excel'i olmayan ofis sektörünü seçer, taslak indirilir; doldurup buradan yükler.
+  const templateHtml = `<div class="hof-start-template"><span class="hof-start-template-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="17" rx="2.5"/><path d="M3.5 9h17M9 3.5v17"/><path d="M14 14.5v4M12 16.5l2 2 2-2"/></svg></span><span><b>Exceliniz yok mu?</b><small>Sektörünüze uygun taslak Excel'i indirin, doldurun ve buradan yükleyin. Kolonlar hazırdır; başlığa tıklayınca ne yazılacağı görünür.</small></span><button type="button" class="hof-button hof-button-small" data-template>Taslak Excel'i indir</button></div>`;
+  async function downloadTemplate() {
+    const current = HOF.profile?.()?.sector?.id || "";
+    const pick = HOF.chooseSector || HOF.pickSector;
+    if (!pick) return;
+    const id = await pick({ title: "Taslak Excel: sektörünüzü seçin", suggested: current && current !== "genel" ? current : "", intro: "Seçtiğiniz sektöre uygun kolonlarla boş bir Excel indirilir. Doldurup açılış ekranından yüklediğinizde program sektörü, kişileri, tutarları ve ödeme günlerini kendiliğinden tanır." });
+    if (!id) return;
+    const link = document.createElement("a");
+    link.href = `/api/workspace/templates/${encodeURIComponent(id)}/xlsx`;
+    link.download = "";
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    HOF.toast("Taslak Excel indirildi. Satırları doldurup kaydedin, sonra bu ekrandan yükleyin.", { type: "success", timeout: 8000 });
+  }
+  const wireTemplate = node => node?.querySelector("[data-template]")?.addEventListener("click", downloadTemplate);
   const wireLink = (form, options = {}) =>
     form.addEventListener("submit", event => {
       event.preventDefault();
@@ -379,14 +396,15 @@
           <h2 id="hof-start-title">Excelini yükle ya da Google Sheets linkini yapıştır, başlayalım</h2>
           <p>Veriler bu sunucuda saklanır ve ofisteki tüm bilgisayarlarda aynı görünür. Siz silmedikçe korunur; sonradan yapılan işlemlerle birlikte devam eder.</p>
           ${canManage()
-            ? `<div class="hof-start-actions">${dropHtml(false)}<div class="hof-start-or"><span>veya</span></div>${linkHtml}<small class="hof-start-hint">Sheet paylaşımı "Bağlantıya sahip olan herkes görüntüleyebilir" olmalıdır.</small></div>`
+            ? `<div class="hof-start-actions">${dropHtml(false)}<div class="hof-start-or"><span>veya</span></div>${linkHtml}<small class="hof-start-hint">Sheet paylaşımı "Bağlantıya sahip olan herkes görüntüleyebilir" olmalıdır.</small></div>${templateHtml}`
             : '<p class="hof-start-wait">Yöneticiniz veri yüklediğinde tablo burada görünecek.</p>'}
-          <p class="hof-start-guide">İlk kez mi kullanıyorsunuz? <a href="/kilavuz/DestekOfis-Kullanim-Kilavuzu.pdf" target="_blank" rel="noopener">Resimli kullanım kılavuzunu açın</a>.</p>
+          <p class="hof-start-guide">İlk kez mi kullanıyorsunuz? <a href="/kilavuz/DestekOfis-Kullanim-Kilavuzu.pdf" target="_blank" rel="noopener">Resimli kullanım kılavuzunu açın</a>.<small>Teknik Destek ve Satın Alımlar İçin: <a href="tel:+905367715055">0536 771 50 55</a></small></p>
         </div>`;
       const zone = card.querySelector(".hof-drop");
       if (zone) wireDrop(zone);
       const form = card.querySelector(".hof-link-form");
       if (form) wireLink(form);
+      wireTemplate(card);
     }
     const anchor = wrap.querySelector(":scope > .welcome-row");
     if (card.parentNode !== wrap) (anchor ? anchor.after(card) : wrap.prepend(card));
@@ -447,7 +465,7 @@
         ${data.rowCount || data.recordCount ? extensions : ""}
         <section class="hof-data-section">
           <h3>Veri ekle veya değiştir</h3>
-          <div class="hof-data-import">${dropHtml(true)}${linkHtml}</div>
+          <div class="hof-data-import">${dropHtml(true)}${linkHtml}</div>${templateHtml}
           <p class="hof-modal-text hof-muted">Mevcut veri varsa önce ne değişeceği gösterilir; "yeni oturumda aç", "devamı olarak ekle" ya da "yerine koy" seçersiniz.</p>
         </section>
         ${data.linked
@@ -482,6 +500,7 @@
         console.error("[DestekOfis]", error);
       }
     }
+    wireTemplate(dialog);
     const zone = dialog.querySelector(".hof-drop");
     if (zone) {
       wireDrop(zone);

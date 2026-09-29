@@ -957,6 +957,8 @@
       return false;
     }
   }
+  // Yalnız seçim (sektör değişmez): açılış ekranındaki "sektörünüze uygun taslak Excel" (v2.0.9) için.
+  HOF.chooseSector = options => pickSector(options);
   HOF.pickSector = async options => {
     const id = await pickSector(options);
     if (id) await applySector(id, "manual");

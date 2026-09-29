@@ -753,7 +753,8 @@ try {
     const ticks = await admin.$$eval(".hof-rep [data-chart] .hof-chart-tick", nodes => nodes.map(node => node.textContent));
     expect(ticks.some(text => text === "0 ₺"), `eksen sıfırı içerir: ${ticks.join(" | ")}`);
     await admin.screenshot({ path: path.join(artifacts, "04e-nakit-akisi.png") });
-    await admin.click(".hof-rep [data-center]");
+    // v2.0.9: rapor merkezi aynı pencerenin "Tüm raporlar" sekmesidir.
+    await admin.click('.hof-rep [data-tab="all"]');
     const catalog = (await admin.evaluate(() => fetch("/api/workspace/report-center").then(response => response.json()))).data;
     await admin.waitForFunction(count => document.querySelectorAll(".hof-rc-item").length === count, catalog.reports.length, { timeout: 10000 });
     await admin.click('.hof-rc-item[data-report="cek-hareketleri"]');
@@ -767,7 +768,6 @@ try {
     expect(files[0].status === 200 && files[0].head === "%PDF", `PDF: ${JSON.stringify(files[0])}`);
     expect(files[1].status === 200 && files[1].head.startsWith("PK"), `Excel: ${JSON.stringify(files[1])}`);
     await admin.screenshot({ path: path.join(artifacts, "04f-rapor-merkezi.png") });
-    await admin.keyboard.press("Escape");
     await admin.keyboard.press("Escape");
     await admin.waitForFunction(() => !document.querySelector(".hof-modal-backdrop.is-visible"), null, { timeout: 5000 });
     // Küçült: tek satırlık şerit; sayfa yenilense de öyle kalır; Rapor Al yerinde.
@@ -1430,12 +1430,21 @@ try {
       await page.keyboard.press("Escape");
       await page.waitForFunction(() => !document.querySelector(".hof-modal-backdrop"), null, { timeout: 5000 });
 
-      // v2.0.2: Raporlar — sol menüden açılır; cari ekstre tablo ve özet kartlarıyla gelir; Excel dışa aktarılır.
+      // v2.0.9: Raporlar — sol menüden açılan pencere ANLIK DURUM'daki Rapor Al ile aynıdır (Cari ekstre, Vade takip, Nakit
+      // akış, Çek/Senet, Tüm raporlar, Tablo raporları). Tablo raporları sekmesi: Excel'den kişi ekstresi ve vadeler.
       await page.click('.hof-side-item[data-action="analytics"]');
+      await page.waitForSelector(".hof-modal-backdrop.is-visible .hof-rep .hof-rep-tabs", { timeout: 10000 });
+      const sideTabs = await page.$$eval(".hof-modal-backdrop.is-visible .hof-rep [data-tab]", nodes => nodes.map(node => node.dataset.tab));
+      expect(sideTabs.includes("mizan") && sideTabs.includes("vade") && sideTabs.includes("table"), `sol menüden Raporlar sekmeleri: ${sideTabs.join(", ")}`);
+      await page.click('.hof-modal-backdrop.is-visible .hof-rep [data-tab="table"]');
       await page.waitForSelector(".hof-modal-backdrop.is-visible .hof-report-kinds", { timeout: 10000 });
-      await page.waitForFunction(() => document.querySelector(".hof-modal-backdrop.is-visible .hof-report-table, .hof-modal-backdrop.is-visible [data-report-body] .hof-empty"), null, { timeout: 15000 });
+      // "Rapor hazırlanıyor…" yer tutucusu sonuç değildir: özet kartları ya da gerçek boş mesajı beklenir.
+      await page.waitForFunction(() => {
+        const body = document.querySelector(".hof-modal-backdrop.is-visible [data-report-body]");
+        return body && (body.querySelector(".hof-report-summary") || (body.querySelector(".hof-empty") && !/hazırlanıyor/.test(body.textContent)));
+      }, null, { timeout: 15000 });
       const reportText = await page.$eval(".hof-modal-backdrop.is-visible .hof-modal", node => node.innerText.replace(/\s+/g, " "));
-      expect(/Cari ekstre/.test(reportText) && /Toplam borç|satır bulunamadı|üretilemedi/i.test(reportText), `rapor penceresi: ${reportText.slice(-400)}`);
+      expect(/Tablodaki kişiler/.test(reportText) && /Toplam borç|satır bulunamadı|üretilemedi/i.test(reportText), `rapor penceresi: ${reportText.slice(-400)}`);
       await page.click('.hof-modal-backdrop.is-visible [data-kind="vade-takip"]');
       await page.waitForFunction(() => /Gecikmiş|Kalem/.test(document.querySelector(".hof-modal-backdrop.is-visible .hof-report-summary")?.textContent || ""), null, { timeout: 15000 });
       const [reportDownload] = await Promise.all([page.waitForEvent("download", { timeout: 20000 }), page.click('.hof-modal-backdrop.is-visible [data-export="xlsx"]')]);

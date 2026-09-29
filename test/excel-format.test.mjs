@@ -2,7 +2,9 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { describe, it } from "node:test";
-import { decodeCsv, formatNumber, sheetMatrix } from "../client/assets/hof-excel-format.js";
+import { decodeCsv, fitRange, formatNumber, sheetMatrix } from "../client/assets/hof-excel-format.js";
+import { buildXlsx } from "../server/lib/xlsx-write.mjs";
+import { createZip, readZip } from "../server/lib/zip.mjs";
 
 const XLSX = await import("../client/assets/xlsx-DGuHH-KN.js");
 
@@ -65,5 +67,25 @@ describe("Excel hücre biçimleri", () => {
     };
     assert.deepEqual(read(utf8), [["DOSYA NO", "TELEFON", "TARİH"], ["2025/1", "05321234567", "13.10.2025"]]);
     assert.deepEqual(read(windows), [["IL", "İLÇE"], ["Konya", "İzmir"]]);
+  });
+
+  it("kullanılan alan etiketi eski kalmış dosya (v2.0.9): dolu satırlar yine okunur", () => {
+    // Taslak Excel yalnız başlıkla iner (<dimension ref="A1:B1"/>); etiketi güncellemeyen bir programla doldurulunca
+    // SheetJS alttaki satırları görmez. fitRange alanı dolu hücrelere genişletir.
+    const template = buildXlsx([{ name: "Kişiler", columns: ["Ad", "Tutar"], rows: [] }]);
+    const entries = readZip(template);
+    const sheet = entries.find(entry => entry.name === "xl/worksheets/sheet1.xml");
+    const xml = sheet.data.toString("utf8");
+    assert.match(xml, /<dimension ref="A1:B1"\/>/);
+    const filled = xml.replace("</sheetData>", '<row r="2"><c r="A2" t="inlineStr"><is><t>Ayşe</t></is></c><c r="B2" t="inlineStr"><is><t>1.500,00</t></is></c></row><row r="3"><c r="A3" t="inlineStr"><is><t>Ali</t></is></c></row></sheetData>');
+    const buffer = createZip(entries.map(entry => ({ name: entry.name, data: entry === sheet ? Buffer.from(filled, "utf8") : entry.data })));
+    const workbook = XLSX.read(buffer, { type: "buffer" });
+    const ws = workbook.Sheets["Kişiler"];
+    assert.equal(sheetMatrix(XLSX, ws).length, 1, "SheetJS eski etikete güvenir: yalnız başlık");
+    fitRange(XLSX, ws);
+    assert.equal(ws["!ref"], "A1:B3");
+    assert.deepEqual(sheetMatrix(XLSX, ws), [["Ad", "Tutar"], ["Ayşe", "1.500,00"], ["Ali"]]);
+    fitRange(XLSX, ws);
+    assert.equal(ws["!ref"], "A1:B3", "doğru alan değişmez (daraltılmaz)");
   });
 });

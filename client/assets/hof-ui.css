@@ -1057,6 +1057,8 @@ html.hof-auth-required #root {
 /* ---------- Yetkiye göre görünürlük ---------- */
 html:not(.hof-can-records-delete) .hof-float-delete,
 html:not(.hof-can-reports-view) [data-requires="reports.view"],
+/* Raporlar (v2.0.9): rapor yetkisi (yönetici, uzman) ya da kişiye verilen ANLIK DURUM yetkisi. */
+html:not(.hof-can-reports-view):not(.hof-can-overview-view) [data-requires="reports.any"],
 html:not(.hof-can-tasks-create) [data-requires="tasks.create"],
 html:not(.hof-can-users-manage) [data-requires="users.manage"],
 html:not(.hof-can-sources-manage) [data-requires="sources.manage"],
@@ -2904,6 +2906,8 @@ html.hof-no-haciz .filter-strip { display: none !important; }
 
 .hof-start-guide { margin-top: 14px; font-size: 14px; opacity: .85; }
 .hof-start-guide a { font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+.hof-start-guide small { display: block; margin-top: 4px; font-size: 12.5px; }
+.hof-start-guide small a { white-space: nowrap; }
 
 /* ---------- Tahsilat düzelt/sil ve Kasa (v2.0.1) ---------- */
 .hof-activity li:has(.hof-activity-tools) {
@@ -6088,11 +6092,18 @@ body.hof-dense .dynamic-table th {
 .hof-report-filters label {
   display: grid;
   gap: 4px;
+  min-width: 0;
   font-size: 11px;
   color: #6b7a75;
 }
+/* v2.0.9: uzun seçenekli açılır liste (ör. "Durgun (ödeme kesilmiş olabilir)") hücresinden taşmaz; pencerede yatay
+   kaydırma çubuğu çıkmaz. */
 .hof-report-filters input,
 .hof-report-filters select {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
   font: inherit;
   font-size: 13px;
   padding: 6px 8px;
@@ -7718,6 +7729,8 @@ button.hof-source-card:focus-visible {
 }
 .hof-rep {
   display: grid;
+  /* v2.0.9: tek kolon, içerik genişliğine yayılmaz (geniş tablo kendi içinde kaydırılır; pencere taşmaz). */
+  grid-template-columns: minmax(0, 1fr);
   gap: 14px;
 }
 .hof-rep-top {
@@ -8044,6 +8057,7 @@ button.hof-source-card:focus-visible {
   color: var(--do-danger) !important;
 }
 .hof-rep-days.is-today,
+.hof-rep-days.is-month,
 .hof-rep-days.is-soon {
   background: var(--do-gold-soft);
   color: var(--do-warn) !important;
@@ -8590,4 +8604,170 @@ button.hof-source-card:focus-visible {
 }
 .hof-plans-entries tr[data-opening] td:first-child {
   border-left: 3px solid #cfd8d3;
+}
+
+/* ---------- 2.0.9: Birleşik Raporlar penceresi ---------- */
+.hof-rep-tablepane {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 8px;
+  min-width: 0;
+}
+.hof-rep-tablepane > * {
+  min-width: 0;
+}
+.hof-rep-tablepane .hof-report-intro {
+  margin: 0 0 4px;
+  color: var(--do-muted);
+  font: 500 12px/1.5 var(--do-font);
+}
+.hof-rep-sources {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.hof-rep-srcpick {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 8px 3px 5px;
+  border: 1px solid var(--do-border);
+  border-radius: 999px;
+  background: #fff;
+  cursor: pointer;
+  opacity: 0.55;
+}
+.hof-rep-srcpick.is-on,
+.hof-rep-srcpick:has(input:checked) {
+  opacity: 1;
+  border-color: var(--do-border-strong);
+}
+.hof-rep-srcpick input {
+  margin: 0;
+}
+.hof-rep-src.is-cash {
+  background: #eef3fb;
+  color: #2f5680;
+}
+.hof-rep-src.is-table,
+.hof-rep-src.is-promise {
+  background: #f3effa;
+  color: #5b3f86;
+}
+.hof-rep-src.is-deadline {
+  background: #f4f4f1;
+  color: #5f615a;
+}
+.hof-rep-table tr[data-due-row],
+.hof-rep-table tr[data-dormant-row] {
+  cursor: pointer;
+}
+.hof-rep-table tr[data-due-row]:hover td,
+.hof-rep-table tr[data-dormant-row]:hover td {
+  background: #f4faf6;
+}
+.hof-rep-vade tr.is-overdue td:first-child {
+  box-shadow: inset 3px 0 0 var(--do-danger);
+}
+.hof-rep-vade tr.is-today td:first-child,
+.hof-rep-vade tr.is-month td:first-child {
+  box-shadow: inset 3px 0 0 var(--do-warn);
+}
+.hof-rep-crumb h3 {
+  flex: 1 1 auto;
+}
+.hof-rep-help {
+  display: grid;
+  gap: 6px;
+  padding: 14px 16px;
+  border: 1px dashed var(--do-border-strong);
+  border-radius: 14px;
+  background: #fbfdfb;
+  color: var(--do-ink-soft);
+  font: 500 12.5px/1.55 var(--do-font);
+}
+.hof-rep-help b {
+  color: var(--do-ink);
+  font: 800 13.5px/1.3 var(--do-display);
+}
+.hof-rep-help-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 4px;
+}
+.hof-rep-allpane {
+  min-width: 0;
+}
+/* Rapor merkezi Raporlar penceresinin içinde: kendi yüksekliği pencereye sığar. */
+.hof-rc.hof-rc-embedded {
+  min-height: min(60vh, 680px);
+}
+.hof-rc.hof-rc-embedded .hof-rc-nav {
+  max-height: min(64vh, 720px);
+}
+.hof-rep-tab.is-all {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #8a5a14;
+}
+.hof-rep-tab.is-all svg {
+  color: var(--do-gold);
+}
+.hof-rep-tab.is-all.is-on {
+  color: #7a5412;
+}
+.hof-rep-tablepane .hof-report-kinds {
+  margin: 0;
+}
+.hof-rep-tablepane .hof-report-kinds button {
+  padding: 6px 12px;
+  font: 700 12.5px/1.2 var(--do-font);
+}
+
+/* ---------- 2.0.9: Sektöre uygun taslak Excel ---------- */
+.hof-start-template {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+  padding: 12px 14px;
+  border: 1px dashed var(--do-border-strong);
+  border-radius: 14px;
+  background: #fbfdfb;
+  text-align: left;
+}
+.hof-start-template-icon {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 11px;
+  background: var(--do-accent-soft);
+  color: var(--do-accent);
+}
+/* Açılış kartında yükleme alanıyla aynı genişlik; alttaki kılavuz satırıyla arasında boşluk. */
+#hof-start .hof-start-template {
+  max-width: 560px;
+  margin: 18px auto 14px;
+}
+.hof-start-template b {
+  display: block;
+  color: var(--do-ink);
+  font: 800 13.5px/1.3 var(--do-display);
+}
+.hof-start-template small {
+  display: block;
+  color: var(--do-muted);
+  font: 500 12px/1.45 var(--do-font);
+}
+@media (max-width: 640px) {
+  .hof-start-template {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+  .hof-start-template .hof-button {
+    grid-column: 1 / -1;
+  }
 }

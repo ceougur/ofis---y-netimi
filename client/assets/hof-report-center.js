@@ -1,4 +1,4 @@
-/* DestekOfis — Rapor merkezi (v2.0.7), "Detaylı raporlar".
+/* DestekOfis — Rapor merkezi (v2.0.7; v2.0.9'dan beri Raporlar penceresinin "Tüm raporlar" sekmesi).
  * Programa girilen her bilginin hazır raporu: Kasa, Cari, Taksit, Çek/Senet, Stok, kayıtlar (tahsilat, not, görev,
  * belge, tablo verisi) ve işlem geçmişi. Solda gruplar ve arama; sağda seçilen raporun süzgeçleri, ekranda ön izleme
  * (ilk 200 satır) ve tek tıkla PDF / Excel. Rapor tanımları sunucudadır (server/routes/report-center.mjs); ekran
@@ -8,6 +8,7 @@
   const HOF = window.HOF;
   const { esc } = HOF;
   let center = null;
+  let lastId = ""; // sekmeye dönülünce son bakılan rapor açılır
 
   const GROUP_ICONS = {
     Kasa: "₺",
@@ -54,43 +55,42 @@
     taskStatus: { label: "Görevler", options: [["all", "Tümü"], ["open", "Açık"], ["done", "Tamamlanan"]] },
   };
 
-  async function open(reportId = "") {
-    if (!HOF.can("overview.view")) return HOF.toast("Raporlar yalnız yönetici ve yönetici yetki verdiği kişilere açıktır.", { type: "error" });
-    if (center?.modal) {
-      if (reportId) select(reportId);
+  // Raporlar penceresindeki "Tüm raporlar" sekmesine kurulur (hof-overview.js). Sekme her açılışta yeni düğüm verir.
+  async function mount(host, reportId = "") {
+    if (!HOF.can("overview.view")) {
+      host.innerHTML = '<p class="hof-empty">Bu raporlar yönetici ve yöneticinin ANLIK DURUM yetkisi verdiği kişiler içindir.</p>';
       return;
     }
-    center = { reports: [], id: reportId, q: "", params: {}, preview: null, busy: false };
-    center.modal = HOF.modal({
-      title: "Rapor merkezi",
-      eyebrow: "DETAYLI RAPORLAR",
-      size: "center",
-      body: '<div class="hof-rc" data-rc><p class="hof-empty">Raporlar yükleniyor…</p></div>',
-      onClose: () => {
-        center = null;
-      },
-    });
-    const dialog = center.modal.dialog;
-    dialog.addEventListener("click", onClick);
-    dialog.addEventListener("input", event => {
-      if (event.target.matches("[data-rc-search]")) {
+    const wanted = reportId || lastId;
+    const state = { host, reports: [], id: wanted, q: "", params: {}, preview: null, busy: false };
+    center = state;
+    host.innerHTML = '<div class="hof-rc hof-rc-embedded" data-rc><p class="hof-empty">Raporlar yükleniyor…</p></div>';
+    host.addEventListener("click", onClick);
+    host.addEventListener("input", event => {
+      if (event.target.matches("[data-rc-search]") && center === state) {
         center.q = event.target.value;
         renderNav();
       }
     });
-    dialog.addEventListener("change", onChange);
+    host.addEventListener("change", onChange);
     try {
       const catalog = await HOF.api("/api/workspace/report-center");
-      if (!center) return;
+      if (center !== state) return;
       center.reports = catalog.reports;
       renderShell();
-      select(reportId || catalog.reports[0]?.id);
+      select(catalog.reports.some(report => report.id === wanted) ? wanted : catalog.reports[0]?.id);
     } catch (error) {
+      if (center !== state) return;
       HOF.toastError(error);
-      center.modal.close();
+      host.innerHTML = `<p class="hof-empty">${esc(error.message)}</p>`;
     }
   }
-  const root = () => center?.modal?.dialog.querySelector("[data-rc]");
+  // Eski giriş noktası (ANLIK DURUM kutucukları, kısayollar): Raporlar penceresi "Tüm raporlar" sekmesinde açılır.
+  function open(reportId = "") {
+    if (!HOF.can("overview.view")) return HOF.toast("Raporlar yalnız yönetici ve yönetici yetki verdiği kişilere açıktır.", { type: "error" });
+    return HOF.overview?.openReports ? HOF.overview.openReports("all", { report: reportId }) : null;
+  }
+  const root = () => center?.host?.querySelector("[data-rc]");
   const current = () => center.reports.find(report => report.id === center.id);
 
   function renderShell() {
@@ -132,6 +132,7 @@
     const report = center.reports.find(item => item.id === id);
     if (!report) return;
     center.id = id;
+    lastId = id;
     const params = {};
     if (report.params.includes("range")) Object.assign(params, { preset: report.preset || "all" }, presetRange(report.preset || "all"));
     if (report.params.includes("planStatus")) params.planStatus = "active";
@@ -258,5 +259,5 @@
     run();
   }
 
-  HOF.reportCenter = { open };
+  HOF.reportCenter = { open, mount };
 })();

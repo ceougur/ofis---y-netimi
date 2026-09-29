@@ -8,9 +8,11 @@
 // Sonuç, tüm kaynakların parmak izi ve bugünün tarihiyle önbelleğe alınır; bir hareket girilince parmak izi değişir.
 // Para ya da stok değiştiren her olaydan sonra herkese (işlemi yapan dahil) tek "overview.changed" olayı gider; açık
 // kartlar kendini yeniler.
-import { presetRange, projection, statement, trialBalance } from "../lib/finance-report.mjs";
+import { dueList, groupFlows, presetRange, projection, statement, trialBalance } from "../lib/finance-report.mjs";
 import { HttpError, limited, ok, sendBuffer, text } from "../lib/http.mjs";
+import { foldText } from "../lib/insight/validators.mjs";
 import { roundMoney } from "../lib/money.mjs";
+import { canUser } from "../lib/permissions.mjs";
 import { dayText, isoDay } from "../lib/plans.mjs";
 import { tablePdf, tl } from "../lib/report-pdf.mjs";
 import { buildXlsx } from "../lib/xlsx-write.mjs";
@@ -26,11 +28,15 @@ const MAX_RANGE_DAYS = 36_600; // 100 yıl (yalnız doğrulama; "tüm zaman" miz
 const PDF_ROWS = 20_000;
 const collator = new Intl.Collator("tr", { numeric: true, sensitivity: "base" });
 const TYPE_TEXT = { customer: "Müşteri", supplier: "Tedarikçi", other: "Diğer" };
-const SOURCE_TEXT = { plan: "Taksit", cheque: "Çek", note: "Senet", cash: "Kasa (ileri tarihli)" };
+const SOURCE_TEXT = { plan: "Taksit", cheque: "Çek", note: "Senet", cash: "Kasa (ileri tarihli)", table: "Tablo", promise: "Ödeme sözü", deadline: "Son tarih" };
+// Vade takip kaynakları (v2.0.9) ve görme koşulu: çek/senet ve Kasa, ANLIK DURUM yetkisi ya da o modülün yetkisiyle.
+const DUE_SOURCES = ["plan", "cheque", "note", "cash", "table", "promise", "deadline"];
+const STATE_TEXT = { overdue: "Gecikmiş", today: "Bugün", month: "Bu ay", upcoming: "Yaklaşan" };
+const GROUPS = new Set(["day", "week", "month"]);
 
 const MONEY_FORMAT = new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-export function registerOverviewRoutes(router, { store, auth, audit, events, cash = () => null, accounts = () => null, plans = () => null, stock = () => null, cheques = () => null, now: clock = () => new Date() }) {
+export function registerOverviewRoutes(router, { store, auth, audit, events, dataset = null, cash = () => null, accounts = () => null, plans = () => null, stock = () => null, cheques = () => null, tables = () => null, now: clock = () => new Date() }) {
   const today = () => isoDay(clock());
   const office = () => store.setting("office.name", "");
   const userName = user => user.display_name || user.username || "";
@@ -141,13 +147,16 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, cas
     const q = text(params.get("q")).toLocaleLowerCase("tr-TR").slice(0, 120);
     const includeIdle = params.get("idle") === "1";
     const ledgers = accounts()?.allLedgers ? accounts().allLedgers() : { accounts: [], lines: new Map() };
-    const list = ledgers.accounts.filter(account => (!type || account.type === type) && (!q || `${account.name} ${account.refNo} ${account.groupName}`.toLocaleLowerCase("tr-TR").includes(q)));
+    // Arama: ad, cari no, grup; üç haneden uzun rakam dizisi telefonda da aranır (v2.0.9).
+    const qDigits = q.replace(/\D/g, "");
+    const hit = account => !q || `${account.name} ${account.refNo} ${account.groupName} ${account.subgroupName || ""}`.toLocaleLowerCase("tr-TR").includes(q) || (qDigits.length >= 3 && String(account.phone || "").replace(/\D/g, "").includes(qDigits));
+    const list = ledgers.accounts.filter(account => (!type || account.type === type) && hit(account));
     const result = trialBalance(list, ledgers.lines, { ...range, includeIdle });
     let rows = result.rows;
     if (side) rows = rows.filter(row => row.side === side);
     rows.sort((a, b) => collator.compare(String(a.refNo || "~"), String(b.refNo || "~")) || collator.compare(a.name, b.name));
     const totals = side ? trialBalance(list.filter(account => rows.some(row => row.id === account.id)), ledgers.lines, { ...range, includeIdle: true }).totals : result.totals;
-    return { ...range, type, side, q, includeIdle, rows, totals, today: today() };
+    return { ...range, type, side, q, includeIdle, rows, totals, today: today(), accountCount: ledgers.accounts.length };
   }
   router.get("/api/workspace/overview/mizan", async ({ req, res, url }) => {
     auth.requirePermission(req, "overview.view");
@@ -240,25 +249,28 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, cas
   });
 
   // ---------- B. Nakit akış projeksiyonu ----------
-  function cashflow(user, params) {
+  async function cashflow(user, params) {
     const range = rangeOf(params, { preset: "next30" });
     const day = today();
     const includeOverdue = params.get("overdue") === "1";
+    const withTable = params.get("table") !== "0";
+    const group = GROUPS.has(text(params.get("group"))) ? text(params.get("group")) : "";
     const flows = [];
     if (plans()?.openItems) flows.push(...plans().openItems(day));
     if (cheques()?.flows) flows.push(...cheques().flows());
+    // Tablolardaki ödeme günleri ve ödeme sözleri (v2.0.9, tahsilat takvimiyle aynı kalemler) beklenen giriştir. Taksit
+    // kartı olan kişinin sözü kartındaki taksitle aynı parayı anlatır; nakit tahmininde ikinci kez sayılmaz.
+    if (withTable) for (const item of await tableItems()) if (!item.deadline && item.amount > 0 && !(item.promise && item.carded)) flows.push(tableFlow(item, { projection: true }));
     // Kasa'ya ileri tarihle girilmiş hareketler (ör. kira, maaş): kendi tarihinde beklenen hareket sayılır.
     // Bugünkü kasa SQL toplamından (Kasa ekranıyla aynı kaynaklar); yalnız ileri tarihli satırlar okunur.
     const cashToday = cash()?.summary ? cash().summary(day).balanceToday : 0;
-    for (const entry of cash()?.entries ? cash().entries({ after: day }) : []) {
-      flows.push({ date: entry.date, direction: entry.kind === "out" ? "out" : "in", amount: entry.amount, source: "cash", label: entry.description || (entry.kind === "in" ? "Tahsilat" : "Ödeme"), party: entry.accountName || entry.planName || entry.caseTitle || "", ref: null });
-    }
+    for (const entry of cash()?.entries ? cash().entries({ after: day }) : []) flows.push(cashFlow(entry));
     const result = projection({ today: day, from: range.from, to: range.to, cashToday, flows, includeOverdue });
-    return { ...result, requested: range };
+    return { ...result, requested: range, withTable, group, periods: group ? groupFlows(result, group) : null };
   }
   router.get("/api/workspace/overview/nakit-akisi", async ({ req, res, url }) => {
     const user = auth.requirePermission(req, "overview.view");
-    const data = cashflow(user, url.searchParams);
+    const data = await cashflow(user, url.searchParams);
     ok(res, { ...data, rows: data.rows.slice(0, 5000), rowTotal: data.rows.length });
   });
   const flowRows = data => [
@@ -266,6 +278,9 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, cas
     ...(data.overdue.length ? [["", "", `— Vadesi geçmiş, kapanmamış (${data.includeOverdue ? "başlangıca eklendi" : "tahmine dahil değil"}) —`, "", "", "", ""]] : []),
     ...data.overdue.map(row => [dayText(row.date), `${SOURCE_TEXT[row.source] || row.source} · gecikmiş`, row.label, row.party || "", row.direction === "in" ? tl(row.amount) : "", row.direction === "out" ? tl(row.amount) : "", ""]),
   ];
+  const GROUP_TEXT = { day: "Günlük", week: "Haftalık", month: "Aylık" };
+  const GROUP_HEAD = { day: "Gün", week: "Hafta", month: "Ay" };
+  const periodRows = data => [[dayText(data.from), "", "", "", "", tl(data.opening)], ...(data.periods || []).map(period => [period.label, String(period.count), tl(period.in), tl(period.out), tl(period.net), tl(period.closing)])];
   const flowSummary = data => [
     ["Bugünkü kasa", tl(data.cashToday)],
     ...(data.carried.in || data.carried.out ? [["Başlangıca kadar beklenen", `+${tl(data.carried.in)} / −${tl(data.carried.out)}`]] : []),
@@ -278,13 +293,13 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, cas
   ];
   router.get("/api/workspace/overview/nakit-akisi.pdf", async ({ req, res, url }) => {
     const user = auth.requirePermission(req, "overview.view");
-    const data = cashflow(user, url.searchParams);
+    const data = await cashflow(user, url.searchParams);
     const pdf = tablePdf({
       title: "Nakit Akış Projeksiyonu",
-      subtitle: [`${dayText(data.from)} – ${dayText(data.to)}`, "Taksit, çek/senet ve ileri tarihli Kasa hareketleri", "Aynı gün önce çıkışlar yazılır"].join(" · "),
-      headers: ["Vade", "Kaynak", "Açıklama", "Kimden / kime", "Giriş", "Çıkış", "Beklenen kasa"],
-      types: ["", "", "", "", "money", "money", "money"],
-      rows: flowRows(data),
+      subtitle: [`${dayText(data.from)} – ${dayText(data.to)}`, `Taksit, çek/senet${data.withTable ? ", tablodaki ödeme günleri" : ""} ve ileri tarihli Kasa hareketleri`, data.group ? `${GROUP_TEXT[data.group]} toplamlar` : "Aynı gün önce çıkışlar yazılır"].join(" · "),
+      ...(data.group
+        ? { headers: [GROUP_HEAD[data.group], "Hareket", "Giriş", "Çıkış", "Net", "Dönem sonu kasa"], types: ["", "number", "money", "money", "money", "money"], rows: periodRows(data) }
+        : { headers: ["Vade", "Kaynak", "Açıklama", "Kimden / kime", "Giriş", "Çıkış", "Beklenen kasa"], types: ["", "", "", "", "money", "money", "money"], rows: flowRows(data) }),
       summary: flowSummary(data),
       officeName: office(),
       userName: userName(user),
@@ -295,7 +310,7 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, cas
   });
   router.get("/api/workspace/overview/nakit-akisi.xlsx", async ({ req, res, url }) => {
     const user = auth.requirePermission(req, "overview.view");
-    const data = cashflow(user, url.searchParams);
+    const data = await cashflow(user, url.searchParams);
     const money = value => MONEY_FORMAT.format(value || 0);
     const columns = ["Vade", "Kaynak", "Açıklama", "Kimden / kime", "Giriş", "Çıkış", "Beklenen kasa"];
     const rows = [
@@ -304,8 +319,11 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, cas
     ];
     const overdue = data.overdue.map(row => ({ Vade: dayText(row.date), Kaynak: SOURCE_TEXT[row.source] || row.source, Açıklama: row.label, "Kimden / kime": row.party || "", Giriş: row.direction === "in" ? money(row.amount) : "", Çıkış: row.direction === "out" ? money(row.amount) : "", "Beklenen kasa": "" }));
     const summary = flowSummary(data).map(([label, value]) => ({ Kalem: label, Tutar: value }));
+    const periodColumns = [GROUP_HEAD[data.group || "month"], "Hareket", "Giriş", "Çıkış", "Net", "Dönem sonu kasa"];
+    const periods = data.group ? periodRows(data).map(row => Object.fromEntries(periodColumns.map((column, index) => [column, row[index]]))) : [];
     const buffer = buildXlsx(
       [
+        ...(data.group ? [{ name: `${GROUP_TEXT[data.group]} toplamlar`.slice(0, 31), columns: periodColumns, rows: periods }] : []),
         { name: "Nakit akışı", columns, rows },
         { name: "Gecikmiş", columns, rows: overdue },
         { name: "Özet", columns: ["Kalem", "Tutar"], rows: summary },
@@ -316,5 +334,139 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, cas
     sendBuffer(res, buffer, { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", name: `Nakit-akisi ${dayText(data.from)}-${dayText(data.to)}.xlsx` });
   });
 
-  return { compute, forUser, mizan, cashflow };
+  // ---------- C. Vade takip (v2.0.9) ----------
+  // Vadesi olan her açık kalem tek listede. Her kaynağın rakamı kendi modülünden gelir (tek kaynak ilkesi):
+  //   Taksit      : açık kartların kalanı olan taksitleri (Taksitler ekranıyla aynı dağıtım, allocate)
+  //   Çek / Senet : portföydeki alınan (tahsil edilecek) ve ödenecek verilen evrak
+  //   Kasa        : Kasa'ya ileri tarihle girilmiş giriş/çıkış (kira, maaş…)
+  //   Tablo       : Excel/Sheets tablolarındaki ödeme günleri ve ödeme sözleri (tahsilat takvimiyle aynı kalemler; taksit
+  //                 kartı olan kişinin tablodaki ödeme kalemleri ikinci kez sayılmaz) ve son tarihler (tutarsız)
+  // Görme: ANLIK DURUM yetkisi ya da rapor yetkisi (yönetici, uzman). Çek/senet ve Kasa kalemleri yalnız ANLIK DURUM ya
+  // da o modülün yetkisi olana gider (ekranında göremediği rakamı raporda da görmez).
+  const canDues = user => canUser(user, "overview.view") || canUser(user, "reports.view");
+  const requireDues = req => {
+    const user = auth.requireUser(req);
+    if (!canDues(user)) throw new HttpError(403, "Vade takip raporu yönetici ve uzman hesapları ile ANLIK DURUM yetkisi verilen kişiler içindir.", { code: "FORBIDDEN" });
+    return user;
+  };
+  const visibleSources = user => DUE_SOURCES.filter(source => (source === "cheque" || source === "note" ? canUser(user, "overview.view") || canUser(user, "cheques.view") : source === "cash" ? canUser(user, "overview.view") || canUser(user, "cash.view") : true));
+  async function tableItems() {
+    try {
+      return tables()?.calendar ? (await tables().calendar(clock())).items : [];
+    } catch {
+      return [];
+    }
+  }
+  // Tablodaki kayda git: kayıt kullanıcının açık veri oturumundaysa tabloda seçilir; değilse hangi oturumda olduğu söylenir.
+  const recordRef = item => ({ type: "record", key: item.caseKey, session: item.session || "", sessionName: item.sessionName || "", current: !dataset?.currentKey || !item.session || item.session === dataset.currentKey() });
+  const tableDetail = item => [item.sessionName, item.tab].filter(Boolean).join(" · ");
+  // Tablodaki ay kalemi içinde bulunulan ayda "bu ay" beklenir (takvimle aynı): nakit tahmininde bugüne yazılır, vade
+  // takipte ayın ilk günüyle "bu ay" olarak görünür.
+  function tableFlow(item, { projection: forProjection = false } = {}) {
+    const month = item.state === "month";
+    return { date: forProjection && month ? today() : item.due, month, direction: "in", amount: item.amount, source: item.promise ? "promise" : "table", label: `${item.label || "Ödeme"}${item.partial ? " (kalan)" : ""}`, party: item.person || item.caseNo || "", phone: item.phone || "", detail: tableDetail(item), ref: recordRef(item) };
+  }
+  function cashFlow(entry) {
+    const ref = entry.source === "account" && entry.accountId ? { type: "account", id: entry.accountId } : entry.source === "plan" && entry.planId ? { type: "plan", id: entry.planId } : entry.source === "cheque" && entry.chequeId ? { type: "cheque", id: entry.chequeId } : { type: "cash" };
+    return { date: entry.date, direction: entry.kind === "out" ? "out" : "in", amount: entry.amount, source: "cash", label: entry.description || (entry.kind === "in" ? "Tahsilat" : "Ödeme"), party: entry.accountName || entry.planName || entry.caseTitle || "", ref };
+  }
+  const vadePreset = (preset, day) => {
+    if (preset === "late") return { from: "", to: new Date(Date.parse(`${day}T00:00:00Z`) - 86_400_000).toISOString().slice(0, 10), late: true };
+    if (preset === "open") return { from: "", to: "", late: true };
+    if (preset === "today") return { from: day, to: day, late: true };
+    const named = presetRange(preset, day);
+    return named ? { ...named, late: true } : null;
+  };
+  async function vadeTakip(user, params) {
+    const day = today();
+    const preset = text(params.get("preset")) || (params.get("from") || params.get("to") ? "" : "next30");
+    const named = vadePreset(preset, day) || { from: "", to: "", late: true };
+    const from = text(params.get("from")) || named.from;
+    const to = text(params.get("to")) || named.to;
+    if (from && !validDate(from)) throw new HttpError(400, "Başlangıç tarihi geçerli değil.");
+    if (to && !validDate(to)) throw new HttpError(400, "Bitiş tarihi geçerli değil.");
+    if (from && to && from > to) throw new HttpError(400, "Başlangıç tarihi bitiş tarihinden sonra olamaz.");
+    const late = params.get("late") === "0" ? false : named.late !== false;
+    const direction = ["in", "out"].includes(text(params.get("direction"))) ? text(params.get("direction")) : "";
+    const allowed = visibleSources(user);
+    const asked = text(params.get("sources")).split(",").map(item => item.trim()).filter(item => allowed.includes(item));
+    const sources = new Set(asked.length ? asked : allowed);
+    const needle = foldText(text(params.get("q")).slice(0, 120));
+    const digits = needle.replace(/\D/g, "");
+    const items = [];
+    if (sources.has("plan") && plans()?.openItems) {
+      for (const item of plans().openItems(day)) items.push({ ...item, detail: [item.accountName && item.accountName !== item.party ? `Cari: ${item.accountName}` : "", item.refNo ? `Kart ${item.refNo}` : ""].filter(Boolean).join(" · ") });
+    }
+    if ((sources.has("cheque") || sources.has("note")) && cheques()?.flows) for (const flow of cheques().flows()) if (sources.has(flow.source)) items.push(flow);
+    if (sources.has("cash") && cash()?.entries) for (const entry of cash().entries({ after: day })) items.push(cashFlow(entry));
+    let dormant = [];
+    if (sources.has("table") || sources.has("promise") || sources.has("deadline")) {
+      const calendar = tables()?.calendar ? await tables().calendar(clock()) : { items: [], dormant: [] };
+      for (const item of calendar.items) {
+        if (item.deadline) {
+          if (sources.has("deadline")) items.push({ date: item.due, direction: "", amount: null, source: "deadline", label: item.label, party: item.person || item.caseNo || "", phone: item.phone || "", detail: tableDetail(item), ref: recordRef(item) });
+        } else if (sources.has(item.promise ? "promise" : "table")) items.push(tableFlow(item));
+      }
+      if (sources.has("table")) dormant = (calendar.dormant || []).map(item => ({ party: item.person || item.caseNo || "", lastPaid: item.lastPaid, lastPaidText: item.lastPaidText, emptyMonths: item.emptyMonths, detail: tableDetail(item), ref: recordRef(item) }));
+    }
+    const matches = item => {
+      if (direction && item.direction !== direction) return false;
+      if (!needle) return true;
+      if (foldText(`${item.party || ""} ${item.label || ""} ${item.detail || ""} ${item.accountName || ""}`).includes(needle)) return true;
+      return digits.length >= 3 && String(item.phone || "").replace(/\D/g, "").includes(digits);
+    };
+    const result = dueList({ today: day, from, to, late, items: items.filter(matches) });
+    if (needle) dormant = dormant.filter(item => foldText(`${item.party} ${item.detail}`).includes(needle));
+    return { ...result, preset, direction, sources: [...sources], allowed, dormant: direction === "out" ? [] : dormant };
+  }
+  router.get("/api/workspace/overview/vade-takip", async ({ req, res, url }) => {
+    const user = requireDues(req);
+    const data = await vadeTakip(user, url.searchParams);
+    ok(res, { ...data, rows: data.rows.slice(0, 5000), rowTotal: data.rows.length });
+  });
+  const vadeState = row => (row.state === "overdue" ? `${Math.abs(row.days)} gün gecikti` : row.state === "today" ? "Bugün" : row.state === "month" ? "Bu ay" : `${row.days} gün kaldı`);
+  const vadeRows = data => data.rows.map(row => [dayText(row.date), vadeState(row), row.party || "", SOURCE_TEXT[row.source] || row.source, [row.label, row.detail].filter(Boolean).join(" · "), row.direction === "in" && row.amount !== null ? tl(row.amount) : "", row.direction === "out" && row.amount !== null ? tl(row.amount) : ""]);
+  const vadeSummary = data => [
+    ["Kalem", String(data.totals.count)],
+    ["Tahsil edilecek", tl(data.totals.in.total.amount)],
+    ["  gecikmiş", `${tl(data.totals.in.overdue.amount)} (${data.totals.in.overdue.count})`],
+    ["Ödenecek", tl(data.totals.out.total.amount)],
+    ["  gecikmiş", `${tl(data.totals.out.overdue.amount)} (${data.totals.out.overdue.count})`],
+    ["Net (tahsil − ödeme)", tl(data.totals.net)],
+    ...(data.totals.noAmount ? [["Tutarsız kalem (son tarih vb.)", String(data.totals.noAmount)]] : []),
+  ];
+  const vadeRange = data => (data.from || data.to ? `${data.from ? dayText(data.from) : "…"} – ${data.to ? dayText(data.to) : "…"}` : "Tüm açık kalemler") + (data.late && data.from ? " · gecikmişler dahil" : "");
+  router.get("/api/workspace/overview/vade-takip.pdf", async ({ req, res, url }) => {
+    const user = requireDues(req);
+    const data = await vadeTakip(user, url.searchParams);
+    const clipped = data.rows.length > PDF_ROWS;
+    const pdf = tablePdf({
+      title: "Vade Takip",
+      subtitle: [vadeRange(data), data.direction === "in" ? "Tahsil edilecekler" : data.direction === "out" ? "Ödenecekler" : "", clipped ? "ilk 20.000 satır (tamamı Excel'de)" : ""].filter(Boolean).join(" · "),
+      headers: ["Vade", "Durum", "Kimden / kime", "Kaynak", "Açıklama", "Tahsil edilecek", "Ödenecek"],
+      types: ["", "", "", "", "", "money", "money"],
+      rows: vadeRows({ rows: data.rows.slice(0, PDF_ROWS) }),
+      summary: vadeSummary(data),
+      officeName: office(),
+      userName: userName(user),
+      brand: office() || "DestekOfis",
+    });
+    audit(user, "overview.exported", "vade-takip.pdf", { from: data.from, to: data.to, count: data.rows.length });
+    sendBuffer(res, pdf, { type: "application/pdf", name: `Vade-takip ${dayText(data.today)}.pdf`, inline: url.searchParams.get("download") !== "1" });
+  });
+  router.get("/api/workspace/overview/vade-takip.xlsx", async ({ req, res, url }) => {
+    const user = requireDues(req);
+    const data = await vadeTakip(user, url.searchParams);
+    const columns = ["Vade", "Gün", "Durum", "Kimden / kime", "Kaynak", "Açıklama", "Ayrıntı", "Tahsil edilecek", "Ödenecek"];
+    const money = value => MONEY_FORMAT.format(value || 0);
+    const rows = data.rows.map(row => ({ Vade: dayText(row.date), Gün: String(row.days), Durum: STATE_TEXT[row.state], "Kimden / kime": row.party || "", Kaynak: SOURCE_TEXT[row.source] || row.source, Açıklama: row.label || "", Ayrıntı: row.detail || "", "Tahsil edilecek": row.direction === "in" && row.amount !== null ? money(row.amount) : "", Ödenecek: row.direction === "out" && row.amount !== null ? money(row.amount) : "" }));
+    const sheets = [{ name: "Vade takip", columns, rows }];
+    if (data.dormant.length) sheets.push({ name: "Ödemesi kesilmiş olabilir", columns: ["Kişi", "Son ödeme", "Boş ay", "Kaynak"], rows: data.dormant.map(item => ({ Kişi: item.party, "Son ödeme": item.lastPaidText, "Boş ay": String(item.emptyMonths), Kaynak: item.detail })) });
+    sheets.push({ name: "Özet", columns: ["Kalem", "Değer"], rows: [{ Kalem: "Kapsam", Değer: vadeRange(data) }, ...vadeSummary(data).map(([label, value]) => ({ Kalem: label.trim(), Değer: value }))] });
+    const buffer = buildXlsx(sheets, { title: "Vade Takip" });
+    audit(user, "overview.exported", "vade-takip.xlsx", { from: data.from, to: data.to, count: data.rows.length });
+    sendBuffer(res, buffer, { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", name: `Vade-takip ${dayText(data.today)}.xlsx` });
+  });
+
+  return { compute, forUser, mizan, cashflow, vadeTakip };
 }
