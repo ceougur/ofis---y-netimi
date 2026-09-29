@@ -477,6 +477,121 @@ describe("lisans motoru — sunucu", () => {
     assert.equal((await staff.post("/api/license/contact", { companyName: "X", phone: "1" })).status, 403);
   });
 
+  // v2.0.8 (sahadan gelen soru): güncelleme ve yeniden kurulum deneme süresini sıfırlamaz.
+  it("deneme süresi güncellemede (aynı data klasörüyle yeniden açılış) ve yeniden kurulumda sıfırlanmaz; süre dolunca öyle kalır", async () => {
+    clock.now = T0;
+    online = true;
+    const machineId = "f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff";
+    const root = mkdtempSync(path.join(tmpdir(), "deneme-guncelleme-"));
+    const dataDir = path.join(root, "data");
+    const opened = [];
+    const open = async () => {
+      const server = await startTestServer({ dataDir, license: licenseOptions(machineId) });
+      servers.push(server);
+      opened.push(server);
+      const admin = await loginAdmin(server);
+      // Gerçek program açılıştan 30 sn sonra servisle doğrular; testte zaman atladığımız için açılış doğrulaması elle.
+      if ((await admin.get("/api/license")).data.data.licenseId) await admin.post("/api/license/check");
+      return { server, admin, status: (await admin.get("/api/license")).data.data, close: () => server.app.close() };
+    };
+    try {
+      let s = await open();
+      const started = (await s.admin.post("/api/license/trial", { officeName: "Prova Ofisi" })).data.data;
+      assert.equal(started.daysLeft, 30);
+      const first = { licenseId: started.licenseId, expiresAt: started.expiresAt };
+      await s.close();
+      // 10. günde güncelleme: yeni sürüm aynı data klasöründe açılır.
+      clock.now = T0 + 10 * DAY;
+      s = await open();
+      assert.equal(s.status.state, "trial");
+      assert.equal(s.status.licenseId, first.licenseId, "aynı deneme");
+      assert.equal(s.status.expiresAt, first.expiresAt, "bitiş tarihi değişmedi");
+      assert.equal(s.status.daysLeft, 20, "kaldığı yerden sayar");
+      assert.equal((await s.admin.post("/api/license/trial", {})).data.data.expiresAt, first.expiresAt, "'Denemeyi başlat' süreyi uzatmaz");
+      assert.equal(reference.store.data.events.filter(event => event.type === "trial.started" && event.machine === machineId).length, 1, "servis ikinci deneme açmadı");
+      await s.close();
+      // 27. günde program ve data klasörü silinip yeniden kurulur: servis aynı denemeyi verir.
+      clock.now = T0 + 27 * DAY;
+      rmSync(dataDir, { recursive: true, force: true });
+      s = await open();
+      assert.equal(s.status.state, "none");
+      const again = (await s.admin.post("/api/license/trial", {})).data.data;
+      assert.equal(again.licenseId, first.licenseId);
+      assert.equal(again.daysLeft, 3);
+      await s.close();
+      // Süre dolduktan sonra güncelleme: salt okunur; yeniden başlamaz.
+      clock.now = T0 + 32 * DAY;
+      s = await open();
+      assert.equal(s.status.state, "expired");
+      assert.equal((await writeNote(s.admin, "2026/9")).status, 403);
+      await s.close();
+    } finally {
+      // Windows açık veritabanı dosyasını silmez: önce bu testte açılan her sunucu kapanır.
+      for (const server of opened) await server.app.close().catch(() => {});
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+
+  it("geçiş dönemi (2.0 öncesi kurulum) güncellemede sıfırlanmaz; bütünlük özeti bozulsa da başlangıç ileri alınmaz", async () => {
+    clock.now = T0;
+    online = false;
+    const machineId = "a0a1a2a3a4a5a6a7a8a9aaabacadaeaf";
+    const root = mkdtempSync(path.join(tmpdir(), "gecis-guncelleme-"));
+    const dataDir = path.join(root, "data");
+    const opened = [];
+    try {
+      // 1.7 döneminde kullanılmış veritabanı (lisans modülü yok).
+      let server = await startTestServer({ dataDir, license: { enforce: false, machineId } });
+      opened.push(server);
+      const admin = await loginAdmin(server);
+      assert.equal((await writeNote(admin, "2026/1")).status, 200);
+      server.app.store.run("DELETE FROM settings WHERE key LIKE 'license.%'");
+      await server.app.close();
+      const open = async () => {
+        const next = await startTestServer({ dataDir, license: licenseOptions(machineId) });
+        servers.push(next);
+        opened.push(next);
+        return next;
+      };
+      server = await open();
+      let status = server.app.license.status();
+      assert.equal(status.state, "transition");
+      assert.equal(status.daysLeft, 30);
+      const endsAt = status.transitionEndsAt;
+      await server.app.close();
+      clock.now = T0 + 20 * DAY + 3_600_000;
+      server = await open();
+      status = server.app.license.status();
+      assert.equal(status.transitionEndsAt, endsAt, "güncelleme sonrası bitiş aynı");
+      assert.equal(status.daysLeft, 10);
+      // Yerel kaydın bütünlük özeti tutmasa da (ör. yedekten dönüş) geçiş başlangıcı korunur.
+      server.app.store.setSetting("meta.instanceId", "baska-kurulum");
+      await server.app.close();
+      server = await open();
+      status = server.app.license.status();
+      assert.equal(status.state, "transition");
+      assert.equal(status.transitionEndsAt, endsAt);
+      await server.app.close();
+      clock.now = T0 + 31 * DAY;
+      server = await open();
+      assert.equal(server.app.license.status().reason, "transition-ended");
+    } finally {
+      online = true;
+      // Windows açık veritabanı dosyasını silmez (EPERM): önce bu testte açılan her sunucu kapanır.
+      for (const item of opened) await item.app.close().catch(() => {});
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+
+  it("lisans durumu bilgisayar kimliğinin kaynağını söyler (Windows/Linux kimliği ya da veri klasöründeki dosya)", async () => {
+    clock.now = T0;
+    const server = await start({ machineId: "b0b1b2b3b4b5b6b7b8b9babbbcbdbebf" });
+    const admin = await loginAdmin(server);
+    const status = (await admin.get("/api/license")).data.data;
+    assert.equal(status.machineSource, "override");
+    assert.equal(typeof status.machineSourceText, "string");
+  });
+
   it("salt okunur modda yazma yetkileri gizlenir, okuma yetkileri kalır", () => {
     assert.ok(WRITE_PERMISSIONS.includes("records.create"));
     assert.ok(!WRITE_PERMISSIONS.includes("users.manage"));

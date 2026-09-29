@@ -66,9 +66,11 @@ export function accountLedger(entries = [], plans = []) {
         origin: "plan",
         planId: plan.id,
         kind: incoming ? "plan-in" : "plan-out",
+        opening: Boolean(entry.opening),
         date: entry.date,
         at: entry.createdAt || "",
-        label: incoming ? `Taksit tahsilatı${entry.itemSeq ? ` · ${entry.itemSeq}. taksit` : ""}` : "Taksit iadesi",
+        // Açılış (devir, v2.0.8): Excel'de programa girmeden önce ödenmiş kısım; alacak tarafına yazılır, Kasa'da yoktur.
+        label: incoming ? `${entry.opening ? "Açılış (devir)" : "Taksit tahsilatı"}${entry.itemSeq ? ` · ${entry.itemSeq}. taksit` : ""}` : "Taksit iadesi",
         note: entry.note || "",
         receiptNo: entry.receiptNo || null,
         debit: incoming ? 0 : amount,
@@ -97,7 +99,7 @@ export function accountLedger(entries = [], plans = []) {
     credit = roundMoney(credit + line.credit);
     balance = roundMoney(balance + line.debit - line.credit);
     line.balance = balance;
-    if (line.kind === "in" || line.kind === "plan-in") collected = roundMoney(collected + line.credit);
+    if (line.kind === "in" || (line.kind === "plan-in" && !line.opening)) collected = roundMoney(collected + line.credit);
   }
   return { lines, totals: { debit, credit, balance, collected, planTotal, planRemaining, overdue, overdueCount } };
 }

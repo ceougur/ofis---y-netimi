@@ -76,9 +76,14 @@ const amountIn = value => {
  * Ay hücrelerinin ödeme mi yoksa ödenecek taksit planı mı taşıdığını tablo düzeyinde karar verir.
  * @returns {{plan:boolean, reason:string|null, totalColumn:string|null, paidColumn:string|null, remainingColumn:string|null, feeColumn:string|null}}
  */
-export function detectMonthPlan({ rows, months, columns, now = new Date() }) {
-  const monthSet = new Set(months.map(entry => entry.column));
-  const others = columns.filter(column => !monthSet.has(column));
+/**
+ * Toplam / ödenen / kalan kolonları: başlığı öyle diyen ve hücrelerinde tutar yazan kolonlar (`exclude` dışındakiler).
+ * Takvim (plan kipi) ve tablodan taksit kartına aktarma (v2.0.8) aynı kuralı kullanır.
+ * @returns {{ totalColumn: string|null, paidColumn: string|null, remainingColumn: string|null }}
+ */
+export function paymentColumns({ rows, columns, exclude = [] }) {
+  const skip = new Set(exclude);
+  const others = columns.filter(column => !skip.has(column));
   const hasAmounts = column => rows.some(row => amountIn(cell(row, column)) !== null);
   const paidColumn = others.find(column => PAID_HEADER.test(foldText(column)) && !REMAINING_HEADER.test(foldText(column)) && hasAmounts(column)) || null;
   const remainingColumn = others.find(column => REMAINING_HEADER.test(foldText(column)) && hasAmounts(column)) || null;
@@ -86,6 +91,11 @@ export function detectMonthPlan({ rows, months, columns, now = new Date() }) {
     const folded = foldText(column);
     return TOTAL_HEADER.test(folded) && !PAID_HEADER.test(folded) && !REMAINING_HEADER.test(folded) && !/\b(aylik|taksit tutari)\b/.test(folded) && hasAmounts(column);
   }) || null;
+  return { totalColumn, paidColumn, remainingColumn };
+}
+
+export function detectMonthPlan({ rows, months, columns, now = new Date() }) {
+  const { totalColumn, paidColumn, remainingColumn } = paymentColumns({ rows, columns, exclude: months.map(entry => entry.column) });
   // Aylık ücret / aidat / kira bedeli kolonu (takvim motorunun "kendi tutar" kolonu): varsa ay hücresindeki tutar ödemedir.
   const feeColumn = months.find(entry => entry.amountColumn)?.amountColumn || null;
   const result = { plan: false, reason: null, totalColumn, paidColumn, remainingColumn, feeColumn };
@@ -199,6 +209,66 @@ export function installmentLedger({ row, months, startColumn = null, endColumn =
   return { start, end, open, dormant, rows };
 }
 
+/**
+ * Ödeme kipindeki ay matrisinin TÜM dönemi (v2.0.8, tablodan taksit kartına aktarma): takvim yalnız bugüne kadarki
+ * ayları bekler; karta aktarırken dönemin kalan ayları da taksittir. Dönem: başlangıç (kayıt tarihi kolonu, yoksa ilk yazılı
+ * ay) → bitiş (ayrılış tarihi kolonu; yoksa tablodaki son ay kolonu; son yazılı aydan sonra üst üste `dormantMonths` tam boş
+ * ay geçmişse son yazılı ay — ayrılmış olabilir). "–", "muaf", "burslu" yazılı ay taksit değildir.
+ * Her ayın tutarı aylık ücret kolonundan; ücret yoksa hücreye yazılan ödeme tutarı. Hücredeki tutar ücreti aşarsa fazlası
+ * `extraPaid` olarak döner (sonraki açık aylara sayılır).
+ * @returns {{ start:number|null, end:number|null, dormant:{lastWritten:number, emptyMonths:number}|null, extraPaid:number,
+ *   rows: Array<{ column:string, time:number, label:string, amount:number|null, paid:number, state:string }> }}
+ */
+export function seasonLedger({ row, months, startColumn = null, endColumn = null, now = new Date() }) {
+  const empty = { start: null, end: null, dormant: null, extraPaid: 0, rows: [] };
+  if (!row || !months?.length) return empty;
+  const currentMonth = Date.UTC(now.getFullYear(), now.getMonth(), 1);
+  const ordered = [...months].sort((a, b) => a.time - b.time);
+  const feeOf = entry => {
+    const fee = entry.amountColumn ? parseAmount(cell(row, entry.amountColumn)) : null;
+    return fee !== null && fee > 0 ? fee : null;
+  };
+  const written = ordered.filter(entry => {
+    const text = String(cell(row, entry.column) ?? "").trim();
+    return text && (!isEmptyCell(text) || notDue(text));
+  });
+  const boundStart = startColumn ? monthOfValue(cell(row, startColumn)) : null;
+  const boundEnd = endColumn ? monthOfValue(cell(row, endColumn)) : null;
+  let start = boundStart;
+  if (start === null && written.length) start = written[0].time;
+  if (start === null) {
+    if (!ordered.some(entry => feeOf(entry))) return empty;
+    start = Math.max(ordered[0].time, Math.min(currentMonth, ordered.at(-1).time));
+  }
+  let end = boundEnd;
+  let dormant = null;
+  if (end === null && written.length) {
+    const lastWritten = written.at(-1).time;
+    const gap = monthIndex(currentMonth) - monthIndex(lastWritten) - 1;
+    if (gap >= LEDGER.dormantMonths) {
+      end = lastWritten;
+      dormant = { lastWritten, emptyMonths: gap };
+    }
+  }
+  if (end === null) end = ordered.at(-1).time;
+  const rows = [];
+  let extraPaid = 0;
+  for (const entry of ordered) {
+    if (entry.time < start || entry.time > end) continue;
+    const fee = feeOf(entry);
+    const { state, paidAmount } = cellState(cell(row, entry.column), fee);
+    if (state === "skip") continue;
+    const written = paidAmount !== null && paidAmount > 0 ? paidAmount : null;
+    const amount = fee ?? (state !== "due" ? written : null);
+    let paid = 0;
+    if (state === "paid") paid = amount ?? 0;
+    else if (state === "partial") paid = written ?? 0;
+    if (written !== null && amount !== null && written > amount + 0.004) extraPaid += written - amount;
+    rows.push({ column: entry.column, time: entry.time, label: entry.label, amount, paid: Math.round(Math.min(paid, amount ?? paid) * 100) / 100, state });
+  }
+  return { start, end, dormant, extraPaid: Math.round(extraPaid * 100) / 100, rows };
+}
+
 // Plan kipi: yalnız tutar (ya da ödeme işareti) yazılı aylar taksittir; geçerlilik aralığı ilk ve son planlı aydır
 // (başlangıç/bitiş kolonu varsa o). Plan bittiyse kayıt "durgun" sayılmaz: ödenecek başka taksit yoktur.
 function planLedger({ row, ordered, plan, startColumn, endColumn }) {
@@ -223,6 +293,9 @@ function planLedger({ row, ordered, plan, startColumn, endColumn }) {
     const remaining = parseAmount(cell(row, plan.remainingColumn));
     if (total !== null && remaining !== null) paid = Math.max(0, total - remaining);
   }
+  // "Ödenen" (ya da Toplam − Kalan) o güne kadar ödenen TOPLAM'dır: hücresinde "ödendi" yazan ayların tutarı zaten bu
+  // toplamın içindedir, yeniden dağıtılmaz (v2.0.8; önceden işaretli ay + Ödenen iki kez sayılıyordu).
+  if (paid && paid > 0) paid -= lines.reduce((sum, line) => sum + (line.state === "paid" ? line.fee || 0 : 0), 0);
   if (paid && paid > 0) {
     let left = paid;
     for (const line of lines) {

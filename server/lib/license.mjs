@@ -32,6 +32,14 @@ export const CLOCK_TOLERANCE_MS = 24 * 3_600_000;
 export const DEFAULT_LICENSE_SERVICES = Object.freeze(["https://destek-ofis.vercel.app/api/lisans"]);
 const DAY = 86_400_000;
 const WRITABLE = new Set(["transition", "trial", "licensed"]);
+const MACHINE_SOURCE_TEXT = Object.freeze({
+  windows: "Windows kimliği (kalıcı; Windows yeniden kurulursa değişir)",
+  linux: "Linux kimliği (kalıcı)",
+  saved: "kayıtlı kimlik (işletim sistemi kimliği okunamadığı için önceki kayıt kullanıldı)",
+  file: "veri klasöründeki kimlik dosyası (işletim sistemi kimliği okunamadı; data klasörü silinirse kimlik değişir)",
+  fallback: "geçici kimlik (kimlik dosyası yazılamadı; kurulum klasöründen türetildi)",
+  override: "test kimliği",
+});
 
 // Salt okunur modda ekranlardan gizlenen yetkiler (sunucu zaten her yazma isteğini reddeder).
 export const WRITE_PERMISSIONS = Object.freeze([
@@ -626,6 +634,10 @@ export function createLicenseService({
       graceUntil: current.graceUntil,
       reason: current.reason,
       installCode: formatInstallCode(machine.id),
+      // v2.0.8: kimliğin kaynağı — Windows/Linux kimliği kalıcıdır; "file" (veri klasöründeki dosya) ise klasör silinince
+      // kimlik değişir, yönetim paneli bunu söyler.
+      machineSource: machine.source,
+      machineSourceText: MACHINE_SOURCE_TEXT[machine.source] || machine.source,
       machineSource: machine.source,
       lastCheck: local.lastCheck,
       tampered,

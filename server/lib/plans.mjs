@@ -161,6 +161,9 @@ const plain = value =>
 const ROLE_TESTS = [
   ["seq", t => /^(#|s n|sn|s no|sira|sira no|sira nu|sira numarasi|no|nr|numara|kayit no|ogrenci no|musteri no|uye no|dosya no)$/.test(t) || (/(^| )(no|nr|numara|numarasi)$/.test(t) && !/(tel|tc|kimlik|iban|hesap|vergi|plaka|kapi)/.test(t))],
   ["phone", t => /(^| )(tel|telefon|telefonu|telefonlari|gsm|cep|iletisim)( |$)/.test(t)],
+  // v2.0.8: Ödenen / Kalan kolonları — açılış (devir) olarak yazılır; "toplam ödenen" de ödenendir, "kalan borç" kalandır.
+  ["remaining", t => /(^| )(kalan|bakiye|kalan borc|kalan tutar)( |$)/.test(t)],
+  ["paid", t => /(^| )(odenen|odenmis|odendi|tahsil edilen|tahsilat|yatan|yatirilan|alinan)( |$)/.test(t) && !/(tarih|gun|no)/.test(t)],
   ["subgroup", t => /(^| )(alt|ara) ?(grup|grubu|gruplar)( |$)|altgrup|(^| )(guzergah|guzergahi|blok|blogu|sube|subesi|hat|hatti|sinif|sinifi|okul|okulu|daire)( |$)/.test(t)],
   ["group", t => /(^| )(grup|grubu|gruplar|plaka|plakasi|arac|araci|servis|site|sitesi|kurum|kurumu)( |$)/.test(t)],
   ["installment", t => (/taksit/.test(t) && /(tutar|ucret|bedel|miktar)/.test(t) && !/(toplam|genel)/.test(t)) || /(^| )aylik( |$)/.test(t)],
@@ -169,7 +172,7 @@ const ROLE_TESTS = [
   ["registered", t => (/(^| )(kayit|giris|kaydolma|uyelik|basvuru|sozlesme)( |$)/.test(t) && /tarih/.test(t)) || /^(kayit|kayit tarihi|giris tarihi|kayit gunu)$/.test(t)],
   ["firstDue", t => /(vade|baslangic|ilk taksit|ilk odeme|tarih)/.test(t)],
   ["note", t => /(^| )(not|notu|notlar|bilgi|aciklama|adres|adresi)( |$)/.test(t)],
-  ["name", t => /(^| )adi? ?soyadi?( |$)|adisoyadi|(^| )(isim|ismi|ogrenci|ogrencinin adi|musteri|kisi|veli|veli adi|sakin|cari|unvan|ad)( |$)/.test(t)],
+  ["name", t => /(^| )adi? ?soyadi?( |$)|adisoyadi|(^| )(isim|ismi|ogrenci|ogrencinin adi|musteri|musteri adi|kisi|veli|veli adi|sakin|cari|cari adi|unvan|unvani|firma|firma adi|ad|borclu|borclunun adi|kiraci|uye|hasta|danisan|abone|alici|muvekkil)( |$)/.test(t) && !/(tel|tarih)/.test(t)],
 ];
 export function mapHeaders(headers) {
   const roles = {};

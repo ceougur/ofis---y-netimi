@@ -40,6 +40,8 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
     if (!Number.isFinite(qty) || qty < 0 || qty > MAX_QTY) throw new HttpError(400, `${label} geçerli bir sayı olmalı.`);
     return roundQty(qty);
   };
+  // Boş bırakılabilen miktar alanları (kritik seviye, açılış stoku): boş = 0.
+  const optionalQty = (value, label) => (value === undefined || value === null || String(value).trim() === "" ? 0 : qtyOf(value, label));
   const priceOf = (value, label = "Birim fiyat") => {
     if (value === undefined || value === null || String(value).trim() === "") return 0;
     const price = parseAmount(value);
@@ -159,7 +161,7 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
       code: limited(body.code, 60, "Kod"),
       unit: limited(body.unit, 20, "Birim") || previous?.unit || "adet",
       category: limited(body.category, 80, "Kategori"),
-      minQty: kind === "service" ? 0 : qtyOf(body.minQty ?? 0, "Kritik seviye"),
+      minQty: kind === "service" ? 0 : optionalQty(body.minQty, "Kritik seviye"),
       unitPrice: priceOf(body.unitPrice),
       note: limited(body.note, 1000, "Not"),
     };
@@ -175,17 +177,30 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
   router.post("/api/workspace/stock", async ({ req, res }) => {
     const user = auth.requirePermission(req, "stock.manage");
     const body = await readJson(req);
+    let openingMove = null;
+    let touched = [];
     const result = store.tx(() => {
       const input = itemInput(body);
       if (store.get("SELECT 1 AS found FROM stock_items WHERE deleted_at IS NULL AND name = ? COLLATE NOCASE AND unit = ? COLLATE NOCASE", input.name, input.unit)) throw new HttpError(409, `“${input.name}” (${input.unit}) zaten var. Aynı ürüne giriş yapın.`);
       const id = insertItem(user, input);
-      // Açılış stoku: ürün açılırken elde olan miktar (para yazılmaz).
-      const opening = input.kind === "service" ? 0 : qtyOf(body.openingQty ?? 0, "Açılış stoku");
-      if (opening > 0) insertMove(user, id, { kind: "in", qty: opening, unitPrice: input.unitPrice, amount: 0, date: today(), note: "Açılış stoku", pay: "none", accountId: "" });
-      audit(user, "stock.item.created", id, { name: input.name, unit: input.unit, opening });
+      // İlk miktar (v2.0.8): elde olan stok (açılış; para yazılmaz), ya da yeni alım — Kasa'dan ödendi (Kasa'ya "Stok
+      // ödemesi" gideri: miktar × birim fiyat) veya tedarikçiye borç (cariye). Stok girişiyle aynı kural (moveInput).
+      const opening = input.kind === "service" ? 0 : optionalQty(body.openingQty, "Açılış stoku");
+      if (opening > 0) {
+        const pay = PAY.has(text(body.openingPay)) ? text(body.openingPay) : "none";
+        openingMove =
+          pay === "none"
+            ? { kind: "in", qty: opening, unitPrice: input.unitPrice, amount: 0, date: dateOf(body.openingDate, "Tarih", today()), note: "Açılış stoku", pay: "none", accountId: "" }
+            : moveInput({ kind: "in", qty: opening, unitPrice: input.unitPrice, pay, accountId: body.openingAccountId, date: body.openingDate, note: limited(body.openingNote, 300, "Açıklama") || "İlk alım" }, user, { ...input, id });
+        const moveId = insertMove(user, id, openingMove);
+        touched = syncAccount(user, input, moveId, openingMove);
+      }
+      audit(user, "stock.item.created", id, { name: input.name, unit: input.unit, opening, openingPay: openingMove?.pay || "none", amount: openingMove?.amount || 0 });
       return detail(id, user);
     });
     changed(user, { itemId: result.id });
+    if (openingMove?.pay === "cash") changed(user, { kind: "cash" });
+    publishAccounts(user, touched);
     ok(res, result);
   });
   router.get("/api/workspace/stock/liste.pdf", async ({ req, res, url }) => {
@@ -478,7 +493,8 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
         ...row,
         kind: moveKind === "in" ? "out" : "in",
         source: "stock",
-        description: `${moveKind === "in" ? "Stok alımı" : "Stok satışı"} · ${row.itemName} ${qtyText(qty)} ${unit}${note ? ` · ${note}` : ""}`,
+        // Alım Kasa'dan gider: "Stok ödemesi" (v2.0.8 adı; önceden "Stok alımı").
+        description: `${moveKind === "in" ? "Stok ödemesi (alım)" : "Stok satışı"} · ${row.itemName} ${qtyText(qty)} ${unit}${note ? ` · ${note}` : ""}`,
       }));
   // Sol menüdeki rozet: kritik seviyedeki ya da tükenen (kritik seviyesi tanımlı) ürün sayısı ve adları.
   function alerts() {

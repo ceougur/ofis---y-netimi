@@ -169,6 +169,8 @@
     sessionStorage.setItem("hof-flash", `${head}${result.mode === "session" ? "" : " Tüm bilgisayarlar aynı veriyi görür."}${result.linked ? " Google Sheets bağlı; değişiklikler kendiliğinden eklenir." : ""}`);
     // İlk yüklemede, "yerine koy"da ve yeni oturumda veri baştan değişti: sayfa açılınca akıllı analiz ekranı gösterilir.
     if (result.mode === "initial" || result.mode === "replace" || result.mode === "session") sessionStorage.setItem("hof-analyze", result.mode === "session" ? "initial" : result.mode);
+    // Tablodan taksit kartına aktarma (v2.0.8): sayfa yenilenince, tabloda ödeme planı varsa yöneticiye sorulur.
+    if (HOF.can?.("plans.manage")) sessionStorage.setItem("hof-plan-transfer-ask", "1");
     location.reload();
   }
 

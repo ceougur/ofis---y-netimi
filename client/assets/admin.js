@@ -595,6 +595,12 @@
       ${status.autoTrial?.lastError ? `<p class="adm-update-warn">Deneme kendiliğinden başlatılamadı (${esc(status.autoTrial.lastError)}). Program birkaç dakikada bir yeniden dener; internet bağlantısını kontrol edin veya aşağıdaki “Denemeyi şimdi başlat” düğmesine basın.</p>` : ""}
       ${status.tampered ? '<p class="adm-update-warn">Lisans kaydında elle değişiklik fark edildi; lisans servisiyle doğrulanana kadar en sıkı kurallar uygulanıyor.</p>' : ""}`;
     $("#adm-install-code").textContent = status.installCode || "—";
+    // v2.0.8: kimliğin kaynağı; işletim sistemi kimliği okunamadıysa (dosya) uyarı.
+    const sourceNode = $("#adm-install-source");
+    if (sourceNode) {
+      sourceNode.textContent = status.machineSourceText ? `Kimlik kaynağı: ${status.machineSourceText}.` : "";
+      sourceNode.classList.toggle("adm-update-warn", ["file", "fallback"].includes(status.machineSource));
+    }
     // Deneme yalnızca hiç etkinleştirilmemiş kurulumda anlamlıdır; süresi dolmuş deneme ikinci kez verilmez.
     $("#adm-license-trial").hidden = !status.canStartTrial;
   }

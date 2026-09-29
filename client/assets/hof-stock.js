@@ -18,7 +18,13 @@
     else text = text.replace(",", ".");
     return Number(text);
   };
-  const UNITS = ["adet", "paket", "kutu", "koli", "kg", "gr", "lt", "ml", "metre", "top", "çift", "takım"];
+  // Birimler (v2.0.8): seçim listesi (önceki öneri listesi, içinde "adet" yazılıyken yalnız "adet"i gösteriyordu).
+  // Sayılan, tartılan, ölçülen ve hizmet birimleri; listede olmayan birim "Başka bir değer yaz…" ile yazılır.
+  const UNITS = ["adet", "paket", "kutu", "koli", "çuval", "şişe", "bidon", "teneke", "kavanoz", "top", "rulo", "düzine", "çift", "takım", "set", "kg", "gr", "ton", "lt", "ml", "m³", "metre", "cm", "m²", "saat", "gün", "hafta", "ay", "seans", "kişi", "sefer"];
+  const unitOptions = (current = "") => {
+    const used = (view.list?.items || []).map(item => item.unit).filter(Boolean);
+    return [...new Set([...UNITS, ...used, current].filter(Boolean))];
+  };
   const STATES = [
     { id: "all", label: "Tümü" },
     { id: "low", label: "Kritik" },
@@ -178,18 +184,71 @@
       fields: [
         { name: "kind", label: "Kalem türü", type: "select", value: item?.kind || "product", options: [{ value: "product", label: "Ürün (stok tutulur)" }, { value: "service", label: "Hizmet (miktar ve kritik seviye izlenmez)" }], help: "Hizmet kalemleri kritik stok sayısına girmez; satış/alış tutarı Kasa'ya ya da cariye yine yazılabilir." },
         { name: "name", label: "Ürün / hizmet adı", required: true, maxlength: 160, value: item?.name || "", autofocus: true, placeholder: "Ör. Çay, Motor yağı 5W-30, Servis ücreti" },
-        { name: "unit", label: "Birim", maxlength: 20, value: item?.unit || "adet", list: UNITS },
+        { name: "unit", label: "Birim", type: "choice", required: true, value: item?.unit || "adet", options: unitOptions(item?.unit), blankLabel: "— Birim seçin —" },
         { name: "code", label: "Kod", maxlength: 60, value: item?.code || "", placeholder: "İsteğe bağlı (barkod, stok kodu)" },
         { name: "category", label: "Kategori", maxlength: 80, value: item?.category || "", list: categories, placeholder: "Ör. Mutfak, Araç, Kırtasiye" },
         { name: "minQty", label: "Kritik seviye", inputmode: "decimal", value: item?.minQty ? qtyText(item.minQty) : "", placeholder: "Bu miktara inince uyarı verir (boş: uyarı yok)" },
         { name: "unitPrice", label: "Birim fiyat (₺)", inputmode: "decimal", value: item?.unitPrice ? office().amountText?.(item.unitPrice) || item.unitPrice : "", placeholder: "Son alış fiyatı (stok değeri için)" },
-        ...(item ? [] : [{ name: "openingQty", label: "Elde olan miktar (açılış stoku)", inputmode: "decimal", placeholder: "Ör. 10 (para yazılmaz)" }]),
+        // İlk miktar (v2.0.8): stoğa girer. Kasa'ya kendiliğinden gider yazılmaz; "Kasa'ya yansıt" işaretlenirse
+        // miktar × birim fiyat Kasa'dan "Stok ödemesi" olarak düşer (kullanıcı kararı).
+        ...(item
+          ? []
+          : [
+              { name: "openingQty", label: "Miktar (stoğa girecek)", inputmode: "decimal", placeholder: "Ör. 10 (boş: şimdilik stok yok)" },
+              { name: "openingCash", label: "Kasa’ya yansıt (miktar × birim fiyat Kasa’dan “Stok ödemesi” gideri olarak düşer)", type: "checkbox", value: false },
+              { name: "openingDate", label: "Ödeme tarihi", type: "date", value: office().todayIso?.() || "" },
+            ]),
         { name: "note", label: "Not", type: "textarea", rows: 2, maxlength: 1000, value: item?.note || "" },
       ],
+      extraHtml: item ? "" : '<p class="hof-stock-total" data-opening-total aria-live="polite"></p>',
       submitLabel: item ? "Kaydet" : "Ürünü aç",
+      onOpen: item
+        ? null
+        : dialog => {
+            const field = name => dialog.querySelector(`[name="${name}"]`);
+            const total = dialog.querySelector("[data-opening-total]");
+            const cashBox = field("openingCash").closest(".hof-check");
+            const dateField = field("openingDate").closest(".hof-field");
+            const sync = () => {
+              const service = field("kind").value === "service";
+              const unit = field("unit")?.value && field("unit").value !== HOF.OTHER_CHOICE ? field("unit").value : "";
+              const qty = parseNumber(field("openingQty").value) || 0;
+              const price = parseNumber(field("unitPrice").value) || 0;
+              const toCash = field("openingCash").checked;
+              field("openingQty").closest(".hof-field").hidden = service;
+              if (cashBox) cashBox.hidden = service;
+              dateField.hidden = service || !toCash;
+              const qtyLabel = field("openingQty").closest(".hof-field").querySelector("span");
+              if (qtyLabel) qtyLabel.textContent = `Miktar (stoğa girecek${unit ? `, ${unit}` : ""})`;
+              if (service || !(qty > 0)) {
+                total.innerHTML = service ? "" : "Miktar yazılırsa ürün o miktarla stoğa girer.";
+                return;
+              }
+              const amount = Math.round(qty * price * 100) / 100;
+              const line = `${esc(qtyText(qty))} ${esc(unit)}${price > 0 ? ` × ${esc(money(price))} = <b>${esc(money(amount))}</b>` : ""}`;
+              if (!toCash) total.innerHTML = `${line} · stoğa girer; Kasa’ya yazılmaz (yansıtmak için kutuyu işaretleyin).`;
+              else if (!(price > 0)) total.innerHTML = `${line} · <b class="hof-cash-out">Kasa’ya yansıtmak için birim fiyat girin.</b>`;
+              else total.innerHTML = `${line} · Kasa’dan <b class="hof-cash-out">${esc(money(amount))}</b> “Stok ödemesi” gideri yazılır.`;
+            };
+            dialog.addEventListener("input", sync);
+            dialog.addEventListener("change", sync);
+            sync();
+          },
       onSubmit: async data => {
+        if (!item) {
+          if (data.unit === HOF.OTHER_CHOICE) data.unit = "";
+          // Kasa'ya yalnız kutu işaretliyse yazılır; işaretsizse ürün miktarıyla açılır, para yazılmaz.
+          data.openingPay = data.openingCash && data.kind !== "service" && parseNumber(data.openingQty) > 0 ? "cash" : "none";
+          delete data.openingCash;
+          if (data.kind === "service" || !(parseNumber(data.openingQty) > 0)) {
+            delete data.openingQty;
+            delete data.openingDate;
+          }
+          if (data.openingPay === "cash" && !(parseNumber(data.unitPrice) > 0)) throw new Error("Kasa’ya yansıtmak için birim fiyat girin (tutar = miktar × birim fiyat).");
+        }
         const result = item ? await HOF.api(`/api/workspace/stock/${encodeURIComponent(item.id)}`, { method: "PUT", body: data }) : await HOF.api("/api/workspace/stock", { method: "POST", body: data });
-        HOF.toast(item ? "Ürün güncellendi." : "Ürün açıldı.", { type: "success" });
+        if (!item && data.openingPay === "cash") HOF.emit("cash-changed");
+        HOF.toast(item ? "Ürün güncellendi." : data.openingQty ? `Ürün açıldı: ${qtyText(result.qty)} ${result.unit} stokta${data.openingPay === "cash" ? "; Kasa’ya stok ödemesi yazıldı" : ""}.` : "Ürün açıldı.", { type: "success" });
         if (!modal) open(result.id);
         view.id = result.id;
         view.mode = "card";
@@ -308,7 +367,7 @@
         intro: `${preview.rows} satır bulundu. Her satır bir ürün olur; miktar kolonu açılış stoku olarak girilir (para yazılmaz). Aynı kodla ya da aynı ad ve birimle ürün varsa atlanır ya da güncellenir.`,
         fields: [
           ...preview.headers.map((header, index) => ({ name: `c${index}`, label: `${header || `${index + 1}. kolon`}${sample[index] !== undefined && String(sample[index]).trim() ? ` — ör. ${String(sample[index]).slice(0, 30)}` : ""}`, type: "select", value: preview.roles[index] || "", options: ROLE_OPTIONS.map(([value, label]) => ({ value, label })) })),
-          { name: "unit", label: "Birim kolonu yoksa", value: "adet", list: UNITS, maxlength: 20 },
+          { name: "unit", label: "Birim kolonu yoksa", type: "choice", value: "adet", options: unitOptions(), required: true, blankLabel: "— Birim seçin —" },
           { name: "mode", label: "Aynı ürün zaten varsa", type: "select", value: "skip", options: [{ value: "skip", label: "Atla" }, { value: "update", label: "Bilgilerini güncelle (miktar eklenmez)" }] },
         ],
         submitLabel: "Ürünleri oluştur",

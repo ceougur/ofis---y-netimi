@@ -1,7 +1,7 @@
 import { createRequire } from "node:module";
 import path from "node:path";
 const { chromium } = createRequire("/home/user/ofis---y-netimi/")("playwright");
-const dir = process.argv[2];
+const dir = path.resolve(process.argv[2]);
 const browser = await chromium.launch();
 const page = await browser.newPage();
 for (const name of process.argv.slice(3)) {
