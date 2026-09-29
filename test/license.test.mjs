@@ -484,9 +484,11 @@ describe("lisans motoru — sunucu", () => {
     const machineId = "f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff";
     const root = mkdtempSync(path.join(tmpdir(), "deneme-guncelleme-"));
     const dataDir = path.join(root, "data");
+    const opened = [];
     const open = async () => {
       const server = await startTestServer({ dataDir, license: licenseOptions(machineId) });
       servers.push(server);
+      opened.push(server);
       const admin = await loginAdmin(server);
       // Gerçek program açılıştan 30 sn sonra servisle doğrular; testte zaman atladığımız için açılış doğrulaması elle.
       if ((await admin.get("/api/license")).data.data.licenseId) await admin.post("/api/license/check");
@@ -524,6 +526,8 @@ describe("lisans motoru — sunucu", () => {
       assert.equal((await writeNote(s.admin, "2026/9")).status, 403);
       await s.close();
     } finally {
+      // Windows açık veritabanı dosyasını silmez: önce bu testte açılan her sunucu kapanır.
+      for (const server of opened) await server.app.close().catch(() => {});
       rmSync(root, { recursive: true, force: true });
     }
   });
@@ -534,17 +538,20 @@ describe("lisans motoru — sunucu", () => {
     const machineId = "a0a1a2a3a4a5a6a7a8a9aaabacadaeaf";
     const root = mkdtempSync(path.join(tmpdir(), "gecis-guncelleme-"));
     const dataDir = path.join(root, "data");
+    const opened = [];
     try {
       // 1.7 döneminde kullanılmış veritabanı (lisans modülü yok).
       let server = await startTestServer({ dataDir, license: { enforce: false, machineId } });
+      opened.push(server);
       const admin = await loginAdmin(server);
       assert.equal((await writeNote(admin, "2026/1")).status, 200);
       server.app.store.run("DELETE FROM settings WHERE key LIKE 'license.%'");
       await server.app.close();
       const open = async () => {
-        const opened = await startTestServer({ dataDir, license: licenseOptions(machineId) });
-        servers.push(opened);
-        return opened;
+        const next = await startTestServer({ dataDir, license: licenseOptions(machineId) });
+        servers.push(next);
+        opened.push(next);
+        return next;
       };
       server = await open();
       let status = server.app.license.status();
@@ -570,6 +577,8 @@ describe("lisans motoru — sunucu", () => {
       assert.equal(server.app.license.status().reason, "transition-ended");
     } finally {
       online = true;
+      // Windows açık veritabanı dosyasını silmez (EPERM): önce bu testte açılan her sunucu kapanır.
+      for (const item of opened) await item.app.close().catch(() => {});
       rmSync(root, { recursive: true, force: true });
     }
   });
