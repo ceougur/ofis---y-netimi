@@ -74,6 +74,9 @@ Yeni bir oturum bu belgeyi okuyarak kaldığı yerden devam eder. Son güncellem
 
 ## Kalanlar (öncelik sırasıyla)
 
+### 2.0.10 için biriken düzeltmeler (kullanıcı: "not al, birlikte yaparsın")
+1. **Sol menü › Çalışma oturumu kartı kesiliyor** (29.09.2026, ekran görüntüsü): sol paneldeki *Çalışma oturumu* başlığına tıklayınca açılan *Çalışma oturumları* kartı (oturum listesi, "+ Yeni oturum aç", "Oturumlar" düğmesi, alttaki açıklama) sağdan panelin dışına taşıyor; bir kısmı panelin altında / ana içeriğin arkasında kalıyor. Kart panelin içine sığmalı ya da panelin üstünde (z-index) açılmalı; dar panelde genişlik panele göre. Test: e2e'ye "oturum kartı görünür alanda, taşma yok" adımı.
+
 1. **2.0.2'yi yayımlamak (kullanıcı onayıyla).**
    - Dal `master`'a birleştirilir (PR), ardından *Releases → Draft a new release* → etiket `v2.0.2` (hedef `master`) → *Publish release*. `release.yml` imzalı paketi, kurulum dosyalarını ve kılavuzu ekler; 2.0.1 kurulumlar *Yönetim → Sistem → Güncellemeleri denetle* ile ya da kendiliğinden 2.0.2'ye geçer.
    - Sır yoksa paket yerelde üretilip yayına elle yüklenir (`docs/SURUM-YAYIMLAMA.md` → B). Site deposunda kılavuz PDF'i ve sürüm notları güncellenir.
