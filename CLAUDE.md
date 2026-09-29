@@ -26,3 +26,11 @@ Bu dosya oturumlar arasında taşınan hafızadır. Her oturumun başında okunu
 - Operatör parolası, imza/lisans anahtarları ve API gizli anahtarı hiçbir dosyaya, zip'e, belgeye girmez.
 - Tag'lere force-push yok. Müvekkil/müşteri verisine erişilmez.
 - Commit: `Co-Authored-By` ve `Claude-Session` satırları; model adı kod/commit/belgeye yazılmaz.
+
+## Standart / Pro (kullanıcı kararı, 29.09.2026)
+- Tek program, tek kod, tek güncelleme; Pro lisansla açılır. Düzeltme ve yeni özellik herkese gider; yalnız kullanıcı
+  "Pro'ya özel" derse Pro kilidine girer. Ayrıntı: `docs/PRO-UZAKTAN-GORUNTULEME.md` → "Paket kuralları".
+
+## Açık iş
+- Pro — uzaktan görüntüleme: `docs/PRO-UZAKTAN-GORUNTULEME.md` (önce en alttaki "Oturum devri"); genel durum
+  `docs/DURUM-VE-DEVAM.md`.

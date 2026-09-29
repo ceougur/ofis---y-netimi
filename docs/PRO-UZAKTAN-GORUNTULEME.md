@@ -1,6 +1,6 @@
 # DestekOfis Pro — Uzaktan görüntüleme (çekmecede, onay bekliyor)
 
-Durum: tasarım kararlaştırıldı (29.09.2026), kod yazılmadı. Kullanıcı "başla" deyince bu belge iş planıdır.
+Durum: kullanıcı "başla" dedi (29.09.2026); bu belge iş planıdır. Yeni oturum önce en alttaki **Oturum devri** bölümünü okur.
 Bu belgedeki kararlar kullanıcıyla tek tek konuşularak alındı; değiştirmeden önce kullanıcıya sorulur.
 
 ## Amaç
@@ -70,12 +70,31 @@ kalan cihazlara yeni anahtar kendiliğinden gider, silinen cihaz bir sonraki gü
 - **Ayrı program yazılmaz:** aynı program, Pro özellikleri lisansla açılır (lisans belirtecine `plan: "pro"`).
 - Operatör merkezi: lisans verirken **Standart / Pro** seçimi; Altyapı limitleri kartına Cloudflare sayaçları (günlük
   Worker isteği, aylık R2 yazma) eklenir, %70'te uyarı.
-- Site: mevcut demonun yanına **"Pro demo indir"** düğmesi; aynı kurulum dosyası, deneme 30 gün Pro özellikleriyle açılır.
+- Site: mevcut demonun yanına **"Pro demo indir"** düğmesi. Standart demo Standart deneme, Pro demo Pro deneme açar
+  (kullanıcı kararı: Standart demo kullanana Pro deneme verilmez). Deneme bilgisayar başına bir kez olduğundan Standart
+  demodan sonra aynı bilgisayarda Pro deneme başlatılamaz. Hangi demonun indirildiği kurulum dosyasındaki işaretle
+  (ör. ayrı dosya adı `DestekOfis-Pro-Kurulum.exe`, içerik aynı) deneme isteğine taşınır; yöntem 1. adımda seçilir.
 - **Sitede fiyat yazılmaz** (kullanıcı kararı, 29.09.2026): mevcut sürümde olduğu gibi yalnız demo indirilir; lisans almak
   isteyen arar, fiyat telefonda bildirilir.
 - **Pro, Vercel'e konmaz** (kullanıcı kararı): telefon sayfası ve kapıcı yalnız Cloudflare'de çalışır; Vercel Hobby'nin
   ticari kullanım riskine ve kotasına Pro trafiği eklenmez. Site ve lisans servisi şimdilik Vercel'de kalır.
 - Lisans süresi biter ya da engellenirse sunucu yüklemeyi durdurur, Worker o ofisin dosyasını vermez.
+
+## Paket kuralları (kullanıcı kararları, 29.09.2026)
+
+- **Tek program, tek kod, tek kurulum, tek güncelleme.** Düzeltmeler herkese gider. Yeni özellik, kullanıcı açıkça
+  "Pro'ya özel" demedikçe herkese gelir. Şu an Pro'ya özel tek şey uzaktan görüntüleme.
+- **Operatör merkezi → Lisans tanımla:** "Paket: Standart / Pro" seçimi. Mevcut lisanslar Standart. Pro'ya geçişte yeni
+  anahtar verilmez: lisansta Pro seçilir, program bir sonraki denetimde (ya da "Lisansı şimdi denetle" ile) Pro olur.
+  İnternetsiz `DOLIS1.` kodu da paket bilgisini taşır.
+- **Operatör paketi her zaman iki yöne değiştirebilir** (yanlış seçimi düzeltmek için). "Pro lisanslı müşteri Standart'a
+  düşürülmez" bir işletme kuralıdır, program engellemez; Pro → Standart değiştirirken operatöre onay sorusu çıkar.
+- **Pro demodan Standart lisansa geçiş kabul:** operatör Standart lisans verir. Program Standart açılır, veriler olduğu
+  gibi kalır; yükleme durur, buluttaki kopya silinir, eşli cihazlar "uzaktan görüntüleme kapalı" görür.
+- **Pro'yu denemek yalnız lisansla:** "14 gün Pro dene" yok. Standart programda yalnız yöneticinin gördüğü küçük
+  **"Pro'ya yükselt"** düğmesi: Pro'yu anlatan kısa kart, satıcının telefonu, **"Beni arayın"** (lisans servisine tek
+  istek; operatör merkezinde "Pro talebi" rozeti ve hareket kaydı; lisans Pro yapılınca talep kendiliğinden kapanır).
+  Talep gönderildikten sonra düğme "Talep gönderildi" olur.
 
 ## Kapasite hesabı (1.000 ofis × 3 kullanıcı, ofis başına 1.000'er kasa/cari/taksit/stok)
 
@@ -115,3 +134,40 @@ ertesi gün sıfırlanır. Kalıcı çözüm Workers ücretli planı (aylık ~5 
 5. Site: "Pro demo" düğmesi; operatör merkezinde Cloudflare sayaçları.
 6. İş akışı testleri: boş veri, sunucu kapalıyken açma, cihaz silme sonrası erişim kesilir, lisans bitince durur, iki
    ofisin verisi karışmaz, aynı adlı iki kişi, iPhone ve Android'de gerçek cihaz provası; belge, kılavuz, paket.
+
+## Oturum devri (yeni oturum önce bunu okur)
+
+**Hazır olanlar (kullanıcı yaptı, 29.09.2026):**
+- Ayrı Cloudflare hesabı (satıcının; kullanıcının kişisel hesabından ayrı), iki adımlı giriş açık, R2 etkin. Ücretsiz
+  sınırlar ödeme sayfasında teyit edildi: 10 GB, ayda 1 milyon yazma, 10 milyon okuma. İlk bakışta kova ve Worker yoktu.
+- API belirteci oluşturuldu ve Claude Code bulut ortamına **API kimlik bilgisi** olarak eklendi (`api.cloudflare.com`;
+  vekil sunucu isteğe kendisi ekler). Hesap numarası ortam değişkeni `CLOUDFLARE_ACCOUNT_ID`. Ağ erişimi "Güvenilir".
+  Bu ayarlar yalnız ayarlar kaydedildikten **sonra açılan** oturumlarda vardır. Yükleme oturumunda ilk iş
+  `GET /client/v4/user/tokens/verify` ile belirteci ve yetkilerini doğrulamak.
+- Belirteç, parola, kurtarma kodları sohbete, depoya, zip'e **asla** yazılmaz; kullanıcıdan yapıştırması istenmez.
+- İsteğe bağlı, kullanıcı onaylamadı: 1 USD fatura uyarısı.
+
+**Araçlar:**
+- Cloudflare bağlayıcısı (MCP): R2 kova oluştur/listele, Worker listele/oku, KV, D1, belge arama. Worker **yükleyemez**;
+  Worker ve Pages yükleme API ile, belirteç olan oturumda yapılır.
+- Bu ortamdan `destek-ofis.vercel.app`, `*.workers.dev`, `*.pages.dev` erişimi engelli olabilir; canlı deneme için
+  kullanıcı ağ erişimine alan ekler (ekran görüntüsüyle tarif edilir).
+- Supabase bağlayıcısı çalışır (proje `lvzaeekyovhquljzesye`, şema `lisans`). Vercel bağlayıcısının projeye erişimi yok.
+  Operatör merkezi `ceougur/destekofis` deposunda; PR birleşince Vercel kendisi yayımlar.
+
+**Çalışma biçimi (kullanıcıyla):**
+- Basit Türkçe, teknik olmayan, tıklanacak yeri tek tek söyleyen anlatım; kullanıcı ekran görüntüsüyle sorar.
+  Cloudflare ve ortam ayarlarında deneyimi az; ondan istenen adım en aza indirilir.
+- Sıra: kod ve testler → iş akışı testleri → paket (zip + SHA256SUMS) kullanıcıya → kullanıcı doğrular → PR ve yayın.
+  Birleştirme ve yayın kullanıcı onayıyla (kullanıcı istediğinde PR'ı Claude açar ve birleştirir). Yayından sonra yayın
+  dosyaları indirilip yereldeki derlemeyle bayt bayt karşılaştırılır.
+- Kod bu oturumda yazılır; yalnız Cloudflare'e yükleme için yeni oturum gerekir. Kullanıcı o oturuma
+  "Pro'yu Cloudflare'e yükle, devir notunu oku" yazar.
+
+**İlerleme** (adım bitince işaretlenir):
+- [ ] 1 Lisans paketi (Standart/Pro, Pro demo, Pro'ya yükselt, operatör merkezi)
+- [ ] 2 Sunucu özeti, şifreleme, yükleme zamanlayıcısı
+- [ ] 3 Yönetim: izin, QR, cihaz listesi, silme ve anahtar yenileme
+- [ ] 4 Worker, R2, Pages (kod burada; yükleme ayrı oturumda)
+- [ ] 5 Site "Pro demo indir", operatör Cloudflare sayaçları
+- [ ] 6 İş akışı testleri, belge, kılavuz, paket

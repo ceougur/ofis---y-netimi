@@ -76,7 +76,7 @@ Yeni bir oturum bu belgeyi okuyarak kaldığı yerden devam eder. Son güncellem
 1. **2.0.2'yi yayımlamak (kullanıcı onayıyla).**
    - Dal `master`'a birleştirilir (PR), ardından *Releases → Draft a new release* → etiket `v2.0.2` (hedef `master`) → *Publish release*. `release.yml` imzalı paketi, kurulum dosyalarını ve kılavuzu ekler; 2.0.1 kurulumlar *Yönetim → Sistem → Güncellemeleri denetle* ile ya da kendiliğinden 2.0.2'ye geçer.
    - Sır yoksa paket yerelde üretilip yayına elle yüklenir (`docs/SURUM-YAYIMLAMA.md` → B). Site deposunda kılavuz PDF'i ve sürüm notları güncellenir.
-2. **Pro — uzaktan görüntüleme (tasarım çekmecede, kullanıcı "başla" deyince yapılacak).** Ayrıntılı ve kararlaştırılmış plan: `docs/PRO-UZAKTAN-GORUNTULEME.md` (şifreli özet kopyası Cloudflare R2/Worker/Pages üzerinde, QR ile cihaz eşleme, "Uzaktan bağlanabilir" izni, SMS yok, Pro lisansla açılır, sitede "Pro demo"). Önceki tünel önerisi sunucunun sürekli açık olmasını gerektirdiği için ikinci adıma (telefondan kayıt girme) bırakıldı.
+2. **Pro — uzaktan görüntüleme (kullanıcı 29.09.2026 tarihinde "başla" dedi; çalışılıyor).** Ayrıntılı ve kararlaştırılmış plan: `docs/PRO-UZAKTAN-GORUNTULEME.md` (şifreli özet kopyası Cloudflare R2/Worker/Pages üzerinde, QR ile cihaz eşleme, "Uzaktan bağlanabilir" izni, SMS yok, Pro lisansla açılır, sitede "Pro demo"). Önceki tünel önerisi sunucunun sürekli açık olmasını gerektirdiği için ikinci adıma (telefondan kayıt girme) bırakıldı.
 3. **Faz 4 kalanı: alan adı.**
    - `destekofis.net` alınıp Vercel'e bağlanacak.
    - Ardından KVKK veri sorumlusu ve adresi güncellenecek. Şu an "Uğur Çetin, Karatay / Konya / Türkiye".
