@@ -57,7 +57,7 @@ export function accountLedger(entries = [], plans = []) {
   for (const plan of plans) {
     const total = roundMoney(Number(plan.total) || 0);
     const opened = plan.registeredOn || String(plan.createdAt || "").slice(0, 10);
-    lines.push({ id: `plan:${plan.id}`, origin: "plan", planId: plan.id, kind: "plan", date: opened, at: plan.createdAt || "", label: "Taksit planı", note: `${plan.name}${plan.itemCount ? ` · ${plan.itemCount} taksit` : ""}`, debit: total, credit: 0 });
+    lines.push({ id: `plan:${plan.id}`, origin: "plan", planId: plan.id, kind: "plan", date: opened, at: plan.createdAt || "", label: "Taksit Planı", note: `${plan.name}${plan.itemCount ? ` · ${plan.itemCount} taksit` : ""}`, debit: total, credit: 0 });
     for (const entry of plan.entries || []) {
       const amount = roundMoney(Number(entry.amount) || 0);
       const incoming = entry.kind === "in";

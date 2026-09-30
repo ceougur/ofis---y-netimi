@@ -114,9 +114,9 @@
       .join("");
     const count = documents.length;
     const hiddenCount = count > LIST_LIMIT + 1 ? count - LIST_LIMIT : 0;
-    const galleryButton = count > 1 ? `<button type="button" class="hof-doc-gallery-open" data-doc-gallery title="Belgeleri yan yana gör, indir, yazdır">${GRID}<span>Yan yana gör</span></button>` : "";
-    box.innerHTML = `<div class="hof-activity-head"><h3>BELGELER${count ? ` <em>${count}</em>` : ""}</h3><span class="hof-doc-head-tools">${galleryButton}${canUpload ? '<button type="button" class="hof-doc-add" data-doc-add data-requires="documents.upload">+ Belge ekle</button>' : ""}</span></div>
-      ${rows ? `<ol class="hof-doc-list">${rows}</ol>${hiddenCount ? `<button type="button" class="hof-doc-more" data-doc-gallery>+${hiddenCount} belge daha · tümünü belge kartında gör</button>` : ""}` : `<p class="hof-doc-empty">${canUpload ? "Henüz belge yok. PDF, resim, Word, Excel veya UYAP dosyasını buraya <b>sürükleyip bırakın</b> ya da <b>+ Belge ekle</b>." : "Bu kayıtta belge yok."}</p>`}
+    const galleryButton = count > 1 ? `<button type="button" class="hof-doc-gallery-open" data-doc-gallery title="Belgeleri yan yana gör, indir, yazdır">${GRID}<span>Yan Yana Gör</span></button>` : "";
+    box.innerHTML = `<div class="hof-activity-head"><h3>BELGELER${count ? ` <em>${count}</em>` : ""}</h3><span class="hof-doc-head-tools">${galleryButton}${canUpload ? '<button type="button" class="hof-doc-add" data-doc-add data-requires="documents.upload">+ Belge Ekle</button>' : ""}</span></div>
+      ${rows ? `<ol class="hof-doc-list">${rows}</ol>${hiddenCount ? `<button type="button" class="hof-doc-more" data-doc-gallery>+${hiddenCount} belge daha · tümünü belge kartında gör</button>` : ""}` : `<p class="hof-doc-empty">${canUpload ? "Henüz belge yok. PDF, resim, Word, Excel veya UYAP dosyasını buraya <b>sürükleyip bırakın</b> ya da <b>+ Belge Ekle</b>." : "Bu kayıtta belge yok."}</p>`}
       <div class="hof-doc-drop" aria-hidden="true"><span>Bırakın, bu kayda eklensin</span></div>`;
   }
 
@@ -247,16 +247,16 @@
     const selected = HOF.selectedCase();
     if (!selected) return HOF.toast("Önce tablodan bir kayıt seçin.", { type: "error" });
     const modal = HOF.modal({
-      title: "Belge ekle",
+      title: "Belge Ekle",
       eyebrow: selected.title || "BELGE",
       body: `<label class="hof-drop hof-doc-picker">
           <span class="hof-drop-icon" aria-hidden="true">${icon("doc")}</span>
-          <span><b>Dosya seçin</b><small>veya buraya sürükleyip bırakın · birden çok dosya seçilebilir</small></span>
+          <span><b>Dosya Seçin</b><small>veya buraya sürükleyip bırakın · birden çok dosya seçilebilir</small></span>
           <input type="file" accept="${ACCEPT}" multiple hidden>
         </label>
         <div class="hof-doc-paste">
           <span class="hof-doc-paste-keys"><kbd>Ctrl</kbd>+<kbd>V</kbd></span>
-          <span><b>Ekran görüntüsü</b> eklemek için bu pencere açıkken yapıştırın. Windows'ta ekran görüntüsü <kbd>Win</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd> ile alınır.</span>
+          <span><b>Ekran Görüntüsü</b> eklemek için bu pencere açıkken yapıştırın. Windows'ta ekran görüntüsü <kbd>Win</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd> ile alınır.</span>
         </div>
         <p class="hof-modal-text hof-muted">Eklenebilir: PDF, resim (JPG, PNG, WEBP, GIF, TIFF), Word, Excel, PowerPoint, UYAP (.udf), metin. Adet sınırı yok; dosya başına en fazla 25 MB. PDF ve resimler programda önizlenir ve yazdırılır; tüm belgeler indirilebilir.</p>
         <div class="hof-actions"><button type="button" class="hof-button hof-button-ghost" data-cancel>Kapat</button></div>`,
@@ -341,7 +341,7 @@
         ? `<iframe src="${fileUrl(item.id)}" title="${esc(item.name)}"></iframe>`
         : `<img src="${fileUrl(item.id)}" alt="${esc(item.name)}">`;
       modal.dialog.querySelector("[data-meta]").textContent = `${KIND_LABELS[item.kind] || "Dosya"} · ${size(item.size)} · ${item.actorName || "—"} · ${HOF.formatDateTime(item.createdAt)}${viewable.length > 1 ? ` · ${index + 1}/${viewable.length}` : ""}`;
-      modal.dialog.querySelector(".hof-doc-viewer-actions").innerHTML = `${viewable.length > 1 ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-step="-1" aria-label="Önceki belge">‹ Önceki</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-step="1" aria-label="Sonraki belge">Sonraki ›</button>' : ""}<a class="hof-button hof-button-small hof-button-ghost" href="${fileUrl(item.id)}" target="_blank" rel="noopener">Yeni sekmede aç</a><button type="button" class="hof-button hof-button-small hof-button-ghost" data-viewer-print="${esc(item.id)}">Yazdır</button><a class="hof-button hof-button-small" href="${fileUrl(item.id, true)}" download>İndir</a>${item.canDelete ? `<button type="button" class="hof-button hof-button-small hof-button-danger-ghost" data-viewer-delete="${esc(item.id)}">Sil</button>` : ""}`;
+      modal.dialog.querySelector(".hof-doc-viewer-actions").innerHTML = `${viewable.length > 1 ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-step="-1" aria-label="Önceki belge">‹ Önceki</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-step="1" aria-label="Sonraki belge">Sonraki ›</button>' : ""}<a class="hof-button hof-button-small hof-button-ghost" href="${fileUrl(item.id)}" target="_blank" rel="noopener">Yeni Sekmede Aç</a><button type="button" class="hof-button hof-button-small hof-button-ghost" data-viewer-print="${esc(item.id)}">Yazdır</button><a class="hof-button hof-button-small" href="${fileUrl(item.id, true)}" download>İndir</a>${item.canDelete ? `<button type="button" class="hof-button hof-button-small hof-button-danger-ghost" data-viewer-delete="${esc(item.id)}">Sil</button>` : ""}`;
     };
     const step = delta => {
       index = (index + delta + viewable.length) % viewable.length;
@@ -432,7 +432,7 @@
       return;
     }
     bar.hidden = false;
-    bar.innerHTML = `<span>Sıradaki PDF: <b>${esc(printQueue[0].name)}</b>${printQueue.length > 1 ? ` · ${printQueue.length - 1} tane daha` : ""}</span><span><button type="button" class="hof-button hof-button-small" data-queue-next>${PRINT} Sıradakini yazdır</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-queue-stop>Bitir</button></span>`;
+    bar.innerHTML = `<span>Sıradaki PDF: <b>${esc(printQueue[0].name)}</b>${printQueue.length > 1 ? ` · ${printQueue.length - 1} tane daha` : ""}</span><span><button type="button" class="hof-button hof-button-small" data-queue-next>${PRINT} Sıradakini Yazdır</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-queue-stop>Bitir</button></span>`;
   }
   async function printDocuments(items) {
     const skipped = items.filter(item => !printable(item));
@@ -486,13 +486,13 @@
       eyebrow: selected.title || "BELGE",
       size: "wide",
       body: `<div class="hof-gallery-head"><div class="hof-gallery-bar">
-          <label class="hof-check"><input type="checkbox" data-pick-all><span>Tümünü seç</span></label>
+          <label class="hof-check"><input type="checkbox" data-pick-all><span>Tümünü Seç</span></label>
           <span class="hof-gallery-count" data-count aria-live="polite"></span>
           <span class="hof-gallery-actions">
             <button type="button" class="hof-button hof-button-small hof-button-ghost" data-bulk-download disabled>${DOWN} <span>İndir</span></button>
             <button type="button" class="hof-button hof-button-small hof-button-ghost" data-bulk-print disabled>${PRINT} <span>Yazdır</span></button>
           </span>
-          <span class="hof-gallery-cols" role="group" aria-label="Yan yana kaç belge"><span>Yan yana</span>${[1, 2, 3, 4].map(value => `<button type="button" data-cols="${value}" aria-pressed="${value === cols}">${value}</button>`).join("")}</span>
+          <span class="hof-gallery-cols" role="group" aria-label="Yan yana kaç belge"><span>Yan Yana</span>${[1, 2, 3, 4].map(value => `<button type="button" data-cols="${value}" aria-pressed="${value === cols}">${value}</button>`).join("")}</span>
         </div>
         <div class="hof-print-queue" role="status" hidden></div></div>
         <div class="hof-gallery-grid" data-grid data-layout="${cols}" style="--cols:${cols}"></div>`,
@@ -612,7 +612,7 @@
   async function remove(id) {
     const item = documents.find(entry => entry.id === id);
     if (!item) return false;
-    const ok = await HOF.confirm({ title: "Belgeyi sil", message: `“${item.name}” bu kayıttan kaldırılacak. Hemen “Geri al” ile, 30 gün içinde de Yönetim → Silinenler'den geri getirilebilir.`, confirmLabel: "Belgeyi sil", danger: true });
+    const ok = await HOF.confirm({ title: "Belgeyi Sil", message: `“${item.name}” bu kayıttan kaldırılacak. Hemen “Geri al” ile, 30 gün içinde de Yönetim → Silinenler'den geri getirilebilir.`, confirmLabel: "Belgeyi Sil", danger: true });
     if (!ok) return false;
     try {
       await HOF.api(`/api/workspace/documents/${encodeURIComponent(id)}`, { method: "DELETE" });
@@ -621,7 +621,7 @@
       HOF.toast(`“${item.name}” silindi.`, {
         type: "success",
         action: {
-          label: "Geri al",
+          label: "Geri Al",
           onClick: async () => {
             try {
               await HOF.api(`/api/workspace/documents/${encodeURIComponent(id)}/restore`, { method: "POST" });

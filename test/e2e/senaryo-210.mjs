@@ -150,7 +150,7 @@ try {
     await admin.keyboard.press("Escape");
     await admin.goto(`${BASE}/admin.html`);
     await admin.waitForSelector(".adm-home");
-    ok((await admin.textContent(".adm-home")).trim() === "Ana ekran", "m13: yönetim panelinde “Ana ekran” düğmesi");
+    ok((await admin.textContent(".adm-home")).trim() === "Ana Ekran", "m13: yönetim panelinde “Ana Ekran” düğmesi");
     await Promise.all([admin.waitForEvent("load"), admin.click(".adm-home")]);
     await admin.waitForSelector(".dynamic-table tbody tr", { timeout: 20000 });
   });

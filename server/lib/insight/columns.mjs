@@ -484,9 +484,18 @@ export function primaryColumns(analyses) {
     return winner ? winner.column : null;
   };
   const filled = item => item.stats.nonEmpty;
+  const person = best(item => item.role === "person" || item.role === "org", item => (item.header.includes("party") ? 2e9 : 0) + (item.header.includes("person") ? 1e9 : 0) + item.stats.uniqueness * 1e6 + filled(item));
+  // Ad ve soyad ayrı kolonlarda (personel/öğrenci rehberi: "Adı", "Soyadı"): kayıt adı ikisinden kurulur (v2.0.11).
+  // Önceden kayıt listelerinde yalnız ad ("Ahmet") ya da iç kimlik ("satir:…") görünüyordu. Ayrı bir "Ad Soyad" kolonu
+  // varsa o kullanılır.
+  const nameOf = pattern => analyses.find(item => item.stats.nonEmpty > 0 && pattern.test(foldText(item.column)))?.column || null;
+  const first = nameOf(/^(ad|adi|isim|ismi|first ?name|name)$/);
+  const last = first ? nameOf(/^(soyad|soyadi|soy ad|soy adi|last ?name|surname)$/) : null;
+  const split = Boolean(first && last && (!person || person === first || person === last));
   return {
     id: best(item => item.role === "id", item => (item.kind === "case" ? 1e9 : 0) + item.stats.uniqueness * 1e6 + filled(item)),
-    person: best(item => item.role === "person" || item.role === "org", item => (item.header.includes("party") ? 2e9 : 0) + (item.header.includes("person") ? 1e9 : 0) + item.stats.uniqueness * 1e6 + filled(item)),
+    person,
+    ...(split ? { personParts: [first, last] } : {}),
     money: best(item => item.role === "money" && item.kind === "amount" && item.currency !== "mixed", item => (item.header.includes("money") ? 1e9 : 0) + filled(item)),
     deadline: best(item => item.role === "date" && item.kind === "deadline", item => (item.strong ? 1e9 : 0) + (item.futureRate || 0) * 1e6 + filled(item)),
     event: best(item => item.role === "date" && item.kind === "event", filled),

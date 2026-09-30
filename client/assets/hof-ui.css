@@ -4960,6 +4960,37 @@ body > .hof-payment-action-card { position: fixed; z-index: 99960; transform: no
 .sidebar > nav.mt-10:not(:has(.nav-item:not([style*="display: none"]))) {
   display: none;
 }
+/* Ayarlar (v2.0.11): kullanıcı kartının altında, Senkron kartının üstünde; Operasyon merkezi kartıyla aynı genişlik. */
+.sidebar .hof-side-settings {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  margin: 10px 0 0;
+  padding: 10px 12px;
+  border: 1px solid var(--do-border);
+  border-radius: 14px;
+  background: #fff;
+  color: var(--do-ink-soft);
+  font: 650 13px var(--do-font);
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+.sidebar .hof-side-settings svg {
+  flex: none;
+  color: var(--do-accent);
+}
+.sidebar .hof-side-settings:hover {
+  border-color: #b7d6c3;
+  background: #eaf4ee;
+  color: var(--do-accent);
+}
+.sidebar .hof-side-settings:focus-visible {
+  outline: none;
+  box-shadow: var(--do-focus);
+}
 /* Sekme şeridinin başlığında sayaç yazılmaz (v2.0.2): arama eşleşmeleri sekme pillerinin içinde görünür. */
 .category-heading > strong {
   display: none;
@@ -8898,6 +8929,24 @@ input[type="search"]::-webkit-search-cancel-button {
 .search-field .smart-search-hint {
   color: #4f7563;
 }
+/* v2.0.11: kutunun tamamı yazı alanı gibi davranır — metin imleci, yazı kutusu satır yüksekliğini doldurur; ipucu ve
+   simgeler tıklamayı yutmaz (odak hof-search.js'te kutuya basınca yazı kutusuna verilir). */
+.search-field,
+.hof-picker-search,
+.hof-chat-search {
+  cursor: text;
+}
+.search-field input {
+  align-self: stretch;
+  height: auto !important;
+  cursor: text;
+}
+.search-field svg,
+.search-field kbd,
+.search-field .smart-search-hint,
+.hof-picker-search svg {
+  pointer-events: none;
+}
 
 /* ---- Ana ekran başlık satırı (v2.0.10) ----
    "Dosya özeti" başlığı, açıklaması ve düğme satırı kaldırıldı: satırda yalnız ANLIK DURUM kalır, içerik genişliğinde
@@ -9219,5 +9268,174 @@ input[type="search"]::-webkit-search-cancel-button {
 @media (max-width: 640px) {
   .hof-free-source {
     grid-template-columns: 1fr;
+  }
+}
+
+/* ---- Taksitler › Cari Seç ve toplu taksitlendirme (v2.0.11) ----
+   Süzgeç satırı: arama · grup · alt grup · Cari Seç · sıralama · PDF/Yazdır tek satırda; dar ekranda iki sütuna iner. */
+.hof-plans-filters:has(> .hof-plan-pick) {
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 1fr) auto minmax(0, 0.9fr) auto;
+}
+.hof-plans-filters > .hof-plan-pick {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 36px;
+  white-space: nowrap;
+}
+@media (max-width: 1100px) {
+  .hof-plans-filters:has(> .hof-plan-pick) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 720px) {
+  .hof-plans-filters:has(> .hof-plan-pick) {
+    grid-template-columns: 1fr;
+  }
+}
+.hof-plan-empty-group {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  padding: 26px 16px;
+  text-align: center;
+}
+.hof-plan-empty-group p {
+  margin: 0;
+}
+/* Seçim penceresi: süzgeç satırı, seçim çubuğu ve kaydırılan liste (başlık satırı sabit). */
+.hof-pick-filters {
+  grid-template-columns: minmax(0, 1.4fr) repeat(3, minmax(0, 1fr)) !important;
+}
+@media (max-width: 720px) {
+  .hof-pick-filters {
+    grid-template-columns: 1fr !important;
+  }
+}
+.hof-pick-list {
+  max-height: min(52vh, 520px);
+  overflow: auto;
+  border: 1px solid var(--do-border);
+  border-radius: 12px;
+}
+.hof-pick-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: #f4f9f6;
+}
+.hof-pick-table tbody tr[data-pick-row] {
+  cursor: pointer;
+}
+.hof-pick-table tbody tr[data-pick-row]:hover {
+  background: #f3faf5;
+}
+.hof-pick-table tbody tr.is-selected {
+  background: #e9f5ee;
+}
+.hof-pick-table tbody tr.is-muted {
+  cursor: default;
+  color: var(--do-muted);
+}
+.hof-pick-table td small {
+  display: block;
+  color: var(--do-muted);
+  font-size: 11.5px;
+}
+.hof-pick-table .hof-acc-check {
+  width: 36px;
+  text-align: center;
+}
+.hof-plan-group-hint {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 10px;
+  padding: 8px 12px;
+  border: 1px solid #cfe5d7;
+  border-radius: 10px;
+  background: #f1f8f3;
+  color: var(--do-ink-soft);
+  font-size: 12.5px;
+}
+.hof-plan-group-hint .hof-link {
+  font-weight: 700;
+}
+
+/* ---- Veri Sağlığı: Yok Say (v2.0.11) ---- */
+.hof-issue-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+.hof-issue-head p {
+  margin: 0;
+}
+.hof-issue-head .hof-button {
+  flex: none;
+}
+.hof-quality-records li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.hof-quality-records li > button[data-open] {
+  flex: 1 1 auto;
+  width: auto;
+  min-width: 0;
+}
+.hof-record-list.hof-quality-records li > button.hof-quality-skip {
+  flex: none;
+  width: auto;
+  align-self: stretch;
+  padding: 4px 11px;
+  border: 1px solid var(--do-border);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--do-muted);
+  font: 650 11.5px var(--do-font);
+  cursor: pointer;
+}
+.hof-record-list.hof-quality-records li > button.hof-quality-skip:hover,
+.hof-record-list.hof-quality-records li > button.hof-quality-skip:focus-visible {
+  border-color: #b7d6c3;
+  background: #eaf4ee;
+  color: var(--do-accent);
+  outline: none;
+}
+.hof-issue.is-ignored {
+  opacity: 0.92;
+}
+.hof-issue.is-ignored .hof-issue-dot {
+  background: #9aa9a2;
+}
+.hof-quality-ignored {
+  display: grid;
+  gap: 6px;
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.hof-quality-ignored li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 10px;
+  border: 1px solid var(--do-border);
+  border-radius: 10px;
+  background: #fbfcfb;
+}
+.hof-quality-ignored small {
+  display: block;
+  color: var(--do-muted);
+  font-size: 11.5px;
+}
+@media (max-width: 720px) {
+  .hof-issue-head {
+    flex-direction: column;
   }
 }

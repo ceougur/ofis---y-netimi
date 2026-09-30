@@ -9,6 +9,7 @@ import { rowHash, rowIdentities } from "./dataset-identity.mjs";
 import { parseJson } from "./http.mjs";
 import { isFullDate } from "./insight/validators.mjs";
 import { verifyPassword } from "./passwords.mjs";
+import { unitLabel } from "./units.mjs";
 
 const columnExists = (store, table, column) => store.all(`PRAGMA table_info(${table})`).some(item => item.name === column);
 const addColumn = (store, table, column, definition) => {
@@ -616,7 +617,7 @@ export const MIGRATIONS = [
           id TEXT PRIMARY KEY,
           code TEXT NOT NULL DEFAULT '',
           name TEXT NOT NULL,
-          unit TEXT NOT NULL DEFAULT 'adet',
+          unit TEXT NOT NULL DEFAULT 'Adet',
           category TEXT NOT NULL DEFAULT '',
           min_qty REAL NOT NULL DEFAULT 0,
           unit_price REAL NOT NULL DEFAULT 0,
@@ -813,6 +814,19 @@ export const MIGRATIONS = [
         }
         if (!Array.isArray(value)) continue;
         store.run("UPDATE users SET grants_json = ? WHERE id = ?", JSON.stringify({ add: value.filter(item => typeof item === "string"), remove: [] }), user.id);
+      }
+    },
+  },
+  {
+    version: 16,
+    name: "v2.0.11 stok birimlerinin tek yazımı",
+    up(store) {
+      // "adet" / "ADET" / "Adet" aynı birimdir: hepsi "Adet" olur (liste, rapor, PDF ve Excel aynı yazar). Yalnız
+      // birim sütunu değişir; ürün, hareket ve tutarlar olduğu gibi kalır.
+      if (!store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'stock_items'")) return;
+      for (const item of store.all("SELECT id, unit FROM stock_items")) {
+        const next = unitLabel(item.unit);
+        if (next !== item.unit) store.run("UPDATE stock_items SET unit = ? WHERE id = ?", next, item.id);
       }
     },
   },

@@ -71,14 +71,14 @@
     const original = freeId ? name : originalOf(name);
     const renamed = !freeId && original !== name;
     const modal = HOF.formModal({
-      title: "Sekmeyi düzenle",
+      title: "Sekmeyi Düzenle",
       eyebrow: freeId ? "SERBEST SAYFA" : "SEKME",
       intro: freeId
         ? "Serbest sayfanın adı tüm bilgisayarlarda değişir."
         : `Ad yalnızca programda değişir; Excel/Sheets dosyanız ve eşitleme ${renamed ? `asıl adla (<b>${esc(original)}</b>)` : "asıl adla"} çalışmaya devam eder. Tabloda, özet kartlarında, tahsilat takviminde ve Excel'e aktarmada yeni ad görünür.`,
-      fields: [{ name: "name", label: "Sekmenin adı", value: name, required: true, autofocus: true, maxlength: 80, placeholder: original }],
+      fields: [{ name: "name", label: "Sekmenin Adı", value: name, required: true, autofocus: true, maxlength: 80, placeholder: original }],
       submitLabel: "Kaydet",
-      extraHtml: `<div class="hof-tab-editor-extra">${renamed ? `<button type="button" class="hof-link" data-reset>Excel'deki ada dön (“${esc(original)}”)</button>` : ""}<button type="button" class="hof-link hof-link-danger" data-remove>Sekmeyi sil</button></div>`,
+      extraHtml: `<div class="hof-tab-editor-extra">${renamed ? `<button type="button" class="hof-link" data-reset>Excel'deki Ada Dön (“${esc(original)}”)</button>` : ""}<button type="button" class="hof-link hof-link-danger" data-remove>Sekmeyi Sil</button></div>`,
       onSubmit: async data => {
         const next = String(data.name || "").trim();
         if (next === name) return undefined;
@@ -106,7 +106,7 @@
         message: freeId
           ? "Serbest sayfa silinir. Yönetim → Silinenler'den ya da bildirimdeki Geri al ile geri getirilir."
           : `Sekme ve ${count} kaydı ekrandan kalkar; veriler silinmez. Yönetim → Silinenler'den ya da bildirimdeki Geri al ile geri getirilir. Excel dosyanız değişmez.`,
-        confirmLabel: "Sekmeyi sil",
+        confirmLabel: "Sekmeyi Sil",
         danger: true,
       });
       if (!yes) return;
@@ -124,7 +124,7 @@
         HOF.toast(`“${name}” sekmesi silindi.`, {
           type: "success",
           action: {
-            label: "Geri al",
+            label: "Geri Al",
             onClick: async () => {
               try {
                 await undo();

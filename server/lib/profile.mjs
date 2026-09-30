@@ -21,31 +21,31 @@ import { createCustomSectors } from "./custom-sectors.mjs";
 
 // Kalemle düzenlenebilen başlıklar: anahtar → en fazla uzunluk ve yönetici ekranındaki adı.
 export const LABEL_SLOTS = Object.freeze({
-  "brand.subtitle": { max: 60, name: "Kenar çubuğu alt başlığı" },
+  "brand.subtitle": { max: 60, name: "Kenar Çubuğu Alt Başlığı" },
   // v2.0.2: "nav.workspace" ve "nav.source" menü başlıkları kaldırıldı; kayıtlı eski değerler yok sayılır.
-  "side.title": { max: 40, name: "Operasyon merkezi başlığı" },
+  "side.title": { max: 40, name: "Operasyon Merkezi Başlığı" },
   // Operasyon merkezi düğmeleri (v2.0.1): kartın köşesindeki kalemle hepsi birlikte değiştirilir.
-  "side.tasks": { max: 32, name: "Operasyon merkezi: Görevler" },
-  "side.messages": { max: 32, name: "Operasyon merkezi: Mesajlar" },
-  "side.newTask": { max: 32, name: "Operasyon merkezi: Görev ata" },
-  "side.newRecord": { max: 32, name: "Operasyon merkezi: Yeni kayıt" },
-  "side.cash": { max: 32, name: "Operasyon merkezi: Kasa" },
-  "side.plans": { max: 32, name: "Operasyon merkezi: Taksitler" },
-  "side.accounts": { max: 32, name: "Operasyon merkezi: Cari" },
-  "side.stock": { max: 32, name: "Operasyon merkezi: Stok" },
-  "side.cheques": { max: 32, name: "Operasyon merkezi: Çek / Senet" },
-  "side.liens": { max: 32, name: "Operasyon merkezi: Haciz uyarıları" },
-  "side.reports": { max: 32, name: "Operasyon merkezi: Personel raporu" },
-  "side.guide": { max: 32, name: "Operasyon merkezi: Kullanım kılavuzu" },
-  "page.title": { max: 80, name: "Sayfa başlığı" },
-  "summary.title": { max: 60, name: "Özet başlığı" },
-  "summary.subtitle": { max: 200, name: "Özet açıklaması" },
-  "categories.title": { max: 60, name: "Sekmeler başlığı" },
-  "table.title": { max: 80, name: "Tablo başlığı" },
-  "table.subtitle": { max: 160, name: "Tablo açıklaması" },
+  "side.tasks": { max: 32, name: "Operasyon Merkezi: Görevler" },
+  "side.messages": { max: 32, name: "Operasyon Merkezi: Mesajlar" },
+  "side.newTask": { max: 32, name: "Operasyon Merkezi: Görev Ata" },
+  "side.newRecord": { max: 32, name: "Operasyon Merkezi: Yeni Kayıt" },
+  "side.cash": { max: 32, name: "Operasyon Merkezi: Kasa" },
+  "side.plans": { max: 32, name: "Operasyon Merkezi: Taksitler" },
+  "side.accounts": { max: 32, name: "Operasyon Merkezi: Cari" },
+  "side.stock": { max: 32, name: "Operasyon Merkezi: Stok" },
+  "side.cheques": { max: 32, name: "Operasyon Merkezi: Çek / Senet" },
+  "side.liens": { max: 32, name: "Operasyon Merkezi: Haciz Uyarıları" },
+  "side.reports": { max: 32, name: "Operasyon Merkezi: Personel Raporu" },
+  "side.guide": { max: 32, name: "Operasyon Merkezi: Kullanım Kılavuzu" },
+  "page.title": { max: 80, name: "Sayfa Başlığı" },
+  "summary.title": { max: 60, name: "Özet Başlığı" },
+  "summary.subtitle": { max: 200, name: "Özet Açıklaması" },
+  "categories.title": { max: 60, name: "Sekmeler Başlığı" },
+  "table.title": { max: 80, name: "Tablo Başlığı" },
+  "table.subtitle": { max: 160, name: "Tablo Açıklaması" },
 });
 
-const K = { sector: "insight.sector", labels: "ui.labels", intro: "insight.intro", initialized: "insight.initialized", columns: "ui.columns", columnsFixed: "ui.columns.fixed", dismissed: "insight.dismissed", roles: "insight.roles" };
+const K = { sector: "insight.sector", labels: "ui.labels", intro: "insight.intro", initialized: "insight.initialized", columns: "ui.columns", columnsFixed: "ui.columns.fixed", dismissed: "insight.dismissed", roles: "insight.roles", qualityIgnored: "insight.quality.ignored" };
 const MAX_DISMISSED = 5000;
 const REASONING_LIST = 50;
 // Metindeki kolon adlarını ofisin verdiği adlarla değiştirir (yalnızca kelime sınırında; "No" "Notlar"ı bozmaz).
@@ -481,6 +481,96 @@ export function createProfileService({ store, dataset, audit, events, log, free 
     return out;
   }
 
+  // ---------- Veri Sağlığı: Yok say (v2.0.11) ----------
+  // Muhasebe programlarındaki "uyarıyı kabul et / bir daha gösterme": bulgu (grubun tamamı ya da tek kayıt) kalıcı olarak
+  // yok sayılır, puandan düşülür (kalan sorun yoksa %100 "İyi"). Karar ofis geneldir ve tüm bilgisayarlarda geçerlidir;
+  // kayıtlar içerikten gelen kimlikleriyle saklanır, bu yüzden aynı Excel yeni bir oturuma yüklense de korunur. Grup yok
+  // sayılınca o anki kayıtlar saklanır: yeni hatalı kayıt yine uyarır. Analiz önbelleği değişmez; yok saymalar istemciye
+  // gitmeden hemen önce uygulanır.
+  const MAX_IGNORED_KEYS = 200_000;
+  const readIgnored = () => readObject(K.qualityIgnored);
+  const signatureOf = (tab, id) => `${tab || ""}|${id}`;
+  const levelOf = score => (score >= 95 ? "iyi" : score >= 80 ? "orta" : "zayif");
+  // Tek kalite raporuna yok saymaları uygular; tab verilmezse bulgunun kendi sekmesi (birleşik rapor) kullanılır.
+  function applyIgnores(quality, tab = null, ignored = readIgnored()) {
+    if (!quality) return quality;
+    let regained = 0;
+    const issues = [];
+    const hidden = [];
+    for (const issue of quality.issues || []) {
+      const { keys = [], template, ...rest } = issue;
+      const signature = signatureOf(tab ?? issue.tab ?? "", issue.id);
+      const entry = ignored[signature];
+      if (!entry) {
+        issues.push(rest);
+        continue;
+      }
+      if (entry.whole || !keys.length) {
+        regained += issue.failed || 0;
+        hidden.push({ signature, title: rest.title, count: rest.count, at: entry.at, byName: entry.byName || "" });
+        continue;
+      }
+      const skip = new Set(entry.keys || []);
+      const left = keys.filter(key => !skip.has(key));
+      const dropped = keys.length - left.length;
+      if (!dropped) {
+        issues.push(rest);
+        continue;
+      }
+      regained += Math.min(issue.failed || 0, dropped);
+      if (!left.length) {
+        hidden.push({ signature, title: rest.title, count: rest.count, at: entry.at, byName: entry.byName || "" });
+        continue;
+      }
+      const count = rest.count - dropped;
+      const items = rest.items.filter(item => !skip.has(item.key));
+      issues.push({ ...rest, count, failed: Math.max(0, (rest.failed || 0) - dropped), title: template ? template.replace("\u0001", String(count)) : rest.title, items, more: Math.max(0, count - items.length), ignoredCount: dropped });
+      hidden.push({ signature, title: template ? template.replace("\u0001", String(dropped)) : rest.title, count: dropped, at: entry.at, byName: entry.byName || "", partial: true });
+    }
+    const passed = Math.min(quality.checked, (quality.passed || 0) + regained);
+    const score = quality.checked ? Math.round((passed / quality.checked) * 100) : 100;
+    return { ...quality, passed, score, level: levelOf(score), issues, ignored: hidden };
+  }
+  // İstemciye giden analiz: her sekmenin ve birleşik raporun kalitesi yok saymalarla (bulgu kayıt listeleri çıkarılmış).
+  function withQualityIgnores(analysis) {
+    if (!analysis?.quality) return analysis;
+    const ignored = readIgnored();
+    const scopes = analysis.kpis?.scopes ? Object.fromEntries(Object.entries(analysis.kpis.scopes).map(([key, scope]) => [key, { ...scope, quality: applyIgnores(scope.quality, key, ignored) }])) : undefined;
+    // Tek sekmeli veride birleşik rapor o sekmenin raporudur (bulgularda sekme adı yazmaz).
+    const order = analysis.kpis?.order || [];
+    return { ...analysis, quality: applyIgnores(analysis.quality, order.length === 1 ? order[0] : null, ignored), ...(scopes ? { kpis: { ...analysis.kpis, scopes } } : {}) };
+  }
+  // tab + id bulguyu gösterir; key verilirse yalnız o kayıt yok sayılır.
+  async function ignoreQuality(user, { tab = "", id = "", key = "" } = {}) {
+    const result = await analysis();
+    const scope = result.kpis?.scopes?.[tab];
+    const issue = (scope?.quality?.issues || []).find(item => item.id === id);
+    if (!issue) throw new HttpError(409, "Bu bulgu artık yok (veri değişmiş olabilir). Pencereyi kapatıp yeniden açın.");
+    const signature = signatureOf(tab, id);
+    const map = readIgnored();
+    const previous = map[signature] || { keys: [] };
+    const entry = { at: iso(), by: user.id, byName: user.display_name || "", column: issue.column || "", title: issue.title };
+    if (key) {
+      if (!(issue.keys || []).includes(key)) throw new HttpError(409, "Bu kayıt artık bu bulguda değil.");
+      map[signature] = { ...entry, whole: false, keys: [...new Set([...(previous.keys || []), key])].slice(-MAX_IGNORED_KEYS) };
+    } else if (!(issue.keys || []).length) map[signature] = { ...entry, whole: true, keys: [] };
+    else map[signature] = { ...entry, whole: false, keys: [...new Set([...(previous.keys || []), ...issue.keys])].slice(-MAX_IGNORED_KEYS) };
+    store.setSetting(K.qualityIgnored, JSON.stringify(map), user.id);
+    audit(user, "insight.quality.ignored", current(), { tab, issue: id, title: issue.title, record: key || null, count: key ? 1 : issue.count });
+    publish(user, { quality: true });
+    return { ok: true };
+  }
+  function restoreQuality(user, signature) {
+    const map = readIgnored();
+    const entry = map[String(signature || "")];
+    if (!entry) throw new HttpError(404, "Yok sayılan bulgu bulunamadı.");
+    delete map[String(signature)];
+    store.setSetting(K.qualityIgnored, Object.keys(map).length ? JSON.stringify(map) : "", user.id);
+    audit(user, "insight.quality.restored", current(), { signature, title: entry.title });
+    publish(user, { quality: true });
+    return { ok: true };
+  }
+
   // "Yoksay": bulgu (aynı değerlerle) bir daha gösterilmez; değer değişirse yeniden değerlendirilir.
   function dismiss(user, signature) {
     const key = String(signature || "").slice(0, 400);
@@ -512,5 +602,5 @@ export function createProfileService({ store, dataset, audit, events, log, free 
     running.clear();
   };
 
-  return { init, profile, tagline, setSector, findSector, customSectors, dismissIntro, setLabel, setLabels, setColumns, clearColumnsFixed, resetLabels, setRoles, roles: readRoles, analysis, records, invalidate, usedBefore, reasoningSummary, checks, dismiss, fingerprint, close: () => analysisRunner.close(), runnerStats: () => analysisRunner.stats() };
+  return { init, profile, tagline, setSector, findSector, customSectors, dismissIntro, setLabel, setLabels, setColumns, clearColumnsFixed, resetLabels, setRoles, roles: readRoles, analysis, records, invalidate, usedBefore, reasoningSummary, checks, dismiss, withQualityIgnores, ignoreQuality, restoreQuality, fingerprint, close: () => analysisRunner.close(), runnerStats: () => analysisRunner.stats() };
 }

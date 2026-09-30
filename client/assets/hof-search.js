@@ -46,6 +46,21 @@
     });
   }
 
+  // v2.0.11: arama kutusunun her noktası (büyüteç, ipucu satırı, iç boşluklar, ⌘K) yazmayı başlatır. Önceden yalnız
+  // ortadaki ince yazı şeridi tıklanabiliyordu; kutunun alt yarısına basınca odak gelmiyordu.
+  const SEARCH_BOXES = ".search-field, .hof-picker-search, .hof-chat-search";
+  document.addEventListener("mousedown", event => {
+    if (event.button !== 0) return;
+    const box = event.target.closest?.(SEARCH_BOXES);
+    if (!box || event.target.closest("input, button, select, textarea, a")) return;
+    const input = box.querySelector("input");
+    if (!input || input.disabled) return;
+    event.preventDefault();
+    input.focus();
+    const end = input.value.length;
+    try { input.setSelectionRange(end, end); } catch { /* type=search bazı tarayıcılarda seçim desteklemez */ }
+  }, true);
+
   document.addEventListener("keydown", event => {
     if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "k") {
       const input = document.querySelector(".search-field input");

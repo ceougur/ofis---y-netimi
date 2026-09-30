@@ -113,6 +113,8 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     status: ["active", "passive", "all"].includes(text(params.get("status"))) ? text(params.get("status")) : "active",
     balance: ["debtor", "creditor", "zero", "nonzero", "overdue", "all"].includes(text(params.get("balance"))) ? text(params.get("balance")) : "all",
     sort: SORTS.has(text(params.get("sort"))) ? text(params.get("sort")) : "no",
+    // Taksit durumu (v2.0.11, Taksitler › Cari Seç): "none" açık taksit kartı olmayanlar, "has" olanlar.
+    plan: ["none", "has"].includes(text(params.get("plan"))) ? text(params.get("plan")) : "",
   });
   const refCompare = (a, b) => {
     const x = String(a.refNo || "");
@@ -124,7 +126,7 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     const { fieldsJson, ...rest } = item;
     return { ...rest, extra: parseFields(fieldsJson).slice(0, 3) };
   };
-  function list(user, { q = "", group = "", subgroup = "", type = "", status = "active", balance = "all", sort = "no" } = {}) {
+  function list(user, { q = "", group = "", subgroup = "", type = "", status = "active", balance = "all", sort = "no", plan = "" } = {}) {
     const rows = store.all(`${ACCOUNT_SQL} WHERE a.deleted_at IS NULL ORDER BY a.name COLLATE NOCASE`);
     const sums = new Map();
     for (const row of store.all("SELECT account_id AS accountId, kind, SUM(amount) AS amount FROM account_entries GROUP BY account_id, kind")) {
@@ -181,6 +183,9 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
       // "Sadece bakiyesi olanlar" (v2.0.10): borçlu ya da alacaklı; kapalı cariler gizlenir.
       if (balance === "nonzero" && side === "zero") continue;
       if (balance === "overdue" && !overdueCount) continue;
+      const activePlans = accountPlans.filter(item => item.status !== "closed").length;
+      if (plan === "none" && activePlans) continue;
+      if (plan === "has" && !activePlans) continue;
       totals.count += 1;
       totals.balance = roundMoney(totals.balance + bal);
       if (side === "debtor") {
@@ -217,7 +222,7 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
         balance: bal,
         side,
         planCount: accountPlans.length,
-        activePlans: accountPlans.filter(plan => plan.status !== "closed").length,
+        activePlans,
         planRemaining: roundMoney(planRemaining),
         overdue: roundMoney(overdue),
         overdueCount,
@@ -476,12 +481,12 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     const account = detail(params.id, user);
     const t = account.totals;
     const pdf = tablePdf({
-      title: `Cari ekstre · ${account.name}`,
+      title: `Cari Ekstre · ${account.name}`,
       subtitle: [account.refNo ? `Cari No ${account.refNo}` : "", ACCOUNT_TYPES[account.type], [account.groupName, account.subgroupName].filter(Boolean).join(" › "), account.phone, account.address].filter(Boolean).join(" · "),
       headers: ["Tarih", "İşlem", "Açıklama", "Borç", "Alacak", "Bakiye"],
       types: ["text", "text", "text", "money", "money", "money"],
       rows: account.ledger.map(line => [dayText(line.date), `${line.label}${line.receiptNo ? ` · Makbuz ${line.receiptNo}` : ""}`, line.note || "", line.debit ? tl(line.debit) : "", line.credit ? tl(line.credit) : "", `${tl(Math.abs(line.balance))} ${sideText(line.balance)}`.trim()]),
-      summary: [["Borç toplamı", tl(t.debit)], ["Alacak toplamı", tl(t.credit)], ["Bakiye", `${tl(Math.abs(t.balance))} ${sideText(t.balance)}`.trim()], ...(t.planRemaining ? [["Taksitlerden kalan", tl(t.planRemaining)]] : []), ...(t.overdueCount ? [["Geciken", `${tl(t.overdue)} · ${t.overdueCount} taksit`]] : [])],
+      summary: [["Borç Toplamı", tl(t.debit)], ["Alacak Toplamı", tl(t.credit)], ["Bakiye", `${tl(Math.abs(t.balance))} ${sideText(t.balance)}`.trim()], ...(t.planRemaining ? [["Taksitlerden Kalan", tl(t.planRemaining)]] : []), ...(t.overdueCount ? [["Geciken", `${tl(t.overdue)} · ${t.overdueCount} taksit`]] : [])],
       officeName: office(),
       userName: user.display_name || user.username || "",
       brand: office(),
@@ -514,10 +519,10 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     const pdf = tablePdf({
       title: `${title} listesi`,
       subtitle: [STATUS_TEXT[query.status], query.type ? ACCOUNT_TYPES[query.type] : "", query.q ? `“${query.q}”` : "", clipped ? `ilk ${PDF_ROWS.toLocaleString("tr-TR")} satır (tamamı Excel'de)` : ""].filter(Boolean).join(" · "),
-      headers: ["No", "Ad / Unvan", "Tür", "Grup", "Telefon", "Kayıt", "Borç", "Alacak", "Bakiye", "Taksitten kalan", "Bilgi notu"],
+      headers: ["No", "Ad / Unvan", "Tür", "Grup", "Telefon", "Kayıt", "Borç", "Alacak", "Bakiye", "Taksitten Kalan", "Bilgi Notu"],
       types: ["text", "text", "text", "text", "text", "text", "money", "money", "money", "money", "text"],
       rows: data.accounts.map(item => [item.refNo, item.name, ACCOUNT_TYPES[item.type] || "", [item.groupName, item.subgroupName].filter(Boolean).join(" › "), item.phone, dayText(item.registeredOn), tl(item.debit), tl(item.credit), `${tl(Math.abs(item.balance))} ${sideText(item.balance)}`.trim(), item.planRemaining ? tl(item.planRemaining) : "", item.note || ""]),
-      summary: [["Cari", String(data.totals.count)], ["Borçlular", tl(data.totals.debtor)], ["Alacaklılar", tl(data.totals.creditor)], ["Geciken taksit", `${tl(data.totals.overdue)} · ${data.totals.overdueCount}`]],
+      summary: [["Cari", String(data.totals.count)], ["Borçlular", tl(data.totals.debtor)], ["Alacaklılar", tl(data.totals.creditor)], ["Geciken Taksit", `${tl(data.totals.overdue)} · ${data.totals.overdueCount}`]],
       officeName: office(),
       userName: user.display_name || user.username || "",
       brand: office(),
@@ -531,7 +536,7 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     const query = listQuery(url.searchParams);
     const data = list(user, query);
     const fieldsById = new Map(store.all("SELECT id, fields_json AS fieldsJson FROM accounts WHERE deleted_at IS NULL").map(row => [row.id, parseFields(row.fieldsJson)]));
-    const base = ["Cari No", "Ad / Unvan", "Tür", "Grup", "Alt grup", "Telefon", "E-posta", "Adres", "Kayıt tarihi", "Durum", "Borç", "Alacak", "Bakiye", "Taksitten kalan", "Geciken", "Bilgi notu"];
+    const base = ["Cari No", "Ad / Unvan", "Tür", "Grup", "Alt Grup", "Telefon", "E-Posta", "Adres", "Kayıt Tarihi", "Durum", "Borç", "Alacak", "Bakiye", "Taksitten Kalan", "Geciken", "Bilgi Notu"];
     const extras = [...new Set(data.accounts.flatMap(item => (fieldsById.get(item.id) || []).map(field => field.label)))].filter(label => !base.includes(label));
     const money = value => MONEY_FORMAT.format(value || 0);
     const rows = data.accounts.map(item => {
@@ -540,18 +545,18 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
         "Ad / Unvan": item.name,
         Tür: ACCOUNT_TYPES[item.type] || "",
         Grup: item.groupName,
-        "Alt grup": item.subgroupName,
+        "Alt Grup": item.subgroupName,
         Telefon: item.phone,
-        "E-posta": item.email,
+        "E-Posta": item.email,
         Adres: item.address,
-        "Kayıt tarihi": dayText(item.registeredOn),
+        "Kayıt Tarihi": dayText(item.registeredOn),
         Durum: item.status === "passive" ? "Pasif" : "Aktif",
         Borç: money(item.debit),
         Alacak: money(item.credit),
         Bakiye: money(item.balance),
-        "Taksitten kalan": money(item.planRemaining),
+        "Taksitten Kalan": money(item.planRemaining),
         Geciken: money(item.overdue),
-        "Bilgi notu": item.note,
+        "Bilgi Notu": item.note,
       };
       for (const field of fieldsById.get(item.id) || []) if (!base.includes(field.label)) row[field.label] = field.value;
       return row;
@@ -732,7 +737,9 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     const user = auth.requirePermission(req, "plans.manage");
     const body = await readJson(req, { limit: 5_000_000 });
     // Seçim: kimlik listesi ya da "süzgeçteki hepsi" (all: true + liste süzgeçleri; 200 bin cari için kimlik taşınmaz).
-    const fromFilter = body.all === true ? list(user, { q: text(body.q).slice(0, 120), group: text(body.group), subgroup: text(body.subgroup), type: ACCOUNT_TYPES[text(body.type)] ? text(body.type) : "", status: ["active", "passive", "all"].includes(text(body.status)) ? text(body.status) : "active", balance: text(body.balance) || "all" }).accounts.map(item => item.id) : [];
+    const fromFilter = body.all === true ? list(user, { q: text(body.q).slice(0, 120), group: text(body.group), subgroup: text(body.subgroup), type: ACCOUNT_TYPES[text(body.type)] ? text(body.type) : "", status: ["active", "passive", "all"].includes(text(body.status)) ? text(body.status) : "active", balance: text(body.balance) || "all", plan: ["none", "has"].includes(text(body.plan)) ? text(body.plan) : "" }).accounts.map(item => item.id) : [];
+    // Ön izleme (v2.0.11): hiçbir şey yazılmadan kaç kart açılacağı, toplam ve atlanacaklar (nedeniyle) döner.
+    const dryRun = body.dryRun === true;
     const ids = [...new Set((body.all === true ? fromFilter : Array.isArray(body.ids) ? body.ids : []).map(value => String(value || "").slice(0, 120)).filter(Boolean))];
     if (!ids.length) throw new HttpError(400, "Taksitlendirilecek carileri seçin.");
     if (ids.length > MAX_IMPORT) throw new HttpError(400, `Tek seferde en çok ${MAX_IMPORT} cari seçilebilir.`);
@@ -747,7 +754,7 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     const skipExisting = body.skipExisting !== false;
     const planName = limited(body.name, 160, "Kart adı");
     const note = limited(body.note, 1000, "Bilgi notu");
-    const report = { created: 0, skipped: [], total: 0 };
+    const report = { created: 0, skipped: [], total: 0, dryRun, names: [] };
     store.tx(() => {
       const active = new Set(store.all("SELECT DISTINCT account_id AS id FROM plans WHERE deleted_at IS NULL AND status = 'active' AND account_id <> ''").map(row => row.id));
       let refNo = Number(plans().nextRef()) - 1;
@@ -771,14 +778,17 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
             continue;
           }
         }
-        plans().createForAccount(user, account, { total, ...distribution, name: planName ? `${account.name} · ${planName}` : "", note, refNo: String((refNo += 1)) });
+        if (!dryRun) plans().createForAccount(user, account, { total, ...distribution, name: planName ? `${account.name} · ${planName}` : "", note, refNo: String((refNo += 1)) });
         report.created += 1;
         report.total = roundMoney(report.total + total);
+        if (report.names.length < 8) report.names.push(account.name);
       }
-      audit(user, "account.bulk-plan", "bulk", { created: report.created, skipped: report.skipped.length, total: report.total, count: distribution.count, firstDue: distribution.firstDue, field: byField ? field : "" });
+      if (!dryRun) audit(user, "account.bulk-plan", "bulk", { created: report.created, skipped: report.skipped.length, total: report.total, count: distribution.count, firstDue: distribution.firstDue, field: byField ? field : "" });
     });
-    changed(user, {});
-    changed(user, { kind: "plans" });
+    if (!dryRun) {
+      changed(user, {});
+      changed(user, { kind: "plans" });
+    }
     ok(res, report);
   });
 

@@ -130,7 +130,8 @@ export function registerInsightRoutes(router, { auth, profile, dataset, store, a
 
   router.get("/api/workspace/insight", async ({ req, res }) => {
     const user = auth.requireUser(req);
-    const analysis = await profile.analysis();
+    // Veri Sağlığı yok saymaları (v2.0.11) puana ve bulgulara uygulanır; bulguların tam kayıt listesi sunucuda kalır.
+    const analysis = profile.withQualityIgnores ? profile.withQualityIgnores(await profile.analysis()) : await profile.analysis();
     // Mantık denetiminin tam bulgu listesi sunucuda kalır; istemciye özet (kurallar, gruplar, işaretli kayıtlar) gider.
     const shaped = shapeAnalysis(analysis, { manage: canUser(user, "profile.manage"), find: profile.findSector });
     ok(res, { analysis: { ...shaped, reasoning: profile.reasoningSummary(analysis.reasoning) }, profile: profile.profile() });
@@ -141,6 +142,18 @@ export function registerInsightRoutes(router, { auth, profile, dataset, store, a
     auth.requireUser(req);
     const key = text(params.key).slice(0, 300);
     ok(res, await profile.checks(key, text(url.searchParams.get("tab")).slice(0, 300)));
+  });
+
+  // Veri Sağlığı "Yok say" (v2.0.11): veri yükleme yetkisi olan (yönetici) bulguyu ya da tek kaydı yok sayar; Geri Al.
+  router.post("/api/workspace/insight/quality/ignore", async ({ req, res }) => {
+    const user = auth.requirePermission(req, "sources.manage");
+    const body = await readJson(req);
+    ok(res, await profile.ignoreQuality(user, { tab: text(body.tab).slice(0, 300), id: text(body.id).slice(0, 400), key: text(body.key).slice(0, 400) }));
+  });
+  router.post("/api/workspace/insight/quality/restore", async ({ req, res }) => {
+    const user = auth.requirePermission(req, "sources.manage");
+    const body = await readJson(req);
+    ok(res, profile.restoreQuality(user, text(body.signature).slice(0, 800)));
   });
 
   router.post("/api/workspace/insight/dismiss", async ({ req, res }) => {

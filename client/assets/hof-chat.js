@@ -244,7 +244,7 @@
       `<button type="button" class="hof-chat-item${unread ? " has-unread" : ""}" ${attrs} role="listitem">${avatarHtml}<span class="hof-chat-item-main"><span class="hof-chat-item-top"><b>${esc(title)}</b>${time ? `<small>${esc(time)}</small>` : ""}</span><span class="hof-chat-item-bottom"><span>${esc(subtitle)}</span>${unread ? `<em aria-label="${unread} okunmamış">${unread}</em>` : ""}</span></span></button>`;
     const rows = [];
     if (office && (!query || HOF.normalize("Ofis geneli herkes").includes(query))) {
-      rows.push(item({ attrs: `data-conversation="${esc(office.id)}"`, avatarHtml: officeAvatar(), title: "Ofis geneli", subtitle: preview(office) || "Tüm ofise duyuru ve sorular", time: office.lastMessage ? shortTime(office.lastMessage.createdAt) : "", unread: office.unread }));
+      rows.push(item({ attrs: `data-conversation="${esc(office.id)}"`, avatarHtml: officeAvatar(), title: "Ofis Geneli", subtitle: preview(office) || "Tüm ofise duyuru ve sorular", time: office.lastMessage ? shortTime(office.lastMessage.createdAt) : "", unread: office.unread }));
     }
     const visible = people.filter(entry => !query || HOF.normalize(entry.user.name).includes(query));
     if (visible.length) rows.push('<p class="hof-chat-section">KİŞİLER</p>');
@@ -297,7 +297,7 @@
     if (conversation.kind === "office") {
       const count = (state.summary?.users.length || 0) + 1;
       const onlineCount = state.summary?.users.filter(user => isOnline(user.id)).length || 0;
-      return `${officeAvatar()}<span><b>Ofis geneli</b><small>${count} kişi · ${onlineCount + 1} çevrimiçi</small></span>`;
+      return `${officeAvatar()}<span><b>Ofis Geneli</b><small>${count} kişi · ${onlineCount + 1} çevrimiçi</small></span>`;
     }
     const online = isOnline(conversation.peerId);
     const status = conversation.peerActive === false ? "Pasif hesap" : online ? "Çevrimiçi" : "Çevrimdışı";
@@ -314,9 +314,9 @@
   function messagesHtml(thread, conversation) {
     if (!thread?.loaded) return '<p class="hof-chat-empty">Yükleniyor…</p>';
     const older = thread.hasMore
-      ? '<button type="button" class="hof-chat-older" data-act="older">↑ Önceki günün mesajlarını yükle</button>'
+      ? '<button type="button" class="hof-chat-older" data-act="older">↑ Önceki Günün Mesajlarını Yükle</button>'
       : thread.archivedMonths
-        ? `<p class="hof-chat-archive">30 günden eski mesajlar programdan kaldırılıp arşivlendi. <button type="button" class="hof-link" data-act="archive">Arşivi indir (${thread.archivedMonths} ay)</button></p>`
+        ? `<p class="hof-chat-archive">30 günden eski mesajlar programdan kaldırılıp arşivlendi. <button type="button" class="hof-link" data-act="archive">Arşivi İndir (${thread.archivedMonths} ay)</button></p>`
         : "";
     if (!thread.messages.length) {
       if (thread.hasMore || thread.archivedMonths) return `${older}<p class="hof-chat-empty">Son 24 saatte mesaj yok.</p>`;

@@ -54,7 +54,7 @@
     return top.filter(item => {
       if (item.kind !== "tab" || !groups.has(item.label)) return true;
       const group = groups.get(item.label);
-      group.sections.push({ ...item, name: "Diğer kayıtlar" });
+      group.sections.push({ ...item, name: "Diğer Kayıtlar" });
       group.count += item.count;
       group.active ||= item.active;
       group.nohit = group.sections.every(section => section.nohit);
@@ -129,7 +129,7 @@
       });
     }
     sub.setAttribute("aria-label", `${activeGroup.label} alt tabloları`);
-    sub.innerHTML = `<span class="hof-section-label">Alt tablolar</span>${activeGroup.sections
+    sub.innerHTML = `<span class="hof-section-label">Alt Tablolar</span>${activeGroup.sections
       .map(section => `<button type="button" class="hof-section-tab${section.active ? " active" : ""}${section.nohit ? " hof-tab-nohit" : ""}" data-label="${esc(section.label)}" title="${esc(section.name)}" aria-pressed="${section.active}">${esc(pretty(section.name))} <span>${section.count}</span></button>`)
       .join("")}`;
     if (strip.nextElementSibling !== sub) strip.after(sub);

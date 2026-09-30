@@ -175,12 +175,12 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
     types: ["", "", "", "money", "money", "money", "money", ""],
     rows: data.rows.map(row => [row.refNo, row.name, TYPE_TEXT[row.type] || "", tl(row.opening), tl(row.debit), tl(row.credit), tl(Math.abs(row.closing)), sideText(row.closing)]),
     summary: [
-      ["Cari sayısı", String(data.totals.count)],
+      ["Cari Sayısı", String(data.totals.count)],
       ["Devir (net)", tl(data.totals.opening)],
-      ["Dönem borç", tl(data.totals.debit)],
-      ["Dönem alacak", tl(data.totals.credit)],
-      ["Borçlular toplamı", tl(data.totals.closingDebtor)],
-      ["Alacaklılar toplamı", tl(data.totals.closingCreditor)],
+      ["Dönem Borç", tl(data.totals.debit)],
+      ["Dönem Alacak", tl(data.totals.credit)],
+      ["Borçlular Toplamı", tl(data.totals.closingDebtor)],
+      ["Alacaklılar Toplamı", tl(data.totals.closingCreditor)],
     ],
   });
   router.get("/api/workspace/overview/mizan.pdf", async ({ req, res, url }) => {
@@ -196,9 +196,9 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
     const user = auth.requirePermission(req, "overview.view");
     const data = mizan(url.searchParams);
     const money = value => MONEY_FORMAT.format(value || 0);
-    const columns = ["Cari No", "Cari", "Tür", "Grup", "Devir", "Dönem borç", "Dönem alacak", "Bakiye", "Durum"];
-    const rows = data.rows.map(row => ({ "Cari No": row.refNo, Cari: row.name, Tür: TYPE_TEXT[row.type] || "", Grup: [row.groupName, row.subgroupName].filter(Boolean).join(" › "), Devir: money(row.opening), "Dönem borç": money(row.debit), "Dönem alacak": money(row.credit), Bakiye: money(row.closing), Durum: sideText(row.closing) }));
-    rows.push({ "Cari No": "", Cari: "TOPLAM", Tür: "", Grup: "", Devir: money(data.totals.opening), "Dönem borç": money(data.totals.debit), "Dönem alacak": money(data.totals.credit), Bakiye: money(data.totals.closing), Durum: `Borçlular ${money(data.totals.closingDebtor)} · Alacaklılar ${money(data.totals.closingCreditor)}` });
+    const columns = ["Cari No", "Cari", "Tür", "Grup", "Devir", "Dönem Borç", "Dönem Alacak", "Bakiye", "Durum"];
+    const rows = data.rows.map(row => ({ "Cari No": row.refNo, Cari: row.name, Tür: TYPE_TEXT[row.type] || "", Grup: [row.groupName, row.subgroupName].filter(Boolean).join(" › "), Devir: money(row.opening), "Dönem Borç": money(row.debit), "Dönem Alacak": money(row.credit), Bakiye: money(row.closing), Durum: sideText(row.closing) }));
+    rows.push({ "Cari No": "", Cari: "TOPLAM", Tür: "", Grup: "", Devir: money(data.totals.opening), "Dönem Borç": money(data.totals.debit), "Dönem Alacak": money(data.totals.credit), Bakiye: money(data.totals.closing), Durum: `Borçlular ${money(data.totals.closingDebtor)} · Alacaklılar ${money(data.totals.closingCreditor)}` });
     const buffer = buildXlsx([{ name: "Mizan", columns, rows }], { title: `Cari Mizanı ${rangeText(data)}` });
     audit(user, "overview.exported", "mizan.xlsx", { from: data.from, to: data.to, count: data.rows.length });
     sendBuffer(res, buffer, { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", name: `Mizan ${fileRange(data)}.xlsx` });
@@ -230,7 +230,7 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
       headers: ["Tarih", "İşlem", "Açıklama", "Borç", "Alacak", "Bakiye"],
       types: ["", "", "", "money", "money", "money"],
       rows: ekstreRows(data),
-      summary: [["Devir", tl(data.opening)], ["Dönem borç", tl(data.debit)], ["Dönem alacak", tl(data.credit)], ["Dönem sonu bakiye", `${tl(Math.abs(data.closing))} ${sideText(data.closing)}`]],
+      summary: [["Devir", tl(data.opening)], ["Dönem Borç", tl(data.debit)], ["Dönem Alacak", tl(data.credit)], ["Dönem Sonu Bakiye", `${tl(Math.abs(data.closing))} ${sideText(data.closing)}`]],
       officeName: office(),
       userName: userName(user),
       brand: office() || "DestekOfis",
@@ -287,14 +287,14 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
   const GROUP_HEAD = { day: "Gün", week: "Hafta", month: "Ay" };
   const periodRows = data => [[dayText(data.from), "", "", "", "", tl(data.opening)], ...(data.periods || []).map(period => [period.label, String(period.count), tl(period.in), tl(period.out), tl(period.net), tl(period.closing)])];
   const flowSummary = data => [
-    ["Bugünkü kasa", tl(data.cashToday)],
-    ...(data.carried.in || data.carried.out ? [["Başlangıca kadar beklenen", `+${tl(data.carried.in)} / −${tl(data.carried.out)}`]] : []),
-    ["Başlangıç kasası", tl(data.opening)],
-    ["Beklenen giriş", tl(data.totals.in)],
-    ["Beklenen çıkış", tl(data.totals.out)],
-    ["Dönem sonu tahmini kasa", tl(data.closing)],
-    ["En düşük tahmini kasa", `${tl(data.lowest.balance)} (${dayText(data.lowest.date)})`],
-    ["Gecikmiş alacak / borç", `${tl(data.overdueTotals.in)} / ${tl(data.overdueTotals.out)}`],
+    ["Bugünkü Kasa", tl(data.cashToday)],
+    ...(data.carried.in || data.carried.out ? [["Başlangıca Kadar Beklenen", `+${tl(data.carried.in)} / −${tl(data.carried.out)}`]] : []),
+    ["Başlangıç Kasası", tl(data.opening)],
+    ["Beklenen Giriş", tl(data.totals.in)],
+    ["Beklenen Çıkış", tl(data.totals.out)],
+    ["Dönem Sonu Tahmini Kasa", tl(data.closing)],
+    ["En Düşük Tahmini Kasa", `${tl(data.lowest.balance)} (${dayText(data.lowest.date)})`],
+    ["Gecikmiş Alacak / Borç", `${tl(data.overdueTotals.in)} / ${tl(data.overdueTotals.out)}`],
   ];
   router.get("/api/workspace/overview/nakit-akisi.pdf", async ({ req, res, url }) => {
     const user = auth.requirePermission(req, "overview.view");
@@ -304,7 +304,7 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
       subtitle: [`${dayText(data.from)} – ${dayText(data.to)}`, `Taksit, çek/senet${data.withTable ? ", tablodaki ödeme günleri" : ""} ve ileri tarihli Kasa hareketleri`, data.group ? `${GROUP_TEXT[data.group]} toplamlar` : "Aynı gün önce çıkışlar yazılır"].join(" · "),
       ...(data.group
         ? { headers: [GROUP_HEAD[data.group], "Hareket", "Giriş", "Çıkış", "Net", "Dönem sonu kasa"], types: ["", "number", "money", "money", "money", "money"], rows: periodRows(data) }
-        : { headers: ["Vade", "Kaynak", "Açıklama", "Kimden / kime", "Giriş", "Çıkış", "Beklenen kasa"], types: ["", "", "", "", "money", "money", "money"], rows: flowRows(data) }),
+        : { headers: ["Vade", "Kaynak", "Açıklama", "Kimden / Kime", "Giriş", "Çıkış", "Beklenen Kasa"], types: ["", "", "", "", "money", "money", "money"], rows: flowRows(data) }),
       summary: flowSummary(data),
       officeName: office(),
       userName: userName(user),
@@ -317,19 +317,19 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
     const user = auth.requirePermission(req, "overview.view");
     const data = await cashflow(user, url.searchParams);
     const money = value => MONEY_FORMAT.format(value || 0);
-    const columns = ["Vade", "Kaynak", "Açıklama", "Kimden / kime", "Giriş", "Çıkış", "Beklenen kasa"];
+    const columns = ["Vade", "Kaynak", "Açıklama", "Kimden / Kime", "Giriş", "Çıkış", "Beklenen Kasa"];
     const rows = [
-      { Vade: dayText(data.from), Kaynak: "Başlangıç", Açıklama: "Bugünkü kasa" + (data.carried.in || data.carried.out ? " + başlangıca kadar beklenenler" : "") + (data.includeOverdue ? " + gecikmişler" : ""), "Kimden / kime": "", Giriş: "", Çıkış: "", "Beklenen kasa": money(data.opening) },
-      ...data.rows.map(row => ({ Vade: dayText(row.date), Kaynak: SOURCE_TEXT[row.source] || row.source, Açıklama: row.label, "Kimden / kime": row.party || "", Giriş: row.direction === "in" ? money(row.amount) : "", Çıkış: row.direction === "out" ? money(row.amount) : "", "Beklenen kasa": money(row.balance) })),
+      { Vade: dayText(data.from), Kaynak: "Başlangıç", Açıklama: "Bugünkü kasa" + (data.carried.in || data.carried.out ? " + başlangıca kadar beklenenler" : "") + (data.includeOverdue ? " + gecikmişler" : ""), "Kimden / Kime": "", Giriş: "", Çıkış: "", "Beklenen Kasa": money(data.opening) },
+      ...data.rows.map(row => ({ Vade: dayText(row.date), Kaynak: SOURCE_TEXT[row.source] || row.source, Açıklama: row.label, "Kimden / Kime": row.party || "", Giriş: row.direction === "in" ? money(row.amount) : "", Çıkış: row.direction === "out" ? money(row.amount) : "", "Beklenen Kasa": money(row.balance) })),
     ];
-    const overdue = data.overdue.map(row => ({ Vade: dayText(row.date), Kaynak: SOURCE_TEXT[row.source] || row.source, Açıklama: row.label, "Kimden / kime": row.party || "", Giriş: row.direction === "in" ? money(row.amount) : "", Çıkış: row.direction === "out" ? money(row.amount) : "", "Beklenen kasa": "" }));
+    const overdue = data.overdue.map(row => ({ Vade: dayText(row.date), Kaynak: SOURCE_TEXT[row.source] || row.source, Açıklama: row.label, "Kimden / Kime": row.party || "", Giriş: row.direction === "in" ? money(row.amount) : "", Çıkış: row.direction === "out" ? money(row.amount) : "", "Beklenen Kasa": "" }));
     const summary = flowSummary(data).map(([label, value]) => ({ Kalem: label, Tutar: value }));
     const periodColumns = [GROUP_HEAD[data.group || "month"], "Hareket", "Giriş", "Çıkış", "Net", "Dönem sonu kasa"];
     const periods = data.group ? periodRows(data).map(row => Object.fromEntries(periodColumns.map((column, index) => [column, row[index]]))) : [];
     const buffer = buildXlsx(
       [
         ...(data.group ? [{ name: `${GROUP_TEXT[data.group]} toplamlar`.slice(0, 31), columns: periodColumns, rows: periods }] : []),
-        { name: "Nakit akışı", columns, rows },
+        { name: "Nakit Akışı", columns, rows },
         { name: "Gecikmiş", columns, rows: overdue },
         { name: "Özet", columns: ["Kalem", "Tutar"], rows: summary },
       ],
@@ -433,12 +433,12 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
   const vadeRows = data => data.rows.map(row => [dayText(row.date), vadeState(row), row.party || "", SOURCE_TEXT[row.source] || row.source, [row.label, row.detail].filter(Boolean).join(" · "), row.direction === "in" && row.amount !== null ? tl(row.amount) : "", row.direction === "out" && row.amount !== null ? tl(row.amount) : ""]);
   const vadeSummary = data => [
     ["Kalem", String(data.totals.count)],
-    ["Tahsil edilecek", tl(data.totals.in.total.amount)],
+    ["Tahsil Edilecek", tl(data.totals.in.total.amount)],
     ["  gecikmiş", `${tl(data.totals.in.overdue.amount)} (${data.totals.in.overdue.count})`],
     ["Ödenecek", tl(data.totals.out.total.amount)],
     ["  gecikmiş", `${tl(data.totals.out.overdue.amount)} (${data.totals.out.overdue.count})`],
     ["Net (tahsil − ödeme)", tl(data.totals.net)],
-    ...(data.totals.noAmount ? [["Tutarsız kalem (son tarih vb.)", String(data.totals.noAmount)]] : []),
+    ...(data.totals.noAmount ? [["Tutarsız Kalem (son tarih vb.)", String(data.totals.noAmount)]] : []),
   ];
   const vadeRange = data => (data.from || data.to ? `${data.from ? dayText(data.from) : "…"} – ${data.to ? dayText(data.to) : "…"}` : "Tüm açık kalemler") + (data.late && data.from ? " · gecikmişler dahil" : "");
   router.get("/api/workspace/overview/vade-takip.pdf", async ({ req, res, url }) => {
@@ -448,7 +448,7 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
     const pdf = tablePdf({
       title: "Vade Takip",
       subtitle: [vadeRange(data), data.direction === "in" ? "Tahsil edilecekler" : data.direction === "out" ? "Ödenecekler" : "", clipped ? "ilk 20.000 satır (tamamı Excel'de)" : ""].filter(Boolean).join(" · "),
-      headers: ["Vade", "Durum", "Kimden / kime", "Kaynak", "Açıklama", "Tahsil edilecek", "Ödenecek"],
+      headers: ["Vade", "Durum", "Kimden / Kime", "Kaynak", "Açıklama", "Tahsil Edilecek", "Ödenecek"],
       types: ["", "", "", "", "", "money", "money"],
       rows: vadeRows({ rows: data.rows.slice(0, PDF_ROWS) }),
       summary: vadeSummary(data),
@@ -462,11 +462,11 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
   router.get("/api/workspace/overview/vade-takip.xlsx", async ({ req, res, url }) => {
     const user = requireDues(req);
     const data = await vadeTakip(user, url.searchParams);
-    const columns = ["Vade", "Gün", "Durum", "Kimden / kime", "Kaynak", "Açıklama", "Ayrıntı", "Tahsil edilecek", "Ödenecek"];
+    const columns = ["Vade", "Gün", "Durum", "Kimden / Kime", "Kaynak", "Açıklama", "Ayrıntı", "Tahsil Edilecek", "Ödenecek"];
     const money = value => MONEY_FORMAT.format(value || 0);
-    const rows = data.rows.map(row => ({ Vade: dayText(row.date), Gün: String(row.days), Durum: STATE_TEXT[row.state], "Kimden / kime": row.party || "", Kaynak: SOURCE_TEXT[row.source] || row.source, Açıklama: row.label || "", Ayrıntı: row.detail || "", "Tahsil edilecek": row.direction === "in" && row.amount !== null ? money(row.amount) : "", Ödenecek: row.direction === "out" && row.amount !== null ? money(row.amount) : "" }));
-    const sheets = [{ name: "Vade takip", columns, rows }];
-    if (data.dormant.length) sheets.push({ name: "Ödemesi kesilmiş olabilir", columns: ["Kişi", "Son ödeme", "Boş ay", "Kaynak"], rows: data.dormant.map(item => ({ Kişi: item.party, "Son ödeme": item.lastPaidText, "Boş ay": String(item.emptyMonths), Kaynak: item.detail })) });
+    const rows = data.rows.map(row => ({ Vade: dayText(row.date), Gün: String(row.days), Durum: STATE_TEXT[row.state], "Kimden / Kime": row.party || "", Kaynak: SOURCE_TEXT[row.source] || row.source, Açıklama: row.label || "", Ayrıntı: row.detail || "", "Tahsil Edilecek": row.direction === "in" && row.amount !== null ? money(row.amount) : "", Ödenecek: row.direction === "out" && row.amount !== null ? money(row.amount) : "" }));
+    const sheets = [{ name: "Vade Takip", columns, rows }];
+    if (data.dormant.length) sheets.push({ name: "Ödemesi kesilmiş olabilir", columns: ["Kişi", "Son Ödeme", "Boş Ay", "Kaynak"], rows: data.dormant.map(item => ({ Kişi: item.party, "Son Ödeme": item.lastPaidText, "Boş Ay": String(item.emptyMonths), Kaynak: item.detail })) });
     sheets.push({ name: "Özet", columns: ["Kalem", "Değer"], rows: [{ Kalem: "Kapsam", Değer: vadeRange(data) }, ...vadeSummary(data).map(([label, value]) => ({ Kalem: label.trim(), Değer: value }))] });
     const buffer = buildXlsx(sheets, { title: "Vade Takip" });
     audit(user, "overview.exported", "vade-takip.xlsx", { from: data.from, to: data.to, count: data.rows.length });

@@ -69,11 +69,11 @@ VersionInfoCopyright=© 2026 {#AppPublisher}
 Name: "turkish"; MessagesFile: "compiler:Languages\Turkish.isl"
 
 [Messages]
-turkish.WelcomeLabel2=Bu sihirbaz [name/ver] uygulamasını bilgisayarınıza kuracak.%n%nOfisteki verilerin tutulacağı bilgisayarda "Sunucu", diğer personel bilgisayarlarında "Personel bilgisayarı" kurulumunu seçin.%n%nDevam etmeden önce diğer uygulamaları kapatmanız önerilir.
+turkish.WelcomeLabel2=Bu sihirbaz [name/ver] uygulamasını bilgisayarınıza kuracak.%n%nOfisteki verilerin tutulacağı bilgisayarda "Sunucu", diğer personel bilgisayarlarında "Personel Bilgisayarı" kurulumunu seçin.%n%nDevam etmeden önce diğer uygulamaları kapatmanız önerilir.
 
 [Types]
-Name: "sunucu"; Description: "Sunucu bilgisayar (ofisin verileri bu bilgisayarda tutulur)"
-Name: "istemci"; Description: "Personel bilgisayarı (sunucuya bağlanır)"
+Name: "sunucu"; Description: "Sunucu Bilgisayar (ofisin verileri bu bilgisayarda tutulur)"
+Name: "istemci"; Description: "Personel Bilgisayarı (sunucuya bağlanır)"
 
 [Components]
 Name: "sunucu"; Description: "DestekOfis sunucusu ve Windows servisi"; Types: sunucu; Flags: fixed
@@ -244,11 +244,11 @@ begin
   else if ExistingServerInstall then
     NetworkNote.Caption := 'Bu bilgisayardaki DestekOfis sunucusu güncellenecek; verileriniz ve yedekleriniz korunur.'
   else if (NetworkServers <> '') and IsServer then
-    NetworkNote.Caption := 'Dikkat: ağda zaten çalışan bir DestekOfis sunucusu var: ' + NetworkServers + '. Bu bilgisayar da sunucu yapılırsa ayrı ve boş bir veritabanıyla çalışır. Personel bilgisayarları için "Personel bilgisayarı"nı seçin.'
+    NetworkNote.Caption := 'Dikkat: ağda zaten çalışan bir DestekOfis sunucusu var: ' + NetworkServers + '. Bu bilgisayar da sunucu yapılırsa ayrı ve boş bir veritabanıyla çalışır. Personel bilgisayarları için "Personel Bilgisayarı"nı seçin.'
   else if NetworkServers <> '' then
     NetworkNote.Caption := 'Ağda DestekOfis sunucusu bulundu: ' + NetworkServers + '. Bu bilgisayar ona bağlanacak.'
   else if IsServer then
-    NetworkNote.Caption := 'Ağda çalışan bir DestekOfis sunucusu bulunamadı; bu bilgisayar ofisin sunucusu olacak. Sunucu başka bir bilgisayarda zaten kuruluysa onun açık ve aynı ağda olduğundan emin olup "Personel bilgisayarı"nı seçin.'
+    NetworkNote.Caption := 'Ağda çalışan bir DestekOfis sunucusu bulunamadı; bu bilgisayar ofisin sunucusu olacak. Sunucu başka bir bilgisayarda zaten kuruluysa onun açık ve aynı ağda olduğundan emin olup "Personel Bilgisayarı"nı seçin.'
   else
     NetworkNote.Caption := 'Ağda çalışan bir DestekOfis sunucusu şu an bulunamadı. Sorun değil: masaüstündeki DestekOfis simgesi, sunucu açıldığında onu kendiliğinden bulur.';
 end;
@@ -275,7 +275,7 @@ begin
   WizardForm.TypesCombo.OnChange := @TypesComboChange;
 end;
 
-// Ağda zaten bir sunucu varsa, yanlışlıkla ikinci bir sunucu kurulmasın diye "Personel bilgisayarı" önceden seçilir.
+// Ağda zaten bir sunucu varsa, yanlışlıkla ikinci bir sunucu kurulmasın diye "Personel Bilgisayarı" önceden seçilir.
 procedure PrepareSetupTypePage;
 begin
   // Bileşen listesi yalnızca özel kurulum türünde görünür; görünmüyorsa not doğrudan tür seçiminin altına yerleşir.
@@ -301,7 +301,7 @@ begin
   Result := True;
   if (CurPageID = wpSelectComponents) and IsServer and (NetworkServers <> '') and not WizardSilent then
     Result := MsgBox('Ağda zaten çalışan bir DestekOfis sunucusu var: ' + NetworkServers + '.' + #13#10#13#10 +
-      'Bir ofiste tek sunucu olmalıdır; diğer bilgisayarlara "Personel bilgisayarı" kurulur. İkinci bir sunucu ayrı ve boş bir veritabanıyla çalışır; bu bilgisayardaki DestekOfis simgesi ofisin asıl verilerini değil bu boş sunucuyu açar.' + #13#10#13#10 +
+      'Bir ofiste tek sunucu olmalıdır; diğer bilgisayarlara "Personel Bilgisayarı" kurulur. İkinci bir sunucu ayrı ve boş bir veritabanıyla çalışır; bu bilgisayardaki DestekOfis simgesi ofisin asıl verilerini değil bu boş sunucuyu açar.' + #13#10#13#10 +
       'Yine de bu bilgisayarı ikinci bir sunucu olarak kurmak istiyor musunuz?', mbConfirmation, MB_YESNO or MB_DEFBUTTON2) = IDYES;
 end;
 
@@ -470,7 +470,7 @@ begin
       WizardForm.FinishedLabel.Caption :=
         'DestekOfis sunucusu kuruldu ve Windows servisi olarak çalışıyor. Bilgisayar her açıldığında oturum açılmasa bile kendiliğinden başlar.' + #13#10#13#10 +
         'İlk giriş (bu bilgisayardan): kullanıcı adı "admin", parola "Ofis2026!". İlk girişte yeni parola belirlemeniz istenir.' + #13#10#13#10 +
-        'Personel bilgisayarlarına aynı kurulum dosyasıyla "Personel bilgisayarı" kurulumu yapın; sunucu kendiliğinden bulunur.'
+        'Personel bilgisayarlarına aynı kurulum dosyasıyla "Personel Bilgisayarı" kurulumu yapın; sunucu kendiliğinden bulunur.'
     else if not IsServer then
       WizardForm.FinishedLabel.Caption :=
         'DestekOfis başlatıcısı kuruldu. Masaüstündeki DestekOfis kısayolu ofis sunucusunu ağda kendiliğinden bulur ve açar.';

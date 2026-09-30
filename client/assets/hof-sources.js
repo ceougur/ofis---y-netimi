@@ -61,7 +61,7 @@
   const SKIP_LABELS = { title: "başlık", note: "not", footnote: "dipnot", group: "grup etiketi", "repeat-header": "yinelenen başlık", unnamed: "adsız kolon", "empty-record": "boş satır" };
   // Ön izleme ve eşleme (v2.0.2): kolonların ne sayıldığı (rol + kesinlik), ilk satırlar; biçimi uymayan hücreler ve
   // belirsiz kolonlar sarı. Kullanıcı kolonun rolünü seçebilir; seçim kaydetmede oturuma yazılır, analiz ve takvim uyar.
-  const ROLE_OPTIONS = [["auto", "Otomatik"], ["id", "Kimlik / No"], ["person", "Kişi"], ["org", "Kurum"], ["phone", "Telefon"], ["email", "E-posta"], ["money", "Tutar"], ["deadline", "Son tarih / Vade"], ["date", "Tarih (olay)"], ["status", "Durum"], ["category", "Kategori"], ["note", "Not"], ["ignore", "Yoksay"]];
+  const ROLE_OPTIONS = [["auto", "Otomatik"], ["id", "Kimlik / No"], ["person", "Kişi"], ["org", "Kurum"], ["phone", "Telefon"], ["email", "E-Posta"], ["money", "Tutar"], ["deadline", "Son Tarih / Vade"], ["date", "Tarih (olay)"], ["status", "Durum"], ["category", "Kategori"], ["note", "Not"], ["ignore", "Yok Say"]];
   const ROLE_TEXT = { id: "kimlik", person: "kişi", org: "kurum", money: "tutar", date: "tarih", status: "durum", category: "kategori", phone: "telefon", email: "e-posta", address: "adres", note: "not", tckn: "T.C. no", vkn: "vergi no", iban: "IBAN", city: "il", plate: "plaka", url: "bağlantı", number: "sayı", percent: "oran", sequence: "sıra", responsible: "sorumlu", text: "metin" };
   const roleText = item => (item.role === "date" ? (item.kind === "deadline" ? "son tarih" : item.kind === "event" ? "olay tarihi" : "tarih") : ROLE_TEXT[item.role] || item.role);
   function mappingHtml(mapping) {
@@ -80,8 +80,8 @@
     const unsure = mapping.unsure ? `${number(mapping.unsure)} kolonun türü belirsiz (sarı başlık) — açılır listeden seçebilirsiniz.` : "Kolon türleri kendiliğinden tanındı.";
     const flagged = (mapping.rows || []).filter(row => row.__hofFlag).length;
     return `<details class="hof-mapping" open>
-      <summary><b>Ön izleme ve eşleme</b> · ${number(mapping.total)} satırın ilk ${number((mapping.rows || []).length)}'i · ${esc(unsure)}${flagged ? ` · sarı satırlar “İşaretlenen hatalar”a gider` : ""}</summary>
-      <p class="hof-inline-note">Program her kolonu ne saydığını başlıkta yazar (kesin / olası / belirsiz). Yanlışsa açılır listeden doğrusunu seçin; <b>Son tarih / Vade</b> seçilen kolon takvime girer, <b>Yoksay</b> seçilen kolon uyarı üretmez. Sarı hücreler kolonun türüne uymayan değerlerdir; üzerine gelince neden yazar.</p>
+      <summary><b>Ön İzleme ve Eşleme</b> · ${number(mapping.total)} satırın ilk ${number((mapping.rows || []).length)}'i · ${esc(unsure)}${flagged ? ` · sarı satırlar “İşaretlenen hatalar”a gider` : ""}</summary>
+      <p class="hof-inline-note">Program her kolonu ne saydığını başlıkta yazar (kesin / olası / belirsiz). Yanlışsa açılır listeden doğrusunu seçin; <b>Son Tarih / Vade</b> seçilen kolon takvime girer, <b>Yok Say</b> seçilen kolon uyarı üretmez. Sarı hücreler kolonun türüne uymayan değerlerdir; üzerine gelince neden yazar.</p>
       <div class="hof-mapping-scroll"><table class="hof-mapping-table"><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div>
     </details>`;
   }
@@ -122,8 +122,8 @@
   function schemaHtml(schema) {
     if (!schema || (!schema.renamed?.length && !schema.added?.length && !schema.removed?.length)) return "";
     const parts = [];
-    if (schema.renamed?.length) parts.push(`<p><b>Yeniden adlandırılan kolonlar</b> (düzeltmeler ve ayarlar yeni ada taşınır): ${schema.renamed.map(item => `“${esc(item.from)}” → “${esc(item.to)}”<small> · ${esc(item.why)}</small>`).join(", ")}</p>`);
-    if (schema.added?.length) parts.push(`<p><b>Yeni kolonlar:</b> ${schema.added.map(esc).join(", ")}</p>`);
+    if (schema.renamed?.length) parts.push(`<p><b>Yeniden Adlandırılan Kolonlar</b> (düzeltmeler ve ayarlar yeni ada taşınır): ${schema.renamed.map(item => `“${esc(item.from)}” → “${esc(item.to)}”<small> · ${esc(item.why)}</small>`).join(", ")}</p>`);
+    if (schema.added?.length) parts.push(`<p><b>Yeni Kolonlar:</b> ${schema.added.map(esc).join(", ")}</p>`);
     if (schema.removed?.length) parts.push(`<p><b>Bu dosyada olmayan kolonlar:</b> ${schema.removed.map(esc).join(", ")}<small> · “devamı olarak” eklemede mevcut kayıtlarda kalır, “yerine koy”da kalkar</small></p>`);
     return `<div class="hof-reading hof-schema">${parts.join("")}</div>`;
   }
@@ -136,9 +136,9 @@
     const warn = percent < 90;
     const lines = (reading.skipped || []).map(item => `<li><b>${esc(item.sheet ? `${item.sheet} · ` : "")}${item.line}. satır</b> · ${esc(SKIP_LABELS[item.kind] || item.kind)}${item.text ? ` · <span>${esc(item.text)}</span>` : ""}</li>`).join("");
     return `<div class="hof-reading ${warn ? "is-warn" : ""}">
-      <p><b>Okuma raporu:</b> hücrelerin %${percent}'i kayda girdi${reading.skippedTotal ? ` · ${number(reading.skippedTotal)} satır kayıt sayılmadı (${esc(summary)})` : " · her satır kayıt oldu"}.${warn ? " <b>Dosyanın önemli bir bölümü kayda giremedi;</b> atlanan satırları kontrol edin, gerekirse Excel'de başlık satırını düzeltip yeniden yükleyin." : ""}</p>
+      <p><b>Okuma Raporu:</b> hücrelerin %${percent}'i kayda girdi${reading.skippedTotal ? ` · ${number(reading.skippedTotal)} satır kayıt sayılmadı (${esc(summary)})` : " · her satır kayıt oldu"}.${warn ? " <b>Dosyanın önemli bir bölümü kayda giremedi;</b> atlanan satırları kontrol edin, gerekirse Excel'de başlık satırını düzeltip yeniden yükleyin." : ""}</p>
       ${(reading.notes || []).map(note => `<p class="hof-reading-note">${esc(note)}</p>`).join("")}
-      ${lines ? `<details><summary>Kayıt sayılmayan satırlar${reading.skippedTotal > (reading.skipped || []).length ? ` (ilk ${(reading.skipped || []).length})` : ""}</summary><ul>${lines}</ul></details>` : ""}
+      ${lines ? `<details><summary>Kayıt Sayılmayan Satırlar${reading.skippedTotal > (reading.skipped || []).length ? ` (ilk ${(reading.skipped || []).length})` : ""}</summary><ul>${lines}</ul></details>` : ""}
     </div>`;
   }
   function progress(title, text) {
@@ -236,16 +236,16 @@
         ${mappingHtml(staged.mapping)}
         ${different ? `<div class="hof-alert">Bu dosya şu anki veriden <b>farklı bir konuda</b> görünüyor${esc(overlap)}. Veriler birbirine karışmasın diye <b>yeni oturumda açmanızı</b> öneririz.</div>` : ""}
         <article class="hof-choice hof-choice-session ${preferSession ? "is-recommended" : ""}">
-          <header><b>Yeni oturumda aç</b>${preferSession ? '<span class="hof-chip">Önerilen</span>' : ""}</header>
+          <header><b>Yeni Oturumda Aç</b>${preferSession ? '<span class="hof-chip">Önerilen</span>' : ""}</header>
           <p>Dosya ayrı bir çalışma alanında açılır; şu anki veri, düzeltmeleri ve kayıtlarıyla olduğu gibi kalır. Oturumlar arasında sol menüdeki <b>oturum seçiciyle</b> geçilir; herkes kendi çalışacağı oturumu seçer.</p>
           <div class="hof-choice-session-row">
-            <label class="hof-field"><span>Oturumun adı</span><input type="text" data-session-name maxlength="80" value="${esc(defaultName)}" ${preferSession ? "autofocus" : ""} placeholder="Ör. Taksit takibi 2026" autocomplete="off"></label>
-            <button type="button" class="hof-button ${preferSession ? "" : "hof-button-ghost"}" data-mode="session">Yeni oturumda aç</button>
+            <label class="hof-field"><span>Oturumun Adı</span><input type="text" data-session-name maxlength="80" value="${esc(defaultName)}" ${preferSession ? "autofocus" : ""} placeholder="Ör. Taksit takibi 2026" autocomplete="off"></label>
+            <button type="button" class="hof-button ${preferSession ? "" : "hof-button-ghost"}" data-mode="session">Yeni Oturumda Aç</button>
           </div>
         </article>
         <div class="hof-choice-grid">
           <article class="hof-choice ${preferSession ? "" : "is-recommended"}">
-            <header><b>Mevcut verinin devamı olarak ekle</b>${preferSession ? "" : '<span class="hof-chip">Önerilen</span>'}</header>
+            <header><b>Mevcut Verinin Devamı Olarak Ekle</b>${preferSession ? "" : '<span class="hof-chip">Önerilen</span>'}</header>
             <ul>
               <li><b>${number(merge.added)}</b> yeni kayıt eklenir</li>
               <li><b>${number(merge.updated)}</b> kayıt yeni bilgilerle güncellenir</li>
@@ -253,16 +253,16 @@
               <li>Yeni dosyada olmayan <b>${number(merge.kept)}</b> kayıt silinmez</li>
             </ul>
             <p>Ofiste yapılan düzeltmeler, notlar ve görevler korunur.</p>
-            <button type="button" class="hof-button ${preferSession ? "hof-button-ghost" : ""}" data-mode="merge" ${preferSession ? "" : "autofocus"}>Devamı olarak ekle</button>
+            <button type="button" class="hof-button ${preferSession ? "hof-button-ghost" : ""}" data-mode="merge" ${preferSession ? "" : "autofocus"}>Devamı Olarak Ekle</button>
           </article>
           <article class="hof-choice">
-            <header><b>Mevcut verinin yerine koy</b></header>
+            <header><b>Mevcut Verinin Yerine Koy</b></header>
             <ul>
               <li><b>${number(replace.added)}</b> yeni, <b>${number(replace.updated)}</b> güncellenen, <b>${number(replace.unchanged)}</b> aynı kayıt</li>
               <li>Yeni dosyada olmayan <b>${number(replace.removed)}</b> kayıt tablodan kalkar</li>
             </ul>
             <p>Notlar, görevler ve işlem geçmişi silinmez; aynı dosya numarası tekrar gelirse yeniden bağlanır.</p>
-            <button type="button" class="hof-button hof-button-ghost" data-mode="replace">Yerine koy</button>
+            <button type="button" class="hof-button hof-button-ghost" data-mode="replace">Yerine Koy</button>
           </article>
         </div>
         ${samplesHtml ? `<p class="hof-choice-samples">Örnek: ${samplesHtml}</p>` : ""}
@@ -283,7 +283,7 @@
       if (!button) return;
       const mode = button.dataset.mode;
       if (mode === "replace" && replace.removed > 0) {
-        const ok = await HOF.confirm({ title: "Yerine koy", message: `Yeni dosyada olmayan ${number(replace.removed)} kayıt tablodan kalkacak. Notları ve geçmişi silinmez; işlemden önce yedek alınır. Devam edilsin mi?`, confirmLabel: "Yerine koy", danger: true });
+        const ok = await HOF.confirm({ title: "Yerine Koy", message: `Yeni dosyada olmayan ${number(replace.removed)} kayıt tablodan kalkacak. Notları ve geçmişi silinmez; işlemden önce yedek alınır. Devam edilsin mi?`, confirmLabel: "Yerine Koy", danger: true });
         if (!ok) return;
       }
       const link = staged.kind === "sheets" ? Boolean(modal.dialog.querySelector("[data-link]")?.checked) : true;
@@ -349,7 +349,7 @@
 
   const dropHtml = compact => `<label class="hof-drop${compact ? " is-compact" : ""}">
       <span class="hof-drop-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M12 12v6"/><path d="m9.5 14.5 2.5-2.5 2.5 2.5"/></svg></span>
-      <span><b>Excel dosyası seçin</b><small>veya buraya sürükleyip bırakın · .xlsx, .xls, .csv</small></span>
+      <span><b>Excel Dosyası Seçin</b><small>veya buraya sürükleyip bırakın · .xlsx, .xls, .csv</small></span>
       <input type="file" accept=".xlsx,.xls,.csv" hidden>
     </label>`;
   const linkHtml = `<form class="hof-link-form" novalidate>
@@ -357,7 +357,7 @@
       <button type="submit" class="hof-button">Bağla</button>
     </form>`;
   // Sektöre uygun taslak Excel (v2.0.9): Excel'i olmayan ofis sektörünü seçer, taslak indirilir; doldurup buradan yükler.
-  const templateHtml = `<div class="hof-start-template"><span class="hof-start-template-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="17" rx="2.5"/><path d="M3.5 9h17M9 3.5v17"/><path d="M14 14.5v4M12 16.5l2 2 2-2"/></svg></span><span><b>Exceliniz yok mu?</b><small>Sektörünüze uygun taslak Excel'i indirin, doldurun ve buradan yükleyin. Kolonlar hazırdır; başlığa tıklayınca ne yazılacağı görünür.</small></span><button type="button" class="hof-button hof-button-small" data-template>Taslak Excel'i indir</button></div>`;
+  const templateHtml = `<div class="hof-start-template"><span class="hof-start-template-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="17" rx="2.5"/><path d="M3.5 9h17M9 3.5v17"/><path d="M14 14.5v4M12 16.5l2 2 2-2"/></svg></span><span><b>Exceliniz yok mu?</b><small>Sektörünüze uygun taslak Excel'i indirin, doldurun ve buradan yükleyin. Kolonlar hazırdır; başlığa tıklayınca ne yazılacağı görünür.</small></span><button type="button" class="hof-button hof-button-small" data-template>Taslak Excel'i İndir</button></div>`;
   async function downloadTemplate() {
     const current = HOF.profile?.()?.sector?.id || "";
     const pick = HOF.chooseSector || HOF.pickSector;
@@ -452,30 +452,30 @@
       }
     }).join("");
     const modal = HOF.modal({
-      title: "Veri ve eşitleme",
+      title: "Veri ve Eşitleme",
       eyebrow: "AYARLAR",
       size: "wide",
       body: `<section class="hof-data-summary">
           <div><b>${esc(data.label || (data.rowCount ? "Çalışma verisi" : "Veri yok"))}</b><span>${number(data.rowCount)} kayıt${data.tabs?.length ? ` · ${number(data.tabs.length)} sekme` : ""}${data.recordCount ? ` · uygulamada eklenen ${number(data.recordCount)} kayıt` : ""}</span><small>${esc(sourceLine(data))}</small></div>
           ${data.lastSyncError ? `<p class="hof-alert">Son eşitlemede Google Sheets'e ulaşılamadı: ${esc(data.lastSyncError)} Son eşitlenen veri kullanılmaya devam ediyor.</p>` : ""}
           ${data.syncHold ? `<p class="hof-alert">Sheet'in yapısı değişmiş görünüyor (${number(data.syncHold.added)} yeni, ${number(data.syncHold.missing)} kayıp satır). Yanlışlıkla veri çoğalmasın diye otomatik eşitleme durduruldu. <button type="button" class="hof-button hof-button-small" data-review>İncele ve karar ver</button></p>` : ""}
-          ${data.missingCount ? `<p class="hof-alert hof-alert-soft">${number(data.missingCount)} kayıt bağlı Sheet'te artık yok; tabloda duruyor. <button type="button" class="hof-button hof-button-small hof-button-ghost" data-missing>Listeyi gör</button></p>` : ""}
+          ${data.missingCount ? `<p class="hof-alert hof-alert-soft">${number(data.missingCount)} kayıt bağlı Sheet'te artık yok; tabloda duruyor. <button type="button" class="hof-button hof-button-small hof-button-ghost" data-missing>Listeyi Gör</button></p>` : ""}
         </section>
         ${sessions?.html || ""}
         ${data.rowCount || data.recordCount ? extensions : ""}
         <section class="hof-data-section">
-          <h3>Veri ekle veya değiştir</h3>
+          <h3>Veri Ekle veya Değiştir</h3>
           <div class="hof-data-import">${dropHtml(true)}${linkHtml}</div>${templateHtml}
           <p class="hof-modal-text hof-muted">Mevcut veri varsa önce ne değişeceği gösterilir; "yeni oturumda aç", "devamı olarak ekle" ya da "yerine koy" seçersiniz.</p>
         </section>
         ${data.linked
           ? `<section class="hof-data-section">
-          <h3>Google Sheets eşitlemesi</h3>
+          <h3>Google Sheets Eşitlemesi</h3>
           <div class="hof-data-row">
             <label class="hof-field hof-field-inline"><span>Sıklık</span><select data-minutes>${[5, 15, 60].map(value => `<option value="${value}" ${value === minutes ? "selected" : ""}>${value === 60 ? "Saatte bir" : `${value} dakikada bir`}</option>`).join("")}</select></label>
-            <button type="button" class="hof-button hof-button-small" data-sync>Şimdi eşitle</button>
-            <a class="hof-button hof-button-small hof-button-ghost" href="${esc(data.linkedSheetUrl)}" target="_blank" rel="noopener">Sheet'i aç</a>
-            <button type="button" class="hof-button hof-button-small hof-button-ghost" data-unlink>Bağlantıyı kaldır</button>
+            <button type="button" class="hof-button hof-button-small" data-sync>Şimdi Eşitle</button>
+            <a class="hof-button hof-button-small hof-button-ghost" href="${esc(data.linkedSheetUrl)}" target="_blank" rel="noopener">Sheet'i Aç</a>
+            <button type="button" class="hof-button hof-button-small hof-button-ghost" data-unlink>Bağlantıyı Kaldır</button>
           </div>
         </section>`
           : ""}
@@ -485,8 +485,8 @@
         </section>
         ${data.rowCount
           ? `<section class="hof-data-section hof-danger-zone">
-          <div><b>Veriyi kaldır</b><small>İçeri alınan tüm satırlar tablodan kalkar. Notlar, görevler ve işlem geçmişi silinmez; öncesinde yedek alınır.</small></div>
-          <button type="button" class="hof-button hof-button-small hof-button-danger" data-remove>Veriyi kaldır</button>
+          <div><b>Veriyi Kaldır</b><small>İçeri alınan tüm satırlar tablodan kalkar. Notlar, görevler ve işlem geçmişi silinmez; öncesinde yedek alınır.</small></div>
+          <button type="button" class="hof-button hof-button-small hof-button-danger" data-remove>Veriyi Kaldır</button>
         </section>`
           : ""}`,
     });
@@ -538,7 +538,7 @@
         }
       } catch (error) {
         button.disabled = false;
-        button.textContent = "Şimdi eşitle";
+        button.textContent = "Şimdi Eşitle";
         HOF.toastError(error);
       }
     });
@@ -551,7 +551,7 @@
       openMissing();
     });
     dialog.querySelector("[data-unlink]")?.addEventListener("click", async () => {
-      const ok = await HOF.confirm({ title: "Bağlantıyı kaldır", message: "Google Sheets eşitlemesi durur. Şu ana kadar alınan veri tabloda kalır ve kullanılmaya devam eder.", confirmLabel: "Bağlantıyı kaldır" });
+      const ok = await HOF.confirm({ title: "Bağlantıyı Kaldır", message: "Google Sheets eşitlemesi durur. Şu ana kadar alınan veri tabloda kalır ve kullanılmaya devam eder.", confirmLabel: "Bağlantıyı Kaldır" });
       if (!ok) return;
       try {
         await HOF.api("/api/workspace/dataset/unlink", { method: "POST" });
@@ -563,7 +563,7 @@
       }
     });
     dialog.querySelector("[data-remove]")?.addEventListener("click", async () => {
-      const ok = await HOF.confirm({ title: "Veriyi kaldır", message: `${number(data.rowCount)} kayıt tüm bilgisayarlarda tablodan kalkacak. Notlar, görevler ve işlem geçmişi silinmez; işlemden önce yedek alınır.`, confirmLabel: "Veriyi kaldır", danger: true });
+      const ok = await HOF.confirm({ title: "Veriyi Kaldır", message: `${number(data.rowCount)} kayıt tüm bilgisayarlarda tablodan kalkacak. Notlar, görevler ve işlem geçmişi silinmez; işlemden önce yedek alınır.`, confirmLabel: "Veriyi Kaldır", danger: true });
       if (!ok) return;
       try {
         const result = await HOF.api("/api/workspace/dataset", { method: "DELETE" });
@@ -585,13 +585,13 @@
       return;
     }
     const modal = HOF.modal({
-      title: "Sheet'te artık olmayan kayıtlar",
+      title: "Sheet'te Artık Olmayan Kayıtlar",
       eyebrow: "VERİ",
       size: "wide",
       body: `<p class="hof-modal-text">Bu kayıtlar bağlı Google Sheets'ten silinmiş veya taşınmış. DestekOfis onları kendiliğinden silmez. <b>Tut</b> derseniz bir daha işaretlenmez; <b>Kaldır</b> derseniz tablodan çıkar (notları ve geçmişi silinmez, öncesinde yedek alınır).</p>
-        <label class="hof-check"><input type="checkbox" data-all checked><span>Tümünü seç (${number(rows.length)})</span></label>
+        <label class="hof-check"><input type="checkbox" data-all checked><span>Tümünü Seç (${number(rows.length)})</span></label>
         <ul class="hof-missing-list">${rows.map(row => `<li><label class="hof-check"><input type="checkbox" value="${esc(row.rowId)}" checked><span><b>${esc(row.caseKey.startsWith("satir:") ? "Kimliksiz satır" : row.caseKey)}</b>${row.tab ? ` · ${esc(row.tab)}` : ""}<small>${esc(row.preview.join(" · "))}</small></span></label></li>`).join("")}</ul>
-        <div class="hof-actions"><button type="button" class="hof-button hof-button-ghost" data-action="keep">Seçilenleri tut</button><button type="button" class="hof-button hof-button-danger" data-action="remove">Seçilenleri kaldır</button></div>`,
+        <div class="hof-actions"><button type="button" class="hof-button hof-button-ghost" data-action="keep">Seçilenleri Tut</button><button type="button" class="hof-button hof-button-danger" data-action="remove">Seçilenleri Kaldır</button></div>`,
     });
     const boxes = () => [...modal.dialog.querySelectorAll(".hof-missing-list input[type=checkbox]")];
     modal.dialog.querySelector("[data-all]").addEventListener("change", event => boxes().forEach(box => (box.checked = event.target.checked)));
@@ -664,13 +664,30 @@
     const display = hidden ? "none" : "";
     if (element.style.display !== display) element.style.display = display;
   };
+  // v2.0.11: "Ayarlar" kenar çubuğunun üstünden (oturum kartının altı) kullanıcı kartının altına taşındı. Paketin kendi
+  // düğmesi React'e ait olduğundan taşınmaz, gizlenir; yerine bizim düğmemiz Operasyon merkezi kartının hemen altına
+  // konur (paket yeniden çizse de yerinde kalır). Yetki kuralı aynı: yalnız veri yükleme yetkisi olan görür.
+  const GEAR = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>';
+  function placeSettings() {
+    const card = document.getElementById("hof-sidecard");
+    let button = document.getElementById("hof-side-settings");
+    if (!card || !canManage()) {
+      button?.remove();
+      return;
+    }
+    if (!button) {
+      button = HOF.el("button", { type: "button", id: "hof-side-settings", class: "hof-side-settings", title: "Veri yükleme, çalışma oturumları ve bağlı tablo" }, `${GEAR}<span>Ayarlar</span>`);
+      button.addEventListener("click", () => openDataSettings());
+    }
+    if (card.nextElementSibling !== button) card.after(button);
+  }
+
   function gateControls() {
-    const manage = canManage();
     document.querySelectorAll(".sidebar .nav-item").forEach(button => {
       const label = navLabel(button);
-      if (label === "Tabloyu değiştir") setHidden(button, true);
-      if (label === "Ayarlar") setHidden(button, !manage);
+      if (label === "Tabloyu değiştir" || label === "Ayarlar") setHidden(button, true);
     });
+    placeSettings();
     document.querySelectorAll(".button-row button").forEach(button => {
       if (navLabel(button).includes("Yeni tablo yükle")) setHidden(button, true);
     });

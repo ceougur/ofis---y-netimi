@@ -11,9 +11,9 @@
   const { esc } = HOF;
   // Adlar Raporlar penceresinin defter sekmelerinden (Cari ekstre, Vade takip, Nakit akış) ayrılsın diye "tablodaki" ile.
   const KINDS = [
-    ["cari-ekstre", "Tablodaki kişiler", "Kişi başına tablodaki tutar (borç), kayıt kartından tahsilat ve yürüyen bakiye"],
-    ["vade-takip", "Tablodaki vadeler", "Tablodaki vadeler ve son tarihler: gecikmiş, bugün, yaklaşan"],
-    ["nakit-akis", "Tablodaki nakit akışı", "Dönem başına tablodan beklenen ve gerçekleşen tahsilat, kasa"],
+    ["cari-ekstre", "Tablodaki Kişiler", "Kişi başına tablodaki tutar (borç), kayıt kartından tahsilat ve yürüyen bakiye"],
+    ["vade-takip", "Tablodaki Vadeler", "Tablodaki vadeler ve son tarihler: gecikmiş, bugün, yaklaşan"],
+    ["nakit-akis", "Tablodaki Nakit Akışı", "Dönem başına tablodan beklenen ve gerçekleşen tahsilat, kasa"],
   ];
   const money = value => (value === null || value === undefined ? "" : `${new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value)} ₺`);
   const day = ms => (ms === null || ms === undefined || ms === "" ? "" : new Date(ms).toLocaleDateString("tr-TR", { timeZone: "UTC" }));
@@ -92,13 +92,13 @@
     const tabs = dialog.querySelector('[data-filter="tabs"]');
     if (tabs && !tabs.dataset.ready) {
       tabs.dataset.ready = "1";
-      tabs.innerHTML = `<option value="">Tüm sekmeler</option>${data.tabs.map(tab => `<option value="${esc(tab)}">${esc(tab)}</option>`).join("")}`;
+      tabs.innerHTML = `<option value="">Tüm Sekmeler</option>${data.tabs.map(tab => `<option value="${esc(tab)}">${esc(tab)}</option>`).join("")}`;
     }
     const status = dialog.querySelector('[data-filter="status"]');
     if (status && !status.dataset.ready) {
       status.dataset.ready = "1";
       const options = state.kind === "vade-takip" ? [["gecikmis", "Gecikmiş"], ["bugun", "Bugün"], ["yaklasan", "Yaklaşan"], ["kapali", "Kapalı"], ["durgun", "Durgun (ödeme kesilmiş olabilir)"]] : data.statuses.map(item => [item, item]);
-      status.innerHTML = `<option value="">Tüm durumlar</option>${options.map(([value, label]) => `<option value="${esc(value)}">${esc(label)}</option>`).join("")}`;
+      status.innerHTML = `<option value="">Tüm Durumlar</option>${options.map(([value, label]) => `<option value="${esc(value)}">${esc(label)}</option>`).join("")}`;
     }
     dialog.querySelector("[data-granularity-row]").hidden = state.kind !== "nakit-akis";
   }
@@ -167,13 +167,13 @@
         <form class="hof-report-filters" data-filters>
           <label><span>Başlangıç</span><input type="date" data-filter="from" value="${esc(previous.from ?? isoOf(monthStart))}"></label>
           <label><span>Bitiş</span><input type="date" data-filter="to" value="${esc(previous.to || "")}"></label>
-          <label><span>Kişi / kimlik</span><input type="search" data-filter="cari" placeholder="Ad, dosya no, telefon" value="${esc(previous.cari || "")}"></label>
-          <label><span>Durum</span><select data-filter="status"><option value="">Tüm durumlar</option></select></label>
-          <label><span>Sekme</span><select data-filter="tabs"><option value="">Tüm sekmeler</option></select></label>
-          <label><span>En az tutar</span><input type="number" data-filter="minAmount" min="0" step="1" placeholder="0" value="${esc(previous.minAmount || "")}"></label>
+          <label><span>Kişi / Kimlik</span><input type="search" data-filter="cari" placeholder="Ad, dosya no, telefon" value="${esc(previous.cari || "")}"></label>
+          <label><span>Durum</span><select data-filter="status"><option value="">Tüm Durumlar</option></select></label>
+          <label><span>Sekme</span><select data-filter="tabs"><option value="">Tüm Sekmeler</option></select></label>
+          <label><span>En Az Tutar</span><input type="number" data-filter="minAmount" min="0" step="1" placeholder="0" value="${esc(previous.minAmount || "")}"></label>
           <label data-granularity-row hidden><span>Dönem</span><select data-filter="granularity"><option value="month">Ay</option><option value="week">Hafta</option><option value="day">Gün</option></select></label>
           <div class="hof-report-sessions"><span>Oturumlar</span><div data-filter="sessions"></div></div>
-          <div class="hof-report-actions"><button type="submit" class="hof-button">Raporu getir</button><button type="button" class="hof-button hof-button-ghost" data-clear>Süzgeçleri temizle</button></div>
+          <div class="hof-report-actions"><button type="submit" class="hof-button">Raporu Getir</button><button type="button" class="hof-button hof-button-ghost" data-clear>Süzgeçleri Temizle</button></div>
         </form>
         <div class="hof-report-toolbar"><span data-report-meta class="hof-muted"></span><span><button type="button" class="hof-button hof-button-small hof-button-ghost" data-export="xlsx">Excel</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-export="pdf">PDF</button><button type="button" class="hof-button hof-button-small" data-print>Yazdır</button></span></div>
         <div data-report-body></div>`;

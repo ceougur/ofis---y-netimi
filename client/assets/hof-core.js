@@ -16,7 +16,7 @@
   HOF.initials = name => String(name || "?").trim().split(/\s+/).slice(0, 2).map(part => part[0] || "").join("").toLocaleUpperCase("tr-TR") || "?";
   // Rol adları ve kayıtlara verilen ad seçili sektöre göre değişir (hof-insight.js); bunlar sektör seçilmemiş hâlidir.
   HOF.roleLabels = { admin: "Yönetici", avukat: "Uzman", personel: "Personel", muhasebe: "Muhasebe" };
-  HOF.vocab = { record: "kayıt", records: "kayıtlar", Record: "Kayıt", Records: "Kayıtlar", expert: "Uzman", subtitle: "Ofis yönetimi" };
+  HOF.vocab = { record: "kayıt", records: "kayıtlar", Record: "Kayıt", Records: "Kayıtlar", expert: "Uzman", subtitle: "Ofis Yönetimi" };
   HOF.modules = { tahsilat: true, haciz: false };
 
   const dateFormat = new Intl.DateTimeFormat("tr-TR", { day: "2-digit", month: "2-digit", year: "numeric" });
@@ -58,7 +58,7 @@
   HOF.user = null;
   HOF.settings = { sheetUrl: "", syncMinutes: "5", aiMapping: "", activeSourceLabel: "" };
   HOF.can = permission => Boolean(HOF.user && HOF.user.permissions && HOF.user.permissions.includes(permission));
-  HOF.sourceName = () => HOF.settings.sheetUrl || window.localStorage.getItem("hukuk-ofisi-sheet-url") || "Çalışma tablosu";
+  HOF.sourceName = () => HOF.settings.sheetUrl || window.localStorage.getItem("hukuk-ofisi-sheet-url") || "Çalışma Tablosu";
 
   // ---------- API ----------
   class ApiError extends Error {
@@ -96,7 +96,73 @@
       else if (response.status === 403 && payload.code === "LICENSE_READ_ONLY") HOF.emit("license-read-only", payload);
       throw error;
     }
+    if (method !== "GET") noteLedgerChange(path);
     return payload.data === undefined ? payload : payload.data;
+  };
+
+  // ---------- Başlık yazımı (v2.0.11) ----------
+  // Sunucudaki server/lib/text-case.mjs ile aynı kural: her sözcüğün ilk harfi büyük (Türkçe i → İ), bağlaçlar küçük,
+  // parantez içi olduğu gibi. Yalnız programın ürettiği başlıklara uygulanır; kullanıcının yazdığı ada değil.
+  const SMALL_WORDS = new Set(["ve", "ile", "veya", "ya", "da", "de", "ki"]);
+  HOF.titleCase = text => {
+    let depth = 0;
+    let seenWord = false;
+    return String(text ?? "")
+      .split(/(\s+)/)
+      .map(word => {
+        if (!word || /^\s+$/.test(word)) return word;
+        const inside = depth > 0 || word.startsWith("(");
+        for (const ch of word) {
+          if (ch === "(") depth += 1;
+          else if (ch === ")") depth = Math.max(0, depth - 1);
+        }
+        if (inside) return word;
+        const bare = word.replace(/[^\p{L}]/gu, "");
+        const first = !seenWord;
+        if (bare) seenWord = true;
+        if (!first && SMALL_WORDS.has(bare) && word === word.toLocaleLowerCase("tr-TR")) return word;
+        const at = word.search(/\p{L}/u);
+        if (at < 0 || (at > 0 && /[\p{L}\p{N}]/u.test(word.slice(0, at)))) return word;
+        const head = word.slice(0, at) + word[at].toLocaleUpperCase("tr-TR") + word.slice(at + 1);
+        // Tireli sözcükte her parça büyük harfle başlar: "Alım-satım" → "Alım-Satım".
+        return head.split("-").map((part, index) => (index && /^\p{L}/u.test(part) ? part[0].toLocaleUpperCase("tr-TR") + part.slice(1) : part)).join("-");
+      })
+      .join("");
+  };
+
+  // ---------- Para/stok defteri değişti (v2.0.11) ----------
+  // Açık pencereler (Kasa, Cari, Taksitler, Stok, Çek/Senet, Raporlar) kendini tek bir kurala göre yeniler:
+  //  - bu ekranda yapılan her yazma isteği (HOF.api) hemen, adresinden çıkarılan türle bildirilir;
+  //  - başka bilgisayardaki değişiklik sunucunun herkese (işlemi yapan dahil) yayımladığı "overview.changed" ile gelir.
+  // Önceden her pencere yalnız kendi türünü dinliyordu ve sunucu "workspace.changed" olayını işlemi yapana göndermiyordu:
+  // Kasa'dan açılan çek kartında ödeme silinince Kasa eski rakamlarla kalıyordu.
+  const LEDGER_PATHS = [
+    [/^\/api\/workspace\/cash\b/, ["cash"]],
+    [/^\/api\/workspace\/cheques\b/, ["cheques", "cash", "accounts"]],
+    [/^\/api\/workspace\/accounts\b/, ["accounts", "cash", "plans"]],
+    [/^\/api\/workspace\/(plans|plan-transfer)\b/, ["plans", "cash", "accounts"]],
+    [/^\/api\/workspace\/stock\b/, ["stock", "cash", "accounts"]],
+    [/^\/api\/workspace\/(payments\b|cases\/[^/]+\/(payments|plans|account)\b)/, ["cash", "plans", "accounts"]],
+    [/^\/api\/(admin\/)?trash\b/, ["cash", "plans", "accounts", "stock", "cheques"]],
+  ];
+  function noteLedgerChange(path) {
+    const clean = String(path || "").split("?")[0];
+    const hit = LEDGER_PATHS.find(([pattern]) => pattern.test(clean));
+    if (hit) HOF.emit("ledger:changed", { kinds: hit[1], local: true, path: clean });
+  }
+  // onLedger(["cash"], yenile): türlerden biri değişince (yerel ya da canlı) kısa gecikmeyle bir kez çağrılır.
+  HOF.onLedger = (kinds, handler, delay = 250) => {
+    const wanted = new Set(kinds);
+    let timer = null;
+    const fire = detail => {
+      const list = detail?.kinds || [];
+      if (list.length && !list.some(kind => wanted.has(kind))) return;
+      clearTimeout(timer);
+      timer = setTimeout(() => handler(detail || {}), delay);
+    };
+    HOF.on("ledger:changed", fire);
+    HOF.on("live:overview.changed", fire);
+    HOF.on("live:resync", () => fire({}));
   };
 
   // ---------- Kendi arayüz düğümlerimiz ----------
@@ -252,7 +318,7 @@
       const value = String(field.value ?? "");
       const options = field.options || [];
       const known = !value || options.includes(value);
-      control = `<select ${common} data-choice>${`<option value="">${HOF.esc(field.blankLabel || "— Seçin —")}</option>`}${options.map(option => `<option value="${HOF.esc(option)}" ${option === value ? "selected" : ""}>${HOF.esc(option)}</option>`).join("")}${known ? "" : `<option value="${HOF.esc(value)}" selected>${HOF.esc(value)} (listede yok)</option>`}${field.strict ? "" : `<option value="${OTHER_CHOICE}">Başka bir değer yaz…</option>`}</select>`;
+      control = `<select ${common} data-choice>${`<option value="">${HOF.esc(field.blankLabel || "— Seçin —")}</option>`}${options.map(option => `<option value="${HOF.esc(option)}" ${option === value ? "selected" : ""}>${HOF.esc(option)}</option>`).join("")}${known ? "" : `<option value="${HOF.esc(value)}" selected>${HOF.esc(value)} (listede yok)</option>`}${field.strict ? "" : `<option value="${OTHER_CHOICE}">Başka Bir Değer Yaz…</option>`}</select>`;
     } else if (field.type === "checkbox") return `<label class="hof-check"><input type="checkbox" ${common} ${field.value ? "checked" : ""}><span>${HOF.esc(field.label)}</span></label>`;
     else {
       const list = field.list && field.list.length ? `${id}-list` : "";

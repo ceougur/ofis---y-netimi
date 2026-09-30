@@ -22,7 +22,7 @@ export function registerTemplateRoutes(router, { auth, audit, profile, now: cloc
     const own = custom(id);
     const template = sectorTemplate(id, { now: clock(), custom: own || null });
     if (!template) throw new HttpError(404, "Sektör bulunamadı.");
-    const buffer = buildXlsx([templateSheet(template)], { title: `DestekOfis taslak · ${template.sector.name}`, now: clock() });
+    const buffer = buildXlsx([templateSheet(template)], { title: `DestekOfis Taslak · ${template.sector.name}`, now: clock() });
     audit?.(user, "template.downloaded", template.sector.id, { name: template.sector.name, columns: template.columns.length });
     sendBuffer(res, buffer, { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", name: template.fileName });
   });

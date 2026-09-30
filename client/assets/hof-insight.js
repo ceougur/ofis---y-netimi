@@ -71,7 +71,7 @@
   const icon = (name, size = 18) => `<svg viewBox="0 0 24 24" width="${size}" height="${size}" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[name] || ""}</svg>`;
 
   // ---------- Profil ----------
-  const DEFAULT_VOCAB = { record: "kayıt", records: "kayıtlar", Record: "Kayıt", Records: "Kayıtlar", expert: "Uzman", subtitle: "Ofis yönetimi" };
+  const DEFAULT_VOCAB = { record: "kayıt", records: "kayıtlar", Record: "Kayıt", Records: "Kayıtlar", expert: "Uzman", subtitle: "Ofis Yönetimi" };
   HOF.vocab = { ...DEFAULT_VOCAB };
   HOF.modules = { tahsilat: true, haciz: false };
   HOF.profile = () => profile;
@@ -117,7 +117,7 @@
     // side.title ve düğme adları (v2.0.1) Operasyon merkezinin kendi düzenleyicisindedir (hof-workspace.js).
     { key: "page.title", root: ".topbar", selector: ".page-title" },
     // Genel sektörde arayüzün kendi başlığı ("Tablo özeti") kalır.
-    { key: "summary.title", root: ".welcome-row", selector: ".section-title", sector: () => (sectorChosen() ? `${HOF.vocab.Record} özeti` : null) },
+    { key: "summary.title", root: ".welcome-row", selector: ".section-title", sector: () => (sectorChosen() ? `${HOF.vocab.Record} Özeti` : null) },
     { key: "summary.subtitle", root: ".welcome-row", selector: ".section-description" },
     { key: "categories.title", root: ".category-bar", selector: ".category-heading > span" },
     { key: "table.title", root: ".cases-panel", selector: ".panel-title", when: singleScope },
@@ -259,7 +259,7 @@
     let pencil = element.querySelector(":scope > .hof-label-pencil");
     if (pencil && pencil === element.lastChild) return;
     if (!pencil) {
-      pencil = HOF.el("button", { type: "button", class: "hof-label-pencil", "data-slot": slot.key, title: "Başlığı değiştir", "aria-label": `${profile?.slots?.[slot.key]?.name || "Başlığı"} değiştir` }, icon("pencil", 13));
+      pencil = HOF.el("button", { type: "button", class: "hof-label-pencil", "data-slot": slot.key, title: "Başlığı Değiştir", "aria-label": `${profile?.slots?.[slot.key]?.name || "Başlığı"} değiştir` }, icon("pencil", 13));
       pencil.addEventListener("click", event => {
         event.preventDefault();
         event.stopPropagation();
@@ -286,7 +286,7 @@
         ${meta.max > 90 ? `<textarea rows="3" maxlength="${meta.max}">${esc(manual || fallback)}</textarea>` : `<input type="text" maxlength="${meta.max}" value="${esc(manual || fallback)}">`}</label>
        <small class="hof-label-editor-help">Tüm bilgisayarlarda kalıcı olarak değişir. Varsayılan: “${esc(fallback)}”</small>
        <div class="hof-label-editor-actions">
-         ${manual ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-reset>Varsayılana dön</button>' : "<span></span>"}
+         ${manual ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-reset>Varsayılana Dön</button>' : "<span></span>"}
          <span><button type="button" class="hof-button hof-button-small hof-button-ghost" data-cancel>İptal</button>
          <button type="button" class="hof-button hof-button-small" data-save>Kaydet</button></span>
        </div>`,
@@ -478,7 +478,7 @@
     }
     if (card.id === "deadline") {
       // En yakın anlamlı pencere gösterilir: 7 gün, yoksa 30 gün; ikisi de boşsa yaklaşan yoktur.
-      const span = card.next7 ? { label: "7 gün içinde", value: card.next7, help: `Bugün ${number(card.today)} · 30 gün içinde ${number(card.next30)}` } : card.next30 ? { label: "30 gün içinde", value: card.next30, help: "7 gün içinde yok" } : { label: "yaklaşan", value: 0, help: "30 gün içinde tarih yok" };
+      const span = card.next7 ? { label: "7 Gün İçinde", value: card.next7, help: `Bugün ${number(card.today)} · 30 gün içinde ${number(card.next30)}` } : card.next30 ? { label: "30 Gün İçinde", value: card.next30, help: "7 gün içinde yok" } : { label: "yaklaşan", value: 0, help: "30 gün içinde tarih yok" };
       // Planlı tarihte (randevu, duruşma) geçmiş olanlar "tarihi geçmiş" değil, olmuş bitmiştir (v2.0.2).
       const passedLabel = card.meaning === "schedule" ? "geçmiş" : "tarihi geçen";
       return { id: "deadline", icon: "calendar", label: `${label} · ${span.label}`, value: number(span.value), help: `${span.help} · ${passedLabel} ${number(card.passed)}${card.unclear ? ` · ${number(card.unclear)} belirsiz` : ""}`, tone: card.next7 ? "warn" : "" };
@@ -496,10 +496,15 @@
   function kpiCards(scope, key) {
     const V = HOF.vocab;
     const cards = [{ id: "total", icon: "records", label: `Toplam ${V.record}`, value: number(scope.total), help: multiScope() ? `${scopeName(key)} sekmesi · ${number(scope.columnCount)} kolon` : `${number(scope.columnCount)} kolon` }];
-    for (const card of scope.cards.slice(0, 2)) cards.push(cardView(card));
+    // Kart adları başlık yazımıyla (v2.0.11): "Takip çıktısı toplamı" → "Takip Çıktısı Toplamı", "Toplam Dosya".
+    for (const card of scope.cards.slice(0, 2)) {
+      const view = cardView(card);
+      cards.push({ ...view, label: HOF.titleCase(view.label) });
+    }
+    cards[0].label = HOF.titleCase(cards[0].label);
     const quality = scope.quality;
     const warnings = quality.issues.filter(issue => issue.severity === "warn").length;
-    cards.push({ id: "quality", icon: "pulse", label: "Veri sağlığı", value: `${LEVELS[quality.level] || "—"} · %${quality.score}`, help: [quality.issues.length ? `${warnings ? `${number(warnings)} uyarı · ` : ""}${number(quality.issues.length)} bulgu` : "", insight?.reasoning?.count ? `${number(insight.reasoning.count)} akıllı denetim bulgusu` : ""].filter(Boolean).join(" · ") || "Sorun bulunmadı", tone: quality.level === "iyi" ? "good" : quality.level === "zayif" ? "bad" : "warn" });
+    cards.push({ id: "quality", icon: "pulse", label: "Veri Sağlığı", value: `${LEVELS[quality.level] || "—"} · %${quality.score}`, help: [quality.issues.length ? `${warnings ? `${number(warnings)} uyarı · ` : ""}${number(quality.issues.length)} bulgu` : "", insight?.reasoning?.count ? `${number(insight.reasoning.count)} akıllı denetim bulgusu` : ""].filter(Boolean).join(" · ") || "Sorun bulunmadı", tone: quality.level === "iyi" ? "good" : quality.level === "zayif" ? "bad" : "warn" });
     return cards;
   }
 
@@ -590,7 +595,7 @@
     if (id === "money") {
       const result = await fetchList({ list: "topAmount", tab: key, limit: 30 });
       if (!result) return undefined;
-      const modal = HOF.modal({ title: `${title}: en yüksek ${number(result.items.length)} kayıt`, eyebrow: eyebrow("AKILLI ÖZET", key), body: `<p class="hof-modal-text">Toplam <b>${esc(amount(card.sum, card.currency))}</b> · ${number(card.count)} kayıtta tutar. Kayda gitmek için tıklayın.</p>${recordList(result.items, item => amount(item.amount, card.currency))}${explainHtml(card.explain)}` });
+      const modal = HOF.modal({ title: `${title}: En Yüksek ${number(result.items.length)} Kayıt`, eyebrow: eyebrow("AKILLI ÖZET", key), body: `<p class="hof-modal-text">Toplam <b>${esc(amount(card.sum, card.currency))}</b> · ${number(card.count)} kayıtta tutar. Kayda gitmek için tıklayın.</p>${recordList(result.items, item => amount(item.amount, card.currency))}${explainHtml(card.explain)}` });
       return wireOpen(modal);
     }
     if (id === "deadline") {
@@ -603,7 +608,7 @@
         title,
         eyebrow: eyebrow("AKILLI ÖZET", key),
         size: "wide",
-        body: `<div class="hof-tabs" role="group" aria-label="Tarih filtresi"><button type="button" data-view="upcoming" aria-pressed="true">Önümüzdeki 30 gün (${number(upcoming.total)})</button><button type="button" data-view="passed" aria-pressed="false">${card.meaning === "schedule" ? "Geçmiş" : "Tarihi geçen"} (${number(passed.total)})</button></div><div data-list>${listFor(upcoming)}</div>${explainHtml(card.explain)}`,
+        body: `<div class="hof-tabs" role="group" aria-label="Tarih filtresi"><button type="button" data-view="upcoming" aria-pressed="true">Önümüzdeki 30 Gün (${number(upcoming.total)})</button><button type="button" data-view="passed" aria-pressed="false">${card.meaning === "schedule" ? "Geçmiş" : "Tarihi Geçen"} (${number(passed.total)})</button></div><div data-list>${listFor(upcoming)}</div>${explainHtml(card.explain)}`,
       });
       modal.dialog.addEventListener("click", event => {
         const view = event.target.closest("[data-view]")?.dataset.view;
@@ -616,7 +621,7 @@
     if (id === "event") {
       const result = await fetchList({ list: "eventMonth", tab: key });
       if (!result) return undefined;
-      const modal = HOF.modal({ title: `${title}: bu ay`, eyebrow: eyebrow("AKILLI ÖZET", key), body: `<p class="hof-modal-text">${number(result.total)} kayıt. Kayda gitmek için tıklayın.</p>${recordList(result.items, item => item.date)}${moreNote(result)}${explainHtml(card.explain)}` });
+      const modal = HOF.modal({ title: `${title}: Bu Ay`, eyebrow: eyebrow("AKILLI ÖZET", key), body: `<p class="hof-modal-text">${number(result.total)} kayıt. Kayda gitmek için tıklayın.</p>${recordList(result.items, item => item.date)}${moreNote(result)}${explainHtml(card.explain)}` });
       return wireOpen(modal);
     }
     // Dağılım (durum, tür, sorumlu): çubuğa tıklanınca o seçeneğin kayıtları listelenir.
@@ -638,7 +643,7 @@
       if (!option) return;
       const result = await fetchList({ list: "value", tab: key, card: id, value: option.dataset.value });
       if (!result) return;
-      detailNode.innerHTML = `<button type="button" class="hof-link" data-back>← Tüm seçenekler</button><p class="hof-modal-text"><b>${esc(option.dataset.value)}</b>: ${number(result.total)} kayıt. Kayda gitmek için tıklayın.</p>${recordList(result.items, () => "")}${moreNote(result)}`;
+      detailNode.innerHTML = `<button type="button" class="hof-link" data-back>← Tüm Seçenekler</button><p class="hof-modal-text"><b>${esc(option.dataset.value)}</b>: ${number(result.total)} kayıt. Kayda gitmek için tıklayın.</p>${recordList(result.items, () => "")}${moreNote(result)}`;
       overviewNode.hidden = true;
       detailNode.hidden = false;
       detailNode.querySelector("[data-back]")?.focus();
@@ -647,7 +652,7 @@
   }
 
   // Sekmenin (ya da tüm sekmelerin) kart raporu: doğrulanan kartlar ve gösterilmeyen aday kartların nedenleri.
-  const CARD_NAMES = { money: "Tutar toplamı", deadline: "Son tarih", event: "Bu ay", status: "Durum dağılımı", category: "Dağılım", responsible: "Sorumlu kişiler" };
+  const CARD_NAMES = { money: "Tutar Toplamı", deadline: "Son Tarih", event: "Bu Ay", status: "Durum Dağılımı", category: "Dağılım", responsible: "Sorumlu Kişiler" };
   function openScopeReport(keys) {
     const sections = keys
       .map(key => {
@@ -664,7 +669,7 @@
       })
       .join("");
     HOF.modal({
-      title: keys.length > 1 ? "Özet kartları raporu" : `${scopeName(keys[0])} özeti`,
+      title: keys.length > 1 ? "Özet Kartları Raporu" : `${scopeName(keys[0])} Özeti`,
       eyebrow: "AKILLI ÖZET",
       size: "wide",
       body: `<p class="hof-modal-text">Bir kart, kolonundaki her hücre tek tek okunup söylediği şey kesinleşirse gösterilir: tutarlar tek tek toplanır, tarihler takvimde denetlenir, dağılım kartları yalnızca birkaç sabit seçenekten oluşan kolonlardan çıkarılır. Kesin olmayan bir kart yerine hiç kart gösterilmez. Değerleri sabit seçeneklere indirmek (Excel'de "Veri doğrulama" ile açılır liste) kolonu karta dönüştürür.</p>${sections}`,
@@ -675,27 +680,73 @@
   function openQuality(quality = insight?.quality, key = "") {
     if (!quality) return;
     const levelText = LEVELS[quality.level];
+    // Yok say (v2.0.11): veri yükleme yetkisi olan kullanıcı bulguyu (grubun tamamı) ya da tek kaydı yok sayar; bulgu bir
+    // daha uyarmaz ve puandan düşülür. Yok sayılanlar aşağıda katlanır bölümde durur, Geri Al ile döner.
+    const manage = HOF.can("sources.manage");
+    const single = scopeKeys().length === 1 ? scopeKeys()[0] : "";
+    const tabOf = issue => issue.tab ?? (key || single);
+    const issueRows = issue =>
+      issue.items.length
+        ? `<ul class="hof-record-list hof-quality-records">${issue.items.map(item => `<li><button type="button" data-open="${esc(item.key)}" data-tab="${esc(item.tab || "")}"><b>${esc(item.title || item.key)}</b><span>${esc(item.tab || "")}</span></button>${manage && issue.count > 1 ? `<button type="button" class="hof-quality-skip" data-ignore-key="${esc(item.key)}" title="Yalnız bu kaydı yok say" aria-label="${esc(item.title || item.key)} kaydını yok say">Yok Say</button>` : ""}</li>`).join("")}</ul>`
+        : "";
     const issues = quality.issues
       .map(
-        (issue, index) => `<details class="hof-issue is-${esc(issue.severity)}" ${index === 0 ? "open" : ""}>
+        (issue, index) => `<details class="hof-issue is-${esc(issue.severity)}" ${index === 0 ? "open" : ""} data-issue="${esc(issue.id)}" data-issue-tab="${esc(tabOf(issue))}">
           <summary><span class="hof-issue-dot" aria-hidden="true"></span><b>${esc(issue.title)}</b></summary>
-          <p>${esc(issue.detail)}</p>
-          ${issue.items.length ? recordList(issue.items, item => item.tab || "") : ""}
+          <div class="hof-issue-head"><p>${esc(issue.detail)}</p>${manage ? `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-ignore title="Bu uyarı bir daha gösterilmez ve puandan düşülür; yeni yüklemede aynı kayıtlar için de. Yeni hatalı kayıt yine uyarır.">Yok Say${issue.count > 1 ? ` (${number(issue.count)})` : ""}</button>` : ""}</div>
+          ${issueRows(issue)}
           ${issue.more ? `<p class="hof-inline-note">…ve ${number(issue.more)} kayıt daha.</p>` : ""}
+          ${issue.ignoredCount ? `<p class="hof-inline-note">Bu bulgudan ${number(issue.ignoredCount)} kayıt yok sayıldı.</p>` : ""}
         </details>`,
       )
       .join("");
+    const ignored = quality.ignored || [];
+    const ignoredHtml = ignored.length
+      ? `<details class="hof-issue is-ignored"><summary><span class="hof-issue-dot" aria-hidden="true"></span><b>Yok Sayılanlar · ${number(ignored.length)}</b></summary>
+          <p>Bu uyarılar kullanıcı kararıyla gösterilmiyor ve puana sayılmıyor. Geri alınca yeniden uyarır.</p>
+          <ul class="hof-quality-ignored">${ignored.map(item => `<li><div><b>${esc(item.title)}</b><small>${esc([item.byName, item.at ? HOF.formatDateTime?.(item.at) || HOF.formatDate(item.at) : ""].filter(Boolean).join(" · "))}</small></div>${manage ? `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-restore="${esc(item.signature)}">Geri Al</button>` : ""}</li>`).join("")}</ul>
+        </details>`
+      : "";
     const modal = HOF.modal({
-      title: `Veri sağlığı: ${levelText} (%${quality.score})`,
+      title: `Veri Sağlığı: ${levelText} (%${quality.score})`,
       eyebrow: key ? eyebrow("VERİ SAĞLIĞI", key) : multiScope() ? "VERİ SAĞLIĞI · TÜM SEKMELER" : "VERİ SAĞLIĞI",
       size: "wide",
-      body: `<p class="hof-modal-text">Kontrol edilen <b>${number(quality.checked)}</b> hücrenin <b>${percentWord(quality.score)}</b> sorunsuz. Kontroller: kimlik ve kişi kolonlarının doluluğu, kimliğin aynı sekmede tekrar etmemesi, T.C./IBAN/VKN sağlaması ve telefon, tarih, tutar biçimleri. Not olarak yazılmış hücreler (ör. “ertelendi”) hata sayılmaz. Kaynak veriniz değiştirilmez; düzeltmeyi tablodan yapabilirsiniz.</p>
+      body: `<p class="hof-modal-text">Kontrol edilen <b>${number(quality.checked)}</b> hücrenin <b>${percentWord(quality.score)}</b> sorunsuz. Kontroller: kimlik ve kişi kolonlarının doluluğu, kimliğin aynı sekmede tekrar etmemesi, T.C./IBAN/VKN sağlaması ve telefon, tarih, tutar biçimleri. Not olarak yazılmış hücreler (ör. “ertelendi”) hata sayılmaz. Kaynak veriniz değiştirilmez; düzeltmeyi tablodan yapabilirsiniz${manage ? "; bilerek böyle olan bir uyarıyı <b>Yok Say</b> ile kapatabilirsiniz" : ""}.</p>
         ${issues || '<p class="hof-empty">Biçim ve doluluk sorunu bulunmadı.</p>'}
-        <section class="hof-fixes" data-fixes><h3>${icon("sparkle", 16)} Toplu düzeltmeler</h3><p class="hof-empty">Öneriler hazırlanıyor…</p></section>
+        ${ignoredHtml}
+        <section class="hof-fixes" data-fixes><h3>${icon("sparkle", 16)} Toplu Düzeltmeler</h3><p class="hof-empty">Öneriler hazırlanıyor…</p></section>
         ${reasoningHtml(insight?.reasoning)}`,
     });
     wireOpen(modal);
     loadFixes(modal);
+    // Yok say / geri al: sunucuya yazılır, analiz yeniden alınır ve pencere yeni puanla yenilenir.
+    const reopen = async message => {
+      const fresh = await loadInsight();
+      modal.close();
+      if (!fresh) return;
+      const next = key ? fresh.kpis?.scopes?.[key]?.quality : fresh.quality;
+      if (message) HOF.toast(`${message} Veri Sağlığı: ${LEVELS[next?.level] || "—"} · %${next?.score ?? "—"}.`, { type: "success" });
+      openQuality(next || fresh.quality, key);
+    };
+    modal.dialog.addEventListener("click", async event => {
+      const skip = event.target.closest("[data-ignore], [data-ignore-key], [data-restore]");
+      if (!skip) return;
+      event.preventDefault();
+      event.stopPropagation();
+      skip.disabled = true;
+      try {
+        if (skip.dataset.restore) {
+          await HOF.api("/api/workspace/insight/quality/restore", { method: "POST", body: { signature: skip.dataset.restore } });
+          return reopen("Uyarı geri alındı.");
+        }
+        const box = skip.closest("[data-issue]");
+        await HOF.api("/api/workspace/insight/quality/ignore", { method: "POST", body: { tab: box.dataset.issueTab, id: box.dataset.issue, key: skip.dataset.ignoreKey || "" } });
+        return reopen(skip.dataset.ignoreKey ? "Kayıt yok sayıldı." : "Uyarı yok sayıldı.");
+      } catch (error) {
+        skip.disabled = false;
+        HOF.toastError(error);
+      }
+    }, true);
   }
   HOF.openQuality = openQuality;
 
@@ -707,13 +758,13 @@
     try {
       data = await HOF.api("/api/workspace/insight/fixes");
     } catch (error) {
-      box.innerHTML = `<h3>${icon("sparkle", 16)} Toplu düzeltmeler</h3><p class="hof-empty">Öneriler alınamadı: ${esc(error.message)}</p>`;
+      box.innerHTML = `<h3>${icon("sparkle", 16)} Toplu Düzeltmeler</h3><p class="hof-empty">Öneriler alınamadı: ${esc(error.message)}</p>`;
       return;
     }
     const canEdit = HOF.can("records.edit");
     const list = data.fixes || [];
-    box.innerHTML = `<h3>${icon("sparkle", 16)} Toplu düzeltmeler</h3>
-      <p class="hof-modal-text">Aynı türden hücreler farklı yazılmışsa (telefon, tarih, tutar, durum) program tek yazıma çevirmeyi önerir. Değerin anlamı değişmez; Excel'deki asıl hücreye dokunulmaz, düzeltme programda saklanır ve <b>Geri al</b> ile döner.</p>
+    box.innerHTML = `<h3>${icon("sparkle", 16)} Toplu Düzeltmeler</h3>
+      <p class="hof-modal-text">Aynı türden hücreler farklı yazılmışsa (telefon, tarih, tutar, durum) program tek yazıma çevirmeyi önerir. Değerin anlamı değişmez; Excel'deki asıl hücreye dokunulmaz, düzeltme programda saklanır ve <b>Geri Al</b> ile döner.</p>
       ${list.length ? `<ul class="hof-fix-list">${list.map(fix => `<li data-fix="${esc(fix.id)}"><div><b>${esc(fix.title)}</b><p>${esc(fix.detail)}</p><small>${fix.samples.map(item => `“${esc(item.from)}” → “${esc(item.to)}”`).join(" · ")}</small></div>${canEdit ? `<button type="button" class="hof-button hof-button-small" data-apply-fix="${esc(fix.id)}">Uygula (${number(fix.count)})</button>` : ""}</li>`).join("")}</ul>` : '<p class="hof-empty">Toplu düzeltme gerektiren yazım farkı bulunmadı.</p>'}`;
     box.querySelectorAll("[data-apply-fix]").forEach(button => {
       button.addEventListener("click", async () => {
@@ -725,7 +776,7 @@
           if (!box.querySelector("li")) box.querySelector(".hof-fix-list")?.replaceWith(Object.assign(document.createElement("p"), { className: "hof-empty", textContent: "Tüm öneriler uygulandı." }));
           HOF.toast(`${number(result.count)} hücre düzeltildi (“${nice(result.column)}”).`, {
             type: "success",
-            action: { label: "Geri al", run: () => HOF.api("/api/workspace/insight/fixes/undo", { method: "POST", body: { batchId: result.batchId } }).then(() => { HOF.toast("Toplu düzeltme geri alındı."); HOF.refreshData(); HOF.refreshInsight?.(); }).catch(HOF.toastError) },
+            action: { label: "Geri Al", run: () => HOF.api("/api/workspace/insight/fixes/undo", { method: "POST", body: { batchId: result.batchId } }).then(() => { HOF.toast("Toplu düzeltme geri alındı."); HOF.refreshData(); HOF.refreshInsight?.(); }).catch(HOF.toastError) },
           });
           HOF.refreshData();
           HOF.refreshInsight?.();
@@ -745,7 +796,7 @@
     const issues = reasoning.issues || [];
     const pretty = tab => (HOF.sections?.pretty ? HOF.sections.pretty(tab) : tab);
     return `<section class="hof-reasoning">
-        <h3>${icon("sparkle", 16)} Akıllı denetim</h3>
+        <h3>${icon("sparkle", 16)} Akıllı Denetim</h3>
         <p class="hof-modal-text">Program verinizden kurallar öğrenir (ör. kalan tutarın nasıl hesaplandığı, hangi tarihin önce geldiği) ve kurala uymayan kayıtları işaretler. Kural ancak kayıtların büyük çoğunluğunda tutuyorsa öğrenilir; internete bir şey gönderilmez.</p>
         ${rules.length ? `<ul class="hof-rules">${rules.map(rule => `<li><b>${esc(rule.text)}</b><small>${rule.tab ? `${esc(pretty(rule.tab))} · ` : ""}kayıtların ${percentWord(Math.round(rule.support * 100))} bu kurala uyuyor (${number(rule.rows)} kayıt)</small></li>`).join("")}</ul>` : '<p class="hof-empty">Bu veride hesap kuralı öğrenilmedi (tutar kolonları arasında düzenli bir ilişki yok).</p>'}
         ${issues
@@ -787,22 +838,22 @@
       let result = null;
       const headers = initial.headers ?? dataHeaders();
       const modal = HOF.formModal({
-        title: editing ? "Sektörü düzenle" : "Kendi sektörünüzü oluşturun",
+        title: editing ? "Sektörü Düzenle" : "Kendi Sektörünüzü Oluşturun",
         eyebrow: "SEKTÖR",
         size: "wide",
         intro: editing ? "Değişiklik bu sektörü kullanan tüm görünümlere uygulanır." : "Listede olmayan işinizi kendiniz tanımlayın. Kaydedince arayüz sizin kelimelerinizle konuşur; verileriniz değişmez.",
         fields: [
-          { name: "name", label: "Sektörünüzün adı", value: initial.name || "", required: true, autofocus: true, maxlength: 60, placeholder: "ör. Tekne kiralama" },
+          { name: "name", label: "Sektörünüzün Adı", value: initial.name || "", required: true, autofocus: true, maxlength: 60, placeholder: "ör. Tekne kiralama" },
           { name: "record", label: "Bir kayda ne diyorsunuz?", value: initial.record || "", required: true, maxlength: 30, placeholder: "ör. tekne, öğrenci, hasta, sözleşme" },
           { name: "records", label: "Çoğulu", value: initial.records || "", maxlength: 30, placeholder: "kendiliğinden yazılır", help: "Tablo ve kartlarda kullanılır." },
-          { name: "expert", label: "Uzman / sorumlu rolü", value: initial.expert || "", maxlength: 40, placeholder: "ör. Kaptan, Öğretmen, Danışman", help: "Boş bırakılırsa “Sorumlu”." },
-          { name: "subtitle", label: "Kenar çubuğu alt başlığı", value: initial.subtitle || "", maxlength: 60, placeholder: "ör. Tekne kiralama yönetimi" },
-          { name: "tahsilat", label: "Tahsilat ve kasa takibi", type: "checkbox", value: initial.modules ? initial.modules.tahsilat !== false : true },
-          { name: "haciz", label: "Haciz takibi", type: "checkbox", value: Boolean(initial.modules?.haciz) },
-          { name: "headers", label: "Bu sektörü tanıtan kolon başlıkları (isteğe bağlı)", type: "textarea", rows: 2, maxlength: 1500, value: headers.join(", "), placeholder: "ör. Tekne adı, Liman, Kaptan", help: "Virgülle ayırın. Sonraki Excel/Sheets yüklemelerinde program bu sektörü kendisi önerir." },
+          { name: "expert", label: "Uzman / Sorumlu Rolü", value: initial.expert || "", maxlength: 40, placeholder: "ör. Kaptan, Öğretmen, Danışman", help: "Boş bırakılırsa “Sorumlu”." },
+          { name: "subtitle", label: "Kenar Çubuğu Alt Başlığı", value: initial.subtitle || "", maxlength: 60, placeholder: "ör. Tekne kiralama yönetimi" },
+          { name: "tahsilat", label: "Tahsilat ve Kasa Takibi", type: "checkbox", value: initial.modules ? initial.modules.tahsilat !== false : true },
+          { name: "haciz", label: "Haciz Takibi", type: "checkbox", value: Boolean(initial.modules?.haciz) },
+          { name: "headers", label: "Bu Sektörü Tanıtan Kolon Başlıkları (isteğe bağlı)", type: "textarea", rows: 2, maxlength: 1500, value: headers.join(", "), placeholder: "ör. Tekne adı, Liman, Kaptan", help: "Virgülle ayırın. Sonraki Excel/Sheets yüklemelerinde program bu sektörü kendisi önerir." },
         ],
         extraHtml: '<div class="hof-sector-preview" aria-live="polite"><small>Önizleme</small><div data-preview></div></div>',
-        submitLabel: editing ? "Kaydet" : "Kaydet ve uygula",
+        submitLabel: editing ? "Kaydet" : "Kaydet ve Uygula",
         onClose: () => resolve(result),
         onSubmit: async data => {
           const body = { name: data.name, record: data.record, records: data.records, expert: data.expert, subtitle: data.subtitle, modules: { tahsilat: Boolean(data.tahsilat), haciz: Boolean(data.haciz) }, headers: data.headers };
@@ -859,7 +910,7 @@
             <label class="hof-picker-search">${icon("search", 16)}<input type="search" role="combobox" aria-expanded="true" aria-controls="${listId}" aria-autocomplete="list" placeholder="Sektör ara… (ör. klinik, emlak, sigorta, galeri, okul)" autocomplete="off" autofocus></label>
             <div class="hof-picker-list" id="${listId}" role="listbox" aria-label="Sektörler" tabindex="-1"></div>
             <p class="hof-picker-count" aria-live="polite"></p>
-            ${canManage() ? '<div class="hof-picker-create"><span><b>Aradığınız sektör listede yok mu?</b> Kendi sektörünüzü birkaç saniyede oluşturun.</span><button type="button" class="hof-button hof-button-small" data-create>+ Kendi sektörünü oluştur</button></div>' : ""}
+            ${canManage() ? '<div class="hof-picker-create"><span><b>Aradığınız sektör listede yok mu?</b> Kendi sektörünüzü birkaç saniyede oluşturun.</span><button type="button" class="hof-button hof-button-small" data-create>+ Kendi Sektörünü Oluştur</button></div>' : ""}
           </div>`,
         onClose: () => resolve(chosen),
       });
@@ -869,7 +920,7 @@
       const sectors = allSectors();
       const haystack = new Map(sectors.map(sector => [sector.id, fold([sector.name, sector.groupName, sector.record, sector.expert, ...(sector.keys || [])].join(" ")).split(" ")]));
       const option = (sector, extraClass = "") => {
-        const chips = [sector.id === suggested ? '<span class="hof-chip hof-chip-accent">Önerilen</span>' : "", sector.id === current ? '<span class="hof-chip">Şu an</span>' : "", sector.custom ? '<span class="hof-chip hof-chip-own">Sizin</span>' : ""].join("");
+        const chips = [sector.id === suggested ? '<span class="hof-chip hof-chip-accent">Önerilen</span>' : "", sector.id === current ? '<span class="hof-chip">Şu An</span>' : "", sector.custom ? '<span class="hof-chip hof-chip-own">Sizin</span>' : ""].join("");
         return `<div role="option" id="${listId}-${sector.id}" class="hof-picker-option ${extraClass}" data-id="${esc(sector.id)}" aria-selected="false"><span class="hof-picker-name"><b>${esc(sector.name)}</b>${chips}</span><small>${esc(sector.record)} · ${esc(sector.expert)}</small></div>`;
       };
       const render = () => {
@@ -889,7 +940,7 @@
         }
         list.innerHTML =
           html ||
-          `<div class="hof-empty hof-picker-none"><p>“${esc(input.value)}” listede yok.</p>${canManage() ? `<button type="button" class="hof-button" data-create>+ “${esc(input.value.trim())}” adıyla kendi sektörünüzü oluşturun</button><small>ya da daha genel bir kelime deneyin · <button type="button" class="hof-link" data-id="genel">Genel ile devam edin</button></small>` : `<small>Daha genel bir kelime deneyin ya da <button type="button" class="hof-link" data-id="genel">Genel</button> ile devam edin.</small>`}</div>`;
+          `<div class="hof-empty hof-picker-none"><p>“${esc(input.value)}” listede yok.</p>${canManage() ? `<button type="button" class="hof-button" data-create>+ “${esc(input.value.trim())}” adıyla kendi sektörünüzü oluşturun</button><small>ya da daha genel bir kelime deneyin · <button type="button" class="hof-link" data-id="genel">Genel ile Devam Edin</button></small>` : `<small>Daha genel bir kelime deneyin ya da <button type="button" class="hof-link" data-id="genel">Genel</button> ile devam edin.</small>`}</div>`;
         count.textContent = tokens.length ? `${number(shown)} sektör bulundu` : `${number(sectors.length)} sektör, ${number(catalog.groups.length)} grup`;
         setActive(list.querySelector(".hof-picker-option"));
       };
@@ -968,7 +1019,7 @@
   };
 
   // ---------- Adım adım analiz ekranı ----------
-  const LEVEL_TEXT = { high: "Yüksek güven", medium: "Orta güven — kontrol edin", low: "Düşük güven" };
+  const LEVEL_TEXT = { high: "Yüksek Güven", medium: "Orta Güven — kontrol edin", low: "Düşük Güven" };
   const evidenceText = item => {
     if (item.kind === "header") return `“${item.column}” kolonu`;
     if (item.kind === "value") return `“${item.column}” kolonunda ${item.signal}`;
@@ -1095,7 +1146,7 @@
       html = `<section class="hof-sector-card ${same ? "is-current" : ""}">
           <span class="hof-sector-icon" aria-hidden="true">${icon("sparkle", 22)}</span>
           <div class="hof-sector-main">
-            <small>${same ? "Mevcut sektörünüz verinizle uyumlu" : "Önerilen sektör"}</small>
+            <small>${same ? "Mevcut sektörünüz verinizle uyumlu" : "Önerilen Sektör"}</small>
             <b>${esc(suggested.name)}</b>
             <span class="hof-sector-meta"><span class="hof-chip">${esc(suggested.groupName)}</span><span class="hof-confidence is-${esc(s.level)}">${esc(LEVEL_TEXT[s.level])}</span></span>
           </div>
@@ -1111,20 +1162,20 @@
         <p class="hof-apply-preview">Listeden sektörünüzü seçebilir ya da <b>Genel</b> görünümle devam edebilirsiniz; kolonlarınız, göstergeler ve arama her iki durumda da verinize göre çalışır.${candidates.length ? ` Olası sektörler: ${candidates.map(item => `<button type="button" class="hof-link" data-candidate="${esc(item.id)}">${esc(item.name)}</button>`).join(", ")}.` : ""}</p>`;
     }
     const skipped = skippedCards(analysis);
-    html += `<p class="hof-quality-line">${icon("sparkle", 16)} Özet kartları: <b>${number(verifiedCards(analysis))}</b> kart doğrulandı${skipped ? ` · ${number(skipped)} aday kart kesinleşmediği için gösterilmiyor` : ""} <button type="button" class="hof-link" data-cards>${skipped ? "Nedenleri gör" : "Raporu gör"}</button></p>`;
-    html += `<p class="hof-quality-line">${icon("pulse", 16)} Veri sağlığı: <b>${esc(levelText)}</b> · kontrol edilen ${number(quality.checked)} hücrenin ${percentWord(quality.score)} sorunsuz${quality.issues.length ? ` · ${number(quality.issues.length)} bulgu` : ""} <button type="button" class="hof-link" data-quality>Raporu gör</button></p>`;
+    html += `<p class="hof-quality-line">${icon("sparkle", 16)} Özet Kartları: <b>${number(verifiedCards(analysis))}</b> kart doğrulandı${skipped ? ` · ${number(skipped)} aday kart kesinleşmediği için gösterilmiyor` : ""} <button type="button" class="hof-link" data-cards>${skipped ? "Nedenleri Gör" : "Raporu Gör"}</button></p>`;
+    html += `<p class="hof-quality-line">${icon("pulse", 16)} Veri Sağlığı: <b>${esc(levelText)}</b> · kontrol edilen ${number(quality.checked)} hücrenin ${percentWord(quality.score)} sorunsuz${quality.issues.length ? ` · ${number(quality.issues.length)} bulgu` : ""} <button type="button" class="hof-link" data-quality>Raporu Gör</button></p>`;
     const reasoning = analysis.reasoning;
-    if (reasoning) html += `<p class="hof-quality-line">${icon("sparkle", 16)} Akıllı denetim: <b>${number(reasoning.relations.length)}</b> hesap kuralı öğrenildi · ${reasoning.count ? `<b>${number(reasoning.count)}</b> olası tutarsızlık` : "tutarsızlık bulunmadı"} <button type="button" class="hof-link" data-quality>Ayrıntılar</button></p>`;
+    if (reasoning) html += `<p class="hof-quality-line">${icon("sparkle", 16)} Akıllı Denetim: <b>${number(reasoning.relations.length)}</b> hesap kuralı öğrenildi · ${reasoning.count ? `<b>${number(reasoning.count)}</b> olası tutarsızlık` : "tutarsızlık bulunmadı"} <button type="button" class="hof-link" data-quality>Ayrıntılar</button></p>`;
     const buttons = [];
     if (unsure) {
-      buttons.push('<button type="button" class="hof-button hof-button-ghost" data-general>Genel ile devam et</button>', '<button type="button" class="hof-button hof-button-ghost" data-create-sector>Kendi sektörümü oluştur</button>', '<button type="button" class="hof-button" data-pick>Sektörümü seç</button>');
+      buttons.push('<button type="button" class="hof-button hof-button-ghost" data-general>Genel ile Devam Et</button>', '<button type="button" class="hof-button hof-button-ghost" data-create-sector>Kendi Sektörümü Oluştur</button>', '<button type="button" class="hof-button" data-pick>Sektörümü Seç</button>');
     } else if (!same) {
-      buttons.push('<button type="button" class="hof-button hof-button-ghost" data-pick>Başka sektör seç</button>');
-      if (current !== "genel") buttons.push('<button type="button" class="hof-button hof-button-ghost" data-keep>Mevcut görünümü koru</button>');
-      else buttons.push('<button type="button" class="hof-button hof-button-ghost" data-general>Genel kullan</button>');
-      buttons.push(`<button type="button" class="hof-button" data-apply="${esc(suggested.id)}">Evet, uygula</button>`);
+      buttons.push('<button type="button" class="hof-button hof-button-ghost" data-pick>Başka Sektör Seç</button>');
+      if (current !== "genel") buttons.push('<button type="button" class="hof-button hof-button-ghost" data-keep>Mevcut Görünümü Koru</button>');
+      else buttons.push('<button type="button" class="hof-button hof-button-ghost" data-general>Genel Kullan</button>');
+      buttons.push(`<button type="button" class="hof-button" data-apply="${esc(suggested.id)}">Evet, Uygula</button>`);
     } else {
-      buttons.push('<button type="button" class="hof-button hof-button-ghost" data-pick>Başka sektör seç</button>', '<button type="button" class="hof-button" data-done>Tamam</button>');
+      buttons.push('<button type="button" class="hof-button hof-button-ghost" data-pick>Başka Sektör Seç</button>', '<button type="button" class="hof-button" data-done>Tamam</button>');
     }
     box.innerHTML = `${html}<div class="hof-actions">${buttons.join("")}</div>`;
     box.hidden = false;
@@ -1173,7 +1224,7 @@
       { id: "hof-intro", class: "hof-intro", role: "status" },
       `<span class="hof-intro-icon" aria-hidden="true">${icon("sparkle", 20)}</span>
        <div><b>Yeni: DestekOfis verinizi tanıyor</b><p>Sektör önerisi, veri sağlığı raporu ve verinize göre özet kartları. Görünümünüz siz onaylamadan değişmez.</p>
-       <div class="hof-intro-actions"><button type="button" class="hof-button hof-button-small" data-run>Analizi gör</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-later>Kapat</button></div></div>`,
+       <div class="hof-intro-actions"><button type="button" class="hof-button hof-button-small" data-run>Analizi Gör</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-later>Kapat</button></div></div>`,
     );
     card.addEventListener("click", async event => {
       if (event.target.closest("[data-run]")) {
@@ -1202,14 +1253,14 @@
       const labels = Object.entries(profile.labels || {});
       const source = { confirmed: "analizle onaylandı", manual: "elle seçildi", legacy: "önceki sürümden", default: "varsayılan" }[profile.sector.source] || "";
       return `<section class="hof-data-section hof-profile-section">
-          <h3>Sektör ve görünüm</h3>
+          <h3>Sektör ve Görünüm</h3>
           <div class="hof-profile-row">
             <div><b>${esc(profile.sector.name)}</b><small>${esc(profile.sector.groupName)}${source ? ` · ${esc(source)}` : ""}${profile.sector.byName ? ` · ${esc(profile.sector.byName)}` : ""}</small></div>
-            <div class="hof-profile-actions"><button type="button" class="hof-button hof-button-small hof-button-ghost" data-profile-analyze>Verimi analiz et</button><button type="button" class="hof-button hof-button-small" data-profile-pick>Sektörü değiştir</button></div>
+            <div class="hof-profile-actions"><button type="button" class="hof-button hof-button-small hof-button-ghost" data-profile-analyze>Verimi Analiz Et</button><button type="button" class="hof-button hof-button-small" data-profile-pick>Sektörü Değiştir</button></div>
           </div>
           <p class="hof-modal-text hof-muted">Kayıtlara <b>${esc(HOF.vocab.record)}</b>, uzman rolüne <b>${esc(HOF.vocab.expert)}</b> deniyor. Başlıkları sayfadaki kalem (✎) simgesiyle değiştirebilirsiniz.</p>
-          <div class="hof-custom-sectors"><div class="hof-custom-sectors-head"><b>Kendi sektörleriniz</b><button type="button" class="hof-button hof-button-small hof-button-ghost" data-create-sector>+ Kendi sektörünü oluştur</button></div><ul data-custom-list><li class="hof-muted">Yükleniyor…</li></ul></div>
-          ${labels.length ? `<ul class="hof-label-list">${labels.map(([key, value]) => `<li><span>${esc(profile.slots?.[key]?.name || key)}</span><b>${esc(value)}</b><button type="button" class="hof-link" data-label-reset="${esc(key)}">Varsayılana dön</button></li>`).join("")}</ul><button type="button" class="hof-button hof-button-small hof-button-ghost" data-labels-reset>Tüm başlıkları varsayılana döndür</button>` : ""}
+          <div class="hof-custom-sectors"><div class="hof-custom-sectors-head"><b>Kendi Sektörleriniz</b><button type="button" class="hof-button hof-button-small hof-button-ghost" data-create-sector>+ Kendi Sektörünü Oluştur</button></div><ul data-custom-list><li class="hof-muted">Yükleniyor…</li></ul></div>
+          ${labels.length ? `<ul class="hof-label-list">${labels.map(([key, value]) => `<li><span>${esc(profile.slots?.[key]?.name || key)}</span><b>${esc(value)}</b><button type="button" class="hof-link" data-label-reset="${esc(key)}">Varsayılana Dön</button></li>`).join("")}</ul><button type="button" class="hof-button hof-button-small hof-button-ghost" data-labels-reset>Tüm Başlıkları Varsayılana Döndür</button>` : ""}
         </section>`;
     },
     wire(modal) {
@@ -1258,7 +1309,7 @@
           drawCustom();
         } else {
           const inUse = item.id === profile?.sector?.id;
-          const yes = await HOF.confirm({ title: `“${item.name}” silinsin mi?`, message: `${inUse ? "Bu sektör şu an kullanılıyor; silinince görünüm Genel'e döner. " : ""}Verileriniz değişmez.`, confirmLabel: "Sektörü sil", danger: true });
+          const yes = await HOF.confirm({ title: `“${item.name}” silinsin mi?`, message: `${inUse ? "Bu sektör şu an kullanılıyor; silinince görünüm Genel'e döner. " : ""}Verileriniz değişmez.`, confirmLabel: "Sektörü Sil", danger: true });
           if (!yes) return;
           try {
             const result = await HOF.api(`/api/workspace/sectors/custom/${encodeURIComponent(item.id)}`, { method: "DELETE" });
@@ -1283,7 +1334,7 @@
         }),
       );
       dialog.querySelector("[data-labels-reset]")?.addEventListener("click", async event => {
-        const ok = await HOF.confirm({ title: "Başlıkları sıfırla", message: "Değiştirilen tüm başlıklar varsayılana döner. Devam edilsin mi?", confirmLabel: "Varsayılana döndür" });
+        const ok = await HOF.confirm({ title: "Başlıkları Sıfırla", message: "Değiştirilen tüm başlıklar varsayılana döner. Devam edilsin mi?", confirmLabel: "Varsayılana Döndür" });
         if (!ok) return;
         try {
           applyProfile(await HOF.api("/api/workspace/labels", { method: "DELETE" }));
@@ -1301,6 +1352,8 @@
   HOF.on("live:workspace.changed", change => {
     if (!change) return;
     if (change.kind === "profile") loadProfile();
+    // Başka bilgisayarda bir uyarı yok sayıldı ya da geri alındı (v2.0.11): özet kartındaki puan yenilenir.
+    if (change.kind === "profile" && change.quality) refreshInsightSoon(300);
     if (change.kind === "records" || change.dataset) refreshInsightSoon(change.dataset ? 400 : 1500);
   });
   HOF.on("live:resync", () => {

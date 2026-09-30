@@ -371,12 +371,12 @@ describe("ofis profili", () => {
   });
   after(() => server.close());
 
-  it("yeni kurulum Genel profille açılır; giriş ekranı alt başlığı 'Ofis yönetimi'", async () => {
+  it("yeni kurulum Genel profille açılır; giriş ekranı alt başlığı 'Ofis Yönetimi'", async () => {
     const info = (await server.client().get("/api/public/info")).data.data;
-    assert.equal(info.tagline, "Ofis yönetimi");
+    assert.equal(info.tagline, "Ofis Yönetimi");
     const me = (await personel.get("/api/auth/me")).data.data;
     assert.equal(me.profile.sector.id, "genel");
-    assert.deepEqual(me.profile.vocab, { record: "kayıt", records: "kayıtlar", Record: "Kayıt", Records: "Kayıtlar", expert: "Uzman", subtitle: "Ofis yönetimi" });
+    assert.deepEqual(me.profile.vocab, { record: "kayıt", records: "kayıtlar", Record: "Kayıt", Records: "Kayıtlar", expert: "Uzman", subtitle: "Ofis Yönetimi" });
     assert.equal(me.profile.roleLabels.avukat, "Uzman");
     assert.deepEqual(me.profile.modules, { tahsilat: true, haciz: false });
     assert.equal(me.profile.introPending, false);
@@ -472,7 +472,7 @@ describe("ofis profili", () => {
     assert.equal(applied.roleLabels.avukat, "Avukat");
     assert.equal(applied.vocab.Record, "Dosya");
     assert.equal(applied.modules.haciz, true);
-    assert.equal((await server.client().get("/api/public/info")).data.data.tagline, "Hukuk ofisi yönetimi");
+    assert.equal((await server.client().get("/api/public/info")).data.data.tagline, "Hukuk Ofisi Yönetimi");
     const clinic = (await admin.post("/api/workspace/insight/sector", { sectorId: "saglik-klinik", source: "manual" })).data.data;
     assert.equal(clinic.roleLabels.avukat, "Hekim");
     assert.equal(clinic.vocab.records, "hastalar");
@@ -504,7 +504,7 @@ describe("ofis profili", () => {
     assert.equal((await server.client().get("/api/public/info")).data.data.tagline, "Ç".repeat(60), "giriş ekranı elle verilen alt başlığı gösterir");
     profile = (await admin.put("/api/workspace/labels", { key: "brand.subtitle", value: "" })).data.data;
     assert.equal(profile.labels["brand.subtitle"], undefined);
-    assert.equal(profile.tagline, "Klinik yönetimi");
+    assert.equal(profile.tagline, "Klinik Yönetimi");
     profile = (await admin.del("/api/workspace/labels")).data.data;
     assert.deepEqual(profile.labels, {});
     assert.deepEqual(Object.keys(profile.slots).sort(), ["brand.subtitle", "categories.title", "page.title", "side.accounts", "side.cash", "side.cheques", "side.guide", "side.liens", "side.messages", "side.newRecord", "side.newTask", "side.plans", "side.reports", "side.stock", "side.tasks", "side.title", "summary.subtitle", "summary.title", "table.subtitle", "table.title"]);
@@ -526,7 +526,7 @@ describe("1.6.0 öncesinden gelen kurulum", () => {
       const profile = (await lawyer.get("/api/workspace/profile")).data.data;
       assert.equal(profile.sector.id, "hukuk-buro");
       assert.equal(profile.sector.source, "legacy");
-      assert.equal(profile.tagline, "Hukuk ofisi yönetimi");
+      assert.equal(profile.tagline, "Hukuk Ofisi Yönetimi");
       assert.equal(profile.roleLabels.avukat, "Avukat");
       assert.equal(profile.introPending, true);
       const admin = server.client();

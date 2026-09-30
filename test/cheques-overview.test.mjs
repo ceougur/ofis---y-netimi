@@ -24,7 +24,7 @@ describe("çek/senet kural motoru (saf)", () => {
     assert.equal(transition({ direction: "out", status: "pending" }, "pay").cash, "out");
     const twice = transition({ direction: "in", status: "collected", instrument: "cheque" }, "collect");
     assert.equal(twice.ok, false);
-    assert.match(twice.reason, /Tahsil edildi/);
+    assert.match(twice.reason, /Tahsil Edildi/);
     assert.equal(transition({ direction: "out", status: "pending" }, "collect").ok, false, "verilen çek tahsil edilmez");
     assert.equal(transition({ direction: "in", status: "portfolio" }, "pay").ok, false, "alınan çek ödenmez");
     assert.equal(transition({ direction: "in", status: "pending" }, "pay").ok, false, "yön/durum uyuşmazlığı");
@@ -534,7 +534,7 @@ describe("rapor merkezi: programdaki her bilgi ön izleme, PDF ve Excel olarak a
     // Rakamlar modülle aynı: Kasa raporunun güncel kasası = Kasa ekranı; yaşlandırmanın gecikmiş toplamı taksit + çek.
     const kasa = (await admin.get("/api/workspace/report-center/kasa-hareketleri?preset=thisYear")).data.data;
     const cash = (await admin.get("/api/workspace/cash")).data.data;
-    assert.equal(kasa.summary.find(([label]) => label.startsWith("Güncel kasa"))[1], tl(cash.totals.balance));
+    assert.equal(kasa.summary.find(([label]) => label.startsWith("Güncel Kasa"))[1], tl(cash.totals.balance));
     const aging = (await admin.get("/api/workspace/report-center/alacak-yaslandirma")).data.data;
     assert.ok(aging.rows.length >= 1);
     const table = (await admin.get("/api/workspace/report-center/tablo-verisi")).data.data;

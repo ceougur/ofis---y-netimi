@@ -21,7 +21,7 @@
     const c = contactOf(status);
     return `<div class="hof-license-contact"><strong>${HOF.esc(c.label || `${c.name} ile iletişim`)}</strong><span>Kullanmaya devam etmek, lisans almak veya yenilemek için bize ulaşın.</span><div class="hof-license-contact-links"><a class="hof-button hof-button-small" href="${HOF.esc(c.phoneHref)}">${HOF.esc(c.phone)}</a><a class="hof-button hof-button-ghost hof-button-small" href="mailto:${HOF.esc(c.email)}?subject=${encodeURIComponent("Destek Ofis lisans")}">${HOF.esc(c.email)}</a></div></div>`;
   };
-  const adminLink = () => (isAdmin() ? '<a class="hof-button hof-button-small" href="/admin.html#license">Lisans ekranını aç</a>' : "");
+  const adminLink = () => (isAdmin() ? '<a class="hof-button hof-button-small" href="/admin.html#license">Lisans Ekranını Aç</a>' : "");
 
   function snoozed(status) {
     try {
@@ -99,13 +99,13 @@
       eyebrow: "DENEMENİN 3. GÜNÜ",
       intro: `Deneme süresince size destek olabilmemiz ve süre bitmeden sizi bilgilendirebilmemiz için firma bilgilerinizi bırakır mısınız? Deneme ${HOF.esc(String(status.daysLeft ?? ""))} gün daha sürecek.`,
       fields: [
-        { name: "companyName", label: "Firma adı", required: true, maxlength: 120, value: status.companyName || "", autocomplete: "organization" },
-        { name: "contact", label: "Yetkili kişi", maxlength: 120, autocomplete: "name" },
+        { name: "companyName", label: "Firma Adı", required: true, maxlength: 120, value: status.companyName || "", autocomplete: "organization" },
+        { name: "contact", label: "Yetkili Kişi", maxlength: 120, autocomplete: "name" },
         { name: "phone", label: "Telefon", type: "tel", maxlength: 40, autocomplete: "tel" },
-        { name: "email", label: "E-posta", type: "email", maxlength: 160, autocomplete: "email" },
+        { name: "email", label: "E-Posta", type: "email", maxlength: 160, autocomplete: "email" },
       ],
-      extraHtml: `<p class="hof-inline-note">Telefon veya e-postadan en az birini yazın. Bilgileriniz yalnızca size ulaşmak için kullanılır (<a href="https://destek-ofis.vercel.app/kvkk" target="_blank" rel="noopener">KVKK aydınlatma metni</a>). Sorunuz olursa: ${HOF.esc(c.phone)} · ${HOF.esc(c.email)}</p>`,
-      submitLabel: "Bilgileri gönder",
+      extraHtml: `<p class="hof-inline-note">Telefon veya e-postadan en az birini yazın. Bilgileriniz yalnızca size ulaşmak için kullanılır (<a href="https://destek-ofis.vercel.app/kvkk" target="_blank" rel="noopener">KVKK Aydınlatma Metni</a>). Sorunuz olursa: ${HOF.esc(c.phone)} · ${HOF.esc(c.email)}</p>`,
+      submitLabel: "Bilgileri Gönder",
       onSubmit: async data => {
         const next = await HOF.api("/api/license/contact", { method: "POST", body: data });
         render(next);
@@ -113,7 +113,7 @@
       },
     });
     const cancel = modal?.dialog?.querySelector("[data-cancel]");
-    if (cancel) cancel.textContent = "Daha sonra";
+    if (cancel) cancel.textContent = "Daha Sonra";
   }
 
   async function refresh() {

@@ -74,7 +74,7 @@
   const issuesHtml = record => `<ul class="hof-transfer-issues">${record.issues.map(issue => `<li class="is-${esc(issue.level)}">${esc(issue.text)}</li>`).join("")}</ul>`;
   const itemsHtml = record =>
     record.items.length
-      ? `<table class="hof-table hof-transfer-items"><thead><tr><th>No</th><th>Vade</th><th>Açıklama</th><th class="num">Tutar</th><th class="num">Excel'e göre ödenen</th></tr></thead><tbody>${record.items.map(([dueDate, amount, paid, label], index) => `<tr><td>${index + 1}.</td><td>${esc(HOF.formatDate(dueDate))}</td><td>${esc(label || "")}</td><td class="num">${amount === null ? '<span class="hof-cash-out">okunamadı</span>' : esc(money(amount))}</td><td class="num hof-cash-in">${paid ? esc(money(paid)) : ""}</td></tr>`).join("")}</tbody></table>`
+      ? `<table class="hof-table hof-transfer-items"><thead><tr><th>No</th><th>Vade</th><th>Açıklama</th><th class="num">Tutar</th><th class="num">Excel'e Göre Ödenen</th></tr></thead><tbody>${record.items.map(([dueDate, amount, paid, label], index) => `<tr><td>${index + 1}.</td><td>${esc(HOF.formatDate(dueDate))}</td><td>${esc(label || "")}</td><td class="num">${amount === null ? '<span class="hof-cash-out">okunamadı</span>' : esc(money(amount))}</td><td class="num hof-cash-in">${paid ? esc(money(paid)) : ""}</td></tr>`).join("")}</tbody></table>`
       : "";
 
   function render() {
@@ -117,15 +117,15 @@
     const allChecked = allVisibleSelectable.length && allVisibleSelectable.every(record => state.selected.has(record.key));
     node.innerHTML = `<p class="hof-modal-text">${esc(data.sessionName || "Açık oturum")} tablosunda ödeme planı bulunan sekmeler: ${data.tabs.map(tab => `<b>${esc(tab.tab)}</b> <small>(${esc(tab.shapeText)}${tab.monthMode === "payment" ? ", aylık ücret + ödenen" : tab.monthMode === "plan" ? ", hücre taksit tutarı" : ""} · ${number(tab.count)} kişi)</small>`).join(", ")}. Her kişi için gerçek vade ve tutarlarıyla kart açılır; Excel'de ödenmiş kısım <b>açılış (devir)</b> olarak yazılır: taksiti kapatır, cari bakiyesine sayılır, <b>Kasa'ya girmez</b>.</p>
       <div class="hof-transfer-options">
-        ${hasMonths ? `<label class="hof-field"><span>Ay kolonlarındaki taksitlerin vade günü</span><select data-opt="dueDay">${Array.from({ length: 28 }, (_, index) => index + 1).map(day => `<option value="${day}" ${day === state.options.dueDay ? "selected" : ""}>Ayın ${day}’i</option>`).join("")}</select></label>` : ""}
+        ${hasMonths ? `<label class="hof-field"><span>Ay Kolonlarındaki Taksitlerin Vade Günü</span><select data-opt="dueDay">${Array.from({ length: 28 }, (_, index) => index + 1).map(day => `<option value="${day}" ${day === state.options.dueDay ? "selected" : ""}>Ayın ${day}’i</option>`).join("")}</select></label>` : ""}
         ${needsFirstDue ? `<label class="hof-field"><span>İlk vadesi yazılmayanlar için ilk vade</span><input type="date" data-opt="firstDue" value="${esc(state.options.firstDue)}"></label>` : ""}
-        <label class="hof-field"><span>Grup</span><select data-opt="group"><option value="tab" ${state.options.group === "tab" ? "selected" : ""}>Sekme adı (tablodaki grup kolonu varsa o)</option><option value="custom" ${state.options.group === "custom" ? "selected" : ""}>Şu ad…</option><option value="none" ${state.options.group === "none" ? "selected" : ""}>Grupsuz (tablodaki grup kolonu varsa o)</option></select></label>
-        ${state.options.group === "custom" ? `<label class="hof-field"><span>Grup adı</span><input type="text" maxlength="80" data-opt="groupName" value="${esc(state.options.groupName)}" placeholder="Ör. 2026-2027 Servis"></label>` : ""}
+        <label class="hof-field"><span>Grup</span><select data-opt="group"><option value="tab" ${state.options.group === "tab" ? "selected" : ""}>Sekme Adı (tablodaki grup kolonu varsa o)</option><option value="custom" ${state.options.group === "custom" ? "selected" : ""}>Şu ad…</option><option value="none" ${state.options.group === "none" ? "selected" : ""}>Grupsuz (tablodaki grup kolonu varsa o)</option></select></label>
+        ${state.options.group === "custom" ? `<label class="hof-field"><span>Grup Adı</span><input type="text" maxlength="80" data-opt="groupName" value="${esc(state.options.groupName)}" placeholder="Ör. 2026-2027 Servis"></label>` : ""}
         <label class="hof-check"><input type="checkbox" data-opt="payments" ${state.options.payments ? "checked" : ""}><span>Kayıt kartından girilmiş tahsilatlar karta taşınsın (Kasa toplamı ve tarihleri değişmez)</span></label>
       </div>
-      <div class="hof-kpis hof-plans-kpis"><div><strong>${number(t.ready + t.warning + t.link)}</strong><span>Aktarılabilir · ${number(t.warning)} uyarılı · ${number(t.link)} bağlanacak</span></div><div><strong>${number(t.closed)}</strong><span>Kapanmış (seçilmedi)</span></div><div class="${t.error ? "is-late" : ""}"><strong>${number(t.error)}</strong><span>Aktarılamaz · ${number(t.exists)} kartı var</span></div><div class="hof-cash-balance"><strong>${esc(money(chosen.remaining))}</strong><span>Seçilenlerin kalanı · ${number(chosen.count)} kişi</span></div></div>
+      <div class="hof-kpis hof-plans-kpis"><div><strong>${number(t.ready + t.warning + t.link)}</strong><span>Aktarılabilir · ${number(t.warning)} uyarılı · ${number(t.link)} bağlanacak</span></div><div><strong>${number(t.closed)}</strong><span>Kapanmış (seçilmedi)</span></div><div class="${t.error ? "is-late" : ""}"><strong>${number(t.error)}</strong><span>Aktarılamaz · ${number(t.exists)} kartı var</span></div><div class="hof-cash-balance"><strong>${esc(money(chosen.remaining))}</strong><span>Seçilenlerin Kalanı · ${number(chosen.count)} kişi</span></div></div>
       <div class="hof-plans-filters"><span class="hof-plan-chips" role="group" aria-label="Süzgeç">${FILTERS.map(([id, label, filter]) => `<button type="button" data-filter="${id}" aria-pressed="${String(id === state.filter)}">${label} <b>${number(records.filter(filter).length)}</b></button>`).join("")}</span><input type="search" data-q value="${esc(state.q)}" placeholder="Ad, telefon, sekme ara…" aria-label="Ara"></div>
-      <div class="hof-cash-list hof-transfer-list">${shown.length ? `<table class="hof-table hof-cash-table hof-transfer-table"><thead><tr><th class="hof-transfer-check"><input type="checkbox" data-pick-all ${allChecked ? "checked" : ""} aria-label="Görünenlerin tümünü seç"></th><th>Kişi</th><th>Taksitler</th><th class="num">Toplam</th><th class="num">Excel'e göre ödenen</th><th class="num">Kayıt tahsilatı</th><th class="num">Kalan</th><th>Cari</th><th>Durum</th></tr></thead><tbody>${shown.map(row).join("")}</tbody></table>${visible.length > shown.length ? `<div class="hof-more"><button type="button" class="hof-button hof-button-small hof-button-ghost" data-more>Daha fazla göster · ${number(visible.length - shown.length)} kişi daha</button></div>` : ""}` : '<p class="hof-empty">Bu süzgeçte kişi yok.</p>'}</div>
+      <div class="hof-cash-list hof-transfer-list">${shown.length ? `<table class="hof-table hof-cash-table hof-transfer-table"><thead><tr><th class="hof-transfer-check"><input type="checkbox" data-pick-all ${allChecked ? "checked" : ""} aria-label="Görünenlerin tümünü seç"></th><th>Kişi</th><th>Taksitler</th><th class="num">Toplam</th><th class="num">Excel'e Göre Ödenen</th><th class="num">Kayıt Tahsilatı</th><th class="num">Kalan</th><th>Cari</th><th>Durum</th></tr></thead><tbody>${shown.map(row).join("")}</tbody></table>${visible.length > shown.length ? `<div class="hof-more"><button type="button" class="hof-button hof-button-small hof-button-ghost" data-more>Daha Fazla Göster · ${number(visible.length - shown.length)} kişi daha</button></div>` : ""}` : '<p class="hof-empty">Bu süzgeçte kişi yok.</p>'}</div>
       <p class="hof-transfer-sum" aria-live="polite">Seçilen <b>${number(chosen.count)}</b> kişi · taksitler ${esc(money(chosen.total))} · Excel'e göre ödenen ${esc(money(chosen.paid))}${chosen.program ? ` · kayıt tahsilatı ${esc(money(chosen.program))}` : ""} · <b>kalan ${esc(money(chosen.remaining))}</b></p>
       ${importsHtml()}
       <div class="hof-actions"><button type="button" class="hof-button hof-button-ghost" data-close>Vazgeç</button><button type="button" class="hof-button" data-commit ${chosen.count ? "" : "disabled"}>${chosen.count ? `${number(chosen.count)} kişiyi aktar` : "Kişi seçin"}</button></div>`;
@@ -134,10 +134,10 @@
   function importsHtml() {
     const list = state.data?.imports || [];
     if (!list.length) return "";
-    return `<details class="hof-transfer-imports"><summary>Son aktarımlar (${list.length})</summary><ul>${list
+    return `<details class="hof-transfer-imports"><summary>Son Aktarımlar (${list.length})</summary><ul>${list
       .map(item => {
         const s = item.summary || {};
-        return `<li><span><b>${esc(item.title || "Aktarım")}</b><small>${esc(HOF.formatDateTime(item.createdAt))} · ${esc(item.actorName || "—")} · ${number(s.created)} kart${s.linked ? `, ${number(s.linked)} bağlama` : ""}${s.paymentsMoved ? `, ${number(s.paymentsMoved)} tahsilat taşındı` : ""}${item.undoneAt ? ` · <b>geri alındı</b> ${esc(HOF.formatDateTime(item.undoneAt))}` : ""}</small></span>${item.undoneAt ? "" : `<button type="button" class="hof-button hof-button-small hof-button-ghost hof-button-danger-ghost" data-undo="${esc(item.id)}">Geri al</button>`}</li>`;
+        return `<li><span><b>${esc(item.title || "Aktarım")}</b><small>${esc(HOF.formatDateTime(item.createdAt))} · ${esc(item.actorName || "—")} · ${number(s.created)} kart${s.linked ? `, ${number(s.linked)} bağlama` : ""}${s.paymentsMoved ? `, ${number(s.paymentsMoved)} tahsilat taşındı` : ""}${item.undoneAt ? ` · <b>geri alındı</b> ${esc(HOF.formatDateTime(item.undoneAt))}` : ""}</small></span>${item.undoneAt ? "" : `<button type="button" class="hof-button hof-button-small hof-button-ghost hof-button-danger-ghost" data-undo="${esc(item.id)}">Geri Al</button>`}</li>`;
       })
       .join("")}</ul></details>`;
   }
@@ -147,7 +147,7 @@
     if (!keys.length) return;
     const chosen = totalsOf(selectedRecords());
     const ok = await HOF.confirm({
-      title: "Taksit kartlarına aktar",
+      title: "Taksit Kartlarına Aktar",
       message: `${number(chosen.count)} kişi aktarılacak: taksitler ${money(chosen.total)}, Excel'e göre ödenen ${money(chosen.paid)} (açılış, Kasa dışı)${chosen.program ? `, kayıt kartından taşınacak tahsilat ${money(chosen.program)}` : ""}; kalan ${money(chosen.remaining)}. Kasa toplamı değişmez. Aktarım sonra geri alınabilir.`,
       confirmLabel: "Aktar",
     });
@@ -190,7 +190,7 @@
           <li>Kalan alacak: <b>${esc(money(result.remaining))}</b>. Bu kişilerin tablodaki ödeme ayları takvimde artık kartlarından gelir (çift sayılmaz).</li>
         </ul>
         ${skipped.length ? `<details open><summary>${number(skipped.length)} kişi aktarılmadı</summary><ul class="hof-transfer-issues">${skipped.slice(0, 50).map(item => `<li class="is-warning">${esc(item.name || item.key)}: ${esc(item.reason)}</li>`).join("")}</ul></details>` : ""}
-        <div class="hof-actions">${result.importId && (result.created || result.linked) ? `<button type="button" class="hof-button hof-button-ghost hof-button-danger-ghost" data-undo="${esc(result.importId)}">Aktarımı geri al</button>` : ""}<button type="button" class="hof-button hof-button-ghost" data-open-plans>Taksitleri aç</button><button type="button" class="hof-button" data-close data-result-close>Tamam</button></div>`,
+        <div class="hof-actions">${result.importId && (result.created || result.linked) ? `<button type="button" class="hof-button hof-button-ghost hof-button-danger-ghost" data-undo="${esc(result.importId)}">Aktarımı Geri Al</button>` : ""}<button type="button" class="hof-button hof-button-ghost" data-open-plans>Taksitleri Aç</button><button type="button" class="hof-button" data-close data-result-close>Tamam</button></div>`,
     });
     box.dialog.addEventListener("click", async event => {
       // "Tamam": sonuç ve aktarım penceresi birlikte kapanır; kullanıcı yenilenmiş Taksitler listesine (ya da ana ekrana) döner.
@@ -211,7 +211,7 @@
   }
 
   async function undo(id) {
-    const ok = await HOF.confirm({ title: "Aktarımı geri al", message: "Bu aktarımın açtığı kartlar ve (başka işlemi olmayan) cariler kaldırılır, bağlanan kartların bağı çözülür, karta taşınan kayıt tahsilatları kayıt kartına döner. Aktarımdan sonra bu kartlara tahsilat ya da düzenleme yapıldıysa geri alma durur ve hangi kartlar olduğunu söyler.", confirmLabel: "Geri al", danger: true });
+    const ok = await HOF.confirm({ title: "Aktarımı Geri Al", message: "Bu aktarımın açtığı kartlar ve (başka işlemi olmayan) cariler kaldırılır, bağlanan kartların bağı çözülür, karta taşınan kayıt tahsilatları kayıt kartına döner. Aktarımdan sonra bu kartlara tahsilat ya da düzenleme yapıldıysa geri alma durur ve hangi kartlar olduğunu söyler.", confirmLabel: "Geri Al", danger: true });
     if (!ok) return false;
     try {
       const result = await HOF.api(`/api/workspace/plans/imports/${encodeURIComponent(id)}/undo`, { method: "POST", body: {} });
@@ -300,7 +300,7 @@
     state.q = "";
     state.limit = PAGE;
     modal = HOF.modal({
-      title: "Tablodan taksit kartına aktar",
+      title: "Tablodan Taksit Kartına Aktar",
       eyebrow: (HOF.uiLabel?.("side.plans", "Taksitler") || "Taksitler").toLocaleUpperCase("tr-TR"),
       size: "wide",
       body: '<div class="hof-transfer" data-transfer><p class="hof-empty">Tablodaki ödeme planları okunuyor…</p></div>',
@@ -329,7 +329,7 @@
     HOF.toast(`Yüklediğiniz tabloda ${number(summary.count)} kişinin ödeme planı var (${summary.tabs.map(tab => `${tab.tab}: ${number(tab.count)}`).join(", ")}). Taksitler'e aktarılsın mı? Gerçek vade ve tutarlarıyla kart açılır; Excel'de ödenmiş kısım açılış olur, Kasa değişmez.`, {
       type: "info",
       timeout: 30_000,
-      action: { label: "Ön izle ve aktar", onClick: () => open() },
+      action: { label: "Ön İzle ve Aktar", onClick: () => open() },
     });
   }
   // Taksitler penceresinde ipucu şeridi için (aktarılmamış plan sayısı).

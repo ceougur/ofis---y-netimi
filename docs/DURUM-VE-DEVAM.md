@@ -1,6 +1,6 @@
 # DestekOfis — durum ve devam notu
 
-Yeni bir oturum bu belgeyi okuyarak kaldığı yerden devam eder. Son güncelleme: 30.09.2026 (2.0.10 sağlama paketi: 17 düzeltme — ayrıntılı yetkiler ve özel roller, kullanıcı silme/ad düzeltme, yönetici parolası kurtarma, "+ Sayfa"ya Excel/Sheets, anlık çek yenilemesi, Borçlu/Alacaklı dili ve renkleri, tek arama kutusu — kullanıcı doğrulaması bekliyor; 2.0.9 yayımlı; önceki not: sürüm 2.0.2 denetimden geçti — `docs/DENETIM-2.0.2.md`; okuma motoru, analiz iş parçacığı, kanıtlı kolon kararları, kendi kendini onarma, şemaya esnek kolon eşleme, Veri Sağlık Kontrolü ve olay tabanlı uyarılar eklendi — `docs/MIMARI.md` → *2.0.2 eklemeleri*; yayın kullanıcı onayı bekliyor; 2.0.1 yayımlı).
+Yeni bir oturum bu belgeyi okuyarak kaldığı yerden devam eder. Son güncelleme: 30.09.2026 (2.0.11 paketlendi, kullanıcı doğrulaması bekliyor: 8 düzeltme — Taksitler'den cari seçip toplu taksitlendirme, grup süzgecinde cari sayısı, Veri Sağlığı'nda Yok Say, başlıklarda her sözcüğün baş harfi büyük, stok birimleri tek yazım, açık pencereler canlı yenilenir, Ayarlar kullanıcı kartının altında, arama kutusu her yerinden yazar; önceki: 2.0.10 yayımlandı: 17 düzeltme — ayrıntılı yetkiler ve özel roller, kullanıcı silme/ad düzeltme, yönetici parolası kurtarma, "+ Sayfa"ya Excel/Sheets, anlık çek yenilemesi, Borçlu/Alacaklı dili ve renkleri, tek arama kutusu ; 2.0.9 yayımlı; önceki not: sürüm 2.0.2 denetimden geçti — `docs/DENETIM-2.0.2.md`; okuma motoru, analiz iş parçacığı, kanıtlı kolon kararları, kendi kendini onarma, şemaya esnek kolon eşleme, Veri Sağlık Kontrolü ve olay tabanlı uyarılar eklendi — `docs/MIMARI.md` → *2.0.2 eklemeleri*; yayın kullanıcı onayı bekliyor; 2.0.1 yayımlı).
 
 ## Nerede ne var
 
@@ -53,7 +53,8 @@ Yeni bir oturum bu belgeyi okuyarak kaldığı yerden devam eder. Son güncellem
 - **2.0.3 yayımlandı** (PR ceougur/ofis---y-netimi#3, `v2.0.3`).
 - **2.0.4 yayımlandı** (PR ceougur/ofis---y-netimi#4, `v2.0.4`; dosyalar bayt bayt doğrulandı).
 - **2.0.5 (yayında):** geniş taksit kartı, kart ve liste PDF/Yazdır, süzgeçler; Excel Sıra No (göç 8) ve esnek başlık eşleme; acil görev kırmızı uyarı. Ayrıntı `CHANGELOG.md`.
-- **2.0.10 (sağlama paketi hazır, dal `claude/nice-euler-jvajxv`; kullanıcı doğrulayınca birleştirme ve yayın):** "2.0.10 için biriken düzeltmeler" listesinin 17 maddesinin tamamı (aşağıda, Kalanlar'da maddeler ve kararlar duruyor). Yeni parçalar: `server/lib/access.mjs` (özel roller, kişiye özel ekle/kaldır, `user.perms`), göç 15 (`roles`, `users.role_key`, yumuşak silme alanları), `server/lib/recovery.mjs` (kurtarma anahtarı + sunucu kodu; `packaging/windows/bin/kurtarma-kodu.cmd`, Başlat menüsü kısayolu), `server/lib/free-import.mjs` ("+ Sayfa" Excel/Sheets). ANLIK DURUM kartı yalnız yönetici (`overview.card`), Yönetim paneli yalnız yönetici; uzman İşlem geçmişini Raporlar → Tüm raporlar'dan görür. Doğrulama: birim 655, e2e 49 adım, `npm run test:senaryo-210` 57 denetim (17 maddenin her biri, ekran görüntüleri `test/e2e/artifacts/senaryo-210/`), senaryo 44, senaryo-rapor 82, senaryo-taslak 30. Ayrıntı `CHANGELOG.md`, `docs/MIMARI.md` → *2.0.10 eklemeleri*.
+- **2.0.11 hazır, yayın kullanıcı doğrulaması bekliyor** (dal `claude/nice-euler-jvajxv`): "2.0.11 düzeltmeleri" listesinin 8 maddesinin tamamı (aşağıda, Kalanlar'da maddeler ve kararlar duruyor). Yeni parçalar: `HOF.onLedger` / `ledger:changed` (açık pencerelerin tek yenileme kanalı), `server/lib/text-case.mjs` + `HOF.titleCase` (yazım düzeni; CLAUDE.md → *Yazım düzeni*), `server/lib/units.mjs` + göç 16, toplu taksit `dryRun` ve `plan` süzgeci, `hof-plans.js pickAccounts`, Veri Sağlığı kararları (`insight.quality.ignored`, ofis geneli). Kılavuz sadeleşti (sürüm/altyapı notu yok; CLAUDE.md → *Kullanım kılavuzu*), 22 ekran görüntüsü yeniden çekildi (`node docs/kilavuz/ekran-cek.mjs`: uydurma örnek verilerle — `docs/kilavuz/ornek/` — sıfırdan; sonra `pdf-uret.mjs`). Doğrulama: birim 662, e2e 50 adım, `npm run test:senaryo-211` 57 denetim, senaryo 44, senaryo-rapor 82, senaryo-taslak 30, senaryo-210 57; güncelleme provası gerçek imzalı paketle 2.0.10 / 2.0.9 / 2.0.4 / 1.7.0 → 2.0.11: 102 / 104 / 104 / 94 denetim (şema → 16, eski birimler tek yazımda). Teslim: `DestekOfis-2.0.11-{1-Guncelleme-ve-Belgeler,2-Kurulum,Kaynak-ve-Denetim}.zip` + SHA256SUMS (paket sha256 16a97a54…, kurulum 214ca7d7…). Ayrıntı `CHANGELOG.md`, `docs/MIMARI.md` → *2.0.11 eklemeleri*.
+- **2.0.10 yayımlandı** (PR ceougur/ofis---y-netimi#10, `v2.0.10`; beş dosya ve latest/DestekOfis-Kurulum.exe bayt bayt doğrulandı): "2.0.10 için biriken düzeltmeler" listesinin 17 maddesinin tamamı (aşağıda, Kalanlar'da maddeler ve kararlar duruyor). Yeni parçalar: `server/lib/access.mjs` (özel roller, kişiye özel ekle/kaldır, `user.perms`), göç 15 (`roles`, `users.role_key`, yumuşak silme alanları), `server/lib/recovery.mjs` (kurtarma anahtarı + sunucu kodu; `packaging/windows/bin/kurtarma-kodu.cmd`, Başlat menüsü kısayolu), `server/lib/free-import.mjs` ("+ Sayfa" Excel/Sheets). ANLIK DURUM kartı yalnız yönetici (`overview.card`), Yönetim paneli yalnız yönetici; uzman İşlem geçmişini Raporlar → Tüm raporlar'dan görür. Doğrulama: birim 655, e2e 49 adım, `npm run test:senaryo-210` 57 denetim (17 maddenin her biri, ekran görüntüleri `test/e2e/artifacts/senaryo-210/`), senaryo 44, senaryo-rapor 82, senaryo-taslak 30. Ayrıntı `CHANGELOG.md`, `docs/MIMARI.md` → *2.0.10 eklemeleri*.
 - **2.0.9 yayımlandı** (PR ceougur/ofis---y-netimi#9, `v2.0.9`): müşteri isteği "soldaki Raporlar cariye bağlı değil, boş geliyor" → sol menü *Raporlar* = *Rapor Al*, tek pencere (Cari ekstre, Vade takip, Nakit akış, Çek / Senet, Tüm raporlar, Tablo raporları); birleşik Vade takip (taksit + çek/senet + ileri tarihli Kasa + tablo takvimi, telefonla arama); Nakit akışta tablo kaynağı ve dönem toplamları; rapor merkezine beş modül raporu (28 rapor); açılış ekranında sektöre uygun taslak Excel (143 sektör); Excel okumada eski "kullanılan alan" etiketi düzeltmesi; destek hattı 0536 771 50 55 (program; site ceougur/destekofis#2 ile birleşti). Doğrulama: birim 630, senaryo-rapor 82, senaryo-taslak 30, e2e, 2.0.8 senaryosu 44. Ayrıntı `CHANGELOG.md`, `docs/MIMARI.md` → *2.0.9 eklemeleri*.
 - **2.0.8 yayımlandı** (PR ceougur/ofis---y-netimi#8, `v2.0.8`; beş dosya bayt bayt doğrulandı; operatör merkezi PR ceougur/destekofis#1 birleşti): tablodaki ödeme planını Taksitler'e aktarma (`server/lib/insight/schedules.mjs`, `server/routes/plan-transfer.mjs`, `client/assets/hof-plan-transfer.js`; göç 14: `plan_entries.opening`, `plans.import_id`, `plan_imports`), açılış (devir) kaydı (Kasa dışı, makbuzsuz), takvimde çift kalem düzeltmesi (`plans.linkedCases`), Taksitler Excel yüklemesi gerçek vadelerle, stokta birim listesi ve ilk alım ("Kasa'ya yansıt" kutusu; boş kritik seviye/miktar = 0), lisans kalıcı testleri ve kimlik kaynağı. Doğrulama: birim 616, uçtan uca 49 adım, gerçek kullanıcı senaryosu 44 denetim (`npm run test:senaryo`), kılavuz `k14-tablodan-aktar.jpg` ile yenilendi. **Operatör merkezi (`destekofis`, dal `claude/nice-euler-jvajxv`, kullanıcı birleştirince Vercel yayımlar):** lisans verirken girilen müşteri bilgisi kurulum kaydına da yazılır, programdan gelen bilgi lisansın boş alanlarını doldurur (`fill_installation`, `sync_license_from_installation`; canlı Supabase'e uygulandı, mevcut kayıtlar dolduruldu); pencere dışına tıklama kapatmaz, uzun kart kartın içinde kaydırılır; **Altyapı limitleri** (Özet: Vercel fonksiyon çağrısı/veri aktarımı, Supabase veritabanı boyutu/egress; sayım `lisans.usage_daily`'de isteğin kendi işleminde, dış servise ek istek yok; %70 sarı, %90 kırmızı, üst çubukta rozet, `infra.warning` hareketi; Ayarlar › Altyapı kotaları). Ayrıntı `CHANGELOG.md` ve `destekofis/README.md`.
 - **2.0.7 (sağlama paketi hazır; kullanıcı doğrulayınca birleştirme ve yayın):** ANLIK DURUM kartı (`routes/overview.mjs`, `hof-overview.js`; canlı `overview.changed`), Rapor Al (mizan/ekstre/nakit akışı `lib/finance-report.mjs`), rapor merkezi (`routes/report-center.mjs`, 23 rapor, `hof-report-center.js`), Çek/Senet (göç 13; `lib/cheques.mjs`, `routes/cheques.mjs`, `hof-cheques.js`; olay tabanlı, geri alınabilir), kişiye özel yetki (`users.grants_json`, `GRANTABLE`), stokta hizmet kalemi, kayıt ↔ cari ↔ taksit bütünlüğü (`POST /cases/:key/account`, ad eşleşmesi önerileri, `hasRecord` records tablosunu da sayar), güncelleyici düzeltmesi (kurulu sürüm dinamik, `stage` korumaları), Kasa toplamları SQL'de, iş akışı testleri (`test/is-akisi.test.mjs`). Sahada 2.0.6 güncelleme hatası: kullanıcıya "kurulum dosyasını üstüne çalıştır" denildi. Ayrıntı `CHANGELOG.md`.
@@ -75,10 +76,106 @@ Yeni bir oturum bu belgeyi okuyarak kaldığı yerden devam eder. Son güncellem
 
 ## Kalanlar (öncelik sırasıyla)
 
-### 2.0.11 için biriken düzeltmeler (kullanıcı ekledikçe büyür; birlikte yapılır)
-_(henüz madde yok)_
+### 2.0.12 için biriken düzeltmeler (kullanıcı ekledikçe büyür; birlikte yapılır)
+1. **"Tahsilat girince müşterinin kayıt tarihi değişiyor"** (müşteri telefonu, 30.09.2026; sahadaki sürüm 2.0.10; 2.0.11
+   zip'i henüz yüklenmedi). **Yeniden üretilemedi** (30.09.2026): kayıt kartından *Tahsilat İşle* (tablodaki "Kayıt
+   Tarihi" hücresi 12.04.2026 kaldı, sayfa yenilenince de), taksit kartından *+ Tahsilat*, cariden tahsilat, taksit
+   tahsilatı API'si — cari ve kartın `registered_on` değeri değişmedi. Sunucuda `registered_on` yalnız düzenleme
+   formu (PUT) ve Excel yüklemesiyle yazılıyor. Açık olasılıklar: (a) müşterinin Excel'inde "Kayıt Tarihi" hücresi
+   formül (=BUGÜN() ya da ödeme kolonlarına bağlı) — program formülü yeniden hesaplar (`server/lib/formula/compute.mjs`);
+   (b) uyarı kartındaki *Gerçekleştirildi* o tarih kolonundan doğan uyarıda hücreye "Gerçekleştirildi · tarih" yazar
+   (`hof-alerts.js markDone`); (c) başka bir ekran kastediliyor. **Müşteriden istenecek:** hangi ekranda (tablo / cari
+   kartı / taksit kartı), hangi düğmeyle tahsilat girildi, önceki ve sonraki tarih, ekran görüntüsü; Excel'deki hücre
+   formül mü.
 
-### 2.0.10 düzeltmeleri — tamamı yapıldı (30.09.2026; sağlama paketi, kullanıcı doğrulaması bekliyor)
+### 2.0.11 düzeltmeleri — tamamı yapıldı (30.09.2026; paket hazır, yayın kullanıcı doğrulaması bekliyor)
+Maddeler ve kararlar kayıt için duruyor; yapılan iş ve kanıtı `CHANGELOG.md` → 2.0.11 ve `test/e2e/senaryo-211.mjs`.
+1. **Tablo arama kutusu her yerinden tıklanınca etkinleşmeli** (müşteri, 30.09.2026, ekran görüntüsü "TÜM REHBER"):
+   kutunun alt kısmına tıklayınca yazma başlamıyor; ancak tam ortadaki ince şeride tıklanınca etkinleşiyor. Koddan
+   ölçülen neden (2.0.10): `.search-field` 44 px yüksek ama içindeki `input` yalnız 18 px; altındaki "Enter · ilk sonuca
+   git · Ctrl+K" ipucu (`.smart-search-hint`) ve iç boşluklar tıklamayı yutuyor. Yapılacak: kutunun her noktası
+   (büyüteç, ipucu, boşluk, ⌘K) tıklanınca `input` odaklansın (kutu `label` gibi davransın ya da `mousedown` → `focus`),
+   `input` kutunun yüksekliğini doldursun, imleç metin imleci olsun; bütün arama kutularında (Cari, Taksitler, Stok,
+   Çek/Senet, Raporlar, Mesajlar, sektör seçici) aynı. Test: e2e — kutunun dört köşesine ve ipucuna tıklayınca odak
+   `input`'ta.
+2. **Veri sağlığı: "Yok say" ile uyarı kalıcı kapansın, puan %100'e çıkabilsin** (müşteri, 30.09.2026, ekran görüntüsü
+   "Veri sağlığı: Orta (%90)": "Öğrenci No boş olan 2716 kayıt", "Telefonu kolonunda geçersiz telefon: 31", "Soyadı boş: 1").
+   Müşteri: "%90 psikolojimi bozuyor; ilk uyarı versin, yoksay deyince bir daha çıkmasın, sağlık artsın."
+   Yapılacak (muhasebe programlarındaki "uyarıyı kabul et / bir daha gösterme" kalıbı): her bulgu grubunda **Yok say**
+   (grubun tamamı) ve satır bazında yok say; kalıcı (sunucuda, veri oturumuna ve kolona bağlı; tüm bilgisayarlarda),
+   puan hesabından düşülür → kalan sorun yoksa %100 "İyi". Yok sayılanlar ayrı katlanır bölümde ("Yok sayılanlar · N")
+   **Geri al** ile döner; yeni yüklemede aynı kolon/aynı kayıt için yok sayma korunur, yeni hatalı satır yine uyarır.
+   İşlem geçmişine yazılır; yetki: veri yükleme yetkisi olan (yönetici). Test: API + e2e (yok say → puan artar → yeniden
+   yükle → yok sayılan gelmez, yeni hata gelir → geri al).
+   **Ek gözlem (ekran görüntüsünden, doğrulanacak):** bu tablo bir personel/akademik **rehber** ("TÜM REHBER"; satırlarda
+   Öğr.Gör., Dr., Prof.Dr. unvanları) ama kimlik kolonu "Öğrenci No" sayılmış ve kayıt adı olarak **unvan** gösteriliyor.
+   Kimlik kolonu boşsa 2716 kaydın hepsi "sorun" görünüyor. Kolon rolleri (kimlik/kişi/unvan) bu tablo için yeniden
+   incelenecek: kimliği boş sekmede kimlik zorunluluğu uyarısı yerine ad+soyad kişi anahtarı; unvan kişi adı sayılmasın.
+3. **Taksitler ekranında toplu taksitlendirme** (müşteri, 30.09.2026): "Toplu taksitlendirmeyi ilk başta ben bile zor
+   buldum; Cari'den toplu seçim yapınca çıkıyor, bunu Taksitler menüsüne de ekleyelim." Bugün yol yalnız *Cari → soldaki
+   kutularla seç → Seçilenlere taksit planı* (sunucu `POST /api/workspace/accounts/bulk-plan`, istemci `hof-accounts.js`).
+   Yapılacak: *Taksitler* üst çubuğuna **"+ Toplu taksitlendir"** düğmesi → cari seçme penceresi (arama; tür, grup/alt grup,
+   bakiye süzgeçleri; "Tümünü seç"; açık taksit kartı olan cari işaretli ve varsayılan seçilmez, "zaten kartı var" yazar;
+   seçili sayısı ve toplam) → aynı taksit formu (tutar herkese aynı ya da karttaki alandan, taksit sayısı, ilk vade,
+   aralık, grup) → ön izleme (kaç kart, toplam, atlanacaklar ve neden) → oluştur. Aynı sunucu ucu kullanılır (tek kural,
+   çift kart açılmaz). Cari yoksa pencere yol gösterir ("Tablodaki kişileri cari yap" / "Excel'den cari yükle"). Kılavuzda
+   Taksitler bölümüne yazılır. Test: e2e — Taksitler'den 3 cari seç → 3 kart, aynı cari ikinci kez seçilince atlanır,
+   Cari ekranındaki yol da çalışmaya devam eder; boş veri ve aynı adlı iki cari.
+4. **Taksitler › grup süzgeci boş gruplarla dolu** (müşteri, 30.09.2026, ekran görüntüsü): *Tüm gruplar* listesinde
+   "42 C 0348 (0)", "42 C 0079 (0)"… hepsi **0 kart**; seçince liste boş. Müşteri: "orada cari seçimi olmadığı için
+   gruplarda boş çıkıyor, bu da hata." Neden (doğrulanacak): gruplar carilerden/Excel'den tanımlandı ama bu gruplardaki
+   carilerin henüz taksit kartı yok; süzgeç yalnız kartları sayıyor. Yapılacak (3. maddeyle birlikte): grup süzgecinde
+   kart sayısının yanında **cari sayısı** ("42 C 0079 · 12 cari · 0 kart"); kartı olmayan grup seçilince boş liste yerine
+   "Bu grupta 12 cari var, henüz taksit kartı yok → **Bu gruba toplu taksitlendir**" (seçim penceresi o grupla açılır);
+   hiç carisi ve kartı olmayan grup listede sönük/ayrı. Test: e2e — gruplu cariler, kart yok → süzgeçte sayılar doğru,
+   düğmeyle toplu taksit → kartlar grupta görünür.
+   **Ek (müşteri, 30.09.2026):** "bu karta bu cari seçimi de ekleyeceğiz" — Taksitler penceresine (kullanıcı teyit etti;
+   "Tüm gruplar · Alt grup · Sıra No" süzgeç satırına) **cari seçimi** gelir: grup seçilince o gruptaki cariler onay kutulu listede görünür (kartı olan/
+   olmayan ayrı işaretli), seçilenler 3. maddedeki toplu taksitlendirmeye gider. Not: tekil "Yeni taksit kartı"
+   penceresinde Cari seçici zaten var (hof-plans.js, v2.0.6); eksik olan ekran düzeyinde toplu cari seçimi.
+5. **Birimlerin baş harfi büyük; tüm programda seçenek yazımı** (müşteri, 30.09.2026, Stok › Yeni ürün ekran görüntüsü):
+   Birim listesi "adet, paket, kutu, çuval, şişe…" küçük harfle. İstek: baş harfleri büyük olsun ("Adet", "Paket",
+   "Çuval", "Şişe") ve **tüm programdaki açılır listeler/etiketler** aynı gözle taransın. Kaynak: `hof-stock.js` `UNITS`
+   dizisi; kayıtlı birimler de listeye katılıyor (`[...UNITS, ...used]`). Dikkat: (a) büyük harf Türkçe kurala göre
+   (`toLocaleUpperCase("tr")`: i→İ); (b) eski kayıtlardaki "adet" ile yeni "Adet" listede iki kez çıkmasın — büyük/küçük
+   harf duyarsız tekilleştirme, gösterimde tek biçim (kayıtlar, ekstre, fatura/PDF, Excel dışa aktarım aynı yazar);
+   (c) **karar (kullanıcı, 30.09.2026): kısaltmalar dahil hepsinin ilk harfi büyük** — Kg, Gr, Ton, Lt, Ml, Cm, M², M³.
+   Test: eski "adet" kayıtlı ürün + yeni ürün → listede tek "Adet"; stok raporu/PDF/Excel'de aynı yazım.
+6. **Kasa penceresi bağlı hareket silinince kendini yenilemiyor** (müşteri, 30.09.2026, ekran görüntüsü): Kasa'da
+   "Çek ödemesi · …" satırındaki ↗ ile çek/senet kartı açılıp hareket silinince Kasa'ya dönüldüğünde satır ve
+   göstergeler eski kalıyor; kapatıp açmak gerekiyor. **Neden (kodda doğrulandı):** `hof-workspace.js` Kasa penceresi
+   yalnız `change.kind === "cash"` olayında yeniden yükleniyor; çek/senet işlemleri `kind: "cheques"` yayımlıyor
+   (`server/routes/cheques.mjs`); cari, taksit ve stok kaynaklı kasa satırları da aynı riskte. Yapılacak: Kasa'ya yazan
+   her kaynak (çek/senet, cari, taksit, stok, detay kartı tahsilatı) değişince açık Kasa penceresi seçili dönemi
+   koruyarak yenilensin (sunucuda kasayı etkileyen işlemler ayrıca `cash` olayı da yayımlasın ya da pencere bu
+   türleri de dinlesin); aynı denetim ANLIK DURUM, Cari ekstresi ve Raporlar gibi açık kalan diğer pencerelere de.
+   Test: e2e — Kasa açık → ↗ çek kartı → ödemeyi geri al/sil → kartı kapat → Kasa satırı ve 4 gösterge yeni değerde;
+   ikinci kullanıcının silmesi de aynı şekilde yansır.
+7. **Başlıklarda her sözcüğün baş harfi büyük (Title Case), tüm programda** (müşteri, 30.09.2026): "Tüm cari
+   hareketleri" → "Tüm Cari Hareketleri", "Personel raporu" → "Personel Raporu"; uzman UI gözüyle programın tamamına.
+   Kullanıcının verdiği hedef örnekler (bağlaç kuralını teyit eder): "Cari Listesi ve Bakiyeler", "Tüm Cari Hareketleri",
+   "Cari Bazında Tahsilat", "Taksit Kartları".
+   Örnek kaynaklar: `server/routes/report-center.mjs` (rapor adları), `server/lib/profile.mjs` ve `hof-workspace.js`
+   (sektör/menü etiketleri). **Kapsam (adlar ve başlıklar):** pencere ve bölüm başlıkları, rapor adları, sol menü,
+   sekme/pil adları, düğmeler, gösterge (KPI) etiketleri, tablo kolon başlıkları, açılır liste seçenekleri, PDF/Excel
+   başlıkları ve sayfa adları. **Kapsam dışı (cümle düzeni kalır):** yardım/açıklama cümleleri, uyarı ve bildirim
+   metinleri, onay pencerelerindeki cümleler, kullanıcının yazdığı veri (kişi adı, not, kullanıcının verdiği pil/kolon
+   adı). **Kurallar:** Türkçe büyük harf (i→İ, ı→I); bağlaçlar küçük kalır ("ve", "ile", "veya", "ya da", "de/da"),
+   ör. "Kasa ve Banka"; kısaltmalar olduğu gibi (PDF, KDV, TC, No). CSS `text-transform` kullanılmaz (Türkçe İ ve
+   bağlaç kuralını bozar, PDF/Excel'e yansımaz); metinler kaynakta düzeltilir, 5. maddedeki birimlerle aynı ilke.
+   Kullanıcının kalemle yeniden adlandırdığı başlıklara dokunulmaz. Kılavuz (HTML+PDF) ve ekran görüntüleri yeni
+   yazımla güncellenir. Test: metin taraması (başlık sözlüğünde küçük harfle başlayan sözcük kalmadı; bağlaç istisnası)
+   + e2e/ekran görüntüsünde menü, Raporlar, Kasa, Cari, Taksitler, Stok, Çek/Senet, Yönetim başlıkları.
+8. **Sol menüde "Ayarlar" aşağıya taşınsın** (kullanıcı, 30.09.2026, ekran görüntüsü): "Ayarlar" düğmesi şimdi en
+   üstte, Çalışma oturumu seçicisinin hemen altında duruyor; kullanıcı kartının (Ofis yöneticisi · Profil / Parola /
+   Yönetim / Çıkış) **altına**, "Senkron aktif" kartının üstündeki boşluğa taşınacak. Kaynak: düğme hazır paketin kenar
+   çubuğundan geliyor; `hof-sources.js` yalnız tıklamayı yakalayıp Veri penceresini açıyor ve `sources.manage` yetkisi
+   yoksa gizliyor — taşıma DOM'da bu düğmeyi yeni yerine almak (paket yeniden çizince yerinde kalmalı). Dikkat: yetki
+   gizlemesi ve tıklama yakalaması aynen sürer; dar ekranda/menü kaydırılırken alt blok taşmasın; Ctrl/klavye sırası
+   mantıklı olsun. Test: e2e — yönetici: Ayarlar kullanıcı kartının altında, tıklayınca Veri penceresi açılır;
+   yetkisiz kullanıcı: görünmez; oturum değiştirince/yenilenince yeri değişmez; ekran görüntüsü.
+
+### 2.0.10 düzeltmeleri — tamamı yapıldı ve yayımlandı (30.09.2026, v2.0.10)
 Maddeler ve kararlar kayıt için duruyor; yapılan iş ve kanıtı `CHANGELOG.md` → 2.0.10 ve `test/e2e/senaryo-210.mjs`.
 1. **Sol menü › Çalışma oturumu kartı kesiliyor** (29.09.2026, ekran görüntüsü): sol paneldeki *Çalışma oturumu* başlığına tıklayınca açılan *Çalışma oturumları* kartı (oturum listesi, "+ Yeni oturum aç", "Oturumlar" düğmesi, alttaki açıklama) sağdan panelin dışına taşıyor; bir kısmı panelin altında / ana içeriğin arkasında kalıyor. Kart panelin içine sığmalı ya da panelin üstünde (z-index) açılmalı; dar panelde genişlik panele göre. Test: e2e'ye "oturum kartı görünür alanda, taşma yok" adımı.
 2. **Görev ata › Atanacak kişi listesi eksik** (29.09.2026, ekran görüntüsü): kayıt kartından *Görev ata* penceresinde "Atanacak kişi" listesinde yalnız "Ofis yöneticisi" var; oysa Yönetim › Kullanıcılar'da aktif personel (mukaddes ulutaş, rol Personel, ANLIK DURUM yetkili) mevcut. Beklenen: tüm aktif kullanıcılar (yönetici, uzman, personel, muhasebe) listede, rolüyle birlikte; pasif hesaplar hariç. Koddan bak: listeyi dolduran uç (`/api/admin/users` mi, ayrı bir "atanabilirler" ucu mu) ve istemcideki süzgeç; olası neden: liste yalnız `plans.manage`/uzman rolleri süzüyor ya da sayfa açılışında bir kez yüklenip yeni kullanıcı gelince yenilenmiyor. Test: API + e2e ("personel eklendi → Görev ata listesinde görünür").

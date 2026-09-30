@@ -11,23 +11,37 @@ import { cell } from "./columns.mjs";
 import { isIban, isTckn, isVkn } from "./validators.mjs";
 
 const LIST_LIMIT = 50;
+// "Yok say" (v2.0.11) için bulgudaki kayıtların tamamı sunucuda tutulur (istemciye gitmez); çok büyük tablolarda sınır.
+const KEY_LIMIT = 200_000;
+// Kimlik kolonu kayıtların yarısından fazlasında boşsa (ör. personel rehberinde "Öğrenci No") tablonun kimliği değildir:
+// boşluk uyarı değil bilgi olarak yazılır ve puanı düşürmez (v2.0.11).
+const SPARSE_ID = 0.5;
 
 export function recordTitle(row, primary) {
-  const person = primary.person ? String(cell(row, primary.person) ?? "").trim() : "";
+  // Ad ve soyad ayrı kolonlardaysa (v2.0.11) ikisi birleşir: "Ahmet" + "Yılmaz" → "Ahmet Yılmaz".
+  const parts = primary.personParts ? primary.personParts.map(column => String(cell(row, column) ?? "").trim()).filter(Boolean).join(" ") : "";
+  const person = parts || (primary.person ? String(cell(row, primary.person) ?? "").trim() : "");
   const id = primary.id ? String(cell(row, primary.id) ?? "").trim() : "";
   return person || id || String(row.__hofKey || "");
 }
 
+// failed: bulgunun puandan düştüğü hücre denetimi sayısı (Yok say'da puana geri eklenir); keys: bulgudaki tüm kayıtlar;
+// template: sayısı yeniden yazılabilen başlık ("\u0001" sayının yeri).
 function collector(id, severity, title, detail, column) {
   const items = [];
+  const keys = [];
   let count = 0;
+  let failed = 0;
   return {
-    add(row, primary) {
+    add(row, primary, fails = 1) {
       count += 1;
-      if (items.length < LIST_LIMIT) items.push({ key: String(row.__hofKey || ""), title: recordTitle(row, primary), tab: String(row.__sheet || "") });
+      failed += fails;
+      const key = String(row.__hofKey || "");
+      if (keys.length < KEY_LIMIT) keys.push(key);
+      if (items.length < LIST_LIMIT) items.push({ key, title: recordTitle(row, primary), tab: String(row.__sheet || "") });
     },
     count: () => count,
-    done: () => (count ? { id, severity, title: title(count), detail, column, count, items, more: Math.max(0, count - items.length) } : null),
+    done: () => (count ? { id, severity, title: title(count), template: title("\u0001"), detail, column, count, failed, keys, items, more: Math.max(0, count - items.length) } : null),
   };
 }
 
@@ -133,7 +147,13 @@ export function assessQuality(rows, analyses, primary) {
 
   const idColumn = primary.id;
   const personColumn = primary.person;
-  const emptyId = idColumn ? make("empty-id", "warn", n => `"${idColumn}" boş olan ${n} kayıt`, "Kimliği boş kayıtlar aramada ve eşleştirmede zor bulunur.", idColumn) : null;
+  const idEmpty = idColumn ? rows.filter(row => Object.hasOwn(row, idColumn) && isEmptyCell(row[idColumn])).length : 0;
+  const sparseId = Boolean(idColumn) && rows.length >= 10 && idEmpty / rows.length > SPARSE_ID;
+  const emptyId = idColumn
+    ? sparseId
+      ? make("empty-id", "info", n => `"${idColumn}" ${n} kayıtta boş`, "Bu kolon kayıtların çoğunda boş olduğu için tablonun kimlik kolonu sayılmadı ve puanı düşürmez. Kayıtlar ad ve diğer bilgilerle bulunur.", idColumn)
+      : make("empty-id", "warn", n => `"${idColumn}" boş olan ${n} kayıt`, "Kimliği boş kayıtlar aramada ve eşleştirmede zor bulunur.", idColumn)
+    : null;
   const emptyPerson = personColumn ? make("empty-person", "info", n => `"${personColumn}" boş olan ${n} kayıt`, "Kişi/kurum adı olmayan kayıtlar.", personColumn) : null;
 
   // Doğrulanabilen/biçimli kolonlar: dolu değerlerin geçerliliği.
@@ -168,12 +188,15 @@ export function assessQuality(rows, analyses, primary) {
   const ids = new Map(); // sekme + kimlik → satırlar (farklı sekmelerde aynı kimlik sorun değildir)
   let idFilled = 0;
   for (const row of rows) {
-    if (shifted && shiftedRow(row)) shifted.add(row, primary);
+    if (shifted && shiftedRow(row)) shifted.add(row, primary, 0);
     if (idColumn && Object.hasOwn(row, idColumn)) {
       const value = String(row[idColumn] ?? "").trim();
       if (isEmptyCell(value)) {
-        count(false);
-        emptyId.add(row, primary);
+        if (sparseId) emptyId.add(row, primary, 0);
+        else {
+          count(false);
+          emptyId.add(row, primary);
+        }
       } else {
         idFilled += 1;
         const key = `${row.__sheet || ""}\u0000${value}`;
@@ -209,7 +232,7 @@ export function assessQuality(rows, analyses, primary) {
       for (const list of ids.values()) {
         count(true);
         for (let index = 1; index < list.length; index += 1) count(false);
-        if (list.length > 1) for (const row of list) duplicate.add(row, primary);
+        if (list.length > 1) list.forEach((row, index) => duplicate.add(row, primary, index ? 1 : 0));
       }
       const done = duplicate.done();
       if (done) issues.push(done);
@@ -242,7 +265,7 @@ export function mergeQuality(parts) {
     checks.total += quality.checked;
     checks.passed += quality.passed;
     rowCount += quality.rows;
-    for (const issue of quality.issues) issues.push({ ...issue, tab, title: tab ? `${tab} · ${issue.title}` : issue.title });
+    for (const issue of quality.issues) issues.push({ ...issue, tab, title: tab ? `${tab} · ${issue.title}` : issue.title, template: issue.template && tab ? `${tab} · ${issue.template}` : issue.template });
   }
   return finishQuality(checks, rowCount, issues);
 }

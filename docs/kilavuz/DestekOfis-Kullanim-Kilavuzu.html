@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
 <meta charset="utf-8">
-<title>DestekOfis Kısa Kullanım Kılavuzu (2.0.10)</title>
+<title>DestekOfis Kısa Kullanım Kılavuzu</title>
 <link rel="stylesheet" href="ortak.css">
 </head>
 <body>
@@ -11,32 +11,29 @@
 <section class="cover">
   <div class="brand"><b>D</b> DestekOfis</div>
   <h1>Kısa Kullanım Kılavuzu</h1>
-  <p class="sub">Sürüm 2.0.10 · Yalnızca bilmeniz gerekenler · 10 dakikada okunur</p>
+  <p class="sub">Sürüm 2.0.11 · Yalnızca bilmeniz gerekenler · 10 dakikada okunur</p>
 </section>
 
 <p>DestekOfis, Excel'de ya da Google Sheets'te tuttuğunuz tabloyu ofisteki herkesin aynı anda kullandığı bir çalışma alanına dönüştürür. Tablonuzu yüklersiniz; program kolonlarınızı tanır, ekranları ona göre kurar. Siz kayıtlara not, tahsilat, görev ve belge eklersiniz; <b>Excel dosyanız hiç bozulmaz</b>.</p>
 
 <figure class="narrow-svg">
-<svg viewBox="0 0 760 170" width="100%" role="img" aria-label="Sunucu bilgisayar ve personel bilgisayarları">
-  <rect x="270" y="40" width="220" height="90" rx="14" fill="#1f6a50"/>
-  <text x="380" y="78" text-anchor="middle" fill="#fff" font-size="17" font-weight="700">Sunucu bilgisayar</text>
-  <text x="380" y="102" text-anchor="middle" fill="#d7ece2" font-size="12">Kayıtlar ve yedekler burada</text>
-  <g fill="#fff" stroke="#c3d8cb" stroke-width="2"><rect x="20" y="10" width="170" height="44" rx="12"/><rect x="20" y="63" width="170" height="44" rx="12"/><rect x="20" y="116" width="170" height="44" rx="12"/></g>
-  <g font-size="13" fill="#142b25" text-anchor="middle"><text x="105" y="37">Personel bilgisayarı</text><text x="105" y="90">Personel bilgisayarı</text><text x="105" y="143">Personel bilgisayarı</text></g>
-  <g stroke="#8fb9a5" stroke-width="2.5"><line x1="190" y1="32" x2="270" y2="70"/><line x1="190" y1="85" x2="270" y2="85"/><line x1="190" y1="138" x2="270" y2="100"/></g>
-  <rect x="580" y="52" width="160" height="66" rx="14" fill="#fbf3e2" stroke="#ecd9ad" stroke-width="2"/>
-  <text x="660" y="80" text-anchor="middle" fill="#6b4d12" font-size="14" font-weight="700">Lisans servisi</text>
-  <text x="660" y="100" text-anchor="middle" fill="#6b4d12" font-size="11">(internette)</text>
-  <line x1="490" y1="85" x2="580" y2="85" stroke="#cf9f4b" stroke-width="2.5" stroke-dasharray="6 5"/>
+<svg viewBox="0 0 560 170" width="100%" role="img" aria-label="Sunucu bilgisayar ve personel bilgisayarları">
+  <rect x="300" y="40" width="240" height="90" rx="14" fill="#1f6a50"/>
+  <text x="420" y="78" text-anchor="middle" fill="#fff" font-size="17" font-weight="700">Sunucu Bilgisayar</text>
+  <text x="420" y="102" text-anchor="middle" fill="#d7ece2" font-size="12">Kayıtlar ve yedekler burada</text>
+  <g fill="#fff" stroke="#c3d8cb" stroke-width="2"><rect x="20" y="10" width="190" height="44" rx="12"/><rect x="20" y="63" width="190" height="44" rx="12"/><rect x="20" y="116" width="190" height="44" rx="12"/></g>
+  <g font-size="13" fill="#142b25" text-anchor="middle"><text x="115" y="37">Personel Bilgisayarı</text><text x="115" y="90">Personel Bilgisayarı</text><text x="115" y="143">Personel Bilgisayarı</text></g>
+  <g stroke="#8fb9a5" stroke-width="2.5"><line x1="210" y1="32" x2="300" y2="70"/><line x1="210" y1="85" x2="300" y2="85"/><line x1="210" y1="138" x2="300" y2="100"/></g>
 </svg>
 <figcaption>Kayıtlar tek bilgisayarda (sunucu) durur; diğer bilgisayarlar ona bağlanır. Sunucu gün boyu açık kalmalıdır.</figcaption>
 </figure>
 
 <ol class="toc">
-  <li>Kurulum ve ilk giriş</li>
-  <li>Verinizi yükleyin</li>
-  <li>Ana ekran</li>
-  <li>Kayıtla çalışmak</li>
+  <li>Kurulum ve İlk Giriş</li>
+  <li>Verinizi Yükleyin</li>
+  <li>Ana Ekran</li>
+  <li>Veri Sağlığı</li>
+  <li>Kayıtla Çalışmak</li>
   <li>Uyarılar</li>
   <li>Kasa</li>
   <li>Cari</li>
@@ -45,203 +42,203 @@
   <li>Çek / Senet</li>
   <li>ANLIK DURUM</li>
   <li>Raporlar</li>
-  <li>Belgeler ve mesajlar</li>
-  <li>Yönetici için</li>
-  <li>Bir sorun mu var?</li>
+  <li>Belgeler ve Mesajlar</li>
+  <li>Yönetici İçin</li>
+  <li>Bir Sorun mu Var?</li>
 </ol>
 
-<h2>1. Kurulum ve ilk giriş</h2>
+<h2>1. Kurulum ve İlk Giriş</h2>
 <ol class="steps">
-  <li><b>Sunucu bilgisayara</b> kurulum dosyasını (<i>DestekOfis-Kurulum.exe</i>) çalıştırın, <b>Sunucu bilgisayar</b>'ı seçip <b>Kur</b>'a basın. Windows "bilgisayarınızı korudu" derse <b>Ek bilgi → Yine de çalıştır</b>.</li>
+  <li><b>Sunucu bilgisayara</b> kurulum dosyasını (<i>DestekOfis-Kurulum.exe</i>) çalıştırın, <b>Sunucu Bilgisayar</b>'ı seçip <b>Kur</b>'a basın. Windows "bilgisayarınızı korudu" derse <b>Ek bilgi → Yine de çalıştır</b>.</li>
   <li><b>Personel bilgisayarlarına</b> aynı dosyayı kurun. Program sunucuyu ağda kendisi bulur; masaüstündeki DestekOfis simgesiyle açılır.</li>
   <li>İlk girişi sunucudan yapın: kullanıcı adı <b>admin</b>, parola <b>Ofis2026!</b>. Program yeni bir parola ister; not edin.</li>
 </ol>
 <figure class="narrow"><img src="ekran/k01-giris.jpg" alt="Giriş ekranı"></figure>
-<div class="box warn"><b class="t">İlk iş: kurtarma anahtarı (2.0.10)</b><b>Yönetim → Kullanıcılar → Kurtarma anahtarı oluştur</b>'a basın, çıkan anahtarı <b>yazdırın</b> ve güvenli bir yerde saklayın. Yönetici parolanızı unutursanız giriş ekranındaki <b>Parolamı unuttum</b> ile bu anahtarla yeni parola belirlersiniz; üyelik, internet ve ücret gerekmez. Ayrıntı: 14. bölüm.</div>
-<div class="box tip"><b class="t">Deneme kendiliğinden başlar</b>Sunucu internete bağlıysa 30 günlük deneme birkaç saniyede başlar. Lisans anahtarınızı <b>Yönetim → Lisans</b>'a yazarsınız. Süre dolsa da hiçbir kayıt silinmez.</div>
+<div class="box warn"><b class="t">İlk İş: Kurtarma Anahtarı</b><b>Yönetim → Kullanıcılar → Kurtarma Anahtarı Oluştur</b>'a basın, anahtarı <b>yazdırın</b> ve güvenli bir yerde saklayın. Yönetici parolanızı unutursanız giriş ekranındaki <b>Parolamı Unuttum</b> ile bu anahtarla yeni parola belirlersiniz (15. bölüm).</div>
+<div class="box tip"><b class="t">Deneme Kendiliğinden Başlar</b>Sunucu internete bağlıysa 30 günlük deneme birkaç saniyede başlar. Lisans anahtarınızı <b>Yönetim → Lisans</b>'a yazarsınız. Süre dolsa da hiçbir kayıt silinmez.</div>
 
-<h2>2. Verinizi yükleyin</h2>
+<h2>2. Verinizi Yükleyin</h2>
 <ol class="steps">
-  <li>Excel dosyanızı ekrandaki kutuya <b>sürükleyin</b> ya da Google Sheets bağlantısını yapıştırıp <b>Bağla</b>'ya basın. Açılan <b>Ön izleme</b> penceresinde program her kolonu ne saydığını yazar; sarı olan kolon ya da hücre varsa bakın, gerekirse açılır listeden doğru türü seçin (ör. <i>Son tarih / Vade</i>), sonra <b>Yükle</b>'ye basın. Bozuk satırlar sizi durdurmaz: <b>İşaretlenen hatalar</b> sekmesine gider, düzeltip <b>Sorun yok</b> dersiniz.</li>
-  <li>Program tablonuzu okur ve sektörünüzü önerir. Doğruysa <b>Evet, uygula</b>; değilse <b>Başka sektör seç</b>.</li>
-  <li>Sektörünüz listede yoksa <b>Kendi sektörünü oluştur</b>: adını ve kayıtlarınıza ne dediğinizi (öğrenci, tekne, hasta…) yazın, <b>Kaydet ve uygula</b>. Ekranlar sizin kelimelerinizle konuşur.</li>
+  <li>Excel dosyanızı açılış ekranındaki kutuya <b>sürükleyin</b> (ya da <b>Excel Dosyası Seçin</b>) veya Google Sheets bağlantısını yapıştırıp <b>Bağla</b>'ya basın.</li>
+  <li>Açılan ön izlemede program her kolonu ne saydığını yazar. <b>Sarı</b> olan varsa bakın, gerekirse açılır listeden doğru türü seçin (ör. <i>Son Tarih / Vade</i>), sonra <b>Yükle</b>.</li>
+  <li>Program sektörünüzü önerir: doğruysa <b>Evet, Uygula</b>; değilse <b>Başka Sektör Seç</b>. Listede yoksa <b>Kendi Sektörünüzü Oluşturun</b>: kayıtlarınıza ne dediğinizi (öğrenci, tekne, hasta…) yazın, <b>Kaydet ve Uygula</b>.</li>
 </ol>
-<p><b>Exceliniz yok mu? (2.0.9)</b> Açılış ekranında yükleme kutusunun altındaki <b>Taslak Excel'i indir</b>'e basın, sektörünüzü seçin (ör. "okul servisi" yazın). Sektörünüze uygun başlıklarla boş bir Excel iner: kişi, telefon, tutar, tarih ve ödeme ayları hazırdır; başlığa tıklayınca ne yazılacağı görünür, <i>Durum</i> gibi kolonlarda açılır liste vardır. Satırları doldurup kaydedin ve aynı ekrandan yükleyin: program sektörü, kişileri, telefonları, tutarları ve ödeme günlerini kendiliğinden tanır; ödenmemiş aylar tahsilat takvimine ve Vade takibe girer. Veri yükledikten sonra da <b>Veri ve eşitleme</b> penceresinden taslak indirebilirsiniz; indirmek verinize dokunmaz.</p>
-<figure class="w80"><img src="ekran/k15-taslak-excel.jpg" alt="Açılış ekranında taslak Excel kartı"><figcaption>Açılış ekranı: Excel'i yükleyin; yoksa sektörünüze uygun taslağı indirip doldurun.</figcaption></figure>
 <div class="pair">
 <figure><img src="ekran/k03-analiz.jpg" alt="Veri analizi ve sektör önerisi"><figcaption>Program ne bulduğunu ve neden o sektörü önerdiğini gösterir; siz onaylamadan hiçbir şey değişmez.</figcaption></figure>
-<figure><img src="ekran/k09-kendi-sektorun.jpg" alt="Kendi sektörünü oluşturma kartı"><figcaption>Kendi sektörünüz: alttaki önizleme ekranların nasıl görüneceğini gösterir.</figcaption></figure>
+<figure><img src="ekran/k09-kendi-sektorun.jpg" alt="Kendi sektörünü oluşturma"><figcaption>Kendi sektörünüz: alttaki ön izleme ekranların nasıl görüneceğini gösterir.</figcaption></figure>
 </div>
-<div class="box"><b class="t">Excel'deki her şey gelir</b>Tüm sayfalar sekme olur; formüller programda da hesaplanır; Excel'deki <b>açılır listeler</b> ve birleşik giriş kutuları programda da açılır liste olur. Google Sheets bağlıysa değişiklikler kendiliğinden eşitlenir. Dosyanız "düzgün tablo" olmak zorunda değil: üstte açıklama satırları, iki satırlı ya da birleştirilmiş başlıklar, yan yana tablolar, toplam ve dipnot satırları, başlıksız listeler, yan çevrilmiş sayfalar ve formlar da doğru okunur. Yükleme penceresindeki <b>okuma raporu</b> hangi satırların neden kayıt sayılmadığını gösterir; bir şey ters giderse orada yazar. Dosyada kolon adını değiştirdiyseniz ("Müvekkil" → "Müvekkil Adı") program eski kolonla eşler ve düzeltmelerinizi taşır. Biçimi bozuk hücreler tabloda <b>kırmızı</b> görünür; <b>Veri sağlığı</b> kartındaki <b>Toplu düzeltmeler</b> aynı türden farklı yazılmış telefon, tarih ve durumları tek tıkla düzeltir (Geri al ile döner). Analiz penceresindeki <b>Neden?</b> her kolon için kararın kanıtlarını gösterir.</div>
+<p><b>Exceliniz yok mu?</b> Açılış ekranındaki <b>Taslak Excel'i İndir</b>'e basın, sektörünüzü seçin. Sektörünüze uygun başlıklarla boş bir Excel iner; doldurup aynı ekrandan yükleyin.</p>
+<figure class="w80"><img src="ekran/k15-taslak-excel.jpg" alt="Açılış ekranı"><figcaption>Açılış ekranı: Excel'i yükleyin ya da Google Sheets bağlantısını yapıştırın; yoksa taslağı indirip doldurun.</figcaption></figure>
+<div class="box"><b class="t">Excel'deki Her Şey Gelir</b>Tüm sayfalar sekme olur; formüller programda da hesaplanır; açılır listeler programda da açılır liste olur. Google Sheets bağlıysa değişiklikler kendiliğinden gelir. Okunamayan satırlar sizi durdurmaz: <b>İşaretlenen hatalar</b> sekmesine gider, düzeltip <b>Sorun Yok</b> dersiniz.</div>
 
-<h2>3. Ana ekran</h2>
+<h2>3. Ana Ekran</h2>
 <figure><img src="ekran/k04-ana-ekran.jpg" alt="Ana ekran"></figure>
 <ul>
-  <li><b>Sol menü · Operasyon Merkezi:</b> Görevler, Mesajlar, Yeni kayıt, Kasa, Taksitler ve bu kılavuz.</li>
+  <li><b>Sol menü · Operasyon Merkezi:</b> Görevler, Mesajlar, Görev Ata, Yeni Kayıt, Kasa, Cari, Taksitler, Stok, Çek / Senet, Raporlar, Personel Raporu ve bu kılavuz. Köşedeki kalemle düğmelere kendi adlarınızı verebilirsiniz.</li>
+  <li><b>Kullanıcı kartı:</b> Profil, Parola, Yönetim (yalnız yönetici) ve Çıkış. Hemen altındaki <b>Ayarlar</b> veri kaynağını, eşitlemeyi, sektörü ve görünümü açar (yönetici).</li>
   <li><b>Üstte zil:</b> bekleyen tahsilatlar, son günü yaklaşan işler ve görevleriniz.</li>
-  <li><b>Tahsilat takvimi şeridi:</b> vadesi gelen ödemeler; bir pile tıklayınca tahsilat girilir.</li>
-  <li><b>ANLIK DURUM (yalnız yönetici):</b> üstte ortada; Kasa, kritik stok, toplam alacak ve borç (11. bölüm).</li>
-  <li><b>Sekmeler:</b> Excel'deki sayfalarınız. Seçili sekmenin yanındaki <b>✎</b> ile adını değiştirin ya da silin. <b>+ Sayfa</b> üç yol sunar: <b>Boş sayfa</b> (Excel gibi kendiniz doldurun), <b>Excel dosyasından aktar</b> (dosyayı seçin ya da sürükleyin, sayfayı seçin, ön izlemeye bakıp <b>Sayfayı aktar</b>) ve <b>Google Sheets'ten aktar</b> (paylaşılan tablonun bağlantısı). Başlıklar, değerler ve formüller gelir; formüller programda hesaplanır, başka sayfaya bağlı formül Excel'deki değeriyle kalır. Ana tablonuz değişmez.</li>
-  <li><b>Tablo:</b> başlığın sağında <b>Dışa aktar</b> (Excel/CSV), <b>Yenile</b> ve <b>Sık görünüm</b>; altında açık yeşil <b>arama kutusu</b> (programdaki bütün arama kutuları aynı görünür). Tüm kolonlarınız burada. Sığmayanlar için tablonun altındaki <b>kaydırma çubuğunu</b> sağa çekin; ilk kolon hep görünür kalır. Bir kolonu daraltmak ya da genişletmek için başlığın sağ kenarındaki çizgiyi <b>sürükleyin</b> (çift tıklayınca kendi genişliğine döner); ayar bu bilgisayarda hatırlanır.</li>
+  <li><b>ANLIK DURUM</b> (yalnız yönetici) ve <b>özet kartları:</b> toplam kayıt, tutar toplamı, Veri Sağlığı. Karta tıklayınca ilgili liste açılır.</li>
+  <li><b>Tahsilat Takvimi şeridi:</b> vadesi gelen ödemeler; bir pile tıklayınca tahsilat girilir.</li>
+  <li><b>Sekmeler:</b> Excel'deki sayfalarınız. <b>✎</b> ile adını değiştirin ya da silin. <b>+ Sayfa</b>: <b>Boş Sayfa</b>, <b>Excel Dosyasından Aktar</b> ya da <b>Google Sheets'ten Aktar</b>.</li>
+  <li><b>Tablo:</b> üstünde <b>Dışa Aktar</b> (Excel/CSV), yenile ve sık görünüm; altında arama kutusu (kutunun her yerine tıklayıp yazabilirsiniz, Enter ilk sonuca gider). Kolon genişliğini başlığın sağ kenarından sürükleyin; çift tık eski haline döndürür.</li>
   <li><b>Sağda detay kartı:</b> seçtiğiniz kaydın bütün bilgileri ve işlemleri.</li>
 </ul>
-<figure class="w80"><img src="ekran/k19-sayfa-excel.jpg" alt="+ Sayfa: Excel dosyasından aktarma"><figcaption>+ Sayfa → Excel dosyasından aktar: sayfayı seçin, ön izlemeye bakın; başlık satırı kendiliğinden bulunur, formüller programda çalışır.</figcaption></figure>
+<p><b>Açık pencereler kendiliğinden yenilenir:</b> Kasa, Cari, Taksitler, Stok, Çek / Senet ya da Raporlar açıkken siz ya da ofisteki başka biri bir işlem yaparsa (ör. bağlı bir çek hareketini silmek) pencere kapatıp açmadan güncellenir.</p>
+<figure class="w80"><img src="ekran/k19-sayfa-excel.jpg" alt="+ Sayfa: Excel dosyasından aktarma"><figcaption>+ Sayfa → Excel Dosyasından Aktar: sayfayı seçin, ön izlemeye bakın, <b>Sayfayı Aktar</b>.</figcaption></figure>
 
-<h2>4. Kayıtla çalışmak</h2>
+<h2>4. Veri Sağlığı</h2>
+<p>Ana ekrandaki <b>Veri Sağlığı</b> kartı tablonuzdaki eksik ve hatalı hücreleri sayar (kimliği boş kayıt, geçersiz telefon, okunamayan tarih…). Karta tıklayın:</p>
+<ul>
+  <li>Kayda tıklayınca tabloda o satıra gidersiniz; düzeltmeyi tablodan yaparsınız.</li>
+  <li>Bilerek böyle olan bir uyarıyı <b>Yok Say</b> ile kapatın: tek kayıt için satırın yanındaki, hepsi için başlıktaki <b>Yok Say (N)</b>. Puan buna göre yükselir (%100'e kadar); karar ofisteki herkes için geçerlidir ve yeni yüklemede de korunur. Yeni hatalı kayıt gelirse yalnız o uyarır.</li>
+  <li>Fikrinizi değiştirirseniz pencerenin altındaki <b>Yok Sayılanlar</b>'dan <b>Geri Al</b>.</li>
+  <li><b>Toplu Düzeltmeler</b> aynı türden farklı yazılmış telefon, tarih ve durumları tek tıkla tek yazıma çevirir.</li>
+</ul>
+<figure class="w80"><img src="ekran/k23-veri-sagligi.jpg" alt="Veri Sağlığı penceresi"><figcaption>Veri Sağlığı: kayıt başına ya da toptan <b>Yok Say</b>.</figcaption></figure>
+
+<h2>5. Kayıtla Çalışmak</h2>
 <ol class="steps">
-  <li>Tablodan bir satıra tıklayın; sağda kaydın kartı açılır. Arama kutusu tüm sekmelerde arar. Uzun listeler 20'şer satırlık sayfalar hâlinde gelir (alttaki sayfa düğmeleri); binlerce kayıtta da yazdıkça anında süzülür.</li>
-  <li>Bir bilgiyi değiştirmek için üzerine gelip sağdaki <b>✎</b>'ye basın ya da <b>Düzenle</b> ile hepsini birden değiştirin. Kim, ne zaman değiştirdi kaydedilir. Tarih uyarıları buraya yazılan değerden gelir.</li>
-  <li><b>Sütun ekle / sil:</b> tablodaki bir sütun başlığının üzerine gelin (yönetici): üstte küçük <b>+ Ekle</b> ve kırmızı <b>× Sil</b> çıkar. Ekle o sütunun sağına yeni sütun açar; Sil sütunu tüm hücreleriyle kaldırır, sağdakiler sola kayar. Excel/Sheets dosyanız değişmez; <b>Geri al</b> ya da <b>Yönetim → Silinenler</b> geri getirir.</li>
-  <li><b>Kolonun adı başka, değeri başka:</b> başlığın hemen yanındaki küçük metin kutusu simgesi (yöneticide, başlığın üzerine gelince) kolonun <i>adını</i> tüm kayıtlarda değiştirir. Oraya tarih yazarsanız program ad olarak kaydetmez, tarihi açık kayda yazmayı önerir.</li>
-  <li><b>▾</b> işaretli alanlar açılır listedir: tıklayın, listeden seçin, kaydedilir.</li>
-  <li>Kartın düğmeleriyle <b>Not</b>, <b>Telefon</b>, <b>Tahsilat</b>, <b>Görev</b> ve <b>Belge</b> ekleyin. <b>Telefon</b> kayıttaki numaraları <b>Ara</b> ve <b>WhatsApp</b> düğmeleriyle gösterir; altından yeni numara eklenir. Yeni kayıt için sol menüden <b>Yeni kayıt</b>; tabloyu Excel'e almak için tablo başlığının sağındaki <b>Dışa aktar</b>.</li>
+  <li>Tablodan bir satıra tıklayın; sağda kaydın kartı açılır. Arama kutusu tüm sekmelerde arar.</li>
+  <li>Bir bilgiyi değiştirmek için üzerine gelip <b>✎</b>'ye basın ya da <b>Düzenle</b> ile hepsini birden değiştirin. Kim, ne zaman değiştirdi kaydedilir.</li>
+  <li><b>▾</b> işaretli alanlar açılır listedir: tıklayın, listeden seçin.</li>
+  <li>Kartın düğmeleriyle <b>Not</b>, <b>Telefon</b>, <b>Tahsilat</b>, <b>Görev</b> ve <b>Belge</b> ekleyin; <b>WhatsApp</b> kayıttaki numaraya yazar.</li>
+  <li><b>Sütun ekle / sil</b> (yönetici): başlığın üzerine gelin; <b>+ Ekle</b> sağına yeni sütun açar, <b>× Sil</b> sütunu kaldırır. Excel dosyanız değişmez; <b>Geri Al</b> ya da <b>Yönetim → Silinenler</b> geri getirir.</li>
 </ol>
 <figure class="narrow"><img src="ekran/k05-detay-acilir-liste.jpg" alt="Detay kartında açılır liste"><figcaption>Excel'deki açılır liste kartta da açılır liste olarak çalışır.</figcaption></figure>
+<p><b>Yeni kayıt ve cari birlikte:</b> sol menüdeki <b>Yeni Kayıt</b> formunda <i>Bu kişi için cari kartı da aç</i> kutusu açıktır. Kaydedince kişi tabloya da Cari'ye de girer ve ikisi birbirine bağlanır; kişiyi bir kez girersiniz. Aynı ad ve telefonla bir cari zaten varsa yenisi açılmaz, o cari bağlanır.</p>
 
-<p><b>Yeni kayıt ve cari birlikte (2.0.7):</b> sol menüdeki <b>Yeni kayıt</b> formunun altında <b>Bu kişi için cari kartı da aç</b> kutusu vardır ve açıktır. Kaydedince kişinin kaydı tabloya, cari kartı Cari'ye açılır ve ikisi birbirine bağlanır; kişiyi bir kez girersiniz. Aynı ad ve telefonla daha önce açılmış bir cari varsa yenisi açılmaz, o cari bu kayda bağlanır. Cari istemiyorsanız kutuyu kaldırın.</p>
-
-<h2>5. Uyarılar</h2>
-<p>Vadesi gelen tahsilatlar, son günü yaklaşan işler (sigorta, muayene, sözleşme bitişi…) ve görevler ekranın sağ altında <b>tek tek</b> belirir. Her uyarı <b>20 saniye</b> kalır; iki uyarı arasında <b>10 saniye</b> boşluk olur. Üzerine gelirseniz bekler.</p>
+<h2>6. Uyarılar</h2>
+<p>Vadesi gelen tahsilatlar, son günü yaklaşan işler ve görevler sağ altta <b>tek tek</b> belirir; her uyarı 20 saniye kalır, üzerine gelirseniz bekler.</p>
 <figure class="half"><img src="ekran/k06-uyari.jpg" alt="Uyarı kartı"></figure>
 <ul>
-  <li><b>✓ Gerçekleştirildi:</b> iş yapıldıysa basın. Uyarıya sebep olan hücreye "Gerçekleştirildi" yazılır (tarih silinmez) ve uyarı bir daha gelmez. Yanlışlıkla bastıysanız çıkan bildirimdeki <b>Geri al</b>.</li>
-  <li><b>Tahsilat gir:</b> ödemeyi kaydeder; tutar kasaya da düşer.</li>
-  <li><b>Kayda git:</b> ilgili kaydı açar.</li>
+  <li><b>Tahsilat Gir:</b> ödemeyi kaydeder; tutar Kasa'ya da düşer.</li>
+  <li><b>✓ Gerçekleştirildi:</b> iş yapıldıysa basın; hücreye "Gerçekleştirildi" yazılır ve uyarı bir daha gelmez (bildirimdeki <b>Geri Al</b> ile döner).</li>
+  <li><b>Kayda Git:</b> ilgili kaydı açar.</li>
 </ul>
-<p><b>Ay sütunlu tablolar (Ocak–Aralık):</b> ay hücresine taksit tutarını yazarsanız (Eylül 10.000, Ekim 10.000) program o ayı <b>ödenecek taksit</b> sayar ve ayı gelince uyarır. Ödendiğini kart detayındaki <b>Tahsilat</b>'tan anlar; tahsilat notuna ayı yazın ("eylül taksiti") ya da kayan pilden tahsilat girin. Hücreye "ödendi" yazmak ya da uyarıda <b>Gerçekleştirildi</b> demek de o ayı kapatır. Tablonuzda ayrı bir <b>Aylık ücret</b> kolonu varsa ay hücresine yazılan tutar ödenen para sayılır. İlk yazılı aydan önceki ve son taksitten sonraki boş aylar borç değildir.</p>
-<p><b>Acil görev:</b> size acil öncelikli görev atanınca ekranda kırmızı bildirim çıkar; sağ altta ve zilde <b>ACİL GÖREV</b> olarak görev tamamlanana kadar kalır. Görevler rozeti kırmızı olur.</p>
-<p>Uyarıların hepsini üstteki <b>zil</b>de görürsünüz. <b>✕</b> ile bir uyarıyı yalnızca kendi listenizden kaldırabilirsiniz.</p>
+<p><b>Ay sütunlu tablolar (Ocak–Aralık):</b> ay hücresine taksit tutarını yazarsanız program o ayı ödenecek taksit sayar ve ayı gelince uyarır. Tahsilatı kayıttan ya da kayan pilden girin; hücreye "ödendi" yazmak da o ayı kapatır.</p>
+<p><b>Acil görev</b> kırmızı bildirimle gelir ve tamamlanana kadar zilde kalır. Bütün uyarılar üstteki <b>zil</b>dedir; <b>✕</b> ile kendi listenizden kaldırırsınız.</p>
 
-<h2>6. Kasa</h2>
-<p>Sol menüden <b>Kasa</b>. Kayıtlara girdiğiniz tahsilatlar kasaya kendiliğinden gelir. Diğer gelir ve giderleri <b>+ Tahsilat</b> ve <b>− Ödeme</b> ile ekleyin. Dönemi <b>Bu ay, Geçen ay, Bu yıl</b> ya da <b>Tarih aralığı</b> ile seçin; <b>PDF indir</b> ile kasa dökümünü alın.</p>
+<h2>7. Kasa</h2>
+<p>Sol menüden <b>Kasa</b>. Kayıtlara, carilere ve taksitlere girdiğiniz tahsilatlar Kasa'ya kendiliğinden gelir. Diğer gelir ve giderleri <b>+ Tahsilat</b> ve <b>− Ödeme</b> ile ekleyin. Dönemi <b>Bu Ay</b>, <b>Geçen Ay</b>, <b>Bu Yıl</b>, <b>Tümü</b> ya da <b>Tarih Aralığı</b> ile seçin; <b>PDF İndir</b> ile kasa dökümünü alın. Çek / senet ya da stoktan gelen satırın yanındaki <b>↗</b> kaynağını açar.</p>
 <figure class="w80"><img src="ekran/k08-kasa.jpg" alt="Kasa"></figure>
 
-<h2>7. Cari</h2>
-<p>Sol menüden <b>Cari</b>. Müşteri, öğrenci, veli, site sakini, hasta, tedarikçi: kiminle para alışverişi yapıyorsanız onun kartı. Fatura ve KDV yoktur; her sektöre uyar. Taksit kartları bir cariye aittir.</p>
+<h2>8. Cari</h2>
+<p>Sol menüden <b>Cari</b>. Kiminle para alışverişi yapıyorsanız (müşteri, öğrenci, veli, site sakini, tedarikçi) onun hesap kartı.</p>
 <ol class="steps">
-  <li><b>Carileri toplu açın:</b> <b>Excel / Sheets’ten yükle</b> ile Excel dosyanızı seçin ya da Google Sheets bağlantısını yapıştırın (Sheet’i “bağlantıya sahip olan herkes: görüntüleyen” paylaşın); binlerce kişi tek seferde gelir ya da <b>Tablodan al</b> ile ortadaki tablonun açık sekmesindeki kişileri alın. Program ad, telefon, adres, kayıt tarihi, grup kolonlarını tanır (başlık tanınmasa da değere bakar: telefon, e-posta, tarih); yüklemeden önce <b>doğrulama raporu</b> çıkar: kaç satır hazır, hangi satırda ne sorun var (adı boş satır alınmaz; okunamayan tarih/tutar uyarıyla alınır), eşlemeyi değiştirdikçe rapor yenilenir. <b>Excel’de ne varsa</b> (Veli, Okul, Plaka, Servis ücreti…) kartta aynı adla görünür. Taksit sorulmaz. Aynı kişi ikinci kez açılmaz; emin olunamayan satır yeni cari olur, başkasının hesabına yazılmaz. <b>Tablodan al</b> ile gelen her cari kendi kaydına bağlanır.</li>
-  <li><b>Toplu taksitlendirin:</b> listede soldaki kutularla carileri seçin (başlıktaki kutu görünenlerin hepsini seçer) → <b>Seçilenlere taksit planı</b>. Tutar herkese aynı olabilir ya da her carinin kartındaki alandan okunur (ör. <i>SERVİS ÜCRETİ</i>). Taksit sayısı, ilk vade ve aralığı yazın. Açık taksit kartı olan cari atlanır, çift plan açılmaz.</li>
-  <li><b>Hareket girin:</b> kartta <b>+ Tahsilat</b> (Kasa’ya girer, makbuzu alınır), <b>Borç yaz</b> (cari size borçlanır), <b>Alacak yaz</b> (siz cariye borçlanırsınız), <b>− Ödeme</b> (Kasa’dan çıkar). Açık taksit kartı varsa <b>+ Tahsilat</b> önce sorar: <b>taksite yaz</b> (taksitten düşer) ya da <b>taksit dışı</b>.</li>
+  <li><b>Carileri toplu açın:</b> <b>Excel / Sheets’ten Yükle</b> (binlerce kişi tek seferde) ya da <b>Tablodan Al</b> (ortadaki tablodaki kişiler, kayıtlarına bağlı). Yüklemeden önce hangi satırın hazır, hangisinde sorun olduğu gösterilir. Aynı kişi ikinci kez açılmaz; Excel'deki ek kolonlar (Veli, Okul, Plaka…) kartta aynı adla görünür.</li>
+  <li><b>Tek cari:</b> <b>+ Yeni Cari</b>. <b>Tablodaki Kayıt</b> alanı cariyi tablodaki kişiye bağlar; aynı adlı iki kişi varsa program tahmin etmez, listeden siz seçersiniz.</li>
+  <li><b>Hareket girin:</b> kartta <b>+ Tahsilat</b> (Kasa'ya girer, makbuzu alınır), <b>Borç Yaz</b>, <b>Alacak Yaz</b>, <b>− Ödeme</b> (Kasa'dan çıkar). Açık taksit kartı varsa tahsilatı taksite mi yazacağınız sorulur.</li>
 </ol>
 <ul>
-  <li><b>Bakiye:</b> borç − alacak. <b style="color:#177245">Borçlu</b> (yeşil): cari size borçlu; <b style="color:#b3473a">Alacaklı</b> (kırmızı): siz cariye borçlusunuz; <b>Kapalı</b>: bakiye sıfır. Listede, kartta, raporlarda, PDF ve Excel'de aynı sözcük ve renk. Taksit planı carinin borcuna, taksit tahsilatı alacağına yazılır; karttaki <b>Hareketler</b> yürüyen bakiyeyle ekstre gibi okunur.</li>
-  <li><b>Arama ve süzgeç:</b> ad, telefonun rakamları, cari no, adres ve ek alanlarda arar; tür, grup, bakiye (<i>Tüm bakiyeler, Borçlular, Alacaklılar, Sadece bakiyesi olanlar, Bakiyesi sıfır, Taksidi gecikenler</i>) ve sıralama. Üstteki kutular borçlu ve alacaklı carilerin toplamını ve sayısını gösterir.</li>
-  <li><b>Çıktı:</b> listede <b>PDF</b>, <b>Yazdır</b> ve <b>Excel</b>: süzgeç yoksa tüm cariler, süzgeç varsa yalnız süzülenler (Excel’de tüm ek alanlar); kartta cari ekstre PDF’i.</li>
-  <li><b>Tablodaki kayıt (2.0.7):</b> <b>+ Yeni cari</b> ya da <b>Düzenle</b> formundaki <b>Tablodaki kayıt</b> alanı cariyi ortadaki tablodaki kişiye bağlar. Ad yazınca tabloda aynı adlı tek kayıt varsa kendiliğinden seçilir (yanlışsa × ile kaldırın); aynı ad iki kişideyse program tahmin etmez, listeden siz seçersiniz. Bir kayda tek cari bağlanır.</li>
-  <li>Ortadaki tablodaki kişinin kartında carisinin bakiyesi görünür; <b>Cari kartı</b> ile açılır. Cari açma, borç/alacak/ödeme ve toplu taksit yönetici, uzman ve muhasebe yetkisidir; herkes tahsilat girer.</li>
+  <li><b>Bakiye</b> = borç − alacak. <b style="color:#177245">Borçlu</b>: cari size borçlu; <b style="color:#b3473a">Alacaklı</b>: siz cariye borçlusunuz; <b>Kapalı</b>: bakiye sıfır. Listede, kartta, raporlarda ve çıktılarda aynı sözcük ve renk.</li>
+  <li><b>Arama ve süzgeç:</b> ad, telefon, cari no, adres ve ek alanlar; tür, grup, bakiye (Borçlular, Alacaklılar, Taksidi Gecikenler…).</li>
+  <li><b>Çıktı:</b> listede PDF, Yazdır ve Excel (süzgeç varsa yalnız süzülenler); kartta cari ekstre PDF'i.</li>
 </ul>
 
-<h2>8. Taksitler</h2>
-<p>Sol menüden <b>Taksitler</b>. Öğrenci, veli, site sakini, müşteri gibi kişilerin taksitli borçlarını Excel'den bağımsız takip eder. Kartlar <b>Grup › Alt grup</b> ile düzenlenir: servis plakası › güzergâh, site › blok, okul › sınıf gibi. Üstteki süzgeçlerle "42 C 1070 plakasının 15 Temmuz güzergâhına kimler gidiyor" listesini anında alırsınız.</p>
+<h2>9. Taksitler</h2>
+<p>Sol menüden <b>Taksitler</b>. Kişilerin taksitli borçlarını takip eder. Kartlar <b>Grup › Alt Grup</b> ile düzenlenir (servis plakası › güzergâh, site › blok, okul › sınıf). Grup listesi her grubun kaç kartı ve kaç carisi olduğunu gösterir: <i>34 SRV 202 · 0 kart · 3 cari</i>.</p>
 <ol class="steps">
-  <li><b>Kart açın:</b> <b>+ Yeni kart</b> → <b>Cari</b> (kişinin carisi varsa seçin; ad yazınca aynı adlı tek cari kendiliğinden seçilir; seçmezseniz aynı ad ve telefonlu cari kullanılır, yoksa bu adla yeni cari açılır), ad soyad, <b>Tablodaki kayıt</b> (kayda bağlı cari seçilince kendiliğinden dolar), <b>kayıt tarihi</b> (bugün hazır gelir), telefon, toplam tutar, grup ve alt grup (yoksa "Yeni grup yaz" ile o anda tanımlanır), bilgi notu. <b>Taksitler</b>: <i>Toplamı eşit taksitlere böl</i> (taksit sayısı ve ilk vade), <i>Elle gireceğim</i> (kart açılınca ilk taksit formu hemen gelir; sonrakiler <b>+ Taksit</b> ile) ya da <i>Şimdilik yok</i>.</li>
-  <li><b>Taksitleri kurun:</b> kartın üstündeki <b>Otomatik dağıt</b> (taksit sayısı, ilk vade, aralık) toplamı eşit böler; her ay aynı gün, kuruş farkı son taksitte. İsterseniz <b>+ Taksit</b> ile serbest tutar ve tarihle tek tek girin; her taksit ✎ ile düzeltilir.</li>
-  <li><b>Tahsilat girin:</b> <b>+ Tahsilat</b> ya da taksitin yanındaki <b>₺</b>. Tutar sıradaki taksit kadar hazır gelir; tahsilat en eski açık taksite sayılır, fazlası sonrakine geçer. Kaydedince <b>Kasa</b>'ya düşer ve hareketler listesinden <b>makbuz</b> (PDF) alınır. Makbuz <b>A5</b> boyutundadır: yazıcıya A5 kâğıt koyup yazdırın. Üstte firmanızın adı yazar (<b>Yönetim → Ofis adı</b>; girilmemişse boş kalır). Müşteriye iade ya da onun adına ödeme için <b>− Ödeme / iade</b>.</li>
-  <li><b>Excel'den ilk yükleme:</b> listeniz Excel'deyse <b>Excel'den yükle</b>: dosyayı seçin, program kolonları tanır (Sıra No, Ad Soyad, Kayıt tarihi, Grup, Alt grup, Telefon, Toplam tutar, Taksit ücreti, Taksit sayısı, İlk vade, Not; kayıt tarihi yoksa bugün yazılır); yanlışsa düzeltin, <b>Kartları oluştur</b>. Gruplar tanımlanır, taksitler dağıtılır; aynı adla açık kart varsa satır atlanır. Sonrasında Excel'e gerek kalmaz.</li>
+  <li><b>Tek kart:</b> <b>+ Yeni Kart</b> → cariyi seçin (ad yazınca bulunur; yoksa bu adla cari açılır), toplam tutar, grup ve taksit sayısı / ilk vade. Taksitleri sonra <b>Otomatik Dağıt</b> ya da <b>+ Taksit</b> ile de kurabilirsiniz.</li>
+  <li><b>Birden çok cariye birden:</b> <b>+ Toplu Taksitlendir</b> ya da süzgeç satırındaki <b>Cari Seç</b>. Açılan pencerede grup, alt grup ve adla süzün, kutularla carileri seçin (başlıktaki kutu hepsini seçer) → <b>Seçilenlere Taksit Planı</b>. Tutarı herkese aynı yazın ya da her carinin kartındaki alandan (ör. <i>Servis Ücreti</i>) okutun; taksit sayısı ve ilk vadeyi girin. Program önce kaç kart, toplam ne kadar ve hangi carilere açılacağını gösterir; <b>N Kartı Aç</b> deyince kartlar açılır. Açık kartı olan cari listeye gelmez; çift kart açılmaz.</li>
+  <li><b>Kartsız grup:</b> bir grubu seçtiğinizde carileri olup hiç kartı yoksa liste boş kalmaz; <b>Bu Gruba Toplu Taksitlendir</b> ile o grubun carileri seçili gelir.</li>
+  <li><b>Tahsilat:</b> kartta <b>+ Tahsilat</b> ya da taksitin yanındaki <b>₺</b>. Tutar sıradaki taksit kadar hazır gelir; en eski açık taksite sayılır, fazlası sonrakine geçer. Kasa'ya düşer; <b>Makbuz</b> A5 boyutundadır. İade için <b>− Ödeme / İade</b>.</li>
+  <li><b>Excel'den ya da tablodan:</b> <b>Excel / Sheets’ten Yükle</b> listenizdeki taksitleri gerçek vade ve tutarlarıyla kurar. Yüklediğiniz tabloda ödeme planı varsa (ay kolonları, "1. Taksit Tarihi / Tutarı" ya da toplam + taksit sayısı) <b>Tablodan Aktar</b> her kişiyi ön izlemede gösterir; <b>Aktar</b> deyince kart tablodaki kayda ve cariye bağlanır, Excel'de ödenmiş kısım açılış sayılır (<b>Kasa değişmez</b>). Yanlış aktardıysanız <b>Son Aktarımlar → Geri Al</b>.</li>
 </ol>
+<div class="pair">
+<figure><img src="ekran/k21-taksitler-grup.jpg" alt="Taksitler: kartsız grup"><figcaption>Grubun carileri var, kartı yok: <b>Bu Gruba Toplu Taksitlendir</b>.</figcaption></figure>
+<figure><img src="ekran/k22-cari-sec.jpg" alt="Cari Seç"><figcaption><b>Cari Seç</b>: grup, alt grup ve adla süzün, seçin, <b>Seçilenlere Taksit Planı</b>.</figcaption></figure>
+</div>
 <ul>
-  <li><b>Listedeki kişiye bağlı (2.0.6):</b> ortadaki listedeki kişiyi tıklayın, kartındaki <b>Tahsilat</b>'a basın. Taksit planı yoksa gelen pencerenin altındaki <b>Taksit planı oluşturun</b> kart formunu o kişiye bağlı, ad ve telefon dolu açar (kart formundaki <b>Tablodaki kayıt</b> kutusundan ad, dosya no ya da telefon yazarak da bağlarsınız). Plan varsa kişinin kartında <b>TAKSİT PLANI</b> bölümü durur: taksitlendirilen tutar, ödenen, <b>güncel bakiye</b>, sıradaki taksit ve taksitler. <b>Tahsilat</b> bu durumda taksitleri listeler; taksitin yanındaki <b>Tahsil et</b> tutarı hazır getirir, kaydedince tahsilat o taksitten düşer, <b>Kasa</b>'ya tek tahsilat olarak iner, makbuzu alınır ve kişinin işlem geçmişinde görünür. Bağ açık veri oturumundaki kayda kurulur; başka oturumdaki kayıtla karışmaz. Taksit kartındaki <i>Tablodaki kayıt · Kayda git</i> kişiyi listede açar.</li>
-  <li><b>Uyarı:</b> vadesi geçen taksit tahsilat takviminde, sağ alt bildirimlerde ve zilde <i>Tahsilat alınmadı</i> olarak görünür; <b>Taksit kartı</b> düğmesi kartı açar, <b>Tahsilat gir</b> doğrudan kaydeder. Sol menüdeki rozet geciken kart sayısını gösterir.</li>
-  <li><b>Liste:</b> <i>Devam eden, Geciken, Biten, Kapalı, Tümü</i>; ad, telefon ya da nota göre arama; göstergelerde kalan alacak, geciken, bu ay beklenen ve tahsil edilen. Tahsilat girmeyi bırakan müşteri için kartı <b>Kapat</b>: uyarı vermez, kayıt durur.</li>
-  <li><b>Kart düzeni:</b> üstte kişi bilgileri ve bilgi notu, altta taksitler ve hareketler. Listeleri <i>Açık, Geciken, Ödenen</i> ya da <i>Tahsilat, Ödeme</i> diye süzebilirsiniz.</li>
-  <li><b>PDF ve Yazdır:</b> kartta <b>PDF</b> ekstreyi açar, <b>Yazdır</b> doğrudan yazıcıya gönderir. Liste ekranındaki <b>PDF</b> ve <b>Yazdır</b> ekrandaki süzgeç ve sıralamayla hazırlanır (ör. yalnız 42 C 1070 plakasının gecikenleri).</li>
-  <li><b>Sıra No:</b> listenin ilk kolonudur ve Excel'deki sıradır; sıralamayı ad, vade, kalan ya da kayıt tarihine göre de değiştirebilirsiniz. Listede ve PDF'inde kişinin bilgi notu da görünür.</li>
-  <li><b>Tablodaki ödeme planı Taksitler'e (2.0.8):</b> yüklediğiniz tabloda ödeme planı varsa (ay kolonları — "Eylül, Ekim…" ya da "Eylül taksiti"; "1. Taksit Tarihi / Tutarı" kolonları; toplam tutar + taksit sayısı + ilk vade) yükleme bitince sağ altta <i>"N kişinin ödeme planı var, Taksitler'e aktarılsın mı?"</i> bildirimi çıkar; <b>Ön izle ve aktar</b> pencereyi açar. İstediğiniz zaman <b>Taksitler → Tablodan aktar</b>. Pencerede her kişi için taksitler (gerçek vade ve tutar), Excel'e göre ödenen, kayıt kartından girilmiş tahsilat, kalan, bağlanacağı cari ve bulgular görünür; <i>Aktarılamaz</i> olanlar (tutarı okunamayan, ödeneni toplamı aşan) seçilemez, <i>Uyarılı</i> olanlar aktarılır ama nedeni yazar, <i>Kapanmış</i> olanlar varsayılan seçilmez. <b>Aktar</b> deyince kart tablodaki kayda ve cariye bağlanır; Excel'de ödenmiş kısım <b>açılış (devir)</b> olarak yazılır: taksit kapanır, cari bakiyesi Excel'deki kalanla aynı olur, <b>Kasa değişmez</b>; kayıt kartından girilmiş tahsilatlar karta taşınır (Kasa toplamı değişmez). Bu kişilerin tablodaki ayları takvimde artık kartından gelir (çift sayılmaz). Yanlış aktardıysanız <b>Son aktarımlar → Geri al</b>. Kişinin kartı zaten varsa yeniden açılmaz; Taksitler'de bağsız aynı kişi varsa yeni kart açılmaz, o kart bağlanır.</li>
-  <li><b>Excel'den yüklerken (2.0.8):</b> sayfada ay kolonları ya da "1. Taksit Tarihi / Tutarı" kolonları varsa taksitler gerçek vade ve tutarlarıyla kurulur; <i>Ödenen</i> / <i>Kalan</i> kolonu açılış olur; ortadaki tabloda aynı adlı (ve telefonlu) tek kayıt varsa kart ona bağlanır.</li>
-  <li><b>Adı size göre:</b> Operasyon Merkezi'nin köşesindeki kalemle "Taksitler" yerine <i>Aidatlar</i>, <i>Servis ücretleri</i> gibi bir ad verin; pencere başlığı ve menü o adla görünür, kayıtlar ve işleyiş değişmez.</li>
-  <li>Kartları ve grupları yönetici, uzman ve muhasebe açar; herkes tahsilat girer. Silinen kart ve hareketler <b>Yönetim → Silinenler</b>'den geri gelir.</li>
+  <li><b>Liste:</b> <i>Devam Eden, Geciken, Biten, Kapalı, Tümü</i>; göstergelerde kalan alacak, geciken, bu ay beklenen ve tahsil edilen. Tahsilatı bırakan müşteri için kartı <b>Kapat</b>: uyarı vermez, kayıt durur.</li>
+  <li><b>Uyarı:</b> vadesi geçen taksit takvimde, sağ altta ve zilde <i>Tahsilat alınmadı</i> olarak görünür.</li>
+  <li><b>PDF ve Yazdır:</b> kart ekstresi ve süzülmüş liste (ör. yalnız bir plakanın gecikenleri).</li>
+  <li><b>Tablodaki kişiden:</b> ortadaki listede kişinin kartındaki <b>Tahsilat</b> taksitlerini gösterir; <b>Tahsil Et</b> tutarı hazır getirir.</li>
 </ul>
+<figure><img src="ekran/k14-tablodan-aktar.jpg" alt="Tablodan taksit kartına aktarma"><figcaption>Tablodan Aktar: her kişi için taksitler, Excel'e göre ödenen, kalan ve durum; seçip <b>Aktar</b>.</figcaption></figure>
 
-<figure><img src="ekran/k14-tablodan-aktar.jpg" alt="Tablodan taksit kartına aktarma"><figcaption>Tablodan aktar: her kişi için taksitler, Excel'e göre ödenen, kayıt tahsilatı, kalan ve bulgular; seçip <b>Aktar</b>.</figcaption></figure>
-
-<h2>9. Stok</h2>
-<p>Sol menüden <b>Stok</b>. Kasa gibi çalışır: ürün (çay, şeker, yağ, kâğıt…) ve giriş/çıkış hareketleri. <b>Mevcut</b> = girişler − çıkışlar.</p>
+<h2>10. Stok</h2>
+<p>Sol menüden <b>Stok</b>. Ürünler (çay, yağ, kâğıt…) ve giriş/çıkış hareketleri; <b>Mevcut</b> = girişler − çıkışlar.</p>
 <ol class="steps">
-  <li><b>Ürünleri açın:</b> <b>+ Yeni ürün</b> (ad, <b>birim</b> listeden: adet, kg, lt, metre, m², paket, koli, saat… — listede yoksa <i>Başka bir değer yaz…</i>; kategori, kritik seviye, birim fiyat). <b>Miktar (stoğa girecek)</b> yazarsanız ürün o miktarla açılır; <b>Kasa'ya yansıt</b> kutusunu işaretlerseniz miktar × birim fiyat Kasa'dan <i>Stok ödemesi (alım)</i> gideri olarak düşer, işaretlemezseniz para yazılmaz (elde olan stok) ya da <b>Excel / Sheets’ten yükle</b> (Excel dosyası ya da Google Sheets bağlantısı; binlerce kalem tek seferde); miktar kolonu açılış stoku olur.</li>
-  <li><b>Giriş / çıkış:</b> satırdaki <b>+ Giriş</b> / <b>− Çıkış</b> ya da kartın düğmeleri. Miktar ve birim fiyatı yazınca <b>tutar</b> kendiliğinden hesaplanır. <b>Para</b>: yalnız miktar, <b>Kasa’dan ödendi</b> (Kasa’ya gider) / <b>Kasa’ya tahsil edildi</b> (satış) ya da <b>cariye yaz</b> (tedarikçiye borçlanılır, müşteri borçlanır).</li>
-  <li><b>Kritik seviye:</b> ürün bu miktara inince listede en üstte kırmızı/turuncu görünür, sol menüde <b>Stok</b> rozeti çıkar ve günde bir kez bildirim gelir.</li>
+  <li><b>+ Yeni Ürün:</b> ad, <b>birim</b> (Adet, Kg, Lt, Metre, M², Paket, Koli, Saat…; listede yoksa kendiniz yazın), kategori, kritik seviye, birim fiyat. Açılış miktarı yazıp <i>Kasa'ya yansıt</i>'ı işaretlerseniz miktar × birim fiyat Kasa'dan gider olarak düşer. Toplu açılış için <b>Excel / Sheets’ten Yükle</b>.</li>
+  <li><b>+ Giriş / − Çıkış:</b> miktar ve birim fiyatı yazınca tutar hesaplanır. Para Kasa'dan ödenebilir, Kasa'ya tahsil edilebilir ya da cariye yazılabilir.</li>
+  <li><b>Kritik seviye:</b> ürün bu miktara inince listede üstte kırmızı görünür, sol menüde rozet çıkar.</li>
 </ol>
-<p><b>Hizmet kalemi (2.0.7):</b> ürün kartında <b>Kalem türü</b>'nü <i>Hizmet</i> yapın (yıkama, servis ücreti, danışmanlık…). Hizmetin stoğu tutulmaz: kritik seviye ve stok değerine girmez; satış hareketi Kasa'ya ya da cariye yazılır.</p>
-<p>Stok eksiye düşecekse program sorar (sayım farkı olabilir). Listenin <b>PDF</b>, <b>Yazdır</b> ve <b>Excel</b> çıktısı (süzgeç yoksa tüm stok, varsa yalnız süzülenler: kategori, kritik, tükenen, arama), ürünün hareket dökümü PDF’i vardır. Silinen ürün ve hareket <b>Yönetim → Silinenler</b>’den geri gelir; ödenmiş tutarlar Kasa’da kalır.</p>
+<p><b>Hizmet kalemi:</b> <i>Kalem Türü</i>'nü <i>Hizmet</i> yapın (yıkama, servis ücreti…); stoğu tutulmaz, satışı Kasa'ya ya da cariye yazılır.</p>
 
-<h2>10. Çek / Senet</h2>
-<p>Sol menüden <b>Çek / Senet</b> (yönetici, uzman, muhasebe). Müşteriden aldığınız ve tedarikçiye verdiğiniz çek ve senetlerin portföyü.</p>
+<h2>11. Çek / Senet</h2>
+<p>Sol menüden <b>Çek / Senet</b>. Aldığınız ve verdiğiniz çek ve senetlerin portföyü.</p>
 <figure><img src="ekran/k13-cek-senet.jpg" alt="Çek / Senet"></figure>
 <ol class="steps">
-  <li><b>Alınan evrak:</b> <b>+ Çek / senet al</b> → cari (ya da kişinin adı), tutar, vade, seri no, banka. İsterseniz <b>Taksite say</b>: evrak carinin en eski açık taksitlerinden başlayarak ödenmiş sayılır. Evrak <b>Portföyde</b>'dir; carinin borcu düşer ama para henüz Kasa'da değildir.</li>
-  <li><b>Vadesi gelince:</b> evrak kartında <b>Tahsil et</b> (para Kasa'ya girer), <b>Ciro et</b> (evrakı bir tedarikçiye verirsiniz; ona olan borcunuz düşer, Kasa değişmez) ya da <b>Karşılıksız / iade</b> (müşteri yeniden borçlanır; taksite sayıldıysa taksit yeniden açılır; ciro ettiyseniz tedarikçi borcu geri gelir).</li>
-  <li><b>Verilen evrak:</b> <b>+ Çek / senet ver</b> → tedarikçi, tutar, vade. Tedarikçiye borç yazılır (<b>Ödenecek</b>); vadesinde <b>Ödeme yap</b> deyince Kasa'dan çıkar.</li>
+  <li><b>+ Çek / Senet Al:</b> cari, tutar, vade, seri no, banka. İsterseniz <b>Taksite Say</b>: evrak carinin en eski açık taksitlerine sayılır. Evrak <i>Portföyde</i>dir; carinin borcu düşer, para henüz Kasa'da değildir.</li>
+  <li><b>Vadesinde:</b> evrak kartında <b>Tahsil Et</b> (Kasa'ya girer), <b>Ciro Et</b> (tedarikçiye verirsiniz) ya da <b>Karşılıksız / İade</b> (müşteri yeniden borçlanır).</li>
+  <li><b>+ Çek / Senet Ver:</b> tedarikçiye borç yazılır; vadesinde <b>Ödeme Yap</b> Kasa'dan çıkarır.</li>
 </ol>
 <ul>
-  <li><b>Yanlış işlem:</b> evrak kartındaki <b>… işlemini geri al</b> son işlemi ve defterdeki kayıtlarını birebir kaldırır. Kartın altındaki <b>işlem geçmişi</b> kimin ne zaman ne yaptığını gösterir.</li>
-  <li><b>Vade takibi:</b> vadesi geçen ve bugün vadesi gelen evrak sol menüde rozet, tahsilat takviminde ve bildirimlerde görünür; <b>7 gün içinde</b> vadesi gelenler ANLIK DURUM kartında. Pile ya da bildirimdeki düğmeye basınca evrak kartı doğrudan <b>Ödeme yap / Tahsil et</b> formuyla açılır; işlemi yapınca pil ve bildirim <b>hemen</b> kalkar (ofisteki diğer bilgisayarlarda da, programı kapatıp açmadan).</li>
-  <li><b>Excel'den açılış portföyü:</b> <b>Excel / Sheets'ten yükle</b> ile mevcut çek listenizi alın (vade, tutar, keşideci, seri no, banka, durum); kapanmış ve tekrar eden satırlar atlanır. Liste <b>PDF</b> ve <b>Excel</b> olarak iner; süzgeçler: alınan/verilen, durum, vade aralığı, arama.</li>
-  <li>Kasa'da ve cari kartındaki defterde çek/senet kaynaklı satırlar <i>çek / senet</i> etiketiyle görünür; oradan düzeltilmez, evrak kartından yönetilir. Silinen evrak <b>Yönetim → Silinenler</b>'den geri gelir.</li>
+  <li><b>Yanlış işlem:</b> evrak kartındaki <b>“…” İşlemini Geri Al</b> son işlemi ve bağlı kayıtlarını birebir kaldırır; açık Kasa ve Cari pencereleri hemen güncellenir.</li>
+  <li><b>Vade takibi:</b> vadesi geçen ve bugün gelen evrak rozette, takvimde ve bildirimlerde; 7 gün içinde gelenler ANLIK DURUM'da.</li>
+  <li><b>Excel / Sheets’ten Yükle</b> ile mevcut portföyünüzü alın. Liste PDF ve Excel olarak iner.</li>
 </ul>
 
-<h2>11. ANLIK DURUM</h2>
-<p>Yalnız <b>yöneticinin</b> ana ekranında, üstte ortada <b>ANLIK DURUM</b> kartı durur (personelde hiç görünmez; yetki verilse de): <b>Kasa / Banka</b> (bugüne kadarki kasa; ileri tarihli hareketler ayrıca yazılır), <b>Kritik stok</b>, <b>Toplam alacak</b> (carilerin size borcu + portföydeki çek/senet; gecikmiş taksit ayrıca), <b>Toplam borç / ödemeler</b> (tedarikçilere borç + ödenecek çek/senet). Her tahsilat, ödeme, taksit, stok ve çek işleminde sayfa yenilenmeden değişir; rakamlar Kasa, Cari, Stok ve Çek/Senet ekranlarıyla aynıdır. Kutulara tıklayınca ilgili ekran açılır. Köşedeki simge kartı tek satırlık şeride küçültür. Karttaki <b>Rapor Al</b>, sol menüdeki <b>Raporlar</b> ile aynı pencereyi açar.</p>
+<h2>12. ANLIK DURUM</h2>
+<p>Yalnız <b>yöneticinin</b> ana ekranında: <b>Kasa / Banka</b>, <b>Kritik Stok</b>, <b>Toplam Alacak</b> (carilerin borcu + portföydeki çek/senet) ve <b>Toplam Borç / Ödemeler</b>. Her işlemde sayfa yenilenmeden değişir; rakamlar Kasa, Cari, Stok ve Çek / Senet ekranlarıyla aynıdır. Kutuya tıklayınca ilgili ekran açılır; <b>Rapor Al</b> Raporlar penceresini açar.</p>
 <figure><img src="ekran/k10-anlik-durum.jpg" alt="ANLIK DURUM kartı"></figure>
 
-<h2>12. Raporlar</h2>
-<p>Sol menüden <b>Raporlar</b> (ya da ANLIK DURUM'daki <b>Rapor Al</b>). Rakamlar programa girdiğiniz <b>cari, Kasa, taksit ve çek/senet</b> kayıtlarından gelir; Excel tablonuzdaki ödeme günleri ve ödeme sözleri de Vade takip ve Nakit akışa eklenir. Üstteki sekmeden seçin:</p>
+<h2>13. Raporlar</h2>
+<p>Sol menüden <b>Raporlar</b> (ya da ANLIK DURUM'daki <b>Rapor Al</b>). Üstteki sekmeden seçin:</p>
 <ul>
-  <li><b>Cari ekstre:</b> tarih aralığı seçip <b>Raporu getir</b>: her cari için devir, dönem borç, dönem alacak, dönem sonu bakiye. Ad, cari no ya da <b>telefonla</b> arayın (aynı adlı iki kişi telefonla ayrılır). Cariye tıklayınca <b>ekstresi</b> açılır (yürüyen bakiye); <b>Cari kartını aç</b> ile karta geçersiniz. Henüz cari yoksa pencere yol gösterir: <b>Cari ekranını aç</b> ya da <b>Tablodaki kişileri cari yap</b> (her cari tablodaki kaydına bağlanır; aynı kişi iki kez açılmaz).</li>
-  <li><b>Vade takip:</b> vadesi olan her açık kalem tek listede: taksitler, alınan ve verilen çek/senet, Kasa'ya ileri tarihle girdiğiniz ödemeler (kira, maaş…), tablodaki ödeme günleri ve sözleri, son tarihler. <i>Gecikmiş, Bugün, 7 / 30 / 90 gün, Tüm açık</i> ya da tarih aralığı; kaynak kutularıyla (Taksit, Çek, Senet, Kasa, Tablo, Ödeme sözü, Son tarih) daraltın; kişi, telefon, cari ya da çek no ile arayın. Üstte gecikmiş tahsilat, tahsil edilecek, ödenecek ve net. Satıra tıklayınca kaynağı (taksit kartı, çek, cari ya da tablodaki kayıt) açılır.</li>
-  <li><b>Nakit akış:</b> bugünkü kasadan başlar; açık taksitler, çek/senet, ileri tarihli Kasa hareketleri ve (kutu işaretliyse) tablodaki ödeme günleri tek zaman çizgisinde. Grafik tahmini kasayı, <b>en düşük tahmini kasa</b>yı ve gününü gösterir; <b>günlük / haftalık / aylık</b> toplamlar seçilebilir.</li>
-  <li><b>Çek / Senet:</b> portföy raporu (alınan/verilen, durum, vade).</li>
-  <li><b>Tüm raporlar:</b> programa girdiğiniz her bilgi rapor olarak — 28 rapor, 7 bölüm: Kasa (hareketler, günlük ve <b>aylık kasa özeti</b>, kaynağa göre), Cari (mizan, liste ve bakiyeler, ekstre, tüm hareketler, <b>cari bazında tahsilat</b>, alacak yaşlandırma), Taksit (kartlar, vade listesi, gecikenler, tahsilatlar, <b>tahsilat performansı</b>), Çek/Senet (portföy, hareketler, <b>vade dağılımı</b>), Stok (durum, hareketler, kategori, <b>envanter özeti</b>), Kayıtlar/Ofis. Soldan raporu seçin, üstten dönemi ve süzgeçleri; ön izleme gelir.</li>
-  <li><b>Tablo raporları:</b> yalnız Excel tablonuza dayalı üç rapor (<i>Tablodaki kişiler / vadeler / nakit akışı</i>); tarih, kişi, durum, oturum, sekme ve en az tutar süzgeci; <b>Yazdır</b>.</li>
+  <li><b>Cari Ekstre:</b> tarih aralığı → <b>Raporu Getir</b>: her cari için devir, dönem borç ve alacak, bakiye. Cariye tıklayınca ekstresi açılır. Henüz cari yoksa <b>Cari Ekranını Aç</b> ya da <b>Tablodaki Kişileri Cari Yap</b>.</li>
+  <li><b>Vade Takip:</b> vadesi olan her açık kalem tek listede (taksit, çek/senet, ileri tarihli Kasa, tablodaki ödeme günleri). Gecikmiş, Bugün, 7 / 30 / 90 Gün; satıra tıklayınca kaynağı açılır.</li>
+  <li><b>Nakit Akış:</b> bugünkü kasadan başlayan tahmini kasa; en düşük günü gösterir.</li>
+  <li><b>Çek / Senet:</b> portföy raporu.</li>
+  <li><b>Tüm Raporlar:</b> Kasa, Cari, Taksit, Çek / Senet, Stok ve kayıt raporları (ör. <i>Cari Listesi ve Bakiyeler</i>, <i>Tüm Cari Hareketleri</i>, <i>Cari Bazında Tahsilat</i>, <i>Taksit Kartları</i>). Soldan raporu, üstten dönemi seçin; ön izleme gelir.</li>
+  <li><b>Tablo Raporları:</b> yalnız Excel tablonuza dayalı raporlar.</li>
 </ul>
-<p>Her rapor kurumsal başlıklı <b>PDF</b> ve <b>Excel</b> olarak iner (internet gerekmez).</p>
+<p>Her rapor <b>PDF İndir</b> ve <b>Excel İndir</b> ile iner.</p>
 <div class="pair">
-<figure><img src="ekran/k16-raporlar-bos-defter.jpg" alt="Raporlar: cari yokken yol gösterir"><figcaption>Cari yoksa Raporlar boş kalmaz: Cari ekranını açın ya da tablodaki kişileri cari yapın.</figcaption></figure>
-<figure><img src="ekran/k11-rapor-al.jpg" alt="Raporlar: Vade takip"><figcaption>Vade takip: taksit, çek/senet, Kasa ve tablodaki vadeler tek listede.</figcaption></figure>
+<figure><img src="ekran/k16-raporlar-bos-defter.jpg" alt="Raporlar: cari yokken"><figcaption>Cari yoksa Raporlar yol gösterir.</figcaption></figure>
+<figure><img src="ekran/k11-rapor-al.jpg" alt="Raporlar: Vade Takip"><figcaption>Vade Takip: taksit, çek/senet, Kasa ve tablodaki vadeler tek listede.</figcaption></figure>
 </div>
-<figure><img src="ekran/k12-rapor-merkezi.jpg" alt="Raporlar: Tüm raporlar"><figcaption>Tüm raporlar: Cari bazında tahsilat (nakit, taksit, çek/senet ayrı sütunda).</figcaption></figure>
-<p><b>Kimler görür:</b> yönetici tüm sekmeleri; uzman <i>Vade takip</i>, <i>Tablo raporları</i> ve <i>Tüm raporlar</i>'da yalnız <i>İşlem geçmişi</i>'ni. Başka birine açmak için <b>Yönetim → Kullanıcılar → Yetkiler → Raporlar → Finans raporları</b>: kişi <i>Cari ekstre, Vade takip, Nakit akış</i> ve <i>Tüm raporlar</i>'ı görür (Çek / Senet sekmesi çek yetkisiyle gelir); kaldırınca kaybolur. Bu yetki ANLIK DURUM kartını, Kasa ekranını ve çek girişini açmaz. Durum sütunu yalnız <b>Borçlu / Alacaklı / Kapalı</b> yazar; <i>Tüm zamanlar</i> seçilince belgede "Tüm hareketler · … tarihine kadar" yazar.</p>
+<figure><img src="ekran/k12-rapor-merkezi.jpg" alt="Raporlar: Tüm Raporlar"><figcaption>Tüm Raporlar → Cari Bazında Tahsilat.</figcaption></figure>
+<p><b>Kimler görür:</b> yönetici tüm sekmeleri. Başka birine açmak için <b>Yönetim → Kullanıcılar → Yetkiler → Raporlar → Finans Raporları</b>.</p>
 
-<h2>13. Belgeler ve mesajlar</h2>
-<p><b>Belge eklemek:</b> kartta <b>Belge</b>'ye basın ya da dosyaları kartın üzerine sürükleyin; ekran görüntüsünü <b>Ctrl+V</b> ile yapıştırın. PDF, resim, Word, Excel ve UYAP dosyaları eklenir; adet sınırı yoktur.</p>
-<p><b>Birden çok belge varsa</b> <b>Yan yana gör</b> ile belge kartı açılır: belgeler yan yana (1–4 sütun) görünür; istediğinizi <b>indirir</b> (seçtikleriniz tek .zip içinde, kendi biçimlerinde) ya da doğrudan <b>yazdırırsınız</b>. Kart ✕ ile kapanır.</p>
+<h2>14. Belgeler ve Mesajlar</h2>
+<p><b>Belge:</b> kartta <b>Belge</b>'ye basın ya da dosyaları kartın üzerine sürükleyin; ekran görüntüsünü <b>Ctrl+V</b> ile yapıştırın. PDF, resim, Word, Excel ve UYAP dosyaları eklenir. Birden çok belge varsa <b>Yan Yana Gör</b>: seçtiklerinizi indirir ya da yazdırırsınız.</p>
 <figure><img src="ekran/k07-belge-karti.jpg" alt="Belge kartı"></figure>
-<p><b>Mesajlar:</b> <b>Ofis geneli</b> herkese açıktır; kişiye yazdığınızı yalnızca o kişi görür. Açılışta son 24 saatin mesajları gelir; <b>Önceki günün mesajlarını yükle</b> her basışta bir gün daha getirir. 30 günden eski mesajlar sunucudaki arşive taşınır; sohbet penceresinden <b>Arşivi indir</b> ile açabilirsiniz.</p>
+<p><b>Mesajlar:</b> <b>Ofis Geneli</b> herkese açıktır; kişiye yazdığınızı yalnız o kişi görür. Eski mesajlar için <b>↑ Önceki Günün Mesajlarını Yükle</b>; 30 günden eskileri <b>Arşivi İndir</b> ile açarsınız.</p>
 
-<h2>14. Yönetici için</h2>
+<h2>15. Yönetici İçin</h2>
 <ul>
-  <li><b>Yönetim yalnız yöneticide (2.0.10):</b> sol alttaki kartta <b>Yönetim</b> yalnız yönetici hesabında görünür; başka hesaplar paneli açamaz.</li>
-  <li><b>Kullanıcılar:</b> <b>+ Yeni kullanıcı</b>: ad, kullanıcı adı, rol, ilk parola; istenirse <i>Yetkileri özelleştir</i>. Çalışan ilk girişte kendi parolasını belirler. Ad ve kullanıcı adındaki yazım hatasını yanlarındaki <b>✎</b> ile düzeltin (Enter kaydeder, Esc vazgeçer); kişi yeni kullanıcı adıyla girer.</li>
-  <li><b>Yetkiler ve roller (2.0.10):</b> satırdaki <b>Yetkiler</b> pili programın bütün yetkilerini gruplar hâlinde açar: rolün verdikleri işaretli gelir; kutuyu işaretleyerek o kişiye <b>ekler</b> (yeşil "eklendi"), işareti kaldırarak rolün verdiğini o kişiden <b>çıkarırsınız</b> (kırmızı "kaldırıldı"); <b>Yetkileri kaydet</b>. Kişinin ekranı sayfa yenilemeden değişir. <b>+ Yeni rol</b> ile kendi rolünüzü kurun (ör. <i>Vezne</i>: Kasa'yı görür ve yönetir); rol listesinde çıkar. Kullanıcı yönetimi, sistem, lisans ve ANLIK DURUM kartı kilitlidir, yalnız yöneticidedir.</li>
-  <li><b>Kullanıcı silme (2.0.10):</b> satırdaki <b>Sil</b>. Açık görevi varsa kime devredileceği sorulur. Kişi giriş yapamaz ve listeden çıkar; yaptığı işlemler geçmişte adıyla kalır. <b>Silinen kullanıcılar</b> bölümünden <b>Geri al</b>. Kendi hesabınızı ve son yöneticiyi silemezsiniz.</li>
-  <li><b>Kurtarma anahtarı (2.0.10):</b> <b>Yönetim → Kullanıcılar → Kurtarma anahtarı oluştur</b>; anahtarı yazdırın, kasada saklayın. Parolanızı unutursanız giriş ekranında <b>Parolamı unuttum</b> → anahtar + yeni parola (eski parola sorulmaz, kayıtlar olduğu gibi kalır; kullanılan anahtar geçersiz olur, yenisi bir kez gösterilir, onu da yazdırın). Anahtar da kayıpsa <b>sunucu bilgisayarında</b> aynı ekrandaki <b>Sunucu kodu oluştur</b>: kod bu bilgisayardaki bir dosyaya yazılır, Başlat menüsündeki <b>DestekOfis → Yönetici kurtarma kodunu aç</b> dosyayı açar (Windows yönetici izni ister; kısayol kurulum dosyasıyla gelir, program otomatik güncellemeyle geldiyse ekrandaki yolu <b>yönetici olarak çalıştırılan Not Defteri</b>'nde açın); kod 10 dakika geçerlidir. Başka bilgisayardan kod istenemez. Tavsiye: ikinci bir yönetici hesabı açın.</li>
-  <li><b>Yedekler:</b> program 6 saatte bir kendiliğinden yedek alır. <b>Yönetim → Yedekler</b>'den yedek alıp indirin; ayda bir harici diske kopyalayın.</li>
-  <li><b>Drive'a da yedekle:</b> <b>Yönetim → Yedekler → Drive'a da yedekle</b> kutusuna Google Drive klasör bağlantısını ya da bilgisayarınızdaki Drive/OneDrive klasörünün yolunu yapıştırıp <b>Kaydet ve bağla</b> deyin. Program orada <b>DestekOfis Yedekleri</b> klasörünü açar; her yedek oraya da kopyalanır. <b>Şimdi dene</b> ile sınayın.</li>
-  <li><b>Silinenler:</b> silinen kayıt, sekme, belge, tahsilat ve kasa hareketleri <b>Yönetim → Silinenler</b>'de durur; <b>Geri yükle</b> eski yerine getirir, sonradan eklenenlerin üzerine yazmaz.</li>
-  <li><b>Güncelleme:</b> <b>Yönetim → Sistem → Güncellemeleri denetle → Şimdi güncelle</b>. Veriler ve lisans korunur; güncellemeden önce yedek alınır. "Güncelleme paketi açılamadı: EPERM" uyarısı görürseniz (2.0.6) <b>Şimdi güncelle</b>'ye basmayın; kurulum dosyasını bir kez daha üstüne çalıştırın, veriler korunur.</li>
-  <li><b>Sektör ve görünüm:</b> <b>Ayarlar → Sektör ve görünüm</b>'den sektörü değiştirin ya da kendi sektörünüzü oluşturup düzenleyin.</li>
+  <li><b>Kullanıcılar:</b> <b>+ Yeni Kullanıcı</b>: ad, kullanıcı adı, rol, ilk parola. Ad ve kullanıcı adını yanlarındaki <b>✎</b> ile düzeltin. <b>Parola Sıfırla</b> personelin parolasını yeniler.</li>
+  <li><b>Yetkiler:</b> satırdaki <b>Yetkiler</b> pili bütün yetkileri açar: rolün verdikleri işaretli gelir; kutuyla o kişiye <b>ekler</b> (yeşil) ya da <b>çıkarırsınız</b> (kırmızı) → <b>Yetkileri Kaydet</b>. <b>+ Yeni Rol</b> ile kendi rolünüzü kurun.</li>
+  <li><b>Sil:</b> kişi giriş yapamaz; yaptıkları geçmişte adıyla kalır. <b>Silinen Kullanıcılar</b>'dan geri alınır.</li>
+  <li><b>Kurtarma anahtarı:</b> <b>Kurtarma Anahtarı Oluştur</b> → yazdırın. Parolanızı unutursanız giriş ekranında <b>Parolamı Unuttum</b> → anahtar + yeni parola. Anahtar da kayıpsa <b>sunucu bilgisayarında</b> aynı ekrandan <b>Sunucu Kodu Oluştur</b>; kodu Başlat menüsündeki <b>DestekOfis → Yönetici kurtarma kodunu aç</b> gösterir (10 dakika geçerli).</li>
+  <li><b>Yedekler:</b> program 6 saatte bir kendiliğinden yedek alır. <b>Yönetim → Yedekler</b>'den yedek alıp indirin; <b>Drive'a da Yedekle</b> ile her yedek Google Drive / OneDrive klasörünüze de kopyalanır (<b>Kaydet ve Bağla</b>, <b>Şimdi Dene</b>).</li>
+  <li><b>Silinenler:</b> silinen kayıt, sekme, belge, tahsilat ve kasa hareketleri <b>Yönetim → Silinenler</b>'dedir; <b>Geri Yükle</b> eski yerine getirir.</li>
+  <li><b>Güncelleme:</b> <b>Yönetim → Sistem → Güncellemeleri Denetle → Şimdi Güncelle</b>. Veriler ve lisans korunur; önce yedek alınır.</li>
+  <li><b>Sektör ve görünüm:</b> <b>Ayarlar → Sektör ve Görünüm</b>.</li>
 </ul>
-<figure><img src="ekran/k17-yetkiler.jpg" alt="Yönetim → Kullanıcılar: kişiye özel yetkiler"><figcaption>Yetkiler: rolün verdikleri işaretli gelir; bu kişiye Kasa'yı görme eklendi (yeşil), tabloyu dışa aktarma kaldırıldı (kırmızı). Kilitli olanlar yalnız yöneticidedir.</figcaption></figure>
+<figure><img src="ekran/k17-yetkiler.jpg" alt="Yönetim → Kullanıcılar: kişiye özel yetkiler"><figcaption>Yetkiler: bu kişiye Kasa'yı görme eklendi (yeşil), tabloyu dışa aktarma kaldırıldı (kırmızı). Kilitli olanlar yalnız yöneticidedir.</figcaption></figure>
 <div class="pair">
 <figure><img src="ekran/k20-kurtarma-karti.jpg" alt="Kurtarma anahtarı kartı"><figcaption>Yönetim → Kullanıcılar: kurtarma anahtarını oluşturun ve yazdırın.</figcaption></figure>
-<figure><img src="ekran/k18-parolami-unuttum.jpg" alt="Giriş ekranı: Parolamı unuttum"><figcaption>Giriş ekranı → Parolamı unuttum: anahtar ya da sunucu kodu ve yeni parola.</figcaption></figure>
+<figure><img src="ekran/k18-parolami-unuttum.jpg" alt="Giriş ekranı: Parolamı Unuttum"><figcaption>Parolamı Unuttum: anahtar ya da sunucu kodu ve yeni parola.</figcaption></figure>
 </div>
 
-<h2>15. Bir sorun mu var?</h2>
+<h2>16. Bir Sorun mu Var?</h2>
 <table>
-  <thead><tr><th>Durum</th><th>Ne yapmalı?</th></tr></thead>
+  <thead><tr><th>Durum</th><th>Ne Yapmalı?</th></tr></thead>
   <tbody>
-    <tr><td>Personel bilgisayarı bağlanamıyor</td><td>Sunucu bilgisayar açık ve aynı ağda mı? Sunucunun uykuya geçmediğinden emin olun.</td></tr>
-    <tr><td>"Deneme henüz başlamadı" / "Lisans doğrulanamadı"</td><td>Sunucunun internetini kontrol edin; ardından <b>Yönetim → Lisans → Şimdi doğrula</b>.</td></tr>
+    <tr><td>Personel bilgisayarı bağlanamıyor</td><td>Sunucu bilgisayar açık ve aynı ağda mı? Uykuya geçmediğinden emin olun.</td></tr>
+    <tr><td>"Deneme henüz başlamadı" / "Lisans doğrulanamadı"</td><td>Sunucunun internetini kontrol edin; ardından <b>Yönetim → Lisans → Şimdi Doğrula</b>.</td></tr>
     <tr><td>Süre doldu, program salt okunur</td><td>Kayıtlarınız duruyor. Bize ulaşın; lisansınız tanımlanınca kaldığınız yerden devam edersiniz.</td></tr>
     <tr><td>"DestekOfis … sürümüne güncellendi"</td><td>Yazdığınızı kaydedip <b>Yenile</b>'ye basın.</td></tr>
-    <tr><td>Yönetici parolasını unuttum</td><td>Giriş ekranında <b>Parolamı unuttum</b> → kurtarma anahtarı ve yeni parola. Anahtar yoksa sunucu bilgisayarında <b>Sunucu kodu oluştur</b> (14. bölüm). Personel parolasını yönetici <b>Parola sıfırla</b> ile yeniler.</td></tr>
-    <tr><td>Bir kaydı ya da sekmeyi yanlışlıkla sildim</td><td>Hemen çıkan bildirimdeki <b>Geri al</b>; sonra ise <b>Yönetim → Silinenler → Geri yükle</b>.</td></tr>
+    <tr><td>Yönetici parolasını unuttum</td><td>Giriş ekranında <b>Parolamı Unuttum</b> (15. bölüm).</td></tr>
+    <tr><td>Bir şeyi yanlışlıkla sildim</td><td>Hemen çıkan bildirimdeki <b>Geri Al</b>; sonra ise <b>Yönetim → Silinenler → Geri Yükle</b>.</td></tr>
     <tr><td>İnternet kesildi</td><td>Çalışmaya devam edin; program 7 gün internetsiz çalışır.</td></tr>
   </tbody>
 </table>
 <div class="box tip"><b class="t">Teknik Destek ve Satın Alımlar İçin</b>Telefon: <b>0536 771 50 55</b> · E-posta: <b>destekofis@proton.me</b></div>
 
-<p class="foot">DestekOfis 2.0.10 · Kısa Kullanım Kılavuzu · Ekran görüntüleri örnek verilerle hazırlanmıştır.</p>
+<p class="foot">DestekOfis 2.0.11 · Kısa Kullanım Kılavuzu · Ekran görüntüleri örnek verilerle hazırlanmıştır.</p>
 </main>
 </body>
 </html>

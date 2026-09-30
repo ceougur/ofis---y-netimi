@@ -110,7 +110,7 @@ describe("zor değerler (v2.0.2)", async () => {
 });
 
 describe("eşleme ekranı: kullanıcı rolleri (v2.0.2)", () => {
-  it("seçilen rol otomatik kararın üstüne yazar; 'Yoksay' önemi sıfırlar; kanıt ve kesinlik bunu söyler", async () => {
+  it("seçilen rol otomatik kararın üstüne yazar; 'Yok Say' önemi sıfırlar; kanıt ve kesinlik bunu söyler", async () => {
     const { analyzeColumns } = await import("../server/lib/insight/columns.mjs");
     const rows = [
       { "Tarih 2": "01.10.2026", "Kolon 3": "Ali Veli", Not: "x" },
@@ -150,7 +150,7 @@ describe("göç 10: kolon adına yazılmış tarihler asıl adına döner (v2.0.
   after(() => server.close());
 
   it("tarih adları kalkar, diğer adlar kalır; işlem geçmişine ve bir kerelik bildirime yazılır", async () => {
-    assert.deepEqual(server.app.migration.applied, [10, 11, 12, 13, 14, 15]);
+    assert.deepEqual(server.app.migration.applied, [10, 11, 12, 13, 14, 15, 16]);
     const { store } = server.app;
     assert.deepEqual(JSON.parse(store.setting("ui.columns")), { MARKA: "Marka / Model" });
     assert.deepEqual(JSON.parse(store.setting("ui.columns@ikinci")), { PLAKA: "Araç" }, "tarih olmayan oturuma dokunulmaz");

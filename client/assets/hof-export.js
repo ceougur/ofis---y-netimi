@@ -16,7 +16,7 @@
   let anchor = null;
   let bypass = false; // CSV seçilince paketin kendi CSV indirmesi çalışsın diye düğmeye yeniden tıklanır
 
-  const isExportButton = element => Boolean(element) && /Dışa aktar/.test(element.textContent || "");
+  const isExportButton = element => Boolean(element) && /Dışa aktar/i.test(element.textContent || "");
   const tabs = () => {
     const rows = HOF.data?.rows || [];
     const counts = new Map();
@@ -59,14 +59,14 @@
     const tabCount = [...counts.keys()].filter(Boolean).length;
     const here = tab ? counts.get(tab) || 0 : rows;
     const items = [
-      { action: "tab", icon: SHEET_ICON, title: tab && tabCount > 1 ? "Excel · bu sekme" : "Excel dosyası (.xlsx)", note: tab && tabCount > 1 ? `“${HOF.sections?.pretty ? HOF.sections.pretty(tab) : tab}” · ${number(here)} kayıt` : `${number(here)} kayıt · tutar ve tarihler hesaplanabilir` },
-      tabCount > 1 ? { action: "all", icon: BOOK_ICON, title: "Excel · tüm sekmeler", note: `${number(tabCount)} sekme, her biri ayrı sayfada · ${number(rows)} kayıt` } : null,
+      { action: "tab", icon: SHEET_ICON, title: tab && tabCount > 1 ? "Excel · Bu Sekme" : "Excel Dosyası (.xlsx)", note: tab && tabCount > 1 ? `“${HOF.sections?.pretty ? HOF.sections.pretty(tab) : tab}” · ${number(here)} kayıt` : `${number(here)} kayıt · tutar ve tarihler hesaplanabilir` },
+      tabCount > 1 ? { action: "all", icon: BOOK_ICON, title: "Excel · Tüm Sekmeler", note: `${number(tabCount)} sekme, her biri ayrı sayfada · ${number(rows)} kayıt` } : null,
       { action: "csv", icon: TEXT_ICON, title: "CSV (düz metin)", note: "Açık sekme; eski programlar için", muted: true },
     ].filter(Boolean);
     menu = HOF.el(
       "div",
       { class: "hof-export-menu", role: "menu", "aria-label": "Dışa aktarma biçimi" },
-      `<p class="hof-export-title">Dışa aktar</p>${items
+      `<p class="hof-export-title">Dışa Aktar</p>${items
         .map(item => `${item.muted ? '<hr aria-hidden="true">' : ""}<button type="button" role="menuitem" class="hof-export-item${item.muted ? " is-muted" : ""}" data-export="${item.action}"><span class="hof-export-icon">${item.icon}</span><span class="hof-export-text"><b>${esc(item.title)}</b><small>${esc(item.note)}</small></span></button>`)
         .join("")}`,
     );
@@ -163,7 +163,7 @@
     if (!heading || !HOF.can("records.export")) return existing?.remove();
     const before = heading.querySelector(":scope > button:not(#hof-toolbar-export)");
     if (existing?.parentNode === heading && (!before || existing.nextElementSibling === before)) return;
-    const button = existing || HOF.el("button", { type: "button", id: "hof-toolbar-export", class: "hof-toolbar-export", "data-hof-ui": "", "aria-label": "Dışa aktar", title: "Tabloyu Excel (.xlsx) ya da CSV olarak indir" }, `${DOWNLOAD_ICON}<span>Dışa aktar</span>`);
+    const button = existing || HOF.el("button", { type: "button", id: "hof-toolbar-export", class: "hof-toolbar-export", "data-hof-ui": "", "aria-label": "Dışa aktar", title: "Tabloyu Excel (.xlsx) ya da CSV olarak indir" }, `${DOWNLOAD_ICON}<span>Dışa Aktar</span>`);
     heading.insertBefore(button, before);
   }
   HOF.whenReady(() => {

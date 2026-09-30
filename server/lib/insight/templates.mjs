@@ -65,7 +65,7 @@ const T = {
   "emlak-ofisi": ["İlan No|id; Mülk Sahibi|person; Telefon|phone; Satılık / Kiralık|list:Satılık,Kiralık; Adres; Metrekare (m²)|number; Oda Sayısı|list:1+0,1+1,2+1,3+1,4+1,5+1; Bina Yaşı|number; Kat; Fiyat|money; İlan Tarihi|date; Durum|list:Aktif,Satıldı,Kiralandı,Pasif; Not"],
   "site-yonetimi": ["Daire No|id; Kat Maliki|person; Telefon|phone; Sakin; Blok; Kat|number; Aylık Aidat|money; Yakıt / Isınma Bedeli|money; Ödeme Günü|day; Durum|list:Oturuyor,Boş,Kirada; Not", { months: "year" }],
   "mulk-kira": ["Mülk; Kiracı|person; Telefon|phone; Mülk Sahibi; Adres; Kira Başlangıç|date; Kira Bedeli|money; Ödeme Günü|day; Depozito|money; Kira Artışı (%)|number; Stopaj|list:Yok,Var; Durum|list:Kirada,Boş; Not", { months: "year" }],
-  "insaat-proje": ["Poz No|id; İş Kalemi; Taşeron|person; Telefon|phone; Şantiye; Birim|list:m²,m³,ton,adet,mt; Metraj|number; Birim Fiyat|money; Hakediş Tutarı|money; Hakediş Tarihi|date; Beton Sınıfı; Durum|list:Devam ediyor,Tamamlandı; Not"],
+  "insaat-proje": ["Poz No|id; İş Kalemi; Taşeron|person; Telefon|phone; Şantiye; Birim|list:M²,M³,Ton,Adet,Metre; Metraj|number; Birim Fiyat|money; Hakediş Tutarı|money; Hakediş Tarihi|date; Beton Sınıfı; Durum|list:Devam ediyor,Tamamlandı; Not"],
   "konut-satis": ["Daire No|id; Alıcı|person; Telefon|phone; Blok; Kat|number; Cephe|list:Kuzey,Güney,Doğu,Batı; Brüt m²|number; Net m²|number; Satış Fiyatı|money; Peşinat Tutarı|money; Taksit Tutarı|money; Sözleşme Tarihi|date; Durum|list:Satıldı,Opsiyonlu,Satılık; Not"],
   mimarlik: ["Proje No|id; İşveren|person; Telefon|phone; Proje Adı; Proje Türü|list:Avan proje,Uygulama projesi,İç mimari,Render; Mimar; Revizyon|number; Teslim Tarihi|date; Proje Bedeli|money; Ödenen|money; Durum|list:Çizimde,Revizyonda,Teslim edildi; Not"],
   harita: ["İş No|id; Müşteri|person; Telefon|phone; İl / İlçe; Ada; Parsel; Pafta; İşlem|list:Aplikasyon,İfraz,Tevhid,Cins tashihi,Kadastro; Başvuru Tarihi|date; Ücret|money; Durum|list:Sahada,Kadastroda,Tamamlandı; Not"],
@@ -94,7 +94,7 @@ const T = {
   cicekci: ["Sipariş No|id; Müşteri|person; Telefon|phone; Ürün|list:Buket,Aranjman,Saksı çiçeği,Çelenk; Çiçek; Not Kartı; Teslimat Adresi; Teslim Tarihi|date; Tutar|money; Durum|list:Hazırlanıyor,Yolda,Teslim edildi; Not"],
   yayinevi: ["ISBN|id; Kitap Adı; Yazar|person; Telefon|phone; Yayınevi; Baskı; Basım Tarihi|date; Sayfa Sayısı|number; Stok|number; Satış Fiyatı|money; Telif Oranı (%)|number; Durum|list:Hazırlıkta,Baskıda,Satışta; Not"],
   abonelik: ["Abone No|id; Abone|person; Telefon|phone; Abonelik Paketi; Başlangıç Tarihi|date; Bitiş Tarihi|date; Aylık Ücret|money; Ödeme Günü|day; Durum|list:Aktif,İptal,Dondurdu; Not", { months: "year" }],
-  "yapi-market": ["Ürün Adı; Nalbur / Hırdavat Grubu|list:Vida-civata,El aleti,Boya,Elektrik,Tesisat,Bahçe; Vida / Civata Ölçüsü; Birim|list:adet,kg,mt,paket; Miktar|number; Fiyat|money; Durum|list:Satışta,Tükendi; Not"],
+  "yapi-market": ["Ürün Adı; Nalbur / Hırdavat Grubu|list:Vida-civata,El aleti,Boya,Elektrik,Tesisat,Bahçe; Vida / Civata Ölçüsü; Birim|list:Adet,Kg,Metre,Paket; Miktar|number; Fiyat|money; Durum|list:Satışta,Tükendi; Not"],
   petshop: ["Ürün Adı; Mama / Ürün Grubu|list:Mama,Kum,Aksesuar,Oyuncak,Sağlık; Mama Markası; Pet Türü|list:Kedi,Köpek,Kuş,Balık,Diğer; Miktar|number; SKT|date; Fiyat|money; Durum|list:Satışta,Tükendi; Not"],
   // ----- Üretim ve sanayi -----
   uretim: ["İş Emri No|id; Ürün; Müşteri|person; Makine; Vardiya|list:Sabah,Akşam,Gece; Parti No; Üretim Miktarı|number; Fire|number; Üretim Tarihi|date; Termin|date; Durum|list:Planlandı,Üretimde,Tamamlandı; Not"],
@@ -105,7 +105,7 @@ const T = {
   matbaa: ["İş No|id; Müşteri|person; Telefon|phone; İş Tanımı; Baskı Türü|list:Ofset,Dijital baskı; Kâğıt; Gramaj|number; Adet|number; Teslim Tarihi|date; Tutar|money; Durum|list:Tasarımda,Baskıda,Teslim edildi; Not"],
   "metal-makine": ["Sipariş No|id; Müşteri|person; Telefon|phone; Parça; Teknik Resim No; Malzeme; Tolerans; İşlem|list:CNC,Torna,Freze,Kaynak,Montaj; Adet|number; Termin|date; Tutar|money; Durum|list:Planlandı,İmalatta,Sevk edildi; Not"],
   // ----- Tedarik, depo ve dış ticaret -----
-  depo: ["Stok Kodu|id; Ürün Adı; Depo; Lokasyon; Birim|list:adet,koli,palet,kg; Miktar|number; Minimum Stok|number; Son Sayım Tarihi|date; Birim Fiyat|money; Sorumlu|person; Durum|list:Stokta,Kritik,Tükendi; Not"],
+  depo: ["Stok Kodu|id; Ürün Adı; Depo; Lokasyon; Birim|list:Adet,Koli,Palet,Kg; Miktar|number; Minimum Stok|number; Son Sayım Tarihi|date; Birim Fiyat|money; Sorumlu|person; Durum|list:Stokta,Kritik,Tükendi; Not"],
   satinalma: ["Talep No|id; Talep Eden|person; Birim / Departman; Ürün / Hizmet; Miktar|number; Tedarikçi; Teklif Tutarı|money; Termin|date; Satınalma Tarihi|date; Durum|list:Teklif bekleniyor,Onaylandı,Teslim alındı; Not"],
   tedarikci: ["Tedarikçi|person; Telefon|phone; E-posta|email; Ürün Grubu; Vergi No; Değerlendirme Puanı|number; Ödeme Vadesi (gün)|number; Son Sipariş Tarihi|date; Borç Bakiye|money; Durum|list:Onaylı,Değerlendirmede,Pasif; Not"],
   "dis-ticaret": ["Dosya No|id; Müşteri / Firma|person; Telefon|phone; Ülke; GTİP; Teslim Şekli (Incoterms)|list:EXW,FOB,CIF,CFR,DAP,DDP; Konteyner No; Konşimento No; Yükleme Tarihi|date; Tutar|money; Döviz|list:USD,EUR,GBP,TRY; Durum|list:Hazırlık,Yolda,Gümrükte,Teslim edildi; Not"],
@@ -247,7 +247,7 @@ export function sectorTemplate(id, { now = new Date(), custom = null } = {}) {
   for (const column of columns) column.prompt = PROMPTS[column.kind] ?? "";
   const sheet = String(sector.vocab?.Records || "Kayıtlar").slice(0, 31);
   const safe = String(sector.name).replace(/[\\/:*?"<>|()]+/g, " ").replace(/\s+/g, " ").trim();
-  return { sector: { id: sector.id, name: sector.name, records: sector.vocab?.records || "kayıtlar" }, sheet, columns, months, fileName: `DestekOfis taslak - ${safe}.xlsx` };
+  return { sector: { id: sector.id, name: sector.name, records: sector.vocab?.records || "kayıtlar" }, sheet, columns, months, fileName: `DestekOfis Taslak - ${safe}.xlsx` };
 }
 
 export const templateIds = () => Object.keys(T);
