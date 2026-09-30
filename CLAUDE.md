@@ -45,7 +45,8 @@ Bu dosya oturumlar arasında taşınan hafızadır. Her oturumun başında okunu
   "Pro'ya özel" derse Pro kilidine girer. Ayrıntı: `docs/PRO-UZAKTAN-GORUNTULEME.md` → "Paket kuralları".
 
 ## Açık iş
-- 2.0.12 hazırlandı (müşteri: taksit kartının Kayıt Tarihi carinin tarihinden gelir; form düzeni). 2.0.11 yayımlı (PR #11).
+- 2.0.12 yayımlandı (PR ceougur/ofis---y-netimi#12, `v2.0.12`; beş dosya bayt bayt doğrulandı; müşteri: taksit kartının
+  Kayıt Tarihi carinin tarihinden gelir).
   Sırada: süpermarket zinciri 1 aylık arayüz simülasyonu (bulgular `docs/DURUM-VE-DEVAM.md` → "2.0.13 için biriken").
 - Pro — uzaktan görüntüleme: `docs/PRO-UZAKTAN-GORUNTULEME.md` (önce en alttaki "Oturum devri"); genel durum
   `docs/DURUM-VE-DEVAM.md`.

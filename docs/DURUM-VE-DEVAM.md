@@ -79,7 +79,7 @@ Yeni bir oturum bu belgeyi okuyarak kaldığı yerden devam eder. Son güncellem
 ### 2.0.13 için biriken düzeltmeler (kullanıcı ekledikçe büyür; birlikte yapılır)
 (henüz yok; süpermarket simülasyonunun bulguları buraya yazılacak)
 
-### 2.0.12 düzeltmeleri — yapıldı (30.09.2026; paket hazır, yayın kullanıcı onayı bekliyor)
+### 2.0.12 düzeltmeleri — yayımlandı 30.09.2026 (PR #12, `v2.0.12`; beş dosya bayt bayt doğrulandı)
 1. **Taksit kartının "Kayıt Tarihi" carinin kayıt tarihini taşımıyor** (müşteri, 30.09.2026; ilk bildirim "tahsilat girince
    kayıt tarihi değişiyor"; WhatsApp ekran görüntüsüyle netleşti: *Yeni Taksit Kartı* formu). **Neden (kodda doğrulandı):**
    kartın kendi `registered_on` alanı var ve cari seçilse de **bugün** gelir — form `hof-plans.js:497`
