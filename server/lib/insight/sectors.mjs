@@ -195,7 +195,7 @@ const GROUPS = [
     ["fotograf", "Fotoğraf ve video stüdyosu", "çekim", "çekimler", "Fotoğrafçı", "Stüdyo yönetimi", { h: ["!cekim tarihi", "!album", "!dis cekim", "cekim", "kapora", "paket", "~teslim"], t: ["cekim", "fotograf"], keys: ["fotoğraf", "stüdyo", "düğün fotoğrafçısı", "video"] }],
   ]],
   ["genel", "Genel", [
-    ["genel", "Genel (sektörden bağımsız)", "kayıt", "kayıtlar", "Uzman", "Ofis yönetimi", { general: true, h: [], keys: ["genel", "diğer", "sektörsüz", "karma"] }],
+    ["genel", "Genel (sektörden bağımsız)", "kayıt", "kayıtlar", "Uzman", "Ofis Yönetimi", { general: true, h: [], keys: ["genel", "diğer", "sektörsüz", "karma"] }],
     ["genel-musteri", "Müşteri ve iletişim listesi", "müşteri", "müşteriler", "Temsilci", "Müşteri yönetimi", { h: ["~musteri", "~firma", "~iletisim"], keys: ["müşteri listesi", "rehber", "iletişim listesi"] }],
     ["genel-envanter", "Envanter ve demirbaş", "demirbaş", "demirbaşlar", "Sorumlu", "Demirbaş yönetimi", { h: ["!demirbas", "!envanter no", "!garanti bitis", "zimmet", "seri no", "lokasyon", "~marka", "~model"], t: ["demirbas", "envanter"], keys: ["demirbaş", "envanter", "zimmet"], modules: { tahsilat: false } }],
     ["genel-randevu", "Randevu takibi", "randevu", "randevular", "Uzman", "Randevu yönetimi", { h: ["!randevu saati", "!randevu tarihi", "randevu", "hizmet", "~uzman"], t: ["randevu"], keys: ["randevu", "ajanda"] }],

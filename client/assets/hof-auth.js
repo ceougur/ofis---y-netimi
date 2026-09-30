@@ -69,7 +69,7 @@
       } catch (failure) {
         error.textContent = failure.message;
         button.disabled = false;
-        button.textContent = "Giriş yap";
+        button.textContent = "Giriş Yap";
         form.elements.password.select();
       }
     });

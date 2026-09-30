@@ -113,7 +113,7 @@
       },
     });
     const cancel = modal?.dialog?.querySelector("[data-cancel]");
-    if (cancel) cancel.textContent = "Daha sonra";
+    if (cancel) cancel.textContent = "Daha Sonra";
   }
 
   async function refresh() {

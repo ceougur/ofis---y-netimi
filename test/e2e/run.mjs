@@ -179,32 +179,7 @@ try {
     // v2.0.2: tabloda dolu kolonların hepsi (önceden ilk 7).
     const headers = await admin.$$eval(".dynamic-table thead th", nodes => nodes.length);
     expect(headers === 8, `tablo kolonları: ${headers}`);
-    // v2.0.4: kolon genişliği başlığın sağ kenarından sürüklenir ve bu bilgisayarda hatırlanır.
     await admin.waitForSelector(".dynamic-table.hof-sized thead th:nth-child(2) .hof-col-grip", { timeout: 10000 });
-    // v2.0.7: ANLIK DURUM kartı başlığı aşağı iter; başlık ekranın altındaki yatay kaydırma çubuğunun altında kalmasın.
-    // Analiz penceresi, ANLIK DURUM ve özet kartları gelirken sayfa kayabilir: tutamaç yerine oturana kadar ölçülür.
-    let gripBox = null;
-    for (let attempt = 0; attempt < 10; attempt += 1) {
-      await admin.$eval(".dynamic-table thead", node => node.scrollIntoView({ block: "center" }));
-      await admin.waitForTimeout(200);
-      gripBox = await admin.$eval(".dynamic-table thead th:nth-child(2) .hof-col-grip", node => { const b = node.getBoundingClientRect(); return { x: b.x + 3, y: b.y + b.height / 2, hit: document.elementFromPoint(b.x + 3, b.y + b.height / 2)?.className || "" }; });
-      if (/hof-col-grip/.test(gripBox.hit)) break;
-    }
-    const before = await admin.$eval(".dynamic-table thead th:nth-child(2)", th => th.getBoundingClientRect().width);
-    expect(/hof-col-grip/.test(gripBox.hit), `tutamaç tıklanabilir: ${gripBox.hit}`);
-    await admin.mouse.move(gripBox.x, gripBox.y);
-    await admin.mouse.down();
-    await admin.mouse.move(gripBox.x - 30, gripBox.y, { steps: 5 });
-    await admin.mouse.up();
-    const after = await admin.$eval(".dynamic-table thead th:nth-child(2)", th => th.getBoundingClientRect().width);
-    expect(after < before - 20, `kolon daraldı: ${Math.round(before)} → ${Math.round(after)}`);
-    const remembered = await admin.evaluate(() => Object.keys(JSON.parse(localStorage.getItem("hof.colw") || "{}")).length);
-    expect(remembered === 1, "kolon genişliği hatırlandı");
-    // Playwright'ın kararlılık denetimi yapışkan başlıkta takılabiliyor; olay doğrudan tutamaca gönderilir.
-    await admin.dispatchEvent(".dynamic-table thead th:nth-child(2) .hof-col-grip", "dblclick");
-    await admin.waitForTimeout(300);
-    const reset = await admin.$eval(".dynamic-table thead th:nth-child(2)", th => th.getBoundingClientRect().width);
-    expect(Math.abs(reset - before) < 3, `çift tık otomatik genişliğe döndürür: ${Math.round(reset)} ≈ ${Math.round(before)}`);
     const flash = await toastText(admin);
     expect(flash.includes("yüklendi") && flash.includes("Tüm bilgisayarlar"), `bildirim: ${flash}`);
     expect(!(await admin.$("#hof-start")), "veri gelince başlangıç kartı kalkmalı");
@@ -272,6 +247,36 @@ try {
     expect(view.search === "Dosya no, borçlu veya telefon ara…", `arama ipucu: ${view.search}`);
     expect(view.cards.length === 4 && view.cards[1].includes("Tutar Toplamı") && view.cards[1].includes("438.750") && view.cards[3].includes("Veri Sağlığı"), `kartlar: ${view.cards}`);
     await admin.screenshot({ path: path.join(artifacts, "03c-akilli-ozet.png") });
+  });
+
+  await step("kolon genişliği başlığın kenarından sürüklenir, hatırlanır; çift tık otomatik genişliğe döndürür", async () => {
+    await admin.waitForFunction(() => !document.querySelector(".hof-modal-backdrop"), null, { timeout: 5000 });
+    // v2.0.4: kolon genişliği başlığın sağ kenarından sürüklenir ve bu bilgisayarda hatırlanır.
+    // v2.0.7: ANLIK DURUM kartı başlığı aşağı iter; başlık ekranın altındaki yatay kaydırma çubuğunun altında kalmasın.
+    // Yüklemeden sonra "Verinizi tanıyoruz" penceresi tabloyu örter; tutamaç o pencere kapandıktan sonra denenir.
+    // ANLIK DURUM ve özet kartları gelirken sayfa kayabilir: tutamaç yerine oturana kadar ölçülür.
+    let gripBox = null;
+    for (let attempt = 0; attempt < 10; attempt += 1) {
+      await admin.$eval(".dynamic-table thead", node => node.scrollIntoView({ block: "center" }));
+      await admin.waitForTimeout(200);
+      gripBox = await admin.$eval(".dynamic-table thead th:nth-child(2) .hof-col-grip", node => { const b = node.getBoundingClientRect(); return { x: b.x + 3, y: b.y + b.height / 2, hit: document.elementFromPoint(b.x + 3, b.y + b.height / 2)?.className || "" }; });
+      if (/hof-col-grip/.test(gripBox.hit)) break;
+    }
+    const before = await admin.$eval(".dynamic-table thead th:nth-child(2)", th => th.getBoundingClientRect().width);
+    expect(/hof-col-grip/.test(gripBox.hit), `tutamaç tıklanabilir: ${gripBox.hit}`);
+    await admin.mouse.move(gripBox.x, gripBox.y);
+    await admin.mouse.down();
+    await admin.mouse.move(gripBox.x - 30, gripBox.y, { steps: 5 });
+    await admin.mouse.up();
+    const after = await admin.$eval(".dynamic-table thead th:nth-child(2)", th => th.getBoundingClientRect().width);
+    expect(after < before - 20, `kolon daraldı: ${Math.round(before)} → ${Math.round(after)}`);
+    const remembered = await admin.evaluate(() => Object.keys(JSON.parse(localStorage.getItem("hof.colw") || "{}")).length);
+    expect(remembered === 1, "kolon genişliği hatırlandı");
+    // Playwright'ın kararlılık denetimi yapışkan başlıkta takılabiliyor; olay doğrudan tutamaca gönderilir.
+    await admin.dispatchEvent(".dynamic-table thead th:nth-child(2) .hof-col-grip", "dblclick");
+    await admin.waitForTimeout(300);
+    const reset = await admin.$eval(".dynamic-table thead th:nth-child(2)", th => th.getBoundingClientRect().width);
+    expect(Math.abs(reset - before) < 3, `çift tık otomatik genişliğe döndürür: ${Math.round(reset)} ≈ ${Math.round(before)}`);
   });
 
   await step("akıllı özet kartı tıklanınca kayıt listesi açılır; kayda gidilir ve satır belirginleşir", async () => {
@@ -676,10 +681,11 @@ try {
     await admin.click(".hof-stock-modal [data-act=new]");
     await admin.waitForSelector('.hof-modal-backdrop.is-visible input[name="name"]', { timeout: 8000 });
     await admin.fill('.hof-modal-backdrop.is-visible input[name="name"]', "Çay");
-    // v2.0.8: birim bir seçim listesi (kg, lt, metre, m², paket, koli, saat…); yalnız "adet" görünmez.
+    // v2.0.8: birim bir seçim listesi; v2.0.11: baş harfleri büyük ve her birim tek kez (Kg, Lt, M²…).
     const units = await admin.$$eval('.hof-modal-backdrop.is-visible select[name="unit"] option', options => options.map(option => option.value));
-    expect(["adet", "paket", "koli", "kg", "lt", "metre", "m²", "saat"].every(unit => units.includes(unit)), `birim listesi geniş (${units.length} seçenek)`);
-    await admin.selectOption('.hof-modal-backdrop.is-visible select[name="unit"]', "paket");
+    expect(["Adet", "Paket", "Koli", "Kg", "Lt", "Metre", "M²", "Saat"].every(unit => units.includes(unit)), `birim listesi geniş ve baş harfleri büyük (${units.length} seçenek)`);
+    expect(new Set(units.map(unit => unit.toLocaleLowerCase("tr-TR"))).size === units.length, "birim listesinde aynı birim iki yazımla yok");
+    await admin.selectOption('.hof-modal-backdrop.is-visible select[name="unit"]', "Paket");
     await admin.fill('.hof-modal-backdrop.is-visible input[name="minQty"]', "3");
     await admin.fill('.hof-modal-backdrop.is-visible input[name="unitPrice"]', "40");
     await admin.fill('.hof-modal-backdrop.is-visible input[name="openingQty"]', "5");
@@ -890,6 +896,7 @@ try {
   await step("personel kaynak menülerini göremez, satır silemez", async () => {
     const hiddenNav = await staff.$$eval(".sidebar .nav-item", items => items.filter(item => ["Tabloyu değiştir", "Ayarlar"].includes(item.textContent.trim())).every(item => item.style.display === "none"));
     expect(hiddenNav, "kaynak menüleri gizli olmalı");
+    expect(!(await staff.$("#hof-side-settings")), "personelde kullanıcı kartı altında Ayarlar yok");
     await staff.locator(".dynamic-table tbody tr").nth(1).locator("td").nth(1).hover();
     await staff.waitForSelector(".hof-float:not(.hof-float-delete).is-visible");
     const deleteVisible = await staff.$eval(".hof-float-delete", node => getComputedStyle(node).display !== "none");
@@ -964,7 +971,7 @@ try {
     await staff.waitForSelector(".hof-modal [data-complete]");
     expect(await staff.$eval(".hof-modal .hof-list-item", node => node.classList.contains("is-urgent")), "görev listesinde acil görev kırmızı olmalı");
     const tabs = await staff.$$eval(".hof-modal [data-view]", nodes => nodes.map(node => node.textContent));
-    expect(tabs.join("|") === "Açık görevlerim|Tamamladıklarım", `personel yalnızca kendi görevlerini görmeli: ${tabs}`);
+    expect(tabs.join("|") === "Açık Görevlerim|Tamamladıklarım", `personel yalnızca kendi görevlerini görmeli: ${tabs}`);
     expect(!(await staff.$(".hof-modal [data-new]")), "personel yeni görev açamamalı");
     await staff.click(".hof-modal [data-complete]");
     await staff.waitForFunction(() => document.querySelector(".hof-modal [data-list]")?.textContent.includes("açık görev yok"));
@@ -1002,7 +1009,7 @@ try {
   });
 
   await step("alt tablolu Excel 'yerine koy' ile yüklenir; sekme içindeki tablolar kendi kolonlarıyla bölüm olur", async () => {
-    await admin.click('.sidebar .nav-item:has-text("Ayarlar")');
+    await admin.click("#hof-side-settings"); // v2.0.11: Ayarlar kullanıcı kartının altında
     await admin.waitForSelector(".hof-modal-backdrop.is-visible .hof-data-summary");
     const input = await admin.$(".hof-modal .hof-drop input[type=file]");
     await input.setInputFiles(path.join(here, "..", "fixtures", "bolumlu-sayfalar.xlsx"));
@@ -1039,7 +1046,7 @@ try {
   });
 
   await step("yeni ay dosyası 'devamı olarak' eklenir: yeniler eklenir, değişen güncellenir, olmayan korunur", async () => {
-    await admin.click('.sidebar .nav-item:has-text("Ayarlar")');
+    await admin.click("#hof-side-settings"); // v2.0.11: Ayarlar kullanıcı kartının altında
     await admin.waitForSelector(".hof-modal-backdrop.is-visible .hof-data-summary");
     const input = await admin.$(".hof-modal .hof-drop input[type=file]");
     await input.setInputFiles(path.join(here, "..", "fixtures", "veri-devam.xlsx"));
@@ -1056,7 +1063,7 @@ try {
 
   await step("farklı konudaki Excel yeni oturumda açılır; adı seçicide değişir, oturumlar arasında geçilir, diğer kullanıcının ekranı değişmez", async () => {
     await staff.evaluate(() => document.querySelectorAll(".hof-toast").forEach(node => node.remove()));
-    await admin.click('.sidebar .nav-item:has-text("Ayarlar")');
+    await admin.click("#hof-side-settings"); // v2.0.11: Ayarlar kullanıcı kartının altında
     await admin.waitForSelector(".hof-modal-backdrop.is-visible #hof-session-section");
     const input = await admin.$(".hof-modal .hof-drop input[type=file]");
     await input.setInputFiles(path.join(here, "..", "fixtures", "formullu-taksitler.xlsx"));
@@ -1147,7 +1154,7 @@ try {
       page.on("pageerror", error => problems.push(`[klinik] pageerror: ${error.message}`));
       await page.goto(`http://127.0.0.1:${clinicPort}/`);
       const tagline = await page.waitForFunction(() => document.querySelector("#hof-auth .hof-auth-brand span")?.textContent).then(handle => handle.jsonValue());
-      expect(tagline === "Ofis yönetimi", `yeni kurulum giriş alt başlığı: ${tagline}`);
+      expect(tagline === "Ofis Yönetimi", `yeni kurulum giriş alt başlığı: ${tagline}`);
       await page.fill("#hof-auth input[name=username]", "admin");
       await page.fill("#hof-auth input[name=password]", ADMIN_PASSWORD);
       await Promise.all([page.waitForEvent("load"), page.click('#hof-auth button[type="submit"]')]);
@@ -1156,9 +1163,9 @@ try {
       await firstUpload(page, input, path.join(here, "..", "fixtures", "klinik.xlsx"));
       await page.waitForSelector(".hof-analysis-result:not([hidden])", { timeout: 20000 });
       const result = await page.$eval(".hof-analysis-result", node => node.innerText.replace(/\s+/g, " "));
-      expect(result.includes("Klinik ve poliklinik") && result.includes("Hekim"), `klinik önerisi: ${result}`);
+      expect(result.includes("Klinik ve Poliklinik") && result.includes("Hekim"), `klinik önerisi: ${result}`);
       await page.click(".hof-analysis-result [data-apply]");
-      await page.waitForFunction(() => document.querySelector(".brand-subtitle")?.firstChild?.nodeValue === "Klinik yönetimi", null, { timeout: 5000 });
+      await page.waitForFunction(() => document.querySelector(".brand-subtitle")?.firstChild?.nodeValue === "Klinik Yönetimi", null, { timeout: 5000 });
       await page.locator(".dynamic-table tbody tr td").first().click({ position: { x: 12, y: 10 } });
       const view = await page.evaluate(() => ({
         summary: document.querySelector(".welcome-row .section-title")?.firstChild?.nodeValue,
@@ -1168,7 +1175,7 @@ try {
         search: document.querySelector(".search-field input")?.placeholder,
         keys: [...document.querySelectorAll(".dynamic-table tbody tr")].slice(0, 2).map(row => row.dataset.hofKey),
       }));
-      expect(view.summary === "Hasta özeti" && view.newRecord === "Yeni Kayıt" && view.liens === "none" && view.lienAction === "none", `klinik görünümü: ${JSON.stringify(view)}`);
+      expect(view.summary === "Hasta Özeti" && view.newRecord === "Yeni Kayıt" && view.liens === "none" && view.lienAction === "none", `klinik görünümü: ${JSON.stringify(view)}`);
       expect(view.search === "Hasta no, ad soyad veya telefon ara…", `arama ipucu: ${view.search}`);
       expect(view.keys.join() === "H-1001,H-1002", `kayıt kimlikleri kimlik kolonundan: ${view.keys}`);
       await page.screenshot({ path: path.join(artifacts, "10-klinik.png") });
@@ -1198,13 +1205,13 @@ try {
       await firstUpload(page, input, schoolFile);
       await page.waitForSelector(".hof-analysis-result:not([hidden])", { timeout: 20000 });
       const result = await page.$eval(".hof-analysis-result", node => node.innerText.replace(/\s+/g, " "));
-      expect(result.includes("Okul servisi"), `okul servisi önerisi: ${result}`);
+      expect(result.includes("Okul Servisi"), `okul servisi önerisi: ${result}`);
       // v2.0.8: yükleme sonrası "ödeme planları Taksitler'e aktarılsın mı?" bildirimi (engellemeyen; düğmesi pencereyi açar).
       // Bildirimler pencerelerin altında kaldığından soru, akıllı analiz penceresi kapanınca gelir.
       await page.waitForTimeout(3500);
       expect(!(await page.evaluate(() => [...document.querySelectorAll(".hof-toast")].some(node => /Taksitler'e aktarılsın mı/.test(node.textContent)))), "analiz penceresi açıkken aktarma sorusu sorulmaz");
       await page.click(".hof-analysis-result [data-apply]");
-      await page.waitForFunction(() => document.querySelector(".brand-subtitle")?.firstChild?.nodeValue === "Okul servisi yönetimi", null, { timeout: 5000 });
+      await page.waitForFunction(() => document.querySelector(".brand-subtitle")?.firstChild?.nodeValue === "Okul Servisi Yönetimi", null, { timeout: 5000 });
       await page.waitForFunction(() => [...document.querySelectorAll(".hof-toast")].some(node => /Taksitler'e aktarılsın mı/.test(node.textContent) && /6 kişinin ödeme planı/.test(node.textContent)), null, { timeout: 20000 });
       expect(await page.$('.hof-toast:has-text("Taksitler\'e aktarılsın mı") .hof-toast-action'), "bildirimde 'Ön izle ve aktar' düğmesi var");
       await page.evaluate(() => document.querySelectorAll(".hof-toast").forEach(node => node.remove()));
@@ -1668,7 +1675,7 @@ try {
     await admin.waitForFunction(() => document.querySelector(".hof-modal-title")?.textContent.includes("kullanmaya devam ettiğiniz için teşekkürler"), null, { timeout: 10000 });
     const company = await admin.inputValue('.hof-modal input[name="companyName"]');
     await admin.screenshot({ path: path.join(artifacts, "29-ucuncu-gun-firma-bilgisi.png") });
-    expect(await admin.textContent(".hof-modal [data-cancel]") === "Daha sonra", "vazgeç düğmesi 'Daha sonra'");
+    expect(await admin.textContent(".hof-modal [data-cancel]") === "Daha Sonra", "vazgeç düğmesi 'Daha Sonra'");
     if (!company) await admin.fill('.hof-modal input[name="companyName"]', "E2E Hukuk");
     await admin.click('.hof-modal button[type="submit"]');
     await admin.waitForFunction(() => document.querySelector(".hof-modal .hof-form-error")?.textContent.includes("telefon veya e-posta"), null, { timeout: 5000 });

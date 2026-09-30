@@ -297,7 +297,7 @@ try {
     await page.click(".hof-stock-modal [data-act=new]");
     await page.waitForSelector('.hof-modal-backdrop.is-visible input[name="name"]', { timeout: 8000 });
     await page.fill('.hof-modal-backdrop.is-visible input[name="name"]', "Fotokopi kağıdı");
-    await page.selectOption('.hof-modal-backdrop.is-visible select[name="unit"]', "paket");
+    await page.selectOption('.hof-modal-backdrop.is-visible select[name="unit"]', "Paket");
     await page.fill('.hof-modal-backdrop.is-visible input[name="unitPrice"]', "120");
     await page.fill('.hof-modal-backdrop.is-visible input[name="openingQty"]', "10");
     await page.check('.hof-modal-backdrop.is-visible input[name="openingCash"]');

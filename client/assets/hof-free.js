@@ -423,7 +423,7 @@
       } catch (failure) {
         book = null;
         excel.querySelector("[data-excel-result]").hidden = true;
-        excel.querySelector("[data-file-label]").textContent = "Excel dosyası seçin";
+        excel.querySelector("[data-file-label]").textContent = "Excel Dosyası Seçin";
         error.textContent = failure.message;
       }
     };

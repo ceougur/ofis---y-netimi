@@ -154,7 +154,7 @@ try {
     await Promise.all([page.waitForEvent("load", { timeout: 30000 }), page.click(`${modal} [data-mode="replace"]`)]);
     await page.waitForSelector(".hof-analysis-result:not([hidden])", { timeout: 20000 });
     const result = await page.$eval(".hof-analysis-result", node => node.textContent.replace(/\s+/g, " "));
-    ok(/Önerilen sektör/.test(result) && /Okul servisi/i.test(result), "program sektörü kendiliğinden önerir: Okul servisi");
+    ok(/Önerilen Sektör/.test(result) && /Okul servisi/i.test(result), "program sektörü kendiliğinden önerir: Okul servisi");
     await shot("taslak-sektor-onerisi");
     await page.click(".hof-analysis-result [data-apply]");
     await page.waitForTimeout(1500);

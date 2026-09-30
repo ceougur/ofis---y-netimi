@@ -10,7 +10,7 @@ export function registerAuthRoutes(router, { auth, config, store, events, profil
 
   // Giriş ekranı için oturum gerektirmeyen bilgi. Ofis adı zaten ağ keşfinde yayınlandığından gizli değildir;
   // alt başlık ("Hukuk ofisi yönetimi", "Klinik yönetimi"…) seçili sektörden ya da yöneticinin yazdığından gelir.
-  router.get("/api/public/info", async ({ res }) => ok(res, { product, office: office(), tagline: profile?.tagline() || "Ofis yönetimi" }));
+  router.get("/api/public/info", async ({ res }) => ok(res, { product, office: office(), tagline: profile?.tagline() || "Ofis Yönetimi" }));
 
   router.post("/api/auth/login", async ({ req, res }) => {
     const body = await readJson(req);

@@ -71,7 +71,7 @@
   const icon = (name, size = 18) => `<svg viewBox="0 0 24 24" width="${size}" height="${size}" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[name] || ""}</svg>`;
 
   // ---------- Profil ----------
-  const DEFAULT_VOCAB = { record: "kayıt", records: "kayıtlar", Record: "Kayıt", Records: "Kayıtlar", expert: "Uzman", subtitle: "Ofis yönetimi" };
+  const DEFAULT_VOCAB = { record: "kayıt", records: "kayıtlar", Record: "Kayıt", Records: "Kayıtlar", expert: "Uzman", subtitle: "Ofis Yönetimi" };
   HOF.vocab = { ...DEFAULT_VOCAB };
   HOF.modules = { tahsilat: true, haciz: false };
   HOF.profile = () => profile;
@@ -1173,7 +1173,7 @@
       buttons.push('<button type="button" class="hof-button hof-button-ghost" data-pick>Başka Sektör Seç</button>');
       if (current !== "genel") buttons.push('<button type="button" class="hof-button hof-button-ghost" data-keep>Mevcut Görünümü Koru</button>');
       else buttons.push('<button type="button" class="hof-button hof-button-ghost" data-general>Genel Kullan</button>');
-      buttons.push(`<button type="button" class="hof-button" data-apply="${esc(suggested.id)}">Evet, uygula</button>`);
+      buttons.push(`<button type="button" class="hof-button" data-apply="${esc(suggested.id)}">Evet, Uygula</button>`);
     } else {
       buttons.push('<button type="button" class="hof-button hof-button-ghost" data-pick>Başka Sektör Seç</button>', '<button type="button" class="hof-button" data-done>Tamam</button>');
     }

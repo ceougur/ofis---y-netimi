@@ -71,6 +71,7 @@ const SENTENCES = new Set([
     "Tüm oturumlarda ortak:",
     "Tür kolonu yoksa",
     "Verinizi tanıyoruz",
+    "Veriniz hazır",
     "Yalnızca programda görünen ad değişir",
     "Yön kolonu yoksa hepsi",
     "Ödeme alanı otomatik bulunamadı",
@@ -88,7 +89,8 @@ function eligible(text) {
   if (!s || SENTENCES.has(s) || /[$`<>{}\\]/.test(s) || !/^[+−↶←→·✓✎⤓↗#0-9A-ZÇĞİÖŞÜ]/.test(s)) return false;
   const words = s.split(/\s+/);
   if (words.length < 2 || words.length > 7) return false;
-  const bare = s.replace(/\([^)]*\)/g, "");
+  // "Evet, Uygula" gibi onay düğmeleri cümle sayılmaz; virgülden sonrası da başlık yazımıyla denetlenir.
+  const bare = s.replace(/\([^)]*\)/g, "").replace(/^(Evet|Hayır|Tamam),\s*/, "");
   if (/[,;!?]/.test(bare) || /\.\s|\.$/.test(bare) || /(ıyor|iyor|uyor|üyor)(…)?$/.test(bare.trim())) return false;
   if (/…$/.test(bare.trim()) && !/^[+−]/.test(s) && !/(seç|yaz|ara)…$/.test(bare.trim())) return false;
   return titleCase(s) !== s;
@@ -103,6 +105,8 @@ function violations(file, { server = false } = {}) {
   for (const m of src.matchAll(/\b(title|eyebrow|label|submitLabel|confirmLabel|cancelLabel|heading)\s*:\s*"([^"\n]{3,70})"/g)) check(m[2], m[1]);
   for (const m of src.matchAll(/\b(title|submitLabel|confirmLabel|label|eyebrow)\s*:\s*([^,\n]*\?[^,\n]*)/g)) for (const n of m[2].matchAll(/"([^"\n]{3,60})"/g)) check(n[1], `${m[1]} koşullu`);
   for (const m of src.matchAll(/\[\s*"[a-z][\w-]*"\s*,\s*"([^"\n]{3,70})"/g)) check(m[1], "seçenek");
+  // Düğme yazısı sonradan geri konurken ("Giriş Yap" → hata → "Giriş yap") yazım kaymasın.
+  for (const m of src.matchAll(/\.textContent\s*=\s*"([^"\n]{3,60})"/g)) check(m[1], "textContent");
   if (server) for (const m of src.matchAll(/\b(headers|columns|head)\s*[:=]\s*\[([^\]\n]{0,1200})\]/g)) for (const n of m[2].matchAll(/"([^"\n]{3,60})"/g)) check(n[1], m[1]);
   return found;
 }

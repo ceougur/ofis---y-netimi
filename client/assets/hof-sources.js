@@ -538,7 +538,7 @@
         }
       } catch (error) {
         button.disabled = false;
-        button.textContent = "Şimdi eşitle";
+        button.textContent = "Şimdi Eşitle";
         HOF.toastError(error);
       }
     });
