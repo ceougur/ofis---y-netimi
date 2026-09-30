@@ -194,7 +194,7 @@
     const total = permissionCount();
     const diff = (user.grants?.add?.length || 0) + (user.grants?.remove?.length || 0);
     const pill = admin
-      ? '<span class="adm-perm-pill is-full" title="Yönetici tüm yetkilere sahiptir">Tam yetki</span>'
+      ? '<span class="adm-perm-pill is-full" title="Yönetici tüm yetkilere sahiptir">Tam Yetki</span>'
       : `<button type="button" class="adm-perm-pill ${openPanelFor === user.id ? "is-open" : ""}" data-perms aria-expanded="${openPanelFor === user.id}" title="Yetkileri gör ve kişiye özel ekle/çıkar">Yetkiler <b>${user.permissions.length}</b><span>/ ${total}</span>${diff ? `<i class="adm-perm-diff">${user.grants.add.length ? `+${user.grants.add.length}` : ""}${user.grants.add.length && user.grants.remove.length ? " " : ""}${user.grants.remove.length ? `−${user.grants.remove.length}` : ""}</i>` : ""}<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>`;
     return `<tr data-id="${esc(user.id)}" class="${user.active ? "" : "is-passive"}">
       <td><span class="adm-inline" data-inline="name"><b>${esc(user.name)}</b><button type="button" class="adm-pencil" data-edit="name" title="Adı düzelt" aria-label="${esc(user.name)} adını düzelt">${PENCIL}</button></span>${self ? ' <span class="hof-chip">siz</span>' : ""}${user.mustChangePassword ? ' <span class="hof-chip hof-chip-high">parola bekliyor</span>' : ""}</td>
@@ -203,7 +203,7 @@
       <td><button type="button" class="adm-status ${user.active ? "is-active" : ""}" data-toggle ${self ? "disabled" : ""}>${user.active ? "Aktif" : "Pasif"}</button></td>
       <td>${pill}</td>
       <td>${user.lastLoginAt ? `${esc(HOF.formatDateTime(user.lastLoginAt))}` : '<span class="adm-muted">Hiç giriş yapmadı</span>'}</td>
-      <td class="adm-right adm-row-actions"><button type="button" class="hof-button hof-button-ghost hof-button-small" data-reset>Parola sıfırla</button><button type="button" class="hof-button hof-button-ghost hof-button-small" data-sessions ${self ? "disabled" : ""}>Oturumları kapat</button><button type="button" class="hof-button hof-button-small adm-delete" data-delete ${self ? 'disabled title="Kendi hesabınızı silemezsiniz"' : 'title="Kullanıcıyı sil (geçmişi korunur)"'}>Sil</button></td>
+      <td class="adm-right adm-row-actions"><button type="button" class="hof-button hof-button-ghost hof-button-small" data-reset>Parola Sıfırla</button><button type="button" class="hof-button hof-button-ghost hof-button-small" data-sessions ${self ? "disabled" : ""}>Oturumları Kapat</button><button type="button" class="hof-button hof-button-small adm-delete" data-delete ${self ? 'disabled title="Kendi hesabınızı silemezsiniz"' : 'title="Kullanıcıyı sil (geçmişi korunur)"'}>Sil</button></td>
     </tr>${openPanelFor === user.id && !admin ? permRow(user) : ""}`;
   }
   function permRow(user) {
@@ -211,7 +211,7 @@
     return `<tr class="adm-perm-row" data-perm-for="${esc(user.id)}"><td colspan="7"><div class="adm-perm-panel" role="group" aria-label="${esc(user.name)} yetkileri">
       <div class="adm-perm-head"><div><b>${esc(user.name)} · yetkiler</b><small>Rol: <b>${esc(roleLabel(user.roleKey))}</b> — rolün verdiği ${base.size} yetki işaretli gelir. İşaret ekleyip kaldırarak bu kişiye özel ayarlayın; rolü değiştirmek diğer kişileri etkilemez.</small></div><div class="adm-perm-legend"><span class="is-added">eklendi</span><span class="is-removed">kaldırıldı</span><span class="is-lock">${LOCK}yalnız yönetici</span></div></div>
       ${permGrid({ checked: new Set(user.permissions), base })}
-      <div class="adm-perm-foot"><span class="adm-perm-summary" data-summary></span><button type="button" class="hof-button hof-button-ghost hof-button-small" data-perm-reset>Rol varsayılanına dön</button><button type="button" class="hof-button hof-button-ghost hof-button-small" data-perm-cancel>Vazgeç</button><button type="button" class="hof-button hof-button-small" data-perm-save>Yetkileri kaydet</button></div>
+      <div class="adm-perm-foot"><span class="adm-perm-summary" data-summary></span><button type="button" class="hof-button hof-button-ghost hof-button-small" data-perm-reset>Rol Varsayılanına Dön</button><button type="button" class="hof-button hof-button-ghost hof-button-small" data-perm-cancel>Vazgeç</button><button type="button" class="hof-button hof-button-small" data-perm-save>Yetkileri Kaydet</button></div>
     </div></td></tr>`;
   }
   function renderUsers() {
@@ -228,7 +228,7 @@
         <header><b>${esc(role.label)}</b><span class="hof-chip ${role.builtIn ? "" : "hof-chip-accent"}">${role.builtIn ? "Yerleşik" : "Ofisin rolü"}</span></header>
         <p class="adm-role-meta">${count} · ${role.users} kullanıcı</p>
         ${note ? `<p class="adm-role-note">${esc(note)}</p>` : ""}
-        <div class="adm-role-actions">${role.builtIn ? `<button type="button" class="hof-button hof-button-ghost hof-button-small" data-role-view>Yetkileri gör</button>${role.key === "admin" ? "" : '<button type="button" class="hof-button hof-button-ghost hof-button-small" data-role-copy>Bundan yeni rol</button>'}` : `<button type="button" class="hof-button hof-button-ghost hof-button-small" data-role-edit>Düzenle</button><button type="button" class="hof-button hof-button-small adm-delete" data-role-delete ${role.users ? `title="${role.users} kullanıcıda kullanılıyor"` : ""}>Sil</button>`}</div>
+        <div class="adm-role-actions">${role.builtIn ? `<button type="button" class="hof-button hof-button-ghost hof-button-small" data-role-view>Yetkileri Gör</button>${role.key === "admin" ? "" : '<button type="button" class="hof-button hof-button-ghost hof-button-small" data-role-copy>Bundan Yeni Rol</button>'}` : `<button type="button" class="hof-button hof-button-ghost hof-button-small" data-role-edit>Düzenle</button><button type="button" class="hof-button hof-button-small adm-delete" data-role-delete ${role.users ? `title="${role.users} kullanıcıda kullanılıyor"` : ""}>Sil</button>`}</div>
       </article>`;
     };
     $("#adm-role-list").innerHTML = allRoles().map(card).join("");
@@ -239,7 +239,7 @@
       $("#adm-deleted").hidden = !list.length;
       $("#adm-deleted-count").textContent = String(list.length);
       $("#adm-deleted-body").innerHTML = list
-        .map(item => `<tr data-deleted="${esc(item.id)}"><td><b>${esc(item.name)}</b></td><td><code>${esc(item.username)}</code></td><td>${esc(item.roleLabel || HOF.roleLabels[item.roleKey] || item.roleKey)}</td><td>${esc(HOF.formatDateTime(item.deletedAt))}${item.deletedByName ? ` · ${esc(item.deletedByName)}` : ""}</td><td class="adm-right"><button type="button" class="hof-button hof-button-ghost hof-button-small" data-restore>Geri al</button></td></tr>`)
+        .map(item => `<tr data-deleted="${esc(item.id)}"><td><b>${esc(item.name)}</b></td><td><code>${esc(item.username)}</code></td><td>${esc(item.roleLabel || HOF.roleLabels[item.roleKey] || item.roleKey)}</td><td>${esc(HOF.formatDateTime(item.deletedAt))}${item.deletedByName ? ` · ${esc(item.deletedByName)}` : ""}</td><td class="adm-right"><button type="button" class="hof-button hof-button-ghost hof-button-small" data-restore>Geri Al</button></td></tr>`)
         .join("");
     } catch {
       $("#adm-deleted").hidden = true;
@@ -258,7 +258,7 @@
     card.hidden = false;
     card.classList.toggle("is-missing", !recoveryStatus.exists);
     $("#adm-recovery-status").innerHTML = recoveryStatus.exists
-      ? `<b>Kurtarma anahtarı hazır</b> (oluşturulma: ${esc(HOF.formatDateTime(recoveryStatus.createdAt))}${recoveryStatus.createdByName ? ` · ${esc(recoveryStatus.createdByName)}` : ""}). Yönetici parolası unutulursa giriş ekranında <b>Parolamı unuttum</b> ile bu anahtarla yeni parola belirlenir. Anahtar kaybolduysa yenileyin (eskisi geçersiz olur). Anahtar da yoksa: sunucu bilgisayarında giriş ekranı → Parolamı unuttum → <b>Sunucu kodu oluştur</b>.`
+      ? `<b>Kurtarma anahtarı hazır</b> (oluşturulma: ${esc(HOF.formatDateTime(recoveryStatus.createdAt))}${recoveryStatus.createdByName ? ` · ${esc(recoveryStatus.createdByName)}` : ""}). Yönetici parolası unutulursa giriş ekranında <b>Parolamı Unuttum</b> ile bu anahtarla yeni parola belirlenir. Anahtar kaybolduysa yenileyin (eskisi geçersiz olur). Anahtar da yoksa: sunucu bilgisayarında giriş ekranı → <b>Parolamı Unuttum</b> → <b>Sunucu Kodu Oluştur</b>.`
       : "<b>Kurtarma anahtarı oluşturulmadı.</b> Yönetici parolanızı unutursanız programa bu anahtarla girersiniz; üyelik ve internet gerekmez. Oluşturun, yazdırın ve kasada saklayın.";
     $("#adm-recovery-create").textContent = recoveryStatus.exists ? "Kurtarma anahtarını yenile" : "Kurtarma anahtarı oluştur";
   }
@@ -295,18 +295,18 @@
     let base = rolePermissions("personel");
     const gridHtml = key => (key === "admin" ? `<p class="adm-muted">Yönetici tüm yetkilere sahiptir; ayrıca ayarlanmaz.</p>${permGrid({ checked: new Set(), full: true })}` : permGrid({ checked: rolePermissions(key), base: rolePermissions(key) }));
     HOF.formModal({
-      title: "Yeni kullanıcı",
+      title: "Yeni Kullanıcı",
       eyebrow: "KULLANICI YÖNETİMİ",
       size: "wide",
       fields: [
-        { name: "name", label: "Ad soyad", required: true, autofocus: true, maxlength: 120 },
-        { name: "username", label: "Kullanıcı adı", required: true, maxlength: 60, help: "Harf, rakam, nokta, tire; en az 3 karakter. Girişte büyük/küçük harf fark etmez." },
+        { name: "name", label: "Ad Soyad", required: true, autofocus: true, maxlength: 120 },
+        { name: "username", label: "Kullanıcı Adı", required: true, maxlength: 60, help: "Harf, rakam, nokta, tire; en az 3 karakter. Girişte büyük/küçük harf fark etmez." },
         { name: "role", label: "Rol", type: "select", value: "personel", options: allRoles().map(role => ({ value: role.key, label: role.builtIn ? role.label : `${role.label} (ofisin rolü)` })) },
-        { name: "password", label: "İlk parola", required: true, value: password, help: "Bu parolayı kullanıcıya iletin. İsterseniz değiştirebilirsiniz." },
+        { name: "password", label: "İlk Parola", required: true, value: password, help: "Bu parolayı kullanıcıya iletin. İsterseniz değiştirebilirsiniz." },
         { name: "mustChangePassword", label: "Kullanıcı ilk girişte parolasını değiştirsin (önerilir)", type: "checkbox", value: true },
       ],
-      extraHtml: `<details class="adm-perm-details"><summary>Yetkileri özelleştir <small>isteğe bağlı · seçilen rolün yetkileri işaretli gelir; ekleyip kaldırabilirsiniz</small></summary><div class="adm-perm-panel is-embedded"><div class="adm-perm-foot is-top"><span class="adm-perm-summary" data-summary></span></div><div data-grid>${gridHtml("personel")}</div></div></details>`,
-      submitLabel: "Kullanıcıyı oluştur",
+      extraHtml: `<details class="adm-perm-details"><summary>Yetkileri Özelleştir <small>isteğe bağlı · seçilen rolün yetkileri işaretli gelir; ekleyip kaldırabilirsiniz</small></summary><div class="adm-perm-panel is-embedded"><div class="adm-perm-foot is-top"><span class="adm-perm-summary" data-summary></span></div><div data-grid>${gridHtml("personel")}</div></div></details>`,
+      submitLabel: "Kullanıcıyı Oluştur",
       onOpen: dialog => {
         const panel = dialog.querySelector(".adm-perm-panel");
         wireGrid(panel, base);
@@ -336,8 +336,8 @@
       size: "wide",
       intro: role ? `Bu rol ${role.users} kullanıcıda. Kaydedince hepsinin yetkileri hemen değişir (kişiye özel eklenen/kaldırılanlar korunur).` : "Rolün adını yazın ve bu roldeki kişilerin yapabileceklerini işaretleyin. Kullanıcı, sistem ve lisans yönetimi ile ANLIK DURUM kartı yalnız yönetici rolündedir.",
       fields: [
-        { name: "name", label: "Rol adı", required: true, autofocus: !role, maxlength: 60, value: role?.label || "", placeholder: "Örn. Veznedar, Sekreter, Stajyer" },
-        { name: "description", label: "Kısa açıklama", maxlength: 200, value: role?.description || "", placeholder: "İsteğe bağlı" },
+        { name: "name", label: "Rol Adı", required: true, autofocus: !role, maxlength: 60, value: role?.label || "", placeholder: "Örn. Veznedar, Sekreter, Stajyer" },
+        { name: "description", label: "Kısa Açıklama", maxlength: 200, value: role?.description || "", placeholder: "İsteğe bağlı" },
       ],
       extraHtml: `${role ? "" : `<label class="hof-field adm-role-start"><span>Başlangıç</span><select data-role-start><option value="">Boş (hiç yetki yok)</option>${roles.builtIn.filter(item => item.key !== "admin").map(item => `<option value="${esc(item.key)}" ${item.key === copyFrom ? "selected" : ""}>${esc(item.label)} yetkileriyle başla</option>`).join("")}${roles.custom.map(item => `<option value="${esc(item.key)}">${esc(item.label)} yetkileriyle başla</option>`).join("")}</select></label>`}<div class="adm-perm-panel is-embedded"><div class="adm-perm-foot is-top"><span class="adm-perm-summary" data-count></span></div><div data-grid>${permGrid({ checked: start })}</div></div>`,
       submitLabel: role ? "Rolü kaydet" : "Rolü oluştur",
@@ -421,7 +421,7 @@
         type: "success",
         timeout: 9000,
         action: {
-          label: "Geri al",
+          label: "Geri Al",
           onClick: async () => {
             try {
               await HOF.api(`/api/admin/users/${encodeURIComponent(user.id)}/restore`, { method: "POST", body: {} });
@@ -451,13 +451,13 @@
             options: [...heirs.map(item => ({ value: item.id, label: `${item.name}${item.id === me.id ? " (siz)" : ""} · ${item.roleLabel || roleLabel(item.roleKey)}` })), { value: "keep", label: "Devretme — görevler silinen kişide kalsın" }],
           },
         ],
-        submitLabel: "Kullanıcıyı sil",
+        submitLabel: "Kullanıcıyı Sil",
         onOpen: dialog => dialog.querySelector('button[type="submit"]').classList.add("hof-button-danger"),
         onSubmit: data => remove(data.reassignTo),
       });
       return;
     }
-    if (!(await HOF.confirm({ title: `${user.name} silinsin mi?`, message: text, confirmLabel: "Kullanıcıyı sil", danger: true }))) return;
+    if (!(await HOF.confirm({ title: `${user.name} silinsin mi?`, message: text, confirmLabel: "Kullanıcıyı Sil", danger: true }))) return;
     try {
       await remove("");
     } catch (error) {
@@ -482,10 +482,10 @@
         eyebrow: "SİLİNEN KULLANICI",
         intro: error.message,
         fields: [
-          { name: "name", label: "Görünen ad", required: true, maxlength: 120, value: error.data.code === "NAME_TAKEN" ? `${name} (2)` : name },
-          { name: "username", label: "Kullanıcı adı", required: true, maxlength: 60, value: `${username}2` },
+          { name: "name", label: "Görünen Ad", required: true, maxlength: 120, value: error.data.code === "NAME_TAKEN" ? `${name} (2)` : name },
+          { name: "username", label: "Kullanıcı Adı", required: true, maxlength: 60, value: `${username}2` },
         ],
-        submitLabel: "Geri al",
+        submitLabel: "Geri Al",
         onSubmit: async data => {
           await HOF.api(`/api/admin/users/${encodeURIComponent(id)}/restore`, { method: "POST", body: data });
           done();
@@ -499,7 +499,7 @@
     const row = event.target.closest("tr");
     const user = users.find(item => item.id === row.dataset.id);
     const next = event.target.value;
-    if (next === "admin" && !(await HOF.confirm({ title: "Yönetici yapılsın mı?", message: `${user.name} yönetici olunca kullanıcıları, yedekleri, sistemi ve lisansı yönetir; ANLIK DURUM kartını görür. Kişiye özel yetki ayarları yöneticiye uygulanmaz.`, confirmLabel: "Yönetici yap" }))) return renderUsers();
+    if (next === "admin" && !(await HOF.confirm({ title: "Yönetici yapılsın mı?", message: `${user.name} yönetici olunca kullanıcıları, yedekleri, sistemi ve lisansı yönetir; ANLIK DURUM kartını görür. Kişiye özel yetki ayarları yöneticiye uygulanmaz.`, confirmLabel: "Yönetici Yap" }))) return renderUsers();
     try {
       await HOF.api(`/api/admin/users/${encodeURIComponent(row.dataset.id)}`, { method: "PATCH", body: { role: next } });
       HOF.toast(`${user.name}: rol “${roleLabel(next)}” oldu.`, { type: "success" });
@@ -559,20 +559,20 @@
     try {
       if ("toggle" in button.dataset) {
         const activate = !button.classList.contains("is-active");
-        if (!activate && !(await HOF.confirm({ title: "Kullanıcıyı pasifleştir", message: `${name} artık giriş yapamayacak ve açık oturumları kapanacak. Kayıtları silinmez; yeniden aktifleştirebilirsiniz.`, confirmLabel: "Pasifleştir", danger: true }))) return;
+        if (!activate && !(await HOF.confirm({ title: "Kullanıcıyı Pasifleştir", message: `${name} artık giriş yapamayacak ve açık oturumları kapanacak. Kayıtları silinmez; yeniden aktifleştirebilirsiniz.`, confirmLabel: "Pasifleştir", danger: true }))) return;
         await HOF.api(`/api/admin/users/${encodeURIComponent(id)}`, { method: "PATCH", body: { active: activate } });
         HOF.toast(activate ? `${name} aktifleştirildi.` : `${name} pasifleştirildi.`, { type: "success" });
       } else if ("reset" in button.dataset) {
         const password = strongPassword();
         HOF.formModal({
-          title: "Parola sıfırla",
+          title: "Parola Sıfırla",
           eyebrow: name,
           intro: "Kullanıcının tüm açık oturumları kapanır.",
           fields: [
-            { name: "password", label: "Yeni geçici parola", required: true, value: password },
+            { name: "password", label: "Yeni Geçici Parola", required: true, value: password },
             { name: "mustChangePassword", label: "İlk girişte değiştirsin", type: "checkbox", value: true },
           ],
-          submitLabel: "Parolayı sıfırla",
+          submitLabel: "Parolayı Sıfırla",
           onSubmit: async data => {
             await HOF.api(`/api/admin/users/${encodeURIComponent(id)}/reset-password`, { method: "POST", body: data });
             HOF.toast(`${name} için yeni parola: ${data.password}`, { type: "success", timeout: 12000 });
@@ -601,7 +601,7 @@
     if ("roleEdit" in button.dataset) return roleEditor(role);
     if ("roleDelete" in button.dataset) {
       if (role.users) return HOF.toast(`“${role.label}” rolü ${role.users} kullanıcıda kullanılıyor. Önce o kullanıcıları başka bir role geçirin.`, { type: "error", timeout: 8000 });
-      if (!(await HOF.confirm({ title: `“${role.label}” rolü silinsin mi?`, message: "Rol listeden kalkar. Bu rolü kullanan kimse yok.", confirmLabel: "Rolü sil", danger: true }))) return;
+      if (!(await HOF.confirm({ title: `“${role.label}” rolü silinsin mi?`, message: "Rol listeden kalkar. Bu rolü kullanan kimse yok.", confirmLabel: "Rolü Sil", danger: true }))) return;
       try {
         await HOF.api(`/api/admin/roles/${encodeURIComponent(role.key)}`, { method: "DELETE" });
         HOF.toast(`“${role.label}” rolü silindi.`, { type: "success" });
@@ -658,7 +658,7 @@
       }
       const where = info.mode === "folder" ? `Klasör: ${info.path}` : `Drive klasörü: ${info.folderId}`;
       const last = info.lastAt ? `Son kopya: ${HOF.formatDateTime(info.lastAt)} (${info.lastName})` : "Henüz kopya alınmadı; ilk yedekte alınır.";
-      status.innerHTML = `<b>${esc(where)}</b> · ${esc(last)} · ${esc(String(info.copies))} kopya${info.lastError ? `<br><span class="adm-error">Son hata: ${esc(info.lastError)}</span>` : ""}`;
+      status.innerHTML = `<b>${esc(where)}</b> · ${esc(last)} · ${esc(String(info.copies))} kopya${info.lastError ? `<br><span class="adm-error">Son Hata: ${esc(info.lastError)}</span>` : ""}`;
       status.className = info.lastError ? "adm-warn" : "adm-ok";
       const input = $("#adm-cloud-target");
       if (input && !input.value) input.value = info.value || "";
@@ -763,7 +763,7 @@
     body.innerHTML = items.length
       ? items
           .map(
-            item => `<tr data-id="${esc(item.id)}"><td>${esc(HOF.formatDateTime(item.deletedAt))}</td><td>${esc(item.actorName || "—")}</td><td><span class="adm-kind">${esc(item.kindLabel)}</span></td><td class="adm-detail"><b>${esc(item.title || "—")}</b>${item.detail ? `<small>${esc(item.detail)}</small>` : ""}<small class="adm-trash-note${item.restorable ? "" : " is-blocked"}">${esc(item.note || "")}</small></td><td class="adm-right">${item.restorable ? '<button type="button" class="hof-button hof-button-small" data-restore>Geri yükle</button>' : ""}</td></tr>`,
+            item => `<tr data-id="${esc(item.id)}"><td>${esc(HOF.formatDateTime(item.deletedAt))}</td><td>${esc(item.actorName || "—")}</td><td><span class="adm-kind">${esc(item.kindLabel)}</span></td><td class="adm-detail"><b>${esc(item.title || "—")}</b>${item.detail ? `<small>${esc(item.detail)}</small>` : ""}<small class="adm-trash-note${item.restorable ? "" : " is-blocked"}">${esc(item.note || "")}</small></td><td class="adm-right">${item.restorable ? '<button type="button" class="hof-button hof-button-small" data-restore>Geri Yükle</button>' : ""}</td></tr>`,
           )
           .join("")
       : `<tr><td colspan="5">${trashItems.length ? "Bu türde silinen yok." : "Silinen bir şey yok."}</td></tr>`;
@@ -887,7 +887,7 @@
       parts.push(`<div class="adm-update-available"><strong>Yeni sürüm hazır: DestekOfis ${esc(status.available.version)}</strong><small>${formatSize(status.available.size)}${esc(date)}${status.autoUpdate ? " · Sunucu yeniden başladığında kendiliğinden de kurulur." : ""}</small>${status.available.notes ? `<pre class="adm-update-notes">${esc(status.available.notes)}</pre>` : ""}</div>`);
     }
     if (status.incompatible) parts.push(`<p class="adm-update-warn">${esc(status.incompatible.reason)}</p>`);
-    if (status.skippedVersions?.length && !busy) parts.push(`<p class="adm-update-warn">${esc(status.skippedVersions.join(", "))} sürümü daha önce açılamadığı için atlandı. <button type="button" class="hof-button hof-button-ghost hof-button-small" id="adm-update-retry">Yine de kur</button></p>`);
+    if (status.skippedVersions?.length && !busy) parts.push(`<p class="adm-update-warn">${esc(status.skippedVersions.join(", "))} sürümü daha önce açılamadığı için atlandı. <button type="button" class="hof-button hof-button-ghost hof-button-small" id="adm-update-retry">Yine de Kur</button></p>`);
     const last = status.lastResult;
     if (last?.outcome === "success") parts.push(`<p class="adm-update-ok">✓ ${esc(last.version)} sürümüne güncellendi · ${esc(HOF.formatDateTime(last.at))}</p>`);
     else if (last?.outcome === "rolled-back") parts.push(`<p class="adm-update-warn">${esc(last.version)} sürümü açılamadı; ${esc(last.previous || "önceki")} sürümüne dönüldü. ${esc(last.reason || "")}</p>`);
@@ -917,7 +917,7 @@
     const ok = await HOF.confirm({
       title: "Güncelleme kurulsun mu?",
       message: `DestekOfis ${version || "yeni"} sürümüne güncellenecek. Önce veritabanının yedeği alınır; geçiş sırasında sistem yaklaşık 1 dakika kullanılamaz ve açık ekranlar kendiliğinden yenilenir. Yeni sürüm açılamazsa önceki sürüme kendiliğinden dönülür.`,
-      confirmLabel: "Şimdi güncelle",
+      confirmLabel: "Şimdi Güncelle",
     });
     if (!ok) return;
     try {
@@ -995,7 +995,7 @@
     $("#adm-license-status").innerHTML = `
       <div class="adm-license-head">
         <div><span class="adm-license-badge">${esc(STATE_LABELS[status.state] || status.state)}</span><h2>${esc(status.title)}</h2><p>${esc(status.message)}</p></div>
-        ${status.kind && !status.offline ? '<button type="button" class="hof-button hof-button-ghost" id="adm-license-check">Şimdi doğrula</button>' : ""}
+        ${status.kind && !status.offline ? '<button type="button" class="hof-button hof-button-ghost" id="adm-license-check">Şimdi Doğrula</button>' : ""}
       </div>
       <dl class="adm-license-facts">
         ${row("Tür", status.kind === "trial" ? "Ücretsiz deneme" : status.kind === "license" ? (status.offline ? "Lisans (internetsiz)" : "Lisans") : "")}

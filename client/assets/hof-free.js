@@ -284,42 +284,42 @@
   function openCreate() {
     if (!canCreate()) return HOF.toast("Sayfa ekleme yetkiniz yok.", { type: "error" });
     const modal = HOF.modal({
-      title: "Yeni sayfa",
+      title: "Yeni Sayfa",
       eyebrow: "SERBEST SAYFA",
       size: "wide",
       body: `<div class="hof-free-source" role="tablist" aria-label="Sayfanın kaynağı">
-          <button type="button" role="tab" data-source="blank" aria-selected="true"><b>Boş sayfa</b><small>Excel gibi kendiniz doldurun</small></button>
-          <button type="button" role="tab" data-source="excel" aria-selected="false"><b>Excel dosyasından aktar</b><small>.xlsx, .xls, .csv</small></button>
-          <button type="button" role="tab" data-source="sheets" aria-selected="false"><b>Google Sheets'ten aktar</b><small>Paylaşılan tablo bağlantısı</small></button>
+          <button type="button" role="tab" data-source="blank" aria-selected="true"><b>Boş Sayfa</b><small>Excel gibi kendiniz doldurun</small></button>
+          <button type="button" role="tab" data-source="excel" aria-selected="false"><b>Excel Dosyasından Aktar</b><small>.xlsx, .xls, .csv</small></button>
+          <button type="button" role="tab" data-source="sheets" aria-selected="false"><b>Google Sheets'ten Aktar</b><small>Paylaşılan tablo bağlantısı</small></button>
         </div>
         <form class="hof-form" data-pane="blank" novalidate>
           <p class="hof-modal-text">Sayfa, verinizin sekmelerinin yanına eklenir ve Excel gibi doldurulur: başlıkları ve hücreleri yazın, siz başka hücreye geçince kaydedilir. Satır, kolon ve formül (Alt toplam, Yan toplam…) sonradan da eklenir.</p>
           ${[
-            { name: "name", label: "Sayfa adı", required: true, maxlength: 60, placeholder: "ör. Masraflar" },
-            { name: "columns", label: "Kolon sayısı", type: "number", value: "5", min: 1, step: 1, inputmode: "numeric", help: "İstediğiniz kadar kolon (500'e kadar); sonradan da ekleyebilirsiniz." },
-            { name: "rows", label: "Satır sayısı", type: "number", value: "20", min: 1, step: 1, inputmode: "numeric" },
-            { name: "names", label: "Kolon başlıkları (isteğe bağlı)", type: "textarea", rows: 3, maxlength: 4000, placeholder: "Virgülle ayırın ya da her satıra bir başlık yazın: Tarih, Açıklama, Tutar", help: "Boş bırakırsanız başlıkları sayfada yazarsınız." },
+            { name: "name", label: "Sayfa Adı", required: true, maxlength: 60, placeholder: "ör. Masraflar" },
+            { name: "columns", label: "Kolon Sayısı", type: "number", value: "5", min: 1, step: 1, inputmode: "numeric", help: "İstediğiniz kadar kolon (500'e kadar); sonradan da ekleyebilirsiniz." },
+            { name: "rows", label: "Satır Sayısı", type: "number", value: "20", min: 1, step: 1, inputmode: "numeric" },
+            { name: "names", label: "Kolon Başlıkları (isteğe bağlı)", type: "textarea", rows: 3, maxlength: 4000, placeholder: "Virgülle ayırın ya da her satıra bir başlık yazın: Tarih, Açıklama, Tutar", help: "Boş bırakırsanız başlıkları sayfada yazarsınız." },
           ].map(HOF.fieldHtml).join("")}
           <p class="hof-form-error" role="alert"></p>
-          <div class="hof-actions"><button type="button" class="hof-button hof-button-ghost" data-cancel>Vazgeç</button><button type="submit" class="hof-button">Sayfayı oluştur</button></div>
+          <div class="hof-actions"><button type="button" class="hof-button hof-button-ghost" data-cancel>Vazgeç</button><button type="submit" class="hof-button">Sayfayı Oluştur</button></div>
         </form>
         <form class="hof-form" data-pane="excel" novalidate hidden>
           <p class="hof-modal-text">Excel'deki bir sayfa <b>başlıkları, değerleri ve formülleriyle</b> yeni sayfa olarak kopyalanır; formüller programda çalışır. Kolon başlıklarının olduğu satır kendiliğinden bulunur (üstündeki sayfa başlığı gibi satırlar alınmaz). Excel dosyanız değişmez ve sonradan Excel'de yapılan değişiklikler buraya gelmez.</p>
-          <label class="hof-free-drop" data-drop><input type="file" accept=".xlsx,.xls,.xlsm,.csv" data-file hidden><span class="hof-free-drop-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M12 12v6"/><path d="m9.5 14.5 2.5-2.5 2.5 2.5"/></svg></span><b data-file-label>Excel dosyası seçin</b><small>ya da dosyayı buraya sürükleyin · .xlsx, .xls, .csv</small></label>
+          <label class="hof-free-drop" data-drop><input type="file" accept=".xlsx,.xls,.xlsm,.csv" data-file hidden><span class="hof-free-drop-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M12 12v6"/><path d="m9.5 14.5 2.5-2.5 2.5 2.5"/></svg></span><b data-file-label>Excel Dosyası Seçin</b><small>ya da dosyayı buraya sürükleyin · .xlsx, .xls, .csv</small></label>
           <div data-excel-result hidden>
-            <label class="hof-field"><span>Aktarılacak sayfa</span><select data-excel-sheet></select></label>
-            <label class="hof-field"><span>Programdaki sayfa adı</span><input data-excel-name maxlength="60" autocomplete="off"></label>
+            <label class="hof-field"><span>Aktarılacak Sayfa</span><select data-excel-sheet></select></label>
+            <label class="hof-field"><span>Programdaki Sayfa Adı</span><input data-excel-name maxlength="60" autocomplete="off"></label>
             <div data-preview></div>
           </div>
           <p class="hof-form-error" role="alert"></p>
-          <div class="hof-actions"><button type="button" class="hof-button hof-button-ghost" data-cancel>Vazgeç</button><button type="submit" class="hof-button" data-import disabled>Sayfayı aktar</button></div>
+          <div class="hof-actions"><button type="button" class="hof-button hof-button-ghost" data-cancel>Vazgeç</button><button type="submit" class="hof-button" data-import disabled>Sayfayı Aktar</button></div>
         </form>
         <form class="hof-form" data-pane="sheets" novalidate hidden>
           <p class="hof-modal-text">Google Sheets'teki bir sekme <b>başlıkları, değerleri ve formülleriyle</b> kopyalanır. Tabloyu <b>“Bağlantıya sahip olan herkes görüntüleyebilir”</b> olarak paylaşın; aktarmak istediğiniz sekmeyi açıp adres çubuğundaki bağlantıyı yapıştırın (sekme, bağlantıdaki <code>#gid=</code> ile seçilir). Sonradan Sheets'te yapılan değişiklikler buraya gelmez.</p>
-          <label class="hof-field"><span>Google Sheets bağlantısı <i aria-hidden="true">*</i></span><input data-sheets-url required autocomplete="off" spellcheck="false" placeholder="https://docs.google.com/spreadsheets/d/…/edit#gid=0"></label>
-          <label class="hof-field"><span>Programdaki sayfa adı</span><input data-sheets-name maxlength="60" autocomplete="off" placeholder="Boş bırakılırsa sekmenin adı"></label>
+          <label class="hof-field"><span>Google Sheets Bağlantısı <i aria-hidden="true">*</i></span><input data-sheets-url required autocomplete="off" spellcheck="false" placeholder="https://docs.google.com/spreadsheets/d/…/edit#gid=0"></label>
+          <label class="hof-field"><span>Programdaki Sayfa Adı</span><input data-sheets-name maxlength="60" autocomplete="off" placeholder="Boş bırakılırsa sekmenin adı"></label>
           <p class="hof-form-error" role="alert"></p>
-          <div class="hof-actions"><button type="button" class="hof-button hof-button-ghost" data-cancel>Vazgeç</button><button type="submit" class="hof-button">Sayfayı aktar</button></div>
+          <div class="hof-actions"><button type="button" class="hof-button hof-button-ghost" data-cancel>Vazgeç</button><button type="submit" class="hof-button">Sayfayı Aktar</button></div>
         </form>`,
     });
     const dialog = modal.dialog;
@@ -531,7 +531,7 @@
         setStatus(`Sayfa yenilenemedi: ${error.message}`);
         dom.status.dataset.tone = "error";
         if (!error.status) reloadSoon(4000);
-      } else dom.table.innerHTML = `<tbody><tr><td class="hof-free-error">${esc(error.message)} <button type="button" class="hof-free-tool" data-act="reload">Yeniden dene</button></td></tr></tbody>`;
+      } else dom.table.innerHTML = `<tbody><tr><td class="hof-free-error">${esc(error.message)} <button type="button" class="hof-free-tool" data-act="reload">Yeniden Dene</button></td></tr></tbody>`;
     }
   }
   const reloadSoon = (() => {
@@ -560,7 +560,7 @@
       { id: "hof-free", class: "hof-free", "aria-label": "Serbest sayfa" },
       `<div class="hof-free-top">
         <div class="hof-free-title">
-          <span class="hof-free-badge">Serbest sayfa</span>
+          <span class="hof-free-badge">Serbest Sayfa</span>
           <h2 class="hof-free-name"></h2>
           <button type="button" class="hof-free-mini" data-act="rename-sheet" title="Sayfanın adını değiştir" aria-label="Sayfanın adını değiştir">${ICON_PENCIL}</button>
           <small class="hof-free-meta"></small>
@@ -580,7 +580,7 @@
           <button type="button" class="hof-free-tool" data-act="fill-down" data-need="edit" title="Seçili hücredeki formülü alttaki satırlara uygular (değer yazılmış satırlara)">↓ Doldur</button>
           <button type="button" class="hof-free-tool" data-act="fill-right" data-need="edit" title="Seçili hücredeki formülü sağdaki kolonlara uygular">→ Doldur</button>
           <span class="hof-free-sep" aria-hidden="true"></span>
-          <button type="button" class="hof-free-tool" data-act="undo" data-need="edit" title="Bu ekranda yaptığınız son işlemi geri alır (Ctrl+Z)">↶ Geri al</button>
+          <button type="button" class="hof-free-tool" data-act="undo" data-need="edit" title="Bu ekranda yaptığınız son işlemi geri alır (Ctrl+Z)">↶ Geri Al</button>
       </div>
       <div class="hof-free-intro" hidden>Başlık satırına kolon adlarını, altına değerleri yazın. <b>Enter</b>, <b>Tab</b>, yön tuşları ya da fareyle başka hücreye geçtiğinizde kaydedilir. Hesap için <b>=</b> ile başlayın: <code>=B1*C1</code>, <code>=TOPLA(D1:D9)</code>.</div>
       <div class="hof-free-barrow">
@@ -595,8 +595,8 @@
         <div class="hof-free-suggest" role="listbox" hidden></div>
       </div>
       <div class="hof-free-foot">
-        <button type="button" class="hof-free-tool" data-act="append-row" data-need="create">+ Satır ekle</button>
-        <button type="button" class="hof-free-tool" data-act="append-rows" data-need="create" title="Sona 10 satır ekler">+ 10 satır</button>
+        <button type="button" class="hof-free-tool" data-act="append-row" data-need="create">+ Satır Ekle</button>
+        <button type="button" class="hof-free-tool" data-act="append-rows" data-need="create" title="Sona 10 satır ekler">+ 10 Satır</button>
         <p class="hof-free-hint"><b>Yazın</b> ve geçin: kaydedilir · <b>F2</b> / çift tık: düzelt · <b>Delete</b>: temizle · <b>=</b> formül · <b>Ctrl+C / V</b>: Excel'den kopyala-yapıştır · <b>Ctrl+Z</b>: geri al · Sağ tık: satır/kolon işlemleri</p>
       </div>`,
     );
@@ -1632,7 +1632,7 @@
           type: "success",
           action: entry
             ? {
-                label: "Geri al",
+                label: "Geri Al",
                 onClick: () => {
                   const list = stack();
                   const index = list.lastIndexOf(entry);
@@ -1731,10 +1731,10 @@
   // ---------- Sayfa işlemleri ----------
   function sheetMenu() {
     const items = [];
-    if (canCreate()) items.push({ label: "Sayfanın adını değiştir", run: renameSheet });
-    if (HOF.can("records.export")) items.push({ label: "Bu sayfayı Excel olarak indir", run: () => (HOF.exportExcel ? HOF.exportExcel({ tab: state.sheet?.name }) : HOF.toast("Dışa aktar menüsünü kullanın.")) });
-    items.push({ label: "Formüller ve kısayollar", run: openHelp });
-    if (canDelete()) items.push({ label: "Sayfayı sil", danger: true, run: removeSheet });
+    if (canCreate()) items.push({ label: "Sayfanın Adını Değiştir", run: renameSheet });
+    if (HOF.can("records.export")) items.push({ label: "Bu Sayfayı Excel Olarak İndir", run: () => (HOF.exportExcel ? HOF.exportExcel({ tab: state.sheet?.name }) : HOF.toast("Dışa aktar menüsünü kullanın.")) });
+    items.push({ label: "Formüller ve Kısayollar", run: openHelp });
+    if (canDelete()) items.push({ label: "Sayfayı Sil", danger: true, run: removeSheet });
     return items;
   }
 
@@ -1742,9 +1742,9 @@
     if (!state.sheet || !canCreate()) return;
     const sheet = state.sheet;
     HOF.formModal({
-      title: "Sayfanın adını değiştir",
+      title: "Sayfanın Adını Değiştir",
       eyebrow: "SERBEST SAYFA",
-      fields: [{ name: "name", label: "Sayfa adı", value: sheet.name, required: true, autofocus: true, maxlength: 60 }],
+      fields: [{ name: "name", label: "Sayfa Adı", value: sheet.name, required: true, autofocus: true, maxlength: 60 }],
       submitLabel: "Kaydet",
       onSubmit: async data => {
         const detail = await HOF.api(url(sheet.id), { method: "PATCH", body: { name: data.name } });
@@ -1757,7 +1757,7 @@
   async function removeSheet() {
     if (!state.sheet || !canDelete()) return;
     const sheet = state.sheet;
-    const ok = await HOF.confirm({ title: "Sayfayı sil", message: `“${sheet.name}” sayfası tüm bilgisayarlarda kaldırılacak. Sayfadaki kayıtların notları ve işlemleri silinmez; sayfayı hemen geri alabilirsiniz.`, confirmLabel: "Sayfayı sil", danger: true });
+    const ok = await HOF.confirm({ title: "Sayfayı Sil", message: `“${sheet.name}” sayfası tüm bilgisayarlarda kaldırılacak. Sayfadaki kayıtların notları ve işlemleri silinmez; sayfayı hemen geri alabilirsiniz.`, confirmLabel: "Sayfayı Sil", danger: true });
     if (!ok) return;
     try {
       await HOF.api(url(sheet.id), { method: "DELETE" });
@@ -1766,7 +1766,7 @@
       HOF.toast(`“${sheet.name}” sayfası silindi.`, {
         type: "success",
         action: {
-          label: "Geri al",
+          label: "Geri Al",
           onClick: async () => {
             try {
               const restored = await HOF.api(url(sheet.id, "/restore"), { method: "POST" });
@@ -1786,7 +1786,7 @@
   function openHelp() {
     const rowsHtml = FUNCTIONS.map(([name, args, text, example]) => `<tr><td><code>${esc(name)}(${esc(args)})</code></td><td>${esc(text)}</td><td><code>${esc(example)}</code></td></tr>`).join("");
     HOF.modal({
-      title: "Formüller ve kısayollar",
+      title: "Formüller ve Kısayollar",
       eyebrow: "SERBEST SAYFA",
       size: "wide",
       body: `<div class="hof-free-help">
@@ -1794,7 +1794,7 @@
         <ul class="hof-free-help-list">
           <li><b>Türkçe ya da İngilizce</b>: <code>=TOPLA(B1:B9)</code> ve <code>=SUM(B1:B9)</code> aynıdır. Türkçe yazımda ayraç <code>;</code>, ondalık <code>,</code>: <code>=EĞER(B2&gt;1,5;"Yüksek";"Düşük")</code>.</li>
           <li><b>İşlemler</b>: <code>+ - * / ^</code>, karşılaştırma <code>= &lt;&gt; &lt; &gt; &lt;= &gt;=</code>, metin birleştirme <code>&amp;</code>, yüzde <code>%</code>.</li>
-          <li><b>Sabit adres</b>: <code>$B$1</code> doldururken ya da kopyalarken kaymaz.</li>
+          <li><b>Sabit Adres</b>: <code>$B$1</code> doldururken ya da kopyalarken kaymaz.</li>
           <li><b>Σ Alt toplam</b> sayısal kolonların altına toplam satırı, <b>Σ Yan toplam</b> her satırın toplamını gösteren kolon ekler. <b>↓ Doldur</b> seçili hücredeki formülü alttaki satırlara, <b>→ Doldur</b> sağdaki kolonlara uygular.</li>
           <li>Satır ya da kolon eklenip silinince formüllerdeki adresler Excel'deki gibi kendiliğinden kayar; silinen hücreye başvuru <code>#BAŞV!</code> olur.</li>
           <li>Hata kodları: <code>#SAYI/0!</code> sıfıra bölme, <code>#DEĞER!</code> sayı beklenen yerde metin, <code>#AD?</code> tanınmayan işlev, <code>#DÖNGÜ!</code> formül kendine başvuruyor.</li>
@@ -1808,8 +1808,8 @@
           <li><kbd>Ctrl+C</kbd> / <kbd>Ctrl+X</kbd> / <kbd>Ctrl+V</kbd>: kopyala, kes, yapıştır (Excel'den de) · <kbd>Ctrl+Z</kbd>: geri al</li>
           <li>Satır numarasına ya da kolon harfine sağ tıklayın: ekle, sil, doldur</li>
         </ul>
-        <h3>Sık kullanılan işlevler</h3>
-        <div class="hof-free-help-table"><table><thead><tr><th>İşlev</th><th>Ne yapar</th><th>Örnek</th></tr></thead><tbody>${rowsHtml}</tbody></table></div>
+        <h3>Sık Kullanılan İşlevler</h3>
+        <div class="hof-free-help-table"><table><thead><tr><th>İşlev</th><th>Ne Yapar</th><th>Örnek</th></tr></thead><tbody>${rowsHtml}</tbody></table></div>
       </div>`,
     });
   }
@@ -1888,19 +1888,19 @@
     const edit = canEdit();
     const formula = r >= 0 && isFormula(rawAt(r, c));
     if (hit.kind !== "column" && r >= 0) {
-      if (create) items.push({ label: "Üste satır ekle", run: () => addRows(r, 1) }, { label: "Alta satır ekle", run: () => addRows(r + 1, 1) });
+      if (create) items.push({ label: "Üste Satır Ekle", run: () => addRows(r, 1) }, { label: "Alta Satır Ekle", run: () => addRows(r + 1, 1) });
       if (canDelete() || (create && rowEmpty(r))) items.push({ label: `${r + 1}. satırı sil`, danger: true, run: () => deleteRow(r) });
       if (items.length) items.push({ sep: true });
     }
     if (hit.kind !== "row") {
-      if (create) items.push({ label: "Sola kolon ekle", run: () => addColumn(c) }, { label: "Sağa kolon ekle", run: () => addColumn(c + 1) });
-      if (edit) items.push({ label: "Başlığı düzenle", run: () => (select(-1, c), startEdit("edit")) });
+      if (create) items.push({ label: "Sola Kolon Ekle", run: () => addColumn(c) }, { label: "Sağa Kolon Ekle", run: () => addColumn(c + 1) });
+      if (edit) items.push({ label: "Başlığı Düzenle", run: () => (select(-1, c), startEdit("edit")) });
       if (canDelete() || (create && columnEmpty(c))) items.push({ label: `${colLetter(c)} kolonunu sil`, danger: true, run: () => deleteColumn(c) });
       if (items.length && items.at(-1).sep !== true) items.push({ sep: true });
     }
     if (edit && hit.kind === "cell" && hit.r >= 0) {
-      items.push({ label: "Formülü aşağı doldur", disabled: !formula, hint: formula ? "" : "formül yok", run: () => fill("down") });
-      items.push({ label: "Formülü sağa doldur", disabled: !formula, run: () => fill("right") });
+      items.push({ label: "Formülü Aşağı Doldur", disabled: !formula, hint: formula ? "" : "formül yok", run: () => fill("down") });
+      items.push({ label: "Formülü Sağa Doldur", disabled: !formula, run: () => fill("right") });
       items.push({ label: "Temizle", hint: "Delete", run: clearSelection });
     }
     while (items.length && items.at(-1).sep) items.pop();

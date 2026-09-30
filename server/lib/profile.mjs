@@ -21,28 +21,28 @@ import { createCustomSectors } from "./custom-sectors.mjs";
 
 // Kalemle düzenlenebilen başlıklar: anahtar → en fazla uzunluk ve yönetici ekranındaki adı.
 export const LABEL_SLOTS = Object.freeze({
-  "brand.subtitle": { max: 60, name: "Kenar çubuğu alt başlığı" },
+  "brand.subtitle": { max: 60, name: "Kenar Çubuğu Alt Başlığı" },
   // v2.0.2: "nav.workspace" ve "nav.source" menü başlıkları kaldırıldı; kayıtlı eski değerler yok sayılır.
-  "side.title": { max: 40, name: "Operasyon merkezi başlığı" },
+  "side.title": { max: 40, name: "Operasyon Merkezi Başlığı" },
   // Operasyon merkezi düğmeleri (v2.0.1): kartın köşesindeki kalemle hepsi birlikte değiştirilir.
-  "side.tasks": { max: 32, name: "Operasyon merkezi: Görevler" },
-  "side.messages": { max: 32, name: "Operasyon merkezi: Mesajlar" },
-  "side.newTask": { max: 32, name: "Operasyon merkezi: Görev ata" },
-  "side.newRecord": { max: 32, name: "Operasyon merkezi: Yeni kayıt" },
-  "side.cash": { max: 32, name: "Operasyon merkezi: Kasa" },
-  "side.plans": { max: 32, name: "Operasyon merkezi: Taksitler" },
-  "side.accounts": { max: 32, name: "Operasyon merkezi: Cari" },
-  "side.stock": { max: 32, name: "Operasyon merkezi: Stok" },
-  "side.cheques": { max: 32, name: "Operasyon merkezi: Çek / Senet" },
-  "side.liens": { max: 32, name: "Operasyon merkezi: Haciz uyarıları" },
-  "side.reports": { max: 32, name: "Operasyon merkezi: Personel raporu" },
-  "side.guide": { max: 32, name: "Operasyon merkezi: Kullanım kılavuzu" },
-  "page.title": { max: 80, name: "Sayfa başlığı" },
-  "summary.title": { max: 60, name: "Özet başlığı" },
-  "summary.subtitle": { max: 200, name: "Özet açıklaması" },
-  "categories.title": { max: 60, name: "Sekmeler başlığı" },
-  "table.title": { max: 80, name: "Tablo başlığı" },
-  "table.subtitle": { max: 160, name: "Tablo açıklaması" },
+  "side.tasks": { max: 32, name: "Operasyon Merkezi: Görevler" },
+  "side.messages": { max: 32, name: "Operasyon Merkezi: Mesajlar" },
+  "side.newTask": { max: 32, name: "Operasyon Merkezi: Görev Ata" },
+  "side.newRecord": { max: 32, name: "Operasyon Merkezi: Yeni Kayıt" },
+  "side.cash": { max: 32, name: "Operasyon Merkezi: Kasa" },
+  "side.plans": { max: 32, name: "Operasyon Merkezi: Taksitler" },
+  "side.accounts": { max: 32, name: "Operasyon Merkezi: Cari" },
+  "side.stock": { max: 32, name: "Operasyon Merkezi: Stok" },
+  "side.cheques": { max: 32, name: "Operasyon Merkezi: Çek / Senet" },
+  "side.liens": { max: 32, name: "Operasyon Merkezi: Haciz Uyarıları" },
+  "side.reports": { max: 32, name: "Operasyon Merkezi: Personel Raporu" },
+  "side.guide": { max: 32, name: "Operasyon Merkezi: Kullanım Kılavuzu" },
+  "page.title": { max: 80, name: "Sayfa Başlığı" },
+  "summary.title": { max: 60, name: "Özet Başlığı" },
+  "summary.subtitle": { max: 200, name: "Özet Açıklaması" },
+  "categories.title": { max: 60, name: "Sekmeler Başlığı" },
+  "table.title": { max: 80, name: "Tablo Başlığı" },
+  "table.subtitle": { max: 160, name: "Tablo Açıklaması" },
 });
 
 const K = { sector: "insight.sector", labels: "ui.labels", intro: "insight.intro", initialized: "insight.initialized", columns: "ui.columns", columnsFixed: "ui.columns.fixed", dismissed: "insight.dismissed", roles: "insight.roles" };

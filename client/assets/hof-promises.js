@@ -76,7 +76,7 @@
       HOF.toast(reason === "paid" ? `${who(item)} · ${item.label} ödendi sayıldı.` : `${who(item)} · ${item.label} iptal edildi.`, {
         type: "success",
         action: {
-          label: "Geri al",
+          label: "Geri Al",
           onClick: async () => {
             try {
               await HOF.api("/api/workspace/dues/settle", { method: "POST", body: { id: item.id, undo: true } });
@@ -126,13 +126,13 @@
       <dl class="hof-due-facts">
         <div><dt>Beklenen</dt><dd>${item.amount ? esc(money(item.amount)) : "Tutar yazılmamış"}${item.partial ? ` <small>(kısmen ödendi)</small>` : ""}</dd></div>
         <div><dt>Durum</dt><dd class="is-${esc(item.state)}">${esc(stateText(item))}</dd></div>
-        ${item.debt ? `<div><dt>Kalan borç</dt><dd>${esc(money(item.debt))}</dd></div>` : ""}
+        ${item.debt ? `<div><dt>Kalan Borç</dt><dd>${esc(money(item.debt))}</dd></div>` : ""}
         ${item.tab ? `<div><dt>Sekme</dt><dd>${esc(item.tab)}</dd></div>` : ""}
       </dl>
       <div class="hof-payment-action-buttons">
         ${canPay ? `<button type="button" data-act="pay" class="hof-payment-paid">${cheque ? (item.direction === "out" ? "Ödeme gir" : "Tahsil et") : "Tahsilat gir"}</button>` : ""}
-        ${canSettle ? `<button type="button" data-act="paid" class="hof-payment-mark" title="Tahsilat girmeden kapatır (ör. başka yoldan ödendi)">Ödendi say</button>` : ""}
-        ${canSettle && item.promise ? '<button type="button" data-act="cancelled" class="hof-payment-cancelled">Söz iptal</button>' : ""}
+        ${canSettle ? `<button type="button" data-act="paid" class="hof-payment-mark" title="Tahsilat girmeden kapatır (ör. başka yoldan ödendi)">Ödendi Say</button>` : ""}
+        ${canSettle && item.promise ? '<button type="button" data-act="cancelled" class="hof-payment-cancelled">Söz İptal</button>' : ""}
       </div>
       <button type="button" class="hof-payment-go" data-act="go">${cheque ? "Çek / senet kartını aç →" : plan ? "Taksit kartını aç →" : "Kayda git →"}</button>`,
     );
@@ -192,7 +192,7 @@
     const shown = items.slice(0, PILL_LIMIT);
     const parts = [overdue ? `${overdue} gecikmiş` : "", now ? `${now} bugün/bu ay` : "", soon ? `${soon} yaklaşan` : ""].filter(Boolean).join(" · ");
     const band = HOF.el("section", { class: "hof-payment-promises", "aria-label": "Tahsilat takvimi" });
-    band.innerHTML = `<div class="hof-payment-promises-heading"><span class="hof-payment-promises-dot${overdue ? " is-late" : ""}"></span><strong>Tahsilat takvimi</strong><small>${esc(parts)}${shown.length < items.length ? ` · ilk ${shown.length}` : ""}</small></div><div class="hof-payment-promises-viewport"><div class="hof-payment-promises-track"></div></div>`;
+    band.innerHTML = `<div class="hof-payment-promises-heading"><span class="hof-payment-promises-dot${overdue ? " is-late" : ""}"></span><strong>Tahsilat Takvimi</strong><small>${esc(parts)}${shown.length < items.length ? ` · ilk ${shown.length}` : ""}</small></div><div class="hof-payment-promises-viewport"><div class="hof-payment-promises-track"></div></div>`;
     const track = band.querySelector(".hof-payment-promises-track");
     const pill = item => {
       const button = HOF.el(

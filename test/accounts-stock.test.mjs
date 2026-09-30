@@ -249,7 +249,7 @@ describe("Stok modülü (v2.0.6)", () => {
     assert.equal(bought.data.data.unitPrice, 90, "son alış fiyatı karta yazılır");
     const cash = (await admin.get("/api/workspace/cash")).data.data.entries;
     assert.deepEqual(cash.map(entry => [entry.source, entry.kind, entry.amount]), [["stock", "out", 360]]);
-    assert.match(cash[0].description, /Stok ödemesi \(alım\) · Çay 4 paket/);
+    assert.match(cash[0].description, /Stok ödemesi \(alım\) · Çay 4 Paket/);
     const used = await staff.post(`/api/workspace/stock/${cay.id}/moves`, { kind: "out", qty: "12", note: "Ofis tüketimi" });
     assert.equal(used.status, 200);
     assert.equal(used.data.data.qty, 2);
@@ -301,7 +301,7 @@ describe("Stok modülü (v2.0.6)", () => {
     const bought = await admin.post("/api/workspace/stock", { name: "Toz şeker", unit: "kg", unitPrice: "42,50", openingQty: "20", openingPay: "cash", openingDate: "2026-09-25" });
     assert.equal(bought.status, 200, JSON.stringify(bought.data));
     assert.equal(bought.data.data.qty, 20);
-    assert.equal(bought.data.data.unit, "kg");
+    assert.equal(bought.data.data.unit, "Kg", "birim tek yazımla (v2.0.11)");
     const cash = (await admin.get("/api/workspace/cash")).data.data;
     const expense = cash.entries.find(entry => entry.source === "stock" && entry.description.includes("Toz şeker"));
     assert.ok(expense, "Kasa'da gider");

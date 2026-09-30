@@ -52,7 +52,7 @@
     node.classList.toggle("is-info", !warn);
     const shown = expanded ? findings : findings.slice(0, MAX_SHOWN);
     const canFix = HOF.can("records.edit");
-    node.innerHTML = `<header><span class="hof-checks-icon">${ICON}</span><b>Akıllı denetim</b><small>${findings.length === 1 ? (warn ? "Bu kayıtta dikkat edilmesi gereken bir şey var" : "Bu kayıt için bir öneri var") : `${findings.length} bulgu`}</small></header>
+    node.innerHTML = `<header><span class="hof-checks-icon">${ICON}</span><b>Akıllı Denetim</b><small>${findings.length === 1 ? (warn ? "Bu kayıtta dikkat edilmesi gereken bir şey var" : "Bu kayıt için bir öneri var") : `${findings.length} bulgu`}</small></header>
       <ul>${shown
         .map(
           (item, index) => `<li class="is-${esc(item.severity)}">

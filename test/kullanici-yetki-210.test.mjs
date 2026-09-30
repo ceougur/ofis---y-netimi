@@ -224,7 +224,7 @@ describe("v2.0.7 ek yetki kayıtları göçü", () => {
         store.db.close();
       },
     });
-    assert.deepEqual(server.app.migration.applied, [15]);
+    assert.deepEqual(server.app.migration.applied, [15, 16]);
     const admin = await loginAdmin(server);
     const user = byName((await admin.get("/api/admin/users")).data.data, "eskipersonel");
     assert.deepEqual(user.grants, { add: ["overview.view"], remove: [] });

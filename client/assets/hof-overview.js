@@ -98,7 +98,7 @@
       out.push({
         id: "stock",
         icon: ICONS.stock,
-        label: "Kritik stok",
+        label: "Kritik Stok",
         value: `<span class="hof-num">${s.critical.toLocaleString("tr-TR")}</span><em>${s.critical === 1 ? "ürün" : "ürün"}</em>`,
         tone: s.critical ? "is-warn" : "",
         sub: s.products ? `${s.out ? `<span class="hof-pulse-flag">${ICONS.warn}${s.out.toLocaleString("tr-TR")} tükendi</span> · ` : ""}${s.products.toLocaleString("tr-TR")} ürün takipte` : "Stok kartı yok",
@@ -110,7 +110,7 @@
       out.push({
         id: "receivable",
         icon: ICONS.in,
-        label: "Toplam alacak",
+        label: "Toplam Alacak",
         value: moneyHtml(r.total, { compact: true }),
         sub: `Cari <b>${esc(shortMoney(r.accounts))}</b> · Çek <b>${esc(shortMoney(r.cheques))}</b>${r.overdue > 0.005 ? `<br><span class="hof-pulse-flag is-late">${ICONS.warn}${esc(shortMoney(r.overdue))} gecikmiş taksit</span>` : ""}`,
         title: `Carilerin bize borcu (${money(r.accounts)}) + portföydeki alınan çek/senet (${money(r.cheques)}).`,
@@ -121,7 +121,7 @@
       out.push({
         id: "payable",
         icon: ICONS.out,
-        label: "Toplam borç / ödemeler",
+        label: "Toplam Borç / Ödemeler",
         value: moneyHtml(p.total, { compact: true }),
         sub: `Cari <b>${esc(shortMoney(p.accounts))}</b> · Çek <b>${esc(shortMoney(p.cheques))}</b>${p.chequesDue > 0.005 ? `<br><span class="hof-pulse-flag">${ICONS.warn}${esc(shortMoney(p.chequesDue))} çek 7 gün içinde</span>` : ""}`,
         title: `Tedarikçilere borcumuz (${money(p.accounts)}) + ödenecek verilen çek/senet (${money(p.cheques)}).`,
@@ -134,7 +134,7 @@
       data.cash ? `<span>Kasa <b>${esc(shortMoney(data.cash.balance))}</b></span>` : "",
       data.receivable ? `<span>Alacak <b>${esc(shortMoney(data.receivable.total))}</b></span>` : "",
       data.payable ? `<span>Borç <b>${esc(shortMoney(data.payable.total))}</b></span>` : "",
-      data.stock ? `<span class="${data.stock.critical ? "is-warn" : ""}">Kritik stok <b>${data.stock.critical}</b></span>` : "",
+      data.stock ? `<span class="${data.stock.critical ? "is-warn" : ""}">Kritik Stok <b>${data.stock.critical}</b></span>` : "",
     ]
       .filter(Boolean)
       .join('<i aria-hidden="true">·</i>');
@@ -236,20 +236,20 @@
 
   // ---------- Rapor Al ----------
   const PRESETS_PAST = [
-    ["thisMonth", "Bu ay"],
-    ["lastMonth", "Geçen ay"],
-    ["last30", "Son 30 gün"],
-    ["thisYear", "Bu yıl"],
-    ["all", "Tüm zamanlar"],
+    ["thisMonth", "Bu Ay"],
+    ["lastMonth", "Geçen Ay"],
+    ["last30", "Son 30 Gün"],
+    ["thisYear", "Bu Yıl"],
+    ["all", "Tüm Zamanlar"],
   ];
   // Vade takip: gecikmiş kalemler her aralıkta başta listelenir ("Gecikmişleri de göster" kapatılmadıkça).
   const PRESETS_DUE = [
     ["late", "Gecikmiş"],
     ["today", "Bugün"],
-    ["next7", "7 gün"],
-    ["next30", "30 gün"],
-    ["next90", "90 gün"],
-    ["open", "Tüm açık"],
+    ["next7", "7 Gün"],
+    ["next30", "30 Gün"],
+    ["next90", "90 Gün"],
+    ["open", "Tüm Açık"],
   ];
   const SOURCE_LABELS = { plan: "Taksit", cheque: "Çek", note: "Senet", cash: "Kasa", table: "Tablo", promise: "Ödeme sözü", deadline: "Son tarih" };
   const SOURCE_HINTS = {
@@ -262,10 +262,10 @@
     deadline: "Tablolardaki son tarihler (sözleşme, sigorta, belge bitişi…); tutarı yoktur",
   };
   const PRESETS_FUTURE = [
-    ["next7", "7 gün"],
-    ["next30", "30 gün"],
-    ["next60", "60 gün"],
-    ["next90", "90 gün"],
+    ["next7", "7 Gün"],
+    ["next30", "30 Gün"],
+    ["next60", "60 Gün"],
+    ["next90", "90 Gün"],
   ];
   // "Tüm zamanlar" aralığının başı (50 yıl önce) ekranda tarih olarak yazılmaz (sunucudaki isAllTimeStart ile aynı kural).
   const allTimeStart = from => Boolean(from) && from <= presetRange("all").from;
@@ -293,13 +293,13 @@
   // Sekmeler ve görme koşulları (sunucudaki uç yetkisiyle aynı): defter raporları ANLIK DURUM yetkisiyle; Vade takip
   // ANLIK DURUM ya da rapor yetkisiyle; Çek / Senet portföyü ayrıca çek yetkisiyle; Tablo raporları rapor yetkisiyle.
   const TABS = [
-    ["mizan", "Cari ekstre", "Cari mizanı; satıra tıklayınca o carinin ekstresi (Cari kartındaki defterle aynı)", () => canSee()],
-    ["vade", "Vade takip", "Vadesi olan her açık kalem: taksit, çek/senet, ileri tarihli Kasa, tablodaki ödeme günleri", () => canReports()],
-    ["flow", "Nakit akış", "Bugünkü kasadan başlayan tahmini kasa: beklenen giriş ve çıkışlar", () => canSee()],
+    ["mizan", "Cari Ekstre", "Cari mizanı; satıra tıklayınca o carinin ekstresi (Cari kartındaki defterle aynı)", () => canSee()],
+    ["vade", "Vade Takip", "Vadesi olan her açık kalem: taksit, çek/senet, ileri tarihli Kasa, tablodaki ödeme günleri", () => canReports()],
+    ["flow", "Nakit Akış", "Bugünkü kasadan başlayan tahmini kasa: beklenen giriş ve çıkışlar", () => canSee()],
     ["cheques", "Çek / Senet", "Alınan ve verilen evrak portföyü", () => canSee() && HOF.can("cheques.view")],
     // İşlem geçmişi yetkisi olan (uzman) finans yetkisi olmasa da burada yalnız "İşlem geçmişi" raporunu görür (v2.0.10).
-    ["all", "Tüm raporlar", "Kasa, Cari, Taksit, Çek/Senet, Stok ve kayıt raporları: ön izleme, PDF ve Excel", () => canSee() || HOF.can("audit.view")],
-    ["table", "Tablo raporları", "Yalnız Excel/Sheets tablolarındaki tutar ve tarihlerden", () => HOF.can("reports.view")],
+    ["all", "Tüm Raporlar", "Kasa, Cari, Taksit, Çek/Senet, Stok ve kayıt raporları: ön izleme, PDF ve Excel", () => canSee() || HOF.can("audit.view")],
+    ["table", "Tablo Raporları", "Yalnız Excel/Sheets tablolarındaki tutar ve tarihlerden", () => HOF.can("reports.view")],
   ];
   const tabsFor = () => TABS.filter(([, , , visible]) => visible());
   // Kendi süzgeci ve dışa aktarması olan sekmeler: "Tüm raporlar" (hof-report-center.js), "Tablo raporları" (hof-reports.js).
@@ -310,7 +310,7 @@
       <div class="hof-rep-presets">${presets.map(([id, label]) => `<button type="button" class="hof-rep-chip ${state.preset === id ? "is-on" : ""}" data-preset="${id}">${esc(label)}</button>`).join("")}</div>
       <label class="hof-rep-date"><span>Başlangıç</span><input type="date" data-range="from" value="${esc(state.preset === "all" ? "" : state.from)}"${state.preset === "all" ? ' title="Tüm zamanlar: ilk hareketten bugüne"' : ""}></label>
       <label class="hof-rep-date"><span>Bitiş</span><input type="date" data-range="to" value="${esc(state.to)}"></label>
-      <button type="button" class="hof-button hof-button-small" data-run>Raporu getir</button>
+      <button type="button" class="hof-button hof-button-small" data-run>Raporu Getir</button>
     </div>`;
   const exportButtons = (pdf, xlsx) => `<span class="hof-rep-export" role="group" aria-label="Dışa aktar">
       <a class="hof-rep-out is-pdf" href="${esc(pdf)}" target="_blank" rel="noopener" title="PDF olarak aç; oradan kaydedin ya da yazdırın">${ICONS.report}PDF indir</a>
@@ -409,13 +409,13 @@
     const pdf = ekstre ? `/api/workspace/overview/ekstre.pdf?${query(ekstre)}` : `/api/workspace/overview/mizan.pdf?${query(params)}`;
     const xlsx = ekstre ? `/api/workspace/overview/ekstre.xlsx?${query(ekstre)}` : `/api/workspace/overview/mizan.xlsx?${query(params)}`;
     const filters = `<div class="hof-rep-bar">${rangeBar(s, PRESETS_PAST)}${exportButtons(pdf, xlsx)}</div>
-      ${s.account ? "" : `<div class="hof-rep-filters"><input type="search" data-q value="${esc(s.q)}" placeholder="Cari adı, cari no ya da telefon ara…" aria-label="Cari ara"><select data-field="type" aria-label="Cari türü"><option value="">Tüm cariler</option><option value="customer" ${s.type === "customer" ? "selected" : ""}>Müşteriler</option><option value="supplier" ${s.type === "supplier" ? "selected" : ""}>Tedarikçiler</option><option value="other" ${s.type === "other" ? "selected" : ""}>Diğer</option></select><select data-field="side" aria-label="Bakiye">${[["", "Tüm bakiyeler"], ["debtor", "Borçlular"], ["creditor", "Alacaklılar"], ["nonzero", "Sadece bakiyesi olanlar"]].map(([value, label]) => `<option value="${value}" ${s.side === value ? "selected" : ""}>${label}</option>`).join("")}</select><label class="hof-rep-check"><input type="checkbox" data-field="idle" ${s.idle ? "checked" : ""}> Hareketsiz carileri de göster</label></div>`}`;
+      ${s.account ? "" : `<div class="hof-rep-filters"><input type="search" data-q value="${esc(s.q)}" placeholder="Cari adı, cari no ya da telefon ara…" aria-label="Cari ara"><select data-field="type" aria-label="Cari türü"><option value="">Tüm Cariler</option><option value="customer" ${s.type === "customer" ? "selected" : ""}>Müşteriler</option><option value="supplier" ${s.type === "supplier" ? "selected" : ""}>Tedarikçiler</option><option value="other" ${s.type === "other" ? "selected" : ""}>Diğer</option></select><select data-field="side" aria-label="Bakiye">${[["", "Tüm Bakiyeler"], ["debtor", "Borçlular"], ["creditor", "Alacaklılar"], ["nonzero", "Sadece Bakiyesi Olanlar"]].map(([value, label]) => `<option value="${value}" ${s.side === value ? "selected" : ""}>${label}</option>`).join("")}</select><label class="hof-rep-check"><input type="checkbox" data-field="idle" ${s.idle ? "checked" : ""}> Hareketsiz carileri de göster</label></div>`}`;
     if (!s.data) return `${filters}<p class="hof-empty">Rapor hazırlanıyor…</p>`;
     if (s.account && s.data.lines) {
       const d = s.data;
       const mark = value => `${esc(money(Math.abs(value)))}<small class="hof-rep-side">${value > 0.005 ? "B" : value < -0.005 ? "A" : ""}</small>`;
-      return `${filters}<div class="hof-rep-crumb"><button type="button" class="hof-plan-back" data-back>← Mizan</button><h3>${esc(d.account.name)} <small>${d.account.refNo ? `Cari No ${esc(d.account.refNo)} · ` : ""}ekstre · ${allTimeStart(d.from) ? `tüm hareketler, ${esc(HOF.formatDate(d.to))} tarihine kadar` : `${esc(HOF.formatDate(d.from))} – ${esc(HOF.formatDate(d.to))}`}</small></h3><button type="button" class="hof-button hof-button-small hof-button-ghost" data-open-account="${esc(d.account.id)}" title="Cari kartını aç: hareket gir, taksit ve çek/senetlerini gör">Cari kartını aç</button></div>
-        ${statTiles([{ label: "Devir", html: moneyHtml(d.opening) }, { label: "Dönem borç", html: moneyHtml(d.debit) }, { label: "Dönem alacak", html: moneyHtml(d.credit) }, { label: "Dönem sonu", html: moneyHtml(Math.abs(d.closing)), help: d.closing > 0.005 ? "Borçlu" : d.closing < -0.005 ? "Alacaklı" : "Kapalı", tone: d.closing > 0.005 ? "is-receivable" : d.closing < -0.005 ? "is-payable" : "" }])}
+      return `${filters}<div class="hof-rep-crumb"><button type="button" class="hof-plan-back" data-back>← Mizan</button><h3>${esc(d.account.name)} <small>${d.account.refNo ? `Cari No ${esc(d.account.refNo)} · ` : ""}ekstre · ${allTimeStart(d.from) ? `tüm hareketler, ${esc(HOF.formatDate(d.to))} tarihine kadar` : `${esc(HOF.formatDate(d.from))} – ${esc(HOF.formatDate(d.to))}`}</small></h3><button type="button" class="hof-button hof-button-small hof-button-ghost" data-open-account="${esc(d.account.id)}" title="Cari kartını aç: hareket gir, taksit ve çek/senetlerini gör">Cari Kartını Aç</button></div>
+        ${statTiles([{ label: "Devir", html: moneyHtml(d.opening) }, { label: "Dönem Borç", html: moneyHtml(d.debit) }, { label: "Dönem Alacak", html: moneyHtml(d.credit) }, { label: "Dönem Sonu", html: moneyHtml(Math.abs(d.closing)), help: d.closing > 0.005 ? "Borçlu" : d.closing < -0.005 ? "Alacaklı" : "Kapalı", tone: d.closing > 0.005 ? "is-receivable" : d.closing < -0.005 ? "is-payable" : "" }])}
         <div class="hof-rep-table"><table class="hof-table"><thead><tr><th>Tarih</th><th>İşlem</th><th>Açıklama</th><th class="num">Borç</th><th class="num">Alacak</th><th class="num">Bakiye</th></tr></thead><tbody>
         <tr class="is-opening"><td>${allTimeStart(d.from) ? "" : esc(HOF.formatDate(d.from))}</td><td><b>Devir</b></td><td>Dönem başı bakiye</td><td></td><td></td><td class="num">${mark(d.opening)}</td></tr>
         ${d.lines.map(line => `<tr><td>${esc(HOF.formatDate(line.date))}</td><td><b>${esc(line.label)}</b></td><td>${esc(line.note || "")}${line.receiptNo ? ` <span class="hof-plan-receipt">Makbuz ${esc(line.receiptNo)}</span>` : ""}</td><td class="num">${line.debit ? esc(money(line.debit)) : ""}</td><td class="num">${line.credit ? esc(money(line.credit)) : ""}</td><td class="num">${mark(line.balance)}</td></tr>`).join("") || '<tr><td colspan="6" class="hof-empty">Bu aralıkta hareket yok.</td></tr>'}
@@ -424,7 +424,7 @@
     const d = s.data;
     const rows = d.rows.map(row => `<tr data-account-row="${esc(row.id)}" tabindex="0" title="Ekstreyi aç"><td class="hof-plan-no">${esc(row.refNo || "")}</td><td><b>${esc(row.name)}</b>${row.groupName ? `<small>${esc([row.groupName, row.subgroupName].filter(Boolean).join(" › "))}</small>` : ""}</td><td>${esc({ customer: "Müşteri", supplier: "Tedarikçi", other: "Diğer" }[row.type] || "")}</td><td class="num">${esc(money(row.opening))}</td><td class="num">${row.debit ? esc(money(row.debit)) : ""}</td><td class="num">${row.credit ? esc(money(row.credit)) : ""}</td><td class="num"><b class="hof-acc-balance is-${row.side === "debtor" ? "debtor" : row.side === "creditor" ? "creditor" : "zero"}">${esc(money(Math.abs(row.closing)))}</b></td><td><span class="hof-plan-badge ${row.side === "debtor" ? "is-done" : row.side === "creditor" ? "is-late" : "is-muted"}">${row.side === "debtor" ? "Borçlu" : row.side === "creditor" ? "Alacaklı" : "Kapalı"}</span></td></tr>`).join("");
     return `${filters}
-      ${statTiles([{ label: "Cari", value: d.totals.count.toLocaleString("tr-TR") }, { label: "Dönem borç", html: moneyHtml(d.totals.debit) }, { label: "Dönem alacak", html: moneyHtml(d.totals.credit) }, { label: "Borçlular", html: moneyHtml(d.totals.closingDebtor), tone: "is-receivable" }, { label: "Alacaklılar", html: moneyHtml(d.totals.closingCreditor), tone: "is-payable" }])}
+      ${statTiles([{ label: "Cari", value: d.totals.count.toLocaleString("tr-TR") }, { label: "Dönem Borç", html: moneyHtml(d.totals.debit) }, { label: "Dönem Alacak", html: moneyHtml(d.totals.credit) }, { label: "Borçlular", html: moneyHtml(d.totals.closingDebtor), tone: "is-receivable" }, { label: "Alacaklılar", html: moneyHtml(d.totals.closingCreditor), tone: "is-payable" }])}
       <div class="hof-rep-table"><table class="hof-table hof-rep-mizan"><thead><tr><th>No</th><th>Cari</th><th>Tür</th><th class="num">Devir</th><th class="num">Borç</th><th class="num">Alacak</th><th class="num">Bakiye</th><th>Durum</th></tr></thead><tbody>${rows || `<tr><td colspan="8" class="hof-empty">${d.accountCount ? (s.q || s.type ? "Bu aramaya uyan, bu aralıkta hareketi olan cari yok." : "Bu aralıkta hareketi ya da devreden bakiyesi olan cari yok. “Hareketsiz carileri de göster” ile tümü listelenir; daha geniş aralık için “Tüm zamanlar”.") : "Henüz cari yok."}</td></tr>`}</tbody></table></div>
       ${!rows && !d.accountCount ? emptyLedgerHelp() : ""}
       ${d.hasMore ? `<p class="hof-rep-note">Ekranda ilk ${d.rows.length.toLocaleString("tr-TR")} cari; tamamı (${d.total.toLocaleString("tr-TR")}) PDF ve Excel'de.</p>` : ""}
@@ -436,7 +436,7 @@
   function emptyLedgerHelp() {
     const fromTable = HOF.can("accounts.manage") && HOF.accounts?.fromTable && (HOF.data?.rows || []).some(row => row.__hofKey && !String(row.__hofKey).startsWith("free:"));
     return `<div class="hof-rep-help"><b>Cari ekstre, Cari defterindeki hareketlerden hazırlanır.</b><span>Cari ekranında açılan her kişi ya da firmanın borç, tahsilat, taksit ve çek/senet hareketleri burada ekstre olarak görünür. Tablonuzdaki kişiler henüz cari değilse önce cari olarak açın; her cari tablodaki kaydına bağlanır, aynı kişi iki kez açılmaz.</span>
-      <span class="hof-rep-help-actions">${HOF.accounts?.open ? '<button type="button" class="hof-button hof-button-small" data-go="accounts">Cari ekranını aç</button>' : ""}${fromTable ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-go="fromTable">Tablodaki kişileri cari yap</button>' : ""}</span></div>`;
+      <span class="hof-rep-help-actions">${HOF.accounts?.open ? '<button type="button" class="hof-button hof-button-small" data-go="accounts">Cari Ekranını Aç</button>' : ""}${fromTable ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-go="fromTable">Tablodaki Kişileri Cari Yap</button>' : ""}</span></div>`;
   }
 
   // --- Vade takip (v2.0.9) ---
@@ -447,7 +447,7 @@
     const params = { ...(s.preset ? { preset: s.preset } : { from: s.from, to: s.to }), direction: s.direction, sources: s.sources.join(","), q: s.q, late: s.late ? "" : "0" };
     const filters = `<div class="hof-rep-bar">${rangeBar(s, PRESETS_DUE)}${exportButtons(`/api/workspace/overview/vade-takip.pdf?${query(params)}`, `/api/workspace/overview/vade-takip.xlsx?${query(params)}`)}</div>
       <div class="hof-rep-filters"><input type="search" data-q value="${esc(s.q)}" placeholder="Kişi, telefon, cari, kart, çek no ara…" aria-label="Kişi ara">
-        <select data-field="direction" aria-label="Yön"><option value="">Tahsil edilecek ve ödenecek</option><option value="in" ${s.direction === "in" ? "selected" : ""}>Yalnız tahsil edilecek</option><option value="out" ${s.direction === "out" ? "selected" : ""}>Yalnız ödenecek</option></select>
+        <select data-field="direction" aria-label="Yön"><option value="">Tahsil Edilecek ve Ödenecek</option><option value="in" ${s.direction === "in" ? "selected" : ""}>Yalnız Tahsil Edilecek</option><option value="out" ${s.direction === "out" ? "selected" : ""}>Yalnız Ödenecek</option></select>
         <label class="hof-rep-check" title="Başlangıçtan önce vadesi geçmiş ve kapanmamış kalemler listenin başında"><input type="checkbox" data-field="late" ${s.late ? "checked" : ""}> Gecikmişleri de göster</label></div>
       <div class="hof-rep-sources" role="group" aria-label="Kaynaklar">${allowed.map(id => `<label class="hof-rep-srcpick ${chosen.has(id) ? "is-on" : ""}" title="${esc(SOURCE_HINTS[id] || "")}"><input type="checkbox" data-source="${id}" ${chosen.has(id) ? "checked" : ""}><span class="hof-rep-src is-${id}">${esc(SOURCE_LABELS[id])}</span></label>`).join("")}</div>`;
     if (!s.data) return `${filters}<p class="hof-empty">Vadeler hazırlanıyor…</p>`;
@@ -462,13 +462,13 @@
     const tableNote = chosen.has("table") || chosen.has("promise") || chosen.has("deadline") ? " Tablodaki kalemler tahsilat takvimiyle aynı kurala göre okunur; taksit kartı olan kişinin tablodaki ödemeleri kartından gelir (iki kez sayılmaz)." : "";
     return `${filters}
       ${statTiles([
-        { label: "Gecikmiş tahsilat", html: moneyHtml(t.in.overdue.amount), help: `${t.in.overdue.count} kalem`, tone: t.in.overdue.count ? "is-bad" : "" },
-        { label: "Tahsil edilecek", html: moneyHtml(t.in.total.amount), help: `${t.in.total.count} kalem · bugün ${esc(money(t.in.today.amount))}`, tone: "is-in" },
+        { label: "Gecikmiş Tahsilat", html: moneyHtml(t.in.overdue.amount), help: `${t.in.overdue.count} kalem`, tone: t.in.overdue.count ? "is-bad" : "" },
+        { label: "Tahsil Edilecek", html: moneyHtml(t.in.total.amount), help: `${t.in.total.count} kalem · bugün ${esc(money(t.in.today.amount))}`, tone: "is-in" },
         { label: "Ödenecek", html: moneyHtml(t.out.total.amount), help: `${t.out.total.count} kalem${t.out.overdue.count ? ` · ${t.out.overdue.count} gecikmiş` : ""}`, tone: "is-out" },
         { label: "Net (tahsil − ödeme)", html: moneyHtml(t.net), tone: t.net < 0 ? "is-bad" : "" },
-        t.noAmount ? { label: "Tutarsız kalem", value: t.noAmount.toLocaleString("tr-TR"), help: "son tarih ya da tutarı yazılmamış ödeme günü" } : null,
+        t.noAmount ? { label: "Tutarsız Kalem", value: t.noAmount.toLocaleString("tr-TR"), help: "son tarih ya da tutarı yazılmamış ödeme günü" } : null,
       ])}
-      <div class="hof-rep-table"><table class="hof-table hof-rep-vade"><thead><tr><th>Vade</th><th>Kimden / kime</th><th>Kaynak</th><th>Açıklama</th><th class="num">Tahsil edilecek</th><th class="num">Ödenecek</th></tr></thead><tbody>${rows || `<tr><td colspan="6" class="hof-empty">${d.totals.count === 0 && !s.q && !s.direction ? "Bu aralıkta vadesi gelen açık kalem yok. Taksit kartı, çek/senet ya da tablodaki ödeme günleri eklendikçe burada listelenir." : "Bu süzgeçlere uyan açık kalem yok."}</td></tr>`}</tbody></table></div>
+      <div class="hof-rep-table"><table class="hof-table hof-rep-vade"><thead><tr><th>Vade</th><th>Kimden / Kime</th><th>Kaynak</th><th>Açıklama</th><th class="num">Tahsil Edilecek</th><th class="num">Ödenecek</th></tr></thead><tbody>${rows || `<tr><td colspan="6" class="hof-empty">${d.totals.count === 0 && !s.q && !s.direction ? "Bu aralıkta vadesi gelen açık kalem yok. Taksit kartı, çek/senet ya da tablodaki ödeme günleri eklendikçe burada listelenir." : "Bu süzgeçlere uyan açık kalem yok."}</td></tr>`}</tbody></table></div>
       ${d.rowTotal > d.rows.length ? `<p class="hof-rep-note">Ekranda ilk ${d.rows.length.toLocaleString("tr-TR")} kalem; tamamı (${d.rowTotal.toLocaleString("tr-TR")}) PDF ve Excel'de.</p>` : ""}
       ${dormant}
       <p class="hof-rep-note">Satıra tıklayın: kaynağı açılır (taksit kartı, çek/senet, cari ya da tablodaki kayıt). Tutarlar açık kalanlardır; kısmen ödenmiş taksitte kalan yazılır.${tableNote}</p>`;
@@ -478,7 +478,7 @@
   function flowView(s) {
     const params = { from: s.from, to: s.to, overdue: s.overdue ? "1" : "", table: s.table ? "" : "0", group: s.group };
     const filters = `<div class="hof-rep-bar">${rangeBar(s, PRESETS_FUTURE)}${exportButtons(`/api/workspace/overview/nakit-akisi.pdf?${query(params)}`, `/api/workspace/overview/nakit-akisi.xlsx?${query(params)}`)}</div>
-      <div class="hof-rep-filters"><select data-field="group" aria-label="Tablo görünümü"><option value="" ${!s.group ? "selected" : ""}>Hareket hareket</option><option value="day" ${s.group === "day" ? "selected" : ""}>Günlük toplamlar</option><option value="week" ${s.group === "week" ? "selected" : ""}>Haftalık toplamlar</option><option value="month" ${s.group === "month" ? "selected" : ""}>Aylık toplamlar</option></select>
+      <div class="hof-rep-filters"><select data-field="group" aria-label="Tablo görünümü"><option value="" ${!s.group ? "selected" : ""}>Hareket Hareket</option><option value="day" ${s.group === "day" ? "selected" : ""}>Günlük Toplamlar</option><option value="week" ${s.group === "week" ? "selected" : ""}>Haftalık Toplamlar</option><option value="month" ${s.group === "month" ? "selected" : ""}>Aylık Toplamlar</option></select>
         <label class="hof-rep-check"><input type="checkbox" data-field="table" ${s.table ? "checked" : ""}> Tablodaki ödeme günlerini ekle</label>
         <label class="hof-rep-check"><input type="checkbox" data-field="overdue" ${s.overdue ? "checked" : ""}> Vadesi geçmiş (kapanmamış) kalemleri başlangıca ekle</label><span class="hof-rep-hint">Kaynaklar: açık taksitler, portföydeki ve ödenecek çek/senet, Kasa'ya ileri tarihli girilen hareketler${s.table ? ", Excel/Sheets tablolarındaki ödeme günleri ve ödeme sözleri" : ""}.</span></div>`;
     if (!s.data) return `${filters}<p class="hof-empty">Projeksiyon hazırlanıyor…</p>`;
@@ -490,15 +490,15 @@
       : "";
     return `${filters}
       ${statTiles([
-        { label: "Bugünkü kasa", html: moneyHtml(d.cashToday) },
-        { label: "Beklenen giriş", html: moneyHtml(d.totals.in), tone: "is-in" },
-        { label: "Beklenen çıkış", html: moneyHtml(d.totals.out), tone: "is-out" },
-        { label: `Tahmini kasa · ${HOF.formatDate(d.to)}`, html: moneyHtml(d.closing), tone: d.closing < 0 ? "is-bad" : "" },
-        { label: "En düşük tahmini kasa", html: moneyHtml(low.balance), help: `${esc(HOF.formatDate(low.date))}${d.negative ? ` · <span class="hof-pulse-flag is-late">${ICONS.warn}kasa eksiye düşüyor</span>` : ""}`, tone: d.negative ? "is-bad" : "" },
+        { label: "Bugünkü Kasa", html: moneyHtml(d.cashToday) },
+        { label: "Beklenen Giriş", html: moneyHtml(d.totals.in), tone: "is-in" },
+        { label: "Beklenen Çıkış", html: moneyHtml(d.totals.out), tone: "is-out" },
+        { label: `Tahmini Kasa · ${HOF.formatDate(d.to)}`, html: moneyHtml(d.closing), tone: d.closing < 0 ? "is-bad" : "" },
+        { label: "En Düşük Tahmini Kasa", html: moneyHtml(low.balance), help: `${esc(HOF.formatDate(low.date))}${d.negative ? ` · <span class="hof-pulse-flag is-late">${ICONS.warn}kasa eksiye düşüyor</span>` : ""}`, tone: d.negative ? "is-bad" : "" },
       ])}
       <figure class="hof-rep-chart" data-chart aria-label="Tahmini kasa grafiği"></figure>
       ${overdue}
-      ${d.periods ? periodTable(d) : `<div class="hof-rep-table"><table class="hof-table"><thead><tr><th>Vade</th><th>Kaynak</th><th>Açıklama</th><th class="num">Giriş</th><th class="num">Çıkış</th><th class="num">Beklenen kasa</th></tr></thead><tbody>
+      ${d.periods ? periodTable(d) : `<div class="hof-rep-table"><table class="hof-table"><thead><tr><th>Vade</th><th>Kaynak</th><th>Açıklama</th><th class="num">Giriş</th><th class="num">Çıkış</th><th class="num">Beklenen Kasa</th></tr></thead><tbody>
         <tr class="is-opening"><td>${esc(HOF.formatDate(d.from))}</td><td></td><td><b>Başlangıç</b><small>Bugünkü kasa${d.carried.in || d.carried.out ? " + başlangıca kadar beklenenler" : ""}${d.includeOverdue ? " + gecikmişler" : ""}</small></td><td></td><td></td><td class="num"><b>${esc(money(d.opening))}</b></td></tr>
         ${rows || '<tr><td colspan="6" class="hof-empty">Bu aralıkta beklenen tahsilat ya da ödeme yok.</td></tr>'}
       </tbody></table></div>`}
@@ -509,7 +509,7 @@
   function periodTable(d) {
     const head = { day: "Gün", week: "Hafta", month: "Ay" }[d.group] || "Dönem";
     const rows = d.periods.map(period => `<tr><td><b>${esc(period.label)}</b><small>${period.count} hareket</small></td><td class="num hof-cash-in">${period.in ? esc(money(period.in)) : ""}</td><td class="num hof-cash-out">${period.out ? esc(money(period.out)) : ""}</td><td class="num ${period.net < 0 ? "hof-cash-out" : ""}">${esc(money(period.net))}</td><td class="num ${period.closing < 0 ? "hof-cash-out" : ""}"><b>${esc(money(period.closing))}</b></td></tr>`).join("");
-    return `<div class="hof-rep-table"><table class="hof-table"><thead><tr><th>${head}</th><th class="num">Giriş</th><th class="num">Çıkış</th><th class="num">Net</th><th class="num">Dönem sonu kasa</th></tr></thead><tbody>
+    return `<div class="hof-rep-table"><table class="hof-table"><thead><tr><th>${head}</th><th class="num">Giriş</th><th class="num">Çıkış</th><th class="num">Net</th><th class="num">Dönem Sonu Kasa</th></tr></thead><tbody>
       <tr class="is-opening"><td><b>Başlangıç</b><small>${esc(HOF.formatDate(d.from))}</small></td><td></td><td></td><td></td><td class="num"><b>${esc(money(d.opening))}</b></td></tr>
       ${rows || '<tr><td colspan="5" class="hof-empty">Bu aralıkta beklenen tahsilat ya da ödeme yok.</td></tr>'}</tbody></table></div>`;
   }
@@ -600,9 +600,9 @@
     ]
       .map(([id, label]) => `<button type="button" class="hof-rep-chip ${s.direction === id ? "is-on" : ""}" data-direction="${id}">${label}</button>`)
       .join("")}</div>
-      <select data-field="status" aria-label="Durum"><option value="open" ${s.status === "open" ? "selected" : ""}>Açık (portföyde / ödenecek)</option><option value="overdue" ${s.status === "overdue" ? "selected" : ""}>Vadesi geçmiş</option><option value="soon" ${s.status === "soon" ? "selected" : ""}>7 gün içinde</option><option value="" ${!s.status ? "selected" : ""}>Tüm durumlar</option><option value="collected" ${s.status === "collected" ? "selected" : ""}>Tahsil edildi</option><option value="endorsed" ${s.status === "endorsed" ? "selected" : ""}>Ciro edildi</option><option value="paid" ${s.status === "paid" ? "selected" : ""}>Ödendi</option><option value="bounced" ${s.status === "bounced" ? "selected" : ""}>Karşılıksız / iade</option></select>
-      <label class="hof-rep-date"><span>Vade başı</span><input type="date" data-range="from" value="${esc(s.from)}"></label><label class="hof-rep-date"><span>Vade sonu</span><input type="date" data-range="to" value="${esc(s.to)}"></label>
-      <button type="button" class="hof-button hof-button-small" data-run>Raporu getir</button></div>
+      <select data-field="status" aria-label="Durum"><option value="open" ${s.status === "open" ? "selected" : ""}>Açık (portföyde / ödenecek)</option><option value="overdue" ${s.status === "overdue" ? "selected" : ""}>Vadesi Geçmiş</option><option value="soon" ${s.status === "soon" ? "selected" : ""}>7 Gün İçinde</option><option value="" ${!s.status ? "selected" : ""}>Tüm Durumlar</option><option value="collected" ${s.status === "collected" ? "selected" : ""}>Tahsil Edildi</option><option value="endorsed" ${s.status === "endorsed" ? "selected" : ""}>Ciro Edildi</option><option value="paid" ${s.status === "paid" ? "selected" : ""}>Ödendi</option><option value="bounced" ${s.status === "bounced" ? "selected" : ""}>Karşılıksız / İade</option></select>
+      <label class="hof-rep-date"><span>Vade Başı</span><input type="date" data-range="from" value="${esc(s.from)}"></label><label class="hof-rep-date"><span>Vade Sonu</span><input type="date" data-range="to" value="${esc(s.to)}"></label>
+      <button type="button" class="hof-button hof-button-small" data-run>Raporu Getir</button></div>
       ${exportButtons(`/api/workspace/cheques/liste.pdf?${query(params)}`, `/api/workspace/cheques/export.xlsx?${query(params)}`)}</div>`;
     if (!s.data) return `${filters}<p class="hof-empty">Portföy hazırlanıyor…</p>`;
     const d = s.data;
@@ -614,11 +614,11 @@
       ${statTiles([
         { label: "Portföyde (alınan)", html: moneyHtml(sum.in.open.amount), help: `${sum.in.open.count} evrak`, tone: "is-in" },
         { label: "Ödenecek (verilen)", html: moneyHtml(sum.out.open.amount), help: `${sum.out.open.count} evrak`, tone: "is-out" },
-        { label: "Vadesi geçmiş", html: moneyHtml(sum.in.overdue.amount + sum.out.overdue.amount), help: `${sum.in.overdue.count + sum.out.overdue.count} evrak`, tone: sum.in.overdue.count + sum.out.overdue.count ? "is-bad" : "" },
-        { label: "7 gün içinde", html: moneyHtml(sum.in.today.amount + sum.in.soon.amount + sum.out.today.amount + sum.out.soon.amount), help: "bugün dahil" },
+        { label: "Vadesi Geçmiş", html: moneyHtml(sum.in.overdue.amount + sum.out.overdue.amount), help: `${sum.in.overdue.count + sum.out.overdue.count} evrak`, tone: sum.in.overdue.count + sum.out.overdue.count ? "is-bad" : "" },
+        { label: "7 Gün İçinde", html: moneyHtml(sum.in.today.amount + sum.in.soon.amount + sum.out.today.amount + sum.out.soon.amount), help: "bugün dahil" },
         { label: "Listelenen", html: moneyHtml(d.listed.amount), help: `${d.listed.count} evrak` },
       ])}
-      <div class="hof-rep-table"><table class="hof-table"><thead><tr><th>Vade</th><th>Evrak</th><th>No / banka</th><th>Kimden / kime</th><th>Durum</th><th class="num">Tutar</th></tr></thead><tbody>${rows || '<tr><td colspan="6" class="hof-empty">Bu süzgeçte evrak yok.</td></tr>'}</tbody></table></div>
+      <div class="hof-rep-table"><table class="hof-table"><thead><tr><th>Vade</th><th>Evrak</th><th>No / Banka</th><th>Kimden / Kime</th><th>Durum</th><th class="num">Tutar</th></tr></thead><tbody>${rows || '<tr><td colspan="6" class="hof-empty">Bu süzgeçte evrak yok.</td></tr>'}</tbody></table></div>
       ${d.hasMore ? `<p class="hof-rep-note">Ekranda ilk ${d.cheques.length.toLocaleString("tr-TR")} evrak; tamamı PDF ve Excel'de.</p>` : ""}`;
   }
 

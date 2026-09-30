@@ -122,11 +122,11 @@
     const tab = activeTab();
     const count = tabRows().length;
     HOF.formModal({
-      title: "Sütun ekle",
+      title: "Sütun Ekle",
       eyebrow: tab ? `TABLO · ${tab}` : "TABLO",
       introHtml: `<p class="hof-modal-text">“<b>${esc(labelOf(after))}</b>” sütununun hemen sağına${count ? `, bu sekmedeki <b>${count.toLocaleString("tr-TR")} satırın</b> hepsine boş hücreyle` : ""} yeni bir sütun eklenir. Değerleri kartta <b>✎</b> ya da <b>Düzenle</b> ile yazılır. Kaynak Excel/Sheets dosyanız değişmez.</p>`,
-      fields: [{ name: "name", label: "Sütun adı", value: "Yeni sütun", maxlength: 60, required: true, autofocus: true }],
-      submitLabel: "Sütunu ekle",
+      fields: [{ name: "name", label: "Sütun Adı", value: "Yeni sütun", maxlength: 60, required: true, autofocus: true }],
+      submitLabel: "Sütunu Ekle",
       onOpen: dialog => dialog.querySelector('input[name="name"]')?.select(),
       onSubmit: async data => {
         const result = await HOF.api("/api/workspace/columns/add", { method: "POST", body: { tab, after, name: data.name } });
@@ -135,7 +135,7 @@
         HOF.toast(`“${result.name}” sütunu eklendi.`, {
           type: "success",
           action: {
-            label: "Geri al",
+            label: "Geri Al",
             onClick: async () => {
               try {
                 await HOF.api("/api/workspace/columns/hide", { method: "POST", body: { tab, column: result.name } });
@@ -159,7 +159,7 @@
       const confirmed = await HOF.confirm({
         title: `“${label}” sütununu sil`,
         message: `Bu sütun ${filled.toLocaleString("tr-TR")} kayıtta dolu. Sütun başlığı ve tüm satırlardaki hücreleriyle tablodan, kartlardan, aramadan ve Excel çıktısından kalkar; sağdaki sütunlar sola kayar. Kaynak Excel/Sheets dosyanız değişmez; Yönetim → Silinenler'den geri yüklenir.`,
-        confirmLabel: "Sütunu sil",
+        confirmLabel: "Sütunu Sil",
         danger: true,
       });
       if (!confirmed) return;
@@ -170,7 +170,7 @@
       HOF.toast(`“${label}” sütunu silindi${filled ? ` (${filled.toLocaleString("tr-TR")} dolu hücre)` : ""}.`, {
         type: "success",
         action: {
-          label: "Geri al",
+          label: "Geri Al",
           onClick: async () => {
             try {
               await HOF.api("/api/workspace/columns/unhide", { method: "POST", body: { tab: result.tab, column } });

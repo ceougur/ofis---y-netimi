@@ -100,6 +100,34 @@
     return payload.data === undefined ? payload : payload.data;
   };
 
+  // ---------- Başlık yazımı (v2.0.11) ----------
+  // Sunucudaki server/lib/text-case.mjs ile aynı kural: her sözcüğün ilk harfi büyük (Türkçe i → İ), bağlaçlar küçük,
+  // parantez içi olduğu gibi. Yalnız programın ürettiği başlıklara uygulanır; kullanıcının yazdığı ada değil.
+  const SMALL_WORDS = new Set(["ve", "ile", "veya", "ya", "da", "de", "ki"]);
+  HOF.titleCase = text => {
+    let depth = 0;
+    let seenWord = false;
+    return String(text ?? "")
+      .split(/(\s+)/)
+      .map(word => {
+        if (!word || /^\s+$/.test(word)) return word;
+        const inside = depth > 0 || word.startsWith("(");
+        for (const ch of word) {
+          if (ch === "(") depth += 1;
+          else if (ch === ")") depth = Math.max(0, depth - 1);
+        }
+        if (inside) return word;
+        const bare = word.replace(/[^\p{L}]/gu, "");
+        const first = !seenWord;
+        if (bare) seenWord = true;
+        if (!first && SMALL_WORDS.has(bare) && word === word.toLocaleLowerCase("tr-TR")) return word;
+        const at = word.search(/\p{L}/u);
+        if (at < 0 || (at > 0 && /[\p{L}\p{N}]/u.test(word.slice(0, at)))) return word;
+        return word.slice(0, at) + word[at].toLocaleUpperCase("tr-TR") + word.slice(at + 1);
+      })
+      .join("");
+  };
+
   // ---------- Para/stok defteri değişti (v2.0.11) ----------
   // Açık pencereler (Kasa, Cari, Taksitler, Stok, Çek/Senet, Raporlar) kendini tek bir kurala göre yeniler:
   //  - bu ekranda yapılan her yazma isteği (HOF.api) hemen, adresinden çıkarılan türle bildirilir;
@@ -288,7 +316,7 @@
       const value = String(field.value ?? "");
       const options = field.options || [];
       const known = !value || options.includes(value);
-      control = `<select ${common} data-choice>${`<option value="">${HOF.esc(field.blankLabel || "— Seçin —")}</option>`}${options.map(option => `<option value="${HOF.esc(option)}" ${option === value ? "selected" : ""}>${HOF.esc(option)}</option>`).join("")}${known ? "" : `<option value="${HOF.esc(value)}" selected>${HOF.esc(value)} (listede yok)</option>`}${field.strict ? "" : `<option value="${OTHER_CHOICE}">Başka bir değer yaz…</option>`}</select>`;
+      control = `<select ${common} data-choice>${`<option value="">${HOF.esc(field.blankLabel || "— Seçin —")}</option>`}${options.map(option => `<option value="${HOF.esc(option)}" ${option === value ? "selected" : ""}>${HOF.esc(option)}</option>`).join("")}${known ? "" : `<option value="${HOF.esc(value)}" selected>${HOF.esc(value)} (listede yok)</option>`}${field.strict ? "" : `<option value="${OTHER_CHOICE}">Başka Bir Değer Yaz…</option>`}</select>`;
     } else if (field.type === "checkbox") return `<label class="hof-check"><input type="checkbox" ${common} ${field.value ? "checked" : ""}><span>${HOF.esc(field.label)}</span></label>`;
     else {
       const list = field.list && field.list.length ? `${id}-list` : "";

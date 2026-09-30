@@ -19,12 +19,12 @@
   const body = () => modal?.dialog.querySelector("[data-cheques]");
   const STATUS_OPTIONS = [
     ["open", "Açık (portföyde / ödenecek)"],
-    ["overdue", "Vadesi geçmiş"],
-    ["soon", "7 gün içinde"],
-    ["", "Tüm durumlar"],
-    ["collected", "Tahsil edildi"],
-    ["endorsed", "Ciro edildi"],
-    ["bounced", "Karşılıksız / iade"],
+    ["overdue", "Vadesi Geçmiş"],
+    ["soon", "7 Gün İçinde"],
+    ["", "Tüm Durumlar"],
+    ["collected", "Tahsil Edildi"],
+    ["endorsed", "Ciro Edildi"],
+    ["bounced", "Karşılıksız / İade"],
     ["paid", "Ödendi"],
   ];
   const statusPill = cheque => `<span class="hof-chq-status is-${esc(cheque.status)}">${esc(cheque.statusLabel)}</span>`;
@@ -125,19 +125,19 @@
     root.innerHTML = `<div class="hof-plan-head">
         <div class="hof-plan-title"><h3>${esc(moduleName())}</h3><small>Alınan evrak portföye girer, tahsil edilince Kasa'ya; verilen evrak ödenince Kasa'dan çıkar.</small></div>
         <div class="hof-plan-actions" role="toolbar" aria-label="Çek / senet işlemleri">
-          ${canManage() ? `<button type="button" class="hof-button hof-button-small" data-act="new-in">+ Çek / senet al</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="new-out">+ Çek / senet ver</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="import">Excel / Sheets’ten yükle</button>` : ""}
+          ${canManage() ? `<button type="button" class="hof-button hof-button-small" data-act="new-in">+ Çek / Senet Al</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="new-out">+ Çek / Senet Ver</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="import">Excel / Sheets’ten Yükle</button>` : ""}
           <span class="hof-rep-export"><a class="hof-rep-out is-pdf" href="/api/workspace/cheques/liste.pdf?${esc(listQuery())}" target="_blank" rel="noopener">PDF</a><a class="hof-rep-out is-xlsx" href="/api/workspace/cheques/export.xlsx?${esc(listQuery())}" download>Excel</a></span>
         </div></div>
       ${sum ? `<div class="hof-rep-stats">${tile("Portföyde (alınan)", sum.in.open, "is-in")}${tile("Ödenecek (verilen)", sum.out.open, "is-out")}${tile("Vadesi geçmiş", { count: sum.in.overdue.count + sum.out.overdue.count, amount: sum.in.overdue.amount + sum.out.overdue.amount }, sum.in.overdue.count + sum.out.overdue.count ? "is-bad" : "")}${tile("7 gün içinde", { count: sum.in.today.count + sum.in.soon.count + sum.out.today.count + sum.out.soon.count, amount: sum.in.today.amount + sum.in.soon.amount + sum.out.today.amount + sum.out.soon.amount }, "", "bugün dahil")}</div>` : ""}
       <div class="hof-plans-filters hof-chq-filters">
         <div class="hof-rep-presets" role="group" aria-label="Yön">${[["", "Tümü"], ["in", "Alınan"], ["out", "Verilen"]].map(([id, label]) => `<button type="button" class="hof-rep-chip ${view.direction === id ? "is-on" : ""}" data-direction="${id}">${label}</button>`).join("")}</div>
         <select data-filter="status" aria-label="Durum">${STATUS_OPTIONS.map(([id, label]) => `<option value="${id}" ${view.status === id ? "selected" : ""}>${label}</option>`).join("")}</select>
-        <label class="hof-rep-date"><span>Vade başı</span><input type="date" data-filter="from" value="${esc(view.from)}"></label>
-        <label class="hof-rep-date"><span>Vade sonu</span><input type="date" data-filter="to" value="${esc(view.to)}"></label>
+        <label class="hof-rep-date"><span>Vade Başı</span><input type="date" data-filter="from" value="${esc(view.from)}"></label>
+        <label class="hof-rep-date"><span>Vade Sonu</span><input type="date" data-filter="to" value="${esc(view.to)}"></label>
         <input type="search" data-filter="q" value="${esc(view.q)}" placeholder="No, banka, kişi, not ara…" aria-label="Ara">
       </div>
-      ${data ? `<div class="hof-rep-table"><table class="hof-table hof-chq-table"><thead><tr><th>Vade</th><th>Evrak</th><th>No / banka</th><th>Kimden / kime</th><th>Durum</th><th class="num">Tutar</th></tr></thead><tbody>${rows || `<tr><td colspan="6" class="hof-empty">${view.status === "open" && !view.q ? "Portföyde evrak yok. “+ Çek / senet al” ile ekleyin." : "Bu süzgeçte evrak yok."}</td></tr>`}</tbody></table></div>
-        <p class="hof-rep-note">${data.total.toLocaleString("tr-TR")} evrak · ${esc(money(data.listed.amount))}${data.hasMore ? ` · <button type="button" class="hof-link-button" data-act="more">Daha fazla göster</button>` : ""}</p>` : '<p class="hof-empty">Yükleniyor…</p>'}`;
+      ${data ? `<div class="hof-rep-table"><table class="hof-table hof-chq-table"><thead><tr><th>Vade</th><th>Evrak</th><th>No / Banka</th><th>Kimden / Kime</th><th>Durum</th><th class="num">Tutar</th></tr></thead><tbody>${rows || `<tr><td colspan="6" class="hof-empty">${view.status === "open" && !view.q ? "Portföyde evrak yok. “+ Çek / senet al” ile ekleyin." : "Bu süzgeçte evrak yok."}</td></tr>`}</tbody></table></div>
+        <p class="hof-rep-note">${data.total.toLocaleString("tr-TR")} evrak · ${esc(money(data.listed.amount))}${data.hasMore ? ` · <button type="button" class="hof-link-button" data-act="more">Daha Fazla Göster</button>` : ""}</p>` : '<p class="hof-empty">Yükleniyor…</p>'}`;
   }
 
   // ---------- Kart ----------
@@ -172,7 +172,7 @@
       </dl>
       <div class="hof-chq-actions" role="toolbar" aria-label="Evrak işlemleri">${actionButtons}${cheque.canUndo ? `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="undo">↶ ${esc(cheque.undoLabel)}</button>` : ""}${cheque.canManage ? `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="edit">Düzenle</button>` : ""}${cheque.canDelete ? `<button type="button" class="hof-button hof-button-small hof-button-danger-ghost" data-act="delete">Sil</button>` : ""}</div>
       <p class="hof-rep-note">${cheque.direction === "in" ? "Alınınca carinin borcu düşer (ya da taksite sayılır); para Kasa'ya tahsil edilince girer. Ciro edilince tedarikçiye olan borç düşer. Karşılıksız çıkarsa müşteri yeniden borçlanır." : "Verilince tedarikçiye olan borç düşer; para Kasa'dan ödenince çıkar."}</p>
-      <h4 class="hof-chq-subtitle">İşlem geçmişi</h4>
+      <h4 class="hof-chq-subtitle">İşlem Geçmişi</h4>
       <ol class="hof-chq-history">${history}</ol>`;
   }
 
@@ -183,10 +183,10 @@
     const fields = [
       { name: "instrument", label: "Evrak", type: "select", value: cheque?.instrument || "cheque", options: [{ value: "cheque", label: "Çek" }, { value: "note", label: "Senet" }] },
       { name: "amount", label: "Tutar (₺)", required: true, autofocus: !edit, value: cheque ? String(cheque.amount).replace(".", ",") : "", inputmode: "decimal", placeholder: "ör. 12.500,00" },
-      { name: "dueDate", label: "Vade tarihi", type: "date", required: true, value: cheque?.dueDate || "" },
+      { name: "dueDate", label: "Vade Tarihi", type: "date", required: true, value: cheque?.dueDate || "" },
       { name: "issueDate", label: direction === "in" ? "Alış tarihi" : "Veriliş tarihi", type: "date", required: true, value: cheque?.issueDate || todayIso() },
       { name: "serialNo", label: direction === "in" ? "Çek / senet no" : "Çek / senet no", value: cheque?.serialNo || "", maxlength: 60 },
-      { name: "bank", label: "Banka / şube", value: cheque?.bank || "", maxlength: 120, placeholder: "ör. Ziraat Bankası Meram" },
+      { name: "bank", label: "Banka / Şube", value: cheque?.bank || "", maxlength: 120, placeholder: "ör. Ziraat Bankası Meram" },
       { name: "drawer", label: direction === "in" ? "Keşideci / borçlu (cari seçilmezse)" : "Lehtar (cari seçilmezse)", value: cheque?.drawer || "", maxlength: 160 },
       { name: "note", label: "Açıklama", value: cheque?.note || "", maxlength: 500 },
     ];
@@ -215,7 +215,7 @@
             const detail = await HOF.api(`/api/workspace/accounts/${encodeURIComponent(account.id)}`);
             const active = (detail.plans || []).filter(plan => plan.status === "active");
             if (!active.length) return;
-            planSlot.innerHTML = HOF.fieldHtml({ name: "planId", label: "Taksite say (isteğe bağlı)", type: "select", value: cheque?.planId || "", options: [{ value: "", label: "Hayır — carinin borcundan düş" }, ...active.map(plan => ({ value: plan.id, label: `${plan.name} · kalan ${money(plan.totals.remaining)}${plan.next ? ` · sıradaki ${HOF.formatDate(plan.next.dueDate)}` : ""}` }))], help: "Seçilen karttaki en eski açık taksitten başlayarak ödenmiş sayılır; çek karşılıksız çıkarsa taksit yeniden açılır." });
+            planSlot.innerHTML = HOF.fieldHtml({ name: "planId", label: "Taksite Say (isteğe bağlı)", type: "select", value: cheque?.planId || "", options: [{ value: "", label: "Hayır — carinin borcundan düş" }, ...active.map(plan => ({ value: plan.id, label: `${plan.name} · kalan ${money(plan.totals.remaining)}${plan.next ? ` · sıradaki ${HOF.formatDate(plan.next.dueDate)}` : ""}` }))], help: "Seçilen karttaki en eski açık taksitten başlayarak ödenmiş sayılır; çek karşılıksız çıkarsa taksit yeniden açılır." });
             planSlot.hidden = false;
           } catch {
             // taksit kartları okunamazsa seçim gösterilmez
@@ -234,7 +234,7 @@
         try {
           saved = await HOF.api(url, { method: edit ? "PUT" : "POST", body: payload });
         } catch (error) {
-          if (error.data?.code === "cheque-duplicate" && (await HOF.confirm({ title: "Aynı numaralı evrak var", message: `${error.message} Yine de ikinci kez kaydedilsin mi?`, confirmLabel: "Yine de kaydet" }))) {
+          if (error.data?.code === "cheque-duplicate" && (await HOF.confirm({ title: "Aynı numaralı evrak var", message: `${error.message} Yine de ikinci kez kaydedilsin mi?`, confirmLabel: "Yine de Kaydet" }))) {
             saved = await HOF.api(url, { method: edit ? "PUT" : "POST", body: { ...payload, allowDuplicate: true } });
           } else throw error;
         }
@@ -249,10 +249,10 @@
     });
   }
   const ACTION_TEXT = {
-    collect: { title: "Tahsil et", past: "tahsil edildi", intro: "Tutar seçtiğiniz tarihte Kasa'ya giriş olarak yazılır.", submit: "Tahsili kaydet" },
-    pay: { title: "Ödeme yap", past: "ödendi", intro: "Tutar seçtiğiniz tarihte Kasa'dan çıkış olarak yazılır.", submit: "Ödemeyi kaydet" },
-    endorse: { title: "Ciro et", past: "ciro edildi", intro: "Evrak seçtiğiniz tedarikçiye verilir; o cariye olan borcunuz evrak tutarı kadar düşer. Kasa değişmez.", submit: "Ciro et" },
-    bounce: { title: "Karşılıksız / iade", past: "karşılıksız / iade", intro: "Evrak karşılıksız çıktı ya da iade edildi: müşteri yeniden borçlanır (taksite sayıldıysa taksit yeniden açılır); ciro edildiyse tedarikçiye olan borç geri gelir.", submit: "Karşılıksız / iade işaretle" },
+    collect: { title: "Tahsil Et", past: "tahsil edildi", intro: "Tutar seçtiğiniz tarihte Kasa'ya giriş olarak yazılır.", submit: "Tahsili kaydet" },
+    pay: { title: "Ödeme Yap", past: "ödendi", intro: "Tutar seçtiğiniz tarihte Kasa'dan çıkış olarak yazılır.", submit: "Ödemeyi kaydet" },
+    endorse: { title: "Ciro Et", past: "ciro edildi", intro: "Evrak seçtiğiniz tedarikçiye verilir; o cariye olan borcunuz evrak tutarı kadar düşer. Kasa değişmez.", submit: "Ciro et" },
+    bounce: { title: "Karşılıksız / İade", past: "karşılıksız / iade", intro: "Evrak karşılıksız çıktı ya da iade edildi: müşteri yeniden borçlanır (taksite sayıldıysa taksit yeniden açılır); ciro edildiyse tedarikçiye olan borç geri gelir.", submit: "Karşılıksız / iade işaretle" },
   };
   function actionForm(cheque, action) {
     const text = ACTION_TEXT[action];
@@ -261,13 +261,13 @@
       eyebrow: money(cheque.amount),
       intro: text.intro,
       fields: [
-        { name: "date", label: "İşlem tarihi", type: "date", required: true, value: todayIso() },
+        { name: "date", label: "İşlem Tarihi", type: "date", required: true, value: todayIso() },
         { name: "note", label: "Açıklama", maxlength: 300, placeholder: action === "bounce" ? "ör. banka iade etti" : "" },
       ],
       submitLabel: text.submit,
       onOpen: dialog => {
         if (action !== "endorse") return;
-        const picker = HOF.accounts?.picker({ label: "Ciro edilen cari (tedarikçi)", required: true, type: "supplier", name: "accountId" });
+        const picker = HOF.accounts?.picker({ label: "Ciro Edilen Cari (tedarikçi)", required: true, type: "supplier", name: "accountId" });
         if (picker) dialog.querySelector('[name="date"]').closest(".hof-field").before(picker);
       },
       onSubmit: async data => {
@@ -279,7 +279,7 @@
     });
   }
   async function undo(cheque) {
-    const ok = await HOF.confirm({ title: cheque.undoLabel, message: "Son işlemin cari, taksit ve Kasa kayıtları birlikte geri alınır; evrak bir önceki durumuna döner.", confirmLabel: "Geri al" });
+    const ok = await HOF.confirm({ title: cheque.undoLabel, message: "Son işlemin cari, taksit ve Kasa kayıtları birlikte geri alınır; evrak bir önceki durumuna döner.", confirmLabel: "Geri Al" });
     if (!ok) return;
     try {
       const last = cheque.events.at(-1);
@@ -309,20 +309,20 @@
   // ---------- Excel / Google Sheets'ten portföy ----------
   const ROLE_OPTIONS = [
     ["", "— Alma —"],
-    ["serial", "Çek / senet no"],
-    ["bank", "Banka / şube"],
-    ["drawer", "Keşideci / lehtar (kişi, firma)"],
+    ["serial", "Çek / Senet No"],
+    ["bank", "Banka / Şube"],
+    ["drawer", "Keşideci / Lehtar (kişi, firma)"],
     ["amount", "Tutar"],
-    ["due", "Vade tarihi"],
-    ["issue", "Alış / veriliş tarihi"],
+    ["due", "Vade Tarihi"],
+    ["issue", "Alış / Veriliş Tarihi"],
     ["direction", "Yön (alınan / verilen)"],
     ["instrument", "Evrak (çek / senet)"],
     ["status", "Durum"],
     ["note", "Açıklama"],
-    ["extra", "Açıklamaya ekle"],
+    ["extra", "Açıklamaya Ekle"],
   ];
   async function importFlow() {
-    const chosen = await HOF.office?.chooseSheet?.({ title: "Çek / senet portföyü yükle", eyebrow: "ÇEK / SENET", hint: "Excel dosyası ya da Google Sheets bağlantısı. Her satır bir evrak olur; tahsil edilmiş, ödenmiş, ciro ya da karşılıksız satırlar alınmaz." });
+    const chosen = await HOF.office?.chooseSheet?.({ title: "Çek / Senet Portföyü Yükle", eyebrow: "ÇEK / SENET", hint: "Excel dosyası ya da Google Sheets bağlantısı. Her satır bir evrak olur; tahsil edilmiş, ödenmiş, ciro ya da karşılıksız satırlar alınmaz." });
     if (!chosen) return;
     const { fileName, matrix } = chosen;
     let preview;
@@ -333,7 +333,7 @@
     }
     const sample = matrix[preview.headerAt + 1] || [];
     HOF.formModal({
-      title: "Çek / senet portföyü: kolonları eşle",
+      title: "Çek / Senet Portföyü: Kolonları Eşle",
       eyebrow: fileName,
       size: "wide",
       intro: `${preview.rows} satır bulundu. Program başlıkları tanıdı; yanlışsa değiştirin. Keşideci adı birebir aynı olan tek cari varsa evrak o cariye bağlanır.`,
@@ -343,7 +343,7 @@
         { name: "instrument", label: "Evrak kolonu yoksa hepsi", type: "select", value: "cheque", options: [{ value: "cheque", label: "Çek" }, { value: "note", label: "Senet" }] },
         { name: "post", label: "Bağlanan carilere de işle (alınan çekte carinin borcu düşer, verilen çekte tedarikçiye borç düşer). Cari bakiyelerini Excel'den ayrıca yüklediyseniz işaretlemeyin.", type: "checkbox", value: false },
       ],
-      submitLabel: "Portföye al",
+      submitLabel: "Portföye Al",
       onOpen: dialog => {
         dialog.classList.add("hof-import-form");
         HOF.office?.wireGate?.(dialog, preview, matrix, "/api/workspace/cheques/import/preview");

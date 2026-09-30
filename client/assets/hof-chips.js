@@ -131,7 +131,7 @@
     if (box && box.dataset.key === selected.key) return;
     box?.remove();
     box = HOF.el("div", { class: "hof-flag-box", "data-hof-ui": "", "data-key": selected.key });
-    box.innerHTML = `<b>⚠ Bu kayıt içeri alınırken işaretlendi:</b> <span>${HOF.esc(row.__hofFlag)}</span><small>Kayıt takvime, son tarih uyarılarına ve göstergelere girmez. Değerleri düzeltin; doğruysa <b>Sorun yok</b> deyin.</small>${HOF.can("records.edit") ? '<button type="button" class="hof-button hof-button-small" data-unflag>Sorun yok</button>' : ""}`;
+    box.innerHTML = `<b>⚠ Bu kayıt içeri alınırken işaretlendi:</b> <span>${HOF.esc(row.__hofFlag)}</span><small>Kayıt takvime, son tarih uyarılarına ve göstergelere girmez. Değerleri düzeltin; doğruysa <b>Sorun Yok</b> deyin.</small>${HOF.can("records.edit") ? '<button type="button" class="hof-button hof-button-small" data-unflag>Sorun Yok</button>' : ""}`;
     box.querySelector("[data-unflag]")?.addEventListener("click", async () => {
       try {
         await HOF.api(`/api/workspace/records/${encodeURIComponent(selected.key)}/unflag`, { method: "POST", body: {} });

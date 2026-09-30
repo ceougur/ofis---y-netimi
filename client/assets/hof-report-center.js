@@ -20,11 +20,11 @@
     Ofis: "◷",
   };
   const PRESETS = [
-    ["thisMonth", "Bu ay"],
-    ["lastMonth", "Geçen ay"],
-    ["last30", "Son 30 gün"],
-    ["thisYear", "Bu yıl"],
-    ["all", "Tüm zamanlar"],
+    ["thisMonth", "Bu Ay"],
+    ["lastMonth", "Geçen Ay"],
+    ["last30", "Son 30 Gün"],
+    ["thisYear", "Bu Yıl"],
+    ["all", "Tüm Zamanlar"],
   ];
   const todayIso = () => {
     const now = new Date();
@@ -46,12 +46,12 @@
     );
   };
   const SELECTS = {
-    type: { label: "Cari türü", options: [["", "Tüm cariler"], ["customer", "Müşteriler"], ["supplier", "Tedarikçiler"], ["other", "Diğer"]] },
-    side: { label: "Bakiye", options: [["", "Tümü"], ["debtor", "Borçlular"], ["creditor", "Alacaklılar"], ["nonzero", "Sadece bakiyesi olanlar"], ["zero", "Kapalı (bakiyesi sıfır)"], ["overdue", "Geciken taksiti olan"]] },
-    direction: { label: "Yön", options: [["", "Alınan ve verilen"], ["in", "Alınan"], ["out", "Verilen"]] },
-    status: { label: "Durum", options: [["", "Tüm durumlar"], ["open", "Açık (portföyde / ödenecek)"], ["overdue", "Vadesi geçmiş"], ["soon", "7 gün içinde"], ["collected", "Tahsil edildi"], ["endorsed", "Ciro edildi"], ["paid", "Ödendi"], ["bounced", "Karşılıksız / iade"]] },
-    state: { label: "Kalem", options: [["", "Tüm kalemler"], ["low", "Kritik seviyedekiler"], ["out", "Tükenenler"], ["product", "Ürünler"], ["service", "Hizmetler"]] },
-    planStatus: { label: "Kartlar", options: [["active", "Açık kartlar"], ["closed", "Kapatılanlar"], ["all", "Tümü"]] },
+    type: { label: "Cari Türü", options: [["", "Tüm Cariler"], ["customer", "Müşteriler"], ["supplier", "Tedarikçiler"], ["other", "Diğer"]] },
+    side: { label: "Bakiye", options: [["", "Tümü"], ["debtor", "Borçlular"], ["creditor", "Alacaklılar"], ["nonzero", "Sadece Bakiyesi Olanlar"], ["zero", "Kapalı (bakiyesi sıfır)"], ["overdue", "Geciken Taksiti Olan"]] },
+    direction: { label: "Yön", options: [["", "Alınan ve Verilen"], ["in", "Alınan"], ["out", "Verilen"]] },
+    status: { label: "Durum", options: [["", "Tüm Durumlar"], ["open", "Açık (portföyde / ödenecek)"], ["overdue", "Vadesi Geçmiş"], ["soon", "7 Gün İçinde"], ["collected", "Tahsil Edildi"], ["endorsed", "Ciro Edildi"], ["paid", "Ödendi"], ["bounced", "Karşılıksız / İade"]] },
+    state: { label: "Kalem", options: [["", "Tüm Kalemler"], ["low", "Kritik Seviyedekiler"], ["out", "Tükenenler"], ["product", "Ürünler"], ["service", "Hizmetler"]] },
+    planStatus: { label: "Kartlar", options: [["active", "Açık Kartlar"], ["closed", "Kapatılanlar"], ["all", "Tümü"]] },
     taskStatus: { label: "Görevler", options: [["all", "Tümü"], ["open", "Açık"], ["done", "Tamamlanan"]] },
   };
 
@@ -168,7 +168,7 @@
       } else if (name === "category") parts.push(`<label class="hof-rc-param"><span>Kategori</span><input type="text" data-param="category" value="${esc(p.category || "")}" placeholder="Tümü" maxlength="80"></label>`);
       else if (name === "tab") {
         const tabs = center.preview?.tabs || [];
-        parts.push(`<label class="hof-rc-param"><span>Sekme</span><select data-param="tab"><option value="">Tüm sekmeler</option>${tabs.map(tab => `<option value="${esc(tab)}" ${p.tab === tab ? "selected" : ""}>${esc(tab)}</option>`).join("")}</select></label>`);
+        parts.push(`<label class="hof-rc-param"><span>Sekme</span><select data-param="tab"><option value="">Tüm Sekmeler</option>${tabs.map(tab => `<option value="${esc(tab)}" ${p.tab === tab ? "selected" : ""}>${esc(tab)}</option>`).join("")}</select></label>`);
       }
     }
     return parts.join("");
@@ -191,10 +191,10 @@
       : `<p class="hof-empty">${ready ? "Rapor hazırlanıyor…" : "Önce cariyi seçin."}</p>`;
     main.innerHTML = `<header class="hof-rc-head"><div><p class="hof-eyebrow">${esc(report.group)}</p><h3>${esc(preview?.title || report.title)}</h3><p>${esc(report.description)}</p>${preview?.subtitle ? `<small class="hof-rc-scope">${esc(preview.subtitle)}</small>` : ""}</div>
         <span class="hof-rep-export ${ready ? "" : "is-disabled"}" role="group" aria-label="Dışa aktar">
-          <a class="hof-rep-out is-pdf" href="${ready ? `/api/workspace/report-center/${esc(report.id)}/pdf?${esc(qs)}` : "#"}" target="_blank" rel="noopener" ${ready ? "" : 'aria-disabled="true" tabindex="-1"'}>PDF indir</a>
-          <a class="hof-rep-out is-xlsx" href="${ready ? `/api/workspace/report-center/${esc(report.id)}/xlsx?${esc(qs)}` : "#"}" download ${ready ? "" : 'aria-disabled="true" tabindex="-1"'}>Excel indir</a>
+          <a class="hof-rep-out is-pdf" href="${ready ? `/api/workspace/report-center/${esc(report.id)}/pdf?${esc(qs)}` : "#"}" target="_blank" rel="noopener" ${ready ? "" : 'aria-disabled="true" tabindex="-1"'}>PDF İndir</a>
+          <a class="hof-rep-out is-xlsx" href="${ready ? `/api/workspace/report-center/${esc(report.id)}/xlsx?${esc(qs)}` : "#"}" download ${ready ? "" : 'aria-disabled="true" tabindex="-1"'}>Excel İndir</a>
         </span></header>
-      ${report.params.length ? `<div class="hof-rc-params">${paramsHtml(report)}<button type="button" class="hof-button hof-button-small" data-rc-run>Ön izle</button></div>` : ""}
+      ${report.params.length ? `<div class="hof-rc-params">${paramsHtml(report)}<button type="button" class="hof-button hof-button-small" data-rc-run>Ön İzle</button></div>` : ""}
       ${table}`;
     const slot = main.querySelector("[data-account-slot]");
     if (slot && HOF.accounts?.picker) {

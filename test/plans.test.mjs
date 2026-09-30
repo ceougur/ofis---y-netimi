@@ -326,7 +326,7 @@ describe("taksit modülü API (v2.0.4)", () => {
     assert.match(pdf.headers.get("content-disposition"), /Aidatlar-listesi/);
     // v2.0.6: listenin sağındaki boşlukta kartın bilgi notu ve kayıt tarihi.
     const listText = pdfText(pdf.buffer);
-    assert.match(listText, /Bilgi notu/);
+    assert.match(listText, /Bilgi Notu/);
     assert.match(listText, /Kayıt/);
     assert.match(listText, /Süleyman Şah Siteleri/);
     const statement = await admin.raw("GET", `/api/workspace/plans/${zeynep.id}/ekstre.pdf`);

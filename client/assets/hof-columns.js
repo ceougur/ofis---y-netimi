@@ -96,7 +96,7 @@
     const canWrite = Boolean(selected?.key && HOF.can("records.edit"));
     const valueTarget = canWrite && focusColumn && columns.includes(focusColumn) ? focusColumn : "";
     const modal = HOF.formModal({
-      title: "Kolon adlarını değiştir",
+      title: "Kolon Adlarını Değiştir",
       eyebrow: tab ? `GÖRÜNÜM · ${HOF.sections?.pretty ? HOF.sections.pretty(tab) : tab}` : "GÖRÜNÜM",
       size: "wide",
       introHtml: `<div class="hof-column-editor-warn" role="note"><p><b>Bu pencere kolonların ADINI değiştirir, kayıttaki değeri değil.</b> Bir kayda tarih ya da bilgi yazmak için alanın sağındaki <b>✎</b> düğmesini ya da kartta <b>Düzenle</b>'yi kullanın.</p>${valueTarget ? `<button type="button" class="hof-button hof-button-small" data-edit-value>“${esc(HOF.columnLabel(valueTarget))}” değerini düzenle · ${esc(selected.title)}</button>` : ""}</div>`,
@@ -109,8 +109,8 @@
         maxlength: 60,
         autofocus: index === focus,
       })),
-      extraHtml: '<div class="hof-side-editor-reset"><button type="button" class="hof-button hof-button-small hof-button-ghost" data-reset-all>Tümünü asıl adına döndür</button></div>',
-      submitLabel: "Başlıkları kaydet",
+      extraHtml: '<div class="hof-side-editor-reset"><button type="button" class="hof-button hof-button-small hof-button-ghost" data-reset-all>Tümünü Asıl Adına Döndür</button></div>',
+      submitLabel: "Başlıkları Kaydet",
       onSubmit: async data => {
         const changes = {};
         const dates = [];
@@ -136,8 +136,8 @@
           const write = await HOF.confirm({
             title: dates.length > 1 ? "Bunlar tarih, kolon adı değil" : "Bu bir tarih, kolon adı değil",
             message: `Bu pencere kolonun adını değiştirir. Yazdığınız tarih${dates.length > 1 ? "ler" : ""} kolon adı olmaz; “${selected.title}” kaydına değer olarak yazılsın mı? ${lines.join(" · ")}`,
-            confirmLabel: "Kayda yaz",
-            cancelLabel: "Geri dön",
+            confirmLabel: "Kayda Yaz",
+            cancelLabel: "Geri Dön",
           });
           if (!write) {
             inputs[first.index]?.focus();
@@ -227,10 +227,10 @@
       if (!canEdit() || !(HOF.data?.rows || []).length) return "";
       const count = Object.keys(aliases).length;
       return `<section class="hof-data-section">
-          <h3>Kolon başlıkları</h3>
+          <h3>Kolon Başlıkları</h3>
           <div class="hof-profile-row">
             <div><b>${count ? `${count} başlık yeniden adlandırıldı` : "Başlıklar Excel/Sheets'teki gibi"}</b><small>Detay kartındaki başlıkların yanındaki kalemle de açılır. Yalnızca programda görünen ad değişir.</small></div>
-            <div class="hof-profile-actions"><button type="button" class="hof-button hof-button-small" data-columns-edit>Başlıkları adlandır</button></div>
+            <div class="hof-profile-actions"><button type="button" class="hof-button hof-button-small" data-columns-edit>Başlıkları Adlandır</button></div>
           </div>
         </section>`;
     },

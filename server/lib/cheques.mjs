@@ -23,24 +23,24 @@ export const DIRECTIONS = Object.freeze({ in: "Alınan", out: "Verilen" });
 export const INSTRUMENTS = Object.freeze({ cheque: "Çek", note: "Senet" });
 export const STATUSES = Object.freeze({
   portfolio: { label: "Portföyde", direction: "in", open: true },
-  endorsed: { label: "Ciro edildi", direction: "in", open: false },
-  collected: { label: "Tahsil edildi", direction: "in", open: false },
-  bounced: { label: "Karşılıksız / iade", direction: "in", open: false },
+  endorsed: { label: "Ciro Edildi", direction: "in", open: false },
+  collected: { label: "Tahsil Edildi", direction: "in", open: false },
+  bounced: { label: "Karşılıksız / İade", direction: "in", open: false },
   pending: { label: "Ödenecek", direction: "out", open: true },
   paid: { label: "Ödendi", direction: "out", open: false },
 });
 export const ACTIONS = Object.freeze({
-  collect: { from: ["portfolio"], to: "collected", label: "Tahsil edildi", past: "tahsil edildi", cash: "in" },
-  endorse: { from: ["portfolio"], to: "endorsed", label: "Ciro et", past: "ciro edildi", cash: "" },
-  bounce: { from: ["portfolio", "endorsed"], to: "bounced", label: "Karşılıksız / iade", past: "karşılıksız/iade işaretlendi", cash: "" },
+  collect: { from: ["portfolio"], to: "collected", label: "Tahsil Edildi", past: "tahsil edildi", cash: "in" },
+  endorse: { from: ["portfolio"], to: "endorsed", label: "Ciro Et", past: "ciro edildi", cash: "" },
+  bounce: { from: ["portfolio", "endorsed"], to: "bounced", label: "Karşılıksız / İade", past: "karşılıksız/iade işaretlendi", cash: "" },
   pay: { from: ["pending"], to: "paid", label: "Ödendi", past: "ödendi", cash: "out" },
 });
 export const EVENT_LABELS = Object.freeze({
   receive: "Alındı",
   issue: "Verildi",
-  collect: "Tahsil edildi",
-  endorse: "Ciro edildi",
-  bounce: "Karşılıksız / iade",
+  collect: "Tahsil Edildi",
+  endorse: "Ciro Edildi",
+  bounce: "Karşılıksız / İade",
   pay: "Ödendi",
 });
 export const initialStatus = direction => (direction === "out" ? "pending" : "portfolio");

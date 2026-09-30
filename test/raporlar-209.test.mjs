@@ -216,10 +216,10 @@ describe("Raporlar penceresi uçları (tam yığın)", () => {
     assert.ok(aliRow && /2\.500,00/.test(aliRow[5]), `Ali Veli (1): nakit 1.500 + çek 1.000 → ${aliRow}`);
     assert.ok(tahsilat.rows.find(row => row[0] === veli.refNo && /700,00/.test(row[4])), "Ali Veli (2): alınan senet 700 ayrı satırda");
     const perf = await run("taksit-performans", `from=${shift(-400)}&to=${shift(400)}`);
-    assert.match(perf.summary.find(([label]) => label === "Vadesi gelen")[1], /3\.000,00/);
+    assert.match(perf.summary.find(([label]) => label === "Vadesi Gelen")[1], /3\.000,00/);
     assert.match(perf.summary.find(([label]) => label === "Geciken")[1], /1\.000,00/);
     const cek = await run("cek-vade-dagilimi");
-    assert.match(cek.summary.find(([label]) => label === "Tahsil edilecek")[1], /1\.700,00/);
+    assert.match(cek.summary.find(([label]) => label === "Tahsil Edilecek")[1], /1\.700,00/);
     assert.match(cek.summary.find(([label]) => label === "Ödenecek")[1], /800,00/);
     const stok = await run("stok-ozet", `from=${shift(-30)}&to=${TODAY}`);
     assert.deepEqual(stok.rows[0].slice(4, 8), ["10", "0", "0", "10"], "dönem başı 10 (60 gün önce açılış), hareket yok");
@@ -349,7 +349,7 @@ describe("sektöre uygun taslak Excel", () => {
       const file = await admin.raw("GET", "/api/workspace/templates/hukuk-icra/xlsx");
       assert.equal(file.status, 200);
       assert.equal(file.buffer.subarray(0, 2).toString(), "PK");
-      assert.match(decodeURIComponent(file.headers.get("content-disposition")), /DestekOfis taslak - İcra ve alacak takibi\.xlsx/);
+      assert.match(decodeURIComponent(file.headers.get("content-disposition")), /DestekOfis Taslak - İcra ve Alacak Takibi\.xlsx/);
       assert.equal((await admin.get("/api/workspace/templates/yok-boyle/xlsx")).status, 404);
       assert.equal((await server.client().get("/api/workspace/templates")).status, 401);
     } finally {

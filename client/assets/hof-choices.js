@@ -98,7 +98,7 @@
     menu.innerHTML = `<div class="hof-choice-head">${esc(label)}${editable ? "" : " · yalnızca görüntüleme"}</div>
       <div class="hof-choice-list">${list.options.map(option => `<button type="button" role="option" data-value="${esc(option)}" aria-selected="${option === value}" ${editable ? "" : "disabled"}>${esc(option)}</button>`).join("")}
       ${known ? "" : `<button type="button" role="option" data-value="${esc(value)}" aria-selected="true" disabled class="is-missing">${esc(value)} <small>(listede yok)</small></button>`}</div>
-      ${editable ? `<div class="hof-choice-foot">${value ? '<button type="button" data-clear>Temizle</button>' : ""}${list.strict ? "" : '<button type="button" data-other>Başka bir değer yaz…</button>'}</div>` : ""}`;
+      ${editable ? `<div class="hof-choice-foot">${value ? '<button type="button" data-clear>Temizle</button>' : ""}${list.strict ? "" : '<button type="button" data-other>Başka Bir Değer Yaz…</button>'}</div>` : ""}`;
     document.body.appendChild(menu);
     const box = pill.getBoundingClientRect();
     const height = Math.min(menu.offsetHeight, 320);

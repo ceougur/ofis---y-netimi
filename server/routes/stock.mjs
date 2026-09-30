@@ -12,6 +12,7 @@ import { parseAmount, roundMoney } from "../lib/money.mjs";
 import { canUser } from "../lib/permissions.mjs";
 import { dayText, isoDay } from "../lib/plans.mjs";
 import { tablePdf, tl } from "../lib/report-pdf.mjs";
+import { unitLabel } from "../lib/units.mjs";
 import { buildXlsx } from "../lib/xlsx-write.mjs";
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
@@ -119,7 +120,7 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
       if (level.low) totals.low += 1;
       if (!service && level.qty <= 0) totals.out += 1;
       totals.value = roundMoney(totals.value + level.value);
-      out.push({ id: row.id, kind: row.kind || "product", code: row.code, name: row.name, unit: row.unit, category: row.category, minQty: row.minQty, unitPrice: row.unitPrice, note: row.note, ...level, lastMove: own.at(-1)?.date || "" });
+      out.push({ id: row.id, kind: row.kind || "product", code: row.code, name: row.name, unit: unitLabel(row.unit), category: row.category, minQty: row.minQty, unitPrice: row.unitPrice, note: row.note, ...level, lastMove: own.at(-1)?.date || "" });
     }
     const byName = (a, b) => collator.compare(a.name, b.name);
     const compare = {
@@ -159,7 +160,7 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
       kind,
       name,
       code: limited(body.code, 60, "Kod"),
-      unit: limited(body.unit, 20, "Birim") || previous?.unit || "adet",
+      unit: unitLabel(limited(body.unit, 20, "Birim") || previous?.unit),
       category: limited(body.category, 80, "Kategori"),
       minQty: kind === "service" ? 0 : optionalQty(body.minQty, "Kritik seviye"),
       unitPrice: priceOf(body.unitPrice),
@@ -213,10 +214,10 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
     const pdf = tablePdf({
       title: `${title} durumu`,
       subtitle: [query.state === "low" ? "Kritik seviyede" : query.state === "out" ? "Tükenen" : "Tüm ürünler", query.category, query.q ? `“${query.q}”` : "", clipped ? `ilk ${PDF_ROWS.toLocaleString("tr-TR")} satır (tamamı Excel'de)` : ""].filter(Boolean).join(" · "),
-      headers: ["Kod", "Ürün", "Kategori", "Mevcut", "Birim", "Kritik seviye", "Birim fiyat", "Değer", "Son hareket", "Durum"],
+      headers: ["Kod", "Ürün", "Kategori", "Mevcut", "Birim", "Kritik Seviye", "Birim Fiyat", "Değer", "Son Hareket", "Durum"],
       types: ["text", "text", "text", "text", "text", "text", "money", "money", "text", "text"],
       rows: data.items.map(item => [item.code, item.name, item.category, qtyText(item.qty), item.unit, item.minQty ? qtyText(item.minQty) : "", tl(item.unitPrice), tl(item.value), dayText(item.lastMove), item.kind === "service" ? "Hizmet" : item.qty <= 0 ? "Tükendi" : item.low ? "Kritik" : ""]),
-      summary: [["Ürün", String(data.totals.count)], ["Kritik", String(data.totals.low)], ["Tükenen", String(data.totals.out)], ["Stok değeri", tl(data.totals.value)]],
+      summary: [["Ürün", String(data.totals.count)], ["Kritik", String(data.totals.low)], ["Tükenen", String(data.totals.out)], ["Stok Değeri", tl(data.totals.value)]],
       officeName: office(),
       userName: user.display_name || user.username || "",
       brand: office(),
@@ -230,8 +231,8 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
     const title = limited(url.searchParams.get("title"), 60, "Başlık") || "Stok";
     const number = value => qtyFormat.format(value || 0);
     const money = value => moneyFormat.format(value || 0);
-    const columns = ["Kod", "Ürün", "Kategori", "Birim", "Mevcut", "Toplam giriş", "Toplam çıkış", "Kritik seviye", "Birim fiyat", "Değer", "Son hareket", "Not"];
-    const rows = data.items.map(item => ({ Kod: item.code, Ürün: item.name, Kategori: item.category, Birim: item.unit, Mevcut: number(item.qty), "Toplam giriş": number(item.qtyIn), "Toplam çıkış": number(item.qtyOut), "Kritik seviye": number(item.minQty), "Birim fiyat": money(item.unitPrice), Değer: money(item.value), "Son hareket": dayText(item.lastMove), Not: item.note }));
+    const columns = ["Kod", "Ürün", "Kategori", "Birim", "Mevcut", "Toplam Giriş", "Toplam Çıkış", "Kritik Seviye", "Birim Fiyat", "Değer", "Son Hareket", "Not"];
+    const rows = data.items.map(item => ({ Kod: item.code, Ürün: item.name, Kategori: item.category, Birim: item.unit, Mevcut: number(item.qty), "Toplam Giriş": number(item.qtyIn), "Toplam Çıkış": number(item.qtyOut), "Kritik Seviye": number(item.minQty), "Birim Fiyat": money(item.unitPrice), Değer: money(item.value), "Son Hareket": dayText(item.lastMove), Not: item.note }));
     const buffer = buildXlsx([{ name: title.slice(0, 31), columns, rows }], { title: `${title} durumu` });
     audit(user, "stock.list.exported", "xlsx", { count: rows.length });
     sendBuffer(res, buffer, { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", name: `${title}-durumu ${dayText(today())}.xlsx` });
@@ -381,12 +382,12 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
     const item = detail(params.id, user);
     const payText = move => (move.pay === "cash" ? (move.kind === "in" ? "Kasa'dan ödendi" : "Kasa'ya tahsil") : move.pay === "account" ? `Cari: ${move.accountName}` : "");
     const pdf = tablePdf({
-      title: `Stok hareketleri · ${item.name}`,
+      title: `Stok Hareketleri · ${item.name}`,
       subtitle: [item.code ? `Kod ${item.code}` : "", item.category, `Birim: ${item.unit}`].filter(Boolean).join(" · "),
-      headers: ["Tarih", "İşlem", "Açıklama", "Giriş", "Çıkış", "Kalan", "Birim fiyat", "Tutar", "Ödeme"],
+      headers: ["Tarih", "İşlem", "Açıklama", "Giriş", "Çıkış", "Kalan", "Birim Fiyat", "Tutar", "Ödeme"],
       types: ["text", "text", "text", "text", "text", "text", "money", "money", "text"],
       rows: item.moves.map(move => [dayText(move.date), move.kind === "in" ? "Giriş" : "Çıkış", move.note || "", move.kind === "in" ? qtyText(move.qty) : "", move.kind === "out" ? qtyText(move.qty) : "", qtyText(move.balance), move.unitPrice ? tl(move.unitPrice) : "", move.amount ? tl(move.amount) : "", payText(move)]),
-      summary: [["Mevcut", `${qtyText(item.qty)} ${item.unit}`], ["Toplam giriş", `${qtyText(item.qtyIn)} ${item.unit}`], ["Toplam çıkış", `${qtyText(item.qtyOut)} ${item.unit}`], ["Değer", tl(item.value)]],
+      summary: [["Mevcut", `${qtyText(item.qty)} ${item.unit}`], ["Toplam Giriş", `${qtyText(item.qtyIn)} ${item.unit}`], ["Toplam Çıkış", `${qtyText(item.qtyOut)} ${item.unit}`], ["Değer", tl(item.value)]],
       officeName: office(),
       userName: user.display_name || user.username || "",
       brand: office(),
@@ -423,7 +424,7 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
     const extraColumns = Object.entries(roles).filter(([, value]) => value === "extra").map(([index]) => Number(index)).filter(index => headers[index]);
     if (col.name < 0) throw new HttpError(400, "Ürün adı kolonunu seçin.");
     const mode = body.mode === "update" ? "update" : "skip";
-    const defaultUnit = limited(body.unit, 20, "Birim") || "adet";
+    const defaultUnit = unitLabel(limited(body.unit, 20, "Birim"));
     const cell = (row, index) => (index >= 0 ? sanitizeCell(row[index]) : "");
     const number = (row, index) => {
       const value = parseQty(cell(row, index));
@@ -447,7 +448,7 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
         const name = cell(row, col.name).slice(0, 160);
         if (!name) return skip(index, "Ürün adı boş");
         const kind = /^(hizmet|servis|işçilik|iscilik)/i.test(cell(row, col.kind)) ? "service" : "product";
-        const input = { kind, name, code: cell(row, col.code).slice(0, 60), unit: (cell(row, col.unit) || defaultUnit).slice(0, 20), category: cell(row, col.category).slice(0, 80), minQty: number(row, col.min), unitPrice: money(row, col.price), note: cell(row, col.note).slice(0, 1000) };
+        const input = { kind, name, code: cell(row, col.code).slice(0, 60), unit: unitLabel(cell(row, col.unit) || defaultUnit), category: cell(row, col.category).slice(0, 80), minQty: number(row, col.min), unitPrice: money(row, col.price), note: cell(row, col.note).slice(0, 1000) };
         const fields = extraColumns.map(column => ({ label: headers[column].slice(0, 80), value: cell(row, column).slice(0, 1000) })).filter(field => field.value);
         // İki ayrı indeksli arama (kodla, sonra ad + birimle): binlerce satırda da hızlı.
         // Kod tek başına kimlik sayılmaz (Excel'deki sıra numarası olabilir): aynı kod ancak ad da aynıysa aynı ürün.

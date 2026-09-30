@@ -476,12 +476,12 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     const account = detail(params.id, user);
     const t = account.totals;
     const pdf = tablePdf({
-      title: `Cari ekstre · ${account.name}`,
+      title: `Cari Ekstre · ${account.name}`,
       subtitle: [account.refNo ? `Cari No ${account.refNo}` : "", ACCOUNT_TYPES[account.type], [account.groupName, account.subgroupName].filter(Boolean).join(" › "), account.phone, account.address].filter(Boolean).join(" · "),
       headers: ["Tarih", "İşlem", "Açıklama", "Borç", "Alacak", "Bakiye"],
       types: ["text", "text", "text", "money", "money", "money"],
       rows: account.ledger.map(line => [dayText(line.date), `${line.label}${line.receiptNo ? ` · Makbuz ${line.receiptNo}` : ""}`, line.note || "", line.debit ? tl(line.debit) : "", line.credit ? tl(line.credit) : "", `${tl(Math.abs(line.balance))} ${sideText(line.balance)}`.trim()]),
-      summary: [["Borç toplamı", tl(t.debit)], ["Alacak toplamı", tl(t.credit)], ["Bakiye", `${tl(Math.abs(t.balance))} ${sideText(t.balance)}`.trim()], ...(t.planRemaining ? [["Taksitlerden kalan", tl(t.planRemaining)]] : []), ...(t.overdueCount ? [["Geciken", `${tl(t.overdue)} · ${t.overdueCount} taksit`]] : [])],
+      summary: [["Borç Toplamı", tl(t.debit)], ["Alacak Toplamı", tl(t.credit)], ["Bakiye", `${tl(Math.abs(t.balance))} ${sideText(t.balance)}`.trim()], ...(t.planRemaining ? [["Taksitlerden Kalan", tl(t.planRemaining)]] : []), ...(t.overdueCount ? [["Geciken", `${tl(t.overdue)} · ${t.overdueCount} taksit`]] : [])],
       officeName: office(),
       userName: user.display_name || user.username || "",
       brand: office(),
@@ -514,10 +514,10 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     const pdf = tablePdf({
       title: `${title} listesi`,
       subtitle: [STATUS_TEXT[query.status], query.type ? ACCOUNT_TYPES[query.type] : "", query.q ? `“${query.q}”` : "", clipped ? `ilk ${PDF_ROWS.toLocaleString("tr-TR")} satır (tamamı Excel'de)` : ""].filter(Boolean).join(" · "),
-      headers: ["No", "Ad / Unvan", "Tür", "Grup", "Telefon", "Kayıt", "Borç", "Alacak", "Bakiye", "Taksitten kalan", "Bilgi notu"],
+      headers: ["No", "Ad / Unvan", "Tür", "Grup", "Telefon", "Kayıt", "Borç", "Alacak", "Bakiye", "Taksitten Kalan", "Bilgi Notu"],
       types: ["text", "text", "text", "text", "text", "text", "money", "money", "money", "money", "text"],
       rows: data.accounts.map(item => [item.refNo, item.name, ACCOUNT_TYPES[item.type] || "", [item.groupName, item.subgroupName].filter(Boolean).join(" › "), item.phone, dayText(item.registeredOn), tl(item.debit), tl(item.credit), `${tl(Math.abs(item.balance))} ${sideText(item.balance)}`.trim(), item.planRemaining ? tl(item.planRemaining) : "", item.note || ""]),
-      summary: [["Cari", String(data.totals.count)], ["Borçlular", tl(data.totals.debtor)], ["Alacaklılar", tl(data.totals.creditor)], ["Geciken taksit", `${tl(data.totals.overdue)} · ${data.totals.overdueCount}`]],
+      summary: [["Cari", String(data.totals.count)], ["Borçlular", tl(data.totals.debtor)], ["Alacaklılar", tl(data.totals.creditor)], ["Geciken Taksit", `${tl(data.totals.overdue)} · ${data.totals.overdueCount}`]],
       officeName: office(),
       userName: user.display_name || user.username || "",
       brand: office(),
@@ -540,18 +540,18 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
         "Ad / Unvan": item.name,
         Tür: ACCOUNT_TYPES[item.type] || "",
         Grup: item.groupName,
-        "Alt grup": item.subgroupName,
+        "Alt Grup": item.subgroupName,
         Telefon: item.phone,
         "E-posta": item.email,
         Adres: item.address,
-        "Kayıt tarihi": dayText(item.registeredOn),
+        "Kayıt Tarihi": dayText(item.registeredOn),
         Durum: item.status === "passive" ? "Pasif" : "Aktif",
         Borç: money(item.debit),
         Alacak: money(item.credit),
         Bakiye: money(item.balance),
-        "Taksitten kalan": money(item.planRemaining),
+        "Taksitten Kalan": money(item.planRemaining),
         Geciken: money(item.overdue),
-        "Bilgi notu": item.note,
+        "Bilgi Notu": item.note,
       };
       for (const field of fieldsById.get(item.id) || []) if (!base.includes(field.label)) row[field.label] = field.value;
       return row;

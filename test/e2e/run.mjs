@@ -774,7 +774,7 @@ try {
     await admin.waitForSelector("#hof-pulse:not(.is-collapsed) .hof-pulse-tile", { timeout: 5000 });
   });
 
-  await step("detaydaki 'Notu kaydet' merkezi sunucuya yazılır", async () => {
+  await step("detaydaki 'Notu Kaydet' merkezi sunucuya yazılır", async () => {
     await admin.fill(".note-section textarea", "Merkezi not denemesi");
     await admin.click(".note-section .save-note");
     await admin.waitForTimeout(600);

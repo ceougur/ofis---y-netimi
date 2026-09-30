@@ -117,9 +117,9 @@ export function registerReportRoutes(router, { auth, store, dataset, profile, pl
   };
   const summaryOf = report => {
     const money = value => `${new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value || 0)} TL`;
-    if (report.kind === "cari-ekstre") return [["Cari", String(report.totals.caris)], ["Toplam borç", money(report.totals.debit)], ["Toplam alacak", money(report.totals.credit)], ["Bakiye", money(report.totals.balance)]];
-    if (report.kind === "vade-takip") return [["Kalem", String(report.totals.count)], ["Gecikmiş", `${report.totals.overdue} · ${money(report.totals.overdueAmount)}`], ["Yaklaşan", String(report.totals.upcoming)], ["Toplam tutar", money(report.totals.amount)]];
-    return [["Beklenen tahsilat", money(report.totals.expected)], ["Gerçekleşen tahsilat", money(report.totals.collected)], ["Kasa giriş", money(report.totals.cashIn)], ["Kasa çıkış", money(report.totals.cashOut)]];
+    if (report.kind === "cari-ekstre") return [["Cari", String(report.totals.caris)], ["Toplam Borç", money(report.totals.debit)], ["Toplam Alacak", money(report.totals.credit)], ["Bakiye", money(report.totals.balance)]];
+    if (report.kind === "vade-takip") return [["Kalem", String(report.totals.count)], ["Gecikmiş", `${report.totals.overdue} · ${money(report.totals.overdueAmount)}`], ["Yaklaşan", String(report.totals.upcoming)], ["Toplam Tutar", money(report.totals.amount)]];
+    return [["Beklenen Tahsilat", money(report.totals.expected)], ["Gerçekleşen Tahsilat", money(report.totals.collected)], ["Kasa Giriş", money(report.totals.cashIn)], ["Kasa Çıkış", money(report.totals.cashOut)]];
   };
 
   router.get("/api/workspace/reports/:kind", async ({ req, res, params, url }) => {

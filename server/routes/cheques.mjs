@@ -438,7 +438,7 @@ export function registerChequeRoutes(router, { store, auth, audit, events, accou
     const pdf = tablePdf({
       title: "Çek / Senet Portföyü",
       subtitle: [filterText(query) || "Tüm evrak", `${data.cheques.length} kayıt`, data.cheques.length > PDF_ROWS ? "ilk 20.000 satır (tamamı Excel'de)" : ""].filter(Boolean).join(" · "),
-      headers: ["Vade", "Yön", "Tür", "No", "Banka", "Kimden / kime", "Durum", "Tutar"],
+      headers: ["Vade", "Yön", "Tür", "No", "Banka", "Kimden / Kime", "Durum", "Tutar"],
       types: ["", "", "", "", "", "", "", "money"],
       rows: rows.map(row => [dayText(row.dueDate), row.directionLabel, row.instrumentLabel, row.serialNo, row.bank, row.status === "endorsed" ? `${row.party} → ${row.endorseAccountName}` : row.party, row.statusLabel, tl(row.amount)]),
       summary: [
@@ -457,8 +457,8 @@ export function registerChequeRoutes(router, { store, auth, audit, events, accou
     const query = listQuery(url.searchParams);
     const data = list(user, query);
     const money = value => new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value || 0);
-    const columns = ["Vade", "Yön", "Tür", "Seri no", "Banka / şube", "Keşideci / lehtar", "Cari", "Taksit kartı", "Ciro edilen", "Alış / veriliş", "Durum", "Durum tarihi", "Tutar", "Açıklama"];
-    const rows = data.cheques.map(row => ({ Vade: dayText(row.dueDate), Yön: row.directionLabel, Tür: row.instrumentLabel, "Seri no": row.serialNo, "Banka / şube": row.bank, "Keşideci / lehtar": row.drawer, Cari: row.accountName, "Taksit kartı": row.planName, "Ciro edilen": row.endorseAccountName, "Alış / veriliş": dayText(row.issueDate), Durum: row.statusLabel, "Durum tarihi": dayText(row.statusDate), Tutar: money(row.amount), Açıklama: row.note }));
+    const columns = ["Vade", "Yön", "Tür", "Seri No", "Banka / Şube", "Keşideci / Lehtar", "Cari", "Taksit Kartı", "Ciro Edilen", "Alış / Veriliş", "Durum", "Durum Tarihi", "Tutar", "Açıklama"];
+    const rows = data.cheques.map(row => ({ Vade: dayText(row.dueDate), Yön: row.directionLabel, Tür: row.instrumentLabel, "Seri No": row.serialNo, "Banka / Şube": row.bank, "Keşideci / Lehtar": row.drawer, Cari: row.accountName, "Taksit Kartı": row.planName, "Ciro Edilen": row.endorseAccountName, "Alış / Veriliş": dayText(row.issueDate), Durum: row.statusLabel, "Durum Tarihi": dayText(row.statusDate), Tutar: money(row.amount), Açıklama: row.note }));
     const buffer = buildXlsx([{ name: "Çek-Senet", columns, rows }], { title: "Çek / Senet Portföyü" });
     audit(user, "cheque.exported", "xlsx", { count: rows.length });
     sendBuffer(res, buffer, { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", name: "Cek-Senet-Portfoyu.xlsx", inline: false });

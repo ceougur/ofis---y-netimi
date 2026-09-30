@@ -275,7 +275,7 @@
 
   function showFatal(message) {
     hideSplash();
-    const node = HOF.el("div", { class: "hof-auth" }, `<section class="hof-auth-card">${HOF.brandHtml}<h1>Sunucuya bağlanılamadı</h1><p class="hof-auth-help">${HOF.esc(message)}</p><button type="button" class="hof-button hof-button-wide">Tekrar dene</button></section>`);
+    const node = HOF.el("div", { class: "hof-auth" }, `<section class="hof-auth-card">${HOF.brandHtml}<h1>Sunucuya bağlanılamadı</h1><p class="hof-auth-help">${HOF.esc(message)}</p><button type="button" class="hof-button hof-button-wide">Tekrar Dene</button></section>`);
     node.querySelector("button").onclick = () => location.reload();
     document.body.appendChild(node);
   }

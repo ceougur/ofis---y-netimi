@@ -88,9 +88,9 @@
     const target = state?.sessions.find(item => item.key === key);
     if (!target || key === FIRST_KEY) return false;
     const ok = await HOF.confirm({
-      title: "Oturumu sil",
+      title: "Oturumu Sil",
       message: `“${nameOf(target)}” oturumu ve içindeki ${number(target.rowCount)} kayıt, düzeltmeler ve uygulamada eklenen kayıtlar kalıcı olarak silinir. Kullanıcılar, notlar, görevler, tahsilatlar ve Kasa silinmez. Silmeden önce veritabanının tam yedeği alınır; bu oturumda çalışan kişiler ilk oturuma döner.`,
-      confirmLabel: "Oturumu sil",
+      confirmLabel: "Oturumu Sil",
       danger: true,
     });
     if (!ok) return false;
@@ -117,7 +117,7 @@
     if (!picker || !canManage()) return;
     closeMenu();
     const modal = HOF.modal({
-      title: "Yeni oturum aç",
+      title: "Yeni Oturum Aç",
       eyebrow: "OTURUM",
       body: `<p class="hof-modal-text">Farklı konudaki bir tabloyu (ör. taksit listesi, ikinci şube) <b>ayrı bir oturumda</b> açın. Şu anki oturum verisiyle, düzeltmeleri ve kayıtlarıyla olduğu gibi kalır; oturumlar arasında sol menüden geçersiniz.</p>
         <div class="hof-data-import">${picker.dropHtml(true)}${picker.linkHtml}</div>
@@ -157,7 +157,7 @@
     return `<p class="hof-session-menu-title">Çalışma oturumları</p>
       <ul class="hof-session-list" role="menu">${rows}</ul>
       ${canManage()
-        ? `<div class="hof-session-foot"><button type="button" class="hof-session-new" data-new>+ Yeni oturum aç</button><button type="button" class="hof-session-manage" data-manage>Oturumları yönet</button></div>`
+        ? `<div class="hof-session-foot"><button type="button" class="hof-session-new" data-new>+ Yeni Oturum Aç</button><button type="button" class="hof-session-manage" data-manage>Oturumları Yönet</button></div>`
         : ""}
       <p class="hof-session-note">Seçtiğiniz oturum yalnızca sizin ekranınızı değiştirir.</p>`;
   }
@@ -314,15 +314,15 @@
         <p class="hof-session-shared"><b>Tüm oturumlarda ortak:</b> kullanıcılar ve personel, yetkiler, görevler, mesajlar, notlar, tahsilatlar ve <b>Kasa</b>, ofis adı, yedekler ve lisans. Oturum değiştirmek ya da silmek bunları etkilemez.</p>
         <ul class="hof-session-admin">${list
           .map(item => `<li data-session="${esc(item.key)}">
-            <div class="hof-session-admin-info"><b>${esc(item.name)}</b>${item.current ? '<span class="hof-chip">Şu an açık</span>' : ""}<small>${esc(meta(item))}${item.createdAt ? ` · açıldı ${esc(HOF.formatDateTime(item.createdAt))}` : ""}</small></div>
+            <div class="hof-session-admin-info"><b>${esc(item.name)}</b>${item.current ? '<span class="hof-chip">Şu An Açık</span>' : ""}<small>${esc(meta(item))}${item.createdAt ? ` · açıldı ${esc(HOF.formatDateTime(item.createdAt))}` : ""}</small></div>
             <div class="hof-session-admin-actions">
-              ${item.current ? "" : '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-s-open>Bu oturuma geç</button>'}
-              <button type="button" class="hof-button hof-button-small hof-button-ghost" data-s-rename>Adını değiştir</button>
+              ${item.current ? "" : '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-s-open>Bu Oturuma Geç</button>'}
+              <button type="button" class="hof-button hof-button-small hof-button-ghost" data-s-rename>Adını Değiştir</button>
               ${item.key === FIRST_KEY ? "" : '<button type="button" class="hof-button hof-button-small hof-button-danger" data-s-delete>Sil</button>'}
             </div>
           </li>`)
           .join("")}</ul>
-        <button type="button" class="hof-button hof-button-small" data-s-new>+ Yeni oturum aç</button>
+        <button type="button" class="hof-button hof-button-small" data-s-new>+ Yeni Oturum Aç</button>
       </section>`;
     const wire = modal => {
       const root = modal.dialog.querySelector("#hof-session-section");
@@ -339,11 +339,11 @@
           select(key);
         } else if (button.hasAttribute("data-s-rename") && item) {
           HOF.formModal({
-            title: "Oturumun adı",
+            title: "Oturumun Adı",
             eyebrow: "OTURUM",
             intro: "Oturumun adı sol menüdeki seçicide ve bu listede görünür; tüm bilgisayarlarda aynıdır.",
-            fields: [{ name: "name", label: "Oturumun adı", value: item.name, maxlength: 80, required: true, autofocus: true }],
-            submitLabel: "Adı kaydet",
+            fields: [{ name: "name", label: "Oturumun Adı", value: item.name, maxlength: 80, required: true, autofocus: true }],
+            submitLabel: "Adı Kaydet",
             onSubmit: async values => {
               const name = await renameStrict(key, values.name);
               const title = root.querySelector(`[data-session="${CSS.escape(key)}"] .hof-session-admin-info b`);

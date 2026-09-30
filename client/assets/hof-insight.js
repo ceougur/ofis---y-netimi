@@ -259,7 +259,7 @@
     let pencil = element.querySelector(":scope > .hof-label-pencil");
     if (pencil && pencil === element.lastChild) return;
     if (!pencil) {
-      pencil = HOF.el("button", { type: "button", class: "hof-label-pencil", "data-slot": slot.key, title: "Başlığı değiştir", "aria-label": `${profile?.slots?.[slot.key]?.name || "Başlığı"} değiştir` }, icon("pencil", 13));
+      pencil = HOF.el("button", { type: "button", class: "hof-label-pencil", "data-slot": slot.key, title: "Başlığı Değiştir", "aria-label": `${profile?.slots?.[slot.key]?.name || "Başlığı"} değiştir` }, icon("pencil", 13));
       pencil.addEventListener("click", event => {
         event.preventDefault();
         event.stopPropagation();
@@ -286,7 +286,7 @@
         ${meta.max > 90 ? `<textarea rows="3" maxlength="${meta.max}">${esc(manual || fallback)}</textarea>` : `<input type="text" maxlength="${meta.max}" value="${esc(manual || fallback)}">`}</label>
        <small class="hof-label-editor-help">Tüm bilgisayarlarda kalıcı olarak değişir. Varsayılan: “${esc(fallback)}”</small>
        <div class="hof-label-editor-actions">
-         ${manual ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-reset>Varsayılana dön</button>' : "<span></span>"}
+         ${manual ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-reset>Varsayılana Dön</button>' : "<span></span>"}
          <span><button type="button" class="hof-button hof-button-small hof-button-ghost" data-cancel>İptal</button>
          <button type="button" class="hof-button hof-button-small" data-save>Kaydet</button></span>
        </div>`,
@@ -478,7 +478,7 @@
     }
     if (card.id === "deadline") {
       // En yakın anlamlı pencere gösterilir: 7 gün, yoksa 30 gün; ikisi de boşsa yaklaşan yoktur.
-      const span = card.next7 ? { label: "7 gün içinde", value: card.next7, help: `Bugün ${number(card.today)} · 30 gün içinde ${number(card.next30)}` } : card.next30 ? { label: "30 gün içinde", value: card.next30, help: "7 gün içinde yok" } : { label: "yaklaşan", value: 0, help: "30 gün içinde tarih yok" };
+      const span = card.next7 ? { label: "7 Gün İçinde", value: card.next7, help: `Bugün ${number(card.today)} · 30 gün içinde ${number(card.next30)}` } : card.next30 ? { label: "30 Gün İçinde", value: card.next30, help: "7 gün içinde yok" } : { label: "yaklaşan", value: 0, help: "30 gün içinde tarih yok" };
       // Planlı tarihte (randevu, duruşma) geçmiş olanlar "tarihi geçmiş" değil, olmuş bitmiştir (v2.0.2).
       const passedLabel = card.meaning === "schedule" ? "geçmiş" : "tarihi geçen";
       return { id: "deadline", icon: "calendar", label: `${label} · ${span.label}`, value: number(span.value), help: `${span.help} · ${passedLabel} ${number(card.passed)}${card.unclear ? ` · ${number(card.unclear)} belirsiz` : ""}`, tone: card.next7 ? "warn" : "" };
@@ -496,10 +496,15 @@
   function kpiCards(scope, key) {
     const V = HOF.vocab;
     const cards = [{ id: "total", icon: "records", label: `Toplam ${V.record}`, value: number(scope.total), help: multiScope() ? `${scopeName(key)} sekmesi · ${number(scope.columnCount)} kolon` : `${number(scope.columnCount)} kolon` }];
-    for (const card of scope.cards.slice(0, 2)) cards.push(cardView(card));
+    // Kart adları başlık yazımıyla (v2.0.11): "Takip çıktısı toplamı" → "Takip Çıktısı Toplamı", "Toplam Dosya".
+    for (const card of scope.cards.slice(0, 2)) {
+      const view = cardView(card);
+      cards.push({ ...view, label: HOF.titleCase(view.label) });
+    }
+    cards[0].label = HOF.titleCase(cards[0].label);
     const quality = scope.quality;
     const warnings = quality.issues.filter(issue => issue.severity === "warn").length;
-    cards.push({ id: "quality", icon: "pulse", label: "Veri sağlığı", value: `${LEVELS[quality.level] || "—"} · %${quality.score}`, help: [quality.issues.length ? `${warnings ? `${number(warnings)} uyarı · ` : ""}${number(quality.issues.length)} bulgu` : "", insight?.reasoning?.count ? `${number(insight.reasoning.count)} akıllı denetim bulgusu` : ""].filter(Boolean).join(" · ") || "Sorun bulunmadı", tone: quality.level === "iyi" ? "good" : quality.level === "zayif" ? "bad" : "warn" });
+    cards.push({ id: "quality", icon: "pulse", label: "Veri Sağlığı", value: `${LEVELS[quality.level] || "—"} · %${quality.score}`, help: [quality.issues.length ? `${warnings ? `${number(warnings)} uyarı · ` : ""}${number(quality.issues.length)} bulgu` : "", insight?.reasoning?.count ? `${number(insight.reasoning.count)} akıllı denetim bulgusu` : ""].filter(Boolean).join(" · ") || "Sorun bulunmadı", tone: quality.level === "iyi" ? "good" : quality.level === "zayif" ? "bad" : "warn" });
     return cards;
   }
 
@@ -638,7 +643,7 @@
       if (!option) return;
       const result = await fetchList({ list: "value", tab: key, card: id, value: option.dataset.value });
       if (!result) return;
-      detailNode.innerHTML = `<button type="button" class="hof-link" data-back>← Tüm seçenekler</button><p class="hof-modal-text"><b>${esc(option.dataset.value)}</b>: ${number(result.total)} kayıt. Kayda gitmek için tıklayın.</p>${recordList(result.items, () => "")}${moreNote(result)}`;
+      detailNode.innerHTML = `<button type="button" class="hof-link" data-back>← Tüm Seçenekler</button><p class="hof-modal-text"><b>${esc(option.dataset.value)}</b>: ${number(result.total)} kayıt. Kayda gitmek için tıklayın.</p>${recordList(result.items, () => "")}${moreNote(result)}`;
       overviewNode.hidden = true;
       detailNode.hidden = false;
       detailNode.querySelector("[data-back]")?.focus();
@@ -647,7 +652,7 @@
   }
 
   // Sekmenin (ya da tüm sekmelerin) kart raporu: doğrulanan kartlar ve gösterilmeyen aday kartların nedenleri.
-  const CARD_NAMES = { money: "Tutar toplamı", deadline: "Son tarih", event: "Bu ay", status: "Durum dağılımı", category: "Dağılım", responsible: "Sorumlu kişiler" };
+  const CARD_NAMES = { money: "Tutar Toplamı", deadline: "Son Tarih", event: "Bu Ay", status: "Durum Dağılımı", category: "Dağılım", responsible: "Sorumlu Kişiler" };
   function openScopeReport(keys) {
     const sections = keys
       .map(key => {
@@ -686,7 +691,7 @@
       )
       .join("");
     const modal = HOF.modal({
-      title: `Veri sağlığı: ${levelText} (%${quality.score})`,
+      title: `Veri Sağlığı: ${levelText} (%${quality.score})`,
       eyebrow: key ? eyebrow("VERİ SAĞLIĞI", key) : multiScope() ? "VERİ SAĞLIĞI · TÜM SEKMELER" : "VERİ SAĞLIĞI",
       size: "wide",
       body: `<p class="hof-modal-text">Kontrol edilen <b>${number(quality.checked)}</b> hücrenin <b>${percentWord(quality.score)}</b> sorunsuz. Kontroller: kimlik ve kişi kolonlarının doluluğu, kimliğin aynı sekmede tekrar etmemesi, T.C./IBAN/VKN sağlaması ve telefon, tarih, tutar biçimleri. Not olarak yazılmış hücreler (ör. “ertelendi”) hata sayılmaz. Kaynak veriniz değiştirilmez; düzeltmeyi tablodan yapabilirsiniz.</p>
@@ -713,7 +718,7 @@
     const canEdit = HOF.can("records.edit");
     const list = data.fixes || [];
     box.innerHTML = `<h3>${icon("sparkle", 16)} Toplu düzeltmeler</h3>
-      <p class="hof-modal-text">Aynı türden hücreler farklı yazılmışsa (telefon, tarih, tutar, durum) program tek yazıma çevirmeyi önerir. Değerin anlamı değişmez; Excel'deki asıl hücreye dokunulmaz, düzeltme programda saklanır ve <b>Geri al</b> ile döner.</p>
+      <p class="hof-modal-text">Aynı türden hücreler farklı yazılmışsa (telefon, tarih, tutar, durum) program tek yazıma çevirmeyi önerir. Değerin anlamı değişmez; Excel'deki asıl hücreye dokunulmaz, düzeltme programda saklanır ve <b>Geri Al</b> ile döner.</p>
       ${list.length ? `<ul class="hof-fix-list">${list.map(fix => `<li data-fix="${esc(fix.id)}"><div><b>${esc(fix.title)}</b><p>${esc(fix.detail)}</p><small>${fix.samples.map(item => `“${esc(item.from)}” → “${esc(item.to)}”`).join(" · ")}</small></div>${canEdit ? `<button type="button" class="hof-button hof-button-small" data-apply-fix="${esc(fix.id)}">Uygula (${number(fix.count)})</button>` : ""}</li>`).join("")}</ul>` : '<p class="hof-empty">Toplu düzeltme gerektiren yazım farkı bulunmadı.</p>'}`;
     box.querySelectorAll("[data-apply-fix]").forEach(button => {
       button.addEventListener("click", async () => {
@@ -725,7 +730,7 @@
           if (!box.querySelector("li")) box.querySelector(".hof-fix-list")?.replaceWith(Object.assign(document.createElement("p"), { className: "hof-empty", textContent: "Tüm öneriler uygulandı." }));
           HOF.toast(`${number(result.count)} hücre düzeltildi (“${nice(result.column)}”).`, {
             type: "success",
-            action: { label: "Geri al", run: () => HOF.api("/api/workspace/insight/fixes/undo", { method: "POST", body: { batchId: result.batchId } }).then(() => { HOF.toast("Toplu düzeltme geri alındı."); HOF.refreshData(); HOF.refreshInsight?.(); }).catch(HOF.toastError) },
+            action: { label: "Geri Al", run: () => HOF.api("/api/workspace/insight/fixes/undo", { method: "POST", body: { batchId: result.batchId } }).then(() => { HOF.toast("Toplu düzeltme geri alındı."); HOF.refreshData(); HOF.refreshInsight?.(); }).catch(HOF.toastError) },
           });
           HOF.refreshData();
           HOF.refreshInsight?.();
@@ -792,14 +797,14 @@
         size: "wide",
         intro: editing ? "Değişiklik bu sektörü kullanan tüm görünümlere uygulanır." : "Listede olmayan işinizi kendiniz tanımlayın. Kaydedince arayüz sizin kelimelerinizle konuşur; verileriniz değişmez.",
         fields: [
-          { name: "name", label: "Sektörünüzün adı", value: initial.name || "", required: true, autofocus: true, maxlength: 60, placeholder: "ör. Tekne kiralama" },
+          { name: "name", label: "Sektörünüzün Adı", value: initial.name || "", required: true, autofocus: true, maxlength: 60, placeholder: "ör. Tekne kiralama" },
           { name: "record", label: "Bir kayda ne diyorsunuz?", value: initial.record || "", required: true, maxlength: 30, placeholder: "ör. tekne, öğrenci, hasta, sözleşme" },
           { name: "records", label: "Çoğulu", value: initial.records || "", maxlength: 30, placeholder: "kendiliğinden yazılır", help: "Tablo ve kartlarda kullanılır." },
-          { name: "expert", label: "Uzman / sorumlu rolü", value: initial.expert || "", maxlength: 40, placeholder: "ör. Kaptan, Öğretmen, Danışman", help: "Boş bırakılırsa “Sorumlu”." },
-          { name: "subtitle", label: "Kenar çubuğu alt başlığı", value: initial.subtitle || "", maxlength: 60, placeholder: "ör. Tekne kiralama yönetimi" },
-          { name: "tahsilat", label: "Tahsilat ve kasa takibi", type: "checkbox", value: initial.modules ? initial.modules.tahsilat !== false : true },
-          { name: "haciz", label: "Haciz takibi", type: "checkbox", value: Boolean(initial.modules?.haciz) },
-          { name: "headers", label: "Bu sektörü tanıtan kolon başlıkları (isteğe bağlı)", type: "textarea", rows: 2, maxlength: 1500, value: headers.join(", "), placeholder: "ör. Tekne adı, Liman, Kaptan", help: "Virgülle ayırın. Sonraki Excel/Sheets yüklemelerinde program bu sektörü kendisi önerir." },
+          { name: "expert", label: "Uzman / Sorumlu Rolü", value: initial.expert || "", maxlength: 40, placeholder: "ör. Kaptan, Öğretmen, Danışman", help: "Boş bırakılırsa “Sorumlu”." },
+          { name: "subtitle", label: "Kenar Çubuğu Alt Başlığı", value: initial.subtitle || "", maxlength: 60, placeholder: "ör. Tekne kiralama yönetimi" },
+          { name: "tahsilat", label: "Tahsilat ve Kasa Takibi", type: "checkbox", value: initial.modules ? initial.modules.tahsilat !== false : true },
+          { name: "haciz", label: "Haciz Takibi", type: "checkbox", value: Boolean(initial.modules?.haciz) },
+          { name: "headers", label: "Bu Sektörü Tanıtan Kolon Başlıkları (isteğe bağlı)", type: "textarea", rows: 2, maxlength: 1500, value: headers.join(", "), placeholder: "ör. Tekne adı, Liman, Kaptan", help: "Virgülle ayırın. Sonraki Excel/Sheets yüklemelerinde program bu sektörü kendisi önerir." },
         ],
         extraHtml: '<div class="hof-sector-preview" aria-live="polite"><small>Önizleme</small><div data-preview></div></div>',
         submitLabel: editing ? "Kaydet" : "Kaydet ve uygula",
@@ -859,7 +864,7 @@
             <label class="hof-picker-search">${icon("search", 16)}<input type="search" role="combobox" aria-expanded="true" aria-controls="${listId}" aria-autocomplete="list" placeholder="Sektör ara… (ör. klinik, emlak, sigorta, galeri, okul)" autocomplete="off" autofocus></label>
             <div class="hof-picker-list" id="${listId}" role="listbox" aria-label="Sektörler" tabindex="-1"></div>
             <p class="hof-picker-count" aria-live="polite"></p>
-            ${canManage() ? '<div class="hof-picker-create"><span><b>Aradığınız sektör listede yok mu?</b> Kendi sektörünüzü birkaç saniyede oluşturun.</span><button type="button" class="hof-button hof-button-small" data-create>+ Kendi sektörünü oluştur</button></div>' : ""}
+            ${canManage() ? '<div class="hof-picker-create"><span><b>Aradığınız sektör listede yok mu?</b> Kendi sektörünüzü birkaç saniyede oluşturun.</span><button type="button" class="hof-button hof-button-small" data-create>+ Kendi Sektörünü Oluştur</button></div>' : ""}
           </div>`,
         onClose: () => resolve(chosen),
       });
@@ -869,7 +874,7 @@
       const sectors = allSectors();
       const haystack = new Map(sectors.map(sector => [sector.id, fold([sector.name, sector.groupName, sector.record, sector.expert, ...(sector.keys || [])].join(" ")).split(" ")]));
       const option = (sector, extraClass = "") => {
-        const chips = [sector.id === suggested ? '<span class="hof-chip hof-chip-accent">Önerilen</span>' : "", sector.id === current ? '<span class="hof-chip">Şu an</span>' : "", sector.custom ? '<span class="hof-chip hof-chip-own">Sizin</span>' : ""].join("");
+        const chips = [sector.id === suggested ? '<span class="hof-chip hof-chip-accent">Önerilen</span>' : "", sector.id === current ? '<span class="hof-chip">Şu An</span>' : "", sector.custom ? '<span class="hof-chip hof-chip-own">Sizin</span>' : ""].join("");
         return `<div role="option" id="${listId}-${sector.id}" class="hof-picker-option ${extraClass}" data-id="${esc(sector.id)}" aria-selected="false"><span class="hof-picker-name"><b>${esc(sector.name)}</b>${chips}</span><small>${esc(sector.record)} · ${esc(sector.expert)}</small></div>`;
       };
       const render = () => {
@@ -889,7 +894,7 @@
         }
         list.innerHTML =
           html ||
-          `<div class="hof-empty hof-picker-none"><p>“${esc(input.value)}” listede yok.</p>${canManage() ? `<button type="button" class="hof-button" data-create>+ “${esc(input.value.trim())}” adıyla kendi sektörünüzü oluşturun</button><small>ya da daha genel bir kelime deneyin · <button type="button" class="hof-link" data-id="genel">Genel ile devam edin</button></small>` : `<small>Daha genel bir kelime deneyin ya da <button type="button" class="hof-link" data-id="genel">Genel</button> ile devam edin.</small>`}</div>`;
+          `<div class="hof-empty hof-picker-none"><p>“${esc(input.value)}” listede yok.</p>${canManage() ? `<button type="button" class="hof-button" data-create>+ “${esc(input.value.trim())}” adıyla kendi sektörünüzü oluşturun</button><small>ya da daha genel bir kelime deneyin · <button type="button" class="hof-link" data-id="genel">Genel ile Devam Edin</button></small>` : `<small>Daha genel bir kelime deneyin ya da <button type="button" class="hof-link" data-id="genel">Genel</button> ile devam edin.</small>`}</div>`;
         count.textContent = tokens.length ? `${number(shown)} sektör bulundu` : `${number(sectors.length)} sektör, ${number(catalog.groups.length)} grup`;
         setActive(list.querySelector(".hof-picker-option"));
       };
@@ -1112,19 +1117,19 @@
     }
     const skipped = skippedCards(analysis);
     html += `<p class="hof-quality-line">${icon("sparkle", 16)} Özet kartları: <b>${number(verifiedCards(analysis))}</b> kart doğrulandı${skipped ? ` · ${number(skipped)} aday kart kesinleşmediği için gösterilmiyor` : ""} <button type="button" class="hof-link" data-cards>${skipped ? "Nedenleri gör" : "Raporu gör"}</button></p>`;
-    html += `<p class="hof-quality-line">${icon("pulse", 16)} Veri sağlığı: <b>${esc(levelText)}</b> · kontrol edilen ${number(quality.checked)} hücrenin ${percentWord(quality.score)} sorunsuz${quality.issues.length ? ` · ${number(quality.issues.length)} bulgu` : ""} <button type="button" class="hof-link" data-quality>Raporu gör</button></p>`;
+    html += `<p class="hof-quality-line">${icon("pulse", 16)} Veri Sağlığı: <b>${esc(levelText)}</b> · kontrol edilen ${number(quality.checked)} hücrenin ${percentWord(quality.score)} sorunsuz${quality.issues.length ? ` · ${number(quality.issues.length)} bulgu` : ""} <button type="button" class="hof-link" data-quality>Raporu Gör</button></p>`;
     const reasoning = analysis.reasoning;
     if (reasoning) html += `<p class="hof-quality-line">${icon("sparkle", 16)} Akıllı denetim: <b>${number(reasoning.relations.length)}</b> hesap kuralı öğrenildi · ${reasoning.count ? `<b>${number(reasoning.count)}</b> olası tutarsızlık` : "tutarsızlık bulunmadı"} <button type="button" class="hof-link" data-quality>Ayrıntılar</button></p>`;
     const buttons = [];
     if (unsure) {
-      buttons.push('<button type="button" class="hof-button hof-button-ghost" data-general>Genel ile devam et</button>', '<button type="button" class="hof-button hof-button-ghost" data-create-sector>Kendi sektörümü oluştur</button>', '<button type="button" class="hof-button" data-pick>Sektörümü seç</button>');
+      buttons.push('<button type="button" class="hof-button hof-button-ghost" data-general>Genel ile Devam Et</button>', '<button type="button" class="hof-button hof-button-ghost" data-create-sector>Kendi Sektörümü Oluştur</button>', '<button type="button" class="hof-button" data-pick>Sektörümü Seç</button>');
     } else if (!same) {
-      buttons.push('<button type="button" class="hof-button hof-button-ghost" data-pick>Başka sektör seç</button>');
-      if (current !== "genel") buttons.push('<button type="button" class="hof-button hof-button-ghost" data-keep>Mevcut görünümü koru</button>');
-      else buttons.push('<button type="button" class="hof-button hof-button-ghost" data-general>Genel kullan</button>');
+      buttons.push('<button type="button" class="hof-button hof-button-ghost" data-pick>Başka Sektör Seç</button>');
+      if (current !== "genel") buttons.push('<button type="button" class="hof-button hof-button-ghost" data-keep>Mevcut Görünümü Koru</button>');
+      else buttons.push('<button type="button" class="hof-button hof-button-ghost" data-general>Genel Kullan</button>');
       buttons.push(`<button type="button" class="hof-button" data-apply="${esc(suggested.id)}">Evet, uygula</button>`);
     } else {
-      buttons.push('<button type="button" class="hof-button hof-button-ghost" data-pick>Başka sektör seç</button>', '<button type="button" class="hof-button" data-done>Tamam</button>');
+      buttons.push('<button type="button" class="hof-button hof-button-ghost" data-pick>Başka Sektör Seç</button>', '<button type="button" class="hof-button" data-done>Tamam</button>');
     }
     box.innerHTML = `${html}<div class="hof-actions">${buttons.join("")}</div>`;
     box.hidden = false;
@@ -1173,7 +1178,7 @@
       { id: "hof-intro", class: "hof-intro", role: "status" },
       `<span class="hof-intro-icon" aria-hidden="true">${icon("sparkle", 20)}</span>
        <div><b>Yeni: DestekOfis verinizi tanıyor</b><p>Sektör önerisi, veri sağlığı raporu ve verinize göre özet kartları. Görünümünüz siz onaylamadan değişmez.</p>
-       <div class="hof-intro-actions"><button type="button" class="hof-button hof-button-small" data-run>Analizi gör</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-later>Kapat</button></div></div>`,
+       <div class="hof-intro-actions"><button type="button" class="hof-button hof-button-small" data-run>Analizi Gör</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-later>Kapat</button></div></div>`,
     );
     card.addEventListener("click", async event => {
       if (event.target.closest("[data-run]")) {
@@ -1202,14 +1207,14 @@
       const labels = Object.entries(profile.labels || {});
       const source = { confirmed: "analizle onaylandı", manual: "elle seçildi", legacy: "önceki sürümden", default: "varsayılan" }[profile.sector.source] || "";
       return `<section class="hof-data-section hof-profile-section">
-          <h3>Sektör ve görünüm</h3>
+          <h3>Sektör ve Görünüm</h3>
           <div class="hof-profile-row">
             <div><b>${esc(profile.sector.name)}</b><small>${esc(profile.sector.groupName)}${source ? ` · ${esc(source)}` : ""}${profile.sector.byName ? ` · ${esc(profile.sector.byName)}` : ""}</small></div>
-            <div class="hof-profile-actions"><button type="button" class="hof-button hof-button-small hof-button-ghost" data-profile-analyze>Verimi analiz et</button><button type="button" class="hof-button hof-button-small" data-profile-pick>Sektörü değiştir</button></div>
+            <div class="hof-profile-actions"><button type="button" class="hof-button hof-button-small hof-button-ghost" data-profile-analyze>Verimi Analiz Et</button><button type="button" class="hof-button hof-button-small" data-profile-pick>Sektörü Değiştir</button></div>
           </div>
           <p class="hof-modal-text hof-muted">Kayıtlara <b>${esc(HOF.vocab.record)}</b>, uzman rolüne <b>${esc(HOF.vocab.expert)}</b> deniyor. Başlıkları sayfadaki kalem (✎) simgesiyle değiştirebilirsiniz.</p>
-          <div class="hof-custom-sectors"><div class="hof-custom-sectors-head"><b>Kendi sektörleriniz</b><button type="button" class="hof-button hof-button-small hof-button-ghost" data-create-sector>+ Kendi sektörünü oluştur</button></div><ul data-custom-list><li class="hof-muted">Yükleniyor…</li></ul></div>
-          ${labels.length ? `<ul class="hof-label-list">${labels.map(([key, value]) => `<li><span>${esc(profile.slots?.[key]?.name || key)}</span><b>${esc(value)}</b><button type="button" class="hof-link" data-label-reset="${esc(key)}">Varsayılana dön</button></li>`).join("")}</ul><button type="button" class="hof-button hof-button-small hof-button-ghost" data-labels-reset>Tüm başlıkları varsayılana döndür</button>` : ""}
+          <div class="hof-custom-sectors"><div class="hof-custom-sectors-head"><b>Kendi Sektörleriniz</b><button type="button" class="hof-button hof-button-small hof-button-ghost" data-create-sector>+ Kendi Sektörünü Oluştur</button></div><ul data-custom-list><li class="hof-muted">Yükleniyor…</li></ul></div>
+          ${labels.length ? `<ul class="hof-label-list">${labels.map(([key, value]) => `<li><span>${esc(profile.slots?.[key]?.name || key)}</span><b>${esc(value)}</b><button type="button" class="hof-link" data-label-reset="${esc(key)}">Varsayılana Dön</button></li>`).join("")}</ul><button type="button" class="hof-button hof-button-small hof-button-ghost" data-labels-reset>Tüm Başlıkları Varsayılana Döndür</button>` : ""}
         </section>`;
     },
     wire(modal) {
@@ -1258,7 +1263,7 @@
           drawCustom();
         } else {
           const inUse = item.id === profile?.sector?.id;
-          const yes = await HOF.confirm({ title: `“${item.name}” silinsin mi?`, message: `${inUse ? "Bu sektör şu an kullanılıyor; silinince görünüm Genel'e döner. " : ""}Verileriniz değişmez.`, confirmLabel: "Sektörü sil", danger: true });
+          const yes = await HOF.confirm({ title: `“${item.name}” silinsin mi?`, message: `${inUse ? "Bu sektör şu an kullanılıyor; silinince görünüm Genel'e döner. " : ""}Verileriniz değişmez.`, confirmLabel: "Sektörü Sil", danger: true });
           if (!yes) return;
           try {
             const result = await HOF.api(`/api/workspace/sectors/custom/${encodeURIComponent(item.id)}`, { method: "DELETE" });
@@ -1283,7 +1288,7 @@
         }),
       );
       dialog.querySelector("[data-labels-reset]")?.addEventListener("click", async event => {
-        const ok = await HOF.confirm({ title: "Başlıkları sıfırla", message: "Değiştirilen tüm başlıklar varsayılana döner. Devam edilsin mi?", confirmLabel: "Varsayılana döndür" });
+        const ok = await HOF.confirm({ title: "Başlıkları Sıfırla", message: "Değiştirilen tüm başlıklar varsayılana döner. Devam edilsin mi?", confirmLabel: "Varsayılana Döndür" });
         if (!ok) return;
         try {
           applyProfile(await HOF.api("/api/workspace/labels", { method: "DELETE" }));

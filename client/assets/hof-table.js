@@ -19,8 +19,8 @@
 
   const ensureFloats = () => {
     if (pencil) return;
-    pencil = HOF.el("button", { type: "button", class: "hof-float", title: "Değeri düzenle", "aria-label": "Değeri düzenle", text: "✎" });
-    remover = HOF.el("button", { type: "button", class: "hof-float hof-float-delete", title: "Kaydı sil", "aria-label": "Kaydı sil", text: "×" });
+    pencil = HOF.el("button", { type: "button", class: "hof-float", title: "Değeri Düzenle", "aria-label": "Değeri düzenle", text: "✎" });
+    remover = HOF.el("button", { type: "button", class: "hof-float hof-float-delete", title: "Kaydı Sil", "aria-label": "Kaydı sil", text: "×" });
     document.body.append(pencil, remover);
     pencil.addEventListener("click", event => {
       event.stopPropagation();
@@ -218,7 +218,7 @@
         : "Bu değişiklik kaynak Excel/Sheets dosyasını bozmaz; ofisin ortak çalışma alanında saklanır ve kimin yaptığı kaydedilir.",
       fields: [field],
       extraHtml: current ? `<p class="hof-edit-meta">Son düzenleyen: ${esc(current.actorName || "—")} · ${esc(HOF.formatDateTime(current.updatedAt))}</p>` : "",
-      submitLabel: "Değişikliği kaydet",
+      submitLabel: "Değişikliği Kaydet",
       onSubmit: async data => {
         const body = { sourceName: HOF.sourceName(), caseKey: info.key, field: info.field, value: data.value, expectedVersion: current ? current.version : 0, previous: current ? current.value : info.value };
         try {
@@ -231,7 +231,7 @@
           const overwrite = await HOF.confirm({
             title: "Bu alan siz bakarken değişti",
             message: `Başka bir kullanıcı${who} bu alanı "${currentValue}" yaptı. Sizin yazdığınız: "${data.value}". Üzerine yazmak istiyor musunuz?`,
-            confirmLabel: "Üzerine yaz",
+            confirmLabel: "Üzerine Yaz",
             cancelLabel: "Vazgeç, güncel değeri göster",
           });
           if (!overwrite) {
@@ -268,7 +268,7 @@
       size: "wide",
       intro: fields.some(field => field.readonly) ? "Yalnızca değiştirdiğiniz alanlar kaydedilir. Kaynak dosya değişmez. <b>ƒ formül</b> işaretli alanlar Excel/Sheets'teki formülle kendiliğinden hesaplanır." : "Yalnızca değiştirdiğiniz alanlar kaydedilir. Kaynak dosya değişmez.",
       fields: fields.map(({ original, column, ...field }) => ({ ...field, maxlength: 20000 })),
-      submitLabel: "Değişiklikleri kaydet",
+      submitLabel: "Değişiklikleri Kaydet",
       onSubmit: async data => {
         const changed = fields.filter(field => !field.readonly && (data[field.name] ?? "") !== field.original);
         if (!changed.length) return;
@@ -285,7 +285,7 @@
     const key = HOF.rowKey(row);
     if (!key) return HOF.toast("Bu satırın kimliği bulunamadı.", { type: "error" });
     const name = row.querySelector("strong")?.textContent?.trim() || key;
-    const ok = await HOF.confirm({ title: "Kaydı sil", message: `"${name}" kaydı tüm bilgisayarlarda tablodan kaldırılacak. Kaynak dosya değişmez ve işlem geri alınabilir.`, confirmLabel: "Sil", danger: true });
+    const ok = await HOF.confirm({ title: "Kaydı Sil", message: `"${name}" kaydı tüm bilgisayarlarda tablodan kaldırılacak. Kaynak dosya değişmez ve işlem geri alınabilir.`, confirmLabel: "Sil", danger: true });
     if (!ok) return;
     const sourceName = HOF.sourceName();
     try {
@@ -294,7 +294,7 @@
       HOF.toast("Kayıt silindi.", {
         type: "success",
         action: {
-          label: "Geri al",
+          label: "Geri Al",
           onClick: async () => {
             try {
               await HOF.api("/api/workspace/deleted/restore", { method: "POST", body: { sourceName, caseKey: key } });
@@ -332,7 +332,7 @@
       });
     }
     const modal = HOF.formModal({
-      title: "Yeni kayıt oluştur",
+      title: "Yeni Kayıt Oluştur",
       eyebrow: `YENİ KAYIT${tab ? ` · ${tab.toLocaleUpperCase("tr-TR")}` : ""}`,
       size: "wide",
       intro: tab ? `Kayıt <b>${esc(tab)}</b> sekmesine eklenir; form bu sekmenin <b>${columns.length}</b> kolonuna göre oluşturuldu. Yalnızca doldurduğunuz alanlar kaydedilir; kayıt tüm bilgisayarlarda görünür.` : `Form, tablonuzun <b>${columns.length}</b> kolonuna göre oluşturuldu. Yalnızca doldurduğunuz alanlar kaydedilir; kayıt tüm bilgisayarlarda görünür.`,
@@ -349,7 +349,7 @@
           return formulas[column] || !HOF.choiceField ? field : HOF.choiceField(field, HOF.choicesFor(column, tab));
         });
       })(),
-      submitLabel: "Kaydı oluştur",
+      submitLabel: "Kaydı Oluştur",
       // v2.0.7: kişi bir kez girilir — kayıtla birlikte cari kartı da açılır (ad ve telefon kayıttan). Aynı ad ve
       // telefonlu bağsız cari varsa kayda bağlanır; kayda bağlı cari zaten varsa o kalır.
       extraHtml: HOF.accounts && HOF.can("accounts.manage") && HOF.plans?.personOf ? '<label class="hof-check hof-record-account"><input type="checkbox" name="openAccount" checked><span>Bu kişi için <b>cari kartı</b> da aç (borç, tahsilat, taksit ve çek/senet takibi)</span></label>' : "",

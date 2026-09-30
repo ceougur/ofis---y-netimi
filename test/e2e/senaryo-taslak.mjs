@@ -114,7 +114,7 @@ try {
     await page.waitForSelector(`${modal} .hof-picker-option[data-id="okul-servisi"]`);
     await shot("taslak-sektor-secimi");
     const [download] = await Promise.all([page.waitForEvent("download", { timeout: 15000 }), page.click(`${modal} .hof-picker-option[data-id="okul-servisi"]`)]);
-    ok(download.suggestedFilename() === "DestekOfis taslak - Okul servisi.xlsx", `dosya adı: ${download.suggestedFilename()}`);
+    ok(download.suggestedFilename() === "DestekOfis Taslak - Okul Servisi.xlsx", `dosya adı: ${download.suggestedFilename()}`);
     const file = path.join(root, download.suggestedFilename());
     await download.saveAs(file);
     downloaded = readFileSync(file);
@@ -198,7 +198,7 @@ try {
     ok(/Okul servisi/.test(suggested) && /Önerilen/.test(suggested), "seçicide mevcut sektör (Okul servisi) “Önerilen” olarak başta");
     await shot("veri-ayarlari-taslak-secici");
     const [download] = await Promise.all([page.waitForEvent("download", { timeout: 15000 }), page.click(`${modal} .hof-picker-option.is-suggested`)]);
-    ok(download.suggestedFilename() === "DestekOfis taslak - Okul servisi.xlsx", "önerilen sektörün taslağı indi");
+    ok(download.suggestedFilename() === "DestekOfis Taslak - Okul Servisi.xlsx", "önerilen sektörün taslağı indi");
     ok((await api("/api/workspace/insight")).data.analysis.rowCount === students.length, "taslak indirmek mevcut veriye dokunmaz");
     ok(errors.length === 0, `tarayıcı hatası yok${errors.length ? `: ${errors.join(" | ")}` : ""}`);
   });

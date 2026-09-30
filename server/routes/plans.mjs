@@ -310,7 +310,7 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
       title: `${title} listesi`,
       subtitle,
       // v2.0.6: kayıt tarihi ve bilgi notu da basılır (yatay sayfada notun yeri var; uzun not satır içinde sarılır).
-      headers: ["No", "Ad Soyad", "Grup", "Telefon", "Kayıt", "Toplam", "Ödenen", "Kalan", "Sıradaki vade", "Durum", "Bilgi notu"],
+      headers: ["No", "Ad Soyad", "Grup", "Telefon", "Kayıt", "Toplam", "Ödenen", "Kalan", "Sıradaki Vade", "Durum", "Bilgi Notu"],
       types: ["text", "text", "text", "text", "text", "money", "money", "money", "text", "text", "text"],
       rows: data.plans.map(plan => [
         plan.refNo,
@@ -325,7 +325,7 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
         `${STATE_TEXT[plan.state] || ""}${plan.totals.overdueCount ? ` · ${plan.totals.overdueCount} taksit geciken` : ""}`,
         plan.note || "",
       ]),
-      summary: [["Kart", String(data.totals.count)], ["Kalan alacak", tl(data.totals.remaining)], ["Geciken", `${tl(data.totals.overdue)} · ${data.totals.overdueCount} taksit`], ["Bu ay beklenen", tl(data.totals.month)], ["Tahsil edilen", tl(data.totals.paid)]],
+      summary: [["Kart", String(data.totals.count)], ["Kalan Alacak", tl(data.totals.remaining)], ["Geciken", `${tl(data.totals.overdue)} · ${data.totals.overdueCount} taksit`], ["Bu Ay Beklenen", tl(data.totals.month)], ["Tahsil Edilen", tl(data.totals.paid)]],
       officeName: office(),
       userName: user.display_name || user.username || "",
       // Liste okula ya da veliye verilebilir: altbilgide program adı değil firma adı (v2.0.6).

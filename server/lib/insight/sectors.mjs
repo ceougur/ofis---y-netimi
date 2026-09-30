@@ -7,6 +7,7 @@
 // uygulanmaz: yönetici onaylar, başka bir sektör seçer ya da Genel ile devam eder.
 import { foldText } from "./validators.mjs";
 import { cell, phraseAt } from "./columns.mjs";
+import { titleCase } from "../text-case.mjs";
 
 // Başlık sinyali ağırlıkları: "!" güçlü (3), öneksiz orta (2), "~" zayıf (1).
 const WEIGHTS = { "!": 3, "": 2, "~": 1 };
@@ -212,9 +213,13 @@ const parseSignal = raw => {
 
 export const SECTORS = [];
 export const SECTOR_GROUPS = [];
-for (const [groupId, groupName, list] of GROUPS) {
+// Görünen adlar (sektör, grup, uzman rolü, kenar çubuğu alt başlığı) başlık yazımıyla (v2.0.11); kayıt adı ("dosya",
+// "hasta") cümle içinde kullanıldığı için küçük kalır.
+for (const [groupId, rawGroupName, list] of GROUPS) {
+  const groupName = titleCase(rawGroupName);
   SECTOR_GROUPS.push({ id: groupId, name: groupName });
-  for (const [id, name, record, records, expert, subtitle, options = {}] of list) {
+  for (const [id, rawName, record, records, rawExpert, rawSubtitle, options = {}] of list) {
+    const [name, expert, subtitle] = [rawName, rawExpert, rawSubtitle].map(titleCase);
     SECTORS.push({
       id,
       name,
@@ -266,7 +271,7 @@ export function customSector(entry) {
     id: entry.id,
     name: entry.name,
     group: "ozel",
-    groupName: "Kendi sektörleriniz",
+    groupName: "Kendi Sektörleriniz",
     general: false,
     custom: true,
     vocab: { record: entry.record, records: entry.records, Record: capitalize(entry.record), Records: capitalize(entry.records), expert: entry.expert, subtitle: entry.subtitle },
