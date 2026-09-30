@@ -5,7 +5,7 @@
 import { cashPdf, cashPdfName, rangeLabel } from "../lib/cash-report.mjs";
 import { HttpError, limited, ok, readJson, sendBuffer, text } from "../lib/http.mjs";
 import { parseAmount, roundMoney } from "../lib/money.mjs";
-import { can } from "../lib/permissions.mjs";
+import { canUser } from "../lib/permissions.mjs";
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 // Kasa'nın kendi kaynakları (kayıt tahsilatları ve elle girilen hareketler); diğerleri modüllerin cashSource'u.
@@ -90,11 +90,11 @@ export function registerCashRoutes(router, context) {
       const own = entry.actorId === user.id;
       // Taksit, cari ve stok hareketleri kendi kartlarından düzeltilir (Kasa'da yalnız kart açılır).
       const editable =
-        entry.source === "plan" ? can(user.role, "plans.manage") || (own && can(user.role, "plans.collect"))
-        : entry.source === "account" ? can(user.role, "accounts.manage") || (own && can(user.role, "accounts.collect"))
-        : entry.source === "stock" ? can(user.role, "stock.manage")
+        entry.source === "plan" ? canUser(user, "plans.manage") || (own && canUser(user, "plans.collect"))
+        : entry.source === "account" ? canUser(user, "accounts.manage") || (own && canUser(user, "accounts.collect"))
+        : entry.source === "stock" ? canUser(user, "stock.manage")
         : entry.source === "cheque" ? false
-        : can(user.role, "cash.manage") || (entry.source === "payment" && own && can(user.role, "payments.create"));
+        : canUser(user, "cash.manage") || (entry.source === "payment" && own && canUser(user, "payments.create"));
       list.push({ ...entry, balance, editable });
     }
     return {
@@ -102,7 +102,7 @@ export function registerCashRoutes(router, context) {
       opening: from ? opening : 0,
       period: { ...period, net: roundMoney(period.in - period.out) },
       totals: { ...totals, balance: roundMoney(totals.in - totals.out) },
-      canManage: can(user.role, "cash.manage"),
+      canManage: canUser(user, "cash.manage"),
     };
   }
 

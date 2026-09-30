@@ -249,7 +249,7 @@
     const visible = people.filter(entry => !query || HOF.normalize(entry.user.name).includes(query));
     if (visible.length) rows.push('<p class="hof-chat-section">KİŞİLER</p>');
     for (const { user, conversation } of visible) {
-      const role = user.inactive ? "Pasif hesap" : HOF.roleLabels[user.role] || user.role;
+      const role = user.inactive ? "Pasif hesap" : user.roleLabel || HOF.roleLabels[user.role] || user.role;
       rows.push(item({
         attrs: conversation ? `data-conversation="${esc(conversation.id)}"` : `data-user="${esc(user.id)}"`,
         avatarHtml: avatar(user.id, user.name, user.inactive ? undefined : isOnline(user.id)),

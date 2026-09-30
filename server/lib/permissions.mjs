@@ -1,4 +1,12 @@
-// Rol bazlı yetki matrisi. Sunucu her işlemde buna göre karar verir; arayüz yalnızca görünürlüğü ayarlar.
+// Yetki modeli. Sunucu her işlemde buna göre karar verir; arayüz yalnızca görünürlüğü ayarlar.
+//
+// v2.0.10 (yetki havuzu):
+// - Dört yerleşik rol (aşağıdaki matris) silinmez ve değişmez.
+// - Yönetici kendi rollerini tanımlar (roles tablosu; lib/access.mjs): ad + havuzdan seçilen yetkiler.
+// - Kişiye özel ayar: rolün verdiğine yetki EKLENİR ya da rolün verdiği yetki KALDIRILIR (users.grants_json =
+//   {"add": [...], "remove": [...]}). v2.0.7'nin dizi biçimi ([...]) "eklenen" olarak okunur.
+// - Yönetimin kendisi (kullanıcılar, sistem, lisans) ve ANLIK DURUM kartı yalnız yönetici rolündedir: özel role ya da
+//   kişiye verilemez, yöneticiden alınamaz. Yönetici her zaman tüm yetkilere sahiptir.
 export const ROLES = Object.freeze(["admin", "avukat", "personel", "muhasebe"]);
 export const ROLE_LABELS = Object.freeze({ admin: "Yönetici", avukat: "Avukat", personel: "Personel", muhasebe: "Muhasebe" });
 
@@ -7,6 +15,8 @@ export const PERMISSIONS = Object.freeze({
   "records.create": ALL,
   "records.edit": ALL,
   "records.delete": ["admin", "avukat"],
+  // Ana tabloyu Excel/CSV olarak indirme (v2.0.10): önceden herkese açıktı, öyle kalır; yönetici kişiden kaldırabilir.
+  "records.export": ALL,
   "notes.write": ALL,
   "phones.create": ALL,
   "payments.create": ALL,
@@ -37,9 +47,11 @@ export const PERMISSIONS = Object.freeze({
   // Çek / Senet (v2.0.7): portföy, tahsil, ciro, ödeme; para ve cari bakiyesine dokunduğu için kasa yetkisiyle aynı hesaplar.
   "cheques.view": ["admin", "avukat", "muhasebe"],
   "cheques.manage": ["admin", "avukat", "muhasebe"],
-  // ANLIK DURUM kokpiti ve raporları (v2.0.7): kasa, alacak/borç, mizan ve nakit akışı. Yalnız yönetici; başka kişiye
-  // yönetici Yönetim → Kullanıcılar'dan tek tek verir (kişiye özel ek yetki, GRANTABLE).
+  // Finans raporları (v2.0.7'de "ANLIK DURUM ve raporlar"): Raporlar penceresi — mizan, cari ekstre, nakit akış, tüm
+  // raporlar. v2.0.10'dan beri ana ekrandaki ANLIK DURUM kartını AÇMAZ (overview.card); kişiye verilebilir.
   "overview.view": ["admin"],
+  // ANLIK DURUM kartı (v2.0.10): yalnız yönetici ekranında (müşteri kararı; tüm sektörlerde).
+  "overview.card": ["admin"],
   // Görev atama, herkesin görevleri ve performans raporu (KPI) yalnızca avukat ve yönetici içindir;
   // personel ve muhasebe kendilerine atanan görevleri görür ve tamamlar.
   "tasks.create": ["admin", "avukat"],
@@ -57,18 +69,160 @@ export const PERMISSIONS = Object.freeze({
   "license.manage": ["admin"],
 });
 
-export const can = (role, permission) => Boolean(PERMISSIONS[permission]?.includes(role));
-export const permissionsFor = role => Object.keys(PERMISSIONS).filter(permission => can(role, permission));
+// Yalnız yönetici rolünde olan, özel role ya da kişiye verilemeyen yetkiler.
+export const ADMIN_ONLY = Object.freeze(["overview.card", "users.manage", "system.manage", "license.manage"]);
 
-// Kişiye özel verilebilen ek yetkiler (v2.0.7). Rolün yetkisine eklenir; rolün yetkisini daraltmaz.
-export const GRANTABLE = Object.freeze({ "overview.view": "ANLIK DURUM ve raporlar" });
-export function grantsOf(user) {
-  try {
-    const value = JSON.parse(user?.grants_json ?? user?.grantsJson ?? "[]");
-    return Array.isArray(value) ? value.filter(permission => Object.hasOwn(GRANTABLE, permission)) : [];
-  } catch {
-    return [];
+// Yetki havuzu (v2.0.10): Yönetim → Kullanıcılar ve Roller ekranı bu sırayla ve bu açıklamalarla gösterir.
+export const PERMISSION_GROUPS = Object.freeze([
+  {
+    id: "records",
+    label: "Kayıtlar ve tablo",
+    items: [
+      ["records.create", "Yeni kayıt ekleme", "Tabloya yeni kişi/satır ekler."],
+      ["records.edit", "Kayıt düzeltme", "Hücreleri değiştirir, satırı düzenler."],
+      ["records.delete", "Kayıt silme", "Satırı siler (Silinenler'den geri alınabilir)."],
+      ["records.export", "Tabloyu dışa aktarma", "Ana tabloyu Excel ya da CSV olarak indirir."],
+      ["notes.write", "Not yazma", "Kayda not ekler."],
+      ["phones.create", "Telefon ekleme", "Kayda ek telefon numarası ekler."],
+      ["liens.create", "Süreli uyarı / haciz ekleme", "Kayda bitiş tarihli uyarı ekler."],
+    ],
+  },
+  {
+    id: "documents",
+    label: "Belgeler",
+    items: [
+      ["documents.upload", "Belge ekleme", "Kayda dosya ekler, görür; kendi eklediğini siler."],
+      ["documents.manage", "Başkasının belgesini silme", "Başka kullanıcının eklediği belgeyi siler."],
+    ],
+  },
+  {
+    id: "cash",
+    label: "Tahsilat ve Kasa",
+    items: [
+      ["payments.create", "Kayda tahsilat girme", "Kişi kartından tahsilat girer; tutar Kasa'ya düşer."],
+      ["cash.view", "Kasa'yı görme", "Kasa hareketleri, bakiye ve dökümü."],
+      ["cash.manage", "Kasa yönetimi", "Kasa'ya giriş/çıkış ekler; başkasının hareketini düzeltir, siler."],
+    ],
+  },
+  {
+    id: "plans",
+    label: "Taksitler",
+    items: [
+      ["plans.view", "Taksit kartlarını görme", "Taksit kartları ve ödeme durumları."],
+      ["plans.collect", "Taksit tahsilatı girme", "Karttan taksit tahsilatı girer."],
+      ["plans.manage", "Taksit yönetimi", "Kart açar, düzenler, siler; Excel'den ve tablodan aktarır."],
+    ],
+  },
+  {
+    id: "accounts",
+    label: "Cari",
+    items: [
+      ["accounts.view", "Carileri görme", "Cari listesi, bakiyeler ve ekstre."],
+      ["accounts.collect", "Cariden tahsilat girme", "Cari kartından tahsilat girer."],
+      ["accounts.manage", "Cari yönetimi", "Cari açar, düzenler; borç, alacak ve ödeme girer."],
+    ],
+  },
+  {
+    id: "stock",
+    label: "Stok",
+    items: [
+      ["stock.view", "Stoku görme", "Ürünler, miktarlar ve kritik seviye."],
+      ["stock.move", "Stok hareketi girme", "Miktar girişi/çıkışı yapar (parasız)."],
+      ["stock.manage", "Stok yönetimi", "Ürün kartı açar; Kasa'ya ya da cariye yazan hareket girer."],
+    ],
+  },
+  {
+    id: "cheques",
+    label: "Çek / Senet",
+    items: [
+      ["cheques.view", "Çek ve senetleri görme", "Portföy, vadeler ve evrak geçmişi."],
+      ["cheques.manage", "Çek / senet işlemleri", "Evrak girer; tahsil, ciro, ödeme ve karşılıksız işler."],
+    ],
+  },
+  {
+    id: "reports",
+    label: "Raporlar",
+    items: [
+      ["overview.view", "Finans raporları", "Raporlar penceresi: mizan, ekstre, nakit akış, Kasa ve tüm raporlar."],
+      ["reports.view", "Tablo ve personel raporları", "Vade takip, tablo raporları ve personel performansı."],
+      ["audit.view", "İşlem geçmişi", "Kim, neyi, ne zaman değiştirdi."],
+    ],
+  },
+  {
+    id: "tasks",
+    label: "Görevler ve mesajlar",
+    items: [
+      ["tasks.create", "Görev atama", "Başka kişilere görev atar."],
+      ["tasks.viewAll", "Herkesin görevlerini görme", "Tüm ofisin açık ve biten görevleri."],
+      ["tasks.complete", "Görev tamamlama", "Kendisine atanan görevi tamamlar."],
+      ["messages.create", "Mesaj yazma", "Ofis içi sohbet ve kayıt mesajları."],
+    ],
+  },
+  {
+    id: "data",
+    label: "Veri ve ayarlar",
+    items: [
+      ["sources.manage", "Veri yükleme ve oturumlar", "Excel / Google Sheets yükler, veri oturumlarını yönetir."],
+      ["profile.manage", "Sektör ve başlıklar", "Sektörü seçer, başlıkları kalemle değiştirir."],
+    ],
+  },
+  {
+    id: "admin",
+    label: "Yönetim (yalnız yönetici)",
+    items: [
+      ["overview.card", "ANLIK DURUM kartı", "Ana ekrandaki canlı özet kartı."],
+      ["users.manage", "Kullanıcı ve rol yönetimi", "Kullanıcı ekler, siler, yetki verir."],
+      ["system.manage", "Sistem, yedek ve güncelleme", "Yedek alır, güncelleme kurar, ofis ayarları."],
+      ["license.manage", "Lisans", "Lisansı etkinleştirir ve doğrular."],
+    ],
+  },
+]);
+export const PERMISSION_ORDER = Object.freeze(PERMISSION_GROUPS.flatMap(group => group.items.map(([key]) => key)));
+const ORDER_INDEX = new Map(PERMISSION_ORDER.map((key, index) => [key, index]));
+const ordered = list => [...new Set(list)].filter(key => Object.hasOwn(PERMISSIONS, key)).sort((a, b) => (ORDER_INDEX.get(a) ?? 999) - (ORDER_INDEX.get(b) ?? 999));
+
+export const can = (role, permission) => Boolean(PERMISSIONS[permission]?.includes(role));
+export const permissionsFor = role => ordered(Object.keys(PERMISSIONS).filter(permission => can(role, permission)));
+// Özel role ya da kişiye verilebilen yetki: havuzda olan ve yönetime özgü olmayan.
+export const isGrantable = permission => Object.hasOwn(PERMISSIONS, permission) && !ADMIN_ONLY.includes(permission);
+// v2.0.7 uyumu: eski arayüz yalnız bunu açıp kapatıyordu.
+export const GRANTABLE = Object.freeze({ "overview.view": "Finans raporları" });
+
+// Kişiye özel ayar. Dizi (v2.0.7) → { add: dizi, remove: [] }. Bilinmeyen ve yönetime özgü yetkiler atılır.
+export function parseGrants(value) {
+  let raw = value;
+  if (typeof raw === "string") {
+    try {
+      raw = JSON.parse(raw || "{}");
+    } catch {
+      raw = {};
+    }
   }
+  if (Array.isArray(raw)) raw = { add: raw, remove: [] };
+  const list = items => (Array.isArray(items) ? ordered(items.filter(item => typeof item === "string" && isGrantable(item))) : []);
+  const add = list(raw?.add);
+  const remove = list(raw?.remove).filter(item => !add.includes(item));
+  return { add, remove };
 }
-export const canUser = (user, permission) => Boolean(user) && (can(user.role, permission) || grantsOf(user).includes(permission));
-export const permissionsForUser = user => [...new Set([...permissionsFor(user.role), ...grantsOf(user)])];
+export const grantsOf = user => parseGrants(user?.grants_json ?? user?.grantsJson ?? "[]");
+
+// Kişinin etkin yetkileri. customRole: { permissions: [...] } (özel rol; yoksa yerleşik rol matrisi).
+export function resolvePermissions(user, customRole = null) {
+  if (!user) return [];
+  // Yönetici her zaman tüm yetkilere sahiptir; kişiye özel ayar yöneticiye uygulanmaz.
+  if (!customRole && user.role === "admin") return ordered(Object.keys(PERMISSIONS));
+  const base = customRole ? (customRole.permissions || []).filter(isGrantable) : permissionsFor(user.role).filter(isGrantable);
+  const { add, remove } = grantsOf(user);
+  const set = new Set([...base, ...add]);
+  for (const permission of remove) set.delete(permission);
+  return ordered([...set]);
+}
+
+// İstek sahibi kullanıcı auth katmanında çözülmüş yetkileriyle gelir (user.perms: Set). Çözülmemiş bir kullanıcı
+// satırında (ör. testlerde elle kurulan nesne) yerleşik rol matrisi ve kişiye özel ayar kullanılır.
+export const canUser = (user, permission) => {
+  if (!user) return false;
+  if (user.perms instanceof Set) return user.perms.has(permission);
+  return resolvePermissions(user).includes(permission);
+};
+export const permissionsForUser = user => (user?.perms instanceof Set ? ordered([...user.perms]) : resolvePermissions(user));

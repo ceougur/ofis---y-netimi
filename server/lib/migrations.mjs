@@ -778,6 +778,44 @@ export const MIGRATIONS = [
       `);
     },
   },
+  {
+    version: 15,
+    name: "v2.0.10 özel roller, kişiye özel yetki, kullanıcı silme",
+    up(store) {
+      // Yalnız ekleyici. users.role sütununun CHECK kısıtı (4 yerleşik rol) tabloyu yeniden kurmamak için korunur:
+      // özel rol atanan kullanıcıda role = 'personel' kalır, role_key rolün kimliğini taşır (lib/access.mjs).
+      store.exec(`
+        CREATE TABLE IF NOT EXISTS roles (
+          id TEXT PRIMARY KEY,
+          name TEXT NOT NULL,
+          description TEXT NOT NULL DEFAULT '',
+          permissions_json TEXT NOT NULL DEFAULT '[]',
+          created_by TEXT NOT NULL DEFAULT '',
+          created_at TEXT NOT NULL,
+          updated_at TEXT NOT NULL
+        );
+      `);
+      addColumn(store, "users", "role_key", "TEXT");
+      // Kullanıcı silme (geçmiş korunur): satır kalır, giriş kapanır; kullanıcı adı ve görünen ad yeniden kullanılabilsin
+      // diye silinen hesapta değiştirilir, asılları geri alma için saklanır.
+      addColumn(store, "users", "deleted_at", "TEXT");
+      addColumn(store, "users", "deleted_by", "TEXT");
+      addColumn(store, "users", "deleted_username", "TEXT");
+      addColumn(store, "users", "deleted_name", "TEXT");
+      // Kişiye özel yetki: v2.0.7 dizisi ["overview.view"] → { add: [...], remove: [] }. "overview.view" artık yalnız
+      // Raporlar penceresini açar; ANLIK DURUM kartı yalnız yöneticide (overview.card).
+      for (const user of store.all("SELECT id, grants_json AS grantsJson FROM users")) {
+        let value = [];
+        try {
+          value = JSON.parse(user.grantsJson || "[]");
+        } catch {
+          value = [];
+        }
+        if (!Array.isArray(value)) continue;
+        store.run("UPDATE users SET grants_json = ? WHERE id = ?", JSON.stringify({ add: value.filter(item => typeof item === "string"), remove: [] }), user.id);
+      }
+    },
+  },
 ];
 
 export const LATEST_VERSION = MIGRATIONS.at(-1).version;

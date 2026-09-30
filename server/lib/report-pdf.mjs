@@ -64,6 +64,9 @@ export function tablePdf({ title, subtitle = "", headers, rows, types = [], summ
         pool = pool.filter(index => !under.includes(index));
       }
     } else cols = widths.map(width => (width * W) / sum(widths));
+  } else if (sum(widths) < W) {
+    // Dar tablo sayfanın bir kısmında kalıp sağı boş görünmesin (v2.0.10): kolonlar orantılı genişleyip satırı doldurur.
+    cols = widths.map(width => (width * W) / sum(widths));
   }
   const lefts = cols.map((_, index) => M + cols.slice(0, index).reduce((sum, width) => sum + width, 0));
   const align = index => (types[index] === "money" || types[index] === "number" ? "right" : "left");

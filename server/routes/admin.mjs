@@ -6,7 +6,7 @@ import { BACKUP_NAME, createBackup, listBackups } from "../lib/backup.mjs";
 import { HttpError, SECURITY_HEADERS, limited, ok, parseJson, readJson, text } from "../lib/http.mjs";
 import { nameConflict } from "../lib/names.mjs";
 import { hashPassword, passwordProblem } from "../lib/passwords.mjs";
-import { GRANTABLE, ROLES, grantsOf } from "../lib/permissions.mjs";
+import { ADMIN_ONLY, GRANTABLE, PERMISSION_GROUPS, ROLE_LABELS, grantsOf, isGrantable, parseGrants } from "../lib/permissions.mjs";
 import { compareVersions } from "../lib/semver.mjs";
 
 // Personel bilgisayarlarının bağlanabileceği yerel ağ adresleri (sanal/yerel bağdaştırıcılar hariç).
@@ -24,65 +24,118 @@ function lanAddresses(port) {
 }
 
 export function registerAdminRoutes(router, context) {
-  const { store, auth, audit, config, startedAt, supervisorLink, events } = context;
+  const { store, auth, access, audit, config, startedAt, supervisorLink, events } = context;
   const notifyInfoChange = () => context.notifyInfoChange?.();
   // Oturumları silinen kullanıcının açık canlı bağlantıları da hemen kapanır.
   const dropLive = userId => events?.closeWhere(client => client.userId === userId);
   const now = () => new Date().toISOString();
-  const activeAdmins = () => store.get("SELECT COUNT(*) AS count FROM users WHERE role = 'admin' AND active = 1").count;
+  const activeAdmins = () => store.get("SELECT COUNT(*) AS count FROM users WHERE role = 'admin' AND active = 1 AND deleted_at IS NULL").count;
+
+  // ---------- Kullanıcılar (v2.0.10: özel rol, kişiye özel yetki, ad/kullanıcı adı düzeltme, silme) ----------
+  const USERNAME_RULE = /^[\p{L}\p{N}._-]{3,60}$/u;
+  const usernameOf = value => {
+    const username = limited(value, 60, "Kullanıcı adı");
+    if (!username) throw new HttpError(400, "Kullanıcı adı gerekli.");
+    if (!USERNAME_RULE.test(username)) throw new HttpError(400, "Kullanıcı adı 3-60 karakter olmalı; harf, rakam, nokta, tire ve alt çizgi kullanılabilir.");
+    return username;
+  };
+  const usernameTaken = (username, exceptId = "") => Boolean(store.get("SELECT id FROM users WHERE username = ? COLLATE NOCASE AND id <> ?", username, exceptId));
+  // Kişiye özel yetki: dizi (v2.0.7: eklenenler) ya da { add, remove }. Yalnız havuzdaki ve yönetime özgü olmayanlar.
+  function grantsInput(value) {
+    const raw = Array.isArray(value) ? { add: value, remove: [] } : value;
+    if (!raw || typeof raw !== "object") throw new HttpError(400, "Yetki listesi tanınmadı.");
+    const lists = [raw.add ?? [], raw.remove ?? []];
+    if (lists.some(list => !Array.isArray(list))) throw new HttpError(400, "Yetki listesi tanınmadı.");
+    if (lists.flat().some(permission => !isGrantable(permission))) throw new HttpError(400, "Verilebilecek yetki tanınmadı. Kullanıcı, sistem ve lisans yönetimi ile ANLIK DURUM kartı yalnız yönetici rolündedir.");
+    return parseGrants({ add: raw.add ?? [], remove: raw.remove ?? [] });
+  }
+  const openTasksOf = id => store.get("SELECT COUNT(*) AS n FROM tasks WHERE assignee_id = ? AND status = 'open'", id).n;
+  const userView = row => {
+    const roleKey = access.roleKeyOf(row);
+    return {
+      id: row.id,
+      username: row.username,
+      name: row.name,
+      role: row.role,
+      roleKey,
+      roleLabel: access.labelOf(row),
+      active: Boolean(row.active),
+      mustChangePassword: Boolean(row.mustChangePassword),
+      grants: grantsOf(row),
+      permissions: access.permissionsOf(row),
+      lastLoginAt: row.lastLoginAt,
+      createdAt: row.createdAt,
+      openTasks: row.openTasks || 0,
+      grantable: GRANTABLE,
+    };
+  };
+  const USER_SELECT = `SELECT u.id, u.username, u.display_name AS name, u.role, u.role_key, u.active, u.must_change_password AS mustChangePassword,
+      u.grants_json, u.last_login_at AS lastLoginAt, u.created_at AS createdAt,
+      (SELECT COUNT(*) FROM tasks t WHERE t.assignee_id = u.id AND t.status = 'open') AS openTasks FROM users u`;
+  // Yetkisi değişen kişinin açık ekranı yetkilerini yeniden alsın.
+  const permissionsChanged = ids => ids.length && events?.publish("workspace.changed", { kind: "permissions", userIds: ids }, { users: ids });
 
   router.get("/api/admin/users", async ({ req, res }) => {
+    auth.requirePermission(req, "users.manage");
+    ok(res, store.all(`${USER_SELECT} WHERE u.deleted_at IS NULL ORDER BY u.display_name COLLATE NOCASE`).map(userView));
+  });
+
+  // Silinen kullanıcılar: geçmişte adlarıyla görünürler; geri alınabilirler.
+  router.get("/api/admin/users/deleted", async ({ req, res }) => {
     auth.requirePermission(req, "users.manage");
     ok(
       res,
       store.all(
-        `SELECT id, username, display_name AS name, role, active, must_change_password AS mustChangePassword, grants_json AS grantsJson,
-                last_login_at AS lastLoginAt, created_at AS createdAt FROM users ORDER BY display_name COLLATE NOCASE`,
-      ).map(({ grantsJson, ...user }) => ({ ...user, active: Boolean(user.active), mustChangePassword: Boolean(user.mustChangePassword), grants: grantsOf({ grantsJson }), grantable: GRANTABLE })),
+        `SELECT u.id, COALESCE(u.deleted_name, u.display_name) AS name, COALESCE(u.deleted_username, u.username) AS username, u.role, u.role_key,
+                u.deleted_at AS deletedAt, COALESCE(d.display_name, '') AS deletedByName
+         FROM users u LEFT JOIN users d ON d.id = u.deleted_by WHERE u.deleted_at IS NOT NULL ORDER BY u.deleted_at DESC`,
+      ).map(row => ({ id: row.id, name: row.name, username: row.username, roleKey: access.roleKeyOf(row), roleLabel: access.labelOf(row), deletedAt: row.deletedAt, deletedByName: row.deletedByName })),
     );
   });
 
   router.post("/api/admin/users", async ({ req, res }) => {
     const admin = auth.requirePermission(req, "users.manage");
     const body = await readJson(req);
-    const username = limited(body.username, 60, "Kullanıcı adı");
+    const username = usernameOf(body.username);
     const name = limited(body.name, 120, "Görünen ad");
-    const role = text(body.role, "personel") || "personel";
+    if (!name) throw new HttpError(400, "Kullanıcı adı ve görünen ad gerekli.");
+    const { role, roleKey } = access.pickRole(text(body.role, "personel") || "personel");
+    const grants = body.grants === undefined || role === "admin" ? { add: [], remove: [] } : grantsInput(body.grants);
     const password = String(body.password || "");
-    if (!username || !name) throw new HttpError(400, "Kullanıcı adı ve görünen ad gerekli.");
-    if (!/^[\p{L}\p{N}._-]{3,60}$/u.test(username)) throw new HttpError(400, "Kullanıcı adı 3-60 karakter olmalı; harf, rakam, nokta, tire ve alt çizgi kullanılabilir.");
-    if (!ROLES.includes(role)) throw new HttpError(400, "Geçersiz rol.");
     const problem = passwordProblem(password, { username });
     if (problem) throw new HttpError(400, problem);
-    if (store.get("SELECT id FROM users WHERE username = ? COLLATE NOCASE", username)) throw new HttpError(409, "Bu kullanıcı adı zaten kayıtlı.");
+    if (usernameTaken(username)) throw new HttpError(409, "Bu kullanıcı adı zaten kayıtlı.");
     const conflict = nameConflict(store, { name, username });
     if (conflict) throw new HttpError(409, conflict);
     const mustChange = body.mustChangePassword === false ? 0 : 1;
     const timestamp = now();
     const userId = auth.newId("user");
     store.run(
-      "INSERT INTO users (id, username, display_name, role, password_hash, must_change_password, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-      userId, username, name, role, hashPassword(password), mustChange, timestamp, timestamp,
+      "INSERT INTO users (id, username, display_name, role, role_key, grants_json, password_hash, must_change_password, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+      userId, username, name, role, roleKey, JSON.stringify(grants), hashPassword(password), mustChange, timestamp, timestamp,
     );
-    audit(admin, "user.created", userId, { username, role });
-    ok(res, { id: userId, username, name, role, mustChangePassword: Boolean(mustChange) });
+    audit(admin, "user.created", userId, { username, role: roleKey || role, grants });
+    ok(res, { id: userId, username, name, role, roleKey: roleKey || role, mustChangePassword: Boolean(mustChange) });
   });
 
   router.patch("/api/admin/users/:id", async ({ req, res, params }) => {
     const admin = auth.requirePermission(req, "users.manage");
     const body = await readJson(req);
-    const target = store.get("SELECT id, username, role, active FROM users WHERE id = ?", params.id);
-    if (!target) throw new HttpError(404, "Kullanıcı bulunamadı.");
-    const role = body.role === undefined ? target.role : text(body.role);
+    const target = store.get("SELECT id, username, display_name, role, role_key, active, grants_json, deleted_at FROM users WHERE id = ?", params.id);
+    if (!target || target.deleted_at) throw new HttpError(404, "Kullanıcı bulunamadı.");
+    const picked = body.role === undefined ? { role: target.role, roleKey: target.role_key && access.customRole(target.role_key) ? target.role_key : null } : access.pickRole(body.role);
+    const { role, roleKey } = picked;
     const active = body.active === undefined ? target.active : body.active === false ? 0 : 1;
     const name = body.name === undefined ? null : limited(body.name, 120, "Görünen ad");
-    // Kişiye özel ek yetkiler (v2.0.7): yalnız GRANTABLE listesindekiler; bilinmeyen yetki reddedilir.
-    let grants = null;
-    if (body.grants !== undefined) {
-      if (!Array.isArray(body.grants) || body.grants.some(permission => !Object.hasOwn(GRANTABLE, permission))) throw new HttpError(400, "Verilebilecek yetki tanınmadı.");
-      grants = [...new Set(body.grants)];
+    if (body.name !== undefined && !name) throw new HttpError(400, "Görünen ad boş olamaz.");
+    // Kullanıcı adı (giriş adı) düzeltme (v2.0.10): yanlış yazılan ad düzeltilir; oturumlar açık kalır.
+    const username = body.username === undefined ? null : usernameOf(body.username);
+    if (username && username !== target.username) {
+      if (usernameTaken(username, target.id)) throw new HttpError(409, "Bu kullanıcı adı zaten kayıtlı.");
+      const conflict = nameConflict(store, { username, exceptId: target.id });
+      if (conflict) throw new HttpError(409, conflict);
     }
-    if (!ROLES.includes(role)) throw new HttpError(400, "Geçersiz rol.");
+    const grants = body.grants === undefined ? null : grantsInput(body.grants);
     if (name) {
       const conflict = nameConflict(store, { name, exceptId: target.id });
       if (conflict) throw new HttpError(409, conflict);
@@ -91,20 +144,131 @@ export function registerAdminRoutes(router, context) {
     const losesAdmin = target.role === "admin" && target.active && (role !== "admin" || !active);
     if (losesAdmin && activeAdmins() <= 1) throw new HttpError(400, "Sistemde en az bir aktif yönetici kalmalı.");
     store.tx(() => {
-      store.run("UPDATE users SET role = ?, active = ?, display_name = COALESCE(?, display_name), grants_json = COALESCE(?, grants_json), updated_at = ? WHERE id = ?", role, active, name || null, grants ? JSON.stringify(grants) : null, now(), target.id);
+      store.run(
+        "UPDATE users SET role = ?, role_key = ?, active = ?, display_name = COALESCE(?, display_name), username = COALESCE(?, username), grants_json = COALESCE(?, grants_json), updated_at = ? WHERE id = ?",
+        role, roleKey, active, name || null, username || null, grants ? JSON.stringify(grants) : null, now(), target.id,
+      );
       if (!active) store.run("DELETE FROM sessions WHERE user_id = ?", target.id);
     });
     if (!active) dropLive(target.id);
-    audit(admin, "user.updated", target.id, { role, active: Boolean(active), name: name || undefined, grants: grants || undefined });
-    // Yetkisi değişen kişinin açık ekranı yetkilerini yeniden alsın.
-    if (grants) events?.publish("workspace.changed", { kind: "permissions", userId: target.id }, { users: [target.id] });
+    if (username && username !== target.username) auth.clearLoginLocks(target.username);
+    const renamed = (name && name !== target.display_name) || (username && username !== target.username);
+    audit(admin, renamed && body.role === undefined && body.grants === undefined && body.active === undefined ? "user.renamed" : "user.updated", target.id, {
+      role: roleKey || role,
+      active: Boolean(active),
+      name: name && name !== target.display_name ? name : undefined,
+      previousName: name && name !== target.display_name ? target.display_name : undefined,
+      username: username && username !== target.username ? username : undefined,
+      previousUsername: username && username !== target.username ? target.username : undefined,
+      grants: grants || undefined,
+    });
+    if (grants || body.role !== undefined) permissionsChanged([target.id]);
+    // Görev ve sohbet listelerinde ad hemen yenilensin.
+    if (renamed) events?.publish("workspace.changed", { kind: "users", actorId: admin.id, actorName: admin.display_name });
+    ok(res, true);
+  });
+
+  // Kullanıcı silme (v2.0.10): geçmiş korunur (işlemler, notlar, tahsilatlar kişinin adıyla kalır). Hesap giriş
+  // yapamaz, listelerden çıkar; kullanıcı adı ve görünen ad yeni hesaba verilebilir. Kendini ve son yöneticiyi silemez.
+  // Açık görevleri varsa reassignTo ister: bir kullanıcının kimliği ya da "keep" (görevler silinen kişide kalır).
+  router.delete("/api/admin/users/:id", async ({ req, res, params, url }) => {
+    const admin = auth.requirePermission(req, "users.manage");
+    const target = store.get("SELECT id, username, display_name, role, active, deleted_at FROM users WHERE id = ?", params.id);
+    if (!target || target.deleted_at) throw new HttpError(404, "Kullanıcı bulunamadı.");
+    if (target.id === admin.id) throw new HttpError(400, "Kendi hesabınızı silemezsiniz. Başka bir yönetici silebilir.");
+    if (target.role === "admin" && target.active && activeAdmins() <= 1) throw new HttpError(400, "Sistemde en az bir aktif yönetici kalmalı.");
+    const openTasks = openTasksOf(target.id);
+    const reassign = text(url.searchParams.get("reassignTo"));
+    let heir = null;
+    if (openTasks && !reassign) throw new HttpError(409, `${target.display_name} kişisinin ${openTasks} açık görevi var. Görevleri kime devredeceğinizi seçin.`, { code: "OPEN_TASKS", openTasks });
+    if (reassign && reassign !== "keep") {
+      heir = store.get("SELECT id, display_name FROM users WHERE id = ? AND active = 1 AND deleted_at IS NULL", reassign);
+      if (!heir || heir.id === target.id) throw new HttpError(400, "Görevlerin devredileceği kişi bulunamadı ya da hesabı kapalı.");
+    }
+    const stamp = now();
+    const suffix = target.id.slice(-6);
+    store.tx(() => {
+      if (heir && openTasks) store.run("UPDATE tasks SET assignee_id = ?, assignee = ? WHERE assignee_id = ? AND status = 'open'", heir.id, heir.display_name, target.id);
+      store.run(
+        `UPDATE users SET active = 0, deleted_at = ?, deleted_by = ?, deleted_username = username, deleted_name = display_name,
+            username = ?, display_name = ?, updated_at = ? WHERE id = ?`,
+        stamp, admin.id, `${target.username}#silindi-${suffix}`, `${target.display_name} (silindi)`, stamp, target.id,
+      );
+      store.run("DELETE FROM sessions WHERE user_id = ?", target.id);
+    });
+    dropLive(target.id);
+    auth.clearLoginLocks(target.username);
+    audit(admin, "user.deleted", target.id, { username: target.username, name: target.display_name, openTasks, reassignedTo: heir?.display_name || undefined });
+    events?.publish("workspace.changed", { kind: "users", actorId: admin.id, actorName: admin.display_name });
+    ok(res, { ok: true, reassigned: heir ? openTasks : 0 });
+  });
+
+  // Silinen kullanıcıyı geri al: eski kullanıcı adı ve adı boştaysa onlarla; doluysa yenisi istenir.
+  router.post("/api/admin/users/:id/restore", async ({ req, res, params }) => {
+    const admin = auth.requirePermission(req, "users.manage");
+    const body = await readJson(req);
+    const target = store.get("SELECT id, deleted_at, deleted_username, deleted_name, role_key FROM users WHERE id = ?", params.id);
+    if (!target || !target.deleted_at) throw new HttpError(404, "Silinen kullanıcı bulunamadı.");
+    const username = usernameOf(body.username || target.deleted_username);
+    const name = limited(body.name || target.deleted_name, 120, "Görünen ad");
+    if (usernameTaken(username, target.id)) throw new HttpError(409, `“${username}” kullanıcı adı artık başka bir hesapta. Geri alınan hesaba yeni bir kullanıcı adı yazın.`, { code: "USERNAME_TAKEN", username });
+    const conflict = nameConflict(store, { name, username, exceptId: target.id });
+    if (conflict) throw new HttpError(409, `${conflict} (Geri alınan hesaba farklı bir ad yazın.)`, { code: "NAME_TAKEN", name });
+    store.run(
+      "UPDATE users SET active = 1, deleted_at = NULL, deleted_by = NULL, deleted_username = NULL, deleted_name = NULL, username = ?, display_name = ?, role_key = ?, updated_at = ? WHERE id = ?",
+      username, name, target.role_key && access.customRole(target.role_key) ? target.role_key : null, now(), target.id,
+    );
+    audit(admin, "user.restored", target.id, { username, name });
+    events?.publish("workspace.changed", { kind: "users", actorId: admin.id, actorName: admin.display_name });
+    ok(res, { ok: true, username, name });
+  });
+
+  // ---------- Yönetici parolası kurtarma anahtarı (v2.0.10) ----------
+  router.get("/api/admin/recovery", async ({ req, res }) => {
+    auth.requirePermission(req, "users.manage");
+    ok(res, context.recovery?.status() || { exists: false });
+  });
+  // Yeni anahtar: eskisi geçersiz olur. Düz metin yalnız bu yanıtta döner; yönetici yazdırıp saklar.
+  router.post("/api/admin/recovery", async ({ req, res }) => {
+    const admin = auth.requirePermission(req, "users.manage");
+    if (!context.recovery) throw new HttpError(404, "Kurtarma kullanılamıyor.");
+    const key = context.recovery.createKey(admin);
+    audit(admin, "auth.recovery_key_created", admin.id, {});
+    ok(res, { key, ...context.recovery.status() });
+  });
+
+  // ---------- Roller ve yetki havuzu (v2.0.10) ----------
+  const catalog = () =>
+    PERMISSION_GROUPS.map(group => ({ id: group.id, label: group.label, items: group.items.map(([key, label, help]) => ({ key, label, help, locked: ADMIN_ONLY.includes(key) })) }));
+  router.get("/api/admin/roles", async ({ req, res }) => {
+    auth.requirePermission(req, "users.manage");
+    const labels = context.profile?.profile?.()?.roleLabels;
+    ok(res, { ...access.list(labels ? { ...ROLE_LABELS, ...labels } : ROLE_LABELS), groups: catalog(), adminOnly: ADMIN_ONLY });
+  });
+  router.post("/api/admin/roles", async ({ req, res }) => {
+    const admin = auth.requirePermission(req, "users.manage");
+    const role = access.createRole(await readJson(req), admin);
+    audit(admin, "role.created", role.id, { name: role.name, permissions: role.permissions });
+    ok(res, role);
+  });
+  router.patch("/api/admin/roles/:id", async ({ req, res, params }) => {
+    const admin = auth.requirePermission(req, "users.manage");
+    const role = access.updateRole(params.id, await readJson(req));
+    audit(admin, "role.updated", role.id, { name: role.name, permissions: role.permissions });
+    permissionsChanged(access.usersOfRole(role.id));
+    ok(res, role);
+  });
+  router.delete("/api/admin/roles/:id", async ({ req, res, params }) => {
+    const admin = auth.requirePermission(req, "users.manage");
+    const role = access.deleteRole(params.id);
+    audit(admin, "role.deleted", role.id, { name: role.name });
     ok(res, true);
   });
 
   router.post("/api/admin/users/:id/reset-password", async ({ req, res, params }) => {
     const admin = auth.requirePermission(req, "users.manage");
     const body = await readJson(req);
-    const target = store.get("SELECT id, username FROM users WHERE id = ?", params.id);
+    const target = store.get("SELECT id, username FROM users WHERE id = ? AND deleted_at IS NULL", params.id);
     if (!target) throw new HttpError(404, "Kullanıcı bulunamadı.");
     const problem = passwordProblem(body.password, { username: target.username });
     if (problem) throw new HttpError(400, problem);
@@ -297,7 +461,7 @@ export function registerAdminRoutes(router, context) {
       lastBackup: latest ? { name: latest.name, size: latest.size, createdAt: latest.createdAt } : null,
       // 30 günden eski sohbet mesajlarının arşivi (v2.0.2).
       chatArchive: context.chatArchive ? context.chatArchive.info() : null,
-      users: store.get("SELECT COUNT(*) AS count FROM users WHERE active = 1").count,
+      users: store.get("SELECT COUNT(*) AS count FROM users WHERE active = 1 AND deleted_at IS NULL").count,
       officeName: store.setting("office.name", ""),
       supervised: Boolean(supervisorLink?.supervised),
       hostname: os.hostname(),

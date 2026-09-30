@@ -1,9 +1,10 @@
 // Serbest sayfa uçları (v2.0.1). Hücre düzenleme herkes (records.edit); satır/kolon/sayfa ekleme records.create;
 // dolu satır/kolon ve sayfa silme records.delete (yönetici, ikinci rol) — yanlışlıkla eklenen BOŞ satırı/kolonu ekleme
 // yetkisi olan da siler. Her değişiklik diğer ekranlara canlı yansır.
+import { matrixToFree } from "../lib/free-import.mjs";
 import { HttpError, ok, readJson, text } from "../lib/http.mjs";
 
-export function registerFreeRoutes(router, { auth, events, profile, dataset, free }) {
+export function registerFreeRoutes(router, { auth, events, profile, dataset, free, readGoogleSheet = null }) {
   const changed = (user, sheetId, detail = {}) => {
     profile?.invalidate();
     events?.publish("workspace.changed", { kind: "records", actorId: user.id, actorName: user.display_name, datasetKey: dataset.currentKey(), free: sheetId, ...detail }, { except: user.id });
@@ -26,6 +27,26 @@ export function registerFreeRoutes(router, { auth, events, profile, dataset, fre
     const user = auth.requirePermission(req, "records.create");
     const body = await readJson(req);
     done(res, user, free.create(user, { name: body.name, columns: body.columns, rows: body.rows, names: Array.isArray(body.names) ? body.names : [] }), { created: true });
+  });
+  // Excel / Google Sheets'ten aktarma (v2.0.10): sayfa bir kopyadır; kaynakta sonradan yapılan değişiklik gelmez.
+  // Excel dosyası tarayıcıda okunur (hof-excel-worker.js), seçilen sayfanın ham matrisi ve formülleri gönderilir.
+  router.post("/api/workspace/free/import", async ({ req, res }) => {
+    const user = auth.requirePermission(req, "records.create");
+    const body = await readJson(req, { limit: 12_000_000 });
+    const sheet = body.sheet || {};
+    const parsed = matrixToFree({ matrix: sheet.matrix, start: sheet.start, formulas: sheet.formulas });
+    done(res, user, free.importSheet(user, { name: body.name || sheet.name, ...parsed, source: `excel:${text(body.fileName).slice(0, 200)}` }), { created: true });
+  });
+  // Google Sheets: bağlantıdaki sekme (gid) okunur; bağlantıda sekme yoksa ilk sekme.
+  router.post("/api/workspace/free/import-sheets", async ({ req, res }) => {
+    const user = auth.requirePermission(req, "records.create");
+    const body = await readJson(req);
+    const url = text(body.url).slice(0, 2000);
+    if (!/^https:\/\/docs\.google\.com\/spreadsheets\/d\//.test(url)) throw new HttpError(400, "Google Sheets bağlantısı tanınmadı. Tablonun adres çubuğundaki bağlantıyı (https://docs.google.com/spreadsheets/d/…) yapıştırın.");
+    if (!readGoogleSheet?.readTab) throw new HttpError(503, "Google Sheets okuyucusu kullanılamıyor.");
+    const tab = await readGoogleSheet.readTab(url);
+    const parsed = matrixToFree({ matrix: tab.matrix, start: { r: 0, c: 0 }, formulas: tab.formulas });
+    done(res, user, free.importSheet(user, { name: text(body.name) || tab.tab || tab.title, ...parsed, source: `sheets:${url}` }), { created: true });
   });
   router.patch("/api/workspace/free/:id", async ({ req, res, params }) => {
     const user = auth.requirePermission(req, "records.create");

@@ -155,6 +155,10 @@ export function projection({ today, from = "", to, cashToday = 0, flows = [], in
   };
 }
 
+/** "Tüm zamanlar" aralığının başı (bugünden 50 yıl önce, 1 Ocak) ya da daha eskisi (v2.0.10): belgede ve ekranda bu tarih
+ * yazılmaz ("01.01.1976 – …" yerine "Tüm hareketler · … tarihine kadar"; Devir satırı tarihsiz). */
+export const isAllTimeStart = (from, today) => Boolean(from) && from <= presetRange("all", today).from;
+
 /** Hazır aralıklar: bugün temel alınır (takvim günü). */
 export function presetRange(preset, today) {
   const [y, m, d] = today.split("-").map(Number);

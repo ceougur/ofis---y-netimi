@@ -3,7 +3,9 @@ import { createServer } from "node:http";
 import { mkdirSync } from "node:fs";
 import path from "node:path";
 import { createAudit } from "./lib/audit.mjs";
+import { createAccess } from "./lib/access.mjs";
 import { createAuth } from "./lib/auth.mjs";
+import { createRecovery } from "./lib/recovery.mjs";
 import { createChat } from "./lib/chat.mjs";
 import { createChatArchive } from "./lib/chat-archive.mjs";
 import { createEventHub } from "./lib/events.mjs";
@@ -75,14 +77,18 @@ export function createApp(overrides = {}) {
   ensureInitialAdmin(store, config, log);
 
   const audit = createAudit(store);
-  const auth = createAuth({ store, config, audit });
+  // Roller ve etkin yetkiler (v2.0.10): yerleşik 4 rol + ofisin tanımladığı roller + kişiye özel ekle/çıkar.
+  const access = createAccess({ store });
+  const auth = createAuth({ store, config, audit, access });
+  // Yönetici parolası kurtarma (v2.0.10): kurtarma anahtarı ya da sunucu bilgisayarında üretilen tek seferlik kod.
+  const recovery = createRecovery({ store, dataDir: config.dataDir, log });
   const clientState = createClientState({ store, audit });
   const readGoogleSheet = createSheetsReader({ fetchImpl: config.fetchImpl, cacheMs: config.sheetsCacheMs });
   const serveStatic = createStaticHandler(config.publicDir);
   const supervisorLink = overrides.supervisorLink ?? (config.supervised ? createSupervisorLink(process) : null);
   // Canlı olay kanalı: oturumu kapanan (çıkış, parola değişikliği, pasifleştirme) bağlantılar ping turunda düşer.
   const events = createEventHub({ log, pingMs: config.eventsPingMs, maxAgeMs: config.eventsMaxAgeMs, isValid: client => auth.sessionAlive(client.tokenHash) });
-  const chat = createChat({ store, events, audit });
+  const chat = createChat({ store, events, audit, roles: access });
   // 30 günden eski sohbet mesajları veri klasöründeki mesaj-arsivi/ klasörüne taşınır (v2.0.2).
   const chatArchive = createChatArchive({ store, dir: path.join(config.dataDir, "mesaj-arsivi"), log });
   // Lisans (Faz 3): süresi dolan, engellenen veya doğrulanamayan kurulum salt okunur çalışır. Veri eşitlemesi de
@@ -136,7 +142,7 @@ export function createApp(overrides = {}) {
   });
   license.init();
   dataset.start();
-  const context = { config, log, store, auth, audit, clientState, startedAt, supervisorLink, events, chat, chatArchive, dataset, profile, license, free, trash, cloudBackup };
+  const context = { config, log, store, auth, access, recovery, audit, clientState, startedAt, supervisorLink, events, chat, chatArchive, dataset, profile, license, free, trash, cloudBackup };
 
   const router = createRouter();
   router.get("/api/health", async ({ res }) => ok(res, { service: "destekofis-merkezi", status: "ok", version: config.version, time: new Date().toISOString(), uptimeSeconds: Math.round(process.uptime()) }));
@@ -164,7 +170,7 @@ export function createApp(overrides = {}) {
   registerDueRoutes(router, context);
   const documents = registerDocumentRoutes(router, context);
   registerTrashRoutes(router, { ...context, documents });
-  registerFreeRoutes(router, context);
+  registerFreeRoutes(router, { ...context, readGoogleSheet });
   registerChatRoutes(router, context);
   registerDatasetRoutes(router, context);
   registerInsightRoutes(router, context);

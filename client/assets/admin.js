@@ -15,6 +15,12 @@
     "user.updated": "Kullanıcıyı güncelledi",
     "user.password_reset": "Parola sıfırladı",
     "user.sessions_revoked": "Oturumları kapattı",
+    "user.renamed": "Kullanıcının adını düzeltti",
+    "user.deleted": "Kullanıcıyı sildi",
+    "user.restored": "Silinen kullanıcıyı geri aldı",
+    "role.created": "Rol oluşturdu",
+    "role.updated": "Rolü düzenledi",
+    "role.deleted": "Rolü sildi",
     "source.row.created": "Yeni kayıt ekledi",
     "source.row.deleted": "Kayıt sildi",
     "source.row.restored": "Silinen kaydı geri aldı",
@@ -103,58 +109,400 @@
     return `${value.slice(0, 4)}-${value.slice(4, 8)}-${value.slice(8)}`;
   };
 
-  // ---------- Kullanıcılar ----------
+  // ---------- Kullanıcılar (v2.0.10: ✎ ad/kullanıcı adı, yetki paneli, özel roller, silme/geri alma) ----------
+  let users = [];
+  let roles = { builtIn: [], custom: [], groups: [], adminOnly: [] };
+  let openPanelFor = "";
+  const ROLE_NOTES = {
+    admin: "Her şey: veri yükleme, sektör ve başlıklar, kullanıcılar ve roller, yedek, sistem ve lisans. ANLIK DURUM kartı yalnız bu rolde.",
+    avukat: "Tüm kayıt işlemleri ve silme, görev atama ve herkesin görevleri, Kasa, Cari, Taksit, Stok, Çek/Senet yönetimi, tablo ve personel raporları. Veri yükleyemez.",
+    personel: "Yeni kayıt, düzeltme, not, telefon, tahsilat; kendi görevleri. Silme, görev atama, Kasa ve raporlar yok.",
+    muhasebe: "Personelin yaptıkları + Kasa, Cari, Taksit, Stok ve Çek/Senet yönetimi. Görev atama ve raporlar yok.",
+  };
+  const PENCIL = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>';
+  const LOCK = '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>';
+  const allRoles = () => [...roles.builtIn, ...roles.custom];
+  const roleOf = key => allRoles().find(role => role.key === key) || null;
+  const roleLabel = key => roleOf(key)?.label || HOF.roleLabels[key] || key;
+  const rolePermissions = key => new Set(roleOf(key)?.permissions || []);
+  const lockedSet = () => new Set(roles.adminOnly || []);
+  const permissionCount = () => roles.groups.reduce((sum, group) => sum + group.items.length, 0);
+  const roleOptions = selected =>
+    `${roles.builtIn.map(role => `<option value="${esc(role.key)}" ${role.key === selected ? "selected" : ""}>${esc(role.label)}</option>`).join("")}${
+      roles.custom.length ? `<optgroup label="Ofisin rolleri">${roles.custom.map(role => `<option value="${esc(role.key)}" ${role.key === selected ? "selected" : ""}>${esc(role.label)}</option>`).join("")}</optgroup>` : ""
+    }`;
+
+  // Yetki havuzu: gruplu onay kutuları. base verilirse (kişiye özel ayar) rolden farklı olanlar "eklendi / kaldırıldı" diye
+  // işaretlenir. Yönetime özgü yetkiler kilitli (yalnız yönetici rolünde). full: yönetici — tümü işaretli ve kapalı.
+  function permGrid({ checked, base = null, full = false, readOnly = false }) {
+    const locked = lockedSet();
+    return `<div class="adm-perm-grid">${roles.groups
+      .map(group => {
+        const items = group.items
+          .map(item => {
+            const isLocked = locked.has(item.key);
+            const on = full || (!isLocked && checked.has(item.key));
+            const state = full || isLocked || !base ? "" : on && !base.has(item.key) ? "is-added" : !on && base.has(item.key) ? "is-removed" : "";
+            return `<label class="adm-perm ${state} ${isLocked ? "is-locked" : ""}" title="${esc(item.help)}"><input type="checkbox" data-perm="${esc(item.key)}" ${on ? "checked" : ""} ${full || readOnly || isLocked ? "disabled" : ""}><span class="adm-perm-text"><b>${esc(item.label)}</b><small>${esc(item.help)}</small></span>${isLocked ? `<em class="adm-perm-tag is-lock is-icon" title="Yalnız yönetici" aria-label="Yalnız yönetici">${LOCK}</em>` : '<em class="adm-perm-tag" aria-hidden="true"></em>'}</label>`;
+          })
+          .join("");
+        const allLocked = group.items.every(item => locked.has(item.key));
+        return `<fieldset class="adm-perm-group"><legend><span>${esc(group.label)}</span>${full || readOnly || allLocked ? "" : `<button type="button" class="adm-perm-all" data-perm-all title="Bu gruptaki tüm yetkileri seç ya da kaldır">Tümü</button>`}</legend>${items}</fieldset>`;
+      })
+      .join("")}</div>`;
+  }
+  const checkedIn = root => new Set([...root.querySelectorAll("[data-perm]:checked:not(:disabled)")].map(input => input.dataset.perm));
+  // Onay kutusu değişince "eklendi / kaldırıldı" etiketi ve özet satırı yenilenir.
+  function refreshTags(root, base) {
+    if (!base) return;
+    let added = 0;
+    let removed = 0;
+    for (const input of root.querySelectorAll("[data-perm]:not(:disabled)")) {
+      const label = input.closest(".adm-perm");
+      const isAdded = input.checked && !base.has(input.dataset.perm);
+      const isRemoved = !input.checked && base.has(input.dataset.perm);
+      label.classList.toggle("is-added", isAdded);
+      label.classList.toggle("is-removed", isRemoved);
+      label.querySelector(".adm-perm-tag").textContent = isAdded ? "eklendi" : isRemoved ? "kaldırıldı" : "";
+      added += isAdded ? 1 : 0;
+      removed += isRemoved ? 1 : 0;
+    }
+    const summary = root.querySelector("[data-summary]");
+    if (summary) summary.textContent = added || removed ? `Rolden farklı: ${added ? `${added} eklendi` : ""}${added && removed ? " · " : ""}${removed ? `${removed} kaldırıldı` : ""}` : "Rolün varsayılan yetkileri";
+  }
+  function wireGrid(root, base = null) {
+    root.addEventListener("click", event => {
+      const all = event.target.closest("[data-perm-all]");
+      if (!all) return;
+      const inputs = [...all.closest(".adm-perm-group").querySelectorAll("[data-perm]:not(:disabled)")];
+      const next = !inputs.every(input => input.checked);
+      inputs.forEach(input => {
+        input.checked = next;
+      });
+      refreshTags(root, base);
+    });
+    root.addEventListener("change", event => {
+      if (event.target.matches("[data-perm]")) refreshTags(root, base);
+    });
+    refreshTags(root, base);
+  }
+  const grantsFrom = (checked, base) => ({ add: [...checked].filter(key => !base.has(key)), remove: [...base].filter(key => !checked.has(key) && !lockedSet().has(key)) });
+
+  function userRow(user) {
+    const self = user.id === me.id;
+    const admin = user.roleKey === "admin";
+    const total = permissionCount();
+    const diff = (user.grants?.add?.length || 0) + (user.grants?.remove?.length || 0);
+    const pill = admin
+      ? '<span class="adm-perm-pill is-full" title="Yönetici tüm yetkilere sahiptir">Tam yetki</span>'
+      : `<button type="button" class="adm-perm-pill ${openPanelFor === user.id ? "is-open" : ""}" data-perms aria-expanded="${openPanelFor === user.id}" title="Yetkileri gör ve kişiye özel ekle/çıkar">Yetkiler <b>${user.permissions.length}</b><span>/ ${total}</span>${diff ? `<i class="adm-perm-diff">${user.grants.add.length ? `+${user.grants.add.length}` : ""}${user.grants.add.length && user.grants.remove.length ? " " : ""}${user.grants.remove.length ? `−${user.grants.remove.length}` : ""}</i>` : ""}<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>`;
+    return `<tr data-id="${esc(user.id)}" class="${user.active ? "" : "is-passive"}">
+      <td><span class="adm-inline" data-inline="name"><b>${esc(user.name)}</b><button type="button" class="adm-pencil" data-edit="name" title="Adı düzelt" aria-label="${esc(user.name)} adını düzelt">${PENCIL}</button></span>${self ? ' <span class="hof-chip">siz</span>' : ""}${user.mustChangePassword ? ' <span class="hof-chip hof-chip-high">parola bekliyor</span>' : ""}</td>
+      <td><span class="adm-inline" data-inline="username"><code>${esc(user.username)}</code><button type="button" class="adm-pencil" data-edit="username" title="Kullanıcı adını (giriş adı) düzelt" aria-label="${esc(user.name)} kullanıcı adını düzelt">${PENCIL}</button></span></td>
+      <td><select class="adm-role" aria-label="${esc(user.name)} rolü" ${self ? "disabled" : ""}>${roleOptions(user.roleKey)}</select></td>
+      <td><button type="button" class="adm-status ${user.active ? "is-active" : ""}" data-toggle ${self ? "disabled" : ""}>${user.active ? "Aktif" : "Pasif"}</button></td>
+      <td>${pill}</td>
+      <td>${user.lastLoginAt ? `${esc(HOF.formatDateTime(user.lastLoginAt))}` : '<span class="adm-muted">Hiç giriş yapmadı</span>'}</td>
+      <td class="adm-right adm-row-actions"><button type="button" class="hof-button hof-button-ghost hof-button-small" data-reset>Parola sıfırla</button><button type="button" class="hof-button hof-button-ghost hof-button-small" data-sessions ${self ? "disabled" : ""}>Oturumları kapat</button><button type="button" class="hof-button hof-button-small adm-delete" data-delete ${self ? 'disabled title="Kendi hesabınızı silemezsiniz"' : 'title="Kullanıcıyı sil (geçmişi korunur)"'}>Sil</button></td>
+    </tr>${openPanelFor === user.id && !admin ? permRow(user) : ""}`;
+  }
+  function permRow(user) {
+    const base = rolePermissions(user.roleKey);
+    return `<tr class="adm-perm-row" data-perm-for="${esc(user.id)}"><td colspan="7"><div class="adm-perm-panel" role="group" aria-label="${esc(user.name)} yetkileri">
+      <div class="adm-perm-head"><div><b>${esc(user.name)} · yetkiler</b><small>Rol: <b>${esc(roleLabel(user.roleKey))}</b> — rolün verdiği ${base.size} yetki işaretli gelir. İşaret ekleyip kaldırarak bu kişiye özel ayarlayın; rolü değiştirmek diğer kişileri etkilemez.</small></div><div class="adm-perm-legend"><span class="is-added">eklendi</span><span class="is-removed">kaldırıldı</span><span class="is-lock">${LOCK}yalnız yönetici</span></div></div>
+      ${permGrid({ checked: new Set(user.permissions), base })}
+      <div class="adm-perm-foot"><span class="adm-perm-summary" data-summary></span><button type="button" class="hof-button hof-button-ghost hof-button-small" data-perm-reset>Rol varsayılanına dön</button><button type="button" class="hof-button hof-button-ghost hof-button-small" data-perm-cancel>Vazgeç</button><button type="button" class="hof-button hof-button-small" data-perm-save>Yetkileri kaydet</button></div>
+    </div></td></tr>`;
+  }
+  function renderUsers() {
+    const body = $("#adm-users");
+    body.innerHTML = users.length ? users.map(userRow).join("") : '<tr><td colspan="7">Kullanıcı yok.</td></tr>';
+    const panel = body.querySelector(".adm-perm-panel");
+    if (panel) wireGrid(panel, rolePermissions(users.find(user => user.id === openPanelFor)?.roleKey));
+  }
+  function renderRoles() {
+    const card = role => {
+      const note = role.builtIn ? ROLE_NOTES[role.key] || "" : role.description || "";
+      const count = role.key === "admin" ? "Tüm yetkiler" : `${role.permissions.length} yetki`;
+      return `<article class="adm-role-card ${role.builtIn ? "is-builtin" : "is-custom"}" data-role="${esc(role.key)}">
+        <header><b>${esc(role.label)}</b><span class="hof-chip ${role.builtIn ? "" : "hof-chip-accent"}">${role.builtIn ? "Yerleşik" : "Ofisin rolü"}</span></header>
+        <p class="adm-role-meta">${count} · ${role.users} kullanıcı</p>
+        ${note ? `<p class="adm-role-note">${esc(note)}</p>` : ""}
+        <div class="adm-role-actions">${role.builtIn ? `<button type="button" class="hof-button hof-button-ghost hof-button-small" data-role-view>Yetkileri gör</button>${role.key === "admin" ? "" : '<button type="button" class="hof-button hof-button-ghost hof-button-small" data-role-copy>Bundan yeni rol</button>'}` : `<button type="button" class="hof-button hof-button-ghost hof-button-small" data-role-edit>Düzenle</button><button type="button" class="hof-button hof-button-small adm-delete" data-role-delete ${role.users ? `title="${role.users} kullanıcıda kullanılıyor"` : ""}>Sil</button>`}</div>
+      </article>`;
+    };
+    $("#adm-role-list").innerHTML = allRoles().map(card).join("");
+  }
+  async function loadDeleted() {
+    try {
+      const list = await HOF.api("/api/admin/users/deleted");
+      $("#adm-deleted").hidden = !list.length;
+      $("#adm-deleted-count").textContent = String(list.length);
+      $("#adm-deleted-body").innerHTML = list
+        .map(item => `<tr data-deleted="${esc(item.id)}"><td><b>${esc(item.name)}</b></td><td><code>${esc(item.username)}</code></td><td>${esc(item.roleLabel || HOF.roleLabels[item.roleKey] || item.roleKey)}</td><td>${esc(HOF.formatDateTime(item.deletedAt))}${item.deletedByName ? ` · ${esc(item.deletedByName)}` : ""}</td><td class="adm-right"><button type="button" class="hof-button hof-button-ghost hof-button-small" data-restore>Geri al</button></td></tr>`)
+        .join("");
+    } catch {
+      $("#adm-deleted").hidden = true;
+    }
+  }
+  // Yönetici parolası kurtarma anahtarı (v2.0.10): yoksa uyarı görünümünde; yenilenince eskisi geçersiz olur.
+  let recoveryStatus = null;
+  async function loadRecovery() {
+    const card = $("#adm-recovery");
+    try {
+      recoveryStatus = await HOF.api("/api/admin/recovery");
+    } catch {
+      card.hidden = true;
+      return;
+    }
+    card.hidden = false;
+    card.classList.toggle("is-missing", !recoveryStatus.exists);
+    $("#adm-recovery-status").innerHTML = recoveryStatus.exists
+      ? `<b>Kurtarma anahtarı hazır</b> (oluşturulma: ${esc(HOF.formatDateTime(recoveryStatus.createdAt))}${recoveryStatus.createdByName ? ` · ${esc(recoveryStatus.createdByName)}` : ""}). Yönetici parolası unutulursa giriş ekranında <b>Parolamı unuttum</b> ile bu anahtarla yeni parola belirlenir. Anahtar kaybolduysa yenileyin (eskisi geçersiz olur). Anahtar da yoksa: sunucu bilgisayarında giriş ekranı → Parolamı unuttum → <b>Sunucu kodu oluştur</b>.`
+      : "<b>Kurtarma anahtarı oluşturulmadı.</b> Yönetici parolanızı unutursanız programa bu anahtarla girersiniz; üyelik ve internet gerekmez. Oluşturun, yazdırın ve kasada saklayın.";
+    $("#adm-recovery-create").textContent = recoveryStatus.exists ? "Kurtarma anahtarını yenile" : "Kurtarma anahtarı oluştur";
+  }
+  $("#adm-recovery-create").addEventListener("click", async () => {
+    if (recoveryStatus?.exists && !(await HOF.confirm({ title: "Kurtarma anahtarı yenilensin mi?", message: "Yeni anahtar oluşturulunca eski anahtar (yazdırdığınız kâğıt) geçersiz olur. Yenisini yazdırıp saklayın.", confirmLabel: "Yenile" }))) return;
+    try {
+      const result = await HOF.api("/api/admin/recovery", { method: "POST", body: {} });
+      await HOF.showRecoveryKey(result.key, { office: me.office?.name || "" });
+      HOF.toast("Kurtarma anahtarı kaydedildi.", { type: "success" });
+    } catch (error) {
+      HOF.toastError(error);
+    }
+    loadRecovery();
+  });
+
   async function loadUsers() {
     const body = $("#adm-users");
+    loadRecovery();
     try {
-      const users = await HOF.api("/api/admin/users");
-      body.innerHTML = users
-        .map(user => {
-          const self = user.id === me.id;
-          const roles = Object.entries(HOF.roleLabels).map(([value, label]) => `<option value="${value}" ${value === user.role ? "selected" : ""}>${label}</option>`).join("");
-          return `<tr data-id="${esc(user.id)}">
-            <td><b>${esc(user.name)}</b>${self ? ' <span class="hof-chip">siz</span>' : ""}${user.mustChangePassword ? ' <span class="hof-chip hof-chip-high">parola bekliyor</span>' : ""}</td>
-            <td>${esc(user.username)}</td>
-            <td><select class="adm-role" aria-label="${esc(user.name)} rolü" ${self ? "disabled" : ""}>${roles}</select></td>
-            <td><button type="button" class="adm-status ${user.active ? "is-active" : ""}" data-toggle ${self ? "disabled" : ""}>${user.active ? "Aktif" : "Pasif"}</button></td>
-            <td>${user.role === "admin" ? '<span class="adm-muted" title="Yönetici ANLIK DURUM ve raporları her zaman görür">Tam yetki</span>' : Object.entries(user.grantable || {}).map(([permission, label]) => `<button type="button" class="adm-grant ${(user.grants || []).includes(permission) ? "is-on" : ""}" data-grant="${esc(permission)}" aria-pressed="${(user.grants || []).includes(permission)}" title="${(user.grants || []).includes(permission) ? "Açık: bu kişi görür. Kapatmak için tıklayın." : "Kapalı: bu kişi görmez. Açmak için tıklayın."}">${esc(label)}</button>`).join("")}</td>
-            <td>${user.lastLoginAt ? `${esc(HOF.formatDateTime(user.lastLoginAt))}` : '<span class="adm-muted">Hiç giriş yapmadı</span>'}</td>
-            <td class="adm-right"><button type="button" class="hof-button hof-button-ghost hof-button-small" data-reset>Parola sıfırla</button> <button type="button" class="hof-button hof-button-ghost hof-button-small" data-sessions ${self ? "disabled" : ""}>Oturumları kapat</button></td>
-          </tr>`;
-        })
-        .join("");
+      [users, roles] = await Promise.all([HOF.api("/api/admin/users"), HOF.api("/api/admin/roles")]);
+      for (const role of roles.builtIn) HOF.roleLabels[role.key] = role.label;
+      if (openPanelFor && !users.some(user => user.id === openPanelFor)) openPanelFor = "";
+      renderUsers();
+      renderRoles();
+      loadDeleted();
     } catch (error) {
       body.innerHTML = `<tr><td colspan="7">${esc(error.message)}</td></tr>`;
     }
   }
 
+  // Yeni kullanıcı: rol seçilir; "Yetkileri özelleştir" açılırsa rolün yetkileri işaretli gelir, kişiye özel ayarlanır.
   function newUser() {
     const password = strongPassword();
+    let base = rolePermissions("personel");
+    const gridHtml = key => (key === "admin" ? `<p class="adm-muted">Yönetici tüm yetkilere sahiptir; ayrıca ayarlanmaz.</p>${permGrid({ checked: new Set(), full: true })}` : permGrid({ checked: rolePermissions(key), base: rolePermissions(key) }));
     HOF.formModal({
       title: "Yeni kullanıcı",
       eyebrow: "KULLANICI YÖNETİMİ",
+      size: "wide",
       fields: [
         { name: "name", label: "Ad soyad", required: true, autofocus: true, maxlength: 120 },
         { name: "username", label: "Kullanıcı adı", required: true, maxlength: 60, help: "Harf, rakam, nokta, tire; en az 3 karakter. Girişte büyük/küçük harf fark etmez." },
-        { name: "role", label: "Rol", type: "select", value: "personel", options: Object.entries(HOF.roleLabels).map(([value, label]) => ({ value, label })) },
+        { name: "role", label: "Rol", type: "select", value: "personel", options: allRoles().map(role => ({ value: role.key, label: role.builtIn ? role.label : `${role.label} (ofisin rolü)` })) },
         { name: "password", label: "İlk parola", required: true, value: password, help: "Bu parolayı kullanıcıya iletin. İsterseniz değiştirebilirsiniz." },
         { name: "mustChangePassword", label: "Kullanıcı ilk girişte parolasını değiştirsin (önerilir)", type: "checkbox", value: true },
       ],
+      extraHtml: `<details class="adm-perm-details"><summary>Yetkileri özelleştir <small>isteğe bağlı · seçilen rolün yetkileri işaretli gelir; ekleyip kaldırabilirsiniz</small></summary><div class="adm-perm-panel is-embedded"><div class="adm-perm-foot is-top"><span class="adm-perm-summary" data-summary></span></div><div data-grid>${gridHtml("personel")}</div></div></details>`,
       submitLabel: "Kullanıcıyı oluştur",
-      onSubmit: async data => {
-        await HOF.api("/api/admin/users", { method: "POST", body: data });
+      onOpen: dialog => {
+        const panel = dialog.querySelector(".adm-perm-panel");
+        wireGrid(panel, base);
+        dialog.querySelector('select[name="role"]').addEventListener("change", event => {
+          base = rolePermissions(event.target.value);
+          panel.querySelector("[data-grid]").innerHTML = gridHtml(event.target.value);
+          refreshTags(panel, event.target.value === "admin" ? null : base);
+          if (event.target.value === "admin") panel.querySelector("[data-summary]").textContent = "";
+        });
+      },
+      onSubmit: async (data, modal) => {
+        const body = { ...data };
+        if (data.role !== "admin") body.grants = grantsFrom(checkedIn(modal.dialog.querySelector("[data-grid]")), base);
+        await HOF.api("/api/admin/users", { method: "POST", body });
         HOF.toast(`${data.name} oluşturuldu. İlk parola: ${data.password}`, { type: "success", timeout: 12000 });
         loadUsers();
       },
     });
   }
 
+  // Rol düzenleyici: ad, açıklama ve havuzdan yetkiler. Yerleşik roller yalnız görüntülenir ya da kopyalanır.
+  function roleEditor(role = null, { copyFrom = "" } = {}) {
+    const start = role ? new Set(role.permissions) : copyFrom ? rolePermissions(copyFrom) : new Set();
+    HOF.formModal({
+      title: role ? `Rolü düzenle · ${role.label}` : "Yeni rol",
+      eyebrow: "ROLLER",
+      size: "wide",
+      intro: role ? `Bu rol ${role.users} kullanıcıda. Kaydedince hepsinin yetkileri hemen değişir (kişiye özel eklenen/kaldırılanlar korunur).` : "Rolün adını yazın ve bu roldeki kişilerin yapabileceklerini işaretleyin. Kullanıcı, sistem ve lisans yönetimi ile ANLIK DURUM kartı yalnız yönetici rolündedir.",
+      fields: [
+        { name: "name", label: "Rol adı", required: true, autofocus: !role, maxlength: 60, value: role?.label || "", placeholder: "Örn. Veznedar, Sekreter, Stajyer" },
+        { name: "description", label: "Kısa açıklama", maxlength: 200, value: role?.description || "", placeholder: "İsteğe bağlı" },
+      ],
+      extraHtml: `${role ? "" : `<label class="hof-field adm-role-start"><span>Başlangıç</span><select data-role-start><option value="">Boş (hiç yetki yok)</option>${roles.builtIn.filter(item => item.key !== "admin").map(item => `<option value="${esc(item.key)}" ${item.key === copyFrom ? "selected" : ""}>${esc(item.label)} yetkileriyle başla</option>`).join("")}${roles.custom.map(item => `<option value="${esc(item.key)}">${esc(item.label)} yetkileriyle başla</option>`).join("")}</select></label>`}<div class="adm-perm-panel is-embedded"><div class="adm-perm-foot is-top"><span class="adm-perm-summary" data-count></span></div><div data-grid>${permGrid({ checked: start })}</div></div>`,
+      submitLabel: role ? "Rolü kaydet" : "Rolü oluştur",
+      onOpen: dialog => {
+        const panel = dialog.querySelector(".adm-perm-panel");
+        const count = () => {
+          panel.querySelector("[data-count]").textContent = `${checkedIn(panel).size} yetki seçili`;
+        };
+        wireGrid(panel);
+        panel.addEventListener("change", count);
+        panel.addEventListener("click", () => setTimeout(count));
+        count();
+        dialog.querySelector("[data-role-start]")?.addEventListener("change", event => {
+          panel.querySelector("[data-grid]").innerHTML = permGrid({ checked: rolePermissions(event.target.value) });
+          count();
+        });
+      },
+      onSubmit: async (data, modal) => {
+        const permissions = [...checkedIn(modal.dialog.querySelector("[data-grid]"))];
+        const body = { name: data.name, description: data.description, permissions };
+        if (role) await HOF.api(`/api/admin/roles/${encodeURIComponent(role.key)}`, { method: "PATCH", body });
+        else await HOF.api("/api/admin/roles", { method: "POST", body });
+        HOF.toast(role ? `“${data.name}” rolü kaydedildi.` : `“${data.name}” rolü oluşturuldu. Kullanıcının rol listesinden seçebilirsiniz.`, { type: "success" });
+        loadUsers();
+      },
+    });
+  }
+  function viewRole(role) {
+    HOF.modal({
+      title: `${role.label} · yetkiler`,
+      eyebrow: "YERLEŞİK ROL",
+      size: "wide",
+      body: `<p class="hof-modal-text">${esc(ROLE_NOTES[role.key] || "")} Yerleşik roller değiştirilemez; kişiye özel yetki için kullanıcının “Yetkiler” düğmesini, farklı bir rol için “Bundan yeni rol”ü kullanın.</p><div class="adm-perm-panel is-embedded">${permGrid({ checked: new Set(role.permissions), full: role.key === "admin", readOnly: true })}</div>`,
+    });
+  }
+
+  // Satır içi ✎ düzeltme (sitedeki operatör merkezi gibi): Enter kaydeder, Esc vazgeçer.
+  function startInline(row, field) {
+    const user = users.find(item => item.id === row.dataset.id);
+    const holder = row.querySelector(`[data-inline="${field}"]`);
+    if (!user || !holder || holder.querySelector("form")) return;
+    const value = field === "name" ? user.name : user.username;
+    holder.innerHTML = `<form class="adm-edit-form"><input value="${esc(value)}" maxlength="${field === "name" ? 120 : 60}" aria-label="${field === "name" ? "Görünen ad" : "Kullanıcı adı"}" ${field === "username" ? 'autocomplete="off" spellcheck="false"' : ""}><button type="submit" class="adm-inline-ok" title="Kaydet" aria-label="Kaydet">✓</button><button type="button" class="adm-inline-cancel" data-inline-cancel title="Vazgeç" aria-label="Vazgeç">✕</button></form>${field === "username" ? '<small class="adm-inline-help">Giriş adı değişir; kişi yeni adla girer. Açık oturumu kapanmaz.</small>' : ""}`;
+    const form = holder.querySelector("form");
+    const input = form.querySelector("input");
+    input.focus();
+    input.select();
+    form.addEventListener("keydown", event => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        renderUsers();
+      }
+    });
+    form.addEventListener("submit", async event => {
+      event.preventDefault();
+      const next = input.value.trim();
+      if (!next || next === value) return renderUsers();
+      form.querySelector(".adm-inline-ok").disabled = true;
+      try {
+        await HOF.api(`/api/admin/users/${encodeURIComponent(user.id)}`, { method: "PATCH", body: { [field]: next } });
+        HOF.toast(field === "name" ? `Ad düzeltildi: ${next}` : `Kullanıcı adı düzeltildi: ${next}. Kişi artık bu adla giriş yapar.`, { type: "success", timeout: field === "name" ? 5000 : 9000 });
+        if (user.id === me.id && field === "name") {
+          me.name = next;
+          $("#adm-user").textContent = `${me.name} · ${HOF.roleLabels[me.role] || me.role}`;
+        }
+        loadUsers();
+      } catch (error) {
+        form.querySelector(".adm-inline-ok").disabled = false;
+        HOF.toastError(error);
+        input.focus();
+      }
+    });
+  }
+
+  // Silme: geçmiş korunur; açık görev varsa kime devredileceği sorulur. "Geri al" ile ya da Silinen kullanıcılar'dan döner.
+  async function deleteUser(user) {
+    const text = `${user.name} giriş yapamayacak ve listelerden çıkacak. Yaptığı işlemler, notlar, tahsilatlar ve mesajlar geçmişte adıyla kalır. Kullanıcı adı ve ad yeni bir hesaba verilebilir. Aşağıdaki “Silinen kullanıcılar” bölümünden geri alınabilir.`;
+    const remove = async reassignTo => {
+      const result = await HOF.api(`/api/admin/users/${encodeURIComponent(user.id)}${reassignTo ? `?reassignTo=${encodeURIComponent(reassignTo)}` : ""}`, { method: "DELETE" });
+      HOF.toast(`${user.name} silindi.${result.reassigned ? ` ${result.reassigned} açık görev devredildi.` : ""}`, {
+        type: "success",
+        timeout: 9000,
+        action: {
+          label: "Geri al",
+          onClick: async () => {
+            try {
+              await HOF.api(`/api/admin/users/${encodeURIComponent(user.id)}/restore`, { method: "POST", body: {} });
+              HOF.toast(`${user.name} geri alındı.${result.reassigned ? " Devredilen görevler yeni kişide kalır." : ""}`, { type: "success" });
+            } catch (error) {
+              HOF.toastError(error);
+            }
+            loadUsers();
+          },
+        },
+      });
+      if (openPanelFor === user.id) openPanelFor = "";
+      loadUsers();
+    };
+    if (user.openTasks) {
+      const heirs = users.filter(item => item.id !== user.id && item.active);
+      HOF.formModal({
+        title: `${user.name} silinsin mi?`,
+        eyebrow: "KULLANICIYI SİL",
+        intro: text,
+        fields: [
+          {
+            name: "reassignTo",
+            label: `Açık ${user.openTasks} görevi kime devredilsin?`,
+            type: "select",
+            value: me.id,
+            options: [...heirs.map(item => ({ value: item.id, label: `${item.name}${item.id === me.id ? " (siz)" : ""} · ${item.roleLabel || roleLabel(item.roleKey)}` })), { value: "keep", label: "Devretme — görevler silinen kişide kalsın" }],
+          },
+        ],
+        submitLabel: "Kullanıcıyı sil",
+        onOpen: dialog => dialog.querySelector('button[type="submit"]').classList.add("hof-button-danger"),
+        onSubmit: data => remove(data.reassignTo),
+      });
+      return;
+    }
+    if (!(await HOF.confirm({ title: `${user.name} silinsin mi?`, message: text, confirmLabel: "Kullanıcıyı sil", danger: true }))) return;
+    try {
+      await remove("");
+    } catch (error) {
+      HOF.toastError(error);
+    }
+  }
+  // Geri alma: eski kullanıcı adı ya da ad artık başka hesaptaysa yenisi sorulur.
+  async function restoreUser(id, row) {
+    const name = row.querySelector("b").textContent;
+    const username = row.querySelector("code").textContent;
+    const done = () => {
+      HOF.toast(`${name} geri alındı; eski parolasıyla giriş yapabilir.`, { type: "success" });
+      loadUsers();
+    };
+    try {
+      await HOF.api(`/api/admin/users/${encodeURIComponent(id)}/restore`, { method: "POST", body: {} });
+      return done();
+    } catch (error) {
+      if (!["USERNAME_TAKEN", "NAME_TAKEN"].includes(error.data?.code)) return HOF.toastError(error);
+      HOF.formModal({
+        title: `${name} geri alınıyor`,
+        eyebrow: "SİLİNEN KULLANICI",
+        intro: error.message,
+        fields: [
+          { name: "name", label: "Görünen ad", required: true, maxlength: 120, value: error.data.code === "NAME_TAKEN" ? `${name} (2)` : name },
+          { name: "username", label: "Kullanıcı adı", required: true, maxlength: 60, value: `${username}2` },
+        ],
+        submitLabel: "Geri al",
+        onSubmit: async data => {
+          await HOF.api(`/api/admin/users/${encodeURIComponent(id)}/restore`, { method: "POST", body: data });
+          done();
+        },
+      });
+    }
+  }
+
   $("#adm-users").addEventListener("change", async event => {
     if (!event.target.classList.contains("adm-role")) return;
     const row = event.target.closest("tr");
+    const user = users.find(item => item.id === row.dataset.id);
+    const next = event.target.value;
+    if (next === "admin" && !(await HOF.confirm({ title: "Yönetici yapılsın mı?", message: `${user.name} yönetici olunca kullanıcıları, yedekleri, sistemi ve lisansı yönetir; ANLIK DURUM kartını görür. Kişiye özel yetki ayarları yöneticiye uygulanmaz.`, confirmLabel: "Yönetici yap" }))) return renderUsers();
     try {
-      await HOF.api(`/api/admin/users/${encodeURIComponent(row.dataset.id)}`, { method: "PATCH", body: { role: event.target.value } });
-      HOF.toast("Rol güncellendi.", { type: "success" });
+      await HOF.api(`/api/admin/users/${encodeURIComponent(row.dataset.id)}`, { method: "PATCH", body: { role: next } });
+      HOF.toast(`${user.name}: rol “${roleLabel(next)}” oldu.`, { type: "success" });
     } catch (error) {
       HOF.toastError(error);
     }
@@ -164,25 +512,54 @@
   $("#adm-users").addEventListener("click", async event => {
     const button = event.target.closest("button");
     if (!button || button.disabled) return;
-    const row = button.closest("tr");
-    const id = row.dataset.id;
-    const name = row.querySelector("b").textContent;
-    // Kişiye özel ek yetki (v2.0.7): ANLIK DURUM ve raporlar — yönetici tek tık ile açar/kapatır.
-    if (button.dataset.grant) {
-      const granted = [...row.querySelectorAll("[data-grant].is-on")].map(node => node.dataset.grant);
-      const next = button.classList.contains("is-on") ? granted.filter(item => item !== button.dataset.grant) : [...granted, button.dataset.grant];
-      try {
-        await HOF.api(`/api/admin/users/${encodeURIComponent(id)}`, { method: "PATCH", body: { grants: next } });
-        HOF.toast(next.includes(button.dataset.grant) ? `${name}: ${button.textContent} açıldı.` : `${name}: ${button.textContent} kapatıldı.`, { type: "success" });
-      } catch (error) {
-        HOF.toastError(error);
+    const permRowNode = button.closest(".adm-perm-row");
+    if (permRowNode) {
+      const user = users.find(item => item.id === permRowNode.dataset.permFor);
+      const panel = permRowNode.querySelector(".adm-perm-panel");
+      const base = rolePermissions(user.roleKey);
+      if ("permCancel" in button.dataset) {
+        openPanelFor = "";
+        return renderUsers();
       }
-      return loadUsers();
+      if ("permReset" in button.dataset) {
+        panel.querySelectorAll("[data-perm]:not(:disabled)").forEach(input => {
+          input.checked = base.has(input.dataset.perm);
+        });
+        return refreshTags(panel, base);
+      }
+      if ("permSave" in button.dataset) {
+        button.disabled = true;
+        try {
+          const grants = grantsFrom(checkedIn(panel), base);
+          await HOF.api(`/api/admin/users/${encodeURIComponent(user.id)}`, { method: "PATCH", body: { grants } });
+          HOF.toast(`${user.name}: yetkiler kaydedildi${grants.add.length || grants.remove.length ? ` (${grants.add.length} eklendi, ${grants.remove.length} kaldırıldı)` : " (rolün varsayılanı)"}. Açık ekranı hemen güncellenir.`, { type: "success" });
+          openPanelFor = "";
+          loadUsers();
+        } catch (error) {
+          button.disabled = false;
+          HOF.toastError(error);
+        }
+      }
+      return;
     }
+    const row = button.closest("tr");
+    if (!row?.dataset.id) return;
+    const id = row.dataset.id;
+    const user = users.find(item => item.id === id);
+    const name = user?.name || "";
+    if ("inlineCancel" in button.dataset) return renderUsers();
+    if (button.dataset.edit) return startInline(row, button.dataset.edit);
+    if ("perms" in button.dataset) {
+      openPanelFor = openPanelFor === id ? "" : id;
+      renderUsers();
+      document.querySelector(".adm-perm-panel")?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+      return;
+    }
+    if ("delete" in button.dataset) return deleteUser(user);
     try {
       if ("toggle" in button.dataset) {
         const activate = !button.classList.contains("is-active");
-        if (!activate && !(await HOF.confirm({ title: "Kullanıcıyı pasifleştir", message: `${name} artık giriş yapamayacak ve açık oturumları kapanacak. Kayıtları silinmez.`, confirmLabel: "Pasifleştir", danger: true }))) return;
+        if (!activate && !(await HOF.confirm({ title: "Kullanıcıyı pasifleştir", message: `${name} artık giriş yapamayacak ve açık oturumları kapanacak. Kayıtları silinmez; yeniden aktifleştirebilirsiniz.`, confirmLabel: "Pasifleştir", danger: true }))) return;
         await HOF.api(`/api/admin/users/${encodeURIComponent(id)}`, { method: "PATCH", body: { active: activate } });
         HOF.toast(activate ? `${name} aktifleştirildi.` : `${name} pasifleştirildi.`, { type: "success" });
       } else if ("reset" in button.dataset) {
@@ -211,6 +588,34 @@
       HOF.toastError(error);
     }
     loadUsers();
+  });
+
+  $("#adm-role-list").addEventListener("click", async event => {
+    const button = event.target.closest("button");
+    const card = button?.closest("[data-role]");
+    if (!card) return;
+    const role = roleOf(card.dataset.role);
+    if (!role) return;
+    if ("roleView" in button.dataset) return viewRole(role);
+    if ("roleCopy" in button.dataset) return roleEditor(null, { copyFrom: role.key });
+    if ("roleEdit" in button.dataset) return roleEditor(role);
+    if ("roleDelete" in button.dataset) {
+      if (role.users) return HOF.toast(`“${role.label}” rolü ${role.users} kullanıcıda kullanılıyor. Önce o kullanıcıları başka bir role geçirin.`, { type: "error", timeout: 8000 });
+      if (!(await HOF.confirm({ title: `“${role.label}” rolü silinsin mi?`, message: "Rol listeden kalkar. Bu rolü kullanan kimse yok.", confirmLabel: "Rolü sil", danger: true }))) return;
+      try {
+        await HOF.api(`/api/admin/roles/${encodeURIComponent(role.key)}`, { method: "DELETE" });
+        HOF.toast(`“${role.label}” rolü silindi.`, { type: "success" });
+      } catch (error) {
+        HOF.toastError(error);
+      }
+      loadUsers();
+    }
+  });
+  $("#adm-deleted-body").addEventListener("click", event => {
+    const button = event.target.closest("[data-restore]");
+    if (!button) return;
+    const row = button.closest("tr");
+    restoreUser(row.dataset.deleted, row);
   });
 
   // ---------- Yedekler ----------
@@ -304,9 +709,19 @@
   const detail = event => {
     const payload = event.payload || {};
     const parts = [];
+    if (event.type === "user.renamed" || (event.type === "user.updated" && (payload.previousName || payload.previousUsername))) {
+      if (payload.previousName) parts.push(`Ad: "${payload.previousName}" → "${payload.name}"`);
+      if (payload.previousUsername) parts.push(`Kullanıcı adı: ${payload.previousUsername} → ${payload.username}`);
+      if (event.type === "user.renamed") return parts.join(" · ");
+    }
+    if (event.type === "user.deleted") return [`${payload.name} (${payload.username})`, payload.openTasks ? `${payload.openTasks} açık görev${payload.reassignedTo ? ` → ${payload.reassignedTo}` : " kişide kaldı"}` : ""].filter(Boolean).join(" · ");
+    if (event.type === "user.restored") return `${payload.name} (${payload.username})`;
+    if (event.type.startsWith("role.")) return [payload.name, payload.permissions ? `${payload.permissions.length} yetki` : ""].filter(Boolean).join(" · ");
+    if (event.type === "user.updated" && payload.grants) parts.push(`Kişiye özel: ${payload.grants.add?.length || 0} eklendi, ${payload.grants.remove?.length || 0} kaldırıldı`);
     if (payload.caseKey) parts.push(`Kayıt ${payload.caseKey}`);
     if (payload.field) parts.push(`${payload.field}: "${payload.previousValue ?? ""}" → "${payload.value ?? ""}"`);
-    if (payload.username) parts.push(`${payload.username} (${HOF.roleLabels[payload.role] || payload.role || ""})`);
+    if (payload.username && !payload.previousUsername) parts.push(`${payload.username}${payload.role ? ` (${HOF.roleLabels[payload.role] || payload.role})` : ""}`);
+    else if (!payload.username && payload.role && event.type === "user.updated") parts.push(`Rol: ${HOF.roleLabels[payload.role] || payload.role}${payload.active === false ? " · pasif" : ""}`);
     if (payload.fileName) parts.push(`${payload.fileName} · ${payload.rows} kayıt`);
     if (event.type === "dataset.imported") {
       const modes = { initial: "ilk yükleme", merge: "devamı olarak", replace: "yerine koyarak" };
@@ -672,6 +1087,7 @@
     if (tab) selectTab(tab.dataset.tab);
   });
   $("#adm-new-user").addEventListener("click", newUser);
+  $("#adm-new-role").addEventListener("click", () => roleEditor());
   $("#adm-logout").addEventListener("click", () => HOF.logout());
   $("#adm-password").addEventListener("click", () => HOF.changePassword());
 
@@ -696,13 +1112,14 @@
       return;
     }
     $("#adm-user").textContent = `${me.name} · ${HOF.roleLabels[me.role] || me.role}`;
-    if (!HOF.can("users.manage") && !HOF.can("audit.view")) {
+    // v2.0.10: Yönetim paneli yalnız yönetici rolündedir (kullanıcı ve rol yönetimi yönetime özgüdür).
+    if (!HOF.can("users.manage")) {
       $("#adm-denied").hidden = false;
       return;
     }
     $("#adm-app").hidden = false;
     const visible = [...document.querySelectorAll(".adm-tabs [data-tab]")].filter(button => getComputedStyle(button).display !== "none").map(button => button.dataset.tab);
-    const requested = location.hash.slice(1);
+    const requested = location.hash.slice(1) === "recovery" ? "users" : location.hash.slice(1);
     // Lisans etkinleştirilmemiş veya salt okunurken yönetici önce Lisans sekmesini görür.
     const needsLicense = me.license && !me.license.writable && visible.includes("license");
     selectTab(visible.includes(requested) ? requested : needsLicense ? "license" : visible[0]);

@@ -63,8 +63,9 @@ try {
     ok(/6 kişinin ödeme planı/.test(toast), `bildirim metni: ${toast}`);
     await page.evaluate(() => document.querySelectorAll(".hof-notice").forEach(node => node.remove()));
     await shot("yukleme-sonrasi-soru");
-    ok(await page.$(".hof-toast .hof-toast-action"), "bildirimde 'Ön izle ve aktar' düğmesi var");
-    await page.click(".hof-toast .hof-toast-action");
+    const action = '.hof-toast:has-text("Taksitler\'e aktarılsın mı") .hof-toast-action';
+    ok(await page.$(action), "bildirimde 'Ön izle ve aktar' düğmesi var");
+    await page.click(action);
     await page.waitForSelector(".hof-transfer-modal .hof-transfer-table", { timeout: 30000 });
   });
 

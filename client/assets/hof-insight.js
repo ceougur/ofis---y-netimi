@@ -206,6 +206,8 @@
       if (!element) continue;
       writeText(element, original => labelFor(slot, original));
       if (!element.classList.contains("hof-label-slot")) element.classList.add("hof-label-slot");
+      // v2.0.10: tablonun üstündeki "N kayıt · N kolon" satırı gizlidir; kalemle kendi açıklamasını yazan ofiste görünür.
+      if (slot.key === "table.subtitle") element.classList.toggle("hof-meta-custom", Boolean(profile?.labels?.[slot.key]));
       // Birden çok sekmede tablo başlığı sekmenin adıdır; kalem yalnızca başlık değiştirilebildiğinde görünür.
       if (manage && (!slot.when || slot.when())) ensurePencil(element, slot);
       else element.querySelector(":scope > .hof-label-pencil")?.remove();

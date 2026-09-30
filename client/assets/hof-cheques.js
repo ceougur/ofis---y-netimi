@@ -31,7 +31,8 @@
   const dueBadge = cheque => (cheque.open ? `<small class="hof-rep-days is-${esc(cheque.dueStateKey)}">${cheque.days < 0 ? `${Math.abs(cheque.days)} gün geçti` : cheque.days === 0 ? "bugün" : `${cheque.days} gün kaldı`}</small>` : "");
   const listQuery = (extra = {}) => new URLSearchParams(Object.fromEntries(Object.entries({ direction: view.direction, status: view.status, q: view.q, from: view.from, to: view.to, sort: view.sort, ...extra }).filter(([, value]) => value !== "" && value !== undefined))).toString();
 
-  function open({ id = "", direction } = {}) {
+  // action (v2.0.10): tahsilat şeridinden/bildirimden "Tahsil et" ya da "Ödeme yap" denince kart açılır açılmaz işlem formu gelir.
+  function open({ id = "", direction, action = "" } = {}) {
     if (!HOF.can("cheques.view")) return HOF.toast("Çek / senet kasa yetkisi olan hesaplara açıktır.", { type: "error" });
     if (direction !== undefined) view.direction = direction;
     if (!modal) {
@@ -59,7 +60,7 @@
         if (event.key === "Enter" && event.target.closest("tr[data-cheque]")) loadCheque(event.target.closest("tr[data-cheque]").dataset.cheque);
       });
     }
-    if (id) return loadCheque(id);
+    if (id) return loadCheque(id, action);
     view.mode = "list";
     renderList();
     loadList();
@@ -77,7 +78,7 @@
       if (ticket === listRequest && body()) body().innerHTML = `<p class="hof-empty">${esc(error.message)}</p>`;
     }
   }
-  async function loadCheque(id) {
+  async function loadCheque(id, action = "") {
     const ticket = ++cardRequest;
     try {
       const cheque = await HOF.api(`/api/workspace/cheques/${encodeURIComponent(id)}`);
@@ -86,6 +87,7 @@
       view.id = id;
       view.mode = "card";
       renderCard();
+      if (action && cheque.actions?.some(item => item.key === action)) actionForm(cheque, action);
     } catch (error) {
       if (ticket !== cardRequest) return;
       HOF.toastError(error);

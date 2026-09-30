@@ -1,12 +1,12 @@
 // Kalıcı çalışma verisi uçları: durum, içeri alma (önizleme + uygulama), eşitleme, bağlantı ve veri kaldırma.
 // Veriyi yükleme, değiştirme ve kaldırma yalnızca yönetici yetkisindedir (sources.manage).
 import { HttpError, ok, readJson, text } from "../lib/http.mjs";
-import { can } from "../lib/permissions.mjs";
+import { canUser } from "../lib/permissions.mjs";
 
 export function registerDatasetRoutes(router, { auth, dataset, clientState, profile }) {
   router.get("/api/workspace/dataset", async ({ req, res }) => {
     const user = auth.requireUser(req);
-    ok(res, dataset.summary({ detailed: can(user.role, "sources.manage") }));
+    ok(res, dataset.summary({ detailed: canUser(user, "sources.manage") }));
   });
 
   // 1. adım: dosya/bağlantı okunur ve mevcut veriyle karşılaştırılır; hiçbir şey değişmez.
@@ -57,7 +57,7 @@ export function registerDatasetRoutes(router, { auth, dataset, clientState, prof
   // ve silmek veri yönetimi yetkisindedir.
   router.get("/api/workspace/sessions", async ({ req, res }) => {
     const user = auth.requireUser(req);
-    ok(res, { current: dataset.currentKey(), sessions: dataset.sessions(), canManage: can(user.role, "sources.manage") });
+    ok(res, { current: dataset.currentKey(), sessions: dataset.sessions(), canManage: canUser(user, "sources.manage") });
   });
 
   router.post("/api/workspace/sessions/select", async ({ req, res }) => {

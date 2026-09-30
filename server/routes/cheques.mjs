@@ -11,7 +11,7 @@ import { ACTIONS, DIRECTIONS, EVENT_LABELS, INSTRUMENTS, STATUSES, dueState, ini
 import { HttpError, limited, ok, readJson, sendBuffer, text } from "../lib/http.mjs";
 import { findHeaderRow, inferRolesByValues, sanitizeCell, validateRows } from "../lib/import-gate.mjs";
 import { parseAmount, roundMoney } from "../lib/money.mjs";
-import { can } from "../lib/permissions.mjs";
+import { canUser } from "../lib/permissions.mjs";
 import { dayText, isoDay, parseDay } from "../lib/plans.mjs";
 import { tablePdf, tl } from "../lib/report-pdf.mjs";
 import { buildXlsx } from "../lib/xlsx-write.mjs";
@@ -98,7 +98,7 @@ export function registerChequeRoutes(router, { store, auth, audit, events, accou
   function detail(id, user) {
     const cheque = shapeRow(chequeRow(id));
     const history = eventsOf(cheque.id);
-    const manage = can(user.role, "cheques.manage");
+    const manage = canUser(user, "cheques.manage");
     const actions = manage ? Object.entries(ACTIONS).filter(([, rule]) => rule.from.includes(cheque.status)).map(([key, rule]) => ({ key, label: rule.label })) : [];
     const last = history.at(-1);
     return {
@@ -150,7 +150,7 @@ export function registerChequeRoutes(router, { store, auth, audit, events, accou
     }[sort];
     out.sort(compare);
     const listed = out.reduce((acc, row) => ({ count: acc.count + 1, amount: roundMoney(acc.amount + row.amount) }), { count: 0, amount: 0 });
-    return { cheques: out, listed, summary: portfolioSummary(rows, day), today: day, canManage: can(user.role, "cheques.manage") };
+    return { cheques: out, listed, summary: portfolioSummary(rows, day), today: day, canManage: canUser(user, "cheques.manage") };
   }
   // Salt okunur liste ve dışa aktarım: çek yetkisi ya da ANLIK DURUM yetkisi (Rapor Al › Çek / Senet sekmesi) yeter.
   const requireReader = req => {

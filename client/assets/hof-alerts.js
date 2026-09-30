@@ -221,7 +221,7 @@
   const canPay = item => (isCheque(item) ? HOF.can("cheques.manage") && Boolean(HOF.cheques) : isPlan(item) ? HOF.can("plans.collect") && Boolean(HOF.plans) : HOF.can("payments.create") && Boolean(HOF.workspace?.payment));
   const pay = item =>
     isCheque(item)
-      ? HOF.cheques.open({ id: item.chequeId })
+      ? HOF.cheques.open({ id: item.chequeId, action: item.direction === "out" ? "pay" : "collect" })
       : isPlan(item)
       ? HOF.plans.pay(item)
       : HOF.workspace.payment({ key: item.caseKey, title: who(item), amount: item.amount, note: `${item.label} · ${item.dueText}`, intro: `<b>${esc(item.label)}</b> · vade ${esc(item.dueText)}${item.amount ? ` · beklenen <b>${esc(money(item.amount))}</b>` : ""}.` });
@@ -410,6 +410,14 @@
     lastRefreshAt = Date.now();
     const all = alerts();
     updateBadge(all);
+    // v2.0.10: kapanan kalemin (tahsilat girildi, çek ödendi, taksit alındı, başka bilgisayarda kapatıldı) bekleyen ve
+    // ekrandaki bildirimi de düşer; program yeniden açılmayı beklemez.
+    const current = new Set(all.map(item => item.id));
+    queue = queue.filter(item => item.summary || current.has(item.id));
+    if (showing && !showing.summary && !current.has(showing.id)) {
+      const node = document.querySelector("#hof-notices .hof-notice.is-visible") || document.querySelector("#hof-notices .hof-notice");
+      if (node) hide(node);
+    }
     // Yeni tur (3 saatte bir): yine ilk birkaç bildirim ve bir özet.
     if (Date.now() - roundStart >= REPEAT_MS) {
       roundStart = Date.now();

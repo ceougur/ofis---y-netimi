@@ -47,7 +47,7 @@
   };
   const SELECTS = {
     type: { label: "Cari türü", options: [["", "Tüm cariler"], ["customer", "Müşteriler"], ["supplier", "Tedarikçiler"], ["other", "Diğer"]] },
-    side: { label: "Bakiye", options: [["", "Tümü"], ["debtor", "Bize borçlu"], ["creditor", "Biz borçluyuz"], ["zero", "Kapalı"], ["overdue", "Geciken taksiti olan"]] },
+    side: { label: "Bakiye", options: [["", "Tümü"], ["debtor", "Borçlular"], ["creditor", "Alacaklılar"], ["nonzero", "Sadece bakiyesi olanlar"], ["zero", "Kapalı (bakiyesi sıfır)"], ["overdue", "Geciken taksiti olan"]] },
     direction: { label: "Yön", options: [["", "Alınan ve verilen"], ["in", "Alınan"], ["out", "Verilen"]] },
     status: { label: "Durum", options: [["", "Tüm durumlar"], ["open", "Açık (portföyde / ödenecek)"], ["overdue", "Vadesi geçmiş"], ["soon", "7 gün içinde"], ["collected", "Tahsil edildi"], ["endorsed", "Ciro edildi"], ["paid", "Ödendi"], ["bounced", "Karşılıksız / iade"]] },
     state: { label: "Kalem", options: [["", "Tüm kalemler"], ["low", "Kritik seviyedekiler"], ["out", "Tükenenler"], ["product", "Ürünler"], ["service", "Hizmetler"]] },
@@ -57,8 +57,8 @@
 
   // Raporlar penceresindeki "Tüm raporlar" sekmesine kurulur (hof-overview.js). Sekme her açılışta yeni düğüm verir.
   async function mount(host, reportId = "") {
-    if (!HOF.can("overview.view")) {
-      host.innerHTML = '<p class="hof-empty">Bu raporlar yönetici ve yöneticinin ANLIK DURUM yetkisi verdiği kişiler içindir.</p>';
+    if (!HOF.can("overview.view") && !HOF.can("audit.view")) {
+      host.innerHTML = '<p class="hof-empty">Bu raporlar yönetici ve yöneticinin finans raporları yetkisi verdiği kişiler içindir.</p>';
       return;
     }
     const wanted = reportId || lastId;

@@ -5,7 +5,7 @@ import { analyzeColumns } from "../lib/insight/columns.mjs";
 import { proposeFixes, summarizeFix } from "../lib/insight/fixes.mjs";
 import { HttpError, ok, readJson, text } from "../lib/http.mjs";
 import { columnOrder } from "../lib/sources.mjs";
-import { can } from "../lib/permissions.mjs";
+import { canUser } from "../lib/permissions.mjs";
 import { sectorById, sectorCatalog } from "../lib/insight/sectors.mjs";
 
 const CATALOG = sectorCatalog();
@@ -132,7 +132,7 @@ export function registerInsightRoutes(router, { auth, profile, dataset, store, a
     const user = auth.requireUser(req);
     const analysis = await profile.analysis();
     // Mantık denetiminin tam bulgu listesi sunucuda kalır; istemciye özet (kurallar, gruplar, işaretli kayıtlar) gider.
-    const shaped = shapeAnalysis(analysis, { manage: can(user.role, "profile.manage"), find: profile.findSector });
+    const shaped = shapeAnalysis(analysis, { manage: canUser(user, "profile.manage"), find: profile.findSector });
     ok(res, { analysis: { ...shaped, reasoning: profile.reasoningSummary(analysis.reasoning) }, profile: profile.profile() });
   });
 

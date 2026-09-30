@@ -6,7 +6,7 @@ import path from "node:path";
 import { HttpError, SECURITY_HEADERS, limited, ok, readBuffer, sendBuffer, text } from "../lib/http.mjs";
 import { MAX_DOCUMENT_BYTES, cleanDocumentName, createDocumentStore, detectDocumentType } from "../lib/documents.mjs";
 import { createZip } from "../lib/zip.mjs";
-import { can } from "../lib/permissions.mjs";
+import { canUser } from "../lib/permissions.mjs";
 
 const KINDS_VIEWABLE = new Set(["application/pdf", "image/jpeg", "image/png", "image/gif", "image/webp"]);
 
@@ -22,7 +22,7 @@ export function registerDocumentRoutes(router, { store, auth, audit, events, con
     if (!key) throw new HttpError(400, "Dosya kimliği gerekli.");
     return key;
   };
-  const canDelete = (user, row) => row.created_by === user.id ? can(user.role, "documents.upload") : can(user.role, "documents.manage");
+  const canDelete = (user, row) => row.created_by === user.id ? canUser(user, "documents.upload") : canUser(user, "documents.manage");
   const shape = (user, row) => ({
     id: row.id,
     name: row.name,

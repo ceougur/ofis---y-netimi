@@ -210,38 +210,268 @@
     return true;
   }
 
+  // "+ Sayfa" penceresi (v2.0.10): boş sayfa, Excel dosyasından ya da Google Sheets'ten. Aktarılan sayfa bir kopyadır:
+  // başlıklar, değerler ve formüller gelir; kaynakta sonradan yapılan değişiklik buraya gelmez.
+  const LIMITS = { columns: 500, rows: 2000, cells: 250_000 }; // sunucudaki FREE_LIMITS ile aynı
+  const parseExcel = file =>
+    new Promise((resolve, reject) => {
+      let worker;
+      try {
+        worker = new Worker("/assets/hof-excel-worker.js", { type: "module" });
+      } catch {
+        reject(new Error("Tarayıcınız Excel okumayı desteklemiyor. Chrome ya da Edge'in güncel sürümünü kullanın."));
+        return;
+      }
+      const timer = setTimeout(() => {
+        worker.terminate();
+        reject(new Error("Excel dosyası 90 saniyede okunamadı. Dosyayı sadeleştirip yeniden deneyin."));
+      }, 90_000);
+      worker.onmessage = event => {
+        clearTimeout(timer);
+        worker.terminate();
+        if (event.data.ok) resolve(event.data);
+        else reject(new Error(`Excel dosyası okunamadı: ${event.data.error}`));
+      };
+      worker.onerror = event => {
+        clearTimeout(timer);
+        worker.terminate();
+        reject(new Error(event.message || "Excel dosyası okunamadı. .xlsx, .xls ya da .csv dosyası seçin."));
+      };
+      file.arrayBuffer().then(buffer => worker.postMessage({ buffer, name: file.name }, [buffer]), reject);
+    });
+  // Ön izleme için sunucudaki kuralın özeti: ilk dolu satır başlık, altındakiler veri (boş sondakiler hariç).
+  function shapeOf(sheet) {
+    const rows = sheet.matrix || [];
+    const filled = row => (row || []).some(cell => String(cell ?? "").trim());
+    const countOf = row => (row || []).filter(cell => String(cell ?? "").trim()).length;
+    // Sunucudaki kural (free-import.mjs headerRowOf): başlık yazısı gibi tek hücreli üst satırlar atlanır.
+    const counts = [];
+    for (let i = 0; i < rows.length && counts.length < 15; i += 1) if (countOf(rows[i])) counts.push([i, countOf(rows[i])]);
+    if (!counts.length) return { empty: true, rows: 0, columns: 0, formulas: 0, head: -1 };
+    const most = Math.max(...counts.map(item => item[1]));
+    const head = most < 2 ? counts[0][0] : counts.find(item => item[1] >= Math.max(2, Math.ceil(most / 2)))[0];
+    const skipped = counts.filter(item => item[0] < head).length;
+    let last = rows.length - 1;
+    while (last > head && !filled(rows[last])) last -= 1;
+    let first = Infinity;
+    let end = -1;
+    for (let i = head; i <= last; i += 1) (rows[i] || []).forEach((cell, c) => {
+      if (String(cell ?? "").trim()) {
+        first = Math.min(first, c);
+        end = Math.max(end, c);
+      }
+    });
+    return { empty: false, head, last, first, end, skipped, rows: last - head, columns: end - first + 1, formulas: (sheet.formulas || []).length };
+  }
+  function previewHtml(sheet) {
+    const shape = shapeOf(sheet);
+    if (shape.empty) return '<p class="hof-free-import-note is-warn">Bu sayfa boş; aktarılacak hücre yok.</p>';
+    const rows = sheet.matrix.slice(shape.head, Math.min(shape.last, shape.head + 5) + 1);
+    const cols = Array.from({ length: Math.min(shape.columns, 8) }, (_, n) => shape.first + n);
+    const table = `<div class="hof-free-import-table"><table><thead><tr>${cols.map(c => `<th>${esc(String(rows[0][c] ?? ""))}</th>`).join("")}${shape.columns > 8 ? "<th>…</th>" : ""}</tr></thead><tbody>${rows
+      .slice(1)
+      .map(row => `<tr>${cols.map(c => `<td>${esc(String(row[c] ?? ""))}</td>`).join("")}${shape.columns > 8 ? "<td>…</td>" : ""}</tr>`)
+      .join("")}</tbody></table></div>`;
+    const tooBig = shape.rows > LIMITS.rows || shape.columns > LIMITS.columns || shape.rows * shape.columns > LIMITS.cells;
+    const facts = `<p class="hof-free-import-note${tooBig ? " is-warn" : ""}"><b>${shape.rows.toLocaleString("tr-TR")} satır × ${shape.columns.toLocaleString("tr-TR")} kolon</b>${shape.formulas ? ` · ${shape.formulas.toLocaleString("tr-TR")} formül` : ""}. Kolon başlıkları: <b>${esc(cols.map(c => String(rows[0][c] ?? "")).filter(Boolean).slice(0, 4).join(", ") || "—")}</b>${shape.columns > 4 ? "…" : ""}.${shape.skipped ? ` Başlığın üstündeki ${shape.skipped} satır (sayfa başlığı gibi) alınmaz.` : ""}${tooBig ? ` Serbest sayfa en fazla ${LIMITS.rows.toLocaleString("tr-TR")} satır ve ${LIMITS.columns} kolon alır; büyük tablolar için ana veri yüklemesini (açılış ekranı ya da Ayarlar → Veri) kullanın.` : ""}</p>`;
+    return facts + table;
+  }
+  const importedText = result => {
+    const info = result.imported || {};
+    return `“${result.name}” sayfası aktarıldı: ${Number(info.rows || 0).toLocaleString("tr-TR")} satır, ${info.columns || 0} kolon${info.formulas ? `, ${info.formulas} formül programda çalışıyor` : ""}${info.asValues ? `; ${info.asValues} formül değeriyle aktarıldı (başka sayfaya başvuru ya da programın tanımadığı işlev)` : ""}${info.skippedAbove ? `; başlığın üstündeki ${info.skippedAbove} satır alınmadı` : ""}.`;
+  };
+
   function openCreate() {
     if (!canCreate()) return HOF.toast("Sayfa ekleme yetkiniz yok.", { type: "error" });
-    HOF.formModal({
+    const modal = HOF.modal({
       title: "Yeni sayfa",
       eyebrow: "SERBEST SAYFA",
-      intro: "Sayfa, verinizin sekmelerinin yanına eklenir ve Excel gibi doldurulur: başlıkları ve hücreleri yazın, siz başka hücreye geçince kaydedilir. Satır, kolon ve formül (Alt toplam, Yan toplam…) sonradan da eklenir.",
-      fields: [
-        { name: "name", label: "Sayfa adı", required: true, autofocus: true, maxlength: 60, placeholder: "ör. Masraflar" },
-        { name: "columns", label: "Kolon sayısı", type: "number", value: "5", min: 1, step: 1, inputmode: "numeric", help: "İstediğiniz kadar kolon (500'e kadar); sonradan da ekleyebilirsiniz." },
-        { name: "rows", label: "Satır sayısı", type: "number", value: "20", min: 1, step: 1, inputmode: "numeric" },
-        { name: "names", label: "Kolon başlıkları (isteğe bağlı)", type: "textarea", rows: 3, maxlength: 4000, placeholder: "Virgülle ayırın ya da her satıra bir başlık yazın: Tarih, Açıklama, Tutar", help: "Boş bırakırsanız başlıkları sayfada yazarsınız." },
-      ],
-      submitLabel: "Sayfayı oluştur",
-      onSubmit: async data => {
+      size: "wide",
+      body: `<div class="hof-free-source" role="tablist" aria-label="Sayfanın kaynağı">
+          <button type="button" role="tab" data-source="blank" aria-selected="true"><b>Boş sayfa</b><small>Excel gibi kendiniz doldurun</small></button>
+          <button type="button" role="tab" data-source="excel" aria-selected="false"><b>Excel dosyasından aktar</b><small>.xlsx, .xls, .csv</small></button>
+          <button type="button" role="tab" data-source="sheets" aria-selected="false"><b>Google Sheets'ten aktar</b><small>Paylaşılan tablo bağlantısı</small></button>
+        </div>
+        <form class="hof-form" data-pane="blank" novalidate>
+          <p class="hof-modal-text">Sayfa, verinizin sekmelerinin yanına eklenir ve Excel gibi doldurulur: başlıkları ve hücreleri yazın, siz başka hücreye geçince kaydedilir. Satır, kolon ve formül (Alt toplam, Yan toplam…) sonradan da eklenir.</p>
+          ${[
+            { name: "name", label: "Sayfa adı", required: true, maxlength: 60, placeholder: "ör. Masraflar" },
+            { name: "columns", label: "Kolon sayısı", type: "number", value: "5", min: 1, step: 1, inputmode: "numeric", help: "İstediğiniz kadar kolon (500'e kadar); sonradan da ekleyebilirsiniz." },
+            { name: "rows", label: "Satır sayısı", type: "number", value: "20", min: 1, step: 1, inputmode: "numeric" },
+            { name: "names", label: "Kolon başlıkları (isteğe bağlı)", type: "textarea", rows: 3, maxlength: 4000, placeholder: "Virgülle ayırın ya da her satıra bir başlık yazın: Tarih, Açıklama, Tutar", help: "Boş bırakırsanız başlıkları sayfada yazarsınız." },
+          ].map(HOF.fieldHtml).join("")}
+          <p class="hof-form-error" role="alert"></p>
+          <div class="hof-actions"><button type="button" class="hof-button hof-button-ghost" data-cancel>Vazgeç</button><button type="submit" class="hof-button">Sayfayı oluştur</button></div>
+        </form>
+        <form class="hof-form" data-pane="excel" novalidate hidden>
+          <p class="hof-modal-text">Excel'deki bir sayfa <b>başlıkları, değerleri ve formülleriyle</b> yeni sayfa olarak kopyalanır; formüller programda çalışır. Kolon başlıklarının olduğu satır kendiliğinden bulunur (üstündeki sayfa başlığı gibi satırlar alınmaz). Excel dosyanız değişmez ve sonradan Excel'de yapılan değişiklikler buraya gelmez.</p>
+          <label class="hof-free-drop" data-drop><input type="file" accept=".xlsx,.xls,.xlsm,.csv" data-file hidden><span class="hof-free-drop-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M12 12v6"/><path d="m9.5 14.5 2.5-2.5 2.5 2.5"/></svg></span><b data-file-label>Excel dosyası seçin</b><small>ya da dosyayı buraya sürükleyin · .xlsx, .xls, .csv</small></label>
+          <div data-excel-result hidden>
+            <label class="hof-field"><span>Aktarılacak sayfa</span><select data-excel-sheet></select></label>
+            <label class="hof-field"><span>Programdaki sayfa adı</span><input data-excel-name maxlength="60" autocomplete="off"></label>
+            <div data-preview></div>
+          </div>
+          <p class="hof-form-error" role="alert"></p>
+          <div class="hof-actions"><button type="button" class="hof-button hof-button-ghost" data-cancel>Vazgeç</button><button type="submit" class="hof-button" data-import disabled>Sayfayı aktar</button></div>
+        </form>
+        <form class="hof-form" data-pane="sheets" novalidate hidden>
+          <p class="hof-modal-text">Google Sheets'teki bir sekme <b>başlıkları, değerleri ve formülleriyle</b> kopyalanır. Tabloyu <b>“Bağlantıya sahip olan herkes görüntüleyebilir”</b> olarak paylaşın; aktarmak istediğiniz sekmeyi açıp adres çubuğundaki bağlantıyı yapıştırın (sekme, bağlantıdaki <code>#gid=</code> ile seçilir). Sonradan Sheets'te yapılan değişiklikler buraya gelmez.</p>
+          <label class="hof-field"><span>Google Sheets bağlantısı <i aria-hidden="true">*</i></span><input data-sheets-url required autocomplete="off" spellcheck="false" placeholder="https://docs.google.com/spreadsheets/d/…/edit#gid=0"></label>
+          <label class="hof-field"><span>Programdaki sayfa adı</span><input data-sheets-name maxlength="60" autocomplete="off" placeholder="Boş bırakılırsa sekmenin adı"></label>
+          <p class="hof-form-error" role="alert"></p>
+          <div class="hof-actions"><button type="button" class="hof-button hof-button-ghost" data-cancel>Vazgeç</button><button type="submit" class="hof-button">Sayfayı aktar</button></div>
+        </form>`,
+    });
+    const dialog = modal.dialog;
+    const pane = name => dialog.querySelector(`[data-pane="${name}"]`);
+    const select = source => {
+      dialog.querySelectorAll("[data-source]").forEach(tab => tab.setAttribute("aria-selected", String(tab.dataset.source === source)));
+      dialog.querySelectorAll("[data-pane]").forEach(form => {
+        form.hidden = form.dataset.pane !== source;
+      });
+      (source === "blank" ? pane("blank").elements.name : source === "sheets" ? pane("sheets").querySelector("[data-sheets-url]") : pane("excel").querySelector("[data-drop]"))?.focus();
+    };
+    dialog.querySelector(".hof-free-source").addEventListener("click", event => {
+      const tab = event.target.closest("[data-source]");
+      if (tab) select(tab.dataset.source);
+    });
+    dialog.querySelectorAll("[data-cancel]").forEach(button => {
+      button.onclick = () => modal.close();
+    });
+    pane("blank").elements.name.focus();
+    const after = sheet => {
+      startAt = { r: 0, c: 0 };
+      openTab(sheet.name).then(ok => {
+        if (!ok) HOF.toast("Sayfa eklendi; sekmesi birazdan görünecek.", { type: "info" });
+      });
+    };
+    const busy = async (form, work) => {
+      const error = form.querySelector(".hof-form-error");
+      const button = form.querySelector('button[type="submit"]');
+      error.textContent = "";
+      button.disabled = true;
+      button.classList.add("is-busy");
+      try {
+        await work();
+        modal.close(true);
+      } catch (failure) {
+        error.textContent = failure.message || "İşlem tamamlanamadı.";
+      } finally {
+        button.disabled = false;
+        button.classList.remove("is-busy");
+      }
+    };
+
+    // Boş sayfa
+    pane("blank").addEventListener("submit", event => {
+      event.preventDefault();
+      const form = event.currentTarget;
+      busy(form, async () => {
+        const data = Object.fromEntries(["name", "columns", "rows", "names"].map(key => [key, form.elements[key].value]));
+        if (!data.name.trim()) throw new Error('"Sayfa adı" alanı boş bırakılamaz.');
         const names = String(data.names || "")
           .split(/[\n,;\t]+/)
           .map(item => item.trim())
           .filter(Boolean);
         const columns = Math.floor(Number(data.columns));
         const rowCount = Math.floor(Number(data.rows));
-        const limits = { columns: 500, rows: 2000, cells: 250_000 }; // sunucudaki FREE_LIMITS ile aynı
-        if (!Number.isFinite(columns) || columns < 1 || columns > limits.columns) throw new Error(`Kolon sayısı 1 ile ${limits.columns} arasında olmalı.`);
-        if (!Number.isFinite(rowCount) || rowCount < 1 || rowCount > limits.rows) throw new Error(`Satır sayısı 1 ile ${limits.rows} arasında olmalı.`);
-        if (names.length > limits.columns) throw new Error(`En fazla ${limits.columns} kolon başlığı yazılabilir.`);
-        if (Math.max(columns, names.length) * rowCount > limits.cells) throw new Error(`Sayfa çok büyük olur: kolon × satır en fazla ${limits.cells.toLocaleString("tr-TR")} olabilir (ör. 500 kolon × 500 satır). Satır sayısını azaltın; satırlar sonradan da eklenir.`);
+        if (!Number.isFinite(columns) || columns < 1 || columns > LIMITS.columns) throw new Error(`Kolon sayısı 1 ile ${LIMITS.columns} arasında olmalı.`);
+        if (!Number.isFinite(rowCount) || rowCount < 1 || rowCount > LIMITS.rows) throw new Error(`Satır sayısı 1 ile ${LIMITS.rows} arasında olmalı.`);
+        if (names.length > LIMITS.columns) throw new Error(`En fazla ${LIMITS.columns} kolon başlığı yazılabilir.`);
+        if (Math.max(columns, names.length) * rowCount > LIMITS.cells) throw new Error(`Sayfa çok büyük olur: kolon × satır en fazla ${LIMITS.cells.toLocaleString("tr-TR")} olabilir (ör. 500 kolon × 500 satır). Satır sayısını azaltın; satırlar sonradan da eklenir.`);
         const sheet = await HOF.api(API, { method: "POST", body: { name: data.name, columns: Math.max(columns, names.length), rows: rowCount, names } });
         HOF.toast(`“${sheet.name}” sayfası eklendi. Başlıkları ve hücreleri yazmaya başlayın.`, { type: "success" });
         startAt = names.length ? { r: 0, c: 0 } : { r: -1, c: 0 };
         openTab(sheet.name).then(ok => {
           if (!ok) HOF.toast("Sayfa eklendi; sekmesi birazdan görünecek.", { type: "info" });
         });
-      },
+      });
+    });
+
+    // Excel dosyasından
+    const excel = pane("excel");
+    let book = null;
+    let fileName = "";
+    const current = () => book?.sheets.find(item => item.name === excel.querySelector("[data-excel-sheet]").value) || null;
+    const refresh = () => {
+      const sheet = current();
+      const shape = sheet ? shapeOf(sheet) : { empty: true };
+      excel.querySelector("[data-preview]").innerHTML = sheet ? previewHtml(sheet) : "";
+      excel.querySelector("[data-excel-name]").value = sheet ? sheet.name.slice(0, 60) : "";
+      excel.querySelector("[data-import]").disabled = !sheet || shape.empty || shape.rows > LIMITS.rows || shape.columns > LIMITS.columns || shape.rows * shape.columns > LIMITS.cells;
+    };
+    const readFile = async file => {
+      if (!file) return;
+      const error = excel.querySelector(".hof-form-error");
+      error.textContent = "";
+      excel.querySelector("[data-file-label]").textContent = `${file.name} okunuyor…`;
+      try {
+        book = await parseExcel(file);
+        fileName = file.name;
+        const usable = book.sheets.filter(sheet => !shapeOf(sheet).empty);
+        excel.querySelector("[data-excel-sheet]").innerHTML = book.sheets
+          .map(sheet => {
+            const shape = shapeOf(sheet);
+            return `<option value="${esc(sheet.name)}" ${shape.empty ? "disabled" : ""}>${esc(sheet.name)}${shape.empty ? " (boş)" : ` · ${shape.rows.toLocaleString("tr-TR")} satır × ${shape.columns} kolon`}${sheet.hidden ? " · gizli" : ""}</option>`;
+          })
+          .join("");
+        if (usable[0]) excel.querySelector("[data-excel-sheet]").value = usable[0].name;
+        excel.querySelector("[data-excel-result]").hidden = false;
+        excel.querySelector("[data-file-label]").textContent = file.name;
+        if (!usable.length) error.textContent = "Dosyadaki sayfaların hepsi boş.";
+        refresh();
+      } catch (failure) {
+        book = null;
+        excel.querySelector("[data-excel-result]").hidden = true;
+        excel.querySelector("[data-file-label]").textContent = "Excel dosyası seçin";
+        error.textContent = failure.message;
+      }
+    };
+    excel.querySelector("[data-file]").addEventListener("change", event => readFile(event.target.files[0]));
+    excel.querySelector("[data-excel-sheet]").addEventListener("change", refresh);
+    const drop = excel.querySelector("[data-drop]");
+    drop.addEventListener("dragover", event => {
+      event.preventDefault();
+      drop.classList.add("is-over");
+    });
+    drop.addEventListener("dragleave", () => drop.classList.remove("is-over"));
+    drop.addEventListener("drop", event => {
+      event.preventDefault();
+      drop.classList.remove("is-over");
+      readFile(event.dataTransfer.files[0]);
+    });
+    drop.addEventListener("keydown", event => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        excel.querySelector("[data-file]").click();
+      }
+    });
+    drop.tabIndex = 0;
+    excel.addEventListener("submit", event => {
+      event.preventDefault();
+      const sheet = current();
+      if (!sheet) return;
+      busy(excel, async () => {
+        const result = await HOF.api(`${API}/import`, { method: "POST", body: { name: excel.querySelector("[data-excel-name]").value.trim() || sheet.name, fileName, sheet: { name: sheet.name, matrix: sheet.matrix, start: sheet.start, formulas: sheet.formulas } }, timeoutMs: 120_000 });
+        HOF.toast(importedText(result), { type: "success", timeout: 9000 });
+        after(result);
+      });
+    });
+
+    // Google Sheets'ten
+    const sheets = pane("sheets");
+    sheets.addEventListener("submit", event => {
+      event.preventDefault();
+      const url = sheets.querySelector("[data-sheets-url]").value.trim();
+      if (!/^https:\/\/docs\.google\.com\/spreadsheets\/d\/[^/]+/.test(url)) {
+        sheets.querySelector(".hof-form-error").textContent = url ? "Google Sheets bağlantısı tanınmadı. Tablonun adres çubuğundaki bağlantıyı (https://docs.google.com/spreadsheets/d/…) yapıştırın." : "Google Sheets bağlantısını yapıştırın.";
+        return;
+      }
+      busy(sheets, async () => {
+        const result = await HOF.api(`${API}/import-sheets`, { method: "POST", body: { url, name: sheets.querySelector("[data-sheets-name]").value.trim() }, timeoutMs: 90_000 });
+        HOF.toast(importedText(result), { type: "success", timeout: 9000 });
+        after(result);
+      });
     });
   }
   let startAt = null;
@@ -1502,7 +1732,7 @@
   function sheetMenu() {
     const items = [];
     if (canCreate()) items.push({ label: "Sayfanın adını değiştir", run: renameSheet });
-    items.push({ label: "Bu sayfayı Excel olarak indir", run: () => (HOF.exportExcel ? HOF.exportExcel({ tab: state.sheet?.name }) : HOF.toast("Dışa aktar menüsünü kullanın.")) });
+    if (HOF.can("records.export")) items.push({ label: "Bu sayfayı Excel olarak indir", run: () => (HOF.exportExcel ? HOF.exportExcel({ tab: state.sheet?.name }) : HOF.toast("Dışa aktar menüsünü kullanın.")) });
     items.push({ label: "Formüller ve kısayollar", run: openHelp });
     if (canDelete()) items.push({ label: "Sayfayı sil", danger: true, run: removeSheet });
     return items;

@@ -43,8 +43,11 @@
     const date = new Date(iso);
     return Number.isNaN(date.getTime()) ? "" : `${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
   };
+  // v2.0.10: ANLIK DURUM kartı yalnız yönetici ekranında (overview.card). Finans raporları (overview.view) kişiye
+  // verilebilir; yalnız Raporlar penceresini açar.
+  const canCard = () => HOF.can("overview.card");
   const canSee = () => HOF.can("overview.view");
-  // Raporlar penceresi: ANLIK DURUM yetkisi (tüm sekmeler) ya da rapor yetkisi (Vade takip ve Tablo raporları).
+  // Raporlar penceresi: finans raporları yetkisi (tüm sekmeler) ya da rapor yetkisi (Vade takip ve Tablo raporları).
   const canReports = () => canSee() || HOF.can("reports.view");
   const collapsedKey = () => `hof.pulse.collapsed.${HOF.user?.id || ""}`;
   const isCollapsed = () => {
@@ -147,7 +150,7 @@
   function render() {
     const welcome = document.querySelector(".main-shell .content-wrap > .welcome-row");
     const existing = document.getElementById("hof-pulse");
-    if (!welcome || !canSee() || !data) {
+    if (!welcome || !canCard() || !data) {
       existing?.remove();
       return;
     }
@@ -195,7 +198,7 @@
     }
     if (button.dataset.pulse === "report") return openReports();
     const go = button.dataset.pulseGo;
-    // Yetkisi olmayan ekrana gitmez: ANLIK DURUM yetkisi verilmiş personel Kasa yerine kasa raporunu görür.
+    // Yetkisi olmayan ekrana gitmez: Kasa yetkisi olmayan kişi Kasa yerine kasa raporunu görür.
     if (go === "cash") HOF.can("cash.view") ? document.querySelector('#hof-sidecard [data-action="cash"]')?.click() : HOF.reportCenter?.open("kasa-hareketleri");
     else if (go === "stock") HOF.stock?.open();
     else if (go === "receivable") HOF.accounts?.open();
@@ -203,7 +206,7 @@
   }
 
   async function load() {
-    if (!canSee()) {
+    if (!canCard()) {
       data = null;
       render();
       return;
@@ -264,6 +267,8 @@
     ["next60", "60 gün"],
     ["next90", "90 gün"],
   ];
+  // "Tüm zamanlar" aralığının başı (50 yıl önce) ekranda tarih olarak yazılmaz (sunucudaki isAllTimeStart ile aynı kural).
+  const allTimeStart = from => Boolean(from) && from <= presetRange("all").from;
   const presetRange = (preset, today = todayIso()) => {
     const [y, m, d] = today.split("-").map(Number);
     const iso = (year, month, day) => new Date(Date.UTC(year, month - 1, day)).toISOString().slice(0, 10);
@@ -292,7 +297,8 @@
     ["vade", "Vade takip", "Vadesi olan her açık kalem: taksit, çek/senet, ileri tarihli Kasa, tablodaki ödeme günleri", () => canReports()],
     ["flow", "Nakit akış", "Bugünkü kasadan başlayan tahmini kasa: beklenen giriş ve çıkışlar", () => canSee()],
     ["cheques", "Çek / Senet", "Alınan ve verilen evrak portföyü", () => canSee() && HOF.can("cheques.view")],
-    ["all", "Tüm raporlar", "Kasa, Cari, Taksit, Çek/Senet, Stok ve kayıt raporları: ön izleme, PDF ve Excel", () => canSee()],
+    // İşlem geçmişi yetkisi olan (uzman) finans yetkisi olmasa da burada yalnız "İşlem geçmişi" raporunu görür (v2.0.10).
+    ["all", "Tüm raporlar", "Kasa, Cari, Taksit, Çek/Senet, Stok ve kayıt raporları: ön izleme, PDF ve Excel", () => canSee() || HOF.can("audit.view")],
     ["table", "Tablo raporları", "Yalnız Excel/Sheets tablolarındaki tutar ve tarihlerden", () => HOF.can("reports.view")],
   ];
   const tabsFor = () => TABS.filter(([, , , visible]) => visible());
@@ -302,7 +308,7 @@
 
   const rangeBar = (state, presets) => `<div class="hof-rep-range" role="group" aria-label="Tarih aralığı">
       <div class="hof-rep-presets">${presets.map(([id, label]) => `<button type="button" class="hof-rep-chip ${state.preset === id ? "is-on" : ""}" data-preset="${id}">${esc(label)}</button>`).join("")}</div>
-      <label class="hof-rep-date"><span>Başlangıç</span><input type="date" data-range="from" value="${esc(state.from)}"></label>
+      <label class="hof-rep-date"><span>Başlangıç</span><input type="date" data-range="from" value="${esc(state.preset === "all" ? "" : state.from)}"${state.preset === "all" ? ' title="Tüm zamanlar: ilk hareketten bugüne"' : ""}></label>
       <label class="hof-rep-date"><span>Bitiş</span><input type="date" data-range="to" value="${esc(state.to)}"></label>
       <button type="button" class="hof-button hof-button-small" data-run>Raporu getir</button>
     </div>`;
@@ -317,7 +323,7 @@
 
   // options.report: "Tüm raporlar" sekmesinde açılacak rapor (ör. ANLIK DURUM'da Kasa kutusu → kasa hareketleri).
   function openReports(tab = "", options = {}) {
-    if (!canReports()) return HOF.toast("Raporlar yönetici ve uzman hesapları ile yöneticinin ANLIK DURUM yetkisi verdiği kişiler içindir.", { type: "error" });
+    if (!tabsFor().length) return HOF.toast("Raporlar yönetici ve uzman hesapları ile yöneticinin finans raporları yetkisi verdiği kişiler içindir.", { type: "error" });
     const allowed = tabsFor().map(([id]) => id);
     const wanted = allowed.includes(tab) ? tab : allowed[0];
     if (report?.modal) {
@@ -330,7 +336,7 @@
     const today = todayIso();
     report = {
       tab: wanted,
-      mizan: { preset: "thisMonth", ...presetRange("thisMonth", today), type: "", idle: false, q: "", account: null, data: null },
+      mizan: { preset: "thisMonth", ...presetRange("thisMonth", today), type: "", side: "", idle: false, q: "", account: null, data: null },
       vade: { preset: "next30", ...presetRange("next30", today), direction: "", sources: [], q: "", late: true, data: null },
       flow: { preset: "next30", ...presetRange("next30", today), overdue: false, table: true, group: "", data: null },
       cheques: { direction: "", status: "open", from: "", to: "", preset: "", data: null },
@@ -398,27 +404,27 @@
 
   // --- Mizan ve ekstre ---
   function mizanView(s) {
-    const params = { from: s.from, to: s.to, type: s.type, idle: s.idle ? "1" : "", q: s.q };
+    const params = { from: s.from, to: s.to, type: s.type, side: s.side, idle: s.idle ? "1" : "", q: s.q };
     const ekstre = s.account ? { account: s.account.id, from: s.from, to: s.to } : null;
     const pdf = ekstre ? `/api/workspace/overview/ekstre.pdf?${query(ekstre)}` : `/api/workspace/overview/mizan.pdf?${query(params)}`;
     const xlsx = ekstre ? `/api/workspace/overview/ekstre.xlsx?${query(ekstre)}` : `/api/workspace/overview/mizan.xlsx?${query(params)}`;
     const filters = `<div class="hof-rep-bar">${rangeBar(s, PRESETS_PAST)}${exportButtons(pdf, xlsx)}</div>
-      ${s.account ? "" : `<div class="hof-rep-filters"><input type="search" data-q value="${esc(s.q)}" placeholder="Cari adı, cari no ya da telefon ara…" aria-label="Cari ara"><select data-field="type" aria-label="Cari türü"><option value="">Tüm cariler</option><option value="customer" ${s.type === "customer" ? "selected" : ""}>Müşteriler</option><option value="supplier" ${s.type === "supplier" ? "selected" : ""}>Tedarikçiler</option><option value="other" ${s.type === "other" ? "selected" : ""}>Diğer</option></select><label class="hof-rep-check"><input type="checkbox" data-field="idle" ${s.idle ? "checked" : ""}> Hareketsiz carileri de göster</label></div>`}`;
+      ${s.account ? "" : `<div class="hof-rep-filters"><input type="search" data-q value="${esc(s.q)}" placeholder="Cari adı, cari no ya da telefon ara…" aria-label="Cari ara"><select data-field="type" aria-label="Cari türü"><option value="">Tüm cariler</option><option value="customer" ${s.type === "customer" ? "selected" : ""}>Müşteriler</option><option value="supplier" ${s.type === "supplier" ? "selected" : ""}>Tedarikçiler</option><option value="other" ${s.type === "other" ? "selected" : ""}>Diğer</option></select><select data-field="side" aria-label="Bakiye">${[["", "Tüm bakiyeler"], ["debtor", "Borçlular"], ["creditor", "Alacaklılar"], ["nonzero", "Sadece bakiyesi olanlar"]].map(([value, label]) => `<option value="${value}" ${s.side === value ? "selected" : ""}>${label}</option>`).join("")}</select><label class="hof-rep-check"><input type="checkbox" data-field="idle" ${s.idle ? "checked" : ""}> Hareketsiz carileri de göster</label></div>`}`;
     if (!s.data) return `${filters}<p class="hof-empty">Rapor hazırlanıyor…</p>`;
     if (s.account && s.data.lines) {
       const d = s.data;
       const mark = value => `${esc(money(Math.abs(value)))}<small class="hof-rep-side">${value > 0.005 ? "B" : value < -0.005 ? "A" : ""}</small>`;
-      return `${filters}<div class="hof-rep-crumb"><button type="button" class="hof-plan-back" data-back>← Mizan</button><h3>${esc(d.account.name)} <small>${d.account.refNo ? `Cari No ${esc(d.account.refNo)} · ` : ""}ekstre · ${esc(HOF.formatDate(d.from))} – ${esc(HOF.formatDate(d.to))}</small></h3><button type="button" class="hof-button hof-button-small hof-button-ghost" data-open-account="${esc(d.account.id)}" title="Cari kartını aç: hareket gir, taksit ve çek/senetlerini gör">Cari kartını aç</button></div>
-        ${statTiles([{ label: "Devir", html: moneyHtml(d.opening) }, { label: "Dönem borç", html: moneyHtml(d.debit) }, { label: "Dönem alacak", html: moneyHtml(d.credit) }, { label: "Dönem sonu", html: moneyHtml(Math.abs(d.closing)), help: d.closing > 0.005 ? "bize borçlu" : d.closing < -0.005 ? "biz borçluyuz" : "kapalı", tone: d.closing > 0.005 ? "is-in" : d.closing < -0.005 ? "is-out" : "" }])}
+      return `${filters}<div class="hof-rep-crumb"><button type="button" class="hof-plan-back" data-back>← Mizan</button><h3>${esc(d.account.name)} <small>${d.account.refNo ? `Cari No ${esc(d.account.refNo)} · ` : ""}ekstre · ${allTimeStart(d.from) ? `tüm hareketler, ${esc(HOF.formatDate(d.to))} tarihine kadar` : `${esc(HOF.formatDate(d.from))} – ${esc(HOF.formatDate(d.to))}`}</small></h3><button type="button" class="hof-button hof-button-small hof-button-ghost" data-open-account="${esc(d.account.id)}" title="Cari kartını aç: hareket gir, taksit ve çek/senetlerini gör">Cari kartını aç</button></div>
+        ${statTiles([{ label: "Devir", html: moneyHtml(d.opening) }, { label: "Dönem borç", html: moneyHtml(d.debit) }, { label: "Dönem alacak", html: moneyHtml(d.credit) }, { label: "Dönem sonu", html: moneyHtml(Math.abs(d.closing)), help: d.closing > 0.005 ? "Borçlu" : d.closing < -0.005 ? "Alacaklı" : "Kapalı", tone: d.closing > 0.005 ? "is-receivable" : d.closing < -0.005 ? "is-payable" : "" }])}
         <div class="hof-rep-table"><table class="hof-table"><thead><tr><th>Tarih</th><th>İşlem</th><th>Açıklama</th><th class="num">Borç</th><th class="num">Alacak</th><th class="num">Bakiye</th></tr></thead><tbody>
-        <tr class="is-opening"><td>${esc(HOF.formatDate(d.from))}</td><td><b>Devir</b></td><td>Dönem başı bakiye</td><td></td><td></td><td class="num">${mark(d.opening)}</td></tr>
-        ${d.lines.map(line => `<tr><td>${esc(HOF.formatDate(line.date))}</td><td><b>${esc(line.label)}</b></td><td>${esc(line.note || "")}${line.receiptNo ? ` <span class="hof-plan-receipt">Makbuz ${esc(line.receiptNo)}</span>` : ""}</td><td class="num hof-cash-out">${line.debit ? esc(money(line.debit)) : ""}</td><td class="num hof-cash-in">${line.credit ? esc(money(line.credit)) : ""}</td><td class="num">${mark(line.balance)}</td></tr>`).join("") || '<tr><td colspan="6" class="hof-empty">Bu aralıkta hareket yok.</td></tr>'}
-        </tbody></table></div><p class="hof-rep-note">B: bize borçlu (alacağımız) · A: biz borçluyuz. Satırlar Cari kartındaki defterle aynıdır.</p>`;
+        <tr class="is-opening"><td>${allTimeStart(d.from) ? "" : esc(HOF.formatDate(d.from))}</td><td><b>Devir</b></td><td>Dönem başı bakiye</td><td></td><td></td><td class="num">${mark(d.opening)}</td></tr>
+        ${d.lines.map(line => `<tr><td>${esc(HOF.formatDate(line.date))}</td><td><b>${esc(line.label)}</b></td><td>${esc(line.note || "")}${line.receiptNo ? ` <span class="hof-plan-receipt">Makbuz ${esc(line.receiptNo)}</span>` : ""}</td><td class="num">${line.debit ? esc(money(line.debit)) : ""}</td><td class="num">${line.credit ? esc(money(line.credit)) : ""}</td><td class="num">${mark(line.balance)}</td></tr>`).join("") || '<tr><td colspan="6" class="hof-empty">Bu aralıkta hareket yok.</td></tr>'}
+        </tbody></table></div><p class="hof-rep-note">B: borçlu · A: alacaklı. Satırlar Cari kartındaki defterle aynıdır.</p>`;
     }
     const d = s.data;
-    const rows = d.rows.map(row => `<tr data-account-row="${esc(row.id)}" tabindex="0" title="Ekstreyi aç"><td class="hof-plan-no">${esc(row.refNo || "")}</td><td><b>${esc(row.name)}</b>${row.groupName ? `<small>${esc([row.groupName, row.subgroupName].filter(Boolean).join(" › "))}</small>` : ""}</td><td>${esc({ customer: "Müşteri", supplier: "Tedarikçi", other: "Diğer" }[row.type] || "")}</td><td class="num">${esc(money(row.opening))}</td><td class="num hof-cash-out">${row.debit ? esc(money(row.debit)) : ""}</td><td class="num hof-cash-in">${row.credit ? esc(money(row.credit)) : ""}</td><td class="num"><b>${esc(money(Math.abs(row.closing)))}</b></td><td><span class="hof-plan-badge ${row.side === "debtor" ? "is-late" : row.side === "creditor" ? "is-info" : "is-muted"}">${row.side === "debtor" ? "Bize borçlu" : row.side === "creditor" ? "Biz borçluyuz" : "Kapalı"}</span></td></tr>`).join("");
+    const rows = d.rows.map(row => `<tr data-account-row="${esc(row.id)}" tabindex="0" title="Ekstreyi aç"><td class="hof-plan-no">${esc(row.refNo || "")}</td><td><b>${esc(row.name)}</b>${row.groupName ? `<small>${esc([row.groupName, row.subgroupName].filter(Boolean).join(" › "))}</small>` : ""}</td><td>${esc({ customer: "Müşteri", supplier: "Tedarikçi", other: "Diğer" }[row.type] || "")}</td><td class="num">${esc(money(row.opening))}</td><td class="num">${row.debit ? esc(money(row.debit)) : ""}</td><td class="num">${row.credit ? esc(money(row.credit)) : ""}</td><td class="num"><b class="hof-acc-balance is-${row.side === "debtor" ? "debtor" : row.side === "creditor" ? "creditor" : "zero"}">${esc(money(Math.abs(row.closing)))}</b></td><td><span class="hof-plan-badge ${row.side === "debtor" ? "is-done" : row.side === "creditor" ? "is-late" : "is-muted"}">${row.side === "debtor" ? "Borçlu" : row.side === "creditor" ? "Alacaklı" : "Kapalı"}</span></td></tr>`).join("");
     return `${filters}
-      ${statTiles([{ label: "Cari", value: d.totals.count.toLocaleString("tr-TR") }, { label: "Dönem borç", html: moneyHtml(d.totals.debit) }, { label: "Dönem alacak", html: moneyHtml(d.totals.credit) }, { label: "Bize borçlu", html: moneyHtml(d.totals.closingDebtor), tone: "is-in" }, { label: "Biz borçluyuz", html: moneyHtml(d.totals.closingCreditor), tone: "is-out" }])}
+      ${statTiles([{ label: "Cari", value: d.totals.count.toLocaleString("tr-TR") }, { label: "Dönem borç", html: moneyHtml(d.totals.debit) }, { label: "Dönem alacak", html: moneyHtml(d.totals.credit) }, { label: "Borçlular", html: moneyHtml(d.totals.closingDebtor), tone: "is-receivable" }, { label: "Alacaklılar", html: moneyHtml(d.totals.closingCreditor), tone: "is-payable" }])}
       <div class="hof-rep-table"><table class="hof-table hof-rep-mizan"><thead><tr><th>No</th><th>Cari</th><th>Tür</th><th class="num">Devir</th><th class="num">Borç</th><th class="num">Alacak</th><th class="num">Bakiye</th><th>Durum</th></tr></thead><tbody>${rows || `<tr><td colspan="8" class="hof-empty">${d.accountCount ? (s.q || s.type ? "Bu aramaya uyan, bu aralıkta hareketi olan cari yok." : "Bu aralıkta hareketi ya da devreden bakiyesi olan cari yok. “Hareketsiz carileri de göster” ile tümü listelenir; daha geniş aralık için “Tüm zamanlar”.") : "Henüz cari yok."}</td></tr>`}</tbody></table></div>
       ${!rows && !d.accountCount ? emptyLedgerHelp() : ""}
       ${d.hasMore ? `<p class="hof-rep-note">Ekranda ilk ${d.rows.length.toLocaleString("tr-TR")} cari; tamamı (${d.total.toLocaleString("tr-TR")}) PDF ve Excel'de.</p>` : ""}
@@ -624,7 +630,7 @@
     renderReport();
     try {
       if (tab === "mizan") {
-        s.data = s.account ? await HOF.api(`/api/workspace/overview/ekstre?${query({ account: s.account.id, from: s.from, to: s.to })}`) : await HOF.api(`/api/workspace/overview/mizan?${query({ from: s.from, to: s.to, type: s.type, idle: s.idle ? "1" : "", q: s.q, limit: 1000 })}`);
+        s.data = s.account ? await HOF.api(`/api/workspace/overview/ekstre?${query({ account: s.account.id, from: s.from, to: s.to })}`) : await HOF.api(`/api/workspace/overview/mizan?${query({ from: s.from, to: s.to, type: s.type, side: s.side, idle: s.idle ? "1" : "", q: s.q, limit: 1000 })}`);
       } else if (tab === "vade") s.data = await HOF.api(`/api/workspace/overview/vade-takip?${query({ ...(s.preset ? { preset: s.preset } : { from: s.from, to: s.to }), direction: s.direction, sources: s.sources.join(","), q: s.q, late: s.late ? "" : "0" })}`);
       else if (tab === "flow") s.data = await HOF.api(`/api/workspace/overview/nakit-akisi?${query({ from: s.from, to: s.to, overdue: s.overdue ? "1" : "", table: s.table ? "" : "0", group: s.group })}`);
       else s.data = await HOF.api(`/api/workspace/cheques?${query({ direction: s.direction, status: s.status, from: s.from, to: s.to, limit: 1000 })}`);
@@ -677,7 +683,8 @@
       return run();
     }
     if (target.hasAttribute("data-run")) {
-      const from = root().querySelector('[data-range="from"]')?.value || "";
+      // "Tüm zamanlar" seçiliyken başlangıç kutusu boş görünür (01.01.1976 yazmaz); boş bırakılırsa o aralık sürer.
+      const from = root().querySelector('[data-range="from"]')?.value || (s.preset === "all" ? s.from : "");
       const to = root().querySelector('[data-range="to"]')?.value || "";
       if (report.tab !== "cheques" && report.tab !== "vade" && (!from || !to)) return HOF.toast("Başlangıç ve bitiş tarihini seçin.", { type: "error" });
       if (from && to && from > to) return HOF.toast("Başlangıç tarihi bitiş tarihinden sonra olamaz.", { type: "error" });
@@ -722,7 +729,7 @@
   HOF.whenReady(() => {
     load();
     HOF.onDom(() => {
-      if (!data || !canSee()) return;
+      if (!data || !canCard()) return;
       const welcome = document.querySelector(".main-shell .content-wrap > .welcome-row");
       const node = document.getElementById("hof-pulse");
       if (welcome && (!node || node.parentNode !== welcome)) render();
@@ -738,17 +745,9 @@
       live = false;
       render();
     });
-    // Yetki değişince (yönetici kişiye ANLIK DURUM açtı/kapattı) kart kendini açar ya da kaldırır.
-    HOF.on("live:workspace.changed", async change => {
-      if (change?.kind !== "permissions") return;
-      try {
-        const me = await HOF.api("/api/auth/me");
-        HOF.user = { ...HOF.user, ...me, permissions: me.permissions };
-        load();
-      } catch {
-        // oturum düştüyse giriş ekranı zaten açılır
-      }
-    });
+    // Yetki değişince (yönetici rolü ya da kişiye özel yetkiyi değiştirdi; hof-workspace.js /me'yi yeniden alır) kart
+    // kendini açar ya da kaldırır.
+    HOF.on("user-changed", () => load());
     // Gün dönümü ve uzun arka plan: vade durumları (gecikmiş/bugün) takvim gününe bağlıdır.
     let day = todayIso();
     setInterval(() => {

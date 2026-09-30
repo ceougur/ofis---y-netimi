@@ -25,9 +25,11 @@
           <p class="hof-form-error" role="alert">${HOF.esc(message)}</p>
           <button type="submit" class="hof-button hof-button-wide">Giriş yap</button>
         </form>
+        <button type="button" class="hof-auth-forgot" data-forgot>Parolamı unuttum</button>
         <small class="hof-auth-foot">Hesabınız yoksa ofis yöneticinizden isteyin.</small>
       </section>`,
     );
+    node.querySelector("[data-forgot]").addEventListener("click", () => showRecovery(node));
     document.body.appendChild(node);
     HOF.api("/api/public/info")
       .then(info => {
@@ -72,6 +74,127 @@
       }
     });
   };
+
+  // ---------- Parolamı unuttum (v2.0.10) ----------
+  // Personel: parolayı yönetici sıfırlar. Yönetici: kurtarma anahtarı ya da sunucu bilgisayarında üretilen tek seferlik kod
+  // ile yeni parola belirler; eski parola sorulmaz. Başarılı olunca doğrudan içeri alınır.
+  async function showRecovery(node) {
+    const card = node.querySelector(".hof-auth-card");
+    let info = { local: false, hasKey: false };
+    try {
+      info = await HOF.api("/api/auth/recovery");
+    } catch {
+      // bilgi alınamazsa iki yol da anlatılır
+    }
+    card.innerHTML = `${brand}
+      <h1 id="hof-auth-title">Parolamı unuttum</h1>
+      <div class="hof-auth-note"><b>Personel misiniz?</b> Parolanızı ofis yöneticiniz sıfırlar: Yönetim → Kullanıcılar → Parola sıfırla.</div>
+      <p class="hof-auth-help"><b>Yönetici misiniz?</b> Yazdırıp sakladığınız <b>kurtarma anahtarıyla</b> ya da sunucu bilgisayarında üretilen <b>sunucu koduyla</b> yeni parola belirleyin. Eski parolanız sorulmaz; kayıtlarınız olduğu gibi kalır.</p>
+      <form class="hof-form" novalidate>
+        <label class="hof-field"><span>Yönetici kullanıcı adı</span><input name="username" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="ör. admin"><small>Ofiste tek yönetici varsa boş bırakabilirsiniz.</small></label>
+        <label class="hof-field"><span>Kurtarma anahtarı ya da sunucu kodu</span><input name="code" autocomplete="off" autocapitalize="characters" spellcheck="false" required placeholder="XXXXX-XXXXX-XXXXX-XXXXX" class="hof-code-input"></label>
+        <label class="hof-field"><span>Yeni parola</span><input name="newPassword" type="password" autocomplete="new-password" minlength="10" required><small>En az 10 karakter; harf ve rakam içermeli.</small></label>
+        <label class="hof-field"><span>Yeni parola (tekrar)</span><input name="confirmPassword" type="password" autocomplete="new-password" required></label>
+        <p class="hof-form-error" role="alert"></p>
+        <button type="submit" class="hof-button hof-button-wide">Yeni parolayı kaydet ve gir</button>
+      </form>
+      <div class="hof-auth-local">${
+        info.local
+          ? `<p><b>Anahtarınız yok mu?</b> Bu bilgisayar sunucu bilgisayarı. Tek seferlik kod oluşturun; kod bu bilgisayardaki bir dosyaya yazılır ve dosyayı yalnız Windows yöneticisi açabilir.</p><button type="button" class="hof-button hof-button-ghost hof-button-wide" data-local>Sunucu kodu oluştur</button><div class="hof-auth-local-result" data-local-result hidden></div>`
+          : "<p><b>Anahtarınız yok mu?</b> Programın kurulu olduğu <b>sunucu bilgisayarında</b> tarayıcıdan bu ekranı açın (Başlat → DestekOfis); orada “Sunucu kodu oluştur” düğmesi görünür.</p>"
+      }</div>
+      <button type="button" class="hof-auth-forgot" data-back>← Giriş ekranına dön</button>`;
+    const form = card.querySelector("form");
+    const error = form.querySelector(".hof-form-error");
+    form.elements.code.focus();
+    card.querySelector("[data-back]").onclick = () => {
+      node.remove();
+      HOF.showLogin();
+    };
+    card.querySelector("[data-local]")?.addEventListener("click", async event => {
+      const button = event.currentTarget;
+      const box = card.querySelector("[data-local-result]");
+      button.disabled = true;
+      try {
+        const result = await HOF.api("/api/auth/recovery/local-code", { method: "POST", body: {} });
+        box.hidden = false;
+        box.innerHTML = `<p>Kod ${result.minutes} dakika geçerli. Açmak için: <b>Başlat → DestekOfis → Yönetici kurtarma kodunu aç</b> (Windows onay sorar). Kısayol yoksa Dosya Gezgini'nde şu dosyayı Windows yöneticisi olarak açın:</p><code>${HOF.esc(result.file)}</code><button type="button" class="hof-button hof-button-ghost hof-button-small" data-copy-path>Yolu kopyala</button>`;
+        box.querySelector("[data-copy-path]").onclick = () => navigator.clipboard?.writeText(result.file).then(() => HOF.toast("Dosya yolu kopyalandı.", { type: "success" })).catch(() => {});
+        form.elements.code.focus();
+      } catch (failure) {
+        box.hidden = false;
+        box.textContent = failure.message;
+      } finally {
+        setTimeout(() => {
+          button.disabled = false;
+        }, 20_000);
+      }
+    });
+    form.addEventListener("submit", async event => {
+      event.preventDefault();
+      error.textContent = "";
+      const code = form.elements.code.value.trim();
+      const newPassword = form.elements.newPassword.value;
+      if (!code || !newPassword) {
+        error.textContent = "Kodu ve yeni parolayı yazın.";
+        return;
+      }
+      if (newPassword !== form.elements.confirmPassword.value) {
+        error.textContent = "Yeni parolalar birbiriyle aynı değil.";
+        return;
+      }
+      const button = form.querySelector('button[type="submit"]');
+      button.disabled = true;
+      try {
+        const result = await HOF.api("/api/auth/recover", { method: "POST", body: { username: form.elements.username.value.trim(), code, newPassword } });
+        if (result.newKey) {
+          // Kullanılan anahtar geçersizleşti; yenisi yalnız şimdi gösterilir.
+          node.remove();
+          await HOF.showRecoveryKey(result.newKey, { office: result.office?.name || "", used: true });
+        }
+        location.reload();
+      } catch (failure) {
+        error.textContent = failure.message;
+        button.disabled = false;
+      }
+    });
+  }
+
+  // Kurtarma anahtarı penceresi: bir kez gösterilir; yazdırılır ya da kopyalanır. "Kaydettim" işaretlenmeden kapanmaz.
+  function printKey(key, office) {
+    const win = window.open("", "_blank", "width=720,height=640");
+    if (!win) return HOF.toast("Yazdırma penceresi açılamadı; tarayıcının açılır pencere izni gerekiyor. Anahtarı kopyalayıp bir yere yazın.", { type: "error", timeout: 9000 });
+    const today = new Date().toLocaleDateString("tr-TR");
+    win.document.write(`<!doctype html><html lang="tr"><head><meta charset="utf-8"><title>DestekOfis kurtarma anahtarı</title><style>body{font:15px/1.5 system-ui,Segoe UI,sans-serif;color:#142b25;margin:40px}h1{font-size:22px;margin:0 0 6px}.key{margin:22px 0;padding:18px;border:2px dashed #1f6a50;border-radius:12px;font:700 26px/1.2 ui-monospace,Consolas,monospace;letter-spacing:.08em;text-align:center}small{color:#555}ol{padding-left:20px}</style></head><body><h1>DestekOfis — yönetici kurtarma anahtarı</h1><p>${HOF.esc(office || "")}${office ? " · " : ""}${today}</p><div class="key">${HOF.esc(key)}</div><ol><li>Yönetici parolanızı unutursanız giriş ekranında <b>Parolamı unuttum</b>'a tıklayın.</li><li>Bu anahtarı ve yeni parolanızı yazın; eski parola sorulmaz.</li><li>Anahtar bir kez kullanılır; kullanınca program yenisini verir, onu da yazdırın.</li></ol><p><small>Bu kâğıdı kasada ya da kilitli bir dolapta saklayın. Anahtarı bilen kişi yönetici hesabına girebilir. Kaybolduysa Yönetim → Kullanıcılar → Kurtarma anahtarını yenile (eskisi geçersiz olur).</small></p><script>window.onload=()=>{window.print();}<\/script></body></html>`);
+    win.document.close();
+    return true;
+  }
+  HOF.showRecoveryKey = (key, { office = "", used = false } = {}) =>
+    new Promise(resolve => {
+      const modal = HOF.modal({
+        title: used ? "Yeni kurtarma anahtarınız" : "Kurtarma anahtarınız",
+        eyebrow: "YÖNETİCİ PAROLASI KURTARMA",
+        size: "small",
+        dismissible: false,
+        body: `<p class="hof-modal-text">${used ? "Kullandığınız anahtar artık geçersiz. Bu yeni anahtarı <b>şimdi</b> yazdırın ya da güvenli bir yere yazın; bir daha gösterilmez." : "Yönetici parolanızı unutursanız giriş ekranında <b>Parolamı unuttum</b> ile bu anahtarla yeni parola belirlersiniz. Anahtar <b>bir daha gösterilmez</b>; yazdırıp kasada saklayın."}</p>
+          <div class="hof-recovery-key" aria-label="Kurtarma anahtarı">${HOF.esc(key)}</div>
+          <div class="hof-actions hof-recovery-actions"><button type="button" class="hof-button hof-button-ghost" data-print>Yazdır</button><button type="button" class="hof-button hof-button-ghost" data-copy>Kopyala</button></div>
+          <label class="hof-check"><input type="checkbox" data-saved><span>Anahtarı yazdırdım ya da güvenli bir yere kaydettim</span></label>
+          <div class="hof-actions"><button type="button" class="hof-button" data-done disabled>Tamam</button></div>`,
+        onClose: () => resolve(true),
+      });
+      const dialog = modal.dialog;
+      dialog.querySelector("[data-print]").onclick = () => printKey(key, office);
+      dialog.querySelector("[data-copy]").onclick = () =>
+        navigator.clipboard
+          ?.writeText(key)
+          .then(() => HOF.toast("Anahtar kopyalandı. Bir yere yapıştırıp saklayın.", { type: "success" }))
+          .catch(() => HOF.toast("Kopyalanamadı; anahtarı elle yazın.", { type: "error" }));
+      dialog.querySelector("[data-saved]").onchange = event => {
+        dialog.querySelector("[data-done]").disabled = !event.target.checked;
+      };
+      dialog.querySelector("[data-done]").onclick = () => modal.close(true);
+    });
 
   // ---------- Parola değişimi ----------
   HOF.changePassword = ({ forced = false } = {}) =>

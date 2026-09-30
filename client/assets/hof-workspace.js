@@ -15,7 +15,10 @@
     }
     return users;
   };
-  const userNames = () => users.map(user => user.name);
+  // Atanacak kişi (v2.0.10): tüm aktif kullanıcılar, rolüyle; görev kişiye kimliğiyle bağlanır (aynı adlı iki kullanıcı
+  // karışmaz). Önceden ad önerisi (datalist) kutudaki adla süzüldüğü için yalnız yönetici görünüyordu.
+  const assigneeOptions = () =>
+    users.map(user => ({ value: user.id, label: `${user.name}${user.id === HOF.user?.id ? " (siz)" : ""} · ${user.roleLabel || HOF.roleLabels?.[user.role] || user.role}` }));
   const priorityLabel = { normal: "Normal", high: "Yüksek", urgent: "Acil" };
 
   // Türk cep telefonlarını wa.me biçimine çevirir (90XXXXXXXXXX).
@@ -292,14 +295,15 @@
         eyebrow: selected ? selected.title : "OPERASYON",
         fields: [
           { name: "title", label: "Görev", required: true, maxlength: 300, placeholder: HOF.modules.haciz ? "Örn. haciz yenileme evrakını kontrol et" : "Örn. eksik belgeleri tamamla ve bilgi ver" },
-          { name: "assignee", label: "Atanacak kişi", list: userNames(), value: HOF.user.name, placeholder: "Personel adı" },
+          { name: "assigneeId", label: "Atanacak kişi", type: "select", options: assigneeOptions(), value: HOF.user.id },
           { name: "dueDate", label: "Son tarih", type: "date" },
           { name: "priority", label: "Öncelik", type: "select", value: "normal", options: [{ value: "normal", label: "Normal" }, { value: "high", label: "Yüksek" }, { value: "urgent", label: "Acil" }] },
           ...(selected ? [{ name: "linkCase", label: `Görevi "${selected.title}" kaydına bağla`, type: "checkbox", value: true }] : []),
         ],
         submitLabel: "Görevi ata",
         onSubmit: async data => {
-          const body = { title: data.title, assignee: data.assignee, dueDate: data.dueDate, priority: data.priority, caseKey: selected && data.linkCase ? selected.key : "" };
+          const person = users.find(user => user.id === data.assigneeId);
+          const body = { title: data.title, assigneeId: data.assigneeId, assignee: person?.name || "", dueDate: data.dueDate, priority: data.priority, caseKey: selected && data.linkCase ? selected.key : "" };
           await HOF.api("/api/workspace/tasks", { method: "POST", body });
           HOF.toast("Görev atandı.", { type: "success" });
           refreshBadges();
@@ -337,6 +341,7 @@
       onSubmit: async data => {
         await HOF.api(`/api/workspace/payments/${encodeURIComponent(item.id)}`, { method: "PUT", body: data });
         HOF.toast("Tahsilat düzeltildi.", { type: "success" });
+        HOF.emit("payment-saved", { key: item.caseKey || "" });
         after?.();
       },
     });
@@ -353,6 +358,7 @@
     try {
       await HOF.api(`/api/workspace/payments/${encodeURIComponent(item.id)}`, { method: "DELETE" });
       HOF.toast("Tahsilat silindi.", { type: "success" });
+      HOF.emit("payment-saved", { key: item.caseKey || "" });
       after?.();
     } catch (error) {
       HOF.toastError(error);
@@ -405,6 +411,7 @@
         if (entry) await HOF.api(`/api/workspace/cash/${encodeURIComponent(entry.id)}`, { method: "PUT", body });
         else await HOF.api("/api/workspace/cash", { method: "POST", body });
         HOF.toast(entry ? "Kasa hareketi düzeltildi." : incoming ? "Tahsilat kasaya eklendi." : "Ödeme kasaya işlendi.", { type: "success" });
+        HOF.emit("cash-changed");
         after?.();
       },
     });
@@ -416,6 +423,7 @@
     try {
       await HOF.api(`/api/workspace/cash/${encodeURIComponent(entry.id)}`, { method: "DELETE" });
       HOF.toast("Kasa hareketi silindi.", { type: "success" });
+      HOF.emit("cash-changed");
       after?.();
     } catch (error) {
       HOF.toastError(error);
@@ -635,7 +643,7 @@
   async function openReports() {
     try {
       const result = await HOF.api("/api/workspace/reports");
-      const rows = result.report.map(item => `<tr><td>${esc(item.userName)}<br><small>${esc(HOF.roleLabels[item.role] || item.role)}</small></td><td class="num">${item.tasksCompleted}</td><td class="num">${item.notes}</td><td class="num">${item.calls}</td><td class="num">${esc(HOF.formatMoney(item.collections))}</td><td class="num">${item.dataEntries}</td></tr>`).join("");
+      const rows = result.report.map(item => `<tr><td>${esc(item.userName)}<br><small>${esc(item.roleLabel || HOF.roleLabels[item.role] || item.role)}</small></td><td class="num">${item.tasksCompleted}</td><td class="num">${item.notes}</td><td class="num">${item.calls}</td><td class="num">${esc(HOF.formatMoney(item.collections))}</td><td class="num">${item.dataEntries}</td></tr>`).join("");
       HOF.modal({
         title: "Personel performans özeti",
         eyebrow: "RAPOR",
@@ -664,7 +672,7 @@
   function openProfile() {
     HOF.formModal({
       title: "Profilim",
-      eyebrow: HOF.roleLabels[HOF.user.role] || HOF.user.role,
+      eyebrow: HOF.user.roleLabel || HOF.roleLabels[HOF.user.role] || HOF.user.role,
       intro: "Bu ad not, tahsilat, görev ve mesaj kayıtlarında görünür. Rolünüzü yalnızca yönetici değiştirebilir.",
       fields: [{ name: "name", label: "Ad soyad", required: true, value: HOF.user.name, maxlength: 120 }],
       submitLabel: "Kaydet",
@@ -685,7 +693,7 @@
     { action: "messages", icon: "✉", key: "side.messages", label: () => "Mesajlar" },
     { action: "newTask", icon: "+", key: "side.newTask", label: () => "Görev ata", requires: "tasks.create" },
     // Sabit "Yeni kayıt" (v2.0.2): açık sekme araç, kasa ya da öğrenci listesi olabilir; sektör sözcüğü yanıltır.
-    { action: "newRecord", icon: "+", key: "side.newRecord", label: () => "Yeni kayıt" },
+    { action: "newRecord", icon: "+", key: "side.newRecord", label: () => "Yeni kayıt", requires: "records.create" },
     { action: "cash", icon: "₺", key: "side.cash", label: () => "Kasa", requires: "cash.view" },
     // Taksitler (v2.0.4): grup › alt grup, taksit kartı, tahsilat, gecikme uyarısı (hof-plans.js).
     // Cari ve Stok (v2.0.6): müşteri/tedarikçi kartları (taksitler cariye bağlı) ve Kasa mantığıyla stok.
@@ -762,7 +770,7 @@
   function renderUser() {
     const target = document.querySelector("#hof-sidecard .hof-user");
     if (!target || !HOF.user) return;
-    target.innerHTML = `<span class="hof-user-avatar" aria-hidden="true">${esc(HOF.initials(HOF.user.name))}</span><span class="hof-user-info"><strong title="${esc(HOF.user.name)}">${esc(HOF.user.name)}</strong><span>${esc(HOF.roleLabels[HOF.user.role] || HOF.user.role)}</span></span><span class="hof-user-menu"><button type="button" data-action="profile">Profil</button><button type="button" data-action="password">Parola</button>${HOF.can("users.manage") || HOF.can("audit.view") ? '<a href="/admin.html">Yönetim</a>' : ""}<button type="button" data-action="logout">Çıkış</button></span>`;
+    target.innerHTML = `<span class="hof-user-avatar" aria-hidden="true">${esc(HOF.initials(HOF.user.name))}</span><span class="hof-user-info"><strong title="${esc(HOF.user.name)}">${esc(HOF.user.name)}</strong><span>${esc(HOF.user.roleLabel || HOF.roleLabels[HOF.user.role] || HOF.user.role)}</span></span><span class="hof-user-menu"><button type="button" data-action="profile">Profil</button><button type="button" data-action="password">Parola</button>${HOF.can("users.manage") ? '<a href="/admin.html">Yönetim</a>' : ""}<button type="button" data-action="logout">Çıkış</button></span>`;
   }
 
   function installSidebar() {
@@ -974,6 +982,25 @@
     refreshBadges();
     refreshActivity();
   });
+  // v2.0.10: yönetici bu kişinin rolünü ya da kişiye özel yetkisini değiştirdi → menü, düğmeler ve kartlar yeniden
+  // açmadan güncellenir. Başka kullanıcının adı değişti ya da silindi → sohbet listesi yenilenir.
+  HOF.on("live:workspace.changed", async change => {
+    if (change?.kind === "users") {
+      loadUsers();
+      return HOF.chat?.refresh?.();
+    }
+    if (change?.kind !== "permissions") return;
+    try {
+      const me = await HOF.api("/api/auth/me");
+      HOF.user = { ...HOF.user, ...me, permissions: me.permissions };
+      HOF.applyPermissions?.(HOF.user);
+      renderUser();
+      HOF.emit("user-changed", HOF.user);
+      HOF.toast("Yöneticiniz yetkilerinizi güncelledi; ekranınız buna göre düzenlendi.", { timeout: 6000 });
+    } catch {
+      // oturum düştüyse giriş ekranı zaten açılır
+    }
+  });
   // Sektör değişince (bu veya başka bir bilgisayarda) kenar çubuğu ve işlem geçmişi yeni dili kullanır.
   HOF.on("profile", () => {
     renderSideLabels();
@@ -981,8 +1008,33 @@
     refreshActivity();
   });
 
+  // Kurtarma anahtarı hatırlatması (v2.0.10): yöneticinin anahtarı yoksa 3 günde bir kısa bildirim; "Oluştur" Yönetim'e götürür.
+  // Açık bir pencere (Excel analizi, ön izleme, form) varken hatırlatma çıkmaz: kullanıcının o anki işiyle yarışmaz ve
+  // pencerenin altında kalıp sönmez. Pencere kapanana kadar 20 sn arayla (en çok 30 kez) yeniden bakılır.
+  async function nudgeRecovery(attempt = 0) {
+    if (!HOF.can("users.manage")) return;
+    if (document.querySelector(".hof-modal-backdrop.is-visible, .hof-modal")) {
+      if (attempt < 30) setTimeout(() => nudgeRecovery(attempt + 1), 20_000);
+      return;
+    }
+    const key = `hof.recovery.nudge.${HOF.user?.id || ""}`;
+    try {
+      if (Date.now() - Number(localStorage.getItem(key) || 0) < 3 * 86_400_000) return;
+    } catch {
+      return;
+    }
+    try {
+      const status = await HOF.api("/api/admin/recovery");
+      if (status.exists) return;
+      localStorage.setItem(key, String(Date.now()));
+      HOF.toast("Yönetici parolanızı unutursanız programa kurtarma anahtarıyla girersiniz. Henüz oluşturmadınız.", { timeout: 15000, action: { label: "Oluştur", onClick: () => location.assign("/admin.html#recovery") } });
+    } catch {
+      // hatırlatma yardımcıdır
+    }
+  }
   HOF.whenReady(() => {
     loadUsers();
+    setTimeout(() => nudgeRecovery(), 6000);
     HOF.onDom(() => {
       installSidebar();
       installDetailActions();
