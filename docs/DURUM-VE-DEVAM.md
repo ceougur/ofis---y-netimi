@@ -77,7 +77,16 @@ Yeni bir oturum bu belgeyi okuyarak kaldığı yerden devam eder. Son güncellem
 ## Kalanlar (öncelik sırasıyla)
 
 ### 2.0.12 için biriken düzeltmeler (kullanıcı ekledikçe büyür; birlikte yapılır)
-(henüz yok)
+1. **"Tahsilat girince müşterinin kayıt tarihi değişiyor"** (müşteri telefonu, 30.09.2026; sahadaki sürüm 2.0.10; 2.0.11
+   zip'i henüz yüklenmedi). **Yeniden üretilemedi** (30.09.2026): kayıt kartından *Tahsilat İşle* (tablodaki "Kayıt
+   Tarihi" hücresi 12.04.2026 kaldı, sayfa yenilenince de), taksit kartından *+ Tahsilat*, cariden tahsilat, taksit
+   tahsilatı API'si — cari ve kartın `registered_on` değeri değişmedi. Sunucuda `registered_on` yalnız düzenleme
+   formu (PUT) ve Excel yüklemesiyle yazılıyor. Açık olasılıklar: (a) müşterinin Excel'inde "Kayıt Tarihi" hücresi
+   formül (=BUGÜN() ya da ödeme kolonlarına bağlı) — program formülü yeniden hesaplar (`server/lib/formula/compute.mjs`);
+   (b) uyarı kartındaki *Gerçekleştirildi* o tarih kolonundan doğan uyarıda hücreye "Gerçekleştirildi · tarih" yazar
+   (`hof-alerts.js markDone`); (c) başka bir ekran kastediliyor. **Müşteriden istenecek:** hangi ekranda (tablo / cari
+   kartı / taksit kartı), hangi düğmeyle tahsilat girildi, önceki ve sonraki tarih, ekran görüntüsü; Excel'deki hücre
+   formül mü.
 
 ### 2.0.11 düzeltmeleri — tamamı yapıldı (30.09.2026; paket hazır, yayın kullanıcı doğrulaması bekliyor)
 Maddeler ve kararlar kayıt için duruyor; yapılan iş ve kanıtı `CHANGELOG.md` → 2.0.11 ve `test/e2e/senaryo-211.mjs`.
