@@ -119,6 +119,14 @@ Yeni bir oturum bu belgeyi okuyarak kaldığı yerden devam eder. Son güncellem
    süzgecinin yanına) **cari seçimi** gelir: grup seçilince o gruptaki cariler onay kutulu listede görünür (kartı olan/
    olmayan ayrı işaretli), seçilenler 3. maddedeki toplu taksitlendirmeye gider. Not: tekil "Yeni taksit kartı"
    penceresinde Cari seçici zaten var (hof-plans.js, v2.0.6); eksik olan ekran düzeyinde toplu cari seçimi.
+5. **Birimlerin baş harfi büyük; tüm programda seçenek yazımı** (müşteri, 30.09.2026, Stok › Yeni ürün ekran görüntüsü):
+   Birim listesi "adet, paket, kutu, çuval, şişe…" küçük harfle. İstek: baş harfleri büyük olsun ("Adet", "Paket",
+   "Çuval", "Şişe") ve **tüm programdaki açılır listeler/etiketler** aynı gözle taransın. Kaynak: `hof-stock.js` `UNITS`
+   dizisi; kayıtlı birimler de listeye katılıyor (`[...UNITS, ...used]`). Dikkat: (a) büyük harf Türkçe kurala göre
+   (`toLocaleUpperCase("tr")`: i→İ); (b) eski kayıtlardaki "adet" ile yeni "Adet" listede iki kez çıkmasın — büyük/küçük
+   harf duyarsız tekilleştirme, gösterimde tek biçim (kayıtlar, ekstre, fatura/PDF, Excel dışa aktarım aynı yazar);
+   (c) önerim: kısaltmalar uluslararası yazımında kalsın (kg, gr, ton, lt, ml, cm, m², m³) — kullanıcıya sorulacak.
+   Test: eski "adet" kayıtlı ürün + yeni ürün → listede tek "Adet"; stok raporu/PDF/Excel'de aynı yazım.
 
 ### 2.0.10 düzeltmeleri — tamamı yapıldı ve yayımlandı (30.09.2026, v2.0.10)
 Maddeler ve kararlar kayıt için duruyor; yapılan iş ve kanıtı `CHANGELOG.md` → 2.0.10 ve `test/e2e/senaryo-210.mjs`.
