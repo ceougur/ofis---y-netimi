@@ -209,7 +209,7 @@
   function permRow(user) {
     const base = rolePermissions(user.roleKey);
     return `<tr class="adm-perm-row" data-perm-for="${esc(user.id)}"><td colspan="7"><div class="adm-perm-panel" role="group" aria-label="${esc(user.name)} yetkileri">
-      <div class="adm-perm-head"><div><b>${esc(user.name)} · yetkiler</b><small>Rol: <b>${esc(roleLabel(user.roleKey))}</b> — rolün verdiği ${base.size} yetki işaretli gelir. İşaret ekleyip kaldırarak bu kişiye özel ayarlayın; rolü değiştirmek diğer kişileri etkilemez.</small></div><div class="adm-perm-legend"><span class="is-added">eklendi</span><span class="is-removed">kaldırıldı</span><span class="is-lock">${LOCK}yalnız yönetici</span></div></div>
+      <div class="adm-perm-head"><div><b>${esc(user.name)} · Yetkiler</b><small>Rol: <b>${esc(roleLabel(user.roleKey))}</b> — rolün verdiği ${base.size} yetki işaretli gelir. İşaret ekleyip kaldırarak bu kişiye özel ayarlayın; rolü değiştirmek diğer kişileri etkilemez.</small></div><div class="adm-perm-legend"><span class="is-added">eklendi</span><span class="is-removed">kaldırıldı</span><span class="is-lock">${LOCK}yalnız yönetici</span></div></div>
       ${permGrid({ checked: new Set(user.permissions), base })}
       <div class="adm-perm-foot"><span class="adm-perm-summary" data-summary></span><button type="button" class="hof-button hof-button-ghost hof-button-small" data-perm-reset>Rol Varsayılanına Dön</button><button type="button" class="hof-button hof-button-ghost hof-button-small" data-perm-cancel>Vazgeç</button><button type="button" class="hof-button hof-button-small" data-perm-save>Yetkileri Kaydet</button></div>
     </div></td></tr>`;
@@ -367,7 +367,7 @@
   }
   function viewRole(role) {
     HOF.modal({
-      title: `${role.label} · yetkiler`,
+      title: `${role.label} · Yetkiler`,
       eyebrow: "YERLEŞİK ROL",
       size: "wide",
       body: `<p class="hof-modal-text">${esc(ROLE_NOTES[role.key] || "")} Yerleşik roller değiştirilemez; kişiye özel yetki için kullanıcının “Yetkiler” düğmesini, farklı bir rol için “Bundan yeni rol”ü kullanın.</p><div class="adm-perm-panel is-embedded">${permGrid({ checked: new Set(role.permissions), full: role.key === "admin", readOnly: true })}</div>`,

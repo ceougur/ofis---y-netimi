@@ -432,7 +432,7 @@
       return;
     }
     bar.hidden = false;
-    bar.innerHTML = `<span>Sıradaki PDF: <b>${esc(printQueue[0].name)}</b>${printQueue.length > 1 ? ` · ${printQueue.length - 1} tane daha` : ""}</span><span><button type="button" class="hof-button hof-button-small" data-queue-next>${PRINT} Sıradakini yazdır</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-queue-stop>Bitir</button></span>`;
+    bar.innerHTML = `<span>Sıradaki PDF: <b>${esc(printQueue[0].name)}</b>${printQueue.length > 1 ? ` · ${printQueue.length - 1} tane daha` : ""}</span><span><button type="button" class="hof-button hof-button-small" data-queue-next>${PRINT} Sıradakini Yazdır</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-queue-stop>Bitir</button></span>`;
   }
   async function printDocuments(items) {
     const skipped = items.filter(item => !printable(item));

@@ -110,7 +110,7 @@ describe("zor değerler (v2.0.2)", async () => {
 });
 
 describe("eşleme ekranı: kullanıcı rolleri (v2.0.2)", () => {
-  it("seçilen rol otomatik kararın üstüne yazar; 'Yoksay' önemi sıfırlar; kanıt ve kesinlik bunu söyler", async () => {
+  it("seçilen rol otomatik kararın üstüne yazar; 'Yok Say' önemi sıfırlar; kanıt ve kesinlik bunu söyler", async () => {
     const { analyzeColumns } = await import("../server/lib/insight/columns.mjs");
     const rows = [
       { "Tarih 2": "01.10.2026", "Kolon 3": "Ali Veli", Not: "x" },

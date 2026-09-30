@@ -368,7 +368,7 @@
             const account = await HOF.api(`/api/workspace/cases/${encodeURIComponent(created.caseKey)}/account`, { method: "POST", body: { name: person, phone: HOF.plans.phoneOf(values), caseTitle: HOF.plans.recordLabel(values) } });
             HOF.toast(account.outcome === "created" ? `Kayıt oluşturuldu; "${account.name}" için cari kartı açıldı ve kayda bağlandı.` : account.outcome === "linked" ? `Kayıt oluşturuldu; mevcut "${account.name}" carisi bu kayda bağlandı.` : "Kayıt oluşturuldu; kayda bağlı cari zaten vardı.", { type: "success", timeout: 6000 });
           } catch (error) {
-            HOF.toast(`Kayıt oluşturuldu ama cari açılamadı: ${error.message} Cari → Yeni cari ile açıp "Tablodaki kayıt" alanından bağlayabilirsiniz.`, { type: "error", timeout: 9000 });
+            HOF.toast(`Kayıt oluşturuldu ama cari açılamadı: ${error.message} Cari → + Yeni Cari ile açıp "Tablodaki Kayıt" alanından bağlayabilirsiniz.`, { type: "error", timeout: 9000 });
           }
         } else HOF.toast("Yeni kayıt oluşturuldu.", { type: "success" });
         page = 1;

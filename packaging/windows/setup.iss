@@ -72,7 +72,7 @@ Name: "turkish"; MessagesFile: "compiler:Languages\Turkish.isl"
 turkish.WelcomeLabel2=Bu sihirbaz [name/ver] uygulamasını bilgisayarınıza kuracak.%n%nOfisteki verilerin tutulacağı bilgisayarda "Sunucu", diğer personel bilgisayarlarında "Personel Bilgisayarı" kurulumunu seçin.%n%nDevam etmeden önce diğer uygulamaları kapatmanız önerilir.
 
 [Types]
-Name: "sunucu"; Description: "Sunucu bilgisayar (ofisin verileri bu bilgisayarda tutulur)"
+Name: "sunucu"; Description: "Sunucu Bilgisayar (ofisin verileri bu bilgisayarda tutulur)"
 Name: "istemci"; Description: "Personel Bilgisayarı (sunucuya bağlanır)"
 
 [Components]

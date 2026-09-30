@@ -44,7 +44,7 @@
     HOF.settings = { ...HOF.settings, ...settings };
     localSet("hukuk-ofisi-sheet-url", settings.sheetUrl || "");
     localSet("hukuk-ofisi-sync-minutes", String(settings.syncMinutes || "5"));
-    localSet("hukuk-ofisi-active-source-label", settings.activeSourceLabel || (settings.sheetUrl ? "Google Sheets" : "Çalışma tablosu"));
+    localSet("hukuk-ofisi-active-source-label", settings.activeSourceLabel || (settings.sheetUrl ? "Google Sheets" : "Çalışma Tablosu"));
     if (settings.aiMapping) localSet("hukuk-ofisi-ai-mapping", settings.aiMapping);
     else localRemove("hukuk-ofisi-ai-mapping");
   };

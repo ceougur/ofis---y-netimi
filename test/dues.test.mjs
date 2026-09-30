@@ -377,7 +377,7 @@ describe("ay kolonu yazımları ve tek vadeli tutar (v2.0.2)", () => {
 });
 
 describe("eşleme ekranı ve takvim (v2.0.2)", () => {
-  it("'Son tarih / Vade' seçilen kolon başlığı ne olursa olsun takvime girer; 'Yoksay' seçilen kolon girmez", async () => {
+  it("'Son tarih / Vade' seçilen kolon başlığı ne olursa olsun takvime girer; 'Yok Say' seçilen kolon girmez", async () => {
     const { computeDues } = await import("../server/lib/insight/dues.mjs");
     const now = new Date("2026-09-27T09:00:00");
     const rows = [

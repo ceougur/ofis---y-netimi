@@ -134,7 +134,7 @@
   function importsHtml() {
     const list = state.data?.imports || [];
     if (!list.length) return "";
-    return `<details class="hof-transfer-imports"><summary>Son aktarımlar (${list.length})</summary><ul>${list
+    return `<details class="hof-transfer-imports"><summary>Son Aktarımlar (${list.length})</summary><ul>${list
       .map(item => {
         const s = item.summary || {};
         return `<li><span><b>${esc(item.title || "Aktarım")}</b><small>${esc(HOF.formatDateTime(item.createdAt))} · ${esc(item.actorName || "—")} · ${number(s.created)} kart${s.linked ? `, ${number(s.linked)} bağlama` : ""}${s.paymentsMoved ? `, ${number(s.paymentsMoved)} tahsilat taşındı` : ""}${item.undoneAt ? ` · <b>geri alındı</b> ${esc(HOF.formatDateTime(item.undoneAt))}` : ""}</small></span>${item.undoneAt ? "" : `<button type="button" class="hof-button hof-button-small hof-button-ghost hof-button-danger-ghost" data-undo="${esc(item.id)}">Geri Al</button>`}</li>`;

@@ -13,6 +13,8 @@ const read = file => readFileSync(new URL(file, ROOT), "utf8");
 // Bilerek cümle düzeninde kalan kısa metinler (durum cümleleri, soru/uyarı başlıkları, yarım cümleler).
 const SENTENCES = new Set([
     "Kasa'ya girmez",
+    "Bağlı değil",
+    "Yeni sürüm hazır: DestekOfis",
     "Bu kişi için",
     "Aktarım tamamlandı",
     "Aynı cari zaten varsa",
@@ -86,7 +88,7 @@ const SENTENCES = new Set([
 
 function eligible(text) {
   const s = text.trim();
-  if (!s || SENTENCES.has(s) || /[$`<>{}\\]/.test(s) || !/^[+−↶←→·✓✎⤓↗#0-9A-ZÇĞİÖŞÜ]/.test(s)) return false;
+  if (!s || SENTENCES.has(s) || /[$`<>{}\\]/.test(s) || !/^[+−↶←→↑·✓✎⤓↗#0-9A-ZÇĞİÖŞÜ]/.test(s)) return false;
   const words = s.split(/\s+/);
   if (words.length < 2 || words.length > 7) return false;
   // "Evet, Uygula" gibi onay düğmeleri cümle sayılmaz; virgülden sonrası da başlık yazımıyla denetlenir.
@@ -102,9 +104,14 @@ function violations(file, { server = false } = {}) {
   const check = (text, where) => eligible(text) && found.push(`${file} (${where}): “${text.trim()}” → “${titleCase(text.trim())}”`);
   const TAGS = "button|th|option|h1|h2|h3|h4|legend|dt|summary|label|strong|b|span|a|optgroup";
   for (const m of src.matchAll(new RegExp(`<(?:${TAGS})\\b[^<>]*>([^<>\`{}$\\n]{3,60})<`, "g"))) check(m[1], "etiket");
+  // Simgeyle başlayan başlık ve düğmeler: <h3>${icon("sparkle")} Toplu Düzeltmeler</h3>, </svg>Excel İndir</a>.
+  for (const m of src.matchAll(new RegExp(`<(?:${TAGS})\\b[^<>]*>\\s*\\$\\{[A-Za-z_.]+(?:\\([^)]*\\))?\\}\\s*([^<>\`{}$\\n]{3,60})<`, "g"))) check(m[1], "simgeli etiket");
+  for (const m of src.matchAll(/<\/svg>\s*([^<>`{}$\n]{3,60})<\/(?:a|button|span|b|strong|h[1-6]|summary|label)>/g)) check(m[1], "simgeli etiket");
   for (const m of src.matchAll(/\b(title|eyebrow|label|submitLabel|confirmLabel|cancelLabel|heading)\s*:\s*"([^"\n]{3,70})"/g)) check(m[2], m[1]);
   for (const m of src.matchAll(/\b(title|submitLabel|confirmLabel|label|eyebrow)\s*:\s*([^,\n]*\?[^,\n]*)/g)) for (const n of m[2].matchAll(/"([^"\n]{3,60})"/g)) check(n[1], `${m[1]} koşullu`);
   for (const m of src.matchAll(/\[\s*"[a-z][\w-]*"\s*,\s*"([^"\n]{3,70})"/g)) check(m[1], "seçenek");
+  // Sayı ya da koşul eklenen başlıklar: <summary>Son Aktarımlar (${n})</summary>, <button>Önümüzdeki 30 Gün (${n})</button>.
+  for (const m of src.matchAll(new RegExp(`<(?:${TAGS})\\b[^<>]*>([A-ZÇĞİÖŞÜ↑][^<>\`{}$\\n]{2,60}?)\\s*\\(?\\$\\{`, "g"))) check(m[1], "sayılı etiket");
   // Düğme yazısı sonradan geri konurken ("Giriş Yap" → hata → "Giriş yap") yazım kaymasın.
   for (const m of src.matchAll(/\.textContent\s*=\s*"([^"\n]{3,60})"/g)) check(m[1], "textContent");
   if (server) for (const m of src.matchAll(/\b(headers|columns|head)\s*[:=]\s*\[([^\]\n]{0,1200})\]/g)) for (const n of m[2].matchAll(/"([^"\n]{3,60})"/g)) check(n[1], m[1]);

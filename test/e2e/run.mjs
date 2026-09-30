@@ -197,7 +197,7 @@ try {
     expect(result.includes("İcra ve Alacak Takibi") && result.includes("Yüksek Güven") && result.includes("“BORÇLU” kolonu"), `sonuç: ${result}`);
     const profile = (await admin.evaluate(() => fetch("/api/workspace/profile").then(response => response.json()))).data;
     expect(profile.sector.id === "genel", `onaysız uygulanmamalı: ${profile.sector.id}`);
-    expect(/Özet kartları: \d+ kart doğrulandı/.test(result), `kart özeti: ${result}`);
+    expect(/Özet Kartları: \d+ kart doğrulandı/.test(result), `kart özeti: ${result}`);
     await admin.screenshot({ path: path.join(artifacts, "03b-analiz.png") });
     // Kart raporu: doğrulanan kartlar ve gösterilmeyen aday kartların nedenleri, sekme sekme.
     await admin.click(".hof-analysis-result [data-cards]");
@@ -1437,7 +1437,7 @@ try {
       await firstUpload(page, input, path.join(here, "..", "fixtures", "akilli-denetim.xlsx"));
       await page.waitForSelector(".hof-analysis-result:not([hidden])", { timeout: 20000 });
       const summary = await page.$eval(".hof-analysis-result", node => node.innerText.replace(/\s+/g, " "));
-      expect(summary.includes("Akıllı denetim: 1 hesap kuralı öğrenildi") && summary.includes("4 olası tutarsızlık"), `analiz: ${summary}`);
+      expect(summary.includes("Akıllı Denetim: 1 hesap kuralı öğrenildi") && summary.includes("4 olası tutarsızlık"), `analiz: ${summary}`);
       await page.click(".hof-analysis-result [data-apply], .hof-analysis-result [data-done]");
       await page.waitForFunction(() => !document.querySelector(".hof-modal-backdrop"), null, { timeout: 8000 });
       await page.waitForFunction(() => document.querySelectorAll(".dynamic-table tbody tr.hof-row-check").length === 4, null, { timeout: 10000 });

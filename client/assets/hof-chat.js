@@ -314,7 +314,7 @@
   function messagesHtml(thread, conversation) {
     if (!thread?.loaded) return '<p class="hof-chat-empty">Yükleniyor…</p>';
     const older = thread.hasMore
-      ? '<button type="button" class="hof-chat-older" data-act="older">↑ Önceki günün mesajlarını yükle</button>'
+      ? '<button type="button" class="hof-chat-older" data-act="older">↑ Önceki Günün Mesajlarını Yükle</button>'
       : thread.archivedMonths
         ? `<p class="hof-chat-archive">30 günden eski mesajlar programdan kaldırılıp arşivlendi. <button type="button" class="hof-link" data-act="archive">Arşivi İndir (${thread.archivedMonths} ay)</button></p>`
         : "";

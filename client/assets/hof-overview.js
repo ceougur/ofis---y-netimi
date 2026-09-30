@@ -313,8 +313,8 @@
       <button type="button" class="hof-button hof-button-small" data-run>Raporu Getir</button>
     </div>`;
   const exportButtons = (pdf, xlsx) => `<span class="hof-rep-export" role="group" aria-label="Dışa aktar">
-      <a class="hof-rep-out is-pdf" href="${esc(pdf)}" target="_blank" rel="noopener" title="PDF olarak aç; oradan kaydedin ya da yazdırın">${ICONS.report}PDF indir</a>
-      <a class="hof-rep-out is-xlsx" href="${esc(xlsx)}" download title="Excel dosyası olarak indir"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="2.5"/><path d="M3.5 9h17M3.5 14.5h17M9 3.5v17"/></svg>Excel indir</a>
+      <a class="hof-rep-out is-pdf" href="${esc(pdf)}" target="_blank" rel="noopener" title="PDF olarak aç; oradan kaydedin ya da yazdırın">${ICONS.report}PDF İndir</a>
+      <a class="hof-rep-out is-xlsx" href="${esc(xlsx)}" download title="Excel dosyası olarak indir"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="2.5"/><path d="M3.5 9h17M3.5 14.5h17M9 3.5v17"/></svg>Excel İndir</a>
     </span>`;
   const statTiles = items => `<div class="hof-rep-stats">${items
     .filter(Boolean)

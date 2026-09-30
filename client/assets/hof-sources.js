@@ -61,7 +61,7 @@
   const SKIP_LABELS = { title: "başlık", note: "not", footnote: "dipnot", group: "grup etiketi", "repeat-header": "yinelenen başlık", unnamed: "adsız kolon", "empty-record": "boş satır" };
   // Ön izleme ve eşleme (v2.0.2): kolonların ne sayıldığı (rol + kesinlik), ilk satırlar; biçimi uymayan hücreler ve
   // belirsiz kolonlar sarı. Kullanıcı kolonun rolünü seçebilir; seçim kaydetmede oturuma yazılır, analiz ve takvim uyar.
-  const ROLE_OPTIONS = [["auto", "Otomatik"], ["id", "Kimlik / No"], ["person", "Kişi"], ["org", "Kurum"], ["phone", "Telefon"], ["email", "E-Posta"], ["money", "Tutar"], ["deadline", "Son Tarih / Vade"], ["date", "Tarih (olay)"], ["status", "Durum"], ["category", "Kategori"], ["note", "Not"], ["ignore", "Yoksay"]];
+  const ROLE_OPTIONS = [["auto", "Otomatik"], ["id", "Kimlik / No"], ["person", "Kişi"], ["org", "Kurum"], ["phone", "Telefon"], ["email", "E-Posta"], ["money", "Tutar"], ["deadline", "Son Tarih / Vade"], ["date", "Tarih (olay)"], ["status", "Durum"], ["category", "Kategori"], ["note", "Not"], ["ignore", "Yok Say"]];
   const ROLE_TEXT = { id: "kimlik", person: "kişi", org: "kurum", money: "tutar", date: "tarih", status: "durum", category: "kategori", phone: "telefon", email: "e-posta", address: "adres", note: "not", tckn: "T.C. no", vkn: "vergi no", iban: "IBAN", city: "il", plate: "plaka", url: "bağlantı", number: "sayı", percent: "oran", sequence: "sıra", responsible: "sorumlu", text: "metin" };
   const roleText = item => (item.role === "date" ? (item.kind === "deadline" ? "son tarih" : item.kind === "event" ? "olay tarihi" : "tarih") : ROLE_TEXT[item.role] || item.role);
   function mappingHtml(mapping) {
@@ -81,7 +81,7 @@
     const flagged = (mapping.rows || []).filter(row => row.__hofFlag).length;
     return `<details class="hof-mapping" open>
       <summary><b>Ön İzleme ve Eşleme</b> · ${number(mapping.total)} satırın ilk ${number((mapping.rows || []).length)}'i · ${esc(unsure)}${flagged ? ` · sarı satırlar “İşaretlenen hatalar”a gider` : ""}</summary>
-      <p class="hof-inline-note">Program her kolonu ne saydığını başlıkta yazar (kesin / olası / belirsiz). Yanlışsa açılır listeden doğrusunu seçin; <b>Son Tarih / Vade</b> seçilen kolon takvime girer, <b>Yoksay</b> seçilen kolon uyarı üretmez. Sarı hücreler kolonun türüne uymayan değerlerdir; üzerine gelince neden yazar.</p>
+      <p class="hof-inline-note">Program her kolonu ne saydığını başlıkta yazar (kesin / olası / belirsiz). Yanlışsa açılır listeden doğrusunu seçin; <b>Son Tarih / Vade</b> seçilen kolon takvime girer, <b>Yok Say</b> seçilen kolon uyarı üretmez. Sarı hücreler kolonun türüne uymayan değerlerdir; üzerine gelince neden yazar.</p>
       <div class="hof-mapping-scroll"><table class="hof-mapping-table"><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div>
     </details>`;
   }
@@ -138,7 +138,7 @@
     return `<div class="hof-reading ${warn ? "is-warn" : ""}">
       <p><b>Okuma Raporu:</b> hücrelerin %${percent}'i kayda girdi${reading.skippedTotal ? ` · ${number(reading.skippedTotal)} satır kayıt sayılmadı (${esc(summary)})` : " · her satır kayıt oldu"}.${warn ? " <b>Dosyanın önemli bir bölümü kayda giremedi;</b> atlanan satırları kontrol edin, gerekirse Excel'de başlık satırını düzeltip yeniden yükleyin." : ""}</p>
       ${(reading.notes || []).map(note => `<p class="hof-reading-note">${esc(note)}</p>`).join("")}
-      ${lines ? `<details><summary>Kayıt sayılmayan satırlar${reading.skippedTotal > (reading.skipped || []).length ? ` (ilk ${(reading.skipped || []).length})` : ""}</summary><ul>${lines}</ul></details>` : ""}
+      ${lines ? `<details><summary>Kayıt Sayılmayan Satırlar${reading.skippedTotal > (reading.skipped || []).length ? ` (ilk ${(reading.skipped || []).length})` : ""}</summary><ul>${lines}</ul></details>` : ""}
     </div>`;
   }
   function progress(title, text) {

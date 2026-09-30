@@ -608,7 +608,7 @@
         title,
         eyebrow: eyebrow("AKILLI ÖZET", key),
         size: "wide",
-        body: `<div class="hof-tabs" role="group" aria-label="Tarih filtresi"><button type="button" data-view="upcoming" aria-pressed="true">Önümüzdeki 30 gün (${number(upcoming.total)})</button><button type="button" data-view="passed" aria-pressed="false">${card.meaning === "schedule" ? "Geçmiş" : "Tarihi geçen"} (${number(passed.total)})</button></div><div data-list>${listFor(upcoming)}</div>${explainHtml(card.explain)}`,
+        body: `<div class="hof-tabs" role="group" aria-label="Tarih filtresi"><button type="button" data-view="upcoming" aria-pressed="true">Önümüzdeki 30 Gün (${number(upcoming.total)})</button><button type="button" data-view="passed" aria-pressed="false">${card.meaning === "schedule" ? "Geçmiş" : "Tarihi Geçen"} (${number(passed.total)})</button></div><div data-list>${listFor(upcoming)}</div>${explainHtml(card.explain)}`,
       });
       modal.dialog.addEventListener("click", event => {
         const view = event.target.closest("[data-view]")?.dataset.view;
@@ -714,7 +714,7 @@
       body: `<p class="hof-modal-text">Kontrol edilen <b>${number(quality.checked)}</b> hücrenin <b>${percentWord(quality.score)}</b> sorunsuz. Kontroller: kimlik ve kişi kolonlarının doluluğu, kimliğin aynı sekmede tekrar etmemesi, T.C./IBAN/VKN sağlaması ve telefon, tarih, tutar biçimleri. Not olarak yazılmış hücreler (ör. “ertelendi”) hata sayılmaz. Kaynak veriniz değiştirilmez; düzeltmeyi tablodan yapabilirsiniz${manage ? "; bilerek böyle olan bir uyarıyı <b>Yok Say</b> ile kapatabilirsiniz" : ""}.</p>
         ${issues || '<p class="hof-empty">Biçim ve doluluk sorunu bulunmadı.</p>'}
         ${ignoredHtml}
-        <section class="hof-fixes" data-fixes><h3>${icon("sparkle", 16)} Toplu düzeltmeler</h3><p class="hof-empty">Öneriler hazırlanıyor…</p></section>
+        <section class="hof-fixes" data-fixes><h3>${icon("sparkle", 16)} Toplu Düzeltmeler</h3><p class="hof-empty">Öneriler hazırlanıyor…</p></section>
         ${reasoningHtml(insight?.reasoning)}`,
     });
     wireOpen(modal);
@@ -758,12 +758,12 @@
     try {
       data = await HOF.api("/api/workspace/insight/fixes");
     } catch (error) {
-      box.innerHTML = `<h3>${icon("sparkle", 16)} Toplu düzeltmeler</h3><p class="hof-empty">Öneriler alınamadı: ${esc(error.message)}</p>`;
+      box.innerHTML = `<h3>${icon("sparkle", 16)} Toplu Düzeltmeler</h3><p class="hof-empty">Öneriler alınamadı: ${esc(error.message)}</p>`;
       return;
     }
     const canEdit = HOF.can("records.edit");
     const list = data.fixes || [];
-    box.innerHTML = `<h3>${icon("sparkle", 16)} Toplu düzeltmeler</h3>
+    box.innerHTML = `<h3>${icon("sparkle", 16)} Toplu Düzeltmeler</h3>
       <p class="hof-modal-text">Aynı türden hücreler farklı yazılmışsa (telefon, tarih, tutar, durum) program tek yazıma çevirmeyi önerir. Değerin anlamı değişmez; Excel'deki asıl hücreye dokunulmaz, düzeltme programda saklanır ve <b>Geri Al</b> ile döner.</p>
       ${list.length ? `<ul class="hof-fix-list">${list.map(fix => `<li data-fix="${esc(fix.id)}"><div><b>${esc(fix.title)}</b><p>${esc(fix.detail)}</p><small>${fix.samples.map(item => `“${esc(item.from)}” → “${esc(item.to)}”`).join(" · ")}</small></div>${canEdit ? `<button type="button" class="hof-button hof-button-small" data-apply-fix="${esc(fix.id)}">Uygula (${number(fix.count)})</button>` : ""}</li>`).join("")}</ul>` : '<p class="hof-empty">Toplu düzeltme gerektiren yazım farkı bulunmadı.</p>'}`;
     box.querySelectorAll("[data-apply-fix]").forEach(button => {
@@ -796,7 +796,7 @@
     const issues = reasoning.issues || [];
     const pretty = tab => (HOF.sections?.pretty ? HOF.sections.pretty(tab) : tab);
     return `<section class="hof-reasoning">
-        <h3>${icon("sparkle", 16)} Akıllı denetim</h3>
+        <h3>${icon("sparkle", 16)} Akıllı Denetim</h3>
         <p class="hof-modal-text">Program verinizden kurallar öğrenir (ör. kalan tutarın nasıl hesaplandığı, hangi tarihin önce geldiği) ve kurala uymayan kayıtları işaretler. Kural ancak kayıtların büyük çoğunluğunda tutuyorsa öğrenilir; internete bir şey gönderilmez.</p>
         ${rules.length ? `<ul class="hof-rules">${rules.map(rule => `<li><b>${esc(rule.text)}</b><small>${rule.tab ? `${esc(pretty(rule.tab))} · ` : ""}kayıtların ${percentWord(Math.round(rule.support * 100))} bu kurala uyuyor (${number(rule.rows)} kayıt)</small></li>`).join("")}</ul>` : '<p class="hof-empty">Bu veride hesap kuralı öğrenilmedi (tutar kolonları arasında düzenli bir ilişki yok).</p>'}
         ${issues
@@ -1162,10 +1162,10 @@
         <p class="hof-apply-preview">Listeden sektörünüzü seçebilir ya da <b>Genel</b> görünümle devam edebilirsiniz; kolonlarınız, göstergeler ve arama her iki durumda da verinize göre çalışır.${candidates.length ? ` Olası sektörler: ${candidates.map(item => `<button type="button" class="hof-link" data-candidate="${esc(item.id)}">${esc(item.name)}</button>`).join(", ")}.` : ""}</p>`;
     }
     const skipped = skippedCards(analysis);
-    html += `<p class="hof-quality-line">${icon("sparkle", 16)} Özet kartları: <b>${number(verifiedCards(analysis))}</b> kart doğrulandı${skipped ? ` · ${number(skipped)} aday kart kesinleşmediği için gösterilmiyor` : ""} <button type="button" class="hof-link" data-cards>${skipped ? "Nedenleri Gör" : "Raporu Gör"}</button></p>`;
+    html += `<p class="hof-quality-line">${icon("sparkle", 16)} Özet Kartları: <b>${number(verifiedCards(analysis))}</b> kart doğrulandı${skipped ? ` · ${number(skipped)} aday kart kesinleşmediği için gösterilmiyor` : ""} <button type="button" class="hof-link" data-cards>${skipped ? "Nedenleri Gör" : "Raporu Gör"}</button></p>`;
     html += `<p class="hof-quality-line">${icon("pulse", 16)} Veri Sağlığı: <b>${esc(levelText)}</b> · kontrol edilen ${number(quality.checked)} hücrenin ${percentWord(quality.score)} sorunsuz${quality.issues.length ? ` · ${number(quality.issues.length)} bulgu` : ""} <button type="button" class="hof-link" data-quality>Raporu Gör</button></p>`;
     const reasoning = analysis.reasoning;
-    if (reasoning) html += `<p class="hof-quality-line">${icon("sparkle", 16)} Akıllı denetim: <b>${number(reasoning.relations.length)}</b> hesap kuralı öğrenildi · ${reasoning.count ? `<b>${number(reasoning.count)}</b> olası tutarsızlık` : "tutarsızlık bulunmadı"} <button type="button" class="hof-link" data-quality>Ayrıntılar</button></p>`;
+    if (reasoning) html += `<p class="hof-quality-line">${icon("sparkle", 16)} Akıllı Denetim: <b>${number(reasoning.relations.length)}</b> hesap kuralı öğrenildi · ${reasoning.count ? `<b>${number(reasoning.count)}</b> olası tutarsızlık` : "tutarsızlık bulunmadı"} <button type="button" class="hof-link" data-quality>Ayrıntılar</button></p>`;
     const buttons = [];
     if (unsure) {
       buttons.push('<button type="button" class="hof-button hof-button-ghost" data-general>Genel ile Devam Et</button>', '<button type="button" class="hof-button hof-button-ghost" data-create-sector>Kendi Sektörümü Oluştur</button>', '<button type="button" class="hof-button" data-pick>Sektörümü Seç</button>');

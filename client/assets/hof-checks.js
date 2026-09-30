@@ -3,7 +3,7 @@
  * kayıtları bulur: hesap tutmayan kalan, "Ödendi" ama borcu olan kayıt, ters tarih, yazım hatası gibi duran yıl ya da
  * tutar, tabloya yansımamış tahsilat. Kullanıcıyı meşgul etmez: yalnızca seçilen kayıtta bir şey varsa detay kartının
  * üstünde kısa bir kutu çıkar (neden ve tek tıkla düzeltme önerisiyle); tabloda şüpheli satırın başında küçük bir işaret
- * olur. "Yoksay" o bulguyu (aynı değerlerle) herkes için kapatır; değer değişirse yeniden değerlendirilir. */
+ * olur. "Yok Say" o bulguyu (aynı değerlerle) herkes için kapatır; değer değişirse yeniden değerlendirilir. */
 (() => {
   "use strict";
   const HOF = window.HOF;
@@ -60,7 +60,7 @@
             <details><summary>Neden?</summary><p>${esc(item.why || "")}</p></details>
             <div class="hof-check-actions">
               ${item.suggest && canFix ? `<button type="button" class="hof-button hof-button-small" data-fix="${index}" title="Önerilen değeri kaydeder (kaynak dosya değişmez; kimin yaptığı kaydedilir).">Uygula: ${esc(item.suggest.label)} → ${esc(item.suggest.value)}</button>` : ""}
-              ${canFix ? `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-dismiss="${index}" title="Bu uyarıyı bu kayıt için kapatır; değerler değişirse yeniden değerlendirilir.">Yoksay</button>` : ""}
+              ${canFix ? `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-dismiss="${index}" title="Bu uyarıyı bu kayıt için kapatır; değerler değişirse yeniden değerlendirilir.">Yok Say</button>` : ""}
             </div>
           </li>`,
         )
