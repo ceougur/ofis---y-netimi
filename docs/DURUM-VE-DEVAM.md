@@ -127,6 +127,16 @@ Yeni bir oturum bu belgeyi okuyarak kaldığı yerden devam eder. Son güncellem
    harf duyarsız tekilleştirme, gösterimde tek biçim (kayıtlar, ekstre, fatura/PDF, Excel dışa aktarım aynı yazar);
    (c) **karar (kullanıcı, 30.09.2026): kısaltmalar dahil hepsinin ilk harfi büyük** — Kg, Gr, Ton, Lt, Ml, Cm, M², M³.
    Test: eski "adet" kayıtlı ürün + yeni ürün → listede tek "Adet"; stok raporu/PDF/Excel'de aynı yazım.
+6. **Kasa penceresi bağlı hareket silinince kendini yenilemiyor** (müşteri, 30.09.2026, ekran görüntüsü): Kasa'da
+   "Çek ödemesi · …" satırındaki ↗ ile çek/senet kartı açılıp hareket silinince Kasa'ya dönüldüğünde satır ve
+   göstergeler eski kalıyor; kapatıp açmak gerekiyor. **Neden (kodda doğrulandı):** `hof-workspace.js` Kasa penceresi
+   yalnız `change.kind === "cash"` olayında yeniden yükleniyor; çek/senet işlemleri `kind: "cheques"` yayımlıyor
+   (`server/routes/cheques.mjs`); cari, taksit ve stok kaynaklı kasa satırları da aynı riskte. Yapılacak: Kasa'ya yazan
+   her kaynak (çek/senet, cari, taksit, stok, detay kartı tahsilatı) değişince açık Kasa penceresi seçili dönemi
+   koruyarak yenilensin (sunucuda kasayı etkileyen işlemler ayrıca `cash` olayı da yayımlasın ya da pencere bu
+   türleri de dinlesin); aynı denetim ANLIK DURUM, Cari ekstresi ve Raporlar gibi açık kalan diğer pencerelere de.
+   Test: e2e — Kasa açık → ↗ çek kartı → ödemeyi geri al/sil → kartı kapat → Kasa satırı ve 4 gösterge yeni değerde;
+   ikinci kullanıcının silmesi de aynı şekilde yansır.
 
 ### 2.0.10 düzeltmeleri — tamamı yapıldı ve yayımlandı (30.09.2026, v2.0.10)
 Maddeler ve kararlar kayıt için duruyor; yapılan iş ve kanıtı `CHANGELOG.md` → 2.0.10 ve `test/e2e/senaryo-210.mjs`.
