@@ -125,7 +125,7 @@ Yeni bir oturum bu belgeyi okuyarak kaldığı yerden devam eder. Son güncellem
    dizisi; kayıtlı birimler de listeye katılıyor (`[...UNITS, ...used]`). Dikkat: (a) büyük harf Türkçe kurala göre
    (`toLocaleUpperCase("tr")`: i→İ); (b) eski kayıtlardaki "adet" ile yeni "Adet" listede iki kez çıkmasın — büyük/küçük
    harf duyarsız tekilleştirme, gösterimde tek biçim (kayıtlar, ekstre, fatura/PDF, Excel dışa aktarım aynı yazar);
-   (c) önerim: kısaltmalar uluslararası yazımında kalsın (kg, gr, ton, lt, ml, cm, m², m³) — kullanıcıya sorulacak.
+   (c) **karar (kullanıcı, 30.09.2026): kısaltmalar dahil hepsinin ilk harfi büyük** — Kg, Gr, Ton, Lt, Ml, Cm, M², M³.
    Test: eski "adet" kayıtlı ürün + yeni ürün → listede tek "Adet"; stok raporu/PDF/Excel'de aynı yazım.
 
 ### 2.0.10 düzeltmeleri — tamamı yapıldı ve yayımlandı (30.09.2026, v2.0.10)
