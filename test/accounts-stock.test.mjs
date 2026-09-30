@@ -308,7 +308,7 @@ describe("Stok modülü (v2.0.6)", () => {
     assert.equal(expense.kind, "out");
     assert.equal(expense.amount, 850, "20 kg × 42,50");
     assert.equal(expense.date, "2026-09-25");
-    assert.match(expense.description, /^Stok ödemesi \(alım\) · Toz şeker 20 kg/);
+    assert.match(expense.description, /^Stok ödemesi \(alım\) · Toz şeker 20 Kg/);
     assert.equal(Math.round((cashBefore.totals.balance - cash.totals.balance) * 100) / 100, 850, "Kasa 850 azaldı");
     // Tedarikçiye borç: cari alacak (biz borçluyuz), Kasa değişmez.
     const onCredit = await admin.post("/api/workspace/stock", { name: "Ayçiçek yağı", unit: "lt", unitPrice: "80", openingQty: "15", openingPay: "account", openingAccountId: supplier.id });
