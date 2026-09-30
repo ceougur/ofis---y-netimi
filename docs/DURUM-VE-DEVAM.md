@@ -76,7 +76,14 @@ Yeni bir oturum bu belgeyi okuyarak kaldığı yerden devam eder. Son güncellem
 ## Kalanlar (öncelik sırasıyla)
 
 ### 2.0.11 için biriken düzeltmeler (kullanıcı ekledikçe büyür; birlikte yapılır)
-_(henüz madde yok)_
+1. **Tablo arama kutusu her yerinden tıklanınca etkinleşmeli** (müşteri, 30.09.2026, ekran görüntüsü "TÜM REHBER"):
+   kutunun alt kısmına tıklayınca yazma başlamıyor; ancak tam ortadaki ince şeride tıklanınca etkinleşiyor. Koddan
+   ölçülen neden (2.0.10): `.search-field` 44 px yüksek ama içindeki `input` yalnız 18 px; altındaki "Enter · ilk sonuca
+   git · Ctrl+K" ipucu (`.smart-search-hint`) ve iç boşluklar tıklamayı yutuyor. Yapılacak: kutunun her noktası
+   (büyüteç, ipucu, boşluk, ⌘K) tıklanınca `input` odaklansın (kutu `label` gibi davransın ya da `mousedown` → `focus`),
+   `input` kutunun yüksekliğini doldursun, imleç metin imleci olsun; bütün arama kutularında (Cari, Taksitler, Stok,
+   Çek/Senet, Raporlar, Mesajlar, sektör seçici) aynı. Test: e2e — kutunun dört köşesine ve ipucuna tıklayınca odak
+   `input`'ta.
 
 ### 2.0.10 düzeltmeleri — tamamı yapıldı ve yayımlandı (30.09.2026, v2.0.10)
 Maddeler ve kararlar kayıt için duruyor; yapılan iş ve kanıtı `CHANGELOG.md` → 2.0.10 ve `test/e2e/senaryo-210.mjs`.
