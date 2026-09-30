@@ -118,7 +118,7 @@
       try {
         const result = await HOF.api("/api/auth/recovery/local-code", { method: "POST", body: {} });
         box.hidden = false;
-        box.innerHTML = `<p>Kod ${result.minutes} dakika geçerli. Açmak için: <b>Başlat → DestekOfis → Yönetici kurtarma kodunu aç</b> (Windows onay sorar). Kısayol yoksa Dosya Gezgini'nde şu dosyayı Windows yöneticisi olarak açın:</p><code>${HOF.esc(result.file)}</code><button type="button" class="hof-button hof-button-ghost hof-button-small" data-copy-path>Yolu kopyala</button>`;
+        box.innerHTML = `<p>Kod ${result.minutes} dakika geçerli. Açmak için: <b>Başlat → DestekOfis → Yönetici kurtarma kodunu aç</b> (Windows onay sorar). Kısayol yoksa (program kurulum dosyasıyla değil otomatik güncellemeyle geldiyse): Başlat'ta <b>Not Defteri</b>'ni sağ tıklayıp <b>Yönetici olarak çalıştır</b> deyin, <b>Dosya → Aç</b> kutusuna şu yolu yapıştırın:</p><code>${HOF.esc(result.file)}</code><button type="button" class="hof-button hof-button-ghost hof-button-small" data-copy-path>Yolu kopyala</button>`;
         box.querySelector("[data-copy-path]").onclick = () => navigator.clipboard?.writeText(result.file).then(() => HOF.toast("Dosya yolu kopyalandı.", { type: "success" })).catch(() => {});
         form.elements.code.focus();
       } catch (failure) {
