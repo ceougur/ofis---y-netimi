@@ -115,8 +115,8 @@ Yeni bir oturum bu belgeyi okuyarak kaldığı yerden devam eder. Son güncellem
    "Bu grupta 12 cari var, henüz taksit kartı yok → **Bu gruba toplu taksitlendir**" (seçim penceresi o grupla açılır);
    hiç carisi ve kartı olmayan grup listede sönük/ayrı. Test: e2e — gruplu cariler, kart yok → süzgeçte sayılar doğru,
    düğmeyle toplu taksit → kartlar grupta görünür.
-   **Ek (müşteri, 30.09.2026):** "bu karta bu cari seçimi de ekleyeceğiz" — Taksitler ekranının kendisine (grup
-   süzgecinin yanına) **cari seçimi** gelir: grup seçilince o gruptaki cariler onay kutulu listede görünür (kartı olan/
+   **Ek (müşteri, 30.09.2026):** "bu karta bu cari seçimi de ekleyeceğiz" — Taksitler penceresine (kullanıcı teyit etti;
+   "Tüm gruplar · Alt grup · Sıra No" süzgeç satırına) **cari seçimi** gelir: grup seçilince o gruptaki cariler onay kutulu listede görünür (kartı olan/
    olmayan ayrı işaretli), seçilenler 3. maddedeki toplu taksitlendirmeye gider. Not: tekil "Yeni taksit kartı"
    penceresinde Cari seçici zaten var (hof-plans.js, v2.0.6); eksik olan ekran düzeyinde toplu cari seçimi.
 5. **Birimlerin baş harfi büyük; tüm programda seçenek yazımı** (müşteri, 30.09.2026, Stok › Yeni ürün ekran görüntüsü):
