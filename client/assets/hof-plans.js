@@ -123,6 +123,15 @@
     const keys = Object.keys(row).filter(key => !key.startsWith("__"));
     return keys.find(key => NAME_COLUMN.test(key) && !SECOND_PERSON.test(key)) || keys.find(key => NAME_COLUMN.test(key)) || primaryColumns().person || "";
   };
+  // v2.0.12: tablodaki kaydın kayıt tarihi ("Kayıt Tarihi", "Kayıt Günü", "Başlangıç Tarihi") → YYYY-AA-GG; yoksa "".
+  const recordDay = row => {
+    const key = Object.keys(row || {}).find(name => !name.startsWith("__") && /^(kay[ıi]t|başlangıç|baslangic)\s*(tarihi|günü|gunu)?$/i.test(name.trim()));
+    const text = key ? String(row[key] || "").trim() : "";
+    let m = text.match(/^(\d{1,2})[./-](\d{1,2})[./-](\d{4})/);
+    if (m) return `${m[3]}-${m[2].padStart(2, "0")}-${m[1].padStart(2, "0")}`;
+    m = text.match(/^(\d{4})-(\d{2})-(\d{2})/);
+    return m ? `${m[1]}-${m[2]}-${m[3]}` : "";
+  };
   const recordLabel = row => {
     const primary = primaryColumns();
     const idColumn = primary.id && !RUNNING_NO.test(String(primary.id).trim()) ? primary.id : "";
@@ -494,11 +503,10 @@
       fields: [
         { name: "name", label: "Ad Soyad / Kurum", required: true, maxlength: 160, value: plan?.name || preset?.name || "", autofocus: !preset },
         { name: "refNo", label: "Sıra No", maxlength: 30, value: plan?.refNo || "", placeholder: plan ? "" : "Boş bırakılırsa sıradaki numara", help: plan ? "" : "Listede ilk kolon ve varsayılan sıralama." },
-        { name: "registeredOn", label: "Kayıt Tarihi", type: "date", required: true, value: plan?.registeredOn || todayIso(), help: plan ? "" : "Kişinin kaydedildiği gün; bugün hazır gelir." },
+        { name: "registeredOn", label: "Kayıt Tarihi", type: "date", required: true, value: plan?.registeredOn || preset?.registeredOn || todayIso(), help: plan ? "Kişinin kayıt tarihi (cari kartındakiyle aynı)." : "Kişinin kayıt tarihi: cari seçilince carinin tarihi gelir; carisi yoksa bugün." },
         { name: "phone", label: "Telefon", type: "tel", inputmode: "tel", maxlength: 60, value: plan?.phone || preset?.phone || "", placeholder: "05xx xxx xx xx" },
         { name: "total", label: "Toplam Tutar (₺)", required: true, inputmode: "decimal", value: plan ? amountText(plan.total) : "", placeholder: "Örn. 12.000,00", autofocus: Boolean(preset) },
-        ...groupFields(plan || { groupId: preset?.groupId || "", subgroupId: preset?.subgroupId || "" }),
-        { name: "note", label: "Bilgi Notu", type: "textarea", rows: 3, maxlength: 1000, value: plan?.note || "", placeholder: "Adres, okul, sınıf, özel durum…" },
+        // v2.0.12: taksit bilgileri tutarın hemen altında; Taksit Sayısı ile İlk Vade yan yana (müşteri: "ilk vade aşağıda kalıyor").
         ...(plan
           ? []
           : [
@@ -506,10 +514,14 @@
               { name: "count", label: "Taksit Sayısı", inputmode: "numeric", value: "" },
               { name: "firstDue", label: "İlk Vade", type: "date", value: "" },
             ]),
+        ...groupFields(plan || { groupId: preset?.groupId || "", subgroupId: preset?.subgroupId || "" }),
+        { name: "note", label: "Bilgi Notu", type: "textarea", rows: 3, maxlength: 1000, value: plan?.note || "", placeholder: "Adres, okul, sınıf, özel durum…" },
       ],
       submitLabel: plan ? "Kaydet" : "Kartı Aç",
       onOpen: dialog => {
         dialog.classList.add("hof-plan-form");
+        const dayInput = dialog.querySelector('input[name="registeredOn"]');
+        dayInput?.addEventListener("input", () => (dayInput.dataset.touched = "1"));
         const picker = HOF.el("div", { class: "hof-field hof-case-picker" }, pickerHtml(link));
         dialog.querySelector('input[name="name"]').closest(".hof-field").after(picker);
         wirePicker(picker);
@@ -523,6 +535,17 @@
             const phone = form.querySelector('input[name="phone"]');
             if (account && !name.value.trim()) name.value = account.name;
             if (account && !phone.value.trim()) phone.value = account.phone || "";
+            // v2.0.12: kişi bir kez kaydolur — kartın Kayıt Tarihi carinin tarihidir (kullanıcı elle değiştirmediyse).
+            const day = form.querySelector('input[name="registeredOn"]');
+            if (day && !day.dataset.touched) day.value = (account && account.registeredOn) || preset?.registeredOn || todayIso();
+            // Cari bir gruptaysa ve formda grup seçilmediyse kart carinin grubuna açılır.
+            const group = form.querySelector('select[name="groupId"]');
+            if (account?.groupId && group && !group.value && [...group.options].some(option => option.value === account.groupId)) {
+              group.value = account.groupId;
+              group.dispatchEvent(new Event("change", { bubbles: true }));
+              const sub = form.querySelector('select[name="subgroupId"]');
+              if (account.subgroupId && sub && [...sub.options].some(option => option.value === account.subgroupId)) sub.value = account.subgroupId;
+            }
             // Cari kayda bağlıysa kart da o kayda bağlanır.
             if (account?.caseKey && !form.querySelector('input[name="caseKey"]').value) {
               form.querySelector('input[name="caseKey"]').value = account.caseKey;
@@ -1271,6 +1294,7 @@
     collect: (plan, item = null) => editEntry(plan, { kind: "in", item }),
     casePicker: { html: pickerHtml, wire: wirePicker },
     recordLabel,
+    recordDay,
     personOf,
     phoneOf,
   };

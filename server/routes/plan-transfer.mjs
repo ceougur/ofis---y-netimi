@@ -334,7 +334,7 @@ export function registerPlanTransfer(router, { store, auth, audit, events, datas
             report.accountsLinked += 1;
           }
           items = full.items;
-          const created = plansService.createScheduled(user, { ...person, accountId, note: full.note, refNo: refFor(full.refNo), registeredOn: full.registeredOn || today() }, { importId, items, openingDate: today(), openingNote: "Excel'de ödenmiş (açılış)" });
+          const created = plansService.createScheduled(user, { ...person, accountId, note: full.note, refNo: refFor(full.refNo), registeredOn: full.registeredOn || (accountId && !outcome.created ? store.get("SELECT registered_on AS day FROM accounts WHERE id = ?", accountId)?.day : "") || today() }, { importId, items, openingDate: today(), openingNote: "Excel'de ödenmiş (açılış)" });
           planId = created.id;
           undo.plans.push(planId);
           undo.openings.push(...created.openingIds);
