@@ -521,6 +521,11 @@ try {
     await admin.selectOption('.hof-plan-form select[name="items"]', "auto");
     await admin.fill('.hof-plan-form input[name="count"]', "3");
     await admin.fill('.hof-plan-form input[name="firstDue"]', "2026-01-05");
+    // v2.0.13: ilk vade Kayıt Tarihi'nden (bugün) önce olamaz — form kaydetmez, nedenini söyler; Kayıt Tarihi düzeltilince açılır.
+    await admin.click('.hof-plan-form button[type="submit"]');
+    await admin.waitForFunction(() => /önce olamaz/.test([...document.querySelectorAll(".hof-toast")].map(node => node.textContent).join(" ")), null, { timeout: 8000 });
+    expect(/İlk Vade .*önce olamaz/.test(await toastText(admin)), `vade < kayıt tarihi uyarısı: ${await toastText(admin)}`);
+    await admin.fill('.hof-plan-form input[name="registeredOn"]', "2026-01-01");
     await admin.click('.hof-plan-form button[type="submit"]');
     await admin.waitForSelector(".hof-plans .hof-plan-head", { timeout: 10000 });
     await admin.waitForFunction(() => document.querySelectorAll(".hof-plan-items tbody tr").length === 3, null, { timeout: 10000 });
@@ -529,7 +534,7 @@ try {
     // v2.0.5: kişi paneli (sıra no, grup, telefon, not) üstte; taksit süzgeçleri; PDF ve Yazdır; geniş pencere.
     const profile = await admin.$eval(".hof-plans .hof-plan-profile", node => node.innerText.replace(/\s+/g, " "));
     expect(/SIRA NO 1\b/.test(profile.toLocaleUpperCase("tr-TR")) && profile.includes("0532 111 22 33") && profile.includes("3 taksit"), `kişi paneli: ${profile}`);
-    expect(profile.toLocaleUpperCase("tr-TR").includes("KAYIT TARİHİ") && profile.includes(todayIso.split("-").reverse().join(".")), `kişi panelinde kayıt tarihi: ${profile}`);
+    expect(profile.toLocaleUpperCase("tr-TR").includes("KAYIT TARİHİ") && profile.includes("01.01.2026"), `kişi panelinde kayıt tarihi: ${profile}`);
     const width = await admin.$eval(".hof-plans-modal", node => node.getBoundingClientRect().width);
     expect(width > 1000, `taksit penceresi geniş olmalı: ${width}`);
     expect(await admin.$('.hof-plans [data-print="card"]') && (await admin.$eval('.hof-plans [data-pdf="card"]', node => node.getAttribute("href"))).endsWith("/ekstre.pdf"), "kartta PDF ve Yazdır");
