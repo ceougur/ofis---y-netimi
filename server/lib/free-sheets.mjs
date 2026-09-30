@@ -204,6 +204,54 @@ export function createFreeSheets({ store, audit, dataset, trash = null }) {
     return detail(sheetId);
   }
 
+  // Excel / Google Sheets sayfasından yeni sayfa (v2.0.10; lib/free-import.mjs matrixToFree çıktısıyla). Tek işlem
+  // bloğunda kurulur. Program hesaplayamadığı formülü (desteklenmeyen işlev) Excel'deki değeriyle bırakır.
+  function importSheet(user, { name, names = [], rows = [], fallback = {}, source = "", foreign = 0, skippedAbove = 0 } = {}) {
+    if (list().length >= FREE_LIMITS.sheets) throw new HttpError(400, `En fazla ${FREE_LIMITS.sheets} serbest sayfa açılabilir.`);
+    const base = cleanName(name, FREE_LIMITS.name) || "Aktarılan sayfa";
+    let title = base;
+    for (let n = 2; nameTaken(title); n += 1) title = cleanName(`${base.slice(0, FREE_LIMITS.name - 6)} (${n})`, FREE_LIMITS.name);
+    validName(title);
+    const headers = (Array.isArray(names) ? names : []).map(columnName);
+    const data = (Array.isArray(rows) ? rows : []).map(row => (Array.isArray(row) ? row.map(value => clean(value, FREE_LIMITS.raw)) : []));
+    const columnCount = Math.max(1, headers.length, ...data.map(row => row.length));
+    if (columnCount > FREE_LIMITS.columns) throw new HttpError(400, `Sayfada ${columnCount} kolon var; bir serbest sayfada en fazla ${FREE_LIMITS.columns} kolon olabilir. Excel'de kullanılmayan kolonları silip yeniden deneyin.`);
+    if (data.length > FREE_LIMITS.rows) throw new HttpError(400, `Sayfada ${data.length.toLocaleString("tr-TR")} satır var; bir serbest sayfada en fazla ${FREE_LIMITS.rows.toLocaleString("tr-TR")} satır olabilir. Büyük tablolar için ana veri yüklemesini (Excel yükle) kullanın ya da sayfayı bölün.`);
+    const rowCount = Math.max(1, data.length);
+    checkSize(rowCount, columnCount);
+    const sheetId = id("fs");
+    const position = (store.get("SELECT MAX(position) AS max FROM free_sheets WHERE dataset_key = ?", current()).max ?? -1) + 1;
+    const columnIds = Array.from({ length: columnCount }, () => id("fc"));
+    const rowIds = Array.from({ length: rowCount }, () => id("fr"));
+    let asValues = 0;
+    let formulas = 0;
+    store.tx(() => {
+      store.run(
+        "INSERT INTO free_sheets (id, dataset_key, name, position, columns_json, created_by, created_at, updated_by, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        sheetId, current(), title, position, JSON.stringify(columnIds.map((columnId, n) => ({ id: columnId, name: headers[n] || "" }))), user.id, now(), user.id, now(),
+      );
+      rowIds.forEach((rowId, n) => store.run("INSERT INTO free_rows (id, sheet_id, position, created_by, created_at) VALUES (?, ?, ?, ?, ?)", rowId, sheetId, n, user.id, now()));
+      data.forEach((row, r) =>
+        row.forEach((raw, c) => {
+          if (!raw.trim()) return;
+          if (isFormula(raw)) formulas += 1;
+          setCell(sheetId, rowIds[r], columnIds[c], raw, user);
+        }),
+      );
+      // Hesaplanamayan formül (#AD? vb.) Excel'de hatasızsa değeriyle kalır.
+      const { grid } = load(sheetRow(sheetId));
+      for (const [key, value] of Object.entries(fallback || {})) {
+        const [r, c] = key.split(",").map(Number);
+        const cell = grid[r]?.[c];
+        if (!cell?.formula || !cell.error || /^#/.test(String(value).trim())) continue;
+        setCell(sheetId, rowIds[r], columnIds[c], String(value), user);
+        asValues += 1;
+      }
+      audit(user, "free.sheet.imported", sheetId, { name: title, source, rows: rowCount, columns: columnCount, formulas: formulas - asValues, asValues: asValues + foreign });
+    });
+    return { ...detail(sheetId), imported: { rows: data.length, columns: columnCount, formulas: formulas - asValues, asValues: asValues + (Number(foreign) || 0), skippedAbove: Number(skippedAbove) || 0 } };
+  }
+
   function rename(user, sheetId, name) {
     const sheet = requireSheet(sheetId);
     const title = validName(name, sheet.id);
@@ -752,5 +800,5 @@ export function createFreeSheets({ store, audit, dataset, trash = null }) {
     return `${row.sheets}|${row.cells}`;
   };
 
-  return { list, detail, viewRows, tabs, create, rename, remove, restore, restoreRow, restoreColumn, restoreSheet, deletedSheets, setCells, renameColumn, addColumns, deleteColumn, addRows, deleteRow, fill, totals, undo, isFreeKey, setByField, addRecord, rawByKey, rowIsEmpty, columnIsEmpty, headersByName, purgeSession, fingerprint };
+  return { list, detail, viewRows, tabs, create, importSheet, rename, remove, restore, restoreRow, restoreColumn, restoreSheet, deletedSheets, setCells, renameColumn, addColumns, deleteColumn, addRows, deleteRow, fill, totals, undo, isFreeKey, setByField, addRecord, rawByKey, rowIsEmpty, columnIsEmpty, headersByName, purgeSession, fingerprint };
 }

@@ -8,7 +8,7 @@ import { randomUUID } from "node:crypto";
 import { ACCOUNT_TYPES, accountLedger, balanceSide, mapAccountHeaders, parseAccountType } from "../lib/accounts.mjs";
 import { HttpError, limited, ok, readJson, sendBuffer, text } from "../lib/http.mjs";
 import { parseAmount, roundMoney } from "../lib/money.mjs";
-import { can } from "../lib/permissions.mjs";
+import { canUser } from "../lib/permissions.mjs";
 import { receiptPdf } from "../lib/plan-report.mjs";
 import { dayText, isoDay, parseDay } from "../lib/plans.mjs";
 import { tablePdf, tl } from "../lib/report-pdf.mjs";
@@ -85,7 +85,7 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
 
   function detail(id, user) {
     const account = accountRow(id);
-    const manage = can(user.role, "accounts.manage");
+    const manage = canUser(user, "accounts.manage");
     // Stok ve çek/senetten gelen satırlar (v2.0.6, v2.0.7) kendi kartlarından düzeltilir.
     const entries = entriesOf(account.id).map(entry => ({ ...entry, editable: entry.source === "" && (manage || (entry.createdBy === user.id && entry.kind === "in")) }));
     const planList = plans()?.forAccount ? plans().forAccount(account.id, user) : [];
@@ -99,7 +99,7 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
       totals: ledger.totals,
       side: balanceSide(ledger.totals.balance),
       canManage: manage,
-      canCollect: can(user.role, "accounts.collect"),
+      canCollect: canUser(user, "accounts.collect"),
     };
   }
 
@@ -111,7 +111,7 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     subgroup: text(params.get("subgroup")),
     type: ACCOUNT_TYPES[text(params.get("type"))] ? text(params.get("type")) : "",
     status: ["active", "passive", "all"].includes(text(params.get("status"))) ? text(params.get("status")) : "active",
-    balance: ["debtor", "creditor", "zero", "overdue", "all"].includes(text(params.get("balance"))) ? text(params.get("balance")) : "all",
+    balance: ["debtor", "creditor", "zero", "nonzero", "overdue", "all"].includes(text(params.get("balance"))) ? text(params.get("balance")) : "all",
     sort: SORTS.has(text(params.get("sort"))) ? text(params.get("sort")) : "no",
   });
   const refCompare = (a, b) => {
@@ -134,7 +134,7 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     const planMap = plans()?.summariesByAccount ? plans().summariesByAccount() : new Map();
     const needle = String(q || "").toLocaleLowerCase("tr-TR").trim();
     const numbers = needle.replace(/\D/g, "");
-    const totals = { count: 0, debtor: 0, creditor: 0, balance: 0, overdue: 0, overdueCount: 0, planRemaining: 0 };
+    const totals = { count: 0, debtor: 0, creditor: 0, debtorCount: 0, creditorCount: 0, balance: 0, overdue: 0, overdueCount: 0, planRemaining: 0 };
     const labels = new Set();
     const out = [];
     for (const row of rows) {
@@ -178,11 +178,19 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
       if (balance === "debtor" && side !== "debtor") continue;
       if (balance === "creditor" && side !== "creditor") continue;
       if (balance === "zero" && side !== "zero") continue;
+      // "Sadece bakiyesi olanlar" (v2.0.10): borçlu ya da alacaklı; kapalı cariler gizlenir.
+      if (balance === "nonzero" && side === "zero") continue;
       if (balance === "overdue" && !overdueCount) continue;
       totals.count += 1;
       totals.balance = roundMoney(totals.balance + bal);
-      if (side === "debtor") totals.debtor = roundMoney(totals.debtor + bal);
-      if (side === "creditor") totals.creditor = roundMoney(totals.creditor - bal);
+      if (side === "debtor") {
+        totals.debtor = roundMoney(totals.debtor + bal);
+        totals.debtorCount += 1;
+      }
+      if (side === "creditor") {
+        totals.creditor = roundMoney(totals.creditor - bal);
+        totals.creditorCount += 1;
+      }
       totals.overdue = roundMoney(totals.overdue + overdue);
       totals.overdueCount += overdueCount;
       totals.planRemaining = roundMoney(totals.planRemaining + planRemaining);
@@ -233,7 +241,7 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
       if (row.subgroupId) counts.set(row.subgroupId, (counts.get(row.subgroupId) || 0) + 1);
     }
     const tree = (plans()?.groupTree ? plans().groupTree() : []).map(item => ({ ...item, count: counts.get(item.id) || 0, subgroups: item.subgroups.map(sub => ({ ...sub, count: counts.get(sub.id) || 0 })) }));
-    return { accounts: out, totals, sort, groups: tree, fieldLabels: [...labels].slice(0, 200), canManage: can(user.role, "accounts.manage"), canCollect: can(user.role, "accounts.collect"), canPlan: can(user.role, "plans.manage"), today: today() };
+    return { accounts: out, totals, sort, groups: tree, fieldLabels: [...labels].slice(0, 200), canManage: canUser(user, "accounts.manage"), canCollect: canUser(user, "accounts.collect"), canPlan: canUser(user, "plans.manage"), today: today() };
   }
 
   // Liste sayfa sayfa gelir (200 bin caride tek yanıt 80 MB olurdu): limit/offset; toplamlar ve sayı tüm süzgeç için.
@@ -408,13 +416,13 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     return entry;
   };
   const requireKindRight = (user, kind) => {
-    if (kind === "in" && !can(user.role, "accounts.collect")) throw new HttpError(403, "Tahsilat girme yetkiniz yok.");
-    if (kind !== "in" && !can(user.role, "accounts.manage")) throw new HttpError(403, "Borç, alacak ve ödeme girişi yönetici, uzman ve muhasebe yetkisidir; tahsilatı herkes girer.");
+    if (kind === "in" && !canUser(user, "accounts.collect")) throw new HttpError(403, "Tahsilat girme yetkiniz yok.");
+    if (kind !== "in" && !canUser(user, "accounts.manage")) throw new HttpError(403, "Borç, alacak ve ödeme girişi yönetici, uzman ve muhasebe yetkisidir; tahsilatı herkes girer.");
   };
   const requireEntryRight = (user, entry) => {
     if (entry.source === "stock") throw new HttpError(409, "Bu hareket bir stok hareketinden geldi; Stok'taki hareketten düzeltin ya da silin.");
     if (entry.source === "cheque") throw new HttpError(409, "Bu hareket bir çek/senetten geldi; Çek/Senet'teki evraktan düzeltin (geri al ya da sil).", { code: "cheque-linked", chequeId: entry.sourceId });
-    if (entry.createdBy !== user.id && !can(user.role, "accounts.manage")) throw new HttpError(403, "Başkasının girdiği hareketi yalnızca yönetici, uzman ve muhasebe değiştirebilir.");
+    if (entry.createdBy !== user.id && !canUser(user, "accounts.manage")) throw new HttpError(403, "Başkasının girdiği hareketi yalnızca yönetici, uzman ve muhasebe değiştirebilir.");
     requireKindRight(user, entry.kind);
   };
 
@@ -509,7 +517,7 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
       headers: ["No", "Ad / Unvan", "Tür", "Grup", "Telefon", "Kayıt", "Borç", "Alacak", "Bakiye", "Taksitten kalan", "Bilgi notu"],
       types: ["text", "text", "text", "text", "text", "text", "money", "money", "money", "money", "text"],
       rows: data.accounts.map(item => [item.refNo, item.name, ACCOUNT_TYPES[item.type] || "", [item.groupName, item.subgroupName].filter(Boolean).join(" › "), item.phone, dayText(item.registeredOn), tl(item.debit), tl(item.credit), `${tl(Math.abs(item.balance))} ${sideText(item.balance)}`.trim(), item.planRemaining ? tl(item.planRemaining) : "", item.note || ""]),
-      summary: [["Cari", String(data.totals.count)], ["Bize borçlu", tl(data.totals.debtor)], ["Bizim borcumuz", tl(data.totals.creditor)], ["Geciken taksit", `${tl(data.totals.overdue)} · ${data.totals.overdueCount}`]],
+      summary: [["Cari", String(data.totals.count)], ["Borçlular", tl(data.totals.debtor)], ["Alacaklılar", tl(data.totals.creditor)], ["Geciken taksit", `${tl(data.totals.overdue)} · ${data.totals.overdueCount}`]],
       officeName: office(),
       userName: user.display_name || user.username || "",
       brand: office(),
@@ -564,7 +572,7 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
   // Sunucu Sheet'in sekmelerini hücre matrisi olarak okur; tarayıcı Excel'deki gibi sayfayı seçip kolonları eşler.
   router.post("/api/workspace/import/google-sheet", async ({ req, res }) => {
     const user = auth.requireUser(req);
-    if (!["accounts.manage", "stock.manage", "plans.manage"].some(permission => can(user.role, permission))) throw new HttpError(403, "Toplu yükleme yönetici, uzman ve muhasebe yetkisidir.");
+    if (!["accounts.manage", "stock.manage", "plans.manage"].some(permission => canUser(user, permission))) throw new HttpError(403, "Toplu yükleme yönetici, uzman ve muhasebe yetkisidir.");
     const body = await readJson(req);
     const url = limited(body.url, 2000, "Bağlantı");
     if (!url) throw new HttpError(400, "Google Sheets bağlantısını yapıştırın.");
@@ -813,7 +821,7 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     const user = auth.requirePermission(req, "accounts.view");
     const key = limited(params.key, 200, "Kayıt");
     const found = store.get("SELECT id FROM accounts WHERE deleted_at IS NULL AND case_key = ? AND case_source = ? ORDER BY created_at LIMIT 1", key, currentSource());
-    if (!found) return ok(res, { account: null, canManage: can(user.role, "accounts.manage") });
+    if (!found) return ok(res, { account: null, canManage: canUser(user, "accounts.manage") });
     const account = detail(found.id, user);
     ok(res, { account: { id: account.id, name: account.name, refNo: account.refNo, type: account.type, totals: account.totals, side: account.side, planCount: account.plans.length }, canManage: account.canManage });
   });

@@ -103,6 +103,8 @@ Source: "{#StageDir}\docs\*"; DestDir: "{app}\belgeler"; Flags: ignoreversion re
 Name: "{autodesktop}\DestekOfis"; Filename: "{app}\launcher\{#AppExe}"; Tasks: masaustu; Comment: "DestekOfis'i aç"
 Name: "{group}\DestekOfis"; Filename: "{app}\launcher\{#AppExe}"; Comment: "DestekOfis'i aç"
 Name: "{group}\Yedek al"; Filename: "{app}\bin\yedek-al.cmd"; Components: sunucu
+; Yönetici parolasını unutan için (v2.0.10): giriş ekranında üretilen tek seferlik kodu Windows yöneticisi olarak açar.
+Name: "{group}\Yönetici kurtarma kodunu aç"; Filename: "{app}\bin\kurtarma-kodu.cmd"; Components: sunucu; Comment: "Yönetici parolası kurtarma kodu (giriş ekranı › Parolamı unuttum › Sunucu kodu oluştur)"
 Name: "{group}\Kullanım kılavuzu"; Filename: "{app}\belgeler\DestekOfis-Kullanim-Kilavuzu.pdf"
 Name: "{group}\Kurulum ve teknik notlar"; Filename: "{app}\belgeler\KURULUM-VE-KULLANIM.html"
 Name: "{group}\DestekOfis'i kaldır"; Filename: "{uninstallexe}"

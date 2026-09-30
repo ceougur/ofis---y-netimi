@@ -25,7 +25,7 @@ const messageRow = row => ({
   createdAt: row.created_at,
 });
 
-export function createChat({ store, events = null, audit = () => {}, now = () => new Date().toISOString() }) {
+export function createChat({ store, events = null, audit = () => {}, roles = null, now = () => new Date().toISOString() }) {
   const sent = new Map();
   const onlineIds = () => new Set(events?.online() || []);
   const userRow = id => store.get("SELECT id, display_name AS name, role, active, created_at FROM users WHERE id = ?", id);
@@ -79,8 +79,8 @@ export function createChat({ store, events = null, audit = () => {}, now = () =>
     ensureOfficeMember(user);
     const online = onlineIds();
     const users = store
-      .all("SELECT id, display_name AS name, role FROM users WHERE active = 1 AND id <> ? ORDER BY display_name COLLATE NOCASE", user.id)
-      .map(item => ({ ...item, online: online.has(item.id) }));
+      .all("SELECT id, display_name AS name, role, role_key FROM users WHERE active = 1 AND deleted_at IS NULL AND id <> ? ORDER BY display_name COLLATE NOCASE", user.id)
+      .map(({ role_key: roleKey, ...item }) => ({ ...item, roleLabel: roles?.labelOf({ role_key: roleKey }) || "", online: online.has(item.id) }));
     const conversations = store
       .all(
         `SELECT c.* FROM chat_conversations c

@@ -4,11 +4,11 @@ import { HttpError, limited, ok, parseJson, readJson, sendBuffer, text } from ".
 import { buildXlsx } from "../lib/xlsx-write.mjs";
 import { foldName, nameConflict, resolveUserByName } from "../lib/names.mjs";
 import { parseAmount, roundMoney } from "../lib/money.mjs";
-import { can } from "../lib/permissions.mjs";
+import { canUser } from "../lib/permissions.mjs";
 
 const CASE_KEY_MAX = 300;
 
-export function registerWorkspaceRoutes(router, { store, auth, audit, dataset, clientState, config, events, chat, profile, free, trash, plans = () => null }) {
+export function registerWorkspaceRoutes(router, { store, auth, access = null, audit, dataset, clientState, config, events, chat, profile, free, trash, plans = () => null }) {
   const now = () => new Date().toISOString();
   // Görev kişiye kimliğiyle bağlıysa yalnızca kimlik belirler (ad değiştirerek başkasının görevi görülemez);
   // serbest yazılmış, kişiye bağlanamamış eski görevlerde ad eşleşmesi geçerlidir.
@@ -17,7 +17,7 @@ export function registerWorkspaceRoutes(router, { store, auth, audit, dataset, c
     return assigneeId ? assigneeId === user.id : Boolean(foldName(task.assignee)) && foldName(task.assignee) === foldName(user.display_name);
   };
   const ownTask = (user, task) => assignedTo(user, task) || (task.actorId ?? task.created_by) === user.id;
-  const visibleTasks = (user, rows) => (can(user.role, "tasks.viewAll") ? rows : rows.filter(row => ownTask(user, row)));
+  const visibleTasks = (user, rows) => (canUser(user, "tasks.viewAll") ? rows : rows.filter(row => ownTask(user, row)));
   // Diğer bilgisayarlardaki açık ekranlar değişikliği anında görsün (işlemi yapan hariç; onun ekranı zaten güncel).
   const changed = (user, kind, detail = {}, users = null) => {
     // Tablo görünümünü değiştiren işlemler (düzeltme, silme, geri alma, yeni kayıt, kaynak) analizi de eskitir.
@@ -28,8 +28,8 @@ export function registerWorkspaceRoutes(router, { store, auth, audit, dataset, c
   };
   // Görev olayları (başlık, atanan) yalnızca o görevi görebilenlere gider: tüm görevleri görme yetkisi olanlar,
   // görevin atandığı ve görevi oluşturan kişi. Personel başkalarının görevlerini canlı kanaldan da öğrenemez.
-  const taskAudience = task => store.all("SELECT id, role, display_name FROM users WHERE active = 1")
-    .filter(member => can(member.role, "tasks.viewAll") || ownTask(member, task))
+  const taskAudience = task => store.all("SELECT id, role, role_key, grants_json, display_name FROM users WHERE active = 1 AND deleted_at IS NULL")
+    .filter(member => (access ? access.can(member, "tasks.viewAll") : canUser(member, "tasks.viewAll")) || ownTask(member, task))
     .map(member => member.id);
   const newId = prefix => auth.newId(prefix);
   const caseKeyOf = (value, label = "Dosya kimliği") => {
@@ -70,7 +70,7 @@ export function registerWorkspaceRoutes(router, { store, auth, audit, dataset, c
       phones: rows(`SELECT p.id, p.case_key AS caseKey, p.phone, p.label, p.created_by AS actorId, COALESCE(u.display_name, '') AS actorName, p.created_at AS createdAt FROM phones p LEFT JOIN users u ON u.id = p.created_by ORDER BY p.created_at DESC`),
       payments: rows(`SELECT p.id, p.case_key AS caseKey, p.amount, p.date, p.note, p.created_by AS actorId, COALESCE(u.display_name, '') AS actorName, p.created_at AS createdAt FROM payments p LEFT JOIN users u ON u.id = p.created_by ORDER BY p.created_at DESC`),
       liens: rows(`SELECT l.id, l.case_key AS caseKey, l.title, l.placed_at AS placedAt, l.expires_at AS expiresAt, l.status, l.created_by AS actorId, COALESCE(u.display_name, '') AS actorName, l.created_at AS createdAt FROM liens l LEFT JOIN users u ON u.id = l.created_by ORDER BY l.created_at DESC`),
-      events: can(user.role, "audit.view")
+      events: canUser(user, "audit.view")
         ? rows("SELECT id, type, entity_id AS entityId, actor_id AS actorId, actor_name AS actorName, payload_json AS payloadJson, created_at AS createdAt FROM audit_events ORDER BY created_at DESC LIMIT 500").map(({ payloadJson, ...row }) => ({ ...row, payload: parseJson(payloadJson) }))
         : [],
     });
@@ -90,7 +90,8 @@ export function registerWorkspaceRoutes(router, { store, auth, audit, dataset, c
 
   router.get("/api/workspace/users", async ({ req, res }) => {
     auth.requireUser(req);
-    ok(res, store.all("SELECT id, display_name AS name, role FROM users WHERE active = 1 ORDER BY display_name COLLATE NOCASE"));
+    // Özel rol (v2.0.10) adıyla gelir; yerleşik rolün adı arayüzde sektöre göre verilir.
+    ok(res, store.all("SELECT id, display_name AS name, role, role_key FROM users WHERE active = 1 AND deleted_at IS NULL ORDER BY display_name COLLATE NOCASE").map(({ role_key: roleKey, ...row }) => ({ ...row, roleLabel: access?.labelOf({ role_key: roleKey }) || "" })));
   });
 
   // ---- Kaynak satırları: yeni kayıt, silme, hücre düzeltme ----
@@ -372,7 +373,7 @@ export function registerWorkspaceRoutes(router, { store, auth, audit, dataset, c
     const user = auth.requirePermission(req, "payments.create");
     const payment = store.get("SELECT id, case_key AS caseKey, amount, date, note, created_by AS createdBy FROM payments WHERE id = ?", limited(id, 120, "Tahsilat"));
     if (!payment) throw new HttpError(404, "Tahsilat bulunamadı. Başka biri silmiş olabilir.");
-    if (payment.createdBy !== user.id && !can(user.role, "cash.manage")) throw new HttpError(403, "Başkasının girdiği tahsilatı yalnızca kasa yetkisi olanlar (yönetici, muhasebe) değiştirebilir.");
+    if (payment.createdBy !== user.id && !canUser(user, "cash.manage")) throw new HttpError(403, "Başkasının girdiği tahsilatı yalnızca kasa yetkisi olanlar (yönetici, muhasebe) değiştirebilir.");
     return { user, payment };
   };
   router.put("/api/workspace/payments/:id", async ({ req, res, params }) => {
@@ -444,8 +445,12 @@ export function registerWorkspaceRoutes(router, { store, auth, audit, dataset, c
     const itemId = newId("task");
     const key = limited(body.caseKey || body.case_key, CASE_KEY_MAX, "Dosya kimliği");
     const typed = limited(body.assignee, 120, "Atanan kişi") || user.display_name;
-    // Yazılan ad tek bir kullanıcıya denk geliyorsa görev o kişiye kimliğiyle bağlanır ve adı düzgün yazılır.
-    const person = resolveUserByName(store, typed);
+    // v2.0.10: arayüz kişiyi listeden seçer ve kimliğini gönderir (aynı adlı iki kullanıcı karışmaz). Kimlik yoksa (eski
+    // istemci) yazılan ad tek bir kullanıcıya denk geliyorsa görev o kişiye kimliğiyle bağlanır.
+    const pickedId = limited(body.assigneeId, 120, "Atanan kişi");
+    const picked = pickedId ? store.get("SELECT id, display_name FROM users WHERE id = ? AND active = 1", pickedId) : null;
+    if (pickedId && !picked) throw new HttpError(400, "Seçilen kişi bulunamadı ya da hesabı kapalı.");
+    const person = picked || resolveUserByName(store, typed);
     const assignee = person?.display_name || typed;
     const assigneeId = person?.id || null;
     store.run("INSERT INTO tasks (id, title, case_key, assignee, assignee_id, due_date, priority, status, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, 'open', ?, ?)", itemId, title, key, assignee, assigneeId, text(body.dueDate).slice(0, 10), priority, user.id, now());
@@ -459,7 +464,7 @@ export function registerWorkspaceRoutes(router, { store, auth, audit, dataset, c
     const user = auth.requirePermission(req, "tasks.complete");
     const item = store.get("SELECT id, status, assignee, assignee_id, created_by, case_key FROM tasks WHERE id = ?", params.id);
     // Tüm görevleri görme yetkisi olmayan yalnızca kendisine atanan görevi tamamlayabilir (varlığı da gizlenir).
-    if (!item || (!can(user.role, "tasks.viewAll") && !ownTask(user, item))) throw new HttpError(404, "Görev bulunamadı.");
+    if (!item || (!canUser(user, "tasks.viewAll") && !ownTask(user, item))) throw new HttpError(404, "Görev bulunamadı.");
     store.run("UPDATE tasks SET status = 'completed', completed_at = ?, completed_by = ? WHERE id = ?", now(), user.id, params.id);
     audit(user, "task.completed", params.id);
     changed(user, "task", { caseKey: item.case_key || null }, taskAudience(item));
@@ -486,7 +491,7 @@ export function registerWorkspaceRoutes(router, { store, auth, audit, dataset, c
   router.get("/api/workspace/reports", async ({ req, res }) => {
     auth.requirePermission(req, "reports.view");
     const count = (sql, ...args) => store.get(sql, ...args);
-    const users = store.all("SELECT id, display_name AS name, role FROM users WHERE active = 1 ORDER BY display_name");
+    const users = store.all("SELECT id, display_name AS name, role, role_key FROM users WHERE active = 1 AND deleted_at IS NULL ORDER BY display_name").map(({ role_key: roleKey, ...row }) => ({ ...row, roleLabel: access?.labelOf({ role_key: roleKey }) || "" }));
     // Tahsilat (v2.0.8): kişinin programda aldığı tüm tahsilatlar — kayıt kartı, taksit kartı ve cari; Kasa'ya giren
     // tahsilatlarla aynı kaynaklar (çekle alınan ve açılış/devir kayıtları hariç). Önceden yalnız kayıt kartı sayılıyordu;
     // tablodan taksit kartına aktarılan tahsilat da girenin adıyla sayılmaya devam eder.
@@ -499,6 +504,7 @@ export function registerWorkspaceRoutes(router, { store, auth, audit, dataset, c
       userId: item.id,
       userName: item.name,
       role: item.role,
+      roleLabel: item.roleLabel,
       tasksCreated: count("SELECT COUNT(*) AS count FROM tasks WHERE created_by = ?", item.id).count,
       tasksCompleted: count("SELECT COUNT(*) AS count FROM tasks WHERE completed_by = ? OR completed_by = ?", item.id, item.name).count,
       notes: count("SELECT COUNT(*) AS count FROM notes WHERE created_by = ?", item.id).count,
@@ -576,7 +582,7 @@ export function registerWorkspaceRoutes(router, { store, auth, audit, dataset, c
   // Tabloda görünen birleşik veri (düzeltmeler, yeni kayıtlar, hesaplanan formüller dahil). tab: yalnızca o sekme;
   // all=1: her sekme ayrı sayfada; ikisi de yoksa tüm kayıtlar tek sayfada.
   router.get("/api/workspace/export.xlsx", async ({ req, res, url }) => {
-    const user = auth.requireUser(req);
+    const user = auth.requirePermission(req, "records.export");
     const view = await dataset.view();
     const rows = view.rows || [];
     if (!rows.length) throw new HttpError(404, "Dışa aktarılacak kayıt yok.");

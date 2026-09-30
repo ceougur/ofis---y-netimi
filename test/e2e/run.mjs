@@ -296,16 +296,16 @@ try {
     await admin.waitForFunction(() => !document.querySelector(".hof-modal-backdrop"));
   });
 
-  await step("başlık kalemle değiştirilir, kalıcıdır ve varsayılana döndürülebilir", async () => {
-    await admin.hover(".welcome-row .section-title");
-    await admin.click(".welcome-row .section-title .hof-label-pencil");
-    await admin.waitForSelector(".hof-label-editor input");
-    await admin.fill(".hof-label-editor input", "İcra dosyaları özeti");
-    await admin.click(".hof-label-editor [data-save]");
-    await admin.waitForFunction(() => document.querySelector(".welcome-row .section-title")?.firstChild?.nodeValue === "İcra dosyaları özeti", null, { timeout: 5000 });
+  await step("başlık kalemle değiştirilir, kalıcıdır ve varsayılana döndürülebilir; ana ekranda 'Dosya özeti' bloğu yok (v2.0.10)", async () => {
+    // v2.0.10: ANLIK DURUM'un yanındaki özet başlığı/açıklaması kaldırıldı; "Dışa aktar" tablo başlık satırında.
+    const top = await admin.evaluate(() => ({
+      summary: getComputedStyle(document.querySelector(".welcome-row > div:first-child")).display,
+      pulse: Boolean(document.querySelector(".welcome-row #hof-pulse")),
+      exportButton: Boolean(document.querySelector(".cases-panel > .panel-heading #hof-toolbar-export")),
+    }));
+    expect(top.summary === "none" && top.pulse && top.exportButton, `üst alan: ${JSON.stringify(top)}`);
     await admin.reload();
     await waitForApp(admin);
-    await admin.waitForFunction(() => document.querySelector(".welcome-row .section-title")?.firstChild?.nodeValue === "İcra dosyaları özeti", null, { timeout: 10000 });
     await admin.hover(".sidebar .brand-subtitle");
     await admin.click(".sidebar .brand-subtitle .hof-label-pencil");
     await admin.fill(".hof-label-editor input", "Deneme Hukuk");
@@ -332,16 +332,10 @@ try {
     await admin.click(".topbar .page-title .hof-label-pencil");
     await admin.click(".hof-label-editor [data-reset]");
     await admin.waitForFunction(title => document.querySelector(".topbar .page-title")?.textContent.trim() === title, pageTitle, { timeout: 5000 });
-    // Birden çok metin parçalı başlık (tablo açıklaması): varsayılana dönünce metin aynen geri gelir.
+    // Tablonun üstündeki "N kayıt · N kolon" satırı gizli (v2.0.10); React sayıyı güncellemeye devam eder.
     tableMeta = await ownText(".cases-panel .panel-meta");
-    await admin.hover(".cases-panel .panel-meta");
-    await admin.click(".cases-panel .panel-meta .hof-label-pencil");
-    await admin.fill(".hof-label-editor textarea", "Özel tablo açıklaması");
-    await admin.click(".hof-label-editor [data-save]");
-    await admin.waitForFunction(() => document.querySelector(".cases-panel .panel-meta")?.textContent.trim() === "Özel tablo açıklaması", null, { timeout: 5000 });
-    await admin.click(".cases-panel .panel-meta .hof-label-pencil");
-    await admin.click(".hof-label-editor [data-reset]");
-    await admin.waitForFunction(text => [...document.querySelector(".cases-panel .panel-meta").childNodes].filter(node => node.nodeType === 3).map(node => node.nodeValue).join("").replace(/\s+/g, " ").trim() === text, tableMeta, { timeout: 5000 });
+    const metaDisplay = await admin.$eval(".cases-panel .panel-meta", node => getComputedStyle(node).display);
+    expect(metaDisplay === "none" && /kayıt/.test(tableMeta), `kayıt · kolon satırı gizli olmalı: ${metaDisplay} "${tableMeta}"`);
   });
 
   await step("satırlar sunucu kimliği taşır, sayfalama 20 satır gösterir", async () => {
@@ -422,7 +416,7 @@ try {
     await admin.click(".hof-float-delete.is-visible");
     await admin.click('.hof-modal [data-answer="yes"]');
     await admin.waitForFunction(count => (window.HOF?.tableWindow?.total ?? document.querySelectorAll(".dynamic-table tbody tr").length) === count - 1, before, { timeout: 10000 });
-    await admin.click(".hof-toast-action");
+    await admin.click('.hof-toast-action:has-text("Geri al")');
     await admin.waitForFunction(count => (window.HOF?.tableWindow?.total ?? document.querySelectorAll(".dynamic-table tbody tr").length) === count, before, { timeout: 10000 });
   });
 
@@ -860,9 +854,9 @@ try {
     const notes = await staff.evaluate(() => localStorage.getItem("hukuk-ofisi-notlar"));
     expect(notes.includes("Merkezi not denemesi"), "merkezi not personelde görünmeli");
     await staff.waitForSelector("#hof-summary .hof-summary-card", { timeout: 10000 });
-    await staff.waitForFunction(() => document.querySelector(".welcome-row .section-title")?.firstChild?.nodeValue === "İcra dosyaları özeti", null, { timeout: 8000 }).catch(() => {});
-    const view = await staff.evaluate(() => ({ label: document.querySelector(".welcome-row .section-title")?.firstChild?.nodeValue, pencils: document.querySelectorAll(".hof-label-pencil").length, subtitle: document.querySelector(".brand-subtitle")?.firstChild?.nodeValue }));
-    expect(view.label === "İcra dosyaları özeti" && view.subtitle === "Hukuk ofisi yönetimi" && view.pencils === 0, `personel görünümü: ${JSON.stringify(view)}`);
+    // Personelde ANLIK DURUM yok; üst satır hiç yer kaplamaz (v2.0.10), özet kartları en üstte.
+    const view = await staff.evaluate(() => ({ welcome: getComputedStyle(document.querySelector(".welcome-row")).display, pencils: document.querySelectorAll(".hof-label-pencil").length, subtitle: document.querySelector(".brand-subtitle")?.firstChild?.nodeValue }));
+    expect(view.welcome === "none" && view.subtitle === "Hukuk ofisi yönetimi" && view.pencils === 0, `personel görünümü: ${JSON.stringify(view)}`);
   });
 
   await step("operasyon merkezi düğme adları köşedeki kalemle değişir; tüm bilgisayarlara yansır, personel kalemi görmez", async () => {
@@ -903,21 +897,43 @@ try {
     await staff.screenshot({ path: path.join(artifacts, "06-personel.png") });
   });
 
-  await step("ANLIK DURUM yalnız yöneticide; yönetim panelinden 'Ek yetki' verilince personelde sayfa yenilenmeden açılır, geri alınınca kapanır (v2.0.7)", async () => {
+  await step("ANLIK DURUM kartı yalnız yöneticide (v2.0.10); yetki panelinden 'Finans raporları' verilince personelde Raporlar sayfa yenilenmeden açılır, kart açılmaz; geri alınınca kapanır", async () => {
     expect(!(await staff.$("#hof-pulse")), "personel kartı görmemeli");
     expect(!(await staff.isVisible('#hof-sidecard [data-action="cheques"]')), "Çek / Senet menüsü personelde gizli");
     const denied = await staff.evaluate(() => fetch("/api/workspace/overview").then(response => response.status));
     expect(denied === 403, `personel ANLIK DURUM verisini alamaz: ${denied}`);
+    const reportsShown = () => staff.evaluate(() => {
+      const node = document.querySelector('#hof-sidecard [data-action="analytics"]');
+      return Boolean(node) && getComputedStyle(node).display !== "none";
+    });
+    expect(!(await reportsShown()), "personelde Raporlar kapalı");
     await admin.goto(BASE + "/admin.html");
     await admin.waitForSelector("#adm-users tr[data-id]");
-    const grant = admin.locator("#adm-users tr", { hasText: "deniz" }).locator('[data-grant="overview.view"]');
-    await grant.click();
-    await admin.waitForFunction(() => [...document.querySelectorAll("#adm-users tr")].find(row => row.textContent.includes("deniz"))?.querySelector('[data-grant="overview.view"].is-on'), null, { timeout: 8000 });
-    await staff.waitForSelector("#hof-pulse .hof-pulse-tile", { timeout: 15000 });
-    await staff.screenshot({ path: path.join(artifacts, "06b-personel-anlik-durum.png") });
-    await grant.click();
-    await admin.waitForFunction(() => ![...document.querySelectorAll("#adm-users tr")].find(row => row.textContent.includes("deniz"))?.querySelector('[data-grant="overview.view"].is-on'), null, { timeout: 8000 });
-    await staff.waitForFunction(() => !document.getElementById("hof-pulse"), null, { timeout: 15000 });
+    const setFinance = async on => {
+      await admin.locator("#adm-users tr[data-id]", { hasText: "deniz" }).locator("[data-perms]").click();
+      await admin.waitForSelector(".adm-perm-row .adm-perm-panel");
+      const box = admin.locator('.adm-perm-row [data-perm="overview.view"]');
+      if (on) await box.check();
+      else await box.uncheck();
+      expect(await admin.isDisabled('.adm-perm-row [data-perm="overview.card"]'), "ANLIK DURUM kartı kişiye verilemez (kilitli)");
+      if (on) await admin.screenshot({ path: path.join(artifacts, "06b-yetki-paneli.png") });
+      await admin.click(".adm-perm-row [data-perm-save]");
+      await admin.waitForSelector(".adm-perm-row", { state: "detached", timeout: 8000 });
+    };
+    await setFinance(true);
+    await staff.waitForFunction(() => {
+      const node = document.querySelector('#hof-sidecard [data-action="analytics"]');
+      return Boolean(node) && getComputedStyle(node).display !== "none";
+    }, null, { timeout: 15000 });
+    expect(!(await staff.$("#hof-pulse")), "ek yetki ANLIK DURUM kartını açmaz");
+    const codes = await staff.evaluate(async () => [(await fetch("/api/workspace/overview")).status, (await fetch("/api/workspace/overview/mizan?preset=thisMonth")).status]);
+    expect(codes.join() === "403,200", `kart 403, raporlar 200: ${codes}`);
+    await staff.screenshot({ path: path.join(artifacts, "06b-personel-raporlar.png") });
+    await setFinance(false);
+    await staff.waitForFunction(() => {
+      const node = document.querySelector('#hof-sidecard [data-action="analytics"]');
+      return !node || getComputedStyle(node).display === "none";
+    }, null, { timeout: 15000 });
   });
 
   await step("yönetici görev atar, personel sayfayı yenilemeden rozet ve bildirim alır, tamamlar", async () => {
@@ -925,7 +941,9 @@ try {
     await waitForApp(admin);
     await admin.click('#hof-sidecard [data-action="newTask"]');
     await admin.fill('.hof-modal input[name="title"]', "Tebligatı kontrol et");
-    await admin.fill('.hof-modal input[name="assignee"]', "Av. Deniz Yıldırım");
+    // v2.0.10: atanacak kişi açılır listeden (tüm kullanıcılar, rolüyle) seçilir.
+    const people = await admin.$$eval('.hof-modal select[name="assigneeId"] option', nodes => nodes.map(node => node.textContent));
+    await admin.selectOption('.hof-modal select[name="assigneeId"]', { label: people.find(item => item.startsWith("Av. Deniz Yıldırım")) });
     await admin.selectOption('.hof-modal select[name="priority"]', "urgent");
     await admin.click('.hof-modal button[type="submit"]');
     await admin.waitForFunction(() => [...document.querySelectorAll(".hof-toast")].some(node => node.textContent.includes("Görev atandı")));
@@ -1182,7 +1200,7 @@ try {
       await page.click(".hof-analysis-result [data-apply]");
       await page.waitForFunction(() => document.querySelector(".brand-subtitle")?.firstChild?.nodeValue === "Okul servisi yönetimi", null, { timeout: 5000 });
       await page.waitForFunction(() => [...document.querySelectorAll(".hof-toast")].some(node => /Taksitler'e aktarılsın mı/.test(node.textContent) && /6 kişinin ödeme planı/.test(node.textContent)), null, { timeout: 20000 });
-      expect(await page.$(".hof-toast .hof-toast-action"), "bildirimde 'Ön izle ve aktar' düğmesi var");
+      expect(await page.$('.hof-toast:has-text("Taksitler\'e aktarılsın mı") .hof-toast-action'), "bildirimde 'Ön izle ve aktar' düğmesi var");
       await page.evaluate(() => document.querySelectorAll(".hof-toast").forEach(node => node.remove()));
 
       // v2.0.2: durum/kategori hücreleri renkli nokta alır (analiz gelince); sık görünüm düğmesi satırları daraltır ve hatırlanır.
@@ -1474,7 +1492,8 @@ try {
       await page.waitForSelector(".hof-doc-gallery-modal .hof-tile");
       expect((await page.$$(".hof-doc-gallery-modal .hof-tile")).length === 2, "belge kartında iki belge");
       await page.check(".hof-doc-gallery-modal [data-pick-all]");
-      const [archive] = await Promise.all([page.waitForEvent("download"), page.click(".hof-doc-gallery-modal [data-bulk-download]")]);
+      // Başsız tarayıcı karttaki PDF önizlemesini de "indirme" olarak bildirir; yalnız toplu arşiv indirmesi beklenir.
+      const [archive] = await Promise.all([page.waitForEvent("download", { predicate: item => item.url().includes("/documents/archive?ids=") }), page.click(".hof-doc-gallery-modal [data-bulk-download]")]);
       // Başsız tarayıcı Türkçe harfli dosya adını "download" diye bildirir; içerik doğrulanır.
       expect(archive.url().includes("/documents/archive?ids="), `toplu indirme: ${archive.url()}`);
       const zipped = readZip(readFileSync(await archive.path())).filter(entry => !entry.directory).map(entry => entry.name).sort();
@@ -1504,7 +1523,7 @@ try {
       expect(await page.evaluate(() => window.HOF.tableHeaders(document.querySelector(".dynamic-table")).includes("Tutar")), "asıl kolon adı korunmalı");
 
       // Excel'e aktarma: menüden açık sekme; dosya gerçek xlsx ve başlıkta verilen ad.
-      await page.click('.button-row button:has-text("Dışa aktar")');
+      await page.click("#hof-toolbar-export");
       await page.waitForSelector(".hof-export-menu");
       const [download] = await Promise.all([page.waitForEvent("download"), page.click('.hof-export-menu [data-export="tab"]')]);
       expect(download.suggestedFilename().endsWith(".xlsx"), `dosya adı: ${download.suggestedFilename()}`);

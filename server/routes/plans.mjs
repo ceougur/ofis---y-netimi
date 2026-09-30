@@ -5,7 +5,7 @@
 import { randomUUID } from "node:crypto";
 import { HttpError, limited, ok, readJson, sendBuffer, text } from "../lib/http.mjs";
 import { parseAmount, roundMoney } from "../lib/money.mjs";
-import { can } from "../lib/permissions.mjs";
+import { canUser } from "../lib/permissions.mjs";
 import { allocate, dayText, distribute, isoDay, mapHeaders, parseDay } from "../lib/plans.mjs";
 import { extractSchedules, spreadPaid } from "../lib/insight/schedules.mjs";
 import { tabContext } from "../lib/insight/dues.mjs";
@@ -161,7 +161,7 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
     const items = itemsOf(plan.id);
     const entries = entriesOf(plan.id);
     const ledger = allocate(plan, items, entries, { today: today() });
-    const manage = can(user.role, "plans.manage");
+    const manage = canUser(user, "plans.manage");
     return {
       ...plan,
       ...ledger,
@@ -169,7 +169,7 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
       // Açılış (devir) kaydını (v2.0.8) yalnız kart yöneten roller düzeltir.
       entries: entries.map(entry => ({ ...entry, opening: Boolean(entry.opening), editable: !entry.chequeId && (manage || (!entry.opening && entry.createdBy === user.id)) })),
       canManage: manage,
-      canCollect: can(user.role, "plans.collect"),
+      canCollect: canUser(user, "plans.collect"),
     };
   };
   const detail = (id, user) => shape(planRow(id), user);
@@ -281,7 +281,7 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
       registered: (a, b) => String(b.registeredOn).localeCompare(String(a.registeredOn)) || refCompare(a, b),
     }[sort] || ((a, b) => refCompare(a, b) || byName(a, b));
     out.sort(compare);
-    return { plans: out, totals, sort, canManage: can(user.role, "plans.manage"), canCollect: can(user.role, "plans.collect"), today: day };
+    return { plans: out, totals, sort, canManage: canUser(user, "plans.manage"), canCollect: canUser(user, "plans.collect"), today: day };
   }
 
   router.get("/api/workspace/plans", async ({ req, res, url }) => {
@@ -293,7 +293,7 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
   router.get("/api/workspace/cases/:key/plans", async ({ req, res, params }) => {
     const user = auth.requirePermission(req, "plans.view");
     const key = limited(params.key, 200, "Kayıt");
-    ok(res, { plans: forCase(key, currentSource(), user), canManage: can(user.role, "plans.manage"), canCollect: can(user.role, "plans.collect") });
+    ok(res, { plans: forCase(key, currentSource(), user), canManage: canUser(user, "plans.manage"), canCollect: canUser(user, "plans.collect") });
   });
 
   // Liste PDF'i (v2.0.5): ekrandaki süzgeçler ve sıralamayla (durum, grup › alt grup, arama). Yazdır düğmesi de bunu kullanır.
@@ -528,8 +528,8 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
   };
   const requireEntryRight = (user, entry) => {
     if (entry.chequeId) throw new HttpError(409, "Bu tahsilat bir çek/senetten geldi; Çek/Senet'teki evraktan düzeltin (karşılıksız, geri al ya da sil).", { code: "cheque-linked", chequeId: entry.chequeId });
-    if (entry.opening && !can(user.role, "plans.manage")) throw new HttpError(403, "Açılış (devir) kaydını yalnızca yönetici, uzman ve muhasebe değiştirebilir.");
-    if (entry.createdBy !== user.id && !can(user.role, "plans.manage")) throw new HttpError(403, "Başkasının girdiği hareketi yalnızca yönetici, uzman ve muhasebe değiştirebilir.");
+    if (entry.opening && !canUser(user, "plans.manage")) throw new HttpError(403, "Açılış (devir) kaydını yalnızca yönetici, uzman ve muhasebe değiştirebilir.");
+    if (entry.createdBy !== user.id && !canUser(user, "plans.manage")) throw new HttpError(403, "Başkasının girdiği hareketi yalnızca yönetici, uzman ve muhasebe değiştirebilir.");
   };
   // Makbuz numarası: ofis genelinde artan sayaç (tahsilatlarda). Silinen makbuzun numarası yeniden verilmez.
   const nextReceipt = () => {
@@ -543,7 +543,7 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
     const plan = planRow(params.id);
     const body = await readJson(req);
     const input = store.tx(() => entryInput(body, plan.id));
-    if (input.kind === "out" && !can(user.role, "plans.manage")) throw new HttpError(403, "Ödeme/iade girişi yönetici, uzman ve muhasebe yetkisidir.");
+    if (input.kind === "out" && !canUser(user, "plans.manage")) throw new HttpError(403, "Ödeme/iade girişi yönetici, uzman ve muhasebe yetkisidir.");
     const id = newId("entry");
     store.tx(() => {
       const receiptNo = input.kind === "in" ? nextReceipt() : null;

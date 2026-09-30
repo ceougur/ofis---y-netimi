@@ -218,10 +218,14 @@
   HOF.showReloadBanner = showReloadBanner;
 
   // ---------- Açılış ----------
+  // Yetki sınıfları (hof-can-*): [data-requires] öğeleri CSS ile gizlenir. v2.0.10: yetki değişince (yönetici rolü ya da
+  // kişiye özel yetkiyi değiştirdi) eski sınıflar silinip yenileri yazılır; ekran yeniden açılmaz.
   const applyRoleClasses = user => {
     html.dataset.hofRole = user.role;
+    for (const name of [...html.classList]) if (name.startsWith("hof-can-")) html.classList.remove(name);
     for (const permission of user.permissions) html.classList.add(`hof-can-${permission.replace(/\./g, "-")}`);
   };
+  HOF.applyPermissions = applyRoleClasses;
 
   const wrapFetch = () => {
     let notified = false;

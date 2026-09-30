@@ -26,17 +26,29 @@
   // Şeritte: gecikenler, bugün/bu ay, 7 gün içinde gelecekler ve 30 gün içindeki açık ödeme sözleri.
   const onStrip = item => item.state !== "upcoming" || item.days <= 7 || item.thisMonth || (item.promise && item.days <= 30);
 
+  let loadedAt = 0;
   async function load() {
     const ticket = ++request;
     try {
       const result = await HOF.api("/api/workspace/dues");
       if (ticket !== request) return;
       data = result;
+      loadedAt = Date.now();
       render();
       HOF.emit("dues", data);
     } catch {
       // Takvim yardımcıdır; alınamazsa şerit gösterilmez.
     }
+  }
+  // Kapanan kalem sunucu yanıtını beklemeden şeritten ve bildirimlerden düşer; ardından gelen yenileme doğrular.
+  function drop(match) {
+    const before = (data.items || []).length;
+    const items = (data.items || []).filter(item => !match(item));
+    if (items.length === before) return;
+    data = { ...data, items };
+    closeCard();
+    render();
+    HOF.emit("dues", data);
   }
   const reloadSoon = (() => {
     let timer = 0;
@@ -88,7 +100,7 @@
     // Taksit kartı kalemi (v2.0.4): tahsilat kartın üstünden girilir.
     if (item.source === "plan") return HOF.plans?.pay(item);
     // Çek / senet (v2.0.7): tahsil / ödeme evrak kartından.
-    if (item.source === "cheque") return HOF.cheques?.open({ id: item.chequeId });
+    if (item.source === "cheque") return HOF.cheques?.open({ id: item.chequeId, action: item.direction === "out" ? "pay" : "collect" });
     if (!HOF.workspace?.payment) return;
     HOF.workspace.payment({
       key: item.caseKey,
@@ -209,7 +221,7 @@
     anchor.after(band);
   }
 
-  HOF.dues = { data: () => data, reload: load, reloadSoon };
+  HOF.dues = { data: () => data, reload: load, reloadSoon, drop };
   HOF.whenReady(() => {
     load();
     // Şerit özet kartlarının altında durur; ekran yeniden çizilince yerine döner.
@@ -221,11 +233,33 @@
     HOF.on("rows", () => reloadSoon(900));
     HOF.on("case-activity", () => reloadSoon(400));
     HOF.on("payment-saved", () => reloadSoon(200));
+    // v2.0.10: taksit, çek/senet ve Kasa değişince de (işlemi bu ekranda yapan kişide) takvim hemen yenilenir. Önceden
+    // yalnız tablo tahsilatı dinleniyordu; çek ödenince pil ve bildirim program yeniden açılana kadar kalıyordu.
+    HOF.on("cheques-changed", cheque => {
+      if (cheque?.id && !["portfolio", "pending"].includes(cheque.status)) drop(item => item.chequeId === cheque.id);
+      reloadSoon(150);
+    });
+    HOF.on("plans-changed", () => reloadSoon(200));
+    HOF.on("cash-changed", () => reloadSoon(300));
+    HOF.on("accounts-changed", () => reloadSoon(400));
     // Olay tabanlı yenileme (v2.0.2): gün dönümü ya da uzun arka plan sonrası takvim yeniden alınır.
     HOF.on("dues:refresh", () => load());
     HOF.on("live:workspace.changed", change => {
       if (!change) return;
-      if (["dues", "activity", "cash", "records", "source", "plans"].includes(change.kind) || change.dataset) reloadSoon(800);
+      if (["dues", "activity", "cash", "records", "source", "plans", "cheques", "accounts", "documents"].includes(change.kind) || change.dataset) reloadSoon(800);
+    });
+    // Sunucu para/evrak değişikliğini işlemi yapan dahil herkese "overview.changed" ile de duyurur (başka bilgisayarda
+    // ödenen çek bu ekranda da düşer).
+    HOF.on("live:overview.changed", () => reloadSoon(400));
+    HOF.on("live:resync", () => reloadSoon(500));
+    HOF.on("live:hello", () => reloadSoon(600));
+    // Yedek yenileme: canlı bağlantı kopsa bile ekran açıkken 5 dakikada bir; sekmeye geri dönülünce de (1 dakikadan
+    // eskiyse). Sunucu sonucu önbellekte tuttuğu için değişiklik yoksa yük getirmez.
+    setInterval(() => {
+      if (!document.hidden) load();
+    }, 5 * 60_000);
+    document.addEventListener("visibilitychange", () => {
+      if (!document.hidden && Date.now() - loadedAt > 60_000) load();
     });
     // Gün dönünce (sayfa uzun süre açık kalırsa) takvim yenilenir.
     setInterval(() => {

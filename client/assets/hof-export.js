@@ -98,9 +98,11 @@
       const target = anchor;
       close();
       if (action === "csv") {
+        // CSV'yi arayüz paketinin kendi (gizli) düğmesi üretir; menü araç çubuğundaki düğmeden açıldıysa ona tıklanır.
+        const native = [...document.querySelectorAll(".button-row button")].find(isExportButton) || target;
         bypass = true;
         try {
-          target.click();
+          native.click();
         } finally {
           bypass = false;
         }
@@ -150,15 +152,36 @@
     }
   }
 
+  // v2.0.10: "Dışa aktar" tablonun araç çubuğunda, arama kutusunun yanında. Başlık satırındaki özet bloğu (ve paketin
+  // oradaki düğmesi) gizlendi; paketin düğmesi yalnız CSV indirmesi için DOM'da durur.
+  const DOWNLOAD_ICON = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"/><path d="m7 10 5 5 5-5"/><path d="M5 20h14"/></svg>';
+  // Tablo başlık satırının sağındaki eylem grubunda, Yenile'nin solunda (v2.0.10): arama kutusu tam genişlikte kalır.
+  function mountToolbarButton() {
+    const heading = document.querySelector(".cases-panel > .panel-heading");
+    const existing = document.getElementById("hof-toolbar-export");
+    // "Tabloyu dışa aktarma" yetkisi (v2.0.10) kişiden kaldırıldıysa düğme hiç görünmez.
+    if (!heading || !HOF.can("records.export")) return existing?.remove();
+    const before = heading.querySelector(":scope > button:not(#hof-toolbar-export)");
+    if (existing?.parentNode === heading && (!before || existing.nextElementSibling === before)) return;
+    const button = existing || HOF.el("button", { type: "button", id: "hof-toolbar-export", class: "hof-toolbar-export", "data-hof-ui": "", "aria-label": "Dışa aktar", title: "Tabloyu Excel (.xlsx) ya da CSV olarak indir" }, `${DOWNLOAD_ICON}<span>Dışa aktar</span>`);
+    heading.insertBefore(button, before);
+  }
+  HOF.whenReady(() => {
+    mountToolbarButton();
+    HOF.onDom(mountToolbarButton);
+    HOF.on("user-changed", mountToolbarButton);
+  });
+
   // Paketin düğmesi yakalanır (paket CSV indirmesini ancak menüden "CSV" seçilince yapar).
   document.addEventListener(
     "click",
     event => {
       if (bypass) return;
-      const button = event.target.closest(".button-row button");
+      const button = event.target.closest(".button-row button, #hof-toolbar-export");
       if (!isExportButton(button)) return;
       event.preventDefault();
       event.stopImmediatePropagation();
+      if (!HOF.can("records.export")) return HOF.toast("Tabloyu dışa aktarma yetkiniz yok. Yöneticinizden isteyin.", { type: "error" });
       if (menu && anchor === button) close();
       else open(button);
     },

@@ -472,24 +472,28 @@ describe("ANLIK DURUM: karttaki rakamlar ekranlarla birebir aynı (rastgele 400 
     assert.match(text, /event: overview\.changed\ndata: \{"kinds":\[[^\]]*"cash"/, "işlemi yapan kişinin kendi ekranı da tazelenir");
   });
 
-  it("yalnız yönetici ve yöneticinin kişiye özel yetki verdiği kişi görür; yetki geri alınınca kapanır", async () => {
+  // v2.0.10: ANLIK DURUM kartı yalnız yönetici ekranındadır (müşteri kararı). Kişiye verilen "finans raporları"
+  // yetkisi (overview.view; v2.0.7'de "ANLIK DURUM ve raporlar") yalnız Raporlar penceresini açar.
+  it("kart yalnız yöneticide; kişiye verilen finans raporları yetkisi raporları açar, kartı açmaz; geri alınınca kapanır", async () => {
     const lawyer = await createUser(server, admin, { username: "avukat1", role: "avukat" });
     const staff = await createUser(server, admin, { username: "personel1", role: "personel" });
+    assert.equal((await admin.get("/api/workspace/overview")).status, 200, "yönetici kartı görür");
     assert.equal((await lawyer.get("/api/workspace/overview")).status, 403, "rol tek başına yetmez");
     assert.equal((await staff.get("/api/workspace/overview/mizan?preset=thisMonth")).status, 403);
     const users = (await admin.get("/api/admin/users")).data.data;
     const target = users.find(user => user.username === "personel1");
-    assert.deepEqual(target.grants, []);
-    assert.equal((await admin.patch(`/api/admin/users/${target.id}`, { grants: ["users.manage"] })).status, 400, "yalnız verilebilir yetkiler");
-    assert.equal((await admin.patch(`/api/admin/users/${target.id}`, { grants: ["overview.view"] })).status, 200);
+    assert.deepEqual(target.grants, { add: [], remove: [] });
+    assert.equal((await admin.patch(`/api/admin/users/${target.id}`, { grants: ["users.manage"] })).status, 400, "yönetime özgü yetki verilemez");
+    assert.equal((await admin.patch(`/api/admin/users/${target.id}`, { grants: ["overview.card"] })).status, 400, "ANLIK DURUM kartı verilemez");
+    assert.equal((await admin.patch(`/api/admin/users/${target.id}`, { grants: ["overview.view"] })).status, 200, "v2.0.7 dizi biçimi hâlâ kabul edilir");
     const me = (await staff.get("/api/auth/me")).data.data;
-    assert.ok(me.permissions.includes("overview.view"));
-    const view = (await staff.get("/api/workspace/overview")).data.data;
-    assert.ok(view.cash && typeof view.cash.balance === "number", "yetki verilen kişi kartın tamamını görür");
+    assert.ok(me.permissions.includes("overview.view") && !me.permissions.includes("overview.card"));
+    assert.equal((await staff.get("/api/workspace/overview")).status, 403, "ek yetki kartı açmaz");
+    assert.equal((await staff.get("/api/workspace/overview/mizan?preset=thisMonth")).status, 200, "raporlar açılır");
     assert.equal((await staff.raw("GET", "/api/workspace/overview/nakit-akisi.pdf?preset=next30")).status, 200);
     assert.equal((await staff.get("/api/workspace/cash")).status, 403, "ek yetki Kasa ekranını açmaz");
     await admin.patch(`/api/admin/users/${target.id}`, { grants: [] });
-    assert.equal((await staff.get("/api/workspace/overview")).status, 403);
+    assert.equal((await staff.get("/api/workspace/overview/mizan?preset=thisMonth")).status, 403);
   });
 });
 

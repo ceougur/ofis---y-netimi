@@ -9,7 +9,7 @@
 // allocate, Stok → stock.list, Çek → cheques.list); ekrandaki rakamla rapordaki rakam aynıdır.
 import { accountLedger } from "../lib/accounts.mjs";
 import { DIRECTIONS, EVENT_LABELS, INSTRUMENTS, STATUSES } from "../lib/cheques.mjs";
-import { presetRange, statement } from "../lib/finance-report.mjs";
+import { isAllTimeStart, presetRange, statement } from "../lib/finance-report.mjs";
 import { HttpError, limited, ok, sendBuffer, text } from "../lib/http.mjs";
 import { roundMoney } from "../lib/money.mjs";
 import { canUser } from "../lib/permissions.mjs";
@@ -40,7 +40,9 @@ const stamp = value => {
   if (Number.isNaN(date.getTime())) return String(value);
   return `${dayText(isoDay(date))} ${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
 };
-const sideText = value => (value > 0.005 ? "Borçlu (bize borçlu)" : value < -0.005 ? "Alacaklı (biz borçluyuz)" : "Kapalı");
+// Durum (v2.0.10): yalın — Borçlu (cari bize borçlu) · Alacaklı (biz cariye borçluyuz) · Kapalı.
+const sideText = value => (value > 0.005 ? "Borçlu" : value < -0.005 ? "Alacaklı" : "Kapalı");
+const SIDE_FILTER = { debtor: "Borçlular", creditor: "Alacaklılar", nonzero: "Sadece bakiyesi olanlar", zero: "Bakiyesi sıfır", overdue: "Geciken taksiti olan" };
 const SEQUENCE = /^(sıra|sira|sıra no|no|#|sn|s\.?\s?no|nr)$/i;
 // Ay anahtarı (YYYY-AA) → "Eylül 2026"; aralıktaki aylar (v2.0.9 aylık raporlar).
 const MONTHS = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"];
@@ -77,7 +79,10 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
     return { from, to };
   };
   const inRange = (date, { from, to }) => (!from || date >= from) && (!to || date <= to);
-  const rangeText = ({ from, to }) => (from || to ? `${from ? dayText(from) : "…"} – ${to ? dayText(to) : "…"}` : "Tüm zamanlar");
+  const allTime = from => isAllTimeStart(from, today());
+  const rangeText = ({ from, to }) =>
+    allTime(from) ? `Tüm hareketler · ${to ? dayText(to) : "bugün"} tarihine kadar` : from || to ? `${from ? dayText(from) : "…"} – ${to ? dayText(to) : "…"}` : "Tüm zamanlar";
+  const openingDay = from => (from && !allTime(from) ? dayText(from) : "");
   // Kayıt anahtarı → okunur ad (tablodaki satırın ilk iki anlamlı değeri; tahsilat/taksit kaydındaki ad önce).
   function caseTitles(keys) {
     const out = new Map();
@@ -128,7 +133,7 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
       build(query) {
         const range = rangeOf(query, "thisMonth");
         const data = cash().report(admin, range.from, range.to);
-        const rows = [[range.from ? dayText(range.from) : "", "Devir", "Dönem başı kasa", "", "", money(data.opening), ""]];
+        const rows = [[openingDay(range.from), "Devir", "Dönem başı kasa", "", "", money(data.opening), ""]];
         for (const entry of data.entries) rows.push([dayText(entry.date), CASH_SOURCE[entry.source] || entry.source, cashLabel(entry), entry.kind === "in" ? money(entry.amount) : "", entry.kind === "out" ? money(entry.amount) : "", money(entry.balance), entry.actorName || ""]);
         const closing = roundMoney(data.opening + data.period.in - data.period.out);
         return {
@@ -246,11 +251,11 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
         const params = new URLSearchParams({ ...query, preset: query.preset || "thisMonth" });
         const data = overview().mizan(params);
         return {
-          subtitle: [rangeText(data), data.type ? TYPE_TEXT[data.type] : "Tüm cariler"].join(" · "),
+          subtitle: [rangeText(data), data.type ? TYPE_TEXT[data.type] : "Tüm cariler", SIDE_FILTER[data.side] || ""].filter(Boolean).join(" · "),
           headers: ["Cari No", "Cari", "Tür", "Devir", "Borç", "Alacak", "Bakiye", "Durum"],
           types: ["", "", "", "money", "money", "money", "money", ""],
           rows: data.rows.map(row => [row.refNo, row.name, TYPE_TEXT[row.type] || "", money(row.opening), money(row.debit), money(row.credit), money(Math.abs(row.closing)), sideText(row.closing)]),
-          summary: [["Cari sayısı", String(data.totals.count)], ["Dönem borç", money(data.totals.debit)], ["Dönem alacak", money(data.totals.credit)], ["Bize borçlu (alacağımız)", money(data.totals.closingDebtor)], ["Biz borçluyuz (borcumuz)", money(data.totals.closingCreditor)]],
+          summary: [["Cari sayısı", String(data.totals.count)], ["Dönem borç", money(data.totals.debit)], ["Dönem alacak", money(data.totals.credit)], ["Borçlular toplamı", money(data.totals.closingDebtor)], ["Alacaklılar toplamı", money(data.totals.closingCreditor)]],
         };
       },
     },
@@ -261,13 +266,13 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
       description: "Tüm cariler (aktif ve pasif): iletişim, grup, borç, alacak, bakiye ve geciken taksit.",
       params: ["type", "side"],
       build(query) {
-        const data = accounts().list(admin, { status: "all", type: TYPE_TEXT[query.type] ? query.type : "", balance: ["debtor", "creditor", "zero", "overdue"].includes(query.side) ? query.side : "all", sort: "no" });
+        const data = accounts().list(admin, { status: "all", type: TYPE_TEXT[query.type] ? query.type : "", balance: ["debtor", "creditor", "zero", "nonzero", "overdue"].includes(query.side) ? query.side : "all", sort: "no" });
         return {
-          subtitle: [query.type && TYPE_TEXT[query.type] ? TYPE_TEXT[query.type] : "Tüm cariler", `${data.totals.count} cari`].join(" · "),
+          subtitle: [query.type && TYPE_TEXT[query.type] ? TYPE_TEXT[query.type] : "Tüm cariler", SIDE_FILTER[query.side] || "", `${data.totals.count} cari`].filter(Boolean).join(" · "),
           headers: ["Cari No", "Cari", "Tür", "Telefon", "Grup", "Borç", "Alacak", "Bakiye", "Durum", "Geciken"],
           types: ["", "", "", "", "", "money", "money", "money", "", "money"],
           rows: data.accounts.map(row => [row.refNo, row.name, TYPE_TEXT[row.type] || "", row.phone, [row.groupName, row.subgroupName].filter(Boolean).join(" › "), money(row.debit), money(row.credit), money(Math.abs(row.balance)), sideText(row.balance), row.overdue ? money(row.overdue) : ""]),
-          summary: [["Cari", String(data.totals.count)], ["Bize borçlu", money(data.totals.debtor)], ["Biz borçluyuz", money(data.totals.creditor)], ["Geciken taksit", money(data.totals.overdue)]],
+          summary: [["Cari", String(data.totals.count)], ["Borçlular", money(data.totals.debtor)], ["Alacaklılar", money(data.totals.creditor)], ["Geciken taksit", money(data.totals.overdue)]],
         };
       },
     },
@@ -286,10 +291,10 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
         const mark = value => `${tl(Math.abs(value))}${value > 0.005 ? " B" : value < -0.005 ? " A" : ""}`;
         return {
           title: `Cari ekstre · ${account.name}`,
-          subtitle: [account.refNo ? `Cari No ${account.refNo}` : "", rangeText(range), "B: bize borçlu · A: biz borçluyuz"].filter(Boolean).join(" · "),
+          subtitle: [account.refNo ? `Cari No ${account.refNo}` : "", rangeText(range), "B: borçlu · A: alacaklı"].filter(Boolean).join(" · "),
           headers: ["Tarih", "İşlem", "Açıklama", "Borç", "Alacak", "Bakiye"],
           types: ["", "", "", "money", "money", "money"],
-          rows: [[range.from ? dayText(range.from) : "", "Devir", "Dönem başı bakiye", "", "", mark(result.opening)], ...result.lines.map(line => [dayText(line.date), line.label, [line.note, line.receiptNo ? `Makbuz ${line.receiptNo}` : ""].filter(Boolean).join(" · "), line.debit ? money(line.debit) : "", line.credit ? money(line.credit) : "", mark(line.balance)])],
+          rows: [[openingDay(range.from), "Devir", "Dönem başı bakiye", "", "", mark(result.opening)], ...result.lines.map(line => [dayText(line.date), line.label, [line.note, line.receiptNo ? `Makbuz ${line.receiptNo}` : ""].filter(Boolean).join(" · "), line.debit ? money(line.debit) : "", line.credit ? money(line.credit) : "", mark(line.balance)])],
           summary: [["Devir", money(result.opening)], ["Dönem borç", money(result.debit)], ["Dönem alacak", money(result.credit)], ["Dönem sonu", `${tl(Math.abs(result.closing))} ${sideText(result.closing)}`]],
         };
       },
@@ -842,6 +847,7 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
       params: ["range"],
       preset: "last30",
       permission: "audit.view",
+      standalone: true,
       build(query) {
         const range = rangeOf(query, "last30");
         const list = store.all(
@@ -901,7 +907,16 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
   }
 
   // ---------- Uçlar ----------
-  const allowed = (user, report) => !report.permission || canUser(user, report.permission);
+  // Finans raporları "overview.view" ister. Kendi izniyle tek başına açılan rapor (standalone: İşlem geçmişi → audit.view)
+  // finans yetkisi olmayana da açılır (v2.0.10): Yönetim paneli yalnız yöneticiye kaldığından uzman işlem geçmişini
+  // Raporlar → Tüm raporlar'dan görür.
+  const allowed = (user, report) =>
+    report.standalone ? canUser(user, report.permission) : canUser(user, "overview.view") && (!report.permission || canUser(user, report.permission));
+  const enter = req => {
+    const user = auth.requireUser(req);
+    if (!REPORTS.some(report => allowed(user, report))) throw new HttpError(403, "Bu işlem için yetkiniz yok.", { code: "FORBIDDEN", permission: "overview.view" });
+    return user;
+  };
   const queryOf = params => {
     const query = {};
     for (const key of ["preset", "from", "to", "account", "type", "side", "status", "direction", "category", "state", "planStatus", "taskStatus", "tab"]) {
@@ -920,20 +935,20 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
     return { id: report.id, group: report.group, title: result.title || report.title, subtitle: result.subtitle || "", headers: result.headers, types: result.types || [], rows, total: result.rows.length, summary: result.summary || [], tabs: result.tabs || null, query };
   }
   router.get("/api/workspace/report-center", async ({ req, res }) => {
-    const user = auth.requirePermission(req, "overview.view");
+    const user = enter(req);
     ok(res, {
       reports: REPORTS.filter(report => allowed(user, report)).map(({ id, group, title, description, params, preset }) => ({ id, group, title, description, params, preset: preset || "" })),
       today: today(),
     });
   });
   router.get("/api/workspace/report-center/:id", async ({ req, res, params, url }) => {
-    const user = auth.requirePermission(req, "overview.view");
+    const user = enter(req);
     const data = await run(user, params.id, url.searchParams);
     ok(res, { ...data, rows: data.rows.slice(0, PREVIEW_ROWS), total: data.total });
   });
   const fileBase = data => `${data.title.replace(/[\\/:*?"<>|]+/g, " ").trim()} ${dayText(today())}`;
   router.get("/api/workspace/report-center/:id/pdf", async ({ req, res, params, url }) => {
-    const user = auth.requirePermission(req, "overview.view");
+    const user = enter(req);
     const data = await run(user, params.id, url.searchParams);
     const clipped = data.rows.length > PDF_ROWS;
     const pdf = tablePdf({
@@ -951,7 +966,7 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
     sendBuffer(res, pdf, { type: "application/pdf", name: `${fileBase(data)}.pdf`, inline: url.searchParams.get("download") !== "1" });
   });
   router.get("/api/workspace/report-center/:id/xlsx", async ({ req, res, params, url }) => {
-    const user = auth.requirePermission(req, "overview.view");
+    const user = enter(req);
     const data = await run(user, params.id, url.searchParams);
     const unique = data.headers.map((header, index) => (data.headers.indexOf(header) === index && header ? header : `${header || "Kolon"} ${index + 1}`));
     const rows = data.rows.map(row => Object.fromEntries(unique.map((header, index) => [header, row[index] ?? ""])));

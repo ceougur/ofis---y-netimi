@@ -16,19 +16,22 @@
     { id: "passive", label: "Pasif" },
     { id: "all", label: "Tümü" },
   ];
+  // Bakiye süzgeci (v2.0.10): muhasebe programlarındaki gibi Tümü · Borçlular · Alacaklılar · Sadece bakiyesi olanlar.
+  // Kutunun görünür etiketi olmadığından ilk seçenek neyi süzdüğünü söyler.
   const BALANCES = [
     ["all", "Tüm bakiyeler"],
-    ["debtor", "Bize borçlu olanlar"],
-    ["creditor", "Bizim borçlu olduklarımız"],
+    ["debtor", "Borçlular"],
+    ["creditor", "Alacaklılar"],
+    ["nonzero", "Sadece bakiyesi olanlar"],
+    ["zero", "Bakiyesi sıfır (kapalı)"],
     ["overdue", "Taksidi gecikenler"],
-    ["zero", "Bakiyesi sıfır"],
   ];
   const SORTS = [
-    ["no", "Cari No"],
-    ["name", "Ada göre"],
-    ["balance", "Bakiyeye göre (çoktan aza)"],
-    ["overdue", "Geciken taksite göre"],
-    ["registered", "Kayıt tarihine göre (yeni önce)"],
+    ["no", "Sırala: Cari No"],
+    ["name", "Sırala: ada göre"],
+    ["balance", "Sırala: bakiye (çoktan aza)"],
+    ["overdue", "Sırala: geciken taksit"],
+    ["registered", "Sırala: kayıt tarihi (yeni önce)"],
   ];
   const ENTRY_LABEL = { debt: "Borç yaz", credit: "Alacak yaz", in: "Tahsilat", out: "Ödeme" };
   const ENTRY_HELP = {
@@ -48,8 +51,11 @@
   const canCollect = () => HOF.can("accounts.collect");
   const canPlan = () => HOF.can("plans.manage");
   const moduleName = () => HOF.uiLabel?.("side.accounts", "Cari") || "Cari";
-  const sideWord = balance => (balance > 0.005 ? "borçlu" : balance < -0.005 ? "alacaklı" : "");
-  const balanceHtml = balance => `<span class="hof-acc-balance is-${balance > 0.005 ? "debtor" : balance < -0.005 ? "creditor" : "zero"}">${esc(money(Math.abs(balance)))}${sideWord(balance) ? `<small>${sideWord(balance)}</small>` : ""}</span>`;
+  const sideWord = balance => (balance > 0.005 ? "Borçlu" : balance < -0.005 ? "Alacaklı" : "");
+  // Renk kuralı (v2.0.10, muhasebe programlarındaki gibi): Borçlu (cari bize borçlu = alacağımız) yeşil, Alacaklı (bizim
+  // borcumuz) kırmızı, kapalı gri. Borç/Alacak hareket sütunları renksizdir; renk yalnız bakiye ve durumda.
+  const sideTone = balance => (balance > 0.005 ? "debtor" : balance < -0.005 ? "creditor" : "zero");
+  const balanceHtml = balance => `<span class="hof-acc-balance is-${sideTone(balance)}">${esc(money(Math.abs(balance)))}${sideWord(balance) ? `<small>${sideWord(balance)}</small>` : ""}</span>`;
   const typeBadge = type => `<span class="hof-plan-badge is-${type === "supplier" ? "soon" : type === "other" ? "muted" : "info"}">${esc(TYPES[type] || "")}</span>`;
   const whereText = item => [item.groupName, item.subgroupName].filter(Boolean).join(" › ");
   const SORT_KEY = "hof.accounts.sort";
@@ -188,7 +194,7 @@
     root.innerHTML = `<div class="hof-cash-bar"><div class="hof-tabs" role="group" aria-label="Durum">${STATUS_TABS.map(item => `<button type="button" data-status="${item.id}" aria-pressed="${String(item.id === view.status)}">${item.label}</button>`).join("")}</div>
       <div class="hof-cash-add">${manage ? `<button type="button" class="hof-button hof-button-small" data-act="new">+ Yeni cari</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="import" title="Excel dosyasından ya da Google Sheets’ten carileri tek seferde aç (taksit sorulmaz)">Excel / Sheets’ten yükle</button>${tableRows ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="fromTable" title="Ortadaki tablonun açık sekmesindeki kişileri cari yap; her cari kendi kaydına bağlanır">Tablodan al</button>' : ""}` : ""}</div></div>
       <div class="hof-plans-filters"><input type="search" data-filter="q" value="${esc(view.q)}" placeholder="Ad, telefon, cari no, adres, ek alan ara…" aria-label="Ara"><select data-filter="type" aria-label="Tür"><option value="">Tüm türler</option>${Object.entries(TYPES).map(([id, label]) => `<option value="${id}" ${id === view.type ? "selected" : ""}>${label}</option>`).join("")}</select>${groupOptions()}<select data-filter="balance" aria-label="Bakiye">${BALANCES.map(([id, label]) => `<option value="${id}" ${id === view.balance ? "selected" : ""}>${label}</option>`).join("")}</select><select data-filter="sort" aria-label="Sıralama">${SORTS.map(([id, label]) => `<option value="${id}" ${id === view.sort ? "selected" : ""}>${label}</option>`).join("")}</select>${outputs(listPdfUrl(), `<a class="hof-button hof-button-small hof-button-ghost" href="${esc(listXlsxUrl())}" data-xlsx title="Ekrandaki listeyi (ek alanlarıyla) Excel olarak indir">Excel</a>`)}</div>
-      <div class="hof-kpis hof-plans-kpis">${data ? `<div class="hof-cash-balance"><strong>${esc(money(data.totals.debtor))}</strong><span>Bize borçlu · ${data.totals.count.toLocaleString("tr-TR")} cari</span></div><div><strong>${esc(money(data.totals.creditor))}</strong><span>Bizim borcumuz</span></div><div><strong>${esc(money(data.totals.planRemaining))}</strong><span>Taksitlerden kalan</span></div><div class="${data.totals.overdueCount ? "is-late" : ""}"><strong>${esc(money(data.totals.overdue))}</strong><span>Geciken · ${data.totals.overdueCount} taksit</span></div>` : ""}</div>
+      <div class="hof-kpis hof-plans-kpis">${data ? `<div class="hof-cash-balance"><strong>${esc(money(data.totals.debtor))}</strong><span>Borçlular · ${(data.totals.debtorCount ?? 0).toLocaleString("tr-TR")} cari</span></div><div><strong>${esc(money(data.totals.creditor))}</strong><span>Alacaklılar · ${(data.totals.creditorCount ?? 0).toLocaleString("tr-TR")} cari</span></div><div><strong>${esc(money(data.totals.planRemaining))}</strong><span>Taksitlerden kalan</span></div><div class="${data.totals.overdueCount ? "is-late" : ""}"><strong>${esc(money(data.totals.overdue))}</strong><span>Geciken · ${data.totals.overdueCount} taksit</span></div>` : ""}</div>
       ${selectBar()}
       <div class="hof-cash-list hof-plans-list">${
         !data
@@ -197,7 +203,7 @@
             ? `<table class="hof-table hof-cash-table hof-plans-table hof-acc-table"><thead><tr>${planning ? `<th class="hof-acc-check"><input type="checkbox" data-select-all aria-label="Süzgeçteki ${total} carinin hepsini seç" title="Süzgeçteki ${total} carinin hepsini seç" ${allChecked ? "checked" : ""}></th>` : ""}<th class="hof-plan-no">No</th><th>Cari</th><th class="num">Borç</th><th class="num">Alacak</th><th class="num">Bakiye</th><th>Taksit</th></tr></thead><tbody>${data.accounts.map(row).join("")}</tbody></table>${data.hasMore ? `<div class="hof-more"><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="more">Daha fazla göster · ${total - data.accounts.length} cari daha</button></div>` : ""}`
             : `<p class="hof-empty">${filtered || view.status !== "all" ? "Bu süzgeçte cari yok." : "Henüz cari yok."}${manage && !filtered ? " <b>+ Yeni cari</b> ile tek kart açın, <b>Excel’den yükle</b> ile listenizi bir kerede aktarın ya da <b>Tablodan al</b> ile ortadaki tablodaki kişileri cari yapın." : ""}</p>`
       }</div>
-      <p class="hof-edit-meta">Bakiye = borç − alacak. <b>borçlu</b>: cari size borçlu; <b>alacaklı</b>: siz cariye borçlusunuz. Taksit planları carinin borcuna, taksit tahsilatları alacağına yazılır. Tahsilat ve ödemeler Kasa’ya düşer.</p>
+      <p class="hof-edit-meta">Bakiye = borç − alacak. <b class="hof-acc-balance is-debtor">Borçlu</b> (yeşil): bakiye borç tarafında; <b class="hof-acc-balance is-creditor">Alacaklı</b> (kırmızı): bakiye alacak tarafında. Taksit planları carinin borcuna, taksit tahsilatları alacağına yazılır. Tahsilat ve ödemeler Kasa’ya düşer.</p>
       <div class="hof-actions"><button type="button" class="hof-button" data-close>Kapat</button></div>`;
   }
   // PDF · Yazdır · Excel tek düğme grubunda.
@@ -225,7 +231,7 @@
       const stock = entry.source === "stock" ? '<small class="hof-muted" title="Stok hareketinden gelir; Stok’tan düzeltilir">stoktan</small>' : entry.source === "cheque" ? (HOF.can("cheques.view") ? `<button type="button" class="hof-mini" data-open-cheque="${esc(entry.sourceId)}" title="Çek / senetten gelir; evrak kartından geri alınır" aria-label="Çek / senet kartını aç">↗</button>` : '<small class="hof-muted" title="Çek / senetten gelir; evrak kartından geri alınır">çek / senet</small>') : "";
       return `${receipt}${stock}${entry.editable ? `<button type="button" class="hof-mini" data-edit-entry="${esc(entry.id)}" title="Düzelt" aria-label="Düzelt">✎</button><button type="button" class="hof-mini hof-mini-danger" data-delete-entry="${esc(entry.id)}" title="Sil" aria-label="Sil">×</button>` : ""}`;
     };
-    const ledgerRow = line => `<tr class="is-${esc(line.kind)}"><td>${esc(HOF.formatDate(line.date))}</td><td><b>${esc(line.label)}${line.receiptNo ? ` <span class="hof-plan-receipt">Makbuz ${esc(line.receiptNo)}</span>` : ""}</b>${line.note ? `<small>${esc(line.note)}</small>` : ""}</td><td class="num hof-cash-out">${line.debit ? esc(money(line.debit)) : ""}</td><td class="num hof-cash-in">${line.credit ? esc(money(line.credit)) : ""}</td><td class="num">${balanceHtml(line.balance)}</td><td class="hof-cash-actions">${lineActions(line)}</td></tr>`;
+    const ledgerRow = line => `<tr class="is-${esc(line.kind)}"><td>${esc(HOF.formatDate(line.date))}</td><td><b>${esc(line.label)}${line.receiptNo ? ` <span class="hof-plan-receipt">Makbuz ${esc(line.receiptNo)}</span>` : ""}</b>${line.note ? `<small>${esc(line.note)}</small>` : ""}</td><td class="num">${line.debit ? esc(money(line.debit)) : ""}</td><td class="num">${line.credit ? esc(money(line.credit)) : ""}</td><td class="num">${balanceHtml(line.balance)}</td><td class="hof-cash-actions">${lineActions(line)}</td></tr>`;
     const planRow = plan => `<tr data-open-plan="${esc(plan.id)}" tabindex="0" class="is-${esc(plan.state)}"><td class="hof-plan-no">${esc(plan.refNo || "")}</td><td><b>${esc(plan.name)}</b><small>${plan.itemCount ? `${plan.itemCount} taksit` : "Taksit kurulmadı"}${plan.next ? ` · sıradaki ${esc(HOF.formatDate(plan.next.dueDate))}` : ""}</small></td><td class="num">${esc(money(plan.totals.total))}</td><td class="num hof-cash-in">${esc(money(plan.totals.paid))}</td><td class="num${plan.totals.remaining > 0 ? " hof-cash-out" : ""}">${esc(money(plan.totals.remaining))}</td><td>${plan.status === "closed" ? '<span class="hof-plan-badge is-muted">Kapalı</span>' : plan.state === "overdue" ? `<span class="hof-plan-badge is-late">${plan.totals.overdueCount} taksit gecikti</span>` : plan.state === "done" ? '<span class="hof-plan-badge is-done">Tamamlandı</span>' : '<span class="hof-plan-badge is-info">Devam ediyor</span>'}</td></tr>`;
     const caseCell = account.caseKey
       ? account.caseSource && HOF.datasetKey && account.caseSource !== HOF.datasetKey
@@ -257,7 +263,7 @@
         </dl>
         <div class="hof-plan-note"><h4>Bilgi notu</h4>${account.note ? `<p>${esc(account.note)}</p>` : `<p class="hof-empty">Not yok.${manage ? " <b>Düzenle</b> ile ekleyin." : ""}</p>`}</div>
       </section>
-      <div class="hof-kpis hof-plans-kpis"><div><strong>${esc(money(t.debit))}</strong><span>Borç toplamı</span></div><div><strong class="hof-cash-in">${esc(money(t.credit))}</strong><span>Alacak toplamı · tahsil ${esc(money(t.collected))}</span></div><div class="hof-cash-balance"><strong>${esc(money(Math.abs(t.balance)))}</strong><span>Bakiye${sideWord(t.balance) ? ` · ${sideWord(t.balance)}` : ""}</span></div><div class="${t.overdueCount ? "is-late" : ""}"><strong>${esc(money(t.planRemaining))}</strong><span>Taksitten kalan${t.overdueCount ? ` · ${t.overdueCount} geciken` : ""}</span></div></div>
+      <div class="hof-kpis hof-plans-kpis"><div><strong>${esc(money(t.debit))}</strong><span>Borç toplamı</span></div><div><strong>${esc(money(t.credit))}</strong><span>Alacak toplamı · tahsil ${esc(money(t.collected))}</span></div><div class="hof-cash-balance"><strong class="hof-acc-balance is-${sideTone(t.balance)}">${esc(money(Math.abs(t.balance)))}</strong><span>Bakiye${sideWord(t.balance) ? ` · ${sideWord(t.balance)}` : ""}</span></div><div class="${t.overdueCount ? "is-late" : ""}"><strong>${esc(money(t.planRemaining))}</strong><span>Taksitten kalan${t.overdueCount ? ` · ${t.overdueCount} geciken` : ""}</span></div></div>
       <div class="hof-plan-section"><h4>Taksit kartları <span>${account.plans.length}</span></h4></div>
       <div class="hof-cash-list hof-plans-items">${account.plans.length ? `<table class="hof-table hof-cash-table hof-plans-table"><thead><tr><th class="hof-plan-no">No</th><th>Kart</th><th class="num">Toplam</th><th class="num">Ödenen</th><th class="num">Kalan</th><th>Durum</th></tr></thead><tbody>${account.plans.map(planRow).join("")}</tbody></table>` : `<p class="hof-empty">Bu carinin taksit kartı yok.${canPlan() ? " <b>+ Taksit planı</b> ile açın; tahsilatlar taksitten düşer ve burada görünür." : ""}</p>`}</div>
       <div class="hof-plan-section"><h4>Hareketler <span>${account.ledger.length}</span></h4>${account.ledger.length ? `<span class="hof-plan-chips" role="group">${LEDGER_FILTERS.map(([id, label, check]) => `<button type="button" data-ledger-filter="${id}" aria-pressed="${String(id === view.ledgerFilter)}">${label} <b>${account.ledger.filter(check).length}</b></button>`).join("")}</span>` : ""}</div>
@@ -399,7 +405,7 @@
         { name: "address", label: "Adres", type: "textarea", rows: 2, maxlength: 500, value: account?.address || "" },
         ...(office().groupFields ? office().groupFields(groups, account || {}) : []),
         { name: "note", label: "Bilgi notu", type: "textarea", rows: 3, maxlength: 2000, value: account?.note || "" },
-        ...(account ? [] : [{ name: "openingBalance", label: "Açılış bakiyesi (₺)", inputmode: "decimal", placeholder: "Örn. 1.500 (borç) ya da -250 (alacak)", help: "Önceki defterden devreden: artı cari size borçlu, eksi siz borçlusunuz. Boş bırakılabilir." }]),
+        ...(account ? [] : [{ name: "openingBalance", label: "Açılış bakiyesi (₺)", inputmode: "decimal", placeholder: "Örn. 1.500 (borç) ya da -250 (alacak)", help: "Önceki defterden devreden bakiye: artı tutar Borçlu, eksi tutar Alacaklı olarak açılır. Boş bırakılabilir." }]),
       ],
       submitLabel: account ? "Kaydet" : "Cariyi aç",
       onOpen: dialog => {

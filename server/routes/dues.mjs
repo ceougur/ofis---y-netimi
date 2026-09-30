@@ -2,7 +2,7 @@
 // Sonuç; veri, tahsilatlar, elle kapatılan kalemler ve gün değişene kadar oturum başına önbellektedir.
 import { HttpError, ok, readJson, text } from "../lib/http.mjs";
 import { computeDeadlines, computeDues } from "../lib/insight/dues.mjs";
-import { can } from "../lib/permissions.mjs";
+import { canUser } from "../lib/permissions.mjs";
 
 const SETTLED_KEY = "dues.settled";
 const MAX_SETTLED = 5000;
@@ -61,7 +61,7 @@ export function registerDueRoutes(router, { auth, store, dataset, profile, event
     const user = auth.requireUser(req);
     const data = await compute();
     // Çek/senet kalemleri yalnız çekleri görebilenlere (kasa yetkisi olanlar) gider.
-    ok(res, can(user.role, "cheques.view") ? data : { ...data, items: data.items.filter(item => item.source !== "cheque") });
+    ok(res, canUser(user, "cheques.view") ? data : { ...data, items: data.items.filter(item => item.source !== "cheque") });
   });
 
   // "Ödendi say" / "İptal": kalem, tahsilat girilmeden kapatılır (veri değişmez; kim, ne zaman kaydedilir).

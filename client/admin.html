@@ -18,7 +18,7 @@
   <header class="adm-top">
     <a class="adm-brand" href="/"><img src="/assets/brand/destekofis-mark.svg" alt="" width="36" height="36"><span><strong>DestekOfis</strong><small>Yönetim paneli</small></span></a>
     <div class="adm-top-right">
-      <a class="hof-button hof-button-ghost hof-button-small" href="/">Dosya takip ekranı</a>
+      <a class="hof-button hof-button-ghost hof-button-small adm-home" href="/"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20h5v-6h4v6h5V9.5"/></svg>Ana ekran</a>
       <span class="adm-user" id="adm-user"></span>
       <a class="hof-button hof-button-ghost hof-button-small" href="/kilavuz/DestekOfis-Kullanim-Kilavuzu.pdf" target="_blank" rel="noopener">Kullanım kılavuzu</a>
       <button type="button" class="hof-button hof-button-ghost hof-button-small" id="adm-password">Parolam</button>
@@ -37,19 +37,22 @@
 
     <section class="adm-panel" data-panel="users" role="tabpanel">
       <div class="adm-panel-head">
-        <div><h1>Kullanıcılar</h1><p>Ofis sunucusuna bağlanan hesapları, rollerini ve erişimlerini yönetin.</p></div>
-        <button type="button" class="hof-button" id="adm-new-user">+ Yeni kullanıcı</button>
+        <div><h1>Kullanıcılar</h1><p>Hesaplar, roller ve yetkiler. Adı ve kullanıcı adını ✎ ile düzeltin; “Yetkiler” ile kişiye özel yetki ekleyip çıkarın.</p></div>
+        <div class="adm-head-actions"><button type="button" class="hof-button hof-button-ghost" id="adm-new-role">+ Yeni rol</button><button type="button" class="hof-button" id="adm-new-user">+ Yeni kullanıcı</button></div>
       </div>
-      <div class="adm-card"><div class="adm-table-wrap"><table class="hof-table adm-table"><thead><tr><th>Ad</th><th>Kullanıcı adı</th><th>Rol</th><th>Durum</th><th title="Yöneticinin kişiye özel verdiği ek yetkiler">Ek yetki</th><th>Son giriş</th><th class="adm-right">İşlemler</th></tr></thead><tbody id="adm-users"><tr><td colspan="7">Yükleniyor…</td></tr></tbody></table></div></div>
-      <div class="adm-card adm-roles">
-        <h2>Roller ne yapabilir?</h2>
-        <ul>
-          <li><b>Yönetici:</b> her şey; veri yükleme ve kaldırma (Excel / Google Sheets), sektör ve başlıklar, kullanıcı yönetimi, yedekler ve sistem ayarları.</li>
-          <li><b data-role-label="avukat">Uzman</b><b>:</b> tüm kayıt işlemleri, kayıt silme, görev atama, herkesin görevleri ve performans raporu. Veri yükleyemez. (Rolün adı ofisin sektörüne göre değişir: Avukat, Hekim, Emlak danışmanı…)</li>
-          <li><b>Personel:</b> not, telefon, tahsilat, haciz, mesaj ve yeni kayıt; kendisine atanan görevleri görür ve tamamlar. Silme, görev atama ve rapor yok.</li>
-          <li><b>Muhasebe:</b> personel ile aynı yetkiler.</li>
-        </ul>
+      <div class="adm-card adm-recovery" id="adm-recovery" hidden>
+        <div class="adm-recovery-text"><h2>Yönetici parolası kurtarma</h2><p id="adm-recovery-status" class="adm-muted"></p></div>
+        <button type="button" class="hof-button" id="adm-recovery-create">Kurtarma anahtarı oluştur</button>
       </div>
+      <div class="adm-card"><div class="adm-table-wrap"><table class="hof-table adm-table adm-users"><thead><tr><th>Ad</th><th>Kullanıcı adı</th><th>Rol</th><th>Durum</th><th title="Rolün verdiği ve kişiye özel eklenen/kaldırılan yetkiler">Yetkiler</th><th>Son giriş</th><th class="adm-right">İşlemler</th></tr></thead><tbody id="adm-users"><tr><td colspan="7">Yükleniyor…</td></tr></tbody></table></div></div>
+      <details class="adm-card adm-deleted" id="adm-deleted" hidden>
+        <summary><span>Silinen kullanıcılar</span> <span class="hof-chip" id="adm-deleted-count">0</span><small class="adm-muted">Geçmişte adlarıyla görünürler; geri alınabilirler.</small></summary>
+        <div class="adm-table-wrap"><table class="hof-table adm-table"><thead><tr><th>Ad</th><th>Kullanıcı adı</th><th>Rol</th><th>Silinme</th><th class="adm-right"></th></tr></thead><tbody id="adm-deleted-body"></tbody></table></div>
+      </details>
+      <section class="adm-card adm-roles-card" aria-labelledby="adm-roles-title">
+        <div class="adm-roles-head"><h2 id="adm-roles-title">Roller</h2><p class="adm-muted">Dört yerleşik rol değişmez ve silinmez. Ofisinize özel rolü “+ Yeni rol” ile oluşturun (ör. Veznedar, Sekreter). Kullanılan rol silinemez. Kullanıcı, sistem ve lisans yönetimi ile ANLIK DURUM kartı yalnız yönetici rolündedir.</p></div>
+        <div class="adm-role-list" id="adm-role-list"></div>
+      </section>
     </section>
 
     <section class="adm-panel" data-panel="backups" role="tabpanel" hidden>
@@ -163,7 +166,7 @@
     </section>
   </main>
   <main class="adm-shell" id="adm-denied" hidden>
-    <div class="adm-card adm-denied"><h1>Bu sayfa yöneticiler içindir</h1><p>Hesabınızın yönetim yetkisi yok. Dosya takip ekranına dönebilirsiniz.</p><a class="hof-button" href="/">Dosya takip ekranı</a></div>
+    <div class="adm-card adm-denied"><h1>Bu sayfa yöneticiler içindir</h1><p>Yönetim paneli yalnız yönetici hesaplarında açılır. İşlem geçmişi yetkiniz varsa sol menüdeki Raporlar → Tüm raporlar → İşlem geçmişi'nden görebilirsiniz. Ana ekrana dönebilirsiniz.</p><a class="hof-button" href="/">Ana ekran</a></div>
   </main>
 </body>
 </html>

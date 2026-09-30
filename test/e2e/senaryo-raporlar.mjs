@@ -6,7 +6,7 @@
 //      aynı adlı iki cari açılır.
 //   C. Raporlar: mizan = Cari listesi bakiyeleri; ekstre = Cari kartındaki defter; Vade takip = taksit + çek + Kasa +
 //      tablo (takvimle aynı); Nakit akış = bugünkü kasa + beklenenler; Tablo raporları sekmesi taşmadan açılır.
-//   D. Yetki: personel Raporlar'ı görmez (API 403); uzman (avukat) yalnız Vade takip ve Tablo raporları'nı görür.
+//   D. Yetki: personel Raporlar'ı görmez (API 403); uzman (avukat) Vade takip, Tablo raporları ve (v2.0.10) Tüm raporlar'da yalnız İşlem geçmişi'ni görür.
 import fs, { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
@@ -363,7 +363,7 @@ try {
     await closeTop();
   });
 
-  await step("D. Yetki: personel görmez; uzman yalnız Vade takip ve Tablo raporları", async () => {
+  await step("D. Yetki: personel görmez; uzman Vade takip, Tablo raporları ve İşlem geçmişi", async () => {
     ok((await api("/api/admin/users", { username: "personel1", name: "Personel Bir", role: "personel", password: "Personel-2026!x", mustChangePassword: false })).status === 200, "personel hesabı");
     ok((await api("/api/admin/users", { username: "uzman1", name: "Uzman Bir", role: "avukat", password: "Uzman-2026!xx", mustChangePassword: false })).status === 200, "uzman (avukat) hesabı");
     const other = await context.browser().newContext({ viewport: { width: 1440, height: 1000 }, locale: "tr-TR" });
@@ -380,11 +380,16 @@ try {
     await expert.waitForSelector('.hof-side-item[data-action="analytics"]');
     await openReports(expert);
     const tabs = await expert.$$eval(`${modal} .hof-rep [data-tab]`, nodes => nodes.map(node => node.textContent.trim()));
-    ok(tabs.join("|") === "Vade takip|Tablo raporları", `uzman sekmeleri: ${tabs.join(", ")}`);
-    ok(!(await expert.$(`${modal} [data-tab="all"]`)), "uzman: Tüm raporlar (ANLIK DURUM yetkisi) yok");
+    ok(tabs.join("|") === "Vade takip|Tüm raporlar|Tablo raporları", `uzman sekmeleri: ${tabs.join(", ")}`);
     await expert.waitForSelector(`${modal} .hof-rep-vade tbody tr[data-due-row]`, { timeout: 15000 });
-    ok((await api("/api/workspace/overview/mizan?preset=thisMonth", null, "GET", expert)).status === 403, "uzman: mizan API 403 (ANLIK DURUM yetkisi yok)");
+    ok((await api("/api/workspace/overview/mizan?preset=thisMonth", null, "GET", expert)).status === 403, "uzman: mizan API 403 (finans raporları yetkisi yok)");
     await shot("uzman-vade-takip", expert);
+    // v2.0.10: Yönetim paneli yalnız yöneticide; uzman işlem geçmişini Tüm raporlar'da görür, finans raporlarını görmez.
+    await expert.click(`${modal} [data-tab="all"]`);
+    await expert.waitForSelector(`${modal} [data-report]`, { timeout: 15000 });
+    const listed = await expert.$$eval(`${modal} [data-report]`, nodes => nodes.map(node => node.dataset.report));
+    ok(listed.join() === "islem-gecmisi", `uzman: Tüm raporlar'da yalnız İşlem geçmişi (${listed.join(", ")})`);
+    await shot("uzman-islem-gecmisi", expert);
     await other2.close();
     // Personel + kişiye özel ANLIK DURUM yetkisi: defter raporları açılır; çek yetkisi ve rapor yetkisi olmadığı için
     // Çek / Senet ve Tablo raporları sekmesi hiç görünmez (görünüp hata veren boş sekme olmaz).

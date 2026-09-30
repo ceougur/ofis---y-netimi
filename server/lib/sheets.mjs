@@ -1,6 +1,7 @@
 // Google Sheets okuma: sekme keşfi, CSV dışa aktarımı, alt tabloların (bölümlerin) ayrılması ve kısa süreli önbellek.
 // v2.0.1: formüller de okunur (belgenin xlsx dışa aktarımından) ve kayıtlara bağlanır (formula/bind.mjs).
 import { createHash } from "node:crypto";
+import { HttpError } from "./http.mjs";
 import { attachFormulas, sourceTagOf } from "./formula/bind.mjs";
 import { describeFormat, parseCellText } from "./formula/values.mjs";
 import { readXlsxFormulas } from "./formula/xlsx.mjs";
@@ -315,8 +316,50 @@ export function createSheetsReader({ fetchImpl, cacheMs = 45_000, timeoutMs = 20
     return { ok: true, text: await response.text() };
   }
 
+  // Tek sekme (v2.0.10; serbest sayfaya aktarma): bağlantıdaki gid'in (yoksa ilk sekmenin) ham matrisi (A1'den, boş
+  // satırlar yerinde) ve formülleri. Sonuç kayıtlara çevrilmez; serbest sayfa kendi başlık/veri ayrımını yapar.
+  async function readTab(sheetUrl) {
+    const sourceUrl = String(sheetUrl || "").trim();
+    let id;
+    try {
+      id = spreadsheetId(sourceUrl);
+    } catch {
+      throw new HttpError(400, "Google Sheets bağlantısı tanınmadı. Tablonun adres çubuğundaki bağlantıyı yapıştırın.");
+    }
+    const signal = () => AbortSignal.timeout(timeoutMs);
+    let documentResponse;
+    try {
+      documentResponse = await fetchImpl(`https://docs.google.com/spreadsheets/d/${id}/edit`, { headers: { Accept: "text/html" }, signal: signal() });
+    } catch {
+      throw new HttpError(502, "Google Sheets'e ulaşılamadı. Sunucu bilgisayarının internet bağlantısını kontrol edin.");
+    }
+    if (!documentResponse.ok) throw new HttpError(400, `Google Sheets açılamadı (${documentResponse.status}). Tabloyu “Bağlantıya sahip olan herkes görüntüleyebilir” olarak paylaşın.`);
+    const html = await documentResponse.text();
+    const tabs = discoverTabs(html);
+    let gid = "";
+    try {
+      gid = new URL(sourceUrl).searchParams.get("gid") || new URL(sourceUrl).hash.match(/gid=(\d+)/)?.[1] || "";
+    } catch {
+      gid = "";
+    }
+    const tab = tabs.find(item => item.gid === gid) || tabs[0] || { gid: gid || "0", title: "" };
+    const csv = await readTabCsv(sourceUrl, tab.gid, signal);
+    if (!csv.ok) throw new HttpError(400, `“${tab.title || "Sheet"}” sekmesi okunamadı (${csv.status}). Tabloyu görüntüleme izniyle paylaşın.`);
+    const matrix = parseCsv(csv.text, { keepEmpty: Boolean(csv.export) });
+    let formulasList = [];
+    if (formulas && csv.export && tab.title) {
+      try {
+        const { workbook } = await readFormulas(id, createHash("sha1").update(csv.text).digest("hex"));
+        formulasList = workbook.get(tab.title)?.formulas || [];
+      } catch {
+        formulasList = []; // formüller alınamazsa değerler gelir
+      }
+    }
+    return { title: documentTitle(html), tab: tab.title, matrix, formulas: formulasList };
+  }
+
   // Aynı Sheet için eşzamanlı istekler tek istekte birleştirilir; sonuç kısa süre önbellekte tutulur.
-  return async function readGoogleSheet(sheetUrl, { fresh = false } = {}) {
+  const readGoogleSheet = async function readGoogleSheet(sheetUrl, { fresh = false } = {}) {
     const key = String(sheetUrl || "").trim();
     const hit = cache.get(key);
     if (!fresh && hit && Date.now() - hit.at < cacheMs) return hit.result;
@@ -335,4 +378,6 @@ export function createSheetsReader({ fetchImpl, cacheMs = 45_000, timeoutMs = 20
     inflight.set(key, promise);
     return promise;
   };
+  readGoogleSheet.readTab = readTab;
+  return readGoogleSheet;
 }

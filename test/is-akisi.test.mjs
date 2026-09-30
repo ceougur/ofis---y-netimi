@@ -111,13 +111,13 @@ describe("iş akışı (v2.0.7)", () => {
   }
   });
 
-  it("F. Yetki: ANLIK DURUM yetkisi verilen personel", async () => {
+  it("F. Yetki: finans raporları yetkisi verilen personel (ANLIK DURUM kartı yalnız yöneticide)", async () => {
   {
     const users = (await get("/api/admin/users")).data;
     const me = users.find(u => u.username === "vezne");
     await admin.patch(`/api/admin/users/${me.id}`, { grants: ["overview.view"] });
     const ov = await get("/api/workspace/overview", staff);
-    okk(ov.status === 200, "F: yetkili personel kartı görür");
+    okk(ov.status === 403, "F: ANLIK DURUM kartı yalnız yöneticide (v2.0.10); ek yetki raporları açar");
     const cat = (await get("/api/workspace/report-center", staff)).data;
     okk(cat && cat.reports.length > 0, `F: personel rapor merkezini açar (${cat?.reports.length} rapor)`);
     const forbidden = ["islem-gecmisi"];

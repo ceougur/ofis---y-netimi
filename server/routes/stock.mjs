@@ -9,7 +9,7 @@ import { mapStockHeaders, parseQty, roundQty, stockLevel } from "../lib/accounts
 import { inferRolesByValues, findHeaderRow, sanitizeCell, validateRows } from "../lib/import-gate.mjs";
 import { HttpError, limited, ok, readJson, sendBuffer, text } from "../lib/http.mjs";
 import { parseAmount, roundMoney } from "../lib/money.mjs";
-import { can } from "../lib/permissions.mjs";
+import { canUser } from "../lib/permissions.mjs";
 import { dayText, isoDay } from "../lib/plans.mjs";
 import { tablePdf, tl } from "../lib/report-pdf.mjs";
 import { buildXlsx } from "../lib/xlsx-write.mjs";
@@ -76,7 +76,7 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
     );
   function detail(id, user) {
     const item = itemRow(id);
-    const manage = can(user.role, "stock.manage");
+    const manage = canUser(user, "stock.manage");
     let running = 0;
     const moves = movesOf(item.id).map(move => {
       running = roundQty(running + (move.kind === "in" ? move.qty : -move.qty));
@@ -84,7 +84,7 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
     });
     const level = stockLevel(item, moves);
     const sums = moves.reduce((acc, move) => ({ inAmount: acc.inAmount + (move.kind === "in" ? move.amount : 0), outAmount: acc.outAmount + (move.kind === "out" ? move.amount : 0) }), { inAmount: 0, outAmount: 0 });
-    return { ...item, ...level, moves, inAmount: roundMoney(sums.inAmount), outAmount: roundMoney(sums.outAmount), canManage: manage, canMove: can(user.role, "stock.move") };
+    return { ...item, ...level, moves, inAmount: roundMoney(sums.inAmount), outAmount: roundMoney(sums.outAmount), canManage: manage, canMove: canUser(user, "stock.move") };
   }
   const listQuery = params => ({
     q: text(params.get("q")).slice(0, 120),
@@ -131,7 +131,7 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
     }[sort];
     // Kritik ürünler her sıralamada önce (göz önünde olsun).
     out.sort((a, b) => Number(b.low) - Number(a.low) || compare(a, b));
-    return { items: out, totals, categories: [...categories].sort(collator.compare), sort, canManage: can(user.role, "stock.manage"), canMove: can(user.role, "stock.move"), today: today() };
+    return { items: out, totals, categories: [...categories].sort(collator.compare), sort, canManage: canUser(user, "stock.manage"), canMove: canUser(user, "stock.move"), today: today() };
   }
 
   // Liste sayfa sayfa (limit/offset); toplamlar ve kategori listesi tüm süzgeç için.
@@ -285,7 +285,7 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
     const amount = roundMoney(qty * unitPrice);
     if (pay !== "none" && !(amount > 0)) throw new HttpError(400, "Kasa'ya ya da cariye yazmak için birim fiyat girin (tutar = miktar × birim fiyat).");
     // Para yazan hareket (Kasa ya da cari) yönetim yetkisidir; yalnız miktar hareketini herkes girer.
-    if (pay !== "none" && !can(user.role, "stock.manage")) throw new HttpError(403, "Kasa'ya ya da cariye yazılan stok hareketi yönetici, uzman ve muhasebe yetkisidir. Yalnız miktarı girebilirsiniz.");
+    if (pay !== "none" && !canUser(user, "stock.manage")) throw new HttpError(403, "Kasa'ya ya da cariye yazılan stok hareketi yönetici, uzman ve muhasebe yetkisidir. Yalnız miktarı girebilirsiniz.");
     const accountId = pay === "account" ? limited(body.accountId, 120, "Cari") : "";
     if (pay === "account" && !accountId) throw new HttpError(400, kind === "in" ? "Alımın yazılacağı tedarikçi carisini seçin." : "Satışın yazılacağı müşteri carisini seçin.");
     if (accountId && !accounts()?.exists(accountId)) throw new HttpError(400, "Seçilen cari bulunamadı; silinmiş olabilir.");
@@ -322,7 +322,7 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
       const moveId = insertMove(user, item.id, input);
       touched = syncAccount(user, item, moveId, input);
       // Alımda birim fiyat verildiyse ürünün son birim fiyatı güncellenir (stok değeri güncel kalsın).
-      if (input.kind === "in" && input.unitPrice > 0 && can(user.role, "stock.manage")) store.run("UPDATE stock_items SET unit_price = ?, updated_at = ? WHERE id = ?", input.unitPrice, now(), item.id);
+      if (input.kind === "in" && input.unitPrice > 0 && canUser(user, "stock.manage")) store.run("UPDATE stock_items SET unit_price = ?, updated_at = ? WHERE id = ?", input.unitPrice, now(), item.id);
       audit(user, input.kind === "in" ? "stock.in" : "stock.out", moveId, { itemId: item.id, itemName: item.name, ...input });
       return moveId;
     });
@@ -337,7 +337,7 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
     return move;
   };
   const requireMoveRight = (user, move) => {
-    if (can(user.role, "stock.manage")) return;
+    if (canUser(user, "stock.manage")) return;
     if (move.createdBy !== user.id || move.pay !== "none") throw new HttpError(403, "Bu hareketi yalnızca yönetici, uzman ve muhasebe değiştirebilir.");
   };
   router.put("/api/workspace/stock/:id/moves/:moveId", async ({ req, res, params }) => {

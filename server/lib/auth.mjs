@@ -5,6 +5,8 @@ import { DEFAULT_ADMIN_PASSWORD } from "./config.mjs";
 import { DUMMY_HASH, hashPassword, passwordProblem, verifyPassword } from "./passwords.mjs";
 import { canUser, grantsOf, permissionsForUser } from "./permissions.mjs";
 
+const USER_COLUMNS = "u.id, u.username, u.display_name, u.role, u.role_key, u.active, u.deleted_at, u.must_change_password, u.grants_json";
+
 export const SESSION_COOKIE = "hof_session";
 const hashToken = token => createHash("sha256").update(token).digest("hex");
 const LOCAL_ADDRESSES = new Set(["127.0.0.1", "::1", "::ffff:127.0.0.1", "localhost"]);
@@ -56,19 +58,33 @@ export function createRateLimiter({ windowMs = 15 * 60_000, maxPerUser = 5, maxP
   };
 }
 
+// role: yerleşik rol (özel rolde "personel"); roleKey: özel rolün kimliği ya da yerleşik rol; roleLabel: özel rolün adı
+// (yerleşik rollerin adı arayüzde sektöre göre verilir: HOF.roleLabels).
 export function publicUser(user) {
   return {
     id: user.id,
     username: user.username,
     name: user.display_name,
     role: user.role,
+    roleKey: user.roleKey || user.role,
+    roleLabel: user.roleLabel || "",
     mustChangePassword: Boolean(user.must_change_password),
     permissions: permissionsForUser(user),
     grants: grantsOf(user),
   };
 }
 
-export function createAuth({ store, config, audit }) {
+export function createAuth({ store, config, audit, access = null }) {
+  // Etkin yetkiler (rol + kişiye eklenen − kaldırılan) istek başına bir kez çözülür.
+  const resolve = user => {
+    if (!user) return user;
+    if (access) {
+      access.attach(user);
+      user.roleKey = access.roleKeyOf(user);
+      user.roleLabel = access.labelOf(user);
+    }
+    return user;
+  };
   const limiter = createRateLimiter();
   const cookie = (token, maxAge) => `${SESSION_COOKIE}=${token ? encodeURIComponent(token) : ""}; Max-Age=${maxAge}; Path=/; HttpOnly; SameSite=Lax`;
 
@@ -78,12 +94,12 @@ export function createAuth({ store, config, audit }) {
     const token = sessionToken(req);
     if (!token) return null;
     const row = store.get(
-      `SELECT u.id, u.username, u.display_name, u.role, u.active, u.must_change_password, u.grants_json, s.expires_at
+      `SELECT ${USER_COLUMNS}, s.expires_at
        FROM sessions s JOIN users u ON u.id = s.user_id WHERE s.token_hash = ?`,
       hashToken(token),
     );
-    if (!row || !row.active || new Date(row.expires_at) <= new Date()) return null;
-    return row;
+    if (!row || !row.active || row.deleted_at || new Date(row.expires_at) <= new Date()) return null;
+    return resolve(row);
   }
 
   function startSession(res, userId) {
@@ -102,7 +118,9 @@ export function createAuth({ store, config, audit }) {
     const wait = limiter.check(ip, key);
     if (wait) throw new HttpError(429, `Çok fazla hatalı deneme yapıldı. ${Math.ceil(wait / 60)} dakika sonra tekrar deneyin veya yöneticinizden parolanızı sıfırlamasını isteyin.`, { retryAfter: wait });
     if (!username || !password) throw new HttpError(400, "Kullanıcı adı ve parola gerekli.");
-    const user = store.get("SELECT id, username, display_name, role, active, must_change_password, grants_json, password_hash FROM users WHERE username = ? COLLATE NOCASE", username);
+    const found = store.get(`SELECT ${USER_COLUMNS}, u.password_hash FROM users u WHERE u.username = ? COLLATE NOCASE`, username);
+    // Silinen hesap (v2.0.10) hiç yokmuş gibi davranır.
+    const user = found && !found.deleted_at ? found : null;
     const valid = verifyPassword(password, user ? user.password_hash : DUMMY_HASH);
     if (!user || !valid || !user.active) {
       limiter.fail(ip, key);
@@ -119,7 +137,44 @@ export function createAuth({ store, config, audit }) {
     startSession(res, user.id);
     store.run("UPDATE users SET last_login_at = ? WHERE id = ?", now(), user.id);
     audit(user, "auth.login", user.id, { ip });
-    return publicUser(user);
+    return publicUser(resolve(user));
+  }
+
+  // Yönetici parolası kurtarma (v2.0.10; lib/recovery.mjs): kurtarma anahtarı ya da sunucu kodu eski parolanın yerini
+  // tutar. Yalnız aktif yönetici hesabı kurtarılır; giriş gibi deneme sınırına tabidir. Başarılı olunca eski oturumlar
+  // kapanır, kişi yeni parolasıyla doğrudan içeri alınır (parola değiştirme ekranı çıkmaz; parolayı kendisi seçti).
+  function recover(req, res, { username: usernameInput, code, newPassword }, recovery) {
+    const ip = clientIp(req, config.trustProxy);
+    const wanted = String(usernameInput || "").trim();
+    const key = `kurtarma|${wanted.toLocaleLowerCase("tr-TR")}`;
+    const wait = limiter.check(ip, key);
+    if (wait) throw new HttpError(429, `Çok fazla hatalı deneme yapıldı. ${Math.ceil(wait / 60)} dakika sonra tekrar deneyin.`, { retryAfter: wait });
+    const admins = store.all(`SELECT ${USER_COLUMNS}, u.password_hash FROM users u WHERE u.role = 'admin' AND u.active = 1 AND u.deleted_at IS NULL`);
+    if (!wanted && admins.length > 1) throw new HttpError(400, "Bu ofiste birden çok yönetici var; kullanıcı adınızı yazın.");
+    // Girişteki gibi (SQLite COLLATE NOCASE) büyük/küçük harf farkı yok sayılır; Türkçe kuralında "ADMIN" → "admın" olur,
+    // bu yüzden hem ASCII hem Türkçe küçük harfe çevrilmiş hali denenir.
+    const same = (a, b) => a.toLowerCase() === b.toLowerCase() || a.toLocaleLowerCase("tr-TR") === b.toLocaleLowerCase("tr-TR");
+    const user = wanted ? admins.find(item => same(item.username, wanted)) : admins[0];
+    const problem = passwordProblem(newPassword, { username: user?.username || wanted });
+    if (problem) throw new HttpError(400, problem);
+    const kind = recovery?.match(code) || null;
+    if (!user || !kind) {
+      limiter.fail(ip, key);
+      audit({ id: "anonymous", display_name: wanted || "bilinmiyor" }, "auth.recovery_failed", user?.id || "unknown", { ip });
+      throw new HttpError(400, "Kurtarma kodu ya da kullanıcı adı hatalı. Kodu tireleriyle ya da tiresiz, olduğu gibi yazın.");
+    }
+    const timestamp = now();
+    store.tx(() => {
+      store.run("UPDATE users SET password_hash = ?, must_change_password = 0, password_changed_at = ?, updated_at = ? WHERE id = ?", hashPassword(newPassword), timestamp, timestamp, user.id);
+      store.run("DELETE FROM sessions WHERE user_id = ?", user.id);
+    });
+    limiter.success(ip, key);
+    limiter.clearUser(user.username);
+    const newKey = recovery.consume(kind, user);
+    startSession(res, user.id);
+    store.run("UPDATE users SET last_login_at = ? WHERE id = ?", timestamp, user.id);
+    audit(user, "auth.recovered", user.id, { ip, method: kind === "key" ? "kurtarma anahtarı" : "sunucu kodu" });
+    return { user: publicUser(resolve({ ...user, must_change_password: 0 })), newKey, method: kind };
   }
 
   function logout(req, res) {
@@ -166,6 +221,6 @@ export function createAuth({ store, config, audit }) {
     const token = sessionToken(req);
     return token ? hashToken(token) : "";
   };
-  const sessionAlive = hash => Boolean(hash && store.get("SELECT 1 AS found FROM sessions s JOIN users u ON u.id = s.user_id WHERE s.token_hash = ? AND s.expires_at > ? AND u.active = 1", hash, now()));
-  return { currentUser, login, logout, changePassword, requireUser, requirePermission, purgeExpiredSessions, startSession, limiter, clearLoginLocks, sessionHash, sessionAlive, newId: prefix => `${prefix}-${randomUUID()}` };
+  const sessionAlive = hash => Boolean(hash && store.get("SELECT 1 AS found FROM sessions s JOIN users u ON u.id = s.user_id WHERE s.token_hash = ? AND s.expires_at > ? AND u.active = 1 AND u.deleted_at IS NULL", hash, now()));
+  return { currentUser, login, logout, recover, changePassword, requireUser, requirePermission, purgeExpiredSessions, startSession, limiter, clearLoginLocks, sessionHash, sessionAlive, newId: prefix => `${prefix}-${randomUUID()}` };
 }

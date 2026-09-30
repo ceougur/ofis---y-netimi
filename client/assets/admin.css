@@ -459,3 +459,487 @@ code {
   box-shadow: 0 0 0 3px #cfe8da;
 }
 .adm-install-source { margin: 6px 0 0; color: var(--do-muted); font-size: 12px; }
+
+/* "Ana ekran" düğmesi (v2.0.10): ev simgesiyle; sektörden bağımsız ad. */
+.adm-home {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ======================================================================================================
+   Kullanıcılar (v2.0.10): ✎ satır içi düzeltme, yetki paneli (gruplu onay kutuları), Sil, silinenler, roller.
+   ====================================================================================================== */
+.adm-head-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.adm-users td {
+  vertical-align: middle;
+}
+.adm-users tr.is-passive td {
+  color: var(--do-muted);
+}
+.adm-users code,
+.adm-deleted code {
+  padding: 2px 7px;
+  border-radius: 6px;
+  background: var(--do-surface-soft);
+  color: var(--do-ink-soft);
+  font: 600 12.5px ui-monospace, "SFMono-Regular", Consolas, monospace;
+}
+.adm-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.adm-pencil {
+  display: inline-grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--do-faint);
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+.adm-pencil:hover,
+.adm-pencil:focus-visible {
+  border-color: var(--do-border-strong);
+  background: var(--do-accent-soft);
+  color: var(--do-accent);
+  outline: none;
+}
+.adm-edit-form {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.adm-edit-form input {
+  width: 190px;
+  height: 32px;
+  padding: 0 10px;
+  border: 1px solid var(--do-accent);
+  border-radius: 8px;
+  box-shadow: var(--do-focus);
+  font: 600 13px var(--do-font);
+  color: var(--do-ink);
+}
+.adm-edit-form button {
+  display: inline-grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border: 1px solid var(--do-border-strong);
+  border-radius: 8px;
+  background: #fff;
+  font: 800 14px var(--do-font);
+  cursor: pointer;
+}
+.adm-edit-form .adm-inline-ok {
+  border-color: var(--do-accent);
+  background: var(--do-accent);
+  color: #fff;
+}
+.adm-edit-form .adm-inline-cancel {
+  color: var(--do-muted);
+}
+.adm-inline-help {
+  display: block;
+  margin-top: 4px;
+  color: var(--do-muted);
+  font-size: 11.5px;
+}
+/* Tablo hücresi hücre olarak kalır (flex hücre satır çizgisini kesiyordu); düğmeler satır içinde, sağa yaslı. */
+td.adm-row-actions {
+  text-align: right;
+  white-space: nowrap;
+}
+td.adm-row-actions > .hof-button {
+  display: inline-flex;
+  vertical-align: middle;
+}
+td.adm-row-actions > .hof-button + .hof-button {
+  margin-left: 6px;
+}
+.hof-button.adm-delete {
+  border: 1px solid #efcbc4;
+  background: var(--do-danger-soft);
+  color: var(--do-danger);
+}
+.hof-button.adm-delete:hover:not(:disabled) {
+  border-color: var(--do-danger);
+  background: var(--do-danger);
+  color: #fff;
+}
+.hof-button.adm-delete:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* Yetkiler pili: "Yetkiler 24/37 +1 −2 ▾"; açıkken satırın altında panel. */
+.adm-perm-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 10px 5px 12px;
+  border: 1px solid var(--do-border-strong);
+  border-radius: 99px;
+  background: #fff;
+  color: var(--do-ink-soft);
+  font: 700 12px var(--do-font);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+.adm-perm-pill b {
+  color: var(--do-accent);
+}
+.adm-perm-pill span {
+  color: var(--do-faint);
+  font-weight: 600;
+}
+.adm-perm-pill svg {
+  transition: transform 0.2s ease;
+}
+.adm-perm-pill:hover,
+.adm-perm-pill.is-open {
+  border-color: var(--do-accent);
+  background: var(--do-accent-soft);
+}
+.adm-perm-pill.is-open svg {
+  transform: rotate(180deg);
+}
+.adm-perm-pill.is-full {
+  border-color: #cde6d6;
+  background: var(--do-accent-soft);
+  color: var(--do-accent);
+  cursor: default;
+}
+.adm-perm-diff {
+  padding: 1px 6px;
+  border-radius: 99px;
+  background: var(--do-gold-soft);
+  color: #8a5a10;
+  font: 800 10.5px var(--do-font);
+  font-style: normal;
+}
+.adm-perm-row > td {
+  padding: 0 !important;
+  background: var(--do-surface-soft);
+}
+.adm-perm-panel {
+  padding: 16px 18px 14px;
+  border-top: 2px solid var(--do-accent);
+}
+.adm-perm-panel.is-embedded {
+  padding: 0;
+  border-top: 0;
+}
+.adm-perm-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px 18px;
+  margin-bottom: 12px;
+}
+.adm-perm-head small {
+  display: block;
+  max-width: 720px;
+  margin-top: 3px;
+  color: var(--do-muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+.adm-perm-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.adm-perm-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 9px;
+  border-radius: 99px;
+  font: 700 11px var(--do-font);
+}
+.adm-perm-legend .is-added,
+.adm-perm.is-added .adm-perm-tag {
+  background: #e3f3e9;
+  color: #177245;
+}
+.adm-perm-legend .is-removed,
+.adm-perm.is-removed .adm-perm-tag {
+  background: var(--do-danger-soft);
+  color: var(--do-danger);
+}
+.adm-perm-legend .is-lock,
+.adm-perm-tag.is-lock {
+  background: #eef1ef;
+  color: var(--do-muted);
+}
+.adm-perm-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  align-items: start;
+  gap: 10px;
+}
+.adm-perm-group {
+  min-width: 0;
+  margin: 0;
+  padding: 10px 10px 8px;
+  border: 1px solid var(--do-border);
+  border-radius: 12px;
+  background: #fff;
+}
+.adm-perm-group legend {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  padding: 0 2px 6px;
+  color: var(--do-ink);
+  font: 800 12.5px var(--do-display);
+}
+.adm-perm-all {
+  padding: 2px 8px;
+  border: 1px solid var(--do-border-strong);
+  border-radius: 99px;
+  background: #fff;
+  color: var(--do-muted);
+  font: 700 10.5px var(--do-font);
+  cursor: pointer;
+}
+.adm-perm-all:hover {
+  border-color: var(--do-accent);
+  color: var(--do-accent);
+}
+.adm-perm {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 8px;
+  padding: 7px 6px;
+  border-radius: 9px;
+  cursor: pointer;
+}
+.adm-perm + .adm-perm {
+  border-top: 1px solid #f0f4f1;
+}
+.adm-perm:hover {
+  background: var(--do-surface-soft);
+}
+.adm-perm input {
+  width: 16px;
+  height: 16px;
+  margin-top: 2px;
+  accent-color: var(--do-accent);
+}
+.adm-perm-text b {
+  display: block;
+  color: var(--do-ink);
+  font: 700 12.5px var(--do-font);
+}
+.adm-perm-text small {
+  display: block;
+  margin-top: 1px;
+  color: var(--do-muted);
+  font-size: 11.5px;
+  line-height: 1.35;
+}
+.adm-perm-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 1px 7px;
+  border-radius: 99px;
+  font: 800 10px var(--do-font);
+  font-style: normal;
+  white-space: nowrap;
+}
+.adm-perm-tag:empty {
+  display: none;
+}
+/* Kilitli yetkide yalnız kilit simgesi (grup başlığı "yalnız yönetici" der; yazı satırı daraltmaz). */
+.adm-perm-tag.is-icon {
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+}
+.adm-perm.is-locked {
+  cursor: default;
+  opacity: 0.75;
+}
+.adm-perm.is-locked:hover {
+  background: transparent;
+}
+.adm-perm.is-removed .adm-perm-text b {
+  text-decoration: line-through;
+  text-decoration-color: rgba(179, 71, 58, 0.5);
+}
+.adm-perm-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 12px;
+}
+.adm-perm-foot.is-top {
+  justify-content: flex-start;
+  margin: 0 0 8px;
+}
+.adm-perm-summary {
+  margin-right: auto;
+  color: var(--do-muted);
+  font: 700 12px var(--do-font);
+}
+.adm-perm-details {
+  margin: 4px 0 8px;
+  border: 1px solid var(--do-border);
+  border-radius: 12px;
+  background: var(--do-surface-soft);
+}
+.adm-perm-details > summary {
+  padding: 10px 14px;
+  color: var(--do-ink);
+  font: 800 13px var(--do-display);
+  cursor: pointer;
+}
+.adm-perm-details > summary small {
+  margin-left: 6px;
+  color: var(--do-muted);
+  font: 500 11.5px var(--do-font);
+}
+.adm-perm-details > .adm-perm-panel {
+  padding: 0 12px 12px;
+}
+.adm-role-start {
+  max-width: 360px;
+}
+
+/* Silinen kullanıcılar ve roller */
+.adm-deleted > summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  font: 800 14px var(--do-display);
+  cursor: pointer;
+}
+.adm-deleted > summary small {
+  font: 500 12px var(--do-font);
+}
+.adm-deleted[open] > summary {
+  margin-bottom: 10px;
+}
+.adm-roles-head p {
+  max-width: 820px;
+  margin: 0 0 12px;
+}
+.adm-role-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 10px;
+}
+.adm-role-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px 14px;
+  border: 1px solid var(--do-border);
+  border-radius: 14px;
+  background: #fff;
+}
+.adm-role-card.is-custom {
+  border-color: #cde6d6;
+  background: linear-gradient(180deg, #fff 0%, #f6fbf8 100%);
+}
+.adm-role-card header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.adm-role-card header b {
+  font: 800 14px var(--do-display);
+}
+.adm-role-meta {
+  margin: 0;
+  color: var(--do-accent);
+  font: 700 12px var(--do-font);
+}
+.adm-role-note {
+  margin: 0;
+  color: var(--do-muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+.adm-role-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: auto;
+  padding-top: 4px;
+}
+.hof-chip-accent {
+  border-color: #cde6d6;
+  background: var(--do-accent-soft);
+  color: var(--do-accent);
+}
+@media (max-width: 760px) {
+  td.adm-row-actions {
+    text-align: left;
+    white-space: normal;
+  }
+  .adm-edit-form input {
+    width: 140px;
+  }
+}
+.adm-recovery {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 20px;
+  padding: 14px 18px;
+}
+.adm-recovery-text {
+  flex: 1 1 520px;
+}
+.adm-recovery h2 {
+  margin: 0 0 4px;
+  font-size: 15px;
+}
+.adm-recovery p {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+.adm-recovery.is-missing {
+  border-color: #efd9a8;
+  background: linear-gradient(180deg, #fffaf0 0%, #fff 100%);
+}
+.adm-recovery.is-missing h2::before {
+  content: "!";
+  display: inline-grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  margin-right: 8px;
+  border-radius: 50%;
+  background: var(--do-gold);
+  color: #fff;
+  font: 900 12px var(--do-font);
+  vertical-align: 1px;
+}
+.adm-recovery.is-missing p {
+  color: #6f5215;
+}

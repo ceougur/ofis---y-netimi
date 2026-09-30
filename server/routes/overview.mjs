@@ -8,7 +8,7 @@
 // Sonuç, tüm kaynakların parmak izi ve bugünün tarihiyle önbelleğe alınır; bir hareket girilince parmak izi değişir.
 // Para ya da stok değiştiren her olaydan sonra herkese (işlemi yapan dahil) tek "overview.changed" olayı gider; açık
 // kartlar kendini yeniler.
-import { dueList, groupFlows, presetRange, projection, statement, trialBalance } from "../lib/finance-report.mjs";
+import { dueList, groupFlows, isAllTimeStart, presetRange, projection, statement, trialBalance } from "../lib/finance-report.mjs";
 import { HttpError, limited, ok, sendBuffer, text } from "../lib/http.mjs";
 import { foldText } from "../lib/insight/validators.mjs";
 import { roundMoney } from "../lib/money.mjs";
@@ -119,8 +119,9 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
     const data = compute();
     return { today: data.today, at: data.at, cash: data.cash, stock: data.stock, receivable: data.receivable, payable: data.payable, chequesVisible: true, canReport: true };
   }
+  // ANLIK DURUM kartı (v2.0.10): yalnız yönetici. Aynı rakamlar finans raporları yetkisiyle Raporlar'da görülür.
   router.get("/api/workspace/overview", async ({ req, res }) => {
-    auth.requirePermission(req, "overview.view");
+    auth.requirePermission(req, "overview.card");
     ok(res, forUser());
   });
 
@@ -136,14 +137,16 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
     if (from && to && (Date.parse(`${to}T00:00:00Z`) - Date.parse(`${from}T00:00:00Z`)) / 86_400_000 > MAX_RANGE_DAYS) throw new HttpError(400, "Tarih aralığı en çok 100 yıl olabilir.");
     return { from, to };
   };
-  const rangeText = ({ from, to }) => `${from ? dayText(from) : "…"} – ${to ? dayText(to) : "…"}`;
-  const fileRange = ({ from, to }) => `${from ? dayText(from) : "baslangic"}-${to ? dayText(to) : "bugun"}`;
+  const allTime = from => isAllTimeStart(from, today());
+  const rangeText = ({ from, to }) => (allTime(from) ? `Tüm hareketler · ${to ? dayText(to) : "bugün"} tarihine kadar` : `${from ? dayText(from) : "…"} – ${to ? dayText(to) : "…"}`);
+  const fileRange = ({ from, to }) => `${from && !allTime(from) ? dayText(from) : "baslangic"}-${to ? dayText(to) : "bugun"}`;
+  const openingDay = from => (allTime(from) ? "" : dayText(from));
 
   // ---------- A. Mizan ----------
   function mizan(params) {
     const range = rangeOf(params, { preset: "thisMonth" });
     const type = TYPE_TEXT[text(params.get("type"))] ? text(params.get("type")) : "";
-    const side = ["debtor", "creditor"].includes(text(params.get("side"))) ? text(params.get("side")) : "";
+    const side = ["debtor", "creditor", "zero", "nonzero"].includes(text(params.get("side"))) ? text(params.get("side")) : "";
     const q = text(params.get("q")).toLocaleLowerCase("tr-TR").slice(0, 120);
     const includeIdle = params.get("idle") === "1";
     const ledgers = accounts()?.allLedgers ? accounts().allLedgers() : { accounts: [], lines: new Map() };
@@ -153,7 +156,7 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
     const list = ledgers.accounts.filter(account => (!type || account.type === type) && hit(account));
     const result = trialBalance(list, ledgers.lines, { ...range, includeIdle });
     let rows = result.rows;
-    if (side) rows = rows.filter(row => row.side === side);
+    if (side) rows = rows.filter(row => (side === "nonzero" ? row.side !== "zero" : row.side === side));
     rows.sort((a, b) => collator.compare(String(a.refNo || "~"), String(b.refNo || "~")) || collator.compare(a.name, b.name));
     const totals = side ? trialBalance(list.filter(account => rows.some(row => row.id === account.id)), ledgers.lines, { ...range, includeIdle: true }).totals : result.totals;
     return { ...range, type, side, q, includeIdle, rows, totals, today: today(), accountCount: ledgers.accounts.length };
@@ -164,7 +167,9 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
     const limit = Math.min(5000, Math.max(1, Math.trunc(Number(url.searchParams.get("limit")) || 1000)));
     ok(res, { ...data, rows: data.rows.slice(0, limit), total: data.rows.length, hasMore: data.rows.length > limit });
   });
-  const sideText = value => (value > 0.005 ? "Borçlu (bize borçlu)" : value < -0.005 ? "Alacaklı (biz borçluyuz)" : "Kapalı");
+  // Durum (v2.0.10): muhasebe programlarındaki gibi yalın — Borçlu (cari bize borçlu) · Alacaklı (biz cariye borçluyuz).
+  const sideText = value => (value > 0.005 ? "Borçlu" : value < -0.005 ? "Alacaklı" : "Kapalı");
+  const SIDE_FILTER = { debtor: "Borçlular", creditor: "Alacaklılar", nonzero: "Sadece bakiyesi olanlar", zero: "Bakiyesi sıfır" };
   const mizanTable = data => ({
     headers: ["Cari No", "Cari", "Tür", "Devir", "Borç", "Alacak", "Bakiye", "Durum"],
     types: ["", "", "", "money", "money", "money", "money", ""],
@@ -174,8 +179,8 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
       ["Devir (net)", tl(data.totals.opening)],
       ["Dönem borç", tl(data.totals.debit)],
       ["Dönem alacak", tl(data.totals.credit)],
-      ["Bize borçlu (alacağımız)", tl(data.totals.closingDebtor)],
-      ["Biz borçluyuz (borcumuz)", tl(data.totals.closingCreditor)],
+      ["Borçlular toplamı", tl(data.totals.closingDebtor)],
+      ["Alacaklılar toplamı", tl(data.totals.closingCreditor)],
     ],
   });
   router.get("/api/workspace/overview/mizan.pdf", async ({ req, res, url }) => {
@@ -183,7 +188,7 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
     const data = mizan(url.searchParams);
     const clipped = data.rows.length > PDF_ROWS;
     const table = mizanTable({ ...data, rows: data.rows.slice(0, PDF_ROWS) });
-    const pdf = tablePdf({ title: "Cari Mizanı", subtitle: [rangeText(data), data.type ? TYPE_TEXT[data.type] : "Tüm cariler", clipped ? "ilk 20.000 satır (tamamı Excel'de)" : ""].filter(Boolean).join(" · "), ...table, officeName: office(), userName: userName(user), brand: office() || "DestekOfis" });
+    const pdf = tablePdf({ title: "Cari Mizanı", subtitle: [rangeText(data), data.type ? TYPE_TEXT[data.type] : "Tüm cariler", SIDE_FILTER[data.side] || "", clipped ? "ilk 20.000 satır (tamamı Excel'de)" : ""].filter(Boolean).join(" · "), ...table, officeName: office(), userName: userName(user), brand: office() || "DestekOfis" });
     audit(user, "overview.exported", "mizan.pdf", { from: data.from, to: data.to, count: data.rows.length });
     sendBuffer(res, pdf, { type: "application/pdf", name: `Mizan ${fileRange(data)}.pdf`, inline: url.searchParams.get("download") !== "1" });
   });
@@ -193,7 +198,7 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
     const money = value => MONEY_FORMAT.format(value || 0);
     const columns = ["Cari No", "Cari", "Tür", "Grup", "Devir", "Dönem borç", "Dönem alacak", "Bakiye", "Durum"];
     const rows = data.rows.map(row => ({ "Cari No": row.refNo, Cari: row.name, Tür: TYPE_TEXT[row.type] || "", Grup: [row.groupName, row.subgroupName].filter(Boolean).join(" › "), Devir: money(row.opening), "Dönem borç": money(row.debit), "Dönem alacak": money(row.credit), Bakiye: money(row.closing), Durum: sideText(row.closing) }));
-    rows.push({ "Cari No": "", Cari: "TOPLAM", Tür: "", Grup: "", Devir: money(data.totals.opening), "Dönem borç": money(data.totals.debit), "Dönem alacak": money(data.totals.credit), Bakiye: money(data.totals.closing), Durum: `Bize borçlu ${money(data.totals.closingDebtor)} · Biz borçluyuz ${money(data.totals.closingCreditor)}` });
+    rows.push({ "Cari No": "", Cari: "TOPLAM", Tür: "", Grup: "", Devir: money(data.totals.opening), "Dönem borç": money(data.totals.debit), "Dönem alacak": money(data.totals.credit), Bakiye: money(data.totals.closing), Durum: `Borçlular ${money(data.totals.closingDebtor)} · Alacaklılar ${money(data.totals.closingCreditor)}` });
     const buffer = buildXlsx([{ name: "Mizan", columns, rows }], { title: `Cari Mizanı ${rangeText(data)}` });
     audit(user, "overview.exported", "mizan.xlsx", { from: data.from, to: data.to, count: data.rows.length });
     sendBuffer(res, buffer, { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", name: `Mizan ${fileRange(data)}.xlsx` });
@@ -213,7 +218,7 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
     ok(res, ekstre(user, url.searchParams));
   });
   const ekstreRows = data => [
-    [dayText(data.from), "Devir", "Dönem başı bakiye", "", "", tl(Math.abs(data.opening)) + (data.opening > 0.005 ? " B" : data.opening < -0.005 ? " A" : "")],
+    [openingDay(data.from), "Devir", "Dönem başı bakiye", "", "", tl(Math.abs(data.opening)) + (data.opening > 0.005 ? " B" : data.opening < -0.005 ? " A" : "")],
     ...data.lines.map(line => [dayText(line.date), line.label, [line.note, line.receiptNo ? `Makbuz ${line.receiptNo}` : ""].filter(Boolean).join(" · "), line.debit ? tl(line.debit) : "", line.credit ? tl(line.credit) : "", tl(Math.abs(line.balance)) + (line.balance > 0.005 ? " B" : line.balance < -0.005 ? " A" : "")]),
   ];
   router.get("/api/workspace/overview/ekstre.pdf", async ({ req, res, url }) => {
@@ -221,7 +226,7 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
     const data = ekstre(user, url.searchParams);
     const pdf = tablePdf({
       title: `Cari Ekstre · ${data.account.name}`,
-      subtitle: [data.account.refNo ? `Cari No ${data.account.refNo}` : "", rangeText(data), "B: bize borçlu · A: biz borçluyuz"].filter(Boolean).join(" · "),
+      subtitle: [data.account.refNo ? `Cari No ${data.account.refNo}` : "", rangeText(data), "B: borçlu · A: alacaklı"].filter(Boolean).join(" · "),
       headers: ["Tarih", "İşlem", "Açıklama", "Borç", "Alacak", "Bakiye"],
       types: ["", "", "", "money", "money", "money"],
       rows: ekstreRows(data),
@@ -239,7 +244,7 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
     const money = value => MONEY_FORMAT.format(value || 0);
     const columns = ["Tarih", "İşlem", "Açıklama", "Makbuz No", "Borç", "Alacak", "Bakiye"];
     const rows = [
-      { Tarih: dayText(data.from), İşlem: "Devir", Açıklama: "Dönem başı bakiye", "Makbuz No": "", Borç: "", Alacak: "", Bakiye: money(data.opening) },
+      { Tarih: openingDay(data.from), İşlem: "Devir", Açıklama: "Dönem başı bakiye", "Makbuz No": "", Borç: "", Alacak: "", Bakiye: money(data.opening) },
       ...data.lines.map(line => ({ Tarih: dayText(line.date), İşlem: line.label, Açıklama: line.note, "Makbuz No": line.receiptNo ? String(line.receiptNo) : "", Borç: line.debit ? money(line.debit) : "", Alacak: line.credit ? money(line.credit) : "", Bakiye: money(line.balance) })),
       { Tarih: dayText(data.to), İşlem: "Dönem sonu", Açıklama: sideText(data.closing), "Makbuz No": "", Borç: money(data.debit), Alacak: money(data.credit), Bakiye: money(data.closing) },
     ];
@@ -346,7 +351,7 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
   const canDues = user => canUser(user, "overview.view") || canUser(user, "reports.view");
   const requireDues = req => {
     const user = auth.requireUser(req);
-    if (!canDues(user)) throw new HttpError(403, "Vade takip raporu yönetici ve uzman hesapları ile ANLIK DURUM yetkisi verilen kişiler içindir.", { code: "FORBIDDEN" });
+    if (!canDues(user)) throw new HttpError(403, "Vade takip raporu yönetici ve uzman hesapları ile finans raporları yetkisi verilen kişiler içindir.", { code: "FORBIDDEN" });
     return user;
   };
   const visibleSources = user => DUE_SOURCES.filter(source => (source === "cheque" || source === "note" ? canUser(user, "overview.view") || canUser(user, "cheques.view") : source === "cash" ? canUser(user, "overview.view") || canUser(user, "cash.view") : true));

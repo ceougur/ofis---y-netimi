@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
 <meta charset="utf-8">
-<title>DestekOfis Kısa Kullanım Kılavuzu (2.0.9)</title>
+<title>DestekOfis Kısa Kullanım Kılavuzu (2.0.10)</title>
 <link rel="stylesheet" href="ortak.css">
 </head>
 <body>
@@ -11,7 +11,7 @@
 <section class="cover">
   <div class="brand"><b>D</b> DestekOfis</div>
   <h1>Kısa Kullanım Kılavuzu</h1>
-  <p class="sub">Sürüm 2.0.9 · Yalnızca bilmeniz gerekenler · 10 dakikada okunur</p>
+  <p class="sub">Sürüm 2.0.10 · Yalnızca bilmeniz gerekenler · 10 dakikada okunur</p>
 </section>
 
 <p>DestekOfis, Excel'de ya da Google Sheets'te tuttuğunuz tabloyu ofisteki herkesin aynı anda kullandığı bir çalışma alanına dönüştürür. Tablonuzu yüklersiniz; program kolonlarınızı tanır, ekranları ona göre kurar. Siz kayıtlara not, tahsilat, görev ve belge eklersiniz; <b>Excel dosyanız hiç bozulmaz</b>.</p>
@@ -52,11 +52,12 @@
 
 <h2>1. Kurulum ve ilk giriş</h2>
 <ol class="steps">
-  <li><b>Sunucu bilgisayara</b> kurulum dosyasını (<i>DestekOfis-Kurulum-2.0.9.exe</i>) çalıştırın, <b>Sunucu bilgisayar</b>'ı seçip <b>Kur</b>'a basın. Windows "bilgisayarınızı korudu" derse <b>Ek bilgi → Yine de çalıştır</b>.</li>
+  <li><b>Sunucu bilgisayara</b> kurulum dosyasını (<i>DestekOfis-Kurulum.exe</i>) çalıştırın, <b>Sunucu bilgisayar</b>'ı seçip <b>Kur</b>'a basın. Windows "bilgisayarınızı korudu" derse <b>Ek bilgi → Yine de çalıştır</b>.</li>
   <li><b>Personel bilgisayarlarına</b> aynı dosyayı kurun. Program sunucuyu ağda kendisi bulur; masaüstündeki DestekOfis simgesiyle açılır.</li>
   <li>İlk girişi sunucudan yapın: kullanıcı adı <b>admin</b>, parola <b>Ofis2026!</b>. Program yeni bir parola ister; not edin.</li>
 </ol>
 <figure class="narrow"><img src="ekran/k01-giris.jpg" alt="Giriş ekranı"></figure>
+<div class="box warn"><b class="t">İlk iş: kurtarma anahtarı (2.0.10)</b><b>Yönetim → Kullanıcılar → Kurtarma anahtarı oluştur</b>'a basın, çıkan anahtarı <b>yazdırın</b> ve güvenli bir yerde saklayın. Yönetici parolanızı unutursanız giriş ekranındaki <b>Parolamı unuttum</b> ile bu anahtarla yeni parola belirlersiniz; üyelik, internet ve ücret gerekmez. Ayrıntı: 14. bölüm.</div>
 <div class="box tip"><b class="t">Deneme kendiliğinden başlar</b>Sunucu internete bağlıysa 30 günlük deneme birkaç saniyede başlar. Lisans anahtarınızı <b>Yönetim → Lisans</b>'a yazarsınız. Süre dolsa da hiçbir kayıt silinmez.</div>
 
 <h2>2. Verinizi yükleyin</h2>
@@ -79,10 +80,12 @@
   <li><b>Sol menü · Operasyon Merkezi:</b> Görevler, Mesajlar, Yeni kayıt, Kasa, Taksitler ve bu kılavuz.</li>
   <li><b>Üstte zil:</b> bekleyen tahsilatlar, son günü yaklaşan işler ve görevleriniz.</li>
   <li><b>Tahsilat takvimi şeridi:</b> vadesi gelen ödemeler; bir pile tıklayınca tahsilat girilir.</li>
-  <li><b>Sekmeler:</b> Excel'deki sayfalarınız. Seçili sekmenin yanındaki <b>✎</b> ile adını değiştirin ya da silin; <b>+ Sayfa</b> ile Excel gibi kendi tablonuzu açın.</li>
-  <li><b>Tablo:</b> tüm kolonlarınız burada. Sığmayanlar için tablonun altındaki <b>kaydırma çubuğunu</b> sağa çekin; ilk kolon hep görünür kalır. Bir kolonu daraltmak ya da genişletmek için başlığın sağ kenarındaki çizgiyi <b>sürükleyin</b> (çift tıklayınca kendi genişliğine döner); ayar bu bilgisayarda hatırlanır.</li>
+  <li><b>ANLIK DURUM (yalnız yönetici):</b> üstte ortada; Kasa, kritik stok, toplam alacak ve borç (11. bölüm).</li>
+  <li><b>Sekmeler:</b> Excel'deki sayfalarınız. Seçili sekmenin yanındaki <b>✎</b> ile adını değiştirin ya da silin. <b>+ Sayfa</b> üç yol sunar: <b>Boş sayfa</b> (Excel gibi kendiniz doldurun), <b>Excel dosyasından aktar</b> (dosyayı seçin ya da sürükleyin, sayfayı seçin, ön izlemeye bakıp <b>Sayfayı aktar</b>) ve <b>Google Sheets'ten aktar</b> (paylaşılan tablonun bağlantısı). Başlıklar, değerler ve formüller gelir; formüller programda hesaplanır, başka sayfaya bağlı formül Excel'deki değeriyle kalır. Ana tablonuz değişmez.</li>
+  <li><b>Tablo:</b> başlığın sağında <b>Dışa aktar</b> (Excel/CSV), <b>Yenile</b> ve <b>Sık görünüm</b>; altında açık yeşil <b>arama kutusu</b> (programdaki bütün arama kutuları aynı görünür). Tüm kolonlarınız burada. Sığmayanlar için tablonun altındaki <b>kaydırma çubuğunu</b> sağa çekin; ilk kolon hep görünür kalır. Bir kolonu daraltmak ya da genişletmek için başlığın sağ kenarındaki çizgiyi <b>sürükleyin</b> (çift tıklayınca kendi genişliğine döner); ayar bu bilgisayarda hatırlanır.</li>
   <li><b>Sağda detay kartı:</b> seçtiğiniz kaydın bütün bilgileri ve işlemleri.</li>
 </ul>
+<figure class="w80"><img src="ekran/k19-sayfa-excel.jpg" alt="+ Sayfa: Excel dosyasından aktarma"><figcaption>+ Sayfa → Excel dosyasından aktar: sayfayı seçin, ön izlemeye bakın; başlık satırı kendiliğinden bulunur, formüller programda çalışır.</figcaption></figure>
 
 <h2>4. Kayıtla çalışmak</h2>
 <ol class="steps">
@@ -91,7 +94,7 @@
   <li><b>Sütun ekle / sil:</b> tablodaki bir sütun başlığının üzerine gelin (yönetici): üstte küçük <b>+ Ekle</b> ve kırmızı <b>× Sil</b> çıkar. Ekle o sütunun sağına yeni sütun açar; Sil sütunu tüm hücreleriyle kaldırır, sağdakiler sola kayar. Excel/Sheets dosyanız değişmez; <b>Geri al</b> ya da <b>Yönetim → Silinenler</b> geri getirir.</li>
   <li><b>Kolonun adı başka, değeri başka:</b> başlığın hemen yanındaki küçük metin kutusu simgesi (yöneticide, başlığın üzerine gelince) kolonun <i>adını</i> tüm kayıtlarda değiştirir. Oraya tarih yazarsanız program ad olarak kaydetmez, tarihi açık kayda yazmayı önerir.</li>
   <li><b>▾</b> işaretli alanlar açılır listedir: tıklayın, listeden seçin, kaydedilir.</li>
-  <li>Kartın düğmeleriyle <b>Not</b>, <b>Telefon</b>, <b>Tahsilat</b>, <b>Görev</b> ve <b>Belge</b> ekleyin. <b>Telefon</b> kayıttaki numaraları <b>Ara</b> ve <b>WhatsApp</b> düğmeleriyle gösterir; altından yeni numara eklenir. Yeni kayıt için sol menüden <b>Yeni kayıt</b>; tabloyu Excel'e almak için <b>Dışa aktar</b>.</li>
+  <li>Kartın düğmeleriyle <b>Not</b>, <b>Telefon</b>, <b>Tahsilat</b>, <b>Görev</b> ve <b>Belge</b> ekleyin. <b>Telefon</b> kayıttaki numaraları <b>Ara</b> ve <b>WhatsApp</b> düğmeleriyle gösterir; altından yeni numara eklenir. Yeni kayıt için sol menüden <b>Yeni kayıt</b>; tabloyu Excel'e almak için tablo başlığının sağındaki <b>Dışa aktar</b>.</li>
 </ol>
 <figure class="narrow"><img src="ekran/k05-detay-acilir-liste.jpg" alt="Detay kartında açılır liste"><figcaption>Excel'deki açılır liste kartta da açılır liste olarak çalışır.</figcaption></figure>
 
@@ -121,8 +124,8 @@
   <li><b>Hareket girin:</b> kartta <b>+ Tahsilat</b> (Kasa’ya girer, makbuzu alınır), <b>Borç yaz</b> (cari size borçlanır), <b>Alacak yaz</b> (siz cariye borçlanırsınız), <b>− Ödeme</b> (Kasa’dan çıkar). Açık taksit kartı varsa <b>+ Tahsilat</b> önce sorar: <b>taksite yaz</b> (taksitten düşer) ya da <b>taksit dışı</b>.</li>
 </ol>
 <ul>
-  <li><b>Bakiye:</b> borç − alacak. <b>borçlu</b> cari size borçlu, <b>alacaklı</b> siz cariye borçlusunuz. Taksit planı carinin borcuna, taksit tahsilatı alacağına yazılır; karttaki <b>Hareketler</b> yürüyen bakiyeyle ekstre gibi okunur.</li>
-  <li><b>Arama ve süzgeç:</b> ad, telefonun rakamları, cari no, adres ve ek alanlarda arar; tür, grup, bakiye (bize borçlu, bizim borcumuz, taksidi geciken) ve sıralama.</li>
+  <li><b>Bakiye:</b> borç − alacak. <b style="color:#177245">Borçlu</b> (yeşil): cari size borçlu; <b style="color:#b3473a">Alacaklı</b> (kırmızı): siz cariye borçlusunuz; <b>Kapalı</b>: bakiye sıfır. Listede, kartta, raporlarda, PDF ve Excel'de aynı sözcük ve renk. Taksit planı carinin borcuna, taksit tahsilatı alacağına yazılır; karttaki <b>Hareketler</b> yürüyen bakiyeyle ekstre gibi okunur.</li>
+  <li><b>Arama ve süzgeç:</b> ad, telefonun rakamları, cari no, adres ve ek alanlarda arar; tür, grup, bakiye (<i>Tüm bakiyeler, Borçlular, Alacaklılar, Sadece bakiyesi olanlar, Bakiyesi sıfır, Taksidi gecikenler</i>) ve sıralama. Üstteki kutular borçlu ve alacaklı carilerin toplamını ve sayısını gösterir.</li>
   <li><b>Çıktı:</b> listede <b>PDF</b>, <b>Yazdır</b> ve <b>Excel</b>: süzgeç yoksa tüm cariler, süzgeç varsa yalnız süzülenler (Excel’de tüm ek alanlar); kartta cari ekstre PDF’i.</li>
   <li><b>Tablodaki kayıt (2.0.7):</b> <b>+ Yeni cari</b> ya da <b>Düzenle</b> formundaki <b>Tablodaki kayıt</b> alanı cariyi ortadaki tablodaki kişiye bağlar. Ad yazınca tabloda aynı adlı tek kayıt varsa kendiliğinden seçilir (yanlışsa × ile kaldırın); aynı ad iki kişideyse program tahmin etmez, listeden siz seçersiniz. Bir kayda tek cari bağlanır.</li>
   <li>Ortadaki tablodaki kişinin kartında carisinin bakiyesi görünür; <b>Cari kartı</b> ile açılır. Cari açma, borç/alacak/ödeme ve toplu taksit yönetici, uzman ve muhasebe yetkisidir; herkes tahsilat girer.</li>
@@ -171,13 +174,13 @@
 </ol>
 <ul>
   <li><b>Yanlış işlem:</b> evrak kartındaki <b>… işlemini geri al</b> son işlemi ve defterdeki kayıtlarını birebir kaldırır. Kartın altındaki <b>işlem geçmişi</b> kimin ne zaman ne yaptığını gösterir.</li>
-  <li><b>Vade takibi:</b> vadesi geçen ve bugün vadesi gelen evrak sol menüde rozet, tahsilat takviminde ve bildirimlerde görünür; <b>7 gün içinde</b> vadesi gelenler ANLIK DURUM kartında.</li>
+  <li><b>Vade takibi:</b> vadesi geçen ve bugün vadesi gelen evrak sol menüde rozet, tahsilat takviminde ve bildirimlerde görünür; <b>7 gün içinde</b> vadesi gelenler ANLIK DURUM kartında. Pile ya da bildirimdeki düğmeye basınca evrak kartı doğrudan <b>Ödeme yap / Tahsil et</b> formuyla açılır; işlemi yapınca pil ve bildirim <b>hemen</b> kalkar (ofisteki diğer bilgisayarlarda da, programı kapatıp açmadan).</li>
   <li><b>Excel'den açılış portföyü:</b> <b>Excel / Sheets'ten yükle</b> ile mevcut çek listenizi alın (vade, tutar, keşideci, seri no, banka, durum); kapanmış ve tekrar eden satırlar atlanır. Liste <b>PDF</b> ve <b>Excel</b> olarak iner; süzgeçler: alınan/verilen, durum, vade aralığı, arama.</li>
   <li>Kasa'da ve cari kartındaki defterde çek/senet kaynaklı satırlar <i>çek / senet</i> etiketiyle görünür; oradan düzeltilmez, evrak kartından yönetilir. Silinen evrak <b>Yönetim → Silinenler</b>'den geri gelir.</li>
 </ul>
 
 <h2>11. ANLIK DURUM</h2>
-<p>Yöneticinin ana ekranında, başlığın sağında <b>ANLIK DURUM</b> kartı durur: <b>Kasa / Banka</b> (bugüne kadarki kasa; ileri tarihli hareketler ayrıca yazılır), <b>Kritik stok</b>, <b>Toplam alacak</b> (carilerin size borcu + portföydeki çek/senet; gecikmiş taksit ayrıca), <b>Toplam borç / ödemeler</b> (tedarikçilere borç + ödenecek çek/senet). Her tahsilat, ödeme, taksit, stok ve çek işleminde sayfa yenilenmeden değişir; rakamlar Kasa, Cari, Stok ve Çek/Senet ekranlarıyla aynıdır. Kutulara tıklayınca ilgili ekran açılır. Köşedeki simge kartı tek satırlık şeride küçültür. Karttaki <b>Rapor Al</b>, sol menüdeki <b>Raporlar</b> ile aynı pencereyi açar.</p>
+<p>Yalnız <b>yöneticinin</b> ana ekranında, üstte ortada <b>ANLIK DURUM</b> kartı durur (personelde hiç görünmez; yetki verilse de): <b>Kasa / Banka</b> (bugüne kadarki kasa; ileri tarihli hareketler ayrıca yazılır), <b>Kritik stok</b>, <b>Toplam alacak</b> (carilerin size borcu + portföydeki çek/senet; gecikmiş taksit ayrıca), <b>Toplam borç / ödemeler</b> (tedarikçilere borç + ödenecek çek/senet). Her tahsilat, ödeme, taksit, stok ve çek işleminde sayfa yenilenmeden değişir; rakamlar Kasa, Cari, Stok ve Çek/Senet ekranlarıyla aynıdır. Kutulara tıklayınca ilgili ekran açılır. Köşedeki simge kartı tek satırlık şeride küçültür. Karttaki <b>Rapor Al</b>, sol menüdeki <b>Raporlar</b> ile aynı pencereyi açar.</p>
 <figure><img src="ekran/k10-anlik-durum.jpg" alt="ANLIK DURUM kartı"></figure>
 
 <h2>12. Raporlar</h2>
@@ -196,7 +199,7 @@
 <figure><img src="ekran/k11-rapor-al.jpg" alt="Raporlar: Vade takip"><figcaption>Vade takip: taksit, çek/senet, Kasa ve tablodaki vadeler tek listede.</figcaption></figure>
 </div>
 <figure><img src="ekran/k12-rapor-merkezi.jpg" alt="Raporlar: Tüm raporlar"><figcaption>Tüm raporlar: Cari bazında tahsilat (nakit, taksit, çek/senet ayrı sütunda).</figcaption></figure>
-<p><b>Kimler görür:</b> yönetici tüm sekmeleri; uzman <i>Vade takip</i> ve <i>Tablo raporları</i>'nı. Başka birine açmak için <b>Yönetim → Kullanıcılar → Ek yetki → ANLIK DURUM ve raporlar</b>: kişi <i>Cari ekstre, Vade takip, Nakit akış</i> ve <i>Tüm raporlar</i>'ı görür (Çek / Senet sekmesi çek yetkisiyle gelir); kapatınca kaybolur. Bu yetki Kasa ekranını ve çek girişini açmaz. Personel ve muhasebe Raporlar'ı görmez.</p>
+<p><b>Kimler görür:</b> yönetici tüm sekmeleri; uzman <i>Vade takip</i>, <i>Tablo raporları</i> ve <i>Tüm raporlar</i>'da yalnız <i>İşlem geçmişi</i>'ni. Başka birine açmak için <b>Yönetim → Kullanıcılar → Yetkiler → Raporlar → Finans raporları</b>: kişi <i>Cari ekstre, Vade takip, Nakit akış</i> ve <i>Tüm raporlar</i>'ı görür (Çek / Senet sekmesi çek yetkisiyle gelir); kaldırınca kaybolur. Bu yetki ANLIK DURUM kartını, Kasa ekranını ve çek girişini açmaz. Durum sütunu yalnız <b>Borçlu / Alacaklı / Kapalı</b> yazar; <i>Tüm zamanlar</i> seçilince belgede "Tüm hareketler · … tarihine kadar" yazar.</p>
 
 <h2>13. Belgeler ve mesajlar</h2>
 <p><b>Belge eklemek:</b> kartta <b>Belge</b>'ye basın ya da dosyaları kartın üzerine sürükleyin; ekran görüntüsünü <b>Ctrl+V</b> ile yapıştırın. PDF, resim, Word, Excel ve UYAP dosyaları eklenir; adet sınırı yoktur.</p>
@@ -206,14 +209,22 @@
 
 <h2>14. Yönetici için</h2>
 <ul>
-  <li><b>Kullanıcılar:</b> sol alttaki kartta <b>Yönetim → + Yeni kullanıcı</b>; rolünü seçin. Çalışan ilk girişte kendi parolasını belirler.</li>
+  <li><b>Yönetim yalnız yöneticide (2.0.10):</b> sol alttaki kartta <b>Yönetim</b> yalnız yönetici hesabında görünür; başka hesaplar paneli açamaz.</li>
+  <li><b>Kullanıcılar:</b> <b>+ Yeni kullanıcı</b>: ad, kullanıcı adı, rol, ilk parola; istenirse <i>Yetkileri özelleştir</i>. Çalışan ilk girişte kendi parolasını belirler. Ad ve kullanıcı adındaki yazım hatasını yanlarındaki <b>✎</b> ile düzeltin (Enter kaydeder, Esc vazgeçer); kişi yeni kullanıcı adıyla girer.</li>
+  <li><b>Yetkiler ve roller (2.0.10):</b> satırdaki <b>Yetkiler</b> pili programın bütün yetkilerini gruplar hâlinde açar: rolün verdikleri işaretli gelir; kutuyu işaretleyerek o kişiye <b>ekler</b> (yeşil "eklendi"), işareti kaldırarak rolün verdiğini o kişiden <b>çıkarırsınız</b> (kırmızı "kaldırıldı"); <b>Yetkileri kaydet</b>. Kişinin ekranı sayfa yenilemeden değişir. <b>+ Yeni rol</b> ile kendi rolünüzü kurun (ör. <i>Vezne</i>: Kasa'yı görür ve yönetir); rol listesinde çıkar. Kullanıcı yönetimi, sistem, lisans ve ANLIK DURUM kartı kilitlidir, yalnız yöneticidedir.</li>
+  <li><b>Kullanıcı silme (2.0.10):</b> satırdaki <b>Sil</b>. Açık görevi varsa kime devredileceği sorulur. Kişi giriş yapamaz ve listeden çıkar; yaptığı işlemler geçmişte adıyla kalır. <b>Silinen kullanıcılar</b> bölümünden <b>Geri al</b>. Kendi hesabınızı ve son yöneticiyi silemezsiniz.</li>
+  <li><b>Kurtarma anahtarı (2.0.10):</b> <b>Yönetim → Kullanıcılar → Kurtarma anahtarı oluştur</b>; anahtarı yazdırın, kasada saklayın. Parolanızı unutursanız giriş ekranında <b>Parolamı unuttum</b> → anahtar + yeni parola (eski parola sorulmaz, kayıtlar olduğu gibi kalır; kullanılan anahtar geçersiz olur, yenisi bir kez gösterilir, onu da yazdırın). Anahtar da kayıpsa <b>sunucu bilgisayarında</b> aynı ekrandaki <b>Sunucu kodu oluştur</b>: kod bu bilgisayardaki bir dosyaya yazılır, Başlat menüsündeki <b>DestekOfis → Yönetici kurtarma kodunu aç</b> dosyayı açar (Windows yönetici izni ister; kısayol kurulum dosyasıyla gelir, program otomatik güncellemeyle geldiyse ekrandaki yolu <b>yönetici olarak çalıştırılan Not Defteri</b>'nde açın); kod 10 dakika geçerlidir. Başka bilgisayardan kod istenemez. Tavsiye: ikinci bir yönetici hesabı açın.</li>
   <li><b>Yedekler:</b> program 6 saatte bir kendiliğinden yedek alır. <b>Yönetim → Yedekler</b>'den yedek alıp indirin; ayda bir harici diske kopyalayın.</li>
   <li><b>Drive'a da yedekle:</b> <b>Yönetim → Yedekler → Drive'a da yedekle</b> kutusuna Google Drive klasör bağlantısını ya da bilgisayarınızdaki Drive/OneDrive klasörünün yolunu yapıştırıp <b>Kaydet ve bağla</b> deyin. Program orada <b>DestekOfis Yedekleri</b> klasörünü açar; her yedek oraya da kopyalanır. <b>Şimdi dene</b> ile sınayın.</li>
   <li><b>Silinenler:</b> silinen kayıt, sekme, belge, tahsilat ve kasa hareketleri <b>Yönetim → Silinenler</b>'de durur; <b>Geri yükle</b> eski yerine getirir, sonradan eklenenlerin üzerine yazmaz.</li>
-  <li><b>Ek yetki (2.0.7):</b> <b>Yönetim → Kullanıcılar</b> listesindeki <b>Ek yetki</b> kolonunda <i>ANLIK DURUM ve raporlar</i> düğmesi: yöneticinin dışında kimin kartı ve raporları göreceğini tek tıkla açıp kapatırsınız.</li>
   <li><b>Güncelleme:</b> <b>Yönetim → Sistem → Güncellemeleri denetle → Şimdi güncelle</b>. Veriler ve lisans korunur; güncellemeden önce yedek alınır. "Güncelleme paketi açılamadı: EPERM" uyarısı görürseniz (2.0.6) <b>Şimdi güncelle</b>'ye basmayın; kurulum dosyasını bir kez daha üstüne çalıştırın, veriler korunur.</li>
   <li><b>Sektör ve görünüm:</b> <b>Ayarlar → Sektör ve görünüm</b>'den sektörü değiştirin ya da kendi sektörünüzü oluşturup düzenleyin.</li>
 </ul>
+<figure><img src="ekran/k17-yetkiler.jpg" alt="Yönetim → Kullanıcılar: kişiye özel yetkiler"><figcaption>Yetkiler: rolün verdikleri işaretli gelir; bu kişiye Kasa'yı görme eklendi (yeşil), tabloyu dışa aktarma kaldırıldı (kırmızı). Kilitli olanlar yalnız yöneticidedir.</figcaption></figure>
+<div class="pair">
+<figure><img src="ekran/k20-kurtarma-karti.jpg" alt="Kurtarma anahtarı kartı"><figcaption>Yönetim → Kullanıcılar: kurtarma anahtarını oluşturun ve yazdırın.</figcaption></figure>
+<figure><img src="ekran/k18-parolami-unuttum.jpg" alt="Giriş ekranı: Parolamı unuttum"><figcaption>Giriş ekranı → Parolamı unuttum: anahtar ya da sunucu kodu ve yeni parola.</figcaption></figure>
+</div>
 
 <h2>15. Bir sorun mu var?</h2>
 <table>
@@ -223,13 +234,14 @@
     <tr><td>"Deneme henüz başlamadı" / "Lisans doğrulanamadı"</td><td>Sunucunun internetini kontrol edin; ardından <b>Yönetim → Lisans → Şimdi doğrula</b>.</td></tr>
     <tr><td>Süre doldu, program salt okunur</td><td>Kayıtlarınız duruyor. Bize ulaşın; lisansınız tanımlanınca kaldığınız yerden devam edersiniz.</td></tr>
     <tr><td>"DestekOfis … sürümüne güncellendi"</td><td>Yazdığınızı kaydedip <b>Yenile</b>'ye basın.</td></tr>
+    <tr><td>Yönetici parolasını unuttum</td><td>Giriş ekranında <b>Parolamı unuttum</b> → kurtarma anahtarı ve yeni parola. Anahtar yoksa sunucu bilgisayarında <b>Sunucu kodu oluştur</b> (14. bölüm). Personel parolasını yönetici <b>Parola sıfırla</b> ile yeniler.</td></tr>
     <tr><td>Bir kaydı ya da sekmeyi yanlışlıkla sildim</td><td>Hemen çıkan bildirimdeki <b>Geri al</b>; sonra ise <b>Yönetim → Silinenler → Geri yükle</b>.</td></tr>
     <tr><td>İnternet kesildi</td><td>Çalışmaya devam edin; program 7 gün internetsiz çalışır.</td></tr>
   </tbody>
 </table>
 <div class="box tip"><b class="t">Teknik Destek ve Satın Alımlar İçin</b>Telefon: <b>0536 771 50 55</b> · E-posta: <b>destekofis@proton.me</b></div>
 
-<p class="foot">DestekOfis 2.0.2 · Kısa Kullanım Kılavuzu · Ekran görüntüleri örnek verilerle hazırlanmıştır.</p>
+<p class="foot">DestekOfis 2.0.10 · Kısa Kullanım Kılavuzu · Ekran görüntüleri örnek verilerle hazırlanmıştır.</p>
 </main>
 </body>
 </html>

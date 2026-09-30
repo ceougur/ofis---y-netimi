@@ -79,16 +79,19 @@ describe("sohbet geçmişi: gün gün ve arşiv", () => {
     assert.equal(files.map(name => readFileSync(path.join(root, privateFolder, name), "utf8")).join(""), before, "aynı mesaj iki kez yazılmaz");
   });
 
-  it("yarıda kalan tur (dosya yazıldı, mesaj silinmedi) tekrarlanınca mesaj ikinci kez yazılmaz", () => {
+  it("yarıda kalan tur (dosya yazıldı, mesaj silinmedi) tekrarlanınca mesaj ikinci kez yazılmaz", async () => {
     const users = Object.fromEntries(server.app.store.all("SELECT id, username FROM users").map(row => [row.username, row.id]));
+    // Ayrı yazışma: ilk yazışmanın 40/45 gün önceki mesajları aynı aya düşebilir (ör. ayın son günlerinde); arşiv dosyası
+    // bir ay içinde zaman sırasıyla yazılır, geriye tarihli test mesajı o dosyada "zaten yazılmış" sayılırdı.
+    const other = (await ali.post("/api/chat/direct", { userId: users.selin })).data.data.id;
     const at = ago(60 * 24 * HOUR);
-    insert(direct, users.ali, "yarıda kalan", at);
+    insert(other, users.ali, "yarıda kalan", at);
     archive.run();
     // Aynı mesaj silinmemiş gibi geri eklenir: dosyanın ilk satırındaki "son" zamanı onu zaten kapsar.
-    insert(direct, users.ali, "yarıda kalan", at);
+    insert(other, users.ali, "yarıda kalan", at);
     assert.equal(archive.run().archived, 1, "silinir");
     const root = path.join(server.dataDir, "mesaj-arsivi");
-    const folder = readdirSync(root).find(name => name.startsWith("Ali Kaya"));
+    const folder = readdirSync(root).find(name => name.includes("Ali Kaya") && name.includes("Selin Er"));
     const all = readdirSync(path.join(root, folder)).map(name => readFileSync(path.join(root, folder, name), "utf8")).join("");
     assert.equal(all.split("yarıda kalan").length - 1, 1);
   });
@@ -105,7 +108,7 @@ describe("sohbet geçmişi: gün gün ve arşiv", () => {
     assert.equal(office.status, 200);
     assert.match(office.buffer.toString("utf8"), /ofise eski duyuru/);
     const info = (await admin.get("/api/admin/chat-archive")).data.data;
-    assert.ok(info.dir.endsWith("mesaj-arsivi") && info.files >= 2 && info.conversations === 2, JSON.stringify(info));
+    assert.ok(info.dir.endsWith("mesaj-arsivi") && info.files >= 3 && info.conversations === 3, JSON.stringify(info)); // iki özel yazışma + ofis kanalı
     assert.equal((await ali.get("/api/admin/chat-archive")).status, 403);
     assert.ok(existsSync(info.dir));
   });

@@ -205,6 +205,7 @@
       </button>
       <div class="hof-session-menu" id="hof-session-menu" ${open ? "" : "hidden"}>${menuHtml()}</div>`;
     place();
+    if (open) positionMenu();
     if (editing) {
       const input = node.querySelector(".hof-session-edit input");
       if (input && document.activeElement !== input) {
@@ -214,11 +215,35 @@
     }
   }
 
+  // Kart sol panelin kaydırma alanında kesilmesin diye (v2.0.10) sayfaya sabit konumlanır: düğmenin hemen altında,
+  // ekrana sığacak genişlik ve yükseklikte; pencere değişince yeniden yerleşir, panel kaydırılınca kapanır.
+  function positionMenu() {
+    const menu = node?.querySelector(".hof-session-menu");
+    const button = node?.querySelector("[data-toggle]");
+    if (!menu || !button || menu.hidden) return;
+    const rect = button.getBoundingClientRect();
+    const width = Math.min(340, window.innerWidth - rect.left - 12);
+    const top = rect.bottom + 6;
+    menu.style.left = `${Math.max(8, rect.left)}px`;
+    menu.style.top = `${top}px`;
+    menu.style.width = `${Math.max(240, width)}px`;
+    menu.style.maxHeight = `${Math.max(200, window.innerHeight - top - 12)}px`;
+  }
+  window.addEventListener("resize", () => node?.classList.contains("is-open") && positionMenu());
+  document.addEventListener(
+    "scroll",
+    event => {
+      if (node?.classList.contains("is-open") && event.target instanceof Element && event.target.contains(node) && !node.contains(event.target)) closeMenu();
+    },
+    true,
+  );
+
   function openMenu() {
     if (!node) return;
     node.classList.add("is-open");
     node.querySelector("[data-toggle]").setAttribute("aria-expanded", "true");
     node.querySelector(".hof-session-menu").hidden = false;
+    positionMenu();
     (node.querySelector(".hof-session-row.is-current .hof-session-pick") || node.querySelector(".hof-session-pick"))?.focus();
     load();
   }
