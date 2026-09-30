@@ -107,6 +107,14 @@ Yeni bir oturum bu belgeyi okuyarak kaldığı yerden devam eder. Son güncellem
    çift kart açılmaz). Cari yoksa pencere yol gösterir ("Tablodaki kişileri cari yap" / "Excel'den cari yükle"). Kılavuzda
    Taksitler bölümüne yazılır. Test: e2e — Taksitler'den 3 cari seç → 3 kart, aynı cari ikinci kez seçilince atlanır,
    Cari ekranındaki yol da çalışmaya devam eder; boş veri ve aynı adlı iki cari.
+4. **Taksitler › grup süzgeci boş gruplarla dolu** (müşteri, 30.09.2026, ekran görüntüsü): *Tüm gruplar* listesinde
+   "42 C 0348 (0)", "42 C 0079 (0)"… hepsi **0 kart**; seçince liste boş. Müşteri: "orada cari seçimi olmadığı için
+   gruplarda boş çıkıyor, bu da hata." Neden (doğrulanacak): gruplar carilerden/Excel'den tanımlandı ama bu gruplardaki
+   carilerin henüz taksit kartı yok; süzgeç yalnız kartları sayıyor. Yapılacak (3. maddeyle birlikte): grup süzgecinde
+   kart sayısının yanında **cari sayısı** ("42 C 0079 · 12 cari · 0 kart"); kartı olmayan grup seçilince boş liste yerine
+   "Bu grupta 12 cari var, henüz taksit kartı yok → **Bu gruba toplu taksitlendir**" (seçim penceresi o grupla açılır);
+   hiç carisi ve kartı olmayan grup listede sönük/ayrı. Test: e2e — gruplu cariler, kart yok → süzgeçte sayılar doğru,
+   düğmeyle toplu taksit → kartlar grupta görünür.
 
 ### 2.0.10 düzeltmeleri — tamamı yapıldı ve yayımlandı (30.09.2026, v2.0.10)
 Maddeler ve kararlar kayıt için duruyor; yapılan iş ve kanıtı `CHANGELOG.md` → 2.0.10 ve `test/e2e/senaryo-210.mjs`.
