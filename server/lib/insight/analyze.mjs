@@ -15,7 +15,7 @@ export const ANALYSIS_VERSION = 3;
 
 // Arama kutusu ipucu: verideki gerçek kolon adlarından (kimlik, kişi, telefon/plaka).
 export function searchColumns(primary) {
-  return [primary.id, primary.person, primary.phone || primary.plate].filter(Boolean).slice(0, 3);
+  return [primary.id, primary.person || primary.personParts?.[0], primary.phone || primary.plate].filter(Boolean).slice(0, 3);
 }
 
 const slim = item => ({

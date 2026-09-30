@@ -680,27 +680,73 @@
   function openQuality(quality = insight?.quality, key = "") {
     if (!quality) return;
     const levelText = LEVELS[quality.level];
+    // Yok say (v2.0.11): veri yükleme yetkisi olan kullanıcı bulguyu (grubun tamamı) ya da tek kaydı yok sayar; bulgu bir
+    // daha uyarmaz ve puandan düşülür. Yok sayılanlar aşağıda katlanır bölümde durur, Geri Al ile döner.
+    const manage = HOF.can("sources.manage");
+    const single = scopeKeys().length === 1 ? scopeKeys()[0] : "";
+    const tabOf = issue => issue.tab ?? (key || single);
+    const issueRows = issue =>
+      issue.items.length
+        ? `<ul class="hof-record-list hof-quality-records">${issue.items.map(item => `<li><button type="button" data-open="${esc(item.key)}" data-tab="${esc(item.tab || "")}"><b>${esc(item.title || item.key)}</b><span>${esc(item.tab || "")}</span></button>${manage && issue.count > 1 ? `<button type="button" class="hof-quality-skip" data-ignore-key="${esc(item.key)}" title="Yalnız bu kaydı yok say" aria-label="${esc(item.title || item.key)} kaydını yok say">Yok Say</button>` : ""}</li>`).join("")}</ul>`
+        : "";
     const issues = quality.issues
       .map(
-        (issue, index) => `<details class="hof-issue is-${esc(issue.severity)}" ${index === 0 ? "open" : ""}>
+        (issue, index) => `<details class="hof-issue is-${esc(issue.severity)}" ${index === 0 ? "open" : ""} data-issue="${esc(issue.id)}" data-issue-tab="${esc(tabOf(issue))}">
           <summary><span class="hof-issue-dot" aria-hidden="true"></span><b>${esc(issue.title)}</b></summary>
-          <p>${esc(issue.detail)}</p>
-          ${issue.items.length ? recordList(issue.items, item => item.tab || "") : ""}
+          <div class="hof-issue-head"><p>${esc(issue.detail)}</p>${manage ? `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-ignore title="Bu uyarı bir daha gösterilmez ve puandan düşülür; yeni yüklemede aynı kayıtlar için de. Yeni hatalı kayıt yine uyarır.">Yok Say${issue.count > 1 ? ` (${number(issue.count)})` : ""}</button>` : ""}</div>
+          ${issueRows(issue)}
           ${issue.more ? `<p class="hof-inline-note">…ve ${number(issue.more)} kayıt daha.</p>` : ""}
+          ${issue.ignoredCount ? `<p class="hof-inline-note">Bu bulgudan ${number(issue.ignoredCount)} kayıt yok sayıldı.</p>` : ""}
         </details>`,
       )
       .join("");
+    const ignored = quality.ignored || [];
+    const ignoredHtml = ignored.length
+      ? `<details class="hof-issue is-ignored"><summary><span class="hof-issue-dot" aria-hidden="true"></span><b>Yok Sayılanlar · ${number(ignored.length)}</b></summary>
+          <p>Bu uyarılar kullanıcı kararıyla gösterilmiyor ve puana sayılmıyor. Geri alınca yeniden uyarır.</p>
+          <ul class="hof-quality-ignored">${ignored.map(item => `<li><div><b>${esc(item.title)}</b><small>${esc([item.byName, item.at ? HOF.formatDateTime?.(item.at) || HOF.formatDate(item.at) : ""].filter(Boolean).join(" · "))}</small></div>${manage ? `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-restore="${esc(item.signature)}">Geri Al</button>` : ""}</li>`).join("")}</ul>
+        </details>`
+      : "";
     const modal = HOF.modal({
       title: `Veri Sağlığı: ${levelText} (%${quality.score})`,
       eyebrow: key ? eyebrow("VERİ SAĞLIĞI", key) : multiScope() ? "VERİ SAĞLIĞI · TÜM SEKMELER" : "VERİ SAĞLIĞI",
       size: "wide",
-      body: `<p class="hof-modal-text">Kontrol edilen <b>${number(quality.checked)}</b> hücrenin <b>${percentWord(quality.score)}</b> sorunsuz. Kontroller: kimlik ve kişi kolonlarının doluluğu, kimliğin aynı sekmede tekrar etmemesi, T.C./IBAN/VKN sağlaması ve telefon, tarih, tutar biçimleri. Not olarak yazılmış hücreler (ör. “ertelendi”) hata sayılmaz. Kaynak veriniz değiştirilmez; düzeltmeyi tablodan yapabilirsiniz.</p>
+      body: `<p class="hof-modal-text">Kontrol edilen <b>${number(quality.checked)}</b> hücrenin <b>${percentWord(quality.score)}</b> sorunsuz. Kontroller: kimlik ve kişi kolonlarının doluluğu, kimliğin aynı sekmede tekrar etmemesi, T.C./IBAN/VKN sağlaması ve telefon, tarih, tutar biçimleri. Not olarak yazılmış hücreler (ör. “ertelendi”) hata sayılmaz. Kaynak veriniz değiştirilmez; düzeltmeyi tablodan yapabilirsiniz${manage ? "; bilerek böyle olan bir uyarıyı <b>Yok Say</b> ile kapatabilirsiniz" : ""}.</p>
         ${issues || '<p class="hof-empty">Biçim ve doluluk sorunu bulunmadı.</p>'}
+        ${ignoredHtml}
         <section class="hof-fixes" data-fixes><h3>${icon("sparkle", 16)} Toplu düzeltmeler</h3><p class="hof-empty">Öneriler hazırlanıyor…</p></section>
         ${reasoningHtml(insight?.reasoning)}`,
     });
     wireOpen(modal);
     loadFixes(modal);
+    // Yok say / geri al: sunucuya yazılır, analiz yeniden alınır ve pencere yeni puanla yenilenir.
+    const reopen = async message => {
+      const fresh = await loadInsight();
+      modal.close();
+      if (!fresh) return;
+      const next = key ? fresh.kpis?.scopes?.[key]?.quality : fresh.quality;
+      if (message) HOF.toast(`${message} Veri Sağlığı: ${LEVELS[next?.level] || "—"} · %${next?.score ?? "—"}.`, { type: "success" });
+      openQuality(next || fresh.quality, key);
+    };
+    modal.dialog.addEventListener("click", async event => {
+      const skip = event.target.closest("[data-ignore], [data-ignore-key], [data-restore]");
+      if (!skip) return;
+      event.preventDefault();
+      event.stopPropagation();
+      skip.disabled = true;
+      try {
+        if (skip.dataset.restore) {
+          await HOF.api("/api/workspace/insight/quality/restore", { method: "POST", body: { signature: skip.dataset.restore } });
+          return reopen("Uyarı geri alındı.");
+        }
+        const box = skip.closest("[data-issue]");
+        await HOF.api("/api/workspace/insight/quality/ignore", { method: "POST", body: { tab: box.dataset.issueTab, id: box.dataset.issue, key: skip.dataset.ignoreKey || "" } });
+        return reopen(skip.dataset.ignoreKey ? "Kayıt yok sayıldı." : "Uyarı yok sayıldı.");
+      } catch (error) {
+        skip.disabled = false;
+        HOF.toastError(error);
+      }
+    }, true);
   }
   HOF.openQuality = openQuality;
 
@@ -1306,6 +1352,8 @@
   HOF.on("live:workspace.changed", change => {
     if (!change) return;
     if (change.kind === "profile") loadProfile();
+    // Başka bilgisayarda bir uyarı yok sayıldı ya da geri alındı (v2.0.11): özet kartındaki puan yenilenir.
+    if (change.kind === "profile" && change.quality) refreshInsightSoon(300);
     if (change.kind === "records" || change.dataset) refreshInsightSoon(change.dataset ? 400 : 1500);
   });
   HOF.on("live:resync", () => {
