@@ -1,4 +1,5 @@
 // Ortak çalışma alanı: dosya işlemleri, görevler, mesajlar, raporlar, merkezi notlar ve veri kaynağı.
+import { methodOf } from "../lib/pay-method.mjs";
 import { columnOrder } from "../lib/sources.mjs";
 import { HttpError, limited, ok, parseJson, readJson, sendBuffer, text } from "../lib/http.mjs";
 import { buildXlsx } from "../lib/xlsx-write.mjs";
@@ -358,8 +359,8 @@ export function registerWorkspaceRoutes(router, { store, auth, access = null, au
     const { amount, date } = paymentInput(body);
     const itemId = newId("payment");
     store.run(
-      "INSERT INTO payments (id, case_key, amount, date, note, case_title, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-      itemId, key, amount, date, limited(body.note, 500, "Açıklama"), limited(body.caseTitle, 200, "Kayıt adı"), user.id, now(),
+      "INSERT INTO payments (id, case_key, amount, date, note, case_title, method, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+      itemId, key, amount, date, limited(body.note, 500, "Açıklama"), limited(body.caseTitle, 200, "Kayıt adı"), methodOf(body.method), user.id, now(),
     );
     audit(user, "case.payment.created", itemId, { caseKey: key, amount });
     changed(user, "activity", { caseKey: key });
@@ -371,7 +372,7 @@ export function registerWorkspaceRoutes(router, { store, auth, access = null, au
   // düzeltebilir/silebilir. Eski ve yeni değerler denetim kaydına yazılır.
   const editablePayment = (req, id) => {
     const user = auth.requirePermission(req, "payments.create");
-    const payment = store.get("SELECT id, case_key AS caseKey, amount, date, note, created_by AS createdBy FROM payments WHERE id = ?", limited(id, 120, "Tahsilat"));
+    const payment = store.get("SELECT id, case_key AS caseKey, amount, date, note, method, created_by AS createdBy FROM payments WHERE id = ?", limited(id, 120, "Tahsilat"));
     if (!payment) throw new HttpError(404, "Tahsilat bulunamadı. Başka biri silmiş olabilir.");
     if (payment.createdBy !== user.id && !canUser(user, "cash.manage")) throw new HttpError(403, "Başkasının girdiği tahsilatı yalnızca kasa yetkisi olanlar (yönetici, muhasebe) değiştirebilir.");
     return { user, payment };
@@ -381,7 +382,7 @@ export function registerWorkspaceRoutes(router, { store, auth, access = null, au
     const body = await readJson(req);
     const { amount, date } = paymentInput(body);
     const note = limited(body.note, 500, "Açıklama");
-    store.run("UPDATE payments SET amount = ?, date = ?, note = ?, updated_by = ?, updated_at = ? WHERE id = ?", amount, date, note, user.id, now(), payment.id);
+    store.run("UPDATE payments SET amount = ?, date = ?, note = ?, method = ?, updated_by = ?, updated_at = ? WHERE id = ?", amount, date, note, methodOf(body.method, payment.method || "cash"), user.id, now(), payment.id);
     audit(user, "case.payment.updated", payment.id, { caseKey: payment.caseKey, previous: { amount: payment.amount, date: payment.date, note: payment.note }, amount, date, note });
     changed(user, "activity", { caseKey: payment.caseKey });
     changed(user, "cash");

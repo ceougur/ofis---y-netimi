@@ -89,7 +89,7 @@ describe("Raporlar penceresi uçları (tam yığın)", () => {
     assert.equal((await admin.post("/api/workspace/cheques", { direction: "in", instrument: "cheque", amount: "1000", dueDate: shift(10), accountId: ali.id, serialNo: "A-1" })).status, 200);
     assert.equal((await admin.post("/api/workspace/cheques", { direction: "out", instrument: "cheque", amount: "800", dueDate: shift(20), accountId: tedarik.id, serialNo: "V-1" })).status, 200);
     assert.equal((await admin.post("/api/workspace/cheques", { direction: "in", instrument: "note", amount: "700", dueDate: shift(45), accountId: veli.id, serialNo: "S-1" })).status, 200);
-    assert.equal((await admin.post("/api/workspace/cash", { kind: "out", amount: "4000", date: shift(15), description: "Kira" })).status, 200);
+    assert.equal((await admin.post("/api/workspace/cash", { kind: "out", amount: "4000", date: shift(15), description: "Kira", cashForce: true })).status, 200);
     assert.equal((await admin.post("/api/workspace/stock", { name: "A4 kağıt", unit: "paket", unitPrice: "50", openingQty: "10", openingDate: shift(-60) })).status, 200);
   });
   after(async () => {
@@ -252,7 +252,7 @@ describe("rapor ekranı kuralı: boş veri, geçmiş/gelecek dönem, tek kayıt,
       assert.equal((await admin.raw("GET", "/api/workspace/overview/vade-takip.pdf?preset=open")).status, 200, "boş Vade takip PDF");
       // Tek kayıt: yalnız ileri tarihli bir Kasa çıkışı (gelecek ay). Vade takipte ve aylık kasada yalnız o ay.
       const future = shift(40);
-      assert.equal((await admin.post("/api/workspace/cash", { kind: "out", amount: "750", date: future, description: "Sigorta" })).status, 200);
+      assert.equal((await admin.post("/api/workspace/cash", { kind: "out", amount: "750", date: future, description: "Sigorta", cashForce: true })).status, 200);
       const one = (await admin.get("/api/workspace/overview/vade-takip?preset=open")).data.data;
       assert.deepEqual(one.rows.map(row => [row.source, row.amount, row.date, row.state]), [["cash", 750, future, "upcoming"]]);
       assert.equal((await admin.get("/api/workspace/overview/vade-takip?preset=next30")).data.data.rows.length, 0, "40 gün sonraki kalem 30 günde yok");

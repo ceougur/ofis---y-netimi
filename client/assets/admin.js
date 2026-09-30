@@ -360,8 +360,10 @@
         const body = { name: data.name, description: data.description, permissions };
         if (role) await HOF.api(`/api/admin/roles/${encodeURIComponent(role.key)}`, { method: "PATCH", body });
         else await HOF.api("/api/admin/roles", { method: "POST", body });
+        // v2.0.13 (simülasyon bulgusu): rol listesi yenilenmeden bildirim verilirse hemen açılan "+ Yeni Kullanıcı"
+        // penceresinde yeni rol görünmüyordu. Önce liste yenilenir, sonra "seçebilirsiniz" denir.
+        await loadUsers();
         HOF.toast(role ? `“${data.name}” rolü kaydedildi.` : `“${data.name}” rolü oluşturuldu. Kullanıcının rol listesinden seçebilirsiniz.`, { type: "success" });
-        loadUsers();
       },
     });
   }

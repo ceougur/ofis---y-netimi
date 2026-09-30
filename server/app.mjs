@@ -31,6 +31,9 @@ import { runScoped } from "./lib/session-scope.mjs";
 import { registerAdminRoutes } from "./routes/admin.mjs";
 import { registerAuthRoutes } from "./routes/auth.mjs";
 import { registerCashRoutes } from "./routes/cash.mjs";
+import { registerLedgerRoutes } from "./routes/ledger.mjs";
+import { registerWhatsappRoutes } from "./routes/whatsapp.mjs";
+import { createIntegrity } from "./lib/integrity.mjs";
 import { registerDueRoutes } from "./routes/dues.mjs";
 import { registerPlanRoutes } from "./routes/plans.mjs";
 import { registerPlanTransfer } from "./routes/plan-transfer.mjs";
@@ -159,14 +162,22 @@ export function createApp(overrides = {}) {
   context.planTransfer = registerPlanTransfer(router, { ...context, plans: () => context.plans, accounts: () => context.accounts });
   context.plans = registerPlanRoutes(router, { ...context, accounts: () => context.accounts, cheques: () => context.cheques });
   context.accounts = registerAccountRoutes(router, { ...context, plans: () => context.plans, cheques: () => context.cheques });
-  context.stock = registerStockRoutes(router, { ...context, accounts: () => context.accounts });
+  context.stock = registerStockRoutes(router, { ...context, accounts: () => context.accounts, plans: () => context.plans });
   // Çek / Senet (v2.0.7): cari ve taksit defterine bağlı; Kasa tahsil/ödeme olaylarını okur.
   context.cheques = registerChequeRoutes(router, { ...context, accounts: () => context.accounts, plans: () => context.plans });
+  // Ana Defter (v2.0.13): alt defterlerden türetilen çift yönlü yevmiye, hesap planı mizanı ve mutabakat kapısı.
+  context.ledger = registerLedgerRoutes(router, { ...context, cash: () => context.cash, accounts: () => context.accounts, integrity: () => context.integrity });
+  // Mutabakat kapısı (v2.0.13): para taşıyan her işlem COMMIT'ten önce alt defter ↔ ana defter denetiminden geçer;
+  // sapma yaratacaksa ROLLBACK edilir ve günlüğe yazılır (lib/integrity.mjs).
+  context.integrity = createIntegrity({ store, ledger: () => context.ledger, log });
+  context.integrity.start();
+  // WhatsApp ile ekstre ve mesaj (v2.0.13): tek ya da toplu; alıcıları sunucu hazırlar, gönderimler cari kartına yazılır.
+  registerWhatsappRoutes(router, { ...context, accounts: () => context.accounts });
   // ANLIK DURUM (v2.0.7): Kasa, Cari, Stok ve Çek/Senet'in kendi hesaplarını okur (tek kaynak); raporlar.
   // Vade takip ve nakit akışı (v2.0.9) tablolardaki ödeme günlerini de okur (tüm veri oturumları; routes/reports.mjs).
   context.overview = registerOverviewRoutes(router, { ...context, cash: () => context.cash, accounts: () => context.accounts, plans: () => context.plans, stock: () => context.stock, cheques: () => context.cheques, tables: () => context.tableReports });
   // Rapor merkezi (v2.0.7): programdaki her bilginin hazır raporu; ekranda ön izleme, PDF ve Excel.
-  context.reportCenter = registerReportCenter(router, { ...context, cash: () => context.cash, accounts: () => context.accounts, plans: () => context.plans, stock: () => context.stock, cheques: () => context.cheques, overview: () => context.overview });
+  context.reportCenter = registerReportCenter(router, { ...context, cash: () => context.cash, accounts: () => context.accounts, plans: () => context.plans, stock: () => context.stock, cheques: () => context.cheques, overview: () => context.overview, ledger: () => context.ledger, integrity: () => context.integrity });
   registerDueRoutes(router, context);
   const documents = registerDocumentRoutes(router, context);
   registerTrashRoutes(router, { ...context, documents });
@@ -267,6 +278,7 @@ export function createApp(overrides = {}) {
     config,
     log,
     store,
+    integrity: context.integrity,
     db,
     server,
     migration,

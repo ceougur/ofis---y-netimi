@@ -150,7 +150,7 @@ try {
     ok((await api(`/api/workspace/accounts/${ahmet1.id}/entries`, { kind: "in", amount: "1500", date: TODAY, note: "Nakit tahsilat" })).status === 200, "Ahmet (1): 1.500 tahsilat");
     // Tedarikçi: 2000 alacak (fatura: biz borçluyuz); 500 ödeme (Kasa'dan çıkar).
     ok((await api(`/api/workspace/accounts/${tedarik.id}/entries`, { kind: "credit", amount: "2000", date: local(-10), note: "Fatura 2026/77" })).status === 200, "Tedarik: 2.000 fatura (alacak)");
-    ok((await api(`/api/workspace/accounts/${tedarik.id}/entries`, { kind: "out", amount: "500", date: local(-5), note: "Kısmi ödeme" })).status === 200, "Tedarik: 500 ödeme");
+    ok((await api(`/api/workspace/accounts/${tedarik.id}/entries`, { kind: "out", amount: "500", date: local(-5), note: "Kısmi ödeme", cashForce: true })).status === 200, "Tedarik: 500 ödeme");
     // Ahmet 2: 3 taksitli kart (ilk taksit 20 gün önce: gecikmiş).
     const p = await api("/api/workspace/plans", { name: "Ahmet Yılmaz", accountId: ahmet2.id, total: "3000", mode: "auto", count: 3, firstDue: local(-20), everyMonths: 1 });
     ok(p.status === 200, "Ahmet (2): 3.000 / 3 taksit kartı");
@@ -160,7 +160,7 @@ try {
     ok((await api("/api/workspace/cheques", { direction: "out", instrument: "cheque", amount: "800", dueDate: local(20), accountId: tedarik.id, serialNo: "V-2001", bank: "Halkbank" })).status === 200, "verilen çek 800 (+20 gün)");
     ok((await api("/api/workspace/cheques", { direction: "in", instrument: "note", amount: "700", dueDate: local(45), accountId: ahmet2.id, serialNo: "S-3001" })).status === 200, "alınan senet 700 (+45 gün)");
     // Kasa: ileri tarihli kira (+15 gün) ve bugünkü elle giriş.
-    ok((await api("/api/workspace/cash", { kind: "out", amount: "4000", date: local(15), description: "Ofis kirası" })).status === 200, "ileri tarihli kira 4.000 (+15 gün)");
+    ok((await api("/api/workspace/cash", { kind: "out", amount: "4000", date: local(15), description: "Ofis kirası", cashForce: true })).status === 200, "ileri tarihli kira 4.000 (+15 gün)");
     ok((await api("/api/workspace/cash", { kind: "in", amount: "250", date: TODAY, description: "Danışmanlık" })).status === 200, "bugün Kasa girişi 250");
   });
 

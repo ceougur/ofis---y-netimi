@@ -208,6 +208,10 @@ export const FORCED_ROLES = {
   status: { role: "status", extra: {}, label: "Durum" },
   category: { role: "category", extra: {}, label: "Kategori" },
   note: { role: "note", extra: {}, label: "Not" },
+  // v2.0.13 (simülasyon bulgusu): otomatik "adres" bulunuyordu ama elle seçilemiyordu; "Kredi Limiti" gibi para
+  // biçimli ama alacak olmayan kolon "Sayı" seçilerek tutar toplamlarından çıkarılır.
+  address: { role: "address", extra: {}, label: "Adres" },
+  number: { role: "number", extra: {}, label: "Sayı (tutar değil)" },
 };
 
 export function analyzeColumn(rows, column, { now = new Date(), forced = null } = {}) {

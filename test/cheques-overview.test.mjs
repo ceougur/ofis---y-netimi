@@ -296,7 +296,8 @@ describe("çek/senet: Cari, Taksit ve Kasa ile işlem bütünlüğü", () => {
     const endorsed = await act(cheque, "endorse", { accountId: other.id });
     // Ciro edilen cari arka planda silinmiş olsun (ör. eski sürümden kalan veri): karşılıksız işleminin ikinci etkisi
     // (tedarikçiye alacak) yazılamaz; ilk etki (müşteriye borç) de geri alınmalı, durum değişmemeli.
-    server.app.store.run("UPDATE accounts SET deleted_at = ? WHERE id = ?", new Date().toISOString(), other.id);
+    // Doğrudan veritabanına (mutabakat kapısının dışından) yazılır: eski sürümden kalmış bozuk veriyi taklit eder.
+    server.app.store.db.prepare("UPDATE accounts SET deleted_at = ? WHERE id = ?").run(new Date().toISOString(), other.id);
     const before = await balanceOf(customer.id);
     const eventsBefore = (await admin.get(`/api/workspace/cheques/${cheque.id}`)).data.data.events.length;
     const response = await admin.post(`/api/workspace/cheques/${cheque.id}/actions`, { action: "bounce", date: TODAY, status: endorsed.status });
@@ -305,7 +306,7 @@ describe("çek/senet: Cari, Taksit ve Kasa ile işlem bütünlüğü", () => {
     const after = (await admin.get(`/api/workspace/cheques/${cheque.id}`)).data.data;
     assert.equal(after.status, "endorsed");
     assert.equal(after.events.length, eventsBefore);
-    server.app.store.run("UPDATE accounts SET deleted_at = NULL WHERE id = ?", other.id);
+    server.app.store.db.prepare("UPDATE accounts SET deleted_at = NULL WHERE id = ?").run(other.id);
   });
 
   it("Excel/Sheets'ten portföy: kapı raporu; varsayılan carilere dokunmaz, 'carilere işle' ile yazar; kapanmış ve çift satır alınmaz", async () => {

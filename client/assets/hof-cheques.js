@@ -177,12 +177,13 @@
   }
 
   // ---------- Formlar ----------
-  function chequeForm({ direction, cheque = null }) {
+  // preset (v2.0.13): cari kartındaki Tahsilat / Ödeme formunda "Çek / Senet" yolu seçilince cari ve tutar dolu gelir.
+  function chequeForm({ direction, cheque = null, preset = null }) {
     const edit = Boolean(cheque);
     const core = !edit || cheque.canEditCore;
     const fields = [
       { name: "instrument", label: "Evrak", type: "select", value: cheque?.instrument || "cheque", options: [{ value: "cheque", label: "Çek" }, { value: "note", label: "Senet" }] },
-      { name: "amount", label: "Tutar (₺)", required: true, autofocus: !edit, value: cheque ? String(cheque.amount).replace(".", ",") : "", inputmode: "decimal", placeholder: "ör. 12.500,00" },
+      { name: "amount", label: "Tutar (₺)", required: true, autofocus: !edit, value: cheque ? String(cheque.amount).replace(".", ",") : preset?.amount ? String(preset.amount) : "", inputmode: "decimal", placeholder: "ör. 12.500,00" },
       { name: "dueDate", label: "Vade Tarihi", type: "date", required: true, value: cheque?.dueDate || "" },
       { name: "issueDate", label: direction === "in" ? "Alış Tarihi" : "Veriliş Tarihi", type: "date", required: true, value: cheque?.issueDate || todayIso() },
       { name: "serialNo", label: "Çek / Senet No", value: cheque?.serialNo || "", maxlength: 60 },
@@ -221,10 +222,10 @@
             // taksit kartları okunamazsa seçim gösterilmez
           }
         };
-        const picker = HOF.accounts?.picker({ value: cheque?.accountId ? { id: cheque.accountId, name: cheque.accountName } : {}, label: direction === "in" ? "Kimden Alındı (cari)" : "Kime Verildi (cari)", help: direction === "in" ? "Müşteri carisi. Yoksa aşağıya keşidecinin adını yazın." : "Tedarikçi carisi. Yoksa aşağıya lehtarın adını yazın.", type: direction === "in" ? "" : "", onPick: loadPlans });
+        const picker = HOF.accounts?.picker({ value: cheque?.accountId ? { id: cheque.accountId, name: cheque.accountName } : preset?.account?.id ? { id: preset.account.id, name: preset.account.name } : {}, label: direction === "in" ? "Kimden Alındı (cari)" : "Kime Verildi (cari)", help: direction === "in" ? "Müşteri carisi. Yoksa aşağıya keşidecinin adını yazın." : "Tedarikçi carisi. Yoksa aşağıya lehtarın adını yazın.", type: direction === "in" ? "" : "", onPick: loadPlans });
         if (picker) anchor.before(picker);
         anchor.after(planSlot);
-        if (cheque?.accountId) loadPlans({ id: cheque.accountId });
+        if (cheque?.accountId || preset?.account?.id) loadPlans({ id: cheque?.accountId || preset.account.id });
       },
       onSubmit: async data => {
         const payload = { ...data, direction, amount: data.amount ?? cheque?.amount, updatedAt: cheque?.updatedAt };
@@ -239,6 +240,11 @@
           } else throw error;
         }
         HOF.toast(edit ? "Evrak güncellendi." : direction === "in" ? "Evrak portföye alındı." : "Verilen evrak kaydedildi.", { type: "success" });
+        HOF.emit("accounts-changed");
+        if (!modal) {
+          HOF.emit("cheques-changed", saved);
+          return;
+        }
         view.id = saved.id;
         view.cheque = saved;
         view.mode = "card";
@@ -249,8 +255,8 @@
     });
   }
   const ACTION_TEXT = {
-    collect: { title: "Tahsil Et", past: "tahsil edildi", intro: "Tutar seçtiğiniz tarihte Kasa'ya giriş olarak yazılır.", submit: "Tahsili kaydet" },
-    pay: { title: "Ödeme Yap", past: "ödendi", intro: "Tutar seçtiğiniz tarihte Kasa'dan çıkış olarak yazılır.", submit: "Ödemeyi kaydet" },
+    collect: { title: "Tahsil Et", past: "tahsil edildi", intro: "Tutar seçtiğiniz tarihte seçtiğiniz hesaba (banka ya da nakit kasa) giriş olarak yazılır.", submit: "Tahsili Kaydet" },
+    pay: { title: "Ödeme Yap", past: "ödendi", intro: "Tutar seçtiğiniz tarihte seçtiğiniz hesaptan (banka ya da nakit kasa) çıkış olarak yazılır.", submit: "Ödemeyi Kaydet" },
     endorse: { title: "Ciro Et", past: "ciro edildi", intro: "Evrak seçtiğiniz tedarikçiye verilir; o cariye olan borcunuz evrak tutarı kadar düşer. Kasa değişmez.", submit: "Ciro et" },
     bounce: { title: "Karşılıksız / İade", past: "karşılıksız / iade", intro: "Evrak karşılıksız çıktı ya da iade edildi: müşteri yeniden borçlanır (taksite sayıldıysa taksit yeniden açılır); ciro edildiyse tedarikçiye olan borç geri gelir.", submit: "Karşılıksız / iade işaretle" },
   };
@@ -262,6 +268,8 @@
       intro: text.intro,
       fields: [
         { name: "date", label: "İşlem Tarihi", type: "date", required: true, value: todayIso() },
+        // v2.0.13: çek/senet çoğunlukla bankadan tahsil edilir/ödenir; elden ise Nakit.
+        ...(action === "collect" || action === "pay" ? [{ name: "method", label: action === "collect" ? "Tahsil Edilen Hesap" : "Ödenen Hesap", type: "select", value: "bank", options: [{ value: "bank", label: "Banka (Havale / EFT)" }, { value: "cash", label: "Nakit Kasa (elden)" }] }] : []),
         { name: "note", label: "Açıklama", maxlength: 300, placeholder: action === "bounce" ? "ör. banka iade etti" : "" },
       ],
       submitLabel: text.submit,
@@ -272,7 +280,7 @@
       },
       onSubmit: async data => {
         if (action === "endorse" && !data.accountId) throw new Error("Çeki kime ciro ettiğinizi seçin.");
-        const saved = await HOF.api(`/api/workspace/cheques/${encodeURIComponent(cheque.id)}/actions`, { method: "POST", body: { action, date: data.date, note: data.note, accountId: data.accountId || "", status: cheque.status } });
+        const saved = await HOF.api(`/api/workspace/cheques/${encodeURIComponent(cheque.id)}/actions`, { method: "POST", body: { action, date: data.date, note: data.note, accountId: data.accountId || "", method: data.method || "", status: cheque.status } });
         HOF.toast(`${cheque.instrumentLabel} ${ACTION_TEXT[action].past} olarak işlendi.`, { type: "success" });
         apply(saved);
       },
@@ -414,7 +422,12 @@
     loadList();
   }
 
-  HOF.cheques = { open };
+  // Başka modülden yeni evrak formu (v2.0.13): cari ve tutar dolu. Liste açık değilse de form tek başına çalışır.
+  const newFor = ({ direction = "in", account = null, amount = 0 } = {}) => {
+    if (!HOF.can("cheques.manage")) return HOF.toast("Çek / senet girme yetkiniz yok.", { type: "error" });
+    chequeForm({ direction, preset: { account, amount } });
+  };
+  HOF.cheques = { open, newFor };
   HOF.whenReady(() => {
     // Başka bilgisayardaki değişiklik: açık liste/kart yenilenir.
     HOF.on("live:workspace.changed", change => {

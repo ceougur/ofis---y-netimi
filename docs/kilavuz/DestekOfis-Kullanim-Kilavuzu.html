@@ -118,8 +118,13 @@
 <p><b>Ay sütunlu tablolar (Ocak–Aralık):</b> ay hücresine taksit tutarını yazarsanız program o ayı ödenecek taksit sayar ve ayı gelince uyarır. Tahsilatı kayıttan ya da kayan pilden girin; hücreye "ödendi" yazmak da o ayı kapatır.</p>
 <p><b>Acil görev</b> kırmızı bildirimle gelir ve tamamlanana kadar zilde kalır. Bütün uyarılar üstteki <b>zil</b>dedir; <b>✕</b> ile kendi listenizden kaldırırsınız.</p>
 
-<h2>7. Kasa</h2>
-<p>Sol menüden <b>Kasa</b>. Kayıtlara, carilere ve taksitlere girdiğiniz tahsilatlar Kasa'ya kendiliğinden gelir. Diğer gelir ve giderleri <b>+ Tahsilat</b> ve <b>− Ödeme</b> ile ekleyin. Dönemi <b>Bu Ay</b>, <b>Geçen Ay</b>, <b>Bu Yıl</b>, <b>Tümü</b> ya da <b>Tarih Aralığı</b> ile seçin; <b>PDF İndir</b> ile kasa dökümünü alın. Çek / senet ya da stoktan gelen satırın yanındaki <b>↗</b> kaynağını açar.</p>
+<h2>7. Kasa ve Banka</h2>
+<p>Sol menüden <b>Kasa</b>. Kayıtlara, carilere, taksitlere ve satışlara girdiğiniz tahsilatlar buraya kendiliğinden gelir. Diğer gelir ve giderleri <b>+ Tahsilat</b> ve <b>− Ödeme</b> ile ekleyin. Dönemi <b>Bu Ay</b>, <b>Geçen Ay</b>, <b>Bu Yıl</b>, <b>Tümü</b> ya da <b>Tarih Aralığı</b> ile seçin; <b>PDF İndir</b> ile dökümü alın. Çek / senet ya da stoktan gelen satırın yanındaki <b>↗</b> kaynağını açar.</p>
+<ul>
+  <li><b>Ödeme ve tahsilat yolu:</b> her tahsilat ve ödemede <b>Nakit</b>, <b>Havale / EFT</b> ya da <b>Kredi Kartı</b> seçin. Cari kartında tahsilatta <b>Çek / Senet</b> seçerseniz evrak formu açılır; satışta <b>Açık Hesap</b> tutarı müşterinin borcuna yazar.</li>
+  <li><b>Sekmeler:</b> <b>Nakit Kasa</b>, <b>Banka</b>, <b>Kredi Kartı</b> ya da <b>Tümü</b>. Her sekmenin kendi bakiyesi ve PDF'i vardır.</li>
+  <li><b>Kasa eksiye düşecekse</b> program sorar. Para bankadan ödendiyse yolu <b>Havale / EFT</b> seçin; gerçekten kasadan çıktıysa <b>Yine de Kaydet</b>.</li>
+</ul>
 <figure class="w80"><img src="ekran/k08-kasa.jpg" alt="Kasa"></figure>
 
 <h2>8. Cari</h2>
@@ -133,7 +138,17 @@
   <li><b>Bakiye</b> = borç − alacak. <b style="color:#177245">Borçlu</b>: cari size borçlu; <b style="color:#b3473a">Alacaklı</b>: siz cariye borçlusunuz; <b>Kapalı</b>: bakiye sıfır. Listede, kartta, raporlarda ve çıktılarda aynı sözcük ve renk.</li>
   <li><b>Arama ve süzgeç:</b> ad, telefon, cari no, adres ve ek alanlar; tür, grup, bakiye (Borçlular, Alacaklılar, Taksidi Gecikenler…).</li>
   <li><b>Çıktı:</b> listede PDF, Yazdır ve Excel (süzgeç varsa yalnız süzülenler); kartta cari ekstre PDF'i.</li>
+  <li><b>Açılış bakiyesi:</b> tedarikçinin bakiyesi <b>Alacaklı</b> (sizin borcunuz), müşterininki <b>Borçlu</b> yazılır. Yanlış yönde girdiğiniz harekette ✎ ile <b>Yön</b>'ü değiştirin.</li>
+  <li><b>Aynı kişi iki kez açılmaz:</b> ad yazarken aynı adlı cari varsa altında gösterilir; kaydederken <b>Mevcut Cariyi Aç</b> diyebilirsiniz.</li>
 </ul>
+<h3>WhatsApp ile Ekstre ve Mesaj</h3>
+<ol class="steps">
+  <li><b>Tek cari:</b> kartta <b>WhatsApp</b> → <b>Ekstre Gönder</b>, <b>Mesaj Gönder</b> ya da <b>Sohbeti Aç</b>. Altta son gönderimler görünür.</li>
+  <li><b>Toplu:</b> listede soldaki kutularla carileri seçin → <b>WhatsApp Ekstre</b> ya da <b>WhatsApp Mesaj</b>. Hiç seçmezseniz <b>Tümüne WhatsApp …</b> süzgeçteki bütün carilere gönderir (önce grup ya da <i>Borçlular</i> seçin).</li>
+  <li><b>Hazırlık:</b> telefonu olmayan ya da sabit hat olan cariler ayrı gösterilir. Ekstrede dönemi seçin; mesajda hazır şablonu seçin ya da kendiniz yazın. <b>{Ad}</b>, <b>{Bakiye}</b>, <b>{Sıradaki Taksit}</b> gibi değişkenler her kişide kendi bilgisiyle dolar; sağda ön izleme vardır. <b>Yalnız Borçlu Carilere Gönder</b> ile alacaklıları çıkarın.</li>
+  <li><b>Gönderim:</b> <b>Gönderime Başla</b> → her kişi için mesaj hazır gelir; <b>WhatsApp'ta Aç ve Sıradakine Geç</b> deyin, açılan WhatsApp'ta <b>Gönder</b>'e basın. Mesajı o kişiye özel düzeltebilir, <b>Atla</b>yabilir, ekstrenin PDF'ini indirip sohbete ekleyebilirsiniz. Gönderilenler cari kartına yazılır.</li>
+</ol>
+<p>Mesajları sizin WhatsApp'ınız (bilgisayardaki WhatsApp ya da WhatsApp Web) gönderir; ücretli bir hizmet gerekmez.</p>
 
 <h2>9. Taksitler</h2>
 <p>Sol menüden <b>Taksitler</b>. Kişilerin taksitli borçlarını takip eder. Kartlar <b>Grup › Alt Grup</b> ile düzenlenir (servis plakası › güzergâh, site › blok, okul › sınıf). Grup listesi her grubun kaç kartı ve kaç carisi olduğunu gösterir: <i>34 SRV 202 · 0 kart · 3 cari</i>.</p>
@@ -141,6 +156,7 @@
   <li><b>Tek kart:</b> <b>+ Yeni Kart</b> → cariyi seçin (ad yazınca bulunur; yoksa bu adla cari açılır); kartın Kayıt Tarihi ve grubu cariden gelir. Toplam tutar, taksit sayısı ve ilk vadeyi yazın. Taksitleri sonra <b>Otomatik Dağıt</b> ya da <b>+ Taksit</b> ile de kurabilirsiniz.</li>
   <li><b>Birden çok cariye birden:</b> <b>+ Toplu Taksitlendir</b> ya da süzgeç satırındaki <b>Cari Seç</b>. Açılan pencerede grup, alt grup ve adla süzün, kutularla carileri seçin (başlıktaki kutu hepsini seçer) → <b>Seçilenlere Taksit Planı</b>. Tutarı herkese aynı yazın ya da her carinin kartındaki alandan (ör. <i>Servis Ücreti</i>) okutun; taksit sayısı ve ilk vadeyi girin. Program önce kaç kart, toplam ne kadar ve hangi carilere açılacağını gösterir; <b>N Kartı Aç</b> deyince kartlar açılır. Açık kartı olan cari listeye gelmez; çift kart açılmaz.</li>
   <li><b>Kartsız grup:</b> bir grubu seçtiğinizde carileri olup hiç kartı yoksa liste boş kalmaz; <b>Bu Gruba Toplu Taksitlendir</b> ile o grubun carileri seçili gelir.</li>
+  <li><b>Veresiye satışı ya da mevcut borcu taksitlendirme:</b> cari kartında <b>+ Taksit Planı</b> → <b>Borcun Kaynağı: Carinin Mevcut Borcu</b> (tutar bakiyeden gelir). Borç ikinci kez yazılmaz, yalnız vadelere bölünür. Satış anında da yapabilirsiniz: Stok → <b>− Çıkış</b> → <b>Açık Hesap</b> → <b>Bu Satışı Taksitlendir</b>. Yeni bir hizmet ya da satışsa <b>Yeni Borç</b> seçin.</li>
   <li><b>Tahsilat:</b> kartta <b>+ Tahsilat</b> ya da taksitin yanındaki <b>₺</b>. Tutar sıradaki taksit kadar hazır gelir; en eski açık taksite sayılır, fazlası sonrakine geçer. Kasa'ya düşer; <b>Makbuz</b> A5 boyutundadır. İade için <b>− Ödeme / İade</b>.</li>
   <li><b>Excel'den ya da tablodan:</b> <b>Excel / Sheets’ten Yükle</b> listenizdeki taksitleri gerçek vade ve tutarlarıyla kurar. Yüklediğiniz tabloda ödeme planı varsa (ay kolonları, "1. Taksit Tarihi / Tutarı" ya da toplam + taksit sayısı) <b>Tablodan Aktar</b> her kişiyi ön izlemede gösterir; <b>Aktar</b> deyince kart tablodaki kayda ve cariye bağlanır, Excel'de ödenmiş kısım açılış sayılır (<b>Kasa değişmez</b>). Yanlış aktardıysanız <b>Son Aktarımlar → Geri Al</b>.</li>
 </ol>
@@ -160,7 +176,10 @@
 <p>Sol menüden <b>Stok</b>. Ürünler (çay, yağ, kâğıt…) ve giriş/çıkış hareketleri; <b>Mevcut</b> = girişler − çıkışlar.</p>
 <ol class="steps">
   <li><b>+ Yeni Ürün:</b> ad, <b>birim</b> (Adet, Kg, Lt, Metre, M², Paket, Koli, Saat…; listede yoksa kendiniz yazın), kategori, kritik seviye, birim fiyat. Açılış miktarı yazıp <i>Kasa'ya yansıt</i>'ı işaretlerseniz miktar × birim fiyat Kasa'dan gider olarak düşer. Toplu açılış için <b>Excel / Sheets’ten Yükle</b>.</li>
-  <li><b>+ Giriş / − Çıkış:</b> miktar ve birim fiyatı yazınca tutar hesaplanır. Para Kasa'dan ödenebilir, Kasa'ya tahsil edilebilir ya da cariye yazılabilir.</li>
+  <li><b>Alış ve satış fiyatı:</b> ürün kartında ikisini ayrı yazın; <b>− Çıkış</b> satış fiyatıyla, <b>+ Giriş</b> alış fiyatıyla açılır.</li>
+  <li><b>+ Giriş / − Çıkış:</b> miktar ve birim fiyatı yazınca tutar hesaplanır. Para <b>Nakit</b>, <b>Kredi Kartı</b> ya da <b>Havale / EFT</b> ile Kasa'ya/Banka'ya yazılır ya da <b>Açık Hesap</b> ile cariye.</li>
+  <li><b>↩ Müşteri İadesi:</b> geri gelen ürün stoğa girer; parası müşteriye geri ödenir ya da borcundan düşülür. Taksitlendirilmiş satıştan iade gelirse taksit kartı da o kadar küçülür.</li>
+  <li><b>Kasiyer:</b> <i>Yönetim → Yeni Rol</i>'de <b>Satış Yapma</b> yetkisi verilen kişi ürün kartına dokunmadan satış ve iade girer.</li>
   <li><b>Kritik seviye:</b> ürün bu miktara inince listede üstte kırmızı görünür, sol menüde rozet çıkar.</li>
 </ol>
 <p><b>Hizmet kalemi:</b> <i>Kalem Türü</i>'nü <i>Hizmet</i> yapın (yıkama, servis ücreti…); stoğu tutulmaz, satışı Kasa'ya ya da cariye yazılır.</p>
@@ -192,6 +211,7 @@
   <li><b>Çek / Senet:</b> portföy raporu.</li>
   <li><b>Tüm Raporlar:</b> Kasa, Cari, Taksit, Çek / Senet, Stok ve kayıt raporları (ör. <i>Cari Listesi ve Bakiyeler</i>, <i>Tüm Cari Hareketleri</i>, <i>Cari Bazında Tahsilat</i>, <i>Taksit Kartları</i>). Soldan raporu, üstten dönemi seçin; ön izleme gelir.</li>
   <li><b>Tablo Raporları:</b> yalnız Excel tablonuza dayalı raporlar.</li>
+  <li><b>Ana Defter</b> (Tüm Raporlar içinde): <i>Hesap Planı Mizanı</i>, <i>Yevmiye Defteri</i> ve <i>Defter Mutabakatı</i>. Mutabakatta her satır <b>Tutarlı</b> olmalıdır; <b>Fark Var</b> görürseniz destek hattını arayın. Defterleri bozacak bir kayıt hiç yazılmaz ve <i>Mutabakat Günlüğü</i>'nde görünür.</li>
 </ul>
 <p>Her rapor <b>PDF İndir</b> ve <b>Excel İndir</b> ile iner.</p>
 <div class="pair">

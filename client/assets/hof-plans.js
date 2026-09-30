@@ -119,9 +119,13 @@
   const NAME_COLUMN = /(^|[^a-zçğıöşü])(ad[ıi]?\s*soyad[ıi]?|adi\s*soyadi|isim|müvekkil|muvekkil|öğrenci|ogrenci|hasta|müşteri|musteri|borçlu|borclu|kiracı|kiraci|üye|uye|personel|çalışan|calisan|firma|kurum|unvan)([^a-zçğıöşü]|$)/i;
   const SECOND_PERSON = /veli|anne|baba|yetkili|avukat|vekil|kefil|sorumlu/i;
   const RUNNING_NO = /^(s\.?\s*n\.?|s[ıi]ra(\s*no)?|no|#|id)$/i;
+  // v2.0.13: "Müşteri No", "Müşteri Telefonu", "Müşteri Kayıt Tarihi" ad kolonu değildir ("müşteri" sözcüğü geçse de);
+  // önce açık ad kolonları (Ad Soyad, İsim, Unvan), sonra kişi sözcükleri. Simülasyonda cari adı "1153" olmuştu.
+  const NOT_NAME = /(\bno\b|\bnum|numara|kod|kimlik|t\.?c\.?|tel|gsm|telefon|tarih|limit|tutar|bakiye|borcu|şekli|sekli|adres|mahalle|şube|sube|grup|e-?posta|mail)/i;
+  const PLAIN_NAME = /(^|[^a-zçğıöşü])(ad[ıi]?\s*soyad[ıi]?|adi\s*soyadi|isim|unvan|ad[ıi]?)([^a-zçğıöşü]|$)/i;
   const nameColumn = row => {
-    const keys = Object.keys(row).filter(key => !key.startsWith("__"));
-    return keys.find(key => NAME_COLUMN.test(key) && !SECOND_PERSON.test(key)) || keys.find(key => NAME_COLUMN.test(key)) || primaryColumns().person || "";
+    const keys = Object.keys(row).filter(key => !key.startsWith("__") && !NOT_NAME.test(key));
+    return keys.find(key => PLAIN_NAME.test(key) && !SECOND_PERSON.test(key)) || keys.find(key => NAME_COLUMN.test(key) && !SECOND_PERSON.test(key)) || keys.find(key => NAME_COLUMN.test(key)) || primaryColumns().person || "";
   };
   // v2.0.12: tablodaki kaydın kayıt tarihi ("Kayıt Tarihi", "Kayıt Günü", "Başlangıç Tarihi") → YYYY-AA-GG; yoksa "".
   const recordDay = row => {
@@ -495,6 +499,26 @@
     const link = { caseKey: plan?.caseKey || preset?.caseKey || "", caseSource: plan?.caseSource || preset?.caseSource || "", caseTitle: plan?.caseTitle || preset?.caseTitle || "" };
     // Cari (v2.0.6): kart bir cariye aittir. Seçilmezse kart açılırken bu ad ve telefonla yeni cari açılır.
     const owner = { id: plan?.accountId || preset?.accountId || "", name: plan?.accountName || preset?.accountName || "" };
+    // Borcun kaynağı alanı yalnız borcu olan cari seçiliyken görünür; mevcut borç seçilince tutar borçla dolar.
+    let lastAccount = null;
+    const syncSource = (account, byUser = false) => {
+      lastAccount = account;
+      const form = document.querySelector(".hof-modal-backdrop.is-visible:last-of-type form") || document;
+      const select = form.querySelector('select[name="source"]');
+      if (!select) return;
+      const field = select.closest(".hof-field");
+      const balance = Number(account?.balance) || 0;
+      field.hidden = !(balance > 0.005);
+      if (!(balance > 0.005)) {
+        select.value = "new";
+        return;
+      }
+      if (!byUser) select.value = "balance";
+      const help = field.querySelector("small") || field.appendChild(HOF.el("small", {}));
+      help.textContent = select.value === "balance" ? `Carinin borcu ${money(balance)}. Kart bu borcu vadelere böler; carinin defterine ikinci kez borç yazılmaz.` : "Kart tutarı carinin borcuna eklenir (bu kartla yapılan yeni satış ya da hizmet).";
+      const total = form.querySelector('input[name="total"]');
+      if (select.value === "balance" && total && (!total.value.trim() || byUser)) total.value = amountText(balance);
+    };
     HOF.formModal({
       title: plan ? "Kartı Düzenle" : "Yeni Taksit Kartı",
       eyebrow: "TAKSİTLER",
@@ -505,7 +529,12 @@
         { name: "refNo", label: "Sıra No", maxlength: 30, value: plan?.refNo || "", placeholder: plan ? "" : "Boş bırakılırsa sıradaki numara", help: plan ? "" : "Listede ilk kolon ve varsayılan sıralama." },
         { name: "registeredOn", label: "Kayıt Tarihi", type: "date", required: true, value: plan?.registeredOn || preset?.registeredOn || todayIso(), help: plan ? "Kişinin kayıt tarihi (cari kartındakiyle aynı)." : "Kişinin kayıt tarihi: cari seçilince carinin tarihi gelir; carisi yoksa bugün." },
         { name: "phone", label: "Telefon", type: "tel", inputmode: "tel", maxlength: 60, value: plan?.phone || preset?.phone || "", placeholder: "05xx xxx xx xx" },
-        { name: "total", label: "Toplam Tutar (₺)", required: true, inputmode: "decimal", value: plan ? amountText(plan.total) : "", placeholder: "Örn. 12.000,00", autofocus: Boolean(preset) },
+        // v2.0.13: carinin borcu varsa kart ya o borcu taksitlendirir (ikinci kez borç yazmaz) ya da yeni borç açar.
+        // Markette "veresiye sat → taksitlendir" akışı artık alacağı ikiye katlamaz.
+        ...(plan
+          ? []
+          : [{ name: "source", label: "Borcun Kaynağı", type: "select", value: Number(preset?.balance) > 0.005 ? "balance" : "new", options: [{ value: "balance", label: "Carinin Mevcut Borcu (veresiye satış, açılış)" }, { value: "new", label: "Yeni Borç (bu kartla borçlanır)" }], help: "" }]),
+        { name: "total", label: "Toplam Tutar (₺)", required: true, inputmode: "decimal", value: plan ? amountText(plan.total) : Number(preset?.balance) > 0.005 ? amountText(preset.balance) : "", placeholder: "Örn. 12.000,00", autofocus: Boolean(preset) },
         // v2.0.12: taksit bilgileri tutarın hemen altında; Taksit Sayısı ile İlk Vade yan yana (müşteri: "ilk vade aşağıda kalıyor").
         ...(plan
           ? []
@@ -557,6 +586,7 @@
               if (unlink) unlink.hidden = false;
             }
             suggestedAccount = "";
+            syncSource(account);
           },
         });
         if (accountField) dialog.querySelector('input[name="name"]').closest(".hof-field").before(accountField);
@@ -594,6 +624,8 @@
           if (nameInput.value.trim()) suggest();
         }
         wireGroupFields(dialog);
+        syncSource(owner.id ? { balance: preset?.balance } : null);
+        dialog.querySelector('select[name="source"]')?.addEventListener("change", () => syncSource(lastAccount, true));
         const items = dialog.querySelector('select[name="items"]');
         if (items) {
           const count = dialog.querySelector('input[name="count"]').closest(".hof-field");
@@ -608,6 +640,7 @@
       },
       onSubmit: async data => {
         const payload = { name: data.name, refNo: data.refNo, registeredOn: data.registeredOn, phone: data.phone, total: data.total, note: data.note, caseKey: data.caseKey || "", caseSource: data.caseSource || "", caseTitle: data.caseKey ? data.caseTitle : "", ...(data.accountId !== undefined ? { accountId: data.accountId } : {}), ...groupBody(data) };
+        if (!plan && data.source === "balance") payload.coversBalance = true;
         if (!plan && data.items === "auto") {
           if (!(Number(data.count) > 0)) throw new Error("Eşit bölmek için taksit sayısını yazın.");
           if (!data.firstDue) throw new Error("Eşit bölmek için ilk vadeyi seçin.");
@@ -680,13 +713,15 @@
       title: entry ? (incoming ? "Tahsilatı Düzelt" : "Ödemeyi Düzelt") : incoming ? "Tahsilat Gir" : "Ödeme / İade Gir",
       eyebrow: plan.name,
       intro: incoming
-        ? `Kalan ${money(plan.totals.remaining)}${plan.next ? ` · sıradaki ${plan.next.seq}. taksit ${money(plan.next.remaining)} (${dayLabel(plan.next.days)})` : ""}. Tutar Kasa’ya tahsilat olarak düşer; makbuz PDF’i hareketler listesinden alınır.`
+        ? `Kalan ${money(plan.totals.remaining)}${plan.next ? ` · sıradaki ${plan.next.seq}. taksit ${money(plan.next.remaining)} (${dayLabel(plan.next.days)})` : ""}. Tutar seçilen yola (nakit kasa, banka, kredi kartı) tahsilat olarak düşer; çekle/senetle ödemede Çek / Senet Al’da “Taksite Say”ı seçin. Makbuz PDF’i hareketler listesinden alınır.`
         : "Müşteriye geri verilen ya da onun adına yapılan ödeme. Kasa’dan düşer ve kartın ödenen tutarını azaltır.",
       fields: [
         { name: "amount", label: "Tutar (₺)", required: true, inputmode: "decimal", value: suggested, autofocus: true },
         { name: "date", label: "Tarih", type: "date", required: true, value: entry?.date || todayIso() },
+        // v2.0.13: tahsilat / ödeme yolu (Nakit, Havale / EFT, Kredi Kartı). Çekle/senetle ödeme Çek / Senet Al'dan "Taksite Say" ile.
+        HOF.methodField(entry?.method || "cash", { incoming }),
         ...(incoming ? [{ name: "itemId", label: "Hangi Taksite", type: "select", value: entry?.itemId || item?.id || "", options: [{ value: "", label: "En Eski Açık Taksite (önerilen)" }, ...openItems.map(row => ({ value: row.id, label: `${row.seq}. taksit · ${HOF.formatDate(row.dueDate)} · kalan ${money(row.remaining)}` }))] }] : []),
-        { name: "note", label: "Açıklama", maxlength: 300, value: entry?.note || "", placeholder: incoming ? "Elden / havale / kart…" : "Ne için", list: incoming ? ["Elden", "Havale", "Kredi kartı", "EFT"] : ["İade", "Fazla Alınan", "İndirim"] },
+        { name: "note", label: "Açıklama", maxlength: 300, value: entry?.note || "", placeholder: incoming ? "Ör. Ekim taksidi" : "Ne için", list: incoming ? [] : ["İade", "Fazla Alınan", "İndirim"] },
       ],
       submitLabel: entry ? "Kaydet" : incoming ? "Tahsilatı Kaydet" : "Ödemeyi Kaydet",
       onSubmit: async data => {

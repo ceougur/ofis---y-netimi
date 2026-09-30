@@ -384,6 +384,35 @@ Yönetim → Lisans ─► /api/license/{trial,activate,code,check} ─► licen
 - Etkin zaman = max(saat, görülen en ileri zaman); servisin `issuedAt`'ı güvenilir zamandır. Yerel durum `settings.license.local`'da kurulum kimliğine bağlı HMAC ile saklanır.
 - Testler bağımsızdır: `createApp({ license: { trustedKeys, services, fetchImpl, machineId, now, enforce } })`. Test yardımcısı varsayılan olarak kilidi kapatır (`enforce: false`); `test/license.test.mjs` ve e2e kilidi başvuru lisans servisiyle (`tools/lib/license-service.mjs`) gerçek hâliyle sınar. Üretimde bu seçenekler ortam değişkeniyle verilemez.
 
+## Ana Defter ve mutabakat kapısı (v2.0.13)
+
+**Kayıt modeli.** Asıl kayıtlar alt defterlerdir: `payments`, `cash_entries` (Kasa ve Banka), `account_entries` (cari),
+`plans`/`plan_items`/`plan_entries` (taksit), `stock_moves` (stok), `cheques`/`cheque_events` (çek/senet). Ana Defter
+(`server/lib/general-ledger.mjs`) bu satırlardan her seferinde aynı kuralla türetilir; ikinci bir kopya saklanmaz. Böylece
+"alt defter yazıldı, ana defter yazılmadı" sapması yapısal olarak olamaz. Hesap planı Tekdüzen'in ilgili hesapları: 100
+Kasa, 101 Alınan Çek/Senet, 102 Bankalar, 103 Verilen Çek/Senet, 108 Kredi Kartı, 120 Alıcılar, 127 Carisiz Taksit
+Kartları, 153 Ticari Mallar, 320 Satıcılar, 336 Diğer Cariler, 500 Açılış, 600 Satışlar, 602 Diğer Gelirler, 610 Satıştan
+İadeler, 649 Diğer Olağan Gelirler, 689 Vazgeçilen Alacaklar, 770 Genel Giderler. Tutarlar kuruş tamsayısıyla toplanır.
+
+**Ödeme yolu.** `method` kolonu (`cash`, `bank`, `card`) para taşıyan her tabloda; ana defterde 100 / 102 / 108'e düşer.
+Eksiye düşme koruması (`cash.guardOut`) yalnız nakitte; kullanıcı onaylarsa istemci aynı isteği `cashForce` ile yeniden yollar.
+
+**Mevcut borcu taksitlendiren kart** (`plans.covers_balance`): caride borç yazmaz, ana defterde de alacak doğurmaz;
+tahsilatları borçtan düşer. `uncoveredDebt` aynı borcun iki karta bölünmesini, `trimCovers` iadede kartın borçtan büyük
+kalmasını engeller.
+
+**Mutabakat kapısı** (`server/lib/integrity.mjs`, `store.addCommitGuard`). `store.tx` en dış işlemde COMMIT'ten hemen
+önce kayıtlı denetimleri çalıştırır; para tablolarına işlem dışında yapılan tek satır yazım da kendiliğinden işleme alınır.
+Denetimler: çift yönlü denge; 100/102/108 ↔ Kasa alt defteri (yola göre), 120/320/336 ↔ `accounts.list` bakiyeleri (taksit
+alacakları dahil), 127 ↔ carisiz kartların kalanı, 101/103 ↔ portföy durumu; kuruş küsuratı ve eksi tutar; stok ↔ cari ve
+çek/senet ↔ cari bağları. Hata → `IntegrityError` (409, `code: ledger-integrity`) → ROLLBACK → `integrity_log`
+(`rolled-back`). Açılışta ölçülen sapmalar taban sayılır (`baseline` günlüğü); bir işlem yeni sapma ekleyemez, var olanı
+büyütemez. Ölçülen maliyet: 1 aylık market verisinde denetim ~6 ms; 5.000 cari ve 50.000 cari hareketinde ~0,5 sn.
+
+**Eşzamanlılık.** Tek süreç, tek SQLite bağlantısı: WAL, `synchronous=FULL`, `busy_timeout=10000`, işlemler
+`BEGIN IMMEDIATE`, iç içe işlemler SAVEPOINT. Node tek iş parçacığında çalıştığı ve işlemler eşzamanlı (await'siz) olduğu
+için iki istek aynı işlemin içine karışamaz; denetim ve COMMIT aynı kilit altında olur.
+
 ## Veri modeli
 
 `users`, `sessions`, `settings` (v1.6 ofis profili ve `dataset.identity` burada), `records`, `overrides`, `deleted_records`, `notes`, `phones`, `payments`, `liens`, `tasks`, `messages`, `audit_events` (v1.0.0) + `case_notes`, `source_snapshots` (v1.1.0) + `dataset_rows`, `dataset_imports` (v1.5.0, göç 4: kalıcı çalışma verisi ve içeri alma geçmişi; `source_snapshots` artık yalnızca geçmiştir) + `cash_entries`, `case_documents`, `free_sheets`, `free_rows`, `free_cells`, `free_history` ve `payments.case_title`, `updated_by`, `updated_at` (v2.0.1, göç 5) + `chat_conversations`, `chat_members` (okunma zamanı), `chat_messages` ve `tasks.assignee_id` (v1.4.0, göç 3: eski `messages` kayıtları sohbete taşınır, eski tablo geri dönüş için silinmez; görevler adları tek bir kullanıcıya denk geliyorsa o kullanıcının kimliğine bağlanır, belirsiz veya serbest adlarda ad eşleşmesi sürer). Görünen adlar benzersizdir (`server/lib/names.mjs`: Türkçe harf kuralı, boşluk ve Unicode yazım farkı yok sayılarak karşılaştırılır).

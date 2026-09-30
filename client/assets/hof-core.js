@@ -57,6 +57,15 @@
   // ---------- Oturum ve yetki ----------
   HOF.user = null;
   HOF.settings = { sheetUrl: "", syncMinutes: "5", aiMapping: "", activeSourceLabel: "" };
+  // v2.0.13: ödeme / tahsilat yolu. Nakit Kasa'ya, Havale/EFT ve Kredi Kartı bankaya düşer; Kasa ve Banka ekranı ayrı
+  // gösterir. Çek/senet (portföy) ve açık hesap (veresiye, cari) para hareketi değildir; kendi ekranlarından yürür.
+  HOF.PAY_METHODS = [
+    { value: "cash", label: "Nakit" },
+    { value: "bank", label: "Havale / EFT" },
+    { value: "card", label: "Kredi Kartı" },
+  ];
+  HOF.methodLabel = value => (HOF.PAY_METHODS.find(item => item.value === value) || HOF.PAY_METHODS[0]).label;
+  HOF.methodField = (value = "cash", { incoming = true, name = "method" } = {}) => ({ name, label: incoming ? "Tahsilat Yolu" : "Ödeme Yolu", type: "select", value: value || "cash", options: HOF.PAY_METHODS });
   HOF.can = permission => Boolean(HOF.user && HOF.user.permissions && HOF.user.permissions.includes(permission));
   HOF.sourceName = () => HOF.settings.sheetUrl || window.localStorage.getItem("hukuk-ofisi-sheet-url") || "Çalışma Tablosu";
 
@@ -69,7 +78,20 @@
     }
   }
   HOF.ApiError = ApiError;
-  HOF.api = async (path, { method = "GET", body, signal, timeoutMs = 30000 } = {}) => {
+  // v2.0.13: Kasa'yı eksiye düşürecek çıkışta sunucu "cash-negative" döner; burada sorulur, onaylanırsa aynı istek
+  // "cashForce" ile yeniden gönderilir (her form ayrı ayrı ele almasın). Vazgeçilirse form açık kalır.
+  HOF.api = async (path, options = {}) => {
+    try {
+      return await rawApi(path, options);
+    } catch (error) {
+      const body = options.body;
+      if (error?.status !== 409 || error.data?.code !== "cash-negative" || !body || typeof body !== "object") throw error;
+      const go = await HOF.confirm({ title: "Kasa Eksiye Düşecek", message: `${error.message} Ödeme bankadan ya da başka bir kasadan yapıldıysa kaydedebilirsiniz. Yine de kaydedilsin mi?`, confirmLabel: "Yine de Kaydet", danger: true });
+      if (!go) throw new ApiError("Kaydedilmedi: Kasa eksiye düşecekti.", 409, { code: "cash-negative-cancelled" });
+      return rawApi(path, { ...options, body: { ...body, cashForce: true } });
+    }
+  };
+  const rawApi = async (path, { method = "GET", body, signal, timeoutMs = 30000 } = {}) => {
     const init = { method, credentials: "same-origin", headers: { accept: "application/json" }, cache: "no-store" };
     if (body !== undefined) {
       init.headers["content-type"] = "application/json";

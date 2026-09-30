@@ -45,7 +45,7 @@ const MACHINE_SOURCE_TEXT = Object.freeze({
 // Salt okunur modda ekranlardan gizlenen yetkiler (sunucu zaten her yazma isteğini reddeder).
 export const WRITE_PERMISSIONS = Object.freeze([
   "records.create", "records.edit", "records.delete", "notes.write", "phones.create", "payments.create", "liens.create", "cash.manage", "documents.upload", "documents.manage",
-  "plans.collect", "plans.manage", "accounts.collect", "accounts.manage", "stock.move", "stock.manage", "cheques.manage", "tasks.create", "tasks.complete", "messages.create", "sources.manage", "profile.manage",
+  "plans.collect", "plans.manage", "accounts.collect", "accounts.manage", "stock.move", "stock.sell", "stock.manage", "cheques.manage", "tasks.create", "tasks.complete", "messages.create", "sources.manage", "profile.manage",
 ]);
 
 // Salt okunur modda da izin verilen değiştirici istekler: giriş/çıkış/parola, lisans işlemleri, yönetim (kullanıcılar,
