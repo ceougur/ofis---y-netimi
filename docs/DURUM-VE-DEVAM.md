@@ -97,6 +97,16 @@ Yeni bir oturum bu belgeyi okuyarak kaldığı yerden devam eder. Son güncellem
    Öğr.Gör., Dr., Prof.Dr. unvanları) ama kimlik kolonu "Öğrenci No" sayılmış ve kayıt adı olarak **unvan** gösteriliyor.
    Kimlik kolonu boşsa 2716 kaydın hepsi "sorun" görünüyor. Kolon rolleri (kimlik/kişi/unvan) bu tablo için yeniden
    incelenecek: kimliği boş sekmede kimlik zorunluluğu uyarısı yerine ad+soyad kişi anahtarı; unvan kişi adı sayılmasın.
+3. **Taksitler ekranında toplu taksitlendirme** (müşteri, 30.09.2026): "Toplu taksitlendirmeyi ilk başta ben bile zor
+   buldum; Cari'den toplu seçim yapınca çıkıyor, bunu Taksitler menüsüne de ekleyelim." Bugün yol yalnız *Cari → soldaki
+   kutularla seç → Seçilenlere taksit planı* (sunucu `POST /api/workspace/accounts/bulk-plan`, istemci `hof-accounts.js`).
+   Yapılacak: *Taksitler* üst çubuğuna **"+ Toplu taksitlendir"** düğmesi → cari seçme penceresi (arama; tür, grup/alt grup,
+   bakiye süzgeçleri; "Tümünü seç"; açık taksit kartı olan cari işaretli ve varsayılan seçilmez, "zaten kartı var" yazar;
+   seçili sayısı ve toplam) → aynı taksit formu (tutar herkese aynı ya da karttaki alandan, taksit sayısı, ilk vade,
+   aralık, grup) → ön izleme (kaç kart, toplam, atlanacaklar ve neden) → oluştur. Aynı sunucu ucu kullanılır (tek kural,
+   çift kart açılmaz). Cari yoksa pencere yol gösterir ("Tablodaki kişileri cari yap" / "Excel'den cari yükle"). Kılavuzda
+   Taksitler bölümüne yazılır. Test: e2e — Taksitler'den 3 cari seç → 3 kart, aynı cari ikinci kez seçilince atlanır,
+   Cari ekranındaki yol da çalışmaya devam eder; boş veri ve aynı adlı iki cari.
 
 ### 2.0.10 düzeltmeleri — tamamı yapıldı ve yayımlandı (30.09.2026, v2.0.10)
 Maddeler ve kararlar kayıt için duruyor; yapılan iş ve kanıtı `CHANGELOG.md` → 2.0.10 ve `test/e2e/senaryo-210.mjs`.
