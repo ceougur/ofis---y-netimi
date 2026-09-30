@@ -117,7 +117,7 @@
     // side.title ve düğme adları (v2.0.1) Operasyon merkezinin kendi düzenleyicisindedir (hof-workspace.js).
     { key: "page.title", root: ".topbar", selector: ".page-title" },
     // Genel sektörde arayüzün kendi başlığı ("Tablo özeti") kalır.
-    { key: "summary.title", root: ".welcome-row", selector: ".section-title", sector: () => (sectorChosen() ? `${HOF.vocab.Record} özeti` : null) },
+    { key: "summary.title", root: ".welcome-row", selector: ".section-title", sector: () => (sectorChosen() ? `${HOF.vocab.Record} Özeti` : null) },
     { key: "summary.subtitle", root: ".welcome-row", selector: ".section-description" },
     { key: "categories.title", root: ".category-bar", selector: ".category-heading > span" },
     { key: "table.title", root: ".cases-panel", selector: ".panel-title", when: singleScope },
@@ -595,7 +595,7 @@
     if (id === "money") {
       const result = await fetchList({ list: "topAmount", tab: key, limit: 30 });
       if (!result) return undefined;
-      const modal = HOF.modal({ title: `${title}: en yüksek ${number(result.items.length)} kayıt`, eyebrow: eyebrow("AKILLI ÖZET", key), body: `<p class="hof-modal-text">Toplam <b>${esc(amount(card.sum, card.currency))}</b> · ${number(card.count)} kayıtta tutar. Kayda gitmek için tıklayın.</p>${recordList(result.items, item => amount(item.amount, card.currency))}${explainHtml(card.explain)}` });
+      const modal = HOF.modal({ title: `${title}: En Yüksek ${number(result.items.length)} Kayıt`, eyebrow: eyebrow("AKILLI ÖZET", key), body: `<p class="hof-modal-text">Toplam <b>${esc(amount(card.sum, card.currency))}</b> · ${number(card.count)} kayıtta tutar. Kayda gitmek için tıklayın.</p>${recordList(result.items, item => amount(item.amount, card.currency))}${explainHtml(card.explain)}` });
       return wireOpen(modal);
     }
     if (id === "deadline") {
@@ -621,7 +621,7 @@
     if (id === "event") {
       const result = await fetchList({ list: "eventMonth", tab: key });
       if (!result) return undefined;
-      const modal = HOF.modal({ title: `${title}: bu ay`, eyebrow: eyebrow("AKILLI ÖZET", key), body: `<p class="hof-modal-text">${number(result.total)} kayıt. Kayda gitmek için tıklayın.</p>${recordList(result.items, item => item.date)}${moreNote(result)}${explainHtml(card.explain)}` });
+      const modal = HOF.modal({ title: `${title}: Bu Ay`, eyebrow: eyebrow("AKILLI ÖZET", key), body: `<p class="hof-modal-text">${number(result.total)} kayıt. Kayda gitmek için tıklayın.</p>${recordList(result.items, item => item.date)}${moreNote(result)}${explainHtml(card.explain)}` });
       return wireOpen(modal);
     }
     // Dağılım (durum, tür, sorumlu): çubuğa tıklanınca o seçeneğin kayıtları listelenir.
@@ -669,7 +669,7 @@
       })
       .join("");
     HOF.modal({
-      title: keys.length > 1 ? "Özet kartları raporu" : `${scopeName(keys[0])} özeti`,
+      title: keys.length > 1 ? "Özet Kartları Raporu" : `${scopeName(keys[0])} Özeti`,
       eyebrow: "AKILLI ÖZET",
       size: "wide",
       body: `<p class="hof-modal-text">Bir kart, kolonundaki her hücre tek tek okunup söylediği şey kesinleşirse gösterilir: tutarlar tek tek toplanır, tarihler takvimde denetlenir, dağılım kartları yalnızca birkaç sabit seçenekten oluşan kolonlardan çıkarılır. Kesin olmayan bir kart yerine hiç kart gösterilmez. Değerleri sabit seçeneklere indirmek (Excel'de "Veri doğrulama" ile açılır liste) kolonu karta dönüştürür.</p>${sections}`,
@@ -838,7 +838,7 @@
       let result = null;
       const headers = initial.headers ?? dataHeaders();
       const modal = HOF.formModal({
-        title: editing ? "Sektörü düzenle" : "Kendi sektörünüzü oluşturun",
+        title: editing ? "Sektörü Düzenle" : "Kendi Sektörünüzü Oluşturun",
         eyebrow: "SEKTÖR",
         size: "wide",
         intro: editing ? "Değişiklik bu sektörü kullanan tüm görünümlere uygulanır." : "Listede olmayan işinizi kendiniz tanımlayın. Kaydedince arayüz sizin kelimelerinizle konuşur; verileriniz değişmez.",
@@ -853,7 +853,7 @@
           { name: "headers", label: "Bu Sektörü Tanıtan Kolon Başlıkları (isteğe bağlı)", type: "textarea", rows: 2, maxlength: 1500, value: headers.join(", "), placeholder: "ör. Tekne adı, Liman, Kaptan", help: "Virgülle ayırın. Sonraki Excel/Sheets yüklemelerinde program bu sektörü kendisi önerir." },
         ],
         extraHtml: '<div class="hof-sector-preview" aria-live="polite"><small>Önizleme</small><div data-preview></div></div>',
-        submitLabel: editing ? "Kaydet" : "Kaydet ve uygula",
+        submitLabel: editing ? "Kaydet" : "Kaydet ve Uygula",
         onClose: () => resolve(result),
         onSubmit: async data => {
           const body = { name: data.name, record: data.record, records: data.records, expert: data.expert, subtitle: data.subtitle, modules: { tahsilat: Boolean(data.tahsilat), haciz: Boolean(data.haciz) }, headers: data.headers };
@@ -1019,7 +1019,7 @@
   };
 
   // ---------- Adım adım analiz ekranı ----------
-  const LEVEL_TEXT = { high: "Yüksek güven", medium: "Orta güven — kontrol edin", low: "Düşük güven" };
+  const LEVEL_TEXT = { high: "Yüksek Güven", medium: "Orta Güven — kontrol edin", low: "Düşük Güven" };
   const evidenceText = item => {
     if (item.kind === "header") return `“${item.column}” kolonu`;
     if (item.kind === "value") return `“${item.column}” kolonunda ${item.signal}`;
@@ -1146,7 +1146,7 @@
       html = `<section class="hof-sector-card ${same ? "is-current" : ""}">
           <span class="hof-sector-icon" aria-hidden="true">${icon("sparkle", 22)}</span>
           <div class="hof-sector-main">
-            <small>${same ? "Mevcut sektörünüz verinizle uyumlu" : "Önerilen sektör"}</small>
+            <small>${same ? "Mevcut sektörünüz verinizle uyumlu" : "Önerilen Sektör"}</small>
             <b>${esc(suggested.name)}</b>
             <span class="hof-sector-meta"><span class="hof-chip">${esc(suggested.groupName)}</span><span class="hof-confidence is-${esc(s.level)}">${esc(LEVEL_TEXT[s.level])}</span></span>
           </div>
@@ -1162,7 +1162,7 @@
         <p class="hof-apply-preview">Listeden sektörünüzü seçebilir ya da <b>Genel</b> görünümle devam edebilirsiniz; kolonlarınız, göstergeler ve arama her iki durumda da verinize göre çalışır.${candidates.length ? ` Olası sektörler: ${candidates.map(item => `<button type="button" class="hof-link" data-candidate="${esc(item.id)}">${esc(item.name)}</button>`).join(", ")}.` : ""}</p>`;
     }
     const skipped = skippedCards(analysis);
-    html += `<p class="hof-quality-line">${icon("sparkle", 16)} Özet kartları: <b>${number(verifiedCards(analysis))}</b> kart doğrulandı${skipped ? ` · ${number(skipped)} aday kart kesinleşmediği için gösterilmiyor` : ""} <button type="button" class="hof-link" data-cards>${skipped ? "Nedenleri gör" : "Raporu gör"}</button></p>`;
+    html += `<p class="hof-quality-line">${icon("sparkle", 16)} Özet kartları: <b>${number(verifiedCards(analysis))}</b> kart doğrulandı${skipped ? ` · ${number(skipped)} aday kart kesinleşmediği için gösterilmiyor` : ""} <button type="button" class="hof-link" data-cards>${skipped ? "Nedenleri Gör" : "Raporu Gör"}</button></p>`;
     html += `<p class="hof-quality-line">${icon("pulse", 16)} Veri Sağlığı: <b>${esc(levelText)}</b> · kontrol edilen ${number(quality.checked)} hücrenin ${percentWord(quality.score)} sorunsuz${quality.issues.length ? ` · ${number(quality.issues.length)} bulgu` : ""} <button type="button" class="hof-link" data-quality>Raporu Gör</button></p>`;
     const reasoning = analysis.reasoning;
     if (reasoning) html += `<p class="hof-quality-line">${icon("sparkle", 16)} Akıllı denetim: <b>${number(reasoning.relations.length)}</b> hesap kuralı öğrenildi · ${reasoning.count ? `<b>${number(reasoning.count)}</b> olası tutarsızlık` : "tutarsızlık bulunmadı"} <button type="button" class="hof-link" data-quality>Ayrıntılar</button></p>`;

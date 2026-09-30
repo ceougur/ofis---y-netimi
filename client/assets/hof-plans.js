@@ -25,7 +25,7 @@
   ];
   const STATE = {
     overdue: ["Gecikti", "late"],
-    active: ["Devam ediyor", "info"],
+    active: ["Devam Ediyor", "info"],
     done: ["Tamamlandı", "done"],
     closed: ["Kapalı", "muted"],
   };
@@ -487,7 +487,7 @@
     // Cari (v2.0.6): kart bir cariye aittir. Seçilmezse kart açılırken bu ad ve telefonla yeni cari açılır.
     const owner = { id: plan?.accountId || preset?.accountId || "", name: plan?.accountName || preset?.accountName || "" };
     HOF.formModal({
-      title: plan ? "Kartı düzenle" : "Yeni taksit kartı",
+      title: plan ? "Kartı Düzenle" : "Yeni Taksit Kartı",
       eyebrow: "TAKSİTLER",
       size: "wide",
       intro: plan ? "" : "Önce kişi ve toplam tutar kaydedilir. Taksitler istenirse sonra kartın üstünden dağıtılır ya da tek tek girilir.",
@@ -507,7 +507,7 @@
               { name: "firstDue", label: "İlk Vade", type: "date", value: "" },
             ]),
       ],
-      submitLabel: plan ? "Kaydet" : "Kartı aç",
+      submitLabel: plan ? "Kaydet" : "Kartı Aç",
       onOpen: dialog => {
         dialog.classList.add("hof-plan-form");
         const picker = HOF.el("div", { class: "hof-field hof-case-picker" }, pickerHtml(link));
@@ -614,7 +614,7 @@
         { name: "firstDue", label: "İlk Vade", type: "date", required: true, value: plan.items[0]?.dueDate || todayIso() },
         { name: "everyMonths", label: "Taksit Aralığı", type: "select", value: "1", options: [{ value: "1", label: "Her Ay" }, { value: "2", label: "2 Ayda Bir" }, { value: "3", label: "3 Ayda Bir" }, { value: "6", label: "6 Ayda Bir" }, { value: "12", label: "Yılda Bir" }] },
       ],
-      submitLabel: plan.items.length ? "Taksitleri yeniden kur" : "Taksitleri kur",
+      submitLabel: plan.items.length ? "Taksitleri Yeniden Kur" : "Taksitleri Kur",
       onSubmit: async data => {
         const result = await HOF.api(`/api/workspace/plans/${encodeURIComponent(plan.id)}/distribute`, { method: "POST", body: data });
         HOF.toast(`${result.items.length} taksit kuruldu.${hasEntries ? " Tahsilatlar yeniden eşlendi." : ""}`, { type: "success" });
@@ -625,14 +625,14 @@
 
   function editItem(plan, item) {
     HOF.formModal({
-      title: item ? `${item.seq}. taksiti düzelt` : "Taksit ekle",
+      title: item ? `${item.seq}. taksiti düzelt` : "Taksit Ekle",
       eyebrow: plan.name,
       fields: [
         { name: "dueDate", label: "Vade", type: "date", required: true, value: item?.dueDate || (plan.items.length ? nextMonth(plan.items.at(-1).dueDate) : todayIso()) },
         { name: "amount", label: "Tutar (₺)", required: true, inputmode: "decimal", value: item ? amountText(item.amount) : "", autofocus: true },
         { name: "note", label: "Açıklama", maxlength: 200, value: item?.note || "", placeholder: "İsteğe bağlı (ör. servis farkı)" },
       ],
-      submitLabel: item ? "Kaydet" : "Taksiti ekle",
+      submitLabel: item ? "Kaydet" : "Taksiti Ekle",
       onSubmit: async data => {
         const url = `/api/workspace/plans/${encodeURIComponent(plan.id)}/items${item ? `/${encodeURIComponent(item.id)}` : ""}`;
         const result = await HOF.api(url, { method: item ? "PUT" : "POST", body: data });
@@ -654,7 +654,7 @@
     const openItems = plan.items.filter(row => row.remaining > 0.005 || row.id === entry?.itemId);
     const suggested = entry ? amountText(entry.amount) : amount ? amountText(amount) : item ? amountText(item.remaining) : plan.next ? amountText(plan.next.remaining) : "";
     HOF.formModal({
-      title: entry ? (incoming ? "Tahsilatı düzelt" : "Ödemeyi düzelt") : incoming ? "Tahsilat gir" : "Ödeme / iade gir",
+      title: entry ? (incoming ? "Tahsilatı Düzelt" : "Ödemeyi Düzelt") : incoming ? "Tahsilat Gir" : "Ödeme / İade Gir",
       eyebrow: plan.name,
       intro: incoming
         ? `Kalan ${money(plan.totals.remaining)}${plan.next ? ` · sıradaki ${plan.next.seq}. taksit ${money(plan.next.remaining)} (${dayLabel(plan.next.days)})` : ""}. Tutar Kasa’ya tahsilat olarak düşer; makbuz PDF’i hareketler listesinden alınır.`
@@ -665,7 +665,7 @@
         ...(incoming ? [{ name: "itemId", label: "Hangi Taksite", type: "select", value: entry?.itemId || item?.id || "", options: [{ value: "", label: "En Eski Açık Taksite (önerilen)" }, ...openItems.map(row => ({ value: row.id, label: `${row.seq}. taksit · ${HOF.formatDate(row.dueDate)} · kalan ${money(row.remaining)}` }))] }] : []),
         { name: "note", label: "Açıklama", maxlength: 300, value: entry?.note || "", placeholder: incoming ? "Elden / havale / kart…" : "Ne için", list: incoming ? ["Elden", "Havale", "Kredi kartı", "EFT"] : ["İade", "Fazla Alınan", "İndirim"] },
       ],
-      submitLabel: entry ? "Kaydet" : incoming ? "Tahsilatı kaydet" : "Ödemeyi kaydet",
+      submitLabel: entry ? "Kaydet" : incoming ? "Tahsilatı Kaydet" : "Ödemeyi Kaydet",
       onSubmit: async data => {
         const url = `/api/workspace/plans/${encodeURIComponent(plan.id)}/entries${entry ? `/${encodeURIComponent(entry.id)}` : ""}`;
         const result = await HOF.api(url, { method: entry ? "PUT" : "POST", body: { ...data, kind: entry?.kind || kind } });
@@ -775,14 +775,14 @@
       if (!target) return;
       if (button.dataset.rename) {
         HOF.formModal({
-          title: target.parent ? "Alt grubun adı" : "Grubun adı",
+          title: target.parent ? "Alt Grubun Adı" : "Grubun Adı",
           eyebrow: target.parent ? target.parent.name : "TAKSİTLER",
           fields: [{ name: "name", label: "Ad", required: true, maxlength: 80, value: target.name, autofocus: true }],
           onSubmit: async data => refresh(await HOF.api(`/api/workspace/plans/groups/${encodeURIComponent(target.id)}`, { method: "PUT", body: data })),
         });
         return;
       }
-      const ok = await HOF.confirm({ title: target.parent ? "Alt grubu sil" : "Grubu sil", message: `“${target.name}” silinecek. İçinde kart varsa silinemez; önce kartları taşıyın.`, confirmLabel: "Sil", danger: true });
+      const ok = await HOF.confirm({ title: target.parent ? "Alt Grubu Sil" : "Grubu Sil", message: `“${target.name}” silinecek. İçinde kart varsa silinemez; önce kartları taşıyın.`, confirmLabel: "Sil", danger: true });
       if (!ok) return;
       try {
         await refresh(await HOF.api(`/api/workspace/plans/groups/${encodeURIComponent(target.id)}`, { method: "DELETE" }));

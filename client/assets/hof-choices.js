@@ -119,7 +119,7 @@
       } else if (event.target.closest("[data-other]")) {
         closeMenu();
         HOF.formModal({
-          title: `${label} düzenle`,
+          title: `${label} Düzenle`,
           eyebrow: selected.title,
           size: "small",
           fields: [{ name: "value", label, value, autofocus: true, maxlength: 20000, list: list.options }],

@@ -178,7 +178,7 @@
       heading.appendChild(button);
     }
     const dense = document.body.classList.contains("hof-dense");
-    const label = dense ? "Rahat görünüm" : "Sık görünüm";
+    const label = dense ? "Rahat Görünüm" : "Sık Görünüm";
     if (button.getAttribute("aria-label") !== label) {
       button.setAttribute("aria-label", label);
       button.title = `${label} (satır yüksekliği)`;

@@ -172,7 +172,7 @@
   HOF.showRecoveryKey = (key, { office = "", used = false } = {}) =>
     new Promise(resolve => {
       const modal = HOF.modal({
-        title: used ? "Yeni kurtarma anahtarınız" : "Kurtarma anahtarınız",
+        title: used ? "Yeni Kurtarma Anahtarınız" : "Kurtarma Anahtarınız",
         eyebrow: "YÖNETİCİ PAROLASI KURTARMA",
         size: "small",
         dismissible: false,
@@ -209,7 +209,7 @@
           <p class="hof-form-error" role="alert"></p>
           <div class="hof-actions">${forced ? '<button type="button" class="hof-button hof-button-ghost" data-logout>Çıkış Yap</button>' : '<button type="button" class="hof-button hof-button-ghost" data-cancel>Vazgeç</button>'}<button type="submit" class="hof-button">Parolayı Değiştir</button></div>
         </form>`;
-      const modal = HOF.modal({ title: forced ? "Parolanızı yenileyin" : "Parola değiştir", eyebrow: "HESAP GÜVENLİĞİ", size: "small", body, dismissible: !forced, onClose: done => resolve(Boolean(done)) });
+      const modal = HOF.modal({ title: forced ? "Parolanızı Yenileyin" : "Parola Değiştir", eyebrow: "HESAP GÜVENLİĞİ", size: "small", body, dismissible: !forced, onClose: done => resolve(Boolean(done)) });
       const form = modal.dialog.querySelector("form");
       const error = form.querySelector(".hof-form-error");
       const meter = form.querySelector(".hof-meter span");

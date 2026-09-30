@@ -162,8 +162,8 @@
       </div>
       <dl class="hof-chq-facts">
         ${fact("Vade", `${esc(HOF.formatDate(cheque.dueDate))} ${dueBadge(cheque)}`)}
-        ${fact(cheque.direction === "in" ? "Alış tarihi" : "Veriliş tarihi", esc(HOF.formatDate(cheque.issueDate)))}
-        ${fact(cheque.direction === "in" ? "Keşideci / borçlu" : "Lehtar", esc(cheque.drawer))}
+        ${fact(cheque.direction === "in" ? "Alış Tarihi" : "Veriliş Tarihi", esc(HOF.formatDate(cheque.issueDate)))}
+        ${fact(cheque.direction === "in" ? "Keşideci / Borçlu" : "Lehtar", esc(cheque.drawer))}
         ${fact("Cari", accountLink(cheque.accountId, cheque.accountName))}
         ${fact("Taksit kartı", cheque.planName ? `<a href="#" data-open-plan="${esc(cheque.planId)}">${esc(cheque.planName)}</a>` : "")}
         ${fact("Ciro edilen", accountLink(cheque.endorseAccountId, cheque.endorseAccountName))}
@@ -184,14 +184,14 @@
       { name: "instrument", label: "Evrak", type: "select", value: cheque?.instrument || "cheque", options: [{ value: "cheque", label: "Çek" }, { value: "note", label: "Senet" }] },
       { name: "amount", label: "Tutar (₺)", required: true, autofocus: !edit, value: cheque ? String(cheque.amount).replace(".", ",") : "", inputmode: "decimal", placeholder: "ör. 12.500,00" },
       { name: "dueDate", label: "Vade Tarihi", type: "date", required: true, value: cheque?.dueDate || "" },
-      { name: "issueDate", label: direction === "in" ? "Alış tarihi" : "Veriliş tarihi", type: "date", required: true, value: cheque?.issueDate || todayIso() },
-      { name: "serialNo", label: direction === "in" ? "Çek / senet no" : "Çek / senet no", value: cheque?.serialNo || "", maxlength: 60 },
+      { name: "issueDate", label: direction === "in" ? "Alış Tarihi" : "Veriliş Tarihi", type: "date", required: true, value: cheque?.issueDate || todayIso() },
+      { name: "serialNo", label: "Çek / Senet No", value: cheque?.serialNo || "", maxlength: 60 },
       { name: "bank", label: "Banka / Şube", value: cheque?.bank || "", maxlength: 120, placeholder: "ör. Ziraat Bankası Meram" },
-      { name: "drawer", label: direction === "in" ? "Keşideci / borçlu (cari seçilmezse)" : "Lehtar (cari seçilmezse)", value: cheque?.drawer || "", maxlength: 160 },
+      { name: "drawer", label: direction === "in" ? "Keşideci / Borçlu (cari seçilmezse)" : "Lehtar (cari seçilmezse)", value: cheque?.drawer || "", maxlength: 160 },
       { name: "note", label: "Açıklama", value: cheque?.note || "", maxlength: 500 },
     ];
     HOF.formModal({
-      title: edit ? `${cheque.directionLabel} ${cheque.instrumentLabel.toLocaleLowerCase("tr-TR")} düzenle` : direction === "in" ? "Çek / senet al" : "Çek / senet ver",
+      title: edit ? `${cheque.directionLabel} ${cheque.instrumentLabel} Düzenle` : direction === "in" ? "Çek / Senet Al" : "Çek / Senet Ver",
       eyebrow: moduleName().toLocaleUpperCase("tr-TR"),
       intro: edit
         ? core
@@ -201,7 +201,7 @@
           ? "Müşteriden aldığınız evrak portföye girer. Cari seçerseniz carinin borcu düşer; taksit kartı seçerseniz o taksit ödenmiş sayılır. Para Kasa'ya tahsil edildiğinde girer."
           : "Tedarikçiye verdiğiniz kendi çekiniz/senediniz. Cari seçerseniz tedarikçiye olan borcunuz düşer; para Kasa'dan vadesinde ödendiğinde çıkar.",
       fields: core ? fields : fields.filter(field => !["instrument", "amount", "issueDate"].includes(field.name)),
-      submitLabel: edit ? "Kaydet" : direction === "in" ? "Portföye al" : "Kaydet",
+      submitLabel: edit ? "Kaydet" : direction === "in" ? "Portföye Al" : "Kaydet",
       onOpen: dialog => {
         if (!core) return;
         const form = dialog.querySelector("form");
@@ -221,7 +221,7 @@
             // taksit kartları okunamazsa seçim gösterilmez
           }
         };
-        const picker = HOF.accounts?.picker({ value: cheque?.accountId ? { id: cheque.accountId, name: cheque.accountName } : {}, label: direction === "in" ? "Kimden alındı (cari)" : "Kime verildi (cari)", help: direction === "in" ? "Müşteri carisi. Yoksa aşağıya keşidecinin adını yazın." : "Tedarikçi carisi. Yoksa aşağıya lehtarın adını yazın.", type: direction === "in" ? "" : "", onPick: loadPlans });
+        const picker = HOF.accounts?.picker({ value: cheque?.accountId ? { id: cheque.accountId, name: cheque.accountName } : {}, label: direction === "in" ? "Kimden Alındı (cari)" : "Kime Verildi (cari)", help: direction === "in" ? "Müşteri carisi. Yoksa aşağıya keşidecinin adını yazın." : "Tedarikçi carisi. Yoksa aşağıya lehtarın adını yazın.", type: direction === "in" ? "" : "", onPick: loadPlans });
         if (picker) anchor.before(picker);
         anchor.after(planSlot);
         if (cheque?.accountId) loadPlans({ id: cheque.accountId });

@@ -134,7 +134,7 @@
         ${canSettle ? `<button type="button" data-act="paid" class="hof-payment-mark" title="Tahsilat girmeden kapatır (ör. başka yoldan ödendi)">Ödendi Say</button>` : ""}
         ${canSettle && item.promise ? '<button type="button" data-act="cancelled" class="hof-payment-cancelled">Söz İptal</button>' : ""}
       </div>
-      <button type="button" class="hof-payment-go" data-act="go">${cheque ? "Çek / senet kartını aç →" : plan ? "Taksit kartını aç →" : "Kayda git →"}</button>`,
+      <button type="button" class="hof-payment-go" data-act="go">${cheque ? "Çek / senet kartını aç →" : plan ? "Taksit Kartını Aç →" : "Kayda Git →"}</button>`,
     );
     card.addEventListener("click", event => {
       const button = event.target.closest("[data-act]");

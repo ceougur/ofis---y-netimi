@@ -49,7 +49,7 @@ try {
     await page.waitForSelector(".hof-modal-backdrop.is-visible .hof-mapping", { timeout: 30000 });
     await Promise.all([page.waitForEvent("load", { timeout: 30000 }), page.click('.hof-modal-backdrop.is-visible [data-mode="replace"]')]);
     await page.waitForSelector(".hof-analysis-result:not([hidden])", { timeout: 20000 });
-    ok((await text(".hof-analysis-result")).includes("Okul servisi"), "sektör önerisi: Okul servisi");
+    ok((await text(".hof-analysis-result")).includes("Okul Servisi"), "sektör önerisi: Okul Servisi");
   });
 
   await step("Yükleme sonrası soru (engellemeyen bildirim) → 'Ön izle ve aktar'", async () => {
@@ -57,7 +57,7 @@ try {
     ok(!(await page.$$eval(".hof-toast", nodes => nodes.some(node => /Taksitler'e aktarılsın mı/.test(node.textContent)))), "analiz penceresi açıkken soru sorulmaz (pencerenin altında kalıp sönmez)");
     // Kullanıcı sektör önerisini uygular; pencere kapanınca soru gelir.
     await page.click(".hof-analysis-result [data-apply]");
-    await page.waitForFunction(() => document.querySelector(".brand-subtitle")?.firstChild?.nodeValue === "Okul servisi yönetimi", null, { timeout: 5000 });
+    await page.waitForFunction(() => document.querySelector(".brand-subtitle")?.firstChild?.nodeValue === "Okul Servisi Yönetimi", null, { timeout: 5000 });
     await page.waitForFunction(() => [...document.querySelectorAll(".hof-toast")].some(node => /Taksitler'e aktarılsın mı/.test(node.textContent)), null, { timeout: 20000 });
     const toast = await page.$$eval(".hof-toast", nodes => nodes.map(node => node.innerText.replace(/\s+/g, " ")).join(" | "));
     ok(/6 kişinin ödeme planı/.test(toast), `bildirim metni: ${toast}`);
@@ -135,7 +135,7 @@ try {
     const card = await text(".hof-modal-backdrop.is-visible:last-of-type .hof-modal, .hof-plans-modal");
     const entries = await page.$$eval(".hof-plans-entries tr[data-entry]", nodes => nodes.map(node => ({ opening: node.hasAttribute("data-opening"), text: node.innerText.replace(/\s+/g, " "), makbuz: Boolean(node.querySelector('a[href*="makbuz"]')) })));
     const openings = entries.filter(e => e.opening);
-    ok(openings.length === 3 && openings.every(e => /Açılış \(devir\)/.test(e.text) && /Kasa dışı/.test(e.text) && !e.makbuz), `3 açılış (devir) hareketi: Kasa dışı rozetli, makbuz bağlantısı yok`);
+    ok(openings.length === 3 && openings.every(e => /Açılış \(devir\)/.test(e.text) && /Kasa dışı/i.test(e.text) && !e.makbuz), `3 açılış (devir) hareketi: Kasa dışı rozetli, makbuz bağlantısı yok`);
     ok(entries.filter(e => !e.opening).length === 0, "Can Öztürk'te program tahsilatı yok (şeritten alınan Mert Çelik'indi)");
     ok(/5\.700,00/.test(card), "kartta kalan 5.700,00");
     await shot("taksit-karti-can-ozturk");
@@ -212,11 +212,11 @@ try {
     await page.waitForSelector('.hof-plans [data-act="transfer"]', { timeout: 10000 });
     await page.click('.hof-plans [data-act="transfer"]');
     await page.waitForSelector(".hof-transfer-modal", { timeout: 30000 });
-    await page.waitForFunction(() => /Son aktarımlar \(1\)/.test(document.querySelector(".hof-transfer-modal")?.innerText || ""), null, { timeout: 10000 });
+    await page.waitForFunction(() => /Son aktarımlar \(1\)/i.test(document.querySelector(".hof-transfer-modal")?.innerText || ""), null, { timeout: 10000 });
     const modal = await text(".hof-transfer-modal");
     const commit = await page.$(".hof-transfer-modal [data-commit]");
     const commitDisabled = commit ? await commit.evaluate(n => n.disabled || /0 kişi/.test(n.textContent)) : true;
-    ok(/Kartı var 6|6 kartı var|Kartı var/.test(modal) && commitDisabled, `ikinci açılışta aktarılacak kimse yok: ${modal.slice(0, 260)}`);
+    ok(/Kartı var 6|6 kartı var|Kartı var/i.test(modal) && commitDisabled, `ikinci açılışta aktarılacak kimse yok: ${modal.slice(0, 260)}`);
     await shot("ikinci-acilis-karti-var");
     importId = await page.$eval(".hof-transfer-modal [data-undo]", n => n.dataset.undo);
     ok(importId, "Son aktarımlar listesinde Geri al düğmesi var");
@@ -229,8 +229,8 @@ try {
     await page.click(".hof-transfer-modal [data-undo]");
     await page.waitForSelector('.hof-modal-backdrop.is-visible [data-answer="yes"]', { timeout: 8000 });
     await page.click('.hof-modal-backdrop.is-visible [data-answer="yes"]');
-    await page.waitForFunction(() => [...document.querySelectorAll(".hof-toast")].some(node => /Aktarım geri alındı/.test(node.textContent)), null, { timeout: 15000 });
-    const undoToast = await page.evaluate(() => [...document.querySelectorAll(".hof-toast")].map(node => node.innerText.replace(/\s+/g, " ")).find(t => /Aktarım geri alındı/.test(t)));
+    await page.waitForFunction(() => [...document.querySelectorAll(".hof-toast")].some(node => /Aktarım geri alındı/i.test(node.textContent)), null, { timeout: 15000 });
+    const undoToast = await page.evaluate(() => [...document.querySelectorAll(".hof-toast")].map(node => node.innerText.replace(/\s+/g, " ")).find(t => /Aktarım geri alındı/i.test(t)));
     ok(/6 kart kaldırıldı/.test(undoToast) && /1 tahsilat kayıt kartına döndü/.test(undoToast), `geri alma bildirimi: ${undoToast}`);
     await page.waitForTimeout(1200);
     const plans = (await api("/api/workspace/plans?status=all")).data;
@@ -271,8 +271,8 @@ try {
     await page.waitForSelector('.hof-modal-backdrop.is-visible input[name="name"]', { timeout: 8000 });
     await page.fill('.hof-modal-backdrop.is-visible input[name="name"]', "Toner");
     const units = await page.$$eval('.hof-modal-backdrop.is-visible select[name="unit"] option', o => o.map(x => x.value));
-    ok(units.length >= 20 && ["adet", "kg", "lt", "metre", "m²", "paket", "koli", "saat"].every(u => units.includes(u)), `birim listesi ${units.length} seçenek`);
-    await page.selectOption('.hof-modal-backdrop.is-visible select[name="unit"]', "adet");
+    ok(units.length >= 20 && ["Adet", "Kg", "Lt", "Metre", "M²", "Paket", "Koli", "Saat"].every(u => units.includes(u)) && new Set(units.map(u => u.toLocaleLowerCase("tr-TR"))).size === units.length, `birim listesi ${units.length} seçenek, baş harfi büyük ve tekrarsız (v2.0.11)`);
+    await page.selectOption('.hof-modal-backdrop.is-visible select[name="unit"]', "Adet");
     await page.fill('.hof-modal-backdrop.is-visible input[name="unitPrice"]', "850");
     await page.fill('.hof-modal-backdrop.is-visible input[name="openingQty"]', "2");
     const hint = await text(".hof-modal-backdrop.is-visible [data-opening-total]");

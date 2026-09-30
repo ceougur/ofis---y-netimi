@@ -76,7 +76,7 @@
         .join("");
       return `<section class="hof-plan-collect" data-plan-block="${esc(plan.id)}"><header><div><b>${esc(plan.name)}</b><small>${esc([plan.groupName, plan.subgroupName].filter(Boolean).join(" › ") || "Taksit kartı")}${plan.refNo ? ` · No ${esc(plan.refNo)}` : ""}</small></div><div class="hof-plan-collect-sums"><span>Toplam<b>${esc(money(plan.totals.total))}</b></span><span>Ödenen<b class="hof-cash-in">${esc(money(plan.totals.paid))}</b></span><span>Kalan<b class="hof-cash-out">${esc(money(plan.totals.remaining))}</b></span>${plan.next ? `<span>Sıradaki<b>${plan.next.seq}. taksit · ${esc(HOF.formatDate(plan.next.dueDate))}</b></span>` : ""}</div></header>
         ${plan.items.length ? `<div class="hof-cash-list"><table class="hof-table hof-cash-table hof-plan-items"><thead><tr><th>No</th><th>Vade</th><th class="num">Tutar</th><th class="num">Ödenen</th><th class="num">Kalan</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>` : '<p class="hof-empty">Bu kartta taksit kurulmamış; tahsilat kalan tutardan düşer.</p>'}
-        <div class="hof-plan-collect-tools">${canCollect ? `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-collect="" data-plan="${esc(plan.id)}">${openItems.length ? "Serbest tutar (en eski açık taksite)" : "Tahsilat gir"}</button>` : ""}<button type="button" class="hof-button hof-button-small hof-button-ghost" data-open-plan="${esc(plan.id)}">Taksit Kartını Aç</button></div></section>`;
+        <div class="hof-plan-collect-tools">${canCollect ? `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-collect="" data-plan="${esc(plan.id)}">${openItems.length ? "Serbest Tutar (en eski açık taksite)" : "Tahsilat Gir"}</button>` : ""}<button type="button" class="hof-button hof-button-small hof-button-ghost" data-open-plan="${esc(plan.id)}">Taksit Kartını Aç</button></div></section>`;
     };
     const modal = HOF.modal({
       title: "Tahsilat",
@@ -397,7 +397,7 @@
   function editCashEntry(entry, kind, after) {
     const incoming = (entry?.kind || kind) === "in";
     HOF.formModal({
-      title: entry ? (incoming ? "Tahsilatı düzelt" : "Ödemeyi düzelt") : incoming ? "Kasaya tahsilat ekle" : "Kasadan ödeme ekle",
+      title: entry ? (incoming ? "Tahsilatı Düzelt" : "Ödemeyi Düzelt") : incoming ? "Kasaya Tahsilat Ekle" : "Kasadan Ödeme Ekle",
       eyebrow: "KASA",
       intro: incoming ? "Bir kayda bağlı olmayan tahsilatlar için (ör. danışmanlık ücreti). Kayda bağlı tahsilatı detay kartındaki Tahsilat düğmesiyle girin; kasaya kendiliğinden düşer." : "Kira, fatura, maaş, masraf gibi kasadan çıkan ödemeler.",
       fields: [
@@ -405,7 +405,7 @@
         { name: "date", label: "Tarih", type: "date", required: true, value: entry ? isoDate(entry.date) : dayText(new Date()) },
         { name: "description", label: "Açıklama", required: true, maxlength: 300, placeholder: incoming ? "Kimden / ne için" : "Kime / ne için", value: entry?.description || "", list: incoming ? [] : ["Kira", "Elektrik Faturası", "Su faturası", "İnternet", "Maaş", "Kırtasiye", "Vergi", "Masraf"] },
       ],
-      submitLabel: entry ? "Düzeltmeyi kaydet" : incoming ? "Tahsilatı ekle" : "Ödemeyi ekle",
+      submitLabel: entry ? "Düzeltmeyi Kaydet" : incoming ? "Tahsilatı Ekle" : "Ödemeyi Ekle",
       onSubmit: async data => {
         const body = { ...data, kind: entry?.kind || kind };
         if (entry) await HOF.api(`/api/workspace/cash/${encodeURIComponent(entry.id)}`, { method: "PUT", body });
@@ -654,7 +654,7 @@
         title: "Personel Performans Özeti",
         eyebrow: "RAPOR",
         size: "wide",
-        body: `<div class="hof-kpis"><div><strong>${result.totals.tasks}</strong><span>toplam görev</span></div><div><strong>${result.totals.completedTasks}</strong><span>tamamlanan</span></div><div><strong>${result.totals.notes}</strong><span>not</span></div><div><strong>${esc(HOF.formatMoney(result.totals.payments))}</strong><span>tahsilat</span></div></div><div style="overflow:auto"><table class="hof-table"><thead><tr><th>Personel</th><th>Görev</th><th>Not</th><th>Telefon</th><th>Tahsilat</th><th>İşlem</th></tr></thead><tbody>${rows || '<tr><td colspan="6">Henüz işlem yok.</td></tr>'}</tbody></table></div><p class="hof-edit-meta">Oluşturulma: ${esc(HOF.formatDateTime(result.generatedAt))}</p>`,
+        body: `<div class="hof-kpis"><div><strong>${result.totals.tasks}</strong><span>Toplam Görev</span></div><div><strong>${result.totals.completedTasks}</strong><span>Tamamlanan</span></div><div><strong>${result.totals.notes}</strong><span>Not</span></div><div><strong>${esc(HOF.formatMoney(result.totals.payments))}</strong><span>Tahsilat</span></div></div><div style="overflow:auto"><table class="hof-table"><thead><tr><th>Personel</th><th>Görev</th><th>Not</th><th>Telefon</th><th>Tahsilat</th><th>İşlem</th></tr></thead><tbody>${rows || '<tr><td colspan="6">Henüz işlem yok.</td></tr>'}</tbody></table></div><p class="hof-edit-meta">Oluşturulma: ${esc(HOF.formatDateTime(result.generatedAt))}</p>`,
       });
     } catch (error) {
       HOF.toastError(error);

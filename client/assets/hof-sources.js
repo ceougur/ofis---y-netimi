@@ -61,7 +61,7 @@
   const SKIP_LABELS = { title: "başlık", note: "not", footnote: "dipnot", group: "grup etiketi", "repeat-header": "yinelenen başlık", unnamed: "adsız kolon", "empty-record": "boş satır" };
   // Ön izleme ve eşleme (v2.0.2): kolonların ne sayıldığı (rol + kesinlik), ilk satırlar; biçimi uymayan hücreler ve
   // belirsiz kolonlar sarı. Kullanıcı kolonun rolünü seçebilir; seçim kaydetmede oturuma yazılır, analiz ve takvim uyar.
-  const ROLE_OPTIONS = [["auto", "Otomatik"], ["id", "Kimlik / No"], ["person", "Kişi"], ["org", "Kurum"], ["phone", "Telefon"], ["email", "E-posta"], ["money", "Tutar"], ["deadline", "Son Tarih / Vade"], ["date", "Tarih (olay)"], ["status", "Durum"], ["category", "Kategori"], ["note", "Not"], ["ignore", "Yoksay"]];
+  const ROLE_OPTIONS = [["auto", "Otomatik"], ["id", "Kimlik / No"], ["person", "Kişi"], ["org", "Kurum"], ["phone", "Telefon"], ["email", "E-Posta"], ["money", "Tutar"], ["deadline", "Son Tarih / Vade"], ["date", "Tarih (olay)"], ["status", "Durum"], ["category", "Kategori"], ["note", "Not"], ["ignore", "Yoksay"]];
   const ROLE_TEXT = { id: "kimlik", person: "kişi", org: "kurum", money: "tutar", date: "tarih", status: "durum", category: "kategori", phone: "telefon", email: "e-posta", address: "adres", note: "not", tckn: "T.C. no", vkn: "vergi no", iban: "IBAN", city: "il", plate: "plaka", url: "bağlantı", number: "sayı", percent: "oran", sequence: "sıra", responsible: "sorumlu", text: "metin" };
   const roleText = item => (item.role === "date" ? (item.kind === "deadline" ? "son tarih" : item.kind === "event" ? "olay tarihi" : "tarih") : ROLE_TEXT[item.role] || item.role);
   function mappingHtml(mapping) {

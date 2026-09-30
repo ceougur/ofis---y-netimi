@@ -536,7 +536,7 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     const query = listQuery(url.searchParams);
     const data = list(user, query);
     const fieldsById = new Map(store.all("SELECT id, fields_json AS fieldsJson FROM accounts WHERE deleted_at IS NULL").map(row => [row.id, parseFields(row.fieldsJson)]));
-    const base = ["Cari No", "Ad / Unvan", "Tür", "Grup", "Alt grup", "Telefon", "E-posta", "Adres", "Kayıt tarihi", "Durum", "Borç", "Alacak", "Bakiye", "Taksitten kalan", "Geciken", "Bilgi notu"];
+    const base = ["Cari No", "Ad / Unvan", "Tür", "Grup", "Alt Grup", "Telefon", "E-Posta", "Adres", "Kayıt Tarihi", "Durum", "Borç", "Alacak", "Bakiye", "Taksitten Kalan", "Geciken", "Bilgi Notu"];
     const extras = [...new Set(data.accounts.flatMap(item => (fieldsById.get(item.id) || []).map(field => field.label)))].filter(label => !base.includes(label));
     const money = value => MONEY_FORMAT.format(value || 0);
     const rows = data.accounts.map(item => {
@@ -547,7 +547,7 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
         Grup: item.groupName,
         "Alt Grup": item.subgroupName,
         Telefon: item.phone,
-        "E-posta": item.email,
+        "E-Posta": item.email,
         Adres: item.address,
         "Kayıt Tarihi": dayText(item.registeredOn),
         Durum: item.status === "passive" ? "Pasif" : "Aktif",

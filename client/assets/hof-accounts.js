@@ -33,7 +33,7 @@
     ["overdue", "Sırala: Geciken Taksit"],
     ["registered", "Sırala: Kayıt Tarihi (yeni önce)"],
   ];
-  const ENTRY_LABEL = { debt: "Borç yaz", credit: "Alacak yaz", in: "Tahsilat", out: "Ödeme" };
+  const ENTRY_LABEL = { debt: "Borç Yaz", credit: "Alacak Yaz", in: "Tahsilat", out: "Ödeme" };
   const ENTRY_HELP = {
     debt: "Cari size borçlanır (ör. verilen hizmet, satış, aidat). Kasa'ya yazılmaz.",
     credit: "Siz cariye borçlanırsınız (ör. alınan mal, hizmet faturası). Kasa'ya yazılmaz.",
@@ -246,7 +246,7 @@
         <div class="hof-plan-actions" role="toolbar" aria-label="Cari işlemleri">
           <span class="hof-plan-toolgroup">${collect ? '<button type="button" class="hof-button hof-button-small" data-entry="in">+ Tahsilat</button>' : ""}${manage ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-entry="debt" title="Cari size borçlanır">Borç Yaz</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-entry="credit" title="Siz cariye borçlanırsınız">Alacak Yaz</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-entry="out" title="Cariye para verildi (Kasa’dan çıkar)">− Ödeme</button>' : ""}${canPlan() ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="newPlan" title="Bu cariye taksit kartı aç">+ Taksit Planı</button>' : ""}</span>
           <span class="hof-plan-toolgroup">${office().outputButtons ? office().outputButtons(cardPdfUrl(account), "card") : ""}${phone ? `<button type="button" class="hof-button hof-button-small hof-button-ghost hof-whatsapp" data-act="whatsapp" data-wa="${esc(phone)}">WhatsApp</button>` : ""}</span>
-          ${manage ? `<span class="hof-plan-toolgroup"><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="edit">Düzenle</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="${active ? "passive" : "activate"}" title="${active ? "Pasif cari listede Pasif altında durur; hareketleri korunur" : ""}">${active ? "Pasife al" : "Aktif yap"}</button><button type="button" class="hof-button hof-button-small hof-button-ghost hof-button-danger-ghost" data-act="delete">Sil</button></span>` : ""}
+          ${manage ? `<span class="hof-plan-toolgroup"><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="edit">Düzenle</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="${active ? "passive" : "activate"}" title="${active ? "Pasif cari listede Pasif altında durur; hareketleri korunur" : ""}">${active ? "Pasife Al" : "Aktif Yap"}</button><button type="button" class="hof-button hof-button-small hof-button-ghost hof-button-danger-ghost" data-act="delete">Sil</button></span>` : ""}
         </div></div>
       <section class="hof-plan-profile" aria-label="Cari bilgileri">
         <dl class="hof-plan-facts">
@@ -254,7 +254,7 @@
           <div><dt>Tür</dt><dd>${esc(TYPES[account.type] || "—")}</dd></div>
           <div><dt>Grup</dt><dd>${esc(whereText(account) || "—")}</dd></div>
           <div><dt>Telefon</dt><dd>${account.phone ? (phone ? `<a href="tel:+${esc(phone)}">${esc(account.phone)}</a>` : esc(account.phone)) : "—"}</dd></div>
-          <div><dt>E-posta</dt><dd>${account.email ? `<a href="mailto:${esc(account.email)}">${esc(account.email)}</a>` : "—"}</dd></div>
+          <div><dt>E-Posta</dt><dd>${account.email ? `<a href="mailto:${esc(account.email)}">${esc(account.email)}</a>` : "—"}</dd></div>
           <div><dt>Kayıt Tarihi</dt><dd>${esc(account.registeredOn ? HOF.formatDate(account.registeredOn) : "—")}</dd></div>
           <div class="is-wide"><dt>Adres</dt><dd>${esc(account.address || "—")}</dd></div>
           <div><dt>Tablodaki Kayıt</dt><dd>${caseCell}</dd></div>
@@ -391,7 +391,7 @@
     const link = { caseKey: account?.caseKey || preset?.caseKey || "", caseSource: account?.caseSource || "", caseTitle: account?.caseTitle || preset?.caseTitle || "" };
     let fieldsBox = null;
     HOF.formModal({
-      title: account ? "Cariyi düzenle" : "Yeni cari",
+      title: account ? "Cariyi Düzenle" : "Yeni Cari",
       eyebrow: moduleName().toLocaleUpperCase("tr-TR"),
       size: "wide",
       intro: account ? "" : "Kişinin ya da firmanın bilgileri. Taksit sorulmaz; taksit planı istenirse sonra karttan ya da listeden toplu açılır.",
@@ -401,13 +401,13 @@
         { name: "refNo", label: "Cari No", maxlength: 30, value: account?.refNo || "", placeholder: account ? "" : "Boş bırakılırsa sıradaki numara" },
         { name: "registeredOn", label: "Kayıt Tarihi", type: "date", value: account?.registeredOn || office().todayIso?.() || "" },
         { name: "phone", label: "Telefon", type: "tel", inputmode: "tel", maxlength: 60, value: account?.phone || preset?.phone || "", placeholder: "05xx xxx xx xx" },
-        { name: "email", label: "E-posta", type: "email", maxlength: 160, value: account?.email || "" },
+        { name: "email", label: "E-Posta", type: "email", maxlength: 160, value: account?.email || "" },
         { name: "address", label: "Adres", type: "textarea", rows: 2, maxlength: 500, value: account?.address || "" },
         ...(office().groupFields ? office().groupFields(groups, account || {}) : []),
         { name: "note", label: "Bilgi Notu", type: "textarea", rows: 3, maxlength: 2000, value: account?.note || "" },
         ...(account ? [] : [{ name: "openingBalance", label: "Açılış Bakiyesi (₺)", inputmode: "decimal", placeholder: "Örn. 1.500 (borç) ya da -250 (alacak)", help: "Önceki defterden devreden bakiye: artı tutar Borçlu, eksi tutar Alacaklı olarak açılır. Boş bırakılabilir." }]),
       ],
-      submitLabel: account ? "Kaydet" : "Cariyi aç",
+      submitLabel: account ? "Kaydet" : "Cariyi Aç",
       onOpen: dialog => {
         dialog.classList.add("hof-plan-form", "hof-acc-form");
         office().wireGroupFields?.(dialog, groups);
@@ -617,7 +617,7 @@
   }
 
   // ---------- Excel'den ve tablodan toplu alım ----------
-  const ROLE_OPTIONS = [["", "— Kullanma —"], ["extra", "Ek Alan (kartta aynı adla)"], ["name", "Ad Soyad / Unvan *"], ["seq", "Cari No"], ["phone", "Telefon"], ["email", "E-posta"], ["address", "Adres"], ["registered", "Kayıt Tarihi"], ["group", "Grup"], ["subgroup", "Alt Grup"], ["type", "Tür (müşteri/tedarikçi)"], ["balance", "Açılış Bakiyesi"], ["note", "Bilgi Notu"]];
+  const ROLE_OPTIONS = [["", "— Kullanma —"], ["extra", "Ek Alan (kartta aynı adla)"], ["name", "Ad Soyad / Unvan *"], ["seq", "Cari No"], ["phone", "Telefon"], ["email", "E-Posta"], ["address", "Adres"], ["registered", "Kayıt Tarihi"], ["group", "Grup"], ["subgroup", "Alt Grup"], ["type", "Tür (müşteri/tedarikçi)"], ["balance", "Açılış Bakiyesi"], ["note", "Bilgi Notu"]];
   async function importFromExcel() {
     const source = await office().chooseSheet?.({ title: "Carileri Toplu Yükle", eyebrow: moduleName().toLocaleUpperCase("tr-TR"), hint: "Binlerce kişi ya da firma tek seferde açılır; taksit sorulmaz. Excel’deki her kolon kartta görünür. Kolonları bir sonraki adımda eşlersiniz." });
     if (!source) return;
@@ -680,7 +680,7 @@
   function mappingForm({ fileName, matrix, preview, caseKeys = null, caseTitles = null }) {
     const sample = matrix[preview.headerAt + 1] || [];
     HOF.formModal({
-      title: caseKeys ? "Tablodan cari al: kolonları eşle" : "Excel’den cari yükle: kolonları eşle",
+      title: caseKeys ? "Tablodan Cari Al: Kolonları Eşle" : "Excel’den Cari Yükle: Kolonları Eşle",
       eyebrow: fileName,
       size: "wide",
       intro: `${preview.rows} satır bulundu. Her satır bir cari olur; taksit sorulmaz. Program başlıkları tanıdı; yanlışsa değiştirin. <b>Ek Alan</b> seçilen her kolon kartta aynı adla görünür (ör. Veli, Okul, Servis ücreti) ve toplu taksitlendirmede tutar olarak kullanılabilir.${caseKeys ? " Her cari tablodaki kaydına bağlanır." : ""}`,

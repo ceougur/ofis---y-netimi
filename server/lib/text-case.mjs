@@ -22,7 +22,9 @@ export function titleCase(text) {
       if (!first && SMALL.has(bare) && word === word.toLocaleLowerCase("tr-TR")) return word;
       const at = word.search(/\p{L}/u);
       if (at < 0 || (at > 0 && /[\p{L}\p{N}]/u.test(word.slice(0, at)))) return word;
-      return word.slice(0, at) + word[at].toLocaleUpperCase("tr-TR") + word.slice(at + 1);
+      const head = word.slice(0, at) + word[at].toLocaleUpperCase("tr-TR") + word.slice(at + 1);
+      // Tireli sözcükte her parça büyük harfle başlar: "Alım-satım" → "Alım-Satım", "E-posta" → "E-Posta".
+      return head.split("-").map((part, index) => (index && /^\p{L}/u.test(part) ? part[0].toLocaleUpperCase("tr-TR") + part.slice(1) : part)).join("-");
     })
     .join("");
 }

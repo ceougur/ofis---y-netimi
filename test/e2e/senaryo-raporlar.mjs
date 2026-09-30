@@ -95,10 +95,10 @@ try {
     ok(await page.isVisible('.hof-side-item[data-action="analytics"]'), "sol menüde Raporlar görünür (yönetici)");
     await openReports();
     const tabs = await page.$$eval(`${modal} .hof-rep [data-tab]`, nodes => nodes.map(node => node.textContent.trim()));
-    ok(tabs.join("|") === "Cari ekstre|Vade takip|Nakit akış|Çek / Senet|Tüm raporlar|Tablo raporları", `sekmeler: ${tabs.join(", ")}`);
+    ok(tabs.join("|") === "Cari Ekstre|Vade Takip|Nakit Akış|Çek / Senet|Tüm Raporlar|Tablo Raporları", `sekmeler: ${tabs.join(", ")}`);
     await page.waitForSelector(`${modal} .hof-rep-help`, { timeout: 10000 });
     const help = await text(`${modal} .hof-rep-help`);
-    ok(/Cari defterindeki hareketlerden/.test(help) && /Cari ekranını aç/.test(help), "boş defterde yol gösterir: Cari ekranını aç");
+    ok(/Cari defterindeki hareketlerden/.test(help) && /Cari ekranını aç/i.test(help), "boş defterde yol gösterir: Cari ekranını aç");
     await shot("bos-veri-cari-ekstre");
     await tab("vade");
     await page.waitForSelector(`${modal} .hof-rep-vade`, { timeout: 10000 });
@@ -124,10 +124,10 @@ try {
     await page.waitForSelector('.hof-side-item[data-action="analytics"]');
     await openReports();
     await page.waitForSelector(`${modal} .hof-rep-help [data-go="fromTable"]`, { timeout: 10000 });
-    ok(/Tablodaki kişileri cari yap/.test(await text(`${modal} .hof-rep-help`)), "boş defter + dolu tablo: “Tablodaki kişileri cari yap” düğmesi");
+    ok(/Tablodaki kişileri cari yap/i.test(await text(`${modal} .hof-rep-help`)), "boş defter + dolu tablo: “Tablodaki kişileri cari yap” düğmesi");
     await shot("excel-var-cari-yok");
     await page.click(`${modal} .hof-rep-help [data-go="fromTable"]`);
-    await page.waitForFunction(() => /Tablodan cari al/.test([...document.querySelectorAll(".hof-modal-backdrop.is-visible")].at(-1)?.innerText || ""), null, { timeout: 15000 });
+    await page.waitForFunction(() => /Tablodan cari al/i.test([...document.querySelectorAll(".hof-modal-backdrop.is-visible")].at(-1)?.innerText || ""), null, { timeout: 15000 });
     ok(true, "düğme “Tablodan cari al: kolonları eşle” penceresini açar (her cari kaydına bağlanır)");
     await closeTop();
     ok((await api("/api/workspace/accounts?status=all")).data.accounts.length === 0, "pencere kapatılınca hiçbir cari açılmadı (kullanıcı onayı olmadan kayıt yok)");
@@ -184,7 +184,7 @@ try {
     await page.waitForSelector(`${modal} .hof-rep-crumb [data-open-account]`, { timeout: 10000 });
     const detail = (await api(`/api/workspace/accounts/${ahmet1.id}`)).data;
     const statement = await text(`${modal} .hof-rep-table tbody`);
-    ok(statement.includes("Açılış bakiyesi") && statement.includes("Nakit tahsilat") && /Çek/.test(statement), "ekstre satırları: açılış, çek, tahsilat");
+    ok(/Açılış bakiyesi/i.test(statement) && /Nakit tahsilat/i.test(statement) && /Çek/.test(statement), "ekstre satırları: açılış, çek, tahsilat");
     ok(detail.totals.balance === 2500 && (await text(`${modal} .hof-rep-stats`)).includes(money(2500)), `ekstre dönem sonu = Cari kartı bakiyesi: ${money(detail.totals.balance)}`);
     await shot("cari-ekstre-ahmet");
     await page.click(`${modal} .hof-rep-crumb [data-open-account]`);
@@ -279,7 +279,7 @@ try {
     ok(![...noTable.rows, ...noTable.overdue].some(isTable), "“Tablodaki ödeme günlerini ekle” kapalı: tablo kalemi yok");
     ok(round(flow.closing - noTable.closing) === round(flow.rows.filter(isTable).reduce((sum, row) => sum + row.amount, 0)), `tahmini kasa farkı = aralıktaki tablo kalemleri (${money(round(flow.closing - noTable.closing))}; çift sayım yok)`);
     await page.selectOption(`${modal} [data-field="group"]`, "month");
-    await page.waitForFunction(() => [...document.querySelectorAll(".hof-modal-backdrop.is-visible .hof-rep-table thead")].some(node => /Dönem sonu kasa/.test(node.textContent)), null, { timeout: 10000 });
+    await page.waitForFunction(() => [...document.querySelectorAll(".hof-modal-backdrop.is-visible .hof-rep-table thead")].some(node => /Dönem sonu kasa/i.test(node.textContent)), null, { timeout: 10000 });
     const monthly = (await api(`/api/workspace/overview/nakit-akisi?from=${TODAY}&to=${local(30)}&group=month`)).data;
     ok(monthly.periods.at(-1).closing === monthly.closing, `aylık toplamlarda son dönem kasası = tahmini kasa ${money(monthly.closing)}`);
     await shot("nakit-akis-aylik");
@@ -305,10 +305,10 @@ try {
     const kasa = await run("kasa-aylik", `from=${year}-01-01&to=${year}-12-31`);
     const seedIn = seeds.filter(([, value]) => value > 0).reduce((total, [, value]) => total + value, 0);
     const seedOut = -seeds.filter(([, value]) => value < 0).reduce((total, [, value]) => total + value, 0);
-    ok(String(sumOf(kasa, "Toplam giriş")).includes(money(seedIn)) && String(sumOf(kasa, "Toplam çıkış")).includes(money(seedOut)), `aylık kasa: giriş ${sumOf(kasa, "Toplam giriş")}, çıkış ${sumOf(kasa, "Toplam çıkış")}`);
+    ok(String(sumOf(kasa, "Toplam Giriş")).includes(money(seedIn)) && String(sumOf(kasa, "Toplam Çıkış")).includes(money(seedOut)), `aylık kasa: giriş ${sumOf(kasa, "Toplam Giriş")}, çıkış ${sumOf(kasa, "Toplam Çıkış")}`);
     const monthRow = kasa.rows.findIndex(row => row[0].endsWith(year) && row[0].startsWith(["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"][Number(TODAY.slice(5, 7)) - 1]));
     const monthEnd = round(seeds.filter(([date]) => date.slice(0, 7) <= TODAY.slice(0, 7)).reduce((a, [, v]) => a + v, 0));
-    ok(monthRow >= 0 && String(cell(kasa, monthRow, "Ay sonu kasa")).includes(money(Math.abs(monthEnd))), `bu ayın ay sonu kasası ${money(monthEnd)} (Kasa hareketlerinden)`);
+    ok(monthRow >= 0 && String(cell(kasa, monthRow, "Ay Sonu Kasa")).includes(money(Math.abs(monthEnd))), `bu ayın ay sonu kasası ${money(monthEnd)} (Kasa hareketlerinden)`);
     // Cari bazında tahsilat: Ahmet (1) nakit 1.500 + alınan çek 1.000 = 2.500; Ahmet (2) alınan senet 700 (aynı adlı iki
     // cari ayrı satır, cari numarasıyla); tedarikçi tahsilatsız.
     const tahsilat = await run("cari-tahsilat", `from=${local(-3)}&to=${local(3)}`);
@@ -316,18 +316,18 @@ try {
     ok(tahsilat.rows.length === 2 && String(byRef(ahmet1.refNo)?.[5]).includes(money(2500)) && String(byRef(ahmet1.refNo)?.[2]).includes(money(1500)) && String(byRef(ahmet2.refNo)?.[4]).includes(money(700)), `cari bazında tahsilat: ${tahsilat.rows.map(row => row.join(" | ")).join(" / ")}`);
     // Taksit performansı: 3 taksit 3.000; ödenen 0; geciken 1.000.
     const perf = await run("taksit-performans", `from=${local(-400)}&to=${local(400)}`);
-    ok(String(sumOf(perf, "Vadesi gelen")).includes(money(3000)) && String(sumOf(perf, "Geciken")).includes(money(1000)), `taksit performansı: vadesi gelen ${sumOf(perf, "Vadesi gelen")}, geciken ${sumOf(perf, "Geciken")}`);
+    ok(String(sumOf(perf, "Vadesi Gelen")).includes(money(3000)) && String(sumOf(perf, "Geciken")).includes(money(1000)), `taksit performansı: vadesi gelen ${sumOf(perf, "Vadesi Gelen")}, geciken ${sumOf(perf, "Geciken")}`);
     // Çek/senet vade dağılımı: tahsil edilecek 1.000 + 700; ödenecek 800.
     const cek = await run("cek-vade-dagilimi", "");
-    ok(String(sumOf(cek, "Tahsil edilecek")).includes(money(1700)) && String(sumOf(cek, "Ödenecek")).includes(money(800)), `çek/senet vade dağılımı: tahsil ${sumOf(cek, "Tahsil edilecek")}, ödeme ${sumOf(cek, "Ödenecek")}`);
+    ok(String(sumOf(cek, "Tahsil Edilecek")).includes(money(1700)) && String(sumOf(cek, "Ödenecek")).includes(money(800)), `çek/senet vade dağılımı: tahsil ${sumOf(cek, "Tahsil Edilecek")}, ödeme ${sumOf(cek, "Ödenecek")}`);
     // Stok özeti (bu ay) = Stok ekranı.
     const monthStart = `${TODAY.slice(0, 7)}-01`;
     const stok = await run("stok-ozet", `from=${monthStart}&to=${TODAY}`);
     const stockList = (await api("/api/workspace/stock")).data;
     const a4 = stockList.items.find(entry => entry.name === "A4 kağıt");
     const opening = local(-40) < monthStart ? "10" : "0";
-    ok(stok.rows.length === 1 && cell(stok, 0, "Dönem başı") === opening && cell(stok, 0, "Çıkış") === "3" && cell(stok, 0, "Dönem sonu") === "7", `stok özeti: ${stok.rows[0]?.join(" | ")}`);
-    ok(a4.qty === 7 && String(cell(stok, 0, "Dönem sonu değer")).includes(money(a4.value)), `dönem sonu = Stok ekranı (7 paket, ${money(a4.value)})`);
+    ok(stok.rows.length === 1 && cell(stok, 0, "Dönem Başı") === opening && cell(stok, 0, "Çıkış") === "3" && cell(stok, 0, "Dönem Sonu") === "7", `stok özeti: ${stok.rows[0]?.join(" | ")}`);
+    ok(a4.qty === 7 && String(cell(stok, 0, "Dönem Sonu Değer")).includes(money(a4.value)), `dönem sonu = Stok ekranı (7 paket, ${money(a4.value)})`);
     // Ekrandan: rapor seçilir, ön izleme ve PDF/Excel bağlantıları hazır.
     await page.click(`${modal} [data-report="cari-tahsilat"]`);
     await page.waitForFunction(() => /Ahmet Yılmaz/.test(document.querySelector(".hof-modal-backdrop.is-visible .hof-rc-table")?.innerText || ""), null, { timeout: 10000 });
@@ -380,7 +380,7 @@ try {
     await expert.waitForSelector('.hof-side-item[data-action="analytics"]');
     await openReports(expert);
     const tabs = await expert.$$eval(`${modal} .hof-rep [data-tab]`, nodes => nodes.map(node => node.textContent.trim()));
-    ok(tabs.join("|") === "Vade takip|Tüm raporlar|Tablo raporları", `uzman sekmeleri: ${tabs.join(", ")}`);
+    ok(tabs.join("|") === "Vade Takip|Tüm Raporlar|Tablo Raporları", `uzman sekmeleri: ${tabs.join(", ")}`);
     await expert.waitForSelector(`${modal} .hof-rep-vade tbody tr[data-due-row]`, { timeout: 15000 });
     ok((await api("/api/workspace/overview/mizan?preset=thisMonth", null, "GET", expert)).status === 403, "uzman: mizan API 403 (finans raporları yetkisi yok)");
     await shot("uzman-vade-takip", expert);

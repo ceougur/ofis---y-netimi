@@ -102,7 +102,7 @@
         { name: "companyName", label: "Firma Adı", required: true, maxlength: 120, value: status.companyName || "", autocomplete: "organization" },
         { name: "contact", label: "Yetkili Kişi", maxlength: 120, autocomplete: "name" },
         { name: "phone", label: "Telefon", type: "tel", maxlength: 40, autocomplete: "tel" },
-        { name: "email", label: "E-posta", type: "email", maxlength: 160, autocomplete: "email" },
+        { name: "email", label: "E-Posta", type: "email", maxlength: 160, autocomplete: "email" },
       ],
       extraHtml: `<p class="hof-inline-note">Telefon veya e-postadan en az birini yazın. Bilgileriniz yalnızca size ulaşmak için kullanılır (<a href="https://destek-ofis.vercel.app/kvkk" target="_blank" rel="noopener">KVKK Aydınlatma Metni</a>). Sorunuz olursa: ${HOF.esc(c.phone)} · ${HOF.esc(c.email)}</p>`,
       submitLabel: "Bilgileri Gönder",

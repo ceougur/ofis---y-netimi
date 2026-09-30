@@ -211,7 +211,7 @@
     const base = { name: "value", label: shownName, type: "textarea", value: current ? current.value : info.value, rows: 4, maxlength: 20000 };
     const field = HOF.choiceField && !computed(formula) ? HOF.choiceField(base, HOF.choicesForKey(info.key, info.field)) : base;
     HOF.formModal({
-      title: `${shownName} düzenle`,
+      title: `${shownName} Düzenle`,
       eyebrow: info.title || info.key,
       intro: computed(formula)
         ? `<b>Bu alan formülle hesaplanıyor</b> (${esc(formula.d)}). Normalde değiştirmeniz gerekmez: formüldeki alanları düzeltin, bu alan kendiliğinden güncellenir. Buraya değer yazarsanız bu kayıtta formül yerine sizin değeriniz kullanılır.`
@@ -263,7 +263,7 @@
     });
     if (!fields.length) return;
     HOF.formModal({
-      title: `${HOF.vocab.Record} bilgilerini düzenle`,
+      title: `${HOF.vocab.Record} Bilgilerini Düzenle`,
       eyebrow: selected.title,
       size: "wide",
       intro: fields.some(field => field.readonly) ? "Yalnızca değiştirdiğiniz alanlar kaydedilir. Kaynak dosya değişmez. <b>ƒ formül</b> işaretli alanlar Excel/Sheets'teki formülle kendiliğinden hesaplanır." : "Yalnızca değiştirdiğiniz alanlar kaydedilir. Kaynak dosya değişmez.",

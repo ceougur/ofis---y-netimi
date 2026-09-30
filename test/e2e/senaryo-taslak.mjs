@@ -93,7 +93,7 @@ try {
     await Promise.all([page.waitForEvent("load"), page.click('#hof-auth button[type="submit"]')]);
     await page.waitForSelector("#hof-start .hof-start-template [data-template]", { timeout: 15000 });
     const card = await page.$eval("#hof-start .hof-start-template", node => node.innerText.replace(/\s+/g, " "));
-    ok(/Exceliniz yok mu\?/.test(card) && /Sektörünüze uygun taslak Excel/.test(card), "kart: “Exceliniz yok mu? Sektörünüze uygun taslak Excel'i indirin…”");
+    ok(/Exceliniz yok mu\?/.test(card) && /Sektörünüze uygun taslak Excel/i.test(card), "kart: “Exceliniz yok mu? Sektörünüze uygun taslak Excel'i indirin…”");
     ok(await page.isVisible("#hof-start .hof-drop"), "Excel yükleme alanı kartın üstünde (önce yükle, yoksa taslak)");
     const guide = await page.$eval("#hof-start .hof-start-guide", node => node.textContent.replace(/\s+/g, " "));
     ok(/Teknik Destek ve Satın Alımlar İçin: 0536 771 50 55/.test(guide), "açılışta destek hattı: Teknik Destek ve Satın Alımlar İçin: 0536 771 50 55");
@@ -154,7 +154,7 @@ try {
     await Promise.all([page.waitForEvent("load", { timeout: 30000 }), page.click(`${modal} [data-mode="replace"]`)]);
     await page.waitForSelector(".hof-analysis-result:not([hidden])", { timeout: 20000 });
     const result = await page.$eval(".hof-analysis-result", node => node.textContent.replace(/\s+/g, " "));
-    ok(/Önerilen sektör/.test(result) && /Okul servisi/.test(result), "program sektörü kendiliğinden önerir: Okul servisi");
+    ok(/Önerilen sektör/.test(result) && /Okul servisi/i.test(result), "program sektörü kendiliğinden önerir: Okul servisi");
     await shot("taslak-sektor-onerisi");
     await page.click(".hof-analysis-result [data-apply]");
     await page.waitForTimeout(1500);
@@ -195,7 +195,7 @@ try {
     await page.click(`${modal} .hof-start-template [data-template]`);
     await page.waitForSelector(`${modal} .hof-picker input`, { timeout: 10000 });
     const suggested = await page.$eval(`${modal} .hof-picker-option.is-suggested`, node => node.textContent.replace(/\s+/g, " "));
-    ok(/Okul servisi/.test(suggested) && /Önerilen/.test(suggested), "seçicide mevcut sektör (Okul servisi) “Önerilen” olarak başta");
+    ok(/Okul servisi/i.test(suggested) && /Önerilen/.test(suggested), "seçicide mevcut sektör (Okul servisi) “Önerilen” olarak başta");
     await shot("veri-ayarlari-taslak-secici");
     const [download] = await Promise.all([page.waitForEvent("download", { timeout: 15000 }), page.click(`${modal} .hof-picker-option.is-suggested`)]);
     ok(download.suggestedFilename() === "DestekOfis Taslak - Okul Servisi.xlsx", "önerilen sektörün taslağı indi");

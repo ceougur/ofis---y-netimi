@@ -260,7 +260,7 @@
     $("#adm-recovery-status").innerHTML = recoveryStatus.exists
       ? `<b>Kurtarma anahtarı hazır</b> (oluşturulma: ${esc(HOF.formatDateTime(recoveryStatus.createdAt))}${recoveryStatus.createdByName ? ` · ${esc(recoveryStatus.createdByName)}` : ""}). Yönetici parolası unutulursa giriş ekranında <b>Parolamı Unuttum</b> ile bu anahtarla yeni parola belirlenir. Anahtar kaybolduysa yenileyin (eskisi geçersiz olur). Anahtar da yoksa: sunucu bilgisayarında giriş ekranı → <b>Parolamı Unuttum</b> → <b>Sunucu Kodu Oluştur</b>.`
       : "<b>Kurtarma anahtarı oluşturulmadı.</b> Yönetici parolanızı unutursanız programa bu anahtarla girersiniz; üyelik ve internet gerekmez. Oluşturun, yazdırın ve kasada saklayın.";
-    $("#adm-recovery-create").textContent = recoveryStatus.exists ? "Kurtarma anahtarını yenile" : "Kurtarma anahtarı oluştur";
+    $("#adm-recovery-create").textContent = recoveryStatus.exists ? "Kurtarma Anahtarını Yenile" : "Kurtarma Anahtarı Oluştur";
   }
   $("#adm-recovery-create").addEventListener("click", async () => {
     if (recoveryStatus?.exists && !(await HOF.confirm({ title: "Kurtarma anahtarı yenilensin mi?", message: "Yeni anahtar oluşturulunca eski anahtar (yazdırdığınız kâğıt) geçersiz olur. Yenisini yazdırıp saklayın.", confirmLabel: "Yenile" }))) return;
@@ -331,7 +331,7 @@
   function roleEditor(role = null, { copyFrom = "" } = {}) {
     const start = role ? new Set(role.permissions) : copyFrom ? rolePermissions(copyFrom) : new Set();
     HOF.formModal({
-      title: role ? `Rolü düzenle · ${role.label}` : "Yeni rol",
+      title: role ? `Rolü düzenle · ${role.label}` : "Yeni Rol",
       eyebrow: "ROLLER",
       size: "wide",
       intro: role ? `Bu rol ${role.users} kullanıcıda. Kaydedince hepsinin yetkileri hemen değişir (kişiye özel eklenen/kaldırılanlar korunur).` : "Rolün adını yazın ve bu roldeki kişilerin yapabileceklerini işaretleyin. Kullanıcı, sistem ve lisans yönetimi ile ANLIK DURUM kartı yalnız yönetici rolündedir.",
@@ -340,7 +340,7 @@
         { name: "description", label: "Kısa Açıklama", maxlength: 200, value: role?.description || "", placeholder: "İsteğe bağlı" },
       ],
       extraHtml: `${role ? "" : `<label class="hof-field adm-role-start"><span>Başlangıç</span><select data-role-start><option value="">Boş (hiç yetki yok)</option>${roles.builtIn.filter(item => item.key !== "admin").map(item => `<option value="${esc(item.key)}" ${item.key === copyFrom ? "selected" : ""}>${esc(item.label)} yetkileriyle başla</option>`).join("")}${roles.custom.map(item => `<option value="${esc(item.key)}">${esc(item.label)} yetkileriyle başla</option>`).join("")}</select></label>`}<div class="adm-perm-panel is-embedded"><div class="adm-perm-foot is-top"><span class="adm-perm-summary" data-count></span></div><div data-grid>${permGrid({ checked: start })}</div></div>`,
-      submitLabel: role ? "Rolü kaydet" : "Rolü oluştur",
+      submitLabel: role ? "Rolü Kaydet" : "Rolü Oluştur",
       onOpen: dialog => {
         const panel = dialog.querySelector(".adm-perm-panel");
         const count = () => {
@@ -380,7 +380,7 @@
     const holder = row.querySelector(`[data-inline="${field}"]`);
     if (!user || !holder || holder.querySelector("form")) return;
     const value = field === "name" ? user.name : user.username;
-    holder.innerHTML = `<form class="adm-edit-form"><input value="${esc(value)}" maxlength="${field === "name" ? 120 : 60}" aria-label="${field === "name" ? "Görünen ad" : "Kullanıcı adı"}" ${field === "username" ? 'autocomplete="off" spellcheck="false"' : ""}><button type="submit" class="adm-inline-ok" title="Kaydet" aria-label="Kaydet">✓</button><button type="button" class="adm-inline-cancel" data-inline-cancel title="Vazgeç" aria-label="Vazgeç">✕</button></form>${field === "username" ? '<small class="adm-inline-help">Giriş adı değişir; kişi yeni adla girer. Açık oturumu kapanmaz.</small>' : ""}`;
+    holder.innerHTML = `<form class="adm-edit-form"><input value="${esc(value)}" maxlength="${field === "name" ? 120 : 60}" aria-label="${field === "name" ? "Görünen Ad" : "Kullanıcı Adı"}" ${field === "username" ? 'autocomplete="off" spellcheck="false"' : ""}><button type="submit" class="adm-inline-ok" title="Kaydet" aria-label="Kaydet">✓</button><button type="button" class="adm-inline-cancel" data-inline-cancel title="Vazgeç" aria-label="Vazgeç">✕</button></form>${field === "username" ? '<small class="adm-inline-help">Giriş adı değişir; kişi yeni adla girer. Açık oturumu kapanmaz.</small>' : ""}`;
     const form = holder.querySelector("form");
     const input = form.querySelector("input");
     input.focus();
@@ -972,7 +972,7 @@
       const hours = Math.floor(info.uptimeSeconds / 3600);
       target.innerHTML = [
         tile("Sürüm", `${info.product} ${info.version}`, `Node.js ${info.node}`),
-        tile("Çalışma biçimi", info.supervised ? "Windows servisi" : "Doğrudan", info.supervised ? "Bilgisayar açılınca oturum açılmadan başlar; çökerse kendiliğinden yeniden başlar." : "Sunucu bir komut penceresinden çalışıyor."),
+        tile("Çalışma biçimi", info.supervised ? "Windows Servisi" : "Doğrudan", info.supervised ? "Bilgisayar açılınca oturum açılmadan başlar; çökerse kendiliğinden yeniden başlar." : "Sunucu bir komut penceresinden çalışıyor."),
         tile("Çalışma süresi", hours ? `${hours} saat` : `${Math.round(info.uptimeSeconds / 60)} dakika`, `Başlangıç ${HOF.formatDateTime(info.startedAt)}`),
         tile("Veritabanı", formatSize(info.dbSize), `Şema sürümü ${info.schemaVersion}`),
         tile("Son yedek", info.lastBackup ? HOF.formatDateTime(info.lastBackup.createdAt) : "Henüz yok", info.lastBackup ? formatSize(info.lastBackup.size) : "Yedekler sekmesinden hemen alabilirsiniz"),
@@ -994,7 +994,7 @@
     $("#adm-license-status").className = `adm-card adm-license-status is-${tone}`;
     $("#adm-license-status").innerHTML = `
       <div class="adm-license-head">
-        <div><span class="adm-license-badge">${esc(STATE_LABELS[status.state] || status.state)}</span><h2>${esc(status.title)}</h2><p>${esc(status.message)}</p></div>
+        <div><span class="adm-license-badge">${esc(STATE_LABELS[status.state] || status.state)}</span><h2 data-sentence>${esc(status.title)}</h2><p>${esc(status.message)}</p></div>
         ${status.kind && !status.offline ? '<button type="button" class="hof-button hof-button-ghost" id="adm-license-check">Şimdi Doğrula</button>' : ""}
       </div>
       <dl class="adm-license-facts">

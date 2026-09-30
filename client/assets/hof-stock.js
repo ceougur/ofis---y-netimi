@@ -186,7 +186,7 @@
   function editItem(item) {
     const categories = view.list?.categories || [];
     HOF.formModal({
-      title: item ? "Ürünü düzenle" : "Yeni ürün",
+      title: item ? "Ürünü Düzenle" : "Yeni Ürün",
       eyebrow: moduleName().toLocaleUpperCase("tr-TR"),
       fields: [
         { name: "kind", label: "Kalem Türü", type: "select", value: item?.kind || "product", options: [{ value: "product", label: "Ürün (stok tutulur)" }, { value: "service", label: "Hizmet (miktar ve kritik seviye izlenmez)" }], help: "Hizmet kalemleri kritik stok sayısına girmez; satış/alış tutarı Kasa'ya ya da cariye yine yazılabilir." },
@@ -208,7 +208,7 @@
         { name: "note", label: "Not", type: "textarea", rows: 2, maxlength: 1000, value: item?.note || "" },
       ],
       extraHtml: item ? "" : '<p class="hof-stock-total" data-opening-total aria-live="polite"></p>',
-      submitLabel: item ? "Kaydet" : "Ürünü aç",
+      submitLabel: item ? "Kaydet" : "Ürünü Aç",
       onOpen: item
         ? null
         : dialog => {
@@ -270,7 +270,7 @@
     const manage = canManage();
     const payOptions = [
       { value: "none", label: "Yalnız Miktar (para yazılmaz)" },
-      ...(manage ? [{ value: "cash", label: incoming ? "Kasa’dan ödendi (Kasa’ya gider yazılır)" : "Kasa’ya tahsil edildi (satış, Kasa’ya giriş)" }, { value: "account", label: incoming ? "Cariye yaz (tedarikçiye borçlanılır)" : "Cariye yaz (müşteri borçlanır, veresiye)" }] : []),
+      ...(manage ? [{ value: "cash", label: incoming ? "Kasa’dan Ödendi (Kasa’ya gider yazılır)" : "Kasa’ya tahsil edildi (satış, Kasa’ya giriş)" }, { value: "account", label: incoming ? "Cariye Yaz (tedarikçiye borçlanılır)" : "Cariye yaz (müşteri borçlanır, veresiye)" }] : []),
     ];
     let accountField = null;
     const send = async (data, force = false) => {
@@ -278,7 +278,7 @@
       return HOF.api(url, { method: move ? "PUT" : "POST", body: { ...data, kind: type, force } });
     };
     HOF.formModal({
-      title: move ? (incoming ? "Girişi düzelt" : "Çıkışı düzelt") : incoming ? "Stok girişi" : "Stok çıkışı",
+      title: move ? (incoming ? "Girişi Düzelt" : "Çıkışı Düzelt") : incoming ? "Stok Girişi" : "Stok Çıkışı",
       eyebrow: `${item.name} · mevcut ${qtyText(item.qty)} ${item.unit}`,
       fields: [
         { name: "qty", label: `Miktar (${item.unit})`, required: true, inputmode: "decimal", value: move ? qtyText(move.qty) : "", autofocus: true, placeholder: incoming ? "Ör. 10" : "Ör. 2" },
@@ -288,13 +288,13 @@
         { name: "note", label: "Açıklama", maxlength: 300, value: move?.note || "", placeholder: incoming ? "Ör. Toplu alım, market" : "Ör. Ofis tüketimi, 42 C 1070 yağ değişimi" },
       ],
       extraHtml: '<p class="hof-stock-total" data-total aria-live="polite"></p>',
-      submitLabel: move ? "Kaydet" : incoming ? "Girişi kaydet" : "Çıkışı kaydet",
+      submitLabel: move ? "Kaydet" : incoming ? "Girişi Kaydet" : "Çıkışı Kaydet",
       onOpen: dialog => {
         const qty = dialog.querySelector('input[name="qty"]');
         const price = dialog.querySelector('input[name="unitPrice"]');
         const pay = dialog.querySelector('select[name="pay"]');
         const total = dialog.querySelector("[data-total]");
-        accountField = HOF.accounts?.picker?.({ value: move?.accountId ? { id: move.accountId, name: move.accountName } : {}, label: incoming ? "Tedarikçi carisi" : "Müşteri carisi", type: "", required: true });
+        accountField = HOF.accounts?.picker?.({ value: move?.accountId ? { id: move.accountId, name: move.accountName } : {}, label: incoming ? "Tedarikçi Carisi" : "Müşteri Carisi", type: "", required: true });
         if (accountField) pay.closest(".hof-field").after(accountField);
         const sync = () => {
           const amount = (parseNumber(qty.value) || 0) * (parseNumber(price.value) || 0);
