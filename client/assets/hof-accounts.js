@@ -795,7 +795,7 @@
     if (act === "whatsapp") return window.open(`https://wa.me/${button.dataset.wa}`, "_blank", "noopener");
     if (act === "newPlan") {
       modal.close();
-      return HOF.plans?.openNew({ accountId: account.id, accountName: account.name, name: account.name, phone: account.phone, groupId: account.groupId || "", subgroupId: account.subgroupId || "", caseKey: account.caseKey, caseTitle: account.caseTitle });
+      return HOF.plans?.openNew({ accountId: account.id, accountName: account.name, name: account.name, phone: account.phone, registeredOn: account.registeredOn || "", groupId: account.groupId || "", subgroupId: account.subgroupId || "", caseKey: account.caseKey, caseTitle: account.caseTitle });
     }
     const entryOf = id => account.entries.find(entry => entry.id === id);
     if (button.dataset.editEntry) return editEntry(account, { entry: entryOf(button.dataset.editEntry) });

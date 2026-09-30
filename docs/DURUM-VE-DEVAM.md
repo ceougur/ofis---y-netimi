@@ -1,6 +1,6 @@
 # DestekOfis — durum ve devam notu
 
-Yeni bir oturum bu belgeyi okuyarak kaldığı yerden devam eder. Son güncelleme: 30.09.2026 (2.0.11 yayımlandı — PR #11, `v2.0.11`, beş dosya bayt bayt doğrulandı: 8 düzeltme — Taksitler'den cari seçip toplu taksitlendirme, grup süzgecinde cari sayısı, Veri Sağlığı'nda Yok Say, başlıklarda her sözcüğün baş harfi büyük, stok birimleri tek yazım, açık pencereler canlı yenilenir, Ayarlar kullanıcı kartının altında, arama kutusu her yerinden yazar; önceki: 2.0.10 yayımlandı: 17 düzeltme — ayrıntılı yetkiler ve özel roller, kullanıcı silme/ad düzeltme, yönetici parolası kurtarma, "+ Sayfa"ya Excel/Sheets, anlık çek yenilemesi, Borçlu/Alacaklı dili ve renkleri, tek arama kutusu ; 2.0.9 yayımlı; önceki not: sürüm 2.0.2 denetimden geçti — `docs/DENETIM-2.0.2.md`; okuma motoru, analiz iş parçacığı, kanıtlı kolon kararları, kendi kendini onarma, şemaya esnek kolon eşleme, Veri Sağlık Kontrolü ve olay tabanlı uyarılar eklendi — `docs/MIMARI.md` → *2.0.2 eklemeleri*; yayın kullanıcı onayı bekliyor; 2.0.1 yayımlı).
+Yeni bir oturum bu belgeyi okuyarak kaldığı yerden devam eder. Son güncelleme: 30.09.2026 (2.0.12 hazırlandı: taksit kartının Kayıt Tarihi carinin tarihinden gelir, form düzeni; önceki: 2.0.11 yayımlandı — PR #11, `v2.0.11`, beş dosya bayt bayt doğrulandı: 8 düzeltme — Taksitler'den cari seçip toplu taksitlendirme, grup süzgecinde cari sayısı, Veri Sağlığı'nda Yok Say, başlıklarda her sözcüğün baş harfi büyük, stok birimleri tek yazım, açık pencereler canlı yenilenir, Ayarlar kullanıcı kartının altında, arama kutusu her yerinden yazar; önceki: 2.0.10 yayımlandı: 17 düzeltme — ayrıntılı yetkiler ve özel roller, kullanıcı silme/ad düzeltme, yönetici parolası kurtarma, "+ Sayfa"ya Excel/Sheets, anlık çek yenilemesi, Borçlu/Alacaklı dili ve renkleri, tek arama kutusu ; 2.0.9 yayımlı; önceki not: sürüm 2.0.2 denetimden geçti — `docs/DENETIM-2.0.2.md`; okuma motoru, analiz iş parçacığı, kanıtlı kolon kararları, kendi kendini onarma, şemaya esnek kolon eşleme, Veri Sağlık Kontrolü ve olay tabanlı uyarılar eklendi — `docs/MIMARI.md` → *2.0.2 eklemeleri*; yayın kullanıcı onayı bekliyor; 2.0.1 yayımlı).
 
 ## Nerede ne var
 
@@ -76,7 +76,10 @@ Yeni bir oturum bu belgeyi okuyarak kaldığı yerden devam eder. Son güncellem
 
 ## Kalanlar (öncelik sırasıyla)
 
-### 2.0.12 için biriken düzeltmeler (kullanıcı ekledikçe büyür; birlikte yapılır)
+### 2.0.13 için biriken düzeltmeler (kullanıcı ekledikçe büyür; birlikte yapılır)
+(henüz yok; süpermarket simülasyonunun bulguları buraya yazılacak)
+
+### 2.0.12 düzeltmeleri — yapıldı (30.09.2026; paket hazır, yayın kullanıcı onayı bekliyor)
 1. **Taksit kartının "Kayıt Tarihi" carinin kayıt tarihini taşımıyor** (müşteri, 30.09.2026; ilk bildirim "tahsilat girince
    kayıt tarihi değişiyor"; WhatsApp ekran görüntüsüyle netleşti: *Yeni Taksit Kartı* formu). **Neden (kodda doğrulandı):**
    kartın kendi `registered_on` alanı var ve cari seçilse de **bugün** gelir — form `hof-plans.js:497`

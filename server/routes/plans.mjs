@@ -360,8 +360,9 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
     const note = limited(body.note, 1000, "Bilgi notu");
     const total = amountOf(body.total, "Toplam tutar");
     const refNo = limited(body.refNo, 30, "Sıra No");
-    // Kayıt tarihi: kişinin kaydedildiği gün; boş bırakılırsa bugün (v2.0.6).
-    const registeredOn = dateOf(body.registeredOn, "Kayıt tarihi", today());
+    // Kayıt tarihi: kişinin kaydedildiği gün (v2.0.6). v2.0.12: boş bırakılırsa carinin kayıt tarihi, cari yoksa bugün.
+    const ownerDay = String(body.accountId || "").trim() ? store.get("SELECT registered_on AS day FROM accounts WHERE id = ? AND deleted_at IS NULL", String(body.accountId).trim().slice(0, 120))?.day || "" : "";
+    const registeredOn = dateOf(body.registeredOn, "Kayıt tarihi", ownerDay || today());
     // Tablodaki kayıt (v2.0.6): kart, açık veri oturumundaki bir kayda bağlanır; boş kimlik bağı kaldırır.
     const caseKey = limited(body.caseKey, 200, "Kayıt");
     const caseSource = caseKey ? limited(body.caseSource, 200, "Veri oturumu") || currentSource() : "";
@@ -794,8 +795,9 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
         const record = records ? records.find(name, phone) : null;
         if (record?.carded) return skip(index, "Tablodaki kaydının taksit kartı zaten var");
         const refNo = cell(row, col.seq).slice(0, 30) || String((autoRef += 1));
-        // Kayıt tarihi kolonu yoksa ya da okunamıyorsa yükleme günü.
-        const registeredOn = parseDay(cell(row, col.registered)) || (scheduled?.registeredOn || "") || today();
+        // Kayıt tarihi kolonu yoksa ya da okunamıyorsa yükleme günü; v2.0.12: kart mevcut bir cariye bağlanırsa onun tarihi.
+        const excelDay = parseDay(cell(row, col.registered)) || (scheduled?.registeredOn || "");
+        const registeredOn = excelDay || today();
         const person = { name, phone, note: cell(row, col.note).slice(0, 1000), registeredOn, groupId, subgroupId, caseKey: record?.key || "", caseSource: record ? source : "", caseTitle: record?.title || "" };
         // Cari (v2.0.6): aynı ad ve telefonla (ya da telefonsuz aynı ad ve grupla) tek bir cari varsa ona bağlanır; yoksa açılır.
         const outcome = {};
@@ -803,7 +805,8 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
         if (accountId && !outcome.created) report.linked += 1;
         if (outcome.created) undo.accounts.push(accountId);
         if (outcome.linked) undo.accountLinks.push({ accountId, caseKey: person.caseKey });
-        const created = createScheduled(user, { ...person, accountId, refNo, total }, { importId, items, openingDate: today(), openingNote: "Excel'de ödenmiş (açılış)" });
+        const ownerDay = !excelDay && accountId && !outcome.created ? store.get("SELECT registered_on AS day FROM accounts WHERE id = ?", accountId)?.day || "" : "";
+        const created = createScheduled(user, { ...person, registeredOn: ownerDay || registeredOn, accountId, refNo, total }, { importId, items, openingDate: today(), openingNote: "Excel'de ödenmiş (açılış)" });
         if (!items.length && total > 0) store.run("UPDATE plans SET total = ? WHERE id = ?", roundMoney(total), created.id);
         undo.plans.push(created.id);
         undo.openings.push(...created.openingIds);
@@ -991,13 +994,14 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
     });
   }
   // Carinin toplu taksitlendirmesi (routes/accounts.mjs): kartı cariye bağlı açar, isterse taksitleri dağıtır.
+  // v2.0.12: kartın Kayıt Tarihi carinin kayıt tarihidir (kişi bir kez kaydolur; kart açıldığı gün değil).
   // refNo verilirse (toplu taksitlendirme sayacı) kart tablosu her kartta yeniden taranmaz.
   function createForAccount(user, account, { total, count = 0, firstDue = "", everyMonths = 1, name = "", note = "", refNo = "" }) {
     const id = newId("plan");
     const amount = roundMoney(Number(total) || 0);
     store.run(
       "INSERT INTO plans (id, account_id, ref_no, registered_on, case_key, case_source, case_title, group_id, subgroup_id, name, note, phone, total, status, created_by, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'active', ?, ?, ?)",
-      id, account.id, refNo || nextRef(), today(), account.caseKey || "", account.caseSource || "", account.caseTitle || "", account.groupId || null, account.subgroupId || null, (name || account.name).slice(0, 160), (note || "").slice(0, 1000), account.phone || "", amount, user.id, now(), now(),
+      id, account.id, refNo || nextRef(), account.registeredOn || today(), account.caseKey || "", account.caseSource || "", account.caseTitle || "", account.groupId || null, account.subgroupId || null, (name || account.name).slice(0, 160), (note || "").slice(0, 1000), account.phone || "", amount, user.id, now(), now(),
     );
     if (count > 0 && amount > 0) replaceItems(id, distribute({ total: amount, count: Math.min(count, MAX_ITEMS), firstDue, everyMonths }));
     audit(user, "plan.created", id, { name: name || account.name, total: amount, accountId: account.id, bulk: true });

@@ -50,7 +50,7 @@
         dialog.querySelector("[data-new-plan]")?.addEventListener("click", () => {
           modal.close();
           const row = (HOF.data?.rows || []).find(item => item.__hofKey === selected.key) || null;
-          HOF.plans.openNew({ caseKey: selected.key, caseTitle: row ? HOF.plans.recordLabel(row) : selected.title, name: row ? HOF.plans.personOf(row) || selected.title : selected.title, phone: row ? HOF.plans.phoneOf(row) : "" });
+          HOF.plans.openNew({ caseKey: selected.key, caseTitle: row ? HOF.plans.recordLabel(row) : selected.title, name: row ? HOF.plans.personOf(row) || selected.title : selected.title, phone: row ? HOF.plans.phoneOf(row) : "", registeredOn: row && HOF.plans.recordDay ? HOF.plans.recordDay(row) : "" });
         });
       },
       onSubmit: async data => {
