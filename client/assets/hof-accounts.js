@@ -562,7 +562,7 @@
           : []),
         // v2.0.13: yanlış yönde yazılan borç/alacak düzeltilirken yön değiştirilebilir (açılış bakiyesi gibi).
         ...(entry && (type === "debt" || type === "credit") ? [{ name: "kind", label: "Yön", type: "select", value: type, options: [{ value: "debt", label: "Borç (cari bize borçlanır)" }, { value: "credit", label: "Alacak (biz cariye borçlanırız)" }] }] : []),
-        { name: "date", label: "Tarih", type: "date", value: entry?.date || office().todayIso?.() || "" },
+        { name: "date", label: "Tarih", type: "date", max: "today", value: entry?.date || office().todayIso?.() || "" },
         { name: "note", label: "Açıklama", maxlength: 300, value: entry?.note || "", placeholder: type === "in" ? "Ör. Eylül ödemesi" : type === "debt" ? "Ör. Eylül aidatı, 3 adet ürün" : "" },
       ],
       submitLabel: entry ? "Kaydet" : ENTRY_LABEL[type],

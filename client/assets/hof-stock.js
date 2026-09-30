@@ -205,7 +205,7 @@
           : [
               { name: "openingQty", label: "Miktar (stoğa girecek)", inputmode: "decimal", placeholder: "Ör. 10 (boş: şimdilik stok yok)" },
               { name: "openingCash", label: "Kasa’ya yansıt (miktar × birim fiyat Kasa’dan “Stok ödemesi” gideri olarak düşer)", type: "checkbox", value: false },
-              { name: "openingDate", label: "Ödeme Tarihi", type: "date", value: office().todayIso?.() || "" },
+              { name: "openingDate", label: "Ödeme Tarihi", type: "date", max: "today", value: office().todayIso?.() || "" },
             ]),
         { name: "note", label: "Not", type: "textarea", rows: 2, maxlength: 1000, value: item?.note || "" },
       ],
@@ -304,7 +304,7 @@
         { name: "qty", label: `Miktar (${item.unit})`, required: true, inputmode: "decimal", value: move ? qtyText(move.qty) : "", autofocus: true, placeholder: incoming ? "Ör. 10" : "Ör. 2" },
         { name: "unitPrice", label: back ? "İade Birim Fiyatı (₺)" : incoming ? "Alış Birim Fiyatı (₺)" : "Satış Birim Fiyatı (₺)", inputmode: "decimal", value: priceOf() ? office().amountText?.(priceOf()) : "", placeholder: "İsteğe bağlı", help: !incoming && !move && item.salePrice ? `Satış fiyatı ${money(item.salePrice)}${item.unitPrice ? ` · alış ${money(item.unitPrice)}` : ""}` : "" },
         { name: "pay", label: incoming && !back ? "Ödeme Yolu" : back ? "İade Yolu" : "Tahsilat Yolu", type: "select", value: payValue, options: payOptions },
-        { name: "date", label: "Tarih", type: "date", value: move?.date || office().todayIso?.() || "" },
+        { name: "date", label: "Tarih", type: "date", max: "today", value: move?.date || office().todayIso?.() || "" },
         { name: "note", label: "Açıklama", maxlength: 300, value: move?.note || "", placeholder: back ? "Ör. Ambalaj hasarlı, yanlış beden" : incoming ? "Ör. Toplu alım, market" : "Ör. Fiş 0124, ofis tüketimi" },
         // v2.0.13: veresiye satışı taksitlendir — satış borcu bir kez yazılır, kart bu borcu vadelere böler.
         ...(canPlan

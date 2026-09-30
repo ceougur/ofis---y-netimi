@@ -41,7 +41,7 @@
       intro: target && target.intro ? target.intro : "",
       fields: [
         { name: "amount", label: "Tutar (₺)", required: true, inputmode: "decimal", placeholder: "Örn. 1.250,00", value: suggested },
-        { name: "date", label: "Tahsilat Tarihi", type: "date", value: new Date().toISOString().slice(0, 10) },
+        { name: "date", label: "Tahsilat Tarihi", type: "date", max: "today", value: HOF.localToday() },
         HOF.methodField("cash", { incoming: true }),
         { name: "note", label: "Açıklama", placeholder: "Ör. Ekim ödemesi", maxlength: 500, value: (target && target.note) || "" },
       ],
@@ -335,7 +335,7 @@
       intro: "Düzeltme kasaya da yansır. Eski ve yeni değer işlem kayıtlarında saklanır.",
       fields: [
         { name: "amount", label: "Tutar (₺)", required: true, inputmode: "decimal", value: amountText(item.amount) },
-        { name: "date", label: "Tahsilat Tarihi", type: "date", required: true, value: isoDate(item.date) },
+        { name: "date", label: "Tahsilat Tarihi", type: "date", required: true, max: "today", value: isoDate(item.date) },
         HOF.methodField(item.method || "cash", { incoming: true }),
         { name: "note", label: "Açıklama", maxlength: 500, value: item.note ?? item.description ?? "" },
       ],
@@ -407,7 +407,7 @@
       intro: incoming ? "Bir kayda bağlı olmayan tahsilatlar için (ör. danışmanlık ücreti). Kayda bağlı tahsilatı detay kartındaki Tahsilat düğmesiyle girin; kasaya kendiliğinden düşer." : "Kira, fatura, maaş, masraf gibi kasadan çıkan ödemeler.",
       fields: [
         { name: "amount", label: "Tutar (₺)", required: true, inputmode: "decimal", placeholder: "Örn. 1.250,00", value: entry ? amountText(entry.amount) : "" },
-        { name: "date", label: "Tarih", type: "date", required: true, value: entry ? isoDate(entry.date) : dayText(new Date()) },
+        { name: "date", label: "Tarih", type: "date", required: true, max: "today", value: entry ? isoDate(entry.date) : dayText(new Date()) },
         { name: "description", label: "Açıklama", required: true, maxlength: 300, placeholder: incoming ? "Kimden / ne için" : "Kime / ne için", value: entry?.description || "", list: incoming ? [] : ["Kira", "Elektrik Faturası", "Su faturası", "İnternet", "Maaş", "Kırtasiye", "Vergi", "Masraf", "Bankaya Yatırılan", "Bankadan Çekilen"] },
         HOF.methodField(entry?.method || cashView.method || "cash", { incoming }),
       ],

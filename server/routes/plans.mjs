@@ -392,7 +392,7 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
     if (!Number.isInteger(count) || count < 1 || count > MAX_ITEMS) throw new HttpError(400, `Taksit sayısı 1 ile ${MAX_ITEMS} arasında olmalı.`);
     const firstDue = dateOf(body.firstDue, "İlk vade");
     // v2.0.13: ilk vade kartın Kayıt Tarihi'nden (işlem/satış tarihi) önce olamaz.
-    if (period && from) period.dueDate(firstDue, { from, label: "İlk vade" });
+    if (period && from) period.dueDate(firstDue, { from, label: "İlk Vade" });
     const everyMonths = Math.trunc(Number(body.everyMonths) || 1);
     if (everyMonths < 1 || everyMonths > 12) throw new HttpError(400, "Taksit aralığı 1–12 ay olmalı.");
     if (!(total > 0)) throw new HttpError(400, "Taksitlere bölmek için toplam tutar gerekli.");
@@ -568,7 +568,7 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
   // ---------- Taksitler (elle) ----------
   const itemInput = (body, plan = null) => {
     const dueDate = dateOf(body.dueDate, "Vade");
-    if (period && plan?.registeredOn) period.dueDate(dueDate, { from: plan.registeredOn, label: "Taksit vadesi" });
+    if (period && plan?.registeredOn) period.dueDate(dueDate, { from: plan.registeredOn, label: "Taksit Vadesi" });
     return { dueDate, amount: amountOf(body.amount, "Taksit tutarı"), note: limited(body.note, 200, "Açıklama") };
   };
   const itemOf = (planId, itemId) => {
@@ -1103,7 +1103,7 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
     const id = newId("plan");
     const amount = roundMoney(Number(total) || 0);
     const registeredOn = account.registeredOn && account.registeredOn <= today() ? account.registeredOn : today();
-    if (count > 0 && period) period.dueDate(firstDue, { from: registeredOn, label: "İlk vade" });
+    if (count > 0 && period) period.dueDate(firstDue, { from: registeredOn, label: "İlk Vade" });
     if (!coversBalance) period?.assertOpen(registeredOn, "Kartın Kayıt Tarihi");
     store.run(
       "INSERT INTO plans (id, account_id, ref_no, registered_on, case_key, case_source, case_title, group_id, subgroup_id, name, note, phone, total, status, covers_balance, created_by, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'active', ?, ?, ?, ?)",

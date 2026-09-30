@@ -152,15 +152,18 @@ try {
     ok((await api(`/api/workspace/accounts/${tedarik.id}/entries`, { kind: "credit", amount: "2000", date: local(-10), note: "Fatura 2026/77" })).status === 200, "Tedarik: 2.000 fatura (alacak)");
     ok((await api(`/api/workspace/accounts/${tedarik.id}/entries`, { kind: "out", amount: "500", date: local(-5), note: "Kısmi ödeme", cashForce: true })).status === 200, "Tedarik: 500 ödeme");
     // Ahmet 2: 3 taksitli kart (ilk taksit 20 gün önce: gecikmiş).
-    const p = await api("/api/workspace/plans", { name: "Ahmet Yılmaz", accountId: ahmet2.id, total: "3000", mode: "auto", count: 3, firstDue: local(-20), everyMonths: 1 });
+    const p = await api("/api/workspace/plans", { name: "Ahmet Yılmaz", accountId: ahmet2.id, total: "3000", mode: "auto", count: 3, firstDue: local(-20), registeredOn: local(-20), everyMonths: 1 });
     ok(p.status === 200, "Ahmet (2): 3.000 / 3 taksit kartı");
     plan = p.data;
     // Çekler: alınan (Ahmet 1, +10 gün), verilen (Tedarik, +20 gün); senet alınan (Ahmet 2, +45 gün).
     ok((await api("/api/workspace/cheques", { direction: "in", instrument: "cheque", amount: "1000", dueDate: local(10), accountId: ahmet1.id, serialNo: "A-1001", bank: "Ziraat" })).status === 200, "alınan çek 1.000 (+10 gün)");
     ok((await api("/api/workspace/cheques", { direction: "out", instrument: "cheque", amount: "800", dueDate: local(20), accountId: tedarik.id, serialNo: "V-2001", bank: "Halkbank" })).status === 200, "verilen çek 800 (+20 gün)");
     ok((await api("/api/workspace/cheques", { direction: "in", instrument: "note", amount: "700", dueDate: local(45), accountId: ahmet2.id, serialNo: "S-3001" })).status === 200, "alınan senet 700 (+45 gün)");
-    // Kasa: ileri tarihli kira (+15 gün) ve bugünkü elle giriş.
-    ok((await api("/api/workspace/cash", { kind: "out", amount: "4000", date: local(15), description: "Ofis kirası", cashForce: true })).status === 200, "ileri tarihli kira 4.000 (+15 gün)");
+    // Kasa: ileri tarihli kira (+15 gün). v2.0.13'ten beri ileri tarihli hareket girilemez; eski sürümden kalan planlı
+    // gider olarak veritabanına yazılır (raporlar onu vade takipte ve nakit akışında göstermeye devam etmeli).
+    ok((await api("/api/workspace/cash", { kind: "out", amount: "4000", date: local(15), description: "Ofis kirası", cashForce: true })).data?.code === "date-future", "ileri tarihli kira artık reddedilir (date-future)");
+    app.store.db.prepare("INSERT INTO cash_entries (id, kind, amount, date, description, method, created_by, created_at) VALUES ('eski-ileri-kira', 'out', 4000, ?, 'Ofis kirası', 'cash', 'eski', ?)").run(local(15), new Date().toISOString());
+    app.integrity.start();
     ok((await api("/api/workspace/cash", { kind: "in", amount: "250", date: TODAY, description: "Danışmanlık" })).status === 200, "bugün Kasa girişi 250");
   });
 

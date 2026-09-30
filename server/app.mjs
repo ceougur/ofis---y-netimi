@@ -282,6 +282,8 @@ export function createApp(overrides = {}) {
     log,
     store,
     integrity: context.integrity,
+    ledger: context.ledger,
+    period: context.period,
     db,
     server,
     migration,

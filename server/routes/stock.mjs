@@ -345,7 +345,7 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
         const account = accounts()?.detail ? accounts().detail(input.accountId, user) : null;
         const count = Math.trunc(Number(plan.count));
         // Vade satış tarihinden önce olamaz (v2.0.13).
-        if (period) period.dueDate(text(plan.firstDue), { from: input.date, label: "İlk vade" });
+        if (period) period.dueDate(text(plan.firstDue), { from: input.date, label: "İlk Vade" });
         const distribution = plans()?.validDistribution ? plans().validDistribution({ count, firstDue: plan.firstDue, everyMonths: plan.everyMonths }, input.amount) : null;
         if (account && distribution) plans().createForAccount(user, account, { total: input.amount, count, firstDue: text(plan.firstDue), everyMonths: Math.trunc(Number(plan.everyMonths) || 1), note: accountNote(item, input), coversBalance: true });
       }

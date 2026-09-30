@@ -125,7 +125,7 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, pe
     ok(res, { lockedUntil: period?.lockedUntil() || "", today: period?.today() || "" });
   });
   router.put("/api/admin/period-lock", async ({ req, res }) => {
-    const user = auth.requirePermission(req, "users.manage");
+    const user = auth.requirePermission(req, "system.manage");
     if (!period) throw new HttpError(503, "Dönem kilidi hazır değil.");
     const body = await readJson(req);
     const previous = period.lockedUntil();

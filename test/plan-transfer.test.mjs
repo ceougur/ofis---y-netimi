@@ -218,7 +218,7 @@ describe("tablodan taksit kartına aktarma (iş akışı)", () => {
     // Aktarımdan önce programda: Ayşe'ye kayıt kartından tahsilat (notunda geçen ayın adı), Zeynep'e Taksitler'den bağsız kart.
     const ayse = keyOf("Ayşe Kaya");
     assert.equal((await post(`/api/workspace/cases/${encodeURIComponent(ayse)}/payments`, { amount: "2.500", date: iso(-1, 12), note: `${monthOf(-1).name} taksiti`, caseTitle: "Ayşe Kaya" })).status, 200);
-    const zeynepCard = await post("/api/workspace/plans", { name: "Zeynep Ak", total: "4.000", mode: "auto", count: 4, firstDue: iso(-2, 1) });
+    const zeynepCard = await post("/api/workspace/plans", { name: "Zeynep Ak", total: "4.000", mode: "auto", count: 4, firstDue: iso(-2, 1), registeredOn: iso(-2, 1) });
     assert.equal(zeynepCard.status, 200, zeynepCard.error);
 
     const summary = await get("/api/workspace/plans/from-table/summary");

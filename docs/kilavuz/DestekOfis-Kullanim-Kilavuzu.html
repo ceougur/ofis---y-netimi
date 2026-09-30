@@ -124,6 +124,7 @@
   <li><b>Ödeme ve tahsilat yolu:</b> her tahsilat ve ödemede <b>Nakit</b>, <b>Havale / EFT</b> ya da <b>Kredi Kartı</b> seçin. Cari kartında tahsilatta <b>Çek / Senet</b> seçerseniz evrak formu açılır; satışta <b>Açık Hesap</b> tutarı müşterinin borcuna yazar.</li>
   <li><b>Sekmeler:</b> <b>Nakit Kasa</b>, <b>Banka</b>, <b>Kredi Kartı</b> ya da <b>Tümü</b>. Her sekmenin kendi bakiyesi ve PDF'i vardır.</li>
   <li><b>Kasa eksiye düşecekse</b> program sorar. Para bankadan ödendiyse yolu <b>Havale / EFT</b> seçin; gerçekten kasadan çıktıysa <b>Yine de Kaydet</b>.</li>
+  <li><b>İleri tarih yok:</b> Kasa, cari, stok ve taksit hareketine bugünden sonraki bir tarih yazılamaz. Gelecekteki ödeme ya da tahsilatı taksit veya çek / senet vadesi olarak girin; günü gelince tahsil edin.</li>
 </ul>
 <figure class="w80"><img src="ekran/k08-kasa.jpg" alt="Kasa"></figure>
 
@@ -153,7 +154,7 @@
 <h2>9. Taksitler</h2>
 <p>Sol menüden <b>Taksitler</b>. Kişilerin taksitli borçlarını takip eder. Kartlar <b>Grup › Alt Grup</b> ile düzenlenir (servis plakası › güzergâh, site › blok, okul › sınıf). Grup listesi her grubun kaç kartı ve kaç carisi olduğunu gösterir: <i>34 SRV 202 · 0 kart · 3 cari</i>.</p>
 <ol class="steps">
-  <li><b>Tek kart:</b> <b>+ Yeni Kart</b> → cariyi seçin (ad yazınca bulunur; yoksa bu adla cari açılır); kartın Kayıt Tarihi ve grubu cariden gelir. Toplam tutar, taksit sayısı ve ilk vadeyi yazın. Taksitleri sonra <b>Otomatik Dağıt</b> ya da <b>+ Taksit</b> ile de kurabilirsiniz.</li>
+  <li><b>Tek kart:</b> <b>+ Yeni Kart</b> → cariyi seçin (ad yazınca bulunur; yoksa bu adla cari açılır); kartın Kayıt Tarihi ve grubu cariden gelir. Toplam tutar, taksit sayısı ve ilk vadeyi yazın. Taksitleri sonra <b>Otomatik Dağıt</b> ya da <b>+ Taksit</b> ile de kurabilirsiniz. İlk vade Kayıt Tarihi'nden önce olamaz; Kayıt Tarihi bugünden ileri olamaz.</li>
   <li><b>Birden çok cariye birden:</b> <b>+ Toplu Taksitlendir</b> ya da süzgeç satırındaki <b>Cari Seç</b>. Açılan pencerede grup, alt grup ve adla süzün, kutularla carileri seçin (başlıktaki kutu hepsini seçer) → <b>Seçilenlere Taksit Planı</b>. Tutarı herkese aynı yazın ya da her carinin kartındaki alandan (ör. <i>Servis Ücreti</i>) okutun; taksit sayısı ve ilk vadeyi girin. Program önce kaç kart, toplam ne kadar ve hangi carilere açılacağını gösterir; <b>N Kartı Aç</b> deyince kartlar açılır. Açık kartı olan cari listeye gelmez; çift kart açılmaz.</li>
   <li><b>Kartsız grup:</b> bir grubu seçtiğinizde carileri olup hiç kartı yoksa liste boş kalmaz; <b>Bu Gruba Toplu Taksitlendir</b> ile o grubun carileri seçili gelir.</li>
   <li><b>Veresiye satışı ya da mevcut borcu taksitlendirme:</b> cari kartında <b>+ Taksit Planı</b> → <b>Borcun Kaynağı: Carinin Mevcut Borcu</b> (tutar bakiyeden gelir). Borç ikinci kez yazılmaz, yalnız vadelere bölünür. Satış anında da yapabilirsiniz: Stok → <b>− Çıkış</b> → <b>Açık Hesap</b> → <b>Bu Satışı Taksitlendir</b>. Yeni bir hizmet ya da satışsa <b>Yeni Borç</b> seçin.</li>
@@ -234,6 +235,7 @@
   <li><b>Kurtarma anahtarı:</b> <b>Kurtarma Anahtarı Oluştur</b> → yazdırın. Parolanızı unutursanız giriş ekranında <b>Parolamı Unuttum</b> → anahtar + yeni parola. Anahtar da kayıpsa <b>sunucu bilgisayarında</b> aynı ekrandan <b>Sunucu Kodu Oluştur</b>; kodu Başlat menüsündeki <b>DestekOfis → Yönetici kurtarma kodunu aç</b> gösterir (10 dakika geçerli).</li>
   <li><b>Yedekler:</b> program 6 saatte bir kendiliğinden yedek alır. <b>Yönetim → Yedekler</b>'den yedek alıp indirin; <b>Drive'a da Yedekle</b> ile her yedek Google Drive / OneDrive klasörünüze de kopyalanır (<b>Kaydet ve Bağla</b>, <b>Şimdi Dene</b>).</li>
   <li><b>Silinenler:</b> silinen kayıt, sekme, belge, tahsilat ve kasa hareketleri <b>Yönetim → Silinenler</b>'dedir; <b>Geri Yükle</b> eski yerine getirir.</li>
+  <li><b>Dönem kilidi:</b> ay kapandığında <b>Yönetim → Sistem → Dönem Kilidi ve Mutabakat</b>'ta son günü seçip <b>Kilitle</b>. O tarih ve öncesine hareket eklenemez, düzeltilemez, silinemez. Düzeltme gerekirse <b>Kilidi Kaldır</b>, düzeltin, yeniden kilitleyin. Kart, defterlerin tutarlı olup olmadığını da gösterir.</li>
   <li><b>Güncelleme:</b> <b>Yönetim → Sistem → Güncellemeleri Denetle → Şimdi Güncelle</b>. Veriler ve lisans korunur; önce yedek alınır.</li>
   <li><b>Sektör ve görünüm:</b> <b>Ayarlar → Sektör ve Görünüm</b>.</li>
 </ul>

@@ -308,6 +308,11 @@
   };
   HOF.hasOpenModal = () => openModals.length > 0;
 
+  /** Yerel takvimle bugün (YYYY-AA-GG); toISOString gece yarısından sonra dünü verir. */
+  HOF.localToday = () => {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+  };
   HOF.confirm = ({ title, message, confirmLabel = "Onayla", cancelLabel = "Vazgeç", danger = false }) =>
     new Promise(resolve => {
       let answered = false;
@@ -347,7 +352,7 @@
     } else if (field.type === "checkbox") return `<label class="hof-check"><input type="checkbox" ${common} ${field.value ? "checked" : ""}><span>${HOF.esc(field.label)}</span></label>`;
     else {
       const list = field.list && field.list.length ? `${id}-list` : "";
-      control = `<input ${common} type="${field.type || "text"}" value="${HOF.esc(field.value ?? "")}" placeholder="${HOF.esc(field.placeholder || "")}" ${field.inputmode ? `inputmode="${field.inputmode}"` : ""} ${field.step ? `step="${field.step}"` : ""} ${field.min != null ? `min="${field.min}"` : ""} ${list ? `list="${list}"` : ""} autocomplete="${field.autocomplete || "off"}">${list ? `<datalist id="${list}">${field.list.map(item => `<option value="${HOF.esc(item)}"></option>`).join("")}</datalist>` : ""}`;
+      control = `<input ${common} type="${field.type || "text"}" value="${HOF.esc(field.value ?? "")}" placeholder="${HOF.esc(field.placeholder || "")}" ${field.inputmode ? `inputmode="${field.inputmode}"` : ""} ${field.step ? `step="${field.step}"` : ""} ${field.min != null ? `min="${field.min}"` : ""} ${field.max != null ? `max="${field.max === "today" ? HOF.localToday() : field.max}"` : ""} ${list ? `list="${list}"` : ""} autocomplete="${field.autocomplete || "off"}">${list ? `<datalist id="${list}">${field.list.map(item => `<option value="${HOF.esc(item)}"></option>`).join("")}</datalist>` : ""}`;
     }
     return `<label class="hof-field${field.readonly ? " is-readonly" : ""}" for="${id}"><span>${HOF.esc(field.label)}${field.required ? ' <i aria-hidden="true">*</i>' : ""}${field.badge ? ` <em class="hof-field-badge">${HOF.esc(field.badge)}</em>` : ""}</span>${control}${field.help ? `<small>${HOF.esc(field.help)}</small>` : ""}</label>`;
   };

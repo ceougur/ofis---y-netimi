@@ -527,7 +527,7 @@
       fields: [
         { name: "name", label: "Ad Soyad / Kurum", required: true, maxlength: 160, value: plan?.name || preset?.name || "", autofocus: !preset },
         { name: "refNo", label: "Sıra No", maxlength: 30, value: plan?.refNo || "", placeholder: plan ? "" : "Boş bırakılırsa sıradaki numara", help: plan ? "" : "Listede ilk kolon ve varsayılan sıralama." },
-        { name: "registeredOn", label: "Kayıt Tarihi", type: "date", required: true, value: plan?.registeredOn || preset?.registeredOn || todayIso(), help: plan ? "Kişinin kayıt tarihi (cari kartındakiyle aynı)." : "Kişinin kayıt tarihi: cari seçilince carinin tarihi gelir; carisi yoksa bugün." },
+        { name: "registeredOn", label: "Kayıt Tarihi", type: "date", required: true, max: "today", value: plan?.registeredOn || preset?.registeredOn || todayIso(), help: plan ? "Kişinin kayıt tarihi (cari kartındakiyle aynı)." : "Kişinin kayıt tarihi: cari seçilince carinin tarihi gelir; carisi yoksa bugün." },
         { name: "phone", label: "Telefon", type: "tel", inputmode: "tel", maxlength: 60, value: plan?.phone || preset?.phone || "", placeholder: "05xx xxx xx xx" },
         // v2.0.13: carinin borcu varsa kart ya o borcu taksitlendirir (ikinci kez borç yazmaz) ya da yeni borç açar.
         // Markette "veresiye sat → taksitlendir" akışı artık alacağı ikiye katlamaz.
@@ -717,7 +717,7 @@
         : "Müşteriye geri verilen ya da onun adına yapılan ödeme. Kasa’dan düşer ve kartın ödenen tutarını azaltır.",
       fields: [
         { name: "amount", label: "Tutar (₺)", required: true, inputmode: "decimal", value: suggested, autofocus: true },
-        { name: "date", label: "Tarih", type: "date", required: true, value: entry?.date || todayIso() },
+        { name: "date", label: "Tarih", type: "date", required: true, max: "today", value: entry?.date || todayIso() },
         // v2.0.13: tahsilat / ödeme yolu (Nakit, Havale / EFT, Kredi Kartı). Çekle/senetle ödeme Çek / Senet Al'dan "Taksite Say" ile.
         HOF.methodField(entry?.method || "cash", { incoming }),
         ...(incoming ? [{ name: "itemId", label: "Hangi Taksite", type: "select", value: entry?.itemId || item?.id || "", options: [{ value: "", label: "En Eski Açık Taksite (önerilen)" }, ...openItems.map(row => ({ value: row.id, label: `${row.seq}. taksit · ${HOF.formatDate(row.dueDate)} · kalan ${money(row.remaining)}` }))] }] : []),
