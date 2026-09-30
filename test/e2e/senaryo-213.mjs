@@ -376,10 +376,11 @@ try {
     d.setDate(d.getDate() - 1);
     const yesterday = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
     await openCari("kemal");
-    await admin.click(`${top} [data-entry="in"]`);
+    // (Kemal'in açık taksit kartı var; + Tahsilat önce "taksite mi?" diye sorar. Tarih alanı Borç Yaz formunda denetlenir.)
+    await admin.click(`${top} [data-entry="debt"]`);
     await admin.waitForSelector(`${modal} form input[name="date"][max]`);
     const maxDay = await admin.$$eval(`${modal} form input[name="date"]`, nodes => nodes.at(-1).max);
-    ok(maxDay === today(), `cari tahsilat formunda tarih seçici bugünden ileriyi göstermez (max = ${maxDay})`);
+    ok(maxDay === today(), `cari hareket formunda tarih seçici bugünden ileriyi göstermez (max = ${maxDay})`);
     await closeAll();
     await admin.goto(`${BASE}/admin.html#system`, { waitUntil: "load" });
     await admin.click('.adm-tabs [data-tab="system"]');

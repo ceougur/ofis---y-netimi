@@ -606,6 +606,7 @@ try {
     await admin.selectOption('.hof-plan-form select[name="items"]', "auto");
     await admin.fill('.hof-plan-form input[name="count"]', "3");
     await admin.fill('.hof-plan-form input[name="firstDue"]', "2026-02-05");
+    await admin.fill('.hof-plan-form input[name="registeredOn"]', "2026-02-01"); // v2.0.13: geçmiş vadeli kartın Kayıt Tarihi vadeden önce
     await admin.click('.hof-plan-form button[type="submit"]');
     await admin.waitForSelector(".hof-plans .hof-plan-head", { timeout: 10000 });
     const facts = await admin.$eval(".hof-plans .hof-plan-profile", node => node.innerText.replace(/\s+/g, " "));
