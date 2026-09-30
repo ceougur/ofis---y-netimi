@@ -377,8 +377,9 @@ try {
     const yesterday = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
     await openCari("kemal");
     await admin.click(`${top} [data-entry="in"]`);
-    await admin.waitForSelector(`${top} input[name="date"]`);
-    ok((await admin.$eval(`${top} input[name="date"]`, node => node.max)) === today(), "cari tahsilat formunda tarih seçici bugünden ileriyi göstermez (max = bugün)");
+    await admin.waitForSelector(`${modal} form input[name="date"][max]`);
+    const maxDay = await admin.$$eval(`${modal} form input[name="date"]`, nodes => nodes.at(-1).max);
+    ok(maxDay === today(), `cari tahsilat formunda tarih seçici bugünden ileriyi göstermez (max = ${maxDay})`);
     await closeAll();
     await admin.goto(`${BASE}/admin.html#system`, { waitUntil: "load" });
     await admin.click('.adm-tabs [data-tab="system"]');

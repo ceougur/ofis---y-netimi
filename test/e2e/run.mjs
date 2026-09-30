@@ -523,8 +523,9 @@ try {
     await admin.fill('.hof-plan-form input[name="firstDue"]', "2026-01-05");
     // v2.0.13: ilk vade Kayıt Tarihi'nden (bugün) önce olamaz — form kaydetmez, nedenini söyler; Kayıt Tarihi düzeltilince açılır.
     await admin.click('.hof-plan-form button[type="submit"]');
-    await admin.waitForFunction(() => /önce olamaz/.test([...document.querySelectorAll(".hof-toast")].map(node => node.textContent).join(" ")), null, { timeout: 8000 });
-    expect(/İlk Vade .*önce olamaz/.test(await toastText(admin)), `vade < kayıt tarihi uyarısı: ${await toastText(admin)}`);
+    await admin.waitForFunction(() => /önce olamaz/.test(document.querySelector(".hof-plan-form .hof-form-error, .hof-modal-backdrop.is-visible .hof-form-error")?.textContent || ""), null, { timeout: 8000 });
+    const dueError = await admin.textContent(".hof-modal-backdrop.is-visible .hof-form-error");
+    expect(/İlk Vade .*önce olamaz/.test(dueError), `vade < kayıt tarihi uyarısı formda: ${dueError}`);
     await admin.fill('.hof-plan-form input[name="registeredOn"]', "2026-01-01");
     await admin.click('.hof-plan-form button[type="submit"]');
     await admin.waitForSelector(".hof-plans .hof-plan-head", { timeout: 10000 });
