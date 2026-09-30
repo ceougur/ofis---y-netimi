@@ -26,7 +26,7 @@ const moneyFormat = new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, m
 const qtyText = value => qtyFormat.format(Number(value) || 0);
 const collator = new Intl.Collator("tr", { numeric: true, sensitivity: "base" });
 
-export function registerStockRoutes(router, { store, auth, audit, events, trash, cash = null, accounts = () => null, plans = () => null }) {
+export function registerStockRoutes(router, { store, auth, audit, events, trash, cash = null, period = null, accounts = () => null, plans = () => null }) {
   const now = () => new Date().toISOString();
   const today = () => isoDay(new Date());
   const newId = prefix => `${prefix}-${randomUUID()}`;
@@ -194,7 +194,7 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
         const pay = PAY.has(text(body.openingPay)) ? text(body.openingPay) : "none";
         openingMove =
           pay === "none"
-            ? { kind: "in", qty: opening, unitPrice: input.unitPrice, amount: 0, date: dateOf(body.openingDate, "Tarih", today()), note: "Açılış stoku", pay: "none", accountId: "" }
+            ? { kind: "in", qty: opening, unitPrice: input.unitPrice, amount: 0, date: period ? period.movementDate(body, { field: "openingDate" }) : dateOf(body.openingDate, "Tarih", today()), note: "Açılış stoku", pay: "none", accountId: "" }
             : moveInput({ kind: "in", qty: opening, unitPrice: input.unitPrice, pay, accountId: body.openingAccountId, date: body.openingDate, note: limited(body.openingNote, 300, "Açıklama") || "İlk alım" }, user, { ...input, id });
         if (openingMove.pay === "cash") cash?.guardOut?.(openingMove.amount, openingMove.date, body.cashForce === true, openingMove.method);
         const moveId = insertMove(user, id, openingMove);
@@ -288,7 +288,7 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
     const pay = PAY.has(text(body.pay)) ? text(body.pay) : "none";
     const unitPrice = priceOf(body.unitPrice);
     const amount = roundMoney(qty * unitPrice);
-    if (pay !== "none" && !(amount > 0)) throw new HttpError(400, "Kasa'ya ya da cariye yazmak için birim fiyat girin (tutar = miktar × birim fiyat).");
+    if (pay !== "none" && !(amount > 0)) throw new HttpError(400, unitPrice > 0 ? "Tutar 0,00 TL çıkıyor (miktar × birim fiyat kuruşa yuvarlanınca). Miktarı ya da fiyatı kontrol edin." : "Kasa'ya ya da cariye yazmak için birim fiyat girin (tutar = miktar × birim fiyat).");
     // Para yazan hareket (Kasa ya da cari) yönetim yetkisidir; yalnız miktar hareketini herkes girer.
     // v2.0.13: "Satış Yapma" yetkisi (stock.sell) satış ve müşteri iadesinde para yazdırır; alım yönetim yetkisidir.
     const selling = kind === "out" || text(body.reason) === "return";
@@ -300,7 +300,7 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
     // olarak görünür; alım sayılmaz (ürünün maliyet fiyatı değişmez).
     const reason = kind === "in" && text(body.reason) === "return" ? "return" : "";
     // v2.0.13: para Kasa'dan/Kasa'ya geçiyorsa yolu: nakit, havale/EFT ya da kredi kartı (POS).
-    return { kind, qty, unitPrice, amount, date: dateOf(body.date, "Tarih", today()), note: limited(body.note, 300, "Açıklama"), pay, reason, method: pay === "cash" ? methodOf(body.method) : "cash", accountId };
+    return { kind, qty, unitPrice, amount, date: period ? period.movementDate(body) : dateOf(body.date, "Tarih", today()), note: limited(body.note, 300, "Açıklama"), pay, reason, method: pay === "cash" ? methodOf(body.method) : "cash", accountId };
   };
   // Eksiye düşme kontrolü: çıkış mevcuttan fazlaysa sorulur (force ile kaydedilir; sayım farkı olabilir).
   function assertAvailable(item, move, previous, force) {
@@ -344,6 +344,8 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
         if (!canUser(user, "plans.manage")) throw new HttpError(403, "Satışı taksitlendirmek taksit yönetimi yetkisidir.");
         const account = accounts()?.detail ? accounts().detail(input.accountId, user) : null;
         const count = Math.trunc(Number(plan.count));
+        // Vade satış tarihinden önce olamaz (v2.0.13).
+        if (period) period.dueDate(text(plan.firstDue), { from: input.date, label: "İlk vade" });
         const distribution = plans()?.validDistribution ? plans().validDistribution({ count, firstDue: plan.firstDue, everyMonths: plan.everyMonths }, input.amount) : null;
         if (account && distribution) plans().createForAccount(user, account, { total: input.amount, count, firstDue: text(plan.firstDue), everyMonths: Math.trunc(Number(plan.everyMonths) || 1), note: accountNote(item, input), coversBalance: true });
       }
@@ -362,6 +364,8 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
     if (!move) throw new HttpError(404, "Stok hareketi bulunamadı. Başka biri silmiş olabilir.");
     return move;
   };
+  // Kasa'ya etkisi: peşin satış Kasa'ya giriş, peşin alım ve nakit iade Kasa'dan çıkış (düzeltme/silme koruması için).
+  const cashSide = move => (move && move.pay === "cash" && Number(move.amount) > 0 ? { kind: move.kind === "out" ? "in" : "out", amount: move.amount, method: move.method || "cash", date: move.date } : null);
   const requireMoveRight = (user, move) => {
     if (canUser(user, "stock.manage")) return;
     if (move.createdBy !== user.id || move.pay !== "none") throw new HttpError(403, "Bu hareketi yalnızca yönetici, uzman ve muhasebe değiştirebilir.");
@@ -371,9 +375,11 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
     const item = itemRow(params.id);
     const previous = moveOf(item.id, params.moveId);
     requireMoveRight(user, previous);
+    period?.assertOpen(previous.date, "Bu stok hareketi");
     const body = await readJson(req);
     const input = moveInput({ ...previous, ...body, kind: previous.kind }, user, item, previous);
     assertAvailable(item, input, previous, body.force === true);
+    cash?.guardChange?.(cashSide(previous), cashSide(input), body.cashForce === true);
     let touched = [];
     store.tx(() => {
       store.run("UPDATE stock_moves SET qty = ?, unit_price = ?, amount = ?, date = ?, note = ?, pay = ?, reason = ?, method = ?, account_id = ?, updated_by = ?, updated_at = ? WHERE id = ?", input.qty, input.unitPrice, input.amount, input.date, input.note, input.pay, input.reason || "", input.method || "cash", input.accountId, user.id, now(), previous.id);
@@ -385,11 +391,13 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
     publishAccounts(user, touched);
     ok(res, detail(item.id, user));
   });
-  router.delete("/api/workspace/stock/:id/moves/:moveId", async ({ req, res, params }) => {
+  router.delete("/api/workspace/stock/:id/moves/:moveId", async ({ req, res, params, url }) => {
     const user = auth.requirePermission(req, "stock.move");
     const item = itemRow(params.id);
     const previous = moveOf(item.id, params.moveId);
     requireMoveRight(user, previous);
+    period?.assertOpen(previous.date, "Bu stok hareketi");
+    cash?.guardChange?.(cashSide(previous), null, url.searchParams.get("cashForce") === "1");
     let accountId = "";
     store.tx(() => {
       store.run("DELETE FROM stock_moves WHERE id = ?", previous.id);

@@ -838,6 +838,8 @@ export const MIGRATIONS = [
       // Mevcut borcu taksitlendiren kart: carinin borcu zaten yazılı (veresiye satış, açılış, borç yaz); kart yalnız
       // vadeleri tutar, carinin defterine ikinci kez borç yazmaz. Tahsilatları borçtan düşer.
       addColumn(store, "plans", "covers_balance", "INTEGER NOT NULL DEFAULT 0");
+      // Kartın kapatıldığı gün: vazgeçilen kalan ana defterde bu tarihte yazılır (dönem kilidiyle uyumlu).
+      addColumn(store, "plans", "closed_at", "TEXT");
       // Stok hareketinin nedeni: '' (alım / satış / kullanım) ya da 'return' (müşteri iadesi: satıştan dönen mal).
       addColumn(store, "stock_moves", "reason", "TEXT NOT NULL DEFAULT ''");
       // Ürünün satış fiyatı (birim fiyat = alış/maliyet). Çıkış formu satış fiyatıyla açılır; brüt kâr hesaplanır.

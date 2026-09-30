@@ -145,7 +145,7 @@ describe("taksit modülü API (v2.0.4)", () => {
   it("kart açılır (taksit sorulmadan), sonra otomatik dağıtılır; tahsilat kalanı düşürür ve Kasa'ya iner", async () => {
     const groups = (await admin.get("/api/workspace/plans/groups")).data.data;
     assert.equal((await personel.post("/api/workspace/plans", { name: "Ali Veli", total: "12.000" })).status, 403);
-    const created = await admin.post("/api/workspace/plans", { name: "Ali Veli", phone: "0532 111 22 33", note: "Sabah servisi", total: "12.000", groupId: groups[0].id, subgroupId: groups[0].subgroups[0].id });
+    const created = await admin.post("/api/workspace/plans", { name: "Ali Veli", registeredOn: "2026-09-01", phone: "0532 111 22 33", note: "Sabah servisi", total: "12.000", groupId: groups[0].id, subgroupId: groups[0].subgroups[0].id });
     assert.equal(created.status, 200, JSON.stringify(created.data));
     plan = created.data.data;
     assert.equal(plan.items.length, 0, "kayıt bitince taksit sorulmaz");

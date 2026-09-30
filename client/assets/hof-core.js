@@ -85,9 +85,12 @@
       return await rawApi(path, options);
     } catch (error) {
       const body = options.body;
-      if (error?.status !== 409 || error.data?.code !== "cash-negative" || !body || typeof body !== "object") throw error;
-      const go = await HOF.confirm({ title: "Kasa Eksiye Düşecek", message: `${error.message} Ödeme bankadan ya da başka bir kasadan yapıldıysa kaydedebilirsiniz. Yine de kaydedilsin mi?`, confirmLabel: "Yine de Kaydet", danger: true });
+      const removing = String(options.method || "").toUpperCase() === "DELETE";
+      if (error?.status !== 409 || error.data?.code !== "cash-negative" || (!removing && (!body || typeof body !== "object"))) throw error;
+      const go = await HOF.confirm({ title: "Kasa Eksiye Düşecek", message: `${error.message} Ödeme bankadan ya da başka bir kasadan yapıldıysa kaydedebilirsiniz. Yine de kaydedilsin mi?`, confirmLabel: removing ? "Yine de Sil" : "Yine de Kaydet", danger: true });
       if (!go) throw new ApiError("Kaydedilmedi: Kasa eksiye düşecekti.", 409, { code: "cash-negative-cancelled" });
+      // Silmede gövde yok: onay adrese eklenir.
+      if (removing) return rawApi(`${path}${path.includes("?") ? "&" : "?"}cashForce=1`, options);
       return rawApi(path, { ...options, body: { ...body, cashForce: true } });
     }
   };

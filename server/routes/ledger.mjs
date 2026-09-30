@@ -3,12 +3,12 @@
 //   GET /api/workspace/ledger?from=&to=  → mizan + mutabakat (Finans raporları yetkisi)
 // Rapor merkezi "Hesap Planı Mizanı", "Yevmiye Defteri" ve "Defter Mutabakatı" raporlarını bu servisten üretir.
 import { journal, reconcile, trialBalance } from "../lib/general-ledger.mjs";
-import { HttpError, ok, text } from "../lib/http.mjs";
+import { HttpError, ok, readJson, text } from "../lib/http.mjs";
 import { roundMoney } from "../lib/money.mjs";
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 
-export function registerLedgerRoutes(router, { store, auth, cash = () => null, accounts = () => null, integrity = () => null }) {
+export function registerLedgerRoutes(router, { store, auth, audit = () => {}, period = null, cash = () => null, accounts = () => null, integrity = () => null }) {
   const has = table => Boolean(store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = ?", table));
   function rows() {
     const out = { payments: [], cashEntries: [], accountEntries: [], plans: [], planEntries: [], stockMoves: [], chequeEvents: [] };
@@ -16,7 +16,7 @@ export function registerLedgerRoutes(router, { store, auth, cash = () => null, a
     out.cashEntries = store.all("SELECT id, kind, amount, date, description, method FROM cash_entries");
     if (has("accounts")) {
       out.accountEntries = store.all(
-        `SELECT e.id, e.kind, e.amount, e.date, e.note, e.source, e.method, a.type AS accountType,
+        `SELECT e.id, e.kind, e.amount, e.date, e.note, e.source, e.method, a.type AS accountType, e.account_id AS party,
                 COALESCE(c.direction, '') AS chequeDirection, COALESCE(m.reason, '') AS moveReason
          FROM account_entries e JOIN accounts a ON a.id = e.account_id AND a.deleted_at IS NULL
            LEFT JOIN cheques c ON e.source = 'cheque' AND c.id = e.source_id
@@ -26,13 +26,13 @@ export function registerLedgerRoutes(router, { store, auth, cash = () => null, a
     if (has("plans")) {
       // Kartın carisi silindiyse kart cari defterinde görünmez: ana defterde "carisiz kart" hesabında izlenir.
       out.plans = store.all(
-        `SELECT p.id, p.total, p.status, p.covers_balance AS coversBalance, COALESCE(NULLIF(p.registered_on, ''), substr(p.created_at, 1, 10)) AS date,
-                COALESCE(a.type, '') AS accountType,
+        `SELECT p.id, p.total, p.status, p.covers_balance AS coversBalance, COALESCE(NULLIF(p.registered_on, ''), substr(p.created_at, 1, 10)) AS date, COALESCE(p.closed_at, substr(p.updated_at, 1, 10)) AS closedOn,
+                COALESCE(a.type, '') AS accountType, COALESCE(a.id, '') AS party,
                 COALESCE((SELECT SUM(CASE WHEN e.kind = 'in' THEN e.amount ELSE -e.amount END) FROM plan_entries e WHERE e.plan_id = p.id), 0) AS paid
          FROM plans p LEFT JOIN accounts a ON a.id = p.account_id AND a.deleted_at IS NULL WHERE p.deleted_at IS NULL`,
       );
       out.planEntries = store.all(
-        `SELECT e.id, e.plan_id AS planId, e.kind, e.amount, e.date, e.note, e.method, e.cheque_id AS chequeId, e.opening, COALESCE(a.type, '') AS accountType
+        `SELECT e.id, e.plan_id AS planId, e.kind, e.amount, e.date, e.note, e.method, e.cheque_id AS chequeId, e.opening, COALESCE(a.type, '') AS accountType, COALESCE(a.id, '') AS party
          FROM plan_entries e JOIN plans p ON p.id = e.plan_id AND p.deleted_at IS NULL LEFT JOIN accounts a ON a.id = p.account_id AND a.deleted_at IS NULL`,
       );
     }
@@ -118,6 +118,21 @@ export function registerLedgerRoutes(router, { store, auth, cash = () => null, a
     if ((from && !DATE.test(from)) || (to && !DATE.test(to))) throw new HttpError(400, "Geçerli bir tarih aralığı seçin.");
     const { entries, trial, reconciliation } = check({ from, to });
     ok(res, { trial, reconciliation, entryCount: entries.length });
+  });
+  // Dönem kilidi (v2.0.13): kilitli tarih ve öncesine hareket eklenemez/düzeltilemez/silinemez. Yalnız yönetici değiştirir.
+  router.get("/api/workspace/ledger/lock", async ({ req, res }) => {
+    auth.requirePermission(req, "overview.view");
+    ok(res, { lockedUntil: period?.lockedUntil() || "", today: period?.today() || "" });
+  });
+  router.put("/api/admin/period-lock", async ({ req, res }) => {
+    const user = auth.requirePermission(req, "users.manage");
+    if (!period) throw new HttpError(503, "Dönem kilidi hazır değil.");
+    const body = await readJson(req);
+    const previous = period.lockedUntil();
+    const lockedUntil = period.setLock(body.lockedUntil);
+    audit(user, lockedUntil ? "ledger.period.locked" : "ledger.period.unlocked", "period", { previous, lockedUntil });
+    integrity()?.start?.();
+    ok(res, { lockedUntil });
   });
   // Mutabakat testi (tüm denetimler) ve geri alınan işlemlerin günlüğü.
   router.get("/api/workspace/ledger/integrity", async ({ req, res }) => {

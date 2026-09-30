@@ -228,7 +228,7 @@ describe("çek/senet: Cari, Taksit ve Kasa ile işlem bütünlüğü", () => {
   });
 
   it("taksite sayılan çek: taksit ödenmiş olur, Kasa değişmez; karşılıksız taksiti yeniden açar; kart silinemez, tahsilat karttan düzeltilemez", async () => {
-    const plan = (await admin.post("/api/workspace/plans", { name: "Veli Yılmaz", total: 6000, count: 3, firstDue: shift(-20), everyMonths: 1 })).data.data;
+    const plan = (await admin.post("/api/workspace/plans", { registeredOn: "2026-01-01", name: "Veli Yılmaz", total: 6000, count: 3, firstDue: shift(-20), everyMonths: 1 })).data.data;
     const first = plan.items[0];
     const cash0 = await cashBalance();
     const cheque = await createCheque({ direction: "in", planId: plan.id, itemId: first.id, amount: 2000, serialNo: "T-1", dueDate: shift(45) });
@@ -415,7 +415,7 @@ describe("ANLIK DURUM: karttaki rakamlar ekranlarla birebir aynı (rastgele 400 
       if (op === "cash") await admin.post("/api/workspace/cash", { kind: pick(["in", "out"]), amount: amount(), date: shift(Math.floor(random() * 20) - 10), description: `Kasa ${step}` });
       else if (["debt", "credit", "collect", "pay"].includes(op)) await admin.post(`/api/workspace/accounts/${account}/entries`, { kind: { debt: "debt", credit: "credit", collect: "in", pay: "out" }[op], amount: amount(), date: day() });
       else if (op === "plan" && plans.length < 8) {
-        const plan = (await admin.post("/api/workspace/plans", { name: `Taksitli ${step}`, accountId: pick(accounts.slice(0, 3)), total: 3000, count: 3, firstDue: day() })).data.data;
+        const plan = (await admin.post("/api/workspace/plans", { name: `Taksitli ${step}`, registeredOn: "2026-01-01", accountId: pick(accounts.slice(0, 3)), total: 3000, count: 3, firstDue: day() })).data.data;
         plans.push(plan);
       } else if (op === "planPay" && plans.length) {
         const plan = pick(plans);
@@ -509,7 +509,7 @@ describe("rapor merkezi: programdaki her bilgi ön izleme, PDF ve Excel olarak a
     await admin.post("/api/workspace/dataset/commit", { stageId: staged.data.data.stageId, mode: "replace" });
     const customer = (await admin.post("/api/workspace/accounts", { name: "Rapor Müşteri", type: "customer" })).data.data;
     await admin.post(`/api/workspace/accounts/${customer.id}/entries`, { kind: "debt", amount: 5000, date: TODAY });
-    await admin.post("/api/workspace/plans", { name: "Rapor Taksit", accountId: customer.id, total: 3000, count: 3, firstDue: shift(-40) });
+    await admin.post("/api/workspace/plans", { registeredOn: "2026-01-01", name: "Rapor Taksit", accountId: customer.id, total: 3000, count: 3, firstDue: shift(-40) });
     await admin.post("/api/workspace/cheques", { direction: "in", accountId: customer.id, amount: 1500, issueDate: TODAY, dueDate: shift(-5), serialNo: "RP-1" });
     await admin.post("/api/workspace/cash", { kind: "out", amount: 250, date: TODAY, description: "Kırtasiye" });
     const item = (await admin.post("/api/workspace/stock", { name: "Toner", unit: "adet", minQty: 2, unitPrice: 900, openingQty: 1 })).data.data;

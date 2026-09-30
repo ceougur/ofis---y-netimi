@@ -79,12 +79,21 @@ export function registerCashRoutes(router, context) {
   // bilinçli onayla kaydedilir). force = kullanıcı onayladı. Tarih: hareketin tarihine kadarki kasa.
   function guardOut(amount, day, force = false, method = "cash") {
     if (force || !(amount > 0) || methodOf(method) !== "cash") return;
-    const balance = summary(day || "9999-12-31").cashToday;
+    // Hareket tarihindeki nakit ve bugünden ileri tarihli hareketler dahil son nakit: hangisi azsa o (ileri tarihli bir
+    // ödeme zaten ayrılmışsa bugünkü çıkış onu açığa düşürmesin).
+    const balance = Math.min(summary(day || "9999-12-31").cashToday, summary("9999-12-31").byMethod.cash || 0);
     const after = roundMoney(balance - amount);
     if (after < -0.005) {
       const money = value => `${new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value)} TL`;
       throw new HttpError(409, `Nakit kasada ${money(balance)} var; ${money(amount)} çıkış Kasa'yı ${money(after)} eksiye düşürür.`, { code: "cash-negative", balance, after });
     }
+  }
+  // v2.0.13: düzeltme ve silmede de nakit eksiye düşmez (sormadan). before/after: { kind: "in"|"out" (Kasa'ya giriş/
+  // çıkış yönü), amount, method, date } ya da null (yeni/silinen). Nakde etkisi azaltıcıysa guardOut'tan geçer.
+  function guardChange(before, after, force = false) {
+    const effect = entry => (entry && methodOf(entry.method) === "cash" ? (entry.kind === "in" ? 1 : -1) * (Number(entry.amount) || 0) : 0);
+    const delta = roundMoney(effect(after) - effect(before));
+    if (delta < -0.005) guardOut(-delta, after?.date || before?.date || "", force, "cash");
   }
   function report(user, from, to, method = "") {
     method = method && Object.hasOwn(METHODS, method) ? method : "";
@@ -152,7 +161,8 @@ export function registerCashRoutes(router, context) {
     if (!["in", "out"].includes(kind)) throw new HttpError(400, "Hareket türü tahsilat ya da ödeme olmalı.");
     const amount = parseAmount(body.amount);
     if (!Number.isFinite(amount) || amount <= 0 || amount > 1e12) throw new HttpError(400, "Geçerli bir tutar girin.");
-    const date = text(body.date) || now().slice(0, 10);
+    // v2.0.13: tarih boş/geçersiz olamaz, ileri tarihli ve kilitli döneme hareket girilemez (lib/period.mjs).
+    const date = context.period ? context.period.movementDate(body) : text(body.date) || now().slice(0, 10);
     if (!validDate(date)) throw new HttpError(400, "Geçerli bir tarih girin.");
     const description = limited(body.description, 300, "Açıklama");
     if (!description) throw new HttpError(400, kind === "in" ? "Tahsilatın kimden/ne için alındığını yazın." : "Ödemenin kime/ne için yapıldığını yazın.");
@@ -180,16 +190,21 @@ export function registerCashRoutes(router, context) {
   router.put("/api/workspace/cash/:id", async ({ req, res, params }) => {
     const user = auth.requirePermission(req, "cash.manage");
     const previous = existing(params.id);
-    const entry = input(await readJson(req));
+    context.period?.assertOpen(previous.date, "Bu kasa hareketi");
+    const body = await readJson(req);
+    const entry = input(body);
+    guardChange(previous, entry, body.cashForce === true);
     store.run("UPDATE cash_entries SET kind = ?, amount = ?, date = ?, description = ?, method = ?, updated_by = ?, updated_at = ? WHERE id = ?", entry.kind, entry.amount, entry.date, entry.description, entry.method, user.id, now(), previous.id);
     audit(user, "cash.entry.updated", previous.id, { previous, ...entry });
     changed(user);
     ok(res, { id: previous.id });
   });
 
-  router.delete("/api/workspace/cash/:id", async ({ req, res, params }) => {
+  router.delete("/api/workspace/cash/:id", async ({ req, res, params, url }) => {
     const user = auth.requirePermission(req, "cash.manage");
     const previous = existing(params.id);
+    context.period?.assertOpen(previous.date, "Bu kasa hareketi");
+    guardChange(previous, null, url.searchParams.get("cashForce") === "1");
     const full = store.get("SELECT id, kind, amount, date, description, method, created_by AS createdBy, created_at AS createdAt FROM cash_entries WHERE id = ?", previous.id);
     store.run("DELETE FROM cash_entries WHERE id = ?", previous.id);
     // Silinenler (v2.0.2): yönetim panelinden geri yüklenebilir.
@@ -200,5 +215,5 @@ export function registerCashRoutes(router, context) {
   });
 
   // ANLIK DURUM (v2.0.7): Kasa ekranıyla aynı hesap (tek kaynak).
-  return { entries, report, balanceAt, summary, guardOut };
+  return { entries, report, balanceAt, summary, guardOut, guardChange };
 }

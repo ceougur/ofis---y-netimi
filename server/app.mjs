@@ -34,6 +34,7 @@ import { registerCashRoutes } from "./routes/cash.mjs";
 import { registerLedgerRoutes } from "./routes/ledger.mjs";
 import { registerWhatsappRoutes } from "./routes/whatsapp.mjs";
 import { createIntegrity } from "./lib/integrity.mjs";
+import { createPeriod } from "./lib/period.mjs";
 import { registerDueRoutes } from "./routes/dues.mjs";
 import { registerPlanRoutes } from "./routes/plans.mjs";
 import { registerPlanTransfer } from "./routes/plan-transfer.mjs";
@@ -153,6 +154,8 @@ export function createApp(overrides = {}) {
   registerAdminRoutes(router, context);
   // Taksit servisi (context.plans) daha sonra kurulur; işlem geçmişi ona istek anında ulaşır (v2.0.6).
   registerWorkspaceRoutes(router, { ...context, plans: () => context.plans });
+  // Hareket tarihi ve dönem kilidi (v2.0.13): Kasa, Cari, Stok ve Taksit aynı kuralla.
+  context.period = createPeriod({ store });
   context.cash = registerCashRoutes(router, context);
   // Taksitler (v2.0.4): Kasa ve tahsilat takvimi bu servisin hareketlerini ve gecikmelerini okur.
   // Cari ve Stok (v2.0.6): taksit kartları cariye bağlıdır; stok hareketi Kasa'ya ya da cariye yazılabilir. Servisler
@@ -169,7 +172,7 @@ export function createApp(overrides = {}) {
   context.ledger = registerLedgerRoutes(router, { ...context, cash: () => context.cash, accounts: () => context.accounts, integrity: () => context.integrity });
   // Mutabakat kapısı (v2.0.13): para taşıyan her işlem COMMIT'ten önce alt defter ↔ ana defter denetiminden geçer;
   // sapma yaratacaksa ROLLBACK edilir ve günlüğe yazılır (lib/integrity.mjs).
-  context.integrity = createIntegrity({ store, ledger: () => context.ledger, log });
+  context.integrity = createIntegrity({ store, ledger: () => context.ledger, accounts: () => context.accounts, stock: () => context.stock, plans: () => context.plans, period: () => context.period, log });
   context.integrity.start();
   // WhatsApp ile ekstre ve mesaj (v2.0.13): tek ya da toplu; alıcıları sunucu hazırlar, gönderimler cari kartına yazılır.
   registerWhatsappRoutes(router, { ...context, accounts: () => context.accounts });

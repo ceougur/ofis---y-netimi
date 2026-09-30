@@ -30,6 +30,7 @@ export const CHART = Object.freeze({
   770: "Genel Giderler ve Alış Faturaları",
 });
 const CASH_ACCOUNT = { cash: "100", bank: "102", card: "108" };
+const PARTY_ACCOUNTS = new Set(["120", "127", "320", "336"]);
 const CONTROL = { customer: "120", supplier: "320", other: "336" };
 const cents = value => Math.round((Number(value) || 0) * 100);
 const cashAccount = method => CASH_ACCOUNT[method] || CASH_ACCOUNT.cash;
@@ -47,10 +48,14 @@ const opening = note => /^açılış/i.test(String(note || "").trim());
  */
 export function journal(rows) {
   const out = [];
+  // party: cari kimliği. Kontrol hesaplarına (120/127/320/336) düşen satır hangi cariye/karta aitse onu taşır; cari
+  // bazında mutabakat (her carinin ana defter bakiyesi = cari kartındaki bakiye) bununla yapılır.
+  let party = "";
   const post = (id, date, source, text, debit, credit, amount) => {
     const value = cents(amount);
     if (!value) return;
-    out.push({ id, date, source, text, lines: [{ account: debit, debit: value, credit: 0 }, { account: credit, debit: 0, credit: value }] });
+    const line = (account, dr, cr) => (PARTY_ACCOUNTS.has(account) && party ? { account, debit: dr, credit: cr, party } : { account, debit: dr, credit: cr });
+    out.push({ id, date, source, text, lines: [line(debit, value, 0), line(credit, 0, value)] });
   };
   for (const row of rows.payments || []) post(`payment:${row.id}`, row.date, "Kayıt tahsilatı", row.note || "Tahsilat", cashAccount(row.method), "602", row.amount);
   for (const row of rows.cashEntries || []) {
@@ -58,6 +63,7 @@ export function journal(rows) {
     else post(`cash:${row.id}`, row.date, "Kasa", row.description || "Kasadan ödeme", "770", cashAccount(row.method), row.amount);
   }
   for (const row of rows.accountEntries || []) {
+    party = row.party || "";
     const control = CONTROL[row.accountType] || CONTROL.customer;
     const id = `account:${row.id}`;
     if (row.source === "cheque") {
@@ -78,12 +84,14 @@ export function journal(rows) {
     else if (row.kind === "out") post(id, row.date, "Cari ödeme", row.note, control, cashAccount(row.method), row.amount);
   }
   for (const plan of rows.plans || []) {
+    party = plan.party || (plan.accountType ? "" : `plan:${plan.id}`);
     const control = plan.accountType ? CONTROL[plan.accountType] || CONTROL.customer : "127";
     // Mevcut borcu taksitlendiren kart ana deftere yeni alacak getirmez (borç caride zaten yazılı).
     if (!plan.coversBalance) post(`plan:${plan.id}`, plan.date, "Taksit kartı", "Taksitli satış / hizmet", control, "602", plan.total);
-    if (plan.status === "closed") post(`plan-close:${plan.id}`, plan.date, "Taksit kartı kapatıldı", "Kalan alacaktan vazgeçildi", "689", control, Math.max(0, roundMoney((Number(plan.total) || 0) - (Number(plan.paid) || 0))));
+    if (plan.status === "closed") post(`plan-close:${plan.id}`, plan.closedOn && plan.closedOn > plan.date ? plan.closedOn : plan.date, "Taksit kartı kapatıldı", "Kalan alacaktan vazgeçildi", "689", control, Math.max(0, roundMoney((Number(plan.total) || 0) - (Number(plan.paid) || 0))));
   }
   for (const row of rows.planEntries || []) {
+    party = row.party || (row.accountType ? "" : `plan:${row.planId}`);
     const control = row.accountType ? CONTROL[row.accountType] || CONTROL.customer : "127";
     const id = `plan-entry:${row.id}`;
     if (row.kind === "in") {
@@ -91,6 +99,7 @@ export function journal(rows) {
       post(id, row.date, row.opening ? "Taksit açılışı (devir)" : row.chequeId ? "Taksit (çek/senetle)" : "Taksit tahsilatı", row.note, debit, control, row.amount);
     } else post(id, row.date, "Taksit iadesi", row.note, control, cashAccount(row.method), row.amount);
   }
+  party = "";
   for (const row of rows.stockMoves || []) {
     const id = `stock:${row.id}`;
     if (row.kind === "out") post(id, row.date, "Stok (peşin satış)", row.note, cashAccount(row.method), "600", row.amount);
@@ -103,6 +112,13 @@ export function journal(rows) {
     else post(id, row.date, "Çek / senet ödemesi", row.note, "103", cashAccount(row.method), row.amount);
   }
   out.sort((a, b) => (a.date === b.date ? (a.id < b.id ? -1 : 1) : a.date < b.date ? -1 : 1));
+  return out;
+}
+
+/** Cari (ve carisiz kart) bazında kontrol hesabı bakiyeleri: party → kuruş (borç artı). */
+export function partyBalances(entries) {
+  const out = new Map();
+  for (const entry of entries) for (const line of entry.lines) if (line.party) out.set(line.party, (out.get(line.party) || 0) + line.debit - line.credit);
   return out;
 }
 

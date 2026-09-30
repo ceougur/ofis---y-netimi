@@ -29,7 +29,7 @@ const collator = new Intl.Collator("tr", { numeric: true, sensitivity: "base" })
 
 const MONEY_FORMAT = new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-export function registerAccountRoutes(router, { store, auth, audit, events, trash, config = {}, dataset = null, cash = null, plans = () => null, cheques = () => null }) {
+export function registerAccountRoutes(router, { store, auth, audit, events, trash, config = {}, dataset = null, cash = null, period = null, plans = () => null, cheques = () => null }) {
   const now = () => new Date().toISOString();
   const today = () => isoDay(new Date());
   const newId = prefix => `${prefix}-${randomUUID()}`;
@@ -409,6 +409,8 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     return current + 1;
   };
   function addEntry(user, accountId, { kind, amount, date, note, source = "", sourceId = "", method = "cash" }) {
+    // Açılış bakiyesi, stoktan ve çekten gelen satırlar dahil: kapanmış döneme cari satırı yazılmaz.
+    period?.assertOpen(date, "Cari hareketi");
     const id = newId("aentry");
     const receiptNo = kind === "in" && source !== "stock" ? receiptNumber() : null;
     store.run(
@@ -423,7 +425,7 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     const amount = amountOf(body.amount);
     if (!(amount > 0)) throw new HttpError(400, "Tutar sıfırdan büyük olmalı.");
     // v2.0.13: tahsilat/ödemenin yolu (nakit, havale/EFT, kredi kartı); borç/alacak yazmada para hareketi yoktur.
-    return { kind, amount, date: dateOf(body.date, "Tarih", today()), note: limited(body.note, 300, "Açıklama"), method: methodOf(body.method) };
+    return { kind, amount, date: period ? period.movementDate(body) : dateOf(body.date, "Tarih", today()), note: limited(body.note, 300, "Açıklama"), method: methodOf(body.method) };
   };
   const entryOf = (accountId, entryId) => {
     const entry = store.get("SELECT id, kind, amount, date, note, method, receipt_no AS receiptNo, source, source_id AS sourceId, created_by AS createdBy, created_at AS createdAt FROM account_entries WHERE account_id = ? AND id = ?", accountId, limited(entryId, 120, "Hareket"));
@@ -462,10 +464,13 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     const account = accountRow(params.id);
     const previous = entryOf(account.id, params.entryId);
     requireEntryRight(user, previous);
+    period?.assertOpen(previous.date, "Bu cari hareketi");
     const body = await readJson(req);
     // v2.0.13: borç ↔ alacak yönü düzeltilebilir (yanlış yönde yazılan açılış bakiyesi gibi); tahsilat/ödeme yön değiştirmez.
     const flip = ["debt", "credit"].includes(previous.kind) && ["debt", "credit"].includes(text(body.kind)) ? text(body.kind) : previous.kind;
     const input = entryInput({ ...previous, ...body, kind: flip });
+    const cashSide = e => (e.kind === "in" || e.kind === "out" ? e : null);
+    cash?.guardChange?.(cashSide(previous), cashSide(input), body.cashForce === true);
     store.tx(() => {
       store.run("UPDATE account_entries SET kind = ?, amount = ?, date = ?, note = ?, method = ?, updated_by = ?, updated_at = ? WHERE id = ?", input.kind, input.amount, input.date, input.note, input.method, user.id, now(), previous.id);
       audit(user, "account.entry.updated", previous.id, { accountId: account.id, previous, ...input });
@@ -474,11 +479,13 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     changed(user, { kind: "cash" });
     ok(res, detail(account.id, user));
   });
-  router.delete("/api/workspace/accounts/:id/entries/:entryId", async ({ req, res, params }) => {
+  router.delete("/api/workspace/accounts/:id/entries/:entryId", async ({ req, res, params, url }) => {
     const user = auth.requirePermission(req, "accounts.view");
     const account = accountRow(params.id);
     const previous = entryOf(account.id, params.entryId);
     requireEntryRight(user, previous);
+    period?.assertOpen(previous.date, "Bu cari hareketi");
+    if (previous.kind === "in" || previous.kind === "out") cash?.guardChange?.(previous, null, url.searchParams.get("cashForce") === "1");
     store.tx(() => {
       store.run("DELETE FROM account_entries WHERE id = ?", previous.id);
       trash?.add({ kind: "account-entry", ref: previous.id, title: account.name, detail: previous.note || KIND_TEXT[previous.kind], payload: { ...previous, accountId: account.id, accountName: account.name }, user });

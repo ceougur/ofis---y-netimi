@@ -44,17 +44,16 @@ export function addMonths(iso, months) {
  * @returns {Array<{ seq: number, dueDate: string, amount: number }>}
  */
 export function distribute({ total, count, firstDue, everyMonths = 1 }) {
-  const sum = roundMoney(Number(total) || 0);
+  // Kuruş tamsayısıyla bölünür (v2.0.13): 0,30 / 3 = 0,10 × 3 (kayan noktada 0,09 + 0,09 + 0,12 çıkıyordu).
+  const sum = Math.round(roundMoney(Number(total) || 0) * 100);
   const n = Math.max(1, Math.min(360, Math.trunc(Number(count) || 1)));
   const step = Math.max(1, Math.min(12, Math.trunc(Number(everyMonths) || 1)));
-  const base = Math.floor((sum / n) * 100) / 100;
+  const base = Math.floor(sum / n);
   const items = [];
-  let allocated = 0;
   for (let index = 0; index < n; index += 1) {
     const last = index === n - 1;
-    const amount = last ? roundMoney(sum - allocated) : base;
-    allocated = roundMoney(allocated + amount);
-    items.push({ seq: index + 1, dueDate: addMonths(firstDue, index * step), amount });
+    const cents = last ? sum - base * (n - 1) : base;
+    items.push({ seq: index + 1, dueDate: addMonths(firstDue, index * step), amount: cents / 100 });
   }
   return items;
 }
