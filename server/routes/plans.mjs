@@ -49,9 +49,26 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
       if (row.g) counts.set(row.g, (counts.get(row.g) || 0) + row.n);
       if (row.s) counts.set(row.s, (counts.get(row.s) || 0) + row.n);
     }
-    const groups = rows.filter(row => !row.parentId).map(row => ({ id: row.id, name: row.name, count: counts.get(row.id) || 0, subgroups: [] }));
+    // Gruplar cari ve taksit kartında ortaktır (v2.0.6). v2.0.11: gruptaki cari sayısı ve bunların kaçının açık taksit
+    // kartı olmadığı da döner; Taksitler'de "42 C 0079 (0)" gibi boş görünen grup aslında carisi olan gruptur.
+    const people = new Map();
+    const bump = (id, key) => {
+      if (!id) return;
+      if (!people.has(id)) people.set(id, { accounts: 0, free: 0 });
+      people.get(id)[key] += 1;
+    };
+    for (const row of store.all(`SELECT a.group_id AS g, a.subgroup_id AS s,
+        EXISTS (SELECT 1 FROM plans p WHERE p.account_id = a.id AND p.deleted_at IS NULL AND p.status = 'active') AS carded
+        FROM accounts a WHERE a.deleted_at IS NULL AND a.status = 'active' AND (a.group_id IS NOT NULL OR a.subgroup_id IS NOT NULL)`)) {
+      for (const id of [row.g, row.s]) {
+        bump(id, "accounts");
+        if (!row.carded) bump(id, "free");
+      }
+    }
+    const node = row => ({ id: row.id, name: row.name, count: counts.get(row.id) || 0, accounts: people.get(row.id)?.accounts || 0, withoutPlan: people.get(row.id)?.free || 0 });
+    const groups = rows.filter(row => !row.parentId).map(row => ({ ...node(row), subgroups: [] }));
     const byId = new Map(groups.map(group => [group.id, group]));
-    for (const row of rows.filter(row => row.parentId)) byId.get(row.parentId)?.subgroups.push({ id: row.id, name: row.name, count: counts.get(row.id) || 0 });
+    for (const row of rows.filter(row => row.parentId)) byId.get(row.parentId)?.subgroups.push(node(row));
     return groups;
   };
   // Aynı adlı grup ikinci kez açılmaz (Excel'den yüklemede de kullanılır); ad boşsa null döner.
@@ -387,6 +404,12 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
       if (accountId && !input.caseKey) {
         const owner = store.get("SELECT case_key AS caseKey, case_source AS caseSource, case_title AS caseTitle FROM accounts WHERE id = ? AND deleted_at IS NULL", accountId);
         if (owner?.caseKey) Object.assign(input, { caseKey: owner.caseKey, caseSource: owner.caseSource, caseTitle: owner.caseTitle });
+      }
+      // v2.0.11: kartta grup seçilmediyse carinin grubu alınır (toplu taksitlendirmedeki gibi); böylece Taksitler'deki
+      // grup süzgeci ve sayıları cariyle tutarlı kalır ("42 C 0079 · 3 kart · 3 cari").
+      if (accountId && !input.groupId) {
+        const owner = store.get("SELECT group_id AS groupId, subgroup_id AS subgroupId FROM accounts WHERE id = ? AND deleted_at IS NULL", accountId);
+        if (owner?.groupId) Object.assign(input, { groupId: owner.groupId, subgroupId: owner.subgroupId || null });
       }
       store.run(
         "INSERT INTO plans (id, account_id, ref_no, registered_on, case_key, case_source, case_title, group_id, subgroup_id, name, note, phone, total, status, created_by, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'active', ?, ?, ?)",

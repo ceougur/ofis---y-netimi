@@ -168,7 +168,7 @@
     const group = groups.find(item => item.id === view.group);
     const subs = group ? group.subgroups : [];
     return `<select data-filter="group" aria-label="Grup"><option value="">Tüm Gruplar</option>${groups.map(item => `<option value="${esc(item.id)}" ${item.id === view.group ? "selected" : ""}>${esc(item.name)} (${item.count})</option>`).join("")}</select>
-      <select data-filter="subgroup" aria-label="Alt grup" ${subs.length ? "" : "disabled"}><option value="">${subs.length ? "Tüm alt gruplar" : "Alt grup"}</option>${subs.map(item => `<option value="${esc(item.id)}" ${item.id === view.subgroup ? "selected" : ""}>${esc(item.name)} (${item.count})</option>`).join("")}</select>`;
+      <select data-filter="subgroup" aria-label="Alt grup" ${subs.length ? "" : "disabled"}><option value="">${subs.length ? "Tüm Alt Gruplar" : "Alt Grup"}</option>${subs.map(item => `<option value="${esc(item.id)}" ${item.id === view.subgroup ? "selected" : ""}>${esc(item.name)} (${item.count})</option>`).join("")}</select>`;
   };
   const selectBar = () => {
     const count = view.selectAll ? view.list?.total || 0 : view.selected.size;
@@ -544,18 +544,18 @@
   }
 
   // ---------- Toplu taksitlendirme ----------
-  function bulkPlan() {
-    const ids = [...view.selected];
-    const all = view.selectAll;
-    const total = all ? view.list?.total || 0 : ids.length;
-    if (!total) return;
-    const labels = view.list?.fieldLabels || [];
-    const names = view.list.accounts.filter(item => all || view.selected.has(item.id)).map(item => item.name);
+  // Ortak form (v2.0.11): Cari ekranındaki seçimden ve Taksitler › Cari Seç / + Toplu Taksitlendir penceresinden aynı
+  // form ve aynı sunucu ucu (tek kural, çift kart açılmaz). Önce ön izleme: kaç kart açılacak, toplam, atlananlar ve
+  // nedenleri; onaylanınca kartlar açılır.
+  // selection: { ids: [...] } ya da { all: true, ...süzgeç }; count: seçilen cari; names: ilk adlar; fieldLabels: ek alanlar.
+  function bulkPlanForm({ selection, count, names = [], fieldLabels = [], onDone = null }) {
+    if (!count) return;
+    const labels = fieldLabels;
     HOF.formModal({
       title: "Seçilenlere Taksit Planı",
-      eyebrow: `${total} CARİ`,
+      eyebrow: `${count.toLocaleString("tr-TR")} CARİ`,
       size: "wide",
-      introHtml: `<p class="hof-modal-text">Her seçili cariye ayrı bir taksit kartı açılır ve taksitleri dağıtılır. Seçilenler: <b>${esc(names.slice(0, 6).join(", "))}${names.length > 6 ? ` ve ${names.length - 6} kişi daha` : ""}</b>.</p>`,
+      introHtml: `<p class="hof-modal-text">Her seçili cariye ayrı bir taksit kartı açılır ve taksitleri dağıtılır. Seçilenler: <b>${esc(names.slice(0, 6).join(", "))}${count > 6 ? ` ve ${(count - Math.min(6, names.length)).toLocaleString("tr-TR")} kişi daha` : ""}</b>. Kartlar açılmadan önce ön izleme gösterilir.</p>`,
       fields: [
         { name: "amountMode", label: "Tutar", type: "select", value: labels.length ? "field" : "fixed", options: [{ value: "fixed", label: "Herkese aynı toplam tutar" }, ...(labels.length ? [{ value: "field", label: "Her carinin kendi kartındaki alandan" }] : [])] },
         { name: "total", label: "Toplam Tutar (₺)", inputmode: "decimal", placeholder: "Örn. 12.000,00" },
@@ -566,7 +566,7 @@
         { name: "name", label: "Kart Adına Ek (isteğe bağlı)", maxlength: 60, placeholder: "Örn. 2026-2027 servis", help: "Yazılırsa kart adı “Ad Soyad · ek” olur." },
         { name: "skipExisting", label: "Açık taksit kartı olan cariyi atla (çift plan açılmasın)", type: "checkbox", value: true },
       ],
-      submitLabel: "Taksit Planlarını Aç",
+      submitLabel: "Ön İzle",
       onOpen: dialog => {
         const mode = dialog.querySelector('select[name="amountMode"]');
         const total = dialog.querySelector('input[name="total"]').closest(".hof-field");
@@ -579,14 +579,39 @@
         sync();
       },
       onSubmit: async data => {
-        const result = await HOF.api("/api/workspace/accounts/bulk-plan", { method: "POST", body: { ...(all ? { all: true, ...filterBody() } : { ids }), ...data, skipExisting: Boolean(data.skipExisting) } });
+        const body = { ...selection, ...data, skipExisting: Boolean(data.skipExisting) };
+        const reasons = report => [...new Set(report.skipped.map(item => item.reason))].join("; ");
+        const preview = await HOF.api("/api/workspace/accounts/bulk-plan", { method: "POST", body: { ...body, dryRun: true } });
+        if (!preview.created) throw new Error(`Açılacak kart yok: seçilen ${preview.skipped.length.toLocaleString("tr-TR")} cari atlanıyor (${reasons(preview)}).`);
+        const every = { 1: "her ay", 2: "2 ayda bir", 3: "3 ayda bir", 6: "6 ayda bir", 12: "yılda bir" }[data.everyMonths] || "her ay";
+        const ok = await HOF.confirm({
+          title: "Taksit Kartları Açılsın mı?",
+          message: `${preview.created.toLocaleString("tr-TR")} cariye taksit kartı açılacak (${preview.names.slice(0, 3).join(", ")}${preview.created > 3 ? "…" : ""}); toplam ${money(preview.total)}, ${data.count} taksit, ilk vade ${HOF.formatDate(data.firstDue)}, ${every}.${preview.skipped.length ? ` ${preview.skipped.length.toLocaleString("tr-TR")} cari atlanacak: ${reasons(preview)}.` : ""}`,
+          confirmLabel: `${preview.created.toLocaleString("tr-TR")} Kartı Aç`,
+        });
+        if (!ok) return true; // form açık kalır; kullanıcı tutarı ya da vadeyi değiştirebilir
+        const result = await HOF.api("/api/workspace/accounts/bulk-plan", { method: "POST", body });
+        HOF.emit("plans-changed", {});
+        HOF.dues?.reloadSoon?.(300);
+        const skipped = result.skipped.length ? ` ${result.skipped.length} cari atlandı (${reasons(result)}).` : "";
+        HOF.toast(`${result.created} taksit kartı açıldı, toplam ${money(result.total)}.${skipped}`, { type: result.created ? "success" : "error", timeout: 10000 });
+        onDone?.(result);
+      },
+    });
+  }
+  function bulkPlan() {
+    const all = view.selectAll;
+    const count = all ? view.list?.total || 0 : view.selected.size;
+    const names = view.list.accounts.filter(item => all || view.selected.has(item.id)).map(item => item.name);
+    bulkPlanForm({
+      selection: all ? { all: true, ...filterBody() } : { ids: [...view.selected] },
+      count,
+      names,
+      fieldLabels: view.list?.fieldLabels || [],
+      onDone: () => {
         view.selected.clear();
         view.selectAll = false;
         loadList();
-        HOF.emit("plans-changed", {});
-        HOF.dues?.reloadSoon?.(300);
-        const skipped = result.skipped.length ? ` ${result.skipped.length} cari atlandı (${[...new Set(result.skipped.map(item => item.reason))].join("; ")}).` : "";
-        HOF.toast(`${result.created} taksit kartı açıldı, toplam ${money(result.total)}.${skipped}`, { type: result.created ? "success" : "error", timeout: 10000 });
       },
     });
   }
@@ -827,6 +852,7 @@
   HOF.accounts = {
     open,
     picker,
+    bulkPlanForm,
     forCase: key => HOF.api(`/api/workspace/cases/${encodeURIComponent(key)}/account`),
     newFor: preset => (canManage() ? editAccount(null, preset) : HOF.toast("Cari açmak yönetici, uzman ve muhasebe yetkisidir.", { type: "error" })),
     // Raporlar (v2.0.9): cari defteri boşken "Tablodaki kişileri cari yap" (Cari → Tablodan al ile aynı akış).

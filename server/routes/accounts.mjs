@@ -113,6 +113,8 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     status: ["active", "passive", "all"].includes(text(params.get("status"))) ? text(params.get("status")) : "active",
     balance: ["debtor", "creditor", "zero", "nonzero", "overdue", "all"].includes(text(params.get("balance"))) ? text(params.get("balance")) : "all",
     sort: SORTS.has(text(params.get("sort"))) ? text(params.get("sort")) : "no",
+    // Taksit durumu (v2.0.11, Taksitler › Cari Seç): "none" açık taksit kartı olmayanlar, "has" olanlar.
+    plan: ["none", "has"].includes(text(params.get("plan"))) ? text(params.get("plan")) : "",
   });
   const refCompare = (a, b) => {
     const x = String(a.refNo || "");
@@ -124,7 +126,7 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     const { fieldsJson, ...rest } = item;
     return { ...rest, extra: parseFields(fieldsJson).slice(0, 3) };
   };
-  function list(user, { q = "", group = "", subgroup = "", type = "", status = "active", balance = "all", sort = "no" } = {}) {
+  function list(user, { q = "", group = "", subgroup = "", type = "", status = "active", balance = "all", sort = "no", plan = "" } = {}) {
     const rows = store.all(`${ACCOUNT_SQL} WHERE a.deleted_at IS NULL ORDER BY a.name COLLATE NOCASE`);
     const sums = new Map();
     for (const row of store.all("SELECT account_id AS accountId, kind, SUM(amount) AS amount FROM account_entries GROUP BY account_id, kind")) {
@@ -181,6 +183,9 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
       // "Sadece bakiyesi olanlar" (v2.0.10): borçlu ya da alacaklı; kapalı cariler gizlenir.
       if (balance === "nonzero" && side === "zero") continue;
       if (balance === "overdue" && !overdueCount) continue;
+      const activePlans = accountPlans.filter(item => item.status !== "closed").length;
+      if (plan === "none" && activePlans) continue;
+      if (plan === "has" && !activePlans) continue;
       totals.count += 1;
       totals.balance = roundMoney(totals.balance + bal);
       if (side === "debtor") {
@@ -217,7 +222,7 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
         balance: bal,
         side,
         planCount: accountPlans.length,
-        activePlans: accountPlans.filter(plan => plan.status !== "closed").length,
+        activePlans,
         planRemaining: roundMoney(planRemaining),
         overdue: roundMoney(overdue),
         overdueCount,
@@ -732,7 +737,9 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     const user = auth.requirePermission(req, "plans.manage");
     const body = await readJson(req, { limit: 5_000_000 });
     // Seçim: kimlik listesi ya da "süzgeçteki hepsi" (all: true + liste süzgeçleri; 200 bin cari için kimlik taşınmaz).
-    const fromFilter = body.all === true ? list(user, { q: text(body.q).slice(0, 120), group: text(body.group), subgroup: text(body.subgroup), type: ACCOUNT_TYPES[text(body.type)] ? text(body.type) : "", status: ["active", "passive", "all"].includes(text(body.status)) ? text(body.status) : "active", balance: text(body.balance) || "all" }).accounts.map(item => item.id) : [];
+    const fromFilter = body.all === true ? list(user, { q: text(body.q).slice(0, 120), group: text(body.group), subgroup: text(body.subgroup), type: ACCOUNT_TYPES[text(body.type)] ? text(body.type) : "", status: ["active", "passive", "all"].includes(text(body.status)) ? text(body.status) : "active", balance: text(body.balance) || "all", plan: ["none", "has"].includes(text(body.plan)) ? text(body.plan) : "" }).accounts.map(item => item.id) : [];
+    // Ön izleme (v2.0.11): hiçbir şey yazılmadan kaç kart açılacağı, toplam ve atlanacaklar (nedeniyle) döner.
+    const dryRun = body.dryRun === true;
     const ids = [...new Set((body.all === true ? fromFilter : Array.isArray(body.ids) ? body.ids : []).map(value => String(value || "").slice(0, 120)).filter(Boolean))];
     if (!ids.length) throw new HttpError(400, "Taksitlendirilecek carileri seçin.");
     if (ids.length > MAX_IMPORT) throw new HttpError(400, `Tek seferde en çok ${MAX_IMPORT} cari seçilebilir.`);
@@ -747,7 +754,7 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     const skipExisting = body.skipExisting !== false;
     const planName = limited(body.name, 160, "Kart adı");
     const note = limited(body.note, 1000, "Bilgi notu");
-    const report = { created: 0, skipped: [], total: 0 };
+    const report = { created: 0, skipped: [], total: 0, dryRun, names: [] };
     store.tx(() => {
       const active = new Set(store.all("SELECT DISTINCT account_id AS id FROM plans WHERE deleted_at IS NULL AND status = 'active' AND account_id <> ''").map(row => row.id));
       let refNo = Number(plans().nextRef()) - 1;
@@ -771,14 +778,17 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
             continue;
           }
         }
-        plans().createForAccount(user, account, { total, ...distribution, name: planName ? `${account.name} · ${planName}` : "", note, refNo: String((refNo += 1)) });
+        if (!dryRun) plans().createForAccount(user, account, { total, ...distribution, name: planName ? `${account.name} · ${planName}` : "", note, refNo: String((refNo += 1)) });
         report.created += 1;
         report.total = roundMoney(report.total + total);
+        if (report.names.length < 8) report.names.push(account.name);
       }
-      audit(user, "account.bulk-plan", "bulk", { created: report.created, skipped: report.skipped.length, total: report.total, count: distribution.count, firstDue: distribution.firstDue, field: byField ? field : "" });
+      if (!dryRun) audit(user, "account.bulk-plan", "bulk", { created: report.created, skipped: report.skipped.length, total: report.total, count: distribution.count, firstDue: distribution.firstDue, field: byField ? field : "" });
     });
-    changed(user, {});
-    changed(user, { kind: "plans" });
+    if (!dryRun) {
+      changed(user, {});
+      changed(user, { kind: "plans" });
+    }
     ok(res, report);
   });
 
