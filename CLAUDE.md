@@ -47,6 +47,8 @@ Bu dosya oturumlar arasında taşınan hafızadır. Her oturumun başında okunu
 ## Açık iş
 - 2.0.12 yayımlandı (PR ceougur/ofis---y-netimi#12, `v2.0.12`; beş dosya bayt bayt doğrulandı; müşteri: taksit kartının
   Kayıt Tarihi carinin tarihinden gelir).
-  Sırada: süpermarket zinciri 1 aylık arayüz simülasyonu (bulgular `docs/DURUM-VE-DEVAM.md` → "2.0.13 için biriken").
+- 2.0.13 hazır (dal `claude/nice-euler-jvajxv`, paket/yayın yok, kullanıcı onayı bekliyor): WhatsApp, ödeme yolu, Ana Defter,
+  mutabakat kapısı, dört çekirdek (Kasa, Stok, Cari, Taksit) tarih/kilit/yuvarlama kuralları. Holding stres simülasyonu
+  kullanıcı kararıyla iptal. Doğrulama: `npm test`, `npm run test:mutabakat`, `npm run mutabakat`.
 - Pro — uzaktan görüntüleme: `docs/PRO-UZAKTAN-GORUNTULEME.md` (önce en alttaki "Oturum devri"); genel durum
   `docs/DURUM-VE-DEVAM.md`.

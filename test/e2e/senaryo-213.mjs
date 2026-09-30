@@ -371,6 +371,40 @@ try {
     await shot(admin, "hesap-plani-mizani");
   });
 
+  await step("11. Dönem Kilidi: Yönetim → Sistem'de kilitle; kapalı güne hareket reddedilir; formlarda ileri tarih seçilemez; kilit kaldırılır", async () => {
+    const d = new Date();
+    d.setDate(d.getDate() - 1);
+    const yesterday = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+    await openCari("kemal");
+    await admin.click(`${top} [data-entry="in"]`);
+    await admin.waitForSelector(`${top} input[name="date"]`);
+    ok((await admin.$eval(`${top} input[name="date"]`, node => node.max)) === today(), "cari tahsilat formunda tarih seçici bugünden ileriyi göstermez (max = bugün)");
+    await closeAll();
+    await admin.goto(`${BASE}/admin.html#system`, { waitUntil: "load" });
+    await admin.click('.adm-tabs [data-tab="system"]');
+    await admin.waitForFunction(() => /Kilitli dönem yok/.test(document.querySelector("#adm-period-status")?.textContent || ""), null, { timeout: 8000 });
+    await admin.waitForFunction(() => /Mutabakat:/.test(document.querySelector("#adm-integrity-status")?.textContent || ""), null, { timeout: 8000 });
+    const health = await admin.textContent("#adm-integrity-status");
+    ok(/kuruşu kuruşuna tutarlı/.test(health), `kartta mutabakat durumu: ${health.slice(0, 90)}`);
+    ok((await admin.$eval("#adm-period-date", node => node.max)) === today(), "kilit tarihi bugünden ileri seçilemez");
+    await admin.fill("#adm-period-date", yesterday);
+    await admin.click("#adm-period-save");
+    await admin.waitForFunction(() => /ve öncesi kilitli/.test(document.querySelector("#adm-period-status")?.textContent || ""), null, { timeout: 8000 });
+    ok(true, `kilitlendi: ${await admin.textContent("#adm-period-status")}`);
+    await shot(admin, "donem-kilidi");
+    const locked = await admin.evaluate(async day => {
+      const response = await fetch("/api/workspace/cash", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ kind: "in", amount: "10", date: day, description: "Kapalı güne" }) });
+      return { status: response.status, ...(await response.json()) };
+    }, yesterday);
+    ok(locked.status === 409 && locked.code === "period-locked" && /kilitli/.test(locked.error || ""), `kapalı güne Kasa hareketi reddedildi: ${locked.error}`);
+    await admin.click("#adm-period-clear");
+    await admin.waitForSelector('.hof-modal-backdrop.is-visible [data-answer="yes"]');
+    await admin.click('.hof-modal-backdrop.is-visible [data-answer="yes"]');
+    await admin.waitForFunction(() => /Kilitli dönem yok/.test(document.querySelector("#adm-period-status")?.textContent || ""), null, { timeout: 8000 });
+    ok(true, "kilit kaldırıldı");
+    await admin.goto(`${BASE}/`, { waitUntil: "load" });
+  });
+
   await step("Tarayıcı hataları", async () => {
     ok(errors.length === 0, errors.length ? `tarayıcı hataları: ${errors.join(" | ")}` : "hiçbir ekranda tarayıcı hatası yok");
   });

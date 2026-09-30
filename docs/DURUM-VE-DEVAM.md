@@ -76,8 +76,17 @@ Yeni bir oturum bu belgeyi okuyarak kaldığı yerden devam eder. Son güncellem
 
 ## Kalanlar (öncelik sırasıyla)
 
-### 2.0.13 için biriken düzeltmeler (kullanıcı ekledikçe büyür; birlikte yapılır)
-(henüz yok; süpermarket simülasyonunun bulguları buraya yazılacak)
+### 2.0.13 — hazır, dal `claude/nice-euler-jvajxv` (yayın ve paket kullanıcı onayı bekliyor)
+Kapsam ve kanıt `CHANGELOG.md` → 2.0.13 ve `docs/MIMARI.md` → *Ana Defter ve mutabakat kapısı*. Özet:
+- Süpermarket simülasyonu bulguları (çift borç, iade, alış/satış fiyatı, eksi kasa, açılış bakiyesi yönü, çift cari).
+- WhatsApp tek/toplu ekstre ve mesaj; ödeme/tahsilat yolu (Nakit, Havale/EFT, Kredi Kartı, Çek/Senet, Açık Hesap).
+- Ana Defter (türetilmiş, çift yönlü) + işlem anında mutabakat kapısı (COMMIT öncesi; sapmada ROLLBACK + `integrity_log`).
+- Kullanıcı kararı (holding stres simülasyonu İPTAL; "4 çekirdeğe odaklan"): Kasa, Stok, Cari, Taksit için tarih kuralları
+  (`server/lib/period.mjs`), dönem kilidi (Yönetim → Sistem), yuvarlama, iade sınırı, cari bazında mutabakat,
+  `npm run mutabakat` (salt okunur yerel denetim), `npm run test:mutabakat` (model tabanlı uzun koşu),
+  `test/mutabakat-cekirdek.test.mjs`, `test/donem-213.test.mjs`.
+- Davranış değişikliği: ileri tarihli Kasa hareketi (planlı gider) artık girilemez; eski kurulumlardaki satırlar taban
+  sayılır ve raporlarda görünmeye devam eder. Tarih alanı hiç gönderilmezse bugün yazılır; gönderilip boş bırakılırsa ret.
 
 ### 2.0.12 düzeltmeleri — yayımlandı 30.09.2026 (PR #12, `v2.0.12`; beş dosya bayt bayt doğrulandı)
 1. **Taksit kartının "Kayıt Tarihi" carinin kayıt tarihini taşımıyor** (müşteri, 30.09.2026; ilk bildirim "tahsilat girince

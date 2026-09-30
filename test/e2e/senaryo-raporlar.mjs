@@ -161,7 +161,7 @@ try {
     ok((await api("/api/workspace/cheques", { direction: "in", instrument: "note", amount: "700", dueDate: local(45), accountId: ahmet2.id, serialNo: "S-3001" })).status === 200, "alınan senet 700 (+45 gün)");
     // Kasa: ileri tarihli kira (+15 gün). v2.0.13'ten beri ileri tarihli hareket girilemez; eski sürümden kalan planlı
     // gider olarak veritabanına yazılır (raporlar onu vade takipte ve nakit akışında göstermeye devam etmeli).
-    ok((await api("/api/workspace/cash", { kind: "out", amount: "4000", date: local(15), description: "Ofis kirası", cashForce: true })).data?.code === "date-future", "ileri tarihli kira artık reddedilir (date-future)");
+    ok((await api("/api/workspace/cash", { kind: "out", amount: "4000", date: local(15), description: "Ofis kirası", cashForce: true })).code === "date-future", "ileri tarihli kira artık reddedilir (date-future)");
     app.store.db.prepare("INSERT INTO cash_entries (id, kind, amount, date, description, method, created_by, created_at) VALUES ('eski-ileri-kira', 'out', 4000, ?, 'Ofis kirası', 'cash', 'eski', ?)").run(local(15), new Date().toISOString());
     app.integrity.start();
     ok((await api("/api/workspace/cash", { kind: "in", amount: "250", date: TODAY, description: "Danışmanlık" })).status === 200, "bugün Kasa girişi 250");
