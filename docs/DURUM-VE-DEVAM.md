@@ -137,6 +137,19 @@ Yeni bir oturum bu belgeyi okuyarak kaldığı yerden devam eder. Son güncellem
    türleri de dinlesin); aynı denetim ANLIK DURUM, Cari ekstresi ve Raporlar gibi açık kalan diğer pencerelere de.
    Test: e2e — Kasa açık → ↗ çek kartı → ödemeyi geri al/sil → kartı kapat → Kasa satırı ve 4 gösterge yeni değerde;
    ikinci kullanıcının silmesi de aynı şekilde yansır.
+7. **Başlıklarda her sözcüğün baş harfi büyük (Title Case), tüm programda** (müşteri, 30.09.2026): "Tüm cari
+   hareketleri" → "Tüm Cari Hareketleri", "Personel raporu" → "Personel Raporu"; uzman UI gözüyle programın tamamına.
+   Örnek kaynaklar: `server/routes/report-center.mjs` (rapor adları), `server/lib/profile.mjs` ve `hof-workspace.js`
+   (sektör/menü etiketleri). **Kapsam (adlar ve başlıklar):** pencere ve bölüm başlıkları, rapor adları, sol menü,
+   sekme/pil adları, düğmeler, gösterge (KPI) etiketleri, tablo kolon başlıkları, açılır liste seçenekleri, PDF/Excel
+   başlıkları ve sayfa adları. **Kapsam dışı (cümle düzeni kalır):** yardım/açıklama cümleleri, uyarı ve bildirim
+   metinleri, onay pencerelerindeki cümleler, kullanıcının yazdığı veri (kişi adı, not, kullanıcının verdiği pil/kolon
+   adı). **Kurallar:** Türkçe büyük harf (i→İ, ı→I); bağlaçlar küçük kalır ("ve", "ile", "veya", "ya da", "de/da"),
+   ör. "Kasa ve Banka"; kısaltmalar olduğu gibi (PDF, KDV, TC, No). CSS `text-transform` kullanılmaz (Türkçe İ ve
+   bağlaç kuralını bozar, PDF/Excel'e yansımaz); metinler kaynakta düzeltilir, 5. maddedeki birimlerle aynı ilke.
+   Kullanıcının kalemle yeniden adlandırdığı başlıklara dokunulmaz. Kılavuz (HTML+PDF) ve ekran görüntüleri yeni
+   yazımla güncellenir. Test: metin taraması (başlık sözlüğünde küçük harfle başlayan sözcük kalmadı; bağlaç istisnası)
+   + e2e/ekran görüntüsünde menü, Raporlar, Kasa, Cari, Taksitler, Stok, Çek/Senet, Yönetim başlıkları.
 
 ### 2.0.10 düzeltmeleri — tamamı yapıldı ve yayımlandı (30.09.2026, v2.0.10)
 Maddeler ve kararlar kayıt için duruyor; yapılan iş ve kanıtı `CHANGELOG.md` → 2.0.10 ve `test/e2e/senaryo-210.mjs`.
