@@ -494,6 +494,13 @@
       if (view.mode === "card" && view.id && (!change.itemId || change.itemId === view.id)) loadItem(view.id);
       else if (view.mode === "list") loadList();
     });
+    // v2.0.11: stok hareketi başka pencereden (Cari kartı, geri yükleme) değişince açık Stok penceresi de yenilenir.
+    HOF.onLedger(["stock"], detail => {
+      refreshAlerts();
+      if (!modal || detail.path?.startsWith("/api/workspace/stock")) return;
+      if (view.mode === "card" && view.id) loadItem(view.id);
+      else if (view.mode === "list") loadList();
+    }, 350);
   });
   HOF.stock = { open, refreshAlerts };
 })();

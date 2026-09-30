@@ -4960,6 +4960,37 @@ body > .hof-payment-action-card { position: fixed; z-index: 99960; transform: no
 .sidebar > nav.mt-10:not(:has(.nav-item:not([style*="display: none"]))) {
   display: none;
 }
+/* Ayarlar (v2.0.11): kullanıcı kartının altında, Senkron kartının üstünde; Operasyon merkezi kartıyla aynı genişlik. */
+.sidebar .hof-side-settings {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  margin: 10px 0 0;
+  padding: 10px 12px;
+  border: 1px solid var(--do-border);
+  border-radius: 14px;
+  background: #fff;
+  color: var(--do-ink-soft);
+  font: 650 13px var(--do-font);
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+.sidebar .hof-side-settings svg {
+  flex: none;
+  color: var(--do-accent);
+}
+.sidebar .hof-side-settings:hover {
+  border-color: #b7d6c3;
+  background: #eaf4ee;
+  color: var(--do-accent);
+}
+.sidebar .hof-side-settings:focus-visible {
+  outline: none;
+  box-shadow: var(--do-focus);
+}
 /* Sekme şeridinin başlığında sayaç yazılmaz (v2.0.2): arama eşleşmeleri sekme pillerinin içinde görünür. */
 .category-heading > strong {
   display: none;
@@ -8897,6 +8928,24 @@ input[type="search"]::-webkit-search-cancel-button {
 }
 .search-field .smart-search-hint {
   color: #4f7563;
+}
+/* v2.0.11: kutunun tamamı yazı alanı gibi davranır — metin imleci, yazı kutusu satır yüksekliğini doldurur; ipucu ve
+   simgeler tıklamayı yutmaz (odak hof-search.js'te kutuya basınca yazı kutusuna verilir). */
+.search-field,
+.hof-picker-search,
+.hof-chat-search {
+  cursor: text;
+}
+.search-field input {
+  align-self: stretch;
+  height: auto !important;
+  cursor: text;
+}
+.search-field svg,
+.search-field kbd,
+.search-field .smart-search-hint,
+.hof-picker-search svg {
+  pointer-events: none;
 }
 
 /* ---- Ana ekran başlık satırı (v2.0.10) ----

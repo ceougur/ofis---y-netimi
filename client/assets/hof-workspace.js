@@ -490,7 +490,8 @@
         cashModal = null;
       },
     });
-    cashModal = { modal, reload: () => load() };
+    // Canlı yenileme (v2.0.11): seçili dönem ve tarih aralığı korunur; kullanıcı listeyi yukarı kaydırdıysa yeri de.
+    cashModal = { modal, reload: () => load({ keepScroll: true }) };
     const kpis = modal.dialog.querySelector("[data-kpis]");
     const list = modal.dialog.querySelector("[data-list]");
     const row = entry => {
@@ -526,7 +527,9 @@
       list.innerHTML = data.entries.length || opening
         ? `<table class="hof-table hof-cash-table"><thead><tr><th>Tarih</th><th>Açıklama</th><th class="num">Tahsilat</th><th class="num">Ödeme</th><th class="num">Kasa</th><th></th></tr></thead><tbody>${opening}${data.entries.map(row).join("")}</tbody></table>${data.entries.length ? "" : '<p class="hof-empty">Bu dönemde kasa hareketi yok.</p>'}`
         : '<p class="hof-empty">Henüz kasa hareketi yok. Detay kartında tahsilat girildiğinde ya da yukarıdan tahsilat/ödeme eklendiğinde burada görünür.</p>';
-      list.scrollTop = list.scrollHeight; // en yeni hareket en altta: listeyi oraya kaydır
+      if (keep == null) list.scrollTop = list.scrollHeight; // en yeni hareket en altta: listeyi oraya kaydır
+      else list.scrollTop = keep;
+      keep = null;
     };
     const rangeBox = modal.dialog.querySelector("[data-range]");
     const rangeError = () => {
@@ -541,7 +544,10 @@
       custom[input.matches("[data-from]") ? "from" : "to"] = input.value;
       load();
     });
-    async function load() {
+    // keep: canlı yenilemede kaydırma yeri (en alttaysa en altta kalır, yeni hareket görünür).
+    let keep = null;
+    async function load({ keepScroll = false } = {}) {
+      keep = keepScroll && list.scrollHeight - list.scrollTop - list.clientHeight > 4 ? list.scrollTop : null;
       const range = periodRange(period, custom);
       const invalid = rangeError();
       if (invalid) {
@@ -967,10 +973,12 @@
     }
     if ((change.kind === "activity" || change.kind === "task") && change.caseKey && HOF.selectedCase()?.key === change.caseKey) refreshActivity();
     if (change.kind === "plans" || change.kind === "accounts" || (change.kind === "activity" && change.caseKey && HOF.selectedCase()?.key === change.caseKey)) renderCasePlan(true);
-    if (change.kind === "cash" && cashModal) cashModal.reload();
     if (change.kind === "plans" || change.kind === "cash") refreshBadges();
   });
   HOF.on("plans-changed", refreshBadges);
+  // v2.0.11: Kasa'ya yazan her kaynak (Kasa, detay kartı tahsilatı, cari, taksit, stok, çek/senet, geri yükleme) değişince
+  // açık Kasa penceresi yenilenir — işlem bu ekranda (ör. Kasa'dan açılan çek kartında) ya da başka bilgisayarda yapılmış olsun.
+  HOF.onLedger(["cash", "cheques", "accounts", "plans", "stock"], () => cashModal?.reload());
   HOF.on("plans-changed", () => renderCasePlan(true));
   HOF.on("accounts-changed", () => renderCasePlan(true));
   HOF.on("payment-saved", detail => {

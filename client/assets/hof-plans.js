@@ -1056,6 +1056,15 @@
         });
       }
     });
+    // v2.0.11: taksit kartına dokunan başka pencerelerdeki işlemler (Cari kartından toplu plan, Kasa'da taksit
+    // tahsilatını silme, detay kartı) açık Taksitler penceresini de yeniler.
+    HOF.onLedger(["plans", "accounts"], detail => {
+      if (!modal || /^\/api\/workspace\/(plans|plan-transfer)\b/.test(detail.path || "")) return;
+      loadGroups().then(() => {
+        if (view.mode === "card" && view.planId) loadPlan(view.planId);
+        else if (view.mode === "list") loadList();
+      });
+    }, 350);
   });
   HOF.plans = {
     open,

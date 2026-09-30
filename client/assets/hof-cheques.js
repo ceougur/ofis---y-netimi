@@ -422,5 +422,10 @@
       if (view.mode === "card" && view.id && (!change.chequeId || change.chequeId === view.id)) loadCheque(view.id);
       else loadList();
     });
+    // v2.0.11: evrak başka pencereden (Cari kartı, Kasa) değişince açık liste de yenilenir.
+    HOF.onLedger(["cheques"], detail => {
+      if (!modal || detail.path?.startsWith("/api/workspace/cheques")) return;
+      if (view.mode === "list") loadList();
+    }, 350);
   });
 })();

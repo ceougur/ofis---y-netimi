@@ -96,7 +96,43 @@
       else if (response.status === 403 && payload.code === "LICENSE_READ_ONLY") HOF.emit("license-read-only", payload);
       throw error;
     }
+    if (method !== "GET") noteLedgerChange(path);
     return payload.data === undefined ? payload : payload.data;
+  };
+
+  // ---------- Para/stok defteri değişti (v2.0.11) ----------
+  // Açık pencereler (Kasa, Cari, Taksitler, Stok, Çek/Senet, Raporlar) kendini tek bir kurala göre yeniler:
+  //  - bu ekranda yapılan her yazma isteği (HOF.api) hemen, adresinden çıkarılan türle bildirilir;
+  //  - başka bilgisayardaki değişiklik sunucunun herkese (işlemi yapan dahil) yayımladığı "overview.changed" ile gelir.
+  // Önceden her pencere yalnız kendi türünü dinliyordu ve sunucu "workspace.changed" olayını işlemi yapana göndermiyordu:
+  // Kasa'dan açılan çek kartında ödeme silinince Kasa eski rakamlarla kalıyordu.
+  const LEDGER_PATHS = [
+    [/^\/api\/workspace\/cash\b/, ["cash"]],
+    [/^\/api\/workspace\/cheques\b/, ["cheques", "cash", "accounts"]],
+    [/^\/api\/workspace\/accounts\b/, ["accounts", "cash", "plans"]],
+    [/^\/api\/workspace\/(plans|plan-transfer)\b/, ["plans", "cash", "accounts"]],
+    [/^\/api\/workspace\/stock\b/, ["stock", "cash", "accounts"]],
+    [/^\/api\/workspace\/(payments\b|cases\/[^/]+\/(payments|plans|account)\b)/, ["cash", "plans", "accounts"]],
+    [/^\/api\/(admin\/)?trash\b/, ["cash", "plans", "accounts", "stock", "cheques"]],
+  ];
+  function noteLedgerChange(path) {
+    const clean = String(path || "").split("?")[0];
+    const hit = LEDGER_PATHS.find(([pattern]) => pattern.test(clean));
+    if (hit) HOF.emit("ledger:changed", { kinds: hit[1], local: true, path: clean });
+  }
+  // onLedger(["cash"], yenile): türlerden biri değişince (yerel ya da canlı) kısa gecikmeyle bir kez çağrılır.
+  HOF.onLedger = (kinds, handler, delay = 250) => {
+    const wanted = new Set(kinds);
+    let timer = null;
+    const fire = detail => {
+      const list = detail?.kinds || [];
+      if (list.length && !list.some(kind => wanted.has(kind))) return;
+      clearTimeout(timer);
+      timer = setTimeout(() => handler(detail || {}), delay);
+    };
+    HOF.on("ledger:changed", fire);
+    HOF.on("live:overview.changed", fire);
+    HOF.on("live:resync", () => fire({}));
   };
 
   // ---------- Kendi arayüz düğümlerimiz ----------

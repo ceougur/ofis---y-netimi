@@ -664,13 +664,30 @@
     const display = hidden ? "none" : "";
     if (element.style.display !== display) element.style.display = display;
   };
+  // v2.0.11: "Ayarlar" kenar çubuğunun üstünden (oturum kartının altı) kullanıcı kartının altına taşındı. Paketin kendi
+  // düğmesi React'e ait olduğundan taşınmaz, gizlenir; yerine bizim düğmemiz Operasyon merkezi kartının hemen altına
+  // konur (paket yeniden çizse de yerinde kalır). Yetki kuralı aynı: yalnız veri yükleme yetkisi olan görür.
+  const GEAR = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>';
+  function placeSettings() {
+    const card = document.getElementById("hof-sidecard");
+    let button = document.getElementById("hof-side-settings");
+    if (!card || !canManage()) {
+      button?.remove();
+      return;
+    }
+    if (!button) {
+      button = HOF.el("button", { type: "button", id: "hof-side-settings", class: "hof-side-settings", title: "Veri yükleme, çalışma oturumları ve bağlı tablo" }, `${GEAR}<span>Ayarlar</span>`);
+      button.addEventListener("click", () => openDataSettings());
+    }
+    if (card.nextElementSibling !== button) card.after(button);
+  }
+
   function gateControls() {
-    const manage = canManage();
     document.querySelectorAll(".sidebar .nav-item").forEach(button => {
       const label = navLabel(button);
-      if (label === "Tabloyu değiştir") setHidden(button, true);
-      if (label === "Ayarlar") setHidden(button, !manage);
+      if (label === "Tabloyu değiştir" || label === "Ayarlar") setHidden(button, true);
     });
+    placeSettings();
     document.querySelectorAll(".button-row button").forEach(button => {
       if (navLabel(button).includes("Yeni tablo yükle")) setHidden(button, true);
     });

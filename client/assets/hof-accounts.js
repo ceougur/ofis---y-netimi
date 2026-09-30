@@ -815,6 +815,13 @@
       if (view.mode === "card" && view.id) loadAccount(view.id);
       else loadList();
     });
+    // v2.0.11: carinin defterine yazan başka pencerelerdeki işlemler (Kasa, çek/senet, taksit, stok) açık Cari
+    // penceresini de yeniler. Bu pencerenin kendi işlemleri zaten kendini yeniler.
+    HOF.onLedger(["accounts", "cash", "plans", "stock", "cheques"], detail => {
+      if (!modal || detail.path?.startsWith("/api/workspace/accounts")) return;
+      if (view.mode === "card" && view.id) loadAccount(view.id);
+      else if (view.mode === "list") loadList();
+    }, 350);
   });
   HOF.office = Object.assign(HOF.office || {}, { gateHtml, wireGate });
   HOF.accounts = {

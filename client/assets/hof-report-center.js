@@ -208,13 +208,16 @@
     }
   }
 
-  async function run() {
+  // quiet (v2.0.11, canlı yenileme): ön izleme "Yükleniyor"a düşmeden yerinde tazelenir.
+  async function run({ quiet = false } = {}) {
     if (!center) return;
     const report = current();
     if (!report || (report.params.includes("account") && !center.account)) return renderMain();
     const ticket = (center.ticket = (center.ticket || 0) + 1);
-    center.preview = null;
-    renderMain();
+    if (!quiet || !center.preview) {
+      center.preview = null;
+      renderMain();
+    }
     try {
       const preview = await HOF.api(`/api/workspace/report-center/${encodeURIComponent(report.id)}?${queryString()}`);
       if (!center || ticket !== center.ticket) return;
@@ -259,5 +262,9 @@
     run();
   }
 
+  // Para/stok/cari/taksit/çek değişince açık ön izleme yenilenir (işlem bu ekranda ya da başka bilgisayarda).
+  HOF.whenReady(() => HOF.onLedger(["cash", "accounts", "plans", "stock", "cheques"], () => {
+    if (center?.host?.isConnected && center.preview) run({ quiet: true });
+  }, 400));
   HOF.reportCenter = { open, mount };
 })();

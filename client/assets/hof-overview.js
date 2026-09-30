@@ -622,12 +622,15 @@
       ${d.hasMore ? `<p class="hof-rep-note">Ekranda ilk ${d.cheques.length.toLocaleString("tr-TR")} evrak; tamamı PDF ve Excel'de.</p>` : ""}`;
   }
 
-  async function run() {
+  // quiet (v2.0.11, canlı yenileme): tablo "Yükleniyor"a düşmeden yerinde tazelenir.
+  async function run({ quiet = false } = {}) {
     if (!report) return;
     const tab = report.tab;
     const s = state();
-    s.data = null;
-    renderReport();
+    if (!quiet || !s.data) {
+      s.data = null;
+      renderReport();
+    }
     try {
       if (tab === "mizan") {
         s.data = s.account ? await HOF.api(`/api/workspace/overview/ekstre?${query({ account: s.account.id, from: s.from, to: s.to })}`) : await HOF.api(`/api/workspace/overview/mizan?${query({ from: s.from, to: s.to, type: s.type, side: s.side, idle: s.idle ? "1" : "", q: s.q, limit: 1000 })}`);
@@ -736,6 +739,11 @@
     });
     // Canlı: para ya da stok değişince sunucu herkese (işlemi yapan dahil) tek olay yayımlar.
     HOF.on("live:overview.changed", () => reloadSoon(200));
+    // Raporlar penceresi açıksa (Cari ekstre/mizan, Vade takip, Nakit akışı, Çek/Senet sekmeleri) gösterilen rapor da
+    // yenilenir (v2.0.11); "Tüm raporlar" ve "Tablo raporları" sekmeleri kendi yenilemesini yapar.
+    HOF.onLedger(["cash", "accounts", "plans", "stock", "cheques"], () => {
+      if (report?.modal && !PANE_TABS.has(report.tab) && state()?.data) run({ quiet: true });
+    }, 400);
     HOF.on("live:resync", () => reloadSoon(200));
     HOF.on("live:hello", () => {
       live = true;
