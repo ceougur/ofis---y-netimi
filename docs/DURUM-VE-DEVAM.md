@@ -139,6 +139,8 @@ Yeni bir oturum bu belgeyi okuyarak kaldığı yerden devam eder. Son güncellem
    ikinci kullanıcının silmesi de aynı şekilde yansır.
 7. **Başlıklarda her sözcüğün baş harfi büyük (Title Case), tüm programda** (müşteri, 30.09.2026): "Tüm cari
    hareketleri" → "Tüm Cari Hareketleri", "Personel raporu" → "Personel Raporu"; uzman UI gözüyle programın tamamına.
+   Kullanıcının verdiği hedef örnekler (bağlaç kuralını teyit eder): "Cari Listesi ve Bakiyeler", "Tüm Cari Hareketleri",
+   "Cari Bazında Tahsilat", "Taksit Kartları".
    Örnek kaynaklar: `server/routes/report-center.mjs` (rapor adları), `server/lib/profile.mjs` ve `hof-workspace.js`
    (sektör/menü etiketleri). **Kapsam (adlar ve başlıklar):** pencere ve bölüm başlıkları, rapor adları, sol menü,
    sekme/pil adları, düğmeler, gösterge (KPI) etiketleri, tablo kolon başlıkları, açılır liste seçenekleri, PDF/Excel
