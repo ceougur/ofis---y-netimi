@@ -152,6 +152,14 @@ Yeni bir oturum bu belgeyi okuyarak kaldığı yerden devam eder. Son güncellem
    Kullanıcının kalemle yeniden adlandırdığı başlıklara dokunulmaz. Kılavuz (HTML+PDF) ve ekran görüntüleri yeni
    yazımla güncellenir. Test: metin taraması (başlık sözlüğünde küçük harfle başlayan sözcük kalmadı; bağlaç istisnası)
    + e2e/ekran görüntüsünde menü, Raporlar, Kasa, Cari, Taksitler, Stok, Çek/Senet, Yönetim başlıkları.
+8. **Sol menüde "Ayarlar" aşağıya taşınsın** (kullanıcı, 30.09.2026, ekran görüntüsü): "Ayarlar" düğmesi şimdi en
+   üstte, Çalışma oturumu seçicisinin hemen altında duruyor; kullanıcı kartının (Ofis yöneticisi · Profil / Parola /
+   Yönetim / Çıkış) **altına**, "Senkron aktif" kartının üstündeki boşluğa taşınacak. Kaynak: düğme hazır paketin kenar
+   çubuğundan geliyor; `hof-sources.js` yalnız tıklamayı yakalayıp Veri penceresini açıyor ve `sources.manage` yetkisi
+   yoksa gizliyor — taşıma DOM'da bu düğmeyi yeni yerine almak (paket yeniden çizince yerinde kalmalı). Dikkat: yetki
+   gizlemesi ve tıklama yakalaması aynen sürer; dar ekranda/menü kaydırılırken alt blok taşmasın; Ctrl/klavye sırası
+   mantıklı olsun. Test: e2e — yönetici: Ayarlar kullanıcı kartının altında, tıklayınca Veri penceresi açılır;
+   yetkisiz kullanıcı: görünmez; oturum değiştirince/yenilenince yeri değişmez; ekran görüntüsü.
 
 ### 2.0.10 düzeltmeleri — tamamı yapıldı ve yayımlandı (30.09.2026, v2.0.10)
 Maddeler ve kararlar kayıt için duruyor; yapılan iş ve kanıtı `CHANGELOG.md` → 2.0.10 ve `test/e2e/senaryo-210.mjs`.
