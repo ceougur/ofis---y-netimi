@@ -47,7 +47,7 @@ Bu dosya oturumlar arasında taşınan hafızadır. Her oturumun başında okunu
 ## Açık iş
 - 2.0.12 yayımlandı (PR ceougur/ofis---y-netimi#12, `v2.0.12`; beş dosya bayt bayt doğrulandı; müşteri: taksit kartının
   Kayıt Tarihi carinin tarihinden gelir).
-- 2.0.13 hazır (dal `claude/nice-euler-jvajxv`, paket/yayın yok, kullanıcı onayı bekliyor): WhatsApp, ödeme yolu, Ana Defter,
+- 2.0.13 paketi hazır (01.10.2026; teslim zipleri scratchpad'de, yayın kullanıcı doğrulamasını bekliyor; dal `claude/nice-euler-jvajxv`): WhatsApp, ödeme yolu, Ana Defter,
   mutabakat kapısı, dört çekirdek (Kasa, Stok, Cari, Taksit) tarih/kilit/yuvarlama kuralları, Eksi Bakiye Denetimi
   (Nakit/Banka/Kredi Kartı: Uyar/Engelle/Kontrol Yok — kullanıcı onayı 01.10.2026), hepsini seç + hariç tut. Holding stres
   simülasyonu kullanıcı kararıyla iptal. Doğrulama: `npm test`, `npm run test:mutabakat`, `npm run mutabakat`,

@@ -76,7 +76,10 @@ Yeni bir oturum bu belgeyi okuyarak kaldığı yerden devam eder. Son güncellem
 
 ## Kalanlar (öncelik sırasıyla)
 
-### 2.0.13 — hazır, dal `claude/nice-euler-jvajxv` (yayın ve paket kullanıcı onayı bekliyor)
+### 2.0.13 — paket hazır (01.10.2026), dal `claude/nice-euler-jvajxv`; yayın kullanıcı doğrulamasını bekliyor
+Teslim: `DestekOfis-2.0.13-{1-Guncelleme-ve-Belgeler,2-Kurulum,Kaynak-ve-Denetim}.zip` + SHA256SUMS (güncelleme paketi
+sha256 840193a1…, kurulum d3fe6f22…; imza anahtarı destekofis-2026-1; göç 17). Yayın adımları teslimdeki OKU-BENI.txt'de;
+"birleştir" denince PR, "yayımladım" denince yayındaki dosyalar bayt bayt doğrulanır.
 Kapsam ve kanıt `CHANGELOG.md` → 2.0.13 ve `docs/MIMARI.md` → *Ana Defter ve mutabakat kapısı*. Özet:
 - Süpermarket simülasyonu bulguları (çift borç, iade, alış/satış fiyatı, eksi kasa, açılış bakiyesi yönü, çift cari).
 - WhatsApp tek/toplu ekstre ve mesaj; ödeme/tahsilat yolu (Nakit, Havale/EFT, Kredi Kartı, Çek/Senet, Açık Hesap).
