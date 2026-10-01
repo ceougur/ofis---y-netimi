@@ -28,15 +28,15 @@ const MAX_RANGE_DAYS = 36_600; // 100 yıl (yalnız doğrulama; "tüm zaman" miz
 const PDF_ROWS = 20_000;
 const collator = new Intl.Collator("tr", { numeric: true, sensitivity: "base" });
 const TYPE_TEXT = { customer: "Müşteri", supplier: "Tedarikçi", other: "Diğer" };
-const SOURCE_TEXT = { plan: "Taksit", cheque: "Çek", note: "Senet", cash: "Kasa (ileri tarihli)", table: "Tablo", promise: "Ödeme sözü", deadline: "Son tarih" };
+const SOURCE_TEXT = { plan: "Taksit", cheque: "Çek", note: "Senet", invoice: "Fatura (vadeli)", cash: "Kasa (ileri tarihli)", table: "Tablo", promise: "Ödeme sözü", deadline: "Son tarih" };
 // Vade takip kaynakları (v2.0.9) ve görme koşulu: çek/senet ve Kasa, ANLIK DURUM yetkisi ya da o modülün yetkisiyle.
-const DUE_SOURCES = ["plan", "cheque", "note", "cash", "table", "promise", "deadline"];
+const DUE_SOURCES = ["plan", "cheque", "note", "invoice", "cash", "table", "promise", "deadline"];
 const STATE_TEXT = { overdue: "Gecikmiş", today: "Bugün", month: "Bu ay", upcoming: "Yaklaşan" };
 const GROUPS = new Set(["day", "week", "month"]);
 
 const MONEY_FORMAT = new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-export function registerOverviewRoutes(router, { store, auth, audit, events, dataset = null, cash = () => null, accounts = () => null, plans = () => null, stock = () => null, cheques = () => null, tables = () => null, now: clock = () => new Date() }) {
+export function registerOverviewRoutes(router, { store, auth, audit, events, dataset = null, cash = () => null, accounts = () => null, plans = () => null, stock = () => null, cheques = () => null, invoices = () => null, tables = () => null, now: clock = () => new Date() }) {
   const today = () => isoDay(clock());
   const office = () => store.setting("office.name", "");
   const userName = user => user.display_name || user.username || "";
@@ -70,6 +70,7 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
       accounts()?.fingerprint?.() || "",
       stock()?.fingerprint?.() || "",
       cheques()?.fingerprint?.() || "",
+      invoices()?.fingerprint?.() || "",
     ].join("|");
   let cache = { key: "", value: null };
   function compute() {
@@ -109,7 +110,32 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
       chequesDue: roundMoney(chequeOut.overdue.amount + chequeOut.today.amount + chequeOut.soon.amount),
       chequesDueCount: chequeOut.overdue.count + chequeOut.today.count + chequeOut.soon.count,
     };
-    const value = { today: day, at: new Date().toISOString(), cash: cashBlock, stock: stockBlock, receivable, payable, cheques: chequeSummary, tookMs: Date.now() - started };
+    // Fatura (v2.0.15): bu ayın faturalı satış ve alışı (KDV hariç, iadeler düşülmüş), ayın KDV sonucu (391 − 191) ve vadeli
+    // açık fatura alacağı/borcu (taksitli olanlar taksit kartında).
+    let invoiceBlock = null;
+    if (invoices()?.openItems) {
+      const monthStart = `${day.slice(0, 7)}-01`;
+      const month = store.get(
+        `SELECT COALESCE(SUM(CASE WHEN kind IN ('sale', 'smm') THEN try_net WHEN kind = 'sale_return' THEN -try_net ELSE 0 END), 0) AS sale,
+                COALESCE(SUM(CASE WHEN kind = 'purchase' THEN try_net WHEN kind = 'purchase_return' THEN -try_net ELSE 0 END), 0) AS purchase,
+                COALESCE(SUM(CASE WHEN kind IN ('sale', 'smm') THEN try_vat - try_withheld WHEN kind = 'sale_return' THEN -(try_vat - try_withheld)
+                                  WHEN kind = 'purchase' THEN -try_vat WHEN kind = 'purchase_return' THEN try_vat ELSE 0 END), 0) AS vat,
+                COUNT(CASE WHEN kind IN ('sale', 'smm') THEN 1 END) AS saleCount, COUNT(CASE WHEN kind = 'purchase' THEN 1 END) AS purchaseCount
+         FROM invoices WHERE status = 'issued' AND issue_date >= ? AND issue_date <= ?`,
+        monthStart, day,
+      );
+      const open = invoices().openItems(day);
+      const sum = filter => roundMoney(open.filter(filter).reduce((total, item) => total + item.open, 0));
+      invoiceBlock = {
+        month: { sale: roundMoney(month.sale), purchase: roundMoney(month.purchase), vat: roundMoney(month.vat), saleCount: month.saleCount, purchaseCount: month.purchaseCount },
+        openSale: sum(item => item.side === "sale"),
+        overdueSale: sum(item => item.side === "sale" && item.days < 0),
+        openPurchase: sum(item => item.side === "purchase"),
+        overduePurchase: sum(item => item.side === "purchase" && item.days < 0),
+        drafts: store.get("SELECT COUNT(*) AS n FROM invoices WHERE status = 'draft'").n,
+      };
+    }
+    const value = { today: day, at: new Date().toISOString(), cash: cashBlock, stock: stockBlock, receivable, payable, cheques: chequeSummary, invoices: invoiceBlock, tookMs: Date.now() - started };
     cache = { key, value };
     return value;
   }
@@ -117,7 +143,7 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
   // yönetici bu kişiye kasa, alacak/borç ve stok özetini birlikte açmış olur.
   function forUser() {
     const data = compute();
-    return { today: data.today, at: data.at, cash: data.cash, stock: data.stock, receivable: data.receivable, payable: data.payable, chequesVisible: true, canReport: true };
+    return { today: data.today, at: data.at, cash: data.cash, stock: data.stock, receivable: data.receivable, payable: data.payable, invoices: data.invoices, chequesVisible: true, canReport: true };
   }
   // ANLIK DURUM kartı (v2.0.10): yalnız yönetici. Aynı rakamlar finans raporları yetkisiyle Raporlar'da görülür.
   router.get("/api/workspace/overview", async ({ req, res }) => {
@@ -263,6 +289,8 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
     const flows = [];
     if (plans()?.openItems) flows.push(...plans().openItems(day));
     if (cheques()?.flows) flows.push(...cheques().flows());
+    // Vadeli (açık hesap) faturaların ödenmemiş kısmı vadesinde beklenen giriş (satış) ya da çıkıştır (alış).
+    for (const item of invoices()?.openItems ? invoices().openItems(day) : []) flows.push(invoiceFlow(item));
     // Tablolardaki ödeme günleri ve ödeme sözleri (v2.0.9, tahsilat takvimiyle aynı kalemler) beklenen giriştir. Taksit
     // kartı olan kişinin sözü kartındaki taksitle aynı parayı anlatır; nakit tahmininde ikinci kez sayılmaz.
     if (withTable) for (const item of await tableItems()) if (!item.deadline && item.amount > 0 && !(item.promise && item.carded)) flows.push(tableFlow(item, { projection: true }));
@@ -354,7 +382,19 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
     if (!canDues(user)) throw new HttpError(403, "Vade takip raporu yönetici ve uzman hesapları ile finans raporları yetkisi verilen kişiler içindir.", { code: "FORBIDDEN" });
     return user;
   };
-  const visibleSources = user => DUE_SOURCES.filter(source => (source === "cheque" || source === "note" ? canUser(user, "overview.view") || canUser(user, "cheques.view") : source === "cash" ? canUser(user, "overview.view") || canUser(user, "cash.view") : true));
+  const visibleSources = user => DUE_SOURCES.filter(source => (source === "cheque" || source === "note" ? canUser(user, "overview.view") || canUser(user, "cheques.view") : source === "cash" ? canUser(user, "overview.view") || canUser(user, "cash.view") : source === "invoice" ? canUser(user, "overview.view") || canUser(user, "invoices.view") : true));
+  // Açık fatura → nakit akışı / vade takip kalemi (fatura modülünün kapama hesabından; tek kaynak).
+  const invoiceFlow = item => ({
+    date: item.dueDate,
+    direction: item.side === "sale" ? "in" : "out",
+    amount: item.open,
+    source: "invoice",
+    label: `${item.side === "sale" ? "Satış" : "Alış"} faturası ${item.number}${item.open < item.payable - 0.005 ? " (kalan)" : ""}`,
+    party: item.accountName,
+    phone: item.phone || "",
+    detail: `Fatura tarihi ${dayText(item.issueDate)}`,
+    ref: { type: "invoice", id: item.id },
+  });
   async function tableItems() {
     try {
       return tables()?.calendar ? (await tables().calendar(clock())).items : [];
@@ -403,6 +443,7 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
       for (const item of plans().openItems(day)) items.push({ ...item, detail: [item.accountName && item.accountName !== item.party ? `Cari: ${item.accountName}` : "", item.refNo ? `Kart ${item.refNo}` : ""].filter(Boolean).join(" · ") });
     }
     if ((sources.has("cheque") || sources.has("note")) && cheques()?.flows) for (const flow of cheques().flows()) if (sources.has(flow.source)) items.push(flow);
+    if (sources.has("invoice") && invoices()?.openItems) for (const item of invoices().openItems(day)) items.push(invoiceFlow(item));
     if (sources.has("cash") && cash()?.entries) for (const entry of cash().entries({ after: day })) items.push(cashFlow(entry));
     let dormant = [];
     if (sources.has("table") || sources.has("promise") || sources.has("deadline")) {

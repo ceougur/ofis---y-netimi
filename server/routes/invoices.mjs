@@ -1047,6 +1047,13 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, peri
       }
       for (const itemId of stock()?.invoiceStock ? stock().invoiceStock.removeFor(invoice.id, { force: force.stock === true }) : []) touched.items.add(itemId);
       accounts().invoiceEntry.removeFor(invoice.id);
+      // İade iptali: asıl faturanın taksit kartı iadeyle küçüldüyse geri büyür (müşteri borcu yine taksitlerde izlenir).
+      if (invoice.kind === "sale_return" && invoice.originalId && plans()?.growForInvoice) {
+        const original = store.get("SELECT plan_id AS planId, payment_json AS paymentJson FROM invoices WHERE id = ?", invoice.originalId);
+        const rest = Number(parseJson(original?.paymentJson, {}).rest) || 0;
+        const grown = original?.planId ? plans().growForInvoice(user, original.planId, invoice.tryPayable, rest, `İade iptali ${invoice.number}`) : null;
+        if (grown) touched.plans.add(grown.id);
+      }
       const stamp = now();
       store.run("UPDATE invoices SET status = 'cancelled', cancelled_by = ?, cancelled_at = ?, cancel_reason = ?, updated_by = ?, updated_at = ? WHERE id = ?", user.id, stamp, limited(reason, 300, "İptal nedeni"), user.id, stamp, invoice.id);
       audit(user, "invoice.cancelled", invoice.id, { number: invoice.number, kind: invoice.kind, payable: invoice.tryPayable, reason });
@@ -1423,10 +1430,35 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, peri
       .filter(({ state }) => state && state.open > 0.005)
       .map(({ row, state }) => ({ id: row.id, number: row.number, kind: row.kind, side: INVOICE_KINDS[row.kind].side, accountId: row.accountId, accountName: parseJson(row.partyJson, {}).name || row.accountName, phone: row.accountPhone, dueDate: row.dueDate || row.issueDate, issueDate: row.issueDate, payable: row.tryPayable, open: state.open, state: state.state, days: Math.round((Date.parse(`${row.dueDate || row.issueDate}T00:00:00Z`) - Date.parse(`${day}T00:00:00Z`)) / 86_400_000) }));
   }
+  // Tahsilat takvimi ve sağ alt bildirimler: vadesi geçen, bugün ve 7 gün içinde vadesi gelen açık faturalar.
+  function dueItems(day = today()) {
+    return openItems(day)
+      .filter(item => item.days <= 7)
+      .map(item => ({
+        id: `invoice|${item.id}`,
+        source: "invoice",
+        invoiceId: item.id,
+        direction: item.side === "sale" ? "in" : "out",
+        person: item.accountName,
+        caseNo: "",
+        caseKey: "",
+        tab: "",
+        label: `${item.side === "sale" ? "Tahsil Edilecek" : "Ödenecek"} Fatura ${item.number}`,
+        kind: "date",
+        dueDate: item.dueDate,
+        dueText: dayText(item.dueDate),
+        amount: item.open,
+        partial: item.open < item.payable - 0.005,
+        days: item.days,
+        state: item.days === 0 ? "today" : item.days < 0 ? "overdue" : "upcoming",
+      }));
+  }
   const fingerprint = () => {
     const row = store.get("SELECT COUNT(*) || '/' || COALESCE(MAX(updated_at), '') AS f FROM invoices");
-    return row.f;
+    // Kapama (ödenen/kalan) cari hareketlerine de bağlıdır: tahsilat girilince açık fatura kapanır.
+    const entries = store.get("SELECT COUNT(*) || '/' || COALESCE(MAX(COALESCE(updated_at, created_at)), '') AS f FROM account_entries");
+    return `${row.f}|${entries.f}`;
   };
   const countForAccount = accountId => store.get("SELECT COUNT(*) AS n FROM invoices WHERE account_id = ? AND status <> 'cancelled'", accountId).n;
-  return { cashEntries, cashSource, openItems, fingerprint, countForAccount, list, detail, settings, paymentStates, lastPrices, returnable, cancel };
+  return { cashEntries, cashSource, openItems, dueItems, fingerprint, countForAccount, list, detail, settings, paymentStates, lastPrices, returnable, cancel };
 }

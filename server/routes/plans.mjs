@@ -1121,6 +1121,21 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
     audit(user, "plan.created", id, { name: name || account.name, total: amount, accountId: account.id, bulk: true, coversBalance, invoiceId });
     return id;
   }
+  // Satıştan iade iptal edilince (v2.0.15): iadenin küçülttüğü taksit kartı geri büyür — tutar son taksite eklenir; kart,
+  // faturanın taksitlendirilen kalanını aşmaz (cap). Kapatılmış kart değişmez.
+  function growForInvoice(user, planId, amount, cap, note = "") {
+    const plan = store.get("SELECT id, name, total, status FROM plans WHERE id = ? AND deleted_at IS NULL", planId);
+    if (!plan || plan.status === "closed") return null;
+    const grow = roundMoney(Math.min(Number(amount) || 0, (Number(cap) || 0) - (Number(plan.total) || 0)));
+    if (!(grow > 0.005)) return null;
+    const last = store.get("SELECT id, amount FROM plan_items WHERE plan_id = ? ORDER BY due_date DESC, seq DESC LIMIT 1", plan.id);
+    if (!last) return null;
+    const stamp = now();
+    store.run("UPDATE plan_items SET amount = ?, updated_at = ? WHERE id = ?", roundMoney((Number(last.amount) || 0) + grow), stamp, last.id);
+    store.run("UPDATE plans SET total = ?, updated_by = ?, updated_at = ? WHERE id = ?", roundMoney((Number(plan.total) || 0) + grow), user.id, stamp, plan.id);
+    audit(user, "plan.grown", plan.id, { from: plan.total, to: roundMoney((Number(plan.total) || 0) + grow), reason: note || "İade iptali" });
+    return { id: plan.id, grow };
+  }
   // Fatura iptalinde faturanın kartı: tahsilatı yoksa kaldırılır (Silinenler'e gitmez; fatura iptalle geri gelmez).
   // Tahsilat varsa iptal durur: para alınmıştır; borcu düşürmek için iade faturası kesilir (kart kalana göre küçülür).
   function removeForInvoice(user, invoiceId) {
@@ -1191,5 +1206,5 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
   // ikinci kez saymaz; aktarma "kartı var" der.
   const linkedCases = source => new Set(store.all("SELECT case_key AS k FROM plans WHERE deleted_at IS NULL AND case_key <> '' AND case_source = ?", source || "").map(row => row.k));
 
-  return { uncoveredDebt, trimCovers, cashEntries, cashSource, dueItems, openItems, fingerprint, ledgerPlansByAccount, list, detail, forCase, entriesForCase, summariesByAccount, forAccount, createForAccount, removeForInvoice, followAccount, countForAccount, receiptSeq, nextRef, validDistribution: distributionInput, resolveGroups, groupTree, ensureGroup, createScheduled, adoptPayment, linkedCases };
+  return { uncoveredDebt, trimCovers, cashEntries, cashSource, dueItems, openItems, fingerprint, ledgerPlansByAccount, list, detail, forCase, entriesForCase, summariesByAccount, forAccount, createForAccount, removeForInvoice, growForInvoice, followAccount, countForAccount, receiptSeq, nextRef, validDistribution: distributionInput, resolveGroups, groupTree, ensureGroup, createScheduled, adoptPayment, linkedCases };
 }
