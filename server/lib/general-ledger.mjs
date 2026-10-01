@@ -19,14 +19,20 @@ export const CHART = Object.freeze({
   120: "Alıcılar (Müşteri Carileri)",
   127: "Carisiz Taksit Kartları",
   153: "Ticari Mallar (Stok Alımları)",
+  191: "İndirilecek KDV",
+  193: "Peşin Ödenen Vergiler (Stopaj)",
+  255: "Demirbaşlar",
   320: "Satıcılar (Tedarikçi Carileri)",
   336: "Diğer Cariler (Personel vb.)",
+  360: "Ödenecek Vergi ve Fonlar (Tevkifat, Stopaj)",
+  391: "Hesaplanan KDV",
   500: "Açılış ve Devir Bakiyeleri",
   600: "Yurt İçi Satışlar (Stok)",
   602: "Diğer Gelirler (Hizmet, Taksitli Satış, Kayıt Tahsilatları)",
   610: "Satıştan İadeler",
   649: "Diğer Olağan Gelirler (Kasaya Elle)",
   689: "Kapatılan Kartlardan Vazgeçilen Alacaklar",
+  760: "Pazarlama, Satış ve Dağıtım Giderleri",
   770: "Genel Giderler ve Alış Faturaları",
 });
 const CASH_ACCOUNT = { cash: "100", bank: "102", card: "108" };
@@ -45,6 +51,16 @@ const opening = note => /^açılış/i.test(String(note || "").trim());
  *   stockMoves: { id, kind, amount, date, pay, method, reason }   (yalnız Kasa'ya/Banka'ya yazanlar; cariye yazanlar
  *               cari hareketinden gelir — iki kez sayılmaz)
  *   chequeEvents: { id, kind: 'collect'|'pay', amount, date, method }
+ *   invoices: { id, kind, date, number, glJson ([{ account, net }] TL kuruş), tryVat, tryWithheld, tryStoppage, tryPayable,
+ *               accountType, party }  (yalnız kesilmiş; taslak ve iptal deftere girmez)
+ *
+ * Fatura (v2.0.15) çok satırlı tek yevmiye maddesidir; cariye yazılan borç/alacak satırı (account_entries, source =
+ * 'invoice') faturanın kendisinden gelir, ikinci kez sayılmaz. Faturanın peşin tahsilat/ödemesi ayrı cari satırıdır
+ * (Kasa ↔ cari), normal tahsilat gibi işlenir.
+ *   satış / SMM      : B 120 ödenecek, B 193 stopaj  ·  A 600 matrah, A 391 (KDV − tevkifat)
+ *   satıştan iade    : B 610 matrah, B 391 (KDV − tevkifat)  ·  A 120 ödenecek
+ *   alış             : B 153/770/760/255 matrah, B 191 KDV  ·  A 360 (tevkifat + stopaj), A 320 ödenecek
+ *   alıştan iade     : B 320 ödenecek, B 360 (tevkifat + stopaj)  ·  A 153/770/… matrah, A 191 KDV
  */
 export function journal(rows) {
   const out = [];
@@ -73,6 +89,8 @@ export function journal(rows) {
       else post(id, row.date, "Çek / Senet", row.note, counter, control, row.amount);
       continue;
     }
+    // Faturanın borç/alacak satırı faturanın maddesinden gelir (yukarıda değil, aşağıda invoices döngüsünde).
+    if (row.source === "invoice" && (row.kind === "debt" || row.kind === "credit")) continue;
     if (row.source === "stock") {
       if (row.kind === "debt") post(id, row.date, "Stok (veresiye satış)", row.note, control, "600", row.amount);
       else post(id, row.date, row.moveReason === "return" ? "Stok (satış iadesi)" : "Stok (açık hesap alım)", row.note, row.moveReason === "return" ? "610" : "153", control, row.amount);
@@ -106,6 +124,59 @@ export function journal(rows) {
     else if (row.reason === "return") post(id, row.date, "Stok (peşin satış iadesi)", row.note, "610", cashAccount(row.method), row.amount);
     else post(id, row.date, "Stok (peşin alım)", row.note, "153", cashAccount(row.method), row.amount);
   }
+  // Çok satırlı madde (kuruş). Borç ve alacak toplamı eşit değilse madde yine yazılır; mizan "dengesiz" der (kapı yakalar).
+  const postLines = (id, date, source, text, lines) => {
+    const kept = lines.filter(line => line.amount > 0).map(line => {
+      const out = { account: line.account, debit: line.side === "debit" ? line.amount : 0, credit: line.side === "credit" ? line.amount : 0 };
+      return PARTY_ACCOUNTS.has(line.account) && party ? { ...out, party } : out;
+    });
+    if (kept.length) out.push({ id, date, source, text, lines: kept });
+  };
+  for (const row of rows.invoices || []) {
+    party = row.party || "";
+    const control = CONTROL[row.accountType] || CONTROL.customer;
+    let groups = [];
+    try {
+      groups = JSON.parse(row.glJson || "[]");
+    } catch {
+      groups = [];
+    }
+    const nets = (Array.isArray(groups) ? groups : []).map(group => ({ account: String(group.account || "600"), amount: Math.round(Number(group.net) || 0) }));
+    const vat = cents(row.tryVat);
+    const withheld = cents(row.tryWithheld);
+    const stoppage = cents(row.tryStoppage);
+    const payable = cents(row.tryPayable);
+    const label = `${row.number || "Taslak"}`;
+    if (row.kind === "sale" || row.kind === "smm") {
+      postLines(`invoice:${row.id}`, row.date, row.kind === "smm" ? "Serbest meslek makbuzu" : "Satış faturası", label, [
+        { account: control, side: "debit", amount: payable },
+        { account: "193", side: "debit", amount: stoppage },
+        ...nets.map(net => ({ ...net, side: "credit" })),
+        { account: "391", side: "credit", amount: vat - withheld },
+      ]);
+    } else if (row.kind === "sale_return") {
+      postLines(`invoice:${row.id}`, row.date, "Satıştan iade faturası", label, [
+        ...nets.map(net => ({ ...net, side: "debit" })),
+        { account: "391", side: "debit", amount: vat - withheld },
+        { account: control, side: "credit", amount: payable },
+      ]);
+    } else if (row.kind === "purchase") {
+      postLines(`invoice:${row.id}`, row.date, "Alış faturası", label, [
+        ...nets.map(net => ({ ...net, side: "debit" })),
+        { account: "191", side: "debit", amount: vat },
+        { account: "360", side: "credit", amount: withheld + stoppage },
+        { account: control, side: "credit", amount: payable },
+      ]);
+    } else if (row.kind === "purchase_return") {
+      postLines(`invoice:${row.id}`, row.date, "Alıştan iade faturası", label, [
+        { account: control, side: "debit", amount: payable },
+        { account: "360", side: "debit", amount: withheld + stoppage },
+        ...nets.map(net => ({ ...net, side: "credit" })),
+        { account: "191", side: "credit", amount: vat },
+      ]);
+    }
+  }
+  party = "";
   for (const row of rows.chequeEvents || []) {
     const id = `cheque:${row.id}`;
     if (row.kind === "collect") post(id, row.date, "Çek / senet tahsili", row.note, cashAccount(row.method), "101", row.amount);

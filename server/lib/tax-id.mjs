@@ -61,3 +61,24 @@ export function partyProblems(party, { profile = "KAGIT", role = "buyer" } = {})
   if (role === "buyer" && profile === "EFATURA" && id.kind === "vkn" && !String(party.taxOffice || "").trim()) problems.push(`${who}: e-Fatura'da tüzel alıcının vergi dairesi zorunludur.`);
   return problems;
 }
+
+// IBAN (ISO 13616): ülke kodu + 2 denetim hanesi + hesap; mod 97 = 1. Türkiye'de 26 karakter (TR + 24 hane).
+export const normalizeIban = value => String(value ?? "").replace(/\s+/g, "").toUpperCase();
+export function isValidIban(value) {
+  const v = normalizeIban(value);
+  if (!/^[A-Z]{2}\d{2}[A-Z0-9]{10,30}$/.test(v)) return false;
+  if (v.startsWith("TR") && !/^TR\d{24}$/.test(v)) return false;
+  const moved = `${v.slice(4)}${v.slice(0, 4)}`.replace(/[A-Z]/g, letter => String(letter.charCodeAt(0) - 55));
+  let rest = 0;
+  for (const digit of moved) rest = (rest * 10 + Number(digit)) % 97;
+  return rest === 1;
+}
+export const ibanText = value => normalizeIban(value).replace(/(.{4})/g, "$1 ").trim();
+
+// Gerçek kişinin adı ve soyadı (e-Belgede Person/FirstName, FamilyName): kartta ayrı yazılmadıysa tam addan çıkarılır —
+// son sözcük soyadı, öncekiler ad ("Ayşe Nur Kaya" → "Ayşe Nur" + "Kaya").
+export function splitPersonName(name) {
+  const words = String(name ?? "").replace(/\s+/g, " ").trim().split(" ").filter(Boolean);
+  if (words.length < 2) return { firstName: words[0] || "", familyName: "" };
+  return { firstName: words.slice(0, -1).join(" "), familyName: words[words.length - 1] };
+}

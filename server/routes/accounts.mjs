@@ -16,7 +16,7 @@ import { tablePdf, tl } from "../lib/report-pdf.mjs";
 import { readSheetMatrices } from "../lib/sheets.mjs";
 import { inferRolesByValues, findHeaderRow, sanitizeCell, validateRows } from "../lib/import-gate.mjs";
 import { buildXlsx } from "../lib/xlsx-write.mjs";
-import { classifyTaxId, isValidMersis } from "../lib/tax-id.mjs";
+import { ANONYMOUS_TCKN, classifyTaxId, isValidIban, isValidMersis, normalizeIban } from "../lib/tax-id.mjs";
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 const validDate = value => DATE.test(value) && !Number.isNaN(new Date(value).getTime());
@@ -56,8 +56,8 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
   // ---------- Okuma ----------
   const ACCOUNT_SQL = `SELECT a.id, a.ref_no AS refNo, a.type, a.name, a.phone, a.email, a.address, a.registered_on AS registeredOn, a.group_id AS groupId, a.subgroup_id AS subgroupId,
       a.note, a.fields_json AS fieldsJson, a.case_key AS caseKey, a.case_source AS caseSource, a.case_title AS caseTitle, a.status,
-      a.tax_no AS taxNo, a.tax_office AS taxOffice, a.mersis_no AS mersisNo, a.party_kind AS partyKind, a.city, a.district, a.postal_code AS postalCode, a.country,
-      a.e_invoice AS eInvoice, a.e_alias AS eAlias,
+      a.tax_no AS taxNo, a.tax_office AS taxOffice, a.mersis_no AS mersisNo, a.trade_registry AS tradeRegistry, a.party_kind AS partyKind, a.first_name AS firstName, a.family_name AS familyName,
+      a.city, a.district, a.postal_code AS postalCode, a.country, a.website, a.iban, a.due_days AS dueDays, a.e_invoice AS eInvoice, a.e_alias AS eAlias, a.e_profile AS eProfile,
       a.created_by AS createdBy, a.created_at AS createdAt, a.updated_at AS updatedAt, COALESCE(u.display_name, '') AS actorName,
       COALESCE(g.name, '') AS groupName, COALESCE(s.name, '') AS subgroupName
     FROM accounts a LEFT JOIN users u ON u.id = a.created_by LEFT JOIN plan_groups g ON g.id = a.group_id LEFT JOIN plan_groups s ON s.id = a.subgroup_id`;
@@ -150,8 +150,9 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
       if (subgroup && row.subgroupId !== subgroup) continue;
       if (needle) {
         // Ek alanlar ham JSON metninde aranır (200 bin caride her satırı ayrıştırmadan); ad, not, adres, grup ayrıca.
-        const hay = `${row.name} ${row.note} ${row.address} ${row.email} ${row.groupName} ${row.subgroupName} ${row.caseTitle} ${row.fieldsJson}`.toLocaleLowerCase("tr-TR");
-        const phoneHit = numbers.length >= 3 && digits(row.phone).includes(numbers);
+        const hay = `${row.name} ${row.note} ${row.address} ${row.city} ${row.district} ${row.taxOffice} ${row.email} ${row.groupName} ${row.subgroupName} ${row.caseTitle} ${row.fieldsJson}`.toLocaleLowerCase("tr-TR");
+        // v2.0.15: VKN/TCKN ile de bulunur (faturada cari çoğu zaman vergi numarasıyla aranır).
+        const phoneHit = numbers.length >= 3 && (digits(row.phone).includes(numbers) || (numbers.length >= 5 && String(row.taxNo || "").includes(numbers)));
         const refHit = String(row.refNo || "").toLocaleLowerCase("tr-TR") === needle;
         if (!hay.includes(needle) && !phoneHit && !refHit) continue;
       }
@@ -221,6 +222,14 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
         caseSource: row.caseSource || "",
         caseTitle: row.caseTitle || "",
         status: row.status,
+        // v2.0.15: fatura kimliği (listede VKN/TCKN ile arama, fatura ekranında cari seçimi).
+        taxNo: row.taxNo || "",
+        taxOffice: row.taxOffice || "",
+        partyKind: row.partyKind || "",
+        city: row.city || "",
+        district: row.district || "",
+        eInvoice: Number(row.eInvoice) === 1,
+        dueDays: Number(row.dueDays) || 0,
         debit,
         credit,
         balance: bal,
@@ -318,37 +327,62 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
       ...groups,
     };
   };
-  // v2.0.15: vergi kimliği ve e-Belge adresi (fatura). Kimlik yazıldıysa geçerli olmalı; tür (tüzel/gerçek) yazılmadıysa
-  // kimliğin uzunluğundan çıkarılır (10 hane VKN → tüzel, 11 hane TCKN → gerçek kişi).
+  // v2.0.15: carinin fatura kimliği (UBL-TR Party). Kimlik yazıldıysa geçerli olmalı; tür (tüzel/gerçek) seçilmediyse
+  // kimliğin uzunluğundan çıkarılır (10 hane VKN → tüzel, 11 hane TCKN → gerçek kişi). Gerçek kişide ad ve soyad e-Belgede
+  // ayrı yazılır: kartta boşsa tam addan önerilir (son sözcük soyadı). IBAN ve MERSİS biçim/denetim hanesiyle sınanır.
+  // e-Fatura mükellefi işaretli caride VKN/TCKN zorunludur (e-Fatura ancak kimlikle gönderilir).
   function taxInput(body, previous = null) {
     const pick = (key, max, label) => limited(body[key] ?? previous?.[key] ?? "", max, label);
     const taxNo = String(body.taxNo ?? previous?.taxNo ?? "").replace(/\s+/g, "");
-    let partyKind = ["company", "person"].includes(text(body.partyKind)) ? text(body.partyKind) : previous?.partyKind || "";
+    let partyKind = ["company", "person"].includes(text(body.partyKind)) ? text(body.partyKind) : body.partyKind === "" ? "" : previous?.partyKind || "";
     if (taxNo) {
       const id = classifyTaxId(taxNo, { allowAnonymous: true });
-      if (!id.ok) throw new HttpError(400, id.kind === "vkn" ? "Vergi kimlik numarası (VKN) geçersiz: denetim hanesi tutmuyor." : id.kind === "tckn" ? "TC kimlik numarası geçersiz: denetim haneleri tutmuyor." : "VKN 10, TCKN 11 haneli olmalı.", { code: "tax-id-invalid" });
+      if (!id.ok) throw new HttpError(400, id.kind === "vkn" ? "Vergi kimlik numarası (VKN) geçersiz: denetim hanesi tutmuyor." : id.kind === "tckn" ? "TC kimlik numarası geçersiz: denetim haneleri tutmuyor." : "VKN 10, TCKN 11 haneli olmalı.", { code: "tax-id-invalid", field: "taxNo" });
       if (!partyKind) partyKind = id.kind === "vkn" ? "company" : "person";
+      if (partyKind === "company" && id.kind === "tckn" && taxNo !== ANONYMOUS_TCKN) throw new HttpError(400, "Tüzel kişide (şirket) 10 haneli vergi kimlik numarası (VKN) yazılır.", { code: "tax-id-invalid", field: "taxNo" });
     }
     const mersisNo = String(body.mersisNo ?? previous?.mersisNo ?? "").replace(/\s+/g, "");
-    if (mersisNo && !isValidMersis(mersisNo)) throw new HttpError(400, "MERSİS numarası 16 haneli olmalı.", { code: "mersis-invalid" });
+    if (mersisNo && !isValidMersis(mersisNo)) throw new HttpError(400, "MERSİS numarası 16 haneli olmalı.", { code: "mersis-invalid", field: "mersisNo" });
+    const iban = normalizeIban(body.iban ?? previous?.iban ?? "");
+    if (iban && !isValidIban(iban)) throw new HttpError(400, "IBAN geçersiz: TR ile başlayan 26 karakter olmalı ve denetim haneleri tutmalı.", { code: "iban-invalid", field: "iban" });
     const eInvoice = body.eInvoice === undefined ? Number(previous?.eInvoice || 0) : body.eInvoice === true || body.eInvoice === 1 || body.eInvoice === "1" || body.eInvoice === "true" ? 1 : 0;
+    if (eInvoice && !taxNo) throw new HttpError(400, "e-Fatura mükellefi carinin VKN ya da TCKN'si yazılmalı.", { code: "tax-id-required", field: "taxNo" });
+    const dueRaw = body.dueDays ?? previous?.dueDays ?? 0;
+    const dueDays = dueRaw === "" || dueRaw === null ? 0 : Math.trunc(Number(dueRaw));
+    if (!Number.isFinite(dueDays) || dueDays < 0 || dueDays > 3650) throw new HttpError(400, "Vade günü 0 ile 3650 arasında olmalı.", { code: "due-days-invalid", field: "dueDays" });
+    const eProfile = ["TEMELFATURA", "TICARIFATURA"].includes(text(body.eProfile ?? previous?.eProfile)) ? text(body.eProfile ?? previous?.eProfile) : "";
+    let firstName = pick("firstName", 80, "Adı");
+    let familyName = pick("familyName", 80, "Soyadı");
+    if (partyKind !== "person") firstName = familyName = "";
     return {
       taxNo,
       taxOffice: pick("taxOffice", 120, "Vergi Dairesi"),
       mersisNo,
+      tradeRegistry: pick("tradeRegistry", 40, "Ticaret Sicil No"),
       partyKind,
+      firstName,
+      familyName,
       city: pick("city", 80, "İl"),
       district: pick("district", 80, "İlçe"),
       postalCode: pick("postalCode", 10, "Posta Kodu"),
       country: pick("country", 80, "Ülke"),
+      website: pick("website", 200, "Web Sitesi"),
+      iban,
+      dueDays,
       eInvoice,
       eAlias: pick("eAlias", 160, "e-Fatura Posta Kutusu"),
+      eProfile,
     };
   }
+  const TAX_COLUMNS = [
+    ["tax_no", "taxNo"], ["tax_office", "taxOffice"], ["mersis_no", "mersisNo"], ["trade_registry", "tradeRegistry"], ["party_kind", "partyKind"], ["first_name", "firstName"], ["family_name", "familyName"],
+    ["city", "city"], ["district", "district"], ["postal_code", "postalCode"], ["country", "country"], ["website", "website"], ["iban", "iban"], ["due_days", "dueDays"], ["e_invoice", "eInvoice"], ["e_alias", "eAlias"], ["e_profile", "eProfile"],
+  ];
   const writeTax = (id, input) =>
     store.run(
-      "UPDATE accounts SET tax_no = ?, tax_office = ?, mersis_no = ?, party_kind = ?, city = ?, district = ?, postal_code = ?, country = ?, e_invoice = ?, e_alias = ? WHERE id = ?",
-      input.taxNo || "", input.taxOffice || "", input.mersisNo || "", input.partyKind || "", input.city || "", input.district || "", input.postalCode || "", input.country || "", input.eInvoice ? 1 : 0, input.eAlias || "", id,
+      `UPDATE accounts SET ${TAX_COLUMNS.map(([column]) => `${column} = ?`).join(", ")} WHERE id = ?`,
+      ...TAX_COLUMNS.map(([column, key]) => (["due_days", "e_invoice"].includes(column) ? Math.trunc(Number(input[key]) || 0) : String(input[key] ?? ""))),
+      id,
     );
   const nextRef = () => {
     let max = 0;
@@ -698,7 +732,7 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
       const found = Object.entries(roles).find(([, value]) => value === role);
       return found ? Number(found[0]) : -1;
     };
-    const col = Object.fromEntries(["seq", "name", "phone", "email", "address", "registered", "group", "subgroup", "balance", "type", "note"].map(role => [role, columnOf(role)]));
+    const col = Object.fromEntries(["seq", "name", "phone", "email", "address", "city", "district", "taxNo", "taxOffice", "registered", "group", "subgroup", "balance", "type", "note"].map(role => [role, columnOf(role)]));
     const extraColumns = Object.entries(roles).filter(([, value]) => value === "extra").map(([index]) => Number(index)).filter(index => headers[index]);
     if (col.name < 0) throw new HttpError(400, "Ad Soyad / Unvan kolonunu seçin.");
     const mode = body.mode === "update" ? "update" : "skip";
@@ -711,7 +745,18 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     const source = currentSource();
     const cell = (row, index) => (index >= 0 ? sanitizeCell(row[index]) : "");
     const rows = matrix.slice(headerAt + 1, headerAt + 1 + MAX_IMPORT);
-    const report = { created: 0, updated: 0, skipped: [], groups: 0, balances: 0, linked: 0, renumbered: 0, truncated: Math.max(0, matrix.length - headerAt - 1 - MAX_IMPORT) };
+    const report = { created: 0, updated: 0, skipped: [], groups: 0, balances: 0, linked: 0, renumbered: 0, taxInvalid: [], truncated: Math.max(0, matrix.length - headerAt - 1 - MAX_IMPORT) };
+    // v2.0.15: vergi kimliği kolonu — geçerli VKN/TCKN karta yazılır; denetim hanesi tutmayan yazılmaz, satır numarasıyla raporlanır.
+    const taxOf = (row, index) => {
+      const raw = cell(row, col.taxNo).replace(/\s+/g, "").replace(/^TR/i, "");
+      if (!raw) return { taxNo: "", partyKind: "" };
+      const id = classifyTaxId(raw, { allowAnonymous: true });
+      if (!id.ok) {
+        if (report.taxInvalid.length < 500) report.taxInvalid.push({ row: headerAt + index + 2, value: raw.slice(0, 20) });
+        return { taxNo: "", partyKind: "" };
+      }
+      return { taxNo: id.value, partyKind: id.kind === "vkn" ? "company" : "person" };
+    };
     let skippedTotal = 0;
     // Atlanan satırların hepsi listelenmez (100 bin satırda yanıt şişmesin); sayı ve nedenler tam gelir.
     const skip = (index, reason) => {
@@ -750,6 +795,7 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
           caseSource: caseKey ? source : "",
           caseTitle: caseKey ? String(caseTitles[index] ?? name).slice(0, 200) : "",
         };
+        const tax = { ...taxOf(row, index), taxOffice: cell(row, col.taxOffice).slice(0, 120), city: cell(row, col.city).slice(0, 80), district: cell(row, col.district).slice(0, 80) };
         const matched = matchExisting(person);
         if (matched && mode === "skip") return skip(index, "Bu cari zaten var");
         const groupId = person.groupName ? ensure(person.groupName) : null;
@@ -769,6 +815,9 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
             groupId || previous.groupId, subgroupId || previous.subgroupId, JSON.stringify(fieldsInput(merged)), person.caseKey || previous.caseKey, person.caseKey ? person.caseSource : previous.caseSource, person.caseKey ? person.caseTitle : previous.caseTitle, user.id, now(), matched,
           );
           plans()?.followAccount?.(matched, { name: previous.name, phone: previous.phone }, { name: person.name, phone: person.phone || previous.phone });
+          // Vergi bilgisi: dolu gelen yazılır, boş gelen eskisi kalır.
+          const keep = (value, old) => value || old || "";
+          writeTax(matched, { ...previous, taxNo: keep(tax.taxNo, previous.taxNo), partyKind: tax.taxNo ? tax.partyKind : previous.partyKind, taxOffice: keep(tax.taxOffice, previous.taxOffice), city: keep(tax.city, previous.city), district: keep(tax.district, previous.district) });
           report.updated += 1;
           return;
         }
@@ -779,7 +828,7 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
           do wanted = String((autoRef += 1));
           while (!freeRef(wanted));
         }
-        const id = insertAccount(user, { ...person, refNo: wanted, groupId, subgroupId });
+        const id = insertAccount(user, { ...person, ...tax, refNo: wanted, groupId, subgroupId });
         if (person.caseKey) report.linked += 1;
         const opening = parseAmount(cell(row, col.balance));
         if (Number.isFinite(opening) && Math.abs(opening) > EPS) {

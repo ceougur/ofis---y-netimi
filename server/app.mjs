@@ -41,6 +41,7 @@ import { registerPlanTransfer } from "./routes/plan-transfer.mjs";
 import { registerAccountRoutes } from "./routes/accounts.mjs";
 import { registerStockRoutes } from "./routes/stock.mjs";
 import { registerChequeRoutes } from "./routes/cheques.mjs";
+import { registerInvoiceRoutes } from "./routes/invoices.mjs";
 import { registerOverviewRoutes } from "./routes/overview.mjs";
 import { registerReportCenter } from "./routes/report-center.mjs";
 import { registerDocumentRoutes } from "./routes/documents.mjs";
@@ -168,6 +169,8 @@ export function createApp(overrides = {}) {
   context.stock = registerStockRoutes(router, { ...context, accounts: () => context.accounts, plans: () => context.plans });
   // Çek / Senet (v2.0.7): cari ve taksit defterine bağlı; Kasa tahsil/ödeme olaylarını okur.
   context.cheques = registerChequeRoutes(router, { ...context, accounts: () => context.accounts, plans: () => context.plans });
+  // Fatura (v2.0.15): belge birincil kayıt; stok, cari, Kasa (peşin), çek/senet ve taksit (vadeli) aynı işlemde yazılır.
+  context.invoices = registerInvoiceRoutes(router, { ...context, accounts: () => context.accounts, stock: () => context.stock, plans: () => context.plans, cheques: () => context.cheques });
   // Ana Defter (v2.0.13): alt defterlerden türetilen çift yönlü yevmiye, hesap planı mizanı ve mutabakat kapısı.
   context.ledger = registerLedgerRoutes(router, { ...context, cash: () => context.cash, accounts: () => context.accounts, integrity: () => context.integrity });
   // Mutabakat kapısı (v2.0.13): para taşıyan her işlem COMMIT'ten önce alt defter ↔ ana defter denetiminden geçer;

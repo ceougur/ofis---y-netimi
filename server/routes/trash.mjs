@@ -133,7 +133,7 @@ export function registerTrashRoutes(router, { store, auth, audit, events, datase
       });
     }
     // Silinen taksit kartları (v2.0.4): taksitleri ve hareketleri yerinde durur; geri yüklenince Kasa'ya döner.
-    for (const item of store.all("SELECT p.id, p.name, p.total, p.deleted_at AS deletedAt, COALESCE(u.display_name, '') AS actorName, COALESCE(g.name, '') AS groupName FROM plans p LEFT JOIN users u ON u.id = p.deleted_by LEFT JOIN plan_groups g ON g.id = p.group_id WHERE p.deleted_at IS NOT NULL")) {
+    for (const item of store.all("SELECT p.id, p.name, p.total, p.deleted_at AS deletedAt, COALESCE(u.display_name, '') AS actorName, COALESCE(g.name, '') AS groupName FROM plans p LEFT JOIN users u ON u.id = p.deleted_by LEFT JOIN plan_groups g ON g.id = p.group_id WHERE p.deleted_at IS NOT NULL AND p.invoice_id = ''")) {
       items.push({
         id: `plan:${item.id}`,
         kind: "plan",

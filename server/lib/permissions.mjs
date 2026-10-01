@@ -51,9 +51,11 @@ export const PERMISSIONS = Object.freeze({
   "cheques.view": ["admin", "avukat", "muhasebe"],
   "cheques.manage": ["admin", "avukat", "muhasebe"],
   // Fatura (v2.0.15): satış/alış faturası ve iadeleri stok, cari, Kasa, taksit ve çek/senede aynı anda yazar; kasa
-  // yetkisiyle aynı hesaplar. Fatura ayarları (firma bilgisi, seri, e-dönüşüm, entegratör) system.manage'dedir.
+  // yetkisiyle aynı hesaplar. Fatura ayarları (firma bilgisi, seri ve numara, e-dönüşüm, entegratör, varsayılanlar)
+  // yönetici ve muhasebededir.
   "invoices.view": ["admin", "avukat", "muhasebe"],
   "invoices.manage": ["admin", "avukat", "muhasebe"],
+  "invoices.settings": ["admin", "muhasebe"],
   // Finans raporları (v2.0.7'de "ANLIK DURUM ve raporlar"): Raporlar penceresi — mizan, cari ekstre, nakit akış, tüm
   // raporlar. v2.0.10'dan beri ana ekrandaki ANLIK DURUM kartını AÇMAZ (overview.card); kişiye verilebilir.
   "overview.view": ["admin"],
@@ -153,6 +155,7 @@ export const PERMISSION_GROUPS = Object.freeze([
     items: [
       ["invoices.view", "Faturaları Görme", "Satış, alış ve iade faturaları; PDF ve e-Belge (UBL-TR XML)."],
       ["invoices.manage", "Fatura Kesme ve İptal", "Fatura keser, iade alır/verir, iptal eder; stok, cari, Kasa, taksit ve çek/senede yazar."],
+      ["invoices.settings", "Fatura Ayarları", "Firma bilgisi, seri ve numaralar, e-Fatura / e-Arşiv, entegratör ve varsayılanlar."],
     ],
   },
   {

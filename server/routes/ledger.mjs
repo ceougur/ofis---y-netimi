@@ -11,7 +11,7 @@ const DATE = /^\d{4}-\d{2}-\d{2}$/;
 export function registerLedgerRoutes(router, { store, auth, audit = () => {}, period = null, cash = () => null, accounts = () => null, integrity = () => null }) {
   const has = table => Boolean(store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = ?", table));
   function rows() {
-    const out = { payments: [], cashEntries: [], accountEntries: [], plans: [], planEntries: [], stockMoves: [], chequeEvents: [] };
+    const out = { payments: [], cashEntries: [], accountEntries: [], plans: [], planEntries: [], stockMoves: [], chequeEvents: [], invoices: [] };
     out.payments = store.all("SELECT id, amount, date, note, method FROM payments");
     out.cashEntries = store.all("SELECT id, kind, amount, date, description, method FROM cash_entries");
     if (has("accounts")) {
@@ -34,6 +34,14 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, pe
       out.planEntries = store.all(
         `SELECT e.id, e.plan_id AS planId, e.kind, e.amount, e.date, e.note, e.method, e.cheque_id AS chequeId, e.opening, COALESCE(a.type, '') AS accountType, COALESCE(a.id, '') AS party
          FROM plan_entries e JOIN plans p ON p.id = e.plan_id AND p.deleted_at IS NULL LEFT JOIN accounts a ON a.id = p.account_id AND a.deleted_at IS NULL`,
+      );
+    }
+    // Fatura (v2.0.15): yalnız kesilmiş olanlar (taslak ve iptal deftere girmez). Carisi silinmiş fatura olamaz (silme engelli).
+    if (has("invoices")) {
+      out.invoices = store.all(
+        `SELECT i.id, i.kind, i.issue_date AS date, i.number, i.gl_json AS glJson, i.try_vat AS tryVat, i.try_withheld AS tryWithheld, i.try_stoppage AS tryStoppage,
+                i.try_payable AS tryPayable, a.type AS accountType, a.id AS party
+         FROM invoices i JOIN accounts a ON a.id = i.account_id AND a.deleted_at IS NULL WHERE i.status = 'issued'`,
       );
     }
     if (has("stock_moves")) out.stockMoves = store.all("SELECT id, kind, amount, date, note, pay, method, reason FROM stock_moves WHERE pay = 'cash' AND amount > 0");
@@ -101,6 +109,24 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, pe
         open = roundMoney(open + total - (Number(plan.paid) || 0) - (plan.status === "closed" ? Math.max(0, left) : 0));
       }
       out[127] = open;
+    }
+    // Vergi hesapları (v2.0.15) — fatura alt defterinin kendi toplamları: 191 İndirilecek KDV (alış − alıştan iade), 391
+    // Hesaplanan KDV (satış − satıştan iade; tevkifat düşülmüş), 360 tevkifat ve stopaj (alıcı olarak kestiklerimiz),
+    // 193 stopaj (müşterinin bizden kestiği). Borç bakiyesi artı.
+    if (has("invoices")) {
+      const sums = store.get(
+        `SELECT COALESCE(SUM(CASE kind WHEN 'purchase' THEN CAST(ROUND(try_vat * 100) AS INTEGER) WHEN 'purchase_return' THEN -CAST(ROUND(try_vat * 100) AS INTEGER) END), 0) AS v191,
+                COALESCE(SUM(CASE WHEN kind IN ('sale', 'smm') THEN -(CAST(ROUND(try_vat * 100) AS INTEGER) - CAST(ROUND(try_withheld * 100) AS INTEGER))
+                                  WHEN kind = 'sale_return' THEN CAST(ROUND(try_vat * 100) AS INTEGER) - CAST(ROUND(try_withheld * 100) AS INTEGER) END), 0) AS v391,
+                COALESCE(SUM(CASE kind WHEN 'purchase' THEN -(CAST(ROUND(try_withheld * 100) AS INTEGER) + CAST(ROUND(try_stoppage * 100) AS INTEGER))
+                                       WHEN 'purchase_return' THEN CAST(ROUND(try_withheld * 100) AS INTEGER) + CAST(ROUND(try_stoppage * 100) AS INTEGER) END), 0) AS v360,
+                COALESCE(SUM(CASE WHEN kind IN ('sale', 'smm') THEN CAST(ROUND(try_stoppage * 100) AS INTEGER) END), 0) AS v193
+         FROM invoices i WHERE i.status = 'issued' AND EXISTS (SELECT 1 FROM accounts a WHERE a.id = i.account_id AND a.deleted_at IS NULL)`,
+      );
+      out[191] = roundMoney(sums.v191 / 100);
+      out[391] = roundMoney(sums.v391 / 100);
+      out[360] = roundMoney(sums.v360 / 100);
+      out[193] = roundMoney(sums.v193 / 100);
     }
     return out;
   }

@@ -72,8 +72,11 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
   const movesOf = itemId =>
     store.all(
       `SELECT m.id, m.kind, m.qty, m.unit_price AS unitPrice, m.amount, m.date, m.note, m.pay, m.reason, m.method, m.account_id AS accountId, COALESCE(a.name, '') AS accountName,
+              m.invoice_id AS invoiceId, COALESCE(inv.number, '') AS invoiceNumber, COALESCE(inv.kind, '') AS invoiceKind, COALESCE(ia.name, '') AS invoiceAccountName,
               m.created_by AS createdBy, m.created_at AS createdAt, m.updated_at AS updatedAt, COALESCE(u.display_name, '') AS actorName
-       FROM stock_moves m LEFT JOIN users u ON u.id = m.created_by LEFT JOIN accounts a ON a.id = m.account_id WHERE m.item_id = ? ORDER BY m.date, m.created_at, m.rowid`,
+       FROM stock_moves m LEFT JOIN users u ON u.id = m.created_by LEFT JOIN accounts a ON a.id = m.account_id
+         LEFT JOIN invoices inv ON inv.id = m.invoice_id AND m.invoice_id <> '' LEFT JOIN accounts ia ON ia.id = inv.account_id
+       WHERE m.item_id = ? ORDER BY m.date, m.created_at, m.rowid`,
       itemId,
     );
   function detail(id, user) {
@@ -82,7 +85,8 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
     let running = 0;
     const moves = movesOf(item.id).map(move => {
       running = roundQty(running + (move.kind === "in" ? move.qty : -move.qty));
-      return { ...move, balance: running, editable: manage || (move.createdBy === user.id && move.pay === "none") };
+      // Faturadan gelen hareket faturanın parçasıdır: yalnız faturadan (iptal / iade) değişir.
+      return { ...move, balance: running, editable: !move.invoiceId && (manage || (move.createdBy === user.id && move.pay === "none")) };
     });
     const level = stockLevel(item, moves);
     const sums = moves.reduce((acc, move) => ({ inAmount: acc.inAmount + (move.kind === "in" ? move.amount : 0), outAmount: acc.outAmount + (move.kind === "out" ? move.amount : 0) }), { inAmount: 0, outAmount: 0 });
@@ -275,8 +279,8 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
   function insertMove(user, itemId, move) {
     const id = newId("smove");
     store.run(
-      "INSERT INTO stock_moves (id, item_id, kind, qty, unit_price, amount, date, note, pay, reason, method, account_id, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-      id, itemId, move.kind, move.qty, move.unitPrice, move.amount, move.date, move.note, move.pay, move.reason || "", move.pay === "cash" ? methodOf(move.method) : "cash", move.accountId, user.id, now(),
+      "INSERT INTO stock_moves (id, item_id, kind, qty, unit_price, amount, date, note, pay, reason, method, account_id, invoice_id, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+      id, itemId, move.kind, move.qty, move.unitPrice, move.amount, move.date, move.note, move.pay, move.reason || "", move.pay === "cash" ? methodOf(move.method) : "cash", move.accountId || "", move.invoiceId || "", user.id, now(),
     );
     return id;
   }
@@ -360,13 +364,14 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
     ok(res, { ...detail(item.id, user), moveId: id, trimmedPlans: trimmed });
   });
   const moveOf = (itemId, moveId) => {
-    const move = store.get("SELECT id, kind, qty, unit_price AS unitPrice, amount, date, note, pay, reason, method, account_id AS accountId, created_by AS createdBy, created_at AS createdAt FROM stock_moves WHERE item_id = ? AND id = ?", itemId, limited(moveId, 120, "Hareket"));
+    const move = store.get("SELECT id, kind, qty, unit_price AS unitPrice, amount, date, note, pay, reason, method, account_id AS accountId, invoice_id AS invoiceId, created_by AS createdBy, created_at AS createdAt FROM stock_moves WHERE item_id = ? AND id = ?", itemId, limited(moveId, 120, "Hareket"));
     if (!move) throw new HttpError(404, "Stok hareketi bulunamadı. Başka biri silmiş olabilir.");
     return move;
   };
   // Kasa'ya etkisi: peşin satış Kasa'ya giriş, peşin alım ve nakit iade Kasa'dan çıkış (düzeltme/silme koruması için).
   const cashSide = move => (move && move.pay === "cash" && Number(move.amount) > 0 ? { kind: move.kind === "out" ? "in" : "out", amount: move.amount, method: move.method || "cash", date: move.date } : null);
   const requireMoveRight = (user, move) => {
+    if (move.invoiceId) throw new HttpError(409, "Bu hareket bir faturadan geldi; Fatura ekranından iptal edin ya da iade faturası kesin.", { code: "invoice-linked", invoiceId: move.invoiceId });
     if (canUser(user, "stock.manage")) return;
     if (move.createdBy !== user.id || move.pay !== "none") throw new HttpError(403, "Bu hareketi yalnızca yönetici, uzman ve muhasebe değiştirebilir.");
   };
@@ -419,7 +424,7 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
       subtitle: [item.code ? `Kod ${item.code}` : "", item.category, `Birim: ${item.unit}`].filter(Boolean).join(" · "),
       headers: ["Tarih", "İşlem", "Açıklama", "Giriş", "Çıkış", "Kalan", "Birim Fiyat", "Tutar", "Ödeme"],
       types: ["text", "text", "text", "text", "text", "text", "money", "money", "text"],
-      rows: item.moves.map(move => [dayText(move.date), move.reason === "return" ? "İade" : move.kind === "in" ? "Giriş" : "Çıkış", move.note || "", move.kind === "in" ? qtyText(move.qty) : "", move.kind === "out" ? qtyText(move.qty) : "", qtyText(move.balance), move.unitPrice ? tl(move.unitPrice) : "", move.amount ? tl(move.amount) : "", payText(move)]),
+      rows: item.moves.map(move => [dayText(move.date), move.reason === "return" ? "Satıştan İade" : move.reason === "preturn" ? "Alıştan İade" : move.kind === "in" ? "Giriş" : "Çıkış", move.note || "", move.kind === "in" ? qtyText(move.qty) : "", move.kind === "out" ? qtyText(move.qty) : "", qtyText(move.balance), move.unitPrice ? tl(move.unitPrice) : "", move.amount ? tl(move.amount) : "", payText(move)]),
       summary: [["Mevcut", `${qtyText(item.qty)} ${item.unit}`], ["Toplam Giriş", `${qtyText(item.qtyIn)} ${item.unit}`], ["Toplam Çıkış", `${qtyText(item.qtyOut)} ${item.unit}`], ["Değer", tl(item.value)]],
       officeName: office(),
       userName: user.display_name || user.username || "",
@@ -530,6 +535,48 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
         // Alım Kasa'dan gider: "Stok ödemesi" (v2.0.8 adı; önceden "Stok alımı").
         description: `${reason === "return" ? "Satış iadesi" : moveKind === "in" ? "Stok ödemesi (alım)" : "Stok satışı"} · ${row.itemName} ${qtyText(qty)} ${unit}${note ? ` · ${note}` : ""}`,
       }));
+  // v2.0.15: faturanın stoklu kalemleri. Hareket faturaya bağlıdır (invoice_id); para faturadan yazılır (pay = 'none').
+  // reason: '' (alış girişi / satış çıkışı), 'return' (satıştan iade: giriş), 'preturn' (alıştan iade: çıkış).
+  // Alışta ürünün birim fiyatı (stok değeri ve maliyet) faturanın iskontolu TL birim maliyetiyle güncellenir.
+  const invoiceStock = {
+    itemFor(itemId) {
+      const item = store.get(`${ITEM_SQL} WHERE i.id = ? AND i.deleted_at IS NULL`, String(itemId || ""));
+      if (!item) throw new HttpError(400, "Faturadaki ürün stokta bulunamadı; silinmiş olabilir.", { code: "item-missing" });
+      return item;
+    },
+    available(itemId, exceptInvoiceId = "") {
+      const item = this.itemFor(itemId);
+      const moves = movesOf(item.id).filter(move => !exceptInvoiceId || move.invoiceId !== exceptInvoiceId);
+      return stockLevel(item, moves).qty;
+    },
+    add(user, { itemId, kind, qty, unitPrice, amount, date, note, reason = "", invoiceId, force = false, unitCost = 0 }) {
+      const item = this.itemFor(itemId);
+      if (item.kind === "service") return "";
+      const move = { kind, qty: roundQty(qty), unitPrice, amount: roundMoney(amount), date, note: String(note || "").slice(0, 300), pay: "none", reason, accountId: "", invoiceId };
+      if (kind === "out" && !force) {
+        const available = stockLevel(item, movesOf(item.id)).qty;
+        if (move.qty > available + 1e-9) throw new HttpError(409, `“${item.name}” stokta ${qtyText(available)} ${item.unit} var; faturadaki ${qtyText(move.qty)} ${item.unit} stoğu eksiye düşürür.`, { code: "stock-negative", available, itemId: item.id, itemName: item.name });
+      }
+      const id = insertMove(user, item.id, move);
+      if (kind === "in" && reason === "" && unitCost > 0) store.run("UPDATE stock_items SET unit_price = ?, updated_at = ? WHERE id = ?", Math.round(unitCost * 10000) / 10000, now(), item.id);
+      return id;
+    },
+    // Fatura iptalinde: faturanın hareketleri silinir. Girişin silinmesi stoğu eksiye düşürecekse (mal satılmış) sorulur.
+    removeFor(invoiceId, { force = false } = {}) {
+      const moves = store.all("SELECT id, item_id AS itemId, kind, qty FROM stock_moves WHERE invoice_id = ?", invoiceId);
+      if (!force) {
+        for (const move of moves.filter(row => row.kind === "in")) {
+          const item = store.get(`${ITEM_SQL} WHERE i.id = ?`, move.itemId);
+          if (!item || item.kind === "service") continue;
+          const left = stockLevel(item, movesOf(item.id).filter(row => row.invoiceId !== invoiceId)).qty;
+          if (left < -1e-9) throw new HttpError(409, `“${item.name}” bu faturayla girdi ve bir kısmı çıktı; iptal stoğu ${qtyText(left)} ${item.unit} yapar.`, { code: "stock-negative", itemId: item.id, itemName: item.name, available: left });
+        }
+      }
+      store.run("DELETE FROM stock_moves WHERE invoice_id = ?", invoiceId);
+      return [...new Set(moves.map(move => move.itemId))];
+    },
+    publish: (user, itemIds) => itemIds.forEach(itemId => changed(user, { itemId })),
+  };
   // Sol menüdeki rozet: kritik seviyedeki ya da tükenen (kritik seviyesi tanımlı) ürün sayısı ve adları.
   function alerts() {
     const data = list({ role: "admin" }, { state: "low" });
@@ -584,5 +631,5 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
     return `${row.m}|${row.i}`;
   };
 
-  return { cashEntries, cashSource, alerts, deletedList, restoreDeleted, restoreMove, fingerprint, list, detail };
+  return { cashEntries, cashSource, alerts, deletedList, restoreDeleted, restoreMove, fingerprint, list, detail, invoiceStock, itemRow };
 }

@@ -882,46 +882,65 @@ export const MIGRATIONS = [
     name: "v2.0.15 fatura modülü (satış, alış, iadeler; e-Fatura / e-Arşiv / UBL-TR), carinin vergi kimliği ve adresi",
     up(store) {
       // Yalnız ekleyici: mevcut hiçbir satır değişmez; eski sürüm aynı veritabanıyla açılır (yeni tabloları okumaz).
-      // Carinin vergi kimliği ve e-Belge adresi: VKN (10) / TCKN (11), vergi dairesi, MERSİS, tüzel/gerçek kişi, il, ilçe,
-      // posta kodu, ülke; GİB e-Fatura mükellefi mi (e-Fatura mı e-Arşiv mi kesileceğini belirler) ve posta kutusu etiketi.
+      // Carinin fatura kimliği (UBL-TR Party): VKN (10) / TCKN (11), vergi dairesi, MERSİS, ticaret sicil no, tüzel/gerçek
+      // kişi, gerçek kişide ad ve soyad (e-Belgede ayrı yazılır), adres (il, ilçe, posta kodu, ülke), web sitesi, IBAN,
+      // varsayılan vade günü; GİB e-Fatura mükellefi mi (e-Fatura mı e-Arşiv mi kesileceğini belirler), posta kutusu
+      // etiketi ve senaryosu (Temel / Ticari).
       for (const [column, definition] of [
         ["tax_no", "TEXT NOT NULL DEFAULT ''"],
         ["tax_office", "TEXT NOT NULL DEFAULT ''"],
         ["mersis_no", "TEXT NOT NULL DEFAULT ''"],
+        ["trade_registry", "TEXT NOT NULL DEFAULT ''"],
         ["party_kind", "TEXT NOT NULL DEFAULT ''"],
+        ["first_name", "TEXT NOT NULL DEFAULT ''"],
+        ["family_name", "TEXT NOT NULL DEFAULT ''"],
         ["city", "TEXT NOT NULL DEFAULT ''"],
         ["district", "TEXT NOT NULL DEFAULT ''"],
         ["postal_code", "TEXT NOT NULL DEFAULT ''"],
         ["country", "TEXT NOT NULL DEFAULT ''"],
+        ["website", "TEXT NOT NULL DEFAULT ''"],
+        ["iban", "TEXT NOT NULL DEFAULT ''"],
+        ["due_days", "INTEGER NOT NULL DEFAULT 0"],
         ["e_invoice", "INTEGER NOT NULL DEFAULT 0"],
         ["e_alias", "TEXT NOT NULL DEFAULT ''"],
+        ["e_profile", "TEXT NOT NULL DEFAULT ''"],
       ]) addColumn(store, "accounts", column, definition);
-      // Faturadan doğan alt defter satırları faturaya bağlıdır (iptal ve mutabakat bu bağla yapılır).
+      store.exec("CREATE INDEX IF NOT EXISTS idx_accounts_tax_no ON accounts(tax_no) WHERE tax_no <> ''");
+      // Faturadan doğan alt defter satırları faturaya bağlıdır (iptal ve mutabakat bu bağla yapılır). Çek cirosu da bir
+      // olaydır: faturayla ciro edilen çekin olayı faturaya bağlanır (iptalde yalnız o olay geri alınır).
       addColumn(store, "stock_moves", "invoice_id", "TEXT NOT NULL DEFAULT ''");
       addColumn(store, "cheques", "invoice_id", "TEXT NOT NULL DEFAULT ''");
+      addColumn(store, "cheque_events", "invoice_id", "TEXT NOT NULL DEFAULT ''");
       addColumn(store, "plans", "invoice_id", "TEXT NOT NULL DEFAULT ''");
       store.exec(`
-        -- Fatura başlığı. Tutarlar kalemlerin toplamıdır (kuruşa yuvarlanmış); mutabakat kapısı her işlemde başlık =
-        -- kalemler eşitliğini denetler. party_json / seller_json: kesildiği andaki alıcı ve satıcı bilgisi (yasal belge
-        -- sonradan cari kartı değişse de değişmez; e-Belge bu bilgiden üretilir).
+        -- Fatura başlığı. Tutarlar belgenin para biriminde kalemlerin toplamıdır (kuruşa yuvarlanmış); try_* deftere
+        -- (cari, Kasa, Ana Defter) yazılan TL karşılıklarıdır. Mutabakat kapısı her işlemde başlık = kalemler ve
+        -- defter = try_* eşitliğini denetler. party_json / seller_json: kesildiği andaki alıcı ve satıcı bilgisi (yasal
+        -- belge sonradan cari kartı değişse de değişmez; e-Belge ve PDF bu bilgiden üretilir).
+        -- Durum: draft (taslak / proforma: deftere dokunmaz, numarası yoktur), issued (kesildi), cancelled (iptal: numara
+        -- korunur, defter etkileri geri alınmıştır).
         CREATE TABLE IF NOT EXISTS invoices (
           id TEXT PRIMARY KEY,
-          kind TEXT NOT NULL CHECK (kind IN ('sale', 'purchase', 'sale_return', 'purchase_return')),
-          status TEXT NOT NULL DEFAULT 'issued' CHECK (status IN ('issued', 'cancelled')),
+          kind TEXT NOT NULL CHECK (kind IN ('sale', 'purchase', 'sale_return', 'purchase_return', 'smm')),
+          scenario TEXT NOT NULL DEFAULT '',
+          status TEXT NOT NULL DEFAULT 'issued' CHECK (status IN ('draft', 'issued', 'cancelled')),
           series TEXT NOT NULL DEFAULT '',
           year INTEGER NOT NULL DEFAULT 0,
           seq INTEGER NOT NULL DEFAULT 0,
-          number TEXT NOT NULL,
+          number TEXT NOT NULL DEFAULT '',
           ettn TEXT NOT NULL,
           issue_date TEXT NOT NULL,
           issue_time TEXT NOT NULL DEFAULT '',
           account_id TEXT NOT NULL,
           party_json TEXT NOT NULL DEFAULT '{}',
           seller_json TEXT NOT NULL DEFAULT '{}',
-          profile TEXT NOT NULL DEFAULT 'KAGIT' CHECK (profile IN ('KAGIT', 'TEMELFATURA', 'TICARIFATURA', 'EARSIVFATURA')),
+          profile TEXT NOT NULL DEFAULT 'KAGIT' CHECK (profile IN ('KAGIT', 'TEMELFATURA', 'TICARIFATURA', 'EARSIVFATURA', 'ESMM')),
           type_code TEXT NOT NULL DEFAULT 'SATIS',
           currency TEXT NOT NULL DEFAULT 'TRY',
+          rate REAL NOT NULL DEFAULT 1,
           prices_include_vat INTEGER NOT NULL DEFAULT 0,
+          discount_rate REAL NOT NULL DEFAULT 0,
+          stoppage_rate REAL NOT NULL DEFAULT 0,
           base_total REAL NOT NULL DEFAULT 0,
           discount_total REAL NOT NULL DEFAULT 0,
           net_total REAL NOT NULL DEFAULT 0,
@@ -929,12 +948,23 @@ export const MIGRATIONS = [
           service_net REAL NOT NULL DEFAULT 0,
           vat_total REAL NOT NULL DEFAULT 0,
           withheld_total REAL NOT NULL DEFAULT 0,
+          stoppage_total REAL NOT NULL DEFAULT 0,
           gross_total REAL NOT NULL DEFAULT 0,
           payable_total REAL NOT NULL DEFAULT 0,
+          try_net REAL NOT NULL DEFAULT 0,
+          try_vat REAL NOT NULL DEFAULT 0,
+          try_withheld REAL NOT NULL DEFAULT 0,
+          try_stoppage REAL NOT NULL DEFAULT 0,
+          try_payable REAL NOT NULL DEFAULT 0,
+          gl_json TEXT NOT NULL DEFAULT '[]',
           payment_json TEXT NOT NULL DEFAULT '{}',
           due_date TEXT NOT NULL DEFAULT '',
           plan_id TEXT NOT NULL DEFAULT '',
           original_id TEXT NOT NULL DEFAULT '',
+          order_no TEXT NOT NULL DEFAULT '',
+          order_date TEXT NOT NULL DEFAULT '',
+          despatch_no TEXT NOT NULL DEFAULT '',
+          despatch_date TEXT NOT NULL DEFAULT '',
           note TEXT NOT NULL DEFAULT '',
           e_status TEXT NOT NULL DEFAULT 'none',
           e_adapter TEXT NOT NULL DEFAULT '',
@@ -944,6 +974,8 @@ export const MIGRATIONS = [
           created_at TEXT NOT NULL,
           updated_by TEXT,
           updated_at TEXT NOT NULL,
+          issued_by TEXT,
+          issued_at TEXT,
           cancelled_by TEXT,
           cancelled_at TEXT,
           cancel_reason TEXT NOT NULL DEFAULT ''
@@ -951,18 +983,24 @@ export const MIGRATIONS = [
         CREATE INDEX IF NOT EXISTS idx_invoices_date ON invoices(issue_date, issue_time);
         CREATE INDEX IF NOT EXISTS idx_invoices_account ON invoices(account_id, issue_date);
         CREATE INDEX IF NOT EXISTS idx_invoices_original ON invoices(original_id);
+        CREATE INDEX IF NOT EXISTS idx_invoices_status ON invoices(status, kind);
         CREATE UNIQUE INDEX IF NOT EXISTS idx_invoices_ettn ON invoices(ettn);
-        -- Kendi kestiğimiz faturanın numarası seri + yıl + sıra ile tektir (GİB: 3 harf + 4 yıl + 9 sıra = 16 hane);
-        -- alış faturasının numarası tedarikçinin numarasıdır: aynı tedarikçide iki kez girilemez.
-        CREATE UNIQUE INDEX IF NOT EXISTS idx_invoices_own_no ON invoices(series, year, seq) WHERE kind IN ('sale', 'sale_return', 'purchase_return');
-        CREATE UNIQUE INDEX IF NOT EXISTS idx_invoices_purchase_no ON invoices(account_id, number) WHERE kind = 'purchase' AND status = 'issued';
+        -- Kendi verdiğimiz numara seri + yıl + sıra ile tektir (GİB: 3 karakter seri + 4 hane yıl + 9 hane sıra = 16);
+        -- karşı tarafın belgesi (alış faturası, müşterinin kestiği iade faturası) aynı caride iki kez girilemez.
+        CREATE UNIQUE INDEX IF NOT EXISTS idx_invoices_own_no ON invoices(series, year, seq) WHERE seq > 0;
+        CREATE UNIQUE INDEX IF NOT EXISTS idx_invoices_party_no ON invoices(account_id, kind, number) WHERE seq = 0 AND status = 'issued' AND number <> '';
+        -- Kalem. Tutarlar belgenin para biriminde (kuruşa yuvarlanmış). gl_account: kalemin ana defter hesabı (600 satış,
+        -- 610 iade, 153 ticari mal, 770/760 gider, 255 demirbaş); expense_code: gider türü (alışta stoksuz kalem).
+        -- origin_line_id: iade kaleminin asıl faturadaki kalemi (iade edilebilir miktar bununla sınırlanır).
         CREATE TABLE IF NOT EXISTS invoice_lines (
           id TEXT PRIMARY KEY,
           invoice_id TEXT NOT NULL,
           seq INTEGER NOT NULL,
           item_id TEXT NOT NULL DEFAULT '',
           goods INTEGER NOT NULL DEFAULT 0,
+          code TEXT NOT NULL DEFAULT '',
           name TEXT NOT NULL,
+          description TEXT NOT NULL DEFAULT '',
           unit TEXT NOT NULL DEFAULT 'Adet',
           qty REAL NOT NULL CHECK (qty > 0),
           unit_price REAL NOT NULL DEFAULT 0,
@@ -979,6 +1017,8 @@ export const MIGRATIONS = [
           exemption_code TEXT NOT NULL DEFAULT '',
           gross REAL NOT NULL DEFAULT 0,
           payable REAL NOT NULL DEFAULT 0,
+          gl_account TEXT NOT NULL DEFAULT '600',
+          expense_code TEXT NOT NULL DEFAULT '',
           unit_cost REAL NOT NULL DEFAULT 0,
           origin_line_id TEXT NOT NULL DEFAULT '',
           move_id TEXT NOT NULL DEFAULT ''
@@ -989,6 +1029,7 @@ export const MIGRATIONS = [
         CREATE INDEX IF NOT EXISTS idx_stock_moves_invoice ON stock_moves(invoice_id);
         CREATE INDEX IF NOT EXISTS idx_cheques_invoice ON cheques(invoice_id);
         CREATE INDEX IF NOT EXISTS idx_plans_invoice ON plans(invoice_id);
+        CREATE INDEX IF NOT EXISTS idx_cheque_events_invoice ON cheque_events(invoice_id);
       `);
     },
   },

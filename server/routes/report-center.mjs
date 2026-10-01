@@ -739,7 +739,7 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
           subtitle: rangeText(range),
           headers: ["Tarih", "Kod", "Kalem", "Hareket", "Miktar", "Birim", "Birim Fiyat", "Tutar", "Para", "Cari", "Açıklama", "Giren"],
           types: ["", "", "", "", "number", "", "money", "money", "", "", "", ""],
-          rows: list.map(row => [dayText(row.date), row.code, row.name, row.reason === "return" ? "Satış İadesi" : row.kind === "in" ? "Giriş" : "Çıkış", qty(row.qty), row.unit, money(row.unitPrice), row.amount ? money(row.amount) : "", pay[row.pay] || row.pay, row.accountName, row.note, row.actorName]),
+          rows: list.map(row => [dayText(row.date), row.code, row.name, row.reason === "return" ? "Satış İadesi" : row.reason === "preturn" ? "Alıştan İade" : row.kind === "in" ? "Giriş" : "Çıkış", qty(row.qty), row.unit, money(row.unitPrice), row.amount ? money(row.amount) : "", pay[row.pay] || row.pay, row.accountName, row.note, row.actorName]),
           summary: [["Hareket", String(list.length)], ["Giriş Tutarı", money(total.in)], ["Çıkış Tutarı", money(total.out)]],
         };
       },
