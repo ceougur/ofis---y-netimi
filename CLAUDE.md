@@ -68,6 +68,14 @@ Bu dosya oturumlar arasında taşınan hafızadır. Her oturumun başında okunu
      cari/ürün seçici açılır listeler, WhatsApp seçim penceresi — tek tek sayılıp denetlenir; liste yenilenirken kutu
      yerinde kalır, odak ve imleç korunur. Tüm ekranları gezen e2e "kesintisiz yazma" denetimi (her kutuya harf harf
      yazıp sonucun tam sözcük olduğunu doğrular) eklenir; kalıp ortak bir yardımcıya (HOF) alınır ki yeni ekranlarda tekrarlanmasın.
-  4. (kullanıcı ekleyecek)
+  4. Odak denetimi — bütün program (kullanıcı: "odak ile ilgili tüm sorunları bütün programda denetle"): yalnız arama
+     kutuları değil, odağın kaybolduğu/çalındığı her yer: canlı yenileme (SSE `live:*`) açık formu ya da yazılan kutuyu
+     yeniden kurup odağı düşürüyor mu; pencere/kart açılınca ilk alana odak geliyor mu; kapanınca odak açan düğmeye
+     dönüyor mu; Tab sırası (formlar, tablo hücreleri, süzgeç çubukları); Enter/Esc davranışı; açılır listeler (cari/
+     ürün seçici) yazarken ve seçince odak; toast/uyarı kartı odağı çalmasın; ana tablo hücre düzenleme sırasında
+     yenileme. Yöntem: her ekran gezilir, her kutuya harf harf yazılırken arka planda veri değişikliği tetiklenir
+     (`live:workspace.changed`), odak ve imleç yerinde kalmalı; bulgular listelenip hepsi düzeltilir, e2e'ye kalıcı
+     odak senaryosu eklenir.
+  5. (kullanıcı ekleyecek)
 - Pro — uzaktan görüntüleme: `docs/PRO-UZAKTAN-GORUNTULEME.md` (önce en alttaki "Oturum devri"); genel durum
   `docs/DURUM-VE-DEVAM.md`.
