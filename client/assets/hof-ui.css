@@ -9486,3 +9486,5 @@ input[type="search"]::-webkit-search-cancel-button {
 .hof-wa-bubble { max-height: none; }
 .hof-wa-right { align-self: start; }
 .hof-wa-actions + .hof-edit-meta { margin-top: 12px; }
+.hof-wa-auto { display: flex; flex-direction: column; gap: 6px; margin-top: 12px; padding: 10px 12px; border: 1px dashed var(--do-border); border-radius: 10px; }
+.hof-wa-auto .hof-check span { font-size: .85rem; }

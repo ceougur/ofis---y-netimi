@@ -58,7 +58,7 @@
   // Bir kapsayıcı yeniden kurulurken (liste yenilenmesi, canlı yenileme) içindeki odaklı girdi kaybolmasın: yazılan
   // değer, odak, imleç ve kaydırma konumu yeniden kurulan kutuya geri verilir. Kutu, süzgeç adıyla (data-filter, data-q,
   // data-pick…), name/id ya da aria-label ile yeniden bulunur. Kullanım: HOF.swap(root, html) ya da HOF.keepFocus(root, fn).
-  const FOCUS_KEYS = ["data-filter", "data-q", "data-pick", "data-rc-search", "data-field", "data-range", "data-open-account", "data-open-plan", "data-case-action", "data-case-collect", "data-action", "data-act", "data-pulse", "name", "id", "aria-label"];
+  const FOCUS_KEYS = ["data-filter", "data-q", "data-pick", "data-rc-search", "data-field", "data-range", "data-open-account", "data-open-plan", "data-case-action", "data-case-collect", "data-action", "data-act", "data-pulse", "data-composer", "data-body", "data-current", "data-opt", "name", "id", "aria-label"];
   const TEXT_INPUT = /^(text|search|tel|email|url|number|password|date|datetime-local|month)?$/;
   HOF.focusKey = node => {
     if (!node || !node.getAttribute) return "";

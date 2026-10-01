@@ -7,6 +7,11 @@
  *   2) Gönderim sırası — her kişi için mesaj hazır; "WhatsApp'ta Aç" aynı WhatsApp sekmesinde sohbeti açar, kişi
  *      gönderildi sayılır ve sıradakine geçilir. Metin kişiye göre düzeltilebilir, kopyalanabilir; ekstrenin PDF'i
  *      indirilip sohbete eklenebilir. Her gönderim ve atlama cari kartına yazılır (kime, ne zaman, kim).
+ *      v2.0.14 (müşteri: "Enter'a basmıyor, tek tek Gönder gerekiyor"): Otomatik Sıra — WhatsApp'ta Gönder'e basıp
+ *      bu pencereye dönülünce sıradaki kişinin sohbeti kendiliğinden açılır (aynı WhatsApp sekmesi yönlendirilir);
+ *      ekstre gönderiminde kişinin PDF'i kişinin adıyla kendiliğinden indirilir (sohbete sürüklenir). Enter'ı yine
+ *      kullanıcı basar: wa.me bağlantısı yalnız metni hazırlar; kendiliğinden gönderim ve dosya eki ancak Meta
+ *      WhatsApp Business API ile olur (ayrı Pro özelliği); resmî olmayan otomasyon numarayı kapattırır, yapılmaz.
  * WhatsApp'ın resmi toplu gönderimi ücretli iş hesabı ve onaylı şablon ister; burada kullanıcının kendi WhatsApp'ı
  * (masaüstü ya da web) kullanılır — mesajı gönderen her zaman kullanıcıdır.
  */
@@ -38,18 +43,46 @@
       .replace(/[ \t]+\n/g, "\n")
       .trim();
   const waUrl = (wa, text) => `https://wa.me/${wa}?text=${encodeURIComponent(text)}`;
+  const PREF = "hof.whatsapp.";
+  const readPref = (key, fallback) => {
+    try { const raw = localStorage.getItem(PREF + key); return raw === null ? fallback : raw === "1"; } catch { return fallback; }
+  };
+  const writePref = (key, value) => { try { localStorage.setItem(PREF + key, value ? "1" : "0"); } catch { /* özel pencere */ } };
+  // WhatsApp sekmesi bir kez açılır (kullanıcı tıklamasıyla), sonraki kişilerde aynı sekme yönlendirilir: tarayıcının
+  // açılır pencere engeli yalnız yeni pencere açmayı durdurur, elimizdeki sekmeyi yönlendirmeyi değil.
+  const openChat = (state, person) => {
+    const url = waUrl(person.wa, person.text);
+    if (state.wa && !state.wa.closed) {
+      try { state.wa.location.href = url; return true; } catch { /* sekme el değiştirmiş; yeniden aç */ }
+    }
+    const win = window.open(url, "hof-whatsapp");
+    state.wa = win || null;
+    return Boolean(win) || !("open" in window) || true;
+  };
+  const statementPdf = person => `/api/workspace/accounts/${encodeURIComponent(person.id)}/ekstre.pdf`;
+  const downloadPdf = person => {
+    const a = document.createElement("a");
+    a.href = `${statementPdf(person)}?download=1`;
+    a.download = `Cari-ekstre ${person.name}.pdf`;
+    a.rel = "noopener";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  };
 
   /**
    * @param {{ kind: "statement"|"message", selection: { ids?: string[], all?: boolean, ...süzgeçler }, title?: string }} options
    */
   async function open({ kind = "message", selection, title = "", onDone = null }) {
     if (!HOF.can("accounts.view")) return HOF.toast("WhatsApp gönderimi için cari görme yetkisi gerekir.", { type: "error" });
-    const state = { kind, preset: "thisMonth", templateId: TEMPLATES[0].id, template: TEMPLATES[0].text, onlyDebtors: false, data: null, picked: new Set(), preview: "", queue: [], at: 0, sent: 0, skipped: 0, batchId: `wa-${Date.now().toString(36)}` };
+    const state = { kind, preset: "thisMonth", templateId: TEMPLATES[0].id, template: TEMPLATES[0].text, onlyDebtors: false, data: null, picked: new Set(), preview: "", queue: [], at: 0, sent: 0, skipped: 0, auto: readPref("auto", true), pdf: kind === "statement" && readPref("pdf", true), armed: false, wa: null, batchId: `wa-${Date.now().toString(36)}` };
+    let stopAuto = null;
     const modal = HOF.modal({
       title: kind === "statement" ? "WhatsApp ile Ekstre Gönder" : "WhatsApp ile Mesaj Gönder",
       eyebrow: title || "CARİ",
       size: "wide",
       body: '<div class="hof-wa" data-wa><p class="hof-empty">Alıcılar hazırlanıyor…</p></div>',
+      onClose: () => stopAuto?.(),
     });
     const root = modal.dialog.querySelector("[data-wa]");
     const load = async () => {
@@ -101,6 +134,7 @@
       const total = state.queue.length;
       if (state.at >= total) {
         root.innerHTML = `<div class="hof-wa-done"><strong>Gönderim Tamamlandı</strong><p>${state.sent} kişiye gönderildi${state.skipped ? `, ${state.skipped} kişi atlandı` : ""}. Gönderimler carilerin kartına kaydedildi.</p></div><div class="hof-actions"><button type="button" class="hof-button" data-close>Kapat</button></div>`;
+        state.armed = false;
         if (!state.finished) {
           state.finished = true;
           if (state.sent || state.skipped) onDone?.({ sent: state.sent, skipped: state.skipped });
@@ -118,11 +152,47 @@
           <button type="button" class="hof-button hof-button-ghost" data-prev ${state.at ? "" : "disabled"}>← Önceki</button>
           <button type="button" class="hof-button hof-button-ghost" data-skip>Atla</button>
           <button type="button" class="hof-button hof-button-ghost" data-copy>Metni Kopyala</button>
-          ${kind === "statement" ? `<a class="hof-button hof-button-ghost" href="/api/workspace/accounts/${encodeURIComponent(person.id)}/ekstre.pdf" target="_blank" rel="noopener">Ekstre PDF</a>` : ""}
-          <button type="button" class="hof-button hof-whatsapp" data-send>WhatsApp'ta Aç ve Sıradakine Geç</button>
+          ${kind === "statement" ? `<a class="hof-button hof-button-ghost" href="${statementPdf(person)}" target="_blank" rel="noopener">Ekstre PDF</a>` : ""}
+          <button type="button" class="hof-button hof-whatsapp" data-send>${state.armed && state.auto ? "Şimdi Aç" : "WhatsApp'ta Aç ve Sıradakine Geç"}</button>
         </div>
-        <p class="hof-edit-meta">WhatsApp sekmesinde mesaj hazır gelir; <b>Gönder</b>'e basıp buraya dönün. Aynı WhatsApp sekmesi her kişide yeniden kullanılır.</p>`;
+        <div class="hof-wa-auto">
+          <label class="hof-check"><input type="checkbox" data-auto ${state.auto ? "checked" : ""}><span>Otomatik Sıra: WhatsApp'ta Gönder'e basıp bu pencereye dönünce sıradaki kişi kendiliğinden açılsın</span></label>
+          ${kind === "statement" ? `<label class="hof-check"><input type="checkbox" data-pdf ${state.pdf ? "checked" : ""}><span>Ekstre PDF'ini kişinin adıyla kendiliğinden indir (sohbete sürükleyin)</span></label>` : ""}
+        </div>
+        <p class="hof-edit-meta" data-wa-hint>${state.armed && state.auto ? `WhatsApp'ta <b>Gönder</b>'e basın; bu pencereye dönünce <b>${esc(person.name)}</b> kendiliğinden açılacak. Beklemeden açmak için <b>Şimdi Aç</b>.` : "WhatsApp sekmesinde mesaj hazır gelir; <b>Gönder</b>'e basıp buraya dönün. Aynı WhatsApp sekmesi her kişide yeniden kullanılır."}</p>`;
     }
+    // Bir kişinin sohbetini açar (ve ekstre PDF'ini indirir), gönderildi sayar, sıradakine geçer.
+    const sendCurrent = () => {
+      const person = state.queue[state.at];
+      if (!person) return;
+      const current = root.querySelector("[data-current]");
+      if (current) person.text = current.value;
+      openChat(state, person);
+      if (kind === "statement" && state.pdf) downloadPdf(person);
+      log(person, "sent", person.text);
+      state.sent += 1;
+      state.at += 1;
+      state.armed = state.at < state.queue.length;
+      queueView();
+    };
+    // Otomatik Sıra: kullanıcı WhatsApp'tan bu pencereye dönünce (pencere odağı / sekme görünürlüğü) sıradaki açılır.
+    let returnTimer = 0;
+    const onReturn = () => {
+      if (!state.armed || !state.auto || state.finished || !document.body.contains(root)) return;
+      clearTimeout(returnTimer);
+      // Odak dönüşünden kısa süre sonra: WhatsApp penceresi kapanırken gelen anlık odak sıçramaları sayılmaz.
+      returnTimer = setTimeout(() => {
+        if (!state.armed || !state.auto || state.finished || !document.body.contains(root) || document.visibilityState !== "visible") return;
+        sendCurrent();
+      }, 600);
+    };
+    window.addEventListener("focus", onReturn);
+    document.addEventListener("visibilitychange", onReturn);
+    stopAuto = () => {
+      clearTimeout(returnTimer);
+      window.removeEventListener("focus", onReturn);
+      document.removeEventListener("visibilitychange", onReturn);
+    };
     const log = (person, status, body) => HOF.api("/api/workspace/whatsapp/log", { method: "POST", body: { batchId: state.batchId, accountId: person.id, kind, phone: person.phone, body, status } }).catch(() => {});
 
     root.addEventListener("change", event => {
@@ -143,6 +213,13 @@
       } else if (target.matches("[data-pick-all]")) {
         for (const item of eligible()) target.checked ? state.picked.add(item.id) : state.picked.delete(item.id);
         prepare();
+      } else if (target.matches("[data-auto]")) {
+        state.auto = target.checked;
+        writePref("auto", state.auto);
+        queueView();
+      } else if (target.matches("[data-pdf]")) {
+        state.pdf = target.checked;
+        writePref("pdf", state.pdf);
       }
     });
     root.addEventListener("input", event => {
@@ -167,6 +244,13 @@
         area.value = `${area.value.slice(0, at)}${target.dataset.var}${area.value.slice(area.selectionEnd ?? at)}`;
         state.template = area.value;
         prepare();
+        // Yazmaya kaldığı yerden devam: odak metin kutusuna, imleç eklenen değişkenin sonuna.
+        const again = root.querySelector("[data-body]");
+        if (again) {
+          again.focus({ preventScroll: true });
+          const caret = at + target.dataset.var.length;
+          try { again.setSelectionRange(caret, caret); } catch { /* yok */ }
+        }
         return;
       }
       if ("close" in target.dataset) return modal.close();
@@ -182,11 +266,7 @@
       const current = root.querySelector("[data-current]");
       if (person && current) person.text = current.value;
       if ("send" in target.dataset) {
-        window.open(waUrl(person.wa, person.text), "hof-whatsapp");
-        log(person, "sent", person.text);
-        state.sent += 1;
-        state.at += 1;
-        queueView();
+        sendCurrent();
       } else if ("skip" in target.dataset) {
         log(person, "skipped", "");
         state.skipped += 1;
@@ -194,6 +274,7 @@
         queueView();
       } else if ("prev" in target.dataset) {
         state.at = Math.max(0, state.at - 1);
+        state.armed = false;
         queueView();
       } else if ("copy" in target.dataset) {
         try {

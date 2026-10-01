@@ -304,6 +304,27 @@ try {
     await typeSlowly(admin, `${top} input[name="name"]`, "deneme", { delay: 200, between: otherChange, label: "Yeni Cari formu → Ad Soyad (canlı yenileme sırasında)" });
     await closeTop(admin);
   });
+  await step("9. Sohbet yazma kutusu: yazarken başka kullanıcıdan mesaj gelse de odak ve metin korunur", async () => {
+    await closeAll();
+    const summary = await call(other, "/api/chat");
+    const office = (summary.conversations || summary.data?.conversations || []).find(item => item.kind === "office");
+    ok(office, "Ofis Geneli sohbeti var");
+    await admin.evaluate(id => window.HOF.chat.open(id), office.id);
+    await admin.waitForSelector("[data-composer]");
+    await admin.waitForTimeout(400);
+    await typeSlowly(admin, "[data-composer]", "merhaba", {
+      delay: 250,
+      label: "Sohbet → mesaj yazma (gelen mesaj sırasında)",
+      between: async () => {
+        const sent = await call(other, `/api/chat/conversations/${office.id}/messages`, { body: "Arada gelen mesaj", caseKey: "" });
+        if (sent.status !== 200) throw new Error(`mesaj gönderilemedi: ${sent.error}`);
+        await admin.waitForTimeout(700);
+      },
+    });
+    ok(await admin.evaluate(() => (document.querySelector("[data-messages]")?.innerText || "").includes("Arada gelen mesaj")), "gelen mesaj iş parçacığına düştü (yazma kutusu bozulmadan)");
+    await shot(admin, "sohbet-yazarken-mesaj");
+    await admin.evaluate(() => window.HOF.chat.close());
+  });
 } catch (error) {
   console.error("\nHATA:", error.message);
   exitCode = 1;

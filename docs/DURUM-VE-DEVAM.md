@@ -76,6 +76,12 @@ Yeni bir oturum bu belgeyi okuyarak kaldığı yerden devam eder. Son güncellem
 
 ## Kalanlar (öncelik sırasıyla)
 
+### 2.0.14 — hazırlanıyor (dal `claude/nice-euler-jvajxv`; paket/yayın kullanıcı onayı bekliyor)
+Kullanıcının biriktirdiği liste (`CLAUDE.md` → Açık iş → 2.0.14 listesi): 1 damga düzeltmesi, 2 WhatsApp Otomatik Sıra + PDF,
+3 tüm arama kutularında odak, 4 bütün programda odak denetimi, 5 detay panelinde Cari Kartı düğmesi. Kapsam ve kanıt
+`CHANGELOG.md` → 2.0.14, `docs/MIMARI.md` → *2.0.14 eklemeleri*. Doğrulama: `npm test`, `npm run test:senaryo-214` (odak),
+`npm run test:senaryo-whatsapp` (adım E), `npm run test:senaryo-213` (PDF), diğer senaryolar ve `npm run test:e2e`.
+
 ### 2.0.13 — yayımlandı 01.10.2026 (PR #13, `v2.0.13` = 20e110d; beş dosya ve latest/DestekOfis-Kurulum.exe bayt bayt doğrulandı)
 Teslim: `DestekOfis-2.0.13-{1-Guncelleme-ve-Belgeler,2-Kurulum,Kaynak-ve-Denetim}.zip` + SHA256SUMS (güncelleme paketi
 sha256 840193a1…, kurulum d3fe6f22…; imza anahtarı destekofis-2026-1; göç 17). Yayın adımları teslimdeki OKU-BENI.txt'de;
