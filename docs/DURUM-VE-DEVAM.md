@@ -85,6 +85,9 @@ Kapsam ve kanıt `CHANGELOG.md` → 2.0.13 ve `docs/MIMARI.md` → *Ana Defter v
   (`server/lib/period.mjs`), dönem kilidi (Yönetim → Sistem), yuvarlama, iade sınırı, cari bazında mutabakat,
   `npm run mutabakat` (salt okunur yerel denetim), `npm run test:mutabakat` (model tabanlı uzun koşu),
   `test/mutabakat-cekirdek.test.mjs`, `test/donem-213.test.mjs`.
+- Eksi Bakiye Denetimi (kullanıcı onayı 01.10.2026; Logo/Netsis parametresinin karşılığı): Nakit, Banka, Kredi Kartı için
+  Uyar / Engelle / Kontrol Yok — Yönetim → Sistem. Cari listesinde hepsini seç + hariç tut (WhatsApp ve toplu taksit).
+  WhatsApp ölçek senaryosu: `npm run test:senaryo-whatsapp` (1.000 cari, 40 seçili, 190 kişiye şube mesajı, 997 hariçli).
 - Davranış değişikliği: ileri tarihli Kasa hareketi (planlı gider) artık girilemez; eski kurulumlardaki satırlar taban
   sayılır ve raporlarda görünmeye devam eder. Tarih alanı hiç gönderilmezse bugün yazılır; gönderilip boş bırakılırsa ret.
 

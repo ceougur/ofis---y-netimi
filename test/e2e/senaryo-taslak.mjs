@@ -132,7 +132,12 @@ try {
     ok(!/<row r="2"/.test(sheet), "veri satırı yok (örnek kişi yazılmaz; kullanıcının verisine karışmaz)");
   });
 
-  const firstMonth = template.columns.find(column => column.kind === "month").label;
+  // Bu ayın kolonu (ödenmeyen ay bu ay takvime düşer). Hiç ayı yazılmamış öğrencide program geçmiş ayları borç saymaz
+  // (kayıt tarihi bilinmiyor: yanlış alarm yerine yalnız bu ay); bu yüzden senaryo "bu ay" üzerinden kurulur.
+  const MONTH_NAMES = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"];
+  const nowLabel = `${MONTH_NAMES[new Date().getMonth()]} ${new Date().getFullYear()}`;
+  const monthColumns = template.columns.filter(column => column.kind === "month");
+  const firstMonth = (monthColumns.find(column => column.label === nowLabel) || monthColumns[0]).label;
   const students = [
     { Öğrenci: "Ayşe Yılmaz", "Veli Adı": "Kemal Yılmaz", "Veli Telefon": "0532 410 10 10", Okul: "Atatürk İlkokulu", Sınıf: "3-A", Güzergâh: "Merkez", "Servis Plaka": "34 ABC 101", "Aylık Ücret": "2.500,00", [firstMonth]: "Ödendi", Durum: "Aktif" },
     { Öğrenci: "Mehmet Demir", "Veli Adı": "Selin Demir", "Veli Telefon": "0533 420 20 20", Okul: "Atatürk İlkokulu", Sınıf: "4-B", Güzergâh: "Merkez", "Servis Plaka": "34 ABC 101", "Aylık Ücret": "2.500,00", Durum: "Aktif" },
@@ -175,7 +180,7 @@ try {
     ok(!dues.some(item => item.person === "Elif Şahin"), "ayrılan öğrenci (Durum: Ayrıldı) takvime girmez");
     ok(!first.some(item => item.person === "Ayşe Yılmaz" || item.person === "Zeynep Kaya"), `“Ödendi” yazılan ${firstMonth} takvime girmez`);
     const vade = (await api("/api/workspace/overview/vade-takip?preset=open&sources=table")).data;
-    const vadeFirst = vade.rows.filter(row => row.label.startsWith(`${firstMonth.split(" ")[0]} ödemesi`) && row.state === "month");
+    const vadeFirst = vade.rows.filter(row => row.label.startsWith(`${firstMonth.split(" ")[0]} ödemesi`) && (row.state === "month" || row.state === "today"));
     ok(vadeFirst.length === 2 && vadeFirst.reduce((sum, row) => sum + row.amount, 0) === 5500, `Vade takip (tablo): “${firstMonth.split(" ")[0]} ödemesi” 2 kalem, 5.500,00, durum “bu ay” (gecikmiş değil)`);
     ok(vade.rows.find(row => row.party === "Mehmet Demir")?.phone === "0533 420 20 20", "Vade takipte veli telefonu (telefonla aranabilir)");
     await page.click('.hof-side-item[data-action="analytics"]');

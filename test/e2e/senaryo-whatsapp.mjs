@@ -258,6 +258,8 @@ try {
     for (const index of [1, 2, 3]) await boxes[index].uncheck();
     const bar = await barText();
     ok(/^997 cari seçildi \(süzgeçteki hepsi, 3 hariç\)/.test(bar), `işareti kaldırılan üç kişi hariç: ${bar.slice(0, 70)}`);
+    const headBox = await admin.$eval(`${top} input[data-select-all]`, node => ({ checked: node.checked, indeterminate: node.indeterminate }));
+    ok(!headBox.checked && headBox.indeterminate, "başlık kutusu kısmi (yarım) görünür");
     await shot("hepsi-uc-haric");
     const excluded = [1, 2, 3].map(index => ids.get(names[index]));
     const started = Date.now();

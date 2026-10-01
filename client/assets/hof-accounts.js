@@ -844,6 +844,15 @@
       else check.checked ? view.selected.add(check.dataset.select) : view.selected.delete(check.dataset.select);
       const bar = body()?.querySelector("[data-selbar]");
       if (bar) bar.outerHTML = selectBar();
+      // Başlık kutusu: hepsi seçili → işaretli; hepsi eksi birkaçı → yarım (kısmi); yoksa ekrandakilere göre.
+      const head = body()?.querySelector("input[data-select-all]");
+      if (head) {
+        const visible = view.list?.accounts || [];
+        const some = visible.some(item => isSelected(item.id));
+        const every = visible.length && visible.every(item => isSelected(item.id)) && !(view.selectAll && view.excluded.size);
+        head.checked = Boolean(every);
+        head.indeterminate = !every && some;
+      }
       return;
     }
     if (event.target.closest(".hof-acc-check")) return;
