@@ -53,36 +53,11 @@ Bu dosya oturumlar arasında taşınan hafızadır. Her oturumun başında okunu
   (Nakit/Banka/Kredi Kartı: Uyar/Engelle/Kontrol Yok — kullanıcı onayı 01.10.2026), hepsini seç + hariç tut. Holding stres
   simülasyonu kullanıcı kararıyla iptal. Doğrulama: `npm test`, `npm run test:mutabakat`, `npm run mutabakat`,
   `npm run test:senaryo-whatsapp` (1.000 cari). Senaryolar tarihe bağlı yazılmasın (ayın 1'inde kırılanlar düzeltildi).
-- 2.0.14 hazır (dal `claude/nice-euler-jvajxv`; paket üretildi, yayın/birleştirme kullanıcı onayı bekliyor — 01.10.2026).
-  Teslim zipleri scratchpad'de (güncelleme 9a6bc908…, kurulum dae7a169…). Beş madde de yapıldı; kanıt: `npm test` 704/704, `test:senaryo-214` 50/50, `test:senaryo-whatsapp` 45/45, `test:senaryo-213` 61/61.
-  Yapılan liste:
-  1. YAPILDI (09c720f): Tablodan Aktar geri alma damga düzeltmesi — plans/plan_items `created_at`/`updated_at` iki ayrı
-     now() yerine tek damga; CI Windows/Node 22 hücresinde aralıklı düşen `plan-transfer.test.mjs:371`'in kök nedeni.
-  2. YAPILDI: WhatsApp gönderim sırası (müşteri: "Enter'a basmıyor, tek tek Gönder gerekiyor"): WhatsApp'ta Gönder'e basıp
-     pencere odağı programa dönünce sıradaki kişi kendiliğinden açılır; ekstre gönderiminde PDF kişinin adıyla otomatik
-     indirilir. Enter yine kullanıcıda (wa.me yalnız metin hazırlar; otomatik gönderim ve PDF eki ancak Meta WhatsApp
-     Business API ile — ayrı Pro özelliği olarak tasarlanacak; resmî olmayan otomasyon numara kapatır, yapılmaz).
-  3. YAPILDI (HOF.swap): Cari penceresi arama kutusu: yazarken liste her gelişte (`hof-accounts.js` `onInput` → `loadList` → `renderList`
-     bütün gövdeyi, arama kutusu dahil, yeniden kurar) odak kayboluyor; "fı" yazınca kutuya yeniden tıklamak gerekiyor.
-     Kullanıcı doğruladı: Taksitler (taksit kartı) ve Stok aramalarında da aynı sorun var.
-     Düzeltme (kullanıcı: "sadece bu sayfada değil, TÜM arama çubuklarında"): programdaki her arama/süzgeç kutusu —
-     ana tablo arama kutusu, Cari, Stok, Taksitler, Çek/Senet, Kasa, Raporlar, Yönetim (kullanıcılar, silinenler),
-     cari/ürün seçici açılır listeler, WhatsApp seçim penceresi — tek tek sayılıp denetlenir; liste yenilenirken kutu
-     yerinde kalır, odak ve imleç korunur. Tüm ekranları gezen e2e "kesintisiz yazma" denetimi (her kutuya harf harf
-     yazıp sonucun tam sözcük olduğunu doğrular) eklenir; kalıp ortak bir yardımcıya (HOF) alınır ki yeni ekranlarda tekrarlanmasın.
-  4. YAPILDI (senaryo-214): Odak denetimi — bütün program (kullanıcı: "odak ile ilgili tüm sorunları bütün programda denetle"): yalnız arama
-     kutuları değil, odağın kaybolduğu/çalındığı her yer: canlı yenileme (SSE `live:*`) açık formu ya da yazılan kutuyu
-     yeniden kurup odağı düşürüyor mu; pencere/kart açılınca ilk alana odak geliyor mu; kapanınca odak açan düğmeye
-     dönüyor mu; Tab sırası (formlar, tablo hücreleri, süzgeç çubukları); Enter/Esc davranışı; açılır listeler (cari/
-     ürün seçici) yazarken ve seçince odak; toast/uyarı kartı odağı çalmasın; ana tablo hücre düzenleme sırasında
-     yenileme. Yöntem: her ekran gezilir, her kutuya harf harf yazılırken arka planda veri değişikliği tetiklenir
-     (`live:workspace.changed`), odak ve imleç yerinde kalmalı; bulgular listelenip hepsi düzeltilir, e2e'ye kalıcı
-     odak senaryosu eklenir.
-  5. YAPILDI (kök neden: #hof-checks ↔ #hof-case-plan yer kavgası): Ana ekran sağ detay panelinde "CARİ … · No 4 · Bakiye" pilindeki **Cari Kartı** düğmesi çalışmıyor (ekran
-     görüntüsü: Ömer Kılcı, 01.10.2026). Kod: `hof-workspace.js` `caseAccountHtml` → `data-open-account`,
-     `document` click dinleyicisi `#hof-case-plan [data-open-account]` → `HOF.accounts?.open(id)`. Kablo yerinde
-     görünüyor; ekranda yeniden üretip kök neden bulunacak (öneriler: tıklama başka bir dinleyicide `stopPropagation`
-     ile yutuluyor; `HOF.accounts` o anda yüklü değil; `open()` kapalı pencere/mod durumunda sessiz dönüyor).
-     Aynı kalıptaki "Taksit Kartını Aç" ve Raporlar'daki "Cari Kartını Aç" da denenir; e2e'ye tıklama denetimi eklenir.
+- 2.0.14 yayımlandı (01.10.2026; PR ceougur/ofis---y-netimi#14, `v2.0.14` = 6337029; beş dosya ve latest/ adresleri bayt
+  bayt doğrulandı; gerçek güncelleyici 2.0.13 ve 2.0.12 olarak canlı GitHub'da 2.0.14'ü "available" gördü, indirme sha256
+  eşleşti; dal `master` üzerine sıfırlandı): arama kutularında ve bütün programda odak (`HOF.swap`, `test:senaryo-214`),
+  detay panelinde Cari Kartı (#hof-checks ↔ #hof-case-plan yer kavgası), WhatsApp Otomatik Sıra + kendiliğinden inen ekstre
+  PDF'i, Tablodan Aktar geri alma damgası. Meta WhatsApp Business API (kendiliğinden gönderim + PDF eki) ayrı Pro özelliği
+  olarak ileride tasarlanacak; resmî olmayan otomasyon yapılmaz.
 - Pro — uzaktan görüntüleme: `docs/PRO-UZAKTAN-GORUNTULEME.md` (önce en alttaki "Oturum devri"); genel durum
   `docs/DURUM-VE-DEVAM.md`.
