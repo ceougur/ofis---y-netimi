@@ -1,6 +1,7 @@
 // Başlık yazımı (v2.0.11): pencere, menü, rapor, kolon ve gösterge adlarında her sözcüğün ilk harfi büyük; bağlaçlar
 // ("ve", "ile", "veya", "ya da", "de/da", "ki") küçük; parantez içi açıklama olduğu gibi; kısaltmalar (PDF, KDV) ve
-// rakamla başlayan sözcükler değişmez. Türkçe kurala göre büyütür (i → İ). Kullanıcının yazdığı veriye uygulanmaz.
+// rakamla başlayan sözcükler değişmez; GİB'in "e-" önekli adları (e-Fatura, e-Arşiv) olduğu gibi kalır. Türkçe kurala göre
+// büyütür (i → İ). Kullanıcının yazdığı veriye uygulanmaz.
 const SMALL = new Set(["ve", "ile", "veya", "ya", "da", "de", "ki"]);
 
 export function titleCase(text) {
@@ -20,6 +21,8 @@ export function titleCase(text) {
       const first = !seenWord;
       if (bare) seenWord = true;
       if (!first && SMALL.has(bare) && word === word.toLocaleLowerCase("tr-TR")) return word;
+      // GİB'in resmî adları küçük "e-" ile yazılır ve öyle kalır: e-Fatura, e-Arşiv, e-Belge, e-SMM, e-İrsaliye.
+      if (/^[^\p{L}]*e-[A-ZÇĞİÖŞÜ]/u.test(word)) return word;
       const at = word.search(/\p{L}/u);
       if (at < 0 || (at > 0 && /[\p{L}\p{N}]/u.test(word.slice(0, at)))) return word;
       const head = word.slice(0, at) + word[at].toLocaleUpperCase("tr-TR") + word.slice(at + 1);

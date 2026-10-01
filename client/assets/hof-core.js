@@ -187,6 +187,8 @@
         const first = !seenWord;
         if (bare) seenWord = true;
         if (!first && SMALL_WORDS.has(bare) && word === word.toLocaleLowerCase("tr-TR")) return word;
+        // GİB'in resmî adları küçük "e-" ile kalır: e-Fatura, e-Arşiv, e-Belge (sunucudaki text-case.mjs ile aynı).
+        if (/^[^\p{L}]*e-[A-ZÇĞİÖŞÜ]/u.test(word)) return word;
         const at = word.search(/\p{L}/u);
         if (at < 0 || (at > 0 && /[\p{L}\p{N}]/u.test(word.slice(0, at)))) return word;
         const head = word.slice(0, at) + word[at].toLocaleUpperCase("tr-TR") + word.slice(at + 1);
@@ -202,14 +204,16 @@
   //  - başka bilgisayardaki değişiklik sunucunun herkese (işlemi yapan dahil) yayımladığı "overview.changed" ile gelir.
   // Önceden her pencere yalnız kendi türünü dinliyordu ve sunucu "workspace.changed" olayını işlemi yapana göndermiyordu:
   // Kasa'dan açılan çek kartında ödeme silinince Kasa eski rakamlarla kalıyordu.
+  // v2.0.15: fatura stok, cari, Kasa, çek/senet ve taksiti birlikte yazar; tahsilat/ödeme faturanın ödeme durumunu değiştirir.
   const LEDGER_PATHS = [
-    [/^\/api\/workspace\/cash\b/, ["cash"]],
-    [/^\/api\/workspace\/cheques\b/, ["cheques", "cash", "accounts"]],
-    [/^\/api\/workspace\/accounts\b/, ["accounts", "cash", "plans"]],
-    [/^\/api\/workspace\/(plans|plan-transfer)\b/, ["plans", "cash", "accounts"]],
+    [/^\/api\/workspace\/cash\b/, ["cash", "invoices"]],
+    [/^\/api\/workspace\/cheques\b/, ["cheques", "cash", "accounts", "invoices"]],
+    [/^\/api\/workspace\/accounts\b/, ["accounts", "cash", "plans", "invoices"]],
+    [/^\/api\/workspace\/(plans|plan-transfer)\b/, ["plans", "cash", "accounts", "invoices"]],
     [/^\/api\/workspace\/stock\b/, ["stock", "cash", "accounts"]],
-    [/^\/api\/workspace\/(payments\b|cases\/[^/]+\/(payments|plans|account)\b)/, ["cash", "plans", "accounts"]],
-    [/^\/api\/(admin\/)?trash\b/, ["cash", "plans", "accounts", "stock", "cheques"]],
+    [/^\/api\/workspace\/invoices\b/, ["invoices", "stock", "cash", "accounts", "cheques", "plans"]],
+    [/^\/api\/workspace\/(payments\b|cases\/[^/]+\/(payments|plans|account)\b)/, ["cash", "plans", "accounts", "invoices"]],
+    [/^\/api\/(admin\/)?trash\b/, ["cash", "plans", "accounts", "stock", "cheques", "invoices"]],
   ];
   function noteLedgerChange(path) {
     const clean = String(path || "").split("?")[0];

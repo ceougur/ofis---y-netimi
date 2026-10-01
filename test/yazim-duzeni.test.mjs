@@ -37,6 +37,9 @@ const SENTENCES = new Set([
     "Elle gireceğim (kart açılınca tek tek)",
     "Emin olunamayan veriye sektör atanmaz",
     "Evrak kolonu yoksa hepsi",
+    // Fatura Ayarları onay kutuları (v2.0.15): cümle.
+    "Fiyatlar varsayılan olarak KDV dahil yazılsın",
+    "Kesilen e-Belge entegratöre hemen gönderilsin",
     "Excel/Sheets tablolarınızdaki",
     "Eşleşen kayıt yok",
     "Geçiş dönemi doldu",

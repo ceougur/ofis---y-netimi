@@ -264,6 +264,7 @@
       const entry = entryById.get(line.id);
       if (!entry) return "";
       const receipt = entry.kind === "in" || entry.kind === "out" ? `<a class="hof-mini hof-mini-text" href="/api/workspace/accounts/${encodeURIComponent(account.id)}/entries/${encodeURIComponent(entry.id)}/makbuz.pdf" target="_blank" rel="noopener" title="Makbuz (PDF)">Makbuz</a>` : "";
+      if (entry.source === "invoice") return HOF.can("invoices.view") ? `<button type="button" class="hof-mini hof-mini-text" data-open-invoice="${esc(entry.sourceId)}" title="Faturadan gelir; Fatura ekranından iptal edilir ya da iade kesilir">Fatura</button>` : '<small class="hof-muted" title="Faturadan gelir">faturadan</small>';
       const stock = entry.source === "stock" ? '<small class="hof-muted" title="Stok hareketinden gelir; Stok’tan düzeltilir">stoktan</small>' : entry.source === "cheque" ? (HOF.can("cheques.view") ? `<button type="button" class="hof-mini" data-open-cheque="${esc(entry.sourceId)}" title="Çek / senetten gelir; evrak kartından geri alınır" aria-label="Çek / senet kartını aç">↗</button>` : '<small class="hof-muted" title="Çek / senetten gelir; evrak kartından geri alınır">çek / senet</small>') : "";
       return `${receipt}${stock}${entry.editable ? `<button type="button" class="hof-mini" data-edit-entry="${esc(entry.id)}" title="Düzelt" aria-label="Düzelt">✎</button><button type="button" class="hof-mini hof-mini-danger" data-delete-entry="${esc(entry.id)}" title="Sil" aria-label="Sil">×</button>` : ""}`;
     };
@@ -284,6 +285,7 @@
           <span class="hof-plan-toolgroup">${office().outputButtons ? office().outputButtons(cardPdfUrl(account), "card") : ""}${phone ? `<button type="button" class="hof-button hof-button-small hof-button-ghost hof-whatsapp" data-act="whatsapp" data-wa="${esc(phone)}">WhatsApp</button>` : ""}</span>
           ${manage ? `<span class="hof-plan-toolgroup"><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="edit">Düzenle</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="${active ? "passive" : "activate"}" title="${active ? "Pasif cari listede Pasif altında durur; hareketleri korunur" : ""}">${active ? "Pasife Al" : "Aktif Yap"}</button><button type="button" class="hof-button hof-button-small hof-button-ghost hof-button-danger-ghost" data-act="delete">Sil</button></span>` : ""}
         </div></div>
+      ${HOF.can("invoices.manage") && HOF.invoices ? `<div class="hof-inv-pills hof-acc-inv-pills" role="group" aria-label="Fatura"><button type="button" class="hof-inv-big-pill" data-act="saleInvoice"><b>Satış Faturası</b><small>Bu cariye satış, hizmet ya da makbuz</small></button><button type="button" class="hof-inv-big-pill" data-act="purchaseInvoice"><b>Alış Faturası</b><small>Bu cariden mal, hizmet ya da gider alışı</small></button></div>` : ""}
       <section class="hof-plan-profile" aria-label="Cari bilgileri">
         <dl class="hof-plan-facts">
           <div><dt>Cari No</dt><dd>${esc(account.refNo || "—")}</dd></div>
@@ -292,7 +294,12 @@
           <div><dt>Telefon</dt><dd>${account.phone ? (phone ? `<a href="tel:+${esc(phone)}">${esc(account.phone)}</a>` : esc(account.phone)) : "—"}</dd></div>
           <div><dt>E-Posta</dt><dd>${account.email ? `<a href="mailto:${esc(account.email)}">${esc(account.email)}</a>` : "—"}</dd></div>
           <div><dt>Kayıt Tarihi</dt><dd>${esc(account.registeredOn ? HOF.formatDate(account.registeredOn) : "—")}</dd></div>
-          <div class="is-wide"><dt>Adres</dt><dd>${esc(account.address || "—")}</dd></div>
+          <div class="is-wide"><dt>Adres</dt><dd>${esc([account.address, account.district, account.city, account.postalCode].filter(Boolean).join(", ") || "—")}</dd></div>
+          ${account.taxNo ? `<div><dt>${String(account.taxNo).length === 11 ? "TC Kimlik No" : "Vergi No"}</dt><dd>${esc(account.taxNo)}</dd></div>` : ""}
+          ${account.taxOffice ? `<div><dt>Vergi Dairesi</dt><dd>${esc(account.taxOffice)}</dd></div>` : ""}
+          ${account.iban ? `<div><dt>IBAN</dt><dd>${esc(String(account.iban).replace(/(.{4})/g, "$1 ").trim())}</dd></div>` : ""}
+          ${Number(account.dueDays) ? `<div><dt>Vade Günü</dt><dd>${esc(String(account.dueDays))} gün</dd></div>` : ""}
+          ${HOF.invoices?.edocEnabled?.() && account.taxNo ? `<div><dt>e-Fatura</dt><dd>${Number(account.eInvoice) === 1 ? `Mükellef${account.eAlias ? `<small>${esc(account.eAlias)}</small>` : ""}` : "Mükellef değil (e-Arşiv)"}</dd></div>` : ""}
           <div><dt>Tablodaki Kayıt</dt><dd>${caseCell}</dd></div>
           <div><dt>Kartı Açan</dt><dd>${esc(account.actorName || "—")} · ${esc(HOF.formatDate(account.createdAt))}</dd></div>
           ${account.fields.map(field => `<div><dt title="Excel’den gelen alan">${esc(field.label)}</dt><dd>${esc(field.value || "—")}</dd></div>`).join("")}
@@ -300,11 +307,33 @@
         <div class="hof-plan-note"><h4>Bilgi Notu</h4>${account.note ? `<p>${esc(account.note)}</p>` : `<p class="hof-empty">Not yok.${manage ? " <b>Düzenle</b> ile ekleyin." : ""}</p>`}</div>
       </section>
       <div class="hof-kpis hof-plans-kpis"><div><strong>${esc(money(t.debit))}</strong><span>Borç Toplamı</span></div><div><strong>${esc(money(t.credit))}</strong><span>Alacak Toplamı · Tahsil ${esc(money(t.collected))}</span></div><div class="hof-cash-balance"><strong class="hof-acc-balance is-${sideTone(t.balance)}">${esc(money(Math.abs(t.balance)))}</strong><span>Bakiye${sideWord(t.balance) ? ` · ${sideWord(t.balance)}` : ""}</span></div><div class="${t.overdueCount ? "is-late" : ""}"><strong>${esc(money(t.planRemaining))}</strong><span>Taksitten Kalan${t.overdueCount ? ` · ${t.overdueCount} geciken` : ""}</span></div></div>
+      ${HOF.can("invoices.view") && HOF.invoices ? '<div class="hof-plan-section"><h4>Faturalar <span data-acc-inv-count></span></h4><button type="button" class="hof-link-button" data-act="allInvoices">Tümünü Gör</button></div><div class="hof-cash-list" data-acc-invoices><p class="hof-empty">Yükleniyor…</p></div>' : ""}
       <div class="hof-plan-section"><h4>Taksit Kartları <span>${account.plans.length}</span></h4></div>
       <div class="hof-cash-list hof-plans-items">${account.plans.length ? `<table class="hof-table hof-cash-table hof-plans-table"><thead><tr><th class="hof-plan-no">No</th><th>Kart</th><th class="num">Toplam</th><th class="num">Ödenen</th><th class="num">Kalan</th><th>Durum</th></tr></thead><tbody>${account.plans.map(planRow).join("")}</tbody></table>` : `<p class="hof-empty">Bu carinin taksit kartı yok.${canPlan() ? " <b>+ Taksit Planı</b> ile açın; tahsilatlar taksitten düşer ve burada görünür." : ""}</p>`}</div>
       <div class="hof-plan-section"><h4>Hareketler <span>${account.ledger.length}</span></h4>${account.ledger.length ? `<span class="hof-plan-chips" role="group">${LEDGER_FILTERS.map(([id, label, check]) => `<button type="button" data-ledger-filter="${id}" aria-pressed="${String(id === view.ledgerFilter)}">${label} <b>${account.ledger.filter(check).length}</b></button>`).join("")}</span>` : ""}</div>
       <div class="hof-cash-list hof-plans-entries">${lines.length ? `<table class="hof-table hof-cash-table"><thead><tr><th>Tarih</th><th>İşlem</th><th class="num">Borç</th><th class="num">Alacak</th><th class="num">Bakiye</th><th></th></tr></thead><tbody>${lines.map(ledgerRow).join("")}</tbody><tfoot><tr><td></td><td>Toplam</td><td class="num hof-cash-out">${esc(money(sums.debit))}</td><td class="num hof-cash-in">${esc(money(sums.credit))}</td><td></td><td></td></tr></tfoot></table>` : account.ledger.length ? '<p class="hof-empty">Bu süzgeçte hareket yok.</p>' : '<p class="hof-empty">Henüz hareket yok. Tahsilat, borç, alacak ve ödeme burada, yürüyen bakiyeyle görünür.</p>'}</div>
       <div class="hof-actions"><button type="button" class="hof-button hof-button-ghost" data-act="back">Listeye Dön</button><button type="button" class="hof-button" data-close>Kapat</button></div>`);
+    loadAccountInvoices(account);
+  }
+  // Cari kartında son faturalar (v2.0.15): kesilen, alınan, iade, taslak ve iptal; satırdan fatura açılır.
+  let invoiceTicket = 0;
+  async function loadAccountInvoices(account) {
+    const slot = body()?.querySelector("[data-acc-invoices]");
+    if (!slot) return;
+    const ticket = ++invoiceTicket;
+    try {
+      const data = await HOF.api(`/api/workspace/invoices?tab=all&account=${encodeURIComponent(account.id)}&limit=8`);
+      if (ticket !== invoiceTicket || !slot.isConnected) return;
+      const count = body()?.querySelector("[data-acc-inv-count]");
+      if (count) count.textContent = String(data.total);
+      slot.innerHTML = data.invoices.length
+        ? `<table class="hof-table hof-cash-table"><thead><tr><th>Tarih</th><th>No</th><th>Tür</th><th>Durum</th><th class="num">Tutar</th><th class="num">Açık</th></tr></thead><tbody>${data.invoices
+            .map(doc => `<tr data-open-invoice="${esc(doc.id)}" tabindex="0" class="${doc.status === "cancelled" ? "is-muted" : ""}"><td>${esc(HOF.formatDate(doc.issueDate))}</td><td><b>${esc(doc.displayNo || "Taslak")}</b></td><td>${esc(doc.kindLabel)}</td><td>${esc(doc.status === "issued" ? doc.payStateLabel : doc.statusLabel)}</td><td class="num">${esc(money(doc.tryPayable))}</td><td class="num">${doc.status === "issued" && doc.open > 0.004 ? esc(money(doc.open)) : "—"}</td></tr>`)
+            .join("")}</tbody></table>`
+        : `<p class="hof-empty">Bu carinin faturası yok.${HOF.can("invoices.manage") ? " Üstteki <b>Satış Faturası</b> ya da <b>Alış Faturası</b> ile kesin." : ""}</p>`;
+    } catch (error) {
+      if (slot.isConnected) slot.innerHTML = `<p class="hof-empty">${esc(error.message)}</p>`;
+    }
   }
 
   // ---------- Cari seçici (taksit kartı formu, stok hareketi) ----------
@@ -439,6 +468,75 @@
       return [];
     }
   }
+  // Fatura bilgileri (v2.0.15): faturada alıcı/satıcı kimliği bu alanlardan gelir (VKN/TCKN, vergi dairesi, adres).
+  // e-Belge bağlantısı açıksa e-Fatura mükellefiyeti ve posta kutusu etiketi de (Mükellef Sorgula ile doldurulur).
+  const edocOn = () => Boolean(HOF.invoices?.edocEnabled?.());
+  function taxFields(account) {
+    const a = account || {};
+    return [
+      { name: "partyKind", label: "Kişi Türü", type: "select", value: a.partyKind || "", options: [{ value: "", label: "Belirtilmedi" }, { value: "company", label: "Tüzel Kişi (Şirket)" }, { value: "person", label: "Gerçek Kişi (Şahıs)" }] },
+      { name: "taxNo", label: "VKN / TCKN", maxlength: 11, inputmode: "numeric", value: a.taxNo || "", help: "Şirkette 10 haneli vergi no, şahısta 11 haneli TC kimlik no. Kimliği bilinmeyen nihai tüketicide 11111111111." },
+      { name: "taxOffice", label: "Vergi Dairesi", maxlength: 120, value: a.taxOffice || "" },
+      { name: "firstName", label: "Adı (Gerçek Kişi)", maxlength: 80, value: a.firstName || "" },
+      { name: "familyName", label: "Soyadı (Gerçek Kişi)", maxlength: 80, value: a.familyName || "" },
+      { name: "district", label: "İlçe", maxlength: 80, value: a.district || "" },
+      { name: "city", label: "İl", maxlength: 80, value: a.city || "" },
+      { name: "postalCode", label: "Posta Kodu", maxlength: 10, value: a.postalCode || "" },
+      { name: "country", label: "Ülke", maxlength: 80, value: a.country || "Türkiye" },
+      { name: "mersisNo", label: "MERSİS No", maxlength: 16, inputmode: "numeric", value: a.mersisNo || "" },
+      { name: "tradeRegistry", label: "Ticaret Sicil No", maxlength: 40, value: a.tradeRegistry || "" },
+      { name: "website", label: "Web Sitesi", maxlength: 200, value: a.website || "" },
+      { name: "iban", label: "IBAN", maxlength: 34, value: a.iban || "", placeholder: "TR00 0000 0000 0000 0000 0000 00" },
+      { name: "dueDays", label: "Vade Günü", inputmode: "numeric", value: a.dueDays ? String(a.dueDays) : "", help: "Fatura vadesi kesim tarihinden bu kadar gün sonrasına yazılır; boşsa Fatura Ayarları'ndaki." },
+      ...(edocOn()
+        ? [
+            { name: "eInvoice", label: "e-Fatura mükellefi (bu cariye e-Fatura kesilir)", type: "checkbox", value: Number(a.eInvoice) === 1 },
+            { name: "eAlias", label: "e-Fatura posta kutusu etiketi", maxlength: 160, value: a.eAlias || "", placeholder: "urn:mail:defaultpk@…" },
+            { name: "eProfile", label: "e-Fatura senaryosu", type: "select", value: a.eProfile || "", options: [{ value: "", label: "Ayarlardaki Varsayılan" }, { value: "TEMELFATURA", label: "Temel Fatura" }, { value: "TICARIFATURA", label: "Ticari Fatura" }] },
+          ]
+        : []),
+    ];
+  }
+  const TAX_KEYS = ["partyKind", "taxNo", "taxOffice", "firstName", "familyName", "district", "city", "postalCode", "country", "mersisNo", "tradeRegistry", "website", "iban", "dueDays"];
+  function taxPayload(data) {
+    const out = Object.fromEntries(TAX_KEYS.filter(key => key in data).map(key => [key, String(data[key] ?? "").trim()]));
+    if (out.taxNo !== undefined) out.taxNo = out.taxNo.replace(/\s+/g, "");
+    if (out.iban !== undefined) out.iban = out.iban.replace(/\s+/g, "").toUpperCase();
+    if ("eInvoice" in data) Object.assign(out, { eInvoice: data.eInvoice === true, eAlias: String(data.eAlias || "").trim(), eProfile: data.eProfile || "" });
+    return out;
+  }
+  function wireTaxFields(dialog) {
+    const kind = dialog.querySelector('select[name="partyKind"]');
+    if (!kind) return;
+    const head = HOF.el("h4", { class: "hof-acc-form-head" }, "Fatura Bilgileri");
+    kind.closest(".hof-field").before(head);
+    const personal = ["firstName", "familyName"].map(name => dialog.querySelector(`[name="${name}"]`)?.closest(".hof-field")).filter(Boolean);
+    const taxNo = dialog.querySelector('input[name="taxNo"]');
+    const sync = () => {
+      const digits = taxNo.value.replace(/\D/g, "");
+      const person = kind.value === "person" || (!kind.value && digits.length === 11);
+      personal.forEach(field => (field.hidden = !person));
+    };
+    kind.addEventListener("change", sync);
+    taxNo.addEventListener("input", sync);
+    sync();
+    if (!edocOn()) return;
+    const button = HOF.el("button", { type: "button", class: "hof-button hof-button-small hof-button-ghost" }, "Mükellef Sorgula");
+    taxNo.closest(".hof-field").append(button);
+    button.addEventListener("click", async () => {
+      button.disabled = true;
+      try {
+        const result = await HOF.api("/api/workspace/invoices/check-user", { method: "POST", body: { taxNo: taxNo.value } });
+        dialog.querySelector('input[name="eInvoice"]').checked = result.registered;
+        dialog.querySelector('input[name="eAlias"]').value = result.aliases[0] || "";
+        HOF.toast(result.registered ? `e-Fatura mükellefi${result.title ? `: ${result.title}` : ""}. Posta kutusu etiketi yazıldı.` : "e-Fatura mükellefi değil; bu cariye e-Arşiv fatura kesilir.", { type: "success", timeout: 7000 });
+      } catch (error) {
+        HOF.toastError(error);
+      } finally {
+        button.disabled = false;
+      }
+    });
+  }
   async function editAccount(account, preset = null) {
     const groups = await groupsNow();
     const link = { caseKey: account?.caseKey || preset?.caseKey || "", caseSource: account?.caseSource || "", caseTitle: account?.caseTitle || preset?.caseTitle || "" };
@@ -457,6 +555,7 @@
         { name: "email", label: "E-Posta", type: "email", maxlength: 160, value: account?.email || "" },
         { name: "address", label: "Adres", type: "textarea", rows: 2, maxlength: 500, value: account?.address || "" },
         ...(office().groupFields ? office().groupFields(groups, account || {}) : []),
+        ...taxFields(account),
         { name: "note", label: "Bilgi Notu", type: "textarea", rows: 3, maxlength: 2000, value: account?.note || "" },
         ...(account
           ? []
@@ -469,6 +568,7 @@
       onOpen: dialog => {
         dialog.classList.add("hof-plan-form", "hof-acc-form");
         office().wireGroupFields?.(dialog, groups);
+        wireTaxFields(dialog);
         if (HOF.plans?.casePicker) {
           const casePicker = HOF.el("div", { class: "hof-field hof-case-picker" }, HOF.plans.casePicker.html(link));
           dialog.querySelector('textarea[name="address"]').closest(".hof-field").after(casePicker);
@@ -548,7 +648,7 @@
             }
           }
         }
-        const payload = { name: data.name, type: data.type, refNo: data.refNo, registeredOn: data.registeredOn, phone: data.phone, email: data.email, address: data.address, note: data.note, fields: fieldsBox ? fieldsBox.read() : [], caseKey: data.caseKey || "", caseSource: data.caseSource || "", caseTitle: data.caseKey ? data.caseTitle : "", ...(office().groupBody ? office().groupBody(data) : {}) };
+        const payload = { ...taxPayload(data), name: data.name, type: data.type, refNo: data.refNo, registeredOn: data.registeredOn, phone: data.phone, email: data.email, address: data.address, note: data.note, fields: fieldsBox ? fieldsBox.read() : [], caseKey: data.caseKey || "", caseSource: data.caseSource || "", caseTitle: data.caseKey ? data.caseTitle : "", ...(office().groupBody ? office().groupBody(data) : {}) };
         if (!account) Object.assign(payload, { openingBalance: data.openingBalance, openingSide: data.openingSide || "auto" });
         const result = account ? await HOF.api(`/api/workspace/accounts/${encodeURIComponent(account.id)}`, { method: "PUT", body: payload }) : await HOF.api("/api/workspace/accounts", { method: "POST", body: payload });
         HOF.toast(account ? "Cari güncellendi." : "Cari açıldı.", { type: "success" });
@@ -858,6 +958,12 @@
       return;
     }
     if (event.target.closest(".hof-acc-check")) return;
+    const invoiceLink = event.target.closest("[data-open-invoice]");
+    if (invoiceLink) {
+      event.preventDefault();
+      modal.close();
+      return HOF.invoices?.openDoc(invoiceLink.dataset.openInvoice);
+    }
     const chequeLink = event.target.closest("[data-open-cheque]");
     if (chequeLink) {
       modal.close();
@@ -910,6 +1016,14 @@
       return HOF.revealRecord?.(account.caseKey);
     }
     if (act === "edit") return editAccount(account);
+    if (act === "saleInvoice" || act === "purchaseInvoice") {
+      modal.close();
+      return HOF.invoices?.newFor({ side: act === "saleInvoice" ? "sale" : "purchase", account: { id: account.id, name: account.name } });
+    }
+    if (act === "allInvoices") {
+      modal.close();
+      return HOF.invoices?.forAccount({ id: account.id, name: account.name });
+    }
     if (act === "passive") return setStatus(account, "passive");
     if (act === "activate") return setStatus(account, "active");
     if (act === "delete") return deleteAccount(account);

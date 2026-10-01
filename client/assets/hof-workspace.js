@@ -738,6 +738,8 @@
     { action: "stock", icon: "▦", key: "side.stock", label: () => "Stok", requires: "stock.view", badge: "warn" },
     // Çek / Senet (v2.0.7): alınan portföy ve verilen evrak; rozet = vadesi geçen ve bugün vadesi gelen açık evrak.
     { action: "cheques", icon: "✎", key: "side.cheques", label: () => "Çek / Senet", requires: "cheques.view", badge: "warn" },
+    // Fatura (v2.0.15): satış, alış, iade, serbest meslek makbuzu; rozet = vadesi geçmiş satış faturası sayısı.
+    { action: "invoices", icon: "≡", key: "side.invoices", label: () => "Fatura", requires: "invoices.view", badge: "warn" },
     { action: "liens", icon: "!", key: "side.liens", label: () => "Haciz Uyarıları", badge: "warn", module: "haciz" },
     // Raporlar (v2.0.9): ANLIK DURUM'daki "Rapor Al" ile aynı pencere (Cari ekstre, Vade takip, Nakit akış, Çek/Senet,
     // modül raporları, Tablo raporları). Rapor yetkisi ya da kişiye verilen ANLIK DURUM yetkisiyle görünür.
@@ -836,6 +838,7 @@
       else if (action === "accounts") HOF.accounts?.open();
       else if (action === "stock") HOF.stock?.open();
       else if (action === "cheques") HOF.cheques?.open();
+      else if (action === "invoices") HOF.invoices?.open({ account: {} });
       else if (action === "editSide") openSideEditor();
       else if (action === "guide") window.open("/kilavuz/DestekOfis-Kullanim-Kilavuzu.pdf", "_blank", "noopener");
       else if (action === "reports") openReports();
@@ -853,12 +856,15 @@
       if (node) node.textContent = value ? String(value) : "";
     };
     try {
-      const [tasks, liens, plans, cheques] = await Promise.all([
+      const [tasks, liens, plans, cheques, invoices] = await Promise.all([
         HOF.api("/api/workspace/tasks?status=open&mine=1"),
         HOF.api("/api/workspace/liens?days=7"),
         HOF.can("plans.view") ? HOF.api("/api/workspace/plans?status=overdue").catch(() => null) : null,
         HOF.can("cheques.view") ? HOF.api("/api/workspace/cheques?status=open&limit=1").catch(() => null) : null,
+        HOF.can("invoices.view") ? HOF.api("/api/workspace/invoices?tab=sale&pay=overdue&limit=1").catch(() => null) : null,
       ]);
+      // Fatura rozeti (v2.0.15): vadesi geçmiş, tahsil edilmemiş satış faturası sayısı.
+      if (invoices) setBadge("invoices", invoices.total);
       // Çek / Senet rozeti: vadesi geçmiş ya da bugün vadesi gelen açık evrak sayısı (v2.0.7).
       if (cheques) setBadge("cheques", cheques.summary.in.overdue.count + cheques.summary.in.today.count + cheques.summary.out.overdue.count + cheques.summary.out.today.count);
       setBadge("tasks", tasks.length);

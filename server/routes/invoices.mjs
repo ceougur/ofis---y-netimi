@@ -27,7 +27,7 @@ import { createSecretBox } from "../lib/secret-box.mjs";
 import { addMonths, dayText, isoDay } from "../lib/plans.mjs";
 import { tablePdf, tl } from "../lib/report-pdf.mjs";
 import { ANONYMOUS_TCKN, classifyTaxId, isValidIban, isValidMersis, normalizeIban, partyProblems, splitPersonName } from "../lib/tax-id.mjs";
-import { unitLabel } from "../lib/units.mjs";
+import { UNITS, unitLabel } from "../lib/units.mjs";
 import { buildXlsx } from "../lib/xlsx-write.mjs";
 import { createZip } from "../lib/zip.mjs";
 
@@ -865,6 +865,12 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, conf
     if (seq > 999_999_999) throw new HttpError(409, `${series} serisinde ${year} yılı için numara kalmadı.`);
     return { seq, number: `${series}${year}${String(seq).padStart(9, "0")}` };
   }
+  // Ayarlar ekranı: bu yıl her serinin sıradaki numarası (kâğıt / iç seri; e-Belge açıksa e-Belge serileri de).
+  function nextNumbers(s) {
+    const year = Number(today().slice(0, 4));
+    const keys = edocEnabled ? Object.keys(s.series) : ["paper", "smm", "internal"];
+    return Object.fromEntries(keys.map(key => [key, { series: s.series[key], year, ...nextNumber(s.series[key], year, s) }]));
+  }
   // VUK md. 231 ve GİB: aynı seride numara sırası ile tarih sırası uyuşmalı — yeni fatura serinin son faturasından eski
   // tarihli olamaz (iptal edilmiş numara da sırada yer tutar).
   function assertChronology(series, year, date) {
@@ -1259,6 +1265,7 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, conf
       exemptions: Object.entries(EXEMPTIONS).map(([code, label]) => ({ code, label })),
       expenses: Object.entries(EXPENSES).map(([code, value]) => ({ code, label: value.label, account: value.account })),
       currencies: Object.entries(CURRENCIES).map(([code, value]) => ({ code, label: value.label, symbol: value.symbol })),
+      units: UNITS,
       methods: METHODS,
       payStates: PAY_STATES,
       eStates: E_STATES,
@@ -1276,7 +1283,7 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, conf
   router.get("/api/workspace/invoices/settings", async ({ req, res }) => {
     requireView(req);
     const s = settings();
-    ok(res, { ...publicSettings(s), edocEnabled, problems: { KAGIT: sellerProblems("KAGIT", s), EARSIVFATURA: sellerProblems("EARSIVFATURA", s), TEMELFATURA: sellerProblems("TEMELFATURA", s) } });
+    ok(res, { ...publicSettings(s), edocEnabled, nextNumbers: nextNumbers(s), problems: { KAGIT: sellerProblems("KAGIT", s), EARSIVFATURA: sellerProblems("EARSIVFATURA", s), TEMELFATURA: sellerProblems("TEMELFATURA", s) } });
   });
   router.put("/api/workspace/invoices/settings", async ({ req, res }) => {
     const user = auth.requirePermission(req, "invoices.settings");
@@ -1290,7 +1297,7 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, conf
       audit(user, "invoice.settings.updated", "settings", { efatura: next.efatura, earsiv: next.earsiv, series: next.series, integrator: integratorLog });
     });
     publish(user, { kind: "invoices", settings: true });
-    ok(res, { ...publicSettings(next), edocEnabled, problems: { KAGIT: sellerProblems("KAGIT", next), EARSIVFATURA: sellerProblems("EARSIVFATURA", next), TEMELFATURA: sellerProblems("TEMELFATURA", next) } });
+    ok(res, { ...publicSettings(next), edocEnabled, nextNumbers: nextNumbers(next), problems: { KAGIT: sellerProblems("KAGIT", next), EARSIVFATURA: sellerProblems("EARSIVFATURA", next), TEMELFATURA: sellerProblems("TEMELFATURA", next) } });
   });
   router.get("/api/workspace/invoices", async ({ req, res, url }) => {
     const user = requireView(req);
