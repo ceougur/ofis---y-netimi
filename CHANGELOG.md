@@ -2,7 +2,7 @@
 
 Sürümler [anlamsal sürümleme](https://semver.org/lang/tr/) kurallarına uyar.
 
-## 2.0.14 — hazırlanıyor (yayımlanmadı)
+## 2.0.14 — Arama kutularında ve bütün programda odak, detay panelinde Cari Kartı düğmesi, WhatsApp Otomatik Sıra ve kendiliğinden inen ekstre PDF'i, Tablodan Aktar geri alma düzeltmesi
 
 - **Arama kutusuna yazarken odak düşüyordu (müşteri: Cari, Taksitler, Stok — "fı" yazınca kutuya yeniden tıklamak gerekiyordu).** Liste her gelişte arama kutusuyla birlikte yeniden kuruluyordu. Artık programdaki her liste yenilenirken (yazarken ve başka kullanıcının değişikliğiyle gelen canlı yenilemede) odaklı kutu, yazılan metin, imleç ve kaydırma yerinde kalır: Cari, Taksitler, Stok, Çek / Senet, Raporlar (Cari Ekstre araması, Tüm Raporlar), Sohbet (kişi arama ve mesaj yazarken gelen mesaj), Tablodan Aktar seçenekleri, toplu taksitlendirme cari seçici, ana tablo araması. Ortak kural tek yerde (`HOF.swap`), yeni ekranlar da aynı kuralla kurulur.
 - **Detay panelindeki "Cari Kartı" düğmesi tepki vermiyordu (müşteri).** Panelde iki bölüm (denetim uyarıları ve cari/taksit) aynı yeri isteyip her ekran değişiminde birbirini itiyordu; her taşınma odağı düşürüyor, tıklama anında taşınınca düğme çalışmıyordu. Bölümlerin sırası sabitlendi (düğmeler → denetim → cari/taksit), odak içindeyken bölüm taşınmaz; "Cari Kartı", "+ Tahsilat" ve "Taksit Kartını Aç" her durumda açılır.
