@@ -220,7 +220,7 @@
   function renderList() {
     state.view = "list";
     const body = panel.querySelector("[data-body]");
-    body.innerHTML = `<div class="hof-chat-search"><input type="search" data-filter placeholder="Kişi ara…" aria-label="Kişi ara" value="${esc(state.filter)}"></div><div class="hof-chat-list" data-list role="list"></div>`;
+    HOF.swap(body, `<div class="hof-chat-search"><input type="search" data-filter placeholder="Kişi ara…" aria-label="Kişi ara" value="${esc(state.filter)}"></div><div class="hof-chat-list" data-list role="list"></div>`);
     renderListItems();
   }
 

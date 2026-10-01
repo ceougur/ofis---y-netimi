@@ -248,6 +248,8 @@
   const body = () => modal?.dialog.querySelector("[data-plans]");
   function open(planId = "") {
     if (!HOF.can("plans.view")) return HOF.toast(`${moduleName()} için yetkiniz yok.`, { type: "error" });
+    // v2.0.14: pencere DOM'dan kaldırıldıysa (kapanışı haber vermeden) referans bayattır; yeniden açılır.
+    if (modal && !document.body.contains(modal.node)) modal = null;
     if (modal) {
       if (planId) loadPlan(planId);
       return;
@@ -369,7 +371,7 @@
       const next = plan.next ? `${HOF.formatDate(plan.next.dueDate)}<small>${esc(plan.next.seq)}. taksit · ${esc(dayLabel(plan.next.days))}</small>` : plan.itemCount ? "<small>—</small>" : '<small class="is-warn">Taksit girilmemiş</small>';
       return `<tr data-plan="${esc(plan.id)}" class="is-${esc(plan.state)}" tabindex="0"><td class="hof-plan-no">${esc(plan.refNo || "")}</td><td><b>${esc(plan.name)}</b><small>${esc(whereText(plan) || "Grupsuz")}${plan.phone ? ` · ${esc(plan.phone)}` : ""}${plan.registeredOn ? ` · kayıt ${esc(HOF.formatDate(plan.registeredOn))}` : ""}</small>${plan.note ? `<small class="hof-plan-row-note" title="${esc(plan.note)}">${esc(plan.note)}</small>` : ""}</td><td class="num">${esc(money(plan.totals.total))}</td><td class="num hof-cash-in">${esc(money(plan.totals.paid))}${progress(plan.totals)}</td><td class="num${plan.totals.remaining > 0 ? " hof-cash-out" : ""}">${esc(money(plan.totals.remaining))}</td><td>${next}</td><td>${badge(label, tone)}${plan.totals.overdueCount ? `<small>${plan.totals.overdueCount} taksit · ${esc(money(plan.totals.overdue))}</small>` : ""}</td></tr>`;
     };
-    root.innerHTML = `<div class="hof-cash-bar"><div class="hof-tabs" role="group" aria-label="Durum">${STATUS_TABS.map(item => `<button type="button" data-status="${item.id}" aria-pressed="${String(item.id === view.status)}">${item.label}</button>`).join("")}</div>
+    HOF.swap(root, `<div class="hof-cash-bar"><div class="hof-tabs" role="group" aria-label="Durum">${STATUS_TABS.map(item => `<button type="button" data-status="${item.id}" aria-pressed="${String(item.id === view.status)}">${item.label}</button>`).join("")}</div>
       <div class="hof-cash-add">${manage ? `<button type="button" class="hof-button hof-button-small" data-act="new">+ Yeni Kart</button>${canBulk() ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="bulk" title="Carileri seçip her birine aynı planla taksit kartı açın">+ Toplu Taksitlendir</button>' : ""}<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="import" title="Excel dosyasından ya da Google Sheets’ten kartları ve grupları tek seferde oluştur">Excel / Sheets’ten Yükle</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="transfer" title="Ana tabloya yüklenen verideki ödeme planlarını (ay kolonları, taksit kolonları) gerçek vadeleriyle kartlara aktar">Tablodan Aktar</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="groups">Gruplar</button>` : ""}</div></div>
       <div class="hof-plans-filters"><input type="search" data-filter="q" value="${esc(view.q)}" placeholder="Ad, telefon, sıra no, not ara…" aria-label="Ara">${groupOptions()}${canBulk() ? `<button type="button" class="hof-button hof-button-small hof-button-ghost hof-plan-pick" data-act="pick" title="Seçili gruptaki carileri listele, seçip toplu taksitlendir">${PEOPLE_ICON}Cari Seç</button>` : ""}<select data-filter="sort" aria-label="Sıralama">${SORT_OPTIONS.map(([id, label]) => `<option value="${id}" ${id === view.sort ? "selected" : ""}>${label}</option>`).join("")}</select>${outputButtons(listPdfUrl(), "list")}</div>
       <div class="hof-kpis hof-plans-kpis" data-kpis>${data ? `<div class="hof-cash-balance"><strong>${esc(money(data.totals.remaining))}</strong><span>Kalan Alacak · ${data.totals.count} kart</span></div><div class="${data.totals.overdueCount ? "is-late" : ""}"><strong>${esc(money(data.totals.overdue))}</strong><span>Geciken · ${data.totals.overdueCount} taksit</span></div><div><strong>${esc(money(data.totals.month))}</strong><span>Bu Ay Beklenen</span></div><div><strong>${esc(money(data.totals.paid))}</strong><span>Tahsil Edilen</span></div>` : ""}</div>
@@ -382,7 +384,7 @@
             : emptyList(filtered, manage)
       }</div>
       <p class="hof-edit-meta">Satıra tıklayınca kart açılır. PDF ve Yazdır ekrandaki süzgeç ve sıralamayla hazırlanır. Kartın üstüne girilen tahsilatlar Kasa’ya düşer; vadesi gelen taksit tahsilat takviminde ve bildirimlerde görünür.</p>
-      <div class="hof-actions"><button type="button" class="hof-button" data-close>Kapat</button></div>`;
+      <div class="hof-actions"><button type="button" class="hof-button" data-close>Kapat</button></div>`);
   }
 
   // ---------- Kart ----------
@@ -423,7 +425,7 @@
     const span = plan.items.length ? `${plan.items.length} taksit · ${HOF.formatDate(plan.items[0].dueDate)} – ${HOF.formatDate(plan.items.at(-1).dueDate)}` : "Taksit kurulmadı";
     const share = t.total > 0 ? Math.max(0, Math.min(100, Math.round((t.paid / t.total) * 100))) : 0;
     const sums = entries.reduce((sum, entry) => ({ in: sum.in + (entry.kind === "in" ? entry.amount : 0), out: sum.out + (entry.kind === "out" ? entry.amount : 0) }), { in: 0, out: 0 });
-    root.innerHTML = `<div class="hof-plan-head">
+    HOF.swap(root, `<div class="hof-plan-head">
         <div class="hof-plan-headline"><button type="button" class="hof-plan-back" data-act="back" title="Listeye dön">← Liste</button>
           <div class="hof-plan-title"><h3>${plan.refNo ? `<span class="hof-plan-refno" title="Sıra No">No ${esc(plan.refNo)}</span>` : ""}${esc(plan.name)} ${badge(label, tone)}</h3><small>${esc(whereText(plan) || "Grupsuz")}${plan.phone ? ` · ${esc(plan.phone)}` : ""}</small></div></div>
         <div class="hof-plan-actions" role="toolbar" aria-label="Kart işlemleri">
@@ -452,7 +454,7 @@
       <div class="hof-cash-list hof-plans-items">${items.length ? `<table class="hof-table hof-cash-table hof-plan-items"><thead><tr><th>No</th><th>Vade</th><th class="num">Tutar</th><th class="num">Ödenen</th><th class="num">Kalan</th><th>Durum</th><th></th></tr></thead><tbody>${items.map(itemRow).join("")}</tbody><tfoot><tr><td></td><td>Toplam</td><td class="num">${esc(money(items.reduce((sum, item) => sum + item.amount, 0)))}</td><td class="num hof-cash-in">${esc(money(items.reduce((sum, item) => sum + item.paid, 0)))}</td><td class="num hof-cash-out">${esc(money(items.reduce((sum, item) => sum + item.remaining, 0)))}</td><td colspan="2"></td></tr></tfoot></table>` : noItems}</div>
       <div class="hof-plan-section"><h4>Hareketler <span>${plan.entries.length}</span></h4>${plan.entries.length ? chips(ENTRY_FILTERS, plan.entries, view.entryFilter, "data-entry-filter") : ""}</div>
       <div class="hof-cash-list hof-plans-entries">${entries.length ? `<table class="hof-table hof-cash-table"><thead><tr><th>Tarih</th><th>İşlem</th><th class="num">Tahsilat</th><th class="num">Ödeme</th><th></th></tr></thead><tbody>${entries.map(entryRow).join("")}</tbody><tfoot><tr><td></td><td>Toplam</td><td class="num hof-cash-in">${esc(money(sums.in))}</td><td class="num hof-cash-out">${esc(money(sums.out))}</td><td></td></tr></tfoot></table>` : plan.entries.length ? '<p class="hof-empty">Bu süzgeçte hareket yok.</p>' : '<p class="hof-empty">Henüz hareket yok. Tahsilat girildiğinde burada ve Kasa’da görünür; her tahsilatın makbuzu PDF olarak alınır.</p>'}</div>
-      <div class="hof-actions"><button type="button" class="hof-button hof-button-ghost" data-act="back">Listeye Dön</button><button type="button" class="hof-button" data-close>Kapat</button></div>`;
+      <div class="hof-actions"><button type="button" class="hof-button hof-button-ghost" data-act="back">Listeye Dön</button><button type="button" class="hof-button" data-close>Kapat</button></div>`);
   }
 
   // ---------- Formlar ----------

@@ -122,7 +122,7 @@
         </tr>`,
       )
       .join("");
-    root.innerHTML = `<div class="hof-plan-head">
+    HOF.swap(root, `<div class="hof-plan-head">
         <div class="hof-plan-title"><h3>${esc(moduleName())}</h3><small>Alınan evrak portföye girer, tahsil edilince Kasa'ya; verilen evrak ödenince Kasa'dan çıkar.</small></div>
         <div class="hof-plan-actions" role="toolbar" aria-label="Çek / senet işlemleri">
           ${canManage() ? `<button type="button" class="hof-button hof-button-small" data-act="new-in">+ Çek / Senet Al</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="new-out">+ Çek / Senet Ver</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="import">Excel / Sheets’ten Yükle</button>` : ""}
@@ -137,7 +137,7 @@
         <input type="search" data-filter="q" value="${esc(view.q)}" placeholder="No, banka, kişi, not ara…" aria-label="Ara">
       </div>
       ${data ? `<div class="hof-rep-table"><table class="hof-table hof-chq-table"><thead><tr><th>Vade</th><th>Evrak</th><th>No / Banka</th><th>Kimden / Kime</th><th>Durum</th><th class="num">Tutar</th></tr></thead><tbody>${rows || `<tr><td colspan="6" class="hof-empty">${view.status === "open" && !view.q ? "Portföyde evrak yok. “+ Çek / senet al” ile ekleyin." : "Bu süzgeçte evrak yok."}</td></tr>`}</tbody></table></div>
-        <p class="hof-rep-note">${data.total.toLocaleString("tr-TR")} evrak · ${esc(money(data.listed.amount))}${data.hasMore ? ` · <button type="button" class="hof-link-button" data-act="more">Daha Fazla Göster</button>` : ""}</p>` : '<p class="hof-empty">Yükleniyor…</p>'}`;
+        <p class="hof-rep-note">${data.total.toLocaleString("tr-TR")} evrak · ${esc(money(data.listed.amount))}${data.hasMore ? ` · <button type="button" class="hof-link-button" data-act="more">Daha Fazla Göster</button>` : ""}</p>` : '<p class="hof-empty">Yükleniyor…</p>'}`);
   }
 
   // ---------- Kart ----------
@@ -155,7 +155,7 @@
         event => `<li class="is-${esc(event.kind)}"><span class="hof-chq-when">${esc(HOF.formatDate(event.date))}</span><b>${esc(event.label)}</b>${event.accountName ? ` · ${esc(event.accountName)}` : ""}${event.note ? `<small>${esc(event.note)}</small>` : ""}<small class="hof-muted">${esc(event.actorName || "")} · ${esc(HOF.formatDateTime(event.createdAt))}${event.ledger ? " · defter kaydı yazıldı" : ""}</small></li>`,
       )
       .join("");
-    root.innerHTML = `<div class="hof-plan-head">
+    HOF.swap(root, `<div class="hof-plan-head">
         <div class="hof-plan-headline"><button type="button" class="hof-plan-back" data-act="back" title="Listeye dön">← Liste</button>
           <div class="hof-plan-title"><h3><span class="hof-chq-dir is-${esc(cheque.direction)}">${esc(cheque.directionLabel)}</span> ${esc(cheque.instrumentLabel)}${cheque.serialNo ? ` No ${esc(cheque.serialNo)}` : ""} ${statusPill(cheque)}</h3><small>${esc(cheque.party)}${cheque.bank ? ` · ${esc(cheque.bank)}` : ""}</small></div></div>
         <div class="hof-chq-amount"><span>Tutar</span><strong>${esc(money(cheque.amount))}</strong></div>
@@ -173,7 +173,7 @@
       <div class="hof-chq-actions" role="toolbar" aria-label="Evrak işlemleri">${actionButtons}${cheque.canUndo ? `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="undo">↶ ${esc(cheque.undoLabel)}</button>` : ""}${cheque.canManage ? `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="edit">Düzenle</button>` : ""}${cheque.canDelete ? `<button type="button" class="hof-button hof-button-small hof-button-danger-ghost" data-act="delete">Sil</button>` : ""}</div>
       <p class="hof-rep-note">${cheque.direction === "in" ? "Alınınca carinin borcu düşer (ya da taksite sayılır); para Kasa'ya tahsil edilince girer. Ciro edilince tedarikçiye olan borç düşer. Karşılıksız çıkarsa müşteri yeniden borçlanır." : "Verilince tedarikçiye olan borç düşer; para Kasa'dan ödenince çıkar."}</p>
       <h4 class="hof-chq-subtitle">İşlem Geçmişi</h4>
-      <ol class="hof-chq-history">${history}</ol>`;
+      <ol class="hof-chq-history">${history}</ol>`);
   }
 
   // ---------- Formlar ----------

@@ -400,7 +400,7 @@
     else if (report.tab === "vade") content = vadeView(s);
     else if (report.tab === "flow") content = flowView(s);
     else content = chequeView(s);
-    node.innerHTML = tabBar + content;
+    HOF.swap(node, tabBar + content);
     if (report.tab === "flow" && s.data) wireChart(node.querySelector("[data-chart]"), s.data);
   }
 

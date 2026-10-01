@@ -35,7 +35,8 @@
     // İşlem düğmelerinin hemen altında (kaydın bilgilerinden önce).
     const actions = panel.querySelector(".hof-case-actions");
     const anchor = actions || panel.querySelector(".detail-header");
-    if (anchor && anchor.nextSibling !== node) anchor.after(node);
+    // v2.0.14: yalnız yerinde değilse taşınır; odak içindeyken taşınmaz (taşınma odağı düşürür). Sıra: düğmeler → bu bölüm → #hof-case-plan.
+    if (anchor && anchor.nextSibling !== node && !node.contains(document.activeElement)) anchor.after(node);
     return { node, selected };
   }
 
