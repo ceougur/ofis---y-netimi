@@ -54,7 +54,7 @@ Bu dosya oturumlar arasında taşınan hafızadır. Her oturumun başında okunu
   simülasyonu kullanıcı kararıyla iptal. Doğrulama: `npm test`, `npm run test:mutabakat`, `npm run mutabakat`,
   `npm run test:senaryo-whatsapp` (1.000 cari). Senaryolar tarihe bağlı yazılmasın (ayın 1'inde kırılanlar düzeltildi).
 - 2.0.14 hazır (dal `claude/nice-euler-jvajxv`; paket üretildi, yayın/birleştirme kullanıcı onayı bekliyor — 01.10.2026).
-  Beş madde de yapıldı; kanıt: `npm test` 704/704, `test:senaryo-214` 50/50, `test:senaryo-whatsapp` 45/45, `test:senaryo-213` 61/61.
+  Teslim zipleri scratchpad'de (güncelleme 9a6bc908…, kurulum dae7a169…). Beş madde de yapıldı; kanıt: `npm test` 704/704, `test:senaryo-214` 50/50, `test:senaryo-whatsapp` 45/45, `test:senaryo-213` 61/61.
   Yapılan liste:
   1. YAPILDI (09c720f): Tablodan Aktar geri alma damga düzeltmesi — plans/plan_items `created_at`/`updated_at` iki ayrı
      now() yerine tek damga; CI Windows/Node 22 hücresinde aralıklı düşen `plan-transfer.test.mjs:371`'in kök nedeni.
