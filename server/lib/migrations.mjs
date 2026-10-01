@@ -830,6 +830,53 @@ export const MIGRATIONS = [
       }
     },
   },
+  {
+    version: 17,
+    name: "v2.0.13 mevcut borcu taksitlendirme, satış iadesi, satış fiyatı, WhatsApp gönderim kaydı, mutabakat günlüğü",
+    up(store) {
+      // Yalnız ekleyici: mevcut hiçbir satır değişmez.
+      // Mevcut borcu taksitlendiren kart: carinin borcu zaten yazılı (veresiye satış, açılış, borç yaz); kart yalnız
+      // vadeleri tutar, carinin defterine ikinci kez borç yazmaz. Tahsilatları borçtan düşer.
+      addColumn(store, "plans", "covers_balance", "INTEGER NOT NULL DEFAULT 0");
+      // Kartın kapatıldığı gün: vazgeçilen kalan ana defterde bu tarihte yazılır (dönem kilidiyle uyumlu).
+      addColumn(store, "plans", "closed_at", "TEXT");
+      // Stok hareketinin nedeni: '' (alım / satış / kullanım) ya da 'return' (müşteri iadesi: satıştan dönen mal).
+      addColumn(store, "stock_moves", "reason", "TEXT NOT NULL DEFAULT ''");
+      // Ürünün satış fiyatı (birim fiyat = alış/maliyet). Çıkış formu satış fiyatıyla açılır; brüt kâr hesaplanır.
+      addColumn(store, "stock_items", "sale_price", "REAL NOT NULL DEFAULT 0");
+      // Ödeme / tahsilat yolu: nakit (Kasa), bank (havale/EFT), card (kredi kartı). Eski hareketler nakit sayılır.
+      for (const table of ["payments", "cash_entries", "account_entries", "plan_entries", "stock_moves", "cheque_events"]) {
+        if (store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = ?", table)) addColumn(store, table, "method", "TEXT NOT NULL DEFAULT 'cash'");
+      }
+      // WhatsApp gönderim kaydı: tek ya da toplu ekstre/mesaj; kime, ne zaman, kimin gönderdiği (cari kartında görünür).
+      store.exec(`
+        CREATE TABLE IF NOT EXISTS message_sends (
+          id TEXT PRIMARY KEY,
+          batch_id TEXT NOT NULL,
+          account_id TEXT NOT NULL,
+          kind TEXT NOT NULL CHECK (kind IN ('statement', 'message')),
+          phone TEXT NOT NULL DEFAULT '',
+          body TEXT NOT NULL DEFAULT '',
+          status TEXT NOT NULL DEFAULT 'sent' CHECK (status IN ('sent', 'skipped')),
+          created_by TEXT NOT NULL,
+          created_at TEXT NOT NULL
+        );
+        CREATE INDEX IF NOT EXISTS idx_message_sends_account ON message_sends(account_id, created_at);
+        CREATE INDEX IF NOT EXISTS idx_message_sends_batch ON message_sends(batch_id);
+        -- Mutabakat günlüğü: alt defter ile ana defter arasında sapma yaratacağı için geri alınan (ROLLBACK) işlemler
+        -- ve açılışta bulunan eski sapmalar. Kayıt silinmez; yönetici Raporlar > Ana Defter'den görür.
+        CREATE TABLE IF NOT EXISTS integrity_log (
+          id TEXT PRIMARY KEY,
+          at TEXT NOT NULL,
+          action TEXT NOT NULL CHECK (action IN ('rolled-back', 'baseline')),
+          tables TEXT NOT NULL DEFAULT '',
+          summary TEXT NOT NULL DEFAULT '',
+          detail_json TEXT NOT NULL DEFAULT '[]'
+        );
+        CREATE INDEX IF NOT EXISTS idx_integrity_log_at ON integrity_log(at);
+      `);
+    },
+  },
 ];
 
 export const LATEST_VERSION = MIGRATIONS.at(-1).version;

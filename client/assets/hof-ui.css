@@ -9443,3 +9443,46 @@ input[type="search"]::-webkit-search-cancel-button {
 /* v2.0.12: Yeni Taksit Kartı — "Taksitler" seçimi tam satır; Taksit Sayısı ile İlk Vade yan yana, Grup ile Alt Grup yan yana
    (müşteri: "ilk vade aşağıda kalıyor"). */
 .hof-plan-form .hof-field:has(> select[name="items"]) { grid-column: 1 / -1; }
+
+/* v2.0.13 — ödeme / tahsilat yolu etiketi ve Kasa ve Banka yol sekmeleri */
+.hof-method-tag { display: inline-block; margin-left: 4px; padding: 0 6px; border-radius: 999px; font-size: 11px; font-weight: 600; line-height: 18px; background: #eef2ff; color: #3730a3; vertical-align: middle; }
+.hof-method-tag.is-cash { background: #ecfdf5; color: #065f46; }
+.hof-method-tag.is-card { background: #fff7ed; color: #9a3412; }
+.hof-method-tabs { margin: 0 0 10px; flex-wrap: wrap; }
+.hof-dup-hint { margin-top: 6px; padding: 8px 10px; border-radius: 8px; background: #fffbeb; border: 1px solid #fcd34d; color: #78350f; font-size: 12.5px; line-height: 1.5; }
+.hof-dup-hint .hof-link { background: none; border: 0; padding: 0 2px; color: #92400e; text-decoration: underline; cursor: pointer; font: inherit; }
+
+/* WhatsApp ile ekstre ve mesaj (v2.0.13) */
+.hof-wa-head { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin-bottom: 14px; }
+.hof-wa-head > div { border: 1px solid var(--do-border); border-radius: 10px; padding: 8px 12px; }
+.hof-wa-head strong { display: block; font-size: 1.25rem; }
+.hof-wa-head span { font-size: .78rem; color: var(--do-muted); }
+.hof-wa-head .is-warn strong { color: #b54708; }
+.hof-wa-grid { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 16px; }
+.hof-wa-list { max-height: 320px; overflow: auto; border: 1px solid var(--do-border); border-radius: 10px; margin-top: 8px; }
+.hof-wa-list td small { display: block; color: var(--do-muted); font-size: .76rem; }
+.hof-wa-list tr[data-preview] { cursor: pointer; }
+.hof-wa-list tr.is-current { background: rgba(37, 211, 102, .1); }
+.hof-wa-list tr.is-muted { opacity: .6; }
+.hof-wa-vars { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0 10px; }
+.hof-wa-vars .hof-chip { cursor: pointer; border: 1px solid var(--do-border); background: transparent; }
+.hof-wa-label { font-size: .8rem; color: var(--do-muted); margin: 0 0 6px; }
+.hof-wa-bubble { background: #dcf8c6; color: #111b21; border-radius: 10px 10px 2px 10px; padding: 10px 12px; font-size: .9rem; line-height: 1.45; white-space: normal; max-height: 380px; overflow: auto; box-shadow: 0 1px 1px rgba(0, 0, 0, .08); }
+.hof-wa-progress { height: 6px; background: var(--do-border); border-radius: 3px; overflow: hidden; }
+.hof-wa-progress span { display: block; height: 100%; background: #25d366; transition: width .2s; }
+.hof-wa-step { margin: 8px 0; }
+.hof-wa-person { display: flex; flex-direction: column; margin-bottom: 8px; }
+.hof-wa-person span { color: var(--do-muted); font-size: .85rem; }
+.hof-wa-actions { flex-wrap: wrap; }
+.hof-button.hof-whatsapp { background: #25d366; border-color: #25d366; color: #fff; }
+.hof-wa-done { text-align: center; padding: 20px 0; }
+.hof-wa-done strong { font-size: 1.2rem; }
+@media (max-width: 760px) { .hof-wa-grid, .hof-wa-head { grid-template-columns: 1fr 1fr; } .hof-wa-grid { grid-template-columns: 1fr; } }
+@media (prefers-color-scheme: dark) { .hof-wa-bubble { background: #005c4b; color: #e9edef; } }
+.hof-wa-history ul { margin: 0; padding-left: 18px; font-size: .85rem; color: var(--do-muted); }
+.hof-wa-history { margin-top: 12px; }
+.hof-wa-vars .hof-chip { text-transform: none; letter-spacing: 0; }
+.hof-wa-right .hof-edit-meta { margin-top: 10px; }
+.hof-wa-bubble { max-height: none; }
+.hof-wa-right { align-self: start; }
+.hof-wa-actions + .hof-edit-meta { margin-top: 12px; }

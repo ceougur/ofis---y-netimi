@@ -243,7 +243,7 @@ describe("Stok modülü (v2.0.6)", () => {
   it("giriş Kasa'dan ödenirse Kasa'ya gider (miktar × birim fiyat); çıkış yalnız miktar; kritik seviye uyarısı", async () => {
     const { items } = (await admin.get("/api/workspace/stock")).data.data;
     const cay = items.find(item => item.name === "Çay");
-    const bought = await admin.post(`/api/workspace/stock/${cay.id}/moves`, { kind: "in", qty: "4", unitPrice: "90", pay: "cash", date: "2026-09-20", note: "Market" });
+    const bought = await admin.post(`/api/workspace/stock/${cay.id}/moves`, { kind: "in", qty: "4", unitPrice: "90", pay: "cash", date: "2026-09-20", note: "Market", cashForce: true });
     assert.equal(bought.status, 200, JSON.stringify(bought.data));
     assert.equal(bought.data.data.qty, 14);
     assert.equal(bought.data.data.unitPrice, 90, "son alış fiyatı karta yazılır");
@@ -282,7 +282,7 @@ describe("Stok modülü (v2.0.6)", () => {
     account = (await admin.get(`/api/workspace/accounts/${supplier.id}`)).data.data;
     assert.equal(account.totals.balance, -2400, "geri gelen hareket cariye de döner");
     // Tedarikçiye ödeme Kasa'dan çıkar ve borcu kapatır.
-    await admin.post(`/api/workspace/accounts/${supplier.id}/entries`, { kind: "out", amount: "2400" });
+    await admin.post(`/api/workspace/accounts/${supplier.id}/entries`, { kind: "out", amount: "2400", cashForce: true });
     assert.equal((await admin.get(`/api/workspace/accounts/${supplier.id}`)).data.data.totals.balance, 0);
   });
 
@@ -298,7 +298,7 @@ describe("Stok modülü (v2.0.6)", () => {
 
   it("yeni ürünün ilk miktarı (v2.0.8): Kasa'dan ödendi → 'Stok ödemesi' gideri; tedarikçiye borç → cari; elde olan → para yazılmaz", async () => {
     const cashBefore = (await admin.get("/api/workspace/cash")).data.data;
-    const bought = await admin.post("/api/workspace/stock", { name: "Toz şeker", unit: "kg", unitPrice: "42,50", openingQty: "20", openingPay: "cash", openingDate: "2026-09-25" });
+    const bought = await admin.post("/api/workspace/stock", { name: "Toz şeker", unit: "kg", unitPrice: "42,50", openingQty: "20", openingPay: "cash", openingDate: "2026-09-25", cashForce: true });
     assert.equal(bought.status, 200, JSON.stringify(bought.data));
     assert.equal(bought.data.data.qty, 20);
     assert.equal(bought.data.data.unit, "Kg", "birim tek yazımla (v2.0.11)");

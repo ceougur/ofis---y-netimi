@@ -84,12 +84,16 @@ describe("Raporlar penceresi uçları (tam yığın)", () => {
     tedarik = (await admin.post("/api/workspace/accounts", { name: "Tedarik Ltd.", type: "supplier", phone: "0312 555 00 00" })).data.data;
     await admin.post(`/api/workspace/accounts/${ali.id}/entries`, { kind: "in", amount: "1500", date: TODAY, note: "Nakit" });
     await admin.post(`/api/workspace/accounts/${tedarik.id}/entries`, { kind: "credit", amount: "2000", date: shift(-10), note: "Fatura" });
-    const plan = await admin.post("/api/workspace/plans", { name: "Ali Veli", accountId: veli.id, total: "3000", mode: "auto", count: 3, firstDue: shift(-20), everyMonths: 1 });
+    const plan = await admin.post("/api/workspace/plans", { registeredOn: "2026-01-01", name: "Ali Veli", accountId: veli.id, total: "3000", mode: "auto", count: 3, firstDue: shift(-20), everyMonths: 1 });
     assert.equal(plan.status, 200, JSON.stringify(plan.data));
     assert.equal((await admin.post("/api/workspace/cheques", { direction: "in", instrument: "cheque", amount: "1000", dueDate: shift(10), accountId: ali.id, serialNo: "A-1" })).status, 200);
     assert.equal((await admin.post("/api/workspace/cheques", { direction: "out", instrument: "cheque", amount: "800", dueDate: shift(20), accountId: tedarik.id, serialNo: "V-1" })).status, 200);
     assert.equal((await admin.post("/api/workspace/cheques", { direction: "in", instrument: "note", amount: "700", dueDate: shift(45), accountId: veli.id, serialNo: "S-1" })).status, 200);
-    assert.equal((await admin.post("/api/workspace/cash", { kind: "out", amount: "4000", date: shift(15), description: "Kira" })).status, 200);
+    // v2.0.13: ileri tarihli Kasa hareketi girilemez (400 date-future). Eski sürümden kalmış ileri tarihli satır Vade
+    // Takip ve Nakit Akış'ta okunmaya devam eder: veritabanına doğrudan (eski veri gibi) yazılır, kapı yeniden tabanlanır.
+    assert.equal((await admin.post("/api/workspace/cash", { kind: "out", amount: "4000", date: shift(15), description: "Kira", cashForce: true })).data.code, "date-future");
+    server.app.store.db.prepare("INSERT INTO cash_entries (id, kind, amount, date, description, method, created_by, created_at) VALUES ('eski-ileri-kira', 'out', 4000, ?, 'Kira', 'cash', 'eski', ?)").run(shift(15), new Date().toISOString());
+    server.app.integrity.start();
     assert.equal((await admin.post("/api/workspace/stock", { name: "A4 kağıt", unit: "paket", unitPrice: "50", openingQty: "10", openingDate: shift(-60) })).status, 200);
   });
   after(async () => {
@@ -250,14 +254,16 @@ describe("rapor ekranı kuralı: boş veri, geçmiş/gelecek dönem, tek kayıt,
       const empty = (await admin.get("/api/workspace/overview/vade-takip?preset=open")).data.data;
       assert.deepEqual([empty.rows.length, empty.totals.in.total.amount, empty.totals.out.total.amount], [0, 0, 0]);
       assert.equal((await admin.raw("GET", "/api/workspace/overview/vade-takip.pdf?preset=open")).status, 200, "boş Vade takip PDF");
-      // Tek kayıt: yalnız ileri tarihli bir Kasa çıkışı (gelecek ay). Vade takipte ve aylık kasada yalnız o ay.
+      // Tek kayıt: 40 gün sonra vadesi gelen tek taksit. v2.0.13'ten beri ileri tarihli Kasa hareketi girilemez
+      // (gelecekteki ödeme vadeyle planlanır); Vade takip yalnız o kalemi, 30 günlük pencere hiçbir şeyi göstermez.
       const future = shift(40);
-      assert.equal((await admin.post("/api/workspace/cash", { kind: "out", amount: "750", date: future, description: "Sigorta" })).status, 200);
+      assert.equal((await admin.post("/api/workspace/cash", { kind: "out", amount: "750", date: future, description: "Sigorta", cashForce: true })).data.code, "date-future");
+      assert.equal((await admin.post("/api/workspace/plans", { name: "Sigorta Taksidi", total: "750", count: 1, firstDue: future })).status, 200);
       const one = (await admin.get("/api/workspace/overview/vade-takip?preset=open")).data.data;
-      assert.deepEqual(one.rows.map(row => [row.source, row.amount, row.date, row.state]), [["cash", 750, future, "upcoming"]]);
+      assert.deepEqual(one.rows.map(row => [row.source, row.amount, row.date, row.state]), [["plan", 750, future, "upcoming"]]);
       assert.equal((await admin.get("/api/workspace/overview/vade-takip?preset=next30")).data.data.rows.length, 0, "40 gün sonraki kalem 30 günde yok");
       const monthly = (await admin.get(`/api/workspace/report-center/kasa-aylik?from=${future.slice(0, 7)}-01&to=${future}`)).data.data;
-      assert.ok(monthly.rows.some(row => /750,00/.test(row.join(" "))), "aylık kasada ileri tarihli çıkış kendi ayında");
+      assert.ok(!monthly.rows.some(row => /750,00/.test(row.join(" "))), "vade Kasa hareketi değildir; aylık kasaya girmez");
       const personel = await createUser(server, admin, { username: "per209b" });
       for (const id of NEW_REPORTS) assert.equal((await personel.get(`/api/workspace/report-center/${id}`)).status, 403, `${id}: personel 403`);
       assert.equal((await personel.raw("GET", "/api/workspace/report-center/stok-ozet/xlsx")).status, 403);

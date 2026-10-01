@@ -552,7 +552,9 @@ describe("ay hücresinde taksit: kart detayındaki tahsilat (tam yığın, v2.0.
 
     const first = (await admin.get("/api/workspace/dues")).data.data;
     const items = first.items.filter(item => item.tab === sheet.name);
-    assert.deepEqual(items.map(item => `${item.person} ${item.amount} ${item.state}`).sort(), ["ali 10000 month", "veli 10000 month"], JSON.stringify(first.items));
+    // Ayın 1'inde vade (ayın 1'i) bugüne denk gelir: durum "today", diğer günlerde "month". İkisi de bu ayın uyarısıdır.
+    const monthState = now.getDate() === 1 ? "today" : "month";
+    assert.deepEqual(items.map(item => `${item.person} ${item.amount} ${item.state}`).sort(), [`ali 10000 ${monthState}`, `veli 10000 ${monthState}`], JSON.stringify(first.items));
     const ali = items.find(item => item.person === "ali");
     const veli = items.find(item => item.person === "veli");
 
@@ -563,6 +565,6 @@ describe("ay hücresinde taksit: kart detayındaki tahsilat (tam yığın, v2.0.
     assert.equal((await admin.post(`/api/workspace/cases/${encodeURIComponent(veli.caseKey)}/payments`, { amount: "10000", date: first.today, note: `${next.toLocaleLowerCase("tr")} taksiti` })).status, 200);
 
     const after = (await admin.get("/api/workspace/dues")).data.data.items.filter(item => item.tab === sheet.name);
-    assert.deepEqual(after.map(item => `${item.person} ${item.amount} ${item.state}`), ["veli 10000 month"]);
+    assert.deepEqual(after.map(item => `${item.person} ${item.amount} ${item.state}`), [`veli 10000 ${monthState}`]);
   });
 });

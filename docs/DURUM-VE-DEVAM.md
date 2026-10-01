@@ -76,10 +76,25 @@ Yeni bir oturum bu belgeyi okuyarak kaldığı yerden devam eder. Son güncellem
 
 ## Kalanlar (öncelik sırasıyla)
 
-### 2.0.13 için biriken düzeltmeler (kullanıcı ekledikçe büyür; birlikte yapılır)
-(henüz yok; süpermarket simülasyonunun bulguları buraya yazılacak)
+### 2.0.13 — paket hazır (01.10.2026), dal `claude/nice-euler-jvajxv`; yayın kullanıcı doğrulamasını bekliyor
+Teslim: `DestekOfis-2.0.13-{1-Guncelleme-ve-Belgeler,2-Kurulum,Kaynak-ve-Denetim}.zip` + SHA256SUMS (güncelleme paketi
+sha256 840193a1…, kurulum d3fe6f22…; imza anahtarı destekofis-2026-1; göç 17). Yayın adımları teslimdeki OKU-BENI.txt'de;
+"birleştir" denince PR, "yayımladım" denince yayındaki dosyalar bayt bayt doğrulanır.
+Kapsam ve kanıt `CHANGELOG.md` → 2.0.13 ve `docs/MIMARI.md` → *Ana Defter ve mutabakat kapısı*. Özet:
+- Süpermarket simülasyonu bulguları (çift borç, iade, alış/satış fiyatı, eksi kasa, açılış bakiyesi yönü, çift cari).
+- WhatsApp tek/toplu ekstre ve mesaj; ödeme/tahsilat yolu (Nakit, Havale/EFT, Kredi Kartı, Çek/Senet, Açık Hesap).
+- Ana Defter (türetilmiş, çift yönlü) + işlem anında mutabakat kapısı (COMMIT öncesi; sapmada ROLLBACK + `integrity_log`).
+- Kullanıcı kararı (holding stres simülasyonu İPTAL; "4 çekirdeğe odaklan"): Kasa, Stok, Cari, Taksit için tarih kuralları
+  (`server/lib/period.mjs`), dönem kilidi (Yönetim → Sistem), yuvarlama, iade sınırı, cari bazında mutabakat,
+  `npm run mutabakat` (salt okunur yerel denetim), `npm run test:mutabakat` (model tabanlı uzun koşu),
+  `test/mutabakat-cekirdek.test.mjs`, `test/donem-213.test.mjs`.
+- Eksi Bakiye Denetimi (kullanıcı onayı 01.10.2026; Logo/Netsis parametresinin karşılığı): Nakit, Banka, Kredi Kartı için
+  Uyar / Engelle / Kontrol Yok — Yönetim → Sistem. Cari listesinde hepsini seç + hariç tut (WhatsApp ve toplu taksit).
+  WhatsApp ölçek senaryosu: `npm run test:senaryo-whatsapp` (1.000 cari, 40 seçili, 190 kişiye şube mesajı, 997 hariçli).
+- Davranış değişikliği: ileri tarihli Kasa hareketi (planlı gider) artık girilemez; eski kurulumlardaki satırlar taban
+  sayılır ve raporlarda görünmeye devam eder. Tarih alanı hiç gönderilmezse bugün yazılır; gönderilip boş bırakılırsa ret.
 
-### 2.0.12 düzeltmeleri — yapıldı (30.09.2026; paket hazır, yayın kullanıcı onayı bekliyor)
+### 2.0.12 düzeltmeleri — yayımlandı 30.09.2026 (PR #12, `v2.0.12`; beş dosya bayt bayt doğrulandı)
 1. **Taksit kartının "Kayıt Tarihi" carinin kayıt tarihini taşımıyor** (müşteri, 30.09.2026; ilk bildirim "tahsilat girince
    kayıt tarihi değişiyor"; WhatsApp ekran görüntüsüyle netleşti: *Yeni Taksit Kartı* formu). **Neden (kodda doğrulandı):**
    kartın kendi `registered_on` alanı var ve cari seçilse de **bugün** gelir — form `hof-plans.js:497`

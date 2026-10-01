@@ -275,13 +275,14 @@ export function registerTrashRoutes(router, { store, auth, audit, events, datase
       store.tx(() => {
         if (!store.get("SELECT 1 AS found FROM payments WHERE id = ?", item.ref)) {
           store.run(
-            "INSERT INTO payments (id, case_key, case_title, amount, date, note, created_by, created_at, updated_by, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            "INSERT INTO payments (id, case_key, case_title, amount, date, note, method, created_by, created_at, updated_by, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
             item.ref,
             payload.caseKey || "",
             payload.caseTitle || "",
             Number(payload.amount) || 0,
             payload.date,
             payload.note || "",
+            payload.method || "cash",
             payload.createdBy || user.id,
             payload.createdAt || now(),
             user.id,
@@ -299,12 +300,13 @@ export function registerTrashRoutes(router, { store, auth, audit, events, datase
       store.tx(() => {
         if (!store.get("SELECT 1 AS found FROM cash_entries WHERE id = ?", item.ref)) {
           store.run(
-            "INSERT INTO cash_entries (id, kind, amount, date, description, created_by, created_at, updated_by, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            "INSERT INTO cash_entries (id, kind, amount, date, description, method, created_by, created_at, updated_by, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
             item.ref,
             payload.kind,
             Number(payload.amount) || 0,
             payload.date,
             payload.description || "",
+            payload.method || "cash",
             payload.createdBy || user.id,
             payload.createdAt || now(),
             user.id,
@@ -326,8 +328,8 @@ export function registerTrashRoutes(router, { store, auth, audit, events, datase
           const itemId = payload.itemId && store.get("SELECT 1 AS found FROM plan_items WHERE id = ?", payload.itemId) ? payload.itemId : null;
           store.run(
             // Açılış (devir) kaydı geri gelince yine açılıştır (v2.0.8): Kasa'ya girmez.
-            "INSERT INTO plan_entries (id, plan_id, item_id, kind, amount, date, note, receipt_no, opening, created_by, created_at, updated_by, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-            item.ref, plan.id, itemId, payload.kind, Number(payload.amount) || 0, payload.date, payload.note || "", payload.receiptNo || null, payload.opening ? 1 : 0, payload.createdBy || user.id, payload.createdAt || now(), user.id, now(),
+            "INSERT INTO plan_entries (id, plan_id, item_id, kind, amount, date, note, receipt_no, opening, method, created_by, created_at, updated_by, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            item.ref, plan.id, itemId, payload.kind, Number(payload.amount) || 0, payload.date, payload.note || "", payload.receiptNo || null, payload.opening ? 1 : 0, payload.method || "cash", payload.createdBy || user.id, payload.createdAt || now(), user.id, now(),
           );
         }
         trash.markRestored(item.id, user);

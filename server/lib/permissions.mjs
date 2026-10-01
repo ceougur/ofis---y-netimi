@@ -43,6 +43,9 @@ export const PERMISSIONS = Object.freeze({
   // Kasa'ya ya da cariye para yazan hareketler yönetim yetkisidir.
   "stock.view": ALL,
   "stock.move": ALL,
+  // Satış yapma (v2.0.13, süpermarket simülasyonu): kasiyer ürün kartına ve alışa dokunmadan satış (Kasa, kart,
+  // havale ya da veresiye) ve müşteri iadesi girer. Ürün kartı, alış ve fiyat yönetimi stock.manage'de kalır.
+  "stock.sell": ["admin", "avukat", "muhasebe"],
   "stock.manage": ["admin", "avukat", "muhasebe"],
   // Çek / Senet (v2.0.7): portföy, tahsil, ciro, ödeme; para ve cari bakiyesine dokunduğu için kasa yetkisiyle aynı hesaplar.
   "cheques.view": ["admin", "avukat", "muhasebe"],
@@ -128,6 +131,7 @@ export const PERMISSION_GROUPS = Object.freeze([
     items: [
       ["stock.view", "Stoku Görme", "Ürünler, miktarlar ve kritik seviye."],
       ["stock.move", "Stok Hareketi Girme", "Miktar girişi/çıkışı yapar (parasız)."],
+      ["stock.sell", "Satış Yapma", "Satış (nakit, kart, havale, veresiye) ve müşteri iadesi girer; ürün kartına ve alışa dokunmaz."],
       ["stock.manage", "Stok Yönetimi", "Ürün kartı açar; Kasa'ya ya da cariye yazan hareket girer."],
     ],
   },

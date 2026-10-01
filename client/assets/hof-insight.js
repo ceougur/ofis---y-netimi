@@ -78,10 +78,35 @@
   // Kalemle verilen başlık (yoksa varsayılan). Operasyon merkezi gibi bizim çizdiğimiz yerler için.
   HOF.uiLabel = (key, fallback) => profile?.labels?.[key] || fallback;
 
+  // v2.0.13 (simülasyon bulgusu): sektörün kayıt sözcüğü bir mal adıysa (market → "ürün") ama açık tablo bir kişi
+  // listesiyse (ad + telefon kolonu var, stok/fiyat kolonu yok), tabloya "ürün" denmez: "müşteri" denir.
+  const ITEM_NOUNS = new Set(["ürün", "cihaz", "kitap", "parti", "araç"]);
+  const PERSON_VOCAB = { record: "müşteri", records: "müşteriler", Record: "Müşteri", Records: "Müşteriler" };
+  function fitVocab() {
+    const base = { ...DEFAULT_VOCAB, ...(profile?.vocab || {}) };
+    let next = base;
+    if (ITEM_NOUNS.has(String(base.record || "").toLocaleLowerCase("tr-TR"))) {
+      const keys = new Set();
+      for (const row of (HOF.data?.rows || []).slice(0, 50)) for (const key of Object.keys(row || {})) keys.add(key.toLocaleLowerCase("tr-TR"));
+      const heads = [...keys].join(" | ");
+      const person = /ad soyad|adı soyadı|müşteri|musteri|isim|unvan|veli|hasta|üye/.test(heads);
+      const phone = /telefon|tel\b|gsm|cep/.test(heads);
+      const goods = /stok|miktar|barkod|fiyat|birim|skt|raf|ürün adı|urun adi|kategori/.test(heads);
+      if (person && phone && !goods) next = { ...base, ...PERSON_VOCAB };
+    }
+    const changed = next.record !== HOF.vocab.record;
+    HOF.vocab = next;
+    return changed;
+  }
+  HOF.on?.("rows", () => {
+    if (profile && fitVocab()) HOF.emit("profile", profile);
+  });
+
   function applyProfile(next) {
     if (!next) return;
     profile = next;
     HOF.vocab = { ...DEFAULT_VOCAB, ...next.vocab };
+    fitVocab();
     HOF.modules = { ...next.modules };
     if (next.roleLabels) Object.assign(HOF.roleLabels, next.roleLabels);
     const root = document.documentElement;

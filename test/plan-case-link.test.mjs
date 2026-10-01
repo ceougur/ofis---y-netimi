@@ -25,7 +25,7 @@ describe("taksit kartı tablodaki kayda bağlanır (v2.0.6)", () => {
 
   it("kart kayda bağlanarak açılır; kaydın kartları uçtan okunur; liste kayda göre süzülür", async () => {
     const ali = rows.find(row => row["Dosya No"] === "2026/1");
-    const created = await admin.post("/api/workspace/plans", { name: "Ali Veli", total: "9.000", caseKey: ali.__hofKey, caseTitle: "2026/1 · Ali Veli", mode: "auto", count: 3, firstDue: "2026-01-05" });
+    const created = await admin.post("/api/workspace/plans", { registeredOn: "2026-01-01", name: "Ali Veli", total: "9.000", caseKey: ali.__hofKey, caseTitle: "2026/1 · Ali Veli", mode: "auto", count: 3, firstDue: "2026-01-05" });
     assert.equal(created.status, 200, JSON.stringify(created.data));
     plan = created.data.data;
     assert.equal(plan.caseKey, ali.__hofKey);

@@ -52,17 +52,17 @@ describe("iş akışı (v2.0.7)", () => {
     // B1 kayıt önce: yeni kayıt formu → cari
     const k1 = keyOf("Kayıt Önce");
     const a1 = (await post(`/api/workspace/cases/${encodeURIComponent(k1)}/account`, { name: "Kayıt Önce", phone: "0532 100 00 01", caseTitle: "1 · Kayıt Önce" })).data;
-    const p1 = (await post("/api/workspace/plans", { name: "Kayıt Önce", accountId: a1.id, total: "9.000", mode: "auto", count: 9, firstDue: day(-40) })).data;
+    const p1 = (await post("/api/workspace/plans", { registeredOn: "2026-01-01", name: "Kayıt Önce", accountId: a1.id, total: "9.000", mode: "auto", count: 9, firstDue: day(-40) })).data;
     okk(p1.caseKey === k1, "B1: kart, carinin kayıt bağını devraldı");
     // B2 cari önce: cari bağsız açıldı, sonra kayda bağlandı, sonra taksit
     const a2 = (await post("/api/workspace/accounts", { name: "Cari Önce", phone: "0532 100 00 02" })).data;
     const link2 = await post(`/api/workspace/cases/${encodeURIComponent(keyOf("Cari Önce"))}/account`, { name: "Cari Önce", phone: "0532 100 00 02" });
     okk(link2.data.id === a2.id && link2.data.outcome === "linked", "B2: bağsız cari kayda bağlandı, yeni cari açılmadı");
-    const p2 = (await post("/api/workspace/plans", { name: "Cari Önce", phone: "0532 100 00 02", total: "9.000", mode: "auto", count: 9, firstDue: day(-40) })).data;
+    const p2 = (await post("/api/workspace/plans", { registeredOn: "2026-01-01", name: "Cari Önce", phone: "0532 100 00 02", total: "9.000", mode: "auto", count: 9, firstDue: day(-40) })).data;
     okk(p2.accountId === a2.id && p2.caseKey === keyOf("Cari Önce"), "B2: cari seçilmeden açılan kart aynı cariye ve kayda bağlandı");
     // B3 taksit önce: kart kayda bağlı açıldı → cari kendiliğinden açılır ve kayda bağlıdır
     const k3 = keyOf("Taksit Önce");
-    const p3 = (await post("/api/workspace/plans", { name: "Taksit Önce", phone: "0532 100 00 03", total: "9.000", caseKey: k3, caseTitle: "3 · Taksit Önce", mode: "auto", count: 9, firstDue: day(-40) })).data;
+    const p3 = (await post("/api/workspace/plans", { registeredOn: "2026-01-01", name: "Taksit Önce", phone: "0532 100 00 03", total: "9.000", caseKey: k3, caseTitle: "3 · Taksit Önce", mode: "auto", count: 9, firstDue: day(-40) })).data;
     const linked3 = (await get(`/api/workspace/cases/${encodeURIComponent(k3)}/account`)).data.account;
     okk(linked3 && linked3.id === p3.accountId, "B3: taksit önce açılınca cari kayda bağlı açıldı");
     const again3 = (await post(`/api/workspace/cases/${encodeURIComponent(k3)}/account`, { name: "Taksit Önce", phone: "0532 100 00 03" })).data;

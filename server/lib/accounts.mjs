@@ -2,7 +2,8 @@
 // routes/stock.mjs) ve testler doğrudan kullanır.
 //
 // Cari defteri (ledger)
-//   Borç tarafı  : borç yazma (debt), cariye yapılan ödeme (out), taksit planının toplamı, taksit iadesi; verilen ya da
+//   Borç tarafı  : borç yazma (debt), cariye yapılan ödeme (out), taksit planının toplamı (mevcut borcu taksitlendiren
+//                  kart hariç, v2.0.13), taksit iadesi; verilen ya da
 //                  ciro edilen çek/senet ve karşılıksız çıkan alınan çek (v2.0.7, source = 'cheque').
 //   Alacak tarafı: alacak yazma (credit), cariden tahsilat (in), taksit tahsilatı; kapatılan kartın ödenmeyen kısmı;
 //                  alınan çek/senet (taksite sayılmadıysa).
@@ -14,6 +15,7 @@
 import { roundMoney } from "./money.mjs";
 
 const EPS = 0.005;
+const tlText = value => `${new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value)} TL`;
 export const roundQty = value => Math.round((Number(value) || 0) * 1000) / 1000;
 
 export const ACCOUNT_TYPES = Object.freeze({ customer: "Müşteri", supplier: "Tedarikçi", other: "Diğer" });
@@ -44,6 +46,8 @@ export function accountLedger(entries = [], plans = []) {
       at: entry.createdAt || "",
       // Çek/senetten gelen satır (v2.0.7): alınan/ciro/karşılıksız açıklamada yazar; etiket evrak olduğunu söyler.
       label: origin === "cheque" ? "Çek / senet" : meta.label,
+      // v2.0.13: tahsilat/ödemenin yolu (Nakit, Havale / EFT, Kredi Kartı); borç/alacakta boş.
+      method: meta.cash ? entry.method || "cash" : "",
       note: entry.note || "",
       receiptNo: entry.receiptNo || null,
       debit: meta.side === "debit" ? amount : 0,
@@ -57,7 +61,10 @@ export function accountLedger(entries = [], plans = []) {
   for (const plan of plans) {
     const total = roundMoney(Number(plan.total) || 0);
     const opened = plan.registeredOn || String(plan.createdAt || "").slice(0, 10);
-    lines.push({ id: `plan:${plan.id}`, origin: "plan", planId: plan.id, kind: "plan", date: opened, at: plan.createdAt || "", label: "Taksit Planı", note: `${plan.name}${plan.itemCount ? ` · ${plan.itemCount} taksit` : ""}`, debit: total, credit: 0 });
+    // v2.0.13: mevcut borcu taksitlendiren kart (veresiye satış, açılış ya da borç yaz zaten defterde) ikinci kez borç
+    // yazmaz; satır iz olarak kalır (tutar 0), tahsilatları borçtan düşer.
+    const covers = Boolean(plan.coversBalance);
+    lines.push({ id: `plan:${plan.id}`, origin: "plan", planId: plan.id, kind: "plan", covers, date: opened, at: plan.createdAt || "", label: covers ? "Taksit Planı (mevcut borç)" : "Taksit Planı", note: `${plan.name}${plan.itemCount ? ` · ${plan.itemCount} taksit` : ""}${covers ? ` · ${tlText(total)} borç taksitlendirildi` : ""}`, debit: covers ? 0 : total, credit: 0 });
     for (const entry of plan.entries || []) {
       const amount = roundMoney(Number(entry.amount) || 0);
       const incoming = entry.kind === "in";
@@ -176,13 +183,15 @@ const STOCK_ROLE_TESTS = [
   ["code", t => /^(#|kod|kodu|urun kodu|stok kodu|malzeme kodu|barkod|sku|sira|sira no|no)$/.test(t)],
   ["unit", t => /^(birim|birimi|olcu|olcu birimi|br)$/.test(t)],
   ["min", t => /(kritik|minimum|min|asgari|alt limit|uyari)/.test(t)],
-  ["price", t => /(fiyat|fiyati|birim fiyat|alis|alis fiyati|maliyet|tutar)/.test(t) && !/toplam/.test(t)],
+  // v2.0.13: satış fiyatı ayrı rol (alış/birim fiyat = maliyet); "satış fiyatı" başlığı birim fiyata düşmez.
+  ["salePrice", t => /(satis fiyati|satis fiyat|satis|etiket fiyati|raf fiyati|perakende fiyat)/.test(t) && !/toplam/.test(t)],
+  ["price", t => /(fiyat|fiyati|birim fiyat|alis|alis fiyati|maliyet|tutar)/.test(t) && !/(toplam|satis)/.test(t)],
   ["qty", t => /(^| )(miktar|miktari|adet|adedi|stok|mevcut|kalan|sayi|sayisi|envanter)( |$)/.test(t) && !/(kod|kritik|min)/.test(t)],
   ["category", t => /(^| )(kategori|kategorisi|grup|grubu|cins|tur|turu|sinif|depo|raf)( |$)/.test(t)],
   ["note", t => /(^| )(not|notu|aciklama|bilgi)( |$)/.test(t)],
   ["name", t => /(^| )(urun|urun adi|urunun adi|malzeme|malzeme adi|stok adi|ad|adi|isim|cinsi|mal|mal adi|kalem)( |$)/.test(t)],
 ];
-export const STOCK_ROLES = Object.freeze(["kind", "code", "name", "unit", "category", "qty", "price", "min", "note", "extra"]);
+export const STOCK_ROLES = Object.freeze(["kind", "code", "name", "unit", "category", "qty", "price", "salePrice", "min", "note", "extra"]);
 
 function mapWith(tests, headers) {
   const roles = {};

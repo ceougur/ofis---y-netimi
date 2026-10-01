@@ -384,6 +384,64 @@ Yönetim → Lisans ─► /api/license/{trial,activate,code,check} ─► licen
 - Etkin zaman = max(saat, görülen en ileri zaman); servisin `issuedAt`'ı güvenilir zamandır. Yerel durum `settings.license.local`'da kurulum kimliğine bağlı HMAC ile saklanır.
 - Testler bağımsızdır: `createApp({ license: { trustedKeys, services, fetchImpl, machineId, now, enforce } })`. Test yardımcısı varsayılan olarak kilidi kapatır (`enforce: false`); `test/license.test.mjs` ve e2e kilidi başvuru lisans servisiyle (`tools/lib/license-service.mjs`) gerçek hâliyle sınar. Üretimde bu seçenekler ortam değişkeniyle verilemez.
 
+## Ana Defter ve mutabakat kapısı (v2.0.13)
+
+**Kayıt modeli.** Asıl kayıtlar alt defterlerdir: `payments`, `cash_entries` (Kasa ve Banka), `account_entries` (cari),
+`plans`/`plan_items`/`plan_entries` (taksit), `stock_moves` (stok), `cheques`/`cheque_events` (çek/senet). Ana Defter
+(`server/lib/general-ledger.mjs`) bu satırlardan her seferinde aynı kuralla türetilir; ikinci bir kopya saklanmaz. Böylece
+"alt defter yazıldı, ana defter yazılmadı" sapması yapısal olarak olamaz. Hesap planı Tekdüzen'in ilgili hesapları: 100
+Kasa, 101 Alınan Çek/Senet, 102 Bankalar, 103 Verilen Çek/Senet, 108 Kredi Kartı, 120 Alıcılar, 127 Carisiz Taksit
+Kartları, 153 Ticari Mallar, 320 Satıcılar, 336 Diğer Cariler, 500 Açılış, 600 Satışlar, 602 Diğer Gelirler, 610 Satıştan
+İadeler, 649 Diğer Olağan Gelirler, 689 Vazgeçilen Alacaklar, 770 Genel Giderler. Tutarlar kuruş tamsayısıyla toplanır.
+
+**Ödeme yolu.** `method` kolonu (`cash`, `bank`, `card`) para taşıyan her tabloda; ana defterde 100 / 102 / 108'e düşer.
+Eksi bakiye denetimi (`cash.guardOut` / `guardChange`) yol başına ayarlanır: `settings["cash.negativePolicy"]` =
+`{cash, bank, card}` ∈ `off | warn | block` (varsayılan `warn`; `PUT /api/admin/negative-policy`, `system.manage`). `warn` →
+409 `cash-negative` (istemci sorar, onaylanırsa aynı istek `cashForce` ile yeniden gider); `block` → 409 `cash-blocked`
+(onayla geçilmez). Bakiye = min(hareket tarihindeki, son) bakiye; düzeltmede her yolun azalan etkisi ayrı denetlenir.
+
+**Mevcut borcu taksitlendiren kart** (`plans.covers_balance`): caride borç yazmaz, ana defterde de alacak doğurmaz;
+tahsilatları borçtan düşer. `uncoveredDebt` aynı borcun iki karta bölünmesini, `trimCovers` iadede kartın borçtan büyük
+kalmasını engeller.
+
+**Mutabakat kapısı** (`server/lib/integrity.mjs`, `store.addCommitGuard`). `store.tx` en dış işlemde COMMIT'ten hemen
+önce kayıtlı denetimleri çalıştırır; para tablolarına işlem dışında yapılan tek satır yazım da kendiliğinden işleme alınır.
+Denetimler: çift yönlü denge; 100/102/108 ↔ Kasa alt defteri (yola göre), 120/320/336 ↔ `accounts.list` bakiyeleri (taksit
+alacakları dahil), 127 ↔ carisiz kartların kalanı, 101/103 ↔ portföy durumu; kuruş küsuratı ve eksi tutar; stok ↔ cari ve
+çek/senet ↔ cari bağları. Hata → `IntegrityError` (409, `code: ledger-integrity`) → ROLLBACK → `integrity_log`
+(`rolled-back`). Açılışta ölçülen sapmalar taban sayılır (`baseline` günlüğü); bir işlem yeni sapma ekleyemez, var olanı
+büyütemez. Ölçülen maliyet: 1 aylık market verisinde denetim ~6 ms; 5.000 cari ve 50.000 cari hareketinde ~0,5 sn.
+
+**Hareket tarihi ve dönem kilidi** (`server/lib/period.mjs`). Kasa, cari, stok ve taksit tahsilatı aynı kuralı kullanır:
+`movementDate(body)` — alan hiç gönderilmezse bugün; gönderilip boş/null ise 400 `date-missing`, takvimde olmayan gün ya da
+başka biçim 400 `date-invalid`, bugünden ileri 400 `date-future` (gelecekteki para taksit ya da çek/senet vadesiyle planlanır),
+kilitli dönemde 409 `period-locked`. `dueDate(value, {from})`: vade işlem/kayıt tarihinden önce olamaz (400
+`due-before-start`). Taksit kartının `registered_on` değeri ileri olamaz. Düzeltme ve silme önce eski tarihi (`assertOpen`),
+sonra yeni tarihi denetler; taşıma ile kilit delinemez. Kilit `settings["ledger.lockedUntil"]`'da; `PUT
+/api/admin/period-lock` (`system.manage`, denetim kaydı). Kapı ikinci kez veritabanı düzeyinde denetler: tarihsiz/geçersiz
+tarihli hareket, ileri tarihli hareket, Kayıt Tarihi'nden önceki vade (`dates:*`) ve kilitli dönemin SHA-256 özeti (kilit
+tarihine kadarki para satırları; değişirse işlem geri alınır).
+
+**Yuvarlama ve iade koruması.** `roundMoney` yarım kuruşu sıfırdan uzağa yuvarlar (1,005 → 1,01; 2,675 → 2,68; −0 yok);
+toplamlar `toCents`/`fromCents` ile tamsayıdır. Taksit dağıtımı kuruşla bölünür (0,30 / 3 = 0,10 × 3; artık son taksite).
+Taksit iadesi net tahsilatı eksiye düşüremez (400 `refund-exceeds`); nakit eksi koruması düzeltme ve silmede de çalışır
+(`guardChange`: yalnız nakit kasanın o tarihteki ve bugünkü bakiyesine bakar).
+
+**Cari bazında mutabakat.** 120/127/320/336 satırları `party` (cari ya da `plan:<id>`) taşır; kapı her carinin ana defter
+bakiyesini cari kartındaki bakiyeyle, carisiz her kartı kendi kalanıyla karşılaştırır (toplam tutup kişiler arasında kayma
+olmasın). Ayrıca taksit ekranı toplamları = satırlar, stok ekran miktarı = girişler − çıkışlar.
+
+**Denetim araçları.** `npm run mutabakat` (`tools/mutabakat.mjs`): yerel veritabanını salt okunur açar, `VACUUM INTO` ile
+geçici kopyada tüm denetimleri ve mizanı çalıştırır; sapma varsa çıkış kodu 1. `npm run test:mutabakat`
+(`test/mutabakat/kos.mjs` + `motor.mjs`): API üzerinden rastgele ama tekrarlanabilir (tohumlu) işlem akışı; bağımsız
+tamsayı modeli (kuruş, miktar binde bir) her işlemden sonra Kasa (yola göre), cariler, stok, taksit kartları, ana defter ve
+raporlarla karşılaştırır. Tarihler çizelgede geçmişten bugüne sıralı ilerler; akışın yaklaşık %17'si bilerek hatalı
+(boş/geçersiz/ileri tarih, vadeden önce vade, kilitli dönem) ve reddedilmesi beklenir.
+
+**Eşzamanlılık.** Tek süreç, tek SQLite bağlantısı: WAL, `synchronous=FULL`, `busy_timeout=10000`, işlemler
+`BEGIN IMMEDIATE`, iç içe işlemler SAVEPOINT. Node tek iş parçacığında çalıştığı ve işlemler eşzamanlı (await'siz) olduğu
+için iki istek aynı işlemin içine karışamaz; denetim ve COMMIT aynı kilit altında olur.
+
 ## Veri modeli
 
 `users`, `sessions`, `settings` (v1.6 ofis profili ve `dataset.identity` burada), `records`, `overrides`, `deleted_records`, `notes`, `phones`, `payments`, `liens`, `tasks`, `messages`, `audit_events` (v1.0.0) + `case_notes`, `source_snapshots` (v1.1.0) + `dataset_rows`, `dataset_imports` (v1.5.0, göç 4: kalıcı çalışma verisi ve içeri alma geçmişi; `source_snapshots` artık yalnızca geçmiştir) + `cash_entries`, `case_documents`, `free_sheets`, `free_rows`, `free_cells`, `free_history` ve `payments.case_title`, `updated_by`, `updated_at` (v2.0.1, göç 5) + `chat_conversations`, `chat_members` (okunma zamanı), `chat_messages` ve `tasks.assignee_id` (v1.4.0, göç 3: eski `messages` kayıtları sohbete taşınır, eski tablo geri dönüş için silinmez; görevler adları tek bir kullanıcıya denk geliyorsa o kullanıcının kimliğine bağlanır, belirsiz veya serbest adlarda ad eşleşmesi sürer). Görünen adlar benzersizdir (`server/lib/names.mjs`: Türkçe harf kuralı, boşluk ve Unicode yazım farkı yok sayılarak karşılaştırılır).

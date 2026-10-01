@@ -36,7 +36,9 @@ const describe = entry => {
 // report: /api/workspace/cash yanıtıyla aynı biçim ({ entries, opening, period, totals }).
 export function cashPdf(report, { from = "", to = "", officeName = "", userName = "", now = new Date() } = {}) {
   const range = rangeLabel(from, to);
-  const doc = new PdfDocument({ fonts: loadFonts(), title: `Kasa dökümü · ${range}`, author: officeName || "DestekOfis", subject: "Kasa hareketleri" });
+  // v2.0.13: yola göre döküm (Nakit Kasa, Banka, Kredi Kartı) ya da hepsi (Kasa ve Banka).
+  const which = { cash: "Nakit Kasa", bank: "Banka (Havale / EFT)", card: "Kredi Kartı (POS)" }[report.method] || "Kasa ve Banka";
+  const doc = new PdfDocument({ fonts: loadFonts(), title: `${which} Dökümü · ${range}`, author: officeName || "DestekOfis", subject: "Kasa hareketleri" });
   const M = 40;
   const W = A4.width - M * 2;
   const bottomLimit = A4.height - 54;
@@ -69,7 +71,7 @@ export function cashPdf(report, { from = "", to = "", officeName = "", userName 
     top = M;
     if (first) {
       if (officeName) page.text(M, top + 9, doc.fit(officeName, W * 0.6, "bold", 9), { font: "bold", size: 9, color: muted });
-      page.text(M, top + 34, "Kasa dökümü", { font: "bold", size: 20, color: ink });
+      page.text(M, top + 34, `${which} Dökümü`, { font: "bold", size: 20, color: ink });
       page.text(M, top + 54, range, { size: 11, color: "#374151" });
       page.text(M, top + 9, `Oluşturma: ${created}`, { size: 8, color: muted, align: "right", width: W });
       if (userName) page.text(M, top + 21, `Hazırlayan: ${doc.fit(userName, W * 0.35, "regular", 8)}`, { size: 8, color: muted, align: "right", width: W });
@@ -90,7 +92,7 @@ export function cashPdf(report, { from = "", to = "", officeName = "", userName 
       });
       top += 60;
     } else {
-      page.text(M, top + 10, `Kasa dökümü · ${range}`, { font: "bold", size: 9, color: muted });
+      page.text(M, top + 10, `${which} Dökümü · ${range}`, { font: "bold", size: 9, color: muted });
       top += 22;
     }
     tableHeader();
@@ -122,7 +124,7 @@ export function cashPdf(report, { from = "", to = "", officeName = "", userName 
     row({
       date: dayText(entry.date),
       lines,
-      sub: doc.fit(`${origin}${entry.actorName ? ` · ${entry.actorName}` : ""}`, textWidth, "regular", 7.5),
+      sub: doc.fit(`${origin}${entry.method && entry.method !== "cash" ? ` · ${{ bank: "Havale / EFT", card: "Kredi Kartı" }[entry.method] || ""}` : ""}${entry.actorName ? ` · ${entry.actorName}` : ""}`, textWidth, "regular", 7.5),
       incoming: entry.kind === "in" ? entry.amount : null,
       outgoing: entry.kind === "out" ? entry.amount : null,
       balance: entry.balance,

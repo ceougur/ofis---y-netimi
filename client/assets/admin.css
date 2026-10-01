@@ -943,3 +943,10 @@ td.adm-row-actions > .hof-button + .hof-button {
 .adm-recovery.is-missing p {
   color: #6f5215;
 }
+
+/* Dönem kilidi ve mutabakat (2.0.13) */
+.adm-period { margin-bottom: 16px; }
+.adm-period .adm-inline { align-items: end; flex-wrap: wrap; }
+.adm-error-text { color: var(--do-danger); }
+.adm-negative { margin-bottom: 16px; }
+.adm-negative .adm-inline { align-items: end; flex-wrap: wrap; }

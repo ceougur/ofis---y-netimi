@@ -274,7 +274,7 @@ try {
     const supplier = (await call(admin, "/api/workspace/accounts", { name: "Akaryakıt Ltd.", type: "supplier" })).data;
     const cheque = (await call(admin, "/api/workspace/cheques", { direction: "out", instrument: "cheque", amount: 2000, dueDate: today(), issueDate: today(), accountId: supplier.id, serialNo: "V-211", bank: "Ziraat" })).data;
     const supplierAfterIssue = (await call(admin, `/api/workspace/accounts/${supplier.id}`)).data.totals.balance;
-    const paid = await call(admin, `/api/workspace/cheques/${cheque.id}/actions`, { action: "pay", date: today(), status: cheque.status });
+    const paid = await call(admin, `/api/workspace/cheques/${cheque.id}/actions`, { action: "pay", method: "cash", date: today(), status: cheque.status }); // nakit kasadan (bankada bakiye yok)
     ok(paid.status === 200, "verilen çek ödendi (Kasa'dan 2.000 çıktı)");
     await admin.click('#hof-sidecard [data-action="cash"]');
     await admin.waitForSelector(".hof-cash-table tbody tr[data-kind]");

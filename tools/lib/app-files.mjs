@@ -3,7 +3,7 @@
 import { readdirSync, statSync } from "node:fs";
 import path from "node:path";
 
-export const APP_ITEMS = Object.freeze(["server", "client", "docs/KURULUM-VE-KULLANIM.md", "package.json", "CHANGELOG.md", "README.md", "tools/backup.mjs"]);
+export const APP_ITEMS = Object.freeze(["server", "client", "docs/KURULUM-VE-KULLANIM.md", "package.json", "CHANGELOG.md", "README.md", "tools/backup.mjs", "tools/mutabakat.mjs"]);
 const EXCLUDE = /(^|\/)(\.DS_Store|Thumbs\.db|desktop\.ini|.*\.log)$/i;
 
 export function collectAppFiles(root, items = APP_ITEMS) {

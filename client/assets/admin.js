@@ -360,8 +360,10 @@
         const body = { name: data.name, description: data.description, permissions };
         if (role) await HOF.api(`/api/admin/roles/${encodeURIComponent(role.key)}`, { method: "PATCH", body });
         else await HOF.api("/api/admin/roles", { method: "POST", body });
+        // v2.0.13 (simülasyon bulgusu): rol listesi yenilenmeden bildirim verilirse hemen açılan "+ Yeni Kullanıcı"
+        // penceresinde yeni rol görünmüyordu. Önce liste yenilenir, sonra "seçebilirsiniz" denir.
+        await loadUsers();
         HOF.toast(role ? `“${data.name}” rolü kaydedildi.` : `“${data.name}” rolü oluşturuldu. Kullanıcının rol listesinden seçebilirsiniz.`, { type: "success" });
-        loadUsers();
       },
     });
   }
@@ -840,6 +842,81 @@
     }
   });
 
+  // ---------- Dönem kilidi ve mutabakat ----------
+  const dayText = iso => (iso ? `${iso.slice(8, 10)}.${iso.slice(5, 7)}.${iso.slice(0, 4)}` : "");
+  async function loadPeriod() {
+    const status = $("#adm-period-status");
+    const health = $("#adm-integrity-status");
+    try {
+      const { lockedUntil, today } = await HOF.api("/api/workspace/ledger/lock");
+      const input = $("#adm-period-date");
+      input.max = today;
+      if (document.activeElement !== input) input.value = lockedUntil || "";
+      status.textContent = lockedUntil ? `${dayText(lockedUntil)} ve öncesi kilitli.` : "Kilitli dönem yok; tüm geçmiş tarihlere hareket girilebilir.";
+      $("#adm-period-clear").hidden = !lockedUntil;
+    } catch (error) {
+      status.textContent = error.message;
+    }
+    try {
+      const result = await HOF.api("/api/workspace/ledger/integrity");
+      const rolled = (result.log || []).filter(row => row.action === "rolled-back").length;
+      health.textContent = result.ok
+        ? `Mutabakat: ${result.checks.length} denetim tamam — ana defter ile Kasa, Cari, Stok ve Taksit kuruşu kuruşuna tutarlı.${rolled ? ` Son kayıtlarda ${rolled} işlem sapma yaratacağı için geri alındı (Raporlar › Mutabakat Günlüğü).` : ""}`
+        : `Mutabakat: ${result.failures.length} denetimde sapma var (${result.failures.map(item => item.name).join(", ")}). Raporlar › Defter Mutabakatı'nda ayrıntıyı görün.`;
+      health.classList.toggle("adm-error-text", !result.ok);
+    } catch {
+      health.textContent = "";
+    }
+  }
+  async function savePeriod(value) {
+    const save = $("#adm-period-save");
+    save.disabled = true;
+    try {
+      const { lockedUntil } = await HOF.api("/api/admin/period-lock", { method: "PUT", body: { lockedUntil: value } });
+      HOF.toast(lockedUntil ? `${dayText(lockedUntil)} ve öncesi kilitlendi.` : "Dönem kilidi kaldırıldı.", { type: "success" });
+      await loadPeriod();
+    } catch (error) {
+      HOF.toastError(error);
+    } finally {
+      save.disabled = false;
+    }
+  }
+  $("#adm-period").addEventListener("submit", event => {
+    event.preventDefault();
+    const value = $("#adm-period-date").value;
+    if (!value) return HOF.toast("Kilitlenecek son günü seçin.", { type: "error" });
+    savePeriod(value);
+  });
+  $("#adm-period-clear").addEventListener("click", async () => {
+    const go = await HOF.confirm({ title: "Dönem Kilidini Kaldır", message: "Kapalı dönemdeki hareketler yeniden değiştirilebilir olur. Düzeltmeden sonra yeniden kilitlemeyi unutmayın.", confirmLabel: "Kilidi Kaldır", danger: true });
+    if (!go) return;
+    savePeriod("");
+  });
+
+  // ---------- Eksi bakiye denetimi ----------
+  async function loadNegative() {
+    try {
+      const policy = await HOF.api("/api/admin/negative-policy");
+      for (const key of ["cash", "bank", "card"]) $(`#adm-negative-${key}`).value = policy[key];
+    } catch (error) {
+      HOF.toastError(error);
+    }
+  }
+  $("#adm-negative").addEventListener("submit", async event => {
+    event.preventDefault();
+    const button = $("#adm-negative-save");
+    button.disabled = true;
+    try {
+      const body = Object.fromEntries(["cash", "bank", "card"].map(key => [key, $(`#adm-negative-${key}`).value]));
+      await HOF.api("/api/admin/negative-policy", { method: "PUT", body });
+      HOF.toast("Eksi bakiye denetimi kaydedildi.", { type: "success" });
+    } catch (error) {
+      HOF.toastError(error);
+    } finally {
+      button.disabled = false;
+    }
+  });
+
   // ---------- Güncellemeler ----------
   let updateStatus = null;
   let updateTimer = null;
@@ -962,6 +1039,8 @@
 
   async function loadSystem() {
     loadUpdate();
+    loadPeriod();
+    loadNegative();
     const target = $("#adm-system");
     try {
       const info = await HOF.api("/api/admin/system");

@@ -57,6 +57,15 @@
   // ---------- Oturum ve yetki ----------
   HOF.user = null;
   HOF.settings = { sheetUrl: "", syncMinutes: "5", aiMapping: "", activeSourceLabel: "" };
+  // v2.0.13: ödeme / tahsilat yolu. Nakit Kasa'ya, Havale/EFT ve Kredi Kartı bankaya düşer; Kasa ve Banka ekranı ayrı
+  // gösterir. Çek/senet (portföy) ve açık hesap (veresiye, cari) para hareketi değildir; kendi ekranlarından yürür.
+  HOF.PAY_METHODS = [
+    { value: "cash", label: "Nakit" },
+    { value: "bank", label: "Havale / EFT" },
+    { value: "card", label: "Kredi Kartı" },
+  ];
+  HOF.methodLabel = value => (HOF.PAY_METHODS.find(item => item.value === value) || HOF.PAY_METHODS[0]).label;
+  HOF.methodField = (value = "cash", { incoming = true, name = "method" } = {}) => ({ name, label: incoming ? "Tahsilat Yolu" : "Ödeme Yolu", type: "select", value: value || "cash", options: HOF.PAY_METHODS });
   HOF.can = permission => Boolean(HOF.user && HOF.user.permissions && HOF.user.permissions.includes(permission));
   HOF.sourceName = () => HOF.settings.sheetUrl || window.localStorage.getItem("hukuk-ofisi-sheet-url") || "Çalışma Tablosu";
 
@@ -69,7 +78,25 @@
     }
   }
   HOF.ApiError = ApiError;
-  HOF.api = async (path, { method = "GET", body, signal, timeoutMs = 30000 } = {}) => {
+  // v2.0.13: Kasa'yı eksiye düşürecek çıkışta sunucu "cash-negative" döner; burada sorulur, onaylanırsa aynı istek
+  // "cashForce" ile yeniden gönderilir (her form ayrı ayrı ele almasın). Vazgeçilirse form açık kalır.
+  HOF.api = async (path, options = {}) => {
+    try {
+      return await rawApi(path, options);
+    } catch (error) {
+      const body = options.body;
+      const removing = String(options.method || "").toUpperCase() === "DELETE";
+      if (error?.status !== 409 || error.data?.code !== "cash-negative" || (!removing && (!body || typeof body !== "object"))) throw error;
+      // Yola göre başlık ve öneri (Nakit Kasa, Banka, Kredi Kartı). "Engelle" ayarında sunucu cash-blocked döner, sorulmaz.
+      const where = { cash: ["Kasa Eksiye Düşecek", "Ödeme bankadan ya da başka bir kasadan yapıldıysa yolu değiştirin."], bank: ["Banka Bakiyesi Eksiye Düşecek", "Hesapta kredili mevduat varsa ya da tahsilat henüz girilmediyse kaydedebilirsiniz."], card: ["Kredi Kartı Bakiyesi Eksiye Düşecek", "İade tutarını ve ödeme yolunu kontrol edin."] }[error.data?.method] || ["Bakiye Eksiye Düşecek", ""];
+      const go = await HOF.confirm({ title: where[0], message: `${error.message} ${where[1]} Yine de kaydedilsin mi?`.replace(/\s+/g, " "), confirmLabel: removing ? "Yine de Sil" : "Yine de Kaydet", danger: true });
+      if (!go) throw new ApiError("Kaydedilmedi: bakiye eksiye düşecekti.", 409, { code: "cash-negative-cancelled" });
+      // Silmede gövde yok: onay adrese eklenir.
+      if (removing) return rawApi(`${path}${path.includes("?") ? "&" : "?"}cashForce=1`, options);
+      return rawApi(path, { ...options, body: { ...body, cashForce: true } });
+    }
+  };
+  const rawApi = async (path, { method = "GET", body, signal, timeoutMs = 30000 } = {}) => {
     const init = { method, credentials: "same-origin", headers: { accept: "application/json" }, cache: "no-store" };
     if (body !== undefined) {
       init.headers["content-type"] = "application/json";
@@ -283,6 +310,11 @@
   };
   HOF.hasOpenModal = () => openModals.length > 0;
 
+  /** Yerel takvimle bugün (YYYY-AA-GG); toISOString gece yarısından sonra dünü verir. */
+  HOF.localToday = () => {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+  };
   HOF.confirm = ({ title, message, confirmLabel = "Onayla", cancelLabel = "Vazgeç", danger = false }) =>
     new Promise(resolve => {
       let answered = false;
@@ -322,7 +354,7 @@
     } else if (field.type === "checkbox") return `<label class="hof-check"><input type="checkbox" ${common} ${field.value ? "checked" : ""}><span>${HOF.esc(field.label)}</span></label>`;
     else {
       const list = field.list && field.list.length ? `${id}-list` : "";
-      control = `<input ${common} type="${field.type || "text"}" value="${HOF.esc(field.value ?? "")}" placeholder="${HOF.esc(field.placeholder || "")}" ${field.inputmode ? `inputmode="${field.inputmode}"` : ""} ${field.step ? `step="${field.step}"` : ""} ${field.min != null ? `min="${field.min}"` : ""} ${list ? `list="${list}"` : ""} autocomplete="${field.autocomplete || "off"}">${list ? `<datalist id="${list}">${field.list.map(item => `<option value="${HOF.esc(item)}"></option>`).join("")}</datalist>` : ""}`;
+      control = `<input ${common} type="${field.type || "text"}" value="${HOF.esc(field.value ?? "")}" placeholder="${HOF.esc(field.placeholder || "")}" ${field.inputmode ? `inputmode="${field.inputmode}"` : ""} ${field.step ? `step="${field.step}"` : ""} ${field.min != null ? `min="${field.min}"` : ""} ${field.max != null ? `max="${field.max === "today" ? HOF.localToday() : field.max}"` : ""} ${list ? `list="${list}"` : ""} autocomplete="${field.autocomplete || "off"}">${list ? `<datalist id="${list}">${field.list.map(item => `<option value="${HOF.esc(item)}"></option>`).join("")}</datalist>` : ""}`;
     }
     return `<label class="hof-field${field.readonly ? " is-readonly" : ""}" for="${id}"><span>${HOF.esc(field.label)}${field.required ? ' <i aria-hidden="true">*</i>' : ""}${field.badge ? ` <em class="hof-field-badge">${HOF.esc(field.badge)}</em>` : ""}</span>${control}${field.help ? `<small>${HOF.esc(field.help)}</small>` : ""}</label>`;
   };

@@ -45,7 +45,12 @@ Bu dosya oturumlar arasında taşınan hafızadır. Her oturumun başında okunu
   "Pro'ya özel" derse Pro kilidine girer. Ayrıntı: `docs/PRO-UZAKTAN-GORUNTULEME.md` → "Paket kuralları".
 
 ## Açık iş
-- 2.0.12 hazırlandı (müşteri: taksit kartının Kayıt Tarihi carinin tarihinden gelir; form düzeni). 2.0.11 yayımlı (PR #11).
-  Sırada: süpermarket zinciri 1 aylık arayüz simülasyonu (bulgular `docs/DURUM-VE-DEVAM.md` → "2.0.13 için biriken").
+- 2.0.12 yayımlandı (PR ceougur/ofis---y-netimi#12, `v2.0.12`; beş dosya bayt bayt doğrulandı; müşteri: taksit kartının
+  Kayıt Tarihi carinin tarihinden gelir).
+- 2.0.13 paketi hazır (01.10.2026; teslim zipleri scratchpad'de, yayın kullanıcı doğrulamasını bekliyor; dal `claude/nice-euler-jvajxv`): WhatsApp, ödeme yolu, Ana Defter,
+  mutabakat kapısı, dört çekirdek (Kasa, Stok, Cari, Taksit) tarih/kilit/yuvarlama kuralları, Eksi Bakiye Denetimi
+  (Nakit/Banka/Kredi Kartı: Uyar/Engelle/Kontrol Yok — kullanıcı onayı 01.10.2026), hepsini seç + hariç tut. Holding stres
+  simülasyonu kullanıcı kararıyla iptal. Doğrulama: `npm test`, `npm run test:mutabakat`, `npm run mutabakat`,
+  `npm run test:senaryo-whatsapp` (1.000 cari). Senaryolar tarihe bağlı yazılmasın (ayın 1'inde kırılanlar düzeltildi).
 - Pro — uzaktan görüntüleme: `docs/PRO-UZAKTAN-GORUNTULEME.md` (önce en alttaki "Oturum devri"); genel durum
   `docs/DURUM-VE-DEVAM.md`.

@@ -68,7 +68,7 @@
   };
 
   let modal = null;
-  const view = { mode: "list", id: "", q: "", type: "", group: "", subgroup: "", status: "active", balance: "all", sort: stored(SORT_KEY, "no"), ledgerFilter: "all", list: null, account: null, selected: new Set(), selectAll: false, limit: 300 };
+  const view = { mode: "list", id: "", q: "", type: "", group: "", subgroup: "", status: "active", balance: "all", sort: stored(SORT_KEY, "no"), ledgerFilter: "all", list: null, account: null, selected: new Set(), selectAll: false, excluded: new Set(), limit: 300 };
   // Binlerce caride ekran hızlı kalsın: sunucu 300'er satır gönderir ("Daha fazla göster" sonrakini ekler); arama, süzgeç
   // ve toplamlar sunucuda tümü üzerinde çalışır. "Hepsini seç" süzgeçteki bütün carileri (yüklenmemişler dahil) seçer.
   const PAGE = 300;
@@ -93,6 +93,7 @@
         const visible = new Set(view.list.accounts.map(item => item.id));
         for (const id of [...view.selected]) if (!visible.has(id)) view.selected.delete(id);
         view.selectAll = false;
+        view.excluded.clear();
       }
       if (view.mode === "list") renderList();
     } catch (error) {
@@ -170,26 +171,59 @@
     return `<select data-filter="group" aria-label="Grup"><option value="">Tüm Gruplar</option>${groups.map(item => `<option value="${esc(item.id)}" ${item.id === view.group ? "selected" : ""}>${esc(item.name)} (${item.count})</option>`).join("")}</select>
       <select data-filter="subgroup" aria-label="Alt grup" ${subs.length ? "" : "disabled"}><option value="">${subs.length ? "Tüm Alt Gruplar" : "Alt Grup"}</option>${subs.map(item => `<option value="${esc(item.id)}" ${item.id === view.subgroup ? "selected" : ""}>${esc(item.name)} (${item.count})</option>`).join("")}</select>`;
   };
-  const selectBar = () => {
-    const count = view.selectAll ? view.list?.total || 0 : view.selected.size;
-    if (!canPlan()) return "";
-    return `<div class="hof-acc-selbar${count ? " is-active" : ""}" data-selbar><span>${count ? `<b>${count}</b> cari seçildi${view.selectAll ? " (süzgeçteki hepsi)" : ""}` : "Toplu taksitlendirmek için soldaki kutulardan carileri seçin; başlıktaki kutu süzgeçteki carilerin hepsini seçer (ör. önce grup ya da okul seçin)."}</span>${count ? '<button type="button" class="hof-button hof-button-small" data-act="bulkPlan">Seçilenlere Taksit Planı</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="clearSel">Seçimi Temizle</button>' : ""}</div>`;
+  // Seçim: tek tek işaretlenenler (selected) ya da "süzgeçteki hepsi" (selectAll) eksi işareti kaldırılanlar (excluded).
+  const selectedCount = () => (view.selectAll ? Math.max(0, (view.list?.total || 0) - view.excluded.size) : view.selected.size);
+  const isSelected = id => (view.selectAll ? !view.excluded.has(id) : view.selected.has(id));
+  const allSelection = () => ({ all: true, ...filterBody(), ...(view.excluded.size ? { except: [...view.excluded] } : {}) });
+  const clearSelection = () => {
+    view.selected.clear();
+    view.excluded.clear();
+    view.selectAll = false;
   };
+  const selectBar = () => {
+    const count = selectedCount();
+    const total = view.list?.total ?? view.list?.accounts?.length ?? 0;
+    const wa = HOF.whatsapp
+      ? count
+        ? '<button type="button" class="hof-button hof-button-small hof-whatsapp" data-act="waStatement" title="Seçilen carilere kişiye özel ekstreyi WhatsApp ile gönder">WhatsApp Ekstre</button><button type="button" class="hof-button hof-button-small hof-button-ghost hof-whatsapp" data-act="waMessage" title="Seçilen carilere toplu WhatsApp mesajı yaz">WhatsApp Mesaj</button>'
+        : total
+          ? `<button type="button" class="hof-button hof-button-small hof-button-ghost hof-whatsapp" data-act="waStatement" title="Süzgeçteki ${total} cariye ekstre">Tümüne WhatsApp Ekstre</button><button type="button" class="hof-button hof-button-small hof-button-ghost hof-whatsapp" data-act="waMessage" title="Süzgeçteki ${total} cariye mesaj">Tümüne WhatsApp Mesaj</button>`
+          : ""
+      : "";
+    const hint = canPlan() ? "Toplu taksit ya da WhatsApp için soldaki kutulardan carileri seçin; başlıktaki kutu süzgeçteki carilerin hepsini seçer (ör. önce grup ya da okul seçin)." : "WhatsApp ile toplu gönderim için soldaki kutulardan carileri seçin ya da süzgeçteki hepsine gönderin.";
+    return `<div class="hof-acc-selbar${count ? " is-active" : ""}" data-selbar><span>${count ? `<b>${count.toLocaleString("tr-TR")}</b> cari seçildi${view.selectAll ? (view.excluded.size ? ` (süzgeçteki hepsi, ${view.excluded.size.toLocaleString("tr-TR")} hariç)` : " (süzgeçteki hepsi)") : ""}` : hint}</span>${count && canPlan() ? '<button type="button" class="hof-button hof-button-small" data-act="bulkPlan">Seçilenlere Taksit Planı</button>' : ""}${wa}${count ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="clearSel">Seçimi Temizle</button>' : ""}</div>`;
+  };
+  // WhatsApp toplu gönderim: seçim varsa seçilenler, yoksa süzgeçteki carilerin hepsi.
+  function bulkWhatsapp(kind) {
+    const count = selectedCount();
+    const selection = count && !view.selectAll ? { ids: [...view.selected] } : view.selectAll ? allSelection() : { all: true, ...filterBody() };
+    const total = count || view.list?.total || 0;
+    HOF.whatsapp?.open({
+      kind,
+      selection,
+      title: `${total.toLocaleString("tr-TR")} Cari`,
+      // Gönderim bitince seçim temizlenir (toplu taksitteki gibi); pencere yeniden açıldığında eski seçim kalmaz.
+      onDone: () => {
+        clearSelection();
+        if (view.mode === "list") renderList();
+      },
+    });
+  }
   function renderList() {
     const root = body();
     if (!root) return;
     const data = view.list;
     const manage = canManage();
-    const planning = canPlan();
+    const planning = true; // seçim kutuları: toplu taksit (yetkiyle) ve WhatsApp gönderimi
     const filtered = Boolean(view.q || view.type || view.group || view.subgroup || view.balance !== "all");
     const tableRows = HOF.data?.rows?.length || 0;
     const row = item => {
       const next = item.next ? `<small class="${item.next.days < 0 ? "is-warn" : ""}">${esc(HOF.formatDate(item.next.dueDate))} · ${item.next.days < 0 ? `${Math.abs(item.next.days)} gün gecikti` : "sıradaki taksit"}</small>` : "";
       const plansCell = item.activePlans ? `<b>${esc(money(item.planRemaining))}</b><small>${item.activePlans} kart${item.overdueCount ? ` · <span class="is-warn">${item.overdueCount} geciken</span>` : ""}</small>${next}` : '<small class="hof-muted">—</small>';
       const extra = item.extra?.length ? `<small class="hof-acc-extra">${item.extra.map(field => `${esc(field.label)}: ${esc(field.value)}`).join(" · ")}</small>` : "";
-      return `<tr data-account="${esc(item.id)}" class="${item.status === "passive" ? "is-passive" : ""}" tabindex="0">${planning ? `<td class="hof-acc-check"><input type="checkbox" data-select="${esc(item.id)}" aria-label="${esc(item.name)} seç" ${view.selected.has(item.id) ? "checked" : ""}></td>` : ""}<td class="hof-plan-no">${esc(item.refNo)}</td><td><b>${esc(item.name)}</b> ${item.type !== "customer" ? typeBadge(item.type) : ""}${item.status === "passive" ? badgeMuted("Pasif") : ""}<small>${esc(whereText(item) || "Grupsuz")}${item.phone ? ` · ${esc(item.phone)}` : ""}${item.caseKey ? " · tabloda kayıtlı" : ""}</small>${extra}</td><td class="num">${amountCell(item.debit)}</td><td class="num">${amountCell(item.credit, "hof-cash-in")}</td><td class="num">${balanceHtml(item.balance)}</td><td>${plansCell}</td></tr>`;
+      return `<tr data-account="${esc(item.id)}" class="${item.status === "passive" ? "is-passive" : ""}" tabindex="0">${planning ? `<td class="hof-acc-check"><input type="checkbox" data-select="${esc(item.id)}" aria-label="${esc(item.name)} seç" ${isSelected(item.id) ? "checked" : ""}></td>` : ""}<td class="hof-plan-no">${esc(item.refNo)}</td><td><b>${esc(item.name)}</b> ${item.type !== "customer" ? typeBadge(item.type) : ""}${item.status === "passive" ? badgeMuted("Pasif") : ""}<small>${esc(whereText(item) || "Grupsuz")}${item.phone ? ` · ${esc(item.phone)}` : ""}${item.caseKey ? " · tabloda kayıtlı" : ""}</small>${extra}</td><td class="num">${amountCell(item.debit)}</td><td class="num">${amountCell(item.credit, "hof-cash-in")}</td><td class="num">${balanceHtml(item.balance)}</td><td>${plansCell}</td></tr>`;
     };
-    const allChecked = view.selectAll || (data && data.accounts.length && data.accounts.every(item => view.selected.has(item.id)));
+    const allChecked = (view.selectAll && !view.excluded.size) || (!view.selectAll && data && data.accounts.length && data.accounts.every(item => view.selected.has(item.id)));
     const total = data?.total ?? data?.accounts.length ?? 0;
     root.innerHTML = `<div class="hof-cash-bar"><div class="hof-tabs" role="group" aria-label="Durum">${STATUS_TABS.map(item => `<button type="button" data-status="${item.id}" aria-pressed="${String(item.id === view.status)}">${item.label}</button>`).join("")}</div>
       <div class="hof-cash-add">${manage ? `<button type="button" class="hof-button hof-button-small" data-act="new">+ Yeni Cari</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="import" title="Excel dosyasından ya da Google Sheets’ten carileri tek seferde aç (taksit sorulmaz)">Excel / Sheets’ten Yükle</button>${tableRows ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="fromTable" title="Ortadaki tablonun açık sekmesindeki kişileri cari yap; her cari kendi kaydına bağlanır">Tablodan Al</button>' : ""}` : ""}</div></div>
@@ -231,7 +265,7 @@
       const stock = entry.source === "stock" ? '<small class="hof-muted" title="Stok hareketinden gelir; Stok’tan düzeltilir">stoktan</small>' : entry.source === "cheque" ? (HOF.can("cheques.view") ? `<button type="button" class="hof-mini" data-open-cheque="${esc(entry.sourceId)}" title="Çek / senetten gelir; evrak kartından geri alınır" aria-label="Çek / senet kartını aç">↗</button>` : '<small class="hof-muted" title="Çek / senetten gelir; evrak kartından geri alınır">çek / senet</small>') : "";
       return `${receipt}${stock}${entry.editable ? `<button type="button" class="hof-mini" data-edit-entry="${esc(entry.id)}" title="Düzelt" aria-label="Düzelt">✎</button><button type="button" class="hof-mini hof-mini-danger" data-delete-entry="${esc(entry.id)}" title="Sil" aria-label="Sil">×</button>` : ""}`;
     };
-    const ledgerRow = line => `<tr class="is-${esc(line.kind)}"><td>${esc(HOF.formatDate(line.date))}</td><td><b>${esc(line.label)}${line.receiptNo ? ` <span class="hof-plan-receipt">Makbuz ${esc(line.receiptNo)}</span>` : ""}</b>${line.note ? `<small>${esc(line.note)}</small>` : ""}</td><td class="num">${line.debit ? esc(money(line.debit)) : ""}</td><td class="num">${line.credit ? esc(money(line.credit)) : ""}</td><td class="num">${balanceHtml(line.balance)}</td><td class="hof-cash-actions">${lineActions(line)}</td></tr>`;
+    const ledgerRow = line => `<tr class="is-${esc(line.kind)}"><td>${esc(HOF.formatDate(line.date))}</td><td><b>${esc(line.label)}${line.method ? ` <span class="hof-method-tag is-${esc(line.method)}">${esc(HOF.methodLabel(line.method))}</span>` : ""}${line.receiptNo ? ` <span class="hof-plan-receipt">Makbuz ${esc(line.receiptNo)}</span>` : ""}</b>${line.note ? `<small>${esc(line.note)}</small>` : ""}</td><td class="num">${line.debit ? esc(money(line.debit)) : ""}</td><td class="num">${line.credit ? esc(money(line.credit)) : ""}</td><td class="num">${balanceHtml(line.balance)}</td><td class="hof-cash-actions">${lineActions(line)}</td></tr>`;
     const planRow = plan => `<tr data-open-plan="${esc(plan.id)}" tabindex="0" class="is-${esc(plan.state)}"><td class="hof-plan-no">${esc(plan.refNo || "")}</td><td><b>${esc(plan.name)}</b><small>${plan.itemCount ? `${plan.itemCount} taksit` : "Taksit kurulmadı"}${plan.next ? ` · sıradaki ${esc(HOF.formatDate(plan.next.dueDate))}` : ""}</small></td><td class="num">${esc(money(plan.totals.total))}</td><td class="num hof-cash-in">${esc(money(plan.totals.paid))}</td><td class="num${plan.totals.remaining > 0 ? " hof-cash-out" : ""}">${esc(money(plan.totals.remaining))}</td><td>${plan.status === "closed" ? '<span class="hof-plan-badge is-muted">Kapalı</span>' : plan.state === "overdue" ? `<span class="hof-plan-badge is-late">${plan.totals.overdueCount} taksit gecikti</span>` : plan.state === "done" ? '<span class="hof-plan-badge is-done">Tamamlandı</span>' : '<span class="hof-plan-badge is-info">Devam Ediyor</span>'}</td></tr>`;
     const caseCell = account.caseKey
       ? account.caseSource && HOF.datasetKey && account.caseSource !== HOF.datasetKey
@@ -386,6 +420,23 @@
       return [];
     }
   }
+  // Açılış bakiyesinin yönü (v2.0.13): tedarikçi listelerinde bakiye bizim borcumuzdur; türe göre ya da elle seçilir.
+  const OPENING_SIDES = [
+    { value: "auto", label: "Türe Göre (müşteride Borçlu, tedarikçide Alacaklı)" },
+    { value: "debt", label: "Borçlu (cari bize borçlu)" },
+    { value: "credit", label: "Alacaklı (biz cariye borçluyuz)" },
+  ];
+  // Aynı kişi uyarısı (v2.0.13): yeni caride aynı ad (ve telefon) varsa yazarken gösterilir, kaydederken sorulur.
+  const sameDigits = (a, b) => String(a || "").replace(/\D/g, "").slice(-10) === String(b || "").replace(/\D/g, "").slice(-10);
+  async function samePeople(name) {
+    const wanted = HOF.normalize(name);
+    if (!wanted) return [];
+    try {
+      return (await HOF.api(`/api/workspace/accounts/search?q=${encodeURIComponent(name.trim())}`)).filter(item => HOF.normalize(item.name) === wanted);
+    } catch {
+      return [];
+    }
+  }
   async function editAccount(account, preset = null) {
     const groups = await groupsNow();
     const link = { caseKey: account?.caseKey || preset?.caseKey || "", caseSource: account?.caseSource || "", caseTitle: account?.caseTitle || preset?.caseTitle || "" };
@@ -405,7 +456,12 @@
         { name: "address", label: "Adres", type: "textarea", rows: 2, maxlength: 500, value: account?.address || "" },
         ...(office().groupFields ? office().groupFields(groups, account || {}) : []),
         { name: "note", label: "Bilgi Notu", type: "textarea", rows: 3, maxlength: 2000, value: account?.note || "" },
-        ...(account ? [] : [{ name: "openingBalance", label: "Açılış Bakiyesi (₺)", inputmode: "decimal", placeholder: "Örn. 1.500 (borç) ya da -250 (alacak)", help: "Önceki defterden devreden bakiye: artı tutar Borçlu, eksi tutar Alacaklı olarak açılır. Boş bırakılabilir." }]),
+        ...(account
+          ? []
+          : [
+              { name: "openingBalance", label: "Açılış Bakiyesi (₺)", inputmode: "decimal", placeholder: "Örn. 1.500", help: "Önceki defterden devreden bakiye. Boş bırakılabilir." },
+              { name: "openingSide", label: "Bakiye Yönü", type: "select", value: "auto", options: OPENING_SIDES, help: "Tedarikçi listesindeki bakiye çoğunlukla bizim borcumuzdur (Alacaklı)." },
+            ]),
       ],
       submitLabel: account ? "Kaydet" : "Cariyi Aç",
       onOpen: dialog => {
@@ -448,10 +504,50 @@
         }
         fieldsBox = fieldsEditor(account?.fields || []);
         dialog.querySelector('textarea[name="note"]').closest(".hof-field").before(fieldsBox);
+        if (!account) {
+          // Yazarken: aynı adlı cariler (numarası, grubu, telefonu) adın altında listelenir; tıklanınca o cari açılır.
+          const nameInput = dialog.querySelector('input[name="name"]');
+          const hint = HOF.el("div", { class: "hof-dup-hint", hidden: "", "aria-live": "polite" });
+          nameInput.closest(".hof-field").append(hint);
+          let timer = 0;
+          const check = () => {
+            clearTimeout(timer);
+            timer = setTimeout(async () => {
+              const list = await samePeople(nameInput.value);
+              hint.hidden = !list.length;
+              hint.innerHTML = list.length
+                ? `<b>${list.length} cari aynı adla kayıtlı:</b> ${list
+                    .slice(0, 5)
+                    .map(item => `<button type="button" class="hof-link" data-open-existing="${esc(item.id)}">No ${esc(item.refNo || "—")} · ${esc([item.groupName, item.phone].filter(Boolean).join(" · ") || "telefonsuz")}</button>`)
+                    .join(" ")}. Aynı kişiyse yeni cari açmayın; mevcut cariyi açın.`
+                : "";
+            }, 250);
+          };
+          nameInput.addEventListener("input", check);
+          hint.addEventListener("click", event => {
+            const id = event.target.closest("[data-open-existing]")?.dataset.openExisting;
+            if (!id) return;
+            dialog.closest(".hof-modal-backdrop")?.querySelector("[data-cancel], .hof-modal-close")?.click();
+            open(id);
+          });
+          if (nameInput.value.trim()) check();
+        }
       },
       onSubmit: async data => {
+        if (!account) {
+          // Kaydederken: aynı ad + aynı telefon varsa (ya da ikisinde de telefon yoksa) açıkça sorulur.
+          const twins = (await samePeople(data.name)).filter(item => (data.phone && item.phone ? sameDigits(item.phone, data.phone) : !data.phone && !item.phone));
+          if (twins.length) {
+            const first = twins[0];
+            const go = await HOF.confirm({ title: "Bu Kişi Zaten Kayıtlı", message: `“${data.name}” ${data.phone ? `(${data.phone}) ` : ""}zaten cari olarak var: No ${first.refNo || "—"}${first.groupName ? ` · ${first.groupName}` : ""}. Aynı kişi için ikinci cari açılırsa borç ve tahsilatlar iki karta bölünür. Yine de yeni cari açılsın mı?`, confirmLabel: "Yine de Aç", cancelLabel: "Mevcut Cariyi Aç", danger: true });
+            if (!go) {
+              open(first.id);
+              return;
+            }
+          }
+        }
         const payload = { name: data.name, type: data.type, refNo: data.refNo, registeredOn: data.registeredOn, phone: data.phone, email: data.email, address: data.address, note: data.note, fields: fieldsBox ? fieldsBox.read() : [], caseKey: data.caseKey || "", caseSource: data.caseSource || "", caseTitle: data.caseKey ? data.caseTitle : "", ...(office().groupBody ? office().groupBody(data) : {}) };
-        if (!account) payload.openingBalance = data.openingBalance;
+        if (!account) Object.assign(payload, { openingBalance: data.openingBalance, openingSide: data.openingSide || "auto" });
         const result = account ? await HOF.api(`/api/workspace/accounts/${encodeURIComponent(account.id)}`, { method: "PUT", body: payload }) : await HOF.api("/api/workspace/accounts", { method: "POST", body: payload });
         HOF.toast(account ? "Cari güncellendi." : "Cari açıldı.", { type: "success" });
         if (!modal) open(result.id);
@@ -469,13 +565,24 @@
       intro: ENTRY_HELP[type],
       fields: [
         { name: "amount", label: "Tutar (₺)", required: true, inputmode: "decimal", value: entry ? office().amountText?.(entry.amount) || entry.amount : "", placeholder: "Örn. 1.250,00", autofocus: true },
-        { name: "date", label: "Tarih", type: "date", value: entry?.date || office().todayIso?.() || "" },
-        { name: "note", label: "Açıklama", maxlength: 300, value: entry?.note || "", placeholder: type === "in" ? "Elden, havale, kart…" : type === "debt" ? "Ör. Eylül aidatı, 3 adet ürün" : "" },
+        // v2.0.13: tahsilat/ödeme yolu (Nakit, Havale / EFT, Kredi Kartı, Çek / Senet). Çek/senet seçilirse evrak formuna geçilir.
+        ...(type === "in" || type === "out"
+          ? [{ name: "method", label: type === "in" ? "Tahsilat Yolu" : "Ödeme Yolu", type: "select", value: entry?.method || "cash", options: [...HOF.PAY_METHODS, ...(!entry && HOF.cheques?.newFor && HOF.can("cheques.manage") ? [{ value: "cheque", label: "Çek / Senet (portföye alınır)" }] : [])] }]
+          : []),
+        // v2.0.13: yanlış yönde yazılan borç/alacak düzeltilirken yön değiştirilebilir (açılış bakiyesi gibi).
+        ...(entry && (type === "debt" || type === "credit") ? [{ name: "kind", label: "Yön", type: "select", value: type, options: [{ value: "debt", label: "Borç (cari bize borçlanır)" }, { value: "credit", label: "Alacak (biz cariye borçlanırız)" }] }] : []),
+        { name: "date", label: "Tarih", type: "date", max: "today", value: entry?.date || office().todayIso?.() || "" },
+        { name: "note", label: "Açıklama", maxlength: 300, value: entry?.note || "", placeholder: type === "in" ? "Ör. Eylül ödemesi" : type === "debt" ? "Ör. Eylül aidatı, 3 adet ürün" : "" },
       ],
       submitLabel: entry ? "Kaydet" : ENTRY_LABEL[type],
       onSubmit: async data => {
+        if (data.method === "cheque") {
+          // Çekle/senetle tahsilat ya da ödeme: evrak portföye girer, carinin borcu evrakla düşer (Kasa değişmez).
+          setTimeout(() => HOF.cheques.newFor({ direction: type === "in" ? "in" : "out", account: { id: account.id, name: account.name }, amount: String(data.amount || "").trim() }), 150);
+          return;
+        }
         const url = `/api/workspace/accounts/${encodeURIComponent(account.id)}/entries${entry ? `/${encodeURIComponent(entry.id)}` : ""}`;
-        const result = await HOF.api(url, { method: entry ? "PUT" : "POST", body: { ...data, kind: type } });
+        const result = await HOF.api(url, { method: entry ? "PUT" : "POST", body: { ...data, kind: entry && data.kind ? data.kind : type } });
         applyAccount(result);
         if (type === "in" || type === "out") HOF.emit("cash-changed");
         const receipt = !entry && (type === "in" || type === "out") && result.entryId ? { label: "Makbuz", onClick: () => window.open(`/api/workspace/accounts/${encodeURIComponent(account.id)}/entries/${encodeURIComponent(result.entryId)}/makbuz.pdf`, "_blank", "noopener") } : undefined;
@@ -601,16 +708,15 @@
   }
   function bulkPlan() {
     const all = view.selectAll;
-    const count = all ? view.list?.total || 0 : view.selected.size;
-    const names = view.list.accounts.filter(item => all || view.selected.has(item.id)).map(item => item.name);
+    const count = selectedCount();
+    const names = view.list.accounts.filter(item => isSelected(item.id)).map(item => item.name);
     bulkPlanForm({
-      selection: all ? { all: true, ...filterBody() } : { ids: [...view.selected] },
+      selection: all ? allSelection() : { ids: [...view.selected] },
       count,
       names,
       fieldLabels: view.list?.fieldLabels || [],
       onDone: () => {
-        view.selected.clear();
-        view.selectAll = false;
+        clearSelection();
         loadList();
       },
     });
@@ -689,6 +795,7 @@
         { name: "type", label: "Tür kolonu yoksa", type: "select", value: "customer", options: Object.entries(TYPES).map(([value, text]) => ({ value, label: text })) },
         { name: "mode", label: "Aynı cari zaten varsa", type: "select", value: "skip", options: [{ value: "skip", label: "Atla (eskisi olduğu gibi kalır)" }, { value: "update", label: "Güncelle (dolu gelen bilgiler yazılır)" }], help: "Aynı cari: aynı tablodaki kayıt, aynı Cari No ya da aynı ad + aynı telefon. Emin olunamayan satır yeni cari açar." },
         { name: "groupName", label: "Grup kolonu yoksa hepsi bu gruba", maxlength: 80, placeholder: "İsteğe bağlı" },
+        { name: "openingSide", label: "Açılış Bakiyesi Yönü", type: "select", value: "auto", options: OPENING_SIDES, help: "Türe göre: müşteride artı tutar Borçlu, tedarikçide artı tutar Alacaklı (tedarikçiye borcumuz). Eksi tutar ters yöndür." },
       ],
       submitLabel: "Carileri Oluştur",
       onOpen: dialog => {
@@ -701,7 +808,7 @@
           if (data[`c${index}`]) roles[index] = data[`c${index}`];
         });
         if (!Object.values(roles).includes("name")) throw new Error("Ad Soyad / Unvan kolonunu seçin.");
-        const result = await HOF.api("/api/workspace/accounts/import", { method: "POST", body: { matrix, headerAt: preview.headerAt, roles, type: data.type, mode: data.mode, groupName: data.groupName, fileName, ...(caseKeys ? { caseKeys, caseTitles } : {}) } });
+        const result = await HOF.api("/api/workspace/accounts/import", { method: "POST", body: { matrix, headerAt: preview.headerAt, roles, type: data.type, mode: data.mode, groupName: data.groupName, openingSide: data.openingSide || "auto", fileName, ...(caseKeys ? { caseKeys, caseTitles } : {}) } });
         view.status = "all";
         view.mode = "list";
         if (!modal) open();
@@ -728,13 +835,24 @@
     if (check) {
       if (check.dataset.selectAll !== undefined) {
         view.selectAll = check.checked && Boolean(view.list?.hasMore);
+        view.excluded.clear();
         for (const item of view.list?.accounts || []) check.checked ? view.selected.add(item.id) : view.selected.delete(item.id);
         return renderList();
       }
-      view.selectAll = false;
-      check.checked ? view.selected.add(check.dataset.select) : view.selected.delete(check.dataset.select);
+      // "Hepsi" seçiliyken tek kişinin işareti kaldırılırsa seçim hepsi eksi o kişi olur (yalnız ekrandakilere inmez).
+      if (view.selectAll) check.checked ? view.excluded.delete(check.dataset.select) : view.excluded.add(check.dataset.select);
+      else check.checked ? view.selected.add(check.dataset.select) : view.selected.delete(check.dataset.select);
       const bar = body()?.querySelector("[data-selbar]");
       if (bar) bar.outerHTML = selectBar();
+      // Başlık kutusu: hepsi seçili → işaretli; hepsi eksi birkaçı → yarım (kısmi); yoksa ekrandakilere göre.
+      const head = body()?.querySelector("input[data-select-all]");
+      if (head) {
+        const visible = view.list?.accounts || [];
+        const some = visible.some(item => isSelected(item.id));
+        const every = visible.length && visible.every(item => isSelected(item.id)) && !(view.selectAll && view.excluded.size);
+        head.checked = Boolean(every);
+        head.indeterminate = !every && some;
+      }
       return;
     }
     if (event.target.closest(".hof-acc-check")) return;
@@ -776,10 +894,11 @@
     if (act === "import") return importFromExcel();
     if (act === "fromTable") return importFromTable();
     if (act === "bulkPlan") return bulkPlan();
+    if (act === "waStatement") return bulkWhatsapp("statement");
+    if (act === "waMessage") return bulkWhatsapp("message");
     if (act === "more") return loadList({ more: true });
     if (act === "clearSel") {
-      view.selected.clear();
-      view.selectAll = false;
+      clearSelection();
       return renderList();
     }
     if (!account) return;
@@ -792,10 +911,10 @@
     if (act === "passive") return setStatus(account, "passive");
     if (act === "activate") return setStatus(account, "active");
     if (act === "delete") return deleteAccount(account);
-    if (act === "whatsapp") return window.open(`https://wa.me/${button.dataset.wa}`, "_blank", "noopener");
+    if (act === "whatsapp") return HOF.whatsapp ? HOF.whatsapp.forAccount({ id: account.id, name: account.name, wa: button.dataset.wa }) : window.open(`https://wa.me/${button.dataset.wa}`, "_blank", "noopener");
     if (act === "newPlan") {
       modal.close();
-      return HOF.plans?.openNew({ accountId: account.id, accountName: account.name, name: account.name, phone: account.phone, registeredOn: account.registeredOn || "", groupId: account.groupId || "", subgroupId: account.subgroupId || "", caseKey: account.caseKey, caseTitle: account.caseTitle });
+      return HOF.plans?.openNew({ accountId: account.id, accountName: account.name, name: account.name, phone: account.phone, registeredOn: account.registeredOn || "", balance: Number(account.totals?.balance) || 0, groupId: account.groupId || "", subgroupId: account.subgroupId || "", caseKey: account.caseKey, caseTitle: account.caseTitle });
     }
     const entryOf = id => account.entries.find(entry => entry.id === id);
     if (button.dataset.editEntry) return editEntry(account, { entry: entryOf(button.dataset.editEntry) });

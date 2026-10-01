@@ -6,6 +6,7 @@
 // değişen çek ve olayın defter etkileri (cari hareketi, taksit tahsilatı) birlikte yazılır; biri başarısız olursa hepsi
 // geri alınır. Etkiler effects_json'da tutulur; "Geri al" bunları birebir tersine çevirir (silinen satır aynı kimlikle
 // geri eklenir). İki kişi aynı çeki aynı anda işlerse ikincisi "bu arada değişti" (409) alır (beklenen durum denetimi).
+import { methodOf } from "../lib/pay-method.mjs";
 import { randomUUID } from "node:crypto";
 import { ACTIONS, DIRECTIONS, EVENT_LABELS, INSTRUMENTS, STATUSES, dueState, initialEvent, initialStatus, mapChequeHeaders, parseDirection, parseInstrument, parseStatus, plannedEffects, portfolioSummary, transition } from "../lib/cheques.mjs";
 import { HttpError, limited, ok, readJson, sendBuffer, text } from "../lib/http.mjs";
@@ -28,7 +29,7 @@ const collator = new Intl.Collator("tr", { numeric: true, sensitivity: "base" })
 // Geri çevrilebilir etkilerin yazılabileceği tablolar (effects_json'dan gelen ad SQL'e yalnız bu listeden girer).
 const EFFECT_TABLES = new Set(["account_entries", "plan_entries"]);
 
-export function registerChequeRoutes(router, { store, auth, audit, events, accounts = () => null, plans = () => null }) {
+export function registerChequeRoutes(router, { store, auth, audit, events, cash = null, accounts = () => null, plans = () => null }) {
   const now = () => new Date().toISOString();
   const today = () => isoDay(new Date());
   const newId = prefix => `${prefix}-${randomUUID()}`;
@@ -220,11 +221,11 @@ export function registerChequeRoutes(router, { store, auth, audit, events, accou
     accountIds: effects.map(effect => effect.accountId).filter(Boolean),
     planIds: effects.map(effect => effect.planId).filter(Boolean),
   });
-  function writeEvent(user, cheque, { kind, date, amount, accountId = "", fromStatus = "", toStatus, note = "", effects = [] }) {
+  function writeEvent(user, cheque, { kind, date, amount, accountId = "", fromStatus = "", toStatus, note = "", effects = [], method = "cash" }) {
     const id = newId("cevent");
     store.run(
-      "INSERT INTO cheque_events (id, cheque_id, kind, date, amount, account_id, from_status, to_status, note, effects_json, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-      id, cheque.id, kind, date, amount, accountId, fromStatus, toStatus, note, JSON.stringify(effects), user.id, now(),
+      "INSERT INTO cheque_events (id, cheque_id, kind, date, amount, account_id, from_status, to_status, note, effects_json, method, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+      id, cheque.id, kind, date, amount, accountId, fromStatus, toStatus, note, JSON.stringify(effects), methodOf(method), user.id, now(),
     );
     return id;
   }
@@ -351,6 +352,9 @@ export function registerChequeRoutes(router, { store, auth, audit, events, accou
       const rule = transition(cheque, action);
       if (!rule.ok) throw new HttpError(409, rule.reason);
       const date = dateOf(body.date, "İşlem tarihi", today());
+      // v2.0.13: çek/senet tahsili ya da ödemesi çoğunlukla bankadan geçer (varsayılan Banka); elden ise Nakit.
+      const method = methodOf(body.method, "bank");
+      if (rule.cash === "out") cash?.guardOut?.(cheque.amount, date, body.cashForce === true, method);
       if (date < cheque.issueDate) throw new HttpError(400, `İşlem tarihi, ${cheque.direction === "in" ? "alış" : "veriliş"} tarihinden (${dayText(cheque.issueDate)}) önce olamaz.`);
       const note = limited(body.note, 300, "Açıklama");
       let endorseAccountId = "";
@@ -365,7 +369,7 @@ export function registerChequeRoutes(router, { store, auth, audit, events, accou
       const endorseEffects = effectsOf(history.filter(event => event.kind === "endorse").at(-1));
       const planned = plannedEffects({ ...cheque }, action, { date, note: noteFor(cheque, action, note), endorseAccountId, receiveEffects, endorseEffects });
       const effects = applyEffects(user, cheque, planned);
-      writeEvent(user, cheque, { kind: action, date, amount: cheque.amount, accountId: endorseAccountId || (action === "bounce" ? cheque.accountId : ""), fromStatus: cheque.status, toStatus: rule.to, note, effects });
+      writeEvent(user, cheque, { kind: action, date, amount: cheque.amount, accountId: endorseAccountId || (action === "bounce" ? cheque.accountId : ""), fromStatus: cheque.status, toStatus: rule.to, note, effects, method: rule.cash ? method : "cash" });
       store.run(
         "UPDATE cheques SET status = ?, status_date = ?, endorse_account_id = CASE WHEN ? <> '' THEN ? ELSE endorse_account_id END, updated_by = ?, updated_at = ? WHERE id = ?",
         rule.to, date, endorseAccountId, endorseAccountId, user.id, now(), cheque.id,
@@ -559,11 +563,11 @@ export function registerChequeRoutes(router, { store, auth, audit, events, accou
   // ---------- Diğer modüller için ----------
   // Kasa: tahsil edilen alınan evrak (giriş), ödenen verilen evrak (çıkış). Silinen evrakın olayları Kasa'dan düşer.
   // Kasa kaynağı: aynı tablo/koşul hem Kasa satırlarında hem Kasa toplamında (ANLIK DURUM) kullanılır.
-  const cashSource = { table: "cheque_events ev JOIN cheques c ON c.id = ev.cheque_id AND c.deleted_at IS NULL", where: "ev.kind IN ('collect', 'pay')", kind: "CASE ev.kind WHEN 'collect' THEN 'in' ELSE 'out' END", amount: "ev.amount", date: "ev.date" };
+  const cashSource = { table: "cheque_events ev JOIN cheques c ON c.id = ev.cheque_id AND c.deleted_at IS NULL", where: "ev.kind IN ('collect', 'pay')", kind: "CASE ev.kind WHEN 'collect' THEN 'in' ELSE 'out' END", amount: "ev.amount", date: "ev.date", method: "ev.method" };
   const cashEntries = (after = "") =>
     store
       .all(
-        `SELECT ev.id, ev.kind AS eventKind, ev.amount, ev.date, ev.note, c.id AS chequeId, c.instrument, c.serial_no AS serialNo, c.drawer, COALESCE(a.name, '') AS accountName,
+        `SELECT ev.id, ev.kind AS eventKind, ev.method, ev.amount, ev.date, ev.note, c.id AS chequeId, c.instrument, c.serial_no AS serialNo, c.drawer, COALESCE(a.name, '') AS accountName,
                 ev.created_by AS actorId, COALESCE(u.display_name, '') AS actorName, ev.created_at AS createdAt, ev.created_at AS updatedAt
          FROM ${cashSource.table} LEFT JOIN accounts a ON a.id = c.account_id LEFT JOIN users u ON u.id = ev.created_by
          WHERE ${cashSource.where}${after ? ` AND ${cashSource.date} > ?` : ""}`,

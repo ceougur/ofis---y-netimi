@@ -63,7 +63,7 @@ function monthsBetween(first, last, max = 600) {
 }
 const percent = (part, whole) => (whole > 0.005 ? `%${new Intl.NumberFormat("tr-TR", { maximumFractionDigits: 1 }).format((part / whole) * 100)}` : "");
 
-export function registerReportCenter(router, { store, auth, audit, dataset, cash = () => null, accounts = () => null, plans = () => null, stock = () => null, cheques = () => null, overview = () => null, now: clock = () => new Date() }) {
+export function registerReportCenter(router, { store, auth, audit, dataset, cash = () => null, accounts = () => null, plans = () => null, stock = () => null, cheques = () => null, overview = () => null, ledger = () => null, integrity = () => null, now: clock = () => new Date() }) {
   const today = () => isoDay(clock());
   const office = () => store.setting("office.name", "");
   const admin = { id: "", role: "admin" };
@@ -236,6 +236,88 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
           types: ["", "number", "money", "money", "money", "money", "money"],
           rows,
           summary: [["Devir", money(data.opening)], ["Toplam Giriş", money(data.period.in)], ["Toplam Çıkış", money(data.period.out)], ["Net", money(data.period.net)], ["Dönem Sonu Kasa", money(roundMoney(data.opening + data.period.in - data.period.out))]],
+        };
+      },
+    },
+    // ===== Ana Defter (v2.0.13) =====
+    {
+      id: "hesap-mizani",
+      group: "Ana Defter",
+      title: "Hesap Planı Mizanı",
+      description: "Tekdüzen hesap planına göre her hesabın devir, dönem borç, dönem alacak ve bakiyesi. Çift yönlü kayıt: borç toplamı alacak toplamına eşittir.",
+      params: ["range"],
+      preset: "thisMonth",
+      build(query) {
+        const range = rangeOf(query, "thisMonth");
+        const { trial, reconciliation } = ledger().check({ from: range.from, to: range.to });
+        return {
+          subtitle: `${rangeText(range)} · ${trial.balanced ? "Borç = Alacak" : "DENGESİZ KAYIT VAR"} · Mutabakat ${reconciliation.ok ? "tutarlı" : "farklı"}`,
+          headers: ["Hesap", "Hesap Adı", "Devir", "Borç", "Alacak", "Bakiye", "Yön"],
+          types: ["", "", "money", "money", "money", "money", ""],
+          rows: trial.accounts.map(row => [row.code, row.name, money(row.opening), money(row.debit), money(row.credit), money(Math.abs(row.balance)), row.balance > 0.005 ? "Borç" : row.balance < -0.005 ? "Alacak" : ""]),
+          summary: [["Dönem Borç", money(trial.totals.debit)], ["Dönem Alacak", money(trial.totals.credit)], ["Fark", money(trial.totals.difference)]],
+        };
+      },
+    },
+    {
+      id: "yevmiye",
+      group: "Ana Defter",
+      title: "Yevmiye Defteri",
+      description: "Aralıktaki her işlemin çift yönlü kaydı: hangi hesap borçlandı, hangi hesap alacaklandı (Kasa, Banka, Cari, Stok, Çek/Senet, Taksit).",
+      params: ["range"],
+      preset: "thisMonth",
+      build(query) {
+        const range = rangeOf(query, "thisMonth");
+        const rows = [];
+        for (const entry of ledger().build()) {
+          if ((range.from && entry.date < range.from) || (range.to && entry.date > range.to)) continue;
+          for (const line of entry.lines) rows.push([dayText(entry.date), entry.source, entry.text || "", line.account, money(line.debit / 100), money(line.credit / 100)].map((cell, index) => (index >= 4 && cell === money(0) ? "" : cell)));
+        }
+        return {
+          subtitle: rangeText(range),
+          headers: ["Tarih", "İşlem", "Açıklama", "Hesap", "Borç", "Alacak"],
+          types: ["", "", "", "", "money", "money"],
+          rows,
+          summary: [["Madde", String(rows.length / 2)]],
+        };
+      },
+    },
+    {
+      id: "defter-mutabakati",
+      group: "Ana Defter",
+      title: "Defter Mutabakatı",
+      description: "Ana defter bakiyeleri ile alt defterlerin (Nakit Kasa, Banka, Kredi Kartı, cariler, taksit, çek/senet portföyü) kendi bakiyesinin kuruşu kuruşuna karşılaştırması; kuruş, stok ↔ cari ve çek/senet ↔ cari bağ denetimleri.",
+      params: [],
+      build() {
+        const { reconciliation } = ledger().check();
+        const extra = integrity()?.run ? integrity().run().checks.filter(check => !check.code.startsWith("gl:") && check.code !== "balance") : [];
+        const ok = reconciliation.ok && extra.every(check => check.ok);
+        return {
+          subtitle: ok ? "Tüm hesaplar tutarlı; borç toplamı alacak toplamına eşit. Her kayıt yazılmadan önce bu denetimden geçer." : "Fark bulunan hesap var; yöneticiye bildirin. Yeni işlemler bu farkı büyütemez.",
+          headers: ["Hesap", "Hesap Adı", "Ana Defter", "Alt Defter", "Fark", "Durum"],
+          types: ["", "", "money", "money", "money", ""],
+          rows: [
+            ...reconciliation.checks.map(check => [check.code, check.name, money(check.ledger), money(check.subledger), money(check.difference), check.ok ? "Tutarlı" : "Fark Var"]),
+            ...extra.map(check => ["Denetim", check.name, "", "", check.ok ? "" : `${check.count} satır`, check.ok ? "Tutarlı" : "Fark Var"]),
+          ],
+          summary: [["Çift Yönlü Denge", reconciliation.balanced ? "Borç = Alacak" : "Dengesiz"], ["Sonuç", ok ? "Tutarlı" : "Fark Var"]],
+        };
+      },
+    },
+    {
+      id: "mutabakat-gunlugu",
+      group: "Ana Defter",
+      title: "Mutabakat Günlüğü",
+      description: "Defterler arasında sapma yaratacağı için otomatik geri alınan (hiç yazılmayan) işlemler ve güncelleme öncesinden kalan sapmalar.",
+      params: [],
+      build() {
+        const rows = integrity()?.recent ? integrity().recent(500) : [];
+        return {
+          subtitle: rows.length ? `${rows.length} kayıt. Geri alınan işlemlerin hiçbir satırı yazılmadı.` : "Geri alınan işlem yok.",
+          headers: ["Zaman", "Olay", "Etkilenen Tablolar", "Denetim"],
+          types: ["", "", "", ""],
+          rows: rows.map(row => [row.at.replace("T", " ").slice(0, 19), row.action === "rolled-back" ? "Geri Alındı" : "Açılışta Bulunan Sapma", row.tables, row.summary]),
+          summary: [["Geri Alınan", String(rows.filter(row => row.action === "rolled-back").length)]],
         };
       },
     },
@@ -645,7 +727,7 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
       build(query) {
         const range = rangeOf(query, "thisMonth");
         const list = store.all(
-          `SELECT m.date, m.kind, m.qty, m.unit_price AS unitPrice, m.amount, m.pay, m.note, i.name, i.code, i.unit, COALESCE(a.name, '') AS accountName, COALESCE(u.display_name, '') AS actorName
+          `SELECT m.date, m.kind, m.reason, m.qty, m.unit_price AS unitPrice, m.amount, m.pay, m.note, i.name, i.code, i.unit, COALESCE(a.name, '') AS accountName, COALESCE(u.display_name, '') AS actorName
            FROM stock_moves m JOIN stock_items i ON i.id = m.item_id LEFT JOIN accounts a ON a.id = m.account_id LEFT JOIN users u ON u.id = m.created_by
            WHERE (? = '' OR m.date >= ?) AND (? = '' OR m.date <= ?) ORDER BY m.date, m.created_at`,
           range.from, range.from, range.to, range.to,
@@ -657,7 +739,7 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
           subtitle: rangeText(range),
           headers: ["Tarih", "Kod", "Kalem", "Hareket", "Miktar", "Birim", "Birim Fiyat", "Tutar", "Para", "Cari", "Açıklama", "Giren"],
           types: ["", "", "", "", "number", "", "money", "money", "", "", "", ""],
-          rows: list.map(row => [dayText(row.date), row.code, row.name, row.kind === "in" ? "Giriş" : "Çıkış", qty(row.qty), row.unit, money(row.unitPrice), row.amount ? money(row.amount) : "", pay[row.pay] || row.pay, row.accountName, row.note, row.actorName]),
+          rows: list.map(row => [dayText(row.date), row.code, row.name, row.reason === "return" ? "Satış İadesi" : row.kind === "in" ? "Giriş" : "Çıkış", qty(row.qty), row.unit, money(row.unitPrice), row.amount ? money(row.amount) : "", pay[row.pay] || row.pay, row.accountName, row.note, row.actorName]),
           summary: [["Hareket", String(list.length)], ["Giriş Tutarı", money(total.in)], ["Çıkış Tutarı", money(total.out)]],
         };
       },

@@ -189,10 +189,17 @@ try {
     await page.waitForSelector(".hof-payment-promises .hof-payment-pill", { timeout: 10000 });
     const heading = await text(".hof-payment-promises-heading");
     const pills = await page.$$eval(".hof-payment-pill:not([aria-hidden])", nodes => nodes.map(n => n.innerText.replace(/\s+/g, " ")));
-    // Kartlar her açık taksiti ayrı gösterir: geçmiş aylardan ödenmeyen 5 taksit gecikmiş, Ekim'in 6 taksiti yaklaşan; aynı kişi+ay iki kez yok.
+    // Kartlar her açık taksiti ayrı gösterir; aynı kişi+ay iki kez yok. Sayılar ayın gününe bağlıdır (ayın 1'inde bu ayın
+    // taksiti "bugün", sonraki ayınki henüz 7 günlük pencerede değil), bu yüzden beklenen şerit takvimin kendisinden okunur.
     console.log("piller:", JSON.stringify(pills));
     const keys = pills.map(p => p.replace(/₺[\d.,]+/g, "").replace(/\s+/g, " ").trim());
-    ok(pills.length === 11 && /5 gecikmiş/.test(heading) && /6 yaklaşan/.test(heading) && new Set(keys).size === keys.length, `şerit (aktarımdan sonra, kartlardan): ${heading} — ${pills.length} pil, çift yok`);
+    const planDues = dues.items.filter(i => i.source === "plan");
+    const overdue = planDues.filter(i => i.state === "overdue").length;
+    const upcoming = planDues.filter(i => i.state === "upcoming").length;
+    ok(pills.length === planDues.length && (!overdue || new RegExp(`${overdue} gecikmiş`).test(heading)) && (!upcoming || new RegExp(`${upcoming} yaklaşan`).test(heading)) && new Set(keys).size === keys.length, `şerit (aktarımdan sonra, kartlardan): ${heading} — ${pills.length} pil = takvimdeki ${planDues.length} kart kalemi, çift yok`);
+    // Fikstür: Zeynep geçen ayı ödemedi (gecikmiş); Efe, Zeynep, Can (kısmi) ve Mert bu ayı ödemedi. Ada ve Deniz hiç görünmez.
+    const who = name => pills.filter(p => p.includes(name)).length;
+    ok(who("Zeynep Demir") >= 2 && who("Efe Kaya") >= 1 && who("Can Öztürk") >= 1 && who("Ada Yılmaz") === 0 && who("Deniz Arslan") === 0, "şeritte doğru kişiler: Zeynep (geçen ay + bu ay), Efe, Can; tamamını ödeyen Ada ve Deniz yok");
     ok(!pills.some(p => new RegExp(pillName).test(p) && /Ağustos/.test(p)), `${pillName} için ödenen Ağustos taksiti şeritte değil`);
     await shot("serit-kartlardan");
     await page.click(".topbar .top-actions > .icon-button");

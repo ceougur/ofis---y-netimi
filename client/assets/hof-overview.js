@@ -34,6 +34,8 @@
     const cut = text.lastIndexOf(",");
     return cut > 0 ? `<span class="hof-num">${esc(text.slice(0, cut))}<small>${esc(text.slice(cut))}</small></span>` : `<span class="hof-num">${esc(text)}</span>`;
   };
+  // v2.0.13: Kasa / Banka kartında yola göre dağılım (yalnız nakitten başka yol kullanıldıysa gösterilir).
+  const methodLine = by => (by && (Math.abs(by.bank) > 0.005 || Math.abs(by.card) > 0.005) ? `<br>Nakit ${esc(shortMoney(by.cash))} · Banka ${esc(shortMoney(by.bank))} · Kart ${esc(shortMoney(by.card))}` : "");
   const shortMoney = value => SHORT_MONEY.format(Number(value) || 0);
   const todayIso = () => {
     const now = new Date();
@@ -89,7 +91,7 @@
         label: "Kasa / Banka",
         value: moneyHtml(data.cash.balance, { compact: true }),
         tone: data.cash.balance < 0 ? "is-bad" : "",
-        sub: `${moved ? `Bugün <b class="hof-pulse-up">+${esc(shortMoney(t.in))}</b> · <b class="hof-pulse-down">−${esc(shortMoney(t.out))}</b>` : "Bugün hareket yok"}${data.cash.futureEntries ? `<br><span class="hof-pulse-flag">${ICONS.warn}${data.cash.futureEntries} ileri tarihli hareket hariç</span>` : ""}`,
+        sub: `${moved ? `Bugün <b class="hof-pulse-up">+${esc(shortMoney(t.in))}</b> · <b class="hof-pulse-down">−${esc(shortMoney(t.out))}</b>` : "Bugün hareket yok"}${methodLine(data.cash.byMethod)}${data.cash.futureEntries ? `<br><span class="hof-pulse-flag">${ICONS.warn}${data.cash.futureEntries} ileri tarihli hareket hariç</span>` : ""}`,
         title: `Bugüne kadarki kasa: ${money(data.cash.balance)}.${data.cash.futureEntries ? ` İleri tarihli ${data.cash.futureEntries} hareketle birlikte ${money(data.cash.allEntries)} (Kasa ekranındaki "tüm hareketler").` : ""} Bu ay giriş ${money(data.cash.month.in)}, çıkış ${money(data.cash.month.out)}.`,
       });
     }
