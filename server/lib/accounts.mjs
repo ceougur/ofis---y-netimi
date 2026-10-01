@@ -37,7 +37,7 @@ export function accountLedger(entries = [], plans = []) {
     const meta = ENTRY_KINDS[entry.kind];
     if (!meta) continue;
     const amount = roundMoney(Number(entry.amount) || 0);
-    const origin = entry.source === "stock" ? "stock" : entry.source === "cheque" ? "cheque" : "account";
+    const origin = entry.source === "stock" ? "stock" : entry.source === "cheque" ? "cheque" : entry.source === "invoice" ? "invoice" : "account";
     lines.push({
       id: entry.id,
       origin,
@@ -45,7 +45,9 @@ export function accountLedger(entries = [], plans = []) {
       date: entry.date,
       at: entry.createdAt || "",
       // Çek/senetten gelen satır (v2.0.7): alınan/ciro/karşılıksız açıklamada yazar; etiket evrak olduğunu söyler.
-      label: origin === "cheque" ? "Çek / senet" : meta.label,
+      // v2.0.15: faturadan gelen borç/alacak "Fatura" olarak görünür (açıklamada fatura türü ve numarası yazar).
+      label: origin === "cheque" ? "Çek / senet" : origin === "invoice" && !meta.cash ? "Fatura" : meta.label,
+      sourceId: entry.sourceId || "",
       // v2.0.13: tahsilat/ödemenin yolu (Nakit, Havale / EFT, Kredi Kartı); borç/alacakta boş.
       method: meta.cash ? entry.method || "cash" : "",
       note: entry.note || "",

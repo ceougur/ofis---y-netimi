@@ -175,7 +175,7 @@
     if (!heading || !HOF.can("records.create")) return existing?.remove();
     const before = document.getElementById("hof-toolbar-export")?.parentNode === heading ? document.getElementById("hof-toolbar-export") : heading.querySelector(":scope > button:not(#hof-toolbar-new)");
     if (existing?.parentNode === heading && (!before || existing.nextElementSibling === before)) return;
-    const button = existing || HOF.el("button", { type: "button", id: "hof-toolbar-new", class: "hof-toolbar-export hof-toolbar-new", "data-hof-ui": "", "aria-label": "Yeni kayıt", title: "Açık sekmeye yeni kayıt ekle" }, `${PLUS_ICON}<span>Yeni Kayıt</span>`);
+    const button = existing || HOF.el("button", { type: "button", id: "hof-toolbar-new", class: "hof-toolbar-export hof-toolbar-new", "data-hof-ui": "", "aria-label": "Yeni Kayıt", title: "Açık Sekmeye Yeni Kayıt Ekle" }, `${PLUS_ICON}<span>Yeni Kayıt</span>`);
     if (!existing) button.addEventListener("click", () => HOF.emit("new-record"));
     heading.insertBefore(button, before);
   }

@@ -150,7 +150,7 @@ describe("göç 10: kolon adına yazılmış tarihler asıl adına döner (v2.0.
   after(() => server.close());
 
   it("tarih adları kalkar, diğer adlar kalır; işlem geçmişine ve bir kerelik bildirime yazılır", async () => {
-    assert.deepEqual(server.app.migration.applied, [10, 11, 12, 13, 14, 15, 16, 17]);
+    assert.deepEqual(server.app.migration.applied, [10, 11, 12, 13, 14, 15, 16, 17, 18]);
     const { store } = server.app;
     assert.deepEqual(JSON.parse(store.setting("ui.columns")), { MARKA: "Marka / Model" });
     assert.deepEqual(JSON.parse(store.setting("ui.columns@ikinci")), { PLAKA: "Araç" }, "tarih olmayan oturuma dokunulmaz");

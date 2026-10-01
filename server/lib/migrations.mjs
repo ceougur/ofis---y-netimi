@@ -877,6 +877,121 @@ export const MIGRATIONS = [
       `);
     },
   },
+  {
+    version: 18,
+    name: "v2.0.15 fatura modülü (satış, alış, iadeler; e-Fatura / e-Arşiv / UBL-TR), carinin vergi kimliği ve adresi",
+    up(store) {
+      // Yalnız ekleyici: mevcut hiçbir satır değişmez; eski sürüm aynı veritabanıyla açılır (yeni tabloları okumaz).
+      // Carinin vergi kimliği ve e-Belge adresi: VKN (10) / TCKN (11), vergi dairesi, MERSİS, tüzel/gerçek kişi, il, ilçe,
+      // posta kodu, ülke; GİB e-Fatura mükellefi mi (e-Fatura mı e-Arşiv mi kesileceğini belirler) ve posta kutusu etiketi.
+      for (const [column, definition] of [
+        ["tax_no", "TEXT NOT NULL DEFAULT ''"],
+        ["tax_office", "TEXT NOT NULL DEFAULT ''"],
+        ["mersis_no", "TEXT NOT NULL DEFAULT ''"],
+        ["party_kind", "TEXT NOT NULL DEFAULT ''"],
+        ["city", "TEXT NOT NULL DEFAULT ''"],
+        ["district", "TEXT NOT NULL DEFAULT ''"],
+        ["postal_code", "TEXT NOT NULL DEFAULT ''"],
+        ["country", "TEXT NOT NULL DEFAULT ''"],
+        ["e_invoice", "INTEGER NOT NULL DEFAULT 0"],
+        ["e_alias", "TEXT NOT NULL DEFAULT ''"],
+      ]) addColumn(store, "accounts", column, definition);
+      // Faturadan doğan alt defter satırları faturaya bağlıdır (iptal ve mutabakat bu bağla yapılır).
+      addColumn(store, "stock_moves", "invoice_id", "TEXT NOT NULL DEFAULT ''");
+      addColumn(store, "cheques", "invoice_id", "TEXT NOT NULL DEFAULT ''");
+      addColumn(store, "plans", "invoice_id", "TEXT NOT NULL DEFAULT ''");
+      store.exec(`
+        -- Fatura başlığı. Tutarlar kalemlerin toplamıdır (kuruşa yuvarlanmış); mutabakat kapısı her işlemde başlık =
+        -- kalemler eşitliğini denetler. party_json / seller_json: kesildiği andaki alıcı ve satıcı bilgisi (yasal belge
+        -- sonradan cari kartı değişse de değişmez; e-Belge bu bilgiden üretilir).
+        CREATE TABLE IF NOT EXISTS invoices (
+          id TEXT PRIMARY KEY,
+          kind TEXT NOT NULL CHECK (kind IN ('sale', 'purchase', 'sale_return', 'purchase_return')),
+          status TEXT NOT NULL DEFAULT 'issued' CHECK (status IN ('issued', 'cancelled')),
+          series TEXT NOT NULL DEFAULT '',
+          year INTEGER NOT NULL DEFAULT 0,
+          seq INTEGER NOT NULL DEFAULT 0,
+          number TEXT NOT NULL,
+          ettn TEXT NOT NULL,
+          issue_date TEXT NOT NULL,
+          issue_time TEXT NOT NULL DEFAULT '',
+          account_id TEXT NOT NULL,
+          party_json TEXT NOT NULL DEFAULT '{}',
+          seller_json TEXT NOT NULL DEFAULT '{}',
+          profile TEXT NOT NULL DEFAULT 'KAGIT' CHECK (profile IN ('KAGIT', 'TEMELFATURA', 'TICARIFATURA', 'EARSIVFATURA')),
+          type_code TEXT NOT NULL DEFAULT 'SATIS',
+          currency TEXT NOT NULL DEFAULT 'TRY',
+          prices_include_vat INTEGER NOT NULL DEFAULT 0,
+          base_total REAL NOT NULL DEFAULT 0,
+          discount_total REAL NOT NULL DEFAULT 0,
+          net_total REAL NOT NULL DEFAULT 0,
+          goods_net REAL NOT NULL DEFAULT 0,
+          service_net REAL NOT NULL DEFAULT 0,
+          vat_total REAL NOT NULL DEFAULT 0,
+          withheld_total REAL NOT NULL DEFAULT 0,
+          gross_total REAL NOT NULL DEFAULT 0,
+          payable_total REAL NOT NULL DEFAULT 0,
+          payment_json TEXT NOT NULL DEFAULT '{}',
+          due_date TEXT NOT NULL DEFAULT '',
+          plan_id TEXT NOT NULL DEFAULT '',
+          original_id TEXT NOT NULL DEFAULT '',
+          note TEXT NOT NULL DEFAULT '',
+          e_status TEXT NOT NULL DEFAULT 'none',
+          e_adapter TEXT NOT NULL DEFAULT '',
+          e_message TEXT NOT NULL DEFAULT '',
+          e_at TEXT NOT NULL DEFAULT '',
+          created_by TEXT NOT NULL,
+          created_at TEXT NOT NULL,
+          updated_by TEXT,
+          updated_at TEXT NOT NULL,
+          cancelled_by TEXT,
+          cancelled_at TEXT,
+          cancel_reason TEXT NOT NULL DEFAULT ''
+        );
+        CREATE INDEX IF NOT EXISTS idx_invoices_date ON invoices(issue_date, issue_time);
+        CREATE INDEX IF NOT EXISTS idx_invoices_account ON invoices(account_id, issue_date);
+        CREATE INDEX IF NOT EXISTS idx_invoices_original ON invoices(original_id);
+        CREATE UNIQUE INDEX IF NOT EXISTS idx_invoices_ettn ON invoices(ettn);
+        -- Kendi kestiğimiz faturanın numarası seri + yıl + sıra ile tektir (GİB: 3 harf + 4 yıl + 9 sıra = 16 hane);
+        -- alış faturasının numarası tedarikçinin numarasıdır: aynı tedarikçide iki kez girilemez.
+        CREATE UNIQUE INDEX IF NOT EXISTS idx_invoices_own_no ON invoices(series, year, seq) WHERE kind IN ('sale', 'sale_return', 'purchase_return');
+        CREATE UNIQUE INDEX IF NOT EXISTS idx_invoices_purchase_no ON invoices(account_id, number) WHERE kind = 'purchase' AND status = 'issued';
+        CREATE TABLE IF NOT EXISTS invoice_lines (
+          id TEXT PRIMARY KEY,
+          invoice_id TEXT NOT NULL,
+          seq INTEGER NOT NULL,
+          item_id TEXT NOT NULL DEFAULT '',
+          goods INTEGER NOT NULL DEFAULT 0,
+          name TEXT NOT NULL,
+          unit TEXT NOT NULL DEFAULT 'Adet',
+          qty REAL NOT NULL CHECK (qty > 0),
+          unit_price REAL NOT NULL DEFAULT 0,
+          discount_rate REAL NOT NULL DEFAULT 0,
+          base REAL NOT NULL DEFAULT 0,
+          discount REAL NOT NULL DEFAULT 0,
+          net REAL NOT NULL DEFAULT 0,
+          vat_rate REAL NOT NULL DEFAULT 0,
+          vat REAL NOT NULL DEFAULT 0,
+          withholding_code TEXT NOT NULL DEFAULT '',
+          withholding_num INTEGER NOT NULL DEFAULT 0,
+          withholding_den INTEGER NOT NULL DEFAULT 0,
+          withheld REAL NOT NULL DEFAULT 0,
+          exemption_code TEXT NOT NULL DEFAULT '',
+          gross REAL NOT NULL DEFAULT 0,
+          payable REAL NOT NULL DEFAULT 0,
+          unit_cost REAL NOT NULL DEFAULT 0,
+          origin_line_id TEXT NOT NULL DEFAULT '',
+          move_id TEXT NOT NULL DEFAULT ''
+        );
+        CREATE INDEX IF NOT EXISTS idx_invoice_lines_invoice ON invoice_lines(invoice_id, seq);
+        CREATE INDEX IF NOT EXISTS idx_invoice_lines_item ON invoice_lines(item_id);
+        CREATE INDEX IF NOT EXISTS idx_invoice_lines_origin ON invoice_lines(origin_line_id);
+        CREATE INDEX IF NOT EXISTS idx_stock_moves_invoice ON stock_moves(invoice_id);
+        CREATE INDEX IF NOT EXISTS idx_cheques_invoice ON cheques(invoice_id);
+        CREATE INDEX IF NOT EXISTS idx_plans_invoice ON plans(invoice_id);
+      `);
+    },
+  },
 ];
 
 export const LATEST_VERSION = MIGRATIONS.at(-1).version;

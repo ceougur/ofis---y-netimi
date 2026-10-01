@@ -16,6 +16,7 @@ import { tablePdf, tl } from "../lib/report-pdf.mjs";
 import { readSheetMatrices } from "../lib/sheets.mjs";
 import { inferRolesByValues, findHeaderRow, sanitizeCell, validateRows } from "../lib/import-gate.mjs";
 import { buildXlsx } from "../lib/xlsx-write.mjs";
+import { classifyTaxId, isValidMersis } from "../lib/tax-id.mjs";
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 const validDate = value => DATE.test(value) && !Number.isNaN(new Date(value).getTime());
@@ -29,7 +30,7 @@ const collator = new Intl.Collator("tr", { numeric: true, sensitivity: "base" })
 
 const MONEY_FORMAT = new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-export function registerAccountRoutes(router, { store, auth, audit, events, trash, config = {}, dataset = null, cash = null, period = null, plans = () => null, cheques = () => null }) {
+export function registerAccountRoutes(router, { store, auth, audit, events, trash, config = {}, dataset = null, cash = null, period = null, plans = () => null, cheques = () => null, invoices = () => null }) {
   const now = () => new Date().toISOString();
   const today = () => isoDay(new Date());
   const newId = prefix => `${prefix}-${randomUUID()}`;
@@ -55,6 +56,8 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
   // ---------- Okuma ----------
   const ACCOUNT_SQL = `SELECT a.id, a.ref_no AS refNo, a.type, a.name, a.phone, a.email, a.address, a.registered_on AS registeredOn, a.group_id AS groupId, a.subgroup_id AS subgroupId,
       a.note, a.fields_json AS fieldsJson, a.case_key AS caseKey, a.case_source AS caseSource, a.case_title AS caseTitle, a.status,
+      a.tax_no AS taxNo, a.tax_office AS taxOffice, a.mersis_no AS mersisNo, a.party_kind AS partyKind, a.city, a.district, a.postal_code AS postalCode, a.country,
+      a.e_invoice AS eInvoice, a.e_alias AS eAlias,
       a.created_by AS createdBy, a.created_at AS createdAt, a.updated_at AS updatedAt, COALESCE(u.display_name, '') AS actorName,
       COALESCE(g.name, '') AS groupName, COALESCE(s.name, '') AS subgroupName
     FROM accounts a LEFT JOIN users u ON u.id = a.created_by LEFT JOIN plan_groups g ON g.id = a.group_id LEFT JOIN plan_groups s ON s.id = a.subgroup_id`;
@@ -298,6 +301,7 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     }
     const groups = plans()?.resolveGroups ? plans().resolveGroups(body, user) : { groupId: null, subgroupId: null };
     return {
+      ...taxInput(body, previous),
       name,
       type,
       refNo: limited(body.refNo, 30, "Cari No"),
@@ -314,6 +318,38 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
       ...groups,
     };
   };
+  // v2.0.15: vergi kimliği ve e-Belge adresi (fatura). Kimlik yazıldıysa geçerli olmalı; tür (tüzel/gerçek) yazılmadıysa
+  // kimliğin uzunluğundan çıkarılır (10 hane VKN → tüzel, 11 hane TCKN → gerçek kişi).
+  function taxInput(body, previous = null) {
+    const pick = (key, max, label) => limited(body[key] ?? previous?.[key] ?? "", max, label);
+    const taxNo = String(body.taxNo ?? previous?.taxNo ?? "").replace(/\s+/g, "");
+    let partyKind = ["company", "person"].includes(text(body.partyKind)) ? text(body.partyKind) : previous?.partyKind || "";
+    if (taxNo) {
+      const id = classifyTaxId(taxNo, { allowAnonymous: true });
+      if (!id.ok) throw new HttpError(400, id.kind === "vkn" ? "Vergi kimlik numarası (VKN) geçersiz: denetim hanesi tutmuyor." : id.kind === "tckn" ? "TC kimlik numarası geçersiz: denetim haneleri tutmuyor." : "VKN 10, TCKN 11 haneli olmalı.", { code: "tax-id-invalid" });
+      if (!partyKind) partyKind = id.kind === "vkn" ? "company" : "person";
+    }
+    const mersisNo = String(body.mersisNo ?? previous?.mersisNo ?? "").replace(/\s+/g, "");
+    if (mersisNo && !isValidMersis(mersisNo)) throw new HttpError(400, "MERSİS numarası 16 haneli olmalı.", { code: "mersis-invalid" });
+    const eInvoice = body.eInvoice === undefined ? Number(previous?.eInvoice || 0) : body.eInvoice === true || body.eInvoice === 1 || body.eInvoice === "1" || body.eInvoice === "true" ? 1 : 0;
+    return {
+      taxNo,
+      taxOffice: pick("taxOffice", 120, "Vergi Dairesi"),
+      mersisNo,
+      partyKind,
+      city: pick("city", 80, "İl"),
+      district: pick("district", 80, "İlçe"),
+      postalCode: pick("postalCode", 10, "Posta Kodu"),
+      country: pick("country", 80, "Ülke"),
+      eInvoice,
+      eAlias: pick("eAlias", 160, "e-Fatura Posta Kutusu"),
+    };
+  }
+  const writeTax = (id, input) =>
+    store.run(
+      "UPDATE accounts SET tax_no = ?, tax_office = ?, mersis_no = ?, party_kind = ?, city = ?, district = ?, postal_code = ?, country = ?, e_invoice = ?, e_alias = ? WHERE id = ?",
+      input.taxNo || "", input.taxOffice || "", input.mersisNo || "", input.partyKind || "", input.city || "", input.district || "", input.postalCode || "", input.country || "", input.eInvoice ? 1 : 0, input.eAlias || "", id,
+    );
   const nextRef = () => {
     let max = 0;
     for (const row of store.all("SELECT ref_no AS refNo FROM accounts WHERE deleted_at IS NULL")) {
@@ -331,6 +367,7 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
       id, freeRef(input.refNo) || nextRef(), input.type || "customer", input.name, input.phone || "", input.email || "", input.address || "", input.registeredOn || today(), input.groupId || null, input.subgroupId || null, input.note || "", JSON.stringify(input.fields || []),
       input.caseKey || "", input.caseKey ? input.caseSource || currentSource() : "", input.caseKey ? input.caseTitle || "" : "", input.status || "active", user.id, now(), now(),
     );
+    if (input.taxNo !== undefined) writeTax(id, input);
     return id;
   }
 
@@ -371,6 +408,7 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
         "UPDATE accounts SET ref_no = ?, type = ?, name = ?, phone = ?, email = ?, address = ?, registered_on = ?, group_id = ?, subgroup_id = ?, note = ?, fields_json = ?, case_key = ?, case_source = ?, case_title = ?, status = ?, updated_by = ?, updated_at = ? WHERE id = ?",
         input.refNo || previous.refNo || nextRef(), input.type, input.name, input.phone, input.email, input.address, input.registeredOn, input.groupId, input.subgroupId, input.note, JSON.stringify(input.fields), input.caseKey, input.caseSource, input.caseTitle, input.status, user.id, now(), previous.id,
       );
+      writeTax(previous.id, input);
       plans()?.followAccount?.(previous.id, { name: previous.name, phone: previous.phone }, { name: input.name, phone: input.phone });
       audit(user, "account.updated", previous.id, { previous: { name: previous.name, phone: previous.phone, status: previous.status }, name: input.name, phone: input.phone, status: input.status });
       return detail(previous.id, user);
@@ -391,6 +429,9 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     if (stockLinked) throw new HttpError(409, `Bu cariye yazılmış ${stockLinked} stok hareketi var. Önce stok hareketlerini düzeltin.`);
     const chequeLinked = cheques()?.countForAccount ? cheques().countForAccount(account.id) : 0;
     if (chequeLinked) throw new HttpError(409, `Bu cariye bağlı ${chequeLinked} çek/senet var. Önce Çek/Senet'ten evrakı silin ya da başka cariye taşıyın.`);
+    // v2.0.15: faturası olan cari silinmez (fatura yasal belgedir; Logo/Netsis'teki gibi hareketli cari silinemez).
+    const invoiceCount = store.get("SELECT COUNT(*) AS n FROM sqlite_master WHERE type = 'table' AND name = 'invoices'").n ? store.get("SELECT COUNT(*) AS n FROM invoices WHERE account_id = ? AND status = 'issued'", account.id).n : 0;
+    if (invoiceCount) throw new HttpError(409, `Bu carinin ${invoiceCount} faturası var; faturası olan cari silinemez. Cariyi pasife alın.`, { code: "account-has-invoices" });
     store.tx(() => {
       // Yumuşak silme: hareketleri yerinde durur (Kasa'dan düşer); yönetim panelindeki Silinenler'den geri gelir.
       store.run("UPDATE accounts SET deleted_by = ?, deleted_at = ? WHERE id = ?", user.id, now(), account.id);
@@ -412,7 +453,7 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     // Açılış bakiyesi, stoktan ve çekten gelen satırlar dahil: kapanmış döneme cari satırı yazılmaz.
     period?.assertOpen(date, "Cari hareketi");
     const id = newId("aentry");
-    const receiptNo = kind === "in" && source !== "stock" ? receiptNumber() : null;
+    const receiptNo = kind === "in" && source !== "stock" && source !== "invoice" ? receiptNumber() : null;
     store.run(
       "INSERT INTO account_entries (id, account_id, kind, amount, date, note, receipt_no, source, source_id, method, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
       id, accountId, kind, amount, date, note || "", receiptNo, source, sourceId, methodOf(method), user.id, now(),
@@ -438,6 +479,7 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
   };
   const requireEntryRight = (user, entry) => {
     if (entry.source === "stock") throw new HttpError(409, "Bu hareket bir stok hareketinden geldi; Stok'taki hareketten düzeltin ya da silin.");
+    if (entry.source === "invoice") throw new HttpError(409, "Bu hareket bir faturadan geldi; Fatura ekranından iptal edin ya da iade faturası kesin.", { code: "invoice-linked", invoiceId: entry.sourceId });
     if (entry.source === "cheque") throw new HttpError(409, "Bu hareket bir çek/senetten geldi; Çek/Senet'teki evraktan düzeltin (geri al ya da sil).", { code: "cheque-linked", chequeId: entry.sourceId });
     if (entry.createdBy !== user.id && !canUser(user, "accounts.manage")) throw new HttpError(403, "Başkasının girdiği hareketi yalnızca yönetici, uzman ve muhasebe değiştirebilir.");
     requireKindRight(user, entry.kind);
@@ -950,6 +992,16 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
       return existing?.accountId || "";
     },
   };
+  // v2.0.15: faturadan doğan cari satırları (borç/alacak + varsa peşin tahsilat/ödeme). source = 'invoice', source_id = fatura.
+  // Kasa'ya etkisi fatura modülünün kendi kaynağından gelir (routes/invoices.mjs cashSource); cari kartından düzeltilemez.
+  const invoiceEntry = {
+    add(user, accountId, { kind, amount, date, note, invoiceId, method = "cash" }) {
+      return addEntry(user, accountId, { kind, amount, date, note, source: "invoice", sourceId: invoiceId, method });
+    },
+    removeFor(invoiceId) {
+      return store.run("DELETE FROM account_entries WHERE source = 'invoice' AND source_id = ?", invoiceId).changes;
+    },
+  };
   const fingerprint = () => {
     const row = store.get("SELECT (SELECT COUNT(*) || '/' || COALESCE(MAX(COALESCE(updated_at, created_at)), '') FROM account_entries) AS e, (SELECT COUNT(*) || '/' || COALESCE(MAX(updated_at), '') || '/' || COUNT(deleted_at) FROM accounts) AS a");
     return `${row.e}|${row.a}`;
@@ -1000,5 +1052,5 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     return "Cari hareketi geri eklendi; bakiye ve Kasa yeniden hesaplandı.";
   }
 
-  return { exists, createFromPlan, matchPerson, cashEntries, cashSource, stockEntry, fingerprint, deletedList, restoreDeleted, restoreEntry, detail, list, allLedgers };
+  return { exists, accountRow, createFromPlan, matchPerson, cashEntries, cashSource, stockEntry, invoiceEntry, fingerprint, deletedList, restoreDeleted, restoreEntry, detail, list, allLedgers };
 }

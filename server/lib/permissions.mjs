@@ -50,6 +50,10 @@ export const PERMISSIONS = Object.freeze({
   // Çek / Senet (v2.0.7): portföy, tahsil, ciro, ödeme; para ve cari bakiyesine dokunduğu için kasa yetkisiyle aynı hesaplar.
   "cheques.view": ["admin", "avukat", "muhasebe"],
   "cheques.manage": ["admin", "avukat", "muhasebe"],
+  // Fatura (v2.0.15): satış/alış faturası ve iadeleri stok, cari, Kasa, taksit ve çek/senede aynı anda yazar; kasa
+  // yetkisiyle aynı hesaplar. Fatura ayarları (firma bilgisi, seri, e-dönüşüm, entegratör) system.manage'dedir.
+  "invoices.view": ["admin", "avukat", "muhasebe"],
+  "invoices.manage": ["admin", "avukat", "muhasebe"],
   // Finans raporları (v2.0.7'de "ANLIK DURUM ve raporlar"): Raporlar penceresi — mizan, cari ekstre, nakit akış, tüm
   // raporlar. v2.0.10'dan beri ana ekrandaki ANLIK DURUM kartını AÇMAZ (overview.card); kişiye verilebilir.
   "overview.view": ["admin"],
@@ -141,6 +145,14 @@ export const PERMISSION_GROUPS = Object.freeze([
     items: [
       ["cheques.view", "Çek ve Senetleri Görme", "Portföy, vadeler ve evrak geçmişi."],
       ["cheques.manage", "Çek / Senet İşlemleri", "Evrak girer; tahsil, ciro, ödeme ve karşılıksız işler."],
+    ],
+  },
+  {
+    id: "invoices",
+    label: "Fatura",
+    items: [
+      ["invoices.view", "Faturaları Görme", "Satış, alış ve iade faturaları; PDF ve e-Belge (UBL-TR XML)."],
+      ["invoices.manage", "Fatura Kesme ve İptal", "Fatura keser, iade alır/verir, iptal eder; stok, cari, Kasa, taksit ve çek/senede yazar."],
     ],
   },
   {
