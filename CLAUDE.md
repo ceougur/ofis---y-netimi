@@ -61,6 +61,10 @@ Bu dosya oturumlar arasında taşınan hafızadır. Her oturumun başında okunu
      pencere odağı programa dönünce sıradaki kişi kendiliğinden açılır; ekstre gönderiminde PDF kişinin adıyla otomatik
      indirilir. Enter yine kullanıcıda (wa.me yalnız metin hazırlar; otomatik gönderim ve PDF eki ancak Meta WhatsApp
      Business API ile — ayrı Pro özelliği olarak tasarlanacak; resmî olmayan otomasyon numara kapatır, yapılmaz).
-  3. (kullanıcı ekleyecek)
+  3. Cari penceresi arama kutusu: yazarken liste her gelişte (`hof-accounts.js` `onInput` → `loadList` → `renderList`
+     bütün gövdeyi, arama kutusu dahil, yeniden kurar) odak kayboluyor; "fı" yazınca kutuya yeniden tıklamak gerekiyor.
+     Düzeltme: liste yenilenirken süzgeç çubuğu yerinde kalsın / odak ve imleç konumu korunsun; aynı kalıp Stok,
+     Taksitler, Çek/Senet, Kasa listelerinde de denetlenip düzeltilsin; e2e'de "kesintisiz yazma" denetimi eklensin.
+  4. (kullanıcı ekleyecek)
 - Pro — uzaktan görüntüleme: `docs/PRO-UZAKTAN-GORUNTULEME.md` (önce en alttaki "Oturum devri"); genel durum
   `docs/DURUM-VE-DEVAM.md`.
