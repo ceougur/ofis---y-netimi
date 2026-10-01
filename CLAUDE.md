@@ -63,7 +63,7 @@ Bu dosya oturumlar arasında taşınan hafızadır. Her oturumun başında okunu
      Business API ile — ayrı Pro özelliği olarak tasarlanacak; resmî olmayan otomasyon numara kapatır, yapılmaz).
   3. Cari penceresi arama kutusu: yazarken liste her gelişte (`hof-accounts.js` `onInput` → `loadList` → `renderList`
      bütün gövdeyi, arama kutusu dahil, yeniden kurar) odak kayboluyor; "fı" yazınca kutuya yeniden tıklamak gerekiyor.
-     Kullanıcı doğruladı: Taksitler (taksit kartı) aramasında da aynı sorun var.
+     Kullanıcı doğruladı: Taksitler (taksit kartı) ve Stok aramalarında da aynı sorun var.
      Düzeltme (kullanıcı: "sadece bu sayfada değil, TÜM arama çubuklarında"): programdaki her arama/süzgeç kutusu —
      ana tablo arama kutusu, Cari, Stok, Taksitler, Çek/Senet, Kasa, Raporlar, Yönetim (kullanıcılar, silinenler),
      cari/ürün seçici açılır listeler, WhatsApp seçim penceresi — tek tek sayılıp denetlenir; liste yenilenirken kutu
