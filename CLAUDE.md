@@ -63,8 +63,11 @@ Bu dosya oturumlar arasında taşınan hafızadır. Her oturumun başında okunu
      Business API ile — ayrı Pro özelliği olarak tasarlanacak; resmî olmayan otomasyon numara kapatır, yapılmaz).
   3. Cari penceresi arama kutusu: yazarken liste her gelişte (`hof-accounts.js` `onInput` → `loadList` → `renderList`
      bütün gövdeyi, arama kutusu dahil, yeniden kurar) odak kayboluyor; "fı" yazınca kutuya yeniden tıklamak gerekiyor.
-     Düzeltme: liste yenilenirken süzgeç çubuğu yerinde kalsın / odak ve imleç konumu korunsun; aynı kalıp Stok,
-     Taksitler, Çek/Senet, Kasa listelerinde de denetlenip düzeltilsin; e2e'de "kesintisiz yazma" denetimi eklensin.
+     Düzeltme (kullanıcı: "sadece bu sayfada değil, TÜM arama çubuklarında"): programdaki her arama/süzgeç kutusu —
+     ana tablo arama kutusu, Cari, Stok, Taksitler, Çek/Senet, Kasa, Raporlar, Yönetim (kullanıcılar, silinenler),
+     cari/ürün seçici açılır listeler, WhatsApp seçim penceresi — tek tek sayılıp denetlenir; liste yenilenirken kutu
+     yerinde kalır, odak ve imleç korunur. Tüm ekranları gezen e2e "kesintisiz yazma" denetimi (her kutuya harf harf
+     yazıp sonucun tam sözcük olduğunu doğrular) eklenir; kalıp ortak bir yardımcıya (HOF) alınır ki yeni ekranlarda tekrarlanmasın.
   4. (kullanıcı ekleyecek)
 - Pro — uzaktan görüntüleme: `docs/PRO-UZAKTAN-GORUNTULEME.md` (önce en alttaki "Oturum devri"); genel durum
   `docs/DURUM-VE-DEVAM.md`.
