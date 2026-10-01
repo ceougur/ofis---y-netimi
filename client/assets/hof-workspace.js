@@ -729,8 +729,7 @@
     { action: "tasks", icon: "✓", key: "side.tasks", label: () => "Görevler" },
     { action: "messages", icon: "✉", key: "side.messages", label: () => "Mesajlar" },
     { action: "newTask", icon: "+", key: "side.newTask", label: () => "Görev Ata", requires: "tasks.create" },
-    // Sabit "Yeni kayıt" (v2.0.2): açık sekme araç, kasa ya da öğrenci listesi olabilir; sektör sözcüğü yanıltır.
-    { action: "newRecord", icon: "+", key: "side.newRecord", label: () => "Yeni Kayıt", requires: "records.create" },
+    // v2.0.15 (müşteri): "Yeni Kayıt" menüden kalktı; tablo başlığında "Dışa Aktar"ın yanında (hof-export.js).
     { action: "cash", icon: "₺", key: "side.cash", label: () => "Kasa", requires: "cash.view" },
     // Taksitler (v2.0.4): grup › alt grup, taksit kartı, tahsilat, gecikme uyarısı (hof-plans.js).
     // Cari ve Stok (v2.0.6): müşteri/tedarikçi kartları (taksitler cariye bağlı) ve Kasa mantığıyla stok.
@@ -831,7 +830,6 @@
       if (action === "tasks") openTasks();
       else if (action === "messages") HOF.chat ? HOF.chat.toggle() : openMessages();
       else if (action === "newTask") actions.task();
-      else if (action === "newRecord") HOF.emit("new-record");
       else if (action === "liens") openLiens();
       else if (action === "cash") openCash();
       else if (action === "plans") HOF.plans?.open();

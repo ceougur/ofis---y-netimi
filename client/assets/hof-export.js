@@ -166,10 +166,27 @@
     const button = existing || HOF.el("button", { type: "button", id: "hof-toolbar-export", class: "hof-toolbar-export", "data-hof-ui": "", "aria-label": "Dışa aktar", title: "Tabloyu Excel (.xlsx) ya da CSV olarak indir" }, `${DOWNLOAD_ICON}<span>Dışa Aktar</span>`);
     heading.insertBefore(button, before);
   }
-  HOF.whenReady(() => {
+  // v2.0.15 (müşteri): "Yeni Kayıt" sol menüden tablo başlığına taşındı — "Dışa Aktar"ın hemen solunda, birincil düğme.
+  // Sabit ad (sektör sözcüğü değil): açık sekme araç, kasa ya da öğrenci listesi olabilir.
+  const PLUS_ICON = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>';
+  function mountNewRecordButton() {
+    const heading = document.querySelector(".cases-panel > .panel-heading");
+    const existing = document.getElementById("hof-toolbar-new");
+    if (!heading || !HOF.can("records.create")) return existing?.remove();
+    const before = document.getElementById("hof-toolbar-export")?.parentNode === heading ? document.getElementById("hof-toolbar-export") : heading.querySelector(":scope > button:not(#hof-toolbar-new)");
+    if (existing?.parentNode === heading && (!before || existing.nextElementSibling === before)) return;
+    const button = existing || HOF.el("button", { type: "button", id: "hof-toolbar-new", class: "hof-toolbar-export hof-toolbar-new", "data-hof-ui": "", "aria-label": "Yeni kayıt", title: "Açık sekmeye yeni kayıt ekle" }, `${PLUS_ICON}<span>Yeni Kayıt</span>`);
+    if (!existing) button.addEventListener("click", () => HOF.emit("new-record"));
+    heading.insertBefore(button, before);
+  }
+  const mountButtons = () => {
     mountToolbarButton();
-    HOF.onDom(mountToolbarButton);
-    HOF.on("user-changed", mountToolbarButton);
+    mountNewRecordButton();
+  };
+  HOF.whenReady(() => {
+    mountButtons();
+    HOF.onDom(mountButtons);
+    HOF.on("user-changed", mountButtons);
   });
 
   // Paketin düğmesi yakalanır (paket CSV indirmesini ancak menüden "CSV" seçilince yapar).

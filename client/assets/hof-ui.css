@@ -9058,6 +9058,16 @@ input[type="search"]::-webkit-search-cancel-button {
   background: var(--do-accent-soft);
   color: var(--do-accent);
 }
+.hof-toolbar-new {
+  border-color: var(--do-accent);
+  background: var(--do-accent);
+  color: #fff;
+}
+.hof-toolbar-new:hover {
+  background: var(--do-accent-strong, #0f5b3f);
+  border-color: var(--do-accent-strong, #0f5b3f);
+  color: #fff;
+}
 .hof-toolbar-export:focus-visible {
   outline: none;
   box-shadow: var(--do-focus);
