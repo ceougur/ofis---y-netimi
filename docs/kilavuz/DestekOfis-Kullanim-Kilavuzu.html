@@ -123,7 +123,7 @@
 <ul>
   <li><b>Ödeme ve tahsilat yolu:</b> her tahsilat ve ödemede <b>Nakit</b>, <b>Havale / EFT</b> ya da <b>Kredi Kartı</b> seçin. Cari kartında tahsilatta <b>Çek / Senet</b> seçerseniz evrak formu açılır; satışta <b>Açık Hesap</b> tutarı müşterinin borcuna yazar.</li>
   <li><b>Sekmeler:</b> <b>Nakit Kasa</b>, <b>Banka</b>, <b>Kredi Kartı</b> ya da <b>Tümü</b>. Her sekmenin kendi bakiyesi ve PDF'i vardır.</li>
-  <li><b>Kasa eksiye düşecekse</b> program sorar. Para bankadan ödendiyse yolu <b>Havale / EFT</b> seçin; gerçekten kasadan çıktıysa <b>Yine de Kaydet</b>.</li>
+  <li><b>Bakiye eksiye düşecekse</b> (nakit kasa, banka ya da kredi kartı) program sorar. Yolu yanlış seçtiyseniz düzeltin; doğruysa <b>Yine de Kaydet</b>. Yönetici bir hesap için sormayı kapatabilir ya da kaydı tamamen engelleyebilir (15. bölüm).</li>
   <li><b>İleri tarih yok:</b> Kasa, cari, stok ve taksit hareketine bugünden sonraki bir tarih yazılamaz. Gelecekteki ödeme ya da tahsilatı taksit veya çek / senet vadesi olarak girin; günü gelince tahsil edin.</li>
 </ul>
 <figure class="w80"><img src="ekran/k08-kasa.jpg" alt="Kasa"></figure>
@@ -145,7 +145,7 @@
 <h3>WhatsApp ile Ekstre ve Mesaj</h3>
 <ol class="steps">
   <li><b>Tek cari:</b> kartta <b>WhatsApp</b> → <b>Ekstre Gönder</b>, <b>Mesaj Gönder</b> ya da <b>Sohbeti Aç</b>. Altta son gönderimler görünür.</li>
-  <li><b>Toplu:</b> listede soldaki kutularla carileri seçin → <b>WhatsApp Ekstre</b> ya da <b>WhatsApp Mesaj</b>. Hiç seçmezseniz <b>Tümüne WhatsApp …</b> süzgeçteki bütün carilere gönderir (önce grup ya da <i>Borçlular</i> seçin).</li>
+  <li><b>Toplu:</b> listede soldaki kutularla carileri seçin → <b>WhatsApp Ekstre</b> ya da <b>WhatsApp Mesaj</b>. Hiç seçmezseniz <b>Tümüne WhatsApp …</b> süzgeçteki bütün carilere gönderir (önce grup ya da <i>Borçlular</i> seçin). Başlıktaki kutu süzgeçteki herkesi seçer; sonra birkaç kişinin işaretini kaldırırsanız o kişiler gönderime girmez (<i>997 cari seçildi, 3 hariç</i>).</li>
   <li><b>Hazırlık:</b> telefonu olmayan ya da sabit hat olan cariler ayrı gösterilir. Ekstrede dönemi seçin; mesajda hazır şablonu seçin ya da kendiniz yazın. <b>{Ad}</b>, <b>{Bakiye}</b>, <b>{Sıradaki Taksit}</b> gibi değişkenler her kişide kendi bilgisiyle dolar; sağda ön izleme vardır. <b>Yalnız Borçlu Carilere Gönder</b> ile alacaklıları çıkarın.</li>
   <li><b>Gönderim:</b> <b>Gönderime Başla</b> → her kişi için mesaj hazır gelir; <b>WhatsApp'ta Aç ve Sıradakine Geç</b> deyin, açılan WhatsApp'ta <b>Gönder</b>'e basın. Mesajı o kişiye özel düzeltebilir, <b>Atla</b>yabilir, ekstrenin PDF'ini indirip sohbete ekleyebilirsiniz. Gönderilenler cari kartına yazılır.</li>
 </ol>
@@ -235,6 +235,7 @@
   <li><b>Kurtarma anahtarı:</b> <b>Kurtarma Anahtarı Oluştur</b> → yazdırın. Parolanızı unutursanız giriş ekranında <b>Parolamı Unuttum</b> → anahtar + yeni parola. Anahtar da kayıpsa <b>sunucu bilgisayarında</b> aynı ekrandan <b>Sunucu Kodu Oluştur</b>; kodu Başlat menüsündeki <b>DestekOfis → Yönetici kurtarma kodunu aç</b> gösterir (10 dakika geçerli).</li>
   <li><b>Yedekler:</b> program 6 saatte bir kendiliğinden yedek alır. <b>Yönetim → Yedekler</b>'den yedek alıp indirin; <b>Drive'a da Yedekle</b> ile her yedek Google Drive / OneDrive klasörünüze de kopyalanır (<b>Kaydet ve Bağla</b>, <b>Şimdi Dene</b>).</li>
   <li><b>Silinenler:</b> silinen kayıt, sekme, belge, tahsilat ve kasa hareketleri <b>Yönetim → Silinenler</b>'dedir; <b>Geri Yükle</b> eski yerine getirir.</li>
+  <li><b>Eksi bakiye denetimi:</b> <b>Yönetim → Sistem → Eksi Bakiye Denetimi</b>'nde Nakit Kasa, Banka ve Kredi Kartı için ayrı ayrı seçin: <b>Uyar</b> (sorar, onayla kaydeder), <b>Engelle</b> (kaydetmez), <b>Kontrol Yok</b> (ör. kredili mevduat hesabı).</li>
   <li><b>Dönem kilidi:</b> ay kapandığında <b>Yönetim → Sistem → Dönem Kilidi ve Mutabakat</b>'ta son günü seçip <b>Kilitle</b>. O tarih ve öncesine hareket eklenemez, düzeltilemez, silinemez. Düzeltme gerekirse <b>Kilidi Kaldır</b>, düzeltin, yeniden kilitleyin. Kart, defterlerin tutarlı olup olmadığını da gösterir.</li>
   <li><b>Güncelleme:</b> <b>Yönetim → Sistem → Güncellemeleri Denetle → Şimdi Güncelle</b>. Veriler ve lisans korunur; önce yedek alınır.</li>
   <li><b>Sektör ve görünüm:</b> <b>Ayarlar → Sektör ve Görünüm</b>.</li>

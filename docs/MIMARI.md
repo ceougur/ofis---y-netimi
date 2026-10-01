@@ -395,7 +395,10 @@ Kartları, 153 Ticari Mallar, 320 Satıcılar, 336 Diğer Cariler, 500 Açılı�
 İadeler, 649 Diğer Olağan Gelirler, 689 Vazgeçilen Alacaklar, 770 Genel Giderler. Tutarlar kuruş tamsayısıyla toplanır.
 
 **Ödeme yolu.** `method` kolonu (`cash`, `bank`, `card`) para taşıyan her tabloda; ana defterde 100 / 102 / 108'e düşer.
-Eksiye düşme koruması (`cash.guardOut`) yalnız nakitte; kullanıcı onaylarsa istemci aynı isteği `cashForce` ile yeniden yollar.
+Eksi bakiye denetimi (`cash.guardOut` / `guardChange`) yol başına ayarlanır: `settings["cash.negativePolicy"]` =
+`{cash, bank, card}` ∈ `off | warn | block` (varsayılan `warn`; `PUT /api/admin/negative-policy`, `system.manage`). `warn` →
+409 `cash-negative` (istemci sorar, onaylanırsa aynı istek `cashForce` ile yeniden gider); `block` → 409 `cash-blocked`
+(onayla geçilmez). Bakiye = min(hareket tarihindeki, son) bakiye; düzeltmede her yolun azalan etkisi ayrı denetlenir.
 
 **Mevcut borcu taksitlendiren kart** (`plans.covers_balance`): caride borç yazmaz, ana defterde de alacak doğurmaz;
 tahsilatları borçtan düşer. `uncoveredDebt` aynı borcun iki karta bölünmesini, `trimCovers` iadede kartın borçtan büyük

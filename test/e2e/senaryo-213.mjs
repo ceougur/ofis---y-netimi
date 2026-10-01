@@ -404,6 +404,19 @@ try {
     await admin.click('.hof-modal-backdrop.is-visible [data-answer="yes"]');
     await admin.waitForFunction(() => /Kilitli dönem yok/.test(document.querySelector("#adm-period-status")?.textContent || ""), null, { timeout: 8000 });
     ok(true, "kilit kaldırıldı");
+    // Eksi Bakiye Denetimi: varsayılan üç hesapta Uyar; Kredi Kartı Engelle yapılır, kaydedilir, geri alınır.
+    await admin.waitForFunction(() => document.querySelector("#adm-negative-card")?.value === "warn", null, { timeout: 8000 });
+    const defaults = await admin.$$eval("#adm-negative select", nodes => nodes.map(node => node.value));
+    ok(defaults.join() === "warn,warn,warn", `Eksi Bakiye Denetimi varsayılanı: ${defaults.join(", ")}`);
+    await admin.selectOption("#adm-negative-card", "block");
+    await admin.click("#adm-negative-save");
+    await admin.waitForFunction(() => /Eksi bakiye denetimi kaydedildi/.test([...document.querySelectorAll(".hof-toast")].map(node => node.textContent).join(" ")), null, { timeout: 8000 });
+    const saved = await admin.evaluate(() => fetch("/api/admin/negative-policy").then(response => response.json()));
+    ok(saved.data.card === "block" && saved.data.cash === "warn", `kaydedildi: ${JSON.stringify(saved.data)}`);
+    await shot(admin, "eksi-bakiye-denetimi");
+    await admin.selectOption("#adm-negative-card", "warn");
+    await admin.click("#adm-negative-save");
+    await admin.waitForTimeout(600);
     await admin.goto(`${BASE}/`, { waitUntil: "load" });
   });
 
