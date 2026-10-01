@@ -45,7 +45,10 @@ export function classifyTaxId(value, options = {}) {
  * e-Belge için taraf denetimi. party: { name, taxNo, taxOffice, mersisNo, partyKind ('company' | 'person'), city, district,
  * address, country }. profile: 'EFATURA' | 'EARSIV' | 'KAGIT'. role: 'buyer' | 'seller'. Dönüş: sorun listesi (boşsa geçerli).
  */
-export function partyProblems(party, { profile = "KAGIT", role = "buyer" } = {}) {
+// e-Arşiv'de kimliği bilinmeyen nihai tüketiciye (11111111111) kesilebilecek en yüksek tutar (KDV dahil, 2026: 30.000 TL);
+// üstünde alıcının gerçek TCKN'si, adı soyadı ve adresi zorunludur (GİB e-Arşiv uygulaması).
+export const ANONYMOUS_LIMIT = 30_000;
+export function partyProblems(party, { profile = "KAGIT", role = "buyer", payable = 0 } = {}) {
   const who = role === "seller" ? "Firma bilgisi (satıcı)" : "Cari (alıcı)";
   const problems = [];
   const id = classifyTaxId(party.taxNo, { allowAnonymous: role === "buyer" && profile === "EARSIV" });
@@ -58,6 +61,8 @@ export function partyProblems(party, { profile = "KAGIT", role = "buyer" } = {})
   if (!String(party.name || "").trim()) problems.push(`${who}: unvan / ad soyad zorunludur.`);
   if (!String(party.city || "").trim()) problems.push(`${who}: il zorunludur (adres).`);
   if (role === "seller" && !String(party.taxOffice || "").trim()) problems.push(`${who}: vergi dairesi zorunludur.`);
+  if (role === "buyer" && profile === "EARSIV" && id.value === ANONYMOUS_TCKN && Number(payable) > ANONYMOUS_LIMIT) problems.push(`${who}: ${ANONYMOUS_LIMIT.toLocaleString("tr-TR")} TL üstü e-Arşiv faturada nihai tüketicinin gerçek TC kimlik numarası, adı soyadı ve adresi zorunludur (11111111111 yazılamaz).`);
+  if (role === "buyer" && profile === "EARSIV" && id.value === ANONYMOUS_TCKN && Number(payable) > ANONYMOUS_LIMIT && !String(party.address || "").trim()) problems.push(`${who}: adres zorunludur.`);
   if (role === "buyer" && profile === "EFATURA" && id.kind === "vkn" && !String(party.taxOffice || "").trim()) problems.push(`${who}: e-Fatura'da tüzel alıcının vergi dairesi zorunludur.`);
   return problems;
 }

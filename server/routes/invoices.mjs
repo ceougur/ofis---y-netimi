@@ -396,6 +396,8 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, conf
       canCancel: manage && row.status === "issued" && activeReturns === 0,
       cancelBlock: row.status === "issued" && activeReturns ? `Bu faturanın ${activeReturns} iade faturası var; önce iadeleri iptal edin.` : "",
       canReturn: manage && row.status === "issued" && !kind?.return && row.kind !== "smm" && returnable.some(item => item.left > 0),
+      repeat: repeatOf(row.id),
+      canRepeat: manage && row.status === "issued" && !kind?.return,
       canSend: edocEnabled && manage && row.status === "issued" && kind?.send && row.profile !== "KAGIT" && E_SENDABLE.has(row.eStatus || "none"),
       canRefresh: edocEnabled && manage && kind?.send && row.profile !== "KAGIT" && E_TRACKED.has(row.eStatus),
       edocEnabled,
@@ -889,7 +891,7 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, conf
     const meta = doc.meta;
     // e-Belge: alıcı ve satıcı bilgisi eksiksiz olmalı (GİB doğrulaması).
     if (doc.profile !== "KAGIT" && meta.own) {
-      const problems = [...sellerProblems(doc.profile, s), ...partyProblems(doc.party, { profile: doc.profile === "EARSIVFATURA" || doc.profile === "ESMM" ? "EARSIV" : "EFATURA", role: "buyer" })];
+      const problems = [...sellerProblems(doc.profile, s), ...partyProblems(doc.party, { profile: doc.profile === "EARSIVFATURA" || doc.profile === "ESMM" ? "EARSIV" : "EFATURA", role: "buyer", payable: c2(doc.money.payable) })];
       if (problems.length) fail400(problems.join(" "), "party", { code: "einvoice-party", problems });
     }
     const invoiceId = id || newId("invoice");
@@ -1248,6 +1250,17 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, conf
     return out;
   }
 
+  // Uyarılar (engellemez): VUK md. 231 — fatura, malın teslimi / hizmetin yapılmasından itibaren 7 gün içinde düzenlenir.
+  const DAY = 86_400_000;
+  const daysBetween = (from, to) => Math.round((Date.parse(`${to}T00:00:00Z`) - Date.parse(`${from}T00:00:00Z`)) / DAY);
+  function docWarnings(doc) {
+    const out = [];
+    if (!doc.meta.own) return out;
+    if (doc.despatchDate && daysBetween(doc.despatchDate, doc.date) > 7) out.push(`İrsaliye (teslim) tarihinden ${daysBetween(doc.despatchDate, doc.date)} gün sonra kesiliyor; fatura teslimden itibaren 7 gün içinde düzenlenmeli (VUK 231).`);
+    else if (daysBetween(doc.date, today()) > 7) out.push(`Fatura tarihi bugünden ${daysBetween(doc.date, today())} gün önce; teslimden itibaren 7 gün içinde düzenlenmeli (VUK 231). Teslim tarihi buysa sorun yok.`);
+    return out;
+  }
+
   // ---------- Yollar ----------
   const requireView = req => auth.requirePermission(req, "invoices.view");
   const requireManage = req => auth.requirePermission(req, "invoices.manage");
@@ -1255,6 +1268,7 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, conf
 
   router.get("/api/workspace/invoices/meta", async ({ req, res }) => {
     const user = requireView(req);
+    const repeated = safeRepeats();
     const s = settings();
     ok(res, {
       kinds: Object.fromEntries(Object.entries(INVOICE_KINDS).map(([key, value]) => [key, { label: value.label, short: value.short, side: value.side, return: value.return, own: value.own }])),
@@ -1273,6 +1287,7 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, conf
       edocEnabled,
       settings: { efatura: edocEnabled && s.efatura, earsiv: edocEnabled && s.earsiv, esmm: edocEnabled && s.esmm, defaults: s.defaults, series: s.series, sellerReady: sellerProblems("KAGIT", s).length === 0 && Boolean(s.seller.name), sellerName: s.seller.name, integrator: edocEnabled ? integratorSummary(s) : null },
       today: today(),
+      repeated: repeated.length,
       lockedUntil: period?.lockedUntil?.() || "",
       canManage: canUser(user, "invoices.manage"),
       canSettings: canUser(user, "invoices.settings"),
@@ -1301,11 +1316,82 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, conf
   });
   router.get("/api/workspace/invoices", async ({ req, res, url }) => {
     const user = requireView(req);
+    safeRepeats();
     const data = list(user, listQuery(url.searchParams));
     const limit = Math.min(5000, Math.max(1, Math.trunc(Number(url.searchParams.get("limit")) || 200)));
     const offset = Math.max(0, Math.trunc(Number(url.searchParams.get("offset")) || 0));
     ok(res, { ...data, invoices: data.invoices.slice(offset, offset + limit), total: data.invoices.length, offset, limit, hasMore: offset + limit < data.invoices.length });
   });
+  // ---------- Tekrarlayan fatura ----------
+  const REPEAT_SQL = "SELECT id, template_id AS templateId, every_months AS everyMonths, next_date AS nextDate, until_date AS untilDate, active, made, last_invoice_id AS lastInvoiceId FROM invoice_repeats";
+  const repeatOf = templateId => store.get(`${REPEAT_SQL} WHERE template_id = ? AND active = 1 ORDER BY created_at DESC LIMIT 1`, templateId) || null;
+  // Günü gelen tekrarlar için taslak hazırlar (en çok 12 dönem geriye). Deftere yazmaz; kullanıcı Taslaklar'dan keser.
+  function runRepeats() {
+    const day = today();
+    const made = [];
+    for (const rep of store.all(`${REPEAT_SQL} WHERE active = 1 AND next_date <= ?`, day)) {
+      const template = store.get(`${INVOICE_SQL} WHERE i.id = ?`, rep.templateId);
+      if (!template || template.status === "draft") continue;
+      const system = { id: store.get("SELECT created_by AS id FROM invoice_repeats WHERE id = ?", rep.id).id, display_name: "Tekrarlayan Fatura", role: "admin", permissions: [] };
+      let next = rep.nextDate;
+      let count = 0;
+      try {
+        while (next <= day && count < 12 && (!rep.untilDate || next <= rep.untilDate)) {
+          const lines = linesOf(template.id).map(line => ({ itemId: line.itemId, name: line.name, code: line.code, description: line.description, unit: line.unit, qty: line.qty, unitPrice: line.unitPrice, discountRate: line.discountRate, vatRate: line.vatRate, withholdingCode: line.withholdingCode, exemptionCode: line.exemptionCode, expenseCode: line.expenseCode }));
+          const doc = documentInput({ kind: template.kind, scenario: template.scenario, accountId: template.accountId, issueDate: next, issueTime: template.issueTime, currency: template.currency, rate: template.rate, pricesIncludeVat: Boolean(template.pricesIncludeVat), discountRate: template.discountRate, stoppageRate: template.stoppageRate, note: template.note, lines, status: "draft" }, { mode: "draft" });
+          doc.paymentDraft = { rest: "open" };
+          const id = writeDraft(system, doc);
+          made.push(id);
+          count += 1;
+          next = addMonths(next, rep.everyMonths);
+          store.run("UPDATE invoice_repeats SET next_date = ?, made = made + 1, last_invoice_id = ?, updated_at = ? WHERE id = ?", next, id, now(), rep.id);
+        }
+        if (rep.untilDate && next > rep.untilDate) store.run("UPDATE invoice_repeats SET active = 0, updated_at = ? WHERE id = ?", now(), rep.id);
+      } catch {
+        // Şablonun carisi silinmiş ya da kalem artık geçersizse tekrar durur; kart üstünde görünür.
+        store.run("UPDATE invoice_repeats SET active = 0, updated_at = ? WHERE id = ?", now(), rep.id);
+      }
+    }
+    return made;
+  }
+  const safeRepeats = () => {
+    try {
+      return runRepeats();
+    } catch {
+      return [];
+    }
+  };
+  router.post("/api/workspace/invoices/:id/repeat", async ({ req, res, params }) => {
+    const user = requireManage(req);
+    const row = invoiceRow(params.id);
+    if (row.status !== "issued" || INVOICE_KINDS[row.kind].return) throw new HttpError(409, "Yalnız kesilmiş satış / alış faturası tekrarlanır.", { code: "repeat-invalid" });
+    const body = await readJson(req);
+    const every = Math.trunc(Number(body.everyMonths) || 0);
+    if (every < 1 || every > 12) fail400("Tekrar aralığı 1 ile 12 ay arasında olmalı.", "everyMonths");
+    const nextDate = text(body.nextDate) || addMonths(row.issueDate, every);
+    if (!validDate(nextDate) || nextDate <= row.issueDate) fail400("İlk tekrar tarihi faturanın tarihinden sonra olmalı.", "nextDate");
+    const untilDate = text(body.untilDate);
+    if (untilDate && (!validDate(untilDate) || untilDate < nextDate)) fail400("Bitiş tarihi ilk tekrar tarihinden önce olamaz.", "untilDate");
+    store.tx(() => {
+      store.run("UPDATE invoice_repeats SET active = 0, updated_at = ? WHERE template_id = ? AND active = 1", now(), row.id);
+      store.run("INSERT INTO invoice_repeats (id, template_id, every_months, next_date, until_date, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)", newId("irep"), row.id, every, nextDate, untilDate, user.id, now());
+      audit(user, "invoice.repeat.set", row.id, { every, nextDate, untilDate });
+    });
+    const made = safeRepeats();
+    publish(user, { kind: "invoices", invoiceId: row.id });
+    ok(res, { ...detail(row.id, user), repeatMade: made.length });
+  });
+  router.post("/api/workspace/invoices/:id/repeat-stop", async ({ req, res, params }) => {
+    const user = requireManage(req);
+    const row = invoiceRow(params.id);
+    store.tx(() => {
+      store.run("UPDATE invoice_repeats SET active = 0, updated_at = ? WHERE template_id = ? AND active = 1", now(), row.id);
+      audit(user, "invoice.repeat.stop", row.id, {});
+    });
+    publish(user, { kind: "invoices", invoiceId: row.id });
+    ok(res, detail(row.id, user));
+  });
+
   // Kalem için ürün/hizmet araması (fatura yetkisiyle; stok ekranı yetkisi gerekmez): ad, kod; mevcut miktar, son alış
   // (maliyet) ve satış fiyatı.
   router.get("/api/workspace/invoices/items", async ({ req, res, url }) => {
@@ -1353,7 +1439,8 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, conf
       try: { net: c2(doc.money.net), vat: c2(doc.money.vat), withheld: c2(doc.money.withheld), stoppage: c2(doc.money.stoppage), payable: c2(doc.money.payable) },
       amountInWords: amountInWords(c2(t.payable), doc.currency),
       party: doc.party,
-      partyProblems: doc.profile === "KAGIT" ? [] : partyProblems(doc.party, { profile: doc.profile === "EARSIVFATURA" || doc.profile === "ESMM" ? "EARSIV" : "EFATURA", role: "buyer" }),
+      partyProblems: doc.profile === "KAGIT" ? [] : partyProblems(doc.party, { profile: doc.profile === "EARSIVFATURA" || doc.profile === "ESMM" ? "EARSIV" : "EFATURA", role: "buyer", payable: c2(doc.money.payable) }),
+      warnings: docWarnings(doc),
       sellerProblems: doc.profile === "KAGIT" || !doc.meta.own ? [] : sellerProblems(doc.profile, doc.settings),
       dueDays: Number(doc.account.dueDays) || Number(doc.settings.defaults.dueDays) || 0,
       nextNumber: doc.meta.own ? nextNumber(seriesFor(doc.kind, doc.profile, doc.settings), Number(doc.date.slice(0, 4)), doc.settings).number : "",
@@ -1423,6 +1510,7 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, conf
     // e-Arşiv: entegratörde de iptal edilir (EDM: taslak, hatalı ya da başarıyla oluşturulmuş e-Arşiv iptal edilebilir).
     // Önce programdaki iptal denenir (iade, kilitli dönem, tahsil edilmiş çek, stok…); geçerse entegratör, sonra program.
     const remote = edocEnabled && existing.status === "issued" && existing.profile === "EARSIVFATURA" && ["processing", "sent", "accepted", "error"].includes(existing.eStatus) && body.localOnly !== true;
+    if (remote && daysBetween(existing.issueDate, today()) > 8) throw new HttpError(409, `e-Arşiv fatura kesildikten 8 gün sonra iptal edilemez (${dayText(existing.issueDate)} tarihli). İade faturası kesin; gerekirse doğrusunu yeniden kesin.`, { code: "einvoice-cancel-late" });
     if (remote) {
       cancel(user, existing.id, { ...options, confirmExternal: true, dryRun: true });
       const doc = detail(existing.id, user);
@@ -1481,7 +1569,7 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, conf
     const s = settings();
     const seller = sellerProblems(doc.profile, s);
     if (seller.length) throw new HttpError(409, `Firma bilgisi eksik (Fatura Ayarları): ${seller.join(" ")}`, { code: "seller-incomplete", problems: seller });
-    const buyer = partyProblems(doc.party, { profile: doc.profile === "EARSIVFATURA" || doc.profile === "ESMM" ? "EARSIV" : "EFATURA", role: "buyer" });
+    const buyer = partyProblems(doc.party, { profile: doc.profile === "EARSIVFATURA" || doc.profile === "ESMM" ? "EARSIV" : "EFATURA", role: "buyer", payable: doc.tryPayable });
     if (buyer.length) throw new HttpError(409, `Alıcı bilgisi eksik: ${buyer.join(" ")}`, { code: "buyer-incomplete", problems: buyer });
     if (sending.has(doc.id)) throw new HttpError(409, "Bu belge şu anda gönderiliyor; birkaç saniye bekleyin.", { code: "einvoice-sending" });
     sending.add(doc.id);

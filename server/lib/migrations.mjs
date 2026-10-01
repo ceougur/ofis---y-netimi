@@ -1053,6 +1053,22 @@ export const MIGRATIONS = [
         CREATE INDEX IF NOT EXISTS idx_cheques_invoice ON cheques(invoice_id);
         CREATE INDEX IF NOT EXISTS idx_plans_invoice ON plans(invoice_id);
         CREATE INDEX IF NOT EXISTS idx_cheque_events_invoice ON cheque_events(invoice_id);
+        -- Tekrarlayan fatura (abonelik, kira, aidat): şablon faturadan her N ayda bir TASLAK hazırlanır; kullanıcı
+        -- kontrol edip keser (kendiliğinden deftere yazılmaz).
+        CREATE TABLE IF NOT EXISTS invoice_repeats (
+          id TEXT PRIMARY KEY,
+          template_id TEXT NOT NULL,
+          every_months INTEGER NOT NULL DEFAULT 1 CHECK (every_months BETWEEN 1 AND 12),
+          next_date TEXT NOT NULL,
+          until_date TEXT NOT NULL DEFAULT '',
+          active INTEGER NOT NULL DEFAULT 1,
+          made INTEGER NOT NULL DEFAULT 0,
+          last_invoice_id TEXT NOT NULL DEFAULT '',
+          created_by TEXT NOT NULL,
+          created_at TEXT NOT NULL,
+          updated_at TEXT
+        );
+        CREATE INDEX IF NOT EXISTS idx_invoice_repeats_template ON invoice_repeats(template_id);
       `);
     },
   },

@@ -69,6 +69,7 @@
     }
     try {
       await loadMeta(true);
+      if (meta.repeated) HOF.toast(`${meta.repeated} tekrarlayan fatura taslağı hazırlandı; Taslaklar sekmesinde.`, { type: "info", timeout: 7000 });
     } catch (error) {
       if (body()) body().innerHTML = `<p class="hof-empty">${esc(error.message)}</p>`;
       return;
@@ -794,7 +795,7 @@
     const t = c.totals;
     const cur = c.currency;
     const row = (label, value, cls = "") => `<div class="${cls}"><dt>${label}</dt><dd>${esc(curMoney(value, cur))}</dd></div>`;
-    const problems = [...(c.partyProblems || []), ...(c.sellerProblems || [])];
+    const problems = [...(c.partyProblems || []), ...(c.sellerProblems || []), ...(c.warnings || [])];
     slot.innerHTML = `<h4>Toplamlar</h4>
       <dl class="hof-inv-totals">
         ${row("Ara Toplam", t.base)}
@@ -1287,10 +1288,12 @@
       </div>
       <div class="hof-chq-actions" role="toolbar" aria-label="Belge işlemleri">
         <span class="hof-plan-toolgroup">${office().outputButtons ? office().outputButtons(pdfUrl(doc), "card") : `<a class="hof-button hof-button-small hof-button-ghost" href="${esc(pdfUrl(doc))}" target="_blank" rel="noopener">PDF</a>`}${phone && doc.status === "issued" ? `<button type="button" class="hof-button hof-button-small hof-button-ghost hof-whatsapp" data-act="whatsapp" data-wa="${esc(phone)}">WhatsApp</button>` : ""}</span>
-        ${doc.canManage ? `<span class="hof-plan-toolgroup">${doc.canEdit ? '<button type="button" class="hof-button hof-button-small" data-act="edit">Düzenle ve Kes</button>' : ""}${!ret ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="copy" title="Aynı cari ve kalemlerle yeni belge">Kopyala</button>' : ""}${doc.canDelete ? '<button type="button" class="hof-button hof-button-small hof-button-danger-ghost" data-act="delete">Taslağı Sil</button>' : ""}${doc.status === "issued" ? `<button type="button" class="hof-button hof-button-small hof-button-danger-ghost" data-act="cancel" ${doc.canCancel ? "" : "disabled"} title="${esc(doc.cancelBlock || "Bütün etkileri geri alınır; numara korunur")}">İptal Et</button>` : ""}</span>` : ""}
+        ${doc.status === "issued" && doc.open > 0.004 && !ret && HOF.can(sideOf(doc.kind) === "sale" ? "accounts.collect" : "accounts.manage") ? `<span class="hof-plan-toolgroup"><button type="button" class="hof-button hof-button-small" data-act="pay">${sideOf(doc.kind) === "sale" ? "+ Tahsilat Ekle" : "+ Ödeme Yap"}</button></span>` : ""}
+        ${doc.canManage ? `<span class="hof-plan-toolgroup">${doc.canEdit ? '<button type="button" class="hof-button hof-button-small" data-act="edit">Düzenle ve Kes</button>' : ""}${!ret ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="copy" title="Aynı cari ve kalemlerle yeni belge">Kopyala</button>' : ""}${doc.canRepeat ? `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="${doc.repeat ? "repeat-stop" : "repeat"}" title="${doc.repeat ? "Tekrar emrini durdur" : "Abonelik, kira, aidat: her dönem taslak hazırlanır"}">${doc.repeat ? "Tekrarı Durdur" : "Tekrarla"}</button>` : ""}${doc.canDelete ? '<button type="button" class="hof-button hof-button-small hof-button-danger-ghost" data-act="delete">Taslağı Sil</button>' : ""}${doc.status === "issued" ? `<button type="button" class="hof-button hof-button-small hof-button-danger-ghost" data-act="cancel" ${doc.canCancel ? "" : "disabled"} title="${esc(doc.cancelBlock || "Bütün etkileri geri alınır; numara korunur")}">İptal Et</button>` : ""}</span>` : ""}
         ${eTools}
       </div>
       ${doc.status === "cancelled" ? `<p class="hof-inv-banner is-cancelled">${esc(HOF.formatDateTime(doc.cancelledAt))} tarihinde iptal edildi${doc.cancelReason ? `: ${esc(doc.cancelReason)}` : ""}. Stok, cari, Kasa, çek/senet ve taksit etkileri geri alındı.</p>` : ""}
+      ${doc.repeat ? `<p class="hof-inv-banner is-ok">Tekrarlanıyor: her ${doc.repeat.everyMonths} ayda bir · sıradaki ${esc(HOF.formatDate(doc.repeat.nextDate))}${doc.repeat.untilDate ? ` · bitiş ${esc(HOF.formatDate(doc.repeat.untilDate))}` : ""} · ${doc.repeat.made} taslak hazırlandı. Günü gelen taslak Taslaklar sekmesinde bekler; kontrol edip kesin.</p>` : ""}
       ${doc.status === "draft" ? '<p class="hof-inv-banner">Taslak: deftere işlenmedi, numarası yok. Düzenle ve Kes ile kaydedin; PDF proforma olarak basılır.</p>' : ""}
       ${edoc() && doc.eMessage ? `<p class="hof-inv-banner is-e">e-Belge: ${esc(doc.eMessage)}${doc.eAt ? ` <small>${esc(HOF.formatDateTime(doc.eAt))}</small>` : ""}</p>` : ""}
       <dl class="hof-chq-facts">
@@ -1335,9 +1338,65 @@
       }
     }
     if (act === "cancel") return cancelForm(doc);
+    if (act === "pay") return payForm(doc);
+    if (act === "repeat") return repeatForm(doc);
+    if (act === "repeat-stop") {
+      if (!(await HOF.confirm({ title: "Tekrar Durdurulsun mu?", message: "Bundan sonra taslak hazırlanmaz; hazırlanmış taslaklar durur.", confirmLabel: "Durdur" }))) return;
+      try {
+        showDoc(await HOF.api(`/api/workspace/invoices/${encodeURIComponent(doc.id)}/repeat-stop`, { method: "POST", body: {} }));
+      } catch (error) {
+        HOF.toastError(error);
+      }
+    }
     if (act === "whatsapp") return sendWhatsapp(doc, target.dataset.wa);
     if (act === "e-send") return eAction(doc, "send");
     if (act === "e-refresh") return eAction(doc, "e-refresh");
+  }
+  // Faturaya tahsilat / ödeme: taksitli faturada taksit kartından (taksitten düşer), değilse cariye Kasa hareketi. Cari
+  // ödemeleri faturalara en eski açık faturadan başlayarak sayılır (bu faturadan önce açık fatura varsa önce o kapanır).
+  function payForm(doc) {
+    const sale = sideOf(doc.kind) === "sale";
+    if (doc.plan && sale && HOF.plans?.open) {
+      modal?.close();
+      return HOF.plans.open(doc.plan.id);
+    }
+    HOF.formModal({
+      title: sale ? "Tahsilat Ekle" : "Ödeme Yap",
+      eyebrow: docTitle(doc),
+      intro: `Açık tutar ${money(doc.open)}. Kayıt cariye ve Kasa'ya yazılır; carinin en eski açık faturasından başlayarak kapanır.`,
+      fields: [
+        { name: "amount", label: "Tutar (₺)", required: true, inputmode: "decimal", value: amountText(doc.open), autofocus: true },
+        { name: "date", label: "Tarih", type: "date", required: true, value: todayIso(), max: "today" },
+        HOF.methodField("cash", { incoming: sale }),
+        { name: "note", label: "Açıklama", maxlength: 300, value: `${doc.displayNo} ${sale ? "tahsilatı" : "ödemesi"}` },
+      ],
+      submitLabel: sale ? "Tahsilatı Kaydet" : "Ödemeyi Kaydet",
+      onSubmit: async data => {
+        await HOF.api(`/api/workspace/accounts/${encodeURIComponent(doc.accountId)}/entries`, { method: "POST", body: { kind: sale ? "in" : "out", amount: data.amount, date: data.date, method: data.method, note: data.note } });
+        HOF.toast(sale ? "Tahsilat kaydedildi." : "Ödeme kaydedildi.", { type: "success" });
+        loadDoc(doc.id);
+      },
+    });
+  }
+  function repeatForm(doc) {
+    const [y, m, d] = doc.issueDate.split("-").map(Number);
+    const next = new Date(Date.UTC(y, m, Math.min(d, 28))).toISOString().slice(0, 10);
+    HOF.formModal({
+      title: "Faturayı Tekrarla",
+      eyebrow: docTitle(doc),
+      intro: "Abonelik, kira, aidat gibi düzenli faturalar için: her dönem aynı cari ve kalemlerle TASLAK hazırlanır. Taslak deftere yazılmaz; Taslaklar sekmesinden kontrol edip kesersiniz.",
+      fields: [
+        { name: "everyMonths", label: "Kaç Ayda Bir", type: "select", value: "1", options: [1, 2, 3, 6, 12].map(n => ({ value: String(n), label: n === 1 ? "Her Ay" : n === 12 ? "Her Yıl" : `${n} Ayda Bir` })) },
+        { name: "nextDate", label: "İlk Tekrar Tarihi", type: "date", required: true, value: next },
+        { name: "untilDate", label: "Bitiş Tarihi (isteğe bağlı)", type: "date", value: "" },
+      ],
+      submitLabel: "Tekrarı Başlat",
+      onSubmit: async data => {
+        const saved = await HOF.api(`/api/workspace/invoices/${encodeURIComponent(doc.id)}/repeat`, { method: "POST", body: data });
+        HOF.toast(saved.repeatMade ? `${saved.repeatMade} taslak hemen hazırlandı (günü gelmiş dönemler).` : "Tekrar emri kaydedildi.", { type: "success" });
+        showDoc(saved);
+      },
+    });
   }
   function cancelForm(doc) {
     const sentEInvoice = edoc() && ["TEMELFATURA", "TICARIFATURA"].includes(doc.profile) && ["sent", "accepted"].includes(doc.eStatus);
