@@ -279,7 +279,8 @@ try {
     await admin.click('#hof-sidecard [data-action="accounts"]');
     await admin.waitForSelector(`${top} tr[data-account] input[data-select]`, { timeout: 20000 });
     await admin.waitForTimeout(400);
-    // Numarası geçerli üç kişi seçilir.
+    // Önceki adımın "hepsini seç" seçimi temizlenir; numarası geçerli üç kişi seçilir.
+    if (await admin.$(`${top} [data-act="clearSel"]`)) { await admin.click(`${top} [data-act="clearSel"]`); await admin.waitForTimeout(300); }
     const names = await rowNames("tr[data-account]");
     const boxes = await admin.$$(`${top} tr[data-account] input[data-select]`);
     const chosen = [];
@@ -321,6 +322,7 @@ try {
     await admin.click('#hof-sidecard [data-action="accounts"]');
     await admin.waitForSelector(`${top} tr[data-account] input[data-select]`, { timeout: 20000 });
     await admin.waitForTimeout(400);
+    if (await admin.$(`${top} [data-act="clearSel"]`)) { await admin.click(`${top} [data-act="clearSel"]`); await admin.waitForTimeout(300); }
     const boxes2 = await admin.$$(`${top} tr[data-account] input[data-select]`);
     const names2 = await rowNames("tr[data-account]");
     let picked = 0;
