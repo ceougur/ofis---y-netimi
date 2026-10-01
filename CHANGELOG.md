@@ -2,6 +2,10 @@
 
 Sürümler [anlamsal sürümleme](https://semver.org/lang/tr/) kurallarına uyar.
 
+## 2.0.14 — hazırlanıyor (yayımlanmadı)
+
+- **Tablodan Aktar → Geri Al, dokunulmamış kartta boşuna duruyordu (aralıklı).** Aktarım kartı veritabanına yazarken oluşturma ve güncelleme damgasını iki ayrı saat okumasıyla alıyordu; milisaniye sınırı araya girince ikisi 1 ms ayrışıyor ve geri alma denetimi kartı "aktarımdan sonra işlem yapılmış" sayıyordu (yavaş bilgisayarda, çok kartlı aktarımda daha olası; 2.0.13 CI'ında Windows hücresinde bir kez görüldü). Kart, taksitleri ve açılış kayıtları artık tek damga taşır; kart açma, cariye kart açma ve taksit ekleme de aynı kurala alındı. Test: `test/plan-transfer.test.mjs` aktarımdan sonra damgaların eşitliğini doğrular.
+
 ## 2.0.13 — WhatsApp ile tek/toplu ekstre ve mesaj, ödeme yolu (Nakit · Havale/EFT · Kredi Kartı · Çek/Senet · Açık Hesap), Kasa ve Banka, müşteri iadesi, mevcut borcu taksitlendirme, Ana Defter ve işlem anında mutabakat kapısı
 
 Bu sürümün mantık düzeltmeleri, süpermarket zincirinin arayüzden yürütülen 1 aylık simülasyonunda (kasiyerler, müdür, depo, muhasebe; yüzlerce satış, çek/senet, maaş, iade) bulunan hatalardan gelir.

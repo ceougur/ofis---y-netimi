@@ -383,8 +383,9 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
   function replaceItems(planId, items) {
     store.run("UPDATE plan_entries SET item_id = NULL WHERE plan_id = ?", planId);
     store.run("DELETE FROM plan_items WHERE plan_id = ?", planId);
+    const stamp = now();
     items.forEach((item, index) => {
-      store.run("INSERT INTO plan_items (id, plan_id, seq, due_date, amount, note, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", newId("item"), planId, index + 1, item.dueDate, item.amount, item.note || "", now(), now());
+      store.run("INSERT INTO plan_items (id, plan_id, seq, due_date, amount, note, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", newId("item"), planId, index + 1, item.dueDate, item.amount, item.note || "", stamp, stamp);
     });
   }
   const distributionInput = (body, total, from = "") => {
@@ -479,9 +480,10 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
       if (covers) assertCoverable(accountId, input.total, user);
       // Yeni borç kartı cariye Kayıt Tarihi'nde borç yazar: kapanmış döneme yazılamaz.
       else period?.assertOpen(input.registeredOn, "Kartın Kayıt Tarihi");
+      const stamp = now();
       store.run(
         "INSERT INTO plans (id, account_id, ref_no, registered_on, case_key, case_source, case_title, group_id, subgroup_id, name, note, phone, total, status, covers_balance, created_by, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'active', ?, ?, ?, ?)",
-        id, accountId, input.refNo || nextRef(), input.registeredOn, input.caseKey, input.caseSource, input.caseTitle, input.groupId, input.subgroupId, input.name, input.note, input.phone, input.total, covers ? 1 : 0, user.id, now(), now(),
+        id, accountId, input.refNo || nextRef(), input.registeredOn, input.caseKey, input.caseSource, input.caseTitle, input.groupId, input.subgroupId, input.name, input.note, input.phone, input.total, covers ? 1 : 0, user.id, stamp, stamp,
       );
       // Kayıt bitince taksit sorulmaz; "count" verilmişse (kartı açarken "otomatik dağıt" seçildiyse) kurulur.
       if (text(body.mode) === "auto" || Number(body.count) > 0) replaceItems(id, distributionInput(body, input.total, input.registeredOn));
@@ -586,7 +588,8 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
     const id = newId("item");
     store.tx(() => {
       const seq = (store.get("SELECT COALESCE(MAX(seq), 0) AS s FROM plan_items WHERE plan_id = ?", plan.id)?.s || 0) + 1;
-      store.run("INSERT INTO plan_items (id, plan_id, seq, due_date, amount, note, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", id, plan.id, seq, input.dueDate, input.amount, input.note, now(), now());
+      const stamp = now();
+      store.run("INSERT INTO plan_items (id, plan_id, seq, due_date, amount, note, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", id, plan.id, seq, input.dueDate, input.amount, input.note, stamp, stamp);
       audit(user, "plan.item.created", id, { planId: plan.id, ...input });
     });
     changed(user, { planId: plan.id });
@@ -1105,9 +1108,10 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
     const registeredOn = account.registeredOn && account.registeredOn <= today() ? account.registeredOn : today();
     if (count > 0 && period) period.dueDate(firstDue, { from: registeredOn, label: "İlk Vade" });
     if (!coversBalance) period?.assertOpen(registeredOn, "Kartın Kayıt Tarihi");
+    const stamp = now();
     store.run(
       "INSERT INTO plans (id, account_id, ref_no, registered_on, case_key, case_source, case_title, group_id, subgroup_id, name, note, phone, total, status, covers_balance, created_by, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'active', ?, ?, ?, ?)",
-      id, account.id, refNo || nextRef(), registeredOn, account.caseKey || "", account.caseSource || "", account.caseTitle || "", account.groupId || null, account.subgroupId || null, (name || account.name).slice(0, 160), (note || "").slice(0, 1000), account.phone || "", amount, coversBalance ? 1 : 0, user.id, now(), now(),
+      id, account.id, refNo || nextRef(), registeredOn, account.caseKey || "", account.caseSource || "", account.caseTitle || "", account.groupId || null, account.subgroupId || null, (name || account.name).slice(0, 160), (note || "").slice(0, 1000), account.phone || "", amount, coversBalance ? 1 : 0, user.id, stamp, stamp,
     );
     if (count > 0 && amount > 0) replaceItems(id, distribute({ total: amount, count: Math.min(count, MAX_ITEMS), firstDue, everyMonths }));
     audit(user, "plan.created", id, { name: name || account.name, total: amount, accountId: account.id, bulk: true, coversBalance });
@@ -1133,12 +1137,14 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
     const firstDue = items.map(item => item.dueDate).filter(Boolean).sort()[0] || "";
     let registeredOn = input.registeredOn && input.registeredOn <= today() ? input.registeredOn : today();
     if (firstDue && firstDue < registeredOn) registeredOn = firstDue;
+    // Kart, taksitleri ve açılış kayıtları tek damga taşır: geri alma denetimi (plan-transfer.mjs) "created_at =
+    // updated_at" ile kartın aktarımdan sonra dokunulmadığını anlar; iki ayrı now() milisaniye sınırında ayrışabiliyordu.
+    const stamp = now();
     store.run(
       "INSERT INTO plans (id, account_id, ref_no, registered_on, case_key, case_source, case_title, group_id, subgroup_id, name, note, phone, total, status, import_id, created_by, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'active', ?, ?, ?, ?)",
-      id, input.accountId || "", input.refNo || nextRef(), registeredOn, input.caseKey || "", input.caseKey ? input.caseSource || currentSource() : "", input.caseKey ? input.caseTitle || input.name : "", input.groupId || null, input.subgroupId || null, String(input.name).slice(0, 160), String(input.note || "").slice(0, 1000), String(input.phone || "").slice(0, 60), total, importId, user.id, now(), now(),
+      id, input.accountId || "", input.refNo || nextRef(), registeredOn, input.caseKey || "", input.caseKey ? input.caseSource || currentSource() : "", input.caseKey ? input.caseTitle || input.name : "", input.groupId || null, input.subgroupId || null, String(input.name).slice(0, 160), String(input.note || "").slice(0, 1000), String(input.phone || "").slice(0, 60), total, importId, user.id, stamp, stamp,
     );
     const openingIds = [];
-    const stamp = now();
     items.slice(0, MAX_ITEMS).forEach((item, index) => {
       const itemId = newId("item");
       store.run("INSERT INTO plan_items (id, plan_id, seq, due_date, amount, note, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", itemId, id, index + 1, item.dueDate, roundMoney(item.amount), String(item.label || "").slice(0, 200), stamp, stamp);

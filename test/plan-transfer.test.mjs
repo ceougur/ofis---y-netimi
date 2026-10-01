@@ -276,6 +276,10 @@ describe("tablodan taksit kartına aktarma (iş akışı)", () => {
     assert.equal(result.data.accountsCreated, 3);
     assert.equal(result.data.accountsLinked, 1, "Zeynep'in kartının carisi kayda bağlandı");
     assert.equal(result.data.skipped.length, 0);
+    // Geri alma denetimi "kart ve taksitler aktarımdan beri dokunulmadı" kararını created_at = updated_at ile verir:
+    // aktarım tek damga yazmalı (iki ayrı now() milisaniye sınırında ayrışıp geri almayı boşuna durduruyordu).
+    assert.equal(server.app.store.get("SELECT COUNT(*) AS n FROM plans WHERE import_id = ? AND created_at <> updated_at", importId).n, 0, "kart damgası tek");
+    assert.equal(server.app.store.get("SELECT COUNT(*) AS n FROM plan_items WHERE plan_id IN (SELECT id FROM plans WHERE import_id = ?) AND created_at <> updated_at", importId).n, 0, "taksit damgası tek");
     assert.equal(await kasa(), baseline.kasa, "Kasa toplamı değişmedi (açılış Kasa dışı, tahsilat yalnız yer değiştirdi)");
     assert.equal(await collections(), baseline.collections, "personel raporundaki tahsilat değişmedi");
     // Ayşe: 4 taksit; açılış (Excel'de ödendi) + kayıt kartından taşınan tahsilat (notundaki aya bağlı).

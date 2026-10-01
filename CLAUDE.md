@@ -53,5 +53,7 @@ Bu dosya oturumlar arasında taşınan hafızadır. Her oturumun başında okunu
   (Nakit/Banka/Kredi Kartı: Uyar/Engelle/Kontrol Yok — kullanıcı onayı 01.10.2026), hepsini seç + hariç tut. Holding stres
   simülasyonu kullanıcı kararıyla iptal. Doğrulama: `npm test`, `npm run test:mutabakat`, `npm run mutabakat`,
   `npm run test:senaryo-whatsapp` (1.000 cari). Senaryolar tarihe bağlı yazılmasın (ayın 1'inde kırılanlar düzeltildi).
+- 2.0.14 (dal `claude/nice-euler-jvajxv`, paket/yayın yok): Tablodan Aktar geri alma damga düzeltmesi (iki ayrı now() →
+  tek damga; CI Windows hücresinde aralıklı düşen `plan-transfer.test.mjs:371`'in kök nedeni). Yayın kararı kullanıcıda.
 - Pro — uzaktan görüntüleme: `docs/PRO-UZAKTAN-GORUNTULEME.md` (önce en alttaki "Oturum devri"); genel durum
   `docs/DURUM-VE-DEVAM.md`.
