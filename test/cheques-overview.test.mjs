@@ -220,7 +220,11 @@ describe("çek/senet: Cari, Taksit ve Kasa ile işlem bütünlüğü", () => {
     near(view1.payable.total, view0.payable.total, "toplam borç korunur (cariden ödenecek çeke geçer)");
     near(view1.payable.cheques, view0.payable.cheques + 2500, "ödenecek çek artar");
     const cash0 = await cashBalance();
-    await act(cheque, "pay");
+    // Verilen çek bankadan ödenir; banka bakiyesi yetmiyorsa Eksi Bakiye Denetimi sorar, onayla ödenir.
+    const short = await admin.post(`/api/workspace/cheques/${cheque.id}/actions`, { action: "pay", date: TODAY, status: cheque.status });
+    assert.equal(short.status, 409, JSON.stringify(short.data));
+    assert.equal(short.data.code, "cash-negative");
+    await act(cheque, "pay", { cashForce: true });
     assert.equal(await cashBalance(), cash0 - 2500);
     const view2 = await overview();
     near(view2.payable.total, view0.payable.total - 2500, "ödenince borç azalır");

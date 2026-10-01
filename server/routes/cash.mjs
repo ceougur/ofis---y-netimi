@@ -6,7 +6,7 @@ import { cashPdf, cashPdfName, rangeLabel } from "../lib/cash-report.mjs";
 import { HttpError, limited, ok, readJson, sendBuffer, text } from "../lib/http.mjs";
 import { parseAmount, roundMoney } from "../lib/money.mjs";
 import { canUser } from "../lib/permissions.mjs";
-import { METHODS, methodOf } from "../lib/pay-method.mjs";
+import { METHODS, NEGATIVE_KEY, NEGATIVE_POLICIES, methodOf, readNegativePolicy } from "../lib/pay-method.mjs";
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 // Kasa'nın kendi kaynakları (kayıt tahsilatları ve elle girilen hareketler); diğerleri modüllerin cashSource'u.
@@ -65,35 +65,55 @@ export function registerCashRoutes(router, context) {
               COALESCE(SUM(CASE WHEN method = 'cash' THEN (CASE WHEN kind = 'in' THEN cents ELSE -cents END) END), 0) AS cashAll,
               COALESCE(SUM(CASE WHEN method = 'bank' THEN (CASE WHEN kind = 'in' THEN cents ELSE -cents END) END), 0) AS bankAll,
               COALESCE(SUM(CASE WHEN method = 'card' THEN (CASE WHEN kind = 'in' THEN cents ELSE -cents END) END), 0) AS cardAll,
-              COALESCE(SUM(CASE WHEN method = 'cash' AND date <= ? THEN (CASE WHEN kind = 'in' THEN cents ELSE -cents END) END), 0) AS cashToday
+              COALESCE(SUM(CASE WHEN method = 'cash' AND date <= ? THEN (CASE WHEN kind = 'in' THEN cents ELSE -cents END) END), 0) AS cashToday,
+              COALESCE(SUM(CASE WHEN method = 'bank' AND date <= ? THEN (CASE WHEN kind = 'in' THEN cents ELSE -cents END) END), 0) AS bankToday,
+              COALESCE(SUM(CASE WHEN method = 'card' AND date <= ? THEN (CASE WHEN kind = 'in' THEN cents ELSE -cents END) END), 0) AS cardToday
        FROM (${union})`,
-      day, day, day, monthStart, day, monthStart, day, day, day,
+      day, day, day, monthStart, day, monthStart, day, day, day, day, day,
     );
     const tl = cents => roundMoney(Number(cents || 0) / 100);
     // v2.0.13: yola göre bakiyeler (Nakit Kasa, Banka, Kredi Kartı); toplam = üçünün toplamı.
-    return { byMethod: { cash: tl(row.cashAll), bank: tl(row.bankAll), card: tl(row.cardAll) }, cashToday: tl(row.cashToday), balance: tl(row.balance), balanceToday: tl(row.balanceToday), today: { in: tl(row.todayIn), out: tl(row.todayOut) }, month: { in: tl(row.monthIn), out: tl(row.monthOut) }, futureEntries: row.future, count: row.count };
+    return { byMethod: { cash: tl(row.cashAll), bank: tl(row.bankAll), card: tl(row.cardAll) }, byMethodAt: { cash: tl(row.cashToday), bank: tl(row.bankToday), card: tl(row.cardToday) }, cashToday: tl(row.cashToday), balance: tl(row.balance), balanceToday: tl(row.balanceToday), today: { in: tl(row.todayIn), out: tl(row.todayOut) }, month: { in: tl(row.monthIn), out: tl(row.monthOut) }, futureEntries: row.future, count: row.count };
   }
   // Tarihe kadarki kasa (dahil): nakit akış projeksiyonunun başlangıcı. Kasa ekranıyla aynı hareketlerden.
   const balanceAt = day => (day ? summary(day).balanceToday : summary("9999-12-31").balance);
-  // v2.0.13: Kasa'dan çıkış Kasa'yı eksiye düşürecekse sorulur (fiziki kasa eksi olamaz; ödeme bankadan yapıldıysa
-  // bilinçli onayla kaydedilir). force = kullanıcı onayladı. Tarih: hareketin tarihine kadarki kasa.
+  // v2.0.13: eksi bakiye denetimi — Logo/Netsis'teki gibi yol başına ayar (Nakit Kasa, Banka, Kredi Kartı):
+  // Kontrol Yok / Uyar / Engelle. Uyar: kullanıcı onaylarsa (force = cashForce) yazılır; Engelle: onayla da yazılmaz.
+  // Bakiye: hareketin tarihindeki ve bugünden ileri tarihli hareketler dahil son bakiye; hangisi azsa o (ileri tarihli bir
+  // ödeme zaten ayrılmışsa bugünkü çıkış onu açığa düşürmesin).
+  const PLACE = { cash: "Nakit kasada", bank: "Banka hesabında (Havale / EFT)", card: "Kredi kartı (POS) hesabında" };
+  const negativePolicy = () => readNegativePolicy(store.setting(NEGATIVE_KEY, ""));
+  function setNegativePolicy(input) {
+    const next = { ...negativePolicy() };
+    for (const method of Object.keys(METHODS)) {
+      if (input?.[method] === undefined) continue;
+      if (!NEGATIVE_POLICIES.includes(input[method])) throw new HttpError(400, "Eksi bakiye denetimi Kontrol Yok, Uyar ya da Engelle olmalı.");
+      next[method] = input[method];
+    }
+    store.setSetting(NEGATIVE_KEY, JSON.stringify(next));
+    return next;
+  }
   function guardOut(amount, day, force = false, method = "cash") {
-    if (force || !(amount > 0) || methodOf(method) !== "cash") return;
-    // Hareket tarihindeki nakit ve bugünden ileri tarihli hareketler dahil son nakit: hangisi azsa o (ileri tarihli bir
-    // ödeme zaten ayrılmışsa bugünkü çıkış onu açığa düşürmesin).
-    const balance = Math.min(summary(day || "9999-12-31").cashToday, summary("9999-12-31").byMethod.cash || 0);
+    const key = methodOf(method);
+    const policy = negativePolicy()[key];
+    if (!(amount > 0) || policy === "off" || (policy === "warn" && force)) return;
+    const balance = Math.min(summary(day || "9999-12-31").byMethodAt[key], summary("9999-12-31").byMethod[key] || 0);
     const after = roundMoney(balance - amount);
     if (after < -0.005) {
       const money = value => `${new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value)} TL`;
-      throw new HttpError(409, `Nakit kasada ${money(balance)} var; ${money(amount)} çıkış Kasa'yı ${money(after)} eksiye düşürür.`, { code: "cash-negative", balance, after });
+      const base = `${PLACE[key]} ${money(balance)} var; ${money(amount)} çıkış bakiyeyi ${money(after)} eksiye düşürür.`;
+      if (policy === "block") throw new HttpError(409, `${base} Bu hesapta eksi bakiyeye izin verilmiyor (Yönetim → Sistem → Eksi Bakiye Denetimi).`, { code: "cash-blocked", method: key, balance, after });
+      throw new HttpError(409, base, { code: "cash-negative", method: key, balance, after });
     }
   }
-  // v2.0.13: düzeltme ve silmede de nakit eksiye düşmez (sormadan). before/after: { kind: "in"|"out" (Kasa'ya giriş/
-  // çıkış yönü), amount, method, date } ya da null (yeni/silinen). Nakde etkisi azaltıcıysa guardOut'tan geçer.
+  // Düzeltme ve silmede de: before/after { kind: "in"|"out" (Kasa'ya giriş/çıkış yönü), amount, method, date } ya da null
+  // (yeni/silinen). Her yol ayrı: nakitten bankaya taşınan bir tahsilat nakit hesabını azaltır, o denetlenir.
   function guardChange(before, after, force = false) {
-    const effect = entry => (entry && methodOf(entry.method) === "cash" ? (entry.kind === "in" ? 1 : -1) * (Number(entry.amount) || 0) : 0);
-    const delta = roundMoney(effect(after) - effect(before));
-    if (delta < -0.005) guardOut(-delta, after?.date || before?.date || "", force, "cash");
+    for (const key of Object.keys(METHODS)) {
+      const effect = entry => (entry && methodOf(entry.method) === key ? (entry.kind === "in" ? 1 : -1) * (Number(entry.amount) || 0) : 0);
+      const delta = roundMoney(effect(after) - effect(before));
+      if (delta < -0.005) guardOut(-delta, after?.date || before?.date || "", force, key);
+    }
   }
   function report(user, from, to, method = "") {
     method = method && Object.hasOwn(METHODS, method) ? method : "";
@@ -214,6 +234,20 @@ export function registerCashRoutes(router, context) {
     ok(res, { id: previous.id });
   });
 
+  // Eksi bakiye denetimi ayarı (yalnız yönetici: Yönetim → Sistem).
+  router.get("/api/admin/negative-policy", async ({ req, res }) => {
+    auth.requirePermission(req, "system.manage");
+    ok(res, negativePolicy());
+  });
+  router.put("/api/admin/negative-policy", async ({ req, res }) => {
+    const user = auth.requirePermission(req, "system.manage");
+    const body = await readJson(req);
+    const previous = negativePolicy();
+    const next = setNegativePolicy(body);
+    audit(user, "cash.negative-policy", "cash", { previous, next });
+    ok(res, next);
+  });
+
   // ANLIK DURUM (v2.0.7): Kasa ekranıyla aynı hesap (tek kaynak).
-  return { entries, report, balanceAt, summary, guardOut, guardChange };
+  return { entries, report, balanceAt, summary, guardOut, guardChange, negativePolicy };
 }

@@ -24,6 +24,7 @@ for (let seed = firstSeed; seed < firstSeed + seeds; seed++) {
     const seconds = (performance.now() - started) / 1000;
     const ms = report.integrityMs.slice().sort((a, b) => a - b);
     console.log(`\nTohum ${seed}: ${report.operations} işlem, ${report.checks} doğrulama, ${report.rejectedAsExpected} beklenen ret (eksiye düşürme / aşım), eşzamanlı ${report.burst?.requests || 0} istek · ${seconds.toFixed(1)} sn`);
+    console.log(`  Beklenen retler: ${Object.entries(report.rejections || {}).sort((a, b) => b[1] - a[1]).map(([code, n]) => `${code} ${n}`).join(", ")}`);
     console.log(`  İşlem türleri: ${Object.entries(report.byKind).map(([k, v]) => `${k} ${v}`).join(", ")}`);
     console.log(`  Model: ${JSON.stringify(report.model)}`);
     console.log(`  Mutabakat kapısı süresi: ortanca ${ms[Math.floor(ms.length / 2)] ?? 0} ms, en çok ${ms.at(-1) ?? 0} ms`);

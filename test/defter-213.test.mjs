@@ -96,7 +96,12 @@ describe("2.0.13 defter ve mantık düzeltmeleri", () => {
     const blocked = await admin.post("/api/workspace/cash", { kind: "out", amount: String(cashNow + 1), description: "Kira" });
     assert.equal(blocked.status, 409);
     assert.equal(blocked.data.code, "cash-negative");
-    ok(await admin.post("/api/workspace/cash", { kind: "out", amount: String(cashNow + 1), description: "Kira", method: "bank" }), "bankadan kira: nakit kasayı etkilemez, sorulmaz");
+    // Bankadan kira: nakit kasayı etkilemez; banka bakiyesi yetmiyorsa bankanın kendi eksi denetimi sorar (Eksi Bakiye Denetimi).
+    const bankShort = await admin.post("/api/workspace/cash", { kind: "out", amount: String(cashNow + 1), description: "Kira", method: "bank" });
+    assert.equal(bankShort.data.code, "cash-negative");
+    assert.equal(bankShort.data.method, "bank", "soran banka hesabı, nakit değil");
+    ok(await admin.post("/api/workspace/cash", { kind: "out", amount: String(cashNow + 1), description: "Kira", method: "bank", cashForce: true }), "bankadan kira onayla (kredili hesap)");
+    assert.equal(data(await admin.get("/api/workspace/cash")).byMethod.cash, cashNow, "nakit kasa değişmedi");
     ok(await admin.post("/api/workspace/cash", { kind: "out", amount: "50", description: "Çay", cashForce: true }), "onayla kaydedilir");
   });
 
@@ -108,7 +113,7 @@ describe("2.0.13 defter ve mantık düzeltmeleri", () => {
     ok(await admin.post(`/api/workspace/cheques/${second.id}/actions`, { action: "collect" }), "tahsil (banka)");
     ok(await admin.post(`/api/workspace/cheques/${third.id}/actions`, { action: "bounce" }), "carisiz karşılıksız");
     const given = ok(await admin.post("/api/workspace/cheques", { direction: "out", instrument: "cheque", amount: "1.500", dueDate: "2026-12-10", accountId: tedarik.id, serialNo: "V-1" }), "çek ver");
-    ok(await admin.post(`/api/workspace/cheques/${given.id}/actions`, { action: "pay", method: "bank" }), "öde (banka)");
+    ok(await admin.post(`/api/workspace/cheques/${given.id}/actions`, { action: "pay", method: "bank", cashForce: true }), "öde (banka; bakiye yetmiyor, onaylı)");
     ok(await admin.post("/api/workspace/cheques", { direction: "out", instrument: "note", amount: "900", dueDate: "2027-01-10", accountId: tedarik.id, serialNo: "V-2" }), "senet ver (açık)");
     ok(await admin.post("/api/workspace/cases/satir:1/payments", { amount: "250", method: "bank", caseTitle: "Kayıt" }).catch(() => ({ status: 200, data: { data: {} } })), "kayıt tahsilatı");
     const ledger = data(await admin.get("/api/workspace/ledger"));

@@ -94,6 +94,9 @@ export function registerWhatsappRoutes(router, { store, auth, audit, accounts = 
     let ids;
     if (body.all === true) {
       ids = service.list(user, { q: text(body.q).slice(0, 120), group: text(body.group), subgroup: text(body.subgroup), type: text(body.type), status: ["active", "passive", "all"].includes(text(body.status)) ? text(body.status) : "active", balance: text(body.balance) || "all" }).accounts.map(item => item.id);
+      // "Hepsini seç, sonra birkaçını çıkar": except — işareti kaldırılanlar gönderilmez.
+      const except = new Set(Array.isArray(body.except) ? body.except.map(value => String(value || "")) : []);
+      ids = ids.filter(id => !except.has(id));
     } else ids = [...new Set((Array.isArray(body.ids) ? body.ids : []).map(value => String(value || "").slice(0, 120)).filter(Boolean))];
     if (!ids.length) throw new HttpError(400, "Gönderilecek carileri seçin.");
     if (ids.length > MAX_TARGETS) throw new HttpError(400, `Tek seferde en çok ${MAX_TARGETS} cariye gönderilebilir; süzgeçle daraltın.`);

@@ -893,6 +893,30 @@
     savePeriod("");
   });
 
+  // ---------- Eksi bakiye denetimi ----------
+  async function loadNegative() {
+    try {
+      const policy = await HOF.api("/api/admin/negative-policy");
+      for (const key of ["cash", "bank", "card"]) $(`#adm-negative-${key}`).value = policy[key];
+    } catch (error) {
+      HOF.toastError(error);
+    }
+  }
+  $("#adm-negative").addEventListener("submit", async event => {
+    event.preventDefault();
+    const button = $("#adm-negative-save");
+    button.disabled = true;
+    try {
+      const body = Object.fromEntries(["cash", "bank", "card"].map(key => [key, $(`#adm-negative-${key}`).value]));
+      await HOF.api("/api/admin/negative-policy", { method: "PUT", body });
+      HOF.toast("Eksi bakiye denetimi kaydedildi.", { type: "success" });
+    } catch (error) {
+      HOF.toastError(error);
+    } finally {
+      button.disabled = false;
+    }
+  });
+
   // ---------- Güncellemeler ----------
   let updateStatus = null;
   let updateTimer = null;
@@ -1016,6 +1040,7 @@
   async function loadSystem() {
     loadUpdate();
     loadPeriod();
+    loadNegative();
     const target = $("#adm-system");
     try {
       const info = await HOF.api("/api/admin/system");

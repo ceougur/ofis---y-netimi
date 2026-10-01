@@ -10,7 +10,8 @@
 //     düzeltilemez, silinemez (409 period-locked) — motor bunu bilinçli olarak dener.
 //   · Hatalı tarih: boş, null, "2026-13-40", "31.12.2026", "2026-02-30", "abc", ileri tarih; vadesi işlem tarihinden
 //     önce olan taksit/satış — hepsi 400 ile reddedilmeli ve hiçbir iz bırakmamalı.
-//   · Eksiye düşürme: nakit kasayı eksiye düşürecek çıkış/düzeltme/silme onaysız 409 (cash-negative), stok eksiye onaysız
+//   · Eksiye düşürme: Nakit, Banka ve Kredi Kartı yol başına ayarla (Kontrol Yok / Uyar / Engelle): Uyar'da onaysız 409
+//     cash-negative, Engelle'de onaylı da 409 cash-blocked (koşu ortasında ayar değişir), stok eksiye onaysız
 //     ret; taksit kartında tahsil edilenden fazla iade 400 (refund-exceeds).
 //   · Eşzamanlılık: aynı ürün ve carilere aynı anda istek yağmuru.
 //
@@ -91,9 +92,25 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
     for (const e of M.planEntries) out.push({ source: "plan", date: e.date, method: e.method, cents: e.kind === "in" ? e.amount : -e.amount });
     return out;
   }
-  const cashAt = date => cashEffects().filter(x => x.method === "cash" && (!date || x.date <= date)).reduce((s, x) => s + x.cents, 0);
-  // Program: min(o tarihteki nakit, son nakit) − çıkış < 0 ise onaysız reddeder.
-  const cashBlocks = (outCents, date) => outCents > 0 && Math.min(cashAt(date), cashAt("")) - outCents < 0;
+  const balAt = (method, date) => cashEffects().filter(x => x.method === method && (!date || x.date <= date)).reduce((s, x) => s + x.cents, 0);
+  // Eksi bakiye denetimi (yol başına: off / warn / block). Program: min(o tarihteki bakiye, son bakiye) − çıkış < 0 ise
+  // warn'da onaysız 409 cash-negative, block'ta onaylı da 409 cash-blocked. Koşunun ortasında politika değişir.
+  const policy = { cash: "warn", bank: "warn", card: "warn" };
+  const METHOD_ORDER = ["cash", "bank", "card"];
+  const blocks = (outCents, date, method) => outCents > 0 && policy[method] !== "off" && Math.min(balAt(method, date), balAt(method, "")) - outCents < 0;
+  // outs: [[yol, çıkış kuruşu, tarih]]; sunucunun sırasıyla (nakit, banka, kart) denetlenir. Ret beklenirse true.
+  function negative(r, outs, force, kind) {
+    for (const method of METHOD_ORDER) {
+      for (const [m, out, date] of outs) {
+        if (m !== method || !blocks(out, date, m)) continue;
+        if (policy[m] === "block") return expectReject(r, "cash-blocked", kind), true;
+        if (!force) return expectReject(r, "cash-negative", kind), true;
+      }
+    }
+    return false;
+  }
+  // Düzeltme/silme: her yolun bakiyeye etkisi (giriş +, çıkış −) önce/sonra; azalan yollar çıkış sayılır.
+  const changeOuts = (before, after, date) => METHOD_ORDER.map(m => [m, (before.method === m ? before.cents : 0) - (after?.method === m ? after.cents : 0), date]).filter(([, out]) => out > 0);
 
   // ---------- Kurulum: cariler ve ürünler ----------
   for (let i = 0; i < 12; i++) {
@@ -232,7 +249,7 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
         const amount = moneyCents(1, 40000);
         const force = R.chance(0.5);
         const r = await api("POST", "/api/workspace/cash", { kind: k, amount: tl(amount), method, description: `Kasa ${k}`, date: day, cashForce: force });
-        if (k === "out" && method === "cash" && !force && cashBlocks(amount, day)) return expectReject(r, "cash-negative", kind);
+        if (k === "out" && negative(r, [[method, amount, day]], force, kind)) return;
         mustOk(r, kind);
         M.kasa[method] += k === "in" ? amount : -amount;
         M.cash.push({ id: r.data.id, kind: k, amount, method, date: day });
@@ -243,11 +260,10 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
         if (!e) return;
         const amount = moneyCents(1, 40000);
         const method = methodPick();
-        const eff = x => (x.method === "cash" ? (x.kind === "in" ? x.amount : -x.amount) : 0);
-        const delta = eff({ ...e, amount, method }) - eff(e);
+        const eff = x => ({ method: x.method, cents: x.kind === "in" ? x.amount : -x.amount });
         const force = R.chance(0.5);
         const r = await api("PUT", `/api/workspace/cash/${e.id}`, { kind: e.kind, amount: tl(amount), method, description: "Düzeltildi", date: e.date, cashForce: force });
-        if (!force && delta < 0 && cashBlocks(-delta, e.date)) return expectReject(r, "cash-negative", kind);
+        if (negative(r, changeOuts(eff(e), eff({ ...e, amount, method }), e.date), force, kind)) return;
         mustOk(r, kind);
         M.kasa[e.method] -= e.kind === "in" ? e.amount : -e.amount;
         M.kasa[method] += e.kind === "in" ? amount : -amount;
@@ -259,7 +275,7 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
         if (!e) return;
         const force = R.chance(0.5);
         const r = await api("DELETE", `/api/workspace/cash/${e.id}${force ? "?cashForce=1" : ""}`);
-        if (!force && e.method === "cash" && e.kind === "in" && cashBlocks(e.amount, e.date)) return expectReject(r, "cash-negative", kind);
+        if (e.kind === "in" && negative(r, [[e.method, e.amount, e.date]], force, kind)) return;
         mustOk(r, kind);
         M.kasa[e.method] -= e.kind === "in" ? e.amount : -e.amount;
         M.cash.splice(M.cash.indexOf(e), 1);
@@ -271,7 +287,7 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
         const amount = moneyCents(1, 60000);
         const force = R.chance(0.5);
         const r = await api("POST", `/api/workspace/accounts/${acc.id}/entries`, { kind: k, amount: tl(amount), method, note: `Cari ${k}`, date: day, cashForce: force });
-        if (k === "out" && method === "cash" && !force && cashBlocks(amount, day)) return expectReject(r, "cash-negative", kind);
+        if (k === "out" && negative(r, [[method, amount, day]], force, kind)) return;
         mustOk(r, kind);
         cariAdd(acc.id, k === "debt" || k === "out" ? amount : -amount);
         if (k === "in") M.kasa[method] += amount;
@@ -286,11 +302,10 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
         const method = methodPick();
         const flip = (e.kind === "debt" || e.kind === "credit") && R.chance(0.3) ? (e.kind === "debt" ? "credit" : "debt") : e.kind;
         const next = { ...e, kind: flip, amount, method };
-        const eff = x => ((x.kind === "in" || x.kind === "out") && x.method === "cash" ? (x.kind === "in" ? x.amount : -x.amount) : 0);
-        const delta = eff(next) - eff(e);
+        const eff = x => ({ method: x.kind === "in" || x.kind === "out" ? x.method : "", cents: x.kind === "in" ? x.amount : -x.amount });
         const force = R.chance(0.5);
         const r = await api("PUT", `/api/workspace/accounts/${e.accountId}/entries/${e.id}`, { kind: flip, amount: tl(amount), method, note: "Düzeltildi", date: e.date, cashForce: force });
-        if (!force && delta < 0 && cashBlocks(-delta, e.date)) return expectReject(r, "cash-negative", kind);
+        if (negative(r, changeOuts(eff(e), eff(next), e.date), force, kind)) return;
         mustOk(r, kind);
         const sign = x => (x.kind === "debt" || x.kind === "out" ? x.amount : -x.amount);
         cariAdd(e.accountId, sign(next) - sign(e));
@@ -303,7 +318,7 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
         if (!e) return;
         const force = R.chance(0.5);
         const r = await api("DELETE", `/api/workspace/accounts/${e.accountId}/entries/${e.id}${force ? "?cashForce=1" : ""}`);
-        if (!force && e.kind === "in" && e.method === "cash" && cashBlocks(e.amount, e.date)) return expectReject(r, "cash-negative", kind);
+        if (e.kind === "in" && negative(r, [[e.method, e.amount, e.date]], force, kind)) return;
         mustOk(r, kind);
         cariAdd(e.accountId, e.kind === "debt" || e.kind === "out" ? -e.amount : e.amount);
         if (e.kind === "in") M.kasa[e.method] -= e.amount;
@@ -321,7 +336,7 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
         const force = R.chance(0.5);
         const r = await api("POST", `/api/workspace/stock/${item.id}/moves`, { kind: "in", qty: qtyText(qty), unitPrice: priceText(price4), pay, method, accountId: pay === "account" ? sup.id : "", date: day, cashForce: force });
         if (pay !== "none" && amount === 0) return expectReject(r, null, kind);
-        if (pay === "cash" && method === "cash" && !force && cashBlocks(amount, day)) return expectReject(r, "cash-negative", kind);
+        if (pay === "cash" && negative(r, [[method, amount, day]], force, kind)) return;
         mustOk(r, kind);
         M.stok.set(item.id, M.stok.get(item.id) + qty);
         if (pay === "cash") M.kasa[method] -= amount;
@@ -363,7 +378,7 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
         const force = R.chance(0.5);
         const r = await api("POST", `/api/workspace/stock/${src.itemId}/moves`, { kind: "in", reason: "return", qty: qtyText(qty), unitPrice: priceText(src.price4), pay, method, accountId: src.accountId, date: day, cashForce: force });
         if (amount === 0) return expectReject(r, null, kind);
-        if (pay === "cash" && method === "cash" && !force && cashBlocks(amount, day)) return expectReject(r, "cash-negative", kind);
+        if (pay === "cash" && negative(r, [[method, amount, day]], force, kind)) return;
         mustOk(r, kind);
         M.stok.set(src.itemId, M.stok.get(src.itemId) + qty);
         if (pay === "cash") M.kasa[method] -= amount;
@@ -387,9 +402,9 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
         if (!m) return;
         const force = R.chance(0.5);
         const qtyAfter = M.stok.get(m.itemId) + (m.kind === "in" ? -m.qty : m.qty);
-        const cashOut = m.pay === "cash" && m.kind === "out" && m.method === "cash" ? m.amount : 0;
+        const cashOut = m.pay === "cash" && m.kind === "out" ? m.amount : 0;
         const r = await api("DELETE", `/api/workspace/stock/${m.itemId}/moves/${m.id}${force ? "?cashForce=1" : ""}`);
-        if (!force && cashOut && cashBlocks(cashOut, m.date)) return expectReject(r, "cash-negative", kind);
+        if (cashOut && negative(r, [[m.method, cashOut, m.date]], force, kind)) return;
         mustOk(r, kind);
         M.stok.set(m.itemId, qtyAfter);
         if (m.pay === "cash") M.kasa[m.method] += m.kind === "out" ? -m.amount : m.amount;
@@ -404,12 +419,11 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
         const price4 = Math.max(1, m.price4 + R.int(-50, 50));
         const amount = lineCents(qty, price4);
         const qtyAfter = M.stok.get(m.itemId) + (m.kind === "in" ? qty - m.qty : m.qty - qty);
-        const eff = (x, a) => (x.pay === "cash" && x.method === "cash" ? (x.kind === "out" ? a : -a) : 0);
-        const delta = eff(m, amount) - eff(m, m.amount);
+        const eff = (x, a) => ({ method: x.pay === "cash" ? x.method : "", cents: x.kind === "out" ? a : -a });
         const force = R.chance(0.5);
         const r = await api("PUT", `/api/workspace/stock/${m.itemId}/moves/${m.id}`, { qty: qtyText(qty), unitPrice: priceText(price4), force: true, cashForce: force });
         if (amount === 0) return expectReject(r, null, kind);
-        if (!force && delta < 0 && cashBlocks(-delta, m.date)) return expectReject(r, "cash-negative", kind);
+        if (negative(r, changeOuts(eff(m, m.amount), eff(m, amount), m.date), force, kind)) return;
         mustOk(r, kind);
         M.stok.set(m.itemId, qtyAfter);
         if (m.pay === "cash") M.kasa[m.method] += m.kind === "out" ? amount - m.amount : m.amount - amount;
@@ -445,7 +459,7 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
           const amount = over ? p.paid + moneyCents(1, 500) : Math.max(1, Math.min(p.paid, moneyCents(1, 5000)));
           const r = await api("POST", `/api/workspace/plans/${id}/entries`, { kind: "out", amount: tl(amount), method, date: day, cashForce: force });
           if (amount > p.paid) return expectReject(r, "refund-exceeds", kind);
-          if (method === "cash" && !force && cashBlocks(amount, day)) return expectReject(r, "cash-negative", kind);
+          if (negative(r, [[method, amount, day]], force, kind)) return;
           mustOk(r, kind);
           p.paid -= amount;
           cariAdd(p.accountId, amount);
@@ -469,7 +483,7 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
         const force = R.chance(0.5);
         const r = await api("DELETE", `/api/workspace/plans/${e.planId}/entries/${e.id}${force ? "?cashForce=1" : ""}`);
         if (e.kind === "in" && p.paid - e.amount < 0) return expectReject(r, "refund-exceeds", kind);
-        if (!force && e.kind === "in" && e.method === "cash" && cashBlocks(e.amount, e.date)) return expectReject(r, "cash-negative", kind);
+        if (e.kind === "in" && negative(r, [[e.method, e.amount, e.date]], force, kind)) return;
         mustOk(r, kind);
         p.paid += e.kind === "in" ? -e.amount : e.amount;
         cariAdd(p.accountId, e.kind === "in" ? e.amount : -e.amount);
@@ -559,6 +573,14 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
         else { lock = until; report.locks.push(until); }
       }
     }
+    // Eksi bakiye denetimi: %50'de Banka Kontrol Yok + Kredi Kartı Engelle, %80'de Nakit Engelle (yönetici ayarı).
+    for (const [at, next] of [[0.5, { cash: "warn", bank: "off", card: "block" }], [0.8, { cash: "block", bank: "warn", card: "warn" }]]) {
+      if (i === Math.floor(operations * at)) {
+        const r = await api("PUT", "/api/admin/negative-policy", next);
+        if (r.status !== 200) report.mismatches.push({ at: `eksi bakiye ayarı`, problems: [`ayar kaydedilemedi: ${r.text}`] });
+        else Object.assign(policy, next);
+      }
+    }
     const kind = R.pick(bag);
     report.operations += 1;
     try {
@@ -601,5 +623,6 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
   report.model = { kasa: Object.fromEntries(MONEY.map(m => [m, tl(M.kasa[m])])), cariler: accounts.length, urunler: items.length, kartlar: M.plans.size, kasaHareketi: M.cash.length, cariHareketi: M.entries.length, stokHareketi: M.moves.length, taksitHareketi: M.planEntries.length };
   // Deney sonrası kilidi kaldır (aynı veritabanında başka koşu olabilir).
   if (lock) await api("PUT", "/api/admin/period-lock", { lockedUntil: "" });
+  await api("PUT", "/api/admin/negative-policy", { cash: "warn", bank: "warn", card: "warn" });
   return report;
 }

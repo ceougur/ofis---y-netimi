@@ -19,6 +19,7 @@
     "test:senaryo-211": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-211.mjs",
     "test:senaryo-212": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-212.mjs",
     "test:senaryo-213": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-213.mjs",
+    "test:senaryo-whatsapp": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-whatsapp.mjs",
     "test:mutabakat": "node --disable-warning=ExperimentalWarning test/mutabakat/kos.mjs",
     "mutabakat": "node --disable-warning=ExperimentalWarning tools/mutabakat.mjs",
     "check": "node tools/check-syntax.mjs",

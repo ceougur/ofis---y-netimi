@@ -180,3 +180,48 @@ describe("dört çekirdekte tarih, dönem kilidi ve iade sınırı (API)", () =>
     store.db.prepare("DELETE FROM cash_entries WHERE id = 'eski-bozuk'").run();
   });
 });
+
+describe("eksi bakiye denetimi: Nakit, Banka, Kredi Kartı için Kontrol Yok / Uyar / Engelle", () => {
+  let server;
+  let admin;
+  before(async () => {
+    server = await startTestServer();
+    admin = await loginAdmin(server);
+    data(await admin.post("/api/workspace/cash", { kind: "in", amount: "1.000", method: "cash", description: "Nakit açılış" }), "nakit");
+    data(await admin.post("/api/workspace/cash", { kind: "in", amount: "500", method: "bank", description: "Banka açılış" }), "banka");
+  });
+  after(async () => server?.close());
+  const out = (method, amount, extra = {}) => admin.post("/api/workspace/cash", { kind: "out", amount, method, description: `${method} çıkış`, ...extra });
+
+  it("varsayılan: üç yolda da Uyar; banka ve kredi kartı da artık uyarısız eksiye düşmez", async () => {
+    assert.deepEqual(data(await admin.get("/api/admin/negative-policy"), "ayar"), { cash: "warn", bank: "warn", card: "warn" });
+    const bank = await out("bank", "600");
+    rejected(bank, 409, "cash-negative", "banka eksiye");
+    assert.equal(bank.data.method, "bank");
+    assert.match(bank.data.error, /Banka hesabında \(Havale \/ EFT\) 500,00 TL var/);
+    rejected(await out("card", "1"), 409, "cash-negative", "kredi kartı eksiye");
+    data(await out("bank", "600", { cashForce: true }), "onaylı banka çıkışı");
+  });
+
+  it("Engelle: onayla da yazılmaz; Kontrol Yok: sormaz; yetkisiz kullanıcı ayarı değiştiremez", async () => {
+    const personel = await createUser(server, admin, { username: "eksici" });
+    assert.equal((await personel.put("/api/admin/negative-policy", { card: "off" })).status, 403);
+    rejected(await admin.put("/api/admin/negative-policy", { card: "belki" }), 400, undefined, "geçersiz değer");
+    data(await admin.put("/api/admin/negative-policy", { cash: "block", card: "off" }), "ayar");
+    rejected(await out("cash", "1.500", { cashForce: true }), 409, "cash-blocked", "nakit engelli");
+    data(await out("card", "50"), "kontrol yok: kart eksiye düşebilir");
+    data(await out("cash", "999"), "bakiye yetiyorsa engel yok");
+    data(await admin.put("/api/admin/negative-policy", { cash: "warn", card: "warn" }), "geri al");
+  });
+
+  it("düzeltmede yol değişirse azalan hesap denetlenir (nakitten bankaya taşınan tahsilat)", async () => {
+    const entry = data(await admin.post("/api/workspace/cash", { kind: "in", amount: "300", method: "cash", description: "Taşınacak tahsilat" }), "tahsilat");
+    data(await admin.post("/api/workspace/cash", { kind: "out", amount: "250", method: "cash", description: "Harcama" }), "harcama");
+    const id = entry.id ?? server.app.store.get("SELECT id FROM cash_entries WHERE description = 'Taşınacak tahsilat'").id;
+    const moved = await admin.put(`/api/workspace/cash/${id}`, { kind: "in", amount: "300", method: "bank", description: "Taşınacak tahsilat" });
+    rejected(moved, 409, "cash-negative", "nakit azalır");
+    assert.equal(moved.data.method, "cash");
+    const result = data(await admin.get("/api/workspace/ledger/integrity"), "mutabakat");
+    assert.equal(result.ok, true, JSON.stringify(result.failures));
+  });
+});

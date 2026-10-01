@@ -370,7 +370,7 @@ describe("tablodan taksit kartına aktarma (iş akışı)", () => {
 
   it("geri alma: karta işlem yapıldıysa durur; işlem kaldırılınca her şey aktarım öncesine döner", async () => {
     const [plan] = await planOfCase(keyOf("Ali Veli", "0532 999 88 77"));
-    const paid = await post(`/api/workspace/plans/${plan.id}/entries`, { kind: "in", amount: "1.000", date: iso(0, 2) });
+    const paid = await post(`/api/workspace/plans/${plan.id}/entries`, { kind: "in", amount: "1.000", date: iso(0, 1) }); // bu ayın 1'i: ileri tarih olmasın (v2.0.13)
     assert.equal(paid.status, 200);
     const blocked = await post(`/api/workspace/plans/imports/${importId}/undo`, {});
     assert.equal(blocked.status, 409);

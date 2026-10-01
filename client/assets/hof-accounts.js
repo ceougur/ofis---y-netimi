@@ -68,7 +68,7 @@
   };
 
   let modal = null;
-  const view = { mode: "list", id: "", q: "", type: "", group: "", subgroup: "", status: "active", balance: "all", sort: stored(SORT_KEY, "no"), ledgerFilter: "all", list: null, account: null, selected: new Set(), selectAll: false, limit: 300 };
+  const view = { mode: "list", id: "", q: "", type: "", group: "", subgroup: "", status: "active", balance: "all", sort: stored(SORT_KEY, "no"), ledgerFilter: "all", list: null, account: null, selected: new Set(), selectAll: false, excluded: new Set(), limit: 300 };
   // Binlerce caride ekran hızlı kalsın: sunucu 300'er satır gönderir ("Daha fazla göster" sonrakini ekler); arama, süzgeç
   // ve toplamlar sunucuda tümü üzerinde çalışır. "Hepsini seç" süzgeçteki bütün carileri (yüklenmemişler dahil) seçer.
   const PAGE = 300;
@@ -93,6 +93,7 @@
         const visible = new Set(view.list.accounts.map(item => item.id));
         for (const id of [...view.selected]) if (!visible.has(id)) view.selected.delete(id);
         view.selectAll = false;
+        view.excluded.clear();
       }
       if (view.mode === "list") renderList();
     } catch (error) {
@@ -170,8 +171,17 @@
     return `<select data-filter="group" aria-label="Grup"><option value="">Tüm Gruplar</option>${groups.map(item => `<option value="${esc(item.id)}" ${item.id === view.group ? "selected" : ""}>${esc(item.name)} (${item.count})</option>`).join("")}</select>
       <select data-filter="subgroup" aria-label="Alt grup" ${subs.length ? "" : "disabled"}><option value="">${subs.length ? "Tüm Alt Gruplar" : "Alt Grup"}</option>${subs.map(item => `<option value="${esc(item.id)}" ${item.id === view.subgroup ? "selected" : ""}>${esc(item.name)} (${item.count})</option>`).join("")}</select>`;
   };
+  // Seçim: tek tek işaretlenenler (selected) ya da "süzgeçteki hepsi" (selectAll) eksi işareti kaldırılanlar (excluded).
+  const selectedCount = () => (view.selectAll ? Math.max(0, (view.list?.total || 0) - view.excluded.size) : view.selected.size);
+  const isSelected = id => (view.selectAll ? !view.excluded.has(id) : view.selected.has(id));
+  const allSelection = () => ({ all: true, ...filterBody(), ...(view.excluded.size ? { except: [...view.excluded] } : {}) });
+  const clearSelection = () => {
+    view.selected.clear();
+    view.excluded.clear();
+    view.selectAll = false;
+  };
   const selectBar = () => {
-    const count = view.selectAll ? view.list?.total || 0 : view.selected.size;
+    const count = selectedCount();
     const total = view.list?.total ?? view.list?.accounts?.length ?? 0;
     const wa = HOF.whatsapp
       ? count
@@ -181,12 +191,12 @@
           : ""
       : "";
     const hint = canPlan() ? "Toplu taksit ya da WhatsApp için soldaki kutulardan carileri seçin; başlıktaki kutu süzgeçteki carilerin hepsini seçer (ör. önce grup ya da okul seçin)." : "WhatsApp ile toplu gönderim için soldaki kutulardan carileri seçin ya da süzgeçteki hepsine gönderin.";
-    return `<div class="hof-acc-selbar${count ? " is-active" : ""}" data-selbar><span>${count ? `<b>${count}</b> cari seçildi${view.selectAll ? " (süzgeçteki hepsi)" : ""}` : hint}</span>${count && canPlan() ? '<button type="button" class="hof-button hof-button-small" data-act="bulkPlan">Seçilenlere Taksit Planı</button>' : ""}${wa}${count ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="clearSel">Seçimi Temizle</button>' : ""}</div>`;
+    return `<div class="hof-acc-selbar${count ? " is-active" : ""}" data-selbar><span>${count ? `<b>${count.toLocaleString("tr-TR")}</b> cari seçildi${view.selectAll ? (view.excluded.size ? ` (süzgeçteki hepsi, ${view.excluded.size.toLocaleString("tr-TR")} hariç)` : " (süzgeçteki hepsi)") : ""}` : hint}</span>${count && canPlan() ? '<button type="button" class="hof-button hof-button-small" data-act="bulkPlan">Seçilenlere Taksit Planı</button>' : ""}${wa}${count ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="clearSel">Seçimi Temizle</button>' : ""}</div>`;
   };
   // WhatsApp toplu gönderim: seçim varsa seçilenler, yoksa süzgeçteki carilerin hepsi.
   function bulkWhatsapp(kind) {
-    const count = view.selectAll ? view.list?.total || 0 : view.selected.size;
-    const selection = count && !view.selectAll ? { ids: [...view.selected] } : { all: true, ...filterBody() };
+    const count = selectedCount();
+    const selection = count && !view.selectAll ? { ids: [...view.selected] } : view.selectAll ? allSelection() : { all: true, ...filterBody() };
     const total = count || view.list?.total || 0;
     HOF.whatsapp?.open({
       kind,
@@ -194,8 +204,7 @@
       title: `${total.toLocaleString("tr-TR")} Cari`,
       // Gönderim bitince seçim temizlenir (toplu taksitteki gibi); pencere yeniden açıldığında eski seçim kalmaz.
       onDone: () => {
-        view.selected.clear();
-        view.selectAll = false;
+        clearSelection();
         if (view.mode === "list") renderList();
       },
     });
@@ -212,9 +221,9 @@
       const next = item.next ? `<small class="${item.next.days < 0 ? "is-warn" : ""}">${esc(HOF.formatDate(item.next.dueDate))} · ${item.next.days < 0 ? `${Math.abs(item.next.days)} gün gecikti` : "sıradaki taksit"}</small>` : "";
       const plansCell = item.activePlans ? `<b>${esc(money(item.planRemaining))}</b><small>${item.activePlans} kart${item.overdueCount ? ` · <span class="is-warn">${item.overdueCount} geciken</span>` : ""}</small>${next}` : '<small class="hof-muted">—</small>';
       const extra = item.extra?.length ? `<small class="hof-acc-extra">${item.extra.map(field => `${esc(field.label)}: ${esc(field.value)}`).join(" · ")}</small>` : "";
-      return `<tr data-account="${esc(item.id)}" class="${item.status === "passive" ? "is-passive" : ""}" tabindex="0">${planning ? `<td class="hof-acc-check"><input type="checkbox" data-select="${esc(item.id)}" aria-label="${esc(item.name)} seç" ${view.selected.has(item.id) ? "checked" : ""}></td>` : ""}<td class="hof-plan-no">${esc(item.refNo)}</td><td><b>${esc(item.name)}</b> ${item.type !== "customer" ? typeBadge(item.type) : ""}${item.status === "passive" ? badgeMuted("Pasif") : ""}<small>${esc(whereText(item) || "Grupsuz")}${item.phone ? ` · ${esc(item.phone)}` : ""}${item.caseKey ? " · tabloda kayıtlı" : ""}</small>${extra}</td><td class="num">${amountCell(item.debit)}</td><td class="num">${amountCell(item.credit, "hof-cash-in")}</td><td class="num">${balanceHtml(item.balance)}</td><td>${plansCell}</td></tr>`;
+      return `<tr data-account="${esc(item.id)}" class="${item.status === "passive" ? "is-passive" : ""}" tabindex="0">${planning ? `<td class="hof-acc-check"><input type="checkbox" data-select="${esc(item.id)}" aria-label="${esc(item.name)} seç" ${isSelected(item.id) ? "checked" : ""}></td>` : ""}<td class="hof-plan-no">${esc(item.refNo)}</td><td><b>${esc(item.name)}</b> ${item.type !== "customer" ? typeBadge(item.type) : ""}${item.status === "passive" ? badgeMuted("Pasif") : ""}<small>${esc(whereText(item) || "Grupsuz")}${item.phone ? ` · ${esc(item.phone)}` : ""}${item.caseKey ? " · tabloda kayıtlı" : ""}</small>${extra}</td><td class="num">${amountCell(item.debit)}</td><td class="num">${amountCell(item.credit, "hof-cash-in")}</td><td class="num">${balanceHtml(item.balance)}</td><td>${plansCell}</td></tr>`;
     };
-    const allChecked = view.selectAll || (data && data.accounts.length && data.accounts.every(item => view.selected.has(item.id)));
+    const allChecked = (view.selectAll && !view.excluded.size) || (!view.selectAll && data && data.accounts.length && data.accounts.every(item => view.selected.has(item.id)));
     const total = data?.total ?? data?.accounts.length ?? 0;
     root.innerHTML = `<div class="hof-cash-bar"><div class="hof-tabs" role="group" aria-label="Durum">${STATUS_TABS.map(item => `<button type="button" data-status="${item.id}" aria-pressed="${String(item.id === view.status)}">${item.label}</button>`).join("")}</div>
       <div class="hof-cash-add">${manage ? `<button type="button" class="hof-button hof-button-small" data-act="new">+ Yeni Cari</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="import" title="Excel dosyasından ya da Google Sheets’ten carileri tek seferde aç (taksit sorulmaz)">Excel / Sheets’ten Yükle</button>${tableRows ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="fromTable" title="Ortadaki tablonun açık sekmesindeki kişileri cari yap; her cari kendi kaydına bağlanır">Tablodan Al</button>' : ""}` : ""}</div></div>
@@ -699,16 +708,15 @@
   }
   function bulkPlan() {
     const all = view.selectAll;
-    const count = all ? view.list?.total || 0 : view.selected.size;
-    const names = view.list.accounts.filter(item => all || view.selected.has(item.id)).map(item => item.name);
+    const count = selectedCount();
+    const names = view.list.accounts.filter(item => isSelected(item.id)).map(item => item.name);
     bulkPlanForm({
-      selection: all ? { all: true, ...filterBody() } : { ids: [...view.selected] },
+      selection: all ? allSelection() : { ids: [...view.selected] },
       count,
       names,
       fieldLabels: view.list?.fieldLabels || [],
       onDone: () => {
-        view.selected.clear();
-        view.selectAll = false;
+        clearSelection();
         loadList();
       },
     });
@@ -827,11 +835,13 @@
     if (check) {
       if (check.dataset.selectAll !== undefined) {
         view.selectAll = check.checked && Boolean(view.list?.hasMore);
+        view.excluded.clear();
         for (const item of view.list?.accounts || []) check.checked ? view.selected.add(item.id) : view.selected.delete(item.id);
         return renderList();
       }
-      view.selectAll = false;
-      check.checked ? view.selected.add(check.dataset.select) : view.selected.delete(check.dataset.select);
+      // "Hepsi" seçiliyken tek kişinin işareti kaldırılırsa seçim hepsi eksi o kişi olur (yalnız ekrandakilere inmez).
+      if (view.selectAll) check.checked ? view.excluded.delete(check.dataset.select) : view.excluded.add(check.dataset.select);
+      else check.checked ? view.selected.add(check.dataset.select) : view.selected.delete(check.dataset.select);
       const bar = body()?.querySelector("[data-selbar]");
       if (bar) bar.outerHTML = selectBar();
       return;
@@ -879,8 +889,7 @@
     if (act === "waMessage") return bulkWhatsapp("message");
     if (act === "more") return loadList({ more: true });
     if (act === "clearSel") {
-      view.selected.clear();
-      view.selectAll = false;
+      clearSelection();
       return renderList();
     }
     if (!account) return;
