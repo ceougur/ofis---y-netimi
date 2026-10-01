@@ -53,7 +53,14 @@ Bu dosya oturumlar arasında taşınan hafızadır. Her oturumun başında okunu
   (Nakit/Banka/Kredi Kartı: Uyar/Engelle/Kontrol Yok — kullanıcı onayı 01.10.2026), hepsini seç + hariç tut. Holding stres
   simülasyonu kullanıcı kararıyla iptal. Doğrulama: `npm test`, `npm run test:mutabakat`, `npm run mutabakat`,
   `npm run test:senaryo-whatsapp` (1.000 cari). Senaryolar tarihe bağlı yazılmasın (ayın 1'inde kırılanlar düzeltildi).
-- 2.0.14 (dal `claude/nice-euler-jvajxv`, paket/yayın yok): Tablodan Aktar geri alma damga düzeltmesi (iki ayrı now() →
-  tek damga; CI Windows hücresinde aralıklı düşen `plan-transfer.test.mjs:371`'in kök nedeni). Yayın kararı kullanıcıda.
+- 2.0.14 listesi (dal `claude/nice-euler-jvajxv`, paket/yayın yok; kullanıcı maddeleri biriktiriyor, hepsi birlikte
+  yapılacak — 01.10.2026):
+  1. YAPILDI (09c720f): Tablodan Aktar geri alma damga düzeltmesi — plans/plan_items `created_at`/`updated_at` iki ayrı
+     now() yerine tek damga; CI Windows/Node 22 hücresinde aralıklı düşen `plan-transfer.test.mjs:371`'in kök nedeni.
+  2. WhatsApp gönderim sırası (müşteri: "Enter'a basmıyor, tek tek Gönder gerekiyor"): WhatsApp'ta Gönder'e basıp
+     pencere odağı programa dönünce sıradaki kişi kendiliğinden açılır; ekstre gönderiminde PDF kişinin adıyla otomatik
+     indirilir. Enter yine kullanıcıda (wa.me yalnız metin hazırlar; otomatik gönderim ve PDF eki ancak Meta WhatsApp
+     Business API ile — ayrı Pro özelliği olarak tasarlanacak; resmî olmayan otomasyon numara kapatır, yapılmaz).
+  3. (kullanıcı ekleyecek)
 - Pro — uzaktan görüntüleme: `docs/PRO-UZAKTAN-GORUNTULEME.md` (önce en alttaki "Oturum devri"); genel durum
   `docs/DURUM-VE-DEVAM.md`.
