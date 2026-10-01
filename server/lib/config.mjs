@@ -55,6 +55,10 @@ export function loadConfig(overrides = {}) {
     // Lisans servisi adresleri (virgülle birden çok). Yanıtlar imzalı olduğundan adres değişikliği güveni zayıflatmaz.
     licenseServices: (overrides.licenseServices ?? env.HUKUK_LICENSE_URL ?? DEFAULT_LICENSE_SERVICES.join(",")).toString(),
     fetchImpl: overrides.fetchImpl || ((...args) => globalThis.fetch(...args)),
+    // e-Belge (e-Fatura / e-Arşiv / entegratör) bağlantısı — program sahibinin kararıyla KAPALI (01.10.2026: "sana entegre
+    // et diyene kadar"). Kapalıyken fatura modülü tam çalışır; belge resmî hükmü olmayan müşteri fişi olarak basılır,
+    // e-Belge seçenekleri ekranda görünmez. Yalnız testler (overrides.edocEnabled) açabilir; ortam değişkeniyle açılmaz.
+    edocEnabled: overrides.edocEnabled === true,
     scheduleBackups: overrides.scheduleBackups ?? true,
   });
 }

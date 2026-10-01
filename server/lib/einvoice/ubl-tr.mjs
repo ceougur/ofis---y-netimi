@@ -134,6 +134,14 @@ export function buildUbl(doc, { variant = "tr" } = {}) {
     doc.orderNo ? `<cac:OrderReference>${tag("cbc:ID", doc.orderNo)}${variant === "peppol" ? "" : tag("cbc:IssueDate", doc.orderDate || doc.issueDate)}</cac:OrderReference>` : "",
     doc.originalNumber ? `<cac:BillingReference><cac:InvoiceDocumentReference>${tag("cbc:ID", doc.originalNumber)}${tag("cbc:IssueDate", doc.originalDate || "")}</cac:InvoiceDocumentReference></cac:BillingReference>` : "",
     doc.despatchNo ? `<cac:DespatchDocumentReference>${tag("cbc:ID", doc.despatchNo)}${variant === "peppol" ? "" : tag("cbc:IssueDate", doc.despatchDate || doc.issueDate)}</cac:DespatchDocumentReference>` : "",
+    // e-Arşiv gönderim şekli (GİB e-Arşiv kılavuzu): alıcının e-postası varsa ELEKTRONIK (entegratör e-postayla iletir),
+    // yoksa KAGIT (çıktısı verilir).
+    variant !== "peppol" && doc.profile === "EARSIVFATURA" ? `<cac:AdditionalDocumentReference>${tag("cbc:ID", buyer?.email ? "ELEKTRONIK" : "KAGIT")}${tag("cbc:IssueDate", doc.issueDate)}${tag("cbc:DocumentTypeCode", "SendingType")}${tag("cbc:DocumentType", buyer?.email ? "ELEKTRONIK" : "KAGIT")}</cac:AdditionalDocumentReference>` : "",
+    // İmzalayan taraf (UBL-TR'de zorunlu cac:Signature): belgeyi entegratör mali mühürle imzalar; burada imzanın kime ait
+    // olduğu ve imzanın yeri (#Signature) bildirilir.
+    variant !== "peppol" && seller?.taxNo
+      ? `<cac:Signature>${`<cbc:ID schemeID="VKN_TCKN">${escape(seller.taxNo)}</cbc:ID>`}<cac:SignatoryParty><cac:PartyIdentification><cbc:ID schemeID="${String(seller.taxNo).length === 11 ? "TCKN" : "VKN"}">${escape(seller.taxNo)}</cbc:ID></cac:PartyIdentification><cac:PostalAddress>${tag("cbc:StreetName", seller.address)}${tag("cbc:CitySubdivisionName", seller.district)}${tag("cbc:CityName", seller.city)}${tag("cbc:PostalZone", seller.postalCode)}<cac:Country>${tag("cbc:Name", seller.country || "Türkiye")}</cac:Country></cac:PostalAddress></cac:SignatoryParty><cac:DigitalSignatureAttachment><cac:ExternalReference>${tag("cbc:URI", `#Signature_${doc.number}`)}</cac:ExternalReference></cac:DigitalSignatureAttachment></cac:Signature>`
+      : "",
   ];
   const bank = (doc.seller?.banks || []).find(item => item.iban);
   const payment = bank || doc.dueDate ? `<cac:PaymentMeans>${tag("cbc:PaymentMeansCode", bank ? (variant === "peppol" ? "58" : "42") : "1")}${variant === "peppol" ? "" : tag("cbc:PaymentDueDate", doc.dueDate || doc.issueDate)}${bank ? `<cac:PayeeFinancialAccount>${tag("cbc:ID", bank.iban)}${variant === "peppol" ? "" : tag("cbc:CurrencyCode", currency)}</cac:PayeeFinancialAccount>` : ""}</cac:PaymentMeans>` : "";

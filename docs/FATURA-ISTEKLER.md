@@ -13,7 +13,7 @@ Durum: ☐ yapılmadı · ◐ sürüyor · ☑ tamam (kanıt yazılı)
 | 2 | Soldaki sabit menüye "Fatura" menüsü | ☐ | |
 | 3 | Satış/alış faturası: stok miktarı ve maliyeti, cari borç/alacak, vadeli/taksitli → Taksit; hepsi tek atomik işlem (BEGIN IMMEDIATE/COMMIT/ROLLBACK) | ◐ | |
 | 4 | GİB UBL-TR XML; KDV %1/%10/%20; tevkifat; KDV dahil/hariç; kuruş hassasiyeti; e-Arşiv / e-Fatura (Temel/Ticari); VKN/TCKN/MERSİS/adres/tüzel-gerçek doğrulaması | ◐ | `server/lib/invoice-math.mjs`, `server/lib/tax-id.mjs` |
-| 5 | Entegratör Adaptör Katmanı (Logo, İzibiz, Digital Planet, QNB e-Finans, GİB) + PEPPOL/UBL | ☐ | |
+| 5 | Entegratör Adaptör Katmanı (Logo, İzibiz, Digital Planet, QNB e-Finans, GİB) + PEPPOL/UBL | ◐ | Tek arayüz (`server/lib/einvoice/adapters.mjs`); kullanıcı kararıyla şimdilik yalnız EDM Bilişim (istek 33); PEPPOL çıktısı `buildUbl(…, { variant: "peppol" })` |
 | 6 | Fatura tarihi kilitli döneme ve yanlış zaman aralığına girmez; cari/stok kilitleri denetlenir | ☐ | |
 | 7 | Kesme / iptal / iade sonrası Kasa, Stok, Cari, Taksit (ve Çek/Senet) ↔ Ana Defter mutabakatı | ◐ | `server/lib/integrity.mjs` fatura denetimleri |
 | 8 | Cari kartının üstünde "Alış Faturası" ve "Satış Faturası" pilleri; tıklayınca ilgili yere gider | ☐ | |
@@ -32,6 +32,15 @@ Durum: ☐ yapılmadı · ◐ sürüyor · ☑ tamam (kanıt yazılı)
 | 21 | Belirtilmeyen ama fatura modülünde olması gereken her şey | ◐ | Aşağıdaki "Benim eklediklerim" |
 | 22 | Hizmet faturası, stoktan satış… tüm sektörlere; hem alış hem satış; kullanıcı en başta seçip ilerler; daha iyi alternatif varsa o | ◐ | Senaryolar (`SCENARIOS`) |
 | 23 | İstekleri yeniden gözden geçir, eksik kalmasın | ◐ | Bu liste |
+| 25 | Entegratör: müşteri entegratörle (Logo, İzibiz, Digital Planet, QNB e-Finans…) kendi sözleşir, kontörü kendisi alır; programa API kullanıcı bilgilerini girip kaydeder; program e-Fatura/e-Arşiv'i doğrudan entegratöre gönderir, durumunu sorgular, gelen faturaları çeker (biz aracı değiliz) | ◐ | |
+| 26 | Kesilen, alınan, iptal edilen (ve taslak, iade) faturaları görüntüleme | ◐ | Fatura ekranı sekmeleri |
+| 27 | Müşteri isterse e-Fatura isterse e-Arşiv kesebilmeli | ◐ | Belge türü seçilir; GİB kuralına aykırı seçim nedeniyle engellenir (`allowedProfiles`) — bağlantı açılınca görünür |
+| 28 | Vergi dairesiyle henüz entegre etme; "entegre et" diyene kadar resmî hükmü olmayan müşteri fişi | ◐ | `config.edocEnabled` false; PDF başlığı "Müşteri Fişi" + "resmî fatura yerine geçmez" |
+| 29 | Entegratör ayarlarına devam et, her şey hazır olsun (kapalı dursun) | ◐ | |
+| 30 | Özellikle EDM Bilişim entegratörünü kusursuz hazırla (kullanıcı onunla çalışmayı düşünüyor) | ◐ | `server/lib/einvoice/edm.mjs`, `soap-contract.mjs`; `test/einvoice-edm.test.mjs` (19 test, sahte EDM sunucusu) |
+| 33 | Entegratör şimdilik yalnız EDM Bilişim; anlaşılamazsa anlaşılan entegratöre göre yapılır | ☑ | `ADAPTERS = { edm }`; İzibiz istemcisi 167eefa'da arşivde |
+| 31 | Modül bitince yalnız proje sahibine özel, deneyimsiz birinin anlayacağı dilde ayrıntılı kullanım kılavuzu; entegrasyonun nasıl yapılacağına kadar | ☐ | Müşteri kılavuzuna girmez; `docs/` altında ve PDF |
+| 32 | Ana teste başlamadan önce: en güncel resmî ve resmî olmayan, en çok önerilen kaynaklardan "fatura modülünde neler olmalı, nasıl çalışır, arayüz, mantık" araştırması; yaptığım modülle karşılaştırma; gerekenleri yap/düzelt; testlere öyle başla | ☐ | `docs/FATURA-KARSILASTIRMA.md` |
 | 24 | Gerçek anlamda test (süslü söz değil): `motor.mjs` — otonom, acımasız test motoru | ☐ | |
 | 24a | Differential testing: bağımsız (harici kurallarla yazılmış) model binlerce rastgele işlem üretir (fatura, tahsilat, ödeme, çek giriş/çıkış, iade, düzeltme, silme); her adımda SQLite / Ana Defter çıktısı modelle kuruşu kuruşuna karşılaştırılır; ilk sapmada durur | ☐ | |
 | 24b | Atomiklik ve ROLLBACK: zincirin bir adımında kasıtlı hata (stok yetersiz, Kasa eksi yasağı, çek doğrulama hatası); hiçbir yarım kayıt kalmaz; Kasa, Cari, Stok, Taksit, Çek/Senet tabloları işlem öncesine birebir döner | ☐ | |
@@ -76,4 +85,23 @@ Durum: ☐ yapılmadı · ◐ sürüyor · ☑ tamam (kanıt yazılı)
 
 ## Kararlar (sorulacak yerde verdiğim karar)
 
-Teslimde maddeler halinde yazılır.
+Teslimde maddeler halinde yazılır. Şimdiye kadar:
+
+- EDM sözleşmesi ezberlenmez: program ilk bağlantıda EDM sunucusunun WSDL'ini (`?singleWsdl`) okur; SOAPAction, ad
+  alanı, SOAP sürümü ve alan sırası oradan gelir. Sözleşmede olmayan zorunlu alan varsa istek hiç gönderilmez, hangi
+  alan olduğu söylenir. WSDL alınamazsa i2i varsayılanıyla çalışılır. (Neden: EDM belge sitesi bu ortamdan erişilemedi;
+  canlı adres ve SOAPAction kesin bilinmiyor — tahminle göndermek yerine sunucunun kendi sözleşmesi esas.)
+- EDM'de Logout çağrılmaz: EDM belgesine göre Logout aynı kullanıcının başka yerlerdeki oturumlarını da kapatır. Oturum
+  bellekte tutulur; "Aktif session bulunamadı" (10011) gelince bir kez yeniden giriş yapılıp istek tekrarlanır.
+- e-Fatura ve e-Arşiv aynı SendInvoice ile gider (EDM belge türünü UBL ProfileID'den anlar); sözleşmede
+  INVOICE/HEADER/EARCHIVE varsa işaret konur. e-Arşivde UBL'e GİB "gönderim şekli" (SendingType: ELEKTRONIK/KAGIT) yazılır.
+- UBL'e `cac:Signature` (imzalayan taraf) eklenir; imzayı EDM mali mühürle atar, program imza anahtarı tutmaz.
+- Entegratör parolası veritabanında AES-256-GCM ile şifreli; anahtar veri klasöründe ayrı dosyada, yedeğe girmez.
+  Ekrana ve günlüğe parola çıkmaz.
+- Gönderimde EDM reddederse durum "Hata" olur (düzeltilip yeniden gönderilir); bağlantı koparsa durum değişmez (aynı ETTN
+  ikinci kez kabul edilmez; önce Durum Sorgula). Aynı belgeye eşzamanlı iki gönderim engellenir.
+- e-Arşiv iptali: önce programdaki iptal denenir ve geri alınır (iade, kilitli dönem, tahsil edilmiş çek, stok…), geçerse
+  EDM'de iptal edilir, sonra programda. Gönderilmiş e-Fatura entegratörden iptal edilmez (alıcı reddi / iade faturası).
+- Gelen e-Fatura: çekilenler okundu işaretlenir; "Alış Faturası Olarak Al" taslak açar (cari VKN ile bulunur ya da
+  açılır, kalemler stok kartına kod ya da adla eşlenir, toplam belgeyle karşılaştırılır). Taslak silinirse belge yeniden
+  "Yeni" olur.

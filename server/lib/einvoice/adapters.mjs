@@ -1,49 +1,79 @@
-// Entegratör Adaptör Katmanı (v2.0.15). Fatura modülü e-Belgeyi tek bir arayüzle gönderir:
-//   send({ invoice, xml, settings }) → { status: 'exported' | 'sent' | 'accepted' | 'rejected' | 'error', message, reference? }
-//   status(...) / cancel(...)        → entegratör bağlantısı kurulduğunda aynı biçimde.
-// Her entegratör (özel entegratör, GİB portalı, PEPPOL erişim noktası) bu arayüzün bir uygulamasıdır; fatura kodu
-// entegratöre göre değişmez. Bağlantı bilgileri (kullanıcı, parola, uç nokta) entegratörle yapılan sözleşmeyle gelir ve
-// programın dosyalarına, paketine yazılmaz.
+// Entegratör Adaptör Katmanı (v2.0.15). Fatura modülü e-Belgeyi tek bir arayüzle gönderir; entegratör değişince fatura
+// kodu değişmez. Müşteri entegratörle (özel entegratör) kendisi sözleşir, kontörü kendisi alır ve entegratörün verdiği
+// web servis kullanıcı bilgilerini Fatura Ayarları'na girer; program doğrudan entegratörle konuşur (aracı yok).
 //
-// Bu sürümde çalışan yol "Dosya": UBL-TR XML'i üretilir; kullanıcı GİB portalına ya da entegratörünün web portalına
-// yükler, sonucu programda işler (Gönderildi / Kabul / Ret). Diğer adaptörler kayıtlıdır ama bağlantıları kurulmamıştır:
-// gönderme denendiğinde ne yapılması gerektiğini söyleyen anlaşılır bir hata döner (uydurma bir API çağrısı yapılmaz).
+// Kullanıcı kararı (01.10.2026): entegratör şimdilik yalnız EDM Bilişim. Başka bir entegratörle anlaşılırsa aynı arayüzle
+// eklenir (İzibiz istemcisi git geçmişinde: 167eefa server/lib/einvoice/izibiz.mjs).
+//
+// Ortak arayüz:
+//   test()                                  → bağlantı, giriş ve servis sözleşmesi raporu
+//   checkUser(taxNo)                        → { registered, title, aliases[] }  (GİB e-Fatura kullanıcı listesi)
+//   send({ invoice, xml })                  → { status: 'sent', message, reference }
+//   status({ invoice })                     → { status: 'processing'|'sent'|'accepted'|'rejected'|'error'|'cancelled', message }
+//   cancel({ invoice })                     → e-Arşiv iptali (e-Fatura entegratörden iptal edilmez)
+//   inbox({ from, to })                     → gelen e-Faturalar [{ uuid, number, senderVkn, senderName, issueDate, payable, currency, xml }]
+//   markRead(uuids)
 import { HttpError } from "../http.mjs";
+import { EDM_URLS, createEdmClient } from "./edm.mjs";
+import { IntegratorError } from "./integrator-error.mjs";
 
 export const ADAPTERS = Object.freeze({
-  file: { label: "Dosya (Portala ya da Entegratöre Elle Yükleme)", protocol: "file", connected: true, profiles: ["EARSIVFATURA", "TEMELFATURA", "TICARIFATURA"] },
-  gib: { label: "GİB e-Arşiv / e-Fatura Portalı", protocol: "portal", connected: false, profiles: ["EARSIVFATURA", "TEMELFATURA", "TICARIFATURA"] },
-  logo: { label: "Logo (eLogo)", protocol: "soap", connected: false, profiles: ["EARSIVFATURA", "TEMELFATURA", "TICARIFATURA"] },
-  izibiz: { label: "İzibiz", protocol: "soap", connected: false, profiles: ["EARSIVFATURA", "TEMELFATURA", "TICARIFATURA"] },
-  digitalplanet: { label: "Digital Planet", protocol: "soap", connected: false, profiles: ["EARSIVFATURA", "TEMELFATURA", "TICARIFATURA"] },
-  qnb: { label: "QNB e-Finans", protocol: "soap", connected: false, profiles: ["EARSIVFATURA", "TEMELFATURA", "TICARIFATURA"] },
-  peppol: { label: "PEPPOL Erişim Noktası (Yurt Dışı)", protocol: "as4", connected: false, profiles: ["EARSIVFATURA", "TEMELFATURA", "TICARIFATURA"] },
+  edm: { label: "EDM Bilişim", protocol: "soap", implemented: true, urls: EDM_URLS },
 });
+export const DEFAULT_ADAPTER = "edm";
 
 export const adapterInfo = (id, adapter = ADAPTERS[id]) => ({
   id,
   label: adapter.label,
   protocol: adapter.protocol,
-  connected: adapter.connected,
-  note: adapter.connected
-    ? "XML'i indirip GİB portalına ya da entegratörünüzün web portalına yükleyin; sonucu faturada işleyin."
-    : "Bağlantı, entegratörünüzle sözleşme yapıldığında verilen API bilgileriyle kurulur. O zamana kadar XML'i indirip portala yükleyin.",
+  implemented: adapter.implemented,
+  urls: adapter.urls,
+  note: "EDM Bilişim'in verdiği web servis kullanıcı adı ve parolasını girin; önce Test ortamında Bağlantıyı Sına ile deneyin.",
 });
 
-const HANDLERS = {
-  file: async ({ invoice }) => ({
-    status: "exported",
-    message: `${invoice.number} için UBL-TR XML hazır. İndirip ${invoice.profile === "EARSIVFATURA" ? "e-Arşiv" : "e-Fatura"} portalına ya da entegratörünüzün portalına yükleyin; sonucu "Gönderildi" olarak işleyin.`,
-  }),
+const toHttp = error => {
+  if (error instanceof IntegratorError) return new HttpError(error.status || 502, error.message, { code: error.code, detail: error.detail, integratorCode: error.integratorCode });
+  return error;
 };
 
-/** Seçili adaptörle gönderir. Bağlantısı kurulmamış adaptörde 501 (ne yapılacağını söyleyen mesaj). */
-export async function sendWith(id, context) {
+export const integratorUrl = integrator => String(integrator?.baseUrl || "").trim() || (integrator?.env === "live" ? EDM_URLS.live : EDM_URLS.test);
+
+/**
+ * @param {{ integrator: { id, env, baseUrl, username, password, senderAlias }, seller, fetchImpl }} options
+ */
+export function connect({ integrator, seller = {}, fetchImpl }) {
+  const id = integrator?.id || DEFAULT_ADAPTER;
   const adapter = ADAPTERS[id];
-  if (!adapter) throw new HttpError(400, "Entegratör tanınmadı. Fatura Ayarları'ndan seçin.");
-  const handler = HANDLERS[id];
-  if (!adapter.connected || !handler) {
-    throw new HttpError(501, `${adapter.label} bağlantısı bu kurulumda etkin değil. Entegratörünüzün verdiği API bilgileriyle bağlantı kurulana kadar Fatura Ayarları'nda "Dosya" yolunu seçip XML'i portala yükleyin.`, { code: "adapter-not-connected", adapter: id });
+  if (!adapter) throw new HttpError(400, "Entegratör tanınmadı. Fatura Ayarları'ndan seçin.", { code: "adapter-unknown" });
+  const wrap = fn => async (...args) => {
+    try {
+      return await fn(...args);
+    } catch (error) {
+      throw toHttp(error);
+    }
+  };
+  let client;
+  try {
+    client = createEdmClient({ baseUrl: integratorUrl(integrator), username: integrator?.username, password: integrator?.password, fetchImpl });
+  } catch (error) {
+    throw toHttp(error);
   }
-  return handler(context);
+  const earchive = invoice => invoice.profile === "EARSIVFATURA";
+  return {
+    id,
+    label: adapter.label,
+    contractReport: wrap(() => client.contractReport({ refresh: true })),
+    test: wrap(() => client.test()),
+    checkUser: wrap(taxNo => client.checkUser(taxNo)),
+    send: wrap(({ invoice, xml }) =>
+      client.send({ xml, number: invoice.number, uuid: invoice.ettn, earchive: earchive(invoice), senderVkn: seller.taxNo || "", senderAlias: integrator.senderAlias || "", receiverVkn: invoice.party?.taxNo || "", receiverAlias: invoice.party?.eAlias || "" }),
+    ),
+    status: wrap(({ invoice }) => client.status({ uuid: invoice.ettn, number: invoice.number, earchive: earchive(invoice) })),
+    cancel: wrap(({ invoice }) => {
+      if (!earchive(invoice)) throw new IntegratorError("e-Fatura entegratör üzerinden iptal edilmez: Ticari faturayı alıcı reddedebilir; Temel faturada iade faturası kesilir ya da GİB'in iptal yolu (e-Fatura portalı) kullanılır.", { code: "einvoice-cancel-unsupported", status: 409 });
+      return client.cancelEArchive({ uuid: invoice.ettn, number: invoice.number });
+    }),
+    inbox: wrap(range => client.inbox(range)),
+    markRead: wrap(uuids => client.markRead(uuids)),
+  };
 }

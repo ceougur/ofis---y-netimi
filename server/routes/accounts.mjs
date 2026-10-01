@@ -1041,6 +1041,26 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
       return existing?.accountId || "";
     },
   };
+  // v2.0.15: e-Belge kimliği. Mükellef sorgusundan (entegratör) gelen e-Fatura kullanıcılığı ve posta kutusu etiketi; gelen
+  // e-Faturanın satıcısı için cari: önce VKN/TCKN ile aranır (kişi bir kez girilir), yoksa vergi bilgileriyle açılır.
+  const taxIdentity = {
+    findByTaxNo: taxNo => (taxNo ? store.get("SELECT id FROM accounts WHERE deleted_at IS NULL AND tax_no = ? ORDER BY created_at LIMIT 1", String(taxNo).replace(/\s+/g, ""))?.id || "" : ""),
+    setEInvoice(user, accountId, { registered, alias = "", title = "" }) {
+      const row = accountRow(accountId);
+      store.run("UPDATE accounts SET e_invoice = ?, e_alias = ?, updated_by = ?, updated_at = ? WHERE id = ?", registered ? 1 : 0, registered ? String(alias).slice(0, 160) : "", user.id, now(), row.id);
+      audit(user, "account.einvoice.checked", row.id, { registered, alias, title });
+      touched(user, row);
+      return accountRow(row.id);
+    },
+    createForParty(user, party, type = "supplier") {
+      const existing = taxIdentity.findByTaxNo(party.taxNo);
+      if (existing) return existing;
+      const input = accountInput({ name: party.name || party.taxNo, type, phone: party.phone, email: party.email, address: party.address, taxNo: party.taxNo, taxOffice: party.taxOffice, partyKind: party.partyKind, firstName: party.firstName, familyName: party.familyName, city: party.city, district: party.district, postalCode: party.postalCode, country: party.country, website: party.website, mersisNo: party.mersisNo, tradeRegistry: party.tradeRegistry }, user);
+      const id = insertAccount(user, input);
+      audit(user, "account.created", id, { name: input.name, type, from: "einvoice" });
+      return id;
+    },
+  };
   // v2.0.15: faturadan doğan cari satırları (borç/alacak + varsa peşin tahsilat/ödeme). source = 'invoice', source_id = fatura.
   // Kasa'ya etkisi fatura modülünün kendi kaynağından gelir (routes/invoices.mjs cashSource); cari kartından düzeltilemez.
   const invoiceEntry = {
@@ -1101,5 +1121,5 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     return "Cari hareketi geri eklendi; bakiye ve Kasa yeniden hesaplandı.";
   }
 
-  return { exists, accountRow, createFromPlan, matchPerson, cashEntries, cashSource, stockEntry, invoiceEntry, fingerprint, deletedList, restoreDeleted, restoreEntry, detail, list, allLedgers };
+  return { exists, accountRow, createFromPlan, matchPerson, cashEntries, cashSource, stockEntry, invoiceEntry, taxIdentity, fingerprint, deletedList, restoreDeleted, restoreEntry, detail, list, allLedgers };
 }

@@ -965,6 +965,7 @@ export const MIGRATIONS = [
           order_date TEXT NOT NULL DEFAULT '',
           despatch_no TEXT NOT NULL DEFAULT '',
           despatch_date TEXT NOT NULL DEFAULT '',
+          paper_no TEXT NOT NULL DEFAULT '',
           note TEXT NOT NULL DEFAULT '',
           e_status TEXT NOT NULL DEFAULT 'none',
           e_adapter TEXT NOT NULL DEFAULT '',
@@ -1027,6 +1028,28 @@ export const MIGRATIONS = [
         CREATE INDEX IF NOT EXISTS idx_invoice_lines_item ON invoice_lines(item_id);
         CREATE INDEX IF NOT EXISTS idx_invoice_lines_origin ON invoice_lines(origin_line_id);
         CREATE INDEX IF NOT EXISTS idx_stock_moves_invoice ON stock_moves(invoice_id);
+        -- Entegratörden gelen e-Faturalar (bize kesilenler). Alış faturası olarak alınınca invoice_id bağlanır; tek
+        -- belge iki kez alınamaz (uuid tekil). e-Belge bağlantısı kapalıyken tablo boş kalır.
+        CREATE TABLE IF NOT EXISTS einvoice_inbox (
+          id TEXT PRIMARY KEY,
+          uuid TEXT NOT NULL,
+          number TEXT NOT NULL DEFAULT '',
+          sender_vkn TEXT NOT NULL DEFAULT '',
+          sender_name TEXT NOT NULL DEFAULT '',
+          issue_date TEXT NOT NULL DEFAULT '',
+          payable REAL NOT NULL DEFAULT 0,
+          currency TEXT NOT NULL DEFAULT 'TRY',
+          profile TEXT NOT NULL DEFAULT '',
+          type_code TEXT NOT NULL DEFAULT '',
+          status TEXT NOT NULL DEFAULT '',
+          xml TEXT NOT NULL DEFAULT '',
+          state TEXT NOT NULL DEFAULT 'new' CHECK (state IN ('new', 'imported', 'ignored')),
+          invoice_id TEXT NOT NULL DEFAULT '',
+          fetched_by TEXT,
+          fetched_at TEXT NOT NULL,
+          updated_at TEXT
+        );
+        CREATE UNIQUE INDEX IF NOT EXISTS idx_einvoice_inbox_uuid ON einvoice_inbox(uuid);
         CREATE INDEX IF NOT EXISTS idx_cheques_invoice ON cheques(invoice_id);
         CREATE INDEX IF NOT EXISTS idx_plans_invoice ON plans(invoice_id);
         CREATE INDEX IF NOT EXISTS idx_cheque_events_invoice ON cheque_events(invoice_id);

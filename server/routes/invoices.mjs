@@ -13,7 +13,8 @@
 //                     iptali durdurur (iade faturası kesilir).
 import { randomUUID } from "node:crypto";
 import { parseQty } from "../lib/accounts.mjs";
-import { ADAPTERS, adapterInfo, sendWith } from "../lib/einvoice/adapters.mjs";
+import { ADAPTERS, DEFAULT_ADAPTER, adapterInfo, connect, integratorUrl } from "../lib/einvoice/adapters.mjs";
+import { readUbl } from "../lib/einvoice/ubl-read.mjs";
 import { buildUbl, ublFileName } from "../lib/einvoice/ubl-tr.mjs";
 import { HttpError, limited, ok, parseJson, readJson, sendBuffer, text } from "../lib/http.mjs";
 import { invoicePdf } from "../lib/invoice-pdf.mjs";
@@ -22,6 +23,7 @@ import { PAY_STATES, settleInvoices } from "../lib/invoice-settle.mjs";
 import { parseAmount, roundMoney } from "../lib/money.mjs";
 import { METHODS, methodOf } from "../lib/pay-method.mjs";
 import { canUser } from "../lib/permissions.mjs";
+import { createSecretBox } from "../lib/secret-box.mjs";
 import { addMonths, dayText, isoDay } from "../lib/plans.mjs";
 import { tablePdf, tl } from "../lib/report-pdf.mjs";
 import { ANONYMOUS_TCKN, classifyTaxId, isValidIban, isValidMersis, normalizeIban, partyProblems, splitPersonName } from "../lib/tax-id.mjs";
@@ -44,17 +46,25 @@ export const PROFILES = Object.freeze({
   TICARIFATURA: "e-Fatura (Ticari)",
   ESMM: "e-SMM",
 });
-const E_STATES = Object.freeze({ none: "Gönderilmedi", exported: "XML Hazır", sent: "Gönderildi", accepted: "Kabul Edildi", rejected: "Reddedildi", error: "Hata" });
+const E_STATES = Object.freeze({ none: "Gönderilmedi", exported: "XML Hazır", processing: "İşleniyor", sent: "Gönderildi", accepted: "Kabul Edildi", rejected: "Reddedildi", error: "Hata", cancelled: "Entegratörde İptal" });
+// Gönderilebilir (ilk kez ya da hatadan sonra yeniden) ve sorgulanabilir e-Belge durumları.
+const E_SENDABLE = new Set(["", "none", "exported", "error"]);
+const E_TRACKED = new Set(["processing", "sent", "accepted", "rejected", "error", "cancelled"]);
 const SIDE_KINDS = { sale: ["sale", "smm", "sale_return"], purchase: ["purchase", "purchase_return"] };
 const MAX_LINES = 500;
 const DEFAULTS = Object.freeze({
   seller: { name: "", partyKind: "company", firstName: "", familyName: "", taxNo: "", taxOffice: "", mersisNo: "", tradeRegistry: "", address: "", district: "", city: "", postalCode: "", country: "Türkiye", phone: "", email: "", website: "", banks: [] },
-  edoc: "none",
+  // e-Dönüşüm (firmanın GİB'e kayıtlı olduğu sistemler). e-Arşiv, e-Fatura kaydı olmadan kullanılamaz.
+  efatura: false,
+  earsiv: false,
   esmm: false,
-  series: { paper: "FTR", earsiv: "EAR", efatura: "EFT", smm: "SMM", esmm: "ESM", internal: "IAD" },
+  // paper: programın kestiği bilgi fişi / kâğıt belge serisi (FIS2026000000001); e-Belge serileri bağlantı açılınca.
+  series: { paper: "FIS", earsiv: "EAR", efatura: "EFT", smm: "SMM", esmm: "ESM", internal: "IAD" },
   start: {},
   defaults: { vatRate: 20, pricesIncludeVat: false, stoppageRate: STOPPAGE_DEFAULT, efaturaProfile: "TEMELFATURA", dueDays: 0, footer: "", saleScenario: "", purchaseScenario: "" },
-  adapter: { id: "file" },
+  // Entegratör bağlantısı (kullanıcı kararı: şimdilik yalnız EDM Bilişim). Parola veritabanında şifreli tutulur
+  // (lib/secret-box.mjs); ekrana ve günlüğe hiç çıkmaz.
+  integrator: { id: "edm", env: "test", baseUrl: "", username: "", passwordSealed: "", senderAlias: "", autoSend: false },
 });
 const clone = value => JSON.parse(JSON.stringify(value));
 const fail400 = (message, field = "", extra = {}) => {
@@ -69,7 +79,15 @@ const moneyText = (value, currency = "TRY") => `${new Intl.NumberFormat("tr-TR",
 const c2 = value => roundMoney((Number(value) || 0) / 100);
 const toCents = value => Math.round((Number(value) || 0) * 100);
 
-export function registerInvoiceRoutes(router, { store, auth, audit, events, period = null, cash = null, accounts = () => null, stock = () => null, plans = () => null, cheques = () => null }) {
+export function registerInvoiceRoutes(router, { store, auth, audit, events, config = {}, period = null, cash = null, accounts = () => null, stock = () => null, plans = () => null, cheques = () => null }) {
+  // e-Belge bağlantısı kapalıyken (varsayılan; program sahibi açana kadar) her belge kâğıt/bilgi fişidir: e-Fatura,
+  // e-Arşiv, XML ve entegratör uçları çalışmaz, ekranda görünmez.
+  const edocEnabled = config.edocEnabled === true;
+  const requireEdoc = () => {
+    if (!edocEnabled) throw new HttpError(404, "e-Belge (e-Fatura / e-Arşiv) bağlantısı bu kurulumda kapalı. Belgeler bilgi amaçlı müşteri fişi olarak kesilir.", { code: "edoc-disabled" });
+  };
+  let box = null;
+  const secrets = () => (box ||= createSecretBox(config.dataDir || "."));
   const now = () => new Date().toISOString();
   const today = () => (period ? period.today() : isoDay(new Date()));
   const newId = prefix => `${prefix}-${randomUUID()}`;
@@ -84,6 +102,7 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, peri
       if (raw?.[key] === undefined) continue;
       out[key] = out[key] && typeof out[key] === "object" && !Array.isArray(out[key]) ? { ...out[key], ...(raw[key] || {}) } : raw[key];
     }
+    if (!ADAPTERS[out.integrator.id]) out.integrator.id = DEFAULT_ADAPTER;
     if (!out.seller.name) out.seller.name = store.setting("office.name", "") || "";
     if (!Array.isArray(out.seller.banks)) out.seller.banks = [];
     return out;
@@ -118,7 +137,10 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, peri
     }
     if (next.seller.mersisNo && !isValidMersis(next.seller.mersisNo)) fail400("MERSİS numarası 16 haneli olmalı.", "seller.mersisNo");
     for (const bank of next.seller.banks) if (bank.iban && !isValidIban(bank.iban)) fail400(`IBAN geçersiz (${bank.iban}).`, "seller.banks");
-    if (body.edoc !== undefined) next.edoc = body.edoc === "efatura" ? "efatura" : "none";
+    if (!edocEnabled && (body.efatura === true || body.earsiv === true || body.esmm === true || (body.integrator && typeof body.integrator === "object"))) requireEdoc();
+    if (body.efatura !== undefined) next.efatura = body.efatura === true;
+    if (body.earsiv !== undefined) next.earsiv = body.earsiv === true;
+    if (next.earsiv && !next.efatura) fail400("e-Arşiv için önce e-Fatura mükellefi olmak gerekir (GİB): e-Fatura kutusunu da işaretleyin.", "earsiv");
     if (body.esmm !== undefined) next.esmm = body.esmm === true;
     if (body.series && typeof body.series === "object") {
       for (const key of Object.keys(DEFAULTS.series)) {
@@ -161,10 +183,25 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, peri
       if (d.saleScenario !== undefined) next.defaults.saleScenario = SCENARIOS[d.saleScenario] && ["sale", "smm"].includes(SCENARIOS[d.saleScenario].kind) ? d.saleScenario : "";
       if (d.purchaseScenario !== undefined) next.defaults.purchaseScenario = SCENARIOS[d.purchaseScenario]?.kind === "purchase" ? d.purchaseScenario : "";
     }
-    if (body.adapter && typeof body.adapter === "object") {
-      const id = text(body.adapter.id);
-      if (!ADAPTERS[id]) fail400("Entegratör tanınmadı.", "adapter");
-      next.adapter = { id };
+    if (body.integrator && typeof body.integrator === "object") {
+      const input = body.integrator;
+      const prev = previous.integrator;
+      const id = text(input.id ?? prev.id) || DEFAULT_ADAPTER;
+      if (!ADAPTERS[id]) fail400("Entegratör tanınmadı.", "integrator.id");
+      const env = input.env === undefined ? prev.env : input.env === "live" ? "live" : "test";
+      const baseUrl = input.baseUrl === undefined ? prev.baseUrl : String(input.baseUrl || "").trim().replace(/\?.*$/, "");
+      if (baseUrl && !/^https:\/\/[^\s/]+\/\S+$/i.test(baseUrl) && !/^http:\/\/(127\.0\.0\.1|localhost)(:\d+)?\/\S*$/i.test(baseUrl)) fail400("Servis adresi https:// ile başlayan tam adres olmalı (ör. https://portal2.edmbilisim.com.tr/EFaturaEDM/EFaturaEDM.svc); boş bırakılırsa seçilen ortamın adresi kullanılır.", "integrator.baseUrl");
+      const username = input.username === undefined ? prev.username : limited(input.username, 120, "Kullanıcı Adı");
+      let passwordSealed = prev.passwordSealed;
+      if (input.clearPassword === true) passwordSealed = "";
+      else if (typeof input.password === "string" && input.password !== "") {
+        if (input.password.length > 200) fail400("Parola en çok 200 karakter olabilir.", "integrator.password");
+        passwordSealed = secrets().seal(input.password);
+      }
+      const senderAlias = input.senderAlias === undefined ? prev.senderAlias : String(input.senderAlias || "").trim();
+      if (senderAlias && !/^urn:mail:[^\s@]+@[^\s@]+$/i.test(senderAlias)) fail400("Gönderici birim etiketi urn:mail:…@… biçiminde olmalı (ör. urn:mail:defaultgb@edmbilisim.com.tr); bilmiyorsanız boş bırakın.", "integrator.senderAlias");
+      const autoSend = input.autoSend === undefined ? prev.autoSend === true : input.autoSend === true;
+      next.integrator = { id, env, baseUrl, username, passwordSealed, senderAlias, autoSend };
     }
     return next;
   }
@@ -175,13 +212,28 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, peri
     return seller;
   };
 
+  // Ekrana giden ayarlar: parola (şifreli hâli de) hiç gönderilmez; yalnız girilmiş olup olmadığı.
+  const publicSettings = s => {
+    const { passwordSealed, ...rest } = s.integrator;
+    return { ...s, integrator: { ...rest, hasPassword: Boolean(passwordSealed), url: integratorUrl(s.integrator), label: ADAPTERS[s.integrator.id]?.label || "" } };
+  };
+  const integratorSummary = s => ({ id: s.integrator.id, label: ADAPTERS[s.integrator.id]?.label || "", env: s.integrator.env, configured: Boolean(s.integrator.username && s.integrator.passwordSealed), autoSend: s.integrator.autoSend === true });
+  function integrator(s = settings()) {
+    requireEdoc();
+    const cfg = s.integrator;
+    if (!cfg.username || !cfg.passwordSealed) throw new HttpError(409, `${ADAPTERS[cfg.id]?.label || "Entegratör"} web servis kullanıcı adı ve parolası girilmemiş. Fatura Ayarları → e-Belge Bağlantısı'ndan girin.`, { code: "integrator-not-configured" });
+    const password = secrets().open(cfg.passwordSealed);
+    if (!password) throw new HttpError(409, "Kayıtlı entegratör parolası bu bilgisayarda açılamadı (veriler başka bilgisayardan taşınmış olabilir). Fatura Ayarları'nda parolayı yeniden girin.", { code: "integrator-password" });
+    return connect({ integrator: { ...cfg, password }, seller: sellerParty(s) });
+  }
+
   // ---------- Okuma ----------
   const INVOICE_SQL = `SELECT i.id, i.kind, i.scenario, i.status, i.series, i.year, i.seq, i.number, i.ettn, i.issue_date AS issueDate, i.issue_time AS issueTime, i.account_id AS accountId,
       i.party_json AS partyJson, i.seller_json AS sellerJson, i.profile, i.type_code AS typeCode, i.currency, i.rate, i.prices_include_vat AS pricesIncludeVat, i.discount_rate AS discountRate,
       i.stoppage_rate AS stoppageRate, i.base_total AS baseTotal, i.discount_total AS discountTotal, i.net_total AS netTotal, i.goods_net AS goodsNet, i.service_net AS serviceNet, i.vat_total AS vatTotal,
       i.withheld_total AS withheldTotal, i.stoppage_total AS stoppageTotal, i.gross_total AS grossTotal, i.payable_total AS payableTotal, i.try_net AS tryNet, i.try_vat AS tryVat,
       i.try_withheld AS tryWithheld, i.try_stoppage AS tryStoppage, i.try_payable AS tryPayable, i.gl_json AS glJson, i.payment_json AS paymentJson, i.due_date AS dueDate, i.plan_id AS planId,
-      i.original_id AS originalId, i.order_no AS orderNo, i.order_date AS orderDate, i.despatch_no AS despatchNo, i.despatch_date AS despatchDate, i.note, i.e_status AS eStatus, i.e_adapter AS eAdapter,
+      i.original_id AS originalId, i.order_no AS orderNo, i.order_date AS orderDate, i.despatch_no AS despatchNo, i.despatch_date AS despatchDate, i.paper_no AS paperNo, i.note, i.e_status AS eStatus, i.e_adapter AS eAdapter,
       i.e_message AS eMessage, i.e_at AS eAt, i.created_by AS createdBy, i.created_at AS createdAt, i.updated_at AS updatedAt, i.issued_at AS issuedAt, i.cancelled_at AS cancelledAt, i.cancel_reason AS cancelReason,
       COALESCE(a.name, '') AS accountName, COALESCE(a.ref_no, '') AS accountRef, COALESCE(a.phone, '') AS accountPhone, COALESCE(a.tax_no, '') AS accountTaxNo, COALESCE(a.type, '') AS accountType,
       COALESCE(u.display_name, '') AS actorName, COALESCE(o.number, '') AS originalNumber, COALESCE(o.issue_date, '') AS originalDate
@@ -322,6 +374,7 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, peri
       orderDate: row.orderDate,
       despatchNo: row.despatchNo,
       despatchDate: row.despatchDate,
+      paperNo: row.paperNo,
       payment: parseJson(row.paymentJson, {}),
       eMessage: row.eMessage,
       eAt: row.eAt,
@@ -343,7 +396,9 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, peri
       canCancel: manage && row.status === "issued" && activeReturns === 0,
       cancelBlock: row.status === "issued" && activeReturns ? `Bu faturanın ${activeReturns} iade faturası var; önce iadeleri iptal edin.` : "",
       canReturn: manage && row.status === "issued" && !kind?.return && row.kind !== "smm" && returnable.some(item => item.left > 0),
-      canSend: manage && row.status === "issued" && kind?.send && row.profile !== "KAGIT",
+      canSend: edocEnabled && manage && row.status === "issued" && kind?.send && row.profile !== "KAGIT" && E_SENDABLE.has(row.eStatus || "none"),
+      canRefresh: edocEnabled && manage && kind?.send && row.profile !== "KAGIT" && E_TRACKED.has(row.eStatus),
+      edocEnabled,
     };
   }
   const vatBreakdown = lines => {
@@ -360,7 +415,17 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, peri
 
   // ---------- Liste ----------
   const SORTS = new Set(["date", "number", "amount", "party"]);
+  // Ekran sekmeleri: Kesilen (satış + serbest meslek), Alınan (alış), İadeler, Taslaklar, İptal Edilenler, Tümü.
+  const TABS = Object.freeze({
+    sale: { kinds: ["sale", "smm"], status: "issued" },
+    purchase: { kinds: ["purchase"], status: "issued" },
+    returns: { kinds: ["sale_return", "purchase_return"], status: "issued" },
+    drafts: { kinds: null, status: "draft" },
+    cancelled: { kinds: null, status: "cancelled" },
+    all: { kinds: null, status: "" },
+  });
   const listQuery = params => ({
+    tab: TABS[text(params.get("tab"))] ? text(params.get("tab")) : "",
     side: ["sale", "purchase"].includes(text(params.get("side"))) ? text(params.get("side")) : "",
     kind: INVOICE_KINDS[text(params.get("kind"))] ? text(params.get("kind")) : "",
     status: ["draft", "issued", "cancelled"].includes(text(params.get("status"))) ? text(params.get("status")) : "",
@@ -384,6 +449,17 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, peri
     if (query.side) {
       where.push(`i.kind IN (${SIDE_KINDS[query.side].map(() => "?").join(", ")})`);
       args.push(...SIDE_KINDS[query.side]);
+    }
+    if (query.tab) {
+      const tab = TABS[query.tab];
+      if (tab.kinds) {
+        where.push(`i.kind IN (${tab.kinds.map(() => "?").join(", ")})`);
+        args.push(...tab.kinds);
+      }
+      if (tab.status) {
+        where.push("i.status = ?");
+        args.push(tab.status);
+      }
     }
     if (query.kind) {
       where.push("i.kind = ?");
@@ -417,7 +493,7 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, peri
     let rows = store.all(`${INVOICE_SQL}${where.length ? ` WHERE ${where.join(" AND ")}` : ""}`, ...args);
     if (needle) {
       const lineHits = new Set(store.all("SELECT DISTINCT invoice_id AS id FROM invoice_lines WHERE lower(name) LIKE ? OR lower(code) LIKE ?", `%${needle}%`, `%${needle}%`).map(row => row.id));
-      rows = rows.filter(row => lineHits.has(row.id) || `${row.number} ${row.accountName} ${parseJson(row.partyJson, {}).name || ""} ${row.accountTaxNo} ${row.note} ${row.orderNo} ${row.despatchNo} ${row.ettn}`.toLocaleLowerCase("tr-TR").includes(needle));
+      rows = rows.filter(row => lineHits.has(row.id) || `${row.number} ${row.accountName} ${parseJson(row.partyJson, {}).name || ""} ${row.accountTaxNo} ${row.note} ${row.orderNo} ${row.despatchNo} ${row.paperNo} ${row.ettn}`.toLocaleLowerCase("tr-TR").includes(needle));
     }
     const states = paymentStates(rows.filter(row => row.status === "issued"));
     let shaped = rows.map(row => shape(row, states.get(row.id)));
@@ -444,7 +520,17 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, peri
       totals.open = roundMoney(totals.open + (row.open || 0));
       if (row.payState === "overdue") totals.overdue = roundMoney(totals.overdue + (row.open || 0));
     }
-    return { invoices: shaped, totals, canManage: canUser(user, "invoices.manage") };
+    return { invoices: shaped, totals, tabCounts: tabCounts(query.account), canManage: canUser(user, "invoices.manage") };
+  }
+  // Sekme sayıları (cari kartından açıldıysa o carininkiler).
+  function tabCounts(accountId = "") {
+    const rows = store.all(`SELECT kind, status, COUNT(*) AS n FROM invoices${accountId ? " WHERE account_id = ?" : ""} GROUP BY kind, status`, ...(accountId ? [accountId] : []));
+    const out = Object.fromEntries(Object.keys(TABS).map(key => [key, 0]));
+    for (const row of rows) {
+      out.all += row.n;
+      for (const [key, tab] of Object.entries(TABS)) if (key !== "all" && (!tab.kinds || tab.kinds.includes(row.kind)) && (!tab.status || tab.status === row.status)) out[key] += row.n;
+    }
+    return out;
   }
 
   // ---------- Girdi ----------
@@ -465,26 +551,37 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, peri
     if (!Number.isFinite(qty) || qty <= 0 || qty > 1e9) fail400(`${at}: miktar sıfırdan büyük olmalı.`, "qty");
     return Math.round(qty * 1000) / 1000;
   };
-  // Profil: kendi kestiğimiz belgede e-Dönüşüm ayarına ve carinin e-Fatura mükellefiyetine göre; karşı tarafın belgesinde
-  // (alış, müşterinin iade faturası) bize nasıl geldiği (bilgi).
+  // Belge türü (profil). Kendi kestiğimiz belgede GİB kuralı (VUK 509 Sıra No'lu Tebliğ):
+  //   alıcı e-Fatura mükellefi ve biz e-Fatura kullanıcısıysak  → e-Fatura (Temel ya da Ticari; seçilebilir)
+  //   alıcı e-Fatura mükellefi değilse ve biz e-Arşiv kullanıcısıysak → e-Arşiv
+  //   aksi hâlde                                                 → kâğıt fatura
+  // Kullanıcı türü değiştirebilir; yasal olmayan seçim nedeni söylenerek engellenir (alıcı e-Fatura mükellefiyken e-Arşiv
+  // kesilmez; e-Arşiv kullanıcısı kâğıt fatura kesmez). Karşı tarafın belgesinde (alış, müşterinin iade faturası) tür
+  // bize nasıl geldiğidir (bilgi).
+  const allowedProfiles = (kind, account, s) => {
+    if (!edocEnabled) return ["KAGIT"];
+    if (kind === "smm") return s.esmm ? ["ESMM"] : ["KAGIT"];
+    if (!INVOICE_KINDS[kind].own) return ["KAGIT", "EARSIVFATURA", "TEMELFATURA", "TICARIFATURA"];
+    if (!s.efatura) return ["KAGIT"];
+    if (Number(account.eInvoice) === 1) return ["TEMELFATURA", "TICARIFATURA"];
+    return s.earsiv ? ["EARSIVFATURA"] : ["KAGIT"];
+  };
   function profileFor(kind, account, requested, s) {
-    const own = INVOICE_KINDS[kind].own;
-    if (kind === "smm") {
-      const value = requested === "ESMM" || (!requested && s.esmm) ? "ESMM" : "KAGIT";
-      if (value === "ESMM" && !s.esmm) fail400("e-SMM için Fatura Ayarları'nda e-SMM kullanıcısı olduğunuzu işaretleyin.", "profile");
-      return value;
-    }
-    if (!own) return PROFILES[requested] && requested !== "ESMM" ? requested : "KAGIT";
-    if (s.edoc !== "efatura") {
-      if (requested && requested !== "KAGIT") fail400("e-Fatura / e-Arşiv için Fatura Ayarları'nda e-Dönüşüm'ü açın.", "profile");
-      return "KAGIT";
-    }
+    const allowed = allowedProfiles(kind, account, s);
+    const auto = kind === "smm" || !INVOICE_KINDS[kind].own ? allowed[0] : allowed.includes("TEMELFATURA") ? (allowed.includes(account.eProfile) ? account.eProfile : s.defaults.efaturaProfile || "TEMELFATURA") : allowed[0];
+    if (!requested || !PROFILES[requested]) return auto;
+    if (allowed.includes(requested)) return requested;
     const efatura = Number(account.eInvoice) === 1;
-    const auto = efatura ? account.eProfile || s.defaults.efaturaProfile || "TEMELFATURA" : "EARSIVFATURA";
-    const value = PROFILES[requested] && requested !== "ESMM" ? requested : auto;
-    if ((value === "TEMELFATURA" || value === "TICARIFATURA") && !efatura) fail400("Cari e-Fatura mükellefi olarak işaretli değil; e-Arşiv kesilir (cari kartında e-Fatura Mükellefi kutusunu kontrol edin).", "profile");
-    if (value === "EARSIVFATURA" && efatura) fail400("Cari e-Fatura mükellefi: e-Arşiv değil e-Fatura kesilir.", "profile");
-    return value;
+    let reason;
+    if (kind === "smm") reason = requested === "ESMM" ? "e-SMM için Fatura Ayarları'nda e-SMM kullanıcısı olduğunuzu işaretleyin." : "e-SMM kullanıcısı kâğıt serbest meslek makbuzu düzenlemez.";
+    else if (!s.efatura) reason = "e-Fatura / e-Arşiv için Fatura Ayarları'nda e-Fatura mükellefi olduğunuzu işaretleyin (entegratör bilgileriyle).";
+    else if (efatura && requested === "EARSIVFATURA") reason = "Alıcı e-Fatura mükellefi: GİB kuralı gereği e-Arşiv değil e-Fatura kesilir. Mükellefiyet bilgisi yanlışsa cari kartında Mükellef Sorgula ile yenileyin.";
+    else if (efatura && requested === "KAGIT") reason = "Alıcı e-Fatura mükellefi: kâğıt fatura kesilmez, e-Fatura kesilir.";
+    else if (!efatura && (requested === "TEMELFATURA" || requested === "TICARIFATURA")) reason = "Alıcı e-Fatura mükellefi değil: e-Fatura gönderilemez. Mükellef ise cari kartında Mükellef Sorgula ile işaretleyin.";
+    else if (requested === "KAGIT" && s.earsiv) reason = "e-Arşiv kullanıcısı e-Fatura mükellefi olmayan alıcıya kâğıt değil e-Arşiv fatura keser.";
+    else if (requested === "EARSIVFATURA") reason = "e-Arşiv için Fatura Ayarları'nda e-Arşiv kullanıcısı olduğunuzu işaretleyin.";
+    else reason = "Bu belge türü bu alıcıya kesilemez.";
+    fail400(reason, "profile", { code: "profile-not-allowed", allowed });
   }
   const partySnapshot = (account, override = null) => {
     const party = {
@@ -612,6 +709,8 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, peri
       orderNo: limited(body.orderNo ?? existing?.orderNo ?? "", 60, "Sipariş No"),
       orderDate: dateField(body.orderDate ?? existing?.orderDate, "Sipariş tarihi", "orderDate"),
       despatchNo: limited(body.despatchNo ?? existing?.despatchNo ?? "", 60, "İrsaliye No"),
+      // Elle kesilen matbu (kâğıt) faturanın seri/numarası (varsa): program fişi yasal faturayla eşleşir.
+      paperNo: limited(body.paperNo ?? existing?.paperNo ?? "", 40, "Kâğıt Fatura No"),
       despatchDate: dateField(body.despatchDate ?? existing?.despatchDate, "İrsaliye tarihi", "despatchDate"),
       lines,
       computed,
@@ -855,6 +954,7 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, peri
         order_date: doc.orderDate,
         despatch_no: doc.despatchNo,
         despatch_date: doc.despatchDate,
+        paper_no: doc.paperNo,
         note: doc.note,
         updated_by: user.id,
         updated_at: stamp,
@@ -994,6 +1094,7 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, peri
         order_date: doc.orderDate,
         despatch_no: doc.despatchNo,
         despatch_date: doc.despatchDate,
+        paper_no: doc.paperNo,
         note: doc.note,
         updated_by: user.id,
         updated_at: stamp,
@@ -1004,7 +1105,7 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, peri
         store.run("DELETE FROM invoice_lines WHERE invoice_id = ?", id);
         store.run(`UPDATE invoices SET ${Object.keys(columns).map(key => `${key} = ?`).join(", ")} WHERE id = ?`, ...Object.values(columns), id);
       } else {
-        const all = { id: invoiceId, ...columns, ettn: randomUUID(), created_by: user.id, created_at: stamp };
+        const all = { id: invoiceId, ...columns, ettn: doc.importUuid || randomUUID(), created_by: user.id, created_at: stamp };
         store.run(`INSERT INTO invoices (${Object.keys(all).join(", ")}) VALUES (${Object.keys(all).map(() => "?").join(", ")})`, ...Object.values(all));
       }
       doc.computed.lines.forEach((line, index) => {
@@ -1023,9 +1124,22 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, peri
   }
 
   // ---------- İptal ----------
-  function cancel(user, id, { reason = "", force = {}, confirmExternal = false } = {}) {
+  // dryRun: bütün engeller ve yazımlar denenir, sonra geri alınır (e-Arşiv iptali entegratöre gitmeden önce programda
+  // iptalin yapılabildiği kesinleşsin diye).
+  const DRY_RUN = Symbol("dry-run");
+  function cancel(user, id, { reason = "", force = {}, confirmExternal = false, dryRun = false } = {}) {
     const touched = { accounts: new Set(), items: new Set(), cash: false, cheques: { accountIds: [], chequeIds: [] }, plans: new Set() };
-    const row = store.tx(() => {
+    let row;
+    try {
+      row = runCancel();
+    } catch (error) {
+      if (error === DRY_RUN) return null;
+      throw error;
+    }
+    publishAll(user, touched, row.id);
+    return row;
+    function runCancel() {
+      return store.tx(() => {
       const invoice = invoiceRow(id);
       if (invoice.status === "draft") throw new HttpError(409, "Taslak iptal edilmez; silinir.", { code: "invoice-draft" });
       if (invoice.status === "cancelled") throw new HttpError(409, "Bu fatura zaten iptal edilmiş.", { code: "invoice-cancelled" });
@@ -1057,10 +1171,10 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, peri
       const stamp = now();
       store.run("UPDATE invoices SET status = 'cancelled', cancelled_by = ?, cancelled_at = ?, cancel_reason = ?, updated_by = ?, updated_at = ? WHERE id = ?", user.id, stamp, limited(reason, 300, "İptal nedeni"), user.id, stamp, invoice.id);
       audit(user, "invoice.cancelled", invoice.id, { number: invoice.number, kind: invoice.kind, payable: invoice.tryPayable, reason });
+      if (dryRun) throw DRY_RUN;
       return invoice;
-    });
-    publishAll(user, touched, row.id);
-    return row;
+      });
+    }
   }
 
   // ---------- Son fiyatlar ----------
@@ -1148,8 +1262,9 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, peri
       methods: METHODS,
       payStates: PAY_STATES,
       eStates: E_STATES,
-      adapters: Object.entries(ADAPTERS).map(([id, value]) => adapterInfo(id, value)),
-      settings: { edoc: s.edoc, esmm: s.esmm, defaults: s.defaults, series: s.series, sellerReady: sellerProblems("KAGIT", s).length === 0 && Boolean(s.seller.name), sellerName: s.seller.name, adapter: s.adapter.id },
+      adapters: edocEnabled ? Object.entries(ADAPTERS).map(([id, value]) => adapterInfo(id, value)) : [],
+      edocEnabled,
+      settings: { efatura: edocEnabled && s.efatura, earsiv: edocEnabled && s.earsiv, esmm: edocEnabled && s.esmm, defaults: s.defaults, series: s.series, sellerReady: sellerProblems("KAGIT", s).length === 0 && Boolean(s.seller.name), sellerName: s.seller.name, integrator: edocEnabled ? integratorSummary(s) : null },
       today: today(),
       lockedUntil: period?.lockedUntil?.() || "",
       canManage: canUser(user, "invoices.manage"),
@@ -1161,7 +1276,7 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, peri
   router.get("/api/workspace/invoices/settings", async ({ req, res }) => {
     requireView(req);
     const s = settings();
-    ok(res, { ...s, problems: { KAGIT: sellerProblems("KAGIT", s), EARSIVFATURA: sellerProblems("EARSIVFATURA", s), TEMELFATURA: sellerProblems("TEMELFATURA", s) } });
+    ok(res, { ...publicSettings(s), edocEnabled, problems: { KAGIT: sellerProblems("KAGIT", s), EARSIVFATURA: sellerProblems("EARSIVFATURA", s), TEMELFATURA: sellerProblems("TEMELFATURA", s) } });
   });
   router.put("/api/workspace/invoices/settings", async ({ req, res }) => {
     const user = auth.requirePermission(req, "invoices.settings");
@@ -1170,10 +1285,12 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, peri
     const next = settingsInput(body, previous);
     store.tx(() => {
       store.setSetting(SETTINGS_KEY, JSON.stringify(next), user.id);
-      audit(user, "invoice.settings.updated", "settings", { edoc: next.edoc, series: next.series, adapter: next.adapter.id });
+      // Günlüğe parola yazılmaz; yalnız değişip değişmediği.
+      const integratorLog = { id: next.integrator.id, env: next.integrator.env, username: next.integrator.username, passwordChanged: next.integrator.passwordSealed !== previous.integrator.passwordSealed, autoSend: next.integrator.autoSend };
+      audit(user, "invoice.settings.updated", "settings", { efatura: next.efatura, earsiv: next.earsiv, series: next.series, integrator: integratorLog });
     });
     publish(user, { kind: "invoices", settings: true });
-    ok(res, { ...next, problems: { KAGIT: sellerProblems("KAGIT", next), EARSIVFATURA: sellerProblems("EARSIVFATURA", next), TEMELFATURA: sellerProblems("TEMELFATURA", next) } });
+    ok(res, { ...publicSettings(next), edocEnabled, problems: { KAGIT: sellerProblems("KAGIT", next), EARSIVFATURA: sellerProblems("EARSIVFATURA", next), TEMELFATURA: sellerProblems("TEMELFATURA", next) } });
   });
   router.get("/api/workspace/invoices", async ({ req, res, url }) => {
     const user = requireView(req);
@@ -1181,6 +1298,21 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, peri
     const limit = Math.min(5000, Math.max(1, Math.trunc(Number(url.searchParams.get("limit")) || 200)));
     const offset = Math.max(0, Math.trunc(Number(url.searchParams.get("offset")) || 0));
     ok(res, { ...data, invoices: data.invoices.slice(offset, offset + limit), total: data.invoices.length, offset, limit, hasMore: offset + limit < data.invoices.length });
+  });
+  // Kalem için ürün/hizmet araması (fatura yetkisiyle; stok ekranı yetkisi gerekmez): ad, kod; mevcut miktar, son alış
+  // (maliyet) ve satış fiyatı.
+  router.get("/api/workspace/invoices/items", async ({ req, res, url }) => {
+    requireView(req);
+    const needle = String(url.searchParams.get("q") || "").toLocaleLowerCase("tr-TR").trim().slice(0, 120);
+    const rows = store.all("SELECT id, kind, code, name, unit, unit_price AS unitPrice, sale_price AS salePrice FROM stock_items WHERE deleted_at IS NULL ORDER BY name COLLATE NOCASE");
+    const hits = [];
+    for (const row of rows) {
+      if (needle && !`${row.name} ${row.code}`.toLocaleLowerCase("tr-TR").includes(needle)) continue;
+      const service = row.kind === "service";
+      hits.push({ ...row, kind: row.kind || "product", unit: unitLabel(row.unit), available: service || !stock()?.invoiceStock ? null : stock().invoiceStock.available(row.id) });
+      if (hits.length >= 25) break;
+    }
+    ok(res, { items: hits });
   });
   router.get("/api/workspace/invoices/returnable", async ({ req, res, url }) => {
     requireView(req);
@@ -1204,6 +1336,7 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, peri
       kind: doc.kind,
       profile: doc.profile,
       profileLabel: PROFILES[doc.profile],
+      profiles: allowedProfiles(doc.kind, doc.account, doc.settings).map(id => ({ id, label: PROFILES[id] })),
       typeCode: typeCode(doc.kind, doc.computed.lines),
       currency: doc.currency,
       rate: doc.rate,
@@ -1235,7 +1368,8 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, peri
     const doc = documentInput(body, { mode: "issue" });
     const payment = paymentInput(body, doc, user);
     const result = writeIssued(user, doc, payment, { force: forceOf(body) });
-    ok(res, detail(result.id, user));
+    const autoSend = await maybeAutoSend(user, result.id);
+    ok(res, { ...detail(result.id, user), ...(autoSend ? { autoSend } : {}) });
   });
   router.put("/api/workspace/invoices/:id", async ({ req, res, params }) => {
     const user = requireManage(req);
@@ -1257,7 +1391,8 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, peri
     const doc = documentInput(merged, { mode: "issue", existing });
     const payment = paymentInput(merged, doc, user);
     writeIssued(user, doc, payment, { id: existing.id, force: forceOf(body) });
-    ok(res, detail(existing.id, user));
+    const autoSend = await maybeAutoSend(user, existing.id);
+    ok(res, { ...detail(existing.id, user), ...(autoSend ? { autoSend } : {}) });
   });
   router.delete("/api/workspace/invoices/:id", async ({ req, res, params }) => {
     const user = requireManage(req);
@@ -1266,6 +1401,8 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, peri
     store.tx(() => {
       store.run("DELETE FROM invoice_lines WHERE invoice_id = ?", existing.id);
       store.run("DELETE FROM invoices WHERE id = ? AND status = 'draft'", existing.id);
+      // Gelen e-Faturadan açılan taslak silinirse belge yeniden "Yeni" olur (tekrar alınabilir).
+      store.run("UPDATE einvoice_inbox SET state = 'new', invoice_id = '', updated_at = ? WHERE invoice_id = ?", now(), existing.id);
       audit(user, "invoice.draft.deleted", existing.id, { kind: existing.kind, accountId: existing.accountId, payable: existing.payableTotal });
     });
     publish(user, { kind: "invoices", invoiceId: existing.id });
@@ -1274,7 +1411,23 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, peri
   router.post("/api/workspace/invoices/:id/cancel", async ({ req, res, params }) => {
     const user = requireManage(req);
     const body = await readJson(req);
-    const row = cancel(user, params.id, { reason: text(body.reason), force: forceOf(body), confirmExternal: body.confirmExternal === true });
+    const options = { reason: text(body.reason), force: forceOf(body), confirmExternal: body.confirmExternal === true };
+    const existing = invoiceRow(params.id);
+    // e-Arşiv: entegratörde de iptal edilir (EDM: taslak, hatalı ya da başarıyla oluşturulmuş e-Arşiv iptal edilebilir).
+    // Önce programdaki iptal denenir (iade, kilitli dönem, tahsil edilmiş çek, stok…); geçerse entegratör, sonra program.
+    const remote = edocEnabled && existing.status === "issued" && existing.profile === "EARSIVFATURA" && ["processing", "sent", "accepted", "error"].includes(existing.eStatus) && body.localOnly !== true;
+    if (remote) {
+      cancel(user, existing.id, { ...options, confirmExternal: true, dryRun: true });
+      const doc = detail(existing.id, user);
+      const result = await integrator().cancel({ invoice: doc });
+      store.tx(() => {
+        store.run("UPDATE invoices SET e_status = 'cancelled', e_message = ?, e_at = ?, updated_at = ? WHERE id = ?", String(result.message || "").slice(0, 500), now(), now(), existing.id);
+        audit(user, "invoice.e.cancelled", existing.id, { number: existing.number, adapter: existing.eAdapter });
+      });
+      const row = cancel(user, existing.id, { ...options, confirmExternal: true });
+      return ok(res, { ...detail(row.id, user), integratorResult: result });
+    }
+    const row = cancel(user, existing.id, options);
     ok(res, detail(row.id, user));
   });
 
@@ -1293,28 +1446,111 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, peri
   });
   router.get("/api/workspace/invoices/:id/ubl.xml", async ({ req, res, params, url }) => {
     const user = requireView(req);
+    requireEdoc();
     const doc = detail(params.id, user);
     if (doc.status !== "issued") throw new HttpError(409, "Yalnız kesilmiş faturanın e-Belgesi (UBL-TR XML) üretilir.");
     const xml = buildUbl(doc, { variant: url.searchParams.get("peppol") === "1" ? "peppol" : "tr" });
     sendBuffer(res, Buffer.from(xml, "utf8"), { type: "application/xml; charset=utf-8", name: ublFileName(doc, url.searchParams.get("peppol") === "1"), inline: false });
   });
+  // ---------- e-Belge: gönder, durum, mükellef, bağlantı ----------
+  const sending = new Set();
+  const setE = (user, id, { status, adapter = null, message = "" }, action, extra = {}) => {
+    store.tx(() => {
+      if (adapter) store.run("UPDATE invoices SET e_status = ?, e_adapter = ?, e_message = ?, e_at = ?, updated_at = ? WHERE id = ?", status, adapter, String(message || "").slice(0, 500), now(), now(), id);
+      else store.run("UPDATE invoices SET e_status = ?, e_message = ?, e_at = ?, updated_at = ? WHERE id = ?", status, String(message || "").slice(0, 500), now(), now(), id);
+      audit(user, action, id, { status, ...extra });
+    });
+    publish(user, { kind: "invoices", invoiceId: id });
+  };
+  async function sendInvoice(user, id) {
+    requireEdoc();
+    const doc = detail(id, user);
+    if (!doc.canSend) {
+      if (doc.profile === "KAGIT") throw new HttpError(409, "Kâğıt belge / müşteri fişi e-Belge olarak gönderilmez.", { code: "einvoice-paper" });
+      if (doc.status !== "issued") throw new HttpError(409, "Yalnız kesilmiş fatura gönderilir.", { code: "einvoice-not-issued" });
+      if (!E_SENDABLE.has(doc.eStatus || "none")) throw new HttpError(409, `Bu belge zaten entegratöre iletildi (durum: ${E_STATES[doc.eStatus] || doc.eStatus}). Sonucu Durum Sorgula ile alın.`, { code: "einvoice-already-sent" });
+      throw new HttpError(409, "Bu belge gönderilemez.", { code: "einvoice-not-sendable" });
+    }
+    const s = settings();
+    const seller = sellerProblems(doc.profile, s);
+    if (seller.length) throw new HttpError(409, `Firma bilgisi eksik (Fatura Ayarları): ${seller.join(" ")}`, { code: "seller-incomplete", problems: seller });
+    const buyer = partyProblems(doc.party, { profile: doc.profile === "EARSIVFATURA" || doc.profile === "ESMM" ? "EARSIV" : "EFATURA", role: "buyer" });
+    if (buyer.length) throw new HttpError(409, `Alıcı bilgisi eksik: ${buyer.join(" ")}`, { code: "buyer-incomplete", problems: buyer });
+    if (sending.has(doc.id)) throw new HttpError(409, "Bu belge şu anda gönderiliyor; birkaç saniye bekleyin.", { code: "einvoice-sending" });
+    sending.add(doc.id);
+    try {
+      const link = integrator(s);
+      const xml = buildUbl(doc, { variant: "tr" });
+      let result;
+      try {
+        result = await link.send({ invoice: doc, xml });
+      } catch (error) {
+        // Entegratör reddettiyse belge gitmemiştir: "Hata" işlenir, düzeltilip yeniden gönderilir. Bağlantı koptuysa
+        // sonuç belirsizdir: durum değişmez (aynı ETTN ikinci kez kabul edilmez; önce Durum Sorgula).
+        const code = error?.extra?.code || error?.code || "";
+        const rejected = ["integrator-rejected", "integrator-contract", "integrator-alias"].includes(code);
+        setE(user, doc.id, { status: rejected ? "error" : doc.eStatus || "none", adapter: link.id, message: error?.message || String(error) }, "invoice.e.send-failed", { adapter: link.id, code });
+        throw error;
+      }
+      setE(user, doc.id, { status: result.status, adapter: link.id, message: result.message }, "invoice.e.sent", { adapter: link.id, reference: result.reference });
+      return result;
+    } finally {
+      sending.delete(doc.id);
+    }
+  }
+  async function maybeAutoSend(user, id) {
+    if (!edocEnabled) return null;
+    const s = settings();
+    if (!s.integrator.autoSend) return null;
+    const doc = detail(id, user);
+    if (!doc.canSend) return null;
+    try {
+      return { ok: true, ...(await sendInvoice(user, id)) };
+    } catch (error) {
+      return { ok: false, message: error?.message || String(error) };
+    }
+  }
   router.post("/api/workspace/invoices/:id/send", async ({ req, res, params }) => {
     const user = requireManage(req);
-    const doc = detail(params.id, user);
-    if (!doc.canSend) throw new HttpError(409, doc.profile === "KAGIT" ? "Kâğıt fatura e-Belge olarak gönderilmez." : "Bu belge gönderilemez.");
+    requireEdoc();
+    const result = await sendInvoice(user, invoiceRow(params.id).id);
+    ok(res, { ...detail(params.id, user), sendResult: result });
+  });
+  router.post("/api/workspace/invoices/:id/e-refresh", async ({ req, res, params }) => {
+    const user = requireManage(req);
+    requireEdoc();
+    const doc = detail(invoiceRow(params.id).id, user);
+    if (!doc.canRefresh) throw new HttpError(409, doc.profile === "KAGIT" ? "Kâğıt belgenin e-Belge durumu olmaz." : "Bu belge henüz entegratöre gönderilmedi.", { code: "einvoice-not-sent" });
+    const result = await integrator().status({ invoice: doc });
+    setE(user, doc.id, { status: result.status, message: result.message }, "invoice.e.status", { raw: result.raw || "" });
+    const hint = result.status === "rejected" && doc.status === "issued" ? "Alıcı faturayı reddetti: faturayı programda İptal edin (stok, cari ve kasa etkileri geri alınır), gerekirse yeniden kesin." : "";
+    ok(res, { ...detail(doc.id, user), statusResult: { ...result, hint } });
+  });
+  router.post("/api/workspace/invoices/integrator/test", async ({ req, res }) => {
+    const user = auth.requirePermission(req, "invoices.settings");
+    requireEdoc();
     const s = settings();
-    const xml = buildUbl(doc, { variant: "tr" });
-    const result = await sendWith(s.adapter.id, { invoice: doc, xml, settings: s });
-    store.tx(() => {
-      store.run("UPDATE invoices SET e_status = ?, e_adapter = ?, e_message = ?, e_at = ?, updated_at = ? WHERE id = ?", result.status, s.adapter.id, String(result.message || "").slice(0, 500), now(), now(), doc.id);
-      audit(user, "invoice.e.sent", doc.id, { adapter: s.adapter.id, status: result.status });
-    });
-    publish(user, { kind: "invoices", invoiceId: doc.id });
-    ok(res, { ...detail(doc.id, user), sendResult: result });
+    const result = await integrator(s).test();
+    audit(user, "invoice.integrator.tested", "settings", { id: s.integrator.id, env: s.integrator.env, contract: result.contract?.source || "" });
+    ok(res, result);
+  });
+  // Mükellef sorgusu: VKN/TCKN GİB e-Fatura kullanıcısı mı, posta kutusu etiketi ne? Cari verilirse kartına yazılır.
+  router.post("/api/workspace/invoices/check-user", async ({ req, res }) => {
+    const user = requireManage(req);
+    requireEdoc();
+    const body = await readJson(req);
+    const taxNo = String(body.taxNo || "").replace(/\s+/g, "");
+    const id = classifyTaxId(taxNo);
+    if (!id.ok) fail400("Geçerli bir VKN (10 hane) ya da TC kimlik numarası (11 hane) yazın.", "taxNo");
+    const result = await integrator().checkUser(taxNo);
+    let accountId = "";
+    if (text(body.accountId)) accountId = accounts().taxIdentity.setEInvoice(user, text(body.accountId), { registered: result.registered, alias: result.aliases[0] || "", title: result.title }).id;
+    ok(res, { ...result, taxNo, accountId });
   });
   // Entegratör portalına elle yüklenen belgenin durumu (Dosya adaptörü): kullanıcı GİB/entegratördeki sonucu işler.
   router.post("/api/workspace/invoices/:id/e-status", async ({ req, res, params }) => {
     const user = requireManage(req);
+    requireEdoc();
     const body = await readJson(req);
     const status = text(body.status);
     if (!["sent", "accepted", "rejected", "exported"].includes(status)) fail400("Durum gönderildi, kabul edildi, reddedildi ya da XML hazır olabilir.", "status");
@@ -1338,6 +1574,7 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, peri
   });
   router.get("/api/workspace/invoices/ubl.zip", async ({ req, res, url }) => {
     const user = requireView(req);
+    requireEdoc();
     const ids = idsOf(url);
     if (!ids.length) fail400("XML'i alınacak faturaları seçin.", "ids");
     const entries = [];
@@ -1404,6 +1641,186 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, peri
   });
 
   // Tek belge (sabit yollardan sonra: router kayıt sırasıyla eşler).
+  // ---------- Gelen e-Faturalar (entegratörün gelen kutusu) ----------
+  // Çekilen belgeler einvoice_inbox'a yazılır (ETTN tekil: aynı belge iki kez gelmez), entegratörde "okundu" işaretlenir.
+  // "Alış Faturası Olarak Al" belgeden alış faturası TASLAĞI açar: satıcı VKN/TCKN ile cari bulunur ya da vergi
+  // bilgileriyle açılır (kişi bir kez girilir), kalemler stok kartına kod ya da adla eşlenir; kullanıcı ödemeyi seçip keser.
+  const INBOX_SQL = `SELECT b.id, b.uuid, b.number, b.sender_vkn AS senderVkn, b.sender_name AS senderName, b.issue_date AS issueDate, b.payable, b.currency, b.profile, b.type_code AS typeCode,
+      b.status, b.state, b.invoice_id AS invoiceId, b.fetched_at AS fetchedAt, COALESCE(i.number, '') AS invoiceNumber, COALESCE(i.status, '') AS invoiceStatus
+    FROM einvoice_inbox b LEFT JOIN invoices i ON i.id = b.invoice_id`;
+  const INBOX_STATES = Object.freeze({ new: "Yeni", imported: "Alındı", ignored: "Yok Sayıldı" });
+  const inboxShape = row => {
+    const accountId = accounts()?.taxIdentity ? accounts().taxIdentity.findByTaxNo(row.senderVkn) : "";
+    const twin = accountId && row.number ? store.get("SELECT id, number FROM invoices WHERE account_id = ? AND kind = 'purchase' AND number = ? AND status = 'issued' AND id <> ?", accountId, row.number, row.invoiceId || "") : null;
+    return { ...row, stateLabel: INBOX_STATES[row.state] || row.state, accountId, duplicateId: twin?.id || "", duplicateNumber: twin?.number || "" };
+  };
+  const inboxRow = id => {
+    const row = store.get(`${INBOX_SQL} WHERE b.id = ?`, text(id));
+    if (!row) throw new HttpError(404, "Gelen belge bulunamadı.", { code: "inbox-not-found" });
+    return row;
+  };
+  const matchItem = line => {
+    const code = String(line.code || "").trim();
+    const byCode = code ? store.get("SELECT id, name, code FROM stock_items WHERE deleted_at IS NULL AND code <> '' AND code = ? COLLATE NOCASE ORDER BY created_at LIMIT 1", code) : null;
+    return byCode || store.get("SELECT id, name, code FROM stock_items WHERE deleted_at IS NULL AND name = ? COLLATE NOCASE ORDER BY created_at LIMIT 1", String(line.name || "").trim()) || null;
+  };
+  function inboxPreview(row, xml) {
+    const parsed = readUbl(xml);
+    const s = settings();
+    const ours = String(s.seller.taxNo || "");
+    return {
+      parsed,
+      addressedToOther: Boolean(ours && parsed.customer.taxNo && parsed.customer.taxNo !== ours),
+      lines: parsed.lines.map(line => {
+        const item = matchItem(line);
+        return { ...line, itemId: item?.id || "", itemName: item?.name || "" };
+      }),
+    };
+  }
+  router.get("/api/workspace/invoices/inbox", async ({ req, res, url }) => {
+    requireView(req);
+    requireEdoc();
+    const state = text(url.searchParams.get("state"));
+    const rows = store.all(`${INBOX_SQL}${INBOX_STATES[state] ? " WHERE b.state = ?" : ""} ORDER BY b.issue_date DESC, b.fetched_at DESC LIMIT 1000`, ...(INBOX_STATES[state] ? [state] : []));
+    const counts = Object.fromEntries(store.all("SELECT state, COUNT(*) AS n FROM einvoice_inbox GROUP BY state").map(item => [item.state, item.n]));
+    ok(res, { items: rows.map(inboxShape), counts, states: INBOX_STATES });
+  });
+  router.post("/api/workspace/invoices/inbox/fetch", async ({ req, res }) => {
+    const user = requireManage(req);
+    requireEdoc();
+    const body = await readJson(req);
+    const to = validDate(body.to) ? body.to : today();
+    const from = validDate(body.from) ? body.from : isoDay(new Date(Date.parse(`${to}T00:00:00Z`) - 30 * 86_400_000));
+    if (from > to) fail400("Başlangıç tarihi bitişten sonra olamaz.", "from");
+    const link = integrator();
+    const list = await link.inbox({ from, to, limit: 100 });
+    let added = 0;
+    let known = 0;
+    const stamp = now();
+    store.tx(() => {
+      for (const item of list) {
+        if (!item.uuid) continue;
+        if (store.get("SELECT 1 FROM einvoice_inbox WHERE uuid = ?", item.uuid)) {
+          known += 1;
+          continue;
+        }
+        store.run(
+          "INSERT INTO einvoice_inbox (id, uuid, number, sender_vkn, sender_name, issue_date, payable, currency, profile, type_code, status, xml, state, fetched_by, fetched_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'new', ?, ?, ?)",
+          newId("inb"), item.uuid, String(item.number || "").slice(0, 40), String(item.senderVkn || "").slice(0, 11), String(item.senderName || "").slice(0, 200), String(item.issueDate || "").slice(0, 10), roundMoney(item.payable),
+          String(item.currency || "TRY").slice(0, 3), String(item.profile || "").slice(0, 40), String(item.typeCode || "").slice(0, 40), String(item.status || "").slice(0, 300), String(item.xml || ""), user.id, stamp, stamp,
+        );
+        added += 1;
+      }
+      audit(user, "invoice.inbox.fetched", "inbox", { from, to, received: list.length, added, known });
+    });
+    // Kaydedilenler entegratörde okundu işaretlenir; işaret konamasa da belge kaybolmaz (bir sonraki çekişte "zaten var").
+    let marked = true;
+    try {
+      await link.markRead(list.map(item => item.uuid).filter(Boolean));
+    } catch {
+      marked = false;
+    }
+    publish(user, { kind: "invoices", inbox: true });
+    ok(res, { from, to, received: list.length, added, known, marked });
+  });
+  router.get("/api/workspace/invoices/inbox/:id", async ({ req, res, params }) => {
+    requireView(req);
+    requireEdoc();
+    const row = inboxRow(params.id);
+    const xml = store.get("SELECT xml FROM einvoice_inbox WHERE id = ?", row.id).xml;
+    let preview = null;
+    let readError = "";
+    try {
+      preview = inboxPreview(row, xml);
+    } catch (error) {
+      readError = `Belge okunamadı: ${error?.message || error}`;
+    }
+    ok(res, { ...inboxShape(row), preview, readError });
+  });
+  router.get("/api/workspace/invoices/inbox/:id/belge.xml", async ({ req, res, params }) => {
+    requireView(req);
+    requireEdoc();
+    const row = inboxRow(params.id);
+    const xml = store.get("SELECT xml FROM einvoice_inbox WHERE id = ?", row.id).xml;
+    sendBuffer(res, Buffer.from(xml, "utf8"), { type: "application/xml; charset=utf-8", name: `${safeName(row.number || row.uuid)}.xml`, inline: false });
+  });
+  router.post("/api/workspace/invoices/inbox/:id/import", async ({ req, res, params }) => {
+    const user = requireManage(req);
+    requireEdoc();
+    const row = inboxRow(params.id);
+    if (row.state === "imported" && row.invoiceId) throw new HttpError(409, `Bu belge ${row.invoiceNumber ? `${row.invoiceNumber} numarasıyla ` : ""}zaten alındı.`, { code: "inbox-imported", invoiceId: row.invoiceId });
+    const xml = store.get("SELECT xml FROM einvoice_inbox WHERE id = ?", row.id).xml;
+    let preview;
+    try {
+      preview = inboxPreview(row, xml);
+    } catch (error) {
+      throw new HttpError(422, `Belge okunamadı: ${error?.message || error}`, { code: "inbox-unreadable" });
+    }
+    const { parsed } = preview;
+    if (!classifyTaxId(parsed.supplier.taxNo).ok) throw new HttpError(422, "Belgedeki satıcının VKN/TCKN'si geçersiz; alış faturasını elle girin.", { code: "inbox-supplier" });
+    if (!preview.lines.length) throw new HttpError(422, "Belgede kalem yok.", { code: "inbox-empty" });
+    const body = await readJson(req);
+    let accountId = accounts().taxIdentity.findByTaxNo(parsed.supplier.taxNo);
+    const accountCreated = !accountId;
+    let draftId = "";
+    store.tx(() => {
+      if (!accountId) accountId = accounts().taxIdentity.createForParty(user, parsed.supplier, "supplier");
+      const goods = preview.lines.some(line => line.itemId);
+      const input = {
+        kind: "purchase",
+        scenario: goods ? "goods_purchase" : "expense_purchase",
+        accountId,
+        number: parsed.number,
+        issueDate: parsed.issueDate,
+        issueTime: /^([01]\d|2[0-3]):[0-5]\d$/.test(parsed.issueTime) ? parsed.issueTime : "00:00",
+        currency: CURRENCIES[parsed.currency] ? parsed.currency : "TRY",
+        rate: parsed.rate || 1,
+        pricesIncludeVat: false,
+        orderNo: parsed.orderNo,
+        despatchNo: parsed.despatchNo,
+        note: [`e-Fatura ETTN ${parsed.uuid}`, ...parsed.notes].join(" · ").slice(0, 1000),
+        lines: preview.lines.map(line => ({ itemId: line.itemId, name: line.name, code: line.code, description: line.description, unit: line.unit, qty: line.qty, unitPrice: line.unitPrice, discountRate: line.discountRate, vatRate: line.vatRate, withholdingCode: line.withholdingCode, exemptionCode: line.exemptionCode, expenseCode: line.itemId ? "" : text(body.expenseCode) || "other" })),
+        status: "draft",
+      };
+      let doc;
+      try {
+        doc = documentInput(input, { mode: "draft" });
+      } catch (error) {
+        throw new HttpError(422, `Belge alış faturasına çevrilemedi: ${error?.message || error}`, { code: "inbox-convert", field: error?.extra?.field || "" });
+      }
+      doc.paymentDraft = { rest: "open" };
+      doc.importUuid = parsed.uuid && !store.get("SELECT 1 FROM invoices WHERE ettn = ?", parsed.uuid) ? parsed.uuid : "";
+      draftId = writeDraft(user, doc);
+      store.run("UPDATE einvoice_inbox SET state = 'imported', invoice_id = ?, updated_at = ? WHERE id = ?", draftId, now(), row.id);
+      audit(user, "invoice.inbox.imported", row.id, { uuid: row.uuid, draftId, accountId, accountCreated });
+    });
+    const draft = detail(draftId, user);
+    const difference = roundMoney(draft.payableTotal - (parsed.totals.payable || 0));
+    publish(user, { kind: "invoices", inbox: true, invoiceId: draftId });
+    ok(res, {
+      draft,
+      accountCreated,
+      unmatched: preview.lines.filter(line => !line.itemId).map(line => line.name),
+      difference,
+      warning: Math.abs(difference) >= 0.01 ? `Programın hesapladığı toplam (${moneyText(draft.payableTotal, draft.currency)}) belgedekinden (${moneyText(parsed.totals.payable, draft.currency)}) farklı; kalemleri kontrol edip kesin.` : "",
+    });
+  });
+  router.post("/api/workspace/invoices/inbox/:id/state", async ({ req, res, params }) => {
+    const user = requireManage(req);
+    requireEdoc();
+    const row = inboxRow(params.id);
+    const body = await readJson(req);
+    const state = text(body.state);
+    if (!["new", "ignored"].includes(state)) fail400("Durum Yeni ya da Yok Sayıldı olabilir.", "state");
+    if (row.state === "imported") throw new HttpError(409, "Alış faturası olarak alınmış belge yok sayılamaz; önce taslağı silin ya da faturayı iptal edin.", { code: "inbox-imported" });
+    store.tx(() => {
+      store.run("UPDATE einvoice_inbox SET state = ?, updated_at = ? WHERE id = ?", state, now(), row.id);
+      audit(user, "invoice.inbox.state", row.id, { state });
+    });
+    publish(user, { kind: "invoices", inbox: true });
+    ok(res, inboxShape(inboxRow(row.id)));
+  });
+
   router.get("/api/workspace/invoices/:id", async ({ req, res, params }) => {
     const user = requireView(req);
     ok(res, detail(params.id, user));

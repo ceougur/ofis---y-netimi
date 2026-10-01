@@ -19,10 +19,15 @@ const money = (value, currency) => `${numberFormat.format(Number(value) || 0)} $
 const dayText = iso => (iso ? `${iso.slice(8, 10)}.${iso.slice(5, 7)}.${iso.slice(0, 4)}` : "");
 const METHOD = { cash: "Nakit", bank: "Havale / EFT", card: "Kredi Kartı" };
 
+// Kâğıt (e-Belge olmayan) belge programdan yazdırıldığında yasal fatura değildir (fatura ancak maliyeyle anlaşmalı
+// matbaanın basılı formuna ya da e-Belge olarak düzenlenir): başlık "Müşteri Fişi" ve altta "resmî fatura yerine
+// geçmez" yazar. e-Belge bağlantısı açılınca e-Fatura / e-Arşiv görseli kendi başlığıyla basılır.
+const isFormal = doc => ["EARSIVFATURA", "TEMELFATURA", "TICARIFATURA", "ESMM"].includes(doc.profile);
 const titleOf = doc => {
-  if (doc.status === "draft") return doc.kind === "smm" ? "PROFORMA MAKBUZ" : "PROFORMA FATURA";
-  if (doc.kind === "smm") return doc.profile === "ESMM" ? "e-SERBEST MESLEK MAKBUZU" : "SERBEST MESLEK MAKBUZU";
-  const head = doc.profile === "EARSIVFATURA" ? "e-ARŞİV FATURA" : doc.profile === "TEMELFATURA" || doc.profile === "TICARIFATURA" ? "e-FATURA" : "FATURA";
+  if (doc.status === "draft") return "PROFORMA";
+  if (!isFormal(doc)) return { sale: "MÜŞTERİ FİŞİ", smm: "MÜŞTERİ FİŞİ (SERBEST MESLEK)", sale_return: "İADE FİŞİ", purchase: "ALIŞ KAYDI", purchase_return: "İADE FİŞİ (ALIŞTAN)" }[doc.kind] || "MÜŞTERİ FİŞİ";
+  if (doc.kind === "smm") return "e-SERBEST MESLEK MAKBUZU";
+  const head = doc.profile === "EARSIVFATURA" ? "e-ARŞİV FATURA" : "e-FATURA";
   return doc.typeCode === "IADE" ? `${head} (İADE)` : head;
 };
 const partyLines = p => {
@@ -85,10 +90,11 @@ function drawInvoice(doc, invoice, { footer = "" }) {
     page.rect(boxX, 36, boxW, 24, { fill: accent, radius: 3 });
     page.text(boxX, 52, titleOf(invoice), { font: "bold", size: 11, color: "#ffffff", align: "center", width: boxW });
     const facts = [
-      ["Fatura No", invoice.displayNo || invoice.number || "Taslak"],
+      [isFormal(invoice) ? "Fatura No" : "Fiş No", invoice.displayNo || invoice.number || "Taslak"],
+      invoice.paperNo ? ["Kâğıt Fatura No", invoice.paperNo] : null,
       ["Tarih / Saat", `${dayText(invoice.issueDate)} ${invoice.issueTime || ""}`.trim()],
-      ["Senaryo", invoice.profileLabel || ""],
-      ["Fatura Tipi", invoice.typeCode || ""],
+      isFormal(invoice) ? ["Senaryo", invoice.profileLabel || ""] : null,
+      isFormal(invoice) ? ["Fatura Tipi", invoice.typeCode || ""] : null,
       invoice.dueDate && invoice.dueDate !== invoice.issueDate ? ["Vade", dayText(invoice.dueDate)] : null,
       invoice.orderNo ? ["Sipariş", `${invoice.orderNo}${invoice.orderDate ? ` · ${dayText(invoice.orderDate)}` : ""}`] : null,
       invoice.despatchNo ? ["İrsaliye", `${invoice.despatchNo}${invoice.despatchDate ? ` · ${dayText(invoice.despatchDate)}` : ""}`] : null,
@@ -99,7 +105,8 @@ function drawInvoice(doc, invoice, { footer = "" }) {
     let factTop = 74;
     for (const [label, value] of facts) {
       page.text(boxX + 4, factTop, label, { size: 7.5, color: muted });
-      page.text(boxX + 66, factTop, doc.fit(String(value), boxW - 70, label === "Fatura No" ? "bold" : "regular", label === "ETTN" ? 6.5 : 8), { size: label === "ETTN" ? 6.5 : 8, font: label === "Fatura No" ? "bold" : "regular", color: ink });
+      const strong = label === "Fatura No" || label === "Fiş No";
+      page.text(boxX + 66, factTop, doc.fit(String(value), boxW - 70, strong ? "bold" : "regular", label === "ETTN" ? 6.5 : 8), { size: label === "ETTN" ? 6.5 : 8, font: strong ? "bold" : "regular", color: ink });
       factTop += 11;
     }
     // Alıcı.
@@ -173,7 +180,7 @@ function drawInvoice(doc, invoice, { footer = "" }) {
     paymentText(invoice),
     (invoice.seller?.banks || []).filter(bank => bank.iban).map(bank => `${bank.name ? `${bank.name} ` : ""}IBAN: ${bank.iban.replace(/(.{4})/g, "$1 ").trim()}`).join("   "),
     invoice.profile === "EARSIVFATURA" ? "e-Arşiv izni kapsamında elektronik ortamda iletilmiştir." : "",
-    invoice.status === "draft" ? "Bu belge proformadır; yasal fatura yerine geçmez." : "",
+    invoice.status === "draft" ? "Bu belge proformadır; yasal fatura yerine geçmez." : !isFormal(invoice) ? "Bu belge bilgi amaçlıdır; resmî fatura yerine geçmez ve mali değeri yoktur." : "",
     invoice.status === "cancelled" ? `Bu fatura ${dayText((invoice.cancelledAt || "").slice(0, 10))} tarihinde iptal edildi${invoice.cancelReason ? `: ${invoice.cancelReason}` : ""}.` : "",
     footer,
   ].filter(Boolean);
