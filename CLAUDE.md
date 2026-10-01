@@ -76,6 +76,12 @@ Bu dosya oturumlar arasında taşınan hafızadır. Her oturumun başında okunu
      yenileme. Yöntem: her ekran gezilir, her kutuya harf harf yazılırken arka planda veri değişikliği tetiklenir
      (`live:workspace.changed`), odak ve imleç yerinde kalmalı; bulgular listelenip hepsi düzeltilir, e2e'ye kalıcı
      odak senaryosu eklenir.
-  5. (kullanıcı ekleyecek)
+  5. Ana ekran sağ detay panelinde "CARİ … · No 4 · Bakiye" pilindeki **Cari Kartı** düğmesi çalışmıyor (ekran
+     görüntüsü: Ömer Kılcı, 01.10.2026). Kod: `hof-workspace.js` `caseAccountHtml` → `data-open-account`,
+     `document` click dinleyicisi `#hof-case-plan [data-open-account]` → `HOF.accounts?.open(id)`. Kablo yerinde
+     görünüyor; ekranda yeniden üretip kök neden bulunacak (öneriler: tıklama başka bir dinleyicide `stopPropagation`
+     ile yutuluyor; `HOF.accounts` o anda yüklü değil; `open()` kapalı pencere/mod durumunda sessiz dönüyor).
+     Aynı kalıptaki "Taksit Kartını Aç" ve Raporlar'daki "Cari Kartını Aç" da denenir; e2e'ye tıklama denetimi eklenir.
+  6. (kullanıcı ekleyecek)
 - Pro — uzaktan görüntüleme: `docs/PRO-UZAKTAN-GORUNTULEME.md` (önce en alttaki "Oturum devri"); genel durum
   `docs/DURUM-VE-DEVAM.md`.
