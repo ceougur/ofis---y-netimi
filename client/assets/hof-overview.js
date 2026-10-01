@@ -162,7 +162,8 @@
     node.classList.toggle("is-offline", !live);
     const list = tiles();
     node.style.setProperty("--hof-pulse-count", String(list.length || 1));
-    node.innerHTML = `<header class="hof-pulse-head">
+    // v2.0.14: canlı yenileme kartı yeniden kurarken odaklı kutu (klavyeyle gezen kullanıcı) korunur.
+    HOF.swap(node, `<header class="hof-pulse-head">
         <span class="hof-pulse-title"><i class="hof-pulse-dot" aria-hidden="true"></i>ANLIK DURUM</span>
         <span class="hof-pulse-time" title="${live ? "Canlı: her giriş ve çıkışta kendiliğinden yenilenir" : "Sunucuya bağlanılamıyor; bağlantı gelince yenilenir"}">${live ? `canlı · ${esc(clock(data.at))}` : "bağlantı bekleniyor"}</span>
         <span class="hof-pulse-mini" aria-hidden="${collapsed ? "false" : "true"}">${miniLine()}</span>
@@ -177,7 +178,7 @@
             <small class="hof-pulse-sub">${tile.sub}</small>
           </button>`,
         )
-        .join("")}</div></div>`;
+        .join("")}</div></div>`);
     place(welcome, node);
   }
   // Yer: başlık satırının sağı (başlık ile "Dışa aktar" arası). Dar ekranda satır kırılır, kart başlığın altına iner.
@@ -400,7 +401,7 @@
     else if (report.tab === "vade") content = vadeView(s);
     else if (report.tab === "flow") content = flowView(s);
     else content = chequeView(s);
-    node.innerHTML = tabBar + content;
+    HOF.swap(node, tabBar + content);
     if (report.tab === "flow" && s.data) wireChart(node.querySelector("[data-chart]"), s.data);
   }
 

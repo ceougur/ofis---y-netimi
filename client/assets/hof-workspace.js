@@ -131,10 +131,16 @@
       casePlanKey = "";
       return;
     }
-    const anchor = panel.querySelector(".hof-case-actions");
-    if (!box) box = HOF.el("section", { id: "hof-case-plan", class: "hof-case-plan", "data-hof-ui": "", "aria-label": "Taksit planı" });
+    // v2.0.14: sıra sabit — işlem düğmeleri → denetim bölümü (#hof-checks) → taksit/cari bölümü. Önceden iki bölüm de
+    // "düğmelerin hemen altı"nı istiyor, her DOM değişiminde birbirinin yerini alıyordu; her taşınma bölümdeki odağı
+    // düşürüyor, tıklama sırasında taşınınca düğme (Cari Kartı) tepki vermiyordu.
+    const anchor = panel.querySelector("#hof-checks") || panel.querySelector(".hof-case-actions");
+    if (!box) {
+      box = HOF.el("section", { id: "hof-case-plan", class: "hof-case-plan", "data-hof-ui": "", "aria-label": "Taksit planı" });
+      box.addEventListener("click", onCasePlanClick, true);
+    }
     if (!box.innerHTML) box.hidden = true;
-    if (anchor && anchor.nextSibling !== box) anchor.after(box);
+    if (anchor && anchor.nextSibling !== box && !box.contains(document.activeElement)) anchor.after(box);
     if (!force && casePlanKey === selected.key) return;
     // Başka kayda geçildiyse önceki kaydın planı bir an bile görünmez: bölüm hemen boşaltılır, sonuç geldiğinde
     // seçili kayıt hâlâ aynıysa yazılır (yarış koruması: damga + kayıt anahtarı).
@@ -168,15 +174,25 @@
     const side = balance > 0.005 ? "borçlu" : balance < -0.005 ? "alacaklı" : "";
     return `<div class="hof-case-account"><div><h3>CARİ</h3><b>${esc(account.name)}</b>${account.refNo ? ` <small>· No ${esc(account.refNo)}</small>` : ""}</div><div class="hof-case-account-balance"><span>Bakiye</span><b class="${balance > 0.005 ? "hof-cash-out" : balance < -0.005 ? "hof-cash-in" : ""}">${esc(HOF.formatMoney(Math.abs(balance)))}${side ? ` <small>${side}</small>` : ""}</b></div><button type="button" class="hof-button hof-button-small hof-button-ghost" data-open-account="${esc(account.id)}">Cari Kartı</button></div>`;
   }
-  document.addEventListener("click", event => {
-    const button = event.target.closest("#hof-case-plan [data-case-collect], #hof-case-plan [data-open-plan], #hof-case-plan [data-open-account]");
-    if (!button) return;
-    if (button.dataset.openAccount) return HOF.accounts?.open(button.dataset.openAccount);
-    if (button.dataset.openPlan) return HOF.plans?.open(button.dataset.openPlan);
+  // v2.0.14: dinleyici bölümün kendi üstünde ve yakalama aşamasında — panelin başka bir dinleyicisi (React, eklenti)
+  // tıklamayı yutsa da "Cari Kartı", "+ Tahsilat" ve "Taksit Kartını Aç" çalışır (müşteri: Cari Kartı düğmesi tepki vermiyordu).
+  function onCasePlanClick(event) {
+    const button = event.target.closest("[data-case-collect], [data-open-plan], [data-open-account]");
+    if (!button || !event.currentTarget.contains(button)) return;
+    event.preventDefault();
+    event.stopPropagation();
+    if (button.dataset.openAccount) {
+      if (!HOF.accounts?.open) return HOF.toast("Cari modülü yüklenemedi; sayfayı yenileyin.", { type: "error" });
+      return HOF.accounts.open(button.dataset.openAccount);
+    }
+    if (button.dataset.openPlan) {
+      if (!HOF.plans?.open) return HOF.toast("Taksit modülü yüklenemedi; sayfayı yenileyin.", { type: "error" });
+      return HOF.plans.open(button.dataset.openPlan);
+    }
     const plan = casePlans.find(item => item.id === button.dataset.plan);
     if (!plan || plan.caseKey !== HOF.selectedCase()?.key) return;
     HOF.plans.collect(plan, plan.items.find(item => item.id === button.dataset.caseCollect) || null);
-  });
+  }
 
   const requireCase = () => {
     const selected = HOF.selectedCase();

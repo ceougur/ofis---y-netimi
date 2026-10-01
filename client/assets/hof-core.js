@@ -54,6 +54,45 @@
   HOF.isReady = false;
   HOF.whenReady = handler => (HOF.isReady ? handler(HOF.user) : HOF.on("ready", handler));
 
+  // ---------- Odak koruma (v2.0.14) ----------
+  // Bir kapsayıcı yeniden kurulurken (liste yenilenmesi, canlı yenileme) içindeki odaklı girdi kaybolmasın: yazılan
+  // değer, odak, imleç ve kaydırma konumu yeniden kurulan kutuya geri verilir. Kutu, süzgeç adıyla (data-filter, data-q,
+  // data-pick…), name/id ya da aria-label ile yeniden bulunur. Kullanım: HOF.swap(root, html) ya da HOF.keepFocus(root, fn).
+  const FOCUS_KEYS = ["data-filter", "data-q", "data-pick", "data-rc-search", "data-field", "data-range", "data-open-account", "data-open-plan", "data-case-action", "data-case-collect", "data-action", "data-act", "data-pulse", "data-pulse-go", "data-composer", "data-body", "data-current", "data-opt", "name", "id", "aria-label"];
+  const TEXT_INPUT = /^(text|search|tel|email|url|number|password|date|datetime-local|month)?$/;
+  HOF.focusKey = node => {
+    if (!node || !node.getAttribute) return "";
+    for (const key of FOCUS_KEYS) {
+      const value = node.getAttribute(key);
+      if (value !== null) return `${node.tagName.toLowerCase()}[${key}="${CSS.escape(value)}"]`;
+    }
+    return "";
+  };
+  HOF.keepFocus = (root, render) => {
+    const active = document.activeElement;
+    const inside = root && active && active !== document.body && root.contains(active) && /^(INPUT|TEXTAREA|SELECT)$/.test(active.tagName);
+    const text = inside && active.tagName !== "SELECT" && (active.tagName === "TEXTAREA" || TEXT_INPUT.test(active.type || ""));
+    const snap = inside ? { key: HOF.focusKey(active), text, value: active.value, start: text ? active.selectionStart : null, end: text ? active.selectionEnd : null, scroll: root.scrollTop } : null;
+    const out = render();
+    if (!snap?.key) {
+      // Pencere "Yükleniyor…" ile açıldıysa odak kapatma düğmesinde kalmıştır; içerik gelince ilk arama kutusuna geçer.
+      const now = document.activeElement;
+      if (now && now.matches?.(".hof-modal-close") && now.closest(".hof-modal")?.contains(root)) root.querySelector("[autofocus], input[type=search]")?.focus({ preventScroll: true });
+      return out;
+    }
+    const next = root.querySelector(snap.key);
+    if (!next || next.disabled) return out;
+    // Yazarken gelen (eski) yanıt kutudaki metni geri almasın.
+    if (snap.text && next.value !== snap.value) next.value = snap.value;
+    next.focus({ preventScroll: true });
+    if (snap.start !== null) {
+      try { next.setSelectionRange(snap.start, snap.end); } catch { /* type=search/number bazı tarayıcılarda seçim desteklemez */ }
+    }
+    if (snap.scroll) root.scrollTop = snap.scroll;
+    return out;
+  };
+  HOF.swap = (root, html) => HOF.keepFocus(root, () => { root.innerHTML = html; });
+
   // ---------- Oturum ve yetki ----------
   HOF.user = null;
   HOF.settings = { sheetUrl: "", syncMinutes: "5", aiMapping: "", activeSourceLabel: "" };
@@ -246,8 +285,14 @@
 
   // ---------- Pencereler ----------
   const openModals = [];
+  let lastPressed = null;
+  document.addEventListener("pointerdown", event => { lastPressed = event.target?.closest?.("button, a, [tabindex]") || null; }, true);
   HOF.modal = ({ title, eyebrow = "DESTEKOFİS", body = "", size = "", dismissible = true, onOpen, onClose } = {}) => {
-    const previousFocus = document.activeElement;
+    // v2.0.14: açan öğe. Tıklama odak vermemişse (ör. panel mousedown'ı yutuyor) son basılan düğme alınır; pencere
+    // açıkken o düğme yeniden kurulmuş olabilir (canlı yenileme) — kapanınca odak aynı anahtarlı yeni düğmeye döner, boşa
+    // (body) düşmez.
+    const previousFocus = document.activeElement && document.activeElement !== document.body ? document.activeElement : lastPressed && lastPressed.isConnected ? lastPressed : null;
+    const previousKey = HOF.focusKey?.(previousFocus) || "";
     const titleId = `hof-modal-title-${Math.random().toString(36).slice(2, 8)}`;
     const node = HOF.el(
       "div",
@@ -268,7 +313,8 @@
       document.removeEventListener("keydown", onKey, true);
       openModals.splice(openModals.indexOf(api), 1);
       setTimeout(() => node.remove(), 160);
-      if (previousFocus && previousFocus.focus) previousFocus.focus();
+      const back = previousFocus && previousFocus.isConnected ? previousFocus : previousKey ? document.querySelector(previousKey) : null;
+      if (back && back.focus && back !== document.body) back.focus({ preventScroll: true });
       if (onClose) onClose(result);
     };
     const focusables = () => [...dialog.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])')].filter(item => !item.disabled && item.offsetParent !== null);

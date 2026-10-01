@@ -133,6 +133,9 @@ try {
     for (const [name, open] of openers) {
       await admin.evaluate(open);
       await admin.waitForSelector(`${modal} input[type="search"]`, { timeout: 10000 });
+      // v2.0.14: pencere açılınca odak arama kutusuna gelir; odaklı çerçeve rengi ölçülmesin diye önce odak bırakılır.
+      await admin.evaluate(() => document.activeElement?.blur());
+      await admin.waitForTimeout(100);
       colors.push([name, await admin.$eval(`${modal} input[type="search"]`, node => `${getComputedStyle(node).backgroundColor}|${getComputedStyle(node).borderTopColor}|${getComputedStyle(node).borderRadius}`)]);
       await admin.keyboard.press("Escape");
       await admin.waitForTimeout(300);

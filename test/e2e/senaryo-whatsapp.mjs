@@ -274,6 +274,76 @@ try {
     await closeAll();
   });
 
+  await step("E. Otomatik Sıra (v2.0.14): WhatsApp'tan bu pencereye dönülünce sıradaki kişi kendiliğinden açılır; kapatılınca açılmaz", async () => {
+    await closeAll();
+    await admin.click('#hof-sidecard [data-action="accounts"]');
+    await admin.waitForSelector(`${top} tr[data-account] input[data-select]`, { timeout: 20000 });
+    await admin.waitForTimeout(400);
+    // Önceki adımın "hepsini seç" seçimi temizlenir; numarası geçerli üç kişi seçilir.
+    if (await admin.$(`${top} [data-act="clearSel"]`)) { await admin.click(`${top} [data-act="clearSel"]`); await admin.waitForTimeout(300); }
+    const names = await rowNames("tr[data-account]");
+    const boxes = await admin.$$(`${top} tr[data-account] input[data-select]`);
+    const chosen = [];
+    for (let i = 0; i < names.length && chosen.length < 3; i += 1) {
+      const person = people.find(item => item.name === names[i]);
+      if (person && validPhone(person)) { await boxes[i].check(); chosen.push(person); }
+    }
+    ok(chosen.length === 3, `üç kişi seçildi: ${chosen.map(item => item.name).join(", ")}`);
+    await admin.click(`${top} [data-act="waMessage"]`);
+    await admin.waitForSelector(`${top} .hof-wa-head`, { timeout: 30000 });
+    await admin.click(`${top} [data-start]`);
+    await admin.click(`${top} [data-answer="yes"]`);
+    await admin.waitForSelector(`${top} [data-send]`);
+    ok(await admin.$eval(`${top} input[data-auto]`, node => node.checked), "Otomatik Sıra kutusu varsayılan açık");
+    const before = (await waSent()).length;
+    await admin.click(`${top} [data-send]`); // 1. kişi: kullanıcı tıklar
+    await admin.waitForFunction(() => /2 \/ 3/.test(document.querySelector(".hof-modal-backdrop.is-visible:last-of-type")?.innerText || ""), null, { timeout: 8000 }).catch(async () => {
+      console.log("  (ayrıntı) pencere metni:", (await admin.$eval(top, node => node.innerText.replace(/\s+/g, " "))).slice(0, 240), "| __wa:", (await waSent()).length);
+      throw new Error("sıra 2 / 3'e geçmedi");
+    });
+    const hint = await admin.$eval(`${top} [data-wa-hint]`, node => node.innerText.replace(/\s+/g, " "));
+    ok(/kendiliğinden açılacak/.test(hint) && (await admin.$eval(`${top} [data-send]`, node => node.textContent.trim())) === "Şimdi Aç", `2. kişi hazır, ipucu: ${hint.slice(0, 90)}`);
+    await shot("otomatik-sira-bekliyor");
+    // Kullanıcı WhatsApp'ta Gönder'e basıp programa döner (pencere odağı gelir) → 2. kişi kendiliğinden açılır.
+    await admin.evaluate(() => window.dispatchEvent(new Event("focus")));
+    await admin.waitForFunction(n => window.__wa.length === n + 2, before, { timeout: 5000 });
+    ok(/3 \/ 3/.test(await admin.$eval(top, node => node.innerText)), "programa dönünce 2. kişi kendiliğinden açıldı; sıra 3 / 3");
+    await admin.evaluate(() => window.dispatchEvent(new Event("focus")));
+    await admin.waitForSelector(`${top} .hof-wa-done`, { timeout: 5000 });
+    ok((await waSent()).length === before + 3 && /3 kişiye gönderildi/.test(await admin.$eval(top, node => node.innerText)), "3. kişi de kendiliğinden açıldı; 3 kişiye gönderildi");
+    ok((await call(`/api/workspace/whatsapp/history?accountId=${ids.get(chosen[2].name)}`)).data.some(item => item.kind === "message"), `${chosen[2].name}: kendiliğinden açılan gönderim de cari kartına yazıldı`);
+    await shot("otomatik-sira-tamam");
+    // Tamamlandıktan sonra pencereye dönüşler bir şey açmaz.
+    await admin.evaluate(() => window.dispatchEvent(new Event("focus")));
+    await admin.waitForTimeout(900);
+    ok((await waSent()).length === before + 3, "tamamlandıktan sonra odak dönüşü yeni sohbet açmaz");
+    await closeAll();
+    // Otomatik Sıra kapatılır: dönüşte sıradaki açılmaz; tercih hatırlanır.
+    await admin.click('#hof-sidecard [data-action="accounts"]');
+    await admin.waitForSelector(`${top} tr[data-account] input[data-select]`, { timeout: 20000 });
+    await admin.waitForTimeout(400);
+    if (await admin.$(`${top} [data-act="clearSel"]`)) { await admin.click(`${top} [data-act="clearSel"]`); await admin.waitForTimeout(300); }
+    const boxes2 = await admin.$$(`${top} tr[data-account] input[data-select]`);
+    const names2 = await rowNames("tr[data-account]");
+    let picked = 0;
+    for (let i = 0; i < names2.length && picked < 2; i += 1) { const person = people.find(item => item.name === names2[i]); if (person && validPhone(person)) { await boxes2[i].check(); picked += 1; } }
+    await admin.click(`${top} [data-act="waMessage"]`);
+    await admin.waitForSelector(`${top} .hof-wa-head`, { timeout: 30000 });
+    await admin.click(`${top} [data-start]`);
+    await admin.click(`${top} [data-answer="yes"]`);
+    await admin.waitForSelector(`${top} input[data-auto]`);
+    await admin.uncheck(`${top} input[data-auto]`);
+    const before2 = (await waSent()).length;
+    await admin.click(`${top} [data-send]`);
+    await admin.waitForFunction(() => /2 \/ 2/.test(document.querySelector(".hof-modal-backdrop.is-visible:last-of-type")?.innerText || ""));
+    ok((await admin.$eval(`${top} [data-send]`, node => node.textContent.trim())) === "WhatsApp'ta Aç ve Sıradakine Geç", "Otomatik Sıra kapalı: düğme eski adıyla");
+    await admin.evaluate(() => window.dispatchEvent(new Event("focus")));
+    await admin.waitForTimeout(900);
+    ok((await waSent()).length === before2 + 1, "Otomatik Sıra kapalıyken odak dönüşü sıradakini açmaz");
+    ok(await admin.evaluate(() => localStorage.getItem("hof.whatsapp.auto") === "0"), "tercih hatırlanır (kapalı)");
+    await closeAll();
+    await admin.evaluate(() => localStorage.removeItem("hof.whatsapp.auto"));
+  });
   await step("Tarayıcı hataları", async () => {
     ok(errors.length === 0, errors.length ? `tarayıcı hataları: ${errors.join(" | ")}` : "hiçbir ekranda tarayıcı hatası yok");
   });

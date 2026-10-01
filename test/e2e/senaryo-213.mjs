@@ -155,8 +155,15 @@ try {
     await admin.waitForSelector(`${top} [data-send]`);
     ok(/1 \/ 2/.test(await topText()), "ilerleme 1 / 2");
     ok(await admin.$(`${top} a[href$="/ekstre.pdf"]`), "Ekstre PDF bağlantısı");
+    ok(await admin.$eval(`${top} input[data-pdf]`, node => node.checked), "v2.0.14: 'Ekstre PDF'ini kendiliğinden indir' varsayılan açık");
     await shot(admin, "whatsapp-sira-1");
+    const firstName = await admin.$eval(`${top} .hof-wa-person strong`, node => node.textContent.trim());
+    const download = admin.waitForEvent("download", { timeout: 8000 });
     await admin.click(`${top} [data-send]`);
+    const file = await download;
+    // Başsız Chromium indirme adını "download" diye bildirir; ad sunucunun Content-Disposition başlığından doğrulanır.
+    const disposition = await admin.evaluate(async url => (await fetch(url)).headers.get("content-disposition") || "", file.url());
+    ok(/ekstre\.pdf\?download=1$/.test(file.url()) && disposition.includes(encodeURIComponent(`Cari-ekstre ${firstName}.pdf`)), `ekstre PDF'i kişinin adıyla kendiliğinden indi: ${decodeURIComponent(disposition.split("''")[1] || disposition)}`);
     await admin.waitForSelector(`${top} [data-prev]:not([disabled])`);
     ok(/2 \/ 2/.test(await topText()), "ilerleme 2 / 2");
     await admin.click(`${top} [data-send]`);
@@ -185,6 +192,7 @@ try {
     await admin.focus(`${top} textarea[data-body]`);
     await admin.keyboard.press("End");
     await admin.click(`${top} [data-var="{Ad}"]`);
+    ok(await admin.evaluate(() => document.activeElement?.matches(".hof-modal-backdrop.is-visible:last-of-type textarea[data-body]") && document.activeElement.selectionStart === document.activeElement.value.length), "v2.0.14: değişken pili eklenince odak metin kutusunda, imleç eklenenin sonunda");
     await admin.fill(`${top} textarea[data-body]`, (await admin.$eval(`${top} textarea[data-body]`, node => node.value)) + ", güncel bakiyeniz {Bakiye}. Hafta sonu indirimimiz başladı.");
     const bubble = await admin.$eval(`${top} .hof-wa-bubble`, node => node.innerText);
     ok(/Merhaba (Tülay Arıkan|Kemal Bakkal), güncel bakiyeniz ₺?[\d.]+,\d\d/.test(bubble), `değişkenler doldu: ${bubble}`);
