@@ -235,6 +235,18 @@ Bağlam kopsa da bu düzen değişmez. Kullanıcı "zip ver" dediğinde şu üç
      45/355) hangi yolu sunuyor — kullanıcıya sorulmadan değiştirilmez, yap'ta ekranla birlikte gösterilir. Test:
      arayüzden Kasa → Tahsilat Ekle / Ödeme Ekle formunda yalnız Nakit; API'ye bank/card gönderilince 400; Banka
      sekmesindeyken eklenen hareket Nakit Kasa'da.
+     Ek (müşteri, aynı gün, ekran: Kasa ve Banka penceresi, "Tümü / Nakit Kasa / Banka (Havale / EFT) / POS / Kredi
+     Kartı" sekmeleri işaretli): MANTIK = KASADA YALNIZ NAKİT AKIŞI görünür, başka hiçbir şey. Banka/POS/Kredi Kartı
+     sekmeleri ve "Kasa ve Banka Toplamı" Kasa penceresinden KALKAR (pencere adı "Kasa", gösterge "Nakit Kasa"; Kasa
+     Dökümü PDF yalnız nakit). Banka modülü henüz yok → havale/EFT, POS, kredi kartı hareketleri (cari, fatura, taksit,
+     stok, çek ekranlarından girilenler; veri zaten `method` ile tutuluyor, hiçbir kayıt kaybolmaz) RAPORLARA taşınır:
+     Raporlar'da "Banka ve POS Hareketleri" (yol süzgeci: Banka / POS / Kredi Kartı; tarih aralığı; giriş-çıkış-bakiye;
+     PDF/Excel) + ANLIK DURUM'da Nakit Kasa ile Banka/POS ayrı kartlar. Kasa ↔ Banka TRANSFERİ: Kasa'da "Banka'dan Kasaya
+     Aktar" / "Kasadan Bankaya Yatır" — Kasa'da NAKİT giriş/çıkış olarak görünür, banka raporunda karşı hareket; tek
+     işlemde, mutabakat kapısında. Detay kartı/cari/fatura tahsilatlarında Havale/POS seçimi KALIR (Kasa'ya değil banka
+     raporuna düşer) — önceki sorum bununla cevaplandı. Eksi Bakiye Denetimi (Nakit/Banka/Kredi Kartı) kalır. Test: Kasa'da
+     yalnız nakit; bankaya tahsilat Kasa toplamını değiştirmez, raporda görünür; transfer iki tarafta; eski verideki
+     bank/card Kasa kayıtları raporda, Kasa'da yok; mutabakat 0.
   KURAL (bu maddeden): kullanıcının her isteği, ne kadar küçük olsa da, AYNI ANDA bu listeye yazılır ve commit edilir;
   "dün konuştuk" denen bir istek listede yoksa kullanıcıya açıkça söylenir.
 - e-Belge kararı (kullanıcı, 01.10.2026): vergi dairesi/entegratör bağlantısı KAPALI — "sana entegre et diyene kadar".
