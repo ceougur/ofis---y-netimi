@@ -137,6 +137,9 @@ Bağlam kopsa da bu düzen değişmez. Kullanıcı "zip ver" dediğinde şu üç
      üstte; faturada kalem satırında kodla arama (yazılan kod tam eşleşirse doğrudan seçilir — barkod okuyucu da çalışır),
      kod kalem altında görünür; tekillik denetimi (aynı kod iki farklı ürüne verilmez, uyarı); stok listesinde koda göre
      arama/sıralama; Excel'den stok aktarımında "Stok Kodu" kolonu (eşleme var: `mapStockHeaders` code); PDF/rapor kolonları.
+     Ek (kullanıcı): FATURADA stok kodu görünür olmalı — formda kalem satırında ayrı "Stok Kodu" kolonu (ürün seçilince
+     dolar, yazılırsa ürünü bulur), fatura kartında kalem tablosunda, fatura PDF'inde ayrı kolon (şu an adın yanında
+     parantez içinde), fatura Excel/raporlarında (Ürün Bazında Satış vb.), UBL'de SellersItemIdentification.
 - e-Belge kararı (kullanıcı, 01.10.2026): vergi dairesi/entegratör bağlantısı KAPALI — "sana entegre et diyene kadar".
   Fatura modülü tam çalışır; belge "Müşteri Fişi" (resmî hükmü yok) basılır; e-Fatura/e-Arşiv/XML ekranda görünmez.
   Entegratör altyapısı (müşteri kendi API bilgisini girer, kontörü kendisi alır) hazır tutulur ama `config.edocEnabled`
