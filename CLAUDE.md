@@ -122,6 +122,9 @@ Bağlam kopsa da bu düzen değişmez. Kullanıcı "zip ver" dediğinde şu üç
      YANLIŞ. Mal alışında stok kartı yoksa öneri listesinde "+ Yeni Stok Kartı: <ad>" çıkmalı (birim, satış fiyatı, kod
      sorulur; kart fatura kaydıyla AYNI işlemde açılır, kalem stoğa girer, maliyet alış fiyatı). Kullanıcı daha önce de
      istemişti. Gider senaryosunda ad = gider kalemi kalır. Kayıtta stoksuz mal kalemi kalmışsa uyarı.
+  8. Kalemler başlığında (Fiyatlar KDV Dahil'in yanında, sarı işaretli yer) "Tüm Kalemlere KDV: [%0/%1/%10/%20]" — tek
+     seçimle bütün satırların KDV'si değişir (alış ve satış); sonra satırda tek tek değiştirilebilir; yeni eklenen kalem
+     de bu oranı alır. (Gözlem, ekranda: ANTİFRİZ "Stokta −5 Adet" — eksi stok; yap'ta incelenip sorulacak.)
 - e-Belge kararı (kullanıcı, 01.10.2026): vergi dairesi/entegratör bağlantısı KAPALI — "sana entegre et diyene kadar".
   Fatura modülü tam çalışır; belge "Müşteri Fişi" (resmî hükmü yok) basılır; e-Fatura/e-Arşiv/XML ekranda görünmez.
   Entegratör altyapısı (müşteri kendi API bilgisini girer, kontörü kendisi alır) hazır tutulur ama `config.edocEnabled`
