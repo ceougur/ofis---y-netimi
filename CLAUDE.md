@@ -223,6 +223,20 @@ Bağlam kopsa da bu düzen değişmez. Kullanıcı "zip ver" dediğinde şu üç
      Cari"; seçicide "+ Yeni Cari" (fatura formundaki gibi); boş sonuçta "Bu adla cari yok — + Yeni Cari". Aynı denetim
      tahsil/ödeme/teminat formlarındaki seçicilere de (tür kısıtı kalmasın). Test: yalnız Müşteri türünde carisi olan
      veride ciro arayüzden; tedarikçi + müşteri aynı adla; ciro sonrası cari bakiyesi, çek durumu "Ciro Edildi", Kasa aynı.
+  9. ÖNCELİKLİ — KASA PENCERESİNDE ÖDEME YOLU YALNIZ NAKİT (kullanıcı, 02.10.2026: "dün konuşmuştuk, yapmamışsın,
+     müşteriye mahçup oldum"; bu istek hiçbir notta/CLAUDE.md'de/CHANGELOG'da kayıtlı DEĞİLDİ — kaybolmuştu). Kasa
+     penceresinin kendi formları "Kasaya Tahsilat Ekle" / "Kasadan Ödeme Ekle" / "Tahsilatı/Ödemeyi Düzelt"
+     (`client/assets/hof-workspace.js` editCashEntry → `HOF.methodField(... cashView.method ...)`) Havale/EFT, POS,
+     Kredi Kartı seçeneği gösteriyor. İstenen: Kasa'da tahsilat ve ödeme yolu YALNIZ NAKİT — açılır liste yok, sabit
+     "Nakit" (sunucu da Kasa formundan gelen nakit dışı yolu reddeder). Banka/POS hareketleri cari, fatura, taksit,
+     stok, çek ekranlarından gelir; Kasa penceresindeki Banka / POS sekmeleri yalnız GÖRÜNTÜLEME (o sekmedeyken
+     "+ Tahsilat/Ödeme" düğmesi Nakit Kasa'ya yazar ve bunu söyler, ya da sekmede gizlenir). Düzeltmede eski kayıt
+     nakit dışıysa yolu değiştirilmez, salt okunur gösterilir. Aynı kontrol: detay kartı Tahsilat (`hof-workspace.js`
+     45/355) hangi yolu sunuyor — kullanıcıya sorulmadan değiştirilmez, yap'ta ekranla birlikte gösterilir. Test:
+     arayüzden Kasa → Tahsilat Ekle / Ödeme Ekle formunda yalnız Nakit; API'ye bank/card gönderilince 400; Banka
+     sekmesindeyken eklenen hareket Nakit Kasa'da.
+  KURAL (bu maddeden): kullanıcının her isteği, ne kadar küçük olsa da, AYNI ANDA bu listeye yazılır ve commit edilir;
+  "dün konuştuk" denen bir istek listede yoksa kullanıcıya açıkça söylenir.
 - e-Belge kararı (kullanıcı, 01.10.2026): vergi dairesi/entegratör bağlantısı KAPALI — "sana entegre et diyene kadar".
   Fatura modülü tam çalışır; belge "Müşteri Fişi" (resmî hükmü yok) basılır; e-Fatura/e-Arşiv/XML ekranda görünmez.
   Entegratör altyapısı (müşteri kendi API bilgisini girer, kontörü kendisi alır) hazır tutulur ama `config.edocEnabled`
