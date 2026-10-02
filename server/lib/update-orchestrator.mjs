@@ -11,19 +11,34 @@ import { compareVersions } from "./semver.mjs";
 import { UpdateError } from "./update-envelope.mjs";
 
 const RECENT_CHECK_MS = 10 * 60_000;
+// v2.0.17 (müşteri: "güncelleme geç geliyor" — servis 22 saat açıkken yeni sürüm hiç denetlenmiyordu): servis açıkken
+// 6 saatte bir (+ 30 dakikaya kadar rastgele kayma) sessiz denetim. Bulunursa "kendiliğinden kur" açıksa mesai dışı /
+// boşta kurulur; mesai içindeyse yöneticiye "hazır — Şimdi Güncelle" olarak görünür, saatte bir yeniden bakılır.
+const PERIODIC_CHECK_MS = 6 * 60 * 60_000;
+const PERIODIC_JITTER_MS = 30 * 60_000;
+const DEFER_RECHECK_MS = 60 * 60_000;
+// Mesai dışı: hafta içi 20:00–07:00 ve hafta sonu (yerel saat).
+export function isQuietTime(date = new Date()) {
+  const day = date.getDay();
+  const hour = date.getHours();
+  return day === 0 || day === 6 || hour < 7 || hour >= 20;
+}
 
 const summarize = found =>
   found
     ? { version: found.version, notes: found.manifest.notes, releasedAt: found.manifest.releasedAt, size: found.manifest.package.size, channel: found.manifest.channel, releaseUrl: found.releaseUrl || null }
     : null;
 
-export function createUpdateOrchestrator({ updater, controller, appsDir, runningVersion, runningDir = null, log, retryDelays = [60_000, 180_000, 600_000, 1_200_000], trialTimeoutMs = 90_000, applyDelayMs = 400 }) {
+export function createUpdateOrchestrator({ updater, controller, appsDir, runningVersion, runningDir = null, log, retryDelays = [60_000, 180_000, 600_000, 1_200_000], trialTimeoutMs = 90_000, periodicCheckMs = PERIODIC_CHECK_MS, periodicJitterMs = PERIODIC_JITTER_MS, deferRecheckMs = DEFER_RECHECK_MS, quietTime = isQuietTime, random = Math.random, applyDelayMs = 400 }) {
   const status = { state: "idle", progress: null, lastFound: null, lastFoundAt: 0, lastResult: null, incompatible: null, lastError: null, skipped: [] };
   const aborter = new AbortController();
   let job = null;
   let checking = null;
   let retryTimer = null;
   let applyTimer = null;
+  let periodicTimer = null;
+  let deferTimer = null;
+  let deferred = null;
   let retryIndex = 0;
   let stopped = false;
   const now = () => new Date().toISOString();
@@ -46,6 +61,9 @@ export function createUpdateOrchestrator({ updater, controller, appsDir, running
       lastResult: status.lastResult,
       lastError: status.lastError,
       failedVersions: Object.keys(saved.failed),
+      // v2.0.17: bulunan sürüm mesai dışına ertelendi (yönetici "Şimdi Güncelle" ile hemen kurabilir).
+      deferred: deferred ? { version: deferred.version, since: deferred.since } : null,
+      periodicCheckMs,
       skippedVersions: status.skipped,
       history: saved.history.slice(-10).reverse(),
     };
@@ -61,13 +79,13 @@ export function createUpdateOrchestrator({ updater, controller, appsDir, running
     log.info(`Güncelleme denetimi ${Math.round(delay / 1000)} sn sonra yeniden denenecek.`);
   }
 
-  async function runCheck({ auto = false } = {}) {
+  async function runCheck({ auto = false, attempts = 1 } = {}) {
     if (checking) return checking;
     if (job) return { status: "busy" };
     checking = (async () => {
       status.state = "checking";
       try {
-        const result = await updater.check({ signal: aborter.signal });
+        const result = await updater.check({ signal: aborter.signal, attempts });
         status.lastFound = result.status === "available" && newer(result) ? result : null;
         status.lastFoundAt = Date.now();
         status.incompatible = result.status === "incompatible" ? { version: result.version, reason: result.reason } : null;
@@ -81,10 +99,39 @@ export function createUpdateOrchestrator({ updater, controller, appsDir, running
     })();
     const result = await checking;
     if (auto && !stopped) {
-      if (result.status === "available" && newer(result)) install(result);
-      else if (result.status === "error" && result.retryable) scheduleRetry();
+      if (result.status === "available" && newer(result)) {
+        if (updater.config().enabled && (quietTime() || !controller.busy?.())) install(result);
+        else defer(result);
+      } else if (result.status === "error" && result.retryable) scheduleRetry();
     }
     return result;
+  }
+  // Mesai içinde bulunan sürüm: hemen kurulmaz (kullanıcılar çalışıyor); yönetici panelinde "hazır" görünür, saatte bir
+  // yeniden bakılır — mesai dışına çıkınca (ya da sunucu boşsa) kendiliğinden kurulur.
+  function defer(found) {
+    if (!deferred || deferred.version !== found.version) {
+      deferred = { version: found.version, since: now() };
+      log.info(`${found.version} sürümü hazır; ${updater.config().enabled ? "mesai dışında kendiliğinden kurulacak" : "kendiliğinden kurulum kapalı"} (Yönetim → Sistem → Şimdi Güncelle ile hemen kurulabilir).`);
+    }
+    clearTimeout(deferTimer);
+    if (!updater.config().enabled || stopped) return;
+    deferTimer = setTimeout(() => {
+      if (stopped || job) return;
+      if (status.lastFound && newer(status.lastFound) && (quietTime() || !controller.busy?.())) install(status.lastFound);
+      else runCheck({ auto: true }).catch(() => {});
+    }, deferRecheckMs);
+    deferTimer.unref?.();
+  }
+  function schedulePeriodic() {
+    if (stopped || !periodicCheckMs) return;
+    clearTimeout(periodicTimer);
+    const delay = periodicCheckMs + Math.floor(random() * periodicJitterMs);
+    periodicTimer = setTimeout(() => {
+      schedulePeriodic();
+      if (job || !updater.config().enabled) return;
+      runCheck({ auto: true }).catch(error => log.error("Periyodik güncelleme denetimi hatası", error));
+    }, delay);
+    periodicTimer.unref?.();
   }
 
   // Yeni sürümü deneme kipinde açar; başarılıysa onaylar, değilse önceki sürüme döner.
@@ -186,6 +233,8 @@ export function createUpdateOrchestrator({ updater, controller, appsDir, running
         status.state = "idle";
         status.progress = null;
         status.lastFound = null;
+        deferred = null;
+        clearTimeout(deferTimer);
         job = null;
       }
     })();
@@ -208,12 +257,14 @@ export function createUpdateOrchestrator({ updater, controller, appsDir, running
       await controller.start();
     }
     if (updater.config().enabled && !stopped) runCheck({ auto: true }).catch(error => log.error("Güncelleme denetimi hatası", error));
+    schedulePeriodic();
   }
 
   async function handle(action, payload = {}) {
     if (action === "status") return publicStatus();
     if (action === "check") {
-      await runCheck();
+      // Elle denetim: 3 deneme (artan bekleme), updater.check içinde.
+      await runCheck({ attempts: 3 });
       return publicStatus();
     }
     if (action === "config") {
@@ -246,7 +297,9 @@ export function createUpdateOrchestrator({ updater, controller, appsDir, running
     aborter.abort();
     clearTimeout(retryTimer);
     clearTimeout(applyTimer);
+    clearTimeout(periodicTimer);
+    clearTimeout(deferTimer);
   }
 
-  return { startup, handle, status: publicStatus, runCheck, install, stop, idle: () => (job || checking || Promise.resolve()).catch(() => {}) };
+  return { startup, handle, status: publicStatus, runCheck, install, stop, schedulePeriodic, idle: () => (job || checking || Promise.resolve()).catch(() => {}) };
 }

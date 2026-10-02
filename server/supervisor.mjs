@@ -263,7 +263,12 @@ export async function startSupervisor(options = {}) {
     }
   }
 
+  // v2.0.17: son kullanıcı isteği (sağlık/keşif hariç). Güncelleme orkestratörü mesai içinde bulduğu sürümü kullanıcı
+  // çalışırken kurmaz; 15 dakikadır istek yoksa "boşta" sayılır.
+  let lastActivityAt = 0;
+  const IDLE_MS = 15 * 60_000;
   const controller = {
+    busy: () => Date.now() - lastActivityAt < IDLE_MS,
     appDir: () => appDir,
     setAppDir(dir) {
       appDir = path.resolve(dir);
@@ -377,6 +382,7 @@ export async function startSupervisor(options = {}) {
   }
 
   function proxy(req, res) {
+    if (!/^\/api\/(health|discovery)\b/.test(req.url || "")) lastActivityAt = Date.now();
     const headers = { ...req.headers, "x-forwarded-for": req.socket.remoteAddress || "", "x-forwarded-host": req.headers.host || "", "x-forwarded-proto": "http" };
     // Canlı olay akışı (SSE) uzun süre açık kalır: ortak bağlantı havuzundan soket tüketmesin diye ayrı bağlantı kullanır.
     const streaming = String(req.headers.accept || "").includes("text/event-stream");

@@ -40,10 +40,16 @@ export function createUpdater({
   fetchImpl = (...args) => globalThis.fetch(...args),
   trustedKeys = TRUSTED_UPDATE_KEYS,
   githubApi = "https://api.github.com",
+  // v2.0.17: API'siz yedek yol — GitHub'ın "releases/latest/download/<dosya>" adresi (istek sınırı yok). API erişilemez
+  // ya da sınırda olduğunda bildirge buradan okunur, paket de aynı yoldan iner.
+  githubWeb = "https://github.com",
   nodeVersion = process.versions.node,
   bootstrapVersion = 1,
   log = { info() {}, warn() {}, error() {} },
-  requestTimeoutMs = 10_000,
+  // v2.0.17 (müşteri: "sunucu zamanında yanıt vermedi"): tek istek 10 sn → 30 sn.
+  requestTimeoutMs = 30_000,
+  // Elle denetimde (yönetici "Güncellemeleri Denetle") ağ hatasında artan beklemeyle yeniden deneme.
+  checkRetryDelaysMs = [2_000, 5_000],
   stallTimeoutMs = 30_000,
   defaultFeed = DEFAULT_FEED,
 }) {
@@ -159,11 +165,21 @@ export function createUpdater({
     throw new UpdateError("Güncelleme kaynağı ayarı geçersiz.", "CONFIG_INVALID");
   }
 
+  const latestDownloadUrl = (feed, name) => `${githubWeb.replace(/\/+$/, "")}/${feed.owner}/${feed.repo}/releases/latest/download/${encodeURIComponent(name)}`;
   async function listCandidates(cfg, signal) {
     const feed = resolveFeed(cfg.feed);
     if (feed.type === "manifest") return [{ tagVersion: null, manifestUrl: feed.url, assets: null }];
-    const url = `${githubApi.replace(/\/+$/, "")}/repos/${feed.owner}/${feed.repo}/releases?per_page=30`;
-    const releases = await fetchJson(url, { limit: 4 * 1024 * 1024, signal });
+    // v2.0.17: 30 yayının tamamı (~367 KB, gövdeler dahil) yerine son 10 yayın.
+    const url = `${githubApi.replace(/\/+$/, "")}/repos/${feed.owner}/${feed.repo}/releases?per_page=10`;
+    let releases;
+    try {
+      releases = await fetchJson(url, { limit: 4 * 1024 * 1024, signal });
+    } catch (error) {
+      // API yoksa (ağ, istek sınırı, 5xx/403) yedek yol: son yayının bildirgesi doğrudan GitHub'dan (API'siz).
+      if (!(error instanceof UpdateError) || !["NETWORK", "RATE_LIMITED", "FEED_HTTP"].includes(error.code) || error.code === "ABORTED") throw error;
+      log.warn?.(`Güncelleme API'si yanıt vermedi (${error.message}); yedek yol deneniyor.`);
+      return [{ tagVersion: null, manifestUrl: latestDownloadUrl(feed, MANIFEST_ASSET), assets: null, fallback: true, primaryError: error, packageUrlFor: name => latestDownloadUrl(feed, name), htmlUrl: `${githubWeb.replace(/\/+$/, "")}/${feed.owner}/${feed.repo}/releases/latest` }];
+    }
     if (!Array.isArray(releases)) throw new UpdateError("Güncelleme sunucusunun yanıtı beklenen biçimde değil.", "FEED_INVALID");
     return releases
       .filter(release => release && !release.draft && (cfg.channel === "beta" || !release.prerelease))
@@ -176,7 +192,18 @@ export function createUpdater({
   }
 
   // ---------- Denetleme ----------
-  async function check({ signal } = {}) {
+  // attempts: elle denetimde 3 (2 sn, 5 sn artan bekleme); otomatik denetim 1 (orkestratör kendi yeniden dener).
+  async function check({ signal, attempts = 1 } = {}) {
+    let result = await checkOnce({ signal });
+    for (let i = 1; i < attempts && result.status === "error" && result.retryable && !signal?.aborted; i += 1) {
+      const delay = checkRetryDelaysMs[Math.min(i - 1, checkRetryDelaysMs.length - 1)] || 0;
+      log.info(`Güncelleme denetimi ${Math.round(delay / 1000)} sn sonra yeniden denenecek (${i + 1}/${attempts}).`);
+      await new Promise(resolve => setTimeout(resolve, delay));
+      result = await checkOnce({ signal });
+    }
+    return result;
+  }
+  async function checkOnce({ signal } = {}) {
     const currentVersion = installed();
     const cfg = config();
     const failed = state().failed;
@@ -197,6 +224,8 @@ export function createUpdater({
         try {
           verified = verifyEnvelope(await fetchJson(candidate.manifestUrl, { limit: MAX_ENVELOPE_BYTES * 2, signal }), trustedKeys);
         } catch (error) {
+          // Yedek yol da düşerse asıl (API) hatası bildirilir: "sunucuya ulaşılamadı" yeniden denenebilir kalır.
+          if (candidate.fallback && candidate.primaryError && error.code !== "ABORTED") throw candidate.primaryError;
           if (error.code === "NETWORK" || error.code === "RATE_LIMITED" || error.code === "ABORTED") throw error;
           problems.push(`${candidate.tagVersion || "Bildirge"}: ${error.message}`);
           continue;
@@ -228,8 +257,9 @@ export function createUpdater({
             continue;
           }
           packageUrl = asset.url;
-        } else packageUrl = new URL(manifest.package.url || manifest.package.name, candidate.manifestUrl).href;
-        result = { status: "available", version: manifest.version, manifest, packageUrl, keyId, releaseUrl: candidate.htmlUrl || null };
+        } else if (candidate.packageUrlFor) packageUrl = candidate.packageUrlFor(manifest.package.name);
+        else packageUrl = new URL(manifest.package.url || manifest.package.name, candidate.manifestUrl).href;
+        result = { status: "available", version: manifest.version, manifest, packageUrl, keyId, releaseUrl: candidate.htmlUrl || null, viaFallback: Boolean(candidate.fallback) };
         break;
       }
       if (!result && incompatible) result = { status: "incompatible", ...incompatible };
