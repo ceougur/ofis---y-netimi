@@ -214,6 +214,15 @@ Bağlam kopsa da bu düzen değişmez. Kullanıcı "zip ver" dediğinde şu üç
      Stoktakiler" süzgeci ve sıralama; Stok Durumu raporunda durum "Eksi (−15)"; ANLIK DURUM'da "Eksi Stok: n ürün";
      fatura kalem satırı "Stokta −15 Adet" kırmızı; Değer eksi miktarda "—" (maliyet bilinmiyor) ya da eksi değer —
      yaygın programlarda eksi miktar × son maliyet gösterilir → öyle. Test: 0→−10→−15→−20 arayüzden; her ekranda sayı.
+  8. ÇEK CİRO: CARİ BULUNMUYOR (müşteri, ekran: "Ciro Et · Çek ₺3.000", "Ciro Edilen Cari (tedarikçi)" kutusunda hiçbir
+     cari gelmiyor). Kök neden (koddan): `client/assets/hof-cheques.js:279` seçici `type: "supplier"` → sunucu
+     `/api/workspace/accounts/search?type=supplier` yalnız türü "Tedarikçi" olan carileri döndürür (`accounts.mjs` list:
+     `if (type && row.type !== type) continue`). Carilerin çoğu "Müşteri" (kayıttan/faturadan açılan) → liste boş.
+     Program genelinde türe kısıtlı başka seçici yok (yalnız burası). Öneri (yap'ta): ciroda BÜTÜN cariler aranır
+     (müşteriye de ciro edilir: borç ödemesi, mal alımı); tedarikçiler listede üstte, tür rozetiyle; etiket "Ciro Edilen
+     Cari"; seçicide "+ Yeni Cari" (fatura formundaki gibi); boş sonuçta "Bu adla cari yok — + Yeni Cari". Aynı denetim
+     tahsil/ödeme/teminat formlarındaki seçicilere de (tür kısıtı kalmasın). Test: yalnız Müşteri türünde carisi olan
+     veride ciro arayüzden; tedarikçi + müşteri aynı adla; ciro sonrası cari bakiyesi, çek durumu "Ciro Edildi", Kasa aynı.
 - e-Belge kararı (kullanıcı, 01.10.2026): vergi dairesi/entegratör bağlantısı KAPALI — "sana entegre et diyene kadar".
   Fatura modülü tam çalışır; belge "Müşteri Fişi" (resmî hükmü yok) basılır; e-Fatura/e-Arşiv/XML ekranda görünmez.
   Entegratör altyapısı (müşteri kendi API bilgisini girer, kontörü kendisi alır) hazır tutulur ama `config.edocEnabled`
