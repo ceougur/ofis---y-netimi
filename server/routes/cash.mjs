@@ -83,7 +83,7 @@ export function registerCashRoutes(router, context) {
   // Kontrol Yok / Uyar / Engelle. Uyar: kullanıcı onaylarsa (force = cashForce) yazılır; Engelle: onayla da yazılmaz.
   // Bakiye: hareketin tarihindeki ve bugünden ileri tarihli hareketler dahil son bakiye; hangisi azsa o (ileri tarihli bir
   // ödeme zaten ayrılmışsa bugünkü çıkış onu açığa düşürmesin).
-  const PLACE = { cash: "Nakit kasada", bank: "Banka hesabında (Havale / EFT)", card: "Kredi kartı (POS) hesabında" };
+  const PLACE = { cash: "Nakit kasada", bank: "Banka hesabında (Havale / EFT)", card: "POS / Kredi Kartı hesabında" };
   const negativePolicy = () => readNegativePolicy(store.setting(NEGATIVE_KEY, ""));
   function setNegativePolicy(input) {
     const next = { ...negativePolicy() };

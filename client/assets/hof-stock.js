@@ -174,7 +174,7 @@
           <div class="hof-plan-title"><h3>${item.code ? `<span class="hof-plan-refno" title="Kod">${esc(item.code)}</span>` : ""}${esc(item.name)} ${stateBadge(item)}</h3><small>${esc(item.category || "Kategorisiz")} · birim: ${esc(item.unit)}</small></div></div>
         <div class="hof-plan-actions" role="toolbar" aria-label="Ürün işlemleri">
           <span class="hof-plan-toolgroup">${move ? '<button type="button" class="hof-button hof-button-small" data-move="in">+ Giriş</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-move="out">− Çıkış</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-move="return" title="Müşterinin geri getirdiği ürün: stoğa girer, para Kasa’dan geri verilir ya da müşterinin borcundan düşer">↩ Müşteri İadesi</button>' : ""}</span>
-          <span class="hof-plan-toolgroup">${office().outputButtons ? office().outputButtons(cardPdfUrl(item), "card") : ""}</span>
+          <span class="hof-plan-toolgroup">${office().outputButtons ? office().outputButtons(cardPdfUrl(item), "card", "Stok Kartı - PDF") : ""}</span>
           ${manage ? '<span class="hof-plan-toolgroup"><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="edit">Düzenle</button><button type="button" class="hof-button hof-button-small hof-button-ghost hof-button-danger-ghost" data-act="delete">Sil</button></span>' : ""}
         </div></div>
       <div class="hof-kpis hof-plans-kpis"><div class="hof-cash-balance ${item.low ? "is-late" : ""}"><strong>${esc(qtyText(item.qty))} ${esc(item.unit)}</strong><span>Mevcut${item.minQty ? ` · kritik ${esc(qtyText(item.minQty))}` : ""}</span></div><div><strong class="hof-cash-in">${esc(qtyText(item.qtyIn))}</strong><span>Toplam Giriş · ${esc(money(item.inAmount))}</span></div><div><strong class="hof-cash-out">${esc(qtyText(item.qtyOut))}</strong><span>Toplam Çıkış · ${esc(money(item.outAmount))}</span></div><div><strong>${esc(money(item.value))}</strong><span>Değer · Birim Fiyat ${esc(money(item.unitPrice))}</span></div></div>
@@ -277,9 +277,10 @@
     // v2.0.13: "Satış Yapma" yetkisi — kasiyer satış ve iadede parayı (Kasa, kart, havale, veresiye) yazar.
     const sell = !move && HOF.can("stock.sell");
     // v2.0.13: para yolu — Nakit (Kasa), Kredi Kartı, Havale / EFT (Banka) ya da Açık Hesap (cari, veresiye).
-    const moneyWays = verb => [
+    // v2.0.16: kart yolu yöne göre — müşteriden tahsilat ve müşteriye iade POS'tan; tedarikçiye ödeme kredi kartıyla.
+    const moneyWays = (verb, direction = "in") => [
       { value: "cash", label: `Nakit (${verb})` },
-      { value: "card", label: `Kredi Kartı (${verb})` },
+      { value: "card", label: `${HOF.methodName("card", direction)} (${verb})` },
       { value: "bank", label: `Havale / EFT (${verb})` },
     ];
     const payOptions = back
@@ -289,7 +290,7 @@
         ]
       : [
           { value: "none", label: "Yalnız Miktar (para yazılmaz)" },
-          ...(manage || (sell && !incoming) ? [...moneyWays(incoming ? "ödendi" : "tahsil edildi"), { value: "account", label: incoming ? "Açık Hesap (tedarikçiye borçlanılır)" : "Açık Hesap (veresiye, müşteri borçlanır)" }] : []),
+          ...(manage || (sell && !incoming) ? [...moneyWays(incoming ? "ödendi" : "tahsil edildi", incoming ? "out" : "in"), { value: "account", label: incoming ? "Açık Hesap (tedarikçiye borçlanılır)" : "Açık Hesap (veresiye, müşteri borçlanır)" }] : []),
         ];
     const payValue = move ? (move.pay === "cash" ? move.method || "cash" : move.pay) : "none";
     const priceOf = () => (move ? move.unitPrice : !incoming || back ? item.salePrice || item.unitPrice : item.unitPrice);

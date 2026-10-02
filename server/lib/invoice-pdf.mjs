@@ -17,7 +17,10 @@ const qtyFormat = new Intl.NumberFormat("tr-TR", { maximumFractionDigits: 3 });
 const unitOf = currency => (currency && currency !== "TRY" ? currency : "TL");
 const money = (value, currency) => `${numberFormat.format(Number(value) || 0)} ${unitOf(currency)}`;
 const dayText = iso => (iso ? `${iso.slice(8, 10)}.${iso.slice(5, 7)}.${iso.slice(0, 4)}` : "");
-const METHOD = { cash: "Nakit", bank: "Havale / EFT", card: "Kredi Kartı" };
+const METHOD = { cash: "Nakit", bank: "Havale / EFT", card: "POS / Kredi Kartı" };
+// v2.0.16: kart yolu yöne göre (satış tarafında tahsilat → POS; alışta ödeme → Kredi Kartı).
+const METHOD_IN = { ...METHOD, card: "POS" };
+const METHOD_OUT = { ...METHOD, card: "Kredi Kartı" };
 
 // Kâğıt (e-Belge olmayan) belge programdan yazdırıldığında yasal fatura değildir (fatura ancak maliyeyle anlaşmalı
 // matbaanın basılı formuna ya da e-Belge olarak düzenlenir): başlık "Müşteri Fişi" ve altta "resmî fatura yerine
@@ -247,7 +250,8 @@ function drawInvoice(doc, invoice, { footer = "", logo = null, signatureArea = f
 function paymentText(invoice) {
   const p = invoice.payment || {};
   const parts = [];
-  for (const item of p.cash || []) parts.push(`${METHOD[item.method] || "Nakit"} ${money(item.amount, "TRY")}`);
+  const names = ["sale", "smm", "purchase_return"].includes(invoice.kind) ? METHOD_IN : METHOD_OUT;
+  for (const item of p.cash || []) parts.push(`${names[item.method] || "Nakit"} ${money(item.amount, "TRY")}`);
   if ((p.cheques || []).length) parts.push(`${p.cheques.length} çek/senet ${money(p.cheques.reduce((sum, item) => sum + (Number(item.amount) || 0), 0), "TRY")}`);
   if ((p.endorse || []).length) parts.push(`${p.endorse.length} çek cirosu`);
   if (p.mode === "installments" && p.installments) parts.push(`kalan ${p.installments.count} taksit (ilk vade ${dayText(p.installments.firstDue)})`);
