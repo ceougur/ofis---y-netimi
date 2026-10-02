@@ -253,6 +253,18 @@ Bağlam kopsa da bu düzen değişmez. Kullanıcı "zip ver" dediğinde şu üç
      raporuna düşer) — önceki sorum bununla cevaplandı. Eksi Bakiye Denetimi (Nakit/Banka/Kredi Kartı) kalır. Test: Kasa'da
      yalnız nakit; bankaya tahsilat Kasa toplamını değiştirmez, raporda görünür; transfer iki tarafta; eski verideki
      bank/card Kasa kayıtları raporda, Kasa'da yok; mutabakat 0.
+  10. İADE FATURASINDA DÜZENLE PASİF (müşteri, ekran: Satıştan İade Faturası IAD2026000000003, Mehmet Eren Demir, 600,
+     asıl fatura FIS2026000000009; "Düzenle" gri, tıklanmıyor). Koddan: 2.0.16'da bilinçli karar (benim önerim) —
+     `server/routes/invoices.mjs:382` modifyBlock "İade belgesi düzenlenmez; yanlışsa iptal edip yeniden kaydedin.";
+     neden yalnız düğmenin üstüne gelince (title) görünüyor, ekranda yazmıyor → müşteri "izin vermiyor" görüyor.
+     Öneri (yap'ta): iade faturası da DÜZENLENİR — aynı numara, tek işlemde eski etkiler geri alınıp yenisi yazılır
+     (stok, cari, Kasa/banka iadesi, çek; mutabakat kapısı), asıl faturayla bağ korunur; sınırlar: iade miktarı asıl
+     faturanın kalan iade edilebilir miktarını aşamaz (bu iade hariç hesap), tarih asıl faturadan önce olamaz, asıl
+     fatura/cari değiştirilemez (gerekirse iptal + yeni). Ayrıca GENEL: pasif düğmenin nedeni düğmenin yanında/altında
+     görünür yazı olarak çıkar (yalnız title değil) — Düzenle, İptal Et, Sil, İade için. Not: bu iadede ödeme satırı
+     "Ödeme (Kredi Kartı) 600" — müşteriye karta iade; satıştan iadede yol adı "POS İadesi" daha doğru, yap'ta kontrol.
+     Test: iade düzenle (miktar azalt/artır sınırda, fiyat, ödeme yolu) → stok/cari/Kasa yeni hâl; aşan miktar 409;
+     asıl faturanın "iade edilebilir" kalanı doğru; pasif düğme nedeni ekranda.
   KURAL (bu maddeden): kullanıcının her isteği, ne kadar küçük olsa da, AYNI ANDA bu listeye yazılır ve commit edilir;
   "dün konuştuk" denen bir istek listede yoksa kullanıcıya açıkça söylenir.
 - e-Belge kararı (kullanıcı, 01.10.2026): vergi dairesi/entegratör bağlantısı KAPALI — "sana entegre et diyene kadar".
