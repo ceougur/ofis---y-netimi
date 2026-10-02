@@ -288,6 +288,29 @@ Bağlam kopsa da bu düzen değişmez. Kullanıcı "zip ver" dediğinde şu üç
      sekme menüsünde "Veri Sekmesine Dönüştür" (veri kaybı yok, geri alınabilir). Test: tarih kolonlu Excel'i + Sayfa
      ile aktar → yarın tarihli satır için zil/sağ alt uyarısı ve tahsilat takviminde görünür; aynı dosya ilk yüklemedeki
      gibi aynı rolleri alır; dönüştürme sonrası satır sayısı aynı.
+  13. YENİ DÜZEN — SOLDA ŞİRKET, ORTADA SAYFA = OTURUM (müşteri, aynı gün; madde 2, 3 ve 12'yi birleştirir/günceller):
+     "oturumu komple kaldırırsak oturum kısmını buraya (+ Sayfa) taşıyalım; buradan aldığımızı oturumdan almış gibi
+     yapsın — ikinci sayfa ikinci oturum, üçüncü sayfa üçüncü oturum"; "sol taraf şirket seçimi ve şirketle ilgili
+     modüller (Cari, Kasa, Stok, Fatura, Taksit, Çek/Senet, Raporlar…); orta kısım serbest alan, oturumlarımızın sayfa
+     sayfa olacağı alan". Kullanıcı: "değerlendir". DEĞERLENDİRME (önerim; yap'ta uygulanır):
+     - Doğru ve yaygın düzen (sol: firma + modüller; orta: çalışma sayfaları). Oturum seçici kalkar; eski "oturum"
+       = ortadaki SAYFA. Her sayfa ayrı veri kümesi: kendi kaynağı (Excel / Google Sheets bağı, senkron), kolon rolleri,
+       tarih anlamı, veri sağlığı. "+ Sayfa" seçenekleri: "Excel / Google Sheets'ten Aktar" (ilk yüklemedeki ön izleme
+       + eşleme ekranı — veri sayfası) ve "Boş Sayfa" (elle doldurulan ızgara, bugünkü serbest sayfa).
+     - Fark (oturuma göre KAZANÇ): oturumda yalnız seçili oturum görünüyordu, uyarılar onunla sınırlıydı; sayfa düzeninde
+       şirketin BÜTÜN sayfaları aynı anda canlı → tarih uyarıları, tahsilat takvimi, zil, ANLIK DURUM, raporlar ve arama
+       hepsini kapsar (müşterinin "tarih uyarısı vermiyor" şikâyeti kökten kapanır); her satırda sayfa adı görünür.
+     - Bir Excel dosyasında birden çok sekme varsa: her sekme ayrı sayfa olur, aynı kaynaktan geldiği sayfa pilinde
+       görünür ve birlikte senkron olur (bugünkü REHBER/AKABE gibi).
+     - Kayıt ↔ cari ↔ taksit bağı sayfadan bağımsız sürer (satır hangi sayfada olursa olsun cariye bağlanır).
+     - Göç: mevcut oturumların HER BİRİ 001 şirketinde ayrı sayfa(lar) olur (madde 3'teki "Oturumları Taşı" ekranına
+       gerek kalmaz; hiçbir şey silinmez, Sheets bağları korunur). Mevcut serbest sayfalar "Boş Sayfa" olarak kalır,
+       menüde "Veri Sayfasına Dönüştür" (madde 12).
+     - Dikkat: tüm sayfalar birden yüklenince büyük veride hız (REHBER 9.176 satır + diğerleri) → arama/analiz
+       sayfa bazında önbellekli; 20.000+ satırla ölçüm testi. Sayfa bazında yetki (kim hangi sayfayı görür) ilk
+       sürümde yok, istenirse eklenir. Sayfa silme yalnız yönetici, Silinenler'e gider.
+     Test: iki Excel'i iki sayfa olarak aktar → ikisindeki yaklaşan tarihler zil/takvimde; sayfa adı satırda; birinden
+     cari bağla; eski 2 oturumlu veriden göç → 2 sayfa, sayılar ve Sheets bağı aynı; 20.000 satırda arama < 1 sn.
   KURAL (bu maddeden): kullanıcının her isteği, ne kadar küçük olsa da, AYNI ANDA bu listeye yazılır ve commit edilir;
   "dün konuştuk" denen bir istek listede yoksa kullanıcıya açıkça söylenir.
 - e-Belge kararı (kullanıcı, 01.10.2026): vergi dairesi/entegratör bağlantısı KAPALI — "sana entegre et diyene kadar".
