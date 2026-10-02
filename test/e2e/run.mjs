@@ -565,7 +565,9 @@ try {
     await admin.waitForSelector(".hof-plans-table tbody tr[data-plan]", { timeout: 10000 });
     const listRow = await admin.$eval(".hof-plans-table tbody tr[data-plan]", node => node.innerText.replace(/\s+/g, " "));
     expect(listRow.includes("Ayşe Yılmaz") && listRow.includes("6.000,00"), `liste satırı: ${listRow}`);
-    expect(/^1\b/.test(listRow.trim()), `listede ilk kolon sıra no: ${listRow}`);
+    // İlk hücre ayrı okunur: innerText hücreler arasına her zaman ayraç koymaz ("1Ayşe…"), satır metninde /^1\b/ aldatıcı.
+    const firstCell = await admin.$eval(".hof-plans-table tbody tr[data-plan] td", node => node.innerText.trim());
+    expect(firstCell === "1", `listede ilk kolon sıra no: ${firstCell} (${listRow})`);
     const listPdf = await admin.$eval('.hof-plans [data-pdf="list"]', node => node.getAttribute("href"));
     const pdfHead = await admin.evaluate(url => fetch(url).then(response => response.arrayBuffer()).then(buffer => new TextDecoder().decode(buffer.slice(0, 5))), listPdf);
     expect(pdfHead === "%PDF-" && /status=active/.test(listPdf) && /sort=no/.test(listPdf), `liste PDF'i süzgeçle: ${listPdf}`);
