@@ -3,13 +3,46 @@ import assert from "node:assert/strict";
 import { after, before, describe, test } from "node:test";
 import { computeInvoice, exclusiveParts } from "../server/lib/invoice-math.mjs";
 import { buildUbl } from "../server/lib/einvoice/ubl-tr.mjs";
+import { inflateSync } from "node:zlib";
 import { loginAdmin, startTestServer } from "./helpers.mjs";
+
+// PDF'teki görünen metin (fatura-215 ile aynı yöntem): ToUnicode eşlemesiyle sayfa akışlarındaki glifler çözülür.
+function pdfText(buffer) {
+  const text = buffer.toString("latin1");
+  const objects = new Map([...text.matchAll(/(\d+) 0 obj\n?([\s\S]*?)\nendobj/g)].map(match => [Number(match[1]), match[2]]));
+  const stream = body => {
+    const match = /stream\n([\s\S]*?)\nendstream/.exec(body || "");
+    if (!match) return "";
+    try {
+      return /FlateDecode/.test(body) ? inflateSync(Buffer.from(match[1], "latin1")).toString("latin1") : match[1];
+    } catch {
+      return "";
+    }
+  };
+  const fonts = new Map();
+  for (const body of objects.values()) {
+    for (const [, name, id] of (/\/Font << ([^>]*) >>/.exec(body)?.[1] || "").matchAll(/\/(\w+) (\d+) 0 R/g)) {
+      if (fonts.has(name)) continue;
+      const cmap = new Map();
+      const unicode = /\/ToUnicode (\d+) 0 R/.exec(objects.get(Number(id)) || "");
+      for (const [, gid, hex] of stream(objects.get(Number(unicode?.[1]))).matchAll(/<([0-9A-F]{4})> <([0-9A-F]+)>/g)) cmap.set(gid, String.fromCodePoint(...hex.match(/.{4}/g).map(part => parseInt(part, 16))));
+      fonts.set(name, cmap);
+    }
+  }
+  const out = [];
+  for (const body of objects.values()) {
+    if (!/\/Length/.test(body) || /ToUnicode|FontFile|beginbfchar|DCTDecode/.test(body)) continue;
+    for (const [, font, glyphs] of stream(body).matchAll(/\/(\w+) [\d.]+ Tf [^<]*<([0-9A-F]*)> Tj/g)) out.push((glyphs.match(/.{4}/g) || []).map(gid => fonts.get(font)?.get(gid) ?? "?").join(""));
+  }
+  return out.join("\n");
+}
 
 const unwrap = response => ({ ...response, data: response.data && typeof response.data === "object" && "ok" in response.data ? (response.data.ok ? response.data.data : response.data) : response.data });
 const apiOf = client => ({
   get: async url => unwrap(await client.get(url)),
   post: async (url, body) => unwrap(await client.post(url, body)),
   put: async (url, body) => unwrap(await client.put(url, body)),
+  raw: (...args) => client.raw(...args),
 });
 const pad = value => String(value).padStart(2, "0");
 const iso = date => `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
@@ -189,5 +222,22 @@ describe("Kaydedilmiş faturayı düzenleme, yeni stok kartı, Stok Kodu (müşt
     assert.equal(blocked.status, 409);
     assert.match(JSON.stringify(blocked.data), /cheque-moved/);
     assert.equal(await balance(ids.other), balance0, "reddedilen düzenleme cariye dokunmadı");
+  });
+
+  test("Fatura PDF'inde ayrı Stok Kodu kolonu, POS ödeme satırı ve Toplamlar düzeni (metin düzeyinde)", async () => {
+    const sale = await api.post("/api/workspace/invoices", { scenario: "goods_sale", accountId: ids.customer, issueDate: shift(0), pricesIncludeVat: true, lines: [{ itemId: ids.item, qty: 1, unitPrice: 2000, discountRate: 10, vatRate: 20 }], payment: { cash: [{ amount: 300, method: "card" }], rest: "open" } });
+    assert.equal(sale.status, 200, JSON.stringify(sale.data));
+    const response = await api.raw("GET", `/api/workspace/invoices/${sale.data.id}/fatura.pdf`);
+    assert.equal(response.status, 200);
+    const text = pdfText(response.buffer);
+    assert.match(text, /Stok Kodu/, "kolon başlığı");
+    assert.match(text, /FK-A4/, "kalemde kod");
+    assert.match(text, /POS 300,00/, "tahsilat yolu POS");
+    assert.match(text, /Mal \/ Hizmet Toplamı[\s\S]*1\.666,67/, "Toplam KDV hariç");
+    assert.match(text, /Toplam İskonto[\s\S]*166,67/, "İskonto KDV hariç");
+    assert.match(text, /Matrah \(KDV Hariç\)[\s\S]*1\.500,00/, "Ara Toplam");
+    const purchase = await api.raw("GET", `/api/workspace/invoices/${ids.purchase}/fatura.pdf`);
+    assert.equal(purchase.status, 200);
+    assert.match(pdfText(purchase.buffer), /Stok Kodu[\s\S]*FK-A4/, "alış PDF'inde de Stok Kodu kolonu");
   });
 });

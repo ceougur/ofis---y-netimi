@@ -368,6 +368,83 @@ try {
     ok(sales.length >= 3, `fatura raporları katalogda ve açıldı (${sales.join(", ")})`);
     await closeAll();
   });
+  await step("7. Öbür ekranlar: Taksit ve Kasa formlarında POS / Kredi Kartı, stok satışında POS; fatura PDF, Excel ve raporda Stok Kodu", async () => {
+    // Taksit kartı → + Tahsilat: POS; − Ödeme / İade: Kredi Kartı.
+    const plan = (await call(admin, "/api/workspace/plans", { accountId: ids.customer, name: "Okul Kantini Ltd.", total: 900, count: 3, firstDue: shift(30), everyMonths: 1 })).data;
+    if (plan?.id) {
+      await admin.click("#hof-sidecard [data-action=plans]");
+      await admin.waitForSelector(`${modal} tr[data-plan]`);
+      await admin.click(`${modal} tr[data-plan="${plan.id}"]`);
+      await admin.waitForSelector(`${modal} [data-act="pay"]`);
+      const opts = async act => {
+        await admin.click(`${modal} [data-act="${act}"]`);
+        await admin.waitForSelector(`${modal} select[name="method"]`);
+        const list = await admin.$$eval(`${modal} select[name="method"] option`, nodes => nodes.map(node => node.textContent.trim()));
+        await admin.keyboard.press("Escape");
+        await admin.waitForTimeout(300);
+        return list;
+      };
+      const payIn = await opts("pay");
+      ok(payIn.includes("POS") && !payIn.includes("Kredi Kartı"), `taksit tahsilatı yolları: ${payIn.join(", ")}`);
+      const payOut = await opts("refund");
+      ok(payOut.includes("Kredi Kartı") && !payOut.includes("POS"), `taksit ödeme/iade yolları: ${payOut.join(", ")}`);
+      await closeAll();
+    } else ok(false, "taksit kartı açılamadı");
+    // Kasa ve Banka → + Tahsilat: POS; − Ödeme: Kredi Kartı; sekme adı "POS / Kredi Kartı".
+    await admin.click("#hof-sidecard [data-action=cash]");
+    await admin.waitForSelector(`${modal} [data-add="in"]`);
+    ok(/POS \/ Kredi Kartı/.test(await admin.textContent(`${modal} [data-methods]`)), "Kasa sekmesi “POS / Kredi Kartı”");
+    const kasa = async kind => {
+      await admin.click(`${modal} [data-add="${kind}"]`);
+      await admin.waitForSelector(`${modal} select[name="method"]`);
+      const list = await admin.$$eval(`${modal} select[name="method"] option`, nodes => nodes.map(node => node.textContent.trim()));
+      await admin.keyboard.press("Escape");
+      await admin.waitForTimeout(300);
+      return list;
+    };
+    const kasaIn = await kasa("in");
+    ok(kasaIn.includes("POS") && !kasaIn.includes("Kredi Kartı"), `Kasa tahsilat yolları: ${kasaIn.join(", ")}`);
+    const kasaOut = await kasa("out");
+    ok(kasaOut.includes("Kredi Kartı") && !kasaOut.includes("POS"), `Kasa ödeme yolları: ${kasaOut.join(", ")}`);
+    await closeAll();
+    // Stok → − Çıkış (satış): POS; + Giriş (alım): Kredi Kartı.
+    await admin.click("#hof-sidecard [data-action=stock]");
+    await admin.waitForSelector(`${modal} tr[data-item]`).catch(() => null);
+    await admin.click(`${modal} tr[data-item="${ids.item}"]`).catch(async () => admin.click(`${modal} tr:has-text("Fotokopi Kağıdı A4")`));
+    await admin.waitForSelector(`${modal} [data-move="out"]`);
+    const stockOpts = async kind => {
+      await admin.click(`${modal} [data-move="${kind}"]`);
+      await admin.waitForSelector(`${modal} select[name="pay"]`);
+      const list = await admin.$$eval(`${modal} select[name="pay"] option`, nodes => nodes.map(node => node.textContent.trim()));
+      await admin.keyboard.press("Escape");
+      await admin.waitForTimeout(300);
+      return list;
+    };
+    const sell = await stockOpts("out");
+    ok(sell.some(label => /^POS \(/.test(label)) && !sell.some(label => /Kredi Kartı/.test(label)), `stok satış yolları: ${sell.join(" | ")}`);
+    const buy = await stockOpts("in");
+    ok(buy.some(label => /^Kredi Kartı \(/.test(label)) && !buy.some(label => /^POS/.test(label)), `stok alım yolları: ${buy.join(" | ")}`);
+    await closeAll();
+    // Fatura PDF'inde ayrı "Stok Kodu" kolonu; Excel'de "Stok Kodu" başlığı; Ürün Bazında Satış raporunda Stok Kodu kolonu.
+    const pdf = await admin.evaluate(async id => {
+      const response = await fetch(`/api/workspace/invoices/${id}/fatura.pdf`);
+      const bytes = new Uint8Array(await response.arrayBuffer());
+      return { status: response.status, size: bytes.length, head: String.fromCharCode(...bytes.slice(0, 4)) };
+    }, ids.sale);
+    ok(pdf.status === 200 && pdf.head === "%PDF" && pdf.size > 5000, `satış faturası PDF'i indi (${pdf.size} bayt)`);
+    const pdfText = await call(admin, `/api/workspace/invoices/${ids.sale}`);
+    ok(pdfText.data.lines.every(line => line.code === "FK-A4"), "kart kaleminde Stok Kodu FK-A4 (PDF aynı veriden basılır)");
+    const xlsx = await admin.evaluate(async () => {
+      const response = await fetch("/api/workspace/invoices/export.xlsx");
+      const bytes = new Uint8Array(await response.arrayBuffer());
+      return { status: response.status, head: String.fromCharCode(...bytes.slice(0, 2)), size: bytes.length };
+    });
+    ok(xlsx.status === 200 && xlsx.head === "PK", `fatura Excel'i indi (${xlsx.size} bayt)`);
+    const report = await call(admin, "/api/workspace/report-center/urun-satis-karlilik?preset=all");
+    ok(report.status === 200 && report.data.headers[0] === "Stok Kodu" && report.data.rows.some(row => row[0] === "FK-A4"), `Ürün Bazında Satış raporunda Stok Kodu kolonu (${report.data.headers[0]}; ${report.data.rows.length} satır)`);
+    const stockReport = await call(admin, "/api/workspace/report-center/stok-durumu");
+    ok(stockReport.status === 200 && stockReport.data.headers[0] === "Stok Kodu", `stok raporunda Stok Kodu kolonu (${stockReport.data.headers[0]})`);
+  });
 } catch (error) {
   console.error("\nHATA:", error.message);
   exitCode = 1;
