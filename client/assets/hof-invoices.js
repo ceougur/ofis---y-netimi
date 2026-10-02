@@ -966,7 +966,7 @@
       renderTotals();
       renderPay();
       const next = body()?.querySelector("[data-next]");
-      if (next) next.innerHTML = calc.nextNumber ? `<span>Kesilince Verilecek No</span><b>${esc(calc.nextNumber)}</b>` : "";
+      if (next) next.innerHTML = calc.nextNumber ? `<span>Kaydedilince Verilecek No</span><b>${esc(calc.nextNumber)}</b>` : "";
     } catch (error) {
       if (ticket !== calcTicket || view.form !== form) return;
       form.calc = null;
@@ -1668,7 +1668,7 @@
       title: `${docs.length.toLocaleString("tr-TR")} Belge İptal Edilsin mi?`,
       eyebrow: "TOPLU İPTAL",
       intro: "Her belgenin bütün etkileri birlikte geri alınır: stok, cari borç/alacak, peşin tahsilat/ödeme (Kasa), çek/senet ve taksit kartı. Numaralar korunur. İadesi olan, kilitli dönemdeki ya da çeki tahsil edilmiş belge iptal edilmez; nedeni bildirilir.",
-      fields: [{ name: "reason", label: "İptal Nedeni", maxlength: 300, placeholder: "ör. Yanlış cariye kesildi", autofocus: true }],
+      fields: [{ name: "reason", label: "İptal Nedeni", maxlength: 300, placeholder: "ör. Yanlış cariye kaydedildi", autofocus: true }],
       submitLabel: "Seçilenleri İptal Et",
       onSubmit: async data => {
         const result = await HOF.api("/api/workspace/invoices/bulk-cancel", { method: "POST", body: { ids: docs.map(doc => doc.id), reason: data.reason } });

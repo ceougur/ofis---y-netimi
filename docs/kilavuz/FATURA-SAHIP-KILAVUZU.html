@@ -47,7 +47,7 @@
   <li><b>Cari</b> seçilir (ad yazılır, listeden seçilir). Vergi bilgileri cari kartından gelir. Kayıtlı değilse <b>+ Yeni Cari</b> formdan ayrılmadan açar.</li>
   <li><b>Kalemler:</b> ürün adı yazılınca stoktaki ürünler listelenir; listede olmayan ad hizmet ya da gider kalemi olur. Miktar, birim, birim fiyat, satır iskontosu, KDV oranı. Cari + ürün seçilince <b>bu cariye ve başkalarına son satış/alış fiyatı</b> görünür; tıklanınca fiyata yazılır. Tevkifat (KDV'nin bir kısmını alıcı öder) ve istisna kodu kalem menüsünden seçilir.</li>
   <li><b>Ödeme</b> (bölüm 4). <b>Not</b> belgenin altına basılır. Tarih ve saat hazır gelir; değiştirilebilir ama ileri tarih kabul edilmez.</li>
-  <li><b>Kaydet</b> (düğme adı senaryoya göre: "Satış Faturasını Kes", "Alış Faturasını Kaydet"…). Onay penceresi tutarı ve verilecek numarayı gösterir. Ya da <b>Taslak Olarak Kaydet</b>: deftere dokunmaz, numarasızdır, PDF'i "PROFORMA" başlıklı çıkar; sonra <b>Düzenle ve Kes</b>.</li>
+  <li><b>Kaydet</b> (düğme adı senaryoya göre: "Faturayı Kaydet", "Alış Faturasını Kaydet"…). Onay penceresi tutarı ve verilecek numarayı gösterir. Ya da <b>Taslak Olarak Kaydet</b>: deftere dokunmaz, numarasızdır, PDF'i "PROFORMA" başlıklı çıkar; sonra <b>Düzenle ve Kaydet</b>.</li>
 </ol>
 <table>
 <tr><th>Senaryo</th><th>Stok</th><th>Cari</th><th>Kasa / Taksit / Çek</th><th>Not</th></tr>
@@ -89,7 +89,7 @@
 <h2>7. Liste, sekmeler, toplu işlemler</h2>
 <ul>
   <li>Sekmeler: Satış, Alış, İadeler, Taslaklar, İptal Edilenler, Tümü; e-Belge açıkken Gönderilecekler ve Gelen Kutusu. Süzgeçler: dönem, ödeme durumu, belge türü, cari, metin araması (no, cari, ürün, VKN, not).</li>
-  <li><b>Seçilenleri Kes</b> (Taslaklar): eski tarihli taslak önce kesilir (seri numarası tarih sırasını bozmasın). <b>Seçilenleri İptal Et</b> (kesilmiş belgeler): en yeni önce; iptal nedeni sorulur. Her belge kendi işleminde: biri kesilemez/iptal edilemezse diğerleri etkilenmez, neden belge belge bildirilir, başarısızlar seçili kalır.</li>
+  <li><b>Seçilenleri Kaydet</b> (Taslaklar): eski tarihli taslak önce kesilir (seri numarası tarih sırasını bozmasın). <b>Seçilenleri İptal Et</b> (kesilmiş belgeler): en yeni önce; iptal nedeni sorulur. Her belge kendi işleminde: biri kesilemez/iptal edilemezse diğerleri etkilenmez, neden belge belge bildirilir, başarısızlar seçili kalır.</li>
   <li>Sol menüdeki Fatura rozeti: vadesi geçmiş açık belge sayısı.</li>
 </ul>
 
@@ -132,12 +132,12 @@
   <li>Fatura Ayarları → <b>e-Belge Bağlantısı</b>: "e-Fatura mükellefiyim", gerekiyorsa "e-Arşiv kullanıcısıyım", "e-SMM kullanıcısıyım"; varsayılan e-Fatura senaryosu (Temel / Ticari); Ortam: <b>Test</b>; kullanıcı adı, parola (şifreli saklanır, ekranda görünmez), gönderici birim etiketi; "Kesilen e-Belge entegratöre hemen gönderilsin" (isteğe bağlı). <b>Ayarları Kaydet</b>.</li>
   <li><b>Bağlantıyı Sına:</b> program EDM'nin sözleşmesini (WSDL) okur, giriş yapar, hangi işlemlerin kullanılabildiğini raporlar. Hata EDM'nin kendi kodu ve iletisiyle görünür.</li>
   <li>Cari kartında <b>Mükellef Sorgula:</b> VKN'ye göre alıcının e-Fatura mükellefi olup olmadığı ve posta kutusu (PK) etiketi karta yazılır. Böylece program alıcıya e-Fatura mı e-Arşiv mi keseceğini bilir.</li>
-  <li><b>Test ortamında prova:</b> bir e-Arşiv ve bir e-Fatura kes → <i>Kes ve Gönder</i> (hemen) ya da <i>Kes, Sonra Gönder</i> (Gönderilecekler'den toplu) → kartta e-Belge durumu (Gönderildi → Kabul Edildi / Reddedildi / Hata) → <i>Durumu Yenile</i>. e-Arşiv iptali dene. Gelen Kutusu → <i>Gelen Kutusunu Yenile</i> → gelen belgeyi <i>Alış Faturası Olarak Al</i> (cari VKN ile bulunur ya da açılır; kalemler stok kartıyla eşlenir) ya da <i>Yok Say</i>.</li>
+  <li><b>Test ortamında prova:</b> bir e-Arşiv ve bir e-Fatura kes → <i>Kaydet ve Gönder</i> (hemen) ya da <i>Kaydet, Sonra Gönder</i> (Gönderilecekler'den toplu) → kartta e-Belge durumu (Gönderildi → Kabul Edildi / Reddedildi / Hata) → <i>Durumu Yenile</i>. e-Arşiv iptali dene. Gelen Kutusu → <i>Gelen Kutusunu Yenile</i> → gelen belgeyi <i>Alış Faturası Olarak Al</i> (cari VKN ile bulunur ya da açılır; kalemler stok kartıyla eşlenir) ya da <i>Yok Say</i>.</li>
   <li>Ortam: <b>Canlı</b>; kullanıcı adı/parola canlı hesabınki. İlk canlı belgeyi küçük tutarla kesip GİB portalında görün.</li>
 </ol>
 <h3>11.3 Gönderim mantığı (bilmeniz gerekenler)</h3>
 <ul>
-  <li><b>Kes, Sonra Gönder:</b> bütün defter etkileri hemen işlenir; belge "Gönderilecek" olarak bekler; <b>resmî numara gönderim anında verilir</b> (GİB serisinde boşluk kalmaz). Gönderilecekler'den <b>Listeden Sil</b>: etkiler geri alınmaz (sizin kararınız); belge Müşteri Fişi numarasıyla kalır, istenirse sonra yine gönderilir.</li>
+  <li><b>Kaydet, Sonra Gönder:</b> bütün defter etkileri hemen işlenir; belge "Gönderilecek" olarak bekler; <b>resmî numara gönderim anında verilir</b> (GİB serisinde boşluk kalmaz). Gönderilecekler'den <b>Listeden Sil</b>: etkiler geri alınmaz (sizin kararınız); belge Müşteri Fişi numarasıyla kalır, istenirse sonra yine gönderilir.</li>
   <li>Serideki son gönderilen belgeden eski tarihli belge gönderilmez (tarih sırası); kart uyarır.</li>
   <li>EDM reddederse durum <b>Hata</b>: belge düzeltilip yeniden gönderilir. Bağlantı koparsa durum değişmez; önce <i>Durumu Yenile</i> (aynı ETTN ikinci kez kabul edilmez). "Aktif session bulunamadı (10011)" gelirse program kendiliğinden yeniden giriş yapıp isteği bir kez tekrarlar. Logout hiç çağrılmaz (EDM'de aynı kullanıcının diğer oturumlarını kapatır).</li>
   <li>e-Fatura ve e-Arşiv aynı gönderim ucuyla gider; belge türünü UBL'deki profil belirler. UBL-TR XML her belge için <i>XML İndir</i> ile alınabilir (e-Belge açıkken).</li>

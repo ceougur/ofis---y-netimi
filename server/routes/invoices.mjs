@@ -328,7 +328,7 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, conf
     scenario: row.scenario,
     scenarioLabel: SCENARIOS[row.scenario]?.label || "",
     status: row.status,
-    statusLabel: { draft: "Taslak", issued: "Kesildi", cancelled: "İptal Edildi" }[row.status] || row.status,
+    statusLabel: { draft: "Taslak", issued: "Kaydedildi", cancelled: "İptal Edildi" }[row.status] || row.status,
     number: row.number,
     displayNo: displayNo(row),
     ettn: row.ettn,
