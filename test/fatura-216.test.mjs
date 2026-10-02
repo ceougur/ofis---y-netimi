@@ -170,4 +170,24 @@ describe("Kaydedilmiş faturayı düzenleme, yeni stok kartı, Stok Kodu (müşt
     assert.equal((await api.post(`/api/workspace/invoices/${sale.data.id}/edit`, { ...body, lines: [{ itemId: ids.item, qty: 1, unitPrice: 150, vatRate: 20 }] })).status, 200);
     assert.equal(await stockQty(ids.item), stock0 - 1);
   });
+
+  test("Düzenleme çekli faturada: aynı çek (aynı seri no) yeniden yazılır; portföyde tek evrak; ciro edilmiş çek varken düzenleme durur", async () => {
+    const sale = await api.post("/api/workspace/invoices", { scenario: "goods_sale", accountId: ids.other, issueDate: shift(0), lines: [{ itemId: ids.item, qty: 1, unitPrice: 150, vatRate: 20 }], payment: { cheques: [{ instrument: "cheque", amount: 100, dueDate: shift(30), serialNo: "CK-2016-1", bank: "Ziraat" }], rest: "open" } });
+    assert.equal(sale.status, 200, JSON.stringify(sale.data));
+    const edited = await api.post(`/api/workspace/invoices/${sale.data.id}/edit`, { accountId: ids.other, issueDate: shift(0), lines: [{ itemId: ids.item, qty: 2, unitPrice: 150, vatRate: 20 }], payment: { cheques: [{ instrument: "cheque", amount: 120, dueDate: shift(30), serialNo: "CK-2016-1", bank: "Ziraat" }], rest: "open" } });
+    assert.equal(edited.status, 200, JSON.stringify(edited.data));
+    assert.equal(edited.data.cheques.length, 1);
+    assert.equal(edited.data.cheques[0].amount, 120);
+    const list = (await api.get("/api/workspace/cheques")).data;
+    const rows = (list.cheques || list.items || []).filter(row => row.serialNo === "CK-2016-1");
+    assert.equal(rows.length, 1, "portföyde tek evrak");
+    // Çek tahsil edildi (para el değiştirdi): fatura düzenlenmez, hiçbir şey yazılmaz.
+    const collected = await api.post(`/api/workspace/cheques/${edited.data.cheques[0].id}/actions`, { action: "collect", date: shift(0), method: "bank" });
+    assert.equal(collected.status, 200, JSON.stringify(collected.data));
+    const balance0 = await balance(ids.other);
+    const blocked = await api.post(`/api/workspace/invoices/${sale.data.id}/edit`, { accountId: ids.other, issueDate: shift(0), lines: [{ itemId: ids.item, qty: 3, unitPrice: 150, vatRate: 20 }], payment: { rest: "open" } });
+    assert.equal(blocked.status, 409);
+    assert.match(JSON.stringify(blocked.data), /cheque-moved/);
+    assert.equal(await balance(ids.other), balance0, "reddedilen düzenleme cariye dokunmadı");
+  });
 });
