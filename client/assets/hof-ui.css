@@ -933,15 +933,6 @@ html.hof-auth-required #root {
 .hof-record-grid .hof-field:first-child {
   grid-column: 1 / -1;
 }
-/* Yeni kayıt: "cari kartı da aç" (v2.0.7) — formun altında, tam satır. */
-.hof-record-grid .hof-record-account {
-  grid-column: 1 / -1;
-  margin-top: 6px;
-  padding: 11px 13px;
-  border: 1px solid var(--do-border);
-  border-radius: var(--do-radius-small);
-  background: var(--do-accent-soft);
-}
 
 
 /* ---------- Sayfalama ---------- */
@@ -7318,37 +7309,6 @@ body.hof-dense .dynamic-table th {
 }
 .hof-stock-table .hof-cash-actions {
   white-space: nowrap;
-}
-.hof-case-account {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 10px 16px;
-  margin: 0 0 10px;
-  padding: 0 0 10px;
-  border-bottom: 1px solid #e3ede7;
-}
-.hof-case-account > div:first-child {
-  flex: 1 1 180px;
-  min-width: 0;
-}
-.hof-case-account h3 {
-  margin: 0 0 2px;
-  color: #5c796a;
-  font-size: 11px;
-  letter-spacing: 0.12em;
-}
-.hof-case-account-balance {
-  display: grid;
-  justify-items: end;
-}
-.hof-case-account-balance span {
-  color: #6b7a74;
-  font-size: 11px;
-}
-.hof-case-account-balance b {
-  font-size: 15px;
-  font-variant-numeric: tabular-nums;
 }
 @media (max-width: 720px) {
   .hof-plan-facts > div.is-wide {

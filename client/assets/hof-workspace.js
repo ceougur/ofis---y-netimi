@@ -152,39 +152,25 @@
     casePlanKey = selected.key;
     box.dataset.caseKey = selected.key;
     const stamp = ++casePlanStamp;
-    // Kayda bağlı cari (v2.0.6) taksit kartlarıyla birlikte okunur: bölümün üstünde carinin bakiyesi durur.
-    const [data, linked] = await Promise.all([
-      HOF.plans.forCase(selected.key).catch(() => ({ plans: [] })),
-      HOF.accounts?.forCase && HOF.can("accounts.view") ? HOF.accounts.forCase(selected.key).catch(() => null) : null,
-    ]);
+    // 2.0.18 (kullanıcı kararı): detay kartında CARİ kutusu / Cari Kartı pili yok; yalnız kayda bağlı taksit kartları.
+    const data = await HOF.plans.forCase(selected.key).catch(() => ({ plans: [] }));
     if (stamp !== casePlanStamp || HOF.selectedCase()?.key !== selected.key || box.dataset.caseKey !== selected.key) return;
     casePlans = (data.plans || []).filter(plan => plan.status === "active" && plan.caseKey === selected.key);
-    caseAccount = linked?.account || null;
-    if (!casePlans.length && !caseAccount) {
+    if (!casePlans.length) {
       box.hidden = true;
       box.innerHTML = "";
       return;
     }
-    box.innerHTML = (caseAccount ? caseAccountHtml(caseAccount) : "") + casePlans.map(plan => casePlanHtml(plan, data)).join("");
+    box.innerHTML = casePlans.map(plan => casePlanHtml(plan, data)).join("");
     box.hidden = false;
   }
-  let caseAccount = null;
-  function caseAccountHtml(account) {
-    const balance = account.totals.balance;
-    const side = balance > 0.005 ? "borçlu" : balance < -0.005 ? "alacaklı" : "";
-    return `<div class="hof-case-account"><div><h3>CARİ</h3><b>${esc(account.name)}</b>${account.refNo ? ` <small>· No ${esc(account.refNo)}</small>` : ""}</div><div class="hof-case-account-balance"><span>Bakiye</span><b class="${balance > 0.005 ? "hof-cash-out" : balance < -0.005 ? "hof-cash-in" : ""}">${esc(HOF.formatMoney(Math.abs(balance)))}${side ? ` <small>${side}</small>` : ""}</b></div><button type="button" class="hof-button hof-button-small hof-button-ghost" data-open-account="${esc(account.id)}">Cari Kartı</button></div>`;
-  }
   // v2.0.14: dinleyici bölümün kendi üstünde ve yakalama aşamasında — panelin başka bir dinleyicisi (React, eklenti)
-  // tıklamayı yutsa da "Cari Kartı", "+ Tahsilat" ve "Taksit Kartını Aç" çalışır (müşteri: Cari Kartı düğmesi tepki vermiyordu).
+  // tıklamayı yutsa da "+ Tahsilat" ve "Taksit Kartını Aç" çalışır (müşteri: Cari Kartı düğmesi tepki vermiyordu).
   function onCasePlanClick(event) {
-    const button = event.target.closest("[data-case-collect], [data-open-plan], [data-open-account]");
+    const button = event.target.closest("[data-case-collect], [data-open-plan]");
     if (!button || !event.currentTarget.contains(button)) return;
     event.preventDefault();
     event.stopPropagation();
-    if (button.dataset.openAccount) {
-      if (!HOF.accounts?.open) return HOF.toast("Cari modülü yüklenemedi; sayfayı yenileyin.", { type: "error" });
-      return HOF.accounts.open(button.dataset.openAccount);
-    }
     if (button.dataset.openPlan) {
       if (!HOF.plans?.open) return HOF.toast("Taksit modülü yüklenemedi; sayfayı yenileyin.", { type: "error" });
       return HOF.plans.open(button.dataset.openPlan);

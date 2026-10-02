@@ -74,6 +74,15 @@ Yeni bir oturum bu belgeyi okuyarak kaldığı yerden devam eder. Son güncellem
   - Drive'a yedek: Yönetim → Yedekler; klasör yolu ya da Drive bağlantısı; `DestekOfis Yedekleri`; bağlantı kipi lisans servisindeki `/v1/yedek/oturum` ucunu bekler (`docs/DRIVE-YEDEK.md`, Vercel işlevi henüz yayımlanmadı).
   - Doğrulama: birim ve uçtan uca testler, 2.0.1 → 2.0.2 ve eski sürümlerden güncelleme provası (ayrıntı `CHANGELOG.md`).
 
+### 2.0.18 — teslim hazır 02.10.2026 (PR/yayın kullanıcı onayıyla)
+Müşteri bildirimi: marka/patent tablosunda kayıttan açılan cari adı "Marka / Buluş Adı" kolonundan geliyordu (FURRA).
+Kök neden ve program geneli düzeltme (`client/assets/hof-plans.js` personOf → analizin kişi kolonu; öğe adı kolonları
+ad sayılmaz; Adı + Soyadı birleşik). Kullanıcı kararı ("çok özellik çok hata doğuruyor"): kayıt ile cari AYRILDI —
+Yeni Kayıt'taki "cari kartı da aç", Cari'deki Tablodan Al, Raporlar'daki "Tablodaki Kişileri Cari Yap", detay kartındaki
+CARİ kutusu / Cari Kartı pili ve POST cases/:key/account ucu kaldırıldı. Kalanlar: cari formundaki Tablodaki Kayıt alanı,
+kayıttan taksit, Taksit → Tablodan Aktar. Şema göçü yok. Kanıt `docs/2.0.18-KANIT.md`, CHANGELOG → 2.0.18, CLAUDE.md
+madde 15. Teslim `dist/teslim-2.0.18/` (3 zip + SHA256SUMS; OKU-BENI.txt'de yayın adımları).
+
 ## Kalanlar (öncelik sırasıyla)
 
 ### 2.0.17 — yapıldı, teslim paketi hazır (02.10.2026; dal `claude/nice-euler-jvajxv`; PR/birleştirme/yayın kullanıcı onayıyla)

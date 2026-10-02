@@ -350,9 +350,6 @@
         });
       })(),
       submitLabel: "Kaydı Oluştur",
-      // v2.0.7: kişi bir kez girilir — kayıtla birlikte cari kartı da açılır (ad ve telefon kayıttan). Aynı ad ve
-      // telefonlu bağsız cari varsa kayda bağlanır; kayda bağlı cari zaten varsa o kalır.
-      extraHtml: HOF.accounts && HOF.can("accounts.manage") && HOF.plans?.personOf ? '<label class="hof-check hof-record-account"><input type="checkbox" name="openAccount" checked><span>Bu kişi için <b>cari kartı</b> da aç (borç, tahsilat, taksit ve çek/senet takibi)</span></label>' : "",
       onSubmit: async data => {
         const values = {};
         columns.forEach((column, index) => {
@@ -360,31 +357,9 @@
           if (value) values[column] = value;
         });
         if (!Object.keys(values).length) throw new Error("En az bir alan doldurun.");
-        const person = data.openAccount ? HOF.plans.personOf(values) : "";
-        if (data.openAccount && !person) throw new Error("Cari kartı için kişinin adı gerekli: ad kolonunu doldurun ya da \"cari kartı da aç\" kutusunu kaldırın.");
-        // v2.0.13: kişi bir kez girilir — aynı ad ve telefonla cari varsa kayıt açılmadan önce sorulur (çift kayıt).
-        if (person) {
-          const phone = HOF.plans.phoneOf(values).replace(/\D/g, "").slice(-10);
-          let twins = [];
-          try {
-            twins = (await HOF.api(`/api/workspace/accounts/search?q=${encodeURIComponent(person)}`)).filter(item => HOF.normalize(item.name) === HOF.normalize(person) && (phone ? String(item.phone || "").replace(/\D/g, "").slice(-10) === phone : !item.phone));
-          } catch {
-            twins = [];
-          }
-          if (twins.length) {
-            const go = await HOF.confirm({ title: "Bu Kişi Zaten Kayıtlı", message: `“${person}” aynı telefonla zaten kayıtlı (Cari No ${twins[0].refNo || "—"}${twins[0].caseTitle ? `, tablodaki kayıt ${twins[0].caseTitle}` : ""}). Aynı kişi için ikinci kayıt açılırsa borç ve tahsilatlar ikiye bölünür. Yine de yeni kayıt açılsın mı?`, confirmLabel: "Yine de Kayıt Aç", cancelLabel: "Vazgeç", danger: true });
-            if (!go) return true;
-          }
-        }
         const created = await HOF.api("/api/workspace/records", { method: "POST", body: { sourceName: HOF.sourceName(), values, sheet: tab } });
-        if (person && created?.caseKey) {
-          try {
-            const account = await HOF.api(`/api/workspace/cases/${encodeURIComponent(created.caseKey)}/account`, { method: "POST", body: { name: person, phone: HOF.plans.phoneOf(values), caseTitle: HOF.plans.recordLabel(values) } });
-            HOF.toast(account.outcome === "created" ? `Kayıt oluşturuldu; "${account.name}" için cari kartı açıldı ve kayda bağlandı.` : account.outcome === "linked" ? `Kayıt oluşturuldu; mevcut "${account.name}" carisi bu kayda bağlandı.` : account.outcome === "duplicate" ? `Kayıt oluşturuldu; "${account.name}" zaten cari olarak kayıtlı (No ${account.refNo || "—"}), ikinci cari açılmadı.` : "Kayıt oluşturuldu; kayda bağlı cari zaten vardı.", { type: "success", timeout: 6000 });
-          } catch (error) {
-            HOF.toast(`Kayıt oluşturuldu ama cari açılamadı: ${error.message} Cari → + Yeni Cari ile açıp "Tablodaki Kayıt" alanından bağlayabilirsiniz.`, { type: "error", timeout: 9000 });
-          }
-        } else HOF.toast("Yeni kayıt oluşturuldu.", { type: "success" });
+        // 2.0.18 (kullanıcı kararı): kayıt cari AÇMAZ; cari yalnız Cari ekranından (+ Yeni Cari / Excel'den Yükle) açılır.
+        HOF.toast("Yeni kayıt oluşturuldu.", { type: "success" });
         page = 1;
         // Tablo yenilenince yeni kayıt seçilir ve vurgulanır.
         const key = created?.caseKey;

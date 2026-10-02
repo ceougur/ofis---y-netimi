@@ -403,12 +403,14 @@ describe("tablodan taksit kartına aktarma (iş akışı)", () => {
 
   it("kart bir kayda bağlıysa, başka kayda bağlı aynı ad + telefonlu cari kullanılmaz", async () => {
     const first = keyOf("Ali Veli", "0532 111 22 33");
-    const linked = await post(`/api/workspace/cases/${encodeURIComponent(first)}/account`, { name: "Ali Veli", phone: "0532 111 22 33" });
-    assert.equal(linked.status, 200);
+    // 2.0.18: kayıttan cari açan uç yok; cari elle açılıp "Tablodaki Kayıt" ile bağlanır (zaten bağlıysa o kullanılır).
+    let linked = (await get(`/api/workspace/cases/${encodeURIComponent(first)}/account`)).data.account;
+    if (!linked) linked = (await post("/api/workspace/accounts", { name: "Ali Veli", phone: "0532 111 22 33", caseKey: first, caseTitle: "Ali Veli satırı" })).data;
+    assert.ok(linked?.id, "Ali Veli'nin kayda bağlı carisi var");
     const other = keyOf("Mehmet Öz");
     const card = await post("/api/workspace/plans", { name: "Ali Veli", phone: "0532 111 22 33", total: "1.000", caseKey: other, caseTitle: "Mehmet Öz satırı" });
     assert.equal(card.status, 200, card.error);
-    assert.notEqual(card.data.accountId, linked.data.id, "başka kaydın carisine yazılmadı");
+    assert.notEqual(card.data.accountId, linked.id, "başka kaydın carisine yazılmadı");
   });
 });
 

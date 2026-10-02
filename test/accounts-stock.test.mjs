@@ -176,7 +176,7 @@ describe("Cari modülü (v2.0.6)", () => {
     assert.equal((await admin.post("/api/workspace/accounts/bulk-plan", { ids, total: "1000", count: 0, firstDue: "2026-10-01" })).status, 400, "taksit sayısı gerekli");
   });
 
-  it("açık tablodan cari alımı kayda bağlar; tabloda olmayan kayıt bağlanmaz; kişinin kartından cari özeti", async () => {
+  it("cari alımı kayda BAĞLAMAZ (2.0.18: Tablodan Al kalktı; caseKeys yok sayılır)", async () => {
     const matrix = [["Dosya No", "Borçlu", "Telefon", "Tutar"], ["2026/1", "Veli Kaya", "0532 999 99 99", "4.500"]];
     const staged = await admin.post("/api/workspace/dataset/stage", { kind: "excel", fileName: "dosyalar.xlsx", sheets: [{ name: "Aktif", matrix }] });
     await admin.post("/api/workspace/dataset/commit", { stageId: staged.data.data.stageId, mode: "replace" });
@@ -187,12 +187,13 @@ describe("Cari modülü (v2.0.6)", () => {
     const roles = { ...preview.roles, 1: "name" };
     const done = (await admin.post("/api/workspace/accounts/import", { matrix: table, headerAt: 0, roles, caseKeys: [key, "2026/999"], caseTitles: ["2026/1 · Veli Kaya", "x"] })).data.data;
     assert.equal(done.created, 2);
-    assert.equal(done.linked, 1, "yalnız tabloda olan kayıt bağlandı");
-    const linked = (await admin.get(`/api/workspace/cases/${encodeURIComponent(key)}/account`)).data.data;
-    assert.equal(linked.account.name, "Veli Kaya");
+    assert.equal(done.linked, undefined, "kayda bağlama sayacı yok");
+    assert.equal((await admin.get(`/api/workspace/cases/${encodeURIComponent(key)}/account`)).data.data.account, null, "kayda cari bağlanmadı");
+    assert.equal((await list(admin, "?q=veli kaya")).accounts[0].caseKey, "");
     const hayalet = (await list(admin, "?q=hayalet")).accounts[0];
     assert.equal(hayalet.caseKey, "");
     assert.equal((await admin.get(`/api/workspace/cases/${encodeURIComponent("2026/999")}/account`)).data.data.account, null);
+    assert.equal((await admin.post(`/api/workspace/cases/${encodeURIComponent(key)}/account`, { name: "Veli Kaya" })).status, 405, "kayıttan cari açan uç yok (yalnız GET kaldı)");
   });
 
   it("Silinenler: silinen cari ve cari hareketi geri gelir", async () => {

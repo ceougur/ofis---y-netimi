@@ -247,30 +247,11 @@ try {
     await admin.waitForTimeout(400);
   });
 
-  await step("7. Detay panelindeki CARİ pili → Cari Kartı: açılır; kapanınca odak düğmeye döner; canlı yenilemeden sonra yine açılır", async () => {
-    await admin.locator(".dynamic-table tbody tr", { hasText: "Mert Çelik" }).first().click();
-    await admin.waitForTimeout(500);
+  await step("7. Detay panelinde CARİ pili yok (2.0.18); Taksit Kartını Aç: açılır, kapanınca odak düğmeye döner", async () => {
     await admin.locator(".dynamic-table tbody tr", { hasText: "Ada Yılmaz" }).first().click();
-    await admin.waitForSelector("#hof-case-plan:not([hidden]) [data-open-account]", { timeout: 10000 });
-    await shot(admin, "detay-cari-pili");
-    await admin.click("#hof-case-plan [data-open-account]");
-    await admin.waitForSelector(`${top}.hof-modal-backdrop .hof-accounts-modal, ${top} .hof-accounts-modal`, { timeout: 8000 }).catch(() => null);
-    await admin.waitForFunction(() => document.querySelector(".hof-modal-backdrop.is-visible .hof-accounts [data-acc-card], .hof-modal-backdrop.is-visible .hof-accounts .hof-plan-head"), null, { timeout: 8000 });
-    const title = await admin.$eval(`${top} .hof-plan-head`, node => node.innerText.replace(/\s+/g, " "));
-    ok(/Ada Yılmaz/.test(title), `Cari Kartı açıldı: ${title.slice(0, 60)}`);
-    const inside = await admin.evaluate(() => Boolean(document.activeElement?.closest(".hof-modal-backdrop.is-visible")));
-    ok(inside, "pencere açılınca odak pencerenin içinde");
-    await shot(admin, "cari-karti-acildi");
-    await closeTop(admin);
-    const back = await admin.evaluate(() => document.activeElement?.matches("#hof-case-plan [data-open-account]"));
-    ok(back, `kapanınca odak Cari Kartı düğmesine döndü (odak: ${await activeDesc(admin)})`);
-    await otherChange();
-    await admin.waitForSelector("#hof-case-plan:not([hidden]) [data-open-account]", { timeout: 10000 });
-    await admin.click("#hof-case-plan [data-open-account]");
-    await admin.waitForFunction(() => document.querySelector(".hof-modal-backdrop.is-visible .hof-accounts .hof-plan-head"), null, { timeout: 8000 });
-    ok(/Ada Yılmaz/.test(await admin.$eval(`${top} .hof-plan-head`, node => node.innerText)), "canlı yenilemeden sonra Cari Kartı yine açıldı");
-    await closeTop(admin);
-    // Taksit Kartını Aç (aynı kalıp): Mert'e kart açıp panelden açılır.
+    await admin.waitForTimeout(800);
+    ok(!(await admin.$("#hof-case-plan .hof-case-account, #hof-case-plan [data-open-account]")), "detay kartında CARİ kutusu / Cari Kartı pili yok");
+    // Taksit Kartını Aç (aynı kalıp): Ada'ya kart açıp panelden açılır; kapanınca odak düğmeye döner.
     const plan = await call(admin, "/api/workspace/plans", { accountId: ids["Ada Yılmaz"], name: "Ada Yılmaz", total: "600", mode: "auto", count: 2, firstDue: shift(40) });
     ok(plan.status === 200, "Ada'ya taksit kartı açıldı");
     await admin.locator(".dynamic-table tbody tr", { hasText: "Mert Çelik" }).first().click();
@@ -279,8 +260,9 @@ try {
     await admin.waitForSelector("#hof-case-plan:not([hidden]) [data-open-plan]", { timeout: 10000 });
     await admin.click("#hof-case-plan [data-open-plan]");
     await admin.waitForFunction(() => document.querySelector(".hof-modal-backdrop.is-visible .hof-plans .hof-plan-head"), null, { timeout: 8000 });
-    ok(/Ada Yılmaz/.test(await admin.$eval(`${top} .hof-plan-head`, node => node.innerText)), "Taksit Kartını Aç da çalışıyor");
+    ok(/Ada Yılmaz/.test(await admin.$eval(`${top} .hof-plan-head`, node => node.innerText)), "Taksit Kartını Aç çalışıyor");
     await closeTop(admin);
+    ok(await admin.evaluate(() => document.activeElement?.matches("#hof-case-plan [data-open-plan]")), `kapanınca odak Taksit Kartını Aç düğmesine döndü (odak: ${await activeDesc(admin)})`);
   });
 
   await step("8. Pencere odağı: ilk alana odak, Tab kapanı, bildirim odağı çalmaz, kapanınca odak açan düğmeye döner", async () => {

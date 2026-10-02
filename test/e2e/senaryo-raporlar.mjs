@@ -119,18 +119,21 @@ try {
     ok(dues.data.items.length > 0, `tablo takvimi: ${dues.data.items.length} kalem`);
   });
 
-  await step("B1b. Excel var, cari yok (müşterinin durumu): Cari ekstre tablodaki kişileri cari yapma yolunu gösterir", async () => {
+  await step("B1b. Excel var, cari yok: Raporlar Cari ekranına yönlendirir (2.0.18: Tablodaki Kişileri Cari Yap ve Tablodan Al kalktı)", async () => {
     await page.reload();
     await page.waitForSelector('.hof-side-item[data-action="analytics"]');
     await openReports();
-    await page.waitForSelector(`${modal} .hof-rep-help [data-go="fromTable"]`, { timeout: 10000 });
-    ok(/Tablodaki kişileri cari yap/i.test(await text(`${modal} .hof-rep-help`)), "boş defter + dolu tablo: “Tablodaki kişileri cari yap” düğmesi");
+    await page.waitForSelector(`${modal} .hof-rep-help [data-go="accounts"]`, { timeout: 10000 });
+    const help = await text(`${modal} .hof-rep-help`);
+    ok(/Cari Ekranını Aç/.test(help) && !/Tablodaki kişileri cari yap/i.test(help), "boş defter: yalnız “Cari Ekranını Aç” düğmesi");
+    ok(!(await page.$(`${modal} .hof-rep-help [data-go="fromTable"]`)), "“Tablodaki Kişileri Cari Yap” düğmesi yok");
     await shot("excel-var-cari-yok");
-    await page.click(`${modal} .hof-rep-help [data-go="fromTable"]`);
-    await page.waitForFunction(() => /Tablodan cari al/i.test([...document.querySelectorAll(".hof-modal-backdrop.is-visible")].at(-1)?.innerText || ""), null, { timeout: 15000 });
-    ok(true, "düğme “Tablodan cari al: kolonları eşle” penceresini açar (her cari kaydına bağlanır)");
+    await page.click(`${modal} .hof-rep-help [data-go="accounts"]`);
+    await page.waitForFunction(() => /\+ Yeni Cari/.test([...document.querySelectorAll(".hof-modal-backdrop.is-visible")].at(-1)?.innerText || ""), null, { timeout: 15000 });
+    ok(!(await page.$(".hof-modal-backdrop.is-visible .hof-accounts-modal [data-act=fromTable]")), "Cari penceresinde “Tablodan Al” düğmesi yok");
     await closeTop();
-    ok((await api("/api/workspace/accounts?status=all")).data.accounts.length === 0, "pencere kapatılınca hiçbir cari açılmadı (kullanıcı onayı olmadan kayıt yok)");
+    if (await page.$(".hof-modal-backdrop.is-visible")) await closeTop();
+    ok((await api("/api/workspace/accounts?status=all")).data.accounts.length === 0, "hiçbir cari kendiliğinden açılmadı");
   });
 
   let ahmet1;
