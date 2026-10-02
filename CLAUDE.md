@@ -59,9 +59,10 @@ Bu dosya oturumlar arasında taşınan hafızadır. Her oturumun başında okunu
   detay panelinde Cari Kartı (#hof-checks ↔ #hof-case-plan yer kavgası), WhatsApp Otomatik Sıra + kendiliğinden inen ekstre
   PDF'i, Tablodan Aktar geri alma damgası. Meta WhatsApp Business API (kendiliğinden gönderim + PDF eki) ayrı Pro özelliği
   olarak ileride tasarlanacak; resmî olmayan otomasyon yapılmaz.
-- 2.0.15 HAZIR (02.10.2026; dal `claude/nice-euler-jvajxv`; sürüm 2.0.15, CHANGELOG/MIMARI/ISTEKLER/DURUM yazıldı; teslim
-  `dist/teslim-2.0.15/`; imzalı paket (anahtar: kullanıcının oturuma yüklediği .pem, `--anahtar`) ve kurulum .exe teslimde;
-  yayın onay bekler). İçerik — 01.10.2026 kullanıcı isteği:
+- 2.0.15 yayımlandı (02.10.2026; PR ceougur/ofis---y-netimi#15, `v2.0.15` = 85171ae; beş dosya ve latest/DestekOfis-Kurulum.exe
+  bayt bayt doğrulandı; gerçek güncelleyici 2.0.14/13/12/2.0.4/1.7.0 olarak yayındaki bildirgeyle 2.0.15'i "available" gördü;
+  imza anahtarı: kullanıcının oturuma yüklediği .pem, `node tools/release.mjs --anahtar …`; kurulum .exe Wine + Inno Setup;
+  dal `master` üzerine sıfırlandı). İçerik — 01.10.2026 kullanıcı isteği:
   1. Küçük düzeltme (müşteri): sol menüdeki "Yeni Kayıt" kalkar; ana listede "Dışa Aktar"ın yanına "Yeni Kayıt".
   2. FATURA modülü (sol sabit menüde "Fatura"): GİB e-Fatura/e-Arşiv, UBL-TR, PEPPOL uyumlu mimari. Kurallar: fatura
      kesilince stok (miktar/maliyet), cari (borç/alacak), vadeli/taksitliyse Taksit motoru, peşinse Kasa — hepsi tek
