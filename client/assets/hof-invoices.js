@@ -1406,6 +1406,17 @@
     renderCard();
   }
   const pdfUrl = doc => `/api/workspace/invoices/${encodeURIComponent(doc.id)}/fatura.pdf`;
+  // v2.0.17 (müşteri: "hayalet kısmi ödeme"): her ödenen kuruşun kaynağı kartta görünür — tarih, tür, tutar ve nasıl
+  // kapattığı (Bağlı: bu faturaya yazılmış; Otomatik: carinin en eski açık faturasına dağıtılmış; Mahsup: mahsup fişi).
+  function closersHtml(doc) {
+    if (doc.status !== "issued" || isReturn(doc.kind)) return "";
+    const rows = (doc.closers || []).map(item => {
+      const offsetId = item.id.startsWith("offset:") ? item.id.slice(7) : "";
+      return `<li><span>${esc(HOF.formatDate(item.date))} · ${esc(item.label || "Ödeme")}${item.methodLabel ? ` (${esc(item.methodLabel)})` : ""}${item.note && !offsetId ? ` <small>${esc(item.note)}</small>` : ""}</span><b>${esc(money(item.amount))}</b><em class="hof-plan-badge is-${item.mode === "auto" ? "muted" : item.mode === "offset" ? "soon" : "info"}">${esc(item.modeLabel || "")}</em>${offsetId && doc.canManage ? `<button type="button" class="hof-link-button" data-act="offset-remove" data-offset="${esc(offsetId)}">Kaldır</button>` : ""}</li>`;
+    });
+    const canOffset = doc.canManage && doc.open > 0.004;
+    return `<div class="hof-inv-closers"><h5>Bu Faturayı Kapatanlar</h5>${rows.length ? `<ul>${rows.join("")}</ul>` : `<p class="hof-muted">Henüz kapatan yok.${sideOf(doc.kind) === "sale" ? " Aynı cariye kesilen alış faturası ve Alacak Yaz satırı kendiliğinden ödeme sayılmaz; karşılıklı kapama için Mahsup Et." : " Aynı cariye kesilen satış faturası ve Borç Yaz satırı kendiliğinden ödeme sayılmaz; karşılıklı kapama için Mahsup Et."}</p>`}${canOffset ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="offset">Mahsup Et</button>' : ""}</div>`;
+  }
   function renderCard() {
     const root = body();
     const doc = view.doc;
@@ -1490,7 +1501,7 @@
       </dl>
       <div class="hof-rep-table"><table class="hof-table hof-inv-doc-lines"><thead><tr><th>#</th>${hasCodes ? "<th>Stok Kodu</th>" : ""}<th>Ürün / Hizmet</th><th class="num">Miktar</th><th class="num">Birim Fiyat</th><th class="num">İsk.</th><th class="num">KDV</th><th class="num">Tutar</th></tr></thead><tbody>${lineRows}</tbody></table></div>
       <div class="hof-inv-bottom">
-        <section class="hof-inv-pay"><h4>Ödeme</h4>${payments ? `<ul class="hof-inv-paylist">${payments}</ul>` : '<p class="hof-muted">Peşin ödeme yok.</p>'}${doc.status === "issued" ? `<p class="hof-inv-rest">${doc.open > 0.004 ? `Açık: <b>${esc(money(doc.open))}</b>${doc.paid > 0 ? ` · ödenen ${esc(money(doc.paid))}` : ""}` : `<b>${esc(doc.payStateLabel || "Kapandı")}</b>`}</p>` : ""}${returns ? `<h4>İadeler</h4><ul class="hof-inv-paylist">${returns}</ul>` : ""}</section>
+        <section class="hof-inv-pay"><h4>Ödeme</h4>${payments ? `<ul class="hof-inv-paylist">${payments}</ul>` : '<p class="hof-muted">Peşin ödeme yok.</p>'}${closersHtml(doc)}${doc.status === "issued" ? `<p class="hof-inv-rest">${doc.open > 0.004 ? `Açık: <b>${esc(money(doc.open))}</b>${doc.paid > 0 ? ` · ödenen ${esc(money(doc.paid))}` : ""}` : `<b>${esc(doc.payStateLabel || "Kapandı")}</b>`}</p>` : ""}${returns ? `<h4>İadeler</h4><ul class="hof-inv-paylist">${returns}</ul>` : ""}</section>
         <section class="hof-inv-sum"><h4>Toplamlar</h4><dl class="hof-inv-totals">${totals.map(([label, value], index) => `<div class="${index === totals.length - 1 ? "is-total" : ""}"><dt>${esc(label)}</dt><dd>${esc(curMoney(value, cur))}</dd></div>`).join("")}${cur !== "TRY" ? `<div><dt>TL Karşılığı</dt><dd>${esc(money(doc.tryPayable))}</dd></div>` : ""}</dl><p class="hof-inv-words">${esc(doc.amountInWords || "")}</p></section>
       </div>
       ${doc.note ? `<div class="hof-plan-note"><h4>Not</h4><p>${esc(doc.note)}</p></div>` : ""}`,
@@ -1516,6 +1527,14 @@
     }
     if (act === "cancel") return cancelForm(doc);
     if (act === "pay") return payForm(doc);
+    if (act === "offset") return offsetForm(doc);
+    if (act === "offset-remove") {
+      const go = await HOF.confirm({ title: "Mahsup Kaldırılsın mı?", message: "Mahsup fişi silinir; iki belgenin ödenme durumu yeniden hesaplanır. Cari bakiyesi değişmez.", confirmLabel: "Kaldır", danger: true });
+      if (!go) return;
+      showDoc(await HOF.api(`/api/workspace/invoices/${encodeURIComponent(doc.id)}/offsets/${encodeURIComponent(target.dataset.offset)}`, { method: "DELETE" }));
+      HOF.emit("accounts-changed");
+      return HOF.toast("Mahsup kaldırıldı.", { type: "success" });
+    }
     if (act === "repeat") return repeatForm(doc);
     if (act === "repeat-stop") {
       if (!(await HOF.confirm({ title: "Tekrar Durdurulsun mu?", message: "Bundan sonra taslak hazırlanmaz; hazırlanmış taslaklar durur.", confirmLabel: "Durdur" }))) return;
@@ -1542,7 +1561,7 @@
     HOF.formModal({
       title: sale ? "Tahsilat Ekle" : "Ödeme Yap",
       eyebrow: docTitle(doc),
-      intro: `Açık tutar ${money(doc.open)}. Kayıt cariye ve Kasa'ya yazılır; carinin en eski açık faturasından başlayarak kapanır.`,
+      intro: `Açık tutar ${money(doc.open)}. Kayıt cariye ve Kasa'ya yazılır; bu faturaya bağlı kapatılır (fazlası carinin en eski açık faturasına gider).`,
       fields: [
         { name: "amount", label: "Tutar (₺)", required: true, inputmode: "decimal", value: amountText(doc.open), autofocus: true },
         { name: "date", label: "Tarih", type: "date", required: true, value: todayIso(), max: "today" },
@@ -1551,9 +1570,51 @@
       ],
       submitLabel: sale ? "Tahsilatı Kaydet" : "Ödemeyi Kaydet",
       onSubmit: async data => {
-        await HOF.api(`/api/workspace/accounts/${encodeURIComponent(doc.accountId)}/entries`, { method: "POST", body: { kind: sale ? "in" : "out", amount: data.amount, date: data.date, method: data.method, note: data.note } });
+        await HOF.api(`/api/workspace/accounts/${encodeURIComponent(doc.accountId)}/entries`, { method: "POST", body: { kind: sale ? "in" : "out", amount: data.amount, date: data.date, method: data.method, invoiceId: doc.id, note: data.note } });
         HOF.toast(sale ? "Tahsilat kaydedildi." : "Ödeme kaydedildi.", { type: "success" });
         loadDoc(doc.id);
+      },
+    });
+  }
+  // Mahsup Et (v2.0.17): aynı carinin karşı yöndeki açık faturası ya da Alacak/Borç Yaz satırıyla karşılıklı kapama.
+  async function offsetForm(doc) {
+    let data;
+    try {
+      data = await HOF.api(`/api/workspace/invoices/${encodeURIComponent(doc.id)}/offsets`);
+    } catch (error) {
+      return HOF.toastError(error);
+    }
+    const options = [
+      ...data.invoices.map(item => ({ value: `invoice:${item.id}`, label: `${item.kindLabel} ${item.displayNo} · ${HOF.formatDate(item.issueDate)} · açık ${money(item.open)}`, left: item.open })),
+      ...data.entries.map(item => ({ value: `entry:${item.id}`, label: `${item.label} · ${HOF.formatDate(item.date)}${item.note ? ` · ${item.note}` : ""} · kalan ${money(item.left)}`, left: item.left })),
+    ];
+    if (!options.length) return HOF.toast(data.side === "sale" ? "Bu caride mahsup edilecek açık alış faturası ya da Alacak Yaz satırı yok." : "Bu caride mahsup edilecek açık satış faturası ya da Borç Yaz satırı yok.", { type: "info" });
+    const first = options[0];
+    HOF.formModal({
+      title: "Mahsup Et",
+      eyebrow: docTitle(doc),
+      intro: `Açık tutar ${money(data.open)}. Seçilen karşı belgeyle karşılıklı kapanır; cari bakiyesi ve Kasa değişmez (bakiye zaten net). Mahsup fişi karttan kaldırılabilir.`,
+      fields: [
+        { name: "counter", label: "Karşı Belge", type: "select", value: first.value, options },
+        { name: "amount", label: "Mahsup Tutarı (₺)", required: true, inputmode: "decimal", value: amountText(Math.min(data.open, first.left)), autofocus: true },
+        { name: "date", label: "Tarih", type: "date", required: true, value: todayIso(), max: "today" },
+        { name: "note", label: "Açıklama", maxlength: 300, value: "" },
+      ],
+      submitLabel: "Mahsup Et",
+      onOpen: dialog => {
+        const select = dialog.querySelector('select[name="counter"]');
+        const amount = dialog.querySelector('input[name="amount"]');
+        select?.addEventListener("change", () => {
+          const picked = options.find(item => item.value === select.value);
+          if (picked && amount) amount.value = amountText(Math.min(data.open, picked.left));
+        });
+      },
+      onSubmit: async form => {
+        const [counterType, counterId] = String(form.counter || "").split(/:(.+)/);
+        const saved = await HOF.api(`/api/workspace/invoices/${encodeURIComponent(doc.id)}/offsets`, { method: "POST", body: { counterType, counterId, amount: form.amount, date: form.date, note: form.note } });
+        showDoc(saved);
+        HOF.emit("accounts-changed");
+        HOF.toast(`Mahsup kaydedildi. ${saved.open > 0.004 ? `Açık: ${money(saved.open)}.` : "Fatura kapandı."}`, { type: "success" });
       },
     });
   }

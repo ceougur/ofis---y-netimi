@@ -48,6 +48,8 @@ export function accountLedger(entries = [], plans = []) {
       // v2.0.15: faturadan gelen borç/alacak "Fatura" olarak görünür (açıklamada fatura türü ve numarası yazar).
       label: origin === "cheque" ? "Çek / senet" : origin === "invoice" && !meta.cash ? "Fatura" : meta.label,
       sourceId: entry.sourceId || "",
+      // v2.0.17: cari kartından girilen tahsilat/ödemenin "Kapatılacak Fatura" bağı (boş = otomatik, en eski açık fatura).
+      invoiceId: entry.invoiceId || "",
       // v2.0.13: tahsilat/ödemenin yolu (Nakit, Havale / EFT, Kredi Kartı); borç/alacakta boş.
       method: meta.cash ? entry.method || "cash" : "",
       note: entry.note || "",

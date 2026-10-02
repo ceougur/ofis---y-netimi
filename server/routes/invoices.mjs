@@ -20,7 +20,7 @@ import { HttpError, limited, ok, parseJson, readJson, sendBuffer, text } from ".
 import { invoicePdf } from "../lib/invoice-pdf.mjs";
 import { jpegInfo } from "../lib/pdf-write.mjs";
 import { CURRENCIES, EXEMPTIONS, EXPENSES, INVOICE_KINDS, InvoiceInputError, SCENARIOS, STOPPAGE_DEFAULT, VAT_RATES, WITHHOLDING, amountInWords, computeInvoice, exclusiveParts, grossFromNet, lineAccount, toTry, typeCode } from "../lib/invoice-math.mjs";
-import { PAY_STATES, settleInvoices } from "../lib/invoice-settle.mjs";
+import { CLOSER_MODES, PAY_STATES, settleInvoices } from "../lib/invoice-settle.mjs";
 import { parseAmount, roundMoney } from "../lib/money.mjs";
 import { METHODS, METHODS_IN, METHODS_OUT, methodLabel, methodOf } from "../lib/pay-method.mjs";
 import { canUser } from "../lib/permissions.mjs";
@@ -285,6 +285,15 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, conf
   };
 
   // Ödeme durumu (kapama): carinin defteri + faturaya bağlı ödemeler (lib/invoice-settle.mjs).
+  // v2.0.17: mahsup fişinin karşı belgesinin adı ("Mahsup · ALS2026…" / "Mahsup · Alacak Yaz 15.09.2026").
+  function offsetLabel(offset) {
+    if (offset.counterType === "invoice") {
+      const counter = store.get("SELECT number, kind FROM invoices WHERE id = ?", offset.counterId);
+      return counter ? `Mahsup · ${INVOICE_KINDS[counter.kind]?.short || "Fatura"} ${counter.number}` : "Mahsup · fatura";
+    }
+    const entry = store.get("SELECT kind, date, note FROM account_entries WHERE id = ?", offset.counterId);
+    return entry ? `Mahsup · ${entry.kind === "credit" ? "Alacak Yaz" : "Borç Yaz"} ${dayText(entry.date)}${entry.note ? ` (${entry.note})` : ""}` : "Mahsup · cari satırı";
+  }
   function paymentStates(rows) {
     const out = new Map();
     const byAccount = new Map();
@@ -304,18 +313,27 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, conf
       const all = store.all("SELECT id, kind, status, try_payable AS payable, original_id AS originalId, due_date AS dueDate, plan_id AS planId FROM invoices WHERE account_id = ?", accountId);
       const links = new Map();
       for (const entry of store.all("SELECT id, source_id AS invoiceId FROM account_entries WHERE account_id = ? AND source = 'invoice' AND kind IN ('in', 'out')", accountId)) links.set(entry.id, entry.invoiceId);
-      for (const event of store.all("SELECT ev.invoice_id AS invoiceId, ev.effects_json AS effects FROM cheque_events ev WHERE ev.invoice_id <> '' AND ev.invoice_id IN (SELECT id FROM invoices WHERE account_id = ?)", accountId)) {
+      // v2.0.17: cari kartından "Kapatılacak Fatura" seçilerek girilen tahsilat/ödeme.
+      for (const entry of store.all("SELECT id, invoice_id AS invoiceId FROM account_entries WHERE account_id = ? AND source = '' AND invoice_id <> ''", accountId)) links.set(entry.id, entry.invoiceId);
+      // Çek/senet satırlarının olay türü (karşılıksız → yükümlülük yeniden açılır) ve faturaya bağı.
+      const chequeEvents = new Map();
+      for (const event of store.all("SELECT ev.kind, ev.invoice_id AS invoiceId, ev.effects_json AS effects FROM cheque_events ev JOIN cheques c ON c.id = ev.cheque_id WHERE c.account_id = ? OR c.endorse_account_id = ? OR ev.account_id = ?", accountId, accountId, accountId)) {
         // İptal edilen faturanın evrakında olay etkileri geri alınmıştır ve alan nesne olarak işaretlenir ({ reverted }).
         const effects = parseJson(event.effects, []);
-        for (const effect of Array.isArray(effects) ? effects : []) if (effect?.table === "account_entries" && effect.id) links.set(effect.id, event.invoiceId);
+        for (const effect of Array.isArray(effects) ? effects : []) {
+          if (effect?.table !== "account_entries" || !effect.id) continue;
+          chequeEvents.set(effect.id, event.kind);
+          if (event.invoiceId) links.set(effect.id, event.invoiceId);
+        }
       }
+      const offsets = store.all("SELECT id, invoice_id AS invoiceId, counter_type AS counterType, counter_id AS counterId, amount, date, note FROM invoice_offsets WHERE account_id = ? ORDER BY date, created_at", accountId).map(offset => ({ ...offset, label: offsetLabel(offset) }));
       const plansById = new Map();
       for (const invoice of all.filter(item => item.planId)) {
         const plan = store.get("SELECT total FROM plans WHERE id = ? AND deleted_at IS NULL", invoice.planId);
         const schedule = store.all("SELECT due_date AS dueDate, amount FROM plan_items WHERE plan_id = ? ORDER BY due_date", invoice.planId);
         plansById.set(invoice.id, { planTotal: Number(plan?.total) || 0, schedule });
       }
-      const states = settleInvoices({ lines: ledger, invoices: all.map(item => ({ ...item, ...(plansById.get(item.id) || {}) })), links, today: day });
+      const states = settleInvoices({ lines: ledger, invoices: all.map(item => ({ ...item, ...(plansById.get(item.id) || {}) })), links, chequeEvents, offsets, today: day });
       for (const row of list) out.set(row.id, states.get(row.id) || { payable: row.tryPayable, paid: 0, open: row.tryPayable, state: "open", label: PAY_STATES.open });
     }
     return out;
@@ -364,6 +382,8 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, conf
     payStateLabel: state?.label || (row.status === "draft" ? PAY_STATES.draft : row.status === "cancelled" ? PAY_STATES.cancelled : ""),
     paid: state?.paid ?? 0,
     open: state?.open ?? 0,
+    // v2.0.17: "Bu Faturayı Kapatanlar" — her ödenen kuruşun kaynağı (tarih, tür, tutar, bağlı/otomatik/mahsup).
+    closers: (state?.closers || []).map(item => ({ ...item, modeLabel: CLOSER_MODES[item.mode] || item.mode, methodLabel: item.method ? methodLabel(item.method) : "" })),
   });
 
   function exclusiveTotals(lines, includeVat) {
@@ -1352,6 +1372,10 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, conf
       }
       const stamp = now();
       store.run("UPDATE invoices SET status = 'cancelled', cancelled_by = ?, cancelled_at = ?, cancel_reason = ?, updated_by = ?, updated_at = ? WHERE id = ?", user.id, stamp, limited(reason, 300, "İptal nedeni"), user.id, stamp, invoice.id);
+      // v2.0.17: iptal edilen belgenin mahsup fişleri ve ona bağlanmış tahsilat/ödemelerin bağı kalkar (satırlar kalır,
+      // kapama yeniden hesaplanır: otomatik en eski açık faturaya).
+      store.run("DELETE FROM invoice_offsets WHERE invoice_id = ? OR (counter_type = 'invoice' AND counter_id = ?)", invoice.id, invoice.id);
+      store.run("UPDATE account_entries SET invoice_id = '' WHERE invoice_id = ?", invoice.id);
       audit(user, "invoice.cancelled", invoice.id, { number: invoice.number, kind: invoice.kind, payable: invoice.tryPayable, reason });
       if (dryRun) throw DRY_RUN;
       return invoice;
@@ -1779,6 +1803,87 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, conf
     const user = requireManage(req);
     const body = await readJson(req);
     ok(res, await cancelInvoice(user, params.id, body));
+  });
+
+  // ---------- Mahsup (v2.0.17) ----------
+  // Satış ↔ alış faturası (ya da fatura ↔ Alacak/Borç Yaz satırı) karşılıklı kapama yalnız açık mahsup fişiyle olur;
+  // otomatik FIFO karşı yöndeki belgeyi ödeme saymaz. Cari bakiyesi değişmez; yalnız iki belgenin "ödendi" durumu.
+  const OFFSET_SQL = "SELECT id, account_id AS accountId, invoice_id AS invoiceId, counter_type AS counterType, counter_id AS counterId, amount, date, note, created_by AS createdBy, created_at AS createdAt FROM invoice_offsets";
+  const sideOfKind = kind => (["sale", "smm"].includes(kind) ? "sale" : kind === "purchase" ? "purchase" : "");
+  const offsetTarget = row => {
+    if (row.status !== "issued") throw new HttpError(409, "Yalnız kaydedilmiş fatura mahsup edilir.");
+    if (!sideOfKind(row.kind)) throw new HttpError(409, "İade faturası mahsup edilmez; iade zaten asıl faturayı kapatır.");
+  };
+  // Mahsupta kullanılabilecek karşı belgeler: aynı carinin karşı yöndeki açık faturaları ve kapanmamış Alacak/Borç Yaz satırları.
+  function offsetCandidates(row, user) {
+    offsetTarget(row);
+    const side = sideOfKind(row.kind);
+    const state = paymentStates([row]).get(row.id);
+    const counterKinds = side === "sale" ? ["purchase"] : ["sale", "smm"];
+    const rows = store.all(`${INVOICE_SQL} WHERE i.account_id = ? AND i.status = 'issued' AND i.kind IN (${counterKinds.map(() => "?").join(", ")}) ORDER BY i.issue_date, i.created_at`, row.accountId, ...counterKinds);
+    const states = paymentStates(rows);
+    const invoices = rows.map(item => ({ ...shape(item, states.get(item.id)) })).filter(item => item.open > 0.004).map(item => ({ id: item.id, number: item.number, displayNo: item.displayNo, kindLabel: item.kindLabel, issueDate: item.issueDate, tryPayable: item.tryPayable, open: item.open }));
+    const used = new Map(store.all("SELECT counter_id AS id, SUM(amount) AS total FROM invoice_offsets WHERE counter_type = 'entry' AND account_id = ? GROUP BY counter_id", row.accountId).map(item => [item.id, Number(item.total) || 0]));
+    const entryKind = side === "sale" ? "credit" : "debt";
+    const entries = store
+      .all("SELECT id, kind, amount, date, note FROM account_entries WHERE account_id = ? AND source = '' AND kind = ? ORDER BY date, created_at", row.accountId, entryKind)
+      .map(entry => ({ ...entry, label: entry.kind === "credit" ? "Alacak Yaz" : "Borç Yaz", left: roundMoney(Number(entry.amount) - (used.get(entry.id) || 0)) }))
+      .filter(entry => entry.left > 0.004);
+    const offsets = store.all(`${OFFSET_SQL} WHERE invoice_id = ? OR (counter_type = 'invoice' AND counter_id = ?) ORDER BY date, created_at`, row.id, row.id).map(offset => ({ ...offset, label: offsetLabel(offset.invoiceId === row.id ? offset : { ...offset, counterType: "invoice", counterId: offset.invoiceId }) }));
+    return { invoiceId: row.id, open: state?.open ?? row.tryPayable, side, invoices, entries, offsets, canManage: canUser(user, "invoices.manage") };
+  }
+  function addOffset(user, row, body) {
+    offsetTarget(row);
+    const counterType = String(body.counterType || "") === "entry" ? "entry" : "invoice";
+    const counterId = limited(body.counterId, 120, "Karşı belge");
+    if (!counterId) throw new HttpError(400, "Mahsup edilecek karşı belge seçilmedi.");
+    const amount = roundMoney(parseAmount(body.amount));
+    if (!(amount > 0)) throw new HttpError(400, "Mahsup tutarı sıfırdan büyük olmalı.");
+    const date = period ? period.movementDate(body) : (body.date ? String(body.date).slice(0, 10) : today());
+    const note = limited(body.note, 300, "Açıklama");
+    const candidates = offsetCandidates(row, user);
+    const counter = (counterType === "invoice" ? candidates.invoices : candidates.entries).find(item => item.id === counterId);
+    if (!counter) throw new HttpError(409, counterType === "invoice" ? "Karşı fatura bu carinin açık, karşı yöndeki faturası olmalı." : "Karşı satır bu carinin kapanmamış Alacak/Borç Yaz satırı olmalı.");
+    const counterLeft = counterType === "invoice" ? counter.open : counter.left;
+    if (amount > candidates.open + 0.004) throw new HttpError(409, `Mahsup tutarı faturanın açık tutarını (${tl(candidates.open)}) aşamaz.`);
+    if (amount > counterLeft + 0.004) throw new HttpError(409, `Mahsup tutarı karşı belgenin kalanını (${tl(counterLeft)}) aşamaz.`);
+    if (date < row.issueDate || (counterType === "invoice" && date < counter.issueDate) || (counterType === "entry" && date < counter.date)) throw new HttpError(409, "Mahsup tarihi iki belgenin tarihinden önce olamaz.");
+    const id = newId("offset");
+    store.tx(() => {
+      store.run("INSERT INTO invoice_offsets (id, account_id, invoice_id, counter_type, counter_id, amount, date, note, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", id, row.accountId, row.id, counterType, counterId, amount, date, note, user.id, now());
+      audit(user, "invoice.offset", row.id, { number: row.number, counterType, counterId, amount, date, note });
+    });
+    publish(user, { kind: "invoices", invoiceId: row.id, accountId: row.accountId });
+    publish(user, { kind: "accounts", accountId: row.accountId });
+    return id;
+  }
+  function removeOffset(user, row, offsetId) {
+    const offset = store.get(`${OFFSET_SQL} WHERE id = ? AND (invoice_id = ? OR (counter_type = 'invoice' AND counter_id = ?))`, limited(offsetId, 120, "Mahsup"), row.id, row.id);
+    if (!offset) throw new HttpError(404, "Mahsup fişi bulunamadı; kaldırılmış olabilir.");
+    period?.assertOpen(offset.date, "Bu mahsup");
+    store.tx(() => {
+      store.run("DELETE FROM invoice_offsets WHERE id = ?", offset.id);
+      audit(user, "invoice.offset.removed", row.id, { number: row.number, offsetId: offset.id, amount: offset.amount, counterType: offset.counterType, counterId: offset.counterId });
+    });
+    publish(user, { kind: "invoices", invoiceId: row.id, accountId: row.accountId });
+    publish(user, { kind: "accounts", accountId: row.accountId });
+  }
+  router.get("/api/workspace/invoices/:id/offsets", async ({ req, res, params }) => {
+    const user = requireView(req);
+    ok(res, offsetCandidates(invoiceRow(params.id), user));
+  });
+  router.post("/api/workspace/invoices/:id/offsets", async ({ req, res, params }) => {
+    const user = requireManage(req);
+    const row = invoiceRow(params.id);
+    const body = await readJson(req);
+    const offsetId = addOffset(user, row, body);
+    ok(res, { ...detail(row.id, user), offsetId });
+  });
+  router.delete("/api/workspace/invoices/:id/offsets/:offsetId", async ({ req, res, params }) => {
+    const user = requireManage(req);
+    const row = invoiceRow(params.id);
+    removeOffset(user, row, params.offsetId);
+    ok(res, detail(row.id, user));
   });
 
   // ---------- Belge çıktıları ----------
