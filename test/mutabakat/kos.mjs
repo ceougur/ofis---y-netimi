@@ -27,12 +27,13 @@ for (let seed = firstSeed; seed < firstSeed + seeds; seed++) {
     console.log(`  Beklenen retler: ${Object.entries(report.rejections || {}).sort((a, b) => b[1] - a[1]).map(([code, n]) => `${code} ${n}`).join(", ")}`);
     console.log(`  İşlem türleri: ${Object.entries(report.byKind).map(([k, v]) => `${k} ${v}`).join(", ")}`);
     console.log(`  Model: ${JSON.stringify(report.model)}`);
+    console.log(`  Fatura: ${JSON.stringify(report.invoices)} · seriler ${JSON.stringify(report.invoiceSeries || {})} · tekil ETTN ${report.ettn ?? "-"}`);
     console.log(`  Mutabakat kapısı süresi: ortanca ${ms[Math.floor(ms.length / 2)] ?? 0} ms, en çok ${ms.at(-1) ?? 0} ms`);
     if (report.mismatches.length) {
       failed += 1;
       console.log(`  ✗ UYUŞMAZLIK (${report.mismatches.length}):`);
       for (const m of report.mismatches.slice(0, 10)) console.log(`    ${m.at}\n      ${m.problems.join("\n      ")}`);
-    } else console.log("  ✓ Her işlemden sonra Kasa, cariler, stok, taksit kartları ve ana defter kuruşu kuruşuna tutarlı.");
+    } else console.log("  ✓ Her işlemden sonra Kasa, cariler, stok, taksit kartları, faturalar, çek/senet ve ana defter kuruşu kuruşuna tutarlı.");
   } finally {
     await server.close();
   }

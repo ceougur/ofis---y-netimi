@@ -283,7 +283,9 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, conf
       const links = new Map();
       for (const entry of store.all("SELECT id, source_id AS invoiceId FROM account_entries WHERE account_id = ? AND source = 'invoice' AND kind IN ('in', 'out')", accountId)) links.set(entry.id, entry.invoiceId);
       for (const event of store.all("SELECT ev.invoice_id AS invoiceId, ev.effects_json AS effects FROM cheque_events ev WHERE ev.invoice_id <> '' AND ev.invoice_id IN (SELECT id FROM invoices WHERE account_id = ?)", accountId)) {
-        for (const effect of parseJson(event.effects, [])) if (effect?.table === "account_entries" && effect.id) links.set(effect.id, event.invoiceId);
+        // İptal edilen faturanın evrakında olay etkileri geri alınmıştır ve alan nesne olarak işaretlenir ({ reverted }).
+        const effects = parseJson(event.effects, []);
+        for (const effect of Array.isArray(effects) ? effects : []) if (effect?.table === "account_entries" && effect.id) links.set(effect.id, event.invoiceId);
       }
       const plansById = new Map();
       for (const invoice of all.filter(item => item.planId)) {

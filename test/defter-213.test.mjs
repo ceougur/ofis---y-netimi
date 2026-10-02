@@ -9,6 +9,12 @@ import { journal, reconcile, trialBalance } from "../server/lib/general-ledger.m
 import { loginAdmin, startTestServer } from "./helpers.mjs";
 
 const data = response => response.data.data;
+// Vadeler bugüne göredir (sabit tarih ayın 1'inde ya da yıl sonunda kırılır; CLAUDE.md "senaryolar tarihe bağlı yazılmasın").
+const later = days => {
+  const d = new Date();
+  d.setDate(d.getDate() + days);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+};
 const ok = (response, label) => {
   assert.equal(response.status, 200, `${label}: ${JSON.stringify(response.data)}`);
   return response.data.data;
@@ -47,7 +53,7 @@ describe("2.0.13 defter ve mantık düzeltmeleri", () => {
   it("veresiye satış + mevcut borcu taksitlendir: borç bir kez; aynı borç ikinci karta bölünemez", async () => {
     const sale = ok(await admin.post(`/api/workspace/stock/${item.id}/moves`, { kind: "out", qty: "3", unitPrice: "400", pay: "account", accountId: tulay.id }), "veresiye satış");
     assert.equal(sale.qty, 47);
-    const plan = ok(await admin.post("/api/workspace/plans", { name: "Tülay Arıkan", accountId: tulay.id, total: "1.200", coversBalance: true, mode: "auto", count: 3, firstDue: "2026-10-01" }), "kart");
+    const plan = ok(await admin.post("/api/workspace/plans", { name: "Tülay Arıkan", accountId: tulay.id, total: "1.200", coversBalance: true, mode: "auto", count: 3, firstDue: later(10) }), "kart");
     assert.equal(plan.coversBalance, 1);
     let card = data(await admin.get(`/api/workspace/accounts/${tulay.id}`));
     assert.equal(card.totals.balance, 1200, "borç ikiye katlanmadı");
@@ -58,14 +64,14 @@ describe("2.0.13 defter ve mantık düzeltmeleri", () => {
     card = data(await admin.get(`/api/workspace/accounts/${tulay.id}`));
     assert.equal(card.totals.balance, 800);
     // Satış anında taksitlendirme: tek istek, tek borç, 2 taksit.
-    const now = ok(await admin.post(`/api/workspace/stock/${item.id}/moves`, { kind: "out", qty: "2", unitPrice: "400", pay: "account", accountId: tulay.id, installments: { count: 2, firstDue: "2026-11-01" } }), "satışı taksitlendir");
+    const now = ok(await admin.post(`/api/workspace/stock/${item.id}/moves`, { kind: "out", qty: "2", unitPrice: "400", pay: "account", accountId: tulay.id, installments: { count: 2, firstDue: later(40) } }), "satışı taksitlendir");
     assert.equal(now.qty, 45);
     card = data(await admin.get(`/api/workspace/accounts/${tulay.id}`));
     assert.equal(card.totals.balance, 1600);
     assert.equal(card.plans.length, 2);
     // Toplu: borçlu carilerin mevcut borcu (Kemal) kendi kartına; Tülay'ın borcu zaten kartlı → atlanır.
     ok(await admin.post(`/api/workspace/accounts/${kemal.id}/entries`, { kind: "debt", amount: "2.500", note: "Toptan satış" }), "borç");
-    const bulk = ok(await admin.post("/api/workspace/accounts/bulk-plan", { ids: [kemal.id, tulay.id], amountMode: "balance", count: 5, firstDue: "2026-10-15" }), "toplu");
+    const bulk = ok(await admin.post("/api/workspace/accounts/bulk-plan", { ids: [kemal.id, tulay.id], amountMode: "balance", count: 5, firstDue: later(20) }), "toplu");
     assert.equal(bulk.created, 1);
     assert.equal(bulk.total, 2500);
     assert.match(bulk.skipped[0].reason, /borcu yok/);

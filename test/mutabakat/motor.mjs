@@ -1,4 +1,18 @@
-// Dört çekirdek mutabakat motoru (v2.0.13): Kasa, Stok, Cari ve Taksit.
+// Mutabakat motoru: dört çekirdek (v2.0.13: Kasa, Stok, Cari, Taksit) + Fatura ve Çek/Senet (v2.0.15).
+//
+// v2.0.15 fatura ekseni (bağımsız fatura hesabı: fatura-model.mjs, programın invoice-math.mjs'ini kullanmaz):
+//   · Satış / SMM / alış / satıştan ve alıştan iade; KDV dahil-hariç, satır ve genel iskonto, tevkifat, stopaj, döviz.
+//   · Karışık ödeme: peşin (Nakit/Banka/Kart, iki yol), çek/senet (alınan, verilen), portföyden ciro, taksit kartı,
+//     vadeli açık hesap — hepsi tek işlemde; cari ↔ Kasa ↔ stok ↔ çek ↔ taksit kartı çapraz denetlenir.
+//   · İptal: bütün etkiler birebir geri; iadesi olan, tahsilatlı kartı olan, çeki hareket görmüş fatura iptal edilemez.
+//   · Kasıtlı yarıda kalan işlem (ACID): 3. kalemde stok yetmez, Kasa çıkışı engellenir, çek seri numarası mükerrer
+//     (stok/cari/Kasa satırları yazıldıktan sonra) → tamamı geri alınmalı; her tablo modelle aynı kalmalı (yetim yok).
+//   · Saha hataları: ileri/geçersiz/boş tarih, vadesi fatura tarihinden önce taksit/açık hesap/çek, ödeme aşımı, iade
+//     aşımı, asıl faturadan önce iade, kronoloji (seride eski tarih), mükerrer tedarikçi no, alışta taksit, iadede çek,
+//     portföyde olmayan çeki ciro, ikinci iptal, kalemsiz fatura, geçersiz KDV; kapalı döneme fatura/iade/iptal.
+//   · Faturadan gelen stok hareketi ve cari satırı kendi ekranından silinemez/düzeltilemez (invoice-linked).
+//   · Sonda: kendi serilerimizde numara 1'den boşluksuz ve tarih sırasıyla uyumlu; ETTN tekil; mükerrer belge yok.
+//   · Raporlar: Satış/Alış/İade Faturaları (sayı, matrah, KDV, ödenecek) ve KDV Özeti (391/191) = model.
 //
 // Programı gerçek HTTP API'si üzerinden (arayüzün kullandığı uçlar) rastgele ama tekrarlanabilir işlemlerle sürer ve
 // yanında programdan HİÇ okumadan kendi defterini tutar (bağımsız model). Model tutarları kuruş, miktarları binde bir,
@@ -24,6 +38,8 @@
 //   · ana defter kasa ve cari hesapları = model
 // Belirli aralıklarla ve sonda: raporlar (Kasa Hareketleri, Stok Hareketleri, Cari Listesi, Taksit Kartları, Hesap Planı
 // Mizanı, Yevmiye) veri varken boş dönmemeli, tutarları modelle aynı olmalı; veri olmayan aralıkta gerçekten boş dönmeli.
+
+import { modelInvoice } from "./fatura-model.mjs";
 
 const MONEY = ["cash", "bank", "card"];
 
@@ -75,11 +91,12 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
   const open = date => !lock || date > lock;
 
   // ---------- Bağımsız model ----------
-  const M = { kasa: { cash: 0, bank: 0, card: 0 }, cari: new Map(), stok: new Map(), plans: new Map(), cash: [], entries: [], moves: [], planEntries: [] };
+  const M = { kasa: { cash: 0, bank: 0, card: 0 }, cari: new Map(), stok: new Map(), plans: new Map(), cash: [], entries: [], moves: [], planEntries: [], invoices: new Map(), drafts: new Map(), cheques: new Map(), invCash: [], chqCash: [] };
   const report = { seed, operations: 0, byKind: {}, rejectedAsExpected: 0, rejections: {}, mismatches: [], checks: 0, reportChecks: 0, integrityMs: [], timeline: { from: D0, to: T }, locks: [] };
   const count = kind => (report.byKind[kind] = (report.byKind[kind] || 0) + 1);
   const accounts = [];
   const items = [];
+  let planSeq = 0;
   const cariAdd = (id, cents) => M.cari.set(id, (M.cari.get(id) || 0) + cents);
   const planLeft = p => Math.max(0, p.total - Math.max(0, p.paid));
   const uncovered = accountId => Math.max(0, (M.cari.get(accountId) || 0) - [...M.plans.values()].filter(p => p.accountId === accountId && p.covers && p.status === "active").reduce((s, p) => s + planLeft(p), 0));
@@ -90,6 +107,8 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
     for (const e of M.entries) if (e.kind === "in" || e.kind === "out") out.push({ source: "account", date: e.date, method: e.method, cents: e.kind === "in" ? e.amount : -e.amount });
     for (const m of M.moves) if (m.pay === "cash" && m.amount > 0) out.push({ source: "stock", date: m.date, method: m.method, cents: m.kind === "out" ? m.amount : -m.amount });
     for (const e of M.planEntries) out.push({ source: "plan", date: e.date, method: e.method, cents: e.kind === "in" ? e.amount : -e.amount });
+    for (const e of M.invCash) out.push({ source: "invoice", date: e.date, method: e.method, cents: e.kind === "in" ? e.amount : -e.amount });
+    for (const e of M.chqCash) out.push({ source: "cheque", date: e.date, method: e.method, cents: e.kind === "in" ? e.amount : -e.amount });
     return out;
   }
   const balAt = (method, date) => cashEffects().filter(x => x.method === method && (!date || x.date <= date)).reduce((s, x) => s + x.cents, 0);
@@ -152,7 +171,7 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
       k.n += 1; k.cents += e.kind === "in" ? centsOf(e.amount) : -centsOf(e.amount);
       got.set(e.source, k);
     }
-    for (const source of ["manual", "account", "stock", "plan"]) {
+    for (const source of ["manual", "account", "stock", "plan", "invoice", "cheque"]) {
       const a = got.get(source) || { n: 0, cents: 0 }, b = want.get(source) || { n: 0, cents: 0 };
       if (a.n !== b.n || a.cents !== b.cents) problems.push(`İşlem zinciri Kasa/${source}: program ${a.n} satır ${tl(a.cents)} · model ${b.n} satır ${tl(b.cents)}`);
     }
@@ -170,6 +189,27 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
       if ((p.status === "closed") !== (m.status === "closed")) problems.push(`Taksit kartı ${p.name}: durum ${p.status} · model ${m.status}`);
     }
     for (const [id, p] of M.plans) if (!seen.has(id)) problems.push(`Taksit kartı ${id}: programda yok (model ${tl(p.total)})`);
+    // Fatura: her belge programda ve modelde aynı durumda, aynı TL ödenecekle; programda olup modelde olmayan (yetim) belge yok.
+    const invs = (await api("GET", "/api/workspace/invoices?tab=all&limit=5000")).data.invoices || [];
+    const invSeen = new Set();
+    for (const x of invs) {
+      const m = M.invoices.get(x.id) || (M.drafts.has(x.id) ? { status: "draft", tryPayable: M.drafts.get(x.id).calc.tryPayable } : null);
+      if (!m) { problems.push(`Fatura ${x.number || x.id} (${x.kind}, ${x.status}): programda var, modelde yok (yetim kayıt)`); continue; }
+      invSeen.add(x.id);
+      if (x.status !== m.status) problems.push(`Fatura ${x.number}: durum ${x.status} · model ${m.status}`);
+      if (centsOf(x.tryPayable) !== m.tryPayable) problems.push(`Fatura ${x.number}: ödenecek ${x.tryPayable} · model ${tl(m.tryPayable)}`);
+    }
+    for (const [id, m] of [...M.invoices, ...M.drafts]) if (!invSeen.has(id)) problems.push(`Fatura ${m.number || id}: modelde var, programda yok`);
+    // Çek/senet: her evrak aynı durumda ve tutarda; iptal edilen faturanın evrakı listede yok.
+    const chs = (await api("GET", "/api/workspace/cheques?limit=5000")).data.cheques || [];
+    const chSeen = new Set();
+    for (const c of chs) {
+      const m = M.cheques.get(c.id);
+      if (!m) { problems.push(`Çek/senet ${c.serialNo || c.id} (${c.status}): programda var, modelde yok`); continue; }
+      chSeen.add(c.id);
+      if (c.status !== m.status || centsOf(c.amount) !== m.amount) problems.push(`Çek/senet ${c.serialNo}: ${c.status} ${c.amount} · model ${m.status} ${tl(m.amount)}`);
+    }
+    for (const [id, m] of M.cheques) if (!chSeen.has(id)) problems.push(`Çek/senet ${m.serialNo}: modelde var, programda yok`);
     const integrity = (await api("GET", "/api/workspace/ledger/integrity")).data;
     report.integrityMs.push(integrity.durationMs);
     if (!integrity.ok) problems.push(`Mutabakat kapısı: ${integrity.failures.map(f => `${f.name}${f.difference ? ` (${f.difference})` : ""}${f.sample?.length ? ` [${f.sample.join("; ")}]` : ""}`).join(" | ")}`);
@@ -205,6 +245,21 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
       if (stok.total !== moves.length) problems.push(`Stok Hareketleri ${from}–${to}: rapor ${stok.total} · model ${moves.length}${moves.length && !stok.total ? " (VERİ VARKEN BOŞ)" : ""}`);
       const stockIn = moves.filter(m => m.kind === "in").reduce((s, m) => s + m.stored, 0), stockOut = moves.filter(m => m.kind === "out").reduce((s, m) => s + m.stored, 0);
       if (sum(stok, "Giriş Tutarı") !== stockIn || sum(stok, "Çıkış Tutarı") !== stockOut) problems.push(`Stok Hareketleri ${from}–${to}: tutar ${tl(sum(stok, "Giriş Tutarı"))}/${tl(sum(stok, "Çıkış Tutarı"))} · model ${tl(stockIn)}/${tl(stockOut)}`);
+      // Fatura raporları: kesilen belge sayısı, matrah, KDV, ödenecek = model (iptal ve taslak hariç); KDV Özeti 391/191.
+      const inRange = kinds => issuedInvoices(x => kinds.includes(x.kind) && x.date >= from && x.date <= to);
+      for (const [id, kinds, label] of [["fatura-satis", ["sale", "smm"], "Satış"], ["fatura-alis", ["purchase"], "Alış"], ["fatura-iade", ["sale_return", "purchase_return"], "İade"]]) {
+        const want = inRange(kinds);
+        const rep = await rc(id, from, to);
+        const n = Number(rep.summary.find(([k]) => k === `${label} Faturası`)?.[1] || 0);
+        const sumOf = key => want.reduce((t, x) => t + x[key], 0);
+        if (rep.total !== want.length || n !== want.length) problems.push(`${id} ${from}–${to}: rapor ${rep.total} satır · model ${want.length}${want.length && !rep.total ? " (VERİ VARKEN BOŞ)" : ""}`);
+        else if (sum(rep, "Matrah") !== sumOf("tryNet") || sum(rep, "KDV") !== sumOf("tryVat") || sum(rep, "Ödenecek") !== sumOf("tryPayable")) problems.push(`${id} ${from}–${to}: matrah/KDV/ödenecek ${tl(sum(rep, "Matrah"))}/${tl(sum(rep, "KDV"))}/${tl(sum(rep, "Ödenecek"))} · model ${tl(sumOf("tryNet"))}/${tl(sumOf("tryVat"))}/${tl(sumOf("tryPayable"))}`);
+      }
+      const kdv = await rc("kdv-ozeti", from, to);
+      const out391 = inRange(["sale", "smm"]).reduce((t, x) => t + x.tryVat - x.tryWithheld, 0) - inRange(["sale_return"]).reduce((t, x) => t + x.tryVat - x.tryWithheld, 0);
+      const in191 = inRange(["purchase"]).reduce((t, x) => t + x.tryVat, 0) - inRange(["purchase_return"]).reduce((t, x) => t + x.tryVat, 0);
+      if (centsOfText(kdv.summary.find(([k]) => k.startsWith("Hesaplanan"))?.[1]) !== out391) problems.push(`KDV Özeti ${from}–${to}: hesaplanan ${kdv.summary.find(([k]) => k.startsWith("Hesaplanan"))?.[1]} · model ${tl(out391)}`);
+      if (centsOfText(kdv.summary.find(([k]) => k.startsWith("İndirilecek"))?.[1]) !== in191) problems.push(`KDV Özeti ${from}–${to}: indirilecek ${kdv.summary.find(([k]) => k.startsWith("İndirilecek"))?.[1]} · model ${tl(in191)}`);
     }
     const cari = await rc("cari-listesi", "", "");
     if (cari.total < accounts.length) problems.push(`Cari Listesi: ${cari.total} satır · en az ${accounts.length} cari olmalı${!cari.total ? " (VERİ VARKEN BOŞ)" : ""}`);
@@ -236,6 +291,245 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
     report.rejections[key] = (report.rejections[key] || 0) + 1;
   }
 
+  // Taksitlendirilmiş borç iadeden (alacaktan) sonra borçtan büyük kalmaz: en yeni karttan başlayarak kırpılır.
+  function trimCovers(accountId) {
+    const covering = [...M.plans.values()].filter(p => p.accountId === accountId && p.covers && p.status === "active");
+    let excess = covering.reduce((s, p) => s + planLeft(p), 0) - Math.max(0, M.cari.get(accountId));
+    for (const p of covering.sort((a, b) => b.order - a.order)) {
+      if (excess <= 0) break;
+      const cut = Math.min(excess, planLeft(p), p.total);
+      p.total -= cut;
+      excess -= cut;
+    }
+  }
+
+  // ---------- Fatura (v2.0.15): bağımsız model ----------
+  // Her fatura modelde: tür, cari, tarih, kalemler (kuruş), TL ödenecek, cariye/Kasa'ya/stoğa/çeke/taksite etkileri.
+  // İptalde bu etkiler birebir geri alınır; iade faturası asıl faturanın kalan miktarından kesilir.
+  const WITHHOLD = { 612: [9, 10], 624: [2, 10], 616: [5, 10], 603: [7, 10] };
+  const EXPENSE_GL = { rent: "770", utilities: "770", marketing: "760", asset: "255", other: "770", freight: "760" };
+  const INFLOW = new Set(["sale", "smm", "purchase_return"]);
+  const PARTY_SIGN = { sale: 1, smm: 1, purchase_return: 1, purchase: -1, sale_return: -1 };
+  const counters = { purchase: 0, serial: 0, ret: 0 };
+  const lastSeries = { paper: "", smm: "", internal: "" };
+  const seriesOf = (kind, numbered) => (kind === "smm" ? "smm" : kind === "sale_return" ? (numbered ? "" : "internal") : kind === "purchase" ? "" : "paper");
+  const issuedInvoices = (filter = () => true) => [...M.invoices.values()].filter(x => x.status === "issued" && filter(x));
+  const linePayload = l => ({ itemId: l.itemId || "", name: l.name, qty: l.qty / 1000, unitPrice: l.price4 / 10000, discountRate: l.disc, vatRate: l.vat, withholdingCode: l.whCode || "", expenseCode: l.expenseCode || "" });
+  const rateText = rate6 => rate6 / 1e6;
+  function saleLines(n, { services = true } = {}) {
+    const used = new Set();
+    const out = [];
+    for (let k = 0; k < n; k++) {
+      if (services && R.chance(0.3)) {
+        const vat = R.pick([0, 1, 10, 20, 20, 20]);
+        const whCode = vat && R.chance(0.3) ? R.pick(Object.keys(WITHHOLD)) : "";
+        out.push({ name: `Hizmet ${R.int(1, 40)}`, qty: R.pick([1000, 1000, 2000, 1500, 250]), price4: R.int(50_0000, 4000_0000), disc: R.pick([0, 0, 0, 5, 12]), vat, whCode, wh: whCode ? WITHHOLD[whCode] : null, account: "600", goods: false });
+        continue;
+      }
+      const it = R.pick(items.filter(x => !used.has(x.id)));
+      if (!it) break;
+      used.add(it.id);
+      out.push({ itemId: it.id, name: "", qty: it.kg ? R.int(100, 8000) : R.int(1, 6) * 1000, price4: it.sale4 + R.int(0, 999), disc: R.pick([0, 0, 0, 3, 10]), vat: R.pick([1, 10, 20, 20]), whCode: "", wh: null, account: "600", goods: true });
+    }
+    return out;
+  }
+  function purchaseLines(n) {
+    const used = new Set();
+    const out = [];
+    for (let k = 0; k < n; k++) {
+      if (R.chance(0.3)) {
+        const expenseCode = R.pick(Object.keys(EXPENSE_GL));
+        out.push({ name: `Gider ${expenseCode}`, expenseCode, qty: 1000, price4: R.int(20_0000, 9000_0000), disc: 0, vat: R.pick([0, 10, 20, 20]), whCode: "", wh: null, account: EXPENSE_GL[expenseCode], goods: false });
+        continue;
+      }
+      const it = R.pick(items.filter(x => !used.has(x.id)));
+      if (!it) break;
+      used.add(it.id);
+      out.push({ itemId: it.id, name: "", qty: it.kg ? R.int(500, 60000) : R.int(1, 40) * 1000, price4: Math.max(1, it.cost4 + R.int(-300, 300)), disc: R.pick([0, 0, 5]), vat: R.pick([1, 10, 20, 20]), whCode: "", wh: null, account: "153", goods: true });
+    }
+    return out;
+  }
+  const docOpts = () => ({ incl: R.chance(0.3), disc: R.chance(0.2) ? R.pick([2, 5, 10]) : 0, stop: 0, rate6: R.chance(0.12) ? R.pick([34_251_200, 36_100_000, 1_250_000]) : 1_000_000 });
+  const currencyOf = rate6 => (rate6 === 1_000_000 ? "TRY" : rate6 === 34_251_200 ? "USD" : rate6 === 36_100_000 ? "EUR" : "GBP");
+  // Ödeme planı (TL kuruş): peşin (Kasa), çek/senet, ciro, kalan (açık / taksit / iade mahsubu).
+  function paymentFor(kind, P, day, accountId) {
+    const pay = { cash: [], cheques: [], endorse: [], rest: "open", installments: null, dueDate: "" };
+    let left = P;
+    const take = max => Math.max(0, Math.min(left, max));
+    const mode = R.pick(kind === "sale" || kind === "smm" ? ["cash", "open", "inst", "mix", "mix", "cheque"] : kind === "purchase" ? ["cash", "open", "mix", "cheque", "endorse"] : ["cash", "open", "mix"]);
+    if (mode === "cash" || mode === "mix") {
+      const methods = [...METHOD_ORDER].sort(() => R.next() - 0.5).slice(0, R.int(1, 2));
+      for (const method of methods) {
+        const amount = mode === "cash" && method === methods.at(-1) ? left : take(R.int(1, Math.max(1, Math.floor(left / 2))));
+        if (amount > 0) { pay.cash.push({ amount, method }); left -= amount; }
+      }
+    }
+    if ((mode === "cheque" || (mode === "mix" && R.chance(0.6))) && ["sale", "smm", "purchase"].includes(kind) && left > 0) {
+      const n = R.int(1, 2);
+      for (let k = 0; k < n && left > 0; k++) {
+        const amount = mode === "cheque" && k === n - 1 ? left : take(R.int(1, Math.max(1, Math.floor(left / 2))));
+        if (amount <= 0) continue;
+        counters.serial += 1;
+        pay.cheques.push({ instrument: R.chance(0.7) ? "cheque" : "note", amount, dueDate: addDays(day, R.int(0, 90)), serialNo: `S${seed}-${counters.serial}`, bank: R.pick(["Ziraat", "Garanti", "İş Bankası"]) });
+        left -= amount;
+      }
+    }
+    if ((mode === "endorse" || (mode === "mix" && kind === "purchase")) && kind === "purchase") {
+      for (const c of [...M.cheques.values()].filter(c => c.direction === "in" && c.status === "portfolio" && c.accountId !== accountId && c.date <= day)) {
+        if (c.amount <= left && R.chance(0.6)) { pay.endorse.push(c.id); left -= c.amount; }
+        if (pay.endorse.length >= 2) break;
+      }
+    }
+    if (left > 0) {
+      if ((kind === "sale" || kind === "smm") && (mode === "inst" || (mode === "mix" && R.chance(0.5)))) pay.installments = { count: R.int(1, 6), firstDue: addDays(day, R.int(0, 40)) };
+      else if (R.chance(0.5)) pay.dueDate = addDays(day, R.int(0, 60));
+    }
+    pay.rest = pay.installments ? "installments" : "open";
+    pay.left = left;
+    return pay;
+  }
+  const paymentPayload = pay => ({
+    cash: pay.cash.map(c => ({ amount: c.amount / 100, method: c.method })),
+    cheques: pay.cheques.map(c => ({ instrument: c.instrument, amount: c.amount / 100, dueDate: c.dueDate, serialNo: c.serialNo, bank: c.bank })),
+    endorse: pay.endorse,
+    rest: pay.rest,
+    ...(pay.installments ? { installments: pay.installments } : {}),
+    ...(pay.dueDate ? { dueDate: pay.dueDate } : {}),
+  });
+  // Fatura kesmenin beklenen retleri (programın işlem sırasıyla): dönem kilidi, kronoloji, mükerrer no, stok eksiye
+  // (kalem sırası), Kasa eksiye (çıkışlar). null: kabul edilmeli.
+  function invoiceRejection({ kind, day, lines, pay, force, cashForce, number, accountId, series }) {
+    if (!open(day)) return ["period-locked"];
+    if (series && lastSeries[series] && lastSeries[series] > day) return ["chronology"];
+    if (number && issuedInvoices(x => x.kind === kind && x.accountId === accountId && x.number === number).length) return ["invoice-duplicate"];
+    if (["sale", "purchase_return"].includes(kind) && !force) {
+      const need = new Map();
+      for (const l of lines.filter(l => l.goods)) {
+        need.set(l.itemId, (need.get(l.itemId) || 0) + l.qty);
+        if (M.stok.get(l.itemId) - need.get(l.itemId) < 0) return ["stock-negative"];
+      }
+    }
+    if (!INFLOW.has(kind)) {
+      const codes = new Set();
+      for (const c of pay.cash) if (blocks(c.amount, day, c.method)) { if (policy[c.method] === "block") codes.add("cash-blocked"); else if (!cashForce) codes.add("cash-negative"); }
+      if (codes.size) return [...codes];
+    }
+    return null;
+  }
+  // Kesilen faturanın etkilerini modele yazar (program yanıtındaki kalem, çek ve kart kimlikleriyle).
+  function applyInvoice({ kind, day, accountId, lines, calc, pay, data, opts, number, series, originalId = "" }) {
+    const inv = { id: data.id, kind, accountId, date: day, number: data.number || number || "", series, tryNet: calc.tryNet, tryVat: calc.tryVat, tryWithheld: calc.tryWithheld, tryPayable: calc.tryPayable, status: "issued", lines: [], opts, cariFx: [], cashRows: [], moves: [], chequesCreated: [], endorsed: [], planId: "", rest: pay.left, originalId, returned: new Map() };
+    const fx = (acc, cents) => { if (!cents) return; cariAdd(acc, cents); inv.cariFx.push([acc, cents]); };
+    fx(accountId, PARTY_SIGN[kind] * calc.tryPayable);
+    const into = INFLOW.has(kind);
+    for (const c of pay.cash) {
+      fx(accountId, into ? -c.amount : c.amount);
+      M.kasa[c.method] += into ? c.amount : -c.amount;
+      const row = { invoiceId: inv.id, kind: into ? "in" : "out", amount: c.amount, method: c.method, date: day };
+      M.invCash.push(row);
+      inv.cashRows.push(row);
+    }
+    const serverCheques = data.cheques || [];
+    for (const c of pay.cheques) {
+      const sc = serverCheques.find(x => x.serialNo === c.serialNo && !x.endorsed);
+      if (!sc) throw Object.assign(new Error(`fatura ${inv.number}: ${c.serialNo} çeki faturada görünmüyor (zincir koptu)`), { unexpected: true });
+      const direction = kind === "purchase" ? "out" : "in";
+      M.cheques.set(sc.id, { id: sc.id, direction, status: direction === "in" ? "portfolio" : "pending", amount: c.amount, accountId, date: day, invoiceId: inv.id, serialNo: c.serialNo, bank: c.bank, instrument: c.instrument, events: 1 });
+      fx(accountId, direction === "in" ? -c.amount : c.amount);
+      inv.chequesCreated.push(sc.id);
+    }
+    for (const id of pay.endorse) {
+      const c = M.cheques.get(id);
+      c.status = "endorsed";
+      c.events += 1;
+      c.endorseTo = accountId;
+      fx(accountId, c.amount);
+      inv.endorsed.push(id);
+    }
+    (data.lines || []).forEach((sl, index) => {
+      const l = lines[index];
+      const cl = calc.lines[index];
+      inv.lines.push({ ...l, lineId: sl.id, tryNet: cl.tryNet });
+      if (l.goods && l.itemId && (kind !== "smm")) {
+        const dir = kind === "sale" || kind === "purchase_return" ? "out" : "in";
+        M.stok.set(l.itemId, M.stok.get(l.itemId) + (dir === "in" ? l.qty : -l.qty));
+        const move = { id: sl.moveId, itemId: l.itemId, kind: dir, qty: l.qty, price4: l.price4, pay: "none", method: "cash", accountId: "", amount: 0, stored: cl.tryNet, date: day, invoiceId: inv.id };
+        M.moves.push(move);
+        inv.moves.push(move);
+        if (!sl.moveId) throw Object.assign(new Error(`fatura ${inv.number}: stoklu kalemin stok hareketi yok (zincir koptu)`), { unexpected: true });
+      }
+    });
+    if (pay.installments) {
+      if (!data.plan?.id) throw Object.assign(new Error(`fatura ${inv.number}: taksitli satışın taksit kartı açılmadı (zincir koptu)`), { unexpected: true });
+      inv.planId = data.plan.id;
+      M.plans.set(data.plan.id, { accountId, total: pay.left, paid: 0, covers: true, status: "active", order: ++planSeq, registeredOn: day, invoiceId: inv.id });
+    }
+    if (kind === "sale_return") trimCovers(accountId);
+    if (series) lastSeries[series] = day > lastSeries[series] ? day : lastSeries[series];
+    M.invoices.set(inv.id, inv);
+    return inv;
+  }
+  // Kesme isteği + beklenti + modele yazma. Dönüş: kesilen faturanın modeli ya da null (beklenen ret).
+  async function issueInvoice({ kind, day, accountId, lines, opts, pay, force = R.chance(0.5), cashForce = R.chance(0.5), number = "", originalId = "", stop = 0, label, extra = {} }) {
+    const calc = modelInvoice(lines, { ...opts, stop });
+    const series = seriesOf(kind, Boolean(number));
+    const body = { kind, accountId, issueDate: day, issueTime: `${String(R.int(8, 19)).padStart(2, "0")}:${String(R.int(0, 59)).padStart(2, "0")}`, currency: currencyOf(opts.rate6), rate: rateText(opts.rate6), pricesIncludeVat: opts.incl, discountRate: opts.disc, stoppageRate: stop, number, originalId, note: `Motor ${label}`, lines: lines.map(l => (l.originLineId ? { originLineId: l.originLineId, qty: l.qty / 1000 } : linePayload(l))), payment: paymentPayload(pay), force, cashForce, ...extra };
+    const r = await api("POST", "/api/workspace/invoices", body);
+    const want = invoiceRejection({ kind, day, lines, pay, force, cashForce, number, accountId, series });
+    if (want) return expectReject(r, want, label), null;
+    mustOk(r, label);
+    if (centsOf(r.data.tryPayable) !== calc.tryPayable) throw Object.assign(new Error(`${label} ${r.data.number}: program ödenecek ${r.data.tryPayable} · model ${tl(calc.tryPayable)} (KDV ${tl(calc.tryVat)}, tevkifat ${tl(calc.tryWithheld)})`), { unexpected: true });
+    return applyInvoice({ kind, day, accountId, lines, calc, pay, data: r.data, opts, number, series, originalId });
+  }
+  // İptal: beklenen ret sırası programdaki gibi (kilit, iade, kart tahsilatı, çek hareketi, Kasa eksiye, stok eksiye).
+  function cancelRejection(inv, { force, cashForce }) {
+    if (inv.status === "cancelled") return ["invoice-cancelled"];
+    if (!open(inv.date)) return ["period-locked"];
+    if (issuedInvoices(x => x.originalId === inv.id).length) return ["invoice-has-returns"];
+    if (inv.planId && M.planEntries.some(e => e.planId === inv.planId)) return ["plan-has-payments"];
+    for (const id of inv.endorsed) if (M.cheques.get(id).status !== "endorsed") return ["cheque-moved"];
+    for (const id of inv.chequesCreated) if (M.cheques.get(id).events > 1) return ["cheque-moved"];
+    const codes = new Set();
+    for (const row of inv.cashRows.filter(x => x.kind === "in")) if (blocks(row.amount, row.date, row.method)) { if (policy[row.method] === "block") codes.add("cash-blocked"); else if (!cashForce) codes.add("cash-negative"); }
+    if (codes.size) return [...codes];
+    if (!force) {
+      for (const m of inv.moves.filter(x => x.kind === "in")) {
+        const after = M.stok.get(m.itemId) - inv.moves.filter(x => x.itemId === m.itemId).reduce((s, x) => s + (x.kind === "in" ? x.qty : -x.qty), 0);
+        if (after < 0) return ["stock-negative"];
+      }
+    }
+    return null;
+  }
+  function applyCancel(inv) {
+    for (const [acc, cents] of inv.cariFx) cariAdd(acc, -cents);
+    for (const row of inv.cashRows) { M.kasa[row.method] -= row.kind === "in" ? row.amount : -row.amount; M.invCash.splice(M.invCash.indexOf(row), 1); }
+    for (const m of inv.moves) { M.stok.set(m.itemId, M.stok.get(m.itemId) - (m.kind === "in" ? m.qty : -m.qty)); M.moves.splice(M.moves.indexOf(m), 1); }
+    for (const id of inv.chequesCreated) M.cheques.delete(id);
+    for (const id of inv.endorsed) { const c = M.cheques.get(id); c.status = "portfolio"; c.events -= 1; c.endorseTo = ""; }
+    if (inv.planId) M.plans.delete(inv.planId);
+    if (inv.kind === "sale_return" && inv.originalId) {
+      const orig = M.invoices.get(inv.originalId);
+      const p = orig?.planId ? M.plans.get(orig.planId) : null;
+      if (p && p.status === "active") {
+        const grow = Math.min(inv.tryPayable, orig.rest - p.total);
+        if (grow > 0) p.total += grow;
+      }
+      for (const l of inv.lines) orig.returned.set(l.originLineId, (orig.returned.get(l.originLineId) || 0) - l.qty);
+    }
+    inv.status = "cancelled";
+  }
+  // İade kalemleri: asıl faturanın iade edilebilir kalanından.
+  function returnLines(orig, { exceed = false } = {}) {
+    const out = [];
+    for (const l of orig.lines.filter(l => l.goods || orig.kind === "sale")) {
+      const left = l.qty - (orig.returned.get(l.lineId) || 0);
+      if (left <= 0 || (!exceed && R.chance(0.35) && out.length)) continue;
+      const qty = exceed ? left + 1000 : Math.max(1, Math.min(left, l.qty >= 2000 ? R.int(1, Math.floor(left / 1000) || 1) * 1000 : left));
+      out.push({ ...l, originLineId: l.lineId, qty: Math.min(qty, exceed ? qty : left), account: orig.kind === "sale" ? "610" : l.account });
+      if (exceed) break;
+    }
+    return out;
+  }
   async function op(kind) {
     count(kind);
     const acc = R.pick(accounts);
@@ -363,7 +657,7 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
         if (plan) {
           const plans = (await api("GET", `/api/workspace/accounts/${cust.id}`)).data.plans;
           const created = plans.find(p => !M.plans.has(p.id));
-          if (created) M.plans.set(created.id, { accountId: cust.id, total: amount, paid: 0, covers: true, status: "active", order: M.plans.size, registeredOn: D0 });
+          if (created) M.plans.set(created.id, { accountId: cust.id, total: amount, paid: 0, covers: true, status: "active", order: ++planSeq, registeredOn: D0 });
           else throw Object.assign(new Error("satışı taksitlendir: kart açılmadı (zincir koptu)"), { unexpected: true });
         }
         return;
@@ -384,21 +678,13 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
         if (pay === "cash") M.kasa[method] -= amount;
         else {
           cariAdd(src.accountId, -amount);
-          // Taksitlendirilmiş borç iadeden sonra borçtan büyük kalmaz: en yeni karttan başlayarak kırpılır.
-          const covering = [...M.plans.values()].filter(p => p.accountId === src.accountId && p.covers && p.status === "active");
-          let excess = covering.reduce((s, p) => s + planLeft(p), 0) - Math.max(0, M.cari.get(src.accountId));
-          for (const p of covering.sort((a, b) => b.order - a.order)) {
-            if (excess <= 0) break;
-            const cut = Math.min(excess, planLeft(p), p.total);
-            p.total -= cut;
-            excess -= cut;
-          }
+          trimCovers(src.accountId);
         }
         M.moves.push({ id: r.data.moveId, itemId: src.itemId, kind: "in", qty, price4: src.price4, pay, method, accountId: src.accountId, amount, stored: amount, reason: "return", date: day });
         return;
       }
       case "hareket-sil": {
-        const m = pickOpen(M.moves.filter(x => !(x.accountId && [...M.plans.values()].some(p => p.accountId === x.accountId && p.covers))));
+        const m = pickOpen(M.moves.filter(x => !x.invoiceId && !(x.accountId && [...M.plans.values()].some(p => p.accountId === x.accountId && p.covers))));
         if (!m) return;
         const force = R.chance(0.5);
         const qtyAfter = M.stok.get(m.itemId) + (m.kind === "in" ? -m.qty : m.qty);
@@ -443,7 +729,7 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
         const total = covers ? Math.max(1, Math.min(free, moneyCents(1, 20000))) : moneyCents(100, 30000);
         const r = await api("POST", "/api/workspace/plans", { name: cust.name, accountId: cust.id, total: tl(total), count: R.int(1, 8), firstDue, registeredOn: day, coversBalance: covers });
         mustOk(r, kind);
-        M.plans.set(r.data.id, { accountId: cust.id, total, paid: 0, covers, status: "active", order: M.plans.size, registeredOn: day });
+        M.plans.set(r.data.id, { accountId: cust.id, total, paid: 0, covers, status: "active", order: ++planSeq, registeredOn: day });
         if (!covers) cariAdd(cust.id, total);
         return;
       }
@@ -529,7 +815,7 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
       case "kilit-ihlali": {
         if (!lock) return;
         // Kapanmış döneme ekleme, oradaki hareketi düzeltme ya da silme, oraya kart açma: 409 period-locked.
-        const which = R.pick(["ekle-kasa", "ekle-cari", "ekle-stok", "duzelt-kasa", "sil-cari", "sil-stok", "sil-taksit", "kart"]);
+        const which = R.pick(["ekle-kasa", "ekle-cari", "ekle-stok", "duzelt-kasa", "sil-cari", "sil-stok", "sil-taksit", "kart", "fatura-kes", "fatura-iptal", "fatura-iade"]);
         const back = addDays(lock, -R.int(0, 10));
         const past = back < D0 ? D0 : back;
         const locked = list => R.pick(list.filter(x => !open(x.date)));
@@ -540,9 +826,236 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
         if (which === "kart") r = await api("POST", "/api/workspace/plans", { name: cust.name, accountId: cust.id, total: "300", count: 1, registeredOn: past, firstDue: T });
         if (which === "duzelt-kasa") { const e = locked(M.cash); if (!e) return; r = await api("PUT", `/api/workspace/cash/${e.id}`, { kind: e.kind, amount: tl(e.amount + 100), method: e.method, description: "Kapalı dönem düzeltme", date: e.date, cashForce: true }); }
         if (which === "sil-cari") { const e = locked(M.entries); if (!e) return; r = await api("DELETE", `/api/workspace/accounts/${e.accountId}/entries/${e.id}?cashForce=1`); }
-        if (which === "sil-stok") { const m = locked(M.moves); if (!m) return; r = await api("DELETE", `/api/workspace/stock/${m.itemId}/moves/${m.id}?cashForce=1`); }
+        if (which === "sil-stok") { const m = locked(M.moves.filter(x => !x.invoiceId)); if (!m) return; r = await api("DELETE", `/api/workspace/stock/${m.itemId}/moves/${m.id}?cashForce=1`); }
         if (which === "sil-taksit") { const e = locked(M.planEntries); if (!e) return; r = await api("DELETE", `/api/workspace/plans/${e.planId}/entries/${e.id}?cashForce=1`); }
+        if (which === "fatura-kes") {
+          const lines = saleLines(1);
+          if (!lines.length) return;
+          r = await api("POST", "/api/workspace/invoices", { kind: "sale", accountId: cust.id, issueDate: past, lines: lines.map(linePayload), payment: { rest: "open" }, force: true });
+        }
+        if (which === "fatura-iptal") { const inv = R.pick(issuedInvoices(x => !open(x.date))); if (!inv) return; r = await api("POST", `/api/workspace/invoices/${inv.id}/cancel`, { force: true, cashForce: true }); }
+        if (which === "fatura-iade") {
+          // Asıl fatura kapalı dönemden önce de olsa iade faturası kapalı döneme tarihlenemez.
+          const orig = R.pick(issuedInvoices(x => x.kind === "sale" && x.date <= past && x.lines.some(l => l.qty - (x.returned.get(l.lineId) || 0) > 0)));
+          if (!orig) return;
+          r = await api("POST", "/api/workspace/invoices", { kind: "sale_return", originalId: orig.id, issueDate: past, lines: returnLines(orig).slice(0, 1).map(l => ({ originLineId: l.originLineId, qty: l.qty / 1000 })), payment: {} });
+        }
         return expectReject(r, "period-locked", `${kind}/${which}`);
+      }
+      // ---------- Fatura ----------
+      case "fatura-satis": {
+        // Stoktan / hizmet satışı ya da SMM; peşin (Kasa), çek/senet, taksit, açık hesap karışık.
+        const smm = R.chance(0.15);
+        const lines = smm ? saleLines(R.int(1, 2), { services: true }).filter(l => !l.goods) : saleLines(R.int(1, 3));
+        if (!lines.length) return;
+        const opts = smm ? { incl: false, disc: 0, stop: 0, rate6: 1_000_000 } : docOpts();
+        const stop = smm ? R.pick([0, 20]) : 0;
+        const calc = modelInvoice(lines, { ...opts, stop });
+        if (calc.tryPayable <= 0) return;
+        const pay = paymentFor(smm ? "smm" : "sale", calc.tryPayable, day, cust.id);
+        await issueInvoice({ kind: smm ? "smm" : "sale", day, accountId: cust.id, lines, opts, pay, stop, label: kind });
+        return;
+      }
+      case "fatura-alis": {
+        const sup = R.pick(suppliers);
+        const lines = purchaseLines(R.int(1, 3));
+        if (!lines.length) return;
+        const opts = docOpts();
+        const calc = modelInvoice(lines, opts);
+        const pay = paymentFor("purchase", calc.tryPayable, day, sup.id);
+        // Tedarikçinin fatura numarası: başka tedarikçinin numarası serbest; iptal edilmiş faturanın numarası yeniden kullanılabilir.
+        let number;
+        const reuseOther = issuedInvoices(x => x.kind === "purchase" && x.accountId !== sup.id && !issuedInvoices(y => y.kind === "purchase" && y.accountId === sup.id && y.number === x.number).length);
+        const reuseCancelled = [...M.invoices.values()].filter(x => x.kind === "purchase" && x.status === "cancelled" && x.accountId === sup.id && !issuedInvoices(y => y.kind === "purchase" && y.accountId === sup.id && y.number === x.number).length);
+        if (reuseCancelled.length && R.chance(0.3)) number = R.pick(reuseCancelled).number;
+        else if (reuseOther.length && R.chance(0.15)) number = R.pick(reuseOther).number;
+        else number = `A${seed}-${++counters.purchase}`;
+        await issueInvoice({ kind: "purchase", day, accountId: sup.id, lines, opts, pay, number, label: kind });
+        return;
+      }
+      case "fatura-iade": {
+        // Satıştan iade (müşterinin numarasıyla ya da iç seri) / Alıştan iade; kalan miktar kadar, kısmi.
+        const orig = R.pick(issuedInvoices(x => (x.kind === "sale" || x.kind === "purchase") && x.lines.some(l => (l.goods || x.kind === "sale") && l.qty - (x.returned.get(l.lineId) || 0) > 0)));
+        if (!orig) return;
+        const lines = returnLines(orig);
+        if (!lines.length) return;
+        const rk = orig.kind === "sale" ? "sale_return" : "purchase_return";
+        const calc = modelInvoice(lines, orig.opts);
+        const pay = paymentFor(rk, calc.tryPayable, day, orig.accountId);
+        const number = rk === "sale_return" && R.chance(0.5) ? `IAD${seed}-${++counters.ret}` : "";
+        const inv = await issueInvoice({ kind: rk, day, accountId: orig.accountId, lines, opts: orig.opts, pay, number, originalId: orig.id, label: kind });
+        if (inv) for (const l of lines) orig.returned.set(l.originLineId, (orig.returned.get(l.originLineId) || 0) + l.qty);
+        return;
+      }
+      case "fatura-iptal": {
+        const inv = R.pick([...M.invoices.values()].filter(x => !(x.planId && M.plans.get(x.planId)?.status === "closed")));
+        if (!inv) return;
+        const force = R.chance(0.5), cashForce = R.chance(0.5);
+        const r = await api("POST", `/api/workspace/invoices/${inv.id}/cancel`, { reason: "Motor iptal", force, cashForce });
+        const want = cancelRejection(inv, { force, cashForce });
+        if (want) return expectReject(r, want, `${kind}/${inv.kind}`);
+        mustOk(r, kind);
+        applyCancel(inv);
+        return;
+      }
+      case "fatura-taslak": {
+        // Taslak deftere yazmaz; günü gelince kesilir ya da silinir.
+        const draft = R.pick([...M.drafts.values()]);
+        if (draft && R.chance(0.6)) {
+          M.drafts.delete(draft.id);
+          if (R.chance(0.3)) { mustOk(await api("DELETE", `/api/workspace/invoices/${draft.id}`), kind); return; }
+          const pay = { cash: [], cheques: [], endorse: [], rest: "open", installments: null, dueDate: "", left: draft.calc.tryPayable };
+          const force = R.chance(0.5);
+          const r = await api("POST", `/api/workspace/invoices/${draft.id}/issue`, { issueDate: day, payment: { rest: "open" }, force });
+          const want = invoiceRejection({ kind: "sale", day, lines: draft.lines, pay, force, cashForce: false, accountId: draft.accountId, series: "paper" });
+          if (want) { M.drafts.set(draft.id, draft); return expectReject(r, want, `${kind}/kes`); }
+          mustOk(r, kind);
+          if (centsOf(r.data.tryPayable) !== draft.calc.tryPayable) throw Object.assign(new Error(`taslaktan kesilen ${r.data.number}: program ${r.data.tryPayable} · model ${tl(draft.calc.tryPayable)}`), { unexpected: true });
+          applyInvoice({ kind: "sale", day, accountId: draft.accountId, lines: draft.lines, calc: draft.calc, pay, data: r.data, opts: draft.opts, series: "paper" });
+          return;
+        }
+        const lines = saleLines(R.int(1, 2));
+        if (!lines.length) return;
+        const opts = docOpts();
+        const calc = modelInvoice(lines, opts);
+        const r = await api("POST", "/api/workspace/invoices", { kind: "sale", status: "draft", accountId: cust.id, issueDate: day, currency: currencyOf(opts.rate6), rate: rateText(opts.rate6), pricesIncludeVat: opts.incl, discountRate: opts.disc, lines: lines.map(linePayload), payment: { rest: "open" } });
+        mustOk(r, kind);
+        M.drafts.set(r.data.id, { id: r.data.id, accountId: cust.id, lines, opts, calc });
+        return;
+      }
+      case "cek-tahsil": {
+        const c = R.pick([...M.cheques.values()].filter(x => x.direction === "in" && x.status === "portfolio"));
+        if (!c) return;
+        const method = R.pick(["bank", "bank", "cash"]);
+        const r = await api("POST", `/api/workspace/cheques/${c.id}/actions`, { action: "collect", date: day, method });
+        mustOk(r, kind);
+        c.status = "collected";
+        c.events += 1;
+        M.kasa[method] += c.amount;
+        M.chqCash.push({ chequeId: c.id, kind: "in", amount: c.amount, method, date: day });
+        return;
+      }
+      case "cek-ode": {
+        const c = R.pick([...M.cheques.values()].filter(x => x.direction === "out" && x.status === "pending"));
+        if (!c) return;
+        const method = R.pick(["bank", "bank", "cash"]);
+        const force = R.chance(0.5);
+        const r = await api("POST", `/api/workspace/cheques/${c.id}/actions`, { action: "pay", date: day, method, cashForce: force });
+        if (negative(r, [[method, c.amount, day]], force, kind)) return;
+        mustOk(r, kind);
+        c.status = "paid";
+        c.events += 1;
+        M.kasa[method] -= c.amount;
+        M.chqCash.push({ chequeId: c.id, kind: "out", amount: c.amount, method, date: day });
+        return;
+      }
+      case "fatura-acid": {
+        // Kasıtlı yarıda kalan işlem: önce stok/cari/Kasa satırları yazılır, sonra bir adım düşer → tamamı geri alınmalı
+        // (yetim kayıt yok; model değişmez, doğrulama bunu her tablo için ölçer).
+        const which = R.pick(["stok", "kasa", "cek"]);
+        if (which === "stok") {
+          const lines = saleLines(3, { services: false });
+          if (lines.length < 2) return;
+          const last = lines.at(-1);
+          last.qty = Math.max(1000, M.stok.get(last.itemId) + R.int(1, 5) * 1000);
+          const opts = docOpts();
+          const calc = modelInvoice(lines, opts);
+          const pay = paymentFor("sale", calc.tryPayable, day, cust.id);
+          return void (await issueInvoice({ kind: "sale", day, accountId: cust.id, lines, opts, pay, force: false, label: `${kind}/stok` }));
+        }
+        if (which === "kasa") {
+          const method = R.pick(METHOD_ORDER.filter(m => policy[m] !== "off")) || "cash";
+          const need = Math.max(0, Math.min(balAt(method, day), balAt(method, ""))) + R.int(1, 5000) * 100;
+          const it = R.pick(items);
+          const lines = [{ itemId: it.id, name: "", qty: 1000, price4: need * 100, disc: 0, vat: 20, whCode: "", wh: null, account: "153", goods: true }];
+          const opts = { incl: false, disc: 0, stop: 0, rate6: 1_000_000 };
+          const calc = modelInvoice(lines, opts);
+          const pay = { cash: [{ amount: need, method }], cheques: [], endorse: [], rest: "open", installments: null, dueDate: "", left: calc.tryPayable - need };
+          return void (await issueInvoice({ kind: "purchase", day, accountId: R.pick(suppliers).id, lines, opts, pay, cashForce: false, number: `A${seed}-${++counters.purchase}`, label: `${kind}/kasa` }));
+        }
+        // Çek: aynı seri/banka/türde ikinci evrak işlemin en sonunda (stok, cari, Kasa yazıldıktan sonra) reddedilir.
+        const twin = R.pick([...M.cheques.values()].filter(c => c.direction === "in"));
+        if (!twin || !open(day)) return;
+        const lines = saleLines(2);
+        if (!lines.length) return;
+        const opts = docOpts();
+        const calc = modelInvoice(lines, opts);
+        const cashPart = Math.floor(calc.tryPayable / 3);
+        const chequePart = Math.max(1, Math.floor(calc.tryPayable / 3));
+        if (cashPart + chequePart > calc.tryPayable) return;
+        const pay = { cash: cashPart ? [{ amount: cashPart, method: "cash" }] : [], cheques: [{ instrument: twin.instrument, amount: chequePart, dueDate: addDays(day, 30), serialNo: twin.serialNo, bank: twin.bank }], endorse: [], rest: "installments", installments: { count: 3, firstDue: addDays(day, 10) }, dueDate: "", left: calc.tryPayable - cashPart - chequePart };
+        const body = { kind: "sale", accountId: cust.id, issueDate: day, currency: currencyOf(opts.rate6), rate: rateText(opts.rate6), pricesIncludeVat: opts.incl, discountRate: opts.disc, lines: lines.map(linePayload), payment: paymentPayload(pay), force: true };
+        const r = await api("POST", "/api/workspace/invoices", body);
+        const want = invoiceRejection({ kind: "sale", day, lines, pay, force: true, cashForce: true, accountId: cust.id, series: "paper" });
+        return expectReject(r, want || ["cheque-duplicate"], `${kind}/cek`);
+      }
+      case "fatura-bagli": {
+        // Faturadan gelen stok hareketi ve cari satırı kendi ekranından silinmez/düzeltilmez (409 invoice-linked).
+        const inv = R.pick(issuedInvoices(x => x.moves.length));
+        if (!inv) return;
+        const m = R.pick(inv.moves);
+        const codes = open(inv.date) ? ["invoice-linked"] : ["period-locked", "invoice-linked"];
+        expectReject(await api("DELETE", `/api/workspace/stock/${m.itemId}/moves/${m.id}?cashForce=1`), codes, `${kind}/stok-sil`);
+        expectReject(await api("PUT", `/api/workspace/stock/${m.itemId}/moves/${m.id}`, { qty: "1", unitPrice: "1", force: true, cashForce: true }), codes, `${kind}/stok-duzelt`);
+        const acc = (await api("GET", `/api/workspace/accounts/${inv.accountId}`)).data;
+        const e = (acc.entries || []).find(x => x.source === "invoice" && x.sourceId === inv.id);
+        if (!e) throw Object.assign(new Error(`fatura ${inv.number}: cari kartında fatura satırı yok`), { unexpected: true });
+        expectReject(await api("DELETE", `/api/workspace/accounts/${inv.accountId}/entries/${e.id}?cashForce=1`), codes, `${kind}/cari-sil`);
+        return;
+      }
+      case "fatura-hatasi": {
+        // Saha hataları: her biri reddedilmeli ve hiçbir iz bırakmamalı (doğrulama her tabloyu modelle karşılaştırır).
+        const which = R.pick(["tarih-ileri", "tarih-gecersiz", "tarih-bos", "taksit-vade", "acik-vade", "cek-vade", "odeme-asim", "iade-asim", "iade-once", "iade-iptal", "kronoloji", "mukerrer", "taksit-alis", "cek-iade", "ciro-yanlis", "iptal-iki-kez", "kalem-yok", "kdv-yanlis"]);
+        const lines = saleLines(1, { services: false });
+        if (!lines.length) return;
+        const base = { kind: "sale", accountId: cust.id, issueDate: day, lines: lines.map(linePayload), payment: { rest: "open" }, force: true };
+        const P = modelInvoice(lines, {}).tryPayable;
+        const post = (body, codes) => api("POST", "/api/workspace/invoices", { ...base, ...body }).then(r => expectReject(r, codes, `${kind}/${which}`));
+        if (which === "tarih-ileri") return post({ issueDate: addDays(T, R.int(1, 60)) }, ["date-future"]);
+        if (which === "tarih-gecersiz") return post({ issueDate: R.pick(["2026-02-30", "2026-13-01", "31.12.2026", "abc"]) }, ["issueDate"]);
+        if (which === "tarih-bos") return post({ issueDate: R.pick(["", "   "]) }, ["issueDate"]);
+        if (which === "taksit-vade") return post({ payment: { rest: "installments", installments: { count: 3, firstDue: addDays(day, -R.int(1, 30)) } } }, ["due-before-start"]);
+        if (which === "acik-vade") return post({ payment: { rest: "open", dueDate: addDays(day, -R.int(1, 30)) } }, ["due-before-start"]);
+        if (which === "cek-vade") return post({ payment: { cheques: [{ amount: 1, dueDate: addDays(day, -R.int(1, 30)), serialNo: `X${seed}-${++counters.serial}`, bank: "Ziraat" }], rest: "open" } }, ["cheque-due-before-issue"]);
+        if (which === "odeme-asim") return post({ payment: { cash: [{ amount: (P + R.int(1, 50000)) / 100, method: "cash" }], rest: "open" } }, ["payment-exceeds"]);
+        if (which === "kalem-yok") return post({ lines: [] }, ["lines"]);
+        if (which === "kdv-yanlis") return post({ lines: [{ ...linePayload(lines[0]), vatRate: R.pick([8, 18, 5, -1]) }] }, ["vatRate"]);
+        if (which === "taksit-alis") return post({ kind: "purchase", accountId: R.pick(suppliers).id, number: `HATA-${seed}-${R.int(1, 1e6)}`, payment: { rest: "installments", installments: { count: 2, firstDue: day } } }, ["payment.rest", "Taksitlendirme"]);
+        if (which === "mukerrer") {
+          const twin = R.pick(issuedInvoices(x => x.kind === "purchase"));
+          if (!twin || !open(day)) return;
+          return post({ kind: "purchase", accountId: twin.accountId, number: twin.number, lines: purchaseLines(1).map(linePayload), payment: { rest: "open" } }, ["invoice-duplicate"]);
+        }
+        if (which === "kronoloji") {
+          if (!lastSeries.paper) return;
+          const d = addDays(lastSeries.paper, -R.int(1, 10));
+          if (!open(d) || d < D0) return;
+          return post({ issueDate: d }, ["chronology"]);
+        }
+        if (which === "iptal-iki-kez") {
+          const inv = R.pick([...M.invoices.values()].filter(x => x.status === "cancelled"));
+          if (!inv) return;
+          return expectReject(await api("POST", `/api/workspace/invoices/${inv.id}/cancel`, { reason: "İkinci iptal", force: true, cashForce: true }), ["invoice-cancelled"], `${kind}/${which}`);
+        }
+        if (which === "ciro-yanlis") {
+          const c = R.pick([...M.cheques.values()].filter(x => x.direction === "in" && x.status !== "portfolio"));
+          if (!c) return;
+          return post({ kind: "purchase", accountId: R.pick(suppliers).id, number: `HATA-${seed}-${R.int(1, 1e6)}`, lines: purchaseLines(1).map(l => linePayload({ ...l, price4: Math.max(l.price4, c.amount * 200) })), payment: { endorse: [c.id], rest: "open" } }, ["cheque-not-in-portfolio"]);
+        }
+        const orig = R.pick(issuedInvoices(x => x.kind === "sale" && x.lines.some(l => l.qty - (x.returned.get(l.lineId) || 0) > 0)));
+        if (which === "iade-iptal") {
+          const dead = R.pick([...M.invoices.values()].filter(x => x.kind === "sale" && x.status === "cancelled"));
+          if (!dead) return;
+          return post({ kind: "sale_return", originalId: dead.id, lines: dead.lines.slice(0, 1).map(l => ({ originLineId: l.lineId, qty: 0.001 })), payment: {} }, ["originalId"]);
+        }
+        if (!orig) return;
+        if (which === "iade-asim") return post({ kind: "sale_return", originalId: orig.id, lines: returnLines(orig, { exceed: true }).map(l => ({ originLineId: l.originLineId, qty: l.qty / 1000 })), payment: {} }, ["return-exceeds"]);
+        if (which === "iade-once") {
+          if (orig.date <= D0) return;
+          return post({ kind: "sale_return", originalId: orig.id, issueDate: addDays(orig.date, -R.int(1, 5)), lines: returnLines(orig).slice(0, 1).map(l => ({ originLineId: l.originLineId, qty: l.qty / 1000 })), payment: {} }, ["return-before-original"]);
+        }
+        if (which === "cek-iade") return post({ kind: "sale_return", originalId: orig.id, lines: returnLines(orig).slice(0, 1).map(l => ({ originLineId: l.originLineId, qty: l.qty / 1000 })), payment: { cheques: [{ amount: 1, dueDate: day, serialNo: "Z1", bank: "Ziraat" }] } }, ["payment.cheques", "çek/senet"]);
+        return;
       }
       default:
         throw new Error(kind);
@@ -554,6 +1067,9 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
     ["kasa-duzelt", 3], ["kasa-sil", 2], ["cari-duzelt", 4], ["cari-sil", 2], ["hareket-duzelt", 3], ["hareket-sil", 2], ["taksit-sil", 3], ["kart-kapat", 2],
     // Saha hataları yüksek sıklıkta: her 100 işlemin ~17'si hatalı tarih, vade ya da kapalı dönem denemesi.
     ["tarih-hatasi", 8], ["vade-hatasi", 4], ["kilit-ihlali", 5],
+    // Fatura (v2.0.15): kesme, iade, iptal, taslak, çek/senet; kasıtlı yarıda kalan işlemler ve saha hataları.
+    ["fatura-satis", 14], ["fatura-alis", 9], ["fatura-iade", 6], ["fatura-iptal", 5], ["fatura-taslak", 3], ["cek-tahsil", 3], ["cek-ode", 3],
+    ["fatura-acid", 4], ["fatura-hatasi", 9], ["fatura-bagli", 1],
   ];
   const bag = WEIGHTS.flatMap(([k, w]) => Array(w).fill(k));
   // Açılış (çizelgenin ilk günü): stok ve kasa dolsun.
@@ -601,6 +1117,9 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
   }
   // Eşzamanlı istek yağmuru: aynı ürünlere ve carilere aynı anda satış, tahsilat, kasa (onaylı; sıra bağımsız).
   if (burst && !report.mismatches.length) {
+    // Yağmurdaki Kasa çıkışları onaylıdır; "Engelle" ayarında onaylı çıkış da reddedileceği için ayar Uyar'a alınır.
+    const warnAll = { cash: "warn", bank: "warn", card: "warn" };
+    if ((await api("PUT", "/api/admin/negative-policy", warnAll)).status === 200) Object.assign(policy, warnAll);
     const jobs = [];
     for (let i = 0; i < burst; i++) {
       const it = items[i % 3];
@@ -609,6 +1128,19 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
       if (i % 3 === 0) jobs.push(api("POST", `/api/workspace/stock/${it.id}/moves`, { kind: "out", qty: "1", unitPrice: priceText(it.sale4), pay: "account", accountId: c.id, date: T, force: true }).then(r => { mustOk(r, "eşzamanlı satış"); const a = lineCents(1000, it.sale4); M.stok.set(it.id, M.stok.get(it.id) - 1000); cariAdd(c.id, a); M.moves.push({ id: r.data.moveId, itemId: it.id, kind: "out", qty: 1000, price4: it.sale4, pay: "account", method: "cash", accountId: c.id, amount: a, stored: a, date: T }); }));
       else if (i % 3 === 1) jobs.push(api("POST", `/api/workspace/accounts/${c.id}/entries`, { kind: "in", amount: tl(amount), method: "bank", date: T }).then(r => { mustOk(r, "eşzamanlı tahsilat"); cariAdd(c.id, -amount); M.kasa.bank += amount; M.entries.push({ id: r.data.entryId, accountId: c.id, kind: "in", amount, method: "bank", date: T }); }));
       else jobs.push(api("POST", "/api/workspace/cash", { kind: "out", amount: tl(amount), method: "cash", description: "Eşzamanlı gider", date: T, cashForce: true }).then(r => { mustOk(r, "eşzamanlı kasa"); M.kasa.cash -= amount; M.cash.push({ id: r.data.id, kind: "out", amount, method: "cash", date: T }); }));
+    }
+    // Aynı anda fatura kesme: numara sırası boşluksuz ve tekil kalmalı (BEGIN IMMEDIATE sıraya sokar), stok/cari tutarlı.
+    for (let i = 0; i < Math.min(12, Math.ceil(burst / 4)); i++) {
+      const c = customers[i % 3];
+      const lines = [{ itemId: items[i % 4].id, name: "", qty: 1000, price4: items[i % 4].sale4, disc: 0, vat: 20, whCode: "", wh: null, account: "600", goods: true }];
+      const opts = { incl: false, disc: 0, stop: 0, rate6: 1_000_000 };
+      const calc = modelInvoice(lines, opts);
+      const pay = { cash: [{ amount: calc.tryPayable, method: "card" }], cheques: [], endorse: [], rest: "open", installments: null, dueDate: "", left: 0 };
+      jobs.push(api("POST", "/api/workspace/invoices", { kind: "sale", accountId: c.id, issueDate: T, lines: lines.map(linePayload), payment: paymentPayload(pay), force: true }).then(r => {
+        mustOk(r, "eşzamanlı fatura");
+        if (centsOf(r.data.tryPayable) !== calc.tryPayable) throw new Error(`eşzamanlı fatura ${r.data.number}: ${r.data.tryPayable} · model ${tl(calc.tryPayable)}`);
+        applyInvoice({ kind: "sale", day: T, accountId: c.id, lines, calc, pay, data: r.data, opts, series: "paper" });
+      }));
     }
     const results = await Promise.allSettled(jobs);
     const failed = results.filter(r => r.status === "rejected");
@@ -620,6 +1152,41 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
     await verify("son durum");
     await verifyReports("son durum raporları");
   }
+  // Belge numaraları: kendi serilerimizde (kâğıt, SMM, iç iade) sıra 1'den boşluksuz ve tarih sırasıyla uyumlu (geri alınan
+  // işlem numara yakmaz); ETTN her belgede tekil; aynı carinin aynı türde iki geçerli belgesi aynı numarayı taşımaz.
+  if (!report.mismatches.length) {
+    const problems = [];
+    const all = (await api("GET", "/api/workspace/invoices?tab=all&limit=5000")).data.invoices || [];
+    const bySeries = new Map();
+    for (const x of all.filter(x => x.status !== "draft" && (["sale", "smm", "purchase_return"].includes(x.kind) || (x.kind === "sale_return" && M.invoices.get(x.id)?.series === "internal")))) {
+      const key = x.number.slice(0, -9);
+      if (!bySeries.has(key)) bySeries.set(key, []);
+      bySeries.get(key).push(x);
+    }
+    for (const [key, list] of bySeries) {
+      list.sort((a, b) => Number(a.number.slice(-9)) - Number(b.number.slice(-9)));
+      list.forEach((x, i) => {
+        if (Number(x.number.slice(-9)) !== i + 1) problems.push(`Seri ${key}: ${i + 1}. sırada ${x.number} (numara boşluğu ya da tekrar)`);
+        if (i && list[i - 1].issueDate > x.issueDate) problems.push(`Seri ${key}: ${list[i - 1].number} (${list[i - 1].issueDate}) sonra ${x.number} (${x.issueDate}) — tarih sırası bozuk`);
+      });
+    }
+    const ettn = new Map();
+    for (const x of all.filter(x => x.ettn)) {
+      if (ettn.has(x.ettn)) problems.push(`ETTN çakışması: ${ettn.get(x.ettn)} ve ${x.number}`);
+      ettn.set(x.ettn, x.number);
+    }
+    const twins = new Map();
+    for (const x of all.filter(x => x.status === "issued" && (x.kind === "purchase" || x.kind === "sale_return") && x.number)) {
+      const key = `${x.accountId}|${x.kind}|${x.number}`;
+      if (twins.has(key)) problems.push(`Mükerrer belge: ${x.number} (${x.kind}) aynı caride iki kez geçerli`);
+      twins.set(key, x.id);
+    }
+    report.invoiceSeries = Object.fromEntries([...bySeries].map(([k, v]) => [k, v.length]));
+    report.ettn = ettn.size;
+    if (problems.length) report.mismatches.push({ at: "belge numaraları", problems });
+  }
+  const invList = [...M.invoices.values()];
+  report.invoices = { kesilen: invList.filter(x => x.status === "issued").length, iptal: invList.filter(x => x.status === "cancelled").length, taslak: M.drafts.size, turler: invList.reduce((o, x) => ((o[x.kind] = (o[x.kind] || 0) + 1), o), {}), cek: M.cheques.size };
   report.model = { kasa: Object.fromEntries(MONEY.map(m => [m, tl(M.kasa[m])])), cariler: accounts.length, urunler: items.length, kartlar: M.plans.size, kasaHareketi: M.cash.length, cariHareketi: M.entries.length, stokHareketi: M.moves.length, taksitHareketi: M.planEntries.length };
   // Deney sonrası kilidi kaldır (aynı veritabanında başka koşu olabilir).
   if (lock) await api("PUT", "/api/admin/period-lock", { lockedUntil: "" });
