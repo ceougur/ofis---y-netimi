@@ -265,6 +265,16 @@ Bağlam kopsa da bu düzen değişmez. Kullanıcı "zip ver" dediğinde şu üç
      "Ödeme (Kredi Kartı) 600" — müşteriye karta iade; satıştan iadede yol adı "POS İadesi" daha doğru, yap'ta kontrol.
      Test: iade düzenle (miktar azalt/artır sınırda, fiyat, ödeme yolu) → stok/cari/Kasa yeni hâl; aşan miktar 409;
      asıl faturanın "iade edilebilir" kalanı doğru; pasif düğme nedeni ekranda.
+  11. BANKA MODÜLÜ YOKKEN BANKA EKSİ BAKİYE UYARISI (müşteri, ekran: Satıştan İade, müşteriye iade ödemesi Havale/EFT →
+     "Banka Bakiyesi Eksiye Düşecek — Banka hesabında (Havale / EFT) −3.600,00 TL var; 3.600,00 TL çıkış bakiyeyi
+     −7.200,00 TL eksiye düşürür"). Koddan: `server/lib/pay-method.mjs` NEGATIVE_DEFAULT { cash, bank, card: "warn" };
+     `server/routes/cash.mjs` guardOut banka/POS "bakiyesini" yalnız programa girilmiş havale/POS hareketlerinden
+     hesaplar — açılış bakiyesi, banka ekstresi, mevduat yok → sayı anlamsız, uyarı yanıltıcı. Öneri (yap'ta; madde 9
+     ile birlikte): Banka modülü gelene kadar Eksi Bakiye Denetimi YALNIZ NAKİT KASA için (Banka ve POS/Kredi Kartı
+     denetimi kapalı; Yönetim → Eksi Bakiye Denetimi'nde yalnız "Nakit Kasa" alanı görünür; mevcut kurulumlarda bank/card
+     ayarı göçle "off"). Banka modülü gelince (açılış bakiyesi + hesaplar) denetim geri açılır. Madde 9'daki "Eksi Bakiye
+     Denetimi (Nakit/Banka/Kredi Kartı) kalır" cümlesi bu maddeyle DEĞİŞTİ. Test: havale ile iade/ödeme → soru çıkmaz;
+     nakit iade Kasa'yı eksiye düşürecekse soru çıkar; Yönetim ekranında yalnız Nakit Kasa ayarı.
   KURAL (bu maddeden): kullanıcının her isteği, ne kadar küçük olsa da, AYNI ANDA bu listeye yazılır ve commit edilir;
   "dün konuştuk" denen bir istek listede yoksa kullanıcıya açıkça söylenir.
 - e-Belge kararı (kullanıcı, 01.10.2026): vergi dairesi/entegratör bağlantısı KAPALI — "sana entegre et diyene kadar".
