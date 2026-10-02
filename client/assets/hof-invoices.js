@@ -215,7 +215,7 @@
         <input type="search" data-filter="q" value="${esc(view.q)}" placeholder="No, cari, ürün, VKN, not ara…" aria-label="Ara">
         ${accountChip}
       </div>
-      <div class="hof-acc-selbar${selected ? " is-active" : ""}"><span>${selected ? `<b>${selected.toLocaleString("tr-TR")}</b> belge seçildi` : canManage() ? "Toplu yazdırmak, kaydetmek ya da iptal etmek için satırları işaretleyin." : "Toplu yazdırmak için satırları işaretleyin."}</span>${selected ? `<a class="hof-button hof-button-small hof-button-ghost" href="/api/workspace/invoices/toplu.pdf?ids=${esc(selIds)}" target="_blank" rel="noopener">Seçilenleri PDF</a><a class="hof-button hof-button-small hof-button-ghost" href="/api/workspace/invoices/export.xlsx?ids=${esc(selIds)}" download>Seçilenleri Excel</a>${edoc() ? `<a class="hof-button hof-button-small hof-button-ghost" href="/api/workspace/invoices/ubl.zip?ids=${esc(selIds)}" download>e-Belge XML (ZIP)</a>` : ""}${canManage() && selectedBy("draft").length ? `<button type="button" class="hof-button hof-button-small" data-act="bulk-issue">Seçilenleri Kaydet (${selectedBy("draft").length})</button>` : ""}${canManage() && selectedBy("issued").length ? `<button type="button" class="hof-button hof-button-small hof-button-danger-ghost" data-act="bulk-cancel">Seçilenleri İptal Et (${selectedBy("issued").length})</button>` : ""}<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="clear-sel">Seçimi Temizle</button>` : ""}</div>
+      <div class="hof-acc-selbar${selected ? " is-active" : ""}"><span>${selected ? `<b>${selected.toLocaleString("tr-TR")}</b> belge seçildi` : canManage() ? "Toplu yazdırmak, kaydetmek, iptal etmek ya da silmek için satırları işaretleyin." : "Toplu yazdırmak için satırları işaretleyin."}</span>${selected ? `<a class="hof-button hof-button-small hof-button-ghost" href="/api/workspace/invoices/toplu.pdf?ids=${esc(selIds)}" target="_blank" rel="noopener">Seçilenleri PDF</a><a class="hof-button hof-button-small hof-button-ghost" href="/api/workspace/invoices/export.xlsx?ids=${esc(selIds)}" download>Seçilenleri Excel</a>${edoc() ? `<a class="hof-button hof-button-small hof-button-ghost" href="/api/workspace/invoices/ubl.zip?ids=${esc(selIds)}" download>e-Belge XML (ZIP)</a>` : ""}${canManage() && selectedBy("draft").length ? `<button type="button" class="hof-button hof-button-small" data-act="bulk-issue">Seçilenleri Kaydet (${selectedBy("draft").length})</button>` : ""}${canManage() && selectedBy("issued").length ? `<button type="button" class="hof-button hof-button-small hof-button-danger-ghost" data-act="bulk-cancel">Seçilenleri İptal Et (${selectedBy("issued").length})</button>` : ""}${canManage() ? `<button type="button" class="hof-button hof-button-small hof-button-danger-ghost" data-act="bulk-delete" title="Seçilen belgeler Silinenler'e gider; kaydedilmiş belgenin etkileri iptaldeki gibi geri alınır">Seçilenleri Sil (${selected})</button>` : ""}<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="clear-sel">Seçimi Temizle</button>` : ""}</div>
       ${
         data
           ? `<div class="hof-rep-table"><table class="hof-table hof-chq-table hof-inv-table"><thead><tr><th class="hof-inv-check"><input type="checkbox" data-sel-all aria-label="Listedekilerin hepsini seç" ${data.invoices.length && data.invoices.every(doc => view.selected.has(doc.id)) ? "checked" : ""}></th><th>Tarih</th><th>No</th><th>Cari</th><th>Durum</th><th class="num">Tutar</th><th class="num">Açık</th></tr></thead><tbody>${rows || `<tr><td colspan="7" class="hof-empty">${emptyText()}</td></tr>`}</tbody></table></div>
@@ -319,6 +319,7 @@
     }
     if (act === "bulk-issue") return bulkIssue();
     if (act === "bulk-cancel") return bulkCancel();
+    if (act === "bulk-delete") return bulkDelete();
     if (act === "clear-account") {
       view.account = null;
       return loadList();
@@ -1495,7 +1496,7 @@
       <div class="hof-chq-actions" role="toolbar" aria-label="Belge işlemleri">
         <span class="hof-plan-toolgroup">${office().outputButtons ? office().outputButtons(pdfUrl(doc), "card", `${doc.status === "draft" ? "Proforma" : kindLabel(doc.kind)} - PDF`) : `<a class="hof-button hof-button-small hof-button-ghost" href="${esc(pdfUrl(doc))}" target="_blank" rel="noopener">PDF</a>`}${phone && doc.status === "issued" ? `<button type="button" class="hof-button hof-button-small hof-button-ghost hof-whatsapp" data-act="whatsapp" data-wa="${esc(phone)}">WhatsApp</button>` : ""}${doc.status === "issued" && isOwn(doc.kind) ? `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="email" data-mail="${esc(email)}" title="${email ? `${esc(email)} adresine e-posta penceresi açılır; PDF indirilir` : "Cari kartında e-posta adresi yok"}">E-Posta</button>` : ""}</span>
         ${doc.status === "issued" && doc.open > 0.004 && !ret && HOF.can(sideOf(doc.kind) === "sale" ? "accounts.collect" : "accounts.manage") ? `<span class="hof-plan-toolgroup"><button type="button" class="hof-button hof-button-small" data-act="pay">${sideOf(doc.kind) === "sale" ? "+ Tahsilat Ekle" : "+ Ödeme Yap"}</button></span>` : ""}
-        ${doc.canManage ? `<span class="hof-plan-toolgroup">${doc.canEdit ? '<button type="button" class="hof-button hof-button-small" data-act="edit">Düzenle ve Kaydet</button>' : ""}${doc.status === "issued" ? `<button type="button" class="hof-button hof-button-small" data-act="modify" ${doc.canModify ? "" : "disabled"} title="${esc(doc.modifyBlock || "Belgeyi düzeltip yeniden kaydedin; numara değişmez, stok, cari, Kasa ve taksit kayıtları yeni hale göre yazılır")}">Düzenle</button>` : ""}${!ret ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="copy" title="Aynı cari ve kalemlerle yeni belge">Kopyala</button>' : ""}${doc.canRepeat ? `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="${doc.repeat ? "repeat-stop" : "repeat"}" title="${doc.repeat ? "Tekrar emrini durdur" : "Abonelik, kira, aidat: her dönem taslak hazırlanır"}">${doc.repeat ? "Tekrarı Durdur" : "Tekrarla"}</button>` : ""}${doc.canDelete ? '<button type="button" class="hof-button hof-button-small hof-button-danger-ghost" data-act="delete">Taslağı Sil</button>' : ""}${doc.status === "issued" ? `<button type="button" class="hof-button hof-button-small hof-button-danger-ghost" data-act="cancel" ${doc.canCancel ? "" : "disabled"} title="${esc(doc.cancelBlock || "Bütün etkileri geri alınır; numara korunur")}">İptal Et</button>` : ""}</span>` : ""}
+        ${doc.canManage ? `<span class="hof-plan-toolgroup">${doc.canEdit ? '<button type="button" class="hof-button hof-button-small" data-act="edit">Düzenle ve Kaydet</button>' : ""}${doc.status === "issued" ? `<button type="button" class="hof-button hof-button-small" data-act="modify" ${doc.canModify ? "" : "disabled"} title="${esc(doc.modifyBlock || "Belgeyi düzeltip yeniden kaydedin; numara değişmez, stok, cari, Kasa ve taksit kayıtları yeni hale göre yazılır")}">Düzenle</button>` : ""}${!ret ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="copy" title="Aynı cari ve kalemlerle yeni belge">Kopyala</button>' : ""}${doc.canRepeat ? `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="${doc.repeat ? "repeat-stop" : "repeat"}" title="${doc.repeat ? "Tekrar emrini durdur" : "Abonelik, kira, aidat: her dönem taslak hazırlanır"}">${doc.repeat ? "Tekrarı Durdur" : "Tekrarla"}</button>` : ""}${doc.status === "draft" || doc.status === "cancelled" || doc.status === "issued" ? `<button type="button" class="hof-button hof-button-small hof-button-danger-ghost" data-act="delete" ${doc.canDelete ? "" : "disabled"} title="${esc(doc.deleteBlock || (doc.status === "draft" ? "Taslağı Silinenler'e gönder" : "Bütün etkileri geri alınır, belge Silinenler'e gider"))}">Sil</button>` : ""}${doc.status === "issued" ? `<button type="button" class="hof-button hof-button-small hof-button-danger-ghost" data-act="cancel" ${doc.canCancel ? "" : "disabled"} title="${esc(doc.cancelBlock || "Bütün etkileri geri alınır; numara korunur")}">İptal Et</button>` : ""}</span>` : ""}
         ${eTools}
       </div>
       ${blocksHtml(doc)}
@@ -1535,17 +1536,7 @@
     if (act === "modify") return doc.canModify ? startForm({ modify: doc }) : HOF.toast(doc.modifyBlock || "Bu belge düzenlenemez.", { type: "error" });
     if (act === "copy") return startForm({ copyOf: doc });
     if (act === "return") return doc.canReturn ? startReturn(doc.id) : null;
-    if (act === "delete") {
-      if (!(await HOF.confirm({ title: "Taslak Silinsin mi?", message: "Taslak deftere işlenmemişti; silinince geri gelmez.", confirmLabel: "Taslağı Sil", danger: true }))) return;
-      try {
-        await HOF.api(`/api/workspace/invoices/${encodeURIComponent(doc.id)}`, { method: "DELETE" });
-        HOF.toast("Taslak silindi.", { type: "success" });
-        HOF.emit("invoices-changed", null);
-        return showList();
-      } catch (error) {
-        return HOF.toastError(error);
-      }
-    }
+    if (act === "delete") return doc.canDelete ? deleteForm(doc) : HOF.toast(doc.deleteBlock || "Bu belge silinemez.", { type: "error" });
     if (act === "cancel") return cancelForm(doc);
     if (act === "pay") return payForm(doc);
     if (act === "offset") return offsetForm(doc);
@@ -1742,6 +1733,53 @@
     }
     HOF.emit("invoices-changed", {});
     loadList();
+  }
+  // v2.0.17 (müşteri): Sil — taslak, kaydedilmiş (etkiler iptaldeki gibi tek işlemde geri alınır) ve iptal edilmiş belge
+  // Silinenler'e gider; Yönetim → Silinenler'den geri yüklenirse etkisiz, "İptal Edildi" olarak döner.
+  const deleteIntro = (status, count = 1) =>
+    status === "draft"
+      ? `${count > 1 ? "Taslaklar" : "Taslak"} deftere işlenmemişti; Silinenler'e gider, oradan geri alınabilir.`
+      : status === "cancelled"
+        ? "Belge zaten iptal edilmişti (etkisiz); listeden kalkar, Silinenler'e gider."
+        : "Bütün etkileri birlikte geri alınır (stok, cari borç/alacak, peşin tahsilat/ödeme ve Kasa, çek/senet, taksit kartı); belge Silinenler'e gider, geri yüklenirse “İptal Edildi” olarak etkisiz döner. Serinin son numarasıysa sayaç geri alınır; aradaysa numarada boşluk kalır.";
+  function deleteForm(doc) {
+    HOF.formModal({
+      title: `${docTitle(doc)} Silinsin mi?`,
+      eyebrow: "SİL",
+      intro: `${deleteIntro(doc.status)} Tutar ${money(doc.tryPayable)}.`,
+      fields: doc.status === "issued" ? [{ name: "reason", label: "Silme Nedeni", maxlength: 300, placeholder: "ör. Yanlış cariye kaydedildi", autofocus: true }] : [],
+      submitLabel: "Sil",
+      onSubmit: async data => {
+        const query = new URLSearchParams({ reason: data.reason || "" });
+        await withStockForce(force => HOF.api(`/api/workspace/invoices/${encodeURIComponent(doc.id)}?${query}${force.force ? "&force=1" : ""}`, { method: "DELETE" }));
+        HOF.toast(`${docTitle(doc)} silindi; Silinenler'den geri alınabilir.`, { type: "success" });
+        HOF.emit("invoices-changed", null);
+        HOF.emit("accounts-changed");
+        HOF.emit("cash-changed");
+        showList();
+      },
+    });
+  }
+  async function bulkDelete() {
+    const docs = (view.list?.invoices || []).filter(doc => view.selected.has(doc.id));
+    if (!docs.length) return;
+    const total = docs.reduce((sum, doc) => sum + (isReturn(doc.kind) ? -1 : 1) * (Number(doc.tryPayable) || 0), 0);
+    const counts = { draft: docs.filter(doc => doc.status === "draft").length, issued: docs.filter(doc => doc.status === "issued").length, cancelled: docs.filter(doc => doc.status === "cancelled").length };
+    HOF.formModal({
+      title: `${docs.length.toLocaleString("tr-TR")} Belge Silinsin mi?`,
+      eyebrow: "TOPLU SİL",
+      intro: `${[counts.issued ? `${counts.issued} kaydedilmiş` : "", counts.cancelled ? `${counts.cancelled} iptal edilmiş` : "", counts.draft ? `${counts.draft} taslak` : ""].filter(Boolean).join(", ")} · toplam ${money(Math.abs(total))}. ${deleteIntro("issued")} İade belgeleri önce silinir. İadesi olan, e-Belgesi gönderilmiş, kilitli dönemdeki ya da taksitinden tahsilat alınmış belge silinmez; nedeni belge belge bildirilir.`,
+      fields: counts.issued ? [{ name: "reason", label: "Silme Nedeni", maxlength: 300, placeholder: "ör. Deneme kayıtları", autofocus: true }] : [],
+      submitLabel: `Seçilenleri Sil (${docs.length})`,
+      onSubmit: async data => {
+        const result = await HOF.api("/api/workspace/invoices/bulk-delete", { method: "POST", body: { ids: docs.map(doc => doc.id), reason: data.reason, force: true } });
+        bulkOutcome(result, "silindi (Silinenler'den geri alınabilir)", "silinemedi");
+        HOF.emit("invoices-changed", {});
+        HOF.emit("accounts-changed");
+        HOF.emit("cash-changed");
+        loadList();
+      },
+    });
   }
   async function bulkCancel() {
     const docs = selectedBy("issued");

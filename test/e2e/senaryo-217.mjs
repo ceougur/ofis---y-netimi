@@ -6,6 +6,8 @@
 //      eksi miktar × maliyet; ANLIK DURUM "Eksi stok: n ürün"; fatura kaleminde kırmızı; raporda "Eksi (−20 Adet)".
 //  10. İade faturası düzenlenir (3 → 5 adet, aynı numara; kalan iade edilebilir kendi iadesi hariç); pasif düğmelerin
 //      nedeni kartta yazılı; satıştan iadede karta iade "POS İadesi".
+//   1. Fatura Sil: kartta Sil (kaydedilmiş belge; etkiler geri alınır), listede Seçilenleri Sil (n) (iptal edilmişler komple),
+//      onay penceresinde sayı/tutar, Silinenler'de (Yönetim → Silinenler → Faturalar).
 //   8. Çek ciro: cari seçici tür kısıtsız (Müşteri türündeki cari bulunur, tür rozeti), "+ Yeni Cari", boş sonuç metni.
 // Çalıştırma: npm run test:senaryo-217 (ekran görüntüleri artifacts/senaryo-217/).
 import fs, { mkdtempSync, rmSync, writeFileSync } from "node:fs";
@@ -281,6 +283,67 @@ try {
     ok(/Düzenle kapalı:.*iade faturası var/.test(blocks) && /İptal Et kapalı:/.test(blocks), `pasif düğmelerin nedeni ekranda (${blocks.slice(0, 140)})`);
     await shot(admin, "pasif-dugme-nedeni");
     await closeAll();
+  });
+
+  await step("1. Fatura Sil: kartta Sil; listede Seçilenleri Sil (n); iptal edilmişler komple silinir; Silinenler'de görünür", async () => {
+    // Müşterinin ekranı: hepsi "İptal Edildi" 3 belge + 1 kaydedilmiş.
+    const made = [];
+    for (let i = 0; i < 3; i += 1) {
+      const doc = await call(admin, "/api/workspace/invoices", { scenario: "goods_sale", accountId: ids.party, issueDate: shift(-2), lines: [{ itemId: ids.item, qty: 1, unitPrice: 50, vatRate: 0 }], payment: { rest: "open" }, force: true });
+      await call(admin, `/api/workspace/invoices/${doc.data.id}/cancel`, { reason: "deneme" });
+      made.push(doc.data.id);
+    }
+    const keep = await call(admin, "/api/workspace/invoices", { scenario: "goods_sale", accountId: ids.party, issueDate: shift(-1), lines: [{ itemId: ids.item, qty: 2, unitPrice: 50, vatRate: 0 }], payment: { rest: "open" }, force: true });
+    ok(made.length === 3 && keep.status === 200, "3 iptal edilmiş + 1 kaydedilmiş satış hazır");
+    const stock0 = await stockQty(ids.item);
+    // Kartta Sil (kaydedilmiş belge): etkiler geri alınır.
+    await admin.evaluate(id => window.HOF.invoices.openDoc(id), keep.data.id);
+    await admin.waitForSelector(`${inv} [data-act="delete"]`, { timeout: 10000 });
+    ok(!(await admin.$eval(`${inv} [data-act="delete"]`, node => node.disabled)) && (await admin.textContent(`${inv} [data-act="delete"]`)).trim() === "Sil", "kaydedilmiş belgenin kartında “Sil” düğmesi aktif");
+    await admin.click(`${inv} [data-act="delete"]`);
+    await admin.waitForSelector(`${modal} input[name="reason"]`, { timeout: 8000 });
+    const intro = (await admin.textContent(`${modal} .hof-modal-text`)).replace(/\s+/g, " ");
+    ok(/Bütün etkileri birlikte geri alınır/.test(intro) && /Silinenler/.test(intro), "silme penceresi etkileri ve Silinenler'i söyler");
+    await shot(admin, "fatura-sil-penceresi");
+    await admin.fill(`${modal} input[name="reason"]`, "yanlış belge");
+    await admin.click(`${modal} form [type="submit"]`);
+    await admin.waitForTimeout(1500);
+    ok((await call(admin, `/api/workspace/invoices/${keep.data.id}`)).status === 404, "belge listeden kalktı (404)");
+    ok((await stockQty(ids.item)) === stock0 + 2, "silinen satışın 2 adedi stoğa geri döndü");
+    // Listede toplu: Tümü sekmesinde iptal edilmişleri seç → Seçilenleri Sil (3).
+    await admin.waitForSelector(`${inv} [data-tab="all"]`, { timeout: 8000 });
+    await admin.click(`${inv} [data-tab="all"]`);
+    await admin.waitForTimeout(800);
+    for (const id of made) {
+      await admin.waitForSelector(`${inv} input[data-sel="${id}"]`, { timeout: 8000 });
+      await admin.check(`${inv} input[data-sel="${id}"]`);
+    }
+    await admin.waitForSelector(`${inv} [data-act="bulk-delete"]`, { timeout: 8000 });
+    const label = (await admin.textContent(`${inv} [data-act="bulk-delete"]`)).trim();
+    ok(/Seçilenleri Sil \(3\)/.test(label), `seçim çubuğunda “${label}”`);
+    await shot(admin, "secilenleri-sil");
+    await admin.click(`${inv} [data-act="bulk-delete"]`);
+    await admin.waitForSelector(`${modal} form [type="submit"]`, { timeout: 8000 });
+    const bulkIntro = (await admin.textContent(`${modal} .hof-modal-text`)).replace(/\s+/g, " ");
+    ok(/3 iptal edilmiş/.test(bulkIntro) && /toplam ₺?150,00/.test(bulkIntro), `onay penceresinde sayı ve tutar (${bulkIntro.slice(0, 80)})`);
+    await admin.click(`${modal} form [type="submit"]`);
+    await admin.waitForTimeout(1500);
+    const left = (await call(admin, "/api/workspace/invoices?tab=all&limit=100")).data.invoices.filter(doc => made.includes(doc.id));
+    ok(left.length === 0, "iptal edilmiş 3 belge komple silindi");
+    const trash = (await call(admin, "/api/admin/trash")).data.filter(item => item.kind === "invoice");
+    ok(trash.length >= 4 && trash.every(item => /Satış Faturası/.test(item.title)), `Silinenler'de ${trash.length} fatura (geri yüklenebilir)`);
+    await closeAll();
+    // Yönetim → Silinenler → Faturalar süzgeci.
+    await admin.goto(`${BASE}/admin.html#trash`, { waitUntil: "load" });
+    await admin.click('.adm-tabs [data-tab="trash"]').catch(() => null);
+    await admin.waitForSelector("#adm-trash tr[data-id]", { timeout: 10000 });
+    await admin.selectOption("#adm-trash-kind", "invoice");
+    await admin.waitForTimeout(500);
+    const rows = await admin.$$eval("#adm-trash tr[data-id]", nodes => nodes.map(node => node.textContent.replace(/\s+/g, " ")));
+    ok(rows.length >= 4 && rows.every(row => /Fatura/.test(row)), `Yönetim → Silinenler → Faturalar: ${rows.length} satır`);
+    await shot(admin, "yonetim-silinenler-faturalar");
+    await admin.goto(`${BASE}/`, { waitUntil: "load" });
+    await admin.waitForSelector("#hof-sidecard [data-action=invoices]", { timeout: 20000 });
   });
 
   await step("8. Çek ciro: yalnız Müşteri türünde carisi olan veride ciro seçicisi cariyi bulur; + Yeni Cari; ciro sonrası durum", async () => {

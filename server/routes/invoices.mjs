@@ -86,7 +86,7 @@ const moneyText = (value, currency = "TRY") => `${new Intl.NumberFormat("tr-TR",
 const c2 = value => roundMoney((Number(value) || 0) / 100);
 const toCents = value => Math.round((Number(value) || 0) * 100);
 
-export function registerInvoiceRoutes(router, { store, auth, audit, events, config = {}, period = null, cash = null, accounts = () => null, stock = () => null, plans = () => null, cheques = () => null }) {
+export function registerInvoiceRoutes(router, { store, auth, audit, events, config = {}, period = null, cash = null, trash = null, accounts = () => null, stock = () => null, plans = () => null, cheques = () => null }) {
   // e-Belge bağlantısı kapalıyken (varsayılan; program sahibi açana kadar) her belge kâğıt/bilgi fişidir: e-Fatura,
   // e-Arşiv, XML ve entegratör uçları çalışmaz, ekranda görünmez.
   const edocEnabled = config.edocEnabled === true;
@@ -543,7 +543,9 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, conf
       canModify: manage && row.status === "issued" && !modifyBlock(row, activeReturns, plan),
       modifyBlock: row.status === "issued" ? modifyBlock(row, activeReturns, plan) : "",
       canIssue: manage && row.status === "draft",
-      canDelete: manage && row.status === "draft",
+      // v2.0.17 (müşteri): her belge silinebilir — taslak, kaydedilmiş (etkiler iptaldeki gibi geri alınır), iptal edilmiş.
+      canDelete: manage && !deleteBlock(row, activeReturns, plan),
+      deleteBlock: manage ? deleteBlock(row, activeReturns, plan) : "",
       canCancel: manage && row.status === "issued" && activeReturns === 0,
       cancelBlock: row.status === "issued" && activeReturns ? `Bu faturanın ${activeReturns} iade faturası var; önce iadeleri iptal edin.` : "",
       canReturn: manage && row.status === "issued" && !kind?.return && row.kind !== "smm" && returnable.some(item => item.left > 0),
@@ -1778,19 +1780,120 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, conf
     }
     ok(res, { results, cancelled: results.filter(item => item.ok).length, failed: results.filter(item => !item.ok).length });
   });
-  router.delete("/api/workspace/invoices/:id", async ({ req, res, params }) => {
-    const user = requireManage(req);
-    const existing = invoiceRow(params.id);
-    if (existing.status !== "draft") throw new HttpError(409, "Kaydedilmiş fatura silinmez; düzenleyin ya da iptal edin.", { code: "invoice-not-draft" });
-    store.tx(() => {
-      store.run("DELETE FROM invoice_lines WHERE invoice_id = ?", existing.id);
-      store.run("DELETE FROM invoices WHERE id = ? AND status = 'draft'", existing.id);
-      // Gelen e-Faturadan açılan taslak silinirse belge yeniden "Yeni" olur (tekrar alınabilir).
-      store.run("UPDATE einvoice_inbox SET state = 'new', invoice_id = '', updated_at = ? WHERE invoice_id = ?", now(), existing.id);
-      audit(user, "invoice.draft.deleted", existing.id, { kind: existing.kind, accountId: existing.accountId, payable: existing.payableTotal });
+  // ---------- Silme (v2.0.17, müşteri: "tümünü seçip komple sil; kartta Sil") ----------
+  // Taslak: deftere girmemişti, doğrudan Silinenler'e. Kaydedilmiş: önce iptal (bütün etkiler tek işlemde geri alınır:
+  // stok, cari, Kasa, taksit, çek/senet; mutabakat kapısı), sonra Silinenler'e. İptal edilmiş: Silinenler'e. Belge
+  // satırlarıyla birlikte Silinenler'de saklanır; geri yüklenirse etkisiz, "İptal Edildi" olarak döner. Numara: silinen
+  // belge serinin son numarasıysa sayaç kendiliğinden geri gelir (MAX(seq)); aradaysa boşluk kalır.
+  function deleteBlock(row, activeReturns = 0, plan = null) {
+    if (row.status === "draft") return "";
+    const lock = period?.lockedUntil?.();
+    if (lock && row.issueDate <= lock) return `Belge ${dayText(row.issueDate)} tarihli; ${dayText(lock)} ve öncesi kilitli dönem. Silmek için dönem kilidi açılmalı.`;
+    if (row.status === "cancelled") return "";
+    if (activeReturns) return `Bu faturanın ${activeReturns} iade faturası var; önce iade faturalarını silin ya da iptal edin.`;
+    if (["sent", "accepted"].includes(row.eStatus)) return `Bu belge e-Belge olarak ${(E_STATES[row.eStatus] || "gönderildi").toLocaleLowerCase("tr-TR")}; silinmez. Önce entegratör tarafında iptal edin.`;
+    const planId = plan?.id || row.planId;
+    if (planId && store.get("SELECT COUNT(*) AS n FROM plan_entries WHERE plan_id = ?", planId).n) return "Faturanın taksit kartında tahsilat var; silinmez. Önce tahsilatları silin ya da iade faturası kaydedin.";
+    return "";
+  }
+  function deleteInvoice(user, id, { reason = "", force = {} } = {}) {
+    const row = store.tx(() => {
+      let invoice = invoiceRow(id);
+      const activeReturns = store.get("SELECT COUNT(*) AS n FROM invoices WHERE original_id = ? AND status = 'issued'", invoice.id).n;
+      const block = deleteBlock(invoice, activeReturns);
+      if (block) throw new HttpError(409, block, { code: "invoice-locked" });
+      if (invoice.status === "issued") {
+        // Etkiler iptaldeki gibi geri alınır (çeki işlem görmüş, taksitinden tahsilat alınmış belge burada 409 verir).
+        cancel(user, invoice.id, { reason: reason || "Silindi", force });
+        invoice = invoiceRow(id);
+      }
+      const raw = store.get("SELECT * FROM invoices WHERE id = ?", invoice.id);
+      const lines = store.all("SELECT * FROM invoice_lines WHERE invoice_id = ? ORDER BY seq", invoice.id);
+      trash?.add({
+        kind: "invoice",
+        ref: invoice.id,
+        title: `${INVOICE_KINDS[invoice.kind]?.label || "Fatura"} ${displayNo(invoice) || ""}`.trim(),
+        detail: [parseJson(invoice.partyJson, {}).name || invoice.accountName, tl(invoice.tryPayable), dayText(invoice.issueDate)].filter(Boolean).join(" · "),
+        payload: { invoice: raw, lines, wasStatus: invoice.status, reason: limited(reason, 300, "Silme nedeni") },
+        user,
+      });
+      store.run("DELETE FROM invoice_lines WHERE invoice_id = ?", invoice.id);
+      store.run("DELETE FROM invoices WHERE id = ?", invoice.id);
+      // Gelen e-Faturadan açılan belge silinirse kutudaki belge yeniden "Yeni" olur (tekrar alınabilir).
+      store.run("UPDATE einvoice_inbox SET state = 'new', invoice_id = '', updated_at = ? WHERE invoice_id = ?", now(), invoice.id);
+      store.run("UPDATE invoice_repeats SET active = 0, updated_at = ? WHERE template_id = ? AND active = 1", now(), invoice.id);
+      audit(user, invoice.status === "draft" ? "invoice.draft.deleted" : "invoice.deleted", invoice.id, { number: invoice.number, kind: invoice.kind, accountId: invoice.accountId, payable: invoice.tryPayable, wasStatus: invoice.status, reason });
+      return invoice;
     });
-    publish(user, { kind: "invoices", invoiceId: existing.id });
-    ok(res, { id: existing.id });
+    publish(user, { kind: "invoices", invoiceId: row.id, accountId: row.accountId });
+    return row;
+  }
+  // Silinenler'den geri yükleme: belge satırlarıyla geri gelir; kaydedilmiş belge iptal edilerek silindiğinden "İptal
+  // Edildi" olarak döner (etkisiz). Numarası bu arada başka belgeye verildiyse numara metni kalır, sıra numarası düşer.
+  function restoreDeleted(user, item, payload) {
+    const raw = payload?.invoice;
+    if (!raw?.id) throw new HttpError(409, "Belgenin bilgisi eksik; geri yüklenemez.");
+    if (store.get("SELECT 1 AS found FROM invoices WHERE id = ?", raw.id)) throw new HttpError(409, "Bu belge zaten geri yüklenmiş.");
+    if (raw.account_id && accounts()?.exists && !accounts().exists(raw.account_id)) throw new HttpError(409, "Belgenin carisi silinmiş. Önce cariyi geri yükleyin.");
+    const row = { ...raw };
+    let renumbered = false;
+    if (row.status === "issued") {
+      row.status = "cancelled";
+      row.cancelled_by = user.id;
+      row.cancelled_at = now();
+      row.cancel_reason = row.cancel_reason || "Silinmişti; geri yüklendi (etkisiz)";
+    }
+    if (Number(row.seq) > 0 && store.get("SELECT 1 AS found FROM invoices WHERE series = ? AND year = ? AND seq = ?", row.series, row.year, row.seq)) {
+      row.seq = 0;
+      renumbered = true;
+    }
+    if (row.ettn && store.get("SELECT 1 AS found FROM invoices WHERE ettn = ?", row.ettn)) row.ettn = randomUUID();
+    row.updated_by = user.id;
+    row.updated_at = now();
+    store.tx(() => {
+      store.run(`INSERT INTO invoices (${Object.keys(row).join(", ")}) VALUES (${Object.keys(row).map(() => "?").join(", ")})`, ...Object.values(row));
+      for (const line of payload.lines || []) store.run(`INSERT INTO invoice_lines (${Object.keys(line).join(", ")}) VALUES (${Object.keys(line).map(() => "?").join(", ")})`, ...Object.values(line));
+      trash?.markRestored(item.id, user);
+      audit(user, "invoice.restored", row.id, { number: row.number, kind: row.kind, status: row.status, renumbered });
+    });
+    publish(user, { kind: "invoices", invoiceId: row.id, accountId: row.account_id });
+    return `${INVOICE_KINDS[row.kind]?.label || "Belge"} ${row.number || ""} geri geldi (${row.status === "draft" ? "taslak" : "iptal edilmiş, etkisiz"}${renumbered ? "; numarası bu arada başka belgeye verildiği için sıra numarası düştü" : ""}).`;
+  }
+  router.delete("/api/workspace/invoices/:id", async ({ req, res, params, url }) => {
+    const user = requireManage(req);
+    const row = deleteInvoice(user, params.id, { reason: text(url.searchParams.get("reason")).slice(0, 300), force: { stock: url.searchParams.get("force") === "1", cash: url.searchParams.get("cashForce") === "1" } });
+    ok(res, { id: row.id, number: row.number, status: row.status });
+  });
+  // Toplu silme: iade belgeleri önce (yeni tarihli önce), sonra öbürleri yeni tarihliden eskiye (serinin son numarası
+  // silinince sayaç geri gelir). Her belge kendi işleminde; sonuç belge belge.
+  router.post("/api/workspace/invoices/bulk-delete", async ({ req, res }) => {
+    const user = requireManage(req);
+    const body = await readJson(req);
+    const ids = bulkIds(body);
+    if (!ids.length) fail400("Silinecek belge seçilmedi.", "ids");
+    const rows = ids.map(id => {
+      try {
+        return invoiceRow(id);
+      } catch (error) {
+        return { id, missing: error };
+      }
+    });
+    const stamp = row => `${row.issueDate || ""} ${row.issueTime || ""} ${row.createdAt || ""}`;
+    rows.sort((a, b) => Number(Boolean(INVOICE_KINDS[b.kind]?.return)) - Number(Boolean(INVOICE_KINDS[a.kind]?.return)) || stamp(b).localeCompare(stamp(a)));
+    const results = [];
+    for (const row of rows) {
+      if (row.missing) {
+        results.push({ id: row.id, ...bulkError(row.missing) });
+        continue;
+      }
+      try {
+        const doc = deleteInvoice(user, row.id, { reason: limited(body.reason, 300, "Silme nedeni"), force: forceOf(body) });
+        results.push({ id: row.id, ok: true, number: doc.number, displayNo: displayNo(doc), accountName: parseJson(doc.partyJson, {}).name || doc.accountName, amount: doc.tryPayable });
+      } catch (error) {
+        results.push({ id: row.id, number: row.number, displayNo: displayNo(row), accountName: parseJson(row.partyJson, {}).name || row.accountName, ...bulkError(error) });
+      }
+    }
+    ok(res, { results, deleted: results.filter(item => item.ok).length, failed: results.filter(item => !item.ok).length });
   });
   async function cancelInvoice(user, id, body) {
     const options = { reason: text(body.reason), force: forceOf(body), confirmExternal: body.confirmExternal === true };
@@ -2448,5 +2551,5 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, conf
     return `${row.f}|${entries.f}`;
   };
   const countForAccount = accountId => store.get("SELECT COUNT(*) AS n FROM invoices WHERE account_id = ? AND status <> 'cancelled'", accountId).n;
-  return { cashEntries, cashSource, openItems, dueItems, fingerprint, countForAccount, list, detail, settings, paymentStates, lastPrices, returnable, cancel };
+  return { cashEntries, cashSource, openItems, dueItems, fingerprint, countForAccount, list, detail, settings, paymentStates, lastPrices, returnable, cancel, deleteInvoice, restoreDeleted };
 }

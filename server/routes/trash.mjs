@@ -24,10 +24,11 @@ const KIND_LABELS = {
   stock: "Stok ürünü",
   "stock-move": "Stok hareketi",
   cheque: "Çek / senet",
+  invoice: "Fatura",
 };
 const SEQUENCE = /^(sıra|sira|sıra no|no|#|sn|s\.?\s?no|nr)$/i;
 
-export function registerTrashRoutes(router, { store, auth, audit, events, dataset, profile, free, trash, documents, accounts = null, stock = null, cheques = null }) {
+export function registerTrashRoutes(router, { store, auth, audit, events, dataset, profile, free, trash, documents, accounts = null, stock = null, cheques = null, invoices = null }) {
   const now = () => new Date().toISOString();
   const publish = (user, detail) => events?.publish("workspace.changed", { actorId: user.id, actorName: user.display_name, ...detail }, { except: user.id });
   const sessionNames = () => {
@@ -167,7 +168,7 @@ export function registerTrashRoutes(router, { store, auth, audit, events, datase
         deletedAt: item.deleted_at,
         actorName: item.actor_name,
         restorable: true,
-        note: item.kind === "free-row" || item.kind === "free-column" ? "Eski sırasına araya eklenir; o arada eklenenler kayar, üzerine yazılmaz." : item.kind === "stock-move" ? "Aynı miktar ve tarihle geri eklenir; mevcut stok yeniden hesaplanır." : "Aynı tutar ve tarihle geri eklenir; Kasa yeniden hesaplanır.",
+        note: item.kind === "invoice" ? (payload.wasStatus === "draft" ? "Taslak olarak Fatura listesine geri döner." : "Etkisiz, “İptal Edildi” olarak Fatura listesine geri döner (stok, cari, Kasa değişmez).") : item.kind === "free-row" || item.kind === "free-column" ? "Eski sırasına araya eklenir; o arada eklenenler kayar, üzerine yazılmaz." : item.kind === "stock-move" ? "Aynı miktar ve tarihle geri eklenir; mevcut stok yeniden hesaplanır." : "Aynı tutar ve tarihle geri eklenir; Kasa yeniden hesaplanır.",
       });
     }
     items.sort((a, b) => (a.deletedAt < b.deletedAt ? 1 : -1));
@@ -347,6 +348,9 @@ export function registerTrashRoutes(router, { store, auth, audit, events, datase
       message = accounts.restoreEntry(user, item, payload);
     } else if (item.kind === "stock-move" && stock?.restoreMove) {
       message = stock.restoreMove(user, item, payload);
+    } else if (item.kind === "invoice" && invoices?.restoreDeleted) {
+      // v2.0.17: silinen fatura satırlarıyla geri gelir; kaydedilmiş belge "İptal Edildi" olarak (etkisiz) döner.
+      message = invoices.restoreDeleted(user, item, payload);
     } else if (item.kind === "free-row" || item.kind === "free-column") {
       const sheet = store.get("SELECT deleted_at FROM free_sheets WHERE id = ?", payload.sheetId);
       if (!sheet) throw new HttpError(409, "Satırın sayfası artık yok; geri yüklenemez.");

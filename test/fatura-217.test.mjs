@@ -283,3 +283,89 @@ describe("Madde 10: iade faturası düzenlenir; sınırlar; POS İadesi; pasif d
     assert.match(done.returnBlock, /tamamı iade edildi/);
   });
 });
+
+describe("Madde 1: fatura Sil — kartta ve toplu; etkiler geri alınır; Silinenler'e gider; numara sayacı", () => {
+  let server;
+  let api;
+  let raw;
+  const ids = {};
+  before(async () => {
+    server = await startTestServer();
+    raw = await loginAdmin(server);
+    api = apiOf(raw);
+    ids.customer = (await api.post("/api/workspace/accounts", { name: "Silme Müşterisi", type: "customer" })).data.id;
+    ids.item = (await api.post("/api/workspace/stock", { name: "Silgi", code: "SLG-1", unit: "Adet", salePrice: 10 })).data.id;
+    await api.post("/api/workspace/cash", { kind: "in", amount: 5000, date: shift(-10), description: "Açılış" });
+    await api.post(`/api/workspace/stock/${ids.item}/moves`, { kind: "in", qty: "100", unitPrice: "5", pay: "none", date: shift(-9) });
+  });
+  after(async () => server.close());
+  const stockQty = async () => Number((await api.get(`/api/workspace/stock/${ids.item}`)).data.qty);
+  const balance = async () => (await api.get(`/api/workspace/accounts/${ids.customer}`)).data.totals.balance;
+  const cashBalance = async () => (await api.get("/api/workspace/cash")).data.totals.balance;
+  const trashList = async () => (await raw.get("/api/admin/trash")).data.data;
+
+  test("kaydedilmiş satış silinir: stok, cari, Kasa eski hâline döner; belge listeden kalkar, Silinenler'de; sayaç geri gelir", async () => {
+    const before = { stock: await stockQty(), balance: await balance(), cash: await cashBalance() };
+    const sale = await api.post("/api/workspace/invoices", { scenario: "goods_sale", accountId: ids.customer, issueDate: shift(-3), lines: [{ itemId: ids.item, qty: 10, unitPrice: 10, vatRate: 0 }], payment: { cash: [{ amount: 40, method: "cash" }], rest: "open" } });
+    assert.equal(sale.status, 200, JSON.stringify(sale.data));
+    assert.equal(sale.data.canDelete, true, sale.data.deleteBlock);
+    const removed = await api.del(`/api/workspace/invoices/${sale.data.id}?reason=deneme`);
+    assert.equal(removed.status, 200, JSON.stringify(removed.data));
+    assert.equal((await api.get(`/api/workspace/invoices/${sale.data.id}`)).status, 404);
+    assert.deepEqual([await stockQty(), await balance(), await cashBalance()], [before.stock, before.balance, before.cash]);
+    // Serinin son numarasıydı: sayaç geri geldi — sıradaki belge aynı numarayı alır.
+    const again = await api.post("/api/workspace/invoices", { scenario: "goods_sale", accountId: ids.customer, issueDate: shift(-3), lines: [{ itemId: ids.item, qty: 1, unitPrice: 10, vatRate: 0 }], payment: { rest: "open" } });
+    assert.equal(again.data.number, sale.data.number, "sayaç geri geldi");
+    assert.equal((await api.del(`/api/workspace/invoices/${again.data.id}`)).status, 200);
+    // Silinenler listesi yeniden eskiye sıralı: ilk silinen (sale) en sonda.
+    const entries = (await trashList()).filter(entry => entry.kind === "invoice");
+    assert.equal(entries.length, 2, "iki silinen belge Silinenler'de");
+    assert.match(entries.at(-1).title, /Satış Faturası/);
+    ids.trashId = entries.at(-1).id;
+    ids.deleted = sale.data.id;
+  });
+  test("Silinenler'den geri yükle: belge 'İptal Edildi' olarak döner, etkisiz (stok/cari/Kasa aynı)", async () => {
+    const before = { stock: await stockQty(), balance: await balance(), cash: await cashBalance() };
+    const restored = await raw.post("/api/admin/trash/restore", { id: ids.trashId });
+    assert.equal(restored.status, 200, JSON.stringify(restored.data));
+    const doc = (await api.get(`/api/workspace/invoices/${ids.deleted}`)).data;
+    assert.equal(doc.status, "cancelled");
+    assert.equal(doc.lines.length, 1);
+    assert.deepEqual([await stockQty(), await balance(), await cashBalance()], [before.stock, before.balance, before.cash]);
+    // İptal edilmiş belge de silinir.
+    assert.equal((await api.del(`/api/workspace/invoices/${ids.deleted}`)).status, 200);
+  });
+  test("engeller: iadesi olan fatura silinmez (409, nedeni deleteBlock); taslak silinir; aradaki numara boşluk kalır", async () => {
+    const a = await api.post("/api/workspace/invoices", { scenario: "goods_sale", accountId: ids.customer, issueDate: shift(-2), lines: [{ itemId: ids.item, qty: 2, unitPrice: 10, vatRate: 0 }], payment: { rest: "open" } });
+    const b = await api.post("/api/workspace/invoices", { scenario: "goods_sale", accountId: ids.customer, issueDate: shift(-1), lines: [{ itemId: ids.item, qty: 3, unitPrice: 10, vatRate: 0 }], payment: { rest: "open" } });
+    const ret = await api.post("/api/workspace/invoices", { kind: "sale_return", originalId: a.data.id, issueDate: shift(0), lines: [{ originLineId: a.data.lines[0].id, qty: 1 }], payment: {} });
+    assert.equal(ret.status, 200, JSON.stringify(ret.data));
+    const card = (await api.get(`/api/workspace/invoices/${a.data.id}`)).data;
+    assert.equal(card.canDelete, false);
+    assert.match(card.deleteBlock, /iade faturası var/);
+    assert.equal((await api.del(`/api/workspace/invoices/${a.data.id}`)).status, 409);
+    const draft = await api.post("/api/workspace/invoices", { scenario: "goods_sale", status: "draft", accountId: ids.customer, issueDate: shift(0), lines: [{ itemId: ids.item, qty: 1, unitPrice: 10, vatRate: 0 }], payment: { rest: "open" } });
+    assert.equal((await api.del(`/api/workspace/invoices/${draft.data.id}`)).status, 200);
+    ids.a = a.data.id;
+    ids.b = b.data.id;
+    ids.ret = ret.data.id;
+  });
+  test("toplu silme: iade önce; sonuç belge belge; başarısızın nedeni; sayılar eski hâline döner", async () => {
+    const before = { stock: await stockQty(), balance: await balance() };
+    const locked = await api.post("/api/workspace/invoices", { scenario: "goods_sale", accountId: ids.customer, issueDate: shift(0), lines: [{ itemId: ids.item, qty: 1, unitPrice: 10, vatRate: 0 }], payment: { rest: "installments", installments: { count: 2, firstDue: shift(30), everyMonths: 1 } } });
+    const plan = (await api.get(`/api/workspace/invoices/${locked.data.id}`)).data.plan;
+    assert.ok(plan?.id, "taksitli fatura");
+    const paid = await api.post(`/api/workspace/plans/${plan.id}/entries`, { kind: "in", amount: 5, date: shift(0), method: "cash" });
+    assert.equal(paid.status, 200, JSON.stringify(paid.data));
+    const result = await api.post("/api/workspace/invoices/bulk-delete", { ids: [ids.a, ids.b, ids.ret, locked.data.id], reason: "toplu" });
+    assert.equal(result.status, 200, JSON.stringify(result.data));
+    assert.deepEqual(result.data.results.map(item => item.id).slice(0, 1), [ids.ret], "iade belgesi önce silinir");
+    assert.equal(result.data.deleted, 3);
+    const failed = result.data.results.find(item => !item.ok);
+    assert.equal(failed.id, locked.data.id);
+    assert.match(failed.message, /taksit kartında tahsilat var/);
+    // a (2 çıkış), b (3 çıkış), iade (1 giriş) geri alındı: +2 +3 −1; taksitli faturanın 1 adedi çıkmış kalır: −1.
+    assert.equal(await stockQty(), before.stock + 2 + 3 - 1 - 1, "silinen belgelerin stok etkisi geri alındı; silinemeyeninki kaldı");
+    assert.equal((await trashList()).filter(item => item.kind === "invoice").length >= 4, true);
+  });
+});
