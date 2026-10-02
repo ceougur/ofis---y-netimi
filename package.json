@@ -21,6 +21,7 @@
     "test:senaryo-213": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-213.mjs",
     "test:senaryo-214": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-214.mjs",
     "test:senaryo-215": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-215.mjs",
+    "test:senaryo-216": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-216.mjs",
     "test:senaryo-whatsapp": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-whatsapp.mjs",
     "test:mutabakat": "node --disable-warning=ExperimentalWarning test/mutabakat/kos.mjs",
     "mutabakat": "node --disable-warning=ExperimentalWarning tools/mutabakat.mjs",

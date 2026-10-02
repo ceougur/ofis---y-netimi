@@ -906,7 +906,8 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, conf
         originLineId: "",
         itemId: stockItem?.id || "",
         goods,
-        code: limited(item.code || stockItem?.code || "", 60, "Kod"),
+        // Stoklu kalemde Stok Kodu kartın kodudur (yazılan "fk-a4" değil kayıtlı "FK-A4"); stoksuzda yazılan.
+        code: limited(stockItem ? stockItem.code || item.code || "" : item.code || "", 60, "Stok Kodu"),
         name,
         description: limited(item.description, 300, "Açıklama"),
         unit: unitLabel(limited(item.unit || stockItem?.unit || "Adet", 20, "Birim")),
@@ -2069,7 +2070,7 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, conf
     }
     const buffer = buildXlsx([
       { name: "Faturalar", columns, rows },
-      { name: "Kalemler", columns: ["Fatura No", "Tarih", "Cari", "Kod", "Kalem", "Miktar", "Birim", "Birim Fiyat", "İskonto %", "Matrah", "KDV %", "KDV", "Tevkifat", "Toplam"], rows: lineRows },
+      { name: "Kalemler", columns: ["Fatura No", "Tarih", "Cari", "Stok Kodu", "Kalem", "Miktar", "Birim", "Birim Fiyat", "İskonto %", "Matrah", "KDV %", "KDV", "Tevkifat", "Toplam"], rows: lineRows },
     ], { title: "Faturalar" });
     audit(user, "invoice.exported", "xlsx", { count: rows.length });
     sendBuffer(res, buffer, { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", name: "Faturalar.xlsx", inline: false });

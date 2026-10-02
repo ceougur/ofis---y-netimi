@@ -619,7 +619,7 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
         const total = list.reduce((acc, row) => ({ net: acc.net + row.net, cost: acc.cost + row.cost }), { net: 0, cost: 0 });
         return {
           subtitle: `${rangeText(range)} · maliyet: satış anında ürün kartındaki son alış fiyatı (hizmette maliyet yok)`,
-          headers: ["Kod", "Ürün / Hizmet", "Net Miktar", "Birim", "Net Satış", "Maliyet", "Brüt Kâr", "Kâr %"],
+          headers: ["Stok Kodu", "Ürün / Hizmet", "Net Miktar", "Birim", "Net Satış", "Maliyet", "Brüt Kâr", "Kâr %"],
           types: ["", "", "number", "", "money", "money", "money", ""],
           rows: list.map(row => [row.code || "", row.name, qty(row.qty), row.unit, money(roundMoney(row.net)), row.goods ? money(roundMoney(row.cost)) : "", row.goods ? money(roundMoney(row.net - row.cost)) : "", row.goods ? percent(row.net - row.cost, row.net) : ""]),
           summary: [["Net Satış", money(roundMoney(total.net))], ["Maliyet", money(roundMoney(total.cost))], ["Brüt Kâr", money(roundMoney(total.net - total.cost))]],
@@ -942,7 +942,7 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
         const data = stock().list(admin, { state: ["low", "out", "product", "service"].includes(query.state) ? query.state : "all", category: limited(query.category, 80, "Kategori"), sort: "name" });
         return {
           subtitle: [{ low: "Kritik seviyedekiler", out: "Tükenenler", product: "Ürünler", service: "Hizmetler" }[query.state] || "Tüm kalemler", query.category || ""].filter(Boolean).join(" · "),
-          headers: ["Kod", "Kalem", "Tür", "Kategori", "Mevcut", "Birim", "Kritik Seviye", "Birim Fiyat", "Değer", "Durum"],
+          headers: ["Stok Kodu", "Kalem", "Tür", "Kategori", "Mevcut", "Birim", "Kritik Seviye", "Birim Fiyat", "Değer", "Durum"],
           types: ["", "", "", "", "number", "", "number", "money", "money", ""],
           rows: data.items.map(item => [item.code, item.name, item.kind === "service" ? "Hizmet" : "Ürün", item.category, item.kind === "service" ? "" : qty(item.qty), item.unit, item.minQty ? qty(item.minQty) : "", money(item.unitPrice), item.kind === "service" ? "" : money(item.value), item.kind === "service" ? "Hizmet" : item.qty <= 0 ? "Tükendi" : item.low ? "Kritik" : ""]),
           summary: [["Kalem", String(data.totals.count)], ["Kritik", String(data.totals.low)], ["Tükenen", String(data.totals.out)], ["Stok Değeri", money(data.totals.value)]],
@@ -969,7 +969,7 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
         for (const row of list) total[row.kind] = roundMoney(total[row.kind] + row.amount);
         return {
           subtitle: rangeText(range),
-          headers: ["Tarih", "Kod", "Kalem", "Hareket", "Miktar", "Birim", "Birim Fiyat", "Tutar", "Para", "Cari", "Açıklama", "Giren"],
+          headers: ["Tarih", "Stok Kodu", "Kalem", "Hareket", "Miktar", "Birim", "Birim Fiyat", "Tutar", "Para", "Cari", "Açıklama", "Giren"],
           types: ["", "", "", "", "number", "", "money", "money", "", "", "", ""],
           rows: list.map(row => [dayText(row.date), row.code, row.name, row.reason === "return" ? "Satış İadesi" : row.reason === "preturn" ? "Alıştan İade" : row.kind === "in" ? "Giriş" : "Çıkış", qty(row.qty), row.unit, money(row.unitPrice), row.amount ? money(row.amount) : "", pay[row.pay] || row.pay, row.accountName, row.note, row.actorName]),
           summary: [["Hareket", String(list.length)], ["Giriş Tutarı", money(total.in)], ["Çıkış Tutarı", money(total.out)]],
@@ -1010,7 +1010,7 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
         }
         return {
           subtitle: [rangeText(range), category || "Tüm kategoriler"].join(" · "),
-          headers: ["Kod", "Ürün", "Kategori", "Birim", "Dönem Başı", "Giriş", "Çıkış", "Dönem Sonu", "Birim Fiyat", "Dönem Sonu Değer"],
+          headers: ["Stok Kodu", "Ürün", "Kategori", "Birim", "Dönem Başı", "Giriş", "Çıkış", "Dönem Sonu", "Birim Fiyat", "Dönem Sonu Değer"],
           types: ["", "", "", "", "number", "number", "number", "number", "money", "money"],
           rows: out,
           summary: [["Ürün", String(out.length)], ["Dönem Sonu Değer", money(value)]],
