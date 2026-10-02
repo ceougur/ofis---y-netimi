@@ -115,8 +115,11 @@ Bağlam kopsa da bu düzen değişmez. Kullanıcı "zip ver" dediğinde şu üç
   denince eksiye düşer; bazı firmalar gerçek stok tutmaz; BÖYLE KALSIN, değiştirilmez.
   Güncelleyici denetimi notu: Node'un fetch'i vekil sunucuyu `NODE_USE_ENV_PROXY=1` ile kullanır (yoksa GitHub istek
   sınırı); `createUpdater({ nodeVersion: "24.21.0", bootstrapVersion: 2 })` — kurulu programın değerleri.
-- 2.0.17 müşteri istekleri (02.10.2026'dan; kullanıcı tek tek yazar, "yap" deyince HEPSİ TOPLU yapılır; o ana kadar
-  yalnız buraya yazılır; kök neden koddan, uzman UI/UX + baş mimar/mühendis gözüyle; her madde test + kanıt):
+- 2.0.17 müşteri istekleri (02.10.2026'dan; kullanıcı "yap" dedi 02.10.2026; HEPSİ YAPILDI, dal `claude/nice-euler-jvajxv`,
+  kanıt `docs/2.0.17-KANIT.md`, CHANGELOG → 2.0.17; madde 14 yalnız kılavuz notu; PR/paket/yayın kullanıcı onayıyla):
+  DURUM: m9+m11 8000a70 · m5 13cc966 · m8 14295cf · m7 4e57d29 · m10 a7b8df2 · m1 481f43a · m4 1a11cee · m2+m3+m6+m12+m13
+  çoklu şirket commit'i (hub + `sirketler/<kod>/`, sol üst şirket seçici, ortada sayfa şeridi, Yönetim → Şirketler,
+  zil/takvim bütün sayfalar). Mimari: `docs/MIMARI.md` → "2.0.17 eklemeleri".
   1. Fatura listesinde SİLME yok (ekran: 10 belge, hepsi "İptal Edildi", Tümü seçili; seçim çubuğunda yalnız PDF/Excel/
      Temizle). Müşteri: tümünü seçip iptal eder gibi KOMPLE SİL; faturanın içinde (kartta) da "Sil" düğmesi.
      Koddan durum: `DELETE /api/workspace/invoices/:id` yalnız taslağı siler ("Kaydedilmiş fatura silinmez; düzenleyin

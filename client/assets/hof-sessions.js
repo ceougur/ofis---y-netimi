@@ -1,25 +1,25 @@
-/* DestekOfis — veri oturumları (v2.0.1).
- * Farklı konudaki her Excel/Sheet ayrı bir oturumda açılabilir; veriler, düzeltmeler ve yeni kayıtlar birbirine
- * karışmaz. Sol menüdeki oturum seçiciyle herkes kendi çalışacağı oturumu seçer (seçim kişiye özeldir ve sunucuda
- * saklanır; başka bilgisayarlardaki ekranları değiştirmez). Veri yöneticisi (sources.manage) oturumun adını
- * seçicideki kalemle ya da Ayarlar → Veri → Oturumlar'dan değiştirir, yeni oturum açar ve oturumu siler. */
+/* DestekOfis — sayfalar (v2.0.17; eski adıyla "veri oturumları", v2.0.1).
+ * Şirketin tabloları ortadaki SAYFA şeridinde durur: her sayfa ayrı bir veri kümesidir (kendi Excel / Google Sheets
+ * kaynağı, kolon rolleri, tarih anlamı, düzeltmeleri ve yeni kayıtları); ikinci Excel ikinci sayfa olur, veriler
+ * birbirine karışmaz. Sayfalar şirkete aittir (şirket değişince şirketin sayfaları gelir). "+ Sayfa": Excel'den /
+ * Google Sheets'ten aktar (ilk yüklemedeki ön izleme + kolon eşleme ekranıyla, VERİ sayfası) ya da Boş Sayfa (elle
+ * doldurulan serbest ızgara). Hangi sayfada çalışıldığı kişiye özeldir ve sunucuda saklanır. */
 (() => {
   "use strict";
   const HOF = window.HOF;
   const { esc } = HOF;
   const FIRST_KEY = "dataset://ofis";
   const number = value => new Intl.NumberFormat("tr-TR").format(Number(value) || 0);
-  const PENCIL = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg>';
-  const LAYERS = '<svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 9 5-9 5-9-5z"/><path d="m3 13 9 5 9-5"/></svg>';
-  const CHEVRON = '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m7 10 5 5 5-5"/></svg>';
+  const PENCIL = '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg>';
+  const CHEVRON = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m7 10 5 5 5-5"/></svg>';
 
   let state = null; // { current, sessions: [...], canManage }
   let pending = null;
-  let editing = ""; // adı düzenlenen oturumun anahtarı (seçici içinde)
+  let editing = ""; // adı düzenlenen sayfanın anahtarı (şeritte)
 
   const canManage = () => Boolean(state?.canManage);
-  const currentSession = () => state?.sessions.find(item => item.current) || null;
-  const nameOf = item => item?.name || "Oturum";
+  const currentPage = () => state?.sessions.find(item => item.current) || null;
+  const nameOf = item => item?.name || "Sayfa";
   const meta = item =>
     [`${number(item.rowCount)} kayıt`, item.recordCount ? `${number(item.recordCount)} yeni kayıt` : "", item.linked ? "Sheets'e bağlı" : ""].filter(Boolean).join(" · ");
 
@@ -40,22 +40,21 @@
     return pending;
   }
 
-  // ---------- Oturuma geçiş ----------
+  // ---------- Sayfaya geçiş ----------
   async function select(key) {
     const target = state?.sessions.find(item => item.key === key);
-    if (!target) return;
-    if (target.current) return closeMenu();
-    const row = document.querySelector(`#hof-session [data-pick="${CSS.escape(key)}"]`);
-    row?.classList.add("is-busy");
-    document.querySelectorAll("#hof-session button").forEach(button => (button.disabled = true));
+    if (!target || target.current) return;
+    const pill = document.querySelector(`#hof-pages [data-pick="${CSS.escape(key)}"]`);
+    pill?.classList.add("is-busy");
+    document.querySelectorAll("#hof-pages button").forEach(button => (button.disabled = true));
     try {
       const result = await HOF.api("/api/workspace/sessions/select", { method: "POST", body: { key } });
       if (result.state) HOF.applyClientState(result.state);
-      sessionStorage.setItem("hof-flash", `“${nameOf(target)}” oturumuna geçtiniz. Bu seçim yalnızca sizin ekranınızı değiştirir.`);
+      sessionStorage.setItem("hof-flash", `“${nameOf(target)}” sayfasına geçtiniz. Bu seçim yalnızca sizin ekranınızı değiştirir.`);
       location.reload();
     } catch (error) {
-      document.querySelectorAll("#hof-session button").forEach(button => (button.disabled = false));
-      row?.classList.remove("is-busy");
+      document.querySelectorAll("#hof-pages button").forEach(button => (button.disabled = false));
+      pill?.classList.remove("is-busy");
       HOF.toastError(error);
     }
   }
@@ -64,12 +63,12 @@
   async function renameStrict(key, value) {
     const name = String(value || "").replace(/\s+/g, " ").trim();
     const target = state?.sessions.find(item => item.key === key);
-    if (!target) throw new Error("Oturum bulunamadı; listeyi yenileyin.");
-    if (!name) throw new Error("Oturum adı boş olamaz.");
+    if (!target) throw new Error("Sayfa bulunamadı; listeyi yenileyin.");
+    if (!name) throw new Error("Sayfa adı boş olamaz.");
     if (name === target.name) return name;
     await HOF.api("/api/workspace/sessions/rename", { method: "POST", body: { key, name } });
     target.name = name;
-    HOF.toast(`Oturumun yeni adı: “${name}”. Tüm bilgisayarlarda görünür.`, { type: "success" });
+    HOF.toast(`Sayfanın yeni adı: “${name}”. Tüm bilgisayarlarda görünür.`, { type: "success" });
     render();
     load().catch(() => {});
     return name;
@@ -88,15 +87,15 @@
     const target = state?.sessions.find(item => item.key === key);
     if (!target || key === FIRST_KEY) return false;
     const ok = await HOF.confirm({
-      title: "Oturumu Sil",
-      message: `“${nameOf(target)}” oturumu ve içindeki ${number(target.rowCount)} kayıt, düzeltmeler ve uygulamada eklenen kayıtlar kalıcı olarak silinir. Kullanıcılar, notlar, görevler, tahsilatlar ve Kasa silinmez. Silmeden önce veritabanının tam yedeği alınır; bu oturumda çalışan kişiler ilk oturuma döner.`,
-      confirmLabel: "Oturumu Sil",
+      title: "Sayfayı Sil",
+      message: `“${nameOf(target)}” sayfası ve içindeki ${number(target.rowCount)} kayıt, düzeltmeler ve uygulamada eklenen kayıtlar kalıcı olarak silinir. Cari, Kasa, stok, taksit, fatura, kullanıcılar, notlar ve görevler silinmez. Silmeden önce veritabanının tam yedeği alınır; bu sayfada çalışan kişiler ilk sayfaya döner.`,
+      confirmLabel: "Sayfayı Sil",
       danger: true,
     });
     if (!ok) return false;
     try {
       const result = await HOF.api("/api/workspace/sessions/delete", { method: "POST", body: { key } });
-      const message = `“${nameOf(target)}” oturumu silindi (${number(result.removed)} kayıt). Yedek: ${result.backupName || "—"}`;
+      const message = `“${nameOf(target)}” sayfası silindi (${number(result.removed)} kayıt). Yedek: ${result.backupName || "—"}`;
       if (target.current) {
         sessionStorage.setItem("hof-flash", message);
         location.reload();
@@ -111,103 +110,103 @@
     }
   }
 
-  // ---------- Yeni oturum ----------
-  function openNew() {
+  // ---------- + Sayfa: Excel'den / Google Sheets'ten (veri sayfası) / Boş Sayfa (serbest ızgara) ----------
+  function openNew(source = "excel") {
     const picker = HOF.sources?.picker;
-    if (!picker || !canManage()) return;
-    closeMenu();
+    closeAdd();
+    if (source === "blank") {
+      HOF.free?.open?.({ blankOnly: true });
+      return;
+    }
+    if (!picker || !canManage()) return HOF.toast("Sayfa eklemek veri yönetimi yetkisi ister.", { type: "error" });
+    const excel = source !== "sheets";
     const modal = HOF.modal({
-      title: "Yeni Oturum Aç",
-      eyebrow: "OTURUM",
-      body: `<p class="hof-modal-text">Farklı konudaki bir tabloyu (ör. taksit listesi, ikinci şube) <b>ayrı bir oturumda</b> açın. Şu anki oturum verisiyle, düzeltmeleri ve kayıtlarıyla olduğu gibi kalır; oturumlar arasında sol menüden geçersiniz.</p>
-        <div class="hof-data-import">${picker.dropHtml(true)}${picker.linkHtml}</div>
-        <p class="hof-modal-text hof-muted">Dosya okunduktan sonra oturuma ad verirsiniz; adı sonradan da değiştirebilirsiniz.</p>`,
+      title: excel ? "Excel'den Yeni Sayfa" : "Google Sheets'ten Yeni Sayfa",
+      eyebrow: "+ SAYFA",
+      body: `<p class="hof-modal-text">${excel ? "Excel dosyası" : "Google Sheets tablosu"} <b>yeni bir sayfa</b> olarak açılır: ilk yüklemedeki gibi ön izleme ve kolon eşleme ekranından geçer (tarih kolonları tanınır; takvim, uyarılar, detay kartı ve raporlar bu sayfayı da kapsar). Şu anki sayfa verisiyle, düzeltmeleri ve kayıtlarıyla olduğu gibi kalır.</p>
+        <div class="hof-data-import">${excel ? picker.dropHtml(true) : picker.linkHtml}</div>
+        <p class="hof-modal-text hof-muted">${excel ? "Dosya" : "Tablo"} okunduktan sonra sayfaya ad verirsiniz; adı sonradan da değiştirebilirsiniz.</p>`,
     });
-    const zone = modal.dialog.querySelector(".hof-drop");
-    picker.wireDrop(zone, { session: true });
-    zone.querySelector("input").addEventListener("change", () => modal.close(), { once: true });
-    zone.addEventListener("drop", () => modal.close(), { once: true });
-    const form = modal.dialog.querySelector(".hof-link-form");
-    form.addEventListener("submit", () => picker.sheetPattern.test(form.elements.url.value.trim()) && modal.close());
-    picker.wireLink(form, { session: true });
+    if (excel) {
+      const zone = modal.dialog.querySelector(".hof-drop");
+      picker.wireDrop(zone, { session: true });
+      zone.querySelector("input").addEventListener("change", () => modal.close(), { once: true });
+      zone.addEventListener("drop", () => modal.close(), { once: true });
+    } else {
+      const form = modal.dialog.querySelector(".hof-link-form");
+      form.addEventListener("submit", () => picker.sheetPattern.test(form.elements.url.value.trim()) && modal.close());
+      picker.wireLink(form, { session: true });
+      form.elements.url?.focus();
+    }
   }
 
-  // ---------- Sol menüdeki seçici ----------
-  function menuHtml() {
-    const rows = state.sessions
+  // ---------- Orta alandaki sayfa şeridi ----------
+  function pillsHtml() {
+    return state.sessions
       .map(item => {
         if (editing === item.key) {
-          return `<li class="hof-session-row is-editing">
-            <form class="hof-session-edit" data-edit="${esc(item.key)}">
-              <input type="text" name="name" value="${esc(item.name)}" maxlength="80" aria-label="Oturumun yeni adı" autocomplete="off">
-              <div><button type="submit" class="hof-button hof-button-small">Kaydet</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-edit-cancel>Vazgeç</button></div>
+          return `<li class="hof-page is-editing">
+            <form class="hof-page-edit" data-edit="${esc(item.key)}">
+              <input type="text" name="name" value="${esc(item.name)}" maxlength="80" aria-label="Sayfanın yeni adı" autocomplete="off">
+              <button type="submit" class="hof-button hof-button-small">Kaydet</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-edit-cancel>Vazgeç</button>
             </form>
           </li>`;
         }
-        return `<li class="hof-session-row${item.current ? " is-current" : ""}">
-          <button type="button" class="hof-session-pick" role="menuitemradio" aria-checked="${item.current}" data-pick="${esc(item.key)}">
-            <span class="hof-session-dot" aria-hidden="true"></span>
-            <span class="hof-session-info"><b title="${esc(item.name)}">${esc(item.name)}</b><small>${esc(meta(item))}</small></span>
-            ${item.current ? '<span class="hof-session-now">Açık</span>' : ""}
+        return `<li class="hof-page${item.current ? " is-current" : ""}">
+          <button type="button" class="hof-page-pick" role="tab" aria-selected="${item.current}" data-pick="${esc(item.key)}" title="${esc(meta(item))}">
+            <b>${esc(item.name)}</b><small>${esc(meta(item))}</small>
           </button>
-          ${canManage() ? `<button type="button" class="hof-session-rename" data-rename="${esc(item.key)}" title="Adını değiştir" aria-label="“${esc(item.name)}” oturumunun adını değiştir">${PENCIL}</button>` : ""}
+          ${canManage() && item.current ? `<button type="button" class="hof-page-rename" data-rename="${esc(item.key)}" title="Sayfanın adını değiştir" aria-label="“${esc(item.name)}” sayfasının adını değiştir">${PENCIL}</button>` : ""}
         </li>`;
       })
       .join("");
-    return `<p class="hof-session-menu-title">Çalışma oturumları</p>
-      <ul class="hof-session-list" role="menu">${rows}</ul>
-      ${canManage()
-        ? `<div class="hof-session-foot"><button type="button" class="hof-session-new" data-new>+ Yeni Oturum Aç</button><button type="button" class="hof-session-manage" data-manage>Oturumları Yönet</button></div>`
-        : ""}
-      <p class="hof-session-note">Seçtiğiniz oturum yalnızca sizin ekranınızı değiştirir.</p>`;
   }
 
   let node = null;
   const visible = () => {
-    const current = currentSession();
-    return Boolean(state && current && (state.sessions.length > 1 || current.rowCount || current.recordCount));
+    const current = currentPage();
+    return Boolean(state && current && (state.sessions.length > 1 || current.rowCount || current.recordCount || HOF.data?.freeTabs?.size));
   };
-  // Kenar çubuğunda marka ile menü arasına yerleşir (paketin kendi düğümlerine dokunmadan). Paket kenar çubuğunu
-  // yeniden çizerse DOM izleyicisi düğümü yeniden yerleştirir; içerik yalnızca render() ile değişir.
+  // İçerik alanının en üstüne (sekme şeridinin üstüne) yerleşir; paket alanı yeniden çizerse DOM izleyicisi düğümü
+  // yeniden yerleştirir; içerik yalnızca render() ile değişir.
   function place() {
-    const sidebar = document.querySelector(".sidebar");
-    if (!sidebar || !node || !visible()) {
+    const wrap = document.querySelector(".main-shell .content-wrap");
+    if (!wrap || !node || !visible()) {
       if (node?.isConnected && !visible()) node.remove();
       return;
     }
-    const nav = [...sidebar.children].find(child => child.tagName === "NAV");
-    if (nav) {
-      if (node.parentNode !== sidebar || node.nextElementSibling !== nav) sidebar.insertBefore(node, nav);
-    } else if (node.parentNode !== sidebar) sidebar.prepend(node);
-    sidebar.classList.add("hof-has-session");
+    const welcome = wrap.querySelector(":scope > .welcome-row");
+    const anchor = welcome ? welcome.nextElementSibling : wrap.firstElementChild;
+    if (node === anchor) return;
+    if (anchor) wrap.insertBefore(node, anchor);
+    else wrap.appendChild(node);
   }
 
   function render() {
-    const current = currentSession();
     if (!visible()) {
       node?.remove();
-      document.querySelector(".sidebar")?.classList.remove("hof-has-session");
       return;
     }
     if (!node) {
-      node = HOF.el("div", { id: "hof-session", class: "hof-session" });
+      node = HOF.el("section", { id: "hof-pages", class: "hof-pages", "aria-label": "Sayfalar" });
       node.addEventListener("click", onClick);
       node.addEventListener("submit", onSubmit);
       node.addEventListener("keydown", onKey);
     }
-    const open = node.classList.contains("is-open");
-    const count = state.sessions.length;
-    node.innerHTML = `<button type="button" class="hof-session-current" data-toggle aria-haspopup="menu" aria-expanded="${open}" aria-controls="hof-session-menu" title="Çalışma oturumunu değiştir">
-        <span class="hof-session-icon">${LAYERS}</span>
-        <span class="hof-session-text"><small>Çalışma oturumu</small><strong title="${esc(current.name)}">${esc(current.name)}</strong></span>
-        ${count > 1 ? `<span class="hof-session-count" title="${number(count)} oturum var" aria-label="${number(count)} oturum var">${number(count)}</span>` : ""}
-        <span class="hof-session-chevron">${CHEVRON}</span>
-      </button>
-      <div class="hof-session-menu" id="hof-session-menu" ${open ? "" : "hidden"}>${menuHtml()}</div>`;
+    const open = node.classList.contains("is-add-open");
+    node.innerHTML = `<div class="hof-pages-head"><span>Sayfalar</span><strong>${number(state.sessions.length)}</strong></div>
+      <ul class="hof-pages-list" role="tablist">${pillsHtml()}</ul>
+      <div class="hof-pages-add">
+        <button type="button" class="hof-pages-add-button" data-add aria-haspopup="menu" aria-expanded="${open}" aria-controls="hof-pages-menu" title="Yeni sayfa: Excel'den, Google Sheets'ten ya da boş"><span aria-hidden="true">+</span> Sayfa ${CHEVRON}</button>
+        <div class="hof-pages-menu" id="hof-pages-menu" role="menu" ${open ? "" : "hidden"}>
+          ${canManage() ? `<button type="button" role="menuitem" data-add-source="excel"><b>Excel'den Aktar</b><small>Veri sayfası: ön izleme, kolon rolleri, tarih uyarıları</small></button>
+          <button type="button" role="menuitem" data-add-source="sheets"><b>Google Sheets'ten Aktar</b><small>Bağlı tablo; aralıklarla eşitlenir</small></button>` : ""}
+          <button type="button" role="menuitem" data-add-source="blank"><b>Boş Sayfa</b><small>Excel gibi elle doldurulan serbest sayfa</small></button>
+        </div>
+      </div>`;
     place();
-    if (open) positionMenu();
     if (editing) {
-      const input = node.querySelector(".hof-session-edit input");
+      const input = node.querySelector(".hof-page-edit input");
       if (input && document.activeElement !== input) {
         input.focus();
         input.select();
@@ -215,64 +214,37 @@
     }
   }
 
-  // Kart sol panelin kaydırma alanında kesilmesin diye (v2.0.10) sayfaya sabit konumlanır: düğmenin hemen altında,
-  // ekrana sığacak genişlik ve yükseklikte; pencere değişince yeniden yerleşir, panel kaydırılınca kapanır.
-  function positionMenu() {
-    const menu = node?.querySelector(".hof-session-menu");
-    const button = node?.querySelector("[data-toggle]");
-    if (!menu || !button || menu.hidden) return;
-    const rect = button.getBoundingClientRect();
-    const width = Math.min(340, window.innerWidth - rect.left - 12);
-    const top = rect.bottom + 6;
-    menu.style.left = `${Math.max(8, rect.left)}px`;
-    menu.style.top = `${top}px`;
-    menu.style.width = `${Math.max(240, width)}px`;
-    menu.style.maxHeight = `${Math.max(200, window.innerHeight - top - 12)}px`;
-  }
-  window.addEventListener("resize", () => node?.classList.contains("is-open") && positionMenu());
-  document.addEventListener(
-    "scroll",
-    event => {
-      if (node?.classList.contains("is-open") && event.target instanceof Element && event.target.contains(node) && !node.contains(event.target)) closeMenu();
-    },
-    true,
-  );
-
-  function openMenu() {
+  function openAdd() {
     if (!node) return;
-    node.classList.add("is-open");
-    node.querySelector("[data-toggle]").setAttribute("aria-expanded", "true");
-    node.querySelector(".hof-session-menu").hidden = false;
-    positionMenu();
-    (node.querySelector(".hof-session-row.is-current .hof-session-pick") || node.querySelector(".hof-session-pick"))?.focus();
-    load();
+    node.classList.add("is-add-open");
+    node.querySelector("[data-add]").setAttribute("aria-expanded", "true");
+    node.querySelector(".hof-pages-menu").hidden = false;
+    node.querySelector(".hof-pages-menu [role=menuitem]")?.focus();
   }
-  function closeMenu({ focus = false } = {}) {
-    editing = "";
-    if (!node || !node.classList.contains("is-open")) return;
-    node.classList.remove("is-open");
-    render();
-    if (focus) node.querySelector("[data-toggle]")?.focus();
+  function closeAdd({ focus = false } = {}) {
+    if (!node || !node.classList.contains("is-add-open")) return;
+    node.classList.remove("is-add-open");
+    node.querySelector("[data-add]")?.setAttribute("aria-expanded", "false");
+    const menu = node.querySelector(".hof-pages-menu");
+    if (menu) menu.hidden = true;
+    if (focus) node.querySelector("[data-add]")?.focus();
   }
 
   function onClick(event) {
     const target = event.target.closest("button");
     if (!target || target.disabled) return;
-    if (target.hasAttribute("data-toggle")) {
-      if (node.classList.contains("is-open")) closeMenu();
-      else openMenu();
-    } else if (target.dataset.pick) select(target.dataset.pick);
+    if (target.hasAttribute("data-add")) {
+      if (node.classList.contains("is-add-open")) closeAdd();
+      else openAdd();
+    } else if (target.dataset.addSource) openNew(target.dataset.addSource);
+    else if (target.dataset.pick) select(target.dataset.pick);
     else if (target.dataset.rename) {
       editing = target.dataset.rename;
       render();
     } else if (target.hasAttribute("data-edit-cancel")) {
       editing = "";
       render();
-      document.querySelector("#hof-session .hof-session-pick")?.focus();
-    } else if (target.hasAttribute("data-new")) openNew();
-    else if (target.hasAttribute("data-manage")) {
-      closeMenu();
-      HOF.sources?.openDataSettings?.({ focus: "sessions" });
+      document.querySelector("#hof-pages .hof-page.is-current .hof-page-pick")?.focus();
     }
   }
 
@@ -285,7 +257,7 @@
     if (done) {
       editing = "";
       render();
-      document.querySelector("#hof-session .hof-session-pick")?.focus();
+      document.querySelector("#hof-pages .hof-page.is-current .hof-page-pick")?.focus();
     } else form.querySelectorAll("button, input").forEach(item => (item.disabled = false));
   }
 
@@ -295,34 +267,34 @@
     if (editing) {
       editing = "";
       render();
-      document.querySelector("#hof-session .hof-session-pick")?.focus();
-    } else closeMenu({ focus: true });
+      document.querySelector("#hof-pages .hof-page.is-current .hof-page-pick")?.focus();
+    } else closeAdd({ focus: true });
   }
 
   document.addEventListener("mousedown", event => {
-    if (node?.classList.contains("is-open") && !node.contains(event.target)) closeMenu();
+    if (node?.classList.contains("is-add-open") && !node.querySelector(".hof-pages-add").contains(event.target)) closeAdd();
   });
 
-  // ---------- Ayarlar → Veri → Oturumlar ----------
+  // ---------- Ayarlar → Veri → Sayfalar ----------
   async function section() {
     const data = await load().catch(() => null);
     if (!data || !canManage()) return null;
     const list = data.sessions;
     const html = `<section class="hof-data-section hof-session-section" id="hof-session-section">
-        <h3>Oturumlar</h3>
-        <p class="hof-modal-text hof-muted">Her oturum ayrı bir çalışma alanıdır; tabloları, düzeltmeleri ve yeni kayıtları birbirine karışmaz. Herkes kendi oturumunu sol menüdeki seçiciden seçer. Yeni eklenen kullanıcılar en son açılan oturumla başlar.</p>
-        <p class="hof-session-shared"><b>Tüm oturumlarda ortak:</b> kullanıcılar ve personel, yetkiler, görevler, mesajlar, notlar, tahsilatlar ve <b>Kasa</b>, ofis adı, yedekler ve lisans. Oturum değiştirmek ya da silmek bunları etkilemez.</p>
+        <h3>Sayfalar</h3>
+        <p class="hof-modal-text hof-muted">Her sayfa ayrı bir veri kümesidir; tabloları, kaynağı, düzeltmeleri ve yeni kayıtları birbirine karışmaz. Sayfalar ortadaki şeritten seçilir; yeni eklenen kullanıcılar en son açılan sayfayla başlar.</p>
+        <p class="hof-session-shared"><b>Tüm Sayfalarda Ortak (şirkete ait):</b> cari, Kasa, stok, taksit, çek/senet, fatura, görevler, mesajlar, notlar ve ofis ayarları. Sayfa değiştirmek ya da silmek bunları etkilemez.</p>
         <ul class="hof-session-admin">${list
           .map(item => `<li data-session="${esc(item.key)}">
             <div class="hof-session-admin-info"><b>${esc(item.name)}</b>${item.current ? '<span class="hof-chip">Şu An Açık</span>' : ""}<small>${esc(meta(item))}${item.createdAt ? ` · açıldı ${esc(HOF.formatDateTime(item.createdAt))}` : ""}</small></div>
             <div class="hof-session-admin-actions">
-              ${item.current ? "" : '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-s-open>Bu Oturuma Geç</button>'}
+              ${item.current ? "" : '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-s-open>Bu Sayfaya Geç</button>'}
               <button type="button" class="hof-button hof-button-small hof-button-ghost" data-s-rename>Adını Değiştir</button>
               ${item.key === FIRST_KEY ? "" : '<button type="button" class="hof-button hof-button-small hof-button-danger" data-s-delete>Sil</button>'}
             </div>
           </li>`)
           .join("")}</ul>
-        <button type="button" class="hof-button hof-button-small" data-s-new>+ Yeni Oturum Aç</button>
+        <button type="button" class="hof-button hof-button-small" data-s-new>+ Excel'den Yeni Sayfa</button>
       </section>`;
     const wire = modal => {
       const root = modal.dialog.querySelector("#hof-session-section");
@@ -333,16 +305,16 @@
         const item = state?.sessions.find(entry => entry.key === key);
         if (button.hasAttribute("data-s-new")) {
           modal.close();
-          openNew();
+          openNew("excel");
         } else if (button.hasAttribute("data-s-open") && item) {
           modal.close();
           select(key);
         } else if (button.hasAttribute("data-s-rename") && item) {
           HOF.formModal({
-            title: "Oturumun Adı",
-            eyebrow: "OTURUM",
-            intro: "Oturumun adı sol menüdeki seçicide ve bu listede görünür; tüm bilgisayarlarda aynıdır.",
-            fields: [{ name: "name", label: "Oturumun Adı", value: item.name, maxlength: 80, required: true, autofocus: true }],
+            title: "Sayfanın Adı",
+            eyebrow: "SAYFA",
+            intro: "Sayfanın adı ortadaki şeritte ve bu listede görünür; tüm bilgisayarlarda aynıdır.",
+            fields: [{ name: "name", label: "Sayfanın Adı", value: item.name, maxlength: 80, required: true, autofocus: true }],
             submitLabel: "Adı Kaydet",
             onSubmit: async values => {
               const name = await renameStrict(key, values.name);
@@ -362,20 +334,21 @@
   HOF.on("live:workspace.changed", change => {
     if (change?.kind !== "sessions") return;
     load().then(data => {
-      // Çalışılan oturum başka bir bilgisayarda silindiyse sayfa ilk oturumla yeniden açılır.
+      // Çalışılan sayfa başka bir bilgisayarda silindiyse ekran ilk sayfayla yeniden açılır.
       if (data && HOF.datasetKey && data.current !== HOF.datasetKey) {
-        sessionStorage.setItem("hof-flash", "Çalıştığınız oturum veri yöneticisi tarafından silindi; ilk oturuma geçildi.");
+        sessionStorage.setItem("hof-flash", "Çalıştığınız sayfa veri yöneticisi tarafından silindi; ilk sayfaya geçildi.");
         location.reload();
       } else if (change.created && change.actorId !== HOF.user?.id) {
-        HOF.toast(`${change.actorName || "Bir kullanıcı"} yeni bir oturum açtı: “${change.created}”. Sol menüdeki oturum seçiciden geçebilirsiniz.`, { timeout: 7000 });
+        HOF.toast(`${change.actorName || "Bir kullanıcı"} yeni bir sayfa açtı: “${change.created}”. Ortadaki sayfa şeridinden geçebilirsiniz.`, { timeout: 7000 });
       }
     }, () => {});
   });
   HOF.on("live:resync", () => load().catch(() => {}));
+  HOF.on("data", () => render());
 
   HOF.whenReady(() => {
     load().catch(() => {});
     HOF.onDom(place);
   });
-  HOF.sessions = { load, select, rename, remove, openNew, section };
+  HOF.sessions = { load, select, rename, remove, openNew, section, pages: () => state?.sessions || [] };
 })();

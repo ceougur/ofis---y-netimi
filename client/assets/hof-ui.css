@@ -9682,3 +9682,222 @@ input[type="search"]::-webkit-search-cancel-button {
 }
 .hof-acc-form-head { grid-column: 1 / -1; margin: 10px 0 0; color: var(--do-ink-soft); font: 800 12px/1 var(--do-display); letter-spacing: 0.12em; text-transform: uppercase; }
 .hof-acc-inv-pills { margin: 4px 0 12px; }
+
+/* ---------- Sayfa şeridi (v2.0.17): eski oturum seçicinin yerine ortada sayfalar ---------- */
+.hof-pages {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 14px;
+  padding: 8px 12px;
+  border: 1px solid var(--do-border);
+  border-radius: 16px;
+  background: linear-gradient(160deg, #fff, #f3f9f5);
+}
+.hof-pages-head {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 6px;
+  padding-right: 10px;
+  border-right: 1px solid var(--do-border);
+  color: var(--do-faint);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.hof-pages-head strong {
+  display: inline-grid;
+  min-width: 20px;
+  height: 20px;
+  place-items: center;
+  border-radius: 999px;
+  background: var(--do-accent-soft);
+  color: var(--do-accent);
+  font-size: 11px;
+}
+.hof-pages-list {
+  display: flex;
+  flex: 1 1 auto;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  overflow-x: auto;
+  list-style: none;
+  scrollbar-width: thin;
+}
+.hof-page {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 2px;
+}
+.hof-page-pick {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-height: 38px;
+  padding: 4px 14px;
+  border: 1px solid var(--do-border);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--do-ink);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+}
+.hof-page-pick b {
+  max-width: 220px;
+  overflow: hidden;
+  font-size: 12.5px;
+  line-height: 1.2;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.hof-page-pick small {
+  font-size: 10.5px;
+  line-height: 1.2;
+  color: var(--do-faint);
+  white-space: nowrap;
+}
+.hof-page-pick:hover {
+  border-color: var(--do-border-strong);
+}
+.hof-page-pick:focus-visible {
+  outline: none;
+  box-shadow: var(--do-focus);
+}
+.hof-page.is-current .hof-page-pick {
+  border-color: var(--do-accent);
+  background: var(--do-accent);
+  color: #fff;
+}
+.hof-page.is-current .hof-page-pick small {
+  color: rgba(255, 255, 255, 0.82);
+}
+.hof-page-pick.is-busy {
+  opacity: 0.6;
+}
+.hof-page-rename {
+  display: inline-grid;
+  width: 26px;
+  height: 26px;
+  place-items: center;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--do-faint);
+  cursor: pointer;
+}
+.hof-page-rename:hover,
+.hof-page-rename:focus-visible {
+  background: var(--do-accent-soft);
+  color: var(--do-accent);
+}
+.hof-page-edit {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.hof-page-edit input {
+  min-width: 180px;
+  padding: 7px 10px;
+  border: 1px solid var(--do-accent);
+  border-radius: 999px;
+  font: inherit;
+  font-size: 12.5px;
+}
+.hof-pages-add {
+  position: relative;
+  flex: none;
+}
+.hof-pages-add-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 36px;
+  padding: 0 14px;
+  border: 1px dashed #9cc5ad;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--do-accent);
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.hof-pages-add-button span {
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1;
+}
+.hof-pages-add-button:hover,
+.hof-pages-add-button:focus-visible,
+.hof-pages.is-add-open .hof-pages-add-button {
+  border-style: solid;
+  border-color: var(--do-accent);
+  background: var(--do-accent-soft);
+}
+.hof-pages-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 60;
+  display: grid;
+  min-width: 280px;
+  padding: 6px;
+  border: 1px solid var(--do-border);
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 14px 36px rgba(20, 52, 40, 0.14);
+}
+.hof-pages-menu[hidden] {
+  display: none;
+}
+.hof-pages-menu button {
+  display: grid;
+  gap: 2px;
+  padding: 9px 12px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--do-ink);
+  text-align: left;
+  cursor: pointer;
+}
+.hof-pages-menu button b {
+  font-size: 13px;
+}
+.hof-pages-menu button small {
+  color: var(--do-faint);
+  font-size: 11px;
+}
+.hof-pages-menu button:hover,
+.hof-pages-menu button:focus-visible {
+  outline: none;
+  background: var(--do-accent-soft);
+}
+/* Şirket seçici (sol üst) ve senkron kartındaki şirket satırı */
+.hof-company .hof-session-text small {
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.hof-company-line {
+  margin: 0 0 6px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--do-accent);
+}
+.adm-company-report-pick {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+.adm-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}

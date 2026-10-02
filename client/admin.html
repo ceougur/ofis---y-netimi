@@ -31,6 +31,7 @@
       <button type="button" role="tab" data-tab="backups" data-requires="system.manage" aria-selected="false">Yedekler</button>
       <button type="button" role="tab" data-tab="audit" data-requires="audit.view" aria-selected="false">Değişiklik Geçmişi</button>
       <button type="button" role="tab" data-tab="trash" data-requires="records.delete" aria-selected="false">Silinenler</button>
+      <button type="button" role="tab" data-tab="companies" data-requires="system.manage" aria-selected="false">Şirketler</button>
       <button type="button" role="tab" data-tab="system" data-requires="system.manage" aria-selected="false">Sistem</button>
       <button type="button" role="tab" data-tab="license" data-requires="license.manage" aria-selected="false">Lisans</button>
     </nav>
@@ -90,6 +91,29 @@
         <label class="hof-field adm-filter"><span>Tür</span><select id="adm-trash-kind"><option value="">Tümü</option><option value="row">Tablo Kayıtları ve Sekmeler</option><option value="document">Belgeler</option><option value="free">Serbest Sayfalar</option><option value="money">Tahsilat ve Kasa</option><option value="invoice">Faturalar</option></select></label>
       </div>
       <div class="adm-card"><div class="adm-table-wrap"><table class="hof-table adm-trash"><thead><tr><th>Silinme</th><th>Silen</th><th>Tür</th><th>Ne Silindi</th><th class="adm-right"></th></tr></thead><tbody id="adm-trash"><tr><td colspan="5">Yükleniyor…</td></tr></tbody></table></div></div>
+    </section>
+
+    <section class="adm-panel" data-panel="companies" role="tabpanel" hidden>
+      <div class="adm-panel-head">
+        <div><h1>Şirketler</h1><p>Her şirket ayrı bir veri tabanıdır: cari, Kasa, stok, taksit, çek/senet, fatura ve sayfalar şirkete aittir; hiçbiri öbür şirketten gelmez. Lisans, kullanıcılar ve roller ortaktır. Sol üstteki seçiciden şirket değiştirilir.</p></div>
+        <button type="button" class="hof-button" id="adm-company-new">+ Yeni Şirket</button>
+      </div>
+      <section class="adm-card">
+        <h2>Şirket Listesi</h2>
+        <div class="adm-table-wrap"><table class="adm-table"><thead><tr><th>Kod</th><th>Unvan</th><th>Durum</th><th class="adm-right">İşlemler</th></tr></thead><tbody id="adm-companies"><tr><td colspan="4" class="adm-muted">Yükleniyor…</td></tr></tbody></table></div>
+      </section>
+      <section class="adm-card">
+        <h2>Kullanıcı Yetkileri</h2>
+        <p class="adm-muted">Kullanıcı yalnız işaretli şirketleri görür ve seçer. Yöneticiler bütün şirketleri görür.</p>
+        <div class="adm-table-wrap"><table class="adm-table" id="adm-company-access"><tbody><tr><td class="adm-muted">Yükleniyor…</td></tr></tbody></table></div>
+      </section>
+      <section class="adm-card">
+        <h2>Birleşik Rapor</h2>
+        <p class="adm-muted">Seçilen şirketlerin Nakit Kasa, Banka/POS, cari alacak/borç, geciken taksit, stok değeri ve açık fatura toplamları yan yana; son satır toplamdır. Yalnız yetkili olduğunuz şirketler.</p>
+        <div class="adm-company-report-pick" id="adm-company-report-pick"></div>
+        <div class="adm-actions"><button type="button" class="hof-button hof-button-small" id="adm-company-report">Raporu Göster</button><a class="hof-button hof-button-small hof-button-ghost" id="adm-company-report-pdf" href="#" target="_blank" rel="noopener">PDF</a><a class="hof-button hof-button-small hof-button-ghost" id="adm-company-report-xlsx" href="#">Excel</a></div>
+        <div class="adm-table-wrap" id="adm-company-report-out"></div>
+      </section>
     </section>
 
     <section class="adm-panel" data-panel="system" role="tabpanel" hidden>

@@ -66,7 +66,7 @@ export function registerTrashRoutes(router, { store, auth, audit, events, datase
   function list() {
     const names = sessionNames();
     const multi = names.size > 1;
-    const where = key => (multi && names.get(key) ? `Oturum: ${names.get(key)}` : "");
+    const where = key => (multi && names.get(key) ? `Sayfa: ${names.get(key)}` : "");
     const items = [];
     for (const item of store.all("SELECT d.id, d.source_name AS datasetKey, d.case_key AS caseKey, d.deleted_at AS deletedAt, COALESCE(u.display_name, '') AS actorName FROM deleted_records d LEFT JOIN users u ON u.id = d.deleted_by")) {
       const row = rowOf(item.datasetKey, item.caseKey);

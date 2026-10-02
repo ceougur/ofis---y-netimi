@@ -1,0 +1,172 @@
+// Şirketler (v2.0.17): liste, seçim, açma, adlandırma, yetki, silme, veri sıfırlama ve şirketler arası birleşik rapor.
+// Yalnız hub'da (ortak katman) kayıtlıdır; her şirketin verisi kendi örneğinden (appFor) okunur.
+import { verifyPassword } from "../lib/passwords.mjs";
+import { HttpError, limited, ok, readJson, sendBuffer, text } from "../lib/http.mjs";
+import { roundMoney } from "../lib/money.mjs";
+import { tablePdf, tl } from "../lib/report-pdf.mjs";
+import { buildXlsx } from "../lib/xlsx-write.mjs";
+
+export function registerCompanyRoutes(router, { store, auth, audit, companies, appFor, resetData, config, events }) {
+  const requireManage = req => auth.requirePermission(req, "system.manage");
+  const publish = (user, detail) => events?.publish("workspace.changed", { actorId: user.id, actorName: user.display_name, ...detail }, { except: user.id });
+  const shape = (user, company) => {
+    const current = companies.selectedFor(user);
+    return { id: company.id, code: company.code, name: company.name, label: company.label, root: company.root, current: company.id === current, createdAt: company.createdAt };
+  };
+  // Parola onayı (silme / sıfırlama): yöneticinin kendi parolası.
+  const confirmPassword = (user, password) => {
+    const row = store.get("SELECT password_hash AS hash FROM users WHERE id = ?", user.id);
+    if (!row || !verifyPassword(String(password || ""), row.hash)) throw new HttpError(403, "Parola doğrulanamadı; işlem yapılmadı.", { code: "password" });
+  };
+  const confirmCode = (company, value) => {
+    const typed = text(value);
+    if (typed !== company.code && typed.toLocaleLowerCase("tr-TR") !== company.name.toLocaleLowerCase("tr-TR")) throw new HttpError(400, `Onay için şirket kodunu (${company.code}) ya da adını yazın.`, { code: "confirm" });
+  };
+
+  router.get("/api/companies", async ({ req, res }) => {
+    const user = auth.requireUser(req);
+    const manage = Boolean(user.permissions?.includes?.("system.manage")) || user.role === "admin";
+    ok(res, { current: companies.selectedFor(user), companies: companies.listFor(user), all: manage ? companies.list().map(item => shape(user, item)) : undefined, canManage: manage, nextCode: manage ? companies.nextCode() : "" });
+  });
+  router.post("/api/companies/select", async ({ req, res }) => {
+    const user = auth.requireUser(req);
+    const body = await readJson(req);
+    const company = companies.select(user, text(body.id));
+    audit(user, "company.selected", company.id, { code: company.code, name: company.name });
+    ok(res, { current: company.id, company: shape(user, company) });
+  });
+  router.post("/api/companies", async ({ req, res }) => {
+    const user = requireManage(req);
+    const body = await readJson(req);
+    const company = companies.create(user, { code: text(body.code), name: text(body.name) });
+    // Veri tabanı hemen açılır (göçler koşar); unvan ofis adı olarak yazılır.
+    const app = appFor(company);
+    app.store.setSetting("office.name", company.name, user.id);
+    audit(user, "company.created", company.id, { code: company.code, name: company.name });
+    if (body.select) companies.select(user, company.id);
+    publish(user, { kind: "companies" });
+    ok(res, { company: shape(user, company), companies: companies.listFor(user) });
+  });
+  router.put("/api/companies/:id", async ({ req, res, params }) => {
+    const user = requireManage(req);
+    const body = await readJson(req);
+    const before = companies.require(params.id);
+    const company = companies.update(user, before.id, { name: body.name !== undefined ? text(body.name) : undefined, code: body.code !== undefined ? text(body.code) : undefined });
+    if (body.name !== undefined) appFor(company).store.setSetting("office.name", company.name, user.id);
+    audit(user, "company.updated", company.id, { from: { code: before.code, name: before.name }, to: { code: company.code, name: company.name } });
+    publish(user, { kind: "companies" });
+    ok(res, { company: shape(user, company), companies: companies.listFor(user) });
+  });
+  router.delete("/api/companies/:id", async ({ req, res, params }) => {
+    const user = requireManage(req);
+    const body = await readJson(req);
+    const company = companies.require(params.id);
+    if (company.root) throw new HttpError(409, "001 kodlu ilk şirket silinemez; verisini sıfırlayabilirsiniz.");
+    confirmCode(company, body.confirm);
+    confirmPassword(user, body.password);
+    // Önce yedek (şirketin kendi yedek klasörüne), sonra örnek kapatılır ve klasör silinen-sirketler altına taşınır.
+    const app = appFor(company);
+    let backup = "";
+    try {
+      const { createBackup } = await import("../lib/backup.mjs");
+      backup = createBackup(app.db, app.config.backupDir, { label: `silme-oncesi-${company.code}`, keep: 100 })?.name || "";
+    } catch (error) {
+      throw new HttpError(500, `Silme öncesi yedek alınamadı: ${error.message}`);
+    }
+    await app.close();
+    const removed = companies.remove(user, company.id);
+    audit(user, "company.deleted", company.id, { code: company.code, name: company.name, backup, archivedTo: removed.archivedTo });
+    publish(user, { kind: "companies" });
+    ok(res, { deleted: company.id, backup, companies: companies.listFor(user) });
+  });
+  // Kullanıcı yetkisi: hangi şirketleri görür (yönetici hepsini görür).
+  router.get("/api/companies/access", async ({ req, res }) => {
+    requireManage(req);
+    const users = store.all("SELECT id, username, display_name AS name, role FROM users WHERE deleted_at IS NULL AND active = 1 ORDER BY display_name");
+    ok(res, { companies: companies.list().map(item => ({ id: item.id, code: item.code, name: item.name })), users: users.map(user => ({ ...user, companies: user.role === "admin" ? "*" : companies.accessOf({ id: user.id, role: user.role }) })) });
+  });
+  router.put("/api/companies/access/:userId", async ({ req, res, params }) => {
+    const admin = requireManage(req);
+    const body = await readJson(req);
+    const target = store.get("SELECT id, role, display_name AS name FROM users WHERE id = ? AND deleted_at IS NULL", limited(params.userId, 120, "Kullanıcı"));
+    if (!target) throw new HttpError(404, "Kullanıcı bulunamadı.");
+    if (target.role === "admin") throw new HttpError(409, "Yönetici bütün şirketleri görür; yetkisi daraltılamaz.");
+    const ids = companies.setAccess(admin, target.id, body.companies);
+    audit(admin, "company.access", target.id, { user: target.name, companies: ids });
+    ok(res, { userId: target.id, companies: ids });
+  });
+  // Şirket verisini sıfırla (m6): zorunlu yedek + onay (kod/ad + parola).
+  router.post("/api/companies/:id/reset", async ({ req, res, params }) => {
+    const user = requireManage(req);
+    const body = await readJson(req);
+    const company = companies.require(params.id);
+    confirmCode(company, body.confirm);
+    confirmPassword(user, body.password);
+    const result = resetData(company, user, { mode: text(body.mode) || "movements", resetNumbers: body.resetNumbers !== false });
+    audit(user, "company.reset", company.id, { code: company.code, ...result });
+    publish(user, { kind: "reset" });
+    ok(res, { company: shape(user, company), ...result });
+  });
+
+  // ---------- Birleşik rapor (m2 kararı: ilk sürümde) ----------
+  // Seçilen şirketlerin Kasa, banka/POS, cari alacak/borç, stok değeri, açık fatura ve çek/senet toplamları yan yana + toplam.
+  function buildReport(user, ids) {
+    const allowed = companies.listFor(user);
+    const chosen = ids.length ? allowed.filter(item => ids.includes(item.id)) : allowed;
+    if (!chosen.length) throw new HttpError(400, "Rapor için en az bir şirket seçin (yetkili olduğunuz şirketler).");
+    const rows = chosen.map(item => {
+      const app = appFor(companies.get(item.id));
+      const view = app.context.overview?.compute?.() || {};
+      return {
+        id: item.id,
+        code: item.code,
+        name: item.name,
+        cash: view.cash?.balance ?? 0,
+        bank: view.cash?.bank?.balance ?? 0,
+        receivable: view.receivable?.total ?? 0,
+        payable: view.payable?.total ?? 0,
+        overdue: view.receivable?.overdue ?? 0,
+        stock: view.stock?.value ?? 0,
+        invoiceOpenSale: view.invoices?.openSale ?? 0,
+        invoiceOpenPurchase: view.invoices?.openPurchase ?? 0,
+        monthSale: view.invoices?.month?.sale ?? 0,
+        monthPurchase: view.invoices?.month?.purchase ?? 0,
+      };
+    });
+    const sum = key => roundMoney(rows.reduce((total, row) => total + (Number(row[key]) || 0), 0));
+    const headers = ["Şirket", "Nakit Kasa", "Banka / POS", "Cari Alacak", "Cari Borç", "Geciken Taksit", "Stok Değeri", "Açık Satış Faturası", "Açık Alış Faturası", "Bu Ay Satış", "Bu Ay Alış"];
+    const keys = ["cash", "bank", "receivable", "payable", "overdue", "stock", "invoiceOpenSale", "invoiceOpenPurchase", "monthSale", "monthPurchase"];
+    const table = rows.map(row => [`${row.code} · ${row.name}`, ...keys.map(key => row[key])]);
+    const totals = ["TOPLAM", ...keys.map(sum)];
+    return { headers, keys, rows, table, totals, types: ["", ...keys.map(() => "money")], generatedAt: new Date().toISOString() };
+  }
+  const idsOf = url => text(url.searchParams.get("ids")).split(",").map(value => value.trim()).filter(Boolean);
+  router.get("/api/companies/report", async ({ req, res, url }) => {
+    const user = auth.requireUser(req);
+    ok(res, buildReport(user, idsOf(url)));
+  });
+  router.get("/api/companies/report.pdf", async ({ req, res, url }) => {
+    const user = auth.requireUser(req);
+    const report = buildReport(user, idsOf(url));
+    const pdf = tablePdf({
+      title: "Şirketler Birleşik Raporu",
+      subtitle: `${report.rows.length} şirket · ${new Date().toLocaleDateString("tr-TR")}`,
+      headers: report.headers,
+      types: ["text", ...report.keys.map(() => "money")],
+      rows: [...report.table.map(row => row.map((cell, index) => (index ? tl(cell) : cell))), report.totals.map((cell, index) => (index ? tl(cell) : cell))],
+      summary: [["Şirket", String(report.rows.length)], ["Toplam Nakit Kasa", tl(report.totals[1])], ["Toplam Cari Alacak", tl(report.totals[3])], ["Toplam Cari Borç", tl(report.totals[4])]],
+      officeName: store.setting("office.name", ""),
+      userName: user.display_name || user.username || "",
+      brand: config.productName,
+    });
+    sendBuffer(res, pdf, { type: "application/pdf", name: "Sirketler Birlesik Raporu.pdf", inline: url.searchParams.get("inline") === "1" });
+  });
+  router.get("/api/companies/report.xlsx", async ({ req, res, url }) => {
+    const user = auth.requireUser(req);
+    const report = buildReport(user, idsOf(url));
+    const columns = report.headers;
+    const rowsOf = row => Object.fromEntries(columns.map((column, index) => [column, row[index]]));
+    const xlsx = buildXlsx([{ name: "Birleşik Rapor", columns, rows: [...report.table.map(rowsOf), rowsOf(report.totals)] }], { title: "Şirketler Birleşik Raporu" });
+    sendBuffer(res, xlsx, { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", name: "Sirketler Birlesik Raporu.xlsx" });
+  });
+}

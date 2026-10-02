@@ -272,7 +272,7 @@
     const planRow = plan => `<tr data-open-plan="${esc(plan.id)}" tabindex="0" class="is-${esc(plan.state)}"><td class="hof-plan-no">${esc(plan.refNo || "")}</td><td><b>${esc(plan.name)}</b><small>${plan.itemCount ? `${plan.itemCount} taksit` : "Taksit kurulmadı"}${plan.next ? ` · sıradaki ${esc(HOF.formatDate(plan.next.dueDate))}` : ""}</small></td><td class="num">${esc(money(plan.totals.total))}</td><td class="num hof-cash-in">${esc(money(plan.totals.paid))}</td><td class="num${plan.totals.remaining > 0 ? " hof-cash-out" : ""}">${esc(money(plan.totals.remaining))}</td><td>${plan.status === "closed" ? '<span class="hof-plan-badge is-muted">Kapalı</span>' : plan.state === "overdue" ? `<span class="hof-plan-badge is-late">${plan.totals.overdueCount} taksit gecikti</span>` : plan.state === "done" ? '<span class="hof-plan-badge is-done">Tamamlandı</span>' : '<span class="hof-plan-badge is-info">Devam Ediyor</span>'}</td></tr>`;
     const caseCell = account.caseKey
       ? account.caseSource && HOF.datasetKey && account.caseSource !== HOF.datasetKey
-        ? `${esc(account.caseTitle || account.caseKey)} <small class="hof-muted">· başka veri oturumunda</small>`
+        ? `${esc(account.caseTitle || account.caseKey)} <small class="hof-muted">· başka sayfada</small>`
         : `<a href="#" data-act="reveal" title="Kaydı tabloda aç">${esc(account.caseTitle || account.caseKey)}</a> <small>· Kayda git</small>`
       : `<span class="hof-muted">Bağlı değil${manage ? " · Düzenle ile bağlayın" : ""}</span>`;
     const sums = lines.reduce((acc, line) => ({ debit: acc.debit + line.debit, credit: acc.credit + line.credit }), { debit: 0, credit: 0 });

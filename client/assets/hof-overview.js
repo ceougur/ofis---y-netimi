@@ -670,7 +670,7 @@
     if (ref.type === "account" && ref.id) return HOF.accounts?.open(ref.id);
     if (ref.type === "cash") return HOF.can("cash.view") ? document.querySelector('#hof-sidecard [data-action="cash"]')?.click() : null;
     if (ref.type === "record" && ref.key) {
-      if (ref.current === false) return HOF.toast(`Bu kayıt “${ref.sessionName || "başka bir"}” veri oturumunda. Sol üstteki oturum seçiciden o oturumu açıp bakın.`, { type: "info" });
+      if (ref.current === false) return HOF.toast(`Bu kayıt “${ref.sessionName || "başka bir"}” sayfasında. Ortadaki sayfa şeridinden o sayfayı açıp bakın.`, { type: "info" });
       report?.modal?.close();
       return HOF.revealRecord?.(ref.key);
     }

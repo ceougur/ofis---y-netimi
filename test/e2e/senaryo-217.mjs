@@ -9,6 +9,9 @@
 //   1. Fatura Sil: kartta Sil (kaydedilmiş belge; etkiler geri alınır), listede Seçilenleri Sil (n) (iptal edilmişler komple),
 //      onay penceresinde sayı/tutar, Silinenler'de (Yönetim → Silinenler → Faturalar).
 //   8. Çek ciro: cari seçici tür kısıtsız (Müşteri türündeki cari bulunur, tür rozeti), "+ Yeni Cari", boş sonuç metni.
+//   2+3+13+6. Çoklu şirket: sol üst "Şirket · 001 · Unvan" seçici (oturum seçici kalktı), 002 sıfırdan açılır, ortada sayfa
+//      şeridi ("+ Sayfa": Excel / Google Sheets / Boş Sayfa), Yönetim → Şirketler (liste, yetki, birleşik rapor, Verisini
+//      Sıfırla kod + parola onayıyla), 001'e dönüşte sayılar aynı.
 // Çalıştırma: npm run test:senaryo-217 (ekran görüntüleri artifacts/senaryo-217/).
 import fs, { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -357,8 +360,9 @@ try {
     const label = (await admin.textContent(`${modal} .hof-acc-picker > span`)).replace(/\s+/g, " ").trim();
     ok(/^Ciro Edilen Cari/.test(label) && /Yeni Cari/.test(label), `etiket “Ciro Edilen Cari” + “+ Yeni Cari” (${label})`);
     await admin.fill(`${modal} .hof-acc-picker [data-acc-query]`, "Veli");
-    await admin.waitForSelector(`${modal} .hof-acc-picker li[data-id]`, { timeout: 8000 });
-    const hit = (await admin.textContent(`${modal} .hof-acc-picker li[data-id]`)).replace(/\s+/g, " ");
+    // Arama sonucu gecikmeli gelir: "Veli Market" satırı listelenene kadar beklenir (ilk satır varsayılan liste olabilir).
+    await admin.waitForFunction(sel => [...document.querySelectorAll(`${sel} .hof-acc-picker li[data-id]`)].some(li => /Veli Market/.test(li.textContent)), modal, { timeout: 8000 });
+    const hit = (await admin.$$eval(`${modal} .hof-acc-picker li[data-id]`, nodes => nodes.map(li => li.textContent).find(text => /Veli Market/.test(text)) || "")).replace(/\s+/g, " ");
     ok(/Veli Market/.test(hit) && /Müşteri/.test(hit), `Müşteri türündeki cari listede, tür rozetiyle (${hit.slice(0, 80)})`);
     await shot(admin, "ciro-cari-secici");
     await admin.fill(`${modal} .hof-acc-picker [data-acc-query]`, "Olmayan Firma");
@@ -367,7 +371,7 @@ try {
     ok(/Bu adla cari yok/.test(empty) && /Yeni Cari/.test(empty), `boş sonuçta “Bu adla cari yok — + Yeni Cari” (${empty})`);
     await admin.fill(`${modal} .hof-acc-picker [data-acc-query]`, "Veli");
     await admin.waitForSelector(`${modal} .hof-acc-picker li[data-id]`, { timeout: 8000 });
-    await (await admin.$(`${modal} .hof-acc-picker li[data-id]`)).dispatchEvent("mousedown");
+    await admin.evaluate(sel => [...document.querySelectorAll(`${sel} .hof-acc-picker li[data-id]`)].find(li => /Veli Market/.test(li.textContent))?.dispatchEvent(new MouseEvent("mousedown", { bubbles: true })), modal);
     await admin.click(`${modal} form [type="submit"]`);
     await admin.waitForTimeout(1500);
     const after = (await call(admin, `/api/workspace/cheques/${cheque.id}`)).data;
@@ -375,6 +379,74 @@ try {
     ok((await account(ids.other)).totals.balance === 3000, "ciro edilen carinin bakiyesi 3.000 borçlu (borç ödemesi olarak düşer)");
     await shot(admin, "ciro-sonrasi");
     await closeAll();
+  });
+  await step("2+3+13+6. Çoklu şirket arayüzden: sol üst şirket seçici, 002 açılır (sıfırdan), sayfa şeridi, Yönetim → Şirketler (yetki, sıfırla), 001'e dönüş", async () => {
+    await admin.goto(`${BASE}/`, { waitUntil: "load" });
+    await admin.waitForSelector("#hof-company [data-toggle]", { timeout: 20000 });
+    const label = (await admin.textContent("#hof-company .hof-session-text strong")).trim();
+    ok(/^001 · /.test(label), `sol üstte şirket seçici “${label}” (001 · unvan)`);
+    ok(!(await admin.$("#hof-session")), "eski “Çalışma Oturumu” seçicisi yok");
+    const pageWord = await admin.evaluate(() => document.querySelector(".sidebar")?.textContent || "");
+    ok(!/Çalışma Oturumu|Oturumları Yönet|Yeni Oturum/.test(pageWord), "sol menüde “Çalışma Oturumu / Oturumları Yönet” kalmadı");
+    // Sayfa şeridi ortada; "+ Sayfa" menüsünde Excel / Google Sheets / Boş Sayfa.
+    await admin.waitForSelector("#hof-pages [data-add]", { timeout: 10000 });
+    const pagesTop = await admin.$eval("#hof-pages", node => node.getBoundingClientRect().left);
+    const sidebarRight = await admin.$eval(".sidebar", node => node.getBoundingClientRect().right);
+    ok(pagesTop > sidebarRight, "sayfa şeridi orta alanda (kenar çubuğunun sağında)");
+    await admin.click("#hof-pages [data-add]");
+    const menuItems = await admin.$$eval("#hof-pages .hof-pages-menu [data-add-source] b", nodes => nodes.map(node => node.textContent));
+    ok(menuItems.join("|") === "Excel'den Aktar|Google Sheets'ten Aktar|Boş Sayfa", `+ Sayfa menüsü: ${menuItems.join(" / ")}`);
+    await shot(admin, "sayfa-seridi-menu");
+    await admin.keyboard.press("Escape");
+    const cashBefore = (await call(admin, "/api/workspace/cash")).data.totals.balance;
+    const accountsBefore = (await call(admin, "/api/workspace/accounts")).data.accounts.length;
+    // Yeni şirket seçiciden açılır ve seçilir; ekran o şirketle yeniden gelir.
+    await admin.click("#hof-company [data-toggle]");
+    await admin.waitForSelector("#hof-company .hof-session-menu:not([hidden])");
+    await admin.click("#hof-company [data-new]");
+    await admin.waitForSelector(`${modal} input[name="code"]`);
+    ok((await admin.inputValue(`${modal} input[name="code"]`)) === "002", "sıradaki kod 002 önerildi");
+    await admin.fill(`${modal} input[name="name"]`, "Gayri Resmi Ltd.");
+    await Promise.all([admin.waitForEvent("load", { timeout: 30000 }), admin.click(`${modal} form [type="submit"]`)]);
+    await admin.waitForSelector("#hof-company .hof-session-text strong", { timeout: 20000 });
+    await admin.waitForFunction(() => /^002 · /.test(document.querySelector("#hof-company .hof-session-text strong")?.textContent || ""), null, { timeout: 10000 });
+    ok(true, "002 · Gayri Resmi Ltd. seçildi; ekran yeniden açıldı");
+    ok((await call(admin, "/api/workspace/accounts")).data.accounts.length === 0 && (await call(admin, "/api/workspace/cash")).data.totals.balance === 0, "002 sıfırdan: cari yok, Kasa 0");
+    await admin.waitForSelector("#hof-start", { timeout: 15000 });
+    ok(!(await admin.$("#hof-pages")), "002'de veri yok: başlangıç ekranı; sayfa şeridi boş veriyle gizli");
+    await shot(admin, "sirket-002-bos");
+    // Sol alttaki senkron kartında şirket satırı.
+    const line = await admin.$eval(".sync-card .hof-company-line", node => node.textContent).catch(() => "");
+    ok(/^002 · /.test(line), `senkron kartında şirket satırı “${line}”`);
+    // Yönetim → Şirketler: liste, yetki tablosu, birleşik rapor, sıfırlama.
+    await admin.goto(`${BASE}/admin.html#companies`, { waitUntil: "load" });
+    await admin.waitForSelector('.adm-panel[data-panel="companies"]:not([hidden]) #adm-companies tr[data-company]', { timeout: 20000 });
+    const codes = await admin.$$eval("#adm-companies tr[data-company] td:first-child", nodes => nodes.map(node => node.textContent.trim()));
+    ok(codes.join(",") === "001,002", `Yönetim → Şirketler listesi: ${codes.join(", ")}`);
+    await admin.waitForSelector("#adm-company-access thead th", { timeout: 10000 });
+    await admin.click("#adm-company-report");
+    await admin.waitForSelector("#adm-company-report-out tfoot", { timeout: 15000 });
+    const foot = (await admin.textContent("#adm-company-report-out tfoot")).replace(/\s+/g, " ");
+    ok(/TOPLAM/.test(foot) && cell(foot, "TOPLAM") !== null, `birleşik rapor toplam satırı (${foot.slice(0, 60)}…)`);
+    await shot(admin, "yonetim-sirketler");
+    // 002'de bir hareket girilir, "Verisini Sıfırla" ile silinir (onay kod + parola), 001 etkilenmez.
+    await call(admin, "/api/workspace/cash", { kind: "in", amount: 777, date: TODAY, description: "002 deneme" });
+    ok((await call(admin, "/api/workspace/cash")).data.totals.balance === 777, "002 Kasa 777");
+    await admin.click('#adm-companies tr[data-company]:nth-child(2) [data-c-reset]');
+    await admin.waitForSelector(`${modal} input[name="confirm"]`);
+    await admin.fill(`${modal} input[name="confirm"]`, "002");
+    await admin.fill(`${modal} input[name="password"]`, PASS);
+    await admin.click(`${modal} form [type="submit"]`);
+    await admin.waitForFunction(() => [...document.querySelectorAll(".hof-toast")].some(node => /sıfırlandı/.test(node.textContent)), null, { timeout: 15000 });
+    ok((await call(admin, "/api/workspace/cash")).data.totals.balance === 0, "sıfırlama sonrası 002 Kasa 0");
+    // 001'e dönüş: eski sayılar aynen.
+    await admin.click('#adm-companies tr[data-company]:nth-child(1) [data-c-select]');
+    await admin.waitForFunction(() => [...document.querySelectorAll(".hof-toast")].some(node => /geçildi/.test(node.textContent)), null, { timeout: 10000 });
+    ok((await call(admin, "/api/workspace/cash")).data.totals.balance === cashBefore && (await call(admin, "/api/workspace/accounts")).data.accounts.length === accountsBefore, `001 verisi aynı (Kasa ${cashBefore}, ${accountsBefore} cari)`);
+    await admin.goto(`${BASE}/`, { waitUntil: "load" });
+    await admin.waitForFunction(() => /^001 · /.test(document.querySelector("#hof-company .hof-session-text strong")?.textContent || ""), null, { timeout: 20000 });
+    await admin.waitForSelector("#hof-pages .hof-page.is-current", { timeout: 10000 });
+    await shot(admin, "sirket-001-geri");
   });
 } catch (error) {
   console.error("\nHATA:", error.message);

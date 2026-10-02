@@ -152,7 +152,17 @@
     };
   }
 
-  function finish(result) {
+  let afterFinish = null; // v2.0.17: dönüştürmede kaydettikten sonra (yenilemeden önce) koşan iş
+  async function finish(result) {
+    if (afterFinish) {
+      const work = afterFinish;
+      afterFinish = null;
+      try {
+        await work(result);
+      } catch (error) {
+        console.error("[DestekOfis]", error);
+      }
+    }
     const counts = result.counts || {};
     const name = `"${result.sourceLabel || result.label}"`;
     const parts = [];
@@ -161,7 +171,7 @@
     if (counts.removed) parts.push(`${number(counts.removed)} kaldırıldı`);
     const detail = parts.length ? parts.join(", ") : "değişiklik yok";
     const head =
-      result.mode === "session" ? `${name} yeni oturumda açıldı: “${result.session?.name || ""}”, ${number(result.rowCount)} kayıt. Önceki veriler kendi oturumunda duruyor; sol menüdeki oturum seçiciyle geçebilirsiniz.`
+      result.mode === "session" ? `${name} yeni sayfada açıldı: “${result.session?.name || ""}”, ${number(result.rowCount)} kayıt. Önceki veriler kendi sayfasında duruyor; ortadaki sayfa şeridinden geçebilirsiniz.`
       : result.mode === "initial" ? `${name} yüklendi: ${number(result.rowCount)} kayıt.`
       : result.mode === "merge" ? `${name} devamı olarak eklendi: ${detail}.`
       : `${name} mevcut verinin yerine kondu: ${detail}.`;
@@ -183,7 +193,10 @@
     const busy = progress("Veri okunuyor", body.kind === "sheets" ? "Google Sheets okunuyor…" : `"${sourceLabel}" okunuyor…`);
     let staged;
     try {
-      if (body.kind === "excel" && body.file) {
+      if (body.kind === "excel" && body.sheets) {
+        // v2.0.17: serbest sayfadan "Veri Sekmesine Dönüştür" — matris hazır gelir, aynı ön izleme/eşleme ekranından geçer.
+        staged = await HOF.api("/api/workspace/dataset/stage", { method: "POST", body: { kind: "excel", fileName: body.fileName, sheets: body.sheets }, timeoutMs: 120_000 });
+      } else if (body.kind === "excel" && body.file) {
         const parsed = await parseInWorker(body.file);
         if (!parsed.rowCount) throw new Error("Dosyada okunabilir kayıt bulunamadı. Tablonun kolon başlıklarıyla başladığından emin olun.");
         busy.set(`Yaklaşık ${number(parsed.rowCount)} satır mevcut veriyle karşılaştırılıyor…`);
@@ -212,6 +225,7 @@
       return;
     }
     busy.close();
+    afterFinish = typeof options.onDone === "function" ? options.onDone : null;
     decide(staged, options);
   }
 
@@ -224,23 +238,23 @@
     // v2.0.1: farklı konudaki dosya (kolonları mevcut veriyle az örtüşen) yeni oturumda açılmalı; veriler karışmaz.
     const different = Boolean(staged.differentTopic);
     const preferSession = different || Boolean(options.session);
-    const defaultName = String(staged.label || "").replace(/\.(xlsx|xls|csv)$/i, "").trim() || "Yeni oturum";
+    const defaultName = String(staged.label || "").replace(/\.(xlsx|xls|csv)$/i, "").trim() || "Yeni sayfa";
     const overlap = staged.similarity == null ? "" : ` (ortak kolon oranı %${Math.round(staged.similarity * 100)})`;
     const modal = HOF.modal({
       title: `Yeni veri: ${staged.label}`,
       eyebrow: "VERİ",
       size: "wide",
-      body: `<p class="hof-modal-text">${number(staged.rowCount)} kayıt okundu${staged.tabs.length ? ` (${number(staged.tabs.length)} sekme)` : ""}. Şu anki oturum: <b>${esc(staged.session?.current || staged.current.label || "Çalışma verisi")}</b>, ${number(staged.current.rowCount)} kayıt. Nasıl açılsın?</p>
+      body: `<p class="hof-modal-text">${number(staged.rowCount)} kayıt okundu${staged.tabs.length ? ` (${number(staged.tabs.length)} sekme)` : ""}. Şu anki sayfa: <b>${esc(staged.session?.current || staged.current.label || "Çalışma verisi")}</b>, ${number(staged.current.rowCount)} kayıt. Nasıl açılsın?</p>
         ${readingHtml(staged.reading)}
         ${schemaHtml(staged.schema)}
         ${mappingHtml(staged.mapping)}
-        ${different ? `<div class="hof-alert">Bu dosya şu anki veriden <b>farklı bir konuda</b> görünüyor${esc(overlap)}. Veriler birbirine karışmasın diye <b>yeni oturumda açmanızı</b> öneririz.</div>` : ""}
+        ${different ? `<div class="hof-alert">Bu dosya şu anki veriden <b>farklı bir konuda</b> görünüyor${esc(overlap)}. Veriler birbirine karışmasın diye <b>yeni sayfada açmanızı</b> öneririz.</div>` : ""}
         <article class="hof-choice hof-choice-session ${preferSession ? "is-recommended" : ""}">
-          <header><b>Yeni Oturumda Aç</b>${preferSession ? '<span class="hof-chip">Önerilen</span>' : ""}</header>
-          <p>Dosya ayrı bir çalışma alanında açılır; şu anki veri, düzeltmeleri ve kayıtlarıyla olduğu gibi kalır. Oturumlar arasında sol menüdeki <b>oturum seçiciyle</b> geçilir; herkes kendi çalışacağı oturumu seçer.</p>
+          <header><b>Yeni Sayfada Aç</b>${preferSession ? '<span class="hof-chip">Önerilen</span>' : ""}</header>
+          <p>Dosya ayrı bir çalışma alanında açılır; şu anki veri, düzeltmeleri ve kayıtlarıyla olduğu gibi kalır. Sayfalar arasında ortadaki <b>sayfa şeridinden</b> geçilir; takvim, uyarılar ve raporlar bütün sayfaları kapsar.</p>
           <div class="hof-choice-session-row">
-            <label class="hof-field"><span>Oturumun Adı</span><input type="text" data-session-name maxlength="80" value="${esc(defaultName)}" ${preferSession ? "autofocus" : ""} placeholder="Ör. Taksit takibi 2026" autocomplete="off"></label>
-            <button type="button" class="hof-button ${preferSession ? "" : "hof-button-ghost"}" data-mode="session">Yeni Oturumda Aç</button>
+            <label class="hof-field"><span>Sayfanın Adı</span><input type="text" data-session-name maxlength="80" value="${esc(defaultName)}" ${preferSession ? "autofocus" : ""} placeholder="Ör. Taksit takibi 2026" autocomplete="off"></label>
+            <button type="button" class="hof-button ${preferSession ? "" : "hof-button-ghost"}" data-mode="session">Yeni Sayfada Aç</button>
           </div>
         </article>
         <div class="hof-choice-grid">
@@ -291,11 +305,11 @@
       const name = String(nameInput?.value || "").replace(/\s+/g, " ").trim();
       if (mode === "session" && !name) {
         nameInput.focus();
-        return HOF.toast("Yeni oturuma bir ad verin.", { type: "error" });
+        return HOF.toast("Yeni sayfaya bir ad verin.", { type: "error" });
       }
       modal.dialog.querySelectorAll("button, input").forEach(item => (item.disabled = true));
       button.classList.add("is-busy");
-      button.textContent = mode === "session" ? "Oturum açılıyor…" : "Uygulanıyor…";
+      button.textContent = mode === "session" ? "Sayfa açılıyor…" : "Uygulanıyor…";
       try {
         finish(await HOF.api("/api/workspace/dataset/commit", { method: "POST", body: { stageId: staged.stageId, mode, link, name, roles: chosenRoles(modal.dialog) }, timeoutMs: 180_000 }));
       } catch (error) {
@@ -466,7 +480,7 @@
         <section class="hof-data-section">
           <h3>Veri Ekle veya Değiştir</h3>
           <div class="hof-data-import">${dropHtml(true)}${linkHtml}</div>${templateHtml}
-          <p class="hof-modal-text hof-muted">Mevcut veri varsa önce ne değişeceği gösterilir; "yeni oturumda aç", "devamı olarak ekle" ya da "yerine koy" seçersiniz.</p>
+          <p class="hof-modal-text hof-muted">Mevcut veri varsa önce ne değişeceği gösterilir; "yeni sayfada aç", "devamı olarak ekle" ya da "yerine koy" seçersiniz.</p>
         </section>
         ${data.linked
           ? `<section class="hof-data-section">
@@ -676,7 +690,7 @@
       return;
     }
     if (!button) {
-      button = HOF.el("button", { type: "button", id: "hof-side-settings", class: "hof-side-settings", title: "Veri yükleme, çalışma oturumları ve bağlı tablo" }, `${GEAR}<span>Ayarlar</span>`);
+      button = HOF.el("button", { type: "button", id: "hof-side-settings", class: "hof-side-settings", title: "Veri yükleme, sayfalar ve bağlı tablo" }, `${GEAR}<span>Ayarlar</span>`);
       button.addEventListener("click", () => openDataSettings());
     }
     if (card.nextElementSibling !== button) card.after(button);
@@ -742,5 +756,7 @@
   });
   // picker: "yeni oturum aç" penceresi (hof-sessions.js) aynı dosya seçiciyi ve bağlantı alanını kullanır.
   const picker = { dropHtml, linkHtml, wireDrop, wireLink, sheetPattern: SHEET_PATTERN };
-  HOF.sources = { importExcel, importSheet, openDataSettings, openMissing, uploadExcel: importExcel, picker };
+  // importMatrix (v2.0.17): tarayıcıda hazır matris (serbest sayfadan dönüştürme) — aynı ön izleme/eşleme ekranı.
+  const importMatrix = (body, label, options = {}) => runImport({ kind: "excel", ...body }, label, options);
+  HOF.sources = { importExcel, importSheet, importMatrix, openDataSettings, openMissing, uploadExcel: importExcel, picker };
 })();
