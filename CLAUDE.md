@@ -106,6 +106,7 @@ Bağlam kopsa da bu düzen değişmez. Kullanıcı "zip ver" dediğinde şu üç
   uzman UI/UX + baş mimar/mühendis gözüyle; her madde test + kanıt):
   1. Fatura formu → Kalemler: ürün adı yazınca açılan öneri listesi kalem tablosunun içinde kalıyor, altı görünmüyor
      (tablo kaydırma kutusu listeyi kırpıyor; ekran: kalem satırında "ANT", liste tablonun altında kesik).
+  2. Fatura formu → Kalemler: KDV açılır kutusu dar; "%20" sığmıyor, "%2(" gibi kesik görünüyor (kolon genişliği).
 - e-Belge kararı (kullanıcı, 01.10.2026): vergi dairesi/entegratör bağlantısı KAPALI — "sana entegre et diyene kadar".
   Fatura modülü tam çalışır; belge "Müşteri Fişi" (resmî hükmü yok) basılır; e-Fatura/e-Arşiv/XML ekranda görünmez.
   Entegratör altyapısı (müşteri kendi API bilgisini girer, kontörü kendisi alır) hazır tutulur ama `config.edocEnabled`
