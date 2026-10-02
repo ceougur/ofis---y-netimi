@@ -116,6 +116,8 @@ Bağlam kopsa da bu düzen değişmez. Kullanıcı "zip ver" dediğinde şu üç
   5. Ödeme yolu adı yöne göre: TAHSİLATTA (para girişi: cari/taksit/fatura/stok satışı/Kasa) "Kredi Kartı" yerine "POS";
      ÖDEMEDE (bizim yaptığımız: alış, gider, tedarikçi) "Kredi Kartı". Tüm ekranlar, açılır listeler, makbuz/ekstre/PDF/
      Excel, raporlar, Kasa göstergeleri. (Kayıtlı değer `card` aynı kalır; yalnız görünen ad yöne göre.)
+  6. Cari kartındaki "PDF" düğmesi "Cari Ekstre - PDF" olacak (ortak `outputButtons` düğmesi; kartın yanında Yazdır da var —
+     aynı mantıkla diğer kartlarda da ne indirdiği belli olsun: Taksit Ekstresi, Fatura, Çek/Senet, liste PDF'leri).
 - e-Belge kararı (kullanıcı, 01.10.2026): vergi dairesi/entegratör bağlantısı KAPALI — "sana entegre et diyene kadar".
   Fatura modülü tam çalışır; belge "Müşteri Fişi" (resmî hükmü yok) basılır; e-Fatura/e-Arşiv/XML ekranda görünmez.
   Entegratör altyapısı (müşteri kendi API bilgisini girer, kontörü kendisi alır) hazır tutulur ama `config.edocEnabled`
