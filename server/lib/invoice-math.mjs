@@ -53,6 +53,7 @@ export const STOPPAGE_DEFAULT = 20;
 export const SCENARIOS = Object.freeze({
   goods_sale: { kind: "sale", label: "Stoktan Satış", line: "goods", hint: "Stoktaki ürünü satarsınız; stok düşer, müşterinin carisine borç yazılır." },
   service_sale: { kind: "sale", label: "Hizmet Satışı", line: "service", hint: "Hizmet, abonelik, kira, servis, eğitim gibi stoksuz satışlar." },
+  price_difference: { kind: "sale", label: "Fiyat Farkı Faturası", line: "service", hint: "Daha önce kesilen faturanın fiyat ya da kur farkı; stoksuz kalemle kesilir, müşterinin carisine borç yazılır." },
   smm: { kind: "smm", label: "Serbest Meslek Makbuzu", line: "service", hint: "Avukat, hekim, mali müşavir, mimar: brüt ücret, stopaj ve KDV." },
   sale_return: { kind: "sale_return", label: "Satıştan İade", line: "goods", hint: "Müşterinin geri getirdiği mal ya da iptal edilen hizmet; kesilen faturadan seçilir." },
   goods_purchase: { kind: "purchase", label: "Stoğa Mal Alışı", line: "goods", hint: "Tedarikçiden alınan ürün stoğa girer; tedarikçinin carisine alacak yazılır." },

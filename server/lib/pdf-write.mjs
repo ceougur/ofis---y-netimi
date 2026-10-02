@@ -235,6 +235,32 @@ const pdfDate = date => {
   return `D:${date.getFullYear()}${pad(date.getMonth() + 1)}${pad(date.getDate())}${pad(date.getHours())}${pad(date.getMinutes())}${pad(date.getSeconds())}${sign}${pad(Math.floor(Math.abs(offset) / 60))}'${pad(Math.abs(offset) % 60)}'`;
 };
 
+/** JPEG başlığından genişlik, yükseklik ve kanal sayısı; JPEG değilse ya da okunamazsa null. */
+export function jpegInfo(buffer) {
+  const data = Buffer.isBuffer(buffer) ? buffer : Buffer.from(buffer);
+  if (data.length < 4 || data[0] !== 0xff || data[1] !== 0xd8) return null;
+  let offset = 2;
+  while (offset + 9 < data.length) {
+    if (data[offset] !== 0xff) {
+      offset += 1;
+      continue;
+    }
+    const marker = data[offset + 1];
+    if (marker === 0xd8 || (marker >= 0xd0 && marker <= 0xd7) || marker === 0x01 || marker === 0xff) {
+      offset += marker === 0xff ? 1 : 2;
+      continue;
+    }
+    const length = data.readUInt16BE(offset + 2);
+    if (marker >= 0xc0 && marker <= 0xcf && ![0xc4, 0xc8, 0xcc].includes(marker)) {
+      const info = { height: data.readUInt16BE(offset + 5), width: data.readUInt16BE(offset + 7), components: data[offset + 9] };
+      return info.width > 0 && info.height > 0 ? info : null;
+    }
+    if (marker === 0xda) return null;
+    offset += 2 + length;
+  }
+  return null;
+}
+
 export class PdfDocument {
   constructor({ fonts, size = A4, title = "", author = "", subject = "" }) {
     this.size = size;
@@ -312,6 +338,17 @@ export class PdfDocument {
     return page;
   }
 
+  // JPEG görsel (v2.0.15: fatura logosu). Veri PDF'e olduğu gibi (DCTDecode) gömülür; boyut SOF başlığından okunur.
+  image(buffer) {
+    const data = Buffer.isBuffer(buffer) ? buffer : Buffer.from(buffer);
+    const info = jpegInfo(data);
+    if (!info) throw new Error("Görsel JPEG olmalı.");
+    this.images ||= [];
+    const entry = { resource: `Im${this.images.length + 1}`, data, width: info.width, height: info.height, components: info.components };
+    this.images.push(entry);
+    return entry;
+  }
+
   toBuffer({ now = new Date() } = {}) {
     const objects = [];
     const add = body => {
@@ -356,7 +393,11 @@ export class PdfDocument {
       const fontId = add(`<< /Type /Font /Subtype /Type0 /BaseFont /${baseFont} /Encoding /Identity-H /DescendantFonts [${cidId} 0 R] /ToUnicode ${toUnicodeId} 0 R >>`);
       fontRefs.push(`/${entry.resource} ${fontId} 0 R`);
     }
-    const resources = `<< /Font << ${fontRefs.join(" ")} >> >>`;
+    const imageRefs = (this.images || []).map(image => {
+      const id = add(stream(`/Type /XObject /Subtype /Image /Width ${image.width} /Height ${image.height} /ColorSpace ${image.components === 1 ? "/DeviceGray" : image.components === 4 ? "/DeviceCMYK" : "/DeviceRGB"} /BitsPerComponent 8 /Filter /DCTDecode`, image.data, false));
+      return `/${image.resource} ${id} 0 R`;
+    });
+    const resources = `<< /Font << ${fontRefs.join(" ")} >>${imageRefs.length ? ` /XObject << ${imageRefs.join(" ")} >>` : ""} >>`;
     const pageIds = this.pages.map(page => {
       const contentId = add(stream("", Buffer.from(page.ops.join("\n"), "latin1")));
       return add(`<< /Type /Page /Parent ${pagesId} 0 R /MediaBox [0 0 ${num(this.size.width)} ${num(this.size.height)}] /Resources ${resources} /Contents ${contentId} 0 R >>`);
@@ -426,6 +467,12 @@ class PdfPage {
     } else parts.push(`${num(x)} ${num(bottom)} ${num(width)} ${num(height)} re`);
     parts.push(fill && stroke ? "B" : fill ? "f" : "S", "Q");
     this.ops.push(parts.join(" "));
+    return this;
+  }
+
+  // Görsel: sol üst köşe (x, top), çizim genişliği ve yüksekliği (nokta).
+  image(entry, x, top, width, height) {
+    this.ops.push(`q ${num(width)} 0 0 ${num(height)} ${num(x)} ${num(this.y(top + height))} cm /${entry.resource} Do Q`);
     return this;
   }
 

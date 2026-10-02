@@ -18,6 +18,7 @@ import { readUbl } from "../lib/einvoice/ubl-read.mjs";
 import { buildUbl, ublFileName } from "../lib/einvoice/ubl-tr.mjs";
 import { HttpError, limited, ok, parseJson, readJson, sendBuffer, text } from "../lib/http.mjs";
 import { invoicePdf } from "../lib/invoice-pdf.mjs";
+import { jpegInfo } from "../lib/pdf-write.mjs";
 import { CURRENCIES, EXEMPTIONS, EXPENSES, INVOICE_KINDS, InvoiceInputError, SCENARIOS, STOPPAGE_DEFAULT, VAT_RATES, WITHHOLDING, amountInWords, computeInvoice, grossFromNet, lineAccount, toTry, typeCode } from "../lib/invoice-math.mjs";
 import { PAY_STATES, settleInvoices } from "../lib/invoice-settle.mjs";
 import { parseAmount, roundMoney } from "../lib/money.mjs";
@@ -55,7 +56,8 @@ const E_TRACKED = new Set(["processing", "sent", "accepted", "rejected", "error"
 const SIDE_KINDS = { sale: ["sale", "smm", "sale_return"], purchase: ["purchase", "purchase_return"] };
 const MAX_LINES = 500;
 const DEFAULTS = Object.freeze({
-  seller: { name: "", partyKind: "company", firstName: "", familyName: "", taxNo: "", taxOffice: "", mersisNo: "", tradeRegistry: "", address: "", district: "", city: "", postalCode: "", country: "Türkiye", phone: "", email: "", website: "", banks: [] },
+  // logo: belgenin sol üstüne basılan JPEG (data:image/jpeg;base64,…; en çok LOGO_MAX_BYTES). Belgeye kopyalanmaz (seller_json'a girmez); PDF her zaman güncel logoyu basar.
+  seller: { name: "", partyKind: "company", firstName: "", familyName: "", taxNo: "", taxOffice: "", mersisNo: "", tradeRegistry: "", address: "", district: "", city: "", postalCode: "", country: "Türkiye", phone: "", email: "", website: "", banks: [], logo: "" },
   // e-Dönüşüm (firmanın GİB'e kayıtlı olduğu sistemler). e-Arşiv, e-Fatura kaydı olmadan kullanılamaz.
   efatura: false,
   earsiv: false,
@@ -63,12 +65,15 @@ const DEFAULTS = Object.freeze({
   // paper: programın kestiği bilgi fişi / kâğıt belge serisi (FIS2026000000001); e-Belge serileri bağlantı açılınca.
   series: { paper: "FIS", earsiv: "EAR", efatura: "EFT", smm: "SMM", esmm: "ESM", internal: "IAD" },
   start: {},
-  defaults: { vatRate: 20, pricesIncludeVat: false, stoppageRate: STOPPAGE_DEFAULT, efaturaProfile: "TEMELFATURA", dueDays: 0, footer: "", saleScenario: "", purchaseScenario: "" },
+  // signatureArea: PDF'in altında "Teslim Alan" ve "Düzenleyen (Kaşe / İmza)" kutuları (v2.0.15, QA A9).
+  defaults: { vatRate: 20, pricesIncludeVat: false, stoppageRate: STOPPAGE_DEFAULT, efaturaProfile: "TEMELFATURA", dueDays: 0, footer: "", saleScenario: "", purchaseScenario: "", signatureArea: true },
   // Entegratör bağlantısı (kullanıcı kararı: şimdilik yalnız EDM Bilişim). Parola veritabanında şifreli tutulur
   // (lib/secret-box.mjs); ekrana ve günlüğe hiç çıkmaz.
   integrator: { id: "edm", env: "test", baseUrl: "", username: "", passwordSealed: "", senderAlias: "", autoSend: false },
 });
 const clone = value => JSON.parse(JSON.stringify(value));
+const LOGO_MAX_BYTES = 150 * 1024;
+const LOGO_MAX_SIDE = 1200;
 const fail400 = (message, field = "", extra = {}) => {
   throw new HttpError(400, message, { code: "invoice-invalid", field, ...extra });
 };
@@ -109,6 +114,18 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, conf
     if (!Array.isArray(out.seller.banks)) out.seller.banks = [];
     return out;
   }
+  // Logo: yalnız JPEG, data URL, en çok 150 KB ve 1200 piksel (PDF'e olduğu gibi gömülür; dev dosya her belgeyi şişirir).
+  function logoInput(value) {
+    if (value === null || value === "" || value === false) return "";
+    const match = /^data:image\/jpeg;base64,([A-Za-z0-9+/=\s]+)$/i.exec(String(value || ""));
+    if (!match) fail400("Logo JPEG olmalı (ekrandan seçilen görsel programca JPEG'e çevrilir).", "seller.logo");
+    const raw = Buffer.from(match[1].replace(/\s+/g, ""), "base64");
+    if (raw.length > LOGO_MAX_BYTES) fail400(`Logo en çok ${Math.round(LOGO_MAX_BYTES / 1024)} KB olmalı (şu an ${Math.round(raw.length / 1024)} KB).`, "seller.logo");
+    const info = jpegInfo(raw);
+    if (!info) fail400("Logo dosyası okunamadı; geçerli bir JPEG seçin.", "seller.logo");
+    if (info.width > LOGO_MAX_SIDE || info.height > LOGO_MAX_SIDE) fail400(`Logo en çok ${LOGO_MAX_SIDE} piksel olmalı (${info.width}×${info.height}).`, "seller.logo");
+    return `data:image/jpeg;base64,${raw.toString("base64")}`;
+  }
   function settingsInput(body, previous) {
     const next = clone(previous);
     const seller = body.seller && typeof body.seller === "object" ? body.seller : {};
@@ -131,6 +148,7 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, conf
       email: pick("email", 160, "E-Posta"),
       website: pick("website", 200, "Web Sitesi"),
       banks: (Array.isArray(seller.banks) ? seller.banks : previous.seller.banks || []).slice(0, 4).map(bank => ({ name: limited(bank?.name, 80, "Banka"), iban: normalizeIban(bank?.iban) })).filter(bank => bank.iban || bank.name),
+      logo: seller.logo === undefined ? previous.seller.logo || "" : logoInput(seller.logo),
     };
     if (next.seller.taxNo) {
       const id = classifyTaxId(next.seller.taxNo);
@@ -182,6 +200,7 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, conf
         next.defaults.dueDays = days;
       }
       if (d.footer !== undefined) next.defaults.footer = limited(d.footer, 500, "Fatura Alt Notu");
+      if (d.signatureArea !== undefined) next.defaults.signatureArea = d.signatureArea === true;
       if (d.saleScenario !== undefined) next.defaults.saleScenario = SCENARIOS[d.saleScenario] && ["sale", "smm"].includes(SCENARIOS[d.saleScenario].kind) ? d.saleScenario : "";
       if (d.purchaseScenario !== undefined) next.defaults.purchaseScenario = SCENARIOS[d.purchaseScenario]?.kind === "purchase" ? d.purchaseScenario : "";
     }
@@ -210,6 +229,7 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, conf
   const sellerProblems = (profile, s = settings()) => partyProblems(sellerParty(s), { profile: profile === "KAGIT" ? "KAGIT" : profile === "EARSIVFATURA" ? "EARSIV" : profile === "ESMM" ? "EARSIV" : "EFATURA", role: "seller" });
   const sellerParty = s => {
     const seller = { ...s.seller };
+    delete seller.logo;
     if (seller.partyKind === "person" && (!seller.firstName || !seller.familyName)) Object.assign(seller, { ...splitPersonName(seller.name), ...(seller.firstName ? { firstName: seller.firstName } : {}), ...(seller.familyName ? { familyName: seller.familyName } : {}) });
     return seller;
   };
@@ -1494,18 +1514,86 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, conf
     writeDraft(user, doc, { id: existing.id });
     ok(res, detail(existing.id, user));
   });
-  router.post("/api/workspace/invoices/:id/issue", async ({ req, res, params }) => {
-    const user = requireManage(req);
-    const existing = invoiceRow(params.id);
+  // Taslağı kes: gövdedeki alanlar taslağın üstüne yazılır (Düzenle ve Kes); toplu kesmede yalnız zorlama ve e-Belge seçimi gelir.
+  async function issueDraft(user, id, body) {
+    const existing = invoiceRow(id);
     if (existing.status !== "draft") throw new HttpError(409, "Bu fatura zaten kesilmiş.", { code: "invoice-not-draft" });
-    const body = await readJson(req, { limit: 2_000_000 });
     const lines = linesOf(existing.id).map(line => ({ itemId: line.itemId, name: line.name, code: line.code, description: line.description, unit: line.unit, qty: line.qty, unitPrice: line.unitPrice, discountRate: line.discountRate, vatRate: line.vatRate, withholdingCode: line.withholdingCode, exemptionCode: line.exemptionCode, expenseCode: line.expenseCode, originLineId: line.originLineId }));
     const merged = { kind: existing.kind, scenario: existing.scenario, accountId: existing.accountId, originalId: existing.originalId, lines, buyer: parseJson(existing.partyJson, {}), payment: parseJson(existing.paymentJson, {}), ...body };
     const doc = documentInput(merged, { mode: "issue", existing });
     const payment = paymentInput(merged, doc, user);
     writeIssued(user, doc, payment, { id: existing.id, force: forceOf(body), defer: body.eSend === "later" });
     const autoSend = await sendChoice(user, existing.id, body.eSend);
-    ok(res, { ...detail(existing.id, user), ...(autoSend ? { autoSend } : {}) });
+    return { ...detail(existing.id, user), ...(autoSend ? { autoSend } : {}) };
+  }
+  router.post("/api/workspace/invoices/:id/issue", async ({ req, res, params }) => {
+    const user = requireManage(req);
+    const body = await readJson(req, { limit: 2_000_000 });
+    ok(res, await issueDraft(user, params.id, body));
+  });
+  // Toplu işlemler (v2.0.15, QA A6): seçilen taslaklar tarih sırasıyla kesilir, seçilen belgeler iptal edilir. Her belge
+  // kendi işleminde (biri düşerse diğerleri etkilenmez); sonuç belge belge döner. En çok 200 belge.
+  const bulkIds = body => [...new Set((Array.isArray(body.ids) ? body.ids : []).map(value => text(value)).filter(Boolean))].slice(0, 200);
+  const bulkError = error => ({ ok: false, message: error?.message || String(error), code: error?.extra?.code || "", status: error?.status || 500 });
+  router.post("/api/workspace/invoices/bulk-issue", async ({ req, res }) => {
+    const user = requireManage(req);
+    const body = await readJson(req);
+    const ids = bulkIds(body);
+    if (!ids.length) fail400("Kesilecek taslak seçilmedi.", "ids");
+    const rows = ids.map(id => {
+      try {
+        return invoiceRow(id);
+      } catch (error) {
+        return { id, missing: error };
+      }
+    });
+    // Tarih sırası: eski tarihli taslak önce kesilir (seri kronolojisi; aynı günde kayıt sırası).
+    rows.sort((a, b) => `${a.issueDate || ""} ${a.issueTime || ""} ${a.createdAt || ""}`.localeCompare(`${b.issueDate || ""} ${b.issueTime || ""} ${b.createdAt || ""}`));
+    const options = { force: body.force === true, cashForce: body.cashForce === true, eSend: body.eSend === "later" ? "later" : body.eSend === "now" ? "now" : "" };
+    const results = [];
+    for (const row of rows) {
+      if (row.missing) {
+        results.push({ id: row.id, ...bulkError(row.missing) });
+        continue;
+      }
+      try {
+        const doc = await issueDraft(user, row.id, options);
+        results.push({ id: row.id, ok: true, number: doc.number, displayNo: doc.displayNo, accountName: doc.accountName, payable: doc.payableTotal, ...(doc.autoSend ? { autoSend: doc.autoSend } : {}) });
+      } catch (error) {
+        results.push({ id: row.id, accountName: row.accountName, ...bulkError(error) });
+      }
+    }
+    ok(res, { results, issued: results.filter(item => item.ok).length, failed: results.filter(item => !item.ok).length });
+  });
+  router.post("/api/workspace/invoices/bulk-cancel", async ({ req, res }) => {
+    const user = requireManage(req);
+    const body = await readJson(req);
+    const ids = bulkIds(body);
+    if (!ids.length) fail400("İptal edilecek belge seçilmedi.", "ids");
+    const options = { reason: text(body.reason), force: body.force === true, cashForce: body.cashForce === true, confirmExternal: body.confirmExternal === true, localOnly: body.localOnly === true };
+    const results = [];
+    // Yeni tarihli belge önce iptal edilir (iade faturası asıl faturadan önce; aynı seçimde ikisi de varsa sıra tutar).
+    const rows = ids.map(id => {
+      try {
+        return invoiceRow(id);
+      } catch (error) {
+        return { id, missing: error };
+      }
+    });
+    rows.sort((a, b) => `${b.issueDate || ""} ${b.createdAt || ""}`.localeCompare(`${a.issueDate || ""} ${a.createdAt || ""}`));
+    for (const row of rows) {
+      if (row.missing) {
+        results.push({ id: row.id, ...bulkError(row.missing) });
+        continue;
+      }
+      try {
+        const doc = await cancelInvoice(user, row.id, options);
+        results.push({ id: row.id, ok: true, number: doc.number, displayNo: doc.displayNo, accountName: doc.accountName });
+      } catch (error) {
+        results.push({ id: row.id, number: row.number, accountName: row.accountName, ...bulkError(error) });
+      }
+    }
+    ok(res, { results, cancelled: results.filter(item => item.ok).length, failed: results.filter(item => !item.ok).length });
   });
   router.delete("/api/workspace/invoices/:id", async ({ req, res, params }) => {
     const user = requireManage(req);
@@ -1521,11 +1609,9 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, conf
     publish(user, { kind: "invoices", invoiceId: existing.id });
     ok(res, { id: existing.id });
   });
-  router.post("/api/workspace/invoices/:id/cancel", async ({ req, res, params }) => {
-    const user = requireManage(req);
-    const body = await readJson(req);
+  async function cancelInvoice(user, id, body) {
     const options = { reason: text(body.reason), force: forceOf(body), confirmExternal: body.confirmExternal === true };
-    const existing = invoiceRow(params.id);
+    const existing = invoiceRow(id);
     // e-Arşiv: entegratörde de iptal edilir (EDM: taslak, hatalı ya da başarıyla oluşturulmuş e-Arşiv iptal edilebilir).
     // Önce programdaki iptal denenir (iade, kilitli dönem, tahsil edilmiş çek, stok…); geçerse entegratör, sonra program.
     const remote = edocEnabled && existing.status === "issued" && existing.profile === "EARSIVFATURA" && ["processing", "sent", "accepted", "error"].includes(existing.eStatus) && body.localOnly !== true;
@@ -1539,16 +1625,22 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, conf
         audit(user, "invoice.e.cancelled", existing.id, { number: existing.number, adapter: existing.eAdapter });
       });
       const row = cancel(user, existing.id, { ...options, confirmExternal: true });
-      return ok(res, { ...detail(row.id, user), integratorResult: result });
+      return { ...detail(row.id, user), integratorResult: result };
     }
     const row = cancel(user, existing.id, options);
-    ok(res, detail(row.id, user));
+    return detail(row.id, user);
+  }
+  router.post("/api/workspace/invoices/:id/cancel", async ({ req, res, params }) => {
+    const user = requireManage(req);
+    const body = await readJson(req);
+    ok(res, await cancelInvoice(user, params.id, body));
   });
 
   // ---------- Belge çıktıları ----------
   const pdfFor = (ids, user) => {
     const docs = ids.map(id => detail(id, user));
-    return invoicePdf(docs, { footer: settings().defaults.footer, officeName: store.setting("office.name", "") || "" });
+    const s = settings();
+    return invoicePdf(docs, { footer: s.defaults.footer, officeName: store.setting("office.name", "") || "", logo: s.seller.logo, signatureArea: s.defaults.signatureArea === true });
   };
   const safeName = value => String(value || "Fatura").replace(/[^\p{L}\p{N} _.-]+/gu, "-").slice(0, 80);
   router.get("/api/workspace/invoices/:id/fatura.pdf", async ({ req, res, params, url }) => {

@@ -537,7 +537,9 @@
       }
     });
   }
-  async function editAccount(account, preset = null) {
+  // options.onSaved(result): başka ekrandan (ör. fatura formu "+ Yeni Cari") açıldığında kayıt sonrası Cari penceresi
+  // açılmaz; sonuç çağırana verilir.
+  async function editAccount(account, preset = null, options = {}) {
     const groups = await groupsNow();
     const link = { caseKey: account?.caseKey || preset?.caseKey || "", caseSource: account?.caseSource || "", caseTitle: account?.caseTitle || preset?.caseTitle || "" };
     let fieldsBox = null;
@@ -652,6 +654,11 @@
         if (!account) Object.assign(payload, { openingBalance: data.openingBalance, openingSide: data.openingSide || "auto" });
         const result = account ? await HOF.api(`/api/workspace/accounts/${encodeURIComponent(account.id)}`, { method: "PUT", body: payload }) : await HOF.api("/api/workspace/accounts", { method: "POST", body: payload });
         HOF.toast(account ? "Cari güncellendi." : "Cari açıldı.", { type: "success" });
+        if (typeof options.onSaved === "function") {
+          HOF.emit("accounts-changed", { accountId: result.id });
+          options.onSaved(result);
+          return;
+        }
         if (!modal) open(result.id);
         view.id = result.id;
         view.mode = "card";
@@ -1089,7 +1096,7 @@
     picker,
     bulkPlanForm,
     forCase: key => HOF.api(`/api/workspace/cases/${encodeURIComponent(key)}/account`),
-    newFor: preset => (canManage() ? editAccount(null, preset) : HOF.toast("Cari açmak yönetici, uzman ve muhasebe yetkisidir.", { type: "error" })),
+    newFor: (preset, options = {}) => (canManage() ? editAccount(null, preset, options) : HOF.toast("Cari açmak yönetici, uzman ve muhasebe yetkisidir.", { type: "error" })),
     // Raporlar (v2.0.9): cari defteri boşken "Tablodaki kişileri cari yap" (Cari → Tablodan al ile aynı akış).
     fromTable: () => (canManage() ? importFromTable() : HOF.toast("Cari açmak yönetici, uzman ve muhasebe yetkisidir.", { type: "error" })),
     collect: async accountId => {

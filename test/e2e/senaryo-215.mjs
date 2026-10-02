@@ -420,6 +420,97 @@ try {
       await edocApp.close?.();
     }
   });
+
+  await step("12. Formdan “+ Yeni Cari”: cari kartı formdan ayrılmadan açılır, kaydedilince seçili gelir", async () => {
+    await admin.click("#hof-sidecard [data-action=invoices]");
+    await admin.waitForSelector(`${inv} [data-act="new"]`);
+    await admin.click(`${inv} [data-act="new"]`);
+    await admin.waitForSelector(`${inv} .hof-inv-pick`);
+    ok(Boolean(await admin.$(`${inv} [data-scenario="price_difference"]`)), "senaryo seçiminde Fiyat Farkı Faturası var");
+    await admin.click(`${inv} [data-scenario="service_sale"]`);
+    await admin.waitForSelector(`${inv} .hof-inv-account-new`);
+    await admin.click(`${inv} .hof-inv-account-new`);
+    const accForm = ".hof-modal-backdrop.is-visible form [name=\"name\"]";
+    await admin.waitForSelector(accForm, { timeout: 8000 });
+    await admin.fill(accForm, "Karatay Nakliyat Ltd.");
+    await admin.fill(".hof-modal-backdrop.is-visible form [name=\"email\"]", "info@karatay-nakliyat.example");
+    await shot(admin, "yeni-cari-formdan");
+    await admin.click(".hof-modal-backdrop.is-visible form button[type=\"submit\"]");
+    await admin.waitForFunction(sel => /Karatay Nakliyat/.test(document.querySelector(sel)?.value || ""), `${inv} [data-acc-query]`, { timeout: 8000 });
+    ok(true, "yeni cari kaydedilince fatura formunda seçili geldi");
+    await admin.click(`${inv} [data-l="0"][data-f="name"]`);
+    await admin.keyboard.type("Nakliye hizmeti");
+    await admin.fill(`${inv} [data-l="0"][data-f="qty"]`, "1");
+    await admin.fill(`${inv} [data-l="0"][data-f="unitPrice"]`, "1000");
+    await admin.waitForTimeout(900);
+    ids.serviceNo = await issue();
+    const text = await admin.textContent(inv);
+    ok(/Karatay Nakliyat/.test(text), "kesilen belge yeni cariye");
+    ok(Boolean(await admin.$(`${inv} [data-act="email"]`)), "kartta E-Posta düğmesi var");
+    ok((await admin.getAttribute(`${inv} [data-act="email"]`, "data-mail")) === "info@karatay-nakliyat.example", "E-Posta düğmesi cari kartındaki adrese gider");
+    await shot(admin, "kart-e-posta");
+    await closeAll();
+  });
+
+  await step("13. Toplu işlemler: Taslaklar sekmesinde Seçilenleri Kes; Satış sekmesinde Seçilenleri İptal Et", async () => {
+    const d1 = await call(admin, "/api/workspace/invoices", { scenario: "service_sale", accountId: ids.customer, status: "draft", lines: [{ name: "Aylık bakım", qty: 1, unitPrice: 500, vatRate: 20 }], payment: { rest: "open" } });
+    const d2 = await call(admin, "/api/workspace/invoices", { scenario: "service_sale", accountId: ids.twinA, status: "draft", lines: [{ name: "Kurulum", qty: 1, unitPrice: 300, vatRate: 20 }], payment: { rest: "open" } });
+    ok(d1.status === 200 && d2.status === 200, "iki taslak hazırlandı");
+    await admin.click("#hof-sidecard [data-action=invoices]");
+    await admin.waitForSelector(`${inv} [data-tab="drafts"]`);
+    await admin.click(`${inv} [data-tab="drafts"]`);
+    await admin.waitForSelector(`${inv} tr[data-inv]`);
+    await admin.click(`${inv} [data-sel-all]`);
+    await admin.waitForSelector(`${inv} [data-act="bulk-issue"]`);
+    ok(/Seçilenleri Kes \(2\)/.test(await admin.textContent(`${inv} [data-act="bulk-issue"]`)), "Seçilenleri Kes (2) düğmesi");
+    await shot(admin, "toplu-kes-secim");
+    await admin.click(`${inv} [data-act="bulk-issue"]`);
+    await confirmYes();
+    await admin.waitForTimeout(1500);
+    const issued = (await call(admin, "/api/workspace/invoices?tab=sale")).data.invoices.filter(x => [d1.data.id, d2.data.id].includes(x.id));
+    ok(issued.length === 2 && issued.every(x => x.status === "issued"), "iki taslak toplu kesildi");
+    ok((await account(ids.twinA)).totals.balance === 360, `toplu kesilen belge cariye işlendi (${(await account(ids.twinA)).totals.balance})`);
+    await admin.click(`${inv} [data-tab="sale"]`);
+    await admin.waitForSelector(`${inv} tr[data-inv]`);
+    for (const id of [d1.data.id, d2.data.id]) await admin.click(`${inv} tr[data-inv="${id}"] input[data-sel]`);
+    await admin.waitForSelector(`${inv} [data-act="bulk-cancel"]`);
+    ok(/Seçilenleri İptal Et \(2\)/.test(await admin.textContent(`${inv} [data-act="bulk-cancel"]`)), "Seçilenleri İptal Et (2) düğmesi");
+    await admin.click(`${inv} [data-act="bulk-cancel"]`);
+    await admin.waitForSelector(`${modal} form [name="reason"]`);
+    await admin.fill(`${modal} form [name="reason"]`, "Deneme belgeleri");
+    await shot(admin, "toplu-iptal-formu");
+    await admin.click(`${modal} form button[type="submit"]`);
+    await admin.waitForTimeout(1500);
+    const cancelled = (await call(admin, "/api/workspace/invoices?tab=cancelled")).data.invoices.filter(x => [d1.data.id, d2.data.id].includes(x.id));
+    ok(cancelled.length === 2, "iki belge toplu iptal edildi");
+    ok((await account(ids.twinA)).totals.balance === 0, "iptalle cari borcu geri alındı");
+    ok((await call(admin, "/api/workspace/ledger/integrity")).data.ok, "mutabakat kapısı tutarlı");
+    await closeAll();
+  });
+
+  await step("14. Fatura Ayarları: logo yüklenir (JPEG'e çevrilir), kaşe / imza seçeneği; PDF'te logo", async () => {
+    await admin.click("#hof-sidecard [data-action=invoices]");
+    await admin.waitForSelector(`${inv} [data-act="settings"]`);
+    await admin.click(`${inv} [data-act="settings"]`);
+    await admin.waitForSelector(`${inv} [data-logo-file]`, { state: "attached" });
+    ok(await admin.isChecked(`${inv} [data-s="defaults.signatureArea"]`), "kaşe / imza kutuları varsayılan açık");
+    await (await admin.$(`${inv} [data-logo-file]`)).setInputFiles(path.join(path.dirname(fileURLToPath(import.meta.url)), "..", "fixtures", "logo.png"));
+    await admin.waitForSelector(`${inv} [data-logo-preview] img`, { timeout: 8000 });
+    ok(/^data:image\/jpeg;base64,/.test(await admin.getAttribute(`${inv} [data-logo-preview] img`, "src")), "PNG logo tarayıcıda JPEG'e çevrildi");
+    await shot(admin, "ayarlar-logo");
+    await admin.click(`${inv} [data-act="save-settings"]`);
+    await admin.waitForTimeout(1200);
+    const settings = (await call(admin, "/api/workspace/invoices/settings")).data;
+    ok(/^data:image\/jpeg;base64,/.test(settings.seller.logo || ""), "logo ayarlara kaydedildi");
+    ok(settings.defaults.signatureArea === true, "kaşe / imza ayarı kaydedildi");
+    const sale = (await call(admin, "/api/workspace/invoices?tab=sale")).data.invoices.find(x => x.status === "issued");
+    const pdf = await admin.evaluate(async id => {
+      const response = await fetch(`/api/workspace/invoices/${id}/fatura.pdf`);
+      return new TextDecoder("latin1").decode(await response.arrayBuffer());
+    }, sale.id);
+    ok(pdf.includes("/Filter /DCTDecode") && pdf.includes("/XObject << /Im1"), "satış PDF'inde logo görseli gömülü");
+    await closeAll();
+  });
 } catch (error) {
   console.error("\nHATA:", error.message);
   exitCode = 1;

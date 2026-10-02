@@ -203,7 +203,7 @@
         <input type="search" data-filter="q" value="${esc(view.q)}" placeholder="No, cari, ürün, VKN, not ara…" aria-label="Ara">
         ${accountChip}
       </div>
-      <div class="hof-acc-selbar${selected ? " is-active" : ""}"><span>${selected ? `<b>${selected.toLocaleString("tr-TR")}</b> belge seçildi` : "Toplu yazdırmak için satırları işaretleyin."}</span>${selected ? `<a class="hof-button hof-button-small hof-button-ghost" href="/api/workspace/invoices/toplu.pdf?ids=${esc(selIds)}" target="_blank" rel="noopener">Seçilenleri PDF</a><a class="hof-button hof-button-small hof-button-ghost" href="/api/workspace/invoices/export.xlsx?ids=${esc(selIds)}" download>Seçilenleri Excel</a>${edoc() ? `<a class="hof-button hof-button-small hof-button-ghost" href="/api/workspace/invoices/ubl.zip?ids=${esc(selIds)}" download>e-Belge XML (ZIP)</a>` : ""}<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="clear-sel">Seçimi Temizle</button>` : ""}</div>
+      <div class="hof-acc-selbar${selected ? " is-active" : ""}"><span>${selected ? `<b>${selected.toLocaleString("tr-TR")}</b> belge seçildi` : canManage() ? "Toplu yazdırmak, kesmek ya da iptal etmek için satırları işaretleyin." : "Toplu yazdırmak için satırları işaretleyin."}</span>${selected ? `<a class="hof-button hof-button-small hof-button-ghost" href="/api/workspace/invoices/toplu.pdf?ids=${esc(selIds)}" target="_blank" rel="noopener">Seçilenleri PDF</a><a class="hof-button hof-button-small hof-button-ghost" href="/api/workspace/invoices/export.xlsx?ids=${esc(selIds)}" download>Seçilenleri Excel</a>${edoc() ? `<a class="hof-button hof-button-small hof-button-ghost" href="/api/workspace/invoices/ubl.zip?ids=${esc(selIds)}" download>e-Belge XML (ZIP)</a>` : ""}${canManage() && selectedBy("draft").length ? `<button type="button" class="hof-button hof-button-small" data-act="bulk-issue">Seçilenleri Kes (${selectedBy("draft").length})</button>` : ""}${canManage() && selectedBy("issued").length ? `<button type="button" class="hof-button hof-button-small hof-button-danger-ghost" data-act="bulk-cancel">Seçilenleri İptal Et (${selectedBy("issued").length})</button>` : ""}<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="clear-sel">Seçimi Temizle</button>` : ""}</div>
       ${
         data
           ? `<div class="hof-rep-table"><table class="hof-table hof-chq-table hof-inv-table"><thead><tr><th class="hof-inv-check"><input type="checkbox" data-sel-all aria-label="Listedekilerin hepsini seç" ${data.invoices.length && data.invoices.every(doc => view.selected.has(doc.id)) ? "checked" : ""}></th><th>Tarih</th><th>No</th><th>Cari</th><th>Durum</th><th class="num">Tutar</th><th class="num">Açık</th></tr></thead><tbody>${rows || `<tr><td colspan="7" class="hof-empty">${emptyText()}</td></tr>`}</tbody></table></div>
@@ -212,6 +212,8 @@
       }`,
     );
   }
+  // Seçili belgelerden listede o durumda olanlar (toplu kesme yalnız taslak, toplu iptal yalnız kesilmiş belge).
+  const selectedBy = status => (view.list?.invoices || []).filter(doc => view.selected.has(doc.id) && doc.status === status);
   const emptyText = () => {
     if (view.q || view.from || view.pay || view.profile || view.account) return "Bu süzgeçte belge yok.";
     return {
@@ -303,6 +305,8 @@
       view.selected.clear();
       return renderList();
     }
+    if (act === "bulk-issue") return bulkIssue();
+    if (act === "bulk-cancel") return bulkCancel();
     if (act === "clear-account") {
       view.account = null;
       return loadList();
@@ -328,7 +332,7 @@
   }
   function onChange(event) {
     if (view.mode === "form") return formChange(event);
-    if (view.mode === "settings") return;
+    if (view.mode === "settings") return event.target.matches("[data-logo-file]") ? pickLogo(event.target) : undefined;
     const name = event.target.dataset.filter;
     if (!name || name === "q") return;
     view[name] = event.target.value;
@@ -543,17 +547,37 @@
       value: form.account || {},
       label: form.side === "purchase" ? "Tedarikçi (Cari)" : "Müşteri (Cari)",
       required: true,
-      help: "Yoksa Cari ekranından açın; vergi bilgileri cari kartından gelir.",
-      onPick: account => {
-        form.account = account?.id ? { id: account.id, name: account.name } : null;
-        form.profile = "";
-        form.portfolio = null;
-        for (const line of form.lines) line.prices = null;
-        refreshAllPrices();
-        scheduleCalc(0);
-      },
+      help: "Vergi bilgileri cari kartından gelir; kayıtlı değilse “+ Yeni Cari” ile buradan açın.",
+      onPick: account => applyPickedAccount(account),
     });
-    slot.replaceChildren(picker);
+    // v2.0.15 (QA A5): cari yoksa formdan ayrılmadan açılır; kaydedilince seçili gelir, fiyatlar ve toplamlar yenilenir.
+    const canNew = HOF.accounts?.newFor && HOF.can("accounts.manage") && !isReturn(form.kind);
+    if (!canNew) return slot.replaceChildren(picker);
+    const add = document.createElement("button");
+    add.type = "button";
+    add.className = "hof-button hof-button-small hof-button-ghost hof-inv-account-new";
+    add.textContent = "+ Yeni Cari";
+    add.title = form.side === "purchase" ? "Tedarikçi kartı aç" : "Müşteri kartı aç";
+    add.onclick = () => HOF.accounts.newFor({ type: form.side === "purchase" ? "supplier" : "customer" }, { onSaved: account => {
+      if (view.form !== form) return;
+      applyPickedAccount(account);
+      mountAccountPicker();
+      HOF.toast(`${account.name} seçildi.`, { type: "info" });
+    } });
+    const row = document.createElement("div");
+    row.className = "hof-inv-account-row";
+    row.append(picker, add);
+    slot.replaceChildren(row);
+  }
+  function applyPickedAccount(account) {
+    const form = view.form;
+    if (!form) return;
+    form.account = account?.id ? { id: account.id, name: account.name } : null;
+    form.profile = "";
+    form.portfolio = null;
+    for (const line of form.lines) line.prices = null;
+    refreshAllPrices();
+    scheduleCalc(0);
   }
 
   // İade edilecek faturayı bulan arama (en üstte).
@@ -1274,6 +1298,7 @@
       .join("");
     const returns = (doc.returns || []).map(item => `<li><a href="#" data-open-invoice="${esc(item.id)}">${esc(item.number || "İade")}</a> · ${esc(HOF.formatDate(item.issueDate))} · ${esc(money(item.tryPayable))}${item.status === "cancelled" ? " · iptal edildi" : ""}</li>`).join("");
     const phone = HOF.workspace?.extractPhones?.(party.phone || doc.accountPhone || "")[0] || "";
+    const email = String(party.email || "").trim();
     const eTools =
       edoc() && doc.status !== "draft" && (doc.profile !== "KAGIT" || doc.eStatus === "withdrawn") && meta.kinds[doc.kind]?.own
         ? `<span class="hof-plan-toolgroup">${doc.canSend ? '<button type="button" class="hof-button hof-button-small" data-act="e-send">e-Belge Gönder</button>' : ""}${doc.canWithdraw ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="e-withdraw" title="Belge gönderilmez, Müşteri Fişi olarak kalır; stok, cari ve Kasa etkileri değişmez">Listeden Sil</button>' : ""}${doc.canRefresh ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="e-refresh">Durum Sorgula</button>' : ""}${doc.status === "issued" ? `<a class="hof-button hof-button-small hof-button-ghost" href="/api/workspace/invoices/${esc(doc.id)}/ubl.xml" download>XML İndir</a>` : ""}</span>`
@@ -1296,7 +1321,7 @@
         }
       </div>
       <div class="hof-chq-actions" role="toolbar" aria-label="Belge işlemleri">
-        <span class="hof-plan-toolgroup">${office().outputButtons ? office().outputButtons(pdfUrl(doc), "card") : `<a class="hof-button hof-button-small hof-button-ghost" href="${esc(pdfUrl(doc))}" target="_blank" rel="noopener">PDF</a>`}${phone && doc.status === "issued" ? `<button type="button" class="hof-button hof-button-small hof-button-ghost hof-whatsapp" data-act="whatsapp" data-wa="${esc(phone)}">WhatsApp</button>` : ""}</span>
+        <span class="hof-plan-toolgroup">${office().outputButtons ? office().outputButtons(pdfUrl(doc), "card") : `<a class="hof-button hof-button-small hof-button-ghost" href="${esc(pdfUrl(doc))}" target="_blank" rel="noopener">PDF</a>`}${phone && doc.status === "issued" ? `<button type="button" class="hof-button hof-button-small hof-button-ghost hof-whatsapp" data-act="whatsapp" data-wa="${esc(phone)}">WhatsApp</button>` : ""}${doc.status === "issued" && isOwn(doc.kind) ? `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="email" data-mail="${esc(email)}" title="${email ? `${esc(email)} adresine e-posta penceresi açılır; PDF indirilir` : "Cari kartında e-posta adresi yok"}">E-Posta</button>` : ""}</span>
         ${doc.status === "issued" && doc.open > 0.004 && !ret && HOF.can(sideOf(doc.kind) === "sale" ? "accounts.collect" : "accounts.manage") ? `<span class="hof-plan-toolgroup"><button type="button" class="hof-button hof-button-small" data-act="pay">${sideOf(doc.kind) === "sale" ? "+ Tahsilat Ekle" : "+ Ödeme Yap"}</button></span>` : ""}
         ${doc.canManage ? `<span class="hof-plan-toolgroup">${doc.canEdit ? '<button type="button" class="hof-button hof-button-small" data-act="edit">Düzenle ve Kes</button>' : ""}${!ret ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="copy" title="Aynı cari ve kalemlerle yeni belge">Kopyala</button>' : ""}${doc.canRepeat ? `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="${doc.repeat ? "repeat-stop" : "repeat"}" title="${doc.repeat ? "Tekrar emrini durdur" : "Abonelik, kira, aidat: her dönem taslak hazırlanır"}">${doc.repeat ? "Tekrarı Durdur" : "Tekrarla"}</button>` : ""}${doc.canDelete ? '<button type="button" class="hof-button hof-button-small hof-button-danger-ghost" data-act="delete">Taslağı Sil</button>' : ""}${doc.status === "issued" ? `<button type="button" class="hof-button hof-button-small hof-button-danger-ghost" data-act="cancel" ${doc.canCancel ? "" : "disabled"} title="${esc(doc.cancelBlock || "Bütün etkileri geri alınır; numara korunur")}">İptal Et</button>` : ""}</span>` : ""}
         ${eTools}
@@ -1359,6 +1384,7 @@
       }
     }
     if (act === "whatsapp") return sendWhatsapp(doc, target.dataset.wa);
+    if (act === "email") return sendEmail(doc, target.dataset.mail);
     if (act === "e-send") return eAction(doc, "send");
     if (act === "e-withdraw") return withdrawDoc(doc);
     if (act === "e-refresh") return eAction(doc, "e-refresh");
@@ -1430,11 +1456,18 @@
       },
     });
   }
-  function sendWhatsapp(doc, wa) {
-    if (!wa) return;
+  // PDF'i indirir (e-posta programına eklenir) ve cari kartındaki adrese hazır metinle e-posta penceresi açar.
+  function sendEmail(doc, mail) {
+    if (!mail) return HOF.toast("Cari kartında e-posta adresi yok; Cari ekranından ekleyin.", { type: "error" });
+    const word = edoc() && doc.profile !== "KAGIT" ? kindLabel(doc.kind) : "Belgeniz";
     const due = doc.open > 0.004 && doc.dueDate ? ` Vade: ${HOF.formatDate(doc.dueDate)}.` : "";
-    const word = edoc() && doc.profile !== "KAGIT" ? kindLabel(doc.kind).toLocaleLowerCase("tr-TR") : "belgeniz";
-    const text = `Sayın ${doc.accountName}, ${HOF.formatDate(doc.issueDate)} tarihli ${doc.displayNo} numaralı ${word}: ${curMoney(doc.payableTotal, doc.currency)}.${due} PDF ektedir. ${meta.settings.sellerName || ""}`.replace(/\s+/g, " ").trim();
+    const subject = `${word} ${doc.displayNo || ""} · ${meta.settings.sellerName || ""}`.replace(/\s+/g, " ").trim();
+    const text = `Sayın ${doc.accountName},\n\n${HOF.formatDate(doc.issueDate)} tarihli ${doc.displayNo} numaralı ${word.toLocaleLowerCase("tr-TR")}: ${curMoney(doc.payableTotal, doc.currency)}.${due}\nPDF ektedir.\n\n${meta.settings.sellerName || ""}`;
+    downloadPdf(doc);
+    window.location.href = `mailto:${encodeURIComponent(mail)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(text)}`;
+    HOF.toast("PDF indirildi; açılan e-posta penceresine ekleyip gönderin.", { type: "info", timeout: 6000 });
+  }
+  function downloadPdf(doc) {
     const a = document.createElement("a");
     a.href = `${pdfUrl(doc)}?download=1`;
     a.download = `${doc.displayNo || "Belge"}.pdf`;
@@ -1442,6 +1475,13 @@
     document.body.appendChild(a);
     a.click();
     a.remove();
+  }
+  function sendWhatsapp(doc, wa) {
+    if (!wa) return;
+    const due = doc.open > 0.004 && doc.dueDate ? ` Vade: ${HOF.formatDate(doc.dueDate)}.` : "";
+    const word = edoc() && doc.profile !== "KAGIT" ? kindLabel(doc.kind).toLocaleLowerCase("tr-TR") : "belgeniz";
+    const text = `Sayın ${doc.accountName}, ${HOF.formatDate(doc.issueDate)} tarihli ${doc.displayNo} numaralı ${word}: ${curMoney(doc.payableTotal, doc.currency)}.${due} PDF ektedir. ${meta.settings.sellerName || ""}`.replace(/\s+/g, " ").trim();
+    downloadPdf(doc);
     window.open(HOF.whatsapp?.waUrl ? HOF.whatsapp.waUrl(wa, text) : `https://wa.me/${wa}?text=${encodeURIComponent(text)}`, "hof-whatsapp");
     HOF.toast("PDF indirildi; WhatsApp'ta sohbete ekleyip gönderin.", { type: "info", timeout: 6000 });
   }
@@ -1457,6 +1497,52 @@
     } catch (error) {
       HOF.toastError(error);
     }
+  }
+  // Toplu kesme (QA A6): seçili taslaklar tarih sırasıyla kesilir; her belge kendi işleminde, biri düşerse diğerleri
+  // kesilir ve sonuç belge belge bildirilir. e-Belge gönderimi entegratör ayarına (otomatik gönderim) göre yapılır.
+  async function bulkIssue() {
+    const docs = selectedBy("draft");
+    if (!docs.length) return;
+    const total = docs.reduce((sum, doc) => sum + (Number(doc.tryPayable) || 0), 0);
+    const go = await HOF.confirm({
+      title: `${docs.length.toLocaleString("tr-TR")} Taslak Kesilsin mi?`,
+      message: `Seçili taslaklar tarih sırasıyla kesilir (toplam ${money(total)}). Her belgede stok, cari, Kasa, çek/senet ve taksit kayıtları birlikte yazılır. Kesilen belge düzeltilmez; yanlışsa iptal edilir ya da iade kesilir. Stoku eksiye düşüren ya da kilitli dönemdeki taslak kesilmez, nedeni bildirilir.`,
+      confirmLabel: "Seçilenleri Kes",
+    });
+    if (!go) return;
+    try {
+      const result = await HOF.api("/api/workspace/invoices/bulk-issue", { method: "POST", body: { ids: docs.map(doc => doc.id) } });
+      bulkOutcome(result, "kesildi", "kesilemedi");
+    } catch (error) {
+      HOF.toastError(error);
+    }
+    HOF.emit("invoices-changed", {});
+    loadList();
+  }
+  async function bulkCancel() {
+    const docs = selectedBy("issued");
+    if (!docs.length) return;
+    HOF.formModal({
+      title: `${docs.length.toLocaleString("tr-TR")} Belge İptal Edilsin mi?`,
+      eyebrow: "TOPLU İPTAL",
+      intro: "Her belgenin bütün etkileri birlikte geri alınır: stok, cari borç/alacak, peşin tahsilat/ödeme (Kasa), çek/senet ve taksit kartı. Numaralar korunur. İadesi olan, kilitli dönemdeki ya da çeki tahsil edilmiş belge iptal edilmez; nedeni bildirilir.",
+      fields: [{ name: "reason", label: "İptal Nedeni", maxlength: 300, placeholder: "ör. Yanlış cariye kesildi", autofocus: true }],
+      submitLabel: "Seçilenleri İptal Et",
+      onSubmit: async data => {
+        const result = await HOF.api("/api/workspace/invoices/bulk-cancel", { method: "POST", body: { ids: docs.map(doc => doc.id), reason: data.reason } });
+        bulkOutcome(result, "iptal edildi", "iptal edilemedi");
+        HOF.emit("invoices-changed", {});
+        loadList();
+      },
+    });
+  }
+  function bulkOutcome(result, doneWord, failWord) {
+    const failed = (result.results || []).filter(item => !item.ok);
+    const done = (result.results || []).length - failed.length;
+    // Başarısızlar seçili kalır (kullanıcı tek tek bakar); başarılılar seçimden düşer.
+    view.selected = new Set(failed.map(item => item.id));
+    const detail = failed.slice(0, 3).map(item => `${item.number || item.displayNo || item.accountName || item.id}: ${item.message}`).join(" · ");
+    HOF.toast(`${done.toLocaleString("tr-TR")} belge ${doneWord}${failed.length ? `; ${failed.length.toLocaleString("tr-TR")} belge ${failWord}: ${detail}${failed.length > 3 ? " …" : ""}` : "."}`, { type: failed.length ? "error" : "success", timeout: failed.length ? 12000 : 5000 });
   }
   async function sendPending() {
     const ids = (view.list?.invoices || []).map(item => item.id);
@@ -1487,6 +1573,7 @@
   // ---------- Fatura Ayarları ----------
   const SERIES_LABELS = { paper: "Belge Serisi (Fiş ve Kâğıt Belge)", smm: "Serbest Meslek Makbuzu Serisi", internal: "İç İade Serisi", efatura: "e-Fatura Serisi", earsiv: "e-Arşiv Serisi", esmm: "e-SMM Serisi" };
   async function showSettings() {
+    view.logo = undefined;
     if (!canSettings()) return HOF.toast("Fatura ayarları yönetici ve muhasebe yetkisindedir.", { type: "error" });
     try {
       view.settings = await HOF.api("/api/workspace/invoices/settings");
@@ -1528,6 +1615,9 @@
         ${input("seller.phone", "Telefon", seller.phone, 'maxlength="60"')}
         ${input("seller.email", "E-Posta", seller.email, 'maxlength="160" type="email"')}
         ${input("seller.website", "Web Sitesi", seller.website, 'maxlength="200"')}
+        <div class="hof-field hof-inv-wide hof-inv-logo"><span>Logo (Belgenin Sol Üstüne Basılır)</span>
+          <div class="hof-inv-logo-row"><div class="hof-inv-logo-box" data-logo-preview>${logoNow() ? `<img src="${esc(logoNow())}" alt="Logo">` : '<small>Logo yok</small>'}</div>
+          <div class="hof-inv-logo-tools"><label class="hof-button hof-button-small hof-button-ghost">Logo Seç<input type="file" accept="image/*" data-logo-file hidden></label>${logoNow() ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="logo-clear">Logoyu Kaldır</button>' : ""}<small>PNG ya da JPEG seçin; program JPEG'e çevirip küçültür (en çok 150 KB). Kaydedince bundan sonraki PDF'lere basılır.</small></div></div></div>
       </div></section>
       <section class="hof-inv-settings"><h4>Banka Hesapları <small>(belgenin altına basılır)</small></h4><div class="hof-inv-banks">
         ${banks.map((bank, index) => `<div class="hof-inv-pay-row"><label><span>Banka</span><input data-bank="${index}" data-k="name" maxlength="80" value="${esc(bank.name || "")}"></label><label><span>IBAN</span><input data-bank="${index}" data-k="iban" maxlength="34" value="${esc(bank.iban || "")}" placeholder="TR00 0000 0000 0000 0000 0000 00"></label></div>`).join("")}
@@ -1542,6 +1632,7 @@
         <label class="hof-field"><span>Varsayılan Satış Senaryosu</span><select data-s="defaults.saleScenario"><option value="">Seçilmedi</option>${Object.entries(meta.scenarios).filter(([, item]) => ["sale", "smm"].includes(item.kind)).map(([id, item]) => `<option value="${id}" ${s.defaults.saleScenario === id ? "selected" : ""}>${esc(item.label)}</option>`).join("")}</select></label>
         <label class="hof-field"><span>Varsayılan Alış Senaryosu</span><select data-s="defaults.purchaseScenario"><option value="">Seçilmedi</option>${Object.entries(meta.scenarios).filter(([, item]) => item.kind === "purchase").map(([id, item]) => `<option value="${id}" ${s.defaults.purchaseScenario === id ? "selected" : ""}>${esc(item.label)}</option>`).join("")}</select></label>
         <label class="hof-check"><input type="checkbox" data-s="defaults.pricesIncludeVat" ${s.defaults.pricesIncludeVat ? "checked" : ""}><span>Fiyatlar varsayılan olarak KDV dahil yazılsın</span></label>
+        <label class="hof-check"><input type="checkbox" data-s="defaults.signatureArea" ${s.defaults.signatureArea !== false ? "checked" : ""}><span>Belgenin altına Teslim Alan ve Düzenleyen (Kaşe / İmza) kutuları basılsın</span></label>
         <label class="hof-field hof-inv-wide"><span>Belge Alt Notu</span><textarea data-s="defaults.footer" rows="2" maxlength="500" placeholder="ör. İade ve değişim 14 gün içinde faturayla yapılır.">${esc(s.defaults.footer || "")}</textarea></label>
       </div></section>
       ${
@@ -1569,10 +1660,53 @@
       <div class="hof-actions"><button type="button" class="hof-button hof-button-ghost" data-act="back">Vazgeç</button><button type="button" class="hof-button" data-act="save-settings">Ayarları Kaydet</button></div>`,
     );
   }
+  // Logo: view.logo tanımsızsa değişmedi; "" kaldırıldı; data URL yeni seçildi (kaydedilince sunucuya gider).
+  const logoNow = () => (view.logo === undefined ? view.settings?.seller?.logo || "" : view.logo);
+  async function pickLogo(input) {
+    const file = input.files?.[0];
+    input.value = "";
+    if (!file) return;
+    try {
+      view.logo = await imageToJpeg(file, { maxSide: 600, maxBytes: 150 * 1024 });
+      renderSettings();
+      HOF.toast("Logo hazır; Ayarları Kaydet ile saklanır.", { type: "info" });
+    } catch (error) {
+      HOF.toast(error.message || "Görsel okunamadı.", { type: "error" });
+    }
+  }
+  // Her görsel (PNG, JPEG, WebP…) beyaz zemine çizilip JPEG'e çevrilir; boyut ve kalite sınır altına inene kadar düşer.
+  async function imageToJpeg(file, { maxSide, maxBytes }) {
+    const bitmap = await new Promise((resolve, reject) => {
+      const image = new Image();
+      image.onload = () => resolve(image);
+      image.onerror = () => reject(new Error("Görsel okunamadı; PNG ya da JPEG seçin."));
+      image.src = URL.createObjectURL(file);
+    });
+    try {
+      for (const side of [maxSide, 400, 240]) {
+        const scale = Math.min(1, side / Math.max(bitmap.naturalWidth, bitmap.naturalHeight));
+        const canvas = document.createElement("canvas");
+        canvas.width = Math.max(1, Math.round(bitmap.naturalWidth * scale));
+        canvas.height = Math.max(1, Math.round(bitmap.naturalHeight * scale));
+        const ctx = canvas.getContext("2d");
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+        for (const quality of [0.86, 0.72, 0.58]) {
+          const url = canvas.toDataURL("image/jpeg", quality);
+          if (Math.ceil(((url.length - url.indexOf(",") - 1) * 3) / 4) <= maxBytes) return url;
+        }
+      }
+      throw new Error("Logo 150 KB altına indirilemedi; daha küçük bir görsel seçin.");
+    } finally {
+      URL.revokeObjectURL(bitmap.src);
+    }
+  }
   function settingsPayload() {
     const root = body();
     const s = view.settings;
     const payload = { seller: { banks: [] }, defaults: {}, series: {}, start: { ...(s.start || {}) } };
+    if (view.logo !== undefined) payload.seller.logo = view.logo;
     for (const input of root.querySelectorAll("[data-s]")) {
       const [group, key] = input.dataset.s.split(".");
       const value = input.type === "checkbox" ? input.checked : input.value;
@@ -1604,11 +1738,16 @@
   }
   async function settingsAction(act) {
     const error = body()?.querySelector("[data-form-error]");
+    if (act === "logo-clear") {
+      view.logo = "";
+      return renderSettings();
+    }
     if (act === "save-settings") {
       if (error) error.textContent = "";
       try {
         const saved = await HOF.api("/api/workspace/invoices/settings", { method: "PUT", body: settingsPayload() });
         view.settings = saved;
+        view.logo = undefined;
         await loadMeta(true);
         HOF.toast("Fatura ayarları kaydedildi.", { type: "success" });
         renderSettings();

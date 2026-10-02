@@ -267,6 +267,10 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
     const user = auth.requirePermission(req, "stock.manage");
     const item = itemRow(params.id);
     store.tx(() => {
+      // v2.0.15: faturadan gelen hareketi olan ürün silinmez (fatura kalemi yasal belgedir; stok izi kopmaz). Önce fatura
+      // iptal edilir ya da iade kesilir; fatura iptali hareketi zaten kaldırır.
+      const linked = store.get("SELECT COUNT(*) AS n, MIN(inv.number) AS number FROM stock_moves m JOIN invoices inv ON inv.id = m.invoice_id WHERE m.item_id = ? AND m.invoice_id <> ''", item.id);
+      if (linked?.n) throw new HttpError(409, `“${item.name}” ${linked.n} fatura kalemine bağlı (ör. ${linked.number || "taslak"}); fatura kalemi olan ürün silinmez. Önce faturayı iptal edin ya da iade kesin.`, { code: "invoice-linked", count: linked.n });
       // Yumuşak silme: hareketler durur. Ödenmiş para gerçektir; Kasa'daki ve carideki karşılıkları silinmez.
       store.run("UPDATE stock_items SET deleted_by = ?, deleted_at = ? WHERE id = ?", user.id, now(), item.id);
       audit(user, "stock.item.deleted", item.id, { name: item.name });

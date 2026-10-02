@@ -83,6 +83,13 @@ Durum: ☐ yapılmadı · ◐ sürüyor · ☑ tamam (kanıt yazılı)
 | Vade Takip ve ANLIK DURUM'a açık faturalar | ☐ | |
 | Nihai tüketici (TCKN 11111111111) | ☐ | |
 | Cari Excel aktarımında Vergi No, Vergi Dairesi, İl, İlçe kolonları | ☑ | `mapAccountHeaders` |
+| QA sonrası (02.10.2026): formda "+ Yeni Cari" | ☑ | `senaryo-215` adım 12 |
+| QA sonrası: toplu kesme / toplu iptal (seçim çubuğu) | ☑ | `test/fatura-215.test.mjs`, `senaryo-215` adım 13 |
+| QA sonrası: PDF'te logo (Fatura Ayarları) ve kaşe / imza kutuları | ☑ | `test/fatura-215.test.mjs`, `senaryo-215` adım 14 |
+| QA sonrası: kartta E-Posta (PDF + mailto) | ☑ | `senaryo-215` adım 12 |
+| QA sonrası: fatura kalemine bağlı stok kartı silinmez | ☑ | `test/fatura-215.test.mjs` |
+| QA sonrası: Fiyat Farkı Faturası senaryosu | ☑ | `test/fatura-215.test.mjs` |
+| Fatura ↔ icra dosyası doğrudan bağ | ☒ | Kullanıcı kararı (02.10.2026): "cariyi ekleyerek kesebilir müşteri"; yapılmayacak |
 
 ## Kararlar (sorulacak yerde verdiğim karar)
 

@@ -131,8 +131,9 @@ await step("k14", async () => {
 
 // Kasa: tahsilat ve gider.
 await step("k08", async () => {
+  // Önce tahsilat, sonra ödeme (Kasa eksiye düşmesin); ikisi de bugün (ayın ilk günlerinde "Bu Ay" boş kalmasın).
+  await api("/api/workspace/cash", { kind: "in", amount: "2.500", date: day(0), description: "Gezi servisi ücreti" });
   await api("/api/workspace/cash", { kind: "out", amount: "1.200", date: day(0), description: "Yakıt" });
-  await api("/api/workspace/cash", { kind: "in", amount: "2.500", date: day(-2), description: "Gezi servisi ücreti" });
   await page.click('#hof-sidecard [data-action="cash"]');
   await page.waitForSelector(".hof-cash-table tbody tr[data-kind]", { timeout: 10000 });
   await page.waitForTimeout(900);
@@ -185,6 +186,36 @@ await step("k13", async () => {
   await page.waitForTimeout(900);
   await quiet();
   await shot("k13-cek-senet");
+  await closeAll();
+});
+
+// Fatura (2.0.15): satış faturası formu. Örnek veriler uydurmadır.
+await step("k24", async () => {
+  const stockItem = (await api("/api/workspace/stock", { name: "Servis Aboneliği", unit: "Ay", kind: "service", unitPrice: "", salePrice: "1250", minQty: "" })).data;
+  const customer = (await api("/api/workspace/accounts", { name: "Yıldız Koleji", type: "customer", taxNo: "1234567890", taxOffice: "Selçuk", city: "Konya", district: "Selçuklu", address: "Bosna Hersek Mah. 12. Sk. No: 4", phone: "0332 555 10 20", email: "muhasebe@yildizkoleji.example" })).data;
+  await api("/api/workspace/invoices/settings", { seller: { name: "Güven Okul Servisi", taxNo: "9876543210", taxOffice: "Meram", city: "Konya", address: "Alavardı Mah. Fatih Cd. No: 18", phone: "0332 444 30 40" } }, "PUT");
+  await page.click('#hof-sidecard [data-action="invoices"]');
+  await page.waitForSelector('.hof-modal-backdrop.is-visible [data-act="new"]', { timeout: 10000 });
+  await page.click('.hof-modal-backdrop.is-visible [data-act="new"]');
+  await page.waitForSelector('.hof-modal-backdrop.is-visible [data-scenario="service_sale"]');
+  await page.click('.hof-modal-backdrop.is-visible [data-scenario="service_sale"]');
+  await page.waitForSelector('.hof-modal-backdrop.is-visible [data-lines]');
+  await page.fill('.hof-modal-backdrop.is-visible [data-acc-query]', "Yıldız Koleji");
+  await page.waitForSelector('.hof-modal-backdrop.is-visible .hof-acc-picker li[data-id]');
+  await (await page.$('.hof-modal-backdrop.is-visible .hof-acc-picker li[data-id]')).dispatchEvent("mousedown");
+  await page.click('.hof-modal-backdrop.is-visible [data-l="0"][data-f="name"]');
+  await page.keyboard.type("Servis");
+  await page.waitForSelector('.hof-modal-backdrop.is-visible [data-hits="0"] li[data-item]', { timeout: 5000 }).catch(() => null);
+  if (await page.$('.hof-modal-backdrop.is-visible [data-hits="0"] li[data-item]')) await page.click('.hof-modal-backdrop.is-visible [data-hits="0"] li[data-item]');
+  await page.fill('.hof-modal-backdrop.is-visible [data-l="0"][data-f="qty"]', "1");
+  await page.fill('.hof-modal-backdrop.is-visible [data-l="0"][data-f="unitPrice"]', "1250");
+  await page.click('.hof-modal-backdrop.is-visible [data-act="pay-add-cash"]');
+  await page.fill('.hof-modal-backdrop.is-visible [data-pay="cash"][data-i="0"][data-f="amount"]', "500");
+  await page.waitForTimeout(1200);
+  await quiet();
+  await shot("k24-fatura-formu", { clip: pad(await topBox(), 6) });
+  void stockItem;
+  void customer;
   await closeAll();
 });
 

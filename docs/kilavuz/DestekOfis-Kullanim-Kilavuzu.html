@@ -11,7 +11,7 @@
 <section class="cover">
   <div class="brand"><b>D</b> DestekOfis</div>
   <h1>Kısa Kullanım Kılavuzu</h1>
-  <p class="sub">Sürüm 2.0.12 · Yalnızca bilmeniz gerekenler · 10 dakikada okunur</p>
+  <p class="sub">Sürüm 2.0.15 · Yalnızca bilmeniz gerekenler · 10 dakikada okunur</p>
 </section>
 
 <p>DestekOfis, Excel'de ya da Google Sheets'te tuttuğunuz tabloyu ofisteki herkesin aynı anda kullandığı bir çalışma alanına dönüştürür. Tablonuzu yüklersiniz; program kolonlarınızı tanır, ekranları ona göre kurar. Siz kayıtlara not, tahsilat, görev ve belge eklersiniz; <b>Excel dosyanız hiç bozulmaz</b>.</p>
@@ -40,6 +40,7 @@
   <li>Taksitler</li>
   <li>Stok</li>
   <li>Çek / Senet</li>
+  <li>Fatura</li>
   <li>ANLIK DURUM</li>
   <li>Raporlar</li>
   <li>Belgeler ve Mesajlar</li>
@@ -74,7 +75,7 @@
 <h2>3. Ana Ekran</h2>
 <figure><img src="ekran/k04-ana-ekran.jpg" alt="Ana ekran"></figure>
 <ul>
-  <li><b>Sol menü · Operasyon Merkezi:</b> Görevler, Mesajlar, Görev Ata, Yeni Kayıt, Kasa, Cari, Taksitler, Stok, Çek / Senet, Raporlar, Personel Raporu ve bu kılavuz. Köşedeki kalemle düğmelere kendi adlarınızı verebilirsiniz.</li>
+  <li><b>Sol menü · Operasyon Merkezi:</b> Görevler, Mesajlar, Görev Ata, Cari, Kasa, Stok, Fatura, Çek / Senet, Taksitler, Raporlar, Personel Raporu ve bu kılavuz. Köşedeki kalemle düğmelere kendi adlarınızı verebilirsiniz. <b>Yeni Kayıt</b> ortadaki tablonun başlığında, <b>Dışa Aktar</b>'ın yanındadır.</li>
   <li><b>Kullanıcı kartı:</b> Profil, Parola, Yönetim (yalnız yönetici) ve Çıkış. Hemen altındaki <b>Ayarlar</b> veri kaynağını, eşitlemeyi, sektörü ve görünümü açar (yönetici).</li>
   <li><b>Üstte zil:</b> bekleyen tahsilatlar, son günü yaklaşan işler ve görevleriniz.</li>
   <li><b>ANLIK DURUM</b> (yalnız yönetici) ve <b>özet kartları:</b> toplam kayıt, tutar toplamı, Veri Sağlığı. Karta tıklayınca ilgili liste açılır.</li>
@@ -105,7 +106,7 @@
   <li><b>Sütun ekle / sil</b> (yönetici): başlığın üzerine gelin; <b>+ Ekle</b> sağına yeni sütun açar, <b>× Sil</b> sütunu kaldırır. Excel dosyanız değişmez; <b>Geri Al</b> ya da <b>Yönetim → Silinenler</b> geri getirir.</li>
 </ol>
 <figure class="narrow"><img src="ekran/k05-detay-acilir-liste.jpg" alt="Detay kartında açılır liste"><figcaption>Excel'deki açılır liste kartta da açılır liste olarak çalışır.</figcaption></figure>
-<p><b>Yeni kayıt ve cari birlikte:</b> sol menüdeki <b>Yeni Kayıt</b> formunda <i>Bu kişi için cari kartı da aç</i> kutusu açıktır. Kaydedince kişi tabloya da Cari'ye de girer ve ikisi birbirine bağlanır; kişiyi bir kez girersiniz. Aynı ad ve telefonla bir cari zaten varsa yenisi açılmaz, o cari bağlanır.</p>
+<p><b>Yeni kayıt ve cari birlikte:</b> tablo başlığındaki <b>Yeni Kayıt</b> formunda <i>Bu kişi için cari kartı da aç</i> kutusu açıktır. Kaydedince kişi tabloya da Cari'ye de girer ve ikisi birbirine bağlanır; kişiyi bir kez girersiniz. Aynı ad ve telefonla bir cari zaten varsa yenisi açılmaz, o cari bağlanır.</p>
 
 <h2>6. Uyarılar</h2>
 <p>Vadesi gelen tahsilatlar, son günü yaklaşan işler ve görevler sağ altta <b>tek tek</b> belirir; her uyarı 20 saniye kalır, üzerine gelirseniz bekler.</p>
@@ -133,7 +134,7 @@
 <ol class="steps">
   <li><b>Carileri toplu açın:</b> <b>Excel / Sheets’ten Yükle</b> (binlerce kişi tek seferde) ya da <b>Tablodan Al</b> (ortadaki tablodaki kişiler, kayıtlarına bağlı). Yüklemeden önce hangi satırın hazır, hangisinde sorun olduğu gösterilir. Aynı kişi ikinci kez açılmaz; Excel'deki ek kolonlar (Veli, Okul, Plaka…) kartta aynı adla görünür.</li>
   <li><b>Tek cari:</b> <b>+ Yeni Cari</b>. <b>Tablodaki Kayıt</b> alanı cariyi tablodaki kişiye bağlar; aynı adlı iki kişi varsa program tahmin etmez, listeden siz seçersiniz.</li>
-  <li><b>Hareket girin:</b> kartta <b>+ Tahsilat</b> (Kasa'ya girer, makbuzu alınır), <b>Borç Yaz</b>, <b>Alacak Yaz</b>, <b>− Ödeme</b> (Kasa'dan çıkar). Açık taksit kartı varsa tahsilatı taksite mi yazacağınız sorulur.</li>
+  <li><b>Hareket girin:</b> kartta <b>+ Tahsilat</b> (Kasa'ya girer, makbuzu alınır), <b>Borç Yaz</b>, <b>Alacak Yaz</b>, <b>− Ödeme</b> (Kasa'dan çıkar). Açık taksit kartı varsa tahsilatı taksite mi yazacağınız sorulur. <b>Satış Faturası</b> ve <b>Alış Faturası</b> pilleri bu cariye fatura keser (bkz. Fatura).</li>
 </ol>
 <ul>
   <li><b>Bakiye</b> = borç − alacak. <b style="color:#177245">Borçlu</b>: cari size borçlu; <b style="color:#b3473a">Alacaklı</b>: siz cariye borçlusunuz; <b>Kapalı</b>: bakiye sıfır. Listede, kartta, raporlarda ve çıktılarda aynı sözcük ve renk.</li>
@@ -199,18 +200,39 @@
   <li><b>Excel / Sheets’ten Yükle</b> ile mevcut portföyünüzü alın. Liste PDF ve Excel olarak iner.</li>
 </ul>
 
-<h2>12. ANLIK DURUM</h2>
-<p>Yalnız <b>yöneticinin</b> ana ekranında: <b>Kasa / Banka</b>, <b>Kritik Stok</b>, <b>Toplam Alacak</b> (carilerin borcu + portföydeki çek/senet) ve <b>Toplam Borç / Ödemeler</b>. Her işlemde sayfa yenilenmeden değişir; rakamlar Kasa, Cari, Stok ve Çek / Senet ekranlarıyla aynıdır. Kutuya tıklayınca ilgili ekran açılır; <b>Rapor Al</b> Raporlar penceresini açar.</p>
+
+<h2>12. Fatura</h2>
+<p>Sol menüden <b>Fatura</b>. Satış, alış ve iade faturalarınız; her fatura kesildiği anda stoğu, cariyi, Kasa'yı, taksit kartını ve çek/senedi birlikte yazar; ayrıca bir yere girmezsiniz.</p>
+<figure><img src="ekran/k24-fatura-formu.jpg" alt="Fatura formu"><figcaption>Satış faturası: cari, kalemler, KDV ve ödeme tek formda.</figcaption></figure>
+<ol class="steps">
+  <li><b>+ Yeni Fatura</b> → ne yapacağınızı seçin: <i>Stoktan Satış</i>, <i>Hizmet Satışı</i>, <i>Serbest Meslek Makbuzu</i>, <i>Fiyat Farkı Faturası</i>, <i>Satıştan İade</i>; <i>Stoğa Mal Alışı</i>, <i>Hizmet ve Gider Alışı</i>, <i>Alıştan İade</i>. Stok, KDV ve ödeme kuralları seçtiğiniz senaryodan gelir. Cari kartındaki <b>Satış Faturası</b> / <b>Alış Faturası</b> pili aynı formu cari dolu açar.</li>
+  <li><b>Cari:</b> adını yazıp seçin; vergi dairesi, VKN/TCKN ve adres cari kartından gelir. Kayıtlı değilse yanındaki <b>+ Yeni Cari</b> formdan ayrılmadan açar; kaydedince seçili gelir.</li>
+  <li><b>Kalemler:</b> ürün adını yazınca stoktan öneri gelir; miktar, birim fiyat, iskonto ve KDV. Cari ve ürün seçilince <b>bu müşteriye ve başkalarına son satış/alış fiyatı</b> görünür, tıklayınca fiyata yazılır. <b>Not</b> belgenin altına basılır.</li>
+  <li><b>Ödeme:</b> peşin kısmı <b>Nakit / Havale / Kredi Kartı</b> ile Kasa'ya, <b>Çek / Senet</b> ile portföye yazılır; kalanı <b>Açık Hesap</b> (vadeli) ya da <b>Taksit</b> (taksit kartı açılır).</li>
+  <li><b>Kaydet</b> (ya da <b>Taslak Olarak Kaydet</b>: deftere işlenmez, Taslaklar sekmesinde bekler). Kesilen belge düzeltilmez; yanlışsa <b>İptal Et</b> bütün etkilerini geri alır (numara korunur) ya da <b>İade</b> kesersiniz.</li>
+</ol>
+<ul>
+  <li><b>İade:</b> kartta <b>İade</b> pili ya da senaryoda <i>Satıştan / Alıştan İade</i>; en üstteki arama ile iade edilecek faturayı bulun, kalem ve miktarı seçin. Para Kasa'dan geri verilir ya da cari borcundan düşer; taksitli satışta taksit kartı iade kadar küçülür.</li>
+  <li><b>Belgeyi verin:</b> kartta <b>PDF</b> / <b>Yazdır</b>, <b>WhatsApp</b> (PDF iner, sohbet açılır) ve <b>E-Posta</b> (PDF iner, cari kartındaki adrese hazır metinle e-posta penceresi açılır). Resmî e-Fatura bağlantısı açılana kadar belge <b>Müşteri Fişi</b> başlığıyla basılır; resmî fatura yerine geçmez.</li>
+  <li><b>Toplu işler:</b> listede soldaki kutularla belgeleri seçin → <b>Seçilenleri PDF / Excel</b>; Taslaklar sekmesinde <b>Seçilenleri Kes</b> (eski tarihli önce), Satış/Alış sekmesinde <b>Seçilenleri İptal Et</b>. Kesilemeyen ya da iptal edilemeyen belge nedeniyle bildirilir ve seçili kalır.</li>
+  <li><b>Tekrarla:</b> kira, aidat, abonelik gibi her ay kesilen fatura için kartta <b>Tekrarla</b>; her dönem taslak hazır gelir, Taslaklar'dan toplu kesersiniz.</li>
+  <li><b>Fatura Ayarları</b> (dişli): belgenin üstünde yazan firma bilgisi, <b>Logo</b> (seçtiğiniz görsel küçültülüp belgeye basılır), banka IBAN'ları, belge alt notu, varsayılan KDV ve vade günü, belgenin altındaki <b>Teslim Alan / Kaşe-İmza</b> kutuları.</li>
+  <li><b>Raporlar → Tüm Raporlar:</b> <i>Satış Faturaları</i>, <i>Alış Faturaları</i>, <i>İade Faturaları</i>, <i>KDV Özeti</i>, <i>Açık Faturalar</i>, <i>Ürün Bazında Satış ve Kârlılık</i>. Açık faturalar Vade Takip'te ve ANLIK DURUM'da da görünür.</li>
+  <li><b>Kimler görür:</b> yönetici ve muhasebe; başka birine <b>Yönetim → Kullanıcılar → Yetkiler → Fatura</b> ile açılır.</li>
+</ul>
+
+<h2>13. ANLIK DURUM</h2>
+<p>Yalnız <b>yöneticinin</b> ana ekranında: <b>Kasa / Banka</b>, <b>Kritik Stok</b>, <b>Toplam Alacak</b> (carilerin borcu + portföydeki çek/senet + açık satış faturaları) ve <b>Toplam Borç / Ödemeler</b>. Her işlemde sayfa yenilenmeden değişir; rakamlar Kasa, Cari, Stok ve Çek / Senet ekranlarıyla aynıdır. Kutuya tıklayınca ilgili ekran açılır; <b>Rapor Al</b> Raporlar penceresini açar.</p>
 <figure><img src="ekran/k10-anlik-durum.jpg" alt="ANLIK DURUM kartı"></figure>
 
-<h2>13. Raporlar</h2>
+<h2>14. Raporlar</h2>
 <p>Sol menüden <b>Raporlar</b> (ya da ANLIK DURUM'daki <b>Rapor Al</b>). Üstteki sekmeden seçin:</p>
 <ul>
   <li><b>Cari Ekstre:</b> tarih aralığı → <b>Raporu Getir</b>: her cari için devir, dönem borç ve alacak, bakiye. Cariye tıklayınca ekstresi açılır. Henüz cari yoksa <b>Cari Ekranını Aç</b> ya da <b>Tablodaki Kişileri Cari Yap</b>.</li>
   <li><b>Vade Takip:</b> vadesi olan her açık kalem tek listede (taksit, çek/senet, ileri tarihli Kasa, tablodaki ödeme günleri). Gecikmiş, Bugün, 7 / 30 / 90 Gün; satıra tıklayınca kaynağı açılır.</li>
   <li><b>Nakit Akış:</b> bugünkü kasadan başlayan tahmini kasa; en düşük günü gösterir.</li>
   <li><b>Çek / Senet:</b> portföy raporu.</li>
-  <li><b>Tüm Raporlar:</b> Kasa, Cari, Taksit, Çek / Senet, Stok ve kayıt raporları (ör. <i>Cari Listesi ve Bakiyeler</i>, <i>Tüm Cari Hareketleri</i>, <i>Cari Bazında Tahsilat</i>, <i>Taksit Kartları</i>). Soldan raporu, üstten dönemi seçin; ön izleme gelir.</li>
+  <li><b>Tüm Raporlar:</b> Kasa, Cari, Taksit, Çek / Senet, Stok, Fatura ve kayıt raporları (ör. <i>Cari Listesi ve Bakiyeler</i>, <i>Tüm Cari Hareketleri</i>, <i>Cari Bazında Tahsilat</i>, <i>Taksit Kartları</i>). Soldan raporu, üstten dönemi seçin; ön izleme gelir.</li>
   <li><b>Tablo Raporları:</b> yalnız Excel tablonuza dayalı raporlar.</li>
   <li><b>Ana Defter</b> (Tüm Raporlar içinde): <i>Hesap Planı Mizanı</i>, <i>Yevmiye Defteri</i> ve <i>Defter Mutabakatı</i>. Mutabakatta her satır <b>Tutarlı</b> olmalıdır; <b>Fark Var</b> görürseniz destek hattını arayın. Defterleri bozacak bir kayıt hiç yazılmaz ve <i>Mutabakat Günlüğü</i>'nde görünür.</li>
 </ul>
@@ -222,12 +244,12 @@
 <figure><img src="ekran/k12-rapor-merkezi.jpg" alt="Raporlar: Tüm Raporlar"><figcaption>Tüm Raporlar → Cari Bazında Tahsilat.</figcaption></figure>
 <p><b>Kimler görür:</b> yönetici tüm sekmeleri. Başka birine açmak için <b>Yönetim → Kullanıcılar → Yetkiler → Raporlar → Finans Raporları</b>.</p>
 
-<h2>14. Belgeler ve Mesajlar</h2>
+<h2>15. Belgeler ve Mesajlar</h2>
 <p><b>Belge:</b> kartta <b>Belge</b>'ye basın ya da dosyaları kartın üzerine sürükleyin; ekran görüntüsünü <b>Ctrl+V</b> ile yapıştırın. PDF, resim, Word, Excel ve UYAP dosyaları eklenir. Birden çok belge varsa <b>Yan Yana Gör</b>: seçtiklerinizi indirir ya da yazdırırsınız.</p>
 <figure><img src="ekran/k07-belge-karti.jpg" alt="Belge kartı"></figure>
 <p><b>Mesajlar:</b> <b>Ofis Geneli</b> herkese açıktır; kişiye yazdığınızı yalnız o kişi görür. Eski mesajlar için <b>↑ Önceki Günün Mesajlarını Yükle</b>; 30 günden eskileri <b>Arşivi İndir</b> ile açarsınız.</p>
 
-<h2>15. Yönetici İçin</h2>
+<h2>16. Yönetici İçin</h2>
 <ul>
   <li><b>Kullanıcılar:</b> <b>+ Yeni Kullanıcı</b>: ad, kullanıcı adı, rol, ilk parola. Ad ve kullanıcı adını yanlarındaki <b>✎</b> ile düzeltin. <b>Parola Sıfırla</b> personelin parolasını yeniler.</li>
   <li><b>Yetkiler:</b> satırdaki <b>Yetkiler</b> pili bütün yetkileri açar: rolün verdikleri işaretli gelir; kutuyla o kişiye <b>ekler</b> (yeşil) ya da <b>çıkarırsınız</b> (kırmızı) → <b>Yetkileri Kaydet</b>. <b>+ Yeni Rol</b> ile kendi rolünüzü kurun.</li>
@@ -246,7 +268,7 @@
 <figure><img src="ekran/k18-parolami-unuttum.jpg" alt="Giriş ekranı: Parolamı Unuttum"><figcaption>Parolamı Unuttum: anahtar ya da sunucu kodu ve yeni parola.</figcaption></figure>
 </div>
 
-<h2>16. Bir Sorun mu Var?</h2>
+<h2>17. Bir Sorun mu Var?</h2>
 <table>
   <thead><tr><th>Durum</th><th>Ne Yapmalı?</th></tr></thead>
   <tbody>

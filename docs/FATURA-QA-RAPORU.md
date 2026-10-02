@@ -142,18 +142,19 @@ testleri eklendi) aşağıda "Bulunan ve düzeltilen hatalar" bölümünde.
 
 | # | Önem | Bulgu | Repro / gözlem | Beklenen |
 |---|---|---|---|---|
-| A1 | Medium | Fatura ↔ icra dosyası bağı dolaylı: faturada "Dosya" alanı yok; dosya detay panelinde faturalar/açık bakiye yok; dosyadan doğrudan fatura kesilemiyor. Bağ cari üzerinden (cari kartı dosyaya bağlı, "Cari Kartı" düğmesi, kartta Faturalar bölümü). | U7, E5 — ekran: `01-dosya-cari-karti-faturalar.png` (Ayşe Kaya kartında "Tablodaki Kayıt: Konya 6. İcra 2026/1234", Faturalar 1, Taksit Kartları 1) | Dosya detayında fatura özeti; faturada dosya seçimi |
+| A1 | Medium | Fatura ↔ icra dosyası bağı dolaylı: faturada "Dosya" alanı yok; dosya detay panelinde faturalar/açık bakiye yok; dosyadan doğrudan fatura kesilemiyor. Bağ cari üzerinden (cari kartı dosyaya bağlı, "Cari Kartı" düğmesi, kartta Faturalar bölümü). | U7, E5 — ekran: `01-dosya-cari-karti-faturalar.png` (Ayşe Kaya kartında "Tablodaki Kayıt: Konya 6. İcra 2026/1234", Faturalar 1, Taksit Kartları 1) | **Kullanıcı kararı (02.10.2026): yapılmayacak** — "icra dosyasını değil cariyi ekleyerek kesebilir müşteri". Bağ cari üzerinden kalır. |
 | A2 | Medium | e-Belge gerçek ortamda (GİB/EDM test hesabı) doğrulanmadı; tüm e-Fatura/e-Arşiv senaryoları sahte EDM sunucusuyla (WSDL'den sözleşme) geçti. | F15 | EDM test hesabı alınınca gerçek uçtan uca prova |
 | A3 | Medium | e-İrsaliye yok (irsaliyeli fatura alanları var). | F3.7 | Mal sevkiyatı olan müşteri için e-İrsaliye |
 | A4 | Medium | İnternet/istek kesilmesi ortamda simüle edilemedi (BLOCKED). Kod incelemesi: her kesim tek BEGIN IMMEDIATE işlemi; yarım kayıt oluşamaz. | N2 | Saha provası |
-| A5 | Low | Fatura formundan yeni cari açılamıyor ("Yoksa Cari ekranından açın"). | F4 | Formda "+ Yeni Cari" |
-| A6 | Low | Toplu onay (taslakları topluca kesme) ve toplu iptal yok; seçilenleri PDF/Excel/XML ve "Tümünü Gönder" var. | F16 | Toplu işlemler |
-| A7 | Low | PDF: tek şablon, logo yok, e-imza/kaşe alanı yok (antet = Fatura Ayarları'ndaki firma bilgisi; not basılıyor). | F14 | Logo ve imza alanı |
-| A8 | Low | Fatura listesinde kolon özelleştirme yok; faturaya özel (kullanıcı tanımlı) alan yok; faturaya görev/not bağlama yok; ayrı "Fiyat Farkı" türü yok. | F1.3, F12, E8, F3.6 | — |
+| A5 | Low | Fatura formundan yeni cari açılamıyor ("Yoksa Cari ekranından açın"). | F4 | **Yapıldı (02.10.2026):** cari seçicinin yanında "+ Yeni Cari"; kart formdan ayrılmadan açılır, kaydedilince seçili gelir, fiyatlar ve toplamlar yenilenir (`senaryo-215` adım 12). |
+| A6 | Low | Toplu onay (taslakları topluca kesme) ve toplu iptal yok; seçilenleri PDF/Excel/XML ve "Tümünü Gönder" var. | F16 | **Yapıldı:** seçim çubuğunda "Seçilenleri Kes (n)" (yalnız taslaklar, tarih sırasıyla) ve "Seçilenleri İptal Et (n)" (yalnız kesilmiş belgeler, en yeni önce; iptal nedeni). Her belge kendi işleminde; kesilemeyen/iptal edilemeyen belge nedeniyle bildirilir ve seçili kalır. `POST /invoices/bulk-issue`, `/bulk-cancel` (`test/fatura-215.test.mjs`, `senaryo-215` adım 13). |
+| A7 | Low | PDF: tek şablon, logo yok, e-imza/kaşe alanı yok (antet = Fatura Ayarları'ndaki firma bilgisi; not basılıyor). | F14 | **Yapıldı:** Fatura Ayarları › Logo (her görsel tarayıcıda JPEG'e çevrilir, en çok 150 KB / 1200 px; PDF'e DCTDecode görseli olarak gömülür; belgeye kopyalanmaz, güncel logo basılır; alış ve müşterinin iade faturasında basılmaz) ve "Teslim Alan / Düzenleyen (Kaşe / İmza)" kutuları (varsayılan açık, ayardan kapanır). Birden çok şablon yok. |
+| A8 | Low | Fatura listesinde kolon özelleştirme yok; faturaya özel (kullanıcı tanımlı) alan yok; faturaya görev/not bağlama yok; ayrı "Fiyat Farkı" türü yok. | F1.3, F12, E8, F3.6 | **Kısmen:** "Fiyat Farkı Faturası" senaryosu eklendi (satış, stoksuz kalem; varsayılan satış senaryosu olarak seçilebilir). Kolon özelleştirme, özel alan ve görev/not bağlama yapılmadı (öncelik düşük). |
 | A9 | Low | Kendi serimizde numara elle değiştirilemez (VUK sıra kuralı için bilinçli). Alış ve müşterinin kestiği iade faturasında elle numara var. | F8.2 | Bilinçli karar; rapora not |
 | A10 | Low | Canlı yenileme olayları kendi kullanıcısına gitmez (`except: user.id`): aynı kullanıcı ikinci sekmede çalışıyorsa o sekme kendiliğinden yenilenmez (tek sekmede sorun yok; arayüzden yapılan değişiklikler yerel olayla yenilenir). Tüm modüller için geçerli tasarım kararı. | U7 tanı adımı | Oturum bazlı hariç tutma |
 | A11 | Low | 10 yıllık saklama / dönem arşivleme otomasyonu yok; e-Belge'nin imzalı XML arşivi entegratörde (program saklamıyor). Kesilmiş belge silinemez, iptal edilen numarasıyla kalır, yedek var. | R3 | Arşiv politikası |
-| A12 | Low | Stok kartı, faturalı hareketi varken silinebiliyor (Silinenler'den geri gelir); silinmiş ürünlü faturanın iadesi "ürün bulunamadı" ile reddediliyor. Bakiyeli/kartlı cari silinemiyor (409). | N6 | Hareketli stok kartında silme uyarısı |
+| A12 | Low | Stok kartı, faturalı hareketi varken silinebiliyor (Silinenler'den geri gelir); silinmiş ürünlü faturanın iadesi "ürün bulunamadı" ile reddediliyor. Bakiyeli/kartlı cari silinemiyor (409). | N6 | **Yapıldı:** fatura kalemine bağlı ürün silinmez (409 `invoice-linked`, mesajda fatura numarası); fatura iptal edilince silinebilir (`test/fatura-215.test.mjs`). |
+| A13 | Low | e-posta ile gönderim yoktu (yalnız WhatsApp ve PDF). | F14 | **Yapıldı:** kartta "E-Posta" (PDF indirilir, cari kartındaki adrese hazır konu ve metinle e-posta penceresi açılır; adres yoksa uyarır). |
 
 ## Entegrasyon matrisi
 
@@ -167,30 +168,34 @@ testleri eklendi) aşağıda "Bulunan ve düzeltilen hatalar" bölümünde.
 | Tahsilat Takvimi / Vade Takip | ✅ Tam | E6: 5 gün sonra vadesi gelen satış "yaklaşan", 10 gün geçmiş alış "gecikmiş (ödenecek)" |
 | Raporlar (KDV, ekstre, yaşlandırma, açık fatura, gider, Ba-Bs, stopaj/tevkifat, Kasa, mizan, yevmiye) | ✅ Tam | E7.1, E7.2: KDV 391/191 modelle aynı; mizan dengeli |
 | Ana Defter / mutabakat kapısı | ✅ Tam | D2, D6, D7: her adımda kapı ok, mizan dengeli |
-| İcra / dava dosyaları | ◐ Dolaylı | A1 |
+| İcra / dava dosyaları | ◐ Dolaylı (kullanıcı kararı: cari üzerinden yeter) | A1 |
 | e-Fatura / e-Arşiv (EDM) | ◐ Sahte sunucuyla tam; gerçek ortam yok | F15, A2 |
 | WhatsApp (PDF + mesaj) | ✅ Var (bu denetimde koşulmadı; senaryo-215 kartta düğme) | — |
+| E-posta (PDF + mailto) | ✅ Var (02.10.2026) | senaryo-215 adım 12 |
 | Görevler / Notlar | ✗ Yok | E8 |
 | e-İrsaliye | ✗ Yok | F3.7 |
 
 ## Eksik özellikler (standart fatura modülüne göre)
 
-1. e-İrsaliye (A3).
-2. Faturada dosya bağı ve dosya detayında fatura özeti (A1).
-3. Formdan yeni cari açma (A5).
-4. Toplu onay / toplu iptal (A6).
-5. PDF'te logo, kaşe/e-imza alanı, birden çok şablon (A7).
-6. Faturaya özel alan; görev/not bağlama; liste kolon özelleştirme; "Fiyat Farkı" türü (A8).
-7. e-posta ile gönderim (yalnız WhatsApp ve PDF indirme var).
-8. Dönem arşivleme / 10 yıl saklama otomasyonu (A11).
+Denetim sonrası (02.10.2026) kapatılanlar: formdan yeni cari (A5), toplu kesme / toplu iptal (A6), PDF'te logo ve kaşe/imza
+alanı (A7), Fiyat Farkı Faturası (A8'in bir parçası), e-posta ile gönderim (A13), stok kartı silme koruması (A12).
+Kullanıcı kararıyla yapılmayan: faturada dosya bağı (A1). Kalanlar:
 
-## Genel kalite skoru: **86 / 100**
+1. e-İrsaliye (A3).
+2. Birden çok PDF şablonu (A7).
+3. Faturaya özel alan; görev/not bağlama; liste kolon özelleştirme (A8).
+4. Dönem arşivleme / 10 yıl saklama otomasyonu (A11).
+5. Gerçek EDM ortam provası (A2; hesap gerekir).
+
+## Genel kalite skoru: **86 / 100** (denetim günü) → **92 / 100** (02.10.2026 düzeltmeleri sonrası)
 
 Gerekçe: Çekirdek muhasebe mantığı (hesaplama, numaralandırma, atomiklik, iptal/iade geri alma, cari–Kasa–stok–taksit–
 çek çapraz tutarlılığı) 64 testin tamamında ve bağımsız modelli 10.000+ işlemlik mutabakat koşularında kuruşu kuruşuna
-doğru; 0 açık hata, 0 tarayıcı hatası; 1.055 belgede liste 111–130 ms, 200 kalemli kesim 24 ms. Puan kırılan yerler:
-e-Belge'nin gerçek entegratör ortamında doğrulanmamış olması (−5), dosya bağının dolaylı kalması (−4), e-İrsaliye ve
-toplu/inline kolaylıkların eksikliği (−3), arşiv/logo/imza gibi sunum ve saklama eksikleri (−2).
+doğru; 0 açık hata, 0 tarayıcı hatası; 1.055 belgede liste 111–130 ms, 200 kalemli kesim 24 ms. Denetim günü puan kırılan
+yerler: e-Belge'nin gerçek entegratör ortamında doğrulanmamış olması (−5), dosya bağının dolaylı kalması (−4), e-İrsaliye ve
+toplu/inline kolaylıkların eksikliği (−3), arşiv/logo/imza gibi sunum ve saklama eksikleri (−2). Sonra: toplu işlemler,
+formdan cari, logo, kaşe/imza, e-posta ve stok silme koruması yapıldı (+4); dosya bağı kullanıcı kararıyla kapsam dışı
+sayıldı (−4 kırılmaz, +2 geri). Kalan kesinti: gerçek EDM provası (−5), e-İrsaliye (−2), arşiv otomasyonu (−1).
 
 ## Acil düzeltilmesi / yapılması gereken 5 madde
 
@@ -198,7 +203,9 @@ toplu/inline kolaylıkların eksikliği (−3), arşiv/logo/imza gibi sunum ve s
    "Kes, Sonra Gönder" numaralandırması gerçek GİB zarflarıyla doğrulansın (A2). Hesap olmadan yapılamaz.
 2. **Fatura ↔ icra dosyası doğrudan bağ** — faturada "Dosya" alanı, dosya detayında faturalar ve açık bakiye, dosyadan
    fatura kesme (A1). Hukuk bürosu için en çok kullanılacak yol.
-3. **Formdan yeni cari açma** (A5) — satış sırasında müşteri yoksa form kapanmadan açılsın.
-4. **Toplu taslak kesme ve toplu iptal** (A6) — tekrarlayan faturalar taslak ürettiği için aylık toplu kesim gerekli.
-5. **PDF'te logo ve kaşe/imza alanı; e-İrsaliye kararı** (A7, A3) — e-İrsaliye yalnız mal sevkiyatı yapan müşteriler için;
-   büro için öncelik düşük, ürün geneli için orta.
+3. ~~**Formdan yeni cari açma** (A5)~~ — yapıldı (02.10.2026).
+4. ~~**Toplu taslak kesme ve toplu iptal** (A6)~~ — yapıldı (02.10.2026).
+5. ~~**PDF'te logo ve kaşe/imza alanı**~~ — yapıldı (02.10.2026); **e-İrsaliye kararı** (A3) açık: yalnız mal sevkiyatı yapan
+   müşteriler için; büro için öncelik düşük, ürün geneli için orta.
+
+Madde 2 (dosya bağı) kullanıcı kararıyla kapatıldı: fatura cari seçilerek kesilir, dosya bağı cari kartı üzerinden kalır.

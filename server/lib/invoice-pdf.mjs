@@ -43,7 +43,7 @@ const partyLines = p => {
   ].filter(Boolean);
 };
 
-function drawInvoice(doc, invoice, { footer = "" }) {
+function drawInvoice(doc, invoice, { footer = "", logo = null, signatureArea = false }) {
   const M = 36;
   const W = A4.width - M * 2;
   const ink = "#111827";
@@ -75,12 +75,23 @@ function drawInvoice(doc, invoice, { footer = "" }) {
     page = doc.addPage();
     pages.push(page);
     pageNo += 1;
-    // Satıcı (sol üst).
-    page.text(M, 50, doc.fit(seller?.name || "", W * 0.55, "bold", 12), { font: "bold", size: 12, color: ink });
+    // Logo (yalnız firmanın kestiği belgede; alış ve müşterinin iade faturasında karşı tarafın belgesidir) ve satıcı (sol üst).
+    let sellerX = M;
+    const image = logo && !incoming ? logo() : null;
+    if (image) {
+      // En çok 44 nokta yüksek ve genişliğin %22'si kadar geniş; oran korunur.
+      const ratio = image.width / image.height;
+      const height = Math.min(44, (W * 0.22) / ratio);
+      const width = height * ratio;
+      page.image(image, M, 36, width, height);
+      sellerX = M + width + 10;
+    }
+    const sellerW = W * 0.6 - (sellerX - M) - 8;
+    page.text(sellerX, 50, doc.fit(seller?.name || "", sellerW, "bold", 12), { font: "bold", size: 12, color: ink });
     let top = 64;
     for (const text of partyLines(seller)) {
-      for (const part of doc.wrap(text, W * 0.55, "regular", 8).slice(0, 2)) {
-        page.text(M, top, part, { size: 8, color: muted });
+      for (const part of doc.wrap(text, sellerW, "regular", 8).slice(0, 2)) {
+        page.text(sellerX, top, part, { size: 8, color: muted });
         top += 10;
       }
     }
@@ -203,6 +214,26 @@ function drawInvoice(doc, invoice, { footer = "" }) {
     page.text(M, ny, part, { size: 8, color: part.startsWith("Yalnız") ? ink : muted, font: part.startsWith("Yalnız") ? "bold" : "regular" });
     ny += 10;
   }
+  // Kaşe / imza alanı (v2.0.15, QA A9): firmanın kestiği belgede "Teslim Alan" ve "Düzenleyen" kutuları; ıslak imza
+  // ve kaşe için boşluk. Alış ve müşterinin iade faturasında (karşı tarafın belgesi) basılmaz.
+  if (signatureArea && !incoming) {
+    let sy = Math.max(ty, ny) + 14;
+    const boxH = 58;
+    if (sy + boxH + 10 > bottom) {
+      header();
+      sy = y + 12;
+    }
+    const boxW = W * 0.32;
+    const boxes = [
+      [M, "TESLİM ALAN", "Ad Soyad / İmza"],
+      [M + W - boxW, "DÜZENLEYEN", "Kaşe / İmza"],
+    ];
+    for (const [bx, title, hint] of boxes) {
+      page.rect(bx, sy, boxW, boxH, { stroke: line, lineWidth: 0.6, radius: 3 });
+      page.text(bx + 6, sy + 11, title, { font: "bold", size: 7, color: muted });
+      page.text(bx + 6, sy + boxH - 6, hint, { size: 6.5, color: muted });
+    }
+  }
   // Sayfa altbilgisi.
   pages.forEach((item, index) => item.text(M, A4.height - 30, `${invoice.displayNo || ""} · Sayfa ${index + 1} / ${pages.length}`, { size: 7, color: muted, align: "right", width: W }));
 }
@@ -218,10 +249,31 @@ function paymentText(invoice) {
   return parts.length ? `Ödeme: ${parts.join(" · ")}` : "";
 }
 
-/** docs: routes/invoices.mjs detail() çıktıları. */
-export function invoicePdf(docs, { footer = "", officeName = "" } = {}) {
+/**
+ * Ayarlardaki logo (data:image/jpeg;base64,…) → PDF görseli. Görsel ilk basıldığında belgeye kaydedilir (yalnız alış
+ * belgeleri içeren PDF'e girmez); bozuksa logosuz basılır (belge hiç kesilmez olmasın).
+ */
+const logoOf = (doc, value) => {
+  if (!value) return null;
+  const raw = Buffer.isBuffer(value) ? value : Buffer.from(String(value).replace(/^data:image\/jpeg;base64,/i, ""), "base64");
+  let image;
+  return () => {
+    if (image === undefined) {
+      try {
+        image = doc.image(raw);
+      } catch {
+        image = null;
+      }
+    }
+    return image;
+  };
+};
+
+/** docs: routes/invoices.mjs detail() çıktıları. logo: JPEG data URL ya da Buffer; signatureArea: kaşe / imza kutuları. */
+export function invoicePdf(docs, { footer = "", officeName = "", logo = "", signatureArea = false } = {}) {
   const list = Array.isArray(docs) ? docs : [docs];
   const doc = new PdfDocument({ fonts: loadFonts(), size: A4, title: list.length === 1 ? `${list[0].kindLabel} ${list[0].displayNo || ""}`.trim() : `Faturalar (${list.length})`, author: officeName || "DestekOfis", subject: "Fatura" });
-  for (const invoice of list) drawInvoice(doc, invoice, { footer });
+  const image = logoOf(doc, logo);
+  for (const invoice of list) drawInvoice(doc, invoice, { footer, logo: image, signatureArea: signatureArea === true });
   return doc.toBuffer();
 }
