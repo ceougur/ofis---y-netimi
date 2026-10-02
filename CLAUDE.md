@@ -275,6 +275,19 @@ Bağlam kopsa da bu düzen değişmez. Kullanıcı "zip ver" dediğinde şu üç
      ayarı göçle "off"). Banka modülü gelince (açılış bakiyesi + hesaplar) denetim geri açılır. Madde 9'daki "Eksi Bakiye
      Denetimi (Nakit/Banka/Kredi Kartı) kalır" cümlesi bu maddeyle DEĞİŞTİ. Test: havale ile iade/ödeme → soru çıkmaz;
      nakit iade Kasa'yı eksiye düşürecekse soru çıkar; Yönetim ekranında yalnız Nakit Kasa ayarı.
+  12. "+ SAYFA → EXCEL'DEN AKTAR" SERBEST IZGARA OLUYOR, TARİH UYARISI YOK (müşteri, ekran: sekmeler "REHBER 9176" ve
+     "AKABE 16"; AKABE "Serbest Sayfa" — A/B/C kolon harfli Excel ızgarası, "sigorta tarihi" kolonunda 03.10.2026 var
+     ama yaklaşan tarih uyarısı gelmiyor). İstenen: Excel'den aktarılan sayfa, OTURUM AÇARKEN yüklenen Excel gibi
+     alınsın (veri sekmesi: ön izleme + kolon rolleri, tarih kolonu tanınır, takvim/uyarı/detay kartı çalışır). Koddan:
+     "+ Sayfa" aktarımı `server/lib/free-import.mjs` → serbest sayfa (`free-sheets.mjs`); `dataset.mjs` yalnız satırlarını
+     görünüme ekliyor (freeProvider.viewRows), kolon rolleri/tarih sınıflandırıcısı ve uyarı motoru (`alerts.mjs`)
+     serbest sayfayı veri sekmesi gibi işlemiyor (yap'ta kesin doğrulanacak). Öneri (yap'ta): "+ Sayfa" penceresinde
+     "Excel / Google Sheets'ten Aktar" = VERİ SEKMESİ (ilk yüklemedeki ön izleme ve eşleme ekranı: kolon rolleri, tarih
+     anlamı, %90 otomatik + şüpheliler sarı) → sekme mevcut şirketin tablosuna eklenir, uyarılar/takvim/rapor/detay
+     kartı onu da kapsar; "Boş Sayfa" (elle doldurulan ızgara) seçeneği ayrı kalır. Mevcut serbest sayfalar için
+     sekme menüsünde "Veri Sekmesine Dönüştür" (veri kaybı yok, geri alınabilir). Test: tarih kolonlu Excel'i + Sayfa
+     ile aktar → yarın tarihli satır için zil/sağ alt uyarısı ve tahsilat takviminde görünür; aynı dosya ilk yüklemedeki
+     gibi aynı rolleri alır; dönüştürme sonrası satır sayısı aynı.
   KURAL (bu maddeden): kullanıcının her isteği, ne kadar küçük olsa da, AYNI ANDA bu listeye yazılır ve commit edilir;
   "dün konuştuk" denen bir istek listede yoksa kullanıcıya açıkça söylenir.
 - e-Belge kararı (kullanıcı, 01.10.2026): vergi dairesi/entegratör bağlantısı KAPALI — "sana entegre et diyene kadar".
