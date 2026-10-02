@@ -825,8 +825,8 @@
     const problems = [...(c.partyProblems || []), ...(c.sellerProblems || []), ...(c.warnings || [])];
     slot.innerHTML = `<h4>Toplamlar</h4>
       <dl class="hof-inv-totals">
-        ${row("Ara Toplam", t.base)}
-        ${t.discount > 0 ? row("İskonto", -t.discount) : ""}
+        ${row("Ara Toplam", t.baseNet ?? t.base)}
+        ${(t.discountNet ?? t.discount) > 0 ? row("İskonto", -(t.discountNet ?? t.discount)) : ""}
         ${t.byRate.length > 1 || t.discount > 0 ? row("KDV Matrahı", t.net) : ""}
         ${t.byRate.map(item => row(`KDV %${item.rate}`, item.vat)).join("")}
         ${t.withheld > 0 ? row("KDV Tevkifatı", -t.withheld) : ""}
@@ -1281,8 +1281,9 @@
       .map((line, index) => `<tr><td>${index + 1}</td><td><b>${esc(line.name)}</b>${line.code ? `<small>${esc(line.code)}</small>` : ""}${line.description ? `<small>${esc(line.description)}</small>` : ""}${line.expenseLabel ? `<small>${esc(line.expenseLabel)}</small>` : ""}${line.withholdingCode ? `<small>Tevkifat ${esc(line.withholdingCode)} (${line.withholdingNum}/${line.withholdingDen})</small>` : ""}</td><td class="num">${esc(String(line.qty).replace(".", ","))} ${esc(line.unit)}${line.returned ? `<small>${esc(String(line.returned).replace(".", ","))} iade</small>` : ""}</td><td class="num">${esc(curMoney(line.unitPrice, cur))}</td><td class="num">${line.discountRate ? `%${esc(String(line.discountRate).replace(".", ","))}` : ""}</td><td class="num">%${esc(String(line.vatRate))}</td><td class="num"><b>${esc(curMoney(line.net, cur))}</b></td></tr>`)
       .join("");
     const totals = [
-      ["Ara Toplam", doc.baseTotal],
-      doc.discountTotal > 0 ? ["İskonto", -doc.discountTotal] : null,
+      ["Ara Toplam", doc.baseNetTotal ?? doc.baseTotal],
+      (doc.discountNetTotal ?? doc.discountTotal) > 0 ? ["İskonto", -(doc.discountNetTotal ?? doc.discountTotal)] : null,
+      doc.discountTotal > 0 || (doc.byRate || []).length > 1 ? ["KDV Matrahı", doc.netTotal] : null,
       ...(doc.byRate || []).map(item => [`KDV %${item.rate}`, item.vat]),
       doc.withheldTotal > 0 ? ["KDV Tevkifatı", -doc.withheldTotal] : null,
       doc.stoppageTotal > 0 ? [`Gelir Vergisi Stopajı %${doc.stoppageRate}`, -doc.stoppageTotal] : null,

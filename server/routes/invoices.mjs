@@ -19,7 +19,7 @@ import { buildUbl, ublFileName } from "../lib/einvoice/ubl-tr.mjs";
 import { HttpError, limited, ok, parseJson, readJson, sendBuffer, text } from "../lib/http.mjs";
 import { invoicePdf } from "../lib/invoice-pdf.mjs";
 import { jpegInfo } from "../lib/pdf-write.mjs";
-import { CURRENCIES, EXEMPTIONS, EXPENSES, INVOICE_KINDS, InvoiceInputError, SCENARIOS, STOPPAGE_DEFAULT, VAT_RATES, WITHHOLDING, amountInWords, computeInvoice, grossFromNet, lineAccount, toTry, typeCode } from "../lib/invoice-math.mjs";
+import { CURRENCIES, EXEMPTIONS, EXPENSES, INVOICE_KINDS, InvoiceInputError, SCENARIOS, STOPPAGE_DEFAULT, VAT_RATES, WITHHOLDING, amountInWords, computeInvoice, exclusiveParts, grossFromNet, lineAccount, toTry, typeCode } from "../lib/invoice-math.mjs";
 import { PAY_STATES, settleInvoices } from "../lib/invoice-settle.mjs";
 import { parseAmount, roundMoney } from "../lib/money.mjs";
 import { METHODS, methodOf } from "../lib/pay-method.mjs";
@@ -366,6 +366,16 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, conf
     open: state?.open ?? 0,
   });
 
+  function exclusiveTotals(lines, includeVat) {
+    let baseNet = 0;
+    let discountNet = 0;
+    for (const line of lines) {
+      const parts = exclusiveParts(line, includeVat, 100);
+      baseNet += Math.round(parts.baseNet * 100);
+      discountNet += Math.round(parts.discountNet * 100);
+    }
+    return { baseNetTotal: baseNet / 100, discountNetTotal: discountNet / 100 };
+  }
   function detail(id, user) {
     const row = invoiceRow(id);
     const lines = linesOf(row.id);
@@ -388,6 +398,8 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, conf
       stoppageRate: row.stoppageRate,
       baseTotal: row.baseTotal,
       discountTotal: row.discountTotal,
+      // v2.0.16: Ara Toplam ve İskonto KDV hariç (KDV dahil fiyatta da Ara Toplam − İskonto = Matrah).
+      ...exclusiveTotals(lines, Boolean(row.pricesIncludeVat)),
       goodsNet: row.goodsNet,
       serviceNet: row.serviceNet,
       grossTotal: row.grossTotal,
@@ -1474,7 +1486,7 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, conf
       rate: doc.rate,
       stoppageRate: doc.stoppageRate,
       lines: doc.computed.lines.map((line, index) => ({ net: c2(line.net), vat: c2(line.vat), withheld: c2(line.withheld), gross: c2(line.gross), payable: c2(line.payable), discount: c2(line.discount), base: c2(line.base), goods: doc.lines[index].goods, account: doc.lines[index].account, originLineId: doc.lines[index].originLineId })),
-      totals: { base: c2(t.base), discount: c2(t.discount), net: c2(t.net), vat: c2(t.vat), withheld: c2(t.withheld), stoppage: c2(t.stoppage), gross: c2(t.gross), payable: c2(t.payable), goodsNet: c2(t.goodsNet), serviceNet: c2(t.serviceNet), byRate: t.byRate.map(item => ({ rate: item.rate, net: c2(item.net), vat: c2(item.vat) })), byWithholding: t.byWithholding.map(item => ({ code: item.code, num: item.num, den: item.den, vat: c2(item.vat), withheld: c2(item.withheld) })) },
+      totals: { base: c2(t.base), discount: c2(t.discount), baseNet: c2(t.baseNet), discountNet: c2(t.discountNet), net: c2(t.net), vat: c2(t.vat), withheld: c2(t.withheld), stoppage: c2(t.stoppage), gross: c2(t.gross), payable: c2(t.payable), goodsNet: c2(t.goodsNet), serviceNet: c2(t.serviceNet), byRate: t.byRate.map(item => ({ rate: item.rate, net: c2(item.net), vat: c2(item.vat) })), byWithholding: t.byWithholding.map(item => ({ code: item.code, num: item.num, den: item.den, vat: c2(item.vat), withheld: c2(item.withheld) })) },
       try: { net: c2(doc.money.net), vat: c2(doc.money.vat), withheld: c2(doc.money.withheld), stoppage: c2(doc.money.stoppage), payable: c2(doc.money.payable) },
       amountInWords: amountInWords(c2(t.payable), doc.currency),
       party: doc.party,

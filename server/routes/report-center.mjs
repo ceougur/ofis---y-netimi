@@ -364,6 +364,8 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
       title: "Cari Ekstre",
       description: "Seçilen carinin tarih aralıklı ekstresi: devir satırı, hareketler ve yürüyen bakiye.",
       params: ["account", "range"],
+      // Ekstre tek bir carinin defteridir: cari seçilmeden çalışmaz. Öbür raporlarda cari isteğe bağlı süzgeçtir.
+      accountRequired: true,
       preset: "thisYear",
       build(query, user) {
         const range = rangeOf(query, "thisYear");
@@ -1269,7 +1271,7 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
   router.get("/api/workspace/report-center", async ({ req, res }) => {
     const user = enter(req);
     ok(res, {
-      reports: REPORTS.filter(report => allowed(user, report)).map(({ id, group, title, description, params, preset }) => ({ id, group, title, description, params, preset: preset || "" })),
+      reports: REPORTS.filter(report => allowed(user, report)).map(({ id, group, title, description, params, preset, accountRequired }) => ({ id, group, title, description, params, preset: preset || "", accountRequired: accountRequired === true })),
       today: today(),
     });
   });

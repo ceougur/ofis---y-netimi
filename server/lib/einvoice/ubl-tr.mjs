@@ -5,6 +5,7 @@
 // e-imza (UBLExtensions içindeki imza) ve GİB zarfı belgeyi gönderen entegratör ya da GİB portalı tarafından eklenir;
 // program imza anahtarı tutmaz. Tutarlar faturanın kendi kuruş hesabından gelir (lib/invoice-math.mjs) — ekranda, PDF'te,
 // defterde ve XML'de aynı sayı.
+import { exclusiveParts } from "../invoice-math.mjs";
 const NS = {
   invoice: "urn:oasis:names:specification:ubl:schema:xsd:Invoice-2",
   cac: "urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2",
@@ -69,13 +70,10 @@ function party(p, { variant }) {
   ].join("");
 }
 
-// KDV dahil girilen fiyatta UBL birim fiyatı KDV hariç yazılır: (matrah + iskonto) ÷ miktar.
-const netUnitPrice = (line, includeVat) => {
-  if (!includeVat) return Number(line.unitPrice) || 0;
-  const discountNet = (Number(line.discount) || 0) * (100 / (100 + (Number(line.vatRate) || 0)));
-  return Math.round((((Number(line.net) || 0) + discountNet) / (Number(line.qty) || 1)) * 10000) / 10000;
-};
-const discountNet = (line, includeVat) => (includeVat ? Math.round((Number(line.discount) || 0) * (100 / (100 + (Number(line.vatRate) || 0))) * 100) / 100 : Number(line.discount) || 0);
+// KDV dahil girilen fiyatta UBL birim fiyatı ve iskonto KDV hariç yazılır; ekran, fiş ve PDF ile aynı kuralla
+// (invoice-math exclusiveParts): KDV hariç brüt − iskonto = matrah, kuruşu kuruşuna.
+const netUnitPrice = (line, includeVat) => (includeVat ? Math.round((exclusiveParts(line, true, 100).baseNet / (Number(line.qty) || 1)) * 10000) / 10000 : Number(line.unitPrice) || 0);
+const discountNet = (line, includeVat) => (includeVat ? exclusiveParts(line, true, 100).discountNet : Number(line.discount) || 0);
 
 function taxCategory(rate, exemptionCode, exemptionLabel, variant) {
   if (variant === "peppol") return `<cac:TaxCategory>${tag("cbc:ID", rate > 0 ? "S" : exemptionCode && exemptionCode !== "351" ? "E" : "Z")}${tag("cbc:Percent", rate)}${rate > 0 ? "" : tag("cbc:TaxExemptionReason", exemptionLabel || "Exempt")}<cac:TaxScheme>${tag("cbc:ID", "VAT")}</cac:TaxScheme></cac:TaxCategory>`;

@@ -175,8 +175,9 @@ function drawInvoice(doc, invoice, { footer = "", logo = null, signatureArea = f
   }
   // Toplamlar.
   const rows = [
-    ["Mal / Hizmet Toplamı", money(invoice.baseTotal, currency)],
-    invoice.discountTotal > 0 ? ["Toplam İskonto", money(invoice.discountTotal, currency)] : null,
+    // v2.0.16: KDV hariç (KDV dahil girilen fiyatta da Mal / Hizmet Toplamı − İskonto = Matrah).
+    ["Mal / Hizmet Toplamı", money(invoice.baseNetTotal ?? invoice.baseTotal, currency)],
+    (invoice.discountNetTotal ?? invoice.discountTotal) > 0 ? ["Toplam İskonto", money(invoice.discountNetTotal ?? invoice.discountTotal, currency)] : null,
     ["Matrah (KDV Hariç)", money(invoice.netTotal, currency)],
     ...(invoice.byRate || []).map(item => [`KDV %${item.rate} (Matrah ${numberFormat.format(item.net)})`, money(item.vat, currency)]),
     ["Vergiler Dahil Toplam", money(invoice.grossTotal, currency)],

@@ -143,8 +143,10 @@
     center.preview = null;
     renderNav();
     renderMain();
-    if (!report.params.includes("account")) run();
+    if (!needsAccount(report)) run();
   }
+  // v2.0.16 (müşteri): yalnız Cari Ekstre cari ister; fatura ve öbür raporlarda cari isteğe bağlı süzgeçtir ("Tüm Cariler").
+  const needsAccount = report => report.accountRequired === true && !center.account;
   const queryString = () =>
     new URLSearchParams(
       Object.fromEntries(
@@ -177,7 +179,7 @@
     const main = root()?.querySelector("[data-rc-main]");
     const report = current();
     if (!main || !report) return;
-    const ready = !report.params.includes("account") || center.account;
+    const ready = !needsAccount(report);
     const qs = queryString();
     const preview = center.preview;
     const table = preview
@@ -198,10 +200,10 @@
       ${table}`;
     const slot = main.querySelector("[data-account-slot]");
     if (slot && HOF.accounts?.picker) {
-      const field = HOF.accounts.picker({ value: center.account || {}, label: "Cari", onPick: account => {
+      const field = HOF.accounts.picker({ value: center.account || {}, label: report.accountRequired ? "Cari" : "Cari (Boş Bırakılırsa Tüm Cariler)", onPick: account => {
         center.account = account && account.id ? { id: account.id, name: account.name } : null;
         center.preview = null;
-        if (center.account) run();
+        if (!needsAccount(report)) run();
         else renderMain();
       } });
       if (field) slot.appendChild(field);
@@ -212,7 +214,7 @@
   async function run({ quiet = false } = {}) {
     if (!center) return;
     const report = current();
-    if (!report || (report.params.includes("account") && !center.account)) return renderMain();
+    if (!report || needsAccount(report)) return renderMain();
     const ticket = (center.ticket = (center.ticket || 0) + 1);
     if (!quiet || !center.preview) {
       center.preview = null;

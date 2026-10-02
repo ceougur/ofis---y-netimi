@@ -140,6 +140,10 @@ Bağlam kopsa da bu düzen değişmez. Kullanıcı "zip ver" dediğinde şu üç
      Ek (kullanıcı): FATURADA stok kodu görünür olmalı — formda kalem satırında ayrı "Stok Kodu" kolonu (ürün seçilince
      dolar, yazılırsa ürünü bulur), fatura kartında kalem tablosunda, fatura PDF'inde ayrı kolon (şu an adın yanında
      parantez içinde), fatura Excel/raporlarında (Ürün Bazında Satış vb.), UBL'de SellersItemIdentification.
+  11. KDV dahil fiyatta iskonto gösterimi: 2.000 TL KDV dahil, %10 iskontoda Toplamlar "Ara Toplam 2.000 − İskonto 200,
+     Matrah 1.500, KDV 300" gösteriyordu (satırlar birbirini tutmuyor). Hesap doğru; GÖSTERİM yanlış. Olması gereken
+     (müşterinin gönderdiği öbür program): Toplam 1.666,67 − İsk. 166,67 = Ara Toplam (Matrah) 1.500; KDV 300. Düzeltme:
+     `exclusiveParts` (invoice-math) — form, kart, PDF, UBL hep KDV HARİÇ ara toplam/iskonto (`test/fatura-216.test.mjs`).
 - e-Belge kararı (kullanıcı, 01.10.2026): vergi dairesi/entegratör bağlantısı KAPALI — "sana entegre et diyene kadar".
   Fatura modülü tam çalışır; belge "Müşteri Fişi" (resmî hükmü yok) basılır; e-Fatura/e-Arşiv/XML ekranda görünmez.
   Entegratör altyapısı (müşteri kendi API bilgisini girer, kontörü kendisi alır) hazır tutulur ama `config.edocEnabled`
