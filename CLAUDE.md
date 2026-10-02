@@ -357,6 +357,10 @@ Bağlam kopsa da bu düzen değişmez. Kullanıcı "zip ver" dediğinde şu üç
   taksit kartı geri büyümüyor (`plans.mjs` growForInvoice satır yoksa açar), kontrast/tıklama hedefi/pasif düğme nedeni/yazım.
   Stres: `test:mutabakat --islem 5000 --tohum 3 --tohumlar 2 --her 1` (sonuç CHANGELOG "Doğrulama"). Kod değiştiği için
   güncelleme paketi ve kurulum .exe YENİDEN üretilir (release.mjs + build:windows), zipler yeniden kapatılır.
+  TESLİM EDİLDİ (02.10.2026 18:13): PR ceougur/ofis---y-netimi#17 açık (birleştirme kullanıcı onayıyla); zipler + .exe
+  kullanıcıya gönderildi (Kaynak-ve-Denetim 38 MB sınırı aştı → A-kaynak / B-denetim iki parça). Kurulum .exe sha256
+  c406cf19…; güncelleme paketi sha256 4702dfee…. Sırada: "birleştir" → CI → birleştir → yayın → "yayımladım" → bayt bayt +
+  güncelleyici denetimi → site kılavuz PR'ı.
 - e-Belge kararı (kullanıcı, 01.10.2026): vergi dairesi/entegratör bağlantısı KAPALI — "sana entegre et diyene kadar".
   Fatura modülü tam çalışır; belge "Müşteri Fişi" (resmî hükmü yok) basılır; e-Fatura/e-Arşiv/XML ekranda görünmez.
   Entegratör altyapısı (müşteri kendi API bilgisini girer, kontörü kendisi alır) hazır tutulur ama `config.edocEnabled`
