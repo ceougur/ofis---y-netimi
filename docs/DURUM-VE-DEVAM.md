@@ -76,13 +76,13 @@ Yeni bir oturum bu belgeyi okuyarak kaldığı yerden devam eder. Son güncellem
 
 ## Kalanlar (öncelik sırasıyla)
 
-### 2.0.16 — hazırlanıyor (02.10.2026; dal `claude/nice-euler-jvajxv`)
+### 2.0.16 — birleşti 02.10.2026 (PR #16, master = bd777e9); yayın ve bayt bayt doğrulama bekliyor
 Müşteri bildirimleri (CLAUDE.md → Açık iş → "2.0.16 müşteri hataları", 11 madde): fatura raporları cari seçmeden açılır
 (kritik), kaydedilmiş faturayı Düzenle (aynı numara, tek işlemde geri al + yeniden yaz), "Kes" → "Kaydet", KDV dahil iskonto
 ve Toplamlar düzeni, Stok Kodu (barkod; tekil; faturada kolon, PDF, rapor), alışta + Yeni Stok Kartı, Tüm Kalemlere KDV, KDV
 kutusu, kırpılmayan öneri listesi, tahsilatta POS / ödemede Kredi Kartı, PDF düğmesi adları. Kanıt: `CHANGELOG.md` → 2.0.16,
 `docs/MIMARI.md` → *2.0.16 eklemeleri*, `test/fatura-216.test.mjs`, `npm run test:senaryo-216` (42 rapor arayüzden).
-Göç yok (şema değişmedi). Sıradaki: PR → "birleştir" → CI → teslim (CLAUDE.md "Sürüm teslim düzeni") → site kılavuz PR'ı.
+Göç yok (şema değişmedi). Teslim: `dist/teslim-2.0.16/` (3 zip + SHA256SUMS; 2-Kurulum 59,7 MB olduğundan .exe ayrıca verildi). Sıradaki: kullanıcı yayını açar (tag v2.0.16, 5 dosya) → "yayımladım" → bayt bayt + güncelleyici denetimi → site kılavuz PR'ı (ceougur/destekofis → web/indir/).
 
 ### 2.0.15 — yayımlandı 02.10.2026 (PR #15, `v2.0.15` = 85171ae; beş dosya ve latest/DestekOfis-Kurulum.exe bayt bayt doğrulandı; güncelleyici 2.0.14/13/12/2.0.4/1.7.0 → 2.0.15 "available")
 Kapsam ve kanıt: `CHANGELOG.md` → 2.0.15, `docs/MIMARI.md` → *2.0.15 eklemeleri — Fatura modülü*, `docs/FATURA-ISTEKLER.md`

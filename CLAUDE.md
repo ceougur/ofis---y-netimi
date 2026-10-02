@@ -102,7 +102,7 @@ Bağlam kopsa da bu düzen değişmez. Kullanıcı "zip ver" dediğinde şu üç
      (JPEG, 150 KB) ve kaşe/imza kutuları, kartta E-Posta, fatura kalemli stok kartı silinmez, "Fiyat Farkı Faturası".
      Testler: `test/fatura-215.test.mjs`, `senaryo-215` adım 12–14. Kullanım kılavuzuna "Fatura" bölümü eklendi
      (kullanıcı isteği; k24 ekranı; PDF yeniden üretildi, client/kilavuz'a kopyalandı — siteye yükleme kullanıcıda).
-- 2.0.16 DURUM (02.10.2026): 11 maddenin hepsi yapıldı, dalda (`claude/nice-euler-jvajxv`), PR bekliyor. Kanıt: `CHANGELOG.md`
+- 2.0.16 DURUM (02.10.2026): 11 madde yapıldı; PR ceougur/ofis---y-netimi#16 BİRLEŞTİ (master = bd777e9, kullanıcı "birleştir" dedi); teslim zipleri verildi (`dist/teslim-2.0.16/`; güncelleme zip sha256 e1f38ccc…, kurulum adca1dda…); yayın (tag v2.0.16, 5 dosya) kullanıcıda; "yayımladım" → bayt bayt + güncelleyici denetimi → site kılavuz PR'ı. Kanıt: `CHANGELOG.md`
   → 2.0.16, `test/fatura-216.test.mjs`, `npm run test:senaryo-216` (39 denetim; 42 rapor arayüzden ön izleme+PDF+Excel).
   Kararlar (önerim uygulandı): Düzenle yalnız satış/alış/SMM (iade belgesi iptal+yeniden); taksitinden tahsilat alınmış
   faturada Düzenle kapalı; Toplam satırı KDV dahil iskontosuzda girilen tutar, iskontoluda KDV hariç.
