@@ -113,6 +113,9 @@ Bağlam kopsa da bu düzen değişmez. Kullanıcı "zip ver" dediğinde şu üç
      yeniden kaydetmek istiyor. Öneri (yap'ta karar): e-Belge kapalıyken (Müşteri Fişi) kartta "Düzenle" → aynı numara ve
      tarihle, tek işlemde eski etkiler geri alınıp yenileri yazılır (stok/cari/Kasa/taksit/çek; mutabakat kapısı; işlem
      geçmişine eski-yeni farkı). Engeller: kilitli dönem, iadesi olan, tahsil/ciro edilmiş çek, e-Belge gönderilmiş.
+  5. Ödeme yolu adı yöne göre: TAHSİLATTA (para girişi: cari/taksit/fatura/stok satışı/Kasa) "Kredi Kartı" yerine "POS";
+     ÖDEMEDE (bizim yaptığımız: alış, gider, tedarikçi) "Kredi Kartı". Tüm ekranlar, açılır listeler, makbuz/ekstre/PDF/
+     Excel, raporlar, Kasa göstergeleri. (Kayıtlı değer `card` aynı kalır; yalnız görünen ad yöne göre.)
 - e-Belge kararı (kullanıcı, 01.10.2026): vergi dairesi/entegratör bağlantısı KAPALI — "sana entegre et diyene kadar".
   Fatura modülü tam çalışır; belge "Müşteri Fişi" (resmî hükmü yok) basılır; e-Fatura/e-Arşiv/XML ekranda görünmez.
   Entegratör altyapısı (müşteri kendi API bilgisini girer, kontörü kendisi alır) hazır tutulur ama `config.edocEnabled`
