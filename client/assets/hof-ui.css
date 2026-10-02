@@ -9663,6 +9663,9 @@ input[type="search"]::-webkit-search-cancel-button {
 .hof-inv-big-pill small { overflow: hidden; color: var(--do-muted); font: 600 12px var(--do-font); text-overflow: ellipsis; white-space: nowrap; }
 .hof-inv-big-pill:hover:not([disabled]) { border-color: var(--do-accent); box-shadow: 0 6px 16px rgba(20, 52, 40, 0.1); }
 .hof-inv-big-pill[disabled] { opacity: 0.55; cursor: not-allowed; }
+/* v2.0.17: pasif düğmelerin nedeni (Düzenle / İptal Et / Sil / İade). */
+.hof-inv-blocks { margin: 6px 0 8px; padding: 8px 12px; border-radius: 10px; background: #fff7ed; color: #7a4a0c; font: 600 12px/1.5 var(--do-font); list-style: none; display: grid; gap: 3px; }
+.hof-inv-blocks b { color: #9a5b00; }
 .hof-inv-banner { margin: 8px 0; padding: 9px 12px; border-radius: 10px; background: #eef1f6; color: #3f5270; font: 600 12.5px/1.5 var(--do-font); }
 .hof-inv-banner small { display: block; color: inherit; opacity: 0.8; }
 .hof-inv-banner.is-cancelled { background: var(--do-danger-soft); color: var(--do-danger); }

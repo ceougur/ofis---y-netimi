@@ -179,8 +179,8 @@ describe("Kaydedilmiş faturayı düzenleme, yeni stok kartı, Stok Kodu (müşt
     assert.match(card.modifyBlock, /iade/);
     const blocked = await api.post(`/api/workspace/invoices/${sale.data.id}/edit`, { accountId: ids.customer, issueDate: shift(-1), lines: [{ itemId: ids.item, qty: 1, unitPrice: 150, vatRate: 20 }], payment: {} });
     assert.equal(blocked.status, 409);
-    // İade belgesinin kendisi düzenlenmez.
-    assert.equal((await api.post(`/api/workspace/invoices/${ret.data.id}/edit`, {})).status, 409);
+    // v2.0.17: iade belgesi de düzenlenir (boş gövde: kalem yok → 400); 409 değil. Ayrıntısı test/fatura-217.test.mjs.
+    assert.equal((await api.post(`/api/workspace/invoices/${ret.data.id}/edit`, {})).status, 400);
   });
 
   test("Düzenleme stok eksiye düşürecekse sorar (stock-negative), izin verilince yapar; tarih sırası korunur", async () => {

@@ -444,7 +444,7 @@
     };
     view.form = form;
     setMode("form");
-    if (draft?.originalId) return attachOriginal(draft.originalId, { keepLines: true });
+    if (draft?.originalId) return attachOriginal(draft.originalId, { keepLines: true, excludeReturn: form.modifyId });
     renderForm();
     if (copyOf) HOF.toast("Kopya hazır: tarih bugüne alındı; kontrol edip kaydedin.", { type: "info" });
   }
@@ -460,11 +460,12 @@
     }
   }
   // İade: asıl fatura seçilince cari, para birimi, kur ve kalemler (kalan iade edilebilir miktarla) ondan gelir.
-  async function attachOriginal(originalId, { doc = null, keepLines = false } = {}) {
+  async function attachOriginal(originalId, { doc = null, keepLines = false, excludeReturn = "" } = {}) {
     const form = view.form;
     if (!form) return;
     try {
-      const original = doc || (await HOF.api(`/api/workspace/invoices/${encodeURIComponent(originalId)}`));
+      // excludeReturn (v2.0.17): iade düzenlenirken asıl faturanın kalanı bu iadenin kendi miktarı hariç gelir.
+      const original = doc || (await HOF.api(`/api/workspace/invoices/${encodeURIComponent(originalId)}${excludeReturn ? `?excludeReturn=${encodeURIComponent(excludeReturn)}` : ""}`));
       const left = new Map((original.returnable || []).map(item => [item.id, item.left]));
       form.original = { id: original.id, number: original.displayNo || original.number, issueDate: original.issueDate, accountName: original.accountName, payableTotal: original.payableTotal, currency: original.currency };
       form.account = { id: original.accountId, name: original.accountName };
@@ -819,7 +820,14 @@
 
   // ---------- Ödeme ----------
   // v2.0.16: kart yolu yöne göre — satışta (tahsilat) POS, alışta (ödeme) Kredi Kartı.
-  const methodOptions = value => Object.entries((view.form && (["sale", "smm", "purchase_return"].includes(view.form.kind) ? meta.methodsIn : meta.methodsOut)) || meta.methods || { cash: "Nakit" }).map(([id, label]) => `<option value="${esc(id)}" ${id === value ? "selected" : ""}>${esc(typeof label === "string" ? label : label.label || id)}</option>`).join("");
+  // v2.0.17: iade belgesinde karta iade "POS İadesi" (satıştan iade) / "Kredi Kartı İadesi" (alıştan iade).
+  const refundMethods = kind => {
+    const base = (kind && (["sale", "smm", "purchase_return"].includes(kind) ? meta.methodsIn : meta.methodsOut)) || meta.methods || { cash: "Nakit" };
+    if (kind === "sale_return") return { ...base, card: "POS İadesi" };
+    if (kind === "purchase_return") return { ...base, card: "Kredi Kartı İadesi" };
+    return base;
+  };
+  const methodOptions = value => Object.entries(refundMethods(view.form?.kind)).map(([id, label]) => `<option value="${esc(id)}" ${id === value ? "selected" : ""}>${esc(typeof label === "string" ? label : label.label || id)}</option>`).join("");
   const paidSum = form => [...form.pay.cash, ...form.pay.cheques].reduce((sum, item) => sum + num(item.amount), 0) + (form.portfolio || []).filter(item => form.pay.endorse.includes(item.id)).reduce((sum, item) => sum + Number(item.amount || 0), 0);
   function renderPay() {
     const form = view.form;
@@ -1408,6 +1416,18 @@
   const pdfUrl = doc => `/api/workspace/invoices/${encodeURIComponent(doc.id)}/fatura.pdf`;
   // v2.0.17 (müşteri: "hayalet kısmi ödeme"): her ödenen kuruşun kaynağı kartta görünür — tarih, tür, tutar ve nasıl
   // kapattığı (Bağlı: bu faturaya yazılmış; Otomatik: carinin en eski açık faturasına dağıtılmış; Mahsup: mahsup fişi).
+  // v2.0.17 (müşteri: "Düzenle pasif, izin vermiyor"): pasif düğmenin nedeni düğmenin altında yazılı — yalnız title değil.
+  function blocksHtml(doc) {
+    if (doc.status !== "issued" || !doc.canManage) return "";
+    const items = [
+      !doc.canModify && doc.modifyBlock ? ["Düzenle", doc.modifyBlock] : null,
+      !doc.canCancel && doc.cancelBlock ? ["İptal Et", doc.cancelBlock] : null,
+      !doc.canDelete && doc.deleteBlock ? ["Sil", doc.deleteBlock] : null,
+      !doc.canReturn && doc.returnBlock ? ["İade", doc.returnBlock] : null,
+    ].filter(Boolean);
+    if (!items.length) return "";
+    return `<ul class="hof-inv-blocks">${items.map(([name, why]) => `<li><b>${esc(name)} kapalı:</b> ${esc(why)}</li>`).join("")}</ul>`;
+  }
   function closersHtml(doc) {
     if (doc.status !== "issued" || isReturn(doc.kind)) return "";
     const rows = (doc.closers || []).map(item => {
@@ -1478,6 +1498,7 @@
         ${doc.canManage ? `<span class="hof-plan-toolgroup">${doc.canEdit ? '<button type="button" class="hof-button hof-button-small" data-act="edit">Düzenle ve Kaydet</button>' : ""}${doc.status === "issued" ? `<button type="button" class="hof-button hof-button-small" data-act="modify" ${doc.canModify ? "" : "disabled"} title="${esc(doc.modifyBlock || "Belgeyi düzeltip yeniden kaydedin; numara değişmez, stok, cari, Kasa ve taksit kayıtları yeni hale göre yazılır")}">Düzenle</button>` : ""}${!ret ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="copy" title="Aynı cari ve kalemlerle yeni belge">Kopyala</button>' : ""}${doc.canRepeat ? `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="${doc.repeat ? "repeat-stop" : "repeat"}" title="${doc.repeat ? "Tekrar emrini durdur" : "Abonelik, kira, aidat: her dönem taslak hazırlanır"}">${doc.repeat ? "Tekrarı Durdur" : "Tekrarla"}</button>` : ""}${doc.canDelete ? '<button type="button" class="hof-button hof-button-small hof-button-danger-ghost" data-act="delete">Taslağı Sil</button>' : ""}${doc.status === "issued" ? `<button type="button" class="hof-button hof-button-small hof-button-danger-ghost" data-act="cancel" ${doc.canCancel ? "" : "disabled"} title="${esc(doc.cancelBlock || "Bütün etkileri geri alınır; numara korunur")}">İptal Et</button>` : ""}</span>` : ""}
         ${eTools}
       </div>
+      ${blocksHtml(doc)}
       ${doc.status === "cancelled" ? `<p class="hof-inv-banner is-cancelled">${esc(HOF.formatDateTime(doc.cancelledAt))} tarihinde iptal edildi${doc.cancelReason ? `: ${esc(doc.cancelReason)}` : ""}. Stok, cari, Kasa, çek/senet ve taksit etkileri geri alındı.</p>` : ""}
       ${doc.repeat ? `<p class="hof-inv-banner is-ok">Tekrarlanıyor: her ${doc.repeat.everyMonths} ayda bir · sıradaki ${esc(HOF.formatDate(doc.repeat.nextDate))}${doc.repeat.untilDate ? ` · bitiş ${esc(HOF.formatDate(doc.repeat.untilDate))}` : ""} · ${doc.repeat.made} taslak hazırlandı. Günü gelen taslak Taslaklar sekmesinde bekler; kontrol edip kaydedin.</p>` : ""}
       ${doc.status === "draft" ? '<p class="hof-inv-banner">Taslak: deftere işlenmedi, numarası yok. “Düzenle ve Kaydet” ile kaydedin; PDF proforma olarak basılır.</p>' : ""}

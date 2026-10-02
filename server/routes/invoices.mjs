@@ -398,8 +398,10 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, conf
   }
   // Düzenleme engeli (boşsa düzenlenebilir). Çek/senedin sonradan işlem görmesi kayıt anında denetlenir (voidFor).
   const E_SENT = new Set(["processing", "sent", "accepted", "rejected", "cancelled"]);
+  // v2.0.17 (müşteri: "iade faturasında Düzenle pasif"): iade belgesi de düzenlenir — aynı numara, tek işlemde eski etkiler
+  // geri alınır, yenisi yazılır; asıl fatura ve cari değişmez, miktar asıl faturanın kalanını aşamaz, tarih asıl faturadan
+  // önce olamaz (documentInput/linesInput denetler).
   function modifyBlock(row, activeReturns = 0, plan = null) {
-    if (INVOICE_KINDS[row.kind].return) return "İade belgesi düzenlenmez; yanlışsa iptal edip yeniden kaydedin.";
     if (activeReturns) return `Bu faturanın ${activeReturns} iade faturası var; düzenlenmez. Önce iadeleri iptal edin.`;
     if (E_SENT.has(row.eStatus)) return `Bu belge e-Belge olarak ${(E_STATES[row.eStatus] || "gönderildi").toLocaleLowerCase("tr-TR")}; düzenlenmez. İptal ya da iade faturasıyla düzeltin.`;
     const lock = period?.lockedUntil?.();
@@ -417,8 +419,10 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, conf
     const block = modifyBlock(existing, activeReturns);
     if (block) throw new HttpError(409, block, { code: "invoice-locked" });
     const own = INVOICE_KINDS[existing.kind].own || existing.seq > 0;
+    if (INVOICE_KINDS[existing.kind].return && text(body.originalId) && text(body.originalId) !== existing.originalId) fail400("İadenin asıl faturası düzenlemede değişmez; iptal edip yeni iade kaydedin.", "originalId", { code: "return-original-fixed" });
     const doc = documentInput({ ...body, kind: existing.kind }, { mode: "issue", existing });
     if (doc.kind !== existing.kind) fail400("Belgenin türü düzenlemede değişmez.", "kind");
+    if (doc.account?.id && doc.account.id !== existing.accountId && INVOICE_KINDS[existing.kind].return) fail400("İadenin carisi asıl faturadan gelir; değiştirilmez.", "accountId");
     if (own && doc.date !== existing.issueDate) {
       // Numara sırası ile tarih sırası uyuşmalı (VUK 231): yeni tarih, serideki önceki ve sonraki belgenin arasında kalmalı.
       const prev = store.get("SELECT number, issue_date AS issueDate FROM invoices WHERE series = ? AND year = ? AND seq > 0 AND seq < ? ORDER BY seq DESC LIMIT 1", existing.series, existing.year, existing.seq);
@@ -476,15 +480,23 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, conf
     publishAll(user, touched, result.id);
     return result;
   }
-  function detail(id, user) {
+  // v2.0.17: iade belgesinde kart/banka iadesi "POS İadesi" / "Kredi Kartı İadesi" (müşteriye karta iade; Kredi Kartı değil).
+  const refundMethodLabel = (kind, entry) => {
+    if (entry.method === "card" && kind === "sale_return" && entry.kind === "out") return "POS İadesi";
+    if (entry.method === "card" && kind === "purchase_return" && entry.kind === "in") return "Kredi Kartı İadesi";
+    return methodLabel(entry.method, entry.kind);
+  };
+  // excludeReturnId: bir iade belgesi düzenlenirken asıl faturanın "iade edilebilir kalanı" o iadenin kendi miktarı hariç
+  // hesaplanır (yoksa kendi miktarı kadar eksik görünür, artırma yapılamazdı).
+  function detail(id, user, { excludeReturnId = "" } = {}) {
     const row = invoiceRow(id);
     const lines = linesOf(row.id);
-    const returned = returnedQty(lines.map(line => line.id));
+    const returned = returnedQty(lines.map(line => line.id), excludeReturnId);
     const state = row.status === "issued" ? paymentStates([row]).get(row.id) : null;
     const returns = store.all("SELECT id, number, issue_date AS issueDate, status, try_payable AS tryPayable, kind FROM invoices WHERE original_id = ? ORDER BY issue_date, created_at", row.id);
     const linkedCheques = cheques()?.invoiceCheques ? cheques().invoiceCheques.forInvoice(row.id) : [];
     const plan = row.planId ? store.get("SELECT id, name, total, status, ref_no AS refNo FROM plans WHERE id = ? AND deleted_at IS NULL", row.planId) : null;
-    const payments = store.all("SELECT id, kind, amount, date, method FROM account_entries WHERE source = 'invoice' AND source_id = ? AND kind IN ('in', 'out') ORDER BY created_at", row.id).map(entry => ({ ...entry, methodLabel: methodLabel(entry.method, entry.kind) }));
+    const payments = store.all("SELECT id, kind, amount, date, method FROM account_entries WHERE source = 'invoice' AND source_id = ? AND kind IN ('in', 'out') ORDER BY created_at", row.id).map(entry => ({ ...entry, methodLabel: refundMethodLabel(row.kind, entry) }));
     const manage = canUser(user, "invoices.manage");
     const kind = INVOICE_KINDS[row.kind];
     const activeReturns = returns.filter(item => item.status === "issued").length;
@@ -535,6 +547,8 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, conf
       canCancel: manage && row.status === "issued" && activeReturns === 0,
       cancelBlock: row.status === "issued" && activeReturns ? `Bu faturanın ${activeReturns} iade faturası var; önce iadeleri iptal edin.` : "",
       canReturn: manage && row.status === "issued" && !kind?.return && row.kind !== "smm" && returnable.some(item => item.left > 0),
+      // v2.0.17: pasif düğmenin nedeni ekranda yazılı (yalnız title değil).
+      returnBlock: row.status !== "issued" ? "" : kind?.return ? "" : row.kind === "smm" ? "Serbest meslek makbuzundan iade belgesi olmaz; yanlışsa iptal edin." : returnable.some(item => item.left > 0) ? "" : "İade edilebilecek kalem kalmadı; faturanın tamamı iade edildi.",
       repeat: repeatOf(row.id),
       canRepeat: manage && row.status === "issued" && !kind?.return,
       canSend: edocEnabled && manage && row.status === "issued" && kind?.send && (row.profile !== "KAGIT" || row.eStatus === "withdrawn") && E_SENDABLE.has(row.eStatus || "none") && !sendBlockOf(row),
@@ -2378,9 +2392,9 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, conf
     ok(res, inboxShape(inboxRow(row.id)));
   });
 
-  router.get("/api/workspace/invoices/:id", async ({ req, res, params }) => {
+  router.get("/api/workspace/invoices/:id", async ({ req, res, params, url }) => {
     const user = requireView(req);
-    ok(res, detail(params.id, user));
+    ok(res, detail(params.id, user, { excludeReturnId: text(url.searchParams.get("excludeReturn")).slice(0, 120) }));
   });
 
   // ---------- Diğer modüller için ----------

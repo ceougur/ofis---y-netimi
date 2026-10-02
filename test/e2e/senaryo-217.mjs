@@ -4,6 +4,8 @@
 //      Mahsup Et (satış ↔ alış) → "Mahsup" rozeti; cari kartından ödeme "Kapatılacak Fatura" ile → "Bağlı"; bakiye/Kasa aynı.
 //   7. Eksi stok: soru "Kayıttan sonra stok: −15 Adet olacak"; rozet "Eksi Stok −20 Adet"; "Eksi Stoktakiler" süzgeci; Değer
 //      eksi miktar × maliyet; ANLIK DURUM "Eksi stok: n ürün"; fatura kaleminde kırmızı; raporda "Eksi (−20 Adet)".
+//  10. İade faturası düzenlenir (3 → 5 adet, aynı numara; kalan iade edilebilir kendi iadesi hariç); pasif düğmelerin
+//      nedeni kartta yazılı; satıştan iadede karta iade "POS İadesi".
 //   8. Çek ciro: cari seçici tür kısıtsız (Müşteri türündeki cari bulunur, tür rozeti), "+ Yeni Cari", boş sonuç metni.
 // Çalıştırma: npm run test:senaryo-217 (ekran görüntüleri artifacts/senaryo-217/).
 import fs, { mkdtempSync, rmSync, writeFileSync } from "node:fs";
@@ -242,6 +244,43 @@ try {
     await closeAll();
     const report = (await call(admin, "/api/workspace/report-center/stok-durumu?state=negative")).data;
     ok(report.rows.length === 1 && report.rows[0].at(-1) === "Eksi (-20 Adet)", `Stok Durumu raporunda durum “Eksi (−20 Adet)” (${report.rows[0].at(-1)})`);
+  });
+
+  await step("10. İade faturası düzenlenir; pasif düğme nedeni ekranda; karta iade 'POS İadesi'", async () => {
+    const sale = await call(admin, "/api/workspace/invoices", { scenario: "goods_sale", accountId: ids.party, issueDate: shift(-3), lines: [{ itemId: ids.item, qty: 10, unitPrice: 100, vatRate: 0 }], payment: { cash: [{ amount: 1000, method: "card" }], rest: "open" }, force: true });
+    const ret = await call(admin, "/api/workspace/invoices", { kind: "sale_return", originalId: sale.data.id, issueDate: shift(-1), lines: [{ originLineId: sale.data.lines[0].id, qty: 3 }], payment: { cash: [{ amount: 300, method: "card" }], rest: "open" } });
+    ok(sale.status === 200 && ret.status === 200, "satış 10 adet (POS 1.000) ve 3 adetlik satıştan iade (karta 300) kaydedildi");
+    await admin.evaluate(id => window.HOF.invoices.openDoc(id), ret.data.id);
+    await admin.waitForSelector(`${inv} [data-act="modify"]`, { timeout: 10000 });
+    ok(!(await admin.$eval(`${inv} [data-act="modify"]`, node => node.disabled)), "iade kartında Düzenle AKTİF");
+    const pay = (await admin.textContent(`${inv} .hof-inv-pay`)).replace(/\s+/g, " ");
+    ok(/Ödeme \(POS İadesi\)/.test(pay), `karta iade satırı “Ödeme (POS İadesi)” (${pay.slice(0, 60)})`);
+    await shot(admin, "iade-karti-duzenle-aktif");
+    await admin.click(`${inv} [data-act="modify"]`);
+    await admin.waitForSelector(`${inv} [data-l="0"][data-f="qty"]`, { timeout: 8000 });
+    const title = (await admin.textContent(`${inv} .hof-inv-form-title, ${inv} h3`)).replace(/\s+/g, " ");
+    ok(/Düzenleme/.test(title), `düzenleme formu açıldı (${title.slice(0, 60)})`);
+    const hint = (await admin.textContent(`${inv} [data-lines]`)).replace(/\s+/g, " ");
+    ok(/En çok 10 /.test(hint), `kalan iade edilebilir miktar kendi iadesi hariç (10) (${hint.slice(0, 100)})`);
+    await admin.fill(`${inv} [data-l="0"][data-f="qty"]`, "5");
+    await admin.waitForTimeout(900);
+    const methods = await admin.$$eval(`${inv} [data-pay="cash"][data-f="method"] option`, nodes => nodes.map(node => node.textContent.trim()));
+    ok(methods.includes("POS İadesi") && !methods.includes("Kredi Kartı"), `iade formunda yol seçenekleri: ${methods.join(" / ")}`);
+    await shot(admin, "iade-duzenleme-formu");
+    await admin.click(`${inv} [data-act="issue"]`);
+    await confirmYes();
+    await admin.waitForSelector(`${inv} .hof-inv-pills`, { timeout: 10000 });
+    const after = (await call(admin, `/api/workspace/invoices/${ret.data.id}`)).data;
+    ok(after.lines[0].qty === 5 && after.number === ret.data.number, `iade 3 → 5 adet, numara aynı (${after.number})`);
+    ok((await call(admin, `/api/workspace/invoices/${sale.data.id}`)).data.returnable[0].left === 5, "asıl faturanın iade edilebilir kalanı 5");
+    await closeAll();
+    // Asıl faturada Düzenle ve İptal Et kapalı; nedeni ekranda yazılı.
+    await admin.evaluate(id => window.HOF.invoices.openDoc(id), sale.data.id);
+    await admin.waitForSelector(`${inv} .hof-inv-blocks`, { timeout: 10000 });
+    const blocks = (await admin.textContent(`${inv} .hof-inv-blocks`)).replace(/\s+/g, " ");
+    ok(/Düzenle kapalı:.*iade faturası var/.test(blocks) && /İptal Et kapalı:/.test(blocks), `pasif düğmelerin nedeni ekranda (${blocks.slice(0, 140)})`);
+    await shot(admin, "pasif-dugme-nedeni");
+    await closeAll();
   });
 
   await step("8. Çek ciro: yalnız Müşteri türünde carisi olan veride ciro seçicisi cariyi bulur; + Yeni Cari; ciro sonrası durum", async () => {

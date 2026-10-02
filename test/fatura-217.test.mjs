@@ -215,3 +215,71 @@ describe("Hem müşteri hem tedarikçi cari: hayalet kısmi ödeme yok (API)", (
     }
   });
 });
+
+describe("Madde 10: iade faturası düzenlenir; sınırlar; POS İadesi; pasif düğme nedeni", () => {
+  let server;
+  let api;
+  const ids = {};
+  before(async () => {
+    server = await startTestServer();
+    api = apiOf(await loginAdmin(server));
+    ids.customer = (await api.post("/api/workspace/accounts", { name: "İade Müşterisi", type: "customer" })).data.id;
+    ids.item = (await api.post("/api/workspace/stock", { name: "Defter", code: "DFT-1", unit: "Adet", salePrice: 100 })).data.id;
+    await api.post("/api/workspace/cash", { kind: "in", amount: 5000, date: shift(-10), description: "Açılış" });
+    const sale = await api.post("/api/workspace/invoices", { scenario: "goods_sale", accountId: ids.customer, issueDate: shift(-5), lines: [{ itemId: ids.item, qty: 10, unitPrice: 100, vatRate: 0 }], payment: { cash: [{ amount: 1000, method: "card" }], rest: "open" }, force: true });
+    assert.equal(sale.status, 200, JSON.stringify(sale.data));
+    ids.sale = sale.data.id;
+    ids.line = sale.data.lines[0].id;
+    const ret = await api.post("/api/workspace/invoices", { kind: "sale_return", originalId: ids.sale, issueDate: shift(-2), lines: [{ originLineId: ids.line, qty: 3 }], payment: { cash: [{ amount: 300, method: "card" }], rest: "open" } });
+    assert.equal(ret.status, 200, JSON.stringify(ret.data));
+    ids.ret = ret.data.id;
+  });
+  after(async () => server.close());
+  const inv = async (id, q = "") => (await api.get(`/api/workspace/invoices/${id}${q}`)).data;
+  const stockQty = async () => Number((await api.get(`/api/workspace/stock/${ids.item}`)).data.qty);
+  const balance = async () => (await api.get(`/api/workspace/accounts/${ids.customer}`)).data.totals.balance;
+
+  test("iade kartı: Düzenle açık (canModify), karta iade 'POS İadesi'; asıl faturanın kalanı iade hariç 7, düzenleme için 10", async () => {
+    const doc = await inv(ids.ret);
+    assert.equal(doc.canModify, true, doc.modifyBlock);
+    assert.equal(doc.modifyBlock, "");
+    assert.deepEqual(doc.payments.map(item => [item.kind, item.methodLabel]), [["out", "POS İadesi"]]);
+    const original = await inv(ids.sale);
+    assert.equal(original.returnable[0].left, 7);
+    assert.equal((await inv(ids.sale, `?excludeReturn=${ids.ret}`)).returnable[0].left, 10);
+    assert.equal(original.canModify, false);
+    assert.match(original.modifyBlock, /iade/);
+  });
+  test("iade düzenle: miktar 3 → 5, aynı numara; stok/cari/Kasa yeni hâle göre; asıl faturanın kalanı 5", async () => {
+    const before = { stock: await stockQty(), balance: await balance() };
+    const edited = await api.post(`/api/workspace/invoices/${ids.ret}/edit`, { originalId: ids.sale, issueDate: shift(-2), lines: [{ originLineId: ids.line, qty: 5 }], payment: { cash: [{ amount: 300, method: "card" }], rest: "open" } });
+    assert.equal(edited.status, 200, JSON.stringify(edited.data));
+    assert.equal(edited.data.id, ids.ret);
+    assert.equal(edited.data.lines[0].qty, 5);
+    assert.equal(edited.data.tryPayable, 500);
+    assert.equal(await stockQty(), before.stock + 2, "iade 3'ten 5'e: stoğa 2 daha girer");
+    assert.equal(await balance(), before.balance - 200, "müşterinin borcu 200 daha düşer");
+    assert.equal((await inv(ids.sale)).returnable[0].left, 5);
+  });
+  test("sınırlar: kalanı aşan miktar 400 (6 iade edilebilir değil: 10 − 0 diğer iade → en çok 10, 11 → 400); asıl faturadan önceki tarih 400; asıl fatura/cari değiştirilemez 400", async () => {
+    const over = await api.post(`/api/workspace/invoices/${ids.ret}/edit`, { originalId: ids.sale, issueDate: shift(-2), lines: [{ originLineId: ids.line, qty: 11 }], payment: {} });
+    assert.equal(over.status, 400, JSON.stringify(over.data));
+    const early = await api.post(`/api/workspace/invoices/${ids.ret}/edit`, { originalId: ids.sale, issueDate: shift(-9), lines: [{ originLineId: ids.line, qty: 2 }], payment: {} });
+    assert.equal(early.status, 400);
+    assert.match(JSON.stringify(early.data), /asıl faturanın tarihinden/);
+    const other = await api.post("/api/workspace/invoices", { scenario: "goods_sale", accountId: ids.customer, issueDate: shift(-4), lines: [{ itemId: ids.item, qty: 1, unitPrice: 100, vatRate: 0 }], payment: { rest: "open" }, force: true });
+    const swap = await api.post(`/api/workspace/invoices/${ids.ret}/edit`, { originalId: other.data.id, issueDate: shift(-2), lines: [{ originLineId: other.data.lines[0].id, qty: 1 }], payment: {} });
+    assert.equal(swap.status, 400);
+    assert.match(JSON.stringify(swap.data), /asıl faturası düzenlemede değişmez/);
+  });
+  test("pasif düğme nedeni: asıl faturada Düzenle/İptal kapalı nedeni metin olarak gelir; tamamı iade edilince İade nedeni", async () => {
+    const original = await inv(ids.sale);
+    assert.match(original.cancelBlock, /iade faturası var/);
+    assert.equal(original.returnBlock, "");
+    const full = await api.post(`/api/workspace/invoices/${ids.ret}/edit`, { originalId: ids.sale, issueDate: shift(-2), lines: [{ originLineId: ids.line, qty: 10 }], payment: {} });
+    assert.equal(full.status, 200, JSON.stringify(full.data));
+    const done = await inv(ids.sale);
+    assert.equal(done.canReturn, false);
+    assert.match(done.returnBlock, /tamamı iade edildi/);
+  });
+});
