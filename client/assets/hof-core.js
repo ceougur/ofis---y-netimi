@@ -101,10 +101,14 @@
   HOF.PAY_METHODS = [
     { value: "cash", label: "Nakit" },
     { value: "bank", label: "Havale / EFT" },
-    { value: "card", label: "Kredi Kartı" },
+    { value: "card", label: "POS / Kredi Kartı" },
   ];
-  HOF.methodLabel = value => (HOF.PAY_METHODS.find(item => item.value === value) || HOF.PAY_METHODS[0]).label;
-  HOF.methodField = (value = "cash", { incoming = true, name = "method" } = {}) => ({ name, label: incoming ? "Tahsilat Yolu" : "Ödeme Yolu", type: "select", value: value || "cash", options: HOF.PAY_METHODS });
+  // v2.0.16 (müşteri): kart yolunun adı yöne göre — tahsilatta (para girişi) "POS", bizim ödememizde "Kredi Kartı";
+  // yönsüz yerde "POS / Kredi Kartı". direction: "in" | "out" | "" (kayıtlı değer `card` değişmez).
+  HOF.methodName = (value, direction = "") => (value === "card" ? (direction === "in" ? "POS" : direction === "out" ? "Kredi Kartı" : "POS / Kredi Kartı") : (HOF.PAY_METHODS.find(item => item.value === value) || HOF.PAY_METHODS[0]).label);
+  HOF.payMethods = (direction = "") => HOF.PAY_METHODS.map(item => ({ ...item, label: HOF.methodName(item.value, direction) }));
+  HOF.methodLabel = (value, direction = "") => HOF.methodName(value, direction);
+  HOF.methodField = (value = "cash", { incoming = true, name = "method" } = {}) => ({ name, label: incoming ? "Tahsilat Yolu" : "Ödeme Yolu", type: "select", value: value || "cash", options: HOF.payMethods(incoming ? "in" : "out") });
   HOF.can = permission => Boolean(HOF.user && HOF.user.permissions && HOF.user.permissions.includes(permission));
   HOF.sourceName = () => HOF.settings.sheetUrl || window.localStorage.getItem("hukuk-ofisi-sheet-url") || "Çalışma Tablosu";
 

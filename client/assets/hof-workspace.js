@@ -56,7 +56,7 @@
       },
       onSubmit: async data => {
         await HOF.api(caseUrl(selected.key, "payments"), { method: "POST", body: { ...data, caseTitle: selected.title } });
-        HOF.toast(`Tahsilat kaydedildi (${HOF.methodLabel(data.method)}).`, { type: "success" });
+        HOF.toast(`Tahsilat kaydedildi (${HOF.methodLabel(data.method, "in")}).`, { type: "success" });
         afterCaseChange();
         HOF.emit("payment-saved", { key: selected.key });
       },
@@ -413,7 +413,7 @@
   let cashModal = null;
   // v2.0.13: Kasa ve Banka — seçili yol (boş: tümü). Yeni hareket formu bu yolla açılır.
   const cashView = { method: "" };
-  const methodTag = entry => (entry.method && entry.method !== "cash" ? ` · <span class="hof-method-tag is-${esc(entry.method)}">${esc(HOF.methodLabel(entry.method))}</span>` : "");
+  const methodTag = entry => (entry.method && entry.method !== "cash" ? ` · <span class="hof-method-tag is-${esc(entry.method)}">${esc(HOF.methodLabel(entry.method, entry.kind))}</span>` : "");
 
   function editCashEntry(entry, kind, after) {
     const incoming = (entry?.kind || kind) === "in";
@@ -502,12 +502,12 @@
       eyebrow: "OPERASYON",
       size: "wide",
       body: `<div class="hof-kpis hof-cash-kpis" data-kpis></div>
-        <div class="hof-tabs hof-method-tabs" role="group" aria-label="Ödeme Yolu" data-methods>${[{ value: "", label: "Tümü" }, { value: "cash", label: "Nakit Kasa" }, { value: "bank", label: "Banka (Havale / EFT)" }, { value: "card", label: "Kredi Kartı (POS)" }].map(item => `<button type="button" data-method="${item.value}">${item.label}</button>`).join("")}</div>
+        <div class="hof-tabs hof-method-tabs" role="group" aria-label="Ödeme Yolu" data-methods>${[{ value: "", label: "Tümü" }, { value: "cash", label: "Nakit Kasa" }, { value: "bank", label: "Banka (Havale / EFT)" }, { value: "card", label: "POS / Kredi Kartı" }].map(item => `<button type="button" data-method="${item.value}">${item.label}</button>`).join("")}</div>
         <div class="hof-cash-bar"><div class="hof-tabs" role="group" aria-label="Dönem">${PERIODS.map(item => `<button type="button" data-period="${item.id}">${item.label}</button>`).join("")}</div>
-        <div class="hof-cash-add"><button type="button" class="hof-button hof-button-small hof-button-ghost" data-pdf title="Seçili dönemin kasa hareketlerini PDF olarak indir">PDF İndir</button>${manage ? '<button type="button" class="hof-button hof-button-small" data-add="in">+ Tahsilat</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-add="out">− Ödeme</button>' : ""}</div>
+        <div class="hof-cash-add"><button type="button" class="hof-button hof-button-small hof-button-ghost" data-pdf title="Seçili dönemin kasa hareketlerini PDF olarak indir">Kasa Dökümü - PDF</button>${manage ? '<button type="button" class="hof-button hof-button-small" data-add="in">+ Tahsilat</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-add="out">− Ödeme</button>' : ""}</div>
         <div class="hof-cash-range" data-range hidden><label><span>Başlangıç</span><input type="date" data-from value="${custom.from}"></label><span aria-hidden="true">–</span><label><span>Bitiş</span><input type="date" data-to value="${custom.to}"></label></div></div>
         <div class="hof-cash-list" data-list><p class="hof-empty">Yükleniyor…</p></div>
-        <p class="hof-edit-meta">Nakit tahsilat ve ödemeler Nakit Kasa'ya, havale/EFT Banka'ya, kredi kartı Kredi Kartı (POS) hesabına düşer; Tümü üçünü birlikte gösterir. Detay kartında, cari, taksit, stok ve çek/senet ekranlarında girilen tahsilat ve ödemeler seçilen yola kendiliğinden yazılır. Hareketler eskiden yeniye sıralıdır; en yeni en altta.</p>
+        <p class="hof-edit-meta">Nakit tahsilat ve ödemeler Nakit Kasa'ya, havale/EFT Banka'ya, kartla tahsilat (POS) ve kredi kartıyla ödemeler POS / Kredi Kartı hesabına düşer; Tümü üçünü birlikte gösterir. Detay kartında, cari, taksit, stok ve çek/senet ekranlarında girilen tahsilat ve ödemeler seçilen yola kendiliğinden yazılır. Hareketler eskiden yeniye sıralıdır; en yeni en altta.</p>
         <div class="hof-actions"><button type="button" class="hof-button" data-close>Kapat</button></div>`,
       onClose: () => {
         cashModal = null;
@@ -554,7 +554,7 @@
       modal.dialog.querySelectorAll("[data-method]").forEach(button => button.setAttribute("aria-pressed", String(button.dataset.method === cashView.method)));
       const by = data.byMethod || { cash: data.totals.balance, bank: 0, card: 0 };
       const split = `Nakit ${HOF.formatMoney(by.cash)} · Banka ${HOF.formatMoney(by.bank)} · Kart ${HOF.formatMoney(by.card)}`;
-      const balanceLabel = cashView.method === "cash" ? "Nakit Kasa" : cashView.method === "bank" ? "Banka" : cashView.method === "card" ? "Kredi Kartı (POS)" : "Kasa ve Banka Toplamı";
+      const balanceLabel = cashView.method === "cash" ? "Nakit Kasa" : cashView.method === "bank" ? "Banka" : cashView.method === "card" ? "POS / Kredi Kartı" : "Kasa ve Banka Toplamı";
       kpis.innerHTML = `<div class="hof-cash-balance ${cashView.method === "cash" && data.totals.balance < 0 ? "is-late" : ""}" title="${esc(split)}"><strong>${esc(HOF.formatMoney(data.totals.balance))}</strong><span>${esc(balanceLabel)}${cashView.method ? "" : `<br><small>${esc(split)}</small>`}</span></div><div><strong>${esc(HOF.formatMoney(data.period.in))}</strong><span>Tahsilat · ${esc(label)}</span></div><div><strong>${esc(HOF.formatMoney(data.period.out))}</strong><span>Ödeme · ${esc(label)}</span></div><div><strong>${esc(HOF.formatMoney(data.period.net))}</strong><span>Fark · ${esc(label)}</span></div>`;
       const opening = period !== "all" ? `<tr class="hof-cash-opening"><td></td><td><b>Devreden Kasa</b><small>Dönem başındaki bakiye</small></td><td></td><td></td><td class="num"><b>${esc(HOF.formatMoney(data.opening))}</b></td><td></td></tr>` : "";
       list.innerHTML = data.entries.length || opening

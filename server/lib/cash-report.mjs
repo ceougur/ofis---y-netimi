@@ -38,7 +38,7 @@ const describe = entry => {
 export function cashPdf(report, { from = "", to = "", officeName = "", userName = "", now = new Date() } = {}) {
   const range = rangeLabel(from, to);
   // v2.0.13: yola göre döküm (Nakit Kasa, Banka, Kredi Kartı) ya da hepsi (Kasa ve Banka).
-  const which = { cash: "Nakit Kasa", bank: "Banka (Havale / EFT)", card: "Kredi Kartı (POS)" }[report.method] || "Kasa ve Banka";
+  const which = { cash: "Nakit Kasa", bank: "Banka (Havale / EFT)", card: "POS / Kredi Kartı" }[report.method] || "Kasa ve Banka";
   const doc = new PdfDocument({ fonts: loadFonts(), title: `${which} Dökümü · ${range}`, author: officeName || "DestekOfis", subject: "Kasa hareketleri" });
   const M = 40;
   const W = A4.width - M * 2;
@@ -125,7 +125,7 @@ export function cashPdf(report, { from = "", to = "", officeName = "", userName 
     row({
       date: dayText(entry.date),
       lines,
-      sub: doc.fit(`${origin}${entry.method && entry.method !== "cash" ? ` · ${{ bank: "Havale / EFT", card: "Kredi Kartı" }[entry.method] || ""}` : ""}${entry.actorName ? ` · ${entry.actorName}` : ""}`, textWidth, "regular", 7.5),
+      sub: doc.fit(`${origin}${entry.method && entry.method !== "cash" ? ` · ${{ bank: "Havale / EFT", card: entry.kind === "out" ? "Kredi Kartı" : "POS" }[entry.method] || ""}` : ""}${entry.actorName ? ` · ${entry.actorName}` : ""}`, textWidth, "regular", 7.5),
       incoming: entry.kind === "in" ? entry.amount : null,
       outgoing: entry.kind === "out" ? entry.amount : null,
       balance: entry.balance,

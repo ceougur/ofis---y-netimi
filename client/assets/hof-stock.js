@@ -39,7 +39,7 @@
   ];
   const SORTS = [
     ["name", "Ada Göre"],
-    ["code", "Koda Göre"],
+    ["code", "Stok Koduna Göre"],
     ["category", "Kategoriye Göre"],
     ["qty", "Mevcuda Göre (azdan çoğa)"],
     ["value", "Değere Göre (çoktan aza)"],
@@ -147,13 +147,13 @@
     const row = item => `<tr data-item="${esc(item.id)}" class="${item.low ? "is-overdue" : ""}" tabindex="0"><td class="hof-plan-no">${esc(item.code || "")}</td><td><b>${esc(item.name)}</b> ${stateBadge(item)}<small>${esc(item.category || "Kategorisiz")}${item.note ? ` · ${esc(item.note)}` : ""}</small></td><td class="num"><b class="hof-stock-qty${item.qty <= 0 ? " is-out" : item.low ? " is-low" : ""}">${esc(qtyText(item.qty))}</b> <small>${esc(item.unit)}</small></td><td class="num">${item.minQty ? `${esc(qtyText(item.minQty))} <small>${esc(item.unit)}</small>` : '<small class="hof-muted">—</small>'}</td><td class="num">${item.unitPrice ? esc(money(item.unitPrice)) : '<small class="hof-muted">—</small>'}</td><td class="num">${esc(money(item.value))}</td><td>${item.lastMove ? esc(HOF.formatDate(item.lastMove)) : '<small class="hof-muted">—</small>'}</td><td class="hof-cash-actions">${move ? `<button type="button" class="hof-mini hof-mini-text" data-quick="in" data-id="${esc(item.id)}" title="Giriş (alım, gelen)">+ Giriş</button><button type="button" class="hof-mini hof-mini-text" data-quick="out" data-id="${esc(item.id)}" title="Çıkış (kullanım, satış)">− Çıkış</button>` : ""}</td></tr>`;
     HOF.swap(root, `<div class="hof-cash-bar"><div class="hof-tabs" role="group" aria-label="Durum">${STATES.map(item => `<button type="button" data-state="${item.id}" aria-pressed="${String(item.id === view.state)}">${item.label}${data && item.id !== "all" ? ` <b>${item.id === "low" ? data.totals.low : ""}</b>` : ""}</button>`).join("")}</div>
       <div class="hof-cash-add">${manage ? '<button type="button" class="hof-button hof-button-small" data-act="new">+ Yeni Ürün</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="import" title="Excel dosyasından ya da Google Sheets’ten ürünleri ve mevcut miktarları tek seferde aç">Excel / Sheets’ten Yükle</button>' : ""}</div></div>
-      <div class="hof-plans-filters"><input type="search" data-filter="q" value="${esc(view.q)}" placeholder="Ürün adı, kod, kategori ara…" aria-label="Ara"><select data-filter="category" aria-label="Kategori"><option value="">Tüm Kategoriler</option>${(data?.categories || []).map(name => `<option value="${esc(name)}" ${name === view.category ? "selected" : ""}>${esc(name)}</option>`).join("")}</select><select data-filter="sort" aria-label="Sıralama">${SORTS.map(([id, label]) => `<option value="${id}" ${id === view.sort ? "selected" : ""}>${label}</option>`).join("")}</select>${office().outputButtons ? office().outputButtons(listPdfUrl(), "list").replace(/<\/span>$/, `<a class="hof-button hof-button-small hof-button-ghost" href="${esc(listXlsxUrl())}" title="Stok durumunu Excel olarak indir">Excel</a></span>`) : ""}</div>
+      <div class="hof-plans-filters"><input type="search" data-filter="q" value="${esc(view.q)}" placeholder="Ürün adı, Stok Kodu (barkod), kategori ara…" aria-label="Ara"><select data-filter="category" aria-label="Kategori"><option value="">Tüm Kategoriler</option>${(data?.categories || []).map(name => `<option value="${esc(name)}" ${name === view.category ? "selected" : ""}>${esc(name)}</option>`).join("")}</select><select data-filter="sort" aria-label="Sıralama">${SORTS.map(([id, label]) => `<option value="${id}" ${id === view.sort ? "selected" : ""}>${label}</option>`).join("")}</select>${office().outputButtons ? office().outputButtons(listPdfUrl(), "list").replace(/<\/span>$/, `<a class="hof-button hof-button-small hof-button-ghost" href="${esc(listXlsxUrl())}" title="Stok durumunu Excel olarak indir">Excel</a></span>`) : ""}</div>
       <div class="hof-kpis hof-plans-kpis">${data ? `<div><strong>${data.totals.count.toLocaleString("tr-TR")}</strong><span>Ürün</span></div><div class="${data.totals.low ? "is-late" : ""}"><strong>${data.totals.low}</strong><span>Kritik Seviyede</span></div><div class="${data.totals.out ? "is-late" : ""}"><strong>${data.totals.out}</strong><span>Tükenen</span></div><div class="hof-cash-balance"><strong>${esc(money(data.totals.value))}</strong><span>Stok Değeri</span></div>` : ""}</div>
       <div class="hof-cash-list hof-plans-list">${
         !data
           ? '<p class="hof-empty">Yükleniyor…</p>'
           : data.items.length
-            ? `<table class="hof-table hof-cash-table hof-plans-table hof-stock-table"><thead><tr><th class="hof-plan-no">Kod</th><th>Ürün</th><th class="num">Mevcut</th><th class="num">Kritik Seviye</th><th class="num">Birim Fiyat</th><th class="num">Değer</th><th>Son Hareket</th><th></th></tr></thead><tbody>${data.items.map(row).join("")}</tbody></table>${data.hasMore ? `<div class="hof-more"><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="more">Daha Fazla Göster · ${data.total - data.items.length} ürün daha</button></div>` : ""}`
+            ? `<table class="hof-table hof-cash-table hof-plans-table hof-stock-table"><thead><tr><th class="hof-plan-no">Stok Kodu</th><th>Ürün</th><th class="num">Mevcut</th><th class="num">Kritik Seviye</th><th class="num">Birim Fiyat</th><th class="num">Değer</th><th>Son Hareket</th><th></th></tr></thead><tbody>${data.items.map(row).join("")}</tbody></table>${data.hasMore ? `<div class="hof-more"><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="more">Daha Fazla Göster · ${data.total - data.items.length} ürün daha</button></div>` : ""}`
             : `<p class="hof-empty">${filtered ? "Bu süzgeçte ürün yok." : "Henüz ürün yok."}${manage && !filtered ? " <b>+ Yeni Ürün</b> ile açın ya da <b>Excel’den Yükle</b> ile listenizi aktarın (ör. Çay, Şeker, Motor yağı)." : ""}</p>`
       }</div>
       <p class="hof-edit-meta">Mevcut = girişler − çıkışlar. Kritik seviyenin altına düşen ürün en üstte ve sol menüde uyarıyla görünür. Tutar = miktar × birim fiyat; istenirse Kasa’ya ya da cariye yazılır.</p>
@@ -171,10 +171,10 @@
     const moveRow = row => `<tr data-kind="${esc(row.kind)}"><td>${esc(HOF.formatDate(row.date))}</td><td><b>${row.reason === "return" ? "Müşteri İadesi" : row.kind === "in" ? "Giriş" : "Çıkış"}</b><small>${esc([row.note, payText(row), row.actorName].filter(Boolean).join(" · "))}${row.updatedAt ? " · düzeltildi" : ""}</small></td><td class="num hof-cash-in">${row.kind === "in" ? esc(qtyText(row.qty)) : ""}</td><td class="num hof-cash-out">${row.kind === "out" ? esc(qtyText(row.qty)) : ""}</td><td class="num"><b>${esc(qtyText(row.balance))}</b></td><td class="num">${row.unitPrice ? esc(money(row.unitPrice)) : ""}</td><td class="num">${row.amount ? esc(money(row.amount)) : ""}</td><td class="hof-cash-actions">${row.invoiceId && HOF.can("invoices.view") ? `<button type="button" class="hof-mini hof-mini-text" data-open-invoice="${esc(row.invoiceId)}" title="Bu hareket faturadan gelir; faturadan iptal edilir ya da iade kesilir">${esc(row.invoiceNumber || "Fatura")}</button>` : ""}${row.pay === "account" && row.accountId ? `<button type="button" class="hof-mini" data-account="${esc(row.accountId)}" title="Cari kartını aç" aria-label="Cari kartını aç">↗</button>` : ""}${row.editable ? `<button type="button" class="hof-mini" data-edit-move="${esc(row.id)}" title="Düzelt" aria-label="Düzelt">✎</button><button type="button" class="hof-mini hof-mini-danger" data-delete-move="${esc(row.id)}" title="Sil" aria-label="Sil">×</button>` : ""}</td></tr>`;
     HOF.swap(root, `<div class="hof-plan-head">
         <div class="hof-plan-headline"><button type="button" class="hof-plan-back" data-act="back" title="Listeye dön">← Liste</button>
-          <div class="hof-plan-title"><h3>${item.code ? `<span class="hof-plan-refno" title="Kod">${esc(item.code)}</span>` : ""}${esc(item.name)} ${stateBadge(item)}</h3><small>${esc(item.category || "Kategorisiz")} · birim: ${esc(item.unit)}</small></div></div>
+          <div class="hof-plan-title"><h3>${item.code ? `<span class="hof-plan-refno" title="Stok Kodu">${esc(item.code)}</span>` : ""}${esc(item.name)} ${stateBadge(item)}</h3><small>${esc(item.category || "Kategorisiz")} · birim: ${esc(item.unit)}</small></div></div>
         <div class="hof-plan-actions" role="toolbar" aria-label="Ürün işlemleri">
           <span class="hof-plan-toolgroup">${move ? '<button type="button" class="hof-button hof-button-small" data-move="in">+ Giriş</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-move="out">− Çıkış</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-move="return" title="Müşterinin geri getirdiği ürün: stoğa girer, para Kasa’dan geri verilir ya da müşterinin borcundan düşer">↩ Müşteri İadesi</button>' : ""}</span>
-          <span class="hof-plan-toolgroup">${office().outputButtons ? office().outputButtons(cardPdfUrl(item), "card") : ""}</span>
+          <span class="hof-plan-toolgroup">${office().outputButtons ? office().outputButtons(cardPdfUrl(item), "card", "Stok Kartı - PDF") : ""}</span>
           ${manage ? '<span class="hof-plan-toolgroup"><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="edit">Düzenle</button><button type="button" class="hof-button hof-button-small hof-button-ghost hof-button-danger-ghost" data-act="delete">Sil</button></span>' : ""}
         </div></div>
       <div class="hof-kpis hof-plans-kpis"><div class="hof-cash-balance ${item.low ? "is-late" : ""}"><strong>${esc(qtyText(item.qty))} ${esc(item.unit)}</strong><span>Mevcut${item.minQty ? ` · kritik ${esc(qtyText(item.minQty))}` : ""}</span></div><div><strong class="hof-cash-in">${esc(qtyText(item.qtyIn))}</strong><span>Toplam Giriş · ${esc(money(item.inAmount))}</span></div><div><strong class="hof-cash-out">${esc(qtyText(item.qtyOut))}</strong><span>Toplam Çıkış · ${esc(money(item.outAmount))}</span></div><div><strong>${esc(money(item.value))}</strong><span>Değer · Birim Fiyat ${esc(money(item.unitPrice))}</span></div></div>
@@ -192,9 +192,10 @@
       eyebrow: moduleName().toLocaleUpperCase("tr-TR"),
       fields: [
         { name: "kind", label: "Kalem Türü", type: "select", value: item?.kind || "product", options: [{ value: "product", label: "Ürün (stok tutulur)" }, { value: "service", label: "Hizmet (miktar ve kritik seviye izlenmez)" }], help: "Hizmet kalemleri kritik stok sayısına girmez; satış/alış tutarı Kasa'ya ya da cariye yine yazılabilir." },
+        // v2.0.16 (müşteri): Stok Kodu en üstte (ürün adının hemen üstünde); her ürünün kodu ayrı (barkod okutulabilir).
+        { name: "code", label: "Stok Kodu", maxlength: 60, value: item?.code || "", placeholder: "İsteğe bağlı: barkod okutun ya da kodu yazın (ör. FK-A4)", help: "Faturada kalem satırına bu kod yazılınca (ya da barkod okutulunca) ürün kendiliğinden seçilir. Aynı kod iki ürüne verilmez." },
         { name: "name", label: "Ürün / Hizmet Adı", required: true, maxlength: 160, value: item?.name || "", autofocus: true, placeholder: "Ör. Çay, Motor yağı 5W-30, Servis ücreti" },
         { name: "unit", label: "Birim", type: "choice", required: true, value: unitLabel(item?.unit) || "Adet", options: unitOptions(item?.unit), blankLabel: "— Birim Seçin —" },
-        { name: "code", label: "Kod", maxlength: 60, value: item?.code || "", placeholder: "İsteğe bağlı (barkod, stok kodu)" },
         { name: "category", label: "Kategori", maxlength: 80, value: item?.category || "", list: categories, placeholder: "Ör. Mutfak, Araç, Kırtasiye" },
         { name: "minQty", label: "Kritik Seviye", inputmode: "decimal", value: item?.minQty ? qtyText(item.minQty) : "", placeholder: "Bu miktara inince uyarı verir (boş: uyarı yok)" },
         { name: "unitPrice", label: "Alış Fiyatı (₺)", inputmode: "decimal", value: item?.unitPrice ? office().amountText?.(item.unitPrice) || item.unitPrice : "", placeholder: "Son alış fiyatı (maliyet, stok değeri)" },
@@ -277,9 +278,10 @@
     // v2.0.13: "Satış Yapma" yetkisi — kasiyer satış ve iadede parayı (Kasa, kart, havale, veresiye) yazar.
     const sell = !move && HOF.can("stock.sell");
     // v2.0.13: para yolu — Nakit (Kasa), Kredi Kartı, Havale / EFT (Banka) ya da Açık Hesap (cari, veresiye).
-    const moneyWays = verb => [
+    // v2.0.16: kart yolu yöne göre — müşteriden tahsilat ve müşteriye iade POS'tan; tedarikçiye ödeme kredi kartıyla.
+    const moneyWays = (verb, direction = "in") => [
       { value: "cash", label: `Nakit (${verb})` },
-      { value: "card", label: `Kredi Kartı (${verb})` },
+      { value: "card", label: `${HOF.methodName("card", direction)} (${verb})` },
       { value: "bank", label: `Havale / EFT (${verb})` },
     ];
     const payOptions = back
@@ -289,7 +291,7 @@
         ]
       : [
           { value: "none", label: "Yalnız Miktar (para yazılmaz)" },
-          ...(manage || (sell && !incoming) ? [...moneyWays(incoming ? "ödendi" : "tahsil edildi"), { value: "account", label: incoming ? "Açık Hesap (tedarikçiye borçlanılır)" : "Açık Hesap (veresiye, müşteri borçlanır)" }] : []),
+          ...(manage || (sell && !incoming) ? [...moneyWays(incoming ? "ödendi" : "tahsil edildi", incoming ? "out" : "in"), { value: "account", label: incoming ? "Açık Hesap (tedarikçiye borçlanılır)" : "Açık Hesap (veresiye, müşteri borçlanır)" }] : []),
         ];
     const payValue = move ? (move.pay === "cash" ? move.method || "cash" : move.pay) : "none";
     const priceOf = () => (move ? move.unitPrice : !incoming || back ? item.salePrice || item.unitPrice : item.unitPrice);
@@ -415,7 +417,7 @@
   }
 
   // ---------- Excel'den yükleme ----------
-  const ROLE_OPTIONS = [["", "— Kullanma —"], ["extra", "Ek Bilgi (kartta saklanır)"], ["name", "Ürün Adı *"], ["code", "Kod"], ["unit", "Birim"], ["category", "Kategori"], ["qty", "Mevcut Miktar (açılış stoku)"], ["price", "Alış Fiyatı (birim fiyat)"], ["salePrice", "Satış Fiyatı"], ["min", "Kritik Seviye"], ["note", "Not"]];
+  const ROLE_OPTIONS = [["", "— Kullanma —"], ["extra", "Ek Bilgi (kartta saklanır)"], ["name", "Ürün Adı *"], ["code", "Stok Kodu"], ["unit", "Birim"], ["category", "Kategori"], ["qty", "Mevcut Miktar (açılış stoku)"], ["price", "Alış Fiyatı (birim fiyat)"], ["salePrice", "Satış Fiyatı"], ["min", "Kritik Seviye"], ["note", "Not"]];
   async function importFromExcel() {
     const source = await office().chooseSheet?.({ title: "Ürünleri Toplu Yükle", eyebrow: moduleName().toLocaleUpperCase("tr-TR"), hint: "Binlerce kalem tek seferde açılır; miktar kolonu açılış stoku olur. Kolonları bir sonraki adımda eşlersiniz." });
     if (!source) return;

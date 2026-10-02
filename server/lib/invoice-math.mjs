@@ -138,6 +138,20 @@ const toCentsExact = value => {
 // a × p / q, yarım yukarı (pozitif tamsayılar için tam bölme; kayan nokta yok).
 const mulDiv = (a, p, q) => (a <= 0 ? 0 : Math.floor((2 * a * p + q) / (2 * q)));
 export const cents = value => toCentsExact(value);
+
+/**
+ * v2.0.16 (müşteri): KDV dahil fiyatta brüt tutar ve iskonto KDV dahildir; ekranda, fişte, PDF'te ve UBL'de "Ara Toplam −
+ * İskonto = Matrah" satırları KDV HARİÇ tutarlarla gösterilir (yaygın muhasebe programlarındaki gibi; 2.000 TL KDV dahil,
+ * %10 iskonto: 1.666,67 − 166,67 = 1.500,00; KDV 300,00). Kalem başına kuruş tamsayısı; iskonto = KDV hariç brüt − matrah,
+ * böylece satırlar kuruşu kuruşuna toplar. base / net / vatRate kuruş tamsayısı ya da (scale = 100) TL ondalığı olabilir.
+ */
+export function exclusiveParts({ base = 0, net = 0, vatRate = 0 }, includeVat, scale = 1) {
+  const baseC = scale === 1 ? Math.round(Number(base) || 0) : toCentsExact(base);
+  const netC = scale === 1 ? Math.round(Number(net) || 0) : toCentsExact(net);
+  const baseNet = includeVat ? mulDiv(baseC, 100, 100 + (Number(vatRate) || 0)) : baseC;
+  const discountNet = Math.max(0, baseNet - netC);
+  return scale === 1 ? { baseNet: netC + discountNet, discountNet } : { baseNet: (netC + discountNet) / 100, discountNet: discountNet / 100 };
+}
 export const tl = value => roundMoney((Number(value) || 0) / 100);
 
 export class InvoiceInputError extends Error {
@@ -219,7 +233,10 @@ export function computeInvoice(lines, { pricesIncludeVat = false, discountRate =
   if (!Number.isFinite(extra) || extra < 0 || extra >= 100) fail("Genel iskonto oranı 0 ile 100 arasında olmalı.", "discountRate");
   const stoppage = Number(stoppageRate || 0);
   if (!Number.isFinite(stoppage) || stoppage < 0 || stoppage > 40) fail("Stopaj oranı 0 ile 40 arasında olmalı.", "stoppageRate");
-  const out = lines.map((line, index) => ({ ...computeLine(line, { pricesIncludeVat, index, extraDiscountRate: extra }), goods: Boolean(line.goods), account: String(line.account || "600") }));
+  const out = lines.map((line, index) => {
+    const computed = computeLine(line, { pricesIncludeVat, index, extraDiscountRate: extra });
+    return { ...computed, ...exclusiveParts(computed, pricesIncludeVat), goods: Boolean(line.goods), account: String(line.account || "600") };
+  });
   const sum = key => out.reduce((total, line) => total + line[key], 0);
   const byRate = new Map();
   const byWithholding = new Map();
@@ -245,6 +262,9 @@ export function computeInvoice(lines, { pricesIncludeVat = false, discountRate =
   const totals = {
     base: sum("base"),
     discount: sum("discount"),
+    // KDV hariç ara toplam ve iskonto (gösterim: Ara Toplam − İskonto = KDV Matrahı).
+    baseNet: sum("baseNet"),
+    discountNet: sum("discountNet"),
     lineDiscount: sum("lineDiscount"),
     docDiscount: sum("docDiscount"),
     net,

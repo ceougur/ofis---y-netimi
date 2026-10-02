@@ -17,7 +17,10 @@ const qtyFormat = new Intl.NumberFormat("tr-TR", { maximumFractionDigits: 3 });
 const unitOf = currency => (currency && currency !== "TRY" ? currency : "TL");
 const money = (value, currency) => `${numberFormat.format(Number(value) || 0)} ${unitOf(currency)}`;
 const dayText = iso => (iso ? `${iso.slice(8, 10)}.${iso.slice(5, 7)}.${iso.slice(0, 4)}` : "");
-const METHOD = { cash: "Nakit", bank: "Havale / EFT", card: "Kredi Kartı" };
+const METHOD = { cash: "Nakit", bank: "Havale / EFT", card: "POS / Kredi Kartı" };
+// v2.0.16: kart yolu yöne göre (satış tarafında tahsilat → POS; alışta ödeme → Kredi Kartı).
+const METHOD_IN = { ...METHOD, card: "POS" };
+const METHOD_OUT = { ...METHOD, card: "Kredi Kartı" };
 
 // Kâğıt (e-Belge olmayan) belge programdan yazdırıldığında yasal fatura değildir (fatura ancak maliyeyle anlaşmalı
 // matbaanın basılı formuna ya da e-Belge olarak düzenlenir): başlık "Müşteri Fişi" ve altta "resmî fatura yerine
@@ -58,6 +61,8 @@ function drawInvoice(doc, invoice, { footer = "", logo = null, signatureArea = f
   const withholding = (invoice.lines || []).some(item => item.withholdingCode);
   const cols = [
     { key: "seq", label: "Sıra", w: 26, align: "right" },
+    // v2.0.16 (müşteri): Stok Kodu ayrı kolon (kalemlerden birinde kod varsa).
+    ...((invoice.lines || []).some(item => item.code) ? [{ key: "code", label: "Stok Kodu", w: 62 }] : []),
     { key: "name", label: "Mal / Hizmet", w: 0 },
     { key: "qty", label: "Miktar", w: 58, align: "right" },
     { key: "price", label: "Birim Fiyat", w: 66, align: "right" },
@@ -66,7 +71,8 @@ function drawInvoice(doc, invoice, { footer = "", logo = null, signatureArea = f
     { key: "vatAmount", label: "KDV", w: 58, align: "right" },
     { key: "net", label: "Tutar", w: 72, align: "right" },
   ];
-  cols[1].w = W - cols.reduce((sum, col) => sum + col.w, 0);
+  const nameCol = cols.find(col => col.key === "name");
+  nameCol.w = W - cols.reduce((sum, col) => sum + col.w, 0);
   let page = null;
   let y = 0;
   let pageNo = 0;
@@ -148,14 +154,15 @@ function drawInvoice(doc, invoice, { footer = "", logo = null, signatureArea = f
   header();
   const bottom = A4.height - 60;
   for (const [index, item] of (invoice.lines || []).entries()) {
-    const nameLines = doc.wrap([item.name, item.code ? `(${item.code})` : ""].filter(Boolean).join(" "), cols[1].w - 6, "regular", 8).slice(0, 4);
+    const nameLines = doc.wrap(item.name, nameCol.w - 6, "regular", 8).slice(0, 4);
     const extra = [item.description, item.withholdingCode ? `Tevkifat ${item.withholdingCode} (${item.withholdingNum}/${item.withholdingDen}): ${money(item.withheld, currency)}` : "", item.vatRate === 0 && item.exemptionCode ? `İstisna ${item.exemptionCode}` : "", item.expenseLabel ? `Gider: ${item.expenseLabel}` : ""].filter(Boolean);
-    const extraLines = extra.flatMap(text => doc.wrap(text, cols[1].w - 6, "regular", 7)).slice(0, 4);
+    const extraLines = extra.flatMap(text => doc.wrap(text, nameCol.w - 6, "regular", 7)).slice(0, 4);
     const height = Math.max(14, nameLines.length * 10 + extraLines.length * 9 + 5);
     if (y + height > bottom) header();
     let x = M;
     const values = {
       seq: String(index + 1),
+      code: item.code || "",
       qty: `${qtyFormat.format(item.qty)} ${item.unit || ""}`.trim(),
       price: priceFormat.format(item.unitPrice),
       disc: item.discountRate ? numberFormat.format(item.discountRate) : "",
@@ -175,8 +182,10 @@ function drawInvoice(doc, invoice, { footer = "", logo = null, signatureArea = f
   }
   // Toplamlar.
   const rows = [
-    ["Mal / Hizmet Toplamı", money(invoice.baseTotal, currency)],
-    invoice.discountTotal > 0 ? ["Toplam İskonto", money(invoice.discountTotal, currency)] : null,
+    // v2.0.16 (müşteri): iskonto varsa Toplam ve İskonto KDV hariç (Toplam − İskonto = Matrah); iskonto yoksa KDV dahil
+    // fiyatta Toplam girilen KDV dahil tutardır. Ekrandaki Toplamlar ile aynı kural (hof-invoices.js totalRows).
+    ["Mal / Hizmet Toplamı", money((invoice.discountNetTotal ?? invoice.discountTotal) > 0 || !invoice.pricesIncludeVat ? (invoice.baseNetTotal ?? invoice.baseTotal) : invoice.baseTotal, currency)],
+    (invoice.discountNetTotal ?? invoice.discountTotal) > 0 ? ["Toplam İskonto", money(invoice.discountNetTotal ?? invoice.discountTotal, currency)] : null,
     ["Matrah (KDV Hariç)", money(invoice.netTotal, currency)],
     ...(invoice.byRate || []).map(item => [`KDV %${item.rate} (Matrah ${numberFormat.format(item.net)})`, money(item.vat, currency)]),
     ["Vergiler Dahil Toplam", money(invoice.grossTotal, currency)],
@@ -241,7 +250,8 @@ function drawInvoice(doc, invoice, { footer = "", logo = null, signatureArea = f
 function paymentText(invoice) {
   const p = invoice.payment || {};
   const parts = [];
-  for (const item of p.cash || []) parts.push(`${METHOD[item.method] || "Nakit"} ${money(item.amount, "TRY")}`);
+  const names = ["sale", "smm", "purchase_return"].includes(invoice.kind) ? METHOD_IN : METHOD_OUT;
+  for (const item of p.cash || []) parts.push(`${names[item.method] || "Nakit"} ${money(item.amount, "TRY")}`);
   if ((p.cheques || []).length) parts.push(`${p.cheques.length} çek/senet ${money(p.cheques.reduce((sum, item) => sum + (Number(item.amount) || 0), 0), "TRY")}`);
   if ((p.endorse || []).length) parts.push(`${p.endorse.length} çek cirosu`);
   if (p.mode === "installments" && p.installments) parts.push(`kalan ${p.installments.count} taksit (ilk vade ${dayText(p.installments.firstDue)})`);

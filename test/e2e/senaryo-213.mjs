@@ -241,12 +241,12 @@ try {
   };
   const cashSummary = async () => (await call(admin, "/api/workspace/cash")).data;
 
-  await step("5. Cari kartı → + Tahsilat → Tahsilat Yolu Kredi Kartı: Kasa ve Banka'da Kredi Kartı sekmesine düşer, nakde değil", async () => {
+  await step("5. Cari kartı → + Tahsilat → Tahsilat Yolu POS (2.0.16: tahsilatta POS): Kasa ve Banka'da POS / Kredi Kartı sekmesine düşer, nakde değil", async () => {
     await openCari("kemal");
     await admin.click(`${top} [data-entry="in"]`);
     await admin.waitForSelector(`${top} select[name="method"]`);
     const options = await admin.$$eval(`${top} select[name="method"] option`, nodes => nodes.map(node => node.textContent.trim()));
-    ok(["Nakit", "Havale / EFT", "Kredi Kartı"].every(label => options.includes(label)) && options.some(label => /Çek \/ Senet/.test(label)), `tahsilat yolları: ${options.join(", ")}`);
+    ok(["Nakit", "Havale / EFT", "POS"].every(label => options.includes(label)) && !options.includes("Kredi Kartı") && options.some(label => /Çek \/ Senet/.test(label)), `tahsilat yolları: ${options.join(", ")}`);
     await admin.fill(`${top} input[name="amount"]`, "1.000");
     await admin.selectOption(`${top} select[name="method"]`, "card");
     await shot(admin, "tahsilat-yolu-kredi-karti");

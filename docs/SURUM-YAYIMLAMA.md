@@ -40,6 +40,11 @@ Etiket `-beta.1` gibi bir ek içeriyorsa (ör. `v1.4.0-beta.1`) yayın **ön sü
 
 Etiket GitHub'da oluştuğunda `release.yml` yine çalışır: testleri ve gerçek Windows kurulum testini yapar. Yayında imzalı güncelleme dosyaları zaten varsa (elle yüklenmişse) onlara **dokunmaz**; yalnızca eksik olanları (Windows'ta sınanmış kurulum dosyası, kılavuz; sır tanımlıysa ve yüklenmemişse imzalı paket) ekler. Yayını önce *taslak* (draft) olarak kaydederseniz kurulumlar onu görmez; hazır olduğunuzda *Publish release* ile yayımlarsınız.
 
+## Site (destek-ofis.vercel.app)
+
+- **Demo düğmesi** yayına bağlıdır (`releases/latest/download/DestekOfis-Kurulum.exe`): yayında sürümsüz `DestekOfis-Kurulum.exe` varsa site kendiliğinden yeni sürümü indirir.
+- **Kullanım kılavuzu düğmesi yayına bağlı DEĞİLDİR**: site kendi kopyasını verir (`ceougur/destekofis` → `web/indir/DestekOfis-Kullanim-Kilavuzu.pdf`; demo indirilince kılavuz yeni sekmede açılsın diye sitede barındırılır). Her sürümde bu dosya `client/kilavuz/DestekOfis-Kullanim-Kilavuzu.pdf` ile değiştirilip site deposunda PR açılır ve birleştirilir; yapılmazsa siteden eski kılavuz iner (2.0.3–2.0.14 arasında böyle kaldı, 2.0.15'te düzeltildi: ceougur/destekofis#3).
+
 ## Kurallar
 
 - Yayımlanmış bir sürümün dosyalarını değiştirmeyin; hatalı bir sürümü düzeltmek için daha yüksek numaralı yeni bir sürüm yayımlayın. Yayını silmek, onu kurmuş sunucuları geri almaz.

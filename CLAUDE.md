@@ -39,6 +39,24 @@ Bu dosya oturumlar arasında taşınan hafızadır. Her oturumun başında okunu
 - Operatör parolası, imza/lisans anahtarları ve API gizli anahtarı hiçbir dosyaya, zip'e, belgeye girmez.
 - Tag'lere force-push yok. Müvekkil/müşteri verisine erişilmez.
 - Commit: `Co-Authored-By` ve `Claude-Session` satırları; model adı kod/commit/belgeye yazılmaz.
+- Her yayında site kılavuzu da güncellenir: sitedeki kılavuz GitHub yayınından GELMEZ, `ceougur/destekofis` →
+  `web/indir/DestekOfis-Kullanim-Kilavuzu.pdf` (yalnız demo .exe yayından iner). Yayın teslimiyle birlikte site PR'ı
+  açılır (ayrıntı `docs/SURUM-YAYIMLAMA.md` → Site). 2.0.3–2.0.14 boyunca sitede eski kılavuz kaldı (02.10.2026 fark edildi).
+
+## Sürüm teslim düzeni (kullanıcı kararı, 02.10.2026 — her sürümde AYNEN; sormadan, eksiksiz)
+Bağlam kopsa da bu düzen değişmez. Kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS verilir:
+1. `DestekOfis-<s>-1-Guncelleme-ve-Belgeler.zip` → içinde **`GitHub-v<s>/`** klasörü: `destekofis-guncelleme-<s>.zip`,
+   `destekofis-guncelleme.json` (İMZALI), `DestekOfis-Kullanim-Kilavuzu.pdf`; kökte OKU-BENI, sürüm notları, belgeler.
+2. `DestekOfis-<s>-2-Kurulum.zip` → içinde **`GitHub-v<s>/`**: `DestekOfis-Kurulum.exe` + `.sha256`.
+   (Zip 50 MB'ı aşarsa dosya gönderiminde sınır var: .exe ve .sha256 ayrıca gönderilir.)
+3. `DestekOfis-<s>-Kaynak-ve-Denetim.zip` (git bundle, test çıktıları).
+- İmza anahtarı: kullanıcının oturuma YÜKLEDİĞİ dosya (`/root/.claude/uploads/<oturum>/*imza-anahtari*.pem`); ortam
+  değişkeninde aranmaz. `node tools/release.mjs --anahtar <o dosya>`. Anahtar hiçbir zip'e, depoya, belgeye girmez.
+  Dosya yoksa kullanıcıdan anahtarı oturuma yüklemesi istenir (sohbete yapıştırması değil).
+- Kurulum: `npm run build:windows` (bu ortamda Wine + Inno Setup çalışır).
+- Akış: testler → PR → kullanıcı "birleştir" → CI yeşil → birleştir → kullanıcı yayın açar (tag v<s>, 5 dosya) →
+  "yayımladım" → yayındaki dosyalar bayt bayt + güncelleyici "available" denetimi → site PR'ı (kılavuz, aşağıda).
+- Site: demo .exe yayından iner; kılavuz İNMEZ (`ceougur/destekofis` → `web/indir/`), her sürümde site PR'ı açılır.
 
 ## Standart / Pro (kullanıcı kararı, 29.09.2026)
 - Tek program, tek kod, tek güncelleme; Pro lisansla açılır. Düzeltme ve yeni özellik herkese gider; yalnız kullanıcı
@@ -59,9 +77,10 @@ Bu dosya oturumlar arasında taşınan hafızadır. Her oturumun başında okunu
   detay panelinde Cari Kartı (#hof-checks ↔ #hof-case-plan yer kavgası), WhatsApp Otomatik Sıra + kendiliğinden inen ekstre
   PDF'i, Tablodan Aktar geri alma damgası. Meta WhatsApp Business API (kendiliğinden gönderim + PDF eki) ayrı Pro özelliği
   olarak ileride tasarlanacak; resmî olmayan otomasyon yapılmaz.
-- 2.0.15 HAZIR (02.10.2026; dal `claude/nice-euler-jvajxv`; sürüm 2.0.15, CHANGELOG/MIMARI/ISTEKLER/DURUM yazıldı; teslim
-  `dist/teslim-2.0.15/`; imzalı paket (anahtar: kullanıcının oturuma yüklediği .pem, `--anahtar`) ve kurulum .exe teslimde;
-  yayın onay bekler). İçerik — 01.10.2026 kullanıcı isteği:
+- 2.0.15 yayımlandı (02.10.2026; PR ceougur/ofis---y-netimi#15, `v2.0.15` = 85171ae; beş dosya ve latest/DestekOfis-Kurulum.exe
+  bayt bayt doğrulandı; gerçek güncelleyici 2.0.14/13/12/2.0.4/1.7.0 olarak yayındaki bildirgeyle 2.0.15'i "available" gördü;
+  imza anahtarı: kullanıcının oturuma yüklediği .pem, `node tools/release.mjs --anahtar …`; kurulum .exe Wine + Inno Setup;
+  dal `master` üzerine sıfırlandı). İçerik — 01.10.2026 kullanıcı isteği:
   1. Küçük düzeltme (müşteri): sol menüdeki "Yeni Kayıt" kalkar; ana listede "Dışa Aktar"ın yanına "Yeni Kayıt".
   2. FATURA modülü (sol sabit menüde "Fatura"): GİB e-Fatura/e-Arşiv, UBL-TR, PEPPOL uyumlu mimari. Kurallar: fatura
      kesilince stok (miktar/maliyet), cari (borç/alacak), vadeli/taksitliyse Taksit motoru, peşinse Kasa — hepsi tek
@@ -83,6 +102,55 @@ Bu dosya oturumlar arasında taşınan hafızadır. Her oturumun başında okunu
      (JPEG, 150 KB) ve kaşe/imza kutuları, kartta E-Posta, fatura kalemli stok kartı silinmez, "Fiyat Farkı Faturası".
      Testler: `test/fatura-215.test.mjs`, `senaryo-215` adım 12–14. Kullanım kılavuzuna "Fatura" bölümü eklendi
      (kullanıcı isteği; k24 ekranı; PDF yeniden üretildi, client/kilavuz'a kopyalandı — siteye yükleme kullanıcıda).
+- 2.0.16 DURUM (02.10.2026): 11 maddenin hepsi yapıldı, dalda (`claude/nice-euler-jvajxv`), PR bekliyor. Kanıt: `CHANGELOG.md`
+  → 2.0.16, `test/fatura-216.test.mjs`, `npm run test:senaryo-216` (39 denetim; 42 rapor arayüzden ön izleme+PDF+Excel).
+  Kararlar (önerim uygulandı): Düzenle yalnız satış/alış/SMM (iade belgesi iptal+yeniden); taksitinden tahsilat alınmış
+  faturada Düzenle kapalı; Toplam satırı KDV dahil iskontosuzda girilen tutar, iskontoluda KDV hariç.
+- 2.0.16 müşteri hataları (02.10.2026'dan; kullanıcı tek tek yazar, "yap" deyince TOPLU yapılır; kök neden koddan,
+  uzman UI/UX + baş mimar/mühendis gözüyle; her madde test + kanıt):
+  1. Fatura formu → Kalemler: ürün adı yazınca açılan öneri listesi kalem tablosunun içinde kalıyor, altı görünmüyor
+     (tablo kaydırma kutusu listeyi kırpıyor; ekran: kalem satırında "ANT", liste tablonun altında kesik).
+  2. Fatura formu → Kalemler: KDV açılır kutusu dar; "%20" sığmıyor, "%2(" gibi kesik görünüyor (kolon genişliği).
+  3. "Faturayı Kes" yanlış anlaşılıyor → "Faturayı Kaydet" olacak (form düğmesi, onay penceresi, toplu "Seçilenleri Kes",
+     "Düzenle ve Kes", bildirimler, kılavuz; kullanıcı dilinde "kes" yerine "kaydet").
+  4. Kaydedilmiş faturayı düzenleme yolu yok (şu an bilinçli: kesilen belge düzeltilmez, iptal/iade). Müşteri düzenleyip
+     yeniden kaydetmek istiyor. Öneri (yap'ta karar): e-Belge kapalıyken (Müşteri Fişi) kartta "Düzenle" → aynı numara ve
+     tarihle, tek işlemde eski etkiler geri alınıp yenileri yazılır (stok/cari/Kasa/taksit/çek; mutabakat kapısı; işlem
+     geçmişine eski-yeni farkı). Engeller: kilitli dönem, iadesi olan, tahsil/ciro edilmiş çek, e-Belge gönderilmiş.
+  5. Ödeme yolu adı yöne göre: TAHSİLATTA (para girişi: cari/taksit/fatura/stok satışı/Kasa) "Kredi Kartı" yerine "POS";
+     ÖDEMEDE (bizim yaptığımız: alış, gider, tedarikçi) "Kredi Kartı". Tüm ekranlar, açılır listeler, makbuz/ekstre/PDF/
+     Excel, raporlar, Kasa göstergeleri. (Kayıtlı değer `card` aynı kalır; yalnız görünen ad yöne göre.)
+  6. Cari kartındaki "PDF" düğmesi "Cari Ekstre - PDF" olacak (ortak `outputButtons` düğmesi; kartın yanında Yazdır da var —
+     aynı mantıkla diğer kartlarda da ne indirdiği belli olsun: Taksit Ekstresi, Fatura, Çek/Senet, liste PDF'leri).
+  7. "Stoğa Mal Alışı"nda stokta olmayan ad yazılınca kalem hizmet/gider sayılıyor ("Diğer Giderler", stoğa girmiyor) —
+     YANLIŞ. Mal alışında stok kartı yoksa öneri listesinde "+ Yeni Stok Kartı: <ad>" çıkmalı (birim, satış fiyatı, kod
+     sorulur; kart fatura kaydıyla AYNI işlemde açılır, kalem stoğa girer, maliyet alış fiyatı). Kullanıcı daha önce de
+     istemişti. Gider senaryosunda ad = gider kalemi kalır. Kayıtta stoksuz mal kalemi kalmışsa uyarı.
+  8. Kalemler başlığında (Fiyatlar KDV Dahil'in yanında, sarı işaretli yer) "Tüm Kalemlere KDV: [%0/%1/%10/%20]" — tek
+     seçimle bütün satırların KDV'si değişir (alış ve satış); sonra satırda tek tek değiştirilebilir; yeni eklenen kalem
+     de bu oranı alır. (Eksi stok: kullanıcı kararı 02.10.2026 — program sorar, "izin ver" denince eksiye
+     düşer; bazı firmalar gerçek stok tutmaz; BÖYLE KALSIN, değiştirilmez.)
+  9. KRİTİK — Raporlar → Fatura raporları hiç açılmıyor ("Önce cariyi seçin."). Kök neden (koddan doğrulandı):
+     `hof-report-center.js` `account` parametresini her raporda ZORUNLU sayıyor (satır 146/180/215/238; Cari Ekstre için
+     yazılmış); fatura raporlarında (`fatura-satis/alis/iade`, `acik-faturalar` …) cari İSTEĞE BAĞLI süzgeç. Düzeltme:
+     raporun tanımında zorunlu/isteğe bağlı ayrımı (`accountRequired`), isteğe bağlıda "Tüm Cariler" ile hemen çalışır.
+     Test açığı: senaryo-215 adım 10 raporları API'den denedi, ARAYÜZDEN değil → 42 raporun HER BİRİ arayüzden açılıp
+     ön izleme + PDF + Excel denetlenecek (kalıcı e2e).
+  10. Stok kodu: alan VAR ama "Kod" adıyla göze çarpmıyor (stok kartı formu "Kod", liste ilk kolonu "Kod", faturada kalem
+     ⋯ menüsünde gizli) → müşteri yok sandı. Yapılacak: her yerde "Stok Kodu" adı; stok kartı formunda Ad'ın yanında
+     üstte; faturada kalem satırında kodla arama (yazılan kod tam eşleşirse doğrudan seçilir — barkod okuyucu da çalışır),
+     kod kalem altında görünür; tekillik denetimi (aynı kod iki farklı ürüne verilmez, uyarı); stok listesinde koda göre
+     arama/sıralama; Excel'den stok aktarımında "Stok Kodu" kolonu (eşleme var: `mapStockHeaders` code); PDF/rapor kolonları.
+     Ek (kullanıcı): FATURADA stok kodu görünür olmalı — formda kalem satırında ayrı "Stok Kodu" kolonu (ürün seçilince
+     dolar, yazılırsa ürünü bulur), fatura kartında kalem tablosunda, fatura PDF'inde ayrı kolon (şu an adın yanında
+     parantez içinde), fatura Excel/raporlarında (Ürün Bazında Satış vb.), UBL'de SellersItemIdentification.
+  11. KDV dahil fiyatta iskonto gösterimi: 2.000 TL KDV dahil, %10 iskontoda Toplamlar "Ara Toplam 2.000 − İskonto 200,
+     Matrah 1.500, KDV 300" gösteriyordu (satırlar birbirini tutmuyor). Hesap doğru; GÖSTERİM yanlış. Olması gereken
+     (müşterinin gönderdiği öbür program): Toplam 1.666,67 − İsk. 166,67 = Ara Toplam (Matrah) 1.500; KDV 300. Düzeltme:
+     `exclusiveParts` (invoice-math) — form, kart, PDF, UBL hep KDV HARİÇ ara toplam/iskonto (`test/fatura-216.test.mjs`).
+     Ek (aynı gün, 2. ekran): iskontosuz KDV dahil 16.500'de "Ara Toplam 16.500" yazıyordu, matrah satırı yoktu. Olması
+     gereken: Toplam 16.500 · Ara Toplam 13.750 · KDV %20 2.750 · Genel Toplam 16.500. Kural (`totalRows`): Ara Toplam =
+     matrah, HER ZAMAN ayrı satır; iskonto varsa Toplam/İskonto KDV hariç; iskonto yoksa KDV dahilde Toplam = girilen tutar.
 - e-Belge kararı (kullanıcı, 01.10.2026): vergi dairesi/entegratör bağlantısı KAPALI — "sana entegre et diyene kadar".
   Fatura modülü tam çalışır; belge "Müşteri Fişi" (resmî hükmü yok) basılır; e-Fatura/e-Arşiv/XML ekranda görünmez.
   Entegratör altyapısı (müşteri kendi API bilgisini girer, kontörü kendisi alır) hazır tutulur ama `config.edocEnabled`

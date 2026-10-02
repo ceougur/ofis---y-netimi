@@ -462,7 +462,7 @@ try {
     await admin.waitForSelector(`${inv} tr[data-inv]`);
     await admin.click(`${inv} [data-sel-all]`);
     await admin.waitForSelector(`${inv} [data-act="bulk-issue"]`);
-    ok(/Seçilenleri Kes \(2\)/.test(await admin.textContent(`${inv} [data-act="bulk-issue"]`)), "Seçilenleri Kes (2) düğmesi");
+    ok(/Seçilenleri Kaydet \(2\)/.test(await admin.textContent(`${inv} [data-act="bulk-issue"]`)), "Seçilenleri Kaydet (2) düğmesi");
     await shot(admin, "toplu-kes-secim");
     await admin.click(`${inv} [data-act="bulk-issue"]`);
     await confirmYes();
