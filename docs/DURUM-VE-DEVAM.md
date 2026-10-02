@@ -86,10 +86,9 @@ almaz, icra dosyası bağı yapılmaz (cari yeter). Doğrulama (02.10.2026): `np
 `test/einvoice-edm.test.mjs` 22/22. Göç 18 (yalnız ekleyici; 2.0.14 yeni şemayla açılabilir). Çalışma zamanı gereksinimi
 değişmedi (Node aynı; bootstrap 2) → 1.7.0 ve sonrası bütün kurulumlar kendiliğinden güncellenir.
 Teslim: `dist/teslim-2.0.15/` (OKU-BENI.txt'de yayın adımları; `DestekOfis-2.0.15-1-Guncelleme-ve-Belgeler.zip`,
-`DestekOfis-2.0.15-Kaynak-ve-Denetim.zip`, SHA256SUMS). **Bu ortamda imza anahtarı ve Inno Setup yok**: imzalı güncelleme
-paketi (`destekofis-guncelleme-2.0.15.zip` + `destekofis-guncelleme.json`) ve `DestekOfis-Kurulum-2.0.15.exe`, `v2.0.15`
-etiketi/yayını açılınca `release.yml` tarafından (`DESTEKOFIS_RELEASE_KEY` sırrıyla) üretilip yayına eklenir; ya da
-anahtar sahibi yerelde `node tools/release.mjs --anahtar destekofis-2026-1.pem` ile üretip yükler. "birleştir" denince PR,
+`DestekOfis-2.0.15-Kaynak-ve-Denetim.zip`, SHA256SUMS). İmzalı güncelleme paketi (anahtar destekofis-2026-1, kullanıcının oturuma yüklediği .pem dosyasıyla
+`node tools/release.mjs --anahtar …`; sha256 a3c1835c…) ve `DestekOfis-Kurulum-2.0.15.exe` (Wine + Inno Setup; sha256
+aa943af8…) teslimde; beş dosya yayına kullanıcı tarafından yüklenir (OKU-BENI.txt). "birleştir" denince PR,
 "yayımladım" denince yayındaki dosyalar bayt bayt doğrulanır (önceki sürümlerdeki gibi).
 
 ### 2.0.14 — yayımlandı 01.10.2026 (PR #14, `v2.0.14` = 6337029; beş dosya ve latest/ adresleri bayt bayt doğrulandı)
