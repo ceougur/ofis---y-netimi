@@ -189,6 +189,12 @@ Bağlam kopsa da bu düzen değişmez. Kullanıcı "zip ver" dediğinde şu üç
      kaynağı görünür. (d) mutabakat: fatura ödenen toplamı = bağlı + FIFO dağıtılanlar. Test: hem müşteri hem tedarikçi
      cari (satış 400 + alış 6.000 → alış Açık 6.000), bağsız ödeme FIFO, Mahsup Et, seçilen faturaya ödeme, iptal/silme
      sonrası kapama yeniden hesap, 2.0.15/2.0.16 verisinde durum değişimi raporu.
+     Ek (müşteri, aynı gün): "faturayı kaydettin, kopyaladın, kopyayı kaydedince kısmen ödendi yapıyor". Koddan +
+     API ile denendi: Kopyala ödeme TAŞIMIYOR (`startForm({ copyOf })` → `pay: payFrom(draft?.payment)`, kopyada boş);
+     tek başına kopya "Açık" kalıyor. Görülen, AYNI kök neden (FIFO, madde 5): carideki fazla borç satırı (ör. aynı
+     kişiye satış) önce en eski alış faturasını kapatır, artanı en yeni faturaya — yani kopyaya — düşer → kopya
+     "Kısmen Ödendi · 400". Denemede aynı cariye 2 satış (6.000) girilince 2 alış faturası da "Ödendi" oldu. Madde 5'in
+     düzeltmesiyle kapanır; testine "kopyala → kaydet → Açık" ve "satış + alış + kopya" eklenecek.
   6. ŞİRKET VERİSİNİ SIFIRLA (müşteri Ahmet Alanlı, 02.10.2026 14:40; Şahin de isteyecek): "bulunduğumuz şirket
      üzerindeyken tüm hareketleri sil / datayı sıfırla; varolan datayı komple sıfırlayıp yeniden girmek istiyoruz";
      "datayı silerek çözerim de lisansım gider". Koddan: lisans aynı veri tabanında (`server/lib/license.mjs`
