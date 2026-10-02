@@ -109,6 +109,10 @@ Bağlam kopsa da bu düzen değişmez. Kullanıcı "zip ver" dediğinde şu üç
   2. Fatura formu → Kalemler: KDV açılır kutusu dar; "%20" sığmıyor, "%2(" gibi kesik görünüyor (kolon genişliği).
   3. "Faturayı Kes" yanlış anlaşılıyor → "Faturayı Kaydet" olacak (form düğmesi, onay penceresi, toplu "Seçilenleri Kes",
      "Düzenle ve Kes", bildirimler, kılavuz; kullanıcı dilinde "kes" yerine "kaydet").
+  4. Kaydedilmiş faturayı düzenleme yolu yok (şu an bilinçli: kesilen belge düzeltilmez, iptal/iade). Müşteri düzenleyip
+     yeniden kaydetmek istiyor. Öneri (yap'ta karar): e-Belge kapalıyken (Müşteri Fişi) kartta "Düzenle" → aynı numara ve
+     tarihle, tek işlemde eski etkiler geri alınıp yenileri yazılır (stok/cari/Kasa/taksit/çek; mutabakat kapısı; işlem
+     geçmişine eski-yeni farkı). Engeller: kilitli dönem, iadesi olan, tahsil/ciro edilmiş çek, e-Belge gönderilmiş.
 - e-Belge kararı (kullanıcı, 01.10.2026): vergi dairesi/entegratör bağlantısı KAPALI — "sana entegre et diyene kadar".
   Fatura modülü tam çalışır; belge "Müşteri Fişi" (resmî hükmü yok) basılır; e-Fatura/e-Arşiv/XML ekranda görünmez.
   Entegratör altyapısı (müşteri kendi API bilgisini girer, kontörü kendisi alır) hazır tutulur ama `config.edocEnabled`
