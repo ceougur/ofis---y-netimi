@@ -400,8 +400,10 @@
     installments: { count: String(payment?.installments?.count || 3), firstDue: payment?.installments?.firstDue || "", everyMonths: String(payment?.installments?.everyMonths || 1) },
   });
 
-  function startForm({ scenario, account = null, draft = null, copyOf = null }) {
+  // modify (v2.0.16): kaydedilmiş belgenin düzenlenmesi — aynı numara; kaydedilince eski etkiler geri alınıp yenileri yazılır.
+  function startForm({ scenario, account = null, draft = null, copyOf = null, modify = null }) {
     if (!canManage()) return HOF.toast("Fatura kaydetme yetkiniz yok.", { type: "error" });
+    if (modify) draft = { ...modify, id: "" };
     const source = draft || copyOf;
     const sc = meta.scenarios[scenario || source?.scenario] || meta.scenarios[source?.kind];
     const kind = source?.kind || sc?.kind;
@@ -437,6 +439,8 @@
       returnQuery: "",
       portfolio: null,
       busy: false,
+      modifyId: modify?.id || "",
+      modifyNumber: modify?.number || "",
     };
     view.form = form;
     setMode("form");
@@ -481,7 +485,7 @@
     }
   }
 
-  const formTitle = form => `${form.id ? "Taslak: " : "Yeni "}${kindLabel(form.kind)}${form.scenario && meta.scenarios[form.scenario] && meta.scenarios[form.scenario].label !== kindLabel(form.kind) ? ` · ${meta.scenarios[form.scenario].label}` : ""}`;
+  const formTitle = form => form.modifyId ? `Düzenleme: ${kindLabel(form.kind)} ${form.modifyNumber}` : `${form.id ? "Taslak: " : "Yeni "}${kindLabel(form.kind)}${form.scenario && meta.scenarios[form.scenario] && meta.scenarios[form.scenario].label !== kindLabel(form.kind) ? ` · ${meta.scenarios[form.scenario].label}` : ""}`;
   // v2.0.16: Stok Kodu kolonu (müşteri). Alışta ek "Gider Türü" kolonu.
   const hasExpenseCol = form => form.side === "purchase" && form.kind === "purchase";
   const lineCols = form => (hasExpenseCol(form) ? 11 : 10);
@@ -547,7 +551,7 @@
       </div>
       <label class="hof-field hof-inv-note"><span>Not (Belgenin Altına Basılır)</span><textarea data-f="note" rows="2" maxlength="2000" placeholder="ör. Teslim adresi, garanti süresi, banka bilgisi…">${esc(form.note)}</textarea></label>
       <p class="hof-form-error" role="alert" data-form-error></p>
-      <div class="hof-actions"><button type="button" class="hof-button hof-button-ghost" data-act="cancel-form">Vazgeç</button><button type="button" class="hof-button hof-button-ghost" data-act="save-draft">Taslak Olarak Kaydet</button>${sendable(form) ? '<button type="button" class="hof-button hof-button-ghost" data-act="issue-later" title="Stok, cari, Kasa, taksit ve çek/senet şimdi işlenir; belge Gönderilecekler\'de bekler">Kaydet, Sonra Gönder</button><button type="button" class="hof-button" data-act="issue-now">Kaydet ve Gönder</button>' : `<button type="button" class="hof-button" data-act="issue">${esc(ISSUE_LABELS[form.kind] || "Kaydet")}</button>`}</div>`,
+      <div class="hof-actions"><button type="button" class="hof-button hof-button-ghost" data-act="cancel-form">Vazgeç</button>${form.modifyId ? '<button type="button" class="hof-button" data-act="issue" title="Eski stok, cari, Kasa, taksit ve çek/senet kayıtları geri alınır, yenileri yazılır; numara değişmez">Değişiklikleri Kaydet</button>' : `<button type="button" class="hof-button hof-button-ghost" data-act="save-draft">Taslak Olarak Kaydet</button>${sendable(form) ? '<button type="button" class="hof-button hof-button-ghost" data-act="issue-later" title="Stok, cari, Kasa, taksit ve çek/senet şimdi işlenir; belge Gönderilecekler\'de bekler">Kaydet, Sonra Gönder</button><button type="button" class="hof-button" data-act="issue-now">Kaydet ve Gönder</button>' : `<button type="button" class="hof-button" data-act="issue">${esc(ISSUE_LABELS[form.kind] || "Kaydet")}</button>`}`}</div>`,
     );
     if (!ret) mountAccountPicker();
     if (ret) renderReturn();
@@ -1336,9 +1340,22 @@
         const stockless = offersNewItem(form) ? usedLines(form).filter(line => !line.itemId && !line.newItem) : [];
         const stocklessText = stockless.length ? ` DİKKAT: ${stockless.map(line => `“${line.name.trim()}”`).join(", ")} stok kartı olmadan GİDER olarak kaydedilir, stoğa girmez. Mal ise Vazgeç'e basıp ürün adı kutusundaki listeden “+ Yeni Stok Kartı”nı seçin.` : "";
         const sendText = eSend === "later" ? " Belge Gönderilecekler'de bekler; e-Belge numarası entegratöre gönderilirken verilir." : eSend === "now" ? " Belge kaydedilir kaydedilmez entegratöre (e-Belge) gönderilir." : "";
+        if (form.modifyId) {
+          const sure = await HOF.confirm({
+            title: "Değişiklikler Kaydedilsin mi?",
+            message: `${form.modifyNumber} numaralı ${kindLabel(form.kind).toLocaleLowerCase("tr-TR")} yeni haliyle kaydedilecek: ${curMoney(c.totals.payable, c.currency)} (${who}). Eski stok, cari, Kasa, taksit ve çek/senet kayıtları geri alınır, yenileri yazılır; numara değişmez. Değişiklik işlem geçmişine yazılır.${stocklessText}`,
+            confirmLabel: "Değişiklikleri Kaydet",
+          });
+          if (!sure) return;
+          saved = await withStockForce(force => HOF.api(`/api/workspace/invoices/${encodeURIComponent(form.modifyId)}/edit`, { method: "POST", body: { ...payload, ...force } }));
+          HOF.toast(`${kindLabel(saved.kind)} ${saved.displayNo || saved.number || ""} düzenlendi.`, { type: "success" });
+          view.form = null;
+          HOF.emit("invoices-changed", saved);
+          return showDoc(saved);
+        }
         const ok = await HOF.confirm({
           title: ISSUE_LABELS[form.kind] || "Kaydet",
-          message: `${who} için ${numberText}${kindLabel(form.kind).toLocaleLowerCase("tr-TR")} kaydedilecek: ${curMoney(c.totals.payable, c.currency)}. Stok, cari, Kasa, çek/senet ve taksit kayıtları birlikte yazılır. Kaydedilen belge düzeltilmez; yanlışsa iptal edilir ya da iade kesilir.${sendText}${stocklessText}`,
+          message: `${who} için ${numberText}${kindLabel(form.kind).toLocaleLowerCase("tr-TR")} kaydedilecek: ${curMoney(c.totals.payable, c.currency)}. Stok, cari, Kasa, çek/senet ve taksit kayıtları birlikte yazılır. Yanlışsa sonradan kartındaki “Düzenle” ile düzeltilir.${sendText}${stocklessText}`,
           confirmLabel: eSend === "later" ? "Kaydet, Sonra Gönder" : eSend === "now" ? "Kaydet ve Gönder" : ISSUE_LABELS[form.kind] || "Kaydet",
         });
         if (!ok) return;
@@ -1441,7 +1458,7 @@
       <div class="hof-chq-actions" role="toolbar" aria-label="Belge işlemleri">
         <span class="hof-plan-toolgroup">${office().outputButtons ? office().outputButtons(pdfUrl(doc), "card") : `<a class="hof-button hof-button-small hof-button-ghost" href="${esc(pdfUrl(doc))}" target="_blank" rel="noopener">PDF</a>`}${phone && doc.status === "issued" ? `<button type="button" class="hof-button hof-button-small hof-button-ghost hof-whatsapp" data-act="whatsapp" data-wa="${esc(phone)}">WhatsApp</button>` : ""}${doc.status === "issued" && isOwn(doc.kind) ? `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="email" data-mail="${esc(email)}" title="${email ? `${esc(email)} adresine e-posta penceresi açılır; PDF indirilir` : "Cari kartında e-posta adresi yok"}">E-Posta</button>` : ""}</span>
         ${doc.status === "issued" && doc.open > 0.004 && !ret && HOF.can(sideOf(doc.kind) === "sale" ? "accounts.collect" : "accounts.manage") ? `<span class="hof-plan-toolgroup"><button type="button" class="hof-button hof-button-small" data-act="pay">${sideOf(doc.kind) === "sale" ? "+ Tahsilat Ekle" : "+ Ödeme Yap"}</button></span>` : ""}
-        ${doc.canManage ? `<span class="hof-plan-toolgroup">${doc.canEdit ? '<button type="button" class="hof-button hof-button-small" data-act="edit">Düzenle ve Kaydet</button>' : ""}${!ret ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="copy" title="Aynı cari ve kalemlerle yeni belge">Kopyala</button>' : ""}${doc.canRepeat ? `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="${doc.repeat ? "repeat-stop" : "repeat"}" title="${doc.repeat ? "Tekrar emrini durdur" : "Abonelik, kira, aidat: her dönem taslak hazırlanır"}">${doc.repeat ? "Tekrarı Durdur" : "Tekrarla"}</button>` : ""}${doc.canDelete ? '<button type="button" class="hof-button hof-button-small hof-button-danger-ghost" data-act="delete">Taslağı Sil</button>' : ""}${doc.status === "issued" ? `<button type="button" class="hof-button hof-button-small hof-button-danger-ghost" data-act="cancel" ${doc.canCancel ? "" : "disabled"} title="${esc(doc.cancelBlock || "Bütün etkileri geri alınır; numara korunur")}">İptal Et</button>` : ""}</span>` : ""}
+        ${doc.canManage ? `<span class="hof-plan-toolgroup">${doc.canEdit ? '<button type="button" class="hof-button hof-button-small" data-act="edit">Düzenle ve Kaydet</button>' : ""}${doc.status === "issued" ? `<button type="button" class="hof-button hof-button-small" data-act="modify" ${doc.canModify ? "" : "disabled"} title="${esc(doc.modifyBlock || "Belgeyi düzeltip yeniden kaydedin; numara değişmez, stok, cari, Kasa ve taksit kayıtları yeni hale göre yazılır")}">Düzenle</button>` : ""}${!ret ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="copy" title="Aynı cari ve kalemlerle yeni belge">Kopyala</button>' : ""}${doc.canRepeat ? `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="${doc.repeat ? "repeat-stop" : "repeat"}" title="${doc.repeat ? "Tekrar emrini durdur" : "Abonelik, kira, aidat: her dönem taslak hazırlanır"}">${doc.repeat ? "Tekrarı Durdur" : "Tekrarla"}</button>` : ""}${doc.canDelete ? '<button type="button" class="hof-button hof-button-small hof-button-danger-ghost" data-act="delete">Taslağı Sil</button>' : ""}${doc.status === "issued" ? `<button type="button" class="hof-button hof-button-small hof-button-danger-ghost" data-act="cancel" ${doc.canCancel ? "" : "disabled"} title="${esc(doc.cancelBlock || "Bütün etkileri geri alınır; numara korunur")}">İptal Et</button>` : ""}</span>` : ""}
         ${eTools}
       </div>
       ${doc.status === "cancelled" ? `<p class="hof-inv-banner is-cancelled">${esc(HOF.formatDateTime(doc.cancelledAt))} tarihinde iptal edildi${doc.cancelReason ? `: ${esc(doc.cancelReason)}` : ""}. Stok, cari, Kasa, çek/senet ve taksit etkileri geri alındı.</p>` : ""}
@@ -1477,6 +1494,7 @@
     const doc = view.doc;
     if (!doc) return;
     if (act === "edit") return startForm({ draft: doc });
+    if (act === "modify") return doc.canModify ? startForm({ modify: doc }) : HOF.toast(doc.modifyBlock || "Bu belge düzenlenemez.", { type: "error" });
     if (act === "copy") return startForm({ copyOf: doc });
     if (act === "return") return doc.canReturn ? startReturn(doc.id) : null;
     if (act === "delete") {

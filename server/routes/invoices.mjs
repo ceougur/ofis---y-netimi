@@ -376,6 +376,86 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, conf
     }
     return { baseNetTotal: baseNet / 100, discountNetTotal: discountNet / 100 };
   }
+  // Düzenleme engeli (boşsa düzenlenebilir). Çek/senedin sonradan işlem görmesi kayıt anında denetlenir (voidFor).
+  const E_SENT = new Set(["processing", "sent", "accepted", "rejected", "cancelled"]);
+  function modifyBlock(row, activeReturns = 0, plan = null) {
+    if (INVOICE_KINDS[row.kind].return) return "İade belgesi düzenlenmez; yanlışsa iptal edip yeniden kaydedin.";
+    if (activeReturns) return `Bu faturanın ${activeReturns} iade faturası var; düzenlenmez. Önce iadeleri iptal edin.`;
+    if (E_SENT.has(row.eStatus)) return `Bu belge e-Belge olarak ${(E_STATES[row.eStatus] || "gönderildi").toLocaleLowerCase("tr-TR")}; düzenlenmez. İptal ya da iade faturasıyla düzeltin.`;
+    const lock = period?.lockedUntil?.();
+    if (lock && row.issueDate <= lock) return `Belge ${dayText(row.issueDate)} tarihli; ${dayText(lock)} ve öncesi kilitli dönem. Düzenlemek için dönem kilidi açılmalı.`;
+    const planId = plan?.id || row.planId;
+    if (planId && store.get("SELECT COUNT(*) AS n FROM plan_entries WHERE plan_id = ?", planId).n) return "Faturanın taksit kartında tahsilat var; düzenlenmez. Borcu düşürmek için iade faturası kaydedin.";
+    return "";
+  }
+  // Kaydedilmiş belgeyi düzenleme: tek işlemde eski etkiler (stok, cari, Kasa, taksit, çek/senet) geri alınır, yenileri
+  // yazılır; numara, seri, ETTN ve ilk kayıt bilgisi korunur. Kasa ve stok yalnız SON durumda denetlenir (ara durum yok).
+  function editInvoice(user, id, body) {
+    const existing = invoiceRow(id);
+    if (existing.status !== "issued") throw new HttpError(409, "Yalnız kaydedilmiş belge bu yolla düzenlenir; taslak için Düzenle ve Kaydet.", { code: "invoice-not-issued" });
+    const activeReturns = store.get("SELECT COUNT(*) AS n FROM invoices WHERE original_id = ? AND status = 'issued'", existing.id).n;
+    const block = modifyBlock(existing, activeReturns);
+    if (block) throw new HttpError(409, block, { code: "invoice-locked" });
+    const own = INVOICE_KINDS[existing.kind].own || existing.seq > 0;
+    const doc = documentInput({ ...body, kind: existing.kind }, { mode: "issue", existing });
+    if (doc.kind !== existing.kind) fail400("Belgenin türü düzenlemede değişmez.", "kind");
+    if (own && doc.date !== existing.issueDate) {
+      // Numara sırası ile tarih sırası uyuşmalı (VUK 231): yeni tarih, serideki önceki ve sonraki belgenin arasında kalmalı.
+      const prev = store.get("SELECT number, issue_date AS issueDate FROM invoices WHERE series = ? AND year = ? AND seq > 0 AND seq < ? ORDER BY seq DESC LIMIT 1", existing.series, existing.year, existing.seq);
+      const next = store.get("SELECT number, issue_date AS issueDate FROM invoices WHERE series = ? AND year = ? AND seq > ? ORDER BY seq LIMIT 1", existing.series, existing.year, existing.seq);
+      if (doc.date.slice(0, 4) !== String(existing.year)) fail400(`Numara ${existing.year} yılına ait; tarih başka yıla alınamaz.`, "issueDate", { code: "chronology" });
+      if (prev && doc.date < prev.issueDate) fail400(`Önceki belge ${prev.number} ${dayText(prev.issueDate)} tarihli; bu belge ondan eski tarihli olamaz (numara ve tarih sırası).`, "issueDate", { code: "chronology" });
+      if (next && doc.date > next.issueDate) fail400(`Sonraki belge ${next.number} ${dayText(next.issueDate)} tarihli; bu belge ondan yeni tarihli olamaz (numara ve tarih sırası).`, "issueDate", { code: "chronology" });
+    }
+    const force = forceOf(body);
+    const before = linesOf(existing.id);
+    const oldCash = store.all("SELECT kind, amount, method, date FROM account_entries WHERE source = 'invoice' AND source_id = ? AND kind IN ('in', 'out')", existing.id);
+    const touched = { accounts: new Set([existing.accountId]), items: new Set(), cash: false, cheques: { accountIds: [], chequeIds: [] }, plans: new Set() };
+    const stockBefore = new Map();
+    for (const itemId of new Set(before.filter(line => line.itemId && line.goods).map(line => line.itemId))) {
+      try {
+        stockBefore.set(itemId, stock().invoiceStock.available(itemId));
+      } catch {
+        // silinmiş ürün: denetlenmez
+      }
+    }
+    const result = store.tx(() => {
+      period?.assertOpen(existing.issueDate, "Bu fatura");
+      reverseEffects(user, existing, touched, { force, edit: true });
+      const payment = paymentInput(body, doc, user);
+      const written = writeIssued(user, doc, payment, { id: existing.id, force, edit: existing });
+      // Son durum denetimi — stok: düzenleme bir ürünü eksiye düşürdüyse (ya da eksiyi büyüttüyse) sorulur.
+      if (!force.stock) {
+        for (const [itemId, was] of stockBefore) {
+          const left = stock().invoiceStock.available(itemId);
+          if (left < -1e-9 && left < was - 1e-9) {
+            const item = stock().invoiceStock.itemFor(itemId);
+            throw new HttpError(409, `“${item.name}” bu düzenlemeyle stokta ${String(Math.round(left * 1000) / 1000).replace(".", ",")} ${item.unit} kalır (eksi).`, { code: "stock-negative", itemId, itemName: item.name, available: left });
+          }
+        }
+      }
+      // Kasa: yöntem başına net giriş azaldıysa (peşin tahsilat küçüldü / ödeme büyüdü) eksiye düşme denetimi.
+      const signed = rows => rows.reduce((map, row) => map.set(row.method || "cash", (map.get(row.method || "cash") || 0) + (row.kind === "in" ? row.amount : -row.amount)), new Map());
+      const was = signed(oldCash);
+      const now2 = signed(store.all("SELECT kind, amount, method FROM account_entries WHERE source = 'invoice' AND source_id = ? AND kind IN ('in', 'out')", existing.id));
+      for (const method of new Set([...was.keys(), ...now2.keys()])) {
+        const delta = Math.round(((now2.get(method) || 0) - (was.get(method) || 0)) * 100) / 100;
+        // Bakiye burada zaten SON durumdadır (eski etki çıktı, yenisi girdi): kuruşun altında bir tutarla "son bakiye eksi
+        // mi" sorulur; farkı yeniden düşmek çift sayım olurdu.
+        if (delta < -0.004) cash?.guardOut?.(0.001, doc.date, force.cash === true, method);
+      }
+      const after = linesOf(existing.id);
+      audit(user, "invoice.edited", existing.id, {
+        number: existing.number,
+        kind: existing.kind,
+        before: { accountId: existing.accountId, date: existing.issueDate, payable: existing.tryPayable, lines: before.map(line => ({ name: line.name, qty: line.qty, unitPrice: line.unitPrice, vatRate: line.vatRate })) },
+        after: { accountId: doc.account.id, date: doc.date, payable: c2(doc.money.payable), lines: after.map(line => ({ name: line.name, qty: line.qty, unitPrice: line.unitPrice, vatRate: line.vatRate })) },
+      });
+      return written;
+    });
+    publishAll(user, touched, result.id);
+    return result;
+  }
   function detail(id, user) {
     const row = invoiceRow(id);
     const lines = linesOf(row.id);
@@ -427,6 +507,9 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, conf
       payments,
       canManage: manage,
       canEdit: manage && row.status === "draft",
+      // v2.0.16 (müşteri): kaydedilmiş belge düzenlenir (aynı numara; eski etkiler geri alınıp yenileri yazılır).
+      canModify: manage && row.status === "issued" && !modifyBlock(row, activeReturns, plan),
+      modifyBlock: row.status === "issued" ? modifyBlock(row, activeReturns, plan) : "",
       canIssue: manage && row.status === "draft",
       canDelete: manage && row.status === "draft",
       canCancel: manage && row.status === "issued" && activeReturns === 0,
@@ -1579,6 +1662,12 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, conf
     const autoSend = await sendChoice(user, existing.id, body.eSend);
     return { ...detail(existing.id, user), ...(autoSend ? { autoSend } : {}) };
   }
+  router.post("/api/workspace/invoices/:id/edit", async ({ req, res, params }) => {
+    const user = requireManage(req);
+    const body = await readJson(req, { limit: 2_000_000 });
+    const result = editInvoice(user, params.id, body);
+    ok(res, detail(result.id, user));
+  });
   router.post("/api/workspace/invoices/:id/issue", async ({ req, res, params }) => {
     const user = requireManage(req);
     const body = await readJson(req, { limit: 2_000_000 });
