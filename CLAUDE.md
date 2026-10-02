@@ -125,6 +125,12 @@ Bağlam kopsa da bu düzen değişmez. Kullanıcı "zip ver" dediğinde şu üç
   8. Kalemler başlığında (Fiyatlar KDV Dahil'in yanında, sarı işaretli yer) "Tüm Kalemlere KDV: [%0/%1/%10/%20]" — tek
      seçimle bütün satırların KDV'si değişir (alış ve satış); sonra satırda tek tek değiştirilebilir; yeni eklenen kalem
      de bu oranı alır. (Gözlem, ekranda: ANTİFRİZ "Stokta −5 Adet" — eksi stok; yap'ta incelenip sorulacak.)
+  9. KRİTİK — Raporlar → Fatura raporları hiç açılmıyor ("Önce cariyi seçin."). Kök neden (koddan doğrulandı):
+     `hof-report-center.js` `account` parametresini her raporda ZORUNLU sayıyor (satır 146/180/215/238; Cari Ekstre için
+     yazılmış); fatura raporlarında (`fatura-satis/alis/iade`, `acik-faturalar` …) cari İSTEĞE BAĞLI süzgeç. Düzeltme:
+     raporun tanımında zorunlu/isteğe bağlı ayrımı (`accountRequired`), isteğe bağlıda "Tüm Cariler" ile hemen çalışır.
+     Test açığı: senaryo-215 adım 10 raporları API'den denedi, ARAYÜZDEN değil → 42 raporun HER BİRİ arayüzden açılıp
+     ön izleme + PDF + Excel denetlenecek (kalıcı e2e).
 - e-Belge kararı (kullanıcı, 01.10.2026): vergi dairesi/entegratör bağlantısı KAPALI — "sana entegre et diyene kadar".
   Fatura modülü tam çalışır; belge "Müşteri Fişi" (resmî hükmü yok) basılır; e-Fatura/e-Arşiv/XML ekranda görünmez.
   Entegratör altyapısı (müşteri kendi API bilgisini girer, kontörü kendisi alır) hazır tutulur ama `config.edocEnabled`
