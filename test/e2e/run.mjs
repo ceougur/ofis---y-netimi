@@ -735,7 +735,7 @@ try {
   await step("ANLIK DURUM (v2.0.7): kart canlı; arayüzden tahsil edilen çek Kasa'yı anında değiştirir; Rapor Al, nakit akışı grafiği, rapor merkezi PDF/Excel; kart küçülür ve öyle kalır", async () => {
     await admin.waitForSelector("#hof-pulse .hof-pulse-tile", { timeout: 15000 });
     const tiles = await admin.$$eval("#hof-pulse .hof-pulse-tile", nodes => nodes.map(node => node.dataset.pulseGo));
-    expect(tiles.join(",") === "cash,stock,receivable,payable", `kart kutuları: ${tiles}`);
+    expect(tiles.join(",") === "cash,bank,stock,receivable,payable", `kart kutuları: ${tiles}`); // v2.0.17: Nakit Kasa ve Banka / POS ayrı kartlar (madde 9)
     const overview = async () => (await admin.evaluate(() => fetch("/api/workspace/overview").then(response => response.json()))).data;
     const tileText = id => admin.$eval(`#hof-pulse [data-pulse-go="${id}"] .hof-pulse-value`, node => node.textContent.replace(/\s+/g, ""));
     const before = await overview();
