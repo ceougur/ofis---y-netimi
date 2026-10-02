@@ -13,7 +13,7 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, pe
   function rows() {
     const out = { payments: [], cashEntries: [], accountEntries: [], plans: [], planEntries: [], stockMoves: [], chequeEvents: [], invoices: [] };
     out.payments = store.all("SELECT id, amount, date, note, method FROM payments");
-    out.cashEntries = store.all("SELECT id, kind, amount, date, description, method FROM cash_entries");
+    out.cashEntries = store.all("SELECT id, kind, amount, date, description, method, transfer_id AS transferId FROM cash_entries");
     if (has("accounts")) {
       out.accountEntries = store.all(
         `SELECT e.id, e.kind, e.amount, e.date, e.note, e.source, e.method, a.type AS accountType, e.account_id AS party,

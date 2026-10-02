@@ -131,7 +131,8 @@ describe("çek/senet: Cari, Taksit ve Kasa ile işlem bütünlüğü", () => {
   let admin;
   let customer;
   let supplier;
-  const cashBalance = async () => (await admin.get("/api/workspace/cash")).data.data.totals.balance;
+  // v2.0.17: Kasa penceresi yalnız nakit; çek tahsili bankaya da düşebilir → "tüm para" (nakit + banka) için method=all.
+  const cashBalance = async () => (await admin.get("/api/workspace/cash?method=all")).data.data.totals.balance;
   const balanceOf = async id => (await admin.get(`/api/workspace/accounts/${id}`)).data.data.totals.balance;
   const overview = async () => (await admin.get("/api/workspace/overview")).data.data;
   const createCheque = async body => {
@@ -177,7 +178,7 @@ describe("çek/senet: Cari, Taksit ve Kasa ile işlem bütünlüğü", () => {
     const collected = await act(cheque, "collect");
     assert.equal(collected.status, "collected");
     assert.equal(await cashBalance(), cash0 + 1500);
-    const kasa = (await admin.get("/api/workspace/cash")).data.data.entries.find(entry => entry.source === "cheque" && entry.amount === 1500);
+    const kasa = (await admin.get("/api/workspace/cash?method=all")).data.data.entries.find(entry => entry.source === "cheque" && entry.amount === 1500);
     assert.ok(kasa && kasa.editable === false && /tahsili/.test(kasa.description));
     const again = await admin.post(`/api/workspace/cheques/${cheque.id}/actions`, { action: "collect", date: TODAY });
     assert.equal(again.status, 409, "iki kez tahsil edilemez");
@@ -220,15 +221,24 @@ describe("çek/senet: Cari, Taksit ve Kasa ile işlem bütünlüğü", () => {
     near(view1.payable.total, view0.payable.total, "toplam borç korunur (cariden ödenecek çeke geçer)");
     near(view1.payable.cheques, view0.payable.cheques + 2500, "ödenecek çek artar");
     const cash0 = await cashBalance();
-    // Verilen çek bankadan ödenir; banka bakiyesi yetmiyorsa Eksi Bakiye Denetimi sorar, onayla ödenir.
-    const short = await admin.post(`/api/workspace/cheques/${cheque.id}/actions`, { action: "pay", date: TODAY, status: cheque.status });
+    // v2.0.17: banka/POS için eksi bakiye denetimi yok (Banka modülü gelene kadar) → bankadan ödeme sormadan yazılır;
+    // nakit ödemede nakit kasa yetmiyorsa sorulur, onayla ödenir.
+    const nakit0 = (await overview()).cash.balance;
+    const short = await admin.post(`/api/workspace/cheques/${cheque.id}/actions`, { action: "pay", date: TODAY, status: cheque.status, method: "cash" });
     assert.equal(short.status, 409, JSON.stringify(short.data));
     assert.equal(short.data.code, "cash-negative");
-    await act(cheque, "pay", { cashForce: true });
+    assert.equal(short.data.method, "cash");
+    await act(cheque, "pay", { cashForce: true, method: "cash" });
     assert.equal(await cashBalance(), cash0 - 2500);
     const view2 = await overview();
     near(view2.payable.total, view0.payable.total - 2500, "ödenince borç azalır");
-    near(view2.cash.balance, cash0 - 2500, "kart Kasa ile aynı");
+    near(view2.cash.balance, nakit0 - 2500, "kart Nakit Kasa ile aynı");
+    // Bankadan ödenen verilen çek: soru yok, banka tarafı düşer.
+    const cheque2 = await createCheque({ direction: "out", accountId: supplier.id, amount: 700, serialNo: "K-2", bank: "Kendi hesabımız" });
+    const bank0 = (await admin.get("/api/workspace/cash?method=all")).data.data.byMethod.bank;
+    await act(cheque2, "pay", { method: "bank" });
+    assert.equal((await admin.get("/api/workspace/cash?method=all")).data.data.byMethod.bank, bank0 - 700, "banka tarafı sormadan düştü");
+    assert.equal((await overview()).cash.balance, nakit0 - 2500, "nakit kasa değişmedi");
   });
 
   it("taksite sayılan çek: taksit ödenmiş olur, Kasa değişmez; karşılıksız taksiti yeniden açar; kart silinemez, tahsilat karttan düzeltilemez", async () => {
@@ -411,7 +421,9 @@ describe("ANLIK DURUM: karttaki rakamlar ekranlarla birebir aynı (rastgele 400 
       const flow = (await admin.get("/api/workspace/overview/nakit-akisi?from=" + TODAY + "&to=2099-12-31&overdue=1")).data.data;
       const openPlans = (await admin.get("/api/workspace/plans?status=active")).data.data;
       const planRemaining = (openPlans.plans || []).reduce((sum, plan) => sum + Math.max(0, plan.totals?.remaining ?? 0), 0);
-      near(flow.closing, cash.totals.balance + planRemaining + portfolio.summary.in.open.amount - portfolio.summary.out.open.amount, `${label}: nakit akışı sonu`);
+      // Nakit akışı tüm parayla (nakit + banka/POS) başlar; Kasa penceresi yalnız nakit (v2.0.17).
+      const allMoney = (await admin.get("/api/workspace/cash?method=all")).data.data;
+      near(flow.closing, allMoney.totals.balance + planRemaining + portfolio.summary.in.open.amount - portfolio.summary.out.open.amount, `${label}: nakit akışı sonu`);
     };
     for (let step = 1; step <= 400; step += 1) {
       const op = pick(["cash", "cash", "debt", "credit", "collect", "pay", "plan", "planPay", "stock", "stockCash", "chequeIn", "chequeIn", "chequeOut", "chequeAct", "chequeAct", "undo", "delete"]);

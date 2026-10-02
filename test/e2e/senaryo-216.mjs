@@ -390,22 +390,24 @@ try {
       ok(payOut.includes("Kredi Kartı") && !payOut.includes("POS"), `taksit ödeme/iade yolları: ${payOut.join(", ")}`);
       await closeAll();
     } else ok(false, "taksit kartı açılamadı");
-    // Kasa ve Banka → + Tahsilat: POS; − Ödeme: Kredi Kartı; sekme adı "POS / Kredi Kartı".
+    // v2.0.17 (müşteri): Kasa yalnız nakit — tahsilat/ödeme formunda yol seçilmez, sabit "Nakit"; yol sekmesi yok.
     await admin.click("#hof-sidecard [data-action=cash]");
     await admin.waitForSelector(`${modal} [data-add="in"]`);
-    ok(/POS \/ Kredi Kartı/.test(await admin.textContent(`${modal} [data-methods]`)), "Kasa sekmesi “POS / Kredi Kartı”");
+    ok(!(await admin.$(`${modal} [data-methods]`)), "Kasa'da yol sekmesi yok");
     const kasa = async kind => {
       await admin.click(`${modal} [data-add="${kind}"]`);
-      await admin.waitForSelector(`${modal} select[name="method"]`);
-      const list = await admin.$$eval(`${modal} select[name="method"] option`, nodes => nodes.map(node => node.textContent.trim()));
+      await admin.waitForSelector(`${modal} input[name="methodLabel"]`);
+      const value = await admin.inputValue(`${modal} input[name="methodLabel"]`);
+      const readonly = await admin.$eval(`${modal} input[name="methodLabel"]`, node => node.readOnly);
+      ok(!(await admin.$(`${modal} select[name="method"]`)), `Kasa ${kind} formunda yol seçici yok`);
       await admin.keyboard.press("Escape");
       await admin.waitForTimeout(300);
-      return list;
+      return { value, readonly };
     };
     const kasaIn = await kasa("in");
-    ok(kasaIn.includes("POS") && !kasaIn.includes("Kredi Kartı"), `Kasa tahsilat yolları: ${kasaIn.join(", ")}`);
+    ok(kasaIn.value === "Nakit" && kasaIn.readonly, `Kasa tahsilat yolu sabit Nakit (${kasaIn.value})`);
     const kasaOut = await kasa("out");
-    ok(kasaOut.includes("Kredi Kartı") && !kasaOut.includes("POS"), `Kasa ödeme yolları: ${kasaOut.join(", ")}`);
+    ok(kasaOut.value === "Nakit" && kasaOut.readonly, `Kasa ödeme yolu sabit Nakit (${kasaOut.value})`);
     await closeAll();
     // Stok → − Çıkış (satış): POS; + Giriş (alım): Kredi Kartı.
     await admin.click("#hof-sidecard [data-action=stock]");

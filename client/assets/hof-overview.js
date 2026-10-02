@@ -34,8 +34,6 @@
     const cut = text.lastIndexOf(",");
     return cut > 0 ? `<span class="hof-num">${esc(text.slice(0, cut))}<small>${esc(text.slice(cut))}</small></span>` : `<span class="hof-num">${esc(text)}</span>`;
   };
-  // v2.0.13: Kasa / Banka kartında yola göre dağılım (yalnız nakitten başka yol kullanıldıysa gösterilir).
-  const methodLine = by => (by && (Math.abs(by.bank) > 0.005 || Math.abs(by.card) > 0.005) ? `<br>Nakit ${esc(shortMoney(by.cash))} · Banka ${esc(shortMoney(by.bank))} · Kart ${esc(shortMoney(by.card))}` : "");
   const shortMoney = value => SHORT_MONEY.format(Number(value) || 0);
   const todayIso = () => {
     const now = new Date();
@@ -85,15 +83,30 @@
     if (data.cash) {
       const t = data.cash.today;
       const moved = t.in || t.out;
+      // v2.0.17 (müşteri): Kasa yalnız nakit; banka tarafı (havale/EFT + POS/kredi kartı) ayrı kart.
       out.push({
         id: "cash",
         icon: ICONS.cash,
-        label: "Kasa / Banka",
+        label: "Nakit Kasa",
         value: moneyHtml(data.cash.balance, { compact: true }),
         tone: data.cash.balance < 0 ? "is-bad" : "",
-        sub: `${moved ? `Bugün <b class="hof-pulse-up">+${esc(shortMoney(t.in))}</b> · <b class="hof-pulse-down">−${esc(shortMoney(t.out))}</b>` : "Bugün hareket yok"}${methodLine(data.cash.byMethod)}${data.cash.futureEntries ? `<br><span class="hof-pulse-flag">${ICONS.warn}${data.cash.futureEntries} ileri tarihli hareket hariç</span>` : ""}`,
-        title: `Bugüne kadarki kasa: ${money(data.cash.balance)}.${data.cash.futureEntries ? ` İleri tarihli ${data.cash.futureEntries} hareketle birlikte ${money(data.cash.allEntries)} (Kasa ekranındaki "tüm hareketler").` : ""} Bu ay giriş ${money(data.cash.month.in)}, çıkış ${money(data.cash.month.out)}.`,
+        sub: `${moved ? `Bugün <b class="hof-pulse-up">+${esc(shortMoney(t.in))}</b> · <b class="hof-pulse-down">−${esc(shortMoney(t.out))}</b>` : "Bugün hareket yok"}${data.cash.futureEntries ? `<br><span class="hof-pulse-flag">${ICONS.warn}${data.cash.futureEntries} ileri tarihli hareket hariç</span>` : ""}`,
+        title: `Bugüne kadarki nakit kasa: ${money(data.cash.balance)}.${data.cash.futureEntries ? ` İleri tarihli ${data.cash.futureEntries} hareketle birlikte ${money(data.cash.allEntries)} (Kasa ekranındaki "tüm hareketler").` : ""} Bu ay giriş ${money(data.cash.month.in)}, çıkış ${money(data.cash.month.out)}.`,
       });
+      if (data.cash.bank) {
+        const b = data.cash.bank;
+        const at = data.cash.byMethodAt || {};
+        const bankMoved = b.today?.in || b.today?.out;
+        out.push({
+          id: "bank",
+          icon: ICONS.cash,
+          label: "Banka / POS",
+          value: moneyHtml(b.balance, { compact: true }),
+          tone: "",
+          sub: `${bankMoved ? `Bugün <b class="hof-pulse-up">+${esc(shortMoney(b.today.in))}</b> · <b class="hof-pulse-down">−${esc(shortMoney(b.today.out))}</b>` : "Bugün hareket yok"}<br>Banka ${esc(shortMoney(at.bank || 0))} · POS ${esc(shortMoney(at.card || 0))}`,
+          title: `Havale/EFT ve POS/kredi kartı hareketlerinin programa girilenlerden hesaplanan toplamı: ${money(b.balance)} (banka ekstresi değildir; Banka modülü gelene kadar bilgi amaçlıdır). Ayrıntı: Raporlar → Banka ve POS Hareketleri.`,
+        });
+      }
     }
     if (data.stock) {
       const s = data.stock;

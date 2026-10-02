@@ -897,7 +897,8 @@
   async function loadNegative() {
     try {
       const policy = await HOF.api("/api/admin/negative-policy");
-      for (const key of ["cash", "bank", "card"]) $(`#adm-negative-${key}`).value = policy[key];
+      // v2.0.17: Banka modülü gelene kadar yalnız Nakit Kasa denetlenir (banka/POS ayarı yok).
+      $("#adm-negative-cash").value = policy.cash;
     } catch (error) {
       HOF.toastError(error);
     }
@@ -907,7 +908,7 @@
     const button = $("#adm-negative-save");
     button.disabled = true;
     try {
-      const body = Object.fromEntries(["cash", "bank", "card"].map(key => [key, $(`#adm-negative-${key}`).value]));
+      const body = { cash: $("#adm-negative-cash").value };
       await HOF.api("/api/admin/negative-policy", { method: "PUT", body });
       HOF.toast("Eksi bakiye denetimi kaydedildi.", { type: "success" });
     } catch (error) {

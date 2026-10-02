@@ -298,21 +298,26 @@ export function registerTrashRoutes(router, { store, auth, audit, events, datase
     } else if (item.kind === "cash") {
       if (!["in", "out"].includes(payload.kind)) throw new HttpError(409, "Kasa hareketinin bilgisi eksik; geri yüklenemez.");
       store.tx(() => {
-        if (!store.get("SELECT 1 AS found FROM cash_entries WHERE id = ?", item.ref)) {
+        // v2.0.17: Kasa ↔ Banka transferi iki bağlı hareket; ikisi birlikte geri gelir (payload.twin).
+        const insert = row => {
+          if (store.get("SELECT 1 AS found FROM cash_entries WHERE id = ?", row.id)) return;
           store.run(
-            "INSERT INTO cash_entries (id, kind, amount, date, description, method, created_by, created_at, updated_by, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-            item.ref,
-            payload.kind,
-            Number(payload.amount) || 0,
-            payload.date,
-            payload.description || "",
-            payload.method || "cash",
-            payload.createdBy || user.id,
-            payload.createdAt || now(),
+            "INSERT INTO cash_entries (id, kind, amount, date, description, method, transfer_id, created_by, created_at, updated_by, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            row.id,
+            row.kind,
+            Number(row.amount) || 0,
+            row.date,
+            row.description || "",
+            row.method || "cash",
+            row.transferId || "",
+            row.createdBy || user.id,
+            row.createdAt || now(),
             user.id,
             now(),
           );
-        }
+        };
+        insert({ ...payload, id: item.ref });
+        if (payload.twin && ["in", "out"].includes(payload.twin.kind)) insert(payload.twin);
         trash.markRestored(item.id, user);
         audit(user, "cash.entry.restored", item.ref, { kind: payload.kind, amount: payload.amount, date: payload.date, description: payload.description });
       });

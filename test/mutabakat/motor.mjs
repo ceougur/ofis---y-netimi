@@ -114,7 +114,9 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
   const balAt = (method, date) => cashEffects().filter(x => x.method === method && (!date || x.date <= date)).reduce((s, x) => s + x.cents, 0);
   // Eksi bakiye denetimi (yol başına: off / warn / block). Program: min(o tarihteki bakiye, son bakiye) − çıkış < 0 ise
   // warn'da onaysız 409 cash-negative, block'ta onaylı da 409 cash-blocked. Koşunun ortasında politika değişir.
-  const policy = { cash: "warn", bank: "warn", card: "warn" };
+  // v2.0.17: Banka modülü gelene kadar banka/POS denetimi kapalı; sunucu bank/card ayarını okumaz (her zaman off).
+  const policy = { cash: "warn", bank: "off", card: "off" };
+  const applyPolicy = next => Object.assign(policy, { cash: next.cash ?? policy.cash, bank: "off", card: "off" });
   const METHOD_ORDER = ["cash", "bank", "card"];
   const blocks = (outCents, date, method) => outCents > 0 && policy[method] !== "off" && Math.min(balAt(method, date), balAt(method, "")) - outCents < 0;
   // outs: [[yol, çıkış kuruşu, tarih]]; sunucunun sırasıyla (nakit, banka, kart) denetlenir. Ret beklenirse true.
@@ -156,7 +158,8 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
   async function verify(where) {
     report.checks += 1;
     const problems = [];
-    const cash = (await api("GET", "/api/workspace/cash")).data;
+    // v2.0.17: Kasa penceresi yalnız nakit; model bütün yolları izler → "all".
+    const cash = (await api("GET", "/api/workspace/cash?method=all")).data;
     for (const m of MONEY) if (centsOf(cash.byMethod[m] || 0) !== M.kasa[m]) problems.push(`Kasa ${m}: program ${cash.byMethod[m]} · model ${tl(M.kasa[m])}`);
     // İşlem zinciri: Kasa satırları kaynağına göre sayı ve tutar (satış → Kasa, tahsilat → Kasa, taksit → Kasa).
     const want = new Map();
@@ -234,12 +237,16 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
     const sum = (rep, label) => centsOfText(rep.summary.find(([k]) => k === label)?.[1]);
     const ranges = [[D0, T], [D0, cur], [lock ? addDays(lock, 1) : addDays(D0, 30), T], [addDays(D0, -400), addDays(D0, -1)]].filter(([a, b]) => a <= b);
     for (const [from, to] of ranges) {
-      const effects = cashEffects().filter(x => x.date >= from && x.date <= to);
-      const kasa = await rc("kasa-hareketleri", from, to);
-      const rows = kasa.total - 1; // ilk satır devir
-      if (rows !== effects.length) problems.push(`Kasa Hareketleri ${from}–${to}: rapor ${rows} satır · model ${effects.length}${effects.length && !rows ? " (VERİ VARKEN BOŞ)" : ""}`);
-      const inCents = effects.filter(x => x.cents > 0).reduce((s, x) => s + x.cents, 0), outCents = -effects.filter(x => x.cents < 0).reduce((s, x) => s + x.cents, 0);
-      if (sum(kasa, "Dönem Giriş") !== inCents || sum(kasa, "Dönem Çıkış") !== outCents) problems.push(`Kasa Hareketleri ${from}–${to}: giriş/çıkış ${tl(sum(kasa, "Dönem Giriş"))}/${tl(sum(kasa, "Dönem Çıkış"))} · model ${tl(inCents)}/${tl(outCents)}`);
+      // v2.0.17: Kasa Hareketleri yalnız nakit; havale/EFT + POS/kredi kartı "Banka ve POS Hareketleri" raporunda.
+      const inRangeEffects = cashEffects().filter(x => x.date >= from && x.date <= to);
+      for (const [id, label, pick] of [["kasa-hareketleri", "Kasa Hareketleri", x => x.method === "cash"], ["banka-pos-hareketleri", "Banka ve POS Hareketleri", x => x.method !== "cash"]]) {
+        const effects = inRangeEffects.filter(pick);
+        const rep = await rc(id, from, to);
+        const rows = rep.total - 1; // ilk satır devir
+        if (rows !== effects.length) problems.push(`${label} ${from}–${to}: rapor ${rows} satır · model ${effects.length}${effects.length && !rows ? " (VERİ VARKEN BOŞ)" : ""}`);
+        const inCents = effects.filter(x => x.cents > 0).reduce((s, x) => s + x.cents, 0), outCents = -effects.filter(x => x.cents < 0).reduce((s, x) => s + x.cents, 0);
+        if (sum(rep, "Dönem Giriş") !== inCents || sum(rep, "Dönem Çıkış") !== outCents) problems.push(`${label} ${from}–${to}: giriş/çıkış ${tl(sum(rep, "Dönem Giriş"))}/${tl(sum(rep, "Dönem Çıkış"))} · model ${tl(inCents)}/${tl(outCents)}`);
+      }
       const moves = M.moves.filter(m => m.date >= from && m.date <= to);
       const stok = await rc("stok-hareketleri", from, to);
       if (stok.total !== moves.length) problems.push(`Stok Hareketleri ${from}–${to}: rapor ${stok.total} · model ${moves.length}${moves.length && !stok.total ? " (VERİ VARKEN BOŞ)" : ""}`);
@@ -538,10 +545,31 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
     const day = cur;
     switch (kind) {
       case "kasa": {
-        const k = R.chance(0.55) ? "in" : "out";
-        const method = methodPick();
         const amount = moneyCents(1, 40000);
         const force = R.chance(0.5);
+        // v2.0.17: Kasa ↔ Banka transferi (%30): nakit tarafı + banka tarafı tek işlemde, aynı transferId.
+        if (R.chance(0.3)) {
+          const direction = R.chance(0.5) ? "to-cash" : "to-bank";
+          const r = await api("POST", "/api/workspace/cash/transfer", { direction, amount: tl(amount), date: day, description: `Transfer ${direction}`, cashForce: force });
+          if (direction === "to-bank" && negative(r, [["cash", amount, day]], force, kind)) return;
+          mustOk(r, kind);
+          const cashKind = direction === "to-cash" ? "in" : "out";
+          M.kasa.cash += cashKind === "in" ? amount : -amount;
+          M.kasa.bank += cashKind === "in" ? -amount : amount;
+          const cashRow = { id: r.data.id, kind: cashKind, amount, method: "cash", date: day, transferId: r.data.transferId };
+          const bankRow = { id: r.data.bankId, kind: cashKind === "in" ? "out" : "in", amount, method: "bank", date: day, transferId: r.data.transferId };
+          cashRow.twin = bankRow;
+          bankRow.twin = cashRow;
+          M.cash.push(cashRow, bankRow);
+          return;
+        }
+        // v2.0.17: Kasa'ya yalnız nakit girilir; nakit dışı yol 400 cash-method.
+        const k = R.chance(0.55) ? "in" : "out";
+        if (R.chance(0.15)) {
+          const r = await api("POST", "/api/workspace/cash", { kind: k, amount: tl(amount), method: R.pick(["bank", "card"]), description: `Kasa ${k}`, date: day, cashForce: force });
+          return void expectReject(r, "cash-method", kind);
+        }
+        const method = "cash";
         const r = await api("POST", "/api/workspace/cash", { kind: k, amount: tl(amount), method, description: `Kasa ${k}`, date: day, cashForce: force });
         if (k === "out" && negative(r, [[method, amount, day]], force, kind)) return;
         mustOk(r, kind);
@@ -553,15 +581,23 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
         const e = pickOpen(M.cash);
         if (!e) return;
         const amount = moneyCents(1, 40000);
-        const method = methodPick();
+        // v2.0.17: yol değiştirilmez (gönderilse de sunucu eskisini korur); transferde iki taraf birlikte güncellenir.
+        const method = e.method;
         const eff = x => ({ method: x.method, cents: x.kind === "in" ? x.amount : -x.amount });
         const force = R.chance(0.5);
-        const r = await api("PUT", `/api/workspace/cash/${e.id}`, { kind: e.kind, amount: tl(amount), method, description: "Düzeltildi", date: e.date, cashForce: force });
-        if (negative(r, changeOuts(eff(e), eff({ ...e, amount, method }), e.date), force, kind)) return;
+        const r = await api("PUT", `/api/workspace/cash/${e.id}`, { kind: e.kind, amount: tl(amount), method: methodPick(), description: "Düzeltildi", date: e.date, cashForce: force });
+        const outs = changeOuts(eff(e), eff({ ...e, amount, method }), e.date);
+        if (e.twin) outs.push(...changeOuts(eff(e.twin), eff({ ...e.twin, amount }), e.date));
+        if (negative(r, outs, force, kind)) return;
         mustOk(r, kind);
         M.kasa[e.method] -= e.kind === "in" ? e.amount : -e.amount;
         M.kasa[method] += e.kind === "in" ? amount : -amount;
         Object.assign(e, { amount, method });
+        if (e.twin) {
+          M.kasa[e.twin.method] -= e.twin.kind === "in" ? e.twin.amount : -e.twin.amount;
+          M.kasa[e.twin.method] += e.twin.kind === "in" ? amount : -amount;
+          e.twin.amount = amount;
+        }
         return;
       }
       case "kasa-sil": {
@@ -569,10 +605,17 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
         if (!e) return;
         const force = R.chance(0.5);
         const r = await api("DELETE", `/api/workspace/cash/${e.id}${force ? "?cashForce=1" : ""}`);
-        if (e.kind === "in" && negative(r, [[e.method, e.amount, e.date]], force, kind)) return;
+        const outs = e.kind === "in" ? [[e.method, e.amount, e.date]] : [];
+        if (e.twin && e.twin.kind === "in") outs.push([e.twin.method, e.twin.amount, e.twin.date]);
+        if (outs.length && negative(r, outs, force, kind)) return;
         mustOk(r, kind);
         M.kasa[e.method] -= e.kind === "in" ? e.amount : -e.amount;
         M.cash.splice(M.cash.indexOf(e), 1);
+        if (e.twin) {
+          // Transferin öbür yarısı da silindi.
+          M.kasa[e.twin.method] -= e.twin.kind === "in" ? e.twin.amount : -e.twin.amount;
+          M.cash.splice(M.cash.indexOf(e.twin), 1);
+        }
         return;
       }
       case "cari": {
@@ -1094,7 +1137,7 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
       if (i === Math.floor(operations * at)) {
         const r = await api("PUT", "/api/admin/negative-policy", next);
         if (r.status !== 200) report.mismatches.push({ at: `eksi bakiye ayarı`, problems: [`ayar kaydedilemedi: ${r.text}`] });
-        else Object.assign(policy, next);
+        else applyPolicy(next);
       }
     }
     const kind = R.pick(bag);
@@ -1119,7 +1162,7 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
   if (burst && !report.mismatches.length) {
     // Yağmurdaki Kasa çıkışları onaylıdır; "Engelle" ayarında onaylı çıkış da reddedileceği için ayar Uyar'a alınır.
     const warnAll = { cash: "warn", bank: "warn", card: "warn" };
-    if ((await api("PUT", "/api/admin/negative-policy", warnAll)).status === 200) Object.assign(policy, warnAll);
+    if ((await api("PUT", "/api/admin/negative-policy", warnAll)).status === 200) applyPolicy(warnAll);
     const jobs = [];
     for (let i = 0; i < burst; i++) {
       const it = items[i % 3];

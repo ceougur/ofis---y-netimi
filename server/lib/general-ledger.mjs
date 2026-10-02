@@ -75,6 +75,14 @@ export function journal(rows) {
   };
   for (const row of rows.payments || []) post(`payment:${row.id}`, row.date, "Kayıt tahsilatı", row.note || "Tahsilat", cashAccount(row.method), "602", row.amount);
   for (const row of rows.cashEntries || []) {
+    // v2.0.17: Kasa ↔ Banka transferi gelir/gider değildir — tek fiş, 100 ↔ 102 (nakit tarafı yazılır, banka tarafı atlanır).
+    if (row.transferId) {
+      if (row.method !== "cash") continue;
+      const bank = cashAccount("bank");
+      if (row.kind === "in") post(`transfer:${row.transferId}`, row.date, "Kasa ↔ Banka", row.description || "Bankadan Kasaya Aktarım", cashAccount("cash"), bank, row.amount);
+      else post(`transfer:${row.transferId}`, row.date, "Kasa ↔ Banka", row.description || "Kasadan Bankaya Yatırma", bank, cashAccount("cash"), row.amount);
+      continue;
+    }
     if (row.kind === "in") post(`cash:${row.id}`, row.date, "Kasa", row.description || "Kasaya giriş", cashAccount(row.method), "649", row.amount);
     else post(`cash:${row.id}`, row.date, "Kasa", row.description || "Kasadan ödeme", "770", cashAccount(row.method), row.amount);
   }

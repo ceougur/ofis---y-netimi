@@ -181,46 +181,109 @@ describe("dört çekirdekte tarih, dönem kilidi ve iade sınırı (API)", () =>
   });
 });
 
-describe("eksi bakiye denetimi: Nakit, Banka, Kredi Kartı için Kontrol Yok / Uyar / Engelle", () => {
+describe("eksi bakiye denetimi (v2.0.17): yalnız Nakit Kasa denetlenir; Kasa'ya yalnız nakit girilir; Kasa ↔ Banka transferi", () => {
   let server;
   let admin;
   before(async () => {
     server = await startTestServer();
     admin = await loginAdmin(server);
     data(await admin.post("/api/workspace/cash", { kind: "in", amount: "1.000", method: "cash", description: "Nakit açılış" }), "nakit");
-    data(await admin.post("/api/workspace/cash", { kind: "in", amount: "500", method: "bank", description: "Banka açılış" }), "banka");
   });
   after(async () => server?.close());
   const out = (method, amount, extra = {}) => admin.post("/api/workspace/cash", { kind: "out", amount, method, description: `${method} çıkış`, ...extra });
 
-  it("varsayılan: üç yolda da Uyar; banka ve kredi kartı da artık uyarısız eksiye düşmez", async () => {
-    assert.deepEqual(data(await admin.get("/api/admin/negative-policy"), "ayar"), { cash: "warn", bank: "warn", card: "warn" });
-    const bank = await out("bank", "600");
-    rejected(bank, 409, "cash-negative", "banka eksiye");
-    assert.equal(bank.data.method, "bank");
-    assert.match(bank.data.error, /Banka hesabında \(Havale \/ EFT\) 500,00 TL var/);
-    rejected(await out("card", "1"), 409, "cash-negative", "kredi kartı eksiye");
-    data(await out("bank", "600", { cashForce: true }), "onaylı banka çıkışı");
+  it("varsayılan: Nakit Kasa Uyar; banka ve kart denetimi kapalı (Banka modülü gelene kadar), ayar gönderilse de okunmaz", async () => {
+    assert.deepEqual(data(await admin.get("/api/admin/negative-policy"), "ayar"), { cash: "warn", bank: "off", card: "off" });
+    rejected(await out("cash", "1.500"), 409, "cash-negative", "nakit eksiye");
+    data(await admin.put("/api/admin/negative-policy", { bank: "warn", card: "block" }), "bank/card gönderildi");
+    assert.deepEqual(data(await admin.get("/api/admin/negative-policy"), "ayar"), { cash: "warn", bank: "off", card: "off" }, "bank/card her zaman off");
+  });
+
+  it("Kasa'ya nakit dışı yol girilemez (400 cash-method); havale/POS cari ekranından girilir ve nakit kasayı değiştirmez", async () => {
+    rejected(await out("bank", "100"), 400, "cash-method", "banka ile Kasa çıkışı");
+    rejected(await admin.post("/api/workspace/cash", { kind: "in", amount: "100", method: "card", description: "POS" }), 400, "cash-method", "POS ile Kasa girişi");
+    const cari = data(await admin.post("/api/workspace/accounts", { name: "Havaleci Ltd.", type: "customer" }), "cari");
+    data(await admin.post(`/api/workspace/accounts/${cari.id}/entries`, { kind: "in", amount: "700", method: "bank", note: "Havale tahsilat" }), "havale");
+    const kasa = data(await admin.get("/api/workspace/cash"), "kasa");
+    assert.ok(kasa.entries.every(entry => entry.method === "cash"), "Kasa penceresi yalnız nakit");
+    assert.equal(kasa.totals.balance, 1000, "nakit kasa 1.000");
+    assert.equal(kasa.byMethod.bank, 700, "banka tarafı 700");
+    const banka = data(await admin.get("/api/workspace/cash?method=noncash"), "banka tarafı");
+    assert.ok(banka.entries.length === 1 && banka.entries[0].method === "bank" && banka.entries[0].amount === 700);
+    const hepsi = data(await admin.get("/api/workspace/cash?method=all"), "hepsi");
+    assert.equal(hepsi.entries.length, 2);
   });
 
   it("Engelle: onayla da yazılmaz; Kontrol Yok: sormaz; yetkisiz kullanıcı ayarı değiştiremez", async () => {
     const personel = await createUser(server, admin, { username: "eksici" });
-    assert.equal((await personel.put("/api/admin/negative-policy", { card: "off" })).status, 403);
-    rejected(await admin.put("/api/admin/negative-policy", { card: "belki" }), 400, undefined, "geçersiz değer");
-    data(await admin.put("/api/admin/negative-policy", { cash: "block", card: "off" }), "ayar");
+    assert.equal((await personel.put("/api/admin/negative-policy", { cash: "off" })).status, 403);
+    rejected(await admin.put("/api/admin/negative-policy", { cash: "belki" }), 400, undefined, "geçersiz değer");
+    data(await admin.put("/api/admin/negative-policy", { cash: "block" }), "ayar");
     rejected(await out("cash", "1.500", { cashForce: true }), 409, "cash-blocked", "nakit engelli");
-    data(await out("card", "50"), "kontrol yok: kart eksiye düşebilir");
     data(await out("cash", "999"), "bakiye yetiyorsa engel yok");
-    data(await admin.put("/api/admin/negative-policy", { cash: "warn", card: "warn" }), "geri al");
+    data(await admin.put("/api/admin/negative-policy", { cash: "off" }), "kontrol yok");
+    data(await out("cash", "500"), "sormadan eksiye");
+    data(await admin.put("/api/admin/negative-policy", { cash: "warn" }), "geri al");
+    data(await admin.post("/api/workspace/cash", { kind: "in", amount: "2.000", description: "Toparla" }), "nakit giriş");
   });
 
-  it("düzeltmede yol değişirse azalan hesap denetlenir (nakitten bankaya taşınan tahsilat)", async () => {
-    const entry = data(await admin.post("/api/workspace/cash", { kind: "in", amount: "300", method: "cash", description: "Taşınacak tahsilat" }), "tahsilat");
-    data(await admin.post("/api/workspace/cash", { kind: "out", amount: "250", method: "cash", description: "Harcama" }), "harcama");
+  it("Kasa ↔ Banka transferi: tek işlem, iki bağlı hareket; kasadan bankaya yatırmada nakit denetimi; düzeltme/silme iki tarafı birlikte; Ana Defter 100 ↔ 102", async () => {
+    const before = data(await admin.get("/api/workspace/cash?method=all"), "önce");
+    const trial0 = data(await admin.get("/api/workspace/ledger"), "mizan önce").trial.accounts;
+    const trialBefore = code => {
+      const row = trial0.find(item => item.code === code);
+      return row ? row.debit + row.credit : 0;
+    };
+    const toCash = data(await admin.post("/api/workspace/cash/transfer", { direction: "to-cash", amount: "300", description: "ATM" }), "bankadan kasaya");
+    assert.ok(toCash.transferId && toCash.id);
+    const after1 = data(await admin.get("/api/workspace/cash?method=all"), "sonra");
+    assert.equal(after1.byMethod.cash, before.byMethod.cash + 300, "nakit +300");
+    assert.equal(after1.byMethod.bank, before.byMethod.bank - 300, "banka −300");
+    const kasa = data(await admin.get("/api/workspace/cash"), "kasa");
+    const row = kasa.entries.find(entry => entry.transferId === toCash.transferId);
+    assert.ok(row && row.kind === "in" && row.method === "cash" && row.amount === 300, "Kasa'da nakit giriş olarak görünür");
+    const banka = data(await admin.get("/api/workspace/cash?method=noncash"), "banka");
+    assert.ok(banka.entries.some(entry => entry.transferId === toCash.transferId && entry.kind === "out" && entry.method === "bank"), "bankada karşı hareket");
+    // Kasadan bankaya: nakit kasadan fazlası sorulur; onayla yazılır.
+    const tooMuch = await admin.post("/api/workspace/cash/transfer", { direction: "to-bank", amount: String(after1.byMethod.cash + 1) });
+    rejected(tooMuch, 409, "cash-negative", "nakit yetmiyor");
+    assert.equal(tooMuch.data.method, "cash");
+    const toBank = data(await admin.post("/api/workspace/cash/transfer", { direction: "to-bank", amount: "100" }), "kasadan bankaya");
+    // Düzeltme iki tarafı birlikte günceller; yön değiştirilemez.
+    data(await admin.put(`/api/workspace/cash/${toBank.id}`, { kind: "out", amount: "150", date: toBank.date, description: "Bankaya yatırıldı" }), "düzelt");
+    const after2 = data(await admin.get("/api/workspace/cash?method=all"), "düzeltildi");
+    const pair = after2.entries.filter(entry => entry.transferId === toBank.transferId);
+    assert.equal(pair.length, 2);
+    assert.ok(pair.every(entry => entry.amount === 150 && entry.description === "Bankaya yatırıldı"), "iki taraf 150");
+    rejected(await admin.put(`/api/workspace/cash/${toBank.id}`, { kind: "in", amount: "150", date: toBank.date, description: "x" }), 400, "transfer-kind", "yön sabit");
+    // Ana Defter: transfer gelir/gider değil, 100 ↔ 102; mutabakat tutar. Gelir (649) ve gider (770) transferle değişmez.
+    const integrity = data(await admin.get("/api/workspace/ledger/integrity"), "mutabakat");
+    assert.equal(integrity.ok, true, JSON.stringify(integrity.failures));
+    const trialNow = data(await admin.get("/api/workspace/ledger"), "mizan").trial.accounts;
+    const acc = code => trialNow.find(row => row.code === code) || { debit: 0, credit: 0, balance: 0 };
+    assert.equal(acc("649").debit + acc("649").credit, trialBefore("649"), "649 transferle değişmedi");
+    assert.equal(acc("770").debit + acc("770").credit, trialBefore("770"), "770 transferle değişmedi");
+    assert.equal(acc("100").balance, after2.byMethod.cash, "100 = nakit kasa");
+    assert.equal(acc("102").balance, after2.byMethod.bank, "102 = banka");
+    // Silme: iki taraf birlikte gider; Silinenler'den birlikte döner.
+    data(await admin.del(`/api/workspace/cash/${toBank.id}`), "sil");
+    const after3 = data(await admin.get("/api/workspace/cash?method=all"), "silindi");
+    assert.equal(after3.entries.filter(entry => entry.transferId === toBank.transferId).length, 0);
+    const bin = data(await admin.get("/api/admin/trash"), "silinenler");
+    const item = bin.find(row => row.kind === "cash" && row.title === "Bankaya yatırıldı");
+    assert.ok(item, "transfer Silinenler'de");
+    data(await admin.post("/api/admin/trash/restore", { id: item.id }), "geri yükle");
+    const after4 = data(await admin.get("/api/workspace/cash?method=all"), "geri geldi");
+    assert.equal(after4.entries.filter(entry => entry.transferId === toBank.transferId).length, 2, "iki taraf birlikte döndü");
+  });
+
+  it("düzeltmede eski nakit dışı kaydın yolu korunur, nakit kasa denetimi sürer", async () => {
+    const entry = data(await admin.post("/api/workspace/cash", { kind: "in", amount: "300", description: "Taşınacak tahsilat" }), "tahsilat");
+    data(await admin.post("/api/workspace/cash", { kind: "out", amount: "250", description: "Harcama" }), "harcama");
     const id = entry.id ?? server.app.store.get("SELECT id FROM cash_entries WHERE description = 'Taşınacak tahsilat'").id;
     const moved = await admin.put(`/api/workspace/cash/${id}`, { kind: "in", amount: "300", method: "bank", description: "Taşınacak tahsilat" });
-    rejected(moved, 409, "cash-negative", "nakit azalır");
-    assert.equal(moved.data.method, "cash");
+    assert.equal(moved.status, 200, "yol gönderilse de nakit kalır");
+    assert.equal(server.app.store.get("SELECT method FROM cash_entries WHERE id = ?", id).method, "cash");
     const result = data(await admin.get("/api/workspace/ledger/integrity"), "mutabakat");
     assert.equal(result.ok, true, JSON.stringify(result.failures));
   });

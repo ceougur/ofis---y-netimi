@@ -1074,6 +1074,16 @@ export const MIGRATIONS = [
       `);
     },
   },
+  {
+    version: 19,
+    name: "v2.0.17 Kasa ↔ Banka transferi (iki Kasa hareketi tek işlemle bağlı)",
+    up(store) {
+      // Yalnız ekleyici. Transfer: nakit tarafı (method = cash) ve banka tarafı (method = bank) aynı transfer_id'yi
+      // taşır; biri düzeltilince/silinince öbürü de. Eski sürüm sütunu görmezden gelir.
+      addColumn(store, "cash_entries", "transfer_id", "TEXT NOT NULL DEFAULT ''");
+      store.exec("CREATE INDEX IF NOT EXISTS idx_cash_entries_transfer ON cash_entries(transfer_id)");
+    },
+  },
 ];
 
 export const LATEST_VERSION = MIGRATIONS.at(-1).version;

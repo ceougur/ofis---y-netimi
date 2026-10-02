@@ -10,6 +10,7 @@
 import { accountLedger } from "../lib/accounts.mjs";
 import { DIRECTIONS, EVENT_LABELS, INSTRUMENTS, STATUSES } from "../lib/cheques.mjs";
 import { isAllTimeStart, presetRange, statement } from "../lib/finance-report.mjs";
+import { methodLabel } from "../lib/pay-method.mjs";
 import { HttpError, limited, ok, sendBuffer, text } from "../lib/http.mjs";
 import { roundMoney } from "../lib/money.mjs";
 import { canUser } from "../lib/permissions.mjs";
@@ -127,12 +128,12 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
       id: "kasa-hareketleri",
       group: "Kasa",
       title: "Kasa Hareketleri",
-      description: "Seçilen aralıktaki tüm giriş ve çıkışlar; devir, yürüyen bakiye ve kaynağı (kayıt tahsilatı, taksit, cari, stok, çek/senet, elle).",
+      description: "Nakit kasanın seçilen aralıktaki giriş ve çıkışları; devir, yürüyen bakiye ve kaynağı (kayıt tahsilatı, taksit, cari, stok, çek/senet, elle, banka transferi). Havale/EFT ve POS hareketleri Banka ve POS Hareketleri raporunda.",
       params: ["range"],
       preset: "thisMonth",
       build(query) {
         const range = rangeOf(query, "thisMonth");
-        const data = cash().report(admin, range.from, range.to);
+        const data = cash().report(admin, range.from, range.to, "cash");
         const rows = [[openingDay(range.from), "Devir", "Dönem başı kasa", "", "", money(data.opening), ""]];
         for (const entry of data.entries) rows.push([dayText(entry.date), CASH_SOURCE[entry.source] || entry.source, cashLabel(entry), entry.kind === "in" ? money(entry.amount) : "", entry.kind === "out" ? money(entry.amount) : "", money(entry.balance), entry.actorName || ""]);
         const closing = roundMoney(data.opening + data.period.in - data.period.out);
@@ -154,7 +155,7 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
       preset: "thisMonth",
       build(query) {
         const range = rangeOf(query, "thisMonth");
-        const data = cash().report(admin, range.from, range.to);
+        const data = cash().report(admin, range.from, range.to, "cash");
         const days = new Map();
         for (const entry of data.entries) {
           const day = days.get(entry.date) || { in: 0, out: 0, count: 0, balance: 0 };
@@ -181,7 +182,7 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
       preset: "thisMonth",
       build(query) {
         const range = rangeOf(query, "thisMonth");
-        const data = cash().report(admin, range.from, range.to);
+        const data = cash().report(admin, range.from, range.to, "cash");
         const groups = new Map();
         for (const entry of data.entries) {
           const group = groups.get(entry.source) || { in: 0, out: 0, count: 0 };
@@ -207,7 +208,7 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
       preset: "thisYear",
       build(query) {
         const range = rangeOf(query, "thisYear");
-        const data = cash().report(admin, range.from, range.to);
+        const data = cash().report(admin, range.from, range.to, "cash");
         const months = new Map();
         for (const entry of data.entries) {
           const key = entry.date.slice(0, 7);
@@ -318,6 +319,31 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
           types: ["", "", "", ""],
           rows: rows.map(row => [row.at.replace("T", " ").slice(0, 19), row.action === "rolled-back" ? "Geri Alındı" : "Açılışta Bulunan Sapma", row.tables, row.summary]),
           summary: [["Geri Alınan", String(rows.filter(row => row.action === "rolled-back").length)]],
+        };
+      },
+    },
+    // v2.0.17 (müşteri): Kasa yalnız nakit; havale/EFT, POS ve kredi kartı hareketleri burada (Banka modülü gelene kadar).
+    {
+      id: "banka-pos-hareketleri",
+      group: "Kasa",
+      title: "Banka ve POS Hareketleri",
+      description: "Havale/EFT, POS ve kredi kartıyla yapılan tahsilat ve ödemeler (cari, fatura, taksit, stok, çek/senet ekranlarından girilenler ve Kasa ↔ Banka transferleri); devir, yürüyen bakiye, kaynağı.",
+      params: ["range", "payMethod"],
+      preset: "thisMonth",
+      build(query) {
+        const range = rangeOf(query, "thisMonth");
+        const method = ["bank", "card"].includes(query.payMethod) ? query.payMethod : "noncash";
+        const data = cash().report(admin, range.from, range.to, method);
+        const which = { bank: "Banka (Havale / EFT)", card: "POS / Kredi Kartı" }[method] || "Banka ve POS";
+        const rows = [[openingDay(range.from), "", "Devir", `Dönem başı ${which.toLocaleLowerCase("tr-TR")}`, "", "", money(data.opening), ""]];
+        for (const entry of data.entries) rows.push([dayText(entry.date), methodLabel(entry.method, entry.kind), entry.transferId ? "Kasa ↔ Banka" : CASH_SOURCE[entry.source] || entry.source, cashLabel(entry), entry.kind === "in" ? money(entry.amount) : "", entry.kind === "out" ? money(entry.amount) : "", money(entry.balance), entry.actorName || ""]);
+        const closing = roundMoney(data.opening + data.period.in - data.period.out);
+        return {
+          subtitle: `${which} · ${rangeText(range)}`,
+          headers: ["Tarih", "Yol", "Kaynak", "Açıklama", "Giriş", "Çıkış", "Bakiye", "Giren"],
+          types: ["", "", "", "", "money", "money", "money", ""],
+          rows,
+          summary: [["Devir", money(data.opening)], ["Dönem Giriş", money(data.period.in)], ["Dönem Çıkış", money(data.period.out)], ["Dönem Net", money(data.period.net)], ["Dönem Sonu", money(closing)], ["Banka (tüm hareketler)", money(data.byMethod.bank)], ["POS / Kredi Kartı (tüm hareketler)", money(data.byMethod.card)]],
         };
       },
     },

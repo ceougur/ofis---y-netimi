@@ -102,11 +102,10 @@ describe("2.0.13 defter ve mantık düzeltmeleri", () => {
     const blocked = await admin.post("/api/workspace/cash", { kind: "out", amount: String(cashNow + 1), description: "Kira" });
     assert.equal(blocked.status, 409);
     assert.equal(blocked.data.code, "cash-negative");
-    // Bankadan kira: nakit kasayı etkilemez; banka bakiyesi yetmiyorsa bankanın kendi eksi denetimi sorar (Eksi Bakiye Denetimi).
+    // v2.0.17 (müşteri): Kasa'ya yalnız nakit girilir; havale ile kira Kasa penceresinden girilemez (cari/fatura ekranından).
     const bankShort = await admin.post("/api/workspace/cash", { kind: "out", amount: String(cashNow + 1), description: "Kira", method: "bank" });
-    assert.equal(bankShort.data.code, "cash-negative");
-    assert.equal(bankShort.data.method, "bank", "soran banka hesabı, nakit değil");
-    ok(await admin.post("/api/workspace/cash", { kind: "out", amount: String(cashNow + 1), description: "Kira", method: "bank", cashForce: true }), "bankadan kira onayla (kredili hesap)");
+    assert.equal(bankShort.status, 400);
+    assert.equal(bankShort.data.code, "cash-method", "Kasa'ya nakit dışı yol reddedilir");
     assert.equal(data(await admin.get("/api/workspace/cash")).byMethod.cash, cashNow, "nakit kasa değişmedi");
     ok(await admin.post("/api/workspace/cash", { kind: "out", amount: "50", description: "Çay", cashForce: true }), "onayla kaydedilir");
   });
