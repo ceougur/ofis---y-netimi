@@ -406,6 +406,75 @@ describe("Fatura modülü ↔ EDM (program uçları)", () => {
     const balance = server.app.store.get("SELECT COUNT(*) AS n FROM account_entries WHERE source = 'invoice' AND source_id = ?", issued.data.id).n;
     assert.equal(balance, 0);
   });
+  test("Kes, Sonra Gönder: etkiler hemen işlenir, numara gönderimde verilir; Gönderilecekler sekmesi; Kes ve Gönder", async () => {
+    const before = (await api.get(`/api/workspace/accounts/${buyerId}`)).data.totals.balance;
+    const later = await api.post("/api/workspace/invoices", { scenario: "service_sale", accountId: buyerId, lines: [{ name: "Eğitim", qty: 1, unitPrice: 1000, vatRate: 20 }], payment: { rest: "open" }, eSend: "later" });
+    assert.equal(later.status, 200, JSON.stringify(later.data));
+    assert.equal(later.data.status, "issued");
+    assert.equal(later.data.eStatus, "waiting");
+    assert.equal(later.data.number, "", "numara gönderimde verilir");
+    assert.equal(later.data.displayNo, "Gönderilecek");
+    assert.equal(later.data.canSend, true);
+    assert.equal(later.data.canWithdraw, true);
+    const after = (await api.get(`/api/workspace/accounts/${buyerId}`)).data.totals.balance;
+    assert.equal(Math.round((after - before) * 100), 120000, "cari borcu kesimde işlendi (1.200)");
+    const pending = await api.get("/api/workspace/invoices?tab=pending");
+    assert.deepEqual(pending.data.invoices.map(x => x.id), [later.data.id]);
+    assert.equal(pending.data.tabs?.pending ?? pending.data.counts?.pending ?? 1, 1);
+    // İadesi gönderilmeden kesilmez.
+    const ret = await api.post("/api/workspace/invoices", { kind: "sale_return", originalId: later.data.id, lines: [{ originLineId: later.data.lines[0].id, qty: 1 }], payment: {} });
+    assert.equal(ret.status, 400);
+    assert.equal(ret.data.code, "invoice-waiting");
+    const sent = await api.post(`/api/workspace/invoices/${later.data.id}/send`, {});
+    assert.equal(sent.status, 200, JSON.stringify(sent.data));
+    assert.match(sent.data.number, /^[A-Z]{3}2026\d{9}$/);
+    assert.equal(sent.data.eStatus, "sent");
+    assert.equal(edm.state.sent.at(-1).id, sent.data.number, "EDM'ye verilen numarayla gitti");
+    const note = server.app.store.get("SELECT note FROM account_entries WHERE source = 'invoice' AND source_id = ?", later.data.id).note;
+    assert.ok(note.includes(sent.data.number) && !note.includes("gönderilecek"), `cari satırında numara: ${note}`);
+    assert.equal((await api.get("/api/workspace/invoices?tab=pending")).data.invoices.length, 0);
+    // Kes ve Gönder: tek adımda.
+    const now = await api.post("/api/workspace/invoices", { scenario: "service_sale", accountId: buyerId, lines: [{ name: "Destek", qty: 1, unitPrice: 200, vatRate: 20 }], payment: { rest: "open" }, eSend: "now" });
+    assert.equal(now.status, 200, JSON.stringify(now.data));
+    assert.equal(now.data.autoSend?.ok, true, JSON.stringify(now.data.autoSend));
+    assert.equal((await api.get(`/api/workspace/invoices/${now.data.id}`)).data.eStatus, "sent");
+  });
+  test("Gönderilecekler'den silme: etkiler kalır, Müşteri Fişi numarası alır; sonra yine e-Belge olarak gönderilebilir", async () => {
+    const before = (await api.get(`/api/workspace/accounts/${buyerId}`)).data.totals.balance;
+    const later = await api.post("/api/workspace/invoices", { scenario: "service_sale", accountId: buyerId, lines: [{ name: "Kurulum", qty: 1, unitPrice: 500, vatRate: 20 }], payment: { rest: "open" }, eSend: "later" });
+    const withdrawn = await api.post(`/api/workspace/invoices/${later.data.id}/withdraw`, {});
+    assert.equal(withdrawn.status, 200, JSON.stringify(withdrawn.data));
+    assert.equal(withdrawn.data.status, "issued", "iptal edilmedi");
+    assert.equal(withdrawn.data.eStatus, "withdrawn");
+    assert.equal(withdrawn.data.profile, "KAGIT");
+    assert.match(withdrawn.data.number, /^FIS2026\d{9}$/);
+    const after = (await api.get(`/api/workspace/accounts/${buyerId}`)).data.totals.balance;
+    assert.equal(Math.round((after - before) * 100), 60000, "etkiler yerinde (cari +600)");
+    assert.equal((await api.get("/api/workspace/invoices?tab=pending")).data.invoices.length, 0);
+    assert.equal(withdrawn.data.canSend, true, "sonra yine gönderilebilir");
+    const sent = await api.post(`/api/workspace/invoices/${later.data.id}/send`, {});
+    assert.equal(sent.status, 200, JSON.stringify(sent.data));
+    assert.equal(sent.data.profile, "TEMELFATURA");
+    assert.match(sent.data.number, /^[A-Z]{3}2026\d{9}$/);
+    assert.equal(sent.data.paperNo, withdrawn.data.number, "fiş numarası izi kalır");
+    assert.equal(sent.data.eStatus, "sent");
+  });
+  test("Sonra gönderilecek belge serideki son gönderilenden eski tarihliyse gönderilmez (tarih sırası); listeden silinebilir", async () => {
+    const yesterday = new Date(Date.now() - 86_400_000);
+    const day = `${yesterday.getFullYear()}-${String(yesterday.getMonth() + 1).padStart(2, "0")}-${String(yesterday.getDate()).padStart(2, "0")}`;
+    if (day.slice(0, 4) !== String(new Date().getFullYear())) return; // yılbaşında seri yeniden başlar
+    const old = await api.post("/api/workspace/invoices", { scenario: "service_sale", accountId: buyerId, issueDate: day, lines: [{ name: "Eski", qty: 1, unitPrice: 100, vatRate: 20 }], payment: { rest: "open" }, eSend: "later" });
+    assert.equal(old.status, 200, JSON.stringify(old.data));
+    assert.equal(old.data.canSend, false);
+    assert.match(old.data.sendBlock, /daha eski tarihli/);
+    const sent = await api.post(`/api/workspace/invoices/${old.data.id}/send`, {});
+    assert.equal(sent.status, 409);
+    assert.equal(sent.data.code, "chronology");
+    assert.equal((await api.get(`/api/workspace/invoices/${old.data.id}`)).data.number, "", "numara yanmadı");
+    assert.equal((await api.post(`/api/workspace/invoices/${old.data.id}/withdraw`, {})).status, 200);
+    const integrity = await api.get("/api/workspace/ledger/integrity");
+    assert.equal(integrity.data.ok, true, JSON.stringify(integrity.data.failures));
+  });
   test("Gelen kutusu: çek → aynı belge ikinci kez gelmez → alış taslağı (satıcı VKN ile cari açılır) → taslak silinince yeniden Yeni", async () => {
     const fetched = await api.post("/api/workspace/invoices/inbox/fetch", { from: "2026-09-01", to: "2026-09-30" });
     assert.equal(fetched.status, 200, JSON.stringify(fetched.data));

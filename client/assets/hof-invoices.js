@@ -151,7 +151,7 @@
     if (doc.status === "draft") return '<span class="hof-inv-pill is-draft">Taslak</span>';
     if (doc.status === "cancelled") return '<span class="hof-inv-pill is-cancelled">İptal Edildi</span>';
     const pay = doc.payState ? `<span class="hof-inv-pill is-${esc(doc.payState)}">${esc(doc.payStateLabel)}</span>` : "";
-    const e = edoc() && doc.profile !== "KAGIT" && doc.eStatus && doc.eStatus !== "none" ? `<span class="hof-inv-pill is-e-${esc(doc.eStatus)}" title="e-Belge durumu">${esc(doc.eStatusLabel)}</span>` : "";
+    const e = edoc() && (doc.profile !== "KAGIT" || doc.eStatus === "withdrawn") && doc.eStatus && doc.eStatus !== "none" ? `<span class="hof-inv-pill is-e-${esc(doc.eStatus)}" title="e-Belge durumu">${esc(doc.eStatusLabel)}</span>` : "";
     return `${pay}${e}`;
   };
   const docTitle = doc => `${kindLabel(doc.kind)}${doc.displayNo ? ` ${doc.displayNo}` : ""}`;
@@ -161,7 +161,8 @@
     const data = view.list;
     const t = data?.totals;
     const counts = data?.tabCounts || {};
-    const tabs = [...TABS, ...(edoc() ? [["inbox", "Gelen e-Faturalar"]] : [])];
+    // e-Belge açıkken: "Gönderilecekler" (kesilmiş, entegratöre sonra gönderilecek) ve gelen kutusu.
+    const tabs = edoc() ? [TABS[0], ["pending", "Gönderilecekler"], ...TABS.slice(1), ["inbox", "Gelen e-Faturalar"]] : TABS;
     const rows = (data?.invoices || [])
       .map(doc => {
         const checked = view.selected.has(doc.id);
@@ -187,6 +188,7 @@
         <div class="hof-plan-title"><h3>${esc(moduleName())}</h3><small>${edoc() ? "Kesilen, alınan ve iade faturaları; e-Fatura ve e-Arşiv entegratör üzerinden gönderilir." : "Kesilen belgeler resmî hükmü olmayan <b>Müşteri Fişi</b> olarak basılır; e-Fatura / e-Arşiv bağlantısı kapalı."}</small></div>
         <div class="hof-plan-actions" role="toolbar" aria-label="Fatura işlemleri">
           ${canManage() ? '<button type="button" class="hof-button hof-button-small" data-act="new">+ Yeni Fatura</button>' : ""}
+          ${edoc() && canManage() && view.tab === "pending" && data?.invoices?.length ? `<button type="button" class="hof-button hof-button-small" data-act="send-pending" title="Listedeki belgeler sırayla entegratöre gönderilir; numara gönderimde verilir">Tümünü Gönder (${data.invoices.length.toLocaleString("tr-TR")})</button>` : ""}
           ${canSettings() ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="settings">Fatura Ayarları</button>' : ""}
           <span class="hof-rep-export"><a class="hof-rep-out is-pdf" href="/api/workspace/invoices/liste.pdf?${esc(listParams())}" target="_blank" rel="noopener">PDF</a><a class="hof-rep-out is-xlsx" href="/api/workspace/invoices/export.xlsx?${esc(listParams())}" download>Excel</a></span>
         </div></div>
@@ -294,6 +296,7 @@
     const act = target.dataset.act;
     if (!act) return;
     if (act === "new") return showPick("", view.account);
+    if (act === "send-pending") return sendPending();
     if (act === "settings") return showSettings();
     if (act === "more") return loadList(true);
     if (act === "clear-sel") {
@@ -523,7 +526,7 @@
       </div>
       <label class="hof-field hof-inv-note"><span>Not (Belgenin Altına Basılır)</span><textarea data-f="note" rows="2" maxlength="2000" placeholder="ör. Teslim adresi, garanti süresi, banka bilgisi…">${esc(form.note)}</textarea></label>
       <p class="hof-form-error" role="alert" data-form-error></p>
-      <div class="hof-actions"><button type="button" class="hof-button hof-button-ghost" data-act="cancel-form">Vazgeç</button><button type="button" class="hof-button hof-button-ghost" data-act="save-draft">Taslak Olarak Kaydet</button><button type="button" class="hof-button" data-act="issue">${esc(ISSUE_LABELS[form.kind] || "Kaydet")}</button></div>`,
+      <div class="hof-actions"><button type="button" class="hof-button hof-button-ghost" data-act="cancel-form">Vazgeç</button><button type="button" class="hof-button hof-button-ghost" data-act="save-draft">Taslak Olarak Kaydet</button>${sendable(form) ? '<button type="button" class="hof-button hof-button-ghost" data-act="issue-later" title="Stok, cari, Kasa, taksit ve çek/senet şimdi işlenir; belge Gönderilecekler\'de bekler">Kes, Sonra Gönder</button><button type="button" class="hof-button" data-act="issue-now">Kes ve Gönder</button>' : `<button type="button" class="hof-button" data-act="issue">${esc(ISSUE_LABELS[form.kind] || "Kaydet")}</button>`}</div>`,
     );
     if (!ret) mountAccountPicker();
     if (ret) renderReturn();
@@ -1136,6 +1139,8 @@
     }
     if (act === "save-draft") return submitForm("draft");
     if (act === "issue") return submitForm("issue");
+    if (act === "issue-now") return submitForm("issue", "now");
+    if (act === "issue-later") return submitForm("issue", "later");
   }
   // SMM: eline geçecek net tutardan brüt ücret (stopaj ve KDV'ye göre) — ilk kalemin birim fiyatına yazılır.
   function grossFromNet() {
@@ -1158,7 +1163,10 @@
       },
     });
   }
-  async function submitForm(mode) {
+  // e-Belge olarak gönderilecek belge mi (kendi kestiğimiz, e-Fatura / e-Arşiv / e-SMM)? Kesimde iki seçenek: hemen gönder
+  // ya da sonra gönder (Gönderilecekler).
+  const sendable = form => edoc() && Boolean(meta.kinds[form.kind]?.send) && (form.calc?.profile || form.profile || "") !== "KAGIT";
+  async function submitForm(mode, eSend = "") {
     const form = view.form;
     if (!form || form.busy) return;
     const error = body()?.querySelector("[data-form-error]");
@@ -1183,15 +1191,16 @@
         const c = form.calc;
         if (!c) throw new Error(form.calcError || "Toplamlar hesaplanamadı; kalemleri kontrol edin.");
         const who = form.account.name;
-        const numberText = c.nextNumber ? `${c.nextNumber} numarasıyla ` : "";
+        const numberText = c.nextNumber && eSend !== "later" ? `${c.nextNumber} numarasıyla ` : "";
+        const sendText = eSend === "later" ? " Belge Gönderilecekler'de bekler; e-Belge numarası entegratöre gönderilirken verilir." : eSend === "now" ? " Belge kesilir kesilmez entegratöre (e-Belge) gönderilir." : "";
         const ok = await HOF.confirm({
           title: ISSUE_LABELS[form.kind] || "Kaydet",
-          message: `${who} için ${numberText}${kindLabel(form.kind).toLocaleLowerCase("tr-TR")} kaydedilecek: ${curMoney(c.totals.payable, c.currency)}. Stok, cari, Kasa, çek/senet ve taksit kayıtları birlikte yazılır. Kaydedilen belge düzeltilmez; yanlışsa iptal edilir ya da iade kesilir.`,
-          confirmLabel: ISSUE_LABELS[form.kind] || "Kaydet",
+          message: `${who} için ${numberText}${kindLabel(form.kind).toLocaleLowerCase("tr-TR")} kaydedilecek: ${curMoney(c.totals.payable, c.currency)}. Stok, cari, Kasa, çek/senet ve taksit kayıtları birlikte yazılır. Kaydedilen belge düzeltilmez; yanlışsa iptal edilir ya da iade kesilir.${sendText}`,
+          confirmLabel: eSend === "later" ? "Kes, Sonra Gönder" : eSend === "now" ? "Kes ve Gönder" : ISSUE_LABELS[form.kind] || "Kaydet",
         });
         if (!ok) return;
-        saved = await withStockForce(force => (form.id ? HOF.api(`/api/workspace/invoices/${encodeURIComponent(form.id)}/issue`, { method: "POST", body: { ...payload, ...force } }) : HOF.api("/api/workspace/invoices", { method: "POST", body: { ...payload, ...force } })));
-        HOF.toast(`${kindLabel(saved.kind)} ${saved.displayNo || ""} kaydedildi.`, { type: "success" });
+        saved = await withStockForce(force => (form.id ? HOF.api(`/api/workspace/invoices/${encodeURIComponent(form.id)}/issue`, { method: "POST", body: { ...payload, ...force, ...(eSend ? { eSend } : {}) } }) : HOF.api("/api/workspace/invoices", { method: "POST", body: { ...payload, ...force, ...(eSend ? { eSend } : {}) } })));
+        HOF.toast(eSend === "later" ? `${kindLabel(saved.kind)} kesildi; Gönderilecekler'de bekliyor.` : `${kindLabel(saved.kind)} ${saved.displayNo || ""} kaydedildi.`, { type: "success" });
         if (saved.autoSend) HOF.toast(saved.autoSend.ok ? saved.autoSend.message : `e-Belge gönderilemedi: ${saved.autoSend.message}`, { type: saved.autoSend.ok ? "success" : "error", timeout: 8000 });
       }
       view.form = null;
@@ -1266,8 +1275,8 @@
     const returns = (doc.returns || []).map(item => `<li><a href="#" data-open-invoice="${esc(item.id)}">${esc(item.number || "İade")}</a> · ${esc(HOF.formatDate(item.issueDate))} · ${esc(money(item.tryPayable))}${item.status === "cancelled" ? " · iptal edildi" : ""}</li>`).join("");
     const phone = HOF.workspace?.extractPhones?.(party.phone || doc.accountPhone || "")[0] || "";
     const eTools =
-      edoc() && doc.status !== "draft" && doc.profile !== "KAGIT" && meta.kinds[doc.kind]?.own
-        ? `<span class="hof-plan-toolgroup">${doc.canSend ? '<button type="button" class="hof-button hof-button-small" data-act="e-send">e-Belge Gönder</button>' : ""}${doc.canRefresh ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="e-refresh">Durum Sorgula</button>' : ""}${doc.status === "issued" ? `<a class="hof-button hof-button-small hof-button-ghost" href="/api/workspace/invoices/${esc(doc.id)}/ubl.xml" download>XML İndir</a>` : ""}</span>`
+      edoc() && doc.status !== "draft" && (doc.profile !== "KAGIT" || doc.eStatus === "withdrawn") && meta.kinds[doc.kind]?.own
+        ? `<span class="hof-plan-toolgroup">${doc.canSend ? '<button type="button" class="hof-button hof-button-small" data-act="e-send">e-Belge Gönder</button>' : ""}${doc.canWithdraw ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="e-withdraw" title="Belge gönderilmez, Müşteri Fişi olarak kalır; stok, cari ve Kasa etkileri değişmez">Listeden Sil</button>' : ""}${doc.canRefresh ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="e-refresh">Durum Sorgula</button>' : ""}${doc.status === "issued" ? `<a class="hof-button hof-button-small hof-button-ghost" href="/api/workspace/invoices/${esc(doc.id)}/ubl.xml" download>XML İndir</a>` : ""}</span>`
         : "";
     HOF.swap(
       root,
@@ -1303,7 +1312,8 @@
         ${fact(String(party.taxNo || "").length === 11 ? "TC Kimlik No" : "Vergi No", esc(party.taxNo || ""))}
         ${fact("Vergi Dairesi", esc(party.taxOffice || ""))}
         ${fact("Adres", esc([party.address, party.district, party.city].filter(Boolean).join(", ")))}
-        ${fact("Belge Türü", esc(profileText))}
+        ${fact("Belge Türü", esc(doc.eStatus === "withdrawn" ? "Müşteri Fişi (e-Belge olarak gönderilmedi)" : profileText))}
+        ${fact("e-Belge", doc.sendBlock ? `<span class="hof-inv-warn">${esc(doc.sendBlock)}</span>` : doc.eStatus === "waiting" ? "Gönderilecekler'de: numara entegratöre gönderilirken verilir." : "")}
         ${fact("Para Birimi", cur !== "TRY" ? `${esc(cur)} · kur ${esc(String(doc.rate).replace(".", ","))}` : "")}
         ${fact("Asıl Fatura", doc.originalId ? `<a href="#" data-open-invoice="${esc(doc.originalId)}">${esc(doc.originalNumber || "")}</a> · ${esc(HOF.formatDate(doc.originalDate))}` : "")}
         ${fact("Sipariş", doc.orderNo ? `${esc(doc.orderNo)}${doc.orderDate ? ` · ${esc(HOF.formatDate(doc.orderDate))}` : ""}` : "")}
@@ -1350,6 +1360,7 @@
     }
     if (act === "whatsapp") return sendWhatsapp(doc, target.dataset.wa);
     if (act === "e-send") return eAction(doc, "send");
+    if (act === "e-withdraw") return withdrawDoc(doc);
     if (act === "e-refresh") return eAction(doc, "e-refresh");
   }
   // Faturaya tahsilat / ödeme: taksitli faturada taksit kartından (taksitten düşer), değilse cariye Kasa hareketi. Cari
@@ -1433,6 +1444,33 @@
     a.remove();
     window.open(HOF.whatsapp?.waUrl ? HOF.whatsapp.waUrl(wa, text) : `https://wa.me/${wa}?text=${encodeURIComponent(text)}`, "hof-whatsapp");
     HOF.toast("PDF indirildi; WhatsApp'ta sohbete ekleyip gönderin.", { type: "info", timeout: 6000 });
+  }
+  // Gönderilecekler'den silme: etkiler yerinde kalır; belge Müşteri Fişi numarası alır (sonra yine gönderilebilir).
+  async function withdrawDoc(doc) {
+    const go = await HOF.confirm({ title: "Gönderilecekler'den Silinsin mi?", message: "Belge entegratöre gönderilmez ve Müşteri Fişi olarak kalır. Stok, cari, Kasa, taksit ve çek/senet kayıtları değişmez. Satışı geri almak için İptal Et kullanılır. İsterseniz belgeyi sonra yine e-Belge olarak gönderebilirsiniz.", confirmLabel: "Listeden Sil" });
+    if (!go) return;
+    try {
+      const saved = await HOF.api(`/api/workspace/invoices/${encodeURIComponent(doc.id)}/withdraw`, { method: "POST", body: {} });
+      HOF.toast(`Belge listeden silindi; ${saved.number} numaralı Müşteri Fişi olarak kaldı.`, { type: "success" });
+      HOF.emit("invoices-changed", saved);
+      showDoc(saved);
+    } catch (error) {
+      HOF.toastError(error);
+    }
+  }
+  async function sendPending() {
+    const ids = (view.list?.invoices || []).map(item => item.id);
+    if (!ids.length) return;
+    const go = await HOF.confirm({ title: "Gönderilecekler Gönderilsin mi?", message: `${ids.length.toLocaleString("tr-TR")} belge sırayla entegratöre gönderilecek; e-Belge numaraları gönderim sırasında verilir.`, confirmLabel: "Tümünü Gönder" });
+    if (!go) return;
+    try {
+      const result = await HOF.api("/api/workspace/invoices/send-pending", { method: "POST", body: { ids } });
+      const failed = result.results.filter(item => !item.ok);
+      HOF.toast(`${result.sent.toLocaleString("tr-TR")} belge gönderildi${failed.length ? `; ${failed.length} belge gönderilemedi: ${failed[0].message}` : "."}`, { type: failed.length ? "error" : "success", timeout: 10000 });
+    } catch (error) {
+      HOF.toastError(error);
+    }
+    loadList();
   }
   async function eAction(doc, action) {
     try {
@@ -1618,7 +1656,7 @@
     const rows = data.items
       .map(item => `<tr data-inbox="${esc(item.id)}" tabindex="0"><td>${esc(HOF.formatDate(item.issueDate))}</td><td><b>${esc(item.number)}</b><small>${esc(item.profile)}</small></td><td><b>${esc(item.senderName || "—")}</b><small>${esc(item.senderVkn)}</small></td><td><span class="hof-inv-pill is-in-${esc(item.state)}">${esc(item.stateLabel)}</span>${item.duplicateNumber ? '<small class="hof-inv-warn">Bu numarayla alış faturası zaten kayıtlı</small>' : ""}${item.invoiceNumber || item.invoiceId ? `<small>${item.invoiceStatus === "draft" ? "Taslak" : esc(item.invoiceNumber)}</small>` : ""}</td><td class="num"><b>${esc(curMoney(item.payable, item.currency))}</b></td></tr>`)
       .join("");
-    const tabs = [...TABS, ["inbox", "Gelen e-Faturalar"]];
+    const tabs = [TABS[0], ["pending", "Gönderilecekler"], ...TABS.slice(1), ["inbox", "Gelen e-Faturalar"]];
     HOF.swap(
       root,
       `<div class="hof-plan-head"><div class="hof-plan-title"><h3>Gelen e-Faturalar</h3><small>Size kesilen e-Faturalar entegratörden çekilir; alış faturası olarak alınca stok, cari ve KDV kayıtları açılır.</small></div>

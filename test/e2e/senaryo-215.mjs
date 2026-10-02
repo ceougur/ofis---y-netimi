@@ -345,6 +345,81 @@ try {
     const lastYear = await call(admin, `/api/workspace/report-center/fatura-alis?from=${shift(-730)}&to=${shift(-366)}`);
     ok(lastYear.data.total === 0, "geçen yıl: boş");
   });
+  await step("11. e-Belge açıkken: Kes, Sonra Gönder → Gönderilecekler → Listeden Sil (etkiler kalır); Kes ve Gönder", async () => {
+    // Ayrı program: e-Belge bağlantısı açık (müşteride kapalı; açılınca bu ekranlar görünür). Entegratör bilgisi girilmedi.
+    const vkn = nine => {
+      const d = String(nine).padStart(9, "0").split("").map(Number);
+      let sum = 0;
+      d.forEach((digit, i) => {
+        const t = (digit + (9 - i)) % 10;
+        let v = (t * 2 ** (9 - i)) % 9;
+        if (t !== 0 && v === 0) v = 9;
+        sum += v;
+      });
+      return `${d.join("")}${(10 - (sum % 10)) % 10}`;
+    };
+    const edocApp = createApp({ dataDir: path.join(root, "data-edoc"), backupDir: path.join(root, "backups-edoc"), logLevel: "warn", scheduleBackups: false, edocEnabled: true, env: { HUKUK_ADMIN_PASSWORD: PASS, HUKUK_DATASET_AUTOSYNC: "0" }, license: { enforce: false, machineId: "a1b2c3d4e5f60718293a4b5c6d7e8f94" } });
+    const { port: edocPort } = await edocApp.listen(0, "127.0.0.1");
+    const page = await newPage();
+    try {
+      await page.goto(`http://127.0.0.1:${edocPort}/`);
+      await page.fill("#hof-auth input[name=username]", "admin");
+      await page.fill("#hof-auth input[name=password]", PASS);
+      await Promise.all([page.waitForEvent("load"), page.click('#hof-auth button[type="submit"]')]);
+      await page.waitForSelector("#hof-start, #hof-sidecard", { timeout: 20000 });
+      const settings = await call(page, "/api/workspace/invoices/settings", { seller: { name: "Deneme Ofis Ltd.", taxNo: vkn(123456789), taxOffice: "Çankaya", address: "Atatürk Blv. 1", district: "Çankaya", city: "Ankara" }, efatura: true, earsiv: true }, "PUT");
+      ok(settings.status === 200, "firma (satıcı) bilgisi girildi");
+      const buyer = (await call(page, "/api/workspace/accounts", { name: "Ayşe Yılmaz", type: "customer", taxNo: "10000000146", address: "Kordon 5", city: "İzmir" })).data.id;
+      await page.evaluate(() => window.HOF.invoices.open({ account: {} }));
+      const pageInv = `${modal} .hof-invoices-modal`;
+      await page.waitForSelector(`${pageInv} [data-tab="pending"]`);
+      ok(true, "e-Belge açıkken Gönderilecekler sekmesi var");
+      await page.click(`${pageInv} [data-act="new"]`);
+      await page.click(`${pageInv} [data-scenario="service_sale"]`);
+      await page.waitForSelector(`${pageInv} [data-lines]`);
+      await page.fill(`${pageInv} [data-acc-query]`, "Ayşe");
+      await page.waitForSelector(`${pageInv} .hof-acc-picker li[data-id]`);
+      await page.dispatchEvent(`${pageInv} .hof-acc-picker li[data-id]`, "mousedown");
+      await page.fill(`${pageInv} [data-l="0"][data-f="name"]`, "Bakım Hizmeti");
+      await page.fill(`${pageInv} [data-l="0"][data-f="qty"]`, "1");
+      await page.fill(`${pageInv} [data-l="0"][data-f="unitPrice"]`, "1000");
+      await page.waitForTimeout(1200);
+      ok(Boolean(await page.$(`${pageInv} [data-act="issue-later"]`)) && Boolean(await page.$(`${pageInv} [data-act="issue-now"]`)), "formda Kes ve Gönder ile Kes, Sonra Gönder düğmeleri");
+      await page.screenshot({ path: path.join(OUT, "16-edoc-form-dugmeler.png") });
+      await page.click(`${pageInv} [data-act="issue-later"]`);
+      await page.waitForSelector(`${modal} [data-answer="yes"]`);
+      await page.click(`${modal} [data-answer="yes"]`);
+      await page.waitForSelector(`${pageInv} .hof-inv-pill.is-e-waiting`, { timeout: 10000 });
+      await page.screenshot({ path: path.join(OUT, "17-gonderilecek-kart.png") });
+      const balance1 = (await call(page, `/api/workspace/accounts/${buyer}`)).data.totals.balance;
+      ok(balance1 === 1200, `Sonra Gönder: cari borcu hemen işlendi (${balance1})`);
+      await page.click(`${pageInv} [data-act="back"]`);
+      await page.waitForSelector(`${pageInv} [data-tab="pending"]`);
+      await page.click(`${pageInv} [data-tab="pending"]`);
+      await page.waitForTimeout(700);
+      ok((await page.$$(`${pageInv} tr[data-inv]`)).length === 1, "Gönderilecekler sekmesinde 1 belge");
+      ok(Boolean(await page.$(`${pageInv} [data-act="send-pending"]`)), "Tümünü Gönder düğmesi var");
+      await page.screenshot({ path: path.join(OUT, "18-gonderilecekler.png") });
+      await page.click(`${pageInv} tr[data-inv]`);
+      await page.waitForSelector(`${pageInv} [data-act="e-withdraw"]`);
+      await page.click(`${pageInv} [data-act="e-withdraw"]`);
+      await page.waitForSelector(`${modal} [data-answer="yes"]`);
+      await page.click(`${modal} [data-answer="yes"]`);
+      await page.waitForSelector(`${pageInv} .hof-inv-pill.is-e-withdrawn`, { timeout: 10000 });
+      const title = await page.textContent(`${pageInv} .hof-plan-title h3`);
+      ok(/FIS\d{13}/.test(title), `listeden silinen belge Müşteri Fişi numarası aldı (${title.replace(/\s+/g, " ").trim()})`);
+      ok(Boolean(await page.$(`${pageInv} [data-act="e-send"]`)), "listeden silinen belge sonra yine gönderilebilir (e-Belge Gönder düğmesi)");
+      const balance2 = (await call(page, `/api/workspace/accounts/${buyer}`)).data.totals.balance;
+      ok(balance2 === 1200, `Listeden Sil: etkiler geri alınmadı (cari ${balance2})`);
+      await page.screenshot({ path: path.join(OUT, "19-listeden-silinen.png") });
+      ok((await call(page, "/api/workspace/invoices?tab=pending")).data.invoices.length === 0, "Gönderilecekler boşaldı");
+      const integrity = await call(page, "/api/workspace/ledger/integrity");
+      ok(integrity.data.ok, "mutabakat kapısı tutarlı");
+    } finally {
+      await page.context().close();
+      await edocApp.close?.();
+    }
+  });
 } catch (error) {
   console.error("\nHATA:", error.message);
   exitCode = 1;

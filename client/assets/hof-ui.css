@@ -9525,6 +9525,8 @@ input[type="search"]::-webkit-search-cancel-button {
 .hof-inv-pill[class*="is-e-"] { background: #eef1f6; color: #3f5270; }
 .hof-inv-pill.is-e-accepted, .hof-inv-pill.is-e-sent { background: #e3f2e9; color: #2d6a4b; }
 .hof-inv-pill.is-e-error, .hof-inv-pill.is-e-rejected { background: var(--do-danger-soft); color: var(--do-danger); }
+.hof-inv-pill.is-e-waiting { background: #fff4d6; color: #8a5a00; }
+.hof-inv-pill.is-e-withdrawn { background: #eef0f2; color: #55606b; }
 .hof-inv-pill.is-in-new { background: var(--do-gold-soft); color: var(--do-warn); }
 .hof-inv-pill.is-in-imported { background: #e3f2e9; color: #2d6a4b; }
 .hof-inv-warn { display: block; color: var(--do-danger); font: 700 11px var(--do-font); }

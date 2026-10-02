@@ -968,6 +968,8 @@ export const MIGRATIONS = [
           paper_no TEXT NOT NULL DEFAULT '',
           note TEXT NOT NULL DEFAULT '',
           e_status TEXT NOT NULL DEFAULT 'none',
+          -- Sonra gönderilecek (waiting) ya da listeden silinen (withdrawn) belgenin gönderileceği e-Belge türü.
+          e_profile TEXT NOT NULL DEFAULT '',
           e_adapter TEXT NOT NULL DEFAULT '',
           e_message TEXT NOT NULL DEFAULT '',
           e_at TEXT NOT NULL DEFAULT '',
