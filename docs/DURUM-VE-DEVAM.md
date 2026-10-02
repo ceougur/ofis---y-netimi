@@ -1,6 +1,6 @@
 # DestekOfis — durum ve devam notu
 
-Yeni bir oturum bu belgeyi okuyarak kaldığı yerden devam eder. Son güncelleme: 01.10.2026 (2.0.14 yayımlandı — PR #14, `v2.0.14`: odak, Cari Kartı, WhatsApp Otomatik Sıra, damga düzeltmesi; 2.0.13 yayımlandı — PR #13, `v2.0.13`: WhatsApp toplu ekstre/mesaj, ödeme yolu, Ana Defter ve mutabakat kapısı, tarih/dönem kilidi/eksi bakiye kuralları; önceki: 2.0.12 hazırlandı: taksit kartının Kayıt Tarihi carinin tarihinden gelir, form düzeni; önceki: 2.0.11 yayımlandı — PR #11, `v2.0.11`, beş dosya bayt bayt doğrulandı: 8 düzeltme — Taksitler'den cari seçip toplu taksitlendirme, grup süzgecinde cari sayısı, Veri Sağlığı'nda Yok Say, başlıklarda her sözcüğün baş harfi büyük, stok birimleri tek yazım, açık pencereler canlı yenilenir, Ayarlar kullanıcı kartının altında, arama kutusu her yerinden yazar; önceki: 2.0.10 yayımlandı: 17 düzeltme — ayrıntılı yetkiler ve özel roller, kullanıcı silme/ad düzeltme, yönetici parolası kurtarma, "+ Sayfa"ya Excel/Sheets, anlık çek yenilemesi, Borçlu/Alacaklı dili ve renkleri, tek arama kutusu ; 2.0.9 yayımlı; önceki not: sürüm 2.0.2 denetimden geçti — `docs/DENETIM-2.0.2.md`; okuma motoru, analiz iş parçacığı, kanıtlı kolon kararları, kendi kendini onarma, şemaya esnek kolon eşleme, Veri Sağlık Kontrolü ve olay tabanlı uyarılar eklendi — `docs/MIMARI.md` → *2.0.2 eklemeleri*; yayın kullanıcı onayı bekliyor; 2.0.1 yayımlı).
+Yeni bir oturum bu belgeyi okuyarak kaldığı yerden devam eder. Son güncelleme: 02.10.2026 (2.0.15 hazır, yayın onayı bekliyor — dal `claude/nice-euler-jvajxv`: Fatura modülü, e-Belge altyapısı kapalı, kılavuzda Fatura; önceki: 2.0.14 yayımlandı — PR #14, `v2.0.14`: odak, Cari Kartı, WhatsApp Otomatik Sıra, damga düzeltmesi; 2.0.13 yayımlandı — PR #13, `v2.0.13`: WhatsApp toplu ekstre/mesaj, ödeme yolu, Ana Defter ve mutabakat kapısı, tarih/dönem kilidi/eksi bakiye kuralları; önceki: 2.0.12 hazırlandı: taksit kartının Kayıt Tarihi carinin tarihinden gelir, form düzeni; önceki: 2.0.11 yayımlandı — PR #11, `v2.0.11`, beş dosya bayt bayt doğrulandı: 8 düzeltme — Taksitler'den cari seçip toplu taksitlendirme, grup süzgecinde cari sayısı, Veri Sağlığı'nda Yok Say, başlıklarda her sözcüğün baş harfi büyük, stok birimleri tek yazım, açık pencereler canlı yenilenir, Ayarlar kullanıcı kartının altında, arama kutusu her yerinden yazar; önceki: 2.0.10 yayımlandı: 17 düzeltme — ayrıntılı yetkiler ve özel roller, kullanıcı silme/ad düzeltme, yönetici parolası kurtarma, "+ Sayfa"ya Excel/Sheets, anlık çek yenilemesi, Borçlu/Alacaklı dili ve renkleri, tek arama kutusu ; 2.0.9 yayımlı; önceki not: sürüm 2.0.2 denetimden geçti — `docs/DENETIM-2.0.2.md`; okuma motoru, analiz iş parçacığı, kanıtlı kolon kararları, kendi kendini onarma, şemaya esnek kolon eşleme, Veri Sağlık Kontrolü ve olay tabanlı uyarılar eklendi — `docs/MIMARI.md` → *2.0.2 eklemeleri*; yayın kullanıcı onayı bekliyor; 2.0.1 yayımlı).
 
 ## Nerede ne var
 
@@ -75,6 +75,22 @@ Yeni bir oturum bu belgeyi okuyarak kaldığı yerden devam eder. Son güncellem
   - Doğrulama: birim ve uçtan uca testler, 2.0.1 → 2.0.2 ve eski sürümlerden güncelleme provası (ayrıntı `CHANGELOG.md`).
 
 ## Kalanlar (öncelik sırasıyla)
+
+### 2.0.15 — HAZIR, yayın onayı bekliyor (02.10.2026; dal `claude/nice-euler-jvajxv`, origin/master = 2.0.14 üzerine)
+Kapsam ve kanıt: `CHANGELOG.md` → 2.0.15, `docs/MIMARI.md` → *2.0.15 eklemeleri — Fatura modülü*, `docs/FATURA-ISTEKLER.md`
+(her istek kanıtlı, kararlar listesi), `docs/FATURA-QA-RAPORU.md` (64 test, 92/100), `docs/FATURA-KARSILASTIRMA.md`,
+proje sahibi kılavuzu `docs/kilavuz/FATURA-SAHIP-KILAVUZU.html` (PDF teslimde). Kullanıcı kararları: e-Belge bağlantısı
+KAPALI ("entegre et" diyene kadar; tek anahtar `config.edocEnabled`), entegratör yalnız EDM, "Listeden Sil" etkileri geri
+almaz, icra dosyası bağı yapılmaz (cari yeter). Doğrulama (02.10.2026): `npm run check` 281/281, `npm test` 734/734,
+`npm run test:e2e` 50/50, `npm run test:senaryo-215` 73/73, `npm run test:mutabakat` tohum 1 (2.000 işlem, 0 sapma),
+`test/einvoice-edm.test.mjs` 22/22. Göç 18 (yalnız ekleyici; 2.0.14 yeni şemayla açılabilir). Çalışma zamanı gereksinimi
+değişmedi (Node aynı; bootstrap 2) → 1.7.0 ve sonrası bütün kurulumlar kendiliğinden güncellenir.
+Teslim: `dist/teslim-2.0.15/` (OKU-BENI.txt'de yayın adımları; `DestekOfis-2.0.15-1-Guncelleme-ve-Belgeler.zip`,
+`DestekOfis-2.0.15-Kaynak-ve-Denetim.zip`, SHA256SUMS). **Bu ortamda imza anahtarı ve Inno Setup yok**: imzalı güncelleme
+paketi (`destekofis-guncelleme-2.0.15.zip` + `destekofis-guncelleme.json`) ve `DestekOfis-Kurulum-2.0.15.exe`, `v2.0.15`
+etiketi/yayını açılınca `release.yml` tarafından (`DESTEKOFIS_RELEASE_KEY` sırrıyla) üretilip yayına eklenir; ya da
+anahtar sahibi yerelde `node tools/release.mjs --anahtar destekofis-2026-1.pem` ile üretip yükler. "birleştir" denince PR,
+"yayımladım" denince yayındaki dosyalar bayt bayt doğrulanır (önceki sürümlerdeki gibi).
 
 ### 2.0.14 — yayımlandı 01.10.2026 (PR #14, `v2.0.14` = 6337029; beş dosya ve latest/ adresleri bayt bayt doğrulandı)
 Teslim: `DestekOfis-2.0.14-{1-Guncelleme-ve-Belgeler,2-Kurulum,Kaynak-ve-Denetim}.zip` + SHA256SUMS (güncelleme paketi

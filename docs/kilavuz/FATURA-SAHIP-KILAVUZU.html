@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<title>DestekOfis Fatura Modülü — Proje Sahibi Kılavuzu</title>
+<link rel="stylesheet" href="ortak.css">
+<style>
+  table { border-collapse: collapse; width: 100%; margin: 8px 0 14px; font-size: 13px; }
+  th, td { border: 1px solid #d7e2dc; padding: 5px 8px; vertical-align: top; text-align: left; }
+  th { background: #eef5f1; }
+  code { background: #f1f5f3; padding: 1px 4px; border-radius: 4px; font-size: 12.5px; }
+  .warn { border-left: 4px solid #d9a441; background: #fff8e8; padding: 8px 12px; margin: 10px 0; }
+  .ok { border-left: 4px solid #2f8f5b; background: #eef8f1; padding: 8px 12px; margin: 10px 0; }
+</style>
+</head>
+<body>
+<header>
+  <h1>DestekOfis Fatura Modülü — Proje Sahibi Kılavuzu</h1>
+  <p class="sub">Sürüm 2.0.15 · Yalnız proje sahibi için · Müşteri kılavuzuna girmez</p>
+</header>
+
+<p>Bu belge, Fatura modülünü <b>hiç muhasebe yazılımı geliştirmemiş birinin</b> anlayacağı dille anlatır: modül ne yapar, hangi ayar neyi değiştirir, müşteri hangi adımlarla fatura keser, bir şey ters giderse nereye bakılır ve <b>vergi dairesi / entegratör (e-Fatura, e-Arşiv) bağlantısı istendiğinde</b> ne yapılır. Müşteriye verilen kısa kılavuzdaki "Fatura" bölümü yalnız "nasıl yapılır" bilgisidir; buradaki ayrıntılar oraya girmez.</p>
+
+<h2>1. Modül bir bakışta</h2>
+<ul>
+  <li><b>Ne yapar:</b> satış, alış ve iade belgeleri keser. Belge kesildiği anda stok (miktar ve maliyet), cari (borç/alacak), Kasa (peşin kısım), taksit kartı (taksitli kısım) ve çek/senet portföyü (çekle ödeme) <b>tek bir işlemde</b> yazılır. Bir adım bile başarısız olursa hiçbiri yazılmaz (yarım kayıt kalmaz).</li>
+  <li><b>Şu anki durum (sizin kararınız, 01.10.2026):</b> vergi dairesi / entegratör bağlantısı <b>kapalı</b>. Program bütün hesapları yapar, ama bastığı belge <b>"Müşteri Fişi"</b> başlığı taşır ve altında "resmî fatura yerine geçmez" yazar. Müşteri resmî faturayı eskisi gibi keser (matbu fatura ya da kendi e-Fatura portalı); program onun muhasebe takibini tutar.</li>
+  <li><b>Bağlantı açılınca:</b> aynı ekranlar e-Fatura / e-Arşiv / e-SMM belgesi keser, EDM Bilişim üzerinden GİB'e gönderir, durumunu izler, gelen e-Faturaları alır. Bunun için programda tek bir anahtar vardır (bkz. bölüm 11); yeni bir sürümle açılır.</li>
+  <li><b>Kimler kullanır:</b> yönetici, uzman (avukat) ve muhasebe. Personel menüde "Fatura"yı görmez. Ayarlar yalnız yönetici ve muhasebe.</li>
+</ul>
+
+<h2>2. İlk kurulum: Fatura Ayarları (dişli simgesi)</h2>
+<p>Müşteri programı ilk açtığında Fatura ekranındaki <b>Ayarlar</b>'dan şunları doldurmalı; eksikse belge kesilirken uyarı çıkar.</p>
+<table>
+<tr><th>Bölüm</th><th>Ne girilir</th><th>Neyi etkiler</th></tr>
+<tr><td>Firma Bilgisi</td><td>Unvan ya da ad soyad, kişi türü (şirket / şahıs), VKN (10 hane) ya da TCKN (11 hane), vergi dairesi, MERSİS (16 hane, şirketlerde), ticaret sicil, adres, ilçe, il, telefon, e-posta, web</td><td>Belgenin sol üstündeki satıcı bloğu; e-Belge'de GİB'e giden satıcı bilgisi. VKN'nin denetim hanesi programda doğrulanır; yanlış VKN kaydedilmez.</td></tr>
+<tr><td>Logo</td><td>PNG ya da JPEG seçilir; program tarayıcıda JPEG'e çevirip küçültür (en çok 150 KB, 1200 piksel)</td><td>Satış belgelerinin sol üstüne basılır. Alış belgesine (karşı tarafın belgesi) basılmaz.</td></tr>
+<tr><td>Banka Hesapları</td><td>En çok 4 banka adı + IBAN (IBAN denetim hanesi doğrulanır)</td><td>Belgenin altına basılır (müşteri havale için okur).</td></tr>
+<tr><td>Numaralar</td><td>Seri (3 büyük harf/rakam) ve sıradaki numara. Bağlantı kapalıyken: <b>FIS</b> (fiş ve kâğıt belge), <b>SMM</b> (serbest meslek makbuzu), <b>IAD</b> (müşteri iade faturası kesmediğinde programın verdiği iç iade numarası). Bağlantı açılınca: <b>EAR</b> (e-Arşiv), <b>EFT</b> (e-Fatura), <b>ESM</b> (e-SMM).</td><td>Numara biçimi: seri + yıl + 9 hane, ör. <code>FIS2026000000001</code>. Sıradaki numara yalnız <b>ileri</b> alınabilir (kâğıttan geçişte kaldığı yerden sürmek için). Her yıl 1'den başlar.</td></tr>
+<tr><td>Varsayılanlar</td><td>KDV oranı, stopaj oranı (SMM), vade günü, varsayılan satış/alış senaryosu, "fiyatlar KDV dahil", belge alt notu, kaşe/imza kutuları</td><td>Yeni formun hazır değerleri. Cari kartında vade günü yazılıysa o kullanılır.</td></tr>
+<tr><td>e-Belge Bağlantısı</td><td>Yalnız bağlantı açıkken görünür (bölüm 11)</td><td>—</td></tr>
+</table>
+
+<h2>3. Müşterinin günlük akışı</h2>
+<ol class="steps">
+  <li><b>+ Yeni Fatura</b> → senaryo seçimi. Senaryo, formun kurallarını belirler (aşağıdaki tablo). Cari kartındaki <b>Satış Faturası</b> / <b>Alış Faturası</b> pili aynı formu cari dolu açar.</li>
+  <li><b>Cari</b> seçilir (ad yazılır, listeden seçilir). Vergi bilgileri cari kartından gelir. Kayıtlı değilse <b>+ Yeni Cari</b> formdan ayrılmadan açar.</li>
+  <li><b>Kalemler:</b> ürün adı yazılınca stoktaki ürünler listelenir; listede olmayan ad hizmet ya da gider kalemi olur. Miktar, birim, birim fiyat, satır iskontosu, KDV oranı. Cari + ürün seçilince <b>bu cariye ve başkalarına son satış/alış fiyatı</b> görünür; tıklanınca fiyata yazılır. Tevkifat (KDV'nin bir kısmını alıcı öder) ve istisna kodu kalem menüsünden seçilir.</li>
+  <li><b>Ödeme</b> (bölüm 4). <b>Not</b> belgenin altına basılır. Tarih ve saat hazır gelir; değiştirilebilir ama ileri tarih kabul edilmez.</li>
+  <li><b>Kaydet</b> (düğme adı senaryoya göre: "Satış Faturasını Kes", "Alış Faturasını Kaydet"…). Onay penceresi tutarı ve verilecek numarayı gösterir. Ya da <b>Taslak Olarak Kaydet</b>: deftere dokunmaz, numarasızdır, PDF'i "PROFORMA" başlıklı çıkar; sonra <b>Düzenle ve Kes</b>.</li>
+</ol>
+<table>
+<tr><th>Senaryo</th><th>Stok</th><th>Cari</th><th>Kasa / Taksit / Çek</th><th>Not</th></tr>
+<tr><td>Stoktan Satış</td><td>Düşer (maliyet FIFO ortalaması stok kartından)</td><td>Borç (müşteri)</td><td>Peşin kısım Kasa, çek portföye, kalan vade ya da taksit</td><td>Kalemler stok kartından</td></tr>
+<tr><td>Hizmet Satışı</td><td>—</td><td>Borç</td><td>Aynı</td><td>Stoksuz kalem; abonelik, servis, eğitim</td></tr>
+<tr><td>Serbest Meslek Makbuzu</td><td>—</td><td>Borç (net)</td><td>Aynı</td><td>Brüt ücret, stopaj (alıcı şirketse %20), KDV; "netten brüte" hesaplayıcı</td></tr>
+<tr><td>Fiyat Farkı Faturası</td><td>—</td><td>Borç</td><td>Aynı</td><td>Daha önce kesilen belgenin fiyat/kur farkı</td></tr>
+<tr><td>Satıştan İade</td><td>Geri girer</td><td>Alacak (borç düşer)</td><td>Para iadesi Kasa'dan ya da borçtan düşer; taksit kartı küçülür</td><td>Asıl fatura aranıp seçilir; kalan miktar kadar</td></tr>
+<tr><td>Stoğa Mal Alışı</td><td>Girer (maliyet güncellenir)</td><td>Alacak (tedarikçi)</td><td>Peşin kısım Kasa'dan, çek verilir/ciro, kalan vade</td><td>Tedarikçinin fatura no'su zorunlu; aynı tedarikçide aynı no ikinci kez girilemez</td></tr>
+<tr><td>Hizmet ve Gider Alışı</td><td>—</td><td>Alacak</td><td>Aynı</td><td>Gider türü seçilir (kira, elektrik, danışmanlık… demirbaş varlıktır)</td></tr>
+<tr><td>Alıştan İade</td><td>Çıkar</td><td>Borç (alacak düşer)</td><td>Para Kasa'ya döner ya da alacaktan düşer</td><td>Alış faturasından seçilir</td></tr>
+</table>
+<p><b>Tekrarla:</b> kira, aidat, abonelik gibi her dönem kesilen belge için kartta <i>Tekrarla</i> (1/2/3/6/12 ay, isteğe bağlı bitiş). Günü gelen dönem <b>taslak</b> olarak hazırlanır, müşteri Taslaklar sekmesinden kontrol edip (toplu) keser; kendiliğinden kesilmez (kesilen belge geri alınamaz, bilinçli karar).</p>
+<p><b>Kopyala:</b> aynı cari ve kalemlerle yeni belge formu.</p>
+
+<h2>4. Ödeme kuralları</h2>
+<ul>
+  <li><b>Peşin Tahsilat</b> satırları: Nakit, Havale / EFT, Kredi Kartı → Kasa'nın ilgili yoluna yazılır. "Tamamı Peşin" tutarı doldurur. Kasa'yı eksiye düşüren ödeme (alışta) Yönetim → Sistem'deki Eksi Bakiye Denetimi'ne göre uyarır ya da engeller.</li>
+  <li><b>Çek / Senet:</b> satışta alınan evrak portföye girer (carinin borcu düşer, para tahsil edilince Kasa'ya girer); alışta verilen evrak "ödenecek" olur ya da portföydeki bir çek ciro edilir. Evrak tarihleri belge tarihinden önce olamaz.</li>
+  <li><b>Kalan:</b> <i>Açık Hesap (Vadeli)</i> → cari borcu olarak kalır, vade tarihi Vade Takip'te; <i>Taksitlendir</i> → taksit kartı açılır (sayı, ilk vade, aralık), kartın adı faturanın numarasıdır ve fatura iptal edilmeden silinemez.</li>
+  <li><b>Sonradan tahsilat:</b> kartta <i>+ Tahsilat Ekle</i> / <i>+ Ödeme Yap</i>. Taksitli belgede taksit kartı açılır; değilse cariye Kasa hareketi yazılır. Cari ödemeleri faturalara <b>en eski açık belgeden başlayarak</b> sayılır (FIFO); ödeme durumu: Ödendi / Kısmen / Açık / Vadesi Geçti / Taksitte.</li>
+</ul>
+
+<h2>5. İade ve iptal</h2>
+<ul>
+  <li><b>Kesilmiş belge düzeltilmez.</b> Yanlışsa ya iptal edilir ya iade kesilir. (Taslaklar düzenlenir.)</li>
+  <li><b>İptal Et:</b> belgenin bütün etkileri geri alınır (stok, cari, Kasa, taksit kartı, çek/senet). Numara korunur, belge "İptal Edildi" olarak İptal Edilenler sekmesinde kalır. Engeller: iadesi olan belge (önce iade iptal edilir), kilitli dönem, tahsil edilmiş/ciro edilmiş çek, stoğu eksiye düşürecek alış iptali (ürün satılmışsa).</li>
+  <li><b>İade:</b> kartta <i>İade</i> pili ya da senaryo. Asıl belge en üstteki arama kutusundan bulunur; kalemler kalan miktar kadar iade edilir. Para iadesi: Kasa'dan (nakit/kart/havale) ya da carinin borcundan düşer. Taksitli satışta taksit kartı iade kadar küçülür (son taksitten geriye).</li>
+  <li><b>e-Belge açıkken:</b> e-Arşiv belgesi 8 gün içinde entegratörde iptal edilir; sonrası iade faturası. Gönderilmiş e-Fatura entegratörden iptal edilmez (alıcı ret ya da iade faturası), programda "GİB'de iptal edildi" onayıyla kapatılır.</li>
+</ul>
+
+<h2>6. Belge çıktısı</h2>
+<ul>
+  <li><b>PDF / Yazdır:</b> A4; satıcı bloğu + logo, başlık kutusu (MÜŞTERİ FİŞİ / e-ARŞİV FATURA / e-FATURA / PROFORMA / İADE FİŞİ…), belge no, tarih-saat, vade, sipariş/irsaliye no, alıcı, kalemler, KDV dökümü, tevkifat/stopaj, yazıyla tutar, not, ödeme özeti, IBAN'lar, yasal ibare, Teslim Alan / Düzenleyen (Kaşe-İmza) kutuları (ayardan kapanır), sayfa numarası. İptal edilen belgede kırmızı "İPTAL EDİLDİ" filigranı.</li>
+  <li><b>WhatsApp:</b> PDF iner, cari kartındaki numaraya hazır mesajla sohbet açılır (dosyayı müşteri sohbete sürükler). <b>E-Posta:</b> PDF iner, cari kartındaki adrese hazır konu ve metinle e-posta penceresi açılır.</li>
+  <li><b>Toplu:</b> listede kutularla seçim → Seçilenleri PDF (tek dosyada), Seçilenleri Excel; e-Belge açıkken e-Belge XML (ZIP). Liste PDF/Excel süzgece göre.</li>
+</ul>
+
+<h2>7. Liste, sekmeler, toplu işlemler</h2>
+<ul>
+  <li>Sekmeler: Satış, Alış, İadeler, Taslaklar, İptal Edilenler, Tümü; e-Belge açıkken Gönderilecekler ve Gelen Kutusu. Süzgeçler: dönem, ödeme durumu, belge türü, cari, metin araması (no, cari, ürün, VKN, not).</li>
+  <li><b>Seçilenleri Kes</b> (Taslaklar): eski tarihli taslak önce kesilir (seri numarası tarih sırasını bozmasın). <b>Seçilenleri İptal Et</b> (kesilmiş belgeler): en yeni önce; iptal nedeni sorulur. Her belge kendi işleminde: biri kesilemez/iptal edilemezse diğerleri etkilenmez, neden belge belge bildirilir, başarısızlar seçili kalır.</li>
+  <li>Sol menüdeki Fatura rozeti: vadesi geçmiş açık belge sayısı.</li>
+</ul>
+
+<h2>8. Diğer modüllerle bağ ve raporlar</h2>
+<ul>
+  <li><b>Cari:</b> kartta Faturalar bölümü; ekstrede faturadan gelen satır "Fatura FIS…" diye görünür, elle silinemez (fatura iptal edilir). Cari kartı bakiyeli ve faturalıyken silinemez.</li>
+  <li><b>Kasa:</b> satır "Faturadan" kaynağıyla ve Fatura düğmesiyle. <b>Stok:</b> hareket faturaya bağlı; elle silinemez; <b>fatura kalemi olan ürün silinemez</b>. <b>Taksitler:</b> kart faturaya bağlı. <b>Çek / Senet:</b> evrak kartında Fatura düğmesi.</li>
+  <li><b>Raporlar → Tüm Raporlar:</b> Satış Faturaları, Alış Faturaları, İade Faturaları, KDV Özeti (Beyanname Hazırlığı), Ba-Bs Formu (aynı kişiyle KDV hariç 5.000 TL ve üzeri), Gider Raporu (Türüne Göre), Stopaj ve Tevkifat Özeti, Açık Faturalar ve Yaşlandırma, Ürün Bazında Satış ve Kârlılık. Açık belgeler Vade Takip'te, ANLIK DURUM'da (Toplam Alacak / Borç) ve sağ alt bildirimlerde.</li>
+  <li><b>Ana Defter:</b> satış 600, satıştan iade 610, stoklu alış 153, giderler 770 / 760, demirbaş 255, KDV 191 / 391, alıcılar 120, satıcılar 320, Kasa 100 / 102 / 108. Her kesim, iptal ve iadeden sonra <b>mutabakat kapısı</b> çalışır: alt defterler ile Ana Defter kuruşu kuruşuna tutmazsa işlem geri alınır ve <i>Mutabakat Günlüğü</i>'ne yazılır (müşteri hiç yarım kayıt görmez).</li>
+  <li><b>Dönem kilidi</b> (Yönetim → Sistem): kilitli tarihe fatura, iade, iptal yapılmaz (409). İşlem geçmişi: invoice.created / issued / cancelled / pdf / e.* olayları.</li>
+</ul>
+
+<h2>9. Yasal kurallar (programın uyguladığı)</h2>
+<table>
+<tr><th>Kural</th><th>Programda</th></tr>
+<tr><td>Fatura numarası sıralı ve tarih sırasıyla uyumlu (VUK)</td><td>Kendi serimizde numara elle verilmez; serideki son belgeden eski tarihli belge kesilmez; iptal numara yakmaz. Alış ve müşterinin kestiği iade faturasında numara elle girilir (karşı tarafın belgesi).</td></tr>
+<tr><td>VUK 231: teslimden itibaren 7 gün</td><td>İrsaliye tarihinden 7+ gün sonra ya da 7+ gün geriye tarihli belgede uyarı (engellemez).</td></tr>
+<tr><td>İleri tarih</td><td>Kabul edilmez.</td></tr>
+<tr><td>KDV oranları</td><td>%0, %1, %10, %20 (liste `server/lib/invoice-math.mjs`; oran değişirse liste güncellenir). İstisna kodları ve tevkifat kodları GİB listesinden.</td></tr>
+<tr><td>Nihai tüketici</td><td>TCKN yoksa 11111111111 kabul edilir; e-Arşiv'de 30.000 TL üstü belgede gerçek kimlik ve adres zorunlu (program engeller).</td></tr>
+<tr><td>e-Arşiv iptali</td><td>8 gün içinde; sonrası iade faturası.</td></tr>
+<tr><td>e-Fatura mı e-Arşiv mi</td><td>Alıcı e-Fatura mükellefiyse e-Fatura (Temel / Ticari), değilse e-Arşiv; program kuralı uygular, aykırı seçim engellenir.</td></tr>
+<tr><td>Ba-Bs</td><td>Aylık, aynı kişiyle KDV hariç 5.000 TL ve üzeri.</td></tr>
+<tr><td>Sınırlar</td><td>Belgede en çok 500 kalem; toplu işlemde 200 belge; logo 150 KB.</td></tr>
+</table>
+
+<h2>10. Yetkiler</h2>
+<p>Yönetim → Kullanıcılar → Yetkiler → <b>Fatura</b>: <i>Faturaları Görme</i>, <i>Fatura Kesme ve İptal</i>, <i>Fatura Ayarları</i>. Hazır roller: yönetici hepsi; uzman (avukat) görme + kesme; muhasebe hepsi; personel hiçbiri (menüde Fatura görünmez, sunucu 403 verir).</p>
+
+<h2>11. e-Belge entegrasyonu — istendiğinde yapılacaklar</h2>
+<div class="warn"><b>Şu an kapalı.</b> Kapatan tek yer: <code>server/lib/config.mjs</code> içindeki <code>edocEnabled: overrides.edocEnabled === true</code> satırı; yalnız testler açar, ortam değişkeni ya da ayar düğmesi yoktur. Açmak bir sürüm değişikliği gerektirir: bana <b>"entegre et"</b> demeniz yeter; Yönetim → Sistem'e "e-Belge bağlantısı" anahtarı eklenip yeni sürüm paketlenir. Bağlantı açılınca Fatura Ayarları'nda "e-Belge Bağlantısı" bölümü ve belge türü seçimleri görünür; belge başlıkları "Müşteri Fişi" yerine e-Fatura / e-Arşiv olur.</div>
+<h3>11.1 Müşterinin önceden hazırlaması gerekenler</h3>
+<ol class="steps">
+  <li><b>GİB kaydı:</b> e-Fatura mükellefiyeti (zorunlu ya da gönüllü), gerekiyorsa e-Arşiv ve e-SMM. Mali mühür (şirket) ya da e-imza (şahıs) entegratörde tutulur; program imza anahtarı taşımaz.</li>
+  <li><b>EDM Bilişim sözleşmesi:</b> müşteri kendisi sözleşir, kontörü kendisi alır (biz aracı değiliz). EDM'den alınacaklar: <b>web servis kullanıcı adı ve parolası</b> (portal kullanıcısından farklı olabilir), test ortamı hesabı, (varsa) gönderici birim etiketi (ör. <code>urn:mail:defaultgb@firma.com.tr</code>), hangi ortam adresinin kullanılacağı. Programdaki hazır adresler: test <code>https://test.edmbilisim.com.tr/EFaturaEDM21ea/EFaturaEDM.svc</code>, canlı <code>https://portal2.edmbilisim.com.tr/EFaturaEDM/EFaturaEDM.svc</code>; EDM farklı adres verirse ayarlara yazılır.</li>
+  <li><b>GİB'e bildirilen seriler:</b> e-Arşiv ve e-Fatura serileri (3 harf) GİB/entegratörde tanımlı olmalı; Fatura Ayarları'ndaki EAR / EFT / ESM serileri bununla aynı yapılır.</li>
+</ol>
+<h3>11.2 Programda yapılacaklar (bağlantı açıldıktan sonra)</h3>
+<ol class="steps">
+  <li>Fatura Ayarları → <b>e-Belge Bağlantısı</b>: "e-Fatura mükellefiyim", gerekiyorsa "e-Arşiv kullanıcısıyım", "e-SMM kullanıcısıyım"; varsayılan e-Fatura senaryosu (Temel / Ticari); Ortam: <b>Test</b>; kullanıcı adı, parola (şifreli saklanır, ekranda görünmez), gönderici birim etiketi; "Kesilen e-Belge entegratöre hemen gönderilsin" (isteğe bağlı). <b>Ayarları Kaydet</b>.</li>
+  <li><b>Bağlantıyı Sına:</b> program EDM'nin sözleşmesini (WSDL) okur, giriş yapar, hangi işlemlerin kullanılabildiğini raporlar. Hata EDM'nin kendi kodu ve iletisiyle görünür.</li>
+  <li>Cari kartında <b>Mükellef Sorgula:</b> VKN'ye göre alıcının e-Fatura mükellefi olup olmadığı ve posta kutusu (PK) etiketi karta yazılır. Böylece program alıcıya e-Fatura mı e-Arşiv mi keseceğini bilir.</li>
+  <li><b>Test ortamında prova:</b> bir e-Arşiv ve bir e-Fatura kes → <i>Kes ve Gönder</i> (hemen) ya da <i>Kes, Sonra Gönder</i> (Gönderilecekler'den toplu) → kartta e-Belge durumu (Gönderildi → Kabul Edildi / Reddedildi / Hata) → <i>Durumu Yenile</i>. e-Arşiv iptali dene. Gelen Kutusu → <i>Gelen Kutusunu Yenile</i> → gelen belgeyi <i>Alış Faturası Olarak Al</i> (cari VKN ile bulunur ya da açılır; kalemler stok kartıyla eşlenir) ya da <i>Yok Say</i>.</li>
+  <li>Ortam: <b>Canlı</b>; kullanıcı adı/parola canlı hesabınki. İlk canlı belgeyi küçük tutarla kesip GİB portalında görün.</li>
+</ol>
+<h3>11.3 Gönderim mantığı (bilmeniz gerekenler)</h3>
+<ul>
+  <li><b>Kes, Sonra Gönder:</b> bütün defter etkileri hemen işlenir; belge "Gönderilecek" olarak bekler; <b>resmî numara gönderim anında verilir</b> (GİB serisinde boşluk kalmaz). Gönderilecekler'den <b>Listeden Sil</b>: etkiler geri alınmaz (sizin kararınız); belge Müşteri Fişi numarasıyla kalır, istenirse sonra yine gönderilir.</li>
+  <li>Serideki son gönderilen belgeden eski tarihli belge gönderilmez (tarih sırası); kart uyarır.</li>
+  <li>EDM reddederse durum <b>Hata</b>: belge düzeltilip yeniden gönderilir. Bağlantı koparsa durum değişmez; önce <i>Durumu Yenile</i> (aynı ETTN ikinci kez kabul edilmez). "Aktif session bulunamadı (10011)" gelirse program kendiliğinden yeniden giriş yapıp isteği bir kez tekrarlar. Logout hiç çağrılmaz (EDM'de aynı kullanıcının diğer oturumlarını kapatır).</li>
+  <li>e-Fatura ve e-Arşiv aynı gönderim ucuyla gider; belge türünü UBL'deki profil belirler. UBL-TR XML her belge için <i>XML İndir</i> ile alınabilir (e-Belge açıkken).</li>
+  <li>Entegratör parolası veritabanında şifreli (AES-256-GCM); anahtar veri klasöründe ayrı dosyada, yedeğe girmez; günlüğe ve ekrana parola çıkmaz.</li>
+</ul>
+<h3>11.4 Sorun giderme</h3>
+<table>
+<tr><th>Belirti</th><th>Neden / çözüm</th></tr>
+<tr><td>"e-Belge bağlantısı bu kurulumda kapalı" (404)</td><td>Anahtar kapalı (bölüm 11 başı). Beklenen durum.</td></tr>
+<tr><td>Bağlantıyı Sına: giriş hatası</td><td>Web servis kullanıcı adı/parolası (portal bilgisi değil); ortam (test/canlı) ve hesap uyuşmalı.</td></tr>
+<tr><td>"Sözleşmede olmayan alan: …"</td><td>EDM'nin WSDL'i değişmiş; istek hiç gönderilmez. Bana iletin; adaptör güncellenir.</td></tr>
+<tr><td>Belge kesilmiyor: "satıcı bilgisi eksik"</td><td>Fatura Ayarları → Firma Bilgisi (VKN, vergi dairesi, adres, il/ilçe).</td></tr>
+<tr><td>e-Arşiv kesilemiyor: "30.000 TL üstü"</td><td>Nihai tüketiciye gerçek TCKN ve adres girilmeli.</td></tr>
+<tr><td>Gönderilecek belge gönderilmiyor: tarih sırası</td><td>Daha yeni tarihli belge zaten gönderilmiş; belge listeden silinip (fiş olarak kalır) doğru tarihle yeniden kesilir.</td></tr>
+<tr><td>Durum "Reddedildi"</td><td>Alıcı e-Faturayı reddetti; programda iptal (onay kutusuyla) ya da iade faturası.</td></tr>
+</table>
+
+<h2>12. Veri, yedek, güvenlik</h2>
+<ul>
+  <li>Belgeler veritabanında (göç 18: <code>invoices</code>, <code>invoice_lines</code>, <code>einvoice_inbox</code>, <code>invoice_repeats</code>); Yönetim → Yedekler her şeyi kapsar. Kesilmiş belge silinmez; iptal edilen numarasıyla saklanır.</li>
+  <li>İmzalı XML arşivi entegratördedir (program saklamaz); 10 yıl saklama sorumluluğu müşteri + entegratör.</li>
+  <li>Taslak silinirse geri gelmez (deftere hiç dokunmamıştır). Cari / stok / taksit / çek kayıtları Yönetim → Silinenler'den geri gelir.</li>
+</ul>
+
+<h2>13. Doğrulama (kendiniz koşabilirsiniz)</h2>
+<table>
+<tr><th>Komut</th><th>Ne yapar</th></tr>
+<tr><td><code>npm test</code></td><td>Bütün birim ve API testleri (734).</td></tr>
+<tr><td><code>npm run test:senaryo-215</code></td><td>Arayüzden uçtan uca fatura senaryosu (14 adım, 73 denetim, ekran görüntüleri <code>test/e2e/artifacts/senaryo-215/</code>).</td></tr>
+<tr><td><code>npm run test:mutabakat</code></td><td>Bağımsız modelle binlerce rastgele işlem (fatura, iade, iptal, çek, taksit); her adımda kuruş kuruşuna karşılaştırma.</td></tr>
+<tr><td><code>npm run mutabakat</code></td><td>Kurulu veritabanında salt okunur denetim (sahada şüphe olursa).</td></tr>
+<tr><td><code>node test/qa/qa-fatura.mjs</code>, <code>node test/qa/qa-fatura-ui.mjs</code></td><td>QA denetimi (64 test); rapor <code>docs/FATURA-QA-RAPORU.md</code>.</td></tr>
+<tr><td><code>node --test test/einvoice-edm.test.mjs</code></td><td>Sahte EDM sunucusuyla e-Belge akışları (bağlantı açık).</td></tr>
+</table>
+
+<h2>14. Bilinen sınırlar ve sonraki sürüm</h2>
+<ul>
+  <li>Gerçek EDM ortamında prova yapılmadı (test hesabı gerekir) — bağlantı açılırken ilk iş.</li>
+  <li>e-İrsaliye yok (irsaliye no/tarihi alanı var). Birden çok PDF şablonu yok. Liste kolonları özelleştirilemez; faturaya görev/not bağlanmaz. Dönem arşivleme otomasyonu yok.</li>
+  <li>Fatura ↔ icra dosyası doğrudan bağ yok (sizin kararınız: cari seçilerek kesilir; cari kartı dosyaya bağlıdır).</li>
+  <li>Entegratör yalnız EDM Bilişim; başka entegratörle anlaşılırsa adaptör yazılır (İzibiz istemcisi git geçmişinde).</li>
+</ul>
+
+<h2>15. Sözlük</h2>
+<table>
+<tr><td>VKN / TCKN</td><td>Vergi kimlik no (10 hane, şirket) / TC kimlik no (11 hane, şahıs). Denetim hanesi programda doğrulanır.</td></tr>
+<tr><td>MERSİS</td><td>Merkezi Sicil Kayıt Sistemi numarası (16 hane, şirketler).</td></tr>
+<tr><td>e-Fatura / e-Arşiv / e-SMM</td><td>Mükellefler arası elektronik fatura / mükellef olmayana (nihai tüketici) elektronik fatura / serbest meslek makbuzu.</td></tr>
+<tr><td>Temel / Ticari fatura</td><td>e-Fatura senaryoları: Ticari'de alıcı 8 gün içinde kabul/ret yanıtı verir.</td></tr>
+<tr><td>UBL-TR</td><td>GİB'in belge XML biçimi; program üretir, entegratör imzalayıp gönderir.</td></tr>
+<tr><td>ETTN</td><td>Her e-Belgenin tekil kimliği (UUID); program kesimde üretir.</td></tr>
+<tr><td>PK etiketi</td><td>Alıcının e-Fatura posta kutusu adresi (urn:mail:…); Mükellef Sorgula ile öğrenilir.</td></tr>
+<tr><td>Tevkifat / Stopaj</td><td>KDV'nin bir kısmını alıcının ödemesi (kod ve oran GİB listesi) / gelir vergisi kesintisi (SMM'de).</td></tr>
+<tr><td>Proforma</td><td>Taslak belge; deftere işlenmez, numarası yoktur, resmî değildir.</td></tr>
+<tr><td>Mutabakat kapısı</td><td>Her işlemden sonra alt defterlerle Ana Defter'in karşılaştırılması; tutmazsa işlem geri alınır.</td></tr>
+</table>
+</body>
+</html>
