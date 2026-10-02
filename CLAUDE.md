@@ -53,36 +53,47 @@ Bu dosya oturumlar arasında taşınan hafızadır. Her oturumun başında okunu
   (Nakit/Banka/Kredi Kartı: Uyar/Engelle/Kontrol Yok — kullanıcı onayı 01.10.2026), hepsini seç + hariç tut. Holding stres
   simülasyonu kullanıcı kararıyla iptal. Doğrulama: `npm test`, `npm run test:mutabakat`, `npm run mutabakat`,
   `npm run test:senaryo-whatsapp` (1.000 cari). Senaryolar tarihe bağlı yazılmasın (ayın 1'inde kırılanlar düzeltildi).
-- 2.0.14 hazır (dal `claude/nice-euler-jvajxv`; paket üretildi, yayın/birleştirme kullanıcı onayı bekliyor — 01.10.2026).
-  Teslim zipleri scratchpad'de (güncelleme 9a6bc908…, kurulum dae7a169…). Beş madde de yapıldı; kanıt: `npm test` 704/704, `test:senaryo-214` 50/50, `test:senaryo-whatsapp` 45/45, `test:senaryo-213` 61/61.
-  Yapılan liste:
-  1. YAPILDI (09c720f): Tablodan Aktar geri alma damga düzeltmesi — plans/plan_items `created_at`/`updated_at` iki ayrı
-     now() yerine tek damga; CI Windows/Node 22 hücresinde aralıklı düşen `plan-transfer.test.mjs:371`'in kök nedeni.
-  2. YAPILDI: WhatsApp gönderim sırası (müşteri: "Enter'a basmıyor, tek tek Gönder gerekiyor"): WhatsApp'ta Gönder'e basıp
-     pencere odağı programa dönünce sıradaki kişi kendiliğinden açılır; ekstre gönderiminde PDF kişinin adıyla otomatik
-     indirilir. Enter yine kullanıcıda (wa.me yalnız metin hazırlar; otomatik gönderim ve PDF eki ancak Meta WhatsApp
-     Business API ile — ayrı Pro özelliği olarak tasarlanacak; resmî olmayan otomasyon numara kapatır, yapılmaz).
-  3. YAPILDI (HOF.swap): Cari penceresi arama kutusu: yazarken liste her gelişte (`hof-accounts.js` `onInput` → `loadList` → `renderList`
-     bütün gövdeyi, arama kutusu dahil, yeniden kurar) odak kayboluyor; "fı" yazınca kutuya yeniden tıklamak gerekiyor.
-     Kullanıcı doğruladı: Taksitler (taksit kartı) ve Stok aramalarında da aynı sorun var.
-     Düzeltme (kullanıcı: "sadece bu sayfada değil, TÜM arama çubuklarında"): programdaki her arama/süzgeç kutusu —
-     ana tablo arama kutusu, Cari, Stok, Taksitler, Çek/Senet, Kasa, Raporlar, Yönetim (kullanıcılar, silinenler),
-     cari/ürün seçici açılır listeler, WhatsApp seçim penceresi — tek tek sayılıp denetlenir; liste yenilenirken kutu
-     yerinde kalır, odak ve imleç korunur. Tüm ekranları gezen e2e "kesintisiz yazma" denetimi (her kutuya harf harf
-     yazıp sonucun tam sözcük olduğunu doğrular) eklenir; kalıp ortak bir yardımcıya (HOF) alınır ki yeni ekranlarda tekrarlanmasın.
-  4. YAPILDI (senaryo-214): Odak denetimi — bütün program (kullanıcı: "odak ile ilgili tüm sorunları bütün programda denetle"): yalnız arama
-     kutuları değil, odağın kaybolduğu/çalındığı her yer: canlı yenileme (SSE `live:*`) açık formu ya da yazılan kutuyu
-     yeniden kurup odağı düşürüyor mu; pencere/kart açılınca ilk alana odak geliyor mu; kapanınca odak açan düğmeye
-     dönüyor mu; Tab sırası (formlar, tablo hücreleri, süzgeç çubukları); Enter/Esc davranışı; açılır listeler (cari/
-     ürün seçici) yazarken ve seçince odak; toast/uyarı kartı odağı çalmasın; ana tablo hücre düzenleme sırasında
-     yenileme. Yöntem: her ekran gezilir, her kutuya harf harf yazılırken arka planda veri değişikliği tetiklenir
-     (`live:workspace.changed`), odak ve imleç yerinde kalmalı; bulgular listelenip hepsi düzeltilir, e2e'ye kalıcı
-     odak senaryosu eklenir.
-  5. YAPILDI (kök neden: #hof-checks ↔ #hof-case-plan yer kavgası): Ana ekran sağ detay panelinde "CARİ … · No 4 · Bakiye" pilindeki **Cari Kartı** düğmesi çalışmıyor (ekran
-     görüntüsü: Ömer Kılcı, 01.10.2026). Kod: `hof-workspace.js` `caseAccountHtml` → `data-open-account`,
-     `document` click dinleyicisi `#hof-case-plan [data-open-account]` → `HOF.accounts?.open(id)`. Kablo yerinde
-     görünüyor; ekranda yeniden üretip kök neden bulunacak (öneriler: tıklama başka bir dinleyicide `stopPropagation`
-     ile yutuluyor; `HOF.accounts` o anda yüklü değil; `open()` kapalı pencere/mod durumunda sessiz dönüyor).
-     Aynı kalıptaki "Taksit Kartını Aç" ve Raporlar'daki "Cari Kartını Aç" da denenir; e2e'ye tıklama denetimi eklenir.
+- 2.0.14 yayımlandı (01.10.2026; PR ceougur/ofis---y-netimi#14, `v2.0.14` = 6337029; beş dosya ve latest/ adresleri bayt
+  bayt doğrulandı; gerçek güncelleyici 2.0.13 ve 2.0.12 olarak canlı GitHub'da 2.0.14'ü "available" gördü, indirme sha256
+  eşleşti; dal `master` üzerine sıfırlandı): arama kutularında ve bütün programda odak (`HOF.swap`, `test:senaryo-214`),
+  detay panelinde Cari Kartı (#hof-checks ↔ #hof-case-plan yer kavgası), WhatsApp Otomatik Sıra + kendiliğinden inen ekstre
+  PDF'i, Tablodan Aktar geri alma damgası. Meta WhatsApp Business API (kendiliğinden gönderim + PDF eki) ayrı Pro özelliği
+  olarak ileride tasarlanacak; resmî olmayan otomasyon yapılmaz.
+- 2.0.15 HAZIR (02.10.2026; dal `claude/nice-euler-jvajxv`; sürüm 2.0.15, CHANGELOG/MIMARI/ISTEKLER/DURUM yazıldı; teslim
+  `dist/teslim-2.0.15/`; imzalı paket (anahtar: kullanıcının oturuma yüklediği .pem, `--anahtar`) ve kurulum .exe teslimde;
+  yayın onay bekler). İçerik — 01.10.2026 kullanıcı isteği:
+  1. Küçük düzeltme (müşteri): sol menüdeki "Yeni Kayıt" kalkar; ana listede "Dışa Aktar"ın yanına "Yeni Kayıt".
+  2. FATURA modülü (sol sabit menüde "Fatura"): GİB e-Fatura/e-Arşiv, UBL-TR, PEPPOL uyumlu mimari. Kurallar: fatura
+     kesilince stok (miktar/maliyet), cari (borç/alacak), vadeli/taksitliyse Taksit motoru, peşinse Kasa — hepsi tek
+     BEGIN IMMEDIATE işlemde; KDV (%1/%10/%20…), tevkifat, KDV dahil/hariç, roundMoney; e-Fatura/e-Arşiv senaryoları
+     (Temel/Ticari) için VKN/TCKN/MERSİS/adres/tüzel-gerçek doğrulaması; Entegratör Adaptör Katmanı (Logo, İzibiz,
+     Digital Planet, QNB e-Finans, GİB) + PEPPOL; dönem kilidi ve tarih sızıntısı koruması; iptal/iade sonrası Kasa,
+     Stok, Cari, Taksit ↔ Ana Defter mutabakat kapısı. Ayrıntı istekleri: cari kartında "Alış Faturası" ve "Satış
+     Faturası" pilleri; panelde Alıştan İade / Satıştan İade (kasa, cari, çek/senet entegre); iade edilecek faturayı
+     arama motoru en üstte; faturada Not (altına basılır); fatura tarihi ve saati; kesilen faturaları görüntüleme,
+     süzgeç, seçim; fatura kartında 2 pil; cari + ürün girilince bu müşteriye ve başka müşteriye son alış/satış fiyatı.
+     Kullanıcı: "sorman gereken yerde önerini yap; bitince seçtiklerini maddeler hâlinde yaz".
+     Ek (aynı gün, ikinci mesaj): ÇEK/SENET de zincirde — tahsilat/ödeme türü Çek veya Senet ise fatura anında Çek/Senet
+     modülüne portföy girişi (alış faturasında verilen evrak) yazılır ve cari ile mahsuplaşır; tümü aynı tek işlemde.
+     Çek/Senet vade/işlem tarihleri de kronolojik kurala bağlı; mutabakat kapısı Çek/Senet alt defterini de kapsar.
+     Ek (üçüncü mesaj): fatura modülü tüm diğer bölümlerle ve RAPORLARLA entegre, doğru mantıkla çalışacak (cari ekstre,
+     Kasa, stok, taksit, çek/senet, ANLIK DURUM, Vade Takip, Rapor Merkezi, Ana Defter/mizan, WhatsApp ekstre, çöp/geri al).
+     QA denetimi (02.10.2026, `docs/FATURA-QA-RAPORU.md`) sonrası kullanıcı kararı: icra dosyası bağı YAPILMAZ ("cariyi
+     ekleyerek kesebilir müşteri"); diğer bulgular yapıldı: formda "+ Yeni Cari", toplu kes / toplu iptal, PDF'te logo
+     (JPEG, 150 KB) ve kaşe/imza kutuları, kartta E-Posta, fatura kalemli stok kartı silinmez, "Fiyat Farkı Faturası".
+     Testler: `test/fatura-215.test.mjs`, `senaryo-215` adım 12–14. Kullanım kılavuzuna "Fatura" bölümü eklendi
+     (kullanıcı isteği; k24 ekranı; PDF yeniden üretildi, client/kilavuz'a kopyalandı — siteye yükleme kullanıcıda).
+- e-Belge kararı (kullanıcı, 01.10.2026): vergi dairesi/entegratör bağlantısı KAPALI — "sana entegre et diyene kadar".
+  Fatura modülü tam çalışır; belge "Müşteri Fişi" (resmî hükmü yok) basılır; e-Fatura/e-Arşiv/XML ekranda görünmez.
+  Entegratör altyapısı (müşteri kendi API bilgisini girer, kontörü kendisi alır) hazır tutulur ama `config.edocEnabled`
+  false; yalnız testler açar. Açma: kullanıcı açıkça "entegre et" derse.
+- Gönderim kararı (kullanıcı, 02.10.2026): kesimde "Kes ve Gönder" ya da "Kes, Sonra Gönder". Sonra gönderde bütün
+  etkiler hemen işlenir; belge "Gönderilecekler" sekmesinde bekler, e-Belge numarası gönderim anında verilir. Oradan
+  "Listeden Sil" etkileri GERİ ALMAZ (kullanıcı: "tüm etkilerle birlikte geri alınmaz!"); belge Müşteri Fişi olarak kalır.
+- Entegratör kararı (kullanıcı, 01.10.2026): şimdilik YALNIZ EDM Bilişim (`server/lib/einvoice/edm.mjs`; WSDL'i
+  sunucudan okur, Logout çağırmaz). Firmayla anlaşılamazsa anlaşılan entegratöre göre yapılır (İzibiz istemcisi git
+  geçmişinde: 167eefa). Fatura modülü bitince: (1) yalnız proje sahibine özel, deneyimsiz birinin anlayacağı ayrıntılı
+  kılavuz (entegrasyona kadar); (2) ana testten ÖNCE güncel resmî/resmî olmayan kaynak araştırması → karşılaştırma →
+  düzeltme (`docs/FATURA-KARSILASTIRMA.md`), sonra testler.
 - Pro — uzaktan görüntüleme: `docs/PRO-UZAKTAN-GORUNTULEME.md` (önce en alttaki "Oturum devri"); genel durum
   `docs/DURUM-VE-DEVAM.md`.

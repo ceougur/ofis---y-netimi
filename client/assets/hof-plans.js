@@ -442,6 +442,7 @@
           <div><dt>Telefon</dt><dd>${plan.phone ? `${phone ? `<a href="tel:+${esc(phone)}">${esc(plan.phone)}</a>` : esc(plan.phone)}` : "—"}</dd></div>
           <div><dt>Taksit Planı</dt><dd>${esc(span)}</dd></div>
           <div><dt>Kayıt Tarihi</dt><dd>${esc(plan.registeredOn ? HOF.formatDate(plan.registeredOn) : "—")}</dd></div>
+          ${plan.invoiceId && HOF.can("invoices.view") ? `<div><dt>Fatura</dt><dd><a href="#" data-open-invoice="${esc(plan.invoiceId)}" title="Kart bu faturanın taksitlendirilen kalanıdır">${esc(plan.invoiceNumber || "Faturayı Aç")}</a></dd></div>` : ""}
           <div><dt>Tablodaki Kayıt</dt><dd>${plan.caseKey ? (foreignCase(plan) ? `${esc(plan.caseTitle || plan.caseKey)} <small class="hof-muted">· başka veri oturumunda</small>` : orphanCase(plan) ? `${esc(plan.caseTitle || plan.caseKey)} <small class="hof-muted" title="Kayıt açık tabloda bulunamadı; silinmiş ya da yeni dosyada kimliği değişmiş olabilir.">· tabloda bulunamadı${manage ? " · Düzenle ile yeniden bağlayın" : ""}</small>` : `<a href="#" data-act="reveal" title="Kaydı tabloda aç">${esc(plan.caseTitle || plan.caseKey)}</a> <small>· Kayda git</small>`) : `<span class="hof-muted">Bağlı değil${manage ? " · Düzenle ile bağlayın" : ""}</span>`}</dd></div>
           <div><dt>Kartı Açan</dt><dd>${esc(plan.actorName || "—")} · ${esc(HOF.formatDate(plan.createdAt))}</dd></div>
         </dl>

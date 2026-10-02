@@ -237,13 +237,14 @@ try {
     const view = await admin.evaluate(() => ({
       summary: document.querySelector(".welcome-row .section-title")?.firstChild?.nodeValue,
       nav: [...document.querySelectorAll(".sidebar .nav-item")].map(node => node.textContent.trim()),
-      newRecord: document.querySelector('[data-action="newRecord"] .hof-side-text')?.textContent,
+      newRecord: document.querySelector("#hof-toolbar-new span")?.textContent,
+      sideNewRecord: Boolean(document.querySelector('#hof-sidecard [data-action="newRecord"]')),
       search: document.querySelector(".search-field input")?.placeholder,
       cards: [...document.querySelectorAll("#hof-summary .hof-summary-card")].map(node => node.innerText.replace(/\s+/g, " ")),
       title: document.title,
     }));
-    // Operasyon Merkezi'nde "Yeni kayıt" sabittir (sektöre göre değişmez, v2.0.2).
-    expect(view.summary === "Dosya Özeti" && !view.nav.some(item => item.startsWith("Tüm dosyalar")) && view.newRecord === "Yeni Kayıt", `dil: ${JSON.stringify(view)}`);
+    // "Yeni Kayıt" sabittir (sektöre göre değişmez, v2.0.2); v2.0.15: menüde değil, tablo başlığında Dışa Aktar'ın yanında.
+    expect(view.summary === "Dosya Özeti" && !view.nav.some(item => item.startsWith("Tüm dosyalar")) && view.newRecord === "Yeni Kayıt" && !view.sideNewRecord, `dil: ${JSON.stringify(view)}`);
     expect(view.search === "Dosya no, borçlu veya telefon ara…", `arama ipucu: ${view.search}`);
     expect(view.cards.length === 4 && view.cards[1].includes("Tutar Toplamı") && view.cards[1].includes("438.750") && view.cards[3].includes("Veri Sağlığı"), `kartlar: ${view.cards}`);
     await admin.screenshot({ path: path.join(artifacts, "03c-akilli-ozet.png") });
@@ -432,7 +433,11 @@ try {
   });
 
   await step("yeni kayıt açık sekmenin kolonlarıyla oluşturulur, o sekmede en üste gelir ve seçilir", async () => {
-    await admin.click('#hof-sidecard [data-action="newRecord"]');
+    {
+      const order = await admin.$$eval(".cases-panel > .panel-heading > button", nodes => nodes.map(node => node.id || node.className));
+      expect(order.indexOf("hof-toolbar-new") >= 0 && order.indexOf("hof-toolbar-new") + 1 === order.indexOf("hof-toolbar-export"), `Yeni Kayıt, Dışa Aktar'ın hemen solunda: ${order.join(" | ")}`);
+    }
+    await admin.click("#hof-toolbar-new");
     await admin.waitForSelector(".hof-modal .hof-record-grid");
     const fields = await admin.$$eval(".hof-modal .hof-field span", nodes => nodes.map(node => node.textContent));
     expect(fields.length === 8, `alan sayısı ${fields.length}`);
@@ -1176,7 +1181,7 @@ try {
       await page.locator(".dynamic-table tbody tr td").first().click({ position: { x: 12, y: 10 } });
       const view = await page.evaluate(() => ({
         summary: document.querySelector(".welcome-row .section-title")?.firstChild?.nodeValue,
-        newRecord: document.querySelector('[data-action="newRecord"] .hof-side-text')?.textContent,
+        newRecord: document.querySelector("#hof-toolbar-new span")?.textContent,
         liens: getComputedStyle(document.querySelector('#hof-sidecard [data-action="liens"]')).display,
         lienAction: getComputedStyle(document.querySelector('.hof-case-actions [data-case-action="lien"]')).display,
         search: document.querySelector(".search-field input")?.placeholder,

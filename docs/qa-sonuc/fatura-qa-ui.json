@@ -1,0 +1,81 @@
+{
+  "results": [
+    {
+      "id": "U7",
+      "section": "2 Entegrasyon",
+      "name": "Fatura → İcra dosyası (arayüz): dosya kaydı → cari → fatura → dosya detayından cari kartı ve faturalar",
+      "steps": "Excel'deki 2026/1234 kaydına bağlı cari aç; fatura kes; kaydı tıkla; detay panelinden Cari Kartı; Faturalar bölümü",
+      "expected": "Bağlı cari dosya kaydıyla açılır; detay panelinde Cari Kartı; kartta fatura listelenir",
+      "actual": "Kayıt → Cari Kartı açıldı; kartta 1 fatura ve dosya bilgisi görünüyor=true. Dosya detay panelinde fatura listesi/tutarı yok; faturada dosya alanı yok; dosyadan doğrudan fatura kesme yok (cari kartından)",
+      "status": "PARTIAL",
+      "severity": "Medium",
+      "bug": ""
+    },
+    {
+      "id": "U1",
+      "section": "4 UX",
+      "name": "Duyarlı tasarım: 390×844 (telefon), 820×1180 (tablet), 1440×900",
+      "steps": "Fatura listesi ve formu her genişlikte aç; yatay taşma",
+      "expected": "Yatay kaydırma yok; düğmeler erişilebilir",
+      "actual": "390px: liste taşma 0px, form taşma 0px, sayfa 0px | 820px: liste taşma 0px, form taşma 0px, sayfa 0px | 1440px: liste taşma 0px, form taşma 0px, sayfa 0px",
+      "status": "PASS",
+      "severity": "",
+      "bug": ""
+    },
+    {
+      "id": "U2",
+      "section": "4 UX",
+      "name": "Klavye: ürün adı yazınca öneri listesi; Enter ile seçim; birim fiyatta Enter → yeni satır; Esc listeyi kapatır",
+      "steps": "Formda kalem adına 'A4' yaz → öneri; Enter; miktar; birim fiyatta Enter",
+      "expected": "Öneri listesi açılır; Enter seçer; Enter ile sonraki satır açılır ve odaklanır",
+      "actual": "öneri 1; Enter → \"A4\" fiyat 185; birim fiyatta Enter → 2. satır var=true odak=1/name; Esc sonrası liste açık=false. Genel kısayol (Ctrl+N, Ctrl+S gibi) yok",
+      "status": "PASS",
+      "severity": "",
+      "bug": ""
+    },
+    {
+      "id": "U3",
+      "section": "4 UX",
+      "name": "Hata mesajları: anlaşılır ve Türkçe; zorunlu alanlar",
+      "steps": "Cari seçmeden kes; kalem olmadan kes; ileri tarih; sunucu hatası ekranda",
+      "expected": "Türkçe, ne yapılacağını söyleyen mesaj; alan odaklanır",
+      "actual": "cari yok: \"Müşteriyi (cariyi) seçin.\" · kalem yok: \"En az bir kalem yazın.\" · ileri tarih: \"İleri tarihli fatura kesilemez (05.10.2026). Taslak olarak kaydedin; günü gelince kesin.\"",
+      "status": "PASS",
+      "severity": "",
+      "bug": ""
+    },
+    {
+      "id": "U5",
+      "section": "4 UX",
+      "name": "Onay diyalogları: kesme, iptal, taslak silme, büyük tutar",
+      "steps": "Faturayı Kes → onay; İptal Et → neden formu; Taslağı Sil → onay",
+      "expected": "Her biri onay ister; kesme onayında tutar ve numara yazar",
+      "actual": "kesme onayı: \" × ONAY Faturayı Kes Ayşe Kaya için FIS2026000000002 numarasıyla satış faturası kaydedilecek: ₺300.000,00. Stok, cari, Kasa, çek/senet ve ta\"; iptal: neden formu (etkiler geri alınır uyarısı var); taslak sil onayı=true; büyük tutara özel ek uyarı yok (tutar onay metninde yazıyor)",
+      "status": "PASS",
+      "severity": "",
+      "bug": ""
+    },
+    {
+      "id": "U6",
+      "section": "4 UX",
+      "name": "Performans: 1.000+ belge listesi ve 60 kalemli fatura",
+      "steps": "API ile 1.050 fatura kes; liste API ve ekran süresi; 60 kalemli kartı aç",
+      "expected": "Liste < 2 sn (API) ve < 3 sn (ekran); 60 kalem kart < 1,5 sn",
+      "actual": "1050 belge 23.1 sn'de kesildi (22 ms/belge); liste API 111 ms (toplam 1055); ekran 213 ms; 60 kalemli kart 66 ms",
+      "status": "PASS",
+      "severity": "",
+      "bug": ""
+    },
+    {
+      "id": "U9",
+      "section": "4 UX",
+      "name": "Tarayıcı konsol/çalışma hatası",
+      "steps": "Tüm adımlar boyunca",
+      "expected": "Hata yok",
+      "actual": "Hiç hata yok",
+      "status": "PASS",
+      "severity": "",
+      "bug": ""
+    }
+  ]
+}

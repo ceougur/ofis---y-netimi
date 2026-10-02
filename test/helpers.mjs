@@ -22,6 +22,8 @@ export async function startTestServer(options = {}) {
     // Lisans kilidi yalnızca lisans testlerinde uygulanır (test/license.test.mjs); diğer testler lisanslı gibi çalışır.
     license: options.license ?? { enforce: false, machineId: "0123456789abcdef0123456789abcdef" },
     startLicenseTimers: options.startLicenseTimers ?? false,
+    // e-Belge bağlantısı programda kapalıdır; yalnız entegratör testleri açar.
+    ...(options.edocEnabled ? { edocEnabled: true } : {}),
     ...(options.supervisorLink ? { supervisorLink: options.supervisorLink } : {}),
   });
   const address = await app.listen(0, "127.0.0.1");

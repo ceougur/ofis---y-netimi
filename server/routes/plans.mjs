@@ -158,6 +158,7 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
 
   // ---------- Kart okuma ----------
   const PLAN_SQL = `SELECT p.id, p.account_id AS accountId, p.ref_no AS refNo, p.registered_on AS registeredOn, p.case_key AS caseKey, p.case_source AS caseSource, p.case_title AS caseTitle, p.group_id AS groupId, p.subgroup_id AS subgroupId, p.name, p.note, p.phone, p.total, p.status, p.covers_balance AS coversBalance,
+      p.invoice_id AS invoiceId, COALESCE((SELECT i.number FROM invoices i WHERE i.id = p.invoice_id), '') AS invoiceNumber,
       p.created_by AS createdBy, p.created_at AS createdAt, p.updated_at AS updatedAt, COALESCE(u.display_name, '') AS actorName,
       COALESCE(g.name, '') AS groupName, COALESCE(s.name, '') AS subgroupName, COALESCE(ac.name, '') AS accountName, COALESCE(ac.ref_no, '') AS accountRef
     FROM plans p LEFT JOIN users u ON u.id = p.created_by LEFT JOIN plan_groups g ON g.id = p.group_id LEFT JOIN plan_groups s ON s.id = p.subgroup_id
@@ -535,6 +536,7 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
   router.delete("/api/workspace/plans/:id", async ({ req, res, params }) => {
     const user = auth.requirePermission(req, "plans.manage");
     const plan = planRow(params.id);
+    if (plan.invoiceId) throw new HttpError(409, `Bu kart ${plan.invoiceNumber || "bir fatura"} ile açıldı (vadeli satışın taksitleri). Kaldırmak için faturayı iptal edin ya da iade faturası kesin.`, { code: "invoice-linked", invoiceId: plan.invoiceId });
     const linked = cheques()?.countForPlan ? cheques().countForPlan(plan.id) : 0;
     // Silinen kart cari bakiyesinden ve Kasa'dan düşer: kapanmış dönemdeki borcu ya da tahsilatı varsa silinemez.
     if (!plan.coversBalance) period?.assertOpen(plan.registeredOn, "Bu kartın Kayıt Tarihi");
@@ -1102,10 +1104,11 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
   // v2.0.12: kartın Kayıt Tarihi carinin kayıt tarihidir (kişi bir kez kaydolur; kart açıldığı gün değil).
   // refNo verilirse (toplu taksitlendirme sayacı) kart tablosu her kartta yeniden taranmaz.
   // v2.0.13: coversBalance = carinin mevcut borcunu (veresiye satış, açılış) taksitlendirir; ikinci kez borç yazmaz.
-  function createForAccount(user, account, { total, count = 0, firstDue = "", everyMonths = 1, name = "", note = "", refNo = "", coversBalance = false }) {
+  // v2.0.15: faturadan açılan kartın Kayıt Tarihi fatura tarihidir (registeredOn) ve kart faturaya bağlıdır (invoiceId).
+  function createForAccount(user, account, { total, count = 0, firstDue = "", everyMonths = 1, name = "", note = "", refNo = "", coversBalance = false, registeredOn: fixedOn = "", invoiceId = "" }) {
     const id = newId("plan");
     const amount = roundMoney(Number(total) || 0);
-    const registeredOn = account.registeredOn && account.registeredOn <= today() ? account.registeredOn : today();
+    const registeredOn = fixedOn || (account.registeredOn && account.registeredOn <= today() ? account.registeredOn : today());
     if (count > 0 && period) period.dueDate(firstDue, { from: registeredOn, label: "İlk Vade" });
     if (!coversBalance) period?.assertOpen(registeredOn, "Kartın Kayıt Tarihi");
     const stamp = now();
@@ -1114,8 +1117,39 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
       id, account.id, refNo || nextRef(), registeredOn, account.caseKey || "", account.caseSource || "", account.caseTitle || "", account.groupId || null, account.subgroupId || null, (name || account.name).slice(0, 160), (note || "").slice(0, 1000), account.phone || "", amount, coversBalance ? 1 : 0, user.id, stamp, stamp,
     );
     if (count > 0 && amount > 0) replaceItems(id, distribute({ total: amount, count: Math.min(count, MAX_ITEMS), firstDue, everyMonths }));
-    audit(user, "plan.created", id, { name: name || account.name, total: amount, accountId: account.id, bulk: true, coversBalance });
+    if (invoiceId) store.run("UPDATE plans SET invoice_id = ? WHERE id = ?", invoiceId, id);
+    audit(user, "plan.created", id, { name: name || account.name, total: amount, accountId: account.id, bulk: true, coversBalance, invoiceId });
     return id;
+  }
+  // Satıştan iade iptal edilince (v2.0.15): iadenin küçülttüğü taksit kartı geri büyür — tutar son taksite eklenir; kart,
+  // faturanın taksitlendirilen kalanını aşmaz (cap). Kapatılmış kart değişmez.
+  function growForInvoice(user, planId, amount, cap, note = "") {
+    const plan = store.get("SELECT id, name, total, status FROM plans WHERE id = ? AND deleted_at IS NULL", planId);
+    if (!plan || plan.status === "closed") return null;
+    const grow = roundMoney(Math.min(Number(amount) || 0, (Number(cap) || 0) - (Number(plan.total) || 0)));
+    if (!(grow > 0.005)) return null;
+    const last = store.get("SELECT id, amount FROM plan_items WHERE plan_id = ? ORDER BY due_date DESC, seq DESC LIMIT 1", plan.id);
+    if (!last) return null;
+    const stamp = now();
+    store.run("UPDATE plan_items SET amount = ?, updated_at = ? WHERE id = ?", roundMoney((Number(last.amount) || 0) + grow), stamp, last.id);
+    store.run("UPDATE plans SET total = ?, updated_by = ?, updated_at = ? WHERE id = ?", roundMoney((Number(plan.total) || 0) + grow), user.id, stamp, plan.id);
+    audit(user, "plan.grown", plan.id, { from: plan.total, to: roundMoney((Number(plan.total) || 0) + grow), reason: note || "İade iptali" });
+    return { id: plan.id, grow };
+  }
+  // Fatura iptalinde faturanın kartı: tahsilatı yoksa kaldırılır (Silinenler'e gitmez; fatura iptalle geri gelmez).
+  // Tahsilat varsa iptal durur: para alınmıştır; borcu düşürmek için iade faturası kesilir (kart kalana göre küçülür).
+  function removeForInvoice(user, invoiceId) {
+    const ids = [];
+    for (const plan of store.all("SELECT id, name FROM plans WHERE invoice_id = ? AND deleted_at IS NULL", invoiceId)) {
+      const paid = store.get("SELECT COUNT(*) AS n FROM plan_entries WHERE plan_id = ?", plan.id).n;
+      if (paid) throw new HttpError(409, `Faturanın taksit kartında (“${plan.name}”) ${paid} tahsilat var; fatura iptal edilemez. Borcu düşürmek için iade faturası kesin.`, { code: "plan-has-payments", planId: plan.id });
+      const linked = cheques()?.countForPlan ? cheques().countForPlan(plan.id) : 0;
+      if (linked) throw new HttpError(409, `Faturanın taksit kartına sayılmış ${linked} çek/senet var; önce evrakı karttan ayırın.`, { code: "plan-has-cheques", planId: plan.id });
+      store.run("UPDATE plans SET deleted_by = ?, deleted_at = ?, updated_at = ? WHERE id = ?", user.id, now(), now(), plan.id);
+      audit(user, "plan.deleted", plan.id, { name: plan.name, invoiceId, reason: "invoice-cancelled" });
+      ids.push(plan.id);
+    }
+    return ids;
   }
   // Cari adı/telefonu değişince, adı/telefonu eski cariyle aynı olan kartlar da güncellenir (farklı adlı kart dokunulmaz).
   function followAccount(accountId, previous, next) {
@@ -1172,5 +1206,5 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
   // ikinci kez saymaz; aktarma "kartı var" der.
   const linkedCases = source => new Set(store.all("SELECT case_key AS k FROM plans WHERE deleted_at IS NULL AND case_key <> '' AND case_source = ?", source || "").map(row => row.k));
 
-  return { uncoveredDebt, trimCovers, cashEntries, cashSource, dueItems, openItems, fingerprint, ledgerPlansByAccount, list, detail, forCase, entriesForCase, summariesByAccount, forAccount, createForAccount, followAccount, countForAccount, receiptSeq, nextRef, validDistribution: distributionInput, resolveGroups, groupTree, ensureGroup, createScheduled, adoptPayment, linkedCases };
+  return { uncoveredDebt, trimCovers, cashEntries, cashSource, dueItems, openItems, fingerprint, ledgerPlansByAccount, list, detail, forCase, entriesForCase, summariesByAccount, forAccount, createForAccount, removeForInvoice, growForInvoice, followAccount, countForAccount, receiptSeq, nextRef, validDistribution: distributionInput, resolveGroups, groupTree, ensureGroup, createScheduled, adoptPayment, linkedCases };
 }

@@ -410,7 +410,11 @@ describe("Google Sheets'ten ve binlerce satırlık toplu alım (v2.0.6)", () => 
     assert.equal(done.created, 2);
     const yildiz = (await admin.get("/api/workspace/accounts?q=yıldız")).data.data.accounts[0];
     assert.equal(yildiz.refNo, "120.01");
-    assert.deepEqual(yildiz.extra, [{ label: "İL", value: "Konya" }, { label: "VERGİ NO", value: "1234567890" }]);
+    // v2.0.15: "İL" ve "VERGİ NO" artık kartın fatura alanlarına gider (ek alan olarak kalmaz).
+    assert.deepEqual(yildiz.extra, []);
+    assert.equal(yildiz.city, "Konya");
+    assert.equal(yildiz.taxNo, "1234567890");
+    assert.equal(yildiz.partyKind, "company");
     const stok = read.data.data.sheets[1].matrix;
     const sp = (await admin.post("/api/workspace/stock/import/preview", { matrix: stok })).data.data;
     const stockDone = (await admin.post("/api/workspace/stock/import", { matrix: stok, headerAt: sp.headerAt, roles: sp.roles })).data.data;

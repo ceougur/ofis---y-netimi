@@ -37,7 +37,7 @@ export function accountLedger(entries = [], plans = []) {
     const meta = ENTRY_KINDS[entry.kind];
     if (!meta) continue;
     const amount = roundMoney(Number(entry.amount) || 0);
-    const origin = entry.source === "stock" ? "stock" : entry.source === "cheque" ? "cheque" : "account";
+    const origin = entry.source === "stock" ? "stock" : entry.source === "cheque" ? "cheque" : entry.source === "invoice" ? "invoice" : "account";
     lines.push({
       id: entry.id,
       origin,
@@ -45,7 +45,9 @@ export function accountLedger(entries = [], plans = []) {
       date: entry.date,
       at: entry.createdAt || "",
       // Çek/senetten gelen satır (v2.0.7): alınan/ciro/karşılıksız açıklamada yazar; etiket evrak olduğunu söyler.
-      label: origin === "cheque" ? "Çek / senet" : meta.label,
+      // v2.0.15: faturadan gelen borç/alacak "Fatura" olarak görünür (açıklamada fatura türü ve numarası yazar).
+      label: origin === "cheque" ? "Çek / senet" : origin === "invoice" && !meta.cash ? "Fatura" : meta.label,
+      sourceId: entry.sourceId || "",
       // v2.0.13: tahsilat/ödemenin yolu (Nakit, Havale / EFT, Kredi Kartı); borç/alacakta boş.
       method: meta.cash ? entry.method || "cash" : "",
       note: entry.note || "",
@@ -164,6 +166,11 @@ export const plainHeader = value =>
 // ("Excel'de ne varsa kişi kartı ona göre açılır").
 const ACCOUNT_ROLE_TESTS = [
   ["seq", t => /^(#|s n|sn|s no|sira|sira no|no|nr|numara|cari no|cari kodu|cari kod|musteri no|musteri kodu|kod|kayit no|uye no|ogrenci no)$/.test(t)],
+  // v2.0.15: fatura kimliği. "Vergi No", "VKN", "TCKN", "T.C. Kimlik No", "Vergi/TC No"; "Vergi Dairesi" ayrı rol.
+  ["taxOffice", t => /(^| )(vergi dairesi|vergi d|v d|vd)( |$)/.test(t)],
+  ["taxNo", t => /(^| )(vkn|tckn|tc no|tc kimlik( no)?|t c kimlik( no)?|kimlik no|vergi no|vergi numarasi|vergi kimlik( no)?|vergi tc no|vergi kimlik numarasi)( |$)/.test(t)],
+  ["district", t => /^(ilce|ilcesi|semt)$/.test(t)],
+  ["city", t => /^(il|ili|sehir|sehri|il adi)$/.test(t)],
   ["phone", t => /(^| )(tel|telefon|telefonu|gsm|cep|cep tel|iletisim)( |$)/.test(t) && !/(2|ikinci|is tel|ev tel)/.test(t)],
   ["email", t => /(^| )(e ?posta|eposta|email|e mail|mail)( |$)/.test(t)],
   ["address", t => /(^| )(adres|adresi|ikamet|acik adres)( |$)/.test(t)],
@@ -176,7 +183,7 @@ const ACCOUNT_ROLE_TESTS = [
   ["note", t => /(^| )(not|notu|notlar|bilgi|bilgi notu|aciklama)( |$)/.test(t)],
   ["name", t => /(^| )adi? ?soyadi?( |$)|adisoyadi|(^| )(isim|ismi|ogrenci|ogrencinin adi|musteri|musteri adi|kisi|cari|cari adi|unvan|unvani|firma|firma adi|sakin|uye|hasta|danisan|abone|alici|kiraci|borclu|borclunun adi|muvekkil|ad)( |$)/.test(t) && !/(veli|anne|baba|avukat|vekil)/.test(t)],
 ];
-export const ACCOUNT_ROLES = Object.freeze(["seq", "name", "phone", "email", "address", "registered", "group", "subgroup", "balance", "type", "note", "extra"]);
+export const ACCOUNT_ROLES = Object.freeze(["seq", "name", "phone", "email", "address", "city", "district", "taxNo", "taxOffice", "registered", "group", "subgroup", "balance", "type", "note", "extra"]);
 
 // Stok kartı.
 const STOCK_ROLE_TESTS = [

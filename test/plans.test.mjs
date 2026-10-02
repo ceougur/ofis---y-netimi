@@ -348,7 +348,7 @@ describe("taksit modülü API (v2.0.4)", () => {
     ];
     const preview = (await admin.post("/api/workspace/plans/import/preview", { matrix })).data.data;
     assert.equal(preview.roles[2], "registered");
-    const result = (await admin.post("/api/workspace/plans/import", { matrix, headerAt: preview.headerAt, roles: preview.roles, defaultFirstDue: "2026-10-01" })).data.data;
+    const result = (await admin.post("/api/workspace/plans/import", { matrix, headerAt: preview.headerAt, roles: preview.roles, defaultFirstDue: today })).data.data;
     assert.equal(result.created, 2, JSON.stringify(result));
     const list = (await admin.get("/api/workspace/plans?status=all&sort=registered")).data.data.plans;
     const byName = name => list.find(item => item.name === name);

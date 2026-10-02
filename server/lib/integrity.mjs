@@ -10,6 +10,7 @@
 //   4. Stok ↔ cari / Kasa bağı: açık hesaba yazılan her stok hareketinin carideki karşılığı aynı tutarda var; karşılığı
 //      olmayan (sızan) ya da hareketi silinmiş (yetim) cari satırı yok; miktar sıfırdan büyük.
 //   5. Çek/senet ↔ cari bağı: evraktan gelen her cari satırı var olan bir evraka ve onun tutarına bağlı.
+//   6. Fatura (v2.0.15): başlık = kalemler; TL karşılığı denk; cari, stok, çek/senet ve taksit bağları; iade ≤ satılan.
 // Sapma bulunursa işlem ROLLBACK edilir (hiçbir satırı diske yazılmaz), kullanıcıya nedeni söylenir (409) ve
 // integrity_log'a yazılır.
 //
@@ -31,6 +32,14 @@ const AMOUNT_COLUMNS = [
   ["stock_moves", "amount", ""],
   ["cheques", "amount", "deleted_at IS NULL"],
   ["cheque_events", "amount", ""],
+  ["invoices", "try_payable", "status <> 'draft'"],
+  ["invoices", "try_net", "status <> 'draft'"],
+  ["invoices", "try_vat", "status <> 'draft'"],
+  ["invoices", "try_withheld", "status <> 'draft'"],
+  ["invoices", "try_stoppage", "status <> 'draft'"],
+  ["invoices", "payable_total", ""],
+  ["invoice_lines", "net", ""],
+  ["invoice_lines", "vat", ""],
 ];
 const money = value => `${new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(Number(value) || 0)} TL`;
 
@@ -56,6 +65,8 @@ const LOCK_SQL = {
   stock_moves: "SELECT id, item_id, kind, qty, amount, date, pay, method, account_id FROM stock_moves WHERE date <= ? ORDER BY id",
   plan_entries: "SELECT id, plan_id, kind, amount, date, method FROM plan_entries WHERE date <= ? ORDER BY id",
   plans: "SELECT id, total, account_id, registered_on FROM plans WHERE deleted_at IS NULL AND covers_balance = 0 AND registered_on <> '' AND registered_on <= ? ORDER BY id",
+  // v2.0.15: kapanmış dönemde kesilmiş fatura iptal edilemez, o döneme fatura eklenemez (taslak deftere girmez, sayılmaz).
+  invoices: "SELECT id, kind, status, account_id, issue_date, try_payable, try_vat FROM invoices WHERE status <> 'draft' AND issue_date <= ? ORDER BY id",
 };
 
 export function createIntegrity({ store, ledger, accounts = () => null, stock = () => null, plans = () => null, period = () => null, log = null, newId = () => `int-${crypto.randomUUID()}` }) {
@@ -155,6 +166,74 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
          WHERE e.source = 'cheque' AND (c.id IS NULL OR ABS(c.amount - e.amount) > 0.004) LIMIT 5`,
       );
       checks.push({ code: "cheque:account", name: "Çek/senet ↔ cari bağı", ok: bad.length === 0, count: bad.length, sample: bad.map(row => `${row.id}: cari ${row.amount} / evrak ${row.chequeAmount ?? "yok"}`) });
+    }
+    // Fatura (v2.0.15): belge ↔ kalemler ↔ cari ↔ stok ↔ çek/senet ↔ taksit bağları.
+    if (has("invoices") && has("invoice_lines")) {
+      const c = column => `CAST(ROUND(${column} * 100) AS INTEGER)`;
+      // 1. Başlık = kalemlerin toplamı (belgenin para biriminde).
+      const head = store.all(
+        // Takma adlar kolon adlarından ayrı (SQLite HAVING'de "net" önce kalemin net kolonunu bulur).
+        `SELECT i.id, i.number, ${c("i.net_total")} AS hnet, ${c("i.vat_total")} AS hvat, ${c("i.withheld_total")} AS hwithheld, ${c("i.payable_total")} AS hpayable, ${c("i.stoppage_total")} AS hstoppage,
+                COALESCE(SUM(${c("l.net")}), 0) AS lnet, COALESCE(SUM(${c("l.vat")}), 0) AS lvat, COALESCE(SUM(${c("l.withheld")}), 0) AS lwithheld, COALESCE(SUM(${c("l.payable")}), 0) AS lpayable, COUNT(l.id) AS lcount
+         FROM invoices i LEFT JOIN invoice_lines l ON l.invoice_id = i.id GROUP BY i.id
+         HAVING lcount = 0 OR hnet <> lnet OR hvat <> lvat OR hwithheld <> lwithheld OR hpayable <> lpayable - hstoppage LIMIT 5`,
+      );
+      checks.push({ code: "invoice:lines", name: "Fatura toplamı = kalemlerin toplamı", ok: head.length === 0, count: head.length, sample: head.map(row => `${row.number || row.id}: başlık ${row.hpayable / 100} (matrah ${row.hnet / 100}, KDV ${row.hvat / 100}) / kalemler ${(row.lpayable - row.hstoppage) / 100} (matrah ${row.lnet / 100}, KDV ${row.lvat / 100})`) });
+      // 2. TL karşılığı: ödenecek = matrah + KDV − tevkifat − stopaj; hesap dağılımı (gl_json) matraha eşit.
+      const money = store.all(`SELECT id, number, ${c("try_net")} AS net, ${c("try_vat")} AS vat, ${c("try_withheld")} AS withheld, ${c("try_stoppage")} AS stoppage, ${c("try_payable")} AS payable, gl_json AS gl FROM invoices WHERE status <> 'draft'`);
+      const wrongTry = [];
+      for (const row of money) {
+        let gl = 0;
+        try {
+          gl = JSON.parse(row.gl || "[]").reduce((sum, item) => sum + Math.round(Number(item.net) || 0), 0);
+        } catch {
+          gl = Number.NaN;
+        }
+        if (row.payable !== row.net + row.vat - row.withheld - row.stoppage || gl !== row.net) wrongTry.push(`${row.number || row.id}: ödenecek ${row.payable / 100}, hesaplar ${gl / 100} / matrah ${row.net / 100}`);
+      }
+      checks.push({ code: "invoice:try", name: "Fatura TL karşılığı (matrah + KDV − tevkifat − stopaj)", ok: wrongTry.length === 0, count: wrongTry.length, sample: wrongTry.slice(0, 5) });
+      // 3. Cari: kesilmiş faturanın cari satırı tek ve ödenecek tutar kadar; taslak/iptal faturanın cari satırı yok.
+      if (has("account_entries")) {
+        const party = store.all(
+          `SELECT * FROM (
+             SELECT i.id, i.number, i.status, i.kind, ${c("i.try_payable")} AS hpayable,
+                    COALESCE((SELECT SUM(${c("e.amount")}) FROM account_entries e WHERE e.source = 'invoice' AND e.source_id = i.id AND e.kind IN ('debt', 'credit') AND e.account_id = i.account_id
+                              AND e.kind = CASE WHEN i.kind IN ('sale', 'smm', 'purchase_return') THEN 'debt' ELSE 'credit' END), 0) AS posted,
+                    (SELECT COUNT(*) FROM account_entries e WHERE e.source = 'invoice' AND e.source_id = i.id AND e.kind IN ('debt', 'credit')) AS postedRows,
+                    (SELECT COUNT(*) FROM account_entries e WHERE e.source = 'invoice' AND e.source_id = i.id) AS anyRows
+             FROM invoices i)
+           WHERE (status = 'issued' AND (posted <> hpayable OR postedRows <> 1)) OR (status <> 'issued' AND anyRows > 0) LIMIT 5`,
+        );
+        checks.push({ code: "invoice:account", name: "Fatura ↔ cari bağı", ok: party.length === 0, count: party.length, sample: party.map(row => `${row.number || row.id} (${row.status}): fatura ${row.hpayable / 100} / cari ${row.posted / 100} (${row.postedRows} satır)`) });
+        const orphans = store.all("SELECT e.id FROM account_entries e LEFT JOIN invoices i ON i.id = e.source_id WHERE e.source = 'invoice' AND i.id IS NULL LIMIT 5");
+        checks.push({ code: "invoice:orphan", name: "Faturası olmayan cari satırı", ok: orphans.length === 0, count: orphans.length, sample: orphans.map(row => row.id) });
+      }
+      // 4. Stok: kesilmiş faturanın stoklu kalemi kendi hareketine bağlı ve miktarı aynı; taslak/iptal faturanın hareketi yok.
+      if (has("stock_moves")) {
+        const moves = store.all(
+          `SELECT l.id, i.number, l.qty, m.qty AS moved FROM invoice_lines l JOIN invoices i ON i.id = l.invoice_id AND i.status = 'issued'
+             LEFT JOIN stock_moves m ON m.id = l.move_id AND m.invoice_id = i.id
+           WHERE l.move_id <> '' AND (m.id IS NULL OR ABS(m.qty - l.qty) > 0.0005) LIMIT 5`,
+        );
+        const stray = store.all("SELECT m.id FROM stock_moves m LEFT JOIN invoices i ON i.id = m.invoice_id WHERE m.invoice_id <> '' AND (i.id IS NULL OR i.status <> 'issued') LIMIT 5");
+        checks.push({ code: "invoice:stock", name: "Fatura ↔ stok bağı", ok: moves.length + stray.length === 0, count: moves.length + stray.length, sample: [...moves.map(row => `${row.number}: kalem ${row.qty} / hareket ${row.moved ?? "yok"}`), ...stray.map(row => `${row.id}: faturası kesilmiş değil`)] });
+      }
+      // 5. Çek/senet ve taksit: faturayla açılan evrak/kart yalnız kesilmiş faturada yaşar.
+      if (has("cheques")) {
+        const stray = store.all("SELECT c.id FROM cheques c LEFT JOIN invoices i ON i.id = c.invoice_id WHERE c.invoice_id <> '' AND c.deleted_at IS NULL AND (i.id IS NULL OR i.status <> 'issued') LIMIT 5");
+        checks.push({ code: "invoice:cheque", name: "Fatura ↔ çek/senet bağı", ok: stray.length === 0, count: stray.length, sample: stray.map(row => row.id) });
+      }
+      if (hasColumn("plans", "invoice_id")) {
+        const stray = store.all("SELECT p.id FROM plans p LEFT JOIN invoices i ON i.id = p.invoice_id WHERE p.invoice_id <> '' AND p.deleted_at IS NULL AND (i.id IS NULL OR i.status <> 'issued') LIMIT 5");
+        checks.push({ code: "invoice:plan", name: "Fatura ↔ taksit kartı bağı", ok: stray.length === 0, count: stray.length, sample: stray.map(row => row.id) });
+      }
+      // 6. İade: bir kalemden iade edilen toplam miktar asıl miktarı aşmaz.
+      const over = store.all(
+        `SELECT o.id, i.number, o.qty, SUM(r.qty) AS returned FROM invoice_lines r JOIN invoices ri ON ri.id = r.invoice_id AND ri.status = 'issued'
+           JOIN invoice_lines o ON o.id = r.origin_line_id JOIN invoices i ON i.id = o.invoice_id
+         WHERE r.origin_line_id <> '' GROUP BY o.id HAVING SUM(r.qty) > o.qty + 0.0005 LIMIT 5`,
+      );
+      checks.push({ code: "invoice:returns", name: "İade miktarı ≤ faturadaki miktar", ok: over.length === 0, count: over.length, sample: over.map(row => `${row.number}: ${row.qty} satıldı / ${row.returned} iade`) });
     }
     // Tarih: her para hareketinin tarihi dolu ve geçerli takvim günü; ileri tarihli hareket yok (eski sürümden kalanlar
     // taban sayılır, yenisi eklenemez); taksit vadesi kartın Kayıt Tarihi'nden önce değil.

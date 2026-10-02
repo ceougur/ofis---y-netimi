@@ -28,7 +28,7 @@ const PDF_ROWS = 20_000;
 const MAX_ROWS = 500_000;
 const collator = new Intl.Collator("tr", { numeric: true, sensitivity: "base" });
 const TYPE_TEXT = { customer: "Müşteri", supplier: "Tedarikçi", other: "Diğer" };
-const CASH_SOURCE = { payment: "Kayıt tahsilatı", manual: "Kasa", plan: "Taksit", account: "Cari", stock: "Stok", cheque: "Çek / senet" };
+const CASH_SOURCE = { payment: "Kayıt tahsilatı", manual: "Kasa", plan: "Taksit", account: "Cari", stock: "Stok", cheque: "Çek / senet", invoice: "Fatura" };
 const PRIORITY = { high: "Yüksek", normal: "Normal", low: "Düşük", urgent: "Acil" };
 const TASK_STATUS = { open: "Açık", done: "Tamamlandı", completed: "Tamamlandı", cancelled: "İptal" };
 const money = value => (value === "" || value === null || value === undefined ? "" : tl(value));
@@ -63,7 +63,7 @@ function monthsBetween(first, last, max = 600) {
 }
 const percent = (part, whole) => (whole > 0.005 ? `%${new Intl.NumberFormat("tr-TR", { maximumFractionDigits: 1 }).format((part / whole) * 100)}` : "");
 
-export function registerReportCenter(router, { store, auth, audit, dataset, cash = () => null, accounts = () => null, plans = () => null, stock = () => null, cheques = () => null, overview = () => null, ledger = () => null, integrity = () => null, now: clock = () => new Date() }) {
+export function registerReportCenter(router, { store, auth, audit, dataset, cash = () => null, accounts = () => null, plans = () => null, stock = () => null, cheques = () => null, invoices = () => null, overview = () => null, ledger = () => null, integrity = () => null, now: clock = () => new Date() }) {
   const today = () => isoDay(clock());
   const office = () => store.setting("office.name", "");
   const admin = { id: "", role: "admin" };
@@ -460,7 +460,7 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
       id: "alacak-yaslandirma",
       group: "Cari",
       title: "Alacak Yaşlandırma",
-      description: "Vadesi gelen alacakların (taksit ve portföydeki çek/senet) gecikme süresine göre dağılımı: 1–30, 31–60, 61–90, 90+ gün.",
+      description: "Vadesi gelen alacakların (taksit, vadeli satış faturası ve portföydeki çek/senet) gecikme süresine göre dağılımı: 1–30, 31–60, 61–90, 90+ gün.",
       params: [],
       build() {
         const day = today();
@@ -485,14 +485,244 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
           const late = Math.round((Date.parse(`${day}T00:00:00Z`) - Date.parse(`${flow.date}T00:00:00Z`)) / 86_400_000);
           add(key, names.get(cheque?.accountId) || flow.party, late, flow.amount);
         }
+        // v2.0.15: vadeli (açık hesap) satış faturalarının ödenmemiş kısmı; taksitli fatura taksit kartından gelir.
+        for (const item of invoices()?.openItems ? invoices().openItems(day) : []) {
+          if (item.side !== "sale") continue;
+          add(item.accountId, names.get(item.accountId) || item.accountName, -item.days, item.open);
+        }
         const list = [...rows.values()].map(row => ({ ...row, late: roundMoney(row.b30 + row.b60 + row.b90 + row.b90p) })).sort((a, b) => b.late - a.late || collator.compare(a.name, b.name));
         const sum = key => roundMoney(list.reduce((total, row) => total + row[key], 0));
         return {
-          subtitle: `${dayText(day)} itibarıyla · taksit ve portföydeki alınan çek/senet vadelerine göre`,
+          subtitle: `${dayText(day)} itibarıyla · taksit, vadeli fatura ve portföydeki alınan çek/senet vadelerine göre`,
           headers: ["Cari / Kişi", "Vadesi Gelmemiş", "1–30 Gün", "31–60 Gün", "61–90 Gün", "90+ Gün", "Toplam Gecikmiş", "Toplam"],
           types: ["", "money", "money", "money", "money", "money", "money", "money"],
           rows: list.map(row => [row.name, money(row.notDue), money(row.b30), money(row.b60), money(row.b90), money(row.b90p), money(row.late), money(roundMoney(row.late + row.notDue))]),
           summary: [["Vadesi Gelmemiş", money(sum("notDue"))], ["1–30 gün", money(sum("b30"))], ["31–60 gün", money(sum("b60"))], ["61–90 gün", money(sum("b90"))], ["90+ gün", money(sum("b90p"))], ["Toplam Gecikmiş", money(sum("late"))]],
+        };
+      },
+    },
+    // ===== Fatura (v2.0.15) =====
+    // Yalnız kesilmiş faturalar (taslak ve iptal hariç); tutarlar TL karşılığıdır (dövizli faturada kurla çevrilmiş).
+    {
+      id: "fatura-satis",
+      group: "Fatura",
+      title: "Satış Faturaları",
+      description: "Aralıkta kesilen satış faturaları ve serbest meslek makbuzları: matrah, KDV, tevkifat, stopaj, ödenecek; ödenen ve kalan (kapama).",
+      params: ["range", "account"],
+      preset: "thisMonth",
+      build: query => invoiceListReport(query, ["sale", "smm"], "Satış"),
+    },
+    {
+      id: "fatura-alis",
+      group: "Fatura",
+      title: "Alış Faturaları",
+      description: "Aralıkta girilen alış faturaları (mal, hizmet ve gider): matrah, KDV, tevkifat, stopaj, ödenecek; ödenen ve kalan.",
+      params: ["range", "account"],
+      preset: "thisMonth",
+      build: query => invoiceListReport(query, ["purchase"], "Alış"),
+    },
+    {
+      id: "fatura-iade",
+      group: "Fatura",
+      title: "İade Faturaları",
+      description: "Satıştan ve alıştan iade faturaları; iade edilen faturanın numarası ve tutarlar.",
+      params: ["range", "account"],
+      preset: "thisMonth",
+      build: query => invoiceListReport(query, ["sale_return", "purchase_return"], "İade"),
+    },
+    {
+      id: "kdv-ozeti",
+      group: "Fatura",
+      title: "KDV Özeti (Beyanname Hazırlığı)",
+      description: "Aylara ve oranlara göre hesaplanan KDV (satış), indirilecek KDV (alış), iadeler ve tevkifat; ödenecek ya da devreden KDV.",
+      params: ["range"],
+      preset: "thisMonth",
+      build(query) {
+        const range = rangeOf(query, "thisMonth");
+        const list = store.all(
+          `SELECT substr(i.issue_date, 1, 7) AS month, i.kind, l.vat_rate AS rate, SUM(l.net * i.rate) AS net, SUM(l.vat * i.rate) AS vat, SUM(l.withheld * i.rate) AS withheld, COUNT(DISTINCT i.id) AS count
+           FROM invoice_lines l JOIN invoices i ON i.id = l.invoice_id AND i.status = 'issued'
+           WHERE (? = '' OR i.issue_date >= ?) AND (? = '' OR i.issue_date <= ?) GROUP BY month, i.kind, l.vat_rate ORDER BY month, i.kind, l.vat_rate`,
+          range.from, range.from, range.to, range.to,
+        );
+        const KIND = { sale: "Satış", smm: "Serbest Meslek Makbuzu", sale_return: "Satıştan İade", purchase: "Alış", purchase_return: "Alıştan İade" };
+        // Hesaplanan (391) ve indirilecek (191) KDV — Ana Defter'deki tutarların aynısı (faturanın TL başlığından).
+        const heads = store.get(
+          `SELECT COALESCE(SUM(CASE WHEN kind IN ('sale', 'smm') THEN try_vat - try_withheld WHEN kind = 'sale_return' THEN -(try_vat - try_withheld) ELSE 0 END), 0) AS output,
+                  COALESCE(SUM(CASE WHEN kind = 'purchase' THEN try_vat WHEN kind = 'purchase_return' THEN -try_vat ELSE 0 END), 0) AS input,
+                  COALESCE(SUM(CASE WHEN kind = 'purchase' THEN try_withheld WHEN kind = 'purchase_return' THEN -try_withheld ELSE 0 END), 0) AS withheld2
+           FROM invoices WHERE status = 'issued' AND (? = '' OR issue_date >= ?) AND (? = '' OR issue_date <= ?)`,
+          range.from, range.from, range.to, range.to,
+        );
+        const result = roundMoney(heads.output - heads.input);
+        return {
+          subtitle: rangeText(range),
+          headers: ["Ay", "Belge Türü", "KDV %", "Belge", "Matrah", "KDV", "Tevkifat"],
+          types: ["", "", "number", "number", "money", "money", "money"],
+          rows: list.map(row => [monthLabel(row.month), KIND[row.kind] || row.kind, `%${row.rate}`, String(row.count), money(roundMoney(row.net)), money(roundMoney(row.vat)), money(roundMoney(row.withheld))]),
+          summary: [
+            ["Hesaplanan KDV (391)", money(roundMoney(heads.output))],
+            ["İndirilecek KDV (191)", money(roundMoney(heads.input))],
+            ["Alıcı Olarak Kesilen Tevkifat (2 No.lu)", money(roundMoney(heads.withheld2))],
+            [result >= 0 ? "Ödenecek KDV" : "Devreden KDV", money(Math.abs(result))],
+          ],
+        };
+      },
+    },
+    {
+      id: "ba-bs",
+      group: "Fatura",
+      title: "Ba-Bs Formu",
+      description: "Aylık Form Ba (alışlar) ve Form Bs (satışlar): aynı kişiyle KDV hariç 5.000 TL ve üzeri belgeler; belge sayısı ve tutar.",
+      params: ["range"],
+      preset: "lastMonth",
+      build(query) {
+        const range = rangeOf(query, "lastMonth");
+        const LIMIT = 5000;
+        const list = store.all(
+          `SELECT substr(i.issue_date, 1, 7) AS month, CASE WHEN i.kind IN ('sale', 'smm', 'purchase_return') THEN 'Bs' ELSE 'Ba' END AS form, i.account_id AS accountId,
+                  MAX(json_extract(i.party_json, '$.name')) AS name, MAX(json_extract(i.party_json, '$.taxNo')) AS taxNo, COUNT(*) AS count, SUM(i.try_net) AS net
+           FROM invoices i WHERE i.status = 'issued' AND (? = '' OR i.issue_date >= ?) AND (? = '' OR i.issue_date <= ?)
+           GROUP BY month, form, i.account_id HAVING SUM(i.try_net) >= ? ORDER BY month, form, net DESC`,
+          range.from, range.from, range.to, range.to, LIMIT,
+        );
+        return {
+          subtitle: `${rangeText(range)} · sınır ${money(LIMIT)} (KDV hariç)`,
+          headers: ["Ay", "Form", "Cari", "VKN / TCKN", "Belge Sayısı", "Tutar (KDV Hariç)"],
+          types: ["", "", "", "", "number", "money"],
+          rows: list.map(row => [monthLabel(row.month), row.form, row.name || "", row.taxNo || "", String(row.count), money(roundMoney(row.net))]),
+          summary: [["Form Ba Satırı", String(list.filter(row => row.form === "Ba").length)], ["Form Bs Satırı", String(list.filter(row => row.form === "Bs").length)]],
+        };
+      },
+    },
+    {
+      id: "urun-satis-karlilik",
+      group: "Fatura",
+      title: "Ürün Bazında Satış ve Kârlılık",
+      description: "Faturalı satışlarda her ürün ve hizmet için net miktar, net satış (iadeler düşülmüş), satış anındaki maliyet, brüt kâr ve kâr oranı.",
+      params: ["range"],
+      preset: "thisMonth",
+      build(query) {
+        const range = rangeOf(query, "thisMonth");
+        const list = store.all(
+          `SELECT COALESCE(NULLIF(l.item_id, ''), 'ad:' || lower(l.name)) AS key, MAX(l.name) AS name, MAX(l.code) AS code, MAX(l.unit) AS unit, MAX(l.goods) AS goods,
+                  SUM(CASE WHEN i.kind = 'sale_return' THEN -l.qty ELSE l.qty END) AS qty,
+                  SUM(CASE WHEN i.kind = 'sale_return' THEN -l.net ELSE l.net END * i.rate) AS net,
+                  SUM(CASE WHEN i.kind = 'sale_return' THEN -l.qty * COALESCE(o.unit_cost, 0) ELSE l.qty * l.unit_cost END) AS cost
+           FROM invoice_lines l JOIN invoices i ON i.id = l.invoice_id AND i.status = 'issued' AND i.kind IN ('sale', 'smm', 'sale_return')
+             LEFT JOIN invoice_lines o ON o.id = l.origin_line_id
+           WHERE (? = '' OR i.issue_date >= ?) AND (? = '' OR i.issue_date <= ?) GROUP BY key ORDER BY net DESC`,
+          range.from, range.from, range.to, range.to,
+        );
+        const total = list.reduce((acc, row) => ({ net: acc.net + row.net, cost: acc.cost + row.cost }), { net: 0, cost: 0 });
+        return {
+          subtitle: `${rangeText(range)} · maliyet: satış anında ürün kartındaki son alış fiyatı (hizmette maliyet yok)`,
+          headers: ["Kod", "Ürün / Hizmet", "Net Miktar", "Birim", "Net Satış", "Maliyet", "Brüt Kâr", "Kâr %"],
+          types: ["", "", "number", "", "money", "money", "money", ""],
+          rows: list.map(row => [row.code || "", row.name, qty(row.qty), row.unit, money(roundMoney(row.net)), row.goods ? money(roundMoney(row.cost)) : "", row.goods ? money(roundMoney(row.net - row.cost)) : "", row.goods ? percent(row.net - row.cost, row.net) : ""]),
+          summary: [["Net Satış", money(roundMoney(total.net))], ["Maliyet", money(roundMoney(total.cost))], ["Brüt Kâr", money(roundMoney(total.net - total.cost))]],
+        };
+      },
+    },
+    {
+      id: "cari-satis-alis",
+      group: "Fatura",
+      title: "Cari Bazında Satış ve Alış",
+      description: "Her cari için faturalı satış, satıştan iade, net satış; alış, alıştan iade, net alış (KDV hariç) ve KDV.",
+      params: ["range"],
+      preset: "thisMonth",
+      build(query) {
+        const range = rangeOf(query, "thisMonth");
+        const list = store.all(
+          `SELECT i.account_id AS accountId, MAX(COALESCE(a.name, json_extract(i.party_json, '$.name'))) AS name,
+                  SUM(CASE WHEN i.kind IN ('sale', 'smm') THEN i.try_net ELSE 0 END) AS sale, SUM(CASE WHEN i.kind = 'sale_return' THEN i.try_net ELSE 0 END) AS saleReturn,
+                  SUM(CASE WHEN i.kind = 'purchase' THEN i.try_net ELSE 0 END) AS purchase, SUM(CASE WHEN i.kind = 'purchase_return' THEN i.try_net ELSE 0 END) AS purchaseReturn,
+                  SUM(CASE WHEN i.kind IN ('sale', 'smm', 'purchase_return') THEN i.try_vat ELSE -i.try_vat END) AS vat, COUNT(*) AS count
+           FROM invoices i LEFT JOIN accounts a ON a.id = i.account_id WHERE i.status = 'issued' AND (? = '' OR i.issue_date >= ?) AND (? = '' OR i.issue_date <= ?)
+           GROUP BY i.account_id ORDER BY (sale - saleReturn) DESC, name`,
+          range.from, range.from, range.to, range.to,
+        );
+        const sum = key => roundMoney(list.reduce((total, row) => total + (Number(row[key]) || 0), 0));
+        return {
+          subtitle: rangeText(range),
+          headers: ["Cari", "Belge", "Satış", "Satıştan İade", "Net Satış", "Alış", "Alıştan İade", "Net Alış"],
+          types: ["", "number", "money", "money", "money", "money", "money", "money"],
+          rows: list.map(row => [row.name || "", String(row.count), money(roundMoney(row.sale)), money(roundMoney(row.saleReturn)), money(roundMoney(row.sale - row.saleReturn)), money(roundMoney(row.purchase)), money(roundMoney(row.purchaseReturn)), money(roundMoney(row.purchase - row.purchaseReturn))]),
+          summary: [["Net Satış", money(roundMoney(sum("sale") - sum("saleReturn")))], ["Net Alış", money(roundMoney(sum("purchase") - sum("purchaseReturn")))]],
+        };
+      },
+    },
+    {
+      id: "gider-raporu",
+      group: "Fatura",
+      title: "Gider Raporu (Türüne Göre)",
+      description: "Hizmet ve gider alış faturalarının gider türüne (kira, elektrik, internet, danışmanlık, demirbaş…) ve aya göre KDV hariç toplamı.",
+      params: ["range"],
+      preset: "thisMonth",
+      build(query) {
+        const range = rangeOf(query, "thisMonth");
+        const EXPENSE = { rent: "Kira", utilities: "Elektrik, Su ve Doğalgaz", telecom: "İnternet ve Telefon", office: "Kırtasiye ve Ofis Malzemesi", fuel: "Yakıt ve Ulaşım", repair: "Bakım ve Onarım", advisory: "Danışmanlık, Muhasebe ve Hukuk", food: "Yemek ve İkram", insurance: "Sigorta", software: "Yazılım ve Abonelik", cleaning: "Temizlik ve Güvenlik", marketing: "Reklam ve Pazarlama", freight: "Nakliye ve Kargo", asset: "Demirbaş (Bilgisayar, Mobilya, Cihaz)", other: "Diğer Giderler" };
+        const list = store.all(
+          `SELECT substr(i.issue_date, 1, 7) AS month, l.expense_code AS code, l.gl_account AS account, SUM(CASE WHEN i.kind = 'purchase_return' THEN -l.net ELSE l.net END * i.rate) AS net,
+                  SUM(CASE WHEN i.kind = 'purchase_return' THEN -l.vat ELSE l.vat END * i.rate) AS vat, COUNT(DISTINCT i.id) AS count
+           FROM invoice_lines l JOIN invoices i ON i.id = l.invoice_id AND i.status = 'issued' AND i.kind IN ('purchase', 'purchase_return')
+           WHERE l.goods = 0 AND (? = '' OR i.issue_date >= ?) AND (? = '' OR i.issue_date <= ?) GROUP BY month, code ORDER BY month, net DESC`,
+          range.from, range.from, range.to, range.to,
+        );
+        const total = roundMoney(list.reduce((sum, row) => sum + row.net, 0));
+        return {
+          subtitle: rangeText(range),
+          headers: ["Ay", "Gider Türü", "Hesap", "Belge", "Tutar (KDV Hariç)", "KDV", "Pay"],
+          types: ["", "", "", "number", "money", "money", ""],
+          rows: list.map(row => [monthLabel(row.month), EXPENSE[row.code] || "Diğer Giderler", row.account, String(row.count), money(roundMoney(row.net)), money(roundMoney(row.vat)), percent(row.net, total)]),
+          summary: [["Toplam Gider", money(total)]],
+        };
+      },
+    },
+    {
+      id: "stopaj-tevkifat",
+      group: "Fatura",
+      title: "Stopaj ve Tevkifat Özeti",
+      description: "Müşterinin bizden kestiği stopaj (193, mahsup edilir) ve alıcı olarak bizim kestiğimiz stopaj ile KDV tevkifatı (360, muhtasar ve 2 No.lu KDV).",
+      params: ["range"],
+      preset: "thisMonth",
+      build(query) {
+        const range = rangeOf(query, "thisMonth");
+        const list = store.all(
+          `SELECT i.issue_date AS date, i.number, i.kind, COALESCE(json_extract(i.party_json, '$.name'), '') AS name, COALESCE(json_extract(i.party_json, '$.taxNo'), '') AS taxNo,
+                  i.try_net AS net, i.stoppage_rate AS stoppageRate, i.try_stoppage AS stoppage, i.try_withheld AS withheld
+           FROM invoices i WHERE i.status = 'issued' AND (i.try_stoppage > 0 OR i.try_withheld > 0) AND (? = '' OR i.issue_date >= ?) AND (? = '' OR i.issue_date <= ?) ORDER BY i.issue_date, i.number`,
+          range.from, range.from, range.to, range.to,
+        );
+        const side = kind => (["sale", "smm", "purchase_return"].includes(kind) ? "Bizden kesilen (193)" : "Bizim kestiğimiz (360)");
+        const sum = (filter, key) => roundMoney(list.filter(filter).reduce((total, row) => total + (Number(row[key]) || 0), 0));
+        const ours = row => !["sale", "smm", "purchase_return"].includes(row.kind);
+        return {
+          subtitle: rangeText(range),
+          headers: ["Tarih", "Belge No", "Cari", "VKN / TCKN", "Taraf", "Matrah", "Stopaj %", "Stopaj", "KDV Tevkifatı"],
+          types: ["", "", "", "", "", "money", "", "money", "money"],
+          rows: list.map(row => [dayText(row.date), row.number, row.name, row.taxNo, side(row.kind), money(row.net), row.stoppageRate ? `%${row.stoppageRate}` : "", money(row.stoppage), money(row.withheld)]),
+          summary: [["Bizden Kesilen Stopaj", money(sum(row => !ours(row), "stoppage"))], ["Bizim Ödeyeceğimiz Stopaj", money(sum(ours, "stoppage"))], ["Bizim Ödeyeceğimiz Tevkifat", money(sum(ours, "withheld"))]],
+        };
+      },
+    },
+    {
+      id: "acik-faturalar",
+      group: "Fatura",
+      title: "Açık Faturalar ve Yaşlandırma",
+      description: "Ödenmemiş (kısmen ödenmiş dahil) satış ve alış faturaları; vade ve gecikme günü (kapama: bağlı ödeme önce kendi faturasına, kalan en eskiye).",
+      params: ["account"],
+      build(query) {
+        const day = today();
+        const list = (invoices()?.openItems ? invoices().openItems(day) : []).filter(item => !query.account || item.accountId === query.account).sort((a, b) => a.days - b.days);
+        const bucket = days => (days >= 0 ? "Vadesi Gelmemiş" : days >= -30 ? "1–30 Gün" : days >= -60 ? "31–60 Gün" : days >= -90 ? "61–90 Gün" : "90+ Gün");
+        const sum = side => roundMoney(list.filter(item => item.side === side).reduce((total, item) => total + item.open, 0));
+        return {
+          subtitle: `${dayText(day)} itibarıyla · taksitli faturalar taksit kartında izlenir`,
+          headers: ["Vade", "Fatura No", "Taraf", "Cari", "Fatura Tarihi", "Fatura Tutarı", "Kalan", "Gecikme", "Dilim"],
+          types: ["", "", "", "", "", "money", "money", "", ""],
+          rows: list.map(item => [dayText(item.dueDate), item.number, item.side === "sale" ? "Alacak (Satış)" : "Borç (Alış)", item.accountName, dayText(item.issueDate), money(item.payable), money(item.open), item.days < 0 ? `${-item.days} gün` : "", bucket(item.days)]),
+          summary: [["Açık Alacak", money(sum("sale"))], ["Açık Borç", money(sum("purchase"))]],
         };
       },
     },
@@ -739,7 +969,7 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
           subtitle: rangeText(range),
           headers: ["Tarih", "Kod", "Kalem", "Hareket", "Miktar", "Birim", "Birim Fiyat", "Tutar", "Para", "Cari", "Açıklama", "Giren"],
           types: ["", "", "", "", "number", "", "money", "money", "", "", "", ""],
-          rows: list.map(row => [dayText(row.date), row.code, row.name, row.reason === "return" ? "Satış İadesi" : row.kind === "in" ? "Giriş" : "Çıkış", qty(row.qty), row.unit, money(row.unitPrice), row.amount ? money(row.amount) : "", pay[row.pay] || row.pay, row.accountName, row.note, row.actorName]),
+          rows: list.map(row => [dayText(row.date), row.code, row.name, row.reason === "return" ? "Satış İadesi" : row.reason === "preturn" ? "Alıştan İade" : row.kind === "in" ? "Giriş" : "Çıkış", qty(row.qty), row.unit, money(row.unitPrice), row.amount ? money(row.amount) : "", pay[row.pay] || row.pay, row.accountName, row.note, row.actorName]),
           summary: [["Hareket", String(list.length)], ["Giriş Tutarı", money(total.in)], ["Çıkış Tutarı", money(total.out)]],
         };
       },
@@ -954,6 +1184,26 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
     },
   ];
   const REGISTRY = new Map(REPORTS.map(report => [report.id, report]));
+
+  // Fatura listesi raporları (satış / alış / iade): rakamlar fatura modülünün listesiyle aynı (ödenen ve kalan kapamadan).
+  function invoiceListReport(query, kinds, label) {
+    const range = rangeOf(query, "thisMonth");
+    const service = invoices();
+    if (!service?.list) return { subtitle: rangeText(range), headers: [], types: [], rows: [], summary: [] };
+    const data = service.list(admin, { side: "", kind: "", status: "issued", pay: "", profile: "", from: range.from, to: range.to, account: limited(query.account || "", 120, "Cari"), item: "", q: "", ids: [], sort: "date" });
+    const list = data.invoices.filter(row => kinds.includes(row.kind)).sort((a, b) => (a.issueDate === b.issueDate ? (a.issueTime < b.issueTime ? -1 : 1) : a.issueDate < b.issueDate ? -1 : 1));
+    const detail = new Map(store.all(`SELECT id, try_withheld AS withheld, try_stoppage AS stoppage, COALESCE(json_extract(party_json, '$.taxNo'), '') AS taxNo FROM invoices WHERE id IN (${list.map(() => "?").join(", ") || "''"})`, ...list.map(row => row.id)).map(row => [row.id, row]));
+    const sum = key => roundMoney(list.reduce((total, row) => total + (Number(row[key]) || 0), 0));
+    const sumDetail = key => roundMoney(list.reduce((total, row) => total + (Number(detail.get(row.id)?.[key]) || 0), 0));
+    const returns = kinds.some(kind => kind.endsWith("return"));
+    return {
+      subtitle: rangeText(range),
+      headers: ["Tarih", "Saat", "Fatura No", "Tür", "Cari", "VKN / TCKN", returns ? "İade Edilen" : "Senaryo", "Matrah", "KDV", "Tevkifat", "Stopaj", "Ödenecek", "Ödenen", "Kalan", "Durum"],
+      types: ["", "", "", "", "", "", "", "money", "money", "money", "money", "money", "money", "money", ""],
+      rows: list.map(row => [dayText(row.issueDate), row.issueTime, row.displayNo, row.kindLabel, row.accountName, detail.get(row.id)?.taxNo || "", returns ? row.originalNumber : row.scenarioLabel, money(row.tryNet), money(row.tryVat), money(detail.get(row.id)?.withheld || 0), money(detail.get(row.id)?.stoppage || 0), money(row.tryPayable), returns ? "" : money(row.paid), returns ? "" : money(row.open), row.payStateLabel]),
+      summary: [[`${label} Faturası`, String(list.length)], ["Matrah", money(sum("tryNet"))], ["KDV", money(sum("tryVat"))], ["Tevkifat", money(sumDetail("withheld"))], ["Ödenecek", money(sum("tryPayable"))], ...(returns ? [] : [["Kalan", money(sum("open"))]])],
+    };
+  }
 
   // Taksitler (vade listesi ve gecikenler) tek geçişte: kartlar, taksitler ve hareketler toplu okunur, allocate ile dağıtılır.
   function installmentReport(filter, subtitle, { lateFirst = false } = {}) {

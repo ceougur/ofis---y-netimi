@@ -28,6 +28,8 @@ export function registerCashRoutes(router, context) {
     const stock = context.stock?.cashEntries ? context.stock.cashEntries(after) : [];
     // Çek/senet (v2.0.7): alınan evrak tahsil edilince giriş, verilen evrak ödenince çıkış. Alınca/verilince Kasa değişmez.
     const cheques = context.cheques?.cashEntries ? context.cheques.cashEntries(after) : [];
+    // Fatura (v2.0.15): kesilirken peşin alınan/ödenen tutar (nakit, banka, kredi kartı). Düzeltme faturadan (iptal/iade).
+    const invoices = context.invoices?.cashEntries ? context.invoices.cashEntries(after) : [];
     const payments = store.all(
       `SELECT p.id, 'in' AS kind, 'payment' AS source, p.method, p.amount, p.date, p.note AS description, p.case_key AS caseKey, p.case_title AS caseTitle,
               p.created_by AS actorId, COALESCE(u.display_name, '') AS actorName, p.created_at AS createdAt, p.updated_at AS updatedAt
@@ -41,13 +43,13 @@ export function registerCashRoutes(router, context) {
       ...(after ? [after] : []),
     );
     // Tarih sırası; aynı gün içinde giriş sırası (yeni eklenen en altta).
-    return [...payments, ...manual, ...plans, ...accounts, ...stock, ...cheques].sort((a, b) => (a.date === b.date ? (a.createdAt < b.createdAt ? -1 : a.createdAt > b.createdAt ? 1 : 0) : a.date < b.date ? -1 : 1));
+    return [...payments, ...manual, ...plans, ...accounts, ...stock, ...cheques, ...invoices].sort((a, b) => (a.date === b.date ? (a.createdAt < b.createdAt ? -1 : a.createdAt > b.createdAt ? 1 : 0) : a.date < b.date ? -1 : 1));
   }
 
   // Kasa toplamları SQL'de, Kasa satırlarıyla aynı kaynak tanımlarından (tablo + koşul) hesaplanır; satırlar belleğe
   // alınmaz. Kuruş tamsayısıyla toplanır (kayan nokta birikimi yok). ANLIK DURUM ve nakit akışı başlangıcı buradan okur.
   function sources() {
-    return [PAYMENTS, MANUAL, context.plans?.cashSource, context.accounts?.cashSource, context.stock?.cashSource, context.cheques?.cashSource].filter(Boolean);
+    return [PAYMENTS, MANUAL, context.plans?.cashSource, context.accounts?.cashSource, context.stock?.cashSource, context.cheques?.cashSource, context.invoices?.cashSource].filter(Boolean);
   }
   function summary(day, monthStart = `${day.slice(0, 7)}-01`) {
     const union = sources()
@@ -144,7 +146,7 @@ export function registerCashRoutes(router, context) {
         entry.source === "plan" ? canUser(user, "plans.manage") || (own && canUser(user, "plans.collect"))
         : entry.source === "account" ? canUser(user, "accounts.manage") || (own && canUser(user, "accounts.collect"))
         : entry.source === "stock" ? canUser(user, "stock.manage")
-        : entry.source === "cheque" ? false
+        : entry.source === "cheque" || entry.source === "invoice" ? false
         : canUser(user, "cash.manage") || (entry.source === "payment" && own && canUser(user, "payments.create"));
       list.push({ ...entry, balance, editable });
     }
