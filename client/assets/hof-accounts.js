@@ -338,12 +338,15 @@
 
   // ---------- Cari seçici (taksit kartı formu, stok hareketi) ----------
   // Yazdıkça sunucudan en çok 20 cari; seçilen carinin kimliği gizli alanda. "×" seçimi kaldırır.
-  function picker({ value = {}, label = "Cari", help = "", required = false, type = "", onPick = null, name = "accountId" } = {}) {
+  // v2.0.17: prefer = o türdeki cariler listede üstte (tür kısıtı değil); allowNew = "+ Yeni Cari" (seçiciden ayrılmadan
+  // kart açılır, kaydedilince seçili gelir; boş sonuçta "Bu adla cari yok — + Yeni Cari").
+  function picker({ value = {}, label = "Cari", help = "", required = false, type = "", prefer = "", allowNew = null, onPick = null, name = "accountId" } = {}) {
     if (!HOF.can("accounts.view")) return null;
+    const canNew = allowNew && canManage();
     const field = HOF.el(
       "div",
       { class: "hof-field hof-case-picker hof-acc-picker" },
-      `<span>${esc(label)}${required ? ' <i aria-hidden="true">*</i>' : ""}</span>
+      `<span>${esc(label)}${required ? ' <i aria-hidden="true">*</i>' : ""}${canNew ? ' <button type="button" class="hof-link-button hof-acc-picker-new" data-acc-new>+ Yeni Cari</button>' : ""}</span>
       <div class="hof-case-picker-box"><input type="text" data-acc-query autocomplete="off" maxlength="160" placeholder="Cari adı, telefon ya da cari no yazın…" value="${esc(value.name || "")}"><button type="button" class="hof-case-picker-clear" data-acc-clear title="Seçimi kaldır" aria-label="Seçimi kaldır">×</button></div>
       <input type="hidden" name="${esc(name)}" value="${esc(value.id || "")}">
       <ul class="hof-case-picker-list" role="listbox" hidden></ul>
@@ -370,14 +373,14 @@
       timer = setTimeout(async () => {
         const own = ++ticket;
         try {
-          hits = await HOF.api(`/api/workspace/accounts/search?q=${encodeURIComponent(input.value.trim())}${type ? `&type=${type}` : ""}`);
+          hits = await HOF.api(`/api/workspace/accounts/search?q=${encodeURIComponent(input.value.trim())}${type ? `&type=${type}` : ""}${prefer ? `&prefer=${prefer}` : ""}`);
         } catch {
           hits = [];
         }
         if (own !== ticket) return;
         list.innerHTML = hits.length
-          ? hits.map(item => `<li role="option" data-id="${esc(item.id)}"><b>${esc(item.name)}${item.refNo ? ` · No ${esc(item.refNo)}` : ""}</b><small>${esc([TYPES[item.type], item.groupName, item.phone].filter(Boolean).join(" · "))} · bakiye ${esc(money(item.balance))}</small></li>`).join("")
-          : `<li class="is-empty">${input.value.trim() ? "Eşleşen cari yok" : "Henüz cari yok"}</li>`;
+          ? hits.map(item => `<li role="option" data-id="${esc(item.id)}"><b>${esc(item.name)}${item.refNo ? ` · No ${esc(item.refNo)}` : ""}${prefer ? ` <span class="hof-plan-badge is-${item.type === "supplier" ? "soon" : item.type === "other" ? "muted" : "info"}">${esc(TYPES[item.type] || "")}</span>` : ""}</b><small>${esc([TYPES[item.type], item.groupName, item.phone].filter(Boolean).join(" · "))} · bakiye ${esc(money(item.balance))}</small></li>`).join("")
+          : `<li class="is-empty">${input.value.trim() ? "Bu adla cari yok" : "Henüz cari yok"}${canNew ? ' — <button type="button" class="hof-link-button" data-acc-new>+ Yeni Cari</button>' : ""}</li>`;
         list.hidden = false;
       }, 180);
     };
@@ -424,6 +427,15 @@
       onPick?.(null);
       input.focus();
     });
+    if (canNew)
+      field.addEventListener("mousedown", event => {
+        const button = event.target.closest("[data-acc-new]");
+        if (!button) return;
+        event.preventDefault();
+        hide();
+        const preset = { ...(typeof allowNew === "object" ? allowNew : {}), name: input.value.trim() || undefined };
+        HOF.accounts.newFor(preset, { onSaved: account => field.setAccount({ id: account.id, name: account.name }) });
+      });
     state();
     return field;
   }

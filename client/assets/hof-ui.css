@@ -6962,6 +6962,10 @@ body.hof-dense .dynamic-table th {
 .hof-case-picker {
   position: relative;
 }
+/* v2.0.17: seçicide "+ Yeni Cari" (etiketin yanında ve boş sonuçta). */
+.hof-acc-picker-new { margin-left: 8px; font-weight: 800; }
+.hof-case-picker-list .is-empty .hof-link-button { font-weight: 800; }
+.hof-case-picker-list li b .hof-plan-badge { margin-left: 6px; vertical-align: middle; }
 .hof-case-picker-box {
   display: flex;
   align-items: center;

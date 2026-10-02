@@ -2,6 +2,7 @@
 // göredir (sabit tarih yok). Her maddenin kanıtı bir kontrol ve ekran görüntüsüdür (artifacts/senaryo-217/).
 //   5. Hayalet kısmi ödeme: aynı cariye satış 400 + alış 6.000 → alış "Açık" (ödenen 0); kartta "Bu Faturayı Kapatanlar";
 //      Mahsup Et (satış ↔ alış) → "Mahsup" rozeti; cari kartından ödeme "Kapatılacak Fatura" ile → "Bağlı"; bakiye/Kasa aynı.
+//   8. Çek ciro: cari seçici tür kısıtsız (Müşteri türündeki cari bulunur, tür rozeti), "+ Yeni Cari", boş sonuç metni.
 // Çalıştırma: npm run test:senaryo-217 (ekran görüntüleri artifacts/senaryo-217/).
 import fs, { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -187,6 +188,36 @@ try {
     await closeAll();
     const after = { balance: (await account(ids.party)).totals.balance, cash: (await call(admin, "/api/workspace/cash")).data.totals.balance };
     ok(after.balance === before.balance + 1000 && after.cash === before.cash - 1000, `mahsup bakiyeyi/Kasa'yı değiştirmedi; yalnız 1.000 ödeme düştü (bakiye ${before.balance} → ${after.balance}, Kasa ${before.cash} → ${after.cash})`);
+  });
+  await step("8. Çek ciro: yalnız Müşteri türünde carisi olan veride ciro seçicisi cariyi bulur; + Yeni Cari; ciro sonrası durum", async () => {
+    ids.other = (await call(admin, "/api/workspace/accounts", { name: "Veli Market", type: "customer" })).data.id;
+    const cheque = (await call(admin, "/api/workspace/cheques", { instrument: "cheque", direction: "in", accountId: ids.party, drawer: "Mehmet Eren Demir", amount: 3000, issueDate: TODAY, dueDate: shift(30), serialNo: "CK-217", bank: "Ziraat" })).data;
+    ok(cheque?.status === "portfolio", "3.000 TL çek portföye alındı");
+    await admin.evaluate(id => window.HOF.cheques.open({ id }), cheque.id);
+    await admin.waitForSelector(`${modal} [data-action="endorse"]`, { timeout: 10000 });
+    await admin.click(`${modal} [data-action="endorse"]`);
+    await admin.waitForSelector(`${modal} .hof-acc-picker [data-acc-query]`, { timeout: 8000 });
+    const label = (await admin.textContent(`${modal} .hof-acc-picker > span`)).replace(/\s+/g, " ").trim();
+    ok(/^Ciro Edilen Cari/.test(label) && /Yeni Cari/.test(label), `etiket “Ciro Edilen Cari” + “+ Yeni Cari” (${label})`);
+    await admin.fill(`${modal} .hof-acc-picker [data-acc-query]`, "Veli");
+    await admin.waitForSelector(`${modal} .hof-acc-picker li[data-id]`, { timeout: 8000 });
+    const hit = (await admin.textContent(`${modal} .hof-acc-picker li[data-id]`)).replace(/\s+/g, " ");
+    ok(/Veli Market/.test(hit) && /Müşteri/.test(hit), `Müşteri türündeki cari listede, tür rozetiyle (${hit.slice(0, 80)})`);
+    await shot(admin, "ciro-cari-secici");
+    await admin.fill(`${modal} .hof-acc-picker [data-acc-query]`, "Olmayan Firma");
+    await admin.waitForSelector(`${modal} .hof-acc-picker li.is-empty`, { timeout: 8000 });
+    const empty = (await admin.textContent(`${modal} .hof-acc-picker li.is-empty`)).replace(/\s+/g, " ");
+    ok(/Bu adla cari yok/.test(empty) && /Yeni Cari/.test(empty), `boş sonuçta “Bu adla cari yok — + Yeni Cari” (${empty})`);
+    await admin.fill(`${modal} .hof-acc-picker [data-acc-query]`, "Veli");
+    await admin.waitForSelector(`${modal} .hof-acc-picker li[data-id]`, { timeout: 8000 });
+    await (await admin.$(`${modal} .hof-acc-picker li[data-id]`)).dispatchEvent("mousedown");
+    await admin.click(`${modal} form [type="submit"]`);
+    await admin.waitForTimeout(1500);
+    const after = (await call(admin, `/api/workspace/cheques/${cheque.id}`)).data;
+    ok(after.status === "endorsed" && after.endorseAccountId === ids.other, `çek “Ciro Edildi”, ciro edilen cari Veli Market (${after.statusLabel || after.status})`);
+    ok((await account(ids.other)).totals.balance === 3000, "ciro edilen carinin bakiyesi 3.000 borçlu (borç ödemesi olarak düşer)");
+    await shot(admin, "ciro-sonrasi");
+    await closeAll();
   });
 } catch (error) {
   console.error("\nHATA:", error.message);

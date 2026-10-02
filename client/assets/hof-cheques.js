@@ -223,7 +223,7 @@
             // taksit kartları okunamazsa seçim gösterilmez
           }
         };
-        const picker = HOF.accounts?.picker({ value: cheque?.accountId ? { id: cheque.accountId, name: cheque.accountName } : preset?.account?.id ? { id: preset.account.id, name: preset.account.name } : {}, label: direction === "in" ? "Kimden Alındı (cari)" : "Kime Verildi (cari)", help: direction === "in" ? "Müşteri carisi. Yoksa aşağıya keşidecinin adını yazın." : "Tedarikçi carisi. Yoksa aşağıya lehtarın adını yazın.", type: direction === "in" ? "" : "", onPick: loadPlans });
+        const picker = HOF.accounts?.picker({ value: cheque?.accountId ? { id: cheque.accountId, name: cheque.accountName } : preset?.account?.id ? { id: preset.account.id, name: preset.account.name } : {}, label: direction === "in" ? "Kimden Alındı (cari)" : "Kime Verildi (cari)", help: direction === "in" ? "Müşteri carisi. Yoksa aşağıya keşidecinin adını yazın." : "Tedarikçi carisi. Yoksa aşağıya lehtarın adını yazın.", prefer: direction === "in" ? "customer" : "supplier", allowNew: { type: direction === "in" ? "customer" : "supplier" }, onPick: loadPlans });
         if (picker) anchor.before(picker);
         anchor.after(planSlot);
         if (cheque?.accountId || preset?.account?.id) loadPlans({ id: cheque?.accountId || preset.account.id });
@@ -276,7 +276,8 @@
       submitLabel: text.submit,
       onOpen: dialog => {
         if (action !== "endorse") return;
-        const picker = HOF.accounts?.picker({ label: "Ciro Edilen Cari (tedarikçi)", required: true, type: "supplier", name: "accountId" });
+        // v2.0.17 (müşteri: "cari bulunmuyor"): tür kısıtı yok — bütün cariler aranır, tedarikçiler üstte; "+ Yeni Cari".
+        const picker = HOF.accounts?.picker({ label: "Ciro Edilen Cari", required: true, prefer: "supplier", allowNew: { type: "supplier" }, help: "Tedarikçi ya da müşteri: çekin kime verildiği. Bulunamazsa + Yeni Cari ile açın.", name: "accountId" });
         if (picker) dialog.querySelector('[name="date"]').closest(".hof-field").before(picker);
       },
       onSubmit: async data => {
