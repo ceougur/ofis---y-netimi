@@ -405,7 +405,10 @@ Bağlam kopsa da bu düzen değişmez. Kullanıcı "zip ver" dediğinde şu üç
   teslimdekiyle bayt bayt AYNI; gerçek güncelleyici 2.0.17/16/15/2.0.4/1.7.0 olarak (Node 24.21, bootstrap 2,
   NODE_USE_ENV_PROXY=1) canlı yayında 2.0.18'i "available" gördü (anahtar destekofis-2026-1, API yolu), indirilen paket
   sha256 4c4c07c6… teslimdekiyle aynı. Site kılavuz PR'ı ceougur/destekofis#7 açık (kullanıcı "birleştir" deyince).
-  CHANGELOG'daki "404" → "405" düzeltildi (GitHub yayın notunda 404 kaldı; önemsiz). 2.0.18 KAPANDI (site PR'ı hariç).
+  CHANGELOG'daki "404" → "405" düzeltildi (GitHub yayın notunda 404 kaldı; önemsiz). Site kılavuz PR'ı ceougur/destekofis#7
+  BİRLEŞTİ (main 04b7df8; Vercel kendiliğinden yayınlar). Not: destekofis klonunda `git fetch origin main` sonrası
+  `origin/main` güncellenmiyor (eski kalıyor) → dal FETCH_HEAD üzerine kurulur, yoksa PR "dirty" olur (#5 ve #7'de yaşandı).
+  2.0.18 KAPANDI.
 - 2.0.17 HAZIR (02.10.2026; dal `claude/nice-euler-jvajxv`; 14 madde yapıldı, kanıt `docs/2.0.17-KANIT.md`): şema göçü 19
   (fatura bağı + mahsup); çoklu şirket hub/çocuk mimarisi (`docs/MIMARI.md` → 2.0.17); teslim `dist/teslim-2.0.17/`
   (3 zip + SHA256SUMS; imza anahtarı kullanıcının yüklediği .pem). Sırada: kullanıcı "birleştir" → CI → birleştir →
