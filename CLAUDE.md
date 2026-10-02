@@ -364,7 +364,9 @@ Bağlam kopsa da bu düzen değişmez. Kullanıcı "zip ver" dediğinde şu üç
   YAYIMLANDI (02.10.2026 18:5x; `v2.0.17` = 6b0a811): 5 dosya ve latest/ adresleri (Kurulum.exe, guncelleme.json) bayt
   bayt doğrulandı; gerçek güncelleyici 2.0.16/15/14/2.0.4/1.7.0 olarak (Node 24.21, bootstrap 2) canlı yayında 2.0.17'yi
   "available" gördü (anahtar destekofis-2026-1), indirilen paket sha256 teslimdekiyle eşleşti. Site kılavuz PR'ı
-  ceougur/destekofis#5 BİRLEŞTİRİLDİ (main 00dff72; eskimiş #4 kapatıldı). 2.0.17 KAPANDI.
+  ceougur/destekofis#5 BİRLEŞTİRİLDİ (main 00dff72; eskimiş #4 kapatıldı). Site metni: kullanıcı yalnız manşet alt cümlesi
+  + SSS'ye 2 soru istedi (özellik kartları/yenilik şeridi İSTEMEDİ), PR #6 birleşti (main 4b611ed). "Farklı konular karışmaz"
+  kartı hâlâ "oturum" anlatıyor (kullanıcıya söylendi, dokunulmadı). 2.0.17 KAPANDI.
 - e-Belge kararı (kullanıcı, 01.10.2026): vergi dairesi/entegratör bağlantısı KAPALI — "sana entegre et diyene kadar".
   Fatura modülü tam çalışır; belge "Müşteri Fişi" (resmî hükmü yok) basılır; e-Fatura/e-Arşiv/XML ekranda görünmez.
   Entegratör altyapısı (müşteri kendi API bilgisini girer, kontörü kendisi alır) hazır tutulur ama `config.edocEnabled`
