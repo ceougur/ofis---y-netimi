@@ -338,7 +338,29 @@ Bağlam kopsa da bu düzen değişmez. Kullanıcı "zip ver" dediğinde şu üç
      Başvuru No · Başvuru Sahibi · Telefon · Marka / Buluş Adı · Tür · Nice Sınıfı; kayıt GÜLDAL KARE / FURRA → cari adı
      "FURRA", HİMMET ERTAŞ / TENYE → "TENYE"; ilk kayıt NARAN YILDIZ ise doğru ad almış). Kullanıcı: "caride niye isim
      soy isim yerine başka yeri çekiyor?" Beklenen: cari adı kişi/firma kolonundan (Başvuru Sahibi), marka adı değil.
-     Kök neden ve düzeltme bu maddeye yazılacak; test: marka/patent tablosunda kayıt → cari adı = Başvuru Sahibi.
+     KÖK NEDEN (koddan): kayıttan cari açan tek-kayıt yolu (Yeni Kayıt → "cari kartı da aç", ad eşleşmesi önerisi,
+     kayıttan taksit) istemcideki `hof-plans.js` nameColumn/personOf sezgisini kullanıyordu: "ad/adı" geçen ilk kolonu
+     alıyordu ("Marka / Buluş Adı"), sunucu analizinin bulduğu kişi kolonuna (`primary.person` = Başvuru Sahibi) bakmıyordu.
+     Sunucu analizi (`insight/columns.mjs`: party > name, "ürün/marka/proje adı" = öğe adı, kişi değil) doğruydu.
+     DÜZELTME (program geneli, kullanıcı 02.10.2026 "sadece bu sektör için olmasın"): personOf önce analizdeki kişi
+     kolonunu alır; öğe adı kolonları (ürün, marka, buluş, proje, hizmet, model, dosya, araç…) hiçbir zaman ad sayılmaz,
+     taraf sözcüğü (müşteri, borçlu, sahibi, başvuran…) olan kolon öncelikli; Adı + Soyadı ayrıysa birleştirilir.
+     Test: `npm run test:senaryo-218` (4 tablo biçimi: marka/patent, sipariş Ürün Adı+Müşteri, Adı/Soyadı ayrı, icra Borçlu).
+     EK SORU (kullanıcı, aynı gün): "birden fazla isim soy isim ya da ad da olabilir tabloda; Tablodan Çek dediğimizde bu
+     hata geniş bir alana yayılır mı?" KODDAN DURUM (7 tablo biçimiyle ölçüldü): toplu yollar ayrı ayrı kural listesi
+     kullanıyor — Cari "Tablodan Al"/Excel (`accounts.mjs` mapAccountHeaders), Taksit Excel (`plans.mjs` mapHeaders),
+     Çek/Senet (`cheques.mjs` drawer); Taksit "Tablodan Aktar" ve detay kartı sunucu analizini (`primary.person`) kullanır.
+     Marka/patent, sipariş (Müşteri + Yetkili Kişi), icra (Borçlu + Alacaklı + Avukat), emlak (Kiracı + Mal Sahibi),
+     hastane (Hasta + Doktor) tablolarında dört yol da doğru kişiyi seçti; AÇIKLAR: "Adı" + "Soyadı" + "Eşinin Adı" (dernek)
+     tablosunda toplu yollar ad kolonu bulamıyor (kullanıcı elle seçer, soyad birleşmez); "Öğrenci Adı" + "Öğrenci Soyadı"
+     ayrı kolonlarsa analiz birleştirmiyor (yalnız "Adı"/"Soyadı" başlıklarını birleştiriyor); Çek/Senet okulda Veli'yi
+     seçiyor; iki taraf kolonu eşit ağırlıktaysa (Kiracı/Mal Sahibi) seçim benzersizliğe kalıyor, kullanıcıya gösterilmiyor.
+     Kullanıcı: "çözüm önerin nedir?" → "benim önerimi dinle, durdur işlemini" → ÖNERİSİ (02.10.2026, ekran: Cari
+     penceresi, NARAN YILDIZ ek alanlı + TENYE/FURRA ek alansız): "Tablodan Al özelliğini kaldırmak en kolay çözüm";
+     "cariyi ya Excel'den/Sheets'ten ya da elle oluştursun kullanıcı". Koddan not: ekrandaki TENYE/FURRA "Tablodan Al"dan
+     değil, Yeni Kayıt → "cari kartı da aç" yolundan açılmış (ek alanı yok); NARAN YILDIZ Tablodan Al'dan ve doğru.
+     Karar kullanıcıda; verilince bu maddeye yazılır. Tek-kayıt yolu düzeltmesi + kayıt başlığında Adı+Soyadı birleşik
+     (recordLabel → personOf) dalda commit'li, PR yok.
   KURAL (bu maddeden): kullanıcının her isteği, ne kadar küçük olsa da, AYNI ANDA bu listeye yazılır ve commit edilir;
   "dün konuştuk" denen bir istek listede yoksa kullanıcıya açıkça söylenir.
 - 2.0.17 HAZIR (02.10.2026; dal `claude/nice-euler-jvajxv`; 14 madde yapıldı, kanıt `docs/2.0.17-KANIT.md`): şema göçü 19
