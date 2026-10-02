@@ -311,6 +311,9 @@ Bağlam kopsa da bu düzen değişmez. Kullanıcı "zip ver" dediğinde şu üç
        sürümde yok, istenirse eklenir. Sayfa silme yalnız yönetici, Silinenler'e gider.
      Test: iki Excel'i iki sayfa olarak aktar → ikisindeki yaklaşan tarihler zil/takvimde; sayfa adı satırda; birinden
      cari bağla; eski 2 oturumlu veriden göç → 2 sayfa, sayılar ve Sheets bağı aynı; 20.000 satırda arama < 1 sn.
+     Ek (kullanıcı, ekran: sol üstte "ÇALIŞMA OTURUMU · TÜM REHBER.xlsx ▾", altında "Operasyon Merkezi" Görevler/Mesajlar/
+     Görev Ata/Cari): KESİN — o kutunun yerine ŞİRKET SEÇİMİ gelir (aynı yer, aynı boyut: "ŞİRKET · 001 · Unvan ▾");
+     oturum (dosya/sayfa) seçimi ORTAYA, sayfa pillerine taşınır.
   KURAL (bu maddeden): kullanıcının her isteği, ne kadar küçük olsa da, AYNI ANDA bu listeye yazılır ve commit edilir;
   "dün konuştuk" denen bir istek listede yoksa kullanıcıya açıkça söylenir.
 - e-Belge kararı (kullanıcı, 01.10.2026): vergi dairesi/entegratör bağlantısı KAPALI — "sana entegre et diyene kadar".
