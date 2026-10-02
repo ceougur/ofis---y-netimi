@@ -965,13 +965,13 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
       description: "Ürün ve hizmet kalemleri: mevcut, kritik seviye, birim fiyat, stok değeri ve durum.",
       params: ["state", "category"],
       build(query) {
-        const data = stock().list(admin, { state: ["low", "out", "product", "service"].includes(query.state) ? query.state : "all", category: limited(query.category, 80, "Kategori"), sort: "name" });
+        const data = stock().list(admin, { state: ["low", "out", "negative", "product", "service"].includes(query.state) ? query.state : "all", category: limited(query.category, 80, "Kategori"), sort: "name" });
         return {
-          subtitle: [{ low: "Kritik seviyedekiler", out: "Tükenenler", product: "Ürünler", service: "Hizmetler" }[query.state] || "Tüm kalemler", query.category || ""].filter(Boolean).join(" · "),
+          subtitle: [{ low: "Kritik seviyedekiler", out: "Tükenenler", negative: "Eksi stoktakiler", product: "Ürünler", service: "Hizmetler" }[query.state] || "Tüm kalemler", query.category || ""].filter(Boolean).join(" · "),
           headers: ["Stok Kodu", "Kalem", "Tür", "Kategori", "Mevcut", "Birim", "Kritik Seviye", "Birim Fiyat", "Değer", "Durum"],
           types: ["", "", "", "", "number", "", "number", "money", "money", ""],
-          rows: data.items.map(item => [item.code, item.name, item.kind === "service" ? "Hizmet" : "Ürün", item.category, item.kind === "service" ? "" : qty(item.qty), item.unit, item.minQty ? qty(item.minQty) : "", money(item.unitPrice), item.kind === "service" ? "" : money(item.value), item.kind === "service" ? "Hizmet" : item.qty <= 0 ? "Tükendi" : item.low ? "Kritik" : ""]),
-          summary: [["Kalem", String(data.totals.count)], ["Kritik", String(data.totals.low)], ["Tükenen", String(data.totals.out)], ["Stok Değeri", money(data.totals.value)]],
+          rows: data.items.map(item => [item.code, item.name, item.kind === "service" ? "Hizmet" : "Ürün", item.category, item.kind === "service" ? "" : qty(item.qty), item.unit, item.minQty ? qty(item.minQty) : "", money(item.unitPrice), item.kind === "service" ? "" : money(item.value), item.kind === "service" ? "Hizmet" : item.qty < 0 ? `Eksi (${qty(item.qty)} ${item.unit})` : item.qty <= 0 ? "Tükendi" : item.low ? "Kritik" : ""]),
+          summary: [["Kalem", String(data.totals.count)], ["Kritik", String(data.totals.low)], ["Tükenen", String(data.totals.out)], ["Eksi Stok", String(data.totals.negative)], ["Stok Değeri", money(data.totals.value)]],
         };
       },
     },
@@ -1054,18 +1054,19 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
         const groups = new Map();
         for (const item of data.items) {
           const key = item.category || "Kategorisiz";
-          const group = groups.get(key) || { count: 0, low: 0, out: 0, value: 0 };
+          const group = groups.get(key) || { count: 0, low: 0, out: 0, negative: 0, value: 0 };
           group.count += 1;
           if (item.low) group.low += 1;
           if (item.kind !== "service" && item.qty <= 0) group.out += 1;
+          if (item.kind !== "service" && item.qty < 0) group.negative += 1;
           group.value = roundMoney(group.value + (item.value || 0));
           groups.set(key, group);
         }
         return {
           subtitle: `${dayText(today())} itibarıyla`,
-          headers: ["Kategori", "Kalem", "Kritik", "Tükenen", "Stok Değeri"],
-          types: ["", "number", "number", "number", "money"],
-          rows: [...groups.entries()].sort((a, b) => b[1].value - a[1].value).map(([name, group]) => [name, String(group.count), String(group.low), String(group.out), money(group.value)]),
+          headers: ["Kategori", "Kalem", "Kritik", "Tükenen", "Eksi Stok", "Stok Değeri"],
+          types: ["", "number", "number", "number", "number", "money"],
+          rows: [...groups.entries()].sort((a, b) => b[1].value - a[1].value).map(([name, group]) => [name, String(group.count), String(group.low), String(group.out), String(group.negative), money(group.value)]),
           summary: [["Kalem", String(data.totals.count)], ["Stok Değeri", money(data.totals.value)]],
         };
       },

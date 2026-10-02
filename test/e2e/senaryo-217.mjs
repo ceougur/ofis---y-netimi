@@ -2,6 +2,8 @@
 // göredir (sabit tarih yok). Her maddenin kanıtı bir kontrol ve ekran görüntüsüdür (artifacts/senaryo-217/).
 //   5. Hayalet kısmi ödeme: aynı cariye satış 400 + alış 6.000 → alış "Açık" (ödenen 0); kartta "Bu Faturayı Kapatanlar";
 //      Mahsup Et (satış ↔ alış) → "Mahsup" rozeti; cari kartından ödeme "Kapatılacak Fatura" ile → "Bağlı"; bakiye/Kasa aynı.
+//   7. Eksi stok: soru "Kayıttan sonra stok: −15 Adet olacak"; rozet "Eksi Stok −20 Adet"; "Eksi Stoktakiler" süzgeci; Değer
+//      eksi miktar × maliyet; ANLIK DURUM "Eksi stok: n ürün"; fatura kaleminde kırmızı; raporda "Eksi (−20 Adet)".
 //   8. Çek ciro: cari seçici tür kısıtsız (Müşteri türündeki cari bulunur, tür rozeti), "+ Yeni Cari", boş sonuç metni.
 // Çalıştırma: npm run test:senaryo-217 (ekran görüntüleri artifacts/senaryo-217/).
 import fs, { mkdtempSync, rmSync, writeFileSync } from "node:fs";
@@ -189,6 +191,59 @@ try {
     const after = { balance: (await account(ids.party)).totals.balance, cash: (await call(admin, "/api/workspace/cash")).data.totals.balance };
     ok(after.balance === before.balance + 1000 && after.cash === before.cash - 1000, `mahsup bakiyeyi/Kasa'yı değiştirmedi; yalnız 1.000 ödeme düştü (bakiye ${before.balance} → ${after.balance}, Kasa ${before.cash} → ${after.cash})`);
   });
+  await step("7. Eksi stok: 0 → −10 → −15 → −20 arayüzden; soru sonucu söyler; rozet, süzgeç, kart, ANLIK DURUM, fatura kalemi", async () => {
+    ids.tea = (await call(admin, "/api/workspace/stock", { name: "Çay 1 Kg", code: "CAY-1", unit: "Adet", unitPrice: 50, salePrice: 80 })).data.id;
+    await admin.evaluate(id => window.HOF.stock.open(id), ids.tea);
+    await admin.waitForSelector(`${modal} [data-move="out"]`, { timeout: 10000 });
+    for (const [qty, expected] of [["10", "-10"], ["5", "-15"], ["5", "-20"]]) {
+      await admin.click(`${modal} [data-move="out"]`);
+      await admin.waitForSelector(`${modal} form input[name="qty"]`, { timeout: 8000 });
+      await admin.fill(`${modal} form input[name="qty"]`, qty);
+      await admin.click(`${modal} form [type="submit"]`);
+      await admin.waitForSelector(`${modal} [data-answer="yes"]`, { timeout: 8000 });
+      const question = (await admin.$$eval(`${modal} .hof-modal-text`, nodes => nodes.map(node => node.textContent).join(" "))).replace(/\s+/g, " ").replace(/\u2212/g, "-");
+      ok(new RegExp(`Kayıttan sonra stok: ${expected} Adet olacak`).test(question), `soru sonucu söyler: “Kayıttan sonra stok: ${expected} Adet olacak” (${question.slice(0, 120)})`);
+      if (qty === "10") await shot(admin, "eksi-stok-sorusu");
+      await admin.click(`${modal} [data-answer="yes"]`);
+      await admin.waitForFunction(([selector, text]) => (document.querySelector(selector)?.textContent || "").replace(/\u2212/g, "-").includes(text), [`${modal} .hof-kpis`, `${expected} Adet`], { timeout: 8000 });
+    }
+    const card = (await admin.textContent(`${modal}`)).replace(/\s+/g, " ").replace(/\u2212/g, "-");
+    ok(/Eksi Stok -20 Adet/.test(card) && /Mevcut \(Eksi Stok\)/.test(card), "kartta “Eksi Stok −20 Adet” rozeti ve Mevcut (Eksi Stok)");
+    await shot(admin, "stok-karti-eksi");
+    await admin.click(`${modal} [data-act="back"]`);
+    await admin.waitForSelector(`${modal} [data-state="negative"]`, { timeout: 8000 });
+    await admin.click(`${modal} [data-state="negative"]`);
+    await admin.waitForFunction(selector => document.querySelector(selector)?.getAttribute("aria-pressed") === "true", `${modal} [data-state="negative"]`, { timeout: 8000 });
+    await admin.waitForFunction(selector => document.querySelectorAll(selector).length === 1, `${modal} tbody tr[data-item]`, { timeout: 8000 });
+    const rows = await admin.$$eval(`${modal} tbody tr[data-item]`, nodes => nodes.map(node => node.textContent.replace(/\s+/g, " ").replace(/\u2212/g, "-")));
+    ok(rows.length === 1 && /Eksi Stok -20 Adet/.test(rows[0]) && /[-\u2010-\u2015\u2212]₺?1\.000,00/.test(rows[0]), `“Eksi Stoktakiler” süzgeci: yalnız çay, rozet −20, Değer −1.000 (${rows.length} satır: ${rows.map(row => row.slice(0, 90)).join(" | ")})`);
+    const kpi = (await admin.textContent(`${modal} .hof-kpis`)).replace(/\s+/g, " ");
+    ok(/1 ?Eksi Stokta/.test(kpi), `liste göstergesi “Eksi Stokta: 1” (${kpi.slice(0, 80)})`);
+    await shot(admin, "stok-listesi-eksi-suzgec");
+    await closeAll();
+    const pulse = (await admin.textContent("#hof-pulse [data-pulse-go='stock']")).replace(/\s+/g, " ");
+    ok(/Eksi stok: 1 ürün/.test(pulse), `ANLIK DURUM: “Eksi stok: 1 ürün” (${pulse})`);
+    // Fatura kaleminde eksi stok kırmızı yazar.
+    await admin.click("#hof-sidecard [data-action=invoices]");
+    await admin.waitForSelector(`${inv} [data-act="new"]`);
+    await admin.click(`${inv} [data-act="new"]`);
+    await admin.click(`${inv} [data-scenario="goods_sale"]`);
+    await admin.waitForSelector(`${inv} [data-lines]`);
+    await admin.click(`${inv} [data-l="0"][data-f="name"]`);
+    await admin.keyboard.type("Çay");
+    await admin.waitForSelector(`${inv} [data-hits="0"] li[data-item]`);
+    const hit = await admin.$eval(`${inv} [data-hits="0"] li[data-item]`, node => ({ text: node.textContent.replace(/\s+/g, " ").replace(/\u2212/g, "-"), red: Boolean(node.querySelector(".hof-inv-warn")) }));
+    ok(/Stokta -20 Adet/.test(hit.text) && hit.red, `fatura kalem önerisinde “Stokta −20 Adet” kırmızı (${hit.text.slice(0, 60)})`);
+    await admin.click(`${inv} [data-hits="0"] li[data-item]`);
+    await admin.waitForTimeout(600);
+    const note = await admin.$eval(`${inv} [data-lines]`, node => ({ text: node.textContent.replace(/\s+/g, " ").replace(/\u2212/g, "-"), red: Boolean(node.querySelector(".hof-inv-warn")) }));
+    ok(/Stokta -20 Adet \(eksi\)/.test(note.text) && note.red, "kalem satırında “Stokta −20 Adet (eksi)” kırmızı");
+    await shot(admin, "fatura-kalemi-eksi-stok");
+    await closeAll();
+    const report = (await call(admin, "/api/workspace/report-center/stok-durumu?state=negative")).data;
+    ok(report.rows.length === 1 && report.rows[0].at(-1) === "Eksi (-20 Adet)", `Stok Durumu raporunda durum “Eksi (−20 Adet)” (${report.rows[0].at(-1)})`);
+  });
+
   await step("8. Çek ciro: yalnız Müşteri türünde carisi olan veride ciro seçicisi cariyi bulur; + Yeni Cari; ciro sonrası durum", async () => {
     ids.other = (await call(admin, "/api/workspace/accounts", { name: "Veli Market", type: "customer" })).data.id;
     const cheque = (await call(admin, "/api/workspace/cheques", { instrument: "cheque", direction: "in", accountId: ids.party, drawer: "Mehmet Eren Demir", amount: 3000, issueDate: TODAY, dueDate: shift(30), serialNo: "CK-217", bank: "Ziraat" })).data;

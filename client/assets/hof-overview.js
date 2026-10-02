@@ -116,8 +116,8 @@
         label: "Kritik Stok",
         value: `<span class="hof-num">${s.critical.toLocaleString("tr-TR")}</span><em>${s.critical === 1 ? "ürün" : "ürün"}</em>`,
         tone: s.critical ? "is-warn" : "",
-        sub: s.products ? `${s.out ? `<span class="hof-pulse-flag">${ICONS.warn}${s.out.toLocaleString("tr-TR")} tükendi</span> · ` : ""}${s.products.toLocaleString("tr-TR")} ürün takipte` : "Stok kartı yok",
-        title: `Kritik seviyenin altındaki ürün sayısı (hizmet kalemleri hariç). Stok değeri ${money(s.value)}.`,
+        sub: s.products ? `${s.negative ? `<span class="hof-pulse-flag is-late">${ICONS.warn}Eksi stok: ${s.negative.toLocaleString("tr-TR")} ürün</span> · ` : ""}${s.out ? `<span class="hof-pulse-flag">${ICONS.warn}${s.out.toLocaleString("tr-TR")} tükendi</span> · ` : ""}${s.products.toLocaleString("tr-TR")} ürün takipte` : "Stok kartı yok",
+        title: `Kritik seviyenin altındaki ürün sayısı (hizmet kalemleri hariç). Eksi stoktaki ürün: ${(s.negative || 0).toLocaleString("tr-TR")}. Stok değeri ${money(s.value)}.`,
       });
     }
     if (data.receivable) {

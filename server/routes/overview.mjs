@@ -89,8 +89,8 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
     const banka = cashSummary.noncash || { balance: 0, balanceToday: 0, today: { in: 0, out: 0 } };
     const cashBlock = { balance: nakit.balanceToday, allEntries: nakit.balance, today: nakit.today, month: nakit.month, futureEntries: nakit.futureEntries, byMethod: cashSummary.byMethod || null, byMethodAt: cashSummary.byMethodAt || null, bank: { balance: banka.balanceToday, allEntries: banka.balance, today: banka.today } };
     // Stok: Stok listesiyle aynı sayım (hizmet kalemleri kritik/tükendi sayılmaz).
-    const stockTotals = stock()?.list ? stock().list(admin, {}).totals : { count: 0, low: 0, out: 0, services: 0, value: 0 };
-    const stockBlock = { critical: stockTotals.low, out: stockTotals.out, products: stockTotals.count - (stockTotals.services || 0), services: stockTotals.services || 0, value: stockTotals.value };
+    const stockTotals = stock()?.list ? stock().list(admin, {}).totals : { count: 0, low: 0, out: 0, negative: 0, services: 0, value: 0 };
+    const stockBlock = { critical: stockTotals.low, out: stockTotals.out, negative: stockTotals.negative || 0, products: stockTotals.count - (stockTotals.services || 0), services: stockTotals.services || 0, value: stockTotals.value };
     // Cari: Cari listesinin tüm cariler (aktif + pasif) toplamı.
     const accountTotals = accounts()?.list ? accounts().list(admin, { status: "all" }).totals : { debtor: 0, creditor: 0, overdue: 0, overdueCount: 0, count: 0 };
     const chequeSummary = cheques()?.summary ? cheques().summary(day) : null;

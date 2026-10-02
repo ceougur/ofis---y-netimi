@@ -450,7 +450,7 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, conf
           const left = stock().invoiceStock.available(itemId);
           if (left < -1e-9 && left < was - 1e-9) {
             const item = stock().invoiceStock.itemFor(itemId);
-            throw new HttpError(409, `“${item.name}” bu düzenlemeyle stokta ${String(Math.round(left * 1000) / 1000).replace(".", ",")} ${item.unit} kalır (eksi).`, { code: "stock-negative", itemId, itemName: item.name, available: left });
+            throw new HttpError(409, `“${item.name}” bu düzenlemeyle stokta ${String(Math.round(left * 1000) / 1000).replace(".", ",")} ${item.unit} kalır (eksi). Kayıttan sonra stok: ${String(Math.round(left * 1000) / 1000).replace(".", ",")} ${item.unit} olacak.`, { code: "stock-negative", itemId, itemName: item.name, available: left, after: left });
           }
         }
       }
