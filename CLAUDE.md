@@ -124,7 +124,8 @@ Bağlam kopsa da bu düzen değişmez. Kullanıcı "zip ver" dediğinde şu üç
      istemişti. Gider senaryosunda ad = gider kalemi kalır. Kayıtta stoksuz mal kalemi kalmışsa uyarı.
   8. Kalemler başlığında (Fiyatlar KDV Dahil'in yanında, sarı işaretli yer) "Tüm Kalemlere KDV: [%0/%1/%10/%20]" — tek
      seçimle bütün satırların KDV'si değişir (alış ve satış); sonra satırda tek tek değiştirilebilir; yeni eklenen kalem
-     de bu oranı alır. (Gözlem, ekranda: ANTİFRİZ "Stokta −5 Adet" — eksi stok; yap'ta incelenip sorulacak.)
+     de bu oranı alır. (Eksi stok: kullanıcı kararı 02.10.2026 — program sorar, "izin ver" denince eksiye
+     düşer; bazı firmalar gerçek stok tutmaz; BÖYLE KALSIN, değiştirilmez.)
   9. KRİTİK — Raporlar → Fatura raporları hiç açılmıyor ("Önce cariyi seçin."). Kök neden (koddan doğrulandı):
      `hof-report-center.js` `account` parametresini her raporda ZORUNLU sayıyor (satır 146/180/215/238; Cari Ekstre için
      yazılmış); fatura raporlarında (`fatura-satis/alis/iade`, `acik-faturalar` …) cari İSTEĞE BAĞLI süzgeç. Düzeltme:
