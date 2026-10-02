@@ -367,6 +367,10 @@ Bağlam kopsa da bu düzen değişmez. Kullanıcı "zip ver" dediğinde şu üç
      (createFromPlan), "+ Yeni Cari" formundaki "Tablodaki Kayıt" alanı (ad yazılınca tek eşleşen satır önerilir).
      "Excel / Sheets'ten Yükle" kayda BAĞLAMAZ (caseKeys yok) → o carilerde pil çıkmaz, kayıttaki "+ Tahsilat" cari
      defterine değil eski kayıt tahsilatına düşer. Bu, Tablodan Al'ın var oluş nedeni.
+     Kullanıcının hatayı bulduğu yol (aynı gün, kendi sözleriyle): "Tablodan Al'ı bir kere tıklayınca senkronize oluyor;
+     tablodan Yeni Kayıt tıklayıp doldurunca otomatik cariye çekti, çekerken cari ismini saçmaladı." = Yeni Kayıt →
+     "cari kartı da aç" yolu (varsayılan işaretli); koddaki kök nedenle birebir, düzeltme c32f3b0 (senaryo-218 ilk tablo
+     tam bu akış: marka/patent tablosu → Yeni Kayıt → cari GÜLDAL KARE, FURRA açılmaz).
   KURAL (bu maddeden): kullanıcının her isteği, ne kadar küçük olsa da, AYNI ANDA bu listeye yazılır ve commit edilir;
   "dün konuştuk" denen bir istek listede yoksa kullanıcıya açıkça söylenir.
 - 2.0.17 HAZIR (02.10.2026; dal `claude/nice-euler-jvajxv`; 14 madde yapıldı, kanıt `docs/2.0.17-KANIT.md`): şema göçü 19
