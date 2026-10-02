@@ -1,6 +1,6 @@
 # DestekOfis — durum ve devam notu
 
-Yeni bir oturum bu belgeyi okuyarak kaldığı yerden devam eder. Son güncelleme: 02.10.2026 (2.0.15 yayımlandı — PR #15, `v2.0.15` = 85171ae: Fatura modülü, e-Belge altyapısı kapalı, kılavuzda Fatura; önceki: 2.0.14 yayımlandı — PR #14, `v2.0.14`: odak, Cari Kartı, WhatsApp Otomatik Sıra, damga düzeltmesi; 2.0.13 yayımlandı — PR #13, `v2.0.13`: WhatsApp toplu ekstre/mesaj, ödeme yolu, Ana Defter ve mutabakat kapısı, tarih/dönem kilidi/eksi bakiye kuralları; önceki: 2.0.12 hazırlandı: taksit kartının Kayıt Tarihi carinin tarihinden gelir, form düzeni; önceki: 2.0.11 yayımlandı — PR #11, `v2.0.11`, beş dosya bayt bayt doğrulandı: 8 düzeltme — Taksitler'den cari seçip toplu taksitlendirme, grup süzgecinde cari sayısı, Veri Sağlığı'nda Yok Say, başlıklarda her sözcüğün baş harfi büyük, stok birimleri tek yazım, açık pencereler canlı yenilenir, Ayarlar kullanıcı kartının altında, arama kutusu her yerinden yazar; önceki: 2.0.10 yayımlandı: 17 düzeltme — ayrıntılı yetkiler ve özel roller, kullanıcı silme/ad düzeltme, yönetici parolası kurtarma, "+ Sayfa"ya Excel/Sheets, anlık çek yenilemesi, Borçlu/Alacaklı dili ve renkleri, tek arama kutusu ; 2.0.9 yayımlı; önceki not: sürüm 2.0.2 denetimden geçti — `docs/DENETIM-2.0.2.md`; okuma motoru, analiz iş parçacığı, kanıtlı kolon kararları, kendi kendini onarma, şemaya esnek kolon eşleme, Veri Sağlık Kontrolü ve olay tabanlı uyarılar eklendi — `docs/MIMARI.md` → *2.0.2 eklemeleri*; yayın kullanıcı onayı bekliyor; 2.0.1 yayımlı).
+Yeni bir oturum bu belgeyi okuyarak kaldığı yerden devam eder. Son güncelleme: 02.10.2026 (2.0.16 hazırlanıyor — müşteri bildirimleri, bkz. Kalanlar; 2.0.15 yayımlandı — PR #15, `v2.0.15` = 85171ae: Fatura modülü, e-Belge altyapısı kapalı, kılavuzda Fatura; önceki: 2.0.14 yayımlandı — PR #14, `v2.0.14`: odak, Cari Kartı, WhatsApp Otomatik Sıra, damga düzeltmesi; 2.0.13 yayımlandı — PR #13, `v2.0.13`: WhatsApp toplu ekstre/mesaj, ödeme yolu, Ana Defter ve mutabakat kapısı, tarih/dönem kilidi/eksi bakiye kuralları; önceki: 2.0.12 hazırlandı: taksit kartının Kayıt Tarihi carinin tarihinden gelir, form düzeni; önceki: 2.0.11 yayımlandı — PR #11, `v2.0.11`, beş dosya bayt bayt doğrulandı: 8 düzeltme — Taksitler'den cari seçip toplu taksitlendirme, grup süzgecinde cari sayısı, Veri Sağlığı'nda Yok Say, başlıklarda her sözcüğün baş harfi büyük, stok birimleri tek yazım, açık pencereler canlı yenilenir, Ayarlar kullanıcı kartının altında, arama kutusu her yerinden yazar; önceki: 2.0.10 yayımlandı: 17 düzeltme — ayrıntılı yetkiler ve özel roller, kullanıcı silme/ad düzeltme, yönetici parolası kurtarma, "+ Sayfa"ya Excel/Sheets, anlık çek yenilemesi, Borçlu/Alacaklı dili ve renkleri, tek arama kutusu ; 2.0.9 yayımlı; önceki not: sürüm 2.0.2 denetimden geçti — `docs/DENETIM-2.0.2.md`; okuma motoru, analiz iş parçacığı, kanıtlı kolon kararları, kendi kendini onarma, şemaya esnek kolon eşleme, Veri Sağlık Kontrolü ve olay tabanlı uyarılar eklendi — `docs/MIMARI.md` → *2.0.2 eklemeleri*; yayın kullanıcı onayı bekliyor; 2.0.1 yayımlı).
 
 ## Nerede ne var
 
@@ -75,6 +75,14 @@ Yeni bir oturum bu belgeyi okuyarak kaldığı yerden devam eder. Son güncellem
   - Doğrulama: birim ve uçtan uca testler, 2.0.1 → 2.0.2 ve eski sürümlerden güncelleme provası (ayrıntı `CHANGELOG.md`).
 
 ## Kalanlar (öncelik sırasıyla)
+
+### 2.0.16 — hazırlanıyor (02.10.2026; dal `claude/nice-euler-jvajxv`)
+Müşteri bildirimleri (CLAUDE.md → Açık iş → "2.0.16 müşteri hataları", 11 madde): fatura raporları cari seçmeden açılır
+(kritik), kaydedilmiş faturayı Düzenle (aynı numara, tek işlemde geri al + yeniden yaz), "Kes" → "Kaydet", KDV dahil iskonto
+ve Toplamlar düzeni, Stok Kodu (barkod; tekil; faturada kolon, PDF, rapor), alışta + Yeni Stok Kartı, Tüm Kalemlere KDV, KDV
+kutusu, kırpılmayan öneri listesi, tahsilatta POS / ödemede Kredi Kartı, PDF düğmesi adları. Kanıt: `CHANGELOG.md` → 2.0.16,
+`docs/MIMARI.md` → *2.0.16 eklemeleri*, `test/fatura-216.test.mjs`, `npm run test:senaryo-216` (42 rapor arayüzden).
+Göç yok (şema değişmedi). Sıradaki: PR → "birleştir" → CI → teslim (CLAUDE.md "Sürüm teslim düzeni") → site kılavuz PR'ı.
 
 ### 2.0.15 — yayımlandı 02.10.2026 (PR #15, `v2.0.15` = 85171ae; beş dosya ve latest/DestekOfis-Kurulum.exe bayt bayt doğrulandı; güncelleyici 2.0.14/13/12/2.0.4/1.7.0 → 2.0.15 "available")
 Kapsam ve kanıt: `CHANGELOG.md` → 2.0.15, `docs/MIMARI.md` → *2.0.15 eklemeleri — Fatura modülü*, `docs/FATURA-ISTEKLER.md`

@@ -263,6 +263,27 @@ Görünüme (`dataset.view`) yalnızca elle değer yazılmış satırlar `serbes
 
 **Acil görev.** `POST /api/workspace/tasks` olayı `priority` ve `dueDate` taşır. İstemci: acil görev atanana kırmızı kısa bildirim (`hof-toast-error`), `hof-alerts.js` görevleri son tarihten bağımsız `urgent` uyarısı olarak üretir (`rank -1`, `tone late`, tur sınırına takılmaz, zilde "Acil görevler" grubu), Görevler rozeti `hof-badge-danger`, görev listesi `is-urgent`, işlem geçmişi `data-urgent`.
 
+## 2.0.16 eklemeleri — müşteri bildirimleri
+
+- **Fatura düzenleme (`editInvoice`, `POST /api/workspace/invoices/:id/edit`).** Tek `store.tx`: `reverseEffects` (iptalle ortak:
+  taksit kartı `removeForInvoice`, çek `voidFor`, Kasa satırları, stok `removeFor`, cari `invoiceEntry.removeFor`; düzenlemede ara
+  durum denetimi yok) → `writeIssued(..., { edit })` (numara/seri/ETTN/oluşturma korunur, satırlar silinip yeniden yazılır) →
+  son durum denetimi (stok: düzenleme öncesine göre eksi büyüdüyse `stock-negative`; Kasa: yöntem başına net giriş azaldıysa
+  son bakiye). Engeller `modifyBlock` (kartta `canModify` / `modifyBlock`). Tarih değişiminde serideki önceki/sonraki belge arası.
+- **Toplamlar gösterimi (`exclusiveParts`, `invoice-math`).** KDV dahil fiyatta KDV hariç brüt = brüt × 100/(100+oran) (kuruş,
+  yarım yukarı), iskonto = KDV hariç brüt − matrah (satırlar kuruşu kuruşuna toplar). `totals.baseNet/discountNet`; kayıtlı
+  belgede `exclusiveTotals` (satırlardan). İstemci `totalRows`: iskonto varsa Toplam/İskonto KDV hariç; yoksa KDV dahilde Toplam
+  girilen tutar; Ara Toplam = matrah. PDF ve UBL (AllowanceCharge, PriceAmount) aynı yardımcıyı kullanır.
+- **Yeni stok kartı (alış).** Kalem `newItem: true` → `linesInput` `create` işaretler (mal, 153); `ensureNewItems` yazma
+  işleminin içinde `invoiceStock.createFor` (aynı ad+birim varsa o; Stok Kodu tekilliği) çağırır; taslakta da açılır.
+- **Stok Kodu.** `assertCodeFree` (açma/düzeltme), Excel aktarımında çakışan kod boşaltılır (`report.codeCleared`); fatura kalem
+  araması `exact` (tam kod) en üstte; stoklu kalemde kod kartın kodudur.
+- **Ödeme yolu adları.** `pay-method.mjs` `METHODS` (yönsüz "POS / Kredi Kartı"), `METHODS_IN` ("POS"), `METHODS_OUT`
+  ("Kredi Kartı"), `methodLabel(value, direction)`; istemci `HOF.methodName/payMethods`.
+- **Rapor merkezi.** Rapor tanımında `accountRequired` (yalnız `cari-ekstre`); istemci `needsAccount`.
+- **Öneri listesi.** `.hof-inv-item-hits` `position: fixed`, `placeHits` girdinin konumuna göre (altta yer yoksa üste), pencere
+  kayınca yeniden yerleşir; kalem tablosunda iç dikey kaydırma yok.
+
 ## 2.0.15 eklemeleri — Fatura modülü
 
 **Şema (göç 18, yalnız ekleyici).** `invoices` (tür `sale | smm | sale_return | purchase | purchase_return`, senaryo, durum `draft | issued | cancelled`, seri/yıl/sıra/numara, ETTN, tarih-saat, cari, taraf ve satıcı anlık görüntüsü `party_json` / `seller_json`, profil `KAGIT | EARSIVFATURA | TEMELFATURA | TICARIFATURA | ESMM`, tip kodu, döviz/kur, toplamlar hem belge para biriminde hem TL (`try_*`), `payment_json`, plan bağı, e-Belge alanları `e_status | e_message | e_at | e_adapter | e_profile`, tekrar emri), `invoice_lines` (kalem, stok bağı, iskonto, KDV, tevkifat, istisna, gider türü, iade kaynağı `origin_line_id`), `einvoice_inbox`, `invoice_repeats`; `accounts` vergi alanları. Para kuruş tamsayısıyla hesaplanır (`server/lib/invoice-math.mjs computeInvoice`: satır → iskonto → KDV → tevkifat → stopaj; `roundMoney`; yazıyla tutar), bağımsız BigInt modeliyle 30.000 rastgele belgede birebir (`test/fatura-model.test.mjs`).

@@ -25,7 +25,9 @@ const OTHER_KEY = keyPair();
 const TRUSTED = { "test-lisans-1": TEST_KEY.spki };
 const MACHINE_A = "a1b2c3d4e5f60718293a4b5c6d7e8f90";
 const MACHINE_B = "ffeeddccbbaa99887766554433221100";
-const T0 = Date.parse("2026-10-01T09:00:00Z");
+// Başlangıç anı gerçek saatten ileri alınır (v2.0.16): sabit "2026-10-01" bu tarih geçince, gerçek saatle açılan
+// sunucunun bıraktığı yüksek su işaretinin gerisinde kalıp "saat geri alındı" sonucuna düşüyordu. Testler tarihe bağlı olmaz.
+const T0 = Math.max(Date.parse("2026-10-01T09:00:00Z"), Math.ceil((Date.now() + 3_600_000) / 60_000) * 60_000);
 
 const claims = (overrides = {}) => ({
   schema: 1,

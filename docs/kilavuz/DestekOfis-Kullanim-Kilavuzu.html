@@ -122,8 +122,8 @@
 <h2>7. Kasa ve Banka</h2>
 <p>Sol menüden <b>Kasa</b>. Kayıtlara, carilere, taksitlere ve satışlara girdiğiniz tahsilatlar buraya kendiliğinden gelir. Diğer gelir ve giderleri <b>+ Tahsilat</b> ve <b>− Ödeme</b> ile ekleyin. Dönemi <b>Bu Ay</b>, <b>Geçen Ay</b>, <b>Bu Yıl</b>, <b>Tümü</b> ya da <b>Tarih Aralığı</b> ile seçin; <b>PDF İndir</b> ile dökümü alın. Çek / senet ya da stoktan gelen satırın yanındaki <b>↗</b> kaynağını açar.</p>
 <ul>
-  <li><b>Ödeme ve tahsilat yolu:</b> her tahsilat ve ödemede <b>Nakit</b>, <b>Havale / EFT</b> ya da <b>Kredi Kartı</b> seçin. Cari kartında tahsilatta <b>Çek / Senet</b> seçerseniz evrak formu açılır; satışta <b>Açık Hesap</b> tutarı müşterinin borcuna yazar.</li>
-  <li><b>Sekmeler:</b> <b>Nakit Kasa</b>, <b>Banka</b>, <b>Kredi Kartı</b> ya da <b>Tümü</b>. Her sekmenin kendi bakiyesi ve PDF'i vardır.</li>
+  <li><b>Ödeme ve tahsilat yolu:</b> her tahsilat ve ödemede <b>Nakit</b>, <b>Havale / EFT</b> ya da kartı seçin: tahsilatta <b>POS</b>, sizin ödemenizde <b>Kredi Kartı</b>. Cari kartında tahsilatta <b>Çek / Senet</b> seçerseniz evrak formu açılır; satışta <b>Açık Hesap</b> tutarı müşterinin borcuna yazar.</li>
+  <li><b>Sekmeler:</b> <b>Nakit Kasa</b>, <b>Banka</b>, <b>POS / Kredi Kartı</b> ya da <b>Tümü</b>. Her sekmenin kendi bakiyesi ve PDF'i vardır.</li>
   <li><b>Bakiye eksiye düşecekse</b> (nakit kasa, banka ya da kredi kartı) program sorar. Yolu yanlış seçtiyseniz düzeltin; doğruysa <b>Yine de Kaydet</b>. Yönetici bir hesap için sormayı kapatabilir ya da kaydı tamamen engelleyebilir (15. bölüm).</li>
   <li><b>İleri tarih yok:</b> Kasa, cari, stok ve taksit hareketine bugünden sonraki bir tarih yazılamaz. Gelecekteki ödeme ya da tahsilatı taksit veya çek / senet vadesi olarak girin; günü gelince tahsil edin.</li>
 </ul>
@@ -177,9 +177,9 @@
 <h2>10. Stok</h2>
 <p>Sol menüden <b>Stok</b>. Ürünler (çay, yağ, kâğıt…) ve giriş/çıkış hareketleri; <b>Mevcut</b> = girişler − çıkışlar.</p>
 <ol class="steps">
-  <li><b>+ Yeni Ürün:</b> ad, <b>birim</b> (Adet, Kg, Lt, Metre, M², Paket, Koli, Saat…; listede yoksa kendiniz yazın), kategori, kritik seviye, birim fiyat. Açılış miktarı yazıp <i>Kasa'ya yansıt</i>'ı işaretlerseniz miktar × birim fiyat Kasa'dan gider olarak düşer. Toplu açılış için <b>Excel / Sheets’ten Yükle</b>.</li>
+  <li><b>+ Yeni Ürün:</b> <b>Stok Kodu</b> (isteğe bağlı; barkod okutabilirsiniz, her ürünün kodu ayrıdır), ad, <b>birim</b> (Adet, Kg, Lt, Metre, M², Paket, Koli, Saat…; listede yoksa kendiniz yazın), kategori, kritik seviye, birim fiyat. Açılış miktarı yazıp <i>Kasa'ya yansıt</i>'ı işaretlerseniz miktar × birim fiyat Kasa'dan gider olarak düşer. Toplu açılış için <b>Excel / Sheets’ten Yükle</b>.</li>
   <li><b>Alış ve satış fiyatı:</b> ürün kartında ikisini ayrı yazın; <b>− Çıkış</b> satış fiyatıyla, <b>+ Giriş</b> alış fiyatıyla açılır.</li>
-  <li><b>+ Giriş / − Çıkış:</b> miktar ve birim fiyatı yazınca tutar hesaplanır. Para <b>Nakit</b>, <b>Kredi Kartı</b> ya da <b>Havale / EFT</b> ile Kasa'ya/Banka'ya yazılır ya da <b>Açık Hesap</b> ile cariye.</li>
+  <li><b>+ Giriş / − Çıkış:</b> miktar ve birim fiyatı yazınca tutar hesaplanır. Para <b>Nakit</b>, <b>POS</b> (alımda <b>Kredi Kartı</b>) ya da <b>Havale / EFT</b> ile Kasa'ya/Banka'ya yazılır ya da <b>Açık Hesap</b> ile cariye.</li>
   <li><b>↩ Müşteri İadesi:</b> geri gelen ürün stoğa girer; parası müşteriye geri ödenir ya da borcundan düşülür. Taksitlendirilmiş satıştan iade gelirse taksit kartı da o kadar küçülür.</li>
   <li><b>Kasiyer:</b> <i>Yönetim → Yeni Rol</i>'de <b>Satış Yapma</b> yetkisi verilen kişi ürün kartına dokunmadan satış ve iade girer.</li>
   <li><b>Kritik seviye:</b> ürün bu miktara inince listede üstte kırmızı görünür, sol menüde rozet çıkar.</li>
@@ -202,20 +202,21 @@
 
 
 <h2>12. Fatura</h2>
-<p>Sol menüden <b>Fatura</b>. Satış, alış ve iade faturalarınız; her fatura kesildiği anda stoğu, cariyi, Kasa'yı, taksit kartını ve çek/senedi birlikte yazar; ayrıca bir yere girmezsiniz.</p>
+<p>Sol menüden <b>Fatura</b>. Satış, alış ve iade faturalarınız; her fatura kaydedildiği anda stoğu, cariyi, Kasa'yı, taksit kartını ve çek/senedi birlikte yazar; ayrıca bir yere girmezsiniz.</p>
 <figure><img src="ekran/k24-fatura-formu.jpg" alt="Fatura formu"><figcaption>Satış faturası: cari, kalemler, KDV ve ödeme tek formda.</figcaption></figure>
 <ol class="steps">
   <li><b>+ Yeni Fatura</b> → ne yapacağınızı seçin: <i>Stoktan Satış</i>, <i>Hizmet Satışı</i>, <i>Serbest Meslek Makbuzu</i>, <i>Fiyat Farkı Faturası</i>, <i>Satıştan İade</i>; <i>Stoğa Mal Alışı</i>, <i>Hizmet ve Gider Alışı</i>, <i>Alıştan İade</i>. Stok, KDV ve ödeme kuralları seçtiğiniz senaryodan gelir. Cari kartındaki <b>Satış Faturası</b> / <b>Alış Faturası</b> pili aynı formu cari dolu açar.</li>
   <li><b>Cari:</b> adını yazıp seçin; vergi dairesi, VKN/TCKN ve adres cari kartından gelir. Kayıtlı değilse yanındaki <b>+ Yeni Cari</b> formdan ayrılmadan açar; kaydedince seçili gelir.</li>
-  <li><b>Kalemler:</b> ürün adını yazınca stoktan öneri gelir; miktar, birim fiyat, iskonto ve KDV. Cari ve ürün seçilince <b>bu müşteriye ve başkalarına son satış/alış fiyatı</b> görünür, tıklayınca fiyata yazılır. <b>Not</b> belgenin altına basılır.</li>
-  <li><b>Ödeme:</b> peşin kısmı <b>Nakit / Havale / Kredi Kartı</b> ile Kasa'ya, <b>Çek / Senet</b> ile portföye yazılır; kalanı <b>Açık Hesap</b> (vadeli) ya da <b>Taksit</b> (taksit kartı açılır).</li>
-  <li><b>Kaydet</b> (ya da <b>Taslak Olarak Kaydet</b>: deftere işlenmez, Taslaklar sekmesinde bekler). Kesilen belge düzeltilmez; yanlışsa <b>İptal Et</b> bütün etkilerini geri alır (numara korunur) ya da <b>İade</b> kesersiniz.</li>
+  <li><b>Kalemler:</b> <b>Stok Kodu</b> ya da ürün adını yazınca stoktan öneri gelir; kodu yazıp Enter'a basınca (barkod okuyucu da) ürün doğrudan seçilir. Miktar, birim fiyat, iskonto ve KDV; bütün satırlara aynı oran için üstteki <b>Tüm Kalemlere KDV</b>. <i>Stoğa Mal Alışı</i>'nda stokta olmayan ürün için listeden <b>+ Yeni Stok Kartı</b>: kart fatura kaydedilince açılır, ürün stoğa girer. Cari ve ürün seçilince <b>bu müşteriye ve başkalarına son satış/alış fiyatı</b> görünür, tıklayınca fiyata yazılır. <b>Not</b> belgenin altına basılır.</li>
+  <li><b>Ödeme:</b> peşin kısmı <b>Nakit / Havale / POS</b> (alışta <b>Kredi Kartı</b>) ile Kasa'ya, <b>Çek / Senet</b> ile portföye yazılır; kalanı <b>Açık Hesap</b> (vadeli) ya da <b>Taksit</b> (taksit kartı açılır).</li>
+  <li><b>Faturayı Kaydet</b> (ya da <b>Taslak Olarak Kaydet</b>: deftere işlenmez, Taslaklar sekmesinde bekler).</li>
+  <li><b>Düzeltme:</b> kaydedilmiş faturanın kartında <b>Düzenle</b> → değiştirin → <b>Değişiklikleri Kaydet</b>. Numara aynı kalır; stok, cari, Kasa ve taksit yeni hale göre yazılır. İadesi olan, kilitli dönemdeki ya da taksitinden tahsilat alınmış faturada Düzenle kapalıdır (nedeni düğmenin üstünde yazar); o zaman <b>İptal Et</b> ya da <b>İade</b>.</li>
 </ol>
 <ul>
   <li><b>İade:</b> kartta <b>İade</b> pili ya da senaryoda <i>Satıştan / Alıştan İade</i>; en üstteki arama ile iade edilecek faturayı bulun, kalem ve miktarı seçin. Para Kasa'dan geri verilir ya da cari borcundan düşer; taksitli satışta taksit kartı iade kadar küçülür.</li>
-  <li><b>Belgeyi verin:</b> kartta <b>PDF</b> / <b>Yazdır</b>, <b>WhatsApp</b> (PDF iner, sohbet açılır) ve <b>E-Posta</b> (PDF iner, cari kartındaki adrese hazır metinle e-posta penceresi açılır). Resmî e-Fatura bağlantısı açılana kadar belge <b>Müşteri Fişi</b> başlığıyla basılır; resmî fatura yerine geçmez.</li>
-  <li><b>Toplu işler:</b> listede soldaki kutularla belgeleri seçin → <b>Seçilenleri PDF / Excel</b>; Taslaklar sekmesinde <b>Seçilenleri Kes</b> (eski tarihli önce), Satış/Alış sekmesinde <b>Seçilenleri İptal Et</b>. Kesilemeyen ya da iptal edilemeyen belge nedeniyle bildirilir ve seçili kalır.</li>
-  <li><b>Tekrarla:</b> kira, aidat, abonelik gibi her ay kesilen fatura için kartta <b>Tekrarla</b>; her dönem taslak hazır gelir, Taslaklar'dan toplu kesersiniz.</li>
+  <li><b>Belgeyi verin:</b> kartta <b>Satış Faturası - PDF</b> / <b>Yazdır</b>, <b>WhatsApp</b> (PDF iner, sohbet açılır) ve <b>E-Posta</b> (PDF iner, cari kartındaki adrese hazır metinle e-posta penceresi açılır). Resmî e-Fatura bağlantısı açılana kadar belge <b>Müşteri Fişi</b> başlığıyla basılır; resmî fatura yerine geçmez.</li>
+  <li><b>Toplu işler:</b> listede soldaki kutularla belgeleri seçin → <b>Seçilenleri PDF / Excel</b>; Taslaklar sekmesinde <b>Seçilenleri Kaydet</b> (eski tarihli önce), Satış/Alış sekmesinde <b>Seçilenleri İptal Et</b>. Kaydedilemeyen ya da iptal edilemeyen belge nedeniyle bildirilir ve seçili kalır.</li>
+  <li><b>Tekrarla:</b> kira, aidat, abonelik gibi her ay düzenlenen fatura için kartta <b>Tekrarla</b>; her dönem taslak hazır gelir, Taslaklar'dan toplu kaydedersiniz.</li>
   <li><b>Fatura Ayarları</b> (dişli): belgenin üstünde yazan firma bilgisi, <b>Logo</b> (seçtiğiniz görsel küçültülüp belgeye basılır), banka IBAN'ları, belge alt notu, varsayılan KDV ve vade günü, belgenin altındaki <b>Teslim Alan / Kaşe-İmza</b> kutuları.</li>
   <li><b>Raporlar → Tüm Raporlar:</b> <i>Satış Faturaları</i>, <i>Alış Faturaları</i>, <i>İade Faturaları</i>, <i>KDV Özeti</i>, <i>Açık Faturalar</i>, <i>Ürün Bazında Satış ve Kârlılık</i>. Açık faturalar Vade Takip'te ve ANLIK DURUM'da da görünür.</li>
   <li><b>Kimler görür:</b> yönetici ve muhasebe; başka birine <b>Yönetim → Kullanıcılar → Yetkiler → Fatura</b> ile açılır.</li>

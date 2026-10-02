@@ -676,7 +676,7 @@
         { name: "amount", label: "Tutar (₺)", required: true, inputmode: "decimal", value: entry ? office().amountText?.(entry.amount) || entry.amount : "", placeholder: "Örn. 1.250,00", autofocus: true },
         // v2.0.13: tahsilat/ödeme yolu (Nakit, Havale / EFT, Kredi Kartı, Çek / Senet). Çek/senet seçilirse evrak formuna geçilir.
         ...(type === "in" || type === "out"
-          ? [{ name: "method", label: type === "in" ? "Tahsilat Yolu" : "Ödeme Yolu", type: "select", value: entry?.method || "cash", options: [...HOF.payMethods(type === "in" ? "in" : "out"), ...(!entry && HOF.cheques?.newFor && HOF.can("cheques.manage") ? [{ value: "cheque", label: "Çek / Senet (portföye alınır)" }] : [])] }]
+          ? [{ name: "method", label: type === "in" ? "Tahsilat Yolu" : "Ödeme Yolu", type: "select", value: entry?.method || "cash", options: [...HOF.payMethods(type === "in" ? "in" : "out"), ...(!entry && HOF.cheques?.newFor && HOF.can("cheques.manage") ? [{ value: "cheque", label: type === "in" ? "Çek / Senet (portföye alınır)" : "Çek / Senet (verilir)" }] : [])] }]
           : []),
         // v2.0.13: yanlış yönde yazılan borç/alacak düzeltilirken yön değiştirilebilir (açılış bakiyesi gibi).
         ...(entry && (type === "debt" || type === "credit") ? [{ name: "kind", label: "Yön", type: "select", value: type, options: [{ value: "debt", label: "Borç (cari bize borçlanır)" }, { value: "credit", label: "Alacak (biz cariye borçlanırız)" }] }] : []),
