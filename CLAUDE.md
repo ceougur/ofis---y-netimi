@@ -344,7 +344,11 @@ Bağlam kopsa da bu düzen değişmez. Kullanıcı "zip ver" dediğinde şu üç
   başlık alt alta kontrol listesi, karşısında yapıldı tiki; (2) uzman mali müşavir gözüyle GERÇEK şirket işlemleri —
   programın bütün özellikleriyle, gerçek ortamda, etkilediği her yere doğru mantık ve tutarla geçtiğinin testi;
   (3) uzman UI + UX gözüyle bütün kartlar/piller tasarım uygunluğu ve kodun uçtan uca doğru çalıştığı; baş mimar/baş
-  mühendis şapkasıyla GERÇEK STRES TESTİ. Çıktılar: `docs/2.0.17-KONTROL-LISTESI.md`, `docs/2.0.17-MALI-MUSAVIR-TESTI.md`
+  mühendis şapkasıyla GERÇEK STRES TESTİ. EK (kullanıcı, aynı gün): mali müşavir FATURA modülünü de HER VARYASYONLA
+  kullanır — 8 senaryo (stoktan satış, hizmet satışı, fiyat farkı, SMM, satıştan iade, stoğa mal alışı, hizmet/gider
+  alışı, alıştan iade), KDV %1/%10/%20, KDV dahil/hariç, iskonto, tevkifat/stopaj, ödeme biçimleri (nakit, havale, POS,
+  alınan/verilen çek-senet, ciro, taksit, açık, karma), taslak → kaydet, düzenle, iptal, sil, kopyala, toplu, Mahsup Et,
+  Kapatılacak Fatura, PDF/Excel/UBL. Çıktılar: `docs/2.0.17-KONTROL-LISTESI.md`, `docs/2.0.17-MALI-MUSAVIR-TESTI.md`
   (senaryo + beklenen/gerçek sayılar), `docs/2.0.17-UI-UX-DENETIMI.md` (ekran görüntüleri + bulgular + düzeltmeler).
 - e-Belge kararı (kullanıcı, 01.10.2026): vergi dairesi/entegratör bağlantısı KAPALI — "sana entegre et diyene kadar".
   Fatura modülü tam çalışır; belge "Müşteri Fişi" (resmî hükmü yok) basılır; e-Fatura/e-Arşiv/XML ekranda görünmez.
