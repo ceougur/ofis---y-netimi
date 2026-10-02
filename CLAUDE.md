@@ -102,6 +102,10 @@ Bağlam kopsa da bu düzen değişmez. Kullanıcı "zip ver" dediğinde şu üç
      (JPEG, 150 KB) ve kaşe/imza kutuları, kartta E-Posta, fatura kalemli stok kartı silinmez, "Fiyat Farkı Faturası".
      Testler: `test/fatura-215.test.mjs`, `senaryo-215` adım 12–14. Kullanım kılavuzuna "Fatura" bölümü eklendi
      (kullanıcı isteği; k24 ekranı; PDF yeniden üretildi, client/kilavuz'a kopyalandı — siteye yükleme kullanıcıda).
+- 2.0.16 DURUM (02.10.2026): 11 maddenin hepsi yapıldı, dalda (`claude/nice-euler-jvajxv`), PR bekliyor. Kanıt: `CHANGELOG.md`
+  → 2.0.16, `test/fatura-216.test.mjs`, `npm run test:senaryo-216` (39 denetim; 42 rapor arayüzden ön izleme+PDF+Excel).
+  Kararlar (önerim uygulandı): Düzenle yalnız satış/alış/SMM (iade belgesi iptal+yeniden); taksitinden tahsilat alınmış
+  faturada Düzenle kapalı; Toplam satırı KDV dahil iskontosuzda girilen tutar, iskontoluda KDV hariç.
 - 2.0.16 müşteri hataları (02.10.2026'dan; kullanıcı tek tek yazar, "yap" deyince TOPLU yapılır; kök neden koddan,
   uzman UI/UX + baş mimar/mühendis gözüyle; her madde test + kanıt):
   1. Fatura formu → Kalemler: ürün adı yazınca açılan öneri listesi kalem tablosunun içinde kalıyor, altı görünmüyor
