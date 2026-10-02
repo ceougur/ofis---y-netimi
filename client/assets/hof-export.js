@@ -161,7 +161,9 @@
     const existing = document.getElementById("hof-toolbar-export");
     // "Tabloyu dışa aktarma" yetkisi (v2.0.10) kişiden kaldırıldıysa düğme hiç görünmez.
     if (!heading || !HOF.can("records.export")) return existing?.remove();
-    const before = heading.querySelector(":scope > button:not(#hof-toolbar-export)");
+    // "Yeni Kayıt" (v2.0.15) Dışa Aktar'ın solunda durur; burada sayılırsa iki düğme birbirinin önüne geçmeye çalışır ve
+    // sonsuz DOM değişikliği öteki ekran düzeltmelerini (hof-sources gizleme geçişi) aç bırakır.
+    const before = heading.querySelector(":scope > button:not(#hof-toolbar-export):not(#hof-toolbar-new)");
     if (existing?.parentNode === heading && (!before || existing.nextElementSibling === before)) return;
     const button = existing || HOF.el("button", { type: "button", id: "hof-toolbar-export", class: "hof-toolbar-export", "data-hof-ui": "", "aria-label": "Dışa aktar", title: "Tabloyu Excel (.xlsx) ya da CSV olarak indir" }, `${DOWNLOAD_ICON}<span>Dışa Aktar</span>`);
     heading.insertBefore(button, before);

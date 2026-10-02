@@ -1723,6 +1723,14 @@
     return open({ account: account || {}, tab: "all" });
   };
   HOF.invoices = { open, newFor, openDoc, forAccount, edocEnabled: () => meta?.edocEnabled === true };
+  // Stok hareketi, çek/senet kartı, taksit kartı ve Kasa satırındaki "Fatura" bağlantısı (data-open-invoice): faturayı
+  // açar. Kendi penceresinde işleyen modül (cari kartı, fatura penceresi) tıklamayı işaretler; burada ikinci kez açılmaz.
+  document.addEventListener("click", event => {
+    const link = event.target.closest?.("[data-open-invoice]");
+    if (!link || event.defaultPrevented || !canView()) return;
+    event.preventDefault();
+    openDoc(link.dataset.openInvoice);
+  });
   HOF.whenReady(() => {
     // Cari formu e-Fatura alanlarını göstermek için e-Belge bağlantısının açık olup olmadığını bilmeli.
     if (canView()) loadMeta().catch(() => null);

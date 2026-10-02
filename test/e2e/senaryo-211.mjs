@@ -340,7 +340,8 @@ try {
 
   await step("G. Başlık yazımı: raporlar ve menü (m7)", async () => {
     const menu = await admin.$$eval("#hof-sidecard .hof-side-text", list => list.map(node => node.textContent.trim()));
-    ok(["Görev Ata", "Yeni Kayıt", "Personel Raporu", "Kullanım Kılavuzu"].every(label => menu.includes(label)), `m7: menü (${menu.join(", ")})`);
+    // v2.0.15: "Yeni Kayıt" sol menüden kalktı (ana listede "Dışa Aktar"ın yanında); menüye "Fatura" geldi.
+    ok(["Görev Ata", "Fatura", "Personel Raporu", "Kullanım Kılavuzu"].every(label => menu.includes(label)) && !menu.includes("Yeni Kayıt"), `m7: menü (${menu.join(", ")})`);
     await admin.click('#hof-sidecard [data-action="analytics"]');
     await admin.waitForSelector(".hof-rep-tab");
     await auditLabels(admin, "Raporlar");

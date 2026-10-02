@@ -526,6 +526,11 @@
       if (entry.source === "cheque") {
         return `<tr data-kind="${esc(entry.kind)}"><td>${esc(HOF.formatDate(entry.date))}</td><td><b>${esc(entry.description)}</b><small>Çek / senet kartından · ${esc(entry.actorName || "—")}${methodTag(entry)}</small></td><td class="num hof-cash-in">${entry.kind === "in" ? esc(HOF.formatMoney(entry.amount)) : ""}</td><td class="num hof-cash-out">${entry.kind === "out" ? esc(HOF.formatMoney(entry.amount)) : ""}</td><td class="num"><b>${esc(HOF.formatMoney(entry.balance))}</b></td><td class="hof-cash-actions"><button type="button" class="hof-mini" data-cheque="${esc(entry.chequeId)}" title="Çek / senet kartını aç" aria-label="Çek / senet kartını aç">↗</button></td></tr>`;
       }
+      // Fatura (v2.0.15): peşin tahsilat / ödeme faturadan gelir; fatura kartından iptal edilir ya da iade kesilir.
+      if (entry.source === "invoice") {
+        const open = `${HOF.can("invoices.view") ? `<button type="button" class="hof-mini hof-mini-text" data-invoice="${esc(entry.invoiceId)}" title="Faturayı aç">Fatura</button>` : ""}<button type="button" class="hof-mini" data-account="${esc(entry.accountId)}" title="Cari kartını aç" aria-label="Cari kartını aç">↗</button>`;
+        return `<tr data-kind="${esc(entry.kind)}"><td>${esc(HOF.formatDate(entry.date))}</td><td><b>${esc(entry.description)}</b><small>Faturadan · ${esc(entry.actorName || "—")}${methodTag(entry)}</small></td><td class="num hof-cash-in">${entry.kind === "in" ? esc(HOF.formatMoney(entry.amount)) : ""}</td><td class="num hof-cash-out">${entry.kind === "out" ? esc(HOF.formatMoney(entry.amount)) : ""}</td><td class="num"><b>${esc(HOF.formatMoney(entry.balance))}</b></td><td class="hof-cash-actions">${open}</td></tr>`;
+      }
       if (entry.source === "account" || entry.source === "stock") {
         const account = entry.source === "account";
         const label = account ? `${entry.kind === "in" ? "Cari tahsilat" : "Cariye ödeme"} · ${entry.accountName}${entry.description ? ` · ${entry.description}` : ""}` : entry.description;
@@ -610,6 +615,7 @@
       else if (target.dataset.account) HOF.accounts?.open(target.dataset.account);
       else if (target.dataset.stock) HOF.stock?.open(target.dataset.stock);
       else if (target.dataset.cheque) HOF.cheques?.open({ id: target.dataset.cheque });
+      else if (target.dataset.invoice) HOF.invoices?.openDoc(target.dataset.invoice);
       else if (target.dataset.edit) {
         const entry = byId(target.dataset.edit);
         if (!entry) return;
@@ -730,16 +736,17 @@
     { action: "messages", icon: "✉", key: "side.messages", label: () => "Mesajlar" },
     { action: "newTask", icon: "+", key: "side.newTask", label: () => "Görev Ata", requires: "tasks.create" },
     // v2.0.15 (müşteri): "Yeni Kayıt" menüden kalktı; tablo başlığında "Dışa Aktar"ın yanında (hof-export.js).
-    { action: "cash", icon: "₺", key: "side.cash", label: () => "Kasa", requires: "cash.view" },
-    // Taksitler (v2.0.4): grup › alt grup, taksit kartı, tahsilat, gecikme uyarısı (hof-plans.js).
+    // Finans düğmeleri alt alta ve müşterinin istediği sırayla (02.10.2026): Cari, Kasa, Stok, Fatura, Çek / Senet, Taksitler.
     // Cari ve Stok (v2.0.6): müşteri/tedarikçi kartları (taksitler cariye bağlı) ve Kasa mantığıyla stok.
     { action: "accounts", icon: "☰", key: "side.accounts", label: () => "Cari", requires: "accounts.view" },
-    { action: "plans", icon: "▤", key: "side.plans", label: () => "Taksitler", requires: "plans.view", badge: "warn" },
+    { action: "cash", icon: "₺", key: "side.cash", label: () => "Kasa", requires: "cash.view" },
     { action: "stock", icon: "▦", key: "side.stock", label: () => "Stok", requires: "stock.view", badge: "warn" },
-    // Çek / Senet (v2.0.7): alınan portföy ve verilen evrak; rozet = vadesi geçen ve bugün vadesi gelen açık evrak.
-    { action: "cheques", icon: "✎", key: "side.cheques", label: () => "Çek / Senet", requires: "cheques.view", badge: "warn" },
     // Fatura (v2.0.15): satış, alış, iade, serbest meslek makbuzu; rozet = vadesi geçmiş satış faturası sayısı.
     { action: "invoices", icon: "≡", key: "side.invoices", label: () => "Fatura", requires: "invoices.view", badge: "warn" },
+    // Çek / Senet (v2.0.7): alınan portföy ve verilen evrak; rozet = vadesi geçen ve bugün vadesi gelen açık evrak.
+    { action: "cheques", icon: "✎", key: "side.cheques", label: () => "Çek / Senet", requires: "cheques.view", badge: "warn" },
+    // Taksitler (v2.0.4): grup › alt grup, taksit kartı, tahsilat, gecikme uyarısı (hof-plans.js).
+    { action: "plans", icon: "▤", key: "side.plans", label: () => "Taksitler", requires: "plans.view", badge: "warn" },
     { action: "liens", icon: "!", key: "side.liens", label: () => "Haciz Uyarıları", badge: "warn", module: "haciz" },
     // Raporlar (v2.0.9): ANLIK DURUM'daki "Rapor Al" ile aynı pencere (Cari ekstre, Vade takip, Nakit akış, Çek/Senet,
     // modül raporları, Tablo raporları). Rapor yetkisi ya da kişiye verilen ANLIK DURUM yetkisiyle görünür.
