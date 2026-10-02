@@ -756,6 +756,8 @@ try {
     await admin.waitForSelector(".hof-chq-actions [data-action='collect']", { timeout: 10000 });
     await admin.click(".hof-chq-actions [data-action='collect']");
     await admin.waitForSelector('.hof-modal-backdrop.is-visible form input[name="date"]', { timeout: 8000 });
+    // v2.0.17: Kasa kartı yalnız nakittir (madde 9); çek nakit tahsil edilir ki Kasa kartı değişsin (varsayılan Banka).
+    await admin.selectOption('.hof-modal-backdrop.is-visible form select[name="method"]', "cash");
     await admin.click('.hof-modal-backdrop.is-visible form button[type="submit"]');
     await admin.waitForFunction(() => document.querySelector(".hof-chq-history")?.textContent.includes("Tahsil Edildi"), null, { timeout: 10000 });
     await admin.keyboard.press("Escape");
