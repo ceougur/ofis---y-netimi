@@ -314,6 +314,23 @@ Bağlam kopsa da bu düzen değişmez. Kullanıcı "zip ver" dediğinde şu üç
      Ek (kullanıcı, ekran: sol üstte "ÇALIŞMA OTURUMU · TÜM REHBER.xlsx ▾", altında "Operasyon Merkezi" Görevler/Mesajlar/
      Görev Ata/Cari): KESİN — o kutunun yerine ŞİRKET SEÇİMİ gelir (aynı yer, aynı boyut: "ŞİRKET · 001 · Unvan ▾");
      oturum (dosya/sayfa) seçimi ORTAYA, sayfa pillerine taşınır.
+  14. "EXCELİM SAPITTI — PROGRAM EXCEL VERİLERİNE MÜDAHALE EDİYOR OLABİLİR Mİ?" (müşteri, 02.10.2026; kullanıcı iletti):
+     sıralama için 1-2-3 yazıp sürükle-bırakınca boş atıyor; doldurma tutamacına çift tıklayınca alta kadar
+     numaralandırmıyor. KODDAN DURUM: program müşterinin Excel DOSYASINA HİÇ YAZMAZ — dosya tarayıcıda okunur
+     (`hof-excel-worker.js`, SheetJS, salt okuma), satırlar programın veri tabanına kopyalanır; Google Sheets de yalnız
+     okunur (export). "Dışa Aktar" YENİ bir .xlsx üretir (`server/lib/xlsx-write.mjs`: sayılar sayı hücresi `<v>`,
+     metinler inlineStr) — müşterinin kendi dosyasına dokunmaz. Yani Excel'deki bu davranış programdan kaynaklanamaz.
+     Müşteriye söylenecek olası nedenler (Excel tarafı): (a) Dosya → Seçenekler → Gelişmiş → "Doldurma tutamacını ve
+     hücre sürükleyip bırakmayı etkinleştir" kapanmış (en sık neden; çift tık + sürükleme ikisi birden ölür); (b) 1 ve 2
+     yazılı hücreleri BİRLİKTE seçmeden sürüklerse Excel kopyalar/boş atar; sürüklerken Ctrl basılıysa kopyalar;
+     (c) hücreler "Metin" biçimindeyse (ör. başka yerden yapıştırılmış, başında kesme işareti) seri üretmez — Veri →
+     Metni Sütunlara Dönüştür ya da biçimi Genel yapıp yeniden gir; (d) çift tık yanındaki sütun boşsa durur (Excel
+     kuralı); (e) Flash Fill / otomatik tamamlama ayarları ya da bozuk Excel profili — Dosya → Seçenekler → Gelişmiş'te
+     "Hücre değerleri için Otomatik Tamamlama'yı etkinleştir"; olmazsa Excel Onarım (Denetim Masası → Programlar → Onar).
+     Öneri (yap'ta): kılavuz "17. Bir Sorun mu Var?" bölümüne "Excel'de doldurma tutamacı çalışmıyor" maddesi (program
+     dosyaya yazmaz + yukarıdaki adımlar); programın Dışa Aktar'ından inen dosyada sayıların sayı olarak geldiğinin
+     testi (`test/xlsx-write` — var mı denetlenir, yoksa eklenir). Müşteriden ekran görüntüsü ve dosyanın programdan mı
+     indiği (Dışa Aktar) yoksa kendi dosyası mı olduğu sorulacak.
   KURAL (bu maddeden): kullanıcının her isteği, ne kadar küçük olsa da, AYNI ANDA bu listeye yazılır ve commit edilir;
   "dün konuştuk" denen bir istek listede yoksa kullanıcıya açıkça söylenir.
 - e-Belge kararı (kullanıcı, 01.10.2026): vergi dairesi/entegratör bağlantısı KAPALI — "sana entegre et diyene kadar".
