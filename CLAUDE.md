@@ -102,6 +102,10 @@ Bağlam kopsa da bu düzen değişmez. Kullanıcı "zip ver" dediğinde şu üç
      (JPEG, 150 KB) ve kaşe/imza kutuları, kartta E-Posta, fatura kalemli stok kartı silinmez, "Fiyat Farkı Faturası".
      Testler: `test/fatura-215.test.mjs`, `senaryo-215` adım 12–14. Kullanım kılavuzuna "Fatura" bölümü eklendi
      (kullanıcı isteği; k24 ekranı; PDF yeniden üretildi, client/kilavuz'a kopyalandı — siteye yükleme kullanıcıda).
+- 2.0.16 müşteri hataları (02.10.2026'dan; kullanıcı tek tek yazar, "yap" deyince TOPLU yapılır; kök neden koddan,
+  uzman UI/UX + baş mimar/mühendis gözüyle; her madde test + kanıt):
+  1. Fatura formu → Kalemler: ürün adı yazınca açılan öneri listesi kalem tablosunun içinde kalıyor, altı görünmüyor
+     (tablo kaydırma kutusu listeyi kırpıyor; ekran: kalem satırında "ANT", liste tablonun altında kesik).
 - e-Belge kararı (kullanıcı, 01.10.2026): vergi dairesi/entegratör bağlantısı KAPALI — "sana entegre et diyene kadar".
   Fatura modülü tam çalışır; belge "Müşteri Fişi" (resmî hükmü yok) basılır; e-Fatura/e-Arşiv/XML ekranda görünmez.
   Entegratör altyapısı (müşteri kendi API bilgisini girer, kontörü kendisi alır) hazır tutulur ama `config.edocEnabled`
