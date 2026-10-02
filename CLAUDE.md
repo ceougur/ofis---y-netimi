@@ -132,6 +132,11 @@ Bağlam kopsa da bu düzen değişmez. Kullanıcı "zip ver" dediğinde şu üç
      raporun tanımında zorunlu/isteğe bağlı ayrımı (`accountRequired`), isteğe bağlıda "Tüm Cariler" ile hemen çalışır.
      Test açığı: senaryo-215 adım 10 raporları API'den denedi, ARAYÜZDEN değil → 42 raporun HER BİRİ arayüzden açılıp
      ön izleme + PDF + Excel denetlenecek (kalıcı e2e).
+  10. Stok kodu: alan VAR ama "Kod" adıyla göze çarpmıyor (stok kartı formu "Kod", liste ilk kolonu "Kod", faturada kalem
+     ⋯ menüsünde gizli) → müşteri yok sandı. Yapılacak: her yerde "Stok Kodu" adı; stok kartı formunda Ad'ın yanında
+     üstte; faturada kalem satırında kodla arama (yazılan kod tam eşleşirse doğrudan seçilir — barkod okuyucu da çalışır),
+     kod kalem altında görünür; tekillik denetimi (aynı kod iki farklı ürüne verilmez, uyarı); stok listesinde koda göre
+     arama/sıralama; Excel'den stok aktarımında "Stok Kodu" kolonu (eşleme var: `mapStockHeaders` code); PDF/rapor kolonları.
 - e-Belge kararı (kullanıcı, 01.10.2026): vergi dairesi/entegratör bağlantısı KAPALI — "sana entegre et diyene kadar".
   Fatura modülü tam çalışır; belge "Müşteri Fişi" (resmî hükmü yok) basılır; e-Fatura/e-Arşiv/XML ekranda görünmez.
   Entegratör altyapısı (müşteri kendi API bilgisini girer, kontörü kendisi alır) hazır tutulur ama `config.edocEnabled`
