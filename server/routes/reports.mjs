@@ -111,8 +111,8 @@ export function registerReportRoutes(router, { auth, store, dataset, profile, pl
     const parts = [];
     if (filters.from || filters.to) parts.push(`${filters.from ? dayText(Date.parse(filters.from)) : "başlangıç"} – ${filters.to ? dayText(Date.parse(filters.to)) : "bugün"}`);
     if (filters.cari) parts.push(`cari: ${filters.cari}`);
-    if (filters.sessions.length) parts.push(`${filters.sessions.length} oturum`);
-    else if (sessions.length > 1) parts.push(`${sessions.length} oturum birleşik`);
+    if (filters.sessions.length) parts.push(`${filters.sessions.length} sayfa`);
+    else if (sessions.length > 1) parts.push(`${sessions.length} sayfa birleşik`);
     return parts.join(" · ");
   };
   const summaryOf = report => {

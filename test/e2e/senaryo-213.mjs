@@ -254,18 +254,17 @@ try {
     await admin.waitForTimeout(800);
     ok((await balanceOf("kemal")) === 3800, "Kemal bakiyesi 4.800 − 1.000 = 3.800");
     const summary = await cashSummary();
-    ok(summary.byMethod?.card === 1000 && (summary.byMethod?.cash || 0) === 0, `Kasa ve Banka: kart ${summary.byMethod?.card}, nakit ${summary.byMethod?.cash}`);
+    ok(summary.byMethod?.card === 1000 && (summary.byMethod?.cash || 0) === 0, `banka tarafı: kart ${summary.byMethod?.card}, nakit ${summary.byMethod?.cash}`);
     await closeAll();
+    // v2.0.17 (müşteri): Kasa penceresi yalnız nakit — POS tahsilatı Kasa'da görünmez, Banka ve POS raporunda görünür.
     await admin.click('#hof-sidecard [data-action="cash"]');
-    await admin.waitForSelector(`${top} [data-methods]`);
-    await admin.click(`${top} [data-methods] [data-method="card"]`);
+    await admin.waitForSelector(`${top} [data-add="in"]`);
     await admin.waitForTimeout(600);
     const text = await topText();
-    ok(/Kemal Bakkal/.test(text) && /1\.000,00/.test(text), "Kredi Kartı sekmesinde Kemal'in tahsilatı");
-    await shot(admin, "kasa-ve-banka-kredi-karti");
-    await admin.click(`${top} [data-methods] [data-method="cash"]`);
-    await admin.waitForTimeout(600);
-    ok(!/Kemal Bakkal/.test(await topText()), "Nakit Kasa sekmesinde yok");
+    ok(!/Kemal Bakkal/.test(text) && /Nakit Kasa/.test(text) && !(await admin.$(`${top} [data-methods]`)), "Kasa penceresi yalnız nakit; yol sekmesi yok; POS tahsilatı listede değil");
+    await shot(admin, "kasa-yalniz-nakit");
+    const bankSide = (await call(admin, "/api/workspace/cash?method=noncash")).data;
+    ok(bankSide.entries.some(entry => entry.method === "card" && entry.amount === 1000), "POS tahsilatı banka tarafında (Banka ve POS Hareketleri)");
     await closeAll();
   });
 
@@ -412,17 +411,18 @@ try {
     await admin.click('.hof-modal-backdrop.is-visible [data-answer="yes"]');
     await admin.waitForFunction(() => /Kilitli dönem yok/.test(document.querySelector("#adm-period-status")?.textContent || ""), null, { timeout: 8000 });
     ok(true, "kilit kaldırıldı");
-    // Eksi Bakiye Denetimi: varsayılan üç hesapta Uyar; Kredi Kartı Engelle yapılır, kaydedilir, geri alınır.
-    await admin.waitForFunction(() => document.querySelector("#adm-negative-card")?.value === "warn", null, { timeout: 8000 });
-    const defaults = await admin.$$eval("#adm-negative select", nodes => nodes.map(node => node.value));
-    ok(defaults.join() === "warn,warn,warn", `Eksi Bakiye Denetimi varsayılanı: ${defaults.join(", ")}`);
-    await admin.selectOption("#adm-negative-card", "block");
+    // Eksi Bakiye Denetimi (v2.0.17): yalnız Nakit Kasa ayarı var (banka/POS denetimi Banka modülü gelene kadar kapalı);
+    // Nakit Engelle yapılır, kaydedilir, geri alınır.
+    await admin.waitForFunction(() => document.querySelector("#adm-negative-cash")?.value === "warn", null, { timeout: 8000 });
+    const defaults = await admin.$$eval("#adm-negative select", nodes => nodes.map(node => `${node.name}=${node.value}`));
+    ok(defaults.join() === "cash=warn", `Eksi Bakiye Denetimi: yalnız Nakit Kasa, varsayılan Uyar (${defaults.join(", ")})`);
+    await admin.selectOption("#adm-negative-cash", "block");
     await admin.click("#adm-negative-save");
     await admin.waitForFunction(() => /Eksi bakiye denetimi kaydedildi/.test([...document.querySelectorAll(".hof-toast")].map(node => node.textContent).join(" ")), null, { timeout: 8000 });
     const saved = await admin.evaluate(() => fetch("/api/admin/negative-policy").then(response => response.json()));
-    ok(saved.data.card === "block" && saved.data.cash === "warn", `kaydedildi: ${JSON.stringify(saved.data)}`);
+    ok(saved.data.cash === "block" && saved.data.bank === "off" && saved.data.card === "off", `kaydedildi: ${JSON.stringify(saved.data)}`);
     await shot(admin, "eksi-bakiye-denetimi");
-    await admin.selectOption("#adm-negative-card", "warn");
+    await admin.selectOption("#adm-negative-cash", "warn");
     await admin.click("#adm-negative-save");
     await admin.waitForTimeout(600);
     await admin.goto(`${BASE}/`, { waitUntil: "load" });

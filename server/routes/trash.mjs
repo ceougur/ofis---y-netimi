@@ -24,10 +24,11 @@ const KIND_LABELS = {
   stock: "Stok ürünü",
   "stock-move": "Stok hareketi",
   cheque: "Çek / senet",
+  invoice: "Fatura",
 };
 const SEQUENCE = /^(sıra|sira|sıra no|no|#|sn|s\.?\s?no|nr)$/i;
 
-export function registerTrashRoutes(router, { store, auth, audit, events, dataset, profile, free, trash, documents, accounts = null, stock = null, cheques = null }) {
+export function registerTrashRoutes(router, { store, auth, audit, events, dataset, profile, free, trash, documents, accounts = null, stock = null, cheques = null, invoices = null }) {
   const now = () => new Date().toISOString();
   const publish = (user, detail) => events?.publish("workspace.changed", { actorId: user.id, actorName: user.display_name, ...detail }, { except: user.id });
   const sessionNames = () => {
@@ -65,7 +66,7 @@ export function registerTrashRoutes(router, { store, auth, audit, events, datase
   function list() {
     const names = sessionNames();
     const multi = names.size > 1;
-    const where = key => (multi && names.get(key) ? `Oturum: ${names.get(key)}` : "");
+    const where = key => (multi && names.get(key) ? `Sayfa: ${names.get(key)}` : "");
     const items = [];
     for (const item of store.all("SELECT d.id, d.source_name AS datasetKey, d.case_key AS caseKey, d.deleted_at AS deletedAt, COALESCE(u.display_name, '') AS actorName FROM deleted_records d LEFT JOIN users u ON u.id = d.deleted_by")) {
       const row = rowOf(item.datasetKey, item.caseKey);
@@ -167,7 +168,7 @@ export function registerTrashRoutes(router, { store, auth, audit, events, datase
         deletedAt: item.deleted_at,
         actorName: item.actor_name,
         restorable: true,
-        note: item.kind === "free-row" || item.kind === "free-column" ? "Eski sırasına araya eklenir; o arada eklenenler kayar, üzerine yazılmaz." : item.kind === "stock-move" ? "Aynı miktar ve tarihle geri eklenir; mevcut stok yeniden hesaplanır." : "Aynı tutar ve tarihle geri eklenir; Kasa yeniden hesaplanır.",
+        note: item.kind === "invoice" ? (payload.wasStatus === "draft" ? "Taslak olarak Fatura listesine geri döner." : "Etkisiz, “İptal Edildi” olarak Fatura listesine geri döner (stok, cari, Kasa değişmez).") : item.kind === "free-row" || item.kind === "free-column" ? "Eski sırasına araya eklenir; o arada eklenenler kayar, üzerine yazılmaz." : item.kind === "stock-move" ? "Aynı miktar ve tarihle geri eklenir; mevcut stok yeniden hesaplanır." : "Aynı tutar ve tarihle geri eklenir; Kasa yeniden hesaplanır.",
       });
     }
     items.sort((a, b) => (a.deletedAt < b.deletedAt ? 1 : -1));
@@ -298,21 +299,26 @@ export function registerTrashRoutes(router, { store, auth, audit, events, datase
     } else if (item.kind === "cash") {
       if (!["in", "out"].includes(payload.kind)) throw new HttpError(409, "Kasa hareketinin bilgisi eksik; geri yüklenemez.");
       store.tx(() => {
-        if (!store.get("SELECT 1 AS found FROM cash_entries WHERE id = ?", item.ref)) {
+        // v2.0.17: Kasa ↔ Banka transferi iki bağlı hareket; ikisi birlikte geri gelir (payload.twin).
+        const insert = row => {
+          if (store.get("SELECT 1 AS found FROM cash_entries WHERE id = ?", row.id)) return;
           store.run(
-            "INSERT INTO cash_entries (id, kind, amount, date, description, method, created_by, created_at, updated_by, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-            item.ref,
-            payload.kind,
-            Number(payload.amount) || 0,
-            payload.date,
-            payload.description || "",
-            payload.method || "cash",
-            payload.createdBy || user.id,
-            payload.createdAt || now(),
+            "INSERT INTO cash_entries (id, kind, amount, date, description, method, transfer_id, created_by, created_at, updated_by, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            row.id,
+            row.kind,
+            Number(row.amount) || 0,
+            row.date,
+            row.description || "",
+            row.method || "cash",
+            row.transferId || "",
+            row.createdBy || user.id,
+            row.createdAt || now(),
             user.id,
             now(),
           );
-        }
+        };
+        insert({ ...payload, id: item.ref });
+        if (payload.twin && ["in", "out"].includes(payload.twin.kind)) insert(payload.twin);
         trash.markRestored(item.id, user);
         audit(user, "cash.entry.restored", item.ref, { kind: payload.kind, amount: payload.amount, date: payload.date, description: payload.description });
       });
@@ -342,6 +348,9 @@ export function registerTrashRoutes(router, { store, auth, audit, events, datase
       message = accounts.restoreEntry(user, item, payload);
     } else if (item.kind === "stock-move" && stock?.restoreMove) {
       message = stock.restoreMove(user, item, payload);
+    } else if (item.kind === "invoice" && invoices?.restoreDeleted) {
+      // v2.0.17: silinen fatura satırlarıyla geri gelir; kaydedilmiş belge "İptal Edildi" olarak (etkisiz) döner.
+      message = invoices.restoreDeleted(user, item, payload);
     } else if (item.kind === "free-row" || item.kind === "free-column") {
       const sheet = store.get("SELECT deleted_at FROM free_sheets WHERE id = ?", payload.sheetId);
       if (!sheet) throw new HttpError(409, "Satırın sayfası artık yok; geri yüklenemez.");

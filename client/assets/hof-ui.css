@@ -37,7 +37,7 @@
   --do-ink: #142b25;
   --do-ink-soft: #2c4a40;
   --do-muted: #64766f;
-  --do-faint: #8a9a93;
+  --do-faint: #66786f; /* v2.0.17 UI/UX denetimi: beyazda 4,7:1 (eski #8a9a93 2,9:1 okunmuyordu) */
   --do-border: #d9e6de;
   --do-border-strong: #c3d8cb;
   --do-surface: #ffffff;
@@ -476,11 +476,22 @@ html.hof-auth-required #root {
   cursor: pointer;
 }
 .hof-toast-close {
+  display: inline-grid;
+  place-items: center;
+  min-width: 28px;
+  min-height: 28px;
+  margin: -4px -6px -4px 0;
   border: 0;
+  border-radius: 8px;
   background: transparent;
   color: var(--do-faint);
   font-size: 18px;
-  cursor: pointer;
+  cursor: pointer; /* v2.0.17 UI/UX denetimi: tıklama hedefi 10×25 → 28×28 */
+}
+.hof-toast-close:hover,
+.hof-toast-close:focus-visible {
+  background: rgba(0, 0, 0, 0.06);
+  color: var(--do-ink);
 }
 
 /* ---------- Bilgi şeridi ---------- */
@@ -522,7 +533,7 @@ html.hof-auth-required #root {
 }
 .hof-sidecard-label {
   margin: 0 0 8px 4px;
-  color: #7a8d85;
+  color: var(--do-faint);
   font-size: 10px;
   font-weight: 800;
   letter-spacing: 0.16em;
@@ -682,7 +693,7 @@ html.hof-auth-required #root {
 }
 .hof-activity-head h3 {
   margin: 0;
-  color: #7a8d85;
+  color: var(--do-faint);
   font-size: 10px;
   font-weight: 800;
   letter-spacing: 0.16em;
@@ -3251,7 +3262,7 @@ html.hof-no-haciz .filter-strip { display: none !important; }
   gap: 1px;
 }
 .hof-session-text small {
-  color: #7a8d85;
+  color: var(--do-faint);
   font-size: 10px;
   font-weight: 800;
   letter-spacing: 0.12em;
@@ -3303,7 +3314,7 @@ html.hof-no-haciz .filter-strip { display: none !important; }
 }
 .hof-session-menu-title {
   margin: 4px 8px 6px;
-  color: #7a8d85;
+  color: var(--do-faint);
   font-size: 10px;
   font-weight: 800;
   letter-spacing: 0.16em;
@@ -3540,7 +3551,7 @@ html.hof-no-haciz .filter-strip { display: none !important; }
 }
 .hof-export-title {
   margin: 4px 8px 6px;
-  color: #7a8d85;
+  color: var(--do-faint);
   font-size: 10px;
   font-weight: 800;
   letter-spacing: 0.16em;
@@ -4801,7 +4812,7 @@ body.hof-free-wide .hof-free-wrap {
 .hof-due-facts > div { display: flex; justify-content: space-between; gap: 10px; font-size: 10.5px; }
 .hof-due-facts dt { color: #789086; }
 .hof-due-facts dd { margin: 0; color: #24573e; font-weight: 800; text-align: right; }
-.hof-due-facts dd small { color: #88a095; font-weight: 600; }
+.hof-due-facts dd small { color: var(--do-faint); font-weight: 600; }
 .hof-due-facts dd.is-overdue { color: #b3473a; }
 .hof-due-facts dd.is-today, .hof-due-facts dd.is-month { color: #a86b12; }
 .hof-payment-mark { background: #f4f8f5; color: #2d5f45; }
@@ -5906,7 +5917,7 @@ body.hof-dense .dynamic-table th {
   overflow: auto;
 }
 .hof-reading li span {
-  color: #7a8883;
+  color: var(--do-faint);
 }
 
 /* ---------- 2.0.2: analizde "Neden?" kanıt listesi ---------- */
@@ -5950,7 +5961,7 @@ body.hof-dense .dynamic-table th {
 }
 .hof-evidence li small {
   display: block;
-  color: #7a8883;
+  color: var(--do-faint);
 }
 
 /* ---------- 2.0.2: Veri Sağlık Kontrolü — kırmızı hücre ve toplu düzeltmeler ---------- */
@@ -6006,7 +6017,7 @@ body.hof-dense .dynamic-table th {
   color: #4b5a56;
 }
 .hof-fix-list li small {
-  color: #7a8883;
+  color: var(--do-faint);
   font-size: 11px;
 }
 
@@ -6110,7 +6121,7 @@ body.hof-dense .dynamic-table th {
 }
 .hof-map-head small {
   font-size: 10px;
-  color: #8a9590;
+  color: var(--do-faint);
   white-space: normal;
   max-width: 200px;
 }
@@ -6222,7 +6233,7 @@ body.hof-dense .dynamic-table th {
 .hof-report-card small {
   display: block;
   font-size: 10px;
-  color: #7a8883;
+  color: var(--do-faint);
   text-transform: uppercase;
   letter-spacing: 0.06em;
 }
@@ -6962,6 +6973,10 @@ body.hof-dense .dynamic-table th {
 .hof-case-picker {
   position: relative;
 }
+/* v2.0.17: seçicide "+ Yeni Cari" (etiketin yanında ve boş sonuçta). */
+.hof-acc-picker-new { margin-left: 8px; font-weight: 800; }
+.hof-case-picker-list .is-empty .hof-link-button { font-weight: 800; }
+.hof-case-picker-list li b .hof-plan-badge { margin-left: 6px; vertical-align: middle; }
 .hof-case-picker-box {
   display: flex;
   align-items: center;
@@ -7022,7 +7037,7 @@ body.hof-dense .dynamic-table th {
   cursor: default;
 }
 .hof-muted {
-  color: #8a9a93;
+  color: var(--do-faint);
 }
 .hof-form-aside {
   margin: 2px 0 12px;
@@ -7129,7 +7144,7 @@ body.hof-dense .dynamic-table th {
   font-weight: 600;
 }
 .hof-case-plan-list tr.is-paid td {
-  color: #8a9a93;
+  color: #7a8d85;
 }
 .hof-case-plan-tools,
 .hof-plan-collect-tools {
@@ -7198,7 +7213,7 @@ body.hof-dense .dynamic-table th {
   color: var(--do-danger);
 }
 .hof-plan-collect tr.is-paid td {
-  color: #8a9a93;
+  color: #7a8d85;
 }
 
 /* ---------- Cari ve Stok (v2.0.6) ---------- */
@@ -7237,7 +7252,7 @@ body.hof-dense .dynamic-table th {
   cursor: pointer;
 }
 .hof-acc-table tr.is-passive td {
-  color: #8a9a93;
+  color: #7a8d85;
 }
 .hof-acc-extra {
   color: #6b7a74;
@@ -7700,7 +7715,7 @@ button.hof-source-card:focus-visible {
   text-overflow: ellipsis;
 }
 .hof-num small {
-  color: #93a39c;
+  color: #7a8d85;
   font-size: 0.64em;
   font-weight: 700;
   letter-spacing: 0;
@@ -8162,7 +8177,7 @@ button.hof-source-card:focus-visible {
   stroke-dasharray: 4 4;
 }
 .hof-chart-tick {
-  fill: #8a9a93;
+  fill: var(--do-faint);
   font: 600 10.5px var(--do-font);
 }
 .hof-chart-area {
@@ -8549,7 +8564,10 @@ button.hof-source-card:focus-visible {
   display: block;
 }
 .hof-link-button {
-  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 0; /* v2.0.17 UI/UX denetimi: metin düğmesi en az 24 px yüksek (tıklama hedefi) */
   border: 0;
   background: none;
   color: var(--do-accent);
@@ -9621,6 +9639,16 @@ input[type="search"]::-webkit-search-cancel-button {
 .hof-inv-rest.is-done { color: #2d6a4b; font-weight: 800; }
 .hof-inv-endorse { display: grid; gap: 6px; margin: 6px 0; padding: 8px; border: 1px dashed var(--do-border-strong); border-radius: 10px; }
 .hof-inv-paylist { margin: 0 0 8px; padding-left: 18px; color: var(--do-ink-soft); font: 550 13px/1.6 var(--do-font); }
+/* v2.0.17: Bu Faturayı Kapatanlar — her ödenen kuruşun kaynağı (bağlı / otomatik / mahsup). */
+.hof-inv-closers { margin: 10px 0 0; padding-top: 10px; border-top: 1px dashed var(--do-border); }
+.hof-inv-closers h5 { margin: 0 0 6px; color: var(--do-ink-soft); font: 800 11px/1 var(--do-display); letter-spacing: 0.1em; text-transform: uppercase; }
+.hof-inv-closers ul { margin: 0 0 8px; padding: 0; list-style: none; display: grid; gap: 4px; }
+.hof-inv-closers li { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; color: var(--do-ink-soft); font: 550 12.5px/1.5 var(--do-font); }
+.hof-inv-closers li > span { flex: 1 1 200px; }
+.hof-inv-closers li small { color: var(--do-faint); }
+.hof-inv-closers li b { color: var(--do-ink); }
+.hof-inv-closers .hof-link-button { font-weight: 800; }
+.hof-inv-closers > p { margin: 0 0 8px; font: 500 12px/1.5 var(--do-font); }
 .hof-inv-totals { display: grid; gap: 4px; margin: 0; }
 .hof-inv-totals > div { display: flex; justify-content: space-between; gap: 12px; padding: 3px 0; }
 .hof-inv-totals dt { color: var(--do-muted); font: 650 13px var(--do-font); }
@@ -9649,6 +9677,9 @@ input[type="search"]::-webkit-search-cancel-button {
 .hof-inv-big-pill small { overflow: hidden; color: var(--do-muted); font: 600 12px var(--do-font); text-overflow: ellipsis; white-space: nowrap; }
 .hof-inv-big-pill:hover:not([disabled]) { border-color: var(--do-accent); box-shadow: 0 6px 16px rgba(20, 52, 40, 0.1); }
 .hof-inv-big-pill[disabled] { opacity: 0.55; cursor: not-allowed; }
+/* v2.0.17: pasif düğmelerin nedeni (Düzenle / İptal Et / Sil / İade). */
+.hof-inv-blocks { margin: 6px 0 8px; padding: 8px 12px; border-radius: 10px; background: #fff7ed; color: #7a4a0c; font: 600 12px/1.5 var(--do-font); list-style: none; display: grid; gap: 3px; }
+.hof-inv-blocks b { color: #9a5b00; }
 .hof-inv-banner { margin: 8px 0; padding: 9px 12px; border-radius: 10px; background: #eef1f6; color: #3f5270; font: 600 12.5px/1.5 var(--do-font); }
 .hof-inv-banner small { display: block; color: inherit; opacity: 0.8; }
 .hof-inv-banner.is-cancelled { background: var(--do-danger-soft); color: var(--do-danger); }
@@ -9665,3 +9696,227 @@ input[type="search"]::-webkit-search-cancel-button {
 }
 .hof-acc-form-head { grid-column: 1 / -1; margin: 10px 0 0; color: var(--do-ink-soft); font: 800 12px/1 var(--do-display); letter-spacing: 0.12em; text-transform: uppercase; }
 .hof-acc-inv-pills { margin: 4px 0 12px; }
+
+/* ---------- Sayfa şeridi (v2.0.17): eski oturum seçicinin yerine ortada sayfalar ---------- */
+.hof-pages {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 14px;
+  padding: 8px 12px;
+  border: 1px solid var(--do-border);
+  border-radius: 16px;
+  background: linear-gradient(160deg, #fff, #f3f9f5);
+}
+.hof-pages-head {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 6px;
+  padding-right: 10px;
+  border-right: 1px solid var(--do-border);
+  color: var(--do-faint);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.hof-pages-head strong {
+  display: inline-grid;
+  min-width: 20px;
+  height: 20px;
+  place-items: center;
+  border-radius: 999px;
+  background: var(--do-accent-soft);
+  color: var(--do-accent);
+  font-size: 11px;
+}
+.hof-pages-list {
+  display: flex;
+  flex: 1 1 auto;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  overflow-x: auto;
+  list-style: none;
+  scrollbar-width: thin;
+}
+.hof-page {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 2px;
+}
+.hof-page-pick {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-height: 38px;
+  padding: 4px 14px;
+  border: 1px solid var(--do-border);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--do-ink);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+}
+.hof-page-pick b {
+  max-width: 220px;
+  overflow: hidden;
+  font-size: 12.5px;
+  line-height: 1.2;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.hof-page-pick small {
+  font-size: 10.5px;
+  line-height: 1.2;
+  color: var(--do-faint);
+  white-space: nowrap;
+}
+.hof-page-pick:hover {
+  border-color: var(--do-border-strong);
+}
+.hof-page-pick:focus-visible {
+  outline: none;
+  box-shadow: var(--do-focus);
+}
+.hof-page.is-current .hof-page-pick {
+  border-color: var(--do-accent);
+  background: var(--do-accent);
+  color: #fff;
+}
+.hof-page.is-current .hof-page-pick small {
+  color: rgba(255, 255, 255, 0.82);
+}
+.hof-page-pick.is-busy {
+  opacity: 0.6;
+}
+.hof-page-rename {
+  display: inline-grid;
+  width: 26px;
+  height: 26px;
+  place-items: center;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--do-faint);
+  cursor: pointer;
+}
+.hof-page-rename:hover,
+.hof-page-rename:focus-visible {
+  background: var(--do-accent-soft);
+  color: var(--do-accent);
+}
+.hof-page-edit {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.hof-page-edit input {
+  min-width: 180px;
+  padding: 7px 10px;
+  border: 1px solid var(--do-accent);
+  border-radius: 999px;
+  font: inherit;
+  font-size: 12.5px;
+}
+.hof-pages-add {
+  position: relative;
+  flex: none;
+}
+.hof-pages-add-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 36px;
+  padding: 0 14px;
+  border: 1px dashed #9cc5ad;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--do-accent);
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.hof-pages-add-button span {
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1;
+}
+.hof-pages-add-button:hover,
+.hof-pages-add-button:focus-visible,
+.hof-pages.is-add-open .hof-pages-add-button {
+  border-style: solid;
+  border-color: var(--do-accent);
+  background: var(--do-accent-soft);
+}
+.hof-pages-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 60;
+  display: grid;
+  min-width: 280px;
+  padding: 6px;
+  border: 1px solid var(--do-border);
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 14px 36px rgba(20, 52, 40, 0.14);
+}
+.hof-pages-menu[hidden] {
+  display: none;
+}
+.hof-pages-menu button {
+  display: grid;
+  gap: 2px;
+  padding: 9px 12px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--do-ink);
+  text-align: left;
+  cursor: pointer;
+}
+.hof-pages-menu button b {
+  font-size: 13px;
+}
+.hof-pages-menu button small {
+  color: var(--do-faint);
+  font-size: 11px;
+}
+.hof-pages-menu button:hover,
+.hof-pages-menu button:focus-visible {
+  outline: none;
+  background: var(--do-accent-soft);
+}
+/* Şirket seçici (sol üst) ve senkron kartındaki şirket satırı */
+.hof-company .hof-session-text small {
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.hof-company-line {
+  margin: 0 0 6px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--do-accent);
+}
+.adm-company-report-pick {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+.adm-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+/* v2.0.17 UI/UX denetimi: özet kartlarındaki yardımcı yazı okunur kontrastta (eski 2,9:1). */
+.stat-card .text-\[\#768187\] {
+  color: var(--do-faint) !important;
+}

@@ -24,6 +24,8 @@ const PAY = new Set(["none", "cash", "account"]);
 const qtyFormat = new Intl.NumberFormat("tr-TR", { maximumFractionDigits: 3 });
 const moneyFormat = new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const qtyText = value => qtyFormat.format(Number(value) || 0);
+// v2.0.17: eksi stok sorusu sonucu söyler ("Kayıttan sonra stok: −15 Adet olacak").
+const afterText = (qty, unit) => `Kayıttan sonra stok: ${qtyText(qty)} ${unit} olacak.`;
 const collator = new Intl.Collator("tr", { numeric: true, sensitivity: "base" });
 
 export function registerStockRoutes(router, { store, auth, audit, events, trash, cash = null, period = null, accounts = () => null, plans = () => null }) {
@@ -95,7 +97,7 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
   const listQuery = params => ({
     q: text(params.get("q")).slice(0, 120),
     category: text(params.get("category")).slice(0, 80),
-    state: ["all", "low", "out", "product", "service"].includes(text(params.get("state"))) ? text(params.get("state")) : "all",
+    state: ["all", "low", "out", "negative", "product", "service"].includes(text(params.get("state"))) ? text(params.get("state")) : "all",
     sort: ["name", "code", "qty", "value", "category"].includes(text(params.get("sort"))) ? text(params.get("sort")) : "name",
   });
   function list(user, { q = "", category = "", state = "all", sort = "name" } = {}) {
@@ -106,7 +108,7 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
       moves.get(move.itemId).push(move);
     }
     const needle = String(q || "").toLocaleLowerCase("tr-TR").trim();
-    const totals = { count: 0, low: 0, out: 0, value: 0, services: 0 };
+    const totals = { count: 0, low: 0, out: 0, negative: 0, value: 0, services: 0 };
     const categories = new Set();
     const out = [];
     for (const row of items) {
@@ -118,12 +120,14 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
       const service = row.kind === "service";
       if (state === "low" && !level.low) continue;
       if (state === "out" && (service || level.qty > 0)) continue;
+      if (state === "negative" && (service || level.qty >= 0)) continue;
       if (state === "service" && !service) continue;
       if (state === "product" && service) continue;
       totals.count += 1;
       if (service) totals.services += 1;
       if (level.low) totals.low += 1;
       if (!service && level.qty <= 0) totals.out += 1;
+      if (!service && level.qty < 0) totals.negative += 1;
       totals.value = roundMoney(totals.value + level.value);
       out.push({ id: row.id, kind: row.kind || "product", code: row.code, name: row.name, unit: unitLabel(row.unit), category: row.category, minQty: row.minQty, unitPrice: row.unitPrice, salePrice: row.salePrice || 0, note: row.note, ...level, lastMove: own.at(-1)?.date || "" });
     }
@@ -229,11 +233,11 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
     const title = limited(url.searchParams.get("title"), 60, "Başlık") || "Stok";
     const pdf = tablePdf({
       title: `${title} durumu`,
-      subtitle: [query.state === "low" ? "Kritik seviyede" : query.state === "out" ? "Tükenen" : "Tüm ürünler", query.category, query.q ? `“${query.q}”` : "", clipped ? `ilk ${PDF_ROWS.toLocaleString("tr-TR")} satır (tamamı Excel'de)` : ""].filter(Boolean).join(" · "),
+      subtitle: [query.state === "low" ? "Kritik seviyede" : query.state === "out" ? "Tükenen" : query.state === "negative" ? "Eksi stoktakiler" : "Tüm ürünler", query.category, query.q ? `“${query.q}”` : "", clipped ? `ilk ${PDF_ROWS.toLocaleString("tr-TR")} satır (tamamı Excel'de)` : ""].filter(Boolean).join(" · "),
       headers: ["Stok Kodu", "Ürün", "Kategori", "Mevcut", "Birim", "Kritik Seviye", "Birim Fiyat", "Değer", "Son Hareket", "Durum"],
       types: ["text", "text", "text", "text", "text", "text", "money", "money", "text", "text"],
-      rows: data.items.map(item => [item.code, item.name, item.category, qtyText(item.qty), item.unit, item.minQty ? qtyText(item.minQty) : "", tl(item.unitPrice), tl(item.value), dayText(item.lastMove), item.kind === "service" ? "Hizmet" : item.qty <= 0 ? "Tükendi" : item.low ? "Kritik" : ""]),
-      summary: [["Ürün", String(data.totals.count)], ["Kritik", String(data.totals.low)], ["Tükenen", String(data.totals.out)], ["Stok Değeri", tl(data.totals.value)]],
+      rows: data.items.map(item => [item.code, item.name, item.category, qtyText(item.qty), item.unit, item.minQty ? qtyText(item.minQty) : "", tl(item.unitPrice), tl(item.value), dayText(item.lastMove), item.kind === "service" ? "Hizmet" : item.qty < 0 ? `Eksi (${qtyText(item.qty)} ${item.unit})` : item.qty <= 0 ? "Tükendi" : item.low ? "Kritik" : ""]),
+      summary: [["Ürün", String(data.totals.count)], ["Kritik", String(data.totals.low)], ["Tükenen", String(data.totals.out)], ["Eksi Stok", String(data.totals.negative)], ["Stok Değeri", tl(data.totals.value)]],
       officeName: office(),
       userName: user.display_name || user.username || "",
       brand: office(),
@@ -324,7 +328,7 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
     if (move.kind !== "out" || force || item.kind === "service") return;
     const moves = movesOf(item.id).filter(row => row.id !== previous?.id);
     const available = stockLevel(item, moves).qty;
-    if (move.qty > available + 1e-9) throw new HttpError(409, `Stokta ${qtyText(available)} ${item.unit} var; ${qtyText(move.qty)} ${item.unit} çıkış stoğu eksiye düşürür.`, { code: "stock-negative", available });
+    if (move.qty > available + 1e-9) throw new HttpError(409, `Stokta ${qtyText(available)} ${item.unit} var; ${qtyText(move.qty)} ${item.unit} çıkış stoğu eksiye düşürür. ${afterText(roundQty(available - move.qty), item.unit)}`, { code: "stock-negative", available, after: roundQty(available - move.qty) });
   }
   const accountNote = (item, move) => `${move.reason === "return" ? "Satış iadesi" : `Stok ${move.kind === "in" ? "alımı" : "satışı"}`}: ${item.name} ${qtyText(move.qty)} ${item.unit} × ${tl(move.unitPrice)}${move.note ? ` · ${move.note}` : ""}`;
   function syncAccount(user, item, moveId, move, previousAccountId = "") {
@@ -586,7 +590,7 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
       const move = { kind, qty: roundQty(qty), unitPrice, amount: roundMoney(amount), date, note: String(note || "").slice(0, 300), pay: "none", reason, accountId: "", invoiceId };
       if (kind === "out" && !force) {
         const available = stockLevel(item, movesOf(item.id)).qty;
-        if (move.qty > available + 1e-9) throw new HttpError(409, `“${item.name}” stokta ${qtyText(available)} ${item.unit} var; faturadaki ${qtyText(move.qty)} ${item.unit} stoğu eksiye düşürür.`, { code: "stock-negative", available, itemId: item.id, itemName: item.name });
+        if (move.qty > available + 1e-9) throw new HttpError(409, `“${item.name}” stokta ${qtyText(available)} ${item.unit} var; faturadaki ${qtyText(move.qty)} ${item.unit} stoğu eksiye düşürür. ${afterText(roundQty(available - move.qty), item.unit)}`, { code: "stock-negative", available, after: roundQty(available - move.qty), itemId: item.id, itemName: item.name });
       }
       const id = insertMove(user, item.id, move);
       if (kind === "in" && reason === "" && unitCost > 0) store.run("UPDATE stock_items SET unit_price = ?, updated_at = ? WHERE id = ?", Math.round(unitCost * 10000) / 10000, now(), item.id);
@@ -600,7 +604,7 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
           const item = store.get(`${ITEM_SQL} WHERE i.id = ?`, move.itemId);
           if (!item || item.kind === "service") continue;
           const left = stockLevel(item, movesOf(item.id).filter(row => row.invoiceId !== invoiceId)).qty;
-          if (left < -1e-9) throw new HttpError(409, `“${item.name}” bu faturayla girdi ve bir kısmı çıktı; iptal stoğu ${qtyText(left)} ${item.unit} yapar.`, { code: "stock-negative", itemId: item.id, itemName: item.name, available: left });
+          if (left < -1e-9) throw new HttpError(409, `“${item.name}” bu faturayla girdi ve bir kısmı çıktı; iptal stoğu ${qtyText(left)} ${item.unit} yapar. ${afterText(left, item.unit)}`, { code: "stock-negative", itemId: item.id, itemName: item.name, available: left, after: left });
         }
       }
       store.run("DELETE FROM stock_moves WHERE invoice_id = ?", invoiceId);

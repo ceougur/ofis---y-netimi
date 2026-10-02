@@ -411,25 +411,53 @@
     return { from: "", to: "" };
   };
   let cashModal = null;
-  // v2.0.13: Kasa ve Banka — seçili yol (boş: tümü). Yeni hareket formu bu yolla açılır.
-  const cashView = { method: "" };
+  // v2.0.17 (müşteri): Kasa penceresi YALNIZ NAKİT. Havale/EFT, POS ve kredi kartı hareketleri Raporlar → Banka ve POS
+  // Hareketleri'nde; Kasa ile banka arasındaki para geçişi Aktar / Yatır (transfer). Yol seçici kalktı.
+  const cashView = { method: "cash" };
   const methodTag = entry => (entry.method && entry.method !== "cash" ? ` · <span class="hof-method-tag is-${esc(entry.method)}">${esc(HOF.methodLabel(entry.method, entry.kind))}</span>` : "");
+  const TRANSFER_TITLE = { "to-cash": "Bankadan Kasaya Aktar", "to-bank": "Kasadan Bankaya Yatır" };
+
+  // Kasa ↔ Banka transferi: tek işlemde Kasa'da nakit giriş/çıkış + banka tarafında karşı hareket.
+  function transferForm(direction, after) {
+    const toCash = direction === "to-cash";
+    HOF.formModal({
+      title: TRANSFER_TITLE[direction] || "Transfer",
+      eyebrow: "KASA",
+      intro: toCash ? "Bankadan çekilen nakit kasaya girer; banka tarafında aynı tutar çıkış olarak yazılır (Raporlar → Banka ve POS Hareketleri)." : "Kasadaki nakit bankaya yatırılır; banka tarafında aynı tutar giriş olarak yazılır. Nakit kasa yetmiyorsa program sorar.",
+      fields: [
+        { name: "amount", label: "Tutar (₺)", required: true, inputmode: "decimal", placeholder: "Örn. 5.000,00", autofocus: true },
+        { name: "date", label: "Tarih", type: "date", required: true, max: "today", value: dayText(new Date()) },
+        { name: "description", label: "Açıklama", maxlength: 300, placeholder: toCash ? "Ör. ATM'den nakit çekildi" : "Ör. Günlük hasılat bankaya" },
+      ],
+      submitLabel: toCash ? "Kasaya Aktar" : "Bankaya Yatır",
+      onSubmit: async data => {
+        await HOF.api("/api/workspace/cash/transfer", { method: "POST", body: { ...data, direction } });
+        HOF.toast(toCash ? "Bankadan kasaya aktarım yazıldı." : "Kasadan bankaya yatırma yazıldı.", { type: "success" });
+        HOF.emit("cash-changed");
+        after?.();
+      },
+    });
+  }
 
   function editCashEntry(entry, kind, after) {
     const incoming = (entry?.kind || kind) === "in";
+    const transfer = Boolean(entry?.transferId);
+    // v2.0.17: yol seçilmez — Kasa'ya yalnız nakit. Eski (2.0.16 öncesi) nakit dışı kayıt düzeltilirken yolu salt okunur.
+    const methodText = transfer ? `Nakit (${entry.kind === "in" ? "bankadan kasaya aktarım" : "kasadan bankaya yatırma"})` : HOF.methodName(entry?.method || "cash", incoming ? "in" : "out");
     HOF.formModal({
-      title: entry ? (incoming ? "Tahsilatı Düzelt" : "Ödemeyi Düzelt") : incoming ? "Kasaya Tahsilat Ekle" : "Kasadan Ödeme Ekle",
+      title: transfer ? "Transferi Düzelt" : entry ? (incoming ? "Tahsilatı Düzelt" : "Ödemeyi Düzelt") : incoming ? "Kasaya Tahsilat Ekle" : "Kasadan Ödeme Ekle",
       eyebrow: "KASA",
       intro: incoming ? "Bir kayda bağlı olmayan tahsilatlar için (ör. danışmanlık ücreti). Kayda bağlı tahsilatı detay kartındaki Tahsilat düğmesiyle girin; kasaya kendiliğinden düşer." : "Kira, fatura, maaş, masraf gibi kasadan çıkan ödemeler.",
       fields: [
         { name: "amount", label: "Tutar (₺)", required: true, inputmode: "decimal", placeholder: "Örn. 1.250,00", value: entry ? amountText(entry.amount) : "" },
         { name: "date", label: "Tarih", type: "date", required: true, max: "today", value: entry ? isoDate(entry.date) : dayText(new Date()) },
         { name: "description", label: "Açıklama", required: true, maxlength: 300, placeholder: incoming ? "Kimden / ne için" : "Kime / ne için", value: entry?.description || "", list: incoming ? [] : ["Kira", "Elektrik Faturası", "Su faturası", "İnternet", "Maaş", "Kırtasiye", "Vergi", "Masraf", "Bankaya Yatırılan", "Bankadan Çekilen"] },
-        HOF.methodField(entry?.method || cashView.method || "cash", { incoming }),
+        { name: "methodLabel", label: incoming ? "Tahsilat Yolu" : "Ödeme Yolu", value: methodText, readonly: true, help: transfer ? "Düzeltme banka tarafındaki karşı hareketi de günceller." : "Kasa'ya yalnız nakit girilir. Havale/EFT ve POS hareketleri cari, fatura, taksit, stok ve çek/senet ekranlarından girilir." },
       ],
       submitLabel: entry ? "Düzeltmeyi Kaydet" : incoming ? "Tahsilatı Ekle" : "Ödemeyi Ekle",
       onSubmit: async data => {
-        const body = { ...data, kind: entry?.kind || kind };
+        const { methodLabel: _ignored, ...rest } = data;
+        const body = { ...rest, kind: entry?.kind || kind };
         if (entry) await HOF.api(`/api/workspace/cash/${encodeURIComponent(entry.id)}`, { method: "PUT", body });
         else await HOF.api("/api/workspace/cash", { method: "POST", body });
         HOF.toast(entry ? "Kasa hareketi düzeltildi." : incoming ? "Tahsilat kasaya eklendi." : "Ödeme kasaya işlendi.", { type: "success" });
@@ -440,7 +468,7 @@
   }
 
   async function deleteCashEntry(entry, after) {
-    const ok = await HOF.confirm({ title: "Kasa Hareketini Sil", message: `${HOF.formatMoney(entry.amount)} tutarındaki ${entry.kind === "in" ? "tahsilat" : "ödeme"} (${entry.description}) silinecek. Silme işlem kayıtlarında saklanır.`, confirmLabel: "Sil", danger: true });
+    const ok = await HOF.confirm({ title: entry.transferId ? "Transferi Sil" : "Kasa Hareketini Sil", message: entry.transferId ? `${HOF.formatMoney(entry.amount)} tutarındaki transfer (${entry.description}) iki tarafıyla birlikte silinecek: Kasa'daki nakit hareket ve banka tarafındaki karşı hareket. Silinenler'den geri yüklenebilir.` : `${HOF.formatMoney(entry.amount)} tutarındaki ${entry.kind === "in" ? "tahsilat" : "ödeme"} (${entry.description}) silinecek. Silme işlem kayıtlarında saklanır.`, confirmLabel: "Sil", danger: true });
     if (!ok) return;
     try {
       await HOF.api(`/api/workspace/cash/${encodeURIComponent(entry.id)}`, { method: "DELETE" });
@@ -458,7 +486,7 @@
     button.disabled = true;
     button.classList.add("is-busy");
     try {
-      const query = new URLSearchParams({ from: range.from, to: range.to, download: "1", ...(cashView.method ? { method: cashView.method } : {}) });
+      const query = new URLSearchParams({ from: range.from, to: range.to, download: "1", method: "cash" });
       const response = await HOF.nativeFetch(`/api/workspace/cash.pdf?${query}`, { credentials: "same-origin" });
       if (!response.ok) {
         const payload = await response.json().catch(() => ({}));
@@ -498,20 +526,19 @@
     const custom = { from: dayText(new Date(today.getFullYear(), today.getMonth(), 1)), to: dayText(today) };
     const manage = HOF.can("cash.manage");
     const modal = HOF.modal({
-      title: "Kasa ve Banka",
+      title: "Kasa",
       eyebrow: "OPERASYON",
       size: "wide",
       body: `<div class="hof-kpis hof-cash-kpis" data-kpis></div>
-        <div class="hof-tabs hof-method-tabs" role="group" aria-label="Ödeme Yolu" data-methods>${[{ value: "", label: "Tümü" }, { value: "cash", label: "Nakit Kasa" }, { value: "bank", label: "Banka (Havale / EFT)" }, { value: "card", label: "POS / Kredi Kartı" }].map(item => `<button type="button" data-method="${item.value}">${item.label}</button>`).join("")}</div>
         <div class="hof-cash-bar"><div class="hof-tabs" role="group" aria-label="Dönem">${PERIODS.map(item => `<button type="button" data-period="${item.id}">${item.label}</button>`).join("")}</div>
-        <div class="hof-cash-add"><button type="button" class="hof-button hof-button-small hof-button-ghost" data-pdf title="Seçili dönemin kasa hareketlerini PDF olarak indir">Kasa Dökümü - PDF</button>${manage ? '<button type="button" class="hof-button hof-button-small" data-add="in">+ Tahsilat</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-add="out">− Ödeme</button>' : ""}</div>
+        <div class="hof-cash-add"><button type="button" class="hof-button hof-button-small hof-button-ghost" data-pdf title="Seçili dönemin nakit kasa hareketlerini PDF olarak indir">Kasa Dökümü - PDF</button>${manage ? '<button type="button" class="hof-button hof-button-small" data-add="in">+ Tahsilat</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-add="out">− Ödeme</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-transfer="to-cash" title="Bankadan çekilen nakit kasaya girer">Bankadan Kasaya Aktar</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-transfer="to-bank" title="Kasadaki nakit bankaya yatırılır">Kasadan Bankaya Yatır</button>' : ""}</div>
         <div class="hof-cash-range" data-range hidden><label><span>Başlangıç</span><input type="date" data-from value="${custom.from}"></label><span aria-hidden="true">–</span><label><span>Bitiş</span><input type="date" data-to value="${custom.to}"></label></div></div>
         <div class="hof-cash-list" data-list><p class="hof-empty">Yükleniyor…</p></div>
-        <p class="hof-edit-meta">Nakit tahsilat ve ödemeler Nakit Kasa'ya, havale/EFT Banka'ya, kartla tahsilat (POS) ve kredi kartıyla ödemeler POS / Kredi Kartı hesabına düşer; Tümü üçünü birlikte gösterir. Detay kartında, cari, taksit, stok ve çek/senet ekranlarında girilen tahsilat ve ödemeler seçilen yola kendiliğinden yazılır. Hareketler eskiden yeniye sıralıdır; en yeni en altta.</p>
+        <p class="hof-edit-meta">Kasa'da yalnız nakit hareketler görünür. Havale/EFT, POS ve kredi kartıyla yapılan tahsilat ve ödemeler cari, fatura, taksit, stok ve çek/senet ekranlarından girilir ve Raporlar → Banka ve POS Hareketleri'nde izlenir. Bankayla para geçişi için Bankadan Kasaya Aktar / Kasadan Bankaya Yatır kullanılır. Hareketler eskiden yeniye sıralıdır; en yeni en altta.</p>
         <div class="hof-actions"><button type="button" class="hof-button" data-close>Kapat</button></div>`,
       onClose: () => {
         cashModal = null;
-        cashView.method = "";
+        cashView.method = "cash";
       },
     });
     // Canlı yenileme (v2.0.11): seçili dönem ve tarih aralığı korunur; kullanıcı listeyi yukarı kaydırdıysa yeri de.
@@ -539,11 +566,12 @@
       }
       const title = payment ? entry.caseTitle || (String(entry.caseKey).startsWith("satir:") ? "" : entry.caseKey) : "";
       const text = payment ? `Tahsilat${title ? ` · ${title}` : ""}${entry.description ? ` · ${entry.description}` : ""}` : plan ? `${entry.kind === "in" ? "Taksit tahsilatı" : "Taksit ödemesi/iadesi"} · ${entry.planName}${entry.description ? ` · ${entry.description}` : ""}` : entry.description;
+      const origin = payment ? "Detay kartından" : plan ? "Taksit kartından" : entry.transferId ? (entry.kind === "in" ? "Bankadan kasaya aktarım" : "Kasadan bankaya yatırma") : entry.kind === "in" ? "Kasaya elle" : "Ödeme";
       // Taksit kartı hareketleri (v2.0.4) kartın kendisinden düzeltilir; buradan kart açılır.
       const actions = plan
         ? `<button type="button" class="hof-mini" data-plan="${esc(entry.planId)}" title="Taksit kartını aç" aria-label="Taksit kartını aç">↗</button>`
         : entry.editable ? `<button type="button" class="hof-mini" data-edit="${esc(entry.id)}" title="Düzelt" aria-label="Düzelt">✎</button><button type="button" class="hof-mini hof-mini-danger" data-delete="${esc(entry.id)}" title="Sil" aria-label="Sil">×</button>` : "";
-      return `<tr data-kind="${esc(entry.kind)}"><td>${esc(HOF.formatDate(entry.date))}</td><td><b>${esc(text)}</b><small>${payment ? "Detay kartından" : plan ? "Taksit kartından" : entry.kind === "in" ? "Kasaya elle" : "Ödeme"} · ${esc(entry.actorName || "—")}${methodTag(entry)}</small></td><td class="num hof-cash-in">${entry.kind === "in" ? esc(HOF.formatMoney(entry.amount)) : ""}</td><td class="num hof-cash-out">${entry.kind === "out" ? esc(HOF.formatMoney(entry.amount)) : ""}</td><td class="num"><b>${esc(HOF.formatMoney(entry.balance))}</b></td><td class="hof-cash-actions">${actions}</td></tr>`;
+      return `<tr data-kind="${esc(entry.kind)}"><td>${esc(HOF.formatDate(entry.date))}</td><td><b>${esc(text)}</b><small>${esc(origin)} · ${esc(entry.actorName || "—")}${methodTag(entry)}</small></td><td class="num hof-cash-in">${entry.kind === "in" ? esc(HOF.formatMoney(entry.amount)) : ""}</td><td class="num hof-cash-out">${entry.kind === "out" ? esc(HOF.formatMoney(entry.amount)) : ""}</td><td class="num"><b>${esc(HOF.formatMoney(entry.balance))}</b></td><td class="hof-cash-actions">${actions}</td></tr>`;
     };
     const render = () => {
       modal.dialog.querySelectorAll("[data-period]").forEach(button => button.setAttribute("aria-pressed", String(button.dataset.period === period)));
@@ -551,11 +579,7 @@
       if (!data) return;
       // Göstergelerde dönemin adı; tarih aralığında tarihlerin kendisi (ör. 01.09–27.09).
       const label = period === "range" ? rangeText(custom) : PERIODS.find(item => item.id === period)?.label || "";
-      modal.dialog.querySelectorAll("[data-method]").forEach(button => button.setAttribute("aria-pressed", String(button.dataset.method === cashView.method)));
-      const by = data.byMethod || { cash: data.totals.balance, bank: 0, card: 0 };
-      const split = `Nakit ${HOF.formatMoney(by.cash)} · Banka ${HOF.formatMoney(by.bank)} · Kart ${HOF.formatMoney(by.card)}`;
-      const balanceLabel = cashView.method === "cash" ? "Nakit Kasa" : cashView.method === "bank" ? "Banka" : cashView.method === "card" ? "POS / Kredi Kartı" : "Kasa ve Banka Toplamı";
-      kpis.innerHTML = `<div class="hof-cash-balance ${cashView.method === "cash" && data.totals.balance < 0 ? "is-late" : ""}" title="${esc(split)}"><strong>${esc(HOF.formatMoney(data.totals.balance))}</strong><span>${esc(balanceLabel)}${cashView.method ? "" : `<br><small>${esc(split)}</small>`}</span></div><div><strong>${esc(HOF.formatMoney(data.period.in))}</strong><span>Tahsilat · ${esc(label)}</span></div><div><strong>${esc(HOF.formatMoney(data.period.out))}</strong><span>Ödeme · ${esc(label)}</span></div><div><strong>${esc(HOF.formatMoney(data.period.net))}</strong><span>Fark · ${esc(label)}</span></div>`;
+      kpis.innerHTML = `<div class="hof-cash-balance ${data.totals.balance < 0 ? "is-late" : ""}" title="Nakit kasanın tüm hareketlerden hesaplanan bakiyesi"><strong>${esc(HOF.formatMoney(data.totals.balance))}</strong><span>Nakit Kasa</span></div><div><strong>${esc(HOF.formatMoney(data.period.in))}</strong><span>Tahsilat · ${esc(label)}</span></div><div><strong>${esc(HOF.formatMoney(data.period.out))}</strong><span>Ödeme · ${esc(label)}</span></div><div><strong>${esc(HOF.formatMoney(data.period.net))}</strong><span>Fark · ${esc(label)}</span></div>`;
       const opening = period !== "all" ? `<tr class="hof-cash-opening"><td></td><td><b>Devreden Kasa</b><small>Dönem başındaki bakiye</small></td><td></td><td></td><td class="num"><b>${esc(HOF.formatMoney(data.opening))}</b></td><td></td></tr>` : "";
       list.innerHTML = data.entries.length || opening
         ? `<table class="hof-table hof-cash-table"><thead><tr><th>Tarih</th><th>Açıklama</th><th class="num">Tahsilat</th><th class="num">Ödeme</th><th class="num">Kasa</th><th></th></tr></thead><tbody>${opening}${data.entries.map(row).join("")}</tbody></table>${data.entries.length ? "" : '<p class="hof-empty">Bu dönemde kasa hareketi yok.</p>'}`
@@ -588,7 +612,7 @@
         return;
       }
       try {
-        data = await HOF.api(`/api/workspace/cash?from=${range.from}&to=${range.to}${cashView.method ? `&method=${cashView.method}` : ""}`);
+        data = await HOF.api(`/api/workspace/cash?from=${range.from}&to=${range.to}&method=cash`);
         render();
       } catch (error) {
         list.innerHTML = `<p class="hof-empty">${esc(error.message)}</p>`;
@@ -602,10 +626,8 @@
     modal.dialog.addEventListener("click", event => {
       const target = event.target.closest("button");
       if (!target) return;
-      if (target.dataset.method !== undefined) {
-        cashView.method = target.dataset.method;
-        load();
-      } else if (target.dataset.period) {
+      if (target.dataset.transfer) transferForm(target.dataset.transfer, load);
+      else if (target.dataset.period) {
         period = target.dataset.period;
         render();
         load();

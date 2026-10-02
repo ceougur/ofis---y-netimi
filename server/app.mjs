@@ -57,6 +57,9 @@ import { registerTemplateRoutes } from "./routes/templates.mjs";
 import { registerLicenseRoutes } from "./routes/license.mjs";
 import { registerTrpcRoutes } from "./routes/trpc.mjs";
 import { registerWorkspaceRoutes } from "./routes/workspace.mjs";
+import { ROOT_COMPANY_ID, createCompanyRegistry, mirrorUsers, usersFingerprint } from "./lib/companies.mjs";
+import { registerCompanyRoutes } from "./routes/companies.mjs";
+import { createBackup } from "./lib/backup.mjs";
 
 function ensureInitialAdmin(store, config, log) {
   if (store.get("SELECT id FROM users WHERE username = ? COLLATE NOCASE", config.adminUsername)) return;
@@ -79,18 +82,23 @@ export function createApp(overrides = {}) {
   const db = openDatabase(config.dbPath);
   const store = createStore(db);
   const migration = runMigrations(store, { backupDir: config.backupDir, keep: config.backupKeep, log });
-  ensureInitialAdmin(store, config, log);
+  // Çoklu şirket (v2.0.17): hub = ilk şirket (001) + ortak katman (kullanıcılar, roller, lisans, şirket listesi).
+  // Çocuk şirket örnekleri aynı createApp ile açılır; kimlik doğrulama, yetki, kurtarma ve lisans hub'dan gelir,
+  // kullanıcı tablosu ad/rol gösterimi için aynalanır.
+  const hub = overrides.hub || null;
+  if (!hub) ensureInitialAdmin(store, config, log);
+  else mirrorUsers(hub.store, store);
 
   const audit = createAudit(store);
   // Roller ve etkin yetkiler (v2.0.10): yerleşik 4 rol + ofisin tanımladığı roller + kişiye özel ekle/çıkar.
-  const access = createAccess({ store });
-  const auth = createAuth({ store, config, audit, access });
+  const access = hub ? hub.access : createAccess({ store });
+  const auth = hub ? hub.auth : createAuth({ store, config, audit, access });
   // Yönetici parolası kurtarma (v2.0.10): kurtarma anahtarı ya da sunucu bilgisayarında üretilen tek seferlik kod.
-  const recovery = createRecovery({ store, dataDir: config.dataDir, log });
+  const recovery = hub ? hub.recovery : createRecovery({ store, dataDir: config.dataDir, log });
   const clientState = createClientState({ store, audit });
   const readGoogleSheet = createSheetsReader({ fetchImpl: config.fetchImpl, cacheMs: config.sheetsCacheMs });
   const serveStatic = createStaticHandler(config.publicDir);
-  const supervisorLink = overrides.supervisorLink ?? (config.supervised ? createSupervisorLink(process) : null);
+  const supervisorLink = hub ? hub.supervisorLink : overrides.supervisorLink ?? (config.supervised ? createSupervisorLink(process) : null);
   // Canlı olay kanalı: oturumu kapanan (çıkış, parola değişikliği, pasifleştirme) bağlantılar ping turunda düşer.
   const events = createEventHub({ log, pingMs: config.eventsPingMs, maxAgeMs: config.eventsMaxAgeMs, isValid: client => auth.sessionAlive(client.tokenHash) });
   const chat = createChat({ store, events, audit, roles: access });
@@ -133,26 +141,33 @@ export function createApp(overrides = {}) {
   profile.init();
   dataset.onChange(() => profile.invalidate());
   const licenseOptions = overrides.license || {};
-  license = createLicenseService({
-    store,
-    audit,
-    events,
-    log,
-    dataDir: config.dataDir,
-    version: config.version,
-    services: config.licenseServices,
-    fetchImpl: config.fetchImpl,
-    usedBefore: () => profile.usedBefore(),
-    ...licenseOptions,
-  });
-  license.init();
+  if (hub) license = hub.license;
+  else {
+    license = createLicenseService({
+      store,
+      audit,
+      events,
+      log,
+      dataDir: config.dataDir,
+      version: config.version,
+      services: config.licenseServices,
+      fetchImpl: config.fetchImpl,
+      usedBefore: () => profile.usedBefore(),
+      ...licenseOptions,
+    });
+    license.init();
+  }
   dataset.start();
-  const context = { config, log, store, auth, access, recovery, audit, clientState, startedAt, supervisorLink, events, chat, chatArchive, dataset, profile, license, free, trash, cloudBackup };
+  // Şirket kayıt defteri yalnız hub'da; çocuklar hub'ınkini görür.
+  const companies = hub ? hub.companies : createCompanyRegistry({ dataDir: config.dataDir, backupDir: config.backupDir, hubStore: store, log });
+  const companyId = overrides.companyId || ROOT_COMPANY_ID;
+  const context = { config, log, store, auth, access, recovery, audit, clientState, startedAt, supervisorLink, events, chat, chatArchive, dataset, profile, license, free, trash, cloudBackup, companies, companyId, company: () => companies.get(companyId) };
 
   const router = createRouter();
   router.get("/api/health", async ({ res }) => ok(res, { service: "destekofis-merkezi", status: "ok", version: config.version, time: new Date().toISOString(), uptimeSeconds: Math.round(process.uptime()) }));
   registerAuthRoutes(router, context);
   registerAdminRoutes(router, context);
+  if (!hub) registerCompanyRoutes(router, { ...context, appFor: company => appFor(company), resetData: (company, ...args) => appFor(company).resetData(...args) });
   // Taksit servisi (context.plans) daha sonra kurulur; işlem geçmişi ona istek anında ulaşır (v2.0.6).
   registerWorkspaceRoutes(router, { ...context, plans: () => context.plans });
   // Hareket tarihi ve dönem kilidi (v2.0.13): Kasa, Cari, Stok ve Taksit aynı kuralla.
@@ -184,9 +199,9 @@ export function createApp(overrides = {}) {
   context.overview = registerOverviewRoutes(router, { ...context, cash: () => context.cash, accounts: () => context.accounts, plans: () => context.plans, stock: () => context.stock, cheques: () => context.cheques, invoices: () => context.invoices, tables: () => context.tableReports });
   // Rapor merkezi (v2.0.7): programdaki her bilginin hazır raporu; ekranda ön izleme, PDF ve Excel.
   context.reportCenter = registerReportCenter(router, { ...context, cash: () => context.cash, accounts: () => context.accounts, plans: () => context.plans, stock: () => context.stock, cheques: () => context.cheques, invoices: () => context.invoices, overview: () => context.overview, ledger: () => context.ledger, integrity: () => context.integrity });
-  registerDueRoutes(router, context);
+  registerDueRoutes(router, { ...context, calendar: () => context.tableReports?.calendar });
   const documents = registerDocumentRoutes(router, context);
-  registerTrashRoutes(router, { ...context, documents });
+  registerTrashRoutes(router, { ...context, documents, invoices: context.invoices });
   registerFreeRoutes(router, { ...context, readGoogleSheet });
   registerChatRoutes(router, context);
   registerDatasetRoutes(router, context);
@@ -233,8 +248,62 @@ export function createApp(overrides = {}) {
     let resolved;
     return runScoped({ user: () => (resolved === undefined ? (resolved = auth.currentUser(req) || null) : resolved) }, () => handle(req, res));
   };
+  // ---------- Çoklu şirket dağıtımı (v2.0.17) ----------
+  // Ortak katman yolları hub'da kalır; öbür her istek kullanıcının SEÇİLİ şirketinin örneğine gider (her şirket ayrı
+  // veri tabanı ve servis kümesi). Şirket değişince istemci sayfayı yeniler; açık pencereler, olay akışı ve önbellek
+  // o şirketin örneğinden gelir.
+  const HUB_ONLY = /^\/api\/(auth|public|license|companies|health|admin\/(users|roles|recovery|update))(\/|$)/;
+  const children = new Map();
+  function appFor(company) {
+    if (!company || company.id === ROOT_COMPANY_ID) return app;
+    if (hub) return hub.appFor(company);
+    let child = children.get(company.id);
+    if (!child) {
+      const dirs = companies.dirsOf(company);
+      mkdirSync(dirs.dataDir, { recursive: true });
+      child = createApp({
+        ...overrides,
+        dataDir: dirs.dataDir,
+        backupDir: dirs.backupDir,
+        log,
+        companyId: company.id,
+        supervisorLink: undefined,
+        startLicenseTimers: false,
+        hub: { store, auth, access, recovery, license, supervisorLink, companies, appFor },
+      });
+      child.usersStamp = usersFingerprint(store);
+      children.set(company.id, child);
+      log.info(`Şirket açıldı: ${company.code} · ${company.name}`);
+    } else {
+      const stamp = usersFingerprint(store);
+      if (child.usersStamp !== stamp) {
+        mirrorUsers(store, child.store);
+        child.usersStamp = stamp;
+      }
+    }
+    return child;
+  }
+  const dispatch = (req, res) => {
+    if (hub) return scoped(req, res);
+    const pathname = (req.url || "/").split("?")[0];
+    if (!pathname.startsWith("/api/") || HUB_ONLY.test(pathname)) return scoped(req, res);
+    let user = null;
+    try {
+      user = auth.currentUser(req) || null;
+    } catch {
+      user = null;
+    }
+    const selected = companies.get(companies.selectedFor(user));
+    if (!selected || selected.id === ROOT_COMPANY_ID) return scoped(req, res);
+    try {
+      return appFor(selected).handleScoped(req, res);
+    } catch (error) {
+      log.error(`Şirket açılamadı (${selected.code}); ilk şirkete düşüldü`, error);
+      return scoped(req, res);
+    }
+  };
   const server = createServer((req, res) => {
-    scoped(req, res).catch(error => {
+    dispatch(req, res).catch(error => {
       log.error("Beklenmeyen hata", error);
       if (!res.headersSent) send(res, 500, { ok: false, error: "Sunucu işlemi tamamlayamadı." }, SECURITY_HEADERS);
     });
@@ -246,7 +315,7 @@ export function createApp(overrides = {}) {
   const stopBackups = config.scheduleBackups
     ? startBackupScheduler({ db, backupDir: config.backupDir, intervalHours: config.backupIntervalHours, keep: config.backupKeep, startDelayMs: config.backupOnStartDelayMs, log, onBackup: mirrorBackup })
     : () => {};
-  if (overrides.startLicenseTimers !== false) license.start();
+  if (overrides.startLicenseTimers !== false && !hub) license.start();
   // Gün dönümünde tüm ekranlara "alerts.refresh" (olay tabanlı uyarı akışı, v2.0.2).
   const alertScheduler = createAlertScheduler({ events, log });
   if (overrides.alertScheduler !== false) alertScheduler.start();
@@ -279,11 +348,56 @@ export function createApp(overrides = {}) {
     for (const listener of infoListeners) listener(info());
   };
 
+  // ---------- Şirket verisini sıfırla (v2.0.17, müşteri: "datayı sıfırla ama lisansım gitmesin") ----------
+  // mode "movements": cari/stok kartları, Kasa hesapları, ayarlar KALIR; bakiyeler sıfır (hareketler, faturalar, taksitler,
+  // çek/senet, Ana Defter, işlem geçmişi silinir). mode "all": şirket ilk açıldığı gibi boş (şirket adı/kodu, unvan/VKN/logo,
+  // fatura serisi kalır). Önce ZORUNLU yedek (Yedekler'den geri yüklenir). Lisans, kullanıcılar, öbür şirketler ortak
+  // katmanda; etkilenmez.
+  const MOVEMENT_TABLES = ["cash_entries", "payments", "account_entries", "stock_moves", "invoice_offsets", "invoice_repeats", "invoice_lines", "invoices", "einvoice_inbox", "plan_entries", "plan_items", "plan_imports", "plans", "cheque_events", "cheques", "integrity_log", "message_sends", "trash", "audit_events"];
+  const CARD_TABLES = ["accounts", "stock_items", "plan_groups", "dataset_rows", "dataset_imports", "records", "overrides", "deleted_records", "notes", "phones", "liens", "tasks", "case_notes", "case_documents", "source_snapshots", "free_cells", "free_rows", "free_history", "free_sheets", "messages"];
+  const KEEP_SETTINGS = ["office.", "meta.", "sectors.", "client.", "invoice", "einvoice", "edoc", "whatsapp", "backup", "cloud", "drive", "license.", "update"];
+  function resetData(user, { mode = "movements", resetNumbers = true } = {}) {
+    if (!["movements", "all"].includes(mode)) throw new HttpError(400, "Sıfırlama türü 'movements' ya da 'all' olmalı.");
+    const company = companies.get(companyId);
+    const backup = createBackup(db, config.backupDir, { label: `sifirlama-oncesi-${company?.code || "001"}`, keep: Math.max(config.backupKeep, 10) });
+    const has = table => Boolean(store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = ?", table));
+    const counts = {};
+    store.tx(() => {
+      const tables = mode === "all" ? [...MOVEMENT_TABLES, ...CARD_TABLES] : MOVEMENT_TABLES;
+      for (const table of tables) {
+        if (!has(table)) continue;
+        counts[table] = store.get(`SELECT COUNT(*) AS n FROM ${table}`).n;
+        store.run(`DELETE FROM ${table}`);
+      }
+      if (resetNumbers) store.run("DELETE FROM settings WHERE key = 'plans.receiptSeq'");
+      if (mode === "all") {
+        for (const row of store.all("SELECT key FROM settings")) {
+          if (!KEEP_SETTINGS.some(prefix => row.key.startsWith(prefix))) store.run("DELETE FROM settings WHERE key = ?", row.key);
+        }
+      }
+      audit(user, "company.reset", companyId, { mode, resetNumbers, backup: backup?.name || "", counts });
+    });
+    try {
+      profile.invalidate?.();
+      clientState.bump?.(user?.id || "");
+    } catch {
+      // önbellek tazeleme başarısız olsa da veri sıfırlandı
+    }
+    events?.publish("workspace.changed", { kind: "reset", actorId: user?.id, actorName: user?.display_name, mode });
+    log.info(`Şirket verisi sıfırlandı (${company?.code || "001"}, ${mode}); yedek: ${backup?.name}`);
+    return { mode, backup: backup?.name || "", counts };
+  }
+
   let closed = false;
-  return {
+  const app = {
     config,
     log,
     store,
+    context,
+    companies,
+    companyId,
+    handleScoped: scoped,
+    resetData,
     integrity: context.integrity,
     ledger: context.ledger,
     period: context.period,
@@ -324,7 +438,9 @@ export function createApp(overrides = {}) {
         server.closeAllConnections?.();
       });
       await analysisRunner.close();
+      for (const child of children.values()) await child.close();
       db.close();
     },
   };
+  return app;
 }

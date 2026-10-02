@@ -265,15 +265,30 @@ await step("k09", async () => {
 });
 
 await step("k19", async () => {
-  await page.click("#hof-free-add");
-  await page.waitForSelector(".hof-modal-backdrop.is-visible .hof-free-source");
-  await page.click('.hof-modal-backdrop.is-visible [data-source="excel"]');
-  await page.setInputFiles(".hof-modal-backdrop.is-visible [data-file]", `${S}/giderler.xlsx`);
-  await page.waitForSelector(".hof-modal-backdrop.is-visible [data-excel-result]:not([hidden])", { timeout: 20000 });
-  await page.waitForTimeout(500);
+  // v2.0.17: "+ Sayfa" ortadaki sayfa şeridinde (Excel'den Aktar / Google Sheets'ten Aktar / Boş Sayfa).
+  await page.waitForSelector("#hof-pages [data-add]", { timeout: 15000 });
+  await page.click("#hof-pages [data-add]");
+  await page.waitForSelector("#hof-pages .hof-pages-menu:not([hidden])");
+  await page.waitForTimeout(300);
   await quiet();
-  await shot("k19-sayfa-excel", { clip: pad(await topBox(), 4) });
-  await closeAll();
+  const strip = await box("#hof-pages");
+  await shot("k19-sayfa-excel", { clip: { x: Math.max(0, strip.x - 6), y: Math.max(0, strip.y - 6), width: strip.width + 12, height: strip.height + 190 } });
+  await page.keyboard.press("Escape");
+});
+
+// Şirket seçici (v2.0.17): sol üstte "Şirket · 001 · Unvan"; menüde şirketler, + Yeni Şirket, Şirketleri Yönet.
+await step("k25", async () => {
+  await api("/api/companies", { code: "002", name: "Kaptan Tekne Turları" });
+  await page.reload({ waitUntil: "load" });
+  await page.waitForSelector("#hof-company [data-toggle]", { timeout: 20000 });
+  await page.click("#hof-company [data-toggle]");
+  await page.waitForSelector("#hof-company .hof-session-menu:not([hidden])");
+  await page.waitForTimeout(300);
+  await quiet();
+  const b = await box("#hof-company");
+  const m = await box("#hof-company .hof-session-menu");
+  await shot("k25-sirket-secici", { clip: { x: Math.max(0, Math.min(b.x, m.x) - 8), y: Math.max(0, b.y - 8), width: Math.max(b.width, m.x + m.width - b.x) + 16, height: m.y + m.height - b.y + 16 } });
+  await page.keyboard.press("Escape");
 });
 
 // Veri Sağlığı: rehber tablosu (kimliği boş kayıtlar) yeni oturumda; Yok Say düğmeleri.
@@ -310,6 +325,15 @@ await step("k17-k20", async () => {
   await page.waitForTimeout(300);
   const card = await page.$eval("#adm-users", node => { const t = node.closest("table"); const b = (t.closest("section, .adm-card, .adm-panel") || t).getBoundingClientRect(); return { x: b.x, y: b.y + window.scrollY, width: b.width, height: b.height }; });
   await shot("k17-yetkiler", { fullPage: true, clip: { x: Math.max(0, card.x - 6), y: Math.max(0, card.y - 6), width: card.width + 12, height: Math.min(card.height + 12, 1100) } });
+  // Yönetim → Şirketler (v2.0.17): liste, yetki tablosu, birleşik rapor.
+  await page.click('.adm-tabs [data-tab="companies"]');
+  await page.waitForSelector("#adm-companies tr[data-company]", { timeout: 15000 });
+  await page.waitForSelector("#adm-company-access thead th", { timeout: 15000 });
+  await page.click("#adm-company-report");
+  await page.waitForSelector("#adm-company-report-out tfoot", { timeout: 15000 });
+  await page.waitForTimeout(300);
+  const panel = await page.$eval('.adm-panel[data-panel="companies"]', node => { const b = node.getBoundingClientRect(); return { x: b.x, y: b.y + window.scrollY, width: b.width, height: b.height }; });
+  await shot("k26-sirketler", { fullPage: true, clip: { x: Math.max(0, panel.x - 6), y: Math.max(0, panel.y - 6), width: panel.width + 12, height: Math.min(panel.height + 12, 1400) } });
 });
 
 await step("k18", async () => {

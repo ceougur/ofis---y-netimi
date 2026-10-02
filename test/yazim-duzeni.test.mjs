@@ -110,7 +110,7 @@ function violations(file, { server = false } = {}) {
   // Simgeyle başlayan başlık ve düğmeler: <h3>${icon("sparkle")} Toplu Düzeltmeler</h3>, </svg>Excel İndir</a>.
   for (const m of src.matchAll(new RegExp(`<(?:${TAGS})\\b[^<>]*>\\s*\\$\\{[A-Za-z_.]+(?:\\([^)]*\\))?\\}\\s*([^<>\`{}$\\n]{3,60})<`, "g"))) check(m[1], "simgeli etiket");
   for (const m of src.matchAll(/<\/svg>\s*([^<>`{}$\n]{3,60})<\/(?:a|button|span|b|strong|h[1-6]|summary|label)>/g)) check(m[1], "simgeli etiket");
-  for (const m of src.matchAll(/\b(title|eyebrow|label|submitLabel|confirmLabel|cancelLabel|heading)\s*:\s*"([^"\n]{3,70})"/g)) check(m[2], m[1]);
+  for (const m of src.matchAll(/\b(title|eyebrow|label|submitLabel|confirmLabel|cancelLabel|heading|submit)\s*:\s*"([^"\n]{3,70})"/g)) check(m[2], m[1]);
   for (const m of src.matchAll(/\b(title|submitLabel|confirmLabel|label|eyebrow)\s*:\s*([^,\n]*\?[^,\n]*)/g)) for (const n of m[2].matchAll(/"([^"\n]{3,60})"/g)) check(n[1], `${m[1]} koşullu`);
   for (const m of src.matchAll(/\[\s*"[a-z][\w-]*"\s*,\s*"([^"\n]{3,70})"/g)) check(m[1], "seçenek");
   // Sayı ya da koşul eklenen başlıklar: <summary>Son Aktarımlar (${n})</summary>, <button>Önümüzdeki 30 Gün (${n})</button>.

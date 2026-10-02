@@ -98,7 +98,7 @@ button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px
 .dynamic-table td:first-child { padding-left:32px !important; }
 .hof-payment-promises { display:flex; align-items:center; gap:18px; min-height:66px; margin:0 0 12px; padding:10px 14px; overflow:hidden; border:1px solid #d9e9dd; border-radius:15px; background:linear-gradient(110deg,#f8fcf8,#eef8f0); box-shadow:0 7px 20px rgba(32,82,53,.055); }
 .hof-payment-promises-heading { display:flex; flex:0 0 auto; align-items:center; gap:7px; color:#285c43; font-size:11px; white-space:nowrap; }
-.hof-payment-promises-heading small { margin-left:2px; color:#88a095; font-size:9px; font-weight:600; }
+.hof-payment-promises-heading small { margin-left:2px; color:#5f7169; font-size:10px; font-weight:600; } /* v2.0.17 UI/UX denetimi: 2,6:1 → 4,6:1, 9 px → 10 px */
 .hof-payment-promises-dot { width:7px; height:7px; border-radius:50%; background:#69a879; box-shadow:0 0 0 4px #dcefe1; }
 .hof-payment-promises-viewport { min-width:0; flex:1; overflow:hidden; mask-image:linear-gradient(90deg,transparent 0,#000 3%,#000 97%,transparent 100%); }
 .hof-payment-promises-track { display:flex; width:max-content; gap:10px; animation:hof-payment-drift 107.14s linear infinite; }
@@ -132,3 +132,6 @@ button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px
   .detail-panel { min-width: 0; width: 100%; }
   .detail-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
 }
+
+/* v2.0.17 UI/UX denetimi: eski "Kaynak Özeti" kartındaki simge düğmesi 16×16 idi; tıklama hedefi 28×28. */
+.quick-card > button, .quick-card button[data-loc] { display: inline-grid; place-items: center; min-width: 28px; min-height: 28px; border-radius: 8px; }

@@ -735,7 +735,7 @@ try {
   await step("ANLIK DURUM (v2.0.7): kart canlı; arayüzden tahsil edilen çek Kasa'yı anında değiştirir; Rapor Al, nakit akışı grafiği, rapor merkezi PDF/Excel; kart küçülür ve öyle kalır", async () => {
     await admin.waitForSelector("#hof-pulse .hof-pulse-tile", { timeout: 15000 });
     const tiles = await admin.$$eval("#hof-pulse .hof-pulse-tile", nodes => nodes.map(node => node.dataset.pulseGo));
-    expect(tiles.join(",") === "cash,stock,receivable,payable", `kart kutuları: ${tiles}`);
+    expect(tiles.join(",") === "cash,bank,stock,receivable,payable", `kart kutuları: ${tiles}`); // v2.0.17: Nakit Kasa ve Banka / POS ayrı kartlar (madde 9)
     const overview = async () => (await admin.evaluate(() => fetch("/api/workspace/overview").then(response => response.json()))).data;
     const tileText = id => admin.$eval(`#hof-pulse [data-pulse-go="${id}"] .hof-pulse-value`, node => node.textContent.replace(/\s+/g, ""));
     const before = await overview();
@@ -756,6 +756,8 @@ try {
     await admin.waitForSelector(".hof-chq-actions [data-action='collect']", { timeout: 10000 });
     await admin.click(".hof-chq-actions [data-action='collect']");
     await admin.waitForSelector('.hof-modal-backdrop.is-visible form input[name="date"]', { timeout: 8000 });
+    // v2.0.17: Kasa kartı yalnız nakittir (madde 9); çek nakit tahsil edilir ki Kasa kartı değişsin (varsayılan Banka).
+    await admin.selectOption('.hof-modal-backdrop.is-visible form select[name="method"]', "cash");
     await admin.click('.hof-modal-backdrop.is-visible form button[type="submit"]');
     await admin.waitForFunction(() => document.querySelector(".hof-chq-history")?.textContent.includes("Tahsil Edildi"), null, { timeout: 10000 });
     await admin.keyboard.press("Escape");
@@ -1075,7 +1077,7 @@ try {
     expect(dataset.rowCount === 54 && dataset.imports[0].mode === "merge", `veri: ${dataset.rowCount} ${dataset.imports[0]?.mode}`);
   });
 
-  await step("farklı konudaki Excel yeni oturumda açılır; adı seçicide değişir, oturumlar arasında geçilir, diğer kullanıcının ekranı değişmez", async () => {
+  await step("farklı konudaki Excel yeni sayfada açılır; adı şeritte değişir, sayfalar arasında geçilir, diğer kullanıcının ekranı değişmez", async () => {
     await staff.evaluate(() => document.querySelectorAll(".hof-toast").forEach(node => node.remove()));
     await admin.click("#hof-side-settings"); // v2.0.11: Ayarlar kullanıcı kartının altında
     await admin.waitForSelector(".hof-modal-backdrop.is-visible #hof-session-section");
@@ -1091,30 +1093,28 @@ try {
     await admin.waitForSelector(".hof-analysis-result:not([hidden])", { timeout: 20000 });
     await admin.click(".hof-analysis-result [data-apply], .hof-analysis-result [data-done]");
     await admin.waitForFunction(() => !document.querySelector(".hof-modal-backdrop"), null, { timeout: 8000 });
-    await admin.waitForFunction(() => document.querySelector("#hof-session .hof-session-text strong")?.textContent === "Taksit takibi", null, { timeout: 10000 });
-    const count = await admin.$eval("#hof-session .hof-session-count", node => node.getAttribute("aria-label"));
-    expect(count === "2 oturum var", `seçici: ${count}`);
+    await admin.waitForFunction(() => document.querySelector("#hof-pages .hof-page.is-current b")?.textContent === "Taksit takibi", null, { timeout: 10000 });
+    const count = await admin.$eval("#hof-pages .hof-pages-head strong", node => node.textContent);
+    expect(count === "2", `şerit: ${count} sayfa`);
     await admin.waitForFunction(() => [...document.querySelectorAll(".dynamic-table tbody tr")].some(row => row.textContent.includes("Ali Veli")), null, { timeout: 10000 });
     // Personel kendi oturumunda kalır; yeni oturum açıldığını bildirimden öğrenir.
-    await staff.waitForFunction(() => [...document.querySelectorAll(".hof-toast")].some(node => node.textContent.includes("yeni bir oturum açtı")), null, { timeout: 10000 });
-    expect(!(await staff.$$eval(".dynamic-table tbody tr", rows => rows.some(row => row.textContent.includes("Ali Veli")))), "personelin tablosuna yeni oturum karışmamalı");
-    // Seçicide adı kalemle değişir.
-    await admin.click("#hof-session [data-toggle]");
-    await admin.waitForSelector("#hof-session .hof-session-menu:not([hidden])");
-    const names = await admin.$$eval("#hof-session .hof-session-info b", nodes => nodes.map(node => node.textContent));
-    expect(names.length === 2 && names[1] === "Taksit takibi", `oturumlar: ${names}`);
-    await admin.screenshot({ path: path.join(artifacts, "08c-oturum-secici.png") });
-    await admin.click("#hof-session .hof-session-row.is-current [data-rename]");
-    await admin.fill("#hof-session .hof-session-edit input", "Taksitler 2026");
-    await admin.press("#hof-session .hof-session-edit input", "Enter");
-    await admin.waitForFunction(() => document.querySelector("#hof-session .hof-session-text strong")?.textContent === "Taksitler 2026", null, { timeout: 8000 });
-    // İlk oturuma dönülür: önceki tablo olduğu gibi durur.
-    await Promise.all([admin.waitForEvent("load", { timeout: 30000 }), admin.click("#hof-session .hof-session-row:not(.is-current) .hof-session-pick")]);
+    await staff.waitForFunction(() => [...document.querySelectorAll(".hof-toast")].some(node => node.textContent.includes("yeni bir sayfa açtı")), null, { timeout: 10000 });
+    expect(!(await staff.$$eval(".dynamic-table tbody tr", rows => rows.some(row => row.textContent.includes("Ali Veli")))), "personelin tablosuna yeni sayfa karışmamalı");
+    // Şeritte adı kalemle değişir (v2.0.17: sayfa şeridi ortada).
+    const names = await admin.$$eval("#hof-pages .hof-page-pick b", nodes => nodes.map(node => node.textContent));
+    expect(names.length === 2 && names[1] === "Taksit takibi", `sayfalar: ${names}`);
+    await admin.screenshot({ path: path.join(artifacts, "08c-sayfa-seridi.png") });
+    await admin.click("#hof-pages .hof-page.is-current [data-rename]");
+    await admin.fill("#hof-pages .hof-page-edit input", "Taksitler 2026");
+    await admin.press("#hof-pages .hof-page-edit input", "Enter");
+    await admin.waitForFunction(() => document.querySelector("#hof-pages .hof-page.is-current b")?.textContent === "Taksitler 2026", null, { timeout: 8000 });
+    // İlk sayfaya dönülür: önceki tablo olduğu gibi durur.
+    await Promise.all([admin.waitForEvent("load", { timeout: 30000 }), admin.click("#hof-pages .hof-page:not(.is-current) .hof-page-pick")]);
     await waitForApp(admin);
     const flash = await toastText(admin);
-    expect(flash.includes("oturumuna geçtiniz"), `bildirim: ${flash}`);
+    expect(flash.includes("sayfasına geçtiniz"), `bildirim: ${flash}`);
     const dataset = (await admin.evaluate(() => fetch("/api/workspace/dataset").then(response => response.json()))).data;
-    expect(dataset.rowCount === 54, `ilk oturum kayıtları: ${dataset.rowCount}`);
+    expect(dataset.rowCount === 54, `ilk sayfa kayıtları: ${dataset.rowCount}`);
     await admin.waitForFunction(() => document.querySelectorAll(".dynamic-table tbody tr").length > 0, null, { timeout: 10000 });
     expect(!(await admin.$$eval(".dynamic-table tbody tr", rows => rows.some(row => row.textContent.includes("Ali Veli")))), "ilk oturuma taksit verisi karışmamalı");
   });
@@ -1606,9 +1606,10 @@ try {
       await page.click(".hof-analysis-result [data-apply], .hof-analysis-result [data-done]");
       await page.waitForFunction(() => !document.querySelector(".hof-modal-backdrop"), null, { timeout: 8000 });
 
-      // Tek sekmeli veride de şerit ve "+ Sayfa" görünür.
-      await page.waitForSelector(".category-bar #hof-free-add", { timeout: 10000 });
-      await page.click("#hof-free-add");
+      // Tek sekmeli veride de sayfa şeridi ve "+ Sayfa" görünür (v2.0.17: Boş Sayfa şerit menüsünden).
+      await page.waitForSelector("#hof-pages [data-add]", { timeout: 10000 });
+      await page.click("#hof-pages [data-add]");
+      await page.click('#hof-pages [data-add-source="blank"]');
       await page.fill(".hof-modal input[name=name]", "Masraflar");
       await page.fill(".hof-modal input[name=columns]", "4");
       await page.fill(".hof-modal input[name=rows]", "5");

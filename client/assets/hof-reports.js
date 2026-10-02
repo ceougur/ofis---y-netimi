@@ -1,5 +1,5 @@
 /* DestekOfis — Tablo raporları (v2.0.2; v2.0.9'dan beri Raporlar penceresinin "Tablo raporları" sekmesi).
- * Excel/Sheets tablolarındaki (tüm veri oturumları) tutar, vade ve durum kolonlarından: Cari ekstre, Vade takip, Nakit
+ * Excel/Sheets tablolarındaki (tüm sayfalar) tutar, vade ve durum kolonlarından: Cari ekstre, Vade takip, Nakit
  * akış. Sabit şablon yoktur; kolonlar sunucunun ortak omurgadan (cari, tutar, vade, durum + özel alanlar) ürettiği
  * tablodan gelir. Farklı Excel dosyalarındaki (oturumlardaki) kayıtlar cari adıyla birleştirilir. Cari, Kasa, Taksit ve
  * Çek/Senet defterlerinden gelen raporlar aynı penceredeki diğer sekmelerdedir (hof-overview.js).
@@ -87,7 +87,7 @@
       sessionsBox.dataset.ready = "1";
       sessionsBox.innerHTML = data.sessions.length > 1
         ? data.sessions.map(item => `<label class="hof-check"><input type="checkbox" value="${esc(item.key)}" checked><span>${esc(item.name)}<small> · ${number(item.rowCount)} kayıt</small></span></label>`).join("")
-        : `<span class="hof-muted">${esc(data.sessions[0]?.name || "Tek oturum")}</span>`;
+        : `<span class="hof-muted">${esc(data.sessions[0]?.name || "Tek sayfa")}</span>`;
     }
     const tabs = dialog.querySelector('[data-filter="tabs"]');
     if (tabs && !tabs.dataset.ready) {
@@ -163,7 +163,7 @@
     const monthStart = new Date(today.getFullYear(), today.getMonth() - 2, 1);
     const previous = state.filters || {};
     node.innerHTML = `<div class="hof-report-kinds" role="tablist" aria-label="Tablo raporları">${KINDS.map(([id, label, hint]) => `<button type="button" role="tab" data-kind="${id}" aria-selected="${id === state.kind}" title="${esc(hint)}">${esc(label)}</button>`).join("")}</div>
-        <p class="hof-modal-text hof-report-intro">Yalnız <b>Excel/Sheets tablolarınızdaki</b> tutar, vade ve durum kolonlarından üretilir (tüm veri oturumları). Aynı kişi birden çok dosyada varsa tek kişi olarak birleşir. Cari, Kasa, Taksit ve Çek/Senet defterlerindeki hareketler için diğer sekmeleri kullanın.</p>
+        <p class="hof-modal-text hof-report-intro">Yalnız <b>Excel/Sheets tablolarınızdaki</b> tutar, vade ve durum kolonlarından üretilir (tüm sayfalar). Aynı kişi birden çok dosyada varsa tek kişi olarak birleşir. Cari, Kasa, Taksit ve Çek/Senet defterlerindeki hareketler için diğer sekmeleri kullanın.</p>
         <form class="hof-report-filters" data-filters>
           <label><span>Başlangıç</span><input type="date" data-filter="from" value="${esc(previous.from ?? isoOf(monthStart))}"></label>
           <label><span>Bitiş</span><input type="date" data-filter="to" value="${esc(previous.to || "")}"></label>
@@ -172,7 +172,7 @@
           <label><span>Sekme</span><select data-filter="tabs"><option value="">Tüm Sekmeler</option></select></label>
           <label><span>En Az Tutar</span><input type="number" data-filter="minAmount" min="0" step="1" placeholder="0" value="${esc(previous.minAmount || "")}"></label>
           <label data-granularity-row hidden><span>Dönem</span><select data-filter="granularity"><option value="month">Ay</option><option value="week">Hafta</option><option value="day">Gün</option></select></label>
-          <div class="hof-report-sessions"><span>Oturumlar</span><div data-filter="sessions"></div></div>
+          <div class="hof-report-sessions"><span>Sayfalar</span><div data-filter="sessions"></div></div>
           <div class="hof-report-actions"><button type="submit" class="hof-button">Raporu Getir</button><button type="button" class="hof-button hof-button-ghost" data-clear>Süzgeçleri Temizle</button></div>
         </form>
         <div class="hof-report-toolbar"><span data-report-meta class="hof-muted"></span><span><button type="button" class="hof-button hof-button-small hof-button-ghost" data-export="xlsx">Excel</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-export="pdf">PDF</button><button type="button" class="hof-button hof-button-small" data-print>Yazdır</button></span></div>

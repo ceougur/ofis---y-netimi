@@ -1,7 +1,7 @@
 // ANLIK DURUM (v2.0.7): ana ekrandaki canlı özet kartı ve "Rapor Al" raporları (mizan, cari ekstre, nakit akışı).
 //
 // Tek kaynak ilkesi: karttaki her rakam, ilgili ekranın kendi hesabından okunur (ayrı bir sorguyla yeniden türetilmez):
-//   Kasa / Banka  = Kasa ekranındaki "Güncel kasa" (cash.report → totals.balance)
+//   Nakit Kasa     = Kasa ekranındaki nakit bakiye (cash.summary → cashOnly); Banka / POS ayrı kart (noncash)
 //   Kritik stok   = Stok listesindeki "Kritik" sayısı (stock.list → totals.low; hizmet kalemleri hariç)
 //   Toplam alacak = Cari listesindeki "Bize borçlu" toplamı (tüm cariler, pasifler dahil) + portföydeki alınan çek/senet
 //   Toplam borç   = Cari listesindeki "Biz borçluyuz" toplamı + ödenecek verilen çek/senet
@@ -84,10 +84,13 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
     const cashSummary = cash()?.summary ? cash().summary(day) : { balance: 0, today: { in: 0, out: 0 }, month: { in: 0, out: 0 }, futureEntries: 0 };
     // Kart "bugünkü kasa"yı gösterir (ileri tarihli kira/maaş henüz kasadan çıkmadı); nakit akışı da buradan başlar.
     // Kasa ekranındaki "güncel kasa (tüm hareketler)" ileri tarihlileri de içerir; fark kartta ayrıca yazılır.
-    const cashBlock = { balance: cashSummary.balanceToday, allEntries: cashSummary.balance, today: cashSummary.today, month: cashSummary.month, futureEntries: cashSummary.futureEntries, byMethod: cashSummary.byMethod || null };
+    // v2.0.17 (müşteri): Kasa yalnız nakit → kart "Nakit Kasa"; banka tarafı (havale/EFT + POS/kredi kartı) ayrı kart.
+    const nakit = cashSummary.cashOnly || { balance: cashSummary.balance, balanceToday: cashSummary.balanceToday, today: cashSummary.today, month: cashSummary.month, futureEntries: cashSummary.futureEntries };
+    const banka = cashSummary.noncash || { balance: 0, balanceToday: 0, today: { in: 0, out: 0 } };
+    const cashBlock = { balance: nakit.balanceToday, allEntries: nakit.balance, today: nakit.today, month: nakit.month, futureEntries: nakit.futureEntries, byMethod: cashSummary.byMethod || null, byMethodAt: cashSummary.byMethodAt || null, bank: { balance: banka.balanceToday, allEntries: banka.balance, today: banka.today } };
     // Stok: Stok listesiyle aynı sayım (hizmet kalemleri kritik/tükendi sayılmaz).
-    const stockTotals = stock()?.list ? stock().list(admin, {}).totals : { count: 0, low: 0, out: 0, services: 0, value: 0 };
-    const stockBlock = { critical: stockTotals.low, out: stockTotals.out, products: stockTotals.count - (stockTotals.services || 0), services: stockTotals.services || 0, value: stockTotals.value };
+    const stockTotals = stock()?.list ? stock().list(admin, {}).totals : { count: 0, low: 0, out: 0, negative: 0, services: 0, value: 0 };
+    const stockBlock = { critical: stockTotals.low, out: stockTotals.out, negative: stockTotals.negative || 0, products: stockTotals.count - (stockTotals.services || 0), services: stockTotals.services || 0, value: stockTotals.value };
     // Cari: Cari listesinin tüm cariler (aktif + pasif) toplamı.
     const accountTotals = accounts()?.list ? accounts().list(admin, { status: "all" }).totals : { debtor: 0, creditor: 0, overdue: 0, overdueCount: 0, count: 0 };
     const chequeSummary = cheques()?.summary ? cheques().summary(day) : null;

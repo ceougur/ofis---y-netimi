@@ -50,9 +50,10 @@
     side: { label: "Bakiye", options: [["", "Tümü"], ["debtor", "Borçlular"], ["creditor", "Alacaklılar"], ["nonzero", "Sadece Bakiyesi Olanlar"], ["zero", "Kapalı (bakiyesi sıfır)"], ["overdue", "Geciken Taksiti Olan"]] },
     direction: { label: "Yön", options: [["", "Alınan ve Verilen"], ["in", "Alınan"], ["out", "Verilen"]] },
     status: { label: "Durum", options: [["", "Tüm Durumlar"], ["open", "Açık (portföyde / ödenecek)"], ["overdue", "Vadesi Geçmiş"], ["soon", "7 Gün İçinde"], ["collected", "Tahsil Edildi"], ["endorsed", "Ciro Edildi"], ["paid", "Ödendi"], ["bounced", "Karşılıksız / İade"]] },
-    state: { label: "Kalem", options: [["", "Tüm Kalemler"], ["low", "Kritik Seviyedekiler"], ["out", "Tükenenler"], ["product", "Ürünler"], ["service", "Hizmetler"]] },
+    state: { label: "Kalem", options: [["", "Tüm Kalemler"], ["low", "Kritik Seviyedekiler"], ["out", "Tükenenler"], ["negative", "Eksi Stoktakiler"], ["product", "Ürünler"], ["service", "Hizmetler"]] },
     planStatus: { label: "Kartlar", options: [["active", "Açık Kartlar"], ["closed", "Kapatılanlar"], ["all", "Tümü"]] },
     taskStatus: { label: "Görevler", options: [["all", "Tümü"], ["open", "Açık"], ["done", "Tamamlanan"]] },
+    payMethod: { label: "Yol", options: [["noncash", "Banka ve POS (Tümü)"], ["bank", "Banka (Havale / EFT)"], ["card", "POS / Kredi Kartı"]] },
   };
 
   // Raporlar penceresindeki "Tüm raporlar" sekmesine kurulur (hof-overview.js). Sekme her açılışta yeni düğüm verir.
@@ -137,6 +138,7 @@
     if (report.params.includes("range")) Object.assign(params, { preset: report.preset || "all" }, presetRange(report.preset || "all"));
     if (report.params.includes("planStatus")) params.planStatus = "active";
     if (report.params.includes("taskStatus")) params.taskStatus = "all";
+    if (report.params.includes("payMethod")) params.payMethod = "noncash";
     if (report.id === "cek-portfoy") params.status = "open";
     center.params = params;
     center.account = null;

@@ -37,7 +37,7 @@
 
   const localDay = (date = new Date()) => `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
   const money = value => (value === null || value === undefined ? "" : HOF.formatMoney(value));
-  const who = item => item.person || item.caseNo || "Kayıt";
+  const who = item => `${item.person || item.caseNo || "Kayıt"}${item.foreign && item.pageName ? ` · ${item.pageName}` : ""}`;
   const storeKey = () => `hof-notices:${HOF.user?.id || "?"}`;
   const muteKey = () => `hof-notices-off:${HOF.user?.id || "?"}`;
   const read = key => {
@@ -349,7 +349,7 @@
       const act = button.dataset.act;
       if (act === "done") markDone(alert);
       else if (act === "pay") pay(alert.due);
-      else if (act === "go") HOF.revealRecord?.(alert.caseKey, { tab: alert.tab || "" });
+      else if (act === "go") (alert.item?.foreign || alert.due?.foreign ? HOF.sessions?.select?.((alert.item || alert.due).session) : HOF.revealRecord?.(alert.caseKey, { tab: alert.tab || "" }));
       else if (act === "plan") HOF.plans?.open(alert.planId);
       else if (act === "list") openPanel();
       else if (act === "tasks") HOF.workspace?.openTasks?.();
@@ -536,6 +536,7 @@
       modal.close();
       if (button.dataset.pay) pay(item.due);
       else if (button.dataset.plan) HOF.plans?.open(item.planId);
+      else if (item.item?.foreign || item.due?.foreign) HOF.sessions?.select?.((item.item || item.due).session);
       else HOF.revealRecord?.(item.caseKey, { tab: item.tab || "" });
     });
     modal.dialog.querySelector(".hof-alert-mute input").addEventListener("change", event => {

@@ -2,11 +2,14 @@
 // Detay kartından girilen tahsilatlar (payments) kasaya kendiliğinden tahsilat olarak düşer; kasaya ayrıca kayda
 // bağlı olmayan tahsilat (ör. danışmanlık ücreti) ve ödeme (kira, fatura, masraf) elle girilir (cash_entries).
 // Hareketler eskiden yeniye sıralanır; her satırda o ana kadarki kasa bakiyesi yazar.
+// v2.0.17 (müşteri): Kasa penceresi YALNIZ NAKİT akışını gösterir; elle girişte yol seçilmez (nakit). Havale/EFT, POS ve
+// kredi kartı hareketleri cari, fatura, taksit, stok ve çek ekranlarından gelir ve Raporlar → Banka ve POS Hareketleri'nde
+// görünür. Kasa ile banka arasındaki para geçişi "transfer"dir: tek işlemde iki bağlı hareket (nakit tarafı + banka tarafı).
 import { cashPdf, cashPdfName, rangeLabel } from "../lib/cash-report.mjs";
 import { HttpError, limited, ok, readJson, sendBuffer, text } from "../lib/http.mjs";
 import { parseAmount, roundMoney } from "../lib/money.mjs";
 import { canUser } from "../lib/permissions.mjs";
-import { METHODS, NEGATIVE_KEY, NEGATIVE_POLICIES, methodOf, readNegativePolicy } from "../lib/pay-method.mjs";
+import { METHODS, NEGATIVE_GUARDED, NEGATIVE_KEY, NEGATIVE_POLICIES, methodFilter, methodOf, readNegativePolicy } from "../lib/pay-method.mjs";
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 // Kasa'nın kendi kaynakları (kayıt tahsilatları ve elle girilen hareketler); diğerleri modüllerin cashSource'u.
@@ -37,7 +40,7 @@ export function registerCashRoutes(router, context) {
       ...(after ? [after] : []),
     );
     const manual = store.all(
-      `SELECT c.id, c.kind, 'manual' AS source, c.method, c.amount, c.date, c.description, '' AS caseKey, '' AS caseTitle,
+      `SELECT c.id, c.kind, 'manual' AS source, c.method, c.amount, c.date, c.description, '' AS caseKey, '' AS caseTitle, c.transfer_id AS transferId,
               c.created_by AS actorId, COALESCE(u.display_name, '') AS actorName, c.created_at AS createdAt, c.updated_at AS updatedAt
        FROM ${MANUAL.table} LEFT JOIN users u ON u.id = c.created_by${after ? ` WHERE ${MANUAL.date} > ?` : ""}`,
       ...(after ? [after] : []),
@@ -69,13 +72,23 @@ export function registerCashRoutes(router, context) {
               COALESCE(SUM(CASE WHEN method = 'card' THEN (CASE WHEN kind = 'in' THEN cents ELSE -cents END) END), 0) AS cardAll,
               COALESCE(SUM(CASE WHEN method = 'cash' AND date <= ? THEN (CASE WHEN kind = 'in' THEN cents ELSE -cents END) END), 0) AS cashToday,
               COALESCE(SUM(CASE WHEN method = 'bank' AND date <= ? THEN (CASE WHEN kind = 'in' THEN cents ELSE -cents END) END), 0) AS bankToday,
-              COALESCE(SUM(CASE WHEN method = 'card' AND date <= ? THEN (CASE WHEN kind = 'in' THEN cents ELSE -cents END) END), 0) AS cardToday
+              COALESCE(SUM(CASE WHEN method = 'card' AND date <= ? THEN (CASE WHEN kind = 'in' THEN cents ELSE -cents END) END), 0) AS cardToday,
+              COALESCE(SUM(CASE WHEN method = 'cash' AND date = ? AND kind = 'in' THEN cents END), 0) AS cashTodayIn,
+              COALESCE(SUM(CASE WHEN method = 'cash' AND date = ? AND kind = 'out' THEN cents END), 0) AS cashTodayOut,
+              COALESCE(SUM(CASE WHEN method = 'cash' AND date >= ? AND date <= ? AND kind = 'in' THEN cents END), 0) AS cashMonthIn,
+              COALESCE(SUM(CASE WHEN method = 'cash' AND date >= ? AND date <= ? AND kind = 'out' THEN cents END), 0) AS cashMonthOut,
+              COUNT(CASE WHEN method = 'cash' AND date > ? THEN 1 END) AS cashFuture,
+              COALESCE(SUM(CASE WHEN method <> 'cash' AND date = ? AND kind = 'in' THEN cents END), 0) AS otherTodayIn,
+              COALESCE(SUM(CASE WHEN method <> 'cash' AND date = ? AND kind = 'out' THEN cents END), 0) AS otherTodayOut
        FROM (${union})`,
-      day, day, day, monthStart, day, monthStart, day, day, day, day, day,
+      day, day, day, monthStart, day, monthStart, day, day, day, day, day, day, day, monthStart, day, monthStart, day, day, day, day,
     );
     const tl = cents => roundMoney(Number(cents || 0) / 100);
     // v2.0.13: yola göre bakiyeler (Nakit Kasa, Banka, Kredi Kartı); toplam = üçünün toplamı.
-    return { byMethod: { cash: tl(row.cashAll), bank: tl(row.bankAll), card: tl(row.cardAll) }, byMethodAt: { cash: tl(row.cashToday), bank: tl(row.bankToday), card: tl(row.cardToday) }, cashToday: tl(row.cashToday), balance: tl(row.balance), balanceToday: tl(row.balanceToday), today: { in: tl(row.todayIn), out: tl(row.todayOut) }, month: { in: tl(row.monthIn), out: tl(row.monthOut) }, futureEntries: row.future, count: row.count };
+    // v2.0.17: ANLIK DURUM için nakit kasa (cashOnly) ile banka tarafı (noncash: havale/EFT + POS/kredi kartı) ayrı.
+    const cashOnly = { balance: tl(row.cashAll), balanceToday: tl(row.cashToday), today: { in: tl(row.cashTodayIn), out: tl(row.cashTodayOut) }, month: { in: tl(row.cashMonthIn), out: tl(row.cashMonthOut) }, futureEntries: row.cashFuture };
+    const noncash = { balance: roundMoney(tl(row.bankAll) + tl(row.cardAll)), balanceToday: roundMoney(tl(row.bankToday) + tl(row.cardToday)), today: { in: tl(row.otherTodayIn), out: tl(row.otherTodayOut) } };
+    return { byMethod: { cash: tl(row.cashAll), bank: tl(row.bankAll), card: tl(row.cardAll) }, byMethodAt: { cash: tl(row.cashToday), bank: tl(row.bankToday), card: tl(row.cardToday) }, cashToday: tl(row.cashToday), balance: tl(row.balance), balanceToday: tl(row.balanceToday), today: { in: tl(row.todayIn), out: tl(row.todayOut) }, month: { in: tl(row.monthIn), out: tl(row.monthOut) }, futureEntries: row.future, count: row.count, cashOnly, noncash };
   }
   // Tarihe kadarki kasa (dahil): nakit akış projeksiyonunun başlangıcı. Kasa ekranıyla aynı hareketlerden.
   const balanceAt = day => (day ? summary(day).balanceToday : summary("9999-12-31").balance);
@@ -87,7 +100,8 @@ export function registerCashRoutes(router, context) {
   const negativePolicy = () => readNegativePolicy(store.setting(NEGATIVE_KEY, ""));
   function setNegativePolicy(input) {
     const next = { ...negativePolicy() };
-    for (const method of Object.keys(METHODS)) {
+    // v2.0.17: yalnız Nakit Kasa ayarlanır; bank/card gönderilse de okunmaz (Banka modülü gelene kadar kapalı).
+    for (const method of NEGATIVE_GUARDED) {
       if (input?.[method] === undefined) continue;
       if (!NEGATIVE_POLICIES.includes(input[method])) throw new HttpError(400, "Eksi bakiye denetimi Kontrol Yok, Uyar ya da Engelle olmalı.");
       next[method] = input[method];
@@ -97,6 +111,7 @@ export function registerCashRoutes(router, context) {
   }
   function guardOut(amount, day, force = false, method = "cash") {
     const key = methodOf(method);
+    if (!NEGATIVE_GUARDED.includes(key)) return;
     const policy = negativePolicy()[key];
     if (!(amount > 0) || policy === "off" || (policy === "warn" && force)) return;
     const balance = Math.min(summary(day || "9999-12-31").byMethodAt[key], summary("9999-12-31").byMethod[key] || 0);
@@ -117,8 +132,10 @@ export function registerCashRoutes(router, context) {
       if (delta < -0.005) guardOut(-delta, after?.date || before?.date || "", force, key);
     }
   }
+  // method: "cash" (Kasa penceresi), "bank" | "card" | "noncash" (banka tarafı), "" (hepsi — Ana Defter, eski raporlar).
   function report(user, from, to, method = "") {
-    method = method && Object.hasOwn(METHODS, method) ? method : "";
+    const filter = methodFilter(method);
+    method = filter ? String(method) : "";
     if ((from && !validDate(from)) || (to && !validDate(to))) throw new HttpError(400, "Geçerli bir tarih aralığı seçin.");
     if (from && to && from > to) throw new HttpError(400, "Başlangıç tarihi bitiş tarihinden sonra olamaz.");
     let balance = 0;
@@ -130,7 +147,7 @@ export function registerCashRoutes(router, context) {
     for (const raw of entries()) {
       const entry = { ...raw, method: methodOf(raw.method) };
       byMethod[entry.method] = roundMoney(byMethod[entry.method] + (entry.kind === "in" ? entry.amount : -entry.amount));
-      if (method && entry.method !== method) continue;
+      if (filter && !filter.has(entry.method)) continue;
       const signed = entry.kind === "in" ? entry.amount : -entry.amount;
       balance = roundMoney(balance + signed);
       totals[entry.kind] = roundMoney(totals[entry.kind] + entry.amount);
@@ -162,9 +179,14 @@ export function registerCashRoutes(router, context) {
     };
   }
 
+  // Kasa penceresi: yol verilmezse NAKİT (v2.0.17). "all" ile hepsi (raporlar), "noncash" ile banka tarafı.
+  const methodParam = url => {
+    const value = text(url.searchParams.get("method"));
+    return value === "all" ? "" : value || "cash";
+  };
   router.get("/api/workspace/cash", async ({ req, res, url }) => {
     const user = auth.requirePermission(req, "cash.view");
-    ok(res, report(user, text(url.searchParams.get("from")), text(url.searchParams.get("to")), text(url.searchParams.get("method"))));
+    ok(res, report(user, text(url.searchParams.get("from")), text(url.searchParams.get("to")), methodParam(url)));
   });
 
   // Kasa dökümü PDF olarak (ör. 01.09.2026 – 25.09.2026 arası hareketler).
@@ -172,7 +194,7 @@ export function registerCashRoutes(router, context) {
     const user = auth.requirePermission(req, "cash.view");
     const from = text(url.searchParams.get("from"));
     const to = text(url.searchParams.get("to"));
-    const data = report(user, from, to, text(url.searchParams.get("method")));
+    const data = report(user, from, to, methodParam(url));
     const pdf = cashPdf(data, { from, to, officeName: store.setting("office.name", ""), userName: user.display_name || user.username || "" });
     audit(user, "cash.exported", rangeLabel(from, to), { from, to, count: data.entries.length });
     sendBuffer(res, pdf, { type: "application/pdf", name: cashPdfName(from, to), inline: url.searchParams.get("download") !== "1" });
@@ -188,7 +210,11 @@ export function registerCashRoutes(router, context) {
     if (!validDate(date)) throw new HttpError(400, "Geçerli bir tarih girin.");
     const description = limited(body.description, 300, "Açıklama");
     if (!description) throw new HttpError(400, kind === "in" ? "Tahsilatın kimden/ne için alındığını yazın." : "Ödemenin kime/ne için yapıldığını yazın.");
-    return { kind, amount: roundMoney(amount), date, description, method: methodOf(body.method) };
+    // v2.0.17: Kasa'ya yalnız nakit girilir. Yol gönderilmişse nakit olmalı (eski istemci / API).
+    if (body.method !== undefined && body.method !== null && String(body.method) !== "" && methodOf(body.method) !== "cash") {
+      throw new HttpError(400, "Kasa'ya yalnız nakit tahsilat ve ödeme girilir. Havale/EFT, POS ve kredi kartı hareketleri cari, fatura, taksit, stok ve çek/senet ekranlarından girilir; banka ile para geçişi için Kasa'daki Aktar / Yatır düğmelerini kullanın.", { code: "cash-method", method: methodOf(body.method) });
+    }
+    return { kind, amount: roundMoney(amount), date, description, method: "cash" };
   };
 
   router.post("/api/workspace/cash", async ({ req, res }) => {
@@ -204,20 +230,59 @@ export function registerCashRoutes(router, context) {
   });
 
   const existing = id => {
-    const entry = store.get("SELECT id, kind, amount, date, description, method FROM cash_entries WHERE id = ?", limited(id, 120, "Hareket"));
+    const entry = store.get("SELECT id, kind, amount, date, description, method, transfer_id AS transferId FROM cash_entries WHERE id = ?", limited(id, 120, "Hareket"));
     if (!entry) throw new HttpError(404, "Kasa hareketi bulunamadı. Başka biri silmiş olabilir.");
     return entry;
   };
+  // Transferin öbür yarısı (nakit tarafının bankası, banka tarafının nakdi).
+  const twinOf = entry => (entry.transferId ? store.get("SELECT id, kind, amount, date, description, method, transfer_id AS transferId FROM cash_entries WHERE transfer_id = ? AND id <> ?", entry.transferId, entry.id) : null);
+
+  // ---------- Kasa ↔ Banka transferi (v2.0.17) ----------
+  // direction: "to-cash" (bankadan kasaya nakit çekildi) | "to-bank" (kasadaki nakit bankaya yatırıldı).
+  // Nakit tarafı Kasa'da nakit giriş/çıkış olarak görünür; banka tarafı Banka ve POS raporunda karşı hareket. Tek işlem;
+  // kasadan bankaya yatırmada nakit eksi bakiye denetimi çalışır.
+  const TRANSFER_TEXT = { "to-cash": "Bankadan Kasaya Aktarım", "to-bank": "Kasadan Bankaya Yatırma" };
+  router.post("/api/workspace/cash/transfer", async ({ req, res }) => {
+    const user = auth.requirePermission(req, "cash.manage");
+    const body = await readJson(req);
+    const direction = text(body.direction);
+    if (!TRANSFER_TEXT[direction]) throw new HttpError(400, "Transfer yönü seçin: Bankadan Kasaya ya da Kasadan Bankaya.", { field: "direction" });
+    const amount = parseAmount(body.amount);
+    if (!Number.isFinite(amount) || amount <= 0 || amount > 1e12) throw new HttpError(400, "Geçerli bir tutar girin.");
+    const date = context.period ? context.period.movementDate(body) : text(body.date) || now().slice(0, 10);
+    if (!validDate(date)) throw new HttpError(400, "Geçerli bir tarih girin.");
+    const description = limited(body.description, 300, "Açıklama") || TRANSFER_TEXT[direction];
+    const cashKind = direction === "to-cash" ? "in" : "out";
+    if (cashKind === "out") guardOut(roundMoney(amount), date, body.cashForce === true, "cash");
+    const transferId = auth.newId("trf");
+    const cashId = auth.newId("cash");
+    const bankId = auth.newId("cash");
+    const stamp = now();
+    store.tx(() => {
+      store.run("INSERT INTO cash_entries (id, kind, amount, date, description, method, transfer_id, created_by, created_at) VALUES (?, ?, ?, ?, ?, 'cash', ?, ?, ?)", cashId, cashKind, roundMoney(amount), date, description, transferId, user.id, stamp);
+      store.run("INSERT INTO cash_entries (id, kind, amount, date, description, method, transfer_id, created_by, created_at) VALUES (?, ?, ?, ?, ?, 'bank', ?, ?, ?)", bankId, cashKind === "in" ? "out" : "in", roundMoney(amount), date, description, transferId, user.id, stamp);
+      audit(user, "cash.transfer.created", transferId, { direction, amount: roundMoney(amount), date, description, cashId, bankId });
+    });
+    changed(user);
+    ok(res, { id: cashId, bankId, transferId, direction, amount: roundMoney(amount), date });
+  });
 
   router.put("/api/workspace/cash/:id", async ({ req, res, params }) => {
     const user = auth.requirePermission(req, "cash.manage");
     const previous = existing(params.id);
     context.period?.assertOpen(previous.date, "Bu kasa hareketi");
     const body = await readJson(req);
-    const entry = input(body);
+    // Eski (2.0.16 öncesi) nakit dışı Kasa kaydının yolu değiştirilmez; transferde yön (kind) de sabittir.
+    const entry = { ...input({ ...body, method: undefined }), method: previous.method };
+    if (previous.transferId && entry.kind !== previous.kind) throw new HttpError(400, "Transferin yönü değiştirilemez; silip yeniden girin.", { code: "transfer-kind" });
     guardChange(previous, entry, body.cashForce === true);
-    store.run("UPDATE cash_entries SET kind = ?, amount = ?, date = ?, description = ?, method = ?, updated_by = ?, updated_at = ? WHERE id = ?", entry.kind, entry.amount, entry.date, entry.description, entry.method, user.id, now(), previous.id);
-    audit(user, "cash.entry.updated", previous.id, { previous, ...entry });
+    const twin = twinOf(previous);
+    if (twin) guardChange(twin, { ...twin, amount: entry.amount, date: entry.date }, body.cashForce === true);
+    store.tx(() => {
+      store.run("UPDATE cash_entries SET kind = ?, amount = ?, date = ?, description = ?, method = ?, updated_by = ?, updated_at = ? WHERE id = ?", entry.kind, entry.amount, entry.date, entry.description, entry.method, user.id, now(), previous.id);
+      if (twin) store.run("UPDATE cash_entries SET amount = ?, date = ?, description = ?, updated_by = ?, updated_at = ? WHERE id = ?", entry.amount, entry.date, entry.description, user.id, now(), twin.id);
+      audit(user, previous.transferId ? "cash.transfer.updated" : "cash.entry.updated", previous.transferId || previous.id, { previous, ...entry });
+    });
     changed(user);
     ok(res, { id: previous.id });
   });
@@ -227,11 +292,17 @@ export function registerCashRoutes(router, context) {
     const previous = existing(params.id);
     context.period?.assertOpen(previous.date, "Bu kasa hareketi");
     guardChange(previous, null, url.searchParams.get("cashForce") === "1");
-    const full = store.get("SELECT id, kind, amount, date, description, method, created_by AS createdBy, created_at AS createdAt FROM cash_entries WHERE id = ?", previous.id);
-    store.run("DELETE FROM cash_entries WHERE id = ?", previous.id);
-    // Silinenler (v2.0.2): yönetim panelinden geri yüklenebilir.
-    trash?.add({ kind: "cash", ref: previous.id, title: full.description || "Kasa hareketi", payload: full, user });
-    audit(user, "cash.entry.deleted", previous.id, previous);
+    const twin = twinOf(previous);
+    if (twin) guardChange(twin, null, url.searchParams.get("cashForce") === "1");
+    const full = store.get("SELECT id, kind, amount, date, description, method, transfer_id AS transferId, created_by AS createdBy, created_at AS createdAt FROM cash_entries WHERE id = ?", previous.id);
+    const twinFull = twin ? store.get("SELECT id, kind, amount, date, description, method, transfer_id AS transferId, created_by AS createdBy, created_at AS createdAt FROM cash_entries WHERE id = ?", twin.id) : null;
+    store.tx(() => {
+      store.run("DELETE FROM cash_entries WHERE id = ?", previous.id);
+      if (twin) store.run("DELETE FROM cash_entries WHERE id = ?", twin.id);
+    });
+    // Silinenler (v2.0.2): yönetim panelinden geri yüklenebilir. Transferde iki taraf birlikte (payload.twin).
+    trash?.add({ kind: "cash", ref: previous.id, title: full.description || (previous.transferId ? "Kasa ↔ Banka Transferi" : "Kasa Hareketi"), payload: { ...full, twin: twinFull }, user });
+    audit(user, previous.transferId ? "cash.transfer.deleted" : "cash.entry.deleted", previous.transferId || previous.id, previous);
     changed(user);
     ok(res, { id: previous.id });
   });

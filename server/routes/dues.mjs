@@ -7,7 +7,10 @@ import { canUser } from "../lib/permissions.mjs";
 const SETTLED_KEY = "dues.settled";
 const MAX_SETTLED = 5000;
 
-export function registerDueRoutes(router, { auth, store, dataset, profile, events, audit, plans, cheques, invoices }) {
+// calendar (v2.0.17): raporların tüm sayfalar takvimi (routes/reports.mjs allCalendar; tembel, çünkü raporlar sonra kaydolur).
+// Sayfa düzeninde şirketin BÜTÜN sayfalarının tarih uyarıları zile/takvime girer: öbür sayfaların kalemleri "foreign"
+// işaretiyle ve sayfa adıyla eklenir (madde 13: "tarih uyarısı vermiyor" şikâyeti kökten kapanır).
+export function registerDueRoutes(router, { auth, store, dataset, profile, events, audit, plans, cheques, invoices, calendar = null }) {
   const cache = new Map(); // oturum → { key, result }
   const settingKey = () => (dataset.settingKey ? dataset.settingKey(SETTLED_KEY) : SETTLED_KEY);
   const readSettled = () => {
@@ -28,7 +31,9 @@ export function registerDueRoutes(router, { auth, store, dataset, profile, event
     const settledRaw = store.setting(settingKey(), "{}") || "{}";
     // Sekme adları ve gizlenen sekmeler (v2.0.2) görünümü değiştirir; anahtara girer.
     const tabState = ["dataset.tabs.alias", "dataset.tabs.hidden"].map(name => store.setting(dataset.settingKey ? dataset.settingKey(name) : name, "") || "").join("|");
-    const key = [profile.fingerprint(), paymentsState(), settledRaw.length, settledRaw.slice(-64), tabState, plans?.fingerprint ? plans.fingerprint() : "", cheques?.fingerprint ? cheques.fingerprint() : "", invoices?.fingerprint ? invoices.fingerprint() : "", now.toDateString()].join("|");
+    const pages = dataset.sessions ? dataset.sessions() : [];
+    const pagesState = pages.length > 1 ? pages.map(page => `${page.key}:${page.rowCount}:${page.recordCount}:${page.changedAt || ""}`).join("|") : "";
+    const key = [pagesState, profile.fingerprint(), paymentsState(), settledRaw.length, settledRaw.slice(-64), tabState, plans?.fingerprint ? plans.fingerprint() : "", cheques?.fingerprint ? cheques.fingerprint() : "", invoices?.fingerprint ? invoices.fingerprint() : "", now.toDateString()].join("|");
     const session = dataset.currentKey();
     const hit = cache.get(session);
     if (hit && hit.key === key) return hit.result;
@@ -54,7 +59,24 @@ export function registerDueRoutes(router, { auth, store, dataset, profile, event
     const chequeItems = cheques?.dueItems ? cheques.dueItems(local) : [];
     // Fatura (v2.0.15): vadesi geçen, bugün ve 7 gün içinde vadesi gelen açık (vadeli) faturalar.
     const invoiceItems = invoices?.dueItems ? invoices.dueItems(local) : [];
-    const result = { items: [...items, ...planItems, ...chequeItems, ...invoiceItems], deadlines, sources, dormant, today: local, generatedAt: now.toISOString() };
+    // Öbür sayfaların kalemleri (v2.0.17): aynı motor (reports.calendar), sayfa adıyla; tıklanınca o sayfaya geçilir.
+    const foreignItems = [];
+    const foreignDeadlines = [];
+    const calendarFn = typeof calendar === "function" ? calendar() : null;
+    if (pages.length > 1 && typeof calendarFn === "function") {
+      try {
+        const all = await calendarFn(now);
+        for (const item of all.items || []) {
+          if (!item.session || item.session === session) continue;
+          const tagged = { ...item, foreign: true, pageName: item.sessionName || "" };
+          if (item.deadline) foreignDeadlines.push(tagged);
+          else if (!item.carded) foreignItems.push(tagged);
+        }
+      } catch (error) {
+        // öbür sayfalar okunamazsa açık sayfanın takvimi yine verilir
+      }
+    }
+    const result = { items: [...items, ...planItems, ...chequeItems, ...invoiceItems, ...foreignItems], deadlines: [...deadlines, ...foreignDeadlines], sources, dormant, today: local, generatedAt: now.toISOString() };
     cache.set(session, { key, result });
     return result;
   }
@@ -74,12 +96,19 @@ export function registerDueRoutes(router, { auth, store, dataset, profile, event
     const id = text(body.id).slice(0, 600);
     if (!id.startsWith("due|")) throw new HttpError(400, "Kalem tanınmadı.");
     const reason = body.reason === "cancelled" ? "cancelled" : "paid";
-    const map = readSettled();
-    if (body.undo) delete map[id];
-    else map[id] = { reason, by: user.id, at: new Date().toISOString() };
-    let entries = Object.entries(map);
-    if (entries.length > MAX_SETTLED) entries = entries.sort((a, b) => String(a[1].at).localeCompare(String(b[1].at))).slice(-MAX_SETTLED);
-    store.setSetting(settingKey(), JSON.stringify(Object.fromEntries(entries)), user.id);
+    // Öbür sayfanın kalemi (v2.0.17, body.session) o sayfanın kendi "kapatılanlar" ayarına yazılır.
+    const pageKey = text(body.session);
+    const write = () => {
+      const map = readSettled();
+      if (body.undo) delete map[id];
+      else map[id] = { reason, by: user.id, at: new Date().toISOString() };
+      let entries = Object.entries(map);
+      if (entries.length > MAX_SETTLED) entries = entries.sort((a, b) => String(a[1].at).localeCompare(String(b[1].at))).slice(-MAX_SETTLED);
+      store.setSetting(settingKey(), JSON.stringify(Object.fromEntries(entries)), user.id);
+    };
+    if (pageKey && pageKey !== dataset.currentKey() && dataset.withKey) dataset.withKey(pageKey, write);
+    else write();
+    cache.clear();
     const caseKey = id.split("|")[2] || "";
     audit(user, body.undo ? "dues.reopened" : reason === "paid" ? "dues.settled" : "dues.cancelled", caseKey, { id });
     events?.publish("workspace.changed", { kind: "dues", caseKey, actorId: user.id, actorName: user.display_name, datasetKey: dataset.currentKey() }, { except: user.id });

@@ -141,15 +141,15 @@ try {
       await admin.waitForTimeout(300);
     }
     ok(new Set(colors.map(item => item[1])).size === 1 && colors[0][1].startsWith("rgb(233, 245, 238)"), `m15: Cari, Taksitler, Stok, Çek/Senet arama kutuları aynı: ${colors.map(item => item.join(" ")).join(" · ")}`);
-    // m1: Çalışma oturumu kartı ekranın içinde.
-    await admin.click("#hof-session [data-toggle]");
+    // m1: Şirket seçici kartı ekranın içinde (v2.0.17: oturum seçicinin yerinde şirket seçici).
+    await admin.click("#hof-company [data-toggle]");
     await admin.waitForSelector(".hof-session-menu", { state: "visible" });
     const menu = await admin.$eval(".hof-session-menu", node => {
       const rect = node.getBoundingClientRect();
       return { top: rect.top, bottom: rect.bottom, left: rect.left, right: rect.right, h: innerHeight, w: innerWidth };
     });
-    ok(menu.top >= 0 && menu.bottom <= menu.h && menu.left >= 0 && menu.right <= menu.w, `m1: Çalışma oturumu kartı ekranın içinde (${Math.round(menu.left)},${Math.round(menu.top)} → ${Math.round(menu.right)},${Math.round(menu.bottom)})`);
-    await shot(admin, "calisma-oturumu");
+    ok(menu.top >= 0 && menu.bottom <= menu.h && menu.left >= 0 && menu.right <= menu.w, `m1: Şirket seçici kartı ekranın içinde (${Math.round(menu.left)},${Math.round(menu.top)} → ${Math.round(menu.right)},${Math.round(menu.bottom)})`);
+    await shot(admin, "sirket-secici");
     await admin.keyboard.press("Escape");
     await admin.goto(`${BASE}/admin.html`);
     await admin.waitForSelector(".adm-home");
@@ -376,7 +376,8 @@ try {
     };
     const file = path.join(root, "giderler.xlsx");
     writeFileSync(file, XLSX.write({ SheetNames: ["Giderler"], Sheets: { Giderler: sheet } }, { type: "buffer", bookType: "xlsx" }));
-    await admin.click("#hof-free-add");
+    // v2.0.17: "+ Sayfa → Excel'den Aktar" veri sayfası açar; eski serbest kopya yalnız HOF.free.open({ blankOnly: false }) ile.
+    await admin.evaluate(() => HOF.free.open({ blankOnly: false }));
     await admin.waitForSelector(`${modal} .hof-free-source`);
     await admin.click(`${modal} [data-source="excel"]`);
     await admin.setInputFiles(`${modal} [data-file]`, file);

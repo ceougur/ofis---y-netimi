@@ -70,7 +70,9 @@
     let state = await HOF.api("/api/workspace/client-state");
     const legacySheet = localGet("hukuk-ofisi-sheet-url");
     // v1.0.0'dan geçiş: kaynak henüz sunucuda yoksa, bu tarayıcıdaki kaynak yetkili kullanıcı tarafından ofise taşınır.
-    if (!state.sheetUrlSet && legacySheet && HOF.can("sources.manage")) {
+    // v2.0.17: yalnız gerçek bir Google Sheets bağlantısı taşınır. Programın kendi iç anahtarı ("dataset://…") şirket
+    // değişince tarayıcıda kalır; boş şirkete taşınsaydı şirket "Google Sheets'e bağlı" görünürdü (sahte kaynak).
+    if (!state.sheetUrlSet && legacySheet && /^https?:\/\//i.test(legacySheet) && HOF.can("sources.manage")) {
       try {
         state = await HOF.api("/api/workspace/client-state", { method: "PUT", body: { key: "sheetUrl", value: legacySheet } });
         HOF.toast("Bu bilgisayardaki veri kaynağı ofisin ortak kaynağı yapıldı.", { type: "success" });
@@ -78,7 +80,7 @@
         console.warn("[DestekOfis] Kaynak aktarılamadı", error);
       }
     }
-    if (!state.sheetUrlSet && legacySheet) {
+    if (!state.sheetUrlSet && legacySheet && /^https?:\/\//i.test(legacySheet)) {
       state = { ...state, settings: { ...state.settings, sheetUrl: legacySheet } };
     }
     HOF.applyClientState(state);

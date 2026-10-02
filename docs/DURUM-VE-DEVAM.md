@@ -76,13 +76,24 @@ Yeni bir oturum bu belgeyi okuyarak kaldığı yerden devam eder. Son güncellem
 
 ## Kalanlar (öncelik sırasıyla)
 
-### 2.0.16 — hazırlanıyor (02.10.2026; dal `claude/nice-euler-jvajxv`)
+### 2.0.17 — yapıldı, teslim paketi hazır (02.10.2026; dal `claude/nice-euler-jvajxv`; PR/birleştirme/yayın kullanıcı onayıyla)
+Müşteri bildirimleri (CLAUDE.md → Açık iş → "2.0.17 müşteri istekleri", 14 madde): çoklu şirket (001/002… ayrı veri tabanı,
+sol üst şirket seçici, Yönetim → Şirketler: yetki, birleşik rapor, Verisini Sıfırla, Sil), çalışma oturumu kalktı → ortada
+Sayfalar şeridi (+ Sayfa: Excel/Sheets = veri sayfası, Boş Sayfa; Veri Sekmesine Dönüştür; zil/takvim bütün sayfalar),
+fatura Sil, hayalet kısmi ödeme (kapama yöne göre, Mahsup Et, Kapatılacak Fatura, Bu Faturayı Kapatanlar), Kasa yalnız
+nakit + Banka/POS raporu + Kasa↔Banka transferi, eksi stok görünür, çek ciro seçici, iade düzenleme + pasif düğme nedeni,
+güncelleyici periyodik denetim; madde 14 (Excel doldurma tutamacı) yalnız kılavuz notu (program dosyaya yazmaz).
+Kanıt: `CHANGELOG.md` → 2.0.17, `docs/2.0.17-KANIT.md`, `docs/MIMARI.md` → *2.0.17 eklemeleri*, `test/*-217.test.mjs`,
+`npm run test:senaryo-217` (62/62). **Göç VAR** (şema 18 → 19: `account_entries.invoice_id`, `invoice_offsets`); çoklu
+şirkette mevcut veri dosyası yerinde = 001. Teslim: `dist/teslim-2.0.17/` (3 zip + SHA256SUMS).
+
+### 2.0.16 — yayımlandı 02.10.2026 (PR #16, `v2.0.16` = bd777e9; beş dosya ve latest/ adresleri bayt bayt doğrulandı; güncelleyici 2.0.15/14/13/12/2.0.4/1.7.0 → 2.0.16 "available"; site kılavuz PR'ı ceougur/destekofis#4)
 Müşteri bildirimleri (CLAUDE.md → Açık iş → "2.0.16 müşteri hataları", 11 madde): fatura raporları cari seçmeden açılır
 (kritik), kaydedilmiş faturayı Düzenle (aynı numara, tek işlemde geri al + yeniden yaz), "Kes" → "Kaydet", KDV dahil iskonto
 ve Toplamlar düzeni, Stok Kodu (barkod; tekil; faturada kolon, PDF, rapor), alışta + Yeni Stok Kartı, Tüm Kalemlere KDV, KDV
 kutusu, kırpılmayan öneri listesi, tahsilatta POS / ödemede Kredi Kartı, PDF düğmesi adları. Kanıt: `CHANGELOG.md` → 2.0.16,
 `docs/MIMARI.md` → *2.0.16 eklemeleri*, `test/fatura-216.test.mjs`, `npm run test:senaryo-216` (42 rapor arayüzden).
-Göç yok (şema değişmedi). Sıradaki: PR → "birleştir" → CI → teslim (CLAUDE.md "Sürüm teslim düzeni") → site kılavuz PR'ı.
+Göç yok (şema değişmedi). Teslim: `dist/teslim-2.0.16/` (3 zip + SHA256SUMS; 2-Kurulum 59,7 MB olduğundan .exe ayrıca verildi). Madde madde kanıt: `docs/2.0.16-KANIT.md`.
 
 ### 2.0.15 — yayımlandı 02.10.2026 (PR #15, `v2.0.15` = 85171ae; beş dosya ve latest/DestekOfis-Kurulum.exe bayt bayt doğrulandı; güncelleyici 2.0.14/13/12/2.0.4/1.7.0 → 2.0.15 "available")
 Kapsam ve kanıt: `CHANGELOG.md` → 2.0.15, `docs/MIMARI.md` → *2.0.15 eklemeleri — Fatura modülü*, `docs/FATURA-ISTEKLER.md`

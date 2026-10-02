@@ -38,9 +38,15 @@
     "dataset.missing.remove": "Sheet'te olmayan kayıtları kaldırdı",
     "dataset.missing.keep": "Sheet'te olmayan kayıtları tuttu",
     "dataset.exported": "Tabloyu Excel'e aktardı",
-    "dataset.session.created": "Yeni veri oturumu açtı",
-    "dataset.session.renamed": "Oturumun adını değiştirdi",
-    "dataset.session.deleted": "Veri oturumunu sildi",
+    "dataset.session.created": "Yeni sayfa açtı",
+    "dataset.session.renamed": "Sayfanın adını değiştirdi",
+    "dataset.session.deleted": "Sayfayı sildi",
+    "company.selected": "Şirket seçti",
+    "company.created": "Yeni şirket açtı",
+    "company.updated": "Şirketin adını/kodunu değiştirdi",
+    "company.deleted": "Şirketi sildi",
+    "company.access": "Şirket yetkisini değiştirdi",
+    "company.reset": "Şirket verisini sıfırladı",
     "case.document.created": "Belge ekledi",
     "case.document.deleted": "Belgeyi sildi",
     "case.document.restored": "Belgeyi geri yükledi",
@@ -200,10 +206,10 @@
       <td><span class="adm-inline" data-inline="name"><b>${esc(user.name)}</b><button type="button" class="adm-pencil" data-edit="name" title="Adı düzelt" aria-label="${esc(user.name)} adını düzelt">${PENCIL}</button></span>${self ? ' <span class="hof-chip">siz</span>' : ""}${user.mustChangePassword ? ' <span class="hof-chip hof-chip-high">parola bekliyor</span>' : ""}</td>
       <td><span class="adm-inline" data-inline="username"><code>${esc(user.username)}</code><button type="button" class="adm-pencil" data-edit="username" title="Kullanıcı adını (giriş adı) düzelt" aria-label="${esc(user.name)} kullanıcı adını düzelt">${PENCIL}</button></span></td>
       <td><select class="adm-role" aria-label="${esc(user.name)} rolü" ${self ? "disabled" : ""}>${roleOptions(user.roleKey)}</select></td>
-      <td><button type="button" class="adm-status ${user.active ? "is-active" : ""}" data-toggle ${self ? "disabled" : ""}>${user.active ? "Aktif" : "Pasif"}</button></td>
+      <td><button type="button" class="adm-status ${user.active ? "is-active" : ""}" data-toggle ${self ? 'disabled title="Kendi hesabınızı pasife alamazsınız"' : 'title="Aktif / pasif"'}>${user.active ? "Aktif" : "Pasif"}</button></td>
       <td>${pill}</td>
       <td>${user.lastLoginAt ? `${esc(HOF.formatDateTime(user.lastLoginAt))}` : '<span class="adm-muted">Hiç giriş yapmadı</span>'}</td>
-      <td class="adm-right adm-row-actions"><button type="button" class="hof-button hof-button-ghost hof-button-small" data-reset>Parola Sıfırla</button><button type="button" class="hof-button hof-button-ghost hof-button-small" data-sessions ${self ? "disabled" : ""}>Oturumları Kapat</button><button type="button" class="hof-button hof-button-small adm-delete" data-delete ${self ? 'disabled title="Kendi hesabınızı silemezsiniz"' : 'title="Kullanıcıyı sil (geçmişi korunur)"'}>Sil</button></td>
+      <td class="adm-right adm-row-actions"><button type="button" class="hof-button hof-button-ghost hof-button-small" data-reset>Parola Sıfırla</button><button type="button" class="hof-button hof-button-ghost hof-button-small" data-sessions ${self ? 'disabled title="Kendi oturumunuzu Çıkış ile kapatın"' : 'title="Bu kullanıcının bütün girişlerini kapatır"'}>Oturumları Kapat</button><button type="button" class="hof-button hof-button-small adm-delete" data-delete ${self ? 'disabled title="Kendi hesabınızı silemezsiniz"' : 'title="Kullanıcıyı sil (geçmişi korunur)"'}>Sil</button></td>
     </tr>${openPanelFor === user.id && !admin ? permRow(user) : ""}`;
   }
   function permRow(user) {
@@ -756,7 +762,7 @@
   $("#adm-audit-type").addEventListener("change", loadAudit);
 
   // ---------- Silinenler (v2.0.2) ----------
-  const TRASH_GROUPS = { row: ["row", "tab", "column"], document: ["document"], free: ["free-sheet", "free-row", "free-column"], money: ["payment", "cash", "plan", "plan-entry"] };
+  const TRASH_GROUPS = { row: ["row", "tab", "column"], document: ["document"], free: ["free-sheet", "free-row", "free-column"], money: ["payment", "cash", "plan", "plan-entry"], invoice: ["invoice"] };
   let trashItems = [];
   function renderTrash() {
     const body = $("#adm-trash");
@@ -897,7 +903,8 @@
   async function loadNegative() {
     try {
       const policy = await HOF.api("/api/admin/negative-policy");
-      for (const key of ["cash", "bank", "card"]) $(`#adm-negative-${key}`).value = policy[key];
+      // v2.0.17: Banka modülü gelene kadar yalnız Nakit Kasa denetlenir (banka/POS ayarı yok).
+      $("#adm-negative-cash").value = policy.cash;
     } catch (error) {
       HOF.toastError(error);
     }
@@ -907,7 +914,7 @@
     const button = $("#adm-negative-save");
     button.disabled = true;
     try {
-      const body = Object.fromEntries(["cash", "bank", "card"].map(key => [key, $(`#adm-negative-${key}`).value]));
+      const body = { cash: $("#adm-negative-cash").value };
       await HOF.api("/api/admin/negative-policy", { method: "PUT", body });
       HOF.toast("Eksi bakiye denetimi kaydedildi.", { type: "success" });
     } catch (error) {
@@ -961,7 +968,7 @@
     if (status.state === "installing" || status.state === "switching") parts.push('<p class="adm-update-note">Kuruluyor… Sistem birazdan kısa bir süreliğine yeniden başlayacak.</p>');
     if (status.available && !busy) {
       const date = status.available.releasedAt ? ` · ${HOF.formatDateTime(status.available.releasedAt)}` : "";
-      parts.push(`<div class="adm-update-available"><strong>Yeni sürüm hazır: DestekOfis ${esc(status.available.version)}</strong><small>${formatSize(status.available.size)}${esc(date)}${status.autoUpdate ? " · Sunucu yeniden başladığında kendiliğinden de kurulur." : ""}</small>${status.available.notes ? `<pre class="adm-update-notes">${esc(status.available.notes)}</pre>` : ""}</div>`);
+      parts.push(`<div class="adm-update-available"><strong>Yeni sürüm hazır: DestekOfis ${esc(status.available.version)}</strong><small>${formatSize(status.available.size)}${esc(date)}${status.deferred ? " · Mesai içinde bulundu; kullanıcılar çalışırken kurulmadı, mesai dışında kendiliğinden kurulacak. Hemen kurmak için Şimdi Güncelle." : status.autoUpdate ? " · Sunucu yeniden başladığında ve mesai dışında kendiliğinden de kurulur." : ""}</small>${status.available.notes ? `<pre class="adm-update-notes">${esc(status.available.notes)}</pre>` : ""}</div>`);
     }
     if (status.incompatible) parts.push(`<p class="adm-update-warn">${esc(status.incompatible.reason)}</p>`);
     if (status.skippedVersions?.length && !busy) parts.push(`<p class="adm-update-warn">${esc(status.skippedVersions.join(", "))} sürümü daha önce açılamadığı için atlandı. <button type="button" class="hof-button hof-button-ghost hof-button-small" id="adm-update-retry">Yine de Kur</button></p>`);
@@ -1152,7 +1159,177 @@
   });
 
   // ---------- Sekmeler ----------
-  const loaders = { users: loadUsers, backups: loadBackups, audit: loadAudit, trash: loadTrash, system: loadSystem, license: loadLicense };
+  // ---------- Şirketler (v2.0.17) ----------
+  let companyData = null;
+  async function loadCompanies() {
+    const body = $("#adm-companies");
+    try {
+      const [data, access] = await Promise.all([HOF.api("/api/companies"), HOF.api("/api/companies/access")]);
+      companyData = data;
+      const list = data.all || data.companies;
+      body.innerHTML = list
+        .map(
+          item => `<tr data-company="${esc(item.id)}">
+            <td><b>${esc(item.code)}</b></td>
+            <td>${esc(item.name)}</td>
+            <td>${item.current ? '<span class="hof-chip">Şu An Açık</span>' : ""}${item.root ? '<span class="adm-muted"> İlk Şirket (mevcut veri)</span>' : ""}</td>
+            <td class="adm-right adm-row-actions">
+              ${item.current ? "" : '<button type="button" class="hof-button hof-button-ghost hof-button-small" data-c-select>Bu Şirkete Geç</button>'}
+              <button type="button" class="hof-button hof-button-ghost hof-button-small" data-c-edit>Adını / Kodunu Değiştir</button>
+              <button type="button" class="hof-button hof-button-ghost hof-button-small" data-c-reset>Verisini Sıfırla</button>
+              ${item.root ? "" : '<button type="button" class="hof-button hof-button-danger hof-button-small" data-c-delete>Sil</button>'}
+            </td>
+          </tr>`,
+        )
+        .join("") || '<tr><td colspan="4" class="adm-muted">Şirket yok.</td></tr>';
+      renderCompanyAccess(access);
+      renderCompanyReportPick(data.companies);
+    } catch (error) {
+      body.innerHTML = `<tr><td colspan="4">${esc(error.message)}</td></tr>`;
+    }
+  }
+  function renderCompanyAccess(access) {
+    const table = $("#adm-company-access");
+    const head = `<thead><tr><th>Kullanıcı</th>${access.companies.map(item => `<th>${esc(item.code)} · ${esc(item.name)}</th>`).join("")}</tr></thead>`;
+    const rows = access.users
+      .map(user => {
+        const all = user.companies === "*";
+        const cells = access.companies
+          .map(item => `<td>${all ? "✓" : `<label class="hof-check"><input type="checkbox" data-access-user="${esc(user.id)}" value="${esc(item.id)}" ${user.companies.includes(item.id) ? "checked" : ""}><span></span></label>`}</td>`)
+          .join("");
+        return `<tr><td><b>${esc(user.name)}</b> <span class="adm-muted">${esc(user.username)}${all ? " · yönetici, hepsini görür" : ""}</span></td>${cells}</tr>`;
+      })
+      .join("");
+    table.innerHTML = `${head}<tbody>${rows || '<tr><td class="adm-muted">Kullanıcı yok.</td></tr>'}</tbody>`;
+  }
+  function renderCompanyReportPick(list) {
+    $("#adm-company-report-pick").innerHTML = list.map(item => `<label class="hof-check"><input type="checkbox" data-report-company value="${esc(item.id)}" checked><span>${esc(item.label)}</span></label>`).join("");
+    syncCompanyReportLinks();
+  }
+  const chosenReportIds = () => [...document.querySelectorAll("[data-report-company]:checked")].map(input => input.value);
+  function syncCompanyReportLinks() {
+    const query = `?ids=${encodeURIComponent(chosenReportIds().join(","))}`;
+    $("#adm-company-report-pdf").href = `/api/companies/report.pdf${query}&inline=1`;
+    $("#adm-company-report-xlsx").href = `/api/companies/report.xlsx${query}`;
+  }
+  async function showCompanyReport() {
+    const out = $("#adm-company-report-out");
+    out.innerHTML = '<p class="adm-muted">Hesaplanıyor…</p>';
+    try {
+      const report = await HOF.api(`/api/companies/report?ids=${encodeURIComponent(chosenReportIds().join(","))}`);
+      const cell = (value, index) => (index ? `<td class="adm-right">${esc(HOF.formatMoney(value))}</td>` : `<td><b>${esc(value)}</b></td>`);
+      out.innerHTML = `<table class="adm-table"><thead><tr>${report.headers.map(header => `<th>${esc(header)}</th>`).join("")}</tr></thead>
+        <tbody>${report.table.map(row => `<tr>${row.map(cell).join("")}</tr>`).join("")}</tbody>
+        <tfoot><tr>${report.totals.map(cell).join("")}</tr></tfoot></table>`;
+    } catch (error) {
+      out.innerHTML = `<p class="adm-muted">${esc(error.message)}</p>`;
+    }
+  }
+  function companyRow(id) {
+    return (companyData?.all || companyData?.companies || []).find(item => item.id === id) || null;
+  }
+  function newCompany() {
+    HOF.formModal({
+      title: "Yeni Şirket",
+      eyebrow: "ŞİRKET",
+      intro: "Yeni şirket sıfırdan açılır: cari, Kasa, stok, taksit, çek/senet, fatura ve sayfalar boştur. Lisans ve kullanıcılar ortaktır.",
+      fields: [
+        { name: "code", label: "Şirket Kodu", value: companyData?.nextCode || "", maxlength: 3, required: true, help: "Üç hane (001, 002…); seçicide ve raporlarda “kod · unvan” olarak görünür." },
+        { name: "name", label: "Unvan", maxlength: 120, required: true, autofocus: true },
+      ],
+      submitLabel: "Şirketi Aç",
+      onSubmit: async values => {
+        const result = await HOF.api("/api/companies", { method: "POST", body: { code: values.code, name: values.name } });
+        HOF.toast(`“${result.company.label}” şirketi açıldı.`, { type: "success" });
+        loadCompanies();
+      },
+    });
+  }
+  function editCompany(item) {
+    HOF.formModal({
+      title: "Şirketin Adı ve Kodu",
+      eyebrow: "ŞİRKET",
+      intro: "Kod değişse de veri aynı şirkette kalır.",
+      fields: [
+        { name: "code", label: "Şirket Kodu", value: item.code, maxlength: 3, required: true },
+        { name: "name", label: "Unvan", value: item.name, maxlength: 120, required: true, autofocus: true },
+      ],
+      submitLabel: "Kaydet",
+      onSubmit: async values => {
+        await HOF.api(`/api/companies/${encodeURIComponent(item.id)}`, { method: "PUT", body: { code: values.code, name: values.name } });
+        HOF.toast("Şirket bilgisi güncellendi.", { type: "success" });
+        loadCompanies();
+      },
+    });
+  }
+  function resetCompany(item) {
+    HOF.formModal({
+      title: `Şirket Verisini Sıfırla · ${item.code} · ${item.name}`,
+      eyebrow: "ŞİRKET",
+      intro: "Önce zorunlu yedek alınır (Yedekler'den geri yüklenebilir). Lisans, kullanıcılar ve öbür şirketler etkilenmez. Geri alınamaz; onay için şirket kodunu ve parolanızı yazın.",
+      fields: [
+        { name: "mode", label: "Ne Silinsin", type: "select", value: "movements", options: [{ value: "movements", label: "Tüm Hareketleri Sil (cari/stok kartları, Kasa hesapları ve ayarlar kalır; bakiyeler sıfır)" }, { value: "all", label: "Tümünü Sıfırla (şirket ilk açıldığı gibi boş; ad/kod, unvan/VKN/logo, fatura serisi kalır)" }] },
+        { name: "resetNumbers", label: "Fatura Serisi Sayaçları da Sıfırlansın", type: "checkbox", value: true },
+        { name: "confirm", label: `Onay: şirket kodunu (${item.code}) ya da adını yazın`, required: true, autofocus: true, autocomplete: "off" },
+        { name: "password", label: "Parolanız", type: "password", required: true, autocomplete: "current-password" },
+      ],
+      submitLabel: "Veriyi Sıfırla",
+      onSubmit: async values => {
+        const result = await HOF.api(`/api/companies/${encodeURIComponent(item.id)}/reset`, { method: "POST", body: { mode: values.mode, confirm: values.confirm, password: values.password, resetNumbers: Boolean(values.resetNumbers) } });
+        HOF.toast(`“${item.code} · ${item.name}” verisi sıfırlandı. Yedek: ${result.backup || "—"}`, { type: "success", timeout: 8000 });
+        loadCompanies();
+      },
+    });
+  }
+  function deleteCompany(item) {
+    HOF.formModal({
+      title: `Şirketi Sil · ${item.code} · ${item.name}`,
+      eyebrow: "ŞİRKET",
+      intro: "Şirketin bütün verisi (cari, Kasa, stok, taksit, çek/senet, fatura, sayfalar) kaldırılır. Önce yedek alınır ve klasör “silinen-sirketler” altında saklanır. Onay için şirket kodunu ve parolanızı yazın.",
+      fields: [
+        { name: "confirm", label: `Onay: şirket kodunu (${item.code}) ya da adını yazın`, required: true, autofocus: true, autocomplete: "off" },
+        { name: "password", label: "Parolanız", type: "password", required: true, autocomplete: "current-password" },
+      ],
+      submitLabel: "Şirketi Sil",
+      onSubmit: async values => {
+        const result = await HOF.api(`/api/companies/${encodeURIComponent(item.id)}`, { method: "DELETE", body: { confirm: values.confirm, password: values.password } });
+        HOF.toast(`“${item.code} · ${item.name}” silindi. Yedek: ${result.backup || "—"}`, { type: "success", timeout: 8000 });
+        loadCompanies();
+      },
+    });
+  }
+  $("#adm-company-new").addEventListener("click", newCompany);
+  $("#adm-company-report").addEventListener("click", showCompanyReport);
+  $("#adm-company-report-pick").addEventListener("change", syncCompanyReportLinks);
+  $("#adm-companies").addEventListener("click", async event => {
+    const button = event.target.closest("button");
+    const id = button?.closest("[data-company]")?.dataset.company;
+    const item = id ? companyRow(id) : null;
+    if (!button || !item) return;
+    if (button.hasAttribute("data-c-select")) {
+      await HOF.api("/api/companies/select", { method: "POST", body: { id } }).then(() => {
+        HOF.toast(`“${item.label}” şirketine geçildi; ana ekran bu şirketi gösterir.`, { type: "success" });
+        loadCompanies();
+      }, HOF.toastError);
+    } else if (button.hasAttribute("data-c-edit")) editCompany(item);
+    else if (button.hasAttribute("data-c-reset")) resetCompany(item);
+    else if (button.hasAttribute("data-c-delete")) deleteCompany(item);
+  });
+  $("#adm-company-access").addEventListener("change", async event => {
+    const input = event.target.closest("[data-access-user]");
+    if (!input) return;
+    const userId = input.dataset.accessUser;
+    const ids = [...document.querySelectorAll(`[data-access-user="${CSS.escape(userId)}"]:checked`)].map(box => box.value);
+    try {
+      await HOF.api(`/api/companies/access/${encodeURIComponent(userId)}`, { method: "PUT", body: { companies: ids } });
+      HOF.toast("Şirket yetkisi kaydedildi.", { type: "success" });
+    } catch (error) {
+      input.checked = !input.checked;
+      HOF.toastError(error);
+    }
+  });
+
+  const loaders = { users: loadUsers, backups: loadBackups, audit: loadAudit, trash: loadTrash, companies: loadCompanies, system: loadSystem, license: loadLicense };
   function selectTab(name) {
     document.querySelectorAll(".adm-tabs [data-tab]").forEach(button => button.setAttribute("aria-selected", String(button.dataset.tab === name)));
     document.querySelectorAll(".adm-panel").forEach(panel => {

@@ -29,6 +29,7 @@ const describe = entry => {
   if (entry.source === "stock") return { text: entry.description || "", origin: "Stok hareketinden" };
   if (entry.source === "invoice") return { text: entry.description || "", origin: "Faturadan" };
   if (entry.source === "plan") return { text: [entry.kind === "in" ? "Taksit tahsilatı" : "Taksit ödemesi/iadesi", entry.planName, entry.description].filter(Boolean).join(" · "), origin: "Taksit kartından" };
+  if (entry.transferId) return { text: entry.description || "", origin: entry.kind === "in" ? "Bankadan kasaya aktarım" : "Kasadan bankaya yatırma" };
   if (entry.source !== "payment") return { text: entry.description || "", origin: entry.kind === "in" ? "Kasaya elle girilen tahsilat" : "Ödeme" };
   const title = entry.caseTitle || (String(entry.caseKey || "").startsWith("satir:") ? "" : entry.caseKey || "");
   return { text: ["Tahsilat", title, entry.description].filter(Boolean).join(" · "), origin: "Detay kartından tahsilat" };
@@ -38,7 +39,8 @@ const describe = entry => {
 export function cashPdf(report, { from = "", to = "", officeName = "", userName = "", now = new Date() } = {}) {
   const range = rangeLabel(from, to);
   // v2.0.13: yola göre döküm (Nakit Kasa, Banka, Kredi Kartı) ya da hepsi (Kasa ve Banka).
-  const which = { cash: "Nakit Kasa", bank: "Banka (Havale / EFT)", card: "POS / Kredi Kartı" }[report.method] || "Kasa ve Banka";
+  // v2.0.17: Kasa dökümü yalnız nakit; banka tarafı "Banka ve POS" (Raporlar).
+  const which = { cash: "Nakit Kasa", bank: "Banka (Havale / EFT)", card: "POS / Kredi Kartı", noncash: "Banka ve POS" }[report.method] || "Kasa ve Banka";
   const doc = new PdfDocument({ fonts: loadFonts(), title: `${which} Dökümü · ${range}`, author: officeName || "DestekOfis", subject: "Kasa hareketleri" });
   const M = 40;
   const W = A4.width - M * 2;

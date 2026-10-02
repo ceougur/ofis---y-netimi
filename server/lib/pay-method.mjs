@@ -15,9 +15,14 @@ export const methodLabel = (value, direction = "") => methodsFor(direction)[valu
 //   off   — denetim yok (ör. kredili mevduat hesabı)
 //   warn  — sorulur; kullanıcı "Yine de Kaydet" derse yazılır (cashForce)
 //   block — yazılmaz; onayla da geçilemez
+// v2.0.17 (müşteri): Banka modülü gelene kadar denetim YALNIZ Nakit Kasa için. Banka ve POS "bakiyesi" programa girilen
+// havale/POS hareketlerinden türetilen bir sayıdır (açılış bakiyesi, ekstre, mevduat yok) — eksi uyarısı yanıltıyordu.
+// Kayıtlı bank/card ayarı okunmaz; her zaman "off" döner. Banka modülü (hesaplar + açılış bakiyesi) gelince açılır.
 export const NEGATIVE_KEY = "cash.negativePolicy";
 export const NEGATIVE_POLICIES = Object.freeze(["off", "warn", "block"]);
-export const NEGATIVE_DEFAULT = Object.freeze({ cash: "warn", bank: "warn", card: "warn" });
+export const NEGATIVE_DEFAULT = Object.freeze({ cash: "warn", bank: "off", card: "off" });
+// Denetlenen yollar: yalnız nakit. (Banka modülüyle birlikte ["cash", "bank", "card"] olur.)
+export const NEGATIVE_GUARDED = Object.freeze(["cash"]);
 export function readNegativePolicy(raw) {
   let value = raw;
   if (typeof raw === "string") {
@@ -28,6 +33,16 @@ export function readNegativePolicy(raw) {
     }
   }
   const out = { ...NEGATIVE_DEFAULT };
-  for (const method of Object.keys(METHODS)) if (NEGATIVE_POLICIES.includes(value?.[method])) out[method] = value[method];
+  for (const method of NEGATIVE_GUARDED) if (NEGATIVE_POLICIES.includes(value?.[method])) out[method] = value[method];
   return out;
+}
+
+// v2.0.17: Kasa penceresi yalnız nakit akışını gösterir; havale/EFT, POS ve kredi kartı "banka tarafı"dır
+// (Raporlar → Banka ve POS Hareketleri). Yol süzgeci: tek yol, "noncash" (banka + kart) ya da "" (hepsi).
+export const NONCASH_METHODS = Object.freeze(["bank", "card"]);
+export function methodFilter(value) {
+  const key = String(value || "");
+  if (key === "noncash") return new Set(NONCASH_METHODS);
+  if (Object.hasOwn(METHODS, key)) return new Set([key]);
+  return null;
 }

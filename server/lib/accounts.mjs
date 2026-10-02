@@ -48,6 +48,8 @@ export function accountLedger(entries = [], plans = []) {
       // v2.0.15: faturadan gelen borç/alacak "Fatura" olarak görünür (açıklamada fatura türü ve numarası yazar).
       label: origin === "cheque" ? "Çek / senet" : origin === "invoice" && !meta.cash ? "Fatura" : meta.label,
       sourceId: entry.sourceId || "",
+      // v2.0.17: cari kartından girilen tahsilat/ödemenin "Kapatılacak Fatura" bağı (boş = otomatik, en eski açık fatura).
+      invoiceId: entry.invoiceId || "",
       // v2.0.13: tahsilat/ödemenin yolu (Nakit, Havale / EFT, Kredi Kartı); borç/alacakta boş.
       method: meta.cash ? entry.method || "cash" : "",
       note: entry.note || "",
@@ -135,8 +137,10 @@ export function stockLevel(item, moves = []) {
   // Hizmet kalemi (v2.0.7): miktar izlenmez; kritik/tükendi sayılmaz, stok değeri yoktur.
   if (item.kind === "service") return { qtyIn: roundQty(qtyIn), qtyOut: roundQty(qtyOut), qty, value: 0, state: "service", low: false };
   const min = Number(item.minQty) || 0;
-  const state = qty <= 0 ? (min > 0 || qtyIn > 0 ? "out" : "empty") : min > 0 && qty <= min ? "low" : "ok";
-  return { qtyIn: roundQty(qtyIn), qtyOut: roundQty(qtyOut), qty, value: roundMoney(Math.max(0, qty) * (Number(item.unitPrice) || 0)), state, low: state === "low" || (state === "out" && min > 0) };
+  // v2.0.17 (müşteri): eksiye düşen ürün "kaça düştüğünü" gösterir — durum "negative", değer eksi miktar × son maliyet
+  // (yaygın programlardaki gibi; sayım farkı ya da girilmemiş alış kadar eksi değer). 0 "Tükendi", eksi "Eksi Stok".
+  const state = qty < 0 ? "negative" : qty <= 0 ? (min > 0 || qtyIn > 0 ? "out" : "empty") : min > 0 && qty <= min ? "low" : "ok";
+  return { qtyIn: roundQty(qtyIn), qtyOut: roundQty(qtyOut), qty, value: roundMoney(qty * (Number(item.unitPrice) || 0)), state, negative: state === "negative", low: state === "low" || ((state === "out" || state === "negative") && min > 0) };
 }
 
 // Miktar hücresi: "12", "12,5", "1.250", "3 kg" → sayı; okunamazsa NaN.

@@ -2,7 +2,9 @@
 import { isLocalAddress, publicUser } from "../lib/auth.mjs";
 import { HttpError, clientIp, ok, readJson } from "../lib/http.mjs";
 
-export function registerAuthRoutes(router, { auth, config, store, events, profile, license, recovery, audit }) {
+export function registerAuthRoutes(router, { auth, config, store, events, profile, license, recovery, audit, companies = null }) {
+  // v2.0.17: seçili şirket ve görülebilen şirketler (sol üst şirket seçici); hub'da hesaplanır.
+  const companyInfo = user => (companies ? { company: companies.listFor(user).find(item => item.current) || null, companies: companies.listFor(user) } : {});
   const product = { name: config.productName, version: config.version };
   const office = () => ({ name: store.setting("office.name", "") });
   // Lisans salt okunurken yazma yetkileri ekranlara gönderilmez; lisans özeti uyarı şeridi için eklenir.
@@ -28,7 +30,7 @@ export function registerAuthRoutes(router, { auth, config, store, events, profil
 
   router.get("/api/auth/me", async ({ req, res }) => {
     const user = auth.requireUser(req, { allowPasswordChange: true });
-    ok(res, { ...withLicense(publicUser(user), user), product, office: office(), profile: profile?.profile() });
+    ok(res, { ...withLicense(publicUser(user), user), product, office: office(), profile: profile?.profile(), ...companyInfo(user) });
   });
 
   // ---------- Yönetici parolası kurtarma (v2.0.10) ----------

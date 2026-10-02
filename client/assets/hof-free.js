@@ -154,18 +154,9 @@
     const bar = document.querySelector(".category-bar");
     return bar?.querySelector(":scope > .hof-category-tabs") || bar?.querySelector(":scope > .category-tabs") || null;
   }
+  // v2.0.17: "+ Sayfa" artık ortadaki sayfa şeridindedir (hof-sessions.js); sekme şeridindeki eski düğme kaldırılır.
   function ensureAddButton() {
-    const strip = stripOf();
-    let button = document.getElementById("hof-free-add");
-    if (!strip || !canCreate()) {
-      button?.remove();
-      return;
-    }
-    if (!button) {
-      button = HOF.el("button", { id: "hof-free-add", type: "button", class: "hof-free-add", title: "Yeni sayfa ekle: Excel gibi serbestçe doldurduğunuz, formül kullanabildiğiniz bir sayfa", "aria-label": "Yeni sayfa ekle" }, '<span aria-hidden="true">+</span> Sayfa');
-      button.addEventListener("click", openCreate);
-    }
-    if (button.parentElement !== strip || button.nextElementSibling) strip.appendChild(button);
+    document.getElementById("hof-free-add")?.remove();
   }
   function markFreeTabs() {
     const names = freeTabs();
@@ -281,13 +272,17 @@
     return `“${result.name}” sayfası aktarıldı: ${Number(info.rows || 0).toLocaleString("tr-TR")} satır, ${info.columns || 0} kolon${info.formulas ? `, ${info.formulas} formül programda çalışıyor` : ""}${info.asValues ? `; ${info.asValues} formül değeriyle aktarıldı (başka sayfaya başvuru ya da programın tanımadığı işlev)` : ""}${info.skippedAbove ? `; başlığın üstündeki ${info.skippedAbove} satır alınmadı` : ""}.`;
   };
 
-  function openCreate() {
+  // v2.0.17 (madde 12): Excel / Google Sheets'ten aktarma VERİ sayfası açar (ön izleme + kolon rolleri; hof-sessions.js
+  // openNew). Bu pencere varsayılan olarak yalnız "Boş Sayfa"yı gösterir; eski Excel/Sheets kopyası (serbest ızgara)
+  // yalnız açıkça blankOnly: false ile açılır.
+  function openCreate(options = {}) {
     if (!canCreate()) return HOF.toast("Sayfa ekleme yetkiniz yok.", { type: "error" });
+    const blankOnly = options?.blankOnly !== false;
     const modal = HOF.modal({
-      title: "Yeni Sayfa",
+      title: blankOnly ? "Boş Sayfa" : "Yeni Sayfa",
       eyebrow: "SERBEST SAYFA",
       size: "wide",
-      body: `<div class="hof-free-source" role="tablist" aria-label="Sayfanın kaynağı">
+      body: `<div class="hof-free-source" role="tablist" aria-label="Sayfanın kaynağı" ${blankOnly ? "hidden" : ""}>
           <button type="button" role="tab" data-source="blank" aria-selected="true"><b>Boş Sayfa</b><small>Excel gibi kendiniz doldurun</small></button>
           <button type="button" role="tab" data-source="excel" aria-selected="false"><b>Excel Dosyasından Aktar</b><small>.xlsx, .xls, .csv</small></button>
           <button type="button" role="tab" data-source="sheets" aria-selected="false"><b>Google Sheets'ten Aktar</b><small>Paylaşılan tablo bağlantısı</small></button>
@@ -1733,9 +1728,37 @@
     const items = [];
     if (canCreate()) items.push({ label: "Sayfanın Adını Değiştir", run: renameSheet });
     if (HOF.can("records.export")) items.push({ label: "Bu Sayfayı Excel Olarak İndir", run: () => (HOF.exportExcel ? HOF.exportExcel({ tab: state.sheet?.name }) : HOF.toast("Dışa aktar menüsünü kullanın.")) });
+    if (HOF.sources?.importMatrix && HOF.can("sources.manage")) items.push({ label: "Veri Sekmesine Dönüştür", run: convertToData });
     items.push({ label: "Formüller ve Kısayollar", run: openHelp });
     if (canDelete()) items.push({ label: "Sayfayı Sil", danger: true, run: removeSheet });
     return items;
+  }
+
+  // v2.0.17 (madde 12): serbest sayfa → VERİ sekmesi. Başlıklar ve hücre değerleri (formül sonuçları) ilk yüklemedeki
+  // ön izleme + kolon eşleme ekranından geçer (tarih kolonları tanınır; takvim, uyarı, detay kartı ve raporlar kapsar);
+  // "Devamı Olarak Ekle" ile açık sayfanın sekmesi olur. Kaydedilince serbest sayfa silinir (Silinenler'den geri alınır).
+  async function convertToData() {
+    if (!state.sheet || !HOF.sources?.importMatrix) return;
+    const sheet = state.sheet;
+    const ok = await HOF.confirm({
+      title: "Veri Sekmesine Dönüştür",
+      message: `“${sheet.name}” sayfasının başlıkları ve hücre değerleri veri sekmesi olarak alınır: kolon rolleri ve tarih anlamı tanınır; takvim, uyarılar, detay kartı ve raporlar bu sekmeyi de kapsar. Formüller sonuç değerleriyle gelir. Dönüştürme kaydedilince serbest sayfa Silinenler'e gider (geri alınabilir); satır sayısı aynı kalır.`,
+      confirmLabel: "Devam Et",
+    });
+    if (!ok) return;
+    const headers = cols().map((column, c) => String(column.header || column.name || column.letter || `Kolon ${c + 1}`));
+    const matrix = [headers];
+    for (let r = 0; r < rows().length; r += 1) {
+      const line = cols().map((_, c) => String(cellAt(r, c).display ?? ""));
+      if (line.some(value => value.trim())) matrix.push(line);
+    }
+    if (matrix.length < 2) return HOF.toast("Sayfada dolu satır yok; dönüştürülecek veri bulunamadı.", { type: "error" });
+    HOF.sources.importMatrix({ fileName: `${sheet.name}.xlsx`, sheets: [{ name: sheet.name, matrix }] }, sheet.name, {
+      onDone: async () => {
+        await HOF.api(url(sheet.id), { method: "DELETE" });
+        undoStacks.delete(sheet.id);
+      },
+    });
   }
 
   function renameSheet() {

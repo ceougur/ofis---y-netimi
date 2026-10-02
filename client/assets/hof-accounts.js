@@ -268,11 +268,11 @@
       const stock = entry.source === "stock" ? '<small class="hof-muted" title="Stok hareketinden gelir; Stok’tan düzeltilir">stoktan</small>' : entry.source === "cheque" ? (HOF.can("cheques.view") ? `<button type="button" class="hof-mini" data-open-cheque="${esc(entry.sourceId)}" title="Çek / senetten gelir; evrak kartından geri alınır" aria-label="Çek / senet kartını aç">↗</button>` : '<small class="hof-muted" title="Çek / senetten gelir; evrak kartından geri alınır">çek / senet</small>') : "";
       return `${receipt}${stock}${entry.editable ? `<button type="button" class="hof-mini" data-edit-entry="${esc(entry.id)}" title="Düzelt" aria-label="Düzelt">✎</button><button type="button" class="hof-mini hof-mini-danger" data-delete-entry="${esc(entry.id)}" title="Sil" aria-label="Sil">×</button>` : ""}`;
     };
-    const ledgerRow = line => `<tr class="is-${esc(line.kind)}"><td>${esc(HOF.formatDate(line.date))}</td><td><b>${esc(line.label)}${line.method ? ` <span class="hof-method-tag is-${esc(line.method)}">${esc(HOF.methodLabel(line.method, line.kind === "in" || line.kind === "out" ? line.kind : ""))}</span>` : ""}${line.receiptNo ? ` <span class="hof-plan-receipt">Makbuz ${esc(line.receiptNo)}</span>` : ""}</b>${line.note ? `<small>${esc(line.note)}</small>` : ""}</td><td class="num">${line.debit ? esc(money(line.debit)) : ""}</td><td class="num">${line.credit ? esc(money(line.credit)) : ""}</td><td class="num">${balanceHtml(line.balance)}</td><td class="hof-cash-actions">${lineActions(line)}</td></tr>`;
+    const ledgerRow = line => `<tr class="is-${esc(line.kind)}"><td>${esc(HOF.formatDate(line.date))}</td><td><b>${esc(line.label)}${line.method ? ` <span class="hof-method-tag is-${esc(line.method)}">${esc(HOF.methodLabel(line.method, line.kind === "in" || line.kind === "out" ? line.kind : ""))}</span>` : ""}${line.receiptNo ? ` <span class="hof-plan-receipt">Makbuz ${esc(line.receiptNo)}</span>` : ""}${line.invoiceId && line.origin === "account" ? ` <a href="#" class="hof-plan-receipt" data-open-invoice="${esc(line.invoiceId)}" title="Bu kayıt seçilen faturayı kapatır">Faturaya Bağlı</a>` : ""}</b>${line.note ? `<small>${esc(line.note)}</small>` : ""}</td><td class="num">${line.debit ? esc(money(line.debit)) : ""}</td><td class="num">${line.credit ? esc(money(line.credit)) : ""}</td><td class="num">${balanceHtml(line.balance)}</td><td class="hof-cash-actions">${lineActions(line)}</td></tr>`;
     const planRow = plan => `<tr data-open-plan="${esc(plan.id)}" tabindex="0" class="is-${esc(plan.state)}"><td class="hof-plan-no">${esc(plan.refNo || "")}</td><td><b>${esc(plan.name)}</b><small>${plan.itemCount ? `${plan.itemCount} taksit` : "Taksit kurulmadı"}${plan.next ? ` · sıradaki ${esc(HOF.formatDate(plan.next.dueDate))}` : ""}</small></td><td class="num">${esc(money(plan.totals.total))}</td><td class="num hof-cash-in">${esc(money(plan.totals.paid))}</td><td class="num${plan.totals.remaining > 0 ? " hof-cash-out" : ""}">${esc(money(plan.totals.remaining))}</td><td>${plan.status === "closed" ? '<span class="hof-plan-badge is-muted">Kapalı</span>' : plan.state === "overdue" ? `<span class="hof-plan-badge is-late">${plan.totals.overdueCount} taksit gecikti</span>` : plan.state === "done" ? '<span class="hof-plan-badge is-done">Tamamlandı</span>' : '<span class="hof-plan-badge is-info">Devam Ediyor</span>'}</td></tr>`;
     const caseCell = account.caseKey
       ? account.caseSource && HOF.datasetKey && account.caseSource !== HOF.datasetKey
-        ? `${esc(account.caseTitle || account.caseKey)} <small class="hof-muted">· başka veri oturumunda</small>`
+        ? `${esc(account.caseTitle || account.caseKey)} <small class="hof-muted">· başka sayfada</small>`
         : `<a href="#" data-act="reveal" title="Kaydı tabloda aç">${esc(account.caseTitle || account.caseKey)}</a> <small>· Kayda git</small>`
       : `<span class="hof-muted">Bağlı değil${manage ? " · Düzenle ile bağlayın" : ""}</span>`;
     const sums = lines.reduce((acc, line) => ({ debit: acc.debit + line.debit, credit: acc.credit + line.credit }), { debit: 0, credit: 0 });
@@ -338,12 +338,15 @@
 
   // ---------- Cari seçici (taksit kartı formu, stok hareketi) ----------
   // Yazdıkça sunucudan en çok 20 cari; seçilen carinin kimliği gizli alanda. "×" seçimi kaldırır.
-  function picker({ value = {}, label = "Cari", help = "", required = false, type = "", onPick = null, name = "accountId" } = {}) {
+  // v2.0.17: prefer = o türdeki cariler listede üstte (tür kısıtı değil); allowNew = "+ Yeni Cari" (seçiciden ayrılmadan
+  // kart açılır, kaydedilince seçili gelir; boş sonuçta "Bu adla cari yok — + Yeni Cari").
+  function picker({ value = {}, label = "Cari", help = "", required = false, type = "", prefer = "", allowNew = null, onPick = null, name = "accountId" } = {}) {
     if (!HOF.can("accounts.view")) return null;
+    const canNew = allowNew && canManage();
     const field = HOF.el(
       "div",
       { class: "hof-field hof-case-picker hof-acc-picker" },
-      `<span>${esc(label)}${required ? ' <i aria-hidden="true">*</i>' : ""}</span>
+      `<span>${esc(label)}${required ? ' <i aria-hidden="true">*</i>' : ""}${canNew ? ' <button type="button" class="hof-link-button hof-acc-picker-new" data-acc-new>+ Yeni Cari</button>' : ""}</span>
       <div class="hof-case-picker-box"><input type="text" data-acc-query autocomplete="off" maxlength="160" placeholder="Cari adı, telefon ya da cari no yazın…" value="${esc(value.name || "")}"><button type="button" class="hof-case-picker-clear" data-acc-clear title="Seçimi kaldır" aria-label="Seçimi kaldır">×</button></div>
       <input type="hidden" name="${esc(name)}" value="${esc(value.id || "")}">
       <ul class="hof-case-picker-list" role="listbox" hidden></ul>
@@ -370,14 +373,14 @@
       timer = setTimeout(async () => {
         const own = ++ticket;
         try {
-          hits = await HOF.api(`/api/workspace/accounts/search?q=${encodeURIComponent(input.value.trim())}${type ? `&type=${type}` : ""}`);
+          hits = await HOF.api(`/api/workspace/accounts/search?q=${encodeURIComponent(input.value.trim())}${type ? `&type=${type}` : ""}${prefer ? `&prefer=${prefer}` : ""}`);
         } catch {
           hits = [];
         }
         if (own !== ticket) return;
         list.innerHTML = hits.length
-          ? hits.map(item => `<li role="option" data-id="${esc(item.id)}"><b>${esc(item.name)}${item.refNo ? ` · No ${esc(item.refNo)}` : ""}</b><small>${esc([TYPES[item.type], item.groupName, item.phone].filter(Boolean).join(" · "))} · bakiye ${esc(money(item.balance))}</small></li>`).join("")
-          : `<li class="is-empty">${input.value.trim() ? "Eşleşen cari yok" : "Henüz cari yok"}</li>`;
+          ? hits.map(item => `<li role="option" data-id="${esc(item.id)}"><b>${esc(item.name)}${item.refNo ? ` · No ${esc(item.refNo)}` : ""}${prefer ? ` <span class="hof-plan-badge is-${item.type === "supplier" ? "soon" : item.type === "other" ? "muted" : "info"}">${esc(TYPES[item.type] || "")}</span>` : ""}</b><small>${esc([TYPES[item.type], item.groupName, item.phone].filter(Boolean).join(" · "))} · bakiye ${esc(money(item.balance))}</small></li>`).join("")
+          : `<li class="is-empty">${input.value.trim() ? "Bu adla cari yok" : "Henüz cari yok"}${canNew ? ' — <button type="button" class="hof-link-button" data-acc-new>+ Yeni Cari</button>' : ""}</li>`;
         list.hidden = false;
       }, 180);
     };
@@ -424,6 +427,15 @@
       onPick?.(null);
       input.focus();
     });
+    if (canNew)
+      field.addEventListener("mousedown", event => {
+        const button = event.target.closest("[data-acc-new]");
+        if (!button) return;
+        event.preventDefault();
+        hide();
+        const preset = { ...(typeof allowNew === "object" ? allowNew : {}), name: input.value.trim() || undefined };
+        HOF.accounts.newFor(preset, { onSaved: account => field.setAccount({ id: account.id, name: account.name }) });
+      });
     state();
     return field;
   }
@@ -666,8 +678,23 @@
       },
     });
   }
-  function editEntry(account, { kind = "in", entry = null } = {}) {
+  // v2.0.17: tahsilat/ödeme formunda "Kapatılacak Fatura" — Otomatik (carinin en eski açık faturası) ya da seçilen fatura.
+  // Seçim yalnız fatura kapamasını belirler; bakiye ve Kasa aynı. Açık fatura yoksa alan görünmez.
+  async function openInvoiceOptions(account, type) {
+    if (!HOF.invoices || !HOF.can("invoices.view")) return [];
+    try {
+      const data = await HOF.api(`/api/workspace/invoices?tab=all&status=issued&pay=open&side=${type === "in" ? "sale" : "purchase"}&account=${encodeURIComponent(account.id)}&limit=200`);
+      return (data.invoices || [])
+        .filter(item => !item.kind.endsWith("_return") && item.open > 0.004)
+        .map(item => ({ value: item.id, label: `${item.kindLabel} ${item.displayNo} · ${HOF.formatDate(item.issueDate)} · açık ${money(item.open)}` }));
+    } catch {
+      return [];
+    }
+  }
+  async function editEntry(account, { kind = "in", entry = null } = {}) {
     const type = entry?.kind || kind;
+    const invoiceOptions = type === "in" || type === "out" ? await openInvoiceOptions(account, type) : [];
+    if (entry?.invoiceId && !invoiceOptions.some(option => option.value === entry.invoiceId)) invoiceOptions.unshift({ value: entry.invoiceId, label: "Bağlı Fatura (kapanmış)" });
     HOF.formModal({
       title: entry ? `${ENTRY_LABEL[type]} düzelt` : ENTRY_LABEL[type],
       eyebrow: account.name,
@@ -681,6 +708,7 @@
         // v2.0.13: yanlış yönde yazılan borç/alacak düzeltilirken yön değiştirilebilir (açılış bakiyesi gibi).
         ...(entry && (type === "debt" || type === "credit") ? [{ name: "kind", label: "Yön", type: "select", value: type, options: [{ value: "debt", label: "Borç (cari bize borçlanır)" }, { value: "credit", label: "Alacak (biz cariye borçlanırız)" }] }] : []),
         { name: "date", label: "Tarih", type: "date", max: "today", value: entry?.date || office().todayIso?.() || "" },
+        ...(invoiceOptions.length ? [{ name: "invoiceId", label: "Kapatılacak Fatura", type: "select", value: entry?.invoiceId || "", options: [{ value: "", label: "Otomatik (En Eski Açık Fatura)" }, ...invoiceOptions], help: "Seçilen fatura bu kayıtla kapanır; fazlası en eski açık faturaya gider. Bakiye ve Kasa değişmez." }] : []),
         { name: "note", label: "Açıklama", maxlength: 300, value: entry?.note || "", placeholder: type === "in" ? "Ör. Eylül ödemesi" : type === "debt" ? "Ör. Eylül aidatı, 3 adet ürün" : "" },
       ],
       submitLabel: entry ? "Kaydet" : ENTRY_LABEL[type],

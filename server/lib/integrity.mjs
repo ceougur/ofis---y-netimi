@@ -207,6 +207,19 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
         checks.push({ code: "invoice:account", name: "Fatura ↔ cari bağı", ok: party.length === 0, count: party.length, sample: party.map(row => `${row.number || row.id} (${row.status}): fatura ${row.hpayable / 100} / cari ${row.posted / 100} (${row.postedRows} satır)`) });
         const orphans = store.all("SELECT e.id FROM account_entries e LEFT JOIN invoices i ON i.id = e.source_id WHERE e.source = 'invoice' AND i.id IS NULL LIMIT 5");
         checks.push({ code: "invoice:orphan", name: "Faturası olmayan cari satırı", ok: orphans.length === 0, count: orphans.length, sample: orphans.map(row => row.id) });
+        // v2.0.17: fatura bağı ve mahsup fişi yalnız aynı carinin kesilmiş faturasına; mahsup toplamı faturayı aşmaz.
+        if (has("invoice_offsets") && store.all("PRAGMA table_info(account_entries)").some(col => col.name === "invoice_id")) {
+          const badLinks = store.all("SELECT e.id FROM account_entries e LEFT JOIN invoices i ON i.id = e.invoice_id WHERE e.invoice_id <> '' AND (i.id IS NULL OR i.status <> 'issued' OR i.account_id <> e.account_id) LIMIT 5");
+          const badOffsets = store.all(
+            `SELECT o.id FROM invoice_offsets o LEFT JOIN invoices i ON i.id = o.invoice_id
+               LEFT JOIN invoices ci ON ci.id = o.counter_id AND o.counter_type = 'invoice' LEFT JOIN account_entries ce ON ce.id = o.counter_id AND o.counter_type = 'entry'
+             WHERE i.id IS NULL OR i.status <> 'issued' OR i.account_id <> o.account_id OR (o.counter_type = 'invoice' AND (ci.id IS NULL OR ci.status <> 'issued' OR ci.account_id <> o.account_id))
+                OR (o.counter_type = 'entry' AND (ce.id IS NULL OR ce.account_id <> o.account_id)) OR o.amount <= 0 LIMIT 5`,
+          );
+          const over = store.all(`SELECT i.number FROM invoices i WHERE i.status = 'issued' AND (SELECT COALESCE(SUM(${c("o.amount")}), 0) FROM invoice_offsets o WHERE o.invoice_id = i.id OR (o.counter_type = 'invoice' AND o.counter_id = i.id)) > ${c("i.try_payable")} LIMIT 5`);
+          const bad = [...badLinks.map(row => `bağ ${row.id}`), ...badOffsets.map(row => `mahsup ${row.id}`), ...over.map(row => `mahsup toplamı faturayı aşıyor: ${row.number}`)];
+          checks.push({ code: "invoice:offset", name: "Fatura kapama bağı ve mahsup fişleri", ok: bad.length === 0, count: bad.length, sample: bad.slice(0, 5) });
+        }
       }
       // 4. Stok: kesilmiş faturanın stoklu kalemi kendi hareketine bağlı ve miktarı aynı; taslak/iptal faturanın hareketi yok.
       if (has("stock_moves")) {

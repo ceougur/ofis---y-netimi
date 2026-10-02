@@ -1074,6 +1074,38 @@ export const MIGRATIONS = [
       `);
     },
   },
+  {
+    version: 19,
+    name: "v2.0.17 Kasa ↔ Banka transferi; fatura kapama bağı ve mahsup fişi",
+    up(store) {
+      // Yalnız ekleyici. Transfer: nakit tarafı (method = cash) ve banka tarafı (method = bank) aynı transfer_id'yi
+      // taşır; biri düzeltilince/silinince öbürü de. Eski sürüm sütunu görmezden gelir.
+      addColumn(store, "cash_entries", "transfer_id", "TEXT NOT NULL DEFAULT ''");
+      store.exec("CREATE INDEX IF NOT EXISTS idx_cash_entries_transfer ON cash_entries(transfer_id)");
+      // Cari kartından girilen tahsilat/ödeme "Kapatılacak Fatura" ile bağlanabilir (boş = otomatik, en eski açık fatura).
+      addColumn(store, "account_entries", "invoice_id", "TEXT NOT NULL DEFAULT ''");
+      store.exec("CREATE INDEX IF NOT EXISTS idx_account_entries_invoice ON account_entries(invoice_id)");
+      // Mahsup fişi: bir faturayı aynı carinin karşı yöndeki faturasıyla ya da cari satırıyla (Alacak/Borç Yaz, açılış)
+      // kapatır. Cari bakiyesini değiştirmez (bakiye zaten net); yalnız fatura kapamasını belirler.
+      store.exec(`
+        CREATE TABLE IF NOT EXISTS invoice_offsets (
+          id TEXT PRIMARY KEY,
+          account_id TEXT NOT NULL,
+          invoice_id TEXT NOT NULL,
+          counter_type TEXT NOT NULL CHECK (counter_type IN ('invoice', 'entry')),
+          counter_id TEXT NOT NULL,
+          amount REAL NOT NULL,
+          date TEXT NOT NULL,
+          note TEXT NOT NULL DEFAULT '',
+          created_by TEXT NOT NULL,
+          created_at TEXT NOT NULL
+        );
+        CREATE INDEX IF NOT EXISTS idx_invoice_offsets_account ON invoice_offsets(account_id);
+        CREATE INDEX IF NOT EXISTS idx_invoice_offsets_invoice ON invoice_offsets(invoice_id);
+        CREATE INDEX IF NOT EXISTS idx_invoice_offsets_counter ON invoice_offsets(counter_id);
+      `);
+    },
+  },
 ];
 
 export const LATEST_VERSION = MIGRATIONS.at(-1).version;

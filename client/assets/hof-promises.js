@@ -17,6 +17,8 @@
 
   const money = value => (value === null || value === undefined ? "" : HOF.formatMoney(value));
   const who = item => item.person || item.caseNo || "Kayıt";
+  // v2.0.17: öbür sayfanın kalemi (item.foreign) pilde sayfa adıyla görünür; "Kayda Git" o sayfaya geçer.
+  const pageTag = item => (item.foreign && item.pageName ? ` · ${item.pageName}` : "");
   const stateText = item => {
     if (item.state === "overdue") return `${Math.abs(item.days)} gün gecikti`;
     if (item.state === "today") return "Bugün";
@@ -71,7 +73,7 @@
   async function settle(item, reason, button) {
     button.disabled = true;
     try {
-      await HOF.api("/api/workspace/dues/settle", { method: "POST", body: { id: item.id, reason } });
+      await HOF.api("/api/workspace/dues/settle", { method: "POST", body: { id: item.id, reason, session: item.foreign ? item.session : undefined } });
       closeCard();
       HOF.toast(reason === "paid" ? `${who(item)} · ${item.label} ödendi sayıldı.` : `${who(item)} · ${item.label} iptal edildi.`, {
         type: "success",
@@ -79,7 +81,7 @@
           label: "Geri Al",
           onClick: async () => {
             try {
-              await HOF.api("/api/workspace/dues/settle", { method: "POST", body: { id: item.id, undo: true } });
+              await HOF.api("/api/workspace/dues/settle", { method: "POST", body: { id: item.id, undo: true, session: item.foreign ? item.session : undefined } });
               load();
             } catch (error) {
               HOF.toastError(error);
@@ -115,7 +117,8 @@
     closeCard();
     const plan = item.source === "plan";
     const cheque = item.source === "cheque";
-    const canPay = cheque ? HOF.can("cheques.manage") : plan ? HOF.can("plans.collect") : HOF.can("payments.create");
+    // Öbür sayfanın kalemi: tahsilat o sayfaya geçince girilir (kayıt orada); Ödendi Say buradan çalışır.
+    const canPay = item.foreign ? false : cheque ? HOF.can("cheques.manage") : plan ? HOF.can("plans.collect") : HOF.can("payments.create");
     const canSettle = !plan && !cheque && HOF.can("records.edit");
     const card = HOF.el(
       "div",
@@ -128,13 +131,14 @@
         <div><dt>Durum</dt><dd class="is-${esc(item.state)}">${esc(stateText(item))}</dd></div>
         ${item.debt ? `<div><dt>Kalan Borç</dt><dd>${esc(money(item.debt))}</dd></div>` : ""}
         ${item.tab ? `<div><dt>Sekme</dt><dd>${esc(item.tab)}</dd></div>` : ""}
+        ${item.foreign ? `<div><dt>Sayfa</dt><dd>${esc(item.pageName || "Başka sayfa")}</dd></div>` : ""}
       </dl>
       <div class="hof-payment-action-buttons">
-        ${canPay ? `<button type="button" data-act="pay" class="hof-payment-paid">${cheque ? (item.direction === "out" ? "Ödeme gir" : "Tahsil et") : "Tahsilat gir"}</button>` : ""}
+        ${canPay ? `<button type="button" data-act="pay" class="hof-payment-paid">${cheque ? (item.direction === "out" ? "Ödeme Gir" : "Tahsil Et") : "Tahsilat Gir"}</button>` : ""}
         ${canSettle ? `<button type="button" data-act="paid" class="hof-payment-mark" title="Tahsilat girmeden kapatır (ör. başka yoldan ödendi)">Ödendi Say</button>` : ""}
         ${canSettle && item.promise ? '<button type="button" data-act="cancelled" class="hof-payment-cancelled">Söz İptal</button>' : ""}
       </div>
-      <button type="button" class="hof-payment-go" data-act="go">${cheque ? "Çek / senet kartını aç →" : plan ? "Taksit Kartını Aç →" : "Kayda Git →"}</button>`,
+      <button type="button" class="hof-payment-go" data-act="go">${cheque ? "Çek / Senet Kartını Aç →" : plan ? "Taksit Kartını Aç →" : item.foreign ? `“${esc(item.pageName || "Sayfa")}” Sayfasına Geç →` : "Kayda Git →"}</button>`,
     );
     card.addEventListener("click", event => {
       const button = event.target.closest("[data-act]");
@@ -145,6 +149,7 @@
         closeCard();
         if (cheque) HOF.cheques?.open({ id: item.chequeId });
         else if (plan) HOF.plans?.open(item.planId);
+        else if (item.foreign) HOF.sessions?.select?.(item.session);
         else HOF.revealRecord?.(item.caseKey, { tab: item.tab });
       } else settle(item, act, button);
     });
@@ -198,7 +203,7 @@
       const button = HOF.el(
         "button",
         { type: "button", class: `hof-payment-pill is-${item.state}`, title: `${who(item)} · ${item.label} · ${item.dueText}${item.amount ? ` · ${money(item.amount)}` : ""} · ${stateText(item)}` },
-        `<span class="hof-payment-pill-icon">₺</span><span class="hof-payment-pill-text"><b>${esc(who(item))}</b><span>${esc(item.label)} · ${esc(item.dueText)}${item.amount ? ` · ${esc(money(item.amount))}` : ""}</span></span><em class="hof-payment-pill-state">${esc(stateText(item))}</em>`,
+        `<span class="hof-payment-pill-icon">₺</span><span class="hof-payment-pill-text"><b>${esc(who(item))}${esc(pageTag(item))}</b><span>${esc(item.label)} · ${esc(item.dueText)}${item.amount ? ` · ${esc(money(item.amount))}` : ""}</span></span><em class="hof-payment-pill-state">${esc(stateText(item))}</em>`,
       );
       button.onclick = event => {
         event.stopPropagation();

@@ -949,7 +949,7 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
   // yeni kullanıcılar yeni oturumla başlar.
   function openSession(user, staged, { link, name }) {
     const datasetKey = `${SESSION_PREFIX}${randomUUID().replace(/-/g, "").slice(0, 12)}`;
-    const title = String(name || staged.label || "Yeni oturum").replace(/\s+/g, " ").trim().slice(0, 80) || "Yeni oturum";
+    const title = String(name || staged.label || "Yeni Sayfa").replace(/\s+/g, " ").trim().slice(0, 80) || "Yeni Sayfa";
     store.tx(() => {
       const previous = defaultKey();
       for (const member of store.all("SELECT id FROM users")) if (!setting(REG.user(member.id), "")) store.setSetting(REG.user(member.id), previous);
@@ -1337,7 +1337,7 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
         const label = sget(S.label, "");
         return {
           key: item.key,
-          name: item.name || label || (item.key === DATASET_KEY ? "İlk oturum" : "Oturum"),
+          name: item.name || label || (item.key === DATASET_KEY ? "İlk Sayfa" : "Sayfa"),
           label,
           rowCount: rowCount(),
           recordCount: recordCount(),
@@ -1354,7 +1354,7 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
 
   function selectSession(user, datasetKey) {
     const target = String(datasetKey || "");
-    if (!knownKey(target)) throw new HttpError(404, "Oturum bulunamadı. Silinmiş olabilir; listeyi yenileyin.");
+    if (!knownKey(target)) throw new HttpError(404, "Sayfa bulunamadı. Silinmiş olabilir; listeyi yenileyin.");
     store.setSetting(REG.user(user.id), target, user.id);
     const scope = currentScope();
     if (scope) scope.datasetKey = target;
@@ -1364,8 +1364,8 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
   function renameSession(user, datasetKey, name) {
     const target = String(datasetKey || "");
     const title = String(name || "").replace(/\s+/g, " ").trim().slice(0, 80);
-    if (!title) throw new HttpError(400, "Oturum adı gerekli.");
-    if (!knownKey(target)) throw new HttpError(404, "Oturum bulunamadı.");
+    if (!title) throw new HttpError(400, "Sayfa adı gerekli.");
+    if (!knownKey(target)) throw new HttpError(404, "Sayfa bulunamadı.");
     store.tx(() => {
       if (target === DATASET_KEY) store.setSetting(REG.defaultName, title, user.id);
       else store.setSetting(REG.sessions, JSON.stringify(sessionList().map(item => (item.key === target ? { ...item, name: title } : item))), user.id);
@@ -1379,11 +1379,11 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
   // İlk oturum silinmez; verisi Ayarlar → Veri → "Veriyi kaldır" ile boşaltılır.
   function deleteSession(user, datasetKey) {
     const target = String(datasetKey || "");
-    if (target === DATASET_KEY) throw new HttpError(400, "İlk oturum silinemez; verisini Ayarlar → Veri → Veriyi kaldır ile boşaltabilirsiniz.");
-    if (!sessionList().some(item => item.key === target)) throw new HttpError(404, "Oturum bulunamadı.");
+    if (target === DATASET_KEY) throw new HttpError(400, "İlk sayfa silinemez; verisini Ayarlar → Veri → Veriyi kaldır ile boşaltabilirsiniz.");
+    if (!sessionList().some(item => item.key === target)) throw new HttpError(404, "Sayfa bulunamadı.");
     const backupName = backupDir ? (() => {
       try {
-        const result = createBackup(store.db, backupDir, { label: "oturum-silme-oncesi", keep: backupKeep });
+        const result = createBackup(store.db, backupDir, { label: "sayfa-silme-oncesi", keep: backupKeep });
         afterBackup?.(result);
         return result.name;
       } catch (error) {

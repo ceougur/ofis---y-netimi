@@ -87,7 +87,7 @@
     }
     const records = data.records;
     if (!records.length) {
-      node.innerHTML = `<p class="hof-empty">Açık veri oturumunun tablosunda taksit kartına aktarılacak bir ödeme planı bulunamadı.</p>
+      node.innerHTML = `<p class="hof-empty">Açık sayfanın tablosunda taksit kartına aktarılacak bir ödeme planı bulunamadı.</p>
         <p class="hof-edit-meta">Aktarılan biçimler: ay kolonları (Eylül, Ekim… ya da “Eylül taksiti”), sıralı taksit kolonları (“1. Taksit Tarihi” / “1. Taksit Tutarı”) ve toplam tutar + taksit sayısı + ilk vade. Tek vadeli alacak, ödeme sözü ve “her ayın 5’i” kira kolonları plan değildir; tahsilat takviminde kalır.</p>
         ${importsHtml()}<div class="hof-actions"><button type="button" class="hof-button" data-close>Kapat</button></div>`;
       return;
@@ -115,7 +115,7 @@
     };
     const allVisibleSelectable = shown.filter(record => record.selectable);
     const allChecked = allVisibleSelectable.length && allVisibleSelectable.every(record => state.selected.has(record.key));
-    HOF.swap(node, `<p class="hof-modal-text">${esc(data.sessionName || "Açık oturum")} tablosunda ödeme planı bulunan sekmeler: ${data.tabs.map(tab => `<b>${esc(tab.tab)}</b> <small>(${esc(tab.shapeText)}${tab.monthMode === "payment" ? ", aylık ücret + ödenen" : tab.monthMode === "plan" ? ", hücre taksit tutarı" : ""} · ${number(tab.count)} kişi)</small>`).join(", ")}. Her kişi için gerçek vade ve tutarlarıyla kart açılır; Excel'de ödenmiş kısım <b>açılış (devir)</b> olarak yazılır: taksiti kapatır, cari bakiyesine sayılır, <b>Kasa'ya girmez</b>.</p>
+    HOF.swap(node, `<p class="hof-modal-text">${esc(data.sessionName || "Açık sayfa")} tablosunda ödeme planı bulunan sekmeler: ${data.tabs.map(tab => `<b>${esc(tab.tab)}</b> <small>(${esc(tab.shapeText)}${tab.monthMode === "payment" ? ", aylık ücret + ödenen" : tab.monthMode === "plan" ? ", hücre taksit tutarı" : ""} · ${number(tab.count)} kişi)</small>`).join(", ")}. Her kişi için gerçek vade ve tutarlarıyla kart açılır; Excel'de ödenmiş kısım <b>açılış (devir)</b> olarak yazılır: taksiti kapatır, cari bakiyesine sayılır, <b>Kasa'ya girmez</b>.</p>
       <div class="hof-transfer-options">
         ${hasMonths ? `<label class="hof-field"><span>Ay Kolonlarındaki Taksitlerin Vade Günü</span><select data-opt="dueDay">${Array.from({ length: 28 }, (_, index) => index + 1).map(day => `<option value="${day}" ${day === state.options.dueDay ? "selected" : ""}>Ayın ${day}’i</option>`).join("")}</select></label>` : ""}
         ${needsFirstDue ? `<label class="hof-field"><span>İlk vadesi yazılmayanlar için ilk vade</span><input type="date" data-opt="firstDue" value="${esc(state.options.firstDue)}"></label>` : ""}
