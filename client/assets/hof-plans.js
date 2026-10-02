@@ -123,9 +123,28 @@
   // önce açık ad kolonları (Ad Soyad, İsim, Unvan), sonra kişi sözcükleri. Simülasyonda cari adı "1153" olmuştu.
   const NOT_NAME = /(\bno\b|\bnum|numara|kod|kimlik|t\.?c\.?|tel|gsm|telefon|tarih|limit|tutar|bakiye|borcu|şekli|sekli|adres|mahalle|şube|sube|grup|e-?posta|mail)/i;
   const PLAIN_NAME = /(^|[^a-zçğıöşü])(ad[ıi]?\s*soyad[ıi]?|adi\s*soyadi|isim|unvan|ad[ıi]?)([^a-zçğıöşü]|$)/i;
+  // v2.0.18 (müşteri, marka/patent tablosu: cari adı "Başvuru Sahibi" yerine "Marka / Buluş Adı" oluyordu; program geneli):
+  // "Ürün Adı", "Marka / Buluş Adı", "Proje Adı" gibi EŞYA adları kişi değildir — "Firma Adı", "Müşteri Adı" gibi taraf
+  // sözcüğü geçenler kişidir. Taraf sözcükleri analiz motorunun sözlüğüyle aynı (server/lib/insight/columns.mjs).
+  const ITEM_WORD = /(ürün|urun|hizmet|proje|etkinlik|kurs|ders|paket|model|marka|buluş|bulus|patent|tasarım|tasarim|eğitim|egitim|oda|menü|menu|kalem|malzeme|parça|parca|ilaç|ilac|dosya|evrak|belge|program|kampanya|görev|gorev|sefer|güzergah|guzergah|cihaz|araç|arac|kitap|konu|eser|yazılım|yazilim|uygulama|site|domain|alan adı|alan adi)/i;
+  const PARTY_WORD = /(müvekkil|muvekkil|borçlu|borclu|alacaklı|alacakli|hasta|müşteri|musteri|öğrenci|ogrenci|veli|kişi|kisi|kiracı|kiraci|malik|sürücü|surucu|üye|uye|aday|çalışan|calisan|personel|davacı|davaci|davalı|davali|sanık|sanik|tedarikçi|tedarikci|bayi|firma|şirket|sirket|unvan|kurum|cari|alıcı|alici|satıcı|satici|gönderen|gonderen|misafir|katılımcı|katilimci|sigortalı|sigortali|danışan|danisan|kursiyer|sporcu|abone|yolcu|ortak|bağışçı|bagisci|mükellef|mukellef|sahibi|sahip|başvuran|basvuran|taraf|vekil eden|yetkili)/i;
+  const isItemName = key => ITEM_WORD.test(key) && !PARTY_WORD.test(key);
+  // Sıra: (1) analiz motorunun kişi kolonu — 143 sektör için ortak sınıflandırıcı; detay kartı başlığı da onu kullanır,
+  // (2) açık ad kolonu (Ad Soyad, İsim, Unvan) — eşya adı değilse, (3) kişi/taraf sözcüğü geçen kolon (Müşteri, Borçlu,
+  // Başvuru Sahibi, Mükellef…), (4) analizin ad + soyad parçaları. Eskiden (2) öndeydi ve eşya adlarını elemiyordu:
+  // "Marka / Buluş Adı" cari adı oluyordu.
   const nameColumn = row => {
-    const keys = Object.keys(row).filter(key => !key.startsWith("__") && !NOT_NAME.test(key));
-    return keys.find(key => PLAIN_NAME.test(key) && !SECOND_PERSON.test(key)) || keys.find(key => NAME_COLUMN.test(key) && !SECOND_PERSON.test(key)) || keys.find(key => NAME_COLUMN.test(key)) || primaryColumns().person || "";
+    const all = Object.keys(row).filter(key => !key.startsWith("__"));
+    const primary = primaryColumns();
+    if (primary.person && all.includes(primary.person) && !isItemName(primary.person)) return primary.person;
+    const keys = all.filter(key => !NOT_NAME.test(key) && !isItemName(key));
+    return (
+      keys.find(key => PLAIN_NAME.test(key) && !SECOND_PERSON.test(key)) ||
+      keys.find(key => (NAME_COLUMN.test(key) || PARTY_WORD.test(key)) && !SECOND_PERSON.test(key)) ||
+      keys.find(key => NAME_COLUMN.test(key)) ||
+      (primary.personParts?.[0] && all.includes(primary.personParts[0]) ? primary.personParts[0] : "") ||
+      ""
+    );
   };
   // v2.0.12: tablodaki kaydın kayıt tarihi ("Kayıt Tarihi", "Kayıt Günü", "Başlangıç Tarihi") → YYYY-AA-GG; yoksa "".
   const recordDay = row => {
@@ -136,16 +155,24 @@
     m = text.match(/^(\d{4})-(\d{2})-(\d{2})/);
     return m ? `${m[1]}-${m[2]}-${m[3]}` : "";
   };
+  const personOf = row => {
+    const column = nameColumn(row);
+    const value = column ? String(row[column] ?? "").trim() : "";
+    // Ad ve soyad ayrı kolonlardaysa ("Adı" + "Soyadı") kişi adı ikisinden kurulur (v2.0.18).
+    const parts = primaryColumns().personParts;
+    if (parts?.length === 2 && column === parts[0] && row[parts[1]] !== undefined) {
+      const last = String(row[parts[1]] ?? "").trim();
+      if (last && !value.toLocaleLowerCase("tr-TR").endsWith(last.toLocaleLowerCase("tr-TR"))) return `${value} ${last}`.trim();
+    }
+    return value;
+  };
   const recordLabel = row => {
     const primary = primaryColumns();
     const idColumn = primary.id && !RUNNING_NO.test(String(primary.id).trim()) ? primary.id : "";
-    const parts = [idColumn, nameColumn(row)].filter(Boolean).map(column => String(row[column] ?? "").trim()).filter(Boolean);
+    // Kayıt başlığı: kimlik + kişi adı (Adı + Soyadı ayrıysa birleşik; personOf ile aynı kural).
+    const parts = [idColumn ? String(row[idColumn] ?? "").trim() : "", personOf(row)].filter(Boolean);
     if (parts.length) return [...new Set(parts)].join(" · ");
     return Object.entries(row).filter(([key, value]) => !key.startsWith("__") && String(value ?? "").trim()).slice(0, 2).map(([, value]) => String(value).trim()).join(" · ");
-  };
-  const personOf = row => {
-    const column = nameColumn(row);
-    return column ? String(row[column] ?? "").trim() : "";
   };
   const phoneOf = row => {
     const column = Object.keys(row).find(key => !key.startsWith("__") && /(telefon|tel\b|gsm|cep)/i.test(key));

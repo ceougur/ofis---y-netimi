@@ -647,27 +647,32 @@ try {
     await admin.click('.hof-plans [data-act="close"]');
     await admin.waitForSelector('.hof-plans [data-act="reopen"]', { timeout: 10000 });
     await admin.click(".hof-plans [data-close]");
-    // v2.0.6 Cari: kart kapanınca taksit bölümü kalkar; kişinin carisi (bakiyesi) bölümde kalır.
-    await admin.waitForFunction(() => !document.querySelector(".hof-modal-backdrop") && !document.querySelector("#hof-case-plan .hof-case-plan-head") && document.querySelector("#hof-case-plan .hof-case-account"), null, { timeout: 8000 });
+    // Kart kapanınca taksit bölümü kalkar (2.0.18: detay kartında cari kutusu yok, bölüm gizlenir).
+    await admin.waitForFunction(() => !document.querySelector(".hof-modal-backdrop") && !document.querySelector("#hof-case-plan .hof-case-plan-head") && (document.querySelector("#hof-case-plan")?.hidden ?? true), null, { timeout: 8000 });
   });
 
-  await step("Cari (v2.0.6): tablodaki kişiler cari olur (kayda bağlı), cari tahsilatı Kasa'ya düşer; taksitli caride tahsilat taksite yazılır", async () => {
+  await step("Cari (2.0.18): Tablodan Al yok; cariler Excel yükleme ucuyla açılır (kayda bağ yok), cari tahsilatı Kasa'ya düşer; taksitli caride tahsilat taksite yazılır", async () => {
     await admin.evaluate(() => document.querySelectorAll(".hof-modal-backdrop").forEach(node => node.remove()));
     await admin.click('#hof-sidecard [data-action="accounts"]');
-    await admin.waitForSelector(".hof-accounts-modal [data-act=fromTable]", { timeout: 10000 });
-    await admin.click(".hof-accounts-modal [data-act=fromTable]");
-    await admin.waitForSelector(".hof-import-form", { timeout: 10000 });
-    await admin.click('.hof-import-form button[type="submit"]');
-    await admin.waitForFunction(() => !document.querySelector(".hof-import-form"), null, { timeout: 10000 });
+    await admin.waitForSelector(".hof-accounts-modal [data-act=import]", { timeout: 10000 });
+    expect(!(await admin.$(".hof-accounts-modal [data-act=fromTable]")), "Cari penceresinde “Tablodan Al” düğmesi yok (2.0.18)");
+    // Excel yüklemesiyle aynı uç: tablodaki kişiler cariye alınır; kayda bağ kurulmaz.
+    const imported = await admin.evaluate(async () => {
+      const rows = window.HOF.data.rows.filter(row => row.__hofKey);
+      const headers = [...new Set(rows.flatMap(row => Object.keys(row).filter(key => !key.startsWith("__"))))];
+      const matrix = [headers, ...rows.map(row => headers.map(key => String(row[key] ?? "")))];
+      const json = async (url, body) => (await (await fetch(url, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) })).json()).data;
+      const preview = await json("/api/workspace/accounts/import/preview", { matrix });
+      const result = await json("/api/workspace/accounts/import", { matrix, headerAt: preview.headerAt, roles: preview.roles, caseKeys: rows.map(row => row.__hofKey) });
+      return { result, rows: rows.length };
+    });
+    expect(imported.result?.created >= 2, `Excel yükleme ucuyla cariler açıldı: ${imported.result?.created} (satır ${imported.rows})`);
     const accounts = (await admin.evaluate(() => fetch("/api/workspace/accounts?status=all").then(response => response.json()))).data.accounts;
-    const linked = accounts.filter(item => item.caseKey);
-    expect(linked.length >= 3, `tablodan gelen cariler kayda bağlı: ${linked.length}`);
-    expect(new Set(linked.map(item => item.caseKey)).size === linked.length, "her kayıt tek cariye bağlı (karışma yok)");
-    // 2026/101: taksit kartıyla açılan cari, tablodan alımda ikinci kez açılmaz (aynı kayıt → atlanır).
-    const planned = accounts.find(item => item.caseKey === "2026/101");
-    expect(planned && accounts.filter(item => item.caseKey === "2026/101").length === 1, "2026/101 tek cari (taksit kartının carisi)");
+    expect(!accounts.some(item => item.caseKey && item.caseKey !== "2026/101"), "yüklenen cariler kayda bağlı değil (caseKeys yok sayıldı); yalnız taksit kartının carisi 2026/101 bağlı");
+    const planned = accounts.filter(item => item.caseKey === "2026/101");
+    expect(planned.length === 1, "2026/101 tek cari (taksit kartının carisi)");
     // Açık taksit kartı varken cari kartındaki Tahsilat önce "taksite mi?" diye sorar.
-    const other = accounts.find(item => item.caseKey === "2026/103");
+    const other = accounts.find(item => !item.caseKey);
     await admin.evaluate(async account => {
       const response = await fetch("/api/workspace/plans", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ accountId: account.id, name: account.name, total: "1.200", mode: "auto", count: 2, firstDue: "2026-11-01" }) });
       if (!response.ok) throw new Error(await response.text());

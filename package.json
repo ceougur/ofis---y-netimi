@@ -1,6 +1,6 @@
 {
   "name": "destekofis",
-  "version": "2.0.17",
+  "version": "2.0.18",
   "private": true,
   "description": "DestekOfis — ofisler için merkezi kayıt takip ve yönetim sunucusu (server/client); yüklenen veriye göre sektöre uyum sağlar",
   "type": "module",
@@ -23,6 +23,7 @@
     "test:senaryo-215": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-215.mjs",
     "test:senaryo-216": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-216.mjs",
     "test:senaryo-217": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-217.mjs",
+    "test:senaryo-218": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-218.mjs",
     "test:senaryo-whatsapp": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-whatsapp.mjs",
     "test:mutabakat": "node --disable-warning=ExperimentalWarning test/mutabakat/kos.mjs",
     "mutabakat": "node --disable-warning=ExperimentalWarning tools/mutabakat.mjs",

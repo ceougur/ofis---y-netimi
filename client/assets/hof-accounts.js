@@ -218,7 +218,6 @@
     const manage = canManage();
     const planning = true; // seçim kutuları: toplu taksit (yetkiyle) ve WhatsApp gönderimi
     const filtered = Boolean(view.q || view.type || view.group || view.subgroup || view.balance !== "all");
-    const tableRows = HOF.data?.rows?.length || 0;
     const row = item => {
       const next = item.next ? `<small class="${item.next.days < 0 ? "is-warn" : ""}">${esc(HOF.formatDate(item.next.dueDate))} · ${item.next.days < 0 ? `${Math.abs(item.next.days)} gün gecikti` : "sıradaki taksit"}</small>` : "";
       const plansCell = item.activePlans ? `<b>${esc(money(item.planRemaining))}</b><small>${item.activePlans} kart${item.overdueCount ? ` · <span class="is-warn">${item.overdueCount} geciken</span>` : ""}</small>${next}` : '<small class="hof-muted">—</small>';
@@ -228,7 +227,7 @@
     const allChecked = (view.selectAll && !view.excluded.size) || (!view.selectAll && data && data.accounts.length && data.accounts.every(item => view.selected.has(item.id)));
     const total = data?.total ?? data?.accounts.length ?? 0;
     HOF.swap(root, `<div class="hof-cash-bar"><div class="hof-tabs" role="group" aria-label="Durum">${STATUS_TABS.map(item => `<button type="button" data-status="${item.id}" aria-pressed="${String(item.id === view.status)}">${item.label}</button>`).join("")}</div>
-      <div class="hof-cash-add">${manage ? `<button type="button" class="hof-button hof-button-small" data-act="new">+ Yeni Cari</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="import" title="Excel dosyasından ya da Google Sheets’ten carileri tek seferde aç (taksit sorulmaz)">Excel / Sheets’ten Yükle</button>${tableRows ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="fromTable" title="Ortadaki tablonun açık sekmesindeki kişileri cari yap; her cari kendi kaydına bağlanır">Tablodan Al</button>' : ""}` : ""}</div></div>
+      <div class="hof-cash-add">${manage ? `<button type="button" class="hof-button hof-button-small" data-act="new">+ Yeni Cari</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="import" title="Excel dosyasından ya da Google Sheets’ten carileri tek seferde aç (taksit sorulmaz)">Excel / Sheets’ten Yükle</button>` : ""}</div></div>
       <div class="hof-plans-filters"><input type="search" data-filter="q" value="${esc(view.q)}" placeholder="Ad, telefon, cari no, adres, ek alan ara…" aria-label="Ara"><select data-filter="type" aria-label="Tür"><option value="">Tüm Türler</option>${Object.entries(TYPES).map(([id, label]) => `<option value="${id}" ${id === view.type ? "selected" : ""}>${label}</option>`).join("")}</select>${groupOptions()}<select data-filter="balance" aria-label="Bakiye">${BALANCES.map(([id, label]) => `<option value="${id}" ${id === view.balance ? "selected" : ""}>${label}</option>`).join("")}</select><select data-filter="sort" aria-label="Sıralama">${SORTS.map(([id, label]) => `<option value="${id}" ${id === view.sort ? "selected" : ""}>${label}</option>`).join("")}</select>${outputs(listPdfUrl(), `<a class="hof-button hof-button-small hof-button-ghost" href="${esc(listXlsxUrl())}" data-xlsx title="Ekrandaki listeyi (ek alanlarıyla) Excel olarak indir">Excel</a>`)}</div>
       <div class="hof-kpis hof-plans-kpis">${data ? `<div class="hof-cash-balance"><strong>${esc(money(data.totals.debtor))}</strong><span>Borçlular · ${(data.totals.debtorCount ?? 0).toLocaleString("tr-TR")} cari</span></div><div><strong>${esc(money(data.totals.creditor))}</strong><span>Alacaklılar · ${(data.totals.creditorCount ?? 0).toLocaleString("tr-TR")} cari</span></div><div><strong>${esc(money(data.totals.planRemaining))}</strong><span>Taksitlerden Kalan</span></div><div class="${data.totals.overdueCount ? "is-late" : ""}"><strong>${esc(money(data.totals.overdue))}</strong><span>Geciken · ${data.totals.overdueCount} taksit</span></div>` : ""}</div>
       ${selectBar()}
@@ -237,7 +236,7 @@
           ? '<p class="hof-empty">Yükleniyor…</p>'
           : data.accounts.length
             ? `<table class="hof-table hof-cash-table hof-plans-table hof-acc-table"><thead><tr>${planning ? `<th class="hof-acc-check"><input type="checkbox" data-select-all aria-label="Süzgeçteki ${total} carinin hepsini seç" title="Süzgeçteki ${total} carinin hepsini seç" ${allChecked ? "checked" : ""}></th>` : ""}<th class="hof-plan-no">No</th><th>Cari</th><th class="num">Borç</th><th class="num">Alacak</th><th class="num">Bakiye</th><th>Taksit</th></tr></thead><tbody>${data.accounts.map(row).join("")}</tbody></table>${data.hasMore ? `<div class="hof-more"><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="more">Daha Fazla Göster · ${total - data.accounts.length} cari daha</button></div>` : ""}`
-            : `<p class="hof-empty">${filtered || view.status !== "all" ? "Bu süzgeçte cari yok." : "Henüz cari yok."}${manage && !filtered ? " <b>+ Yeni Cari</b> ile tek kart açın, <b>Excel’den Yükle</b> ile listenizi bir kerede aktarın ya da <b>Tablodan Al</b> ile ortadaki tablodaki kişileri cari yapın." : ""}</p>`
+            : `<p class="hof-empty">${filtered || view.status !== "all" ? "Bu süzgeçte cari yok." : "Henüz cari yok."}${manage && !filtered ? " <b>+ Yeni Cari</b> ile tek kart açın ya da <b>Excel / Sheets’ten Yükle</b> ile listenizi bir kerede aktarın." : ""}</p>`
       }</div>
       <p class="hof-edit-meta">Bakiye = borç − alacak. <b class="hof-acc-balance is-debtor">Borçlu</b> (yeşil): bakiye borç tarafında; <b class="hof-acc-balance is-creditor">Alacaklı</b> (kırmızı): bakiye alacak tarafında. Taksit planları carinin borcuna, taksit tahsilatları alacağına yazılır. Tahsilat ve ödemeler Kasa’ya düşer.</p>
       <div class="hof-actions"><button type="button" class="hof-button" data-close>Kapat</button></div>`);
@@ -859,7 +858,7 @@
     });
   }
 
-  // ---------- Excel'den ve tablodan toplu alım ----------
+  // ---------- Excel'den toplu alım (2.0.18: açık tablodan alım kullanıcı kararıyla kalktı) ----------
   const ROLE_OPTIONS = [["", "— Kullanma —"], ["extra", "Ek Alan (kartta aynı adla)"], ["name", "Ad Soyad / Unvan *"], ["seq", "Cari No"], ["phone", "Telefon"], ["email", "E-Posta"], ["address", "Adres"], ["registered", "Kayıt Tarihi"], ["group", "Grup"], ["subgroup", "Alt Grup"], ["type", "Tür (müşteri/tedarikçi)"], ["balance", "Açılış Bakiyesi"], ["note", "Bilgi Notu"]];
   async function importFromExcel() {
     const source = await office().chooseSheet?.({ title: "Carileri Toplu Yükle", eyebrow: moduleName().toLocaleUpperCase("tr-TR"), hint: "Binlerce kişi ya da firma tek seferde açılır; taksit sorulmaz. Excel’deki her kolon kartta görünür. Kolonları bir sonraki adımda eşlersiniz." });
@@ -871,26 +870,6 @@
       HOF.toastError(error);
     }
   }
-  // Ortadaki tablonun açık sekmesi: her satır bir cari, kaydına bağlı (kişinin kartında carisi görünür).
-  async function importFromTable() {
-    const rows = HOF.data?.rows || [];
-    const tab = HOF.activeTab?.() || "";
-    const scope = rows.filter(row => row.__hofKey && (!tab || row.__sheet === tab));
-    if (!scope.length) return HOF.toast("Açık sekmede kayıt yok.", { type: "error" });
-    const headers = [];
-    for (const row of scope) for (const key of Object.keys(row)) if (!key.startsWith("__") && !headers.includes(key)) headers.push(key);
-    const label = column => HOF.columnLabel?.(column) || column;
-    const matrix = [headers.map(label), ...scope.map(row => headers.map(key => String(row[key] ?? "")))];
-    const caseKeys = scope.map(row => row.__hofKey);
-    const caseTitles = scope.map(row => HOF.plans?.recordLabel?.(row) || "");
-    try {
-      const preview = await HOF.api("/api/workspace/accounts/import/preview", { method: "POST", body: { matrix } });
-      mappingForm({ fileName: tab ? `Tablo: ${tab}` : "Tablo", matrix, preview, caseKeys, caseTitles });
-    } catch (error) {
-      HOF.toastError(error);
-    }
-  }
-
   // Doğrulama kapısı (v2.0.6): eşleme değiştikçe sunucu satır bazlı raporu yeniler; hatalı satırlar alınmaz, uyarılılar alınır.
   const gateHtml = gate => {
     if (!gate) return "";
@@ -920,10 +899,10 @@
       }, 300);
     });
   };
-  function mappingForm({ fileName, matrix, preview, caseKeys = null, caseTitles = null }) {
+  function mappingForm({ fileName, matrix, preview }) {
     const sample = matrix[preview.headerAt + 1] || [];
     HOF.formModal({
-      title: caseKeys ? "Tablodan Cari Al: Kolonları Eşle" : "Excel’den Cari Yükle: Kolonları Eşle",
+      title: "Excel’den Cari Yükle: Kolonları Eşle",
       eyebrow: fileName,
       size: "wide",
       intro: `${preview.rows} satır bulundu. Her satır bir cari olur; taksit sorulmaz. Program başlıkları tanıdı; yanlışsa değiştirin. <b>Ek Alan</b> seçilen her kolon kartta aynı adla görünür (ör. Veli, Okul, Servis ücreti) ve toplu taksitlendirmede tutar olarak kullanılabilir.${caseKeys ? " Her cari tablodaki kaydına bağlanır." : ""}`,
@@ -945,7 +924,7 @@
           if (data[`c${index}`]) roles[index] = data[`c${index}`];
         });
         if (!Object.values(roles).includes("name")) throw new Error("Ad Soyad / Unvan kolonunu seçin.");
-        const result = await HOF.api("/api/workspace/accounts/import", { method: "POST", body: { matrix, headerAt: preview.headerAt, roles, type: data.type, mode: data.mode, groupName: data.groupName, openingSide: data.openingSide || "auto", fileName, ...(caseKeys ? { caseKeys, caseTitles } : {}) } });
+        const result = await HOF.api("/api/workspace/accounts/import", { method: "POST", body: { matrix, headerAt: preview.headerAt, roles, type: data.type, mode: data.mode, groupName: data.groupName, openingSide: data.openingSide || "auto", fileName } });
         view.status = "all";
         view.mode = "list";
         if (!modal) open();
@@ -955,7 +934,6 @@
         }
         const parts = [`${result.created} cari açıldı`];
         if (result.updated) parts.push(`${result.updated} güncellendi`);
-        if (result.linked) parts.push(`${result.linked} kayda bağlandı`);
         if (result.balances) parts.push(`${result.balances} açılış bakiyesi yazıldı`);
         if (result.truncated) parts.push(`${result.truncated} satır sınır dışı kaldı (tek seferde en çok 250.000 satır; kalanı ikinci yüklemede)`);
         if (result.renumbered) parts.push(`${result.renumbered} carinin numarası başka caride kullanıldığı için yeni numara verildi`);
@@ -1035,7 +1013,6 @@
     }
     if (act === "new") return editAccount(null);
     if (act === "import") return importFromExcel();
-    if (act === "fromTable") return importFromTable();
     if (act === "bulkPlan") return bulkPlan();
     if (act === "waStatement") return bulkWhatsapp("statement");
     if (act === "waMessage") return bulkWhatsapp("message");
@@ -1125,8 +1102,6 @@
     bulkPlanForm,
     forCase: key => HOF.api(`/api/workspace/cases/${encodeURIComponent(key)}/account`),
     newFor: (preset, options = {}) => (canManage() ? editAccount(null, preset, options) : HOF.toast("Cari açmak yönetici, uzman ve muhasebe yetkisidir.", { type: "error" })),
-    // Raporlar (v2.0.9): cari defteri boşken "Tablodaki kişileri cari yap" (Cari → Tablodan al ile aynı akış).
-    fromTable: () => (canManage() ? importFromTable() : HOF.toast("Cari açmak yönetici, uzman ve muhasebe yetkisidir.", { type: "error" })),
     collect: async accountId => {
       try {
         collect(await HOF.api(`/api/workspace/accounts/${encodeURIComponent(accountId)}`));

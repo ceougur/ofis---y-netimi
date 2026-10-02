@@ -82,31 +82,13 @@ try {
   ids.supplier = (await call("/api/workspace/accounts", { name: "Selçuklu Yapı Market Ltd. Şti.", type: "supplier", city: "Konya" })).data?.id;
   await call("/api/workspace/invoices", { scenario: "goods_purchase", accountId: ids.supplier, number: "SYM-1", lines: [{ itemId: ids.kagit, qty: 200, unitPrice: 120, vatRate: 20 }], payment: { rest: "open" } });
 
-  await T("U7", "2 Entegrasyon", "Fatura → İcra dosyası (arayüz): dosya kaydı → cari → fatura → dosya detayından cari kartı ve faturalar", "Excel'deki 2026/1234 kaydına bağlı cari aç; fatura kes; kaydı tıkla; detay panelinden Cari Kartı; Faturalar bölümü", "Bağlı cari dosya kaydıyla açılır; detay panelinde Cari Kartı; kartta fatura listelenir", async () => {
+  await T("U7", "2 Entegrasyon", "Fatura → İcra dosyası (arayüz): dosya kaydı → cari → fatura → cari kartında faturalar", "Excel'deki 2026/1234 kaydına bağlı cari aç; fatura kes; kaydı tıkla; detay panelinden Cari Kartı; Faturalar bölümü", "Bağlı cari dosya kaydıyla açılır; detay panelinde Cari Kartı; kartta fatura listelenir", async () => {
     if (!ids.ayse) return { ok: false, severity: "High", actual: `Cari dosyaya bağlanamadı: ${ayse.error} (anahtar "${rowKey}")` };
     const sale = await call("/api/workspace/invoices", { scenario: "goods_sale", accountId: ids.ayse, lines: [{ itemId: ids.kagit, qty: 10, unitPrice: 185, vatRate: 20 }], payment: { cash: [{ amount: 1000, method: "cash" }], rest: "installments", installments: { count: 3, firstDue: TODAY } }, note: "Konya 6. İcra 2026/1234" });
     ids.sale = sale.data?.id;
     await page.click(".dynamic-table tbody tr");
-    let btn = await page.waitForSelector('.hof-case-account [data-open-account]', { timeout: 5000 }).catch(() => null);
-    let staleNote = "";
-    if (!btn) {
-      // Kayıt sayfa açılırken zaten seçiliyse: başka kayda geçip geri dön (kullanıcı akışı).
-      await page.click(".dynamic-table tbody tr:nth-child(2)");
-      await page.waitForTimeout(600);
-      await page.click(".dynamic-table tbody tr:nth-child(1)");
-      btn = await page.waitForSelector('.hof-case-account [data-open-account]', { timeout: 8000 }).catch(() => null);
-      staleNote = btn ? " BULGU: kayıt seçiliyken cari ona bağlanınca detay paneli kendiliğinden yenilenmedi; başka kayda geçip dönünce çıktı (canlı yenileme eksik)." : "";
-    }
-    if (!btn) {
-      const acc = await call(`/api/workspace/accounts/${ids.ayse}`);
-      const sel = await page.evaluate(() => window.HOF.selectedCase?.());
-      const direct = await call(`/api/workspace/cases/${encodeURIComponent(sel?.key || "")}/account`);
-      const box = await page.evaluate(() => { const b = document.querySelector("[data-case-key], #hof-case-plan, .hof-case-plan"); return b ? { hidden: b.hidden, html: b.innerHTML.slice(0, 200), cls: b.className, id: b.id } : null; });
-      console.log("TANI uç:", JSON.stringify(direct).slice(0, 300), "\nTANI kutu:", JSON.stringify(box));
-      await shot("dosya-detay-cari-yok");
-      return { ok: false, severity: "High", actual: `Detay panelinde Cari Kartı düğmesi çıkmadı. Cari caseKey="${acc.data?.caseKey}" caseSource="${acc.data?.caseSource}"; seçili kayıt key="${sel?.key}" source="${sel?.source || sel?.datasetKey || ""}"` };
-    }
-    await btn.click();
+    // 2.0.18 (kullanıcı kararı): detay kartındaki CARİ pili kalktı; cari kartı Cari ekranından açılır.
+    await page.evaluate(id => window.HOF.accounts.open(id), ids.ayse);
     await page.waitForSelector(`${modal} [data-acc-invoices] table`, { timeout: 10000 });
     const rows = await page.$$(`${modal} [data-acc-invoices] tr[data-open-invoice]`);
     const facts = await page.textContent(`${modal} .hof-modal`);

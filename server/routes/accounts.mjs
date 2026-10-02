@@ -705,8 +705,9 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     }
   });
 
-  // ---------- Excel'den (ya da açık tablodan) toplu alım ----------
-  // Tarayıcı dosyayı okur (hof-excel-worker.js) ya da açık tablonun satırlarını gönderir; başlıklar rollerle eşlenir.
+  // ---------- Excel'den toplu alım ----------
+  // Tarayıcı dosyayı okur (hof-excel-worker.js); başlıklar rollerle eşlenir. 2.0.18: açık tablodan alım (caseKeys ile
+  // kayda bağlama) kullanıcı kararıyla kalktı; gelen caseKeys yok sayılır.
   // Taksit sorulmaz. Aynı cari (tablodaki kayıt, Cari No ya da ad + telefon) varsa "atla" ya da "güncelle".
   router.post("/api/workspace/accounts/import/preview", async ({ req, res }) => {
     auth.requirePermission(req, "accounts.manage");
@@ -756,13 +757,10 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     const openingSide = sideOf(body.openingSide);
     const defaultType = ACCOUNT_TYPES[text(body.type)] ? text(body.type) : "customer";
     const defaults = { groupName: limited(body.groupName, 80, "Grup adı") };
-    // Açık tablodan alımda her satırın kayıt kimliği gelir: kart o kayda bağlanır (kişinin kartında carisi görünür).
-    const caseKeys = Array.isArray(body.caseKeys) ? body.caseKeys : [];
-    const caseTitles = Array.isArray(body.caseTitles) ? body.caseTitles : [];
     const source = currentSource();
     const cell = (row, index) => (index >= 0 ? sanitizeCell(row[index]) : "");
     const rows = matrix.slice(headerAt + 1, headerAt + 1 + MAX_IMPORT);
-    const report = { created: 0, updated: 0, skipped: [], groups: 0, balances: 0, linked: 0, renumbered: 0, taxInvalid: [], truncated: Math.max(0, matrix.length - headerAt - 1 - MAX_IMPORT) };
+    const report = { created: 0, updated: 0, skipped: [], groups: 0, balances: 0, renumbered: 0, taxInvalid: [], truncated: Math.max(0, matrix.length - headerAt - 1 - MAX_IMPORT) };
     // v2.0.15: vergi kimliği kolonu — geçerli VKN/TCKN karta yazılır; denetim hanesi tutmayan yazılmaz, satır numarasıyla raporlanır.
     const taxOf = (row, index) => {
       const raw = cell(row, col.taxNo).replace(/\s+/g, "").replace(/^TR/i, "");
@@ -789,8 +787,6 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
         if (!Array.isArray(row) || !row.some(value => sanitizeCell(value))) return;
         const name = cell(row, col.name).slice(0, 160);
         if (!name) return skip(index, "Ad boş");
-        let caseKey = String(caseKeys[index] ?? "").slice(0, 200);
-        if (caseKey && dataset?.hasRecord && !dataset.hasRecord(caseKey)) caseKey = "";
         const fields = [];
         for (const column of extraColumns) {
           const value = cell(row, column);
@@ -808,9 +804,9 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
           groupName: (cell(row, col.group) || defaults.groupName).slice(0, 80),
           subgroupName: cell(row, col.subgroup).slice(0, 80),
           fields: fieldsInput(fields),
-          caseKey,
-          caseSource: caseKey ? source : "",
-          caseTitle: caseKey ? String(caseTitles[index] ?? name).slice(0, 200) : "",
+          caseKey: "",
+          caseSource: "",
+          caseTitle: "",
         };
         const tax = { ...taxOf(row, index), taxOffice: cell(row, col.taxOffice).slice(0, 120), city: cell(row, col.city).slice(0, 80), district: cell(row, col.district).slice(0, 80) };
         const matched = matchExisting(person);
@@ -846,7 +842,6 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
           while (!freeRef(wanted));
         }
         const id = insertAccount(user, { ...person, ...tax, refNo: wanted, groupId, subgroupId });
-        if (person.caseKey) report.linked += 1;
         const opening = parseAmount(cell(row, col.balance));
         if (Number.isFinite(opening) && Math.abs(opening) > EPS) {
           addEntry(user, id, { kind: openingKind(opening, person.type, openingSide), amount: roundMoney(Math.abs(opening)), date: person.registeredOn, note: "Açılış bakiyesi" });
@@ -937,46 +932,8 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
 
   // ---------- Tablodaki kayıt ----------
   // Kişinin kartı (ortadaki tablo): kayda bağlı cari varsa özeti ve bakiyesi.
-  // Yeni kayıt formu (v2.0.7): "Cari kartı da aç". Kayda bağlı cari varsa o; aynı ad + telefon (ya da telefonsuz tek
-  // aynı ad) bağsız bir cari varsa kayda bağlanır; yoksa kayda bağlı yeni cari açılır. Kişi bir kez girilir.
-  router.post("/api/workspace/cases/:key/account", async ({ req, res, params }) => {
-    const user = auth.requirePermission(req, "accounts.manage");
-    const key = limited(params.key, 200, "Kayıt");
-    const body = await readJson(req);
-    const name = limited(body.name, 160, "Ad Soyad / Unvan");
-    if (!name) throw new HttpError(400, "Cari açmak için ad gerekli.");
-    const phone = limited(body.phone, 60, "Telefon");
-    const caseTitle = limited(body.caseTitle, 200, "Kayıt adı") || name;
-    if (dataset?.hasRecord && !dataset.hasRecord(key)) throw new HttpError(400, "Kayıt açık veri oturumunda bulunamadı.");
-    let outcome = "existing";
-    const id = store.tx(() => {
-      const linked = store.get("SELECT id FROM accounts WHERE deleted_at IS NULL AND case_key = ? AND case_source = ? ORDER BY created_at LIMIT 1", key, currentSource());
-      if (linked) return linked.id;
-      const matched = matchPerson({ name, phone, groupId: "" });
-      const free = matched && store.get("SELECT id FROM accounts WHERE id = ? AND case_key = ''", matched);
-      // v2.0.13: aynı ad ve telefonla başka bir kayda bağlı cari varsa bu kişi zaten kayıtlıdır: ikinci cari açılmaz,
-      // mevcut cari döner; arayüz "bu kişi tabloda başka bir kayıtla da var" diye uyarır (çift kayıt).
-      const same = !free && phone && matched ? store.get("SELECT id, case_title AS caseTitle, ref_no AS refNo FROM accounts WHERE id = ?", matched) : null;
-      if (same) {
-        outcome = "duplicate";
-        return same.id;
-      }
-      if (free) {
-        store.run("UPDATE accounts SET case_key = ?, case_source = ?, case_title = ?, updated_by = ?, updated_at = ? WHERE id = ?", key, currentSource(), caseTitle, user.id, now(), matched);
-        audit(user, "account.updated", matched, { linkedCase: key, from: "record" });
-        outcome = "linked";
-        return matched;
-      }
-      const created = insertAccount(user, { name, phone, caseKey: key, caseSource: currentSource(), caseTitle, type: ACCOUNT_TYPES[text(body.type)] ? text(body.type) : "customer", fields: [] });
-      audit(user, "account.created", created, { name, from: "record" });
-      outcome = "created";
-      return created;
-    });
-    changed(user, { accountId: id });
-    changed(user, { kind: "activity", caseKey: key, datasetKey: currentSource() });
-    ok(res, { ...detail(id, user), outcome });
-  });
-
+  // 2.0.18: kayıttan cari açan uç (POST cases/:key/account) kullanıcı kararıyla kaldırıldı; cari yalnız + Yeni Cari
+  // ya da Excel'den açılır, kayda bağ cari formundaki "Tablodaki Kayıt" alanıyla kurulur.
   router.get("/api/workspace/cases/:key/account", async ({ req, res, params }) => {
     const user = auth.requirePermission(req, "accounts.view");
     const key = limited(params.key, 200, "Kayıt");

@@ -447,12 +447,11 @@
       <p class="hof-rep-note">Bir satıra tıklayın: o carinin aynı aralıktaki ekstresi açılır. Devir: başlangıç tarihinden önceki bakiye.</p>`;
   }
 
-  // Cari defteri boşken: rapor Cari ekranındaki hareketlerden gelir; tablodaki kişiler cari değilse görünmez. Tek tıkla
-  // Cari'ye ya da "Tablodan al"a (her cari kaydına bağlanır; aynı kişi iki kez açılmaz) gidilir.
+  // Cari defteri boşken: rapor Cari ekranındaki hareketlerden gelir; tek tıkla Cari ekranına gidilir.
+  // 2.0.18: "Tablodaki kişileri cari yap" yolu kullanıcı kararıyla kalktı; cari + Yeni Cari ya da Excel'den açılır.
   function emptyLedgerHelp() {
-    const fromTable = HOF.can("accounts.manage") && HOF.accounts?.fromTable && (HOF.data?.rows || []).some(row => row.__hofKey && !String(row.__hofKey).startsWith("free:"));
-    return `<div class="hof-rep-help"><b>Cari ekstre, Cari defterindeki hareketlerden hazırlanır.</b><span>Cari ekranında açılan her kişi ya da firmanın borç, tahsilat, taksit ve çek/senet hareketleri burada ekstre olarak görünür. Tablonuzdaki kişiler henüz cari değilse önce cari olarak açın; her cari tablodaki kaydına bağlanır, aynı kişi iki kez açılmaz.</span>
-      <span class="hof-rep-help-actions">${HOF.accounts?.open ? '<button type="button" class="hof-button hof-button-small" data-go="accounts">Cari Ekranını Aç</button>' : ""}${fromTable ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-go="fromTable">Tablodaki Kişileri Cari Yap</button>' : ""}</span></div>`;
+    return `<div class="hof-rep-help"><b>Cari ekstre, Cari defterindeki hareketlerden hazırlanır.</b><span>Cari ekranında açılan her kişi ya da firmanın borç, tahsilat, taksit ve çek/senet hareketleri burada ekstre olarak görünür. Kişiler henüz cari değilse önce Cari ekranından açın: <b>+ Yeni Cari</b> ya da <b>Excel / Sheets’ten Yükle</b>.</span>
+      <span class="hof-rep-help-actions">${HOF.accounts?.open ? '<button type="button" class="hof-button hof-button-small" data-go="accounts">Cari Ekranını Aç</button>' : ""}</span></div>`;
   }
 
   // --- Vade takip (v2.0.9) ---
@@ -689,10 +688,6 @@
     if (target.dataset.dormantRow !== undefined) return openRef(s.data?.dormant?.[Number(target.dataset.dormantRow)]?.ref);
     if (target.dataset.openAccount) return HOF.accounts?.open(target.dataset.openAccount);
     if (target.dataset.go === "accounts") return HOF.accounts?.open();
-    if (target.dataset.go === "fromTable") {
-      report?.modal?.close();
-      return HOF.accounts?.fromTable();
-    }
     if (target.dataset.preset) {
       Object.assign(s, { preset: target.dataset.preset }, presetRange(target.dataset.preset));
       return run();

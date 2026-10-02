@@ -49,24 +49,25 @@ describe("iş akışı (v2.0.7)", () => {
   rows = (await admin.get(`/api/trpc/sheets.getRows?input=${encodeURIComponent(JSON.stringify({ json: {} }))}`)).data.result.data.json.rows;
   const keyOf = name => rows.find(r => r["Öğrenci Adı"] === name)?.__hofKey;
   {
-    // B1 kayıt önce: yeni kayıt formu → cari
+    // B1 kayıt önce: kayıt var → cari "+ Yeni Cari" ile açılır, "Tablodaki Kayıt" alanıyla bağlanır (2.0.18: Yeni Kayıt cari açmaz)
     const k1 = keyOf("Kayıt Önce");
-    const a1 = (await post(`/api/workspace/cases/${encodeURIComponent(k1)}/account`, { name: "Kayıt Önce", phone: "0532 100 00 01", caseTitle: "1 · Kayıt Önce" })).data;
+    const a1 = (await post("/api/workspace/accounts", { name: "Kayıt Önce", phone: "0532 100 00 01", caseKey: k1, caseTitle: "1 · Kayıt Önce" })).data;
     const p1 = (await post("/api/workspace/plans", { registeredOn: "2026-01-01", name: "Kayıt Önce", accountId: a1.id, total: "9.000", mode: "auto", count: 9, firstDue: day(-40) })).data;
     okk(p1.caseKey === k1, "B1: kart, carinin kayıt bağını devraldı");
     // B2 cari önce: cari bağsız açıldı, sonra kayda bağlandı, sonra taksit
     const a2 = (await post("/api/workspace/accounts", { name: "Cari Önce", phone: "0532 100 00 02" })).data;
-    const link2 = await post(`/api/workspace/cases/${encodeURIComponent(keyOf("Cari Önce"))}/account`, { name: "Cari Önce", phone: "0532 100 00 02" });
-    okk(link2.data.id === a2.id && link2.data.outcome === "linked", "B2: bağsız cari kayda bağlandı, yeni cari açılmadı");
-    const p2 = (await post("/api/workspace/plans", { registeredOn: "2026-01-01", name: "Cari Önce", phone: "0532 100 00 02", total: "9.000", mode: "auto", count: 9, firstDue: day(-40) })).data;
-    okk(p2.accountId === a2.id && p2.caseKey === keyOf("Cari Önce"), "B2: cari seçilmeden açılan kart aynı cariye ve kayda bağlandı");
+    const p2 = (await post("/api/workspace/plans", { registeredOn: "2026-01-01", name: "Cari Önce", phone: "0532 100 00 02", total: "9.000", mode: "auto", count: 9, firstDue: day(-40), caseKey: keyOf("Cari Önce"), caseTitle: "2 · Cari Önce" })).data;
+    okk(p2.accountId === a2.id && p2.caseKey === keyOf("Cari Önce"), "B2: kayda bağlı açılan kart aynı ad + telefonlu bağsız cariyi buldu, yeni cari açmadı");
+    const linked2 = (await get(`/api/workspace/cases/${encodeURIComponent(keyOf("Cari Önce"))}/account`)).data.account;
+    okk(linked2 && linked2.id === a2.id, "B2: bağsız cari kartla birlikte kayda bağlandı");
     // B3 taksit önce: kart kayda bağlı açıldı → cari kendiliğinden açılır ve kayda bağlıdır
     const k3 = keyOf("Taksit Önce");
     const p3 = (await post("/api/workspace/plans", { registeredOn: "2026-01-01", name: "Taksit Önce", phone: "0532 100 00 03", total: "9.000", caseKey: k3, caseTitle: "3 · Taksit Önce", mode: "auto", count: 9, firstDue: day(-40) })).data;
     const linked3 = (await get(`/api/workspace/cases/${encodeURIComponent(k3)}/account`)).data.account;
     okk(linked3 && linked3.id === p3.accountId, "B3: taksit önce açılınca cari kayda bağlı açıldı");
-    const again3 = (await post(`/api/workspace/cases/${encodeURIComponent(k3)}/account`, { name: "Taksit Önce", phone: "0532 100 00 03" })).data;
-    okk(again3.id === p3.accountId && again3.outcome === "existing", "B3: sonra 'cari kartı da aç' çift cari açmaz");
+    const again3 = await post("/api/workspace/accounts", { name: "Taksit Önce", phone: "0532 100 00 03", caseKey: k3 });
+    okk(again3.status === 409, "B3: aynı kayda ikinci cari bağlanmaz (409)");
+    okk((await post(`/api/workspace/cases/${encodeURIComponent(k3)}/account`, { name: "Taksit Önce" })).status === 405, "B3: kayıttan cari açan uç yok (2.0.18: 405)");
     const all = (await get("/api/workspace/accounts?status=all")).data.accounts;
     okk(all.length === 3, `B: üç kişi için üç cari (${all.length})`);
   }
@@ -74,9 +75,9 @@ describe("iş akışı (v2.0.7)", () => {
 
   it("C. Aynı adlı iki kişi", async () => {
   {
-    const r4 = await post(`/api/workspace/cases/${encodeURIComponent(keyOf("Ali Ak"))}/account`, { name: "Ali Ak", phone: "0532 100 00 04" });
+    const r4 = await post("/api/workspace/accounts", { name: "Ali Ak", phone: "0532 100 00 04", caseKey: keyOf("Ali Ak") });
     const k5 = rows.filter(r => r["Öğrenci Adı"] === "Ali Ak")[1].__hofKey;
-    const r5 = await post(`/api/workspace/cases/${encodeURIComponent(k5)}/account`, { name: "Ali Ak", phone: "0532 100 00 05" });
+    const r5 = await post("/api/workspace/accounts", { name: "Ali Ak", phone: "0532 100 00 05", caseKey: k5 });
     okk(r4.data.id !== r5.data.id, "C: farklı telefonlu aynı ad → iki ayrı cari");
     const pX = (await post("/api/workspace/plans", { name: "Ali Ak", total: "500" })).data;
     okk(pX.accountId !== r4.data.id && pX.accountId !== r5.data.id, "C: telefonsuz 'Ali Ak' kartı tahmin edilmez, yeni cari (yanlış deftere yazılmaz)");

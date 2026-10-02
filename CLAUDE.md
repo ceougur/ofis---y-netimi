@@ -334,8 +334,71 @@ Bağlam kopsa da bu düzen değişmez. Kullanıcı "zip ver" dediğinde şu üç
      dosyaya yazmaz + yukarıdaki adımlar); programın Dışa Aktar'ından inen dosyada sayıların sayı olarak geldiğinin
      testi (`test/xlsx-write` — var mı denetlenir, yoksa eklenir). Müşteriden ekran görüntüsü ve dosyanın programdan mı
      indiği (Dışa Aktar) yoksa kendi dosyası mı olduğu sorulacak.
+  15. CARİ ADI YANLIŞ KOLONDAN GELİYOR (kullanıcı, 02.10.2026 19:3x; ekran: "Marka ve Patent Yönetimi" sektörü, kolonlar
+     Başvuru No · Başvuru Sahibi · Telefon · Marka / Buluş Adı · Tür · Nice Sınıfı; kayıt GÜLDAL KARE / FURRA → cari adı
+     "FURRA", HİMMET ERTAŞ / TENYE → "TENYE"; ilk kayıt NARAN YILDIZ ise doğru ad almış). Kullanıcı: "caride niye isim
+     soy isim yerine başka yeri çekiyor?" Beklenen: cari adı kişi/firma kolonundan (Başvuru Sahibi), marka adı değil.
+     KÖK NEDEN (koddan): kayıttan cari açan tek-kayıt yolu (Yeni Kayıt → "cari kartı da aç", ad eşleşmesi önerisi,
+     kayıttan taksit) istemcideki `hof-plans.js` nameColumn/personOf sezgisini kullanıyordu: "ad/adı" geçen ilk kolonu
+     alıyordu ("Marka / Buluş Adı"), sunucu analizinin bulduğu kişi kolonuna (`primary.person` = Başvuru Sahibi) bakmıyordu.
+     Sunucu analizi (`insight/columns.mjs`: party > name, "ürün/marka/proje adı" = öğe adı, kişi değil) doğruydu.
+     DÜZELTME (program geneli, kullanıcı 02.10.2026 "sadece bu sektör için olmasın"): personOf önce analizdeki kişi
+     kolonunu alır; öğe adı kolonları (ürün, marka, buluş, proje, hizmet, model, dosya, araç…) hiçbir zaman ad sayılmaz,
+     taraf sözcüğü (müşteri, borçlu, sahibi, başvuran…) olan kolon öncelikli; Adı + Soyadı ayrıysa birleştirilir.
+     Test: `npm run test:senaryo-218` (4 tablo biçimi: marka/patent, sipariş Ürün Adı+Müşteri, Adı/Soyadı ayrı, icra Borçlu).
+     EK SORU (kullanıcı, aynı gün): "birden fazla isim soy isim ya da ad da olabilir tabloda; Tablodan Çek dediğimizde bu
+     hata geniş bir alana yayılır mı?" KODDAN DURUM (7 tablo biçimiyle ölçüldü): toplu yollar ayrı ayrı kural listesi
+     kullanıyor — Cari "Tablodan Al"/Excel (`accounts.mjs` mapAccountHeaders), Taksit Excel (`plans.mjs` mapHeaders),
+     Çek/Senet (`cheques.mjs` drawer); Taksit "Tablodan Aktar" ve detay kartı sunucu analizini (`primary.person`) kullanır.
+     Marka/patent, sipariş (Müşteri + Yetkili Kişi), icra (Borçlu + Alacaklı + Avukat), emlak (Kiracı + Mal Sahibi),
+     hastane (Hasta + Doktor) tablolarında dört yol da doğru kişiyi seçti; AÇIKLAR: "Adı" + "Soyadı" + "Eşinin Adı" (dernek)
+     tablosunda toplu yollar ad kolonu bulamıyor (kullanıcı elle seçer, soyad birleşmez); "Öğrenci Adı" + "Öğrenci Soyadı"
+     ayrı kolonlarsa analiz birleştirmiyor (yalnız "Adı"/"Soyadı" başlıklarını birleştiriyor); Çek/Senet okulda Veli'yi
+     seçiyor; iki taraf kolonu eşit ağırlıktaysa (Kiracı/Mal Sahibi) seçim benzersizliğe kalıyor, kullanıcıya gösterilmiyor.
+     Kullanıcı: "çözüm önerin nedir?" → "benim önerimi dinle, durdur işlemini" → ÖNERİSİ (02.10.2026, ekran: Cari
+     penceresi, NARAN YILDIZ ek alanlı + TENYE/FURRA ek alansız): "Tablodan Al özelliğini kaldırmak en kolay çözüm";
+     "cariyi ya Excel'den/Sheets'ten ya da elle oluştursun kullanıcı". Koddan not: ekrandaki TENYE/FURRA "Tablodan Al"dan
+     değil, Yeni Kayıt → "cari kartı da aç" yolundan açılmış (ek alanı yok); NARAN YILDIZ Tablodan Al'dan ve doğru.
+     Karar kullanıcıda; verilince bu maddeye yazılır. Tek-kayıt yolu düzeltmesi + kayıt başlığında Adı+Soyadı birleşik
+     (recordLabel → personOf) dalda commit'li (c32f3b0), PR yok.
+     Kullanıcı sorusu (aynı gün): "detay kartında Cari Kartı pili de boşa düşer mi o zaman?" KODDAN: detay kartındaki
+     CARİ kutusu yalnız kayda `case_key` ile BAĞLI cariyi gösterir (`GET cases/:key/account`, ad eşleşmesi yok). Bağ
+     kuran yollar: Yeni Kayıt "cari kartı da aç", Tablodan Al (caseKeys), Taksit Tablodan Aktar / kayıttan taksit
+     (createFromPlan), "+ Yeni Cari" formundaki "Tablodaki Kayıt" alanı (ad yazılınca tek eşleşen satır önerilir).
+     "Excel / Sheets'ten Yükle" kayda BAĞLAMAZ (caseKeys yok) → o carilerde pil çıkmaz, kayıttaki "+ Tahsilat" cari
+     defterine değil eski kayıt tahsilatına düşer. Bu, Tablodan Al'ın var oluş nedeni.
+     Kullanıcının hatayı bulduğu yol (aynı gün, kendi sözleriyle): "Tablodan Al'ı bir kere tıklayınca senkronize oluyor;
+     tablodan Yeni Kayıt tıklayıp doldurunca otomatik cariye çekti, çekerken cari ismini saçmaladı." = Yeni Kayıt →
+     "cari kartı da aç" yolu (varsayılan işaretli); koddaki kök nedenle birebir, düzeltme c32f3b0 (senaryo-218 ilk tablo
+     tam bu akış: marka/patent tablosu → Yeni Kayıt → cari GÜLDAL KARE, FURRA açılmaz).
+     Kullanıcı (aynı gün): "Tablodan Al butonu doğru çalışıyor, tamam; program tablodan çekerken cariyi yanlış çektiği
+     için bu yolu kapatmak amacıyla kaldırmayı düşünmüştüm." → Kaldırma fikri OTOMATİK çekme yoluna (Yeni Kayıt → cari
+     kartı da aç) yönelikti; o yol düzeltildi.
+     NİHAİ KARAR (kullanıcı, 02.10.2026, itirazım dinlendikten sonra yinelendi — "çok özellik çok hata doğuruyor"):
+     (a) cariyi tablodan alma yolu KAPANIR: Yeni Kayıt formundaki "cari kartı da aç" kutusu ve kayıttan cari açan uç
+     kalkar; (b) "Tablodan Al" düğmeleri kalkar (Cari penceresi + Raporlar'daki "Tablodaki kişileri cari yap");
+     (c) detay kartındaki CARİ kutusu / "Cari Kartı" pili kalkar. Cari yalnız "+ Yeni Cari" ve "Excel / Sheets'ten Yükle"
+     ile açılır. Şikâyet 3'teki "kayıt → cari" otomatik zinciri bu kararla KALKTI; taksit zinciri (kayıttan taksit,
+     Taksit → Tablodan Aktar) dokunulmadı. Kullanıcı (aynı gün): "başka düzeltme eklemeyeceğim, bunu yapalım, zipi ver".
+     YAPILDI (2.0.18, dal `claude/nice-euler-jvajxv`): (a) `hof-table.js` Yeni Kayıt formundan "cari kartı da aç" kutusu,
+     çift kayıt sorusu ve POST cases/:key/account çağrısı kalktı (kayıt yalnız kayıt); sunucuda POST ucu kaldırıldı (yol
+     405 döner; GET kaldı — kayıttaki + Tahsilat'ın cari defterine yönlendirmesi için); (b) `hof-accounts.js` Tablodan Al
+     düğmesi + importFromTable + fromTable dışa aktarımı, `hof-overview.js` "Tablodaki Kişileri Cari Yap", import ucunda
+     caseKeys/caseTitles (yok sayılır, `linked` sayacı yok); (c) `hof-workspace.js` detay kartındaki CARİ kutusu
+     (caseAccountHtml, data-open-account) ve CSS'leri. Kalanlar: cari formundaki "Tablodaki Kayıt" alanı + ad eşleşmesi
+     önerisi (düzeltilmiş personOf ile), kayıttan taksit, Taksit → Tablodan Aktar. Testler: senaryo-218 yeniden yazıldı
+     (kutu yok, cari açılmaz, pil yok, düğme yok, + Yeni Cari'de kayıt önerisi); is-akisi/plan-case-link/plan-transfer/
+     accounts-stock/senaryo-214/senaryo-raporlar/e2e run güncellendi. Kılavuz: "Kayıt ve cari ayrıdır", Tablodan Al
+     çıkarıldı, k16 ekranı yenilendi, PDF yeniden üretildi. Kanıt: `docs/2.0.18-KANIT.md`; CHANGELOG → 2.0.18.
   KURAL (bu maddeden): kullanıcının her isteği, ne kadar küçük olsa da, AYNI ANDA bu listeye yazılır ve commit edilir;
   "dün konuştuk" denen bir istek listede yoksa kullanıcıya açıkça söylenir.
+- 2.0.18 TESLİM (02.10.2026; dal `claude/nice-euler-jvajxv`; madde 15 — cari adı kişi kolonundan + kayıt/cari ayrımı;
+  şema göçü YOK, 19 aynı; teslim `dist/teslim-2.0.18/` 3 zip + SHA256SUMS; imzalı paket kullanıcının yüklediği .pem ile;
+  kurulum .exe Wine + Inno Setup). Sırada: kullanıcı yükler/"birleştir" → PR → CI → birleştir → yayın (tag v2.0.18, 5 dosya)
+  → "yayımladım" → bayt bayt + güncelleyici "available" denetimi → site kılavuz PR'ı.
+  TESLİM EDİLDİ (02.10.2026 20:3x): PR ceougur/ofis---y-netimi#18 açık (birleştirme kullanıcı onayıyla; kullanıcı: "zipi ver,
+  yükleyelim sonra"). Güncelleme paketi sha256 4c4c07c6…, kurulum .exe sha256 a864b1a7… (29,3 MB); 3 zip + SHA256SUMS
+  gönderildi (2-Kurulum zip'inde yalnız GitHub-v2.0.18/ exe + sha256; sürümlü .exe teslim klasöründe, zip'e boyut için konmadı).
 - 2.0.17 HAZIR (02.10.2026; dal `claude/nice-euler-jvajxv`; 14 madde yapıldı, kanıt `docs/2.0.17-KANIT.md`): şema göçü 19
   (fatura bağı + mahsup); çoklu şirket hub/çocuk mimarisi (`docs/MIMARI.md` → 2.0.17); teslim `dist/teslim-2.0.17/`
   (3 zip + SHA256SUMS; imza anahtarı kullanıcının yüklediği .pem). Sırada: kullanıcı "birleştir" → CI → birleştir →
@@ -361,6 +424,12 @@ Bağlam kopsa da bu düzen değişmez. Kullanıcı "zip ver" dediğinde şu üç
   kullanıcıya gönderildi (Kaynak-ve-Denetim 38 MB sınırı aştı → A-kaynak / B-denetim iki parça). Kurulum .exe sha256
   c406cf19…; güncelleme paketi sha256 4702dfee…. Sırada: "birleştir" → CI → birleştir → yayın → "yayımladım" → bayt bayt +
   güncelleyici denetimi → site kılavuz PR'ı.
+  YAYIMLANDI (02.10.2026 18:5x; `v2.0.17` = 6b0a811): 5 dosya ve latest/ adresleri (Kurulum.exe, guncelleme.json) bayt
+  bayt doğrulandı; gerçek güncelleyici 2.0.16/15/14/2.0.4/1.7.0 olarak (Node 24.21, bootstrap 2) canlı yayında 2.0.17'yi
+  "available" gördü (anahtar destekofis-2026-1), indirilen paket sha256 teslimdekiyle eşleşti. Site kılavuz PR'ı
+  ceougur/destekofis#5 BİRLEŞTİRİLDİ (main 00dff72; eskimiş #4 kapatıldı). Site metni: kullanıcı yalnız manşet alt cümlesi
+  + SSS'ye 2 soru istedi (özellik kartları/yenilik şeridi İSTEMEDİ), PR #6 birleşti (main 4b611ed). "Farklı konular karışmaz"
+  kartı hâlâ "oturum" anlatıyor (kullanıcıya söylendi, dokunulmadı). 2.0.17 KAPANDI.
 - e-Belge kararı (kullanıcı, 01.10.2026): vergi dairesi/entegratör bağlantısı KAPALI — "sana entegre et diyene kadar".
   Fatura modülü tam çalışır; belge "Müşteri Fişi" (resmî hükmü yok) basılır; e-Fatura/e-Arşiv/XML ekranda görünmez.
   Entegratör altyapısı (müşteri kendi API bilgisini girer, kontörü kendisi alır) hazır tutulur ama `config.edocEnabled`
