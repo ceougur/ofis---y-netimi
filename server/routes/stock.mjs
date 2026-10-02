@@ -164,7 +164,7 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
     return {
       kind,
       name,
-      code: limited(body.code, 60, "Kod"),
+      code: limited(body.code, 60, "Stok Kodu"),
       unit: unitLabel(limited(body.unit, 20, "Birim") || previous?.unit),
       category: limited(body.category, 80, "Kategori"),
       minQty: kind === "service" ? 0 : optionalQty(body.minQty, "Kritik seviye"),
@@ -173,6 +173,13 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
       salePrice: priceOf(body.salePrice),
       note: limited(body.note, 1000, "Not"),
     };
+  };
+  // v2.0.16 (müşteri): Stok Kodu (barkod) tektir — faturada kodla ya da barkod okuyucuyla seçilen ürün tek olmalı.
+  const assertCodeFree = (code, exceptId = "") => {
+    const value = String(code || "").trim();
+    if (!value) return;
+    const owner = store.get("SELECT name FROM stock_items WHERE deleted_at IS NULL AND code = ? COLLATE NOCASE AND id <> ?", value, exceptId);
+    if (owner) throw new HttpError(409, `“${value}” Stok Kodu “${owner.name}” ürününde kullanılıyor; her ürünün kodu ayrı olmalı.`, { code: "stock-code-taken", field: "code" });
   };
   function insertItem(user, input, fields = []) {
     const id = newId("stock");
@@ -190,6 +197,7 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
     const result = store.tx(() => {
       const input = itemInput(body);
       if (store.get("SELECT 1 AS found FROM stock_items WHERE deleted_at IS NULL AND name = ? COLLATE NOCASE AND unit = ? COLLATE NOCASE", input.name, input.unit)) throw new HttpError(409, `“${input.name}” (${input.unit}) zaten var. Aynı ürüne giriş yapın.`);
+      assertCodeFree(input.code);
       const id = insertItem(user, input);
       // İlk miktar (v2.0.8): elde olan stok (açılış; para yazılmaz), ya da yeni alım — Kasa'dan ödendi (Kasa'ya "Stok
       // ödemesi" gideri: miktar × birim fiyat) veya tedarikçiye borç (cariye). Stok girişiyle aynı kural (moveInput).
@@ -256,6 +264,7 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
     const result = store.tx(() => {
       const input = itemInput({ ...previous, ...body }, previous);
       if (store.get("SELECT 1 AS found FROM stock_items WHERE deleted_at IS NULL AND name = ? COLLATE NOCASE AND unit = ? COLLATE NOCASE AND id <> ?", input.name, input.unit, previous.id)) throw new HttpError(409, `“${input.name}” (${input.unit}) adlı başka bir ürün var.`);
+      if (String(input.code).toLocaleLowerCase("tr-TR") !== String(previous.code || "").toLocaleLowerCase("tr-TR")) assertCodeFree(input.code, previous.id);
       store.run("UPDATE stock_items SET kind = ?, code = ?, name = ?, unit = ?, category = ?, min_qty = ?, unit_price = ?, sale_price = ?, note = ?, updated_by = ?, updated_at = ? WHERE id = ?", input.kind, input.code, input.name, input.unit, input.category, input.minQty, input.unitPrice, input.salePrice, input.note, user.id, now(), previous.id);
       audit(user, "stock.item.updated", previous.id, { previous: { name: previous.name, minQty: previous.minQty, unitPrice: previous.unitPrice }, ...input });
       return detail(previous.id, user);
@@ -496,6 +505,12 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
         // Kod tek başına kimlik sayılmaz (Excel'deki sıra numarası olabilir): aynı kod ancak ad da aynıysa aynı ürün.
         const existing = (input.code && store.get("SELECT id FROM stock_items WHERE deleted_at IS NULL AND code = ? AND name = ? COLLATE NOCASE", input.code, input.name)) || store.get("SELECT id FROM stock_items WHERE deleted_at IS NULL AND name = ? COLLATE NOCASE AND unit = ? COLLATE NOCASE", input.name, input.unit);
         if (existing && mode === "skip") return skip(index, "Bu ürün zaten var");
+        // v2.0.16: Stok Kodu tektir; başka üründe kullanılan kod bu satıra yazılmaz (ürün yine aktarılır, rapora düşer).
+        if (input.code && store.get("SELECT 1 AS found FROM stock_items WHERE deleted_at IS NULL AND code = ? COLLATE NOCASE AND id <> ?", input.code, existing?.id || "")) {
+          report.codeCleared = (report.codeCleared || 0) + 1;
+          if (report.skipped.length < 500) report.skipped.push({ row: headerAt + index + 2, reason: `Stok Kodu “${input.code}” başka üründe; kod boş bırakıldı` });
+          input.code = "";
+        }
         if (existing) {
           store.run(
             "UPDATE stock_items SET code = CASE WHEN ? <> '' THEN ? ELSE code END, category = CASE WHEN ? <> '' THEN ? ELSE category END, min_qty = CASE WHEN ? > 0 THEN ? ELSE min_qty END, unit_price = CASE WHEN ? > 0 THEN ? ELSE unit_price END, sale_price = CASE WHEN ? > 0 THEN ? ELSE sale_price END, note = CASE WHEN ? <> '' THEN ? ELSE note END, updated_by = ?, updated_at = ? WHERE id = ?",
@@ -548,6 +563,18 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
       if (!item) throw new HttpError(400, "Faturadaki ürün stokta bulunamadı; silinmiş olabilir.", { code: "item-missing" });
       return item;
     },
+    // v2.0.16 (müşteri): "Stoğa Mal Alışı"nda stokta olmayan ürün için kart, faturanın kaydıyla AYNI işlemde açılır.
+    // Aynı ad ve birimde kart varsa o kullanılır (çift kart açılmaz).
+    createFor(user, { name, unit, code = "", salePrice = 0, unitPrice = 0, invoiceId = "" }) {
+      const input = itemInput({ name, unit, code, salePrice, unitPrice, kind: "product" });
+      const existing = store.get("SELECT id FROM stock_items WHERE deleted_at IS NULL AND name = ? COLLATE NOCASE AND unit = ? COLLATE NOCASE", input.name, input.unit);
+      if (existing) return { id: existing.id, created: false };
+      assertCodeFree(input.code);
+      const id = insertItem(user, input);
+      audit(user, "stock.item.created", id, { name: input.name, unit: input.unit, code: input.code, opening: 0, from: "invoice", invoiceId });
+      return { id, created: true };
+    },
+    codeOwner: code => (String(code || "").trim() ? store.get("SELECT id, name FROM stock_items WHERE deleted_at IS NULL AND code = ? COLLATE NOCASE", String(code).trim()) || null : null),
     available(itemId, exceptInvoiceId = "") {
       const item = this.itemFor(itemId);
       const moves = movesOf(item.id).filter(move => !exceptInvoiceId || move.invoiceId !== exceptInvoiceId);

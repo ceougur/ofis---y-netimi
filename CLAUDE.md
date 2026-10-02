@@ -144,6 +144,9 @@ Bağlam kopsa da bu düzen değişmez. Kullanıcı "zip ver" dediğinde şu üç
      Matrah 1.500, KDV 300" gösteriyordu (satırlar birbirini tutmuyor). Hesap doğru; GÖSTERİM yanlış. Olması gereken
      (müşterinin gönderdiği öbür program): Toplam 1.666,67 − İsk. 166,67 = Ara Toplam (Matrah) 1.500; KDV 300. Düzeltme:
      `exclusiveParts` (invoice-math) — form, kart, PDF, UBL hep KDV HARİÇ ara toplam/iskonto (`test/fatura-216.test.mjs`).
+     Ek (aynı gün, 2. ekran): iskontosuz KDV dahil 16.500'de "Ara Toplam 16.500" yazıyordu, matrah satırı yoktu. Olması
+     gereken: Toplam 16.500 · Ara Toplam 13.750 · KDV %20 2.750 · Genel Toplam 16.500. Kural (`totalRows`): Ara Toplam =
+     matrah, HER ZAMAN ayrı satır; iskonto varsa Toplam/İskonto KDV hariç; iskonto yoksa KDV dahilde Toplam = girilen tutar.
 - e-Belge kararı (kullanıcı, 01.10.2026): vergi dairesi/entegratör bağlantısı KAPALI — "sana entegre et diyene kadar".
   Fatura modülü tam çalışır; belge "Müşteri Fişi" (resmî hükmü yok) basılır; e-Fatura/e-Arşiv/XML ekranda görünmez.
   Entegratör altyapısı (müşteri kendi API bilgisini girer, kontörü kendisi alır) hazır tutulur ama `config.edocEnabled`

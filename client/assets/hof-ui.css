@@ -9564,27 +9564,38 @@ input[type="search"]::-webkit-search-cancel-button {
 .hof-inv-line-tools { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 12px; }
 .hof-inv-mini { display: inline-flex; align-items: center; gap: 6px; color: var(--do-muted); font: 700 11.5px var(--do-font); }
 .hof-inv-mini input { width: 64px; height: 30px; padding: 0 8px; border: 1px solid var(--do-border-strong); border-radius: 8px; font: 600 12.5px var(--do-font); text-align: right; }
-.hof-inv-lines-scroll { overflow-x: auto; }
-.hof-inv-lines { min-width: 860px; }
+/* v2.0.16 (müşteri): kalem tablosu kendi içinde dikey kaydırmaz (pencere kayar); öneri listesi sabit konumlu açılır. */
+.hof-rep-table.hof-inv-lines-scroll { max-height: none; overflow-x: auto; overflow-y: visible; }
+.hof-inv-lines { min-width: 980px; }
 .hof-inv-lines td { vertical-align: top; padding-top: 6px; padding-bottom: 6px; }
 .hof-inv-lines input, .hof-inv-lines select { width: 100%; min-width: 0; height: 32px; padding: 0 8px; border: 1px solid var(--do-border-strong); border-radius: 8px; background: #fff; color: var(--do-ink); font: 600 12.5px var(--do-font); }
 .hof-inv-lines input.num { text-align: right; }
 .hof-inv-lines input[readonly] { background: var(--do-surface-soft); color: var(--do-ink-soft); }
-.hof-inv-lines td:nth-child(3) { width: 84px; }
-.hof-inv-lines td:nth-child(4) { width: 82px; }
-.hof-inv-lines td:nth-child(5) { width: 112px; }
-.hof-inv-lines td:nth-child(6) { width: 64px; }
-.hof-inv-lines td:nth-child(7) { width: 74px; }
+.hof-inv-lines td.hof-inv-code { width: 118px; }
+.hof-inv-lines td:nth-child(4) { width: 84px; }
+.hof-inv-lines td:nth-child(5) { width: 82px; }
+.hof-inv-lines td:nth-child(6) { width: 112px; }
+.hof-inv-lines td:nth-child(7) { width: 64px; }
+/* KDV: "%20" ve ok işareti sığsın (müşteri: "%2(" görünüyordu). */
+.hof-inv-lines td:nth-child(8) { width: 92px; }
+.hof-inv-lines td:nth-child(8) select { min-width: 84px; padding-right: 22px; }
+.hof-inv-mini select { height: 30px; min-width: 92px; padding: 0 22px 0 8px; border: 1px solid var(--do-border-strong); border-radius: 8px; background-color: #fff; font: 600 12.5px var(--do-font); }
 .hof-inv-no { width: 26px; color: var(--do-faint); font: 700 12px var(--do-font); padding-top: 13px !important; }
 .hof-inv-name { min-width: 240px; }
 .hof-inv-name > small { display: block; margin-top: 3px; color: var(--do-muted); font: 600 11px var(--do-font); }
 .hof-inv-item { position: relative; }
-.hof-inv-item-hits { position: absolute; z-index: 30; top: calc(100% + 2px); left: 0; right: 0; max-height: 260px; overflow: auto; margin: 0; padding: 4px; list-style: none; border: 1px solid var(--do-border-strong); border-radius: 10px; background: #fff; box-shadow: var(--do-shadow); }
+.hof-inv-item-hits { position: fixed; z-index: 60; top: 0; left: 0; width: 320px; max-height: 260px; overflow: auto; margin: 0; padding: 4px; list-style: none; border: 1px solid var(--do-border-strong); border-radius: 10px; background: #fff; box-shadow: var(--do-shadow); }
 .hof-inv-item-hits li { padding: 7px 9px; border-radius: 7px; cursor: pointer; }
 .hof-inv-item-hits li:hover { background: var(--do-accent-soft); }
 .hof-inv-item-hits li b { display: block; font: 700 13px var(--do-font); }
 .hof-inv-item-hits li small { color: var(--do-muted); font: 600 11px var(--do-font); }
 .hof-inv-item-hits li.is-empty { color: var(--do-muted); cursor: default; font-size: 12px; }
+.hof-inv-item-hits li.is-exact { background: var(--do-accent-soft); }
+.hof-inv-item-hits li.hof-inv-hit-new { border-top: 1px dashed var(--do-border-strong); color: var(--do-accent); }
+.hof-inv-hit-code { display: inline-block; margin-right: 4px; padding: 0 6px; border-radius: 6px; background: var(--do-surface-soft); color: var(--do-ink-soft); font: 700 11.5px var(--do-font); }
+.hof-inv-newitem { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 4px 6px; color: var(--do-accent); }
+.hof-inv-newitem input { width: 96px !important; height: 26px !important; }
+.hof-inv-warn { color: var(--do-warn); font-weight: 700; }
 .hof-inv-line-more { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 6px 10px; margin-top: 6px; padding: 8px; border: 1px dashed var(--do-border); border-radius: 10px; }
 .hof-inv-line-more label { display: grid; gap: 3px; color: var(--do-muted); font: 700 10.5px var(--do-font); }
 .hof-inv-line-actions { white-space: nowrap; width: 60px; }

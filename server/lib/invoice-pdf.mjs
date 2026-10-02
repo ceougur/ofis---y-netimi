@@ -58,6 +58,8 @@ function drawInvoice(doc, invoice, { footer = "", logo = null, signatureArea = f
   const withholding = (invoice.lines || []).some(item => item.withholdingCode);
   const cols = [
     { key: "seq", label: "Sıra", w: 26, align: "right" },
+    // v2.0.16 (müşteri): Stok Kodu ayrı kolon (kalemlerden birinde kod varsa).
+    ...((invoice.lines || []).some(item => item.code) ? [{ key: "code", label: "Stok Kodu", w: 62 }] : []),
     { key: "name", label: "Mal / Hizmet", w: 0 },
     { key: "qty", label: "Miktar", w: 58, align: "right" },
     { key: "price", label: "Birim Fiyat", w: 66, align: "right" },
@@ -66,7 +68,8 @@ function drawInvoice(doc, invoice, { footer = "", logo = null, signatureArea = f
     { key: "vatAmount", label: "KDV", w: 58, align: "right" },
     { key: "net", label: "Tutar", w: 72, align: "right" },
   ];
-  cols[1].w = W - cols.reduce((sum, col) => sum + col.w, 0);
+  const nameCol = cols.find(col => col.key === "name");
+  nameCol.w = W - cols.reduce((sum, col) => sum + col.w, 0);
   let page = null;
   let y = 0;
   let pageNo = 0;
@@ -148,14 +151,15 @@ function drawInvoice(doc, invoice, { footer = "", logo = null, signatureArea = f
   header();
   const bottom = A4.height - 60;
   for (const [index, item] of (invoice.lines || []).entries()) {
-    const nameLines = doc.wrap([item.name, item.code ? `(${item.code})` : ""].filter(Boolean).join(" "), cols[1].w - 6, "regular", 8).slice(0, 4);
+    const nameLines = doc.wrap(item.name, nameCol.w - 6, "regular", 8).slice(0, 4);
     const extra = [item.description, item.withholdingCode ? `Tevkifat ${item.withholdingCode} (${item.withholdingNum}/${item.withholdingDen}): ${money(item.withheld, currency)}` : "", item.vatRate === 0 && item.exemptionCode ? `İstisna ${item.exemptionCode}` : "", item.expenseLabel ? `Gider: ${item.expenseLabel}` : ""].filter(Boolean);
-    const extraLines = extra.flatMap(text => doc.wrap(text, cols[1].w - 6, "regular", 7)).slice(0, 4);
+    const extraLines = extra.flatMap(text => doc.wrap(text, nameCol.w - 6, "regular", 7)).slice(0, 4);
     const height = Math.max(14, nameLines.length * 10 + extraLines.length * 9 + 5);
     if (y + height > bottom) header();
     let x = M;
     const values = {
       seq: String(index + 1),
+      code: item.code || "",
       qty: `${qtyFormat.format(item.qty)} ${item.unit || ""}`.trim(),
       price: priceFormat.format(item.unitPrice),
       disc: item.discountRate ? numberFormat.format(item.discountRate) : "",
@@ -175,8 +179,9 @@ function drawInvoice(doc, invoice, { footer = "", logo = null, signatureArea = f
   }
   // Toplamlar.
   const rows = [
-    // v2.0.16: KDV hariç (KDV dahil girilen fiyatta da Mal / Hizmet Toplamı − İskonto = Matrah).
-    ["Mal / Hizmet Toplamı", money(invoice.baseNetTotal ?? invoice.baseTotal, currency)],
+    // v2.0.16 (müşteri): iskonto varsa Toplam ve İskonto KDV hariç (Toplam − İskonto = Matrah); iskonto yoksa KDV dahil
+    // fiyatta Toplam girilen KDV dahil tutardır. Ekrandaki Toplamlar ile aynı kural (hof-invoices.js totalRows).
+    ["Mal / Hizmet Toplamı", money((invoice.discountNetTotal ?? invoice.discountTotal) > 0 || !invoice.pricesIncludeVat ? (invoice.baseNetTotal ?? invoice.baseTotal) : invoice.baseTotal, currency)],
     (invoice.discountNetTotal ?? invoice.discountTotal) > 0 ? ["Toplam İskonto", money(invoice.discountNetTotal ?? invoice.discountTotal, currency)] : null,
     ["Matrah (KDV Hariç)", money(invoice.netTotal, currency)],
     ...(invoice.byRate || []).map(item => [`KDV %${item.rate} (Matrah ${numberFormat.format(item.net)})`, money(item.vat, currency)]),
