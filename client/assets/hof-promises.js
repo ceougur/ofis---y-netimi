@@ -134,11 +134,11 @@
         ${item.foreign ? `<div><dt>Sayfa</dt><dd>${esc(item.pageName || "Başka sayfa")}</dd></div>` : ""}
       </dl>
       <div class="hof-payment-action-buttons">
-        ${canPay ? `<button type="button" data-act="pay" class="hof-payment-paid">${cheque ? (item.direction === "out" ? "Ödeme gir" : "Tahsil et") : "Tahsilat gir"}</button>` : ""}
+        ${canPay ? `<button type="button" data-act="pay" class="hof-payment-paid">${cheque ? (item.direction === "out" ? "Ödeme Gir" : "Tahsil Et") : "Tahsilat Gir"}</button>` : ""}
         ${canSettle ? `<button type="button" data-act="paid" class="hof-payment-mark" title="Tahsilat girmeden kapatır (ör. başka yoldan ödendi)">Ödendi Say</button>` : ""}
         ${canSettle && item.promise ? '<button type="button" data-act="cancelled" class="hof-payment-cancelled">Söz İptal</button>' : ""}
       </div>
-      <button type="button" class="hof-payment-go" data-act="go">${cheque ? "Çek / senet kartını aç →" : plan ? "Taksit Kartını Aç →" : item.foreign ? `“${esc(item.pageName || "Sayfa")}” Sayfasına Geç →` : "Kayda Git →"}</button>`,
+      <button type="button" class="hof-payment-go" data-act="go">${cheque ? "Çek / Senet Kartını Aç →" : plan ? "Taksit Kartını Aç →" : item.foreign ? `“${esc(item.pageName || "Sayfa")}” Sayfasına Geç →` : "Kayda Git →"}</button>`,
     );
     card.addEventListener("click", event => {
       const button = event.target.closest("[data-act]");

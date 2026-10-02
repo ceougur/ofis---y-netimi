@@ -206,10 +206,10 @@
       <td><span class="adm-inline" data-inline="name"><b>${esc(user.name)}</b><button type="button" class="adm-pencil" data-edit="name" title="Adı düzelt" aria-label="${esc(user.name)} adını düzelt">${PENCIL}</button></span>${self ? ' <span class="hof-chip">siz</span>' : ""}${user.mustChangePassword ? ' <span class="hof-chip hof-chip-high">parola bekliyor</span>' : ""}</td>
       <td><span class="adm-inline" data-inline="username"><code>${esc(user.username)}</code><button type="button" class="adm-pencil" data-edit="username" title="Kullanıcı adını (giriş adı) düzelt" aria-label="${esc(user.name)} kullanıcı adını düzelt">${PENCIL}</button></span></td>
       <td><select class="adm-role" aria-label="${esc(user.name)} rolü" ${self ? "disabled" : ""}>${roleOptions(user.roleKey)}</select></td>
-      <td><button type="button" class="adm-status ${user.active ? "is-active" : ""}" data-toggle ${self ? "disabled" : ""}>${user.active ? "Aktif" : "Pasif"}</button></td>
+      <td><button type="button" class="adm-status ${user.active ? "is-active" : ""}" data-toggle ${self ? 'disabled title="Kendi hesabınızı pasife alamazsınız"' : 'title="Aktif / pasif"'}>${user.active ? "Aktif" : "Pasif"}</button></td>
       <td>${pill}</td>
       <td>${user.lastLoginAt ? `${esc(HOF.formatDateTime(user.lastLoginAt))}` : '<span class="adm-muted">Hiç giriş yapmadı</span>'}</td>
-      <td class="adm-right adm-row-actions"><button type="button" class="hof-button hof-button-ghost hof-button-small" data-reset>Parola Sıfırla</button><button type="button" class="hof-button hof-button-ghost hof-button-small" data-sessions ${self ? "disabled" : ""}>Oturumları Kapat</button><button type="button" class="hof-button hof-button-small adm-delete" data-delete ${self ? 'disabled title="Kendi hesabınızı silemezsiniz"' : 'title="Kullanıcıyı sil (geçmişi korunur)"'}>Sil</button></td>
+      <td class="adm-right adm-row-actions"><button type="button" class="hof-button hof-button-ghost hof-button-small" data-reset>Parola Sıfırla</button><button type="button" class="hof-button hof-button-ghost hof-button-small" data-sessions ${self ? 'disabled title="Kendi oturumunuzu Çıkış ile kapatın"' : 'title="Bu kullanıcının bütün girişlerini kapatır"'}>Oturumları Kapat</button><button type="button" class="hof-button hof-button-small adm-delete" data-delete ${self ? 'disabled title="Kendi hesabınızı silemezsiniz"' : 'title="Kullanıcıyı sil (geçmişi korunur)"'}>Sil</button></td>
     </tr>${openPanelFor === user.id && !admin ? permRow(user) : ""}`;
   }
   function permRow(user) {

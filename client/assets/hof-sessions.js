@@ -175,8 +175,12 @@
       if (node?.isConnected && !visible()) node.remove();
       return;
     }
+    // Sıra: başlık satırı → akıllı özet (#hof-summary) → tahsilat takvimi şeridi → sayfalar. Özet ve takvim kendilerini
+    // başlığın hemen altına koyar; sayfa şeridi onların altına yerleşir (aynı yeri isteyen iki şerit DOM izleyicisiyle
+    // birbirini sonsuz döngüde taşıyordu — v2.0.17 UI/UX denetimi bulgusu).
     const welcome = wrap.querySelector(":scope > .welcome-row");
-    const anchor = welcome ? welcome.nextElementSibling : wrap.firstElementChild;
+    const prev = wrap.querySelector(":scope > .hof-payment-promises") || wrap.querySelector(":scope > #hof-summary") || welcome;
+    const anchor = prev ? prev.nextElementSibling : wrap.firstElementChild;
     if (node === anchor) return;
     if (anchor) wrap.insertBefore(node, anchor);
     else wrap.appendChild(node);

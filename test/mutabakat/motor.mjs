@@ -188,7 +188,13 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
       const m = M.plans.get(p.id);
       if (!m) continue;
       seen.add(p.id);
-      if (centsOf(p.totals.total) !== m.total || centsOf(p.totals.paid) !== m.paid) problems.push(`Taksit kartı ${p.name}: program ${p.totals.total}/${p.totals.paid} · model ${tl(m.total)}/${tl(m.paid)}`);
+      if (centsOf(p.totals.total) !== m.total || centsOf(p.totals.paid) !== m.paid) {
+        // Teşhis için kartın taksitleri ve tahsilatları da yazılır (hangi satırın saptığı görünsün).
+        const d = (await api("GET", `/api/workspace/plans/${p.id}`)).data || {};
+        const items = (d.items || d.ledger?.items || []).map(i => `${i.dueDate}:${i.amount}/${i.paid ?? i.paidAmount ?? "-"}`).join(" ");
+        const ents = (d.entries || []).map(e => `${e.date}:${e.amount}`).join(" ");
+        problems.push(`Taksit kartı ${p.name} (${p.id}, fatura ${d.invoiceId || d.invoice?.number || "-"}, durum ${p.status}): program ${p.totals.total}/${p.totals.paid} · model ${tl(m.total)}/${tl(m.paid)} · taksitler [${items}] · tahsilatlar [${ents}]`);
+      }
       if ((p.status === "closed") !== (m.status === "closed")) problems.push(`Taksit kartı ${p.name}: durum ${p.status} · model ${m.status}`);
     }
     for (const [id, p] of M.plans) if (!seen.has(id)) problems.push(`Taksit kartı ${id}: programda yok (model ${tl(p.total)})`);

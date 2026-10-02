@@ -1129,9 +1129,16 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
     const grow = roundMoney(Math.min(Number(amount) || 0, (Number(cap) || 0) - (Number(plan.total) || 0)));
     if (!(grow > 0.005)) return null;
     const last = store.get("SELECT id, amount FROM plan_items WHERE plan_id = ? ORDER BY due_date DESC, seq DESC LIMIT 1", plan.id);
-    if (!last) return null;
     const stamp = now();
-    store.run("UPDATE plan_items SET amount = ?, updated_at = ? WHERE id = ?", roundMoney((Number(last.amount) || 0) + grow), stamp, last.id);
+    if (last) store.run("UPDATE plan_items SET amount = ?, updated_at = ? WHERE id = ?", roundMoney((Number(last.amount) || 0) + grow), stamp, last.id);
+    else {
+      // v2.0.17 (stres testi bulgusu): iade kartı tümüyle küçültmüşse (taksit satırı kalmamışsa) iade iptalinde borç
+      // yeniden karta yazılır — yeni bir taksit satırı açılır (vade: son tahsilat tarihi ya da bugün). Aksi hâlde cari
+      // borçlanır ama taksit kartı 0'da kalır (kart ile cari uyuşmaz).
+      const lastEntry = store.get("SELECT MAX(date) AS date FROM plan_entries WHERE plan_id = ?", plan.id)?.date || "";
+      const seq = (store.get("SELECT COALESCE(MAX(seq), 0) AS n FROM plan_items WHERE plan_id = ?", plan.id)?.n || 0) + 1;
+      store.run("INSERT INTO plan_items (id, plan_id, seq, due_date, amount, note, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", newId("item"), plan.id, seq, lastEntry > today() ? lastEntry : today(), grow, note || "İade iptali", stamp, stamp);
+    }
     store.run("UPDATE plans SET total = ?, updated_by = ?, updated_at = ? WHERE id = ?", roundMoney((Number(plan.total) || 0) + grow), user.id, stamp, plan.id);
     audit(user, "plan.grown", plan.id, { from: plan.total, to: roundMoney((Number(plan.total) || 0) + grow), reason: note || "İade iptali" });
     return { id: plan.id, grow };

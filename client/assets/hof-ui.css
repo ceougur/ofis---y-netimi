@@ -37,7 +37,7 @@
   --do-ink: #142b25;
   --do-ink-soft: #2c4a40;
   --do-muted: #64766f;
-  --do-faint: #8a9a93;
+  --do-faint: #66786f; /* v2.0.17 UI/UX denetimi: beyazda 4,7:1 (eski #8a9a93 2,9:1 okunmuyordu) */
   --do-border: #d9e6de;
   --do-border-strong: #c3d8cb;
   --do-surface: #ffffff;
@@ -476,11 +476,22 @@ html.hof-auth-required #root {
   cursor: pointer;
 }
 .hof-toast-close {
+  display: inline-grid;
+  place-items: center;
+  min-width: 28px;
+  min-height: 28px;
+  margin: -4px -6px -4px 0;
   border: 0;
+  border-radius: 8px;
   background: transparent;
   color: var(--do-faint);
   font-size: 18px;
-  cursor: pointer;
+  cursor: pointer; /* v2.0.17 UI/UX denetimi: tıklama hedefi 10×25 → 28×28 */
+}
+.hof-toast-close:hover,
+.hof-toast-close:focus-visible {
+  background: rgba(0, 0, 0, 0.06);
+  color: var(--do-ink);
 }
 
 /* ---------- Bilgi şeridi ---------- */
@@ -522,7 +533,7 @@ html.hof-auth-required #root {
 }
 .hof-sidecard-label {
   margin: 0 0 8px 4px;
-  color: #7a8d85;
+  color: var(--do-faint);
   font-size: 10px;
   font-weight: 800;
   letter-spacing: 0.16em;
@@ -682,7 +693,7 @@ html.hof-auth-required #root {
 }
 .hof-activity-head h3 {
   margin: 0;
-  color: #7a8d85;
+  color: var(--do-faint);
   font-size: 10px;
   font-weight: 800;
   letter-spacing: 0.16em;
@@ -3251,7 +3262,7 @@ html.hof-no-haciz .filter-strip { display: none !important; }
   gap: 1px;
 }
 .hof-session-text small {
-  color: #7a8d85;
+  color: var(--do-faint);
   font-size: 10px;
   font-weight: 800;
   letter-spacing: 0.12em;
@@ -3303,7 +3314,7 @@ html.hof-no-haciz .filter-strip { display: none !important; }
 }
 .hof-session-menu-title {
   margin: 4px 8px 6px;
-  color: #7a8d85;
+  color: var(--do-faint);
   font-size: 10px;
   font-weight: 800;
   letter-spacing: 0.16em;
@@ -3540,7 +3551,7 @@ html.hof-no-haciz .filter-strip { display: none !important; }
 }
 .hof-export-title {
   margin: 4px 8px 6px;
-  color: #7a8d85;
+  color: var(--do-faint);
   font-size: 10px;
   font-weight: 800;
   letter-spacing: 0.16em;
@@ -4801,7 +4812,7 @@ body.hof-free-wide .hof-free-wrap {
 .hof-due-facts > div { display: flex; justify-content: space-between; gap: 10px; font-size: 10.5px; }
 .hof-due-facts dt { color: #789086; }
 .hof-due-facts dd { margin: 0; color: #24573e; font-weight: 800; text-align: right; }
-.hof-due-facts dd small { color: #88a095; font-weight: 600; }
+.hof-due-facts dd small { color: var(--do-faint); font-weight: 600; }
 .hof-due-facts dd.is-overdue { color: #b3473a; }
 .hof-due-facts dd.is-today, .hof-due-facts dd.is-month { color: #a86b12; }
 .hof-payment-mark { background: #f4f8f5; color: #2d5f45; }
@@ -5906,7 +5917,7 @@ body.hof-dense .dynamic-table th {
   overflow: auto;
 }
 .hof-reading li span {
-  color: #7a8883;
+  color: var(--do-faint);
 }
 
 /* ---------- 2.0.2: analizde "Neden?" kanıt listesi ---------- */
@@ -5950,7 +5961,7 @@ body.hof-dense .dynamic-table th {
 }
 .hof-evidence li small {
   display: block;
-  color: #7a8883;
+  color: var(--do-faint);
 }
 
 /* ---------- 2.0.2: Veri Sağlık Kontrolü — kırmızı hücre ve toplu düzeltmeler ---------- */
@@ -6006,7 +6017,7 @@ body.hof-dense .dynamic-table th {
   color: #4b5a56;
 }
 .hof-fix-list li small {
-  color: #7a8883;
+  color: var(--do-faint);
   font-size: 11px;
 }
 
@@ -6110,7 +6121,7 @@ body.hof-dense .dynamic-table th {
 }
 .hof-map-head small {
   font-size: 10px;
-  color: #8a9590;
+  color: var(--do-faint);
   white-space: normal;
   max-width: 200px;
 }
@@ -6222,7 +6233,7 @@ body.hof-dense .dynamic-table th {
 .hof-report-card small {
   display: block;
   font-size: 10px;
-  color: #7a8883;
+  color: var(--do-faint);
   text-transform: uppercase;
   letter-spacing: 0.06em;
 }
@@ -7026,7 +7037,7 @@ body.hof-dense .dynamic-table th {
   cursor: default;
 }
 .hof-muted {
-  color: #8a9a93;
+  color: var(--do-faint);
 }
 .hof-form-aside {
   margin: 2px 0 12px;
@@ -7133,7 +7144,7 @@ body.hof-dense .dynamic-table th {
   font-weight: 600;
 }
 .hof-case-plan-list tr.is-paid td {
-  color: #8a9a93;
+  color: #7a8d85;
 }
 .hof-case-plan-tools,
 .hof-plan-collect-tools {
@@ -7202,7 +7213,7 @@ body.hof-dense .dynamic-table th {
   color: var(--do-danger);
 }
 .hof-plan-collect tr.is-paid td {
-  color: #8a9a93;
+  color: #7a8d85;
 }
 
 /* ---------- Cari ve Stok (v2.0.6) ---------- */
@@ -7241,7 +7252,7 @@ body.hof-dense .dynamic-table th {
   cursor: pointer;
 }
 .hof-acc-table tr.is-passive td {
-  color: #8a9a93;
+  color: #7a8d85;
 }
 .hof-acc-extra {
   color: #6b7a74;
@@ -7704,7 +7715,7 @@ button.hof-source-card:focus-visible {
   text-overflow: ellipsis;
 }
 .hof-num small {
-  color: #93a39c;
+  color: #7a8d85;
   font-size: 0.64em;
   font-weight: 700;
   letter-spacing: 0;
@@ -8166,7 +8177,7 @@ button.hof-source-card:focus-visible {
   stroke-dasharray: 4 4;
 }
 .hof-chart-tick {
-  fill: #8a9a93;
+  fill: var(--do-faint);
   font: 600 10.5px var(--do-font);
 }
 .hof-chart-area {
@@ -8553,7 +8564,10 @@ button.hof-source-card:focus-visible {
   display: block;
 }
 .hof-link-button {
-  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 0; /* v2.0.17 UI/UX denetimi: metin düğmesi en az 24 px yüksek (tıklama hedefi) */
   border: 0;
   background: none;
   color: var(--do-accent);
@@ -9900,4 +9914,9 @@ input[type="search"]::-webkit-search-cancel-button {
   flex-wrap: wrap;
   gap: 8px;
   margin-bottom: 12px;
+}
+
+/* v2.0.17 UI/UX denetimi: özet kartlarındaki yardımcı yazı okunur kontrastta (eski 2,9:1). */
+.stat-card .text-\[\#768187\] {
+  color: var(--do-faint) !important;
 }

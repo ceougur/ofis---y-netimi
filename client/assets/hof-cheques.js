@@ -258,8 +258,8 @@
   const ACTION_TEXT = {
     collect: { title: "Tahsil Et", past: "tahsil edildi", intro: "Tutar seçtiğiniz tarihte seçtiğiniz hesaba (banka ya da nakit kasa) giriş olarak yazılır.", submit: "Tahsili Kaydet" },
     pay: { title: "Ödeme Yap", past: "ödendi", intro: "Tutar seçtiğiniz tarihte seçtiğiniz hesaptan (banka ya da nakit kasa) çıkış olarak yazılır.", submit: "Ödemeyi Kaydet" },
-    endorse: { title: "Ciro Et", past: "ciro edildi", intro: "Evrak seçtiğiniz tedarikçiye verilir; o cariye olan borcunuz evrak tutarı kadar düşer. Kasa değişmez.", submit: "Ciro et" },
-    bounce: { title: "Karşılıksız / İade", past: "karşılıksız / iade", intro: "Evrak karşılıksız çıktı ya da iade edildi: müşteri yeniden borçlanır (taksite sayıldıysa taksit yeniden açılır); ciro edildiyse tedarikçiye olan borç geri gelir.", submit: "Karşılıksız / iade işaretle" },
+    endorse: { title: "Ciro Et", past: "ciro edildi", intro: "Evrak seçtiğiniz tedarikçiye verilir; o cariye olan borcunuz evrak tutarı kadar düşer. Kasa değişmez.", submit: "Ciro Et" },
+    bounce: { title: "Karşılıksız / İade", past: "karşılıksız / iade", intro: "Evrak karşılıksız çıktı ya da iade edildi: müşteri yeniden borçlanır (taksite sayıldıysa taksit yeniden açılır); ciro edildiyse tedarikçiye olan borç geri gelir.", submit: "Karşılıksız / İade İşaretle" },
   };
   function actionForm(cheque, action) {
     const text = ACTION_TEXT[action];
