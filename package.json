@@ -30,6 +30,7 @@
     "test:senaryo-221": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-221.mjs",
     "test:senaryo-whatsapp": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-whatsapp.mjs",
     "test:mutabakat": "node --disable-warning=ExperimentalWarning test/mutabakat/kos.mjs",
+    "test:guvenilirlik": "node --disable-warning=ExperimentalWarning test/guvenilirlik/kos.mjs",
     "mutabakat": "node --disable-warning=ExperimentalWarning tools/mutabakat.mjs",
     "check": "node tools/check-syntax.mjs",
     "backup": "node --disable-warning=ExperimentalWarning tools/backup.mjs",

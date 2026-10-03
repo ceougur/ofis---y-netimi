@@ -13,7 +13,9 @@
 //   Büyük hacimli yerel koşu (gerçek müşteri tablosu boyunda: 9.200 satırlık REHBER, binlerce cari, 15 ay) + güncel sürümle
 //   doğrulama:
 //     node --disable-warning=ExperimentalWarning tools/surum-verisi.mjs --zincir zincir --hacim buyuk --tohum 7 --dogrula
-//   Seçenekler: --zincir zincir|cakisma, --hacim kucuk|buyuk, --tohum N, --cikti <klasör> (verilmezse geçici), --dogrula.
+//   Seçenekler: --zincir zincir|cakisma, --hacim kucuk|buyuk, --tohum N, --cikti <klasör> (verilmezse geçici), --dogrula,
+//   --dur v2.0.19 (zinciri o sürümden sonra durdurur). Çıktı klasörü rastgele sıra testine taban olabilir:
+//     npm run test:guvenilirlik -- --taban <klasör> --islem 1000
 import { mkdirSync, mkdtempSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
@@ -64,7 +66,7 @@ if (flag("fikstur")) {
   mkdirSync(root, { recursive: true });
   const dataDir = path.join(root, "data");
   const backupDir = path.join(root, "backups");
-  const manifest = await runChain({ chain, dataDir, backupDir, seed, volume, log });
+  const manifest = await runChain({ chain, dataDir, backupDir, seed, volume, log, stopAfter: value("dur", null) });
   writeFileSync(path.join(root, "manifest.json"), `${JSON.stringify(manifest, null, 1)}\n`);
   log(`Üretildi: ${root} · ${((performance.now() - started) / 1000).toFixed(1)} sn · sürüm süreleri ${JSON.stringify(manifest.timings)}`);
   if (flag("dogrula")) {
