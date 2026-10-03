@@ -487,6 +487,13 @@ Bağlam kopsa da bu düzen değişmez. Kullanıcı "zip ver" dediğinde şu üç
   gördü, indirme sha256 985056b5… eşleşti; 2.0.21 kurulu → "up-to-date". Site kılavuz PR'ı ceougur/destekofis#8 2.0.21 PDF'iyle
   (802d42a4…) güncellendi ve kullanıcının isteğiyle BİRLEŞTİRİLDİ (main 6b0cc85). Canlı sitenin PDF'i bu ortamdan denetlenemedi
   (destekofis.com ağ politikasıyla kapalı). 2.0.21 KAPANDI.
+- TEST KAPSAMI SORUSU (kullanıcı, 03.10.2026: "dünyadaki tüm hata testleri yapıldı, her işlevi kusursuzdur diyebilir miyim?").
+  Cevap: HAYIR. Ölçüldü (`docs/TEST-KAPSAMI-2.0.21.md`): sunucu satır %95,2 / karar kolu %79,9; arayüz satır %79,8 (19 senaryo,
+  tarayıcı kapsaması); bağımsız denetimde 52 yüksek + 116 orta riskli testsiz yer doğrulandı (5 iddia çürütüldü). CI 19 arayüz
+  senaryosunun yalnız 5'ini koşuyor; senaryo-213 2.0.21'den beri bu yüzden fark edilmeden kırıktı (test eskimişti, düzeltildi
+  c93ab9c). Kapsama, mutasyon, lint, bağımlılık taraması, yük/dayanıklılık, beta, sahadan hata bildirimi YOK.
+  ÖNERİ (kullanıcı "yap" derse): 52 yüksek riskli açığa hata testi (önce para/dönem kilidi/yetki/şirket); 19 senaryonun hepsi
+  CI'de; kapsama ölçümü CI'de ve düşerse kırmızı.
   [x] 6. Bu test türleri aşağıdaki "Test kuralı"na her sürümde koşulacak kural olarak yazılır; teslimde "denenen /
          denenmeyen / bilinen sınırlar" açıkça yazılır; her sürümde bağımsız gözden geçirme.
 - 2.0.20 YAPILACAKLAR (kullanıcı "yapılacaklara not al" dedi, 03.10.2026; "yap" denince başlanır; ayrıntı ve
