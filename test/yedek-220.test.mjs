@@ -609,3 +609,35 @@ describe("geri yükleme: doğru şirkete; yanlış şirkete 409; 002 hemen, 001 
     assert.equal(await accountsNow(api), 3);
   });
 });
+
+// Ana mühendis incelemesi (birleştirmede eklendi): değiştirme sırasında canlı dosyanın WAL günlüğü silinmeden önce ana
+// dosyaya işlenir; yeniden adlandırma başarısız olsa (Windows'ta dosya açık) son işlem kaybolmaz.
+describe("geri yükleme dosya değiştirme: WAL'daki son işlem kaybolmaz", () => {
+  test("rename başarısız olsa da canlı veri (WAL'daki satır dahil) yerinde", async () => {
+    const { swapInRestoredFile } = await import("../server/lib/company-backups.mjs");
+    const dir = mkdtempSync(path.join(tmpdir(), "swap-wal-"));
+    try {
+      const dbPath = path.join(dir, "destekofis.sqlite");
+      const writer = new DatabaseSync(dbPath);
+      writer.exec("PRAGMA journal_mode = WAL; PRAGMA wal_autocheckpoint = 0; CREATE TABLE t (v TEXT); INSERT INTO t VALUES ('eski');");
+      writer.exec("PRAGMA wal_checkpoint(TRUNCATE)");
+      const mainOnly = `${dbPath}.ana`;
+      copyFileSync(dbPath, mainOnly); // ana dosyada yalnız 'eski'
+      writer.exec("INSERT INTO t VALUES ('son-islem')"); // yalnız WAL'da
+      const walCopy = `${dbPath}-wal.kopya`;
+      copyFileSync(`${dbPath}-wal`, walCopy);
+      writer.close();
+      // Disk durumu: ana dosya son işlemi içermiyor, işlem yalnız WAL günlüğünde (kapanmadan önceki an).
+      copyFileSync(mainOnly, dbPath);
+      copyFileSync(walCopy, `${dbPath}-wal`);
+      rmSync(`${dbPath}-shm`, { force: true });
+      assert.throws(() => swapInRestoredFile(path.join(dir, "olmayan-hazirlik-dosyasi"), dbPath));
+      const reader = new DatabaseSync(dbPath, { readOnly: true });
+      const rows = reader.prepare("SELECT v FROM t ORDER BY rowid").all().map(row => row.v);
+      reader.close();
+      assert.deepEqual(rows, ["eski", "son-islem"], "WAL'daki son işlem ana dosyaya işlendi, kaybolmadı");
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+});

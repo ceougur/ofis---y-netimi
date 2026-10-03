@@ -161,8 +161,28 @@ export function prepareRestoreFile({ source, dbPath, transplantFrom = null, clie
   }
 }
 
-/** Hazırlanan dosyayı canlı dosyanın yerine koyar (veri tabanı bu anda hiçbir bağlantıda açık olmamalı). */
+/**
+ * Hazırlanan dosyayı canlı dosyanın yerine koyar (veri tabanı bu anda hiçbir bağlantıda açık olmamalı).
+ * Önce canlı dosyanın WAL günlüğü ana dosyaya işlenir (checkpoint); günlük ancak boşaldıktan sonra silinir. Böylece
+ * yeniden adlandırma başarısız olsa (Windows'ta dosya başka programda açık) canlı veriden tek işlem bile kaybolmaz.
+ */
 export function swapInRestoredFile(temp, dbPath) {
+  const wal = `${dbPath}-wal`;
+  let pending = 0;
+  try {
+    pending = statSync(wal).size;
+  } catch {
+    pending = 0;
+  }
+  if (pending > 0 && existsSync(dbPath)) {
+    const live = openDatabase(dbPath);
+    try {
+      const result = live.prepare("PRAGMA wal_checkpoint(TRUNCATE)").get();
+      if (result && Number(result.busy) !== 0) throw new Error("veri dosyası başka bir bağlantıda açık (günlük işlenemedi)");
+    } finally {
+      live.close();
+    }
+  }
   for (const suffix of ["-wal", "-shm"]) rmSync(`${dbPath}${suffix}`, { force: true });
   renameSync(temp, dbPath);
 }

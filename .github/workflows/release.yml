@@ -34,6 +34,8 @@ jobs:
       - run: npm test
       - run: npm run test:e2e
       - run: npm run test:senaryo-219
+      - run: npm run test:senaryo-220
+      - run: npm run test:senaryo-220-yedek
 
   windows:
     name: Windows kurulum paketi
