@@ -32,7 +32,7 @@
     if (source || !HOF.user || document.hidden) return;
     clearTimeout(retryTimer);
     try {
-      source = new EventSource(`/api/events${lastId ? `?last=${encodeURIComponent(lastId)}` : ""}`);
+      source = new EventSource(HOF.apiUrl(`/api/events${lastId ? `?last=${encodeURIComponent(lastId)}` : ""}`));
     } catch {
       schedule();
       return;

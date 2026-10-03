@@ -332,7 +332,7 @@
       },
       { once: true },
     );
-    frame.src = url;
+    frame.src = HOF.apiUrl(url);
   }
   const listQuery = () => new URLSearchParams({ q: view.q, group: view.group, subgroup: view.subgroup, status: view.status, sort: view.sort });
   const listPdfUrl = () => `/api/workspace/plans/liste.pdf?${listQuery()}&title=${encodeURIComponent(moduleName())}`;

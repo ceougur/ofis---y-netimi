@@ -8,6 +8,23 @@
   const HOF = (window.HOF = {});
   const nativeFetch = window.fetch.bind(window);
   HOF.nativeFetch = nativeFetch;
+  // Sayfanın şirketi (v2.0.21): açılışta /api/auth/me'den gelir; bu sayfadan giden her API isteğine eklenir (?hofCompany=).
+  // Sunucu isteği bu şirkete yönlendirir: aynı hesap başka pencerede/bilgisayarda şirket değiştirse de bu pencerede
+  // görünen şirkete yazılır. Ortak katman yolları (giriş, şirket listesi/seçimi, lisans) ve başka adresler değişmez.
+  HOF.companyId = "";
+  const COMPANY_FREE = /^\/api\/(auth|public|health|license|companies)(\/|$)/;
+  HOF.apiUrl = value => {
+    if (!HOF.companyId || typeof value !== "string") return value;
+    let url;
+    try {
+      url = new URL(value, window.location.href);
+    } catch {
+      return value;
+    }
+    if (url.origin !== window.location.origin || !url.pathname.startsWith("/api/") || COMPANY_FREE.test(url.pathname) || url.searchParams.has("hofCompany")) return value;
+    url.searchParams.set("hofCompany", HOF.companyId);
+    return `${url.pathname}${url.search}${url.hash}`;
+  };
 
   // ---------- Metin yardımcıları ----------
   const ESCAPES = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" };
@@ -151,7 +168,7 @@
     init.signal = controller.signal;
     let response;
     try {
-      response = await nativeFetch(path, init);
+      response = await nativeFetch(HOF.apiUrl(path), init);
     } catch (error) {
       throw new ApiError(error && error.name === "AbortError" ? "Sunucu zamanında yanıt vermedi." : "Sunucuya ulaşılamadı. Ağ bağlantısını kontrol edin.", 0);
     } finally {
@@ -248,6 +265,7 @@
       if (value === false || value == null) continue;
       if (key === "class") node.className = value;
       else if (key === "text") node.textContent = value;
+      else if (key === "href" || key === "src") node.setAttribute(key, HOF.apiUrl(String(value)));
       else node.setAttribute(key, value === true ? "" : value);
     }
     if (html) node.innerHTML = html;

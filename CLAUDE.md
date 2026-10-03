@@ -466,6 +466,13 @@ Bağlam kopsa da bu düzen değişmez. Kullanıcı "zip ver" dediğinde şu üç
          (001 ve 002; eski sürüm yedeğiyle de).
   [ ] 4. GÖÇ testi: 2.0.17'den bu yana her sürümün veri düzeninden güncelleme; hiçbir kayıt kaybolmaz.
   [ ] 5. ARIZA testi: yedek/geri yükleme ortasında kesinti, disk dolu, kilitli dosya → veri bozulmaz.
+  [ ] 7. (kullanıcı, aynı gün: "her şirketin yedeğini sunucuda kendi adıyla yedek açıp yedeklediğini de kontrol et; baş mimar
+         baş mühendis olarak programına sahip çık, özümse") Gerçek sunucu düzeninde (Windows hizmeti gibi: data + backups
+         klasörleri) otomatik zamanlayıcı, Şimdi Yedek Al (Tüm/Yalnız), ad/kod değişimi, silme, Ayır, göç sonrası her
+         şirketin yedeği `backups\\<kod> - <ad>\\` klasöründe, adında kodu, içinde kimliği; başka klasöre düşen yok.
+  [ ] 8. (bulgu, 03.10.2026) AYNI HESAP İKİ PENCEREDE/BİLGİSAYARDA: şirket seçimi kullanıcı başına sunucuda; birinde şirket
+         değişince öbür pencerenin (001'i gösteren) kaydı 002'ye yazılıyordu. Düzeltme: istek sayfanın şirketine gider
+         (?hofCompany=, `HOF.apiUrl`); seçim yalnız yeni açılan sayfanın şirketini belirler.
   [x] 6. Bu test türleri aşağıdaki "Test kuralı"na her sürümde koşulacak kural olarak yazılır; teslimde "denenen /
          denenmeyen / bilinen sınırlar" açıkça yazılır; her sürümde bağımsız gözden geçirme.
 - 2.0.20 YAPILACAKLAR (kullanıcı "yapılacaklara not al" dedi, 03.10.2026; "yap" denince başlanır; ayrıntı ve

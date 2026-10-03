@@ -232,6 +232,7 @@
   const wrapFetch = () => {
     let notified = false;
     window.fetch = async (...args) => {
+      if (typeof args[0] === "string") args[0] = HOF.apiUrl(args[0]);
       const target = String(args[0] && args[0].url ? args[0].url : args[0]);
       const pending = HOF.nativeFetch(...args);
       if (target.includes("/api/trpc/sheets.getRows")) HOF.trackRowsRequest(pending);
@@ -249,6 +250,22 @@
     };
   };
 
+
+  // İndirme bağlantıları (PDF/Excel) ve yeni pencerede açılan belgeler de sayfanın şirketinden gelir (v2.0.21).
+  const bindCompanyLinks = () => {
+    document.addEventListener(
+      "click",
+      event => {
+        const link = event.target instanceof Element ? event.target.closest("a[href]") : null;
+        if (!link) return;
+        const next = HOF.apiUrl(link.getAttribute("href"));
+        if (next !== link.getAttribute("href")) link.setAttribute("href", next);
+      },
+      true,
+    );
+    const open = window.open.bind(window);
+    window.open = (url, ...rest) => open(typeof url === "string" ? HOF.apiUrl(url) : url, ...rest);
+  };
 
   HOF.on("unauthorized", () => {
     if (appLoaded) HOF.showLogin("Oturumunuz sona erdi. Lütfen tekrar giriş yapın.");
@@ -296,6 +313,7 @@
       return showFatal(error.status ? error.message : "Merkezi sunucuya ulaşılamadı. Sunucu bilgisayarın açık olduğundan emin olun.");
     }
     HOF.user = me;
+    HOF.companyId = me.company?.id || "";
     applyRoleClasses(me);
     if (me.mustChangePassword) {
       hideSplash();
@@ -308,6 +326,7 @@
       await loadClientState();
       installStorageBridge();
       wrapFetch();
+      bindCompanyLinks();
       HOF.isReady = true;
       HOF.emit("ready", me);
       await loadApp();

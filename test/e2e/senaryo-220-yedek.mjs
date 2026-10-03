@@ -54,7 +54,16 @@ const shot = async name => {
   await page.screenshot({ path: path.join(OUT, `${String(shotNo).padStart(2, "0")}-${name}.png`), fullPage: true });
 };
 const modal = ".hof-modal-backdrop.is-visible";
-const api = (url, body, method) =>
+// 2.0.21: sayfanın istekleri sayfanın şirketine gider; test "şirketi seç, sonra işlem yap" derken o şirketi açıkça ekler.
+let focus = "";
+const scopedUrl = url => (focus && url.startsWith("/api/") && !url.startsWith("/api/companies") && !url.startsWith("/api/admin/backups") ? `${url}${url.includes("?") ? "&" : "?"}hofCompany=${focus}` : url);
+const api = async (url, body, method) => {
+  const result = await rawApi(scopedUrl(url), body, method);
+  if (url === "/api/companies/select" && result.status === 200) focus = body.id;
+  if (url === "/api/companies" && body?.select && result.status === 200) focus = result.data.company.id;
+  return result;
+};
+const rawApi = (url, body, method) =>
   page.evaluate(
     async ({ url, body, method }) => {
       const response = await fetch(url, { method: method || (body ? "POST" : "GET"), headers: body ? { "content-type": "application/json" } : {}, body: body ? JSON.stringify(body) : undefined });

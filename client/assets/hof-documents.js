@@ -41,7 +41,7 @@
     return `${value.toLocaleString("tr-TR", { maximumFractionDigits: value < 10 ? 1 : 0 })} ${units[unit]}`;
   };
   const listUrl = key => `/api/workspace/cases/${encodeURIComponent(key)}/documents`;
-  const fileUrl = (id, download = false) => `/api/workspace/documents/${encodeURIComponent(id)}/file${download ? "?download=1" : ""}`;
+  const fileUrl = (id, download = false) => HOF.apiUrl(`/api/workspace/documents/${encodeURIComponent(id)}/file${download ? "?download=1" : ""}`);
   const extOf = name => String(name || "").toLowerCase().split(".").pop();
   // Tarayıcıda doğrudan yazdırılabilenler: PDF, resim (JPG, PNG, GIF, WEBP) ve metin. Word/Excel/UYAP kendi programında.
   const printable = item => Boolean(item.viewable) || item.mime === "text/plain" || item.mime === "text/csv";
@@ -168,7 +168,7 @@
   const send = (key, title, file, onProgress) =>
     new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
-      xhr.open("POST", `${listUrl(key)}?name=${encodeURIComponent(file.name)}&title=${encodeURIComponent(title || "")}`);
+      xhr.open("POST", HOF.apiUrl(`${listUrl(key)}?name=${encodeURIComponent(file.name)}&title=${encodeURIComponent(title || "")}`));
       xhr.setRequestHeader("content-type", "application/octet-stream");
       xhr.setRequestHeader("x-hof-upload", "1");
       xhr.upload.onprogress = event => event.lengthComputable && onProgress(event.loaded / event.total);

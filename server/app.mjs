@@ -392,7 +392,28 @@ export function createApp(overrides = {}) {
     } catch {
       user = null;
     }
-    const selected = companies.get(companies.selectedFor(user));
+    // Sayfanın şirketi (v2.0.21): istemci her isteğe sayfanın açıldığı şirketi ekler (?hofCompany=). Sunucudaki seçim
+    // kullanıcı başınadır; aynı hesap iki pencerede/bilgisayarda açıkken birinde şirket değişince öbür pencerenin 001'i
+    // gösterirken girdiği kayıt 002'ye yazılıyordu. Artık istek sayfanın şirketine gider; seçim yalnız yeni açılan
+    // sayfanın şirketini belirler. Belirtilmemişse (eski istemci, indirme bağlantısı) eskisi gibi seçili şirket.
+    let requested = "";
+    try {
+      requested = new URL(req.url || "/", "http://x").searchParams.get("hofCompany") || "";
+    } catch {
+      requested = "";
+    }
+    let selected;
+    if (requested) {
+      selected = companies.get(requested);
+      if (!selected) {
+        send(res, 409, { ok: false, error: "Bu pencerenin şirketi artık yok (silinmiş olabilir); sayfayı yenileyin.", code: "company-missing" });
+        return Promise.resolve();
+      }
+      if (user && !companies.canAccess(user, selected.id)) {
+        send(res, 403, { ok: false, error: "Bu şirketi görme yetkiniz yok; yönetici yetki verebilir.", code: "company-forbidden" });
+        return Promise.resolve();
+      }
+    } else selected = companies.get(companies.selectedFor(user));
     if (!selected || selected.id === ROOT_COMPANY_ID) return scoped(req, res);
     try {
       return appFor(selected).handleScoped(req, res);

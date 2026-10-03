@@ -2,7 +2,8 @@
 // endişeleniyorum". 2.0.17–2.0.19'da "kod değiştir (002 → 005) + eski kodla (002) yeni şirket aç" sırasını yaşamış kurulum
 // sıfırdan kurulur (iki şirket aynı veri dosyası). Arayüzden: hata yeniden üretilir (birine girilen cari öbüründe görünür) →
 // sol üstte uyarı → Yönetim → Şirketler'de kırmızı kutu ve "Ayır" → onay penceresi → ayrılınca kutu ve uyarı kalkar; bundan
-// sonra girilen kayıt yalnız kendi şirketinde; ayırma öncesi yedek ayrılan şirketin klasöründe.
+// sonra girilen kayıt yalnız kendi şirketinde; ayırma öncesi yedek ayrılan şirketin klasöründe. Madde 8: aynı hesap iki
+// pencerede; birinde şirket değişse de öbür pencerenin kaydı kendi ekranındaki şirkete yazılır.
 // Çalıştırma: node --disable-warning=ExperimentalWarning test/e2e/senaryo-221.mjs
 import fs, { existsSync, mkdirSync, mkdtempSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -65,7 +66,15 @@ const shot = async (name, options = {}) => {
   await page.screenshot({ path: path.join(OUT, `${String(shotNo).padStart(2, "0")}-${name}.png`), ...options });
 };
 const modal = ".hof-modal-backdrop.is-visible";
-const api = (url, body) =>
+// 2.0.21: sayfanın istekleri sayfanın şirketine gider; test "şirketi seç, sonra işlem yap" derken o şirketi açıkça ekler.
+let focus = "";
+const scopedUrl = url => (focus && url.startsWith("/api/") && !url.startsWith("/api/companies") ? `${url}${url.includes("?") ? "&" : "?"}hofCompany=${focus}` : url);
+const api = async (url, body) => {
+  const result = await rawApi(scopedUrl(url), body);
+  if (url === "/api/companies/select" && result.status === 200) focus = body.id;
+  return result;
+};
+const rawApi = (url, body) =>
   page.evaluate(
     async ({ url, body }) => {
       const response = await fetch(url, { method: body ? "POST" : "GET", headers: body ? { "content-type": "application/json" } : {}, body: body ? JSON.stringify(body) : undefined });
@@ -143,6 +152,42 @@ try {
   await page.waitForTimeout(500);
   ok(!(await page.$("#hof-company-warn")), "sol üstte uyarı yok");
   ok(existsSync(path.join(dataDir, "sirketler", "002", "destekofis.sqlite")), "005'in (dosyayı koruyan) veri dosyası yerinde");
+
+  console.log("\n■ Aynı hesap iki pencerede (madde 8): B 002'ye geçer; A (001'i gösteriyor) yazmaya devam eder");
+  await api("/api/companies/select", { id: "sirket-001" });
+  const streams = [];
+  page.on("request", request => request.url().includes("/api/events") && streams.push(request.url()));
+  await page.goto(`${BASE}/`, { waitUntil: "load" });
+  await page.waitForSelector("#hof-company", { timeout: 15000 });
+  const other = await context.newPage();
+  other.on("pageerror", error => errors.push(`pageerror(B) ${error.message}`));
+  await other.goto(`${BASE}/`, { waitUntil: "load" });
+  await other.waitForSelector("#hof-company", { timeout: 15000 });
+  // B arayüzden şirket değiştirir (sayfa yenilenir).
+  await other.click("#hof-company [data-toggle]");
+  await other.waitForSelector('#hof-company [data-pick="sirket-yeni"]');
+  await Promise.all([other.waitForEvent("load"), other.click('#hof-company [data-pick="sirket-yeni"]')]);
+  await other.waitForSelector("#hof-company", { timeout: 15000 });
+  ok(/002 · Gayri Resmî/.test(await other.textContent("#hof-company strong")), "B: 002 · Gayri Resmî açık");
+  // A'nın ekranı hâlâ 001; A'nın istekleri (programın kendi API yolu ve tablo paketinin fetch'i) 001'e gider.
+  ok(/001 · Ana Şirket/.test(await page.textContent("#hof-company strong")), "A: ekranda hâlâ 001 · Ana Şirket");
+  await page.evaluate(() => window.HOF.api("/api/workspace/accounts", { method: "POST", body: { name: "A Penceresi Carisi", type: "customer" } }));
+  const viaFetch = await page.evaluate(async () => (await (await fetch("/api/workspace/accounts")).json()).data.accounts.map(item => item.name).sort());
+  ok(JSON.stringify(viaFetch) === JSON.stringify(["A Penceresi Carisi"]), `A'nın tablo paketi yolu (fetch) 001'i okur: ${viaFetch.join(", ")}`);
+  await other.evaluate(() => window.HOF.api("/api/workspace/accounts", { method: "POST", body: { name: "B Penceresi Carisi", type: "customer" } }));
+  const inB = await other.evaluate(async () => (await window.HOF.api("/api/workspace/accounts")).accounts.map(item => item.name).sort());
+  ok(JSON.stringify(inB) === JSON.stringify(["B Penceresi Carisi", "Gayri Resmî Müşteri", "Resmî Müşteri"]), `B 002'ye yazar: ${inB.join(", ")}`);
+  await page.waitForFunction(() => true, null, { timeout: 1000 });
+  ok(streams.length > 0 && streams.every(url => /hofCompany=sirket-001/.test(url)), `A'nın canlı olay akışı 001'den (${streams.length} bağlantı)`);
+  // A'nın indirme bağlantısı (PDF) da 001'den gelir.
+  await page.evaluate(() => {
+    const link = Object.assign(document.createElement("a"), { href: "/api/workspace/report-center/cari-listesi/xlsx", id: "a-test-link", textContent: "Excel İndir" });
+    link.addEventListener("click", event => event.preventDefault());
+    document.body.appendChild(link);
+  });
+  await page.evaluate(() => document.getElementById("a-test-link").click());
+  ok(/hofCompany=sirket-001/.test(await page.getAttribute("#a-test-link", "href")), "A'nın indirme bağlantısı 001'e gider");
+  await other.close();
 
   ok(!errors.length, `sayfada JavaScript hatası yok${errors.length ? `: ${errors.join(" ; ")}` : ""}`);
 } catch (error) {
