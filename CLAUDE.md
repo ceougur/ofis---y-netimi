@@ -446,6 +446,18 @@ Bağlam kopsa da bu düzen değişmez. Kullanıcı "zip ver" dediğinde şu üç
          toplamı dışında → "Toplam Tahsil Edilen" açılış dahil), Taksit Tahsilat Performansı, Cari Listesi "Toplam Tahsilat
          (Ödenen)". Kırılım kolonları kalır (kaynağı görünsün). KASA raporları DEĞİŞMEZ (açılış Kasa'ya hiç girmedi; Kasa
          fiziki nakit, mutabakat bozulmasın) — kullanıcıya söylendi.
+  [ ] 9. YEDEK VE ÇOKLU ŞİRKET (kullanıcı, 03.10.2026: "001 dolu ama yedek klasöründe 002 dolu yedeklemiş"). Ölçüldü
+         (API, 001'de 5 cari, 002'de 2 cari): veri KARIŞMIYOR — 002 seçiliyken Yedek Al → `backups/sirket-002/…-manuel.sqlite`
+         (yalnız 002), 001 seçiliyken → `backups/…-manuel.sqlite` (yalnız 001). AÇIKLAR: (a) `/api/admin/backups` HUB_ONLY
+         değil → Yedek Al ve Yedekler listesi yalnız SEÇİLİ şirket (`app.mjs` dispatch); (b) dosya adında şirket kodu yok
+         (001 ve 002 aynı adla, ayrım yalnız klasörde; Drive'da ayırt edilemez); (c) otomatik zamanlayıcı 001'de hep,
+         öbür şirketlerde yalnız o şirket bu açılışta açıldıysa (`appFor` tembel) → girilmeyen şirket yedeklenmez;
+         (d) supervisor `restoreDatabase` yalnız kök `backupDir` + kök db — şirket yedeği geri yüklemesi denetlenecek.
+         Öneri: Yedek Al → "Tüm Şirketler" (varsayılan) / "Yalnız <kod · ad>"; ad `destekofis-<kod>-<zaman>-<etiket>`;
+         Yedekler listesi bütün şirketler + Şirket kolonu; otomatik yedek ve Drive kopyası bütün şirketler (açılmamış olsa
+         da); yedeğin içine şirket kimliği yazılır, geri yüklemede yanlış şirkete yükleme reddedilir. Test: iki şirket
+         farklı veri; tümü/tek; otomatik; geri yükleme; yanlış şirkete yükleme 409. Kullanıcıya soruldu: yedek alınırken
+         002 mi seçiliydi / baktığı klasör sirket-002 mi (ekran bekleniyor).
   Açık soru CEVAPLANDI: "getirmiyor" = Cari Bazında Tahsilat (madde 8).
 - 2.0.20 ADAYI — RAPORLARDA ALT TOPLAM (kullanıcı, 03.10.2026): "toplam cari alacağı yani ciroyu hangi rapordan
   görürüm?" → yanıt: ciro = Raporlar → Fatura → Satış Faturaları / Cari Bazında Satış ve Alış (Net Satış); toplam
