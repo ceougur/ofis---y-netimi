@@ -42,6 +42,15 @@ const ok = (cond, what) => {
 };
 const shot = async name => {
   shotNo += 1;
+  // Pencere açılış geçişi bitmeden çekilen görüntü yarı saydam çıkar (kanıt görüntüsü için bekle).
+  await page.evaluate(() =>
+    Promise.all(
+      document
+        .getAnimations()
+        .filter(item => Number.isFinite(item.effect?.getComputedTiming().endTime))
+        .map(item => item.finished.catch(() => null)),
+    ),
+  );
   await page.screenshot({ path: path.join(OUT, `${String(shotNo).padStart(2, "0")}-${name}.png`), fullPage: true });
 };
 const modal = ".hof-modal-backdrop.is-visible";
