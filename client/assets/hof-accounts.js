@@ -905,11 +905,11 @@
       title: "Excel’den Cari Yükle: Kolonları Eşle",
       eyebrow: fileName,
       size: "wide",
-      intro: `${preview.rows} satır bulundu. Her satır bir cari olur; taksit sorulmaz. Program başlıkları tanıdı; yanlışsa değiştirin. <b>Ek Alan</b> seçilen her kolon kartta aynı adla görünür (ör. Veli, Okul, Servis ücreti) ve toplu taksitlendirmede tutar olarak kullanılabilir.${caseKeys ? " Her cari tablodaki kaydına bağlanır." : ""}`,
+      intro: `${preview.rows} satır bulundu. Her satır bir cari olur; taksit sorulmaz. Program başlıkları tanıdı; yanlışsa değiştirin. <b>Ek Alan</b> seçilen her kolon kartta aynı adla görünür (ör. Veli, Okul, Servis ücreti) ve toplu taksitlendirmede tutar olarak kullanılabilir.`,
       fields: [
         ...preview.headers.map((header, index) => ({ name: `c${index}`, label: `${header || `${index + 1}. kolon`}${sample[index] !== undefined && String(sample[index]).trim() ? ` — ör. ${String(sample[index]).slice(0, 30)}` : ""}`, type: "select", value: preview.roles[index] || "", options: ROLE_OPTIONS.map(([value, text]) => ({ value, label: text })) })),
         { name: "type", label: "Tür kolonu yoksa", type: "select", value: "customer", options: Object.entries(TYPES).map(([value, text]) => ({ value, label: text })) },
-        { name: "mode", label: "Aynı cari zaten varsa", type: "select", value: "skip", options: [{ value: "skip", label: "Atla (eskisi olduğu gibi kalır)" }, { value: "update", label: "Güncelle (dolu gelen bilgiler yazılır)" }], help: "Aynı cari: aynı tablodaki kayıt, aynı Cari No ya da aynı ad + aynı telefon. Emin olunamayan satır yeni cari açar." },
+        { name: "mode", label: "Aynı cari zaten varsa", type: "select", value: "skip", options: [{ value: "skip", label: "Atla (eskisi olduğu gibi kalır)" }, { value: "update", label: "Güncelle (dolu gelen bilgiler yazılır)" }], help: "Aynı cari: aynı Cari No ya da aynı ad + aynı telefon. Emin olunamayan satır yeni cari açar." },
         { name: "groupName", label: "Grup kolonu yoksa hepsi bu gruba", maxlength: 80, placeholder: "İsteğe bağlı" },
         { name: "openingSide", label: "Açılış Bakiyesi Yönü", type: "select", value: "auto", options: OPENING_SIDES, help: "Türe göre: müşteride artı tutar Borçlu, tedarikçide artı tutar Alacaklı (tedarikçiye borcumuz). Eksi tutar ters yöndür." },
       ],

@@ -2,6 +2,11 @@
 
 Sürümler [anlamsal sürümleme](https://semver.org/lang/tr/) kurallarına uyar.
 
+## 2.0.19 — Cari → Excel / Sheets’ten Yükle yeniden çalışıyor
+
+- **KRİTİK — Toplu cari yükleme hiç çalışmıyordu (müşteri: "cariyi toplu Excel'den, Sheets'ten al deyince çekmiyor").** 2.0.18'de *Tablodan Al* kaldırılırken Cari eşleme penceresinde artık tanımsız bir değişken (`caseKeys`) kalmıştı; dosya ya da Sheets bağlantısı okunduktan sonra **Kolonları Eşle** penceresi açılmadan JavaScript hatası veriyordu (Excel de, Google Sheets de). Düzeltildi; "Aynı cari zaten varsa" açıklamasından artık geçersiz "aynı tablodaki kayıt" ifadesi çıkarıldı. Stok, Taksit ve Çek / Senet yüklemeleri etkilenmemişti (aynı testle denetlendi). İstemci kodunun tamamı tanımsız ad için tarandı: başka yok.
+- **Kalıcı arayüz testi:** `npm run test:senaryo-219` — boş veriden Cari (Excel + Google Sheets; aynı adlı iki kişi, açılış bakiyesi, ek alan, ikinci yüklemede çift açılmaması), Stok, Taksit ve Çek / Senet toplu yüklemeleri arayüzden; CI'nin uçtan uca işine eklendi (2.0.18'de bu yol yalnız 1.000 carilik WhatsApp senaryosunda vardı, o senaryo CI'de koşmuyordu).
+
 ## 2.0.18 — Cari adı kişi kolonundan; kayıt ile cari ayrıldı (Tablodan Al, "cari kartı da aç" ve detay kartı CARİ pili kalktı)
 
 - **Cari adı yanlış kolondan geliyordu (müşteri: marka/patent tablosunda cari "FURRA", kişi "GÜLDAL KARE" olmalıydı).** Kayıttan ad üreten her yer — cari formundaki ad eşleşmesi önerisi, kayıt başlığı, kayıttan taksit — artık sunucu analizinin bulduğu **kişi kolonunu** kullanır: "Ürün / Marka / Buluş / Proje Adı" gibi öğe adı kolonları ad sayılmaz; taraf sözcüğü olan kolon (Müşteri, Borçlu, Başvuru Sahibi…) öncelikli; **Adı + Soyadı** ayrı kolonlarsa birleştirilir. Yedi tablo biçimiyle ölçüldü (marka/patent, sipariş, okul, icra, emlak, dernek, hastane). Test: `npm run test:senaryo-218`.

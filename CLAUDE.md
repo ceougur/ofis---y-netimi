@@ -399,6 +399,16 @@ Bağlam kopsa da bu düzen değişmez. Kullanıcı "zip ver" dediğinde şu üç
   TESLİM EDİLDİ (02.10.2026 20:3x): PR ceougur/ofis---y-netimi#18 açık (birleştirme kullanıcı onayıyla; kullanıcı: "zipi ver,
   yükleyelim sonra"). Güncelleme paketi sha256 4c4c07c6…, kurulum .exe sha256 a864b1a7… (29,3 MB); 3 zip + SHA256SUMS
   gönderildi (2-Kurulum zip'inde yalnız GitHub-v2.0.18/ exe + sha256; sürümlü .exe teslim klasöründe, zip'e boyut için konmadı).
+- 2.0.19 (03.10.2026; dal `claude/kind-newton-fpmx3f`; 2.0.18 yayımlı = `v2.0.18`): KULLANICI BİLDİRİMİ "cariyi toplu Excel'den /
+  Sheets'ten al deyince çekmiyor". Kök neden: 2.0.18'de Tablodan Al kalkarken `hof-accounts.js` mappingForm içinde tanımsız
+  `caseKeys` kaldı → Kolonları Eşle penceresi açılmadan ReferenceError (Excel ve Sheets). Düzeltildi; Stok/Taksit/Çek
+  yüklemeleri etkilenmemişti. İstemci + sunucu kodu no-undef ile tarandı: başka yok. Kalıcı test `npm run test:senaryo-219`
+  (30 denetim, CI e2e işine eklendi). DERS: kod kaldırırken o koda dokunan her arayüz yolu (toplu yükleme dahil) arayüzden
+  koşulur; 1.000 carilik WhatsApp senaryosu bu yolu kapsıyordu ama 2.0.18'de koşulmadı.
+  Gözlem (kullanıcıya soruldu, karar bekleniyor): aynı Excel ikinci kez "Atla" ile yüklenince TELEFONSUZ ve Cari No'suz
+  satır yeniden cari açar (bilinçli kural: "emin olunamayan satır yeni cari açar"; aynı adlı iki gerçek kişi ayrılsın diye).
+  Kullanıcı (03.10.2026, "müşteri bekliyor"): işlem bitince zip ver, BİRLEŞTİRMEYİ YAP, GitHub'a yükleme linkini ver.
+  İmza anahtarı bu oturumda yok → kullanıcıdan oturuma yüklemesi istendi; birleştirme CI yeşil olunca yapılır.
 - 2.0.17 HAZIR (02.10.2026; dal `claude/nice-euler-jvajxv`; 14 madde yapıldı, kanıt `docs/2.0.17-KANIT.md`): şema göçü 19
   (fatura bağı + mahsup); çoklu şirket hub/çocuk mimarisi (`docs/MIMARI.md` → 2.0.17); teslim `dist/teslim-2.0.17/`
   (3 zip + SHA256SUMS; imza anahtarı kullanıcının yüklediği .pem). Sırada: kullanıcı "birleştir" → CI → birleştir →
