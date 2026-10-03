@@ -8,13 +8,14 @@
 // Ayrıca gerçek v2.0.19'da yaşanan hata (002 → 005, sonra yeni 002: iki şirket aynı veri dosyası) güncel sürümde bulunur
 // ve Ayır ile kayıpsız ayrılır.
 import assert from "node:assert/strict";
+import { existsSync } from "node:fs";
 import path from "node:path";
 import { describe, test } from "node:test";
 import { readBackupIdentity } from "../server/lib/backup.mjs";
 import { ADMIN_PASSWORD } from "./helpers.mjs";
 import { verifyUpgrade } from "./guvenilirlik/dogrula.mjs";
 import { unpackFixture } from "./guvenilirlik/fikstur.mjs";
-import { apiFacts, dbFacts } from "./guvenilirlik/olgular.mjs";
+import { apiFacts, dbFacts, expectedFacts, knownFacts } from "./guvenilirlik/olgular.mjs";
 import { CURRENT, bootVersion } from "./guvenilirlik/surumler.mjs";
 import { companyDbFile, readRegistry } from "./guvenilirlik/uretici.mjs";
 
@@ -31,6 +32,21 @@ describe("gerçek eski sürüm verisinden güncel sürüme göç", () => {
       }
     });
   }
+});
+
+describe("çok eski kurulum: v1.3.1 → v2.0.16 → v2.0.19 (eski adlı veri dosyası hukuk-ofisi.sqlite)", () => {
+  test("veri dosyası yeniden adlandırılmadan açılır; v1.3.1'in kendi aracıyla aldığı yedek dahil her yedek kendi şirketinde ve geri yüklenir", async () => {
+    const fixture = unpackFixture("surum-2.0.19-eski");
+    try {
+      assert.ok(fixture.fixture.files.some(item => item.path === "veri/hukuk-ofisi.sqlite"), "fikstürde eski adlı veri dosyası");
+      assert.ok(fixture.fixture.backups.some(item => item.version === "v1.3.1" && /^hukuk-ofisi-/.test(item.file)), "v1.3.1'in yedeği");
+      const report = await verifyUpgrade({ dataDir: fixture.dataDir, backupDir: fixture.backupDir, manifest: fixture.fixture, files: fixture.fixture.files });
+      assert.deepEqual(report.failures, [], report.failures.join("\n"));
+      assert.ok(existsSync(path.join(fixture.dataDir, "hukuk-ofisi.sqlite")) && !existsSync(path.join(fixture.dataDir, "destekofis.sqlite")), "eski adlı dosya yerinde, yenisi açılmadı");
+    } finally {
+      fixture.cleanup();
+    }
+  });
 });
 
 describe("gerçek v2.0.19 hatası: kodu değişen şirketin eski koduyla açılan yeni şirket aynı veri dosyasında", () => {
@@ -68,7 +84,7 @@ describe("gerçek v2.0.19 hatası: kodu değişen şirketin eski koduyla açıla
       const fileOf = id => companyDbFile(fixture.dataDir, registry.find(item => item.id === id));
       assert.notEqual(fileOf(resmi.id), fileOf(gayri.id), "artık ayrı veri dosyaları");
       for (const company of [resmi, gayri]) {
-        assert.deepEqual(dbFacts(fileOf(company.id)), company.facts, `${company.code}: veri tabanı olguları ayırmadan önceki gibi`);
+        assert.deepEqual(knownFacts(dbFacts(fileOf(company.id)), company.facts), expectedFacts(company.facts), `${company.code}: veri tabanı olguları ayırmadan önceki gibi`);
         await api.post("/api/companies/select", { id: company.id });
         assert.deepEqual(await apiFacts(api), company.api, `${company.code}: ekrandaki cari listesi ayırmadan önceki gibi`);
         assert.equal((await api.post("/api/workspace/accounts", { name: `Ayırma Sonrası ${company.code}`, type: "customer" })).status, 200);

@@ -11,7 +11,7 @@ import path from "node:path";
 import { addDays, rng } from "../mutabakat/motor.mjs";
 import { CITY, EXPENSE, FIRST, LAST, SERVICE, SUPPLIER } from "./adlar.mjs";
 import { apiFacts, dbFacts, sha256File } from "./olgular.mjs";
-import { bootVersion } from "./surumler.mjs";
+import { bootProcess, bootVersion } from "./surumler.mjs";
 
 // Hacim: "kucuk" depoya konan fikstürler için (birkaç MB); "buyuk" yerel/CLI koşusu için (gerçek müşteri tablosu ~9.200 satır).
 export const VOLUMES = {
@@ -31,6 +31,13 @@ export const CHAINS = {
   ],
   // 2.0.17–2.0.19 hatası, GERÇEK v2.0.19 koduyla: 002'nin kodu 005 yapılır, sonra 002 koduyla yeni şirket açılır — eski kod
   // yeni şirkete aynı veri klasörünü (sirketler/002) verir; iki şirketin carileri aynı veri tabanına yazılır.
+  // Çok eski kurulum: v1.3.1 (tek dosyalık sunucu, veri dosyası "hukuk-ofisi.sqlite", yedek "hukuk-ofisi-<zaman>.sqlite",
+  // kendi yedek aracıyla) → v2.0.16 (göçler) → v2.0.19 (çoklu şirket). Eski adlı dosya hiç yeniden adlandırılmaz.
+  eski: [
+    { version: "v1.3.1", actions: [{ do: "kayit1x" }, { do: "backup" }] },
+    { version: "v2.0.16", actions: [{ do: "office", name: "Eski Hukuk Bürosu" }, { do: "work" }, { do: "backup" }] },
+    { version: "v2.0.19", actions: [{ do: "create", key: "B", code: "002", name: "Yeni Büro Ltd. Şti." }, { do: "work" }, { do: "backup" }] },
+  ],
   cakisma: [
     { version: "v2.0.19", actions: [{ do: "office", name: "Merkez Ofis" }, { do: "create", key: "B", code: "002", name: "Resmi Şirket" }, { do: "work" }, { do: "backup" }] },
     { version: "v2.0.19", actions: [{ do: "recode", key: "B", code: "005" }, { do: "create", key: "C", code: "002", name: "Gayri Resmi Şirket", refStart: 500 }, { do: "work", keys: ["C"] }, { do: "backup", keys: ["B", "C"] }] },
@@ -87,10 +94,13 @@ export async function runChain({ chain, dataDir, backupDir, seed = 1, volume = "
 
   for (const [phaseIndex, step] of steps.entries()) {
     const started = performance.now();
-    const server = await bootVersion(step.version, { dataDir, backupDir });
+    // 1.x ayrı süreç (kendi ortam değişkenleriyle); 2.x aynı süreçte kendi createApp'i.
+    const legacy = /^v1\./.test(step.version);
+    const server = legacy ? await bootProcess(step.version, { dataDir, backupDir }) : await bootVersion(step.version, { dataDir, backupDir });
     manifest.versions.push({ version: step.version, commit: server.commit });
     const api = await server.login();
-    const multi = step.version !== "v2.0.16";
+    const multi = !legacy && step.version !== "v2.0.16";
+    let closed = false;
     try {
       const probe = await api.get("/api/workspace/accounts?limit=1");
       today = probe.data?.today || today;
@@ -136,6 +146,23 @@ export async function runChain({ chain, dataDir, backupDir, seed = 1, volume = "
           await work({ api, R, V, company, windowStart, windowEnd, today, version: step.version });
           log(`  ${company.code} · ${company.name}: veri girildi (${Math.round(performance.now() - t)} ms)`);
         }
+      } else if (action.do === "kayit1x") {
+        // v1.3.1: tabloya elle kayıt (Kayıtlar) ve görev. O sürümde cari/fatura yoktu.
+        const t = performance.now();
+        const count = V.rehber.root;
+        for (let i = 1; i <= count; i += 1) must(await api.post("/api/workspace/records", { sourceName: "REHBER.xlsx", values: { "DOSYA NO": `2024/${String(i).padStart(4, "0")}`, "Ad Soyad": `${R.pick(FIRST)} ${R.pick(LAST)}`, Telefon: `05${R.int(30, 59)} ${R.int(100, 999)} ${R.int(10, 99)} ${R.int(10, 99)}`, Şehir: R.pick(CITY) } }), `${step.version} kayıt`);
+        for (let i = 1; i <= 12; i += 1) must(await api.post("/api/workspace/tasks", { title: `Duruşma hazırlığı ${i}`, dueDate: addDays(windowStart, i * 5) }), `${step.version} görev`);
+        log(`  001: ${count} kayıt, 12 görev girildi (${Math.round(performance.now() - t)} ms)`);
+      } else if (action.do === "backup" && legacy) {
+        // 1.x: yedek, servis durdurulup o sürümün kendi aracıyla (npm run backup) alınır.
+        await server.close();
+        closed = true;
+        const company = companies.get("A");
+        const live = companyDbFile(dataDir, null);
+        const file = server.runBackupTool();
+        const facts = dbFacts(file);
+        manifest.backups.push({ version: step.version, companyKey: "A", companyId: company.id, code: "001", name: company.name, file: path.basename(file), pathAtCreation: path.relative(backupDir, file).split(path.sep).join("/"), sha256: sha256File(file), dataDir: "", facts, api: null, fileFacts: facts, matchesLive: JSON.stringify(dbFacts(live)) === JSON.stringify(facts) });
+        log(`  yedek 001 (araçla): ${path.relative(backupDir, file)} (${facts.records} kayıt)`);
       } else if (action.do === "backup") {
         for (const company of pick(action.keys)) {
           await select(company);
@@ -156,14 +183,15 @@ export async function runChain({ chain, dataDir, backupDir, seed = 1, volume = "
 
     // Sürümün son hâli: her şirketin olguları (dosya + API).
     const state = [];
+    if (legacy && !closed) await server.close();
     for (const company of live()) {
-      await select(company);
+      if (!legacy) await select(company);
       const entry = registryEntry(company);
-      state.push({ key: company.key, id: company.id, code: company.code, name: company.name, dir: entry.dir || "", facts: dbFacts(companyDbFile(dataDir, entry)), api: await apiFacts(api) });
+      state.push({ key: company.key, id: company.id, code: company.code, name: company.name || "", dir: entry.dir || "", facts: dbFacts(companyDbFile(dataDir, entry)), api: legacy ? null : await apiFacts(api) });
     }
     manifest.versions.at(-1).state = state;
     if (multi) must(await api.post("/api/companies/select", { id: "sirket-001" }), "001'e dön");
-    await server.close();
+    if (!legacy) await server.close();
     manifest.timings[step.version] = Math.round(performance.now() - started);
     // Kesit: bu sürüm kapandıktan hemen sonraki disk hâli (fikstür). Manifest o ana kadarki hâliyle verilir.
     if (onPhaseEnd) await onPhaseEnd({ version: step.version, last: phaseIndex === totalPhases - 1, manifest: { ...structuredClone(manifest), final: state, registry: readRegistry(dataDir), cut: step.version } });

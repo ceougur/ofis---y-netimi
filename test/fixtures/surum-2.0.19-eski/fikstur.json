@@ -1,0 +1,539 @@
+{
+ "name": "surum-2.0.19-eski",
+ "chain": "eski",
+ "seed": 7,
+ "volume": "kucuk",
+ "node": "v22.22.0",
+ "versions": [
+  {
+   "version": "v1.3.1",
+   "commit": "c794f7aa9cb7fd8679439e26baeb5ae2b37991bb",
+   "state": [
+    {
+     "key": "A",
+     "id": "sirket-001",
+     "code": "001",
+     "name": "",
+     "dir": "",
+     "facts": {
+      "accounts": null,
+      "accountEntries": null,
+      "accountNet": null,
+      "cashEntries": null,
+      "cashNet": null,
+      "invoices": null,
+      "invoicePayable": null,
+      "invoiceLines": null,
+      "plans": null,
+      "planTotal": null,
+      "planEntries": null,
+      "planPaid": null,
+      "datasetRows": null,
+      "records": 240,
+      "tasks": 12
+     },
+     "api": null
+    }
+   ]
+  },
+  {
+   "version": "v2.0.16",
+   "commit": "bd777e9648b0fb355c1d9cb310918d00796fd5c2",
+   "state": [
+    {
+     "key": "A",
+     "id": "sirket-001",
+     "code": "001",
+     "name": "Eski Hukuk Bürosu",
+     "dir": "",
+     "facts": {
+      "accounts": 124,
+      "accountEntries": 67,
+      "accountNet": 13051212,
+      "cashEntries": 5,
+      "cashNet": -216447,
+      "invoices": 12,
+      "invoicePayable": 8420570,
+      "invoiceLines": 18,
+      "plans": 3,
+      "planTotal": 10730800,
+      "planEntries": 4,
+      "planPaid": 2020000,
+      "datasetRows": 240,
+      "records": 240,
+      "tasks": 12
+     },
+     "api": {
+      "accounts": {
+       "count": 124,
+       "balance": 21131212,
+       "hash": "e79c57d43d95523f5ec57851fb4be23b"
+      },
+      "datasetRows": 240
+     }
+    }
+   ]
+  },
+  {
+   "version": "v2.0.19",
+   "commit": "fb032cf44a173ab20d9e21b70bb7b096da07822a",
+   "state": [
+    {
+     "key": "A",
+     "id": "sirket-001",
+     "code": "001",
+     "name": "Eski Hukuk Bürosu",
+     "dir": "",
+     "facts": {
+      "accounts": 136,
+      "accountEntries": 111,
+      "accountNet": 22203060,
+      "cashEntries": 10,
+      "cashNet": -232982,
+      "invoices": 24,
+      "invoicePayable": 23513530,
+      "invoiceLines": 41,
+      "plans": 5,
+      "planTotal": 19830800,
+      "planEntries": 8,
+      "planPaid": 3840000,
+      "datasetRows": 260,
+      "records": 240,
+      "tasks": 12
+     },
+     "api": {
+      "accounts": {
+       "count": 136,
+       "balance": 37563060,
+       "hash": "39f91d27e5c4ff00c45d76a01fbb3013"
+      },
+      "datasetRows": 260
+     }
+    },
+    {
+     "key": "B",
+     "id": "sirket-fd219075-b214-4bd7-a2a3-ff1f03c6a365",
+     "code": "002",
+     "name": "Yeni Büro Ltd. Şti.",
+     "dir": "sirketler/002",
+     "facts": {
+      "accounts": 44,
+      "accountEntries": 58,
+      "accountNet": 12757748,
+      "cashEntries": 5,
+      "cashNet": 123978,
+      "invoices": 12,
+      "invoicePayable": 14555890,
+      "invoiceLines": 21,
+      "plans": 5,
+      "planTotal": 11698320,
+      "planEntries": 4,
+      "planPaid": 1680000,
+      "datasetRows": 60,
+      "records": 0,
+      "tasks": 0
+     },
+     "api": {
+      "accounts": {
+       "count": 44,
+       "balance": 19477748,
+       "hash": "b2b817ce14b548902bb53ef43d782efc"
+      },
+      "datasetRows": 60
+     }
+    }
+   ]
+  }
+ ],
+ "backups": [
+  {
+   "version": "v1.3.1",
+   "companyKey": "A",
+   "companyId": "sirket-001",
+   "code": "001",
+   "name": "",
+   "file": "hukuk-ofisi-2026-10-03T15-48-42-042Z.sqlite",
+   "pathAtCreation": "hukuk-ofisi-2026-10-03T15-48-42-042Z.sqlite",
+   "sha256": "f43074849d84c584182ff79ced779953b33f832055dc2a02f35fbe6c4b88805c",
+   "dataDir": "",
+   "facts": {
+    "accounts": null,
+    "accountEntries": null,
+    "accountNet": null,
+    "cashEntries": null,
+    "cashNet": null,
+    "invoices": null,
+    "invoicePayable": null,
+    "invoiceLines": null,
+    "plans": null,
+    "planTotal": null,
+    "planEntries": null,
+    "planPaid": null,
+    "datasetRows": null,
+    "records": 240,
+    "tasks": 12
+   },
+   "api": null,
+   "fileFacts": {
+    "accounts": null,
+    "accountEntries": null,
+    "accountNet": null,
+    "cashEntries": null,
+    "cashNet": null,
+    "invoices": null,
+    "invoicePayable": null,
+    "invoiceLines": null,
+    "plans": null,
+    "planTotal": null,
+    "planEntries": null,
+    "planPaid": null,
+    "datasetRows": null,
+    "records": 240,
+    "tasks": 12
+   },
+   "matchesLive": true
+  },
+  {
+   "version": "v2.0.16",
+   "companyKey": "A",
+   "companyId": "sirket-001",
+   "code": "001",
+   "name": "Eski Hukuk Bürosu",
+   "file": "destekofis-2026-10-03T15-48-43-491Z-manuel.sqlite",
+   "pathAtCreation": "destekofis-2026-10-03T15-48-43-491Z-manuel.sqlite",
+   "sha256": "c390f83cfb14f4d908916ecef01070c307463bf01ea1e53d1d8c5617bc14e303",
+   "dataDir": "",
+   "facts": {
+    "accounts": 124,
+    "accountEntries": 67,
+    "accountNet": 13051212,
+    "cashEntries": 5,
+    "cashNet": -216447,
+    "invoices": 12,
+    "invoicePayable": 8420570,
+    "invoiceLines": 18,
+    "plans": 3,
+    "planTotal": 10730800,
+    "planEntries": 4,
+    "planPaid": 2020000,
+    "datasetRows": 240,
+    "records": 240,
+    "tasks": 12
+   },
+   "api": {
+    "accounts": {
+     "count": 124,
+     "balance": 21131212,
+     "hash": "e79c57d43d95523f5ec57851fb4be23b"
+    },
+    "datasetRows": 240
+   },
+   "fileFacts": {
+    "accounts": 124,
+    "accountEntries": 67,
+    "accountNet": 13051212,
+    "cashEntries": 5,
+    "cashNet": -216447,
+    "invoices": 12,
+    "invoicePayable": 8420570,
+    "invoiceLines": 18,
+    "plans": 3,
+    "planTotal": 10730800,
+    "planEntries": 4,
+    "planPaid": 2020000,
+    "datasetRows": 240,
+    "records": 240,
+    "tasks": 12
+   },
+   "matchesLive": true
+  },
+  {
+   "version": "v2.0.19",
+   "companyKey": "A",
+   "companyId": "sirket-001",
+   "code": "001",
+   "name": "Eski Hukuk Bürosu",
+   "file": "destekofis-2026-10-03T15-48-45-951Z-manuel.sqlite",
+   "pathAtCreation": "destekofis-2026-10-03T15-48-45-951Z-manuel.sqlite",
+   "sha256": "e60848cb82be6a6eaa1ee52192c7d4fe5928c52d98eb45d2ade971e4ad13f110",
+   "dataDir": "",
+   "facts": {
+    "accounts": 136,
+    "accountEntries": 111,
+    "accountNet": 22203060,
+    "cashEntries": 10,
+    "cashNet": -232982,
+    "invoices": 24,
+    "invoicePayable": 23513530,
+    "invoiceLines": 41,
+    "plans": 5,
+    "planTotal": 19830800,
+    "planEntries": 8,
+    "planPaid": 3840000,
+    "datasetRows": 260,
+    "records": 240,
+    "tasks": 12
+   },
+   "api": {
+    "accounts": {
+     "count": 136,
+     "balance": 37563060,
+     "hash": "39f91d27e5c4ff00c45d76a01fbb3013"
+    },
+    "datasetRows": 260
+   },
+   "fileFacts": {
+    "accounts": 136,
+    "accountEntries": 111,
+    "accountNet": 22203060,
+    "cashEntries": 10,
+    "cashNet": -232982,
+    "invoices": 24,
+    "invoicePayable": 23513530,
+    "invoiceLines": 41,
+    "plans": 5,
+    "planTotal": 19830800,
+    "planEntries": 8,
+    "planPaid": 3840000,
+    "datasetRows": 260,
+    "records": 240,
+    "tasks": 12
+   },
+   "matchesLive": true
+  },
+  {
+   "version": "v2.0.19",
+   "companyKey": "B",
+   "companyId": "sirket-fd219075-b214-4bd7-a2a3-ff1f03c6a365",
+   "code": "002",
+   "name": "Yeni Büro Ltd. Şti.",
+   "file": "destekofis-2026-10-03T15-48-46-002Z-manuel.sqlite",
+   "pathAtCreation": "sirket-002/destekofis-2026-10-03T15-48-46-002Z-manuel.sqlite",
+   "sha256": "94ef259c6280fb9bcde1c08b4b702236eb1f56383754c46a33e22a8def71959b",
+   "dataDir": "sirketler/002",
+   "facts": {
+    "accounts": 44,
+    "accountEntries": 58,
+    "accountNet": 12757748,
+    "cashEntries": 5,
+    "cashNet": 123978,
+    "invoices": 12,
+    "invoicePayable": 14555890,
+    "invoiceLines": 21,
+    "plans": 5,
+    "planTotal": 11698320,
+    "planEntries": 4,
+    "planPaid": 1680000,
+    "datasetRows": 60,
+    "records": 0,
+    "tasks": 0
+   },
+   "api": {
+    "accounts": {
+     "count": 44,
+     "balance": 19477748,
+     "hash": "b2b817ce14b548902bb53ef43d782efc"
+    },
+    "datasetRows": 60
+   },
+   "fileFacts": {
+    "accounts": 44,
+    "accountEntries": 58,
+    "accountNet": 12757748,
+    "cashEntries": 5,
+    "cashNet": 123978,
+    "invoices": 12,
+    "invoicePayable": 14555890,
+    "invoiceLines": 21,
+    "plans": 5,
+    "planTotal": 11698320,
+    "planEntries": 4,
+    "planPaid": 1680000,
+    "datasetRows": 60,
+    "records": 0,
+    "tasks": 0
+   },
+   "matchesLive": true
+  }
+ ],
+ "deleted": [],
+ "timings": {
+  "v1.3.1": 1266,
+  "v2.0.16": 1506,
+  "v2.0.19": 2540
+ },
+ "final": [
+  {
+   "key": "A",
+   "id": "sirket-001",
+   "code": "001",
+   "name": "Eski Hukuk Bürosu",
+   "dir": "",
+   "facts": {
+    "accounts": 136,
+    "accountEntries": 111,
+    "accountNet": 22203060,
+    "cashEntries": 10,
+    "cashNet": -232982,
+    "invoices": 24,
+    "invoicePayable": 23513530,
+    "invoiceLines": 41,
+    "plans": 5,
+    "planTotal": 19830800,
+    "planEntries": 8,
+    "planPaid": 3840000,
+    "datasetRows": 260,
+    "records": 240,
+    "tasks": 12
+   },
+   "api": {
+    "accounts": {
+     "count": 136,
+     "balance": 37563060,
+     "hash": "39f91d27e5c4ff00c45d76a01fbb3013"
+    },
+    "datasetRows": 260
+   }
+  },
+  {
+   "key": "B",
+   "id": "sirket-fd219075-b214-4bd7-a2a3-ff1f03c6a365",
+   "code": "002",
+   "name": "Yeni Büro Ltd. Şti.",
+   "dir": "sirketler/002",
+   "facts": {
+    "accounts": 44,
+    "accountEntries": 58,
+    "accountNet": 12757748,
+    "cashEntries": 5,
+    "cashNet": 123978,
+    "invoices": 12,
+    "invoicePayable": 14555890,
+    "invoiceLines": 21,
+    "plans": 5,
+    "planTotal": 11698320,
+    "planEntries": 4,
+    "planPaid": 1680000,
+    "datasetRows": 60,
+    "records": 0,
+    "tasks": 0
+   },
+   "api": {
+    "accounts": {
+     "count": 44,
+     "balance": 19477748,
+     "hash": "b2b817ce14b548902bb53ef43d782efc"
+    },
+    "datasetRows": 60
+   }
+  }
+ ],
+ "registry": [
+  {
+   "id": "sirket-001",
+   "code": "001",
+   "name": "Eski Hukuk Bürosu",
+   "dir": "",
+   "createdAt": "2026-10-03T15:48:43.833Z",
+   "createdBy": ""
+  },
+  {
+   "id": "sirket-fd219075-b214-4bd7-a2a3-ff1f03c6a365",
+   "code": "002",
+   "name": "Yeni Büro Ltd. Şti.",
+   "dir": "sirketler/002",
+   "createdAt": "2026-10-03T15:48:43.953Z",
+   "createdBy": "user-f39b22bd-c140-43d9-a679-b7d277410fdf"
+  }
+ ],
+ "cut": "v2.0.19",
+ "generator": {
+  "command": "node tools/surum-verisi.mjs --fikstur eski",
+  "chain": "eski",
+  "seed": 7,
+  "volume": "kucuk"
+ },
+ "files": [
+  {
+   "path": "veri/hukuk-ofisi.sqlite",
+   "sha256": "f9831c4a49b87ef0e9b41f33f87bb2bb1b6c8acbfde5e96b1e51ad7cff6cf6d1",
+   "size": 1310720,
+   "mtimeMs": 1791042526095
+  },
+  {
+   "path": "veri/sirketler.json",
+   "sha256": "c08d5eece0730f5800835eff8f55337b2ce84b81797ae9f875576b3f6746653a",
+   "size": 477,
+   "mtimeMs": 1791042523954
+  },
+  {
+   "path": "veri/sirketler/002/destekofis.sqlite",
+   "sha256": "5555aaa80b21ffcd290d23942767a88dda7e165d5ed9ea989d2f06d17e88c53a",
+   "size": 892928,
+   "mtimeMs": 1791042526083
+  },
+  {
+   "path": "yedek/destekofis-2026-10-03T15-48-42-253Z-pre-migration-v18.sqlite",
+   "sha256": "c8909fa95ed62a942d6fe367897429ab97cb01d0b80bd5c97f79497e2137abd7",
+   "size": 327680,
+   "mtimeMs": 1791042522254,
+   "owners": [
+    "sirket-001"
+   ]
+  },
+  {
+   "path": "yedek/destekofis-2026-10-03T15-48-43-491Z-manuel.sqlite",
+   "sha256": "c390f83cfb14f4d908916ecef01070c307463bf01ea1e53d1d8c5617bc14e303",
+   "size": 1187840,
+   "mtimeMs": 1791042523504,
+   "owners": [
+    "sirket-001"
+   ]
+  },
+  {
+   "path": "yedek/destekofis-2026-10-03T15-48-43-803Z-pre-migration-v19.sqlite",
+   "sha256": "74dec8b0ce5d124f63055fd16dcc6de7106183f2d1040251c4a8774ab1530629",
+   "size": 1187840,
+   "mtimeMs": 1791042523811,
+   "owners": [
+    "sirket-001"
+   ]
+  },
+  {
+   "path": "yedek/destekofis-2026-10-03T15-48-44-123Z-veri-oncesi-ekleme.sqlite",
+   "sha256": "d0154f2bf43571ac85e7b1f49585e4086df87511b4ba92d17cd5675b1af3a92b",
+   "size": 1224704,
+   "mtimeMs": 1791042524131,
+   "owners": [
+    "sirket-001"
+   ]
+  },
+  {
+   "path": "yedek/destekofis-2026-10-03T15-48-45-951Z-manuel.sqlite",
+   "sha256": "e60848cb82be6a6eaa1ee52192c7d4fe5928c52d98eb45d2ade971e4ad13f110",
+   "size": 1314816,
+   "mtimeMs": 1791042525959,
+   "owners": [
+    "sirket-001"
+   ]
+  },
+  {
+   "path": "yedek/hukuk-ofisi-2026-10-03T15-48-42-042Z.sqlite",
+   "sha256": "f43074849d84c584182ff79ced779953b33f832055dc2a02f35fbe6c4b88805c",
+   "size": 327680,
+   "mtimeMs": 1791042522043,
+   "owners": [
+    "sirket-001"
+   ]
+  },
+  {
+   "path": "yedek/sirket-002/destekofis-2026-10-03T15-48-46-002Z-manuel.sqlite",
+   "sha256": "94ef259c6280fb9bcde1c08b4b702236eb1f56383754c46a33e22a8def71959b",
+   "size": 888832,
+   "mtimeMs": 1791042526011,
+   "owners": [
+    "sirket-fd219075-b214-4bd7-a2a3-ff1f03c6a365"
+   ]
+  }
+ ]
+}

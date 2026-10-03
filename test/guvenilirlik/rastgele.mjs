@@ -29,7 +29,7 @@ import { ADMIN_PASSWORD } from "../helpers.mjs";
 import { rng } from "../mutabakat/motor.mjs";
 import { FIRST, LAST } from "./adlar.mjs";
 import { unpackFixture } from "./fikstur.mjs";
-import { accountsDigest, apiAccounts, dbFacts } from "./olgular.mjs";
+import { accountsDigest, apiAccounts, dbFacts, sameFacts } from "./olgular.mjs";
 import { CURRENT, bootVersion } from "./surumler.mjs";
 import { companyDbFile } from "./uretici.mjs";
 
@@ -124,7 +124,7 @@ export async function runRandom({ seed = 1, operations = 200, base = "bos", log 
     for (const item of (await checker.get("/api/admin/backups")).data) preexisting.set(item.name, item.companyId);
     // Eski sürümün aldığı yedekler: geri yükleme sonrası beklenen hâl manifestte (ekrandaki cari özeti).
     for (const record of fixture?.fixture.backups || []) {
-      if (M.companies.has(record.companyId) && preexisting.get(record.file) === record.companyId) M.backups.set(backupKey(record.companyId, record.file), { companyId: record.companyId, name: record.file, kind: "eski-surum", digest: record.api.accounts, facts: record.facts });
+      if (M.companies.has(record.companyId) && preexisting.get(record.file) === record.companyId) M.backups.set(backupKey(record.companyId, record.file), { companyId: record.companyId, name: record.file, kind: "eski-surum", digest: record.api?.accounts || null, facts: record.facts });
     }
   }
 
@@ -423,10 +423,10 @@ export async function runRandom({ seed = 1, operations = 200, base = "bos", log 
     // Eski sürümün yedeği: manifestteki ekran özeti ve veri tabanı olguları tutmalı; sonra model gözlemden kurulur.
     const seen = await observe(checker, company.id);
     const digest = accountsDigest([...seen.accounts].map(([id, item]) => ({ id, name: item.name, balance: item.cents / 100 })));
-    if (JSON.stringify(digest) !== JSON.stringify(record.digest)) fail(`eski sürüm yedeği ${record.name} geri yüklendi ama cari listesi yedek anındaki gibi değil: ${JSON.stringify(digest)} ≠ ${JSON.stringify(record.digest)}`);
+    if (record.digest && JSON.stringify(digest) !== JSON.stringify(record.digest)) fail(`eski sürüm yedeği ${record.name} geri yüklendi ama cari listesi yedek anındaki gibi değil: ${JSON.stringify(digest)} ≠ ${JSON.stringify(record.digest)}`);
     const registry = registryFile();
     const facts = dbFacts(companyDbFile(dirs.dataDir, registry.find(item => item.id === company.id)));
-    if (JSON.stringify(facts) !== JSON.stringify(record.facts)) fail(`eski sürüm yedeği ${record.name}: veri tabanı olguları yedek anındaki gibi değil`);
+    if (!sameFacts(facts, record.facts)) fail(`eski sürüm yedeği ${record.name}: veri tabanı olguları yedek anındaki gibi değil`);
     company.accounts = seen.accounts;
     company.cash = seen.cash;
   }

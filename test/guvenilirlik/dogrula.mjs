@@ -13,7 +13,7 @@ import { existsSync } from "node:fs";
 import { BACKUP_NAME, parseBackupName, readBackupIdentity } from "../../server/lib/backup.mjs";
 import { ADMIN_PASSWORD } from "../helpers.mjs";
 import { expectedOwners } from "./fikstur.mjs";
-import { apiFacts, dbFacts, treeHashes } from "./olgular.mjs";
+import { apiFacts, dbFacts, sameFacts, treeHashes } from "./olgular.mjs";
 import { CURRENT, bootVersion } from "./surumler.mjs";
 import { companyDbFile, readRegistry } from "./uretici.mjs";
 
@@ -63,8 +63,8 @@ export async function verifyUpgrade({ dataDir, backupDir, manifest, files = null
     };
     for (const company of manifest.final) {
       const now = await factsNow(company);
-      expect(same(now.db, company.facts), `${company.code} · ${company.name}: veri tabanı olguları farklı\n    eski: ${JSON.stringify(company.facts)}\n    yeni: ${JSON.stringify(now.db)}`);
-      expect(same(now.api, company.api), `${company.code} · ${company.name}: ekrandaki cari listesi farklı\n    eski: ${JSON.stringify(company.api)}\n    yeni: ${JSON.stringify(now.api)}`);
+      expect(sameFacts(now.db, company.facts), `${company.code} · ${company.name}: veri tabanı olguları farklı\n    eski: ${JSON.stringify(company.facts)}\n    yeni: ${JSON.stringify(now.db)}`);
+      expect(!company.api || same(now.api, company.api), `${company.code} · ${company.name}: ekrandaki cari listesi farklı\n    eski: ${JSON.stringify(company.api)}\n    yeni: ${JSON.stringify(now.api)}`);
     }
 
     // 3. Yedekler: hiçbiri silinmedi; listede yalnız kendi şirketinin altında
@@ -117,14 +117,14 @@ export async function verifyUpgrade({ dataDir, backupDir, manifest, files = null
           expect(server.app.stagedRestore?.ok === true, `001 geri yüklemesi açılışta uygulanmadı: ${JSON.stringify(server.app.stagedRestore)}`);
         }
         const now = await factsNow(company);
-        expect(same(now.db, record.facts), `${record.version} yedeği ${record.file} geri yüklendi ama veri yedek anındaki gibi değil\n    yedek anı: ${JSON.stringify(record.facts)}\n    şimdi:     ${JSON.stringify(now.db)}`);
-        expect(same(now.api, record.api), `${record.version} yedeği ${record.file}: ekrandaki cari listesi yedek anındaki gibi değil`);
+        expect(sameFacts(now.db, record.facts), `${record.version} yedeği ${record.file} geri yüklendi ama veri yedek anındaki gibi değil\n    yedek anı: ${JSON.stringify(record.facts)}\n    şimdi:     ${JSON.stringify(now.db)}`);
+        expect(!record.api || same(now.api, record.api), `${record.version} yedeği ${record.file}: ekrandaki cari listesi yedek anındaki gibi değil`);
         // Öbür şirketler değişmedi.
         for (const other of manifest.final.filter(item => item.id !== company.id)) {
           const registry = readRegistry(dataDir);
           const live = dbFacts(companyDbFile(dataDir, registry.find(item => item.id === other.id)));
           checks += 1;
-          if (other.lastRestored ? !same(live, other.lastRestored) : !same(live, other.facts)) failures.push(`${company.code} geri yüklenirken ${other.code} şirketinin verisi değişti`);
+          if (other.lastRestored ? !same(live, other.lastRestored) : !sameFacts(live, other.facts)) failures.push(`${company.code} geri yüklenirken ${other.code} şirketinin verisi değişti`);
         }
         company.lastRestored = now.db;
       }

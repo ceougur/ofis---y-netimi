@@ -2,7 +2,8 @@
 // ve kullanıcının gördüğü cari listesi (API'den: her carinin bakiyesi). Eski sürümün ürettiği an ile güncel sürümün
 // gösterdiği an bu olgularla karşılaştırılır: "hiçbir kayıt kaybolmadı, hiçbir kayıt başka şirketten gelmedi".
 import { createHash } from "node:crypto";
-import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
+import { copyFileSync, existsSync, mkdtempSync, readFileSync, readdirSync, rmSync, statSync } from "node:fs";
+import { tmpdir } from "node:os";
 import path from "node:path";
 import { DatabaseSync } from "node:sqlite";
 
@@ -22,12 +23,30 @@ const SQL = {
   planEntries: "SELECT COUNT(*) AS n FROM plan_entries",
   planPaid: "SELECT COALESCE(SUM(CASE WHEN kind = 'in' THEN amount ELSE -amount END), 0) AS n FROM plan_entries",
   datasetRows: "SELECT COUNT(*) AS n FROM dataset_rows",
+  records: "SELECT COUNT(*) AS n FROM records",
+  tasks: "SELECT COUNT(*) AS n FROM tasks",
 };
 const MONEY = new Set(["accountNet", "cashNet", "invoicePayable", "planTotal", "planPaid"]);
 
-/** Veri tabanı dosyasındaki olgular (salt okunur bağlantı; WAL'deki işlenmiş kayıtlar dahil). */
+/**
+ * Beklenen olgularla karşılaştırma: yalnız beklenende bulunan ve o anda tablosu olan (null olmayan) anahtarlar. Eski
+ * sürümün o anda olmayan tablosu (ör. v1.3.1'de cari) ya da fikstürden sonra eklenmiş yeni olgu anahtarı karşılaştırmayı
+ * bozmaz; var olan her anahtar bire bir eşit olmalı.
+ */
+export const expectedFacts = expected => Object.fromEntries(Object.entries(expected || {}).filter(([, value]) => value !== null));
+export const knownFacts = (actual, expected) => Object.fromEntries(Object.keys(expectedFacts(expected)).map(key => [key, actual?.[key] ?? null]));
+export const sameFacts = (actual, expected) => JSON.stringify(knownFacts(actual, expected)) === JSON.stringify(expectedFacts(expected));
+
+/**
+ * Veri tabanı dosyasındaki olgular (WAL'deki işlenmiş kayıtlar dahil). Dosyanın KOPYASI okunur: kanıt olan yedek dosyasının
+ * yanında SQLite'ın açarken bıraktığı -wal/-shm oluşmaz, canlı dosyaya hiç bağlanılmaz.
+ */
 export function dbFacts(file) {
-  const db = new DatabaseSync(file, { readOnly: true });
+  const dir = mkdtempSync(path.join(tmpdir(), "olgu-"));
+  const copy = path.join(dir, "kopya.sqlite");
+  copyFileSync(file, copy);
+  if (existsSync(`${file}-wal`)) copyFileSync(`${file}-wal`, `${copy}-wal`);
+  const db = new DatabaseSync(copy, { readOnly: true });
   try {
     const out = {};
     for (const [key, sql] of Object.entries(SQL)) {
@@ -42,6 +61,7 @@ export function dbFacts(file) {
     return out;
   } finally {
     db.close();
+    rmSync(dir, { recursive: true, force: true });
   }
 }
 

@@ -9,7 +9,7 @@ import assert from "node:assert/strict";
 import { after, before, describe, test } from "node:test";
 import { ADMIN_PASSWORD } from "./helpers.mjs";
 import { unpackFixture } from "./guvenilirlik/fikstur.mjs";
-import { apiFacts, dbFacts } from "./guvenilirlik/olgular.mjs";
+import { apiFacts, dbFacts, expectedFacts, knownFacts } from "./guvenilirlik/olgular.mjs";
 import { CURRENT, bootVersion } from "./guvenilirlik/surumler.mjs";
 import { companyDbFile, readRegistry } from "./guvenilirlik/uretici.mjs";
 
@@ -81,7 +81,7 @@ describe("yedek tatbikatı: gerçek v2.0.19 verisinde 001 ve 002", () => {
       const company = manifest().final.find(item => item.code === code);
       assert.ok(company, `${code} fikstürde var`);
       const first = await facts(company.id);
-      assert.deepEqual(first.db, company.facts, "açılışta veri v2.0.19'un bıraktığı gibi");
+      assert.deepEqual(knownFacts(first.db, company.facts), expectedFacts(company.facts), "açılışta veri v2.0.19'un bıraktığı gibi");
       await work(company.id, "Tatbikat");
       const moment1 = await facts(company.id);
       assert.ok(moment1.db.invoices > company.facts.invoices && moment1.db.plans > company.facts.plans, "yeni fatura ve taksit kartı girildi");
@@ -128,7 +128,7 @@ describe("yedek tatbikatı: gerçek v2.0.19 verisinde 001 ve 002", () => {
       assert.deepEqual(listing.map(item => item.companyId), [company.id], "eski yedek listede yalnız kendi şirketinin altında");
       await restore(company.id, company.code, record.file);
       const now = await facts(company.id);
-      assert.deepEqual(now.db, record.facts, `${version}'un yedek anındaki veri`);
+      assert.deepEqual(knownFacts(now.db, record.facts), expectedFacts(record.facts), `${version}'un yedek anındaki veri`);
       assert.deepEqual(now.api, record.api, `${version}'un yedek anında ekranda görünen cari listesi`);
       assert.deepEqual(await others(company.id), othersBefore, "öbür şirketler değişmedi");
       await work(company.id, `Eski Yedekten Sonra ${version}`);
