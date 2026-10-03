@@ -417,6 +417,17 @@ Bağlam kopsa da bu düzen değişmez. Kullanıcı "zip ver" dediğinde şu üç
   (Node 24.21, bootstrap 2; GitHub API ve API kapalıyken yedek yol) 2.0.19'u "available" gördü, indirme sha256 eşleşti;
   2.0.19 kurulu → "up-to-date"; kurcalanmış bildirge reddedildi. Kılavuz değişmedi: site `web/indir/` PDF'i yayınla
   bayt bayt aynı (60bcf7ad…) → site PR'ı gerekmedi. 2.0.19 KAPANDI.
+- 2.0.20 YAPILACAKLAR (kullanıcı "yapılacaklara not al" dedi, 03.10.2026; "yap" denince başlanır; ayrıntı ve
+  kanıt hemen altındaki ADAYI maddesinde):
+  [ ] 1. Bütün raporların (43) tablosunun altında kalın TOPLAM satırı — ekran, PDF, Excel aynı; yalnız toplanabilir
+         kolonlar (tutar, matrah, KDV, borç, alacak, miktar); birim fiyat, yürüyen bakiye, oran, tarih boş.
+  [ ] 2. Cari Listesi ve Bakiyeler özetine "Toplam Borç (Anlaşılan)", "Toplam Tahsilat (Ödenen)", "Kalan".
+  [ ] 3. Dönemli raporlar ilk açılışta "Bu Yıl"; sonra kullanıcının son seçtiği dönem hatırlanır.
+  [ ] 4. Dönemde kayıt yoksa ipucu: "Bu dönemde kayıt yok — Tüm Zamanlar'ı deneyin".
+  [ ] 5. Test: 43 raporda TOPLAM satırı = satırların toplamı (ekran/PDF/Excel); boş dönem; tek kayıt; 10 cari × 10.000,
+         ilk taksitler ödenmiş → 100.000 / 10.000 / 90.000 (Taksit Kartları, Cari Mizanı, Cari Listesi); arayüzden senaryo.
+  [ ] 6. Kılavuza kısa hap bilgi: "Ciro ve toplam alacak hangi raporda".
+  Açık soru: kullanıcı "getirmiyor"u hangi raporda gördü (ekran bekleniyor).
 - 2.0.20 ADAYI — RAPORLARDA ALT TOPLAM (kullanıcı, 03.10.2026): "toplam cari alacağı yani ciroyu hangi rapordan
   görürüm?" → yanıt: ciro = Raporlar → Fatura → Satış Faturaları / Cari Bazında Satış ve Alış (Net Satış); toplam
   alacak = Raporlar → Cari → Cari Listesi ve Bakiyeler (Borçlular) / Cari Mizanı. Kullanıcı: "raporları getirmiyor ya da
