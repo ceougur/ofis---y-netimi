@@ -59,9 +59,10 @@
     <section class="adm-panel" data-panel="backups" role="tabpanel" hidden>
       <div class="adm-panel-head">
         <div><h1>Yedekler</h1><p>Sunucu açıkken 6 saatte bir, verisi değişen her şirketin otomatik yedeği alınır; her şirketin son 30 yedeği, ayrıca sıfırlama, silme, geri yükleme ve güncelleme öncesi alınan son 20 güvenlik yedeği saklanır. Yedekleri düzenli olarak harici diske kopyalayın.</p><p class="adm-backup-where" id="adm-backup-where"></p></div>
-        <button type="button" class="hof-button" id="adm-backup-now">Şimdi Yedek Al</button>
+        <div class="adm-actions"><button type="button" class="hof-button hof-button-ghost" id="adm-backup-audit">Yedekleri Denetle</button><button type="button" class="hof-button" id="adm-backup-now">Şimdi Yedek Al</button></div>
       </div>
       <div class="adm-card adm-backup-pending" id="adm-backup-pending" hidden></div>
+      <div class="adm-card adm-backup-audit" id="adm-backup-audit-out" hidden></div>
       <div class="adm-card"><div class="adm-table-wrap"><table class="hof-table"><thead><tr><th>Şirket</th><th>Yedek Dosyası</th><th>Tarih</th><th class="adm-right">Boyut</th><th class="adm-right">İşlemler</th></tr></thead><tbody id="adm-backups"></tbody></table></div></div>
       <div class="adm-card" id="adm-cloud">
         <h2>Drive'a da Yedekle</h2>

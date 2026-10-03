@@ -693,6 +693,30 @@
     loadBackups();
     loadCloud();
   }
+  // Yedekleri Denetle (v2.0.21): her şirketin yedekleri kendi adını taşıyan klasörde ve içlerindeki kimlik o şirketin mi?
+  // Yalnız okur; hiçbir dosyaya dokunmaz.
+  $("#adm-backup-audit").addEventListener("click", async event => {
+    const button = event.currentTarget;
+    const out = $("#adm-backup-audit-out");
+    button.disabled = true;
+    try {
+      const result = await HOF.api("/api/admin/backups/audit");
+      const rows = result.companies
+        .map(item => `<tr><td><b>${esc(item.code)} · ${esc(item.name)}</b></td><td><code>${esc(item.folder)}</code>${item.exists ? "" : ' <span class="adm-muted">(henüz yedek yok)</span>'}</td><td class="adm-right">${item.count.toLocaleString("tr-TR")}</td><td>${item.files.some(file => file.state === "baska-sirket") ? '<span class="adm-error">Başka Şirketin Yedeği Var</span>' : item.files.some(file => file.state === "kimliksiz") ? '<span class="adm-warn">Eski (Kimliksiz) Yedek Var</span>' : '<span class="adm-ok">Doğru</span>'}</td></tr>`)
+        .join("");
+      const list = (items, cls) => (items.length ? `<ul class="adm-hints ${cls}">${items.map(item => `<li>${esc(item)}</li>`).join("")}</ul>` : "");
+      out.innerHTML = `<h2>Yedek Denetimi</h2>
+        <p class="${result.ok ? "adm-ok" : "adm-error"}"><b>${result.ok ? "Her şirketin yedekleri kendi klasöründe ve kendi kimliğiyle." : "Sorun bulundu: aşağıdaki yedekler yanlış yerde."}</b> ${esc(HOF.formatDateTime(result.checkedAt))} · <code>${esc(result.backupRoot)}</code></p>
+        <div class="adm-table-wrap"><table class="hof-table"><thead><tr><th>Şirket</th><th>Yedek Klasörü</th><th class="adm-right">Yedek</th><th>Durum</th></tr></thead><tbody>${rows}</tbody></table></div>
+        ${list(result.errors, "adm-error")}${list(result.warnings, "adm-warn")}${list(result.notes, "adm-muted")}`;
+      out.hidden = false;
+      out.scrollIntoView({ block: "nearest" });
+    } catch (error) {
+      HOF.toastError(error);
+    } finally {
+      button.disabled = false;
+    }
+  });
   $("#adm-backup-now").addEventListener("click", async event => {
     const button = event.currentTarget;
     button.disabled = true;

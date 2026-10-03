@@ -3,6 +3,7 @@ import { createReadStream, statSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { BACKUP_NAME } from "../lib/backup.mjs";
+import { auditBackups } from "../lib/backup-audit.mjs";
 import { HttpError, SECURITY_HEADERS, limited, ok, parseJson, readJson, text } from "../lib/http.mjs";
 import { nameConflict } from "../lib/names.mjs";
 import { hashPassword, passwordProblem, verifyPassword } from "../lib/passwords.mjs";
@@ -323,6 +324,13 @@ export function registerAdminRoutes(router, context) {
   router.get("/api/admin/backups/folders", async ({ req, res }) => {
     const admin = auth.requirePermission(req, "system.manage");
     ok(res, { root: backups.root(), current: companies.selectedFor(admin), companies: backups.accessible(admin).map(company => companyView(admin, company)), pending: backups.pendingRestore(), lastRestore: lastRestore(), supervised: Boolean(supervisorLink?.supervised) });
+  });
+
+  // Yedekleri Denetle (v2.0.21): her şirketin yedekleri kendi klasöründe ve kendi kimliğiyle mi? Yalnız okur, rapor verir.
+  // (/api/admin/backups/:name'den önce kayıtlı; "audit" yedek adı sayılmaz.)
+  router.get("/api/admin/backups/audit", async ({ req, res }) => {
+    auth.requirePermission(req, "system.manage");
+    ok(res, auditBackups({ registry: companies, backupRoot: backups.root() }));
   });
 
   // Yedek Al: scope "all" (Tüm Şirketler, varsayılan) ya da "one" (companyId; verilmezse seçili şirket).
