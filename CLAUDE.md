@@ -410,7 +410,13 @@ Bağlam kopsa da bu düzen değişmez. Kullanıcı "zip ver" dediğinde şu üç
   olunamayan satır yeni cari açar"; aynı adlı iki gerçek kişi ayrılsın diye). KARAR (kullanıcı, 03.10.2026: "önerini yap"
   → önerim: kural BÖYLE KALIR; "yalnız ad aynıysa sor" yapılmadı). senaryo-219 adım 2 bu kuralı denetler.
   Kullanıcı (03.10.2026, "müşteri bekliyor"): işlem bitince zip ver, BİRLEŞTİRMEYİ YAP, GitHub'a yükleme linkini ver.
-  İmza anahtarı bu oturumda yok → kullanıcıdan oturuma yüklemesi istendi; birleştirme CI yeşil olunca yapılır.
+  YAYIMLANDI (03.10.2026 10:13; PR ceougur/ofis---y-netimi#19 CI 12/12 yeşil → birleştirildi, `v2.0.19` = fb032cf; dal
+  `master` üzerine sıfırlandı). İmza anahtarı kullanıcının yüklediği .pem (destekofis-2026-1 ile birebir, imzala/doğrula
+  sınandı). Güncelleme paketi sha256 349ebb89…, kurulum .exe sha256 029c2acf… (29,32 MB, simgeli). Yayındaki 5 dosya +
+  latest/ (exe, json, zip, pdf) bayt bayt aynı; gerçek güncelleyici canlı GitHub'da 2.0.18/17/16/15/2.0.4/1.7.0 olarak
+  (Node 24.21, bootstrap 2; GitHub API ve API kapalıyken yedek yol) 2.0.19'u "available" gördü, indirme sha256 eşleşti;
+  2.0.19 kurulu → "up-to-date"; kurcalanmış bildirge reddedildi. Kılavuz değişmedi: site `web/indir/` PDF'i yayınla
+  bayt bayt aynı (60bcf7ad…) → site PR'ı gerekmedi. 2.0.19 KAPANDI.
 - 2.0.17 HAZIR (02.10.2026; dal `claude/nice-euler-jvajxv`; 14 madde yapıldı, kanıt `docs/2.0.17-KANIT.md`): şema göçü 19
   (fatura bağı + mahsup); çoklu şirket hub/çocuk mimarisi (`docs/MIMARI.md` → 2.0.17); teslim `dist/teslim-2.0.17/`
   (3 zip + SHA256SUMS; imza anahtarı kullanıcının yüklediği .pem). Sırada: kullanıcı "birleştir" → CI → birleştir →
