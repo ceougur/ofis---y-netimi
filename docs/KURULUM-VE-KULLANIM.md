@@ -252,17 +252,19 @@ Yetkiler: hücre ve başlık yazmayı herkes, satır/kolon/sayfa eklemeyi ekleme
 
 ## 10. Yedekleme ve geri dönüş
 
-- Sunucu açıkken 6 saatte bir otomatik yedek alınır; açılışta son yedek eskiyse hemen alınır. Son 30 yedek kurulum klasöründeki `backups` klasöründe saklanır (`C:\DestekOfis\backups`; eski kurulumlarda `C:\HukukOfisiMerkezi\backups`). Yedek adları `destekofis-<tarih>-….sqlite` biçimindedir; 1.6 öncesinden kalan `hukuk-ofisi-…` yedekler de listelenir, geri yüklenebilir ve zaman sırasıyla temizlenir.
-- Elle yedek: yönetim paneli → *Yedekler* → *Şimdi yedek al* (indirilebilir) veya Başlat menüsü → DestekOfis → *Yedek al*.
+- Sunucu açıkken 6 saatte bir bütün şirketlerin otomatik yedeği alınır (o gün hiç açılmamış şirketinki de); açılışta son yedek eskiyse hemen alınır. Her şirketin yedeği kurulum klasöründeki `backups` altında **kendi adını taşıyan klasörde** durur ve son 30'u saklanır: `C:\DestekOfis\backups\001 - Şirket 1\`, `C:\DestekOfis\backups\002 - Şirket 2\` (eski kurulumlarda `C:\HukukOfisiMerkezi\backups\…`). Yedek adında şirket kodu bulunur: `destekofis-002-<tarih>-….sqlite`. Şirketin adı ya da kodu değişince klasörü de yeni adını alır; şirket silinse de yedek klasörü yerinde kalır.
+- 2.0.19 ve öncesinin yedekleri (`backups` kökündeki ve `backups\sirket-002\` gibi klasörlerdeki) ilk açılışta kendi şirketinin klasörüne taşınır; silinmez. 1.6 öncesinden kalan `hukuk-ofisi-…` yedekler de listelenir, geri yüklenebilir ve zaman sırasıyla temizlenir.
+- Elle yedek: yönetim paneli → *Yedekler* → *Şimdi Yedek Al* (*Tüm Şirketler* ya da *Yalnız* seçili şirket; indirilebilir) veya Başlat menüsü → DestekOfis → *Yedek al* (bütün şirketler).
+- Programdan geri yükleme: *Yönetim → Yedekler* → yedeğin satırında *Geri Yükle* (şirket kodu ya da adı + parolanızla onay). Yedek yalnız kendi şirketine yüklenir; önce şirketin o anki verisi `geri-yukleme-oncesi` adıyla yedeklenir. İlk şirket (001) sunucu yeniden açılırken geri yüklenir (servis birkaç saniye içinde kendiliğinden yeniden başlar); kullanıcılar, parolalar ve lisans geri gitmez.
 - Sürüm yükseltmelerinde veritabanı değişmeden önce otomatik tam yedek alınır (`...-pre-migration-...sqlite`).
 - `backups` klasörünü düzenli olarak harici diske veya NAS'a kopyalayın. Sohbet arşivi (`data\mesaj-arsivi`) ve belgeler (`data\belgeler`) veritabanı yedeğinde değil, `data` klasöründe durur; onları da kopyalayın.
 - **Silinenler (2.0.2):** Yanlışlıkla silinen kayıt, sekme, belge, serbest sayfa/satır/kolon, tahsilat ve kasa hareketi yedeğe dönmeden geri getirilir: *Yönetim → Silinenler → Geri yükle*. Eski yerine döner, o arada eklenenlerin üzerine yazmaz.
 
-**Yedekten dönüş:**
+**Yedekten elle dönüş (program açılmıyorsa):**
 
 1. Servisi durdurun: Başlat → *Hizmetler* (services.msc) → **DestekOfis Sunucu** → *Durdur* (veya yönetici komut isteminde `net stop DestekOfis`).
-2. `data` klasöründeki veritabanı dosyasını (`destekofis.sqlite`, 1.6 öncesi kurulumlarda `hukuk-ofisi.sqlite`) güvenli bir adla saklayın; varsa yanındaki `-wal` ve `-shm` dosyalarını da taşıyın.
-3. Seçtiğiniz yedeği aynı adla (`destekofis.sqlite` veya `hukuk-ofisi.sqlite`) `data` klasörüne kopyalayın.
+2. Şirketin veri dosyasını bulun: 001 için `data\destekofis.sqlite` (1.6 öncesi kurulumlarda `hukuk-ofisi.sqlite`), diğer şirketler için `data\sirketler\<klasör>\destekofis.sqlite` (yol *Yönetim → Şirketler → Veri ve Yedek Klasörleri*'nde yazar). Dosyayı güvenli bir adla saklayın; varsa yanındaki `-wal` ve `-shm` dosyalarını da taşıyın.
+3. O şirketin yedek klasöründen (`backups\<kod> - <ad>\`) seçtiğiniz yedeği aynı adla bu klasöre kopyalayın. Başka şirketin yedeğini kopyalamayın.
 4. Servisi başlatın (`net start DestekOfis`).
 
 ## 11. Servis yönetimi
