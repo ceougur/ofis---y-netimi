@@ -1,0 +1,158 @@
+{
+ "name": "surum-2.0.16-zincir",
+ "chain": "zincir",
+ "seed": 7,
+ "volume": "kucuk",
+ "node": "v22.22.0",
+ "versions": [
+  {
+   "version": "v2.0.16",
+   "commit": "bd777e9648b0fb355c1d9cb310918d00796fd5c2",
+   "state": [
+    {
+     "key": "A",
+     "id": "sirket-001",
+     "code": "001",
+     "name": "Merkez Danışmanlık Ltd. Şti.",
+     "dir": "",
+     "facts": {
+      "accounts": 124,
+      "accountEntries": 71,
+      "accountNet": 16372733,
+      "cashEntries": 5,
+      "cashNet": 4835,
+      "invoices": 12,
+      "invoicePayable": 13072520,
+      "invoiceLines": 21,
+      "plans": 5,
+      "planTotal": 11246500,
+      "planEntries": 4,
+      "planPaid": 1620000,
+      "datasetRows": 240
+     },
+     "api": {
+      "accounts": {
+       "count": 124,
+       "balance": 22852733,
+       "hash": "729aaa5ca5d9e9d1479e6a4629cfbaf7"
+      },
+      "datasetRows": 240
+     }
+    }
+   ]
+  }
+ ],
+ "backups": [
+  {
+   "version": "v2.0.16",
+   "companyKey": "A",
+   "companyId": "sirket-001",
+   "code": "001",
+   "name": "Merkez Danışmanlık Ltd. Şti.",
+   "file": "destekofis-2026-10-03T15-22-46-207Z-manuel.sqlite",
+   "pathAtCreation": "destekofis-2026-10-03T15-22-46-207Z-manuel.sqlite",
+   "sha256": "f2cd031281e37120040d9d637b4d1927096399a4c663ef0f14e40a9ae6197d43",
+   "dataDir": "",
+   "facts": {
+    "accounts": 124,
+    "accountEntries": 71,
+    "accountNet": 16372733,
+    "cashEntries": 5,
+    "cashNet": 4835,
+    "invoices": 12,
+    "invoicePayable": 13072520,
+    "invoiceLines": 21,
+    "plans": 5,
+    "planTotal": 11246500,
+    "planEntries": 4,
+    "planPaid": 1620000,
+    "datasetRows": 240
+   },
+   "api": {
+    "accounts": {
+     "count": 124,
+     "balance": 22852733,
+     "hash": "729aaa5ca5d9e9d1479e6a4629cfbaf7"
+    },
+    "datasetRows": 240
+   },
+   "fileFacts": {
+    "accounts": 124,
+    "accountEntries": 71,
+    "accountNet": 16372733,
+    "cashEntries": 5,
+    "cashNet": 4835,
+    "invoices": 12,
+    "invoicePayable": 13072520,
+    "invoiceLines": 21,
+    "plans": 5,
+    "planTotal": 11246500,
+    "planEntries": 4,
+    "planPaid": 1620000,
+    "datasetRows": 240
+   },
+   "matchesLive": true
+  }
+ ],
+ "deleted": [],
+ "timings": {
+  "v2.0.16": 1463
+ },
+ "final": [
+  {
+   "key": "A",
+   "id": "sirket-001",
+   "code": "001",
+   "name": "Merkez Danışmanlık Ltd. Şti.",
+   "dir": "",
+   "facts": {
+    "accounts": 124,
+    "accountEntries": 71,
+    "accountNet": 16372733,
+    "cashEntries": 5,
+    "cashNet": 4835,
+    "invoices": 12,
+    "invoicePayable": 13072520,
+    "invoiceLines": 21,
+    "plans": 5,
+    "planTotal": 11246500,
+    "planEntries": 4,
+    "planPaid": 1620000,
+    "datasetRows": 240
+   },
+   "api": {
+    "accounts": {
+     "count": 124,
+     "balance": 22852733,
+     "hash": "729aaa5ca5d9e9d1479e6a4629cfbaf7"
+    },
+    "datasetRows": 240
+   }
+  }
+ ],
+ "registry": null,
+ "cut": "v2.0.16",
+ "generator": {
+  "command": "node tools/surum-verisi.mjs --fikstur",
+  "chain": "zincir",
+  "seed": 7,
+  "volume": "kucuk"
+ },
+ "files": [
+  {
+   "path": "veri/destekofis.sqlite",
+   "sha256": "6cb1e415d83cc2381ffd36211bd7bb8725ba33d67abf213c0ea1995f43d5ae38",
+   "size": 983040,
+   "mtimeMs": 1791040966243
+  },
+  {
+   "path": "yedek/destekofis-2026-10-03T15-22-46-207Z-manuel.sqlite",
+   "sha256": "f2cd031281e37120040d9d637b4d1927096399a4c663ef0f14e40a9ae6197d43",
+   "size": 983040,
+   "mtimeMs": 1791040966211,
+   "owners": [
+    "sirket-001"
+   ]
+  }
+ ]
+}
