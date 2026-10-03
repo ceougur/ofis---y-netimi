@@ -466,6 +466,13 @@ Bağlam kopsa da bu düzen değişmez. Kullanıcı "zip ver" dediğinde şu üç
          001'in YENİ yedekleri de `backups/sirket-001/` altına, ad `destekofis-<kod>-…` (001 veri dosyası yerinde kalır, göç
          riski yok); Yönetim → Şirketler'de her şirketin veri dosyası yolu, boyutu, cari/kayıt sayısı ve son yedeği; Yedekler
          ekranında "001 · Şirket 1 → …\backups\sirket-001" açıklaması. Kullanıcıdan teyit: 002'ye geçince Cari boş mu.
+         KARAR (kullanıcı, 03.10.2026): "her şirketin yedeği kendi isminde klasör açılıp buna girmeli". Uygulama: her
+         şirketin yedekleri `backups\<kod> - <ad>\` (ör. `backups\001 - Şirket 1\`, `backups\002 - Şirket 2\`); Windows'ta
+         geçersiz karakterler (\ / : * ? " < > |) temizlenir; ad/kod değişince klasör yeniden adlandırılır (içindekiler
+         korunur); göçte mevcut yedekler taşınır: `backups\` kökündeki 001 yedekleri → `001 - <ad>\`, `sirket-002\` →
+         `002 - <ad>\` (silme yok, taşıma; taşınamayan yerinde kalır, listelenir). Dosya adı `destekofis-<kod>-<zaman>-<etiket>`.
+         Geri yükleme ve Yedekler listesi yeni klasörlerden okur; eski yerdeki yedek de tanınır. Test: iki şirket, ad değişimi,
+         göç (kökte ve sirket-002'de eski yedekler), Türkçe/özel karakterli ad.
   Açık soru CEVAPLANDI: "getirmiyor" = Cari Bazında Tahsilat (madde 8).
 - 2.0.20 ADAYI — RAPORLARDA ALT TOPLAM (kullanıcı, 03.10.2026): "toplam cari alacağı yani ciroyu hangi rapordan
   görürüm?" → yanıt: ciro = Raporlar → Fatura → Satış Faturaları / Cari Bazında Satış ve Alış (Net Satış); toplam
