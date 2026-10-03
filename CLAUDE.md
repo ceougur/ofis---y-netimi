@@ -436,6 +436,9 @@ Bağlam kopsa da bu düzen değişmez. Kullanıcı "zip ver" dediğinde şu üç
   güncelleyici 2.0.19/18/17/16/2.0.4/1.7.0 olarak (API ve yedek yol) "available". Kılavuz DEĞİŞTİ (PDF 84c256d7…) →
   yayından sonra site PR'ı (`ceougur/destekofis` → `web/indir/`). Sırada: "birleştir" → CI → birleştir → yayın (v2.0.20,
   5 dosya) → "yayımladım" → bayt bayt + güncelleyici denetimi → site PR'ı.
+  Kullanıcı (03.10.2026, Geri Yükle penceresi ekranıyla): "yedekten geri yükle yap dememiştim ama güzel olmuş" → KALIR.
+  Kaynağı: madde 9 önerimdeki "geri yüklemede yanlış şirkete yükleme reddedilir" (2.0.19'a kadar geri yükleme yalnız
+  güncelleme geri dönüşünde, ekransız). DERS: istenenin dışına çıkan özellik teslimde AYRICA söylenir.
 - 2.0.20 YAPILACAKLAR (kullanıcı "yapılacaklara not al" dedi, 03.10.2026; "yap" denince başlanır; ayrıntı ve
   kanıt hemen altındaki ADAYI maddesinde):
   [x] 1. Bütün raporların (43) tablosunun altında kalın TOPLAM satırı — ekran, PDF, Excel aynı; yalnız toplanabilir
