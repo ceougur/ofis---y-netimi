@@ -64,6 +64,70 @@ function monthsBetween(first, last, max = 600) {
 }
 const percent = (part, whole) => (whole > 0.005 ? `%${new Intl.NumberFormat("tr-TR", { maximumFractionDigits: 1 }).format((part / whole) * 100)}` : "");
 
+// ---------- TOPLAM satırı (v2.0.20, kullanıcı: "alt toplamları getirmiyor") ----------
+// Her raporun tablosunun altında, yaygın muhasebe programlarındaki gibi kalın bir TOPLAM satırı: ekran, PDF ve Excel aynı
+// satırı gösterir ve TÜM satırlardan (ön izlemedeki ilk 200 değil) hesaplanır. Kurallar:
+//   - yalnız tutar ("money") ve sayı ("number") kolonları toplanır; yürüyen bakiye, birim fiyat, oran gibi toplanması
+//     anlamsız kolonlar (NO_SUM) boş kalır;
+//   - miktar kolonları yalnız bütün satırlar aynı birimdeyse toplanır (Adet + Kg toplanmaz);
+//   - rapor, yönü karışık satırlarda (alınan/verilen, satış/alış) footerUniform ile toplamı yalnız tek yön süzülünce
+//     gösterir; footer: false toplamı kapatır; footer: { Kolon: değer } hesaplanan satırın üstüne yazar (ör. net bakiye).
+const NO_SUM = /^(Bakiye|Gün Sonu Kasa|Ay Başı Kasa|Ay Sonu Kasa|Birim Fiyat|KDV %|Stopaj %|Kritik Seviye)$/;
+const MONEY_CELL = /^(-?)((?:\d{1,3}(?:\.\d{3})*|\d+)),(\d{2}) TL$/;
+const NUMBER_CELL = /^-?(?:\d{1,3}(?:\.\d{3})+|\d+)(?:,\d+)?$/;
+export function cellNumber(value, type) {
+  const raw = String(value ?? "").trim().replace(/−/g, "-");
+  if (!raw) return null;
+  if (type === "money") {
+    const match = MONEY_CELL.exec(raw);
+    return match ? Number(`${match[1]}${match[2].replace(/\./g, "")}.${match[3]}`) : null;
+  }
+  if (!NUMBER_CELL.test(raw)) return null;
+  return Number(raw.replace(/\./g, "").replace(",", "."));
+}
+// Cari bakiyelerinde (Bakiye mutlak değer + Durum) TOPLAM net bakiyedir: borçlular − alacaklılar, yönüyle.
+const netFooter = net => ({ Bakiye: tl(Math.abs(roundMoney(net))), Durum: sideText(roundMoney(net)) });
+export function footerRow({ headers = [], types = [], rows = [], footer, footerUniform }) {
+  if (footer === false || !rows.length) return null;
+  if (footerUniform) {
+    const index = headers.indexOf(footerUniform);
+    if (index >= 0 && new Set(rows.map(row => String(row[index] ?? "").trim())).size > 1) return null;
+  }
+  const unitIndex = headers.indexOf("Birim");
+  const oneUnit = unitIndex < 0 || new Set(rows.map(row => String(row[unitIndex] ?? "").trim()).filter(Boolean)).size <= 1;
+  const out = headers.map(() => "");
+  let any = false;
+  headers.forEach((header, index) => {
+    const type = types[index];
+    if ((type !== "money" && type !== "number") || NO_SUM.test(header)) return;
+    if (type === "number" && unitIndex >= 0 && !oneUnit) return;
+    let total = 0;
+    let seen = false;
+    for (const row of rows) {
+      const value = cellNumber(row[index], type);
+      if (value === null) continue;
+      total += value;
+      seen = true;
+    }
+    if (!seen) return;
+    any = true;
+    out[index] = type === "money" ? tl(roundMoney(total)) : QTY_FORMAT.format(Math.round(total * 1000) / 1000);
+  });
+  if (footer && typeof footer === "object") {
+    for (const [header, value] of Object.entries(footer)) {
+      const index = headers.indexOf(header);
+      if (index >= 0) {
+        out[index] = value;
+        any = true;
+      }
+    }
+  }
+  if (!any) return null;
+  const label = out.findIndex((value, index) => !value && types[index] !== "money" && types[index] !== "number");
+  out[label >= 0 ? label : 0] = out[label >= 0 ? label : 0] || "TOPLAM";
+  return out;
+}
+
 export function registerReportCenter(router, { store, auth, audit, dataset, cash = () => null, accounts = () => null, plans = () => null, stock = () => null, cheques = () => null, invoices = () => null, overview = () => null, ledger = () => null, integrity = () => null, now: clock = () => new Date() }) {
   const today = () => isoDay(clock());
   const office = () => store.setting("office.name", "");
@@ -80,6 +144,9 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
     return { from, to };
   };
   const inRange = (date, { from, to }) => (!from || date >= from) && (!to || date <= to);
+  // Vade raporlarında (çek/senet portföyü, taksit vadeleri) "Tüm Zamanlar" sınırsızdır: vadesi henüz gelmemiş evrak ve
+  // taksitler de listelenir (v2.0.20; önceden aralık bugünde bitiyor, ileri vadeli çekler portföyde görünmüyordu).
+  const dueRangeOf = (query, preset) => (query.preset === "all" ? { from: "", to: "" } : rangeOf(query, preset));
   const allTime = from => isAllTimeStart(from, today());
   const rangeText = ({ from, to }) =>
     allTime(from) ? `Tüm hareketler · ${to ? dayText(to) : "bugün"} tarihine kadar` : from || to ? `${from ? dayText(from) : "…"} – ${to ? dayText(to) : "…"}` : "Tüm zamanlar";
@@ -130,9 +197,9 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
       title: "Kasa Hareketleri",
       description: "Nakit kasanın seçilen aralıktaki giriş ve çıkışları; devir, yürüyen bakiye ve kaynağı (kayıt tahsilatı, taksit, cari, stok, çek/senet, elle, banka transferi). Havale/EFT ve POS hareketleri Banka ve POS Hareketleri raporunda.",
       params: ["range"],
-      preset: "thisMonth",
+      preset: "thisYear",
       build(query) {
-        const range = rangeOf(query, "thisMonth");
+        const range = rangeOf(query, "thisYear");
         const data = cash().report(admin, range.from, range.to, "cash");
         const rows = [[openingDay(range.from), "Devir", "Dönem başı kasa", "", "", money(data.opening), ""]];
         for (const entry of data.entries) rows.push([dayText(entry.date), CASH_SOURCE[entry.source] || entry.source, cashLabel(entry), entry.kind === "in" ? money(entry.amount) : "", entry.kind === "out" ? money(entry.amount) : "", money(entry.balance), entry.actorName || ""]);
@@ -152,9 +219,9 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
       title: "Günlük Kasa Özeti",
       description: "Her gün için toplam giriş, çıkış, net ve gün sonu kasa.",
       params: ["range"],
-      preset: "thisMonth",
+      preset: "thisYear",
       build(query) {
-        const range = rangeOf(query, "thisMonth");
+        const range = rangeOf(query, "thisYear");
         const data = cash().report(admin, range.from, range.to, "cash");
         const days = new Map();
         for (const entry of data.entries) {
@@ -179,9 +246,9 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
       title: "Gelir / Gider Kaynağa Göre",
       description: "Giriş ve çıkışların kaynağına göre dağılımı: kayıt tahsilatı, taksit, cari, stok, çek/senet, elle girilen.",
       params: ["range"],
-      preset: "thisMonth",
+      preset: "thisYear",
       build(query) {
-        const range = rangeOf(query, "thisMonth");
+        const range = rangeOf(query, "thisYear");
         const data = cash().report(admin, range.from, range.to, "cash");
         const groups = new Map();
         for (const entry of data.entries) {
@@ -219,7 +286,8 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
           months.set(key, month);
         }
         // Aylar: aralığın başından bugünkü aya (ya da son harekete) kadar; aralık sonunu geçmez.
-        const first = range.from ? range.from.slice(0, 7) : data.entries[0]?.date.slice(0, 7) || today().slice(0, 7);
+        // "Tüm Zamanlar" (v2.0.20): 50 yıl öncesinden değil, ilk kasa hareketinin ayından başlar (600 boş ay yazılmasın).
+        const first = range.from && !allTime(range.from) ? range.from.slice(0, 7) : data.entries[0]?.date.slice(0, 7) || today().slice(0, 7);
         const lastMove = data.entries.at(-1)?.date.slice(0, 7) || "";
         let last = today().slice(0, 7) > lastMove ? today().slice(0, 7) : lastMove;
         if (range.to && range.to.slice(0, 7) < last) last = range.to.slice(0, 7);
@@ -247,9 +315,9 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
       title: "Hesap Planı Mizanı",
       description: "Tekdüzen hesap planına göre her hesabın devir, dönem borç, dönem alacak ve bakiyesi. Çift yönlü kayıt: borç toplamı alacak toplamına eşittir.",
       params: ["range"],
-      preset: "thisMonth",
+      preset: "thisYear",
       build(query) {
-        const range = rangeOf(query, "thisMonth");
+        const range = rangeOf(query, "thisYear");
         const { trial, reconciliation } = ledger().check({ from: range.from, to: range.to });
         return {
           subtitle: `${rangeText(range)} · ${trial.balanced ? "Borç = Alacak" : "DENGESİZ KAYIT VAR"} · Mutabakat ${reconciliation.ok ? "tutarlı" : "farklı"}`,
@@ -266,9 +334,9 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
       title: "Yevmiye Defteri",
       description: "Aralıktaki her işlemin çift yönlü kaydı: hangi hesap borçlandı, hangi hesap alacaklandı (Kasa, Banka, Cari, Stok, Çek/Senet, Taksit).",
       params: ["range"],
-      preset: "thisMonth",
+      preset: "thisYear",
       build(query) {
-        const range = rangeOf(query, "thisMonth");
+        const range = rangeOf(query, "thisYear");
         const rows = [];
         for (const entry of ledger().build()) {
           if ((range.from && entry.date < range.from) || (range.to && entry.date > range.to)) continue;
@@ -302,6 +370,7 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
             ...extra.map(check => ["Denetim", check.name, "", "", check.ok ? "" : `${check.count} satır`, check.ok ? "Tutarlı" : "Fark Var"]),
           ],
           summary: [["Çift Yönlü Denge", reconciliation.balanced ? "Borç = Alacak" : "Dengesiz"], ["Sonuç", ok ? "Tutarlı" : "Fark Var"]],
+          footer: false, // farklı hesapların (Kasa, Banka, Cari…) bakiyeleri toplanmaz
         };
       },
     },
@@ -329,9 +398,9 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
       title: "Banka ve POS Hareketleri",
       description: "Havale/EFT, POS ve kredi kartıyla yapılan tahsilat ve ödemeler (cari, fatura, taksit, stok, çek/senet ekranlarından girilenler ve Kasa ↔ Banka transferleri); devir, yürüyen bakiye, kaynağı.",
       params: ["range", "payMethod"],
-      preset: "thisMonth",
+      preset: "thisYear",
       build(query) {
-        const range = rangeOf(query, "thisMonth");
+        const range = rangeOf(query, "thisYear");
         const method = ["bank", "card"].includes(query.payMethod) ? query.payMethod : "noncash";
         const data = cash().report(admin, range.from, range.to, method);
         const which = { bank: "Banka (Havale / EFT)", card: "POS / Kredi Kartı" }[method] || "Banka ve POS";
@@ -354,9 +423,9 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
       title: "Cari Mizanı",
       description: "Her cari için devir, dönem borç, dönem alacak ve dönem sonu bakiye (Cari ekranıyla aynı defter).",
       params: ["range", "type", "side"],
-      preset: "thisMonth",
+      preset: "thisYear",
       build(query) {
-        const params = new URLSearchParams({ ...query, preset: query.preset || "thisMonth" });
+        const params = new URLSearchParams({ ...query, preset: query.preset || "thisYear" });
         const data = overview().mizan(params);
         return {
           subtitle: [rangeText(data), data.type ? TYPE_TEXT[data.type] : "Tüm cariler", SIDE_FILTER[data.side] || ""].filter(Boolean).join(" · "),
@@ -364,6 +433,7 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
           types: ["", "", "", "money", "money", "money", "money", ""],
           rows: data.rows.map(row => [row.refNo, row.name, TYPE_TEXT[row.type] || "", money(row.opening), money(row.debit), money(row.credit), money(Math.abs(row.closing)), sideText(row.closing)]),
           summary: [["Cari Sayısı", String(data.totals.count)], ["Dönem Borç", money(data.totals.debit)], ["Dönem Alacak", money(data.totals.credit)], ["Borçlular Toplamı", money(data.totals.closingDebtor)], ["Alacaklılar Toplamı", money(data.totals.closingCreditor)]],
+          footer: netFooter(data.rows.reduce((sum, row) => sum + (Number(row.closing) || 0), 0)),
         };
       },
     },
@@ -380,7 +450,15 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
           headers: ["Cari No", "Cari", "Tür", "Telefon", "Grup", "Borç", "Alacak", "Bakiye", "Durum", "Geciken"],
           types: ["", "", "", "", "", "money", "money", "money", "", "money"],
           rows: data.accounts.map(row => [row.refNo, row.name, TYPE_TEXT[row.type] || "", row.phone, [row.groupName, row.subgroupName].filter(Boolean).join(" › "), money(row.debit), money(row.credit), money(Math.abs(row.balance)), sideText(row.balance), row.overdue ? money(row.overdue) : ""]),
-          summary: [["Cari", String(data.totals.count)], ["Borçlular", money(data.totals.debtor)], ["Alacaklılar", money(data.totals.creditor)], ["Geciken Taksit", money(data.totals.overdue)]],
+          // v2.0.20 (kullanıcı: "100 bin toplam, ödenen 10 bin, kalan 90 bin görmek istiyorum"): anlaşılan (toplam borç),
+          // ödenen (toplam alacak: tahsilat, Excel'de ödenmiş açılış, çek dahil) ve kalan (net bakiye) yan yana.
+          summary: (() => {
+            const debit = roundMoney(data.accounts.reduce((sum, row) => sum + (Number(row.debit) || 0), 0));
+            const credit = roundMoney(data.accounts.reduce((sum, row) => sum + (Number(row.credit) || 0), 0));
+            const net = roundMoney(debit - credit);
+            return [["Cari", String(data.totals.count)], ["Toplam Borç (Anlaşılan)", money(debit)], ["Toplam Alacak (Ödenen)", money(credit)], [`Kalan (${sideText(net)})`, money(Math.abs(net))], ["Borçlular", money(data.totals.debtor)], ["Alacaklılar", money(data.totals.creditor)], ["Geciken Taksit", money(data.totals.overdue)]];
+          })(),
+          footer: netFooter(data.accounts.reduce((sum, row) => sum + (Number(row.balance) || 0), 0)),
         };
       },
     },
@@ -415,9 +493,9 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
       title: "Tüm Cari Hareketleri",
       description: "Aralıktaki bütün cari defter satırları: borç, alacak, tahsilat, ödeme, taksit, stok ve çek/senet kaynaklı.",
       params: ["range", "type"],
-      preset: "thisMonth",
+      preset: "thisYear",
       build(query) {
-        const range = rangeOf(query, "thisMonth");
+        const range = rangeOf(query, "thisYear");
         const ledgers = accounts().allLedgers();
         const rows = [];
         let debit = 0;
@@ -445,42 +523,43 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
       id: "cari-tahsilat",
       group: "Cari",
       title: "Cari Bazında Tahsilat",
-      description: "Aralıkta her cariden alınan para: nakit / havale tahsilat, taksit tahsilatı, alınan çek / senet; toplam ve son tahsilat tarihi.",
+      description: "Aralıkta her cariden alınan para: nakit / havale tahsilat, taksit tahsilatı, alınan çek / senet ve Excel'den yüklenen önceden ödenmiş tutar (açılış); toplam ve son tahsilat tarihi.",
       params: ["range", "type"],
-      preset: "thisMonth",
+      preset: "thisYear",
       build(query) {
-        const range = rangeOf(query, "thisMonth");
+        const range = rangeOf(query, "thisYear");
         const ledgers = accounts().allLedgers();
         const list = [];
-        const total = { cash: 0, plan: 0, cheque: 0, all: 0 };
+        const total = { cash: 0, plan: 0, cheque: 0, opening: 0, all: 0 };
         for (const account of ledgers.accounts) {
           if (query.type && TYPE_TEXT[query.type] && account.type !== query.type) continue;
-          const row = { account, cash: 0, plan: 0, cheque: 0, count: 0, last: "" };
+          const row = { account, cash: 0, plan: 0, cheque: 0, opening: 0, count: 0, last: "" };
           for (const line of ledgers.lines.get(account.id) || []) {
             if (!inRange(line.date, range) || !(line.credit > 0)) continue;
-            // Açılış (devir) Excel'de ödenmiş kısımdır; bu dönemin tahsilatı değildir.
+            // Açılış (devir): Excel'den yüklenen taksit kartının "Ödenen" kısmı (programa girmeden önce alınmış, Kasa dışı).
+            // v2.0.20 (kullanıcı: "hepsini toplasın"): kendi kolonunda görünür ve Toplam'a dahildir; tarihi yükleme günüdür.
             let key = "";
             if (line.kind === "in") key = "cash";
-            else if (line.kind === "plan-in" && !line.opening) key = line.cheque ? "cheque" : "plan";
+            else if (line.kind === "plan-in") key = line.opening ? "opening" : line.cheque ? "cheque" : "plan";
             else if (line.origin === "cheque" && line.kind === "credit") key = "cheque";
             if (!key) continue;
             row[key] = roundMoney(row[key] + line.credit);
             row.count += 1;
             if (line.date > row.last) row.last = line.date;
           }
-          const sum = roundMoney(row.cash + row.plan + row.cheque);
+          const sum = roundMoney(row.cash + row.plan + row.cheque + row.opening);
           if (!(sum > 0)) continue;
           list.push({ ...row, sum });
-          for (const key of ["cash", "plan", "cheque"]) total[key] = roundMoney(total[key] + row[key]);
+          for (const key of ["cash", "plan", "cheque", "opening"]) total[key] = roundMoney(total[key] + row[key]);
           total.all = roundMoney(total.all + sum);
         }
         list.sort((a, b) => b.sum - a.sum || collator.compare(a.account.name, b.account.name));
         return {
           subtitle: [rangeText(range), query.type && TYPE_TEXT[query.type] ? TYPE_TEXT[query.type] : "Tüm cariler"].join(" · "),
-          headers: ["Cari No", "Cari", "Nakit / Havale", "Taksit Tahsilatı", "Çek / Senet (alınan)", "Toplam", "İşlem", "Son Tahsilat"],
-          types: ["", "", "money", "money", "money", "money", "number", ""],
-          rows: list.map(row => [row.account.refNo || "", row.account.name, row.cash ? money(row.cash) : "", row.plan ? money(row.plan) : "", row.cheque ? money(row.cheque) : "", money(row.sum), String(row.count), dayText(row.last)]),
-          summary: [["Cari", String(list.length)], ["Nakit / Havale", money(total.cash)], ["Taksit Tahsilatı", money(total.plan)], ["Çek / Senet (alınan)", money(total.cheque)], ["Toplam", money(total.all)]],
+          headers: ["Cari No", "Cari", "Nakit / Havale", "Taksit Tahsilatı", "Çek / Senet (alınan)", "Önceden Ödenen (Açılış)", "Toplam", "İşlem", "Son Tahsilat"],
+          types: ["", "", "money", "money", "money", "money", "money", "number", ""],
+          rows: list.map(row => [row.account.refNo || "", row.account.name, row.cash ? money(row.cash) : "", row.plan ? money(row.plan) : "", row.cheque ? money(row.cheque) : "", row.opening ? money(row.opening) : "", money(row.sum), String(row.count), dayText(row.last)]),
+          summary: [["Cari", String(list.length)], ["Nakit / Havale", money(total.cash)], ["Taksit Tahsilatı", money(total.plan)], ["Çek / Senet (alınan)", money(total.cheque)], ["Önceden Ödenen (Açılış)", money(total.opening)], ["Toplam", money(total.all)]],
         };
       },
     },
@@ -537,7 +616,7 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
       title: "Satış Faturaları",
       description: "Aralıkta kesilen satış faturaları ve serbest meslek makbuzları: matrah, KDV, tevkifat, stopaj, ödenecek; ödenen ve kalan (kapama).",
       params: ["range", "account"],
-      preset: "thisMonth",
+      preset: "thisYear",
       build: query => invoiceListReport(query, ["sale", "smm"], "Satış"),
     },
     {
@@ -546,7 +625,7 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
       title: "Alış Faturaları",
       description: "Aralıkta girilen alış faturaları (mal, hizmet ve gider): matrah, KDV, tevkifat, stopaj, ödenecek; ödenen ve kalan.",
       params: ["range", "account"],
-      preset: "thisMonth",
+      preset: "thisYear",
       build: query => invoiceListReport(query, ["purchase"], "Alış"),
     },
     {
@@ -555,7 +634,7 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
       title: "İade Faturaları",
       description: "Satıştan ve alıştan iade faturaları; iade edilen faturanın numarası ve tutarlar.",
       params: ["range", "account"],
-      preset: "thisMonth",
+      preset: "thisYear",
       build: query => invoiceListReport(query, ["sale_return", "purchase_return"], "İade"),
     },
     {
@@ -564,9 +643,9 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
       title: "KDV Özeti (Beyanname Hazırlığı)",
       description: "Aylara ve oranlara göre hesaplanan KDV (satış), indirilecek KDV (alış), iadeler ve tevkifat; ödenecek ya da devreden KDV.",
       params: ["range"],
-      preset: "thisMonth",
+      preset: "thisYear",
       build(query) {
-        const range = rangeOf(query, "thisMonth");
+        const range = rangeOf(query, "thisYear");
         const list = store.all(
           `SELECT substr(i.issue_date, 1, 7) AS month, i.kind, l.vat_rate AS rate, SUM(l.net * i.rate) AS net, SUM(l.vat * i.rate) AS vat, SUM(l.withheld * i.rate) AS withheld, COUNT(DISTINCT i.id) AS count
            FROM invoice_lines l JOIN invoices i ON i.id = l.invoice_id AND i.status = 'issued'
@@ -588,6 +667,7 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
           headers: ["Ay", "Belge Türü", "KDV %", "Belge", "Matrah", "KDV", "Tevkifat"],
           types: ["", "", "number", "number", "money", "money", "money"],
           rows: list.map(row => [monthLabel(row.month), KIND[row.kind] || row.kind, `%${row.rate}`, String(row.count), money(roundMoney(row.net)), money(roundMoney(row.vat)), money(roundMoney(row.withheld))]),
+          footerUniform: "Belge Türü", // hesaplanan (satış) ve indirilecek (alış) KDV toplanmaz; özet ayrı ayrı verir
           summary: [
             ["Hesaplanan KDV (391)", money(roundMoney(heads.output))],
             ["İndirilecek KDV (191)", money(roundMoney(heads.input))],
@@ -620,6 +700,7 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
           types: ["", "", "", "", "number", "money"],
           rows: list.map(row => [monthLabel(row.month), row.form, row.name || "", row.taxNo || "", String(row.count), money(roundMoney(row.net))]),
           summary: [["Form Ba Satırı", String(list.filter(row => row.form === "Ba").length)], ["Form Bs Satırı", String(list.filter(row => row.form === "Bs").length)]],
+          footerUniform: "Form",
         };
       },
     },
@@ -629,9 +710,9 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
       title: "Ürün Bazında Satış ve Kârlılık",
       description: "Faturalı satışlarda her ürün ve hizmet için net miktar, net satış (iadeler düşülmüş), satış anındaki maliyet, brüt kâr ve kâr oranı.",
       params: ["range"],
-      preset: "thisMonth",
+      preset: "thisYear",
       build(query) {
-        const range = rangeOf(query, "thisMonth");
+        const range = rangeOf(query, "thisYear");
         const list = store.all(
           `SELECT COALESCE(NULLIF(l.item_id, ''), 'ad:' || lower(l.name)) AS key, MAX(l.name) AS name, MAX(l.code) AS code, MAX(l.unit) AS unit, MAX(l.goods) AS goods,
                   SUM(CASE WHEN i.kind = 'sale_return' THEN -l.qty ELSE l.qty END) AS qty,
@@ -649,6 +730,13 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
           types: ["", "", "number", "", "money", "money", "money", ""],
           rows: list.map(row => [row.code || "", row.name, qty(row.qty), row.unit, money(roundMoney(row.net)), row.goods ? money(roundMoney(row.cost)) : "", row.goods ? money(roundMoney(row.net - row.cost)) : "", row.goods ? percent(row.net - row.cost, row.net) : ""]),
           summary: [["Net Satış", money(roundMoney(total.net))], ["Maliyet", money(roundMoney(total.cost))], ["Brüt Kâr", money(roundMoney(total.net - total.cost))]],
+          // Toplam kâr oranı: maliyeti bilinen (stoklu) kalemlerin brüt kârı / net satışı.
+          footer: (() => {
+            const goods = list.filter(row => row.goods);
+            const net = goods.reduce((sum, row) => sum + row.net, 0);
+            const cost = goods.reduce((sum, row) => sum + row.cost, 0);
+            return { "Kâr %": percent(net - cost, net) };
+          })(),
         };
       },
     },
@@ -658,9 +746,9 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
       title: "Cari Bazında Satış ve Alış",
       description: "Her cari için faturalı satış, satıştan iade, net satış; alış, alıştan iade, net alış (KDV hariç) ve KDV.",
       params: ["range"],
-      preset: "thisMonth",
+      preset: "thisYear",
       build(query) {
-        const range = rangeOf(query, "thisMonth");
+        const range = rangeOf(query, "thisYear");
         const list = store.all(
           `SELECT i.account_id AS accountId, MAX(COALESCE(a.name, json_extract(i.party_json, '$.name'))) AS name,
                   SUM(CASE WHEN i.kind IN ('sale', 'smm') THEN i.try_net ELSE 0 END) AS sale, SUM(CASE WHEN i.kind = 'sale_return' THEN i.try_net ELSE 0 END) AS saleReturn,
@@ -686,9 +774,9 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
       title: "Gider Raporu (Türüne Göre)",
       description: "Hizmet ve gider alış faturalarının gider türüne (kira, elektrik, internet, danışmanlık, demirbaş…) ve aya göre KDV hariç toplamı.",
       params: ["range"],
-      preset: "thisMonth",
+      preset: "thisYear",
       build(query) {
-        const range = rangeOf(query, "thisMonth");
+        const range = rangeOf(query, "thisYear");
         const EXPENSE = { rent: "Kira", utilities: "Elektrik, Su ve Doğalgaz", telecom: "İnternet ve Telefon", office: "Kırtasiye ve Ofis Malzemesi", fuel: "Yakıt ve Ulaşım", repair: "Bakım ve Onarım", advisory: "Danışmanlık, Muhasebe ve Hukuk", food: "Yemek ve İkram", insurance: "Sigorta", software: "Yazılım ve Abonelik", cleaning: "Temizlik ve Güvenlik", marketing: "Reklam ve Pazarlama", freight: "Nakliye ve Kargo", asset: "Demirbaş (Bilgisayar, Mobilya, Cihaz)", other: "Diğer Giderler" };
         const list = store.all(
           `SELECT substr(i.issue_date, 1, 7) AS month, l.expense_code AS code, l.gl_account AS account, SUM(CASE WHEN i.kind = 'purchase_return' THEN -l.net ELSE l.net END * i.rate) AS net,
@@ -713,9 +801,9 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
       title: "Stopaj ve Tevkifat Özeti",
       description: "Müşterinin bizden kestiği stopaj (193, mahsup edilir) ve alıcı olarak bizim kestiğimiz stopaj ile KDV tevkifatı (360, muhtasar ve 2 No.lu KDV).",
       params: ["range"],
-      preset: "thisMonth",
+      preset: "thisYear",
       build(query) {
-        const range = rangeOf(query, "thisMonth");
+        const range = rangeOf(query, "thisYear");
         const list = store.all(
           `SELECT i.issue_date AS date, i.number, i.kind, COALESCE(json_extract(i.party_json, '$.name'), '') AS name, COALESCE(json_extract(i.party_json, '$.taxNo'), '') AS taxNo,
                   i.try_net AS net, i.stoppage_rate AS stoppageRate, i.try_stoppage AS stoppage, i.try_withheld AS withheld
@@ -731,6 +819,7 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
           types: ["", "", "", "", "", "money", "", "money", "money"],
           rows: list.map(row => [dayText(row.date), row.number, row.name, row.taxNo, side(row.kind), money(row.net), row.stoppageRate ? `%${row.stoppageRate}` : "", money(row.stoppage), money(row.withheld)]),
           summary: [["Bizden Kesilen Stopaj", money(sum(row => !ours(row), "stoppage"))], ["Bizim Ödeyeceğimiz Stopaj", money(sum(ours, "stoppage"))], ["Bizim Ödeyeceğimiz Tevkifat", money(sum(ours, "withheld"))]],
+          footerUniform: "Taraf",
         };
       },
     },
@@ -751,6 +840,7 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
           types: ["", "", "", "", "", "money", "money", "", ""],
           rows: list.map(item => [dayText(item.dueDate), item.number, item.side === "sale" ? "Alacak (Satış)" : "Borç (Alış)", item.accountName, dayText(item.issueDate), money(item.payable), money(item.open), item.days < 0 ? `${-item.days} gün` : "", bucket(item.days)]),
           summary: [["Açık Alacak", money(sum("sale"))], ["Açık Borç", money(sum("purchase"))]],
+          footerUniform: "Taraf", // alacak (satış) ve borç (alış) faturaları toplanmaz; cari süzülünce tek taraf kalır
         };
       },
     },
@@ -782,8 +872,8 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
       params: ["range"],
       preset: "thisMonth",
       build(query) {
-        const range = rangeOf(query, "thisMonth");
-        return installmentReport(item => inRange(item.dueDate, range), rangeText(range));
+        const range = dueRangeOf(query, "thisMonth");
+        return installmentReport(item => inRange(item.dueDate, range), range.from || range.to ? rangeText(range) : "Tüm vadeler");
       },
     },
     {
@@ -846,6 +936,7 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
             return [monthLabel(key), String(month.count), money(month.amount), money(month.paid), money(month.remaining), month.overdue ? money(month.overdue) : "", key <= day.slice(0, 7) ? percent(month.paid, month.amount) : "— (vadesi gelmedi)"];
           }),
           summary: [["Taksit", String(keys.reduce((total, key) => total + months.get(key).count, 0))], ["Vadesi Gelen", money(sum("amount"))], ["Ödenen", money(sum("paid"))], ["Geciken", money(sum("overdue"))], ["Tahsilat Oranı (vadesi gelmiş aylar)", percent(duePaid, dueAmount) || "—"]],
+          footer: { "Tahsilat Oranı": percent(duePaid, dueAmount) ? `${percent(duePaid, dueAmount)} (vadesi gelmiş)` : "" },
         };
       },
     },
@@ -853,18 +944,19 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
       id: "taksit-tahsilatlari",
       group: "Taksit",
       title: "Taksit Tahsilatları",
-      description: "Aralıktaki taksit tahsilatları ve iadeler; makbuz numarası, nakit ya da çek/senetle alındığı.",
+      description: "Aralıktaki taksit tahsilatları, iadeler ve Excel'den yüklenen önceden ödenmiş tutarlar (açılış); makbuz numarası, nakit ya da çek/senetle alındığı.",
       params: ["range"],
-      preset: "thisMonth",
+      preset: "thisYear",
       build(query) {
-        const range = rangeOf(query, "thisMonth");
+        const range = rangeOf(query, "thisYear");
         const list = store.all(
           `SELECT e.date, e.kind, e.amount, e.note, e.receipt_no AS receiptNo, e.cheque_id AS chequeId, e.opening, p.name AS planName, COALESCE(a.name, '') AS accountName, i.seq, COALESCE(u.display_name, '') AS actorName
            FROM plan_entries e JOIN plans p ON p.id = e.plan_id AND p.deleted_at IS NULL LEFT JOIN accounts a ON a.id = p.account_id LEFT JOIN plan_items i ON i.id = e.item_id LEFT JOIN users u ON u.id = e.created_by
            WHERE (? = '' OR e.date >= ?) AND (? = '' OR e.date <= ?) ORDER BY e.date, e.created_at`,
           range.from, range.from, range.to, range.to,
         );
-        // Açılış (devir, v2.0.8): programa girmeden önce ödenmiş kısım. Listede görünür, tahsilat toplamına girmez (Kasa'da yok).
+        // Açılış (devir, v2.0.8): programa girmeden önce ödenmiş kısım (Excel'den yüklenen "Ödenen"). Kasa'ya hiç girmedi.
+        // v2.0.20 (kullanıcı: "hepsini toplasın raporlar da"): ayrı kalemde görünür VE toplam tahsil edilene dahildir.
         const total = { in: 0, out: 0, opening: 0 };
         for (const row of list) {
           const key = row.opening ? "opening" : row.kind;
@@ -874,8 +966,9 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
           subtitle: rangeText(range),
           headers: ["Tarih", "Makbuz", "Kart", "Cari", "Taksit", "Tür", "Yöntem", "Tutar", "Açıklama", "Giren"],
           types: ["", "", "", "", "", "", "", "money", "", ""],
-          rows: list.map(row => [dayText(row.date), row.receiptNo ? String(row.receiptNo) : "", row.planName, row.accountName, row.seq ? `${row.seq}. taksit` : "", row.opening ? "Açılış (devir)" : row.kind === "in" ? "Tahsilat" : "İade / ödeme", row.opening ? "Excel'den" : row.chequeId ? "Çek / senet" : "Nakit / havale", money(row.amount), row.note, row.actorName]),
-          summary: [["Tahsilat", money(total.in)], ["İade / Ödeme", money(total.out)], ["Net", money(roundMoney(total.in - total.out))], ...(total.opening ? [["Açılış (devir, Kasa dışı)", money(total.opening)]] : [])],
+          // İade / ödeme satırı eksi yazılır: TOPLAM satırı doğrudan net tahsil edilendir.
+          rows: list.map(row => [dayText(row.date), row.receiptNo ? String(row.receiptNo) : "", row.planName, row.accountName, row.seq ? `${row.seq}. taksit` : "", row.opening ? "Önceden Ödenen (Açılış)" : row.kind === "in" ? "Tahsilat" : "İade / Ödeme", row.opening ? "Excel'den" : row.chequeId ? "Çek / senet" : "Nakit / havale", money(!row.opening && row.kind !== "in" ? -row.amount : row.amount), row.note, row.actorName]),
+          summary: [["Tahsilat", money(total.in)], ...(total.opening ? [["Önceden Ödenen (Açılış)", money(total.opening)]] : []), ["İade / Ödeme", money(total.out)], ["Toplam Tahsil Edilen", money(roundMoney(total.in + total.opening - total.out))]],
         };
       },
     },
@@ -887,7 +980,7 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
       description: "Alınan ve verilen evrak; vade, banka, kimden/kime, durum ve tutar. Yön, durum ve vade aralığıyla süzülür.",
       params: ["direction", "status", "range"],
       build(query) {
-        const range = query.from || query.to || query.preset ? rangeOf(query, "") : { from: "", to: "" };
+        const range = query.from || query.to || query.preset ? dueRangeOf(query, "") : { from: "", to: "" };
         const data = cheques().list(admin, { direction: ["in", "out"].includes(query.direction) ? query.direction : "", status: STATUSES[query.status] || ["open", "closed", "overdue", "soon"].includes(query.status) ? query.status : "", from: range.from, to: range.to, sort: "due" });
         return {
           subtitle: [query.direction ? DIRECTIONS[query.direction] : "Alınan ve verilen", STATUSES[query.status]?.label || "", range.from || range.to ? `vade ${rangeText(range)}` : ""].filter(Boolean).join(" · "),
@@ -895,6 +988,7 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
           types: ["", "", "", "", "", "", "", "money"],
           rows: data.cheques.map(row => [dayText(row.dueDate), row.directionLabel, row.instrumentLabel, row.serialNo, row.bank, row.status === "endorsed" ? `${row.party} → ${row.endorseAccountName}` : row.party, row.statusLabel, money(row.amount)]),
           summary: [["Listelenen", `${data.listed.count} · ${tl(data.listed.amount)}`], ["Portföyde (alınan)", tl(data.summary.in.open.amount)], ["Ödenecek (verilen)", tl(data.summary.out.open.amount)], ["Vadesi Geçmiş Alınan", tl(data.summary.in.overdue.amount)]],
+          footerUniform: "Yön", // alınan ve verilen evrak toplanmaz; Yön süzülünce toplam çıkar
         };
       },
     },
@@ -904,9 +998,9 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
       title: "Çek / Senet Hareketleri",
       description: "Aralıktaki tüm evrak işlemleri: alındı, verildi, tahsil, ciro, karşılıksız, ödeme.",
       params: ["range"],
-      preset: "thisMonth",
+      preset: "thisYear",
       build(query) {
-        const range = rangeOf(query, "thisMonth");
+        const range = rangeOf(query, "thisYear");
         const list = store.all(
           `SELECT ev.date, ev.kind, ev.amount, ev.note, c.direction, c.instrument, c.serial_no AS serialNo, c.drawer, COALESCE(a.name, '') AS accountName, COALESCE(ea.name, '') AS eventAccount, COALESCE(u.display_name, '') AS actorName
            FROM cheque_events ev JOIN cheques c ON c.id = ev.cheque_id AND c.deleted_at IS NULL LEFT JOIN accounts a ON a.id = c.account_id LEFT JOIN accounts ea ON ea.id = ev.account_id LEFT JOIN users u ON u.id = ev.created_by
@@ -919,6 +1013,7 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
           types: ["", "", "", "", "", "", "money", "", ""],
           rows: list.map(row => [dayText(row.date), `${DIRECTIONS[row.direction]} ${INSTRUMENTS[row.instrument].toLocaleLowerCase("tr-TR")}`, row.serialNo, row.accountName || row.drawer, EVENT_LABELS[row.kind] || row.kind, row.eventAccount, money(row.amount), row.note, row.actorName]),
           summary: [["İşlem", String(list.length)]],
+          footerUniform: "İşlem",
         };
       },
     },
@@ -981,9 +1076,9 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
       title: "Stok Hareketleri",
       description: "Aralıktaki giriş ve çıkışlar; miktar, birim fiyat, tutar ve paranın nereye yazıldığı (Kasa, cari, yok).",
       params: ["range"],
-      preset: "thisMonth",
+      preset: "thisYear",
       build(query) {
-        const range = rangeOf(query, "thisMonth");
+        const range = rangeOf(query, "thisYear");
         const list = store.all(
           `SELECT m.date, m.kind, m.reason, m.qty, m.unit_price AS unitPrice, m.amount, m.pay, m.note, i.name, i.code, i.unit, COALESCE(a.name, '') AS accountName, COALESCE(u.display_name, '') AS actorName
            FROM stock_moves m JOIN stock_items i ON i.id = m.item_id LEFT JOIN accounts a ON a.id = m.account_id LEFT JOIN users u ON u.id = m.created_by
@@ -999,6 +1094,7 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
           types: ["", "", "", "", "number", "", "money", "money", "", "", "", ""],
           rows: list.map(row => [dayText(row.date), row.code, row.name, row.reason === "return" ? "Satış İadesi" : row.reason === "preturn" ? "Alıştan İade" : row.kind === "in" ? "Giriş" : "Çıkış", qty(row.qty), row.unit, money(row.unitPrice), row.amount ? money(row.amount) : "", pay[row.pay] || row.pay, row.accountName, row.note, row.actorName]),
           summary: [["Hareket", String(list.length)], ["Giriş Tutarı", money(total.in)], ["Çıkış Tutarı", money(total.out)]],
+          footerUniform: "Hareket", // giriş ve çıkış toplanmaz
         };
       },
     },
@@ -1008,9 +1104,9 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
       title: "Stok Hareket Özeti (envanter)",
       description: "Her ürün için dönem başı miktar, dönem girişi, dönem çıkışı ve dönem sonu miktar; birim fiyat ve dönem sonu değer.",
       params: ["range", "category"],
-      preset: "thisMonth",
+      preset: "thisYear",
       build(query) {
-        const range = rangeOf(query, "thisMonth");
+        const range = rangeOf(query, "thisYear");
         const category = limited(query.category, 80, "Kategori");
         const items = stock().list(admin, { category, sort: "name" }).items.filter(item => item.kind !== "service");
         const moves = new Map();
@@ -1078,9 +1174,9 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
       title: "Kayıt Kartından Tahsilatlar",
       description: "Tablodaki kişilerin kartından girilen tahsilatlar (taksit ve cari dışındaki).",
       params: ["range"],
-      preset: "thisMonth",
+      preset: "thisYear",
       build(query) {
-        const range = rangeOf(query, "thisMonth");
+        const range = rangeOf(query, "thisYear");
         const list = store.all(
           `SELECT p.date, p.amount, p.note, p.case_key AS caseKey, p.case_title AS caseTitle, COALESCE(u.display_name, '') AS actorName FROM payments p LEFT JOIN users u ON u.id = p.created_by
            WHERE (? = '' OR p.date >= ?) AND (? = '' OR p.date <= ?) ORDER BY p.date, p.created_at`,
@@ -1103,9 +1199,9 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
       title: "Kayıt Notları",
       description: "Kayıtlara yazılan notlar; kim, ne zaman.",
       params: ["range"],
-      preset: "thisMonth",
+      preset: "thisYear",
       build(query) {
-        const range = rangeOf(query, "thisMonth");
+        const range = rangeOf(query, "thisYear");
         const list = store.all(
           `SELECT n.note, n.case_key AS caseKey, n.created_at AS createdAt, COALESCE(u.display_name, '') AS actorName FROM notes n LEFT JOIN users u ON u.id = n.created_by
            WHERE (? = '' OR substr(n.created_at, 1, 10) >= ?) AND (? = '' OR substr(n.created_at, 1, 10) <= ?) ORDER BY n.created_at`,
@@ -1216,7 +1312,7 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
 
   // Fatura listesi raporları (satış / alış / iade): rakamlar fatura modülünün listesiyle aynı (ödenen ve kalan kapamadan).
   function invoiceListReport(query, kinds, label) {
-    const range = rangeOf(query, "thisMonth");
+    const range = rangeOf(query, "thisYear");
     const service = invoices();
     if (!service?.list) return { subtitle: rangeText(range), headers: [], types: [], rows: [], summary: [] };
     const data = service.list(admin, { side: "", kind: "", status: "issued", pay: "", profile: "", from: range.from, to: range.to, account: limited(query.account || "", 120, "Cari"), item: "", q: "", ids: [], sort: "date" });
@@ -1231,6 +1327,8 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
       types: ["", "", "", "", "", "", "", "money", "money", "money", "money", "money", "money", "money", ""],
       rows: list.map(row => [dayText(row.issueDate), row.issueTime, row.displayNo, row.kindLabel, row.accountName, detail.get(row.id)?.taxNo || "", returns ? row.originalNumber : row.scenarioLabel, money(row.tryNet), money(row.tryVat), money(detail.get(row.id)?.withheld || 0), money(detail.get(row.id)?.stoppage || 0), money(row.tryPayable), returns ? "" : money(row.paid), returns ? "" : money(row.open), row.payStateLabel]),
       summary: [[`${label} Faturası`, String(list.length)], ["Matrah", money(sum("tryNet"))], ["KDV", money(sum("tryVat"))], ["Tevkifat", money(sumDetail("withheld"))], ["Ödenecek", money(sum("tryPayable"))], ...(returns ? [] : [["Kalan", money(sum("open"))]])],
+      // İade raporunda satıştan ve alıştan iade aynı listede: toplam yalnız tek tür varken anlamlıdır.
+      footerUniform: returns ? "Tür" : undefined,
     };
   }
 
@@ -1293,7 +1391,8 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
     const query = queryOf(params);
     const result = await report.build(query, user);
     const rows = result.rows.slice(0, MAX_ROWS);
-    return { id: report.id, group: report.group, title: result.title || report.title, subtitle: result.subtitle || "", headers: result.headers, types: result.types || [], rows, total: result.rows.length, summary: result.summary || [], tabs: result.tabs || null, query };
+    const footer = footerRow({ headers: result.headers, types: result.types || [], rows, footer: result.footer, footerUniform: result.footerUniform });
+    return { id: report.id, group: report.group, title: result.title || report.title, subtitle: result.subtitle || "", headers: result.headers, types: result.types || [], rows, total: result.rows.length, footer, summary: result.summary || [], tabs: result.tabs || null, query };
   }
   router.get("/api/workspace/report-center", async ({ req, res }) => {
     const user = enter(req);
@@ -1318,6 +1417,8 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
       headers: data.headers,
       types: data.types,
       rows: data.rows.slice(0, PDF_ROWS),
+      // PDF kırpılırsa (20.000 satır) TOPLAM satırı yine TÜM satırların toplamıdır; alt başlık bunu söyler.
+      footer: data.footer,
       summary: data.summary,
       officeName: office(),
       userName: user.display_name || user.username || "",
@@ -1331,7 +1432,8 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
     const data = await run(user, params.id, url.searchParams);
     const unique = data.headers.map((header, index) => (data.headers.indexOf(header) === index && header ? header : `${header || "Kolon"} ${index + 1}`));
     const rows = data.rows.map(row => Object.fromEntries(unique.map((header, index) => [header, row[index] ?? ""])));
-    const sheets = [{ name: data.title.slice(0, 31), columns: unique, rows }];
+    const footer = data.footer ? Object.fromEntries(unique.map((header, index) => [header, data.footer[index] ?? ""])) : null;
+    const sheets = [{ name: data.title.slice(0, 31), columns: unique, rows, footer }];
     if (data.summary.length) sheets.push({ name: "Özet", columns: ["Kalem", "Değer"], rows: [{ Kalem: "Rapor", Değer: data.title }, { Kalem: "Kapsam", Değer: data.subtitle }, { Kalem: "Hazırlanma", Değer: stamp(new Date().toISOString()) }, ...data.summary.map(([label, value]) => ({ Kalem: label, Değer: value }))] });
     const buffer = buildXlsx(sheets, { title: data.title });
     audit(user, "report.exported", data.id, { format: "xlsx", rows: data.total, ...data.query });

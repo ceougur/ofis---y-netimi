@@ -234,7 +234,7 @@
 <h2>14. Raporlar</h2>
 <p>Sol menüden <b>Raporlar</b> (ya da ANLIK DURUM'daki <b>Rapor Al</b>). Üstteki sekmeden seçin:</p>
 <ul>
-  <li><b>Cari Ekstre:</b> tarih aralığı → <b>Raporu Getir</b>: her cari için devir, dönem borç ve alacak, bakiye. Cariye tıklayınca ekstresi açılır. Henüz cari yoksa <b>Cari Ekranını Aç</b> ya da <b>Tablodaki Kişileri Cari Yap</b>.</li>
+  <li><b>Cari Ekstre:</b> tarih aralığı → <b>Raporu Getir</b>: her cari için devir, dönem borç ve alacak, bakiye. Cariye tıklayınca ekstresi açılır. Henüz cari yoksa <b>Cari Ekranını Aç</b>.</li>
   <li><b>Vade Takip:</b> vadesi olan her açık kalem tek listede (taksit, çek/senet, ileri tarihli Kasa, tablodaki ödeme günleri). Gecikmiş, Bugün, 7 / 30 / 90 Gün; satıra tıklayınca kaynağı açılır.</li>
   <li><b>Nakit Akış:</b> bugünkü kasadan başlayan tahmini kasa; en düşük günü gösterir.</li>
   <li><b>Çek / Senet:</b> portföy raporu.</li>
@@ -242,7 +242,14 @@
   <li><b>Tablo Raporları:</b> yalnız Excel tablonuza dayalı raporlar.</li>
   <li><b>Ana Defter</b> (Tüm Raporlar içinde): <i>Hesap Planı Mizanı</i>, <i>Yevmiye Defteri</i> ve <i>Defter Mutabakatı</i>. Mutabakatta her satır <b>Tutarlı</b> olmalıdır; <b>Fark Var</b> görürseniz destek hattını arayın. Defterleri bozacak bir kayıt hiç yazılmaz ve <i>Mutabakat Günlüğü</i>'nde görünür.</li>
 </ul>
-<p>Her rapor <b>PDF İndir</b> ve <b>Excel İndir</b> ile iner.</p>
+<p>Her rapor <b>PDF İndir</b> ve <b>Excel İndir</b> ile iner. Tablonun en altındaki kalın <b>TOPLAM</b> satırı bütün satırların toplamıdır (PDF ve Excel'de de aynı). Raporlar <b>Bu Yıl</b> ile açılır ve son seçtiğiniz dönemi hatırlar; aradığınız kayıt görünmüyorsa <b>Tüm Zamanlar</b>'ı seçin.</p>
+<div class="box tip"><b class="t">Hangi sayı hangi raporda?</b>
+<ul>
+  <li><b>Ciro (satış):</b> <i>Satış Faturaları</i> → <b>Matrah</b> KDV hariç, <b>Ödenecek</b> KDV dahil; iadeler düşülmüş hâli <i>Cari Bazında Satış ve Alış</i> → <b>Net Satış</b>.</li>
+  <li><b>Toplam alacak:</b> <i>Cari Listesi ve Bakiyeler</i> → <b>Toplam Borç (Anlaşılan)</b>, <b>Toplam Alacak (Ödenen)</b>, <b>Kalan</b>.</li>
+  <li><b>Taksitler:</b> <i>Taksit Kartları</i> → her kartın ve hepsinin <b>Toplam</b>, <b>Ödenen</b>, <b>Kalan</b>, <b>Geciken</b> tutarı.</li>
+  <li><b>Kimden ne tahsil edildi:</b> <i>Cari Bazında Tahsilat</i>. Taksitleri Excel'den yüklerken "Ödenen" kolonunda yazan tutar <b>Önceden Ödenen (Açılış)</b> kolonunda görünür ve toplama dahildir (Kasa'ya girmez; o para programdan önce alınmıştır).</li>
+</ul></div>
 <div class="pair">
 <figure><img src="ekran/k16-raporlar-bos-defter.jpg" alt="Raporlar: cari yokken"><figcaption>Cari yoksa Raporlar yol gösterir.</figcaption></figure>
 <figure><img src="ekran/k11-rapor-al.jpg" alt="Raporlar: Vade Takip"><figcaption>Vade Takip: taksit, çek/senet, Kasa ve tablodaki vadeler tek listede.</figcaption></figure>
@@ -261,9 +268,9 @@
   <li><b>Yetkiler:</b> satırdaki <b>Yetkiler</b> pili bütün yetkileri açar: rolün verdikleri işaretli gelir; kutuyla o kişiye <b>ekler</b> (yeşil) ya da <b>çıkarırsınız</b> (kırmızı) → <b>Yetkileri Kaydet</b>. <b>+ Yeni Rol</b> ile kendi rolünüzü kurun.</li>
   <li><b>Sil:</b> kişi giriş yapamaz; yaptıkları geçmişte adıyla kalır. <b>Silinen Kullanıcılar</b>'dan geri alınır.</li>
   <li><b>Kurtarma anahtarı:</b> <b>Kurtarma Anahtarı Oluştur</b> → yazdırın. Parolanızı unutursanız giriş ekranında <b>Parolamı Unuttum</b> → anahtar + yeni parola. Anahtar da kayıpsa <b>sunucu bilgisayarında</b> aynı ekrandan <b>Sunucu Kodu Oluştur</b>; kodu Başlat menüsündeki <b>DestekOfis → Yönetici kurtarma kodunu aç</b> gösterir (10 dakika geçerli).</li>
-  <li><b>Yedekler:</b> program 6 saatte bir kendiliğinden yedek alır. <b>Yönetim → Yedekler</b>'den yedek alıp indirin; <b>Drive'a da Yedekle</b> ile her yedek Google Drive / OneDrive klasörünüze de kopyalanır (<b>Kaydet ve Bağla</b>, <b>Şimdi Dene</b>).</li>
+  <li><b>Yedekler:</b> program 6 saatte bir bütün şirketlerin yedeğini kendiliğinden alır; her şirketin yedeği yedek klasöründe kendi adını taşıyan klasördedir (ör. <i>001 - Şirket 1</i>). <b>Yönetim → Yedekler → Şimdi Yedek Al</b>: <b>Tüm Şirketler</b> ya da yalnız açık şirket. <b>İndir</b> ile indirin. <b>Geri Yükle</b> yedeği yalnız kendi şirketine yükler (onay için şirket kodu ve parolanız; önce bugünkü veri ayrıca yedeklenir); ilk şirket (001) geri yüklenirken program birkaç saniye yeniden başlar, kullanıcılar ve lisans korunur. <b>Drive'a da Yedekle</b> ile her yedek Google Drive / OneDrive klasörünüze de, şirket klasörüyle kopyalanır (<b>Kaydet ve Bağla</b>, <b>Şimdi Dene</b>).</li>
   <li><b>Silinenler:</b> silinen kayıt, sekme, belge, tahsilat, kasa hareketleri ve faturalar <b>Yönetim → Silinenler</b>'dedir; <b>Geri Yükle</b> eski yerine getirir.</li>
-  <li><b>Şirketler:</b> <b>Yönetim → Şirketler</b>: <b>+ Yeni Şirket</b> (kod önerilir: 002, 003…), <b>Adını / Kodunu Değiştir</b> (veri aynı şirkette kalır), <b>Kullanıcı Yetkileri</b> (kim hangi şirketi görür; yönetici hepsini), <b>Birleşik Rapor</b> (seçilen şirketlerin Kasa, banka/POS, cari, stok, açık fatura toplamları yan yana + toplam; PDF/Excel). <b>Verisini Sıfırla</b>: <i>Tüm Hareketleri Sil</i> (kartlar ve ayarlar kalır, bakiyeler sıfır) ya da <i>Tümünü Sıfırla</i>; önce zorunlu yedek alınır, onay için şirket kodu ve parolanız istenir; lisans, kullanıcılar ve öbür şirketler etkilenmez. <b>Sil</b> (001 silinmez): önce yedek, klasör saklanır.</li>
+  <li><b>Şirketler:</b> <b>Yönetim → Şirketler</b>: <b>+ Yeni Şirket</b> (kod önerilir: 002, 003…), <b>Adını / Kodunu Değiştir</b> (veri aynı şirkette kalır), <b>Kullanıcı Yetkileri</b> (kim hangi şirketi görür; yönetici hepsini), <b>Birleşik Rapor</b> (seçilen şirketlerin Kasa, banka/POS, cari, stok, açık fatura toplamları yan yana + toplam; PDF/Excel). <b>Verisini Sıfırla</b>: <i>Tüm Hareketleri Sil</i> (kartlar ve ayarlar kalır, bakiyeler sıfır) ya da <i>Tümünü Sıfırla</i>; önce zorunlu yedek alınır, onay için şirket kodu ve parolanız istenir; lisans, kullanıcılar ve öbür şirketler etkilenmez. <b>Sil</b> (001 silinmez): önce yedek, klasör saklanır. <b>Veri ve Yedek Klasörleri</b>: her şirketin veri dosyası, cari sayısı, son yedeği ve yedek klasörü.</li>
   <li><b>Eksi bakiye denetimi:</b> <b>Yönetim → Sistem → Eksi Bakiye Denetimi</b>'nde Nakit Kasa, Banka ve Kredi Kartı için ayrı ayrı seçin: <b>Uyar</b> (sorar, onayla kaydeder), <b>Engelle</b> (kaydetmez), <b>Kontrol Yok</b> (ör. kredili mevduat hesabı).</li>
   <li><b>Dönem kilidi:</b> ay kapandığında <b>Yönetim → Sistem → Dönem Kilidi ve Mutabakat</b>'ta son günü seçip <b>Kilitle</b>. O tarih ve öncesine hareket eklenemez, düzeltilemez, silinemez. Düzeltme gerekirse <b>Kilidi Kaldır</b>, düzeltin, yeniden kilitleyin. Kart, defterlerin tutarlı olup olmadığını da gösterir.</li>
   <li><b>Güncelleme:</b> <b>Yönetim → Sistem → Güncellemeleri Denetle → Şimdi Güncelle</b>. Veriler ve lisans korunur; önce yedek alınır.</li>

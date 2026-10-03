@@ -319,7 +319,8 @@ try {
     // cari ayrı satır, cari numarasıyla); tedarikçi tahsilatsız.
     const tahsilat = await run("cari-tahsilat", `from=${local(-3)}&to=${local(3)}`);
     const byRef = ref => tahsilat.rows.find(row => row[0] === ref);
-    ok(tahsilat.rows.length === 2 && String(byRef(ahmet1.refNo)?.[5]).includes(money(2500)) && String(byRef(ahmet1.refNo)?.[2]).includes(money(1500)) && String(byRef(ahmet2.refNo)?.[4]).includes(money(700)), `cari bazında tahsilat: ${tahsilat.rows.map(row => row.join(" | ")).join(" / ")}`);
+    const col = header => tahsilat.headers.indexOf(header);
+    ok(tahsilat.rows.length === 2 && String(byRef(ahmet1.refNo)?.[col("Toplam")]).includes(money(2500)) && String(byRef(ahmet1.refNo)?.[col("Nakit / Havale")]).includes(money(1500)) && String(byRef(ahmet2.refNo)?.[col("Çek / Senet (alınan)")]).includes(money(700)), `cari bazında tahsilat: ${tahsilat.rows.map(row => row.join(" | ")).join(" / ")}`);
     // Taksit performansı: 3 taksit 3.000; ödenen 0; geciken 1.000.
     const perf = await run("taksit-performans", `from=${local(-400)}&to=${local(400)}`);
     ok(String(sumOf(perf, "Vadesi Gelen")).includes(money(3000)) && String(sumOf(perf, "Geciken")).includes(money(1000)), `taksit performansı: vadesi gelen ${sumOf(perf, "Vadesi Gelen")}, geciken ${sumOf(perf, "Geciken")}`);

@@ -2,10 +2,10 @@
 import { createReadStream, statSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { BACKUP_NAME, createBackup, listBackups } from "../lib/backup.mjs";
+import { BACKUP_NAME } from "../lib/backup.mjs";
 import { HttpError, SECURITY_HEADERS, limited, ok, parseJson, readJson, text } from "../lib/http.mjs";
 import { nameConflict } from "../lib/names.mjs";
-import { hashPassword, passwordProblem } from "../lib/passwords.mjs";
+import { hashPassword, passwordProblem, verifyPassword } from "../lib/passwords.mjs";
 import { ADMIN_ONLY, GRANTABLE, PERMISSION_GROUPS, ROLE_LABELS, grantsOf, isGrantable, parseGrants } from "../lib/permissions.mjs";
 import { compareVersions } from "../lib/semver.mjs";
 
@@ -292,17 +292,96 @@ export function registerAdminRoutes(router, context) {
     ok(res, { removed });
   });
 
+  // ---------- Yedekler (v2.0.20: bütün şirketler, her biri kendi klasöründe; ortak katmanda çalışır) ----------
+  // Yönetici bütün şirketleri görür; liste ve indirme yine de kullanıcının görebildiği şirketlerle sınırlıdır.
+  const backups = context.backups;
+  const companies = context.companies;
+  const mirror = result => (context.mirrorNow ? context.mirrorNow(result) : context.cloudBackup ? context.cloudBackup.mirror(result) : Promise.resolve(null));
+  const companyView = (admin, company) => ({ id: company.id, code: company.code, name: company.name, label: company.label || `${company.code} · ${company.name}`, root: Boolean(company.root), current: company.id === companies.selectedFor(admin), folder: backups.folderOf(company) });
+  const backupView = ({ mtimeMs, dir, ...item }) => ({ ...item, folder: dir });
+  const companyFor = (admin, id) => {
+    const company = companies.get(text(id));
+    if (!company || !companies.canAccess(admin, company.id)) throw new HttpError(404, "Şirket bulunamadı ya da bu şirketi görme yetkiniz yok.");
+    return company;
+  };
+
   router.get("/api/admin/backups", async ({ req, res }) => {
-    auth.requirePermission(req, "system.manage");
-    ok(res, listBackups(config.backupDir).map(({ mtimeMs, ...item }) => item));
+    const admin = auth.requirePermission(req, "system.manage");
+    ok(res, backups.list(admin).map(backupView));
   });
 
+  // Son 001 geri yüklemesinin sonucu (sunucu açılışında uygulanır): 3 gün boyunca Yedekler ekranında görünür.
+  const lastRestore = () => {
+    try {
+      const value = JSON.parse(store.setting("backup.lastRestore", "") || "null");
+      return value && Date.now() - Date.parse(value.at) < 3 * 86_400_000 ? value : null;
+    } catch {
+      return null;
+    }
+  };
+  // Klasörler: Yedekler ekranındaki "Her şirketin yedeği kendi klasöründe" açıklaması ve Yedek Al seçenekleri.
+  router.get("/api/admin/backups/folders", async ({ req, res }) => {
+    const admin = auth.requirePermission(req, "system.manage");
+    ok(res, { root: backups.root(), current: companies.selectedFor(admin), companies: backups.accessible(admin).map(company => companyView(admin, company)), pending: backups.pendingRestore(), lastRestore: lastRestore(), supervised: Boolean(supervisorLink?.supervised) });
+  });
+
+  // Yedek Al: scope "all" (Tüm Şirketler, varsayılan) ya da "one" (companyId; verilmezse seçili şirket).
   router.post("/api/admin/backups", async ({ req, res }) => {
     const admin = auth.requirePermission(req, "system.manage");
-    const result = createBackup(store.db, config.backupDir, { label: "manuel", keep: config.backupKeep });
-    audit(admin, "system.backup_created", result.name, { size: result.size });
-    const cloud = context.cloudBackup ? await context.cloudBackup.mirror(result) : null;
-    ok(res, { name: result.name, size: result.size, cloud });
+    const body = await readJson(req);
+    const scope = text(body.scope) === "one" ? "one" : "all";
+    const chosen = scope === "all" ? backups.accessible(admin) : [companyFor(admin, text(body.companyId) || companies.selectedFor(admin))];
+    const results = backups.backupMany(chosen, { label: "manuel" });
+    const done = results.filter(item => item.name);
+    const failed = results.filter(item => !item.name).map(item => ({ companyId: item.companyId, company: item.company ? `${item.company.code} · ${item.company.name}` : "", error: item.error }));
+    if (!done.length) throw new HttpError(500, `Yedek alınamadı: ${failed.map(item => `${item.company}: ${item.error}`).join("; ") || "bilinmeyen hata"}`);
+    for (const item of done) audit(admin, "system.backup_created", item.name, { size: item.size, company: item.company?.code || "", scope });
+    const clouds = [];
+    for (const item of done) clouds.push(await mirror(item).catch(error => ({ ok: false, error: error.message })));
+    const selected = companies.selectedFor(admin);
+    const primaryIndex = Math.max(0, done.findIndex(item => item.companyId === selected));
+    const primary = done[primaryIndex];
+    ok(res, {
+      scope,
+      name: primary.name,
+      size: primary.size,
+      company: primary.company,
+      cloud: clouds[primaryIndex] || null,
+      backups: done.map((item, index) => ({ companyId: item.companyId, company: `${item.company.code} · ${item.company.name}`, code: item.company.code, name: item.name, size: item.size, folder: path.dirname(item.path), cloud: clouds[index] || null })),
+      failed,
+    });
+  });
+
+  // Geri yükle (v2.0.20): yedek yalnız kendi şirketine (içindeki kimlik; eski yedekte bulunduğu klasör). Onay: hedef
+  // şirketin kodu ya da adı + yöneticinin parolası. 001 sunucu yeniden açılırken, diğerleri hemen geri yüklenir.
+  router.post("/api/admin/backups/restore", async ({ req, res }) => {
+    const admin = auth.requirePermission(req, "system.manage");
+    const body = await readJson(req);
+    const located = backups.locate(admin, text(body.name), text(body.company));
+    const target = text(body.target) ? companyFor(admin, body.target) : located.company;
+    backups.assertRestorable({ file: located.file, source: located.company, target });
+    const typed = text(body.confirm);
+    if (typed !== target.code && typed.toLocaleLowerCase("tr-TR") !== target.name.toLocaleLowerCase("tr-TR")) throw new HttpError(400, `Onay için şirket kodunu (${target.code}) ya da adını yazın.`, { code: "confirm" });
+    const row = store.get("SELECT password_hash AS hash FROM users WHERE id = ?", admin.id);
+    if (!row || !verifyPassword(String(body.password || ""), row.hash)) throw new HttpError(403, "Parola doğrulanamadı; işlem yapılmadı.", { code: "password" });
+    const result = await backups.restoreCompany({ file: located.file, target, user: admin });
+    const label = `${target.code} · ${target.name}`;
+    if (result.staged) {
+      audit(admin, "system.backup_restore_staged", located.file ? path.basename(located.file) : "", { company: target.code });
+      const restarting = Boolean(context.requestRestart?.("Yedekten geri yükleme"));
+      return ok(res, { staged: true, restarting, restartRequired: !restarting, company: label, name: result.name });
+    }
+    audit(admin, "system.backup_restored", result.name, { company: target.code, safety: result.safety });
+    events?.publish("workspace.changed", { kind: "companies", actorId: admin.id, actorName: admin.display_name });
+    ok(res, { restored: true, company: label, name: result.name, safety: result.safety });
+  });
+
+  // Bekleyen 001 geri yüklemesinden vazgeç (sunucu yeniden açılmadan önce).
+  router.delete("/api/admin/backups/restore", async ({ req, res }) => {
+    const admin = auth.requirePermission(req, "system.manage");
+    const cancelled = backups.cancelRestore();
+    if (cancelled) audit(admin, "system.backup_restore_cancelled", "", {});
+    ok(res, { cancelled });
   });
 
   // Drive'a yedek (v2.0.2): bağlantı/klasör bağlama, durum ve deneme. ":name" yolundan önce kayıtlı olmalı.
@@ -330,23 +409,27 @@ export function registerAdminRoutes(router, context) {
   router.post("/api/admin/backups/cloud/test", async ({ req, res }) => {
     const admin = auth.requirePermission(req, "system.manage");
     if (!context.cloudBackup?.status().enabled) throw new HttpError(400, "Önce bir Drive bağlantısı ya da klasör yolu bağlayın.");
-    const result = createBackup(store.db, config.backupDir, { label: "drive-deneme", keep: config.backupKeep });
-    audit(admin, "system.backup_created", result.name, { size: result.size, test: true });
-    const cloud = await context.cloudBackup.mirror(result);
+    // Deneme: seçili şirketin yedeği alınır ve Drive'a kopyalanır.
+    const company = companyFor(admin, companies.selectedFor(admin));
+    const result = backups.backup(company, { label: "drive-deneme" });
+    if (!result) throw new HttpError(500, "Şirketin veri dosyası bulunamadı; yedek alınamadı.");
+    audit(admin, "system.backup_created", result.name, { size: result.size, test: true, company: company.code });
+    const cloud = await mirror(result);
     ok(res, { ok: Boolean(cloud?.ok), name: result.name, error: cloud?.error || null, status: context.cloudBackup.status() });
   });
 
-  router.get("/api/admin/backups/:name", async ({ req, res, params }) => {
+  // İndir: ?company=<şirket kimliği> (Yedekler listesi gönderir); verilmezse görebildiği şirketlerde aranır.
+  router.get("/api/admin/backups/:name", async ({ req, res, params, url }) => {
     const admin = auth.requirePermission(req, "system.manage");
     if (!BACKUP_NAME.test(params.name)) throw new HttpError(400, "Geçersiz yedek adı.");
-    const file = path.join(config.backupDir, params.name);
+    const { file, company } = backups.locate(admin, params.name, text(url.searchParams.get("company")));
     let stats;
     try {
       stats = statSync(file);
     } catch {
       throw new HttpError(404, "Yedek bulunamadı.");
     }
-    audit(admin, "system.backup_downloaded", params.name);
+    audit(admin, "system.backup_downloaded", params.name, { company: company.code });
     res.writeHead(200, {
       ...SECURITY_HEADERS,
       "content-type": "application/vnd.sqlite3",
@@ -447,7 +530,9 @@ export function registerAdminRoutes(router, context) {
         // Dosya yoksa (ör. WAL boşaltılmış) atlanır.
       }
     }
-    const latest = listBackups(config.backupDir)[0] || null;
+    // Bu şirketin (seçili şirket) son yedeği ve yedek klasörü (v2.0.20: <yedek kökü>/<kod> - <ad>).
+    const self = context.company?.();
+    const latest = self && context.backups ? context.backups.latestFor(self) : null;
     ok(res, {
       product: config.productName,
       version: config.version,
@@ -457,7 +542,8 @@ export function registerAdminRoutes(router, context) {
       schemaVersion: store.get("PRAGMA user_version").user_version,
       dbSize,
       dataDir: config.dataDir,
-      backupDir: config.backupDir,
+      backupDir: context.backupDir ? context.backupDir() : config.backupDir,
+      backupRoot: config.backupDir,
       lastBackup: latest ? { name: latest.name, size: latest.size, createdAt: latest.createdAt } : null,
       // 30 günden eski sohbet mesajlarının arşivi (v2.0.2).
       chatArchive: context.chatArchive ? context.chatArchive.info() : null,

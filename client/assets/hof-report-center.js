@@ -128,6 +128,32 @@
       : '<p class="hof-muted">Aranan rapor yok.</p>';
   }
 
+  // Dönem hafızası (v2.0.20, kullanıcı: "Bu Ay"da eski kayıtlar görünmüyordu): her rapor en son seçilen dönemle açılır;
+  // ilk açılışta raporun varsayılanı (çoğu raporda Bu Yıl). Tarayıcıda kişiye özel tutulur; okunamazsa varsayılan kullanılır.
+  const RANGE_KEY = "hof.rc.range.v1";
+  const rememberedRanges = () => {
+    try {
+      return JSON.parse(localStorage.getItem(RANGE_KEY) || "{}") || {};
+    } catch {
+      return {};
+    }
+  };
+  const rememberRange = (id, { preset = "", from = "", to = "" }) => {
+    try {
+      const all = rememberedRanges();
+      all[id] = preset ? { preset } : { from, to };
+      localStorage.setItem(RANGE_KEY, JSON.stringify(all));
+    } catch {
+      // gizli pencere / kapalı depolama: hafıza olmadan çalışır
+    }
+  };
+  const initialRange = report => {
+    const saved = rememberedRanges()[report.id];
+    if (saved?.preset && PRESETS.some(([id]) => id === saved.preset)) return { preset: saved.preset, ...presetRange(saved.preset) };
+    if (saved && (saved.from || saved.to)) return { preset: "", from: saved.from || "", to: saved.to || "" };
+    return { preset: report.preset || "all", ...presetRange(report.preset || "all") };
+  };
+
   function select(id) {
     if (!center) return;
     const report = center.reports.find(item => item.id === id);
@@ -135,7 +161,7 @@
     center.id = id;
     lastId = id;
     const params = {};
-    if (report.params.includes("range")) Object.assign(params, { preset: report.preset || "all" }, presetRange(report.preset || "all"));
+    if (report.params.includes("range")) Object.assign(params, initialRange(report));
     if (report.params.includes("planStatus")) params.planStatus = "active";
     if (report.params.includes("taskStatus")) params.taskStatus = "all";
     if (report.params.includes("payMethod")) params.payMethod = "noncash";
@@ -177,6 +203,46 @@
     }
     return parts.join("");
   }
+  // Ad kolonları (v2.0.20): çok kolonlu raporlarda kişi/ürün adı "Müşteri / 01" diye ikiye kırılmasın.
+  const NAME_HEADERS = new Set(["Cari", "Ad", "Kart", "Kalem", "Ürün", "Ürün / Hizmet", "Cari / Kişi", "Kimden / Kime", "Kayıt", "İlgili Cari", "Hesap Adı"]);
+  // Telefon numarası da "0532 100 00 / 01" diye ikiye kırılmasın.
+  const NOWRAP_HEADERS = new Set(["Telefon"]);
+  const cellClass = (preview, index) =>
+    preview.types[index] === "money" || preview.types[index] === "number"
+      ? "num"
+      : NAME_HEADERS.has(preview.headers[index])
+        ? "is-name"
+        : NOWRAP_HEADERS.has(preview.headers[index])
+          ? "is-nowrap"
+          : "";
+  // TOPLAM satırı ilk bakışta görünsün (v2.0.20): tablo kutusu pencerenin görünen alanına sığacak yüksekliği alır; uzun tablo
+  // kendi kutusunda kayar, TOPLAM kutunun altında sabit kalır. Sabit 50vh, süzgeç alanı uzun raporlarda (Cari Bazında Tahsilat)
+  // TOPLAM'ı pencerenin altına itiyordu. Pencere içeriği zaten sığıyorsa kutu olduğu gibi kalır. Alçak ekranda (dizüstü) tabloya
+  // 280 px'ten az yer kalırsa kutu küçültülmez (50vh kalır): pencere bir kez kaydırılınca tablo TOPLAM'ıyla birlikte görünür.
+  function fitTable() {
+    const box = root()?.querySelector("[data-rc-main] .hof-rc-table");
+    const frame = box?.closest(".hof-modal");
+    if (!box || !frame || !frame.getClientRects().length) return;
+    const note = box.nextElementSibling;
+    const bottom = Math.min(frame.getBoundingClientRect().bottom, window.innerHeight) - (parseFloat(getComputedStyle(frame).paddingBottom) || 0);
+    const top = box.getBoundingClientRect().top + frame.scrollTop;
+    const room = bottom - top - (note ? note.offsetHeight + 12 : 0);
+    box.style.maxHeight = room >= 280 ? `${Math.floor(room)}px` : "";
+  }
+  let fitQueued = false;
+  window.addEventListener("resize", () => {
+    if (fitQueued || !center) return;
+    fitQueued = true;
+    requestAnimationFrame(() => {
+      fitQueued = false;
+      if (center) fitTable();
+    });
+  });
+  // Boş sonuç (v2.0.20): dönemli raporda "Tüm Zamanlar" seçili değilse ipucu ve tek tıkla Tüm Zamanlar.
+  const emptyText = report =>
+    report.params.includes("range") && center.params.preset !== "all"
+      ? `Bu dönemde kayıt yok. <button type="button" class="hof-button hof-button-small hof-button-ghost" data-preset="all">Tüm Zamanları Göster</button>`
+      : "Bu süzgeçte kayıt yok.";
   function renderMain() {
     const main = root()?.querySelector("[data-rc-main]");
     const report = current();
@@ -188,10 +254,14 @@
       ? `<div class="hof-rc-summary">${(preview.summary || []).map(([label, value]) => `<span><small>${esc(label)}</small><b>${esc(value)}</b></span>`).join("")}</div>
         <div class="hof-rep-table hof-rc-table"><table class="hof-table"><thead><tr>${preview.headers.map((header, index) => `<th class="${preview.types[index] === "money" || preview.types[index] === "number" ? "num" : ""}">${esc(header)}</th>`).join("")}</tr></thead><tbody>${
           preview.rows.length
-            ? preview.rows.map(row => `<tr>${row.map((cell, index) => `<td class="${preview.types[index] === "money" || preview.types[index] === "number" ? "num" : ""}">${esc(cell)}</td>`).join("")}</tr>`).join("")
-            : `<tr><td colspan="${preview.headers.length}" class="hof-empty">Bu süzgeçte kayıt yok.</td></tr>`
-        }</tbody></table></div>
-        <p class="hof-rep-note">${preview.total > preview.rows.length ? `Ekranda ilk ${preview.rows.length.toLocaleString("tr-TR")} satır; tamamı (${preview.total.toLocaleString("tr-TR")} satır) PDF ve Excel'de.` : `${preview.total.toLocaleString("tr-TR")} satır.`} PDF en çok 20.000 satır yazar; Excel sınırsızdır.</p>`
+            ? preview.rows.map(row => `<tr>${row.map((cell, index) => `<td class="${cellClass(preview, index)}">${esc(cell)}</td>`).join("")}</tr>`).join("")
+            : `<tr><td colspan="${preview.headers.length}" class="hof-empty">${emptyText(report)}</td></tr>`
+        }</tbody>${
+          preview.footer && preview.rows.length
+            ? `<tfoot><tr class="hof-rc-total">${preview.footer.map((cell, index) => `<td class="${preview.types[index] === "money" || preview.types[index] === "number" ? "num" : ""}">${esc(cell)}</td>`).join("")}</tr></tfoot>`
+            : ""
+        }</table></div>
+        <p class="hof-rep-note">${preview.total > preview.rows.length ? `Ekranda ilk ${preview.rows.length.toLocaleString("tr-TR")} satır; tamamı (${preview.total.toLocaleString("tr-TR")} satır) PDF ve Excel'de.${preview.footer ? " TOPLAM satırı bütün satırları kapsar." : ""}` : `${preview.total.toLocaleString("tr-TR")} satır.`} PDF en çok 20.000 satır yazar; Excel sınırsızdır.</p>`
       : `<p class="hof-empty">${ready ? "Rapor hazırlanıyor…" : "Önce cariyi seçin."}</p>`;
     main.innerHTML = `<header class="hof-rc-head"><div><p class="hof-eyebrow">${esc(report.group)}</p><h3>${esc(preview?.title || report.title)}</h3><p>${esc(report.description)}</p>${preview?.subtitle ? `<small class="hof-rc-scope">${esc(preview.subtitle)}</small>` : ""}</div>
         <span class="hof-rep-export ${ready ? "" : "is-disabled"}" role="group" aria-label="Dışa aktar">
@@ -210,6 +280,7 @@
       } });
       if (field) slot.appendChild(field);
     }
+    fitTable();
   }
 
   // quiet (v2.0.11, canlı yenileme): ön izleme "Yükleniyor"a düşmeden yerinde tazelenir.
@@ -244,6 +315,7 @@
     if (target.dataset.report) return select(target.dataset.report);
     if (target.dataset.preset) {
       Object.assign(center.params, { preset: target.dataset.preset }, presetRange(target.dataset.preset));
+      rememberRange(center.id, center.params);
       return run();
     }
     if (target.hasAttribute("data-rc-run")) {
@@ -251,7 +323,10 @@
       const from = main.querySelector('[data-param="from"]')?.value;
       const to = main.querySelector('[data-param="to"]')?.value;
       if (from && to && from > to) return HOF.toast("Başlangıç tarihi bitiş tarihinden sonra olamaz.", { type: "error" });
-      if (from !== undefined) Object.assign(center.params, { from: from || "", to: to || "", preset: "" });
+      if (from !== undefined) {
+        Object.assign(center.params, { from: from || "", to: to || "", preset: "" });
+        rememberRange(center.id, center.params);
+      }
       const category = main.querySelector('[data-param="category"]');
       if (category) center.params.category = category.value.trim();
       return run();

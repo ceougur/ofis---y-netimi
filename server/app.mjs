@@ -1,6 +1,6 @@
 // DestekOfis merkezi sunucusu: uygulamayı kurar, göçleri çalıştırır ve HTTP isteklerini yönlendirir.
 import { createServer } from "node:http";
-import { mkdirSync } from "node:fs";
+import { existsSync, mkdirSync } from "node:fs";
 import path from "node:path";
 import { createAudit } from "./lib/audit.mjs";
 import { createAccess } from "./lib/access.mjs";
@@ -9,7 +9,7 @@ import { createRecovery } from "./lib/recovery.mjs";
 import { createChat } from "./lib/chat.mjs";
 import { createChatArchive } from "./lib/chat-archive.mjs";
 import { createEventHub } from "./lib/events.mjs";
-import { startBackupScheduler } from "./lib/backup.mjs";
+import { runDueBackups, startBackupScheduler } from "./lib/backup.mjs";
 import { createCloudBackup } from "./lib/cloud-backup.mjs";
 import { createClientState } from "./lib/client-state.mjs";
 import { DEFAULT_ADMIN_PASSWORD, loadConfig } from "./lib/config.mjs";
@@ -60,6 +60,8 @@ import { registerWorkspaceRoutes } from "./routes/workspace.mjs";
 import { ROOT_COMPANY_ID, createCompanyRegistry, mirrorUsers, usersFingerprint } from "./lib/companies.mjs";
 import { registerCompanyRoutes } from "./routes/companies.mjs";
 import { createBackup } from "./lib/backup.mjs";
+import { applyStagedRestore, createCompanyBackups } from "./lib/company-backups.mjs";
+import { resolveDbPath } from "./lib/db-path.mjs";
 
 function ensureInitialAdmin(store, config, log) {
   if (store.get("SELECT id FROM users WHERE username = ? COLLATE NOCASE", config.adminUsername)) return;
@@ -78,14 +80,55 @@ export function createApp(overrides = {}) {
   const startedAt = new Date().toISOString();
   mkdirSync(config.dataDir, { recursive: true });
   mkdirSync(config.backupDir, { recursive: true });
-
-  const db = openDatabase(config.dbPath);
-  const store = createStore(db);
-  const migration = runMigrations(store, { backupDir: config.backupDir, keep: config.backupKeep, log });
   // Çoklu şirket (v2.0.17): hub = ilk şirket (001) + ortak katman (kullanıcılar, roller, lisans, şirket listesi).
   // Çocuk şirket örnekleri aynı createApp ile açılır; kimlik doğrulama, yetki, kurtarma ve lisans hub'dan gelir,
   // kullanıcı tablosu ad/rol gösterimi için aynalanır.
   const hub = overrides.hub || null;
+  const children = new Map();
+  // Bekleyen 001 geri yüklemesi (v2.0.20): veri tabanı açılmadan uygulanır (Yönetim → Yedekler → Geri Yükle).
+  const stagedRestore = hub ? null : applyStagedRestore({ dataDir: config.dataDir, backupRoot: config.backupDir, dbPath: config.dbPath, keep: config.backupKeep, log });
+
+  const db = openDatabase(config.dbPath);
+  const store = createStore(db);
+  // Şirket kayıt defteri yalnız hub'da; çocuklar hub'ınkini görür. (v2.0.20: göçlerden önce kurulur; göç öncesi yedek de
+  // şirketin kendi yedek klasörüne gider.)
+  const companies = hub ? hub.companies : createCompanyRegistry({ dataDir: config.dataDir, backupDir: config.backupDir, hubStore: store, log });
+  const companyId = overrides.companyId || ROOT_COMPANY_ID;
+  // Bu örneğin şirketi ve yedek klasörü (<yedek kökü>/<kod> - <ad>; ad/kod değişince yeni klasör — her kullanımda çözülür).
+  const selfCompany = () => companies.get(companyId) || { id: companyId, code: "001", name: "", dir: "" };
+  const companyIdentity = () => {
+    const company = selfCompany();
+    return { id: company.id, code: company.code, name: company.name };
+  };
+  const backupDirNow = () => companies.dirsOf(selfCompany()).backupDir;
+  const takeBackup = (label, keep = config.backupKeep) => createBackup(db, backupDirNow(), { label, keep, company: companyIdentity() });
+  // Bir şirketin veri tabanıyla iş: açık örneğinki, açık değilse kısa süreli salt okunur bağlantı (açıp kapatır; örnek
+  // açılmaz, bağlantı sızmaz). Otomatik yedek, Yönetim → Şirketler sayıları ve geri yükleme öncesi yedek bunu kullanır.
+  function withCompanyDb(company, fn) {
+    if (!company || company.id === companyId) return fn(db);
+    if (hub) return hub.withCompanyDb(company, fn);
+    const child = children.get(company.id);
+    if (child) return fn(child.db);
+    const file = resolveDbPath(companies.dirsOf(company).dataDir);
+    if (!existsSync(file)) return null;
+    const temp = openDatabase(file, { readOnly: true });
+    try {
+      return fn(temp);
+    } finally {
+      temp.close();
+    }
+  }
+  // Geri yüklenen ya da silinen şirket o sırada açılmaz; istek 503 ile "birkaç saniye sonra" der.
+  const busyCompanies = hub ? hub.busyCompanies : new Map();
+  const backups = hub ? hub.backups : createCompanyBackups({ registry: companies, dataDir: config.dataDir, keep: config.backupKeep, log, withDb: withCompanyDb, busy: busyCompanies, closeCompany: id => closeCompany(id) });
+  if (!hub) {
+    try {
+      backups.migrate();
+    } catch (error) {
+      log.warn(`Yedekler şirket klasörlerine taşınamadı: ${error.message}`);
+    }
+  }
+  const migration = runMigrations(store, { backupDir: backupDirNow(), keep: config.backupKeep, log, company: companyIdentity() });
   if (!hub) ensureInitialAdmin(store, config, log);
   else mirrorUsers(hub.store, store);
 
@@ -109,11 +152,39 @@ export function createApp(overrides = {}) {
   let license = null;
   // Drive'a yedek (v2.0.2): kullanıcı Drive bağlantısı/klasörü bağladıysa her yedek oraya da kopyalanır. Lisans nesnesi
   // aşağıda kurulduğundan geç bağlanır; kopya hatası yerel yedeği hiçbir zaman engellemez.
-  const cloudBackup = createCloudBackup({ store, log, services: config.licenseServices.split(",").map(item => item.trim()).filter(Boolean), keep: config.backupKeep, license: { summary: () => license?.summary?.() } });
-  const mirrorBackup = result => {
-    if (!result?.path) return;
-    cloudBackup.mirror(result).catch(error => log.warn(`Drive kopyası başarısız: ${error.message}`));
+  // v2.0.20: Drive ayarı ortak katmanda (hub) tek; bütün şirketlerin yedekleri oraya, her şirket kendi klasörüne kopyalanır.
+  // Kopyalar sırayla yapılır (aynı anda iki kopya durum kaydını ezmesin).
+  // Drive bağlantısı ortak katmanda tek (v2.0.20). 2.0.17–2.0.19'da bağlantı seçili şirketin dosyasına yazılıyordu: 002
+  // seçiliyken bağlanan Drive ayarı ortak katmanda yoksa ondan alınır (gözden geçirme bulgusu: kopyalar sessizce duruyordu).
+  if (!hub) {
+    try {
+      if (!store.setting("backup.cloud", "")) {
+        for (const company of companies.list().filter(item => item.id !== ROOT_COMPANY_ID)) {
+          const value = withCompanyDb(company, companyDb => companyDb.prepare("SELECT value FROM settings WHERE key = 'backup.cloud'").get()?.value || "");
+          if (value) {
+            store.setSetting("backup.cloud", value);
+            log.info?.(`Drive yedek bağlantısı ${company.code} · ${company.name} şirketinin ayarından ortak katmana alındı.`);
+            break;
+          }
+        }
+      }
+    } catch (error) {
+      log.warn?.(`Drive yedek ayarı şirketlerden okunamadı: ${error.message}`);
+    }
+  }
+  const cloudBackup = hub ? hub.cloudBackup : createCloudBackup({ store, log, services: config.licenseServices.split(",").map(item => item.trim()).filter(Boolean), keep: config.backupKeep, license: { summary: () => license?.summary?.() } });
+  let mirrorQueue = Promise.resolve();
+  const mirrorNow = result => {
+    const run = mirrorQueue.then(() => cloudBackup.mirror(result));
+    mirrorQueue = run.catch(() => {});
+    return run;
   };
+  const mirrorBackup = hub
+    ? hub.mirrorBackup
+    : result => {
+        if (!result?.path) return;
+        mirrorNow(result).catch(error => log.warn(`Drive kopyası başarısız: ${error.message}`));
+      };
   // Kalıcı çalışma verisi: içeri alınan Excel/Sheets satırları + bağlı Sheet'in zamanlanmış eşitlemesi.
   const dataset = createDatasetService({
     store,
@@ -122,8 +193,8 @@ export function createApp(overrides = {}) {
     bumpClientState: clientState.bump,
     events,
     log,
-    backupDir: config.backupDir,
     backupKeep: config.backupKeep,
+    makeBackup: label => takeBackup(label),
     autoSync: config.datasetAutoSync,
     tickMs: config.datasetTickMs,
     canWrite: () => !license || license.writable(),
@@ -158,16 +229,37 @@ export function createApp(overrides = {}) {
     license.init();
   }
   dataset.start();
-  // Şirket kayıt defteri yalnız hub'da; çocuklar hub'ınkini görür.
-  const companies = hub ? hub.companies : createCompanyRegistry({ dataDir: config.dataDir, backupDir: config.backupDir, hubStore: store, log });
-  const companyId = overrides.companyId || ROOT_COMPANY_ID;
-  const context = { config, log, store, auth, access, recovery, audit, clientState, startedAt, supervisorLink, events, chat, chatArchive, dataset, profile, license, free, trash, cloudBackup, companies, companyId, company: () => companies.get(companyId) };
+  // Sunucunun yeniden başlatılması (001 geri yüklemesi): servis yöneticisi altında server.mjs bağlar; yoksa false.
+  let restartHandler = null;
+  const requestRestart = reason => {
+    if (hub) return hub.requestRestart(reason);
+    if (!restartHandler) return false;
+    const timer = setTimeout(() => restartHandler(reason), 400);
+    timer.unref?.();
+    return true;
+  };
+  const context = {
+    config, log, store, auth, access, recovery, audit, clientState, startedAt, supervisorLink, events, chat, chatArchive, dataset, profile, license, free, trash, cloudBackup, companies, companyId, company: () => companies.get(companyId),
+    // Şirket yedekleri (v2.0.20): bütün şirketler, kendi klasörlerinde; Drive kopyası sıralı.
+    backups, backupDir: backupDirNow, withCompanyDb, mirrorNow: hub ? hub.mirrorNow : mirrorNow, closeCompany: id => closeCompany(id), busyCompanies, requestRestart,
+  };
+  if (stagedRestore) {
+    const actor = stagedRestore.by ? { id: stagedRestore.by, display_name: stagedRestore.byName } : null;
+    audit(actor, stagedRestore.ok ? "system.backup_restored" : "system.backup_restore_failed", stagedRestore.name, { company: "001", safety: stagedRestore.safety || "", error: stagedRestore.error || "" });
+    // Sonuç Yönetim → Yedekler'de gösterilir (gözden geçirme bulgusu: başarısız 001 geri yüklemesi sessiz kalıyordu;
+    // kullanıcı eski veriyle çalıştığını bilmiyordu).
+    try {
+      store.setSetting("backup.lastRestore", JSON.stringify({ ok: stagedRestore.ok, name: stagedRestore.name, safety: stagedRestore.safety || "", error: stagedRestore.error || "", byName: stagedRestore.byName || "", at: new Date().toISOString() }));
+    } catch (error) {
+      log.warn?.(`Geri yükleme sonucu kaydedilemedi: ${error.message}`);
+    }
+  }
 
   const router = createRouter();
   router.get("/api/health", async ({ res }) => ok(res, { service: "destekofis-merkezi", status: "ok", version: config.version, time: new Date().toISOString(), uptimeSeconds: Math.round(process.uptime()) }));
   registerAuthRoutes(router, context);
   registerAdminRoutes(router, context);
-  if (!hub) registerCompanyRoutes(router, { ...context, appFor: company => appFor(company), resetData: (company, ...args) => appFor(company).resetData(...args) });
+  if (!hub) registerCompanyRoutes(router, { ...context, appFor: company => appFor(company), resetData: (company, ...args) => appFor(company).resetData(...args), closeCompany: id => closeCompany(id) });
   // Taksit servisi (context.plans) daha sonra kurulur; işlem geçmişi ona istek anında ulaşır (v2.0.6).
   registerWorkspaceRoutes(router, { ...context, plans: () => context.plans });
   // Hareket tarihi ve dönem kilidi (v2.0.13): Kasa, Cari, Stok ve Taksit aynı kuralla.
@@ -252,11 +344,12 @@ export function createApp(overrides = {}) {
   // Ortak katman yolları hub'da kalır; öbür her istek kullanıcının SEÇİLİ şirketinin örneğine gider (her şirket ayrı
   // veri tabanı ve servis kümesi). Şirket değişince istemci sayfayı yeniler; açık pencereler, olay akışı ve önbellek
   // o şirketin örneğinden gelir.
-  const HUB_ONLY = /^\/api\/(auth|public|license|companies|health|admin\/(users|roles|recovery|update))(\/|$)/;
-  const children = new Map();
+  // v2.0.20: Yedekler (admin/backups) de ortak katmanda: bütün şirketlerin yedeği tek yerden alınır, listelenir, indirilir.
+  const HUB_ONLY = /^\/api\/(auth|public|license|companies|health|admin\/(users|roles|recovery|update|backups))(\/|$)/;
   function appFor(company) {
     if (!company || company.id === ROOT_COMPANY_ID) return app;
     if (hub) return hub.appFor(company);
+    if (busyCompanies.has(company.id)) throw new HttpError(503, busyCompanies.get(company.id), { retryAfter: 5 });
     let child = children.get(company.id);
     if (!child) {
       const dirs = companies.dirsOf(company);
@@ -264,12 +357,15 @@ export function createApp(overrides = {}) {
       child = createApp({
         ...overrides,
         dataDir: dirs.dataDir,
-        backupDir: dirs.backupDir,
+        // Yedek kökü ortak; şirketin klasörü (<kod> - <ad>) kayıt defterinden her kullanımda çözülür.
+        backupDir: config.backupDir,
         log,
         companyId: company.id,
         supervisorLink: undefined,
         startLicenseTimers: false,
-        hub: { store, auth, access, recovery, license, supervisorLink, companies, appFor },
+        // Otomatik yedek ortak katmanın zamanlayıcısında (bütün şirketler); çocuk kendi zamanlayıcısını kurmaz.
+        scheduleBackups: false,
+        hub: { store, auth, access, recovery, license, supervisorLink, companies, appFor, withCompanyDb, busyCompanies, backups, cloudBackup, mirrorBackup, mirrorNow, requestRestart, closeCompany },
       });
       child.usersStamp = usersFingerprint(store);
       children.set(company.id, child);
@@ -298,10 +394,28 @@ export function createApp(overrides = {}) {
     try {
       return appFor(selected).handleScoped(req, res);
     } catch (error) {
-      log.error(`Şirket açılamadı (${selected.code}); ilk şirkete düşüldü`, error);
-      return scoped(req, res);
+      // Şirket geri yükleniyor/siliniyor: başka şirketin verisi gösterilmez, "birkaç saniye sonra" denir.
+      if (error instanceof HttpError) {
+        send(res, error.status, { ok: false, error: error.message }, error.extra?.retryAfter ? { "retry-after": String(error.extra.retryAfter) } : {});
+        return Promise.resolve();
+      }
+      // v2.0.20 (2.0.17'den kalan hata): şirket açılamazsa istek ARTIK 001'e düşmez — seçici 002'yi gösterirken girilen
+      // kayıt 001'e yazılıyordu. Kullanıcıya açık hata verilir; yönetici şirketi değiştirip ya da yedekten geri yükleyebilir.
+      log.error(`Şirket açılamadı (${selected.code} · ${selected.name})`, error);
+      send(res, 503, { ok: false, error: `“${selected.code} · ${selected.name}” şirketinin verisi açılamadı (${error.code || error.message}). Sol üstten başka şirkete geçin; yönetici Yönetim → Yedekler'den geri yükleyebilir.`, code: "company-unavailable" }, { "retry-after": "30" });
+      return Promise.resolve();
     }
   };
+  // Şirket örneğini kapatır ve listeden çıkarır (geri yükleme, silme). Ortak katmandaki servisler (lisans, oturum)
+  // çocuğun kapanışından etkilenmez.
+  async function closeCompany(id) {
+    if (hub) return hub.closeCompany(id);
+    const child = children.get(id);
+    if (!child) return false;
+    children.delete(id);
+    await child.close();
+    return true;
+  }
   const server = createServer((req, res) => {
     dispatch(req, res).catch(error => {
       log.error("Beklenmeyen hata", error);
@@ -312,8 +426,10 @@ export function createApp(overrides = {}) {
   server.headersTimeout = 70_000;
   server.requestTimeout = 5 * 60_000;
 
-  const stopBackups = config.scheduleBackups
-    ? startBackupScheduler({ db, backupDir: config.backupDir, intervalHours: config.backupIntervalHours, keep: config.backupKeep, startDelayMs: config.backupOnStartDelayMs, log, onBackup: mirrorBackup })
+  // Otomatik yedek (v2.0.20): ortak katmanda tek zamanlayıcı BÜTÜN şirketleri yedekler — bu açılışta hiç açılmamış şirket
+  // de (veri tabanı kısa süreliğine salt okunur açılır); her şirket kendi klasörüne, Drive'a da kendi klasörüne.
+  const stopBackups = config.scheduleBackups && !hub
+    ? startBackupScheduler({ targets: () => backups.scheduleTargets(), intervalHours: config.backupIntervalHours, keep: config.backupKeep, startDelayMs: config.backupOnStartDelayMs, log, onBackup: mirrorBackup })
     : () => {};
   if (overrides.startLicenseTimers !== false && !hub) license.start();
   // Gün dönümünde tüm ekranlara "alerts.refresh" (olay tabanlı uyarı akışı, v2.0.2).
@@ -359,7 +475,8 @@ export function createApp(overrides = {}) {
   function resetData(user, { mode = "movements", resetNumbers = true } = {}) {
     if (!["movements", "all"].includes(mode)) throw new HttpError(400, "Sıfırlama türü 'movements' ya da 'all' olmalı.");
     const company = companies.get(companyId);
-    const backup = createBackup(db, config.backupDir, { label: `sifirlama-oncesi-${company?.code || "001"}`, keep: Math.max(config.backupKeep, 10) });
+    // Zorunlu yedek şirketin kendi klasörüne (v2.0.20: <kod> - <ad>, adında kod, içinde şirket kimliği).
+    const backup = takeBackup(`sifirlama-oncesi-${company?.code || "001"}`, Math.max(config.backupKeep, 10));
     const has = table => Boolean(store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = ?", table));
     const counts = {};
     store.tx(() => {
@@ -407,6 +524,18 @@ export function createApp(overrides = {}) {
     events,
     license,
     info,
+    // Şirket yedekleri (v2.0.20): bütün şirketler; testler ve araçlar için.
+    backups,
+    backupDir: backupDirNow,
+    // Zamanlayıcının bir turu (zamanı gelen bütün şirketler); zamanlayıcı kapalıyken de çalışır.
+    runDueBackups: () => (hub ? [] : runDueBackups({ targets: () => backups.scheduleTargets(), intervalHours: config.backupIntervalHours, log, onBackup: mirrorBackup })),
+    stagedRestore,
+    openCompanyIds: () => (hub ? [] : [...children.keys()]),
+    // Servis yöneticisi altında server.mjs bağlar: 001 geri yüklemesi için uygulama kendini düzgün kapatır, servis
+    // yöneticisi yeniden açar (açılışta geri yükleme uygulanır).
+    onRestartRequest(handler) {
+      restartHandler = typeof handler === "function" ? handler : null;
+    },
     onInfoChange(listener) {
       infoListeners.add(listener);
       return () => infoListeners.delete(listener);
@@ -428,10 +557,12 @@ export function createApp(overrides = {}) {
       clearTimeout(archiveStart);
       clearInterval(archiveTimer);
       alertScheduler.stop();
-      auth.limiter.stop();
+      // Oturum sınırlayıcı ve lisans ortak katmanın: şirket örneği kapanırken (geri yükleme, silme) durdurulmaz
+      // (v2.0.17'de şirket silinince ilk şirketin lisans denetimi de duruyordu).
+      if (!hub) auth.limiter.stop();
       dataset.stop();
       documents.stop();
-      license.stop();
+      if (!hub) license.stop();
       events.stop();
       await new Promise(resolve => {
         server.close(() => resolve());

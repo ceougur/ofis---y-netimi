@@ -271,7 +271,8 @@ Görünüme (`dataset.view`) yalnızca elle değer yazılmış satırlar `serbes
   ortak katmanı taşır: kullanıcılar/roller/kimlik doğrulama (`auth`, `access`, `recovery`), lisans, şirket listesi
   (`<dataDir>/sirketler.json` → `{companies:[{id, code, name, dir}]}`). Diğer şirketler `appFor(company)` ile tembel açılan
   çocuk `createApp` örnekleridir (`overrides.hub`: hub'ın auth/access/license/supervisorLink'i yeniden kullanılır; kendi
-  `dataDir` `<dataDir>/sirketler/<kod>/`, yedek `<backupDir>/sirket-<kod>/`; `mirrorUsers` kullanıcı tablosunu ad/rol
+  `dataDir` `<dataDir>/sirketler/<kod>/`, yedek `<backupDir>/sirket-<kod>/` — 2.0.20'den beri `<backupDir>/<kod> - <ad>/`,
+  aşağıda *Yedekleme*; `mirrorUsers` kullanıcı tablosunu ad/rol
   gösterimi için aynalar, parmak izi değişince tazelenir). İstek dağıtımı: hub'daki `dispatch()` `HUB_ONLY` dışındaki her
   `/api/*` isteği kullanıcının seçili şirketinin örneğine (`handleScoped`) yollar; seçim `settings company.user.<id>`,
   yetki `company.access.<id>` (yönetici hepsini görür; kayıt yoksa yalnız 001). Kod üç hane ve tekil; kod değişse de
@@ -546,6 +547,42 @@ için iki istek aynı işlemin içine karışamaz; denetim ve COMMIT aynı kilit
 Drive'a kopya (v2.0.2): yukarıdaki *Drive'a yedek* başlığı; her yerel yedekten sonra bağlanan klasöre/Drive'a kopyalanır.
 
 `VACUUM INTO` ile tutarlı anlık kopya; açılışta ve 6 saatte bir (son yedek eskiyse), son 30 yedek. Elle: yönetim paneli veya `npm run backup` (salt okunur bağlantı, sunucu çalışırken güvenli). Yedek adları `destekofis-<zaman>[-<neden>].sqlite`. 1.6 öncesinden kalan `hukuk-ofisi-…` yedekler de listelenir, geri yüklenir ve adına göre değil zaman damgasına göre sıralanıp temizlenir.
+
+**Şirket yedekleri (2.0.20, `server/lib/company-backups.mjs`).** Her şirketin yedeği kendi adını taşıyan klasörde:
+`<backupDir>/<kod> - <ad>/` (`backup.mjs` `companyFolderName`: Windows'ta geçersiz `\ / : * ? " < > |` ve denetim
+karakterleri boşluğa, sondaki nokta/boşluk atılır, Türkçe harf kalır, en çok 80 karakter); ad
+`destekofis-<kod>-<zaman>[-<etiket>].sqlite`; şirket kimliği (`{id, code, name}`) yedeğin içindeki `backup_meta`
+tablosunda (yalnız kopyada; geri yüklemede düşürülür). 001'in VERİ dosyası yerinde kalır, yalnız yedekleri taşınır.
+- Göç (`migrate`, her açılışta, iş kalmayınca boş geçer; günde bir de zamanlayıcıdan): kökteki kodsuz yedekler → 001'in
+  klasörü, `sirket-<klasör>/` → o veri klasörünün şirketi (kod değişmiş olsa da `dir` ile eşleşir). Taşıma; silme yok;
+  taşınamayan yerinde kalır ve "eski yerde" diye listelenir. Yedek olmayan dosyaya dokunulmaz; sahipsiz `sirket-<n>/`
+  (silinmiş şirket) yerinde kalır. Kökteki 7 günden yeni `guncelleme-oncesi-*` / `basarisiz-guncelleme-*` yedekleri
+  kökte BEKLETİLİR: 2.0.19 ve öncesinin servis yöneticisi (servis yeniden başlayana kadar eski kod çalışır) geri dönüşte
+  yedeği kökte arar.
+- Ad/kod değişimi (`companies.update`): klasör `moveBackupFolder` ile yeniden adlandırılır; olmazsa dosya dosya taşınır;
+  kalan olursa eski klasör `sirketler.json`'da `oldBackupDirs` olarak tutulur (listelenir, açılışta yeniden taşınır).
+  Şirket silinince yedek klasörü yerinde kalır; sıfırlama/silme/geri yükleme öncesi yedekler şirketin klasörüne.
+- Uçlar ortak katmanda (`HUB_ONLY` içinde `admin/backups`): `GET /api/admin/backups` (görülebilen bütün şirketler,
+  `company`, `companyId`, `folder`, `legacy`), `GET …/folders`, `POST …` (`scope: "all" | "one"`, `companyId`), `GET
+  …/:name?company=`, `POST …/restore` (`name`, `company` = bulunduğu klasörün şirketi, `target`, onay kod/ad + parola),
+  `DELETE …/restore` (bekleyen 001 geri yüklemesinden vazgeç), `GET /api/companies/storage` (veri dosyası, boyut,
+  cari/kayıt sayısı, son yedek, yedek klasörü). Hepsi `system.manage` + şirket erişimi.
+- Otomatik yedek ve Drive: tek zamanlayıcı hub'da (`runDueBackups` + `backups.scheduleTargets()`); hiç açılmamış şirketin
+  veri tabanı kısa süreliğine salt okunur açılıp kapatılır (`withCompanyDb`; örnek açılmaz). Drive ayarı hub'da tek;
+  kopyalar sırayla (`mirrorNow` kuyruğu) ve klasör kipinde `DestekOfis Yedekleri/<kod> - <ad>/` altına, budama klasör başına.
+- Geri yükleme: yedekteki kimlik hedef şirketten farklıysa 409 (`company-mismatch`); kimliksiz eski yedek yalnız
+  bulunduğu klasörün şirketine (`company-unknown`); daha yeni şema 409. 002+: şirket "meşgul" (istek 503, başka şirketin
+  verisi gösterilmez) → örnek kapatılır → `prepareRestoreFile` (kopya, `quick_check`, son sürüme göç, `backup_meta`
+  düşer, istemci durum sayacı artar) → `geri-yukleme-oncesi-<kod>` yedeği → dosya değişir → ilk istekte yeniden açılır.
+  001: ortak katman aynı dosyada olduğundan çalışırken değiştirilmez; yedek `data/geri-yukleme/` altına kopyalanır,
+  `data/geri-yukleme.json` yazılır, servis yöneticisi altında uygulama düzgün kapanıp yeniden açılır (`onRestartRequest`).
+  Açılışta (veri tabanı açılmadan, `applyStagedRestore`) önce `geri-yukleme-oncesi-001` yedeği, sonra geri yüklenen
+  dosyaya ortak katman o anki hâliyle aktarılır (`users`, `roles`, `sessions`; `license.*`, `meta.*`, `auth.*`,
+  `company.*`, `backup.cloud`, `office.name` ayarları): kullanıcılar, parolalar, lisans ve şirket yetkileri geri gitmez.
+  Tek deneme; hata olursa mevcut veriyle açılır, işlem geçmişine `system.backup_restore_failed` yazılır.
+- Servis yöneticisi güncelleme öncesi yedeği 001'in klasörüne alır (kodlu ad, kimlik); geri dönüşte önce o klasörde,
+  sonra kökte arar. Şirket örneği kapanırken ortak katmanın lisans ve giriş sınırlayıcısı durdurulmaz (2.0.17'de şirket
+  silinince 001'in lisans denetim zamanlayıcıları da duruyordu).
 
 ## Test
 

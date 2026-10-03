@@ -410,7 +410,111 @@ Bağlam kopsa da bu düzen değişmez. Kullanıcı "zip ver" dediğinde şu üç
   olunamayan satır yeni cari açar"; aynı adlı iki gerçek kişi ayrılsın diye). KARAR (kullanıcı, 03.10.2026: "önerini yap"
   → önerim: kural BÖYLE KALIR; "yalnız ad aynıysa sor" yapılmadı). senaryo-219 adım 2 bu kuralı denetler.
   Kullanıcı (03.10.2026, "müşteri bekliyor"): işlem bitince zip ver, BİRLEŞTİRMEYİ YAP, GitHub'a yükleme linkini ver.
-  İmza anahtarı bu oturumda yok → kullanıcıdan oturuma yüklemesi istendi; birleştirme CI yeşil olunca yapılır.
+  YAYIMLANDI (03.10.2026 10:13; PR ceougur/ofis---y-netimi#19 CI 12/12 yeşil → birleştirildi, `v2.0.19` = fb032cf; dal
+  `master` üzerine sıfırlandı). İmza anahtarı kullanıcının yüklediği .pem (destekofis-2026-1 ile birebir, imzala/doğrula
+  sınandı). Güncelleme paketi sha256 349ebb89…, kurulum .exe sha256 029c2acf… (29,32 MB, simgeli). Yayındaki 5 dosya +
+  latest/ (exe, json, zip, pdf) bayt bayt aynı; gerçek güncelleyici canlı GitHub'da 2.0.18/17/16/15/2.0.4/1.7.0 olarak
+  (Node 24.21, bootstrap 2; GitHub API ve API kapalıyken yedek yol) 2.0.19'u "available" gördü, indirme sha256 eşleşti;
+  2.0.19 kurulu → "up-to-date"; kurcalanmış bildirge reddedildi. Kılavuz değişmedi: site `web/indir/` PDF'i yayınla
+  bayt bayt aynı (60bcf7ad…) → site PR'ı gerekmedi. 2.0.19 KAPANDI.
+- 2.0.20 BAŞLADI (kullanıcı, 03.10.2026: "uzman UI, uzman UX, baş mimar ve baş mühendis şapkanla başka sorunlara yol
+  açmayacak şekilde düzeltmeleri yap" = 9 maddenin hepsi; dal `claude/kind-newton-fpmx3f`).
+  DURUM: 9 MADDE YAPILDI (kanıt `docs/2.0.20-KANIT.md`, CHANGELOG → 2.0.20). Madde 9 bir yardımcı ajanla ayrı kopyada yapıldı
+  (`server/lib/company-backups.mjs`; GERİ YÜKLE özelliği de eklendi: 002+ hemen, 001 yeniden açılışta, ortak katman korunur),
+  sonra BAĞIMSIZ gözden geçirme ajanı → bulgular düzeltildi (`test/yedek-220-inceleme.test.mjs`, önce 9/9 kırmızı). Gözden
+  geçirmede 2.0.17'den kalan iki ciddi hata bulundu ve düzeltildi: kodu değişen şirketin `sirketler/<kod>` klasörü yeni şirkete
+  veriliyordu (İKİ ŞİRKET AYNI VERİ TABANI); açılamayan şirketin istekleri 001'e düşüyordu. Kalan bilinen sınırlar (CHANGELOG'a
+  yazılmadı, düşük): Drive "bağlantı" kipinde şirketler aynı Drive klasörü; 001 geri yüklemesinde servis yöneticisi yeniden
+  açılışı çökme sayar (5 dk'da 5 kez olursa bekler); silinmiş şirketin yedekleri listede görünmez (klasörü durur).
+  Yedek klasörü: `backups\<kod> - <ad>\` (çakışırsa kayıtta `backupFolder` "… (2)"); veri klasörü yeni şirkette boş ve
+  kullanılmayan (`sirketler\002-2` gibi). Budama: rutin (otomatik/manuel/drive-deneme) son 30, güvenlik etiketlileri ayrıca 20.
+  TESLİM (03.10.2026 14:3x): PR ceougur/ofis---y-netimi#20 açık (birleştirme kullanıcının "birleştir"iyle). Teslim öncesi ekran
+  denetiminde bulunup düzeltildi: Cari Bazında Tahsilat'ta TOPLAM pencerenin altında kalıyordu (tablo kutusu pencereye göre
+  boyutlanır, `hof-report-center.js` fitTable; alçak ekranda 50vh kalır), Cari Listesi'nde telefon ikiye bölünüyordu.
+  Testler: npm test 831/831; senaryo-220 23, 220-yedek 26, rapor 82, 216 53, 211 57, 217 62, 219 30, e2e 50 adım.
+  Güncelleme paketi sha256 c3d16dc8… (207 dosya, HEAD ile bayt bayt), kurulum .exe sha256 b4eaafd3… (29,4 MB, simgeli);
+  güncelleyici 2.0.19/18/17/16/2.0.4/1.7.0 olarak (API ve yedek yol) "available". Kılavuz DEĞİŞTİ (PDF 84c256d7…) →
+  yayından sonra site PR'ı (`ceougur/destekofis` → `web/indir/`). Sırada: "birleştir" → CI → birleştir → yayın (v2.0.20,
+  5 dosya) → "yayımladım" → bayt bayt + güncelleyici denetimi → site PR'ı.
+  Kullanıcı (03.10.2026, Geri Yükle penceresi ekranıyla): "yedekten geri yükle yap dememiştim ama güzel olmuş" → KALIR.
+  Kaynağı: madde 9 önerimdeki "geri yüklemede yanlış şirkete yükleme reddedilir" (2.0.19'a kadar geri yükleme yalnız
+  güncelleme geri dönüşünde, ekransız). DERS: istenenin dışına çıkan özellik teslimde AYRICA söylenir.
+- 2.0.20 YAPILACAKLAR (kullanıcı "yapılacaklara not al" dedi, 03.10.2026; "yap" denince başlanır; ayrıntı ve
+  kanıt hemen altındaki ADAYI maddesinde):
+  [x] 1. Bütün raporların (43) tablosunun altında kalın TOPLAM satırı — ekran, PDF, Excel aynı; yalnız toplanabilir
+         kolonlar (tutar, matrah, KDV, borç, alacak, miktar); birim fiyat, yürüyen bakiye, oran, tarih boş.
+  [x] 2. Cari Listesi ve Bakiyeler özetine "Toplam Borç (Anlaşılan)", "Toplam Tahsilat (Ödenen)", "Kalan".
+  [x] 3. Dönemli raporlar ilk açılışta "Bu Yıl"; sonra kullanıcının son seçtiği dönem hatırlanır.
+  [x] 4. Dönemde kayıt yoksa ipucu: "Bu dönemde kayıt yok — Tüm Zamanlar'ı deneyin".
+  [x] 5. Test: 43 raporda TOPLAM satırı = satırların toplamı (ekran/PDF/Excel); boş dönem; tek kayıt; 10 cari × 10.000,
+         ilk taksitler ödenmiş → 100.000 / 10.000 / 90.000 (Taksit Kartları, Cari Mizanı, Cari Listesi); arayüzden senaryo.
+  [x] 6. Kılavuza kısa hap bilgi: "Ciro ve toplam alacak hangi raporda".
+  [x] 7. Sol üstteki ŞİRKET kutusunda şirket sayısını gösteren yeşil rozet ("001 · Şirket 1  (2)") KALKAR — kullanıcı
+         (03.10.2026, ekran): "kafa karıştırıyor, o sayı yazmasın". Kod: `client/assets/hof-companies.js:132`
+         (`hof-session-count`); açılır listede şirketler zaten görünür. Test: 1 ve 2 şirketle rozet yok.
+  [x] 8. "CARİ BAZINDA TAHSİLAT RAPORU ÇALIŞMIYOR" (kullanıcı, 03.10.2026 — açık sorunun cevabı). Arayüzden yeniden
+         üretildi: Taksit Excel'i "Ödenen" kolonuyla (10 kişi × 10.000, her biri 1.000 ödenmiş) yüklenince ödenen tutar
+         AÇILIŞ (devir, `plan_entries.opening = 1`, Kasa dışı) yazılır; rapor (`report-center.mjs` cari-tahsilat)
+         açılışı bilinçli SAYMIYOR → "Bu Ay" da "Tüm Zamanlar" da "Cari 0 · Toplam 0 · Bu süzgeçte kayıt yok" (Taksit
+         Kartları aynı veride Ödenen 10.000 gösteriyor). Programa girilen tahsilatların hepsi doğru sayılıyor (API ile
+         9 tür denendi: cari nakit/havale/POS, fatura peşin nakit/POS/havale, taksit, cariden çek, faturayla çek → 4.500).
+         Öneri: rapora "Önceden Ödenen (Açılış)" kolonu + özet kutusu (dönem tahsilatı "Toplam"ından AYRI; açılış
+         tarihi = yükleme günü); açılışı olan cari de listede görünür; rapor boşsa ve açılış varsa altta açıklama
+         ("Excel'den yüklenen n TL ödenmiş tutar açılış olarak yazıldı; Taksit Kartları → Ödenen"). Test: bu senaryo
+         arayüzden (Bu Ay / Tüm Zamanlar), açılış + gerçek tahsilat karışık, geçen ayın tahsilatı Bu Ay'da yok.
+         KARAR (kullanıcı, 03.10.2026: "taksitleri Excel ile toplu yüklemiştik"; "tamam ama hepsini toplasın raporlar da"):
+         tahsilat raporlarında TOPLAM açılış (Excel'de ödenmiş) DAHİL her şeyi toplar — Cari Bazında Tahsilat (Toplam =
+         nakit/havale + taksit + çek/senet + Önceden Ödenen), Taksit Tahsilatları (bugün açılış ayrı satır, "Tahsilat"
+         toplamı dışında → "Toplam Tahsil Edilen" açılış dahil), Taksit Tahsilat Performansı, Cari Listesi "Toplam Tahsilat
+         (Ödenen)". Kırılım kolonları kalır (kaynağı görünsün). KASA raporları DEĞİŞMEZ (açılış Kasa'ya hiç girmedi; Kasa
+         fiziki nakit, mutabakat bozulmasın) — kullanıcıya söylendi.
+  [x] 9. YEDEK VE ÇOKLU ŞİRKET (kullanıcı, 03.10.2026: "001 dolu ama yedek klasöründe 002 dolu yedeklemiş"). Ölçüldü
+         (API, 001'de 5 cari, 002'de 2 cari): veri KARIŞMIYOR — 002 seçiliyken Yedek Al → `backups/sirket-002/…-manuel.sqlite`
+         (yalnız 002), 001 seçiliyken → `backups/…-manuel.sqlite` (yalnız 001). AÇIKLAR: (a) `/api/admin/backups` HUB_ONLY
+         değil → Yedek Al ve Yedekler listesi yalnız SEÇİLİ şirket (`app.mjs` dispatch); (b) dosya adında şirket kodu yok
+         (001 ve 002 aynı adla, ayrım yalnız klasörde; Drive'da ayırt edilemez); (c) otomatik zamanlayıcı 001'de hep,
+         öbür şirketlerde yalnız o şirket bu açılışta açıldıysa (`appFor` tembel) → girilmeyen şirket yedeklenmez;
+         (d) supervisor `restoreDatabase` yalnız kök `backupDir` + kök db — şirket yedeği geri yüklemesi denetlenecek.
+         Öneri: Yedek Al → "Tüm Şirketler" (varsayılan) / "Yalnız <kod · ad>"; ad `destekofis-<kod>-<zaman>-<etiket>`;
+         Yedekler listesi bütün şirketler + Şirket kolonu; otomatik yedek ve Drive kopyası bütün şirketler (açılmamış olsa
+         da); yedeğin içine şirket kimliği yazılır, geri yüklemede yanlış şirkete yükleme reddedilir. Test: iki şirket
+         farklı veri; tümü/tek; otomatik; geri yükleme; yanlış şirkete yükleme 409. Kullanıcıya soruldu: yedek alınırken
+         002 mi seçiliydi / baktığı klasör sirket-002 mi (ekran bekleniyor).
+         CEVAP (kullanıcı, aynı gün): "001'de çalışıyoruz; yedekte şirketler klasöründe 001 yok, 002 klasöründe şirket
+         datası var; bu veriler aslında 001'in". ÖLÇÜLDÜ (arayüz + dosya içi sayım): 001 KÖK klasörde (`data/destekofis.sqlite`,
+         yedekleri `backups/` kökünde, alt klasörsüz); 002 `data/sirketler/002/` ve `backups/sirket-002/`. Yeni şirket BOŞ
+         açılıyor (001'in carisi/tablosu kopyalanmıyor: 002'de accounts=0, dataset_rows=0); boş şirket dosyası bile ~0,8 MB
+         (şema + kullanıcı kopyası + WAL) → "dolu" görünür. Yani karışma yok ama düzen yanıltıcı. Ek öneri (madde 9'a):
+         001'in YENİ yedekleri de `backups/sirket-001/` altına, ad `destekofis-<kod>-…` (001 veri dosyası yerinde kalır, göç
+         riski yok); Yönetim → Şirketler'de her şirketin veri dosyası yolu, boyutu, cari/kayıt sayısı ve son yedeği; Yedekler
+         ekranında "001 · Şirket 1 → …\backups\sirket-001" açıklaması. Kullanıcıdan teyit: 002'ye geçince Cari boş mu.
+         KARAR (kullanıcı, 03.10.2026): "her şirketin yedeği kendi isminde klasör açılıp buna girmeli". Uygulama: her
+         şirketin yedekleri `backups\<kod> - <ad>\` (ör. `backups\001 - Şirket 1\`, `backups\002 - Şirket 2\`); Windows'ta
+         geçersiz karakterler (\ / : * ? " < > |) temizlenir; ad/kod değişince klasör yeniden adlandırılır (içindekiler
+         korunur); göçte mevcut yedekler taşınır: `backups\` kökündeki 001 yedekleri → `001 - <ad>\`, `sirket-002\` →
+         `002 - <ad>\` (silme yok, taşıma; taşınamayan yerinde kalır, listelenir). Dosya adı `destekofis-<kod>-<zaman>-<etiket>`.
+         Geri yükleme ve Yedekler listesi yeni klasörlerden okur; eski yerdeki yedek de tanınır. Test: iki şirket, ad değişimi,
+         göç (kökte ve sirket-002'de eski yedekler), Türkçe/özel karakterli ad.
+  Açık soru CEVAPLANDI: "getirmiyor" = Cari Bazında Tahsilat (madde 8).
+- 2.0.20 ADAYI — RAPORLARDA ALT TOPLAM (kullanıcı, 03.10.2026): "toplam cari alacağı yani ciroyu hangi rapordan
+  görürüm?" → yanıt: ciro = Raporlar → Fatura → Satış Faturaları / Cari Bazında Satış ve Alış (Net Satış); toplam
+  alacak = Raporlar → Cari → Cari Listesi ve Bakiyeler (Borçlular) / Cari Mizanı. Kullanıcı: "raporları getirmiyor ya da
+  alt toplamları getirmiyor gibi, anlamadım". ARAYÜZDEN DENENDİ (3 cari, 3 satış faturası 12.000 + 6.000 (2.000 peşin)
+  + 3.300): sayılar DOĞRU (Matrah 18.000, Ödenecek 21.300, Kalan/Borçlular 19.300). Açıklar: (a) toplam yalnız tablonun
+  ÜSTÜNDE kart olarak; tablonun altında TOPLAM satırı YOK (ekran, PDF; Excel'de toplam yalnız ayrı "Özet" sayfasında) —
+  yaygın programlarda kolon altında toplam satırı olur; (b) dönemli raporlar "Bu Ay" ile açılır — ayın başında (bugün
+  3'ü) eski faturalar görünmez, "getirmiyor" sanılır. Öneri (kullanıcı "yap" derse): her rapor tablosunun altında
+  kalın TOPLAM satırı (ekran + PDF + Excel aynı satır, Excel'de SUM formülü değil değer), yalnız toplanabilir kolonlarda
+  (tutar, matrah, KDV, borç, alacak, miktar); yürüyen bakiye, birim fiyat, oran, tarih kolonları boş; rapor bazında
+  kolon listesi tanımlanır; Ciro/fatura/cari raporlarında varsayılan dönem kullanıcının son seçtiği dönem (ilk açılışta
+  "Bu Yıl"); boş sonuçta "Bu dönemde kayıt yok — Tüm Zamanlar'ı deneyin" ipucu. Test: 43 raporun her birinde TOPLAM satırı
+  = satır toplamı (ekran/PDF/Excel), boş dönem, tek kayıt. Kullanıcıdan: hangi raporda "getirmiyor" gördüğü (ekran).
+  EK İSTEK (kullanıcı, aynı gün): "10 müşteride toplam 100 bin alacak, ilk taksitler ödenmiş; raporda 100 bin toplam
+  (ilk anlaşılan), ödenen 10 bin, kalan 90 bin görmek istiyorum." API ile kuruldu (10 cari × 10.000, 10 taksit, her
+  birinden 1.000 tahsilat): Taksit Kartları raporu ZATEN Toplam 100.000 · Ödenen 10.000 · Kalan 90.000 (satırda da);
+  Cari Mizanı (Tüm Zamanlar) Dönem Borç 100.000 · Dönem Alacak 10.000 · Borçlular 90.000. AÇIK: Cari Listesi ve
+  Bakiyeler özetinde yalnız Borçlular/Alacaklılar var, toplam Borç (anlaşılan) ve toplam Alacak (ödenen) yok. Öneri:
+  Cari Listesi özetine "Toplam Borç (Anlaşılan)", "Toplam Tahsilat (Ödenen)", "Kalan" eklenir + alt TOPLAM satırı.
 - 2.0.17 HAZIR (02.10.2026; dal `claude/nice-euler-jvajxv`; 14 madde yapıldı, kanıt `docs/2.0.17-KANIT.md`): şema göçü 19
   (fatura bağı + mahsup); çoklu şirket hub/çocuk mimarisi (`docs/MIMARI.md` → 2.0.17); teslim `dist/teslim-2.0.17/`
   (3 zip + SHA256SUMS; imza anahtarı kullanıcının yüklediği .pem). Sırada: kullanıcı "birleştir" → CI → birleştir →
