@@ -154,6 +154,8 @@ describe("2.0.21 · 001'in veri klasörünü gösteren şirket (bozuk kayıt) a�
   test("Ayır sonrası şirket açılır (001'in o günkü kopyasıyla); 001 ve kullanıcılar etkilenmez", async () => {
     const result = await api.post("/api/companies/sirket-bozuk/separate", { confirm: "003", password: ADMIN_PASSWORD });
     assert.equal(result.status, 200, JSON.stringify(result.data));
+    // Ortak dosya 001'in: ayırma öncesi yedek 001'in kimliğiyle 001'in klasöründe (001'e geri yüklenebilir).
+    assert.match(result.data.backup, /^destekofis-001-.*-ayirma-oncesi-003\.sqlite$/);
     const moved = registryOf(server).find(item => item.id === "sirket-bozuk");
     assert.ok(moved.dir && moved.dir.startsWith("sirketler"), moved.dir);
     // Kopyaya yalnız şirket dosyaları gider; 001'in kök klasöründeki ortak dosyalar (şirket listesi) gitmez.

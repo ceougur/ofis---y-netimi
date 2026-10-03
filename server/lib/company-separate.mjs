@@ -41,9 +41,12 @@ export async function separateCompany({ registry, backups, withDb, closeCompany 
   try {
     // Ayrılan şirketin açık örneği kapatılır (bu sırada istekleri 503 alır); dosyayı koruyan şirket çalışmaya devam eder.
     await closeCompany(company.id);
+    // Ortak dosya 001'inse (bozuk kayıt) yedek 001'in kimliğiyle 001'in klasörüne alınır: dosya 001'indir ve gerekirse 001'e
+    // geri yüklenebilir. Öbür durumlarda ayrılan şirketin klasörüne, onun kimliğiyle.
+    const owner = registry.sharesRoot?.(company) ? registry.get(group.keeper) : company;
     let backup = "";
     try {
-      backup = backups.backup(company, { label: `ayirma-oncesi-${company.code}`, keep: 100 })?.name || "";
+      backup = backups.backup(owner, { label: `ayirma-oncesi-${company.code}`, keep: 100 })?.name || "";
     } catch (error) {
       throw new HttpError(500, `Ayırma öncesi yedek alınamadı; şirket ayrılmadı (${error.message}).`);
     }
