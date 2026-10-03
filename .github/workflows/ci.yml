@@ -16,6 +16,10 @@ jobs:
         node: [22, 24]
     steps:
       - uses: actions/checkout@v4
+        with:
+          # Etiketler: gerçek eski sürümlerin (v2.0.17…) koduyla üretilen veriden güncelleme testleri (2.0.21).
+          fetch-depth: 0
+          fetch-tags: true
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}

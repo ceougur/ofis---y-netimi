@@ -140,7 +140,9 @@ describe("2.0.21 · yedek denetimi: gerçek v2.0.19 verisinden güncelleme", { s
     work = mkdtempSync(path.join(tmpdir(), "destekofis-v2019-"));
     const code = path.join(work, "kod");
     mkdirSync(code);
-    execFileSync("sh", ["-c", `git archive v2.0.19 server package.json | tar -x -C "${code}"`], { cwd: ROOT });
+    const tarball = path.join(work, "v2.0.19.tar");
+    execFileSync("git", ["archive", "--format=tar", "-o", tarball, "v2.0.19", "server", "package.json"], { cwd: ROOT });
+    execFileSync("tar", ["-xf", tarball, "-C", code]);
     dataDir = path.join(work, "data");
     backupDir = path.join(work, "backups");
     const { createApp } = await import(pathToFileURL(path.join(code, "server", "app.mjs")).href);
