@@ -1,6 +1,6 @@
 // DestekOfis merkezi sunucusu: uygulamayı kurar, göçleri çalıştırır ve HTTP isteklerini yönlendirir.
 import { createServer } from "node:http";
-import { existsSync, mkdirSync } from "node:fs";
+import { existsSync, mkdirSync, readdirSync } from "node:fs";
 import path from "node:path";
 import { createAudit } from "./lib/audit.mjs";
 import { createAccess } from "./lib/access.mjs";
@@ -129,6 +129,18 @@ export function createApp(overrides = {}) {
     }
   }
   const migration = runMigrations(store, { backupDir: backupDirNow(), keep: config.backupKeep, log, company: companyIdentity() });
+  // 2.0.21 öncesinden gelen şirketler (gözden geçirme bulgusu): veri dosyası olan her şirket "açılmış" sayılır; dosyası
+  // sonradan kaybolursa sessizce boş veri tabanı açılmaz (2.0.21'deki ilk açılışını beklemeden).
+  if (!hub) {
+    for (const company of companies.list()) {
+      if (company.root || store.setting(`company.opened.${company.id}`, "")) continue;
+      try {
+        if (existsSync(resolveDbPath(companies.dirsOf(company).dataDir))) store.setSetting(`company.opened.${company.id}`, "1");
+      } catch {
+        // işaretlenemedi; ilk açılışta işaretlenir
+      }
+    }
+  }
   if (!hub) ensureInitialAdmin(store, config, log);
   else mirrorUsers(hub.store, store);
 
@@ -350,9 +362,21 @@ export function createApp(overrides = {}) {
     if (!company || company.id === ROOT_COMPANY_ID) return app;
     if (hub) return hub.appFor(company);
     if (busyCompanies.has(company.id)) throw new HttpError(503, busyCompanies.get(company.id), { retryAfter: 5 });
+    // v2.0.21: kaydı bozulmuş (001'in veri klasörünü gösteren) şirket açılmaz — açılışta ortak kullanıcı tablosunu yeniden
+    // yazardı ve 001'in kayıtları bu şirkette görünürdü. Yönetici Yönetim → Şirketler → Ayır ile kendi klasörüne alır.
+    if (companies.sharesRoot(company)) throw new HttpError(503, `“${company.code} · ${company.name}” şirketi ilk şirketin (001) veri dosyasını gösteriyor; açılmadı. Yönetici Yönetim → Şirketler'den “Ayır” ile kendi klasörüne almalı.`);
     let child = children.get(company.id);
     if (!child) {
       const dirs = companies.dirsOf(company);
+      // v2.0.21 (arıza testi bulgusu): veri dosyası ya da klasörü kaybolmuş şirket için sessizce YENİ, BOŞ veri tabanı
+      // açılmaz (kullanıcı şirketini boş görüp üstüne yazıyordu). Yalnız hiç açılmamış yeni şirket (boş klasör) oluşturulur;
+      // bir kez açılan şirket ortak katmanda işaretlenir. Kayıp dosyada istek 503 alır; Yedekler'den geri yüklenir.
+      const openedKey = `company.opened.${company.id}`;
+      const file = resolveDbPath(dirs.dataDir);
+      if (!existsSync(file)) {
+        const fresh = existsSync(dirs.dataDir) && readdirSync(dirs.dataDir).length === 0 && !store.setting(openedKey, "");
+        if (!fresh) throw new Error(`veri dosyası bulunamadı: ${file}`);
+      }
       mkdirSync(dirs.dataDir, { recursive: true });
       child = createApp({
         ...overrides,
@@ -369,6 +393,7 @@ export function createApp(overrides = {}) {
       });
       child.usersStamp = usersFingerprint(store);
       children.set(company.id, child);
+      if (!store.setting(openedKey, "")) store.setSetting(openedKey, "1");
       log.info(`Şirket açıldı: ${company.code} · ${company.name}`);
     } else {
       const stamp = usersFingerprint(store);
@@ -389,7 +414,28 @@ export function createApp(overrides = {}) {
     } catch {
       user = null;
     }
-    const selected = companies.get(companies.selectedFor(user));
+    // Sayfanın şirketi (v2.0.21): istemci her isteğe sayfanın açıldığı şirketi ekler (?hofCompany=). Sunucudaki seçim
+    // kullanıcı başınadır; aynı hesap iki pencerede/bilgisayarda açıkken birinde şirket değişince öbür pencerenin 001'i
+    // gösterirken girdiği kayıt 002'ye yazılıyordu. Artık istek sayfanın şirketine gider; seçim yalnız yeni açılan
+    // sayfanın şirketini belirler. Belirtilmemişse (eski istemci, indirme bağlantısı) eskisi gibi seçili şirket.
+    let requested = "";
+    try {
+      requested = new URL(req.url || "/", "http://x").searchParams.get("hofCompany") || "";
+    } catch {
+      requested = "";
+    }
+    let selected;
+    if (requested) {
+      selected = companies.get(requested);
+      if (!selected) {
+        send(res, 409, { ok: false, error: "Bu pencerenin şirketi artık yok (silinmiş olabilir); sayfayı yenileyin.", code: "company-missing" });
+        return Promise.resolve();
+      }
+      if (user && !companies.canAccess(user, selected.id)) {
+        send(res, 403, { ok: false, error: "Bu şirketi görme yetkiniz yok; yönetici yetki verebilir.", code: "company-forbidden" });
+        return Promise.resolve();
+      }
+    } else selected = companies.get(companies.selectedFor(user));
     if (!selected || selected.id === ROOT_COMPANY_ID) return scoped(req, res);
     try {
       return appFor(selected).handleScoped(req, res);
@@ -471,7 +517,10 @@ export function createApp(overrides = {}) {
   // katmanda; etkilenmez.
   const MOVEMENT_TABLES = ["cash_entries", "payments", "account_entries", "stock_moves", "invoice_offsets", "invoice_repeats", "invoice_lines", "invoices", "einvoice_inbox", "plan_entries", "plan_items", "plan_imports", "plans", "cheque_events", "cheques", "integrity_log", "message_sends", "trash", "audit_events"];
   const CARD_TABLES = ["accounts", "stock_items", "plan_groups", "dataset_rows", "dataset_imports", "records", "overrides", "deleted_records", "notes", "phones", "liens", "tasks", "case_notes", "case_documents", "source_snapshots", "free_cells", "free_rows", "free_history", "free_sheets", "messages"];
-  const KEEP_SETTINGS = ["office.", "meta.", "sectors.", "client.", "invoice", "einvoice", "edoc", "whatsapp", "backup", "cloud", "drive", "license.", "update"];
+  // v2.0.21 (rastgele sıra testi bulgusu): 001'in veri tabanı aynı zamanda ortak katmandır; kullanıcıların şirket seçimi ve
+  // ŞİRKET YETKİLERİ (company.*) ile parola kurtarma anahtarı (auth.*) "Tümünü Sıfırla"da silinmez (geri yüklemedeki ortak
+  // katman listesiyle aynı: company-backups.mjs COMMON_SETTINGS).
+  const KEEP_SETTINGS = ["office.", "meta.", "sectors.", "client.", "invoice", "einvoice", "edoc", "whatsapp", "backup", "cloud", "drive", "license.", "update", "company.", "auth."];
   function resetData(user, { mode = "movements", resetNumbers = true } = {}) {
     if (!["movements", "all"].includes(mode)) throw new HttpError(400, "Sıfırlama türü 'movements' ya da 'all' olmalı.");
     const company = companies.get(companyId);

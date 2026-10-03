@@ -960,3 +960,8 @@ td.adm-row-actions > .hof-button + .hof-button {
 .adm-error-text { color: var(--do-danger); }
 .adm-negative { margin-bottom: 16px; }
 .adm-negative .adm-inline { align-items: end; flex-wrap: wrap; }
+
+/* Veri dosyası paylaşan şirketler (v2.0.21) */
+.adm-company-conflicts { border-color: #f1b8b2; background: #fff6f5; }
+.adm-company-conflicts h2 { color: #b42318; }
+.adm-company-conflicts p { margin: 0 0 10px; line-height: 1.6; }

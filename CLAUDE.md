@@ -15,6 +15,16 @@ Bu dosya oturumlar arasında taşınan hafızadır. Her oturumun başında okunu
   gerçek kullanıcı senaryosu, sıfırdan, arayüzden, uçtan uca; sonuç sayılarla (bakiye, kasa, kart) karşılaştırılır.
 - Her yeni modül için "boş veri", "kayıt önce/cari önce/taksit önce" sıralamaları ve "aynı adlı iki kişi" durumu denenir.
 - Rapor ekranları için: boş dönem, tek kayıt, geçmiş/gelecek tarih, ileri tarihli hareket, yetkisiz kullanıcı.
+- (2.0.21, kullanıcı: "öz eleştiriden ders çıkar, tekrarlama; uydurma verilerle değil") Her sürümde ayrıca:
+  - TEST VERİSİ programın KENDİSİNİN ürettiği veridir: eski sürüm verisi, o sürümün GERÇEK kodu (git etiketi v<s>)
+    çalıştırılıp API'sinden girilerek üretilir; elle yazılmış kayıt defteri/yedek düzeni yalnız ek denetimdir, kanıt
+    sayılmaz. Hacim gerçekçi (binlerce cari/satır, 12+ ay, 3–5 şirket). Müşteri verisine erişilmez.
+  - "Nasıl bozulur?" listesi önce yazılır (sıra değiştir, ad/kod değiştir, sil + aynı adla yeniden aç, iki kişi aynı anda,
+    eski sürümden gelen veri, yarıda kesilme); testler bu listeden çıkar.
+  - Rastgele sıra testi (`npm run test:guvenilirlik`) + değişmez kurallar; yedek tatbikatı (yedek → çalış → geri yükle →
+    sayılar → yeniden çalış); eski sürümlerden zincirleme göç; arıza (kesinti, disk dolu, kilitli dosya).
+  - Her sürümde bağımsız gözden geçirme (ayrı ajan, yalnız hata arar).
+  - Teslimde üç başlık: DENENEN, DENENMEYEN, BİLİNEN SINIRLAR. "Testler sorunsuz" tek başına yazılmaz.
 
 ## Kullanıcının tekrar eden şikâyetleri (aynı hataya düşme)
 1. "Onca test yaptım deyip mantık hatalarını görmüyorsun." → Test sayısı değil senaryo çeşidi; kartları aç, kullan.
@@ -439,6 +449,40 @@ Bağlam kopsa da bu düzen değişmez. Kullanıcı "zip ver" dediğinde şu üç
   Kullanıcı (03.10.2026, Geri Yükle penceresi ekranıyla): "yedekten geri yükle yap dememiştim ama güzel olmuş" → KALIR.
   Kaynağı: madde 9 önerimdeki "geri yüklemede yanlış şirkete yükleme reddedilir" (2.0.19'a kadar geri yükleme yalnız
   güncelleme geri dönüşünde, ekransız). DERS: istenenin dışına çıkan özellik teslimde AYRICA söylenir.
+  YAYIMLANDI (03.10.2026 ~15:0x; PR #20 CI yeşil → kullanıcının "birleştir"iyle squash, `master` = d795151, `v2.0.20`; dal
+  `master` üzerine sıfırlandı). Yayındaki 5 dosya + latest/ (exe, json, zip, pdf) teslimdekiyle bayt bayt aynı; gerçek
+  güncelleyici canlı GitHub'da 2.0.19/18/17/16/15/2.0.4/1.7.0 olarak (API ve API kapalıyken yedek yol) 2.0.20'yi
+  "available" gördü, indirme sha256 c3d16dc8… eşleşti; 2.0.20 kurulu → "up-to-date". Site kılavuz PR'ı
+  ceougur/destekofis#8 açık (PDF yayındakiyle aynı, 84c256d7…); birleştirme kullanıcı onayıyla.
+- 2.0.21 GÜVENİLİRLİK (kullanıcı, 03.10.2026: "bir şirketin yedeğinin başka şirkete yazılması tam bir fiyasko, çok endişeleniyorum;
+  test çeşitliliğini bilişim sektörünce bilinen testlerle mi söylemem lazım?" → önerim → "yap"). YENİ ÖZELLİK YOK, yalnız:
+  [x] 1. Açılışta "iki şirket aynı veri dosyasını mı gösteriyor?" denetimi (2.0.17–2.0.19'da kod değiştir + eski kodla yeni
+         şirket aç sırasını yaşamış kurulumlar; 2.0.20 yalnız yenisini önlüyor). Varsa yöneticiye açık uyarı + ayırma yolu;
+         hiçbir kayıt silinmez, önce yedek. YAPILDI d636b8f (`company-separate.mjs`, sirket-ayir-221, senaryo-221).
+  [x] 2. Şirket ve yedek işlemleri için RASTGELE SIRA testi (binlerce işlem: aç, kod/ad değiştir, sil, yedek al, geri yükle,
+         cari gir) + değişmez kurallar: bir şirketin verisi öbüründe görünmez; iki şirket aynı dosyayı kullanmaz; yedek
+         yalnız kendi şirketinin klasöründe ve kimliğiyle; geri yükleme sayıları yedek anındakine döner.
+  [x] 3. YEDEK TATBİKATI: veri gir → yedek → çalışmaya devam → geri yükle → sayılar → geri yüklenen veride yeniden çalış
+         (001 ve 002; eski sürüm yedeğiyle de).
+  [x] 4. GÖÇ testi: 2.0.17'den bu yana her sürümün veri düzeninden güncelleme; hiçbir kayıt kaybolmaz.
+  [x] 5. ARIZA testi: yedek/geri yükleme ortasında kesinti, disk dolu, kilitli dosya → veri bozulmaz.
+  [x] 7. (kullanıcı, aynı gün: "her şirketin yedeğini sunucuda kendi adıyla yedek açıp yedeklediğini de kontrol et; baş mimar
+         baş mühendis olarak programına sahip çık, özümse") Gerçek sunucu düzeninde (Windows hizmeti gibi: data + backups
+         klasörleri) otomatik zamanlayıcı, Şimdi Yedek Al (Tüm/Yalnız), ad/kod değişimi, silme, Ayır, göç sonrası her
+         şirketin yedeği `backups\\<kod> - <ad>\\` klasöründe, adında kodu, içinde kimliği; başka klasöre düşen yok.
+  [x] 8. (bulgu, 03.10.2026) AYNI HESAP İKİ PENCEREDE/BİLGİSAYARDA: şirket seçimi kullanıcı başına sunucuda; birinde şirket
+         değişince öbür pencerenin (001'i gösteren) kaydı 002'ye yazılıyordu. Düzeltme: istek sayfanın şirketine gider
+         (?hofCompany=, `HOF.apiUrl`); seçim yalnız yeni açılan sayfanın şirketini belirler.
+  DURUM (03.10.2026): 8 madde YAPILDI; kanıt `docs/2.0.21-KANIT.md` (DENENEN / DENENMEYEN / BİLİNEN SINIRLAR). Testler yardımcı
+  ajanla (gerçek eski sürümlerden veri üreteci `tools/surum-verisi.mjs`, fikstürler `test/fixtures/surum-*`), sonra BAĞIMSIZ
+  gözden geçirme (12 bulgu; 1 KRİTİK, 1 YÜKSEK — hepsi düzeltildi, `test/inceleme-221.test.mjs` önce 5/5 kırmızı). Yeni kural:
+  veri dosyası paylaşan şirkette Geri Yükle/Sil/Sıfırla Ayır'a kadar 409; pencere şirketi ?hofCompany= (Yönetim ?sirket=).
+  TESLİM (03.10.2026): PR ceougur/ofis---y-netimi#21 açık (birleştirme kullanıcının "birleştir"iyle). npm test 891/891, 12 arayüz
+  senaryosu, rastgele uzun koşular 0 hata. Güncelleme paketi sha256 985056b5… (209 dosya, HEAD ile bayt bayt), kurulum .exe
+  71bca999… (simgeli); güncelleyici 2.0.20/19/18/17/2.0.4/1.7.0 "available". Kılavuz DEĞİŞTİ (802d42a4…) → yayından sonra site
+  PR'ı ceougur/destekofis#8 güncellenir. Kullanıcıya söylendi: bulunan hatalar 2.0.20'de de var (iki pencere, 001 Tümünü Sıfırla).
+  [x] 6. Bu test türleri aşağıdaki "Test kuralı"na her sürümde koşulacak kural olarak yazılır; teslimde "denenen /
+         denenmeyen / bilinen sınırlar" açıkça yazılır; her sürümde bağımsız gözden geçirme.
 - 2.0.20 YAPILACAKLAR (kullanıcı "yapılacaklara not al" dedi, 03.10.2026; "yap" denince başlanır; ayrıntı ve
   kanıt hemen altındaki ADAYI maddesinde):
   [x] 1. Bütün raporların (43) tablosunun altında kalın TOPLAM satırı — ekran, PDF, Excel aynı; yalnız toplanabilir

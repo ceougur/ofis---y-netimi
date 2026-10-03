@@ -12,14 +12,29 @@
 //   - Kullanıcı seçimi ve yetkisi ortak ayarlarda: company.user.<kullanıcı> (seçili şirket), company.access.<kullanıcı>
 //     (görebildiği şirket kimlikleri; yönetici hepsini görür; kayıt yoksa yalnız 001).
 import { randomUUID } from "node:crypto";
-import { existsSync, mkdirSync, readdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
+import { copyFileSync, existsSync, mkdirSync, readdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
 import path from "node:path";
-import { BACKUP_NAME, companyFolderName, moveBackupFolder } from "./backup.mjs";
+import { BACKUP_NAME, companyFolderName, moveBackupFolder, parseBackupName, readBackupIdentity } from "./backup.mjs";
+import { DatabaseSync } from "node:sqlite";
 import { HttpError } from "./http.mjs";
 
 export const ROOT_COMPANY_ID = "sirket-001";
 const CODE = /^\d{3}$/;
 const REGISTRY = "sirketler.json";
+// Kayıt defterinin ikinci kopyası (v2.0.21): asıl dosya bozulursa (elektrik kesintisi, elle düzenleme) şirket listesi
+// buradan, o da yoksa ortak katmanın veri tabanındaki kopyadan geri kurulur. Bozuk dosya silinmez, yanına alınır.
+export const REGISTRY_COPY = "sirketler.yedek.json";
+const REGISTRY_SETTING = "company.registry";
+/** Kayıt defteri dosyasını okur: geçerli ({ companies: [...] }, en az bir şirket) ise döner, yoksa null. */
+export function readRegistryFile(file) {
+  try {
+    const parsed = JSON.parse(readFileSync(file, "utf8"));
+    const list = Array.isArray(parsed?.companies) ? parsed.companies.filter(item => item && typeof item.id === "string" && CODE.test(String(item.code)) && typeof item.dir === "string") : [];
+    return list.length && list.some(item => item.id === ROOT_COMPANY_ID) ? { ...parsed, companies: list } : null;
+  } catch {
+    return null;
+  }
+}
 
 const now = () => new Date().toISOString();
 const text = value => String(value ?? "").replace(/\s+/g, " ").trim();
@@ -28,15 +43,49 @@ export function createCompanyRegistry({ dataDir, backupDir, hubStore, log = { in
   const file = path.join(dataDir, REGISTRY);
   let registry = { companies: [] };
   registry = load();
+  // Açılışta kopyalar asıl listeyle eşitlenir (v2.0.21): güncellemeden sonra liste hiç değişmeden asıl dosya bozulursa da
+  // ikinci kopya ve ortak veri tabanındaki kopya hazırdır.
+  try {
+    const body = JSON.stringify(registry, null, 2);
+    const copy = path.join(dataDir, REGISTRY_COPY);
+    if (!existsSync(copy) || readFileSync(copy, "utf8") !== body) {
+      writeFileSync(`${copy}.tmp`, body);
+      renameSync(`${copy}.tmp`, copy);
+    }
+    if (hubStore.setting(REGISTRY_SETTING, "") !== JSON.stringify(registry)) hubStore.setSetting(REGISTRY_SETTING, JSON.stringify(registry));
+  } catch {
+    // ilk kurulumda ayar tablosu henüz yok; dosya kopyası yeter
+  }
 
   function load() {
+    const main = existsSync(file) ? readRegistryFile(file) : null;
+    if (main) return main;
+    // v2.0.21 (arıza testi bulgusu): okunamayan liste yerine yalnız 001'li yeni liste yazılıyordu; 002 ve sonraki şirketler
+    // listeden düşüyor, bozuk dosya da üzerine yazıldığı için kurtarılamıyordu. Artık bozuk dosya yanına alınır ve liste
+    // sırayla ikinci kopyadan, ortak veri tabanındaki kopyadan, o da yoksa diskteki şirket klasörlerinden kurulur.
     if (existsSync(file)) {
+      const aside = `${file}.bozuk-${now().replace(/[:.]/g, "-")}`;
       try {
-        const parsed = JSON.parse(readFileSync(file, "utf8"));
-        if (Array.isArray(parsed?.companies) && parsed.companies.length) return parsed;
-      } catch (error) {
-        log.warn?.(`Şirket listesi okunamadı (${error.message}); yeniden oluşturuluyor.`);
+        copyFileSync(file, aside);
+      } catch {
+        // kopyalanamadı; aşağıdaki kurtarma yine denenir
       }
+      log.warn?.(`Şirket listesi okunamadı; bozuk dosya ${path.basename(aside)} adıyla saklandı, liste kopyasından kuruluyor.`);
+    }
+    const fromCopy = readRegistryFile(path.join(dataDir, REGISTRY_COPY));
+    let fromHub = null;
+    try {
+      const raw = hubStore.setting(REGISTRY_SETTING, "");
+      const parsed = raw ? JSON.parse(raw) : null;
+      fromHub = parsed && Array.isArray(parsed.companies) && parsed.companies.some(item => item?.id === ROOT_COMPANY_ID) ? parsed : null;
+    } catch {
+      fromHub = null;
+    }
+    const recovered = fromCopy || fromHub || (existsSync(file) ? fromDisk() : null);
+    if (recovered) {
+      log.warn?.(`Şirket listesi ${fromCopy ? "ikinci kopyadan" : fromHub ? "ortak veri tabanındaki kopyadan" : "diskteki şirket klasörlerinden"} geri kuruldu (${recovered.companies.length} şirket).`);
+      save(recovered);
+      return recovered;
     }
     // Göç: mevcut veri ilk şirkettir (001). Unvan ofis adından gelir; yoksa "Şirket 1". (v2.0.20: kayıt defteri veritabanı
     // göçlerinden önce kurulur ki göç öncesi yedek de şirketin klasörüne gitsin; yeni kurulumda ayar tablosu henüz yoktur.)
@@ -51,11 +100,98 @@ export function createCompanyRegistry({ dataDir, backupDir, hubStore, log = { in
     save(fresh);
     return fresh;
   }
+  // Son çare: kopyalar da yoksa sirketler/<klasör> altındaki veri tabanlarından liste kurulur. Yedek, şirket veri tabanının
+  // kopyası olduğundan içinde aynı veri tabanı kimliği (meta.instanceId) vardır: şirketin asıl kimliği, kodu ve adı en
+  // yeni kimlikli yedeğinden (backup_meta) alınır (kullanıcı yetkileri ve yedeklerle bağ korunur); yedeği yoksa klasör
+  // adından ve şirketin unvan ayarından.
+  function instanceOf(file) {
+    try {
+      const handle = new DatabaseSync(file, { readOnly: true });
+      try {
+        return { instance: handle.prepare("SELECT value FROM settings WHERE key = 'meta.instanceId'").get()?.value || "", office: handle.prepare("SELECT value FROM settings WHERE key = 'office.name'").get()?.value || "" };
+      } finally {
+        handle.close();
+      }
+    } catch {
+      return { instance: "", office: "" };
+    }
+  }
+  function identitiesFromBackups() {
+    const found = new Map(); // instanceId → { identity, stamp }
+    let folders = [];
+    try {
+      folders = readdirSync(backupDir, { withFileTypes: true }).filter(entry => entry.isDirectory()).map(entry => path.join(backupDir, entry.name));
+    } catch {
+      folders = [];
+    }
+    for (const folder of folders) {
+      let names = [];
+      try {
+        names = readdirSync(folder).filter(name => BACKUP_NAME.test(name));
+      } catch {
+        names = [];
+      }
+      for (const name of names) {
+        const file = path.join(folder, name);
+        // "ayirma-oncesi" yedeği ortak dosyadan, ayrılan şirketin kimliğiyle alınır; içindeki veri tabanı kimliği dosyayı
+        // koruyan şirketinkidir — kimlik eşleşmesinde sayılmaz (gözden geçirme bulgusu).
+        const parsed = parseBackupName(name);
+        if (/^ayirma-oncesi(?:-|$)/.test(parsed?.label || "")) continue;
+        const identity = readBackupIdentity(file);
+        if (!identity) continue;
+        const { instance } = instanceOf(file);
+        const stamp = parsed?.stamp || "";
+        if (instance && (!found.has(instance) || found.get(instance).stamp < stamp)) found.set(instance, { identity, stamp, folder: path.basename(folder) });
+      }
+    }
+    return found;
+  }
+  function fromDisk() {
+    const companies = [{ id: ROOT_COMPANY_ID, code: "001", name: text(hubStore.setting?.("office.name", "") || "") || "Şirket 1", dir: "", createdAt: now(), createdBy: "" }];
+    const base = path.join(dataDir, "sirketler");
+    let dirs = [];
+    try {
+      dirs = readdirSync(base, { withFileTypes: true }).filter(entry => entry.isDirectory()).map(entry => entry.name).sort();
+    } catch {
+      dirs = [];
+    }
+    const used = new Set(["001"]);
+    const known = identitiesFromBackups();
+    const ids = new Set([ROOT_COMPANY_ID]);
+    for (const name of dirs) {
+      const db = ["destekofis.sqlite", "hukuk-ofisi.sqlite"].map(item => path.join(base, name, item)).find(item => existsSync(item));
+      if (!db) continue;
+      const { instance, office } = instanceOf(db);
+      const identity = instance ? known.get(instance)?.identity : null;
+      const guess = identity && CODE.test(String(identity.code)) ? String(identity.code) : /^\d{3}/.exec(name)?.[0];
+      let code = guess && !used.has(guess) ? guess : "";
+      for (let n = 2; !code && n < 1000; n += 1) if (!used.has(String(n).padStart(3, "0"))) code = String(n).padStart(3, "0");
+      used.add(code);
+      const id = identity?.id && !ids.has(identity.id) ? identity.id : `sirket-kurtarilan-${name}`;
+      ids.add(id);
+      const entry = { id, code, name: text(identity?.name || office) || `Şirket ${code}`, dir: path.join("sirketler", name), createdAt: "", createdBy: "", recovered: true };
+      // Yedek klasörü: yedeğin bulunduğu klasör (ekli ad, ör. "002 - Ad (2)", korunur).
+      const folder = id === identity?.id ? known.get(instance)?.folder : "";
+      if (folder && folder.toUpperCase() !== companyFolderName(entry).toUpperCase()) entry.backupFolder = folder;
+      companies.push(entry);
+    }
+    return { companies };
+  }
   function save(value = registry) {
     mkdirSync(dataDir, { recursive: true });
-    const tmp = `${file}.tmp`;
-    writeFileSync(tmp, JSON.stringify(value, null, 2));
-    renameSync(tmp, file);
+    const body = JSON.stringify(value, null, 2);
+    // Önce ikinci kopya, sonra asıl dosya (gözden geçirme bulgusu): yazım yarıda kalırsa asıl dosya eski hâlinde kalır,
+    // bellekteki liste de değişmez (atlanan hata çağırana gider); açılışta kopya asıl dosyayla yeniden eşitlenir.
+    for (const target of [path.join(dataDir, REGISTRY_COPY), file]) {
+      const tmp = `${target}.tmp`;
+      writeFileSync(tmp, body);
+      renameSync(tmp, target);
+    }
+    try {
+      hubStore.setSetting(REGISTRY_SETTING, JSON.stringify(value));
+    } catch {
+      // ilk kurulumda ayar tablosu henüz yok; dosya ve ikinci kopya yeter
+    }
     registry = value;
   }
 
@@ -128,6 +264,36 @@ export function createCompanyRegistry({ dataDir, backupDir, hubStore, log = { in
     }
     return path.join("sirketler", `${code}-${randomUUID().slice(0, 8)}`);
   }
+  // Veri dosyası çakışması (v2.0.21): 2.0.17–2.0.19'da "kod değiştir + eski kodla yeni şirket aç" sırasını yaşamış kurulumda
+  // iki şirket kayıtta AYNI veri klasörünü gösterir (2.0.20 yalnız yenisini önler). Klasörler tam yol ve Windows gibi
+  // büyük/küçük harf ayrımsız karşılaştırılır; 001 dışı bir şirketin kök klasörü göstermesi (bozuk kayıt) de çakışmadır.
+  // Gruptaki ilk şirket (001 ya da en eski) dosyayı korur; öbürleri Yönetim → Şirketler → Ayır ile kendi klasörüne alınır.
+  const dataKey = company => path.resolve(dirsOf(company).dataDir).toUpperCase();
+  function conflicts() {
+    const groups = new Map();
+    for (const company of list()) {
+      const key = dataKey(company);
+      if (!groups.has(key)) groups.set(key, []);
+      groups.get(key).push(company);
+    }
+    return [...groups.values()]
+      .filter(group => group.length > 1)
+      .map(group => {
+        const sorted = [...group].sort((a, b) => Number(b.root) - Number(a.root) || String(a.createdAt || "").localeCompare(String(b.createdAt || "")) || a.code.localeCompare(b.code));
+        return { dataDir: dirsOf(sorted[0]).dataDir, keeper: sorted[0].id, companies: sorted.map(item => ({ id: item.id, code: item.code, name: item.name, label: item.label, root: item.root, keeper: item.id === sorted[0].id })) };
+      });
+  }
+  const conflictOf = id => conflicts().find(group => group.companies.some(item => item.id === id)) || null;
+  // 001 dışı şirket kök veri klasörünü gösteriyorsa açılmaz: açılışta ortak kullanıcı tablosunu yeniden yazardı.
+  const sharesRoot = company => Boolean(company) && company.id !== ROOT_COMPANY_ID && dataKey(company) === path.resolve(dataDir).toUpperCase();
+  // Ayırma: şirkete hiçbir şirketin kullanmadığı, diskte olmayan yeni veri klasörü verilir (kopyalama company-separate.mjs'de).
+  function setDataDir(id, dir) {
+    require(id);
+    if (id === ROOT_COMPANY_ID) throw new HttpError(409, "İlk şirketin (001) veri klasörü değiştirilemez.");
+    save({ companies: registry.companies.map(item => (item.id === id ? { ...item, dir, updatedAt: now() } : item)) });
+    return get(id);
+  }
+
   // Yedek klasörü: başka şirketin kullandığı ya da içinde (silinmiş şirketten kalma) yedek bulunan ad verilmez.
   function freeBackupFolder(base, exceptId = "") {
     for (let n = 1; n < 1000; n += 1) {
@@ -258,7 +424,11 @@ export function createCompanyRegistry({ dataDir, backupDir, hubStore, log = { in
       .map(item => ({ id: item.id, code: item.code, name: item.name, label: item.label, root: item.root, current: item.id === current }));
   };
 
-  return { file, list, get, require, byCode, nextCode, dirsOf, create, update, settleOldBackupDirs, remove, accessOf, canAccess, selectedFor, select, setAccess, listFor, ROOT_COMPANY_ID };
+  for (const group of conflicts()) {
+    log.warn?.(`DİKKAT: ${group.companies.map(item => item.label).join(" ve ")} şirketleri aynı veri klasörünü kullanıyor (${group.dataDir}); kayıtları ortak. Yönetim → Şirketler → Ayır ile ayırın.`);
+  }
+
+  return { file, list, get, require, byCode, nextCode, dirsOf, create, update, settleOldBackupDirs, remove, accessOf, canAccess, selectedFor, select, setAccess, listFor, conflicts, conflictOf, sharesRoot, freeDataDir, setDataDir, ROOT_COMPANY_ID };
 }
 
 // Kullanıcı tablosunun şirket veri tabanına aynası (işlem geçmişi, Silinenler, "Kaydeden" gibi adlar için). Kimlik

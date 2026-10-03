@@ -5,8 +5,9 @@ import { HttpError, limited, ok, readJson, sendBuffer, text } from "../lib/http.
 import { roundMoney } from "../lib/money.mjs";
 import { tablePdf, tl } from "../lib/report-pdf.mjs";
 import { buildXlsx } from "../lib/xlsx-write.mjs";
+import { separateCompany } from "../lib/company-separate.mjs";
 
-export function registerCompanyRoutes(router, { store, auth, audit, companies, appFor, resetData, config, events, backups, closeCompany, busyCompanies }) {
+export function registerCompanyRoutes(router, { store, auth, audit, companies, appFor, resetData, config, events, backups, closeCompany, busyCompanies, withCompanyDb, log }) {
   const requireManage = req => auth.requirePermission(req, "system.manage");
   // Geri yüklenen ya da silinen şirkette aynı anda ikinci işlem (ad değiştirme, sıfırlama, silme) yapılmaz.
   const notBusy = company => {
@@ -27,10 +28,44 @@ export function registerCompanyRoutes(router, { store, auth, audit, companies, a
     if (typed !== company.code && typed.toLocaleLowerCase("tr-TR") !== company.name.toLocaleLowerCase("tr-TR")) throw new HttpError(400, `Onay için şirket kodunu (${company.code}) ya da adını yazın.`, { code: "confirm" });
   };
 
+  // Veri dosyası paylaşan şirketler (v2.0.21): kullanıcının görebildiği şirketleri içeren gruplar.
+  const conflictsFor = user =>
+    companies
+      .conflicts()
+      .filter(group => group.companies.some(item => companies.canAccess(user, item.id)))
+      .map(group => ({
+        keeper: group.keeper,
+        // Yetkisi olmayan şirketin adı gösterilmez; yalnız paylaşım olduğu söylenir.
+        companies: group.companies.map(item => (companies.canAccess(user, item.id) ? { id: item.id, code: item.code, name: item.name, label: item.label, keeper: item.keeper } : { id: "", code: "", name: "", label: "erişiminiz olmayan bir şirket", keeper: item.keeper, hidden: true })),
+      }));
   router.get("/api/companies", async ({ req, res }) => {
     const user = auth.requireUser(req);
     const manage = Boolean(user.permissions?.includes?.("system.manage")) || user.role === "admin";
-    ok(res, { current: companies.selectedFor(user), companies: companies.listFor(user), all: manage ? companies.list().map(item => shape(user, item)) : undefined, canManage: manage, nextCode: manage ? companies.nextCode() : "" });
+    ok(res, { current: companies.selectedFor(user), companies: companies.listFor(user), all: manage ? companies.list().map(item => shape(user, item)) : undefined, canManage: manage, nextCode: manage ? companies.nextCode() : "", conflicts: conflictsFor(user) });
+  });
+  // Ayır (v2.0.21): ortak veri dosyasını kullanan şirketi kendi klasörüne alır (önce yedek; kayıt silinmez). Onay: kod/ad + parola.
+  router.post("/api/companies/:id/separate", async ({ req, res, params }) => {
+    const user = requireManage(req);
+    const body = await readJson(req);
+    const company = companies.require(params.id);
+    if (!companies.canAccess(user, company.id)) throw new HttpError(404, "Şirket bulunamadı ya da bu şirketi görme yetkiniz yok.");
+    confirmCode(company, body.confirm);
+    confirmPassword(user, body.password);
+    const group = companies.conflictOf(company.id);
+    const result = await separateCompany({ registry: companies, backups, withDb: withCompanyDb, closeCompany, busy: busyCompanies, dataDir: config.dataDir, id: company.id, log });
+    // Unvan (gözden geçirme bulgusu): paylaşım döneminde iki şirketin ad değişiklikleri aynı dosyaya yazıldı; ayrılan da
+    // dosyayı koruyan da kendi kayıttaki adını alır (rapor/PDF başlıkları doğru şirketle basılır).
+    for (const id of [company.id, group?.keeper].filter(Boolean)) {
+      const item = companies.get(id);
+      try {
+        if (item) appFor(item).store.setSetting("office.name", item.name, user.id);
+      } catch (error) {
+        log?.warn?.(`Unvan yazılamadı (${item?.label}): ${error.message}`);
+      }
+    }
+    audit(user, "company.separated", company.id, { code: company.code, name: company.name, from: result.from, to: result.to, backup: result.backup, sharedWith: result.sharedWith });
+    publish(user, { kind: "companies" });
+    ok(res, { company: shape(user, result.company), backup: result.backup, sharedWith: result.sharedWith, conflicts: conflictsFor(user) });
   });
   router.post("/api/companies/select", async ({ req, res }) => {
     const user = auth.requireUser(req);
@@ -68,6 +103,8 @@ export function registerCompanyRoutes(router, { store, auth, audit, companies, a
     const company = companies.require(params.id);
     notBusy(company);
     if (company.root) throw new HttpError(409, "001 kodlu ilk şirket silinemez; verisini sıfırlayabilirsiniz.");
+    // v2.0.21: veri dosyası paylaşan şirket silinirse ortak klasör taşınır ve öbür şirket verisiz kalır; önce Ayır.
+    backups.assertNotShared(company, "silme");
     confirmCode(company, body.confirm);
     confirmPassword(user, body.password);
     // Önce yedek (şirketin kendi yedek klasörüne: <kod> - <ad>), sonra örnek kapatılır ve veri klasörü silinen-sirketler
@@ -118,6 +155,7 @@ export function registerCompanyRoutes(router, { store, auth, audit, companies, a
     const body = await readJson(req);
     const company = companies.require(params.id);
     notBusy(company);
+    backups.assertNotShared(company, "sıfırlama");
     confirmCode(company, body.confirm);
     confirmPassword(user, body.password);
     const result = resetData(company, user, { mode: text(body.mode) || "movements", resetNumbers: body.resetNumbers !== false });

@@ -128,7 +128,7 @@
     if (button) button.disabled = true;
     const slow = setTimeout(() => HOF.toast("Excel dosyası hazırlanıyor…"), 700);
     try {
-      const response = await HOF.nativeFetch(`/api/workspace/export.xlsx${query ? `?${query}` : ""}`, { credentials: "same-origin" });
+      const response = await HOF.nativeFetch(HOF.apiUrl(`/api/workspace/export.xlsx${query ? `?${query}` : ""}`), { credentials: "same-origin" });
       if (!response.ok) {
         const payload = await response.json().catch(() => ({}));
         throw new Error(payload.error || "Excel dosyası hazırlanamadı.");

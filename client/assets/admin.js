@@ -693,13 +693,37 @@
     loadBackups();
     loadCloud();
   }
+  // Yedekleri Denetle (v2.0.21): her şirketin yedekleri kendi adını taşıyan klasörde ve içlerindeki kimlik o şirketin mi?
+  // Yalnız okur; hiçbir dosyaya dokunmaz.
+  $("#adm-backup-audit").addEventListener("click", async event => {
+    const button = event.currentTarget;
+    const out = $("#adm-backup-audit-out");
+    button.disabled = true;
+    try {
+      const result = await HOF.api("/api/admin/backups/audit");
+      const rows = result.companies
+        .map(item => `<tr><td><b>${esc(item.code)} · ${esc(item.name)}</b></td><td><code>${esc(item.folder)}</code>${item.exists ? "" : ' <span class="adm-muted">(henüz yedek yok)</span>'}</td><td class="adm-right">${item.count.toLocaleString("tr-TR")}</td><td>${item.files.some(file => file.state === "baska-sirket") ? '<span class="adm-error">Başka Şirketin Yedeği Var</span>' : item.files.some(file => file.state === "kimliksiz") ? '<span class="adm-warn">Eski (Kimliksiz) Yedek Var</span>' : '<span class="adm-ok">Doğru</span>'}</td></tr>`)
+        .join("");
+      const list = (items, cls) => (items.length ? `<ul class="adm-hints ${cls}">${items.map(item => `<li>${esc(item)}</li>`).join("")}</ul>` : "");
+      out.innerHTML = `<h2>Yedek Denetimi</h2>
+        <p class="${result.ok ? "adm-ok" : "adm-error"}"><b>${result.ok ? "Her şirketin yedekleri kendi klasöründe ve kendi kimliğiyle." : "Sorun bulundu: aşağıdaki yedekler yanlış yerde."}</b> ${esc(HOF.formatDateTime(result.checkedAt))} · <code>${esc(result.backupRoot)}</code></p>
+        <div class="adm-table-wrap"><table class="hof-table"><thead><tr><th>Şirket</th><th>Yedek Klasörü</th><th class="adm-right">Yedek</th><th>Durum</th></tr></thead><tbody>${rows}</tbody></table></div>
+        ${list(result.errors, "adm-error")}${list(result.warnings, "adm-warn")}${list(result.notes, "adm-muted")}`;
+      out.hidden = false;
+      out.scrollIntoView({ block: "nearest" });
+    } catch (error) {
+      HOF.toastError(error);
+    } finally {
+      button.disabled = false;
+    }
+  });
   $("#adm-backup-now").addEventListener("click", async event => {
     const button = event.currentTarget;
     button.disabled = true;
     try {
       const folders = backupFolders || (await HOF.api("/api/admin/backups/folders"));
       const list = folders.companies || [];
-      const current = list.find(item => item.id === folders.current) || list[0];
+      const current = list.find(item => item.id === (HOF.companyId || folders.current)) || list[0];
       // Tek şirket varsa sorulmaz; birden çoksa: Tüm Şirketler (varsayılan) ya da Yalnız seçili şirket.
       if (list.length <= 1 || !current) {
         await takeBackup({ scope: "all" });
@@ -1304,6 +1328,7 @@
           </tr>`,
         )
         .join("") || '<tr><td colspan="4" class="adm-muted">Şirket yok.</td></tr>';
+      renderCompanyConflicts(data.conflicts || []);
       renderCompanyAccess(access);
       renderCompanyReportPick(data.companies);
       loadCompanyStorage();
@@ -1311,6 +1336,45 @@
       body.innerHTML = `<tr><td colspan="4">${esc(error.message)}</td></tr>`;
     }
   }
+  // Aynı veri dosyasını kullanan şirketler (v2.0.21): 2.0.17–2.0.19'da "kod değiştir + eski kodla yeni şirket aç" sırasını
+  // yaşamış kurulum. Dosyayı koruyan şirket yerinde kalır; öbürü "Ayır" ile kendi klasörüne alınır (önce yedek, kayıt silinmez).
+  function renderCompanyConflicts(groups) {
+    const box = $("#adm-company-conflicts");
+    if (!box) return;
+    box.hidden = !groups.length;
+    box.innerHTML = groups.length
+      ? `<h2>Aynı Veri Dosyasını Kullanan Şirketler</h2>${groups
+          .map(group => {
+            const keeper = group.companies.find(item => item.keeper);
+            const others = group.companies.filter(item => !item.keeper && !item.hidden);
+            return `<p><b>${group.companies.map(item => esc(item.label)).join(" ve ")}</b> aynı veri dosyasını kullanıyor: birine girilen kayıt öbüründe de görünüyor. ${esc(keeper?.label || "")} dosyayı korur; öbürünü “Ayır” ile kendi klasörüne alın. Ayırma anındaki kayıtlar iki şirkette de kalır; sonra her şirkette ona ait olmayan kayıtları silin (Silinenler'den geri alınabilir).</p>
+              <div class="adm-actions">${others.map(item => `<button type="button" class="hof-button hof-button-small" data-c-separate="${esc(item.id)}">Ayır: ${esc(item.label)}</button>`).join("")}</div>`;
+          })
+          .join("")}`
+      : "";
+  }
+  function separateCompany(item) {
+    HOF.formModal({
+      title: `Şirketi Ayır · ${item.code} · ${item.name}`,
+      eyebrow: "ŞİRKET",
+      intro: "Önce ortak veri dosyasının yedeği alınır. Sonra bu şirket, ortak verinin bugünkü kopyasıyla kendi klasörüne taşınır; bundan sonra öbür şirketle hiçbir kayıt paylaşmaz. Hiçbir kayıt silinmez. Onay için şirket kodunu ve parolanızı yazın.",
+      fields: [
+        { name: "confirm", label: `Onay: şirket kodunu (${item.code}) ya da adını yazın`, required: true, autofocus: true, autocomplete: "off" },
+        { name: "password", label: "Parolanız", type: "password", required: true, autocomplete: "current-password" },
+      ],
+      submitLabel: "Şirketi Ayır",
+      onSubmit: async values => {
+        const result = await HOF.api(`/api/companies/${encodeURIComponent(item.id)}/separate`, { method: "POST", body: { confirm: values.confirm, password: values.password } });
+        HOF.toast(`“${item.code} · ${item.name}” ayrıldı; artık kendi veri dosyasını kullanıyor. Ayırma öncesi yedek: ${result.backup || "—"}`, { type: "success", timeout: 10000 });
+        loadCompanies();
+      },
+    });
+  }
+  $("#adm-company-conflicts")?.addEventListener("click", event => {
+    const id = event.target.closest("[data-c-separate]")?.dataset.cSeparate;
+    const item = id ? companyRow(id) : null;
+    if (item) separateCompany(item);
+  });
   // Veri ve yedek klasörleri (v2.0.20): veri dosyası, boyutu, cari/kayıt sayısı, son yedek ve yedek klasörü.
   async function loadCompanyStorage() {
     const body = $("#adm-company-storage");
@@ -1504,6 +1568,12 @@
       return HOF.toastError(error);
     }
     HOF.user = me;
+    // Bu sayfanın şirketi (v2.0.21, gözden geçirme bulgusu): ana ekrandan gelirken o pencerenin şirketi (?sirket=), yoksa
+    // seçili şirket. Şirkete özgü ayarlar (unvan, dönem kilidi, eksi bakiye, Silinenler, işlem geçmişi) o şirkete yazılır
+    // ve o şirketten okunur; başka pencerede şirket değişse de bu sayfa etkilenmez.
+    const asked = new URLSearchParams(location.search).get("sirket") || "";
+    const page = (me.companies || []).find(item => item.id === asked) || me.company || null;
+    HOF.companyId = page?.id || "";
     // Rol adları ofisin sektörüne göre (ör. "Avukat", "Hekim", "Emlak danışmanı"; sektörsüz "Uzman").
     if (me.profile?.roleLabels) Object.assign(HOF.roleLabels, me.profile.roleLabels);
     document.querySelectorAll("[data-role-label]").forEach(node => {
@@ -1516,6 +1586,11 @@
       return;
     }
     $("#adm-user").textContent = `${me.name} · ${HOF.roleLabels[me.role] || me.role}`;
+    if (page) {
+      const chip = $("#adm-company");
+      chip.textContent = `Şirket: ${page.label || `${page.code} · ${page.name}`}`;
+      chip.hidden = false;
+    }
     // v2.0.10: Yönetim paneli yalnız yönetici rolündedir (kullanıcı ve rol yönetimi yönetime özgüdür).
     if (!HOF.can("users.manage")) {
       $("#adm-denied").hidden = false;

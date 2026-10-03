@@ -12,9 +12,13 @@
   let state = null; // { current, companies: [...], canManage, nextCode }
   let pending = null;
   let node = null;
+  let warnNode = null;
 
   const canManage = () => Boolean(state?.canManage);
-  const current = () => state?.companies.find(item => item.current) || state?.companies[0] || null;
+  // Bu sayfanın şirketi (v2.0.21): sunucudaki seçim başka pencereden değişmiş olabilir; kutu ve "Açık" işareti her zaman
+  // bu pencerenin çalıştığı şirketi gösterir (istekler de oraya gider).
+  const isPage = item => (HOF.companyId ? item.id === HOF.companyId : item.current);
+  const current = () => state?.companies.find(isPage) || state?.companies.find(item => item.current) || state?.companies[0] || null;
 
   async function load() {
     if (!HOF.user) return null;
@@ -37,7 +41,7 @@
   async function select(id) {
     const target = state?.companies.find(item => item.id === id);
     if (!target) return;
-    if (target.current) return closeMenu();
+    if (isPage(target)) return closeMenu();
     const row = node?.querySelector(`[data-pick="${CSS.escape(id)}"]`);
     row?.classList.add("is-busy");
     node?.querySelectorAll("button").forEach(button => (button.disabled = true));
@@ -77,11 +81,11 @@
   function menuHtml() {
     const rows = state.companies
       .map(
-        item => `<li class="hof-session-row${item.current ? " is-current" : ""}">
-          <button type="button" class="hof-session-pick" role="menuitemradio" aria-checked="${item.current}" data-pick="${esc(item.id)}">
+        item => `<li class="hof-session-row${isPage(item) ? " is-current" : ""}">
+          <button type="button" class="hof-session-pick" role="menuitemradio" aria-checked="${isPage(item)}" data-pick="${esc(item.id)}">
             <span class="hof-session-dot" aria-hidden="true"></span>
             <span class="hof-session-info"><b title="${esc(item.label)}">${esc(item.label)}</b><small>${item.root ? "İlk Şirket" : "Şirket"}</small></span>
-            ${item.current ? '<span class="hof-session-now">Açık</span>' : ""}
+            ${isPage(item) ? '<span class="hof-session-now">Açık</span>' : ""}
           </button>
         </li>`,
       )
@@ -97,8 +101,9 @@
     if (!sidebar || !node) return;
     const nav = [...sidebar.children].find(child => child.tagName === "NAV");
     if (nav) {
-      if (node.parentNode !== sidebar || node.nextElementSibling !== nav) sidebar.insertBefore(node, nav);
+      if (node.parentNode !== sidebar || node.nextElementSibling !== (warnNode || nav)) sidebar.insertBefore(node, nav);
     } else if (node.parentNode !== sidebar) sidebar.prepend(node);
+    if (warnNode && node.nextElementSibling !== warnNode) node.after(warnNode);
     sidebar.classList.add("hof-has-session");
     syncCard();
   }
@@ -131,8 +136,21 @@
         <span class="hof-session-chevron">${CHEVRON}</span>
       </button>
       <div class="hof-session-menu" id="hof-company-menu" ${open ? "" : "hidden"}>${menuHtml()}</div>`;
+    renderWarning(company);
     place();
     if (open) positionMenu();
+  }
+  // Açık şirket başka bir şirketle aynı veri dosyasını kullanıyorsa (v2.0.21) şirket kutusunun altında uyarı.
+  function renderWarning(company) {
+    const group = (state?.conflicts || []).find(item => item.companies.some(member => member.id === company.id));
+    if (!group) {
+      warnNode?.remove();
+      warnNode = null;
+      return;
+    }
+    if (!warnNode) warnNode = HOF.el("p", { id: "hof-company-warn", class: "hof-company-warn", role: "alert" });
+    const others = group.companies.filter(item => item.id !== company.id).map(item => esc(item.label)).join(", ");
+    warnNode.innerHTML = `<b>Dikkat:</b> bu şirket ${others} ile aynı veri dosyasını kullanıyor; kayıtlar ortak. ${canManage() ? '<a href="/admin.html#companies">Şirketler\'de Ayır</a>' : "Yöneticinize bildirin."}`;
   }
 
   function positionMenu() {

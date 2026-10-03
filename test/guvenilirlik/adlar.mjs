@@ -1,0 +1,8 @@
+// Uydurma ama gerçekçi Türkçe adlar (test verisi; gerçek müşteri verisi değildir). Aynı adlı kişiler bilinçli olarak çıkar
+// (aynı adlı iki gerçek kişi ayrı cari olmalı).
+export const FIRST = ["Ahmet", "Mehmet", "Mustafa", "Ayşe", "Fatma", "Emine", "Hatice", "Zeynep", "Elif", "İbrahim", "İsmail", "Hüseyin", "Hasan", "Ali", "Ömer", "Yusuf", "Murat", "Şahin", "Gülşen", "Çağrı", "Özge", "Ümit", "Şükrü", "Ilgın", "Işıl", "Gökhan", "Tuğba", "Büşra", "Doğan", "Ece", "Kübra", "Nazlı", "Oğuz", "Serdar", "Sevgi", "Tülay", "Uğur", "Yağmur", "Zehra", "Cemile"];
+export const LAST = ["Yılmaz", "Kaya", "Demir", "Şahin", "Çelik", "Yıldız", "Yıldırım", "Öztürk", "Aydın", "Özdemir", "Arslan", "Doğan", "Kılıç", "Aslan", "Çetin", "Kara", "Koç", "Kurt", "Özkan", "Şimşek", "Polat", "Öz", "Ağaoğlu", "Güneş", "Erdoğan", "Akgül", "Işık", "Uğurlu", "Çakır", "Bozkurt"];
+export const CITY = ["İstanbul", "Ankara", "İzmir", "Bursa", "Antalya", "Konya", "Kayseri", "Eskişehir", "Diyarbakır", "Şanlıurfa", "Muğla", "Çanakkale", "Iğdır", "Ağrı", "Düzce"];
+export const SUPPLIER = ["Akdeniz Kırtasiye Ltd. Şti.", "Boğaziçi Elektrik A.Ş.", "Çınar Yazılım Hizmetleri", "Doğu Lojistik ve Taşımacılık", "Ege Temizlik Ürünleri", "Güneydoğu İnşaat Malzemeleri", "İç Anadolu Gıda San. Tic.", "Karadeniz Mobilya", "Marmara Bilişim A.Ş.", "Trakya Ofis Çözümleri"];
+export const SERVICE = ["Danışmanlık Hizmeti", "Aylık Bakım Ücreti", "Yazılım Lisansı", "Eğitim Hizmeti", "Kira Bedeli", "Servis Ücreti", "Proje Yönetimi", "Muhasebe Hizmeti", "Teknik Destek", "Kurulum Bedeli"];
+export const EXPENSE = ["Kırtasiye Gideri", "Elektrik Faturası", "İnternet Aboneliği", "Temizlik Malzemesi", "Kargo Gideri", "Ofis Kirası"];

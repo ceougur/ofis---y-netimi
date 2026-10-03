@@ -19,7 +19,7 @@ import { copyFileSync, existsSync, mkdirSync, readdirSync, readFileSync, renameS
 import path from "node:path";
 import { DatabaseSync } from "node:sqlite";
 import { BACKUP_META_TABLE, BACKUP_NAME, compareBackups, companyFolderName, createBackup, listBackups, parseBackupName, readBackupIdentity } from "./backup.mjs";
-import { ROOT_COMPANY_ID } from "./companies.mjs";
+import { REGISTRY_COPY, ROOT_COMPANY_ID, readRegistryFile } from "./companies.mjs";
 import { resolveDbPath } from "./db-path.mjs";
 import { createStore, openDatabase } from "./db.mjs";
 import { HttpError } from "./http.mjs";
@@ -45,13 +45,9 @@ const quoteName = value => `"${String(value).replace(/"/g, '""')}"`;
 
 /** Kayıt defteri dosyasından şirketler (sunucu açık değilken: servis yöneticisi, "npm run backup"). */
 export function companiesOnDisk({ dataDir, backupRoot }) {
-  let companies = [];
-  try {
-    const parsed = JSON.parse(readFileSync(path.join(dataDir, "sirketler.json"), "utf8"));
-    if (Array.isArray(parsed?.companies)) companies = parsed.companies.filter(item => item && item.id && /^\d{3}$/.test(String(item.code)));
-  } catch {
-    companies = [];
-  }
+  // v2.0.21: asıl liste okunamazsa ikinci kopya (sirketler.yedek.json); yalnız 001'e düşmez (yedek aracı ve servis
+  // yöneticisi öbür şirketleri atlamasın).
+  const companies = (readRegistryFile(path.join(dataDir, "sirketler.json")) || readRegistryFile(path.join(dataDir, REGISTRY_COPY)))?.companies || [];
   if (!companies.some(item => item.id === ROOT_COMPANY_ID)) companies.unshift({ id: ROOT_COMPANY_ID, code: "001", name: "Şirket 1", dir: "" });
   return companies.map(item => {
     const root = item.id === ROOT_COMPANY_ID || !item.dir;
@@ -153,6 +149,8 @@ export function prepareRestoreFile({ source, dbPath, transplantFrom = null, clie
     for (const suffix of ["", "-wal", "-shm", "-journal"]) rmSync(`${temp}${suffix}`, { force: true });
   };
   clean();
+  // Veri klasörü tamamen kaybolmuşsa (v2.0.21 arıza testi) geri yükleme onu yeniden kurar.
+  mkdirSync(path.dirname(dbPath), { recursive: true });
   copyFileSync(source, temp);
   let db;
   try {
@@ -324,7 +322,16 @@ export function createCompanyBackups({ registry, dataDir, keep = 30, log = null,
   const list = user => accessible(user).flatMap(listFor).sort(compareBackups);
   const latestFor = company => listFor(company)[0] || null;
 
+  // Veri dosyası paylaşan şirketler (v2.0.21, gözden geçirme bulgusu): 001'in klasörünü gösteren (bozuk kayıtlı) şirketin
+  // yedeği alınmaz — 001'in bütün veri tabanını bu şirketin kimliğiyle yazardı ve geri yükleme 001'i değiştirirdi.
+  // Paylaşan şirketlerde geri yükleme (öbür şirketin verisini de geri alır) Ayır yapılana kadar yapılmaz.
+  const sharedWith = company => registry.conflictOf?.(company.id)?.companies.filter(item => item.id !== company.id).map(item => item.label) || [];
+  function assertNotShared(company, action) {
+    const others = sharedWith(company);
+    if (others.length) throw new HttpError(409, `“${labelOf(company)}” ${others.join(", ")} ile aynı veri dosyasını kullanıyor; ${action} öbür şirketi de etkiler. Önce Yönetim → Şirketler → Ayır.`, { code: "company-shared" });
+  }
   function backup(company, { label = "", keep: keepCount, stamp = "" } = {}) {
+    if (registry.sharesRoot?.(company)) throw new HttpError(409, `“${labelOf(company)}” ilk şirketin (001) veri dosyasını gösteriyor; yedeği alınmaz (001'in yedeği alınıyor). Önce Yönetim → Şirketler → Ayır.`, { code: "company-shared" });
     return withDb(company, db => createBackup(db, folderOf(company), { label, keep: keepCount ?? keep, company: identityOf(company), stamp })) || null;
   }
   // Aynı turda alınan yedekler aynı zamanı taşır (Drive'da ve klasörlerde birlikte görünür).
@@ -336,7 +343,7 @@ export function createCompanyBackups({ registry, dataDir, keep = 30, log = null,
         return result ? { ...result, companyId: company.id } : { companyId: company.id, company: identityOf(company), error: "Şirketin veri dosyası bulunamadı." };
       } catch (error) {
         log?.error?.(`Yedek alınamadı (${labelOf(company)})`, error);
-        return { companyId: company.id, company: identityOf(company), error: error.message };
+        return { companyId: company.id, company: identityOf(company), error: error.message, code: error.extra?.code || "" };
       }
     });
   }
@@ -523,7 +530,7 @@ export function createCompanyBackups({ registry, dataDir, keep = 30, log = null,
     }
     return registry
       .list()
-      .filter(company => !isBusy(company.id))
+      .filter(company => !isBusy(company.id) && !registry.sharesRoot?.(company))
       .map(company => ({ backupDir: folderOf(company), label: labelOf(company), run: () => backup(company), changedAt: () => changedAt(company) }));
   }
 
@@ -621,6 +628,7 @@ export function createCompanyBackups({ registry, dataDir, keep = 30, log = null,
    */
   async function restoreCompany({ file, target, user }) {
     if (isBusy(target.id)) throw new HttpError(409, busy.get(target.id) || "Bu şirkette başka bir işlem sürüyor; birkaç saniye sonra yeniden deneyin.");
+    assertNotShared(target, "geri yükleme");
     inspectBackup(file);
     if (target.id === ROOT_COMPANY_ID) {
       const job = stageRootRestore(user, file);
@@ -672,5 +680,5 @@ export function createCompanyBackups({ registry, dataDir, keep = 30, log = null,
     }
   }
 
-  return { root: backupRoot, folderOf, listFor, list, latestFor, backup, backupMany, find, locate, assertRestorable, restoreCompany, migrate, scheduleTargets, storage, stageRootRestore, pendingRestore, cancelRestore, accessible };
+  return { root: backupRoot, folderOf, listFor, list, latestFor, backup, backupMany, find, locate, assertRestorable, restoreCompany, migrate, scheduleTargets, storage, stageRootRestore, pendingRestore, cancelRestore, accessible, assertNotShared };
 }
