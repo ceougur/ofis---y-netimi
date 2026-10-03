@@ -19,7 +19,7 @@ import { copyFileSync, existsSync, mkdirSync, readdirSync, readFileSync, renameS
 import path from "node:path";
 import { DatabaseSync } from "node:sqlite";
 import { BACKUP_META_TABLE, BACKUP_NAME, compareBackups, companyFolderName, createBackup, listBackups, parseBackupName, readBackupIdentity } from "./backup.mjs";
-import { ROOT_COMPANY_ID } from "./companies.mjs";
+import { REGISTRY_COPY, ROOT_COMPANY_ID, readRegistryFile } from "./companies.mjs";
 import { resolveDbPath } from "./db-path.mjs";
 import { createStore, openDatabase } from "./db.mjs";
 import { HttpError } from "./http.mjs";
@@ -45,13 +45,9 @@ const quoteName = value => `"${String(value).replace(/"/g, '""')}"`;
 
 /** Kayıt defteri dosyasından şirketler (sunucu açık değilken: servis yöneticisi, "npm run backup"). */
 export function companiesOnDisk({ dataDir, backupRoot }) {
-  let companies = [];
-  try {
-    const parsed = JSON.parse(readFileSync(path.join(dataDir, "sirketler.json"), "utf8"));
-    if (Array.isArray(parsed?.companies)) companies = parsed.companies.filter(item => item && item.id && /^\d{3}$/.test(String(item.code)));
-  } catch {
-    companies = [];
-  }
+  // v2.0.21: asıl liste okunamazsa ikinci kopya (sirketler.yedek.json); yalnız 001'e düşmez (yedek aracı ve servis
+  // yöneticisi öbür şirketleri atlamasın).
+  const companies = (readRegistryFile(path.join(dataDir, "sirketler.json")) || readRegistryFile(path.join(dataDir, REGISTRY_COPY)))?.companies || [];
   if (!companies.some(item => item.id === ROOT_COMPANY_ID)) companies.unshift({ id: ROOT_COMPANY_ID, code: "001", name: "Şirket 1", dir: "" });
   return companies.map(item => {
     const root = item.id === ROOT_COMPANY_ID || !item.dir;

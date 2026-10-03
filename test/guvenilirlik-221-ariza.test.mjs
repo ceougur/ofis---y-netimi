@@ -376,7 +376,6 @@ describe("şirket listesi (sirketler.json) bozuk, boş ya da yarım yazılmış"
 
   test(
     "bozuk sirketler.json: 002 ve sonraki şirketler kaybolmaz (veri klasörleri diskte duruyor)",
-    { todo: "server/lib/companies.mjs load(): okunamayan liste yerine yalnız 001'li yeni liste YAZILIYOR; 002+ şirketler listeden düşüyor, bozuk dosya da üzerine yazıldığı için kurtarılamıyor (veri klasörleri sirketler/ altında duruyor). companies.mjs başka geliştiricide." },
     async () => {
       const h = harness();
       try {
