@@ -4,7 +4,7 @@
 // şirketler (açılmamış olsa da); eski yerlerden taşıma; ad/kod değişince klasör; yanlış şirkete geri yükleme 409.
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
-import { copyFileSync, existsSync, mkdirSync, mkdtempSync, readdirSync, rmSync, utimesSync, writeFileSync } from "node:fs";
+import { copyFileSync, existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, utimesSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { DatabaseSync } from "node:sqlite";
@@ -250,26 +250,39 @@ describe("iki şirket: Tüm Şirketler / Yalnız, liste, indirme, Drive, otomati
     assert.equal(fresh.data.backups[0].folder, coded);
   });
 
-  test("yarım kalan klasör taşıması: eski klasör kayda yazılır, yedekleri listede görünür, sonraki açılışta tamamlanır", async () => {
-    const current = path.join(dirs.backupDir, companyFolderName(second));
+  // v2.0.20 (gözden geçirme sonrası): yeni adın klasörü İÇİNDE YEDEK olan başka bir klasörse (ör. silinmiş şirketten kalma)
+  // yedekler ona karışmaz — klasör ek alır ("007 - Çakışma (2)"). Yarım taşıma (dosya açık/çakışan yedek olmayan dosya)
+  // eski klasörü kayda yazar; yedekler yeni klasörde, eski klasör sonraki açılışta temizlenir.
+  test("ad değişince dolu klasörle çakışma: ek alır, karışmaz; yarım kalan taşıma kayda yazılır ve tamamlanır", async () => {
+    const folderOf = () => server.app.companies.dirsOf(server.app.companies.get(second.id)).backupDir;
+    const current = folderOf();
     const sample = filesIn(current)[0];
-    // Hedef klasörde aynı adlı dosya varsa o dosya taşınamaz.
-    const target = path.join(dirs.backupDir, "007 - Çakışma");
-    mkdirSync(target, { recursive: true });
-    copyFileSync(path.join(current, sample), path.join(target, sample));
+    const foreign = path.join(dirs.backupDir, "007 - Çakışma");
+    mkdirSync(foreign, { recursive: true });
+    copyFileSync(path.join(current, sample), path.join(foreign, "destekofis-007-2026-01-01T00-00-00-000Z-manuel.sqlite"));
     const renamed = await admin.put(`/api/companies/${second.id}`, { name: "Çakışma" });
     assert.equal(renamed.status, 200);
     second = renamed.data.company;
-    const registry = server.app.companies.get(second.id);
-    assert.deepEqual(registry.oldBackupDirs, [path.basename(current)]);
-    const listed = (await admin.get("/api/admin/backups")).data.filter(item => item.companyId === second.id && item.folder === current);
-    assert.deepEqual(listed.map(item => item.name), [sample], "eski klasörde kalan dosya listede");
-    // Çakışan kopya kaldırılınca taşıma tamamlanır (açılıştaki göç adımı).
-    rmSync(path.join(target, sample));
+    assert.equal(path.basename(folderOf()), "007 - Çakışma (2)", "dolu klasöre karışmaz");
+    assert.deepEqual(filesIn(foreign), ["destekofis-007-2026-01-01T00-00-00-000Z-manuel.sqlite"], "yabancı klasör olduğu gibi");
+    assert.ok(filesIn(folderOf()).includes(sample), "şirketin yedekleri yeni klasörde");
+    assert.ok(!existsSync(current), "eski klasör kalktı");
+    // Yarım taşıma: hedefte aynı adlı (yedek olmayan) dosya → o dosya eski klasörde kalır, eski klasör kayda yazılır.
+    const before = folderOf();
+    const next = path.join(dirs.backupDir, "007 - Yeni Ad");
+    mkdirSync(next, { recursive: true });
+    writeFileSync(path.join(before, "notlar.txt"), "a");
+    writeFileSync(path.join(next, "notlar.txt"), "b");
+    const again = await admin.put(`/api/companies/${second.id}`, { name: "Yeni Ad" });
+    assert.equal(again.status, 200);
+    second = again.data.company;
+    assert.equal(folderOf(), next);
+    assert.deepEqual(server.app.companies.get(second.id).oldBackupDirs, [path.basename(before)]);
+    assert.ok(filesIn(next).includes(sample), "yedekler yeni klasöre taşındı");
+    const listed = (await admin.get("/api/admin/backups")).data.filter(item => item.companyId === second.id);
+    assert.ok(listed.some(item => item.name === sample && item.folder === next));
     server.app.backups.migrate();
-    assert.ok(existsSync(path.join(target, sample)));
-    assert.ok(!existsSync(current), "eski klasör boşalınca kalkar");
-    assert.equal(server.app.companies.get(second.id).oldBackupDirs, undefined, "kayıttan düşer");
+    assert.equal(server.app.companies.get(second.id).oldBackupDirs, undefined, "eski klasörde yedek kalmayınca kayıttan düşer");
   });
 
   test("şirket meşgulken (geri yükleniyor/siliniyor) o şirkete gelen istek 503 alır; başka şirketin verisi gösterilmez", async () => {
@@ -287,7 +300,7 @@ describe("iki şirket: Tüm Şirketler / Yalnız, liste, indirme, Drive, otomati
   });
 
   test("sıfırlama ve silme öncesi yedekler şirketin klasörüne; şirket silinince yedek klasörü yerinde kalır", async () => {
-    const folder = path.join(dirs.backupDir, companyFolderName(second));
+    const folder = server.app.companies.dirsOf(server.app.companies.get(second.id)).backupDir;
     const reset = await admin.post(`/api/companies/${second.id}/reset`, { mode: "movements", confirm: second.code, password: ADMIN_PASSWORD });
     assert.equal(reset.status, 200, JSON.stringify(reset.data));
     assert.match(reset.data.backup, /^destekofis-007-.*-sifirlama-oncesi-007\.sqlite$/);
@@ -391,6 +404,12 @@ describe("göç: eski yedekler (kök ve sirket-002) şirket klasörlerine taşı
     copyFileSync(path.join(dirs.backupDir, made), path.join(dirs.backupDir, realOld));
     rmSync(path.join(dirs.backupDir, made));
     await first.app.close();
+    // Gerçek kurulumda 002 eski yedeklerinden ÖNCE açılmıştır (v2.0.20: şirketin kuruluşundan eski "sirket-<klasör>"
+    // dosyaları silinmiş eski bir şirketindir, taşınmaz) — kuruluş tarihi yedeklerden önceye alınır.
+    const registryFile = path.join(dirs.dataDir, "sirketler.json");
+    const registry = JSON.parse(readFileSync(registryFile, "utf8"));
+    for (const company of registry.companies) if (company.code === "002") company.createdAt = "2026-08-15T09:00:00.000Z";
+    writeFileSync(registryFile, JSON.stringify(registry, null, 2));
     // 2.0.19 düzeni: kökte 001'in yedekleri, sirket-002/ altında 002'ninkiler; yanlarında yedek olmayan dosyalar.
     rmSync(path.join(dirs.backupDir, "001 - Şirket 1"), { recursive: true, force: true });
     rmSync(path.join(dirs.backupDir, "002 - Şirket 2"), { recursive: true, force: true });

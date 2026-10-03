@@ -48,8 +48,9 @@ describe("yedekleme", () => {
       assert.match(fresh.name, /^destekofis-\d{4}-\d{2}-\d{2}T[\d-]+Z-elle\.sqlite$/);
       assert.deepEqual(listBackups(dir).map(item => item.name.slice(0, 16)), ["destekofis-" + fresh.name.slice(11, 16), "hukuk-ofisi-2026", "hukuk-ofisi-2026"]);
       assert.equal(listBackups(dir)[2].name, "hukuk-ofisi-2026-09-20T10-00-00-000Z.sqlite", "en eski en sonda");
-      // Temizlik en eskileri siler, yeni önekli yedeği değil.
-      pruneBackups(dir, 2);
+      // Temizlik en eski RUTİN yedeği siler, yeni önekli yedeği değil. v2.0.20: güncelleme öncesi gibi işlem öncesi güvenlik
+      // yedekleri rutinlerden ayrı sayılır (son 20 kalır); rutinlerden 1 tutulunca en eski rutin gider.
+      pruneBackups(dir, 1);
       assert.deepEqual(listBackups(dir).map(item => item.name), [fresh.name, "hukuk-ofisi-2026-09-21T10-00-00-000Z-guncelleme-oncesi.sqlite"]);
     } finally {
       rmSync(dir, { recursive: true, force: true });
