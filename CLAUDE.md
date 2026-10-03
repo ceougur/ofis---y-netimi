@@ -417,6 +417,19 @@ Bağlam kopsa da bu düzen değişmez. Kullanıcı "zip ver" dediğinde şu üç
   (Node 24.21, bootstrap 2; GitHub API ve API kapalıyken yedek yol) 2.0.19'u "available" gördü, indirme sha256 eşleşti;
   2.0.19 kurulu → "up-to-date"; kurcalanmış bildirge reddedildi. Kılavuz değişmedi: site `web/indir/` PDF'i yayınla
   bayt bayt aynı (60bcf7ad…) → site PR'ı gerekmedi. 2.0.19 KAPANDI.
+- 2.0.20 ADAYI — RAPORLARDA ALT TOPLAM (kullanıcı, 03.10.2026): "toplam cari alacağı yani ciroyu hangi rapordan
+  görürüm?" → yanıt: ciro = Raporlar → Fatura → Satış Faturaları / Cari Bazında Satış ve Alış (Net Satış); toplam
+  alacak = Raporlar → Cari → Cari Listesi ve Bakiyeler (Borçlular) / Cari Mizanı. Kullanıcı: "raporları getirmiyor ya da
+  alt toplamları getirmiyor gibi, anlamadım". ARAYÜZDEN DENENDİ (3 cari, 3 satış faturası 12.000 + 6.000 (2.000 peşin)
+  + 3.300): sayılar DOĞRU (Matrah 18.000, Ödenecek 21.300, Kalan/Borçlular 19.300). Açıklar: (a) toplam yalnız tablonun
+  ÜSTÜNDE kart olarak; tablonun altında TOPLAM satırı YOK (ekran, PDF; Excel'de toplam yalnız ayrı "Özet" sayfasında) —
+  yaygın programlarda kolon altında toplam satırı olur; (b) dönemli raporlar "Bu Ay" ile açılır — ayın başında (bugün
+  3'ü) eski faturalar görünmez, "getirmiyor" sanılır. Öneri (kullanıcı "yap" derse): her rapor tablosunun altında
+  kalın TOPLAM satırı (ekran + PDF + Excel aynı satır, Excel'de SUM formülü değil değer), yalnız toplanabilir kolonlarda
+  (tutar, matrah, KDV, borç, alacak, miktar); yürüyen bakiye, birim fiyat, oran, tarih kolonları boş; rapor bazında
+  kolon listesi tanımlanır; Ciro/fatura/cari raporlarında varsayılan dönem kullanıcının son seçtiği dönem (ilk açılışta
+  "Bu Yıl"); boş sonuçta "Bu dönemde kayıt yok — Tüm Zamanlar'ı deneyin" ipucu. Test: 43 raporun her birinde TOPLAM satırı
+  = satır toplamı (ekran/PDF/Excel), boş dönem, tek kayıt. Kullanıcıdan: hangi raporda "getirmiyor" gördüğü (ekran).
 - 2.0.17 HAZIR (02.10.2026; dal `claude/nice-euler-jvajxv`; 14 madde yapıldı, kanıt `docs/2.0.17-KANIT.md`): şema göçü 19
   (fatura bağı + mahsup); çoklu şirket hub/çocuk mimarisi (`docs/MIMARI.md` → 2.0.17); teslim `dist/teslim-2.0.17/`
   (3 zip + SHA256SUMS; imza anahtarı kullanıcının yüklediği .pem). Sırada: kullanıcı "birleştir" → CI → birleştir →
