@@ -33,7 +33,11 @@ export function registerCompanyRoutes(router, { store, auth, audit, companies, a
     companies
       .conflicts()
       .filter(group => group.companies.some(item => companies.canAccess(user, item.id)))
-      .map(group => ({ keeper: group.keeper, companies: group.companies.map(item => ({ id: item.id, code: item.code, name: item.name, label: item.label, keeper: item.keeper })) }));
+      .map(group => ({
+        keeper: group.keeper,
+        // Yetkisi olmayan şirketin adı gösterilmez; yalnız paylaşım olduğu söylenir.
+        companies: group.companies.map(item => (companies.canAccess(user, item.id) ? { id: item.id, code: item.code, name: item.name, label: item.label, keeper: item.keeper } : { id: "", code: "", name: "", label: "erişiminiz olmayan bir şirket", keeper: item.keeper, hidden: true })),
+      }));
   router.get("/api/companies", async ({ req, res }) => {
     const user = auth.requireUser(req);
     const manage = Boolean(user.permissions?.includes?.("system.manage")) || user.role === "admin";
@@ -44,9 +48,21 @@ export function registerCompanyRoutes(router, { store, auth, audit, companies, a
     const user = requireManage(req);
     const body = await readJson(req);
     const company = companies.require(params.id);
+    if (!companies.canAccess(user, company.id)) throw new HttpError(404, "Şirket bulunamadı ya da bu şirketi görme yetkiniz yok.");
     confirmCode(company, body.confirm);
     confirmPassword(user, body.password);
+    const group = companies.conflictOf(company.id);
     const result = await separateCompany({ registry: companies, backups, withDb: withCompanyDb, closeCompany, busy: busyCompanies, dataDir: config.dataDir, id: company.id, log });
+    // Unvan (gözden geçirme bulgusu): paylaşım döneminde iki şirketin ad değişiklikleri aynı dosyaya yazıldı; ayrılan da
+    // dosyayı koruyan da kendi kayıttaki adını alır (rapor/PDF başlıkları doğru şirketle basılır).
+    for (const id of [company.id, group?.keeper].filter(Boolean)) {
+      const item = companies.get(id);
+      try {
+        if (item) appFor(item).store.setSetting("office.name", item.name, user.id);
+      } catch (error) {
+        log?.warn?.(`Unvan yazılamadı (${item?.label}): ${error.message}`);
+      }
+    }
     audit(user, "company.separated", company.id, { code: company.code, name: company.name, from: result.from, to: result.to, backup: result.backup, sharedWith: result.sharedWith });
     publish(user, { kind: "companies" });
     ok(res, { company: shape(user, result.company), backup: result.backup, sharedWith: result.sharedWith, conflicts: conflictsFor(user) });
@@ -87,6 +103,8 @@ export function registerCompanyRoutes(router, { store, auth, audit, companies, a
     const company = companies.require(params.id);
     notBusy(company);
     if (company.root) throw new HttpError(409, "001 kodlu ilk şirket silinemez; verisini sıfırlayabilirsiniz.");
+    // v2.0.21: veri dosyası paylaşan şirket silinirse ortak klasör taşınır ve öbür şirket verisiz kalır; önce Ayır.
+    backups.assertNotShared(company, "silme");
     confirmCode(company, body.confirm);
     confirmPassword(user, body.password);
     // Önce yedek (şirketin kendi yedek klasörüne: <kod> - <ad>), sonra örnek kapatılır ve veri klasörü silinen-sirketler
@@ -137,6 +155,7 @@ export function registerCompanyRoutes(router, { store, auth, audit, companies, a
     const body = await readJson(req);
     const company = companies.require(params.id);
     notBusy(company);
+    backups.assertNotShared(company, "sıfırlama");
     confirmCode(company, body.confirm);
     confirmPassword(user, body.password);
     const result = resetData(company, user, { mode: text(body.mode) || "movements", resetNumbers: body.resetNumbers !== false });

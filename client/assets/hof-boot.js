@@ -252,19 +252,30 @@
 
 
   // İndirme bağlantıları (PDF/Excel) ve yeni pencerede açılan belgeler de sayfanın şirketinden gelir (v2.0.21).
+  // Orta tık, sağ tık ("yeni sekmede aç", "bağlantıyı kaydet") ve sürükleme de yakalanır; Yönetim sayfasına giden
+  // bağlantı bu pencerenin şirketini taşır (?sirket=).
+  const withCompany = href => {
+    const next = HOF.apiUrl(href);
+    if (next !== href || !HOF.companyId) return next;
+    try {
+      const url = new URL(href, location.href);
+      if (url.origin !== location.origin || url.pathname !== "/admin.html" || url.searchParams.has("sirket")) return href;
+      url.searchParams.set("sirket", HOF.companyId);
+      return `${url.pathname}${url.search}${url.hash}`;
+    } catch {
+      return href;
+    }
+  };
   const bindCompanyLinks = () => {
-    document.addEventListener(
-      "click",
-      event => {
-        const link = event.target instanceof Element ? event.target.closest("a[href]") : null;
-        if (!link) return;
-        const next = HOF.apiUrl(link.getAttribute("href"));
-        if (next !== link.getAttribute("href")) link.setAttribute("href", next);
-      },
-      true,
-    );
+    const rewrite = event => {
+      const link = event.target instanceof Element ? event.target.closest("a[href]") : null;
+      if (!link) return;
+      const next = withCompany(link.getAttribute("href"));
+      if (next !== link.getAttribute("href")) link.setAttribute("href", next);
+    };
+    for (const type of ["click", "auxclick", "contextmenu", "dragstart"]) document.addEventListener(type, rewrite, true);
     const open = window.open.bind(window);
-    window.open = (url, ...rest) => open(typeof url === "string" ? HOF.apiUrl(url) : url, ...rest);
+    window.open = (url, ...rest) => open(typeof url === "string" ? withCompany(url) : url, ...rest);
   };
 
   HOF.on("unauthorized", () => {

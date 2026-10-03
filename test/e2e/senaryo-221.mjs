@@ -157,6 +157,12 @@ try {
   await api("/api/companies/select", { id: "sirket-001" });
   const streams = [];
   page.on("request", request => request.url().includes("/api/events") && streams.push(request.url()));
+  // A penceresinden giden bütün şirkete özgü istekler (ortak katman yolları hariç) A'nın şirketini taşımalı.
+  const fromA = [];
+  page.on("request", request => {
+    const url = new URL(request.url());
+    if (url.pathname.startsWith("/api/") && !/^\/api\/(auth|public|health|license|companies)(\/|$)/.test(url.pathname)) fromA.push(url.pathname + url.search);
+  });
   await page.goto(`${BASE}/`, { waitUntil: "load" });
   await page.waitForSelector("#hof-company", { timeout: 15000 });
   const other = await context.newPage();
@@ -187,6 +193,38 @@ try {
   });
   await page.evaluate(() => document.getElementById("a-test-link").click());
   ok(/hofCompany=sirket-001/.test(await page.getAttribute("#a-test-link", "href")), "A'nın indirme bağlantısı 001'e gider");
+  // Dışa Aktar ve Kasa Dökümü PDF yolları (gözden geçirme bulgusu: sarmalanmamış fetch) ve orta tık.
+  await page.evaluate(async () => {
+    await window.HOF.nativeFetch(window.HOF.apiUrl("/api/workspace/cash.pdf?from=2026-01-01&to=2026-12-31&download=1&method=cash"));
+    const link = Object.assign(document.createElement("a"), { href: "/api/workspace/report-center/cari-listesi/pdf", id: "a-aux-link", textContent: "PDF" });
+    document.body.appendChild(link);
+    link.dispatchEvent(new MouseEvent("auxclick", { bubbles: true, button: 1 }));
+  });
+  ok(/hofCompany=sirket-001/.test(await page.getAttribute("#a-aux-link", "href")), "orta tıkla açılan bağlantı da A'nın şirketinden");
+  const exportSource = fs.readFileSync(path.join(path.dirname(fileURLToPath(import.meta.url)), "..", "..", "client", "assets", "hof-export.js"), "utf8");
+  ok(/nativeFetch\(HOF\.apiUrl\(`\/api\/workspace\/export\.xlsx/.test(exportSource), "Dışa Aktar isteği sayfanın şirketini taşır");
+  const stray = fromA.filter(url => !/hofCompany=sirket-001/.test(url));
+  ok(fromA.length > 5 && stray.length === 0, `A'dan giden ${fromA.length} şirkete özgü isteğin hepsi 001'i taşıyor${stray.length ? ` — taşımayan: ${stray.slice(0, 5).join(", ")}` : ""}`);
+  // Yönetim sayfası A'nın şirketiyle açılır (bağlantı ?sirket= taşır), ayarlar 001'e yazılır.
+  const adminHref = await page.evaluate(() => {
+    const link = Object.assign(document.createElement("a"), { href: "/admin.html#companies", id: "a-admin-link", textContent: "Yönetim" });
+    link.addEventListener("click", event => event.preventDefault());
+    document.body.appendChild(link);
+    link.click();
+    return link.getAttribute("href");
+  });
+  ok(/sirket=sirket-001/.test(adminHref), `Yönetim bağlantısı A'nın şirketini taşır: ${adminHref}`);
+  const adminPage = await context.newPage();
+  await adminPage.goto(`${BASE}${adminHref}`, { waitUntil: "load" });
+  await adminPage.waitForSelector("#adm-company:not([hidden])", { timeout: 15000 });
+  ok(/Şirket: 001 · Ana Şirket/.test(await adminPage.textContent("#adm-company")), `Yönetim üst çubuğu: ${(await adminPage.textContent("#adm-company")).trim()}`);
+  await adminPage.evaluate(() => window.HOF.api("/api/admin/office", { method: "PUT", body: { name: "Ana Unvan" } }));
+  const officeOf = id => adminPage.evaluate(async id => (await (await fetch(`/api/admin/office?hofCompany=${id}`)).json()).data.name, id);
+  const [anaUnvan, gayriUnvan] = [await officeOf("sirket-001"), await officeOf("sirket-yeni")];
+  ok(anaUnvan === "Ana Unvan" && gayriUnvan !== "Ana Unvan", `Yönetim'den kaydedilen unvan 001'e yazıldı (seçim 002 iken): 001 “${anaUnvan}”, 002 “${gayriUnvan}”`);
+  shotNo += 1;
+  await adminPage.screenshot({ path: path.join(OUT, `${String(shotNo).padStart(2, "0")}-yonetim-sayfa-sirketi.png`), clip: { x: 0, y: 0, width: 1440, height: 260 } });
+  await adminPage.close();
   await other.close();
 
   ok(!errors.length, `sayfada JavaScript hatası yok${errors.length ? `: ${errors.join(" ; ")}` : ""}`);

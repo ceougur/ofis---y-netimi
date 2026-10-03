@@ -15,16 +15,26 @@ import { BACKUP_NAME, parseBackupName, readBackupIdentity } from "./backup.mjs";
 
 const key = value => String(value).toUpperCase();
 
-export function auditBackups({ registry, backupRoot }) {
-  const companies = registry.list();
-  const byId = new Map(companies.map(company => [company.id, company]));
+// visible: raporlanacak şirket kimlikleri (yetki; yoksa hepsi). full: sahipsiz klasör/dosya bölümü (yalnız yönetici).
+export function auditBackups({ registry, backupRoot, visible = null, full = true }) {
+  const all = registry.list();
+  const companies = visible ? all.filter(company => visible.includes(company.id)) : all;
+  const byId = new Map(all.map(company => [company.id, company]));
   const errors = [];
   const warnings = [];
   const notes = [];
   const owned = new Map(); // klasör adı (büyük harf) → şirket
   const report = [];
 
+  // Eski yerler (2.0.19'a kadarki klasörler, taşıması yarım kalan eski adlı klasörler) şirketindir: listede görünürler.
+  const legacy = new Map();
+  for (const company of all) {
+    for (const dir of registry.dirsOf(company).legacyBackupDirs || []) {
+      if (path.resolve(dir).toUpperCase() !== path.resolve(backupRoot).toUpperCase()) legacy.set(key(path.basename(dir)), company);
+    }
+  }
   for (const company of companies) {
+    if (registry.sharesRoot?.(company)) errors.push(`${company.code} · ${company.name} ilk şirketin (001) veri dosyasını gösteriyor; yedeği alınmaz, geri yüklenmez. Yönetim → Şirketler → Ayır.`);
     const folderPath = registry.dirsOf(company).backupDir;
     const folder = path.basename(folderPath);
     const label = `${company.code} · ${company.name}`;
@@ -58,10 +68,16 @@ export function auditBackups({ registry, backupRoot }) {
 
   // Kökte kalanlar ve kayıtta olmayan klasörler.
   const stray = [];
-  if (existsSync(backupRoot)) {
+  if (full && existsSync(backupRoot)) {
     for (const entry of readdirSync(backupRoot, { withFileTypes: true })) {
       if (entry.isDirectory()) {
         if (owned.has(key(entry.name))) continue;
+        const legacyOwner = legacy.get(key(entry.name));
+        if (legacyOwner) {
+          const count = readdirSync(path.join(backupRoot, entry.name)).filter(name => BACKUP_NAME.test(name)).length;
+          if (count) notes.push(`${entry.name}: ${legacyOwner.code} · ${legacyOwner.name} şirketinin eski yedek yeri (${count} yedek; Yedekler listesinde görünür, sonraki açılışta şirket klasörüne taşınır).`);
+          continue;
+        }
         const dir = path.join(backupRoot, entry.name);
         const names = readdirSync(dir).filter(name => BACKUP_NAME.test(name));
         if (!names.length) continue;

@@ -473,7 +473,7 @@
     button.classList.add("is-busy");
     try {
       const query = new URLSearchParams({ from: range.from, to: range.to, download: "1", method: "cash" });
-      const response = await HOF.nativeFetch(`/api/workspace/cash.pdf?${query}`, { credentials: "same-origin" });
+      const response = await HOF.nativeFetch(HOF.apiUrl(`/api/workspace/cash.pdf?${query}`), { credentials: "same-origin" });
       if (!response.ok) {
         const payload = await response.json().catch(() => ({}));
         throw new Error(payload.error || "PDF hazırlanamadı.");

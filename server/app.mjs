@@ -129,6 +129,18 @@ export function createApp(overrides = {}) {
     }
   }
   const migration = runMigrations(store, { backupDir: backupDirNow(), keep: config.backupKeep, log, company: companyIdentity() });
+  // 2.0.21 öncesinden gelen şirketler (gözden geçirme bulgusu): veri dosyası olan her şirket "açılmış" sayılır; dosyası
+  // sonradan kaybolursa sessizce boş veri tabanı açılmaz (2.0.21'deki ilk açılışını beklemeden).
+  if (!hub) {
+    for (const company of companies.list()) {
+      if (company.root || store.setting(`company.opened.${company.id}`, "")) continue;
+      try {
+        if (existsSync(resolveDbPath(companies.dirsOf(company).dataDir))) store.setSetting(`company.opened.${company.id}`, "1");
+      } catch {
+        // işaretlenemedi; ilk açılışta işaretlenir
+      }
+    }
+  }
   if (!hub) ensureInitialAdmin(store, config, log);
   else mirrorUsers(hub.store, store);
 

@@ -322,7 +322,16 @@ export function createCompanyBackups({ registry, dataDir, keep = 30, log = null,
   const list = user => accessible(user).flatMap(listFor).sort(compareBackups);
   const latestFor = company => listFor(company)[0] || null;
 
+  // Veri dosyası paylaşan şirketler (v2.0.21, gözden geçirme bulgusu): 001'in klasörünü gösteren (bozuk kayıtlı) şirketin
+  // yedeği alınmaz — 001'in bütün veri tabanını bu şirketin kimliğiyle yazardı ve geri yükleme 001'i değiştirirdi.
+  // Paylaşan şirketlerde geri yükleme (öbür şirketin verisini de geri alır) Ayır yapılana kadar yapılmaz.
+  const sharedWith = company => registry.conflictOf?.(company.id)?.companies.filter(item => item.id !== company.id).map(item => item.label) || [];
+  function assertNotShared(company, action) {
+    const others = sharedWith(company);
+    if (others.length) throw new HttpError(409, `“${labelOf(company)}” ${others.join(", ")} ile aynı veri dosyasını kullanıyor; ${action} öbür şirketi de etkiler. Önce Yönetim → Şirketler → Ayır.`, { code: "company-shared" });
+  }
   function backup(company, { label = "", keep: keepCount, stamp = "" } = {}) {
+    if (registry.sharesRoot?.(company)) throw new HttpError(409, `“${labelOf(company)}” ilk şirketin (001) veri dosyasını gösteriyor; yedeği alınmaz (001'in yedeği alınıyor). Önce Yönetim → Şirketler → Ayır.`, { code: "company-shared" });
     return withDb(company, db => createBackup(db, folderOf(company), { label, keep: keepCount ?? keep, company: identityOf(company), stamp })) || null;
   }
   // Aynı turda alınan yedekler aynı zamanı taşır (Drive'da ve klasörlerde birlikte görünür).
@@ -334,7 +343,7 @@ export function createCompanyBackups({ registry, dataDir, keep = 30, log = null,
         return result ? { ...result, companyId: company.id } : { companyId: company.id, company: identityOf(company), error: "Şirketin veri dosyası bulunamadı." };
       } catch (error) {
         log?.error?.(`Yedek alınamadı (${labelOf(company)})`, error);
-        return { companyId: company.id, company: identityOf(company), error: error.message };
+        return { companyId: company.id, company: identityOf(company), error: error.message, code: error.extra?.code || "" };
       }
     });
   }
@@ -521,7 +530,7 @@ export function createCompanyBackups({ registry, dataDir, keep = 30, log = null,
     }
     return registry
       .list()
-      .filter(company => !isBusy(company.id))
+      .filter(company => !isBusy(company.id) && !registry.sharesRoot?.(company))
       .map(company => ({ backupDir: folderOf(company), label: labelOf(company), run: () => backup(company), changedAt: () => changedAt(company) }));
   }
 
@@ -619,6 +628,7 @@ export function createCompanyBackups({ registry, dataDir, keep = 30, log = null,
    */
   async function restoreCompany({ file, target, user }) {
     if (isBusy(target.id)) throw new HttpError(409, busy.get(target.id) || "Bu şirkette başka bir işlem sürüyor; birkaç saniye sonra yeniden deneyin.");
+    assertNotShared(target, "geri yükleme");
     inspectBackup(file);
     if (target.id === ROOT_COMPANY_ID) {
       const job = stageRootRestore(user, file);
@@ -670,5 +680,5 @@ export function createCompanyBackups({ registry, dataDir, keep = 30, log = null,
     }
   }
 
-  return { root: backupRoot, folderOf, listFor, list, latestFor, backup, backupMany, find, locate, assertRestorable, restoreCompany, migrate, scheduleTargets, storage, stageRootRestore, pendingRestore, cancelRestore, accessible };
+  return { root: backupRoot, folderOf, listFor, list, latestFor, backup, backupMany, find, locate, assertRestorable, restoreCompany, migrate, scheduleTargets, storage, stageRootRestore, pendingRestore, cancelRestore, accessible, assertNotShared };
 }

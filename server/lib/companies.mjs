@@ -133,11 +133,15 @@ export function createCompanyRegistry({ dataDir, backupDir, hubStore, log = { in
       }
       for (const name of names) {
         const file = path.join(folder, name);
+        // "ayirma-oncesi" yedeği ortak dosyadan, ayrılan şirketin kimliğiyle alınır; içindeki veri tabanı kimliği dosyayı
+        // koruyan şirketinkidir — kimlik eşleşmesinde sayılmaz (gözden geçirme bulgusu).
+        const parsed = parseBackupName(name);
+        if (/^ayirma-oncesi(?:-|$)/.test(parsed?.label || "")) continue;
         const identity = readBackupIdentity(file);
         if (!identity) continue;
         const { instance } = instanceOf(file);
-        const stamp = parseBackupName(name)?.stamp || "";
-        if (instance && (!found.has(instance) || found.get(instance).stamp < stamp)) found.set(instance, { identity, stamp });
+        const stamp = parsed?.stamp || "";
+        if (instance && (!found.has(instance) || found.get(instance).stamp < stamp)) found.set(instance, { identity, stamp, folder: path.basename(folder) });
       }
     }
     return found;
@@ -165,14 +169,20 @@ export function createCompanyRegistry({ dataDir, backupDir, hubStore, log = { in
       used.add(code);
       const id = identity?.id && !ids.has(identity.id) ? identity.id : `sirket-kurtarilan-${name}`;
       ids.add(id);
-      companies.push({ id, code, name: text(identity?.name || office) || `Şirket ${code}`, dir: path.join("sirketler", name), createdAt: "", createdBy: "", recovered: true });
+      const entry = { id, code, name: text(identity?.name || office) || `Şirket ${code}`, dir: path.join("sirketler", name), createdAt: "", createdBy: "", recovered: true };
+      // Yedek klasörü: yedeğin bulunduğu klasör (ekli ad, ör. "002 - Ad (2)", korunur).
+      const folder = id === identity?.id ? known.get(instance)?.folder : "";
+      if (folder && folder.toUpperCase() !== companyFolderName(entry).toUpperCase()) entry.backupFolder = folder;
+      companies.push(entry);
     }
     return { companies };
   }
   function save(value = registry) {
     mkdirSync(dataDir, { recursive: true });
     const body = JSON.stringify(value, null, 2);
-    for (const target of [file, path.join(dataDir, REGISTRY_COPY)]) {
+    // Önce ikinci kopya, sonra asıl dosya (gözden geçirme bulgusu): yazım yarıda kalırsa asıl dosya eski hâlinde kalır,
+    // bellekteki liste de değişmez (atlanan hata çağırana gider); açılışta kopya asıl dosyayla yeniden eşitlenir.
+    for (const target of [path.join(dataDir, REGISTRY_COPY), file]) {
       const tmp = `${target}.tmp`;
       writeFileSync(tmp, body);
       renameSync(tmp, target);

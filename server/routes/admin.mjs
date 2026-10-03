@@ -329,8 +329,8 @@ export function registerAdminRoutes(router, context) {
   // Yedekleri Denetle (v2.0.21): her şirketin yedekleri kendi klasöründe ve kendi kimliğiyle mi? Yalnız okur, rapor verir.
   // (/api/admin/backups/:name'den önce kayıtlı; "audit" yedek adı sayılmaz.)
   router.get("/api/admin/backups/audit", async ({ req, res }) => {
-    auth.requirePermission(req, "system.manage");
-    ok(res, auditBackups({ registry: companies, backupRoot: backups.root() }));
+    const admin = auth.requirePermission(req, "system.manage");
+    ok(res, auditBackups({ registry: companies, backupRoot: backups.root(), visible: backups.accessible(admin).map(company => company.id), full: admin.role === "admin" }));
   });
 
   // Yedek Al: scope "all" (Tüm Şirketler, varsayılan) ya da "one" (companyId; verilmezse seçili şirket).
@@ -341,8 +341,9 @@ export function registerAdminRoutes(router, context) {
     const chosen = scope === "all" ? backups.accessible(admin) : [companyFor(admin, text(body.companyId) || companies.selectedFor(admin))];
     const results = backups.backupMany(chosen, { label: "manuel" });
     const done = results.filter(item => item.name);
-    const failed = results.filter(item => !item.name).map(item => ({ companyId: item.companyId, company: item.company ? `${item.company.code} · ${item.company.name}` : "", error: item.error }));
-    if (!done.length) throw new HttpError(500, `Yedek alınamadı: ${failed.map(item => `${item.company}: ${item.error}`).join("; ") || "bilinmeyen hata"}`);
+    const failed = results.filter(item => !item.name).map(item => ({ companyId: item.companyId, company: item.company ? `${item.company.code} · ${item.company.name}` : "", error: item.error, code: item.code || "" }));
+    // Veri dosyası paylaşan şirket (v2.0.21) bir hata değil, yöneticinin yapacağı iş: 409 ve nedeni.
+    if (!done.length) throw new HttpError(failed.length && failed.every(item => item.code === "company-shared") ? 409 : 500, `Yedek alınamadı: ${failed.map(item => `${item.company}: ${item.error}`).join("; ") || "bilinmeyen hata"}`, { code: failed[0]?.code || "" });
     for (const item of done) audit(admin, "system.backup_created", item.name, { size: item.size, company: item.company?.code || "", scope });
     const clouds = [];
     for (const item of done) clouds.push(await mirror(item).catch(error => ({ ok: false, error: error.message })));
