@@ -419,20 +419,29 @@ Bağlam kopsa da bu düzen değişmez. Kullanıcı "zip ver" dediğinde şu üç
   bayt bayt aynı (60bcf7ad…) → site PR'ı gerekmedi. 2.0.19 KAPANDI.
 - 2.0.20 BAŞLADI (kullanıcı, 03.10.2026: "uzman UI, uzman UX, baş mimar ve baş mühendis şapkanla başka sorunlara yol
   açmayacak şekilde düzeltmeleri yap" = 9 maddenin hepsi; dal `claude/kind-newton-fpmx3f`).
+  DURUM: 9 MADDE YAPILDI (kanıt `docs/2.0.20-KANIT.md`, CHANGELOG → 2.0.20). Madde 9 bir yardımcı ajanla ayrı kopyada yapıldı
+  (`server/lib/company-backups.mjs`; GERİ YÜKLE özelliği de eklendi: 002+ hemen, 001 yeniden açılışta, ortak katman korunur),
+  sonra BAĞIMSIZ gözden geçirme ajanı → bulgular düzeltildi (`test/yedek-220-inceleme.test.mjs`, önce 9/9 kırmızı). Gözden
+  geçirmede 2.0.17'den kalan iki ciddi hata bulundu ve düzeltildi: kodu değişen şirketin `sirketler/<kod>` klasörü yeni şirkete
+  veriliyordu (İKİ ŞİRKET AYNI VERİ TABANI); açılamayan şirketin istekleri 001'e düşüyordu. Kalan bilinen sınırlar (CHANGELOG'a
+  yazılmadı, düşük): Drive "bağlantı" kipinde şirketler aynı Drive klasörü; 001 geri yüklemesinde servis yöneticisi yeniden
+  açılışı çökme sayar (5 dk'da 5 kez olursa bekler); silinmiş şirketin yedekleri listede görünmez (klasörü durur).
+  Yedek klasörü: `backups\<kod> - <ad>\` (çakışırsa kayıtta `backupFolder` "… (2)"); veri klasörü yeni şirkette boş ve
+  kullanılmayan (`sirketler\002-2` gibi). Budama: rutin (otomatik/manuel/drive-deneme) son 30, güvenlik etiketlileri ayrıca 20.
 - 2.0.20 YAPILACAKLAR (kullanıcı "yapılacaklara not al" dedi, 03.10.2026; "yap" denince başlanır; ayrıntı ve
   kanıt hemen altındaki ADAYI maddesinde):
-  [ ] 1. Bütün raporların (43) tablosunun altında kalın TOPLAM satırı — ekran, PDF, Excel aynı; yalnız toplanabilir
+  [x] 1. Bütün raporların (43) tablosunun altında kalın TOPLAM satırı — ekran, PDF, Excel aynı; yalnız toplanabilir
          kolonlar (tutar, matrah, KDV, borç, alacak, miktar); birim fiyat, yürüyen bakiye, oran, tarih boş.
-  [ ] 2. Cari Listesi ve Bakiyeler özetine "Toplam Borç (Anlaşılan)", "Toplam Tahsilat (Ödenen)", "Kalan".
-  [ ] 3. Dönemli raporlar ilk açılışta "Bu Yıl"; sonra kullanıcının son seçtiği dönem hatırlanır.
-  [ ] 4. Dönemde kayıt yoksa ipucu: "Bu dönemde kayıt yok — Tüm Zamanlar'ı deneyin".
-  [ ] 5. Test: 43 raporda TOPLAM satırı = satırların toplamı (ekran/PDF/Excel); boş dönem; tek kayıt; 10 cari × 10.000,
+  [x] 2. Cari Listesi ve Bakiyeler özetine "Toplam Borç (Anlaşılan)", "Toplam Tahsilat (Ödenen)", "Kalan".
+  [x] 3. Dönemli raporlar ilk açılışta "Bu Yıl"; sonra kullanıcının son seçtiği dönem hatırlanır.
+  [x] 4. Dönemde kayıt yoksa ipucu: "Bu dönemde kayıt yok — Tüm Zamanlar'ı deneyin".
+  [x] 5. Test: 43 raporda TOPLAM satırı = satırların toplamı (ekran/PDF/Excel); boş dönem; tek kayıt; 10 cari × 10.000,
          ilk taksitler ödenmiş → 100.000 / 10.000 / 90.000 (Taksit Kartları, Cari Mizanı, Cari Listesi); arayüzden senaryo.
-  [ ] 6. Kılavuza kısa hap bilgi: "Ciro ve toplam alacak hangi raporda".
-  [ ] 7. Sol üstteki ŞİRKET kutusunda şirket sayısını gösteren yeşil rozet ("001 · Şirket 1  (2)") KALKAR — kullanıcı
+  [x] 6. Kılavuza kısa hap bilgi: "Ciro ve toplam alacak hangi raporda".
+  [x] 7. Sol üstteki ŞİRKET kutusunda şirket sayısını gösteren yeşil rozet ("001 · Şirket 1  (2)") KALKAR — kullanıcı
          (03.10.2026, ekran): "kafa karıştırıyor, o sayı yazmasın". Kod: `client/assets/hof-companies.js:132`
          (`hof-session-count`); açılır listede şirketler zaten görünür. Test: 1 ve 2 şirketle rozet yok.
-  [ ] 8. "CARİ BAZINDA TAHSİLAT RAPORU ÇALIŞMIYOR" (kullanıcı, 03.10.2026 — açık sorunun cevabı). Arayüzden yeniden
+  [x] 8. "CARİ BAZINDA TAHSİLAT RAPORU ÇALIŞMIYOR" (kullanıcı, 03.10.2026 — açık sorunun cevabı). Arayüzden yeniden
          üretildi: Taksit Excel'i "Ödenen" kolonuyla (10 kişi × 10.000, her biri 1.000 ödenmiş) yüklenince ödenen tutar
          AÇILIŞ (devir, `plan_entries.opening = 1`, Kasa dışı) yazılır; rapor (`report-center.mjs` cari-tahsilat)
          açılışı bilinçli SAYMIYOR → "Bu Ay" da "Tüm Zamanlar" da "Cari 0 · Toplam 0 · Bu süzgeçte kayıt yok" (Taksit
@@ -448,7 +457,7 @@ Bağlam kopsa da bu düzen değişmez. Kullanıcı "zip ver" dediğinde şu üç
          toplamı dışında → "Toplam Tahsil Edilen" açılış dahil), Taksit Tahsilat Performansı, Cari Listesi "Toplam Tahsilat
          (Ödenen)". Kırılım kolonları kalır (kaynağı görünsün). KASA raporları DEĞİŞMEZ (açılış Kasa'ya hiç girmedi; Kasa
          fiziki nakit, mutabakat bozulmasın) — kullanıcıya söylendi.
-  [ ] 9. YEDEK VE ÇOKLU ŞİRKET (kullanıcı, 03.10.2026: "001 dolu ama yedek klasöründe 002 dolu yedeklemiş"). Ölçüldü
+  [x] 9. YEDEK VE ÇOKLU ŞİRKET (kullanıcı, 03.10.2026: "001 dolu ama yedek klasöründe 002 dolu yedeklemiş"). Ölçüldü
          (API, 001'de 5 cari, 002'de 2 cari): veri KARIŞMIYOR — 002 seçiliyken Yedek Al → `backups/sirket-002/…-manuel.sqlite`
          (yalnız 002), 001 seçiliyken → `backups/…-manuel.sqlite` (yalnız 001). AÇIKLAR: (a) `/api/admin/backups` HUB_ONLY
          değil → Yedek Al ve Yedekler listesi yalnız SEÇİLİ şirket (`app.mjs` dispatch); (b) dosya adında şirket kodu yok
