@@ -1,7 +1,12 @@
 // 2.0.21 güvenilirlik testlerinin (rastgele sıra, tatbikat, göç, arıza) BULDUĞU hataların kalıcı regresyon testleri.
 // Her biri düzeltmeden önce kırmızıydı; bulan test ve tohum yanında yazılı.
 import assert from "node:assert/strict";
+import { mkdtempSync, readdirSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import path from "node:path";
+import { DatabaseSync } from "node:sqlite";
 import { describe, test } from "node:test";
+import { createBackup } from "../server/lib/backup.mjs";
 import { ADMIN_PASSWORD, createUser, loginAdmin, startTestServer } from "./helpers.mjs";
 
 const data = response => response.data?.data ?? response.data;
@@ -40,6 +45,34 @@ describe("001'in verisini 'Tümünü Sıfırla' ortak katmanı silmez", () => {
       assert.equal(data(await admin.get("/api/workspace/accounts?status=all")).accounts.length, 0);
     } finally {
       await server.close();
+    }
+  });
+});
+
+describe("disk dolu: yarım yedek dosyası diskte kalmaz", () => {
+  // Bulan: arıza testi (guvenilirlik-221-ariza, "disk dolu"). VACUUM INTO yarıda kalınca (SQLite: "database or disk is
+  // full") geçici adlı yarım kopya (.yaziliyor) diskte kalıyordu; yalnız bir saat sonraki yedekte siliniyordu — dolu diski
+  // daha da dolduruyordu.
+  test("VACUUM INTO hata verirse .yaziliyor silinir, hata çağırana iletilir; liste değişmez", () => {
+    const dir = mkdtempSync(path.join(tmpdir(), "disk-dolu-"));
+    const db = new DatabaseSync(":memory:");
+    db.exec("CREATE TABLE settings (key TEXT PRIMARY KEY, value TEXT); CREATE TABLE users (id TEXT)");
+    const full = {
+      exec(sql) {
+        const match = /^VACUUM INTO '(.+)'$/.exec(sql);
+        if (!match) return db.exec(sql);
+        writeFileSync(match[1], Buffer.alloc(32 * 1024, 1));
+        throw new Error("database or disk is full");
+      },
+    };
+    try {
+      assert.throws(() => createBackup(full, dir, { label: "manuel", company: { id: "sirket-x", code: "002", name: "X" } }), /disk is full/);
+      assert.deepEqual(readdirSync(dir), [], "yarım dosya kalmadı");
+      const ok = createBackup(db, dir, { label: "manuel", company: { id: "sirket-x", code: "002", name: "X" } });
+      assert.deepEqual(readdirSync(dir), [ok.name], "disk boşalınca yedek alınır");
+    } finally {
+      db.close();
+      rmSync(dir, { recursive: true, force: true });
     }
   });
 });
