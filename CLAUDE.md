@@ -458,6 +458,14 @@ Bağlam kopsa da bu düzen değişmez. Kullanıcı "zip ver" dediğinde şu üç
          da); yedeğin içine şirket kimliği yazılır, geri yüklemede yanlış şirkete yükleme reddedilir. Test: iki şirket
          farklı veri; tümü/tek; otomatik; geri yükleme; yanlış şirkete yükleme 409. Kullanıcıya soruldu: yedek alınırken
          002 mi seçiliydi / baktığı klasör sirket-002 mi (ekran bekleniyor).
+         CEVAP (kullanıcı, aynı gün): "001'de çalışıyoruz; yedekte şirketler klasöründe 001 yok, 002 klasöründe şirket
+         datası var; bu veriler aslında 001'in". ÖLÇÜLDÜ (arayüz + dosya içi sayım): 001 KÖK klasörde (`data/destekofis.sqlite`,
+         yedekleri `backups/` kökünde, alt klasörsüz); 002 `data/sirketler/002/` ve `backups/sirket-002/`. Yeni şirket BOŞ
+         açılıyor (001'in carisi/tablosu kopyalanmıyor: 002'de accounts=0, dataset_rows=0); boş şirket dosyası bile ~0,8 MB
+         (şema + kullanıcı kopyası + WAL) → "dolu" görünür. Yani karışma yok ama düzen yanıltıcı. Ek öneri (madde 9'a):
+         001'in YENİ yedekleri de `backups/sirket-001/` altına, ad `destekofis-<kod>-…` (001 veri dosyası yerinde kalır, göç
+         riski yok); Yönetim → Şirketler'de her şirketin veri dosyası yolu, boyutu, cari/kayıt sayısı ve son yedeği; Yedekler
+         ekranında "001 · Şirket 1 → …\backups\sirket-001" açıklaması. Kullanıcıdan teyit: 002'ye geçince Cari boş mu.
   Açık soru CEVAPLANDI: "getirmiyor" = Cari Bazında Tahsilat (madde 8).
 - 2.0.20 ADAYI — RAPORLARDA ALT TOPLAM (kullanıcı, 03.10.2026): "toplam cari alacağı yani ciroyu hangi rapordan
   görürüm?" → yanıt: ciro = Raporlar → Fatura → Satış Faturaları / Cari Bazında Satış ve Alış (Net Satış); toplam
