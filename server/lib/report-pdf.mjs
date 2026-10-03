@@ -17,10 +17,11 @@ const moneyFormat = new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, m
 const tl = value => `${moneyFormat.format(Number(value) || 0)} TL`;
 
 /**
- * @param {{ title: string, subtitle?: string, headers: string[], rows: string[][], types?: string[], summary?: Array<[string, string]>, officeName?: string, userName?: string, brand?: string, now?: Date }} input
+ * @param {{ title: string, subtitle?: string, headers: string[], rows: string[][], types?: string[], summary?: Array<[string, string]>, footer?: string[] | null, officeName?: string, userName?: string, brand?: string, now?: Date }} input
+ * footer (v2.0.20): tablonun altındaki kalın TOPLAM satırı (rapor merkezi hesaplar; yoksa çizilmez).
  * brand: altbilgideki ad (varsayılan "DestekOfis"); boş metin yalnız başlığı yazar (müşteriye verilen belgeler, v2.0.6).
  */
-export function tablePdf({ title, subtitle = "", headers, rows, types = [], summary = [], officeName = "", userName = "", brand = "DestekOfis", now = new Date() }) {
+export function tablePdf({ title, subtitle = "", headers, rows, types = [], summary = [], footer = null, officeName = "", userName = "", brand = "DestekOfis", now = new Date() }) {
   const M = 36;
   const landscape = headers.length > 7;
   const size = landscape ? { width: A4.height, height: A4.width } : A4;
@@ -125,6 +126,22 @@ export function tablePdf({ title, subtitle = "", headers, rows, types = [], summ
     top += height;
     page.line(M, top, M + W, top, { color: "#e5e7eb", width: 0.4 });
   });
+  // TOPLAM satırı (v2.0.20): son satırın altında, üstte koyu çizgi ve açık zemin; sayfaya sığmazsa yeni sayfada başlıkla.
+  if (footer && rows.length) {
+    const wrapped = footer.map((value, index) => {
+      const lines = doc.wrap(String(value ?? ""), cols[index] - cellPad * 2, "bold", fontSize);
+      return lines.length ? lines.slice(0, 2) : [""];
+    });
+    const height = 8 + Math.max(...wrapped.map(lines => lines.length)) * (fontSize + 3);
+    if (top + height > bottomLimit) newPage(false);
+    page.rect(M, top, W, height, { fill: "#eef6f1" });
+    page.line(M, top, M + W, top, { color: "#374151", width: 1 });
+    wrapped.forEach((lines, index) => {
+      lines.forEach((line, lineIndex) => page.text(lefts[index] + cellPad, top + fontSize + 4 + lineIndex * (fontSize + 3), line, { font: "bold", size: fontSize, color: ink, align: align(index), width: align(index) === "right" ? cols[index] - cellPad * 2 : undefined }));
+    });
+    top += height;
+    page.line(M, top, M + W, top, { color: "#374151", width: 1 });
+  }
   const count = doc.pages.length;
   doc.pages.forEach((item, index) => {
     const footer = size.height - 24;

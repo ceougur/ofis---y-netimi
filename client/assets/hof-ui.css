@@ -3266,17 +3266,6 @@ html.hof-no-haciz .filter-strip { display: none !important; }
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.hof-session-count {
-  flex: none;
-  min-width: 22px;
-  padding: 2px 7px;
-  border-radius: 999px;
-  background: var(--do-accent-soft);
-  color: var(--do-accent);
-  font-size: 11px;
-  font-weight: 800;
-  text-align: center;
-}
 .hof-session-chevron {
   display: inline-grid;
   flex: none;
@@ -8356,6 +8345,32 @@ button.hof-source-card:focus-visible {
 }
 .hof-rc-table {
   max-height: 50vh;
+}
+/* TOPLAM satırı (v2.0.20): kaydırınca tablonun altında sabit kalır. */
+.hof-rc-table tfoot td {
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
+  border-top: 2px solid var(--do-ink);
+  background: #eef6f1;
+  color: var(--do-ink);
+  font-weight: 800;
+}
+.hof-rep-table tfoot td {
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
+  border-top: 2px solid var(--do-ink);
+  background: #eef6f1;
+  color: var(--do-ink);
+  font-weight: 800;
+}
+.hof-rep-table tfoot small {
+  color: var(--do-muted);
+  font-weight: 600;
+}
+.hof-rc-table .hof-empty .hof-button {
+  margin-left: 8px;
 }
 @media (max-width: 980px) {
   .hof-rc {

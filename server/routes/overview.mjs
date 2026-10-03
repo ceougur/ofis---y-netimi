@@ -173,7 +173,7 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
 
   // ---------- A. Mizan ----------
   function mizan(params) {
-    const range = rangeOf(params, { preset: "thisMonth" });
+    const range = rangeOf(params, { preset: "thisYear" });
     const type = TYPE_TEXT[text(params.get("type"))] ? text(params.get("type")) : "";
     const side = ["debtor", "creditor", "zero", "nonzero"].includes(text(params.get("side"))) ? text(params.get("side")) : "";
     const q = text(params.get("q")).toLocaleLowerCase("tr-TR").slice(0, 120);
@@ -211,6 +211,8 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
       ["Borçlular Toplamı", tl(data.totals.closingDebtor)],
       ["Alacaklılar Toplamı", tl(data.totals.closingCreditor)],
     ],
+    // TOPLAM satırı (v2.0.20): bakiye net (borçlular − alacaklılar) ve yönü.
+    footer: ["", "TOPLAM", "", tl(data.totals.opening), tl(data.totals.debit), tl(data.totals.credit), tl(Math.abs(data.totals.closing)), sideText(data.totals.closing)],
   });
   router.get("/api/workspace/overview/mizan.pdf", async ({ req, res, url }) => {
     const user = auth.requirePermission(req, "overview.view");
@@ -227,15 +229,16 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
     const money = value => MONEY_FORMAT.format(value || 0);
     const columns = ["Cari No", "Cari", "Tür", "Grup", "Devir", "Dönem Borç", "Dönem Alacak", "Bakiye", "Durum"];
     const rows = data.rows.map(row => ({ "Cari No": row.refNo, Cari: row.name, Tür: TYPE_TEXT[row.type] || "", Grup: [row.groupName, row.subgroupName].filter(Boolean).join(" › "), Devir: money(row.opening), "Dönem Borç": money(row.debit), "Dönem Alacak": money(row.credit), Bakiye: money(row.closing), Durum: sideText(row.closing) }));
-    rows.push({ "Cari No": "", Cari: "TOPLAM", Tür: "", Grup: "", Devir: money(data.totals.opening), "Dönem Borç": money(data.totals.debit), "Dönem Alacak": money(data.totals.credit), Bakiye: money(data.totals.closing), Durum: `Borçlular ${money(data.totals.closingDebtor)} · Alacaklılar ${money(data.totals.closingCreditor)}` });
-    const buffer = buildXlsx([{ name: "Mizan", columns, rows }], { title: `Cari Mizanı ${rangeText(data)}` });
+    // TOPLAM satırı (v2.0.20): kalın, süzgeç alanı dışında (sıralayınca yerinden oynamaz).
+    const footer = { "Cari No": "", Cari: "TOPLAM", Tür: "", Grup: "", Devir: money(data.totals.opening), "Dönem Borç": money(data.totals.debit), "Dönem Alacak": money(data.totals.credit), Bakiye: money(data.totals.closing), Durum: `Borçlular ${money(data.totals.closingDebtor)} · Alacaklılar ${money(data.totals.closingCreditor)}` };
+    const buffer = buildXlsx([{ name: "Mizan", columns, rows, footer }], { title: `Cari Mizanı ${rangeText(data)}` });
     audit(user, "overview.exported", "mizan.xlsx", { from: data.from, to: data.to, count: data.rows.length });
     sendBuffer(res, buffer, { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", name: `Mizan ${fileRange(data)}.xlsx` });
   });
 
   // ---------- A2. Cari ekstre (tarih aralıklı) ----------
   function ekstre(user, params) {
-    const range = rangeOf(params, { preset: "thisMonth" });
+    const range = rangeOf(params, { preset: "thisYear" });
     const id = limited(params.get("account"), 120, "Cari");
     if (!id) throw new HttpError(400, "Ekstresi alınacak cariyi seçin.");
     const account = accounts().detail(id, user);
@@ -260,6 +263,7 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
       types: ["", "", "", "money", "money", "money"],
       rows: ekstreRows(data),
       summary: [["Devir", tl(data.opening)], ["Dönem Borç", tl(data.debit)], ["Dönem Alacak", tl(data.credit)], ["Dönem Sonu Bakiye", `${tl(Math.abs(data.closing))} ${sideText(data.closing)}`]],
+      footer: [dayText(data.to), "TOPLAM", "Dönem sonu", tl(data.debit), tl(data.credit), tl(Math.abs(data.closing)) + (data.closing > 0.005 ? " B" : data.closing < -0.005 ? " A" : "")],
       officeName: office(),
       userName: userName(user),
       brand: office() || "DestekOfis",
@@ -275,9 +279,9 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
     const rows = [
       { Tarih: openingDay(data.from), İşlem: "Devir", Açıklama: "Dönem başı bakiye", "Makbuz No": "", Borç: "", Alacak: "", Bakiye: money(data.opening) },
       ...data.lines.map(line => ({ Tarih: dayText(line.date), İşlem: line.label, Açıklama: line.note, "Makbuz No": line.receiptNo ? String(line.receiptNo) : "", Borç: line.debit ? money(line.debit) : "", Alacak: line.credit ? money(line.credit) : "", Bakiye: money(line.balance) })),
-      { Tarih: dayText(data.to), İşlem: "Dönem sonu", Açıklama: sideText(data.closing), "Makbuz No": "", Borç: money(data.debit), Alacak: money(data.credit), Bakiye: money(data.closing) },
     ];
-    const buffer = buildXlsx([{ name: "Ekstre", columns, rows }], { title: `Cari Ekstre ${data.account.name}` });
+    const footer = { Tarih: dayText(data.to), İşlem: "TOPLAM", Açıklama: `Dönem sonu · ${sideText(data.closing)}`, "Makbuz No": "", Borç: money(data.debit), Alacak: money(data.credit), Bakiye: money(data.closing) };
+    const buffer = buildXlsx([{ name: "Ekstre", columns, rows, footer }], { title: `Cari Ekstre ${data.account.name}` });
     audit(user, "overview.exported", "ekstre.xlsx", { accountId: data.account.id, from: data.from, to: data.to });
     sendBuffer(res, buffer, { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", name: `Ekstre ${data.account.name} ${fileRange(data)}.xlsx` });
   });

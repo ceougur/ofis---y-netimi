@@ -114,14 +114,23 @@ export function buildXlsx(sheets, { title = "DestekOfis", creator = "DestekOfis"
   const formats = new Map(); // biçim kodu → numFmtId (164'ten başlar)
   const styleOf = new Map(); // numFmtId → cellXfs sırası
   const styles = [{ numFmtId: 0 }, { numFmtId: 0, header: true }];
-  const styleFor = code => {
+  const styleFor = (code, bold = false) => {
     if (!formats.has(code)) formats.set(code, 164 + formats.size);
     const id = formats.get(code);
-    if (!styleOf.has(id)) {
-      styleOf.set(id, styles.length);
-      styles.push({ numFmtId: id });
+    const key = bold ? `b${id}` : id;
+    if (!styleOf.has(key)) {
+      styleOf.set(key, styles.length);
+      styles.push({ numFmtId: id, bold });
     }
-    return styleOf.get(id);
+    return styleOf.get(key);
+  };
+  // Kalın metin (TOPLAM satırı, v2.0.20).
+  const boldText = () => {
+    if (!styleOf.has("b0")) {
+      styleOf.set("b0", styles.length);
+      styles.push({ numFmtId: 0, bold: true });
+    }
+    return styleOf.get("b0");
   };
 
   const sheetFiles = list.map((sheet, sheetIndex) => {
@@ -143,9 +152,9 @@ export function buildXlsx(sheets, { title = "DestekOfis", creator = "DestekOfis"
       return styleFor(code);
     };
     const rowsXml = [];
-    const cell = (ref, content, style) => {
+    const cell = (ref, content, style, bold = false) => {
       if (content === null) return "";
-      if ("value" in content) return `<c r="${ref}" s="${styleFor(content.format)}"><v>${content.value}</v></c>`;
+      if ("value" in content) return `<c r="${ref}" s="${styleFor(content.format, bold)}"><v>${content.value}</v></c>`;
       const text = content.text.length > MAX_CELL_TEXT ? content.text.slice(0, MAX_CELL_TEXT) : content.text;
       const space = /^\s|\s$|\n/.test(text) ? ' xml:space="preserve"' : "";
       return `<c r="${ref}" t="inlineStr"${style ? ` s="${style}"` : ""}><is><t${space}>${xml(text)}</t></is></c>`;
@@ -162,9 +171,16 @@ export function buildXlsx(sheets, { title = "DestekOfis", creator = "DestekOfis"
         .join("");
       rowsXml.push(`<row r="${r}">${cells}</row>`);
     });
+    // TOPLAM satırı (v2.0.20): kalın, verinin altında; süzgeç (autoFilter) alanının DIŞINDA kalır, sıralamada yerinden oynamaz.
+    const footerRowNo = sheet.rows.length + 2;
+    if (sheet.footer && columns.length) {
+      const cells = columns.map((column, index) => cell(`${columnName(index)}${footerRowNo}`, typedCell(sheet.footer[column]) || { text: "" }, boldText(), true)).join("");
+      rowsXml.push(`<row r="${footerRowNo}">${cells}</row>`);
+    }
     const last = `${columnName(Math.max(0, columns.length - 1))}${sheet.rows.length + 1}`;
+    const extent = sheet.footer && columns.length ? `${columnName(Math.max(0, columns.length - 1))}${footerRowNo}` : last;
     const body = `${XML_HEADER}<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
-<dimension ref="A1:${last}"/>
+<dimension ref="A1:${extent}"/>
 <sheetViews><sheetView workbookViewId="0"${sheetIndex === 0 ? ' tabSelected="1"' : ""}>${columns.length ? '<pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/><selection pane="bottomLeft" activeCell="A2" sqref="A2"/>' : ""}</sheetView></sheetViews>
 <sheetFormatPr defaultRowHeight="15"/>
 ${columns.length ? `<cols>${widths.map((width, index) => { const style = colStyle(index); return `<col min="${index + 1}" max="${index + 1}" width="${width}"${style ? ` style="${style}"` : ""} customWidth="1"/>`; }).join("")}</cols>` : ""}
@@ -179,12 +195,12 @@ ${validationsXml(sheet.validations)}
   const numFmts = [...formats].map(([code, id]) => `<numFmt numFmtId="${id}" formatCode="${xml(code)}"/>`).join("");
   const stylesXml = `${XML_HEADER}<styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
 ${formats.size ? `<numFmts count="${formats.size}">${numFmts}</numFmts>` : ""}
-<fonts count="2"><font><sz val="11"/><name val="Calibri"/><family val="2"/></font><font><b/><sz val="11"/><color rgb="FF142B25"/><name val="Calibri"/><family val="2"/></font></fonts>
+<fonts count="3"><font><sz val="11"/><name val="Calibri"/><family val="2"/></font><font><b/><sz val="11"/><color rgb="FF142B25"/><name val="Calibri"/><family val="2"/></font><font><b/><sz val="11"/><name val="Calibri"/><family val="2"/></font></fonts>
 <fills count="3"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill><fill><patternFill patternType="solid"><fgColor rgb="FFE6F3EB"/><bgColor indexed="64"/></patternFill></fill></fills>
-<borders count="2"><border><left/><right/><top/><bottom/><diagonal/></border><border><left/><right/><top/><bottom style="thin"><color rgb="FF9CC7AE"/></bottom><diagonal/></border></borders>
+<borders count="3"><border><left/><right/><top/><bottom/><diagonal/></border><border><left/><right/><top/><bottom style="thin"><color rgb="FF9CC7AE"/></bottom><diagonal/></border><border><left/><right/><top style="medium"><color rgb="FF374151"/></top><bottom style="medium"><color rgb="FF374151"/></bottom><diagonal/></border></borders>
 <cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>
 <cellXfs count="${styles.length}">${styles
-    .map(style => (style.header ? '<xf numFmtId="0" fontId="1" fillId="2" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1"/>' : `<xf numFmtId="${style.numFmtId}" fontId="0" fillId="0" borderId="0" xfId="0"${style.numFmtId ? ' applyNumberFormat="1"' : ""}/>`))
+    .map(style => (style.header ? '<xf numFmtId="0" fontId="1" fillId="2" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1"/>' : style.bold ? `<xf numFmtId="${style.numFmtId}" fontId="2" fillId="2" borderId="2" xfId="0" applyFont="1" applyFill="1" applyBorder="1"${style.numFmtId ? ' applyNumberFormat="1"' : ""}/>` : `<xf numFmtId="${style.numFmtId}" fontId="0" fillId="0" borderId="0" xfId="0"${style.numFmtId ? ' applyNumberFormat="1"' : ""}/>`))
     .join("")}</cellXfs>
 <cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles>
 </styleSheet>`;

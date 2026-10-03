@@ -356,11 +356,15 @@ describe("tablodan taksit kartına aktarma (iş akışı)", () => {
     assert.equal(await kasa(), kasaBefore, "geri gelen açılış Kasa'ya girmedi");
   });
 
-  it("rapor merkezi: açılış tahsilat toplamına girmez, ayrı satırda; mizan = cari listesi", async () => {
+  // v2.0.20 (kullanıcı: "hepsini toplasın raporlar da"): açılış ayrı kalemde görünür VE toplam tahsil edilene dahildir.
+  it("rapor merkezi: açılış ayrı satırda ve toplam tahsil edilene dahil; TOPLAM satırı = özet; mizan = cari listesi", async () => {
     const report = (await get("/api/workspace/report-center/taksit-tahsilatlari?preset=all")).data;
     const summary = Object.fromEntries(report.summary);
-    assert.ok(summary["Açılış (devir, Kasa dışı)"], "açılış ayrı satırda");
-    assert.ok(report.rows.some(row => row.includes("Açılış (devir)")));
+    const tl = text => Number(String(text).replace(/[^\d,-]/g, "").replace(",", "."));
+    assert.ok(summary["Önceden Ödenen (Açılış)"], "açılış ayrı kalemde");
+    assert.ok(report.rows.some(row => row.includes("Önceden Ödenen (Açılış)")));
+    assert.equal(tl(summary["Toplam Tahsil Edilen"]), Math.round((tl(summary.Tahsilat) + tl(summary["Önceden Ödenen (Açılış)"]) - tl(summary["İade / Ödeme"])) * 100) / 100, "toplam = tahsilat + açılış − iade");
+    assert.equal(tl(report.footer[report.headers.indexOf("Tutar")]), tl(summary["Toplam Tahsil Edilen"]), "TOPLAM satırı = toplam tahsil edilen");
     const accounts = (await get("/api/workspace/accounts?status=all")).data.accounts;
     const mizan = (await get(`/api/workspace/overview/mizan?from=2000-01-01&to=${iso(12, 28)}&idle=1`)).data;
     const sum = list => Math.round(list.reduce((total, value) => total + value, 0) * 100) / 100;

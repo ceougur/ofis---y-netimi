@@ -217,7 +217,7 @@ describe("Raporlar penceresi uçları (tam yığın)", () => {
     assert.equal(sumCol(aylik, "Çıkış"), cash.period.out, "aylık kasa çıkışı = Kasa");
     const tahsilat = await run("cari-tahsilat", `from=${shift(-3)}&to=${shift(3)}`);
     const aliRow = tahsilat.rows.find(row => row[0] === ali.refNo);
-    assert.ok(aliRow && /2\.500,00/.test(aliRow[5]), `Ali Veli (1): nakit 1.500 + çek 1.000 → ${aliRow}`);
+    assert.ok(aliRow && /2\.500,00/.test(aliRow[tahsilat.headers.indexOf("Toplam")]), `Ali Veli (1): nakit 1.500 + çek 1.000 → ${aliRow}`);
     assert.ok(tahsilat.rows.find(row => row[0] === veli.refNo && /700,00/.test(row[4])), "Ali Veli (2): alınan senet 700 ayrı satırda");
     const perf = await run("taksit-performans", `from=${shift(-400)}&to=${shift(400)}`);
     assert.match(perf.summary.find(([label]) => label === "Vadesi Gelen")[1], /3\.000,00/);

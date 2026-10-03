@@ -6,7 +6,6 @@
   "use strict";
   const HOF = window.HOF;
   const { esc } = HOF;
-  const number = value => new Intl.NumberFormat("tr-TR").format(Number(value) || 0);
   const BUILDING = '<svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 21V5a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v16"/><path d="M14 9h5a1 1 0 0 1 1 1v11"/><path d="M2 21h20"/><path d="M8 8h2M8 12h2M8 16h2M17 13h1M17 17h1"/></svg>';
   const CHEVRON = '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m7 10 5 5 5-5"/></svg>';
 
@@ -125,11 +124,10 @@
       node.addEventListener("keydown", onKey);
     }
     const open = node.classList.contains("is-open");
-    const count = state.companies.length;
+    // v2.0.20 (kullanıcı: "kaç şirket var yazan yeşil sayı kafa karıştırıyor"): şirket sayısı rozeti yok; şirketler açılır listede.
     node.innerHTML = `<button type="button" class="hof-session-current" data-toggle aria-haspopup="menu" aria-expanded="${open}" aria-controls="hof-company-menu" title="Şirket değiştir">
         <span class="hof-session-icon">${BUILDING}</span>
         <span class="hof-session-text"><small>Şirket</small><strong title="${esc(company.label)}">${esc(company.label)}</strong></span>
-        ${count > 1 ? `<span class="hof-session-count" title="${number(count)} şirket var" aria-label="${number(count)} şirket var">${number(count)}</span>` : ""}
         <span class="hof-session-chevron">${CHEVRON}</span>
       </button>
       <div class="hof-session-menu" id="hof-company-menu" ${open ? "" : "hidden"}>${menuHtml()}</div>`;
