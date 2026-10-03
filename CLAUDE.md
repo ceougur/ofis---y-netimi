@@ -428,6 +428,14 @@ Bağlam kopsa da bu düzen değişmez. Kullanıcı "zip ver" dediğinde şu üç
   açılışı çökme sayar (5 dk'da 5 kez olursa bekler); silinmiş şirketin yedekleri listede görünmez (klasörü durur).
   Yedek klasörü: `backups\<kod> - <ad>\` (çakışırsa kayıtta `backupFolder` "… (2)"); veri klasörü yeni şirkette boş ve
   kullanılmayan (`sirketler\002-2` gibi). Budama: rutin (otomatik/manuel/drive-deneme) son 30, güvenlik etiketlileri ayrıca 20.
+  TESLİM (03.10.2026 14:3x): PR ceougur/ofis---y-netimi#20 açık (birleştirme kullanıcının "birleştir"iyle). Teslim öncesi ekran
+  denetiminde bulunup düzeltildi: Cari Bazında Tahsilat'ta TOPLAM pencerenin altında kalıyordu (tablo kutusu pencereye göre
+  boyutlanır, `hof-report-center.js` fitTable; alçak ekranda 50vh kalır), Cari Listesi'nde telefon ikiye bölünüyordu.
+  Testler: npm test 831/831; senaryo-220 23, 220-yedek 26, rapor 82, 216 53, 211 57, 217 62, 219 30, e2e 50 adım.
+  Güncelleme paketi sha256 c3d16dc8… (207 dosya, HEAD ile bayt bayt), kurulum .exe sha256 b4eaafd3… (29,4 MB, simgeli);
+  güncelleyici 2.0.19/18/17/16/2.0.4/1.7.0 olarak (API ve yedek yol) "available". Kılavuz DEĞİŞTİ (PDF 84c256d7…) →
+  yayından sonra site PR'ı (`ceougur/destekofis` → `web/indir/`). Sırada: "birleştir" → CI → birleştir → yayın (v2.0.20,
+  5 dosya) → "yayımladım" → bayt bayt + güncelleyici denetimi → site PR'ı.
 - 2.0.20 YAPILACAKLAR (kullanıcı "yapılacaklara not al" dedi, 03.10.2026; "yap" denince başlanır; ayrıntı ve
   kanıt hemen altındaki ADAYI maddesinde):
   [x] 1. Bütün raporların (43) tablosunun altında kalın TOPLAM satırı — ekran, PDF, Excel aynı; yalnız toplanabilir
