@@ -205,6 +205,39 @@
   }
   // Ad kolonları (v2.0.20): çok kolonlu raporlarda kişi/ürün adı "Müşteri / 01" diye ikiye kırılmasın.
   const NAME_HEADERS = new Set(["Cari", "Ad", "Kart", "Kalem", "Ürün", "Ürün / Hizmet", "Cari / Kişi", "Kimden / Kime", "Kayıt", "İlgili Cari", "Hesap Adı"]);
+  // Telefon numarası da "0532 100 00 / 01" diye ikiye kırılmasın.
+  const NOWRAP_HEADERS = new Set(["Telefon"]);
+  const cellClass = (preview, index) =>
+    preview.types[index] === "money" || preview.types[index] === "number"
+      ? "num"
+      : NAME_HEADERS.has(preview.headers[index])
+        ? "is-name"
+        : NOWRAP_HEADERS.has(preview.headers[index])
+          ? "is-nowrap"
+          : "";
+  // TOPLAM satırı ilk bakışta görünsün (v2.0.20): tablo kutusu pencerenin görünen alanına sığacak yüksekliği alır; uzun tablo
+  // kendi kutusunda kayar, TOPLAM kutunun altında sabit kalır. Sabit 50vh, süzgeç alanı uzun raporlarda (Cari Bazında Tahsilat)
+  // TOPLAM'ı pencerenin altına itiyordu. Pencere içeriği zaten sığıyorsa kutu olduğu gibi kalır. Alçak ekranda (dizüstü) tabloya
+  // 280 px'ten az yer kalırsa kutu küçültülmez (50vh kalır): pencere bir kez kaydırılınca tablo TOPLAM'ıyla birlikte görünür.
+  function fitTable() {
+    const box = root()?.querySelector("[data-rc-main] .hof-rc-table");
+    const frame = box?.closest(".hof-modal");
+    if (!box || !frame || !frame.getClientRects().length) return;
+    const note = box.nextElementSibling;
+    const bottom = Math.min(frame.getBoundingClientRect().bottom, window.innerHeight) - (parseFloat(getComputedStyle(frame).paddingBottom) || 0);
+    const top = box.getBoundingClientRect().top + frame.scrollTop;
+    const room = bottom - top - (note ? note.offsetHeight + 12 : 0);
+    box.style.maxHeight = room >= 280 ? `${Math.floor(room)}px` : "";
+  }
+  let fitQueued = false;
+  window.addEventListener("resize", () => {
+    if (fitQueued || !center) return;
+    fitQueued = true;
+    requestAnimationFrame(() => {
+      fitQueued = false;
+      if (center) fitTable();
+    });
+  });
   // Boş sonuç (v2.0.20): dönemli raporda "Tüm Zamanlar" seçili değilse ipucu ve tek tıkla Tüm Zamanlar.
   const emptyText = report =>
     report.params.includes("range") && center.params.preset !== "all"
@@ -221,7 +254,7 @@
       ? `<div class="hof-rc-summary">${(preview.summary || []).map(([label, value]) => `<span><small>${esc(label)}</small><b>${esc(value)}</b></span>`).join("")}</div>
         <div class="hof-rep-table hof-rc-table"><table class="hof-table"><thead><tr>${preview.headers.map((header, index) => `<th class="${preview.types[index] === "money" || preview.types[index] === "number" ? "num" : ""}">${esc(header)}</th>`).join("")}</tr></thead><tbody>${
           preview.rows.length
-            ? preview.rows.map(row => `<tr>${row.map((cell, index) => `<td class="${preview.types[index] === "money" || preview.types[index] === "number" ? "num" : NAME_HEADERS.has(preview.headers[index]) ? "is-name" : ""}">${esc(cell)}</td>`).join("")}</tr>`).join("")
+            ? preview.rows.map(row => `<tr>${row.map((cell, index) => `<td class="${cellClass(preview, index)}">${esc(cell)}</td>`).join("")}</tr>`).join("")
             : `<tr><td colspan="${preview.headers.length}" class="hof-empty">${emptyText(report)}</td></tr>`
         }</tbody>${
           preview.footer && preview.rows.length
@@ -247,6 +280,7 @@
       } });
       if (field) slot.appendChild(field);
     }
+    fitTable();
   }
 
   // quiet (v2.0.11, canlı yenileme): ön izleme "Yükleniyor"a düşmeden yerinde tazelenir.

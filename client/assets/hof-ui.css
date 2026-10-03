@@ -8355,7 +8355,10 @@ button.hof-source-card:focus-visible {
   white-space: nowrap;
 }
 .hof-rc-table td.is-name {
-  min-width: 120px;
+  min-width: 100px;
+}
+.hof-rc-table td.is-nowrap {
+  white-space: nowrap;
 }
 /* TOPLAM satırı (v2.0.20): kaydırınca tablonun altında sabit kalır. */
 .hof-rc-table tfoot td {

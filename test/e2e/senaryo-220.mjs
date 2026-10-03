@@ -78,7 +78,7 @@ const closeAll = async () => {
     await page.waitForTimeout(250);
   }
 };
-const lastModal = fn => page.evaluate(fn => new Function("box", `return (${fn})(box)`)([...document.querySelectorAll(".hof-modal-backdrop.is-visible")].at(-1)), fn.toString());
+const lastModal = (fn, arg) => page.evaluate(([fn, arg]) => new Function("box", "arg", `return (${fn})(box, arg)`)([...document.querySelectorAll(".hof-modal-backdrop.is-visible")].at(-1), arg), [fn.toString(), arg]);
 const money = text => Number(String(text || "").replace(/[^\d,-]/g, "").replace(",", "."));
 async function openCenterReport(id) {
   await closeAll();
@@ -153,6 +153,19 @@ try {
   ok(money(state.cards["Toplam Alacak (Ödenen)"]) === 15000, `Toplam Alacak (Ödenen) ${state.cards["Toplam Alacak (Ödenen)"]}`);
   ok(money(state.cards["Kalan (Borçlu)"]) === 85000, `Kalan (Borçlu) ${state.cards["Kalan (Borçlu)"]}`);
   ok(state.footLabel === "TOPLAM" && money(state.foot["Borç"]) === 100000 && money(state.foot["Alacak"]) === 15000 && money(state.foot["Bakiye"]) === 85000 && state.foot["Durum"] === "Borçlu", `TOPLAM satırı: Borç ${state.foot["Borç"]} · Alacak ${state.foot["Alacak"]} · Bakiye ${state.foot["Bakiye"]} ${state.foot["Durum"]}`);
+  const phone = await lastModal(box => {
+    const cell = box.querySelector("[data-rc-main] tbody td.is-nowrap");
+    if (!cell) return { lines: 0, text: "" };
+    const range = document.createRange();
+    range.selectNodeContents(cell);
+    return { lines: new Set([...range.getClientRects()].map(rect => Math.round(rect.top))).size, text: cell.textContent.trim() };
+  });
+  ok(phone.lines === 1, `telefon tek satırda: "${phone.text}" (${phone.lines} satır)`);
+  const listFit = await lastModal(box => {
+    const pane = box.querySelector("[data-rc-main] .hof-rc-table");
+    return { scroll: pane.scrollWidth, client: pane.clientWidth, cols: [...pane.querySelectorAll("thead th")].map(th => `${th.textContent.trim()} ${Math.round(th.getBoundingClientRect().width)}`).join(" · ") };
+  });
+  ok(listFit.scroll <= listFit.client + 1, `10 kolonlu Cari Listesi 1440 px ekranda yana taşmıyor (${listFit.scroll} / ${listFit.client})${listFit.scroll > listFit.client + 1 ? ` — ${listFit.cols}` : ""}`);
   await shot("cari-listesi-toplam");
 
   console.log("\n■ Cari Bazında Tahsilat (kullanıcının 'çalışmıyor' dediği rapor): Excel'de ödenmiş + programda alınan");
@@ -163,7 +176,30 @@ try {
   ok(state.rows === 10 && money(state.foot.Toplam) === 15000 && money(state.foot["Önceden Ödenen (Açılış)"]) === 10000, `10 satır; TOPLAM satırı ${state.foot.Toplam}`);
   const fit = await lastModal(box => { const pane = box.querySelector("[data-rc-main] .hof-rc-table"); return { scroll: pane.scrollWidth, client: pane.clientWidth }; });
   ok(fit.scroll <= fit.client + 1, `9 kolonlu tablo 1440 px ekranda yana taşmıyor (${fit.scroll} / ${fit.client})`);
+  // TOPLAM ilk bakışta görünür: pencere kaydırılmadan satır pencerenin görünen alanında (süzgeç alanı uzun bu raporda sabit
+  // 50vh kutu TOPLAM'ı pencerenin altına itiyordu). Dizüstü ekranında (1366 × 768) başlık ve süzgeçler tabloya yer bırakmaz:
+  // pencere tabloya bir kez kaydırılınca tablo TOPLAM'ıyla birlikte görünür (kutu eskisinden kısa olmaz).
+  const totalInView = ({ toTable = false } = {}) =>
+    lastModal((box, toTable) => {
+      const dialog = box.querySelector(".hof-modal");
+      const pane = box.querySelector("[data-rc-main] .hof-rc-table");
+      dialog.scrollTop = 0;
+      if (toTable) dialog.scrollTop = pane.getBoundingClientRect().top - dialog.getBoundingClientRect().top - (parseFloat(getComputedStyle(dialog).paddingTop) || 0);
+      const foot = pane.querySelector("tfoot td");
+      const dialogBox = dialog.getBoundingClientRect();
+      const footBox = foot.getBoundingClientRect();
+      return { inView: footBox.top >= dialogBox.top && footBox.bottom <= Math.min(dialogBox.bottom, innerHeight) + 1, foot: Math.round(footBox.bottom), bottom: Math.round(Math.min(dialogBox.bottom, innerHeight)), pane: Math.round(pane.getBoundingClientRect().height) };
+    }, toTable);
+  let view = await totalInView();
+  ok(view.inView, `1440 × 1000: TOPLAM pencere kaydırılmadan görünür (alt ${view.foot} ≤ ${view.bottom})`);
   await shot("cari-tahsilat");
+  await page.setViewportSize({ width: 1366, height: 768 });
+  await page.waitForTimeout(400);
+  view = await totalInView({ toTable: true });
+  ok(view.inView && view.pane >= 0.5 * 768 - 2, `1366 × 768: pencere tabloya kaydırılınca TOPLAM görünür (alt ${view.foot} ≤ ${view.bottom}); tablo kutusu ${view.pane} px (eskisinden kısa değil)`);
+  await shot("cari-tahsilat-1366");
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.waitForTimeout(400);
 
   console.log("\n■ Boş dönem ipucu ve dönem hafızası (Satış Faturaları)");
   await openCenterReport("fatura-satis");
