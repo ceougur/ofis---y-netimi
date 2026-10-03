@@ -135,7 +135,10 @@ describe("Windows kurulum düzeni (bootstrap)", () => {
     const { stdout } = await run(process.execPath, ["--disable-warning=ExperimentalWarning", path.join(installRoot, "bootstrap.mjs"), "surum"]);
     assert.equal(stdout.trim(), version);
     await run(process.execPath, ["--disable-warning=ExperimentalWarning", path.join(installRoot, "bootstrap.mjs"), "yedek"], { env: { ...process.env, HUKUK_DATA_DIR: "", HUKUK_BACKUP_DIR: "" } });
-    assert.ok(readdirSync(path.join(installRoot, "backups")).some(name => name.endsWith("-manuel.sqlite")));
+    // v2.0.20: her şirket kendi klasörüne ("001 - <ad>"), adında şirket kodu.
+    const folder = readdirSync(path.join(installRoot, "backups")).find(name => name.startsWith("001 - "));
+    assert.ok(folder, readdirSync(path.join(installRoot, "backups")).join(", "));
+    assert.ok(readdirSync(path.join(installRoot, "backups", folder)).some(name => /^destekofis-001-.*-manuel\.sqlite$/.test(name)));
   });
 
   it("etkin sürüm açılamazsa önceki sürüme dönülür ve açılamayan sürüm işaretlenir", async () => {

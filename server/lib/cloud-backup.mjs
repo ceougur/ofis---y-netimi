@@ -15,6 +15,8 @@ import path from "node:path";
 export const CLOUD_KEY = "backup.cloud";
 const FOLDER_NAME = "DestekOfis Yedekleri";
 const DRIVE_LINK = /drive\.google\.com\/(?:drive\/(?:u\/\d+\/)?folders\/|open\?id=)([A-Za-z0-9_-]{10,})/;
+// Şirket yedek klasörü adı ("001" ya da "001 - Şirket 1"; backup.mjs companyFolderName). Yol ayıracı içeremez.
+const COMPANY_FOLDER = /^\d{3}(?: - [^\\/]+)?$/;
 
 /** Kullanıcının yapıştırdığı metni sınıflandırır: { mode: "folder"|"link", folderId?, path? } ya da null. */
 export function parseTarget(text) {
@@ -67,7 +69,10 @@ export function createCloudBackup({ store, log = null, fetchImpl = globalThis.fe
     if (state.lastName === name && !state.lastError) return { skipped: true, reason: "already" };
     try {
       if (state.mode === "folder") {
-        const dir = state.resolvedPath || path.join(state.path, FOLDER_NAME);
+        // v2.0.20: her şirketin kopyası kendi klasörüne ("DestekOfis Yedekleri/001 - Şirket 1/"), yereldeki düzenle aynı;
+        // eski budama klasör başına yapılır, bir şirketin sık yedeği öbürününkini silmez.
+        const base = state.resolvedPath || path.join(state.path, FOLDER_NAME);
+        const dir = COMPANY_FOLDER.test(String(file.folder || "")) ? path.join(base, file.folder) : base;
         mkdirSync(dir, { recursive: true });
         copyFileSync(file.path, path.join(dir, name));
         prune(dir);

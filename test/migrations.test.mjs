@@ -24,8 +24,10 @@ describe("v1.0.0 veritabanından yükseltme", () => {
   it("şemayı son sürüme yükseltir ve öncesinde yedek alır", () => {
     assert.equal(server.app.store.get("PRAGMA user_version").user_version, LATEST_VERSION);
     assert.deepEqual(server.app.migration.applied, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]);
-    const backups = readdirSync(server.backupDir);
-    assert.ok(backups.some(name => name.includes("pre-migration")), `yedekler: ${backups}`);
+    // v2.0.20: göç öncesi yedek şirketin kendi klasöründe ("001 - <ad>"), adında şirket kodu.
+    const backups = readdirSync(server.app.backupDir());
+    assert.ok(backups.some(name => /^destekofis-001-.*pre-migration/.test(name)), `yedekler: ${backups}`);
+    assert.match(path.basename(server.app.backupDir()), /^001 - /);
   });
 
   it("mevcut verileri korur", () => {

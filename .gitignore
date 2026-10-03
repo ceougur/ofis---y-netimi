@@ -2,6 +2,10 @@ data/*.sqlite
 data/*.sqlite-shm
 data/*.sqlite-wal
 backups/*.sqlite
+# 2.0.20: her şirketin yedeği kendi klasöründe (backups/<kod> - <ad>/); bekleyen geri yükleme veri klasöründe.
+backups/**/*.sqlite
+data/geri-yukleme/
+data/geri-yukleme.json
 node_modules/
 .DS_Store
 *.log

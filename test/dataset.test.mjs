@@ -86,7 +86,7 @@ describe("devamı olarak ekle / yerine koy", () => {
     const result = await commit(admin, staged, "merge");
     assert.equal(result.mode, "merge");
     assert.match(result.backupName, /veri-oncesi-ekleme/);
-    assert.ok(readdirSync(server.backupDir).includes(result.backupName), "yedek diskte");
+    assert.ok(readdirSync(server.app.backupDir()).includes(result.backupName), "yedek diskte (şirketin klasöründe)");
     const rows = (await view(personel)).rows;
     assert.deepEqual(rows.map(row => row.__hofKey), ["2025/1", "2025/2", "2025/3", "2025/4"]);
     assert.equal(rows[0]["BORÇLU"], "Ali Kaya", "dosyadaki yeni değer");

@@ -6,7 +6,7 @@ import { roundMoney } from "../lib/money.mjs";
 import { tablePdf, tl } from "../lib/report-pdf.mjs";
 import { buildXlsx } from "../lib/xlsx-write.mjs";
 
-export function registerCompanyRoutes(router, { store, auth, audit, companies, appFor, resetData, config, events }) {
+export function registerCompanyRoutes(router, { store, auth, audit, companies, appFor, resetData, config, events, backups, closeCompany, busyCompanies }) {
   const requireManage = req => auth.requirePermission(req, "system.manage");
   const publish = (user, detail) => events?.publish("workspace.changed", { actorId: user.id, actorName: user.display_name, ...detail }, { except: user.id });
   const shape = (user, company) => {
@@ -64,17 +64,22 @@ export function registerCompanyRoutes(router, { store, auth, audit, companies, a
     if (company.root) throw new HttpError(409, "001 kodlu ilk şirket silinemez; verisini sıfırlayabilirsiniz.");
     confirmCode(company, body.confirm);
     confirmPassword(user, body.password);
-    // Önce yedek (şirketin kendi yedek klasörüne), sonra örnek kapatılır ve klasör silinen-sirketler altına taşınır.
-    const app = appFor(company);
+    // Önce yedek (şirketin kendi yedek klasörüne: <kod> - <ad>), sonra örnek kapatılır ve veri klasörü silinen-sirketler
+    // altına taşınır. Yedek klasörü yerinde kalır (v2.0.20). Bu sırada şirkete gelen istek 503 alır (yeniden açılmaz).
+    busyCompanies?.set(company.id, `“${company.code} · ${company.name}” siliniyor.`);
     let backup = "";
+    let removed;
     try {
-      const { createBackup } = await import("../lib/backup.mjs");
-      backup = createBackup(app.db, app.config.backupDir, { label: `silme-oncesi-${company.code}`, keep: 100 })?.name || "";
-    } catch (error) {
-      throw new HttpError(500, `Silme öncesi yedek alınamadı: ${error.message}`);
+      await closeCompany?.(company.id);
+      try {
+        backup = backups.backup(company, { label: `silme-oncesi-${company.code}`, keep: 100 })?.name || "";
+      } catch (error) {
+        throw new HttpError(500, `Silme öncesi yedek alınamadı; şirket silinmedi (${error.message}).`);
+      }
+      removed = companies.remove(user, company.id);
+    } finally {
+      busyCompanies?.delete(company.id);
     }
-    await app.close();
-    const removed = companies.remove(user, company.id);
     audit(user, "company.deleted", company.id, { code: company.code, name: company.name, backup, archivedTo: removed.archivedTo });
     publish(user, { kind: "companies" });
     ok(res, { deleted: company.id, backup, companies: companies.listFor(user) });
@@ -84,6 +89,12 @@ export function registerCompanyRoutes(router, { store, auth, audit, companies, a
     requireManage(req);
     const users = store.all("SELECT id, username, display_name AS name, role FROM users WHERE deleted_at IS NULL AND active = 1 ORDER BY display_name");
     ok(res, { companies: companies.list().map(item => ({ id: item.id, code: item.code, name: item.name })), users: users.map(user => ({ ...user, companies: user.role === "admin" ? "*" : companies.accessOf({ id: user.id, role: user.role }) })) });
+  });
+  // Yönetim → Şirketler (v2.0.20): her şirketin veri dosyası (yol, boyut), cari ve kayıt sayısı, son yedeği ve yedek
+  // klasörü. Açılmamış şirketin dosyası kısa süreliğine salt okunur açılıp kapatılır (şirket örneği açılmaz).
+  router.get("/api/companies/storage", async ({ req, res }) => {
+    const user = requireManage(req);
+    ok(res, { backupRoot: backups.root(), companies: companies.list().filter(item => companies.canAccess(user, item.id)).map(item => backups.storage(item)) });
   });
   router.put("/api/companies/access/:userId", async ({ req, res, params }) => {
     const admin = requireManage(req);

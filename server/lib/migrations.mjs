@@ -1110,15 +1110,15 @@ export const MIGRATIONS = [
 
 export const LATEST_VERSION = MIGRATIONS.at(-1).version;
 
-export function runMigrations(store, { backupDir, keep = 30, log } = {}) {
+export function runMigrations(store, { backupDir, keep = 30, log, company = null } = {}) {
   const current = store.get("PRAGMA user_version").user_version;
   const pending = MIGRATIONS.filter(item => item.version > current);
   if (!pending.length) return { from: current, to: current, applied: [], backup: null };
   const hasData = Boolean(store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'users'"));
   let backup = null;
   if (hasData && backupDir) {
-    // Göçten önce mutlaka tam yedek: bir sorun olursa bu dosyaya dönülür.
-    backup = createBackup(store.db, backupDir, { label: `pre-migration-v${pending.at(-1).version}`, keep });
+    // Göçten önce mutlaka tam yedek: bir sorun olursa bu dosyaya dönülür. (v2.0.20: şirketin klasörüne, kodlu adla.)
+    backup = createBackup(store.db, backupDir, { label: `pre-migration-v${pending.at(-1).version}`, keep, company });
     log?.info(`Göç öncesi yedek alındı: ${backup.name}`);
   }
   for (const migration of pending) {
