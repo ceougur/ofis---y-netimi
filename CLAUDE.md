@@ -417,6 +417,8 @@ Bağlam kopsa da bu düzen değişmez. Kullanıcı "zip ver" dediğinde şu üç
   (Node 24.21, bootstrap 2; GitHub API ve API kapalıyken yedek yol) 2.0.19'u "available" gördü, indirme sha256 eşleşti;
   2.0.19 kurulu → "up-to-date"; kurcalanmış bildirge reddedildi. Kılavuz değişmedi: site `web/indir/` PDF'i yayınla
   bayt bayt aynı (60bcf7ad…) → site PR'ı gerekmedi. 2.0.19 KAPANDI.
+- 2.0.20 BAŞLADI (kullanıcı, 03.10.2026: "uzman UI, uzman UX, baş mimar ve baş mühendis şapkanla başka sorunlara yol
+  açmayacak şekilde düzeltmeleri yap" = 9 maddenin hepsi; dal `claude/kind-newton-fpmx3f`).
 - 2.0.20 YAPILACAKLAR (kullanıcı "yapılacaklara not al" dedi, 03.10.2026; "yap" denince başlanır; ayrıntı ve
   kanıt hemen altındaki ADAYI maddesinde):
   [ ] 1. Bütün raporların (43) tablosunun altında kalın TOPLAM satırı — ekran, PDF, Excel aynı; yalnız toplanabilir
