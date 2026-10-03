@@ -2,7 +2,7 @@
 
 Sürümler [anlamsal sürümleme](https://semver.org/lang/tr/) kurallarına uyar.
 
-## 2.0.21 — Güvenilirlik: şirket verisi ve yedekleri; yeni özellik yok
+## 2.0.21 — Güvenilirlik: şirket verisi ve yedekleri (yeni iş özelliği yok; iki güvenlik aracı eklendi: Ayır ve Yedekleri Denetle)
 
 Kullanıcı (03.10.2026): "bir şirketin verisinin başka şirkete yazılması tam bir fiyasko; içim rahat programım doğru çalışır demek istiyorum". Bu sürüm yalnız şirket verisinin ayrılığı ve yedeklerin güvenilirliği içindir. Testler programın **gerçek eski sürümlerinin** (git etiketlerindeki kod, kendi API'si ile) ürettiği veriyle yapıldı; bozulma listesi `docs/2.0.21-BOZULMA-LISTESI.md`.
 
