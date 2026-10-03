@@ -422,6 +422,16 @@ code {
 .adm-warn { color: #a05a00; }
 .adm-error { color: #b42318; }
 
+/* Şirket yedek klasörleri (v2.0.20) */
+.adm-backup-where { margin: 6px 0 0; color: var(--hof-muted, #5b6472); font-size: 13px; line-height: 1.6; }
+.adm-backup-where code { display: inline-block; margin: 2px 6px 2px 0; padding: 1px 6px; border-radius: 6px; background: #f1f5f3; font-size: 12px; }
+.adm-backup-pending p { margin: 0 0 8px; }
+.adm-company-storage code { font-size: 12px; overflow-wrap: anywhere; }
+.adm-company-storage td { vertical-align: top; }
+.adm-company-storage td:first-child,
+.adm-company-storage td.adm-right,
+.adm-company-storage td:nth-child(6) { white-space: nowrap; }
+
 /* Kişiye özel ek yetki (v2.0.7): ANLIK DURUM ve raporlar. Kapalı hali sade, açık hali marka yeşili; önünde durum noktası. */
 .adm-grant {
   display: inline-flex;

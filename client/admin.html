@@ -58,13 +58,14 @@
 
     <section class="adm-panel" data-panel="backups" role="tabpanel" hidden>
       <div class="adm-panel-head">
-        <div><h1>Yedekler</h1><p>Sunucu açıkken 6 saatte bir otomatik yedek alınır; son 30 yedek saklanır. Yedekleri düzenli olarak harici diske kopyalayın.</p></div>
+        <div><h1>Yedekler</h1><p>Sunucu açıkken 6 saatte bir bütün şirketlerin otomatik yedeği alınır; her şirketin son 30 yedeği saklanır. Yedekleri düzenli olarak harici diske kopyalayın.</p><p class="adm-backup-where" id="adm-backup-where"></p></div>
         <button type="button" class="hof-button" id="adm-backup-now">Şimdi Yedek Al</button>
       </div>
-      <div class="adm-card"><div class="adm-table-wrap"><table class="hof-table"><thead><tr><th>Yedek Dosyası</th><th>Tarih</th><th class="adm-right">Boyut</th><th class="adm-right">İndir</th></tr></thead><tbody id="adm-backups"></tbody></table></div></div>
+      <div class="adm-card adm-backup-pending" id="adm-backup-pending" hidden></div>
+      <div class="adm-card"><div class="adm-table-wrap"><table class="hof-table"><thead><tr><th>Şirket</th><th>Yedek Dosyası</th><th>Tarih</th><th class="adm-right">Boyut</th><th class="adm-right">İşlemler</th></tr></thead><tbody id="adm-backups"></tbody></table></div></div>
       <div class="adm-card" id="adm-cloud">
         <h2>Drive'a da Yedekle</h2>
-        <p>Her yedek bilgisayarınızdaki yedek klasörüne alındıktan sonra bir de buraya kopyalanır. Program klasörün içinde <b>DestekOfis Yedekleri</b> adlı bir klasör açar; sonrakiler oraya gider.</p>
+        <p>Her yedek bilgisayarınızdaki yedek klasörüne alındıktan sonra bir de buraya kopyalanır. Program klasörün içinde <b>DestekOfis Yedekleri</b> adlı bir klasör açar; her şirketin yedeği orada da kendi klasörüne gider (ör. 001 - Şirket 1).</p>
         <ul class="adm-hints">
           <li><b>Google Drive masaüstü uygulaması kuruluysa (önerilen):</b> Drive klasörünüzün bilgisayardaki yolunu yapıştırın, ör. <code>G:\Drive'ım\Yedekler</code>. OneDrive ve Dropbox klasörleri de olur.</li>
           <li><b>Drive Bağlantısı:</b> <code>https://drive.google.com/drive/folders/…</code> bağlantısını yapıştırın ve klasörü "Bağlantıya sahip herkes: Düzenleyen" yapın. Yükleme DestekOfis servisi üzerinden yapılır.</li>
@@ -101,6 +102,11 @@
       <section class="adm-card">
         <h2>Şirket Listesi</h2>
         <div class="adm-table-wrap"><table class="adm-table"><thead><tr><th>Kod</th><th>Unvan</th><th>Durum</th><th class="adm-right">İşlemler</th></tr></thead><tbody id="adm-companies"><tr><td colspan="4" class="adm-muted">Yükleniyor…</td></tr></tbody></table></div>
+      </section>
+      <section class="adm-card">
+        <h2>Veri ve Yedek Klasörleri</h2>
+        <p class="adm-muted">Her şirketin verisi ayrı bir dosyadadır; yedekleri de kendi adını taşıyan klasörde durur. Şirket silinse de yedek klasörü yerinde kalır.</p>
+        <div class="adm-table-wrap"><table class="hof-table adm-company-storage"><thead><tr><th>Şirket</th><th>Veri Dosyası</th><th class="adm-right">Boyut</th><th class="adm-right">Cari</th><th class="adm-right">Kayıt</th><th>Son Yedek</th><th>Yedek Klasörü</th></tr></thead><tbody id="adm-company-storage"><tr><td colspan="7" class="adm-muted">Yükleniyor…</td></tr></tbody></table></div>
       </section>
       <section class="adm-card">
         <h2>Kullanıcı Yetkileri</h2>
