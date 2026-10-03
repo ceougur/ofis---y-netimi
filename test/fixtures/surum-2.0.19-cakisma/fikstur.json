@@ -1,0 +1,573 @@
+{
+ "name": "surum-2.0.19-cakisma",
+ "chain": "cakisma",
+ "seed": 7,
+ "volume": "kucuk",
+ "node": "v22.22.0",
+ "versions": [
+  {
+   "version": "v2.0.19",
+   "commit": "fb032cf44a173ab20d9e21b70bb7b096da07822a",
+   "state": [
+    {
+     "key": "A",
+     "id": "sirket-001",
+     "code": "001",
+     "name": "Merkez Ofis",
+     "dir": "",
+     "facts": {
+      "accounts": 124,
+      "accountEntries": 71,
+      "accountNet": 16372733,
+      "cashEntries": 5,
+      "cashNet": 4835,
+      "invoices": 12,
+      "invoicePayable": 13072520,
+      "invoiceLines": 21,
+      "plans": 5,
+      "planTotal": 11246500,
+      "planEntries": 4,
+      "planPaid": 1620000,
+      "datasetRows": 240
+     },
+     "api": {
+      "accounts": {
+       "count": 124,
+       "balance": 22852733,
+       "hash": "4163cc5f95405897efcb175107ea749d"
+      },
+      "datasetRows": 240
+     }
+    },
+    {
+     "key": "B",
+     "id": "sirket-e43c8036-7033-46e4-b5e6-cabdab622625",
+     "code": "002",
+     "name": "Resmi Şirket",
+     "dir": "sirketler/002",
+     "facts": {
+      "accounts": 44,
+      "accountEntries": 49,
+      "accountNet": 13036571,
+      "cashEntries": 5,
+      "cashNet": 64235,
+      "invoices": 12,
+      "invoicePayable": 14412850,
+      "invoiceLines": 22,
+      "plans": 5,
+      "planTotal": 12614380,
+      "planEntries": 4,
+      "planPaid": 1500000,
+      "datasetRows": 60
+     },
+     "api": {
+      "accounts": {
+       "count": 44,
+       "balance": 19036571,
+       "hash": "728877404c8d6873c420c82af60166ff"
+      },
+      "datasetRows": 60
+     }
+    }
+   ]
+  },
+  {
+   "version": "v2.0.19",
+   "commit": "fb032cf44a173ab20d9e21b70bb7b096da07822a",
+   "state": [
+    {
+     "key": "A",
+     "id": "sirket-001",
+     "code": "001",
+     "name": "Merkez Ofis",
+     "dir": "",
+     "facts": {
+      "accounts": 124,
+      "accountEntries": 71,
+      "accountNet": 16372733,
+      "cashEntries": 5,
+      "cashNet": 4835,
+      "invoices": 12,
+      "invoicePayable": 13072520,
+      "invoiceLines": 21,
+      "plans": 5,
+      "planTotal": 11246500,
+      "planEntries": 4,
+      "planPaid": 1620000,
+      "datasetRows": 240
+     },
+     "api": {
+      "accounts": {
+       "count": 124,
+       "balance": 22852733,
+       "hash": "4163cc5f95405897efcb175107ea749d"
+      },
+      "datasetRows": 240
+     }
+    },
+    {
+     "key": "B",
+     "id": "sirket-e43c8036-7033-46e4-b5e6-cabdab622625",
+     "code": "005",
+     "name": "Resmi Şirket",
+     "dir": "sirketler/002",
+     "facts": {
+      "accounts": 88,
+      "accountEntries": 99,
+      "accountNet": 25734789,
+      "cashEntries": 10,
+      "cashNet": 405141,
+      "invoices": 24,
+      "invoicePayable": 26863360,
+      "invoiceLines": 43,
+      "plans": 9,
+      "planTotal": 22414240,
+      "planEntries": 8,
+      "planPaid": 2880000,
+      "datasetRows": 60
+     },
+     "api": {
+      "accounts": {
+       "count": 88,
+       "balance": 37254789,
+       "hash": "99ca0d8ca617dec3a1113d6883716043"
+      },
+      "datasetRows": 60
+     }
+    },
+    {
+     "key": "C",
+     "id": "sirket-9a0f6e4a-3742-4b1d-847e-df7b2b05fcaa",
+     "code": "002",
+     "name": "Gayri Resmi Şirket",
+     "dir": "sirketler/002",
+     "facts": {
+      "accounts": 88,
+      "accountEntries": 99,
+      "accountNet": 25734789,
+      "cashEntries": 10,
+      "cashNet": 405141,
+      "invoices": 24,
+      "invoicePayable": 26863360,
+      "invoiceLines": 43,
+      "plans": 9,
+      "planTotal": 22414240,
+      "planEntries": 8,
+      "planPaid": 2880000,
+      "datasetRows": 60
+     },
+     "api": {
+      "accounts": {
+       "count": 88,
+       "balance": 37254789,
+       "hash": "99ca0d8ca617dec3a1113d6883716043"
+      },
+      "datasetRows": 60
+     }
+    }
+   ]
+  }
+ ],
+ "backups": [
+  {
+   "version": "v2.0.19",
+   "companyKey": "A",
+   "companyId": "sirket-001",
+   "code": "001",
+   "name": "Merkez Ofis",
+   "file": "destekofis-2026-10-03T15-23-46-287Z-manuel.sqlite",
+   "pathAtCreation": "destekofis-2026-10-03T15-23-46-287Z-manuel.sqlite",
+   "sha256": "1bf8f6ab5d7822ccc59258edcfdd25ee161ffd68d8b1a40c8532cb4f833a0b94",
+   "dataDir": "",
+   "facts": {
+    "accounts": 124,
+    "accountEntries": 71,
+    "accountNet": 16372733,
+    "cashEntries": 5,
+    "cashNet": 4835,
+    "invoices": 12,
+    "invoicePayable": 13072520,
+    "invoiceLines": 21,
+    "plans": 5,
+    "planTotal": 11246500,
+    "planEntries": 4,
+    "planPaid": 1620000,
+    "datasetRows": 240
+   },
+   "api": {
+    "accounts": {
+     "count": 124,
+     "balance": 22852733,
+     "hash": "4163cc5f95405897efcb175107ea749d"
+    },
+    "datasetRows": 240
+   },
+   "fileFacts": {
+    "accounts": 124,
+    "accountEntries": 71,
+    "accountNet": 16372733,
+    "cashEntries": 5,
+    "cashNet": 4835,
+    "invoices": 12,
+    "invoicePayable": 13072520,
+    "invoiceLines": 21,
+    "plans": 5,
+    "planTotal": 11246500,
+    "planEntries": 4,
+    "planPaid": 1620000,
+    "datasetRows": 240
+   },
+   "matchesLive": true
+  },
+  {
+   "version": "v2.0.19",
+   "companyKey": "B",
+   "companyId": "sirket-e43c8036-7033-46e4-b5e6-cabdab622625",
+   "code": "002",
+   "name": "Resmi Şirket",
+   "file": "destekofis-2026-10-03T15-23-46-323Z-manuel.sqlite",
+   "pathAtCreation": "sirket-002/destekofis-2026-10-03T15-23-46-323Z-manuel.sqlite",
+   "sha256": "3a7c3e67e466d946ee2bd56ec8242326f1d09e8a03eacdc472197186ccb6e2b3",
+   "dataDir": "sirketler/002",
+   "facts": {
+    "accounts": 44,
+    "accountEntries": 49,
+    "accountNet": 13036571,
+    "cashEntries": 5,
+    "cashNet": 64235,
+    "invoices": 12,
+    "invoicePayable": 14412850,
+    "invoiceLines": 22,
+    "plans": 5,
+    "planTotal": 12614380,
+    "planEntries": 4,
+    "planPaid": 1500000,
+    "datasetRows": 60
+   },
+   "api": {
+    "accounts": {
+     "count": 44,
+     "balance": 19036571,
+     "hash": "728877404c8d6873c420c82af60166ff"
+    },
+    "datasetRows": 60
+   },
+   "fileFacts": {
+    "accounts": 44,
+    "accountEntries": 49,
+    "accountNet": 13036571,
+    "cashEntries": 5,
+    "cashNet": 64235,
+    "invoices": 12,
+    "invoicePayable": 14412850,
+    "invoiceLines": 22,
+    "plans": 5,
+    "planTotal": 12614380,
+    "planEntries": 4,
+    "planPaid": 1500000,
+    "datasetRows": 60
+   },
+   "matchesLive": true
+  },
+  {
+   "version": "v2.0.19",
+   "companyKey": "B",
+   "companyId": "sirket-e43c8036-7033-46e4-b5e6-cabdab622625",
+   "code": "005",
+   "name": "Resmi Şirket",
+   "file": "destekofis-2026-10-03T15-23-47-418Z-manuel.sqlite",
+   "pathAtCreation": "sirket-002/destekofis-2026-10-03T15-23-47-418Z-manuel.sqlite",
+   "sha256": "636d8a3409b81d8dc28435adfed68c76d6bc1e83082e122d54c5c67946c6d4ae",
+   "dataDir": "sirketler/002",
+   "facts": {
+    "accounts": 88,
+    "accountEntries": 99,
+    "accountNet": 25734789,
+    "cashEntries": 10,
+    "cashNet": 405141,
+    "invoices": 24,
+    "invoicePayable": 26863360,
+    "invoiceLines": 43,
+    "plans": 9,
+    "planTotal": 22414240,
+    "planEntries": 8,
+    "planPaid": 2880000,
+    "datasetRows": 60
+   },
+   "api": {
+    "accounts": {
+     "count": 88,
+     "balance": 37254789,
+     "hash": "99ca0d8ca617dec3a1113d6883716043"
+    },
+    "datasetRows": 60
+   },
+   "fileFacts": {
+    "accounts": 88,
+    "accountEntries": 99,
+    "accountNet": 25734789,
+    "cashEntries": 10,
+    "cashNet": 405141,
+    "invoices": 24,
+    "invoicePayable": 26863360,
+    "invoiceLines": 43,
+    "plans": 9,
+    "planTotal": 22414240,
+    "planEntries": 8,
+    "planPaid": 2880000,
+    "datasetRows": 60
+   },
+   "matchesLive": true
+  },
+  {
+   "version": "v2.0.19",
+   "companyKey": "C",
+   "companyId": "sirket-9a0f6e4a-3742-4b1d-847e-df7b2b05fcaa",
+   "code": "002",
+   "name": "Gayri Resmi Şirket",
+   "file": "destekofis-2026-10-03T15-23-47-458Z-manuel.sqlite",
+   "pathAtCreation": "sirket-002/destekofis-2026-10-03T15-23-47-458Z-manuel.sqlite",
+   "sha256": "11b9f4cd18acf0475ca67ac542d0bfe722b408d68410f7689ba45661b6e12f22",
+   "dataDir": "sirketler/002",
+   "facts": {
+    "accounts": 88,
+    "accountEntries": 99,
+    "accountNet": 25734789,
+    "cashEntries": 10,
+    "cashNet": 405141,
+    "invoices": 24,
+    "invoicePayable": 26863360,
+    "invoiceLines": 43,
+    "plans": 9,
+    "planTotal": 22414240,
+    "planEntries": 8,
+    "planPaid": 2880000,
+    "datasetRows": 60
+   },
+   "api": {
+    "accounts": {
+     "count": 88,
+     "balance": 37254789,
+     "hash": "99ca0d8ca617dec3a1113d6883716043"
+    },
+    "datasetRows": 60
+   },
+   "fileFacts": {
+    "accounts": 88,
+    "accountEntries": 99,
+    "accountNet": 25734789,
+    "cashEntries": 10,
+    "cashNet": 405141,
+    "invoices": 24,
+    "invoicePayable": 26863360,
+    "invoiceLines": 43,
+    "plans": 9,
+    "planTotal": 22414240,
+    "planEntries": 8,
+    "planPaid": 2880000,
+    "datasetRows": 60
+   },
+   "matchesLive": true
+  }
+ ],
+ "deleted": [],
+ "timings": {
+  "v2.0.19": 1159
+ },
+ "final": [
+  {
+   "key": "A",
+   "id": "sirket-001",
+   "code": "001",
+   "name": "Merkez Ofis",
+   "dir": "",
+   "facts": {
+    "accounts": 124,
+    "accountEntries": 71,
+    "accountNet": 16372733,
+    "cashEntries": 5,
+    "cashNet": 4835,
+    "invoices": 12,
+    "invoicePayable": 13072520,
+    "invoiceLines": 21,
+    "plans": 5,
+    "planTotal": 11246500,
+    "planEntries": 4,
+    "planPaid": 1620000,
+    "datasetRows": 240
+   },
+   "api": {
+    "accounts": {
+     "count": 124,
+     "balance": 22852733,
+     "hash": "4163cc5f95405897efcb175107ea749d"
+    },
+    "datasetRows": 240
+   }
+  },
+  {
+   "key": "B",
+   "id": "sirket-e43c8036-7033-46e4-b5e6-cabdab622625",
+   "code": "005",
+   "name": "Resmi Şirket",
+   "dir": "sirketler/002",
+   "facts": {
+    "accounts": 88,
+    "accountEntries": 99,
+    "accountNet": 25734789,
+    "cashEntries": 10,
+    "cashNet": 405141,
+    "invoices": 24,
+    "invoicePayable": 26863360,
+    "invoiceLines": 43,
+    "plans": 9,
+    "planTotal": 22414240,
+    "planEntries": 8,
+    "planPaid": 2880000,
+    "datasetRows": 60
+   },
+   "api": {
+    "accounts": {
+     "count": 88,
+     "balance": 37254789,
+     "hash": "99ca0d8ca617dec3a1113d6883716043"
+    },
+    "datasetRows": 60
+   }
+  },
+  {
+   "key": "C",
+   "id": "sirket-9a0f6e4a-3742-4b1d-847e-df7b2b05fcaa",
+   "code": "002",
+   "name": "Gayri Resmi Şirket",
+   "dir": "sirketler/002",
+   "facts": {
+    "accounts": 88,
+    "accountEntries": 99,
+    "accountNet": 25734789,
+    "cashEntries": 10,
+    "cashNet": 405141,
+    "invoices": 24,
+    "invoicePayable": 26863360,
+    "invoiceLines": 43,
+    "plans": 9,
+    "planTotal": 22414240,
+    "planEntries": 8,
+    "planPaid": 2880000,
+    "datasetRows": 60
+   },
+   "api": {
+    "accounts": {
+     "count": 88,
+     "balance": 37254789,
+     "hash": "99ca0d8ca617dec3a1113d6883716043"
+    },
+    "datasetRows": 60
+   }
+  }
+ ],
+ "registry": [
+  {
+   "id": "sirket-001",
+   "code": "001",
+   "name": "Şirket 1",
+   "dir": "",
+   "createdAt": "2026-10-03T15:23:44.636Z",
+   "createdBy": ""
+  },
+  {
+   "id": "sirket-e43c8036-7033-46e4-b5e6-cabdab622625",
+   "code": "005",
+   "name": "Resmi Şirket",
+   "dir": "sirketler/002",
+   "createdAt": "2026-10-03T15:23:44.741Z",
+   "createdBy": "user-b2c40ea4-a16c-46e6-a15c-a4de84d54c1a",
+   "updatedAt": "2026-10-03T15:23:46.500Z",
+   "updatedBy": "user-b2c40ea4-a16c-46e6-a15c-a4de84d54c1a"
+  },
+  {
+   "id": "sirket-9a0f6e4a-3742-4b1d-847e-df7b2b05fcaa",
+   "code": "002",
+   "name": "Gayri Resmi Şirket",
+   "dir": "sirketler/002",
+   "createdAt": "2026-10-03T15:23:46.503Z",
+   "createdBy": "user-b2c40ea4-a16c-46e6-a15c-a4de84d54c1a"
+  }
+ ],
+ "cut": "v2.0.19",
+ "generator": {
+  "command": "node tools/surum-verisi.mjs --fikstur",
+  "chain": "cakisma",
+  "seed": 7,
+  "volume": "kucuk"
+ },
+ "files": [
+  {
+   "path": "veri/destekofis.sqlite",
+   "sha256": "56c12faa50bc4961156ce7af69174dc904d08c57712a8df8009eea15c8e468b2",
+   "size": 1024000,
+   "mtimeMs": 1791041027551
+  },
+  {
+   "path": "veri/sirketler.json",
+   "sha256": "97f8e6e089eab55a48e1271cb2f146a0f508f5e12e90e2c4a26bd6adbf3cc8a9",
+   "size": 841,
+   "mtimeMs": 1791041026499
+  },
+  {
+   "path": "veri/sirketler/002/destekofis.sqlite",
+   "sha256": "75261f159aef83b4866917df74e24705dda7b5d6c31eae3199750ba35d15f35f",
+   "size": 1003520,
+   "mtimeMs": 1791041027543
+  },
+  {
+   "path": "yedek/destekofis-2026-10-03T15-23-46-287Z-manuel.sqlite",
+   "sha256": "1bf8f6ab5d7822ccc59258edcfdd25ee161ffd68d8b1a40c8532cb4f833a0b94",
+   "size": 1019904,
+   "mtimeMs": 1791041026295,
+   "owners": [
+    "sirket-001"
+   ]
+  },
+  {
+   "path": "yedek/sirket-002/destekofis-2026-10-03T15-23-46-323Z-manuel.sqlite",
+   "sha256": "3a7c3e67e466d946ee2bd56ec8242326f1d09e8a03eacdc472197186ccb6e2b3",
+   "size": 892928,
+   "mtimeMs": 1791041026327,
+   "owners": [
+    "sirket-e43c8036-7033-46e4-b5e6-cabdab622625",
+    "sirket-9a0f6e4a-3742-4b1d-847e-df7b2b05fcaa"
+   ]
+  },
+  {
+   "path": "yedek/sirket-002/destekofis-2026-10-03T15-23-46-544Z-veri-oncesi-degistirme.sqlite",
+   "sha256": "5c1ac99e549a8920b505ab6d84008439513b4327981e30da1961f823abb6c405",
+   "size": 897024,
+   "mtimeMs": 1791041026551,
+   "owners": [
+    "sirket-e43c8036-7033-46e4-b5e6-cabdab622625",
+    "sirket-9a0f6e4a-3742-4b1d-847e-df7b2b05fcaa"
+   ]
+  },
+  {
+   "path": "yedek/sirket-002/destekofis-2026-10-03T15-23-47-418Z-manuel.sqlite",
+   "sha256": "636d8a3409b81d8dc28435adfed68c76d6bc1e83082e122d54c5c67946c6d4ae",
+   "size": 999424,
+   "mtimeMs": 1791041027427,
+   "owners": [
+    "sirket-e43c8036-7033-46e4-b5e6-cabdab622625",
+    "sirket-9a0f6e4a-3742-4b1d-847e-df7b2b05fcaa"
+   ]
+  },
+  {
+   "path": "yedek/sirket-002/destekofis-2026-10-03T15-23-47-458Z-manuel.sqlite",
+   "sha256": "11b9f4cd18acf0475ca67ac542d0bfe722b408d68410f7689ba45661b6e12f22",
+   "size": 1003520,
+   "mtimeMs": 1791041027467,
+   "owners": [
+    "sirket-e43c8036-7033-46e4-b5e6-cabdab622625",
+    "sirket-9a0f6e4a-3742-4b1d-847e-df7b2b05fcaa"
+   ]
+  }
+ ]
+}

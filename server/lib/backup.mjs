@@ -147,17 +147,30 @@ export function createBackup(db, backupDir, { label = "", keep = 30, company = n
     }
   }
   rmSync(partial, { force: true });
-  db.exec(`VACUUM INTO '${partial.replace(/'/g, "''")}'`);
   let identity = false;
-  if (code) {
-    try {
-      writeBackupIdentity(partial, company, { label: safeLabel });
-      identity = true;
-    } catch {
-      // Kimlik yazılamasa da yedek geçerlidir; şirketin kendi klasöründe durduğu için yalnız o şirkete geri yüklenir.
+  try {
+    db.exec(`VACUUM INTO '${partial.replace(/'/g, "''")}'`);
+    if (code) {
+      try {
+        writeBackupIdentity(partial, company, { label: safeLabel });
+        identity = true;
+      } catch {
+        // Kimlik yazılamasa da yedek geçerlidir; şirketin kendi klasöründe durduğu için yalnız o şirkete geri yüklenir.
+      }
     }
+    renameSync(partial, target);
+  } catch (error) {
+    // v2.0.21 (arıza testi bulgusu): disk dolu ya da yazma hatasında yarım dosya diskte kalıyordu (bir saat boyunca
+    // silinmiyor, dolu diski daha da dolduruyordu). Yarım kopya hemen silinir; hata çağırana iletilir.
+    for (const suffix of ["", "-journal", "-wal", "-shm"]) {
+      try {
+        rmSync(`${partial}${suffix}`, { force: true });
+      } catch {
+        // silinemezse (dosya açık) bir saat sonraki yedekte temizlenir
+      }
+    }
+    throw error;
   }
-  renameSync(partial, target);
   pruneBackups(backupDir, keep);
   return { name, path: target, size: statSync(target).size, folder: path.basename(backupDir), company: company ? { id: company.id, code: company.code, name: company.name } : null, identity };
 }

@@ -153,6 +153,8 @@ export function prepareRestoreFile({ source, dbPath, transplantFrom = null, clie
     for (const suffix of ["", "-wal", "-shm", "-journal"]) rmSync(`${temp}${suffix}`, { force: true });
   };
   clean();
+  // Veri klasörü tamamen kaybolmuşsa (v2.0.21 arıza testi) geri yükleme onu yeniden kurar.
+  mkdirSync(path.dirname(dbPath), { recursive: true });
   copyFileSync(source, temp);
   let db;
   try {
