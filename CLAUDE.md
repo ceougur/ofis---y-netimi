@@ -477,6 +477,10 @@ Bağlam kopsa da bu düzen değişmez. Kullanıcı "zip ver" dediğinde şu üç
   ajanla (gerçek eski sürümlerden veri üreteci `tools/surum-verisi.mjs`, fikstürler `test/fixtures/surum-*`), sonra BAĞIMSIZ
   gözden geçirme (12 bulgu; 1 KRİTİK, 1 YÜKSEK — hepsi düzeltildi, `test/inceleme-221.test.mjs` önce 5/5 kırmızı). Yeni kural:
   veri dosyası paylaşan şirkette Geri Yükle/Sil/Sıfırla Ayır'a kadar 409; pencere şirketi ?hofCompany= (Yönetim ?sirket=).
+  TESLİM (03.10.2026): PR ceougur/ofis---y-netimi#21 açık (birleştirme kullanıcının "birleştir"iyle). npm test 891/891, 12 arayüz
+  senaryosu, rastgele uzun koşular 0 hata. Güncelleme paketi sha256 985056b5… (209 dosya, HEAD ile bayt bayt), kurulum .exe
+  71bca999… (simgeli); güncelleyici 2.0.20/19/18/17/2.0.4/1.7.0 "available". Kılavuz DEĞİŞTİ (802d42a4…) → yayından sonra site
+  PR'ı ceougur/destekofis#8 güncellenir. Kullanıcıya söylendi: bulunan hatalar 2.0.20'de de var (iki pencere, 001 Tümünü Sıfırla).
   [x] 6. Bu test türleri aşağıdaki "Test kuralı"na her sürümde koşulacak kural olarak yazılır; teslimde "denenen /
          denenmeyen / bilinen sınırlar" açıkça yazılır; her sürümde bağımsız gözden geçirme.
 - 2.0.20 YAPILACAKLAR (kullanıcı "yapılacaklara not al" dedi, 03.10.2026; "yap" denince başlanır; ayrıntı ve
