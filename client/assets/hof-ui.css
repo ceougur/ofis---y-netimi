@@ -8346,6 +8346,17 @@ button.hof-source-card:focus-visible {
 .hof-rc-table {
   max-height: 50vh;
 }
+/* Rapor merkezi (v2.0.20): para kolonu başlıkları da iki satıra sarılır ("Önceden Ödenen (Açılış)"), tutarlar tek satırda
+   kalır; böylece çok kolonlu raporlar (Cari Bazında Tahsilat, Satış Faturaları) 1440 px ekranda yana taşmaz. */
+.hof-rc-table thead th.num {
+  white-space: normal;
+}
+.hof-rc-table td.num {
+  white-space: nowrap;
+}
+.hof-rc-table td.is-name {
+  min-width: 120px;
+}
 /* TOPLAM satırı (v2.0.20): kaydırınca tablonun altında sabit kalır. */
 .hof-rc-table tfoot td {
   position: sticky;

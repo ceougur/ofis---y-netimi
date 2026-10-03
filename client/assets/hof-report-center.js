@@ -203,6 +203,8 @@
     }
     return parts.join("");
   }
+  // Ad kolonları (v2.0.20): çok kolonlu raporlarda kişi/ürün adı "Müşteri / 01" diye ikiye kırılmasın.
+  const NAME_HEADERS = new Set(["Cari", "Ad", "Kart", "Kalem", "Ürün", "Ürün / Hizmet", "Cari / Kişi", "Kimden / Kime", "Kayıt", "İlgili Cari", "Hesap Adı"]);
   // Boş sonuç (v2.0.20): dönemli raporda "Tüm Zamanlar" seçili değilse ipucu ve tek tıkla Tüm Zamanlar.
   const emptyText = report =>
     report.params.includes("range") && center.params.preset !== "all"
@@ -219,7 +221,7 @@
       ? `<div class="hof-rc-summary">${(preview.summary || []).map(([label, value]) => `<span><small>${esc(label)}</small><b>${esc(value)}</b></span>`).join("")}</div>
         <div class="hof-rep-table hof-rc-table"><table class="hof-table"><thead><tr>${preview.headers.map((header, index) => `<th class="${preview.types[index] === "money" || preview.types[index] === "number" ? "num" : ""}">${esc(header)}</th>`).join("")}</tr></thead><tbody>${
           preview.rows.length
-            ? preview.rows.map(row => `<tr>${row.map((cell, index) => `<td class="${preview.types[index] === "money" || preview.types[index] === "number" ? "num" : ""}">${esc(cell)}</td>`).join("")}</tr>`).join("")
+            ? preview.rows.map(row => `<tr>${row.map((cell, index) => `<td class="${preview.types[index] === "money" || preview.types[index] === "number" ? "num" : NAME_HEADERS.has(preview.headers[index]) ? "is-name" : ""}">${esc(cell)}</td>`).join("")}</tr>`).join("")
             : `<tr><td colspan="${preview.headers.length}" class="hof-empty">${emptyText(report)}</td></tr>`
         }</tbody>${
           preview.footer && preview.rows.length

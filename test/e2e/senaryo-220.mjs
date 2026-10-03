@@ -152,6 +152,8 @@ try {
   ok(state.preset === "thisYear", `açılış dönemi ${state.preset} (Bu Yıl)`);
   ok(money(state.cards["Önceden Ödenen (Açılış)"]) === 10000 && money(state.cards["Taksit Tahsilatı"]) === 5000 && money(state.cards.Toplam) === 15000, `kartlar: Önceden Ödenen ${state.cards["Önceden Ödenen (Açılış)"]} · Taksit ${state.cards["Taksit Tahsilatı"]} · Toplam ${state.cards.Toplam}`);
   ok(state.rows === 10 && money(state.foot.Toplam) === 15000 && money(state.foot["Önceden Ödenen (Açılış)"]) === 10000, `10 satır; TOPLAM satırı ${state.foot.Toplam}`);
+  const fit = await lastModal(box => { const pane = box.querySelector("[data-rc-main] .hof-rc-table"); return { scroll: pane.scrollWidth, client: pane.clientWidth }; });
+  ok(fit.scroll <= fit.client + 1, `9 kolonlu tablo 1440 px ekranda yana taşmıyor (${fit.scroll} / ${fit.client})`);
   await shot("cari-tahsilat");
 
   console.log("\n■ Boş dönem ipucu ve dönem hafızası (Satış Faturaları)");
@@ -163,6 +165,9 @@ try {
   state = await centerState();
   ok(/Bu dönemde kayıt yok/.test(state.empty) && Boolean(await page.$(`${top} [data-rc-main] tbody .hof-empty [data-preset="all"]`)), `boş dönem: "${state.empty}"`);
   await shot("bos-donem-ipucu");
+  // 15 kolonlu Satış Faturaları için bir fatura (yana taşma ölçümü).
+  const firstAccount = (await call("/api/workspace/accounts?status=all")).accounts[0].id;
+  await call("/api/workspace/invoices", { scenario: "service_sale", accountId: firstAccount, issueDate: iso(0), lines: [{ name: "Danışmanlık", qty: 1, unitPrice: 1000, vatRate: 20 }], payment: { rest: "open" } });
   await page.click(`${top} [data-rc-main] tbody .hof-empty [data-preset="all"]`);
   await page.waitForTimeout(900);
   state = await centerState();
@@ -170,6 +175,20 @@ try {
   await openCenterReport("fatura-satis");
   state = await centerState();
   ok(state.preset === "all", `yeniden açınca son seçilen dönem hatırlandı: ${state.preset}`);
+  // 15 kolon 1440 px'e sığmaz (2.0.20 öncesi de böyleydi; PDF yatay basılır): tablo KENDİ kutusunda yana kayar, pencere taşmaz;
+  // en sağdaki Kalan kolonuna kaydırınca TOPLAM satırı da onunla gelir.
+  const wide = await lastModal(box => {
+    const pane = box.querySelector("[data-rc-main] .hof-rc-table");
+    const dialog = box.querySelector(".hof-modal");
+    pane.scrollLeft = pane.scrollWidth;
+    const index = [...pane.querySelectorAll("thead th")].findIndex(th => th.textContent.trim() === "Kalan");
+    const cell = pane.querySelectorAll("tfoot td")[index];
+    const paneBox = pane.getBoundingClientRect();
+    const cellBox = cell.getBoundingClientRect();
+    return { dialogFits: dialog.scrollWidth <= dialog.clientWidth + 1, scrolls: pane.scrollWidth > pane.clientWidth, kalan: cell.textContent.trim(), visible: cellBox.left >= paneBox.left - 1 && cellBox.right <= paneBox.right + 1 };
+  });
+  ok(wide.dialogFits && wide.scrolls && wide.visible && money(wide.kalan) === 1200, `15 kolonlu Satış Faturaları: pencere taşmıyor, tablo kendi içinde kayıyor, TOPLAM Kalan ${wide.kalan} görünür`);
+  await shot("satis-faturalari");
 
   console.log("\n■ TOPLAM satırı kaydırınca tablonun altında sabit (uzun liste)");
   await openCenterReport("taksit-kartlari");
