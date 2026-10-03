@@ -14,7 +14,9 @@ import net from "node:net";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { detectInstall, packageVersion } from "./lib/app-layout.mjs";
-import { BACKUP_NAME, createBackup } from "./lib/backup.mjs";
+import { BACKUP_NAME, createBackup, readBackupIdentity } from "./lib/backup.mjs";
+import { ROOT_COMPANY_ID } from "./lib/companies.mjs";
+import { companiesOnDisk } from "./lib/company-backups.mjs";
 import { resolveDbPath } from "./lib/db-path.mjs";
 import { openDatabase } from "./lib/db.mjs";
 import { startDiscoveryResponder } from "./lib/discovery.mjs";
@@ -236,10 +238,22 @@ export async function startSupervisor(options = {}) {
     }
   }
 
+  // v2.0.20: güncelleme öncesi yedek ilk şirketin (001; ortak katman + 001 verisi) kendi klasörüne gider
+  // (<yedek kökü>/<kod> - <ad>, adında kod, içinde şirket kimliği). Diğer şirketler deneme açılışında açılmaz (bakım
+  // sayfası istekleri bekletir), göç ettirilmez; ilk açıldıklarında uygulama göç öncesi yedeklerini kendisi alır.
+  const rootTarget = () => companiesOnDisk({ dataDir, backupRoot: backupDir }).find(item => item.root);
+  function backupDatabase(label) {
+    const target = rootTarget();
+    return withDatabase(db => createBackup(db, target.backupDir, { label, keep: backupKeep, company: target.company }));
+  }
+
   function restoreDatabase(name) {
     if (!BACKUP_NAME.test(String(name))) throw new Error(`Geçersiz yedek adı: ${name}`);
-    const source = path.join(backupDir, name);
-    if (!existsSync(source)) throw new Error(`Yedek bulunamadı: ${name}`);
+    // Önce şirketin klasörü, sonra eski yer (kök: 2.0.19 ve öncesinin servis yöneticisi oraya yazar).
+    const source = [rootTarget().backupDir, backupDir].map(dir => path.join(dir, name)).find(file => existsSync(file));
+    if (!source) throw new Error(`Yedek bulunamadı: ${name}`);
+    const identity = readBackupIdentity(source);
+    if (identity && identity.id !== ROOT_COMPANY_ID) throw new Error(`Yedek “${identity.code} · ${identity.name}” şirketine ait; ilk şirkete geri yüklenmez.`);
     const file = dbPath();
     const temp = `${file}.geri-yukleniyor`;
     copyFileSync(source, temp);
@@ -316,7 +330,7 @@ export async function startSupervisor(options = {}) {
     },
     probe: version => probeChild(version),
     schemaVersion: () => withDatabase(db => db.prepare("PRAGMA user_version").get().user_version),
-    backupDatabase: label => withDatabase(db => createBackup(db, backupDir, { label, keep: backupKeep })),
+    backupDatabase,
     restoreDatabase,
   };
 

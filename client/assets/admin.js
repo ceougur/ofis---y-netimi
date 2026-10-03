@@ -87,6 +87,10 @@
     "settings.office.updated": "Ofis adını değiştirdi",
     "system.backup_created": "Yedek aldı",
     "system.backup_downloaded": "Yedek indirdi",
+    "system.backup_restored": "Yedekten geri yükledi",
+    "system.backup_restore_staged": "Yedekten geri yüklemeyi başlattı",
+    "system.backup_restore_cancelled": "Bekleyen geri yüklemeden vazgeçti",
+    "system.backup_restore_failed": "Yedekten geri yükleme yapılamadı",
     "system.update_checked": "Güncellemeleri denetledi",
     "system.update_requested": "Güncellemeyi başlattı",
     "system.update_settings": "Güncelleme ayarını değiştirdi",
@@ -626,30 +630,143 @@
     restoreUser(row.dataset.deleted, row);
   });
 
-  // ---------- Yedekler ----------
+  // ---------- Yedekler (v2.0.20: bütün şirketler, her biri kendi klasöründe) ----------
+  let backupFolders = null;
+  let backupRows = [];
+  // Uzun yolu kısaltır: "C:\DestekOfis\backups\001 - Şirket 1" → "…\backups\001 - Şirket 1" (tam yol üzerine gelince).
+  const shortFolder = full => {
+    const value = String(full || "");
+    const sep = value.includes("\\") ? "\\" : "/";
+    const parts = value.split(/[\\/]/).filter(Boolean);
+    return parts.length > 2 ? `…${sep}${parts.slice(-2).join(sep)}` : value;
+  };
+  function renderBackupFolders(info) {
+    const where = $("#adm-backup-where");
+    if (where) {
+      const list = info?.companies || [];
+      where.innerHTML = list.length
+        ? `Her şirketin yedeği kendi klasöründe: ${list.map(item => `<code title="${esc(item.folder)}">${esc(shortFolder(item.folder))}</code>`).join(" ")}`
+        : "";
+    }
+    const pending = $("#adm-backup-pending");
+    if (pending) {
+      pending.hidden = !info?.pending;
+      pending.innerHTML = info?.pending
+        ? `<p class="adm-warn"><b>Geri Yükleme Bekliyor:</b> ${esc(info.pending.name)} — ilk şirket (001) sunucu yeniden açılınca bu yedeğe döner.${info.pending.byName ? ` Başlatan: ${esc(info.pending.byName)}.` : ""}</p><div class="adm-actions"><button type="button" class="hof-button hof-button-ghost hof-button-small" id="adm-restore-cancel">Geri Yüklemeden Vazgeç</button></div>`
+        : "";
+    }
+  }
   async function loadBackups() {
     const body = $("#adm-backups");
     try {
-      const backups = await HOF.api("/api/admin/backups");
+      const [backups, folders] = await Promise.all([HOF.api("/api/admin/backups"), HOF.api("/api/admin/backups/folders")]);
+      backupFolders = folders;
+      backupRows = backups;
+      renderBackupFolders(folders);
       body.innerHTML = backups.length
-        ? backups.map(item => `<tr><td><code>${esc(item.name)}</code></td><td>${esc(HOF.formatDateTime(item.createdAt))}</td><td class="adm-right">${esc(formatSize(item.size))}</td><td class="adm-right"><a class="hof-button hof-button-ghost hof-button-small" href="/api/admin/backups/${encodeURIComponent(item.name)}" download>İndir</a></td></tr>`).join("")
-        : '<tr><td colspan="4">Henüz yedek yok.</td></tr>';
+        ? backups
+            .map(
+              (item, index) => `<tr data-backup="${index}">
+                <td><b>${esc(item.company || "")}</b>${item.legacy ? '<br><small class="adm-muted" title="2.0.19 ve önceki sürümlerin yedek yeri">eski yerde</small>' : ""}</td>
+                <td><code title="${esc(item.folder || "")}">${esc(item.name)}</code></td>
+                <td>${esc(HOF.formatDateTime(item.createdAt))}</td>
+                <td class="adm-right">${esc(formatSize(item.size))}</td>
+                <td class="adm-right adm-row-actions"><a class="hof-button hof-button-ghost hof-button-small" href="/api/admin/backups/${encodeURIComponent(item.name)}?company=${encodeURIComponent(item.companyId || "")}" download>İndir</a><button type="button" class="hof-button hof-button-ghost hof-button-small" data-backup-restore>Geri Yükle</button></td>
+              </tr>`,
+            )
+            .join("")
+        : '<tr><td colspan="5">Henüz yedek yok.</td></tr>';
     } catch (error) {
-      body.innerHTML = `<tr><td colspan="4">${esc(error.message)}</td></tr>`;
+      body.innerHTML = `<tr><td colspan="5">${esc(error.message)}</td></tr>`;
     }
+  }
+  async function takeBackup(body) {
+    const result = await HOF.api("/api/admin/backups", { method: "POST", body, timeoutMs: 180000 });
+    const count = result.backups?.length || 1;
+    HOF.toast(count > 1 ? `${count} şirketin yedeği alındı; her biri kendi klasöründe.` : `Yedek alındı: ${result.name}`, { type: "success" });
+    if (result.failed?.length) HOF.toast(`Yedeği alınamayan şirket: ${result.failed.map(item => `${item.company} (${item.error})`).join("; ")}`, { type: "error", timeout: 8000 });
+    loadBackups();
+    loadCloud();
   }
   $("#adm-backup-now").addEventListener("click", async event => {
     const button = event.currentTarget;
     button.disabled = true;
     try {
-      const result = await HOF.api("/api/admin/backups", { method: "POST" });
-      HOF.toast(`Yedek alındı: ${result.name}`, { type: "success" });
-      loadBackups();
-      loadCloud();
+      const folders = backupFolders || (await HOF.api("/api/admin/backups/folders"));
+      const list = folders.companies || [];
+      const current = list.find(item => item.id === folders.current) || list[0];
+      // Tek şirket varsa sorulmaz; birden çoksa: Tüm Şirketler (varsayılan) ya da Yalnız seçili şirket.
+      if (list.length <= 1 || !current) {
+        await takeBackup({ scope: "all" });
+        return;
+      }
+      HOF.formModal({
+        title: "Yedek Al",
+        eyebrow: "YEDEKLER",
+        intro: "Her şirketin yedeği kendi klasörüne alınır; dosya adında şirket kodu bulunur.",
+        fields: [
+          {
+            name: "scope",
+            label: "Hangi Şirketler",
+            type: "select",
+            value: "all",
+            options: [
+              { value: "all", label: `Tüm Şirketler (${list.length})` },
+              { value: "one", label: `Yalnız ${current.label}` },
+            ],
+          },
+        ],
+        submitLabel: "Yedek Al",
+        onSubmit: async values => takeBackup(values.scope === "one" ? { scope: "one", companyId: current.id } : { scope: "all" }),
+      });
     } catch (error) {
       HOF.toastError(error);
     } finally {
       button.disabled = false;
+    }
+  });
+  function restoreBackup(item) {
+    const root = (backupFolders?.companies || []).find(company => company.id === item.companyId)?.root;
+    const code = item.companyCode || "";
+    HOF.formModal({
+      title: `Yedekten Geri Yükle · ${item.company}`,
+      eyebrow: "YEDEKLER",
+      intro: `${esc(item.name)} yedeği yalnız kendi şirketine (${esc(item.company)}) geri yüklenir. Şirketin bugünkü verisi önce yedeklenir, sonra bu yedekteki hâline döner; yedekten sonra girilen kayıtlar geri yüklenen veride olmaz (bugünkü veri yedekte kalır). Lisans, kullanıcılar ve öbür şirketler etkilenmez.${root ? " İlk şirket sunucu yeniden açılırken geri yüklenir; bağlantı birkaç saniye kesilir." : ""}`,
+      fields: [
+        { name: "confirm", label: `Onay: şirket kodunu (${code}) ya da adını yazın`, required: true, autofocus: true, autocomplete: "off" },
+        { name: "password", label: "Parolanız", type: "password", required: true, autocomplete: "current-password" },
+      ],
+      submitLabel: "Geri Yükle",
+      onSubmit: async values => {
+        const result = await HOF.api("/api/admin/backups/restore", { method: "POST", body: { name: item.name, company: item.companyId, confirm: values.confirm, password: values.password }, timeoutMs: 180000 });
+        if (result.restored) {
+          HOF.toast(`“${result.company}” yedekten geri yüklendi. Önceki veri yedeklendi: ${result.safety || "—"}`, { type: "success", timeout: 8000 });
+          loadBackups();
+        } else if (result.restarting) {
+          HOF.toast("Geri yükleme hazırlandı; sunucu yeniden başlatılıyor. Sayfa birkaç saniye içinde yenilenecek.", { type: "success", timeout: 10000 });
+          setTimeout(() => location.reload(), 8000);
+        } else {
+          HOF.toast("Geri yükleme hazırlandı; sunucu yeniden başlatılınca uygulanacak (Hizmetler → DestekOfis Sunucu → Yeniden Başlat).", { type: "success", timeout: 12000 });
+          loadBackups();
+        }
+      },
+    });
+  }
+  $("#adm-backups").addEventListener("click", event => {
+    const button = event.target.closest("[data-backup-restore]");
+    if (!button) return;
+    const item = backupRows[Number(button.closest("[data-backup]")?.dataset.backup)];
+    if (item) restoreBackup(item);
+  });
+  $("#adm-backup-pending")?.addEventListener("click", async event => {
+    if (!event.target.closest("#adm-restore-cancel")) return;
+    if (!(await HOF.confirm({ title: "Geri Yüklemeden Vazgeçilsin mi?", message: "Bekleyen geri yükleme iptal edilir; ilk şirketin verisi olduğu gibi kalır.", confirmLabel: "Vazgeç ve Kaldır" }))) return;
+    try {
+      await HOF.api("/api/admin/backups/restore", { method: "DELETE" });
+      HOF.toast("Bekleyen geri yükleme kaldırıldı.", { type: "success" });
+      loadBackups();
+    } catch (error) {
+      HOF.toastError(error);
     }
   });
 
@@ -1184,8 +1301,34 @@
         .join("") || '<tr><td colspan="4" class="adm-muted">Şirket yok.</td></tr>';
       renderCompanyAccess(access);
       renderCompanyReportPick(data.companies);
+      loadCompanyStorage();
     } catch (error) {
       body.innerHTML = `<tr><td colspan="4">${esc(error.message)}</td></tr>`;
+    }
+  }
+  // Veri ve yedek klasörleri (v2.0.20): veri dosyası, boyutu, cari/kayıt sayısı, son yedek ve yedek klasörü.
+  async function loadCompanyStorage() {
+    const body = $("#adm-company-storage");
+    if (!body) return;
+    const count = value => (value === null || value === undefined ? "—" : Number(value).toLocaleString("tr-TR"));
+    try {
+      const info = await HOF.api("/api/companies/storage");
+      body.innerHTML =
+        info.companies
+          .map(
+            item => `<tr>
+              <td><b>${esc(item.label)}</b></td>
+              <td><code>${esc(item.dataFile)}</code>${item.dataExists ? "" : '<br><small class="adm-muted">henüz dosya yok</small>'}</td>
+              <td class="adm-right">${esc(formatSize(item.dataSize))}</td>
+              <td class="adm-right">${esc(count(item.accounts))}</td>
+              <td class="adm-right">${esc(count(item.records))}</td>
+              <td>${item.lastBackup ? `${esc(HOF.formatDateTime(item.lastBackup.createdAt))}<br><small class="adm-muted">${esc(String(item.backupCount))} yedek</small>` : '<small class="adm-muted">henüz yedek yok</small>'}</td>
+              <td><code>${esc(item.backupFolder)}</code></td>
+            </tr>`,
+          )
+          .join("") || '<tr><td colspan="7" class="adm-muted">Şirket yok.</td></tr>';
+    } catch (error) {
+      body.innerHTML = `<tr><td colspan="7">${esc(error.message)}</td></tr>`;
     }
   }
   function renderCompanyAccess(access) {

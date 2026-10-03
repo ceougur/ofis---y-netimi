@@ -106,7 +106,8 @@ describe("yedekleme", () => {
       const created = await admin.post("/api/admin/backups");
       assert.equal(created.status, 200);
       assert.equal(created.data.data.cloud?.ok, true, JSON.stringify(created.data.data));
-      assert.ok(existsSync(path.join(drive, "DestekOfis Yedekleri", created.data.data.name)));
+      // v2.0.20: Drive'da da her şirket kendi klasöründe ("DestekOfis Yedekleri/001 - <ad>/").
+      assert.ok(existsSync(path.join(drive, "DestekOfis Yedekleri", path.basename(server.app.backupDir()), created.data.data.name)));
       const test = await admin.post("/api/admin/backups/cloud/test");
       assert.equal(test.status, 200);
       assert.equal(test.data.data.ok, true);

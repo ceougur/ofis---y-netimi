@@ -66,7 +66,10 @@ const TAB_SEP = " › ";
 
 const isSheetUrl = value => /^https:\/\/docs\.google\.com\/spreadsheets\//i.test(String(value || "").trim());
 
-export function createDatasetService({ store, audit, readGoogleSheet, bumpClientState, events, log, backupDir, backupKeep = 30, autoSync = true, tickMs = 60_000, canWrite = () => true, afterBackup = null }) {
+export function createDatasetService({ store, audit, readGoogleSheet, bumpClientState, events, log, backupDir, backupKeep = 30, autoSync = true, tickMs = 60_000, canWrite = () => true, afterBackup = null, makeBackup = null }) {
+  // Değişiklik öncesi yedek (v2.0.20): şirket uygulaması kendi yedekleyicisini verir (şirketin klasörü, kodlu ad, kimlik);
+  // verilmezse eski davranış (backupDir'e kodsuz ad).
+  const takeBackup = makeBackup || (backupDir ? label => createBackup(store.db, backupDir, { label, keep: backupKeep }) : null);
   const stages = new Map();
   const caches = new Map(); // oturum → { rows, byId } — veritabanındaki satırların ayrıştırılmış hâli
   const syncing = new Map(); // oturum → süren eşitleme
@@ -924,9 +927,9 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
   }
 
   function backup(label) {
-    if (!backupDir || !rowCount()) return null;
+    if (!takeBackup || !rowCount()) return null;
     try {
-      const result = createBackup(store.db, backupDir, { label, keep: backupKeep });
+      const result = takeBackup(label);
       afterBackup?.(result); // Drive'a kopya (v2.0.2); arka planda, asla fırlatmaz
       return result.name;
     } catch (error) {
@@ -1381,9 +1384,9 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
     const target = String(datasetKey || "");
     if (target === DATASET_KEY) throw new HttpError(400, "İlk sayfa silinemez; verisini Ayarlar → Veri → Veriyi kaldır ile boşaltabilirsiniz.");
     if (!sessionList().some(item => item.key === target)) throw new HttpError(404, "Sayfa bulunamadı.");
-    const backupName = backupDir ? (() => {
+    const backupName = takeBackup ? (() => {
       try {
-        const result = createBackup(store.db, backupDir, { label: "sayfa-silme-oncesi", keep: backupKeep });
+        const result = takeBackup("sayfa-silme-oncesi");
         afterBackup?.(result);
         return result.name;
       } catch (error) {

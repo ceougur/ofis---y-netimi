@@ -41,6 +41,9 @@ if (process.send) {
   const report = () => process.send?.({ type: "info", ...app.info() });
   process.send({ type: "ready", port: address.port, ...app.info() });
   app.onInfoChange(report);
+  // İlk şirketin (001) yedekten geri yüklenmesi (v2.0.20): uygulama düzgün kapanır, servis yöneticisi birkaç saniye içinde
+  // yeniden açar; geri yükleme açılışta, veri tabanı açılmadan uygulanır.
+  app.onRestartRequest(reason => shutdown(reason || "Yeniden başlatma istendi"));
   process.on("message", message => {
     if (message && message.type === "shutdown") shutdown("Servis yöneticisi kapatma istedi");
   });

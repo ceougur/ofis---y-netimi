@@ -130,7 +130,8 @@ describe("otomatik güncelleme akışı", () => {
       assert.ok(existsSync(path.join(installRoot, "app", "9.0.1", ".paket.json")));
       assert.ok(!existsSync(path.join(installRoot, "app", "8.9.0")), "eski sürüm temizlenmeli");
       assert.ok(existsSync(path.join(installRoot, "app", "9.0.0")), "önceki sürüm geri dönüş için saklanmalı");
-      assert.ok(readdirSync(path.join(installRoot, "backups")).some(name => name.includes("guncelleme-oncesi-9-0-0")), "güncelleme öncesi yedek alınmalı");
+      // v2.0.20: ilk şirketin kendi klasöründe ("001 - <ad>"), adında şirket kodu.
+      assert.ok(readdirSync(path.join(installRoot, "backups", "001 - Şirket 1")).some(name => /^destekofis-001-.*guncelleme-oncesi-9-0-0/.test(name)), "güncelleme öncesi yedek alınmalı");
       const history = readJson(path.join(installRoot, "app", "update-state.json")).history.map(item => item.event);
       assert.ok(history.includes("installed"), history.join(","));
 
@@ -173,7 +174,7 @@ process.exit(3);
       assert.equal(current.version, "9.0.0");
       assert.equal(current.rolledBackFrom, "9.0.1");
       assert.equal(schemaOf(path.join(installRoot, "data", "destekofis.sqlite")), LATEST_VERSION, "veritabanı güncelleme öncesi hâline dönmeli");
-      assert.ok(readdirSync(path.join(installRoot, "backups")).some(name => name.includes("basarisiz-guncelleme-9-0-1")));
+      assert.ok(readdirSync(path.join(installRoot, "backups", "001 - Şirket 1")).some(name => /^destekofis-001-.*basarisiz-guncelleme-9-0-1/.test(name)));
       assert.ok(readJson(path.join(installRoot, "app", "update-state.json")).failed["9.0.1"]);
       assert.equal((await login(base, "kalici", "Kalici-Parola-2026")).status, 200);
 

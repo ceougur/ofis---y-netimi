@@ -4,13 +4,17 @@
 // yedek/geri yükleme şirket bazında). Ortak katman: lisans, kullanıcılar, roller, şirket listesi — ilk (kök) veri
 // tabanında. Mevcut kurulumun verisi göçte ilk şirket (001) olur; hiçbir kayıt taşınmaz, dosya yerinde kalır.
 //   - Kayıt defteri: <dataDir>/sirketler.json  { companies: [{ id, code, name, dir, createdAt, createdBy }] }
-//   - 001: dir "" (kök veri klasörü); diğerleri: <dataDir>/sirketler/<kod>/ (veri) ve <backupDir>/sirket-<kod>/ (yedek).
-//     Kod sonradan değişse de klasör ve iç kimlik aynı kalır (veri aynı şirkette).
+//   - 001: dir "" (kök veri klasörü); diğerleri: <dataDir>/sirketler/<kod>/ (veri). Kod sonradan değişse de veri klasörü ve
+//     iç kimlik aynı kalır (veri aynı şirkette).
+//   - Yedek (v2.0.20, kullanıcı kararı): her şirketin yedekleri kendi adını taşıyan klasörde, <backupDir>/<kod> - <ad>/
+//     (ör. "001 - Şirket 1"); ad ya da kod değişince klasör yeniden adlandırılır. 2.0.19'a kadarki yerler (001: <backupDir>
+//     kökü, diğerleri <backupDir>/sirket-<klasör>/) "eski yer" olarak tanınır; açılışta yedekler yeni klasöre taşınır.
 //   - Kullanıcı seçimi ve yetkisi ortak ayarlarda: company.user.<kullanıcı> (seçili şirket), company.access.<kullanıcı>
 //     (görebildiği şirket kimlikleri; yönetici hepsini görür; kayıt yoksa yalnız 001).
 import { randomUUID } from "node:crypto";
 import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
 import path from "node:path";
+import { companyFolderName, moveBackupFolder } from "./backup.mjs";
 import { HttpError } from "./http.mjs";
 
 export const ROOT_COMPANY_ID = "sirket-001";
@@ -34,8 +38,15 @@ export function createCompanyRegistry({ dataDir, backupDir, hubStore, log = { in
         log.warn?.(`Şirket listesi okunamadı (${error.message}); yeniden oluşturuluyor.`);
       }
     }
-    // Göç: mevcut veri ilk şirkettir (001). Unvan ofis adından gelir; yoksa "Şirket 1".
-    const name = text(hubStore.setting("office.name", "")) || "Şirket 1";
+    // Göç: mevcut veri ilk şirkettir (001). Unvan ofis adından gelir; yoksa "Şirket 1". (v2.0.20: kayıt defteri veritabanı
+    // göçlerinden önce kurulur ki göç öncesi yedek de şirketin klasörüne gitsin; yeni kurulumda ayar tablosu henüz yoktur.)
+    let office = "";
+    try {
+      office = text(hubStore.setting("office.name", ""));
+    } catch {
+      office = "";
+    }
+    const name = office || "Şirket 1";
     const fresh = { companies: [{ id: ROOT_COMPANY_ID, code: "001", name, dir: "", createdAt: now(), createdBy: "" }] };
     save(fresh);
     return fresh;
@@ -62,8 +73,23 @@ export function createCompanyRegistry({ dataDir, backupDir, hubStore, log = { in
     while (used.has(n)) n += 1;
     return String(n).padStart(3, "0");
   }
-  // Şirketin klasörleri: 001 kök klasörde (dosya yerinde kalır), diğerleri sirketler/<kod>.
-  const dirsOf = company => (company.id === ROOT_COMPANY_ID || !company.dir ? { dataDir, backupDir } : { dataDir: path.join(dataDir, company.dir), backupDir: path.join(backupDir, `sirket-${path.basename(company.dir)}`) });
+  // Şirketin klasörleri: veri 001'de kök klasörde (dosya yerinde kalır), diğerlerinde sirketler/<kod>; yedek her şirkette
+  // <backupDir>/<kod> - <ad>. legacyBackupDirs: 2.0.19'a kadarki yer + taşıması yarım kalmış eski adlı klasörler.
+  const isRoot = company => company.id === ROOT_COMPANY_ID || !company.dir;
+  const legacyBackupDirsOf = company => {
+    const dirs = [isRoot(company) ? backupDir : path.join(backupDir, `sirket-${path.basename(company.dir)}`)];
+    for (const folder of Array.isArray(company.oldBackupDirs) ? company.oldBackupDirs : []) {
+      const safe = path.basename(String(folder || ""));
+      if (safe && safe !== "." && safe !== "..") dirs.push(path.join(backupDir, safe));
+    }
+    return dirs;
+  };
+  const dirsOf = company => ({
+    dataDir: isRoot(company) ? dataDir : path.join(dataDir, company.dir),
+    backupDir: path.join(backupDir, companyFolderName(company)),
+    backupRoot: backupDir,
+    legacyBackupDirs: legacyBackupDirsOf(company),
+  });
 
   const codeInput = (value, exceptId = "") => {
     const code = text(value);
@@ -93,10 +119,42 @@ export function createCompanyRegistry({ dataDir, backupDir, hubStore, log = { in
     const next = { ...company };
     if (name !== undefined) next.name = nameInput(name);
     if (code !== undefined) next.code = codeInput(code, id);
-    save({ companies: registry.companies.map(item => (item.id === id ? { id: next.id, code: next.code, name: next.name, dir: next.dir, createdAt: next.createdAt, createdBy: next.createdBy, updatedAt: now(), updatedBy: user?.id || "" } : item)) });
+    const entry = { id: next.id, code: next.code, name: next.name, dir: next.dir, createdAt: next.createdAt, createdBy: next.createdBy, updatedAt: now(), updatedBy: user?.id || "" };
+    if (Array.isArray(company.oldBackupDirs) && company.oldBackupDirs.length) entry.oldBackupDirs = company.oldBackupDirs;
+    save({ companies: registry.companies.map(item => (item.id === id ? entry : item)) });
+    // Ad ya da kod değişti (v2.0.20): yedek klasörü yeni adına taşınır, içindekiler korunur. Taşınamayan dosya kalırsa
+    // (ör. klasör Windows Gezgini'nde açık) eski klasör kayda yazılır: yedekler listede görünmeye devam eder, taşıma
+    // sonraki açılışta yeniden denenir.
+    const from = path.join(backupDir, companyFolderName(company));
+    const to = path.join(backupDir, companyFolderName(entry));
+    if (from !== to) {
+      let result;
+      try {
+        result = moveBackupFolder(from, to);
+      } catch (error) {
+        result = { left: 1 };
+        log.warn?.(`Yedek klasörü yeniden adlandırılamadı (${from} → ${to}): ${error.message}`);
+      }
+      if (result.left) {
+        settleOldBackupDirs(id, [...(entry.oldBackupDirs || []), path.basename(from)]);
+        log.warn?.(`Yedek klasöründen ${result.left} dosya eski yerinde kaldı (${from}); listede görünür, sonraki açılışta yeniden taşınır.`);
+      } else log.info?.(`Yedek klasörü yeniden adlandırıldı: ${path.basename(from)} → ${path.basename(to)}`);
+    }
     return get(id);
   }
+  // Eski adlı yedek klasörleri (taşıması yarım kalanlar) kayda yazılır; taşıma tamamlanınca kayıttan düşülür.
+  function settleOldBackupDirs(id, remaining) {
+    const clean = [...new Set((remaining || []).map(folder => path.basename(String(folder || ""))).filter(folder => folder && folder !== "." && folder !== ".."))];
+    save({
+      companies: registry.companies.map(item => {
+        if (item.id !== id) return item;
+        const { oldBackupDirs, ...rest } = item;
+        return clean.length ? { ...rest, oldBackupDirs: clean } : rest;
+      }),
+    });
+  }
   // Silme: klasör silinmez, "silinen-sirketler/<kod>-<zaman>" altına taşınır (geri getirilebilir; önce yedek alınmıştır).
+  // Yedek klasörüne (<backupDir>/<kod> - <ad>) dokunulmaz: şirketin bütün yedekleri orada kalır (v2.0.20).
   function remove(user, id) {
     const company = require(id);
     if (company.id === ROOT_COMPANY_ID) throw new HttpError(409, "001 kodlu ilk şirket silinemez; verisini sıfırlayabilirsiniz.");
@@ -157,7 +215,7 @@ export function createCompanyRegistry({ dataDir, backupDir, hubStore, log = { in
       .map(item => ({ id: item.id, code: item.code, name: item.name, label: item.label, root: item.root, current: item.id === current }));
   };
 
-  return { file, list, get, require, byCode, nextCode, dirsOf, create, update, remove, accessOf, canAccess, selectedFor, select, setAccess, listFor, ROOT_COMPANY_ID };
+  return { file, list, get, require, byCode, nextCode, dirsOf, create, update, settleOldBackupDirs, remove, accessOf, canAccess, selectedFor, select, setAccess, listFor, ROOT_COMPANY_ID };
 }
 
 // Kullanıcı tablosunun şirket veri tabanına aynası (işlem geçmişi, Silinenler, "Kaydeden" gibi adlar için). Kimlik

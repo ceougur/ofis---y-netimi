@@ -141,7 +141,9 @@ describe("Çoklu şirket: ayrı veri, ortak lisans/kullanıcı; göç, yetki, s�
     const reset = await api.post(`/api/companies/${second.id}/reset`, { mode: "movements", confirm: "005", password: ADMIN_PASSWORD });
     assert.equal(reset.status, 200, JSON.stringify(reset.data));
     assert.match(reset.data.backup, /sifirlama-oncesi-005/);
-    assert.ok(existsSync(path.join(server.backupDir, "sirket-002", reset.data.backup)), "yedek şirketin kendi klasöründe");
+    // v2.0.20: şirketin kendi adını taşıyan klasörü (<kod> - <ad>); adında şirket kodu.
+    assert.ok(existsSync(path.join(server.backupDir, "005 - Gayri Resmi", reset.data.backup)), "yedek şirketin kendi klasöründe");
+    assert.match(reset.data.backup, /^destekofis-005-/);
     await api.post("/api/companies/select", { id: second.id });
     assert.equal((await api.get("/api/workspace/cash")).data.totals.balance, 0);
     assert.equal((await api.get("/api/workspace/accounts")).data.accounts.length, 1, "cari kartı kalır, bakiyesi sıfır");
