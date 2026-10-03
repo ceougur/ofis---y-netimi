@@ -440,6 +440,12 @@ Bağlam kopsa da bu düzen değişmez. Kullanıcı "zip ver" dediğinde şu üç
          tarihi = yükleme günü); açılışı olan cari de listede görünür; rapor boşsa ve açılış varsa altta açıklama
          ("Excel'den yüklenen n TL ödenmiş tutar açılış olarak yazıldı; Taksit Kartları → Ödenen"). Test: bu senaryo
          arayüzden (Bu Ay / Tüm Zamanlar), açılış + gerçek tahsilat karışık, geçen ayın tahsilatı Bu Ay'da yok.
+         KARAR (kullanıcı, 03.10.2026: "taksitleri Excel ile toplu yüklemiştik"; "tamam ama hepsini toplasın raporlar da"):
+         tahsilat raporlarında TOPLAM açılış (Excel'de ödenmiş) DAHİL her şeyi toplar — Cari Bazında Tahsilat (Toplam =
+         nakit/havale + taksit + çek/senet + Önceden Ödenen), Taksit Tahsilatları (bugün açılış ayrı satır, "Tahsilat"
+         toplamı dışında → "Toplam Tahsil Edilen" açılış dahil), Taksit Tahsilat Performansı, Cari Listesi "Toplam Tahsilat
+         (Ödenen)". Kırılım kolonları kalır (kaynağı görünsün). KASA raporları DEĞİŞMEZ (açılış Kasa'ya hiç girmedi; Kasa
+         fiziki nakit, mutabakat bozulmasın) — kullanıcıya söylendi.
   Açık soru CEVAPLANDI: "getirmiyor" = Cari Bazında Tahsilat (madde 8).
 - 2.0.20 ADAYI — RAPORLARDA ALT TOPLAM (kullanıcı, 03.10.2026): "toplam cari alacağı yani ciroyu hangi rapordan
   görürüm?" → yanıt: ciro = Raporlar → Fatura → Satış Faturaları / Cari Bazında Satış ve Alış (Net Satış); toplam
