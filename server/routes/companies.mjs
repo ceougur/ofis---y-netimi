@@ -8,6 +8,10 @@ import { buildXlsx } from "../lib/xlsx-write.mjs";
 
 export function registerCompanyRoutes(router, { store, auth, audit, companies, appFor, resetData, config, events, backups, closeCompany, busyCompanies }) {
   const requireManage = req => auth.requirePermission(req, "system.manage");
+  // Geri yüklenen ya da silinen şirkette aynı anda ikinci işlem (ad değiştirme, sıfırlama, silme) yapılmaz.
+  const notBusy = company => {
+    if (busyCompanies?.has(company.id)) throw new HttpError(409, busyCompanies.get(company.id) || "Bu şirkette başka bir işlem sürüyor; birkaç saniye sonra yeniden deneyin.");
+  };
   const publish = (user, detail) => events?.publish("workspace.changed", { actorId: user.id, actorName: user.display_name, ...detail }, { except: user.id });
   const shape = (user, company) => {
     const current = companies.selectedFor(user);
@@ -51,6 +55,7 @@ export function registerCompanyRoutes(router, { store, auth, audit, companies, a
     const user = requireManage(req);
     const body = await readJson(req);
     const before = companies.require(params.id);
+    notBusy(before);
     const company = companies.update(user, before.id, { name: body.name !== undefined ? text(body.name) : undefined, code: body.code !== undefined ? text(body.code) : undefined });
     if (body.name !== undefined) appFor(company).store.setSetting("office.name", company.name, user.id);
     audit(user, "company.updated", company.id, { from: { code: before.code, name: before.name }, to: { code: company.code, name: company.name } });
@@ -61,6 +66,7 @@ export function registerCompanyRoutes(router, { store, auth, audit, companies, a
     const user = requireManage(req);
     const body = await readJson(req);
     const company = companies.require(params.id);
+    notBusy(company);
     if (company.root) throw new HttpError(409, "001 kodlu ilk şirket silinemez; verisini sıfırlayabilirsiniz.");
     confirmCode(company, body.confirm);
     confirmPassword(user, body.password);
@@ -111,6 +117,7 @@ export function registerCompanyRoutes(router, { store, auth, audit, companies, a
     const user = requireManage(req);
     const body = await readJson(req);
     const company = companies.require(params.id);
+    notBusy(company);
     confirmCode(company, body.confirm);
     confirmPassword(user, body.password);
     const result = resetData(company, user, { mode: text(body.mode) || "movements", resetNumbers: body.resetNumbers !== false });

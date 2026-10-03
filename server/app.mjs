@@ -154,6 +154,24 @@ export function createApp(overrides = {}) {
   // aşağıda kurulduğundan geç bağlanır; kopya hatası yerel yedeği hiçbir zaman engellemez.
   // v2.0.20: Drive ayarı ortak katmanda (hub) tek; bütün şirketlerin yedekleri oraya, her şirket kendi klasörüne kopyalanır.
   // Kopyalar sırayla yapılır (aynı anda iki kopya durum kaydını ezmesin).
+  // Drive bağlantısı ortak katmanda tek (v2.0.20). 2.0.17–2.0.19'da bağlantı seçili şirketin dosyasına yazılıyordu: 002
+  // seçiliyken bağlanan Drive ayarı ortak katmanda yoksa ondan alınır (gözden geçirme bulgusu: kopyalar sessizce duruyordu).
+  if (!hub) {
+    try {
+      if (!store.setting("backup.cloud", "")) {
+        for (const company of companies.list().filter(item => item.id !== ROOT_COMPANY_ID)) {
+          const value = withCompanyDb(company, companyDb => companyDb.prepare("SELECT value FROM settings WHERE key = 'backup.cloud'").get()?.value || "");
+          if (value) {
+            store.setSetting("backup.cloud", value);
+            log.info?.(`Drive yedek bağlantısı ${company.code} · ${company.name} şirketinin ayarından ortak katmana alındı.`);
+            break;
+          }
+        }
+      }
+    } catch (error) {
+      log.warn?.(`Drive yedek ayarı şirketlerden okunamadı: ${error.message}`);
+    }
+  }
   const cloudBackup = hub ? hub.cloudBackup : createCloudBackup({ store, log, services: config.licenseServices.split(",").map(item => item.trim()).filter(Boolean), keep: config.backupKeep, license: { summary: () => license?.summary?.() } });
   let mirrorQueue = Promise.resolve();
   const mirrorNow = result => {
@@ -228,6 +246,13 @@ export function createApp(overrides = {}) {
   if (stagedRestore) {
     const actor = stagedRestore.by ? { id: stagedRestore.by, display_name: stagedRestore.byName } : null;
     audit(actor, stagedRestore.ok ? "system.backup_restored" : "system.backup_restore_failed", stagedRestore.name, { company: "001", safety: stagedRestore.safety || "", error: stagedRestore.error || "" });
+    // Sonuç Yönetim → Yedekler'de gösterilir (gözden geçirme bulgusu: başarısız 001 geri yüklemesi sessiz kalıyordu;
+    // kullanıcı eski veriyle çalıştığını bilmiyordu).
+    try {
+      store.setSetting("backup.lastRestore", JSON.stringify({ ok: stagedRestore.ok, name: stagedRestore.name, safety: stagedRestore.safety || "", error: stagedRestore.error || "", byName: stagedRestore.byName || "", at: new Date().toISOString() }));
+    } catch (error) {
+      log.warn?.(`Geri yükleme sonucu kaydedilemedi: ${error.message}`);
+    }
   }
 
   const router = createRouter();
@@ -374,8 +399,11 @@ export function createApp(overrides = {}) {
         send(res, error.status, { ok: false, error: error.message }, error.extra?.retryAfter ? { "retry-after": String(error.extra.retryAfter) } : {});
         return Promise.resolve();
       }
-      log.error(`Şirket açılamadı (${selected.code}); ilk şirkete düşüldü`, error);
-      return scoped(req, res);
+      // v2.0.20 (2.0.17'den kalan hata): şirket açılamazsa istek ARTIK 001'e düşmez — seçici 002'yi gösterirken girilen
+      // kayıt 001'e yazılıyordu. Kullanıcıya açık hata verilir; yönetici şirketi değiştirip ya da yedekten geri yükleyebilir.
+      log.error(`Şirket açılamadı (${selected.code} · ${selected.name})`, error);
+      send(res, 503, { ok: false, error: `“${selected.code} · ${selected.name}” şirketinin verisi açılamadı (${error.code || error.message}). Sol üstten başka şirkete geçin; yönetici Yönetim → Yedekler'den geri yükleyebilir.`, code: "company-unavailable" }, { "retry-after": "30" });
+      return Promise.resolve();
     }
   };
   // Şirket örneğini kapatır ve listeden çıkarır (geri yükleme, silme). Ortak katmandaki servisler (lisans, oturum)

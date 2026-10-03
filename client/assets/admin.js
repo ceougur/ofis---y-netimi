@@ -650,10 +650,15 @@
     }
     const pending = $("#adm-backup-pending");
     if (pending) {
-      pending.hidden = !info?.pending;
+      const last = info?.lastRestore;
+      pending.hidden = !info?.pending && !last;
       pending.innerHTML = info?.pending
         ? `<p class="adm-warn"><b>Geri Yükleme Bekliyor:</b> ${esc(info.pending.name)} — ilk şirket (001) sunucu yeniden açılınca bu yedeğe döner.${info.pending.byName ? ` Başlatan: ${esc(info.pending.byName)}.` : ""}</p><div class="adm-actions"><button type="button" class="hof-button hof-button-ghost hof-button-small" id="adm-restore-cancel">Geri Yüklemeden Vazgeç</button></div>`
-        : "";
+        : last
+          ? last.ok
+            ? `<p class="adm-ok"><b>Geri Yüklendi:</b> ilk şirket (001) ${esc(HOF.formatDateTime(last.at))} tarihinde ${esc(last.name)} yedeğine döndü.${last.safety ? ` Önceki veri ${esc(last.safety)} adıyla yedeklendi.` : ""}</p>`
+            : `<p class="adm-warn"><b>Geri Yükleme Yapılamadı:</b> ${esc(last.name || "")} — ${esc(last.error || "bilinmeyen hata")}. İlk şirketin verisi değişmedi; yeniden deneyin.</p>`
+          : "";
     }
   }
   async function loadBackups() {

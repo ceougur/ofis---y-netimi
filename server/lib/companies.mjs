@@ -12,9 +12,9 @@
 //   - Kullanıcı seçimi ve yetkisi ortak ayarlarda: company.user.<kullanıcı> (seçili şirket), company.access.<kullanıcı>
 //     (görebildiği şirket kimlikleri; yönetici hepsini görür; kayıt yoksa yalnız 001).
 import { randomUUID } from "node:crypto";
-import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
 import path from "node:path";
-import { companyFolderName, moveBackupFolder } from "./backup.mjs";
+import { BACKUP_NAME, companyFolderName, moveBackupFolder } from "./backup.mjs";
 import { HttpError } from "./http.mjs";
 
 export const ROOT_COMPANY_ID = "sirket-001";
@@ -84,9 +84,12 @@ export function createCompanyRegistry({ dataDir, backupDir, hubStore, log = { in
     }
     return dirs;
   };
+  // Yedek klasörünün adı: "<kod> - <ad>"; aynı adlı klasör başka bir (ör. silinmiş) şirketin yedekleriyle doluysa kayıtta
+  // "backupFolder" olarak ek almış ad tutulur ("002 - Ad (2)") — iki şirketin yedekleri asla aynı klasöre düşmez (v2.0.20).
+  const backupFolderOf = company => (company.backupFolder ? path.basename(String(company.backupFolder)) : companyFolderName(company));
   const dirsOf = company => ({
     dataDir: isRoot(company) ? dataDir : path.join(dataDir, company.dir),
-    backupDir: path.join(backupDir, companyFolderName(company)),
+    backupDir: path.join(backupDir, backupFolderOf(company)),
     backupRoot: backupDir,
     legacyBackupDirs: legacyBackupDirsOf(company),
   });
@@ -104,11 +107,45 @@ export function createCompanyRegistry({ dataDir, backupDir, hubStore, log = { in
     return name;
   };
 
+  // Windows dosya sistemi büyük/küçük harfe duyarsızdır (yerel ayarsız büyük harfle karşılaştırılır; "İ" ile "i" ayrıdır).
+  const sameName = (a, b) => String(a).toUpperCase() === String(b).toUpperCase();
+  const hasBackups = folder => {
+    try {
+      return readdirSync(path.join(backupDir, folder)).some(name => BACKUP_NAME.test(name));
+    } catch {
+      return false;
+    }
+  };
+  // Veri klasörü (v2.0.20 düzeltmesi, 2.0.17'den kalan hata): kodu sonradan değişen bir şirket "sirketler/002"yi tutarken
+  // yeni şirkete 002 kodu verilince ikisi AYNI veri tabanını açıyordu. Artık hiçbir şirketin kullanmadığı ve diskte
+  // bulunmayan klasör seçilir: sirketler/002, sirketler/002-2, sirketler/002-3…
+  function freeDataDir(code) {
+    for (let n = 1; n < 1000; n += 1) {
+      const dir = path.join("sirketler", n === 1 ? code : `${code}-${n}`);
+      if (registry.companies.some(item => item.dir && sameName(path.normalize(item.dir), dir))) continue;
+      if (existsSync(path.join(dataDir, dir))) continue;
+      return dir;
+    }
+    return path.join("sirketler", `${code}-${randomUUID().slice(0, 8)}`);
+  }
+  // Yedek klasörü: başka şirketin kullandığı ya da içinde (silinmiş şirketten kalma) yedek bulunan ad verilmez.
+  function freeBackupFolder(base, exceptId = "") {
+    for (let n = 1; n < 1000; n += 1) {
+      const folder = n === 1 ? base : `${base} (${n})`;
+      if (registry.companies.some(item => item.id !== exceptId && sameName(backupFolderOf(item), folder))) continue;
+      if (hasBackups(folder)) continue;
+      return folder;
+    }
+    return `${base} (${randomUUID().slice(0, 8)})`;
+  }
+
   function create(user, { code, name }) {
     const safeCode = codeInput(code || nextCode());
     const safeName = nameInput(name);
-    const dir = path.join("sirketler", safeCode);
-    const company = { id: `sirket-${randomUUID()}`, code: safeCode, name: safeName, dir, createdAt: now(), createdBy: user?.id || "" };
+    const dir = freeDataDir(safeCode);
+    const base = companyFolderName({ code: safeCode, name: safeName });
+    const folder = freeBackupFolder(base);
+    const company = { id: `sirket-${randomUUID()}`, code: safeCode, name: safeName, dir, createdAt: now(), createdBy: user?.id || "", ...(folder !== base ? { backupFolder: folder } : {}) };
     mkdirSync(path.join(dataDir, dir), { recursive: true });
     save({ companies: [...registry.companies, company] });
     log.info?.(`Yeni şirket açıldı: ${safeCode} · ${safeName}`);
@@ -121,12 +158,17 @@ export function createCompanyRegistry({ dataDir, backupDir, hubStore, log = { in
     if (code !== undefined) next.code = codeInput(code, id);
     const entry = { id: next.id, code: next.code, name: next.name, dir: next.dir, createdAt: next.createdAt, createdBy: next.createdBy, updatedAt: now(), updatedBy: user?.id || "" };
     if (Array.isArray(company.oldBackupDirs) && company.oldBackupDirs.length) entry.oldBackupDirs = company.oldBackupDirs;
+    // Yeni yedek klasörü adı başka şirketin klasörüyle ya da içinde yedek olan eski bir klasörle çakışırsa ek alır.
+    const base = companyFolderName(entry);
+    const current = backupFolderOf(company);
+    const target = sameName(base, current) && !company.backupFolder ? base : sameName(base, current) ? current : freeBackupFolder(base, id);
+    if (target !== base) entry.backupFolder = target;
     save({ companies: registry.companies.map(item => (item.id === id ? entry : item)) });
     // Ad ya da kod değişti (v2.0.20): yedek klasörü yeni adına taşınır, içindekiler korunur. Taşınamayan dosya kalırsa
     // (ör. klasör Windows Gezgini'nde açık) eski klasör kayda yazılır: yedekler listede görünmeye devam eder, taşıma
     // sonraki açılışta yeniden denenir.
-    const from = path.join(backupDir, companyFolderName(company));
-    const to = path.join(backupDir, companyFolderName(entry));
+    const from = path.join(backupDir, backupFolderOf(company));
+    const to = path.join(backupDir, backupFolderOf(entry));
     if (from !== to) {
       let result;
       try {
@@ -143,6 +185,7 @@ export function createCompanyRegistry({ dataDir, backupDir, hubStore, log = { in
     return get(id);
   }
   // Eski adlı yedek klasörleri (taşıması yarım kalanlar) kayda yazılır; taşıma tamamlanınca kayıttan düşülür.
+  // (save her alanı korur: backupFolder dahil.)
   function settleOldBackupDirs(id, remaining) {
     const clean = [...new Set((remaining || []).map(folder => path.basename(String(folder || ""))).filter(folder => folder && folder !== "." && folder !== ".."))];
     save({

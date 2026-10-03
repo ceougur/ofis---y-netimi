@@ -35,7 +35,11 @@ const COMMON_SETTINGS = "(key LIKE 'license.%' OR key LIKE 'meta.%' OR key LIKE 
 
 const identityOf = company => ({ id: company.id, code: company.code, name: company.name });
 const labelOf = company => `${company.code} · ${company.name}`;
-const sameDir = (a, b) => path.resolve(a).toLocaleLowerCase("tr-TR") === path.resolve(b).toLocaleLowerCase("tr-TR");
+// Windows (NTFS) klasör adlarını yerel ayarsız büyük harfle karşılaştırır: "MAVI" = "Mavi", ama "İ" ≠ "i".
+const sameDir = (a, b) => path.resolve(a).toUpperCase() === path.resolve(b).toUpperCase();
+const dirKey = dir => path.resolve(dir).toUpperCase();
+// "2026-10-03T09-15-00-000Z" (yedek adındaki zaman) ↔ ISO zaman.
+const stampToIso = stamp => (stamp ? stamp.replace(/^(\d{4}-\d{2}-\d{2})T(\d{2})-(\d{2})-(\d{2})-(\d{3})Z$/, "$1T$2:$3:$4.$5Z") : "");
 const quoteSql = value => `'${String(value).replace(/'/g, "''")}'`;
 const quoteName = value => `"${String(value).replace(/"/g, '""')}"`;
 
@@ -55,10 +59,26 @@ export function companiesOnDisk({ dataDir, backupRoot }) {
       company: identityOf(item),
       root,
       dataDir: root ? dataDir : path.join(dataDir, item.dir),
-      backupDir: path.join(backupRoot, companyFolderName(item)),
+      backupDir: path.join(backupRoot, item.backupFolder ? path.basename(String(item.backupFolder)) : companyFolderName(item)),
       legacyBackupDirs: [root ? backupRoot : path.join(backupRoot, `sirket-${path.basename(item.dir)}`)],
     };
   });
+}
+
+function readInstanceId(file) {
+  let db;
+  try {
+    db = new DatabaseSync(file, { readOnly: true });
+    return db.prepare("SELECT value FROM settings WHERE key = 'meta.instanceId'").get()?.value || "";
+  } catch {
+    return "";
+  } finally {
+    try {
+      db?.close();
+    } catch {
+      // zaten kapalı
+    }
+  }
 }
 
 /** Yedek dosyasını denetler: SQLite mi, DestekOfis veri tabanı mı, bu sürümden yeni mi? */
@@ -127,7 +147,7 @@ function transplantCommon(db, fromFile) {
  * kimliği tablosu kaldırılır → (001'de) ortak katman aktarılır → istemcilerin yenilenmesi için durum sayacı artırılır.
  * Hazırlık sırasında canlı dosyaya dokunulmaz; hata olursa hazırlık dosyası silinir.
  */
-export function prepareRestoreFile({ source, dbPath, transplantFrom = null, clientStateFloor = 0, log = null }) {
+export function prepareRestoreFile({ source, dbPath, transplantFrom = null, clientStateFloor = 0, keepSettings = {}, log = null }) {
   const temp = `${dbPath}.geri-yukleme`;
   const clean = () => {
     for (const suffix of ["", "-wal", "-shm", "-journal"]) rmSync(`${temp}${suffix}`, { force: true });
@@ -142,6 +162,11 @@ export function prepareRestoreFile({ source, dbPath, transplantFrom = null, clie
     runMigrations(createStore(db), { backupDir: null, log });
     db.exec(`DROP TABLE IF EXISTS ${BACKUP_META_TABLE}`);
     if (transplantFrom) transplantCommon(db, transplantFrom);
+    // Şirketin o anki unvanı (office.name) korunur: yedek alındıktan sonra ad değiştiyse PDF/rapor başlığı eski ada dönmesin.
+    for (const [key, value] of Object.entries(keepSettings || {})) {
+      if (value === undefined || value === null || value === "") continue;
+      db.prepare("INSERT INTO settings (key, value, updated_at, updated_by) VALUES (?, ?, ?, NULL) ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = excluded.updated_at").run(key, String(value), new Date().toISOString());
+    }
     const current = Number(db.prepare("SELECT value FROM settings WHERE key = 'meta.clientStateVersion'").get()?.value || 0) || 0;
     const next = Math.max(current, Number(clientStateFloor) || 0) + 1;
     db.prepare("INSERT INTO settings (key, value, updated_at, updated_by) VALUES ('meta.clientStateVersion', ?, ?, NULL) ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = excluded.updated_at").run(String(next), new Date().toISOString());
@@ -214,6 +239,18 @@ export function applyStagedRestore({ dataDir, backupRoot, dbPath, keep = 30, log
     const identity = readBackupIdentity(job.source);
     if (identity && identity.id !== ROOT_COMPANY_ID) throw new Error(`Yedek “${identity.code} · ${identity.name}” şirketine ait; ilk şirkete yüklenmedi.`);
     inspectBackup(job.source);
+    // Güncellemenin deneme açılışında (canlı veri henüz yeni sürüme göç etmemişken) uygulanmaz: ortak katman eski
+    // biçimde aktarılır ve deneme başarısız olursa geri dönüş geri yüklemeyi sessizce bozardı.
+    if (existsSync(dbPath)) {
+      const probe = new DatabaseSync(dbPath, { readOnly: true });
+      let liveVersion = 0;
+      try {
+        liveVersion = probe.prepare("PRAGMA user_version").get().user_version;
+      } finally {
+        probe.close();
+      }
+      if (liveVersion !== LATEST_VERSION) throw new Error("Program o sırada güncelleniyordu; geri yükleme uygulanmadı. Güncelleme bittikten sonra Yönetim → Yedekler'den yeniden geri yükleyin.");
+    }
     const target = companiesOnDisk({ dataDir, backupRoot }).find(item => item.company.id === ROOT_COMPANY_ID);
     let safety = null;
     if (existsSync(dbPath)) {
@@ -255,8 +292,15 @@ export function createCompanyBackups({ registry, dataDir, keep = 30, log = null,
   };
   const accessible = user => registry.list().filter(company => registry.canAccess(user, company.id));
 
-  // Kökteki (001'in eski yeri) kodlu dosya başka bir şirketinse 001'in listesine girmez.
+  // Kökteki (001'in eski yeri) kodlu dosya başka bir şirketinse 001'in listesine girmez. Eski yerdeki (sirket-<klasör>)
+  // dosya şirketin kuruluşundan önceyse silinmiş, aynı klasörü kullanmış eski bir şirketindir: bu şirkete sayılmaz.
+  const predates = (company, name) => {
+    if (company.id === ROOT_COMPANY_ID || !company.createdAt) return false;
+    const iso = stampToIso(parseBackupName(name)?.stamp || "");
+    return Boolean(iso) && iso < company.createdAt;
+  };
   const belongs = (company, dir, name) => {
+    if (!sameDir(dir, folderOf(company)) && predates(company, name)) return false;
     if (!sameDir(dir, backupRoot())) return true;
     const code = parseBackupName(name)?.code;
     return !code || code === company.code;
@@ -267,7 +311,7 @@ export function createCompanyBackups({ registry, dataDir, keep = 30, log = null,
     const seen = new Set();
     const out = [];
     for (const dir of dirsFor(company)) {
-      const key = path.resolve(dir).toLocaleLowerCase("tr-TR");
+      const key = dirKey(dir);
       if (seen.has(key)) continue;
       seen.add(key);
       for (const item of listBackups(dir)) {
@@ -345,6 +389,19 @@ export function createCompanyBackups({ registry, dataDir, keep = 30, log = null,
       }
     } else if (source.id !== target.id) {
       throw new HttpError(409, `Bu yedek eski biçimde (içinde şirket bilgisi yok); yalnız bulunduğu klasörün şirketine (${labelOf(source)}) geri yüklenebilir.`, { code: "company-unknown" });
+    } else {
+      // Kimliksiz (2.0.19 öncesi) yedek: veri tabanı soy kimliği (meta.instanceId) hedefinkiyle aynı olmalı; aynı kodla
+      // sonradan açılmış başka bir şirkete eski şirketin verisi yüklenmesin.
+      const backupInstance = readInstanceId(file);
+      let liveInstance = "";
+      try {
+        liveInstance = withDb(target, db => db.prepare("SELECT value FROM settings WHERE key = 'meta.instanceId'").get()?.value || "") || "";
+      } catch {
+        liveInstance = "";
+      }
+      if (backupInstance && liveInstance && backupInstance !== liveInstance) {
+        throw new HttpError(409, `Bu eski biçimli yedek “${labelOf(target)}” şirketinin veri tabanından alınmamış (aynı kodu kullanmış silinmiş bir şirketten kalmış olabilir); geri yüklenmedi.`, { code: "company-unknown" });
+      }
     }
     return identity;
   }
@@ -402,6 +459,10 @@ export function createCompanyBackups({ registry, dataDir, keep = 30, log = null,
             continue;
           }
           const parsed = parseBackupName(name);
+          if (!isRootDir && predates(company, name)) {
+            leftHere += 1; // silinmiş eski şirketten kalma: yerinde kalır, bu şirkete taşınmaz
+            continue;
+          }
           let owner = company;
           if (isRootDir && parsed?.code && parsed.code !== company.code) {
             owner = byCode.get(parsed.code);
@@ -435,6 +496,19 @@ export function createCompanyBackups({ registry, dataDir, keep = 30, log = null,
     return report;
   }
 
+  // Veri dosyasının son değişme zamanı (ana dosya ya da WAL günlüğü; hangisi yeniyse).
+  function changedAt(company) {
+    const file = resolveDbPath(registry.dirsOf(company).dataDir);
+    let latest = 0;
+    for (const item of [file, `${file}-wal`]) {
+      try {
+        latest = Math.max(latest, statSync(item).mtimeMs);
+      } catch {
+        // dosya yok
+      }
+    }
+    return latest || Infinity;
+  }
   // Otomatik yedek hedefleri: her şirket (geri yüklenen/silinen şirket o turda atlanır). Eski yerdeki taze güncelleme
   // yedekleri için taşıma günde bir yeniden denenir.
   let migratedAt = Date.now();
@@ -450,7 +524,7 @@ export function createCompanyBackups({ registry, dataDir, keep = 30, log = null,
     return registry
       .list()
       .filter(company => !isBusy(company.id))
-      .map(company => ({ backupDir: folderOf(company), label: labelOf(company), run: () => backup(company) }));
+      .map(company => ({ backupDir: folderOf(company), label: labelOf(company), run: () => backup(company), changedAt: () => changedAt(company) }));
   }
 
   // Yönetim → Şirketler: veri dosyası, boyutu, cari/kayıt sayısı, son yedek ve yedek klasörü.
@@ -502,6 +576,15 @@ export function createCompanyBackups({ registry, dataDir, keep = 30, log = null,
     };
   }
 
+  function rawSafetyCopy(company, dbPath) {
+    const dir = folderOf(company);
+    mkdirSync(dir, { recursive: true });
+    const name = `destekofis-${company.code}-${new Date().toISOString().replace(/[:.]/g, "-")}-geri-yukleme-oncesi-${company.code}-ham.sqlite`;
+    const target = path.join(dir, name);
+    copyFileSync(dbPath, target);
+    if (existsSync(`${dbPath}-wal`)) copyFileSync(`${dbPath}-wal`, `${target}-wal`);
+    return { name, path: target, size: statSync(target).size };
+  }
   // 001 geri yüklemesi sunucu yeniden açılırken uygulanır. Seçilen yedek hemen veri klasörüne kopyalanır (aradaki
   // otomatik yedeklerin eski dosyaları budaması seçilen yedeği silemesin).
   const markerPath = () => path.join(dataDir, RESTORE_MARKER);
@@ -537,6 +620,7 @@ export function createCompanyBackups({ registry, dataDir, keep = 30, log = null,
    * ({ staged: true }; sunucu yeniden açılırken uygulanır); diğer şirketlerde hemen uygular ({ restored: true }).
    */
   async function restoreCompany({ file, target, user }) {
+    if (isBusy(target.id)) throw new HttpError(409, busy.get(target.id) || "Bu şirkette başka bir işlem sürüyor; birkaç saniye sonra yeniden deneyin.");
     inspectBackup(file);
     if (target.id === ROOT_COMPANY_ID) {
       const job = stageRootRestore(user, file);
@@ -548,14 +632,15 @@ export function createCompanyBackups({ registry, dataDir, keep = 30, log = null,
       await closeCompany(target.id);
       const dbPath = resolveDbPath(registry.dirsOf(target).dataDir);
       let floor = 0;
+      let officeName = "";
       try {
-        floor = Number(withDb(target, db => db.prepare("SELECT value FROM settings WHERE key = 'meta.clientStateVersion'").get()?.value) || 0) || 0;
+        [floor, officeName] = withDb(target, db => [Number(db.prepare("SELECT value FROM settings WHERE key = 'meta.clientStateVersion'").get()?.value) || 0, db.prepare("SELECT value FROM settings WHERE key = 'office.name'").get()?.value || ""]) || [0, ""];
       } catch {
         floor = 0;
       }
       let temp;
       try {
-        temp = prepareRestoreFile({ source: file, dbPath, clientStateFloor: floor, log });
+        temp = prepareRestoreFile({ source: file, dbPath, clientStateFloor: floor, keepSettings: { "office.name": officeName }, log });
       } catch (error) {
         throw new HttpError(500, `Yedek hazırlanamadı; şirketin verisi değişmedi (${error.message}).`);
       }
@@ -564,8 +649,15 @@ export function createCompanyBackups({ registry, dataDir, keep = 30, log = null,
       try {
         safety = existsSync(dbPath) ? backup(target, { label: `geri-yukleme-oncesi-${target.code}`, keep: Math.max(keep, 10) }) : null;
       } catch (error) {
-        rmSync(temp, { force: true });
-        throw new HttpError(500, `Geri yükleme öncesi yedek alınamadı; şirketin verisi değişmedi (${error.message}).`);
+        // Canlı dosya bozuksa (VACUUM okuyamaz) geri yükleme tam da gerektiği anda engellenmesin: dosya olduğu gibi
+        // (ham) kopyalanır; WAL günlüğü de yanına.
+        try {
+          safety = rawSafetyCopy(target, dbPath);
+          log?.warn?.(`Geri yükleme öncesi yedek VACUUM ile alınamadı (${error.message}); ham kopya alındı: ${safety.name}`);
+        } catch (copyError) {
+          rmSync(temp, { force: true });
+          throw new HttpError(500, `Geri yükleme öncesi yedek alınamadı; şirketin verisi değişmedi (${error.message}; ham kopya: ${copyError.message}).`);
+        }
       }
       try {
         swapInRestoredFile(temp, dbPath);

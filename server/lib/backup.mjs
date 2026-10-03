@@ -1,5 +1,5 @@
 // Tutarlı SQLite yedekleri: "VACUUM INTO" çalışan veritabanının anlık, bozulmayan bir kopyasını üretir.
-import { existsSync, mkdirSync, readdirSync, renameSync, rmdirSync, statSync, unlinkSync } from "node:fs";
+import { existsSync, mkdirSync, readdirSync, renameSync, rmdirSync, rmSync, statSync, unlinkSync } from "node:fs";
 import path from "node:path";
 import { DatabaseSync } from "node:sqlite";
 
@@ -67,11 +67,21 @@ export function listBackups(backupDir) {
   }
 }
 
+// Budama (v2.0.20): rutin yedekler (otomatik, "manuel", "drive-deneme") son `keep` adet; işlem öncesi güvenlik yedekleri
+// (sıfırlama, silme, geri yükleme, güncelleme, göç, sayfa silme öncesi) AYRI sayılır ve son SAFETY_KEEP adedi kalır —
+// rutin kopyalar güvenlik yedeklerini klasörden itip silemez (gözden geçirme bulgusu: haftada bir siliniyorlardı).
+export const SAFETY_KEEP = 20;
+const ROUTINE_LABEL = /^(?:|manuel|drive-deneme)$/;
+const isRoutine = name => ROUTINE_LABEL.test(parseBackupName(name)?.label || "");
 export function pruneBackups(backupDir, keep) {
   const removed = [];
-  for (const item of listBackups(backupDir).slice(keep)) {
+  const all = listBackups(backupDir);
+  const routine = all.filter(item => isRoutine(item.name));
+  const safety = all.filter(item => !isRoutine(item.name));
+  for (const item of [...routine.slice(keep), ...safety.slice(Math.max(SAFETY_KEEP, keep))]) {
     try {
       unlinkSync(path.join(backupDir, item.name));
+      rmSync(path.join(backupDir, `${item.name}-wal`), { force: true }); // ham (kopyalanmış) güvenlik yedeğinin günlüğü
       removed.push(item.name);
     } catch {
       // Silinemeyen yedek bir sonraki turda tekrar denenir.
@@ -125,16 +135,28 @@ export function createBackup(db, backupDir, { label = "", keep = 30, company = n
   let name = nameAt(fixedStamp || stamp());
   for (let step = 1; existsSync(path.join(backupDir, name)) && step < 1000; step += 1) name = nameAt(new Date(Date.now() + step).toISOString().replace(/[:.]/g, "-"));
   const target = path.join(backupDir, name);
-  db.exec(`VACUUM INTO '${target.replace(/'/g, "''")}'`);
+  // Önce geçici adla yazılır, bitince asıl adına alınır: yarıda kesilen (elektrik, servis durdurma) yedek geçerli bir
+  // yedek gibi listelenip geri yüklenemez. Eski yarım dosyalar (1 saatten eski) temizlenir.
+  const partial = `${target}.yaziliyor`;
+  for (const stale of readdirSync(backupDir).filter(file => file.endsWith(".yaziliyor"))) {
+    try {
+      if (Date.now() - statSync(path.join(backupDir, stale)).mtimeMs > 3_600_000) rmSync(path.join(backupDir, stale), { force: true });
+    } catch {
+      // başka süreç yazıyor olabilir
+    }
+  }
+  rmSync(partial, { force: true });
+  db.exec(`VACUUM INTO '${partial.replace(/'/g, "''")}'`);
   let identity = false;
   if (code) {
     try {
-      writeBackupIdentity(target, company, { label: safeLabel });
+      writeBackupIdentity(partial, company, { label: safeLabel });
       identity = true;
     } catch {
       // Kimlik yazılamasa da yedek geçerlidir; şirketin kendi klasöründe durduğu için yalnız o şirkete geri yüklenir.
     }
   }
+  renameSync(partial, target);
   pruneBackups(backupDir, keep);
   return { name, path: target, size: statSync(target).size, folder: path.basename(backupDir), company: company ? { id: company.id, code: company.code, name: company.name } : null, identity };
 }
@@ -146,7 +168,8 @@ export function createBackup(db, backupDir, { label = "", keep = 30, company = n
  */
 export function moveBackupFolder(from, to) {
   if (path.resolve(from) === path.resolve(to) || !existsSync(from)) return { moved: 0, left: 0 };
-  const sameIgnoringCase = path.resolve(from).toLocaleLowerCase("tr-TR") === path.resolve(to).toLocaleLowerCase("tr-TR");
+  // Windows (NTFS) gibi yerel ayarsız büyük harfle: "MAVI" = "Mavi", "İ" ≠ "i".
+  const sameIgnoringCase = path.resolve(from).toUpperCase() === path.resolve(to).toUpperCase();
   if (!existsSync(to) || sameIgnoringCase) {
     try {
       mkdirSync(path.dirname(to), { recursive: true });
@@ -215,6 +238,16 @@ export function runDueBackups({ targets, intervalHours, log, onBackup = null }) 
   for (const target of items) {
     const latest = listBackups(target.backupDir)[0];
     if (latest && Date.now() - latest.mtimeMs < intervalMs) continue;
+    // Son yedekten beri veri dosyası hiç değişmediyse (kimsenin açmadığı şirket) aynı içerikli yeni kopya alınmaz.
+    if (latest && target.changedAt) {
+      let changed = Infinity;
+      try {
+        changed = target.changedAt();
+      } catch {
+        changed = Infinity;
+      }
+      if (Number.isFinite(changed) && changed <= latest.mtimeMs) continue;
+    }
     try {
       const result = target.run();
       if (!result) continue;

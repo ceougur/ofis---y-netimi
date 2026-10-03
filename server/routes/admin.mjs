@@ -310,10 +310,19 @@ export function registerAdminRoutes(router, context) {
     ok(res, backups.list(admin).map(backupView));
   });
 
+  // Son 001 geri yüklemesinin sonucu (sunucu açılışında uygulanır): 3 gün boyunca Yedekler ekranında görünür.
+  const lastRestore = () => {
+    try {
+      const value = JSON.parse(store.setting("backup.lastRestore", "") || "null");
+      return value && Date.now() - Date.parse(value.at) < 3 * 86_400_000 ? value : null;
+    } catch {
+      return null;
+    }
+  };
   // Klasörler: Yedekler ekranındaki "Her şirketin yedeği kendi klasöründe" açıklaması ve Yedek Al seçenekleri.
   router.get("/api/admin/backups/folders", async ({ req, res }) => {
     const admin = auth.requirePermission(req, "system.manage");
-    ok(res, { root: backups.root(), current: companies.selectedFor(admin), companies: backups.accessible(admin).map(company => companyView(admin, company)), pending: backups.pendingRestore(), supervised: Boolean(supervisorLink?.supervised) });
+    ok(res, { root: backups.root(), current: companies.selectedFor(admin), companies: backups.accessible(admin).map(company => companyView(admin, company)), pending: backups.pendingRestore(), lastRestore: lastRestore(), supervised: Boolean(supervisorLink?.supervised) });
   });
 
   // Yedek Al: scope "all" (Tüm Şirketler, varsayılan) ya da "one" (companyId; verilmezse seçili şirket).
