@@ -72,7 +72,7 @@ export function listBackups(backupDir) {
 // rutin kopyalar güvenlik yedeklerini klasörden itip silemez (gözden geçirme bulgusu: haftada bir siliniyorlardı).
 export const SAFETY_KEEP = 20;
 // Güvenlik yedeği: bilinen işlem öncesi etiketler (bilinmeyen etiket rutin sayılır; eski davranış).
-const SAFETY_LABEL = /^(?:sifirlama-oncesi|silme-oncesi|geri-yukleme-oncesi|guncelleme-oncesi|basarisiz-guncelleme|pre-migration|sayfa-silme-oncesi)(?:-|$)/;
+const SAFETY_LABEL = /^(?:sifirlama-oncesi|silme-oncesi|geri-yukleme-oncesi|guncelleme-oncesi|basarisiz-guncelleme|pre-migration|sayfa-silme-oncesi|ayirma-oncesi)(?:-|$)/;
 const isRoutine = name => !SAFETY_LABEL.test(parseBackupName(name)?.label || "");
 export function pruneBackups(backupDir, keep) {
   const removed = [];

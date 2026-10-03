@@ -1304,6 +1304,7 @@
           </tr>`,
         )
         .join("") || '<tr><td colspan="4" class="adm-muted">Şirket yok.</td></tr>';
+      renderCompanyConflicts(data.conflicts || []);
       renderCompanyAccess(access);
       renderCompanyReportPick(data.companies);
       loadCompanyStorage();
@@ -1311,6 +1312,45 @@
       body.innerHTML = `<tr><td colspan="4">${esc(error.message)}</td></tr>`;
     }
   }
+  // Aynı veri dosyasını kullanan şirketler (v2.0.21): 2.0.17–2.0.19'da "kod değiştir + eski kodla yeni şirket aç" sırasını
+  // yaşamış kurulum. Dosyayı koruyan şirket yerinde kalır; öbürü "Ayır" ile kendi klasörüne alınır (önce yedek, kayıt silinmez).
+  function renderCompanyConflicts(groups) {
+    const box = $("#adm-company-conflicts");
+    if (!box) return;
+    box.hidden = !groups.length;
+    box.innerHTML = groups.length
+      ? `<h2>Aynı Veri Dosyasını Kullanan Şirketler</h2>${groups
+          .map(group => {
+            const keeper = group.companies.find(item => item.keeper);
+            const others = group.companies.filter(item => !item.keeper);
+            return `<p><b>${group.companies.map(item => esc(item.label)).join(" ve ")}</b> aynı veri dosyasını kullanıyor: birine girilen kayıt öbüründe de görünüyor. ${esc(keeper?.label || "")} dosyayı korur; öbürünü “Ayır” ile kendi klasörüne alın. Ayırma anındaki kayıtlar iki şirkette de kalır; sonra her şirkette ona ait olmayan kayıtları silin (Silinenler'den geri alınabilir).</p>
+              <div class="adm-actions">${others.map(item => `<button type="button" class="hof-button hof-button-small" data-c-separate="${esc(item.id)}">Ayır: ${esc(item.label)}</button>`).join("")}</div>`;
+          })
+          .join("")}`
+      : "";
+  }
+  function separateCompany(item) {
+    HOF.formModal({
+      title: `Şirketi Ayır · ${item.code} · ${item.name}`,
+      eyebrow: "ŞİRKET",
+      intro: "Önce ortak veri dosyasının yedeği alınır. Sonra bu şirket, ortak verinin bugünkü kopyasıyla kendi klasörüne taşınır; bundan sonra öbür şirketle hiçbir kayıt paylaşmaz. Hiçbir kayıt silinmez. Onay için şirket kodunu ve parolanızı yazın.",
+      fields: [
+        { name: "confirm", label: `Onay: şirket kodunu (${item.code}) ya da adını yazın`, required: true, autofocus: true, autocomplete: "off" },
+        { name: "password", label: "Parolanız", type: "password", required: true, autocomplete: "current-password" },
+      ],
+      submitLabel: "Şirketi Ayır",
+      onSubmit: async values => {
+        const result = await HOF.api(`/api/companies/${encodeURIComponent(item.id)}/separate`, { method: "POST", body: { confirm: values.confirm, password: values.password } });
+        HOF.toast(`“${item.code} · ${item.name}” ayrıldı; artık kendi veri dosyasını kullanıyor. Ayırma öncesi yedek: ${result.backup || "—"}`, { type: "success", timeout: 10000 });
+        loadCompanies();
+      },
+    });
+  }
+  $("#adm-company-conflicts")?.addEventListener("click", event => {
+    const id = event.target.closest("[data-c-separate]")?.dataset.cSeparate;
+    const item = id ? companyRow(id) : null;
+    if (item) separateCompany(item);
+  });
   // Veri ve yedek klasörleri (v2.0.20): veri dosyası, boyutu, cari/kayıt sayısı, son yedek ve yedek klasörü.
   async function loadCompanyStorage() {
     const body = $("#adm-company-storage");

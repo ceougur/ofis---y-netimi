@@ -5,8 +5,9 @@ import { HttpError, limited, ok, readJson, sendBuffer, text } from "../lib/http.
 import { roundMoney } from "../lib/money.mjs";
 import { tablePdf, tl } from "../lib/report-pdf.mjs";
 import { buildXlsx } from "../lib/xlsx-write.mjs";
+import { separateCompany } from "../lib/company-separate.mjs";
 
-export function registerCompanyRoutes(router, { store, auth, audit, companies, appFor, resetData, config, events, backups, closeCompany, busyCompanies }) {
+export function registerCompanyRoutes(router, { store, auth, audit, companies, appFor, resetData, config, events, backups, closeCompany, busyCompanies, withCompanyDb, log }) {
   const requireManage = req => auth.requirePermission(req, "system.manage");
   // Geri yüklenen ya da silinen şirkette aynı anda ikinci işlem (ad değiştirme, sıfırlama, silme) yapılmaz.
   const notBusy = company => {
@@ -27,10 +28,28 @@ export function registerCompanyRoutes(router, { store, auth, audit, companies, a
     if (typed !== company.code && typed.toLocaleLowerCase("tr-TR") !== company.name.toLocaleLowerCase("tr-TR")) throw new HttpError(400, `Onay için şirket kodunu (${company.code}) ya da adını yazın.`, { code: "confirm" });
   };
 
+  // Veri dosyası paylaşan şirketler (v2.0.21): kullanıcının görebildiği şirketleri içeren gruplar.
+  const conflictsFor = user =>
+    companies
+      .conflicts()
+      .filter(group => group.companies.some(item => companies.canAccess(user, item.id)))
+      .map(group => ({ keeper: group.keeper, companies: group.companies.map(item => ({ id: item.id, code: item.code, name: item.name, label: item.label, keeper: item.keeper })) }));
   router.get("/api/companies", async ({ req, res }) => {
     const user = auth.requireUser(req);
     const manage = Boolean(user.permissions?.includes?.("system.manage")) || user.role === "admin";
-    ok(res, { current: companies.selectedFor(user), companies: companies.listFor(user), all: manage ? companies.list().map(item => shape(user, item)) : undefined, canManage: manage, nextCode: manage ? companies.nextCode() : "" });
+    ok(res, { current: companies.selectedFor(user), companies: companies.listFor(user), all: manage ? companies.list().map(item => shape(user, item)) : undefined, canManage: manage, nextCode: manage ? companies.nextCode() : "", conflicts: conflictsFor(user) });
+  });
+  // Ayır (v2.0.21): ortak veri dosyasını kullanan şirketi kendi klasörüne alır (önce yedek; kayıt silinmez). Onay: kod/ad + parola.
+  router.post("/api/companies/:id/separate", async ({ req, res, params }) => {
+    const user = requireManage(req);
+    const body = await readJson(req);
+    const company = companies.require(params.id);
+    confirmCode(company, body.confirm);
+    confirmPassword(user, body.password);
+    const result = await separateCompany({ registry: companies, backups, withDb: withCompanyDb, closeCompany, busy: busyCompanies, dataDir: config.dataDir, id: company.id, log });
+    audit(user, "company.separated", company.id, { code: company.code, name: company.name, from: result.from, to: result.to, backup: result.backup, sharedWith: result.sharedWith });
+    publish(user, { kind: "companies" });
+    ok(res, { company: shape(user, result.company), backup: result.backup, sharedWith: result.sharedWith, conflicts: conflictsFor(user) });
   });
   router.post("/api/companies/select", async ({ req, res }) => {
     const user = auth.requireUser(req);

@@ -12,6 +12,7 @@
   let state = null; // { current, companies: [...], canManage, nextCode }
   let pending = null;
   let node = null;
+  let warnNode = null;
 
   const canManage = () => Boolean(state?.canManage);
   const current = () => state?.companies.find(item => item.current) || state?.companies[0] || null;
@@ -97,8 +98,9 @@
     if (!sidebar || !node) return;
     const nav = [...sidebar.children].find(child => child.tagName === "NAV");
     if (nav) {
-      if (node.parentNode !== sidebar || node.nextElementSibling !== nav) sidebar.insertBefore(node, nav);
+      if (node.parentNode !== sidebar || node.nextElementSibling !== (warnNode || nav)) sidebar.insertBefore(node, nav);
     } else if (node.parentNode !== sidebar) sidebar.prepend(node);
+    if (warnNode && node.nextElementSibling !== warnNode) node.after(warnNode);
     sidebar.classList.add("hof-has-session");
     syncCard();
   }
@@ -131,8 +133,21 @@
         <span class="hof-session-chevron">${CHEVRON}</span>
       </button>
       <div class="hof-session-menu" id="hof-company-menu" ${open ? "" : "hidden"}>${menuHtml()}</div>`;
+    renderWarning(company);
     place();
     if (open) positionMenu();
+  }
+  // Açık şirket başka bir şirketle aynı veri dosyasını kullanıyorsa (v2.0.21) şirket kutusunun altında uyarı.
+  function renderWarning(company) {
+    const group = (state?.conflicts || []).find(item => item.companies.some(member => member.id === company.id));
+    if (!group) {
+      warnNode?.remove();
+      warnNode = null;
+      return;
+    }
+    if (!warnNode) warnNode = HOF.el("p", { id: "hof-company-warn", class: "hof-company-warn", role: "alert" });
+    const others = group.companies.filter(item => item.id !== company.id).map(item => esc(item.label)).join(", ");
+    warnNode.innerHTML = `<b>Dikkat:</b> bu şirket ${others} ile aynı veri dosyasını kullanıyor; kayıtlar ortak. ${canManage() ? '<a href="/admin.html#companies">Şirketler\'de Ayır</a>' : "Yöneticinize bildirin."}`;
   }
 
   function positionMenu() {

@@ -128,6 +128,36 @@ export function createCompanyRegistry({ dataDir, backupDir, hubStore, log = { in
     }
     return path.join("sirketler", `${code}-${randomUUID().slice(0, 8)}`);
   }
+  // Veri dosyası çakışması (v2.0.21): 2.0.17–2.0.19'da "kod değiştir + eski kodla yeni şirket aç" sırasını yaşamış kurulumda
+  // iki şirket kayıtta AYNI veri klasörünü gösterir (2.0.20 yalnız yenisini önler). Klasörler tam yol ve Windows gibi
+  // büyük/küçük harf ayrımsız karşılaştırılır; 001 dışı bir şirketin kök klasörü göstermesi (bozuk kayıt) de çakışmadır.
+  // Gruptaki ilk şirket (001 ya da en eski) dosyayı korur; öbürleri Yönetim → Şirketler → Ayır ile kendi klasörüne alınır.
+  const dataKey = company => path.resolve(dirsOf(company).dataDir).toUpperCase();
+  function conflicts() {
+    const groups = new Map();
+    for (const company of list()) {
+      const key = dataKey(company);
+      if (!groups.has(key)) groups.set(key, []);
+      groups.get(key).push(company);
+    }
+    return [...groups.values()]
+      .filter(group => group.length > 1)
+      .map(group => {
+        const sorted = [...group].sort((a, b) => Number(b.root) - Number(a.root) || String(a.createdAt || "").localeCompare(String(b.createdAt || "")) || a.code.localeCompare(b.code));
+        return { dataDir: dirsOf(sorted[0]).dataDir, keeper: sorted[0].id, companies: sorted.map(item => ({ id: item.id, code: item.code, name: item.name, label: item.label, root: item.root, keeper: item.id === sorted[0].id })) };
+      });
+  }
+  const conflictOf = id => conflicts().find(group => group.companies.some(item => item.id === id)) || null;
+  // 001 dışı şirket kök veri klasörünü gösteriyorsa açılmaz: açılışta ortak kullanıcı tablosunu yeniden yazardı.
+  const sharesRoot = company => Boolean(company) && company.id !== ROOT_COMPANY_ID && dataKey(company) === path.resolve(dataDir).toUpperCase();
+  // Ayırma: şirkete hiçbir şirketin kullanmadığı, diskte olmayan yeni veri klasörü verilir (kopyalama company-separate.mjs'de).
+  function setDataDir(id, dir) {
+    require(id);
+    if (id === ROOT_COMPANY_ID) throw new HttpError(409, "İlk şirketin (001) veri klasörü değiştirilemez.");
+    save({ companies: registry.companies.map(item => (item.id === id ? { ...item, dir, updatedAt: now() } : item)) });
+    return get(id);
+  }
+
   // Yedek klasörü: başka şirketin kullandığı ya da içinde (silinmiş şirketten kalma) yedek bulunan ad verilmez.
   function freeBackupFolder(base, exceptId = "") {
     for (let n = 1; n < 1000; n += 1) {
@@ -258,7 +288,11 @@ export function createCompanyRegistry({ dataDir, backupDir, hubStore, log = { in
       .map(item => ({ id: item.id, code: item.code, name: item.name, label: item.label, root: item.root, current: item.id === current }));
   };
 
-  return { file, list, get, require, byCode, nextCode, dirsOf, create, update, settleOldBackupDirs, remove, accessOf, canAccess, selectedFor, select, setAccess, listFor, ROOT_COMPANY_ID };
+  for (const group of conflicts()) {
+    log.warn?.(`DİKKAT: ${group.companies.map(item => item.label).join(" ve ")} şirketleri aynı veri klasörünü kullanıyor (${group.dataDir}); kayıtları ortak. Yönetim → Şirketler → Ayır ile ayırın.`);
+  }
+
+  return { file, list, get, require, byCode, nextCode, dirsOf, create, update, settleOldBackupDirs, remove, accessOf, canAccess, selectedFor, select, setAccess, listFor, conflicts, conflictOf, sharesRoot, freeDataDir, setDataDir, ROOT_COMPANY_ID };
 }
 
 // Kullanıcı tablosunun şirket veri tabanına aynası (işlem geçmişi, Silinenler, "Kaydeden" gibi adlar için). Kimlik

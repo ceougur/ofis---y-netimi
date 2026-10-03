@@ -3211,6 +3211,20 @@ html.hof-no-haciz .filter-strip { display: none !important; }
   position: relative;
   margin: 22px 0 0;
 }
+.hof-company-warn {
+  margin: 8px 0 0;
+  padding: 8px 10px;
+  border: 1px solid #f1b8b2;
+  border-radius: 11px;
+  background: #fff6f5;
+  color: #8a1c12;
+  font: 600 12px/1.45 var(--do-font);
+}
+.hof-company-warn a {
+  color: #b42318;
+  font-weight: 800;
+  text-decoration: underline;
+}
 .sidebar.hof-has-session > nav.mt-10 {
   margin-top: 18px;
 }
