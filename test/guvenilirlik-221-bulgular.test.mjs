@@ -1,7 +1,7 @@
 // 2.0.21 güvenilirlik testlerinin (rastgele sıra, tatbikat, göç, arıza) BULDUĞU hataların kalıcı regresyon testleri.
 // Her biri düzeltmeden önce kırmızıydı; bulan test ve tohum yanında yazılı.
 import assert from "node:assert/strict";
-import { mkdtempSync, readdirSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdtempSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { DatabaseSync } from "node:sqlite";
@@ -73,6 +73,47 @@ describe("disk dolu: yarım yedek dosyası diskte kalmaz", () => {
     } finally {
       db.close();
       rmSync(dir, { recursive: true, force: true });
+    }
+  });
+});
+
+describe("veri dosyası ya da klasörü kaybolan şirket boş açılmaz", () => {
+  // Bulan: arıza testi (guvenilirlik-221-ariza, "veri dosyası silinmiş" / "veri klasörü tamamen silinmiş"). Şirketin veri
+  // dosyası (ya da klasörü) diskten kaybolunca (taşınma, virüs programı, disk hatası) program sessizce YENİ, BOŞ bir veri
+  // tabanı açıyordu: kullanıcı şirketini boş görüp üstüne kayıt giriyor, boş dosyanın otomatik yedekleri de zamanla eski
+  // dolu yedekleri budayabiliyordu. Klasör tamamen silinmişse yedekten geri yükleme de çalışmıyordu (geçici dosya yazılacak
+  // klasör yok). Artık: 503 company-unavailable (001'e düşmez, boş dosya açılmaz); Yedekler'den geri yükleme veriyi getirir.
+  test("dosya silinmiş: 503, boş dosya oluşmaz; klasör silinmiş: 503, geri yükleme çalışır; yeni şirket yine açılır", async () => {
+    const server = await startTestServer();
+    try {
+      const admin = await loginAdmin(server);
+      const company = data(await admin.post("/api/companies", { code: "002", name: "Kaybolan", select: true })).company;
+      assert.equal((await admin.post("/api/workspace/accounts", { name: "Kaybolmaması Gereken", type: "customer" })).status, 200);
+      const backup = data(await admin.post("/api/admin/backups", { scope: "one", companyId: company.id })).backups[0].name;
+      const dir = path.join(server.dataDir, "sirketler", "002");
+      const file = path.join(dir, "destekofis.sqlite");
+
+      await server.app.context.closeCompany(company.id);
+      for (const suffix of ["", "-wal", "-shm"]) rmSync(`${file}${suffix}`, { force: true });
+      const missing = await admin.get("/api/workspace/accounts");
+      assert.equal(missing.status, 503, JSON.stringify(missing.data));
+      assert.equal(missing.data.code, "company-unavailable");
+      assert.equal((await admin.post("/api/workspace/accounts", { name: "Boşa Yazılan", type: "customer" })).status, 503);
+      assert.equal(existsSync(file), false, "boş veri tabanı oluşturulmadı");
+
+      rmSync(dir, { recursive: true, force: true });
+      assert.equal((await admin.get("/api/workspace/accounts")).status, 503);
+      assert.equal(existsSync(dir), false, "boş klasör oluşturulmadı");
+      const restored = await admin.post("/api/admin/backups/restore", { name: backup, company: company.id, confirm: "002", password: ADMIN_PASSWORD });
+      assert.equal(restored.status, 200, JSON.stringify(restored.data));
+      assert.deepEqual(data(await admin.get("/api/workspace/accounts")).accounts.map(item => item.name), ["Kaybolmaması Gereken"]);
+
+      const fresh = data(await admin.post("/api/companies", { name: "Yepyeni", select: true })).company;
+      assert.equal((await admin.get("/api/workspace/accounts")).status, 200, "yeni açılan (boş klasörlü) şirket açılır");
+      await server.app.context.closeCompany(fresh.id);
+      assert.equal((await admin.get("/api/workspace/accounts")).status, 200, "yeni şirket kapatılıp yeniden açılır");
+    } finally {
+      await server.close();
     }
   });
 });

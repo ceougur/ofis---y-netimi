@@ -1,6 +1,6 @@
 // DestekOfis merkezi sunucusu: uygulamayı kurar, göçleri çalıştırır ve HTTP isteklerini yönlendirir.
 import { createServer } from "node:http";
-import { existsSync, mkdirSync } from "node:fs";
+import { existsSync, mkdirSync, readdirSync } from "node:fs";
 import path from "node:path";
 import { createAudit } from "./lib/audit.mjs";
 import { createAccess } from "./lib/access.mjs";
@@ -356,6 +356,15 @@ export function createApp(overrides = {}) {
     let child = children.get(company.id);
     if (!child) {
       const dirs = companies.dirsOf(company);
+      // v2.0.21 (arıza testi bulgusu): veri dosyası ya da klasörü kaybolmuş şirket için sessizce YENİ, BOŞ veri tabanı
+      // açılmaz (kullanıcı şirketini boş görüp üstüne yazıyordu). Yalnız hiç açılmamış yeni şirket (boş klasör) oluşturulur;
+      // bir kez açılan şirket ortak katmanda işaretlenir. Kayıp dosyada istek 503 alır; Yedekler'den geri yüklenir.
+      const openedKey = `company.opened.${company.id}`;
+      const file = resolveDbPath(dirs.dataDir);
+      if (!existsSync(file)) {
+        const fresh = existsSync(dirs.dataDir) && readdirSync(dirs.dataDir).length === 0 && !store.setting(openedKey, "");
+        if (!fresh) throw new Error(`veri dosyası bulunamadı: ${file}`);
+      }
       mkdirSync(dirs.dataDir, { recursive: true });
       child = createApp({
         ...overrides,
@@ -372,6 +381,7 @@ export function createApp(overrides = {}) {
       });
       child.usersStamp = usersFingerprint(store);
       children.set(company.id, child);
+      if (!store.setting(openedKey, "")) store.setSetting(openedKey, "1");
       log.info(`Şirket açıldı: ${company.code} · ${company.name}`);
     } else {
       const stamp = usersFingerprint(store);
