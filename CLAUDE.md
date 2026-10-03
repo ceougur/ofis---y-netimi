@@ -15,6 +15,16 @@ Bu dosya oturumlar arasında taşınan hafızadır. Her oturumun başında okunu
   gerçek kullanıcı senaryosu, sıfırdan, arayüzden, uçtan uca; sonuç sayılarla (bakiye, kasa, kart) karşılaştırılır.
 - Her yeni modül için "boş veri", "kayıt önce/cari önce/taksit önce" sıralamaları ve "aynı adlı iki kişi" durumu denenir.
 - Rapor ekranları için: boş dönem, tek kayıt, geçmiş/gelecek tarih, ileri tarihli hareket, yetkisiz kullanıcı.
+- (2.0.21, kullanıcı: "öz eleştiriden ders çıkar, tekrarlama; uydurma verilerle değil") Her sürümde ayrıca:
+  - TEST VERİSİ programın KENDİSİNİN ürettiği veridir: eski sürüm verisi, o sürümün GERÇEK kodu (git etiketi v<s>)
+    çalıştırılıp API'sinden girilerek üretilir; elle yazılmış kayıt defteri/yedek düzeni yalnız ek denetimdir, kanıt
+    sayılmaz. Hacim gerçekçi (binlerce cari/satır, 12+ ay, 3–5 şirket). Müşteri verisine erişilmez.
+  - "Nasıl bozulur?" listesi önce yazılır (sıra değiştir, ad/kod değiştir, sil + aynı adla yeniden aç, iki kişi aynı anda,
+    eski sürümden gelen veri, yarıda kesilme); testler bu listeden çıkar.
+  - Rastgele sıra testi (`npm run test:guvenilirlik`) + değişmez kurallar; yedek tatbikatı (yedek → çalış → geri yükle →
+    sayılar → yeniden çalış); eski sürümlerden zincirleme göç; arıza (kesinti, disk dolu, kilitli dosya).
+  - Her sürümde bağımsız gözden geçirme (ayrı ajan, yalnız hata arar).
+  - Teslimde üç başlık: DENENEN, DENENMEYEN, BİLİNEN SINIRLAR. "Testler sorunsuz" tek başına yazılmaz.
 
 ## Kullanıcının tekrar eden şikâyetleri (aynı hataya düşme)
 1. "Onca test yaptım deyip mantık hatalarını görmüyorsun." → Test sayısı değil senaryo çeşidi; kartları aç, kullan.
@@ -446,9 +456,9 @@ Bağlam kopsa da bu düzen değişmez. Kullanıcı "zip ver" dediğinde şu üç
   ceougur/destekofis#8 açık (PDF yayındakiyle aynı, 84c256d7…); birleştirme kullanıcı onayıyla.
 - 2.0.21 GÜVENİLİRLİK (kullanıcı, 03.10.2026: "bir şirketin yedeğinin başka şirkete yazılması tam bir fiyasko, çok endişeleniyorum;
   test çeşitliliğini bilişim sektörünce bilinen testlerle mi söylemem lazım?" → önerim → "yap"). YENİ ÖZELLİK YOK, yalnız:
-  [ ] 1. Açılışta "iki şirket aynı veri dosyasını mı gösteriyor?" denetimi (2.0.17–2.0.19'da kod değiştir + eski kodla yeni
+  [x] 1. Açılışta "iki şirket aynı veri dosyasını mı gösteriyor?" denetimi (2.0.17–2.0.19'da kod değiştir + eski kodla yeni
          şirket aç sırasını yaşamış kurulumlar; 2.0.20 yalnız yenisini önlüyor). Varsa yöneticiye açık uyarı + ayırma yolu;
-         hiçbir kayıt silinmez, önce yedek.
+         hiçbir kayıt silinmez, önce yedek. YAPILDI d636b8f (`company-separate.mjs`, sirket-ayir-221, senaryo-221).
   [ ] 2. Şirket ve yedek işlemleri için RASTGELE SIRA testi (binlerce işlem: aç, kod/ad değiştir, sil, yedek al, geri yükle,
          cari gir) + değişmez kurallar: bir şirketin verisi öbüründe görünmez; iki şirket aynı dosyayı kullanmaz; yedek
          yalnız kendi şirketinin klasöründe ve kimliğiyle; geri yükleme sayıları yedek anındakine döner.
@@ -456,7 +466,7 @@ Bağlam kopsa da bu düzen değişmez. Kullanıcı "zip ver" dediğinde şu üç
          (001 ve 002; eski sürüm yedeğiyle de).
   [ ] 4. GÖÇ testi: 2.0.17'den bu yana her sürümün veri düzeninden güncelleme; hiçbir kayıt kaybolmaz.
   [ ] 5. ARIZA testi: yedek/geri yükleme ortasında kesinti, disk dolu, kilitli dosya → veri bozulmaz.
-  [ ] 6. Bu test türleri aşağıdaki "Test kuralı"na her sürümde koşulacak kural olarak yazılır; teslimde "denenen /
+  [x] 6. Bu test türleri aşağıdaki "Test kuralı"na her sürümde koşulacak kural olarak yazılır; teslimde "denenen /
          denenmeyen / bilinen sınırlar" açıkça yazılır; her sürümde bağımsız gözden geçirme.
 - 2.0.20 YAPILACAKLAR (kullanıcı "yapılacaklara not al" dedi, 03.10.2026; "yap" denince başlanır; ayrıntı ve
   kanıt hemen altındaki ADAYI maddesinde):
