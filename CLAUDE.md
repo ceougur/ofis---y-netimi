@@ -494,6 +494,11 @@ Bağlam kopsa da bu düzen değişmez. Kullanıcı "zip ver" dediğinde şu üç
   c93ab9c). Kapsama, mutasyon, lint, bağımlılık taraması, yük/dayanıklılık, beta, sahadan hata bildirimi YOK.
   ÖNERİ (kullanıcı "yap" derse): 52 yüksek riskli açığa hata testi (önce para/dönem kilidi/yetki/şirket); 19 senaryonun hepsi
   CI'de; kapsama ölçümü CI'de ve düşerse kırmızı.
+  EK (kullanıcı, 04.10.2026): iki test türü de listeye: (a) YÜK/EŞZAMANLILIK — birden çok personel aynı anda farklı
+  şirketlerde (001'de fatura, 002'de tahsilat…) ve aynı şirkette yoğun yazar; sonuç: veri karışmaz, kayıp/çift kayıt yok,
+  mutabakat 0, yanıt süreleri ölçülür. (b) KÖTÜ NİYETLİ (güvenlik) — yetkisiz personel başka şirketin/işlemin verisine
+  ulaşmaya, ?hofCompany= ile şirket değiştirmeye, yetki dışı uçları çağırmaya, bozuk/aşırı büyük girdi göndermeye çalışır;
+  bağımlılık taraması. Hepsi reddedilmeli, veri bozulmamalı.
   [x] 6. Bu test türleri aşağıdaki "Test kuralı"na her sürümde koşulacak kural olarak yazılır; teslimde "denenen /
          denenmeyen / bilinen sınırlar" açıkça yazılır; her sürümde bağımsız gözden geçirme.
 - 2.0.20 YAPILACAKLAR (kullanıcı "yapılacaklara not al" dedi, 03.10.2026; "yap" denince başlanır; ayrıntı ve
