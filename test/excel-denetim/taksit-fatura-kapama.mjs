@@ -18,6 +18,11 @@ const must = async (label, promise) => {
 };
 const item = await must("ürün", c.post("/api/workspace/stock", { kind: "service", code: "HZM", name: "Hizmet", unit: "Adet", salePrice: "1000" }));
 const out = [];
+const nextMonth = day => {
+  const [y, m, d] = day.split("-").map(Number);
+  const next = new Date(Date.UTC(y, m, Math.min(d, 28)));
+  return next.toISOString().slice(0, 10);
+};
 async function scenario(label, steps) {
   const acc = await must("cari", c.post("/api/workspace/accounts", { name: `Deneme ${label}`, type: "customer", registeredOn: "2025-01-01", phone: `0500 000 00 ${String(out.length + 10)}` }));
   let planId = "";
@@ -28,14 +33,18 @@ async function scenario(label, steps) {
       const doc = await must("fatura oku", c.get(`/api/workspace/invoices/${invoiceId}`));
       planId = doc.planId || doc.plan?.id;
     }
-    if (step.plan) planId = (await must("kart", c.post("/api/workspace/plans", { name: acc.name, registeredOn: step.date, total: String(step.plan), accountId: acc.id, mode: "auto", count: "3", firstDue: "2025-03-01", ...(step.covers ? { coversBalance: true } : {}) }))).id;
+    if (step.plan) planId = (await must("kart", c.post("/api/workspace/plans", { name: acc.name, registeredOn: step.date, total: String(step.plan), accountId: acc.id, mode: "auto", count: "3", firstDue: step.firstDue || nextMonth(step.date), ...(step.covers ? { coversBalance: true } : {}) }))).id;
     if (step.collect) await must("tahsilat", c.post(`/api/workspace/accounts/${acc.id}/entries`, { kind: "in", amount: step.collect, date: step.date, method: "cash", note: "cari kartından tahsilat" }));
     if (step.planCollect) await must("kart tahsilatı", c.post(`/api/workspace/plans/${planId}/entries`, { kind: "in", amount: step.planCollect, date: step.date, method: "bank", note: "taksit kartından tahsilat" }));
+    // F: cari kartından "Kapatılacak Fatura" seçilerek (bağlı) tahsilat. G: kartı kapat (kalan düşülür).
+    if (step.linkedCollect) await must("bağlı tahsilat", c.post(`/api/workspace/accounts/${acc.id}/entries`, { kind: "in", amount: step.linkedCollect, date: step.date, method: "cash", invoiceId, note: "Kapatılacak Fatura seçilerek" }));
+    if (step.closePlan) await must("kartı kapat", c.put(`/api/workspace/plans/${planId}`, { status: "closed" }));
   }
   const inv = await must("fatura oku", c.get(`/api/workspace/invoices/${invoiceId}`));
   const plan = await must("kart oku", c.get(`/api/workspace/plans/${planId}`));
   const account = (await must("cari oku", c.get(`/api/workspace/accounts?status=all&limit=50&q=${encodeURIComponent(acc.name)}`))).accounts.find(a => a.id === acc.id);
-  const invOpen = Number(inv.open ?? inv.settle?.open ?? 0);
+  if (inv.open === undefined || plan.totals?.remaining === undefined) throw new Error("fatura açığı ya da kart kalanı okunamadı");
+  const invOpen = Number(inv.open);
   const planLeft = Number(plan.totals.remaining);
   const row = { senaryo: label, adimlar: steps, fatura: { odenecek: inv.tryPayable, odenen: inv.paid, acik: invOpen, durum: inv.payStateLabel }, taksitKarti: { toplam: plan.totals.total, odenen: plan.totals.paid, kalan: planLeft }, cariBakiye: account.balance, acikToplam: Math.round((invOpen + planLeft) * 100) / 100 };
   row.tutarli = Math.abs(row.acikToplam - account.balance) < 0.005;
@@ -61,6 +70,11 @@ try {
   const e = out.at(-1);
   e.tutarli = Math.abs(e.fatura.acik - e.taksitKarti.kalan) < 0.005;
   console.log(`  E için doğru ölçü: fatura açığı ${e.fatura.acik} = kendi taksit kartının kalanı ${e.taksitKarti.kalan} → ${e.tutarli ? "TUTARLI" : "TUTARSIZ"} (cari bakiye ${e.cariBakiye})`);
+  await scenario("F · taksitli fatura + Kapatılacak Fatura seçilerek tahsilat", [{ date: "2025-02-25", invoice: 3000, installments: 3, firstDue: "2025-03-25" }, { date: "2025-02-26", linkedCollect: 1000 }]);
+  const fRow = out.at(-1);
+  fRow.tutarli = Math.abs(fRow.fatura.acik - fRow.taksitKarti.kalan) < 0.005;
+  console.log(`  F için doğru ölçü: fatura açığı ${fRow.fatura.acik} = kendi taksit kartının kalanı ${fRow.taksitKarti.kalan} → ${fRow.tutarli ? "TUTARLI" : "TUTARSIZ"}`);
+  await scenario("G · önce fatura, sonra ayrı kart; karttan 3.000 tahsilat; kart kapatılır (kalan düşülür)", [{ date: "2025-03-01", invoice: 12720 }, { date: "2025-03-02", plan: 9000 }, { date: "2025-03-03", planCollect: 3000 }, { date: "2025-03-04", closePlan: true }]);
   const aging = await must("yaşlandırma", c.get("/api/workspace/report-center/alacak-yaslandirma"));
   console.log(`\nAlacak Yaşlandırma özeti: ${JSON.stringify(aging.summary)}`);
   const accounts = (await must("cariler", c.get("/api/workspace/accounts?status=all&limit=50"))).accounts;

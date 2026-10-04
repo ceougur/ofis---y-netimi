@@ -45,8 +45,8 @@ sonuç `cikti/ekran-hafta-sonuc.json`, beklenen `cikti/beklenen-hafta.json`, ekr
   değeri, faturalar (21 satış, 22 alış: adet, toplam, ödenen, açık), 8 çek/senet, 6 taksit kartı, Kasa / banka / POS, ek
   faturaların durumu → **FARK YOK**.
 - Programın Mutabakat Testi iki şirkette **59 / 59**. Tarayıcıda sayfa hatası **yok**.
-- Bulgu 1 (ödeme alanının silinmesi) bu koşuda tetiklenmedi: betik her alandan sonra bekleyip alanı denetleyen dikkatli bir
-  kullanıcı gibi yazdı (ilk turda normal hızda yazınca alan silinmişti).
+- Bulgu 1 bu koşuda tetiklenmedi, çünkü betik ödeme alanlarını programla doldurdu ve her alanı yeniden denetledi. Gerçek
+  klavye kullanıcısında evrak uyarısız düşüyor (bölüm 4, Bulgu 1).
 
 ### 3.2 Raporlar ↔ bağımsız beklenen (iki şirkette, ekrandan)
 
@@ -117,9 +117,10 @@ PDF/Excel: 64/64 dosyada ekrandaki sayılar aynı ve bağlantı pencerenin şirk
 
 ### 3.3 Farkların açıklaması
 
-- **Satış Faturaları · Kalan:** program 76.158,23, beklenen 79.448,83 → fark **3.290,60** = Bulgu 2: 3.000 (yeni cari Deniz
-  Yapı: taksit kartının tahsilatı faturaya da sayıldı) + 290,60 (C0122'nin taksitli faturası ISL-01905, başka iş için verilen
-  senetle "Ödendi" sayıldı; kendi taksit kartı ödenmemiş görünüyor).
+- **Satış Faturaları · Kalan:** program 76.158,23, beklenen 79.448,83 → fark **3.290,60** = 3.000 (yeni cari Deniz Yapı:
+  taksit kartının tahsilatı faturaya da sayıldı — Bulgu 2 A, gerçek hata) + 290,60 (C0122'nin taksitli faturası ISL-01905,
+  aynı carinin senediyle en eski borç sırasında "Ödendi" sayıldı; cari alacaklı olduğu için faturanın kapanması savunulabilir,
+  bu 290,60 bir KURAL FARKIDIR; yanlış olan kartın ödenmemiş görünmesidir — Bulgu 2 E).
 - **Açık Faturalar · Açık Alacak:** program 68.494,23, beklenen 71.494,23 → fark **3.000** = Bulgu 2 (taksitli faturalar bu
   raporda yer almaz; 290,60 bu yüzden burada görünmez).
 - **Banka ve POS · Yol = Banka / POS:** Bulgu 4; "Yol" seçimi uygulanmıyor, rapor birleşik kalıyor. Birleşik rapor doğru
@@ -127,17 +128,35 @@ PDF/Excel: 64/64 dosyada ekrandaki sayılar aynı ve bağlantı pencerenin şirk
 - Bunların dışında **açıklanmamış fark yok**: Kasa, KDV, Gider, Cari Mizanı, Cari Listesi, Taksit Kartları, Çek/Senet, Stok
   (51 kalemin her biri), yeni carinin ekstresi, Hesap Planı Mizanı (borç = alacak) ve ANLIK DURUM'un 6 kartı kuruşu
   kuruşuna tuttu.
-- PDF ve Excel: her raporun iki dosyası da indi, bağlantı pencerenin şirketini taşıdı, dosyalardaki sayılar ekranla aynı.
+- PDF ve Excel: her raporun iki dosyası da indi, bağlantı pencerenin şirketini taşıdı ve ekrandaki her tutar dosyada da
+  geçiyor. Bu bir içerme denetimidir (tutarın dosyada bir yerde bulunması), dosyanın satır satır ekranla aynı olduğunun kanıtı
+  değildir; adetler denetime girmedi.
 
 ## 4. Bulunan program hataları (kod değiştirilmedi; karar kullanıcıda)
 
-**Bulgu 1 — Fatura formunda ödeme alanları siliniyor (ilk turda bulundu; 2.0.21'de de var).** Ödeme tutarı faturayı
-tamamen karşılayınca ödeme bölümü ~0,6 sn sonra yeniden çiziliyor; bu sürede seçilen Vade tarihi ya da yazılan
-Banka/Şube siliniyor. Kaydet "vade tarihini seçin" der; veri bozulmaz. Yeniden üretim: `test/excel-denetim/form-insan.mjs`.
+**Bulgu 1 — Fatura formunda çek/senet ödeme satırı doldurulamıyor; klavyeyle girilince evrak SESSİZCE düşüyor (önem:
+YÜKSEK).** İlk turda "vade/banka siliniyor, veri bozulmaz" demiştim; bağımsız gözden geçirme bunun eksik ve yanlış olduğunu
+gösterdi, yeniden ürettim (`test/excel-denetim/odeme-alani-kaydet.mjs`, sonuç `cikti/odeme-alani-kaydet.json`):
+
+| Giriş biçimi (alış faturası, ödeme "Senet") | Ne oluyor |
+|---|---|
+| Klavye: Tutar → Tab → Vade → Tab → No → Tab → Banka, tam ödeme 240 | Tutar'dan sonra odak sayfaya düşüyor; Vade boş, "Ziraat" Tutar kutusuna yazılıyor. Kaydet yalnız olağan "kaydedilecek" sorusunu soruyor; **fatura "Açık 240" kaydediliyor, senet YOK** |
+| Klavye, kısmi ödeme 100 | aynı: **fatura açık, senet yok, uyarı yok** |
+| Fare: her alana tıklayıp yazma (kısmi ve tam) | Vade ve Banka'ya yazılan kayboluyor; Kaydet "1. evrakın vade tarihini seçin" der, kaydetmez |
+
+Kök neden (koddan, gözden geçirmeyle): değer her tuşta forma yazılıyor; ama bir ödeme alanından çıkılınca `change`
+işleyicisi (`client/assets/hof-invoices.js:1171-1174`) ödeme bölümünü HEMEN yeniden çiziyor (`:901`). Tıklanan ya da Tab ile
+gidilen alan çizimden önce sayfadan kopuyor, odak sayfaya düşüyor; sonraki tuşlar başka alana gidiyor. Tutarı 0 sayılan evrak
+kayıtta sessizce atılıyor (`:965`). İlk turdaki "≥ 600 ms beklenirse alan kalıyor" gözlemi yalnız tam ödemede ilk geçişi
+kurtarıyor; sonraki alanda yine bozuluyor. Kullanıcı senetle ödedim sanırken fatura ödenmemiş, portföy senetsiz kalır.
+Hafta testindeki çekli/senetli faturalar doğru girildi, çünkü betik alanları programla doldurup her alanı yeniden denetledi
+(iki şirket karşılaştırması da bunu doğruladı); gerçek klavye kullanıcısı bunu yapmaz.
 
 **Bulgu 2 — Taksit kartı ile fatura kapaması birbirini tutmuyor (yeni).** `server/lib/invoice-settle.mjs` fatura
 kapamasında taksit kartının borcunu ve tahsilatını genel "en eski borç" sırasına (FIFO) katıyor; Taksit modülü ise kartın
-ödenenini kendi içinde sayıyor. Değişmez kural "açık faturalar + kart kalanları = cari bakiye" bozuluyor
+ödenenini kendi içinde sayıyor; aynı para iki yerde sayılıyor ya da hiçbir yerde sayılmıyor. Denemede her cari yalnız
+fatura + kart taşıdığı için ölçü "açık faturalar + kart kalanları = cari bakiye" (D, E, F, G'de doğru ölçü satırda yazılı;
+genel bir kural olarak bu ölçü alacaklı caride ve faturasız borçta geçerli değildir — gözden geçirme notu)
 (`test/excel-denetim/taksit-fatura-kapama.mjs`, sonuç `cikti/taksit-fatura-kapama.json`):
 
 | Senaryo | Programda fatura | Taksit kartı | Cari bakiye | Sorun |
@@ -146,24 +165,43 @@ kapamasında taksit kartının borcunu ve tahsilatını genel "en eski borç" s�
 | B · önce kart, sonra fatura; aynı tahsilatlar | ödenen 0 · açık 12.720 | kalan 6.000 | 13.720 | cari kartından alınan 5.000 hiçbir yerde görünmüyor |
 | C · fatura 6.000 hiç ödenmedi; kart 9.000 tamamen ödendi | **"Ödendi"** | kalan 0 | 6.000 borçlu | ödenmemiş fatura "Ödendi" (hayalet ödeme) |
 | D · faturanın borcu karta bölündü ("Carinin Mevcut Borcu") | açık 9.000 | kalan 9.000 | 9.000 | ikisi tutarlı; ama raporlar ikisini TOPLUYOR |
-| E · taksitli fatura 3.000 (kartı faturanın kendisi); müşteri cari kartından başka iş için 5.000 öder | **"Ödendi"** | kalan 3.000 | −2.000 (müşteri alacaklı) | fatura ile kendi kartı çelişiyor; yaşlandırma/hatırlatma 3.000 bekliyor |
+| E · taksitli fatura 3.000 (kartı faturanın kendisi); müşteri cari kartından 5.000 öder (bağsız) | **"Ödendi"** | kalan 3.000 | −2.000 (müşteri alacaklı) | fatura ile kendi kartı çelişiyor; yaşlandırma/hatırlatma kart üzerinden 3.000 bekliyor |
+| F · taksitli fatura 3.000; cari kartından "Kapatılacak Fatura" seçilerek 1.000 tahsilat | açık 2.000 | ödenen 0 · kalan 3.000 | 2.000 | bağlı tahsilat bile kartı kapatmıyor (gözden geçirmede bulundu) |
+| G · fatura 12.720 + ayrı kart 9.000; karttan 3.000; kart kapatılır (kalan 6.000 silinir) | ödenen 9.000 · açık 3.720 | kapalı | 12.720 | kartın silinen kalanı faturaya "ödeme" sayılıyor (gözden geçirmede bulundu; kod yorumu "kart kapatma ödeme değildir" diyor) |
 
-E türü Excel haftasında **gerçekten oldu**: C0122'nin 290,60'lık taksitli faturası (ISL-01905), aynı carinin 31.454,63'lük
-senediyle (ISL-03375) "Ödendi" sayılıyor; taksit kartı 290,60 kalan gösteriyor. Bağımsız hesapla programın satış
-açığı arasındaki 290,60'lık fark budur.
+E türü Excel haftasında da görüldü: C0122'nin 290,60'lık taksitli faturası (ISL-01905), aynı carinin 31.454,63'lük senediyle
+(ISL-03375) "Ödendi" sayılıyor; kendi taksit kartı 290,60 kalan gösteriyor. Dürüst not (gözden geçirme): C0122 o anda
+31.164,03 alacaklı; bu durumda faturanın en eski borç sırasıyla "Ödendi" sayılması savunulabilir. Asıl yanlış, kartın hâlâ
+ödenmemiş görünmesi. Benim bağımsız hesabım da kartı ödenmemiş saydığı için "Taksit Kartları tuttu" satırı bu caride kartın
+doğruluğunu kanıtlamaz. Verideki senedin "başka bir iş için" verildiği bilgisi yok; ilk özetimde öyle yazmıştım, yanlıştı.
 
-Etkisi: Satış Faturaları "Kalan", Açık Faturalar, fatura kartındaki durum (A, B, C, E); **Alacak Yaşlandırma** A–D
-birlikteyken 47.440 diyor, carilerin gerçek toplam borcu 42.440. Koddan: Nakit Akış (`server/routes/overview.mjs:299-302`),
-Vade Takip (452-455) ve tahsilat takvimi/sağ alt bildirimler (`server/routes/dues.mjs:68-72`) aynı iki listeyi birleştiriyor
-(D türünde aynı borç iki kez; bunlar ölçülmedi, koddan). Kimi etkiler: aynı cariye hem fatura kesip hem Taksit
-penceresinden kart açan işletmeler.
+**Etkisi.** Cari bakiyesi, Kasa ve mizan DOĞRU; bozuk olan "hangi tahsilat hangi borcu kapattı" eşleştirmesi:
+- Fatura kartındaki durum ve Satış Faturaları "Kalan" (A, B, C, E, F, G); Açık Faturalar (A, B, C, G; taksitli faturalar
+  bu rapora girmez, E ve F burada görünmez).
+- **Alacak Yaşlandırma:** her cari ayrı ayrı yanlış; tek toplam yanıltır. Son koşuda (A–G) cari başına hata (yaşlandırma −
+  gerçek alacak): A −3.000, B +5.000, C −6.000, D +9.000, E +3.000 (müşteri alacaklı, kart 3.000 bekleniyor), F +1.000 (kart
+  3.000, gerçek 2.000), G −9.000 (kart kapalı, fatura 3.720, gerçek 12.720). Bu koşuda hatalar toplamda tam sıfırlanıyor
+  (yaşlandırma 57.160 = gerçek alacak 57.160): toplama bakan biri hatayı göremez.
+- Koddan (ölçülmedi): Nakit Akış (`server/routes/overview.mjs:299-302`), Vade Takip (451-455) ve tahsilat takvimi / sağ alt
+  bildirimler (`server/routes/dues.mjs:68-72`) aynı iki listeyi birleştiriyor; A, B, C ve D türlerinde orada da yanlış.
+- "Ödendi" görünen fatura "Kapatılacak Fatura" ve Mahsup listelerine girmediği için arayüzde düzeltme yolu da yok.
+- Programın Mutabakat Testi kapama eşleştirmesini denetlemiyor (`server/lib/integrity.mjs`); 59/59 bunu yakalayamaz.
+
+**Kimi etkiler:** aynı cariye hem fatura kesip hem de faturasız taksit kartı kullanan herkes. Faturasız kartlar yalnız
+Taksitler → + Yeni Kart'tan değil, Taksit Excel'i / Tablodan Aktar (`server/routes/plans.mjs:1188`, `covers_balance` 0) ve
+Toplu Taksitlendir "yeni borç" (`server/routes/accounts.mjs:974`) ile de açılıyor. Taksitli fatura kesip müşteriden cari kartından
+tahsilat alan herkes (E, F).
 
 **Bulgu 3 — Raporlarda dönem düğmesi seçili cariyi siliyor (yeni).** Raporlar → Tüm Raporlar'da cari seçildikten sonra
 "Tüm Zamanlar", "Bu Yıl", "Bu Ay"… düğmesine basılınca cari seçimi kalkıyor: Cari Ekstre "Önce cariyi seçin"e düşüyor;
 fatura raporlarındaki isteğe bağlı cari süzgeci SESSİZCE kalkıp rapor bütün carileri gösteriyor (Deniz Yapı süzülü: 1
 fatura, 1.000 TL → "Bu Yıl" → 2 fatura, 6.000 TL). Tarih yazıp "Ön İzle" seçimi korur. Kök neden:
-`client/assets/hof-overview.js:715` (Raporlar penceresinin tıklama işleyicisi "Tüm Raporlar" sekmesindeki dönem
-düğmelerini de işleyip sekmeyi yeniden kuruyor). Yeniden üretim: `test/excel-denetim/rapor-ekstre-secim.mjs` (gerçek
+`client/assets/hof-overview.js:715-718` — dönem tıklaması önce rapor merkezinde işleniyor, sonra Raporlar penceresinin genel
+işleyicisine kabarıyor; o da sekmeyi baştan kuruyor (`mount`), yeni kurulan merkezde cari yok (`hof-report-center.js:66-67`,
+`select()` → `center.account = null`). Ölçüldü (gözden geçirmeyle): tek "Bu Yıl" tıklaması 3 rapor isteği, 2 katalog isteği ve
+gereksiz bir çek listesi isteği (`/cheques?limit=1000`) gönderiyor. "Tüm Zamanları Göster" düğmesi de aynı. Koddan
+(denenmedi): yalnız İşlem Geçmişi yetkisi olan kullanıcıda o çek isteği 403 döner; her dönem tıklamasında hata bildirimi
+çıkabilir. Yeniden üretim: `test/excel-denetim/rapor-ekstre-secim.mjs` (gerçek
 tıklamalarla; ekran görüntüleri `cikti/rapor-ekstre-secim/`).
 
 **Bulgu 4 — Banka ve POS Hareketleri raporunda "Yol" süzgeci hiç çalışmıyor (yeni).** Kutuda "Banka (Havale / EFT)" ya da
@@ -183,40 +221,64 @@ açılmadı. Fatura numarası/tarih sırası: eski tarihli satış faturası red
 ## 5. DENENEN / DENENMEYEN / BİLİNEN SINIRLAR
 
 **DENENEN**
-- Excel'deki haftanın 51 işi + 16 ek işlem, iki şirkette (001 API, 002 ekran), her iş kendi gününde.
+- Excel'deki haftanın 51 işi + 16 ek işlem, iki şirkette (001 API, 002 ekran), her iş kendi gününde; tam koşu iki kez.
 - Ekrandan: satış (nakit, havale, açık, çek, senet, taksitli), alış (nakit, havale, kredi kartı, açık, çek, senet), gider
   faturaları (nakit, havale, kredi kartı), kira faturası (açık) + sonradan ödeme, iki kalemli satış (ürün + hizmet), cari
   kartından tahsilat/ödeme (nakit, havale, POS, senet), maaş (tahakkuk + ödeme), Çek/Senet penceresinden alınan/verilen evrak,
   cari kartından ve Taksit penceresinden taksit tahsilatı, + Yeni Cari (3), aynı ad denemesi, + Yeni Ürün (2), stok
   giriş/çıkış/fire, Taksitler → + Yeni Kart.
-- Rapor Merkezi'nden 14 rapor (16 görünüm) ekrandan, iki şirkette: Kasa Hareketleri, Banka ve POS (Tümü; Yol = Banka; Yol = POS), Satış ve Alış
-  Faturaları, KDV Özeti, Gider Raporu, Cari Mizanı, Cari Listesi ve Bakiyeler, Açık Faturalar, Taksit Kartları, Çek/Senet
-  Portföyü, Stok Durumu (her kalemin miktarı), Cari Ekstre (yeni müşteri), Hesap Planı Mizanı; ANLIK DURUM kartları. Her
-  raporun PDF'i ve Excel'i indirildi, ekrandaki sayılarla karşılaştırıldı, bağlantının şirketi denetlendi.
-- Bulgu senaryoları: taksit kartı ↔ fatura (A–E), rapor dönem düğmesi (Cari Ekstre + fatura süzgeci), fatura formunda
-  ödeme alanı (ilk tur).
+- Rapor Merkezi'nden 14 rapor (16 görünüm) ekrandan, iki şirkette: Kasa Hareketleri, Banka ve POS (Tümü; Yol = Banka; Yol =
+  POS), Satış ve Alış Faturaları, KDV Özeti, Gider Raporu, Cari Mizanı, Cari Listesi ve Bakiyeler, Açık Faturalar, Taksit
+  Kartları, Çek/Senet Portföyü, Stok Durumu (her kalemin miktarı), Cari Ekstre (yeni müşteri), Hesap Planı Mizanı; ANLIK DURUM
+  kartları. Her raporun PDF'i ve Excel'i indirildi; ekrandaki tutarların dosyada geçtiği ve bağlantının şirketi denetlendi.
+- Bulgu senaryoları: taksit kartı ↔ fatura (A–G), rapor dönem düğmesi (Cari Ekstre + fatura süzgeci) ve tek tıkta giden
+  istekler, Banka/POS Yol süzgeci, fatura formunda çek/senet satırı (klavye ve fare; tam ve kısmi; kaydedilen sonuç).
+- Bağımsız gözden geçirme (ayrı ajan, yalnız hata arar): bulguları kodla karşılaştırdı, iki yeni durum (F, G) ve Bulgu 1'in
+  gerçek etkisini buldu; hepsi tarafımdan yeniden üretildi (bölüm 7).
 
 **DENENMEYEN**
 - İade faturaları, fatura iptali/düzenleme/silme/kopyalama, Mahsup Et, çek tahsili/cirosu/karşılıksız, Kasa ↔ Banka
   transferi, stokta Müşteri İadesi, dönem kilidi, yetkisiz kullanıcının rapor ekranı, ileri tarihli hareket (bu hafta
-  testinde yok; 2.0.17 mali müşavir testinde ve Excel denetiminde ayrı denenmişti).
-- 43 raporun 29'u bu turda açılmadı (ör. Ba-Bs, Yevmiye, Ürün Bazında Satış, Cari Bazında Tahsilat, Taksit Vadeleri).
-- Vade Takip, Nakit Akış ve tahsilat takvimindeki çift sayım ölçülmedi (koddan çıkarıldı).
-- PDF'lerin görsel düzenine yalnız örnek olarak bakıldı; denetim sayı karşılaştırmasıdır.
+  testinde yok; 2.0.17 mali müşavir testinde ve Excel denetiminde eski sürümlerde, çoğu API'den denenmişti).
+- 43 raporun 29'u bu turda açılmadı (ör. Ba-Bs, Yevmiye, Ürün Bazında Satış, Cari Bazında Tahsilat, Taksit Vadeleri); açılan
+  raporlarda da süzgeçlerin hepsi denenmedi (Bulgu 4 bu yüzden 2.0.17'den beri fark edilmemişti).
+- Vade Takip, Nakit Akış ve tahsilat takvimindeki yanlış sayım ölçülmedi (koddan çıkarıldı).
+- Bulgu 3'ün yalnız İşlem Geçmişi yetkili kullanıcıda 403 hatası vermesi denenmedi (koddan).
 
 **BİLİNEN SINIRLAR**
-- Bağımsız beklenen hesap benim yazdığım muhasebe kurallarıyla yapıldı (bölüm 2). Her fark tek tek incelendi; kural
-  farkı mı program hatası mı olduğu bölüm 3'te yazılı.
+- Bağımsız beklenen hesap benim yazdığım muhasebe kurallarıyla yapıldı (bölüm 2). C0122'de (alacaklı cari) modelin kuralı
+  programınkinden farklı; 290,60'lık fark bu yüzden bir kural farkıdır (bölüm 3.3).
+- PDF/Excel denetimi bir içerme denetimidir: ekrandaki tutar dosyada bir yerde bulunuyor mu; dosyanın satır satır aynı olduğu
+  kanıtlanmadı, adetler denetlenmedi.
+- Koşudaki rapor karşılaştırması tutarların mutlak değerine bakıyordu; sonuç kayıtlı veriden işaretiyle yeniden hesaplandı
+  (`hafta-tablo.py`), sonuç aynı. Betik artık işaretiyle karşılaştırıyor.
+- İşlem başına "✓" ekrandaki formun kapanmasına bakar; asıl kanıt sondaki iki şirket karşılaştırmasıdır (fark yok).
 - Test Linux'ta Chromium'la koştu; tarih kutuları tarayıcı dili yüzünden aa/gg/yyyy göründü (Türkçe Windows'ta gg.aa.yyyy).
 - Lisans denetimi testte kapalı; ekrandaki "Ücretsiz deneme henüz başlamadı" kutusu bu yüzden (bulgu değil).
-- Hacim küçük: 373 cari, 52 ürün, 67 işlem; yük testi değildir (yük ölçümü 2.0.22'de ayrı yapıldı).
+- Hacim küçük: 376 cari, 52 kalem, 67 işlem; yük testi değildir (yük ölçümü 2.0.22'de ayrı yapıldı).
 
 ## 6. Düzeltme önerileri (karar kullanıcıda; kod değiştirilmedi)
 
 | Bulgu | Önem | Önerim | İş |
 |---|---|---|---|
-| 2 · taksit kartı ↔ fatura kapama | **Yüksek** (yanlış "Ödendi", yanlış alacak ve hatırlatma; aynı müşteriye fatura + kart kullanan herkes) | Faturasız "Yeni Borç" kartının borcu ve tahsilatı kendi içinde kapanır, fatura FIFO'suna girmez; taksitli faturada bağsız tahsilat önce faturanın taksit kartına sayılır ya da ikisi aynı kuralla kapanır (ikisi aynı sonucu göstermeli); "Mevcut Borç" kartına bölünen açık faturalar vade/yaşlandırma/takvimde bir kez görünür. Değişmez kural testi: açık faturalar + kart kalanları = cari bakiye (A–E). Eski veride durum değişimi raporu. | Orta–büyük (mimari; dikkatli göç ve test) |
-| 4 · Banka/POS Yol süzgeci | Orta (rapor yanlış kapsamda; birleşik doğru) | `payMethod` parametre listesine eklenir; her raporun her süzgeci arayüzden en az bir kez denenir (test). | Küçük |
-| 3 · dönem düğmesi seçimi siliyor | Orta (fatura raporunda süzgeç sessizce kalkıyor) | Raporlar penceresinin genel işleyicisi "Tüm Raporlar" içindeki tıklamaları işlemez; seçili cari dönem değişince korunur. | Küçük |
-| 1 · ödeme alanı siliniyor | Düşük–orta (veri bozulmaz, kullanıcı yeniden girer) | Ödeme bölümü yeniden çizilirken yazılan değerler korunur; tutar tamamlanınca bölüm yeniden çizilmez. | Küçük |
+| 1 · fatura formunda çek/senet satırı | **Yüksek** (klavyeyle girilen senet/çek uyarısız düşüyor; fatura ödenmemiş, portföy eksik) | Ödeme satırları alan değişince yeniden çizilmez, yalnız "Kalan" kutusu güncellenir; tutarı geçersiz ya da 0 olan evrak satırı varken kaydetmeye izin verilmez ("1. evrakın tutarı yok"). Test: klavye ve fare, tam ve kısmi, kayıt sonucu. | Küçük–orta |
+| 2 · taksit kartı ↔ fatura kapama | **Yüksek** (yanlış "Ödendi", yanlış alacak ve hatırlatma; arayüzde düzeltme yolu yok) | Faturasız kart (`covers_balance` 0 ve hiçbir faturanın kartı değil) kendi borcunu ve tahsilatını kendi içinde kapatır; karttan artan ödeme genel havuza düşer. Kart kapatma (kalanın silinmesi) ödeme sayılmaz. Taksitli faturada fatura ile kart aynı kuralla kapanır (cari kartından tahsilat önce faturanın kartına, kayıt yazmadan yalnız hesapta sayılır; aksi hâlde Kasa çift sayar). "Mevcut Borç" kartına bölünen açık faturalar vade/yaşlandırma/takvimde bir kez görünür (dağıtım kuralı ya da şema değişikliği gerekir). Değişmez kural testi doğru tanımla: bir tahsilat en çok bir borcu kapatır; fatura ve kendi kartı aynı açığı gösterir; aynı borç iki listede görünmez. Eski veride durum değişimi raporu. Bozulmaması gerekenler: 2.0.17 yön kuralı, Mahsup, iade bağı, iptal. | Orta–büyük (mimari; dikkatli göç ve test) |
+| 4 · Banka/POS Yol süzgeci | Orta (rapor yanlış kapsamda; birleşik doğru) | `payMethod` sunucunun parametre listesine eklenir; her raporun her süzgeci arayüzden en az bir kez denenir (test). | Küçük |
+| 3 · dönem düğmesi seçimi siliyor | Orta (fatura raporunda süzgeç sessizce kalkıyor; tek tıkta 6 istek) | Raporlar penceresinin genel işleyicisi "Tüm Raporlar" içindeki tıklamaları işlemez; seçili cari dönem değişince korunur. | Küçük |
 | PDF özet başlığı kesiliyor | Düşük (görünüm) | Uzun özet başlığı iki satıra iner. | Küçük |
+
+## 7. Bağımsız gözden geçirme ne düzeltti
+
+Ayrı bir ajan (yalnız hata arar, kod değiştirmez) bulguları kodla karşılaştırdı. Hepsini yeniden ürettim; belgeye işlendi:
+- **Bulgu 1'in etkisini küçük göstermişim:** "veri bozulmaz" yanlıştı; klavyeyle girilen evrak uyarısız düşüyor.
+  Mekanizmayı da yanlış yere bağlamışım (600 ms'lik yeniden çizim değil, alan değişince anında yeniden çizim).
+- **Bulgu 2'ye iki yeni durum:** F (Kapatılacak Fatura ile bağlı tahsilat da taksitli faturanın kartını kapatmıyor) ve G
+  (kartı kapatmak ödenmemiş faturayı kapatıyor).
+- **47.440'lık yaşlandırma toplamı eski bir koşudandı;** tek toplam hataları gizliyor, cari başına yazıldı.
+- **E, Açık Faturalar'ı etkilemiyor;** A, B, C ise Nakit Akış/Vade Takip/takvimi de etkiliyor.
+- **C0122'nin 290,60'ı bir kural farkı;** "başka iş için" bilgisi veride yok.
+- **Değişmez kuralı fazla geniş yazmışım** (alacaklı caride ve faturasız borçta geçerli değil).
+- **Bulgu 3'ün mekanizması eksikti;** tek tıkta 6 istek ölçüldü.
+- **Bulgu 4 doğru;** başka düşen parametre yok.
+- **Test betiklerinde zayıf yerler:** mutlak değer karşılaştırması, NaN'ın geçmesi, içerme tabanlı PDF/Excel denetimi.
+  İlk ikisi düzeltildi; üçüncüsü belgede açıkça yazıldı.

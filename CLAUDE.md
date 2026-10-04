@@ -567,6 +567,19 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   (16 görünüm) + ANLIK DURUM iki şirkette ekrandan ↔ bağımsız beklenen (`model-hafta.py`): 57 kalemin 51'i tuttu, 6'sı bilinen
   bulgulardan (Bulgu 2: Satış Kalan 3.290,60 / Açık Alacak 3.000; Bulgu 4: Yol = Banka/POS), açıklanmamış 0; stok 51/51;
   PDF/Excel 64/64 ekranla aynı ve şirketli. Düzeltme kararı kullanıcıda (öneriler belgenin 6. bölümünde).
+  BAĞIMSIZ GÖZDEN GEÇİRME (04.10.2026; hepsi tarafımdan yeniden üretildi, belgenin 7. bölümü): (1) BULGU 1 CİDDİ — "veri
+  bozulmaz" YANLIŞTI: fatura formunda çek/senet satırında alan değişince ödeme bölümü anında yeniden çiziliyor
+  (hof-invoices.js:1171-1174 → :901), odak sayfaya düşüyor; klavyeyle (Tab) girilen senet tutarın üstüne yazılıyor, Kaydet
+  UYARISIZ "Açık 240", senet YOK (`test/excel-denetim/odeme-alani-kaydet.mjs`, tam ve kısmi); fareyle girişte vade/banka
+  kayboluyor, kayıt "vade seçin" ile duruyor. Önem YÜKSEK. (2) Bulgu 2'ye F (Kapatılacak Fatura ile bağlı tahsilat da taksitli
+  faturanın kartını kapatmıyor) ve G (kart kapatma — kalanın silinmesi — ödenmemiş faturayı kapatıyor; kod yorumu tersini
+  söylüyor) eklendi; yaşlandırma cari başına yanlış, toplamda sıfırlanabiliyor (57.160 = 57.160). C0122'nin 290,60'ı KURAL
+  FARKI (cari alacaklı; fatura FIFO ile kapanabilir, yanlış olan kart); "başka iş için" bilgisi veride yoktu. (3) Bulgu 3: tek
+  dönem tıklaması 6 istek. (4) Bulgu 4 doğru, başka düşen parametre yok. Test betiği işaretli karşılaştırmaya geçti.
+  KULLANICI SORUSU (aynı gün): "denenmeyenleri (iade/iptal/düzenleme/silme, çek tahsil/ciro, Kasa↔Banka, dönem kilidi, yetkisiz
+  kullanıcı, 29 rapor) de ayrıca teste tabi tutman gerekecek mi?" → cevap: evet, kanıt yok; ÖNERİM: düzeltmeden ÖNCE aynı hafta
+  testine ekleyip ekrandan koşmak (iade/iptal/düzenleme Bulgu 2'nin koduyla iç içe; bütün hatalar görülünce düzeltme tek
+  tasarımla), 29 rapor her süzgeç seçeneğiyle; düzeltmelerden sonra hepsi bir kez daha. Kullanıcının "yap"ı bekleniyor.
   BULGU 2 (04.10.2026, ek işlemlerde bulundu; KOD DEĞİŞTİRİLMEDİ, karar kullanıcıda): aynı caride açık satış faturası +
   Taksit penceresinden "Yeni Borç" ile AYRI taksit kartı varsa fatura kapama (`server/lib/invoice-settle.mjs`) kartın
   tahsilatını (plan-in) ve kartın borcunu genel FIFO'ya katıyor; taksit modülü ise kartın ödenenini ayrı sayıyor → iki hesap

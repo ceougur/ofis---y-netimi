@@ -23,6 +23,16 @@ def tr(value, money=True):
     return ("−" if value < 0 else "") + s
 
 
+# Sonuç işaretiyle yeniden hesaplanır (koşudaki karşılaştırma mutlak değerdi; gözden geçirme notu).
+def signed_ok(row):
+    if row.get("dosya") or row.get("rapor") == "stok" or row.get("rapor") == "bankaPosYol":
+        return row["ok"]
+    return row["ekran"] is not None and abs(float(row["ekran"]) - float(row["beklenen"])) < 0.005
+
+
+for side in ("Ekran", "API"):
+    for row in res["kontrol"][side]:
+        row["ok"] = signed_ok(row)
 ekran = res["kontrol"]["Ekran"]
 api = {(r["rapor"], r["kalem"]): r for r in res["kontrol"]["API"]}
 out = ["| Rapor | Kalem | Bağımsız Beklenen | Ekran Şirketi (002) | API Şirketi (001) | Sonuç |", "|---|---|---|---|---|---|"]
@@ -41,4 +51,4 @@ for r in ekran:
     out.append(f"| {TITLES.get(r['rapor'], r['rapor'])} | {r['kalem']} | {tr(r['beklenen'], not integer)} | {tr(r['ekran'], not integer)} | {tr(a.get('ekran'), not integer)} | {mark} |")
 print("\n".join(out))
 print(f"\nKalem: {count['ok'] + count['bad'] + count['bulgu']} · iki şirkette de beklenenle aynı {count['ok']} · bilinen bulgudan farklı {count['bulgu']} · açıklanmamış {count['bad']}")
-print(f"PDF/Excel: {files['ok']}/{files['all']} dosyada ekrandaki sayılar aynı ve bağlantı pencerenin şirketini taşıyor")
+print(f"PDF/Excel: {files['ok']}/{files['all']} dosya indi, bağlantı pencerenin şirketini taşıyor ve ekrandaki her tutar dosyada da geçiyor (tam eşitlik değil, içerme denetimi)")

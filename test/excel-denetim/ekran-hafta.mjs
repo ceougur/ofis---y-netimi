@@ -697,7 +697,9 @@ function checkReports(read, expected, label) {
     }
     for (const [name, want] of Object.entries(spec.expect(expected))) {
       const got = numberOf(one.ozet[name]);
-      const ok = got !== null && Math.abs(Math.abs(got) - Math.abs(Number(want))) < 0.005;
+      // İşaretiyle karşılaştırılır (gözden geçirme notu: önceden mutlak değerdi). Program yönü ayrı yazdığı yerlerde
+      // (Bakiye + Durum, Devreden KDV) tutarı artı gösterir; beklenen de öyle verilir.
+      const ok = got !== null && Number.isFinite(got) && Math.abs(got - Number(want)) < 0.005;
       lines.push(`${ok ? "✓" : "✗"} ${label} ${spec.id} · ${name}: ekran ${one.ozet[name] ?? "—"} · beklenen ${want}${!ok && spec.bulgu ? ` (${spec.bulgu})` : ""}`);
       rows.push({ rapor: spec.key, kalem: name, beklenen: Number(want), ekran: got, ok, bulgu: spec.bulgu || "" });
       if (!ok) bad.push(`${label} ${spec.id} · ${name}: ekran ${one.ozet[name] ?? "YOK"} · beklenen ${want}${spec.bulgu ? ` (${spec.bulgu})` : ""}`);
@@ -727,7 +729,7 @@ function checkReports(read, expected, label) {
       for (const [code, qty] of Object.entries(expected.stok)) {
         const row = one.satirlar.find(r => r["Stok Kodu"] === code);
         const got = row ? Number(String(row.Mevcut).replace(/\./g, "").replace(",", ".").replace("−", "-")) : null;
-        if (got === null || Math.abs(got - Number(qty)) > 0.0005) {
+        if (got === null || !Number.isFinite(got) || Math.abs(got - Number(qty)) > 0.0005) {
           wrong += 1;
           bad.push(`${label} stok-durumu · ${code}: ekran ${row?.Mevcut ?? "YOK"} · beklenen ${qty}`);
         }
@@ -747,7 +749,7 @@ function checkReports(read, expected, label) {
   const anlik = { "Nakit Kasa": expected.anlik.nakit_kasa, "Banka / POS": expected.anlik.banka_pos, "Alacak Cari": expected.anlik.alacak_cari, "Alacak Çek": expected.anlik.alacak_cek, "Borç Cari": expected.anlik.borc_cari, "Borç Çek": expected.anlik.borc_cek };
   for (const [name, want] of Object.entries(anlik)) {
     const got = read.anlik.ozet[name];
-    const ok = got !== null && Math.abs(Math.abs(got) - Math.abs(Number(want))) < 0.005;
+    const ok = got !== null && Number.isFinite(got) && Math.abs(got - Number(want)) < 0.005;
     lines.push(`${ok ? "✓" : "✗"} ${label} ANLIK DURUM · ${name}: ekran ${got ?? "—"} · beklenen ${want}`);
     rows.push({ rapor: "anlik", kalem: name, beklenen: Number(want), ekran: got, ok, bulgu: "" });
     if (!ok) bad.push(`${label} ANLIK DURUM · ${name}: ekran ${got} · beklenen ${want}`);

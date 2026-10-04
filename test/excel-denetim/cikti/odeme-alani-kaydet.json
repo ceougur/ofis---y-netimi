@@ -1,0 +1,98 @@
+[
+ {
+  "label": "1-klavye-tam-240",
+  "mod": "klavye",
+  "tutar": "240",
+  "odakIzi": [
+   "dueDate için odak: BODY",
+   "serialNo için odak: SELECT[instrument]",
+   "bank için odak: INPUT[amount]"
+  ],
+  "kaydetmedenOnceAlanlar": {
+   "instrument": "note",
+   "amount": "Ziraat",
+   "dueDate": "",
+   "serialNo": "",
+   "bank": ""
+  },
+  "soru": "Deneme Tedarikçi için alış faturası kaydedilecek: ₺240,00. Stok, cari, Kasa, çek/senet ve taksit kayıtları birlikte yazılır. Yanlışsa sonradan kartındaki “Düzenle” ile düzeltilir.",
+  "formHatasi": "",
+  "kaydedilenFatura": {
+   "no": "K-1",
+   "odenecek": 240,
+   "odenen": 0,
+   "acik": 240,
+   "durum": "Açık"
+  },
+  "cekSenet": 0
+ },
+ {
+  "label": "2-klavye-kismi-100",
+  "mod": "klavye",
+  "tutar": "100",
+  "odakIzi": [
+   "dueDate için odak: BODY",
+   "serialNo için odak: SELECT[instrument]",
+   "bank için odak: INPUT[amount]"
+  ],
+  "kaydetmedenOnceAlanlar": {
+   "instrument": "note",
+   "amount": "Ziraat",
+   "dueDate": "",
+   "serialNo": "",
+   "bank": ""
+  },
+  "soru": "Deneme Tedarikçi için alış faturası kaydedilecek: ₺240,00. Stok, cari, Kasa, çek/senet ve taksit kayıtları birlikte yazılır. Yanlışsa sonradan kartındaki “Düzenle” ile düzeltilir.",
+  "formHatasi": "",
+  "kaydedilenFatura": {
+   "no": "K-2",
+   "odenecek": 240,
+   "odenen": 0,
+   "acik": 240,
+   "durum": "Açık"
+  },
+  "cekSenet": 0
+ },
+ {
+  "label": "3-fare-kismi-100",
+  "mod": "fare",
+  "tutar": "100",
+  "odakIzi": [
+   "dueDate için odak: BODY",
+   "serialNo için odak: INPUT[serialNo]",
+   "bank için odak: BODY"
+  ],
+  "kaydetmedenOnceAlanlar": {
+   "instrument": "note",
+   "amount": "100",
+   "dueDate": "",
+   "serialNo": "S-77",
+   "bank": ""
+  },
+  "soru": "Deneme Tedarikçi için alış faturası kaydedilecek: ₺240,00. Stok, cari, Kasa, çek/senet ve taksit kayıtları birlikte yazılır. Yanlışsa sonradan kartındaki “Düzenle” ile düzeltilir.",
+  "formHatasi": "1. evrakın vade tarihini seçin.",
+  "kaydedilenFatura": null,
+  "cekSenet": 0
+ },
+ {
+  "label": "4-fare-tam-240",
+  "mod": "fare",
+  "tutar": "240",
+  "odakIzi": [
+   "dueDate için odak: BODY",
+   "serialNo için odak: INPUT[serialNo]",
+   "bank için odak: BODY"
+  ],
+  "kaydetmedenOnceAlanlar": {
+   "instrument": "note",
+   "amount": "240",
+   "dueDate": "",
+   "serialNo": "S-77",
+   "bank": ""
+  },
+  "soru": "Deneme Tedarikçi için alış faturası kaydedilecek: ₺240,00. Stok, cari, Kasa, çek/senet ve taksit kayıtları birlikte yazılır. Yanlışsa sonradan kartındaki “Düzenle” ile düzeltilir.",
+  "formHatasi": "1. evrakın vade tarihini seçin.",
+  "kaydedilenFatura": null,
+  "cekSenet": 0
+ }
+]

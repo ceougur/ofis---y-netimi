@@ -169,6 +169,70 @@
    "cariBakiye": -2000,
    "acikToplam": 3000,
    "tutarli": false
+  },
+  {
+   "senaryo": "F · taksitli fatura + Kapatılacak Fatura seçilerek tahsilat",
+   "adimlar": [
+    {
+     "date": "2025-02-25",
+     "invoice": 3000,
+     "installments": 3,
+     "firstDue": "2025-03-25"
+    },
+    {
+     "date": "2025-02-26",
+     "linkedCollect": 1000
+    }
+   ],
+   "fatura": {
+    "odenecek": 3000,
+    "odenen": 1000,
+    "acik": 2000,
+    "durum": "Vadesi Geçti"
+   },
+   "taksitKarti": {
+    "toplam": 3000,
+    "odenen": 0,
+    "kalan": 3000
+   },
+   "cariBakiye": 2000,
+   "acikToplam": 5000,
+   "tutarli": false
+  },
+  {
+   "senaryo": "G · önce fatura, sonra ayrı kart; karttan 3.000 tahsilat; kart kapatılır (kalan düşülür)",
+   "adimlar": [
+    {
+     "date": "2025-03-01",
+     "invoice": 12720
+    },
+    {
+     "date": "2025-03-02",
+     "plan": 9000
+    },
+    {
+     "date": "2025-03-03",
+     "planCollect": 3000
+    },
+    {
+     "date": "2025-03-04",
+     "closePlan": true
+    }
+   ],
+   "fatura": {
+    "odenecek": 12720,
+    "odenen": 9000,
+    "acik": 3720,
+    "durum": "Vadesi Geçti"
+   },
+   "taksitKarti": {
+    "toplam": 9000,
+    "odenen": 3000,
+    "kalan": 6000
+   },
+   "cariBakiye": 12720,
+   "acikToplam": 9720,
+   "tutarli": false
   }
  ],
  "yaslandirma": [
@@ -190,11 +254,11 @@
   ],
   [
    "90+ gün",
-   "50.440,00 TL"
+   "57.160,00 TL"
   ],
   [
    "Toplam Gecikmiş",
-   "50.440,00 TL"
+   "57.160,00 TL"
   ]
  ]
 }
