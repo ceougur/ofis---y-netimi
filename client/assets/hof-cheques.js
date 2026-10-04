@@ -76,6 +76,7 @@
       if (view.mode === "list") renderList();
     } catch (error) {
       if (ticket === listRequest) HOF.listFailed(body(), error, { quiet, hasData: Boolean(view.list) });
+      if (quiet) throw error;
     }
   }
   async function loadCheque(id, action = "", { quiet = false } = {}) {
@@ -90,7 +91,7 @@
       if (action && cheque.actions?.some(item => item.key === action)) actionForm(cheque, action);
     } catch (error) {
       if (ticket !== cardRequest) return;
-      if (quiet && !HOF.lostRecord(error)) return;
+      if (quiet && !HOF.lostRecord(error)) throw error;
       HOF.toastError(error);
       view.mode = "list";
       renderList();

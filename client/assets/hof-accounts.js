@@ -108,6 +108,7 @@
       if (view.mode === "list") renderList();
     } catch (error) {
       if (ticket === listRequest && view.mode === "list") HOF.listFailed(body(), error, { quiet: keep, hasData: Boolean(view.list) });
+      if (keep) throw error;
     }
   }
   let cardRequest = 0;
@@ -126,7 +127,7 @@
     } catch (error) {
       if (ticket !== cardRequest) return;
       // Arka plan yenilemesinin geçici hatası kartı kapatmaz (kullanıcı formda olabilir); silinmiş cari listeye döner.
-      if (quiet && !HOF.lostRecord(error)) return;
+      if (quiet && !HOF.lostRecord(error)) throw error;
       HOF.toastError(error);
       view.mode = "list";
       renderList();

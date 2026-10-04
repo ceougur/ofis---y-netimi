@@ -301,8 +301,13 @@ try {
     }), modal);
     ok(failedCalls >= 1, `arka plan yenilemesi denendi ve başarısız oldu (${failedCalls} kez)`);
     ok(state.input === "Müşteri 0" && state.rows === 9 && !state.error, `liste ve arama kutusu yerinde (kutuda "${state.input}", ${state.rows} satır${state.error ? `, hata yazısı: ${state.error}` : ""})`);
-    await admin.unroute(isList);
     await shot("yenileme-hatasinda-liste-yerinde");
+    // Bağlantı düzelince başka bir değişiklik gelmeden de liste güncellenir (başarısız yenileme yeniden denenir).
+    await admin.unroute(isList);
+    const want = Math.abs((await get(`/api/workspace/accounts/${ids.customers[5]}`)).totals.balance);
+    const wantText = want.toLocaleString("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const refreshed = await admin.waitForFunction(([sel, id, text]) => (document.querySelector(`${sel} tr[data-account="${id}"]`)?.innerText || "").includes(text), [modal, ids.customers[5], wantText], { timeout: 15000 }).then(() => true, () => false);
+    ok(refreshed, `bağlantı düzelince liste kendiliğinden güncellendi (Müşteri 06: ${wantText})`);
     // Açık kart: yenilemesi başarısız olunca kullanıcı kartta kalır.
     await admin.click(`${modal} tr[data-account="${ids.customers[5]}"]`);
     await admin.waitForSelector(`${modal} [data-act="back"]`, { timeout: 10000 });

@@ -299,7 +299,9 @@
   //  - başka bilgisayardan gelen değişiklikte ilk yenileme `delay` ms sonra (aynı işlemin olayları birlikte gelsin),
   //    iki yenileme arası en az `gap` ms;
   //  - bu ekranda yapılan işlem (yerel) beklemeden yeniler: refresh.now();
-  //  - sekme gizliyken yenilenmez; görünür olunca bir kez yenilenir.
+  //  - sekme gizliyken yenilenmez; görünür olunca bir kez yenilenir;
+  //  - yenileme başarısızsa (ağ, zaman aşımı; yükleyici hatayı fırlatır) ekran son hâlinde kalır ve artan beklemeyle en çok
+  //    3 kez yeniden denenir — başka bir değişiklik gelmese de eski veri ekranda kalmaz.
   HOF.refresher = (load, { delay = 450, gap = 1500 } = {}) => {
     let timer = 0;
     let running = false;
@@ -307,6 +309,7 @@
     let urgent = false;
     let hidden = false;
     let last = 0;
+    let failures = 0;
     const run = async () => {
       timer = 0;
       if (document.hidden) {
@@ -317,14 +320,20 @@
       again = false;
       urgent = false;
       last = Date.now();
+      let failed = false;
       try {
         await load();
+        failures = 0;
       } catch {
-        // yenileme yardımcıdır; bir sonraki olayda yeniden denenir
+        failed = true;
       } finally {
         running = false;
         if (urgent) run();
         else if (again) schedule(0);
+        else if (failed && failures < 3) {
+          failures += 1;
+          schedule(gap * 2 ** failures);
+        }
       }
     };
     const schedule = wait => {

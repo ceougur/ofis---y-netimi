@@ -79,6 +79,7 @@
       if (view.mode === "list") renderList();
     } catch (error) {
       if (ticket === listRequest && view.mode === "list") HOF.listFailed(body(), error, { quiet, hasData: Boolean(view.list) });
+      if (quiet) throw error;
     }
   }
   async function loadPlan(id, { quiet = false } = {}) {
@@ -94,7 +95,7 @@
       view.mode = "card";
       renderCard();
     } catch (error) {
-      if (quiet && !HOF.lostRecord(error)) return;
+      if (quiet && !HOF.lostRecord(error)) throw error;
       HOF.toastError(error);
       view.mode = "list";
       renderList();

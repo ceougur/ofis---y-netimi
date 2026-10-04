@@ -157,6 +157,7 @@
       if (view.mode === "list") renderList();
     } catch (error) {
       if (ticket === listTicket) HOF.listFailed(body(), error, { quiet, hasData: Boolean(view.list) });
+      if (quiet) throw error;
     }
   }
   const statusPill = doc => {
@@ -1410,7 +1411,7 @@
       if (quiet && (view.mode !== "card" || view.id !== id)) return;
       showDoc(doc);
     } catch (error) {
-      if (quiet && !HOF.lostRecord(error)) return;
+      if (quiet && !HOF.lostRecord(error)) throw error;
       HOF.toastError(error);
       showList();
     }
