@@ -33,469 +33,469 @@
    "no": "ISL-00388",
    "type": "purchase",
    "ok": true,
-   "sn": 6.068,
+   "sn": 6.159,
    "note": "Alış Faturası ISL-00388 Ödendi"
   },
   {
    "no": "ISL-00548",
    "type": "purchase",
    "ok": true,
-   "sn": 8.61,
+   "sn": 9.156,
    "note": "Alış Faturası ISL-00548 Ödendi"
   },
   {
    "no": "ISL-00700",
    "type": "purchase",
    "ok": true,
-   "sn": 6.193,
+   "sn": 6.247,
    "note": "Alış Faturası ISL-00700 Ödendi"
   },
   {
    "no": "ISL-00783",
    "type": "purchase",
    "ok": true,
-   "sn": 4.807,
+   "sn": 4.801,
    "note": "Alış Faturası ISL-00783 Vadesi Geçti"
   },
   {
    "no": "ISL-01033",
    "type": "purchase",
    "ok": true,
-   "sn": 4.432,
+   "sn": 4.749,
    "note": "Alış Faturası ISL-01033 Vadesi Geçti"
   },
   {
    "no": "ISL-02252",
    "type": "sale",
    "ok": true,
-   "sn": 6.1,
+   "sn": 6.486,
    "note": "Satış Faturası FIS2025000000001 Ödendi"
   },
   {
    "no": "ISL-02289",
    "type": "sale",
    "ok": true,
-   "sn": 5.3,
+   "sn": 5.461,
    "note": "Satış Faturası FIS2025000000002 Vadesi Geçti"
   },
   {
    "no": "ISL-03059",
    "type": "expense",
    "ok": true,
-   "sn": 7.493,
+   "sn": 7.533,
    "note": "Alış Faturası ISL-03059 Ödendi"
   },
   {
    "no": "ISL-04149",
    "type": "purchase",
    "ok": true,
-   "sn": 5.69,
+   "sn": 5.742,
    "note": "Alış Faturası ISL-04149 Ödendi"
   },
   {
    "no": "EK-01",
    "type": "newCari",
    "ok": true,
-   "sn": 7.407,
+   "sn": 7.131,
    "note": "form kapandı"
   },
   {
    "no": "EK-02",
    "type": "newCari",
    "ok": true,
-   "sn": 7.181,
+   "sn": 6.983,
    "note": "form kapandı"
   },
   {
    "no": "EK-03",
    "type": "newCari",
    "ok": true,
-   "sn": 6.844,
+   "sn": 6.786,
    "note": "form kapandı"
   },
   {
    "no": "EK-04",
    "type": "dupCari",
    "ok": true,
-   "sn": 5.171,
+   "sn": 5.544,
    "note": "uyarı var; \"Mevcut Cariyi Aç\" → No C0001 Mehmet Kurt Müşteri"
   },
   {
    "no": "EK-05",
    "type": "newItem",
    "ok": true,
-   "sn": 7.425,
+   "sn": 7.626,
    "note": "form kapandı"
   },
   {
    "no": "EK-06",
    "type": "newItem",
    "ok": true,
-   "sn": 5.981,
+   "sn": 5.958,
    "note": "form kapandı"
   },
   {
    "no": "EK-07",
    "type": "rent",
    "ok": true,
-   "sn": 6.907,
+   "sn": 6.727,
    "note": "Alış Faturası KR-2025-01 Vadesi Geçti"
   },
   {
    "no": "ISL-00741",
    "type": "purchase",
    "ok": true,
-   "sn": 5.798,
+   "sn": 5.556,
    "note": "Alış Faturası ISL-00741 Ödendi"
   },
   {
    "no": "ISL-00861",
    "type": "purchase",
    "ok": true,
-   "sn": 6.246,
+   "sn": 6.432,
    "note": "Alış Faturası ISL-00861 Ödendi"
   },
   {
    "no": "ISL-01752",
    "type": "sale",
    "ok": true,
-   "sn": 6.055,
+   "sn": 6.231,
    "note": "Satış Faturası FIS2025000000003 Ödendi"
   },
   {
    "no": "ISL-01845",
    "type": "sale",
    "ok": true,
-   "sn": 6.353,
+   "sn": 5.954,
    "note": "Satış Faturası FIS2025000000004 Vadesi Geçti"
   },
   {
    "no": "ISL-03029",
    "type": "expense",
    "ok": true,
-   "sn": 7.782,
+   "sn": 7.8,
    "note": "Alış Faturası ISL-03029 Ödendi"
   },
   {
    "no": "ISL-03699",
    "type": "pay",
    "ok": true,
-   "sn": 6.961,
+   "sn": 6.762,
    "note": "form kapandı"
   },
   {
    "no": "ISL-04052",
    "type": "installment",
    "ok": true,
-   "sn": 6.866,
+   "sn": 6.903,
    "note": "Tahsilat kaydedildi. Kalan ₺1.706,81.Makbuz"
   },
   {
    "no": "EK-08",
    "type": "stockIn",
    "ok": true,
-   "sn": 6.367,
+   "sn": 5.94,
    "note": "form kapandı"
   },
   {
    "no": "EK-09",
    "type": "payEntry",
    "ok": true,
-   "sn": 6.058,
+   "sn": 6.449,
    "note": "Ödeme kaydedildi. Bakiye ₺0,00.Makbuz"
   },
   {
    "no": "ISL-00398",
    "type": "purchase",
    "ok": true,
-   "sn": 4.896,
+   "sn": 4.371,
    "note": "Alış Faturası ISL-00398 Vadesi Geçti"
   },
   {
    "no": "ISL-02147",
    "type": "sale",
    "ok": true,
-   "sn": 9.692,
+   "sn": 9.946,
    "note": "Satış Faturası FIS2025000000005 Ödendi"
   },
   {
    "no": "ISL-02391",
    "type": "sale",
    "ok": true,
-   "sn": 5.415,
+   "sn": 5.256,
    "note": "Satış Faturası FIS2025000000006 Vadesi Geçti"
   },
   {
    "no": "ISL-02424",
    "type": "sale",
    "ok": true,
-   "sn": 5.383,
+   "sn": 5.677,
    "note": "Satış Faturası FIS2025000000007 Vadesi Geçti"
   },
   {
    "no": "ISL-03121",
    "type": "expense",
    "ok": true,
-   "sn": 8.774,
+   "sn": 8.812,
    "note": "Alış Faturası ISL-03121 Ödendi"
   },
   {
    "no": "ISL-03492",
    "type": "collect",
    "ok": true,
-   "sn": 7.687,
+   "sn": 7.362,
    "note": "Tahsilat kaydedildi. Bakiye ₺13.733,77 Borçlu.Makbuz"
   },
   {
    "no": "ISL-04119",
    "type": "purchase",
    "ok": true,
-   "sn": 5.841,
+   "sn": 5.847,
    "note": "Alış Faturası ISL-04119 Ödendi"
   },
   {
    "no": "EK-10",
    "type": "stockOut",
    "ok": true,
-   "sn": 6.013,
+   "sn": 5.971,
    "note": "form kapandı"
   },
   {
    "no": "ISL-01066",
    "type": "purchase",
    "ok": true,
-   "sn": 6.356,
+   "sn": 6.255,
    "note": "Alış Faturası ISL-01066 Ödendi"
   },
   {
    "no": "ISL-01992",
    "type": "sale",
    "ok": true,
-   "sn": 9.851,
+   "sn": 9.679,
    "note": "Satış Faturası FIS2025000000008 Ödendi"
   },
   {
    "no": "ISL-04051",
    "type": "installment",
    "ok": true,
-   "sn": 7.567,
+   "sn": 6.906,
    "note": "Tahsilat kaydedildi. Kalan ₺0,00.Makbuz"
   },
   {
    "no": "ISL-04133",
    "type": "purchase",
    "ok": true,
-   "sn": 6.78,
+   "sn": 6.682,
    "note": "Alış Faturası ISL-04133 Ödendi"
   },
   {
    "no": "EK-11",
    "type": "stockOut",
    "ok": true,
-   "sn": 6.18,
+   "sn": 5.992,
    "note": "form kapandı"
   },
   {
    "no": "EK-12",
    "type": "sale",
    "ok": true,
-   "sn": 5.469,
+   "sn": 5.462,
    "note": "Satış Faturası FIS2025000000009 Vadesi Geçti"
   },
   {
    "no": "ISL-00599",
    "type": "purchase",
    "ok": true,
-   "sn": 8.89,
+   "sn": 9.217,
    "note": "Alış Faturası ISL-00599 Ödendi"
   },
   {
    "no": "ISL-01025",
    "type": "purchase",
    "ok": true,
-   "sn": 5.043,
+   "sn": 4.71,
    "note": "Alış Faturası ISL-01025 Vadesi Geçti"
   },
   {
    "no": "ISL-01185",
    "type": "purchase",
    "ok": true,
-   "sn": 6.495,
+   "sn": 6.537,
    "note": "Alış Faturası ISL-01185 Ödendi"
   },
   {
    "no": "ISL-01630",
    "type": "sale",
    "ok": true,
-   "sn": 5.42,
+   "sn": 5.683,
    "note": "Satış Faturası FIS2025000000010 Vadesi Geçti"
   },
   {
    "no": "ISL-01640",
    "type": "sale",
    "ok": true,
-   "sn": 8.858,
+   "sn": 9.226,
    "note": "Satış Faturası FIS2025000000011 Ödendi"
   },
   {
    "no": "ISL-02622",
    "type": "sale",
    "ok": true,
-   "sn": 5.775,
+   "sn": 5.113,
    "note": "Satış Faturası FIS2025000000012 Vadesi Geçti"
   },
   {
    "no": "ISL-02660",
    "type": "sale",
    "ok": true,
-   "sn": 5.02,
+   "sn": 4.806,
    "note": "Satış Faturası FIS2025000000013 Vadesi Geçti"
   },
   {
    "no": "ISL-02978",
    "type": "expense",
    "ok": true,
-   "sn": 8.886,
+   "sn": 8.429,
    "note": "Alış Faturası ISL-02978 Ödendi"
   },
   {
    "no": "ISL-03484",
    "type": "collect",
    "ok": true,
-   "sn": 7.41,
+   "sn": 7.707,
    "note": "Tahsilat kaydedildi. Bakiye ₺9.204,02 Alacaklı.Makbuz"
   },
   {
    "no": "ISL-03839",
    "type": "pay",
    "ok": true,
-   "sn": 7.326,
+   "sn": 7.682,
    "note": "Ödeme kaydedildi. Bakiye ₺8.153,07 Borçlu.Makbuz"
   },
   {
    "no": "ISL-04087",
    "type": "installment",
    "ok": true,
-   "sn": 6.648,
+   "sn": 6.688,
    "note": "Tahsilat kaydedildi. Kalan ₺249,99.Makbuz"
   },
   {
    "no": "EK-13",
    "type": "plan",
    "ok": true,
-   "sn": 7.086,
+   "sn": 7.434,
    "note": "form kapandı"
   },
   {
    "no": "EK-14",
    "type": "salary",
    "ok": true,
-   "sn": 12.5,
+   "sn": 12.847,
    "note": "Ödeme kaydedildi. Bakiye ₺0,00.Makbuz"
   },
   {
    "no": "ISL-00468",
    "type": "purchase",
    "ok": true,
-   "sn": 5.874,
+   "sn": 5.859,
    "note": "Alış Faturası ISL-00468 Ödendi"
   },
   {
    "no": "ISL-02196",
    "type": "sale",
    "ok": true,
-   "sn": 4.683,
+   "sn": 4.836,
    "note": "Satış Faturası FIS2025000000014 Vadesi Geçti"
   },
   {
    "no": "ISL-02300",
    "type": "sale",
    "ok": true,
-   "sn": 9.776,
+   "sn": 9.611,
    "note": "Satış Faturası FIS2025000000015 Ödendi"
   },
   {
    "no": "ISL-03339",
    "type": "expense",
    "ok": true,
-   "sn": 8.451,
+   "sn": 8.26,
    "note": "Alış Faturası ISL-03339 Ödendi"
   },
   {
    "no": "ISL-03375",
    "type": "collect",
    "ok": true,
-   "sn": 7.343,
+   "sn": 6.958,
    "note": "form kapandı"
   },
   {
    "no": "ISL-03439",
    "type": "collect",
    "ok": true,
-   "sn": 7.337,
+   "sn": 7.434,
    "note": "Tahsilat kaydedildi. Bakiye ₺9.132,02 Alacaklı.Makbuz"
   },
   {
    "no": "EK-15",
    "type": "collectEntry",
    "ok": true,
-   "sn": 6.688,
+   "sn": 7.064,
    "note": "Tahsilat kaydedildi. Bakiye ₺16.720,00 Borçlu.Makbuz"
   },
   {
    "no": "ISL-01905",
    "type": "sale",
    "ok": true,
-   "sn": 6.585,
-   "note": "Satış Faturası FIS2025000000016 Ödendi"
+   "sn": 6.07,
+   "note": "Satış Faturası FIS2025000000016 Vadesi Geçti"
   },
   {
    "no": "ISL-01973",
    "type": "sale",
    "ok": true,
-   "sn": 6.827,
+   "sn": 6.511,
    "note": "Satış Faturası FIS2025000000017 Ödendi"
   },
   {
    "no": "ISL-02108",
    "type": "sale",
    "ok": true,
-   "sn": 6.3,
+   "sn": 6.705,
    "note": "Satış Faturası FIS2025000000018 Ödendi"
   },
   {
    "no": "ISL-02889",
    "type": "salary",
    "ok": true,
-   "sn": 11.562,
+   "sn": 12.306,
    "note": "Ödeme kaydedildi. Bakiye ₺0,00.Makbuz"
   },
   {
    "no": "ISL-02893",
    "type": "salary",
    "ok": true,
-   "sn": 11.533,
+   "sn": 11.76,
    "note": "Ödeme kaydedildi. Bakiye ₺0,00.Makbuz"
   },
   {
    "no": "ISL-02894",
    "type": "salary",
    "ok": true,
-   "sn": 11.65,
+   "sn": 11.829,
    "note": "Ödeme kaydedildi. Bakiye ₺0,00.Makbuz"
   },
   {
    "no": "ISL-03566",
    "type": "collect",
    "ok": true,
-   "sn": 7.358,
+   "sn": 7.425,
    "note": "Tahsilat kaydedildi. Bakiye ₺45.548,42 Alacaklı.Makbuz"
   },
   {
    "no": "EK-16",
    "type": "planCollect",
    "ok": true,
-   "sn": 6.339,
+   "sn": 5.962,
    "note": "Tahsilat kaydedildi. Kalan ₺6.000,00.Makbuz"
   }
  ],
@@ -3298,8 +3298,8 @@
     "sale": {
      "adet": 21,
      "toplam": 363681.06,
-     "odenen": 285566.03,
-     "acik": 78115.03
+     "odenen": 282275.43,
+     "acik": 81405.63
     },
     "purchase": {
      "adet": 22,
@@ -3347,8 +3347,8 @@
    "ekFatura": {
     "EK-12": {
      "odenecek": 12720,
-     "odenen": 8000,
-     "acik": 4720,
+     "odenen": 5000,
+     "acik": 7720,
      "durum": "overdue"
     },
     "EK-07": {
@@ -5677,8 +5677,8 @@
     "sale": {
      "adet": 21,
      "toplam": 363681.06,
-     "odenen": 285566.03,
-     "acik": 78115.03
+     "odenen": 282275.43,
+     "acik": 81405.63
     },
     "purchase": {
      "adet": 22,
@@ -5726,8 +5726,8 @@
    "ekFatura": {
     "EK-12": {
      "odenecek": 12720,
-     "odenen": 8000,
-     "acik": 4720,
+     "odenen": 5000,
+     "acik": 7720,
      "durum": "overdue"
     },
     "EK-07": {
@@ -6023,13 +6023,13 @@
    },
    "banka": {
     "id": "banka-pos-hareketleri",
-    "kapsam": "Banka ve POS · 20.01.2025 – 26.01.2025",
+    "kapsam": "Banka (Havale / EFT) · 20.01.2025 – 26.01.2025",
     "ozet": {
      "Devir": "0,00 TL",
-     "Dönem Giriş": "139.997,01 TL",
-     "Dönem Çıkış": "563.226,58 TL",
-     "Dönem Net": "-423.229,57 TL",
-     "Dönem Sonu": "-423.229,57 TL",
+     "Dönem Giriş": "126.647,20 TL",
+     "Dönem Çıkış": "185.887,98 TL",
+     "Dönem Net": "-59.240,78 TL",
+     "Dönem Sonu": "-59.240,78 TL",
      "Banka (tüm hareketler)": "-59.240,78 TL",
      "POS / Kredi Kartı (tüm hareketler)": "-363.988,79 TL"
     },
@@ -6038,8 +6038,8 @@
      "",
      "",
      "",
-     "139.997,01 TL",
-     "563.226,58 TL",
+     "126.647,20 TL",
+     "185.887,98 TL",
      "",
      ""
     ],
@@ -6058,13 +6058,13 @@
    },
    "pos": {
     "id": "banka-pos-hareketleri",
-    "kapsam": "Banka ve POS · 20.01.2025 – 26.01.2025",
+    "kapsam": "POS / Kredi Kartı · 20.01.2025 – 26.01.2025",
     "ozet": {
      "Devir": "0,00 TL",
-     "Dönem Giriş": "139.997,01 TL",
-     "Dönem Çıkış": "563.226,58 TL",
-     "Dönem Net": "-423.229,57 TL",
-     "Dönem Sonu": "-423.229,57 TL",
+     "Dönem Giriş": "13.349,81 TL",
+     "Dönem Çıkış": "377.338,60 TL",
+     "Dönem Net": "-363.988,79 TL",
+     "Dönem Sonu": "-363.988,79 TL",
      "Banka (tüm hareketler)": "-59.240,78 TL",
      "POS / Kredi Kartı (tüm hareketler)": "-363.988,79 TL"
     },
@@ -6073,8 +6073,8 @@
      "",
      "",
      "",
-     "139.997,01 TL",
-     "563.226,58 TL",
+     "13.349,81 TL",
+     "377.338,60 TL",
      "",
      ""
     ],
@@ -6100,7 +6100,7 @@
      "KDV": "20.417,58 TL",
      "Tevkifat": "0,00 TL",
      "Ödenecek": "356.669,32 TL",
-     "Kalan": "76.158,23 TL"
+     "Kalan": "79.448,83 TL"
     },
     "toplam": [
      "TOPLAM",
@@ -6115,8 +6115,8 @@
      "0,00 TL",
      "0,00 TL",
      "356.669,32 TL",
-     "280.511,09 TL",
-     "76.158,23 TL",
+     "277.220,49 TL",
+     "79.448,83 TL",
      ""
     ],
     "dosya": {
@@ -6298,7 +6298,7 @@
     "id": "acik-faturalar",
     "kapsam": "04.10.2026 itibarıyla · taksitli faturalar taksit kartında izlenir",
     "ozet": {
-     "Açık Alacak": "68.494,23 TL",
+     "Açık Alacak": "71.494,23 TL",
      "Açık Borç": "78.476,09 TL"
     },
     "toplam": [],
@@ -7389,13 +7389,13 @@
    },
    "banka": {
     "id": "banka-pos-hareketleri",
-    "kapsam": "Banka ve POS · 20.01.2025 – 26.01.2025",
+    "kapsam": "Banka (Havale / EFT) · 20.01.2025 – 26.01.2025",
     "ozet": {
      "Devir": "0,00 TL",
-     "Dönem Giriş": "139.997,01 TL",
-     "Dönem Çıkış": "563.226,58 TL",
-     "Dönem Net": "-423.229,57 TL",
-     "Dönem Sonu": "-423.229,57 TL",
+     "Dönem Giriş": "126.647,20 TL",
+     "Dönem Çıkış": "185.887,98 TL",
+     "Dönem Net": "-59.240,78 TL",
+     "Dönem Sonu": "-59.240,78 TL",
      "Banka (tüm hareketler)": "-59.240,78 TL",
      "POS / Kredi Kartı (tüm hareketler)": "-363.988,79 TL"
     },
@@ -7404,8 +7404,8 @@
      "",
      "",
      "",
-     "139.997,01 TL",
-     "563.226,58 TL",
+     "126.647,20 TL",
+     "185.887,98 TL",
      "",
      ""
     ],
@@ -7424,13 +7424,13 @@
    },
    "pos": {
     "id": "banka-pos-hareketleri",
-    "kapsam": "Banka ve POS · 20.01.2025 – 26.01.2025",
+    "kapsam": "POS / Kredi Kartı · 20.01.2025 – 26.01.2025",
     "ozet": {
      "Devir": "0,00 TL",
-     "Dönem Giriş": "139.997,01 TL",
-     "Dönem Çıkış": "563.226,58 TL",
-     "Dönem Net": "-423.229,57 TL",
-     "Dönem Sonu": "-423.229,57 TL",
+     "Dönem Giriş": "13.349,81 TL",
+     "Dönem Çıkış": "377.338,60 TL",
+     "Dönem Net": "-363.988,79 TL",
+     "Dönem Sonu": "-363.988,79 TL",
      "Banka (tüm hareketler)": "-59.240,78 TL",
      "POS / Kredi Kartı (tüm hareketler)": "-363.988,79 TL"
     },
@@ -7439,8 +7439,8 @@
      "",
      "",
      "",
-     "139.997,01 TL",
-     "563.226,58 TL",
+     "13.349,81 TL",
+     "377.338,60 TL",
      "",
      ""
     ],
@@ -7466,7 +7466,7 @@
      "KDV": "20.417,58 TL",
      "Tevkifat": "0,00 TL",
      "Ödenecek": "356.669,32 TL",
-     "Kalan": "76.158,23 TL"
+     "Kalan": "79.448,83 TL"
     },
     "toplam": [
      "TOPLAM",
@@ -7481,8 +7481,8 @@
      "0,00 TL",
      "0,00 TL",
      "356.669,32 TL",
-     "280.511,09 TL",
-     "76.158,23 TL",
+     "277.220,49 TL",
+     "79.448,83 TL",
      ""
     ],
     "dosya": {
@@ -7664,7 +7664,7 @@
     "id": "acik-faturalar",
     "kapsam": "04.10.2026 itibarıyla · taksitli faturalar taksit kartında izlenir",
     "ozet": {
-     "Açık Alacak": "68.494,23 TL",
+     "Açık Alacak": "71.494,23 TL",
      "Açık Borç": "78.476,09 TL"
     },
     "toplam": [],
@@ -8473,20 +8473,7 @@
    }
   }
  },
- "raporFarklari": [
-  "Ekran banka-pos-hareketleri · Dönem Giriş: ekran 139.997,01 TL · beklenen 126647.20 (Bulgu 4)",
-  "Ekran banka-pos-hareketleri · Dönem Çıkış: ekran 563.226,58 TL · beklenen 185887.98 (Bulgu 4)",
-  "Ekran banka-pos-hareketleri · Dönem Giriş: ekran 139.997,01 TL · beklenen 13349.81 (Bulgu 4)",
-  "Ekran banka-pos-hareketleri · Dönem Çıkış: ekran 563.226,58 TL · beklenen 377338.60 (Bulgu 4)",
-  "Ekran fatura-satis · Kalan: ekran 76.158,23 TL · beklenen 79448.83 (Bulgu 2 (Kalan))",
-  "Ekran acik-faturalar · Açık Alacak: ekran 68.494,23 TL · beklenen 71494.23 (Bulgu 2 (Açık Alacak))",
-  "API banka-pos-hareketleri · Dönem Giriş: ekran 139.997,01 TL · beklenen 126647.20 (Bulgu 4)",
-  "API banka-pos-hareketleri · Dönem Çıkış: ekran 563.226,58 TL · beklenen 185887.98 (Bulgu 4)",
-  "API banka-pos-hareketleri · Dönem Giriş: ekran 139.997,01 TL · beklenen 13349.81 (Bulgu 4)",
-  "API banka-pos-hareketleri · Dönem Çıkış: ekran 563.226,58 TL · beklenen 377338.60 (Bulgu 4)",
-  "API fatura-satis · Kalan: ekran 76.158,23 TL · beklenen 79448.83 (Bulgu 2 (Kalan))",
-  "API acik-faturalar · Açık Alacak: ekran 68.494,23 TL · beklenen 71494.23 (Bulgu 2 (Açık Alacak))"
- ],
+ "raporFarklari": [],
  "kontrol": {
   "Ekran": [
    {
@@ -8625,16 +8612,16 @@
     "rapor": "banka",
     "kalem": "Dönem Giriş",
     "beklenen": 126647.2,
-    "ekran": 139997.01,
-    "ok": false,
+    "ekran": 126647.2,
+    "ok": true,
     "bulgu": "Bulgu 4"
    },
    {
     "rapor": "banka",
     "kalem": "Dönem Çıkış",
     "beklenen": 185887.98,
-    "ekran": 563226.58,
-    "ok": false,
+    "ekran": 185887.98,
+    "ok": true,
     "bulgu": "Bulgu 4"
    },
    {
@@ -8659,16 +8646,16 @@
     "rapor": "pos",
     "kalem": "Dönem Giriş",
     "beklenen": 13349.81,
-    "ekran": 139997.01,
-    "ok": false,
+    "ekran": 13349.81,
+    "ok": true,
     "bulgu": "Bulgu 4"
    },
    {
     "rapor": "pos",
     "kalem": "Dönem Çıkış",
     "beklenen": 377338.6,
-    "ekran": 563226.58,
-    "ok": false,
+    "ekran": 377338.6,
+    "ok": true,
     "bulgu": "Bulgu 4"
    },
    {
@@ -8725,8 +8712,8 @@
     "rapor": "satis",
     "kalem": "Kalan",
     "beklenen": 79448.83,
-    "ekran": 76158.23,
-    "ok": false,
+    "ekran": 79448.83,
+    "ok": true,
     "bulgu": "Bulgu 2 (Kalan)"
    },
    {
@@ -8977,8 +8964,8 @@
     "rapor": "acik",
     "kalem": "Açık Alacak",
     "beklenen": 71494.23,
-    "ekran": 68494.23,
-    "ok": false,
+    "ekran": 71494.23,
+    "ok": true,
     "bulgu": "Bulgu 2 (Açık Alacak)"
    },
    {
@@ -9371,16 +9358,16 @@
     "rapor": "banka",
     "kalem": "Dönem Giriş",
     "beklenen": 126647.2,
-    "ekran": 139997.01,
-    "ok": false,
+    "ekran": 126647.2,
+    "ok": true,
     "bulgu": "Bulgu 4"
    },
    {
     "rapor": "banka",
     "kalem": "Dönem Çıkış",
     "beklenen": 185887.98,
-    "ekran": 563226.58,
-    "ok": false,
+    "ekran": 185887.98,
+    "ok": true,
     "bulgu": "Bulgu 4"
    },
    {
@@ -9405,16 +9392,16 @@
     "rapor": "pos",
     "kalem": "Dönem Giriş",
     "beklenen": 13349.81,
-    "ekran": 139997.01,
-    "ok": false,
+    "ekran": 13349.81,
+    "ok": true,
     "bulgu": "Bulgu 4"
    },
    {
     "rapor": "pos",
     "kalem": "Dönem Çıkış",
     "beklenen": 377338.6,
-    "ekran": 563226.58,
-    "ok": false,
+    "ekran": 377338.6,
+    "ok": true,
     "bulgu": "Bulgu 4"
    },
    {
@@ -9471,8 +9458,8 @@
     "rapor": "satis",
     "kalem": "Kalan",
     "beklenen": 79448.83,
-    "ekran": 76158.23,
-    "ok": false,
+    "ekran": 79448.83,
+    "ok": true,
     "bulgu": "Bulgu 2 (Kalan)"
    },
    {
@@ -9723,8 +9710,8 @@
     "rapor": "acik",
     "kalem": "Açık Alacak",
     "beklenen": 71494.23,
-    "ekran": 68494.23,
-    "ok": false,
+    "ekran": 71494.23,
+    "ok": true,
     "bulgu": "Bulgu 2 (Açık Alacak)"
    },
    {
