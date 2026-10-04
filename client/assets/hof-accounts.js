@@ -107,11 +107,11 @@
       }
       if (view.mode === "list") renderList();
     } catch (error) {
-      if (ticket === listRequest && view.mode === "list" && body()) body().innerHTML = `<p class="hof-empty">${esc(error.message)}</p>`;
+      if (ticket === listRequest && view.mode === "list") HOF.listFailed(body(), error, { quiet: keep, hasData: Boolean(view.list) });
     }
   }
   let cardRequest = 0;
-  async function loadAccount(id) {
+  async function loadAccount(id, { quiet = false } = {}) {
     const ticket = ++cardRequest;
     const target = view.id;
     try {
@@ -125,6 +125,8 @@
       renderCard();
     } catch (error) {
       if (ticket !== cardRequest) return;
+      // Arka plan yenilemesinin geçici hatası kartı kapatmaz (kullanıcı formda olabilir); silinmiş cari listeye döner.
+      if (quiet && !HOF.lostRecord(error)) return;
       HOF.toastError(error);
       view.mode = "list";
       renderList();
@@ -1131,7 +1133,7 @@
     // girerken aramada her harf ~3 sn bekliyordu). Bütün olaylar tek yenileme kapısından geçer (HOF.refresher).
     const refreshOpen = HOF.refresher(() => {
       if (!modal) return null;
-      if (view.mode === "card" && view.id) return loadAccount(view.id);
+      if (view.mode === "card" && view.id) return loadAccount(view.id, { quiet: true });
       if (view.mode === "list") return loadList({ keep: true });
       return null;
     });

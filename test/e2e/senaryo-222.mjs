@@ -275,6 +275,59 @@ try {
     await closeAll();
   });
 
+  await step("Pencere bozulmaz: arka plan yenilemesi başarısız olunca liste, arama kutusu ve açık kart yerinde kalır; silinen cari bildirilir", async () => {
+    // v2.0.21'de liste yenilenemeyince (yük altında 30 sn'yi aşan istek) pencere gövdesi hata yazısıyla değişiyor, arama
+    // kutusu kayboluyordu; açık kartın yenilemesi hata alınca kullanıcı listeye atılıyordu (yük ölçümünde görüldü).
+    const colleague = createClient(BASE);
+    await colleague.login("muhasebe2", STAFF);
+    const lonely = unwrap(await api.post("/api/workspace/accounts", { name: "Silinecek Cari", type: "customer" })).id;
+    await admin.click("#hof-sidecard [data-action=accounts]");
+    await admin.waitForSelector(`${modal} tr[data-account]`);
+    await admin.fill(`${modal} input[data-filter=q]`, "Müşteri 0");
+    await admin.waitForFunction(sel => [...document.querySelectorAll(`${sel} tr[data-account]`)].length === 9, modal, { timeout: 10000 });
+    const isList = url => new URL(url).pathname === "/api/workspace/accounts";
+    let failedCalls = 0;
+    await admin.route(isList, route => {
+      if (route.request().method() !== "GET") return route.continue();
+      failedCalls += 1;
+      return route.abort("failed");
+    });
+    await colleague.post(`/api/workspace/accounts/${ids.customers[5]}/entries`, { kind: "in", amount: 7, date: TODAY, method: "cash", note: "yenileme hatası denemesi" });
+    await admin.waitForTimeout(3500);
+    const state = await admin.evaluate(sel => ({
+      input: document.querySelector(`${sel} input[data-filter=q]`)?.value ?? null,
+      rows: document.querySelectorAll(`${sel} tr[data-account]`).length,
+      error: document.querySelector(`${sel} .hof-empty`)?.textContent || "",
+    }), modal);
+    ok(failedCalls >= 1, `arka plan yenilemesi denendi ve başarısız oldu (${failedCalls} kez)`);
+    ok(state.input === "Müşteri 0" && state.rows === 9 && !state.error, `liste ve arama kutusu yerinde (kutuda "${state.input}", ${state.rows} satır${state.error ? `, hata yazısı: ${state.error}` : ""})`);
+    await admin.unroute(isList);
+    await shot("yenileme-hatasinda-liste-yerinde");
+    // Açık kart: yenilemesi başarısız olunca kullanıcı kartta kalır.
+    await admin.click(`${modal} tr[data-account="${ids.customers[5]}"]`);
+    await admin.waitForSelector(`${modal} [data-act="back"]`, { timeout: 10000 });
+    const isCard = url => new URL(url).pathname === `/api/workspace/accounts/${ids.customers[5]}`;
+    await admin.route(isCard, route => (route.request().method() === "GET" ? route.abort("failed") : route.continue()));
+    await colleague.post(`/api/workspace/accounts/${ids.customers[5]}/entries`, { kind: "in", amount: 8, date: TODAY, method: "cash", note: "kart yenileme hatası" });
+    await admin.waitForTimeout(3500);
+    const stillCard = await admin.evaluate(sel => Boolean(document.querySelector(`${sel} [data-act="back"]`)) && !document.querySelector(`${sel} input[data-filter=q]`) && Boolean(document.querySelector(sel)?.innerText.includes("Müşteri 06")), modal);
+    ok(stillCard, "açık kartın yenilemesi başarısız oldu, kullanıcı kartta kaldı (listeye atılmadı)");
+    await admin.unroute(isCard);
+    await closeAll();
+    // Başka bilgisayarda silinen cari: kart açıkken silinince bildirilir, liste açılır.
+    await admin.click("#hof-sidecard [data-action=accounts]");
+    await admin.waitForSelector(`${modal} input[data-filter=q]`);
+    await admin.fill(`${modal} input[data-filter=q]`, "Silinecek");
+    await admin.waitForSelector(`${modal} tr[data-account="${lonely}"]`, { timeout: 10000 });
+    await admin.click(`${modal} tr[data-account="${lonely}"]`);
+    await admin.waitForSelector(`${modal} [data-act="back"]`, { timeout: 10000 });
+    const removed = await api.del(`/api/workspace/accounts/${lonely}`);
+    ok(removed.status === 200, `cari başka oturumda silindi (${removed.status})`);
+    const back = await admin.waitForFunction(sel => Boolean(document.querySelector(`${sel} input[data-filter=q]`)) && /bulunamadı|Silinmiş/i.test([...document.querySelectorAll(".hof-toast")].map(node => node.textContent).join(" ")), modal, { timeout: 10000 }).then(() => true, () => false);
+    ok(back, "silinen carinin kartı bildirimle kapandı, liste açıldı");
+    await closeAll();
+  });
+
   await step("S2: başka personelin cari notu düzeltmesi ANLIK DURUM'u yeniden yükletmez; parasal kayıt yükletir", async () => {
     const colleague = createClient(BASE);
     await colleague.login("muhasebe2", STAFF);

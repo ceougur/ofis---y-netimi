@@ -66,7 +66,7 @@
     loadList();
   }
 
-  async function loadList(more = false) {
+  async function loadList(more = false, { quiet = false } = {}) {
     const ticket = ++listRequest;
     try {
       const offset = more && view.list ? view.list.cheques.length : 0;
@@ -75,10 +75,10 @@
       view.list = more && view.list ? { ...data, cheques: [...view.list.cheques, ...data.cheques] } : data;
       if (view.mode === "list") renderList();
     } catch (error) {
-      if (ticket === listRequest && body()) body().innerHTML = `<p class="hof-empty">${esc(error.message)}</p>`;
+      if (ticket === listRequest) HOF.listFailed(body(), error, { quiet, hasData: Boolean(view.list) });
     }
   }
-  async function loadCheque(id, action = "") {
+  async function loadCheque(id, action = "", { quiet = false } = {}) {
     const ticket = ++cardRequest;
     try {
       const cheque = await HOF.api(`/api/workspace/cheques/${encodeURIComponent(id)}`);
@@ -90,6 +90,7 @@
       if (action && cheque.actions?.some(item => item.key === action)) actionForm(cheque, action);
     } catch (error) {
       if (ticket !== cardRequest) return;
+      if (quiet && !HOF.lostRecord(error)) return;
       HOF.toastError(error);
       view.mode = "list";
       renderList();
@@ -432,8 +433,8 @@
   HOF.cheques = { open, newFor };
   HOF.whenReady(() => {
     // v2.0.22: canlı olaylar ve defter değişiklikleri tek yenileme kapısından (HOF.refresher).
-    const refreshList = HOF.refresher(() => (modal && view.mode === "list" ? loadList() : null));
-    const refreshCard = HOF.refresher(() => (modal && view.mode === "card" && view.id ? loadCheque(view.id) : null));
+    const refreshList = HOF.refresher(() => (modal && view.mode === "list" ? loadList(false, { quiet: true }) : null));
+    const refreshCard = HOF.refresher(() => (modal && view.mode === "card" && view.id ? loadCheque(view.id, "", { quiet: true }) : null));
     // Başka bilgisayardaki değişiklik: açık liste/kart yenilenir.
     HOF.on("live:workspace.changed", change => {
       if (!modal || change?.kind !== "cheques") return;

@@ -213,10 +213,10 @@ for (const kind of ["not", "para"]) {
       return Math.round(total);
     });
     // Donma ölçümünün (10 sn) sırasında da pencere kaybolabilir: kutu kullanılmadan hemen önce yeniden denetlenir.
+    // v2.0.21 listeyi saniyede birkaç kez baştan çizer: kutunun ölçüsünü alıp fareyle tıklamak yarışa girer (ölçerken
+    // kutu yenisiyle değişir → "görünmüyor"). Tıklama, kutu kararlı olana dek yeniden deneyen locator.click ile yapılır.
     const reopenedAfter = await ensureWindow(`${kind}-${rate}-olcum-sonrasi`);
-    const box = await page.locator(input).boundingBox();
-    if (!box) throw new Error(`Cari arama kutusu yeniden açıldıktan sonra da görünmüyor (${kind}, ${rate}/sn)`);
-    await page.mouse.click(box.x + 30, box.y + box.height / 2);
+    await page.locator(input).click({ timeout: 60000 });
     const lags = [];
     for (const ch of "C0123") {
       await page.evaluate(sel => {

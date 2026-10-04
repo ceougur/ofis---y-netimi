@@ -147,7 +147,7 @@
   const listParams = (extra = {}) =>
     new URLSearchParams(Object.fromEntries(Object.entries({ tab: view.tab, q: view.q, from: view.from, to: view.to, pay: view.pay, profile: view.profile, account: view.account?.id || "", ...extra }).filter(([, value]) => value !== "" && value !== undefined && value !== null))).toString();
 
-  async function loadList(more = false) {
+  async function loadList(more = false, { quiet = false } = {}) {
     const ticket = ++listTicket;
     try {
       const offset = more && view.list ? view.list.invoices.length : 0;
@@ -156,7 +156,7 @@
       view.list = more && view.list ? { ...data, invoices: [...view.list.invoices, ...data.invoices] } : data;
       if (view.mode === "list") renderList();
     } catch (error) {
-      if (ticket === listTicket && body()) body().innerHTML = `<p class="hof-empty">${esc(error.message)}</p>`;
+      if (ticket === listTicket) HOF.listFailed(body(), error, { quiet, hasData: Boolean(view.list) });
     }
   }
   const statusPill = doc => {
@@ -1403,11 +1403,14 @@
   }
 
   // ---------- Kart ----------
-  async function loadDoc(id) {
+  async function loadDoc(id, { quiet = false } = {}) {
     try {
       const doc = await HOF.api(`/api/workspace/invoices/${encodeURIComponent(id)}`);
+      // Arka plan yenilemesi gelene kadar kullanıcı başka belgeye ya da listeye geçtiyse eski belge geri gelmez.
+      if (quiet && (view.mode !== "card" || view.id !== id)) return;
       showDoc(doc);
     } catch (error) {
+      if (quiet && !HOF.lostRecord(error)) return;
       HOF.toastError(error);
       showList();
     }
@@ -2180,8 +2183,8 @@
     // v2.0.22: canlı olaylar ve defter değişiklikleri tek yenileme kapısından (HOF.refresher; açık pencere başına tek yükleme).
     const refreshOpen = HOF.refresher(() => {
       if (!modal) return null;
-      if (view.mode === "list") return loadList();
-      if (view.mode === "card" && view.id) return loadDoc(view.id);
+      if (view.mode === "list") return loadList(false, { quiet: true });
+      if (view.mode === "card" && view.id) return loadDoc(view.id, { quiet: true });
       return null;
     });
     HOF.on("live:workspace.changed", change => {

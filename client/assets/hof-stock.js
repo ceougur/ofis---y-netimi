@@ -63,7 +63,7 @@
   const listXlsxUrl = () => `/api/workspace/stock/export.xlsx?${query()}&title=${encodeURIComponent(moduleName())}`;
   const cardPdfUrl = item => `/api/workspace/stock/${encodeURIComponent(item.id)}/hareketler.pdf`;
 
-  async function loadList({ more = false } = {}) {
+  async function loadList({ more = false, quiet = false } = {}) {
     const ticket = ++listRequest;
     const offset = more && view.list ? view.list.items.length : 0;
     try {
@@ -72,11 +72,11 @@
       view.list = more && view.list ? { ...data, items: [...view.list.items, ...data.items] } : data;
       if (view.mode === "list") renderList();
     } catch (error) {
-      if (ticket === listRequest && view.mode === "list" && body()) body().innerHTML = `<p class="hof-empty">${esc(error.message)}</p>`;
+      if (ticket === listRequest && view.mode === "list") HOF.listFailed(body(), error, { quiet, hasData: Boolean(view.list) });
     }
   }
   let cardRequest = 0;
-  async function loadItem(id) {
+  async function loadItem(id, { quiet = false } = {}) {
     const ticket = ++cardRequest;
     const target = view.id;
     try {
@@ -89,6 +89,7 @@
       renderCard();
     } catch (error) {
       if (ticket !== cardRequest) return;
+      if (quiet && !HOF.lostRecord(error)) return;
       HOF.toastError(error);
       view.mode = "list";
       renderList();
@@ -557,8 +558,8 @@
   const alertsSoon = HOF.refresher(refreshAlerts, { delay: 600, gap: 3000 });
   const refreshOpen = HOF.refresher(() => {
     if (!modal) return null;
-    if (view.mode === "card" && view.id) return loadItem(view.id);
-    if (view.mode === "list") return loadList();
+    if (view.mode === "card" && view.id) return loadItem(view.id, { quiet: true });
+    if (view.mode === "list") return loadList({ quiet: true });
     return null;
   });
   HOF.whenReady(() => {

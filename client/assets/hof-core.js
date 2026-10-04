@@ -271,6 +271,26 @@
     const hit = LEDGER_PATHS.find(([pattern]) => pattern.test(clean));
     if (hit) HOF.emit("ledger:changed", { kinds: hit[1], local: true, path: clean });
   }
+  // ---------- Yükleme hatası (v2.0.22) ----------
+  // v2.0.21'de liste yüklenemeyince (yük altında tarayıcı kuyruğunda 30 sn'yi aşan istek) pencere gövdesi — arama kutusu ve
+  // süzgeçler dahil — tek satırlık hata yazısıyla değiştiriliyordu: Cari aramasında kutu "kayboluyordu"; açık karttaki
+  // arka plan yenilemesi hata alınca kullanıcı karttan listeye atılıyordu. Kural:
+  //  - arka plan yenilemesi (quiet) başarısızsa ekran olduğu gibi kalır; bir sonraki değişiklikte yeniden denenir;
+  //  - kullanıcının kendi yüklemesi başarısızsa eldeki liste korunur, bildirim çıkar;
+  //  - yalnız hiç veri yokken hata pencereye yazılır.
+  // Silinmiş kayıt (404) ya da yetkinin kalkması (403) arka planda da bildirilir: eski hâlin gösterilmesi yanıltır.
+  HOF.lostRecord = error => error?.status === 404 || error?.status === 403;
+  HOF.listFailed = (root, error, { quiet = false, hasData = false } = {}) => {
+    if (hasData) {
+      if (!quiet) HOF.toast(`Liste yenilenemedi: ${error.message} Ekrandaki liste son alınan hâliyle duruyor.`, { type: "error", timeout: 6000 });
+      return;
+    }
+    if (root) {
+      root.innerHTML = "";
+      root.appendChild(HOF.el("p", { class: "hof-empty", text: error.message }));
+    }
+  };
+
   // ---------- Arka plan yenilemesi (v2.0.22) ----------
   // Excel denetimi ölçümü: başka personel saniyede bir kayıt girerken açık her pencere her olayda 3–7 isteği yeniden
   // gönderiyordu (bir fatura 5–7 olay yayımlar: fatura, cari, her stok kalemi, Kasa, taksit; ardından ANLIK DURUM).

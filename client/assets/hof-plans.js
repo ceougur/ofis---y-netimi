@@ -70,7 +70,7 @@
       view.groups = [];
     }
   };
-  async function loadList() {
+  async function loadList({ quiet = false } = {}) {
     const ticket = ++listRequest;
     try {
       const data = await HOF.api(`/api/workspace/plans?${listQuery()}`);
@@ -78,10 +78,10 @@
       view.list = data;
       if (view.mode === "list") renderList();
     } catch (error) {
-      if (ticket === listRequest && view.mode === "list") body().innerHTML = `<p class="hof-empty">${esc(error.message)}</p>`;
+      if (ticket === listRequest && view.mode === "list") HOF.listFailed(body(), error, { quiet, hasData: Boolean(view.list) });
     }
   }
-  async function loadPlan(id) {
+  async function loadPlan(id, { quiet = false } = {}) {
     try {
       const plan = await HOF.api(`/api/workspace/plans/${encodeURIComponent(id)}`);
       // Başka bir karta geçilince taksit/hareket süzgeçleri sıfırlanır.
@@ -94,6 +94,7 @@
       view.mode = "card";
       renderCard();
     } catch (error) {
+      if (quiet && !HOF.lostRecord(error)) return;
       HOF.toastError(error);
       view.mode = "list";
       renderList();
@@ -1328,10 +1329,10 @@
     const refreshOpen = HOF.refresher(async () => {
       if (!modal) return;
       await loadGroups();
-      if (view.mode === "card" && view.planId) await loadPlan(view.planId);
+      if (view.mode === "card" && view.planId) await loadPlan(view.planId, { quiet: true });
       else if (view.mode === "list") {
         renderList();
-        await loadList();
+        await loadList({ quiet: true });
       }
     });
     HOF.on("live:workspace.changed", change => {
