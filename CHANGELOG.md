@@ -9,7 +9,9 @@ Kaynak: Excel iş listesi denetimi (04.10.2026; 4.220 iş × 2 şirket, eşzaman
 - **Başka personel kayıt girerken ekran ve sunucu yetişiyor.** Ölçüldü (aynı veri, aynı yük, v2.0.21 → 2.0.22):
   - Başka personel kayıt girerken Cari aramasında harf başına gecikme 1,5–7,9 sn → 3–12 ms; son tuştan sonuca 4,6–11,9 sn → 0,31–0,45 sn. v2.0.21'de arama kutusu 5 sn tıklanamıyordu; artık tıklanıyor.
   - 5 açık pencereyle tahsilat kaydı saniyede 1 → 3,2; cari not düzeltmesi 0,8 → 364.
-  - Başkasının 10 kaydında açık Cari penceresi 100 istek / 30,8 MB → 43 istek / 6,8 MB; en uzun istek 22 sn → 0,66 sn. Nedenleri ve düzeltmeler:
+  - Başkasının 10 kaydında açık Cari penceresi 100 istek / 30,8 MB → 43 istek / 6,8 MB; en uzun istek 22 sn → 0,66 sn.
+
+  Nedenleri ve düzeltmeler:
   - Açık her pencere başkasının her kaydında 7–10 isteği yeniden gönderiyordu. Bir fatura 5–7 olay yayımlar; vade takvimi her seferinde ~1,3 MB iniyordu. Artık bütün pencereler tek yenileme kapısından geçer. Bir yenileme sürerken gelenler bitince tek yenileme yaptırır. İki yenileme arasında en az süre vardır: Cari/Fatura/Stok/Taksit/Çek 1,5 sn; ANLIK DURUM ve raporlar 2 sn; rozetler 3 sn; vade takvimi 4 sn. Bu ekranda yapılan işlem beklemeden yenilenir. Arka plandaki sekme yenilenmez, dönünce bir kez yenilenir. Yenileme başarısızsa en çok 3 kez yeniden denenir.
   - Arka plan istekleri aynı anda en çok 2 bağlantı kullanır: kullanıcının araması ve açtığı kart sıraya girmez.
   - Arka plan yenilemesi yazılan aramayı ezmez ve geçersiz saymaz (Cari, Fatura, Stok, Taksit, Çek/Senet). Cari listesinde "Daha Fazla" ile açılmış satırlar ve "Tümünü Seç" korunur; liste değişmediyse yeniden çizilmez.
