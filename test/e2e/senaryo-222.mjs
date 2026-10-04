@@ -426,7 +426,17 @@ try {
     await admin.waitForTimeout(2500);
     const got = await admin.evaluate(() => window.__ledger);
     ok(status === 200 && got.length >= 1, `Kasa girişi bu ekrandan yapıldı; işleyiciye ${got.length} çağrı`);
-    ok(got.some(item => item.local && item.path.startsWith("/api/workspace/cash")), `işleyici "yerel" bilgisini aldı (${JSON.stringify(got)})`);
+    ok(got.some(item => item.local), `işleyici "yerel" bilgisini aldı (${JSON.stringify(got)})`);
+    // İkinci gözden geçirme bulgusu 5: bekleme içinde başka bir olay da geldiyse (başka personelin değişikliği olabilir) yol
+    // taşınmaz — kendi modülünün yolunu yok sayan pencere o değişikliği kaçırmasın; "yerel" yine korunur.
+    const merged = await admin.evaluate(() => new Promise(resolve => {
+      const seen = [];
+      window.HOF.onLedger(["stock"], detail => seen.push({ local: Boolean(detail.local), path: detail.path || "" }), 100);
+      window.HOF.emit("ledger:changed", { kinds: ["stock"], local: true, path: "/api/workspace/stock/x/moves" });
+      window.HOF.emit("live:overview.changed", { kinds: ["stock"] });
+      setTimeout(() => resolve(seen), 400);
+    }));
+    ok(merged.length === 1 && merged[0].local && !merged[0].path, `yerel + başka olay birleşti: yerel korunur, yol taşınmaz (${JSON.stringify(merged)})`);
   });
 
   await step("Kart yenilemesi sürerken kullanıcı başka yere geçerse eski kart geri gelmez, hatası onu yerinden etmez (Taksit, Çek/Senet, Fatura)", async () => {
@@ -503,6 +513,129 @@ try {
     const toasts = await admin.evaluate(() => [...document.querySelectorAll(".hof-toast")].map(node => node.textContent).join(" "));
     ok(onB && !/bulunamadı/i.test(toasts), `Fatura: kullanıcı B (${docB.number}) kartında kaldı, A'nın hatası gösterilmedi${/bulunamadı/i.test(toasts) ? ` (bildirim: ${toasts.slice(0, 80)})` : ""}`);
     await admin.unroute(match);
+    await closeAll();
+  });
+
+  await step("İkinci gözden geçirme: seçim, kart sırası, liste sırası, eski hata yazısı, taslak yinelemesi", async () => {
+    await closeAll();
+    const colleague = createClient(BASE);
+    await colleague.login("muhasebe2", STAFF);
+
+    // (1) Elle işaretlenen cariler, arama yüklenemeyince seçili kalmaz (toplu düğme görünmeyen carilere uygulanmasın).
+    await admin.click("#hof-sidecard [data-action=accounts]");
+    await admin.waitForSelector(`${modal} input[data-filter=q]`);
+    await admin.fill(`${modal} input[data-filter=q]`, "");
+    await admin.waitForFunction(sel => document.querySelectorAll(`${sel} tr[data-account]`).length >= 12, modal, { timeout: 10000 });
+    await admin.click(`${modal} input[data-select="${ids.customers[0]}"]`);
+    await admin.click(`${modal} input[data-select="${ids.customers[1]}"]`);
+    ok(Boolean(await admin.$(`${modal} [data-selbar].is-active`)), "iki cari işaretlendi (seçim çubuğu etkin)");
+    const isSearch = url => {
+      const parsed = new URL(url);
+      return parsed.pathname === "/api/workspace/accounts" && parsed.searchParams.get("q") === "Müşteri 1";
+    };
+    await admin.route(isSearch, route => (route.request().method() === "GET" ? route.abort("failed") : route.continue()));
+    await admin.fill(`${modal} input[data-filter=q]`, "Müşteri 1");
+    await admin.waitForSelector(`${modal} .hof-list-error`, { timeout: 10000 });
+    const bar = await admin.evaluate(sel => ({ active: Boolean(document.querySelector(`${sel} [data-selbar].is-active`)), bulk: Boolean(document.querySelector(`${sel} [data-act="bulkPlan"]`)) }), modal);
+    ok(!bar.active && !bar.bulk, `arama yüklenemedi: seçim temizlendi, toplu düğme yok (${JSON.stringify(bar)})`);
+    await admin.unroute(isSearch);
+    await admin.fill(`${modal} input[data-filter=q]`, "");
+    await admin.waitForFunction(sel => document.querySelectorAll(`${sel} tr[data-account]`).length >= 12, modal, { timeout: 10000 });
+
+    // (2) Cari A'nın kartı arka planda yenilenirken kullanıcı B'yi açar (fatura kartındaki cari bağlantısı gibi) → B görünür.
+    await admin.click(`${modal} tr[data-account="${ids.customers[2]}"]`);
+    await admin.waitForSelector(`${modal} [data-act="back"]`, { timeout: 10000 });
+    await admin.waitForTimeout(2000);
+    const isCardA = url => new URL(url).pathname === `/api/workspace/accounts/${ids.customers[2]}`;
+    await admin.route(isCardA, async route => {
+      if (route.request().method() !== "GET") return route.continue();
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      return route.continue().catch(() => null);
+    });
+    const started = admin.waitForRequest(request => isCardA(request.url()) && request.method() === "GET", { timeout: 10000 });
+    await colleague.post(`/api/workspace/accounts/${ids.customers[2]}/entries`, { kind: "in", amount: 1, date: TODAY, method: "cash", note: "kart sırası" });
+    await started;
+    await admin.evaluate(id => window.HOF.accounts.open(id), ids.customers[9]);
+    await admin.waitForTimeout(3500);
+    const shownName = await admin.evaluate(sel => document.querySelector(`${sel} .hof-plan-headline`)?.innerText || document.querySelector(sel)?.innerText.slice(0, 200) || "", modal);
+    ok(/Müşteri 10/.test(shownName) && !/Müşteri 03/.test(shownName), `kullanıcının açtığı cari (Müşteri 10) ekranda: "${shownName.replace(/\s+/g, " ").slice(0, 60)}"`);
+    await admin.unroute(isCardA);
+    await closeAll();
+
+    // (3, 4) Liste sırası kuralları (HOF.listGate): sonra başlamış yanıt yazıldıysa eskisi yazılmaz; süzgeç yüklemesi
+    // sürerken "Daha Fazla" yok sayılır; yeni kullanıcı yüklemesi öncekileri geçersiz sayar.
+    const gate = await admin.evaluate(() => {
+      if (typeof window.HOF.listGate !== "function") return { missing: true };
+      const lists = window.HOF.listGate();
+      const user = lists.start({});
+      const more = lists.start({ more: true });
+      const quiet = lists.start({ quiet: true });
+      const quietCurrent = quiet.current();
+      quiet.applied();
+      const userAfterQuiet = user.current();
+      user.done();
+      const moreAfter = Boolean(lists.start({ more: true }));
+      const next = lists.start({});
+      return { moreWhilePending: more === null, quietCurrent, userAfterQuiet, moreAfter, staleQuiet: quiet.current(), nextCurrent: next.current() };
+    });
+    ok(gate.moreWhilePending && gate.moreAfter, `"Daha Fazla" süzgeç yüklemesi sürerken yok sayılır, bitince çalışır (${JSON.stringify(gate)})`);
+    ok(gate.quietCurrent && !gate.userAfterQuiet, "sonra başlamış arka plan yanıtı yazıldıysa önce başlamış kullanıcı yanıtı eski veriyle ezmez");
+    ok(!gate.staleQuiet && gate.nextCurrent, "yeni kullanıcı yüklemesi öncekileri geçersiz sayar");
+
+    // (6) Fatura: bir sekme yüklenemedikten sonra başka sekmeye geçilince eski hata yazısı kalmaz ("Yükleniyor…").
+    await admin.click("#hof-sidecard [data-action=invoices]");
+    await admin.waitForSelector(`${inv} [data-tab]`, { timeout: 15000 });
+    const tabs = await admin.$$eval(`${inv} [data-tab]`, nodes => nodes.map(node => node.dataset.tab).filter(tab => tab && tab !== "inbox"));
+    const isList = url => new URL(url).pathname === "/api/workspace/invoices";
+    await admin.route(isList, route => (route.request().method() === "GET" ? route.abort("failed") : route.continue()));
+    await admin.click(`${inv} [data-tab="${tabs[1]}"]`);
+    await admin.waitForSelector(`${inv} .hof-list-error`, { timeout: 10000 });
+    await admin.unroute(isList);
+    await admin.route(isList, async route => {
+      if (route.request().method() !== "GET") return route.continue();
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      return route.continue().catch(() => null);
+    });
+    await admin.click(`${inv} [data-tab="${tabs[0]}"]`);
+    await admin.waitForTimeout(300);
+    const during = await admin.evaluate(sel => ({ error: Boolean(document.querySelector(`${sel} .hof-list-error`)), text: document.querySelector(sel)?.innerText.includes("Yükleniyor") }), inv);
+    ok(!during.error && during.text, `sekme değişince eski hata yazısı kalkıp "Yükleniyor…" göründü (${JSON.stringify(during)})`);
+    await admin.unroute(isList);
+    await closeAll();
+
+    // (7) Taslak isteğinin yanıtı kaybolur; taslak başka yerden kaydedilip deftere işlenir; kullanıcı yeniden "Taslak Olarak
+    // Kaydet"e basar → "daha önce kaydedilmiş ve deftere işlenmiş" (önce "Taslak kaydedildi; deftere işlenmedi" diyordu).
+    await admin.click("#hof-sidecard [data-action=invoices]");
+    await admin.waitForSelector(`${inv} [data-act="new"]`);
+    await admin.click(`${inv} [data-act="new"]`);
+    await admin.click(`${inv} [data-scenario="goods_sale"]`);
+    await admin.waitForSelector(`${inv} [data-lines]`);
+    await admin.fill(`${inv} [data-acc-query]`, "Müşteri 05");
+    await admin.waitForSelector(`${inv} .hof-acc-picker li[data-id]`);
+    await (await admin.$(`${inv} .hof-acc-picker li[data-id]`)).dispatchEvent("mousedown");
+    await admin.click(`${inv} [data-l="0"][data-f="name"]`);
+    await admin.keyboard.type("Deneme");
+    await admin.waitForSelector(`${inv} [data-hits="0"] li[data-item]`);
+    await admin.click(`${inv} [data-hits="0"] li[data-item]`);
+    await admin.fill(`${inv} [data-l="0"][data-f="qty"]`, "1");
+    await admin.fill(`${inv} [data-l="0"][data-f="unitPrice"]`, "100");
+    await admin.waitForTimeout(1000);
+    let draftId = "";
+    await admin.route(isList, async route => {
+      if (route.request().method() !== "POST" || draftId) return route.continue();
+      const response = await route.fetch();
+      draftId = (await response.json())?.data?.id || "draft";
+      return route.abort("failed");
+    });
+    await admin.click(`${inv} [data-act="save-draft"]`);
+    await admin.waitForFunction(() => /Sunucuya ulaşılamadı|zamanında yanıt vermedi/.test(document.body.innerText), null, { timeout: 15000 }).catch(() => null);
+    const issued = await api.post(`/api/workspace/invoices/${draftId}/issue`, { force: true });
+    ok(issued.status === 200, `taslak başka yerden kaydedildi (${issued.status}, ${unwrap(issued)?.number || ""})`);
+    await admin.click(`${inv} [data-act="save-draft"]`);
+    const toastSeen = await admin.waitForFunction(() => /daha önce kaydedilmiş ve deftere işlenmiş/.test([...document.querySelectorAll(".hof-toast")].map(node => node.textContent).join(" ")), null, { timeout: 15000 }).then(() => true, () => false);
+    const toasts = await admin.evaluate(() => [...document.querySelectorAll(".hof-toast")].map(node => node.textContent).join(" | "));
+    ok(toastSeen && !/Taslak kaydedildi; deftere işlenmedi/.test(toasts), `bildirim: ${toasts.split(" | ").filter(Boolean).at(-1) || "yok"}`);
+    await admin.unroute(isList);
     await closeAll();
   });
 

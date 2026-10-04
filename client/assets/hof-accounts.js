@@ -72,7 +72,7 @@
   // Binlerce caride ekran hızlı kalsın: sunucu 300'er satır gönderir ("Daha fazla göster" sonrakini ekler); arama, süzgeç
   // ve toplamlar sunucuda tümü üzerinde çalışır. "Hepsini seç" süzgeçteki bütün carileri (yüklenmemişler dahil) seçer.
   const PAGE = 300;
-  let listRequest = 0;
+  const lists = HOF.listGate();
   const body = () => modal?.dialog.querySelector("[data-accounts]");
   const query = () => new URLSearchParams({ q: view.q, type: view.type, group: view.group, subgroup: view.subgroup, status: view.status, balance: view.balance, sort: view.sort });
   const filterBody = () => ({ q: view.q, type: view.type, group: view.group, subgroup: view.subgroup, status: view.status, balance: view.balance });
@@ -86,12 +86,18 @@
   // Arka plan yenilemesi kullanıcının araması/süzgeci/sayfası sürerken onu geçersiz saymaz (sıra numarası artmaz): yazarken
   // gelen yenileme aramanın yanıtını bekletmesin. Yanıt listede görüneni değiştirmiyorsa liste yeniden çizilmez.
   async function loadList({ more = false, keep = false } = {}) {
-    const ticket = keep ? listRequest : ++listRequest;
+    const load = lists.start({ quiet: keep, more });
+    if (!load) return;
+    if (!keep && !more && view.listError) {
+      view.listError = "";
+      if (!view.list && view.mode === "list") renderList();
+    }
     const offset = more && view.list ? view.list.accounts.length : 0;
     const limit = keep && view.list ? Math.min(5000, Math.max(PAGE, view.list.accounts.length)) : PAGE;
     try {
       const data = await HOF.api(`/api/workspace/accounts?${query()}&limit=${limit}&offset=${offset}`, keep ? { background: true } : {});
-      if (ticket !== listRequest) return;
+      if (!load.current()) return;
+      load.applied();
       view.listError = "";
       const sign = more ? "" : JSON.stringify(data);
       if (keep && sign === view.listSign && view.mode === "list") return;
@@ -109,20 +115,24 @@
       if (view.mode === "list") renderList();
     } catch (error) {
       if (keep) throw error;
-      if (ticket !== listRequest) return;
+      if (!load.current()) return;
       if (more && view.list) return HOF.toastError(error);
       // Yeni arama/süzgeç yüklenemedi: eski satırlar yeni süzgecin altında kalmaz (Tümünü Seç görünmeyen carilere uygulanmasın).
       view.list = null;
       view.listSign = "";
       view.selectAll = false;
       view.excluded.clear();
+      view.selected.clear();
       view.listError = error.message;
       if (view.mode === "list") renderList();
+    } finally {
+      load.done();
     }
   }
   let cardRequest = 0;
   async function loadAccount(id, { quiet = false } = {}) {
-    const ticket = ++cardRequest;
+    // Arka plan yenilemesi sıra numarasını artırmaz: kullanıcının o sırada açtığı cari geçersiz sayılmaz.
+    const ticket = quiet ? cardRequest : ++cardRequest;
     const target = view.id;
     try {
       const account = await HOF.api(`/api/workspace/accounts/${encodeURIComponent(id)}`);

@@ -282,6 +282,35 @@
   //  - "Daha Fazla Göster" başarısızsa görünen satırlar aynı süzgece aittir; kalır, bildirim çıkar.
   // Silinmiş kayıt (404) ya da yetkinin kalkması (403) arka planda da bildirilir: eski hâlin gösterilmesi yanıltır.
   HOF.lostRecord = error => error?.status === 404 || error?.status === 403;
+  // Liste yüklemelerinin sırası (v2.0.22; Cari, Fatura, Stok, Taksit, Çek/Senet aynı kural):
+  //  - kullanıcının yüklemesi (yeni arama, süzgeç, sekme) sıra numarasını artırır: daha eski yanıtlar yok sayılır;
+  //  - arka plan yenilemesi (quiet) artırmaz: kullanıcının sürmekte olan araması geçersiz sayılmaz;
+  //  - aynı sıradaki iki yanıttan, sonra başlamış olan ekrana yazıldıysa önce başlamış olanınki yazılmaz (eski okuma
+  //    yeni veriyi ezmesin);
+  //  - süzgeç yüklemesi sürerken "Daha Fazla" yok sayılır (eski listenin uzunluğu yeni süzgece uygulanmasın).
+  HOF.listGate = () => {
+    let ticket = 0;
+    let seq = 0;
+    let applied = 0;
+    let pending = 0;
+    return {
+      start({ quiet = false, more = false } = {}) {
+        if (more && pending) return null;
+        const own = quiet ? ticket : ++ticket;
+        const order = ++seq;
+        if (!quiet && !more) pending = own;
+        return {
+          current: () => own === ticket && (more || order >= applied),
+          applied: () => {
+            if (!more) applied = order;
+          },
+          done: () => {
+            if (!quiet && !more && pending === own) pending = 0;
+          },
+        };
+      },
+    };
+  };
   HOF.listPending = message =>
     message
       ? `<p class="hof-empty hof-list-error" role="alert">Liste alınamadı: ${HOF.esc(message)} <button type="button" class="hof-link-button" data-act="retryList">Yeniden Dene</button></p>`
@@ -364,16 +393,21 @@
     const wanted = new Set(kinds);
     let timer = null;
     // v2.0.22 (gözden geçirme bulgusu 9): bu ekrandaki işlemin olayı (local) ile aynı işlemin ANLIK DURUM olayı bekleme
-    // içinde birleşir; "yerel" bilgisi kaybolmaz (pencere beklemeden yenilenir, en sık aralığa takılmaz).
+    // içinde birleşir; "yerel" bilgisi kaybolmaz (pencere beklemeden yenilenir, en sık aralığa takılmaz). Bekleme içinde
+    // başka bir olay da geldiyse (başka personelin değişikliği olabilir) yol bilgisi taşınmaz: kendi modülünün yolunu yok
+    // sayan pencere o değişikliği kaçırmasın.
     let local = null;
+    let foreign = false;
     const fire = detail => {
       const list = detail?.kinds || [];
       if (list.length && !list.some(kind => wanted.has(kind))) return;
-      if (detail?.local && !local) local = detail;
+      if (detail?.local) local = local || detail;
+      else foreign = true;
       clearTimeout(timer);
       timer = setTimeout(() => {
-        const merged = local ? { ...(detail || {}), local: true, path: local.path, kinds: local.kinds } : detail || {};
+        const merged = local ? { ...(detail || {}), local: true, path: foreign ? "" : local.path } : detail || {};
         local = null;
+        foreign = false;
         handler(merged);
       }, delay);
     };

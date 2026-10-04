@@ -8,7 +8,7 @@
   const HOF = window.HOF;
   const { esc } = HOF;
   let modal = null;
-  let listRequest = 0;
+  const lists = HOF.listGate();
   let cardRequest = 0;
   const view = { mode: "list", direction: "", status: "open", q: "", from: "", to: "", sort: "due", list: null, id: "", cheque: null };
 
@@ -67,27 +67,35 @@
   }
 
   async function loadList(more = false, { quiet = false } = {}) {
-    // Arka plan yenilemesi (quiet) sıra numarasını artırmaz: kullanıcının sürmekte olan araması/süzgeci geçersiz sayılmaz;
-    // en çok 2 bağlantılık arka plan kuyruğundan gider (v2.0.22, HOF.listPending).
-    const ticket = quiet ? listRequest : ++listRequest;
+    // Sıra kuralları HOF.listGate'te (v2.0.22); arka plan yenilemesi en çok 2 bağlantılık arka plan kuyruğundan gider.
+    const load = lists.start({ quiet, more });
+    if (!load) return;
+    if (!quiet && !more && view.listError) {
+      view.listError = "";
+      if (!view.list && view.mode === "list") renderList();
+    }
     try {
       const offset = more && view.list ? view.list.cheques.length : 0;
       const data = await HOF.api(`/api/workspace/cheques?${listQuery({ offset, limit: 300 })}`, quiet ? { background: true } : {});
-      if (ticket !== listRequest) return;
+      if (!load.current()) return;
+      load.applied();
       view.listError = "";
       view.list = more && view.list ? { ...data, cheques: [...view.list.cheques, ...data.cheques] } : data;
       if (view.mode === "list") renderList();
     } catch (error) {
       if (quiet) throw error;
-      if (ticket !== listRequest) return;
+      if (!load.current()) return;
       if (more && view.list) return HOF.toastError(error);
       view.list = null;
       view.listError = error.message;
       if (view.mode === "list") renderList();
+    } finally {
+      load.done();
     }
   }
   async function loadCheque(id, action = "", { quiet = false } = {}) {
-    const ticket = ++cardRequest;
+    // Arka plan yenilemesi sıra numarasını artırmaz: kullanıcının o sırada açtığı evrak geçersiz sayılmaz.
+    const ticket = quiet ? cardRequest : ++cardRequest;
     try {
       const cheque = await HOF.api(`/api/workspace/cheques/${encodeURIComponent(id)}`);
       if (ticket !== cardRequest) return;

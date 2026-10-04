@@ -60,7 +60,7 @@
     }
   };
   const view = { mode: "list", planId: "", q: "", group: "", subgroup: "", status: "active", sort: savedSort(), itemFilter: "all", entryFilter: "all", groups: [], list: null, plan: null };
-  let listRequest = 0;
+  const lists = HOF.listGate();
 
   // ---------- Veri ----------
   const loadGroups = async () => {
@@ -71,21 +71,27 @@
     }
   };
   async function loadList({ quiet = false } = {}) {
-    // Arka plan yenilemesi (quiet) sıra numarasını artırmaz: kullanıcının sürmekte olan araması/süzgeci geçersiz sayılmaz;
-    // en çok 2 bağlantılık arka plan kuyruğundan gider (v2.0.22, HOF.listPending).
-    const ticket = quiet ? listRequest : ++listRequest;
+    // Sıra kuralları HOF.listGate'te (v2.0.22); arka plan yenilemesi en çok 2 bağlantılık arka plan kuyruğundan gider.
+    const load = lists.start({ quiet });
+    if (!quiet && view.listError) {
+      view.listError = "";
+      if (!view.list && view.mode === "list") renderList();
+    }
     try {
       const data = await HOF.api(`/api/workspace/plans?${listQuery()}`, quiet ? { background: true } : {});
-      if (ticket !== listRequest) return;
+      if (!load.current()) return;
+      load.applied();
       view.listError = "";
       view.list = data;
       if (view.mode === "list") renderList();
     } catch (error) {
       if (quiet) throw error;
-      if (ticket !== listRequest) return;
+      if (!load.current()) return;
       view.list = null;
       view.listError = error.message;
       if (view.mode === "list") renderList();
+    } finally {
+      load.done();
     }
   }
   async function loadPlan(id, { quiet = false } = {}) {

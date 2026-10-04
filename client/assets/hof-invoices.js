@@ -12,7 +12,7 @@
   const { esc } = HOF;
   let modal = null;
   let meta = null;
-  let listTicket = 0;
+  const lists = HOF.listGate();
   let calcTicket = 0;
   let calcTimer = 0;
   const view = { mode: "list", tab: "sale", q: "", from: "", to: "", preset: "", pay: "", profile: "", account: null, list: null, selected: new Set(), id: "", doc: null, form: null, pickSide: "", inbox: null, inboxState: "new", inboxItem: null, settings: null };
@@ -148,23 +148,32 @@
     new URLSearchParams(Object.fromEntries(Object.entries({ tab: view.tab, q: view.q, from: view.from, to: view.to, pay: view.pay, profile: view.profile, account: view.account?.id || "", ...extra }).filter(([, value]) => value !== "" && value !== undefined && value !== null))).toString();
 
   async function loadList(more = false, { quiet = false } = {}) {
-    // Arka plan yenilemesi (quiet) sıra numarasını artırmaz: kullanıcının sürmekte olan araması/süzgeci geçersiz sayılmaz;
-    // en çok 2 bağlantılık arka plan kuyruğundan gider (v2.0.22, HOF.listPending).
-    const ticket = quiet ? listTicket : ++listTicket;
+    // Sıra kuralları HOF.listGate'te (v2.0.22); arka plan yenilemesi en çok 2 bağlantılık arka plan kuyruğundan gider.
+    const load = lists.start({ quiet, more });
+    if (!load) return;
+    if (!quiet && !more && view.listError) {
+      view.listError = "";
+      if (!view.list && view.mode === "list") renderList();
+    }
     try {
       const offset = more && view.list ? view.list.invoices.length : 0;
       const data = await HOF.api(`/api/workspace/invoices?${listParams({ offset, limit: 200 })}`, quiet ? { background: true } : {});
-      if (ticket !== listTicket) return;
+      if (!load.current()) return;
+      load.applied();
       view.listError = "";
       view.list = more && view.list ? { ...data, invoices: [...view.list.invoices, ...data.invoices] } : data;
       if (view.mode === "list") renderList();
     } catch (error) {
       if (quiet) throw error;
-      if (ticket !== listTicket) return;
+      if (!load.current()) return;
       if (more && view.list) return HOF.toastError(error);
+      // Yeni süzgeç yüklenemedi: eski satırlar ve seçim yeni süzgecin altında kalmaz.
       view.list = null;
+      view.selected.clear();
       view.listError = error.message;
       if (view.mode === "list") renderList();
+    } finally {
+      load.done();
     }
   }
   const statusPill = doc => {
@@ -1357,7 +1366,8 @@
       let saved;
       if (mode === "draft") {
         saved = form.id ? await HOF.api(`/api/workspace/invoices/${encodeURIComponent(form.id)}`, { method: "PUT", body: payload }) : await HOF.api("/api/workspace/invoices", { method: "POST", body: { ...payload, status: "draft" }, requestId: form.requestId });
-        HOF.toast("Taslak kaydedildi; deftere işlenmedi.", { type: "success" });
+        // Aynı formun yinelenen isteği (yanıt kaybolmuştu): taslak o arada kaydedilip deftere işlendiyse bu söylenir.
+        HOF.toast(saved?.replayed && saved.status !== "draft" ? `Bu form daha önce kaydedilmiş ve deftere işlenmiş (${saved.number || "kayıtlı belge"}).` : saved?.replayed ? "Taslak zaten kaydedilmişti; ikinci taslak açılmadı." : "Taslak kaydedildi; deftere işlenmedi.", { type: saved?.replayed ? "info" : "success" });
       } else {
         await runCalc();
         const c = form.calc;

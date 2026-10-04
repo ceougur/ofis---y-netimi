@@ -56,7 +56,7 @@
   const view = { mode: "list", id: "", q: "", category: "", state: "all", sort: "name", list: null, item: null };
   // Binlerce kalemde ekran hızlı kalsın: sunucu 300'er satır gönderir; arama, süzgeç ve toplamlar tümünde çalışır.
   const PAGE = 300;
-  let listRequest = 0;
+  const lists = HOF.listGate();
   const body = () => modal?.dialog.querySelector("[data-stock]");
   const query = () => new URLSearchParams({ q: view.q, category: view.category, state: view.state, sort: view.sort });
   const listPdfUrl = () => `/api/workspace/stock/liste.pdf?${query()}&title=${encodeURIComponent(moduleName())}`;
@@ -64,28 +64,36 @@
   const cardPdfUrl = item => `/api/workspace/stock/${encodeURIComponent(item.id)}/hareketler.pdf`;
 
   async function loadList({ more = false, quiet = false } = {}) {
-    // Arka plan yenilemesi (quiet) sıra numarasını artırmaz: kullanıcının sürmekte olan araması/süzgeci geçersiz sayılmaz;
-    // en çok 2 bağlantılık arka plan kuyruğundan gider (v2.0.22, HOF.listPending).
-    const ticket = quiet ? listRequest : ++listRequest;
+    // Sıra kuralları HOF.listGate'te (v2.0.22); arka plan yenilemesi en çok 2 bağlantılık arka plan kuyruğundan gider.
+    const load = lists.start({ quiet, more });
+    if (!load) return;
+    if (!quiet && !more && view.listError) {
+      view.listError = "";
+      if (!view.list && view.mode === "list") renderList();
+    }
     const offset = more && view.list ? view.list.items.length : 0;
     try {
       const data = await HOF.api(`/api/workspace/stock?${query()}&limit=${PAGE}&offset=${offset}`, quiet ? { background: true } : {});
-      if (ticket !== listRequest) return;
+      if (!load.current()) return;
+      load.applied();
       view.listError = "";
       view.list = more && view.list ? { ...data, items: [...view.list.items, ...data.items] } : data;
       if (view.mode === "list") renderList();
     } catch (error) {
       if (quiet) throw error;
-      if (ticket !== listRequest) return;
+      if (!load.current()) return;
       if (more && view.list) return HOF.toastError(error);
       view.list = null;
       view.listError = error.message;
       if (view.mode === "list") renderList();
+    } finally {
+      load.done();
     }
   }
   let cardRequest = 0;
   async function loadItem(id, { quiet = false } = {}) {
-    const ticket = ++cardRequest;
+    // Arka plan yenilemesi sıra numarasını artırmaz: kullanıcının o sırada açtığı kart geçersiz sayılmaz.
+    const ticket = quiet ? cardRequest : ++cardRequest;
     const target = view.id;
     try {
       const item = await HOF.api(`/api/workspace/stock/${encodeURIComponent(id)}`);
