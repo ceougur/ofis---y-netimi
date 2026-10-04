@@ -33,358 +33,470 @@
    "no": "ISL-00388",
    "type": "purchase",
    "ok": true,
-   "sn": 5.788,
+   "sn": 6.068,
    "note": "Alış Faturası ISL-00388 Ödendi"
   },
   {
    "no": "ISL-00548",
    "type": "purchase",
    "ok": true,
-   "sn": 9.126,
+   "sn": 8.61,
    "note": "Alış Faturası ISL-00548 Ödendi"
   },
   {
    "no": "ISL-00700",
    "type": "purchase",
    "ok": true,
-   "sn": 6.156,
+   "sn": 6.193,
    "note": "Alış Faturası ISL-00700 Ödendi"
   },
   {
    "no": "ISL-00783",
    "type": "purchase",
    "ok": true,
-   "sn": 4.602,
+   "sn": 4.807,
    "note": "Alış Faturası ISL-00783 Vadesi Geçti"
   },
   {
    "no": "ISL-01033",
    "type": "purchase",
    "ok": true,
-   "sn": 4.544,
+   "sn": 4.432,
    "note": "Alış Faturası ISL-01033 Vadesi Geçti"
   },
   {
    "no": "ISL-02252",
    "type": "sale",
    "ok": true,
-   "sn": 6.168,
+   "sn": 6.1,
    "note": "Satış Faturası FIS2025000000001 Ödendi"
   },
   {
    "no": "ISL-02289",
    "type": "sale",
    "ok": true,
-   "sn": 5.344,
+   "sn": 5.3,
    "note": "Satış Faturası FIS2025000000002 Vadesi Geçti"
   },
   {
    "no": "ISL-03059",
    "type": "expense",
    "ok": true,
-   "sn": 7.518,
+   "sn": 7.493,
    "note": "Alış Faturası ISL-03059 Ödendi"
   },
   {
    "no": "ISL-04149",
    "type": "purchase",
    "ok": true,
-   "sn": 5.607,
+   "sn": 5.69,
    "note": "Alış Faturası ISL-04149 Ödendi"
+  },
+  {
+   "no": "EK-01",
+   "type": "newCari",
+   "ok": true,
+   "sn": 7.407,
+   "note": "form kapandı"
+  },
+  {
+   "no": "EK-02",
+   "type": "newCari",
+   "ok": true,
+   "sn": 7.181,
+   "note": "form kapandı"
+  },
+  {
+   "no": "EK-03",
+   "type": "newCari",
+   "ok": true,
+   "sn": 6.844,
+   "note": "form kapandı"
+  },
+  {
+   "no": "EK-04",
+   "type": "dupCari",
+   "ok": true,
+   "sn": 5.171,
+   "note": "uyarı var; \"Mevcut Cariyi Aç\" → No C0001 Mehmet Kurt Müşteri"
+  },
+  {
+   "no": "EK-05",
+   "type": "newItem",
+   "ok": true,
+   "sn": 7.425,
+   "note": "form kapandı"
+  },
+  {
+   "no": "EK-06",
+   "type": "newItem",
+   "ok": true,
+   "sn": 5.981,
+   "note": "form kapandı"
+  },
+  {
+   "no": "EK-07",
+   "type": "rent",
+   "ok": true,
+   "sn": 6.907,
+   "note": "Alış Faturası KR-2025-01 Vadesi Geçti"
   },
   {
    "no": "ISL-00741",
    "type": "purchase",
    "ok": true,
-   "sn": 5.72,
+   "sn": 5.798,
    "note": "Alış Faturası ISL-00741 Ödendi"
   },
   {
    "no": "ISL-00861",
    "type": "purchase",
    "ok": true,
-   "sn": 6.664,
+   "sn": 6.246,
    "note": "Alış Faturası ISL-00861 Ödendi"
   },
   {
    "no": "ISL-01752",
    "type": "sale",
    "ok": true,
-   "sn": 6.398,
+   "sn": 6.055,
    "note": "Satış Faturası FIS2025000000003 Ödendi"
   },
   {
    "no": "ISL-01845",
    "type": "sale",
    "ok": true,
-   "sn": 6.167,
+   "sn": 6.353,
    "note": "Satış Faturası FIS2025000000004 Vadesi Geçti"
   },
   {
    "no": "ISL-03029",
    "type": "expense",
    "ok": true,
-   "sn": 7.391,
+   "sn": 7.782,
    "note": "Alış Faturası ISL-03029 Ödendi"
   },
   {
    "no": "ISL-03699",
    "type": "pay",
    "ok": true,
-   "sn": 6.896,
+   "sn": 6.961,
    "note": "form kapandı"
   },
   {
    "no": "ISL-04052",
    "type": "installment",
    "ok": true,
-   "sn": 7.237,
+   "sn": 6.866,
    "note": "Tahsilat kaydedildi. Kalan ₺1.706,81.Makbuz"
+  },
+  {
+   "no": "EK-08",
+   "type": "stockIn",
+   "ok": true,
+   "sn": 6.367,
+   "note": "form kapandı"
+  },
+  {
+   "no": "EK-09",
+   "type": "payEntry",
+   "ok": true,
+   "sn": 6.058,
+   "note": "Ödeme kaydedildi. Bakiye ₺0,00.Makbuz"
   },
   {
    "no": "ISL-00398",
    "type": "purchase",
    "ok": true,
-   "sn": 4.793,
+   "sn": 4.896,
    "note": "Alış Faturası ISL-00398 Vadesi Geçti"
   },
   {
    "no": "ISL-02147",
    "type": "sale",
    "ok": true,
-   "sn": 9.334,
+   "sn": 9.692,
    "note": "Satış Faturası FIS2025000000005 Ödendi"
   },
   {
    "no": "ISL-02391",
    "type": "sale",
    "ok": true,
-   "sn": 5.354,
+   "sn": 5.415,
    "note": "Satış Faturası FIS2025000000006 Vadesi Geçti"
   },
   {
    "no": "ISL-02424",
    "type": "sale",
    "ok": true,
-   "sn": 5.411,
+   "sn": 5.383,
    "note": "Satış Faturası FIS2025000000007 Vadesi Geçti"
   },
   {
    "no": "ISL-03121",
    "type": "expense",
    "ok": true,
-   "sn": 8.487,
+   "sn": 8.774,
    "note": "Alış Faturası ISL-03121 Ödendi"
   },
   {
    "no": "ISL-03492",
    "type": "collect",
    "ok": true,
-   "sn": 7.571,
+   "sn": 7.687,
    "note": "Tahsilat kaydedildi. Bakiye ₺13.733,77 Borçlu.Makbuz"
   },
   {
    "no": "ISL-04119",
    "type": "purchase",
    "ok": true,
-   "sn": 5.82,
+   "sn": 5.841,
    "note": "Alış Faturası ISL-04119 Ödendi"
+  },
+  {
+   "no": "EK-10",
+   "type": "stockOut",
+   "ok": true,
+   "sn": 6.013,
+   "note": "form kapandı"
   },
   {
    "no": "ISL-01066",
    "type": "purchase",
    "ok": true,
-   "sn": 6.468,
+   "sn": 6.356,
    "note": "Alış Faturası ISL-01066 Ödendi"
   },
   {
    "no": "ISL-01992",
    "type": "sale",
    "ok": true,
-   "sn": 9.874,
+   "sn": 9.851,
    "note": "Satış Faturası FIS2025000000008 Ödendi"
   },
   {
    "no": "ISL-04051",
    "type": "installment",
    "ok": true,
-   "sn": 6.496,
+   "sn": 7.567,
    "note": "Tahsilat kaydedildi. Kalan ₺0,00.Makbuz"
   },
   {
    "no": "ISL-04133",
    "type": "purchase",
    "ok": true,
-   "sn": 6.515,
+   "sn": 6.78,
    "note": "Alış Faturası ISL-04133 Ödendi"
+  },
+  {
+   "no": "EK-11",
+   "type": "stockOut",
+   "ok": true,
+   "sn": 6.18,
+   "note": "form kapandı"
+  },
+  {
+   "no": "EK-12",
+   "type": "sale",
+   "ok": true,
+   "sn": 5.469,
+   "note": "Satış Faturası FIS2025000000009 Vadesi Geçti"
   },
   {
    "no": "ISL-00599",
    "type": "purchase",
    "ok": true,
-   "sn": 9.048,
+   "sn": 8.89,
    "note": "Alış Faturası ISL-00599 Ödendi"
   },
   {
    "no": "ISL-01025",
    "type": "purchase",
    "ok": true,
-   "sn": 4.799,
+   "sn": 5.043,
    "note": "Alış Faturası ISL-01025 Vadesi Geçti"
   },
   {
    "no": "ISL-01185",
    "type": "purchase",
    "ok": true,
-   "sn": 6.376,
+   "sn": 6.495,
    "note": "Alış Faturası ISL-01185 Ödendi"
   },
   {
    "no": "ISL-01630",
    "type": "sale",
    "ok": true,
-   "sn": 5.708,
-   "note": "Satış Faturası FIS2025000000009 Vadesi Geçti"
+   "sn": 5.42,
+   "note": "Satış Faturası FIS2025000000010 Vadesi Geçti"
   },
   {
    "no": "ISL-01640",
    "type": "sale",
    "ok": true,
-   "sn": 9.256,
-   "note": "Satış Faturası FIS2025000000010 Ödendi"
+   "sn": 8.858,
+   "note": "Satış Faturası FIS2025000000011 Ödendi"
   },
   {
    "no": "ISL-02622",
    "type": "sale",
    "ok": true,
-   "sn": 5.458,
-   "note": "Satış Faturası FIS2025000000011 Vadesi Geçti"
+   "sn": 5.775,
+   "note": "Satış Faturası FIS2025000000012 Vadesi Geçti"
   },
   {
    "no": "ISL-02660",
    "type": "sale",
    "ok": true,
-   "sn": 4.893,
-   "note": "Satış Faturası FIS2025000000012 Vadesi Geçti"
+   "sn": 5.02,
+   "note": "Satış Faturası FIS2025000000013 Vadesi Geçti"
   },
   {
    "no": "ISL-02978",
    "type": "expense",
    "ok": true,
-   "sn": 8.654,
+   "sn": 8.886,
    "note": "Alış Faturası ISL-02978 Ödendi"
   },
   {
    "no": "ISL-03484",
    "type": "collect",
    "ok": true,
-   "sn": 7.585,
+   "sn": 7.41,
    "note": "Tahsilat kaydedildi. Bakiye ₺9.204,02 Alacaklı.Makbuz"
   },
   {
    "no": "ISL-03839",
    "type": "pay",
    "ok": true,
-   "sn": 7.238,
+   "sn": 7.326,
    "note": "Ödeme kaydedildi. Bakiye ₺8.153,07 Borçlu.Makbuz"
   },
   {
    "no": "ISL-04087",
    "type": "installment",
    "ok": true,
-   "sn": 6.817,
+   "sn": 6.648,
    "note": "Tahsilat kaydedildi. Kalan ₺249,99.Makbuz"
+  },
+  {
+   "no": "EK-13",
+   "type": "plan",
+   "ok": true,
+   "sn": 7.086,
+   "note": "form kapandı"
+  },
+  {
+   "no": "EK-14",
+   "type": "salary",
+   "ok": true,
+   "sn": 12.5,
+   "note": "Ödeme kaydedildi. Bakiye ₺0,00.Makbuz"
   },
   {
    "no": "ISL-00468",
    "type": "purchase",
    "ok": true,
-   "sn": 5.574,
+   "sn": 5.874,
    "note": "Alış Faturası ISL-00468 Ödendi"
   },
   {
    "no": "ISL-02196",
    "type": "sale",
    "ok": true,
-   "sn": 4.671,
-   "note": "Satış Faturası FIS2025000000013 Vadesi Geçti"
+   "sn": 4.683,
+   "note": "Satış Faturası FIS2025000000014 Vadesi Geçti"
   },
   {
    "no": "ISL-02300",
    "type": "sale",
    "ok": true,
-   "sn": 9.712,
-   "note": "Satış Faturası FIS2025000000014 Ödendi"
+   "sn": 9.776,
+   "note": "Satış Faturası FIS2025000000015 Ödendi"
   },
   {
    "no": "ISL-03339",
    "type": "expense",
    "ok": true,
-   "sn": 8.624,
+   "sn": 8.451,
    "note": "Alış Faturası ISL-03339 Ödendi"
   },
   {
    "no": "ISL-03375",
    "type": "collect",
    "ok": true,
-   "sn": 6.556,
+   "sn": 7.343,
    "note": "form kapandı"
   },
   {
    "no": "ISL-03439",
    "type": "collect",
    "ok": true,
-   "sn": 7.544,
+   "sn": 7.337,
    "note": "Tahsilat kaydedildi. Bakiye ₺9.132,02 Alacaklı.Makbuz"
+  },
+  {
+   "no": "EK-15",
+   "type": "collectEntry",
+   "ok": true,
+   "sn": 6.688,
+   "note": "Tahsilat kaydedildi. Bakiye ₺16.720,00 Borçlu.Makbuz"
   },
   {
    "no": "ISL-01905",
    "type": "sale",
    "ok": true,
-   "sn": 6.096,
-   "note": "Satış Faturası FIS2025000000015 Ödendi"
+   "sn": 6.585,
+   "note": "Satış Faturası FIS2025000000016 Ödendi"
   },
   {
    "no": "ISL-01973",
    "type": "sale",
    "ok": true,
-   "sn": 6.329,
-   "note": "Satış Faturası FIS2025000000016 Ödendi"
+   "sn": 6.827,
+   "note": "Satış Faturası FIS2025000000017 Ödendi"
   },
   {
    "no": "ISL-02108",
    "type": "sale",
    "ok": true,
-   "sn": 6.419,
-   "note": "Satış Faturası FIS2025000000017 Ödendi"
+   "sn": 6.3,
+   "note": "Satış Faturası FIS2025000000018 Ödendi"
   },
   {
    "no": "ISL-02889",
    "type": "salary",
    "ok": true,
-   "sn": 11.61,
+   "sn": 11.562,
    "note": "Ödeme kaydedildi. Bakiye ₺0,00.Makbuz"
   },
   {
    "no": "ISL-02893",
    "type": "salary",
    "ok": true,
-   "sn": 11.728,
+   "sn": 11.533,
    "note": "Ödeme kaydedildi. Bakiye ₺0,00.Makbuz"
   },
   {
    "no": "ISL-02894",
    "type": "salary",
    "ok": true,
-   "sn": 11.551,
+   "sn": 11.65,
    "note": "Ödeme kaydedildi. Bakiye ₺0,00.Makbuz"
   },
   {
    "no": "ISL-03566",
    "type": "collect",
    "ok": true,
-   "sn": 7.731,
+   "sn": 7.358,
    "note": "Tahsilat kaydedildi. Bakiye ₺45.548,42 Alacaklı.Makbuz"
+  },
+  {
+   "no": "EK-16",
+   "type": "planCollect",
+   "ok": true,
+   "sn": 6.339,
+   "note": "Tahsilat kaydedildi. Kalan ₺6.000,00.Makbuz"
   }
  ],
  "api": [
@@ -452,6 +564,55 @@
    "error": ""
   },
   {
+   "no": "EK-01",
+   "type": "newCari",
+   "ok": true,
+   "status": 200,
+   "error": ""
+  },
+  {
+   "no": "EK-02",
+   "type": "newCari",
+   "ok": true,
+   "status": 200,
+   "error": ""
+  },
+  {
+   "no": "EK-03",
+   "type": "newCari",
+   "ok": true,
+   "status": 200,
+   "error": ""
+  },
+  {
+   "no": "EK-04",
+   "type": "dupCari",
+   "ok": true,
+   "status": 200,
+   "error": ""
+  },
+  {
+   "no": "EK-05",
+   "type": "newItem",
+   "ok": true,
+   "status": 200,
+   "error": ""
+  },
+  {
+   "no": "EK-06",
+   "type": "newItem",
+   "ok": true,
+   "status": 200,
+   "error": ""
+  },
+  {
+   "no": "EK-07",
+   "type": "rent",
+   "ok": true,
+   "status": 200,
+   "error": ""
+  },
+  {
    "no": "ISL-00741",
    "type": "purchase",
    "ok": true,
@@ -496,6 +657,20 @@
   {
    "no": "ISL-04052",
    "type": "installment",
+   "ok": true,
+   "status": 200,
+   "error": ""
+  },
+  {
+   "no": "EK-08",
+   "type": "stockIn",
+   "ok": true,
+   "status": 200,
+   "error": ""
+  },
+  {
+   "no": "EK-09",
+   "type": "payEntry",
    "ok": true,
    "status": 200,
    "error": ""
@@ -550,6 +725,13 @@
    "error": ""
   },
   {
+   "no": "EK-10",
+   "type": "stockOut",
+   "ok": true,
+   "status": 200,
+   "error": ""
+  },
+  {
    "no": "ISL-01066",
    "type": "purchase",
    "ok": true,
@@ -573,6 +755,20 @@
   {
    "no": "ISL-04133",
    "type": "purchase",
+   "ok": true,
+   "status": 200,
+   "error": ""
+  },
+  {
+   "no": "EK-11",
+   "type": "stockOut",
+   "ok": true,
+   "status": 200,
+   "error": ""
+  },
+  {
+   "no": "EK-12",
+   "type": "sale",
    "ok": true,
    "status": 200,
    "error": ""
@@ -655,6 +851,20 @@
    "error": ""
   },
   {
+   "no": "EK-13",
+   "type": "plan",
+   "ok": true,
+   "status": 200,
+   "error": ""
+  },
+  {
+   "no": "EK-14",
+   "type": "salary",
+   "ok": true,
+   "status": 200,
+   "error": ""
+  },
+  {
    "no": "ISL-00468",
    "type": "purchase",
    "ok": true,
@@ -692,6 +902,13 @@
   {
    "no": "ISL-03439",
    "type": "collect",
+   "ok": true,
+   "status": 200,
+   "error": ""
+  },
+  {
+   "no": "EK-15",
+   "type": "collectEntry",
    "ok": true,
    "status": 200,
    "error": ""
@@ -744,12 +961,24 @@
    "ok": true,
    "status": 200,
    "error": ""
+  },
+  {
+   "no": "EK-16",
+   "type": "planCollect",
+   "ok": true,
+   "status": 200,
+   "error": ""
   }
  ],
  "farklar": [],
  "sayfaHatalari": [],
  "ekranHatasi": [],
  "baslangicFarki": [],
+ "ayniAd": {
+  "yazarkenUyari": "1 cari aynı adla kayıtlı: No C0001 · telefonsuz. Aynı kişiyse yeni cari açmayın; mevcut cariyi açın.",
+  "kaydederkenSoru": "Kişinin ya da firmanın bilgileri. Taksit sorulmaz; taksit planı istenirse sonra karttan ya da listeden toplu açılır. “Mehmet Kurt” zaten cari olarak var: No C0001. Aynı kişi için ikinci cari açılırsa borç ve tahsilatlar iki karta bölünür. Yine de yeni cari açılsın mı?",
+  "acilanKart": "No C0001 Mehmet Kurt Müşteri"
+ },
  "sonuc": {
   "api": {
    "cari": {
@@ -2990,6 +3219,24 @@
      "borc": 20756,
      "alacak": 20756,
      "bakiye": 0
+    },
+    "YNI-001": {
+     "ad": "Deniz Yapı Malzemeleri Ltd. Şti.",
+     "borc": 21720,
+     "alacak": 8000,
+     "bakiye": 13720
+    },
+    "YNI-002": {
+     "ad": "Kaya Gayrimenkul A.Ş.",
+     "borc": 36000,
+     "alacak": 36000,
+     "bakiye": 0
+    },
+    "YNI-003": {
+     "ad": "Elif Su Tekin",
+     "borc": 22500,
+     "alacak": 22500,
+     "bakiye": 0
     }
    },
    "stok": {
@@ -3017,6 +3264,7 @@
     "GID-002": -7,
     "MOB-006": 0,
     "BIL-003": -12,
+    "YNI-H1": 0,
     "BIL-001": 11,
     "ELK-001": 0,
     "ELK-006": 0,
@@ -3026,6 +3274,7 @@
     "BIL-004": -17,
     "KIR-007": 0,
     "MOB-001": 2,
+    "YNI-U1": 8,
     "ELK-002": 20,
     "INS-006": -8,
     "TEM-001": 433,
@@ -3044,18 +3293,18 @@
     "TEM-003": 0,
     "KIR-004": 0
    },
-   "stokDegeri": 318931.88,
+   "stokDegeri": 330531.88,
    "fatura": {
     "sale": {
-     "adet": 20,
-     "toplam": 350961.06,
-     "odenen": 277566.03,
-     "acik": 73395.03
+     "adet": 21,
+     "toplam": 363681.06,
+     "odenen": 285566.03,
+     "acik": 78115.03
     },
     "purchase": {
-     "adet": 21,
-     "toplam": 709361.84,
-     "odenen": 630885.75,
+     "adet": 22,
+     "toplam": 745361.84,
+     "odenen": 666885.75,
      "acik": 78476.09
     }
    },
@@ -3068,21 +3317,21 @@
     }
    },
    "taksit": {
-    "kart": 5,
-    "toplam": 14966.34,
-    "odenen": 5054.94,
-    "kalan": 9911.4
+    "kart": 6,
+    "toplam": 23966.34,
+    "odenen": 8054.94,
+    "kalan": 15911.4
    },
    "kasa": {
     "cash": {
-     "in": 77303.38,
-     "out": 145136.87,
-     "balance": -67833.49
+     "in": 87103.38,
+     "out": 182636.87,
+     "balance": -95533.49
     },
     "bank": {
-     "in": 123647.2,
-     "out": 142637.98,
-     "balance": -18990.78
+     "in": 126647.2,
+     "out": 185887.98,
+     "balance": -59240.78
     },
     "card": {
      "in": 13349.81,
@@ -3094,6 +3343,20 @@
     "ok": true,
     "gecen": 59,
     "toplam": 59
+   },
+   "ekFatura": {
+    "EK-12": {
+     "odenecek": 12720,
+     "odenen": 8000,
+     "acik": 4720,
+     "durum": "overdue"
+    },
+    "EK-07": {
+     "odenecek": 36000,
+     "odenen": 36000,
+     "acik": 0,
+     "durum": "paid"
+    }
    }
   },
   "ekran": {
@@ -5335,6 +5598,24 @@
      "borc": 20756,
      "alacak": 20756,
      "bakiye": 0
+    },
+    "YNI-001": {
+     "ad": "Deniz Yapı Malzemeleri Ltd. Şti.",
+     "borc": 21720,
+     "alacak": 8000,
+     "bakiye": 13720
+    },
+    "YNI-002": {
+     "ad": "Kaya Gayrimenkul A.Ş.",
+     "borc": 36000,
+     "alacak": 36000,
+     "bakiye": 0
+    },
+    "YNI-003": {
+     "ad": "Elif Su Tekin",
+     "borc": 22500,
+     "alacak": 22500,
+     "bakiye": 0
     }
    },
    "stok": {
@@ -5362,6 +5643,7 @@
     "GID-002": -7,
     "MOB-006": 0,
     "BIL-003": -12,
+    "YNI-H1": 0,
     "BIL-001": 11,
     "ELK-001": 0,
     "ELK-006": 0,
@@ -5371,6 +5653,7 @@
     "BIL-004": -17,
     "KIR-007": 0,
     "MOB-001": 2,
+    "YNI-U1": 8,
     "ELK-002": 20,
     "INS-006": -8,
     "TEM-001": 433,
@@ -5389,18 +5672,18 @@
     "TEM-003": 0,
     "KIR-004": 0
    },
-   "stokDegeri": 318931.88,
+   "stokDegeri": 330531.88,
    "fatura": {
     "sale": {
-     "adet": 20,
-     "toplam": 350961.06,
-     "odenen": 277566.03,
-     "acik": 73395.03
+     "adet": 21,
+     "toplam": 363681.06,
+     "odenen": 285566.03,
+     "acik": 78115.03
     },
     "purchase": {
-     "adet": 21,
-     "toplam": 709361.84,
-     "odenen": 630885.75,
+     "adet": 22,
+     "toplam": 745361.84,
+     "odenen": 666885.75,
      "acik": 78476.09
     }
    },
@@ -5413,21 +5696,21 @@
     }
    },
    "taksit": {
-    "kart": 5,
-    "toplam": 14966.34,
-    "odenen": 5054.94,
-    "kalan": 9911.4
+    "kart": 6,
+    "toplam": 23966.34,
+    "odenen": 8054.94,
+    "kalan": 15911.4
    },
    "kasa": {
     "cash": {
-     "in": 77303.38,
-     "out": 145136.87,
-     "balance": -67833.49
+     "in": 87103.38,
+     "out": 182636.87,
+     "balance": -95533.49
     },
     "bank": {
-     "in": 123647.2,
-     "out": 142637.98,
-     "balance": -18990.78
+     "in": 126647.2,
+     "out": 185887.98,
+     "balance": -59240.78
     },
     "card": {
      "in": 13349.81,
@@ -5439,7 +5722,4264 @@
     "ok": true,
     "gecen": 59,
     "toplam": 59
+   },
+   "ekFatura": {
+    "EK-12": {
+     "odenecek": 12720,
+     "odenen": 8000,
+     "acik": 4720,
+     "durum": "overdue"
+    },
+    "EK-07": {
+     "odenecek": 36000,
+     "odenen": 36000,
+     "acik": 0,
+     "durum": "paid"
+    }
    }
   }
- }
+ },
+ "raporlar": {
+  "Ekran": {
+   "kasa": {
+    "id": "kasa-hareketleri",
+    "kapsam": "20.01.2025 – 26.01.2025",
+    "ozet": {
+     "Devir": "2.409,43 TL",
+     "Dönem Giriş": "84.693,95 TL",
+     "Dönem Çıkış": "182.636,87 TL",
+     "Dönem Net": "-97.942,92 TL",
+     "Dönem Sonu Kasa": "-95.533,49 TL",
+     "Güncel Kasa (tüm hareketler)": "-95.533,49 TL"
+    },
+    "toplam": [
+     "TOPLAM",
+     "",
+     "",
+     "84.693,95 TL",
+     "182.636,87 TL",
+     "",
+     ""
+    ],
+    "dosya": {
+     "pdf": {
+      "status": 200,
+      "sirketli": true,
+      "eksik": []
+     },
+     "excel": {
+      "status": 200,
+      "sirketli": true,
+      "eksik": []
+     }
+    }
+   },
+   "bankaPos": {
+    "id": "banka-pos-hareketleri",
+    "kapsam": "Banka ve POS · 20.01.2025 – 26.01.2025",
+    "ozet": {
+     "Devir": "0,00 TL",
+     "Dönem Giriş": "139.997,01 TL",
+     "Dönem Çıkış": "563.226,58 TL",
+     "Dönem Net": "-423.229,57 TL",
+     "Dönem Sonu": "-423.229,57 TL",
+     "Banka (tüm hareketler)": "-59.240,78 TL",
+     "POS / Kredi Kartı (tüm hareketler)": "-363.988,79 TL"
+    },
+    "toplam": [
+     "TOPLAM",
+     "",
+     "",
+     "",
+     "139.997,01 TL",
+     "563.226,58 TL",
+     "",
+     ""
+    ],
+    "satirlar": [
+     {
+      "Tarih": "20.01.2025",
+      "Yol": "",
+      "Kaynak": "Devir",
+      "Açıklama": "Dönem başı banka ve pos",
+      "Giriş": "",
+      "Çıkış": "",
+      "Bakiye": "0,00 TL",
+      "Giren": ""
+     },
+     {
+      "Tarih": "20.01.2025",
+      "Yol": "Havale / EFT",
+      "Kaynak": "Fatura",
+      "Açıklama": "Alış ISL-00388 · ödeme · Volkan Demir Elektronik Ltd. Şti.",
+      "Giriş": "",
+      "Çıkış": "3.955,24 TL",
+      "Bakiye": "-3.955,24 TL",
+      "Giren": "Ofis yöneticisi"
+     },
+     {
+      "Tarih": "20.01.2025",
+      "Yol": "Havale / EFT",
+      "Kaynak": "Fatura",
+      "Açıklama": "Satış FIS2025000000001 · tahsilat · Zehra Demir Ltd. Şti.",
+      "Giriş": "1.167,22 TL",
+      "Çıkış": "",
+      "Bakiye": "-2.788,02 TL",
+      "Giren": "Ofis yöneticisi"
+     },
+     {
+      "Tarih": "20.01.2025",
+      "Yol": "Kredi Kartı",
+      "Kaynak": "Fatura",
+      "Açıklama": "Alış ISL-03059 · ödeme · Gider: Vergi",
+      "Giriş": "",
+      "Çıkış": "37.608,66 TL",
+      "Bakiye": "-40.396,68 TL",
+      "Giren": "Ofis yöneticisi"
+     },
+     {
+      "Tarih": "20.01.2025",
+      "Yol": "Havale / EFT",
+      "Kaynak": "Fatura",
+      "Açıklama": "Alış ISL-04149 · ödeme · Burak Yıldırım",
+      "Giriş": "",
+      "Çıkış": "4.270,68 TL",
+      "Bakiye": "-44.667,36 TL",
+      "Giren": "Ofis yöneticisi"
+     },
+     {
+      "Tarih": "21.01.2025",
+      "Yol": "Kredi Kartı",
+      "Kaynak": "Fatura",
+      "Açıklama": "Alış ISL-00741 · ödeme · Hakan Şimşek Tekstil Ltd. Şti.",
+      "Giriş": "",
+      "Çıkış": "106.990,18 TL",
+      "Bakiye": "-151.657,54 TL",
+      "Giren": "Ofis yöneticisi"
+     },
+     {
+      "Tarih": "21.01.2025",
+      "Yol": "Havale / EFT",
+      "Kaynak": "Fatura",
+      "Açıklama": "Alış ISL-03029 · ödeme · Gider: Bakım",
+      "Giriş": "",
+      "Çıkış": "8.416,67 TL",
+      "Bakiye": "-160.074,21 TL",
+      "Giren": "Ofis yöneticisi"
+     },
+     {
+      "Tarih": "21.01.2025",
+      "Yol": "POS",
+      "Kaynak": "Taksit",
+      "Açıklama": "Gökhan Yıldırım · ISL-04052",
+      "Giriş": "213,35 TL",
+      "Çıkış": "",
+      "Bakiye": "-159.860,86 TL",
+      "Giren": "Ofis yöneticisi"
+     },
+     {
+      "Tarih": "21.01.2025",
+      "Yol": "Havale / EFT",
+      "Kaynak": "Stok",
+      "Açıklama": "Stok ödemesi (alım) · Ofis Sandalyesi 5 Adet · EK-08 toplu alım",
+      "Giriş": "",
+      "Çıkış": "7.250,00 TL",
+      "Bakiye": "-167.110,86 TL",
+      "Giren": "Ofis yöneticisi"
+     },
+     {
+      "Tarih": "21.01.2025",
+      "Yol": "Havale / EFT",
+      "Kaynak": "Cari",
+      "Açıklama": "Kaya Gayrimenkul A.Ş. · EK-09 Ocak kirası",
+      "Giriş": "",
+      "Çıkış": "36.000,00 TL",
+      "Bakiye": "-203.110,86 TL",
+      "Giren": "Ofis yöneticisi"
+     },
+     {
+      "Tarih": "22.01.2025",
+      "Yol": "POS",
+      "Kaynak": "Cari",
+      "Açıklama": "Onur Arslan · ISL-03492",
+      "Giriş": "3.932,44 TL",
+      "Çıkış": "",
+      "Bakiye": "-199.178,42 TL",
+      "Giren": "Ofis yöneticisi"
+     },
+     {
+      "Tarih": "22.01.2025",
+      "Yol": "Havale / EFT",
+      "Kaynak": "Fatura",
+      "Açıklama": "Alış ISL-04119 · ödeme · Mert Taş Ltd. Şti.",
+      "Giriş": "",
+      "Çıkış": "47.164,42 TL",
+      "Bakiye": "-246.342,84 TL",
+      "Giren": "Ofis yöneticisi"
+     },
+     {
+      "Tarih": "24.01.2025",
+      "Yol": "POS",
+      "Kaynak": "Cari",
+      "Açıklama": "Ahmet Öztürk · ISL-03484",
+      "Giriş": "9.204,02 TL",
+      "Çıkış": "",
+      "Bakiye": "-237.138,82 TL",
+      "Giren": "Ofis yöneticisi"
+     },
+     {
+      "Tarih": "24.01.2025",
+      "Yol": "Havale / EFT",
+      "Kaynak": "Taksit",
+      "Açıklama": "Figen Polat · ISL-04087",
+      "Giriş": "22,73 TL",
+      "Çıkış": "",
+      "Bakiye": "-237.116,09 TL",
+      "Giren": "Ofis yöneticisi"
+     },
+     {
+      "Tarih": "25.01.2025",
+      "Yol": "Kredi Kartı",
+      "Kaynak": "Fatura",
+      "Açıklama": "Alış ISL-00468 · ödeme · Aslı Işık",
+      "Giriş": "",
+      "Çıkış": "232.739,76 TL",
+      "Bakiye": "-469.855,85 TL",
+      "Giren": "Ofis yöneticisi"
+     },
+     {
+      "Tarih": "26.01.2025",
+      "Yol": "Havale / EFT",
+      "Kaynak": "Fatura",
+      "Açıklama": "Satış FIS2025000000017 · tahsilat · Büşra Çetin",
+      "Giriş": "76.908,83 TL",
+      "Çıkış": "",
+      "Bakiye": "-392.947,02 TL",
+      "Giren": "Ofis yöneticisi"
+     },
+     {
+      "Tarih": "26.01.2025",
+      "Yol": "Havale / EFT",
+      "Kaynak": "Cari",
+      "Açıklama": "Ali Yıldız · ISL-02889 maaş ödemesi",
+      "Giriş": "",
+      "Çıkış": "28.101,14 TL",
+      "Bakiye": "-421.048,16 TL",
+      "Giren": "Ofis yöneticisi"
+     },
+     {
+      "Tarih": "26.01.2025",
+      "Yol": "Havale / EFT",
+      "Kaynak": "Cari",
+      "Açıklama": "Hasan Kılıç · ISL-02893 maaş ödemesi",
+      "Giriş": "",
+      "Çıkış": "29.973,83 TL",
+      "Bakiye": "-451.021,99 TL",
+      "Giren": "Ofis yöneticisi"
+     },
+     {
+      "Tarih": "26.01.2025",
+      "Yol": "Havale / EFT",
+      "Kaynak": "Cari",
+      "Açıklama": "Hatice Kara · ISL-02894 maaş ödemesi",
+      "Giriş": "",
+      "Çıkış": "20.756,00 TL",
+      "Bakiye": "-471.777,99 TL",
+      "Giren": "Ofis yöneticisi"
+     },
+     {
+      "Tarih": "26.01.2025",
+      "Yol": "Havale / EFT",
+      "Kaynak": "Cari",
+      "Açıklama": "Esra Taş · ISL-03566",
+      "Giriş": "45.548,42 TL",
+      "Çıkış": "",
+      "Bakiye": "-426.229,57 TL",
+      "Giren": "Ofis yöneticisi"
+     },
+     {
+      "Tarih": "26.01.2025",
+      "Yol": "Havale / EFT",
+      "Kaynak": "Taksit",
+      "Açıklama": "Deniz Yapı Malzemeleri Ltd. Şti. · EK-16 1. taksit (erken)",
+      "Giriş": "3.000,00 TL",
+      "Çıkış": "",
+      "Bakiye": "-423.229,57 TL",
+      "Giren": "Ofis yöneticisi"
+     }
+    ],
+    "dosya": {
+     "pdf": {
+      "status": 200,
+      "sirketli": true,
+      "eksik": []
+     },
+     "excel": {
+      "status": 200,
+      "sirketli": true,
+      "eksik": []
+     }
+    }
+   },
+   "banka": {
+    "id": "banka-pos-hareketleri",
+    "kapsam": "Banka ve POS · 20.01.2025 – 26.01.2025",
+    "ozet": {
+     "Devir": "0,00 TL",
+     "Dönem Giriş": "139.997,01 TL",
+     "Dönem Çıkış": "563.226,58 TL",
+     "Dönem Net": "-423.229,57 TL",
+     "Dönem Sonu": "-423.229,57 TL",
+     "Banka (tüm hareketler)": "-59.240,78 TL",
+     "POS / Kredi Kartı (tüm hareketler)": "-363.988,79 TL"
+    },
+    "toplam": [
+     "TOPLAM",
+     "",
+     "",
+     "",
+     "139.997,01 TL",
+     "563.226,58 TL",
+     "",
+     ""
+    ],
+    "dosya": {
+     "pdf": {
+      "status": 200,
+      "sirketli": true,
+      "eksik": []
+     },
+     "excel": {
+      "status": 200,
+      "sirketli": true,
+      "eksik": []
+     }
+    }
+   },
+   "pos": {
+    "id": "banka-pos-hareketleri",
+    "kapsam": "Banka ve POS · 20.01.2025 – 26.01.2025",
+    "ozet": {
+     "Devir": "0,00 TL",
+     "Dönem Giriş": "139.997,01 TL",
+     "Dönem Çıkış": "563.226,58 TL",
+     "Dönem Net": "-423.229,57 TL",
+     "Dönem Sonu": "-423.229,57 TL",
+     "Banka (tüm hareketler)": "-59.240,78 TL",
+     "POS / Kredi Kartı (tüm hareketler)": "-363.988,79 TL"
+    },
+    "toplam": [
+     "TOPLAM",
+     "",
+     "",
+     "",
+     "139.997,01 TL",
+     "563.226,58 TL",
+     "",
+     ""
+    ],
+    "dosya": {
+     "pdf": {
+      "status": 200,
+      "sirketli": true,
+      "eksik": []
+     },
+     "excel": {
+      "status": 200,
+      "sirketli": true,
+      "eksik": []
+     }
+    }
+   },
+   "satis": {
+    "id": "fatura-satis",
+    "kapsam": "20.01.2025 – 26.01.2025",
+    "ozet": {
+     "Satış Faturası": "18",
+     "Matrah": "336.251,74 TL",
+     "KDV": "20.417,58 TL",
+     "Tevkifat": "0,00 TL",
+     "Ödenecek": "356.669,32 TL",
+     "Kalan": "76.158,23 TL"
+    },
+    "toplam": [
+     "TOPLAM",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "336.251,74 TL",
+     "20.417,58 TL",
+     "0,00 TL",
+     "0,00 TL",
+     "356.669,32 TL",
+     "280.511,09 TL",
+     "76.158,23 TL",
+     ""
+    ],
+    "dosya": {
+     "pdf": {
+      "status": 200,
+      "sirketli": true,
+      "eksik": []
+     },
+     "excel": {
+      "status": 200,
+      "sirketli": true,
+      "eksik": []
+     }
+    }
+   },
+   "alis": {
+    "id": "fatura-alis",
+    "kapsam": "20.01.2025 – 26.01.2025",
+    "ozet": {
+     "Alış Faturası": "22",
+     "Matrah": "667.965,10 TL",
+     "KDV": "77.396,74 TL",
+     "Tevkifat": "0,00 TL",
+     "Ödenecek": "745.361,84 TL",
+     "Kalan": "78.476,09 TL"
+    },
+    "toplam": [
+     "TOPLAM",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "667.965,10 TL",
+     "77.396,74 TL",
+     "0,00 TL",
+     "0,00 TL",
+     "745.361,84 TL",
+     "666.885,75 TL",
+     "78.476,09 TL",
+     ""
+    ],
+    "dosya": {
+     "pdf": {
+      "status": 200,
+      "sirketli": true,
+      "eksik": []
+     },
+     "excel": {
+      "status": 200,
+      "sirketli": true,
+      "eksik": []
+     }
+    }
+   },
+   "kdv": {
+    "id": "kdv-ozeti",
+    "kapsam": "20.01.2025 – 26.01.2025",
+    "ozet": {
+     "Hesaplanan KDV (391)": "20.417,58 TL",
+     "İndirilecek KDV (191)": "77.396,74 TL",
+     "Alıcı Olarak Kesilen Tevkifat (2 No.lu)": "0,00 TL",
+     "Devreden KDV": "56.979,16 TL"
+    },
+    "toplam": [],
+    "dosya": {
+     "pdf": {
+      "status": 200,
+      "sirketli": true,
+      "eksik": []
+     },
+     "excel": {
+      "status": 200,
+      "sirketli": true,
+      "eksik": []
+     }
+    }
+   },
+   "gider": {
+    "id": "gider-raporu",
+    "kapsam": "20.01.2025 – 26.01.2025",
+    "ozet": {
+     "Toplam Gider": "119.799,54 TL"
+    },
+    "toplam": [
+     "TOPLAM",
+     "",
+     "",
+     "6",
+     "119.799,54 TL",
+     "16.438,18 TL",
+     ""
+    ],
+    "dosya": {
+     "pdf": {
+      "status": 200,
+      "sirketli": true,
+      "eksik": []
+     },
+     "excel": {
+      "status": 200,
+      "sirketli": true,
+      "eksik": []
+     }
+    }
+   },
+   "mizan": {
+    "id": "mizan",
+    "kapsam": "20.01.2025 – 26.01.2025 · Tüm cariler",
+    "ozet": {
+     "Cari Sayısı": "51",
+     "Dönem Borç": "1.208.535,31 TL",
+     "Dönem Alacak": "1.224.897,90 TL",
+     "Borçlular Toplamı": "161.764,30 TL",
+     "Alacaklılar Toplamı": "173.524,58 TL"
+    },
+    "toplam": [
+     "TOPLAM",
+     "",
+     "",
+     "4.602,31 TL",
+     "1.208.535,31 TL",
+     "1.224.897,90 TL",
+     "11.760,28 TL",
+     "Alacaklı"
+    ],
+    "dosya": {
+     "pdf": {
+      "status": 200,
+      "sirketli": true,
+      "eksik": []
+     },
+     "excel": {
+      "status": 200,
+      "sirketli": true,
+      "eksik": []
+     }
+    }
+   },
+   "cariler": {
+    "id": "cari-listesi",
+    "kapsam": "Tüm cariler · 376 cari",
+    "ozet": {
+     "Cari": "376",
+     "Toplam Borç (Anlaşılan)": "1.215.547,05 TL",
+     "Toplam Alacak (Ödenen)": "1.227.307,33 TL",
+     "Kalan (Alacaklı)": "11.760,28 TL",
+     "Borçlular": "161.764,30 TL",
+     "Alacaklılar": "173.524,58 TL",
+     "Geciken Taksit": "15.911,40 TL"
+    },
+    "toplam": [
+     "TOPLAM",
+     "",
+     "",
+     "",
+     "",
+     "1.215.547,05 TL",
+     "1.227.307,33 TL",
+     "11.760,28 TL",
+     "Alacaklı",
+     "15.911,40 TL"
+    ],
+    "dosya": {
+     "pdf": {
+      "status": 200,
+      "sirketli": true,
+      "eksik": []
+     },
+     "excel": {
+      "status": 200,
+      "sirketli": true,
+      "eksik": []
+     }
+    }
+   },
+   "acik": {
+    "id": "acik-faturalar",
+    "kapsam": "04.10.2026 itibarıyla · taksitli faturalar taksit kartında izlenir",
+    "ozet": {
+     "Açık Alacak": "68.494,23 TL",
+     "Açık Borç": "78.476,09 TL"
+    },
+    "toplam": [],
+    "dosya": {
+     "pdf": {
+      "status": 200,
+      "sirketli": true,
+      "eksik": []
+     },
+     "excel": {
+      "status": 200,
+      "sirketli": true,
+      "eksik": []
+     }
+    }
+   },
+   "taksit": {
+    "id": "taksit-kartlari",
+    "kapsam": "Tüm kartlar",
+    "ozet": {
+     "Kart": "6",
+     "Toplam": "23.966,34 TL",
+     "Ödenen": "8.054,94 TL",
+     "Kalan": "15.911,40 TL",
+     "Geciken": "15.911,40 TL"
+    },
+    "toplam": [
+     "TOPLAM",
+     "",
+     "",
+     "",
+     "",
+     "23.966,34 TL",
+     "8.054,94 TL",
+     "15.911,40 TL",
+     "15.911,40 TL",
+     "",
+     ""
+    ],
+    "dosya": {
+     "pdf": {
+      "status": 200,
+      "sirketli": true,
+      "eksik": []
+     },
+     "excel": {
+      "status": 200,
+      "sirketli": true,
+      "eksik": []
+     }
+    }
+   },
+   "cek": {
+    "id": "cek-portfoy",
+    "kapsam": "Alınan ve verilen · vade Tüm hareketler · 04.10.2026 tarihine kadar",
+    "ozet": {
+     "Listelenen": "8 · 277.566,67 TL",
+     "Portföyde (alınan)": "158.314,13 TL",
+     "Ödenecek (verilen)": "119.252,54 TL",
+     "Vadesi Geçmiş Alınan": "158.314,13 TL"
+    },
+    "toplam": [],
+    "dosya": {
+     "pdf": {
+      "status": 200,
+      "sirketli": true,
+      "eksik": []
+     },
+     "excel": {
+      "status": 200,
+      "sirketli": true,
+      "eksik": []
+     }
+    }
+   },
+   "stok": {
+    "id": "stok-durumu",
+    "kapsam": "Tüm kalemler",
+    "ozet": {
+     "Kalem": "52",
+     "Kritik": "0",
+     "Tükenen": "34",
+     "Eksi Stok": "13",
+     "Stok Değeri": "330.531,88 TL"
+    },
+    "toplam": [
+     "TOPLAM",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "330.531,88 TL",
+     ""
+    ],
+    "satirlar": [
+     {
+      "Stok Kodu": "KIR-001",
+      "Kalem": "A4 Fotokopi Kağıdı 80gr (5'li)",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "-28",
+      "Birim": "Paket",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "185,00 TL",
+      "Değer": "-5.180,00 TL",
+      "Durum": "Eksi (-28 Paket)"
+     },
+     {
+      "Stok Kodu": "ELK-005",
+      "Kalem": "Akıllı Priz WiFi",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "101",
+      "Birim": "Adet",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "307,06 TL",
+      "Değer": "31.013,06 TL",
+      "Durum": ""
+     },
+     {
+      "Stok Kodu": "OTO-003",
+      "Kalem": "Akü 60Ah",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "0",
+      "Birim": "Adet",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "1.850,00 TL",
+      "Değer": "0,00 TL",
+      "Durum": "Tükendi"
+     },
+     {
+      "Stok Kodu": "INS-004",
+      "Kalem": "Alçı Sıva 25kg",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "23",
+      "Birim": "Torba",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "93,48 TL",
+      "Değer": "2.150,04 TL",
+      "Durum": ""
+     },
+     {
+      "Stok Kodu": "ELK-003",
+      "Kalem": "Anahtar Tekli",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "179",
+      "Birim": "Adet",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "19,22 TL",
+      "Değer": "3.440,38 TL",
+      "Durum": ""
+     },
+     {
+      "Stok Kodu": "OTO-005",
+      "Kalem": "Antifriz 5Lt",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "-22",
+      "Birim": "Adet",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "220,00 TL",
+      "Değer": "-4.840,00 TL",
+      "Durum": "Eksi (-22 Adet)"
+     },
+     {
+      "Stok Kodu": "GID-005",
+      "Kalem": "Bisküvi Karışık 1kg",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "0",
+      "Birim": "Paket",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "75,00 TL",
+      "Değer": "0,00 TL",
+      "Durum": "Tükendi"
+     },
+     {
+      "Stok Kodu": "INS-005",
+      "Kalem": "Boya İç Cephe 15Lt",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "-26",
+      "Birim": "Kova",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "680,00 TL",
+      "Değer": "-17.680,00 TL",
+      "Durum": "Eksi (-26 Kova)"
+     },
+     {
+      "Stok Kodu": "MOB-002",
+      "Kalem": "Çalışma Masası 140cm",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "0",
+      "Birim": "Adet",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "2.200,00 TL",
+      "Değer": "0,00 TL",
+      "Durum": "Tükendi"
+     },
+     {
+      "Stok Kodu": "TEM-002",
+      "Kalem": "Çamaşır Suyu 5Lt",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "-7",
+      "Birim": "Adet",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "85,00 TL",
+      "Değer": "-595,00 TL",
+      "Durum": "Eksi (-7 Adet)"
+     },
+     {
+      "Stok Kodu": "GID-001",
+      "Kalem": "Çay 1kg",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "21",
+      "Birim": "Paket",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "186,48 TL",
+      "Değer": "3.916,08 TL",
+      "Durum": ""
+     },
+     {
+      "Stok Kodu": "INS-001",
+      "Kalem": "Çimento 50kg",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "37",
+      "Birim": "Torba",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "190,86 TL",
+      "Değer": "7.061,82 TL",
+      "Durum": ""
+     },
+     {
+      "Stok Kodu": "TEM-005",
+      "Kalem": "Çöp Torbası Büyük (20'li)",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "0",
+      "Birim": "Paket",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "65,00 TL",
+      "Değer": "0,00 TL",
+      "Durum": "Tükendi"
+     },
+     {
+      "Stok Kodu": "INS-002",
+      "Kalem": "Demir İnşaat Ø12",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "2,34",
+      "Birim": "Ton",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "18.696,93 TL",
+      "Değer": "43.750,82 TL",
+      "Durum": ""
+     },
+     {
+      "Stok Kodu": "ELK-007",
+      "Kalem": "Dimmer Anahtar",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "-24",
+      "Birim": "Adet",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "85,00 TL",
+      "Değer": "-2.040,00 TL",
+      "Durum": "Eksi (-24 Adet)"
+     },
+     {
+      "Stok Kodu": "MOB-003",
+      "Kalem": "Dosya Dolabı 4 Çekmeceli",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "-28",
+      "Birim": "Adet",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "1.650,00 TL",
+      "Değer": "-46.200,00 TL",
+      "Durum": "Eksi (-28 Adet)"
+     },
+     {
+      "Stok Kodu": "KIR-003",
+      "Kalem": "Dosya Klasörü A4",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "0",
+      "Birim": "Adet",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "28,00 TL",
+      "Değer": "0,00 TL",
+      "Durum": "Tükendi"
+     },
+     {
+      "Stok Kodu": "OTO-002",
+      "Kalem": "Fren Balata Ön Takım",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "46",
+      "Birim": "Takım",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "871,24 TL",
+      "Değer": "40.077,04 TL",
+      "Durum": ""
+     },
+     {
+      "Stok Kodu": "BIL-008",
+      "Kalem": "Harici Disk 1TB",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "-29",
+      "Birim": "Adet",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "1.450,00 TL",
+      "Değer": "-42.050,00 TL",
+      "Durum": "Eksi (-29 Adet)"
+     },
+     {
+      "Stok Kodu": "KIR-005",
+      "Kalem": "Hesap Makinesi Masaüstü",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "0",
+      "Birim": "Adet",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "220,00 TL",
+      "Değer": "0,00 TL",
+      "Durum": "Tükendi"
+     },
+     {
+      "Stok Kodu": "TEM-004",
+      "Kalem": "Kağıt Havlu (6'lı)",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "23",
+      "Birim": "Paket",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "91,88 TL",
+      "Değer": "2.113,24 TL",
+      "Durum": ""
+     },
+     {
+      "Stok Kodu": "GID-002",
+      "Kalem": "Kahve Filtre 250gr",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "-7",
+      "Birim": "Paket",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "95,00 TL",
+      "Değer": "-665,00 TL",
+      "Durum": "Eksi (-7 Paket)"
+     },
+     {
+      "Stok Kodu": "MOB-006",
+      "Kalem": "Kitaplık 5 Raflı",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "0",
+      "Birim": "Adet",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "1.250,00 TL",
+      "Değer": "0,00 TL",
+      "Durum": "Tükendi"
+     },
+     {
+      "Stok Kodu": "BIL-003",
+      "Kalem": "Klavye Mekanik RGB",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "-12",
+      "Birim": "Adet",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "850,00 TL",
+      "Değer": "-10.200,00 TL",
+      "Durum": "Eksi (-12 Adet)"
+     },
+     {
+      "Stok Kodu": "YNI-H1",
+      "Kalem": "Kurulum Hizmeti",
+      "Tür": "Hizmet",
+      "Kategori": "",
+      "Mevcut": "",
+      "Birim": "Adet",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "0,00 TL",
+      "Değer": "",
+      "Durum": "Hizmet"
+     },
+     {
+      "Stok Kodu": "BIL-001",
+      "Kalem": "Laptop 15.6\" i5 16GB",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "11",
+      "Birim": "Adet",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "17.631,80 TL",
+      "Değer": "193.949,80 TL",
+      "Durum": ""
+     },
+     {
+      "Stok Kodu": "ELK-001",
+      "Kalem": "LED Ampul 9W",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "0",
+      "Birim": "Adet",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "45,00 TL",
+      "Değer": "0,00 TL",
+      "Durum": "Tükendi"
+     },
+     {
+      "Stok Kodu": "ELK-006",
+      "Kalem": "LED Panel 60x60 40W",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "0",
+      "Birim": "Adet",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "280,00 TL",
+      "Değer": "0,00 TL",
+      "Durum": "Tükendi"
+     },
+     {
+      "Stok Kodu": "MOB-004",
+      "Kalem": "Misafir Koltuğu",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "24",
+      "Birim": "Adet",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "968,52 TL",
+      "Değer": "23.244,48 TL",
+      "Durum": ""
+     },
+     {
+      "Stok Kodu": "BIL-002",
+      "Kalem": "Monitör 27\" Full HD",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "0",
+      "Birim": "Adet",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "4.200,00 TL",
+      "Değer": "0,00 TL",
+      "Durum": "Tükendi"
+     },
+     {
+      "Stok Kodu": "OTO-001",
+      "Kalem": "Motor Yağı 5Lt 5W30",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "0",
+      "Birim": "Adet",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "650,00 TL",
+      "Değer": "0,00 TL",
+      "Durum": "Tükendi"
+     },
+     {
+      "Stok Kodu": "BIL-004",
+      "Kalem": "Mouse Kablosuz",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "-17",
+      "Birim": "Adet",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "280,00 TL",
+      "Değer": "-4.760,00 TL",
+      "Durum": "Eksi (-17 Adet)"
+     },
+     {
+      "Stok Kodu": "KIR-007",
+      "Kalem": "Not Defteri A5",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "0",
+      "Birim": "Adet",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "35,00 TL",
+      "Değer": "0,00 TL",
+      "Durum": "Tükendi"
+     },
+     {
+      "Stok Kodu": "MOB-001",
+      "Kalem": "Ofis Koltuğu Ergonomik",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "2",
+      "Birim": "Adet",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "1.919,50 TL",
+      "Değer": "3.839,00 TL",
+      "Durum": ""
+     },
+     {
+      "Stok Kodu": "YNI-U1",
+      "Kalem": "Ofis Sandalyesi",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "8",
+      "Birim": "Adet",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "1.450,00 TL",
+      "Değer": "11.600,00 TL",
+      "Durum": ""
+     },
+     {
+      "Stok Kodu": "ELK-002",
+      "Kalem": "Priz 3'lü Topraklı",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "20",
+      "Birim": "Adet",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "27,29 TL",
+      "Değer": "545,80 TL",
+      "Durum": ""
+     },
+     {
+      "Stok Kodu": "INS-006",
+      "Kalem": "Seramik 30x60",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "-8",
+      "Birim": "M²",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "145,00 TL",
+      "Değer": "-1.160,00 TL",
+      "Durum": "Eksi (-8 M²)"
+     },
+     {
+      "Stok Kodu": "TEM-001",
+      "Kalem": "Sıvı Sabun 5Lt",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "433",
+      "Birim": "Adet",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "142,19 TL",
+      "Değer": "61.568,27 TL",
+      "Durum": ""
+     },
+     {
+      "Stok Kodu": "ELK-008",
+      "Kalem": "Sigorta 16A",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "-36",
+      "Birim": "Adet",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "22,00 TL",
+      "Değer": "-792,00 TL",
+      "Durum": "Eksi (-36 Adet)"
+     },
+     {
+      "Stok Kodu": "OTO-004",
+      "Kalem": "Silecek Lastiği Takım",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "0",
+      "Birim": "Takım",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "185,00 TL",
+      "Değer": "0,00 TL",
+      "Durum": "Tükendi"
+     },
+     {
+      "Stok Kodu": "GID-004",
+      "Kalem": "Su 19Lt Damacana",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "0",
+      "Birim": "Adet",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "55,00 TL",
+      "Değer": "0,00 TL",
+      "Durum": "Tükendi"
+     },
+     {
+      "Stok Kodu": "GID-003",
+      "Kalem": "Şeker 1kg",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "0",
+      "Birim": "Paket",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "42,00 TL",
+      "Değer": "0,00 TL",
+      "Durum": "Tükendi"
+     },
+     {
+      "Stok Kodu": "BIL-006",
+      "Kalem": "Toner Kartuş Siyah",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "6",
+      "Birim": "Adet",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "706,65 TL",
+      "Değer": "4.239,90 TL",
+      "Durum": ""
+     },
+     {
+      "Stok Kodu": "MOB-005",
+      "Kalem": "Toplantı Masası 8 Kişilik",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "23",
+      "Birim": "Adet",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "4.605,69 TL",
+      "Değer": "105.930,87 TL",
+      "Durum": ""
+     },
+     {
+      "Stok Kodu": "INS-003",
+      "Kalem": "Tuğla Delikli",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "0",
+      "Birim": "Adet",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "4,50 TL",
+      "Değer": "0,00 TL",
+      "Durum": "Tükendi"
+     },
+     {
+      "Stok Kodu": "KIR-002",
+      "Kalem": "Tükenmez Kalem Mavi (50'li)",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "0",
+      "Birim": "Kutu",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "95,00 TL",
+      "Değer": "0,00 TL",
+      "Durum": "Tükendi"
+     },
+     {
+      "Stok Kodu": "BIL-007",
+      "Kalem": "USB Flash 64GB",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "47",
+      "Birim": "Adet",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "186,24 TL",
+      "Değer": "8.753,28 TL",
+      "Durum": ""
+     },
+     {
+      "Stok Kodu": "ELK-004",
+      "Kalem": "Uzatma Kablosu 5m",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "0",
+      "Birim": "Adet",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "95,00 TL",
+      "Değer": "0,00 TL",
+      "Durum": "Tükendi"
+     },
+     {
+      "Stok Kodu": "KIR-006",
+      "Kalem": "Yapıştırıcı Stick 40gr",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "0",
+      "Birim": "Adet",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "18,00 TL",
+      "Değer": "0,00 TL",
+      "Durum": "Tükendi"
+     },
+     {
+      "Stok Kodu": "BIL-005",
+      "Kalem": "Yazıcı Lazer Mono",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "-23",
+      "Birim": "Adet",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "3.500,00 TL",
+      "Değer": "-80.500,00 TL",
+      "Durum": "Eksi (-23 Adet)"
+     },
+     {
+      "Stok Kodu": "TEM-003",
+      "Kalem": "Yüzey Temizleyici 1Lt",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "0",
+      "Birim": "Adet",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "48,00 TL",
+      "Değer": "0,00 TL",
+      "Durum": "Tükendi"
+     },
+     {
+      "Stok Kodu": "KIR-004",
+      "Kalem": "Zımba Makinesi",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "0",
+      "Birim": "Adet",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "65,00 TL",
+      "Değer": "0,00 TL",
+      "Durum": "Tükendi"
+     }
+    ],
+    "dosya": {
+     "pdf": {
+      "status": 200,
+      "sirketli": true,
+      "eksik": []
+     },
+     "excel": {
+      "status": 200,
+      "sirketli": true,
+      "eksik": []
+     }
+    }
+   },
+   "ekstre": {
+    "id": "cari-ekstre",
+    "kapsam": "Cari No YNI-001 · 20.01.2025 – 26.01.2025 · B: borçlu · A: alacaklı",
+    "ozet": {
+     "Devir": "0,00 TL",
+     "Dönem Borç": "21.720,00 TL",
+     "Dönem Alacak": "8.000,00 TL",
+     "Dönem Sonu": "13.720,00 TL Borçlu"
+    },
+    "toplam": [
+     "TOPLAM",
+     "",
+     "",
+     "21.720,00 TL",
+     "8.000,00 TL",
+     ""
+    ],
+    "dosya": {
+     "pdf": {
+      "status": 200,
+      "sirketli": true,
+      "eksik": []
+     },
+     "excel": {
+      "status": 200,
+      "sirketli": true,
+      "eksik": []
+     }
+    }
+   },
+   "hesapMizani": {
+    "id": "hesap-mizani",
+    "kapsam": "20.01.2025 – 26.01.2025 · Borç = Alacak · Mutabakat tutarlı",
+    "ozet": {
+     "Dönem Borç": "2.460.483,21 TL",
+     "Dönem Alacak": "2.460.483,21 TL",
+     "Fark": "0,00 TL"
+    },
+    "toplam": [
+     "TOPLAM",
+     "",
+     "0,00 TL",
+     "2.460.483,21 TL",
+     "2.460.483,21 TL",
+     "",
+     ""
+    ],
+    "dosya": {
+     "pdf": {
+      "status": 200,
+      "sirketli": true,
+      "eksik": []
+     },
+     "excel": {
+      "status": 200,
+      "sirketli": true,
+      "eksik": []
+     }
+    }
+   },
+   "anlik": {
+    "ozet": {
+     "Nakit Kasa": -95533.49,
+     "Banka / POS": -423229.57,
+     "Alacak Cari": 161764.3,
+     "Alacak Çek": 158314.13,
+     "Borç Cari": 173524.58,
+     "Borç Çek": 119252.54
+    }
+   }
+  },
+  "API": {
+   "kasa": {
+    "id": "kasa-hareketleri",
+    "kapsam": "20.01.2025 – 26.01.2025",
+    "ozet": {
+     "Devir": "2.409,43 TL",
+     "Dönem Giriş": "84.693,95 TL",
+     "Dönem Çıkış": "182.636,87 TL",
+     "Dönem Net": "-97.942,92 TL",
+     "Dönem Sonu Kasa": "-95.533,49 TL",
+     "Güncel Kasa (tüm hareketler)": "-95.533,49 TL"
+    },
+    "toplam": [
+     "TOPLAM",
+     "",
+     "",
+     "84.693,95 TL",
+     "182.636,87 TL",
+     "",
+     ""
+    ],
+    "dosya": {
+     "pdf": {
+      "status": 200,
+      "sirketli": true,
+      "eksik": []
+     },
+     "excel": {
+      "status": 200,
+      "sirketli": true,
+      "eksik": []
+     }
+    }
+   },
+   "bankaPos": {
+    "id": "banka-pos-hareketleri",
+    "kapsam": "Banka ve POS · 20.01.2025 – 26.01.2025",
+    "ozet": {
+     "Devir": "0,00 TL",
+     "Dönem Giriş": "139.997,01 TL",
+     "Dönem Çıkış": "563.226,58 TL",
+     "Dönem Net": "-423.229,57 TL",
+     "Dönem Sonu": "-423.229,57 TL",
+     "Banka (tüm hareketler)": "-59.240,78 TL",
+     "POS / Kredi Kartı (tüm hareketler)": "-363.988,79 TL"
+    },
+    "toplam": [
+     "TOPLAM",
+     "",
+     "",
+     "",
+     "139.997,01 TL",
+     "563.226,58 TL",
+     "",
+     ""
+    ],
+    "satirlar": [
+     {
+      "Tarih": "20.01.2025",
+      "Yol": "",
+      "Kaynak": "Devir",
+      "Açıklama": "Dönem başı banka ve pos",
+      "Giriş": "",
+      "Çıkış": "",
+      "Bakiye": "0,00 TL",
+      "Giren": ""
+     },
+     {
+      "Tarih": "20.01.2025",
+      "Yol": "Havale / EFT",
+      "Kaynak": "Fatura",
+      "Açıklama": "Alış ISL-00388 · ödeme · Volkan Demir Elektronik Ltd. Şti.",
+      "Giriş": "",
+      "Çıkış": "3.955,24 TL",
+      "Bakiye": "-3.955,24 TL",
+      "Giren": "Ofis yöneticisi"
+     },
+     {
+      "Tarih": "20.01.2025",
+      "Yol": "Havale / EFT",
+      "Kaynak": "Fatura",
+      "Açıklama": "Satış FIS2025000000001 · tahsilat · Zehra Demir Ltd. Şti.",
+      "Giriş": "1.167,22 TL",
+      "Çıkış": "",
+      "Bakiye": "-2.788,02 TL",
+      "Giren": "Ofis yöneticisi"
+     },
+     {
+      "Tarih": "20.01.2025",
+      "Yol": "Kredi Kartı",
+      "Kaynak": "Fatura",
+      "Açıklama": "Alış ISL-03059 · ödeme · Gider: Vergi",
+      "Giriş": "",
+      "Çıkış": "37.608,66 TL",
+      "Bakiye": "-40.396,68 TL",
+      "Giren": "Ofis yöneticisi"
+     },
+     {
+      "Tarih": "20.01.2025",
+      "Yol": "Havale / EFT",
+      "Kaynak": "Fatura",
+      "Açıklama": "Alış ISL-04149 · ödeme · Burak Yıldırım",
+      "Giriş": "",
+      "Çıkış": "4.270,68 TL",
+      "Bakiye": "-44.667,36 TL",
+      "Giren": "Ofis yöneticisi"
+     },
+     {
+      "Tarih": "21.01.2025",
+      "Yol": "Kredi Kartı",
+      "Kaynak": "Fatura",
+      "Açıklama": "Alış ISL-00741 · ödeme · Hakan Şimşek Tekstil Ltd. Şti.",
+      "Giriş": "",
+      "Çıkış": "106.990,18 TL",
+      "Bakiye": "-151.657,54 TL",
+      "Giren": "Ofis yöneticisi"
+     },
+     {
+      "Tarih": "21.01.2025",
+      "Yol": "Havale / EFT",
+      "Kaynak": "Fatura",
+      "Açıklama": "Alış ISL-03029 · ödeme · Gider: Bakım",
+      "Giriş": "",
+      "Çıkış": "8.416,67 TL",
+      "Bakiye": "-160.074,21 TL",
+      "Giren": "Ofis yöneticisi"
+     },
+     {
+      "Tarih": "21.01.2025",
+      "Yol": "POS",
+      "Kaynak": "Taksit",
+      "Açıklama": "Gökhan Yıldırım · ISL-04052",
+      "Giriş": "213,35 TL",
+      "Çıkış": "",
+      "Bakiye": "-159.860,86 TL",
+      "Giren": "Ofis yöneticisi"
+     },
+     {
+      "Tarih": "21.01.2025",
+      "Yol": "Havale / EFT",
+      "Kaynak": "Stok",
+      "Açıklama": "Stok ödemesi (alım) · Ofis Sandalyesi 5 Adet · EK-08 toplu alım",
+      "Giriş": "",
+      "Çıkış": "7.250,00 TL",
+      "Bakiye": "-167.110,86 TL",
+      "Giren": "Ofis yöneticisi"
+     },
+     {
+      "Tarih": "21.01.2025",
+      "Yol": "Havale / EFT",
+      "Kaynak": "Cari",
+      "Açıklama": "Kaya Gayrimenkul A.Ş. · EK-09 Ocak kirası",
+      "Giriş": "",
+      "Çıkış": "36.000,00 TL",
+      "Bakiye": "-203.110,86 TL",
+      "Giren": "Ofis yöneticisi"
+     },
+     {
+      "Tarih": "22.01.2025",
+      "Yol": "POS",
+      "Kaynak": "Cari",
+      "Açıklama": "Onur Arslan · ISL-03492",
+      "Giriş": "3.932,44 TL",
+      "Çıkış": "",
+      "Bakiye": "-199.178,42 TL",
+      "Giren": "Ofis yöneticisi"
+     },
+     {
+      "Tarih": "22.01.2025",
+      "Yol": "Havale / EFT",
+      "Kaynak": "Fatura",
+      "Açıklama": "Alış ISL-04119 · ödeme · Mert Taş Ltd. Şti.",
+      "Giriş": "",
+      "Çıkış": "47.164,42 TL",
+      "Bakiye": "-246.342,84 TL",
+      "Giren": "Ofis yöneticisi"
+     },
+     {
+      "Tarih": "24.01.2025",
+      "Yol": "POS",
+      "Kaynak": "Cari",
+      "Açıklama": "Ahmet Öztürk · ISL-03484",
+      "Giriş": "9.204,02 TL",
+      "Çıkış": "",
+      "Bakiye": "-237.138,82 TL",
+      "Giren": "Ofis yöneticisi"
+     },
+     {
+      "Tarih": "24.01.2025",
+      "Yol": "Havale / EFT",
+      "Kaynak": "Taksit",
+      "Açıklama": "Figen Polat · ISL-04087",
+      "Giriş": "22,73 TL",
+      "Çıkış": "",
+      "Bakiye": "-237.116,09 TL",
+      "Giren": "Ofis yöneticisi"
+     },
+     {
+      "Tarih": "25.01.2025",
+      "Yol": "Kredi Kartı",
+      "Kaynak": "Fatura",
+      "Açıklama": "Alış ISL-00468 · ödeme · Aslı Işık",
+      "Giriş": "",
+      "Çıkış": "232.739,76 TL",
+      "Bakiye": "-469.855,85 TL",
+      "Giren": "Ofis yöneticisi"
+     },
+     {
+      "Tarih": "26.01.2025",
+      "Yol": "Havale / EFT",
+      "Kaynak": "Fatura",
+      "Açıklama": "Satış FIS2025000000017 · tahsilat · Büşra Çetin",
+      "Giriş": "76.908,83 TL",
+      "Çıkış": "",
+      "Bakiye": "-392.947,02 TL",
+      "Giren": "Ofis yöneticisi"
+     },
+     {
+      "Tarih": "26.01.2025",
+      "Yol": "Havale / EFT",
+      "Kaynak": "Cari",
+      "Açıklama": "Ali Yıldız · ISL-02889 maaş ödemesi",
+      "Giriş": "",
+      "Çıkış": "28.101,14 TL",
+      "Bakiye": "-421.048,16 TL",
+      "Giren": "Ofis yöneticisi"
+     },
+     {
+      "Tarih": "26.01.2025",
+      "Yol": "Havale / EFT",
+      "Kaynak": "Cari",
+      "Açıklama": "Hasan Kılıç · ISL-02893 maaş ödemesi",
+      "Giriş": "",
+      "Çıkış": "29.973,83 TL",
+      "Bakiye": "-451.021,99 TL",
+      "Giren": "Ofis yöneticisi"
+     },
+     {
+      "Tarih": "26.01.2025",
+      "Yol": "Havale / EFT",
+      "Kaynak": "Cari",
+      "Açıklama": "Hatice Kara · ISL-02894 maaş ödemesi",
+      "Giriş": "",
+      "Çıkış": "20.756,00 TL",
+      "Bakiye": "-471.777,99 TL",
+      "Giren": "Ofis yöneticisi"
+     },
+     {
+      "Tarih": "26.01.2025",
+      "Yol": "Havale / EFT",
+      "Kaynak": "Cari",
+      "Açıklama": "Esra Taş · ISL-03566",
+      "Giriş": "45.548,42 TL",
+      "Çıkış": "",
+      "Bakiye": "-426.229,57 TL",
+      "Giren": "Ofis yöneticisi"
+     },
+     {
+      "Tarih": "26.01.2025",
+      "Yol": "Havale / EFT",
+      "Kaynak": "Taksit",
+      "Açıklama": "Deniz Yapı Malzemeleri Ltd. Şti. · EK-16 1. taksit (erken)",
+      "Giriş": "3.000,00 TL",
+      "Çıkış": "",
+      "Bakiye": "-423.229,57 TL",
+      "Giren": "Ofis yöneticisi"
+     }
+    ],
+    "dosya": {
+     "pdf": {
+      "status": 200,
+      "sirketli": true,
+      "eksik": []
+     },
+     "excel": {
+      "status": 200,
+      "sirketli": true,
+      "eksik": []
+     }
+    }
+   },
+   "banka": {
+    "id": "banka-pos-hareketleri",
+    "kapsam": "Banka ve POS · 20.01.2025 – 26.01.2025",
+    "ozet": {
+     "Devir": "0,00 TL",
+     "Dönem Giriş": "139.997,01 TL",
+     "Dönem Çıkış": "563.226,58 TL",
+     "Dönem Net": "-423.229,57 TL",
+     "Dönem Sonu": "-423.229,57 TL",
+     "Banka (tüm hareketler)": "-59.240,78 TL",
+     "POS / Kredi Kartı (tüm hareketler)": "-363.988,79 TL"
+    },
+    "toplam": [
+     "TOPLAM",
+     "",
+     "",
+     "",
+     "139.997,01 TL",
+     "563.226,58 TL",
+     "",
+     ""
+    ],
+    "dosya": {
+     "pdf": {
+      "status": 200,
+      "sirketli": true,
+      "eksik": []
+     },
+     "excel": {
+      "status": 200,
+      "sirketli": true,
+      "eksik": []
+     }
+    }
+   },
+   "pos": {
+    "id": "banka-pos-hareketleri",
+    "kapsam": "Banka ve POS · 20.01.2025 – 26.01.2025",
+    "ozet": {
+     "Devir": "0,00 TL",
+     "Dönem Giriş": "139.997,01 TL",
+     "Dönem Çıkış": "563.226,58 TL",
+     "Dönem Net": "-423.229,57 TL",
+     "Dönem Sonu": "-423.229,57 TL",
+     "Banka (tüm hareketler)": "-59.240,78 TL",
+     "POS / Kredi Kartı (tüm hareketler)": "-363.988,79 TL"
+    },
+    "toplam": [
+     "TOPLAM",
+     "",
+     "",
+     "",
+     "139.997,01 TL",
+     "563.226,58 TL",
+     "",
+     ""
+    ],
+    "dosya": {
+     "pdf": {
+      "status": 200,
+      "sirketli": true,
+      "eksik": []
+     },
+     "excel": {
+      "status": 200,
+      "sirketli": true,
+      "eksik": []
+     }
+    }
+   },
+   "satis": {
+    "id": "fatura-satis",
+    "kapsam": "20.01.2025 – 26.01.2025",
+    "ozet": {
+     "Satış Faturası": "18",
+     "Matrah": "336.251,74 TL",
+     "KDV": "20.417,58 TL",
+     "Tevkifat": "0,00 TL",
+     "Ödenecek": "356.669,32 TL",
+     "Kalan": "76.158,23 TL"
+    },
+    "toplam": [
+     "TOPLAM",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "336.251,74 TL",
+     "20.417,58 TL",
+     "0,00 TL",
+     "0,00 TL",
+     "356.669,32 TL",
+     "280.511,09 TL",
+     "76.158,23 TL",
+     ""
+    ],
+    "dosya": {
+     "pdf": {
+      "status": 200,
+      "sirketli": true,
+      "eksik": []
+     },
+     "excel": {
+      "status": 200,
+      "sirketli": true,
+      "eksik": []
+     }
+    }
+   },
+   "alis": {
+    "id": "fatura-alis",
+    "kapsam": "20.01.2025 – 26.01.2025",
+    "ozet": {
+     "Alış Faturası": "22",
+     "Matrah": "667.965,10 TL",
+     "KDV": "77.396,74 TL",
+     "Tevkifat": "0,00 TL",
+     "Ödenecek": "745.361,84 TL",
+     "Kalan": "78.476,09 TL"
+    },
+    "toplam": [
+     "TOPLAM",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "667.965,10 TL",
+     "77.396,74 TL",
+     "0,00 TL",
+     "0,00 TL",
+     "745.361,84 TL",
+     "666.885,75 TL",
+     "78.476,09 TL",
+     ""
+    ],
+    "dosya": {
+     "pdf": {
+      "status": 200,
+      "sirketli": true,
+      "eksik": []
+     },
+     "excel": {
+      "status": 200,
+      "sirketli": true,
+      "eksik": []
+     }
+    }
+   },
+   "kdv": {
+    "id": "kdv-ozeti",
+    "kapsam": "20.01.2025 – 26.01.2025",
+    "ozet": {
+     "Hesaplanan KDV (391)": "20.417,58 TL",
+     "İndirilecek KDV (191)": "77.396,74 TL",
+     "Alıcı Olarak Kesilen Tevkifat (2 No.lu)": "0,00 TL",
+     "Devreden KDV": "56.979,16 TL"
+    },
+    "toplam": [],
+    "dosya": {
+     "pdf": {
+      "status": 200,
+      "sirketli": true,
+      "eksik": []
+     },
+     "excel": {
+      "status": 200,
+      "sirketli": true,
+      "eksik": []
+     }
+    }
+   },
+   "gider": {
+    "id": "gider-raporu",
+    "kapsam": "20.01.2025 – 26.01.2025",
+    "ozet": {
+     "Toplam Gider": "119.799,54 TL"
+    },
+    "toplam": [
+     "TOPLAM",
+     "",
+     "",
+     "6",
+     "119.799,54 TL",
+     "16.438,18 TL",
+     ""
+    ],
+    "dosya": {
+     "pdf": {
+      "status": 200,
+      "sirketli": true,
+      "eksik": []
+     },
+     "excel": {
+      "status": 200,
+      "sirketli": true,
+      "eksik": []
+     }
+    }
+   },
+   "mizan": {
+    "id": "mizan",
+    "kapsam": "20.01.2025 – 26.01.2025 · Tüm cariler",
+    "ozet": {
+     "Cari Sayısı": "51",
+     "Dönem Borç": "1.208.535,31 TL",
+     "Dönem Alacak": "1.224.897,90 TL",
+     "Borçlular Toplamı": "161.764,30 TL",
+     "Alacaklılar Toplamı": "173.524,58 TL"
+    },
+    "toplam": [
+     "TOPLAM",
+     "",
+     "",
+     "4.602,31 TL",
+     "1.208.535,31 TL",
+     "1.224.897,90 TL",
+     "11.760,28 TL",
+     "Alacaklı"
+    ],
+    "dosya": {
+     "pdf": {
+      "status": 200,
+      "sirketli": true,
+      "eksik": []
+     },
+     "excel": {
+      "status": 200,
+      "sirketli": true,
+      "eksik": []
+     }
+    }
+   },
+   "cariler": {
+    "id": "cari-listesi",
+    "kapsam": "Tüm cariler · 376 cari",
+    "ozet": {
+     "Cari": "376",
+     "Toplam Borç (Anlaşılan)": "1.215.547,05 TL",
+     "Toplam Alacak (Ödenen)": "1.227.307,33 TL",
+     "Kalan (Alacaklı)": "11.760,28 TL",
+     "Borçlular": "161.764,30 TL",
+     "Alacaklılar": "173.524,58 TL",
+     "Geciken Taksit": "15.911,40 TL"
+    },
+    "toplam": [
+     "TOPLAM",
+     "",
+     "",
+     "",
+     "",
+     "1.215.547,05 TL",
+     "1.227.307,33 TL",
+     "11.760,28 TL",
+     "Alacaklı",
+     "15.911,40 TL"
+    ],
+    "dosya": {
+     "pdf": {
+      "status": 200,
+      "sirketli": true,
+      "eksik": []
+     },
+     "excel": {
+      "status": 200,
+      "sirketli": true,
+      "eksik": []
+     }
+    }
+   },
+   "acik": {
+    "id": "acik-faturalar",
+    "kapsam": "04.10.2026 itibarıyla · taksitli faturalar taksit kartında izlenir",
+    "ozet": {
+     "Açık Alacak": "68.494,23 TL",
+     "Açık Borç": "78.476,09 TL"
+    },
+    "toplam": [],
+    "dosya": {
+     "pdf": {
+      "status": 200,
+      "sirketli": true,
+      "eksik": []
+     },
+     "excel": {
+      "status": 200,
+      "sirketli": true,
+      "eksik": []
+     }
+    }
+   },
+   "taksit": {
+    "id": "taksit-kartlari",
+    "kapsam": "Tüm kartlar",
+    "ozet": {
+     "Kart": "6",
+     "Toplam": "23.966,34 TL",
+     "Ödenen": "8.054,94 TL",
+     "Kalan": "15.911,40 TL",
+     "Geciken": "15.911,40 TL"
+    },
+    "toplam": [
+     "TOPLAM",
+     "",
+     "",
+     "",
+     "",
+     "23.966,34 TL",
+     "8.054,94 TL",
+     "15.911,40 TL",
+     "15.911,40 TL",
+     "",
+     ""
+    ],
+    "dosya": {
+     "pdf": {
+      "status": 200,
+      "sirketli": true,
+      "eksik": []
+     },
+     "excel": {
+      "status": 200,
+      "sirketli": true,
+      "eksik": []
+     }
+    }
+   },
+   "cek": {
+    "id": "cek-portfoy",
+    "kapsam": "Alınan ve verilen · vade Tüm hareketler · 04.10.2026 tarihine kadar",
+    "ozet": {
+     "Listelenen": "8 · 277.566,67 TL",
+     "Portföyde (alınan)": "158.314,13 TL",
+     "Ödenecek (verilen)": "119.252,54 TL",
+     "Vadesi Geçmiş Alınan": "158.314,13 TL"
+    },
+    "toplam": [],
+    "dosya": {
+     "pdf": {
+      "status": 200,
+      "sirketli": true,
+      "eksik": []
+     },
+     "excel": {
+      "status": 200,
+      "sirketli": true,
+      "eksik": []
+     }
+    }
+   },
+   "stok": {
+    "id": "stok-durumu",
+    "kapsam": "Tüm kalemler",
+    "ozet": {
+     "Kalem": "52",
+     "Kritik": "0",
+     "Tükenen": "34",
+     "Eksi Stok": "13",
+     "Stok Değeri": "330.531,88 TL"
+    },
+    "toplam": [
+     "TOPLAM",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "330.531,88 TL",
+     ""
+    ],
+    "satirlar": [
+     {
+      "Stok Kodu": "KIR-001",
+      "Kalem": "A4 Fotokopi Kağıdı 80gr (5'li)",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "-28",
+      "Birim": "Paket",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "185,00 TL",
+      "Değer": "-5.180,00 TL",
+      "Durum": "Eksi (-28 Paket)"
+     },
+     {
+      "Stok Kodu": "ELK-005",
+      "Kalem": "Akıllı Priz WiFi",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "101",
+      "Birim": "Adet",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "307,06 TL",
+      "Değer": "31.013,06 TL",
+      "Durum": ""
+     },
+     {
+      "Stok Kodu": "OTO-003",
+      "Kalem": "Akü 60Ah",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "0",
+      "Birim": "Adet",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "1.850,00 TL",
+      "Değer": "0,00 TL",
+      "Durum": "Tükendi"
+     },
+     {
+      "Stok Kodu": "INS-004",
+      "Kalem": "Alçı Sıva 25kg",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "23",
+      "Birim": "Torba",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "93,48 TL",
+      "Değer": "2.150,04 TL",
+      "Durum": ""
+     },
+     {
+      "Stok Kodu": "ELK-003",
+      "Kalem": "Anahtar Tekli",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "179",
+      "Birim": "Adet",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "19,22 TL",
+      "Değer": "3.440,38 TL",
+      "Durum": ""
+     },
+     {
+      "Stok Kodu": "OTO-005",
+      "Kalem": "Antifriz 5Lt",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "-22",
+      "Birim": "Adet",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "220,00 TL",
+      "Değer": "-4.840,00 TL",
+      "Durum": "Eksi (-22 Adet)"
+     },
+     {
+      "Stok Kodu": "GID-005",
+      "Kalem": "Bisküvi Karışık 1kg",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "0",
+      "Birim": "Paket",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "75,00 TL",
+      "Değer": "0,00 TL",
+      "Durum": "Tükendi"
+     },
+     {
+      "Stok Kodu": "INS-005",
+      "Kalem": "Boya İç Cephe 15Lt",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "-26",
+      "Birim": "Kova",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "680,00 TL",
+      "Değer": "-17.680,00 TL",
+      "Durum": "Eksi (-26 Kova)"
+     },
+     {
+      "Stok Kodu": "MOB-002",
+      "Kalem": "Çalışma Masası 140cm",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "0",
+      "Birim": "Adet",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "2.200,00 TL",
+      "Değer": "0,00 TL",
+      "Durum": "Tükendi"
+     },
+     {
+      "Stok Kodu": "TEM-002",
+      "Kalem": "Çamaşır Suyu 5Lt",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "-7",
+      "Birim": "Adet",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "85,00 TL",
+      "Değer": "-595,00 TL",
+      "Durum": "Eksi (-7 Adet)"
+     },
+     {
+      "Stok Kodu": "GID-001",
+      "Kalem": "Çay 1kg",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "21",
+      "Birim": "Paket",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "186,48 TL",
+      "Değer": "3.916,08 TL",
+      "Durum": ""
+     },
+     {
+      "Stok Kodu": "INS-001",
+      "Kalem": "Çimento 50kg",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "37",
+      "Birim": "Torba",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "190,86 TL",
+      "Değer": "7.061,82 TL",
+      "Durum": ""
+     },
+     {
+      "Stok Kodu": "TEM-005",
+      "Kalem": "Çöp Torbası Büyük (20'li)",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "0",
+      "Birim": "Paket",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "65,00 TL",
+      "Değer": "0,00 TL",
+      "Durum": "Tükendi"
+     },
+     {
+      "Stok Kodu": "INS-002",
+      "Kalem": "Demir İnşaat Ø12",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "2,34",
+      "Birim": "Ton",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "18.696,93 TL",
+      "Değer": "43.750,82 TL",
+      "Durum": ""
+     },
+     {
+      "Stok Kodu": "ELK-007",
+      "Kalem": "Dimmer Anahtar",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "-24",
+      "Birim": "Adet",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "85,00 TL",
+      "Değer": "-2.040,00 TL",
+      "Durum": "Eksi (-24 Adet)"
+     },
+     {
+      "Stok Kodu": "MOB-003",
+      "Kalem": "Dosya Dolabı 4 Çekmeceli",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "-28",
+      "Birim": "Adet",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "1.650,00 TL",
+      "Değer": "-46.200,00 TL",
+      "Durum": "Eksi (-28 Adet)"
+     },
+     {
+      "Stok Kodu": "KIR-003",
+      "Kalem": "Dosya Klasörü A4",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "0",
+      "Birim": "Adet",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "28,00 TL",
+      "Değer": "0,00 TL",
+      "Durum": "Tükendi"
+     },
+     {
+      "Stok Kodu": "OTO-002",
+      "Kalem": "Fren Balata Ön Takım",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "46",
+      "Birim": "Takım",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "871,24 TL",
+      "Değer": "40.077,04 TL",
+      "Durum": ""
+     },
+     {
+      "Stok Kodu": "BIL-008",
+      "Kalem": "Harici Disk 1TB",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "-29",
+      "Birim": "Adet",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "1.450,00 TL",
+      "Değer": "-42.050,00 TL",
+      "Durum": "Eksi (-29 Adet)"
+     },
+     {
+      "Stok Kodu": "KIR-005",
+      "Kalem": "Hesap Makinesi Masaüstü",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "0",
+      "Birim": "Adet",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "220,00 TL",
+      "Değer": "0,00 TL",
+      "Durum": "Tükendi"
+     },
+     {
+      "Stok Kodu": "TEM-004",
+      "Kalem": "Kağıt Havlu (6'lı)",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "23",
+      "Birim": "Paket",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "91,88 TL",
+      "Değer": "2.113,24 TL",
+      "Durum": ""
+     },
+     {
+      "Stok Kodu": "GID-002",
+      "Kalem": "Kahve Filtre 250gr",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "-7",
+      "Birim": "Paket",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "95,00 TL",
+      "Değer": "-665,00 TL",
+      "Durum": "Eksi (-7 Paket)"
+     },
+     {
+      "Stok Kodu": "MOB-006",
+      "Kalem": "Kitaplık 5 Raflı",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "0",
+      "Birim": "Adet",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "1.250,00 TL",
+      "Değer": "0,00 TL",
+      "Durum": "Tükendi"
+     },
+     {
+      "Stok Kodu": "BIL-003",
+      "Kalem": "Klavye Mekanik RGB",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "-12",
+      "Birim": "Adet",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "850,00 TL",
+      "Değer": "-10.200,00 TL",
+      "Durum": "Eksi (-12 Adet)"
+     },
+     {
+      "Stok Kodu": "YNI-H1",
+      "Kalem": "Kurulum Hizmeti",
+      "Tür": "Hizmet",
+      "Kategori": "",
+      "Mevcut": "",
+      "Birim": "Adet",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "0,00 TL",
+      "Değer": "",
+      "Durum": "Hizmet"
+     },
+     {
+      "Stok Kodu": "BIL-001",
+      "Kalem": "Laptop 15.6\" i5 16GB",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "11",
+      "Birim": "Adet",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "17.631,80 TL",
+      "Değer": "193.949,80 TL",
+      "Durum": ""
+     },
+     {
+      "Stok Kodu": "ELK-001",
+      "Kalem": "LED Ampul 9W",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "0",
+      "Birim": "Adet",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "45,00 TL",
+      "Değer": "0,00 TL",
+      "Durum": "Tükendi"
+     },
+     {
+      "Stok Kodu": "ELK-006",
+      "Kalem": "LED Panel 60x60 40W",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "0",
+      "Birim": "Adet",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "280,00 TL",
+      "Değer": "0,00 TL",
+      "Durum": "Tükendi"
+     },
+     {
+      "Stok Kodu": "MOB-004",
+      "Kalem": "Misafir Koltuğu",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "24",
+      "Birim": "Adet",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "968,52 TL",
+      "Değer": "23.244,48 TL",
+      "Durum": ""
+     },
+     {
+      "Stok Kodu": "BIL-002",
+      "Kalem": "Monitör 27\" Full HD",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "0",
+      "Birim": "Adet",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "4.200,00 TL",
+      "Değer": "0,00 TL",
+      "Durum": "Tükendi"
+     },
+     {
+      "Stok Kodu": "OTO-001",
+      "Kalem": "Motor Yağı 5Lt 5W30",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "0",
+      "Birim": "Adet",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "650,00 TL",
+      "Değer": "0,00 TL",
+      "Durum": "Tükendi"
+     },
+     {
+      "Stok Kodu": "BIL-004",
+      "Kalem": "Mouse Kablosuz",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "-17",
+      "Birim": "Adet",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "280,00 TL",
+      "Değer": "-4.760,00 TL",
+      "Durum": "Eksi (-17 Adet)"
+     },
+     {
+      "Stok Kodu": "KIR-007",
+      "Kalem": "Not Defteri A5",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "0",
+      "Birim": "Adet",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "35,00 TL",
+      "Değer": "0,00 TL",
+      "Durum": "Tükendi"
+     },
+     {
+      "Stok Kodu": "MOB-001",
+      "Kalem": "Ofis Koltuğu Ergonomik",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "2",
+      "Birim": "Adet",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "1.919,50 TL",
+      "Değer": "3.839,00 TL",
+      "Durum": ""
+     },
+     {
+      "Stok Kodu": "YNI-U1",
+      "Kalem": "Ofis Sandalyesi",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "8",
+      "Birim": "Adet",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "1.450,00 TL",
+      "Değer": "11.600,00 TL",
+      "Durum": ""
+     },
+     {
+      "Stok Kodu": "ELK-002",
+      "Kalem": "Priz 3'lü Topraklı",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "20",
+      "Birim": "Adet",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "27,29 TL",
+      "Değer": "545,80 TL",
+      "Durum": ""
+     },
+     {
+      "Stok Kodu": "INS-006",
+      "Kalem": "Seramik 30x60",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "-8",
+      "Birim": "M²",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "145,00 TL",
+      "Değer": "-1.160,00 TL",
+      "Durum": "Eksi (-8 M²)"
+     },
+     {
+      "Stok Kodu": "TEM-001",
+      "Kalem": "Sıvı Sabun 5Lt",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "433",
+      "Birim": "Adet",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "142,19 TL",
+      "Değer": "61.568,27 TL",
+      "Durum": ""
+     },
+     {
+      "Stok Kodu": "ELK-008",
+      "Kalem": "Sigorta 16A",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "-36",
+      "Birim": "Adet",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "22,00 TL",
+      "Değer": "-792,00 TL",
+      "Durum": "Eksi (-36 Adet)"
+     },
+     {
+      "Stok Kodu": "OTO-004",
+      "Kalem": "Silecek Lastiği Takım",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "0",
+      "Birim": "Takım",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "185,00 TL",
+      "Değer": "0,00 TL",
+      "Durum": "Tükendi"
+     },
+     {
+      "Stok Kodu": "GID-004",
+      "Kalem": "Su 19Lt Damacana",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "0",
+      "Birim": "Adet",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "55,00 TL",
+      "Değer": "0,00 TL",
+      "Durum": "Tükendi"
+     },
+     {
+      "Stok Kodu": "GID-003",
+      "Kalem": "Şeker 1kg",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "0",
+      "Birim": "Paket",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "42,00 TL",
+      "Değer": "0,00 TL",
+      "Durum": "Tükendi"
+     },
+     {
+      "Stok Kodu": "BIL-006",
+      "Kalem": "Toner Kartuş Siyah",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "6",
+      "Birim": "Adet",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "706,65 TL",
+      "Değer": "4.239,90 TL",
+      "Durum": ""
+     },
+     {
+      "Stok Kodu": "MOB-005",
+      "Kalem": "Toplantı Masası 8 Kişilik",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "23",
+      "Birim": "Adet",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "4.605,69 TL",
+      "Değer": "105.930,87 TL",
+      "Durum": ""
+     },
+     {
+      "Stok Kodu": "INS-003",
+      "Kalem": "Tuğla Delikli",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "0",
+      "Birim": "Adet",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "4,50 TL",
+      "Değer": "0,00 TL",
+      "Durum": "Tükendi"
+     },
+     {
+      "Stok Kodu": "KIR-002",
+      "Kalem": "Tükenmez Kalem Mavi (50'li)",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "0",
+      "Birim": "Kutu",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "95,00 TL",
+      "Değer": "0,00 TL",
+      "Durum": "Tükendi"
+     },
+     {
+      "Stok Kodu": "BIL-007",
+      "Kalem": "USB Flash 64GB",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "47",
+      "Birim": "Adet",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "186,24 TL",
+      "Değer": "8.753,28 TL",
+      "Durum": ""
+     },
+     {
+      "Stok Kodu": "ELK-004",
+      "Kalem": "Uzatma Kablosu 5m",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "0",
+      "Birim": "Adet",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "95,00 TL",
+      "Değer": "0,00 TL",
+      "Durum": "Tükendi"
+     },
+     {
+      "Stok Kodu": "KIR-006",
+      "Kalem": "Yapıştırıcı Stick 40gr",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "0",
+      "Birim": "Adet",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "18,00 TL",
+      "Değer": "0,00 TL",
+      "Durum": "Tükendi"
+     },
+     {
+      "Stok Kodu": "BIL-005",
+      "Kalem": "Yazıcı Lazer Mono",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "-23",
+      "Birim": "Adet",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "3.500,00 TL",
+      "Değer": "-80.500,00 TL",
+      "Durum": "Eksi (-23 Adet)"
+     },
+     {
+      "Stok Kodu": "TEM-003",
+      "Kalem": "Yüzey Temizleyici 1Lt",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "0",
+      "Birim": "Adet",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "48,00 TL",
+      "Değer": "0,00 TL",
+      "Durum": "Tükendi"
+     },
+     {
+      "Stok Kodu": "KIR-004",
+      "Kalem": "Zımba Makinesi",
+      "Tür": "Ürün",
+      "Kategori": "",
+      "Mevcut": "0",
+      "Birim": "Adet",
+      "Kritik Seviye": "",
+      "Birim Fiyat": "65,00 TL",
+      "Değer": "0,00 TL",
+      "Durum": "Tükendi"
+     }
+    ],
+    "dosya": {
+     "pdf": {
+      "status": 200,
+      "sirketli": true,
+      "eksik": []
+     },
+     "excel": {
+      "status": 200,
+      "sirketli": true,
+      "eksik": []
+     }
+    }
+   },
+   "ekstre": {
+    "id": "cari-ekstre",
+    "kapsam": "Cari No YNI-001 · 20.01.2025 – 26.01.2025 · B: borçlu · A: alacaklı",
+    "ozet": {
+     "Devir": "0,00 TL",
+     "Dönem Borç": "21.720,00 TL",
+     "Dönem Alacak": "8.000,00 TL",
+     "Dönem Sonu": "13.720,00 TL Borçlu"
+    },
+    "toplam": [
+     "TOPLAM",
+     "",
+     "",
+     "21.720,00 TL",
+     "8.000,00 TL",
+     ""
+    ],
+    "dosya": {
+     "pdf": {
+      "status": 200,
+      "sirketli": true,
+      "eksik": []
+     },
+     "excel": {
+      "status": 200,
+      "sirketli": true,
+      "eksik": []
+     }
+    }
+   },
+   "hesapMizani": {
+    "id": "hesap-mizani",
+    "kapsam": "20.01.2025 – 26.01.2025 · Borç = Alacak · Mutabakat tutarlı",
+    "ozet": {
+     "Dönem Borç": "2.460.483,21 TL",
+     "Dönem Alacak": "2.460.483,21 TL",
+     "Fark": "0,00 TL"
+    },
+    "toplam": [
+     "TOPLAM",
+     "",
+     "0,00 TL",
+     "2.460.483,21 TL",
+     "2.460.483,21 TL",
+     "",
+     ""
+    ],
+    "dosya": {
+     "pdf": {
+      "status": 200,
+      "sirketli": true,
+      "eksik": []
+     },
+     "excel": {
+      "status": 200,
+      "sirketli": true,
+      "eksik": []
+     }
+    }
+   },
+   "anlik": {
+    "ozet": {
+     "Nakit Kasa": -95533.49,
+     "Banka / POS": -423229.57,
+     "Alacak Cari": 161764.3,
+     "Alacak Çek": 158314.13,
+     "Borç Cari": 173524.58,
+     "Borç Çek": 119252.54
+    }
+   }
+  }
+ },
+ "raporFarklari": [
+  "Ekran banka-pos-hareketleri · Dönem Giriş: ekran 139.997,01 TL · beklenen 126647.20 (Bulgu 4)",
+  "Ekran banka-pos-hareketleri · Dönem Çıkış: ekran 563.226,58 TL · beklenen 185887.98 (Bulgu 4)",
+  "Ekran banka-pos-hareketleri · Dönem Giriş: ekran 139.997,01 TL · beklenen 13349.81 (Bulgu 4)",
+  "Ekran banka-pos-hareketleri · Dönem Çıkış: ekran 563.226,58 TL · beklenen 377338.60 (Bulgu 4)",
+  "Ekran fatura-satis · Kalan: ekran 76.158,23 TL · beklenen 79448.83 (Bulgu 2 (Kalan))",
+  "Ekran acik-faturalar · Açık Alacak: ekran 68.494,23 TL · beklenen 71494.23 (Bulgu 2 (Açık Alacak))",
+  "API banka-pos-hareketleri · Dönem Giriş: ekran 139.997,01 TL · beklenen 126647.20 (Bulgu 4)",
+  "API banka-pos-hareketleri · Dönem Çıkış: ekran 563.226,58 TL · beklenen 185887.98 (Bulgu 4)",
+  "API banka-pos-hareketleri · Dönem Giriş: ekran 139.997,01 TL · beklenen 13349.81 (Bulgu 4)",
+  "API banka-pos-hareketleri · Dönem Çıkış: ekran 563.226,58 TL · beklenen 377338.60 (Bulgu 4)",
+  "API fatura-satis · Kalan: ekran 76.158,23 TL · beklenen 79448.83 (Bulgu 2 (Kalan))",
+  "API acik-faturalar · Açık Alacak: ekran 68.494,23 TL · beklenen 71494.23 (Bulgu 2 (Açık Alacak))"
+ ],
+ "kontrol": {
+  "Ekran": [
+   {
+    "rapor": "kasa",
+    "kalem": "Devir",
+    "beklenen": 2409.43,
+    "ekran": 2409.43,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "kasa",
+    "kalem": "Dönem Giriş",
+    "beklenen": 84693.95,
+    "ekran": 84693.95,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "kasa",
+    "kalem": "Dönem Çıkış",
+    "beklenen": 182636.87,
+    "ekran": 182636.87,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "kasa",
+    "kalem": "PDF",
+    "beklenen": null,
+    "ekran": null,
+    "ok": true,
+    "bulgu": "",
+    "dosya": true
+   },
+   {
+    "rapor": "kasa",
+    "kalem": "Excel",
+    "beklenen": null,
+    "ekran": null,
+    "ok": true,
+    "bulgu": "",
+    "dosya": true
+   },
+   {
+    "rapor": "bankaPos",
+    "kalem": "Devir",
+    "beklenen": 0,
+    "ekran": 0,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "bankaPos",
+    "kalem": "Dönem Giriş",
+    "beklenen": 139997.01,
+    "ekran": 139997.01,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "bankaPos",
+    "kalem": "Dönem Çıkış",
+    "beklenen": 563226.58,
+    "ekran": 563226.58,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "bankaPos",
+    "kalem": "Banka (tüm hareketler)",
+    "beklenen": -59240.78,
+    "ekran": -59240.78,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "bankaPos",
+    "kalem": "POS / Kredi Kartı (tüm hareketler)",
+    "beklenen": -363988.79,
+    "ekran": -363988.79,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "bankaPosYol",
+    "kalem": "Banka Giriş",
+    "beklenen": 126647.2,
+    "ekran": 126647.2,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "bankaPosYol",
+    "kalem": "Banka Çıkış",
+    "beklenen": 185887.98,
+    "ekran": 185887.98,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "bankaPosYol",
+    "kalem": "POS / Kredi Kartı Giriş",
+    "beklenen": 13349.81,
+    "ekran": 13349.81,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "bankaPosYol",
+    "kalem": "POS / Kredi Kartı Çıkış",
+    "beklenen": 377338.6,
+    "ekran": 377338.6,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "bankaPos",
+    "kalem": "PDF",
+    "beklenen": null,
+    "ekran": null,
+    "ok": true,
+    "bulgu": "",
+    "dosya": true
+   },
+   {
+    "rapor": "bankaPos",
+    "kalem": "Excel",
+    "beklenen": null,
+    "ekran": null,
+    "ok": true,
+    "bulgu": "",
+    "dosya": true
+   },
+   {
+    "rapor": "banka",
+    "kalem": "Dönem Giriş",
+    "beklenen": 126647.2,
+    "ekran": 139997.01,
+    "ok": false,
+    "bulgu": "Bulgu 4"
+   },
+   {
+    "rapor": "banka",
+    "kalem": "Dönem Çıkış",
+    "beklenen": 185887.98,
+    "ekran": 563226.58,
+    "ok": false,
+    "bulgu": "Bulgu 4"
+   },
+   {
+    "rapor": "banka",
+    "kalem": "PDF",
+    "beklenen": null,
+    "ekran": null,
+    "ok": true,
+    "bulgu": "",
+    "dosya": true
+   },
+   {
+    "rapor": "banka",
+    "kalem": "Excel",
+    "beklenen": null,
+    "ekran": null,
+    "ok": true,
+    "bulgu": "",
+    "dosya": true
+   },
+   {
+    "rapor": "pos",
+    "kalem": "Dönem Giriş",
+    "beklenen": 13349.81,
+    "ekran": 139997.01,
+    "ok": false,
+    "bulgu": "Bulgu 4"
+   },
+   {
+    "rapor": "pos",
+    "kalem": "Dönem Çıkış",
+    "beklenen": 377338.6,
+    "ekran": 563226.58,
+    "ok": false,
+    "bulgu": "Bulgu 4"
+   },
+   {
+    "rapor": "pos",
+    "kalem": "PDF",
+    "beklenen": null,
+    "ekran": null,
+    "ok": true,
+    "bulgu": "",
+    "dosya": true
+   },
+   {
+    "rapor": "pos",
+    "kalem": "Excel",
+    "beklenen": null,
+    "ekran": null,
+    "ok": true,
+    "bulgu": "",
+    "dosya": true
+   },
+   {
+    "rapor": "satis",
+    "kalem": "Satış Faturası",
+    "beklenen": 18,
+    "ekran": 18,
+    "ok": true,
+    "bulgu": "Bulgu 2 (Kalan)"
+   },
+   {
+    "rapor": "satis",
+    "kalem": "Matrah",
+    "beklenen": 336251.74,
+    "ekran": 336251.74,
+    "ok": true,
+    "bulgu": "Bulgu 2 (Kalan)"
+   },
+   {
+    "rapor": "satis",
+    "kalem": "KDV",
+    "beklenen": 20417.58,
+    "ekran": 20417.58,
+    "ok": true,
+    "bulgu": "Bulgu 2 (Kalan)"
+   },
+   {
+    "rapor": "satis",
+    "kalem": "Ödenecek",
+    "beklenen": 356669.32,
+    "ekran": 356669.32,
+    "ok": true,
+    "bulgu": "Bulgu 2 (Kalan)"
+   },
+   {
+    "rapor": "satis",
+    "kalem": "Kalan",
+    "beklenen": 79448.83,
+    "ekran": 76158.23,
+    "ok": false,
+    "bulgu": "Bulgu 2 (Kalan)"
+   },
+   {
+    "rapor": "satis",
+    "kalem": "PDF",
+    "beklenen": null,
+    "ekran": null,
+    "ok": true,
+    "bulgu": "",
+    "dosya": true
+   },
+   {
+    "rapor": "satis",
+    "kalem": "Excel",
+    "beklenen": null,
+    "ekran": null,
+    "ok": true,
+    "bulgu": "",
+    "dosya": true
+   },
+   {
+    "rapor": "alis",
+    "kalem": "Alış Faturası",
+    "beklenen": 22,
+    "ekran": 22,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "alis",
+    "kalem": "Matrah",
+    "beklenen": 667965.1,
+    "ekran": 667965.1,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "alis",
+    "kalem": "KDV",
+    "beklenen": 77396.74,
+    "ekran": 77396.74,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "alis",
+    "kalem": "Ödenecek",
+    "beklenen": 745361.84,
+    "ekran": 745361.84,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "alis",
+    "kalem": "Kalan",
+    "beklenen": 78476.09,
+    "ekran": 78476.09,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "alis",
+    "kalem": "PDF",
+    "beklenen": null,
+    "ekran": null,
+    "ok": true,
+    "bulgu": "",
+    "dosya": true
+   },
+   {
+    "rapor": "alis",
+    "kalem": "Excel",
+    "beklenen": null,
+    "ekran": null,
+    "ok": true,
+    "bulgu": "",
+    "dosya": true
+   },
+   {
+    "rapor": "kdv",
+    "kalem": "Hesaplanan KDV (391)",
+    "beklenen": 20417.58,
+    "ekran": 20417.58,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "kdv",
+    "kalem": "İndirilecek KDV (191)",
+    "beklenen": 77396.74,
+    "ekran": 77396.74,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "kdv",
+    "kalem": "Devreden KDV",
+    "beklenen": 56979.16,
+    "ekran": 56979.16,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "kdv",
+    "kalem": "PDF",
+    "beklenen": null,
+    "ekran": null,
+    "ok": true,
+    "bulgu": "",
+    "dosya": true
+   },
+   {
+    "rapor": "kdv",
+    "kalem": "Excel",
+    "beklenen": null,
+    "ekran": null,
+    "ok": true,
+    "bulgu": "",
+    "dosya": true
+   },
+   {
+    "rapor": "gider",
+    "kalem": "Toplam Gider",
+    "beklenen": 119799.54,
+    "ekran": 119799.54,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "gider",
+    "kalem": "PDF",
+    "beklenen": null,
+    "ekran": null,
+    "ok": true,
+    "bulgu": "",
+    "dosya": true
+   },
+   {
+    "rapor": "gider",
+    "kalem": "Excel",
+    "beklenen": null,
+    "ekran": null,
+    "ok": true,
+    "bulgu": "",
+    "dosya": true
+   },
+   {
+    "rapor": "mizan",
+    "kalem": "Dönem Borç",
+    "beklenen": 1208535.31,
+    "ekran": 1208535.31,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "mizan",
+    "kalem": "Dönem Alacak",
+    "beklenen": 1224897.9,
+    "ekran": 1224897.9,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "mizan",
+    "kalem": "Borçlular Toplamı",
+    "beklenen": 161764.3,
+    "ekran": 161764.3,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "mizan",
+    "kalem": "Alacaklılar Toplamı",
+    "beklenen": 173524.58,
+    "ekran": 173524.58,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "mizan",
+    "kalem": "PDF",
+    "beklenen": null,
+    "ekran": null,
+    "ok": true,
+    "bulgu": "",
+    "dosya": true
+   },
+   {
+    "rapor": "mizan",
+    "kalem": "Excel",
+    "beklenen": null,
+    "ekran": null,
+    "ok": true,
+    "bulgu": "",
+    "dosya": true
+   },
+   {
+    "rapor": "cariler",
+    "kalem": "Toplam Borç (Anlaşılan)",
+    "beklenen": 1215547.05,
+    "ekran": 1215547.05,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "cariler",
+    "kalem": "Toplam Alacak (Ödenen)",
+    "beklenen": 1227307.33,
+    "ekran": 1227307.33,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "cariler",
+    "kalem": "Borçlular",
+    "beklenen": 161764.3,
+    "ekran": 161764.3,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "cariler",
+    "kalem": "Alacaklılar",
+    "beklenen": 173524.58,
+    "ekran": 173524.58,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "cariler",
+    "kalem": "PDF",
+    "beklenen": null,
+    "ekran": null,
+    "ok": true,
+    "bulgu": "",
+    "dosya": true
+   },
+   {
+    "rapor": "cariler",
+    "kalem": "Excel",
+    "beklenen": null,
+    "ekran": null,
+    "ok": true,
+    "bulgu": "",
+    "dosya": true
+   },
+   {
+    "rapor": "acik",
+    "kalem": "Açık Alacak",
+    "beklenen": 71494.23,
+    "ekran": 68494.23,
+    "ok": false,
+    "bulgu": "Bulgu 2 (Açık Alacak)"
+   },
+   {
+    "rapor": "acik",
+    "kalem": "Açık Borç",
+    "beklenen": 78476.09,
+    "ekran": 78476.09,
+    "ok": true,
+    "bulgu": "Bulgu 2 (Açık Alacak)"
+   },
+   {
+    "rapor": "acik",
+    "kalem": "PDF",
+    "beklenen": null,
+    "ekran": null,
+    "ok": true,
+    "bulgu": "",
+    "dosya": true
+   },
+   {
+    "rapor": "acik",
+    "kalem": "Excel",
+    "beklenen": null,
+    "ekran": null,
+    "ok": true,
+    "bulgu": "",
+    "dosya": true
+   },
+   {
+    "rapor": "taksit",
+    "kalem": "Kart",
+    "beklenen": 6,
+    "ekran": 6,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "taksit",
+    "kalem": "Toplam",
+    "beklenen": 23966.34,
+    "ekran": 23966.34,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "taksit",
+    "kalem": "Ödenen",
+    "beklenen": 8054.94,
+    "ekran": 8054.94,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "taksit",
+    "kalem": "Kalan",
+    "beklenen": 15911.4,
+    "ekran": 15911.4,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "taksit",
+    "kalem": "PDF",
+    "beklenen": null,
+    "ekran": null,
+    "ok": true,
+    "bulgu": "",
+    "dosya": true
+   },
+   {
+    "rapor": "taksit",
+    "kalem": "Excel",
+    "beklenen": null,
+    "ekran": null,
+    "ok": true,
+    "bulgu": "",
+    "dosya": true
+   },
+   {
+    "rapor": "cek",
+    "kalem": "Portföyde (alınan)",
+    "beklenen": 158314.13,
+    "ekran": 158314.13,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "cek",
+    "kalem": "Ödenecek (verilen)",
+    "beklenen": 119252.54,
+    "ekran": 119252.54,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "cek",
+    "kalem": "PDF",
+    "beklenen": null,
+    "ekran": null,
+    "ok": true,
+    "bulgu": "",
+    "dosya": true
+   },
+   {
+    "rapor": "cek",
+    "kalem": "Excel",
+    "beklenen": null,
+    "ekran": null,
+    "ok": true,
+    "bulgu": "",
+    "dosya": true
+   },
+   {
+    "rapor": "stok",
+    "kalem": "51 kalemin Mevcut miktarı",
+    "beklenen": 51,
+    "ekran": 51,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "stok",
+    "kalem": "PDF",
+    "beklenen": null,
+    "ekran": null,
+    "ok": true,
+    "bulgu": "",
+    "dosya": true
+   },
+   {
+    "rapor": "stok",
+    "kalem": "Excel",
+    "beklenen": null,
+    "ekran": null,
+    "ok": true,
+    "bulgu": "",
+    "dosya": true
+   },
+   {
+    "rapor": "ekstre",
+    "kalem": "Dönem Borç",
+    "beklenen": 21720,
+    "ekran": 21720,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "ekstre",
+    "kalem": "Dönem Alacak",
+    "beklenen": 8000,
+    "ekran": 8000,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "ekstre",
+    "kalem": "Dönem Sonu",
+    "beklenen": 13720,
+    "ekran": 13720,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "ekstre",
+    "kalem": "PDF",
+    "beklenen": null,
+    "ekran": null,
+    "ok": true,
+    "bulgu": "",
+    "dosya": true
+   },
+   {
+    "rapor": "ekstre",
+    "kalem": "Excel",
+    "beklenen": null,
+    "ekran": null,
+    "ok": true,
+    "bulgu": "",
+    "dosya": true
+   },
+   {
+    "rapor": "hesapMizani",
+    "kalem": "Fark",
+    "beklenen": 0,
+    "ekran": 0,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "hesapMizani",
+    "kalem": "PDF",
+    "beklenen": null,
+    "ekran": null,
+    "ok": true,
+    "bulgu": "",
+    "dosya": true
+   },
+   {
+    "rapor": "hesapMizani",
+    "kalem": "Excel",
+    "beklenen": null,
+    "ekran": null,
+    "ok": true,
+    "bulgu": "",
+    "dosya": true
+   },
+   {
+    "rapor": "anlik",
+    "kalem": "Nakit Kasa",
+    "beklenen": -95533.49,
+    "ekran": -95533.49,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "anlik",
+    "kalem": "Banka / POS",
+    "beklenen": -423229.57,
+    "ekran": -423229.57,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "anlik",
+    "kalem": "Alacak Cari",
+    "beklenen": 161764.3,
+    "ekran": 161764.3,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "anlik",
+    "kalem": "Alacak Çek",
+    "beklenen": 158314.13,
+    "ekran": 158314.13,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "anlik",
+    "kalem": "Borç Cari",
+    "beklenen": 173524.58,
+    "ekran": 173524.58,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "anlik",
+    "kalem": "Borç Çek",
+    "beklenen": 119252.54,
+    "ekran": 119252.54,
+    "ok": true,
+    "bulgu": ""
+   }
+  ],
+  "API": [
+   {
+    "rapor": "kasa",
+    "kalem": "Devir",
+    "beklenen": 2409.43,
+    "ekran": 2409.43,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "kasa",
+    "kalem": "Dönem Giriş",
+    "beklenen": 84693.95,
+    "ekran": 84693.95,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "kasa",
+    "kalem": "Dönem Çıkış",
+    "beklenen": 182636.87,
+    "ekran": 182636.87,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "kasa",
+    "kalem": "PDF",
+    "beklenen": null,
+    "ekran": null,
+    "ok": true,
+    "bulgu": "",
+    "dosya": true
+   },
+   {
+    "rapor": "kasa",
+    "kalem": "Excel",
+    "beklenen": null,
+    "ekran": null,
+    "ok": true,
+    "bulgu": "",
+    "dosya": true
+   },
+   {
+    "rapor": "bankaPos",
+    "kalem": "Devir",
+    "beklenen": 0,
+    "ekran": 0,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "bankaPos",
+    "kalem": "Dönem Giriş",
+    "beklenen": 139997.01,
+    "ekran": 139997.01,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "bankaPos",
+    "kalem": "Dönem Çıkış",
+    "beklenen": 563226.58,
+    "ekran": 563226.58,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "bankaPos",
+    "kalem": "Banka (tüm hareketler)",
+    "beklenen": -59240.78,
+    "ekran": -59240.78,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "bankaPos",
+    "kalem": "POS / Kredi Kartı (tüm hareketler)",
+    "beklenen": -363988.79,
+    "ekran": -363988.79,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "bankaPosYol",
+    "kalem": "Banka Giriş",
+    "beklenen": 126647.2,
+    "ekran": 126647.2,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "bankaPosYol",
+    "kalem": "Banka Çıkış",
+    "beklenen": 185887.98,
+    "ekran": 185887.98,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "bankaPosYol",
+    "kalem": "POS / Kredi Kartı Giriş",
+    "beklenen": 13349.81,
+    "ekran": 13349.81,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "bankaPosYol",
+    "kalem": "POS / Kredi Kartı Çıkış",
+    "beklenen": 377338.6,
+    "ekran": 377338.6,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "bankaPos",
+    "kalem": "PDF",
+    "beklenen": null,
+    "ekran": null,
+    "ok": true,
+    "bulgu": "",
+    "dosya": true
+   },
+   {
+    "rapor": "bankaPos",
+    "kalem": "Excel",
+    "beklenen": null,
+    "ekran": null,
+    "ok": true,
+    "bulgu": "",
+    "dosya": true
+   },
+   {
+    "rapor": "banka",
+    "kalem": "Dönem Giriş",
+    "beklenen": 126647.2,
+    "ekran": 139997.01,
+    "ok": false,
+    "bulgu": "Bulgu 4"
+   },
+   {
+    "rapor": "banka",
+    "kalem": "Dönem Çıkış",
+    "beklenen": 185887.98,
+    "ekran": 563226.58,
+    "ok": false,
+    "bulgu": "Bulgu 4"
+   },
+   {
+    "rapor": "banka",
+    "kalem": "PDF",
+    "beklenen": null,
+    "ekran": null,
+    "ok": true,
+    "bulgu": "",
+    "dosya": true
+   },
+   {
+    "rapor": "banka",
+    "kalem": "Excel",
+    "beklenen": null,
+    "ekran": null,
+    "ok": true,
+    "bulgu": "",
+    "dosya": true
+   },
+   {
+    "rapor": "pos",
+    "kalem": "Dönem Giriş",
+    "beklenen": 13349.81,
+    "ekran": 139997.01,
+    "ok": false,
+    "bulgu": "Bulgu 4"
+   },
+   {
+    "rapor": "pos",
+    "kalem": "Dönem Çıkış",
+    "beklenen": 377338.6,
+    "ekran": 563226.58,
+    "ok": false,
+    "bulgu": "Bulgu 4"
+   },
+   {
+    "rapor": "pos",
+    "kalem": "PDF",
+    "beklenen": null,
+    "ekran": null,
+    "ok": true,
+    "bulgu": "",
+    "dosya": true
+   },
+   {
+    "rapor": "pos",
+    "kalem": "Excel",
+    "beklenen": null,
+    "ekran": null,
+    "ok": true,
+    "bulgu": "",
+    "dosya": true
+   },
+   {
+    "rapor": "satis",
+    "kalem": "Satış Faturası",
+    "beklenen": 18,
+    "ekran": 18,
+    "ok": true,
+    "bulgu": "Bulgu 2 (Kalan)"
+   },
+   {
+    "rapor": "satis",
+    "kalem": "Matrah",
+    "beklenen": 336251.74,
+    "ekran": 336251.74,
+    "ok": true,
+    "bulgu": "Bulgu 2 (Kalan)"
+   },
+   {
+    "rapor": "satis",
+    "kalem": "KDV",
+    "beklenen": 20417.58,
+    "ekran": 20417.58,
+    "ok": true,
+    "bulgu": "Bulgu 2 (Kalan)"
+   },
+   {
+    "rapor": "satis",
+    "kalem": "Ödenecek",
+    "beklenen": 356669.32,
+    "ekran": 356669.32,
+    "ok": true,
+    "bulgu": "Bulgu 2 (Kalan)"
+   },
+   {
+    "rapor": "satis",
+    "kalem": "Kalan",
+    "beklenen": 79448.83,
+    "ekran": 76158.23,
+    "ok": false,
+    "bulgu": "Bulgu 2 (Kalan)"
+   },
+   {
+    "rapor": "satis",
+    "kalem": "PDF",
+    "beklenen": null,
+    "ekran": null,
+    "ok": true,
+    "bulgu": "",
+    "dosya": true
+   },
+   {
+    "rapor": "satis",
+    "kalem": "Excel",
+    "beklenen": null,
+    "ekran": null,
+    "ok": true,
+    "bulgu": "",
+    "dosya": true
+   },
+   {
+    "rapor": "alis",
+    "kalem": "Alış Faturası",
+    "beklenen": 22,
+    "ekran": 22,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "alis",
+    "kalem": "Matrah",
+    "beklenen": 667965.1,
+    "ekran": 667965.1,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "alis",
+    "kalem": "KDV",
+    "beklenen": 77396.74,
+    "ekran": 77396.74,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "alis",
+    "kalem": "Ödenecek",
+    "beklenen": 745361.84,
+    "ekran": 745361.84,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "alis",
+    "kalem": "Kalan",
+    "beklenen": 78476.09,
+    "ekran": 78476.09,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "alis",
+    "kalem": "PDF",
+    "beklenen": null,
+    "ekran": null,
+    "ok": true,
+    "bulgu": "",
+    "dosya": true
+   },
+   {
+    "rapor": "alis",
+    "kalem": "Excel",
+    "beklenen": null,
+    "ekran": null,
+    "ok": true,
+    "bulgu": "",
+    "dosya": true
+   },
+   {
+    "rapor": "kdv",
+    "kalem": "Hesaplanan KDV (391)",
+    "beklenen": 20417.58,
+    "ekran": 20417.58,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "kdv",
+    "kalem": "İndirilecek KDV (191)",
+    "beklenen": 77396.74,
+    "ekran": 77396.74,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "kdv",
+    "kalem": "Devreden KDV",
+    "beklenen": 56979.16,
+    "ekran": 56979.16,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "kdv",
+    "kalem": "PDF",
+    "beklenen": null,
+    "ekran": null,
+    "ok": true,
+    "bulgu": "",
+    "dosya": true
+   },
+   {
+    "rapor": "kdv",
+    "kalem": "Excel",
+    "beklenen": null,
+    "ekran": null,
+    "ok": true,
+    "bulgu": "",
+    "dosya": true
+   },
+   {
+    "rapor": "gider",
+    "kalem": "Toplam Gider",
+    "beklenen": 119799.54,
+    "ekran": 119799.54,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "gider",
+    "kalem": "PDF",
+    "beklenen": null,
+    "ekran": null,
+    "ok": true,
+    "bulgu": "",
+    "dosya": true
+   },
+   {
+    "rapor": "gider",
+    "kalem": "Excel",
+    "beklenen": null,
+    "ekran": null,
+    "ok": true,
+    "bulgu": "",
+    "dosya": true
+   },
+   {
+    "rapor": "mizan",
+    "kalem": "Dönem Borç",
+    "beklenen": 1208535.31,
+    "ekran": 1208535.31,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "mizan",
+    "kalem": "Dönem Alacak",
+    "beklenen": 1224897.9,
+    "ekran": 1224897.9,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "mizan",
+    "kalem": "Borçlular Toplamı",
+    "beklenen": 161764.3,
+    "ekran": 161764.3,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "mizan",
+    "kalem": "Alacaklılar Toplamı",
+    "beklenen": 173524.58,
+    "ekran": 173524.58,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "mizan",
+    "kalem": "PDF",
+    "beklenen": null,
+    "ekran": null,
+    "ok": true,
+    "bulgu": "",
+    "dosya": true
+   },
+   {
+    "rapor": "mizan",
+    "kalem": "Excel",
+    "beklenen": null,
+    "ekran": null,
+    "ok": true,
+    "bulgu": "",
+    "dosya": true
+   },
+   {
+    "rapor": "cariler",
+    "kalem": "Toplam Borç (Anlaşılan)",
+    "beklenen": 1215547.05,
+    "ekran": 1215547.05,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "cariler",
+    "kalem": "Toplam Alacak (Ödenen)",
+    "beklenen": 1227307.33,
+    "ekran": 1227307.33,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "cariler",
+    "kalem": "Borçlular",
+    "beklenen": 161764.3,
+    "ekran": 161764.3,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "cariler",
+    "kalem": "Alacaklılar",
+    "beklenen": 173524.58,
+    "ekran": 173524.58,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "cariler",
+    "kalem": "PDF",
+    "beklenen": null,
+    "ekran": null,
+    "ok": true,
+    "bulgu": "",
+    "dosya": true
+   },
+   {
+    "rapor": "cariler",
+    "kalem": "Excel",
+    "beklenen": null,
+    "ekran": null,
+    "ok": true,
+    "bulgu": "",
+    "dosya": true
+   },
+   {
+    "rapor": "acik",
+    "kalem": "Açık Alacak",
+    "beklenen": 71494.23,
+    "ekran": 68494.23,
+    "ok": false,
+    "bulgu": "Bulgu 2 (Açık Alacak)"
+   },
+   {
+    "rapor": "acik",
+    "kalem": "Açık Borç",
+    "beklenen": 78476.09,
+    "ekran": 78476.09,
+    "ok": true,
+    "bulgu": "Bulgu 2 (Açık Alacak)"
+   },
+   {
+    "rapor": "acik",
+    "kalem": "PDF",
+    "beklenen": null,
+    "ekran": null,
+    "ok": true,
+    "bulgu": "",
+    "dosya": true
+   },
+   {
+    "rapor": "acik",
+    "kalem": "Excel",
+    "beklenen": null,
+    "ekran": null,
+    "ok": true,
+    "bulgu": "",
+    "dosya": true
+   },
+   {
+    "rapor": "taksit",
+    "kalem": "Kart",
+    "beklenen": 6,
+    "ekran": 6,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "taksit",
+    "kalem": "Toplam",
+    "beklenen": 23966.34,
+    "ekran": 23966.34,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "taksit",
+    "kalem": "Ödenen",
+    "beklenen": 8054.94,
+    "ekran": 8054.94,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "taksit",
+    "kalem": "Kalan",
+    "beklenen": 15911.4,
+    "ekran": 15911.4,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "taksit",
+    "kalem": "PDF",
+    "beklenen": null,
+    "ekran": null,
+    "ok": true,
+    "bulgu": "",
+    "dosya": true
+   },
+   {
+    "rapor": "taksit",
+    "kalem": "Excel",
+    "beklenen": null,
+    "ekran": null,
+    "ok": true,
+    "bulgu": "",
+    "dosya": true
+   },
+   {
+    "rapor": "cek",
+    "kalem": "Portföyde (alınan)",
+    "beklenen": 158314.13,
+    "ekran": 158314.13,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "cek",
+    "kalem": "Ödenecek (verilen)",
+    "beklenen": 119252.54,
+    "ekran": 119252.54,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "cek",
+    "kalem": "PDF",
+    "beklenen": null,
+    "ekran": null,
+    "ok": true,
+    "bulgu": "",
+    "dosya": true
+   },
+   {
+    "rapor": "cek",
+    "kalem": "Excel",
+    "beklenen": null,
+    "ekran": null,
+    "ok": true,
+    "bulgu": "",
+    "dosya": true
+   },
+   {
+    "rapor": "stok",
+    "kalem": "51 kalemin Mevcut miktarı",
+    "beklenen": 51,
+    "ekran": 51,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "stok",
+    "kalem": "PDF",
+    "beklenen": null,
+    "ekran": null,
+    "ok": true,
+    "bulgu": "",
+    "dosya": true
+   },
+   {
+    "rapor": "stok",
+    "kalem": "Excel",
+    "beklenen": null,
+    "ekran": null,
+    "ok": true,
+    "bulgu": "",
+    "dosya": true
+   },
+   {
+    "rapor": "ekstre",
+    "kalem": "Dönem Borç",
+    "beklenen": 21720,
+    "ekran": 21720,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "ekstre",
+    "kalem": "Dönem Alacak",
+    "beklenen": 8000,
+    "ekran": 8000,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "ekstre",
+    "kalem": "Dönem Sonu",
+    "beklenen": 13720,
+    "ekran": 13720,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "ekstre",
+    "kalem": "PDF",
+    "beklenen": null,
+    "ekran": null,
+    "ok": true,
+    "bulgu": "",
+    "dosya": true
+   },
+   {
+    "rapor": "ekstre",
+    "kalem": "Excel",
+    "beklenen": null,
+    "ekran": null,
+    "ok": true,
+    "bulgu": "",
+    "dosya": true
+   },
+   {
+    "rapor": "hesapMizani",
+    "kalem": "Fark",
+    "beklenen": 0,
+    "ekran": 0,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "hesapMizani",
+    "kalem": "PDF",
+    "beklenen": null,
+    "ekran": null,
+    "ok": true,
+    "bulgu": "",
+    "dosya": true
+   },
+   {
+    "rapor": "hesapMizani",
+    "kalem": "Excel",
+    "beklenen": null,
+    "ekran": null,
+    "ok": true,
+    "bulgu": "",
+    "dosya": true
+   },
+   {
+    "rapor": "anlik",
+    "kalem": "Nakit Kasa",
+    "beklenen": -95533.49,
+    "ekran": -95533.49,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "anlik",
+    "kalem": "Banka / POS",
+    "beklenen": -423229.57,
+    "ekran": -423229.57,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "anlik",
+    "kalem": "Alacak Cari",
+    "beklenen": 161764.3,
+    "ekran": 161764.3,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "anlik",
+    "kalem": "Alacak Çek",
+    "beklenen": 158314.13,
+    "ekran": 158314.13,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "anlik",
+    "kalem": "Borç Cari",
+    "beklenen": 173524.58,
+    "ekran": 173524.58,
+    "ok": true,
+    "bulgu": ""
+   },
+   {
+    "rapor": "anlik",
+    "kalem": "Borç Çek",
+    "beklenen": 119252.54,
+    "ekran": 119252.54,
+    "ok": true,
+    "bulgu": ""
+   }
+  ]
+ },
+ "raporSirketFarki": []
 }

@@ -1,4 +1,4 @@
-Hafta 2025-01-20 – 2025-01-26: 51 işlem; başlangıç verisi 4 işlem (ISL-04007, ISL-04008, ISL-04013, ISL-04050)
+Hafta 2025-01-20 – 2025-01-26: 51 işlem + 16 ek işlem (tarih sırasında); başlangıç verisi 4 işlem (ISL-04007, ISL-04008, ISL-04013, ISL-04050)
 ■ API Şirketi: cari listesi → Yönetici parolanızı unutursanız programa kurtarma anahtarıyla girersiniz. Henüz oluşturmadınız.Oluştur | 350 cari açıldı, 107 carinin türü belirsizdi, Müşteri olarak açıldı (satır 5, 12, 16, 21, 26, 28, 29, 30…).
 ■ API Şirketi: ürün listesi → 350 cari açıldı, 107 carinin türü belirsizdi, Müşteri olarak açıldı (satır 5, 12, 16, 21, 26, 28, 29, 30…). | 50 ürün açıldı.
   API Şirketi: 373 cari, 50 ürün, başlangıç işlemleri girildi
@@ -6,63 +6,279 @@ Hafta 2025-01-20 – 2025-01-26: 51 işlem; başlangıç verisi 4 işlem (ISL-04
 ■ Ekran Şirketi: ürün listesi → 350 cari açıldı, 107 carinin türü belirsizdi, Müşteri olarak açıldı (satır 5, 12, 16, 21, 26, 28, 29, 30…). | 50 ürün açıldı.
   Ekran Şirketi: 373 cari, 50 ürün, başlangıç işlemleri girildi
 Başlangıçta iki şirket aynı
-API: 51/51 işlem (1.0 sn)
-  ✓ ekran ISL-00388 2025-01-20 purchase paid · 5.8 sn · Alış Faturası ISL-00388 Ödendi
-  ✓ ekran ISL-00548 2025-01-20 purchase cheque · 9.1 sn · Alış Faturası ISL-00548 Ödendi
+API: 67/67 işlem (1.4 sn)
+  ✓ ekran ISL-00388 2025-01-20 purchase paid · 6.1 sn · Alış Faturası ISL-00388 Ödendi
+  ✓ ekran ISL-00548 2025-01-20 purchase cheque · 8.6 sn · Alış Faturası ISL-00548 Ödendi
   ✓ ekran ISL-00700 2025-01-20 purchase paid · 6.2 sn · Alış Faturası ISL-00700 Ödendi
-  ✓ ekran ISL-00783 2025-01-20 purchase open · 4.6 sn · Alış Faturası ISL-00783 Vadesi Geçti
-  ✓ ekran ISL-01033 2025-01-20 purchase open · 4.5 sn · Alış Faturası ISL-01033 Vadesi Geçti
-  ✓ ekran ISL-02252 2025-01-20 sale paid · 6.2 sn · Satış Faturası FIS2025000000001 Ödendi
+  ✓ ekran ISL-00783 2025-01-20 purchase open · 4.8 sn · Alış Faturası ISL-00783 Vadesi Geçti
+  ✓ ekran ISL-01033 2025-01-20 purchase open · 4.4 sn · Alış Faturası ISL-01033 Vadesi Geçti
+  ✓ ekran ISL-02252 2025-01-20 sale paid · 6.1 sn · Satış Faturası FIS2025000000001 Ödendi
   ✓ ekran ISL-02289 2025-01-20 sale open · 5.3 sn · Satış Faturası FIS2025000000002 Vadesi Geçti
   ✓ ekran ISL-03059 2025-01-20 expense card · 7.5 sn · Alış Faturası ISL-03059 Ödendi
-  ✓ ekran ISL-04149 2025-01-20 purchase paid · 5.6 sn · Alış Faturası ISL-04149 Ödendi
-  ✓ ekran ISL-00741 2025-01-21 purchase paid · 5.7 sn · Alış Faturası ISL-00741 Ödendi
-  ✓ ekran ISL-00861 2025-01-21 purchase paid · 6.7 sn · Alış Faturası ISL-00861 Ödendi
-  ✓ ekran ISL-01752 2025-01-21 sale paid · 6.4 sn · Satış Faturası FIS2025000000003 Ödendi
-  ✓ ekran ISL-01845 2025-01-21 sale installments · 6.2 sn · Satış Faturası FIS2025000000004 Vadesi Geçti
-  ✓ ekran ISL-03029 2025-01-21 expense bank · 7.4 sn · Alış Faturası ISL-03029 Ödendi
-  ✓ ekran ISL-03699 2025-01-21 pay note · 6.9 sn · form kapandı
-  ✓ ekran ISL-04052 2025-01-21 installment card · 7.2 sn · Tahsilat kaydedildi. Kalan ₺1.706,81.Makbuz
-  ✓ ekran ISL-00398 2025-01-22 purchase open · 4.8 sn · Alış Faturası ISL-00398 Vadesi Geçti
-  ✓ ekran ISL-02147 2025-01-22 sale cheque · 9.3 sn · Satış Faturası FIS2025000000005 Ödendi
+  ✓ ekran ISL-04149 2025-01-20 purchase paid · 5.7 sn · Alış Faturası ISL-04149 Ödendi
+  ✓ ekran EK-01 2025-01-20 newCari Deniz Yapı Malzemeleri Ltd. Şti. · 7.4 sn · form kapandı
+  ✓ ekran EK-02 2025-01-20 newCari Kaya Gayrimenkul A.Ş. · 7.2 sn · form kapandı
+  ✓ ekran EK-03 2025-01-20 newCari Elif Su Tekin · 6.8 sn · form kapandı
+  ✓ ekran EK-04 2025-01-20 dupCari Mehmet Kurt · 5.2 sn · uyarı var; "Mevcut Cariyi Aç" → No C0001 Mehmet Kurt Müşteri
+  ✓ ekran EK-05 2025-01-20 newItem Ofis Sandalyesi · 7.4 sn · form kapandı
+  ✓ ekran EK-06 2025-01-20 newItem Kurulum Hizmeti · 6.0 sn · form kapandı
+  ✓ ekran EK-07 2025-01-20 rent  · 6.9 sn · Alış Faturası KR-2025-01 Vadesi Geçti
+  ✓ ekran ISL-00741 2025-01-21 purchase paid · 5.8 sn · Alış Faturası ISL-00741 Ödendi
+  ✓ ekran ISL-00861 2025-01-21 purchase paid · 6.2 sn · Alış Faturası ISL-00861 Ödendi
+  ✓ ekran ISL-01752 2025-01-21 sale paid · 6.1 sn · Satış Faturası FIS2025000000003 Ödendi
+  ✓ ekran ISL-01845 2025-01-21 sale installments · 6.4 sn · Satış Faturası FIS2025000000004 Vadesi Geçti
+  ✓ ekran ISL-03029 2025-01-21 expense bank · 7.8 sn · Alış Faturası ISL-03029 Ödendi
+  ✓ ekran ISL-03699 2025-01-21 pay note · 7.0 sn · form kapandı
+  ✓ ekran ISL-04052 2025-01-21 installment card · 6.9 sn · Tahsilat kaydedildi. Kalan ₺1.706,81.Makbuz
+  ✓ ekran EK-08 2025-01-21 stockIn bank · 6.4 sn · form kapandı
+  ✓ ekran EK-09 2025-01-21 payEntry bank · 6.1 sn · Ödeme kaydedildi. Bakiye ₺0,00.Makbuz
+  ✓ ekran ISL-00398 2025-01-22 purchase open · 4.9 sn · Alış Faturası ISL-00398 Vadesi Geçti
+  ✓ ekran ISL-02147 2025-01-22 sale cheque · 9.7 sn · Satış Faturası FIS2025000000005 Ödendi
   ✓ ekran ISL-02391 2025-01-22 sale open · 5.4 sn · Satış Faturası FIS2025000000006 Vadesi Geçti
   ✓ ekran ISL-02424 2025-01-22 sale open · 5.4 sn · Satış Faturası FIS2025000000007 Vadesi Geçti
-  ✓ ekran ISL-03121 2025-01-22 expense cash · 8.5 sn · Alış Faturası ISL-03121 Ödendi
-  ✓ ekran ISL-03492 2025-01-22 collect card · 7.6 sn · Tahsilat kaydedildi. Bakiye ₺13.733,77 Borçlu.Makbuz
+  ✓ ekran ISL-03121 2025-01-22 expense cash · 8.8 sn · Alış Faturası ISL-03121 Ödendi
+  ✓ ekran ISL-03492 2025-01-22 collect card · 7.7 sn · Tahsilat kaydedildi. Bakiye ₺13.733,77 Borçlu.Makbuz
   ✓ ekran ISL-04119 2025-01-22 purchase paid · 5.8 sn · Alış Faturası ISL-04119 Ödendi
-  ✓ ekran ISL-01066 2025-01-23 purchase paid · 6.5 sn · Alış Faturası ISL-01066 Ödendi
+  ✓ ekran EK-10 2025-01-22 stockOut cash · 6.0 sn · form kapandı
+  ✓ ekran ISL-01066 2025-01-23 purchase paid · 6.4 sn · Alış Faturası ISL-01066 Ödendi
   ✓ ekran ISL-01992 2025-01-23 sale cheque · 9.9 sn · Satış Faturası FIS2025000000008 Ödendi
-  ✓ ekran ISL-04051 2025-01-23 installment cash · 6.5 sn · Tahsilat kaydedildi. Kalan ₺0,00.Makbuz
-  ✓ ekran ISL-04133 2025-01-23 purchase paid · 6.5 sn · Alış Faturası ISL-04133 Ödendi
-  ✓ ekran ISL-00599 2025-01-24 purchase cheque · 9.0 sn · Alış Faturası ISL-00599 Ödendi
-  ✓ ekran ISL-01025 2025-01-24 purchase open · 4.8 sn · Alış Faturası ISL-01025 Vadesi Geçti
-  ✓ ekran ISL-01185 2025-01-24 purchase paid · 6.4 sn · Alış Faturası ISL-01185 Ödendi
-  ✓ ekran ISL-01630 2025-01-24 sale open · 5.7 sn · Satış Faturası FIS2025000000009 Vadesi Geçti
-  ✓ ekran ISL-01640 2025-01-24 sale cheque · 9.3 sn · Satış Faturası FIS2025000000010 Ödendi
-  ✓ ekran ISL-02622 2025-01-24 sale open · 5.5 sn · Satış Faturası FIS2025000000011 Vadesi Geçti
-  ✓ ekran ISL-02660 2025-01-24 sale open · 4.9 sn · Satış Faturası FIS2025000000012 Vadesi Geçti
-  ✓ ekran ISL-02978 2025-01-24 expense cash · 8.7 sn · Alış Faturası ISL-02978 Ödendi
-  ✓ ekran ISL-03484 2025-01-24 collect card · 7.6 sn · Tahsilat kaydedildi. Bakiye ₺9.204,02 Alacaklı.Makbuz
-  ✓ ekran ISL-03839 2025-01-24 pay cash · 7.2 sn · Ödeme kaydedildi. Bakiye ₺8.153,07 Borçlu.Makbuz
-  ✓ ekran ISL-04087 2025-01-24 installment bank · 6.8 sn · Tahsilat kaydedildi. Kalan ₺249,99.Makbuz
-  ✓ ekran ISL-00468 2025-01-25 purchase paid · 5.6 sn · Alış Faturası ISL-00468 Ödendi
-  ✓ ekran ISL-02196 2025-01-25 sale open · 4.7 sn · Satış Faturası FIS2025000000013 Vadesi Geçti
-  ✓ ekran ISL-02300 2025-01-25 sale cheque · 9.7 sn · Satış Faturası FIS2025000000014 Ödendi
-  ✓ ekran ISL-03339 2025-01-25 expense cash · 8.6 sn · Alış Faturası ISL-03339 Ödendi
-  ✓ ekran ISL-03375 2025-01-25 collect note · 6.6 sn · form kapandı
-  ✓ ekran ISL-03439 2025-01-25 collect cash · 7.5 sn · Tahsilat kaydedildi. Bakiye ₺9.132,02 Alacaklı.Makbuz
-  ✓ ekran ISL-01905 2025-01-26 sale installments · 6.1 sn · Satış Faturası FIS2025000000015 Ödendi
-  ✓ ekran ISL-01973 2025-01-26 sale paid · 6.3 sn · Satış Faturası FIS2025000000016 Ödendi
-  ✓ ekran ISL-02108 2025-01-26 sale paid · 6.4 sn · Satış Faturası FIS2025000000017 Ödendi
+  ✓ ekran ISL-04051 2025-01-23 installment cash · 7.6 sn · Tahsilat kaydedildi. Kalan ₺0,00.Makbuz
+  ✓ ekran ISL-04133 2025-01-23 purchase paid · 6.8 sn · Alış Faturası ISL-04133 Ödendi
+  ✓ ekran EK-11 2025-01-23 stockOut none · 6.2 sn · form kapandı
+  ✓ ekran EK-12 2025-01-23 sale  · 5.5 sn · Satış Faturası FIS2025000000009 Vadesi Geçti
+  ✓ ekran ISL-00599 2025-01-24 purchase cheque · 8.9 sn · Alış Faturası ISL-00599 Ödendi
+  ✓ ekran ISL-01025 2025-01-24 purchase open · 5.0 sn · Alış Faturası ISL-01025 Vadesi Geçti
+  ✓ ekran ISL-01185 2025-01-24 purchase paid · 6.5 sn · Alış Faturası ISL-01185 Ödendi
+  ✓ ekran ISL-01630 2025-01-24 sale open · 5.4 sn · Satış Faturası FIS2025000000010 Vadesi Geçti
+  ✓ ekran ISL-01640 2025-01-24 sale cheque · 8.9 sn · Satış Faturası FIS2025000000011 Ödendi
+  ✓ ekran ISL-02622 2025-01-24 sale open · 5.8 sn · Satış Faturası FIS2025000000012 Vadesi Geçti
+  ✓ ekran ISL-02660 2025-01-24 sale open · 5.0 sn · Satış Faturası FIS2025000000013 Vadesi Geçti
+  ✓ ekran ISL-02978 2025-01-24 expense cash · 8.9 sn · Alış Faturası ISL-02978 Ödendi
+  ✓ ekran ISL-03484 2025-01-24 collect card · 7.4 sn · Tahsilat kaydedildi. Bakiye ₺9.204,02 Alacaklı.Makbuz
+  ✓ ekran ISL-03839 2025-01-24 pay cash · 7.3 sn · Ödeme kaydedildi. Bakiye ₺8.153,07 Borçlu.Makbuz
+  ✓ ekran ISL-04087 2025-01-24 installment bank · 6.6 sn · Tahsilat kaydedildi. Kalan ₺249,99.Makbuz
+  ✓ ekran EK-13 2025-01-24 plan  · 7.1 sn · form kapandı
+  ✓ ekran EK-14 2025-01-24 salary cash · 12.5 sn · Ödeme kaydedildi. Bakiye ₺0,00.Makbuz
+  ✓ ekran ISL-00468 2025-01-25 purchase paid · 5.9 sn · Alış Faturası ISL-00468 Ödendi
+  ✓ ekran ISL-02196 2025-01-25 sale open · 4.7 sn · Satış Faturası FIS2025000000014 Vadesi Geçti
+  ✓ ekran ISL-02300 2025-01-25 sale cheque · 9.8 sn · Satış Faturası FIS2025000000015 Ödendi
+  ✓ ekran ISL-03339 2025-01-25 expense cash · 8.5 sn · Alış Faturası ISL-03339 Ödendi
+  ✓ ekran ISL-03375 2025-01-25 collect note · 7.3 sn · form kapandı
+  ✓ ekran ISL-03439 2025-01-25 collect cash · 7.3 sn · Tahsilat kaydedildi. Bakiye ₺9.132,02 Alacaklı.Makbuz
+  ✓ ekran EK-15 2025-01-25 collectEntry cash · 6.7 sn · Tahsilat kaydedildi. Bakiye ₺16.720,00 Borçlu.Makbuz
+  ✓ ekran ISL-01905 2025-01-26 sale installments · 6.6 sn · Satış Faturası FIS2025000000016 Ödendi
+  ✓ ekran ISL-01973 2025-01-26 sale paid · 6.8 sn · Satış Faturası FIS2025000000017 Ödendi
+  ✓ ekran ISL-02108 2025-01-26 sale paid · 6.3 sn · Satış Faturası FIS2025000000018 Ödendi
   ✓ ekran ISL-02889 2025-01-26 salary bank · 11.6 sn · Ödeme kaydedildi. Bakiye ₺0,00.Makbuz
-  ✓ ekran ISL-02893 2025-01-26 salary bank · 11.7 sn · Ödeme kaydedildi. Bakiye ₺0,00.Makbuz
-  ✓ ekran ISL-02894 2025-01-26 salary bank · 11.6 sn · Ödeme kaydedildi. Bakiye ₺0,00.Makbuz
-  ✓ ekran ISL-03566 2025-01-26 collect bank · 7.7 sn · Tahsilat kaydedildi. Bakiye ₺45.548,42 Alacaklı.Makbuz
-Ekran: 51/51 işlem (6.0 dk)
+  ✓ ekran ISL-02893 2025-01-26 salary bank · 11.5 sn · Ödeme kaydedildi. Bakiye ₺0,00.Makbuz
+  ✓ ekran ISL-02894 2025-01-26 salary bank · 11.7 sn · Ödeme kaydedildi. Bakiye ₺0,00.Makbuz
+  ✓ ekran ISL-03566 2025-01-26 collect bank · 7.4 sn · Tahsilat kaydedildi. Bakiye ₺45.548,42 Alacaklı.Makbuz
+  ✓ ekran EK-16 2025-01-26 planCollect bank · 6.3 sn · Tahsilat kaydedildi. Kalan ₺6.000,00.Makbuz
+Ekran: 67/67 işlem (7.8 dk)
 
 KARŞILAŞTIRMA: FARK YOK
 Mutabakat: API {"ok":true,"gecen":59,"toplam":59} · Ekran {"ok":true,"gecen":59,"toplam":59}
-Faturalar: API {"sale":{"adet":20,"toplam":350961.06,"odenen":277566.03,"acik":73395.03},"purchase":{"adet":21,"toplam":709361.84,"odenen":630885.75,"acik":78476.09}}
-Çek/Senet: API {"adet":8,"toplam":277566.67,"durum":{"in:portfolio":5,"out:pending":3}} · Taksit: {"kart":5,"toplam":14966.34,"odenen":5054.94,"kalan":9911.4}
+Faturalar: API {"sale":{"adet":21,"toplam":363681.06,"odenen":285566.03,"acik":78115.03},"purchase":{"adet":22,"toplam":745361.84,"odenen":666885.75,"acik":78476.09}}
+Çek/Senet: API {"adet":8,"toplam":277566.67,"durum":{"in:portfolio":5,"out:pending":3}} · Taksit: {"kart":6,"toplam":23966.34,"odenen":8054.94,"kalan":15911.4}
 Sayfa hataları: yok
 Ekranda silinen alan (bilinen hata): 0 kez
+Aynı adla cari denemesi: {"yazarkenUyari":"1 cari aynı adla kayıtlı: No C0001 · telefonsuz. Aynı kişiyse yeni cari açmayın; mevcut cariyi açın.","kaydederkenSoru":"Kişinin ya da firmanın bilgileri. Taksit sorulmaz; taksit planı istenirse sonra karttan ya da listeden toplu açılır. “Mehmet Kurt” zaten cari olarak var: No C0001. Aynı kişi için ikinci cari açılırsa borç ve tahsilatlar iki karta bölünür. Yine de yeni cari açılsın mı?","acilanKart":"No C0001 Mehmet Kurt Müşteri"}
+Ek faturalar (API): {"EK-12":{"odenecek":12720,"odenen":8000,"acik":4720,"durum":"overdue"},"EK-07":{"odenecek":36000,"odenen":36000,"acik":0,"durum":"paid"}} · (Ekran): {"EK-12":{"odenecek":12720,"odenen":8000,"acik":4720,"durum":"overdue"},"EK-07":{"odenecek":36000,"odenen":36000,"acik":0,"durum":"paid"}}
+
+RAPORLAR (Ekran şirketi) ↔ BAĞIMSIZ BEKLENEN:
+  ✓ Ekran kasa-hareketleri · Devir: ekran 2.409,43 TL · beklenen 2409.43
+  ✓ Ekran kasa-hareketleri · Dönem Giriş: ekran 84.693,95 TL · beklenen 84693.95
+  ✓ Ekran kasa-hareketleri · Dönem Çıkış: ekran 182.636,87 TL · beklenen 182636.87
+  ✓ Ekran kasa PDF: 200 · ekrandaki sayılar dosyada
+  ✓ Ekran kasa EXCEL: 200 · ekrandaki sayılar dosyada
+  ✓ Ekran banka-pos-hareketleri · Devir: ekran 0,00 TL · beklenen 0.00
+  ✓ Ekran banka-pos-hareketleri · Dönem Giriş: ekran 139.997,01 TL · beklenen 139997.01
+  ✓ Ekran banka-pos-hareketleri · Dönem Çıkış: ekran 563.226,58 TL · beklenen 563226.58
+  ✓ Ekran banka-pos-hareketleri · Banka (tüm hareketler): ekran -59.240,78 TL · beklenen -59240.78
+  ✓ Ekran banka-pos-hareketleri · POS / Kredi Kartı (tüm hareketler): ekran -363.988,79 TL · beklenen -363988.79
+  ✓ Ekran banka-pos-hareketleri (Yol kolonundan) · Banka Giriş: ekran 126647.2 · beklenen 126647.2
+  ✓ Ekran banka-pos-hareketleri (Yol kolonundan) · Banka Çıkış: ekran 185887.98 · beklenen 185887.98
+  ✓ Ekran banka-pos-hareketleri (Yol kolonundan) · POS / Kredi Kartı Giriş: ekran 13349.81 · beklenen 13349.81
+  ✓ Ekran banka-pos-hareketleri (Yol kolonundan) · POS / Kredi Kartı Çıkış: ekran 377338.6 · beklenen 377338.6
+  ✓ Ekran bankaPos PDF: 200 · ekrandaki sayılar dosyada
+  ✓ Ekran bankaPos EXCEL: 200 · ekrandaki sayılar dosyada
+  ✗ Ekran banka-pos-hareketleri · Dönem Giriş: ekran 139.997,01 TL · beklenen 126647.20 (Bulgu 4)
+  ✗ Ekran banka-pos-hareketleri · Dönem Çıkış: ekran 563.226,58 TL · beklenen 185887.98 (Bulgu 4)
+  ✓ Ekran banka PDF: 200 · ekrandaki sayılar dosyada
+  ✓ Ekran banka EXCEL: 200 · ekrandaki sayılar dosyada
+  ✗ Ekran banka-pos-hareketleri · Dönem Giriş: ekran 139.997,01 TL · beklenen 13349.81 (Bulgu 4)
+  ✗ Ekran banka-pos-hareketleri · Dönem Çıkış: ekran 563.226,58 TL · beklenen 377338.60 (Bulgu 4)
+  ✓ Ekran pos PDF: 200 · ekrandaki sayılar dosyada
+  ✓ Ekran pos EXCEL: 200 · ekrandaki sayılar dosyada
+  ✓ Ekran fatura-satis · Satış Faturası: ekran 18 · beklenen 18
+  ✓ Ekran fatura-satis · Matrah: ekran 336.251,74 TL · beklenen 336251.74
+  ✓ Ekran fatura-satis · KDV: ekran 20.417,58 TL · beklenen 20417.58
+  ✓ Ekran fatura-satis · Ödenecek: ekran 356.669,32 TL · beklenen 356669.32
+  ✗ Ekran fatura-satis · Kalan: ekran 76.158,23 TL · beklenen 79448.83 (Bulgu 2 (Kalan))
+  ✓ Ekran satis PDF: 200 · ekrandaki sayılar dosyada
+  ✓ Ekran satis EXCEL: 200 · ekrandaki sayılar dosyada
+  ✓ Ekran fatura-alis · Alış Faturası: ekran 22 · beklenen 22
+  ✓ Ekran fatura-alis · Matrah: ekran 667.965,10 TL · beklenen 667965.10
+  ✓ Ekran fatura-alis · KDV: ekran 77.396,74 TL · beklenen 77396.74
+  ✓ Ekran fatura-alis · Ödenecek: ekran 745.361,84 TL · beklenen 745361.84
+  ✓ Ekran fatura-alis · Kalan: ekran 78.476,09 TL · beklenen 78476.09
+  ✓ Ekran alis PDF: 200 · ekrandaki sayılar dosyada
+  ✓ Ekran alis EXCEL: 200 · ekrandaki sayılar dosyada
+  ✓ Ekran kdv-ozeti · Hesaplanan KDV (391): ekran 20.417,58 TL · beklenen 20417.58
+  ✓ Ekran kdv-ozeti · İndirilecek KDV (191): ekran 77.396,74 TL · beklenen 77396.74
+  ✓ Ekran kdv-ozeti · Devreden KDV: ekran 56.979,16 TL · beklenen 56979.16
+  ✓ Ekran kdv PDF: 200 · ekrandaki sayılar dosyada
+  ✓ Ekran kdv EXCEL: 200 · ekrandaki sayılar dosyada
+  ✓ Ekran gider-raporu · Toplam Gider: ekran 119.799,54 TL · beklenen 119799.54
+  ✓ Ekran gider PDF: 200 · ekrandaki sayılar dosyada
+  ✓ Ekran gider EXCEL: 200 · ekrandaki sayılar dosyada
+  ✓ Ekran mizan · Dönem Borç: ekran 1.208.535,31 TL · beklenen 1208535.31
+  ✓ Ekran mizan · Dönem Alacak: ekran 1.224.897,90 TL · beklenen 1224897.90
+  ✓ Ekran mizan · Borçlular Toplamı: ekran 161.764,30 TL · beklenen 161764.30
+  ✓ Ekran mizan · Alacaklılar Toplamı: ekran 173.524,58 TL · beklenen 173524.58
+  ✓ Ekran mizan PDF: 200 · ekrandaki sayılar dosyada
+  ✓ Ekran mizan EXCEL: 200 · ekrandaki sayılar dosyada
+  ✓ Ekran cari-listesi · Toplam Borç (Anlaşılan): ekran 1.215.547,05 TL · beklenen 1215547.05
+  ✓ Ekran cari-listesi · Toplam Alacak (Ödenen): ekran 1.227.307,33 TL · beklenen 1227307.33
+  ✓ Ekran cari-listesi · Borçlular: ekran 161.764,30 TL · beklenen 161764.30
+  ✓ Ekran cari-listesi · Alacaklılar: ekran 173.524,58 TL · beklenen 173524.58
+  ✓ Ekran cariler PDF: 200 · ekrandaki sayılar dosyada
+  ✓ Ekran cariler EXCEL: 200 · ekrandaki sayılar dosyada
+  ✗ Ekran acik-faturalar · Açık Alacak: ekran 68.494,23 TL · beklenen 71494.23 (Bulgu 2 (Açık Alacak))
+  ✓ Ekran acik-faturalar · Açık Borç: ekran 78.476,09 TL · beklenen 78476.09
+  ✓ Ekran acik PDF: 200 · ekrandaki sayılar dosyada
+  ✓ Ekran acik EXCEL: 200 · ekrandaki sayılar dosyada
+  ✓ Ekran taksit-kartlari · Kart: ekran 6 · beklenen 6
+  ✓ Ekran taksit-kartlari · Toplam: ekran 23.966,34 TL · beklenen 23966.34
+  ✓ Ekran taksit-kartlari · Ödenen: ekran 8.054,94 TL · beklenen 8054.94
+  ✓ Ekran taksit-kartlari · Kalan: ekran 15.911,40 TL · beklenen 15911.40
+  ✓ Ekran taksit PDF: 200 · ekrandaki sayılar dosyada
+  ✓ Ekran taksit EXCEL: 200 · ekrandaki sayılar dosyada
+  ✓ Ekran cek-portfoy · Portföyde (alınan): ekran 158.314,13 TL · beklenen 158314.13
+  ✓ Ekran cek-portfoy · Ödenecek (verilen): ekran 119.252,54 TL · beklenen 119252.54
+  ✓ Ekran cek PDF: 200 · ekrandaki sayılar dosyada
+  ✓ Ekran cek EXCEL: 200 · ekrandaki sayılar dosyada
+  ✓ Ekran stok-durumu · 51 kalemin Mevcut'u (0 farklı)
+  ✓ Ekran stok PDF: 200 · ekrandaki sayılar dosyada
+  ✓ Ekran stok EXCEL: 200 · ekrandaki sayılar dosyada
+  ✓ Ekran cari-ekstre · Dönem Borç: ekran 21.720,00 TL · beklenen 21720.00
+  ✓ Ekran cari-ekstre · Dönem Alacak: ekran 8.000,00 TL · beklenen 8000.00
+  ✓ Ekran cari-ekstre · Dönem Sonu: ekran 13.720,00 TL Borçlu · beklenen 13720.00
+  ✓ Ekran ekstre PDF: 200 · ekrandaki sayılar dosyada
+  ✓ Ekran ekstre EXCEL: 200 · ekrandaki sayılar dosyada
+  ✓ Ekran hesap-mizani · Fark: ekran 0,00 TL · beklenen 0.00
+  ✓ Ekran hesapMizani PDF: 200 · ekrandaki sayılar dosyada
+  ✓ Ekran hesapMizani EXCEL: 200 · ekrandaki sayılar dosyada
+  ✓ Ekran ANLIK DURUM · Nakit Kasa: ekran -95533.49 · beklenen -95533.49
+  ✓ Ekran ANLIK DURUM · Banka / POS: ekran -423229.57 · beklenen -423229.57
+  ✓ Ekran ANLIK DURUM · Alacak Cari: ekran 161764.3 · beklenen 161764.30
+  ✓ Ekran ANLIK DURUM · Alacak Çek: ekran 158314.13 · beklenen 158314.13
+  ✓ Ekran ANLIK DURUM · Borç Cari: ekran 173524.58 · beklenen 173524.58
+  ✓ Ekran ANLIK DURUM · Borç Çek: ekran 119252.54 · beklenen 119252.54
+
+RAPORLAR (API şirketi) ↔ BAĞIMSIZ BEKLENEN:
+  ✓ API kasa-hareketleri · Devir: ekran 2.409,43 TL · beklenen 2409.43
+  ✓ API kasa-hareketleri · Dönem Giriş: ekran 84.693,95 TL · beklenen 84693.95
+  ✓ API kasa-hareketleri · Dönem Çıkış: ekran 182.636,87 TL · beklenen 182636.87
+  ✓ API kasa PDF: 200 · ekrandaki sayılar dosyada
+  ✓ API kasa EXCEL: 200 · ekrandaki sayılar dosyada
+  ✓ API banka-pos-hareketleri · Devir: ekran 0,00 TL · beklenen 0.00
+  ✓ API banka-pos-hareketleri · Dönem Giriş: ekran 139.997,01 TL · beklenen 139997.01
+  ✓ API banka-pos-hareketleri · Dönem Çıkış: ekran 563.226,58 TL · beklenen 563226.58
+  ✓ API banka-pos-hareketleri · Banka (tüm hareketler): ekran -59.240,78 TL · beklenen -59240.78
+  ✓ API banka-pos-hareketleri · POS / Kredi Kartı (tüm hareketler): ekran -363.988,79 TL · beklenen -363988.79
+  ✓ API banka-pos-hareketleri (Yol kolonundan) · Banka Giriş: ekran 126647.2 · beklenen 126647.2
+  ✓ API banka-pos-hareketleri (Yol kolonundan) · Banka Çıkış: ekran 185887.98 · beklenen 185887.98
+  ✓ API banka-pos-hareketleri (Yol kolonundan) · POS / Kredi Kartı Giriş: ekran 13349.81 · beklenen 13349.81
+  ✓ API banka-pos-hareketleri (Yol kolonundan) · POS / Kredi Kartı Çıkış: ekran 377338.6 · beklenen 377338.6
+  ✓ API bankaPos PDF: 200 · ekrandaki sayılar dosyada
+  ✓ API bankaPos EXCEL: 200 · ekrandaki sayılar dosyada
+  ✗ API banka-pos-hareketleri · Dönem Giriş: ekran 139.997,01 TL · beklenen 126647.20 (Bulgu 4)
+  ✗ API banka-pos-hareketleri · Dönem Çıkış: ekran 563.226,58 TL · beklenen 185887.98 (Bulgu 4)
+  ✓ API banka PDF: 200 · ekrandaki sayılar dosyada
+  ✓ API banka EXCEL: 200 · ekrandaki sayılar dosyada
+  ✗ API banka-pos-hareketleri · Dönem Giriş: ekran 139.997,01 TL · beklenen 13349.81 (Bulgu 4)
+  ✗ API banka-pos-hareketleri · Dönem Çıkış: ekran 563.226,58 TL · beklenen 377338.60 (Bulgu 4)
+  ✓ API pos PDF: 200 · ekrandaki sayılar dosyada
+  ✓ API pos EXCEL: 200 · ekrandaki sayılar dosyada
+  ✓ API fatura-satis · Satış Faturası: ekran 18 · beklenen 18
+  ✓ API fatura-satis · Matrah: ekran 336.251,74 TL · beklenen 336251.74
+  ✓ API fatura-satis · KDV: ekran 20.417,58 TL · beklenen 20417.58
+  ✓ API fatura-satis · Ödenecek: ekran 356.669,32 TL · beklenen 356669.32
+  ✗ API fatura-satis · Kalan: ekran 76.158,23 TL · beklenen 79448.83 (Bulgu 2 (Kalan))
+  ✓ API satis PDF: 200 · ekrandaki sayılar dosyada
+  ✓ API satis EXCEL: 200 · ekrandaki sayılar dosyada
+  ✓ API fatura-alis · Alış Faturası: ekran 22 · beklenen 22
+  ✓ API fatura-alis · Matrah: ekran 667.965,10 TL · beklenen 667965.10
+  ✓ API fatura-alis · KDV: ekran 77.396,74 TL · beklenen 77396.74
+  ✓ API fatura-alis · Ödenecek: ekran 745.361,84 TL · beklenen 745361.84
+  ✓ API fatura-alis · Kalan: ekran 78.476,09 TL · beklenen 78476.09
+  ✓ API alis PDF: 200 · ekrandaki sayılar dosyada
+  ✓ API alis EXCEL: 200 · ekrandaki sayılar dosyada
+  ✓ API kdv-ozeti · Hesaplanan KDV (391): ekran 20.417,58 TL · beklenen 20417.58
+  ✓ API kdv-ozeti · İndirilecek KDV (191): ekran 77.396,74 TL · beklenen 77396.74
+  ✓ API kdv-ozeti · Devreden KDV: ekran 56.979,16 TL · beklenen 56979.16
+  ✓ API kdv PDF: 200 · ekrandaki sayılar dosyada
+  ✓ API kdv EXCEL: 200 · ekrandaki sayılar dosyada
+  ✓ API gider-raporu · Toplam Gider: ekran 119.799,54 TL · beklenen 119799.54
+  ✓ API gider PDF: 200 · ekrandaki sayılar dosyada
+  ✓ API gider EXCEL: 200 · ekrandaki sayılar dosyada
+  ✓ API mizan · Dönem Borç: ekran 1.208.535,31 TL · beklenen 1208535.31
+  ✓ API mizan · Dönem Alacak: ekran 1.224.897,90 TL · beklenen 1224897.90
+  ✓ API mizan · Borçlular Toplamı: ekran 161.764,30 TL · beklenen 161764.30
+  ✓ API mizan · Alacaklılar Toplamı: ekran 173.524,58 TL · beklenen 173524.58
+  ✓ API mizan PDF: 200 · ekrandaki sayılar dosyada
+  ✓ API mizan EXCEL: 200 · ekrandaki sayılar dosyada
+  ✓ API cari-listesi · Toplam Borç (Anlaşılan): ekran 1.215.547,05 TL · beklenen 1215547.05
+  ✓ API cari-listesi · Toplam Alacak (Ödenen): ekran 1.227.307,33 TL · beklenen 1227307.33
+  ✓ API cari-listesi · Borçlular: ekran 161.764,30 TL · beklenen 161764.30
+  ✓ API cari-listesi · Alacaklılar: ekran 173.524,58 TL · beklenen 173524.58
+  ✓ API cariler PDF: 200 · ekrandaki sayılar dosyada
+  ✓ API cariler EXCEL: 200 · ekrandaki sayılar dosyada
+  ✗ API acik-faturalar · Açık Alacak: ekran 68.494,23 TL · beklenen 71494.23 (Bulgu 2 (Açık Alacak))
+  ✓ API acik-faturalar · Açık Borç: ekran 78.476,09 TL · beklenen 78476.09
+  ✓ API acik PDF: 200 · ekrandaki sayılar dosyada
+  ✓ API acik EXCEL: 200 · ekrandaki sayılar dosyada
+  ✓ API taksit-kartlari · Kart: ekran 6 · beklenen 6
+  ✓ API taksit-kartlari · Toplam: ekran 23.966,34 TL · beklenen 23966.34
+  ✓ API taksit-kartlari · Ödenen: ekran 8.054,94 TL · beklenen 8054.94
+  ✓ API taksit-kartlari · Kalan: ekran 15.911,40 TL · beklenen 15911.40
+  ✓ API taksit PDF: 200 · ekrandaki sayılar dosyada
+  ✓ API taksit EXCEL: 200 · ekrandaki sayılar dosyada
+  ✓ API cek-portfoy · Portföyde (alınan): ekran 158.314,13 TL · beklenen 158314.13
+  ✓ API cek-portfoy · Ödenecek (verilen): ekran 119.252,54 TL · beklenen 119252.54
+  ✓ API cek PDF: 200 · ekrandaki sayılar dosyada
+  ✓ API cek EXCEL: 200 · ekrandaki sayılar dosyada
+  ✓ API stok-durumu · 51 kalemin Mevcut'u (0 farklı)
+  ✓ API stok PDF: 200 · ekrandaki sayılar dosyada
+  ✓ API stok EXCEL: 200 · ekrandaki sayılar dosyada
+  ✓ API cari-ekstre · Dönem Borç: ekran 21.720,00 TL · beklenen 21720.00
+  ✓ API cari-ekstre · Dönem Alacak: ekran 8.000,00 TL · beklenen 8000.00
+  ✓ API cari-ekstre · Dönem Sonu: ekran 13.720,00 TL Borçlu · beklenen 13720.00
+  ✓ API ekstre PDF: 200 · ekrandaki sayılar dosyada
+  ✓ API ekstre EXCEL: 200 · ekrandaki sayılar dosyada
+  ✓ API hesap-mizani · Fark: ekran 0,00 TL · beklenen 0.00
+  ✓ API hesapMizani PDF: 200 · ekrandaki sayılar dosyada
+  ✓ API hesapMizani EXCEL: 200 · ekrandaki sayılar dosyada
+  ✓ API ANLIK DURUM · Nakit Kasa: ekran -95533.49 · beklenen -95533.49
+  ✓ API ANLIK DURUM · Banka / POS: ekran -423229.57 · beklenen -423229.57
+  ✓ API ANLIK DURUM · Alacak Cari: ekran 161764.3 · beklenen 161764.30
+  ✓ API ANLIK DURUM · Alacak Çek: ekran 158314.13 · beklenen 158314.13
+  ✓ API ANLIK DURUM · Borç Cari: ekran 173524.58 · beklenen 173524.58
+  ✓ API ANLIK DURUM · Borç Çek: ekran 119252.54 · beklenen 119252.54
+
+Rapor özetleri API şirketi ↔ Ekran şirketi: aynı
+Rapor ↔ beklenen: 12 FARK (12 bilinen bulgudan, 0 açıklanmamış)
+  ✗ Ekran banka-pos-hareketleri · Dönem Giriş: ekran 139.997,01 TL · beklenen 126647.20 (Bulgu 4)
+  ✗ Ekran banka-pos-hareketleri · Dönem Çıkış: ekran 563.226,58 TL · beklenen 185887.98 (Bulgu 4)
+  ✗ Ekran banka-pos-hareketleri · Dönem Giriş: ekran 139.997,01 TL · beklenen 13349.81 (Bulgu 4)
+  ✗ Ekran banka-pos-hareketleri · Dönem Çıkış: ekran 563.226,58 TL · beklenen 377338.60 (Bulgu 4)
+  ✗ Ekran fatura-satis · Kalan: ekran 76.158,23 TL · beklenen 79448.83 (Bulgu 2 (Kalan))
+  ✗ Ekran acik-faturalar · Açık Alacak: ekran 68.494,23 TL · beklenen 71494.23 (Bulgu 2 (Açık Alacak))
+  ✗ API banka-pos-hareketleri · Dönem Giriş: ekran 139.997,01 TL · beklenen 126647.20 (Bulgu 4)
+  ✗ API banka-pos-hareketleri · Dönem Çıkış: ekran 563.226,58 TL · beklenen 185887.98 (Bulgu 4)
+  ✗ API banka-pos-hareketleri · Dönem Giriş: ekran 139.997,01 TL · beklenen 13349.81 (Bulgu 4)
+  ✗ API banka-pos-hareketleri · Dönem Çıkış: ekran 563.226,58 TL · beklenen 377338.60 (Bulgu 4)
+  ✗ API fatura-satis · Kalan: ekran 76.158,23 TL · beklenen 79448.83 (Bulgu 2 (Kalan))
+  ✗ API acik-faturalar · Açık Alacak: ekran 68.494,23 TL · beklenen 71494.23 (Bulgu 2 (Açık Alacak))
+Sayfa hataları (raporlar dahil): yok
