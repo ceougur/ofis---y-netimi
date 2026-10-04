@@ -1,0 +1,46 @@
+     001 çek alanları Kaydet öncesi: {"instrument":"cheque","amount":"1200","dueDate":"2026-12-03","serialNo":"UI-001-59727","bank":"Ziraat","drawer":"","undefined":""}
+     002 çek alanları Kaydet öncesi: {"instrument":"cheque","amount":"1200","dueDate":"2026-12-03","serialNo":"UI-002-60042","bank":"Ziraat","drawer":"","undefined":""}
+✓ [Bugünün İşleri (Arayüzden, İki Şirket Aynı Anda)] 001 Nakit satış 3 × 100 + %20 = 360 (Satış Faturası FIS2026000000005 Ödendi)
+     beklenen: Kasa +360; cari değişmez; stok −3
+     gerçek:   Kasa 360; cari 0; stok -3
+✓ [Bugünün İşleri (Arayüzden, İki Şirket Aynı Anda)] 001 POS'la satış 2 × 250 + %20 = 600
+     beklenen: POS +600; Kasa değişmez
+     gerçek:   POS 600; Kasa 0
+✓ [Bugünün İşleri (Arayüzden, İki Şirket Aynı Anda)] 001 Çekle satış 5 × 200 + %20 = 1.200
+     beklenen: portföye 1 çek; cari net 0; Kasa/banka değişmez
+     gerçek:   çek +1; cari 0; Kasa 0
+✓ [Bugünün İşleri (Arayüzden, İki Şirket Aynı Anda)] 001 Taksitli satış 10 × 300 + %20 = 3.600, 3 taksit
+     beklenen: cari +3.600 (tek borç); taksit kartı 3 × 1.200
+     gerçek:   cari 3600
+✓ [Bugünün İşleri (Arayüzden, İki Şirket Aynı Anda)] 001 1. taksit nakit tahsil (1.200)
+     beklenen: Kasa +1.200; cari −1.200; kart ödenen 1.200
+     gerçek:   Kasa 1200; cari -1200; kart ödenen 1200
+✓ [Bugünün İşleri (Arayüzden, İki Şirket Aynı Anda)] 001 cari-tahsilat-havale (500)
+     beklenen: bank +500; cari −500
+     gerçek:   bank 500.00; cari -500.00
+✓ [Bugünün İşleri (Arayüzden, İki Şirket Aynı Anda)] 001 tedarikci-odeme-nakit (300)
+     beklenen: cash −300; cari +300
+     gerçek:   cash -300.00; cari 300.00
+✓ [Bugünün İşleri (Arayüzden, İki Şirket Aynı Anda)] 002 Nakit satış 3 × 100 + %20 = 360 (Satış Faturası FIS2026000000005 Ödendi)
+     beklenen: Kasa +360; cari değişmez; stok −3
+     gerçek:   Kasa 360; cari 0; stok -3
+✓ [Bugünün İşleri (Arayüzden, İki Şirket Aynı Anda)] 002 POS'la satış 2 × 250 + %20 = 600
+     beklenen: POS +600; Kasa değişmez
+     gerçek:   POS 600; Kasa 0
+✓ [Bugünün İşleri (Arayüzden, İki Şirket Aynı Anda)] 002 Çekle satış 5 × 200 + %20 = 1.200
+     beklenen: portföye 1 çek; cari net 0; Kasa/banka değişmez
+     gerçek:   çek +1; cari 0; Kasa 0
+✓ [Bugünün İşleri (Arayüzden, İki Şirket Aynı Anda)] 002 Taksitli satış 10 × 300 + %20 = 3.600, 3 taksit
+     beklenen: cari +3.600 (tek borç); taksit kartı 3 × 1.200
+     gerçek:   cari 3600
+✓ [Bugünün İşleri (Arayüzden, İki Şirket Aynı Anda)] 002 1. taksit nakit tahsil (1.200)
+     beklenen: Kasa +1.200; cari −1.200; kart ödenen 1.200
+     gerçek:   Kasa 1200; cari -1200; kart ödenen 1200
+✓ [Bugünün İşleri (Arayüzden, İki Şirket Aynı Anda)] 002 cari-tahsilat-havale (500)
+     beklenen: bank +500; cari −500
+     gerçek:   bank 500.00; cari -500.00
+✓ [Bugünün İşleri (Arayüzden, İki Şirket Aynı Anda)] 002 tedarikci-odeme-nakit (300)
+     beklenen: cash −300; cari +300
+     gerçek:   cash -300.00; cari 300.00
+
+Arayüz testi: 14; beklenene uymayan: 0

@@ -1,0 +1,101 @@
+yedek kökü: /tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/canli/backups
+   {"id":"sirket-001","code":"001","name":"Merkez Ticaret A.Ş.","label":"001 · Merkez Ticaret A.Ş.","root":true,"current":true,"folder":"/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/canli/backups/001 - Merkez Ticaret A.Ş"}
+   {"id":"sirket-3a17daa7-54e9-484c-a4f2-82c2e1586057","code":"002","name":"Şube Ticaret Ltd. Şti.","label":"002 · Şube Ticaret Ltd. Şti.","root":false,"current":false,"folder":"/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/canli/backups/002 - Şube Ticaret Ltd. Şti"}
+  önceki koşudan kalan tatbikat hareketi silindi: 001 1 TL → HTTP 200
+  önceki koşudan kalan tatbikat hareketi silindi: 001 1 TL → HTTP 200
+  önceki koşudan kalan tatbikat hareketi silindi: 002 1 TL → HTTP 200
+  önceki koşudan kalan tatbikat hareketi silindi: 002 1 TL → HTTP 200
+✓ [Şimdi Yedek Al (Tüm Şirketler)] Yönetim → Yedekler → Şimdi Yedek Al: Tüm Şirketler
+     beklenen: her şirket için bir yedek
+     gerçek:   HTTP 200; 001 · Merkez Ticaret A.Ş. → 001 - Merkez Ticaret A.Ş/destekofis-001-2026-10-04T13-00-34-820Z-manuel.sqlite | 002 · Şube Ticaret Ltd. Şti. → 002 - Şube Ticaret Ltd. Şti/destekofis-002-2026-10-04T13-00-34-820Z-manuel.sqlite
+✓ [Şimdi Yedek Al (Tüm Şirketler)] 001 yedeği kendi klasöründe (Windows kuralı: ad noktayla bitmez)
+     beklenen: backups/001 - Merkez Ticaret A.Ş/
+     gerçek:   backups/001 - Merkez Ticaret A.Ş/
+✓ [Şimdi Yedek Al (Tüm Şirketler)] 001 yedeğinin adında şirket kodu
+     beklenen: destekofis-001-…
+     gerçek:   destekofis-001-2026-10-04T13-00-34-820Z-manuel.sqlite
+✓ [Şimdi Yedek Al (Tüm Şirketler)] 001 yedeğinin İÇİNDE kendi kimliği
+     beklenen: sirket-001 (001)
+     gerçek:   sirket-001 (001)
+✓ [Şimdi Yedek Al (Tüm Şirketler)] 001 yedeğinde yalnız kendi işareti
+     beklenen: [YEDEK-İŞARET-001]
+     gerçek:   ["YEDEK-İŞARET-001"]
+✓ [Şimdi Yedek Al (Tüm Şirketler)] 001 yedeğindeki cari ve fatura sayısı yedek anındakiyle aynı
+     beklenen: cari 374, satış+alış 2948
+     gerçek:   cari 374, kaydedilmiş fatura 2948
+✓ [Şimdi Yedek Al (Tüm Şirketler)] 002 yedeği kendi klasöründe (Windows kuralı: ad noktayla bitmez)
+     beklenen: backups/002 - Şube Ticaret Ltd. Şti/
+     gerçek:   backups/002 - Şube Ticaret Ltd. Şti/
+✓ [Şimdi Yedek Al (Tüm Şirketler)] 002 yedeğinin adında şirket kodu
+     beklenen: destekofis-002-…
+     gerçek:   destekofis-002-2026-10-04T13-00-34-820Z-manuel.sqlite
+✓ [Şimdi Yedek Al (Tüm Şirketler)] 002 yedeğinin İÇİNDE kendi kimliği
+     beklenen: sirket-3a17daa7-54e9-484c-a4f2-82c2e1586057 (002)
+     gerçek:   sirket-3a17daa7-54e9-484c-a4f2-82c2e1586057 (002)
+✓ [Şimdi Yedek Al (Tüm Şirketler)] 002 yedeğinde yalnız kendi işareti
+     beklenen: [YEDEK-İŞARET-002]
+     gerçek:   ["YEDEK-İŞARET-002"]
+✓ [Şimdi Yedek Al (Tüm Şirketler)] 002 yedeğindeki cari ve fatura sayısı yedek anındakiyle aynı
+     beklenen: cari 374, satış+alış 2948
+     gerçek:   cari 374, kaydedilmiş fatura 2948
+✓ [Otomatik Yedek (Zamanlayıcı)] Zamanlayıcının bu saatteki çalışması (her şirket kendi klasörüne)
+     beklenen: iki şirket de yedeklenir (ya da son yedek yeni olduğu için atlanır)
+     gerçek:   []
+     ayrıntı: Zamanlayıcı son yedekten 6 saat geçmemişse yeniden almaz; aşağıda klasörler sayılıyor.
+✓ [Otomatik Yedek (Zamanlayıcı)] 001 klasöründeki bütün yedekler (5 dosya) bu şirketin
+     beklenen: başka şirketin dosyası/kimliği yok
+     gerçek:   yabancı ad 0, yabancı kimlik 0: destekofis-001-2026-10-04T12-59-29-488Z-manuel.sqlite, destekofis-001-2026-10-04T12-59-40-262Z-geri-yukleme-oncesi-001.sqlite, destekofis-001-2026-10-04T13-00-05-942Z-manuel.sqlite, destekofis-001-2026-10-04T13-00-16-581Z-geri-yukleme-oncesi-001.sqlite, destekofis-001-2026-10-04T13-00-34-820Z-manuel.sqlite
+✓ [Otomatik Yedek (Zamanlayıcı)] 002 klasöründeki bütün yedekler (5 dosya) bu şirketin
+     beklenen: başka şirketin dosyası/kimliği yok
+     gerçek:   yabancı ad 0, yabancı kimlik 0: destekofis-002-2026-10-04T12-59-29-488Z-manuel.sqlite, destekofis-002-2026-10-04T12-59-33-552Z-geri-yukleme-oncesi-002.sqlite, destekofis-002-2026-10-04T13-00-05-942Z-manuel.sqlite, destekofis-002-2026-10-04T13-00-10-046Z-geri-yukleme-oncesi-002.sqlite, destekofis-002-2026-10-04T13-00-34-820Z-manuel.sqlite
+✓ [Otomatik Yedek (Zamanlayıcı)] Yönetim → Yedekleri Denetle
+     beklenen: sorun yok
+     gerçek:   {"ok":true,"backupRoot":"/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/canli/backups","companies":[{"id":"sirket-001","code":"001","name":"Merkez Ticaret A.Ş.","folder":"001 - Merkez Ticaret A.Ş","exists":true,"count":5,"files":[{"name":"destekofis-001-2026-10-04T12-59-29-488Z-manuel.sqlite","code":"001","label":"manuel","identity":{"id":"sirket-001","code":"001","name":
+✓ [002 Tatbikatı: Yedek → Çalış → Geri Yükle → Yeniden Çalış] Yedekten sonra 002'ye 12.345,67 TL nakit tahsilat girilir
+     beklenen: Kasa -12042568.88 → -12030223.21
+     gerçek:   HTTP 200; Kasa -12030223.21
+✓ [002 Tatbikatı: Yedek → Çalış → Geri Yükle → Yeniden Çalış] 001'in yedeğini 002'ye geri yüklemeye çalışmak (yanlış şirket)
+     beklenen: 409 reddedilir; 002 değişmez
+     gerçek:   HTTP 409 Bu yedek “001 · Merkez Ticaret A.Ş.” şirketine ait; “002 · Şube Ticaret Ltd. Şti.” şirketine geri yüklenemez. Yedeği kendi şirketine geri yükleyin.
+✓ [002 Tatbikatı: Yedek → Çalış → Geri Yükle → Yeniden Çalış] Yanlış şirket denemesinden sonra 002 aynı
+     beklenen: {"cari":374,"bakiye":16374425.79,"kasa":-12030223.21,"satis":1528,"alis":1420,"isaret":["YEDEK-İŞARET-002"]}
+     gerçek:   {"cari":374,"bakiye":16374425.79,"kasa":-12030223.21,"satis":1528,"alis":1420,"isaret":["YEDEK-İŞARET-002"]}
+✓ [002 Tatbikatı: Yedek → Çalış → Geri Yükle → Yeniden Çalış] Doğru yedek, yanlış parola
+     beklenen: 403
+     gerçek:   HTTP 403
+✓ [002 Tatbikatı: Yedek → Çalış → Geri Yükle → Yeniden Çalış] 002 kendi yedeğinden geri yüklenir (hemen)
+     beklenen: {"cari":374,"bakiye":16386771.46,"kasa":-12042568.88,"satis":1528,"alis":1420,"isaret":["YEDEK-İŞARET-002"]}
+     gerçek:   HTTP 200; {"cari":374,"bakiye":16386771.46,"kasa":-12042568.88,"satis":1528,"alis":1420,"isaret":["YEDEK-İŞARET-002"]}
+     ayrıntı: güvenlik kopyası: destekofis-002-2026-10-04T13-00-38-648Z-geri-yukleme-oncesi-002.sqlite
+✓ [002 Tatbikatı: Yedek → Çalış → Geri Yükle → Yeniden Çalış] Geri yükleme 001'e dokunmadı
+     beklenen: {"cari":374,"bakiye":16386771.46,"kasa":-12042568.88,"satis":1528,"alis":1420,"isaret":["YEDEK-İŞARET-001"]}
+     gerçek:   {"cari":374,"bakiye":16386771.46,"kasa":-12042568.88,"satis":1528,"alis":1420,"isaret":["YEDEK-İŞARET-001"]}
+✓ [002 Tatbikatı: Yedek → Çalış → Geri Yükle → Yeniden Çalış] Geri yüklenen 002'de yeniden çalışılır (1 TL tahsilat)
+     beklenen: kaydedilir
+     gerçek:   HTTP 200; Kasa -12042567.88
+✓ [001 Tatbikatı (Yeniden Açılışta Geri Yükleme)] Yedekten sonra 001'e 7.777,77 TL tahsilat
+     beklenen: Kasa +7.777,77
+     gerçek:   HTTP 200; Kasa -12042568.88 → -12034791.11
+✓ [001 Tatbikatı (Yeniden Açılışta Geri Yükleme)] 001 geri yüklemesi istenir
+     beklenen: yeniden açılışta uygulanmak üzere bekletilir (staged)
+     gerçek:   HTTP 200 {"staged":true,"restarting":false,"restartRequired":true,"company":"001 · Merkez Ticaret A.Ş.","name":"destekofis-001-2026-10-04T13-00-34-820Z-manuel.sqlite"}
+✓ [001 Tatbikatı (Yeniden Açılışta Geri Yükleme)] Sunucu yeniden açıldı: 001 yedek anındaki sayılarda
+     beklenen: {"cari":374,"bakiye":16386771.46,"kasa":-12042568.88,"satis":1528,"alis":1420,"isaret":["YEDEK-İŞARET-001"]}
+     gerçek:   {"cari":374,"bakiye":16386771.46,"kasa":-12042568.88,"satis":1528,"alis":1420,"isaret":["YEDEK-İŞARET-001"]}
+✓ [001 Tatbikatı (Yeniden Açılışta Geri Yükleme)] Yeniden açılış 002'yi bozmadı
+     beklenen: {"cari":374,"bakiye":16386771.46,"kasa":-12042568.88,"satis":1528,"alis":1420,"isaret":["YEDEK-İŞARET-002"]}
+     gerçek:   {"cari":374,"bakiye":16386771.46,"kasa":-12042568.88,"satis":1528,"alis":1420,"isaret":["YEDEK-İŞARET-002"]}
+✓ [001 Tatbikatı (Yeniden Açılışta Geri Yükleme)] Ortak katman korundu (kullanıcılar)
+     beklenen: 11 kullanıcı (yönetici + 10)
+     gerçek:   11
+✓ [001 Tatbikatı (Yeniden Açılışta Geri Yükleme)] Geri yüklenen 001'de yeniden çalışılır
+     beklenen: kaydedilir
+     gerçek:   HTTP 200
+✓ [Temizlik] 001 işaret carisi silinir
+     beklenen: 200
+     gerçek:   HTTP 200
+✓ [Temizlik] 002 işaret carisi silinir
+     beklenen: 200
+     gerçek:   HTTP 200
+
+Yedek tatbikatı: 30 denetim; beklenene uymayan: 0

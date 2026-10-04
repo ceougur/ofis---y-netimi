@@ -1,0 +1,40 @@
+✗ BULGU [Açık Pencere Sayısının Sunucu Hızına Etkisi] Aynı yazma yükü (4 eşzamanlı istek), açık pencere 0 / 2 / 5
+     beklenen: pencere sayısı hızı belirgin düşürmez
+     gerçek:   0 açık pencere: saniyede 4.1 kayıt, yanıt p50 980 ms / p95 1133 ms · 2 açık pencere (boşta, ana ekranda): saniyede 0.9 kayıt, yanıt p50 5167 ms / p95 7626 ms · 5 açık pencere (boşta, ana ekranda): saniyede 0.5 kayıt, yanıt p50 8888 ms / p95 14748 ms
+     ayrıntı: Her açık pencere, başkasının her kaydında ekranını yeniler (sunucuya ek sorgu).
+✓ [Açık Pencere Sayısının Sunucu Hızına Etkisi] Saniyede 0 başka kayıt yazılırken Cari aramasına fare + klavyeyle "C0123" yazılır
+     beklenen: kutuda C0123, listede o cari
+     gerçek:   arama kutusu 10 sn'de 0 kez yeniden çizildi; kutuda "C0123", 1 satır, bulundu: evet (3518 ms)
+✓ [Açık Pencere Sayısının Sunucu Hızına Etkisi] Saniyede 0 başka kayıt yazılırken "+ Yeni Fatura"ya fareyle basılır; senaryo ekranı açılır ve 4 sn sonra hâlâ açık
+     beklenen: açık kalır
+     gerçek:   açıldı: evet, 4 sn sonra: açık
+     (arka plan 0 kayıt yazdı)
+✗ BULGU [Açık Pencere Sayısının Sunucu Hızına Etkisi] Saniyede 1 başka kayıt yazılırken Cari aramasına fare + klavyeyle "C0123" yazılır
+     beklenen: kutuda C0123, listede o cari
+     gerçek:   arama kutusu 10 sn'de 6 kez yeniden çizildi; kutuda "?", 0 satır, bulundu: hayır (19336 ms)
+✗ BULGU [Açık Pencere Sayısının Sunucu Hızına Etkisi] Saniyede 1 başka kayıt yazılırken "+ Yeni Fatura"ya fareyle basılır; senaryo ekranı açılır ve 4 sn sonra hâlâ açık
+     beklenen: açık kalır
+     gerçek:   açıldı: hayır, 4 sn sonra: listeye döndü
+     (arka plan 70 kayıt yazdı)
+✗ BULGU [Açık Pencere Sayısının Sunucu Hızına Etkisi] Saniyede 5 başka kayıt yazılırken Cari aramasına fare + klavyeyle "C0123" yazılır
+     beklenen: kutuda C0123, listede o cari
+     gerçek:   arama kutusu 10 sn'de 7 kez yeniden çizildi; kutuda "?", 0 satır, bulundu: hayır (24486 ms)
+✓ [Açık Pencere Sayısının Sunucu Hızına Etkisi] Saniyede 5 başka kayıt yazılırken "+ Yeni Fatura"ya fareyle basılır; senaryo ekranı açılır ve 4 sn sonra hâlâ açık
+     beklenen: açık kalır
+     gerçek:   açıldı: evet, 4 sn sonra: açık
+     (arka plan 74 kayıt yazdı)
+✗ BULGU [Açık Pencere Sayısının Sunucu Hızına Etkisi] Saniyede 20 başka kayıt yazılırken Cari aramasına fare + klavyeyle "C0123" yazılır
+     beklenen: kutuda C0123, listede o cari
+     gerçek:   arama kutusu 10 sn'de 4 kez yeniden çizildi; kutuda "?", 0 satır, bulundu: hayır (29857 ms)
+✗ BULGU [Açık Pencere Sayısının Sunucu Hızına Etkisi] Saniyede 20 başka kayıt yazılırken "+ Yeni Fatura"ya fareyle basılır; senaryo ekranı açılır ve 4 sn sonra hâlâ açık
+     beklenen: açık kalır
+     gerçek:   açıldı: hayır, 4 sn sonra: listeye döndü
+     (arka plan 97 kayıt yazdı)
+✗ BULGU [Bugünün İşleri (Arayüzden, İki Şirket Aynı Anda)] 001 arayüz akışı
+     beklenen: tamamlanır
+     gerçek:   DURDU: Cannot read properties of undefined (reading 'cash') · 
+✗ BULGU [Bugünün İşleri (Arayüzden, İki Şirket Aynı Anda)] 002 arayüz akışı
+     beklenen: tamamlanır
+     gerçek:   DURDU: Cannot read properties of undefined (reading 'cash') · 
+
+Arayüz testi: 11; beklenene uymayan: 8

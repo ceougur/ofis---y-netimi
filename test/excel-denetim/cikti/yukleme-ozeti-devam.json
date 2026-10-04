@@ -1,0 +1,107 @@
+{
+ "seconds": 610.781,
+ "done": {
+  "001": {
+   "sale:cheque": 191,
+   "salary:bank": 93,
+   "sale:paid": 246,
+   "collect:bank": 25,
+   "collect:cheque": 29,
+   "sale:open": 273,
+   "pay:bank": 39,
+   "collect:cash": 35,
+   "pay:cheque": 34,
+   "installment:bank": 12,
+   "collect:card": 29,
+   "sale:installments": 154,
+   "pay:cash": 41,
+   "collect:note": 34,
+   "pay:note": 38,
+   "installment:cash": 16,
+   "installment:cheque": 22,
+   "installment:card": 11
+  },
+  "002": {
+   "sale:paid": 259,
+   "pay:cheque": 36,
+   "collect:cash": 37,
+   "sale:installments": 158,
+   "pay:bank": 41,
+   "salary:bank": 103,
+   "collect:note": 35,
+   "sale:cheque": 193,
+   "pay:cash": 42,
+   "sale:open": 277,
+   "pay:note": 39,
+   "installment:bank": 13,
+   "collect:bank": 25,
+   "collect:cheque": 29,
+   "collect:card": 29,
+   "installment:cash": 16,
+   "installment:cheque": 22,
+   "installment:card": 11
+  }
+ },
+ "warnings": {
+  "cash-negative": 83,
+  "stock-negative": 24
+ },
+ "errors": [],
+ "ui": [],
+ "latency": {
+  "satış faturası": {
+   "n": 1775,
+   "ortalama": 564.6,
+   "p95": 903.2,
+   "max": 1172
+  },
+  "maaş ödemesi": {
+   "n": 196,
+   "ortalama": 634.4,
+   "p95": 915.8,
+   "max": 1063.6
+  },
+  "cari tahsilat": {
+   "n": 180,
+   "ortalama": 650.5,
+   "p95": 970.3,
+   "max": 1063.8
+  },
+  "verilen çek/senet": {
+   "n": 147,
+   "ortalama": 647.8,
+   "p95": 943.9,
+   "max": 1171.8
+  },
+  "alınan çek/senet": {
+   "n": 127,
+   "ortalama": 618.6,
+   "p95": 942.4,
+   "max": 1053.4
+  },
+  "cari ödeme": {
+   "n": 246,
+   "ortalama": 578.9,
+   "p95": 891,
+   "max": 973.7
+  },
+  "maaş tahakkuku": {
+   "n": 195,
+   "ortalama": 637.5,
+   "p95": 923.5,
+   "max": 1167.4
+  },
+  "taksit tahsilatı": {
+   "n": 79,
+   "ortalama": 636.6,
+   "p95": 985.6,
+   "max": 1030.1
+  },
+  "taksit tahsilatı (çek)": {
+   "n": 44,
+   "ortalama": 621.6,
+   "p95": 936.3,
+   "max": 970.9
+  }
+ }
+}

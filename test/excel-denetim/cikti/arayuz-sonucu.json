@@ -1,0 +1,114 @@
+[
+ {
+  "group": "Bugünün İşleri (Arayüzden, İki Şirket Aynı Anda)",
+  "name": "001 Nakit satış 3 × 100 + %20 = 360 (Satış Faturası FIS2026000000005 Ödendi)",
+  "expected": "Kasa +360; cari değişmez; stok −3",
+  "actual": "Kasa 360; cari 0; stok -3",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "Bugünün İşleri (Arayüzden, İki Şirket Aynı Anda)",
+  "name": "001 POS'la satış 2 × 250 + %20 = 600",
+  "expected": "POS +600; Kasa değişmez",
+  "actual": "POS 600; Kasa 0",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "Bugünün İşleri (Arayüzden, İki Şirket Aynı Anda)",
+  "name": "001 Çekle satış 5 × 200 + %20 = 1.200",
+  "expected": "portföye 1 çek; cari net 0; Kasa/banka değişmez",
+  "actual": "çek +1; cari 0; Kasa 0",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "Bugünün İşleri (Arayüzden, İki Şirket Aynı Anda)",
+  "name": "001 Taksitli satış 10 × 300 + %20 = 3.600, 3 taksit",
+  "expected": "cari +3.600 (tek borç); taksit kartı 3 × 1.200",
+  "actual": "cari 3600",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "Bugünün İşleri (Arayüzden, İki Şirket Aynı Anda)",
+  "name": "001 1. taksit nakit tahsil (1.200)",
+  "expected": "Kasa +1.200; cari −1.200; kart ödenen 1.200",
+  "actual": "Kasa 1200; cari -1200; kart ödenen 1200",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "Bugünün İşleri (Arayüzden, İki Şirket Aynı Anda)",
+  "name": "001 cari-tahsilat-havale (500)",
+  "expected": "bank +500; cari −500",
+  "actual": "bank 500.00; cari -500.00",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "Bugünün İşleri (Arayüzden, İki Şirket Aynı Anda)",
+  "name": "001 tedarikci-odeme-nakit (300)",
+  "expected": "cash −300; cari +300",
+  "actual": "cash -300.00; cari 300.00",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "Bugünün İşleri (Arayüzden, İki Şirket Aynı Anda)",
+  "name": "002 Nakit satış 3 × 100 + %20 = 360 (Satış Faturası FIS2026000000005 Ödendi)",
+  "expected": "Kasa +360; cari değişmez; stok −3",
+  "actual": "Kasa 360; cari 0; stok -3",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "Bugünün İşleri (Arayüzden, İki Şirket Aynı Anda)",
+  "name": "002 POS'la satış 2 × 250 + %20 = 600",
+  "expected": "POS +600; Kasa değişmez",
+  "actual": "POS 600; Kasa 0",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "Bugünün İşleri (Arayüzden, İki Şirket Aynı Anda)",
+  "name": "002 Çekle satış 5 × 200 + %20 = 1.200",
+  "expected": "portföye 1 çek; cari net 0; Kasa/banka değişmez",
+  "actual": "çek +1; cari 0; Kasa 0",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "Bugünün İşleri (Arayüzden, İki Şirket Aynı Anda)",
+  "name": "002 Taksitli satış 10 × 300 + %20 = 3.600, 3 taksit",
+  "expected": "cari +3.600 (tek borç); taksit kartı 3 × 1.200",
+  "actual": "cari 3600",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "Bugünün İşleri (Arayüzden, İki Şirket Aynı Anda)",
+  "name": "002 1. taksit nakit tahsil (1.200)",
+  "expected": "Kasa +1.200; cari −1.200; kart ödenen 1.200",
+  "actual": "Kasa 1200; cari -1200; kart ödenen 1200",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "Bugünün İşleri (Arayüzden, İki Şirket Aynı Anda)",
+  "name": "002 cari-tahsilat-havale (500)",
+  "expected": "bank +500; cari −500",
+  "actual": "bank 500.00; cari -500.00",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "group": "Bugünün İşleri (Arayüzden, İki Şirket Aynı Anda)",
+  "name": "002 tedarikci-odeme-nakit (300)",
+  "expected": "cash −300; cari +300",
+  "actual": "cash -300.00; cari 300.00",
+  "ok": true,
+  "detail": ""
+ }
+]

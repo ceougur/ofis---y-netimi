@@ -512,6 +512,28 @@ Bağlam kopsa da bu düzen değişmez. Kullanıcı "zip ver" dediğinde şu üç
   eşzamanlılık/yük → girdi bozma → arayüz düğmeleri. Bulunan her açık: önce kırmızı test, sonra düzeltme, kanıt dosyası.
   [x] 6. Bu test türleri aşağıdaki "Test kuralı"na her sürümde koşulacak kural olarak yazılır; teslimde "denenen /
          denenmeyen / bilinen sınırlar" açıkça yazılır; her sürümde bağımsız gözden geçirme.
+- EXCEL DENETİMİ (kullanıcı, 04.10.2026; yüklenen `Sirket_Is_Listesi_Stoklu.xlsx`, 4.220 iş, 350 cari, 50 ürün): "programı
+  gerçek bilgisayarda çalıştır, uzman muhasebeci olarak iki şirket kur, Excel'deki işleri gir — kod üzerinden değil insan
+  gibi; birden çok çalışan iki şirkette aynı anda tahsilat, mal satışı, taksit tahsilatı; mali müşavir olarak denetle; iki
+  şirketin yedeğini denetle"; ek: "hatalı ve yetkisiz işlemleri de dene; bulduğun sorunları KOD DEĞİŞTİRMEDEN madde madde
+  bildir"; "mali raporları teslim et" (zip). DERS (ağır): ilk deneme (başka model) programı salt okunur lisansla çalıştırdı,
+  HİÇBİR kayıt girilmedi, istekler reddedildi ama test "✅" saydı ve uydurma "mali rapor" + zip teslim edildi
+  (`docs/MALI-RAPOR-2.0.21-TEST.md`, kök `test-*.mjs`, `test-raporlar-2.0.21.zip` — YANLIŞ). Kullanıcı: "yapmış gibi yapma,
+  yap!". Kural: bir testin "✓" demesi için yanıt gövdesi ve veri tabanı sayısı okunur; reddedilen istek başarı sayılmaz.
+  Yapılan iş: `test/excel-denetim/` (model.py bağımsız beklenen; kos.mjs kur/yukle; denetim.mjs; saldiri.mjs; yedek.mjs;
+  arayuz.mjs; rapor-al.mjs). Kod değiştirilmez; bulgular `test/excel-denetim/cikti/` ve teslim zip'inde.
+  SONUÇ (04.10.2026; rapor `docs/EXCEL-DENETIMI-2026-10-04.md`, zip `dist/teslim-excel-denetimi/`): 4.220 iş × 2 şirket
+  eksiksiz (veri dosyasından sayıldı; SIGKILL kesinti + devam sonrası eksik/çift 0); mali denetim 70/70; programın Mutabakat
+  Testi 59/59 ×2; saldırı 63 (2 bulgu); yedek tatbikatı 30/30 + otomatik yedek; arayüzden bugünün işleri 14/14. Hacim API'den
+  girildi (ekrandan: şirket açma, cari/stok Excel yükleme, örnek satış/tahsilat, bugünün işleri) — kullanıcıya açıkça söylendi.
+  BULGULAR (düzeltme kullanıcı "yap" derse): (1) yük altında sunucu yavaş, boşta açık her pencere yavaşlığı katlıyor
+  (cari not düzeltme 0 pencere ~1 sn/4,1 kayıt-sn → 5 pencere 8,9 sn/0,5 kayıt-sn); (2) başka personel saniyede 1 kayıt
+  girerken Cari aramasında her harf ~3 sn gecikiyor; (3) Excel cari yüklemede "Müşteri/Tedarikçi" sessizce Tedarikçi;
+  (4) API'de tanımsız ödeme yolu nakit sayılıyor; (5) API'de aynı fatura iki kez → iki fatura (ekranda çift tıklama
+  korumalı); (6) lisans kapalıyken bile "salt okunur" uyarı kutusu. Excel'in kendi sorunları raporda (Kasa açılışı yok,
+  1.613 işlem cari açılışından önce, kısmi ödeme tutarı yok, 165 "Tamamlandı" taksitlinin tahsilatı yok, Özet sayfası yanlış).
+  Kullanıcı sorusu (aynı gün): "gerçek muhasebeci gibi değil de koddan mı yapıyorsun?" → evet, hacim API'den; önerildi:
+  bir ayın tamamı (Ocak 2024) ekrandan ayrı şirkete girilip API ile girilenle sayı sayı karşılaştırılsın (karar kullanıcıda).
 - 2.0.20 YAPILACAKLAR (kullanıcı "yapılacaklara not al" dedi, 03.10.2026; "yap" denince başlanır; ayrıntı ve
   kanıt hemen altındaki ADAYI maddesinde):
   [x] 1. Bütün raporların (43) tablosunun altında kalın TOPLAM satırı — ekran, PDF, Excel aynı; yalnız toplanabilir
