@@ -2,6 +2,45 @@
 
 Sürümler [anlamsal sürümleme](https://semver.org/lang/tr/) kurallarına uyar.
 
+## 2.0.22 — Çok personelli kullanımda hız ve donmalar; Excel'den cari türü; çift fatura koruması
+
+Kaynak: Excel iş listesi denetimi (04.10.2026; 4.220 iş × 2 şirket, eşzamanlı personel; `docs/EXCEL-DENETIMI-2026-10-04.md`). Kullanıcı: "UI'deki donmalar, gecikmeler, çoklu kullanımda arayüzün yetişememesi, cari arama pilindeki sorunlar canımı çok acıttı, en iyi haliyle yap!". Ölçümler aynı verinin kopyasıyla yapıldı; önce = v2.0.21 kodu, sonra = bu sürüm (`test/excel-denetim/yuk-olcum.mjs`). Ayrıntı ve denenen / denenmeyen / bilinen sınırlar: `docs/2.0.22-KANIT.md`.
+
+- **Başka personel kayıt girerken ekran ve sunucu yetişiyor.** Ölçüldü (aynı veri, aynı yük, v2.0.21 → 2.0.22):
+  - Başka personel kayıt girerken Cari aramasında harf başına gecikme 1,5–7,9 sn → 3–12 ms; son tuştan sonuca 4,6–11,9 sn → 0,31–0,45 sn. v2.0.21'de arama kutusu 5 sn tıklanamıyordu; artık tıklanıyor.
+  - 5 açık pencereyle tahsilat kaydı saniyede 1 → 3,2; cari not düzeltmesi 0,8 → 364.
+  - Başkasının 10 kaydında açık Cari penceresi 100 istek / 30,8 MB → 43 istek / 6,8 MB; en uzun istek 22 sn → 0,66 sn. Nedenleri ve düzeltmeler:
+  - Açık her pencere başkasının her kaydında 7–10 isteği yeniden gönderiyordu. Bir fatura 5–7 olay yayımlar; vade takvimi her seferinde ~1,3 MB iniyordu. Artık bütün pencereler tek yenileme kapısından geçer. Bir yenileme sürerken gelenler bitince tek yenileme yaptırır. İki yenileme arasında en az süre vardır: Cari/Fatura/Stok/Taksit/Çek 1,5 sn; ANLIK DURUM ve raporlar 2 sn; rozetler 3 sn; vade takvimi 4 sn. Bu ekranda yapılan işlem beklemeden yenilenir. Arka plandaki sekme yenilenmez, dönünce bir kez yenilenir. Yenileme başarısızsa en çok 3 kez yeniden denenir.
+  - Arka plan istekleri aynı anda en çok 2 bağlantı kullanır: kullanıcının araması ve açtığı kart sıraya girmez.
+  - Arka plan yenilemesi yazılan aramayı ezmez ve geçersiz saymaz (Cari, Fatura, Stok, Taksit, Çek/Senet). Cari listesinde "Daha Fazla" ile açılmış satırlar ve "Tümünü Seç" korunur; liste değişmediyse yeniden çizilmez.
+  - **Pencere kayboluyordu.** Liste ya da kart yenilenemeyince (yük altında 30 sn'yi aşan istek) pencerenin gövdesi hata yazısıyla değiştiriliyordu; arama kutusu ve süzgeçler de gidiyordu. Açık karttaki kullanıcı listeye atılıyordu. Artık arka plan yenilemesinin hatası ekranı bozmaz. Kullanıcının kendi araması yüklenemezse eski satırlar yeni aramanın altında bırakılmaz: liste alanında neden ve "Yeniden Dene" çıkar. Yenileme sürerken başka karta ya da listeye geçen kullanıcıya eski kart geri gelmez. Silinmiş kayıt (404) eskisi gibi bildirilir.
+  - Sunucu: fatura ödeme durumları (liste, sol menü rozeti, vade takvimi, ANLIK DURUM) toplu hesaplanır ve veri değişene kadar saklanır (rozet 1,1 sn → 0,04 sn). Toplu hesap yalnız faturası olan carileri işler; 60.000 caride fatura listesi ~0,03 sn. Carinin yalnız bilgisini (not, adres, e-posta, vergi bilgisi…) düzeltmek mutabakat denetimini ve ANLIK DURUM yenilemesini tetiklemez (0,26 sn → 0,005 sn). Mutabakat denetiminde cari listesi bir kez hesaplanır. Vade takviminin tablo kısmı para kaydında yeniden hesaplanmaz. Taksit rozeti yalnız sayıyı alır.
+- **Excel'den cari yüklemede "Müşteri/Tedarikçi" artık sessizce Tedarikçi olmaz.** Kolonları Eşle penceresinde **Tür Değerleri** tablosu var: Tür kolonundaki her farklı değer, satır sayısı ve açılacak tür. İki türü birden yazan ya da tanınmayan değer işaretlidir; türünü siz seçersiniz. Seçmezseniz "Tür kolonu yoksa" alanındaki tür yazılır ve sonuçta satır numaralarıyla söylenir. Tanınan bir değer için de "Varsayılan Tür" seçilebilir. Satır raporunda bu satırlar uyarı olarak görünür. Programa yeni bir tür eklenmedi (kullanıcı kararı).
+- **Çift fatura koruması (istek kimliği).** Fatura formu açılınca bir kimlik alır. Yanıt gecikip ya da bağlantı kopup yeniden "Faturayı Kaydet"e basılırsa sunucu ikinci fatura açmaz; ilkini döndürür ve "zaten kaydedilmişti" bildirimi çıkar. "Taslak Olarak Kaydet"ten sonra aynı formdan "Kaydet" de ikinci belge açmaz; taslak söylenir. Aynı içerikli iki gerçek satış (iki ayrı form) eskisi gibi serbesttir. İlk kayıttan sonra form değiştirilip yeniden gönderilirse 409 döner ("Düzenle'yi kullanın").
+- **Tanımsız ödeme yolu reddedilir.** Doğrudan API'ye "bitcoin" gibi tanınmayan bir yol gönderilince 400 döner; önceden sessizce Nakit sayılıyordu. Yol hiç gönderilmezse eskisi gibi Nakit sayılır. Ekrandan zaten seçilemiyordu.
+- **Bağımsız gözden geçirmede bulunup düzeltilenler:**
+  - Veri dosyasını paylaşan şirketlerde (2.0.17–2.0.19'dan kalan, "Ayır" yapılmamış kurulum) öbür şirketten girilen tahsilat fatura listesinde görünmüyordu.
+  - "constructor" gibi değerler cari türü sayılıyordu (Excel Tür eşlemesinde 500 veriyordu, API'de cariye yazılıyordu).
+  - Yalnız Cari No değişince taksit/fatura pencereleri yenilenmiyordu.
+  - Bu ekrandaki işlemin "yerel" bilgisi ANLIK DURUM olayıyla birleşince kayboluyordu.
+  - İkinci gözden geçirme düzeltmelerin kendisinde 7 bulgu çıkardı, hepsi düzeltildi:
+    - arama yüklenemeyince elle işaretlenen seçim kalıyordu;
+    - arama sürerken "Daha Fazla" aramayı geçersiz sayıyordu;
+    - önce başlamış yanıt sonra başlamışın yeni verisini ezebiliyordu;
+    - eski hata yazısı yeni yükleme sürerken kalıyordu;
+    - taslak yinelemesi yanlış bildirim veriyordu.
+  - Ayrıntı: `docs/2.0.22-KANIT.md`.
+- **Denetim raporu:** 5.6 (lisans uyarısı) bulgu değildi; test düzenimden kaynaklanıyordu. Geri çekildi.
+- **Testler:**
+  - Birim/API: `test/odeme-yolu-222`, `cari-tur-222`, `cari-bilgi-222`, `fatura-durum-222` (tohumlu rastgele 260 işlemde liste = kart), `istek-kimligi-222`, `inceleme-222`.
+  - Arayüzden `npm run test:senaryo-222`:
+    - yanıt kaybolur → yeniden Kaydet → tek fatura;
+    - başka personel kayıt girerken istek sayısı, arama ve yük altında fatura formu;
+    - yenileme hatasında pencere yerinde; arama yüklenemezse eski liste kalmaz;
+    - kart yenilemesi sürerken listeye dönmek;
+    - not düzeltmesi ANLIK DURUM'u yenilemez.
+  - `senaryo-219` adım 3b (Tür Değerleri). CI'ye eklendi.
+
 ## 2.0.21 — Güvenilirlik: şirket verisi ve yedekleri (yeni iş özelliği yok; iki güvenlik aracı eklendi: Ayır ve Yedekleri Denetle)
 
 Kullanıcı (03.10.2026): "bir şirketin verisinin başka şirkete yazılması tam bir fiyasko; içim rahat programım doğru çalışır demek istiyorum". Bu sürüm yalnız şirket verisinin ayrılığı ve yedeklerin güvenilirliği içindir. Testler programın **gerçek eski sürümlerinin** (git etiketlerindeki kod, kendi API'si ile) ürettiği veriyle yapıldı; bozulma listesi `docs/2.0.21-BOZULMA-LISTESI.md`.

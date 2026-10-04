@@ -1,0 +1,212 @@
+{
+ "hiz": {
+  "not · 0 pencere": {
+   "perSecond": 4.1,
+   "p50": 982,
+   "p95": 1142,
+   "failed": 0
+  },
+  "para · 0 pencere": {
+   "perSecond": 4.2,
+   "p50": 991,
+   "p95": 1203,
+   "failed": 0
+  },
+  "not · 2 pencere": {
+   "perSecond": 1,
+   "p50": 4202,
+   "p95": 7909,
+   "failed": 0
+  },
+  "para · 2 pencere": {
+   "perSecond": 0.8,
+   "p50": 5377,
+   "p95": 5737,
+   "failed": 0
+  },
+  "not · 5 pencere": {
+   "perSecond": 0.8,
+   "p50": 7933,
+   "p95": 11379,
+   "failed": 0
+  },
+  "para · 5 pencere": {
+   "perSecond": 1,
+   "p50": 4610,
+   "p95": 7066,
+   "failed": 0
+  }
+ },
+ "istek": {
+  "ana ekran · not": {
+   "istek": 71,
+   "kb": 15992,
+   "enUzunMs": 9688,
+   "uclar": {
+    "/api/workspace/dues": "11× 14027 KB",
+    "/api/workspace/tasks": "10× 0 KB",
+    "/api/workspace/liens": "10× 1 KB",
+    "/api/workspace/plans": "10× 1935 KB",
+    "/api/workspace/cheques": "10× 15 KB",
+    "/api/workspace/invoices": "10× 14 KB",
+    "/api/workspace/stock/alerts": "10× 0 KB"
+   }
+  },
+  "ana ekran · para": {
+   "istek": 80,
+   "kb": 27468,
+   "enUzunMs": 21033,
+   "uclar": {
+    "/api/workspace/dues": "20× 25504 KB",
+    "/api/workspace/tasks": "10× 0 KB",
+    "/api/workspace/liens": "10× 1 KB",
+    "/api/workspace/plans": "10× 1935 KB",
+    "/api/workspace/cheques": "10× 15 KB",
+    "/api/workspace/invoices": "10× 14 KB",
+    "/api/workspace/stock/alerts": "10× 0 KB"
+   }
+  },
+  "cari ekran · not": {
+   "istek": 101,
+   "kb": 22091,
+   "enUzunMs": 9378,
+   "uclar": {
+    "/api/workspace/accounts": "30× 6099 KB",
+    "/api/workspace/dues": "11× 14027 KB",
+    "/api/workspace/tasks": "10× 0 KB",
+    "/api/workspace/liens": "10× 1 KB",
+    "/api/workspace/plans": "10× 1935 KB",
+    "/api/workspace/cheques": "10× 15 KB",
+    "/api/workspace/invoices": "10× 14 KB",
+    "/api/workspace/stock/alerts": "10× 0 KB"
+   }
+  },
+  "cari ekran · para": {
+   "istek": 100,
+   "kb": 31535,
+   "enUzunMs": 22017,
+   "uclar": {
+    "/api/workspace/accounts": "20× 4066 KB",
+    "/api/workspace/dues": "20× 25504 KB",
+    "/api/workspace/liens": "10× 1 KB",
+    "/api/workspace/tasks": "10× 0 KB",
+    "/api/workspace/plans": "10× 1935 KB",
+    "/api/workspace/cheques": "10× 15 KB",
+    "/api/workspace/invoices": "10× 14 KB",
+    "/api/workspace/stock/alerts": "10× 0 KB"
+   }
+  }
+ },
+ "ekran": {
+  "not · 0/sn": {
+   "kayitSn": 0,
+   "tur": "not",
+   "yazilan": 0,
+   "donmaMs": 0,
+   "tusHarfMs": [
+    8,
+    9,
+    6,
+    5,
+    4
+   ],
+   "aramaSonucuMs": 314,
+   "kutuda": "C0123",
+   "pencereYenidenAcildi": false,
+   "kutuKararsiz": false
+  },
+  "not · 1/sn": {
+   "kayitSn": 1,
+   "tur": "not",
+   "yazilan": 34,
+   "donmaMs": 521,
+   "tusHarfMs": [
+    1597,
+    3191,
+    3253,
+    2914,
+    4475
+   ],
+   "aramaSonucuMs": 7538,
+   "kutuda": "C0123",
+   "pencereYenidenAcildi": false,
+   "kutuKararsiz": true
+  },
+  "not · 5/sn": {
+   "kayitSn": 5,
+   "tur": "not",
+   "yazilan": 34,
+   "donmaMs": 585,
+   "tusHarfMs": [
+    1509,
+    3123,
+    3256,
+    4265,
+    2887
+   ],
+   "aramaSonucuMs": 4645,
+   "kutuda": "C0123",
+   "pencereYenidenAcildi": false,
+   "kutuKararsiz": true
+  },
+  "para · 0/sn": {
+   "kayitSn": 0,
+   "tur": "para",
+   "yazilan": 0,
+   "donmaMs": 0,
+   "tusHarfMs": [
+    14,
+    4,
+    4,
+    3,
+    3
+   ],
+   "aramaSonucuMs": 326,
+   "kutuda": "C0123",
+   "pencereYenidenAcildi": false,
+   "kutuKararsiz": false
+  },
+  "para · 1/sn": {
+   "kayitSn": 1,
+   "tur": "para",
+   "yazilan": 29,
+   "donmaMs": 583,
+   "tusHarfMs": [
+    5362,
+    7940,
+    5466,
+    6747,
+    4816
+   ],
+   "aramaSonucuMs": 9872,
+   "kutuda": "C0123",
+   "pencereYenidenAcildi": false,
+   "kutuKararsiz": true
+  },
+  "para · 5/sn": {
+   "kayitSn": 5,
+   "tur": "para",
+   "yazilan": 33,
+   "donmaMs": 828,
+   "tusHarfMs": [
+    5824,
+    7921,
+    5695,
+    5286,
+    6435
+   ],
+   "aramaSonucuMs": 11909,
+   "kutuda": "C0123",
+   "pencereYenidenAcildi": false,
+   "kutuKararsiz": true
+  }
+ },
+ "etiket": "once",
+ "surum": "2.0.21",
+ "kod": "/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/kod-2.0.21",
+ "tarih": "2026-10-04T14:51:25.308Z",
+ "bolumler": [
+  "ekran"
+ ],
+ "pencereKayiplari": []
+}
