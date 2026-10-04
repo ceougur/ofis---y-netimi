@@ -499,6 +499,15 @@ Bağlam kopsa da bu düzen değişmez. Kullanıcı "zip ver" dediğinde şu üç
   mutabakat 0, yanıt süreleri ölçülür. (b) KÖTÜ NİYETLİ (güvenlik) — yetkisiz personel başka şirketin/işlemin verisine
   ulaşmaya, ?hofCompany= ile şirket değiştirmeye, yetki dışı uçları çağırmaya, bozuk/aşırı büyük girdi göndermeye çalışır;
   bağımlılık taraması. Hepsi reddedilmeli, veri bozulmamalı.
+  KARAR (kullanıcı, 04.10.2026): "her yapılmayan testi hacker yani kötü niyetli olarak programı bozmak için yapalım; planını
+  böyle yap". PLAN: raporda (docs/TEST-KAPSAMI-2.0.21.md) doğrulanmış her testsiz yer (52 yüksek + 116 orta) için test
+  "çalışıyor mu?" diye değil "nasıl bozarım?" diye yazılır. Her açık için saldırgan soruları: yetkim yokken yapabilir miyim
+  (başka personel, başka şirket, ?hofCompany= oyunu, doğrudan API)? kilitli döneme/ileri tarihe yazdırabilir miyim? tutarı
+  eksi/sıfır/devasa/kuruş artığı, metni bozuk/çok uzun/zararlı (HTML, formül, yol) verebilir miyim? çift tıklama ve aynı
+  anda iki istekle çift kayıt ya da eksi bakiye yaratabilir miyim? işlemi yarıda kesip (bağlantı kopması, disk dolu) veriyi
+  yarım bırakabilir miyim? sil → geri yükle → düzenle sırasıyla bağları koparabilir miyim? Her test sonunda değişmezler
+  denetlenir (mutabakat 0, şirketler ayrı, yetkisiz değişiklik yok). Sıra: para ve dönem kilidi → yetki ve şirket ayrımı →
+  eşzamanlılık/yük → girdi bozma → arayüz düğmeleri. Bulunan her açık: önce kırmızı test, sonra düzeltme, kanıt dosyası.
   [x] 6. Bu test türleri aşağıdaki "Test kuralı"na her sürümde koşulacak kural olarak yazılır; teslimde "denenen /
          denenmeyen / bilinen sınırlar" açıkça yazılır; her sürümde bağımsız gözden geçirme.
 - 2.0.20 YAPILACAKLAR (kullanıcı "yapılacaklara not al" dedi, 03.10.2026; "yap" denince başlanır; ayrıntı ve
