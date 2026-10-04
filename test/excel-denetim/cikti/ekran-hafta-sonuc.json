@@ -33,469 +33,469 @@
    "no": "ISL-00388",
    "type": "purchase",
    "ok": true,
-   "sn": 6.159,
+   "sn": 5.713,
    "note": "Alış Faturası ISL-00388 Ödendi"
   },
   {
    "no": "ISL-00548",
    "type": "purchase",
    "ok": true,
-   "sn": 9.156,
+   "sn": 8.653,
    "note": "Alış Faturası ISL-00548 Ödendi"
   },
   {
    "no": "ISL-00700",
    "type": "purchase",
    "ok": true,
-   "sn": 6.247,
+   "sn": 6.044,
    "note": "Alış Faturası ISL-00700 Ödendi"
   },
   {
    "no": "ISL-00783",
    "type": "purchase",
    "ok": true,
-   "sn": 4.801,
+   "sn": 4.451,
    "note": "Alış Faturası ISL-00783 Vadesi Geçti"
   },
   {
    "no": "ISL-01033",
    "type": "purchase",
    "ok": true,
-   "sn": 4.749,
+   "sn": 4.487,
    "note": "Alış Faturası ISL-01033 Vadesi Geçti"
   },
   {
    "no": "ISL-02252",
    "type": "sale",
    "ok": true,
-   "sn": 6.486,
+   "sn": 6.105,
    "note": "Satış Faturası FIS2025000000001 Ödendi"
   },
   {
    "no": "ISL-02289",
    "type": "sale",
    "ok": true,
-   "sn": 5.461,
+   "sn": 5.214,
    "note": "Satış Faturası FIS2025000000002 Vadesi Geçti"
   },
   {
    "no": "ISL-03059",
    "type": "expense",
    "ok": true,
-   "sn": 7.533,
+   "sn": 7.295,
    "note": "Alış Faturası ISL-03059 Ödendi"
   },
   {
    "no": "ISL-04149",
    "type": "purchase",
    "ok": true,
-   "sn": 5.742,
+   "sn": 5.287,
    "note": "Alış Faturası ISL-04149 Ödendi"
   },
   {
    "no": "EK-01",
    "type": "newCari",
    "ok": true,
-   "sn": 7.131,
+   "sn": 7.125,
    "note": "form kapandı"
   },
   {
    "no": "EK-02",
    "type": "newCari",
    "ok": true,
-   "sn": 6.983,
+   "sn": 6.837,
    "note": "form kapandı"
   },
   {
    "no": "EK-03",
    "type": "newCari",
    "ok": true,
-   "sn": 6.786,
+   "sn": 6.5,
    "note": "form kapandı"
   },
   {
    "no": "EK-04",
    "type": "dupCari",
    "ok": true,
-   "sn": 5.544,
+   "sn": 5.167,
    "note": "uyarı var; \"Mevcut Cariyi Aç\" → No C0001 Mehmet Kurt Müşteri"
   },
   {
    "no": "EK-05",
    "type": "newItem",
    "ok": true,
-   "sn": 7.626,
+   "sn": 7.164,
    "note": "form kapandı"
   },
   {
    "no": "EK-06",
    "type": "newItem",
    "ok": true,
-   "sn": 5.958,
+   "sn": 5.628,
    "note": "form kapandı"
   },
   {
    "no": "EK-07",
    "type": "rent",
    "ok": true,
-   "sn": 6.727,
+   "sn": 6.498,
    "note": "Alış Faturası KR-2025-01 Vadesi Geçti"
   },
   {
    "no": "ISL-00741",
    "type": "purchase",
    "ok": true,
-   "sn": 5.556,
+   "sn": 5.244,
    "note": "Alış Faturası ISL-00741 Ödendi"
   },
   {
    "no": "ISL-00861",
    "type": "purchase",
    "ok": true,
-   "sn": 6.432,
+   "sn": 6.082,
    "note": "Alış Faturası ISL-00861 Ödendi"
   },
   {
    "no": "ISL-01752",
    "type": "sale",
    "ok": true,
-   "sn": 6.231,
+   "sn": 6.027,
    "note": "Satış Faturası FIS2025000000003 Ödendi"
   },
   {
    "no": "ISL-01845",
    "type": "sale",
    "ok": true,
-   "sn": 5.954,
+   "sn": 5.696,
    "note": "Satış Faturası FIS2025000000004 Vadesi Geçti"
   },
   {
    "no": "ISL-03029",
    "type": "expense",
    "ok": true,
-   "sn": 7.8,
+   "sn": 7.521,
    "note": "Alış Faturası ISL-03029 Ödendi"
   },
   {
    "no": "ISL-03699",
    "type": "pay",
    "ok": true,
-   "sn": 6.762,
+   "sn": 6.619,
    "note": "form kapandı"
   },
   {
    "no": "ISL-04052",
    "type": "installment",
    "ok": true,
-   "sn": 6.903,
+   "sn": 6.68,
    "note": "Tahsilat kaydedildi. Kalan ₺1.706,81.Makbuz"
   },
   {
    "no": "EK-08",
    "type": "stockIn",
    "ok": true,
-   "sn": 5.94,
+   "sn": 5.604,
    "note": "form kapandı"
   },
   {
    "no": "EK-09",
    "type": "payEntry",
    "ok": true,
-   "sn": 6.449,
+   "sn": 5.955,
    "note": "Ödeme kaydedildi. Bakiye ₺0,00.Makbuz"
   },
   {
    "no": "ISL-00398",
    "type": "purchase",
    "ok": true,
-   "sn": 4.371,
+   "sn": 4.43,
    "note": "Alış Faturası ISL-00398 Vadesi Geçti"
   },
   {
    "no": "ISL-02147",
    "type": "sale",
    "ok": true,
-   "sn": 9.946,
+   "sn": 9.188,
    "note": "Satış Faturası FIS2025000000005 Ödendi"
   },
   {
    "no": "ISL-02391",
    "type": "sale",
    "ok": true,
-   "sn": 5.256,
+   "sn": 5.01,
    "note": "Satış Faturası FIS2025000000006 Vadesi Geçti"
   },
   {
    "no": "ISL-02424",
    "type": "sale",
    "ok": true,
-   "sn": 5.677,
+   "sn": 5.08,
    "note": "Satış Faturası FIS2025000000007 Vadesi Geçti"
   },
   {
    "no": "ISL-03121",
    "type": "expense",
    "ok": true,
-   "sn": 8.812,
+   "sn": 8.254,
    "note": "Alış Faturası ISL-03121 Ödendi"
   },
   {
    "no": "ISL-03492",
    "type": "collect",
    "ok": true,
-   "sn": 7.362,
+   "sn": 7.227,
    "note": "Tahsilat kaydedildi. Bakiye ₺13.733,77 Borçlu.Makbuz"
   },
   {
    "no": "ISL-04119",
    "type": "purchase",
    "ok": true,
-   "sn": 5.847,
+   "sn": 5.611,
    "note": "Alış Faturası ISL-04119 Ödendi"
   },
   {
    "no": "EK-10",
    "type": "stockOut",
    "ok": true,
-   "sn": 5.971,
+   "sn": 5.685,
    "note": "form kapandı"
   },
   {
    "no": "ISL-01066",
    "type": "purchase",
    "ok": true,
-   "sn": 6.255,
+   "sn": 5.926,
    "note": "Alış Faturası ISL-01066 Ödendi"
   },
   {
    "no": "ISL-01992",
    "type": "sale",
    "ok": true,
-   "sn": 9.679,
+   "sn": 9.105,
    "note": "Satış Faturası FIS2025000000008 Ödendi"
   },
   {
    "no": "ISL-04051",
    "type": "installment",
    "ok": true,
-   "sn": 6.906,
+   "sn": 6.272,
    "note": "Tahsilat kaydedildi. Kalan ₺0,00.Makbuz"
   },
   {
    "no": "ISL-04133",
    "type": "purchase",
    "ok": true,
-   "sn": 6.682,
+   "sn": 6.073,
    "note": "Alış Faturası ISL-04133 Ödendi"
   },
   {
    "no": "EK-11",
    "type": "stockOut",
    "ok": true,
-   "sn": 5.992,
+   "sn": 5.894,
    "note": "form kapandı"
   },
   {
    "no": "EK-12",
    "type": "sale",
    "ok": true,
-   "sn": 5.462,
+   "sn": 5.231,
    "note": "Satış Faturası FIS2025000000009 Vadesi Geçti"
   },
   {
    "no": "ISL-00599",
    "type": "purchase",
    "ok": true,
-   "sn": 9.217,
+   "sn": 8.82,
    "note": "Alış Faturası ISL-00599 Ödendi"
   },
   {
    "no": "ISL-01025",
    "type": "purchase",
    "ok": true,
-   "sn": 4.71,
+   "sn": 4.417,
    "note": "Alış Faturası ISL-01025 Vadesi Geçti"
   },
   {
    "no": "ISL-01185",
    "type": "purchase",
    "ok": true,
-   "sn": 6.537,
+   "sn": 5.957,
    "note": "Alış Faturası ISL-01185 Ödendi"
   },
   {
    "no": "ISL-01630",
    "type": "sale",
    "ok": true,
-   "sn": 5.683,
+   "sn": 4.94,
    "note": "Satış Faturası FIS2025000000010 Vadesi Geçti"
   },
   {
    "no": "ISL-01640",
    "type": "sale",
    "ok": true,
-   "sn": 9.226,
+   "sn": 8.701,
    "note": "Satış Faturası FIS2025000000011 Ödendi"
   },
   {
    "no": "ISL-02622",
    "type": "sale",
    "ok": true,
-   "sn": 5.113,
+   "sn": 5.21,
    "note": "Satış Faturası FIS2025000000012 Vadesi Geçti"
   },
   {
    "no": "ISL-02660",
    "type": "sale",
    "ok": true,
-   "sn": 4.806,
+   "sn": 4.418,
    "note": "Satış Faturası FIS2025000000013 Vadesi Geçti"
   },
   {
    "no": "ISL-02978",
    "type": "expense",
    "ok": true,
-   "sn": 8.429,
+   "sn": 8.354,
    "note": "Alış Faturası ISL-02978 Ödendi"
   },
   {
    "no": "ISL-03484",
    "type": "collect",
    "ok": true,
-   "sn": 7.707,
+   "sn": 7.266,
    "note": "Tahsilat kaydedildi. Bakiye ₺9.204,02 Alacaklı.Makbuz"
   },
   {
    "no": "ISL-03839",
    "type": "pay",
    "ok": true,
-   "sn": 7.682,
+   "sn": 6.875,
    "note": "Ödeme kaydedildi. Bakiye ₺8.153,07 Borçlu.Makbuz"
   },
   {
    "no": "ISL-04087",
    "type": "installment",
    "ok": true,
-   "sn": 6.688,
+   "sn": 6.631,
    "note": "Tahsilat kaydedildi. Kalan ₺249,99.Makbuz"
   },
   {
    "no": "EK-13",
    "type": "plan",
    "ok": true,
-   "sn": 7.434,
+   "sn": 7.079,
    "note": "form kapandı"
   },
   {
    "no": "EK-14",
    "type": "salary",
    "ok": true,
-   "sn": 12.847,
+   "sn": 12.232,
    "note": "Ödeme kaydedildi. Bakiye ₺0,00.Makbuz"
   },
   {
    "no": "ISL-00468",
    "type": "purchase",
    "ok": true,
-   "sn": 5.859,
+   "sn": 5.442,
    "note": "Alış Faturası ISL-00468 Ödendi"
   },
   {
    "no": "ISL-02196",
    "type": "sale",
    "ok": true,
-   "sn": 4.836,
+   "sn": 4.513,
    "note": "Satış Faturası FIS2025000000014 Vadesi Geçti"
   },
   {
    "no": "ISL-02300",
    "type": "sale",
    "ok": true,
-   "sn": 9.611,
+   "sn": 9.443,
    "note": "Satış Faturası FIS2025000000015 Ödendi"
   },
   {
    "no": "ISL-03339",
    "type": "expense",
    "ok": true,
-   "sn": 8.26,
+   "sn": 8.138,
    "note": "Alış Faturası ISL-03339 Ödendi"
   },
   {
    "no": "ISL-03375",
    "type": "collect",
    "ok": true,
-   "sn": 6.958,
+   "sn": 6.439,
    "note": "form kapandı"
   },
   {
    "no": "ISL-03439",
    "type": "collect",
    "ok": true,
-   "sn": 7.434,
+   "sn": 7.287,
    "note": "Tahsilat kaydedildi. Bakiye ₺9.132,02 Alacaklı.Makbuz"
   },
   {
    "no": "EK-15",
    "type": "collectEntry",
    "ok": true,
-   "sn": 7.064,
+   "sn": 6.414,
    "note": "Tahsilat kaydedildi. Bakiye ₺16.720,00 Borçlu.Makbuz"
   },
   {
    "no": "ISL-01905",
    "type": "sale",
    "ok": true,
-   "sn": 6.07,
+   "sn": 5.941,
    "note": "Satış Faturası FIS2025000000016 Vadesi Geçti"
   },
   {
    "no": "ISL-01973",
    "type": "sale",
    "ok": true,
-   "sn": 6.511,
+   "sn": 6.498,
    "note": "Satış Faturası FIS2025000000017 Ödendi"
   },
   {
    "no": "ISL-02108",
    "type": "sale",
    "ok": true,
-   "sn": 6.705,
+   "sn": 6.34,
    "note": "Satış Faturası FIS2025000000018 Ödendi"
   },
   {
    "no": "ISL-02889",
    "type": "salary",
    "ok": true,
-   "sn": 12.306,
+   "sn": 11.576,
    "note": "Ödeme kaydedildi. Bakiye ₺0,00.Makbuz"
   },
   {
    "no": "ISL-02893",
    "type": "salary",
    "ok": true,
-   "sn": 11.76,
+   "sn": 11.756,
    "note": "Ödeme kaydedildi. Bakiye ₺0,00.Makbuz"
   },
   {
    "no": "ISL-02894",
    "type": "salary",
    "ok": true,
-   "sn": 11.829,
+   "sn": 11.613,
    "note": "Ödeme kaydedildi. Bakiye ₺0,00.Makbuz"
   },
   {
    "no": "ISL-03566",
    "type": "collect",
    "ok": true,
-   "sn": 7.425,
+   "sn": 7.43,
    "note": "Tahsilat kaydedildi. Bakiye ₺45.548,42 Alacaklı.Makbuz"
   },
   {
    "no": "EK-16",
    "type": "planCollect",
    "ok": true,
-   "sn": 5.962,
+   "sn": 5.889,
    "note": "Tahsilat kaydedildi. Kalan ₺6.000,00.Makbuz"
   }
  ],
