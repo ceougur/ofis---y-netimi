@@ -1,0 +1,68 @@
+Hafta 2025-01-20 – 2025-01-26: 51 işlem; başlangıç verisi 4 işlem (ISL-04007, ISL-04008, ISL-04013, ISL-04050)
+■ API Şirketi: cari listesi → Yönetici parolanızı unutursanız programa kurtarma anahtarıyla girersiniz. Henüz oluşturmadınız.Oluştur | 350 cari açıldı, 107 carinin türü belirsizdi, Müşteri olarak açıldı (satır 5, 12, 16, 21, 26, 28, 29, 30…).
+■ API Şirketi: ürün listesi → 350 cari açıldı, 107 carinin türü belirsizdi, Müşteri olarak açıldı (satır 5, 12, 16, 21, 26, 28, 29, 30…). | 50 ürün açıldı.
+  API Şirketi: 373 cari, 50 ürün, başlangıç işlemleri girildi
+■ Ekran Şirketi: cari listesi → “002 · Ekran Şirketi” şirketine geçtiniz. Bu seçim yalnızca sizin ekranınızı değiştirir. | 350 cari açıldı, 107 carinin türü belirsizdi, Müşteri olarak açıldı (satır 5, 12, 16, 21, 26, 28, 29, 30…).
+■ Ekran Şirketi: ürün listesi → 350 cari açıldı, 107 carinin türü belirsizdi, Müşteri olarak açıldı (satır 5, 12, 16, 21, 26, 28, 29, 30…). | 50 ürün açıldı.
+  Ekran Şirketi: 373 cari, 50 ürün, başlangıç işlemleri girildi
+Başlangıçta iki şirket aynı
+API: 51/51 işlem (1.0 sn)
+  ✓ ekran ISL-00388 2025-01-20 purchase paid · 5.8 sn · Alış Faturası ISL-00388 Ödendi
+  ✓ ekran ISL-00548 2025-01-20 purchase cheque · 9.1 sn · Alış Faturası ISL-00548 Ödendi
+  ✓ ekran ISL-00700 2025-01-20 purchase paid · 6.2 sn · Alış Faturası ISL-00700 Ödendi
+  ✓ ekran ISL-00783 2025-01-20 purchase open · 4.6 sn · Alış Faturası ISL-00783 Vadesi Geçti
+  ✓ ekran ISL-01033 2025-01-20 purchase open · 4.5 sn · Alış Faturası ISL-01033 Vadesi Geçti
+  ✓ ekran ISL-02252 2025-01-20 sale paid · 6.2 sn · Satış Faturası FIS2025000000001 Ödendi
+  ✓ ekran ISL-02289 2025-01-20 sale open · 5.3 sn · Satış Faturası FIS2025000000002 Vadesi Geçti
+  ✓ ekran ISL-03059 2025-01-20 expense card · 7.5 sn · Alış Faturası ISL-03059 Ödendi
+  ✓ ekran ISL-04149 2025-01-20 purchase paid · 5.6 sn · Alış Faturası ISL-04149 Ödendi
+  ✓ ekran ISL-00741 2025-01-21 purchase paid · 5.7 sn · Alış Faturası ISL-00741 Ödendi
+  ✓ ekran ISL-00861 2025-01-21 purchase paid · 6.7 sn · Alış Faturası ISL-00861 Ödendi
+  ✓ ekran ISL-01752 2025-01-21 sale paid · 6.4 sn · Satış Faturası FIS2025000000003 Ödendi
+  ✓ ekran ISL-01845 2025-01-21 sale installments · 6.2 sn · Satış Faturası FIS2025000000004 Vadesi Geçti
+  ✓ ekran ISL-03029 2025-01-21 expense bank · 7.4 sn · Alış Faturası ISL-03029 Ödendi
+  ✓ ekran ISL-03699 2025-01-21 pay note · 6.9 sn · form kapandı
+  ✓ ekran ISL-04052 2025-01-21 installment card · 7.2 sn · Tahsilat kaydedildi. Kalan ₺1.706,81.Makbuz
+  ✓ ekran ISL-00398 2025-01-22 purchase open · 4.8 sn · Alış Faturası ISL-00398 Vadesi Geçti
+  ✓ ekran ISL-02147 2025-01-22 sale cheque · 9.3 sn · Satış Faturası FIS2025000000005 Ödendi
+  ✓ ekran ISL-02391 2025-01-22 sale open · 5.4 sn · Satış Faturası FIS2025000000006 Vadesi Geçti
+  ✓ ekran ISL-02424 2025-01-22 sale open · 5.4 sn · Satış Faturası FIS2025000000007 Vadesi Geçti
+  ✓ ekran ISL-03121 2025-01-22 expense cash · 8.5 sn · Alış Faturası ISL-03121 Ödendi
+  ✓ ekran ISL-03492 2025-01-22 collect card · 7.6 sn · Tahsilat kaydedildi. Bakiye ₺13.733,77 Borçlu.Makbuz
+  ✓ ekran ISL-04119 2025-01-22 purchase paid · 5.8 sn · Alış Faturası ISL-04119 Ödendi
+  ✓ ekran ISL-01066 2025-01-23 purchase paid · 6.5 sn · Alış Faturası ISL-01066 Ödendi
+  ✓ ekran ISL-01992 2025-01-23 sale cheque · 9.9 sn · Satış Faturası FIS2025000000008 Ödendi
+  ✓ ekran ISL-04051 2025-01-23 installment cash · 6.5 sn · Tahsilat kaydedildi. Kalan ₺0,00.Makbuz
+  ✓ ekran ISL-04133 2025-01-23 purchase paid · 6.5 sn · Alış Faturası ISL-04133 Ödendi
+  ✓ ekran ISL-00599 2025-01-24 purchase cheque · 9.0 sn · Alış Faturası ISL-00599 Ödendi
+  ✓ ekran ISL-01025 2025-01-24 purchase open · 4.8 sn · Alış Faturası ISL-01025 Vadesi Geçti
+  ✓ ekran ISL-01185 2025-01-24 purchase paid · 6.4 sn · Alış Faturası ISL-01185 Ödendi
+  ✓ ekran ISL-01630 2025-01-24 sale open · 5.7 sn · Satış Faturası FIS2025000000009 Vadesi Geçti
+  ✓ ekran ISL-01640 2025-01-24 sale cheque · 9.3 sn · Satış Faturası FIS2025000000010 Ödendi
+  ✓ ekran ISL-02622 2025-01-24 sale open · 5.5 sn · Satış Faturası FIS2025000000011 Vadesi Geçti
+  ✓ ekran ISL-02660 2025-01-24 sale open · 4.9 sn · Satış Faturası FIS2025000000012 Vadesi Geçti
+  ✓ ekran ISL-02978 2025-01-24 expense cash · 8.7 sn · Alış Faturası ISL-02978 Ödendi
+  ✓ ekran ISL-03484 2025-01-24 collect card · 7.6 sn · Tahsilat kaydedildi. Bakiye ₺9.204,02 Alacaklı.Makbuz
+  ✓ ekran ISL-03839 2025-01-24 pay cash · 7.2 sn · Ödeme kaydedildi. Bakiye ₺8.153,07 Borçlu.Makbuz
+  ✓ ekran ISL-04087 2025-01-24 installment bank · 6.8 sn · Tahsilat kaydedildi. Kalan ₺249,99.Makbuz
+  ✓ ekran ISL-00468 2025-01-25 purchase paid · 5.6 sn · Alış Faturası ISL-00468 Ödendi
+  ✓ ekran ISL-02196 2025-01-25 sale open · 4.7 sn · Satış Faturası FIS2025000000013 Vadesi Geçti
+  ✓ ekran ISL-02300 2025-01-25 sale cheque · 9.7 sn · Satış Faturası FIS2025000000014 Ödendi
+  ✓ ekran ISL-03339 2025-01-25 expense cash · 8.6 sn · Alış Faturası ISL-03339 Ödendi
+  ✓ ekran ISL-03375 2025-01-25 collect note · 6.6 sn · form kapandı
+  ✓ ekran ISL-03439 2025-01-25 collect cash · 7.5 sn · Tahsilat kaydedildi. Bakiye ₺9.132,02 Alacaklı.Makbuz
+  ✓ ekran ISL-01905 2025-01-26 sale installments · 6.1 sn · Satış Faturası FIS2025000000015 Ödendi
+  ✓ ekran ISL-01973 2025-01-26 sale paid · 6.3 sn · Satış Faturası FIS2025000000016 Ödendi
+  ✓ ekran ISL-02108 2025-01-26 sale paid · 6.4 sn · Satış Faturası FIS2025000000017 Ödendi
+  ✓ ekran ISL-02889 2025-01-26 salary bank · 11.6 sn · Ödeme kaydedildi. Bakiye ₺0,00.Makbuz
+  ✓ ekran ISL-02893 2025-01-26 salary bank · 11.7 sn · Ödeme kaydedildi. Bakiye ₺0,00.Makbuz
+  ✓ ekran ISL-02894 2025-01-26 salary bank · 11.6 sn · Ödeme kaydedildi. Bakiye ₺0,00.Makbuz
+  ✓ ekran ISL-03566 2025-01-26 collect bank · 7.7 sn · Tahsilat kaydedildi. Bakiye ₺45.548,42 Alacaklı.Makbuz
+Ekran: 51/51 işlem (6.0 dk)
+
+KARŞILAŞTIRMA: FARK YOK
+Mutabakat: API {"ok":true,"gecen":59,"toplam":59} · Ekran {"ok":true,"gecen":59,"toplam":59}
+Faturalar: API {"sale":{"adet":20,"toplam":350961.06,"odenen":277566.03,"acik":73395.03},"purchase":{"adet":21,"toplam":709361.84,"odenen":630885.75,"acik":78476.09}}
+Çek/Senet: API {"adet":8,"toplam":277566.67,"durum":{"in:portfolio":5,"out:pending":3}} · Taksit: {"kart":5,"toplam":14966.34,"odenen":5054.94,"kalan":9911.4}
+Sayfa hataları: yok
+Ekranda silinen alan (bilinen hata): 0 kez

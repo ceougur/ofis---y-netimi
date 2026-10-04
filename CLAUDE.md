@@ -547,6 +547,14 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   KARAR (kullanıcı, 04.10.2026, 2.0.22 yayınından sonra; haftalık kullanım limitini sordu → önerim: limit dar olabilir, BİR
   HAFTA + TEK ŞİRKET, kısa karşılaştırma tablosu; fark çıkmazsa genişletilmez) → "önerini yap". Kod değiştirilmez; fark
   çıkarsa önce kullanıcıya bildirilir.
+  SONUÇ (04.10.2026 18:0x; `test/excel-denetim/ekran-hafta.mjs`, sonuç `cikti/ekran-hafta-sonuc.json`): 20–26 Ocak 2025 haftası
+  (51 işlem, 30 türün 25'i) aynı başlangıçlı iki şirkete — 001 API, 002 EKRANDAN (fatura formu, cari kartı, Çek/Senet penceresi,
+  taksit) — girildi: 51/51 ekrandan (ort. 7 sn/işlem, 6 dk); 373 cari borç/alacak/bakiye, 50 ürün stoğu + stok değeri, faturalar,
+  çek/senet, taksit kartları, Kasa/banka/POS, mutabakat 59/59 ×2 → FARK YOK. BULGU (gerçek ekran hatası, 2.0.21'de de var,
+  KOD DEĞİŞTİRİLMEDİ, karar kullanıcıda): fatura formunda ödeme tutarı faturayı tamamen karşılayınca ödeme alanları ~0,6 sn
+  sonra yeniden çiziliyor (`hof-invoices.js` refreshRest → renderPayLater); bu sürede seçilen Vade tarihi ya da yazılan
+  Banka/Şube siliniyor ("No yaz → Tab → Banka yaz" normal hızda Banka boş kalıyor). Kaydet "1. evrakın vade tarihini seçin"
+  der, veri bozulmaz. Yeniden üretim: `test/excel-denetim/form-insan.mjs` (TARIH=100 → vade boş; TARIH=2000 → dolu).
   KULLANICI ÖNERİSİ (04.10.2026, "baş mimar olarak onaylarsan"): öncelik 1 = güvenlik/veri bütünlüğü (3 cari türü, 4 tanımsız
   ödeme yolu, 5 API çift fatura); öncelik 2 = performans/UX (1–2 gecikmeler, 6 lisans uyarısı). DEĞERLENDİRMEM: 3/4/5 katılıyorum;
   İTİRAZ (a) 1–2 yalnız "frontend" değil ve ikinci sıra değil: 0 pencerede bile cari not düzeltmesi ~1 sn (sunucu); her açık
