@@ -544,6 +544,9 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   1.613 işlem cari açılışından önce, kısmi ödeme tutarı yok, 165 "Tamamlandı" taksitlinin tahsilatı yok, Özet sayfası yanlış).
   Kullanıcı sorusu (aynı gün): "gerçek muhasebeci gibi değil de koddan mı yapıyorsun?" → evet, hacim API'den; önerildi:
   bir ayın tamamı (Ocak 2024) ekrandan ayrı şirkete girilip API ile girilenle sayı sayı karşılaştırılsın (karar kullanıcıda).
+  KARAR (kullanıcı, 04.10.2026, 2.0.22 yayınından sonra; haftalık kullanım limitini sordu → önerim: limit dar olabilir, BİR
+  HAFTA + TEK ŞİRKET, kısa karşılaştırma tablosu; fark çıkmazsa genişletilmez) → "önerini yap". Kod değiştirilmez; fark
+  çıkarsa önce kullanıcıya bildirilir.
   KULLANICI ÖNERİSİ (04.10.2026, "baş mimar olarak onaylarsan"): öncelik 1 = güvenlik/veri bütünlüğü (3 cari türü, 4 tanımsız
   ödeme yolu, 5 API çift fatura); öncelik 2 = performans/UX (1–2 gecikmeler, 6 lisans uyarısı). DEĞERLENDİRMEM: 3/4/5 katılıyorum;
   İTİRAZ (a) 1–2 yalnız "frontend" değil ve ikinci sıra değil: 0 pencerede bile cari not düzeltmesi ~1 sn (sunucu); her açık
