@@ -18,6 +18,8 @@ import { HERE, PASS, STAFF_PASS } from "./ortak.mjs";
 const SP = process.env.SP || path.join(HERE, "calisma");
 const KOD = path.resolve(process.env.KOD || path.join(HERE, "..", ".."));
 const ETIKET = process.env.ETIKET || path.basename(KOD);
+// BOLUM: "hiz,istek,ekran" (varsayılan hepsi). Yalnız bir bölüm koşulursa önceki sonuç dosyası korunur, o bölüm güncellenir.
+const BOLUM = new Set((process.env.BOLUM || "hiz,istek,ekran").split(",").map(item => item.trim()).filter(Boolean));
 const state = JSON.parse(fs.readFileSync(path.join(SP, "canli", "durum.json"), "utf8"));
 const C1 = state.companies["001"];
 const { createApp } = await import(pathToFileURL(path.join(KOD, "server", "app.mjs")).href);
@@ -99,9 +101,18 @@ async function throughput(kind, seconds = 20) {
   }));
   return { perSecond: +((n - failed) / seconds).toFixed(1), p50: pct(lat, 0.5), p95: pct(lat, 0.95), failed };
 }
-const result = { etiket: ETIKET, surum: version, kod: KOD, tarih: new Date().toISOString(), hiz: {}, istek: {}, ekran: {} };
+const RESULT_FILE = path.join(HERE, "cikti", `yuk-olcum-${ETIKET}.json`);
+let previous = {};
+try {
+  previous = JSON.parse(fs.readFileSync(RESULT_FILE, "utf8"));
+} catch {
+  previous = {};
+}
+const result = { hiz: {}, istek: {}, ekran: {}, ...previous, etiket: ETIKET, surum: version, kod: KOD, tarih: new Date().toISOString(), bolumler: [...BOLUM] };
+const save = () => fs.writeFileSync(RESULT_FILE, JSON.stringify(result, null, 1));
 const windows = [];
-for (const count of [0, 2, 5]) {
+if (BOLUM.has("hiz")) result.hiz = {};
+for (const count of BOLUM.has("hiz") ? [0, 2, 5] : []) {
   const users = ["arayuz001", "mudur", "satis001", "tahsilat001", "stajyer001"];
   while (windows.length < count) windows.push(await openPage(users[windows.length]));
   await new Promise(r => setTimeout(r, 2000));
@@ -113,7 +124,6 @@ for (const count of [0, 2, 5]) {
   }
 }
 for (const page of windows) await page.context().close();
-const save = () => fs.writeFileSync(path.join(HERE, "cikti", `yuk-olcum-${ETIKET}.json`), JSON.stringify(result, null, 1));
 save();
 
 // 2) Açık bir pencerenin isteği (başka personel 10 kayıt, saniyede bir)
@@ -143,7 +153,8 @@ async function requestsOf(screen, kind) {
   for (const item of log) (by[item.url] ||= { n: 0, kb: 0 }), (by[item.url].n += 1), (by[item.url].kb += item.kb);
   return { istek: log.length, kb: Math.round(log.reduce((s, x) => s + x.kb, 0)), enUzunMs: Math.round(Math.max(0, ...log.map(x => x.ms))), uclar: Object.fromEntries(Object.entries(by).sort((a, b) => b[1].n - a[1].n).map(([k, v]) => [k, `${v.n}× ${Math.round(v.kb)} KB`])) };
 }
-for (const screen of ["ana", "cari"]) {
+if (BOLUM.has("istek")) result.istek = {};
+for (const screen of BOLUM.has("istek") ? ["ana", "cari"] : []) {
   for (const kind of ["not", "para"]) {
     const r = await requestsOf(screen, kind);
     result.istek[`${screen} ekran · ${kind}`] = r;
@@ -153,6 +164,8 @@ for (const screen of ["ana", "cari"]) {
 save();
 
 // 3) İnsanın hissettiği: Cari aramasında tuş → harf ve son tuş → sonuç
+if (BOLUM.has("ekran")) {
+result.ekran = {};
 const page = await openPage("arayuz001");
 const input = `${MODAL} input[data-filter=q]`;
 const openAccounts = async () => {
@@ -199,7 +212,10 @@ for (const kind of ["not", "para"]) {
       observer.disconnect();
       return Math.round(total);
     });
+    // Donma ölçümünün (10 sn) sırasında da pencere kaybolabilir: kutu kullanılmadan hemen önce yeniden denetlenir.
+    const reopenedAfter = await ensureWindow(`${kind}-${rate}-olcum-sonrasi`);
     const box = await page.locator(input).boundingBox();
+    if (!box) throw new Error(`Cari arama kutusu yeniden açıldıktan sonra da görünmüyor (${kind}, ${rate}/sn)`);
     await page.mouse.click(box.x + 30, box.y + box.height / 2);
     const lags = [];
     for (const ch of "C0123") {
@@ -230,9 +246,9 @@ for (const kind of ["not", "para"]) {
     const value = await page.locator(input).inputValue();
     alive = false;
     await noise;
-    const row = { kayitSn: rate, tur: kind, yazilan: written, donmaMs: freeze, tusHarfMs: lags, aramaSonucuMs: searchMs, kutuda: value, pencereYenidenAcildi: reopened };
+    const row = { kayitSn: rate, tur: kind, yazilan: written, donmaMs: freeze, tusHarfMs: lags, aramaSonucuMs: searchMs, kutuda: value, pencereYenidenAcildi: reopened || reopenedAfter };
     result.ekran[`${kind} · ${rate}/sn`] = row;
-    console.log(`[${ETIKET}] ekran ${kind} · başkası saniyede ${rate}: tuş→harf ${lags.join("/")} ms · son tuş→sonuç ${searchMs} ms · 10 sn'de donma ${freeze} ms · kutuda "${value}"${reopened ? " · pencere yeniden açıldı" : ""}`);
+    console.log(`[${ETIKET}] ekran ${kind} · başkası saniyede ${rate}: tuş→harf ${lags.join("/")} ms · son tuş→sonuç ${searchMs} ms · 10 sn'de donma ${freeze} ms · kutuda "${value}"${reopened || reopenedAfter ? " · pencere yeniden açıldı" : ""}`);
     save();
     if (await page.locator(input).isVisible().catch(() => false)) await page.fill(input, "");
     await page.waitForTimeout(3000);
@@ -240,6 +256,7 @@ for (const kind of ["not", "para"]) {
 }
 result.pencereKayiplari = lost;
 await page.context().close();
+}
 save();
 await browser.close();
 await app.close();
