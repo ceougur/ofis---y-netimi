@@ -150,6 +150,44 @@ describe("2.0.23 Bulgu 2: taksit kartı ↔ fatura kapama", () => {
     assert.equal(dueSum, 0, `takvimde bu carinin faturası ayrıca listelenmemeli (taksitleri kartından gelir), ${dueSum}`);
   });
 
+  test("D (çok cari): 12 caride Mevcut Borç kartı — toplu bakiye yolu da her borcu bir kez sayar", async () => {
+    // 8'den çok cari: bakiyeler cari başına ayrıntıdan değil toplu defterden (önbellekli) okunur; sonuç aynı olmalı.
+    // X: kart faturayı taksitlendirir (fatura 1.200, karttan 300 → yaşlandırma 900, faturanın açığı ayrıca sayılmaz).
+    // Y: kart faturayı DEĞİL önceki "Borç Yaz" borcunu (1.000) taksitlendirir; fatura 1.200 ayrı borçtur → 2.200.
+    //    Burada bakiye yanlış okunursa (ör. 0) fatura yanlışlıkla düşülür; test bakiyenin doğru okunduğunu ayırt eder.
+    const xs = [];
+    const ys = [];
+    for (let i = 0; i < 6; i += 1) {
+      const acc = await customer(`Çok X${i}`);
+      await sale(acc, "2025-02-15", 1200);
+      const card = await plan(acc, "2025-02-16", 1200, true);
+      await planIn(card.id, "2025-02-17", 300);
+      xs.push(acc);
+    }
+    for (let i = 0; i < 6; i += 1) {
+      const acc = await customer(`Çok Y${i}`);
+      await must("borç yaz", api.post(`/api/workspace/accounts/${acc.id}/entries`, { kind: "debt", amount: 1000, date: "2025-02-14", note: "önceki borç" }));
+      await plan(acc, "2025-02-15", 1000, true);
+      await sale(acc, "2025-02-16", 1200);
+      ys.push(acc);
+    }
+    const aging = await must("yaşlandırma", api.get("/api/workspace/report-center/alacak-yaslandirma"));
+    for (const [list, expected] of [[xs, "900,00 TL"], [ys, "2.200,00 TL"]]) {
+      for (const acc of list) {
+        const row = aging.rows.find(r => r[0] === acc.name);
+        assert.equal(row?.at(-1), expected, `${acc.name} yaşlandırma ${row?.at(-1)} (beklenen ${expected})`);
+      }
+    }
+    const names = new Set([...xs, ...ys].map(acc => acc.name));
+    const flow = await must("nakit akış", api.get("/api/workspace/overview/nakit-akisi?from=2025-01-01&to=2026-12-31&overdue=1&table=0"));
+    const inFlow = [...(flow.rows || []), ...(flow.overdue || [])].filter(r => r.direction === "in" && (names.has(r.party) || names.has(r.accountName))).reduce((sum, r) => sum + r.amount, 0);
+    assert.equal(Math.round(inFlow * 100) / 100, 6 * 900 + 6 * 2200, `nakit akışta 12 carinin beklenen girişi ${inFlow} (beklenen 18.600)`);
+    const dues = await must("takvim", api.get("/api/workspace/dues"));
+    const dueOf = list => dues.items.filter(r => r.source === "invoice" && list.some(acc => [r.party, r.person, r.accountName].includes(acc.name))).reduce((sum, r) => sum + (Number(r.amount) || 0), 0);
+    assert.equal(dueOf(xs), 0, `takvimde X carilerinin faturası ayrıca listelenmemeli, ${dueOf(xs)}`);
+    assert.equal(dueOf(ys), 6 * 1200, `takvimde Y carilerinin faturası (ayrı borç) listelenmeli, ${dueOf(ys)}`);
+  });
+
   test("E: taksitli fatura + cari kartından bağsız tahsilat — fatura açığı = kendi kartının kalanı", async () => {
     const acc = await customer("E");
     const inv = await sale(acc, "2025-02-20", 3000, { count: 3, firstDue: "2025-03-20", everyMonths: 1 });

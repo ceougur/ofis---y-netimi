@@ -296,10 +296,11 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
     const withTable = params.get("table") !== "0";
     const group = GROUPS.has(text(params.get("group"))) ? text(params.get("group")) : "";
     const flows = [];
-    if (plans()?.openItems) flows.push(...plans().openItems(day));
+    const planItems = plans()?.openItems ? plans().openItems(day) : null;
+    if (planItems) flows.push(...planItems);
     if (cheques()?.flows) flows.push(...cheques().flows());
     // Vadeli (açık hesap) faturaların ödenmemiş kısmı vadesinde beklenen giriş (satış) ya da çıkıştır (alış).
-    for (const item of invoices()?.openItems ? invoices().openItems(day, { net: true }) : []) flows.push(invoiceFlow(item));
+    for (const item of invoices()?.openItems ? invoices().openItems(day, { net: true, planItems }) : []) flows.push(invoiceFlow(item));
     // Tablolardaki ödeme günleri ve ödeme sözleri (v2.0.9, tahsilat takvimiyle aynı kalemler) beklenen giriştir. Taksit
     // kartı olan kişinin sözü kartındaki taksitle aynı parayı anlatır; nakit tahmininde ikinci kez sayılmaz.
     if (withTable) for (const item of await tableItems()) if (!item.deadline && item.amount > 0 && !(item.promise && item.carded)) flows.push(tableFlow(item, { projection: true }));
@@ -448,11 +449,13 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
     const needle = foldText(text(params.get("q")).slice(0, 120));
     const digits = needle.replace(/\D/g, "");
     const items = [];
+    let planItems = null;
     if (sources.has("plan") && plans()?.openItems) {
-      for (const item of plans().openItems(day)) items.push({ ...item, detail: [item.accountName && item.accountName !== item.party ? `Cari: ${item.accountName}` : "", item.refNo ? `Kart ${item.refNo}` : ""].filter(Boolean).join(" · ") });
+      planItems = plans().openItems(day);
+      for (const item of planItems) items.push({ ...item, detail: [item.accountName && item.accountName !== item.party ? `Cari: ${item.accountName}` : "", item.refNo ? `Kart ${item.refNo}` : ""].filter(Boolean).join(" · ") });
     }
     if ((sources.has("cheque") || sources.has("note")) && cheques()?.flows) for (const flow of cheques().flows()) if (sources.has(flow.source)) items.push(flow);
-    if (sources.has("invoice") && invoices()?.openItems) for (const item of invoices().openItems(day, { net: true })) items.push(invoiceFlow(item));
+    if (sources.has("invoice") && invoices()?.openItems) for (const item of invoices().openItems(day, { net: true, planItems })) items.push(invoiceFlow(item));
     if (sources.has("cash") && cash()?.entries) for (const entry of cash().entries({ after: day })) items.push(cashFlow(entry));
     let dormant = [];
     if (sources.has("table") || sources.has("promise") || sources.has("deadline")) {

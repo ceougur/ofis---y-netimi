@@ -302,15 +302,18 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, conf
   // ya da gün dönene kadar saklanır (total_changes(): bu bağlantının her INSERT/UPDATE/DELETE'inde artar; data_version: başka
   // bir bağlantının kesinleşen yazmasında değişir — veri dosyasını paylaşan şirket, 2.0.21 "Ayır" öncesi). Tek carili
   // istek (fatura kartı) aşağıdaki cari başına yoldan hesaplanır; iki yolun aynı sonucu verdiği testle denetlenir.
-  let statesCache = { key: "", map: null };
+  // v2.0.23: aynı toplu defterden cari bakiyeleri de saklanır (balances; birleşik listelerde "Mevcut Borç" düşümü,
+  // netCovered: cari başına ayrı ayrı cari ayrıntısı hesaplanmasın).
+  let statesCache = { key: "", map: null, balances: null };
   const BATCH_ACCOUNTS = 8;
-  function allPaymentStates() {
+  const allPaymentStates = () => batchStates().map;
+  function batchStates() {
     const day = today();
     // Veri tabanı işleminin içinde (yazmalar henüz kesinleşmemiş, geri alınabilir) önbellek ne okunur ne yazılır: geri
     // alınan işlemin durumu saklanıp sonra gösterilmesin (total_changes() geri alınca azalmaz).
     const inTx = store.inTransaction;
     const key = `${store.get("SELECT total_changes() AS n").n}|${store.get("PRAGMA data_version").data_version}|${day}`;
-    if (!inTx && statesCache.key === key && statesCache.map) return statesCache.map;
+    if (!inTx && statesCache.key === key && statesCache.map) return statesCache;
     const group = (rows, field) => {
       const map = new Map();
       for (const row of rows) {
@@ -362,8 +365,12 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, conf
       const states = settleInvoices({ lines: ledgers.get(accountId) || [], invoices, links, chequeEvents, offsets, today: day });
       for (const [id, state] of states) map.set(id, state);
     }
-    if (!inTx) statesCache = { key, map };
-    return map;
+    // Defter satırları tarih sırasında, her satırda yürüyen bakiye (accountLedger): son satırınki carinin bakiyesidir.
+    const balances = new Map();
+    for (const [accountId, lines] of ledgers) balances.set(accountId, lines.length ? Number(lines[lines.length - 1].balance) || 0 : 0);
+    const result = { key, map, balances };
+    if (!inTx) statesCache = result;
+    return result;
   }
   function paymentStates(rows) {
     const out = new Map();
@@ -2618,26 +2625,39 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, conf
   // takvim/bildirim) { net: true } ile ister: o caride satış faturalarının açığı, mevcut borç kartlarının kalanı kadar ve
   // yalnız fazla sayılan kısım kadar (faturalar + bütün kart kalanları − cari bakiye − alış açığı) en eskiden düşülür.
   // Açık Faturalar raporu ve fatura kartı faturanın kendi açığını gösterir (net istemez).
-  function netCovered(items, day) {
-    const coverPlans = store.all("SELECT p.id, p.account_id AS accountId FROM plans p WHERE p.deleted_at IS NULL AND p.status = 'active' AND p.covers_balance = 1 AND p.account_id <> '' AND NOT EXISTS (SELECT 1 FROM invoices i WHERE i.plan_id = p.id)");
+  // planItems: çağıran taksit kalemlerini zaten hesapladıysa (yaşlandırma, nakit akış, vade takip) yeniden hesaplanmaz;
+  // verilmezse yalnız ilgili carilerin kartları hesaplanır. Bakiyeler 8'den çok caride toplu defterden (önbellekli) okunur.
+  function netCovered(items, day, planItems = null) {
+    // NOT IN (bir kez hesaplanan alt sorgu): ilişkili NOT EXISTS her kart için bütün faturaları tarıyordu (1.000 kartta 111 ms).
+    const coverPlans = store.all("SELECT p.id, p.account_id AS accountId FROM plans p WHERE p.deleted_at IS NULL AND p.status = 'active' AND p.covers_balance = 1 AND p.account_id <> '' AND p.id NOT IN (SELECT plan_id FROM invoices WHERE plan_id <> '')");
     if (!coverPlans.length || !plans()?.openItems) return items;
-    const coverOf = new Map(coverPlans.map(plan => [plan.id, plan.accountId]));
+    const saleAccounts = new Set(items.filter(item => item.side === "sale" && item.open > 0.005).map(item => item.accountId));
+    const relevant = new Set(coverPlans.map(plan => plan.accountId).filter(accountId => saleAccounts.has(accountId)));
+    if (!relevant.size) return items;
+    const coverOf = new Set(coverPlans.map(plan => plan.id));
+    const ownItems = new Map();
+    for (const item of items) {
+      if (!relevant.has(item.accountId)) continue;
+      if (!ownItems.has(item.accountId)) ownItems.set(item.accountId, []);
+      ownItems.get(item.accountId).push(item);
+    }
     const planLeft = new Map();
     const coveredLeft = new Map();
-    for (const item of plans().openItems(day)) {
-      if (!item.accountId) continue;
+    for (const item of planItems || plans().openItems(day, { accounts: relevant })) {
+      if (!relevant.has(item.accountId)) continue;
       planLeft.set(item.accountId, (planLeft.get(item.accountId) || 0) + item.amount);
       if (coverOf.has(item.ref?.id)) coveredLeft.set(item.accountId, (coveredLeft.get(item.accountId) || 0) + item.amount);
     }
+    const batch = coveredLeft.size > BATCH_ACCOUNTS ? batchStates().balances : null;
     const reduce = new Map();
     for (const [accountId, covered] of coveredLeft) {
-      const own = items.filter(item => item.accountId === accountId);
+      const own = ownItems.get(accountId) || [];
       const saleOpen = own.filter(item => item.side === "sale").reduce((sum, item) => sum + item.open, 0);
       if (!(saleOpen > 0.005)) continue;
       const purchaseOpen = own.filter(item => item.side === "purchase").reduce((sum, item) => sum + item.open, 0);
       let balance = 0;
       try {
-        balance = Number(accounts()?.detail ? accounts().detail(accountId, AUDITOR).totals?.balance : 0) || 0;
+        balance = batch?.has(accountId) ? batch.get(accountId) : Number(accounts()?.detail ? accounts().detail(accountId, AUDITOR).totals?.balance : 0) || 0;
       } catch {
         balance = 0;
       }
@@ -2660,14 +2680,14 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, conf
     }
     return out;
   }
-  function openItems(day = today(), { net = false } = {}) {
+  function openItems(day = today(), { net = false, planItems = null } = {}) {
     const rows = store.all(`${INVOICE_SQL} WHERE i.status = 'issued' AND i.kind IN ('sale', 'smm', 'purchase') AND i.plan_id = ''`);
     const states = paymentStates(rows);
     const items = rows
       .map(row => ({ row, state: states.get(row.id) }))
       .filter(({ state }) => state && state.open > 0.005)
       .map(({ row, state }) => ({ id: row.id, number: row.number, kind: row.kind, side: INVOICE_KINDS[row.kind].side, accountId: row.accountId, accountName: parseJson(row.partyJson, {}).name || row.accountName, phone: row.accountPhone, dueDate: row.dueDate || row.issueDate, issueDate: row.issueDate, payable: row.tryPayable, open: state.open, state: state.state, days: Math.round((Date.parse(`${row.dueDate || row.issueDate}T00:00:00Z`) - Date.parse(`${day}T00:00:00Z`)) / 86_400_000) }));
-    return net ? netCovered(items, day) : items;
+    return net ? netCovered(items, day, planItems) : items;
   }
   // Tahsilat takvimi ve sağ alt bildirimler: vadesi geçen, bugün ve 7 gün içinde vadesi gelen açık faturalar.
   function dueItems(day = today()) {

@@ -580,7 +580,8 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
           rows.set(key, row);
         };
         const names = new Map(store.all("SELECT id, name FROM accounts").map(row => [row.id, row.name]));
-        for (const item of plans().openItems(day)) {
+        const planItems = plans().openItems(day);
+        for (const item of planItems) {
           const plan = store.get("SELECT account_id AS accountId FROM plans WHERE id = ?", item.ref.id);
           const key = plan?.accountId || `plan:${item.ref.id}`;
           const late = Math.round((Date.parse(`${day}T00:00:00Z`) - Date.parse(`${item.date}T00:00:00Z`)) / 86_400_000);
@@ -594,7 +595,7 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
           add(key, names.get(cheque?.accountId) || flow.party, late, flow.amount);
         }
         // v2.0.15: vadeli (açık hesap) satış faturalarının ödenmemiş kısmı; taksitli fatura taksit kartından gelir.
-        for (const item of invoices()?.openItems ? invoices().openItems(day, { net: true }) : []) {
+        for (const item of invoices()?.openItems ? invoices().openItems(day, { net: true, planItems }) : []) {
           if (item.side !== "sale") continue;
           add(item.accountId, names.get(item.accountId) || item.accountName, -item.days, item.open);
         }
