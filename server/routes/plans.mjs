@@ -456,11 +456,13 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
   }
   // v2.0.23 (2. gözden geçirme): silinen "Carinin Mevcut Borcu" kartı, taksitlendirdiği borç bu arada azaldıysa (tahsil
   // edildi, iptal edildi) geri yüklenmez; yükleniyordu ve ödenmiş fatura yeniden açık görünüyordu.
+  const GROW_COVER = "Bu kart carinin açıldığı günkü borcunu taksitlendirir; tutarı büyütülemez (küçültülebilir). Sonradan doğan borç için cari kartında + Taksit Planı → Carinin Mevcut Borcu ile yeni kart açın.";
   function assertRestorable(planId, user) {
     const plan = store.get("SELECT id, account_id AS accountId, total, status, covers_balance AS covers, invoice_id AS invoiceId FROM plans WHERE id = ?", planId);
     if (!plan || !plan.covers || plan.invoiceId || plan.status === "closed" || !plan.accountId || !accounts()?.exists?.(plan.accountId)) return;
     const left = roundMoney(Math.max(0, (Number(plan.total) || 0) - netPaid(plan.id)));
-    const free = uncoveredDebt(plan.accountId, user, plan.id);
+    // Kart silinmişken tahsilatları bakiyede yok: geri gelince bakiye net tahsilat kadar düşer (3. gözden geçirme).
+    const free = roundMoney(uncoveredDebt(plan.accountId, user, plan.id) - netPaid(plan.id));
     if (left > free + 0.005) throw new HttpError(409, `Bu kart carinin o günkü borcunu taksitlendiriyordu; borç bu arada azaldı (taksitlendirilebilecek borç ${tl(free)}, kartın kalanı ${tl(left)}). Kart geri yüklenmez; kalan borç için cari kartında + Taksit Planı → Carinin Mevcut Borcu ile yeni kart açın.`, { code: "cover-exceeds", free });
   }
   function assertCoverable(accountId, total, user, exceptPlanId = "") {
@@ -532,6 +534,9 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
       }
       // Cari boşaltılamaz: eski kartta (göç öncesinden kalma, cari yoksa) ilk düzenlemede cari açılır.
       const accountId = input.accountId || previous.accountId || accounts()?.createFromPlan(user, input) || "";
+      // v2.0.23 (3. gözden geçirme): Mevcut Borç kartı açıldığı andaki borcu taksitlendirir; tutarı sonradan büyütülünce kart
+      // yeni borcu da sayıyor ya da başka faturayı "ödenmiş" gösteriyordu. Yeni borç için yeni kart açılır.
+      if (previous.coversBalance && !previous.invoiceId && input.total > roundMoney(Number(previous.total) || 0) + 0.005) throw new HttpError(409, GROW_COVER, { code: "cover-grow" });
       if (previous.coversBalance && status === "active" && (input.total > roundMoney(Number(previous.total) || 0) + 0.005 || accountId !== previous.accountId)) {
         const paid = roundMoney(entriesOf(previous.id).reduce((sum, e) => sum + (e.kind === "in" ? Number(e.amount) || 0 : -(Number(e.amount) || 0)), 0));
         assertCoverable(accountId, roundMoney(input.total - paid), user, previous.id);
@@ -581,7 +586,7 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
         // (faturanın kartı faturayla ayrışıyor, Mevcut Borç kartı carinin borcunu aşıyor, kilitli dönemin bakiyesi değişiyordu).
         if (plan.invoiceId) throw new HttpError(409, `Bu kart ${plan.invoiceNumber || "bir fatura"} ile açıldı; tutarı faturadan gelir. Taksit sayısı ve vadeleri buradan değişir; tutar için faturada Düzenle'yi ya da iade faturasını kullanın.`, { code: "invoice-linked", invoiceId: plan.invoiceId });
         if (!plan.coversBalance) period?.assertOpen(plan.registeredOn, "Bu kartın Kayıt Tarihi");
-        else if (plan.status === "active" && total > roundMoney(Number(plan.total) || 0) + 0.005) assertCoverable(plan.accountId, roundMoney(total - netPaid(plan.id)), user, plan.id);
+        else if (total > roundMoney(Number(plan.total) || 0) + 0.005) throw new HttpError(409, GROW_COVER, { code: "cover-grow" });
         store.run("UPDATE plans SET total = ?, updated_by = ?, updated_at = ? WHERE id = ?", total, user.id, now(), plan.id);
       }
       const items = distributionInput(body, total, plan.registeredOn);

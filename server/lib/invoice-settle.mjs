@@ -160,7 +160,7 @@ export function settleInvoices({ lines, invoices, links = new Map(), chequeEvent
     return value;
   };
   // Bir tarafın (alacak / borç) kapaması. coverage: kart kimliği → (yükümlülük satırı → kapsanan kuruş).
-  function runSide(side, sideLines, coverage, offsetList, withhold = null, track = true) {
+  function runSide(side, sideLines, coverage, offsetList, track = true) {
     const kinds = side === "receivable" ? RECEIVABLE : PAYABLE;
     const dueKey = side === "receivable" ? "recvDue" : "payDue";
     const payKey = side === "receivable" ? "recvPay" : "payPay";
@@ -190,7 +190,7 @@ export function settleInvoices({ lines, invoices, links = new Map(), chequeEvent
         // Taksitli fatura (kendi kartı var) yalnız bağlı ödemeyle kapanır; en eski borç sırasında atlanır.
         obligations.push({ invoiceId: own, lineId: line.id, bornAt: born, free: cover ? 0 : amount, covered: new Map(cover ? [[cover, amount]] : []), closers: [], planned: Boolean(own && byId.get(own)?.planId) });
       }
-      if (role[payKey] && !(withhold && line.planId && withhold.has(line.planId))) pool.push({ line, owner: ownerOf(line), cover: line.origin === "plan" && coverIds.has(line.planId) ? line.planId : "", amount, left: amount, mode: links.has(line.id) ? "linked" : "" });
+      if (role[payKey]) pool.push({ line, owner: ownerOf(line), cover: line.origin === "plan" && coverIds.has(line.planId) ? line.planId : "", amount, left: amount, mode: links.has(line.id) ? "linked" : "" });
     }
     // Kartın borcunu aşan tahsilat (artan) genel havuza: son tahsilatın tarihiyle, tarih sırası korunarak.
     let excess = false;
@@ -313,34 +313,13 @@ export function settleInvoices({ lines, invoices, links = new Map(), chequeEvent
     const knownOffsets = offsets.filter(offset => String(offset.createdAt || offset.date || "") <= plan.at);
     const parts = new Map();
     let rest = plan.total;
-    for (const item of newestFirst(runSide("receivable", known, coverage, knownOffsets, null, false).obligations)) {
+    for (const item of newestFirst(runSide("receivable", known, coverage, knownOffsets, false).obligations)) {
       if (rest <= 0) break;
       const take = Math.min(item.free, rest);
       parts.set(item.lineId, (parts.get(item.lineId) || 0) + take);
       rest -= take;
     }
     coverage.set(plan.planId, parts);
-  }
-  // Kartın tutarı açıldığı andaki açık borçtan büyükse (kart sonradan büyütüldü, geri yüklendi ya da kapsadığı borç iptal
-  // edildi) kalan payı bugün açık olan kapsanmamış borçtan, en son kaydedilenden başlayarak tamamlanır. Bu kartların kendi
-  // tahsilatı bu hesapta tutulur (kapsadığı borca sayılacak; açık borcu eksiltmesin).
-  const spare = coverPlans
-    .map(plan => ({ plan, left: plan.total - [...coverage.get(plan.planId).values()].reduce((sum, value) => sum + value, 0) }))
-    .filter(({ left }) => left > 0);
-  if (spare.length) {
-    const open = newestFirst(runSide("receivable", ordered, coverage, offsets, new Set(spare.map(({ plan }) => plan.planId)), false).obligations);
-    for (const { plan, left } of spare) {
-      const parts = coverage.get(plan.planId);
-      let rest = left;
-      for (const item of open) {
-        if (rest <= 0) break;
-        if (!(item.free > 0)) continue;
-        const take = Math.min(item.free, rest);
-        item.free -= take;
-        parts.set(item.lineId, (parts.get(item.lineId) || 0) + take);
-        rest -= take;
-      }
-    }
   }
   for (const side of ["receivable", "payable"]) {
     const { target } = runSide(side, ordered, side === "receivable" ? coverage : new Map(), offsets);

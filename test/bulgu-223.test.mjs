@@ -472,7 +472,7 @@ describe("2.0.23 gözden geçirme: kapamanın kalan yolları", () => {
     await sale(acc, "2025-07-03", 2000);
     const k = await coverPlan(acc, "2025-07-04", 2000);
     const grow = await api.post(`/api/workspace/plans/${k.id}/distribute`, { total: "3000", count: "3", firstDue: "2025-08-04", everyMonths: "1" });
-    assert.equal(grow.status, 400, `kart borçtan büyümemeli (${grow.status})`);
+    assert.equal(grow.status, 409, `kart büyütülmemeli (${grow.status})`);
     assert.equal((await card(k.id)).totals.total, 2000);
     assert.deepEqual([(await inv(z.id)).paid, (await inv(z.id)).open], [1000, 0], "Z ödenmiş kalır");
     const same = await api.post(`/api/workspace/plans/${k.id}/distribute`, { count: "4", firstDue: "2025-08-04", everyMonths: "1" });
@@ -543,19 +543,31 @@ describe("2.0.23 gözden geçirme: kapamanın kalan yolları", () => {
     assert.deepEqual([s.paid, s.open], [0, 1000], `fatura ödenmedi (kapatanlar: ${JSON.stringify(s.closers)})`);
     assert.equal(await agingOf(acc), "1.000,00 TL");
   });
-  test("2. tur #3: sonradan büyütülen Mevcut Borç kartı yeni borcu da kapsar; kart tahsilatı yeni borca da sayılır", async () => {
+  test("2. tur #3 / 3. tur: Mevcut Borç kartı büyütülemez (Düzenle ve Otomatik Dağıt); yeni borç kartın dışında, bir kez sayılır", async () => {
     const acc = await customer("Büyüt");
-    await sale(acc, "2025-07-27", 1000);
+    const x = await sale(acc, "2025-07-27", 1000);
     const k = await coverPlan(acc, "2025-07-28", 1000);
     const b = await sale(acc, "2025-07-29", 500);
     const grow = await api.post(`/api/workspace/plans/${k.id}/distribute`, { total: "1500", count: "3", firstDue: "2025-08-28", everyMonths: "1" });
-    assert.equal(grow.status, 200, JSON.stringify(grow.data).slice(0, 200));
-    assert.equal(await agingOf(acc), "1.500,00 TL", "yaşlandırma = bakiye: kart B'yi de kapsar");
+    assert.equal(grow.status, 409, `Otomatik Dağıt ile büyütme reddedilir (${grow.status})`);
+    assert.match(String(grow.data?.error || ""), /yeni kart/);
+    assert.equal((await api.put(`/api/workspace/plans/${k.id}`, { total: "1500" })).status, 409, "Düzenle ile büyütme reddedilir");
+    assert.equal(await agingOf(acc), "1.500,00 TL", "yaşlandırma = bakiye: kart 1.000 + B 500");
+    await planIn(k.id, "2025-08-28", 1000);
+    const z = await sale(acc, "2025-07-29", 200);
+    assert.deepEqual([(await inv(x.id)).open, (await inv(b.id)).open, (await inv(z.id)).open], [0, 500, 200], "kart tahsilatı yalnız X'i kapatır; sonraki satış açık");
+    assert.equal(await agingOf(acc), "700,00 TL");
+  });
+  test("3. tur: borcu olmayan caride (yalnız ödeme yapılmış) açılan kart sonradan kesilen faturayı yutmaz", async () => {
+    const acc = await customer("Yutmaz");
+    await sale(acc, "2025-07-29", 1000);
+    assert.equal((await entry(acc, "in", "2025-07-29", 1000)).status, 200);
+    assert.equal((await entry(acc, "out", "2025-07-29", 500, { note: "Cariye ödeme" })).status, 200);
+    await coverPlan(acc, "2025-07-29", 500);
+    const y = await sale(acc, "2025-07-29", 800);
+    assert.equal((await inv(y.id)).open, 800);
     const dues = await must("takvim", api.get("/api/workspace/dues"));
-    assert.equal(dues.items.filter(i => i.id === `invoice|${b.id}`).reduce((sum, i) => sum + i.amount, 0), 0, "B takvimde kartın taksitleriyle");
-    await planIn(k.id, "2025-08-28", 1200);
-    assert.equal(await agingOf(acc), "300,00 TL", "kart tahsilatı 1.200 → yaşlandırma = bakiye 300");
-    assert.deepEqual([(await inv(b.id)).open, (await card(k.id)).totals.remaining], [300, 300]);
+    assert.equal(dues.items.filter(i => i.id === `invoice|${y.id}`).reduce((sum, i) => sum + i.amount, 0), 800, "Y takvimde 800 (kartın içinde sayılmaz)");
   });
   test("2. tur #4: silinen Mevcut Borç kartı, taksitlendirdiği borç bu arada ödenmişse geri yüklenmez (ödenmiş fatura açılmaz)", async () => {
     const acc = await customer("GeriYükle");
@@ -571,5 +583,28 @@ describe("2.0.23 gözden geçirme: kapamanın kalan yolları", () => {
     assert.equal(restore.status, 409, `geri yükleme reddedilmeli (${restore.status})`);
     assert.match(String(restore.data?.error || ""), /taksitlendir/i);
     assert.deepEqual([(await inv(a.id)).paid, (await inv(a.id)).open], [2000, 0], "fatura ödenmiş kalır");
+  });
+  test("3. tur: kartın kendi tahsilatı olan silinmiş kart, borç bu arada azaldıysa geri yüklenmez; borç varsa geri yüklenir", async () => {
+    const acc = await customer("GeriYükle2");
+    const x = await sale(acc, "2025-08-05", 1000);
+    const k = await coverPlan(acc, "2025-08-06", 1000);
+    await planIn(k.id, "2025-08-07", 400);
+    assert.equal((await api.del(`/api/workspace/plans/${k.id}`)).status, 200);
+    assert.equal((await entry(acc, "in", "2025-08-08", 300)).status, 200);
+    const list = await must("silinenler", api.get("/api/admin/trash"));
+    const item = (Array.isArray(list) ? list : list?.items || []).find(row => row.id === `plan:${k.id}`);
+    const restore = await api.post("/api/admin/trash/restore", { id: item.id });
+    assert.equal(restore.status, 409, `kalan 600 > taksitlendirilebilir borç 300 (${restore.status})`);
+    assert.equal((await inv(x.id)).open, 700);
+    // Meşru geri yükleme: sil → hemen geri yükle.
+    const acc2 = await customer("GeriYükle3");
+    await sale(acc2, "2025-08-09", 1000);
+    const k2 = await coverPlan(acc2, "2025-08-10", 1000);
+    await planIn(k2.id, "2025-08-11", 400);
+    assert.equal((await api.del(`/api/workspace/plans/${k2.id}`)).status, 200);
+    const list2 = await must("silinenler", api.get("/api/admin/trash"));
+    const item2 = (Array.isArray(list2) ? list2 : list2?.items || []).find(row => row.id === `plan:${k2.id}`);
+    assert.equal((await api.post("/api/admin/trash/restore", { id: item2.id })).status, 200, "borç yerindeyse geri yüklenir");
+    assert.equal(await agingOf(acc2), "600,00 TL");
   });
 });
