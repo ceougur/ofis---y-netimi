@@ -517,7 +517,7 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     if (invoice.status !== "issued") throw new HttpError(409, "Yalnız kaydedilmiş fatura kapatılır (taslak ya da iptal edilmiş fatura seçilemez).");
     // v2.0.23 (Bulgu 2 F): taksitli fatura kendi taksit kartıyla kapanır; cari kartından bağ kurulursa fatura ile kartı
     // çelişirdi (fatura ödendi, kart ödenmedi). Tahsilat kartın taksitine girilir.
-    if (invoice.planId) throw new HttpError(409, "Bu fatura taksitli: tahsilatı taksit kartına girin (cari kartında + Tahsilat → taksit kartını seçin). Taksitli fatura kendi kartıyla kapanır.");
+    if (invoice.planId) throw new HttpError(409, "Bu fatura taksitli; kendi taksit kartıyla kapanır. Tahsilatı taksite yazın: cari kartında + Tahsilat → Taksite Yaz.");
     const side = ["sale", "smm"].includes(invoice.kind) ? "in" : invoice.kind === "purchase" ? "out" : "";
     if (side !== kind) throw new HttpError(409, kind === "in" ? "Tahsilat yalnız satış faturasını kapatır; alış faturası için Ödeme girin." : "Ödeme yalnız alış faturasını kapatır; satış faturası için Tahsilat girin.");
     return invoice.id;

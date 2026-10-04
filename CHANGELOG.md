@@ -2,6 +2,34 @@
 
 Sürümler [anlamsal sürümleme](https://semver.org/lang/tr/) kurallarına uyar.
 
+## 2.0.23 — Fatura formunda çek/senet satırı, taksit kartı ile fatura kapaması, rapor süzgeçleri
+
+Kaynak: ekrandan bir haftalık iş testi (04.10.2026; `docs/EKRAN-HAFTA-TESTI-2026-10-04.md`). Excel iş listesindeki bir hafta ve 16 ek işlem iki şirkete girildi: biri API'den, biri ekrandan. Rapor Merkezi raporları ekrandan açılıp programdan bağımsız bir hesapla karşılaştırıldı. Kullanıcı kararı: "önce tespit ettiğin hataları düzelt". Ayrıntı ve denenen / denenmeyen / bilinen sınırlar: `docs/2.0.23-KANIT.md`.
+
+- **Fatura formunda çek/senetle ödeme klavyeyle girilince senet sessizce düşüyordu (önem: yüksek).**
+  - Ödeme satırında bir alandan çıkınca bütün ödeme bölümü yeniden çiziliyordu. Tab'la ya da fareyle gidilen alan sayfadan kopuyordu; Banka'ya yazılan "Ziraat" Tutar kutusuna gidiyordu.
+  - Sonuç: fatura uyarısız "Açık" kaydediliyor, senet portföye girmiyordu. Fareyle girişte vade ve banka siliniyordu.
+  - Peşin tutar yazılıp fareyle doğrudan Vade Tarihi'ne tıklanınca yazılan vade kayboluyor, fatura bugünün vadesiyle kaydediliyordu.
+  - Artık ödeme satırları yazarken yeniden çizilmez; yalnız "Kalan" kutusu güncellenir.
+  - Tutarı yazılmamış ya da geçersiz evrak satırı ve geçersiz peşin tutar varken fatura kaydedilmez; neden satır numarasıyla yazılır.
+- **Taksit kartı ile fatura birbirinin parasını sayıyordu (önem: yüksek).** Aynı caride fatura ve taksit kartı olunca:
+  - Taksitler → Yeni Borç ile açılan (faturasız) kartın tahsilatı faturayı da kapatıyordu (çift sayım).
+  - Cari kartından alınan tahsilat bazen hiçbir yerde görünmüyordu.
+  - Kart ödenince ödenmemiş fatura "Ödendi" görünüyordu.
+  - Kartı kapatmak (kalanı silmek) ödenmemiş faturayı kapatıyordu.
+
+  Artık:
+  - Faturasız kart kendi defteridir: borcu, tahsilatı ve kapatılması faturaları kapatmaz. Kartın borcunu aşan tahsilat faturalara sayılır (para kaybolmaz).
+  - Taksitli fatura kendi taksit kartıyla kapanır; fatura kartındaki açık her zaman kartın kalanına eşittir. Taksitli faturanın tahsilatını cari kartında **+ Tahsilat → Taksite Yaz** ile girin. **Taksit Dışı Tahsilat** taksitli faturayı kapatmaz, carinin hesabına yazılır. "Kapatılacak Fatura" listesinde taksitli fatura yoktur; sunucu da reddeder.
+  - "Carinin Mevcut Borcu" ile taksitlendirilen açık fatura Alacak Yaşlandırma, Nakit Akış, Vade Takip ve tahsilat takvimi / bildirimlerde bir kez sayılır (önceden fatura ve kart ayrı ayrı sayılıyordu).
+  - Cari bakiyeleri, Kasa ve mizan bu hatalardan etkilenmiyordu. Değişen, "hangi tahsilat hangi borcu kapattı" eşleştirmesi ve ona bağlı ekranlar: fatura durumu, Satış Faturaları "Kalan", Açık Faturalar, yaşlandırma, hatırlatmalar. Eski veride eşleştirme kendiliğinden yeniden hesaplanır; hiçbir kayıt değişmez.
+- **Raporlarda dönem düğmesi seçili cariyi siliyordu.** Raporlar → Tüm Raporlar'da cari seçtikten sonra "Tüm Zamanlar", "Bu Yıl"… düğmesine basınca Cari Ekstre "Önce cariyi seçin"e düşüyordu. Fatura raporlarında cari süzgeci sessizce kalkıyor, bütün cariler görünüyordu. Tek tıkta 6 istek gidiyordu. Artık seçim kalır, tek istek gider.
+- **Banka ve POS Hareketleri'nde "Yol" süzgeci çalışmıyordu (2.0.17'den beri).** "Banka (Havale / EFT)" ya da "POS / Kredi Kartı" seçilince rapor (ekran, PDF, Excel) yalnız o yolu gösterir.
+- **PDF raporların özet kutusunda uzun başlık kesiliyordu** ("Güncel Kasa (tü…"); artık iki satıra iner.
+- **Testler:**
+  - `test/bulgu-223.test.mjs`: taksit kartı ↔ fatura (A–G, artan tahsilat, eski bağ), Yol süzgeci, PDF özeti. 2.0.22'de 13'ün 11'i kırmızı.
+  - Arayüzden `npm run test:senaryo-223` (CI'de): senet satırı klavyeyle ve fareyle (tam ve kısmi), peşin tutardan Vade Tarihi'ne, geçersiz tutar, Kapatılacak Fatura, dönem düğmesi ve tek istek, Yol = Banka / POS. 2.0.22'de 21'in 19'u kırmızı.
+
 ## 2.0.22 — Çok personelli kullanımda hız ve donmalar; Excel'den cari türü; çift fatura koruması
 
 Kaynak: Excel iş listesi denetimi (04.10.2026; 4.220 iş × 2 şirket, eşzamanlı personel; `docs/EXCEL-DENETIMI-2026-10-04.md`). Kullanıcı: "UI'deki donmalar, gecikmeler, çoklu kullanımda arayüzün yetişememesi, cari arama pilindeki sorunlar canımı çok acıttı, en iyi haliyle yap!". Ölçümler aynı verinin kopyasıyla yapıldı; önce = v2.0.21 kodu, sonra = bu sürüm (`test/excel-denetim/yuk-olcum.mjs`). Ayrıntı ve denenen / denenmeyen / bilinen sınırlar: `docs/2.0.22-KANIT.md`.
