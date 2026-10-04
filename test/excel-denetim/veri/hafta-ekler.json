@@ -1,0 +1,22 @@
+{
+  "aciklama": "Haftalık ekran testinin eksikleri (kullanıcı, 04.10.2026: 'testin eksiğini tamamla'). Excel'de olmayan, kullanıcının her gün yaptığı işler: + Yeni Cari, aynı adla cari denemesi, Yeni Ürün (ilk miktar Kasa'dan), hizmet kalemi, stok girişi/çıkışı/fire, kira faturası + sonradan ödeme, yeni cariye satış, Taksit penceresinden kart + tahsilat, yeni personelin maaşı. Tarihler 20-26 Ocak 2025 haftasında.",
+  "ops": [
+    { "no": "EK-01", "type": "newCari", "date": "2025-01-20", "ref": "YNI-001", "name": "Deniz Yapı Malzemeleri Ltd. Şti.", "kind": "customer", "phone": "0532 111 22 33" },
+    { "no": "EK-02", "type": "newCari", "date": "2025-01-20", "ref": "YNI-002", "name": "Kaya Gayrimenkul A.Ş.", "kind": "supplier", "phone": "0212 444 55 66" },
+    { "no": "EK-03", "type": "newCari", "date": "2025-01-20", "ref": "YNI-003", "name": "Elif Su Tekin", "kind": "other", "phone": "0555 777 88 99", "note": "Personel" },
+    { "no": "EK-04", "type": "dupCari", "date": "2025-01-20", "name": "Mehmet Kurt" },
+    { "no": "EK-05", "type": "newItem", "date": "2025-01-20", "code": "YNI-U1", "name": "Ofis Sandalyesi", "kind": "product", "unit": "Adet", "buy": "1500", "sell": "2400", "openingQty": 10, "openingCash": true },
+    { "no": "EK-06", "type": "newItem", "date": "2025-01-20", "code": "YNI-H1", "name": "Kurulum Hizmeti", "kind": "service", "unit": "Adet", "buy": "", "sell": "1000" },
+    { "no": "EK-07", "type": "rent", "date": "2025-01-20", "ref": "YNI-002", "number": "KR-2025-01", "itemName": "Ocak 2025 Ofis Kirası", "gross": "36000", "vatRate": 20, "expenseCode": "rent", "due": "2025-01-21" },
+    { "no": "EK-08", "type": "stockIn", "date": "2025-01-21", "code": "YNI-U1", "qty": 5, "price": "1450", "method": "bank", "note": "EK-08 toplu alım" },
+    { "no": "EK-09", "type": "payEntry", "date": "2025-01-21", "ref": "YNI-002", "amount": "36000", "method": "bank", "note": "EK-09 Ocak kirası" },
+    { "no": "EK-10", "type": "stockOut", "date": "2025-01-22", "code": "YNI-U1", "qty": 2, "price": "2400", "method": "cash", "note": "EK-10 perakende satış" },
+    { "no": "EK-11", "type": "stockOut", "date": "2025-01-23", "code": "YNI-U1", "qty": 1, "price": "", "method": "none", "note": "EK-11 fire (hasarlı)" },
+    { "no": "EK-12", "type": "sale", "date": "2025-01-23", "ref": "YNI-001", "due": "2025-02-23",
+      "lines": [ { "code": "YNI-U1", "qty": 4, "price": "2400", "vatRate": 20 }, { "code": "YNI-H1", "qty": 1, "price": "1000", "vatRate": 20 } ] },
+    { "no": "EK-13", "type": "plan", "date": "2025-01-24", "ref": "YNI-001", "total": "9000", "count": 3, "firstDue": "2025-02-24" },
+    { "no": "EK-14", "type": "salary", "date": "2025-01-24", "ref": "YNI-003", "amount": "22500", "method": "cash", "note": "EK-14 Ocak 2025 maaşı" },
+    { "no": "EK-15", "type": "collectEntry", "date": "2025-01-25", "ref": "YNI-001", "amount": "5000", "method": "cash", "note": "EK-15 fatura tahsilatı" },
+    { "no": "EK-16", "type": "planCollect", "date": "2025-01-26", "ref": "YNI-001", "amount": "3000", "method": "bank", "note": "EK-16 1. taksit (erken)" }
+  ]
+}

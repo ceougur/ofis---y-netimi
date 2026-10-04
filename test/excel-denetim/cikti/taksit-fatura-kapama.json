@@ -1,0 +1,139 @@
+{
+ "senaryolar": [
+  {
+   "senaryo": "A · önce fatura, sonra ayrı kart",
+   "adimlar": [
+    {
+     "date": "2025-01-23",
+     "invoice": 12720
+    },
+    {
+     "date": "2025-01-24",
+     "plan": 9000
+    },
+    {
+     "date": "2025-01-25",
+     "collect": 5000
+    },
+    {
+     "date": "2025-01-26",
+     "planCollect": 3000
+    }
+   ],
+   "fatura": {
+    "odenecek": 12720,
+    "odenen": 8000,
+    "acik": 4720,
+    "durum": "Vadesi Geçti"
+   },
+   "taksitKarti": {
+    "toplam": 9000,
+    "odenen": 3000,
+    "kalan": 6000
+   },
+   "cariBakiye": 13720,
+   "acikToplam": 10720,
+   "tutarli": false
+  },
+  {
+   "senaryo": "B · önce kart, sonra fatura",
+   "adimlar": [
+    {
+     "date": "2025-01-10",
+     "plan": 9000
+    },
+    {
+     "date": "2025-01-23",
+     "invoice": 12720
+    },
+    {
+     "date": "2025-01-25",
+     "collect": 5000
+    },
+    {
+     "date": "2025-01-26",
+     "planCollect": 3000
+    }
+   ],
+   "fatura": {
+    "odenecek": 12720,
+    "odenen": 0,
+    "acik": 12720,
+    "durum": "Vadesi Geçti"
+   },
+   "taksitKarti": {
+    "toplam": 9000,
+    "odenen": 3000,
+    "kalan": 6000
+   },
+   "cariBakiye": 13720,
+   "acikToplam": 18720,
+   "tutarli": false
+  },
+  {
+   "senaryo": "C · fatura hiç ödenmedi, kart tamamen ödendi",
+   "adimlar": [
+    {
+     "date": "2025-02-01",
+     "invoice": 6000
+    },
+    {
+     "date": "2025-02-02",
+     "plan": 9000
+    },
+    {
+     "date": "2025-02-03",
+     "planCollect": 3000
+    },
+    {
+     "date": "2025-02-04",
+     "planCollect": 3000
+    },
+    {
+     "date": "2025-02-05",
+     "planCollect": 3000
+    }
+   ],
+   "fatura": {
+    "odenecek": 6000,
+    "odenen": 6000,
+    "acik": 0,
+    "durum": "Ödendi"
+   },
+   "taksitKarti": {
+    "toplam": 9000,
+    "odenen": 9000,
+    "kalan": 0
+   },
+   "cariBakiye": 6000,
+   "acikToplam": 0,
+   "tutarli": false
+  }
+ ],
+ "yaslandirma": [
+  [
+   "Vadesi Gelmemiş",
+   "0,00 TL"
+  ],
+  [
+   "1–30 gün",
+   "0,00 TL"
+  ],
+  [
+   "31–60 gün",
+   "0,00 TL"
+  ],
+  [
+   "61–90 gün",
+   "0,00 TL"
+  ],
+  [
+   "90+ gün",
+   "29.440,00 TL"
+  ],
+  [
+   "Toplam Gecikmiş",
+   "29.440,00 TL"
+  ]
+ ]
+}

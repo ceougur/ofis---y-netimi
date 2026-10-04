@@ -562,6 +562,20 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   haftaya ekrandan: + Yeni Cari, stok kartı + stok giriş/çıkış, Taksit formundan taksit kartı + tahsilatı, kira gideri;
   sonra Rapor Merkezi raporları EKRANDAN açılıp programdan bağımsız beklenen hesapla (ve PDF/Excel ekranla) karşılaştırılır.
   Kod değiştirilmez; ödeme alanı hatasının düzeltmesi bu testten sonra konuşulur.
+  BULGU 2 (04.10.2026, ek işlemlerde bulundu; KOD DEĞİŞTİRİLMEDİ, karar kullanıcıda): aynı caride açık satış faturası +
+  Taksit penceresinden "Yeni Borç" ile AYRI taksit kartı varsa fatura kapama (`server/lib/invoice-settle.mjs`) kartın
+  tahsilatını (plan-in) ve kartın borcunu genel FIFO'ya katıyor; taksit modülü ise kartın ödenenini ayrı sayıyor → iki hesap
+  çelişiyor. `test/excel-denetim/taksit-fatura-kapama.mjs`: A (önce fatura) kart tahsilatı 3.000 faturayı da kapatıyor (çift
+  sayım); B (önce kart) cari kartından 5.000 tahsilat hiçbir yerde görünmüyor; C fatura hiç ödenmedi, kart tamamen ödendi →
+  fatura "Ödendi" (hayalet ödeme, 2.0.17 m5'in akrabası). Değişmez: açık fatura + kart kalanı = cari bakiye; A/B/C'de bozuk;
+  Alacak Yaşlandırma 29.440, gerçek 33.440. Düzeltme önerisi (karar kullanıcıda): faturasız ve "Yeni Borç" kartın borcu ve
+  tahsilatı kendi içinde kapanır (FIFO'ya girmez); "Carinin Mevcut Borcu" kartında tahsilat faturaları FIFO kapatmaya devam eder.
+  BULGU 3 (04.10.2026, rapor denetiminde; KOD DEĞİŞTİRİLMEDİ): Raporlar → Tüm Raporlar'da cari seçildikten sonra dönem düğmesi
+  ("Tüm Zamanlar", "Bu Yıl", "Bu Ay"…) cari seçimini SİLİYOR: Cari Ekstre "Önce cariyi seçin"e düşüyor; fatura raporlarındaki
+  isteğe bağlı cari süzgeci sessizce kalkıp rapor BÜTÜN carileri gösteriyor (Deniz süzülü 1 fatura/1.000 → "Bu Yıl" → 2 fatura/
+  6.000). Tarih yazıp "Ön İzle" seçimi korur. Kök neden: `client/assets/hof-overview.js:715` onReportClick Raporlar penceresinin
+  her [data-preset] tıklamasını da işliyor ve sekmeyi yeniden kuruyor (hof-report-center'ın kendi işleyicisiyle çakışma).
+  Yeniden üretim: `test/excel-denetim/rapor-ekstre-secim.mjs` (gerçek tıklamalarla).
   KULLANICI ÖNERİSİ (04.10.2026, "baş mimar olarak onaylarsan"): öncelik 1 = güvenlik/veri bütünlüğü (3 cari türü, 4 tanımsız
   ödeme yolu, 5 API çift fatura); öncelik 2 = performans/UX (1–2 gecikmeler, 6 lisans uyarısı). DEĞERLENDİRMEM: 3/4/5 katılıyorum;
   İTİRAZ (a) 1–2 yalnız "frontend" değil ve ikinci sıra değil: 0 pencerede bile cari not düzeltmesi ~1 sn (sunucu); her açık

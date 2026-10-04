@@ -1,0 +1,38 @@
+{
+ "secildi": {
+  "secili": "Deniz Yapı Malzemeleri Ltd. Şti.",
+  "ozet": "Devir -400,00 TL | Dönem Borç 1.000,00 TL | Dönem Alacak 0,00 TL | Dönem Sonu 600,00 TL Borçlu",
+  "bos": ""
+ },
+ "tumZamanlar": {
+  "secili": "",
+  "ozet": "",
+  "bos": "Önce cariyi seçin."
+ },
+ "onIzle": {
+  "secili": "Deniz Yapı Malzemeleri Ltd. Şti.",
+  "ozet": "Devir 0,00 TL | Dönem Borç 0,00 TL | Dönem Alacak 400,00 TL | Dönem Sonu 400,00 TL Alacaklı",
+  "bos": ""
+ },
+ "buYil": {
+  "secili": "",
+  "ozet": "",
+  "bos": "Önce cariyi seçin."
+ },
+ "faturaTumu": {
+  "secili": "",
+  "ozet": "Satış Faturası 2 | Matrah 6.000,00 TL | KDV 0,00 TL | Tevkifat 0,00 TL | Ödenecek 6.000,00 TL | Kalan 5.600,00 TL",
+  "bos": ""
+ },
+ "faturaSuzuldu": {
+  "secili": "Deniz Yapı Malzemeleri Ltd. Şti.",
+  "ozet": "Satış Faturası 1 | Matrah 1.000,00 TL | KDV 0,00 TL | Tevkifat 0,00 TL | Ödenecek 1.000,00 TL | Kalan 600,00 TL",
+  "bos": ""
+ },
+ "faturaBuYil": {
+  "secili": "",
+  "ozet": "Satış Faturası 2 | Matrah 6.000,00 TL | KDV 0,00 TL | Tevkifat 0,00 TL | Ödenecek 6.000,00 TL | Kalan 5.600,00 TL",
+  "bos": ""
+ },
+ "sayfaHatalari": []
+}

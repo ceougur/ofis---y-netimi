@@ -23,3 +23,4 @@ docs/kilavuz/*.pdf
 test/qa/artifacts/
 .claude/worktrees/
 test/excel-denetim/cikti/ekran-hafta/
+test/excel-denetim/cikti/rapor-ekstre-secim/
