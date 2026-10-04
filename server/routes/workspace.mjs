@@ -1,5 +1,5 @@
 // Ortak çalışma alanı: dosya işlemleri, görevler, mesajlar, raporlar, merkezi notlar ve veri kaynağı.
-import { methodOf } from "../lib/pay-method.mjs";
+import { methodInput } from "../lib/pay-method.mjs";
 import { columnOrder } from "../lib/sources.mjs";
 import { HttpError, limited, ok, parseJson, readJson, sendBuffer, text } from "../lib/http.mjs";
 import { buildXlsx } from "../lib/xlsx-write.mjs";
@@ -360,7 +360,7 @@ export function registerWorkspaceRoutes(router, { store, auth, access = null, au
     const itemId = newId("payment");
     store.run(
       "INSERT INTO payments (id, case_key, amount, date, note, case_title, method, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
-      itemId, key, amount, date, limited(body.note, 500, "Açıklama"), limited(body.caseTitle, 200, "Kayıt adı"), methodOf(body.method), user.id, now(),
+      itemId, key, amount, date, limited(body.note, 500, "Açıklama"), limited(body.caseTitle, 200, "Kayıt adı"), methodInput(body.method), user.id, now(),
     );
     audit(user, "case.payment.created", itemId, { caseKey: key, amount });
     changed(user, "activity", { caseKey: key });
@@ -382,7 +382,7 @@ export function registerWorkspaceRoutes(router, { store, auth, access = null, au
     const body = await readJson(req);
     const { amount, date } = paymentInput(body);
     const note = limited(body.note, 500, "Açıklama");
-    store.run("UPDATE payments SET amount = ?, date = ?, note = ?, method = ?, updated_by = ?, updated_at = ? WHERE id = ?", amount, date, note, methodOf(body.method, payment.method || "cash"), user.id, now(), payment.id);
+    store.run("UPDATE payments SET amount = ?, date = ?, note = ?, method = ?, updated_by = ?, updated_at = ? WHERE id = ?", amount, date, note, methodInput(body.method, payment.method || "cash"), user.id, now(), payment.id);
     audit(user, "case.payment.updated", payment.id, { caseKey: payment.caseKey, previous: { amount: payment.amount, date: payment.date, note: payment.note }, amount, date, note });
     changed(user, "activity", { caseKey: payment.caseKey });
     changed(user, "cash");

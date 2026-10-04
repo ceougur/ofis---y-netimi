@@ -9,7 +9,7 @@ import { cashPdf, cashPdfName, rangeLabel } from "../lib/cash-report.mjs";
 import { HttpError, limited, ok, readJson, sendBuffer, text } from "../lib/http.mjs";
 import { parseAmount, roundMoney } from "../lib/money.mjs";
 import { canUser } from "../lib/permissions.mjs";
-import { METHODS, NEGATIVE_GUARDED, NEGATIVE_KEY, NEGATIVE_POLICIES, methodFilter, methodOf, readNegativePolicy } from "../lib/pay-method.mjs";
+import { METHODS, NEGATIVE_GUARDED, NEGATIVE_KEY, NEGATIVE_POLICIES, methodFilter, methodOf, readNegativePolicy, methodInput } from "../lib/pay-method.mjs";
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 // Kasa'nın kendi kaynakları (kayıt tahsilatları ve elle girilen hareketler); diğerleri modüllerin cashSource'u.
@@ -211,7 +211,7 @@ export function registerCashRoutes(router, context) {
     const description = limited(body.description, 300, "Açıklama");
     if (!description) throw new HttpError(400, kind === "in" ? "Tahsilatın kimden/ne için alındığını yazın." : "Ödemenin kime/ne için yapıldığını yazın.");
     // v2.0.17: Kasa'ya yalnız nakit girilir. Yol gönderilmişse nakit olmalı (eski istemci / API).
-    if (body.method !== undefined && body.method !== null && String(body.method) !== "" && methodOf(body.method) !== "cash") {
+    if (methodInput(body.method) !== "cash") {
       throw new HttpError(400, "Kasa'ya yalnız nakit tahsilat ve ödeme girilir. Havale/EFT, POS ve kredi kartı hareketleri cari, fatura, taksit, stok ve çek/senet ekranlarından girilir; banka ile para geçişi için Kasa'daki Aktar / Yatır düğmelerini kullanın.", { code: "cash-method", method: methodOf(body.method) });
     }
     return { kind, amount: roundMoney(amount), date, description, method: "cash" };

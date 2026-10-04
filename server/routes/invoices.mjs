@@ -22,7 +22,7 @@ import { jpegInfo } from "../lib/pdf-write.mjs";
 import { CURRENCIES, EXEMPTIONS, EXPENSES, INVOICE_KINDS, InvoiceInputError, SCENARIOS, STOPPAGE_DEFAULT, VAT_RATES, WITHHOLDING, amountInWords, computeInvoice, exclusiveParts, grossFromNet, lineAccount, toTry, typeCode } from "../lib/invoice-math.mjs";
 import { CLOSER_MODES, PAY_STATES, settleInvoices } from "../lib/invoice-settle.mjs";
 import { parseAmount, roundMoney } from "../lib/money.mjs";
-import { METHODS, METHODS_IN, METHODS_OUT, methodLabel, methodOf } from "../lib/pay-method.mjs";
+import { METHODS, METHODS_IN, METHODS_OUT, methodLabel, methodInput } from "../lib/pay-method.mjs";
 import { canUser } from "../lib/permissions.mjs";
 import { createSecretBox } from "../lib/secret-box.mjs";
 import { addMonths, dayText, isoDay } from "../lib/plans.mjs";
@@ -980,7 +980,7 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, conf
       const n = numberOf(value, label, field, { min: 0, max: 1e12 });
       return n === null ? 0 : roundMoney(n);
     };
-    const cashList = (Array.isArray(p.cash) ? p.cash : p.cash && typeof p.cash === "object" ? [p.cash] : []).slice(0, 3).map(item => ({ amount: amount(item?.amount, "Peşin tutar", "payment.cash"), method: methodOf(item?.method) })).filter(item => item.amount > 0);
+    const cashList = (Array.isArray(p.cash) ? p.cash : p.cash && typeof p.cash === "object" ? [p.cash] : []).slice(0, 3).map(item => ({ amount: amount(item?.amount, "Peşin tutar", "payment.cash"), method: methodInput(item?.method) })).filter(item => item.amount > 0);
     const chequeAllowed = ["sale", "smm", "purchase"].includes(kind);
     const chequeList = (Array.isArray(p.cheques) ? p.cheques : []).slice(0, 20).map((item, index) => {
       if (!chequeAllowed) fail400("İade faturasında çek/senet alınmaz ya da verilmez; iade Kasa'dan ya da cariden mahsupla yapılır.", "payment.cheques");

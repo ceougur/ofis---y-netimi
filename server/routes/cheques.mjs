@@ -6,7 +6,7 @@
 // değişen çek ve olayın defter etkileri (cari hareketi, taksit tahsilatı) birlikte yazılır; biri başarısız olursa hepsi
 // geri alınır. Etkiler effects_json'da tutulur; "Geri al" bunları birebir tersine çevirir (silinen satır aynı kimlikle
 // geri eklenir). İki kişi aynı çeki aynı anda işlerse ikincisi "bu arada değişti" (409) alır (beklenen durum denetimi).
-import { methodOf } from "../lib/pay-method.mjs";
+import { methodOf, methodInput } from "../lib/pay-method.mjs";
 import { randomUUID } from "node:crypto";
 import { ACTIONS, DIRECTIONS, EVENT_LABELS, INSTRUMENTS, STATUSES, dueState, initialEvent, initialStatus, mapChequeHeaders, parseDirection, parseInstrument, parseStatus, plannedEffects, portfolioSummary, transition } from "../lib/cheques.mjs";
 import { HttpError, limited, ok, readJson, sendBuffer, text } from "../lib/http.mjs";
@@ -357,7 +357,7 @@ export function registerChequeRoutes(router, { store, auth, audit, events, cash 
       if (!rule.ok) throw new HttpError(409, rule.reason);
       const date = dateOf(body.date, "İşlem tarihi", today());
       // v2.0.13: çek/senet tahsili ya da ödemesi çoğunlukla bankadan geçer (varsayılan Banka); elden ise Nakit.
-      const method = methodOf(body.method, "bank");
+      const method = methodInput(body.method, "bank");
       if (rule.cash === "out") cash?.guardOut?.(cheque.amount, date, body.cashForce === true, method);
       if (date < cheque.issueDate) throw new HttpError(400, `İşlem tarihi, ${cheque.direction === "in" ? "alış" : "veriliş"} tarihinden (${dayText(cheque.issueDate)}) önce olamaz.`);
       const note = limited(body.note, 300, "Açıklama");

@@ -542,6 +542,14 @@ Bağlam kopsa da bu düzen değişmez. Kullanıcı "zip ver" dediğinde şu üç
   program gerçekten salt okunurdur, uyarı doğru → rapordan düşülecek. Önerilen sıra: 4 → 3 → 1/2 ölçüm → 5 → (6 yok).
   Not: 5'te içerik aynı diye reddetmek YANLIŞ (aynı cariye aynı ürünü iki kez satmak meşru) → istek kimliği (idempotency
   anahtarı) gerekir. 3'te ikili tür eklemek ayrı karar; asgari: yüklemede uyarı + kullanıcı seçimi. Kullanıcının "yap"ı bekleniyor.
+  KARAR (kullanıcı, 04.10.2026): "baş mimar ve baş mühendis şapkanla önerdiğin şekilde yap" → 2.0.22 adayı, sıra 4 → 3
+  (YALNIZ uyarı + eşleme seçimi, yeni tür YOK) → 1/2 (ölç, sonra düzelt) → 5 (istek kimliği). Her madde: kırmızı test →
+  düzeltme → kanıt; sonunda bağımsız gözden geçirme; DENENEN/DENENMEYEN/BİLİNEN SINIRLAR. 6 rapordan düşülür.
+  [x] 4. tanımsız ödeme yolu 400   [ ] 3. Müşteri/Tedarikçi uyarı + eşleme   [ ] 1/2. ölçüm + düzeltme   [ ] 5. idempotency
+  EK (kullanıcı, aynı gün): "UI'deki donmalar, gecikmeler, çoklu kullanımda arayüzün yetişememesi, cari arama pilindeki
+  sorunlar canımı çok acıttı, EN İYİ HALİYLE yap!" → 1/2 ÖNE ALINDI (4'ten hemen sonra). Hedef: çok personelli ofiste
+  (aynı şirkette saniyede 1–5 başka kayıt, 5+ açık pencere) arama kutusu anında, açık pencere kapanmaz/sıfırlanmaz,
+  sunucu yanıtı pencere sayısıyla katlanmaz; önce/sonra aynı A/B + tuş gecikmesi ölçümüyle kanıt.
 - 2.0.20 YAPILACAKLAR (kullanıcı "yapılacaklara not al" dedi, 03.10.2026; "yap" denince başlanır; ayrıntı ve
   kanıt hemen altındaki ADAYI maddesinde):
   [x] 1. Bütün raporların (43) tablosunun altında kalın TOPLAM satırı — ekran, PDF, Excel aynı; yalnız toplanabilir

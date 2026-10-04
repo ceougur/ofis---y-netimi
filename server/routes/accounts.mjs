@@ -5,7 +5,7 @@
 // aynı adla "ek alan" olur; taksit sorulmaz. Toplu taksitlendirme: seçilen carilere tek seferde taksit kartı.
 // Hesap kuralı server/lib/accounts.mjs içinde (saf, testli); burada doğrulama, kayıt ve yetki vardır.
 import { randomUUID } from "node:crypto";
-import { methodOf } from "../lib/pay-method.mjs";
+import { methodOf, methodInput } from "../lib/pay-method.mjs";
 import { ACCOUNT_TYPES, accountLedger, balanceSide, mapAccountHeaders, parseAccountType } from "../lib/accounts.mjs";
 import { HttpError, limited, ok, readJson, sendBuffer, text } from "../lib/http.mjs";
 import { parseAmount, roundMoney } from "../lib/money.mjs";
@@ -517,7 +517,7 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     const amount = amountOf(body.amount);
     if (!(amount > 0)) throw new HttpError(400, "Tutar sıfırdan büyük olmalı.");
     // v2.0.13: tahsilat/ödemenin yolu (nakit, havale/EFT, kredi kartı); borç/alacak yazmada para hareketi yoktur.
-    return { kind, amount, date: period ? period.movementDate(body) : dateOf(body.date, "Tarih", today()), note: limited(body.note, 300, "Açıklama"), method: methodOf(body.method), invoiceId: invoiceLink(accountId, kind, body.invoiceId) };
+    return { kind, amount, date: period ? period.movementDate(body) : dateOf(body.date, "Tarih", today()), note: limited(body.note, 300, "Açıklama"), method: methodInput(body.method), invoiceId: invoiceLink(accountId, kind, body.invoiceId) };
   };
   const entryOf = (accountId, entryId) => {
     const entry = store.get("SELECT id, kind, amount, date, note, method, receipt_no AS receiptNo, source, source_id AS sourceId, invoice_id AS invoiceId, created_by AS createdBy, created_at AS createdAt FROM account_entries WHERE account_id = ? AND id = ?", accountId, limited(entryId, 120, "Hareket"));
