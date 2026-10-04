@@ -7,3 +7,4 @@ cikti/DENETIM-RAPORU.pdf
 veri/*.xlsx
 veri/islemler.json
 veri/beklenen-*.json
+cikti/yuk-olcum-*.json
