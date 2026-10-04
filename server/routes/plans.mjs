@@ -11,7 +11,7 @@ import { extractSchedules, spreadPaid } from "../lib/insight/schedules.mjs";
 import { tabContext } from "../lib/insight/dues.mjs";
 import { planStatementPdf, receiptPdf } from "../lib/plan-report.mjs";
 import { tablePdf, tl } from "../lib/report-pdf.mjs";
-import { methodOf } from "../lib/pay-method.mjs";
+import { methodInput } from "../lib/pay-method.mjs";
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 const validDate = value => DATE.test(value) && !Number.isNaN(new Date(value).getTime());
@@ -305,7 +305,10 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
 
   router.get("/api/workspace/plans", async ({ req, res, url }) => {
     const user = auth.requirePermission(req, "plans.view");
-    ok(res, list(user, { ...listQuery(url.searchParams), caseSource: currentSource() }));
+    const data = list(user, { ...listQuery(url.searchParams), caseSource: currentSource() });
+    // v2.0.22: sol menü rozeti yalnız sayıyı ister (count=1); kartların tamamı (binlerce kartta ~200 KB) gönderilmez.
+    if (url.searchParams.get("count") === "1") return ok(res, { total: data.plans.length, totals: data.totals, today: data.today });
+    ok(res, data);
   });
 
   // Kaydın taksit kartları (v2.0.6): kişinin kartındaki "Taksit planı" bölümü ve Tahsilat penceresi buradan okur.
@@ -634,7 +637,7 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
     let itemId = text(body.itemId) || null;
     if (itemId && kind === "out") itemId = null;
     if (itemId && !store.get("SELECT 1 AS found FROM plan_items WHERE id = ? AND plan_id = ?", itemId, planId)) throw new HttpError(400, "Seçilen taksit bu kartta yok; kartı yenileyin.");
-    return { kind, amount, date, note, itemId, method: methodOf(body.method) };
+    return { kind, amount, date, note, itemId, method: methodInput(body.method) };
   };
   const entryOf = (planId, entryId) => {
     const entry = store.get("SELECT id, item_id AS itemId, kind, amount, date, note, method, receipt_no AS receiptNo, cheque_id AS chequeId, opening, created_by AS createdBy, created_at AS createdAt FROM plan_entries WHERE plan_id = ? AND id = ?", planId, limited(entryId, 120, "Hareket"));

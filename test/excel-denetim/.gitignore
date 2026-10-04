@@ -1,0 +1,10 @@
+# Ağır ya da yeniden üretilebilir çıktılar teslim zip'inde; depoda yalnız betikler, rapor ve sonuç özetleri.
+calisma/
+cikti/ekran/
+cikti/ham/
+cikti/raporlar/
+cikti/DENETIM-RAPORU.pdf
+veri/*.xlsx
+veri/islemler.json
+veri/beklenen-*.json
+cikti/yuk-olcum-*.json

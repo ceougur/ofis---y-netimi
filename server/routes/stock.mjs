@@ -11,7 +11,7 @@ import { HttpError, limited, ok, readJson, sendBuffer, text } from "../lib/http.
 import { parseAmount, roundMoney } from "../lib/money.mjs";
 import { canUser } from "../lib/permissions.mjs";
 import { dayText, isoDay } from "../lib/plans.mjs";
-import { methodOf } from "../lib/pay-method.mjs";
+import { methodOf, methodInput } from "../lib/pay-method.mjs";
 import { tablePdf, tl } from "../lib/report-pdf.mjs";
 import { unitLabel } from "../lib/units.mjs";
 import { buildXlsx } from "../lib/xlsx-write.mjs";
@@ -321,7 +321,7 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
     // olarak görünür; alım sayılmaz (ürünün maliyet fiyatı değişmez).
     const reason = kind === "in" && text(body.reason) === "return" ? "return" : "";
     // v2.0.13: para Kasa'dan/Kasa'ya geçiyorsa yolu: nakit, havale/EFT ya da kredi kartı (POS).
-    return { kind, qty, unitPrice, amount, date: period ? period.movementDate(body) : dateOf(body.date, "Tarih", today()), note: limited(body.note, 300, "Açıklama"), pay, reason, method: pay === "cash" ? methodOf(body.method) : "cash", accountId };
+    return { kind, qty, unitPrice, amount, date: period ? period.movementDate(body) : dateOf(body.date, "Tarih", today()), note: limited(body.note, 300, "Açıklama"), pay, reason, method: pay === "cash" ? methodInput(body.method) : "cash", accountId };
   };
   // Eksiye düşme kontrolü: çıkış mevcuttan fazlaysa sorulur (force ile kaydedilir; sayım farkı olabilir).
   function assertAvailable(item, move, previous, force) {

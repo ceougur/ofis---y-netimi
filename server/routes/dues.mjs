@@ -26,6 +26,10 @@ export function registerDueRoutes(router, { auth, store, dataset, profile, event
     return `${row.count}/${row.at}`;
   };
 
+  // v2.0.22 (yük ölçümü): tablo kayıtlarından hesaplanan kısım (ödeme kalemleri, son tarihler) para kaydından etkilenmez;
+  // ayrı saklanır. Personel sürekli tahsilat/fatura girerken her kayıtta yalnız taksit, çek/senet ve fatura kalemleri
+  // yeniden hesaplanır (önceden binlerce satırlık tablo her kayıtta baştan işleniyordu). Sonuç aynıdır.
+  const tableCache = new Map(); // oturum → { key, value: { computed, deadlines } }
   async function compute() {
     const now = new Date();
     const settledRaw = store.setting(settingKey(), "{}") || "{}";
@@ -33,24 +37,31 @@ export function registerDueRoutes(router, { auth, store, dataset, profile, event
     const tabState = ["dataset.tabs.alias", "dataset.tabs.hidden"].map(name => store.setting(dataset.settingKey ? dataset.settingKey(name) : name, "") || "").join("|");
     const pages = dataset.sessions ? dataset.sessions() : [];
     const pagesState = pages.length > 1 ? pages.map(page => `${page.key}:${page.rowCount}:${page.recordCount}:${page.changedAt || ""}`).join("|") : "";
-    const key = [pagesState, profile.fingerprint(), paymentsState(), settledRaw.length, settledRaw.slice(-64), tabState, plans?.fingerprint ? plans.fingerprint() : "", cheques?.fingerprint ? cheques.fingerprint() : "", invoices?.fingerprint ? invoices.fingerprint() : "", now.toDateString()].join("|");
+    const tableKey = [pagesState, profile.fingerprint(), paymentsState(), settledRaw.length, settledRaw.slice(-64), tabState, now.toDateString()].join("|");
+    const key = [tableKey, plans?.fingerprint ? plans.fingerprint() : "", cheques?.fingerprint ? cheques.fingerprint() : "", invoices?.fingerprint ? invoices.fingerprint() : ""].join("|");
     const session = dataset.currentKey();
     const hit = cache.get(session);
     if (hit && hit.key === key) return hit.result;
-    const view = await dataset.view();
-    const rows = view.rows || [];
-    const tabs = (view.tabs || []).map(item => item.title);
-    const keys = new Set(rows.map(row => row.__hofKey).filter(Boolean));
-    const payments = store.all("SELECT case_key AS caseKey, amount, date, note FROM payments").filter(item => keys.has(item.caseKey));
-    const forced = profile.roles ? profile.roles() : null;
-    const computed = computeDues({ rows, tabs, payments, settled: readSettled(), now, forced });
+    let table = tableCache.get(session);
+    if (!table || table.key !== tableKey) {
+      const view = await dataset.view();
+      const rows = view.rows || [];
+      const tabs = (view.tabs || []).map(item => item.title);
+      const keys = new Set(rows.map(row => row.__hofKey).filter(Boolean));
+      const payments = store.all("SELECT case_key AS caseKey, amount, date, note FROM payments").filter(item => keys.has(item.caseKey));
+      const forced = profile.roles ? profile.roles() : null;
+      const computed = computeDues({ rows, tabs, payments, settled: readSettled(), now, forced });
+      const deadlines = computeDeadlines({ rows, tabs, now, exclude: computed.sources, forced });
+      table = { key: tableKey, value: { computed, deadlines } };
+      tableCache.set(session, table);
+    }
+    const { computed, deadlines } = table.value;
     // Taksit kartı olan kişinin (v2.0.8) tablodaki ödeme kalemleri ikinci kez sayılmaz: taksitleri kartından gelir.
     // Ödeme sözü kişiye özel bir taahhüttür, kalır; son tarihi yaklaşan işler (sözleşme, sigorta…) bundan etkilenmez.
     const carded = plans?.linkedCases ? plans.linkedCases(session) : new Set();
     const items = carded.size ? computed.items.filter(item => item.promise || !carded.has(item.caseKey)) : computed.items;
     const dormant = carded.size ? computed.dormant.filter(item => !carded.has(item.caseKey)) : computed.dormant;
     const { sources } = computed;
-    const deadlines = computeDeadlines({ rows, tabs, now, exclude: sources, forced });
     const local = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
     // Taksit kartlarının vadesi gelen/geçen taksitleri (v2.0.4) aynı listeye girer: şerit ve bildirimler tek kaynaktan okur.
     // Kart oturumdan bağımsızdır (Kasa gibi); her oturumda görünür.
@@ -109,6 +120,7 @@ export function registerDueRoutes(router, { auth, store, dataset, profile, event
     if (pageKey && pageKey !== dataset.currentKey() && dataset.withKey) dataset.withKey(pageKey, write);
     else write();
     cache.clear();
+    tableCache.clear();
     const caseKey = id.split("|")[2] || "";
     audit(user, body.undo ? "dues.reopened" : reason === "paid" ? "dues.settled" : "dues.cancelled", caseKey, { id });
     events?.publish("workspace.changed", { kind: "dues", caseKey, actorId: user.id, actorName: user.display_name, datasetKey: dataset.currentKey() }, { except: user.id });

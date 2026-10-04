@@ -1,0 +1,676 @@
+// Senaryo 2.0.22 — Excel denetimi bulguları (04.10.2026), arayüzden, sıfırdan:
+//  madde 5: fatura isteğinin yanıtı kaybolunca (sunucu kaydetti, ekran öğrenemedi) yeniden "Faturayı Kaydet" → TEK fatura;
+//  madde 1/2: başka personel saniyede bir parasal kayıt girerken açık pencereler yenilemeleri birleştirir (istek sayısı),
+//            veri yine güncel kalır; Cari aramasında yazılan metin ve sonuç doğru;
+//  madde 1/2 (S2): başka personelin cari notu düzeltmesi ANLIK DURUM'u yeniden yükletmez, parasal kayıt yükletir.
+// Çalıştırma: npm run test:senaryo-222
+import fs, { mkdtempSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+import { chromium } from "playwright";
+import { createApp } from "../../server/app.mjs";
+import { createClient } from "../helpers.mjs";
+
+const OUT = path.join(path.dirname(fileURLToPath(import.meta.url)), "artifacts", "senaryo-222");
+fs.rmSync(OUT, { recursive: true, force: true });
+fs.mkdirSync(OUT, { recursive: true });
+const PASS = "Prova-Admin-2026!";
+const STAFF = "Prova-Personel-2026!";
+const root = mkdtempSync(path.join(tmpdir(), "destekofis-222-"));
+const pad = v => String(v).padStart(2, "0");
+const now = new Date();
+const TODAY = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
+const app = createApp({ dataDir: path.join(root, "data"), backupDir: path.join(root, "backups"), logLevel: "warn", scheduleBackups: false, env: { HUKUK_ADMIN_PASSWORD: PASS, HUKUK_DATASET_AUTOSYNC: "0" }, license: { enforce: false, machineId: "a1b2c3d4e5f60718293a4b5c6d7e8f22" } });
+const { port } = await app.listen(0, "127.0.0.1");
+const BASE = `http://127.0.0.1:${port}`;
+const browser = await chromium.launch();
+const context = await browser.newContext({ viewport: { width: 1440, height: 1000 }, locale: "tr-TR" });
+await context.addInitScript(() => {
+  document.addEventListener("DOMContentLoaded", () => document.head.appendChild(Object.assign(document.createElement("style"), { textContent: "#hof-license-bar,.hof-license-notice{display:none!important}" })));
+});
+const admin = await context.newPage();
+const errors = [];
+admin.on("pageerror", error => errors.push(`pageerror ${error.message}`));
+admin.on("console", message => {
+  if (message.type() === "error" && !/api\/auth\/me|Failed to load resource|net::ERR_FAILED/.test(`${message.location().url} ${message.text()}`)) errors.push(`${message.text()} @ ${message.location().url}`);
+});
+
+let passed = 0;
+let failed = 0;
+let shotNo = 0;
+const ok = (cond, what) => {
+  if (cond) passed += 1;
+  else failed += 1;
+  console.log(`  ${cond ? "✓" : "✗"} ${what}`);
+  return Boolean(cond);
+};
+const shot = async name => {
+  shotNo += 1;
+  await admin.screenshot({ path: path.join(OUT, `${String(shotNo).padStart(2, "0")}-${name}.png`) });
+};
+const step = async (title, fn) => {
+  console.log(`\n■ ${title}`);
+  try {
+    await fn();
+  } catch (error) {
+    failed += 1;
+    console.log(`  ✗ beklenmeyen hata: ${error.stack || error.message}`);
+    await shot("hata").catch(() => null);
+  }
+};
+const modal = ".hof-modal-backdrop.is-visible";
+const inv = `${modal} .hof-invoices-modal`;
+const unwrap = r => (r.data && typeof r.data === "object" && "ok" in r.data ? (r.data.ok ? r.data.data : r.data) : r.data);
+const api = createClient(BASE);
+const get = async url => unwrap(await api.get(url));
+const closeAll = async () => {
+  for (let i = 0; i < 6 && (await admin.$(modal)); i += 1) {
+    await admin.keyboard.press("Escape");
+    await admin.waitForTimeout(250);
+  }
+};
+const confirmYes = async () => {
+  await admin.waitForSelector(`${modal} [data-answer="yes"]`, { timeout: 8000 });
+  await admin.click(`${modal} [data-answer="yes"]`);
+};
+// Sayfanın API isteklerini uç başına sayar (yalnız GET; arka plan yenilemeleri).
+const counter = page => {
+  const counts = {};
+  const listener = request => {
+    const url = new URL(request.url());
+    if (!url.pathname.startsWith("/api/") || request.method() !== "GET") return;
+    counts[url.pathname] = (counts[url.pathname] || 0) + 1;
+  };
+  page.on("request", listener);
+  return { counts, stop: () => page.off("request", listener) };
+};
+
+const ids = { customers: [] };
+try {
+  await step("Kurulum: yönetici girer; 12 müşteri, ürün, Kasa açılışı; ikinci personel (Muhasebe)", async () => {
+    await api.login("admin", PASS);
+    for (let i = 1; i <= 12; i += 1) ids.customers.push(unwrap(await api.post("/api/workspace/accounts", { name: `Müşteri ${pad(i)}`, type: "customer", phone: `0532 100 00 ${pad(i)}` })).id);
+    ids.item = unwrap(await api.post("/api/workspace/stock", { name: "Deneme Kalemi", code: "DK-1", unit: "Adet", unitPrice: 50, salePrice: 100, openingQty: 100 })).id;
+    await api.post("/api/workspace/cash", { kind: "in", amount: 10000, date: TODAY, description: "Açılış" });
+    const created = await api.post("/api/admin/users", { username: "muhasebe2", name: "Muhasebe İki", role: "muhasebe", password: STAFF, mustChangePassword: false });
+    ok(created.status === 200, "ikinci personel açıldı");
+    await admin.goto(`${BASE}/`);
+    await admin.fill("#hof-auth input[name=username]", "admin");
+    await admin.fill("#hof-auth input[name=password]", PASS);
+    await admin.click('#hof-auth button[type="submit"]');
+    await admin.waitForSelector("#hof-sidecard [data-action=invoices]", { timeout: 60000 });
+    await admin.waitForTimeout(2500);
+    ok(ids.customers.length === 12 && Boolean(ids.item), "veri hazır");
+  });
+
+  await step("Madde 5: yanıt kaybolur (sunucu kaydetti), kullanıcı yeniden Faturayı Kaydet'e basar → tek fatura", async () => {
+    await admin.click("#hof-sidecard [data-action=invoices]");
+    await admin.waitForSelector(`${inv} [data-act="new"]`);
+    await admin.click(`${inv} [data-act="new"]`);
+    await admin.click(`${inv} [data-scenario="goods_sale"]`);
+    await admin.waitForSelector(`${inv} [data-lines]`);
+    await admin.fill(`${inv} [data-acc-query]`, "Müşteri 01");
+    await admin.waitForSelector(`${inv} .hof-acc-picker li[data-id]`);
+    await (await admin.$(`${inv} .hof-acc-picker li[data-id]`)).dispatchEvent("mousedown");
+    await admin.click(`${inv} [data-l="0"][data-f="name"]`);
+    await admin.keyboard.type("Deneme");
+    await admin.waitForSelector(`${inv} [data-hits="0"] li[data-item]`);
+    await admin.click(`${inv} [data-hits="0"] li[data-item]`);
+    await admin.fill(`${inv} [data-l="0"][data-f="qty"]`, "2");
+    await admin.fill(`${inv} [data-l="0"][data-f="unitPrice"]`, "100");
+    await admin.waitForTimeout(1000);
+    const headers = [];
+    let dropped = false;
+    // İlk "kaydet" isteği sunucuya gider ve işlenir; yanıtı tarayıcıya ulaşmaz (ağ koptu / zaman aşımı gibi).
+    await admin.route(url => new URL(url).pathname === "/api/workspace/invoices", async route => {
+      if (route.request().method() !== "POST") return route.continue();
+      headers.push(route.request().headers()["x-hof-request"] || "");
+      if (!dropped) {
+        dropped = true;
+        await route.fetch();
+        return route.abort("failed");
+      }
+      return route.continue();
+    });
+    await admin.click(`${inv} [data-act="issue"]`);
+    await confirmYes();
+    const failedShown = await admin.waitForFunction(() => /Sunucuya ulaşılamadı|zamanında yanıt vermedi/.test(document.body.innerText), null, { timeout: 15000 }).then(() => true, () => false);
+    ok(failedShown, "ekran yanıtı alamadığını söyledi (form açık kaldı)");
+    const afterFirst = (await get(`/api/workspace/invoices?tab=sale&limit=50`)).invoices.filter(doc => doc.status === "issued");
+    ok(afterFirst.length === 1, `sunucu ilk isteği zaten kaydetmişti (${afterFirst.length} fatura)`);
+    await shot("yanit-kayboldu");
+    await admin.click(`${inv} [data-act="issue"]`);
+    await confirmYes();
+    const opened = await admin.waitForSelector(`${inv} .hof-inv-pills`, { timeout: 15000 }).then(() => true, () => false);
+    ok(opened, "ikinci basışta fatura kartı açıldı");
+    const toast = await admin.evaluate(() => [...document.querySelectorAll(".hof-toast")].map(node => node.textContent).join(" | "));
+    ok(/zaten kaydedilmişti/.test(toast), `bildirim: ${toast.split(" | ").filter(Boolean).at(-1) || "yok"}`);
+    ok(headers.length === 2 && headers[0] && headers[0] === headers[1], `iki gönderim aynı istek kimliğiyle (${headers.map(h => h.slice(0, 8)).join(" = ")})`);
+    const docs = (await get(`/api/workspace/invoices?tab=sale&limit=50`)).invoices.filter(doc => doc.status === "issued");
+    ok(docs.length === 1, `tek fatura (${docs.length})`);
+    const customer = await get(`/api/workspace/accounts/${ids.customers[0]}`);
+    ok(customer.totals.balance === 240, `müşteri borcu bir kez: ${customer.totals.balance} (2 × 100 + %20 KDV = 240)`);
+    ok((await get(`/api/workspace/stock/${ids.item}`)).qty === 98, "stoktan bir kez düştü (100 → 98)");
+    await shot("tek-fatura");
+    await admin.unroute(url => new URL(url).pathname === "/api/workspace/invoices");
+    // Yeni form yeni kimlik: gerçekten ikinci satış serbest.
+    await closeAll();
+    await admin.click("#hof-sidecard [data-action=invoices]");
+    await admin.waitForSelector(`${inv} [data-act="new"]`);
+    await admin.click(`${inv} [data-act="new"]`);
+    await admin.click(`${inv} [data-scenario="goods_sale"]`);
+    await admin.waitForSelector(`${inv} [data-lines]`);
+    await admin.fill(`${inv} [data-acc-query]`, "Müşteri 01");
+    await admin.waitForSelector(`${inv} .hof-acc-picker li[data-id]`);
+    await (await admin.$(`${inv} .hof-acc-picker li[data-id]`)).dispatchEvent("mousedown");
+    await admin.click(`${inv} [data-l="0"][data-f="name"]`);
+    await admin.keyboard.type("Deneme");
+    await admin.waitForSelector(`${inv} [data-hits="0"] li[data-item]`);
+    await admin.click(`${inv} [data-hits="0"] li[data-item]`);
+    await admin.fill(`${inv} [data-l="0"][data-f="qty"]`, "2");
+    await admin.fill(`${inv} [data-l="0"][data-f="unitPrice"]`, "100");
+    await admin.waitForTimeout(1000);
+    await admin.click(`${inv} [data-act="issue"]`);
+    await confirmYes();
+    await admin.waitForSelector(`${inv} .hof-inv-pills`, { timeout: 15000 });
+    ok((await get(`/api/workspace/invoices?tab=sale&limit=50`)).invoices.filter(doc => doc.status === "issued").length === 2, "aynı içerikli ikinci satış (yeni form) ayrı fatura olarak kaydedildi");
+    await closeAll();
+  });
+
+  await step("Madde 1/2: başka personel 10 parasal kayıt girerken açık Cari penceresi ve ana ekran yenilemeleri birleştirir", async () => {
+    const colleague = createClient(BASE);
+    ok((await colleague.login("muhasebe2", STAFF)).status === 200, "ikinci personel girdi (ayrı oturum)");
+    await admin.click("#hof-sidecard [data-action=accounts]");
+    await admin.waitForSelector(`${modal} tr[data-account]`);
+    await admin.waitForTimeout(2500);
+    const log = counter(admin);
+    for (let i = 0; i < 10; i += 1) {
+      const r = await colleague.post(`/api/workspace/accounts/${ids.customers[1]}/entries`, { kind: "in", amount: 10, date: TODAY, method: "cash", note: `eşzamanlı ${i}` });
+      if (r.status !== 200) ok(false, `personel kaydı ${i}: ${r.status}`);
+      await admin.waitForTimeout(1000);
+    }
+    await admin.waitForTimeout(5000);
+    log.stop();
+    const c = log.counts;
+    const total = Object.values(c).reduce((s, n) => s + n, 0);
+    console.log(`    istekler: ${JSON.stringify(c)}`);
+    ok((c["/api/workspace/accounts"] || 0) >= 1 && (c["/api/workspace/accounts"] || 0) <= 12, `Cari listesi ${c["/api/workspace/accounts"] || 0} kez yenilendi (10 kayıt; 2.0.21'de 20–30 kez)`);
+    ok((c["/api/workspace/dues"] || 0) <= 6, `vade takvimi ${c["/api/workspace/dues"] || 0} kez (2.0.21'de 11–20 kez, her biri büyük)`);
+    ok((c["/api/workspace/invoices"] || 0) <= 7 && (c["/api/workspace/plans"] || 0) <= 7, `rozetler: fatura ${c["/api/workspace/invoices"] || 0}, taksit ${c["/api/workspace/plans"] || 0} kez (2.0.21'de 10'ar)`);
+    ok(total <= 50, `toplam ${total} istek (2.0.21'de aynı koşulda ~100)`);
+    // Veri güncel: Müşteri 02'nin bakiyesi listede −100 (10 × 10 TL tahsilat, borcu yoktu → alacaklı 100).
+    const row = await admin.$eval(`${modal} tr[data-account="${ids.customers[1]}"]`, node => node.innerText.replace(/\s+/g, " ")).catch(() => "");
+    ok(/100,00/.test(row), `listede Müşteri 02 güncel: ${row.slice(0, 120)}`);
+    await shot("cari-listesi-guncel");
+  });
+
+  await step("Madde 1/2: başka personel kayıt girerken Cari aramasında yazılan metin ve sonuç doğru", async () => {
+    const colleague = createClient(BASE);
+    await colleague.login("muhasebe2", STAFF);
+    let alive = true;
+    const noise = (async () => {
+      let i = 0;
+      while (alive) {
+        await colleague.post(`/api/workspace/accounts/${ids.customers[2 + (i % 8)]}/entries`, { kind: "in", amount: 5, date: TODAY, method: "cash", note: `arama sırasında ${i}` });
+        i += 1;
+        await new Promise(resolve => setTimeout(resolve, 500));
+      }
+    })();
+    const box = await admin.$(`${modal} input[data-filter=q]`);
+    await box.click();
+    await admin.keyboard.type("Müşteri 07", { delay: 120 });
+    const shown = await admin.waitForFunction(sel => {
+      const rows = [...document.querySelectorAll(`${sel} tr[data-account]`)];
+      return rows.length === 1 && rows[0].innerText.includes("Müşteri 07");
+    }, modal, { timeout: 15000 }).then(() => true, () => false);
+    alive = false;
+    await noise;
+    ok((await admin.$eval(`${modal} input[data-filter=q]`, node => node.value)) === "Müşteri 07", "kutudaki metin eksiksiz (harf kaybolmadı)");
+    ok(shown, "listede yalnız Müşteri 07 kaldı (arama sonucu arka plan yenilemesinde kaybolmadı)");
+    await shot("arama-yuk-altinda");
+    await admin.fill(`${modal} input[data-filter=q]`, "");
+    await closeAll();
+  });
+
+  await step("Madde 1/2 (denetim 5.2): başka personel saniyede 2 kayıt girerken Faturalar → Yeni → Satış formu açılır ve kaydedilir", async () => {
+    const colleague = createClient(BASE);
+    await colleague.login("muhasebe2", STAFF);
+    let alive = true;
+    let written = 0;
+    const noise = (async () => {
+      while (alive) {
+        const r = await colleague.post(`/api/workspace/accounts/${ids.customers[4 + (written % 6)]}/entries`, { kind: "in", amount: 3, date: TODAY, method: "cash", note: `form sırasında ${written}` });
+        if (r.status === 200) written += 1;
+        await new Promise(resolve => setTimeout(resolve, 500));
+      }
+    })();
+    const started = Date.now();
+    await admin.click("#hof-sidecard [data-action=invoices]");
+    await admin.waitForSelector(`${inv} [data-act="new"]`, { timeout: 20000 });
+    await admin.click(`${inv} [data-act="new"]`);
+    await admin.click(`${inv} [data-scenario="goods_sale"]`);
+    const opened = await admin.waitForSelector(`${inv} [data-lines]`, { timeout: 20000 }).then(() => true, () => false);
+    const openMs = Date.now() - started;
+    ok(opened && openMs < 8000, `satış formu ${openMs} ms'de açıldı (yük altında)`);
+    await admin.fill(`${inv} [data-acc-query]`, "Müşteri 12");
+    await admin.waitForSelector(`${inv} .hof-acc-picker li[data-id]`, { timeout: 15000 });
+    await (await admin.$(`${inv} .hof-acc-picker li[data-id]`)).dispatchEvent("mousedown");
+    await admin.click(`${inv} [data-l="0"][data-f="name"]`);
+    await admin.keyboard.type("Deneme");
+    await admin.waitForSelector(`${inv} [data-hits="0"] li[data-item]`, { timeout: 15000 });
+    await admin.click(`${inv} [data-hits="0"] li[data-item]`);
+    await admin.fill(`${inv} [data-l="0"][data-f="qty"]`, "1");
+    await admin.fill(`${inv} [data-l="0"][data-f="unitPrice"]`, "100");
+    await admin.waitForTimeout(1000);
+    await admin.click(`${inv} [data-act="issue"]`);
+    await confirmYes();
+    const saved = await admin.waitForSelector(`${inv} .hof-inv-pills`, { timeout: 20000 }).then(() => true, () => false);
+    alive = false;
+    await noise;
+    ok(saved && written >= 4, `fatura kaydedildi; bu sırada öbür personel ${written} kayıt girdi`);
+    const balance = (await get(`/api/workspace/accounts/${ids.customers[11]}`)).totals.balance;
+    ok(balance === 120, `Müşteri 12 borcu ${balance} (100 + %20 KDV)`);
+    await shot("yuk-altinda-fatura");
+    await closeAll();
+  });
+
+  await step("Pencere bozulmaz: arka plan yenilemesi başarısız olunca liste, arama kutusu ve açık kart yerinde kalır; silinen cari bildirilir", async () => {
+    // v2.0.21'de liste yenilenemeyince (yük altında 30 sn'yi aşan istek) pencere gövdesi hata yazısıyla değişiyor, arama
+    // kutusu kayboluyordu; açık kartın yenilemesi hata alınca kullanıcı listeye atılıyordu (yük ölçümünde görüldü).
+    const colleague = createClient(BASE);
+    await colleague.login("muhasebe2", STAFF);
+    const lonely = unwrap(await api.post("/api/workspace/accounts", { name: "Silinecek Cari", type: "customer" })).id;
+    await admin.click("#hof-sidecard [data-action=accounts]");
+    await admin.waitForSelector(`${modal} tr[data-account]`);
+    await admin.fill(`${modal} input[data-filter=q]`, "Müşteri 0");
+    await admin.waitForFunction(sel => [...document.querySelectorAll(`${sel} tr[data-account]`)].length === 9, modal, { timeout: 10000 });
+    const isList = url => new URL(url).pathname === "/api/workspace/accounts";
+    let failedCalls = 0;
+    await admin.route(isList, route => {
+      if (route.request().method() !== "GET") return route.continue();
+      failedCalls += 1;
+      return route.abort("failed");
+    });
+    await colleague.post(`/api/workspace/accounts/${ids.customers[5]}/entries`, { kind: "in", amount: 7, date: TODAY, method: "cash", note: "yenileme hatası denemesi" });
+    await admin.waitForTimeout(3500);
+    const state = await admin.evaluate(sel => ({
+      input: document.querySelector(`${sel} input[data-filter=q]`)?.value ?? null,
+      rows: document.querySelectorAll(`${sel} tr[data-account]`).length,
+      error: document.querySelector(`${sel} .hof-empty`)?.textContent || "",
+    }), modal);
+    ok(failedCalls >= 1, `arka plan yenilemesi denendi ve başarısız oldu (${failedCalls} kez)`);
+    ok(state.input === "Müşteri 0" && state.rows === 9 && !state.error, `liste ve arama kutusu yerinde (kutuda "${state.input}", ${state.rows} satır${state.error ? `, hata yazısı: ${state.error}` : ""})`);
+    await shot("yenileme-hatasinda-liste-yerinde");
+    // Bağlantı düzelince başka bir değişiklik gelmeden de liste güncellenir (başarısız yenileme yeniden denenir).
+    await admin.unroute(isList);
+    const want = Math.abs((await get(`/api/workspace/accounts/${ids.customers[5]}`)).totals.balance);
+    const wantText = want.toLocaleString("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const refreshed = await admin.waitForFunction(([sel, id, text]) => (document.querySelector(`${sel} tr[data-account="${id}"]`)?.innerText || "").includes(text), [modal, ids.customers[5], wantText], { timeout: 15000 }).then(() => true, () => false);
+    ok(refreshed, `bağlantı düzelince liste kendiliğinden güncellendi (Müşteri 06: ${wantText})`);
+    // Açık kart: yenilemesi başarısız olunca kullanıcı kartta kalır.
+    await admin.click(`${modal} tr[data-account="${ids.customers[5]}"]`);
+    await admin.waitForSelector(`${modal} [data-act="back"]`, { timeout: 10000 });
+    const isCard = url => new URL(url).pathname === `/api/workspace/accounts/${ids.customers[5]}`;
+    await admin.route(isCard, route => (route.request().method() === "GET" ? route.abort("failed") : route.continue()));
+    await colleague.post(`/api/workspace/accounts/${ids.customers[5]}/entries`, { kind: "in", amount: 8, date: TODAY, method: "cash", note: "kart yenileme hatası" });
+    await admin.waitForTimeout(3500);
+    const stillCard = await admin.evaluate(sel => Boolean(document.querySelector(`${sel} [data-act="back"]`)) && !document.querySelector(`${sel} input[data-filter=q]`) && Boolean(document.querySelector(sel)?.innerText.includes("Müşteri 06")), modal);
+    ok(stillCard, "açık kartın yenilemesi başarısız oldu, kullanıcı kartta kaldı (listeye atılmadı)");
+    await admin.unroute(isCard);
+    await closeAll();
+    // Başka bilgisayarda silinen cari: kart açıkken silinince bildirilir, liste açılır.
+    await admin.click("#hof-sidecard [data-action=accounts]");
+    await admin.waitForSelector(`${modal} input[data-filter=q]`);
+    await admin.fill(`${modal} input[data-filter=q]`, "Silinecek");
+    await admin.waitForSelector(`${modal} tr[data-account="${lonely}"]`, { timeout: 10000 });
+    await admin.click(`${modal} tr[data-account="${lonely}"]`);
+    await admin.waitForSelector(`${modal} [data-act="back"]`, { timeout: 10000 });
+    const removed = await api.del(`/api/workspace/accounts/${lonely}`);
+    ok(removed.status === 200, `cari başka oturumda silindi (${removed.status})`);
+    const back = await admin.waitForFunction(sel => Boolean(document.querySelector(`${sel} input[data-filter=q]`)) && /bulunamadı|Silinmiş/i.test([...document.querySelectorAll(".hof-toast")].map(node => node.textContent).join(" ")), modal, { timeout: 10000 }).then(() => true, () => false);
+    ok(back, "silinen carinin kartı bildirimle kapandı, liste açıldı");
+    await closeAll();
+  });
+
+  await step("Gözden geçirme 8: kullanıcının kendi araması yüklenemezse eski satırlar yeni süzgecin altında kalmaz", async () => {
+    await closeAll();
+    // Önceden eski liste (ve "Tümünü Seç") yeni arama metninin altında kalıyordu: toplu işlem görünmeyen carilere uygulanırdı.
+    await admin.click("#hof-sidecard [data-action=accounts]");
+    await admin.waitForSelector(`${modal} input[data-filter=q]`);
+    await admin.fill(`${modal} input[data-filter=q]`, "");
+    await admin.waitForFunction(sel => document.querySelectorAll(`${sel} tr[data-account]`).length >= 12, modal, { timeout: 10000 });
+    const isSearch = url => {
+      const parsed = new URL(url);
+      return parsed.pathname === "/api/workspace/accounts" && parsed.searchParams.get("q") === "Müşteri 1";
+    };
+    await admin.route(isSearch, route => (route.request().method() === "GET" ? route.abort("failed") : route.continue()));
+    await admin.fill(`${modal} input[data-filter=q]`, "Müşteri 1");
+    const shown = await admin.waitForSelector(`${modal} .hof-list-error`, { timeout: 10000 }).then(() => true, () => false);
+    const state = await admin.evaluate(sel => ({
+      rows: document.querySelectorAll(`${sel} tr[data-account]`).length,
+      input: document.querySelector(`${sel} input[data-filter=q]`)?.value ?? null,
+      selectAll: Boolean(document.querySelector(`${sel} [data-select-all]`)),
+      retry: Boolean(document.querySelector(`${sel} .hof-list-error [data-act="retryList"]`)),
+    }), modal);
+    ok(shown && state.rows === 0 && !state.selectAll, `arama yüklenemedi: eski satırlar gösterilmiyor (${state.rows} satır), Tümünü Seç yok`);
+    ok(state.input === "Müşteri 1" && state.retry, `arama kutusu yerinde ("${state.input}"), "Yeniden Dene" var`);
+    await shot("arama-yuklenemedi");
+    await admin.unroute(isSearch);
+    await admin.click(`${modal} .hof-list-error [data-act="retryList"]`);
+    const retried = await admin.waitForFunction(sel => {
+      const rows = [...document.querySelectorAll(`${sel} tr[data-account]`)];
+      return rows.length === 3 && rows.every(row => /Müşteri 1[0-2]/.test(row.innerText));
+    }, modal, { timeout: 10000 }).then(() => true, () => false);
+    ok(retried, "Yeniden Dene → Müşteri 10, 11, 12");
+    await admin.fill(`${modal} input[data-filter=q]`, "");
+    await closeAll();
+  });
+
+  await step("Gözden geçirme 4: arka plan yenilemesi kullanıcının sürmekte olan aramasını geçersiz saymaz (Stok)", async () => {
+    await closeAll();
+    // Önceden arka plan yenilemesi sıra numarasını artırıyordu: kullanıcının arama yanıtı atılıyor, yenileme başarısızsa eski
+    // (süzülmemiş) liste aranan metnin altında kalıyordu.
+    const colleague = createClient(BASE);
+    await colleague.login("muhasebe2", STAFF);
+    await api.post("/api/workspace/stock", { name: "Vida M8", code: "VD-8", unit: "Adet", unitPrice: 1, salePrice: 2 });
+    await api.post("/api/workspace/stock", { name: "Somun M8", code: "SM-8", unit: "Adet", unitPrice: 1, salePrice: 2 });
+    await admin.click("#hof-sidecard [data-action=stock]");
+    await admin.waitForFunction(sel => document.querySelectorAll(`${sel} .hof-stock-table tbody tr`).length >= 3, modal, { timeout: 10000 });
+    await admin.waitForTimeout(2000);
+    const isSearch = url => {
+      const parsed = new URL(url);
+      return parsed.pathname === "/api/workspace/stock" && parsed.searchParams.get("q") === "Vida";
+    };
+    let first = null;
+    const seen = [];
+    await admin.route(isSearch, async route => {
+      if (route.request().method() !== "GET") return route.continue();
+      if (!first) {
+        first = route;
+        seen.push("kullanıcı");
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        return route.continue();
+      }
+      seen.push("arka plan");
+      return route.abort("failed");
+    });
+    const answered = admin.waitForResponse(response => isSearch(response.url()), { timeout: 15000 });
+    const sent = admin.waitForRequest(request => isSearch(request.url()), { timeout: 10000 });
+    await admin.fill(`${modal} input[data-filter=q]`, "Vida");
+    await sent;
+    const made = await colleague.post("/api/workspace/stock", { name: "Pul M8", code: "PL-8", unit: "Adet", unitPrice: 1, salePrice: 2 });
+    ok(made.status === 200, `öbür personel ürün açtı (${made.status}) — açık Stok penceresi arka planda yenilenir`);
+    await answered;
+    const filtered = await admin.waitForFunction(sel => {
+      const rows = [...document.querySelectorAll(`${sel} .hof-stock-table tbody tr`)];
+      return rows.length === 1 && rows[0].innerText.includes("Vida M8");
+    }, modal, { timeout: 1200 }).then(() => true, () => false);
+    ok(seen.includes("arka plan"), `arama sürerken arka plan yenilemesi gitti ve başarısız oldu (${seen.join(", ")})`);
+    ok(filtered, "kullanıcının arama yanıtı geldiği anda liste süzüldü (yalnız Vida M8)");
+    await shot("arama-arka-plan-yenilemesi");
+    await admin.unroute(isSearch);
+    await closeAll();
+  });
+
+  await step("Gözden geçirme 9: bu ekrandaki işlemin \"yerel\" bilgisi ANLIK DURUM olayıyla birleşince kaybolmaz", async () => {
+    await closeAll();
+    await admin.evaluate(() => {
+      window.__ledger = [];
+      window.HOF.onLedger(["cash", "accounts"], detail => window.__ledger.push({ local: Boolean(detail.local), path: detail.path || "" }), 350);
+    });
+    const status = await admin.evaluate(async today => {
+      const result = await window.HOF.api("/api/workspace/cash", { method: "POST", body: { kind: "in", amount: 10, date: today, description: "yerel deneme" } });
+      return result ? 200 : 0;
+    }, TODAY);
+    await admin.waitForTimeout(2500);
+    const got = await admin.evaluate(() => window.__ledger);
+    ok(status === 200 && got.length >= 1, `Kasa girişi bu ekrandan yapıldı; işleyiciye ${got.length} çağrı`);
+    ok(got.some(item => item.local), `işleyici "yerel" bilgisini aldı (${JSON.stringify(got)})`);
+    // İkinci gözden geçirme bulgusu 5: bekleme içinde başka bir olay da geldiyse (başka personelin değişikliği olabilir) yol
+    // taşınmaz — kendi modülünün yolunu yok sayan pencere o değişikliği kaçırmasın; "yerel" yine korunur.
+    const merged = await admin.evaluate(() => new Promise(resolve => {
+      const seen = [];
+      window.HOF.onLedger(["stock"], detail => seen.push({ local: Boolean(detail.local), path: detail.path || "" }), 100);
+      window.HOF.emit("ledger:changed", { kinds: ["stock"], local: true, path: "/api/workspace/stock/x/moves" });
+      window.HOF.emit("live:overview.changed", { kinds: ["stock"] });
+      setTimeout(() => resolve(seen), 400);
+    }));
+    ok(merged.length === 1 && merged[0].local && !merged[0].path, `yerel + başka olay birleşti: yerel korunur, yol taşınmaz (${JSON.stringify(merged)})`);
+  });
+
+  await step("Kart yenilemesi sürerken kullanıcı başka yere geçerse eski kart geri gelmez, hatası onu yerinden etmez (Taksit, Çek/Senet, Fatura)", async () => {
+    await closeAll();
+    const colleague = createClient(BASE);
+    await colleague.login("muhasebe2", STAFF);
+    const plan = unwrap(await api.post("/api/workspace/plans", { accountId: ids.customers[0], name: "Müşteri 01", total: "1.200", mode: "auto", count: 3, firstDue: TODAY }));
+    const cheque = unwrap(await api.post("/api/workspace/cheques", { instrument: "cheque", direction: "in", accountId: ids.customers[1], drawer: "Müşteri 02", amount: 500, issueDate: TODAY, dueDate: TODAY, serialNo: "CK-222-1", bank: "Ziraat" }));
+    const sale = async customer => unwrap(await api.post("/api/workspace/invoices", { scenario: "goods_sale", accountId: ids.customers[customer], issueDate: TODAY, lines: [{ itemId: ids.item, qty: 1, unitPrice: 10, vatRate: 0 }], payment: { rest: "open" }, force: true }));
+    const docA = await sale(7);
+    const docB = await sale(8);
+    ok(plan?.id && cheque?.id && docA?.id && docB?.id, "taksit kartı, çek ve iki fatura hazır");
+    // Kartın arka plan isteğini yavaşlatır (yük altındaki sunucu gibi); isteğe bağlı olarak 404 döndürür.
+    const slow = async (pathname, { notFound = false } = {}) => {
+      const match = url => new URL(url).pathname === pathname;
+      await admin.route(match, async route => {
+        if (route.request().method() !== "GET") return route.continue();
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        if (notFound) return route.fulfill({ status: 404, contentType: "application/json", body: JSON.stringify({ ok: false, error: "Fatura bulunamadı." }) }).catch(() => null);
+        return route.continue().catch(() => null);
+      });
+      return match;
+    };
+    const foreignChange = () => colleague.post(`/api/workspace/accounts/${ids.customers[6]}/entries`, { kind: "in", amount: 2, date: TODAY, method: "cash", note: "kart yenileme sırasında" });
+
+    // Taksit: kart açık → başka personelin kaydı kartı arka planda yeniler → istek sürerken kullanıcı listeye döner.
+    await admin.click("#hof-sidecard [data-action=plans]");
+    await admin.waitForSelector(`${modal} tr[data-plan="${plan.id}"]`, { timeout: 15000 });
+    await admin.click(`${modal} tr[data-plan="${plan.id}"]`);
+    await admin.waitForSelector(`${modal} .hof-plan-back`, { timeout: 10000 });
+    await admin.waitForTimeout(2000);
+    let match = await slow(`/api/workspace/plans/${plan.id}`);
+    let started = admin.waitForRequest(request => match(request.url()) && request.method() === "GET", { timeout: 10000 });
+    await foreignChange();
+    await started;
+    await admin.click(`${modal} .hof-plan-back`);
+    await admin.waitForTimeout(3500);
+    ok(await admin.evaluate(sel => Boolean(document.querySelector(`${sel} tr[data-plan]`)) && !document.querySelector(`${sel} .hof-plan-back`), modal), "Taksit: listeye dönen kullanıcıya eski kart geri gelmedi");
+    await admin.unroute(match);
+    await closeAll();
+
+    // Çek/Senet: aynı akış; yenilemeyi evrakın kendi değişikliği tetikler.
+    await admin.click("#hof-sidecard [data-action=cheques]");
+    await admin.waitForSelector(`${modal} tr[data-cheque="${cheque.id}"]`, { timeout: 15000 });
+    await admin.click(`${modal} tr[data-cheque="${cheque.id}"]`);
+    await admin.waitForSelector(`${modal} .hof-plan-back`, { timeout: 10000 });
+    await admin.waitForTimeout(2000);
+    match = await slow(`/api/workspace/cheques/${cheque.id}`);
+    started = admin.waitForRequest(request => match(request.url()) && request.method() === "GET", { timeout: 10000 });
+    const edited = await colleague.put(`/api/workspace/cheques/${cheque.id}`, { note: "başka personelin notu" });
+    ok(edited.status === 200, `öbür personel çekin notunu düzeltti (${edited.status})`);
+    await started;
+    await admin.click(`${modal} .hof-plan-back`);
+    await admin.waitForTimeout(3500);
+    ok(await admin.evaluate(sel => Boolean(document.querySelector(`${sel} tr[data-cheque]`)) && !document.querySelector(`${sel} .hof-plan-back`), modal), "Çek/Senet: listeye dönen kullanıcıya eski kart geri gelmedi");
+    await admin.unroute(match);
+    await closeAll();
+
+    // Fatura: A kartının arka plan isteği 404 alır; kullanıcı o arada B'yi açmıştır → B'de kalır, A'nın hatası gösterilmez.
+    await admin.click("#hof-sidecard [data-action=invoices]");
+    await admin.waitForSelector(`${inv} tr[data-inv="${docA.id}"]`, { timeout: 15000 });
+    await admin.click(`${inv} tr[data-inv="${docA.id}"]`);
+    await admin.waitForSelector(`${inv} .hof-plan-back`, { timeout: 10000 });
+    await admin.waitForTimeout(2000);
+    match = await slow(`/api/workspace/invoices/${docA.id}`, { notFound: true });
+    started = admin.waitForRequest(request => match(request.url()) && request.method() === "GET", { timeout: 10000 });
+    await foreignChange();
+    await started;
+    await admin.click(`${inv} .hof-plan-back`);
+    await admin.waitForSelector(`${inv} tr[data-inv="${docB.id}"]`, { timeout: 10000 });
+    await admin.click(`${inv} tr[data-inv="${docB.id}"]`);
+    await admin.waitForTimeout(3500);
+    const onB = await admin.evaluate(([sel, number]) => Boolean(document.querySelector(`${sel} .hof-plan-back`)) && (document.querySelector(sel)?.innerText || "").includes(number), [inv, docB.number]);
+    const toasts = await admin.evaluate(() => [...document.querySelectorAll(".hof-toast")].map(node => node.textContent).join(" "));
+    ok(onB && !/bulunamadı/i.test(toasts), `Fatura: kullanıcı B (${docB.number}) kartında kaldı, A'nın hatası gösterilmedi${/bulunamadı/i.test(toasts) ? ` (bildirim: ${toasts.slice(0, 80)})` : ""}`);
+    await admin.unroute(match);
+    await closeAll();
+  });
+
+  await step("İkinci gözden geçirme: seçim, kart sırası, liste sırası, eski hata yazısı, taslak yinelemesi", async () => {
+    await closeAll();
+    const colleague = createClient(BASE);
+    await colleague.login("muhasebe2", STAFF);
+
+    // (1) Elle işaretlenen cariler, arama yüklenemeyince seçili kalmaz (toplu düğme görünmeyen carilere uygulanmasın).
+    await admin.click("#hof-sidecard [data-action=accounts]");
+    await admin.waitForSelector(`${modal} input[data-filter=q]`);
+    await admin.fill(`${modal} input[data-filter=q]`, "");
+    await admin.waitForFunction(sel => document.querySelectorAll(`${sel} tr[data-account]`).length >= 12, modal, { timeout: 10000 });
+    await admin.click(`${modal} input[data-select="${ids.customers[0]}"]`);
+    await admin.click(`${modal} input[data-select="${ids.customers[1]}"]`);
+    ok(Boolean(await admin.$(`${modal} [data-selbar].is-active`)), "iki cari işaretlendi (seçim çubuğu etkin)");
+    const isSearch = url => {
+      const parsed = new URL(url);
+      return parsed.pathname === "/api/workspace/accounts" && parsed.searchParams.get("q") === "Müşteri 1";
+    };
+    await admin.route(isSearch, route => (route.request().method() === "GET" ? route.abort("failed") : route.continue()));
+    await admin.fill(`${modal} input[data-filter=q]`, "Müşteri 1");
+    await admin.waitForSelector(`${modal} .hof-list-error`, { timeout: 10000 });
+    const bar = await admin.evaluate(sel => ({ active: Boolean(document.querySelector(`${sel} [data-selbar].is-active`)), bulk: Boolean(document.querySelector(`${sel} [data-act="bulkPlan"]`)) }), modal);
+    ok(!bar.active && !bar.bulk, `arama yüklenemedi: seçim temizlendi, toplu düğme yok (${JSON.stringify(bar)})`);
+    await admin.unroute(isSearch);
+    await admin.fill(`${modal} input[data-filter=q]`, "");
+    await admin.waitForFunction(sel => document.querySelectorAll(`${sel} tr[data-account]`).length >= 12, modal, { timeout: 10000 });
+
+    // (2) Cari A'nın kartı arka planda yenilenirken kullanıcı B'yi açar (fatura kartındaki cari bağlantısı gibi) → B görünür.
+    await admin.click(`${modal} tr[data-account="${ids.customers[2]}"]`);
+    await admin.waitForSelector(`${modal} [data-act="back"]`, { timeout: 10000 });
+    await admin.waitForTimeout(2000);
+    const isCardA = url => new URL(url).pathname === `/api/workspace/accounts/${ids.customers[2]}`;
+    await admin.route(isCardA, async route => {
+      if (route.request().method() !== "GET") return route.continue();
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      return route.continue().catch(() => null);
+    });
+    const started = admin.waitForRequest(request => isCardA(request.url()) && request.method() === "GET", { timeout: 10000 });
+    await colleague.post(`/api/workspace/accounts/${ids.customers[2]}/entries`, { kind: "in", amount: 1, date: TODAY, method: "cash", note: "kart sırası" });
+    await started;
+    await admin.evaluate(id => window.HOF.accounts.open(id), ids.customers[9]);
+    await admin.waitForTimeout(3500);
+    const shownName = await admin.evaluate(sel => document.querySelector(`${sel} .hof-plan-headline`)?.innerText || document.querySelector(sel)?.innerText.slice(0, 200) || "", modal);
+    ok(/Müşteri 10/.test(shownName) && !/Müşteri 03/.test(shownName), `kullanıcının açtığı cari (Müşteri 10) ekranda: "${shownName.replace(/\s+/g, " ").slice(0, 60)}"`);
+    await admin.unroute(isCardA);
+    await closeAll();
+
+    // (3, 4) Liste sırası kuralları (HOF.listGate): sonra başlamış yanıt yazıldıysa eskisi yazılmaz; süzgeç yüklemesi
+    // sürerken "Daha Fazla" yok sayılır; yeni kullanıcı yüklemesi öncekileri geçersiz sayar.
+    const gate = await admin.evaluate(() => {
+      if (typeof window.HOF.listGate !== "function") return { missing: true };
+      const lists = window.HOF.listGate();
+      const user = lists.start({});
+      const more = lists.start({ more: true });
+      const quiet = lists.start({ quiet: true });
+      const quietCurrent = quiet.current();
+      quiet.applied();
+      const userAfterQuiet = user.current();
+      user.done();
+      const moreAfter = Boolean(lists.start({ more: true }));
+      const next = lists.start({});
+      return { moreWhilePending: more === null, quietCurrent, userAfterQuiet, moreAfter, staleQuiet: quiet.current(), nextCurrent: next.current() };
+    });
+    ok(gate.moreWhilePending && gate.moreAfter, `"Daha Fazla" süzgeç yüklemesi sürerken yok sayılır, bitince çalışır (${JSON.stringify(gate)})`);
+    ok(gate.quietCurrent && !gate.userAfterQuiet, "sonra başlamış arka plan yanıtı yazıldıysa önce başlamış kullanıcı yanıtı eski veriyle ezmez");
+    ok(!gate.staleQuiet && gate.nextCurrent, "yeni kullanıcı yüklemesi öncekileri geçersiz sayar");
+
+    // (6) Fatura: bir sekme yüklenemedikten sonra başka sekmeye geçilince eski hata yazısı kalmaz ("Yükleniyor…").
+    await admin.click("#hof-sidecard [data-action=invoices]");
+    await admin.waitForSelector(`${inv} [data-tab]`, { timeout: 15000 });
+    const tabs = await admin.$$eval(`${inv} [data-tab]`, nodes => nodes.map(node => node.dataset.tab).filter(tab => tab && tab !== "inbox"));
+    const isList = url => new URL(url).pathname === "/api/workspace/invoices";
+    await admin.route(isList, route => (route.request().method() === "GET" ? route.abort("failed") : route.continue()));
+    await admin.click(`${inv} [data-tab="${tabs[1]}"]`);
+    await admin.waitForSelector(`${inv} .hof-list-error`, { timeout: 10000 });
+    await admin.unroute(isList);
+    await admin.route(isList, async route => {
+      if (route.request().method() !== "GET") return route.continue();
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      return route.continue().catch(() => null);
+    });
+    await admin.click(`${inv} [data-tab="${tabs[0]}"]`);
+    await admin.waitForTimeout(300);
+    const during = await admin.evaluate(sel => ({ error: Boolean(document.querySelector(`${sel} .hof-list-error`)), text: document.querySelector(sel)?.innerText.includes("Yükleniyor") }), inv);
+    ok(!during.error && during.text, `sekme değişince eski hata yazısı kalkıp "Yükleniyor…" göründü (${JSON.stringify(during)})`);
+    await admin.unroute(isList);
+    await closeAll();
+
+    // (7) Taslak isteğinin yanıtı kaybolur; taslak başka yerden kaydedilip deftere işlenir; kullanıcı yeniden "Taslak Olarak
+    // Kaydet"e basar → "daha önce kaydedilmiş ve deftere işlenmiş" (önce "Taslak kaydedildi; deftere işlenmedi" diyordu).
+    await admin.click("#hof-sidecard [data-action=invoices]");
+    await admin.waitForSelector(`${inv} [data-act="new"]`);
+    await admin.click(`${inv} [data-act="new"]`);
+    await admin.click(`${inv} [data-scenario="goods_sale"]`);
+    await admin.waitForSelector(`${inv} [data-lines]`);
+    await admin.fill(`${inv} [data-acc-query]`, "Müşteri 05");
+    await admin.waitForSelector(`${inv} .hof-acc-picker li[data-id]`);
+    await (await admin.$(`${inv} .hof-acc-picker li[data-id]`)).dispatchEvent("mousedown");
+    await admin.click(`${inv} [data-l="0"][data-f="name"]`);
+    await admin.keyboard.type("Deneme");
+    await admin.waitForSelector(`${inv} [data-hits="0"] li[data-item]`);
+    await admin.click(`${inv} [data-hits="0"] li[data-item]`);
+    await admin.fill(`${inv} [data-l="0"][data-f="qty"]`, "1");
+    await admin.fill(`${inv} [data-l="0"][data-f="unitPrice"]`, "100");
+    await admin.waitForTimeout(1000);
+    let draftId = "";
+    await admin.route(isList, async route => {
+      if (route.request().method() !== "POST" || draftId) return route.continue();
+      const response = await route.fetch();
+      draftId = (await response.json())?.data?.id || "draft";
+      return route.abort("failed");
+    });
+    await admin.click(`${inv} [data-act="save-draft"]`);
+    await admin.waitForFunction(() => /Sunucuya ulaşılamadı|zamanında yanıt vermedi/.test(document.body.innerText), null, { timeout: 15000 }).catch(() => null);
+    const issued = await api.post(`/api/workspace/invoices/${draftId}/issue`, { force: true });
+    ok(issued.status === 200, `taslak başka yerden kaydedildi (${issued.status}, ${unwrap(issued)?.number || ""})`);
+    await admin.click(`${inv} [data-act="save-draft"]`);
+    const toastSeen = await admin.waitForFunction(() => /daha önce kaydedilmiş ve deftere işlenmiş/.test([...document.querySelectorAll(".hof-toast")].map(node => node.textContent).join(" ")), null, { timeout: 15000 }).then(() => true, () => false);
+    const toasts = await admin.evaluate(() => [...document.querySelectorAll(".hof-toast")].map(node => node.textContent).join(" | "));
+    ok(toastSeen && !/Taslak kaydedildi; deftere işlenmedi/.test(toasts), `bildirim: ${toasts.split(" | ").filter(Boolean).at(-1) || "yok"}`);
+    await admin.unroute(isList);
+    await closeAll();
+  });
+
+  await step("S2: başka personelin cari notu düzeltmesi ANLIK DURUM'u yeniden yükletmez; parasal kayıt yükletir", async () => {
+    const colleague = createClient(BASE);
+    await colleague.login("muhasebe2", STAFF);
+    // Boş veriyle ana ekran başlangıç görünümündedir; ANLIK DURUM kartı çizilmese de verisi yüklenir ve olayla yenilenir.
+    await admin.waitForFunction(() => Boolean(window.HOF?.overview?.data?.()), null, { timeout: 15000 });
+    await admin.waitForTimeout(2500);
+    const target = await get(`/api/workspace/accounts/${ids.customers[3]}`);
+    const log = counter(admin);
+    for (let i = 0; i < 5; i += 1) {
+      const r = await colleague.put(`/api/workspace/accounts/${ids.customers[3]}`, { name: target.name, type: target.type, phone: target.phone, note: `not ${i}` });
+      if (r.status !== 200) ok(false, `not düzeltme ${i}: ${r.status} ${JSON.stringify(r.data).slice(0, 120)}`);
+      await admin.waitForTimeout(600);
+    }
+    await admin.waitForTimeout(2500);
+    ok(!(log.counts["/api/workspace/overview"] || 0), `5 not düzeltmesinde ANLIK DURUM ${log.counts["/api/workspace/overview"] || 0} kez yüklendi (beklenen 0)`);
+    await colleague.post(`/api/workspace/accounts/${ids.customers[3]}/entries`, { kind: "in", amount: 25, date: TODAY, method: "cash", note: "parasal" });
+    await admin.waitForTimeout(3000);
+    log.stop();
+    ok((log.counts["/api/workspace/overview"] || 0) >= 1, `parasal kayıttan sonra ANLIK DURUM yenilendi (${log.counts["/api/workspace/overview"] || 0} kez)`);
+    const note = (await get(`/api/workspace/accounts/${ids.customers[3]}`)).note;
+    ok(note === "not 4", `not kaydedildi (${note})`);
+  });
+
+  await step("Mutabakat ve sayfa hataları", async () => {
+    const integrity = await get("/api/workspace/ledger/integrity");
+    ok(integrity.ok === true, `mutabakat ${integrity.checks?.filter(c => c.ok).length}/${integrity.checks?.length}`);
+    ok(!errors.length, `sayfada JavaScript hatası yok${errors.length ? `: ${errors.join(" ; ")}` : ""}`);
+  });
+} finally {
+  await browser.close();
+  await app.close();
+  rmSync(root, { recursive: true, force: true });
+}
+console.log(`\nSenaryo 2.0.22: ${passed} geçti, ${failed} kaldı. Ekranlar: ${path.relative(process.cwd(), OUT)}`);
+process.exit(failed ? 1 : 0);

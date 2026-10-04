@@ -156,8 +156,38 @@
       return rawApi(path, { ...options, body: { ...body, cashForce: true } });
     }
   };
-  const rawApi = async (path, { method = "GET", body, signal, timeoutMs = 30000 } = {}) => {
+  // v2.0.22 (Excel denetimi, yük ölçümü): arka plan istekleri (rozetler, vade takvimi, ANLIK DURUM, başka bilgisayardaki
+  // değişiklikten sonra pencere yenilemesi) aynı anda en çok 2 bağlantı kullanır. Tarayıcı sunucuya 6 bağlantı açar
+  // (biri canlı olay akışında); yenilemeler hepsini doldurunca kullanıcının araması ve açtığı kart sıraya giriyordu.
+  const BACKGROUND_SLOTS = 2;
+  let backgroundBusy = 0;
+  const backgroundQueue = [];
+  const backgroundSlot = async () => {
+    if (backgroundBusy >= BACKGROUND_SLOTS) await new Promise(resolve => backgroundQueue.push(resolve));
+    backgroundBusy += 1;
+    let released = false;
+    return () => {
+      if (released) return;
+      released = true;
+      backgroundBusy -= 1;
+      backgroundQueue.shift()?.();
+    };
+  };
+  const rawApi = async (path, { background = false, ...options } = {}) => {
+    if (!background) return sendApi(path, options);
+    const release = await backgroundSlot();
+    try {
+      return await sendApi(path, options);
+    } finally {
+      release();
+    }
+  };
+  // İstek kimliği (v2.0.22): formun açıldığı anda üretilir, her gönderimde aynı gider; sunucu ikinci gönderimde yeni belge
+  // açmaz (server/lib/idempotency.mjs). LAN'da (http://192.168…) crypto.randomUUID yoktur; getRandomValues her yerde var.
+  HOF.requestId = () => Array.from(crypto.getRandomValues(new Uint8Array(16)), byte => byte.toString(16).padStart(2, "0")).join("");
+  const sendApi = async (path, { method = "GET", body, signal, timeoutMs = 30000, requestId = "" } = {}) => {
     const init = { method, credentials: "same-origin", headers: { accept: "application/json" }, cache: "no-store" };
+    if (requestId) init.headers["x-hof-request"] = requestId;
     if (body !== undefined) {
       init.headers["content-type"] = "application/json";
       init.body = typeof body === "string" ? body : JSON.stringify(body);
@@ -241,15 +271,145 @@
     const hit = LEDGER_PATHS.find(([pattern]) => pattern.test(clean));
     if (hit) HOF.emit("ledger:changed", { kinds: hit[1], local: true, path: clean });
   }
+  // ---------- Yükleme hatası (v2.0.22) ----------
+  // v2.0.21'de liste yüklenemeyince (yük altında tarayıcı kuyruğunda 30 sn'yi aşan istek) pencere gövdesi — arama kutusu ve
+  // süzgeçler dahil — tek satırlık hata yazısıyla değiştiriliyordu: Cari aramasında kutu "kayboluyordu"; açık karttaki
+  // arka plan yenilemesi hata alınca kullanıcı karttan listeye atılıyordu. Kural:
+  //  - arka plan yenilemesi (quiet) başarısızsa ekran olduğu gibi kalır; HOF.refresher yeniden dener;
+  //  - kullanıcının kendi yüklemesi (yeni arama, süzgeç, sekme) başarısızsa eski satırlar GÖSTERİLMEZ — yeni süzgecin altında
+  //    eski liste kalırsa "Tümünü Seç" gibi toplu işlemler görünmeyen kayıtlara uygulanır; liste alanında neden ve "Yeniden
+  //    Dene" görünür, arama kutusu ve süzgeçler yerinde kalır (HOF.listPending);
+  //  - "Daha Fazla Göster" başarısızsa görünen satırlar aynı süzgece aittir; kalır, bildirim çıkar.
+  // Silinmiş kayıt (404) ya da yetkinin kalkması (403) arka planda da bildirilir: eski hâlin gösterilmesi yanıltır.
+  HOF.lostRecord = error => error?.status === 404 || error?.status === 403;
+  // Liste yüklemelerinin sırası (v2.0.22; Cari, Fatura, Stok, Taksit, Çek/Senet aynı kural):
+  //  - kullanıcının yüklemesi (yeni arama, süzgeç, sekme) sıra numarasını artırır: daha eski yanıtlar yok sayılır;
+  //  - arka plan yenilemesi (quiet) artırmaz: kullanıcının sürmekte olan araması geçersiz sayılmaz;
+  //  - aynı sıradaki iki yanıttan, sonra başlamış olan ekrana yazıldıysa önce başlamış olanınki yazılmaz (eski okuma
+  //    yeni veriyi ezmesin);
+  //  - süzgeç yüklemesi sürerken "Daha Fazla" yok sayılır (eski listenin uzunluğu yeni süzgece uygulanmasın).
+  HOF.listGate = () => {
+    let ticket = 0;
+    let seq = 0;
+    let applied = 0;
+    let pending = 0;
+    return {
+      start({ quiet = false, more = false } = {}) {
+        if (more && pending) return null;
+        const own = quiet ? ticket : ++ticket;
+        const order = ++seq;
+        if (!quiet && !more) pending = own;
+        return {
+          current: () => own === ticket && (more || order >= applied),
+          applied: () => {
+            if (!more) applied = order;
+          },
+          done: () => {
+            if (!quiet && !more && pending === own) pending = 0;
+          },
+        };
+      },
+    };
+  };
+  HOF.listPending = message =>
+    message
+      ? `<p class="hof-empty hof-list-error" role="alert">Liste alınamadı: ${HOF.esc(message)} <button type="button" class="hof-link-button" data-act="retryList">Yeniden Dene</button></p>`
+      : '<p class="hof-empty">Yükleniyor…</p>';
+
+  // ---------- Arka plan yenilemesi (v2.0.22) ----------
+  // Excel denetimi ölçümü: başka personel saniyede bir kayıt girerken açık her pencere her olayda 3–7 isteği yeniden
+  // gönderiyordu (bir fatura 5–7 olay yayımlar: fatura, cari, her stok kalemi, Kasa, taksit; ardından ANLIK DURUM).
+  // Kurallar (bütün pencerelerde aynı):
+  //  - bir yenileme sürerken gelen istekler bitince TEK yenileme yaptırır — değişiklik kaçmaz, istek yığılmaz;
+  //  - başka bilgisayardan gelen değişiklikte ilk yenileme `delay` ms sonra (aynı işlemin olayları birlikte gelsin),
+  //    iki yenileme arası en az `gap` ms;
+  //  - bu ekranda yapılan işlem (yerel) beklemeden yeniler: refresh.now();
+  //  - sekme gizliyken yenilenmez; görünür olunca bir kez yenilenir;
+  //  - yenileme başarısızsa (ağ, zaman aşımı; yükleyici hatayı fırlatır) ekran son hâlinde kalır ve artan beklemeyle en çok
+  //    3 kez yeniden denenir — başka bir değişiklik gelmese de eski veri ekranda kalmaz.
+  HOF.refresher = (load, { delay = 450, gap = 1500 } = {}) => {
+    let timer = 0;
+    let running = false;
+    let again = false;
+    let urgent = false;
+    let hidden = false;
+    let last = 0;
+    let failures = 0;
+    const run = async () => {
+      timer = 0;
+      if (document.hidden) {
+        hidden = true;
+        return;
+      }
+      running = true;
+      again = false;
+      urgent = false;
+      last = Date.now();
+      let failed = false;
+      try {
+        await load();
+        failures = 0;
+      } catch {
+        failed = true;
+      } finally {
+        running = false;
+        if (urgent) run();
+        else if (again) schedule(0);
+        else if (failed && failures < 3) {
+          failures += 1;
+          schedule(gap * 2 ** failures);
+        }
+      }
+    };
+    const schedule = wait => {
+      if (running) {
+        again = true;
+        return;
+      }
+      if (timer) return;
+      timer = setTimeout(run, Math.max(wait, last + gap - Date.now()));
+    };
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden || !hidden) return;
+      hidden = false;
+      schedule(0);
+    });
+    const refresh = () => schedule(delay);
+    refresh.now = () => {
+      if (running) {
+        again = true;
+        urgent = true;
+        return;
+      }
+      clearTimeout(timer);
+      timer = 0;
+      run();
+    };
+    return refresh;
+  };
+
   // onLedger(["cash"], yenile): türlerden biri değişince (yerel ya da canlı) kısa gecikmeyle bir kez çağrılır.
   HOF.onLedger = (kinds, handler, delay = 250) => {
     const wanted = new Set(kinds);
     let timer = null;
+    // v2.0.22 (gözden geçirme bulgusu 9): bu ekrandaki işlemin olayı (local) ile aynı işlemin ANLIK DURUM olayı bekleme
+    // içinde birleşir; "yerel" bilgisi kaybolmaz (pencere beklemeden yenilenir, en sık aralığa takılmaz). Bekleme içinde
+    // başka bir olay da geldiyse (başka personelin değişikliği olabilir) yol bilgisi taşınmaz: kendi modülünün yolunu yok
+    // sayan pencere o değişikliği kaçırmasın.
+    let local = null;
+    let foreign = false;
     const fire = detail => {
       const list = detail?.kinds || [];
       if (list.length && !list.some(kind => wanted.has(kind))) return;
+      if (detail?.local) local = local || detail;
+      else foreign = true;
       clearTimeout(timer);
-      timer = setTimeout(() => handler(detail || {}), delay);
+      timer = setTimeout(() => {
+        const merged = local ? { ...(detail || {}), local: true, path: foreign ? "" : local.path } : detail || {};
+        local = null;
+        foreign = false;
+        handler(merged);
+      }, delay);
     };
     HOF.on("ledger:changed", fire);
     HOF.on("live:overview.changed", fire);

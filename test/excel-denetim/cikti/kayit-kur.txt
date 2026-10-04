@@ -1,0 +1,36 @@
+001 unvan: 200 001 · Merkez Ticaret A.Ş.
+şirketler: sirket-001=001 · Merkez Ticaret A.Ş. | sirket-3a17daa7-54e9-484c-a4f2-82c2e1586057=002 · Şube Ticaret Ltd. Şti. önerilen kod: 002
+
+■ 001: Cari → Excel / Sheets'ten Yükle → yüklenen dosya → Cari Listesi
+  eşleme: Cari Kodu — ör. C0001→seq, Cari Ünvanı — ör. Mehmet Kurt→name, Tip — ör. Müşteri→type
+  350 satır hazır · 15 uyarı (alınır, raporlanır)
+  satır raporu: Satır Bazlı Rapor SATIR KOLON SORUN DEĞER 109 Cari Ünvanı Aynı ad (ilk: 20. satır); telefon olmadığı için ayrı cari açılır Can Tekin 131 Cari Ünvanı Aynı ad (ilk: 94. satır); telefon olmadığı için ayrı cari açılır Elif Kurt 171 Cari Ünvanı Aynı ad (ilk: 18. satır); telefon olmadığı için ayrı cari açılır Selin Mutlu 210 Cari Ünvanı Aynı ad (ilk: 160. satır); telefon olmadığı için ayrı cari açılır Serkan Demir 225 Cari Ünvanı Aynı ad (ilk: 26. satır); telefon olmadığı için ayrı cari açılır Ömer Özdemir 230 Cari Ünvanı Aynı ad (ilk: 213. satır); telefon olmadığı için ayrı cari açılır Furkan Erdoğan 238 Cari Ünvanı Aynı ad (ilk: 202. satır); telefon olmadığı için ayrı cari açılır Zehra Özdemir 245 Cari Ünvanı Aynı ad (ilk: 234. satır); telefon olmadığı için ayrı cari açılır Pınar Avcı 265 Cari Ünvanı Aynı ad (ilk: 96. satır); telefon olmadığı için ayrı cari açılır Zeynep Kılıç 298 Cari Ünvanı Aynı ad (ilk: 249. satır); telefon olmadığı için ayrı cari açılır İbrahim Bozkurt 301 Cari Ünvanı Aynı ad (ilk: 248. satır); telefon olmadığı için ayrı cari açılır Gökhan Yıldırım 304 Cari Ünvanı Aynı ad (ilk: 87. satır); telefon olmadığı için ayrı cari açılır Tolga Mutlu 306 Cari Ünvanı Aynı ad (ilk: 248. satır); telefon olmadığı için ayrı cari açılır Gökhan Yıldırım 341 Cari Ünvanı Aynı ad (ilk: 309. satır); telefon olmadığı için ayrı cari açılır Eren Bulut 349 Cari Ünvanı Aynı ad (ilk: 202. satır); telefon olmadığı için ayrı cari açılır Zehra Özdemir
+  sonuç: “001 · Merkez Ticaret A.Ş.” şirketine geçtiniz. Bu seçim yalnızca sizin ekranınızı değiştirir. | 350 cari açıldı.
+■ 001: Stok → Excel / Sheets'ten Yükle → Ürün Listesi
+  eşleme: Ürün Kodu — ör. ELK-001→code, Ürün Adı — ör. LED Ampul 9W→name, Birim — ör. Adet→unit, Alış Fiyatı (TL) — ör. 45,00→price, Satış Fiyatı (TL) — ör. 75,00→salePrice
+  50 satır hazır
+  sonuç: 350 cari açıldı. | 50 ürün açıldı.
+001: cari 373, stok kartı 50
+
+■ 002: Cari → Excel / Sheets'ten Yükle → yüklenen dosya → Cari Listesi
+  eşleme: Cari Kodu — ör. C0001→seq, Cari Ünvanı — ör. Mehmet Kurt→name, Tip — ör. Müşteri→type
+  350 satır hazır · 15 uyarı (alınır, raporlanır)
+  satır raporu: Satır Bazlı Rapor SATIR KOLON SORUN DEĞER 109 Cari Ünvanı Aynı ad (ilk: 20. satır); telefon olmadığı için ayrı cari açılır Can Tekin 131 Cari Ünvanı Aynı ad (ilk: 94. satır); telefon olmadığı için ayrı cari açılır Elif Kurt 171 Cari Ünvanı Aynı ad (ilk: 18. satır); telefon olmadığı için ayrı cari açılır Selin Mutlu 210 Cari Ünvanı Aynı ad (ilk: 160. satır); telefon olmadığı için ayrı cari açılır Serkan Demir 225 Cari Ünvanı Aynı ad (ilk: 26. satır); telefon olmadığı için ayrı cari açılır Ömer Özdemir 230 Cari Ünvanı Aynı ad (ilk: 213. satır); telefon olmadığı için ayrı cari açılır Furkan Erdoğan 238 Cari Ünvanı Aynı ad (ilk: 202. satır); telefon olmadığı için ayrı cari açılır Zehra Özdemir 245 Cari Ünvanı Aynı ad (ilk: 234. satır); telefon olmadığı için ayrı cari açılır Pınar Avcı 265 Cari Ünvanı Aynı ad (ilk: 96. satır); telefon olmadığı için ayrı cari açılır Zeynep Kılıç 298 Cari Ünvanı Aynı ad (ilk: 249. satır); telefon olmadığı için ayrı cari açılır İbrahim Bozkurt 301 Cari Ünvanı Aynı ad (ilk: 248. satır); telefon olmadığı için ayrı cari açılır Gökhan Yıldırım 304 Cari Ünvanı Aynı ad (ilk: 87. satır); telefon olmadığı için ayrı cari açılır Tolga Mutlu 306 Cari Ünvanı Aynı ad (ilk: 248. satır); telefon olmadığı için ayrı cari açılır Gökhan Yıldırım 341 Cari Ünvanı Aynı ad (ilk: 309. satır); telefon olmadığı için ayrı cari açılır Eren Bulut 349 Cari Ünvanı Aynı ad (ilk: 202. satır); telefon olmadığı için ayrı cari açılır Zehra Özdemir
+  sonuç: “002 · Şube Ticaret Ltd. Şti.” şirketine geçtiniz. Bu seçim yalnızca sizin ekranınızı değiştirir. | 350 cari açıldı.
+■ 002: Stok → Excel / Sheets'ten Yükle → Ürün Listesi
+  eşleme: Ürün Kodu — ör. ELK-001→code, Ürün Adı — ör. LED Ampul 9W→name, Birim — ör. Adet→unit, Alış Fiyatı (TL) — ör. 45,00→price, Satış Fiyatı (TL) — ör. 75,00→salePrice
+  50 satır hazır
+  sonuç: 350 cari açıldı. | 50 ürün açıldı.
+002: cari 373, stok kartı 50
+kullanıcı satis001 muhasebe şirketler: 001 → 200
+kullanıcı alis001 muhasebe şirketler: 001 → 200
+kullanıcı tahsilat001 muhasebe şirketler: 001 → 200
+kullanıcı arayuz001 muhasebe şirketler: 001 → 200
+kullanıcı satis002 muhasebe şirketler: 002 → 200
+kullanıcı alis002 muhasebe şirketler: 002 → 200
+kullanıcı tahsilat002 muhasebe şirketler: 002 → 200
+kullanıcı arayuz002 muhasebe şirketler: 002 → 200
+kullanıcı stajyer001 personel şirketler: 001 → 200
+kullanıcı mudur muhasebe şirketler: 001,002 → 200
+
+Kurulum bitti.

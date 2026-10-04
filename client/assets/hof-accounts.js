@@ -72,7 +72,7 @@
   // Binlerce caride ekran hızlı kalsın: sunucu 300'er satır gönderir ("Daha fazla göster" sonrakini ekler); arama, süzgeç
   // ve toplamlar sunucuda tümü üzerinde çalışır. "Hepsini seç" süzgeçteki bütün carileri (yüklenmemişler dahil) seçer.
   const PAGE = 300;
-  let listRequest = 0;
+  const lists = HOF.listGate();
   const body = () => modal?.dialog.querySelector("[data-accounts]");
   const query = () => new URLSearchParams({ q: view.q, type: view.type, group: view.group, subgroup: view.subgroup, status: view.status, balance: view.balance, sort: view.sort });
   const filterBody = () => ({ q: view.q, type: view.type, group: view.group, subgroup: view.subgroup, status: view.status, balance: view.balance });
@@ -81,28 +81,58 @@
   const cardPdfUrl = account => `/api/workspace/accounts/${encodeURIComponent(account.id)}/ekstre.pdf`;
 
   // ---------- Veri ----------
-  async function loadList({ more = false } = {}) {
-    const ticket = ++listRequest;
+  // keep (v2.0.22): başka bilgisayardaki değişiklikten sonra arka plan yenilemesi — "Daha Fazla" ile açılmış satırlar ve
+  // "Tümünü Seç" korunur (önceden ilk sayfaya dönüyor, seçim sıfırlanıyordu); yalnız silinen cari seçimden düşer.
+  // Arka plan yenilemesi kullanıcının araması/süzgeci/sayfası sürerken onu geçersiz saymaz (sıra numarası artmaz): yazarken
+  // gelen yenileme aramanın yanıtını bekletmesin. Yanıt listede görüneni değiştirmiyorsa liste yeniden çizilmez.
+  async function loadList({ more = false, keep = false } = {}) {
+    const load = lists.start({ quiet: keep, more });
+    if (!load) return;
+    if (!keep && !more && view.listError) {
+      view.listError = "";
+      if (!view.list && view.mode === "list") renderList();
+    }
     const offset = more && view.list ? view.list.accounts.length : 0;
+    const limit = keep && view.list ? Math.min(5000, Math.max(PAGE, view.list.accounts.length)) : PAGE;
     try {
-      const data = await HOF.api(`/api/workspace/accounts?${query()}&limit=${PAGE}&offset=${offset}`);
-      if (ticket !== listRequest) return;
+      const data = await HOF.api(`/api/workspace/accounts?${query()}&limit=${limit}&offset=${offset}`, keep ? { background: true } : {});
+      if (!load.current()) return;
+      load.applied();
+      view.listError = "";
+      const sign = more ? "" : JSON.stringify(data);
+      if (keep && sign === view.listSign && view.mode === "list") return;
+      view.listSign = sign;
       view.list = more && view.list ? { ...data, accounts: [...view.list.accounts, ...data.accounts] } : data;
       // Süzgeç değişince seçim sıfırlanır (görünmeyen cari seçili kalmasın; yanlış kişiye plan açılmasın).
       if (!more) {
         const visible = new Set(view.list.accounts.map(item => item.id));
         for (const id of [...view.selected]) if (!visible.has(id)) view.selected.delete(id);
-        view.selectAll = false;
-        view.excluded.clear();
+        if (!keep) {
+          view.selectAll = false;
+          view.excluded.clear();
+        }
       }
       if (view.mode === "list") renderList();
     } catch (error) {
-      if (ticket === listRequest && view.mode === "list" && body()) body().innerHTML = `<p class="hof-empty">${esc(error.message)}</p>`;
+      if (keep) throw error;
+      if (!load.current()) return;
+      if (more && view.list) return HOF.toastError(error);
+      // Yeni arama/süzgeç yüklenemedi: eski satırlar yeni süzgecin altında kalmaz (Tümünü Seç görünmeyen carilere uygulanmasın).
+      view.list = null;
+      view.listSign = "";
+      view.selectAll = false;
+      view.excluded.clear();
+      view.selected.clear();
+      view.listError = error.message;
+      if (view.mode === "list") renderList();
+    } finally {
+      load.done();
     }
   }
   let cardRequest = 0;
-  async function loadAccount(id) {
-    const ticket = ++cardRequest;
+  async function loadAccount(id, { quiet = false } = {}) {
+    // Arka plan yenilemesi sıra numarasını artırmaz: kullanıcının o sırada açtığı cari geçersiz sayılmaz.
+    const ticket = quiet ? cardRequest : ++cardRequest;
     const target = view.id;
     try {
       const account = await HOF.api(`/api/workspace/accounts/${encodeURIComponent(id)}`);
@@ -115,6 +145,8 @@
       renderCard();
     } catch (error) {
       if (ticket !== cardRequest) return;
+      // Arka plan yenilemesinin geçici hatası kartı kapatmaz (kullanıcı formda olabilir); silinmiş cari listeye döner.
+      if (quiet && !HOF.lostRecord(error)) throw error;
       HOF.toastError(error);
       view.mode = "list";
       renderList();
@@ -233,7 +265,7 @@
       ${selectBar()}
       <div class="hof-cash-list hof-plans-list">${
         !data
-          ? '<p class="hof-empty">Yükleniyor…</p>'
+          ? HOF.listPending(view.listError)
           : data.accounts.length
             ? `<table class="hof-table hof-cash-table hof-plans-table hof-acc-table"><thead><tr>${planning ? `<th class="hof-acc-check"><input type="checkbox" data-select-all aria-label="Süzgeçteki ${total} carinin hepsini seç" title="Süzgeçteki ${total} carinin hepsini seç" ${allChecked ? "checked" : ""}></th>` : ""}<th class="hof-plan-no">No</th><th>Cari</th><th class="num">Borç</th><th class="num">Alacak</th><th class="num">Bakiye</th><th>Taksit</th></tr></thead><tbody>${data.accounts.map(row).join("")}</tbody></table>${data.hasMore ? `<div class="hof-more"><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="more">Daha Fazla Göster · ${total - data.accounts.length} cari daha</button></div>` : ""}`
             : `<p class="hof-empty">${filtered || view.status !== "all" ? "Bu süzgeçte cari yok." : "Henüz cari yok."}${manage && !filtered ? " <b>+ Yeni Cari</b> ile tek kart açın ya da <b>Excel / Sheets’ten Yükle</b> ile listenizi bir kerede aktarın." : ""}</p>`
@@ -877,12 +909,13 @@
     const rows = gate.issues.slice(0, 30).map(issue => `<tr class="is-${esc(issue.level)}"><td>${issue.row}</td><td>${esc(issue.column)}</td><td>${esc(issue.problem)}</td><td>${esc(issue.value)}</td></tr>`).join("");
     return `<div class="hof-gate ${tone}"><div class="hof-gate-sum"><b>${gate.ready.toLocaleString("tr-TR")}</b> satır hazır${gate.errors ? ` · <b class="hof-cash-out">${gate.errors.toLocaleString("tr-TR")}</b> satır hatalı (alınmaz)` : ""}${gate.warnings ? ` · <b>${gate.warnings.toLocaleString("tr-TR")}</b> uyarı (alınır, raporlanır)` : ""}${gate.empty ? ` · ${gate.empty} boş satır` : ""}</div>${gate.issues.length ? `<details ${gate.errors ? "open" : ""}><summary>Satır Bazlı Rapor${gate.truncated ? ` (ilk ${gate.issues.length})` : ""}</summary><div class="hof-gate-list"><table class="hof-table"><thead><tr><th>Satır</th><th>Kolon</th><th>Sorun</th><th>Değer</th></tr></thead><tbody>${rows}</tbody></table>${gate.issues.length > 30 ? `<p class="hof-muted">… ${gate.issueTotal - 30} sorun daha; yükleme sonrası raporda tamamı sayılır.</p>` : ""}</div></details>` : ""}</div>`;
   };
-  const wireGate = (dialog, preview, matrix, url) => {
+  // extra (v2.0.22): ön izlemeye eklenecek alanlar (ör. Tür Değerleri seçimi) ve yeni ön izleme gelince çağrılacak işlev.
+  const wireGate = (dialog, preview, matrix, url, { body: extraBody = () => ({}), onPreview = null, watch = "" } = {}) => {
     const box = HOF.el("div", { class: "hof-field hof-gate-field" }, gateHtml(preview.gate));
     dialog.querySelector(".hof-form .hof-actions").before(box);
     let timer = 0;
     dialog.addEventListener("change", event => {
-      if (!event.target.closest('select[name^="c"]')) return;
+      if (!event.target.closest(`select[name^="c"]${watch ? `, ${watch}` : ""}`)) return;
       clearTimeout(timer);
       timer = setTimeout(async () => {
         const roles = {};
@@ -891,16 +924,46 @@
           if (value) roles[index] = value;
         });
         try {
-          const next = await HOF.api(url, { method: "POST", body: { matrix, roles } });
+          const next = await HOF.api(url, { method: "POST", body: { matrix, roles, ...extraBody() } });
           box.innerHTML = gateHtml(next.gate);
+          onPreview?.(next);
         } catch {
           // kapı yenilenemezse eski rapor kalır
         }
       }, 300);
     });
+    return box;
+  };
+  // ---------- Tür Değerleri (v2.0.22) ----------
+  // Excel denetimi bulgusu: Tür kolonunda "Müşteri/Tedarikçi" yazan satırlar sessizce Tedarikçi açılıyordu. Kolonları
+  // Eşle ekranında Tür kolonundaki her farklı değer, programın okuması ve açılacak tür birlikte görünür; iki türü birden
+  // yazan ya da tanınmayan değerin türünü kullanıcı seçer (seçmezse "Tür kolonu yoksa" alanındaki tür yazılır, raporlanır).
+  const typeValuesHtml = (types, chosen) => {
+    if (!types?.length) return "";
+    const flag = item => (item.state === "ambiguous" ? ' <small class="hof-type-flag">İki Tür Birden</small>' : item.state === "unknown" ? ' <small class="hof-type-flag">Tanınmadı</small>' : "");
+    const options = item => {
+      const picked = chosen.has(item.key) ? chosen.get(item.key) : item.state === "ok" ? item.type : "";
+      const value = picked === "default" ? "" : picked;
+      return `<option value="" ${value ? "" : "selected"}>Varsayılan Tür</option>${Object.entries(TYPES).map(([key, label]) => `<option value="${key}" ${value === key ? "selected" : ""}>${esc(label)}</option>`).join("")}`;
+    };
+    const unclear = types.filter(item => item.state !== "ok").length;
+    return `<span class="hof-field-label">Tür Değerleri</span>
+      <p class="hof-muted">${unclear ? `<b class="hof-type-flag">${unclear} değer</b> iki türü birden içeriyor ya da tanınmadı; bu satırların türünü seçin. Seçmezseniz “Tür kolonu yoksa” alanındaki tür yazılır.` : "Tür kolonundaki değerler aşağıdaki türlerle açılır; gerekirse değiştirin."} Tür, açılış bakiyesinin yönünü de belirler.</p>
+      <div class="hof-gate-list"><table class="hof-table"><thead><tr><th>Excel'deki Değer</th><th>Satır</th><th>Açılacak Tür</th></tr></thead><tbody>${types.map(item => `<tr class="${item.state === "ok" ? "" : "is-warning"}"><td>${esc(item.value)}${flag(item)}</td><td>${item.count.toLocaleString("tr-TR")}</td><td><select data-type-key="${esc(item.key)}" data-type-state="${esc(item.state)}" aria-label="${esc(item.value)}: Açılacak Tür">${options(item)}</select></td></tr>`).join("")}</tbody></table></div>`;
+  };
+  // Tanınan değer (ör. "Tedarikçi") için "Varsayılan Tür" seçilirse "default" gider: sunucu tanıdığı türü değil "Tür kolonu
+  // yoksa" alanındaki türü yazar. İki türlü / tanınmayan değerde seçim yapılmadıysa hiçbir şey gitmez (uyarıyla varsayılan).
+  const typeChoices = dialog => {
+    const out = {};
+    for (const select of dialog.querySelectorAll("select[data-type-key]")) {
+      if (select.value) out[select.dataset.typeKey] = select.value;
+      else if (select.dataset.typeState === "ok") out[select.dataset.typeKey] = "default";
+    }
+    return out;
   };
   function mappingForm({ fileName, matrix, preview }) {
     const sample = matrix[preview.headerAt + 1] || [];
+    let form = null;
     HOF.formModal({
       title: "Excel’den Cari Yükle: Kolonları Eşle",
       eyebrow: fileName,
@@ -916,7 +979,20 @@
       submitLabel: "Carileri Oluştur",
       onOpen: dialog => {
         dialog.classList.add("hof-import-form");
-        wireGate(dialog, preview, matrix, "/api/workspace/accounts/import/preview");
+        form = dialog;
+        const typesBox = HOF.el("div", { class: "hof-field hof-gate-field hof-type-values" }, typeValuesHtml(preview.types, new Map()));
+        typesBox.hidden = !preview.types?.length;
+        const gate = wireGate(dialog, preview, matrix, "/api/workspace/accounts/import/preview", {
+          watch: "select[data-type-key]",
+          body: () => ({ typeMap: typeChoices(dialog) }),
+          onPreview: next => {
+            // Kullanıcının seçtikleri kolon değişse de korunur (aynı değer yeniden gelirse).
+            const chosen = new Map(Object.entries(typeChoices(dialog)));
+            HOF.swap(typesBox, typeValuesHtml(next.types, chosen));
+            typesBox.hidden = !next.types?.length;
+          },
+        });
+        gate.after(typesBox);
       },
       onSubmit: async data => {
         const roles = {};
@@ -924,7 +1000,8 @@
           if (data[`c${index}`]) roles[index] = data[`c${index}`];
         });
         if (!Object.values(roles).includes("name")) throw new Error("Ad Soyad / Unvan kolonunu seçin.");
-        const result = await HOF.api("/api/workspace/accounts/import", { method: "POST", body: { matrix, headerAt: preview.headerAt, roles, type: data.type, mode: data.mode, groupName: data.groupName, openingSide: data.openingSide || "auto", fileName } });
+        const typeMap = form ? typeChoices(form) : {};
+        const result = await HOF.api("/api/workspace/accounts/import", { method: "POST", body: { matrix, headerAt: preview.headerAt, roles, type: data.type, typeMap, mode: data.mode, groupName: data.groupName, openingSide: data.openingSide || "auto", fileName } });
         view.status = "all";
         view.mode = "list";
         if (!modal) open();
@@ -938,8 +1015,10 @@
         if (result.truncated) parts.push(`${result.truncated} satır sınır dışı kaldı (tek seferde en çok 250.000 satır; kalanı ikinci yüklemede)`);
         if (result.renumbered) parts.push(`${result.renumbered} carinin numarası başka caride kullanıldığı için yeni numara verildi`);
         if (result.groups) parts.push(`${result.groups} grup tanımlandı`);
+        // v2.0.22: türü belirsiz (iki tür birden / tanınmayan) satırlar varsayılan türle açıldıysa satır numaralarıyla söylenir.
+        if (result.typeDefaultedTotal) parts.push(`${result.typeDefaultedTotal} carinin türü belirsizdi, ${TYPES[data.type] || "Müşteri"} olarak açıldı (satır ${result.typeDefaulted.slice(0, 8).map(item => item.row).join(", ")}${result.typeDefaultedTotal > 8 ? "…" : ""})`);
         const skipped = result.skipped.length ? ` ${result.skippedTotal || result.skipped.length} satır atlandı (${[...new Set(result.skipped.map(item => item.reason))].join("; ")}).` : "";
-        HOF.toast(`${parts.join(", ")}.${skipped}`, { type: result.created || result.updated ? "success" : "error", timeout: 10000 });
+        HOF.toast(`${parts.join(", ")}.${skipped}`, { type: result.created || result.updated ? "success" : "error", timeout: result.typeDefaultedTotal ? 20000 : 10000 });
       },
     });
   }
@@ -1017,6 +1096,11 @@
     if (act === "waStatement") return bulkWhatsapp("statement");
     if (act === "waMessage") return bulkWhatsapp("message");
     if (act === "more") return loadList({ more: true });
+    if (act === "retryList") {
+      view.listError = "";
+      renderList();
+      return loadList();
+    }
     if (act === "clearSel") {
       clearSelection();
       return renderList();
@@ -1075,24 +1159,28 @@
   })();
 
   HOF.whenReady(() => {
+    // v2.0.22 (Excel denetimi): bir fatura 5–7 canlı olay yayımlar (fatura, cari, her stok kalemi, Kasa, taksit) ve ardından
+    // ANLIK DURUM olayı gelir; açık Cari penceresi her birinde listeyi yeniden istiyordu (personel saniyede bir kayıt
+    // girerken aramada her harf ~3 sn bekliyordu). Bütün olaylar tek yenileme kapısından geçer (HOF.refresher).
+    const refreshOpen = HOF.refresher(() => {
+      if (!modal) return null;
+      if (view.mode === "card" && view.id) return loadAccount(view.id, { quiet: true });
+      if (view.mode === "list") return loadList({ keep: true });
+      return null;
+    });
     HOF.on("live:workspace.changed", change => {
       if (!modal || !change) return;
-      if (["accounts", "plans", "stock"].includes(change.kind)) {
-        if (view.mode === "card" && view.id && (!change.accountId || change.accountId === view.id || change.kind !== "accounts")) loadAccount(view.id);
-        else if (view.mode === "list") loadList();
-      }
+      if (!["accounts", "plans", "stock"].includes(change.kind)) return;
+      if (view.mode === "card" && view.id && change.kind === "accounts" && change.accountId && change.accountId !== view.id) return;
+      refreshOpen();
     });
-    HOF.on("plans-changed", () => {
-      if (!modal) return;
-      if (view.mode === "card" && view.id) loadAccount(view.id);
-      else loadList();
-    });
+    HOF.on("plans-changed", () => modal && refreshOpen.now());
     // v2.0.11: carinin defterine yazan başka pencerelerdeki işlemler (Kasa, çek/senet, taksit, stok) açık Cari
     // penceresini de yeniler. Bu pencerenin kendi işlemleri zaten kendini yeniler.
     HOF.onLedger(["accounts", "cash", "plans", "stock", "cheques"], detail => {
       if (!modal || detail.path?.startsWith("/api/workspace/accounts")) return;
-      if (view.mode === "card" && view.id) loadAccount(view.id);
-      else if (view.mode === "list") loadList();
+      if (detail.local) refreshOpen.now();
+      else refreshOpen();
     }, 350);
   });
   HOF.office = Object.assign(HOF.office || {}, { gateHtml, wireGate });

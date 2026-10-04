@@ -1,0 +1,25 @@
+Arayüzden girilecek 12 işlem/şirket: ISL-01664, ISL-02235, ISL-02462, ISL-01252, ISL-01469, ISL-02450, ISL-02054, ISL-03625, ISL-03656, ISL-03424, ISL-03854, ISL-04050
+  arayüz personeli 001 giriş yaptı; ekrandaki şirket: 001 · Merkez Ticaret A.Ş.
+  arayüz personeli 002 giriş yaptı; ekrandaki şirket: 002 · Şube Ticaret Ltd. Şti.
+  ✗ arayüz 001 ISL-01664 sale: arayüz girişi tamamlanamadı (fatura kesilmedi, API'den girilecek): page.click: Timeout 30000ms exceeded. · bildirimler: 
+  ✗ arayüz 002 ISL-01664 sale: arayüz girişi tamamlanamadı (fatura kesilmedi, API'den girilecek): page.click: Timeout 30000ms exceeded. · bildirimler: 
+  ✗ arayüz 001 ISL-03656 collect: arayüz girişi yapılamadı: page.fill: Timeout 30000ms exceeded.
+  ✗ arayüz 002 ISL-03656 collect: arayüz girişi yapılamadı: page.click: Timeout 30000ms exceeded.
+  ✗ arayüz 001 ISL-02235 sale: arayüz girişi tamamlanamadı (fatura kesilmedi, API'den girilecek): page.click: Timeout 30000ms exceeded. · bildirimler: 
+  ✗ arayüz 002 ISL-02235 sale: arayüz girişi tamamlanamadı (fatura kesilmedi, API'den girilecek): page.click: Timeout 30000ms exceeded. · bildirimler: 
+  ✗ arayüz 001 ISL-03854 pay: arayüz girişi yapılamadı: page.fill: Timeout 30000ms exceeded.
+  ✗ arayüz 002 ISL-03854 pay: arayüz girişi yapılamadı: page.fill: Timeout 30000ms exceeded.
+  ✗ arayüz 001 ISL-02462 sale: arayüz girişi tamamlanamadı (fatura kesilmedi, API'den girilecek): page.click: Timeout 30000ms exceeded. · bildirimler: 
+  ✗ arayüz 002 ISL-02462 sale: arayüz girişi tamamlanamadı (fatura kesilmedi, API'den girilecek): page.click: Timeout 30000ms exceeded. · bildirimler: 
+  ✓ arayüz 001 ISL-03424 collect: Mustafa Güneş: bakiye 0 → -9754.07 (beklenen -9754.07) · Tahsilat kaydedildi. Bakiye ₺9.754,07 Alacaklı.Makbuz
+  ✓ arayüz 002 ISL-03424 collect: Mustafa Güneş: bakiye 0 → -9754.07 (beklenen -9754.07) · Tahsilat kaydedildi. Bakiye ₺9.754,07 Alacaklı.Makbuz
+  ✗ arayüz 001 ISL-01252 sale: arayüz girişi tamamlanamadı (fatura kesilmedi, API'den girilecek): page.waitForSelector: Timeout 15000ms exceeded. · bildirimler: 
+  ✗ arayüz 002 ISL-01252 sale: arayüz girişi tamamlanamadı (fatura kesilmedi, API'den girilecek): page.waitForSelector: Timeout 15000ms exceeded. · bildirimler: 
+  ✓ arayüz 001 ISL-03625 collect: Ömer Kaya: bakiye -3157.26 → -29171.95 (beklenen -29171.95) · Tahsilat kaydedildi. Bakiye ₺29.171,95 Alacaklı.Makbuz
+  ✓ arayüz 002 ISL-03625 collect: Ömer Kaya: bakiye -3157.26 → -29171.95 (beklenen -29171.95) · Tahsilat kaydedildi. Bakiye ₺29.171,95 Alacaklı.Makbuz
+  ✓ arayüz 001 ISL-01469 sale: Satış Faturası FIS2024000000006 Ödendi · formdaki toplamlar: Toplamlar Toplam₺540,48Ara Toplam₺540,48 KDV %1₺5,40 Genel Toplam₺545,88 Yalnız Beş Yüz Kırk Beş Türk Lirası Seksen Sekiz Kuruş Fatura tarih · program 545.88 / model 545.88
+  ✓ arayüz 002 ISL-01469 sale: Satış Faturası FIS2024000000006 Ödendi · formdaki toplamlar: Toplamlar Toplam₺540,48Ara Toplam₺540,48 KDV %1₺5,40 Genel Toplam₺545,88 Yalnız Beş Yüz Kırk Beş Türk Lirası Seksen Sekiz Kuruş Fatura tarih · program 545.88 / model 545.88
+  ✓ arayüz 001 ISL-02450 sale: Satış Faturası FIS2024000000011 Vadesi Geçti · formdaki toplamlar: Toplamlar Toplam₺1.933,20Ara Toplam₺1.933,20 KDV %20₺386,64 Genel Toplam₺2.319,84 Yalnız İki Bin Üç Yüz On Dokuz Türk Lirası Seksen Dört Kur · program 2319.84 / model 2319.84
+  ✓ arayüz 002 ISL-02450 sale: Satış Faturası FIS2024000000011 Vadesi Geçti · formdaki toplamlar: Toplamlar Toplam₺1.933,20Ara Toplam₺1.933,20 KDV %20₺386,64 Genel Toplam₺2.319,84 Yalnız İki Bin Üç Yüz On Dokuz Türk Lirası Seksen Dört Kur · program 2319.84 / model 2319.84
+  ✗ arayüz 001 ISL-02054 sale: arayüz girişi tamamlanamadı (fatura kesilmedi, API'den girilecek): page.waitForSelector: Timeout 15000ms exceeded. · bildirimler: 
+  ✗ arayüz 002 ISL-02054 sale: arayüz girişi tamamlanamadı (fatura kesilmedi, API'den girilecek): page.waitForSelector: Timeout 15000ms exceeded. · bildirimler: 

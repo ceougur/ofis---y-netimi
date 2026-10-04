@@ -54,7 +54,17 @@ Bu dosya oturumlar arasında taşınan hafızadır. Her oturumun başında okunu
   açılır (ayrıntı `docs/SURUM-YAYIMLAMA.md` → Site). 2.0.3–2.0.14 boyunca sitede eski kılavuz kaldı (02.10.2026 fark edildi).
 
 ## Sürüm teslim düzeni (kullanıcı kararı, 02.10.2026 — her sürümde AYNEN; sormadan, eksiksiz)
-Bağlam kopsa da bu düzen değişmez. Kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS verilir:
+GÜNCELLEME (kullanıcı, 04.10.2026: "zipleri teslim ederken GitHub'a yükleyeceklerimi ayrı ver, karma karışık bir sürü zip
+oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
+  A) GitHub'a yüklenecek 5 dosya ZİPSİZ, TEK TEK gönderilir (dosya adları yayındaki adlarıyla aynı):
+     `destekofis-guncelleme-<s>.zip`, `destekofis-guncelleme.json` (İMZALI), `DestekOfis-Kullanim-Kilavuzu.pdf`,
+     `DestekOfis-Kurulum.exe`, `DestekOfis-Kurulum.exe.sha256` + yayın açma bağlantısı ve sürüm notu metni.
+  B) Arşiv için TEK zip `DestekOfis-<s>-Arsiv-Belgeler-Kaynak-Denetim.zip` (sürüm notları, kanıt, git bundle, test çıktıları;
+     GitHub'a YÜKLENMEZ — adında ve OKU-BENI'de yazar); SHA256SUMS zip'in içinde. 50 MB'ı aşarsa parçalara bölünür.
+  Kaynak paketi: bu kapsayıcıda depo SIĞ klonlanır → önce `git fetch --unshallow origin`, sonra `git bundle create`, sonra
+  paketten `git clone` ile doğrula (2.0.21 arşivindeki paket bu yüzden klonlanamıyordu — 04.10.2026 fark edildi; kod GitHub'da).
+Aşağıdaki üç zip düzeni (1/2/3) bu tarihten önceki teslimler içindir; yerini yukarıdaki iki parça aldı.
+Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS verilirdi:
 1. `DestekOfis-<s>-1-Guncelleme-ve-Belgeler.zip` → içinde **`GitHub-v<s>/`** klasörü: `destekofis-guncelleme-<s>.zip`,
    `destekofis-guncelleme.json` (İMZALI), `DestekOfis-Kullanim-Kilavuzu.pdf`; kökte OKU-BENI, sürüm notları, belgeler.
 2. `DestekOfis-<s>-2-Kurulum.zip` → içinde **`GitHub-v<s>/`**: `DestekOfis-Kurulum.exe` + `.sha256`.
@@ -481,8 +491,101 @@ Bağlam kopsa da bu düzen değişmez. Kullanıcı "zip ver" dediğinde şu üç
   senaryosu, rastgele uzun koşular 0 hata. Güncelleme paketi sha256 985056b5… (209 dosya, HEAD ile bayt bayt), kurulum .exe
   71bca999… (simgeli); güncelleyici 2.0.20/19/18/17/2.0.4/1.7.0 "available". Kılavuz DEĞİŞTİ (802d42a4…) → yayından sonra site
   PR'ı ceougur/destekofis#8 güncellenir. Kullanıcıya söylendi: bulunan hatalar 2.0.20'de de var (iki pencere, 001 Tümünü Sıfırla).
+  YAYIMLANDI (03.10.2026; PR #21 CI yeşil → kullanıcının "birleştir"iyle squash, `master` = 863c35a, `v2.0.21`; dal `master`
+  üzerine sıfırlandı). Yayındaki 5 dosya + latest/ (exe, json, zip, pdf) teslimdekiyle bayt bayt aynı, exe .sha256 OK; gerçek
+  güncelleyici canlı GitHub'da 2.0.20/19/18/17/16/2.0.4/1.7.0 olarak (API ve API kapalıyken yedek yol) 2.0.21'i "available"
+  gördü, indirme sha256 985056b5… eşleşti; 2.0.21 kurulu → "up-to-date". Site kılavuz PR'ı ceougur/destekofis#8 2.0.21 PDF'iyle
+  (802d42a4…) güncellendi ve kullanıcının isteğiyle BİRLEŞTİRİLDİ (main 6b0cc85). Canlı sitenin PDF'i bu ortamdan denetlenemedi
+  (destekofis.com ağ politikasıyla kapalı). 2.0.21 KAPANDI.
+- TEST KAPSAMI SORUSU (kullanıcı, 03.10.2026: "dünyadaki tüm hata testleri yapıldı, her işlevi kusursuzdur diyebilir miyim?").
+  Cevap: HAYIR. Ölçüldü (`docs/TEST-KAPSAMI-2.0.21.md`): sunucu satır %95,2 / karar kolu %79,9; arayüz satır %79,8 (19 senaryo,
+  tarayıcı kapsaması); bağımsız denetimde 52 yüksek + 116 orta riskli testsiz yer doğrulandı (5 iddia çürütüldü). CI 19 arayüz
+  senaryosunun yalnız 5'ini koşuyor; senaryo-213 2.0.21'den beri bu yüzden fark edilmeden kırıktı (test eskimişti, düzeltildi
+  c93ab9c). Kapsama, mutasyon, lint, bağımlılık taraması, yük/dayanıklılık, beta, sahadan hata bildirimi YOK.
+  ÖNERİ (kullanıcı "yap" derse): 52 yüksek riskli açığa hata testi (önce para/dönem kilidi/yetki/şirket); 19 senaryonun hepsi
+  CI'de; kapsama ölçümü CI'de ve düşerse kırmızı.
+  EK (kullanıcı, 04.10.2026): iki test türü de listeye: (a) YÜK/EŞZAMANLILIK — birden çok personel aynı anda farklı
+  şirketlerde (001'de fatura, 002'de tahsilat…) ve aynı şirkette yoğun yazar; sonuç: veri karışmaz, kayıp/çift kayıt yok,
+  mutabakat 0, yanıt süreleri ölçülür. (b) KÖTÜ NİYETLİ (güvenlik) — yetkisiz personel başka şirketin/işlemin verisine
+  ulaşmaya, ?hofCompany= ile şirket değiştirmeye, yetki dışı uçları çağırmaya, bozuk/aşırı büyük girdi göndermeye çalışır;
+  bağımlılık taraması. Hepsi reddedilmeli, veri bozulmamalı.
+  KARAR (kullanıcı, 04.10.2026): "her yapılmayan testi hacker yani kötü niyetli olarak programı bozmak için yapalım; planını
+  böyle yap"; DÜZELTME (aynı gün): "hem çalışıyor mu diye test et hem de bunu nasıl bozarım diye test et, plan bu!".
+  PLAN: raporda (docs/TEST-KAPSAMI-2.0.21.md) doğrulanmış her testsiz yer (52 yüksek + 116 orta) için İKİ test yazılır:
+  (1) ÇALIŞIYOR MU — doğru kullanımda beklenen sonuç sayılarla (bakiye, Kasa, stok, kart) doğrulanır; (2) NASIL BOZARIM —
+  saldırgan bakışla. Saldırgan soruları: yetkim yokken yapabilir miyim
+  (başka personel, başka şirket, ?hofCompany= oyunu, doğrudan API)? kilitli döneme/ileri tarihe yazdırabilir miyim? tutarı
+  eksi/sıfır/devasa/kuruş artığı, metni bozuk/çok uzun/zararlı (HTML, formül, yol) verebilir miyim? çift tıklama ve aynı
+  anda iki istekle çift kayıt ya da eksi bakiye yaratabilir miyim? işlemi yarıda kesip (bağlantı kopması, disk dolu) veriyi
+  yarım bırakabilir miyim? sil → geri yükle → düzenle sırasıyla bağları koparabilir miyim? Her test sonunda değişmezler
+  denetlenir (mutabakat 0, şirketler ayrı, yetkisiz değişiklik yok). Sıra: para ve dönem kilidi → yetki ve şirket ayrımı →
+  eşzamanlılık/yük → girdi bozma → arayüz düğmeleri. Bulunan her açık: önce kırmızı test, sonra düzeltme, kanıt dosyası.
   [x] 6. Bu test türleri aşağıdaki "Test kuralı"na her sürümde koşulacak kural olarak yazılır; teslimde "denenen /
          denenmeyen / bilinen sınırlar" açıkça yazılır; her sürümde bağımsız gözden geçirme.
+- EXCEL DENETİMİ (kullanıcı, 04.10.2026; yüklenen `Sirket_Is_Listesi_Stoklu.xlsx`, 4.220 iş, 350 cari, 50 ürün): "programı
+  gerçek bilgisayarda çalıştır, uzman muhasebeci olarak iki şirket kur, Excel'deki işleri gir — kod üzerinden değil insan
+  gibi; birden çok çalışan iki şirkette aynı anda tahsilat, mal satışı, taksit tahsilatı; mali müşavir olarak denetle; iki
+  şirketin yedeğini denetle"; ek: "hatalı ve yetkisiz işlemleri de dene; bulduğun sorunları KOD DEĞİŞTİRMEDEN madde madde
+  bildir"; "mali raporları teslim et" (zip). DERS (ağır): ilk deneme (başka model) programı salt okunur lisansla çalıştırdı,
+  HİÇBİR kayıt girilmedi, istekler reddedildi ama test "✅" saydı ve uydurma "mali rapor" + zip teslim edildi
+  (`docs/MALI-RAPOR-2.0.21-TEST.md`, kök `test-*.mjs`, `test-raporlar-2.0.21.zip` — YANLIŞ). Kullanıcı: "yapmış gibi yapma,
+  yap!". Kural: bir testin "✓" demesi için yanıt gövdesi ve veri tabanı sayısı okunur; reddedilen istek başarı sayılmaz.
+  Yapılan iş: `test/excel-denetim/` (model.py bağımsız beklenen; kos.mjs kur/yukle; denetim.mjs; saldiri.mjs; yedek.mjs;
+  arayuz.mjs; rapor-al.mjs). Kod değiştirilmez; bulgular `test/excel-denetim/cikti/` ve teslim zip'inde.
+  SONUÇ (04.10.2026; rapor `docs/EXCEL-DENETIMI-2026-10-04.md`, zip `dist/teslim-excel-denetimi/`): 4.220 iş × 2 şirket
+  eksiksiz (veri dosyasından sayıldı; SIGKILL kesinti + devam sonrası eksik/çift 0); mali denetim 70/70; programın Mutabakat
+  Testi 59/59 ×2; saldırı 63 (2 bulgu); yedek tatbikatı 30/30 + otomatik yedek; arayüzden bugünün işleri 14/14. Hacim API'den
+  girildi (ekrandan: şirket açma, cari/stok Excel yükleme, örnek satış/tahsilat, bugünün işleri) — kullanıcıya açıkça söylendi.
+  BULGULAR (düzeltme kullanıcı "yap" derse): (1) yük altında sunucu yavaş, boşta açık her pencere yavaşlığı katlıyor
+  (cari not düzeltme 0 pencere ~1 sn/4,1 kayıt-sn → 5 pencere 8,9 sn/0,5 kayıt-sn); (2) başka personel saniyede 1 kayıt
+  girerken Cari aramasında her harf ~3 sn gecikiyor; (3) Excel cari yüklemede "Müşteri/Tedarikçi" sessizce Tedarikçi;
+  (4) API'de tanımsız ödeme yolu nakit sayılıyor; (5) API'de aynı fatura iki kez → iki fatura (ekranda çift tıklama
+  korumalı); (6) lisans kapalıyken bile "salt okunur" uyarı kutusu. Excel'in kendi sorunları raporda (Kasa açılışı yok,
+  1.613 işlem cari açılışından önce, kısmi ödeme tutarı yok, 165 "Tamamlandı" taksitlinin tahsilatı yok, Özet sayfası yanlış).
+  Kullanıcı sorusu (aynı gün): "gerçek muhasebeci gibi değil de koddan mı yapıyorsun?" → evet, hacim API'den; önerildi:
+  bir ayın tamamı (Ocak 2024) ekrandan ayrı şirkete girilip API ile girilenle sayı sayı karşılaştırılsın (karar kullanıcıda).
+  KULLANICI ÖNERİSİ (04.10.2026, "baş mimar olarak onaylarsan"): öncelik 1 = güvenlik/veri bütünlüğü (3 cari türü, 4 tanımsız
+  ödeme yolu, 5 API çift fatura); öncelik 2 = performans/UX (1–2 gecikmeler, 6 lisans uyarısı). DEĞERLENDİRMEM: 3/4/5 katılıyorum;
+  İTİRAZ (a) 1–2 yalnız "frontend" değil ve ikinci sıra değil: 0 pencerede bile cari not düzeltmesi ~1 sn (sunucu); her açık
+  pencere her değişiklikte yeniden sorgu → önce ÖLÇÜM (nereye gidiyor), sonra düzeltme; çok personelli ofiste her gün
+  hissedilecek tek bulgu bu. (b) 6 BULGU DEĞİL: testte lisans denetimini ben kapattım; gerçek kurulumda deneme başlamamışsa
+  program gerçekten salt okunurdur, uyarı doğru → rapordan düşülecek. Önerilen sıra: 4 → 3 → 1/2 ölçüm → 5 → (6 yok).
+  Not: 5'te içerik aynı diye reddetmek YANLIŞ (aynı cariye aynı ürünü iki kez satmak meşru) → istek kimliği (idempotency
+  anahtarı) gerekir. 3'te ikili tür eklemek ayrı karar; asgari: yüklemede uyarı + kullanıcı seçimi. Kullanıcının "yap"ı bekleniyor.
+  KARAR (kullanıcı, 04.10.2026): "baş mimar ve baş mühendis şapkanla önerdiğin şekilde yap" → 2.0.22 adayı, sıra 4 → 3
+  (YALNIZ uyarı + eşleme seçimi, yeni tür YOK) → 1/2 (ölç, sonra düzelt) → 5 (istek kimliği). Her madde: kırmızı test →
+  düzeltme → kanıt; sonunda bağımsız gözden geçirme; DENENEN/DENENMEYEN/BİLİNEN SINIRLAR. 6 rapordan düşülür.
+  [x] 4. tanımsız ödeme yolu 400   [x] 3. Müşteri/Tedarikçi uyarı + eşleme   [x] 1/2. ölçüm + düzeltme   [x] 5. idempotency
+  EK (kullanıcı, aynı gün): "UI'deki donmalar, gecikmeler, çoklu kullanımda arayüzün yetişememesi, cari arama pilindeki
+  sorunlar canımı çok acıttı, EN İYİ HALİYLE yap!" → 1/2 ÖNE ALINDI (4'ten hemen sonra). Hedef: çok personelli ofiste
+  (aynı şirkette saniyede 1–5 başka kayıt, 5+ açık pencere) arama kutusu anında, açık pencere kapanmaz/sıfırlanmaz,
+  sunucu yanıtı pencere sayısıyla katlanmaz; önce/sonra aynı A/B + tuş gecikmesi ölçümüyle kanıt.
+  DURUM (04.10.2026, dal `claude/kind-newton-fpmx3f`): 4 commit fec9d40; 1/2 sunucu kısmı (S1 fatura ödeme durumu toplu +
+  saklanır, S2 cari bilgi düzeltmesi kapısız + "info" olayı) commit b0498a7 (testler cari-bilgi-222, fatura-durum-222: eski
+  kodda kırmızı); istemci kısmı (HOF.refresher: tek yükleme + en sık aralık + gizli sekmede yok + arka plan istekleri en çok
+  2 bağlantı; Cari listesi aramayı ezmez, "Daha Fazla"/Tümünü Seç korunur, değişmeyen liste çizilmez), kapıda cari listesi
+  bir kez, takvimin tablo kısmı ayrı önbellek, rozet sayı-yalnız (plans count=1) commit edilmedi — ölçüm sürüyor
+  (`test/excel-denetim/yuk-olcum.mjs`: AYNI veri kopyası, önce=v2.0.21 kodu, sonra=bu dal). 3 yapıldı (test cari-tur-222 eski
+  kodda kırmızı; senaryo-219 adım 3b). 5: kütüphane `server/lib/idempotency.mjs` + test istek-kimligi-222; uca/forma bağlama
+  ölçümden sonra (yama hazır). Arayüz senaryosu `test/e2e/senaryo-222.mjs` (CI'ye eklendi). DERS (04.10.2026): ölçüm
+  zincirini (önce; sonra) elle yeniden başlatırken eskisini durdurmadım → iki ölçüm aynı anda koştu, sayılar atıldı; artık
+  `flock` kilidiyle tek ölçüm.
+  KULLANICI (04.10.2026, 2.0.22 sırasında): "işlem bitince GitHub'a yüklenecek doğrulanmış imzalı zipi ve linki ver; sende
+  birleştirmeyi yap" → iş bitince: testler + bağımsız gözden geçirme düzeltmeleri → son ölçüm → sürüm 2.0.22 → imzalı paket
+  (kullanıcının yüklediği .pem) + kurulum .exe → 3 zip + SHA256SUMS → PR → CI yeşil → BİRLEŞTİRMEYİ BEN YAPARIM (kullanıcı
+  izni) → yayın açma bağlantısı (tag v2.0.22) → kullanıcı "yayımladım" → bayt bayt + güncelleyici "available" → site PR'ı.
+  DURUM (04.10.2026 16:xx): 4 madde yapıldı; bağımsız gözden geçirme 10 bulgu → hepsi düzeltildi (24fe61a; `test/inceleme-222`
+  önce 6/7 kırmızı, senaryo-222 ve 219 adımları eski istemcide kırmızı) + testte bulunan 11. (kart yenilemesi sürerken listeye
+  dönen kullanıcıya eski kart geri geliyordu, d6e14bd). Düzeltme commit'leri ikinci bağımsız gözden geçirmede. Kanıt
+  `docs/2.0.22-KANIT.md`, CHANGELOG → 2.0.22. Çok carili ölçüm `test/excel-denetim/olcum-cok-cari.mjs` (60.000 caride fatura
+  listesi v2.0.21 102–122 ms → 30–33 ms); gerçek denetim verisinde toplu = kart 5.914/5.914 fatura.
+  İkinci bağımsız gözden geçirme (düzeltmelerin kendisi) 7 bulgu → hepsi düzeltildi 081dce6 (`HOF.listGate`; eski kodda 7 kırmızı).
+  Son kodla: npm test 916/916; 19 arayüz senaryosu 0 hata (222: 56/56); rastgele sıra 2×1.000 işlem 0 hata; mutabakat 3.000
+  işlem tutarlı. Son ölçüm (aynı veri/yük): Cari aramasında harf 1,5–7,9 sn → 3–12 ms; 5 pencerede tahsilat 1 → 3,2 kayıt/sn.
+  TESLİM (04.10.2026 17:2x; yeni düzen: GitHub'a 5 dosya zipsiz + tek arşiv zip): güncelleme paketi sha256 437ac249… (210
+  dosya, HEAD ile bayt bayt), kurulum .exe e0751bd9… (29,4 MB, simgeli), kılavuz PDF 91ffc51d… (değişti → yayından sonra site
+  PR'ı); güncelleyici 2.0.21/20/19/18/2.0.4/1.7.0 olarak (API ve yedek yol) "available", kurcalanmış bildirge reddedildi.
+  PR ceougur/ofis---y-netimi#22 → CI yeşil olunca birleştirmeyi ben yaparım (kullanıcı izni) → yayın bağlantısı.
 - 2.0.20 YAPILACAKLAR (kullanıcı "yapılacaklara not al" dedi, 03.10.2026; "yap" denince başlanır; ayrıntı ve
   kanıt hemen altındaki ADAYI maddesinde):
   [x] 1. Bütün raporların (43) tablosunun altında kalın TOPLAM satırı — ekran, PDF, Excel aynı; yalnız toplanabilir

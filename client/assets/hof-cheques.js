@@ -8,7 +8,7 @@
   const HOF = window.HOF;
   const { esc } = HOF;
   let modal = null;
-  let listRequest = 0;
+  const lists = HOF.listGate();
   let cardRequest = 0;
   const view = { mode: "list", direction: "", status: "open", q: "", from: "", to: "", sort: "due", list: null, id: "", cheque: null };
 
@@ -66,23 +66,41 @@
     loadList();
   }
 
-  async function loadList(more = false) {
-    const ticket = ++listRequest;
+  async function loadList(more = false, { quiet = false } = {}) {
+    // Sıra kuralları HOF.listGate'te (v2.0.22); arka plan yenilemesi en çok 2 bağlantılık arka plan kuyruğundan gider.
+    const load = lists.start({ quiet, more });
+    if (!load) return;
+    if (!quiet && !more && view.listError) {
+      view.listError = "";
+      if (!view.list && view.mode === "list") renderList();
+    }
     try {
       const offset = more && view.list ? view.list.cheques.length : 0;
-      const data = await HOF.api(`/api/workspace/cheques?${listQuery({ offset, limit: 300 })}`);
-      if (ticket !== listRequest) return;
+      const data = await HOF.api(`/api/workspace/cheques?${listQuery({ offset, limit: 300 })}`, quiet ? { background: true } : {});
+      if (!load.current()) return;
+      load.applied();
+      view.listError = "";
       view.list = more && view.list ? { ...data, cheques: [...view.list.cheques, ...data.cheques] } : data;
       if (view.mode === "list") renderList();
     } catch (error) {
-      if (ticket === listRequest && body()) body().innerHTML = `<p class="hof-empty">${esc(error.message)}</p>`;
+      if (quiet) throw error;
+      if (!load.current()) return;
+      if (more && view.list) return HOF.toastError(error);
+      view.list = null;
+      view.listError = error.message;
+      if (view.mode === "list") renderList();
+    } finally {
+      load.done();
     }
   }
-  async function loadCheque(id, action = "") {
-    const ticket = ++cardRequest;
+  async function loadCheque(id, action = "", { quiet = false } = {}) {
+    // Arka plan yenilemesi sıra numarasını artırmaz: kullanıcının o sırada açtığı evrak geçersiz sayılmaz.
+    const ticket = quiet ? cardRequest : ++cardRequest;
     try {
       const cheque = await HOF.api(`/api/workspace/cheques/${encodeURIComponent(id)}`);
       if (ticket !== cardRequest) return;
+      // Arka plan yenilemesi gelene kadar kullanıcı listeye döndüyse eski kart geri gelmez.
+      if (quiet && (view.mode !== "card" || view.id !== id)) return;
       view.cheque = cheque;
       view.id = id;
       view.mode = "card";
@@ -90,6 +108,8 @@
       if (action && cheque.actions?.some(item => item.key === action)) actionForm(cheque, action);
     } catch (error) {
       if (ticket !== cardRequest) return;
+      if (quiet && (view.mode !== "card" || view.id !== id)) return;
+      if (quiet && !HOF.lostRecord(error)) throw error;
       HOF.toastError(error);
       view.mode = "list";
       renderList();
@@ -137,7 +157,7 @@
         <input type="search" data-filter="q" value="${esc(view.q)}" placeholder="No, banka, kişi, not ara…" aria-label="Ara">
       </div>
       ${data ? `<div class="hof-rep-table"><table class="hof-table hof-chq-table"><thead><tr><th>Vade</th><th>Evrak</th><th>No / Banka</th><th>Kimden / Kime</th><th>Durum</th><th class="num">Tutar</th></tr></thead><tbody>${rows || `<tr><td colspan="6" class="hof-empty">${view.status === "open" && !view.q ? "Portföyde evrak yok. “+ Çek / senet al” ile ekleyin." : "Bu süzgeçte evrak yok."}</td></tr>`}</tbody></table></div>
-        <p class="hof-rep-note">${data.total.toLocaleString("tr-TR")} evrak · ${esc(money(data.listed.amount))}${data.hasMore ? ` · <button type="button" class="hof-link-button" data-act="more">Daha Fazla Göster</button>` : ""}</p>` : '<p class="hof-empty">Yükleniyor…</p>'}`);
+        <p class="hof-rep-note">${data.total.toLocaleString("tr-TR")} evrak · ${esc(money(data.listed.amount))}${data.hasMore ? ` · <button type="button" class="hof-link-button" data-act="more">Daha Fazla Göster</button>` : ""}</p>` : HOF.listPending(view.listError)}`);
   }
 
   // ---------- Kart ----------
@@ -405,6 +425,11 @@
     if (act === "new-out") return chequeForm({ direction: "out" });
     if (act === "import") return importFlow();
     if (act === "more") return loadList(true);
+    if (act === "retryList") {
+      view.listError = "";
+      renderList();
+      return loadList();
+    }
     if (act === "back") {
       view.mode = "list";
       view.id = "";
@@ -431,16 +456,21 @@
   };
   HOF.cheques = { open, newFor };
   HOF.whenReady(() => {
+    // v2.0.22: canlı olaylar ve defter değişiklikleri tek yenileme kapısından (HOF.refresher).
+    const refreshList = HOF.refresher(() => (modal && view.mode === "list" ? loadList(false, { quiet: true }) : null));
+    const refreshCard = HOF.refresher(() => (modal && view.mode === "card" && view.id ? loadCheque(view.id, "", { quiet: true }) : null));
     // Başka bilgisayardaki değişiklik: açık liste/kart yenilenir.
     HOF.on("live:workspace.changed", change => {
       if (!modal || change?.kind !== "cheques") return;
-      if (view.mode === "card" && view.id && (!change.chequeId || change.chequeId === view.id)) loadCheque(view.id);
-      else loadList();
+      if (view.mode === "card" && view.id && (!change.chequeId || change.chequeId === view.id)) refreshCard();
+      else refreshList();
     });
     // v2.0.11: evrak başka pencereden (Cari kartı, Kasa) değişince açık liste de yenilenir.
     HOF.onLedger(["cheques"], detail => {
       if (!modal || detail.path?.startsWith("/api/workspace/cheques")) return;
-      if (view.mode === "list") loadList();
+      if (view.mode !== "list") return;
+      if (detail.local) refreshList.now();
+      else refreshList();
     }, 350);
   });
 })();

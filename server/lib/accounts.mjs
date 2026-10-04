@@ -18,7 +18,12 @@ const EPS = 0.005;
 const tlText = value => `${new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value)} TL`;
 export const roundQty = value => Math.round((Number(value) || 0) * 1000) / 1000;
 
-export const ACCOUNT_TYPES = Object.freeze({ customer: "Müşteri", supplier: "Tedarikçi", other: "Diğer" });
+// Kalıtımsız nesne (v2.0.22, gözden geçirme bulgusu 6): ACCOUNT_TYPES[girdi] denetiminde "constructor", "toString",
+// "__proto__" gibi adlar tür sayılmasın (önceden Excel Tür eşlemesinde 500 veriyor, doğrudan API'de cariye yazılıyordu).
+export const ACCOUNT_TYPES = Object.freeze(Object.assign(Object.create(null), { customer: "Müşteri", supplier: "Tedarikçi", other: "Diğer" }));
+export const isAccountType = value => typeof value === "string" && Object.hasOwn(ACCOUNT_TYPES, value);
+// Excel Tür Değerleri'nde "Varsayılan Tür" seçimi: değer tanınsa da "Tür kolonu yoksa" alanındaki tür yazılır.
+export const TYPE_DEFAULT = "default";
 export const ENTRY_KINDS = Object.freeze({
   debt: { label: "Borç", side: "debit", cash: "" },
   credit: { label: "Alacak", side: "credit", cash: "" },
@@ -233,11 +238,23 @@ export function mapAccountHeaders(headers) {
 export const mapStockHeaders = headers => mapWith(STOCK_ROLE_TESTS, headers);
 
 // Cari türü hücresi: "Tedarikçi", "satıcı", "firma (tedarik)" → supplier; "müşteri", "alıcı" → customer.
-export function parseAccountType(value) {
+// v2.0.22 (Excel denetimi bulgusu): "Müşteri/Tedarikçi" gibi iki türü birden yazan hücre önceden sessizce Tedarikçi
+// oluyordu (ilk eşleşen). Artık iki tür birden ("ambiguous") ya da tanınmayan ("unknown") değer bir türe atanmaz:
+// kullanıcı Kolonları Eşle ekranında değer başına seçer (typeMap); seçmezse varsayılan tür yazılır ve satır raporlanır.
+const TYPE_PATTERNS = [
+  ["supplier", /(tedarik|satici|toptanci|uretici|bayi)/],
+  ["customer", /(musteri|alici|ogrenci|veli|uye|hasta|kiraci|sakin)/],
+  ["other", /(diger|personel|ortak)/],
+];
+export const accountTypeKey = value => plainHeader(value).slice(0, 80);
+export function classifyAccountType(value) {
   const t = plainHeader(value);
-  if (!t) return "";
-  if (/(tedarik|satici|toptanci|uretici|bayi)/.test(t)) return "supplier";
-  if (/(musteri|alici|ogrenci|veli|uye|hasta|kiraci|sakin)/.test(t)) return "customer";
-  if (/(diger|personel|ortak)/.test(t)) return "other";
-  return "";
+  if (!t) return { type: "", state: "empty" };
+  const hits = TYPE_PATTERNS.filter(([, pattern]) => pattern.test(t)).map(([type]) => type);
+  if (hits.length === 1) return { type: hits[0], state: "ok" };
+  return { type: "", state: hits.length ? "ambiguous" : "unknown", candidates: hits };
+}
+export function parseAccountType(value) {
+  const found = classifyAccountType(value);
+  return found.state === "ok" ? found.type : "";
 }

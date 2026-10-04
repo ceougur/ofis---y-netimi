@@ -33,6 +33,14 @@ const ACCOUNTS = [
   { "Ad Soyad": "Deniz Ak", Telefon: "", Grup: "", "Açılış Bakiyesi": "", Veli: "Selin Ak" },
 ];
 const accountsXlsx = xlsx("cariler.xlsx", "Cariler", ["Ad Soyad", "Telefon", "Grup", "Açılış Bakiyesi", "Veli"], ACCOUNTS);
+// 2.0.22 madde 3 (Excel denetimi bulgusu): Tür kolonunda iki türü birden yazan ("Müşteri/Tedarikçi") ve tanınmayan değer.
+const TYPED = [
+  { "Ad Soyad": "Tür Müşteri", Telefon: "0541 000 00 01", Tür: "Müşteri", "Açılış Bakiyesi": "100" },
+  { "Ad Soyad": "Tür Tedarikçi", Telefon: "0541 000 00 02", Tür: "Tedarikçi", "Açılış Bakiyesi": "100" },
+  { "Ad Soyad": "Tür İkisi", Telefon: "0541 000 00 03", Tür: "Müşteri/Tedarikçi", "Açılış Bakiyesi": "100" },
+  { "Ad Soyad": "Tür Garip", Telefon: "0541 000 00 04", Tür: "xyz", "Açılış Bakiyesi": "100" },
+];
+const typedXlsx = xlsx("cari-tur.xlsx", "Cariler", ["Ad Soyad", "Telefon", "Tür", "Açılış Bakiyesi"], TYPED);
 // Google Sheets (sahte sunucu): üç yeni cari.
 const SHEET_URL = "https://docs.google.com/spreadsheets/d/1Sahte219Cariler/edit#gid=0";
 const SHEET_CSV = "Ad Soyad,Telefon,Açılış Bakiyesi\nEmre Yıldız,0536 100 20 30,500\nFatma Şahin,0537 200 30 40,\nGökhan Demir,0538 300 40 50,750\n";
@@ -196,6 +204,35 @@ try {
     ok(list.total === 8, `cari listesinde ${list.total} cari (beklenen 8)`);
     const emre = list.accounts.find(item => item.name === "Emre Yıldız");
     ok(emre && Math.abs(emre.balance - 500) < 0.005 && /100 20 30/.test(emre.phone), `Emre Yıldız: bakiye ${emre?.balance}, telefon ${emre?.phone}`);
+  }
+
+  console.log("\n■ 3b. (2.0.22) Tür kolonunda “Müşteri/Tedarikçi” ve tanınmayan değer → Tür Değerleri'nden seçim");
+  if (await openImport("accounts", { file: typedXlsx })) {
+    const box = `${top} .hof-import-form .hof-type-values`;
+    const shown = await page.waitForSelector(`${box}:not([hidden]) select[data-type-key]`, { timeout: 10000 }).then(() => true, () => false);
+    const rows = shown ? await page.$$eval(`${box} tbody tr`, nodes => nodes.map(node => ({ text: node.cells[0].innerText.replace(/\s+/g, " ").trim(), warn: node.classList.contains("is-warning"), value: node.querySelector("select").value }))) : [];
+    const by = Object.fromEntries(rows.map(row => [row.text.replace(/ (İki Tür Birden|Tanınmadı)$/, ""), row]));
+    ok(shown && rows.length === 4, `Tür Değerleri tablosu: ${rows.map(row => `${row.text} → ${row.value || "Varsayılan"}`).join(" · ") || "yok"}`);
+    ok(by["Müşteri"]?.value === "customer" && by["Tedarikçi"]?.value === "supplier" && !by["Müşteri"]?.warn, "tek türü açık yazan değerler kendi türüyle, uyarısız");
+    ok(/İki Tür Birden/.test(by["Müşteri/Tedarikçi"]?.text || "") && by["Müşteri/Tedarikçi"]?.warn && by["Müşteri/Tedarikçi"]?.value === "", "“Müşteri/Tedarikçi” işaretli (İki Tür Birden), türü seçilmemiş — sessizce Tedarikçi değil");
+    ok(/Tanınmadı/.test(by.xyz?.text || "") && by.xyz?.warn, "“xyz” işaretli (Tanınmadı)");
+    const gateText = await page.$eval(`${top} .hof-import-form .hof-gate`, node => node.innerText).catch(() => "");
+    ok(/2 uyarı/.test(gateText), `satır raporunda 2 tür uyarısı (${gateText.split("\n")[0]})`);
+    await shot("cari-tur-degerleri");
+    await page.selectOption(`${box} select[data-type-key="musteri tedarikci"]`, "supplier");
+    const refreshed = await page.waitForFunction(sel => /1 uyarı/.test(document.querySelector(sel)?.innerText || ""), `${top} .hof-import-form .hof-gate`, { timeout: 10000 }).then(() => true, () => false);
+    ok(refreshed, "seçim yapılınca o değerin uyarısı kalktı (1 uyarı kaldı: xyz)");
+    // Gözden geçirme bulgusu 7 (2.0.22): tanınan değer için "Varsayılan Tür" seçimi etkisizdi (Tedarikçi olarak açılıyordu).
+    await page.selectOption(`${box} select[data-type-key="tedarikci"]`, "");
+    await page.waitForTimeout(800);
+    await shot("cari-tur-secildi");
+    await submitImport(/4 cari açıldı.*türü belirsizdi, Müşteri olarak açıldı \(satır 5\)/);
+    const list = await call("/api/workspace/accounts?status=all&limit=50&q=T%C3%BCr");
+    const type = name => list.accounts.find(item => item.name === name);
+    ok(type("Tür İkisi")?.type === "supplier" && type("Tür İkisi")?.balance === -100, `Tür İkisi: ${type("Tür İkisi")?.type}, bakiye ${type("Tür İkisi")?.balance} (seçilen Tedarikçi; açılış alacak)`);
+    ok(type("Tür Garip")?.type === "customer" && type("Tür Garip")?.balance === 100, `Tür Garip: ${type("Tür Garip")?.type} (varsayılan Müşteri, raporlandı)`);
+    ok(type("Tür Müşteri")?.type === "customer", "açık yazılan tür aynen (Müşteri)");
+    ok(type("Tür Tedarikçi")?.type === "customer", `“Tedarikçi” değeri için Varsayılan Tür seçildi → ${type("Tür Tedarikçi")?.type} (Tür kolonu yoksa: Müşteri)`);
   }
 
   console.log("\n■ 4. Stok → Excel / Sheets’ten Yükle");

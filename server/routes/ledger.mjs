@@ -83,10 +83,11 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, pe
     return entries;
   }
   // Alt defterlerin kendi hesabı (beklenen bakiyeler): Kasa ve Banka yola göre, cariler türe göre, portföy durumuna göre.
-  function expected() {
+  // accountList (v2.0.22): mutabakat denetimi aynı anda (aynı veriyle) cari listesini zaten hesapladıysa yeniden hesaplanmaz.
+  function expected(accountList = null) {
     const by = cash()?.summary ? cash().summary("9999-12-31").byMethod || {} : {};
     const out = { 100: by.cash || 0, 102: by.bank || 0, 108: by.card || 0, 120: 0, 320: 0, 336: 0 };
-    const list = accounts()?.list ? accounts().list({ id: "ledger", role: "admin", permissions: [] }, { status: "all" }).accounts : [];
+    const list = accountList || (accounts()?.list ? accounts().list({ id: "ledger", role: "admin", permissions: [] }, { status: "all" }).accounts : []);
     for (const account of list) {
       const code = { customer: "120", supplier: "320", other: "336" }[account.type] || "120";
       out[code] = roundMoney(out[code] + (Number(account.balance) || 0));
@@ -130,11 +131,11 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, pe
     }
     return out;
   }
-  function check({ from = "", to = "" } = {}) {
+  function check({ from = "", to = "", accountList = null } = {}) {
     const entries = build();
     const trial = trialBalance(entries, { from, to });
     // Mutabakat tüm zamanlarla yapılır (alt defter bakiyeleri bugüne kadarki her şeyi içerir).
-    const reconciliation = reconcile(from || to ? trialBalance(entries) : trial, expected());
+    const reconciliation = reconcile(from || to ? trialBalance(entries) : trial, expected(accountList));
     return { entries, trial, reconciliation };
   }
   router.get("/api/workspace/ledger", async ({ req, res, url }) => {

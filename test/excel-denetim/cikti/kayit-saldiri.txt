@@ -1,0 +1,196 @@
+✓ [Yetki ve Şirket Ayrımı] Yalnız 001 yetkili personel ?hofCompany=002 ile 002'nin carilerini okumaya çalışır
+     beklenen: reddedilir (403/404), veri dönmez
+     gerçek:   HTTP 403 (company-forbidden) Bu şirketi görme yetkiniz yok; yönetici yetki verebilir.
+✓ [Yetki ve Şirket Ayrımı] 001 personeli ?hofCompany=002 ile 002'deki bir cariye tahsilat yazmaya çalışır
+     beklenen: reddedilir
+     gerçek:   HTTP 403 (company-forbidden) Bu şirketi görme yetkiniz yok; yönetici yetki verebilir.
+✓ [Yetki ve Şirket Ayrımı] 001 personeli 002'deki carinin kimliğini kendi şirketinde (001) kullanır
+     beklenen: bulunamaz (404), 001'e de yazılmaz
+     gerçek:   HTTP 404 Cari bulunamadı. Silinmiş olabilir.
+✓ [Yetki ve Şirket Ayrımı] 001 personeli kendini 002'ye geçirmeye çalışır (Şirket Seçimi)
+     beklenen: reddedilir
+     gerçek:   HTTP 403 Bu şirketi görme yetkiniz yok; yönetici yetki verebilir.
+✓ [Yetki ve Şirket Ayrımı] 001 personelinin şirket listesinde ne görünür
+     beklenen: yalnız 001
+     gerçek:   001
+✓ [Yetki ve Şirket Ayrımı] 001 personeli 002'nin fatura PDF'ini kimliğiyle indirmeye çalışır
+     beklenen: bulunamaz
+     gerçek:   HTTP 404
+✓ [Yetki ve Şirket Ayrımı] 001 personeli 002'deki carinin ekstre PDF'ini ?hofCompany=002 ile indirmeye çalışır
+     beklenen: reddedilir
+     gerçek:   HTTP 403
+✓ [Yetki ve Şirket Ayrımı] Personel rolü (stajyer) fatura kesmeye çalışır
+     beklenen: 403 (Fatura Kesme yetkisi yok)
+     gerçek:   HTTP 403 (FORBIDDEN) Bu işlem için yetkiniz yok.
+✓ [Yetki ve Şirket Ayrımı] Personel rolü Kasa'yı görmeye çalışır
+     beklenen: 403
+     gerçek:   HTTP 403 (FORBIDDEN) Bu işlem için yetkiniz yok.
+✓ [Yetki ve Şirket Ayrımı] Personel rolü Kasa'dan para çıkışı yazmaya çalışır
+     beklenen: 403
+     gerçek:   HTTP 403 (FORBIDDEN) Bu işlem için yetkiniz yok.
+✓ [Yetki ve Şirket Ayrımı] Personel rolü cariye ÖDEME yazmaya çalışır (yalnız tahsilat yetkisi var)
+     beklenen: 403
+     gerçek:   HTTP 403 Borç, alacak ve ödeme girişi yönetici, uzman ve muhasebe yetkisidir; tahsilatı herkes girer.
+✓ [Yetki ve Şirket Ayrımı] Personel rolü çek girmeye çalışır
+     beklenen: 403
+     gerçek:   HTTP 403 (FORBIDDEN) Bu işlem için yetkiniz yok.
+✓ [Yetki ve Şirket Ayrımı] Muhasebe personeli (yönetici değil) kullanıcı listesini okumaya çalışır
+     beklenen: 403
+     gerçek:   HTTP 403 (FORBIDDEN) Bu işlem için yetkiniz yok.
+✓ [Yetki ve Şirket Ayrımı] Muhasebe personeli (yönetici değil) kendine yönetici kullanıcı açmaya çalışır
+     beklenen: 403
+     gerçek:   HTTP 403 (FORBIDDEN) Bu işlem için yetkiniz yok.
+✓ [Yetki ve Şirket Ayrımı] Muhasebe personeli (yönetici değil) yedek almaya çalışır
+     beklenen: 403
+     gerçek:   HTTP 403 (FORBIDDEN) Bu işlem için yetkiniz yok.
+✓ [Yetki ve Şirket Ayrımı] Muhasebe personeli (yönetici değil) yedekten geri yüklemeye çalışır
+     beklenen: 403
+     gerçek:   HTTP 403 (FORBIDDEN) Bu işlem için yetkiniz yok.
+✓ [Yetki ve Şirket Ayrımı] Muhasebe personeli (yönetici değil) dönem kilidini kaldırmaya çalışır
+     beklenen: 403
+     gerçek:   HTTP 403 (FORBIDDEN) Bu işlem için yetkiniz yok.
+✓ [Yetki ve Şirket Ayrımı] Muhasebe personeli (yönetici değil) kendi şirket yetkisini 002'ye genişletmeye çalışır
+     beklenen: 403
+     gerçek:   HTTP 403 (FORBIDDEN) Bu işlem için yetkiniz yok.
+✓ [Yetki ve Şirket Ayrımı] Muhasebe personeli (yönetici değil) 002 şirketini silmeye çalışır
+     beklenen: 403
+     gerçek:   HTTP 403 (FORBIDDEN) Bu işlem için yetkiniz yok.
+✓ [Yetki ve Şirket Ayrımı] Muhasebe personeli (yönetici değil) 002'nin verisini sıfırlamaya çalışır
+     beklenen: 403
+     gerçek:   HTTP 403 (FORBIDDEN) Bu işlem için yetkiniz yok.
+✓ [Yetki ve Şirket Ayrımı] Oturum açmadan cari listesi istenir
+     beklenen: 401
+     gerçek:   HTTP 401 (UNAUTHORIZED) Oturum gerekli.
+✓ [Yetki ve Şirket Ayrımı] Giriş ekranında SQL enjeksiyonu (' OR 1=1 --)
+     beklenen: giriş reddedilir
+     gerçek:   HTTP 401 Kullanıcı adı veya parola hatalı.
+✓ [Yetki ve Şirket Ayrımı] Aynı hesaba arka arkaya 12 yanlış parola (kaba kuvvet)
+     beklenen: bir noktada geçici kilit / 429
+     gerçek:   HTTP 429 Çok fazla hatalı deneme yapıldı. 15 dakika sonra tekrar deneyin veya yöneticinizden parolanızı sıfırlamasını isteyin.
+     ayrıntı: 429 yoksa sınırsız deneme açığı
+✓ [Yetki ve Şirket Ayrımı] Kontrol: iki şirkete yetkili müdür 002'yi okuyabilir
+     beklenen: 200
+     gerçek:   HTTP 200 
+✓ [Girdi Bozma (003 deneme şirketi)] Eksi tutarlı tahsilat (−5.000)
+     beklenen: 400
+     gerçek:   HTTP 400 Tutar geçerli bir sayı olmalı.
+✓ [Girdi Bozma (003 deneme şirketi)] Sıfır tutarlı tahsilat
+     beklenen: 400
+     gerçek:   HTTP 400 Tutar sıfırdan büyük olmalı.
+✓ [Girdi Bozma (003 deneme şirketi)] Devasa tutar (10 trilyon)
+     beklenen: 400 (üst sınır 1 trilyon)
+     gerçek:   HTTP 400 Tutar geçerli bir sayı olmalı.
+✓ [Girdi Bozma (003 deneme şirketi)] 1 milyar TL tahsilat (üst sınırın altında)
+     beklenen: programın kuralı: kabul edilir (üst sınır 1 trilyon); uyarı yok
+     gerçek:   HTTP 200 
+     ayrıntı: Önceki (yanlış) raporda 'sorun' denmişti; gerçekte bilinçli sınır 1e12.
+✓ [Girdi Bozma (003 deneme şirketi)] Kuruş artığı (10,005 TL)
+     beklenen: kuruşa yuvarlanır (10,01)
+     gerçek:   HTTP 200  kaydedilen tutar=10.01
+✓ [Girdi Bozma (003 deneme şirketi)] Sayı yerine metin ('on bin')
+     beklenen: 400
+     gerçek:   HTTP 400 Tutar geçerli bir sayı olmalı.
+✓ [Girdi Bozma (003 deneme şirketi)] İleri tarihli tahsilat (2099)
+     beklenen: 400 / reddedilir
+     gerçek:   HTTP 400 (date-future) İleri tarihli hareket girilemez (01.01.2099). Gelecekteki ödeme ya da tahsilatı taksit veya çek/senet vadesiyle planlayın.
+✓ [Girdi Bozma (003 deneme şirketi)] Var olmayan tarih (30 Şubat)
+     beklenen: 400
+     gerçek:   HTTP 400 (date-invalid) Tarih geçerli bir tarih değil (2025-02-30). Takvimden seçin.
+✗ BULGU [Girdi Bozma (003 deneme şirketi)] Tanımsız ödeme yolu ('bitcoin')
+     beklenen: 400 (geçersiz yol reddedilir)
+     gerçek:   HTTP 200  kaydedilen yol=cash
+     ayrıntı: Program reddetmedi; 'cash' olarak kaydetti (kullanıcı arayüzde bunu seçemez; yalnız doğrudan API ile).
+✓ [Girdi Bozma (003 deneme şirketi)] 100.000 karakterlik cari adı
+     beklenen: 400 ya da kısaltılır
+     gerçek:   HTTP 400 Ad / Unvan en fazla 160 karakter olabilir. uzunluk=undefined
+✓ [Girdi Bozma (003 deneme şirketi)] Bozuk JSON gövdesi
+     beklenen: 400
+     gerçek:   HTTP 400
+✓ [Girdi Bozma (003 deneme şirketi)] 30 MB'lık istek gövdesi
+     beklenen: 413 / 400 (sunucu çökmez)
+     gerçek:   HTTP 413
+✓ [Girdi Bozma (003 deneme şirketi)] İleri tarihli fatura (2099)
+     beklenen: 400 date-future
+     gerçek:   HTTP 400 (date-future) İleri tarihli fatura kaydedilemez (01.01.2099). Taslak olarak kaydedin; günü gelince kaydedin.
+✓ [Girdi Bozma (003 deneme şirketi)] Eksi miktarlı satış kalemi (−5)
+     beklenen: 400
+     gerçek:   HTTP 400 (invoice-invalid) 1. kalem: miktar sıfırdan büyük olmalı.
+✓ [Girdi Bozma (003 deneme şirketi)] Geçersiz KDV oranı (%7)
+     beklenen: 400
+     gerçek:   HTTP 400 (invoice-invalid) 1. kalem: KDV oranı %0, %1, %10, %20 olabilir.
+✓ [Girdi Bozma (003 deneme şirketi)] Faturadan fazla peşin tahsilat (24 TL faturaya 1.000 TL)
+     beklenen: 400 payment-exceeds
+     gerçek:   HTTP 400 (payment-exceeds) Ödemeler (1.000,00 TL) faturanın ödenecek tutarını (24,00 TL) aşıyor.
+✓ [Girdi Bozma (003 deneme şirketi)] Son satıştan (20.09) daha eski tarihli satış (10.09) — numara/tarih sırası (VUK 231)
+     beklenen: 400 chronology
+     gerçek:   HTTP 400 (chronology) FIS serisinde son belge FIS2025000000001 20.09.2025 tarihli; yeni belge daha eski tarihli kaydedilemez (numara ve tarih sırası uyuşmalı).
+✓ [Dönem Kilidi (003)] Yönetici 003'te dönemi 31.08.2025'e kadar kilitler
+     beklenen: 200
+     gerçek:   HTTP 200 
+✓ [Dönem Kilidi (003)] Kilitli döneme (15.08.2025) tahsilat
+     beklenen: 409 reddedilir
+     gerçek:   HTTP 409 (period-locked) Hareket 15.08.2025 tarihli; 31.08.2025 ve öncesi kapatılmış (kilitli) dönemdir. Değişiklik için yönetici dönem kilidini açmalı.
+✓ [Dönem Kilidi (003)] Kilitli döneme alış faturası
+     beklenen: reddedilir
+     gerçek:   HTTP 409 (period-locked) Fatura 15.08.2025 tarihli; 31.08.2025 ve öncesi kapatılmış (kilitli) dönemdir. Değişiklik için yönetici dönem kilidini açmalı.
+✓ [Dönem Kilidi (003)] Açık dönemdeki faturanın tarihini kilitli döneme çekmek
+     beklenen: reddedilir
+     gerçek:   HTTP 409 (invoice-not-draft) Yalnız taslak fatura düzeltilir; kesilmiş fatura iptal edilir ya da iade faturası kesilir.
+✓ [Dönem Kilidi (003)] Yetkisiz personel 003'ün dönem kilidini kaldırmaya çalışır
+     beklenen: 403
+     gerçek:   HTTP 403 (company-forbidden) Bu şirketi görme yetkiniz yok; yönetici yetki verebilir.
+✓ [Dönem Kilidi (003)] Kontrol: 003 kilidi yerinde
+     beklenen: 2025-08-31
+     gerçek:   2025-08-31
+✓ [Dönem Kilidi (003)] Kontrol: 003'ün kilidi 001'e sızmadı
+     beklenen: 001'de kilit yok
+     gerçek:   (yok)
+✗ BULGU [Eşzamanlılık ve Çift Kayıt (003)] Aynı satış faturası aynı anda iki kez gönderilir (çift tıklama / ağ tekrarı, API'de)
+     beklenen: tek fatura kesilir (tekrar koruması)
+     gerçek:   200, 200 → fatura sayısı 2 → 4
+     ayrıntı: Doğrudan API'de tekrar (idempotency) koruması yok: iki ayrı numaralı fatura kesildi. Arayüzdeki çift tıklama ayrıca arayüz testinde denenir.
+✓ [Eşzamanlılık ve Çift Kayıt (003)] Aynı seri numaralı çek aynı anda 3 kez girilir
+     beklenen: yalnız 1'i kabul edilir (409 cheque-duplicate)
+     gerçek:   200, 409, 409
+✓ [Eşzamanlılık ve Çift Kayıt (003)] Aynı taksite (1. taksit 400 TL) aynı anda 3 tahsilat
+     beklenen: taksit fazla ödenmez ya da fazlası sonraki taksite/carinin alacağına düşer; toplam tutar bozulmaz
+     gerçek:   200, 200, 200 → kart ödenen 1200, kalan 0, 1. taksit ödenen 400
+     ayrıntı: Yaygın programlarda fazla tahsilat sonraki taksite dağıtılır.
+✓ [Eşzamanlılık ve Çift Kayıt (003)] Eksi Kasa "Engelle" kipinde, Kasa 1200 TL iken aynı anda iki büyük nakit ödeme (onay atlanarak)
+     beklenen: en çok biri geçer; Kasa eksiye düşmez
+     gerçek:   200, 409/cash-blocked → Kasa 1200 → 299
+✓ [Eşzamanlılık ve Çift Kayıt (003)] Fatura isteği yolda kesilir (bağlantı koparılır), sonra Mutabakat Testi
+     beklenen: yarım kayıt yok; Mutabakat Testi temiz
+     gerçek:   mutabakat: {"ok":true,"checks":[{"code":"balance","name":"Çift yönlü kayıt (borç = alacak)","ok":true,"difference":0},{"code":"gl:100","name":"100 Kasa (Nakit)","ok":true,"difference":0,"ledger":299,"subledger":299},{"code":"gl:101
+✓ [Silme ve Bağ Koparma (003)] Faturada kullanılmış ürünü silmeye çalışmak
+     beklenen: 409 (fatura kalemi olan ürün silinmez)
+     gerçek:   HTTP 409 (invoice-linked) “Deneme Ürün” 5 fatura kalemine bağlı (ör. FIS2025000000001); fatura kalemi olan ürün silinmez. Önce faturayı iptal edin ya da iade kesin.
+✓ [Silme ve Bağ Koparma (003)] Silinmiş cariye fatura kesmek
+     beklenen: reddedilir
+     gerçek:   HTTP 400 (invoice-invalid) Seçilen cari bulunamadı; silinmiş olabilir.
+✓ [Silme ve Bağ Koparma (003)] İptal edilmiş faturaya iade kesmek
+     beklenen: 400
+     gerçek:   iptal 200 → iade HTTP 400 (invoice-invalid) İptal edilmiş ya da taslak faturanın iadesi olmaz.
+✓ [Silme ve Bağ Koparma (003)] 1 adetlik faturadan 5 adet iade
+     beklenen: 400 return-exceeds
+     gerçek:   HTTP 400 (return-exceeds) 1. kalem (Deneme Ürün): en çok 1 Adet iade edilebilir (faturada 1, önce iade edilen 0).
+✓ [Ekranda Zararlı Metin ve Excel Formülü (003)] Cari adına HTML/JS (<img onerror>, <script>) yazılır, cari listesi ve kartı açılır
+     beklenen: metin olarak görünür, kod çalışmaz
+     gerçek:   çalışan kod: yok; açılan uyarı penceresi: 0
+✓ [Ekranda Zararlı Metin ve Excel Formülü (003)] Cari adı '=1+1' ve notu '=HYPERLINK(…)' olan kartlar Excel'e dışa aktarılır
+     beklenen: hücreler metin; Excel formül çalıştırmaz
+     gerçek:   formül hücresi yok (metin)
+✓ [003 Deneme Şirketinin Kaldırılması] Deneme şirketi 003'ü yanlış parolayla silmek
+     beklenen: 403
+     gerçek:   HTTP 403
+✓ [003 Deneme Şirketinin Kaldırılması] Deneme şirketi 003 silinir (önce kendi klasörüne yedeği alınır)
+     beklenen: 200 + silme öncesi yedek
+     gerçek:   HTTP 200 "destekofis-003-2026-10-04T12-59-00-926Z-silme-oncesi-003.sqlite"
+✓ [Değişmezlik] Saldırılardan sonra 001'in sayıları (cari, bakiye, Kasa, fatura, çek) aynı
+     beklenen: {"acc":373,"bal":"16386771.46","cash":{"in":4004384.79,"out":16046953.67,"balance":-12042568.88},"inv":{"sale":1528,"purchase":1420,"returns":0,"drafts":0,"pending":0,"cancelled":0,"all":2948},"ch":884}
+     gerçek:   {"acc":373,"bal":"16386771.46","cash":{"in":4004384.79,"out":16046953.67,"balance":-12042568.88},"inv":{"sale":1528,"purchase":1420,"returns":0,"drafts":0,"pending":0,"cancelled":0,"all":2948},"ch":884}
+✓ [Değişmezlik] Saldırılardan sonra 002'nin sayıları aynı
+     beklenen: {"acc":373,"bal":"16386771.46","cash":{"in":4004384.79,"out":16046953.67,"balance":-12042568.88},"inv":{"sale":1528,"purchase":1420,"returns":0,"drafts":0,"pending":0,"cancelled":0,"all":2948},"ch":884}
+     gerçek:   {"acc":373,"bal":"16386771.46","cash":{"in":4004384.79,"out":16046953.67,"balance":-12042568.88},"inv":{"sale":1528,"purchase":1420,"returns":0,"drafts":0,"pending":0,"cancelled":0,"all":2948},"ch":884}
+
+Saldırı denemeleri: 63; beklenene uymayan (bulgu): 2

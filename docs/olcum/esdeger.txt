@@ -1,0 +1,2 @@
+001: 2958 fatura; liste (toplu) = kart (cari başına): 2958/2958; ilk liste 343 ms, önbellekli rozet 69 ms
+002: 2956 fatura; liste (toplu) = kart (cari başına): 2956/2956; ilk liste 544 ms, önbellekli rozet 57 ms

@@ -60,7 +60,7 @@
     }
   };
   const view = { mode: "list", planId: "", q: "", group: "", subgroup: "", status: "active", sort: savedSort(), itemFilter: "all", entryFilter: "all", groups: [], list: null, plan: null };
-  let listRequest = 0;
+  const lists = HOF.listGate();
 
   // ---------- Veri ----------
   const loadGroups = async () => {
@@ -70,20 +70,35 @@
       view.groups = [];
     }
   };
-  async function loadList() {
-    const ticket = ++listRequest;
+  async function loadList({ quiet = false } = {}) {
+    // Sıra kuralları HOF.listGate'te (v2.0.22); arka plan yenilemesi en çok 2 bağlantılık arka plan kuyruğundan gider.
+    const load = lists.start({ quiet });
+    if (!quiet && view.listError) {
+      view.listError = "";
+      if (!view.list && view.mode === "list") renderList();
+    }
     try {
-      const data = await HOF.api(`/api/workspace/plans?${listQuery()}`);
-      if (ticket !== listRequest) return;
+      const data = await HOF.api(`/api/workspace/plans?${listQuery()}`, quiet ? { background: true } : {});
+      if (!load.current()) return;
+      load.applied();
+      view.listError = "";
       view.list = data;
       if (view.mode === "list") renderList();
     } catch (error) {
-      if (ticket === listRequest && view.mode === "list") body().innerHTML = `<p class="hof-empty">${esc(error.message)}</p>`;
+      if (quiet) throw error;
+      if (!load.current()) return;
+      view.list = null;
+      view.listError = error.message;
+      if (view.mode === "list") renderList();
+    } finally {
+      load.done();
     }
   }
-  async function loadPlan(id) {
+  async function loadPlan(id, { quiet = false } = {}) {
     try {
       const plan = await HOF.api(`/api/workspace/plans/${encodeURIComponent(id)}`);
+      // Arka plan yenilemesi gelene kadar kullanıcı listeye ya da başka karta geçtiyse eski kart geri gelmez.
+      if (quiet && (view.mode !== "card" || view.planId !== id)) return;
       // Başka bir karta geçilince taksit/hareket süzgeçleri sıfırlanır.
       if (id !== view.planId) {
         view.itemFilter = "all";
@@ -94,6 +109,8 @@
       view.mode = "card";
       renderCard();
     } catch (error) {
+      if (quiet && (view.mode !== "card" || view.planId !== id)) return;
+      if (quiet && !HOF.lostRecord(error)) throw error;
       HOF.toastError(error);
       view.mode = "list";
       renderList();
@@ -406,7 +423,7 @@
       ${groupHint(data)}
       <div class="hof-cash-list hof-plans-list" data-list>${
         !data
-          ? '<p class="hof-empty">Yükleniyor…</p>'
+          ? HOF.listPending(view.listError)
           : data.plans.length
             ? `<table class="hof-table hof-cash-table hof-plans-table"><thead><tr><th class="hof-plan-no">No</th><th>Kart</th><th class="num">Toplam</th><th class="num">Ödenen</th><th class="num">Kalan</th><th>Sıradaki Vade</th><th>Durum</th></tr></thead><tbody>${data.plans.map(row).join("")}</tbody></table>`
             : emptyList(filtered, manage)
@@ -1239,6 +1256,11 @@
     }
     if ("close" in button.dataset) return modal.close();
     const act = button.dataset.act;
+    if (act === "retryList") {
+      view.listError = "";
+      renderList();
+      return loadList();
+    }
     if (act === "back") {
       view.mode = "list";
       view.planId = "";
@@ -1324,26 +1346,28 @@
   // Ortak araçlar (v2.0.6): Cari ve Stok da aynı Excel okuyucuyu, yazdırmayı ve grup alanlarını kullanır.
   HOF.office = { parseExcel: parseInWorker, pickSheet, chooseSheet, printPdf, outputButtons, groupFields: groupFieldsFor, wireGroupFields, groupBody, amountText, todayIso };
   HOF.whenReady(() => {
-    HOF.on("live:workspace.changed", change => {
-      if (!modal || !change) return;
-      if (change.kind === "plans" || change.kind === "accounts") {
-        loadGroups().then(() => {
-          if (view.mode === "card" && view.planId && (!change.planId || change.planId === view.planId)) loadPlan(view.planId);
-          else if (view.mode === "list") {
-            renderList();
-            loadList();
-          }
-        });
+    // v2.0.22: canlı olaylar ve defter değişiklikleri tek yenileme kapısından (HOF.refresher; açık pencere başına tek yükleme).
+    const refreshOpen = HOF.refresher(async () => {
+      if (!modal) return;
+      await loadGroups();
+      if (view.mode === "card" && view.planId) await loadPlan(view.planId, { quiet: true });
+      else if (view.mode === "list") {
+        renderList();
+        await loadList({ quiet: true });
       }
+    });
+    HOF.on("live:workspace.changed", change => {
+      if (!modal || !change || change.info) return;
+      if (change.kind !== "plans" && change.kind !== "accounts") return;
+      if (view.mode === "card" && view.planId && change.kind === "plans" && change.planId && change.planId !== view.planId) return;
+      refreshOpen();
     });
     // v2.0.11: taksit kartına dokunan başka pencerelerdeki işlemler (Cari kartından toplu plan, Kasa'da taksit
     // tahsilatını silme, detay kartı) açık Taksitler penceresini de yeniler.
     HOF.onLedger(["plans", "accounts"], detail => {
       if (!modal || /^\/api\/workspace\/(plans|plan-transfer)\b/.test(detail.path || "")) return;
-      loadGroups().then(() => {
-        if (view.mode === "card" && view.planId) loadPlan(view.planId);
-        else if (view.mode === "list") loadList();
-      });
+      if (detail.local) refreshOpen.now();
+      else refreshOpen();
     }, 350);
   });
   HOF.plans = {

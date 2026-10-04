@@ -17,12 +17,13 @@ import { ADAPTERS, DEFAULT_ADAPTER, adapterInfo, connect, integratorUrl } from "
 import { readUbl } from "../lib/einvoice/ubl-read.mjs";
 import { buildUbl, ublFileName } from "../lib/einvoice/ubl-tr.mjs";
 import { HttpError, limited, ok, parseJson, readJson, sendBuffer, text } from "../lib/http.mjs";
+import { bodyHash, createIdempotency } from "../lib/idempotency.mjs";
 import { invoicePdf } from "../lib/invoice-pdf.mjs";
 import { jpegInfo } from "../lib/pdf-write.mjs";
 import { CURRENCIES, EXEMPTIONS, EXPENSES, INVOICE_KINDS, InvoiceInputError, SCENARIOS, STOPPAGE_DEFAULT, VAT_RATES, WITHHOLDING, amountInWords, computeInvoice, exclusiveParts, grossFromNet, lineAccount, toTry, typeCode } from "../lib/invoice-math.mjs";
 import { CLOSER_MODES, PAY_STATES, settleInvoices } from "../lib/invoice-settle.mjs";
 import { parseAmount, roundMoney } from "../lib/money.mjs";
-import { METHODS, METHODS_IN, METHODS_OUT, methodLabel, methodOf } from "../lib/pay-method.mjs";
+import { METHODS, METHODS_IN, METHODS_OUT, methodLabel, methodInput } from "../lib/pay-method.mjs";
 import { canUser } from "../lib/permissions.mjs";
 import { createSecretBox } from "../lib/secret-box.mjs";
 import { addMonths, dayText, isoDay } from "../lib/plans.mjs";
@@ -100,6 +101,7 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, conf
   const newId = prefix => `${prefix}-${randomUUID()}`;
   const AUDITOR = { id: "invoices", role: "admin", permissions: [] };
   const publish = (user, detail) => events?.publish("workspace.changed", { actorId: user.id, actorName: user.display_name, ...detail }, { except: user.id });
+  const requests = createIdempotency();
 
   // ---------- Ayarlar ----------
   function settings() {
@@ -294,12 +296,83 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, conf
     const entry = store.get("SELECT kind, date, note FROM account_entries WHERE id = ?", offset.counterId);
     return entry ? `Mahsup · ${entry.kind === "credit" ? "Alacak Yaz" : "Borç Yaz"} ${dayText(entry.date)}${entry.note ? ` (${entry.note})` : ""}` : "Mahsup · cari satırı";
   }
+  // v2.0.22 (Excel denetimi, yük ölçümü): liste ve sol menü rozeti her cari için ayrı ayrı cari ayrıntısı + 5–7 sorgu
+  // çalıştırıyordu (2.948 faturada 1,1 sn; her açık pencere başkasının her kaydında yeniden istiyordu). Çok carili istekte
+  // aynı girdiler birkaç toplu sorguyla okunur, kapama kuralı (settleInvoices) AYNIDIR; sonuç veri tabanına yazma olana
+  // ya da gün dönene kadar saklanır (total_changes(): bu bağlantının her INSERT/UPDATE/DELETE'inde artar; data_version: başka
+  // bir bağlantının kesinleşen yazmasında değişir — veri dosyasını paylaşan şirket, 2.0.21 "Ayır" öncesi). Tek carili
+  // istek (fatura kartı) aşağıdaki cari başına yoldan hesaplanır; iki yolun aynı sonucu verdiği testle denetlenir.
+  let statesCache = { key: "", map: null };
+  const BATCH_ACCOUNTS = 8;
+  function allPaymentStates() {
+    const day = today();
+    // Veri tabanı işleminin içinde (yazmalar henüz kesinleşmemiş, geri alınabilir) önbellek ne okunur ne yazılır: geri
+    // alınan işlemin durumu saklanıp sonra gösterilmesin (total_changes() geri alınca azalmaz).
+    const inTx = store.inTransaction;
+    const key = `${store.get("SELECT total_changes() AS n").n}|${store.get("PRAGMA data_version").data_version}|${day}`;
+    if (!inTx && statesCache.key === key && statesCache.map) return statesCache.map;
+    const group = (rows, field) => {
+      const map = new Map();
+      for (const row of rows) {
+        const id = row[field];
+        if (!map.has(id)) map.set(id, []);
+        map.get(id).push(row);
+      }
+      return map;
+    };
+    const ledgers = accounts()?.allLedgers ? accounts().allLedgers({ invoiced: true }).lines : new Map();
+    const invoicesOf = group(store.all("SELECT id, account_id AS accountId, kind, status, try_payable AS payable, original_id AS originalId, due_date AS dueDate, plan_id AS planId FROM invoices"), "accountId");
+    const baseLinks = new Map();
+    for (const entry of store.all("SELECT id, account_id AS accountId, source_id AS invoiceId FROM account_entries WHERE source = 'invoice' AND kind IN ('in', 'out')")) {
+      if (!baseLinks.has(entry.accountId)) baseLinks.set(entry.accountId, new Map());
+      baseLinks.get(entry.accountId).set(entry.id, entry.invoiceId);
+    }
+    for (const entry of store.all("SELECT id, account_id AS accountId, invoice_id AS invoiceId FROM account_entries WHERE source = '' AND invoice_id <> ''")) {
+      if (!baseLinks.has(entry.accountId)) baseLinks.set(entry.accountId, new Map());
+      baseLinks.get(entry.accountId).set(entry.id, entry.invoiceId);
+    }
+    // Çek olayı, cari başına yolda olduğu gibi evrakın carisine, ciro edilen cariye ve olayın carisine sayılır.
+    const eventsOf = new Map();
+    for (const event of store.all("SELECT ev.kind, ev.invoice_id AS invoiceId, ev.effects_json AS effects, c.account_id AS a1, c.endorse_account_id AS a2, ev.account_id AS a3 FROM cheque_events ev JOIN cheques c ON c.id = ev.cheque_id ORDER BY ev.rowid")) {
+      for (const accountId of new Set([event.a1, event.a2, event.a3].filter(Boolean))) {
+        if (!eventsOf.has(accountId)) eventsOf.set(accountId, []);
+        eventsOf.get(accountId).push(event);
+      }
+    }
+    const offsetsOf = group(store.all("SELECT id, account_id AS accountId, invoice_id AS invoiceId, counter_type AS counterType, counter_id AS counterId, amount, date, note FROM invoice_offsets ORDER BY date, created_at"), "accountId");
+    const planTotals = new Map(store.all("SELECT id, total FROM plans WHERE deleted_at IS NULL").map(row => [row.id, Number(row.total) || 0]));
+    const scheduleOf = group(store.all("SELECT plan_id AS planId, due_date AS dueDate, amount FROM plan_items ORDER BY due_date"), "planId");
+    const map = new Map();
+    for (const [accountId, all] of invoicesOf) {
+      const links = new Map(baseLinks.get(accountId) || []);
+      const chequeEvents = new Map();
+      for (const event of eventsOf.get(accountId) || []) {
+        const effects = parseJson(event.effects, []);
+        for (const effect of Array.isArray(effects) ? effects : []) {
+          if (effect?.table !== "account_entries" || !effect.id) continue;
+          chequeEvents.set(effect.id, event.kind);
+          if (event.invoiceId) links.set(effect.id, event.invoiceId);
+        }
+      }
+      const offsets = (offsetsOf.get(accountId) || []).map(({ accountId: _, ...offset }) => ({ ...offset, label: offsetLabel(offset) }));
+      const invoices = all.map(({ accountId: _, ...item }) => (item.planId ? { ...item, planTotal: planTotals.get(item.planId) || 0, schedule: (scheduleOf.get(item.planId) || []).map(({ planId: __, ...row }) => row) } : item));
+      const states = settleInvoices({ lines: ledgers.get(accountId) || [], invoices, links, chequeEvents, offsets, today: day });
+      for (const [id, state] of states) map.set(id, state);
+    }
+    if (!inTx) statesCache = { key, map };
+    return map;
+  }
   function paymentStates(rows) {
     const out = new Map();
     const byAccount = new Map();
     for (const row of rows) {
       if (!byAccount.has(row.accountId)) byAccount.set(row.accountId, []);
       byAccount.get(row.accountId).push(row);
+    }
+    if (byAccount.size > BATCH_ACCOUNTS) {
+      const all = allPaymentStates();
+      for (const row of rows) out.set(row.id, all.get(row.id) || { payable: row.tryPayable, paid: 0, open: row.tryPayable, state: "open", label: PAY_STATES.open });
+      return out;
     }
     const day = today();
     for (const [accountId, list] of byAccount) {
@@ -980,7 +1053,7 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, conf
       const n = numberOf(value, label, field, { min: 0, max: 1e12 });
       return n === null ? 0 : roundMoney(n);
     };
-    const cashList = (Array.isArray(p.cash) ? p.cash : p.cash && typeof p.cash === "object" ? [p.cash] : []).slice(0, 3).map(item => ({ amount: amount(item?.amount, "Peşin tutar", "payment.cash"), method: methodOf(item?.method) })).filter(item => item.amount > 0);
+    const cashList = (Array.isArray(p.cash) ? p.cash : p.cash && typeof p.cash === "object" ? [p.cash] : []).slice(0, 3).map(item => ({ amount: amount(item?.amount, "Peşin tutar", "payment.cash"), method: methodInput(item?.method) })).filter(item => item.amount > 0);
     const chequeAllowed = ["sale", "smm", "purchase"].includes(kind);
     const chequeList = (Array.isArray(p.cheques) ? p.cheques : []).slice(0, 20).map((item, index) => {
       if (!chequeAllowed) fail400("İade faturasında çek/senet alınmaz ya da verilmez; iade Kasa'dan ya da cariden mahsupla yapılır.", "payment.cheques");
@@ -1671,15 +1744,35 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, conf
   router.post("/api/workspace/invoices", async ({ req, res }) => {
     const user = requireManage(req);
     const body = await readJson(req, { limit: 2_000_000 });
+    // v2.0.22 (madde 5): istek kimliği — aynı formun ikinci gönderimi (yanıt gecikince yeniden Kaydet, ağ tekrarı) ikinci
+    // belge açmaz; ilk belge döner. Denetim ile kayıt arasında bekleme (await) yoktur: aynı anda gelen iki istekten biri
+    // kaydeder, öbürü onun sonucunu görür. Taslak ve kayıt AYNI işlemdir (bir form = bir belge): "Taslak Olarak Kaydet"in
+    // yanıtı kaybolup ardından "Kaydet"e basılırsa ikinci belge açılmaz, taslak söylenir. İlk belge sonradan silindiyse
+    // yineleme yeni belge açmaz; nedeni söylenir.
+    const requestKey = requests.key(user, "invoice.create", req.headers["x-hof-request"] || body.requestId);
+    const hash = requestKey ? bodyHash(body) : "";
+    const gone = () => new HttpError(409, "Bu formla kaydedilen belge sonradan silindi; yeniden kaydetmek için yeni bir fatura başlatın.", { code: "request-id-gone" });
+    const prior = requests.lookup(requestKey, hash, refId => {
+      const row = store.get("SELECT number, kind, status FROM invoices WHERE id = ?", refId);
+      if (!row) throw gone();
+      if (row.status === "draft") return "Bu form taslak olarak zaten kaydedildi; ikinci belge açılmadı. Taslağı Taslaklar sekmesinden açıp kaydedin.";
+      return `Bu ${label(row).toLocaleLowerCase("tr-TR")} zaten kaydedildi${row.number ? ` (${row.number})` : ""}; sonradan yapılan değişiklik yeni belge açmaz. Kayıtlı belgeyi açıp Düzenle'yi kullanın ya da yeni bir fatura başlatın.`;
+    });
+    if (prior) {
+      if (!store.get("SELECT 1 AS found FROM invoices WHERE id = ?", prior.refId)) throw gone();
+      return ok(res, { ...detail(prior.refId, user), replayed: true });
+    }
     if (body.status === "draft") {
       const doc = documentInput(body, { mode: "draft" });
       doc.paymentDraft = body.payment && typeof body.payment === "object" ? body.payment : {};
       const id = writeDraft(user, doc);
+      requests.remember(requestKey, hash, id);
       return ok(res, detail(id, user));
     }
     const doc = documentInput(body, { mode: "issue" });
     const payment = paymentInput(body, doc, user);
     const result = writeIssued(user, doc, payment, { force: forceOf(body), defer: body.eSend === "later" });
+    requests.remember(requestKey, hash, result.id);
     const autoSend = await sendChoice(user, result.id, body.eSend);
     ok(res, { ...detail(result.id, user), ...(autoSend ? { autoSend } : {}) });
   });

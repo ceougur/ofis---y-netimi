@@ -1,0 +1,16 @@
+kod-2.0.21: 20.000 cari içe aktarıldı (200, 2748 ms)
+  tur 1: fatura listesi 36 ms · rozet 33 ms · vade takvimi 41 ms · ANLIK DURUM 426 ms
+  tur 2: fatura listesi 35 ms · rozet 32 ms · vade takvimi 35 ms · ANLIK DURUM 460 ms
+  tur 3: fatura listesi 40 ms · rozet 35 ms · vade takvimi 38 ms · ANLIK DURUM 454 ms
+ofis---y-netimi: 20.000 cari içe aktarıldı (200, 2254 ms)
+  tur 1: fatura listesi 16 ms · rozet 2 ms · vade takvimi 11 ms · ANLIK DURUM 399 ms
+  tur 2: fatura listesi 13 ms · rozet 2 ms · vade takvimi 5 ms · ANLIK DURUM 418 ms
+  tur 3: fatura listesi 12 ms · rozet 2 ms · vade takvimi 5 ms · ANLIK DURUM 404 ms
+kod-2.0.21: 60.000 cari içe aktarıldı (200, 8925 ms)
+  tur 1: fatura listesi 105 ms · rozet 104 ms · vade takvimi 115 ms · ANLIK DURUM 1548 ms
+  tur 2: fatura listesi 102 ms · rozet 103 ms · vade takvimi 114 ms · ANLIK DURUM 1562 ms
+  tur 3: fatura listesi 122 ms · rozet 119 ms · vade takvimi 131 ms · ANLIK DURUM 1818 ms
+ofis---y-netimi: 60.000 cari içe aktarıldı (200, 7808 ms)
+  tur 1: fatura listesi 33 ms · rozet 3 ms · vade takvimi 18 ms · ANLIK DURUM 1776 ms
+  tur 2: fatura listesi 31 ms · rozet 2 ms · vade takvimi 11 ms · ANLIK DURUM 1290 ms
+  tur 3: fatura listesi 30 ms · rozet 2 ms · vade takvimi 11 ms · ANLIK DURUM 1398 ms

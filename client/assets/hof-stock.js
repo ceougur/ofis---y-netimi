@@ -56,28 +56,44 @@
   const view = { mode: "list", id: "", q: "", category: "", state: "all", sort: "name", list: null, item: null };
   // Binlerce kalemde ekran hızlı kalsın: sunucu 300'er satır gönderir; arama, süzgeç ve toplamlar tümünde çalışır.
   const PAGE = 300;
-  let listRequest = 0;
+  const lists = HOF.listGate();
   const body = () => modal?.dialog.querySelector("[data-stock]");
   const query = () => new URLSearchParams({ q: view.q, category: view.category, state: view.state, sort: view.sort });
   const listPdfUrl = () => `/api/workspace/stock/liste.pdf?${query()}&title=${encodeURIComponent(moduleName())}`;
   const listXlsxUrl = () => `/api/workspace/stock/export.xlsx?${query()}&title=${encodeURIComponent(moduleName())}`;
   const cardPdfUrl = item => `/api/workspace/stock/${encodeURIComponent(item.id)}/hareketler.pdf`;
 
-  async function loadList({ more = false } = {}) {
-    const ticket = ++listRequest;
+  async function loadList({ more = false, quiet = false } = {}) {
+    // Sıra kuralları HOF.listGate'te (v2.0.22); arka plan yenilemesi en çok 2 bağlantılık arka plan kuyruğundan gider.
+    const load = lists.start({ quiet, more });
+    if (!load) return;
+    if (!quiet && !more && view.listError) {
+      view.listError = "";
+      if (!view.list && view.mode === "list") renderList();
+    }
     const offset = more && view.list ? view.list.items.length : 0;
     try {
-      const data = await HOF.api(`/api/workspace/stock?${query()}&limit=${PAGE}&offset=${offset}`);
-      if (ticket !== listRequest) return;
+      const data = await HOF.api(`/api/workspace/stock?${query()}&limit=${PAGE}&offset=${offset}`, quiet ? { background: true } : {});
+      if (!load.current()) return;
+      load.applied();
+      view.listError = "";
       view.list = more && view.list ? { ...data, items: [...view.list.items, ...data.items] } : data;
       if (view.mode === "list") renderList();
     } catch (error) {
-      if (ticket === listRequest && view.mode === "list" && body()) body().innerHTML = `<p class="hof-empty">${esc(error.message)}</p>`;
+      if (quiet) throw error;
+      if (!load.current()) return;
+      if (more && view.list) return HOF.toastError(error);
+      view.list = null;
+      view.listError = error.message;
+      if (view.mode === "list") renderList();
+    } finally {
+      load.done();
     }
   }
   let cardRequest = 0;
-  async function loadItem(id) {
-    const ticket = ++cardRequest;
+  async function loadItem(id, { quiet = false } = {}) {
+    // Arka plan yenilemesi sıra numarasını artırmaz: kullanıcının o sırada açtığı kart geçersiz sayılmaz.
+    const ticket = quiet ? cardRequest : ++cardRequest;
     const target = view.id;
     try {
       const item = await HOF.api(`/api/workspace/stock/${encodeURIComponent(id)}`);
@@ -89,6 +105,7 @@
       renderCard();
     } catch (error) {
       if (ticket !== cardRequest) return;
+      if (quiet && !HOF.lostRecord(error)) throw error;
       HOF.toastError(error);
       view.mode = "list";
       renderList();
@@ -153,7 +170,7 @@
       <div class="hof-kpis hof-plans-kpis">${data ? `<div><strong>${data.totals.count.toLocaleString("tr-TR")}</strong><span>Ürün</span></div><div class="${data.totals.low ? "is-late" : ""}"><strong>${data.totals.low}</strong><span>Kritik Seviyede</span></div><div class="${data.totals.out ? "is-late" : ""}"><strong>${data.totals.out}</strong><span>Tükenen</span></div><div class="${data.totals.negative ? "is-late" : ""}"><strong>${data.totals.negative || 0}</strong><span>Eksi Stokta</span></div><div class="hof-cash-balance"><strong>${esc(money(data.totals.value))}</strong><span>Stok Değeri</span></div>` : ""}</div>
       <div class="hof-cash-list hof-plans-list">${
         !data
-          ? '<p class="hof-empty">Yükleniyor…</p>'
+          ? HOF.listPending(view.listError)
           : data.items.length
             ? `<table class="hof-table hof-cash-table hof-plans-table hof-stock-table"><thead><tr><th class="hof-plan-no">Stok Kodu</th><th>Ürün</th><th class="num">Mevcut</th><th class="num">Kritik Seviye</th><th class="num">Birim Fiyat</th><th class="num">Değer</th><th>Son Hareket</th><th></th></tr></thead><tbody>${data.items.map(row).join("")}</tbody></table>${data.hasMore ? `<div class="hof-more"><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="more">Daha Fazla Göster · ${data.total - data.items.length} ürün daha</button></div>` : ""}`
             : `<p class="hof-empty">${filtered ? "Bu süzgeçte ürün yok." : "Henüz ürün yok."}${manage && !filtered ? " <b>+ Yeni Ürün</b> ile açın ya da <b>Excel’den Yükle</b> ile listenizi aktarın (ör. Çay, Şeker, Motor yağı)." : ""}</p>`
@@ -471,7 +488,7 @@
     if (!HOF.can("stock.view")) return;
     let alerts = [];
     try {
-      alerts = await HOF.api("/api/workspace/stock/alerts");
+      alerts = await HOF.api("/api/workspace/stock/alerts", { background: true });
     } catch {
       return;
     }
@@ -523,6 +540,11 @@
       return loadList();
     }
     if (act === "more") return loadList({ more: true });
+    if (act === "retryList") {
+      view.listError = "";
+      renderList();
+      return loadList();
+    }
     if (act === "new") return editItem(null);
     if (act === "import") return importFromExcel();
     if (!item) return;
@@ -552,22 +574,32 @@
     };
   })();
 
+  // v2.0.22: kritik stok rozeti ve açık Stok penceresi tek yenileme kapısından (HOF.refresher) — bir fatura her stok
+  // kalemi için ayrı olay yayımlar; önceden her biri ayrı istek gönderiyordu.
+  const alertsSoon = HOF.refresher(refreshAlerts, { delay: 600, gap: 3000 });
+  const refreshOpen = HOF.refresher(() => {
+    if (!modal) return null;
+    if (view.mode === "card" && view.id) return loadItem(view.id, { quiet: true });
+    if (view.mode === "list") return loadList({ quiet: true });
+    return null;
+  });
   HOF.whenReady(() => {
-    setTimeout(refreshAlerts, 1500);
+    setTimeout(alertsSoon, 1500);
     HOF.on("live:workspace.changed", change => {
       if (change?.kind !== "stock") return;
-      refreshAlerts();
+      alertsSoon();
       if (!modal) return;
-      if (view.mode === "card" && view.id && (!change.itemId || change.itemId === view.id)) loadItem(view.id);
-      else if (view.mode === "list") loadList();
+      if (view.mode === "card" && view.id && change.itemId && change.itemId !== view.id) return;
+      refreshOpen();
     });
     // v2.0.11: stok hareketi başka pencereden (Cari kartı, geri yükleme) değişince açık Stok penceresi de yenilenir.
     HOF.onLedger(["stock"], detail => {
-      refreshAlerts();
+      if (detail.local) alertsSoon.now();
+      else alertsSoon();
       if (!modal || detail.path?.startsWith("/api/workspace/stock")) return;
-      if (view.mode === "card" && view.id) loadItem(view.id);
-      else if (view.mode === "list") loadList();
+      if (detail.local) refreshOpen.now();
+      else refreshOpen();
     }, 350);
   });
-  HOF.stock = { open, refreshAlerts };
+  HOF.stock = { open, refreshAlerts: () => alertsSoon() };
 })();

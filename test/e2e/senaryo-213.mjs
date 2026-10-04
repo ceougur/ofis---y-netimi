@@ -163,7 +163,12 @@ try {
     const file = await download;
     // Başsız Chromium indirme adını "download" diye bildirir; ad sunucunun Content-Disposition başlığından doğrulanır.
     const disposition = await admin.evaluate(async url => (await fetch(url)).headers.get("content-disposition") || "", file.url());
-    ok(/ekstre\.pdf\?download=1$/.test(file.url()) && disposition.includes(encodeURIComponent(`Cari-ekstre ${firstName}.pdf`)), `ekstre PDF'i kişinin adıyla kendiliğinden indi: ${decodeURIComponent(disposition.split("''")[1] || disposition)}`);
+    // 2.0.21'den beri bağlantı pencerenin şirketini de taşır (?hofCompany=); PDF o şirketten iner.
+    const pdfUrl = new URL(file.url());
+    const windowCompany = await admin.evaluate(() => window.HOF.companyId);
+    ok(pdfUrl.pathname.endsWith("/ekstre.pdf") && pdfUrl.searchParams.get("download") === "1", `ekstre PDF'i indirme adresi: ${pdfUrl.pathname}${pdfUrl.search}`);
+    ok(pdfUrl.searchParams.get("hofCompany") === windowCompany, `ekstre PDF'i pencerenin şirketinden indi (${windowCompany})`);
+    ok(disposition.includes(encodeURIComponent(`Cari-ekstre ${firstName}.pdf`)), `ekstre PDF'i kişinin adıyla kendiliğinden indi: ${decodeURIComponent(disposition.split("''")[1] || disposition)}`);
     await admin.waitForSelector(`${top} [data-prev]:not([disabled])`);
     ok(/2 \/ 2/.test(await topText()), "ilerleme 2 / 2");
     await admin.click(`${top} [data-send]`);

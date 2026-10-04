@@ -1,0 +1,16 @@
+[
+ {
+  "company": "001",
+  "name": "destekofis-001-2026-10-04T13-01-14-656Z.sqlite",
+  "folder": "001 - Merkez Ticaret A.Ş",
+  "kimlik": "001",
+  "faturalar": 2948
+ },
+ {
+  "company": "002",
+  "name": "destekofis-002-2026-10-04T13-01-14-717Z.sqlite",
+  "folder": "002 - Şube Ticaret Ltd. Şti",
+  "kimlik": "002",
+  "faturalar": 2948
+ }
+]

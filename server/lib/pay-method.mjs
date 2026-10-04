@@ -1,3 +1,5 @@
+import { HttpError } from "./http.mjs";
+
 // Ödeme / tahsilat yolu (v2.0.13). Para hareketi nereden geçti: nakit Kasa, banka (havale/EFT) ya da kredi kartı (POS).
 // Çek/senet kendi modülünde (portföy), açık hesap (veresiye) carinin defterindedir; bu ikisi para hareketi değildir.
 // Kasa ve Banka ekranı bakiyeleri bu yola göre ayrı gösterir. Eksi bakiye denetimi her yol için ayrı ayarlanır
@@ -9,6 +11,15 @@ export const METHODS_IN = Object.freeze({ ...METHODS, card: "POS" });
 export const METHODS_OUT = Object.freeze({ ...METHODS, card: "Kredi Kartı" });
 export const methodsFor = direction => (direction === "in" ? METHODS_IN : direction === "out" ? METHODS_OUT : METHODS);
 export const methodOf = (value, fallback = "cash") => (Object.hasOwn(METHODS, String(value || "")) ? String(value) : fallback);
+// v2.0.22 (Excel denetimi bulgusu): kullanıcıdan/API'den gelen yol. Hiç gönderilmezse (undefined, null, "") varsayılan
+// (geriye uyum); gönderilip tanımsızsa ("bitcoin", "Nakit" etiketi…) 400 — sessizce nakit sayılmaz. methodOf yalnız
+// veri tabanından okunan kayıtlar içindir.
+export function methodInput(value, fallback = "cash") {
+  if (value === undefined || value === null || String(value).trim() === "") return fallback;
+  const key = String(value).trim();
+  if (Object.hasOwn(METHODS, key)) return key;
+  throw new HttpError(400, `Ödeme yolu tanınmadı (${key.slice(0, 40)}). Nakit, Havale / EFT ya da POS / Kredi Kartı seçin.`, { code: "pay-method-invalid", field: "method" });
+}
 export const methodLabel = (value, direction = "") => methodsFor(direction)[value] || METHODS.cash;
 
 // Eksi bakiye denetimi (v2.0.13): Logo/Netsis'teki "kasa/banka eksi bakiye kontrolü" parametresinin karşılığı.
