@@ -562,6 +562,11 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   haftaya ekrandan: + Yeni Cari, stok kartı + stok giriş/çıkış, Taksit formundan taksit kartı + tahsilatı, kira gideri;
   sonra Rapor Merkezi raporları EKRANDAN açılıp programdan bağımsız beklenen hesapla (ve PDF/Excel ekranla) karşılaştırılır.
   Kod değiştirilmez; ödeme alanı hatasının düzeltmesi bu testten sonra konuşulur.
+  SONUÇ (04.10.2026 19:0x; `docs/EKRAN-HAFTA-TESTI-2026-10-04.md`, commit 93974d1): 51 Excel işi + 16 ek işlem her biri kendi
+  gününde; ekrandan 67/67 (7,8 dk), API şirketiyle FARK YOK, mutabakat 59/59 ×2, sayfa hatası yok. Rapor Merkezi'nden 14 rapor
+  (16 görünüm) + ANLIK DURUM iki şirkette ekrandan ↔ bağımsız beklenen (`model-hafta.py`): 57 kalemin 51'i tuttu, 6'sı bilinen
+  bulgulardan (Bulgu 2: Satış Kalan 3.290,60 / Açık Alacak 3.000; Bulgu 4: Yol = Banka/POS), açıklanmamış 0; stok 51/51;
+  PDF/Excel 64/64 ekranla aynı ve şirketli. Düzeltme kararı kullanıcıda (öneriler belgenin 6. bölümünde).
   BULGU 2 (04.10.2026, ek işlemlerde bulundu; KOD DEĞİŞTİRİLMEDİ, karar kullanıcıda): aynı caride açık satış faturası +
   Taksit penceresinden "Yeni Borç" ile AYRI taksit kartı varsa fatura kapama (`server/lib/invoice-settle.mjs`) kartın
   tahsilatını (plan-in) ve kartın borcunu genel FIFO'ya katıyor; taksit modülü ise kartın ödenenini ayrı sayıyor → iki hesap
