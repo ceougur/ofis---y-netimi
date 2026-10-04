@@ -454,6 +454,15 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
     }
     return changedPlans;
   }
+  // v2.0.23 (2. gözden geçirme): silinen "Carinin Mevcut Borcu" kartı, taksitlendirdiği borç bu arada azaldıysa (tahsil
+  // edildi, iptal edildi) geri yüklenmez; yükleniyordu ve ödenmiş fatura yeniden açık görünüyordu.
+  function assertRestorable(planId, user) {
+    const plan = store.get("SELECT id, account_id AS accountId, total, status, covers_balance AS covers, invoice_id AS invoiceId FROM plans WHERE id = ?", planId);
+    if (!plan || !plan.covers || plan.invoiceId || plan.status === "closed" || !plan.accountId || !accounts()?.exists?.(plan.accountId)) return;
+    const left = roundMoney(Math.max(0, (Number(plan.total) || 0) - netPaid(plan.id)));
+    const free = uncoveredDebt(plan.accountId, user, plan.id);
+    if (left > free + 0.005) throw new HttpError(409, `Bu kart carinin o günkü borcunu taksitlendiriyordu; borç bu arada azaldı (taksitlendirilebilecek borç ${tl(free)}, kartın kalanı ${tl(left)}). Kart geri yüklenmez; kalan borç için cari kartında + Taksit Planı → Carinin Mevcut Borcu ile yeni kart açın.`, { code: "cover-exceeds", free });
+  }
   function assertCoverable(accountId, total, user, exceptPlanId = "") {
     if (!accountId) throw new HttpError(400, "Mevcut borcu taksitlendirmek için cari seçin.");
     const free = uncoveredDebt(accountId, user, exceptPlanId);
@@ -965,6 +974,17 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
       ...(after ? [after] : []),
     );
   // Tahsilat takvimi ve bildirimler: vadesi geçen, bugün ve 7 gün içinde gelecek açık taksitler.
+  // v2.0.23 (2. gözden geçirme): birleşik listelerde (takvim, bildirim, yaşlandırma, nakit akış, vade takip) kartın payı kartın
+  // kalanını (tutar − tahsil edilen) aşmaz. Tutarı Düzenle ile küçültülüp taksitleri yeniden dağıtılmayan kartta taksitler
+  // toplamı tutardan büyük kalıyor, fark listelerde fazladan sayılıyordu; fazlası son vadeli taksitlerden düşülür.
+  function capToRemaining(ledger) {
+    let room = Math.max(0, Number(ledger.totals?.remaining) || 0);
+    return ledger.items.map(item => {
+      const remaining = roundMoney(Math.min(item.remaining, room));
+      room = roundMoney(room - remaining);
+      return remaining === item.remaining ? item : { ...item, remaining, partial: remaining > 0.005 && remaining < item.amount - 0.005 };
+    });
+  }
   function dueItems(day = today()) {
     const out = [];
     const plans = store.all(`${PLAN_SQL} WHERE p.deleted_at IS NULL AND p.status = 'active'`);
@@ -981,7 +1001,7 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
     }
     for (const plan of plans) {
       const ledger = allocate(plan, items.get(plan.id) || [], entries.get(plan.id) || [], { today: day });
-      for (const item of ledger.items) {
+      for (const item of capToRemaining(ledger)) {
         if (item.remaining <= 0.005 || item.state === "open" || item.state === "closed") continue;
         const where = [plan.groupName, plan.subgroupName].filter(Boolean).join(" › ");
         out.push({
@@ -1028,7 +1048,7 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
     }
     for (const plan of plans) {
       const ledger = allocate(plan, items.get(plan.id) || [], entries.get(plan.id) || [], { today: day });
-      for (const item of ledger.items) {
+      for (const item of capToRemaining(ledger)) {
         if (item.remaining <= 0.005 || item.state === "closed") continue;
         // Vade takip (v2.0.9) kartı, cariyi ve taksiti de gösterir; nakit akışı yalnız tarih/tutar/kaynağı okur.
         out.push({ date: item.dueDate, direction: "in", amount: item.remaining, source: "plan", label: `${item.seq}. taksit${item.partial ? " (kalan)" : ""}`, party: plan.name, ref: { type: "plan", id: plan.id }, seq: item.seq, fullAmount: item.amount, partial: Boolean(item.partial), phone: plan.phone || "", refNo: plan.refNo || "", accountId: plan.accountId || "", accountName: plan.accountName || "" });
@@ -1090,9 +1110,11 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
     if (!plans.length) return out;
     const seqs = new Map();
     const counts = new Map();
-    for (const item of store.all("SELECT id, plan_id AS planId, seq FROM plan_items")) {
+    const planned = new Map();
+    for (const item of store.all("SELECT id, plan_id AS planId, seq, amount FROM plan_items")) {
       seqs.set(item.id, item.seq);
       counts.set(item.planId, (counts.get(item.planId) || 0) + 1);
+      planned.set(item.planId, (planned.get(item.planId) || 0) + (Number(item.amount) || 0));
     }
     const entries = new Map();
     for (const entry of store.all("SELECT id, plan_id AS planId, item_id AS itemId, kind, amount, date, note, receipt_no AS receiptNo, opening, cheque_id AS chequeId, created_at AS createdAt FROM plan_entries ORDER BY date, created_at, rowid")) {
@@ -1103,7 +1125,7 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
       const own = entries.get(plan.id) || [];
       const paid = roundMoney(own.reduce((sum, entry) => sum + (entry.kind === "in" ? Number(entry.amount) || 0 : -(Number(entry.amount) || 0)), 0));
       if (!out.has(plan.accountId)) out.set(plan.accountId, []);
-      out.get(plan.accountId).push({ ...plan, itemCount: counts.get(plan.id) || 0, totals: { paid }, entries: own });
+      out.get(plan.accountId).push({ ...plan, itemCount: counts.get(plan.id) || 0, planned: roundMoney(planned.get(plan.id) || 0), totals: { paid }, entries: own });
     }
     return out;
   }
@@ -1228,5 +1250,5 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
   // ikinci kez saymaz; aktarma "kartı var" der.
   const linkedCases = source => new Set(store.all("SELECT case_key AS k FROM plans WHERE deleted_at IS NULL AND case_key <> '' AND case_source = ?", source || "").map(row => row.k));
 
-  return { uncoveredDebt, trimCovers, cashEntries, cashSource, dueItems, openItems, fingerprint, ledgerPlansByAccount, list, detail, forCase, entriesForCase, summariesByAccount, forAccount, createForAccount, removeForInvoice, growForInvoice, followAccount, countForAccount, receiptSeq, nextRef, validDistribution: distributionInput, resolveGroups, groupTree, ensureGroup, createScheduled, adoptPayment, linkedCases };
+  return { uncoveredDebt, assertRestorable, trimCovers, cashEntries, cashSource, dueItems, openItems, fingerprint, ledgerPlansByAccount, list, detail, forCase, entriesForCase, summariesByAccount, forAccount, createForAccount, removeForInvoice, growForInvoice, followAccount, countForAccount, receiptSeq, nextRef, validDistribution: distributionInput, resolveGroups, groupTree, ensureGroup, createScheduled, adoptPayment, linkedCases };
 }

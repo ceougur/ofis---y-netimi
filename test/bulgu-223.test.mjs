@@ -502,4 +502,74 @@ describe("2.0.23 gözden geçirme: kapamanın kalan yolları", () => {
       assert.equal((await api.put("/api/admin/period-lock", { lockedUntil: "" })).status, 200);
     }
   });
+
+  // 2. gözden geçirmenin kalan bulguları. Birleşik listelerde kartın payı taksitlerinden gelir; kapsam kartın tutarından
+  // geliyordu: taksitleri girilmemiş ("Şimdilik yok") ya da tutarı küçültülmüş kartta borç listelerden düşüyor ya da fazla
+  // sayılıyordu.
+  const flowOf = async invoiceId => {
+    const flow = await must("nakit akış", api.get("/api/workspace/overview/nakit-akisi?from=2025-01-01&to=2027-12-31&overdue=1&table=0"));
+    return [...(flow.rows || []), ...(flow.overdue || [])].filter(r => r.ref?.id === invoiceId).reduce((sum, r) => sum + r.amount, 0);
+  };
+  test("2. tur #1: taksitleri girilmemiş ('Şimdilik yok') Mevcut Borç kartında borç birleşik listelerden düşmez", async () => {
+    const acc = await customer("ŞimdilikYok");
+    const a = await sale(acc, "2025-07-20", 2000);
+    await must("kart (taksit yok)", api.post("/api/workspace/plans", { name: acc.name, registeredOn: "2025-07-21", total: "2000", accountId: acc.id, mode: "none", coversBalance: true }));
+    assert.equal(await agingOf(acc), "2.000,00 TL", "yaşlandırma: kartın taksiti yok, borç faturada");
+    assert.equal(await flowOf(a.id), 2000, "nakit akışta fatura 2.000");
+  });
+  test("2. tur #1: elle tek taksit (500) girilen 2.000'lik kartta kalan 1.500 faturada görünür", async () => {
+    const acc = await customer("ElleTek");
+    const a = await sale(acc, "2025-07-22", 2000);
+    const k = await must("kart (elle)", api.post("/api/workspace/plans", { name: acc.name, registeredOn: "2025-07-23", total: "2000", accountId: acc.id, mode: "manual", coversBalance: true }));
+    await must("taksit", api.post(`/api/workspace/plans/${k.id}/items`, { dueDate: "2025-08-23", amount: "500" }));
+    assert.equal(await agingOf(acc), "2.000,00 TL", "yaşlandırma: kartın taksiti 500 + faturanın kalanı 1.500");
+    assert.equal(await flowOf(a.id), 1500);
+  });
+  test("2. tur #1: tutarı Düzenle ile küçültülen kartta (taksitler aynı) borç bir kez sayılır", async () => {
+    const acc = await customer("Küçült");
+    await sale(acc, "2025-07-24", 2000);
+    const k = await coverPlan(acc, "2025-07-25", 2000);
+    await must("kart küçült", api.put(`/api/workspace/plans/${k.id}`, { total: "1500" }));
+    assert.equal(await agingOf(acc), "2.000,00 TL", "yaşlandırma = bakiye: kartın 1.500'ü + faturanın kart dışında kalan 500'ü");
+  });
+  test("2. tur #2: geriye tarihli stoktan taksitli satışın kartı, kendi satışını kapsar (ilgisiz fatura ödenmiş görünmez)", async () => {
+    const acc = await customer("StokGeri");
+    const f = await sale(acc, "2025-07-26", 1000);
+    await must("stoktan taksitli satış (geriye tarihli)", api.post(`/api/workspace/stock/${goods.id}/moves`, { kind: "out", qty: 45, unitPrice: 20, pay: "account", accountId: acc.id, date: "2025-07-21", force: true, installments: { count: 3, firstDue: "2025-08-21", everyMonths: 1 } }));
+    const planId = (await must("cari", api.get(`/api/workspace/accounts/${acc.id}`))).plans.find(p => p.coversBalance)?.id;
+    assert.ok(planId, "stok satışının kartı açıldı");
+    for (const day of ["2025-08-21", "2025-09-21", "2025-10-21"]) await planIn(planId, day, 300);
+    const s = await inv(f.id);
+    assert.deepEqual([s.paid, s.open], [0, 1000], `fatura ödenmedi (kapatanlar: ${JSON.stringify(s.closers)})`);
+    assert.equal(await agingOf(acc), "1.000,00 TL");
+  });
+  test("2. tur #3: sonradan büyütülen Mevcut Borç kartı yeni borcu da kapsar; kart tahsilatı yeni borca da sayılır", async () => {
+    const acc = await customer("Büyüt");
+    await sale(acc, "2025-07-27", 1000);
+    const k = await coverPlan(acc, "2025-07-28", 1000);
+    const b = await sale(acc, "2025-07-29", 500);
+    const grow = await api.post(`/api/workspace/plans/${k.id}/distribute`, { total: "1500", count: "3", firstDue: "2025-08-28", everyMonths: "1" });
+    assert.equal(grow.status, 200, JSON.stringify(grow.data).slice(0, 200));
+    assert.equal(await agingOf(acc), "1.500,00 TL", "yaşlandırma = bakiye: kart B'yi de kapsar");
+    const dues = await must("takvim", api.get("/api/workspace/dues"));
+    assert.equal(dues.items.filter(i => i.id === `invoice|${b.id}`).reduce((sum, i) => sum + i.amount, 0), 0, "B takvimde kartın taksitleriyle");
+    await planIn(k.id, "2025-08-28", 1200);
+    assert.equal(await agingOf(acc), "300,00 TL", "kart tahsilatı 1.200 → yaşlandırma = bakiye 300");
+    assert.deepEqual([(await inv(b.id)).open, (await card(k.id)).totals.remaining], [300, 300]);
+  });
+  test("2. tur #4: silinen Mevcut Borç kartı, taksitlendirdiği borç bu arada ödenmişse geri yüklenmez (ödenmiş fatura açılmaz)", async () => {
+    const acc = await customer("GeriYükle");
+    const a = await sale(acc, "2025-07-30", 2000);
+    const k = await coverPlan(acc, "2025-07-31", 2000);
+    assert.equal((await api.del(`/api/workspace/plans/${k.id}`)).status, 200);
+    assert.equal((await entry(acc, "in", "2025-08-01", 2000)).status, 200);
+    assert.equal((await inv(a.id)).open, 0);
+    const trash = (await must("silinenler", api.get("/api/admin/trash")));
+    const item = (Array.isArray(trash) ? trash : trash?.items || []).find(row => row.kind === "plan" && row.id === `plan:${k.id}`);
+    assert.ok(item, "kart Silinenler'de");
+    const restore = await api.post("/api/admin/trash/restore", { id: item.id });
+    assert.equal(restore.status, 409, `geri yükleme reddedilmeli (${restore.status})`);
+    assert.match(String(restore.data?.error || ""), /taksitlendir/i);
+    assert.deepEqual([(await inv(a.id)).paid, (await inv(a.id)).open], [2000, 0], "fatura ödenmiş kalır");
+  });
 });
