@@ -216,7 +216,20 @@ for (const kind of ["not", "para"]) {
     // v2.0.21 listeyi saniyede birkaç kez baştan çizer: kutunun ölçüsünü alıp fareyle tıklamak yarışa girer (ölçerken
     // kutu yenisiyle değişir → "görünmüyor"). Tıklama, kutu kararlı olana dek yeniden deneyen locator.click ile yapılır.
     const reopenedAfter = await ensureWindow(`${kind}-${rate}-olcum-sonrasi`);
-    await page.locator(input).click({ timeout: 60000 });
+    // v2.0.21'de (04.10.2026 ölçümü) kutu 60 sn boyunca tıklanamadı: 16 kez bulundu, her seferinde tıklamadan önce DOM'dan
+    // söküldü (liste sürekli baştan çiziliyor). İnsan kararlılığı beklemez, kutunun yerine tıklar: 5 sn'de olmazsa öyle.
+    let unstable = false;
+    try {
+      await page.locator(input).click({ timeout: 5000 });
+    } catch {
+      unstable = true;
+      const rect = await page.evaluate(sel => {
+        const box = document.querySelector(sel)?.getBoundingClientRect();
+        return box ? { x: box.x, y: box.y, h: box.height } : null;
+      }, input);
+      if (!rect) throw new Error(`Cari arama kutusu bulunamadı (${kind}, ${rate}/sn)`);
+      await page.mouse.click(rect.x + 30, rect.y + rect.h / 2);
+    }
     const lags = [];
     for (const ch of "C0123") {
       await page.evaluate(sel => {
@@ -246,9 +259,9 @@ for (const kind of ["not", "para"]) {
     const value = await page.locator(input).inputValue();
     alive = false;
     await noise;
-    const row = { kayitSn: rate, tur: kind, yazilan: written, donmaMs: freeze, tusHarfMs: lags, aramaSonucuMs: searchMs, kutuda: value, pencereYenidenAcildi: reopened || reopenedAfter };
+    const row = { kayitSn: rate, tur: kind, yazilan: written, donmaMs: freeze, tusHarfMs: lags, aramaSonucuMs: searchMs, kutuda: value, pencereYenidenAcildi: reopened || reopenedAfter, kutuKararsiz: unstable };
     result.ekran[`${kind} · ${rate}/sn`] = row;
-    console.log(`[${ETIKET}] ekran ${kind} · başkası saniyede ${rate}: tuş→harf ${lags.join("/")} ms · son tuş→sonuç ${searchMs} ms · 10 sn'de donma ${freeze} ms · kutuda "${value}"${reopened || reopenedAfter ? " · pencere yeniden açıldı" : ""}`);
+    console.log(`[${ETIKET}] ekran ${kind} · başkası saniyede ${rate}: tuş→harf ${lags.join("/")} ms · son tuş→sonuç ${searchMs} ms · 10 sn'de donma ${freeze} ms · kutuda "${value}"${reopened || reopenedAfter ? " · pencere yeniden açıldı" : ""}${unstable ? " · KUTU 5 SN TIKLANAMADI (sürekli yeniden çiziliyor)" : ""}`);
     save();
     if (await page.locator(input).isVisible().catch(() => false)) await page.fill(input, "");
     await page.waitForTimeout(3000);
