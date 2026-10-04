@@ -93,17 +93,42 @@ export function tablePdf({ title, subtitle = "", headers, rows, types = [], summ
       if (summary.length) {
         const gap = 6;
         const cardWidth = (W - gap * (summary.length - 1)) / summary.length;
-        // v2.0.23: uzun özet başlığı ("Güncel Kasa (tüm hareketler)") kesilmez, en çok iki satıra iner; kutular aynı boyda.
-        const labels = summary.map(([label]) => {
-          const lines = doc.wrap(String(label ?? ""), cardWidth - 16, "regular", 7.5);
-          return lines.length > 2 ? [lines[0], doc.fit(`${lines.slice(1).join(" ")}`, cardWidth - 16, "regular", 7.5)] : lines.length ? lines : [""];
-        });
-        const twoLines = labels.some(lines => lines.length > 1);
+        // v2.0.23: uzun özet başlığı ("Güncel Kasa (tüm hareketler)") kesilmez, sözcük sınırından en çok iki satıra iner;
+        // kutular aynı boyda. Tek başına sığmayan sözcükte yazı küçülür (en az 6 punto); yine sığmazsa sözcük tireyle bölünür
+        // ("Taksitlendiril-" / "miş"), harf ortasından sessizce kesilmez.
+        const labelOf = label => {
+          const width = cardWidth - 16;
+          const words = String(label ?? "").split(/\s+/).filter(Boolean);
+          const longest = Math.max(0, ...words.map(word => doc.measure(word, "regular", 7.5)));
+          const size = longest > width ? Math.max(6, Math.floor(((7.5 * width) / longest) * 10) / 10) : 7.5;
+          const lines = [];
+          let line = "";
+          for (const word of words) {
+            const candidate = line ? `${line} ${word}` : word;
+            if (doc.measure(candidate, "regular", size) <= width) {
+              line = candidate;
+              continue;
+            }
+            if (line) lines.push(line);
+            line = word;
+            while (line.length > 1 && doc.measure(line, "regular", size) > width) {
+              let cut = 1;
+              while (cut < line.length - 1 && doc.measure(`${line.slice(0, cut + 1)}-`, "regular", size) <= width) cut += 1;
+              lines.push(`${line.slice(0, cut)}-`);
+              line = line.slice(cut);
+            }
+          }
+          if (line) lines.push(line);
+          return { size, lines: lines.length > 2 ? [lines[0], doc.fit(lines.slice(1).join(" "), width, "regular", size)] : lines.length ? lines : [""] };
+        };
+        const labels = summary.map(([label]) => labelOf(label));
+        const twoLines = labels.some(label => label.lines.length > 1);
         const cardHeight = twoLines ? 45 : 36;
         summary.forEach(([, value], index) => {
           const left = M + index * (cardWidth + gap);
           page.rect(left, top, cardWidth, cardHeight, { fill: "#f9fafb", stroke: "#e5e7eb", radius: 5 });
-          labels[index].forEach((line, lineIndex) => page.text(left + 8, top + 13 + lineIndex * 9, line, { size: 7.5, color: muted }));
+          const { size, lines } = labels[index];
+          lines.forEach((line, lineIndex) => page.text(left + 8, top + 13 + lineIndex * (size + 1.5), line, { size, color: muted }));
           page.text(left + 8, top + cardHeight - 8, doc.fit(value, cardWidth - 16, "bold", 10), { font: "bold", size: 10, color: ink });
         });
         top += cardHeight + 10;

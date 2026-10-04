@@ -582,7 +582,8 @@
         ...(plan
           ? []
           : [{ name: "source", label: "Borcun Kaynağı", type: "select", value: Number(preset?.balance) > 0.005 ? "balance" : "new", options: [{ value: "balance", label: "Carinin Mevcut Borcu (veresiye satış, açılış)" }, { value: "new", label: "Yeni Borç (bu kartla borçlanır)" }], help: "" }]),
-        { name: "total", label: "Toplam Tutar (₺)", required: true, inputmode: "decimal", value: plan ? amountText(plan.total) : Number(preset?.balance) > 0.005 ? amountText(preset.balance) : "", placeholder: "Örn. 12.000,00", autofocus: Boolean(preset) },
+        // v2.0.23: faturanın kartının tutarı faturadan gelir (sunucu da değiştirmez); fatura Düzenle ya da iadeyle değişir.
+        { name: "total", label: "Toplam Tutar (₺)", required: true, inputmode: "decimal", value: plan ? amountText(plan.total) : Number(preset?.balance) > 0.005 ? amountText(preset.balance) : "", placeholder: "Örn. 12.000,00", autofocus: Boolean(preset), ...(plan?.invoiceId ? { readonly: true, help: `Tutar ${plan.invoiceNumber ? `${plan.invoiceNumber} faturasından` : "faturadan"} gelir; değiştirmek için faturada Düzenle'yi ya da iade faturasını kullanın.` } : {}) },
         // v2.0.12: taksit bilgileri tutarın hemen altında; Taksit Sayısı ile İlk Vade yan yana (müşteri: "ilk vade aşağıda kalıyor").
         ...(plan
           ? []

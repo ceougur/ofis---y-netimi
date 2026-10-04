@@ -15,6 +15,9 @@
   const lists = HOF.listGate();
   let calcTicket = 0;
   let calcTimer = 0;
+  // v2.0.23 (gözden geçirme): bekleyen (zamanlanmış) ve süren hesap; "Tamamı Peşin" güncel toplamla çalışsın.
+  let calcPending = false;
+  let calcRunning = null;
   const view = { mode: "list", tab: "sale", q: "", from: "", to: "", preset: "", pay: "", profile: "", account: null, list: null, selected: new Set(), id: "", doc: null, form: null, pickSide: "", inbox: null, inboxState: "new", inboxItem: null, settings: null };
 
   const money = value => HOF.formatMoney(value);
@@ -31,6 +34,19 @@
     if (!text) return 0;
     const clean = text.includes(",") ? text.replace(/\./g, "").replace(",", ".") : text;
     const n = Number(clean.replace(/[^\d.-]/g, ""));
+    return Number.isFinite(n) ? n : 0;
+  };
+  // v2.0.23 (gözden geçirme): ödeme tutarı sunucunun parseAmount'ıyla (server/lib/money.mjs) aynı okunur: "1.250,50",
+  // "40.000 TL", "₺ 3.000", "1250.5". Eskiden "40.000" 40 okunuyor (Kalan yanlış), "100 TL" reddediliyordu.
+  const parseTl = value => {
+    let raw = String(value ?? "").trim().replace(/[₺$€\s]|tl|try/gi, "");
+    if (!raw) return Number.NaN;
+    if (raw.includes(",")) raw = raw.replace(/\./g, "").replace(",", ".");
+    else if (/^-?\d{1,3}(\.\d{3})+$/.test(raw)) raw = raw.replace(/\./g, "");
+    return /^-?\d+(\.\d+)?$/.test(raw) ? Number(raw) : Number.NaN;
+  };
+  const amountNum = value => {
+    const n = parseTl(value);
     return Number.isFinite(n) ? n : 0;
   };
   const amountText = value => (value === "" || value === null || value === undefined ? "" : String(value).replace(".", ","));
@@ -58,6 +74,7 @@
         onClose: () => {
           modal = null;
           clearTimeout(calcTimer);
+          calcPending = false;
           Object.assign(view, { mode: "list", id: "", doc: null, form: null, inboxItem: null, settings: null });
         },
       });
@@ -853,7 +870,7 @@
     return base;
   };
   const methodOptions = value => Object.entries(refundMethods(view.form?.kind)).map(([id, label]) => `<option value="${esc(id)}" ${id === value ? "selected" : ""}>${esc(typeof label === "string" ? label : label.label || id)}</option>`).join("");
-  const paidSum = form => [...form.pay.cash, ...form.pay.cheques].reduce((sum, item) => sum + num(item.amount), 0) + (form.portfolio || []).filter(item => form.pay.endorse.includes(item.id)).reduce((sum, item) => sum + Number(item.amount || 0), 0);
+  const paidSum = form => [...form.pay.cash, ...form.pay.cheques].reduce((sum, item) => sum + amountNum(item.amount), 0) + (form.portfolio || []).filter(item => form.pay.endorse.includes(item.id)).reduce((sum, item) => sum + Number(item.amount || 0), 0);
   function renderPay() {
     const form = view.form;
     const slot = body()?.querySelector("[data-pay]");
@@ -983,8 +1000,8 @@
     lines: usedLines(form).map(lineBody),
   });
   const payBody = form => ({
-    cash: form.pay.cash.filter(item => num(item.amount) > 0).map(item => ({ amount: item.amount, method: item.method })),
-    cheques: form.pay.cheques.filter(item => num(item.amount) > 0).map(item => ({ ...item })),
+    cash: form.pay.cash.filter(item => amountNum(item.amount) > 0).map(item => ({ amount: item.amount, method: item.method })),
+    cheques: form.pay.cheques.filter(item => amountNum(item.amount) > 0).map(item => ({ ...item })),
     endorse: [...form.pay.endorse],
     rest: form.pay.rest,
     dueDate: form.pay.dueDate,
@@ -992,16 +1009,44 @@
   });
   function scheduleCalc(delay = 300) {
     clearTimeout(calcTimer);
-    calcTimer = setTimeout(runCalc, delay);
+    calcPending = true;
+    calcTimer = setTimeout(() => {
+      calcPending = false;
+      runCalc();
+    }, delay);
   }
-  async function runCalc() {
+  // Bekleyen ya da süren hesabı bitirir.
+  async function flushCalc() {
+    if (calcPending) {
+      clearTimeout(calcTimer);
+      calcPending = false;
+      await runCalc();
+    } else if (calcRunning) await calcRunning;
+  }
+  function runCalc() {
+    const run = calcOnce();
+    calcRunning = run;
+    run.finally(() => {
+      if (calcRunning === run) calcRunning = null;
+    });
+    return run;
+  }
+  // v2.0.23 (gözden geçirme, Bulgu 1'in kalan yolu): hesap dönünce ödeme satırları yeniden çizilmez (kalemden doğrudan ödeme
+  // alanına geçen kullanıcının yazdığı rakamlar kayboluyordu); hesaba bağlı olan yalnız "Kalan" kutusu ve "Tamamı Peşin".
+  function refreshPayAfterCalc() {
+    const form = view.form;
+    const button = body()?.querySelector('[data-pay] [data-act="pay-all-cash"]');
+    if (button && form) button.disabled = !((form.calc ? form.calc.try?.payable ?? form.calc.totals.payable : 0) > 0);
+    renderRest();
+  }
+  async function calcOnce() {
     const form = view.form;
     if (!form) return;
     if (!form.account || !usedLines(form).length) {
       form.calc = null;
       form.calcError = "";
       renderTotals();
-      renderPay();
+      refreshPayAfterCalc();
       return;
     }
     const ticket = ++calcTicket;
@@ -1019,7 +1064,7 @@
       if (!form.pay.dueDate && calc.dueDays) form.pay.dueDate = new Date(Date.parse(`${form.issueDate}T12:00:00`) + calc.dueDays * 86_400_000).toISOString().slice(0, 10);
       renderProfile();
       renderTotals();
-      renderPay();
+      refreshPayAfterCalc();
       const next = body()?.querySelector("[data-next]");
       if (next) next.innerHTML = calc.nextNumber ? `<span>Kaydedilince Verilecek No</span><b>${esc(calc.nextNumber)}</b>` : "";
     } catch (error) {
@@ -1027,7 +1072,7 @@
       form.calc = null;
       form.calcError = error.message;
       renderTotals();
-      renderPay();
+      refreshPayAfterCalc();
     }
   }
   // Belge türü (e-Belge açıksa): GİB kuralına göre izin verilenler; tek seçenekse gizli.
@@ -1278,8 +1323,11 @@
       return body()?.querySelector(`[data-pay="cash"][data-i="${form.pay.cash.length - 1}"][data-f="amount"]`)?.focus();
     }
     if (act === "pay-all-cash") {
+      // Fiyat yeni değiştiyse hesap bitmeden eski toplam kullanılıyordu (288'lik fatura 24 peşinle kaydedildi).
+      await flushCalc();
+      if (view.form !== form) return;
       const payable = form.calc ? form.calc.try?.payable ?? form.calc.totals.payable : 0;
-      const others = form.pay.cheques.reduce((sum, item) => sum + num(item.amount), 0) + (form.portfolio || []).filter(item => form.pay.endorse.includes(item.id)).reduce((sum, item) => sum + Number(item.amount || 0), 0);
+      const others = form.pay.cheques.reduce((sum, item) => sum + amountNum(item.amount), 0) + (form.portfolio || []).filter(item => form.pay.endorse.includes(item.id)).reduce((sum, item) => sum + Number(item.amount || 0), 0);
       form.pay.cash = [{ amount: amountText(Math.max(0, Math.round((payable - others) * 100) / 100)), method: form.pay.cash[0]?.method || "cash" }];
       return renderPay();
     }
@@ -1360,10 +1408,7 @@
     if (!usedLines(form).length) return fail("En az bir kalem yazın.");
     // v2.0.23 (Bulgu 1): tutarı yazılmamış ya da geçersiz ödeme satırı sessizce atılmaz (önceden evrak kayıtta düşüyordu,
     // fatura "Açık" kaydediliyordu). Peşin satırında boş tutar olabilir (satır yok sayılır); evrak satırında tutar zorunlu.
-    const amountOk = value => {
-      const text = String(value ?? "").trim();
-      return Boolean(text) && !/[^\d.,\s₺-]/.test(text) && num(text) > 0;
-    };
+    const amountOk = value => parseTl(value) > 0;
     const badCash = form.pay.cash.findIndex(item => String(item.amount ?? "").trim() && !amountOk(item.amount));
     if (badCash >= 0) return fail(`${badCash + 1}. peşin ödeme satırındaki tutar geçerli değil ("${String(form.pay.cash[badCash].amount).trim()}"). Tutarı düzeltin ya da satırı × ile silin.`);
     const badCheque = form.pay.cheques.findIndex(item => !amountOk(item.amount));
@@ -1378,6 +1423,8 @@
         // Aynı formun yinelenen isteği (yanıt kaybolmuştu): taslak o arada kaydedilip deftere işlendiyse bu söylenir.
         HOF.toast(saved?.replayed && saved.status !== "draft" ? `Bu form daha önce kaydedilmiş ve deftere işlenmiş (${saved.number || "kayıtlı belge"}).` : saved?.replayed ? "Taslak zaten kaydedilmişti; ikinci taslak açılmadı." : "Taslak kaydedildi; deftere işlenmedi.", { type: saved?.replayed ? "info" : "success" });
       } else {
+        clearTimeout(calcTimer);
+        calcPending = false;
         await runCalc();
         const c = form.calc;
         if (!c) throw new Error(form.calcError || "Toplamlar hesaplanamadı; kalemleri kontrol edin.");
@@ -1476,8 +1523,10 @@
       const offsetId = item.id.startsWith("offset:") ? item.id.slice(7) : "";
       return `<li><span>${esc(HOF.formatDate(item.date))} · ${esc(item.label || "Ödeme")}${item.methodLabel ? ` (${esc(item.methodLabel)})` : ""}${item.note && !offsetId ? ` <small>${esc(item.note)}</small>` : ""}</span><b>${esc(money(item.amount))}</b><em class="hof-plan-badge is-${item.mode === "auto" ? "muted" : item.mode === "offset" ? "soon" : "info"}">${esc(item.modeLabel || "")}</em>${offsetId && doc.canManage ? `<button type="button" class="hof-link-button" data-act="offset-remove" data-offset="${esc(offsetId)}">Kaldır</button>` : ""}</li>`;
     });
-    const canOffset = doc.canManage && doc.open > 0.004;
-    return `<div class="hof-inv-closers"><h5>Bu Faturayı Kapatanlar</h5>${rows.length ? `<ul>${rows.join("")}</ul>` : `<p class="hof-muted">Henüz kapatan yok.${sideOf(doc.kind) === "sale" ? " Aynı cariye kesilen alış faturası ve Alacak Yaz satırı kendiliğinden ödeme sayılmaz; karşılıklı kapama için Mahsup Et." : " Aynı cariye kesilen satış faturası ve Borç Yaz satırı kendiliğinden ödeme sayılmaz; karşılıklı kapama için Mahsup Et."}</p>`}${canOffset ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="offset">Mahsup Et</button>' : ""}</div>`;
+    // v2.0.23: taksitli fatura kendi taksit kartıyla kapanır; mahsup edilmez (sunucu da reddeder).
+    const canOffset = doc.canManage && doc.open > 0.004 && !doc.planId;
+    const hint = doc.planId ? " Taksitli fatura kendi taksit kartıyla kapanır; tahsilat taksit kartından girilir." : sideOf(doc.kind) === "sale" ? " Aynı cariye kesilen alış faturası ve Alacak Yaz satırı kendiliğinden ödeme sayılmaz; karşılıklı kapama için Mahsup Et." : " Aynı cariye kesilen satış faturası ve Borç Yaz satırı kendiliğinden ödeme sayılmaz; karşılıklı kapama için Mahsup Et.";
+    return `<div class="hof-inv-closers"><h5>Bu Faturayı Kapatanlar</h5>${rows.length ? `<ul>${rows.join("")}</ul>` : `<p class="hof-muted">Henüz kapatan yok.${hint}</p>`}${canOffset ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="offset">Mahsup Et</button>' : ""}</div>`;
   }
   function renderCard() {
     const root = body();

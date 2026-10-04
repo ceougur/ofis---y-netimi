@@ -269,4 +269,141 @@ describe("2.0.23: PDF özet kutusunda uzun başlık kesilmez", () => {
     assert.ok(!/Güncel Kasa \(tü…/.test(text), "başlık '…' ile kesilmemeli");
     assert.match(text.replace(/\n/g, " "), /Güncel Kasa \(tüm\s*hareketler\)/);
   });
+  test("dar kutuda (8 kutu, dikey) uzun sözcük harf ortasından bölünmez: küçülür ya da tireyle bölünür (gözden geçirme)", () => {
+    const summary = [["Taksitlendirilmiş Toplam", "1.234.567,89 TL"], ["Tahsil Edilen", "1,00 TL"], ["Vadesi Geçmiş Taksitler", "2,00 TL"], ["Kalan", "3,00 TL"], ["Önceden Ödenen (Açılış)", "4,00 TL"], ["Kart", "5"], ["Gecikmiş Kart", "6"], ["Ortalama Gecikme (gün)", "7"]];
+    const text = pdfText(Buffer.from(tablePdf({ title: "Deneme", headers: ["A", "B", "C"], types: ["", "money", "money"], rows: [["x", "1,00 TL", "2,00 TL"]], summary })));
+    assert.ok(!/Taksitlendiril\nmiş/.test(text), "tiresiz bölünmemeli");
+    assert.match(text.replace(/-\n/g, "").replace(/\n/g, " "), /Taksitlendirilmiş Toplam/);
+  });
+});
+
+// Bağımsız gözden geçirme (04.10.2026) bulguları; önce kırmızı yazıldı. Senaryolar gözden geçirme betiklerinden (s1, s4, s5, s6,
+// s11): "Mevcut Borç" kartı açıldığı anda var olan borcu kapsar; sonradan kesilen fatura kapsanmaz (#2); stoktan taksitli
+// satışın kartı ilgisiz faturayı kapatmaz (#4); taksitli faturada mahsup (#5), eski bağın düzeltilmesi (#6), sonradan
+// taksitlendirme (#7), kendi kartında taksit iadesi ve kart tutarının Taksitler'den değiştirilmesi (#9).
+describe("2.0.23 gözden geçirme: kapamanın kalan yolları", () => {
+  let server;
+  let api;
+  let item;
+  let goods;
+  let n = 0;
+  before(async () => {
+    server = await startTestServer();
+    const client = await loginAdmin(server);
+    api = {
+      get: async url => unwrap(await client.get(url)),
+      post: async (url, body) => unwrap(await client.post(url, body)),
+      put: async (url, body) => unwrap(await client.put(url, body)),
+    };
+    item = (await api.post("/api/workspace/stock", { kind: "service", code: "HZM", name: "Hizmet", unit: "Adet", salePrice: "1000" })).data;
+    goods = (await api.post("/api/workspace/stock", { name: "Mal", code: "MAL", unit: "Adet", unitPrice: 10, salePrice: 20 })).data;
+  });
+  after(async () => server.close());
+  const must = async (label, promise) => {
+    const res = await promise;
+    assert.equal(res.status, 200, `${label}: ${res.status} ${JSON.stringify(res.data).slice(0, 200)}`);
+    return res.data;
+  };
+  const customer = async label => must("cari", api.post("/api/workspace/accounts", { name: `Kalan ${label}`, type: "customer", registeredOn: "2025-01-01", phone: `0500 000 20 ${String((n += 1)).padStart(2, "0")}` }));
+  const sale = async (acc, date, amount, installments = null, payment = {}) => {
+    const doc = await must("fatura", api.post("/api/workspace/invoices", { scenario: "service_sale", accountId: acc.id, issueDate: date, lines: [{ itemId: item.id, qty: 1, unitPrice: amount, vatRate: 0 }], payment: installments ? { rest: "installments", installments, ...payment } : { rest: "open", dueDate: date, ...payment } }));
+    return must("fatura oku", api.get(`/api/workspace/invoices/${doc.id}`));
+  };
+  const coverPlan = async (acc, date, total) => must("kart", api.post("/api/workspace/plans", { name: acc.name, registeredOn: date, total: String(total), accountId: acc.id, mode: "auto", count: "3", firstDue: "2025-09-01", coversBalance: true }));
+  const planIn = async (planId, date, amount) => must("kart tahsilatı", api.post(`/api/workspace/plans/${planId}/entries`, { kind: "in", amount, date, method: "bank" }));
+  const entry = (acc, kind, date, amount, extra = {}) => api.post(`/api/workspace/accounts/${acc.id}/entries`, { kind, amount, date, method: "cash", cashForce: true, ...extra });
+  const inv = id => must("fatura", api.get(`/api/workspace/invoices/${id}`));
+  const card = id => must("kart", api.get(`/api/workspace/plans/${id}`));
+  const agingOf = async acc => (await must("yaşlandırma", api.get("/api/workspace/report-center/alacak-yaslandirma"))).rows.find(r => r[0] === acc.name)?.at(-1) || "0,00 TL";
+
+  for (const variant of ["Alacak Yaz", "alış faturası"]) {
+    test(`#2: Mevcut Borç kartından SONRA kesilen fatura karta bölünmüş sayılmaz (${variant})`, async () => {
+      const acc = await customer(`N ${variant}`);
+      assert.equal((await entry(acc, "debt", "2025-04-02", 5000, { note: "Açılış" })).status, 200);
+      await coverPlan(acc, "2025-04-03", 5000);
+      const f = await sale(acc, "2025-04-04", 2000);
+      if (variant === "Alacak Yaz") assert.equal((await entry(acc, "credit", "2025-04-05", 2000, { note: "İskonto" })).status, 200);
+      else await must("alış", api.post("/api/workspace/invoices", { scenario: "expense_purchase", accountId: acc.id, issueDate: "2025-04-05", number: `AL-${n}`, lines: [{ name: "Hizmet alımı", qty: 1, unitPrice: 2000, vatRate: 0 }], payment: { rest: "open", dueDate: "2025-04-05" } }));
+      assert.equal((await inv(f.id)).open, 2000);
+      assert.equal(await agingOf(acc), "7.000,00 TL", "yaşlandırma: kart 5.000 + kapsanmayan fatura 2.000");
+      const dues = await must("takvim", api.get("/api/workspace/dues"));
+      assert.deepEqual(dues.items.filter(i => i.id === `invoice|${f.id}`).map(i => i.amount), [2000], "takvimde fatura 2.000");
+      const flow = await must("nakit akış", api.get("/api/workspace/overview/nakit-akisi?from=2025-01-01&to=2026-12-31&overdue=1&table=0"));
+      const fromInvoice = [...(flow.rows || []), ...(flow.overdue || [])].filter(r => r.ref?.id === f.id).reduce((sum, r) => sum + r.amount, 0);
+      assert.equal(fromInvoice, 2000, "nakit akışta fatura 2.000");
+    });
+  }
+
+  test("#4: stoktan taksitli satışın kartı tahsil edilince ilgisiz eski fatura 'Ödendi' olmaz", async () => {
+    const acc = await customer("Stok");
+    const f = await sale(acc, "2025-05-01", 6000);
+    await must("stoktan taksitli satış", api.post(`/api/workspace/stock/${goods.id}/moves`, { kind: "out", qty: 450, unitPrice: 20, pay: "account", accountId: acc.id, date: "2025-05-02", force: true, installments: { count: 3, firstDue: "2025-06-02", everyMonths: 1 } }));
+    const planId = (await must("cari", api.get(`/api/workspace/accounts/${acc.id}`))).plans.find(p => p.coversBalance)?.id;
+    assert.ok(planId, "stok satışının taksit kartı açıldı");
+    for (const day of ["2025-06-02", "2025-07-02", "2025-08-02"]) await planIn(planId, day, 3000);
+    const s = await inv(f.id);
+    assert.deepEqual([s.paid, s.open], [0, 6000], `fatura ödenmedi (ödenen ${s.paid}, açık ${s.open})`);
+    assert.notEqual(s.payState, "paid");
+    assert.equal(await agingOf(acc), "6.000,00 TL");
+  });
+
+  test("D (peşinatlı): peşinatı alınmış fatura Mevcut Borç kartına bölünür; fatura açığı = kart kalanı", async () => {
+    const acc = await customer("Peşinat");
+    const f = await sale(acc, "2025-05-10", 12000, null, { cash: [{ amount: 2000, method: "cash" }] });
+    const k = await coverPlan(acc, "2025-05-11", 10000);
+    await planIn(k.id, "2025-05-12", 3000);
+    const s = await inv(f.id);
+    assert.deepEqual([s.paid, s.open, (await card(k.id)).totals.remaining], [5000, 7000, 7000]);
+    assert.equal(await agingOf(acc), "7.000,00 TL");
+  });
+
+  test("#9: taksitli faturanın kendi kartında taksit iadesi faturayı da yeniden açar", async () => {
+    const acc = await customer("İade");
+    const f = await sale(acc, "2025-05-20", 3000, { count: 3, firstDue: "2025-06-20", everyMonths: 1 });
+    await planIn(f.planId, "2025-05-21", 1000);
+    await must("taksit iadesi", api.post(`/api/workspace/plans/${f.planId}/entries`, { kind: "out", amount: 1000, date: "2025-05-22", method: "bank", cashForce: true }));
+    const s = await inv(f.id);
+    assert.deepEqual([s.paid, s.open, (await card(f.planId)).totals.remaining], [0, 3000, 3000]);
+  });
+
+  test("#9: faturanın kendi taksit kartının tutarı Taksitler'den değiştirilemez (fatura ile kart ayrışmasın)", async () => {
+    const acc = await customer("Tutar");
+    const f = await sale(acc, "2025-05-25", 3000, { count: 3, firstDue: "2025-06-25", everyMonths: 1 });
+    const res = await api.put(`/api/workspace/plans/${f.planId}`, { total: "2000" });
+    assert.equal(res.status, 409, `kart tutarı değişmemeli (${res.status})`);
+    assert.equal((await card(f.planId)).totals.total, 3000);
+  });
+
+  test("#5: taksitli fatura mahsup edilemez (fatura ile kendi kartı ayrışmasın)", async () => {
+    const acc = await customer("Mahsup");
+    const f = await sale(acc, "2025-06-01", 3000, { count: 3, firstDue: "2025-07-01", everyMonths: 1 });
+    const p = await must("alış", api.post("/api/workspace/invoices", { scenario: "expense_purchase", accountId: acc.id, issueDate: "2025-06-02", number: "AL-MAHSUP", lines: [{ name: "Hizmet alımı", qty: 1, unitPrice: 1000, vatRate: 0 }], payment: { rest: "open", dueDate: "2025-06-02" } }));
+    const off = await api.post(`/api/workspace/invoices/${f.id}/offsets`, { counterType: "invoice", counterId: p.id, amount: "1000", date: "2025-06-03" });
+    assert.equal(off.status, 409, `mahsup reddedilmeli (${off.status})`);
+    assert.match(String(off.data?.error || ""), /taksit/i);
+    const off2 = await api.post(`/api/workspace/invoices/${p.id}/offsets`, { counterType: "invoice", counterId: f.id, amount: "1000", date: "2025-06-03" });
+    assert.equal(off2.status, 409, `karşı taraftan da reddedilmeli (${off2.status})`);
+    assert.deepEqual([(await inv(f.id)).open, (await card(f.planId)).totals.remaining], [3000, 3000]);
+  });
+
+  test("#6: eski veride taksitli faturaya bağlı cari tahsilatı düzeltilebilir (bağ değişmeden)", async () => {
+    const acc = await customer("EskiBağ");
+    const f = await sale(acc, "2025-06-05", 3000, { count: 3, firstDue: "2025-07-05", everyMonths: 1 });
+    const res = await must("tahsilat", entry(acc, "in", "2025-06-06", 1000));
+    server.app.store.run("UPDATE account_entries SET invoice_id = ? WHERE id = ?", f.id, res.entryId);
+    const edit = await api.put(`/api/workspace/accounts/${acc.id}/entries/${res.entryId}`, { note: "yalnız açıklama düzeltildi" });
+    assert.equal(edit.status, 200, `açıklama düzeltmesi engellenmemeli: ${JSON.stringify(edit.data).slice(0, 160)}`);
+    assert.deepEqual([(await inv(f.id)).open, (await card(f.planId)).totals.remaining], [3000, 3000]);
+  });
+
+  test("#7: kısmen ödenmiş açık fatura sonradan taksitlendirilemez; neden ve doğru yol söylenir", async () => {
+    const acc = await customer("Sonradan");
+    const f = await sale(acc, "2025-06-10", 3000);
+    await must("bağlı tahsilat", entry(acc, "in", "2025-06-11", 1000, { invoiceId: f.id }));
+    const edit = await api.post(`/api/workspace/invoices/${f.id}/edit`, { scenario: "service_sale", accountId: acc.id, issueDate: "2025-06-10", lines: [{ itemId: item.id, qty: 1, unitPrice: 3000, vatRate: 0 }], payment: { rest: "installments", installments: { count: 3, firstDue: "2025-07-10", everyMonths: 1 } } });
+    assert.equal(edit.status, 409, `taksitlendirme reddedilmeli (${edit.status})`);
+    assert.match(String(edit.data?.error || ""), /Carinin Mevcut Borcu/);
+    const s = await inv(f.id);
+    assert.deepEqual([s.paid, s.open, s.planId || ""], [1000, 2000, ""]);
+  });
 });

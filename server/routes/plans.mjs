@@ -511,6 +511,11 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
     const result = store.tx(() => {
       const input = planInput({ ...previous, ...body }, user, previous);
       const status = body.status === undefined ? previous.status : body.status === "closed" ? "closed" : "active";
+      // v2.0.23 (gözden geçirme): faturanın kendi taksit kartının tutarı ve carisi faturadan gelir; burada değişince fatura ile
+      // kart ayrışıyordu (fatura 3.000 açık, kart 2.000). Ad, grup, not ve kapatma burada serbest.
+      if (previous.invoiceId && (roundMoney(input.total) !== roundMoney(Number(previous.total) || 0) || (input.accountId && input.accountId !== previous.accountId))) {
+        throw new HttpError(409, `Bu kart ${previous.invoiceNumber || "bir fatura"} ile açıldı; tutarı ve carisi faturadan gelir. Değiştirmek için faturada Düzenle'yi ya da iade faturasını kullanın.`, { code: "invoice-linked", invoiceId: previous.invoiceId });
+      }
       // Kapanmış dönem: yeni borç kartının tutarı, carisi ya da Kayıt Tarihi değişemez (o dönemin cari bakiyesi değişir).
       if (!previous.coversBalance && (roundMoney(input.total) !== roundMoney(Number(previous.total) || 0) || (input.accountId && input.accountId !== previous.accountId) || input.registeredOn !== previous.registeredOn)) {
         period?.assertOpen(previous.registeredOn, "Bu kartın Kayıt Tarihi");
@@ -998,27 +1003,19 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
     return out;
   }
   // Nakit akışı (v2.0.7): açık kartların kalanı olan TÜM taksitleri (vade penceresi yok; ayrımı rapor motoru yapar).
-  // accounts (v2.0.23): verilirse yalnız o carilerin kartları okunur ve hesaplanır (fatura birleşik listelerinde "Mevcut
-  // Borç" kartı düşümü, routes/invoices.mjs netCovered: bütün kartları ikinci kez hesaplamasın).
-  function openItems(day = today(), { accounts = null } = {}) {
+  function openItems(day = today()) {
     const out = [];
-    const only = accounts ? JSON.stringify([...accounts]) : "";
-    if (accounts && !accounts.size) return out;
-    const byAccount = only ? " AND p.account_id IN (SELECT value FROM json_each(?))" : "";
-    const ofPlans = only ? " WHERE plan_id IN (SELECT p.id FROM plans p WHERE p.deleted_at IS NULL AND p.status = 'active' AND p.account_id IN (SELECT value FROM json_each(?)))" : "";
-    const args = only ? [only] : [];
     const plans = store.all(
-      `SELECT p.id, p.name, p.phone, p.ref_no AS refNo, p.total, p.status, p.account_id AS accountId, COALESCE(a.name, '') AS accountName FROM plans p LEFT JOIN accounts a ON a.id = p.account_id AND a.deleted_at IS NULL WHERE p.deleted_at IS NULL AND p.status = 'active'${byAccount}`,
-      ...args,
+      "SELECT p.id, p.name, p.phone, p.ref_no AS refNo, p.total, p.status, p.account_id AS accountId, COALESCE(a.name, '') AS accountName FROM plans p LEFT JOIN accounts a ON a.id = p.account_id AND a.deleted_at IS NULL WHERE p.deleted_at IS NULL AND p.status = 'active'",
     );
     if (!plans.length) return out;
     const items = new Map();
-    for (const item of store.all(`SELECT id, plan_id AS planId, seq, due_date AS dueDate, amount FROM plan_items${ofPlans} ORDER BY due_date, seq`, ...args)) {
+    for (const item of store.all("SELECT id, plan_id AS planId, seq, due_date AS dueDate, amount FROM plan_items ORDER BY due_date, seq")) {
       if (!items.has(item.planId)) items.set(item.planId, []);
       items.get(item.planId).push(item);
     }
     const entries = new Map();
-    for (const entry of store.all(`SELECT id, plan_id AS planId, item_id AS itemId, kind, amount, date FROM plan_entries${ofPlans} ORDER BY date, created_at, rowid`, ...args)) {
+    for (const entry of store.all("SELECT id, plan_id AS planId, item_id AS itemId, kind, amount, date FROM plan_entries ORDER BY date, created_at, rowid")) {
       if (!entries.has(entry.planId)) entries.set(entry.planId, []);
       entries.get(entry.planId).push(entry);
     }

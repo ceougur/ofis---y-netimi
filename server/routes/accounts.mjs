@@ -508,11 +508,15 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
   }
   // v2.0.17: tahsilat/ödeme "Kapatılacak Fatura" ile bağlanabilir (boş = otomatik: carinin en eski açık faturası).
   // Bağ yalnız kapamayı belirler; cari bakiyesi ve Kasa değişmez. Fatura aynı carinin, kesilmiş, aynı yönde olmalı.
-  const invoiceLink = (accountId, kind, value) => {
+  // keep (v2.0.23): hareket düzeltilirken değişmeyen eski bağ yeni kurallara takılmaz (taksitli ya da iptal edilmiş faturaya
+  // eskiden kurulmuş bağ yalnız açıklama düzeltmesini engelliyordu); fatura artık yoksa bağ düşer. Kapama böyle bir bağı
+  // zaten yok sayar (taksitli fatura kendi kartıyla kapanır).
+  const invoiceLink = (accountId, kind, value, keep = "") => {
     const invoiceId = limited(value, 120, "Fatura");
     if (!invoiceId) return "";
     if (kind !== "in" && kind !== "out") throw new HttpError(400, "Fatura bağı yalnız tahsilat ve ödemede seçilir.");
     const invoice = store.get("SELECT id, kind, status, account_id AS accountId, plan_id AS planId FROM invoices WHERE id = ?", invoiceId);
+    if (keep && invoiceId === keep) return invoice && invoice.accountId === accountId ? invoice.id : "";
     if (!invoice || invoice.accountId !== accountId) throw new HttpError(404, "Kapatılacak fatura bu caride bulunamadı.");
     if (invoice.status !== "issued") throw new HttpError(409, "Yalnız kaydedilmiş fatura kapatılır (taslak ya da iptal edilmiş fatura seçilemez).");
     // v2.0.23 (Bulgu 2 F): taksitli fatura kendi taksit kartıyla kapanır; cari kartından bağ kurulursa fatura ile kartı
@@ -522,13 +526,13 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     if (side !== kind) throw new HttpError(409, kind === "in" ? "Tahsilat yalnız satış faturasını kapatır; alış faturası için Ödeme girin." : "Ödeme yalnız alış faturasını kapatır; satış faturası için Tahsilat girin.");
     return invoice.id;
   };
-  const entryInput = (body, accountId = "") => {
+  const entryInput = (body, accountId = "", previous = null) => {
     const kind = text(body.kind);
     if (!KIND_TEXT[kind]) throw new HttpError(400, "Hareket türü borç, alacak, tahsilat ya da ödeme olmalı.");
     const amount = amountOf(body.amount);
     if (!(amount > 0)) throw new HttpError(400, "Tutar sıfırdan büyük olmalı.");
     // v2.0.13: tahsilat/ödemenin yolu (nakit, havale/EFT, kredi kartı); borç/alacak yazmada para hareketi yoktur.
-    return { kind, amount, date: period ? period.movementDate(body) : dateOf(body.date, "Tarih", today()), note: limited(body.note, 300, "Açıklama"), method: methodInput(body.method), invoiceId: invoiceLink(accountId, kind, body.invoiceId) };
+    return { kind, amount, date: period ? period.movementDate(body) : dateOf(body.date, "Tarih", today()), note: limited(body.note, 300, "Açıklama"), method: methodInput(body.method), invoiceId: invoiceLink(accountId, kind, body.invoiceId, previous?.invoiceId || "") };
   };
   const entryOf = (accountId, entryId) => {
     const entry = store.get("SELECT id, kind, amount, date, note, method, receipt_no AS receiptNo, source, source_id AS sourceId, invoice_id AS invoiceId, created_by AS createdBy, created_at AS createdAt FROM account_entries WHERE account_id = ? AND id = ?", accountId, limited(entryId, 120, "Hareket"));
@@ -572,7 +576,7 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     const body = await readJson(req);
     // v2.0.13: borç ↔ alacak yönü düzeltilebilir (yanlış yönde yazılan açılış bakiyesi gibi); tahsilat/ödeme yön değiştirmez.
     const flip = ["debt", "credit"].includes(previous.kind) && ["debt", "credit"].includes(text(body.kind)) ? text(body.kind) : previous.kind;
-    const input = entryInput({ ...previous, ...body, kind: flip }, account.id);
+    const input = entryInput({ ...previous, ...body, kind: flip }, account.id, previous);
     const cashSide = e => (e.kind === "in" || e.kind === "out" ? e : null);
     cash?.guardChange?.(cashSide(previous), cashSide(input), body.cashForce === true);
     store.tx(() => {
