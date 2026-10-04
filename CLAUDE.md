@@ -534,6 +534,14 @@ Bağlam kopsa da bu düzen değişmez. Kullanıcı "zip ver" dediğinde şu üç
   1.613 işlem cari açılışından önce, kısmi ödeme tutarı yok, 165 "Tamamlandı" taksitlinin tahsilatı yok, Özet sayfası yanlış).
   Kullanıcı sorusu (aynı gün): "gerçek muhasebeci gibi değil de koddan mı yapıyorsun?" → evet, hacim API'den; önerildi:
   bir ayın tamamı (Ocak 2024) ekrandan ayrı şirkete girilip API ile girilenle sayı sayı karşılaştırılsın (karar kullanıcıda).
+  KULLANICI ÖNERİSİ (04.10.2026, "baş mimar olarak onaylarsan"): öncelik 1 = güvenlik/veri bütünlüğü (3 cari türü, 4 tanımsız
+  ödeme yolu, 5 API çift fatura); öncelik 2 = performans/UX (1–2 gecikmeler, 6 lisans uyarısı). DEĞERLENDİRMEM: 3/4/5 katılıyorum;
+  İTİRAZ (a) 1–2 yalnız "frontend" değil ve ikinci sıra değil: 0 pencerede bile cari not düzeltmesi ~1 sn (sunucu); her açık
+  pencere her değişiklikte yeniden sorgu → önce ÖLÇÜM (nereye gidiyor), sonra düzeltme; çok personelli ofiste her gün
+  hissedilecek tek bulgu bu. (b) 6 BULGU DEĞİL: testte lisans denetimini ben kapattım; gerçek kurulumda deneme başlamamışsa
+  program gerçekten salt okunurdur, uyarı doğru → rapordan düşülecek. Önerilen sıra: 4 → 3 → 1/2 ölçüm → 5 → (6 yok).
+  Not: 5'te içerik aynı diye reddetmek YANLIŞ (aynı cariye aynı ürünü iki kez satmak meşru) → istek kimliği (idempotency
+  anahtarı) gerekir. 3'te ikili tür eklemek ayrı karar; asgari: yüklemede uyarı + kullanıcı seçimi. Kullanıcının "yap"ı bekleniyor.
 - 2.0.20 YAPILACAKLAR (kullanıcı "yapılacaklara not al" dedi, 03.10.2026; "yap" denince başlanır; ayrıntı ve
   kanıt hemen altındaki ADAYI maddesinde):
   [x] 1. Bütün raporların (43) tablosunun altında kalın TOPLAM satırı — ekran, PDF, Excel aynı; yalnız toplanabilir
