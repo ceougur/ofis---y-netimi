@@ -92,6 +92,7 @@
     try {
       const data = await HOF.api(`/api/workspace/accounts?${query()}&limit=${limit}&offset=${offset}`, keep ? { background: true } : {});
       if (ticket !== listRequest) return;
+      view.listError = "";
       const sign = more ? "" : JSON.stringify(data);
       if (keep && sign === view.listSign && view.mode === "list") return;
       view.listSign = sign;
@@ -107,8 +108,16 @@
       }
       if (view.mode === "list") renderList();
     } catch (error) {
-      if (ticket === listRequest && view.mode === "list") HOF.listFailed(body(), error, { quiet: keep, hasData: Boolean(view.list) });
       if (keep) throw error;
+      if (ticket !== listRequest) return;
+      if (more && view.list) return HOF.toastError(error);
+      // Yeni arama/süzgeç yüklenemedi: eski satırlar yeni süzgecin altında kalmaz (Tümünü Seç görünmeyen carilere uygulanmasın).
+      view.list = null;
+      view.listSign = "";
+      view.selectAll = false;
+      view.excluded.clear();
+      view.listError = error.message;
+      if (view.mode === "list") renderList();
     }
   }
   let cardRequest = 0;
@@ -246,7 +255,7 @@
       ${selectBar()}
       <div class="hof-cash-list hof-plans-list">${
         !data
-          ? '<p class="hof-empty">Yükleniyor…</p>'
+          ? HOF.listPending(view.listError)
           : data.accounts.length
             ? `<table class="hof-table hof-cash-table hof-plans-table hof-acc-table"><thead><tr>${planning ? `<th class="hof-acc-check"><input type="checkbox" data-select-all aria-label="Süzgeçteki ${total} carinin hepsini seç" title="Süzgeçteki ${total} carinin hepsini seç" ${allChecked ? "checked" : ""}></th>` : ""}<th class="hof-plan-no">No</th><th>Cari</th><th class="num">Borç</th><th class="num">Alacak</th><th class="num">Bakiye</th><th>Taksit</th></tr></thead><tbody>${data.accounts.map(row).join("")}</tbody></table>${data.hasMore ? `<div class="hof-more"><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="more">Daha Fazla Göster · ${total - data.accounts.length} cari daha</button></div>` : ""}`
             : `<p class="hof-empty">${filtered || view.status !== "all" ? "Bu süzgeçte cari yok." : "Henüz cari yok."}${manage && !filtered ? " <b>+ Yeni Cari</b> ile tek kart açın ya da <b>Excel / Sheets’ten Yükle</b> ile listenizi bir kerede aktarın." : ""}</p>`
@@ -923,17 +932,23 @@
     if (!types?.length) return "";
     const flag = item => (item.state === "ambiguous" ? ' <small class="hof-type-flag">İki Tür Birden</small>' : item.state === "unknown" ? ' <small class="hof-type-flag">Tanınmadı</small>' : "");
     const options = item => {
-      const value = chosen.has(item.key) ? chosen.get(item.key) : item.state === "ok" ? item.type : "";
+      const picked = chosen.has(item.key) ? chosen.get(item.key) : item.state === "ok" ? item.type : "";
+      const value = picked === "default" ? "" : picked;
       return `<option value="" ${value ? "" : "selected"}>Varsayılan Tür</option>${Object.entries(TYPES).map(([key, label]) => `<option value="${key}" ${value === key ? "selected" : ""}>${esc(label)}</option>`).join("")}`;
     };
     const unclear = types.filter(item => item.state !== "ok").length;
     return `<span class="hof-field-label">Tür Değerleri</span>
       <p class="hof-muted">${unclear ? `<b class="hof-type-flag">${unclear} değer</b> iki türü birden içeriyor ya da tanınmadı; bu satırların türünü seçin. Seçmezseniz “Tür kolonu yoksa” alanındaki tür yazılır.` : "Tür kolonundaki değerler aşağıdaki türlerle açılır; gerekirse değiştirin."} Tür, açılış bakiyesinin yönünü de belirler.</p>
-      <div class="hof-gate-list"><table class="hof-table"><thead><tr><th>Excel'deki Değer</th><th>Satır</th><th>Açılacak Tür</th></tr></thead><tbody>${types.map(item => `<tr class="${item.state === "ok" ? "" : "is-warning"}"><td>${esc(item.value)}${flag(item)}</td><td>${item.count.toLocaleString("tr-TR")}</td><td><select data-type-key="${esc(item.key)}" aria-label="${esc(item.value)}: Açılacak Tür">${options(item)}</select></td></tr>`).join("")}</tbody></table></div>`;
+      <div class="hof-gate-list"><table class="hof-table"><thead><tr><th>Excel'deki Değer</th><th>Satır</th><th>Açılacak Tür</th></tr></thead><tbody>${types.map(item => `<tr class="${item.state === "ok" ? "" : "is-warning"}"><td>${esc(item.value)}${flag(item)}</td><td>${item.count.toLocaleString("tr-TR")}</td><td><select data-type-key="${esc(item.key)}" data-type-state="${esc(item.state)}" aria-label="${esc(item.value)}: Açılacak Tür">${options(item)}</select></td></tr>`).join("")}</tbody></table></div>`;
   };
+  // Tanınan değer (ör. "Tedarikçi") için "Varsayılan Tür" seçilirse "default" gider: sunucu tanıdığı türü değil "Tür kolonu
+  // yoksa" alanındaki türü yazar. İki türlü / tanınmayan değerde seçim yapılmadıysa hiçbir şey gitmez (uyarıyla varsayılan).
   const typeChoices = dialog => {
     const out = {};
-    for (const select of dialog.querySelectorAll("select[data-type-key]")) if (select.value) out[select.dataset.typeKey] = select.value;
+    for (const select of dialog.querySelectorAll("select[data-type-key]")) {
+      if (select.value) out[select.dataset.typeKey] = select.value;
+      else if (select.dataset.typeState === "ok") out[select.dataset.typeKey] = "default";
+    }
     return out;
   };
   function mappingForm({ fileName, matrix, preview }) {
@@ -1071,6 +1086,11 @@
     if (act === "waStatement") return bulkWhatsapp("statement");
     if (act === "waMessage") return bulkWhatsapp("message");
     if (act === "more") return loadList({ more: true });
+    if (act === "retryList") {
+      view.listError = "";
+      renderList();
+      return loadList();
+    }
     if (act === "clearSel") {
       clearSelection();
       return renderList();

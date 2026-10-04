@@ -64,16 +64,23 @@
   const cardPdfUrl = item => `/api/workspace/stock/${encodeURIComponent(item.id)}/hareketler.pdf`;
 
   async function loadList({ more = false, quiet = false } = {}) {
-    const ticket = ++listRequest;
+    // Arka plan yenilemesi (quiet) sıra numarasını artırmaz: kullanıcının sürmekte olan araması/süzgeci geçersiz sayılmaz;
+    // en çok 2 bağlantılık arka plan kuyruğundan gider (v2.0.22, HOF.listPending).
+    const ticket = quiet ? listRequest : ++listRequest;
     const offset = more && view.list ? view.list.items.length : 0;
     try {
-      const data = await HOF.api(`/api/workspace/stock?${query()}&limit=${PAGE}&offset=${offset}`);
+      const data = await HOF.api(`/api/workspace/stock?${query()}&limit=${PAGE}&offset=${offset}`, quiet ? { background: true } : {});
       if (ticket !== listRequest) return;
+      view.listError = "";
       view.list = more && view.list ? { ...data, items: [...view.list.items, ...data.items] } : data;
       if (view.mode === "list") renderList();
     } catch (error) {
-      if (ticket === listRequest && view.mode === "list") HOF.listFailed(body(), error, { quiet, hasData: Boolean(view.list) });
       if (quiet) throw error;
+      if (ticket !== listRequest) return;
+      if (more && view.list) return HOF.toastError(error);
+      view.list = null;
+      view.listError = error.message;
+      if (view.mode === "list") renderList();
     }
   }
   let cardRequest = 0;
@@ -155,7 +162,7 @@
       <div class="hof-kpis hof-plans-kpis">${data ? `<div><strong>${data.totals.count.toLocaleString("tr-TR")}</strong><span>Ürün</span></div><div class="${data.totals.low ? "is-late" : ""}"><strong>${data.totals.low}</strong><span>Kritik Seviyede</span></div><div class="${data.totals.out ? "is-late" : ""}"><strong>${data.totals.out}</strong><span>Tükenen</span></div><div class="${data.totals.negative ? "is-late" : ""}"><strong>${data.totals.negative || 0}</strong><span>Eksi Stokta</span></div><div class="hof-cash-balance"><strong>${esc(money(data.totals.value))}</strong><span>Stok Değeri</span></div>` : ""}</div>
       <div class="hof-cash-list hof-plans-list">${
         !data
-          ? '<p class="hof-empty">Yükleniyor…</p>'
+          ? HOF.listPending(view.listError)
           : data.items.length
             ? `<table class="hof-table hof-cash-table hof-plans-table hof-stock-table"><thead><tr><th class="hof-plan-no">Stok Kodu</th><th>Ürün</th><th class="num">Mevcut</th><th class="num">Kritik Seviye</th><th class="num">Birim Fiyat</th><th class="num">Değer</th><th>Son Hareket</th><th></th></tr></thead><tbody>${data.items.map(row).join("")}</tbody></table>${data.hasMore ? `<div class="hof-more"><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="more">Daha Fazla Göster · ${data.total - data.items.length} ürün daha</button></div>` : ""}`
             : `<p class="hof-empty">${filtered ? "Bu süzgeçte ürün yok." : "Henüz ürün yok."}${manage && !filtered ? " <b>+ Yeni Ürün</b> ile açın ya da <b>Excel’den Yükle</b> ile listenizi aktarın (ör. Çay, Şeker, Motor yağı)." : ""}</p>`
@@ -525,6 +532,11 @@
       return loadList();
     }
     if (act === "more") return loadList({ more: true });
+    if (act === "retryList") {
+      view.listError = "";
+      renderList();
+      return loadList();
+    }
     if (act === "new") return editItem(null);
     if (act === "import") return importFromExcel();
     if (!item) return;

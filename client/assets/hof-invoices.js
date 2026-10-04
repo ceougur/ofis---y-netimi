@@ -148,16 +148,23 @@
     new URLSearchParams(Object.fromEntries(Object.entries({ tab: view.tab, q: view.q, from: view.from, to: view.to, pay: view.pay, profile: view.profile, account: view.account?.id || "", ...extra }).filter(([, value]) => value !== "" && value !== undefined && value !== null))).toString();
 
   async function loadList(more = false, { quiet = false } = {}) {
-    const ticket = ++listTicket;
+    // Arka plan yenilemesi (quiet) sıra numarasını artırmaz: kullanıcının sürmekte olan araması/süzgeci geçersiz sayılmaz;
+    // en çok 2 bağlantılık arka plan kuyruğundan gider (v2.0.22, HOF.listPending).
+    const ticket = quiet ? listTicket : ++listTicket;
     try {
       const offset = more && view.list ? view.list.invoices.length : 0;
-      const data = await HOF.api(`/api/workspace/invoices?${listParams({ offset, limit: 200 })}`);
+      const data = await HOF.api(`/api/workspace/invoices?${listParams({ offset, limit: 200 })}`, quiet ? { background: true } : {});
       if (ticket !== listTicket) return;
+      view.listError = "";
       view.list = more && view.list ? { ...data, invoices: [...view.list.invoices, ...data.invoices] } : data;
       if (view.mode === "list") renderList();
     } catch (error) {
-      if (ticket === listTicket) HOF.listFailed(body(), error, { quiet, hasData: Boolean(view.list) });
       if (quiet) throw error;
+      if (ticket !== listTicket) return;
+      if (more && view.list) return HOF.toastError(error);
+      view.list = null;
+      view.listError = error.message;
+      if (view.mode === "list") renderList();
     }
   }
   const statusPill = doc => {
@@ -221,7 +228,7 @@
         data
           ? `<div class="hof-rep-table"><table class="hof-table hof-chq-table hof-inv-table"><thead><tr><th class="hof-inv-check"><input type="checkbox" data-sel-all aria-label="Listedekilerin hepsini seç" ${data.invoices.length && data.invoices.every(doc => view.selected.has(doc.id)) ? "checked" : ""}></th><th>Tarih</th><th>No</th><th>Cari</th><th>Durum</th><th class="num">Tutar</th><th class="num">Açık</th></tr></thead><tbody>${rows || `<tr><td colspan="7" class="hof-empty">${emptyText()}</td></tr>`}</tbody></table></div>
         <p class="hof-rep-note">${data.total.toLocaleString("tr-TR")} belge${data.hasMore ? ` · <button type="button" class="hof-link-button" data-act="more">Daha Fazla Göster</button>` : ""}</p>`
-          : '<p class="hof-empty">Yükleniyor…</p>'
+          : HOF.listPending(view.listError)
       }`,
     );
   }
@@ -314,6 +321,11 @@
     if (act === "send-pending") return sendPending();
     if (act === "settings") return showSettings();
     if (act === "more") return loadList(true);
+    if (act === "retryList") {
+      view.listError = "";
+      renderList();
+      return loadList();
+    }
     if (act === "clear-sel") {
       view.selected.clear();
       return renderList();

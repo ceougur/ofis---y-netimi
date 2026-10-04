@@ -275,21 +275,17 @@
   // v2.0.21'de liste yüklenemeyince (yük altında tarayıcı kuyruğunda 30 sn'yi aşan istek) pencere gövdesi — arama kutusu ve
   // süzgeçler dahil — tek satırlık hata yazısıyla değiştiriliyordu: Cari aramasında kutu "kayboluyordu"; açık karttaki
   // arka plan yenilemesi hata alınca kullanıcı karttan listeye atılıyordu. Kural:
-  //  - arka plan yenilemesi (quiet) başarısızsa ekran olduğu gibi kalır; bir sonraki değişiklikte yeniden denenir;
-  //  - kullanıcının kendi yüklemesi başarısızsa eldeki liste korunur, bildirim çıkar;
-  //  - yalnız hiç veri yokken hata pencereye yazılır.
+  //  - arka plan yenilemesi (quiet) başarısızsa ekran olduğu gibi kalır; HOF.refresher yeniden dener;
+  //  - kullanıcının kendi yüklemesi (yeni arama, süzgeç, sekme) başarısızsa eski satırlar GÖSTERİLMEZ — yeni süzgecin altında
+  //    eski liste kalırsa "Tümünü Seç" gibi toplu işlemler görünmeyen kayıtlara uygulanır; liste alanında neden ve "Yeniden
+  //    Dene" görünür, arama kutusu ve süzgeçler yerinde kalır (HOF.listPending);
+  //  - "Daha Fazla Göster" başarısızsa görünen satırlar aynı süzgece aittir; kalır, bildirim çıkar.
   // Silinmiş kayıt (404) ya da yetkinin kalkması (403) arka planda da bildirilir: eski hâlin gösterilmesi yanıltır.
   HOF.lostRecord = error => error?.status === 404 || error?.status === 403;
-  HOF.listFailed = (root, error, { quiet = false, hasData = false } = {}) => {
-    if (hasData) {
-      if (!quiet) HOF.toast(`Liste yenilenemedi: ${error.message} Ekrandaki liste son alınan hâliyle duruyor.`, { type: "error", timeout: 6000 });
-      return;
-    }
-    if (root) {
-      root.innerHTML = "";
-      root.appendChild(HOF.el("p", { class: "hof-empty", text: error.message }));
-    }
-  };
+  HOF.listPending = message =>
+    message
+      ? `<p class="hof-empty hof-list-error" role="alert">Liste alınamadı: ${HOF.esc(message)} <button type="button" class="hof-link-button" data-act="retryList">Yeniden Dene</button></p>`
+      : '<p class="hof-empty">Yükleniyor…</p>';
 
   // ---------- Arka plan yenilemesi (v2.0.22) ----------
   // Excel denetimi ölçümü: başka personel saniyede bir kayıt girerken açık her pencere her olayda 3–7 isteği yeniden
@@ -367,11 +363,19 @@
   HOF.onLedger = (kinds, handler, delay = 250) => {
     const wanted = new Set(kinds);
     let timer = null;
+    // v2.0.22 (gözden geçirme bulgusu 9): bu ekrandaki işlemin olayı (local) ile aynı işlemin ANLIK DURUM olayı bekleme
+    // içinde birleşir; "yerel" bilgisi kaybolmaz (pencere beklemeden yenilenir, en sık aralığa takılmaz).
+    let local = null;
     const fire = detail => {
       const list = detail?.kinds || [];
       if (list.length && !list.some(kind => wanted.has(kind))) return;
+      if (detail?.local && !local) local = detail;
       clearTimeout(timer);
-      timer = setTimeout(() => handler(detail || {}), delay);
+      timer = setTimeout(() => {
+        const merged = local ? { ...(detail || {}), local: true, path: local.path, kinds: local.kinds } : detail || {};
+        local = null;
+        handler(merged);
+      }, delay);
     };
     HOF.on("ledger:changed", fire);
     HOF.on("live:overview.changed", fire);

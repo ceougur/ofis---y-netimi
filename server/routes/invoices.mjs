@@ -299,7 +299,8 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, conf
   // v2.0.22 (Excel denetimi, yük ölçümü): liste ve sol menü rozeti her cari için ayrı ayrı cari ayrıntısı + 5–7 sorgu
   // çalıştırıyordu (2.948 faturada 1,1 sn; her açık pencere başkasının her kaydında yeniden istiyordu). Çok carili istekte
   // aynı girdiler birkaç toplu sorguyla okunur, kapama kuralı (settleInvoices) AYNIDIR; sonuç veri tabanına yazma olana
-  // ya da gün dönene kadar saklanır (total_changes(): bu bağlantının her INSERT/UPDATE/DELETE'inde artar). Tek carili
+  // ya da gün dönene kadar saklanır (total_changes(): bu bağlantının her INSERT/UPDATE/DELETE'inde artar; data_version: başka
+  // bir bağlantının kesinleşen yazmasında değişir — veri dosyasını paylaşan şirket, 2.0.21 "Ayır" öncesi). Tek carili
   // istek (fatura kartı) aşağıdaki cari başına yoldan hesaplanır; iki yolun aynı sonucu verdiği testle denetlenir.
   let statesCache = { key: "", map: null };
   const BATCH_ACCOUNTS = 8;
@@ -308,7 +309,7 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, conf
     // Veri tabanı işleminin içinde (yazmalar henüz kesinleşmemiş, geri alınabilir) önbellek ne okunur ne yazılır: geri
     // alınan işlemin durumu saklanıp sonra gösterilmesin (total_changes() geri alınca azalmaz).
     const inTx = store.inTransaction;
-    const key = `${store.get("SELECT total_changes() AS n").n}|${day}`;
+    const key = `${store.get("SELECT total_changes() AS n").n}|${store.get("PRAGMA data_version").data_version}|${day}`;
     if (!inTx && statesCache.key === key && statesCache.map) return statesCache.map;
     const group = (rows, field) => {
       const map = new Map();
@@ -319,7 +320,7 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, conf
       }
       return map;
     };
-    const ledgers = accounts()?.allLedgers ? accounts().allLedgers().lines : new Map();
+    const ledgers = accounts()?.allLedgers ? accounts().allLedgers({ invoiced: true }).lines : new Map();
     const invoicesOf = group(store.all("SELECT id, account_id AS accountId, kind, status, try_payable AS payable, original_id AS originalId, due_date AS dueDate, plan_id AS planId FROM invoices"), "accountId");
     const baseLinks = new Map();
     for (const entry of store.all("SELECT id, account_id AS accountId, source_id AS invoiceId FROM account_entries WHERE source = 'invoice' AND kind IN ('in', 'out')")) {
@@ -1745,14 +1746,22 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, conf
     const body = await readJson(req, { limit: 2_000_000 });
     // v2.0.22 (madde 5): istek kimliği — aynı formun ikinci gönderimi (yanıt gecikince yeniden Kaydet, ağ tekrarı) ikinci
     // belge açmaz; ilk belge döner. Denetim ile kayıt arasında bekleme (await) yoktur: aynı anda gelen iki istekten biri
-    // kaydeder, öbürü onun sonucunu görür.
-    const requestKey = requests.key(user, body.status === "draft" ? "invoice.draft" : "invoice.create", req.headers["x-hof-request"] || body.requestId);
+    // kaydeder, öbürü onun sonucunu görür. Taslak ve kayıt AYNI işlemdir (bir form = bir belge): "Taslak Olarak Kaydet"in
+    // yanıtı kaybolup ardından "Kaydet"e basılırsa ikinci belge açılmaz, taslak söylenir. İlk belge sonradan silindiyse
+    // yineleme yeni belge açmaz; nedeni söylenir.
+    const requestKey = requests.key(user, "invoice.create", req.headers["x-hof-request"] || body.requestId);
     const hash = requestKey ? bodyHash(body) : "";
+    const gone = () => new HttpError(409, "Bu formla kaydedilen belge sonradan silindi; yeniden kaydetmek için yeni bir fatura başlatın.", { code: "request-id-gone" });
     const prior = requests.lookup(requestKey, hash, refId => {
       const row = store.get("SELECT number, kind, status FROM invoices WHERE id = ?", refId);
-      return `Bu ${row ? label(row).toLocaleLowerCase("tr-TR") : "fatura"} zaten kaydedildi${row?.number ? ` (${row.number})` : ""}; sonradan yapılan değişiklik yeni belge açmaz. Kayıtlı belgeyi açıp Düzenle'yi kullanın ya da yeni bir fatura başlatın.`;
+      if (!row) throw gone();
+      if (row.status === "draft") return "Bu form taslak olarak zaten kaydedildi; ikinci belge açılmadı. Taslağı Taslaklar sekmesinden açıp kaydedin.";
+      return `Bu ${label(row).toLocaleLowerCase("tr-TR")} zaten kaydedildi${row.number ? ` (${row.number})` : ""}; sonradan yapılan değişiklik yeni belge açmaz. Kayıtlı belgeyi açıp Düzenle'yi kullanın ya da yeni bir fatura başlatın.`;
     });
-    if (prior) return ok(res, { ...detail(prior.refId, user), replayed: true });
+    if (prior) {
+      if (!store.get("SELECT 1 AS found FROM invoices WHERE id = ?", prior.refId)) throw gone();
+      return ok(res, { ...detail(prior.refId, user), replayed: true });
+    }
     if (body.status === "draft") {
       const doc = documentInput(body, { mode: "draft" });
       doc.paymentDraft = body.payment && typeof body.payment === "object" ? body.payment : {};

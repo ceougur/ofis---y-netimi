@@ -18,7 +18,12 @@ const EPS = 0.005;
 const tlText = value => `${new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value)} TL`;
 export const roundQty = value => Math.round((Number(value) || 0) * 1000) / 1000;
 
-export const ACCOUNT_TYPES = Object.freeze({ customer: "Müşteri", supplier: "Tedarikçi", other: "Diğer" });
+// Kalıtımsız nesne (v2.0.22, gözden geçirme bulgusu 6): ACCOUNT_TYPES[girdi] denetiminde "constructor", "toString",
+// "__proto__" gibi adlar tür sayılmasın (önceden Excel Tür eşlemesinde 500 veriyor, doğrudan API'de cariye yazılıyordu).
+export const ACCOUNT_TYPES = Object.freeze(Object.assign(Object.create(null), { customer: "Müşteri", supplier: "Tedarikçi", other: "Diğer" }));
+export const isAccountType = value => typeof value === "string" && Object.hasOwn(ACCOUNT_TYPES, value);
+// Excel Tür Değerleri'nde "Varsayılan Tür" seçimi: değer tanınsa da "Tür kolonu yoksa" alanındaki tür yazılır.
+export const TYPE_DEFAULT = "default";
 export const ENTRY_KINDS = Object.freeze({
   debt: { label: "Borç", side: "debit", cash: "" },
   credit: { label: "Alacak", side: "credit", cash: "" },

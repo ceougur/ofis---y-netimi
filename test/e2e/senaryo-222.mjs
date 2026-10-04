@@ -333,6 +333,102 @@ try {
     await closeAll();
   });
 
+  await step("Gözden geçirme 8: kullanıcının kendi araması yüklenemezse eski satırlar yeni süzgecin altında kalmaz", async () => {
+    await closeAll();
+    // Önceden eski liste (ve "Tümünü Seç") yeni arama metninin altında kalıyordu: toplu işlem görünmeyen carilere uygulanırdı.
+    await admin.click("#hof-sidecard [data-action=accounts]");
+    await admin.waitForSelector(`${modal} input[data-filter=q]`);
+    await admin.fill(`${modal} input[data-filter=q]`, "");
+    await admin.waitForFunction(sel => document.querySelectorAll(`${sel} tr[data-account]`).length >= 12, modal, { timeout: 10000 });
+    const isSearch = url => {
+      const parsed = new URL(url);
+      return parsed.pathname === "/api/workspace/accounts" && parsed.searchParams.get("q") === "Müşteri 1";
+    };
+    await admin.route(isSearch, route => (route.request().method() === "GET" ? route.abort("failed") : route.continue()));
+    await admin.fill(`${modal} input[data-filter=q]`, "Müşteri 1");
+    const shown = await admin.waitForSelector(`${modal} .hof-list-error`, { timeout: 10000 }).then(() => true, () => false);
+    const state = await admin.evaluate(sel => ({
+      rows: document.querySelectorAll(`${sel} tr[data-account]`).length,
+      input: document.querySelector(`${sel} input[data-filter=q]`)?.value ?? null,
+      selectAll: Boolean(document.querySelector(`${sel} [data-select-all]`)),
+      retry: Boolean(document.querySelector(`${sel} .hof-list-error [data-act="retryList"]`)),
+    }), modal);
+    ok(shown && state.rows === 0 && !state.selectAll, `arama yüklenemedi: eski satırlar gösterilmiyor (${state.rows} satır), Tümünü Seç yok`);
+    ok(state.input === "Müşteri 1" && state.retry, `arama kutusu yerinde ("${state.input}"), "Yeniden Dene" var`);
+    await shot("arama-yuklenemedi");
+    await admin.unroute(isSearch);
+    await admin.click(`${modal} .hof-list-error [data-act="retryList"]`);
+    const retried = await admin.waitForFunction(sel => {
+      const rows = [...document.querySelectorAll(`${sel} tr[data-account]`)];
+      return rows.length === 3 && rows.every(row => /Müşteri 1[0-2]/.test(row.innerText));
+    }, modal, { timeout: 10000 }).then(() => true, () => false);
+    ok(retried, "Yeniden Dene → Müşteri 10, 11, 12");
+    await admin.fill(`${modal} input[data-filter=q]`, "");
+    await closeAll();
+  });
+
+  await step("Gözden geçirme 4: arka plan yenilemesi kullanıcının sürmekte olan aramasını geçersiz saymaz (Stok)", async () => {
+    await closeAll();
+    // Önceden arka plan yenilemesi sıra numarasını artırıyordu: kullanıcının arama yanıtı atılıyor, yenileme başarısızsa eski
+    // (süzülmemiş) liste aranan metnin altında kalıyordu.
+    const colleague = createClient(BASE);
+    await colleague.login("muhasebe2", STAFF);
+    await api.post("/api/workspace/stock", { name: "Vida M8", code: "VD-8", unit: "Adet", unitPrice: 1, salePrice: 2 });
+    await api.post("/api/workspace/stock", { name: "Somun M8", code: "SM-8", unit: "Adet", unitPrice: 1, salePrice: 2 });
+    await admin.click("#hof-sidecard [data-action=stock]");
+    await admin.waitForFunction(sel => document.querySelectorAll(`${sel} .hof-stock-table tbody tr`).length >= 3, modal, { timeout: 10000 });
+    await admin.waitForTimeout(2000);
+    const isSearch = url => {
+      const parsed = new URL(url);
+      return parsed.pathname === "/api/workspace/stock" && parsed.searchParams.get("q") === "Vida";
+    };
+    let first = null;
+    const seen = [];
+    await admin.route(isSearch, async route => {
+      if (route.request().method() !== "GET") return route.continue();
+      if (!first) {
+        first = route;
+        seen.push("kullanıcı");
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        return route.continue();
+      }
+      seen.push("arka plan");
+      return route.abort("failed");
+    });
+    const answered = admin.waitForResponse(response => isSearch(response.url()), { timeout: 15000 });
+    const sent = admin.waitForRequest(request => isSearch(request.url()), { timeout: 10000 });
+    await admin.fill(`${modal} input[data-filter=q]`, "Vida");
+    await sent;
+    const made = await colleague.post("/api/workspace/stock", { name: "Pul M8", code: "PL-8", unit: "Adet", unitPrice: 1, salePrice: 2 });
+    ok(made.status === 200, `öbür personel ürün açtı (${made.status}) — açık Stok penceresi arka planda yenilenir`);
+    await answered;
+    const filtered = await admin.waitForFunction(sel => {
+      const rows = [...document.querySelectorAll(`${sel} .hof-stock-table tbody tr`)];
+      return rows.length === 1 && rows[0].innerText.includes("Vida M8");
+    }, modal, { timeout: 1200 }).then(() => true, () => false);
+    ok(seen.includes("arka plan"), `arama sürerken arka plan yenilemesi gitti ve başarısız oldu (${seen.join(", ")})`);
+    ok(filtered, "kullanıcının arama yanıtı geldiği anda liste süzüldü (yalnız Vida M8)");
+    await shot("arama-arka-plan-yenilemesi");
+    await admin.unroute(isSearch);
+    await closeAll();
+  });
+
+  await step("Gözden geçirme 9: bu ekrandaki işlemin \"yerel\" bilgisi ANLIK DURUM olayıyla birleşince kaybolmaz", async () => {
+    await closeAll();
+    await admin.evaluate(() => {
+      window.__ledger = [];
+      window.HOF.onLedger(["cash", "accounts"], detail => window.__ledger.push({ local: Boolean(detail.local), path: detail.path || "" }), 350);
+    });
+    const status = await admin.evaluate(async today => {
+      const result = await window.HOF.api("/api/workspace/cash", { method: "POST", body: { kind: "in", amount: 10, date: today, description: "yerel deneme" } });
+      return result ? 200 : 0;
+    }, TODAY);
+    await admin.waitForTimeout(2500);
+    const got = await admin.evaluate(() => window.__ledger);
+    ok(status === 200 && got.length >= 1, `Kasa girişi bu ekrandan yapıldı; işleyiciye ${got.length} çağrı`);
+    ok(got.some(item => item.local && item.path.startsWith("/api/workspace/cash")), `işleyici "yerel" bilgisini aldı (${JSON.stringify(got)})`);
+  });
+
   await step("S2: başka personelin cari notu düzeltmesi ANLIK DURUM'u yeniden yükletmez; parasal kayıt yükletir", async () => {
     const colleague = createClient(BASE);
     await colleague.login("muhasebe2", STAFF);

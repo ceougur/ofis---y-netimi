@@ -71,15 +71,21 @@
     }
   };
   async function loadList({ quiet = false } = {}) {
-    const ticket = ++listRequest;
+    // Arka plan yenilemesi (quiet) sıra numarasını artırmaz: kullanıcının sürmekte olan araması/süzgeci geçersiz sayılmaz;
+    // en çok 2 bağlantılık arka plan kuyruğundan gider (v2.0.22, HOF.listPending).
+    const ticket = quiet ? listRequest : ++listRequest;
     try {
-      const data = await HOF.api(`/api/workspace/plans?${listQuery()}`);
+      const data = await HOF.api(`/api/workspace/plans?${listQuery()}`, quiet ? { background: true } : {});
       if (ticket !== listRequest) return;
+      view.listError = "";
       view.list = data;
       if (view.mode === "list") renderList();
     } catch (error) {
-      if (ticket === listRequest && view.mode === "list") HOF.listFailed(body(), error, { quiet, hasData: Boolean(view.list) });
       if (quiet) throw error;
+      if (ticket !== listRequest) return;
+      view.list = null;
+      view.listError = error.message;
+      if (view.mode === "list") renderList();
     }
   }
   async function loadPlan(id, { quiet = false } = {}) {
@@ -408,7 +414,7 @@
       ${groupHint(data)}
       <div class="hof-cash-list hof-plans-list" data-list>${
         !data
-          ? '<p class="hof-empty">Yükleniyor…</p>'
+          ? HOF.listPending(view.listError)
           : data.plans.length
             ? `<table class="hof-table hof-cash-table hof-plans-table"><thead><tr><th class="hof-plan-no">No</th><th>Kart</th><th class="num">Toplam</th><th class="num">Ödenen</th><th class="num">Kalan</th><th>Sıradaki Vade</th><th>Durum</th></tr></thead><tbody>${data.plans.map(row).join("")}</tbody></table>`
             : emptyList(filtered, manage)
@@ -1241,6 +1247,11 @@
     }
     if ("close" in button.dataset) return modal.close();
     const act = button.dataset.act;
+    if (act === "retryList") {
+      view.listError = "";
+      renderList();
+      return loadList();
+    }
     if (act === "back") {
       view.mode = "list";
       view.planId = "";

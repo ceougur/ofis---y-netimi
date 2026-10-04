@@ -28,7 +28,8 @@ const PREVIEW_ROWS = 200;
 const PDF_ROWS = 20_000;
 const MAX_ROWS = 500_000;
 const collator = new Intl.Collator("tr", { numeric: true, sensitivity: "base" });
-const TYPE_TEXT = { customer: "Müşteri", supplier: "Tedarikçi", other: "Diğer" };
+// Kalıtımsız (v2.0.22): süzgeçteki "constructor" gibi adlar tür sayılmaz.
+const TYPE_TEXT = Object.freeze(Object.assign(Object.create(null), { customer: "Müşteri", supplier: "Tedarikçi", other: "Diğer" }));
 const CASH_SOURCE = { payment: "Kayıt tahsilatı", manual: "Kasa", plan: "Taksit", account: "Cari", stock: "Stok", cheque: "Çek / senet", invoice: "Fatura" };
 const PRIORITY = { high: "Yüksek", normal: "Normal", low: "Düşük", urgent: "Acil" };
 const TASK_STATUS = { open: "Açık", done: "Tamamlandı", completed: "Tamamlandı", cancelled: "İptal" };

@@ -67,16 +67,23 @@
   }
 
   async function loadList(more = false, { quiet = false } = {}) {
-    const ticket = ++listRequest;
+    // Arka plan yenilemesi (quiet) sıra numarasını artırmaz: kullanıcının sürmekte olan araması/süzgeci geçersiz sayılmaz;
+    // en çok 2 bağlantılık arka plan kuyruğundan gider (v2.0.22, HOF.listPending).
+    const ticket = quiet ? listRequest : ++listRequest;
     try {
       const offset = more && view.list ? view.list.cheques.length : 0;
-      const data = await HOF.api(`/api/workspace/cheques?${listQuery({ offset, limit: 300 })}`);
+      const data = await HOF.api(`/api/workspace/cheques?${listQuery({ offset, limit: 300 })}`, quiet ? { background: true } : {});
       if (ticket !== listRequest) return;
+      view.listError = "";
       view.list = more && view.list ? { ...data, cheques: [...view.list.cheques, ...data.cheques] } : data;
       if (view.mode === "list") renderList();
     } catch (error) {
-      if (ticket === listRequest) HOF.listFailed(body(), error, { quiet, hasData: Boolean(view.list) });
       if (quiet) throw error;
+      if (ticket !== listRequest) return;
+      if (more && view.list) return HOF.toastError(error);
+      view.list = null;
+      view.listError = error.message;
+      if (view.mode === "list") renderList();
     }
   }
   async function loadCheque(id, action = "", { quiet = false } = {}) {
@@ -139,7 +146,7 @@
         <input type="search" data-filter="q" value="${esc(view.q)}" placeholder="No, banka, kişi, not ara…" aria-label="Ara">
       </div>
       ${data ? `<div class="hof-rep-table"><table class="hof-table hof-chq-table"><thead><tr><th>Vade</th><th>Evrak</th><th>No / Banka</th><th>Kimden / Kime</th><th>Durum</th><th class="num">Tutar</th></tr></thead><tbody>${rows || `<tr><td colspan="6" class="hof-empty">${view.status === "open" && !view.q ? "Portföyde evrak yok. “+ Çek / senet al” ile ekleyin." : "Bu süzgeçte evrak yok."}</td></tr>`}</tbody></table></div>
-        <p class="hof-rep-note">${data.total.toLocaleString("tr-TR")} evrak · ${esc(money(data.listed.amount))}${data.hasMore ? ` · <button type="button" class="hof-link-button" data-act="more">Daha Fazla Göster</button>` : ""}</p>` : '<p class="hof-empty">Yükleniyor…</p>'}`);
+        <p class="hof-rep-note">${data.total.toLocaleString("tr-TR")} evrak · ${esc(money(data.listed.amount))}${data.hasMore ? ` · <button type="button" class="hof-link-button" data-act="more">Daha Fazla Göster</button>` : ""}</p>` : HOF.listPending(view.listError)}`);
   }
 
   // ---------- Kart ----------
@@ -407,6 +414,11 @@
     if (act === "new-out") return chequeForm({ direction: "out" });
     if (act === "import") return importFlow();
     if (act === "more") return loadList(true);
+    if (act === "retryList") {
+      view.listError = "";
+      renderList();
+      return loadList();
+    }
     if (act === "back") {
       view.mode = "list";
       view.id = "";

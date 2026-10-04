@@ -27,7 +27,8 @@ const OVERVIEW_KINDS = new Set(["cash", "accounts", "plans", "stock", "cheques"]
 const MAX_RANGE_DAYS = 36_600; // 100 yıl (yalnız doğrulama; "tüm zaman" mizanı için geniş aralık serbest)
 const PDF_ROWS = 20_000;
 const collator = new Intl.Collator("tr", { numeric: true, sensitivity: "base" });
-const TYPE_TEXT = { customer: "Müşteri", supplier: "Tedarikçi", other: "Diğer" };
+// Kalıtımsız (v2.0.22): süzgeçteki "constructor" gibi adlar tür sayılmaz.
+const TYPE_TEXT = Object.freeze(Object.assign(Object.create(null), { customer: "Müşteri", supplier: "Tedarikçi", other: "Diğer" }));
 const SOURCE_TEXT = { plan: "Taksit", cheque: "Çek", note: "Senet", invoice: "Fatura (vadeli)", cash: "Kasa (ileri tarihli)", table: "Tablo", promise: "Ödeme sözü", deadline: "Son tarih" };
 // Vade takip kaynakları (v2.0.9) ve görme koşulu: çek/senet ve Kasa, ANLIK DURUM yetkisi ya da o modülün yetkisiyle.
 const DUE_SOURCES = ["plan", "cheque", "note", "invoice", "cash", "table", "promise", "deadline"];
