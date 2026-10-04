@@ -590,6 +590,16 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   Bulgu 1'de ikinci yol bulundu ve kapandı: peşin tutar yazılıp fareyle doğrudan Kalan → Vade Tarihi'ne tıklanınca yazılan
   vade kayboluyor, fatura SESSİZCE bugünün vadesiyle kaydediliyordu (2.0.22'de de var). Sırada: npm test + diğer arayüz
   senaryoları + hafta testi yeniden, bağımsız gözden geçirme, sürüm 2.0.23, imzalı paket + kurulum, teslim A + B.
+  DURUM (04/05.10.2026): ÜÇ bağımsız gözden geçirme (11 + 12 + 4 bulgu), hepsi yeniden üretildi, önce kırmızı test. Kapama
+  modeli son hali: "Carinin Mevcut Borcu" kartı açıldığı anda AÇIK olan borcu kapsar (kartın açılış anına kadar kayıtlı
+  satırlarla kapama yapılır; açık borçlar en son kaydedilenden; kapasite = min(tutar, taksitler)); birleşik listelerde kartın
+  payı kalanını aşmaz; Mevcut Borç kartı BÜYÜTÜLEMEZ (409, yeni kart; 3. tur kararı — büyütmeyi destekleyen ara çözüm ilgisiz
+  satışı "Ödendi" gösteriyordu); borcu azalmış kart geri yüklenmez; Otomatik Dağıt Düzenle'nin denetimleriyle; mahsup ve
+  "Kapatılacak Fatura" taksitli faturaya 409; Kaydet bekleyen hesap + Tamamı Peşin bitince kurulur. ERTELENEN (bilinen sınır,
+  kullanıcıya söylenecek): taksitli faturadan / iki kartlı caride İADE kartı yanlış küçültüyor (trimCovers, 2.0.22'de daha
+  kötü) → iade/iptal/düzenleme testleriyle sıradaki sürüm. Son kodla: npm test 959/959, 21 arayüz senaryosu (211 bir kez
+  zamanlama, tek başına 57/57), mutabakat 3.000, güvenilirlik 2×1.000, hafta testi 67/67 + 57/57 rapor kalemi, hız tablosu
+  `docs/2.0.23-KANIT.md`. Kırmızı kanıt 2.0.22'de: bulgu-223+rastgele 43'ün 32'si, senaryo-223 29'un 25'i. Kılavuz değişti.
   BULGU 2 (04.10.2026, ek işlemlerde bulundu; KOD DEĞİŞTİRİLMEDİ, karar kullanıcıda): aynı caride açık satış faturası +
   Taksit penceresinden "Yeni Borç" ile AYRI taksit kartı varsa fatura kapama (`server/lib/invoice-settle.mjs`) kartın
   tahsilatını (plan-in) ve kartın borcunu genel FIFO'ya katıyor; taksit modülü ise kartın ödenenini ayrı sayıyor → iki hesap
