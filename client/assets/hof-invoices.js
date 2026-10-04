@@ -1015,13 +1015,15 @@
       runCalc();
     }, delay);
   }
-  // Bekleyen ya da süren hesabı bitirir.
+  // Bekleyen ya da süren hesabı bitirir; bu arada yenisi başladıysa (ör. Kaydet'in hesabı) onu da bekler.
   async function flushCalc() {
-    if (calcPending) {
-      clearTimeout(calcTimer);
-      calcPending = false;
-      await runCalc();
-    } else if (calcRunning) await calcRunning;
+    for (let round = 0; round < 6 && (calcPending || calcRunning); round += 1) {
+      if (calcPending) {
+        clearTimeout(calcTimer);
+        calcPending = false;
+        await runCalc();
+      } else await calcRunning;
+    }
   }
   function runCalc() {
     const run = calcOnce();
@@ -1323,13 +1325,24 @@
       return body()?.querySelector(`[data-pay="cash"][data-i="${form.pay.cash.length - 1}"][data-f="amount"]`)?.focus();
     }
     if (act === "pay-all-cash") {
-      // Fiyat yeni değiştiyse hesap bitmeden eski toplam kullanılıyordu (288'lik fatura 24 peşinle kaydedildi).
-      await flushCalc();
-      if (view.form !== form) return;
-      const payable = form.calc ? form.calc.try?.payable ?? form.calc.totals.payable : 0;
-      const others = form.pay.cheques.reduce((sum, item) => sum + amountNum(item.amount), 0) + (form.portfolio || []).filter(item => form.pay.endorse.includes(item.id)).reduce((sum, item) => sum + Number(item.amount || 0), 0);
-      form.pay.cash = [{ amount: amountText(Math.max(0, Math.round((payable - others) * 100) / 100)), method: form.pay.cash[0]?.method || "cash" }];
-      return renderPay();
+      // Fiyat yeni değiştiyse hesap bitmeden eski toplam kullanılıyordu (288'lik fatura 24 peşinle kaydedildi). Kaydet bu işin
+      // bitmesini bekler (2. gözden geçirme: yük, peşin tutar yazılmadan kuruluyor; ekranda peşin görünen fatura 0 peşinle
+      // kaydediliyordu).
+      const job = (async () => {
+        await flushCalc();
+        if (view.form !== form) return;
+        const payable = form.calc ? form.calc.try?.payable ?? form.calc.totals.payable : 0;
+        const others = form.pay.cheques.reduce((sum, item) => sum + amountNum(item.amount), 0) + (form.portfolio || []).filter(item => form.pay.endorse.includes(item.id)).reduce((sum, item) => sum + Number(item.amount || 0), 0);
+        form.pay.cash = [{ amount: amountText(Math.max(0, Math.round((payable - others) * 100) / 100)), method: form.pay.cash[0]?.method || "cash" }];
+        renderPay();
+      })();
+      form.payPending = job;
+      try {
+        await job;
+      } finally {
+        if (form.payPending === job) form.payPending = null;
+      }
+      return;
     }
     if (act === "pay-add-cheque") {
       form.pay.cheques.push({ instrument: "cheque", amount: "", dueDate: "", serialNo: "", bank: "", drawer: "" });
@@ -1403,6 +1416,18 @@
       HOF.toast(message, { type: "error" });
     };
     if (error) error.textContent = "";
+    // v2.0.23 (2. gözden geçirme): yük, bekleyen hesap ve "Tamamı Peşin" bitmeden kuruluyordu (sunucu yavaşken ekranda peşin
+    // görünen fatura 0 peşinle kaydedildi). Önce ikisi biter, kayıt ekranda görünenle yapılır.
+    if (form.payPending || calcPending || calcRunning) {
+      form.busy = true;
+      try {
+        if (form.payPending) await form.payPending.catch(() => null);
+        await flushCalc();
+      } finally {
+        form.busy = false;
+      }
+      if (view.form !== form) return;
+    }
     if (isReturn(form.kind) && !form.original) return fail("İade edilecek faturayı üstteki arama kutusundan seçin.");
     if (!form.account) return fail(`${form.side === "purchase" ? "Tedarikçiyi" : "Müşteriyi"} (cariyi) seçin.`);
     if (!usedLines(form).length) return fail("En az bir kalem yazın.");

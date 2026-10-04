@@ -249,6 +249,40 @@ try {
     ok(value === "288", `Tamamı Peşin: ${value} (beklenen 288)`);
     ok(saved?.tryPayable === 288 && saved?.paid === 288 && saved?.open === 0, `fatura 288, ödenen ${saved?.paid}, açık ${saved?.open}${error ? ` · ${error}` : ""}`);
   });
+  // 2. gözden geçirme (u1-pesin-kaydet-yarisi): sunucu yavaşken fiyat değişir, Tamamı Peşin'e ve hemen Kaydet'e basılır.
+  // Kaydet'in yükü Tamamı Peşin bitmeden kuruluyordu: ekranda peşin tutar görünürken fatura 0 peşinle kaydediliyordu.
+  await step("Bulgu 1: fiyat değişir, Tamamı Peşin ve hemen Kaydet (hesap 1.200 ms gecikmeli) — ekrandaki ödemeyle kaydedilir", async () => {
+    await newPurchase("K-8");
+    const slow = async route => {
+      await new Promise(resolve => setTimeout(resolve, 1200));
+      await route.continue();
+    };
+    await page.route(/\/api\/workspace\/invoices\/calc/, slow);
+    let value = "";
+    let saved = null;
+    try {
+      await page.click(`${inv} [data-l="0"][data-f="unitPrice"]`);
+      await page.keyboard.press("Control+A");
+      await page.keyboard.type("120", { delay: 40 });
+      await page.click(`${inv} [data-act="pay-all-cash"]`);
+      await page.waitForTimeout(150);
+      await page.click(`${inv} [data-act="issue"]`);
+      await page.waitForSelector(`${modal} [data-answer="yes"]`, { timeout: 15000 });
+      value = await page.$eval(`${inv} [data-pay="cash"][data-i="0"][data-f="amount"]`, n => n.value).catch(() => "(yok)");
+      for (let i = 0; i < 24 && !saved; i += 1) {
+        const yes = await page.$(`${modal} [data-answer="yes"]`);
+        if (yes) await yes.click();
+        await page.waitForTimeout(500);
+        saved = (unwrap(await api.get("/api/workspace/invoices?tab=all&limit=100")).invoices || []).find(d => d.number === "K-8") || null;
+      }
+    } finally {
+      await page.unroute(/\/api\/workspace\/invoices\/calc/, slow);
+    }
+    await shot("bulgu1-K-8");
+    await closeAll();
+    ok(value === "288", `onay sorulurken peşin tutar güncel toplam (${value || "boş"}; beklenen 288)`);
+    ok(saved?.tryPayable === 288 && saved?.paid === 288 && saved?.open === 0, `fatura 288, ödenen ${saved?.paid}, açık ${saved?.open} (ekranda görünenle aynı)`);
+  });
   await step("Bulgu 1: tutarı geçersiz evrakla kayıt durur (sessizce evraksız kaydedilmez)", async () => {
     const r = await purchase({ number: "K-3", amount: "240", typedAmount: "Ziraat", mode: "klavye" });
     ok(/tutarı geçerli değil|tutarı yazılmadı/.test(r.error), `kayıt durdu, açık neden: "${r.error}"`);
