@@ -570,6 +570,10 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   fatura "Ödendi" (hayalet ödeme, 2.0.17 m5'in akrabası). Değişmez: açık fatura + kart kalanı = cari bakiye; A/B/C'de bozuk;
   Alacak Yaşlandırma 29.440, gerçek 33.440. Düzeltme önerisi (karar kullanıcıda): faturasız ve "Yeni Borç" kartın borcu ve
   tahsilatı kendi içinde kapanır (FIFO'ya girmez); "Carinin Mevcut Borcu" kartında tahsilat faturaları FIFO kapatmaya devam eder.
+  Ek (D senaryosu, aynı gün): "Carinin Mevcut Borcu" ile açılan kartta fatura ve kart kendi aralarında tutarlı (fatura açığı
+  9.000 = kart kalanı 9.000 = bakiye 9.000) ama Alacak Yaşlandırma AYNI borcu iki kez sayıyor (fatura + kart; 47.440 ↔ gerçek
+  42.440). Koddan: Nakit Akış (overview.mjs:299-302), Vade Takip (452-455), takvim/bildirim (dues.mjs:68-72) de iki listeyi
+  birleştiriyor → aynı borç iki kez (ölçülmedi, koddan).
   BULGU 3 (04.10.2026, rapor denetiminde; KOD DEĞİŞTİRİLMEDİ): Raporlar → Tüm Raporlar'da cari seçildikten sonra dönem düğmesi
   ("Tüm Zamanlar", "Bu Yıl", "Bu Ay"…) cari seçimini SİLİYOR: Cari Ekstre "Önce cariyi seçin"e düşüyor; fatura raporlarındaki
   isteğe bağlı cari süzgeci sessizce kalkıp rapor BÜTÜN carileri gösteriyor (Deniz süzülü 1 fatura/1.000 → "Bu Yıl" → 2 fatura/

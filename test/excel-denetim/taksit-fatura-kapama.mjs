@@ -24,7 +24,7 @@ async function scenario(label, steps) {
   let invoiceId = "";
   for (const step of steps) {
     if (step.invoice) invoiceId = (await must("fatura", c.post("/api/workspace/invoices", { scenario: "service_sale", accountId: acc.id, issueDate: step.date, lines: [{ itemId: item.id, qty: 1, unitPrice: step.invoice, vatRate: 0 }], payment: { rest: "open", dueDate: step.date } }))).id;
-    if (step.plan) planId = (await must("kart", c.post("/api/workspace/plans", { name: acc.name, registeredOn: step.date, total: String(step.plan), accountId: acc.id, mode: "auto", count: "3", firstDue: "2025-03-01" }))).id;
+    if (step.plan) planId = (await must("kart", c.post("/api/workspace/plans", { name: acc.name, registeredOn: step.date, total: String(step.plan), accountId: acc.id, mode: "auto", count: "3", firstDue: "2025-03-01", ...(step.covers ? { coversBalance: true } : {}) }))).id;
     if (step.collect) await must("tahsilat", c.post(`/api/workspace/accounts/${acc.id}/entries`, { kind: "in", amount: step.collect, date: step.date, method: "cash", note: "cari kartından tahsilat" }));
     if (step.planCollect) await must("kart tahsilatı", c.post(`/api/workspace/plans/${planId}/entries`, { kind: "in", amount: step.planCollect, date: step.date, method: "bank", note: "taksit kartından tahsilat" }));
   }
@@ -45,6 +45,12 @@ try {
   await scenario("A · önce fatura, sonra ayrı kart", [{ date: "2025-01-23", invoice: 12720 }, { date: "2025-01-24", plan: 9000 }, { date: "2025-01-25", collect: 5000 }, { date: "2025-01-26", planCollect: 3000 }]);
   await scenario("B · önce kart, sonra fatura", [{ date: "2025-01-10", plan: 9000 }, { date: "2025-01-23", invoice: 12720 }, { date: "2025-01-25", collect: 5000 }, { date: "2025-01-26", planCollect: 3000 }]);
   await scenario("C · fatura hiç ödenmedi, kart tamamen ödendi", [{ date: "2025-02-01", invoice: 6000 }, { date: "2025-02-02", plan: 9000 }, { date: "2025-02-03", planCollect: 3000 }, { date: "2025-02-04", planCollect: 3000 }, { date: "2025-02-05", planCollect: 3000 }]);
+  // D: kart AYRI borç değil, faturanın borcunu taksitlendiriyor ("Carinin Mevcut Borcu"); burada tek borç vardır:
+  // fatura açığı ile kart kalanı AYNI borcun iki görünüşüdür (toplanmaz), ikisi de cari bakiyesine eşit olmalı.
+  await scenario("D · faturanın borcu karta bölündü (Carinin Mevcut Borcu)", [{ date: "2025-02-10", invoice: 12000 }, { date: "2025-02-11", plan: 12000, covers: true }, { date: "2025-02-12", planCollect: 3000 }]);
+  const d = out.at(-1);
+  d.tutarli = Math.abs(d.fatura.acik - d.cariBakiye) < 0.005 && Math.abs(d.taksitKarti.kalan - d.cariBakiye) < 0.005;
+  console.log(`  D için doğru ölçü: fatura açığı ${d.fatura.acik} = kart kalanı ${d.taksitKarti.kalan} = cari bakiye ${d.cariBakiye} → ${d.tutarli ? "TUTARLI" : "TUTARSIZ"}`);
   const aging = await must("yaşlandırma", c.get("/api/workspace/report-center/alacak-yaslandirma"));
   console.log(`\nAlacak Yaşlandırma özeti: ${JSON.stringify(aging.summary)}`);
   const accounts = (await must("cariler", c.get("/api/workspace/accounts?status=all&limit=50"))).accounts;

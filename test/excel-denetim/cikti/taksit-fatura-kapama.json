@@ -108,6 +108,38 @@
    "cariBakiye": 6000,
    "acikToplam": 0,
    "tutarli": false
+  },
+  {
+   "senaryo": "D · faturanın borcu karta bölündü (Carinin Mevcut Borcu)",
+   "adimlar": [
+    {
+     "date": "2025-02-10",
+     "invoice": 12000
+    },
+    {
+     "date": "2025-02-11",
+     "plan": 12000,
+     "covers": true
+    },
+    {
+     "date": "2025-02-12",
+     "planCollect": 3000
+    }
+   ],
+   "fatura": {
+    "odenecek": 12000,
+    "odenen": 3000,
+    "acik": 9000,
+    "durum": "Vadesi Geçti"
+   },
+   "taksitKarti": {
+    "toplam": 12000,
+    "odenen": 3000,
+    "kalan": 9000
+   },
+   "cariBakiye": 9000,
+   "acikToplam": 18000,
+   "tutarli": true
   }
  ],
  "yaslandirma": [
@@ -129,11 +161,11 @@
   ],
   [
    "90+ gün",
-   "29.440,00 TL"
+   "47.440,00 TL"
   ],
   [
    "Toplam Gecikmiş",
-   "29.440,00 TL"
+   "47.440,00 TL"
   ]
  ]
 }
