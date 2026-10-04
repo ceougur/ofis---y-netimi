@@ -91,6 +91,8 @@
     try {
       const cheque = await HOF.api(`/api/workspace/cheques/${encodeURIComponent(id)}`);
       if (ticket !== cardRequest) return;
+      // Arka plan yenilemesi gelene kadar kullanıcı listeye döndüyse eski kart geri gelmez.
+      if (quiet && (view.mode !== "card" || view.id !== id)) return;
       view.cheque = cheque;
       view.id = id;
       view.mode = "card";
@@ -98,6 +100,7 @@
       if (action && cheque.actions?.some(item => item.key === action)) actionForm(cheque, action);
     } catch (error) {
       if (ticket !== cardRequest) return;
+      if (quiet && (view.mode !== "card" || view.id !== id)) return;
       if (quiet && !HOF.lostRecord(error)) throw error;
       HOF.toastError(error);
       view.mode = "list";

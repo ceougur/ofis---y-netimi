@@ -429,6 +429,83 @@ try {
     ok(got.some(item => item.local && item.path.startsWith("/api/workspace/cash")), `işleyici "yerel" bilgisini aldı (${JSON.stringify(got)})`);
   });
 
+  await step("Kart yenilemesi sürerken kullanıcı başka yere geçerse eski kart geri gelmez, hatası onu yerinden etmez (Taksit, Çek/Senet, Fatura)", async () => {
+    await closeAll();
+    const colleague = createClient(BASE);
+    await colleague.login("muhasebe2", STAFF);
+    const plan = unwrap(await api.post("/api/workspace/plans", { accountId: ids.customers[0], name: "Müşteri 01", total: "1.200", mode: "auto", count: 3, firstDue: TODAY }));
+    const cheque = unwrap(await api.post("/api/workspace/cheques", { instrument: "cheque", direction: "in", accountId: ids.customers[1], drawer: "Müşteri 02", amount: 500, issueDate: TODAY, dueDate: TODAY, serialNo: "CK-222-1", bank: "Ziraat" }));
+    const sale = async customer => unwrap(await api.post("/api/workspace/invoices", { scenario: "goods_sale", accountId: ids.customers[customer], issueDate: TODAY, lines: [{ itemId: ids.item, qty: 1, unitPrice: 10, vatRate: 0 }], payment: { rest: "open" }, force: true }));
+    const docA = await sale(7);
+    const docB = await sale(8);
+    ok(plan?.id && cheque?.id && docA?.id && docB?.id, "taksit kartı, çek ve iki fatura hazır");
+    // Kartın arka plan isteğini yavaşlatır (yük altındaki sunucu gibi); isteğe bağlı olarak 404 döndürür.
+    const slow = async (pathname, { notFound = false } = {}) => {
+      const match = url => new URL(url).pathname === pathname;
+      await admin.route(match, async route => {
+        if (route.request().method() !== "GET") return route.continue();
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        if (notFound) return route.fulfill({ status: 404, contentType: "application/json", body: JSON.stringify({ ok: false, error: "Fatura bulunamadı." }) }).catch(() => null);
+        return route.continue().catch(() => null);
+      });
+      return match;
+    };
+    const foreignChange = () => colleague.post(`/api/workspace/accounts/${ids.customers[6]}/entries`, { kind: "in", amount: 2, date: TODAY, method: "cash", note: "kart yenileme sırasında" });
+
+    // Taksit: kart açık → başka personelin kaydı kartı arka planda yeniler → istek sürerken kullanıcı listeye döner.
+    await admin.click("#hof-sidecard [data-action=plans]");
+    await admin.waitForSelector(`${modal} tr[data-plan="${plan.id}"]`, { timeout: 15000 });
+    await admin.click(`${modal} tr[data-plan="${plan.id}"]`);
+    await admin.waitForSelector(`${modal} .hof-plan-back`, { timeout: 10000 });
+    await admin.waitForTimeout(2000);
+    let match = await slow(`/api/workspace/plans/${plan.id}`);
+    let started = admin.waitForRequest(request => match(request.url()) && request.method() === "GET", { timeout: 10000 });
+    await foreignChange();
+    await started;
+    await admin.click(`${modal} .hof-plan-back`);
+    await admin.waitForTimeout(3500);
+    ok(await admin.evaluate(sel => Boolean(document.querySelector(`${sel} tr[data-plan]`)) && !document.querySelector(`${sel} .hof-plan-back`), modal), "Taksit: listeye dönen kullanıcıya eski kart geri gelmedi");
+    await admin.unroute(match);
+    await closeAll();
+
+    // Çek/Senet: aynı akış; yenilemeyi evrakın kendi değişikliği tetikler.
+    await admin.click("#hof-sidecard [data-action=cheques]");
+    await admin.waitForSelector(`${modal} tr[data-cheque="${cheque.id}"]`, { timeout: 15000 });
+    await admin.click(`${modal} tr[data-cheque="${cheque.id}"]`);
+    await admin.waitForSelector(`${modal} .hof-plan-back`, { timeout: 10000 });
+    await admin.waitForTimeout(2000);
+    match = await slow(`/api/workspace/cheques/${cheque.id}`);
+    started = admin.waitForRequest(request => match(request.url()) && request.method() === "GET", { timeout: 10000 });
+    const edited = await colleague.put(`/api/workspace/cheques/${cheque.id}`, { note: "başka personelin notu" });
+    ok(edited.status === 200, `öbür personel çekin notunu düzeltti (${edited.status})`);
+    await started;
+    await admin.click(`${modal} .hof-plan-back`);
+    await admin.waitForTimeout(3500);
+    ok(await admin.evaluate(sel => Boolean(document.querySelector(`${sel} tr[data-cheque]`)) && !document.querySelector(`${sel} .hof-plan-back`), modal), "Çek/Senet: listeye dönen kullanıcıya eski kart geri gelmedi");
+    await admin.unroute(match);
+    await closeAll();
+
+    // Fatura: A kartının arka plan isteği 404 alır; kullanıcı o arada B'yi açmıştır → B'de kalır, A'nın hatası gösterilmez.
+    await admin.click("#hof-sidecard [data-action=invoices]");
+    await admin.waitForSelector(`${inv} tr[data-inv="${docA.id}"]`, { timeout: 15000 });
+    await admin.click(`${inv} tr[data-inv="${docA.id}"]`);
+    await admin.waitForSelector(`${inv} .hof-plan-back`, { timeout: 10000 });
+    await admin.waitForTimeout(2000);
+    match = await slow(`/api/workspace/invoices/${docA.id}`, { notFound: true });
+    started = admin.waitForRequest(request => match(request.url()) && request.method() === "GET", { timeout: 10000 });
+    await foreignChange();
+    await started;
+    await admin.click(`${inv} .hof-plan-back`);
+    await admin.waitForSelector(`${inv} tr[data-inv="${docB.id}"]`, { timeout: 10000 });
+    await admin.click(`${inv} tr[data-inv="${docB.id}"]`);
+    await admin.waitForTimeout(3500);
+    const onB = await admin.evaluate(([sel, number]) => Boolean(document.querySelector(`${sel} .hof-plan-back`)) && (document.querySelector(sel)?.innerText || "").includes(number), [inv, docB.number]);
+    const toasts = await admin.evaluate(() => [...document.querySelectorAll(".hof-toast")].map(node => node.textContent).join(" "));
+    ok(onB && !/bulunamadı/i.test(toasts), `Fatura: kullanıcı B (${docB.number}) kartında kaldı, A'nın hatası gösterilmedi${/bulunamadı/i.test(toasts) ? ` (bildirim: ${toasts.slice(0, 80)})` : ""}`);
+    await admin.unroute(match);
+    await closeAll();
+  });
+
   await step("S2: başka personelin cari notu düzeltmesi ANLIK DURUM'u yeniden yükletmez; parasal kayıt yükletir", async () => {
     const colleague = createClient(BASE);
     await colleague.login("muhasebe2", STAFF);

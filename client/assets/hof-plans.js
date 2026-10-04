@@ -91,6 +91,8 @@
   async function loadPlan(id, { quiet = false } = {}) {
     try {
       const plan = await HOF.api(`/api/workspace/plans/${encodeURIComponent(id)}`);
+      // Arka plan yenilemesi gelene kadar kullanıcı listeye ya da başka karta geçtiyse eski kart geri gelmez.
+      if (quiet && (view.mode !== "card" || view.planId !== id)) return;
       // Başka bir karta geçilince taksit/hareket süzgeçleri sıfırlanır.
       if (id !== view.planId) {
         view.itemFilter = "all";
@@ -101,6 +103,7 @@
       view.mode = "card";
       renderCard();
     } catch (error) {
+      if (quiet && (view.mode !== "card" || view.planId !== id)) return;
       if (quiet && !HOF.lostRecord(error)) throw error;
       HOF.toastError(error);
       view.mode = "list";

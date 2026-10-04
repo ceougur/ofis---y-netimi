@@ -1423,6 +1423,8 @@
       if (quiet && (view.mode !== "card" || view.id !== id)) return;
       showDoc(doc);
     } catch (error) {
+      // Kullanıcı o arada başka belgeye ya da listeye geçtiyse eski belgenin hatası onu yerinden etmez.
+      if (quiet && (view.mode !== "card" || view.id !== id)) return;
       if (quiet && !HOF.lostRecord(error)) throw error;
       HOF.toastError(error);
       showList();
