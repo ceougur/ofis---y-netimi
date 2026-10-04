@@ -583,6 +583,11 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   6.000). Tarih yazıp "Ön İzle" seçimi korur. Kök neden: `client/assets/hof-overview.js:715` onReportClick Raporlar penceresinin
   her [data-preset] tıklamasını da işliyor ve sekmeyi yeniden kuruyor (hof-report-center'ın kendi işleyicisiyle çakışma).
   Yeniden üretim: `test/excel-denetim/rapor-ekstre-secim.mjs` (gerçek tıklamalarla).
+  BULGU 4 (04.10.2026, rapor denetiminde; KOD DEĞİŞTİRİLMEDİ): Raporlar → Banka ve POS Hareketleri'nde "Yol" kutusu (Banka /
+  POS) HİÇ ÇALIŞMIYOR — kutu "Banka" gösterir, rapor (ekran, PDF, Excel) hep Banka + POS birleşik. Kök neden:
+  `server/routes/report-center.mjs:1382` queryOf izin listesinde `payMethod` yok → parametre atılıyor (2.0.17'den beri; müşteri
+  isteği "yol süzgeci" hiç çalışmadı; senaryo-216 raporları yalnız varsayılan süzgeçle açtığı için yakalanmadı). Birleşik toplam
+  doğru (giriş 139.997,01 = banka 126.647,20 + POS 13.349,81). Yeniden üretim: `rapor-ekstre-secim.mjs` adım 8–10.
   KULLANICI ÖNERİSİ (04.10.2026, "baş mimar olarak onaylarsan"): öncelik 1 = güvenlik/veri bütünlüğü (3 cari türü, 4 tanımsız
   ödeme yolu, 5 API çift fatura); öncelik 2 = performans/UX (1–2 gecikmeler, 6 lisans uyarısı). DEĞERLENDİRMEM: 3/4/5 katılıyorum;
   İTİRAZ (a) 1–2 yalnız "frontend" değil ve ikinci sıra değil: 0 pencerede bile cari not düzeltmesi ~1 sn (sunucu); her açık

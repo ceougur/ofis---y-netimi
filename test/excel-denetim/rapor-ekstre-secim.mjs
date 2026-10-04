@@ -92,6 +92,25 @@ try {
   await page.click(`${main} [data-preset="thisYear"]`);
   await page.waitForTimeout(2000);
   out.faturaBuYil = await state("7-fatura-bu-yil-tiklandi");
+  // Banka ve POS Hareketleri: "Yol" kutusundan Banka ya da POS seçilir (fareyle aç, klavyeyle seç, Enter).
+  await c.post(`/api/workspace/accounts/${other.id}/entries`, { kind: "in", amount: 700, date: "2026-01-07", method: "card", note: "POS tahsilatı" });
+  await c.post(`/api/workspace/accounts/${other.id}/entries`, { kind: "in", amount: 300, date: "2026-01-08", method: "bank", note: "havale tahsilatı" });
+  await page.click(`${modal} [data-rc-list] [data-report="banka-pos-hareketleri"]`);
+  await page.waitForSelector(`${main} .hof-rc-summary`, { timeout: 15000 });
+  await page.click(`${main} [data-preset="all"]`);
+  await page.waitForTimeout(1500);
+  out.bankaTumu = await state("8-banka-pos-tumu");
+  out.bankaTumu.kapsam = await page.$eval(`${main} .hof-rc-scope`, node => node.innerText).catch(() => "");
+  await page.selectOption(`${main} [data-param="payMethod"]`, "bank");
+  await page.waitForTimeout(2000);
+  out.bankaSecildi = await state("9-yol-banka-secildi");
+  out.bankaSecildi.kapsam = await page.$eval(`${main} .hof-rc-scope`, node => node.innerText).catch(() => "");
+  out.bankaSecildi.kutu = await page.$eval(`${main} [data-param="payMethod"]`, node => node.value).catch(() => "");
+  await page.click(`${main} [data-rc-run]`);
+  await page.waitForTimeout(2000);
+  out.bankaOnIzle = await state("10-yol-banka-on-izle");
+  out.bankaOnIzle.kapsam = await page.$eval(`${main} .hof-rc-scope`, node => node.innerText).catch(() => "");
+  console.log(`Banka ve POS: önce "${out.bankaTumu.kapsam}" · Yol=Banka seçilince "${out.bankaSecildi.kapsam}" (kutu ${out.bankaSecildi.kutu}) · Ön İzle'den sonra "${out.bankaOnIzle.kapsam}"`);
   out.sayfaHatalari = errors;
   console.log(`sayfa hataları: ${errors.length ? errors.join(" ; ") : "yok"}`);
   fs.writeFileSync(path.join(HERE, "cikti", "rapor-ekstre-secim.json"), JSON.stringify(out, null, 1));

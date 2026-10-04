@@ -545,15 +545,18 @@ function screenAgent(page, companyId, ctx) {
 // pencerenin şirketini taşımalı (?hofCompany=); dosyalardaki sayılar ekrandakilerle aynı olmalı.
 const REPORTS = [
   { key: "kasa", id: "kasa-hareketleri", range: true, expect: e => ({ Devir: e.kasa.cash.devir, "Dönem Giriş": e.kasa.cash.giris, "Dönem Çıkış": e.kasa.cash.cikis }) },
-  { key: "banka", id: "banka-pos-hareketleri", range: true, selects: { payMethod: "bank" }, expect: e => ({ Devir: e.kasa.bank.devir, "Dönem Giriş": e.kasa.bank.giris, "Dönem Çıkış": e.kasa.bank.cikis, "Banka (tüm hareketler)": e.kasa.bank.bakiye, "POS / Kredi Kartı (tüm hareketler)": e.kasa.card.bakiye }) },
-  { key: "pos", id: "banka-pos-hareketleri", range: true, selects: { payMethod: "card" }, expect: e => ({ Devir: e.kasa.card.devir, "Dönem Giriş": e.kasa.card.giris, "Dönem Çıkış": e.kasa.card.cikis }) },
-  { key: "satis", id: "fatura-satis", range: true, expect: e => ({ "Satış Faturası": e.fatura_sale.adet, Matrah: e.fatura_sale.matrah, KDV: e.fatura_sale.kdv, Ödenecek: e.fatura_sale.odenecek, Kalan: e.fatura_sale.kalan }) },
+  // Banka ve POS birlikte (varsayılan "Yol: Banka ve POS (Tümü)"); banka ile POS'un ayrı toplamı tablonun Yol kolonundan.
+  { key: "bankaPos", id: "banka-pos-hareketleri", range: true, table: true, expect: e => ({ Devir: (Number(e.kasa.bank.devir) + Number(e.kasa.card.devir)).toFixed(2), "Dönem Giriş": (Number(e.kasa.bank.giris) + Number(e.kasa.card.giris)).toFixed(2), "Dönem Çıkış": (Number(e.kasa.bank.cikis) + Number(e.kasa.card.cikis)).toFixed(2), "Banka (tüm hareketler)": e.kasa.bank.bakiye, "POS / Kredi Kartı (tüm hareketler)": e.kasa.card.bakiye }) },
+  // "Yol" kutusundan Banka / POS seçimi (Bulgu 4: sunucu payMethod'u yok sayıyor; düzelene kadar bu iki satır ✗ verir).
+  { key: "banka", id: "banka-pos-hareketleri", range: true, selects: { payMethod: "bank" }, bulgu: "Bulgu 4", expect: e => ({ "Dönem Giriş": e.kasa.bank.giris, "Dönem Çıkış": e.kasa.bank.cikis }) },
+  { key: "pos", id: "banka-pos-hareketleri", range: true, selects: { payMethod: "card" }, bulgu: "Bulgu 4", expect: e => ({ "Dönem Giriş": e.kasa.card.giris, "Dönem Çıkış": e.kasa.card.cikis }) },
+  { key: "satis", id: "fatura-satis", range: true, bulgu: "Bulgu 2 (Kalan)", expect: e => ({ "Satış Faturası": e.fatura_sale.adet, Matrah: e.fatura_sale.matrah, KDV: e.fatura_sale.kdv, Ödenecek: e.fatura_sale.odenecek, Kalan: e.fatura_sale.kalan }) },
   { key: "alis", id: "fatura-alis", range: true, expect: e => ({ "Alış Faturası": e.fatura_purchase.adet, Matrah: e.fatura_purchase.matrah, KDV: e.fatura_purchase.kdv, Ödenecek: e.fatura_purchase.odenecek, Kalan: e.fatura_purchase.kalan }) },
   { key: "kdv", id: "kdv-ozeti", range: true, expect: e => ({ "Hesaplanan KDV (391)": e.kdv.hesaplanan, "İndirilecek KDV (191)": e.kdv.indirilecek, [Number(e.kdv.sonuc) >= 0 ? "Ödenecek KDV" : "Devreden KDV"]: String(Math.abs(Number(e.kdv.sonuc)).toFixed(2)) }) },
   { key: "gider", id: "gider-raporu", range: true, expect: e => ({ "Toplam Gider": e.gider.toplam }) },
   { key: "mizan", id: "mizan", range: true, expect: e => ({ "Dönem Borç": e.mizan.donem_borc, "Dönem Alacak": e.mizan.donem_alacak, "Borçlular Toplamı": e.mizan.borclular, "Alacaklılar Toplamı": e.mizan.alacaklilar }) },
   { key: "cariler", id: "cari-listesi", expect: e => ({ "Toplam Borç (Anlaşılan)": e.cari_listesi.toplam_borc, "Toplam Alacak (Ödenen)": e.cari_listesi.toplam_alacak, Borçlular: e.cari_listesi.borclular, Alacaklılar: e.cari_listesi.alacaklilar }) },
-  { key: "acik", id: "acik-faturalar", expect: e => ({ "Açık Alacak": e.acik_faturalar.alacak, "Açık Borç": e.acik_faturalar.borc }) },
+  { key: "acik", id: "acik-faturalar", bulgu: "Bulgu 2 (Açık Alacak)", expect: e => ({ "Açık Alacak": e.acik_faturalar.alacak, "Açık Borç": e.acik_faturalar.borc }) },
   { key: "taksit", id: "taksit-kartlari", selects: { planStatus: "all" }, expect: e => ({ Kart: e.taksit.kart, Toplam: e.taksit.toplam, Ödenen: e.taksit.odenen, Kalan: e.taksit.kalan }) },
   { key: "cek", id: "cek-portfoy", expect: e => ({ "Portföyde (alınan)": e.cek.alinan, "Ödenecek (verilen)": e.cek.verilen }) },
   { key: "stok", id: "stok-durumu", table: true, expect: () => ({}) },
@@ -644,7 +647,8 @@ async function readReports(page, companyId, label) {
       one.ozet = Object.fromEntries(await page.$$eval(`${main} .hof-rc-summary span`, spans => spans.map(span => [span.querySelector("small").innerText.trim(), span.querySelector("b").innerText.trim()])));
       one.toplam = await page.$$eval(`${main} tfoot td`, cells => cells.map(cell => cell.innerText.trim())).catch(() => []);
       if (spec.table) {
-        const headers = await page.$$eval(`${main} thead th`, cells => cells.map(cell => cell.innerText.trim()));
+        // Başlıklar textContent'ten (ekranda CSS ile BÜYÜK harf gösteriliyor; innerText onu döndürür).
+        const headers = await page.$$eval(`${main} thead th`, cells => cells.map(cell => cell.textContent.trim()));
         const rows = await page.$$eval(`${main} tbody tr`, rows => rows.map(row => [...row.cells].map(cell => cell.innerText.trim())));
         one.satirlar = rows.map(row => Object.fromEntries(headers.map((h, i) => [h, row[i]])));
       }
@@ -684,6 +688,7 @@ async function readReports(page, companyId, label) {
 function checkReports(read, expected, label) {
   const lines = [];
   const bad = [];
+  const rows = [];
   for (const spec of REPORTS) {
     const one = read[spec.key];
     if (one.hata) {
@@ -693,11 +698,31 @@ function checkReports(read, expected, label) {
     for (const [name, want] of Object.entries(spec.expect(expected))) {
       const got = numberOf(one.ozet[name]);
       const ok = got !== null && Math.abs(Math.abs(got) - Math.abs(Number(want))) < 0.005;
-      lines.push(`${ok ? "✓" : "✗"} ${label} ${spec.id} · ${name}: ekran ${one.ozet[name] ?? "—"} · beklenen ${want}`);
-      if (!ok) bad.push(`${label} ${spec.id} · ${name}: ekran ${one.ozet[name] ?? "YOK"} · beklenen ${want}`);
+      lines.push(`${ok ? "✓" : "✗"} ${label} ${spec.id} · ${name}: ekran ${one.ozet[name] ?? "—"} · beklenen ${want}${!ok && spec.bulgu ? ` (${spec.bulgu})` : ""}`);
+      rows.push({ rapor: spec.key, kalem: name, beklenen: Number(want), ekran: got, ok, bulgu: spec.bulgu || "" });
+      if (!ok) bad.push(`${label} ${spec.id} · ${name}: ekran ${one.ozet[name] ?? "YOK"} · beklenen ${want}${spec.bulgu ? ` (${spec.bulgu})` : ""}`);
     }
     if (spec.key === "ekstre" && !/Borçlu/.test(one.ozet["Dönem Sonu"] || "")) bad.push(`${label} cari-ekstre · Dönem Sonu yönü: ${one.ozet["Dönem Sonu"]}`);
-    if (spec.table) {
+    if (spec.key === "bankaPos") {
+      // Yol kolonundan: "Havale / EFT" banka, öbürleri (POS, Kredi Kartı) kart.
+      const sums = { bank: { in: 0, out: 0 }, card: { in: 0, out: 0 } };
+      for (const r of one.satirlar.slice(1)) {
+        const way = /Havale/i.test(r.Yol || "") ? "bank" : "card";
+        sums[way].in += numberOf(r["Giriş"]) || 0;
+        sums[way].out += numberOf(r["Çıkış"]) || 0;
+      }
+      for (const [way, name] of [["bank", "Banka"], ["card", "POS / Kredi Kartı"]]) {
+        for (const [dir, key] of [["in", "giris"], ["out", "cikis"]]) {
+          const want = Number(expected.kasa[way][key]);
+          const got = Math.round(sums[way][dir] * 100) / 100;
+          const ok = Math.abs(got - want) < 0.005;
+          lines.push(`${ok ? "✓" : "✗"} ${label} banka-pos-hareketleri (Yol kolonundan) · ${name} ${dir === "in" ? "Giriş" : "Çıkış"}: ekran ${got} · beklenen ${want}`);
+          rows.push({ rapor: "bankaPosYol", kalem: `${name} ${dir === "in" ? "Giriş" : "Çıkış"}`, beklenen: want, ekran: got, ok, bulgu: "" });
+          if (!ok) bad.push(`${label} banka-pos (Yol) · ${name} ${dir}: ekran ${got} · beklenen ${want}`);
+        }
+      }
+    }
+    if (spec.key === "stok") {
       let wrong = 0;
       for (const [code, qty] of Object.entries(expected.stok)) {
         const row = one.satirlar.find(r => r["Stok Kodu"] === code);
@@ -708,11 +733,13 @@ function checkReports(read, expected, label) {
         }
       }
       lines.push(`${wrong ? "✗" : "✓"} ${label} stok-durumu · ${Object.keys(expected.stok).length} kalemin Mevcut'u (${wrong} farklı)`);
+      rows.push({ rapor: "stok", kalem: `${Object.keys(expected.stok).length} kalemin Mevcut miktarı`, beklenen: Object.keys(expected.stok).length, ekran: Object.keys(expected.stok).length - wrong, ok: !wrong, bulgu: "" });
     }
     for (const kind of ["pdf", "excel"]) {
       const f = one.dosya?.[kind];
       if (!f) continue;
       const ok = f.status === 200 && f.sirketli && !f.eksik.length;
+      rows.push({ rapor: spec.key, kalem: kind === "pdf" ? "PDF" : "Excel", beklenen: null, ekran: null, ok, bulgu: "", dosya: true });
       lines.push(`${ok ? "✓" : "✗"} ${label} ${spec.key} ${kind.toUpperCase()}: ${f.status}${f.sirketli ? "" : " · ŞİRKETSİZ BAĞLANTI"}${f.eksik.length ? ` · ekrandaki ${f.eksik.join(", ")} dosyada yok` : " · ekrandaki sayılar dosyada"}`);
       if (!ok) bad.push(`${label} ${spec.key} ${kind}: ${f.status} şirketli=${f.sirketli} eksik=${f.eksik.join(",")}`);
     }
@@ -722,9 +749,10 @@ function checkReports(read, expected, label) {
     const got = read.anlik.ozet[name];
     const ok = got !== null && Math.abs(Math.abs(got) - Math.abs(Number(want))) < 0.005;
     lines.push(`${ok ? "✓" : "✗"} ${label} ANLIK DURUM · ${name}: ekran ${got ?? "—"} · beklenen ${want}`);
+    rows.push({ rapor: "anlik", kalem: name, beklenen: Number(want), ekran: got, ok, bulgu: "" });
     if (!ok) bad.push(`${label} ANLIK DURUM · ${name}: ekran ${got} · beklenen ${want}`);
   }
-  return { lines, bad };
+  return { lines, bad, rows };
 }
 
 // ---------- Karşılaştırma ----------
@@ -870,8 +898,10 @@ try {
   for (const [label, id] of [["Ekran", C2], ["API", C1]]) {
     await pickCompany(page, id);
     const read = await readReports(page, id, label === "Ekran" ? "ekran" : "api");
-    const { lines, bad } = checkReports(read, expected, label);
+    const { lines, bad, rows } = checkReports(read, expected, label);
     result.raporlar[label] = read;
+    result.kontrol ||= {};
+    result.kontrol[label] = rows;
     result.raporFarklari.push(...bad);
     log(`\nRAPORLAR (${label} şirketi) ↔ BAĞIMSIZ BEKLENEN:`);
     for (const line of lines) log(`  ${line}`);
@@ -880,8 +910,11 @@ try {
   const same = REPORTS.flatMap(spec => diff(result.raporlar.API[spec.key]?.ozet || {}, result.raporlar.Ekran[spec.key]?.ozet || {}, spec.key));
   result.raporSirketFarki = same;
   log(`\nRapor özetleri API şirketi ↔ Ekran şirketi: ${same.length ? `${same.length} FARK: ${same.slice(0, 20).join(" | ")}` : "aynı"}`);
-  log(`Rapor ↔ beklenen: ${result.raporFarklari.length ? `${result.raporFarklari.length} FARK` : "FARK YOK"}`);
-  for (const line of result.raporFarklari.slice(0, 80)) log(`  ✗ ${line}`);
+  const known = result.raporFarklari.filter(line => /\(Bulgu \d/.test(line));
+  const unknown = result.raporFarklari.filter(line => !/\(Bulgu \d/.test(line));
+  log(`Rapor ↔ beklenen: ${result.raporFarklari.length ? `${result.raporFarklari.length} FARK (${known.length} bilinen bulgudan, ${unknown.length} açıklanmamış)` : "FARK YOK"}`);
+  for (const line of unknown) log(`  ✗ AÇIKLANMAMIŞ ${line}`);
+  for (const line of known) log(`  ✗ ${line}`);
   log(`Sayfa hataları (raporlar dahil): ${page.errorsSeen.length ? page.errorsSeen.join(" ; ") : "yok"}`);
 } catch (error) {
   log("DURDU:", error.stack);
