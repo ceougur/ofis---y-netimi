@@ -555,6 +555,13 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   sonra yeniden çiziliyor (`hof-invoices.js` refreshRest → renderPayLater); bu sürede seçilen Vade tarihi ya da yazılan
   Banka/Şube siliniyor ("No yaz → Tab → Banka yaz" normal hızda Banka boş kalıyor). Kaydet "1. evrakın vade tarihini seçin"
   der, veri bozulmaz. Yeniden üretim: `test/excel-denetim/form-insan.mjs` (TARIH=100 → vade boş; TARIH=2000 → dolu).
+  KULLANICI SORUSU (04.10.2026): "maaş, fatura, kira ödemeleri, cari açma, taksit yapma, stok ekleme, tahsilat yapıldı mı;
+  raporlarda doğru sonuca ulaşıldığı doğrulandı mı?" → dürüst cevap: maaş/fatura/gider/tahsilat ekrandan EVET; kira o hafta
+  yok; cari ve stok Excel'den toplu (form değil); taksit yalnız taksitli faturadan; Rapor Merkezi AÇILMADI, bağımsız beklenen
+  hesapla karşılaştırılmadı. KARAR (kullanıcı): "testin eksiğini tamamla, düzeltmeyi ondan sonra değerlendirelim" → aynı
+  haftaya ekrandan: + Yeni Cari, stok kartı + stok giriş/çıkış, Taksit formundan taksit kartı + tahsilatı, kira gideri;
+  sonra Rapor Merkezi raporları EKRANDAN açılıp programdan bağımsız beklenen hesapla (ve PDF/Excel ekranla) karşılaştırılır.
+  Kod değiştirilmez; ödeme alanı hatasının düzeltmesi bu testten sonra konuşulur.
   KULLANICI ÖNERİSİ (04.10.2026, "baş mimar olarak onaylarsan"): öncelik 1 = güvenlik/veri bütünlüğü (3 cari türü, 4 tanımsız
   ödeme yolu, 5 API çift fatura); öncelik 2 = performans/UX (1–2 gecikmeler, 6 lisans uyarısı). DEĞERLENDİRMEM: 3/4/5 katılıyorum;
   İTİRAZ (a) 1–2 yalnız "frontend" değil ve ikinci sıra değil: 0 pencerede bile cari not düzeltmesi ~1 sn (sunucu); her açık
