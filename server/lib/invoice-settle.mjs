@@ -25,9 +25,10 @@
 //     reddedilir. Tahsilat ve kart iadesinde fatura açığı kartın kalanına eşit kalır (iade faturasının kartı küçültmesi
 //     bilinen sınır, docs/2.0.23-KANIT.md).
 //   - "Carinin Mevcut Borcu" kartı (cari kartından ya da stoktan taksitli satıştan; faturanın kendi kartı değil) açıldığı
-//     anda var olan borçlardan en yenisinden başlayarak kendi tutarı kadarını kapsar. Kartın tahsilatı yalnız kapsadığı
-//     borcu kapatır; kapsanan kısım en eski borç sırasına girmez; sonradan doğan borç kapsanmaz. Faturanın kapsanan açığı
-//     (covered) birleşik listelerde (yaşlandırma, nakit akış, vade takip, takvim) bir kez, kartın taksitleriyle sayılır.
+//     anda AÇIK olan borçlardan en yeni tarihlisinden başlayarak kendi tutarı kadarını kapsar (ödenmiş borcu değil). Kartın
+//     tahsilatı yalnız kapsadığı borcu kapatır; kapsanan kısım en eski borç sırasına girmez; sonradan doğan borç kapsanmaz.
+//     Faturanın kapsanan açığı (covered) birleşik listelerde (yaşlandırma, nakit akış, vade takip, takvim) bir kez, kartın
+//     taksitleriyle sayılır.
 import { roundMoney } from "./money.mjs";
 
 const cents = value => Math.round((Number(value) || 0) * 100);
