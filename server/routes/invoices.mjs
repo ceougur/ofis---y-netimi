@@ -343,7 +343,7 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, conf
         eventsOf.get(accountId).push(event);
       }
     }
-    const offsetsOf = group(store.all("SELECT id, account_id AS accountId, invoice_id AS invoiceId, counter_type AS counterType, counter_id AS counterId, amount, date, note FROM invoice_offsets ORDER BY date, created_at"), "accountId");
+    const offsetsOf = group(store.all("SELECT id, account_id AS accountId, invoice_id AS invoiceId, counter_type AS counterType, counter_id AS counterId, amount, date, note, created_at AS createdAt FROM invoice_offsets ORDER BY date, created_at"), "accountId");
     const planTotals = new Map(store.all("SELECT id, total FROM plans WHERE deleted_at IS NULL").map(row => [row.id, Number(row.total) || 0]));
     const scheduleOf = group(store.all("SELECT plan_id AS planId, due_date AS dueDate, amount FROM plan_items ORDER BY due_date"), "planId");
     const map = new Map();
@@ -405,7 +405,7 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, conf
           if (event.invoiceId) links.set(effect.id, event.invoiceId);
         }
       }
-      const offsets = store.all("SELECT id, invoice_id AS invoiceId, counter_type AS counterType, counter_id AS counterId, amount, date, note FROM invoice_offsets WHERE account_id = ? ORDER BY date, created_at", accountId).map(offset => ({ ...offset, label: offsetLabel(offset) }));
+      const offsets = store.all("SELECT id, invoice_id AS invoiceId, counter_type AS counterType, counter_id AS counterId, amount, date, note, created_at AS createdAt FROM invoice_offsets WHERE account_id = ? ORDER BY date, created_at", accountId).map(offset => ({ ...offset, label: offsetLabel(offset) }));
       const plansById = new Map();
       for (const invoice of all.filter(item => item.planId)) {
         const plan = store.get("SELECT total FROM plans WHERE id = ? AND deleted_at IS NULL", invoice.planId);

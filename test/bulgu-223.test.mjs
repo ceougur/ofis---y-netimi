@@ -294,6 +294,7 @@ describe("2.0.23 gözden geçirme: kapamanın kalan yolları", () => {
       get: async url => unwrap(await client.get(url)),
       post: async (url, body) => unwrap(await client.post(url, body)),
       put: async (url, body) => unwrap(await client.put(url, body)),
+      del: async url => unwrap(await client.del(url)),
     };
     item = (await api.post("/api/workspace/stock", { kind: "service", code: "HZM", name: "Hizmet", unit: "Adet", salePrice: "1000" })).data;
     goods = (await api.post("/api/workspace/stock", { name: "Mal", code: "MAL", unit: "Adet", unitPrice: 10, salePrice: 20 })).data;
@@ -405,5 +406,100 @@ describe("2.0.23 gözden geçirme: kapamanın kalan yolları", () => {
     assert.match(String(edit.data?.error || ""), /Carinin Mevcut Borcu/);
     const s = await inv(f.id);
     assert.deepEqual([s.paid, s.open, s.planId || ""], [1000, 2000, ""]);
+  });
+
+  // 2. gözden geçirme: "Mevcut Borç" kartı, açıldığı anda AÇIK olan borcu kapsar (ödenmiş borcu değil). Önceki kod kapsamı
+  // ödemelerden önce kuruyordu: kapsanan fatura iptal / düzenleme / silme ile gidince kapsam eski, ödenmiş faturaya kayıyor,
+  // ödenmiş fatura yeniden "Açık" görünüyordu; geriye tarihli borçta tahsilat başka faturaya kayıyordu.
+  const paidOld = async (label, date) => {
+    const acc = await customer(label);
+    const z = await sale(acc, date[0], 1000);
+    assert.equal((await entry(acc, "in", date[1], 1000)).status, 200);
+    return { acc, z };
+  };
+  test("2. tur: kapsanan fatura iptal edilince kartın kapsamı eski, ödenmiş faturaya kaymaz", async () => {
+    const { acc, z } = await paidOld("İptal", ["2025-06-12", "2025-06-13"]);
+    const a = await sale(acc, "2025-06-14", 2000);
+    await coverPlan(acc, "2025-06-15", 2000);
+    assert.deepEqual([(await inv(z.id)).paid, (await inv(z.id)).open], [1000, 0], "kart açılınca Z ödenmiş kalır");
+    const cancel = await api.post(`/api/workspace/invoices/${a.id}/cancel`, { reason: "yanlış fatura" });
+    assert.equal(cancel.status, 200, JSON.stringify(cancel.data).slice(0, 200));
+    const s = await inv(z.id);
+    assert.deepEqual([s.paid, s.open, s.payState], [1000, 0, "paid"], "Z, 1.000 tahsilatla kapanmıştı");
+  });
+  test("2. tur: kapsanan fatura düzenlenip küçülünce kapsam ödenmiş faturaya kaymaz", async () => {
+    const { acc, z } = await paidOld("Düzenle", ["2025-06-16", "2025-06-17"]);
+    const a = await sale(acc, "2025-06-18", 2000);
+    await coverPlan(acc, "2025-06-19", 2000);
+    const edit = await api.post(`/api/workspace/invoices/${a.id}/edit`, { scenario: "service_sale", accountId: acc.id, issueDate: "2025-06-18", lines: [{ itemId: item.id, qty: 1, unitPrice: 1500, vatRate: 0 }], payment: { rest: "open", dueDate: "2025-06-18" } });
+    assert.equal(edit.status, 200, JSON.stringify(edit.data).slice(0, 200));
+    assert.deepEqual([(await inv(z.id)).paid, (await inv(z.id)).open], [1000, 0], "Z ödenmiş kalır");
+    assert.equal((await inv(a.id)).open, 1500);
+  });
+  test("2. tur: kapsanan Borç Yaz silinince kapsam ödenmiş faturaya kaymaz", async () => {
+    const { acc, z } = await paidOld("BorçSil", ["2025-06-20", "2025-06-21"]);
+    const debt = await must("borç yaz", entry(acc, "debt", "2025-06-22", 2000, { note: "Hizmet" }));
+    await coverPlan(acc, "2025-06-23", 2000);
+    const del = await api.del(`/api/workspace/accounts/${acc.id}/entries/${debt.entryId}`);
+    assert.equal(del.status, 200, JSON.stringify(del.data).slice(0, 200));
+    assert.deepEqual([(await inv(z.id)).paid, (await inv(z.id)).open], [1000, 0], "Z ödenmiş kalır");
+  });
+  test("2. tur: geriye tarihli borç girilince kart, açık kalan faturayı kapsar; tahsilat başka faturaya kaymaz", async () => {
+    const acc = await customer("GeriTarih");
+    const b = await sale(acc, "2025-06-25", 1000);
+    assert.equal((await entry(acc, "debt", "2025-06-24", 1000, { note: "Açılış bakiyesi" })).status, 200);
+    assert.equal((await entry(acc, "in", "2025-06-26", 1000)).status, 200);
+    assert.deepEqual([(await inv(b.id)).paid, (await inv(b.id)).open], [0, 1000], "tahsilat en eski borcu (açılış) kapatır");
+    await coverPlan(acc, "2025-06-27", 1000);
+    const s = await inv(b.id);
+    assert.deepEqual([s.paid, s.open], [0, 1000], `kart açılınca fatura ödenmiş görünmez (kapatanlar: ${JSON.stringify(s.closers)})`);
+    const open = await must("açık faturalar", api.get("/api/workspace/report-center/acik-faturalar"));
+    assert.equal((open.rows || []).filter(row => row.some(cell => String(cell).includes(b.number))).length, 1, "Açık Faturalar raporunda");
+    assert.equal(await agingOf(acc), "1.000,00 TL", "yaşlandırma: kartın 1.000'i (fatura karta bölünmüş, bir kez)");
+  });
+  test("2. tur: peşin ödenmiş yeni fatura varken kart, açık eski faturayı kapsar (yaşlandırmada bir kez)", async () => {
+    const acc = await customer("PeşinYeni");
+    const z = await sale(acc, "2025-06-28", 1000);
+    await sale(acc, "2025-06-29", 2000, null, { cash: [{ amount: 2000, method: "cash" }] });
+    const k = await coverPlan(acc, "2025-06-30", 1000);
+    assert.equal(await agingOf(acc), "1.000,00 TL", "bakiye 1.000: kart ve Z aynı borç");
+    const dues = await must("takvim", api.get("/api/workspace/dues"));
+    assert.equal(dues.items.filter(i => i.id === `invoice|${z.id}`).reduce((sum, i) => sum + i.amount, 0), 0, "Z'nin borcu takvimde kartın taksitleriyle");
+    assert.deepEqual([(await inv(z.id)).open, (await card(k.id)).totals.remaining], [1000, 1000]);
+  });
+  test("2. tur: Otomatik Dağıt Mevcut Borç kartını carinin borcundan büyütemez (Düzenle'deki denetim)", async () => {
+    const { acc, z } = await paidOld("Dağıt", ["2025-07-01", "2025-07-02"]);
+    await sale(acc, "2025-07-03", 2000);
+    const k = await coverPlan(acc, "2025-07-04", 2000);
+    const grow = await api.post(`/api/workspace/plans/${k.id}/distribute`, { total: "3000", count: "3", firstDue: "2025-08-04", everyMonths: "1" });
+    assert.equal(grow.status, 400, `kart borçtan büyümemeli (${grow.status})`);
+    assert.equal((await card(k.id)).totals.total, 2000);
+    assert.deepEqual([(await inv(z.id)).paid, (await inv(z.id)).open], [1000, 0], "Z ödenmiş kalır");
+    const same = await api.post(`/api/workspace/plans/${k.id}/distribute`, { count: "4", firstDue: "2025-08-04", everyMonths: "1" });
+    assert.equal(same.status, 200, "tutarı değiştirmeyen yeniden dağıtım serbest");
+    assert.equal(same.data.items.length, 4);
+  });
+  test("2. tur: Otomatik Dağıt faturanın kendi taksit kartının tutarını değiştiremez", async () => {
+    const acc = await customer("FaturaDağıt");
+    const f = await sale(acc, "2025-07-05", 3000, { count: 3, firstDue: "2025-08-05", everyMonths: 1 });
+    const cut = await api.post(`/api/workspace/plans/${f.planId}/distribute`, { total: "2000", count: "2", firstDue: "2025-08-05", everyMonths: "1" });
+    assert.equal(cut.status, 409, `kart tutarı faturadan gelir (${cut.status})`);
+    assert.deepEqual([(await inv(f.id)).open, (await card(f.planId)).totals.total], [3000, 3000]);
+    const again = await api.post(`/api/workspace/plans/${f.planId}/distribute`, { total: "3000", count: "6", firstDue: "2025-08-05", everyMonths: "1" });
+    assert.equal(again.status, 200, "aynı tutarla taksit sayısı değişebilir");
+    assert.deepEqual([(await inv(f.id)).open, (await card(f.planId)).totals.remaining], [3000, 3000]);
+  });
+  test("2. tur: Otomatik Dağıt kilitli dönemdeki yeni borç kartının tutarını değiştiremez", async () => {
+    const acc = await customer("KilitDağıt");
+    const k = await must("yeni borç kartı", api.post("/api/workspace/plans", { name: acc.name, registeredOn: "2025-07-06", total: "1000", accountId: acc.id, mode: "auto", count: "2", firstDue: "2025-08-06" }));
+    assert.equal((await api.put("/api/admin/period-lock", { lockedUntil: "2025-07-10" })).status, 200);
+    try {
+      const grow = await api.post(`/api/workspace/plans/${k.id}/distribute`, { total: "1500", count: "3", firstDue: "2025-08-06", everyMonths: "1" });
+      assert.equal(grow.status, 409, `kilitli dönemin bakiyesi değişmemeli (${grow.status})`);
+      assert.equal(grow.data?.code, "period-locked");
+      assert.equal((await card(k.id)).totals.total, 1000);
+    } finally {
+      assert.equal((await api.put("/api/admin/period-lock", { lockedUntil: "" })).status, 200);
+    }
   });
 });

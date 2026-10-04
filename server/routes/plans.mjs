@@ -567,7 +567,14 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
     const body = await readJson(req);
     const result = store.tx(() => {
       const total = body.total === undefined || body.total === "" ? plan.total : amountOf(body.total, "Toplam tutar");
-      if (total !== plan.total) store.run("UPDATE plans SET total = ?, updated_by = ?, updated_at = ? WHERE id = ?", total, user.id, now(), plan.id);
+      if (roundMoney(total) !== roundMoney(Number(plan.total) || 0)) {
+        // v2.0.23 (2. gözden geçirme): Otomatik Dağıt da kartın toplamını değiştirir; Düzenle'deki denetimler burada da geçerli
+        // (faturanın kartı faturayla ayrışıyor, Mevcut Borç kartı carinin borcunu aşıyor, kilitli dönemin bakiyesi değişiyordu).
+        if (plan.invoiceId) throw new HttpError(409, `Bu kart ${plan.invoiceNumber || "bir fatura"} ile açıldı; tutarı faturadan gelir. Taksit sayısı ve vadeleri buradan değişir; tutar için faturada Düzenle'yi ya da iade faturasını kullanın.`, { code: "invoice-linked", invoiceId: plan.invoiceId });
+        if (!plan.coversBalance) period?.assertOpen(plan.registeredOn, "Bu kartın Kayıt Tarihi");
+        else if (plan.status === "active" && total > roundMoney(Number(plan.total) || 0) + 0.005) assertCoverable(plan.accountId, roundMoney(total - netPaid(plan.id)), user, plan.id);
+        store.run("UPDATE plans SET total = ?, updated_by = ?, updated_at = ? WHERE id = ?", total, user.id, now(), plan.id);
+      }
       const items = distributionInput(body, total, plan.registeredOn);
       replaceItems(plan.id, items);
       audit(user, "plan.distributed", plan.id, { total, count: items.length, firstDue: items[0].dueDate });

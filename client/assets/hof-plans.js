@@ -714,7 +714,7 @@
       eyebrow: plan.name,
       intro: `Toplam tutar eşit taksitlere bölünür; her ay aynı gün, kuruş farkı son taksitte.${plan.items.length ? " <b>Mevcut taksitler silinir</b>; girilen tahsilatlar yeni taksitlere en eski vadeden başlayarak sayılır." : ""}`,
       fields: [
-        { name: "total", label: "Toplam Tutar (₺)", required: true, inputmode: "decimal", value: amountText(plan.total) },
+        { name: "total", label: "Toplam Tutar (₺)", required: true, inputmode: "decimal", value: amountText(plan.total), ...(plan.invoiceId ? { readonly: true, help: `Tutar ${plan.invoiceNumber ? `${plan.invoiceNumber} faturasından` : "faturadan"} gelir; burada taksit sayısı ve vadeler değişir.` } : {}) },
         { name: "count", label: "Taksit Sayısı", required: true, inputmode: "numeric", value: plan.items.length ? String(plan.items.length) : "", placeholder: "Örn. 9", autofocus: true },
         { name: "firstDue", label: "İlk Vade", type: "date", required: true, value: plan.items[0]?.dueDate || todayIso() },
         { name: "everyMonths", label: "Taksit Aralığı", type: "select", value: "1", options: [{ value: "1", label: "Her Ay" }, { value: "2", label: "2 Ayda Bir" }, { value: "3", label: "3 Ayda Bir" }, { value: "6", label: "6 Ayda Bir" }, { value: "12", label: "Yılda Bir" }] },

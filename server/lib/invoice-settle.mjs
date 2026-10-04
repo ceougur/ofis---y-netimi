@@ -118,9 +118,9 @@ export function settleInvoices({ lines, invoices, links = new Map(), chequeEvent
     if (invoice && (invoice.kind === "sale_return" || invoice.kind === "purchase_return")) id = invoice.originalId || "";
     return id;
   };
-  const offsetsOf = (invoiceId, side) => {
+  const offsetsOf = (invoiceId, side, offsetList) => {
     const list = [];
-    for (const offset of offsets) {
+    for (const offset of offsetList) {
       const amount = cents(offset.amount);
       if (!(amount > 0)) continue;
       if (offset.invoiceId === invoiceId) list.push({ offset, amount });
@@ -134,9 +134,12 @@ export function settleInvoices({ lines, invoices, links = new Map(), chequeEvent
     return list;
   };
   // v2.0.23: mevcut borcu taksitlendiren kartlar ("Carinin Mevcut Borcu", stoktan taksitli satış; faturanın kendi kartı
-  // değil). Açıldığı anda var olan borçlardan en yenisinden başlayarak kendi tutarı kadarını kapsar: stoktan taksitli satışın
-  // kartı o satışın borcunu, cari kartından açılan kart o günkü borcu. Kartın tahsilatı ve kapatılması yalnız kapsadığı kısmı
-  // kapatır (artanı genel sıraya düşer); kapsanan kısım en eski borç sırasında atlanır. Sonradan doğan borcu kapsamaz.
+  // değil). Kart, açıldığı anda AÇIK olan borçlardan en yenisinden (en eski borç sırasının sonundan) başlayarak kendi tutarı
+  // kadarını kapsar: stoktan taksitli satışın kartı o satışın borcunu, cari kartından açılan kart o günkü açık borcu. Hangi
+  // borcun o an açık olduğu, kartın açıldığı ana kadar kaydedilmiş satırlarla aynı kuralla hesaplanır (2. gözden geçirme:
+  // kapsam ödemelerden önce kurulunca kapsanan fatura iptal edilince ya da geriye tarihli borç girilince kart ödenmiş borcu
+  // kapsıyor, ödenmiş fatura yeniden "Açık" görünüyordu). Kartın tahsilatı ve kapatılması yalnız kapsadığı kısmı kapatır
+  // (artanı genel sıraya düşer); kapsanan kısım en eski borç sırasında atlanır; karttan sonra doğan borç kapsanmaz.
   const coverPlans = lines
     .filter(line => line.origin === "plan" && line.kind === "plan" && line.covers && line.planId && !planOwner.has(line.planId) && cents(line.coverTotal) > 0)
     .map(line => ({ planId: line.planId, at: String(line.at || line.date || ""), total: cents(line.coverTotal) }))
@@ -145,7 +148,8 @@ export function settleInvoices({ lines, invoices, links = new Map(), chequeEvent
   // Borcun doğduğu an: fatura için kaydedildiği an (düzenleme ve taslak süresi değiştirmez), öbürleri için satırın kaydı.
   const bornAt = line => String((line.origin === "invoice" ? byId.get(line.sourceId)?.issuedAt : "") || line.at || line.date || "");
   const partsLeft = item => item.free + [...item.covered.values()].reduce((sum, value) => sum + value, 0);
-  for (const side of ["receivable", "payable"]) {
+  // Bir tarafın (alacak / borç) kapaması. coverage: kart kimliği → (yükümlülük satırı → kapsanan kuruş).
+  function runSide(side, sideLines, coverage, offsetList) {
     const kinds = side === "receivable" ? RECEIVABLE : PAYABLE;
     const dueKey = side === "receivable" ? "recvDue" : "payDue";
     const payKey = side === "receivable" ? "recvPay" : "payPay";
@@ -154,7 +158,7 @@ export function settleInvoices({ lines, invoices, links = new Map(), chequeEvent
     const obligations = [];
     const pool = [];
     const planBooks = new Map();
-    for (const line of ordered) {
+    for (const line of sideLines) {
       const role = classifyLine(line, { invoiceKind: kindOf(line), chequeEvent: chequeEvents.get(line.id) || "" });
       const amount = cents(line.debit) || cents(line.credit);
       // Ayrı kartın satırları kartın kendi defterinde toplanır (fatura sırasına girmez).
@@ -188,21 +192,17 @@ export function settleInvoices({ lines, invoices, links = new Map(), chequeEvent
       }
     }
     if (excess) pool.sort((a, b) => (a.line.date === b.line.date ? String(a.line.at || "").localeCompare(String(b.line.at || "")) : a.line.date < b.line.date ? -1 : 1));
-    // Mevcut Borç kartlarının kapsamı: açılış sırasıyla, her kart kendinden önce doğmuş ve henüz kapsanmamış borcu en yeniden
-    // başlayarak alır (taksitli faturanın borcu kendi kartınındır, kapsanmaz).
-    if (side === "receivable") {
-      for (const plan of coverPlans) {
-        let rest = plan.total;
-        const candidates = obligations
-          .map((item, index) => ({ item, index }))
-          .filter(({ item }) => !item.planned && item.free > 0 && item.bornAt <= plan.at)
-          .sort((a, b) => b.item.bornAt.localeCompare(a.item.bornAt) || b.index - a.index);
-        for (const { item } of candidates) {
-          if (rest <= 0) break;
-          const take = Math.min(item.free, rest);
-          item.free -= take;
-          item.covered.set(plan.planId, (item.covered.get(plan.planId) || 0) + take);
-          rest -= take;
+    // Mevcut Borç kartlarının kapsamı (yalnız alacak tarafı; kartın açıldığı anda hesaplandı).
+    if (coverage.size) {
+      const byLine = new Map(obligations.map(item => [item.lineId, item]));
+      for (const [planId, parts] of coverage) {
+        for (const [lineId, take] of parts) {
+          const item = byLine.get(lineId);
+          if (!item) continue;
+          const cut = Math.min(item.free, take);
+          if (!(cut > 0)) continue;
+          item.free -= cut;
+          item.covered.set(planId, (item.covered.get(planId) || 0) + cut);
         }
       }
     }
@@ -231,13 +231,13 @@ export function settleInvoices({ lines, invoices, links = new Map(), chequeEvent
     };
     // 0. Mahsup fişleri: iki tarafı da bağlı kapatır (fatura ↔ karşı belge).
     for (const [invoiceId, items] of target) {
-      for (const { offset, amount } of offsetsOf(invoiceId, side)) {
+      for (const { offset, amount } of offsetsOf(invoiceId, side, offsetList)) {
         const other = offset.invoiceId === invoiceId ? offset.counterId : offset.invoiceId;
         closeInvoice(items, { line: { id: `offset:${offset.id}`, date: offset.date, label: offset.label || "Mahsup", note: offset.note || other, method: "" }, left: amount }, "offset");
       }
     }
     // Mahsupta karşı taraf bir cari satırıysa (Alacak Yaz / Borç Yaz / açılış) o yükümlülük de aynı tutarda kapanır.
-    for (const offset of offsets) {
+    for (const offset of offsetList) {
       if (offset.counterType !== "entry") continue;
       const item = obligations.find(entry => !entry.invoiceId && entry.lineId === offset.counterId);
       if (!item) continue;
@@ -280,6 +280,29 @@ export function settleInvoices({ lines, invoices, links = new Map(), chequeEvent
       }
       if (cursor >= pool.length) break;
     }
+    return { obligations, target };
+  }
+  // Kapsam: kartlar açılış sırasıyla; her kart, kendi açıldığı ana kadar kaydedilmiş satırlarla (önceki kartların kapsamı
+  // dahil) kapama yapılınca açık kalan, kapsanmamış borcu en eski borç sırasının sonundan başlayarak alır. Taksitli faturanın
+  // borcu kendi kartınındır, kapsanmaz.
+  const coverage = new Map();
+  for (const plan of coverPlans) {
+    const known = ordered.filter(line => bornAt(line) <= plan.at);
+    const knownOffsets = offsets.filter(offset => String(offset.createdAt || offset.date || "") <= plan.at);
+    const { obligations } = runSide("receivable", known, coverage, knownOffsets);
+    const parts = new Map();
+    let rest = plan.total;
+    for (let index = obligations.length - 1; index >= 0 && rest > 0; index -= 1) {
+      const item = obligations[index];
+      if (item.planned || !(item.free > 0)) continue;
+      const take = Math.min(item.free, rest);
+      parts.set(item.lineId, (parts.get(item.lineId) || 0) + take);
+      rest -= take;
+    }
+    coverage.set(plan.planId, parts);
+  }
+  for (const side of ["receivable", "payable"]) {
+    const { target } = runSide(side, ordered, side === "receivable" ? coverage : new Map(), offsets);
     for (const [invoiceId, items] of target) {
       const invoice = byId.get(invoiceId);
       const payable = cents(invoice.payable);
