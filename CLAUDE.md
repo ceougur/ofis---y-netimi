@@ -586,6 +586,11 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   dosya, HEAD ile bayt bayt), kurulum .exe e0751bd9… (29,4 MB, simgeli), kılavuz PDF 91ffc51d… (değişti → yayından sonra site
   PR'ı); güncelleyici 2.0.21/20/19/18/2.0.4/1.7.0 olarak (API ve yedek yol) "available", kurcalanmış bildirge reddedildi.
   PR ceougur/ofis---y-netimi#22 → CI yeşil olunca birleştirmeyi ben yaparım (kullanıcı izni) → yayın bağlantısı.
+  YAYIMLANDI (04.10.2026 ~17:3x; kullanıcı bağlantı isteyince son commit'in CI'si bitmeden squash birleştirildi — kod içeren son
+  commit 00d5fc3 CI'de yeşildi, sonrası yalnız belge; `master` = e0d9ec7, `v2.0.22`; dal master'a sıfırlandı). Yayındaki 5 dosya +
+  latest/ (exe, json, zip, pdf) teslimdekiyle bayt bayt aynı, exe .sha256 OK; gerçek güncelleyici canlı GitHub'da
+  2.0.21/20/19/18/17/2.0.4/1.7.0 olarak (API ve yedek yol) 2.0.22'yi "available" gördü, indirme sha256 437ac249… eşleşti; 2.0.22
+  kurulu → "up-to-date". Site kılavuz PR'ı ceougur/destekofis#9 açık (PDF 91ffc51d…); birleştirme kullanıcı onayıyla.
 - 2.0.20 YAPILACAKLAR (kullanıcı "yapılacaklara not al" dedi, 03.10.2026; "yap" denince başlanır; ayrıntı ve
   kanıt hemen altındaki ADAYI maddesinde):
   [x] 1. Bütün raporların (43) tablosunun altında kalın TOPLAM satırı — ekran, PDF, Excel aynı; yalnız toplanabilir
