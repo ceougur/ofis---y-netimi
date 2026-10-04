@@ -580,6 +580,11 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   kullanıcı, 29 rapor) de ayrıca teste tabi tutman gerekecek mi?" → cevap: evet, kanıt yok; ÖNERİM: düzeltmeden ÖNCE aynı hafta
   testine ekleyip ekrandan koşmak (iade/iptal/düzenleme Bulgu 2'nin koduyla iç içe; bütün hatalar görülünce düzeltme tek
   tasarımla), 29 rapor her süzgeç seçeneğiyle; düzeltmelerden sonra hepsi bir kez daha. Kullanıcının "yap"ı bekleniyor.
+  KARAR (kullanıcı, 04.10.2026): "kullanım limitimden dolayı test yarım kalabilir; önce tespit ettiğin hataları düzelt ve
+  GitHub'a yüklenecek imzalı 5 dosyayı ver, diğer testleri bundan sonra değerlendirelim" → 2.0.23 = Bulgu 1, 2 (A–G), 3, 4 +
+  PDF özet başlığı. Her hata: önce kırmızı test → düzeltme → kanıt; hafta testi yeniden (beklenen: açıklanmamış fark 0, Bulgu 4
+  satırları da tutar); bağımsız gözden geçirme; teslim A (5 dosya) + B (arşiv zip). Denenmeyen 6 alan sonra konuşulacak.
+  [ ] 1. çek/senet satırı   [ ] 2. taksit ↔ fatura   [ ] 3. dönem düğmesi   [ ] 4. Yol süzgeci   [ ] 5. PDF başlık
   BULGU 2 (04.10.2026, ek işlemlerde bulundu; KOD DEĞİŞTİRİLMEDİ, karar kullanıcıda): aynı caride açık satış faturası +
   Taksit penceresinden "Yeni Borç" ile AYRI taksit kartı varsa fatura kapama (`server/lib/invoice-settle.mjs`) kartın
   tahsilatını (plan-in) ve kartın borcunu genel FIFO'ya katıyor; taksit modülü ise kartın ödenenini ayrı sayıyor → iki hesap
