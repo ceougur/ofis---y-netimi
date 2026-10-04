@@ -17,6 +17,7 @@ import { ADAPTERS, DEFAULT_ADAPTER, adapterInfo, connect, integratorUrl } from "
 import { readUbl } from "../lib/einvoice/ubl-read.mjs";
 import { buildUbl, ublFileName } from "../lib/einvoice/ubl-tr.mjs";
 import { HttpError, limited, ok, parseJson, readJson, sendBuffer, text } from "../lib/http.mjs";
+import { bodyHash, createIdempotency } from "../lib/idempotency.mjs";
 import { invoicePdf } from "../lib/invoice-pdf.mjs";
 import { jpegInfo } from "../lib/pdf-write.mjs";
 import { CURRENCIES, EXEMPTIONS, EXPENSES, INVOICE_KINDS, InvoiceInputError, SCENARIOS, STOPPAGE_DEFAULT, VAT_RATES, WITHHOLDING, amountInWords, computeInvoice, exclusiveParts, grossFromNet, lineAccount, toTry, typeCode } from "../lib/invoice-math.mjs";
@@ -100,6 +101,7 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, conf
   const newId = prefix => `${prefix}-${randomUUID()}`;
   const AUDITOR = { id: "invoices", role: "admin", permissions: [] };
   const publish = (user, detail) => events?.publish("workspace.changed", { actorId: user.id, actorName: user.display_name, ...detail }, { except: user.id });
+  const requests = createIdempotency();
 
   // ---------- Ayarlar ----------
   function settings() {
@@ -303,8 +305,11 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, conf
   const BATCH_ACCOUNTS = 8;
   function allPaymentStates() {
     const day = today();
+    // Veri tabanı işleminin içinde (yazmalar henüz kesinleşmemiş, geri alınabilir) önbellek ne okunur ne yazılır: geri
+    // alınan işlemin durumu saklanıp sonra gösterilmesin (total_changes() geri alınca azalmaz).
+    const inTx = store.inTransaction;
     const key = `${store.get("SELECT total_changes() AS n").n}|${day}`;
-    if (statesCache.key === key && statesCache.map) return statesCache.map;
+    if (!inTx && statesCache.key === key && statesCache.map) return statesCache.map;
     const group = (rows, field) => {
       const map = new Map();
       for (const row of rows) {
@@ -353,7 +358,7 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, conf
       const states = settleInvoices({ lines: ledgers.get(accountId) || [], invoices, links, chequeEvents, offsets, today: day });
       for (const [id, state] of states) map.set(id, state);
     }
-    statesCache = { key, map };
+    if (!inTx) statesCache = { key, map };
     return map;
   }
   function paymentStates(rows) {
@@ -1738,15 +1743,27 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, conf
   router.post("/api/workspace/invoices", async ({ req, res }) => {
     const user = requireManage(req);
     const body = await readJson(req, { limit: 2_000_000 });
+    // v2.0.22 (madde 5): istek kimliği — aynı formun ikinci gönderimi (yanıt gecikince yeniden Kaydet, ağ tekrarı) ikinci
+    // belge açmaz; ilk belge döner. Denetim ile kayıt arasında bekleme (await) yoktur: aynı anda gelen iki istekten biri
+    // kaydeder, öbürü onun sonucunu görür.
+    const requestKey = requests.key(user, body.status === "draft" ? "invoice.draft" : "invoice.create", req.headers["x-hof-request"] || body.requestId);
+    const hash = requestKey ? bodyHash(body) : "";
+    const prior = requests.lookup(requestKey, hash, refId => {
+      const row = store.get("SELECT number, kind, status FROM invoices WHERE id = ?", refId);
+      return `Bu ${row ? label(row).toLocaleLowerCase("tr-TR") : "fatura"} zaten kaydedildi${row?.number ? ` (${row.number})` : ""}; sonradan yapılan değişiklik yeni belge açmaz. Kayıtlı belgeyi açıp Düzenle'yi kullanın ya da yeni bir fatura başlatın.`;
+    });
+    if (prior) return ok(res, { ...detail(prior.refId, user), replayed: true });
     if (body.status === "draft") {
       const doc = documentInput(body, { mode: "draft" });
       doc.paymentDraft = body.payment && typeof body.payment === "object" ? body.payment : {};
       const id = writeDraft(user, doc);
+      requests.remember(requestKey, hash, id);
       return ok(res, detail(id, user));
     }
     const doc = documentInput(body, { mode: "issue" });
     const payment = paymentInput(body, doc, user);
     const result = writeIssued(user, doc, payment, { force: forceOf(body), defer: body.eSend === "later" });
+    requests.remember(requestKey, hash, result.id);
     const autoSend = await sendChoice(user, result.id, body.eSend);
     ok(res, { ...detail(result.id, user), ...(autoSend ? { autoSend } : {}) });
   });

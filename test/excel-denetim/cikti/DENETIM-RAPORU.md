@@ -116,8 +116,10 @@ Bakiyeyi etkilemez; Cari listesindeki "Müşteri / Tedarikçi" süzgeci yanılt�
 **5.5 Doğrudan API'de aynı fatura iki kez gönderilince iki fatura kesiliyor** (tekrar koruması yok; ağ kopup yeniden
 gönderilirse olabilir). Ekranda çift tıklama korumalı (1 fatura).
 
-**5.6 Lisans uyarısı.** Lisans denetimi kapalıyken bile ekranda "Ücretsiz deneme henüz başlamadı … salt okunur" kutusu
-görünüyor. Gerçek kurulumda lisans servisine ulaşılamazsa program salt okunur açılır (bu ortamda 403).
+**5.6 ~~Lisans uyarısı~~ — GERİ ÇEKİLDİ (04.10.2026, düzeltme aşamasında koddan doğrulandı).** Ekrandaki "Ücretsiz deneme
+henüz başlamadı … salt okunur" kutusu programın hatası değil, bu denetimin test düzeninden kaynaklanıyordu: testler lisans
+denetimi kapalı (programın kendi test ayarı) çalıştırıldı, deneme ise hiç başlatılmadı; gerçek kurulumda deneme ilk
+açılışta başlar. Bulgu sayısı 6 değil 5'tir.
 
 **Bulgu DEĞİL (programın bilinçli kuralı, doğru çalıştı):** eksi ve sıfır tutar, 10 trilyon (üst sınır 1 trilyon), ileri
 tarih, 30 Şubat, %7 KDV, eksi miktar, faturadan fazla peşin ödeme reddedildi; 1 milyar TL kabul edildi (sınırın altında);

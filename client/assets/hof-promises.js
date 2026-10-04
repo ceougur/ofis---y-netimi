@@ -32,7 +32,7 @@
   async function load() {
     const ticket = ++request;
     try {
-      const result = await HOF.api("/api/workspace/dues");
+      const result = await HOF.api("/api/workspace/dues", { background: true });
       if (ticket !== request) return;
       data = result;
       loadedAt = Date.now();
@@ -249,15 +249,18 @@
     HOF.on("accounts-changed", () => reloadSoon(400));
     // Olay tabanlı yenileme (v2.0.2): gün dönümü ya da uzun arka plan sonrası takvim yeniden alınır.
     HOF.on("dues:refresh", () => load());
+    // v2.0.22 (Excel denetimi): başka bilgisayardaki değişiklikler birleştirilir — takvim yanıtı büyüktür (binlerce kayıtta
+    // ~1,4 MB); personel saniyede bir kayıt girerken her açık ekran her kayıtta yeniden istiyordu. En sık 4 sn'de bir.
+    const liveSoon = HOF.refresher(load, { delay: 800, gap: 4000 });
     HOF.on("live:workspace.changed", change => {
-      if (!change) return;
-      if (["dues", "activity", "cash", "records", "source", "plans", "cheques", "accounts", "documents"].includes(change.kind) || change.dataset) reloadSoon(800);
+      if (!change || change.info) return;
+      if (["dues", "activity", "cash", "records", "source", "plans", "cheques", "accounts", "documents", "invoices"].includes(change.kind) || change.dataset) liveSoon();
     });
     // Sunucu para/evrak değişikliğini işlemi yapan dahil herkese "overview.changed" ile de duyurur (başka bilgisayarda
     // ödenen çek bu ekranda da düşer).
-    HOF.on("live:overview.changed", () => reloadSoon(400));
-    HOF.on("live:resync", () => reloadSoon(500));
-    HOF.on("live:hello", () => reloadSoon(600));
+    HOF.on("live:overview.changed", () => liveSoon());
+    HOF.on("live:resync", () => liveSoon());
+    HOF.on("live:hello", () => liveSoon());
     // Yedek yenileme: canlı bağlantı kopsa bile ekran açıkken 5 dakikada bir; sekmeye geri dönülünce de (1 dakikadan
     // eskiyse). Sunucu sonucu önbellekte tuttuğu için değişiklik yoksa yük getirmez.
     setInterval(() => {

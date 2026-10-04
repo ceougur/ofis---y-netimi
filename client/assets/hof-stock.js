@@ -471,7 +471,7 @@
     if (!HOF.can("stock.view")) return;
     let alerts = [];
     try {
-      alerts = await HOF.api("/api/workspace/stock/alerts");
+      alerts = await HOF.api("/api/workspace/stock/alerts", { background: true });
     } catch {
       return;
     }
@@ -552,22 +552,32 @@
     };
   })();
 
+  // v2.0.22: kritik stok rozeti ve açık Stok penceresi tek yenileme kapısından (HOF.refresher) — bir fatura her stok
+  // kalemi için ayrı olay yayımlar; önceden her biri ayrı istek gönderiyordu.
+  const alertsSoon = HOF.refresher(refreshAlerts, { delay: 600, gap: 3000 });
+  const refreshOpen = HOF.refresher(() => {
+    if (!modal) return null;
+    if (view.mode === "card" && view.id) return loadItem(view.id);
+    if (view.mode === "list") return loadList();
+    return null;
+  });
   HOF.whenReady(() => {
-    setTimeout(refreshAlerts, 1500);
+    setTimeout(alertsSoon, 1500);
     HOF.on("live:workspace.changed", change => {
       if (change?.kind !== "stock") return;
-      refreshAlerts();
+      alertsSoon();
       if (!modal) return;
-      if (view.mode === "card" && view.id && (!change.itemId || change.itemId === view.id)) loadItem(view.id);
-      else if (view.mode === "list") loadList();
+      if (view.mode === "card" && view.id && change.itemId && change.itemId !== view.id) return;
+      refreshOpen();
     });
     // v2.0.11: stok hareketi başka pencereden (Cari kartı, geri yükleme) değişince açık Stok penceresi de yenilenir.
     HOF.onLedger(["stock"], detail => {
-      refreshAlerts();
+      if (detail.local) alertsSoon.now();
+      else alertsSoon();
       if (!modal || detail.path?.startsWith("/api/workspace/stock")) return;
-      if (view.mode === "card" && view.id) loadItem(view.id);
-      else if (view.mode === "list") loadList();
+      if (detail.local) refreshOpen.now();
+      else refreshOpen();
     }, 350);
   });
-  HOF.stock = { open, refreshAlerts };
+  HOF.stock = { open, refreshAlerts: () => alertsSoon() };
 })();

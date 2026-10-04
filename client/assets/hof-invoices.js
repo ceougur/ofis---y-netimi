@@ -412,6 +412,8 @@
     const d = meta.settings.defaults;
     const form = {
       id: draft?.id || "",
+      // v2.0.22 (madde 5): bu formun istek kimliği — her "Kaydet" denemesinde aynı (ikinci fatura açılmaz).
+      requestId: HOF.requestId(),
       scenario: scenario || source?.scenario || "",
       kind,
       side: sideOf(kind),
@@ -1341,7 +1343,7 @@
     try {
       let saved;
       if (mode === "draft") {
-        saved = form.id ? await HOF.api(`/api/workspace/invoices/${encodeURIComponent(form.id)}`, { method: "PUT", body: payload }) : await HOF.api("/api/workspace/invoices", { method: "POST", body: { ...payload, status: "draft" } });
+        saved = form.id ? await HOF.api(`/api/workspace/invoices/${encodeURIComponent(form.id)}`, { method: "PUT", body: payload }) : await HOF.api("/api/workspace/invoices", { method: "POST", body: { ...payload, status: "draft" }, requestId: form.requestId });
         HOF.toast("Taslak kaydedildi; deftere işlenmedi.", { type: "success" });
       } else {
         await runCalc();
@@ -1372,8 +1374,10 @@
           confirmLabel: eSend === "later" ? "Kaydet, Sonra Gönder" : eSend === "now" ? "Kaydet ve Gönder" : ISSUE_LABELS[form.kind] || "Kaydet",
         });
         if (!ok) return;
-        saved = await withStockForce(force => (form.id ? HOF.api(`/api/workspace/invoices/${encodeURIComponent(form.id)}/issue`, { method: "POST", body: { ...payload, ...force, ...(eSend ? { eSend } : {}) } }) : HOF.api("/api/workspace/invoices", { method: "POST", body: { ...payload, ...force, ...(eSend ? { eSend } : {}) } })));
-        HOF.toast(eSend === "later" ? `${kindLabel(saved.kind)} kaydedildi; Gönderilecekler'de bekliyor.` : `${kindLabel(saved.kind)} ${saved.displayNo || ""} kaydedildi.`, { type: "success" });
+        // v2.0.22 (madde 5): formun istek kimliğiyle — yanıt gecikip yeniden Kaydet'e basılırsa sunucu ikinci fatura açmaz.
+        saved = await withStockForce(force => (form.id ? HOF.api(`/api/workspace/invoices/${encodeURIComponent(form.id)}/issue`, { method: "POST", body: { ...payload, ...force, ...(eSend ? { eSend } : {}) } }) : HOF.api("/api/workspace/invoices", { method: "POST", body: { ...payload, ...force, ...(eSend ? { eSend } : {}) }, requestId: form.requestId })));
+        if (saved.replayed) HOF.toast(`${kindLabel(saved.kind)} ${saved.displayNo || ""} zaten kaydedilmişti (önceki gönderim sunucuya ulaşmış); ikinci kez kaydedilmedi.`, { type: "info", timeout: 9000 });
+        else HOF.toast(eSend === "later" ? `${kindLabel(saved.kind)} kaydedildi; Gönderilecekler'de bekliyor.` : `${kindLabel(saved.kind)} ${saved.displayNo || ""} kaydedildi.`, { type: "success" });
         if (saved.autoSend) HOF.toast(saved.autoSend.ok ? saved.autoSend.message : `e-Belge gönderilemedi: ${saved.autoSend.message}`, { type: saved.autoSend.ok ? "success" : "error", timeout: 8000 });
       }
       view.form = null;
@@ -2173,17 +2177,24 @@
   HOF.whenReady(() => {
     // Cari formu e-Fatura alanlarını göstermek için e-Belge bağlantısının açık olup olmadığını bilmeli.
     if (canView()) loadMeta().catch(() => null);
+    // v2.0.22: canlı olaylar ve defter değişiklikleri tek yenileme kapısından (HOF.refresher; açık pencere başına tek yükleme).
+    const refreshOpen = HOF.refresher(() => {
+      if (!modal) return null;
+      if (view.mode === "list") return loadList();
+      if (view.mode === "card" && view.id) return loadDoc(view.id);
+      return null;
+    });
     HOF.on("live:workspace.changed", change => {
       if (!modal || change?.kind !== "invoices") return;
-      if (view.mode === "list") loadList();
-      else if (view.mode === "card" && view.id && (!change.invoiceId || change.invoiceId === view.id)) loadDoc(view.id);
+      if (view.mode === "list") refreshOpen();
+      else if (view.mode === "card" && view.id && (!change.invoiceId || change.invoiceId === view.id)) refreshOpen();
       else if (view.mode === "inbox" && change.inbox) loadInbox();
     });
     // Tahsilat, çek/senet ya da taksitten gelen ödeme faturanın ödeme durumunu değiştirir: açık liste/kart yenilenir.
     HOF.onLedger(["accounts", "cheques", "plans", "cash", "invoices"], detail => {
       if (!modal || detail.path?.startsWith("/api/workspace/invoices")) return;
-      if (view.mode === "list") loadList();
-      else if (view.mode === "card" && view.id) loadDoc(view.id);
+      if (detail.local) refreshOpen.now();
+      else refreshOpen();
     }, 400);
   });
 })();

@@ -305,7 +305,10 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
 
   router.get("/api/workspace/plans", async ({ req, res, url }) => {
     const user = auth.requirePermission(req, "plans.view");
-    ok(res, list(user, { ...listQuery(url.searchParams), caseSource: currentSource() }));
+    const data = list(user, { ...listQuery(url.searchParams), caseSource: currentSource() });
+    // v2.0.22: sol menü rozeti yalnız sayıyı ister (count=1); kartların tamamı (binlerce kartta ~200 KB) gönderilmez.
+    if (url.searchParams.get("count") === "1") return ok(res, { total: data.plans.length, totals: data.totals, today: data.today });
+    ok(res, data);
   });
 
   // Kaydın taksit kartları (v2.0.6): kişinin kartındaki "Taksit planı" bölümü ve Tahsilat penceresi buradan okur.

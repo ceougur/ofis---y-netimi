@@ -431,16 +431,21 @@
   };
   HOF.cheques = { open, newFor };
   HOF.whenReady(() => {
+    // v2.0.22: canlı olaylar ve defter değişiklikleri tek yenileme kapısından (HOF.refresher).
+    const refreshList = HOF.refresher(() => (modal && view.mode === "list" ? loadList() : null));
+    const refreshCard = HOF.refresher(() => (modal && view.mode === "card" && view.id ? loadCheque(view.id) : null));
     // Başka bilgisayardaki değişiklik: açık liste/kart yenilenir.
     HOF.on("live:workspace.changed", change => {
       if (!modal || change?.kind !== "cheques") return;
-      if (view.mode === "card" && view.id && (!change.chequeId || change.chequeId === view.id)) loadCheque(view.id);
-      else loadList();
+      if (view.mode === "card" && view.id && (!change.chequeId || change.chequeId === view.id)) refreshCard();
+      else refreshList();
     });
     // v2.0.11: evrak başka pencereden (Cari kartı, Kasa) değişince açık liste de yenilenir.
     HOF.onLedger(["cheques"], detail => {
       if (!modal || detail.path?.startsWith("/api/workspace/cheques")) return;
-      if (view.mode === "list") loadList();
+      if (view.mode !== "list") return;
+      if (detail.local) refreshList.now();
+      else refreshList();
     }, 350);
   });
 })();

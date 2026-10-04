@@ -342,8 +342,10 @@
   }
 
   // Para/stok/cari/taksit/çek değişince açık ön izleme yenilenir (işlem bu ekranda ya da başka bilgisayarda).
-  HOF.whenReady(() => HOF.onLedger(["cash", "accounts", "plans", "stock", "cheques"], () => {
-    if (center?.host?.isConnected && center.preview) run({ quiet: true });
-  }, 400));
+  // v2.0.22: başka bilgisayardaki değişikliklerde birleştirilerek (en sık 2 sn'de bir; HOF.refresher).
+  HOF.whenReady(() => {
+    const previewSoon = HOF.refresher(() => (center?.host?.isConnected && center.preview ? run({ quiet: true }) : null), { delay: 400, gap: 2000 });
+    HOF.onLedger(["cash", "accounts", "plans", "stock", "cheques"], detail => (detail?.local ? previewSoon.now() : previewSoon()), 400);
+  });
   HOF.reportCenter = { open, mount };
 })();

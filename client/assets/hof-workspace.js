@@ -865,18 +865,23 @@
     refreshBadges();
   }
 
-  async function refreshBadges() {
+  // Bu ekrandaki işlemden sonra rozetler hemen; başka bilgisayardaki değişiklikte en sık 3 sn'de bir (HOF.refresher).
+  function refreshBadges() {
+    badges.now();
+  }
+  async function loadBadges() {
     const setBadge = (name, value) => {
       const node = document.querySelector(`[data-badge="${name}"]`);
       if (node) node.textContent = value ? String(value) : "";
     };
+    const background = { background: true };
     try {
       const [tasks, liens, plans, cheques, invoices] = await Promise.all([
-        HOF.api("/api/workspace/tasks?status=open&mine=1"),
-        HOF.api("/api/workspace/liens?days=7"),
-        HOF.can("plans.view") ? HOF.api("/api/workspace/plans?status=overdue").catch(() => null) : null,
-        HOF.can("cheques.view") ? HOF.api("/api/workspace/cheques?status=open&limit=1").catch(() => null) : null,
-        HOF.can("invoices.view") ? HOF.api("/api/workspace/invoices?tab=sale&pay=overdue&limit=1").catch(() => null) : null,
+        HOF.api("/api/workspace/tasks?status=open&mine=1", background),
+        HOF.api("/api/workspace/liens?days=7", background),
+        HOF.can("plans.view") ? HOF.api("/api/workspace/plans?status=overdue&count=1", background).catch(() => null) : null,
+        HOF.can("cheques.view") ? HOF.api("/api/workspace/cheques?status=open&limit=1", background).catch(() => null) : null,
+        HOF.can("invoices.view") ? HOF.api("/api/workspace/invoices?tab=sale&pay=overdue&limit=1", background).catch(() => null) : null,
       ]);
       // Fatura rozeti (v2.0.15): vadesi geçmiş, tahsil edilmemiş satış faturası sayısı.
       if (invoices) setBadge("invoices", invoices.total);
@@ -886,13 +891,14 @@
       // Açık acil görev varsa Görevler rozeti kırmızıdır (v2.0.5).
       document.querySelector('[data-badge="tasks"]')?.classList.toggle("hof-badge-danger", tasks.some(task => task.priority === "urgent"));
       setBadge("liens", liens.total);
-      // Taksitler rozeti: geciken taksiti olan kart sayısı.
-      setBadge("plans", plans ? plans.plans.length : 0);
+      // Taksitler rozeti: geciken taksiti olan kart sayısı (v2.0.22: sunucu yalnız sayıyı gönderir — count=1).
+      setBadge("plans", plans ? (plans.total ?? plans.plans.length) : 0);
       HOF.stock?.refreshAlerts?.();
     } catch {
       // Rozetler kritik değil; bir sonraki turda yeniden denenir.
     }
   }
+  const badges = HOF.refresher(loadBadges, { delay: 600, gap: 3000 });
 
   // ---------- Detay paneli: işlem düğmeleri ve geçmiş ----------
   const ACTIVITY_ICONS = { note: "✎", phone: "☎", payment: "₺", "plan-entry": "₺", lien: "⚖", task: "✓" };
@@ -1022,13 +1028,19 @@
       }
     }
     if ((change.kind === "activity" || change.kind === "task") && change.caseKey && HOF.selectedCase()?.key === change.caseKey) refreshActivity();
-    if (change.kind === "plans" || change.kind === "accounts" || (change.kind === "activity" && change.caseKey && HOF.selectedCase()?.key === change.caseKey)) renderCasePlan(true);
-    if (change.kind === "plans" || change.kind === "cash") refreshBadges();
+    // v2.0.22: yalnız bilgi düzeltmesi (cari notu, adresi…) taksit bölümünü ve rozetleri değiştirmez.
+    if (change.info) return;
+    if (change.kind === "plans" || change.kind === "accounts" || (change.kind === "activity" && change.caseKey && HOF.selectedCase()?.key === change.caseKey)) casePlanSoon();
+    if (change.kind === "plans" || change.kind === "cash") badges();
   });
   HOF.on("plans-changed", refreshBadges);
+  // Detay kartındaki taksit bölümü: başka bilgisayardaki değişiklikte birleştirilerek (kayıt seçiliyse) yenilenir.
+  const casePlanSoon = HOF.refresher(() => (HOF.selectedCase() ? renderCasePlan(true) : null));
   // v2.0.11: Kasa'ya yazan her kaynak (Kasa, detay kartı tahsilatı, cari, taksit, stok, çek/senet, geri yükleme) değişince
   // açık Kasa penceresi yenilenir — işlem bu ekranda (ör. Kasa'dan açılan çek kartında) ya da başka bilgisayarda yapılmış olsun.
-  HOF.onLedger(["cash", "cheques", "accounts", "plans", "stock"], () => cashModal?.reload());
+  // v2.0.22: bu ekrandaki işlemde hemen, başka bilgisayardakinde birleştirilerek (en sık 1,5 sn'de bir).
+  const cashSoon = HOF.refresher(() => cashModal?.reload());
+  HOF.onLedger(["cash", "cheques", "accounts", "plans", "stock"], detail => (detail?.local ? cashSoon.now() : cashSoon()));
   HOF.on("plans-changed", () => renderCasePlan(true));
   HOF.on("accounts-changed", () => renderCasePlan(true));
   HOF.on("payment-saved", detail => {
@@ -1037,7 +1049,7 @@
     renderCasePlan(true);
   });
   HOF.on("live:resync", () => {
-    refreshBadges();
+    badges();
     refreshActivity();
   });
   // v2.0.10: yönetici bu kişinin rolünü ya da kişiye özel yetkisini değiştirdi → menü, düğmeler ve kartlar yeniden
@@ -1099,7 +1111,7 @@
       renderActivity();
       renderCasePlan();
     });
-    setInterval(refreshBadges, 120_000);
+    setInterval(() => badges(), 120_000);
   });
   HOF.workspace = { openTasks, openMessages, openReports, openLiens, openCash, refreshBadges, refreshActivity, extractPhones, payment: target => actions.payment(target) };
 })();

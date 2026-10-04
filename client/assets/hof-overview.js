@@ -229,7 +229,7 @@
     }
     const ticket = ++request;
     try {
-      const result = await HOF.api("/api/workspace/overview");
+      const result = await HOF.api("/api/workspace/overview", { background: true });
       if (ticket !== request) return;
       data = result;
       loadedAt = Date.now();
@@ -774,13 +774,14 @@
       const node = document.getElementById("hof-pulse");
       if (welcome && (!node || node.parentNode !== welcome)) render();
     });
-    // Canlı: para ya da stok değişince sunucu herkese (işlemi yapan dahil) tek olay yayımlar.
-    HOF.on("live:overview.changed", () => reloadSoon(200));
+    // Canlı: para ya da stok değişince sunucu herkese (işlemi yapan dahil) tek olay yayımlar. v2.0.22: başka personel
+    // sürekli kayıt girerken kart en sık 2 sn'de bir yenilenir (HOF.refresher; sürerken gelen olaylar tek yenilemede).
+    const cardSoon = HOF.refresher(load, { delay: 200, gap: 2000 });
+    HOF.on("live:overview.changed", () => cardSoon());
     // Raporlar penceresi açıksa (Cari ekstre/mizan, Vade takip, Nakit akışı, Çek/Senet sekmeleri) gösterilen rapor da
     // yenilenir (v2.0.11); "Tüm raporlar" ve "Tablo raporları" sekmeleri kendi yenilemesini yapar.
-    HOF.onLedger(["cash", "accounts", "plans", "stock", "cheques"], () => {
-      if (report?.modal && !PANE_TABS.has(report.tab) && state()?.data) run({ quiet: true });
-    }, 400);
+    const reportSoon = HOF.refresher(() => (report?.modal && !PANE_TABS.has(report.tab) && state()?.data ? run({ quiet: true }) : null), { delay: 400, gap: 2000 });
+    HOF.onLedger(["cash", "accounts", "plans", "stock", "cheques"], detail => (detail?.local ? reportSoon.now() : reportSoon()), 400);
     HOF.on("live:resync", () => reloadSoon(200));
     HOF.on("live:hello", () => {
       live = true;

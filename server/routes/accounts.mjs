@@ -6,7 +6,7 @@
 // Hesap kuralı server/lib/accounts.mjs içinde (saf, testli); burada doğrulama, kayıt ve yetki vardır.
 import { randomUUID } from "node:crypto";
 import { methodOf, methodInput } from "../lib/pay-method.mjs";
-import { ACCOUNT_TYPES, accountLedger, balanceSide, mapAccountHeaders, parseAccountType } from "../lib/accounts.mjs";
+import { ACCOUNT_TYPES, accountLedger, accountTypeKey, balanceSide, classifyAccountType, mapAccountHeaders } from "../lib/accounts.mjs";
 import { HttpError, limited, ok, readJson, sendBuffer, text } from "../lib/http.mjs";
 import { parseAmount, roundMoney } from "../lib/money.mjs";
 import { canUser } from "../lib/permissions.mjs";
@@ -726,8 +726,35 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     const rows = matrix.slice(headerAt + 1, headerAt + 1 + MAX_IMPORT);
     // Eşleme: başlıktan, başlık tanınmadıysa değerlerden; kullanıcı eşlemeyi gönderirse (roles) yalnız kapı yeniden hesaplanır.
     const roles = body.roles && typeof body.roles === "object" ? body.roles : inferRolesByValues(headers, rows, mapAccountHeaders(headers), "account");
-    ok(res, { headerAt, headers, roles, rows: matrix.length - headerAt - 1, gate: validateRows(headers, rows, roles, "account", { headerAt }) });
+    const typeMap = typeMapOf(body.typeMap);
+    ok(res, { headerAt, headers, roles, rows: matrix.length - headerAt - 1, gate: validateRows(headers, rows, roles, "account", { headerAt, typeMap }), types: typeValues(rows, roles) });
   });
+  // v2.0.22: Tür kolonundaki farklı değerler (en çok 60) ve programın okuması — Kolonları Eşle ekranında değer başına tür
+  // seçilir; "Müşteri/Tedarikçi" gibi iki türü birden yazan ya da tanınmayan değer sessizce bir türe atanmaz.
+  const typeMapOf = value => {
+    const out = {};
+    if (!value || typeof value !== "object" || Array.isArray(value)) return out;
+    for (const [key, type] of Object.entries(value).slice(0, 500)) if (ACCOUNT_TYPES[type]) out[accountTypeKey(key)] = type;
+    return out;
+  };
+  function typeValues(rows, roles) {
+    const index = Number(Object.entries(roles || {}).find(([, role]) => role === "type")?.[0] ?? -1);
+    if (!(index >= 0)) return [];
+    const byKey = new Map();
+    for (const row of rows) {
+      if (!Array.isArray(row)) continue;
+      const value = sanitizeCell(row[index]);
+      const key = accountTypeKey(value);
+      if (!key) continue;
+      const item = byKey.get(key) || { value: value.slice(0, 80), key, count: 0 };
+      item.count += 1;
+      byKey.set(key, item);
+    }
+    return [...byKey.values()]
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 60)
+      .map(item => ({ ...item, ...classifyAccountType(item.value) }));
+  }
   function matchExisting({ caseKey, caseSource, refNo, name, phone }) {
     if (caseKey) {
       const found = store.get("SELECT id FROM accounts WHERE deleted_at IS NULL AND case_key = ? AND case_source = ?", caseKey, caseSource);
@@ -763,11 +790,23 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     const mode = body.mode === "update" ? "update" : "skip";
     const openingSide = sideOf(body.openingSide);
     const defaultType = ACCOUNT_TYPES[text(body.type)] ? text(body.type) : "customer";
+    const typeMap = typeMapOf(body.typeMap);
     const defaults = { groupName: limited(body.groupName, 80, "Grup adı") };
     const source = currentSource();
     const cell = (row, index) => (index >= 0 ? sanitizeCell(row[index]) : "");
     const rows = matrix.slice(headerAt + 1, headerAt + 1 + MAX_IMPORT);
-    const report = { created: 0, updated: 0, skipped: [], groups: 0, balances: 0, renumbered: 0, taxInvalid: [], truncated: Math.max(0, matrix.length - headerAt - 1 - MAX_IMPORT) };
+    const report = { created: 0, updated: 0, skipped: [], groups: 0, balances: 0, renumbered: 0, taxInvalid: [], typeDefaulted: [], typeDefaultedTotal: 0, truncated: Math.max(0, matrix.length - headerAt - 1 - MAX_IMPORT) };
+    // Tür: kullanıcının değer başına seçimi (typeMap) önce; yoksa tek türü açıkça yazan hücre; iki tür birden ya da tanınmayan
+    // değer varsayılan türle açılır ve satır numarasıyla raporlanır (sessizce bir türe atanmaz).
+    const typeOf = row => {
+      const raw = cell(row, col.type);
+      if (!raw) return { type: defaultType, warn: null };
+      const mapped = typeMap[accountTypeKey(raw)];
+      if (ACCOUNT_TYPES[mapped]) return { type: mapped, warn: null };
+      const found = classifyAccountType(raw);
+      if (found.state === "ok") return { type: found.type, warn: null };
+      return { type: defaultType, warn: { value: raw.slice(0, 80), reason: found.state === "ambiguous" ? "İki tür birden" : "Tanınmadı", type: defaultType } };
+    };
     // v2.0.15: vergi kimliği kolonu — geçerli VKN/TCKN karta yazılır; denetim hanesi tutmayan yazılmaz, satır numarasıyla raporlanır.
     const taxOf = (row, index) => {
       const raw = cell(row, col.taxNo).replace(/\s+/g, "").replace(/^TR/i, "");
@@ -799,10 +838,11 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
           const value = cell(row, column);
           if (value) fields.push({ label: headers[column].slice(0, 80), value: value.slice(0, 1000) });
         }
+        const typed = typeOf(row);
         const person = {
           name,
           refNo: cell(row, col.seq).slice(0, 30),
-          type: parseAccountType(cell(row, col.type)) || defaultType,
+          type: typed.type,
           phone: cell(row, col.phone).slice(0, 60),
           email: cell(row, col.email).slice(0, 160),
           address: cell(row, col.address).slice(0, 500),
@@ -849,6 +889,10 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
           while (!freeRef(wanted));
         }
         const id = insertAccount(user, { ...person, ...tax, refNo: wanted, groupId, subgroupId });
+        if (typed.warn) {
+          report.typeDefaultedTotal += 1;
+          if (report.typeDefaulted.length < 500) report.typeDefaulted.push({ row: headerAt + index + 2, ...typed.warn });
+        }
         const opening = parseAmount(cell(row, col.balance));
         if (Number.isFinite(opening) && Math.abs(opening) > EPS) {
           addEntry(user, id, { kind: openingKind(opening, person.type, openingSide), amount: roundMoney(Math.abs(opening)), date: person.registeredOn, note: "Açılış bakiyesi" });

@@ -79,13 +79,15 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
     const checks = [];
     const service = ledger();
     if (service?.check) {
-      const { reconciliation, entries } = service.check();
+      // Cari listesi bir kez hesaplanır: Ana Defter'in beklenen bakiyeleri (120/320/336) ve cari bazında denetim aynı
+      // listeyi kullanır (v2.0.22; önceden her yazmada iki kez hesaplanıyordu — aynı veri, aynı sonuç).
+      const list = accounts()?.list ? accounts().list(AUDITOR, { status: "all" }).accounts : null;
+      const { reconciliation, entries } = service.check({ accountList: list });
       checks.push({ code: "balance", name: "Çift yönlü kayıt (borç = alacak)", ok: reconciliation.balanced, difference: 0 });
       for (const item of reconciliation.checks) checks.push({ code: `gl:${item.code}`, name: `${item.code} ${item.name}`, ok: item.ok, difference: item.difference, ledger: item.ledger, subledger: item.subledger });
       // Cari bazında: her carinin ana defterdeki bakiyesi = cari kartındaki bakiye (toplamlar tutup kişiler arasında
       // kayma olmasın). Carisiz taksit kartları da kart bazında: kalan alacak = kart tutarı − net tahsilat.
       const parties = partyBalances(entries);
-      const list = accounts()?.list ? accounts().list(AUDITOR, { status: "all" }).accounts : null;
       if (list) {
         const wrong = [];
         let difference = 0;

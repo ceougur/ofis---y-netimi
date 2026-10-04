@@ -12,7 +12,7 @@
 //   Yükleme tek işlem bloğunda (store.tx: BEGIN IMMEDIATE … COMMIT); yarıda kesilirse hiçbir satır kalmaz (rollback).
 import { parseAmount } from "./money.mjs";
 import { parseDay } from "./plans.mjs";
-import { parseQty } from "./accounts.mjs";
+import { ACCOUNT_TYPES, accountTypeKey, classifyAccountType, parseQty } from "./accounts.mjs";
 import { parseStatus } from "./cheques.mjs";
 
 const INVISIBLE = new RegExp("[\\u0000-\\u0008\\u000B\\u000C\\u000E-\\u001F\\u007F\\u200B-\\u200F\\u2028\\u2029\\u202A-\\u202E\\u2060\\uFEFF]", "g");
@@ -95,7 +95,7 @@ const column = (roles, role) => {
   return found ? Number(found[0]) : -1;
 };
 const MAX_ISSUES = 500;
-export function validateRows(headers, rows, roles, kind, { headerAt = 0 } = {}) {
+export function validateRows(headers, rows, roles, kind, { headerAt = 0, typeMap = {} } = {}) {
   const col = role => column(roles, role);
   const issues = [];
   const counts = { error: 0, warning: 0 };
@@ -127,6 +127,13 @@ export function validateRows(headers, rows, roles, kind, { headerAt = 0 } = {}) 
       if (balance && !Number.isFinite(parseAmount(balance))) push("warning", index, "balance", "Açılış bakiyesi okunamadı; bakiye yazılmaz", balance);
       const email = cell(row, "email");
       if (email && !EMAIL.test(email)) push("warning", index, "email", "E-posta biçimi tanınmadı; olduğu gibi saklanır", email);
+      // v2.0.22: iki türü birden yazan ("Müşteri/Tedarikçi") ya da tanınmayan tür sessizce bir türe atanmaz.
+      const type = cell(row, "type");
+      if (type && !ACCOUNT_TYPES[typeMap?.[accountTypeKey(type)]]) {
+        const found = classifyAccountType(type);
+        if (found.state === "ambiguous") push("warning", index, "type", "Tür birden çok türü içeriyor; Tür Değerleri'nden seçin (seçilmezse varsayılan tür yazılır)", type);
+        else if (found.state === "unknown") push("warning", index, "type", "Tür tanınmadı; Tür Değerleri'nden seçin (seçilmezse varsayılan tür yazılır)", type);
+      }
       if (name) {
         // Sunucu kuralıyla aynı: ad + telefon (≥7 hane) aynıysa aynı kişi, ikinci satır açılmaz; telefonsuz aynı ad ayrı cari olur.
         const phoneDigits = phone.replace(/\D/g, "");

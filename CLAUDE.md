@@ -545,11 +545,21 @@ Bağlam kopsa da bu düzen değişmez. Kullanıcı "zip ver" dediğinde şu üç
   KARAR (kullanıcı, 04.10.2026): "baş mimar ve baş mühendis şapkanla önerdiğin şekilde yap" → 2.0.22 adayı, sıra 4 → 3
   (YALNIZ uyarı + eşleme seçimi, yeni tür YOK) → 1/2 (ölç, sonra düzelt) → 5 (istek kimliği). Her madde: kırmızı test →
   düzeltme → kanıt; sonunda bağımsız gözden geçirme; DENENEN/DENENMEYEN/BİLİNEN SINIRLAR. 6 rapordan düşülür.
-  [x] 4. tanımsız ödeme yolu 400   [ ] 3. Müşteri/Tedarikçi uyarı + eşleme   [ ] 1/2. ölçüm + düzeltme   [ ] 5. idempotency
+  [x] 4. tanımsız ödeme yolu 400   [x] 3. Müşteri/Tedarikçi uyarı + eşleme   [ ] 1/2. ölçüm + düzeltme   [ ] 5. idempotency
   EK (kullanıcı, aynı gün): "UI'deki donmalar, gecikmeler, çoklu kullanımda arayüzün yetişememesi, cari arama pilindeki
   sorunlar canımı çok acıttı, EN İYİ HALİYLE yap!" → 1/2 ÖNE ALINDI (4'ten hemen sonra). Hedef: çok personelli ofiste
   (aynı şirkette saniyede 1–5 başka kayıt, 5+ açık pencere) arama kutusu anında, açık pencere kapanmaz/sıfırlanmaz,
   sunucu yanıtı pencere sayısıyla katlanmaz; önce/sonra aynı A/B + tuş gecikmesi ölçümüyle kanıt.
+  DURUM (04.10.2026, dal `claude/kind-newton-fpmx3f`): 4 commit fec9d40; 1/2 sunucu kısmı (S1 fatura ödeme durumu toplu +
+  saklanır, S2 cari bilgi düzeltmesi kapısız + "info" olayı) commit b0498a7 (testler cari-bilgi-222, fatura-durum-222: eski
+  kodda kırmızı); istemci kısmı (HOF.refresher: tek yükleme + en sık aralık + gizli sekmede yok + arka plan istekleri en çok
+  2 bağlantı; Cari listesi aramayı ezmez, "Daha Fazla"/Tümünü Seç korunur, değişmeyen liste çizilmez), kapıda cari listesi
+  bir kez, takvimin tablo kısmı ayrı önbellek, rozet sayı-yalnız (plans count=1) commit edilmedi — ölçüm sürüyor
+  (`test/excel-denetim/yuk-olcum.mjs`: AYNI veri kopyası, önce=v2.0.21 kodu, sonra=bu dal). 3 yapıldı (test cari-tur-222 eski
+  kodda kırmızı; senaryo-219 adım 3b). 5: kütüphane `server/lib/idempotency.mjs` + test istek-kimligi-222; uca/forma bağlama
+  ölçümden sonra (yama hazır). Arayüz senaryosu `test/e2e/senaryo-222.mjs` (CI'ye eklendi). DERS (04.10.2026): ölçüm
+  zincirini (önce; sonra) elle yeniden başlatırken eskisini durdurmadım → iki ölçüm aynı anda koştu, sayılar atıldı; artık
+  `flock` kilidiyle tek ölçüm.
 - 2.0.20 YAPILACAKLAR (kullanıcı "yapılacaklara not al" dedi, 03.10.2026; "yap" denince başlanır; ayrıntı ve
   kanıt hemen altındaki ADAYI maddesinde):
   [x] 1. Bütün raporların (43) tablosunun altında kalın TOPLAM satırı — ekran, PDF, Excel aynı; yalnız toplanabilir

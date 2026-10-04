@@ -1324,26 +1324,28 @@
   // Ortak araçlar (v2.0.6): Cari ve Stok da aynı Excel okuyucuyu, yazdırmayı ve grup alanlarını kullanır.
   HOF.office = { parseExcel: parseInWorker, pickSheet, chooseSheet, printPdf, outputButtons, groupFields: groupFieldsFor, wireGroupFields, groupBody, amountText, todayIso };
   HOF.whenReady(() => {
-    HOF.on("live:workspace.changed", change => {
-      if (!modal || !change) return;
-      if (change.kind === "plans" || change.kind === "accounts") {
-        loadGroups().then(() => {
-          if (view.mode === "card" && view.planId && (!change.planId || change.planId === view.planId)) loadPlan(view.planId);
-          else if (view.mode === "list") {
-            renderList();
-            loadList();
-          }
-        });
+    // v2.0.22: canlı olaylar ve defter değişiklikleri tek yenileme kapısından (HOF.refresher; açık pencere başına tek yükleme).
+    const refreshOpen = HOF.refresher(async () => {
+      if (!modal) return;
+      await loadGroups();
+      if (view.mode === "card" && view.planId) await loadPlan(view.planId);
+      else if (view.mode === "list") {
+        renderList();
+        await loadList();
       }
+    });
+    HOF.on("live:workspace.changed", change => {
+      if (!modal || !change || change.info) return;
+      if (change.kind !== "plans" && change.kind !== "accounts") return;
+      if (view.mode === "card" && view.planId && change.kind === "plans" && change.planId && change.planId !== view.planId) return;
+      refreshOpen();
     });
     // v2.0.11: taksit kartına dokunan başka pencerelerdeki işlemler (Cari kartından toplu plan, Kasa'da taksit
     // tahsilatını silme, detay kartı) açık Taksitler penceresini de yeniler.
     HOF.onLedger(["plans", "accounts"], detail => {
       if (!modal || /^\/api\/workspace\/(plans|plan-transfer)\b/.test(detail.path || "")) return;
-      loadGroups().then(() => {
-        if (view.mode === "card" && view.planId) loadPlan(view.planId);
-        else if (view.mode === "list") loadList();
-      });
+      if (detail.local) refreshOpen.now();
+      else refreshOpen();
     }, 350);
   });
   HOF.plans = {

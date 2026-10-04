@@ -156,8 +156,38 @@
       return rawApi(path, { ...options, body: { ...body, cashForce: true } });
     }
   };
-  const rawApi = async (path, { method = "GET", body, signal, timeoutMs = 30000 } = {}) => {
+  // v2.0.22 (Excel denetimi, yük ölçümü): arka plan istekleri (rozetler, vade takvimi, ANLIK DURUM, başka bilgisayardaki
+  // değişiklikten sonra pencere yenilemesi) aynı anda en çok 2 bağlantı kullanır. Tarayıcı sunucuya 6 bağlantı açar
+  // (biri canlı olay akışında); yenilemeler hepsini doldurunca kullanıcının araması ve açtığı kart sıraya giriyordu.
+  const BACKGROUND_SLOTS = 2;
+  let backgroundBusy = 0;
+  const backgroundQueue = [];
+  const backgroundSlot = async () => {
+    if (backgroundBusy >= BACKGROUND_SLOTS) await new Promise(resolve => backgroundQueue.push(resolve));
+    backgroundBusy += 1;
+    let released = false;
+    return () => {
+      if (released) return;
+      released = true;
+      backgroundBusy -= 1;
+      backgroundQueue.shift()?.();
+    };
+  };
+  const rawApi = async (path, { background = false, ...options } = {}) => {
+    if (!background) return sendApi(path, options);
+    const release = await backgroundSlot();
+    try {
+      return await sendApi(path, options);
+    } finally {
+      release();
+    }
+  };
+  // İstek kimliği (v2.0.22): formun açıldığı anda üretilir, her gönderimde aynı gider; sunucu ikinci gönderimde yeni belge
+  // açmaz (server/lib/idempotency.mjs). LAN'da (http://192.168…) crypto.randomUUID yoktur; getRandomValues her yerde var.
+  HOF.requestId = () => Array.from(crypto.getRandomValues(new Uint8Array(16)), byte => byte.toString(16).padStart(2, "0")).join("");
+  const sendApi = async (path, { method = "GET", body, signal, timeoutMs = 30000, requestId = "" } = {}) => {
     const init = { method, credentials: "same-origin", headers: { accept: "application/json" }, cache: "no-store" };
+    if (requestId) init.headers["x-hof-request"] = requestId;
     if (body !== undefined) {
       init.headers["content-type"] = "application/json";
       init.body = typeof body === "string" ? body : JSON.stringify(body);
@@ -241,6 +271,69 @@
     const hit = LEDGER_PATHS.find(([pattern]) => pattern.test(clean));
     if (hit) HOF.emit("ledger:changed", { kinds: hit[1], local: true, path: clean });
   }
+  // ---------- Arka plan yenilemesi (v2.0.22) ----------
+  // Excel denetimi ölçümü: başka personel saniyede bir kayıt girerken açık her pencere her olayda 3–7 isteği yeniden
+  // gönderiyordu (bir fatura 5–7 olay yayımlar: fatura, cari, her stok kalemi, Kasa, taksit; ardından ANLIK DURUM).
+  // Kurallar (bütün pencerelerde aynı):
+  //  - bir yenileme sürerken gelen istekler bitince TEK yenileme yaptırır — değişiklik kaçmaz, istek yığılmaz;
+  //  - başka bilgisayardan gelen değişiklikte ilk yenileme `delay` ms sonra (aynı işlemin olayları birlikte gelsin),
+  //    iki yenileme arası en az `gap` ms;
+  //  - bu ekranda yapılan işlem (yerel) beklemeden yeniler: refresh.now();
+  //  - sekme gizliyken yenilenmez; görünür olunca bir kez yenilenir.
+  HOF.refresher = (load, { delay = 450, gap = 1500 } = {}) => {
+    let timer = 0;
+    let running = false;
+    let again = false;
+    let urgent = false;
+    let hidden = false;
+    let last = 0;
+    const run = async () => {
+      timer = 0;
+      if (document.hidden) {
+        hidden = true;
+        return;
+      }
+      running = true;
+      again = false;
+      urgent = false;
+      last = Date.now();
+      try {
+        await load();
+      } catch {
+        // yenileme yardımcıdır; bir sonraki olayda yeniden denenir
+      } finally {
+        running = false;
+        if (urgent) run();
+        else if (again) schedule(0);
+      }
+    };
+    const schedule = wait => {
+      if (running) {
+        again = true;
+        return;
+      }
+      if (timer) return;
+      timer = setTimeout(run, Math.max(wait, last + gap - Date.now()));
+    };
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden || !hidden) return;
+      hidden = false;
+      schedule(0);
+    });
+    const refresh = () => schedule(delay);
+    refresh.now = () => {
+      if (running) {
+        again = true;
+        urgent = true;
+        return;
+      }
+      clearTimeout(timer);
+      timer = 0;
+      run();
+    };
+    return refresh;
+  };
+
   // onLedger(["cash"], yenile): türlerden biri değişince (yerel ya da canlı) kısa gecikmeyle bir kez çağrılır.
   HOF.onLedger = (kinds, handler, delay = 250) => {
     const wanted = new Set(kinds);
