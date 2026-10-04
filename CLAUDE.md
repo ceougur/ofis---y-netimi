@@ -545,7 +545,7 @@ Bağlam kopsa da bu düzen değişmez. Kullanıcı "zip ver" dediğinde şu üç
   KARAR (kullanıcı, 04.10.2026): "baş mimar ve baş mühendis şapkanla önerdiğin şekilde yap" → 2.0.22 adayı, sıra 4 → 3
   (YALNIZ uyarı + eşleme seçimi, yeni tür YOK) → 1/2 (ölç, sonra düzelt) → 5 (istek kimliği). Her madde: kırmızı test →
   düzeltme → kanıt; sonunda bağımsız gözden geçirme; DENENEN/DENENMEYEN/BİLİNEN SINIRLAR. 6 rapordan düşülür.
-  [x] 4. tanımsız ödeme yolu 400   [x] 3. Müşteri/Tedarikçi uyarı + eşleme   [ ] 1/2. ölçüm + düzeltme   [ ] 5. idempotency
+  [x] 4. tanımsız ödeme yolu 400   [x] 3. Müşteri/Tedarikçi uyarı + eşleme   [x] 1/2. ölçüm + düzeltme   [x] 5. idempotency
   EK (kullanıcı, aynı gün): "UI'deki donmalar, gecikmeler, çoklu kullanımda arayüzün yetişememesi, cari arama pilindeki
   sorunlar canımı çok acıttı, EN İYİ HALİYLE yap!" → 1/2 ÖNE ALINDI (4'ten hemen sonra). Hedef: çok personelli ofiste
   (aynı şirkette saniyede 1–5 başka kayıt, 5+ açık pencere) arama kutusu anında, açık pencere kapanmaz/sıfırlanmaz,
@@ -564,6 +564,11 @@ Bağlam kopsa da bu düzen değişmez. Kullanıcı "zip ver" dediğinde şu üç
   birleştirmeyi yap" → iş bitince: testler + bağımsız gözden geçirme düzeltmeleri → son ölçüm → sürüm 2.0.22 → imzalı paket
   (kullanıcının yüklediği .pem) + kurulum .exe → 3 zip + SHA256SUMS → PR → CI yeşil → BİRLEŞTİRMEYİ BEN YAPARIM (kullanıcı
   izni) → yayın açma bağlantısı (tag v2.0.22) → kullanıcı "yayımladım" → bayt bayt + güncelleyici "available" → site PR'ı.
+  DURUM (04.10.2026 16:xx): 4 madde yapıldı; bağımsız gözden geçirme 10 bulgu → hepsi düzeltildi (24fe61a; `test/inceleme-222`
+  önce 6/7 kırmızı, senaryo-222 ve 219 adımları eski istemcide kırmızı) + testte bulunan 11. (kart yenilemesi sürerken listeye
+  dönen kullanıcıya eski kart geri geliyordu, d6e14bd). Düzeltme commit'leri ikinci bağımsız gözden geçirmede. Kanıt
+  `docs/2.0.22-KANIT.md`, CHANGELOG → 2.0.22. Çok carili ölçüm `test/excel-denetim/olcum-cok-cari.mjs` (60.000 caride fatura
+  listesi v2.0.21 102–122 ms → 30–33 ms); gerçek denetim verisinde toplu = kart 5.914/5.914 fatura.
 - 2.0.20 YAPILACAKLAR (kullanıcı "yapılacaklara not al" dedi, 03.10.2026; "yap" denince başlanır; ayrıntı ve
   kanıt hemen altındaki ADAYI maddesinde):
   [x] 1. Bütün raporların (43) tablosunun altında kalın TOPLAM satırı — ekran, PDF, Excel aynı; yalnız toplanabilir
