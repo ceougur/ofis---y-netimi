@@ -14,6 +14,14 @@
 // (alış) simetrik: ödeme, verilen çek/senet (ciro dahil), alıştan iade; SATIŞ faturası, elle "Borç", stoktan satış
 // ödeme değildir. Satış ↔ alış karşılıklı kapama yalnız açık "Mahsup Et" ile (offsets). Cari bakiyesi bundan etkilenmez;
 // bakiye zaten net.
+//
+// v2.0.23 (haftalık ekran testi, docs/EKRAN-HAFTA-TESTI-2026-10-04.md Bulgu 2): fatura ile taksit kartı aynı parayı iki
+// kez saymaz, hiçbir tahsilat kaybolmaz:
+//   - Faturasız, AYRI borç yazan kart (Taksitler → "Yeni Borç", Taksit Excel'i / Tablodan Aktar, Toplu Taksitlendir) kendi
+//     defteridir: borcu, tahsilatı, iadesi ve kapatılması (kalanın silinmesi) faturaları kapatmaz, en eski borç sırasına
+//     girmez. Kartın borcunu aşan tahsilat (artan) genel havuza düşer.
+//   - Taksitli fatura (faturanın kendi kartı) yalnız bağlı ödemelerle kapanır: peşinat, kartının tahsilatı, iade, mahsup.
+//     Bağsız tahsilat onu en eski borç sırasıyla kapatmaz; böylece fatura açığı her zaman kartının kalanına eşittir.
 import { roundMoney } from "./money.mjs";
 
 const cents = value => Math.round((Number(value) || 0) * 100);
@@ -94,6 +102,8 @@ export function settleInvoices({ lines, invoices, links = new Map(), chequeEvent
   const byId = new Map(invoices.map(invoice => [invoice.id, invoice]));
   const planOwner = new Map(invoices.filter(invoice => invoice.planId).map(invoice => [invoice.planId, invoice.id]));
   const ordered = [...lines].sort((a, b) => (a.date === b.date ? String(a.at || "").localeCompare(String(b.at || "")) : a.date < b.date ? -1 : 1));
+  // v2.0.23: ayrı borç yazan (mevcut borcu taksitlendirmeyen) ve hiçbir faturanın kartı olmayan kartlar.
+  const separatePlans = new Set(lines.filter(line => line.origin === "plan" && line.kind === "plan" && !line.covers && line.planId && !planOwner.has(line.planId)).map(line => line.planId));
   const kindOf = line => (line.origin === "invoice" ? byId.get(line.sourceId)?.kind || "" : "");
   // Satırın bağlı olduğu fatura (varsa): iade faturasının satırı asıl faturaya bağlıdır.
   const ownerOf = line => {
@@ -124,15 +134,38 @@ export function settleInvoices({ lines, invoices, links = new Map(), chequeEvent
     // Yükümlülükler: sıra korunur; faturanınki fatura kimliğiyle işaretlenir.
     const obligations = [];
     const pool = [];
+    const planBooks = new Map();
     for (const line of ordered) {
       const role = classifyLine(line, { invoiceKind: kindOf(line), chequeEvent: chequeEvents.get(line.id) || "" });
       const amount = cents(line.debit) || cents(line.credit);
+      // Ayrı kartın satırları kartın kendi defterinde toplanır (fatura sırasına girmez).
+      if (line.planId && separatePlans.has(line.planId)) {
+        const book = planBooks.get(line.planId) || { due: 0, paid: 0, last: null };
+        if (role[dueKey]) book.due += amount;
+        if (role[payKey]) {
+          book.paid += amount;
+          book.last = line;
+        }
+        planBooks.set(line.planId, book);
+        continue;
+      }
       if (role[dueKey]) {
         const own = line.origin === "invoice" && kinds.has(kindOf(line)) ? line.sourceId : "";
-        obligations.push({ invoiceId: own, lineId: line.id, left: amount, closers: [] });
+        // Taksitli fatura (kendi kartı var) yalnız bağlı ödemeyle kapanır; en eski borç sırasında atlanır.
+        obligations.push({ invoiceId: own, lineId: line.id, left: amount, closers: [], planned: Boolean(own && byId.get(own)?.planId) });
       }
       if (role[payKey]) pool.push({ line, owner: ownerOf(line), amount, left: amount, mode: links.has(line.id) ? "linked" : "" });
     }
+    // Kartın borcunu aşan tahsilat (artan) genel havuza: son tahsilatın tarihiyle, tarih sırası korunarak.
+    let excess = false;
+    for (const [planId, book] of planBooks) {
+      const extra = book.paid - book.due;
+      if (extra > 0 && book.last) {
+        pool.push({ line: { ...book.last, id: `plan-excess:${planId}`, label: "Taksit kartından artan ödeme" }, owner: "", amount: extra, left: extra, mode: "" });
+        excess = true;
+      }
+    }
+    if (excess) pool.sort((a, b) => (a.line.date === b.line.date ? String(a.line.at || "").localeCompare(String(b.line.at || "")) : a.line.date < b.line.date ? -1 : 1));
     const target = new Map(obligations.filter(item => item.invoiceId).map(item => [item.invoiceId, item]));
     const close = (item, payment, take, mode) => {
       item.left -= take;
@@ -164,6 +197,7 @@ export function settleInvoices({ lines, invoices, links = new Map(), chequeEvent
     // 2. Kalanı en eski yükümlülükten başlayarak (ödemeler de tarih sırasında).
     let cursor = 0;
     for (const item of obligations) {
+      if (item.planned) continue;
       while (item.left > 0 && cursor < pool.length) {
         const payment = pool[cursor];
         if (payment.left <= 0) {

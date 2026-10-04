@@ -594,7 +594,7 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
           add(key, names.get(cheque?.accountId) || flow.party, late, flow.amount);
         }
         // v2.0.15: vadeli (açık hesap) satış faturalarının ödenmemiş kısmı; taksitli fatura taksit kartından gelir.
-        for (const item of invoices()?.openItems ? invoices().openItems(day) : []) {
+        for (const item of invoices()?.openItems ? invoices().openItems(day, { net: true }) : []) {
           if (item.side !== "sale") continue;
           add(item.accountId, names.get(item.accountId) || item.accountName, -item.days, item.open);
         }
@@ -1379,7 +1379,8 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
   };
   const queryOf = params => {
     const query = {};
-    for (const key of ["preset", "from", "to", "account", "type", "side", "status", "direction", "category", "state", "planStatus", "taskStatus", "tab"]) {
+    // v2.0.23 (Bulgu 4): payMethod (Banka ve POS Hareketleri → Yol) listede yoktu; süzgeç 2.0.17'den beri yok sayılıyordu.
+    for (const key of ["preset", "from", "to", "account", "type", "side", "status", "direction", "category", "state", "planStatus", "taskStatus", "tab", "payMethod"]) {
       const value = text(params.get(key));
       if (value) query[key] = value.slice(0, 200);
     }

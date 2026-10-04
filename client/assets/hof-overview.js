@@ -699,6 +699,11 @@
     }
   }
   function onReportClick(event) {
+    // v2.0.23 (Bulgu 3): "Tüm Raporlar" sekmesi (rapor merkezi) kendi tıklamalarını işler. Buradaki genel işleyici onun
+    // dönem düğmelerini de yakalayıp sekmeyi baştan kuruyordu: seçili cari siliniyor, bir tıkta 6 istek gidiyordu.
+    // Olayın yolu tıklama anında okunur: rapor merkezi düğmeyi işlerken ekranı yeniden çizdiği için düğme o an sayfadan
+    // kopmuş olur ve closest() rapor merkezini bulamaz.
+    if (event.composedPath().some(node => node instanceof Element && node.hasAttribute("data-rc"))) return;
     const target = event.target.closest("button, [data-account-row], [data-cheque-row], [data-due-row], [data-dormant-row]");
     if (!target || !report) return;
     const s = state();

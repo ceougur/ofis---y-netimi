@@ -862,8 +862,6 @@
     const sale = form.side === "sale";
     const payable = form.calc ? form.calc.try?.payable ?? form.calc.totals.payable : 0;
     const chequeOk = meta.canCheques && ["sale", "smm", "purchase"].includes(form.kind);
-    const planOk = meta.canPlans && ["sale", "smm"].includes(form.kind);
-    const rest = Math.round((payable - paidSum(form)) * 100) / 100;
     const cashWord = ret ? (form.kind === "sale_return" ? "Müşteriye İade Ödemesi" : "Tedarikçiden İade Tahsilatı") : sale ? "Peşin Tahsilat" : "Peşin Ödeme";
     const cashRows = form.pay.cash
       .map((item, index) => `<div class="hof-inv-pay-row"><label><span>${esc(cashWord)} (₺)</span><input data-pay="cash" data-i="${index}" data-f="amount" inputmode="decimal" value="${esc(item.amount)}" placeholder="0,00"></label><label><span>${sale ? "Tahsilat Yolu" : "Ödeme Yolu"}</span><select data-pay="cash" data-i="${index}" data-f="method">${methodOptions(item.method)}</select></label><button type="button" class="hof-mini hof-mini-danger" data-act="pay-remove" data-pay="cash" data-i="${index}" aria-label="Sil" title="Sil">×</button></div>`)
@@ -881,7 +879,29 @@
             : '<p class="hof-muted">Portföyde ciro edilebilecek evrak yok.</p>'
           : ""
         : "";
-    const restBlock = ret
+    const restBlock = restHtml(form);
+    slot.innerHTML = `<h4>${ret ? "İade Ödemesi" : "Ödeme"}</h4>
+      ${cashRows}${chequeRows}${endorse}
+      <div class="hof-inv-pay-add">
+        <button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="pay-add-cash">+ ${esc(cashWord)}</button>
+        ${!ret ? `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="pay-all-cash" ${payable > 0 ? "" : "disabled"}>Tamamı Peşin</button>` : ""}
+        ${chequeOk ? `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="pay-add-cheque">+ Çek / Senet</button>` : ""}
+        ${form.kind === "purchase" && chequeOk && !form.portfolio ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="pay-endorse">Portföyden Ciro Et</button>' : ""}
+      </div>
+      <div data-pay-rest>${restBlock}</div>`;
+    const box = slot.querySelector("[data-pay-rest]");
+    if (box) box.hofHtml = restBlock;
+  }
+  // v2.0.23 (Bulgu 1): "Kalan" kutusu ayrı çizilir. Ödeme satırındaki bir alan değişince (tutar, vade, no, banka, yol) yalnız
+  // bu kutu yenilenir; satırlar yeniden çizilmez. Önceden bütün bölüm yeniden çiziliyordu: Tab ile ya da fareyle gidilen
+  // alan sayfadan kopuyor, yazılanlar başka kutuya (ör. tutara) gidiyordu.
+  function restHtml(form) {
+    const ret = isReturn(form.kind);
+    const sale = form.side === "sale";
+    const payable = form.calc ? form.calc.try?.payable ?? form.calc.totals.payable : 0;
+    const planOk = meta.canPlans && ["sale", "smm"].includes(form.kind);
+    const rest = Math.round((payable - paidSum(form)) * 100) / 100;
+    return ret
       ? rest > 0.004
         ? `<p class="hof-inv-rest">Kalan <b>${esc(money(rest))}</b> carinin bakiyesinden düşülür (mahsup).</p>`
         : ""
@@ -898,15 +918,17 @@
         : form.calc
           ? `<p class="hof-inv-rest is-done">${sale ? "Tamamı tahsil edildi." : "Tamamı ödendi."}</p>`
           : "";
-    slot.innerHTML = `<h4>${ret ? "İade Ödemesi" : "Ödeme"}</h4>
-      ${cashRows}${chequeRows}${endorse}
-      <div class="hof-inv-pay-add">
-        <button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="pay-add-cash">+ ${esc(cashWord)}</button>
-        ${!ret ? `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="pay-all-cash" ${payable > 0 ? "" : "disabled"}>Tamamı Peşin</button>` : ""}
-        ${chequeOk ? `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="pay-add-cheque">+ Çek / Senet</button>` : ""}
-        ${form.kind === "purchase" && chequeOk && !form.portfolio ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="pay-endorse">Portföyden Ciro Et</button>' : ""}
-      </div>
-      ${restBlock}`;
+  }
+  // İçerik değişmediyse kutu yeniden çizilmez: tutardan fareyle doğrudan kutudaki bir alana (Vade Tarihi, Taksit Sayısı)
+  // geçilirken tutarın "change" olayı tıklanan alanı yok etmesin.
+  function renderRest() {
+    const form = view.form;
+    const box = body()?.querySelector("[data-pay] [data-pay-rest]");
+    if (!form || !box) return renderPay();
+    const html = restHtml(form);
+    if (box.hofHtml === html) return;
+    box.hofHtml = html;
+    box.innerHTML = html;
   }
 
   // ---------- Toplamlar (sunucunun hesap motorundan) ----------
@@ -1081,33 +1103,10 @@
       if (target.dataset.f !== "note") scheduleCalc();
     }
   }
-  // Kalanı ödeme alanını yeniden çizmeden günceller (yazarken odak kaçmasın).
+  // Kalanı ödeme satırlarını yeniden çizmeden günceller (yazarken ve alan değiştirirken odak kaçmasın).
   function refreshRest() {
-    const form = view.form;
-    const slot = body()?.querySelector("[data-pay] .hof-inv-rest b");
-    if (!form?.calc || !slot) return renderPayLater();
-    const payable = form.calc.try?.payable ?? form.calc.totals.payable;
-    const rest = Math.round((payable - paidSum(form)) * 100) / 100;
-    if (rest > 0.004) slot.textContent = money(rest);
-    else renderPayLater();
+    renderRest();
   }
-  let payTimer = 0;
-  const renderPayLater = () => {
-    clearTimeout(payTimer);
-    payTimer = setTimeout(() => {
-      const active = document.activeElement;
-      const key = active?.dataset ? { pay: active.dataset.pay, i: active.dataset.i, f: active.dataset.f, payf: active.dataset.payf } : null;
-      renderPay();
-      if (key && (key.pay || key.payf)) {
-        const selector = key.payf ? `[data-payf="${key.payf}"]` : `[data-pay="${key.pay}"][data-i="${key.i}"][data-f="${key.f}"]`;
-        const again = body()?.querySelector(selector);
-        if (again) {
-          again.focus();
-          if (again.setSelectionRange && again.type !== "date") again.setSelectionRange(again.value.length, again.value.length);
-        }
-      }
-    }, 600);
-  };
   function formChange(event) {
     const form = view.form;
     const target = event.target;
@@ -1171,7 +1170,7 @@
     if (target.dataset.pay !== undefined && target.dataset.f) {
       const item = form.pay[target.dataset.pay]?.[Number(target.dataset.i)];
       if (item) item[target.dataset.f] = target.value;
-      return renderPay();
+      return refreshRest();
     }
     if (target.dataset.f && HEAD_FIELDS.has(target.dataset.f)) {
       form[target.dataset.f] = target.value;
@@ -1359,6 +1358,16 @@
     if (isReturn(form.kind) && !form.original) return fail("İade edilecek faturayı üstteki arama kutusundan seçin.");
     if (!form.account) return fail(`${form.side === "purchase" ? "Tedarikçiyi" : "Müşteriyi"} (cariyi) seçin.`);
     if (!usedLines(form).length) return fail("En az bir kalem yazın.");
+    // v2.0.23 (Bulgu 1): tutarı yazılmamış ya da geçersiz ödeme satırı sessizce atılmaz (önceden evrak kayıtta düşüyordu,
+    // fatura "Açık" kaydediliyordu). Peşin satırında boş tutar olabilir (satır yok sayılır); evrak satırında tutar zorunlu.
+    const amountOk = value => {
+      const text = String(value ?? "").trim();
+      return Boolean(text) && !/[^\d.,\s₺-]/.test(text) && num(text) > 0;
+    };
+    const badCash = form.pay.cash.findIndex(item => String(item.amount ?? "").trim() && !amountOk(item.amount));
+    if (badCash >= 0) return fail(`${badCash + 1}. peşin ödeme satırındaki tutar geçerli değil ("${String(form.pay.cash[badCash].amount).trim()}"). Tutarı düzeltin ya da satırı × ile silin.`);
+    const badCheque = form.pay.cheques.findIndex(item => !amountOk(item.amount));
+    if (badCheque >= 0) return fail(`${badCheque + 1}. evrakın (${form.pay.cheques[badCheque].instrument === "note" ? "senet" : "çek"}) tutarı ${String(form.pay.cheques[badCheque].amount ?? "").trim() ? `geçerli değil ("${String(form.pay.cheques[badCheque].amount).trim()}")` : "yazılmadı"}. Tutarı yazın ya da satırı × ile silin.`);
     const payload = { ...docBody(form), payment: payBody(form) };
     form.busy = true;
     body()?.querySelectorAll(".hof-actions .hof-button").forEach(button => (button.disabled = true));

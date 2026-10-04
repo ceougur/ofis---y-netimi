@@ -93,13 +93,20 @@ export function tablePdf({ title, subtitle = "", headers, rows, types = [], summ
       if (summary.length) {
         const gap = 6;
         const cardWidth = (W - gap * (summary.length - 1)) / summary.length;
-        summary.forEach(([label, value], index) => {
-          const left = M + index * (cardWidth + gap);
-          page.rect(left, top, cardWidth, 36, { fill: "#f9fafb", stroke: "#e5e7eb", radius: 5 });
-          page.text(left + 8, top + 13, doc.fit(label, cardWidth - 16, "regular", 7.5), { size: 7.5, color: muted });
-          page.text(left + 8, top + 28, doc.fit(value, cardWidth - 16, "bold", 10), { font: "bold", size: 10, color: ink });
+        // v2.0.23: uzun özet başlığı ("Güncel Kasa (tüm hareketler)") kesilmez, en çok iki satıra iner; kutular aynı boyda.
+        const labels = summary.map(([label]) => {
+          const lines = doc.wrap(String(label ?? ""), cardWidth - 16, "regular", 7.5);
+          return lines.length > 2 ? [lines[0], doc.fit(`${lines.slice(1).join(" ")}`, cardWidth - 16, "regular", 7.5)] : lines.length ? lines : [""];
         });
-        top += 46;
+        const twoLines = labels.some(lines => lines.length > 1);
+        const cardHeight = twoLines ? 45 : 36;
+        summary.forEach(([, value], index) => {
+          const left = M + index * (cardWidth + gap);
+          page.rect(left, top, cardWidth, cardHeight, { fill: "#f9fafb", stroke: "#e5e7eb", radius: 5 });
+          labels[index].forEach((line, lineIndex) => page.text(left + 8, top + 13 + lineIndex * 9, line, { size: 7.5, color: muted }));
+          page.text(left + 8, top + cardHeight - 8, doc.fit(value, cardWidth - 16, "bold", 10), { font: "bold", size: 10, color: ink });
+        });
+        top += cardHeight + 10;
       }
     } else {
       page.text(M, top + 8, `${title}${subtitle ? ` · ${subtitle}` : ""}`, { font: "bold", size: 8, color: muted });

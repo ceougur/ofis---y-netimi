@@ -584,7 +584,12 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   GitHub'a yüklenecek imzalı 5 dosyayı ver, diğer testleri bundan sonra değerlendirelim" → 2.0.23 = Bulgu 1, 2 (A–G), 3, 4 +
   PDF özet başlığı. Her hata: önce kırmızı test → düzeltme → kanıt; hafta testi yeniden (beklenen: açıklanmamış fark 0, Bulgu 4
   satırları da tutar); bağımsız gözden geçirme; teslim A (5 dosya) + B (arşiv zip). Denenmeyen 6 alan sonra konuşulacak.
-  [ ] 1. çek/senet satırı   [ ] 2. taksit ↔ fatura   [ ] 3. dönem düğmesi   [ ] 4. Yol süzgeci   [ ] 5. PDF başlık
+  [x] 1. çek/senet satırı   [x] 2. taksit ↔ fatura   [x] 3. dönem düğmesi   [x] 4. Yol süzgeci   [x] 5. PDF başlık
+  DURUM (04.10.2026 20:xx): 5 düzeltme yapıldı. Kırmızı → yeşil: `test/bulgu-223.test.mjs` (2.0.22'de 13'ün 11'i kırmızı,
+  dalda 13/13), `npm run test:senaryo-223` (arayüz; 2.0.22'de 21'in 19'u kırmızı, dalda 21/21; CI ve yayın iş akışına eklendi).
+  Bulgu 1'de ikinci yol bulundu ve kapandı: peşin tutar yazılıp fareyle doğrudan Kalan → Vade Tarihi'ne tıklanınca yazılan
+  vade kayboluyor, fatura SESSİZCE bugünün vadesiyle kaydediliyordu (2.0.22'de de var). Sırada: npm test + diğer arayüz
+  senaryoları + hafta testi yeniden, bağımsız gözden geçirme, sürüm 2.0.23, imzalı paket + kurulum, teslim A + B.
   BULGU 2 (04.10.2026, ek işlemlerde bulundu; KOD DEĞİŞTİRİLMEDİ, karar kullanıcıda): aynı caride açık satış faturası +
   Taksit penceresinden "Yeni Borç" ile AYRI taksit kartı varsa fatura kapama (`server/lib/invoice-settle.mjs`) kartın
   tahsilatını (plan-in) ve kartın borcunu genel FIFO'ya katıyor; taksit modülü ise kartın ödenenini ayrı sayıyor → iki hesap

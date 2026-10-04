@@ -53,9 +53,18 @@ async function attempt({ label, amount, mode, number }) {
   await page.click(f("amount"));
   await page.keyboard.press("Control+A");
   await page.keyboard.type(amount, { delay: 80 });
-  for (const [name, text] of [["dueDate", "03152025"], ["serialNo", "S-77"], ["bank", "Ziraat"]]) {
-    if (mode === "klavye") await page.keyboard.press("Tab");
-    else await page.click(f(name));
+  // Vade faturadan (bugün) sonra: 15.12.2026 (tarayıcı kutusu ay/gün/yıl sırasıyla yazılır).
+  for (const [name, text] of [["dueDate", "12152026"], ["serialNo", `S-${number}`], ["bank", "Ziraat"]]) {
+    if (mode === "klavye") {
+      // Kullanıcı Tab'a basar; imleç hâlâ önceki tarih kutusundaysa (tarih kutusu bölümleri arasında) bir kez daha basar.
+      await page.keyboard.press("Tab");
+      for (let i = 0; i < 3 && name !== "dueDate" && (await focus()) === "INPUT[dueDate]"; i += 1) await page.keyboard.press("Tab");
+    } else if (name === "dueDate") {
+      // Fareyle tarih kutusunun ay bölümüne (sol uç) tıklanır.
+      const box = await page.$(f(name));
+      const rect = await box.boundingBox();
+      await page.mouse.click(rect.x + 12, rect.y + rect.height / 2);
+    } else await page.click(f(name));
     trail.push(`${name} için odak: ${await focus()}`);
     await page.keyboard.type(text, { delay: 80 });
   }
@@ -72,7 +81,7 @@ async function attempt({ label, amount, mode, number }) {
   const formError = await page.$eval(`${inv} [data-form-error]`, n => n.textContent.trim()).catch(() => "");
   const list = (await api.get("/api/workspace/invoices?tab=all&limit=50")).data.invoices || [];
   const saved = list.find(d => d.number === number);
-  const cheques = ((await api.get("/api/workspace/cheques?status=all&limit=200")).data.cheques || []).filter(c => String(c.serialNo || "").includes("S-77") || c.amount === Number(amount));
+  const cheques = ((await api.get("/api/workspace/cheques?status=all&limit=200")).data.cheques || []).filter(c => String(c.serialNo || "") === `S-${number}`);
   const row = { label, mod: mode, tutar: amount, odakIzi: trail, kaydetmedenOnceAlanlar: fields, soru: question, formHatasi: formError, kaydedilenFatura: saved ? { no: saved.number, odenecek: saved.tryPayable, odenen: saved.paid, acik: saved.open, durum: saved.payStateLabel } : null, cekSenet: cheques.length };
   out.push(row);
   console.log(`■ ${label}\n  ${trail.join(" · ")}\n  kaydetmeden önce alanlar ${JSON.stringify(fields)}\n  soru: ${question || "yok"} · form hatası: ${formError || "yok"}\n  kaydedilen fatura: ${JSON.stringify(row.kaydedilenFatura)} · senet: ${cheques.length}`);

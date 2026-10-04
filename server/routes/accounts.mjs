@@ -512,9 +512,12 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     const invoiceId = limited(value, 120, "Fatura");
     if (!invoiceId) return "";
     if (kind !== "in" && kind !== "out") throw new HttpError(400, "Fatura bağı yalnız tahsilat ve ödemede seçilir.");
-    const invoice = store.get("SELECT id, kind, status, account_id AS accountId FROM invoices WHERE id = ?", invoiceId);
+    const invoice = store.get("SELECT id, kind, status, account_id AS accountId, plan_id AS planId FROM invoices WHERE id = ?", invoiceId);
     if (!invoice || invoice.accountId !== accountId) throw new HttpError(404, "Kapatılacak fatura bu caride bulunamadı.");
     if (invoice.status !== "issued") throw new HttpError(409, "Yalnız kaydedilmiş fatura kapatılır (taslak ya da iptal edilmiş fatura seçilemez).");
+    // v2.0.23 (Bulgu 2 F): taksitli fatura kendi taksit kartıyla kapanır; cari kartından bağ kurulursa fatura ile kartı
+    // çelişirdi (fatura ödendi, kart ödenmedi). Tahsilat kartın taksitine girilir.
+    if (invoice.planId) throw new HttpError(409, "Bu fatura taksitli: tahsilatı taksit kartına girin (cari kartında + Tahsilat → taksit kartını seçin). Taksitli fatura kendi kartıyla kapanır.");
     const side = ["sale", "smm"].includes(invoice.kind) ? "in" : invoice.kind === "purchase" ? "out" : "";
     if (side !== kind) throw new HttpError(409, kind === "in" ? "Tahsilat yalnız satış faturasını kapatır; alış faturası için Ödeme girin." : "Ödeme yalnız alış faturasını kapatır; satış faturası için Tahsilat girin.");
     return invoice.id;
