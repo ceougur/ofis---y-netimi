@@ -590,7 +590,7 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   commit 00d5fc3 CI'de yeşildi, sonrası yalnız belge; `master` = e0d9ec7, `v2.0.22`; dal master'a sıfırlandı). Yayındaki 5 dosya +
   latest/ (exe, json, zip, pdf) teslimdekiyle bayt bayt aynı, exe .sha256 OK; gerçek güncelleyici canlı GitHub'da
   2.0.21/20/19/18/17/2.0.4/1.7.0 olarak (API ve yedek yol) 2.0.22'yi "available" gördü, indirme sha256 437ac249… eşleşti; 2.0.22
-  kurulu → "up-to-date". Site kılavuz PR'ı ceougur/destekofis#9 açık (PDF 91ffc51d…); birleştirme kullanıcı onayıyla.
+  kurulu → "up-to-date". Site kılavuz PR'ı ceougur/destekofis#9 kullanıcının "birleştir"iyle BİRLEŞTİRİLDİ (main 513ebe8, PDF 91ffc51d…). 2.0.22 KAPANDI.
 - 2.0.20 YAPILACAKLAR (kullanıcı "yapılacaklara not al" dedi, 03.10.2026; "yap" denince başlanır; ayrıntı ve
   kanıt hemen altındaki ADAYI maddesinde):
   [x] 1. Bütün raporların (43) tablosunun altında kalın TOPLAM satırı — ekran, PDF, Excel aynı; yalnız toplanabilir
