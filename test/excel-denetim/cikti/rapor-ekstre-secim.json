@@ -5,9 +5,9 @@
   "bos": ""
  },
  "tumZamanlar": {
-  "secili": "",
-  "ozet": "",
-  "bos": "Önce cariyi seçin."
+  "secili": "Deniz Yapı Malzemeleri Ltd. Şti.",
+  "ozet": "Devir 0,00 TL | Dönem Borç 1.000,00 TL | Dönem Alacak 400,00 TL | Dönem Sonu 600,00 TL Borçlu",
+  "bos": ""
  },
  "onIzle": {
   "secili": "Deniz Yapı Malzemeleri Ltd. Şti.",
@@ -15,9 +15,9 @@
   "bos": ""
  },
  "buYil": {
-  "secili": "",
-  "ozet": "",
-  "bos": "Önce cariyi seçin."
+  "secili": "Deniz Yapı Malzemeleri Ltd. Şti.",
+  "ozet": "Devir -400,00 TL | Dönem Borç 1.000,00 TL | Dönem Alacak 0,00 TL | Dönem Sonu 600,00 TL Borçlu",
+  "bos": ""
  },
  "faturaTumu": {
   "secili": "",
@@ -30,8 +30,8 @@
   "bos": ""
  },
  "faturaBuYil": {
-  "secili": "",
-  "ozet": "Satış Faturası 2 | Matrah 6.000,00 TL | KDV 0,00 TL | Tevkifat 0,00 TL | Ödenecek 6.000,00 TL | Kalan 5.600,00 TL",
+  "secili": "Deniz Yapı Malzemeleri Ltd. Şti.",
+  "ozet": "Satış Faturası 1 | Matrah 1.000,00 TL | KDV 0,00 TL | Tevkifat 0,00 TL | Ödenecek 1.000,00 TL | Kalan 600,00 TL",
   "bos": ""
  },
  "bankaTumu": {
@@ -42,16 +42,16 @@
  },
  "bankaSecildi": {
   "secili": "",
-  "ozet": "Devir 0,00 TL | Dönem Giriş 1.000,00 TL | Dönem Çıkış 0,00 TL | Dönem Net 1.000,00 TL | Dönem Sonu 1.000,00 TL | Banka (tüm hareketler) 300,00 TL | POS / Kredi Kartı (tüm hareketler) 700,00 TL",
+  "ozet": "Devir 0,00 TL | Dönem Giriş 300,00 TL | Dönem Çıkış 0,00 TL | Dönem Net 300,00 TL | Dönem Sonu 300,00 TL | Banka (tüm hareketler) 300,00 TL | POS / Kredi Kartı (tüm hareketler) 700,00 TL",
   "bos": "",
-  "kapsam": "Banka ve POS · Tüm hareketler · 04.10.2026 tarihine kadar",
+  "kapsam": "Banka (Havale / EFT) · Tüm hareketler · 04.10.2026 tarihine kadar",
   "kutu": "bank"
  },
  "bankaOnIzle": {
   "secili": "",
-  "ozet": "Devir 0,00 TL | Dönem Giriş 1.000,00 TL | Dönem Çıkış 0,00 TL | Dönem Net 1.000,00 TL | Dönem Sonu 1.000,00 TL | Banka (tüm hareketler) 300,00 TL | POS / Kredi Kartı (tüm hareketler) 700,00 TL",
+  "ozet": "Devir 0,00 TL | Dönem Giriş 300,00 TL | Dönem Çıkış 0,00 TL | Dönem Net 300,00 TL | Dönem Sonu 300,00 TL | Banka (tüm hareketler) 300,00 TL | POS / Kredi Kartı (tüm hareketler) 700,00 TL",
   "bos": "",
-  "kapsam": "Banka ve POS · Tüm hareketler · 04.10.2026 tarihine kadar"
+  "kapsam": "Banka (Havale / EFT) · Tüm hareketler · 04.10.2026 tarihine kadar"
  },
  "sayfaHatalari": []
 }
