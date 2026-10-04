@@ -500,8 +500,10 @@ Bağlam kopsa da bu düzen değişmez. Kullanıcı "zip ver" dediğinde şu üç
   ulaşmaya, ?hofCompany= ile şirket değiştirmeye, yetki dışı uçları çağırmaya, bozuk/aşırı büyük girdi göndermeye çalışır;
   bağımlılık taraması. Hepsi reddedilmeli, veri bozulmamalı.
   KARAR (kullanıcı, 04.10.2026): "her yapılmayan testi hacker yani kötü niyetli olarak programı bozmak için yapalım; planını
-  böyle yap". PLAN: raporda (docs/TEST-KAPSAMI-2.0.21.md) doğrulanmış her testsiz yer (52 yüksek + 116 orta) için test
-  "çalışıyor mu?" diye değil "nasıl bozarım?" diye yazılır. Her açık için saldırgan soruları: yetkim yokken yapabilir miyim
+  böyle yap"; DÜZELTME (aynı gün): "hem çalışıyor mu diye test et hem de bunu nasıl bozarım diye test et, plan bu!".
+  PLAN: raporda (docs/TEST-KAPSAMI-2.0.21.md) doğrulanmış her testsiz yer (52 yüksek + 116 orta) için İKİ test yazılır:
+  (1) ÇALIŞIYOR MU — doğru kullanımda beklenen sonuç sayılarla (bakiye, Kasa, stok, kart) doğrulanır; (2) NASIL BOZARIM —
+  saldırgan bakışla. Saldırgan soruları: yetkim yokken yapabilir miyim
   (başka personel, başka şirket, ?hofCompany= oyunu, doğrudan API)? kilitli döneme/ileri tarihe yazdırabilir miyim? tutarı
   eksi/sıfır/devasa/kuruş artığı, metni bozuk/çok uzun/zararlı (HTML, formül, yol) verebilir miyim? çift tıklama ve aynı
   anda iki istekle çift kayıt ya da eksi bakiye yaratabilir miyim? işlemi yarıda kesip (bağlantı kopması, disk dolu) veriyi
