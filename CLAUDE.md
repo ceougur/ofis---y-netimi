@@ -560,6 +560,10 @@ Bağlam kopsa da bu düzen değişmez. Kullanıcı "zip ver" dediğinde şu üç
   ölçümden sonra (yama hazır). Arayüz senaryosu `test/e2e/senaryo-222.mjs` (CI'ye eklendi). DERS (04.10.2026): ölçüm
   zincirini (önce; sonra) elle yeniden başlatırken eskisini durdurmadım → iki ölçüm aynı anda koştu, sayılar atıldı; artık
   `flock` kilidiyle tek ölçüm.
+  KULLANICI (04.10.2026, 2.0.22 sırasında): "işlem bitince GitHub'a yüklenecek doğrulanmış imzalı zipi ve linki ver; sende
+  birleştirmeyi yap" → iş bitince: testler + bağımsız gözden geçirme düzeltmeleri → son ölçüm → sürüm 2.0.22 → imzalı paket
+  (kullanıcının yüklediği .pem) + kurulum .exe → 3 zip + SHA256SUMS → PR → CI yeşil → BİRLEŞTİRMEYİ BEN YAPARIM (kullanıcı
+  izni) → yayın açma bağlantısı (tag v2.0.22) → kullanıcı "yayımladım" → bayt bayt + güncelleyici "available" → site PR'ı.
 - 2.0.20 YAPILACAKLAR (kullanıcı "yapılacaklara not al" dedi, 03.10.2026; "yap" denince başlanır; ayrıntı ve
   kanıt hemen altındaki ADAYI maddesinde):
   [x] 1. Bütün raporların (43) tablosunun altında kalın TOPLAM satırı — ekran, PDF, Excel aynı; yalnız toplanabilir
