@@ -10,7 +10,8 @@ Kaynak: ekrandan bir haftalık iş testi (04.10.2026; `docs/EKRAN-HAFTA-TESTI-20
   - Ödeme satırında bir alandan çıkınca bütün ödeme bölümü yeniden çiziliyordu. Tab'la ya da fareyle gidilen alan sayfadan kopuyordu; Banka'ya yazılan "Ziraat" Tutar kutusuna gidiyordu.
   - Sonuç: fatura uyarısız "Açık" kaydediliyor, senet portföye girmiyordu. Fareyle girişte vade ve banka siliniyordu.
   - Peşin tutar yazılıp fareyle doğrudan Vade Tarihi'ne tıklanınca yazılan vade kayboluyor, fatura bugünün vadesiyle kaydediliyordu.
-  - Artık ödeme satırları yazarken yeniden çizilmez; yalnız "Kalan" kutusu güncellenir.
+  - Kalemin fiyatı değiştirilip hemen peşin tutar yazılınca, toplam yeniden hesaplanırken yazılan rakamlar kayboluyordu: "264" yazılan fatura sessizce "ödenen 2, açık 262" kaydediliyordu. Fiyat değişir değişmez **Tamamı Peşin**'e basılınca eski toplam yazılıyordu.
+  - Artık ödeme satırları yazarken ve toplam yeniden hesaplanırken yeniden çizilmez; yalnız "Kalan" kutusu güncellenir. **Tamamı Peşin** hesabın bitmesini bekler. Tutar "100 TL", "40.000 TL" gibi yazılabilir (sunucuyla aynı okunur).
   - Tutarı yazılmamış ya da geçersiz evrak satırı ve geçersiz peşin tutar varken fatura kaydedilmez; neden satır numarasıyla yazılır.
 - **Taksit kartı ile fatura birbirinin parasını sayıyordu (önem: yüksek).** Aynı caride fatura ve taksit kartı olunca:
   - Taksitler → Yeni Borç ile açılan (faturasız) kartın tahsilatı faturayı da kapatıyordu (çift sayım).
@@ -20,15 +21,21 @@ Kaynak: ekrandan bir haftalık iş testi (04.10.2026; `docs/EKRAN-HAFTA-TESTI-20
 
   Artık:
   - Faturasız kart kendi defteridir: borcu, tahsilatı ve kapatılması faturaları kapatmaz. Kartın borcunu aşan tahsilat faturalara sayılır (para kaybolmaz).
-  - Taksitli fatura kendi taksit kartıyla kapanır; fatura kartındaki açık her zaman kartın kalanına eşittir. Taksitli faturanın tahsilatını cari kartında **+ Tahsilat → Taksite Yaz** ile girin. **Taksit Dışı Tahsilat** taksitli faturayı kapatmaz, carinin hesabına yazılır. "Kapatılacak Fatura" listesinde taksitli fatura yoktur; sunucu da reddeder.
-  - "Carinin Mevcut Borcu" ile taksitlendirilen açık fatura Alacak Yaşlandırma, Nakit Akış, Vade Takip ve tahsilat takvimi / bildirimlerde bir kez sayılır (önceden fatura ve kart ayrı ayrı sayılıyordu).
+  - Taksitli fatura kendi taksit kartıyla kapanır; tahsilatta ve taksit iadesinde fatura kartındaki açık kartın kalanına eşittir. Taksitli faturanın tahsilatını cari kartında **+ Tahsilat → Taksite Yaz** ile girin. **Taksit Dışı Tahsilat** taksitli faturayı kapatmaz, carinin hesabına yazılır.
+  - Taksitli fatura için "Kapatılacak Fatura" ve **Mahsup Et** yoktur (sunucu da reddeder). Faturanın kendi kartının tutarı ve carisi Taksitler'den değiştirilmez; faturadan (Düzenle / iade) değişir.
+  - Kendi ödemesi dışında ödeme sayılmış açık fatura sonradan taksitlendirilmez; program nedenini ve doğru yolu söyler (cari kartında + Taksit Planı → Carinin Mevcut Borcu).
+  - "Carinin Mevcut Borcu" kartı (cari kartından ya da Stok → Bu Satışı Taksitlendir ile) açıldığı anda var olan borcu kapsar, en yeniden başlayarak kendi tutarı kadar. Kartın tahsilatı yalnız o borcu kapatır: stoktan taksitli satışın kartı ilgisiz eski faturayı "Ödendi" yapmaz. Karttan sonra kesilen fatura karta bölünmüş sayılmaz.
+  - Karta bölünen açık fatura Alacak Yaşlandırma, Nakit Akış, Vade Takip ve tahsilat takvimi / bildirimlerde bir kez sayılır (önceden fatura ve kart ayrı ayrı sayılıyordu).
   - Cari bakiyeleri, Kasa ve mizan bu hatalardan etkilenmiyordu. Değişen, "hangi tahsilat hangi borcu kapattı" eşleştirmesi ve ona bağlı ekranlar: fatura durumu, Satış Faturaları "Kalan", Açık Faturalar, yaşlandırma, hatırlatmalar. Eski veride eşleştirme kendiliğinden yeniden hesaplanır; hiçbir kayıt değişmez.
 - **Raporlarda dönem düğmesi seçili cariyi siliyordu.** Raporlar → Tüm Raporlar'da cari seçtikten sonra "Tüm Zamanlar", "Bu Yıl"… düğmesine basınca Cari Ekstre "Önce cariyi seçin"e düşüyordu. Fatura raporlarında cari süzgeci sessizce kalkıyor, bütün cariler görünüyordu. Tek tıkta 6 istek gidiyordu. Artık seçim kalır, tek istek gider.
 - **Banka ve POS Hareketleri'nde "Yol" süzgeci çalışmıyordu (2.0.17'den beri).** "Banka (Havale / EFT)" ya da "POS / Kredi Kartı" seçilince rapor (ekran, PDF, Excel) yalnız o yolu gösterir.
-- **PDF raporların özet kutusunda uzun başlık kesiliyordu** ("Güncel Kasa (tü…"); artık iki satıra iner.
+- **PDF raporların özet kutusunda uzun başlık kesiliyordu** ("Güncel Kasa (tü…"); artık sözcük sınırından iki satıra iner, dar kutuda sözcük harf ortasından bölünmez.
+- **Eski veride** taksitli ya da iptal edilmiş faturaya bağlı cari tahsilatı (2.0.17–2.0.22) bağ değişmeden düzeltilebilir (önceden açıklama düzeltmesi bile reddediliyordu).
+- **Bağımsız gözden geçirme** (iki tur) 11 + ⟨GOZDEN2⟩ bulgu verdi; hepsi yeniden üretildi ve önce kırmızı testle düzeltildi. Biri dışında: taksitli faturadan **iade**, aynı caride başka borç ya da başka taksitli fatura varken faturanın kendi kartını küçültmeyebiliyor (2.0.22'de de var). Bu, iade / iptal / düzenleme testleriyle birlikte sıradaki sürüme bırakıldı: `docs/2.0.23-KANIT.md` → Bilinen Sınırlar.
 - **Testler:**
-  - `test/bulgu-223.test.mjs`: taksit kartı ↔ fatura (A–G, artan tahsilat, eski bağ), Yol süzgeci, PDF özeti. 2.0.22'de 13'ün 11'i kırmızı.
-  - Arayüzden `npm run test:senaryo-223` (CI'de): senet satırı klavyeyle ve fareyle (tam ve kısmi), peşin tutardan Vade Tarihi'ne, geçersiz tutar, Kapatılacak Fatura, dönem düğmesi ve tek istek, Yol = Banka / POS. 2.0.22'de 21'in 19'u kırmızı.
+  - `test/bulgu-223.test.mjs`: taksit kartı ↔ fatura (A–G, artan tahsilat, eski bağ, Mevcut Borç kartı çok caride, sonradan kesilen fatura, stoktan taksitli satış, peşinatlı fatura, taksit iadesi, kart tutarı, mahsup, eski bağın düzeltilmesi, sonradan taksitlendirme), Yol süzgeci, PDF özeti. 2.0.22'de 24'ün 19'u kırmızı.
+  - Arayüzden `npm run test:senaryo-223` (CI'de): senet satırı klavyeyle ve fareyle (tam ve kısmi), peşin tutardan Vade Tarihi'ne, fiyat değişip hemen peşin tutar (hesap anında ve 400 ms gecikmeli), Tamamı Peşin, geçersiz tutar, Kapatılacak Fatura, dönem düğmesi ve tek istek, Yol = Banka / POS. 2.0.22'de 27'nin 23'ü kırmızı.
+  - Haftalık ekran testi bu sürümle: 57 rapor kaleminin 57'si iki şirkette de bağımsız hesapla aynı (2.0.22'de 51).
 
 ## 2.0.22 — Çok personelli kullanımda hız ve donmalar; Excel'den cari türü; çift fatura koruması
 
