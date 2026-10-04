@@ -54,7 +54,15 @@ Bu dosya oturumlar arasında taşınan hafızadır. Her oturumun başında okunu
   açılır (ayrıntı `docs/SURUM-YAYIMLAMA.md` → Site). 2.0.3–2.0.14 boyunca sitede eski kılavuz kaldı (02.10.2026 fark edildi).
 
 ## Sürüm teslim düzeni (kullanıcı kararı, 02.10.2026 — her sürümde AYNEN; sormadan, eksiksiz)
-Bağlam kopsa da bu düzen değişmez. Kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS verilir:
+GÜNCELLEME (kullanıcı, 04.10.2026: "zipleri teslim ederken GitHub'a yükleyeceklerimi ayrı ver, karma karışık bir sürü zip
+oluyor, çözemiyorum") — bundan sonra teslim İKİ PARÇA:
+  A) GitHub'a yüklenecek 5 dosya ZİPSİZ, TEK TEK gönderilir (dosya adları yayındaki adlarıyla aynı):
+     `destekofis-guncelleme-<s>.zip`, `destekofis-guncelleme.json` (İMZALI), `DestekOfis-Kullanim-Kilavuzu.pdf`,
+     `DestekOfis-Kurulum.exe`, `DestekOfis-Kurulum.exe.sha256` + yayın açma bağlantısı ve sürüm notu metni.
+  B) Arşiv için TEK zip `DestekOfis-<s>-Arsiv-Belgeler-Kaynak-Denetim.zip` (sürüm notları, kanıt, git bundle, test çıktıları;
+     GitHub'a YÜKLENMEZ — adında ve OKU-BENI'de yazar) + SHA256SUMS. 50 MB'ı aşarsa A/B parçalara bölünür.
+Aşağıdaki üç zip düzeni (1/2/3) bu tarihten önceki teslimler içindir; yerini yukarıdaki iki parça aldı.
+Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS verilirdi:
 1. `DestekOfis-<s>-1-Guncelleme-ve-Belgeler.zip` → içinde **`GitHub-v<s>/`** klasörü: `destekofis-guncelleme-<s>.zip`,
    `destekofis-guncelleme.json` (İMZALI), `DestekOfis-Kullanim-Kilavuzu.pdf`; kökte OKU-BENI, sürüm notları, belgeler.
 2. `DestekOfis-<s>-2-Kurulum.zip` → içinde **`GitHub-v<s>/`**: `DestekOfis-Kurulum.exe` + `.sha256`.
