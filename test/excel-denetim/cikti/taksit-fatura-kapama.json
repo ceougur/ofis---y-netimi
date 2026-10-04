@@ -140,6 +140,35 @@
    "cariBakiye": 9000,
    "acikToplam": 18000,
    "tutarli": true
+  },
+  {
+   "senaryo": "E · taksitli fatura + cari kartından bağsız tahsilat",
+   "adimlar": [
+    {
+     "date": "2025-02-20",
+     "invoice": 3000,
+     "installments": 3,
+     "firstDue": "2025-03-20"
+    },
+    {
+     "date": "2025-02-21",
+     "collect": 5000
+    }
+   ],
+   "fatura": {
+    "odenecek": 3000,
+    "odenen": 3000,
+    "acik": 0,
+    "durum": "Ödendi"
+   },
+   "taksitKarti": {
+    "toplam": 3000,
+    "odenen": 0,
+    "kalan": 3000
+   },
+   "cariBakiye": -2000,
+   "acikToplam": 3000,
+   "tutarli": false
   }
  ],
  "yaslandirma": [
@@ -161,11 +190,11 @@
   ],
   [
    "90+ gün",
-   "47.440,00 TL"
+   "50.440,00 TL"
   ],
   [
    "Toplam Gecikmiş",
-   "47.440,00 TL"
+   "50.440,00 TL"
   ]
  ]
 }

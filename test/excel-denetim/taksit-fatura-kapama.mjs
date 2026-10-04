@@ -23,7 +23,11 @@ async function scenario(label, steps) {
   let planId = "";
   let invoiceId = "";
   for (const step of steps) {
-    if (step.invoice) invoiceId = (await must("fatura", c.post("/api/workspace/invoices", { scenario: "service_sale", accountId: acc.id, issueDate: step.date, lines: [{ itemId: item.id, qty: 1, unitPrice: step.invoice, vatRate: 0 }], payment: { rest: "open", dueDate: step.date } }))).id;
+    if (step.invoice) invoiceId = (await must("fatura", c.post("/api/workspace/invoices", { scenario: "service_sale", accountId: acc.id, issueDate: step.date, lines: [{ itemId: item.id, qty: 1, unitPrice: step.invoice, vatRate: 0 }], payment: step.installments ? { rest: "installments", installments: { count: step.installments, firstDue: step.firstDue, everyMonths: 1 } } : { rest: "open", dueDate: step.date } }))).id;
+    if (step.installments) {
+      const doc = await must("fatura oku", c.get(`/api/workspace/invoices/${invoiceId}`));
+      planId = doc.planId || doc.plan?.id;
+    }
     if (step.plan) planId = (await must("kart", c.post("/api/workspace/plans", { name: acc.name, registeredOn: step.date, total: String(step.plan), accountId: acc.id, mode: "auto", count: "3", firstDue: "2025-03-01", ...(step.covers ? { coversBalance: true } : {}) }))).id;
     if (step.collect) await must("tahsilat", c.post(`/api/workspace/accounts/${acc.id}/entries`, { kind: "in", amount: step.collect, date: step.date, method: "cash", note: "cari kartından tahsilat" }));
     if (step.planCollect) await must("kart tahsilatı", c.post(`/api/workspace/plans/${planId}/entries`, { kind: "in", amount: step.planCollect, date: step.date, method: "bank", note: "taksit kartından tahsilat" }));
@@ -51,6 +55,12 @@ try {
   const d = out.at(-1);
   d.tutarli = Math.abs(d.fatura.acik - d.cariBakiye) < 0.005 && Math.abs(d.taksitKarti.kalan - d.cariBakiye) < 0.005;
   console.log(`  D için doğru ölçü: fatura açığı ${d.fatura.acik} = kart kalanı ${d.taksitKarti.kalan} = cari bakiye ${d.cariBakiye} → ${d.tutarli ? "TUTARLI" : "TUTARSIZ"}`);
+  // E: taksitli fatura (taksit kartı faturanın kendisi); müşteri cari kartından başka bir iş için ödeme yapar (bağsız).
+  // Excel haftasında gerçekten oldu: C0122, ISL-01905 (290,60) + ISL-03375 senet. Fatura ile kartı aynı şeyi söylemeli.
+  await scenario("E · taksitli fatura + cari kartından bağsız tahsilat", [{ date: "2025-02-20", invoice: 3000, installments: 3, firstDue: "2025-03-20" }, { date: "2025-02-21", collect: 5000 }]);
+  const e = out.at(-1);
+  e.tutarli = Math.abs(e.fatura.acik - e.taksitKarti.kalan) < 0.005;
+  console.log(`  E için doğru ölçü: fatura açığı ${e.fatura.acik} = kendi taksit kartının kalanı ${e.taksitKarti.kalan} → ${e.tutarli ? "TUTARLI" : "TUTARSIZ"} (cari bakiye ${e.cariBakiye})`);
   const aging = await must("yaşlandırma", c.get("/api/workspace/report-center/alacak-yaslandirma"));
   console.log(`\nAlacak Yaşlandırma özeti: ${JSON.stringify(aging.summary)}`);
   const accounts = (await must("cariler", c.get("/api/workspace/accounts?status=all&limit=50"))).accounts;
