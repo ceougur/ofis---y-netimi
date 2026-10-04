@@ -331,7 +331,8 @@ try {
   await step("S2: başka personelin cari notu düzeltmesi ANLIK DURUM'u yeniden yükletmez; parasal kayıt yükletir", async () => {
     const colleague = createClient(BASE);
     await colleague.login("muhasebe2", STAFF);
-    await admin.waitForSelector("#hof-pulse", { timeout: 15000 });
+    // Boş veriyle ana ekran başlangıç görünümündedir; ANLIK DURUM kartı çizilmese de verisi yüklenir ve olayla yenilenir.
+    await admin.waitForFunction(() => Boolean(window.HOF?.overview?.data?.()), null, { timeout: 15000 });
     await admin.waitForTimeout(2500);
     const target = await get(`/api/workspace/accounts/${ids.customers[3]}`);
     const log = counter(admin);
