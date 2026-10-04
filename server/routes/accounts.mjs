@@ -37,8 +37,8 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
   const office = () => store.setting("office.name", "");
   const currentSource = () => (dataset?.currentKey ? dataset.currentKey() : "");
   const changed = (user, detail = {}) => events?.publish("workspace.changed", { kind: "accounts", actorId: user.id, actorName: user.display_name, ...detail }, { except: user.id });
-  const touched = (user, account) => {
-    changed(user, { accountId: account.id });
+  const touched = (user, account, extra = {}) => {
+    changed(user, { accountId: account.id, ...extra });
     if (account.caseKey) changed(user, { kind: "activity", caseKey: account.caseKey, datasetKey: account.caseSource || "" });
   };
   const amountOf = (value, label = "Tutar") => {
@@ -442,17 +442,24 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
       if (wantedRef && wantedRef !== previous.refNo && store.get("SELECT 1 AS found FROM accounts WHERE deleted_at IS NULL AND ref_no = ? AND id <> ?", wantedRef, previous.id)) throw new HttpError(409, `${wantedRef} numarası başka bir caride kullanılıyor.`);
       // Görünen grup adları birleştirilmez: grup boşaltılınca eski adla yeniden açılmasın.
       const input = accountInput({ ...previous, groupName: "", subgroupName: "", ...body }, user, previous);
+      // v2.0.22: bilgi kolonları ayrı yazılır; tür ve durum yalnız değiştiyse (bilgi düzeltmesi mutabakat kapısını
+      // tetiklemez — lib/db.mjs INFO_COLUMNS).
       store.run(
-        "UPDATE accounts SET ref_no = ?, type = ?, name = ?, phone = ?, email = ?, address = ?, registered_on = ?, group_id = ?, subgroup_id = ?, note = ?, fields_json = ?, case_key = ?, case_source = ?, case_title = ?, status = ?, updated_by = ?, updated_at = ? WHERE id = ?",
-        input.refNo || previous.refNo || nextRef(), input.type, input.name, input.phone, input.email, input.address, input.registeredOn, input.groupId, input.subgroupId, input.note, JSON.stringify(input.fields), input.caseKey, input.caseSource, input.caseTitle, input.status, user.id, now(), previous.id,
+        "UPDATE accounts SET ref_no = ?, name = ?, phone = ?, email = ?, address = ?, registered_on = ?, group_id = ?, subgroup_id = ?, note = ?, fields_json = ?, case_key = ?, case_source = ?, case_title = ?, updated_by = ?, updated_at = ? WHERE id = ?",
+        input.refNo || previous.refNo || nextRef(), input.name, input.phone, input.email, input.address, input.registeredOn, input.groupId, input.subgroupId, input.note, JSON.stringify(input.fields), input.caseKey, input.caseSource, input.caseTitle, user.id, now(), previous.id,
       );
+      if (input.type !== previous.type || input.status !== previous.status) store.run("UPDATE accounts SET type = ?, status = ? WHERE id = ?", input.type, input.status, previous.id);
       writeTax(previous.id, input);
       plans()?.followAccount?.(previous.id, { name: previous.name, phone: previous.phone }, { name: input.name, phone: input.phone });
       audit(user, "account.updated", previous.id, { previous: { name: previous.name, phone: previous.phone, status: previous.status }, name: input.name, phone: input.phone, status: input.status });
       return detail(previous.id, user);
     });
-    touched(user, result);
-    changed(user, { kind: "plans" });
+    // Para defterini etkileyen değişiklik (tür, durum) ya da taksit kartlarına yansıyan ad/telefon yoksa olay "bilgi"
+    // olarak gider: ANLIK DURUM ve açık pencerelerin para/vade yenilemesi tetiklenmez (routes/overview.mjs).
+    const money = result.type !== previous.type || result.status !== previous.status;
+    const followed = result.name !== previous.name || result.phone !== previous.phone;
+    touched(user, result, money || followed ? {} : { info: true });
+    if (money || followed) changed(user, { kind: "plans" });
     ok(res, result);
   });
   router.delete("/api/workspace/accounts/:id", async ({ req, res, params }) => {
@@ -982,7 +989,8 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
   function allLedgers() {
     const rows = store.all(`${ACCOUNT_SQL} WHERE a.deleted_at IS NULL ORDER BY a.name COLLATE NOCASE`).map(({ fieldsJson, ...row }) => row);
     const entries = new Map();
-    for (const entry of store.all("SELECT id, account_id AS accountId, kind, amount, date, note, receipt_no AS receiptNo, source, source_id AS sourceId, created_at AS createdAt FROM account_entries ORDER BY date, created_at, rowid")) {
+    // v2.0.22: yol ve "Kapatılacak Fatura" bağı da (Cari kartındaki defterle aynı satır; fatura kapamada kullanılır).
+    for (const entry of store.all("SELECT id, account_id AS accountId, kind, amount, date, note, method, receipt_no AS receiptNo, source, source_id AS sourceId, invoice_id AS invoiceId, created_at AS createdAt FROM account_entries ORDER BY date, created_at, rowid")) {
       if (!entries.has(entry.accountId)) entries.set(entry.accountId, []);
       entries.get(entry.accountId).push(entry);
     }

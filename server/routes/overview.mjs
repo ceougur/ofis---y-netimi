@@ -45,7 +45,8 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
   let timer = null;
   const kinds = new Set();
   events?.tap?.((event, data) => {
-    if (event !== "workspace.changed" || !OVERVIEW_KINDS.has(data?.kind)) return;
+    // v2.0.22: yalnız bilgi düzeltmesi (cari notu, adresi…) para ve stok sayısını değiştirmez; ANLIK DURUM yenilenmez.
+    if (event !== "workspace.changed" || !OVERVIEW_KINDS.has(data?.kind) || data?.info) return;
     kinds.add(data.kind);
     clearTimeout(timer);
     timer = setTimeout(() => {
