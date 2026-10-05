@@ -69,7 +69,8 @@ export async function runRandom({ seed = 1, operations = 200, base = "bos", log 
   let actor;
   let checker;
   const boot = async () => {
-    server = await bootVersion(CURRENT, { dataDir: dirs.dataDir, backupDir: dirs.backupDir });
+    // Program en fazla 2 şirkete izin verir (05.10.2026); bu test sınırdan önce çok şirket açmış kurulumu canlandırır.
+    server = await bootVersion(CURRENT, { dataDir: dirs.dataDir, backupDir: dirs.backupDir, maxCompanies });
     actor = await server.login();
     checker = await server.login(CHECKER.username, CHECKER.password).catch(() => null);
   };

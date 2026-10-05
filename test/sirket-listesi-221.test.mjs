@@ -15,7 +15,7 @@ const roots = [];
 after(() => roots.forEach(root => rmSync(root, { recursive: true, force: true })));
 
 async function boot(root) {
-  const app = createApp({ dataDir: path.join(root, "data"), backupDir: path.join(root, "backups"), logLevel: "silent", scheduleBackups: false, env: { HUKUK_ADMIN_PASSWORD: ADMIN_PASSWORD, HUKUK_DATASET_AUTOSYNC: "0" }, license: { enforce: false, machineId: "0123456789abcdef0123456789abcdef" }, startLicenseTimers: false });
+  const app = createApp({ dataDir: path.join(root, "data"), backupDir: path.join(root, "backups"), logLevel: "silent", scheduleBackups: false, env: { HUKUK_ADMIN_PASSWORD: ADMIN_PASSWORD, HUKUK_DATASET_AUTOSYNC: "0" }, license: { enforce: false, machineId: "0123456789abcdef0123456789abcdef" }, startLicenseTimers: false, maxCompanies: 3 }); // 3 şirket: sınırdan (2) önceki kurulum
   const { port } = await app.listen(0, "127.0.0.1");
   const client = createClient(`http://127.0.0.1:${port}`);
   assert.equal((await client.login("admin", ADMIN_PASSWORD)).status, 200);

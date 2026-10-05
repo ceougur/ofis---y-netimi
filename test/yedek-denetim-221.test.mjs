@@ -39,7 +39,7 @@ describe("2.0.21 · yedek denetimi: güncel kodla gerçek iş akışı", () => {
   let admin;
   const ids = {};
   before(async () => {
-    server = await startTestServer();
+    server = await startTestServer({ maxCompanies: 10 }); // sınırdan (en fazla 2 şirket) önceki çok şirketli kurulum
     admin = await loginAdmin(server);
     assert.equal((await admin.put("/api/admin/office", { name: "Çetin Hukuk Bürosu" })).status, 200);
     await admin.put("/api/companies/sirket-001", { name: "Çetin Hukuk Bürosu" });
@@ -146,7 +146,7 @@ describe("2.0.21 · yedek denetimi: gerçek v2.0.19 verisinden güncelleme", { s
     dataDir = path.join(work, "data");
     backupDir = path.join(work, "backups");
     const { createApp } = await import(pathToFileURL(path.join(code, "server", "app.mjs")).href);
-    const app = createApp({ dataDir, backupDir, logLevel: "silent", scheduleBackups: false, env: { HUKUK_ADMIN_PASSWORD: ADMIN_PASSWORD, HUKUK_DATASET_AUTOSYNC: "0" }, license: { enforce: false, machineId: "0123456789abcdef0123456789abcdef" }, startLicenseTimers: false });
+    const app = createApp({ dataDir, backupDir, logLevel: "silent", scheduleBackups: false, env: { HUKUK_ADMIN_PASSWORD: ADMIN_PASSWORD, HUKUK_DATASET_AUTOSYNC: "0" }, license: { enforce: false, machineId: "0123456789abcdef0123456789abcdef" }, startLicenseTimers: false, maxCompanies: 10 });
     const { port } = await app.listen(0, "127.0.0.1");
     const client = createClient(`http://127.0.0.1:${port}`);
     assert.equal((await client.login("admin", ADMIN_PASSWORD)).status, 200);
@@ -175,7 +175,7 @@ describe("2.0.21 · yedek denetimi: gerçek v2.0.19 verisinden güncelleme", { s
   test("2.0.19'un bıraktığı yedekler: güncel kod açılınca her biri kendi şirketinin klasöründe; çakışma bildirilir", async () => {
     // Güncel kod, 2.0.19'un veri ve yedek klasörleriyle (sunucuda güncelleme sonrası açılış gibi).
     const { createApp } = await import(pathToFileURL(path.join(ROOT, "server", "app.mjs")).href);
-    const app = createApp({ dataDir, backupDir, logLevel: "silent", scheduleBackups: false, env: { HUKUK_ADMIN_PASSWORD: ADMIN_PASSWORD, HUKUK_DATASET_AUTOSYNC: "0" }, license: { enforce: false, machineId: "0123456789abcdef0123456789abcdef" }, startLicenseTimers: false });
+    const app = createApp({ dataDir, backupDir, logLevel: "silent", scheduleBackups: false, env: { HUKUK_ADMIN_PASSWORD: ADMIN_PASSWORD, HUKUK_DATASET_AUTOSYNC: "0" }, license: { enforce: false, machineId: "0123456789abcdef0123456789abcdef" }, startLicenseTimers: false, maxCompanies: 10 });
     const { port } = await app.listen(0, "127.0.0.1");
     try {
       const client = createClient(`http://127.0.0.1:${port}`);

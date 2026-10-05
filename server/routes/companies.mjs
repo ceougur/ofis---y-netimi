@@ -41,7 +41,7 @@ export function registerCompanyRoutes(router, { store, auth, audit, companies, a
   router.get("/api/companies", async ({ req, res }) => {
     const user = auth.requireUser(req);
     const manage = Boolean(user.permissions?.includes?.("system.manage")) || user.role === "admin";
-    ok(res, { current: companies.selectedFor(user), companies: companies.listFor(user), all: manage ? companies.list().map(item => shape(user, item)) : undefined, canManage: manage, nextCode: manage ? companies.nextCode() : "", conflicts: conflictsFor(user) });
+    ok(res, { current: companies.selectedFor(user), companies: companies.listFor(user), all: manage ? companies.list().map(item => shape(user, item)) : undefined, canManage: manage, nextCode: manage ? companies.nextCode() : "", limit: companies.limit(), conflicts: conflictsFor(user) });
   });
   // Ayır (v2.0.21): ortak veri dosyasını kullanan şirketi kendi klasörüne alır (önce yedek; kayıt silinmez). Onay: kod/ad + parola.
   router.post("/api/companies/:id/separate", async ({ req, res, params }) => {

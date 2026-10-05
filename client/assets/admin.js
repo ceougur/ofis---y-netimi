@@ -1312,6 +1312,13 @@
     try {
       const [data, access] = await Promise.all([HOF.api("/api/companies"), HOF.api("/api/companies/access")]);
       companyData = data;
+      // Şirket sınırı (en fazla 2): sınırdayken düğme pasif, nedeni altında görünür yazıyla.
+      const full = data.limit && !data.limit.canCreate;
+      $("#adm-company-new").disabled = Boolean(full);
+      $("#adm-company-new").toggleAttribute("aria-describedby", false);
+      if (full) $("#adm-company-new").setAttribute("aria-describedby", "adm-company-limit");
+      $("#adm-company-limit").textContent = full ? data.limit.reason : "";
+      $("#adm-company-limit").hidden = !full;
       const list = data.all || data.companies;
       body.innerHTML = list
         .map(
@@ -1441,6 +1448,7 @@
     return (companyData?.all || companyData?.companies || []).find(item => item.id === id) || null;
   }
   function newCompany() {
+    if (companyData?.limit && !companyData.limit.canCreate) return HOF.toast(companyData.limit.reason, { type: "error" });
     HOF.formModal({
       title: "Yeni Şirket",
       eyebrow: "ŞİRKET",

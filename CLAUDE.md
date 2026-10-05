@@ -647,15 +647,7 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   EK (kullanıcı, 05.10.2026: "bu ölçümü sadece koddan yapma, arayüz kaldırıyor mu ona da bak"): ölçek testi ARAYÜZDEN de
   yapılır — aynı anda açık gerçek tarayıcı pencereleri (her biri bir personel), aynı büyük veride: pencere açılışı, Cari
   aramasında harf gecikmesi, uzun listelerde kaydırma/donma, rapor ön izleme + PDF/Excel, Kaydet → listede görünme, başka
-  personel yazarken açık pencere donuyor mu, tarayıcı belleği. Sonuç tablosu her ölçümde sunucu + ekran iki sütun.
-- SIRADAKİ DÜZENLEME — ŞİRKET SAYISI EN FAZLA 2 (kullanıcı, 05.10.2026: "en fazla 2 şirket kurulabilsin; şu an sürekli yeni
-  şirket açılabiliyor"). YAPILMADI, not; "yap" denince uygulanır. Bu karar 2.0.17'deki "şirket sayısı lisansa bağlı değil,
-  herkese sınırsız" kararını DEĞİŞTİRİR. Önerim (yap'ta): + Yeni Şirket sunucuda 2 şirket varken 409 ("En fazla 2 şirket
-  kurulabilir"), arayüzde düğme pasif + nedeni görünür yazıyla; silinen şirket sayıya girmez (silince yenisi açılabilir);
-  "Ayır" (2.0.21, aynı dosyayı paylaşan şirketleri ayırma) sınırı aşmaz ya da yalnız onarım için istisna. Karar bekleyen
-  sorular: (a) bugün 3+ şirketi olan kurulumlar ne olur — önerim: mevcutlar KALIR, hiçbir veri silinmez, yalnız yenisi
-  açılmaz; (b) Pro lisansta sınır farklı mı (ör. Pro'da daha fazla) — önerim: kullanıcı söylemedikçe herkese 2.
-  Test: 2 şirketle 3.'sü 409 (API ve ekran), birini silince yenisi açılır, 3 şirketli eski veride göç sonrası hepsi çalışır. DERS: yayın bağlantısı birleştirmeden
+  personel yazarken açık pencere donuyor mu, tarayıcı belleği. Sonuç tablosu her ölçümde sunucu + ekran iki sütun. DERS: yayın bağlantısı birleştirmeden
   ÖNCE verilmez; verildiyse "Publish'e basmayın" en başta yazılır. Sırada (kullanıcıyla): ertelenen testler (iade/iptal/düzenleme/silme,
   çek tahsil/ciro, Kasa↔Banka, dönem kilidi, yetkisiz kullanıcı, 29 rapor) ve iade kartı küçültme düzeltmesi.
   BULGU 2 (04.10.2026, ek işlemlerde bulundu; KOD DEĞİŞTİRİLMEDİ, karar kullanıcıda): aynı caride açık satış faturası +
@@ -731,6 +723,16 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   latest/ (exe, json, zip, pdf) teslimdekiyle bayt bayt aynı, exe .sha256 OK; gerçek güncelleyici canlı GitHub'da
   2.0.21/20/19/18/17/2.0.4/1.7.0 olarak (API ve yedek yol) 2.0.22'yi "available" gördü, indirme sha256 437ac249… eşleşti; 2.0.22
   kurulu → "up-to-date". Site kılavuz PR'ı ceougur/destekofis#9 kullanıcının "birleştir"iyle BİRLEŞTİRİLDİ (main 513ebe8, PDF 91ffc51d…). 2.0.22 KAPANDI.
+- ŞİRKET SAYISI EN FAZLA 2 (kullanıcı, 05.10.2026: "en fazla 2 şirket kurulabilsin; şu an sürekli yeni şirket açılabiliyor").
+  Bu karar 2.0.17'deki "şirket sayısı lisansa bağlı değil, herkese sınırsız" kararını DEĞİŞTİRİR. KARAR (kullanıcı, aynı gün:
+  "3 olanlar kalsın, Pro'da da olmasın, en fazla 2 şirket açılabilsin"): (a) bugün 3+ şirketi olan kurulumlarda mevcutlar
+  KALIR, hiçbir veri silinmez, yalnız yenisi açılmaz; (b) Pro'da da istisna YOK, herkese 2. Silinen şirket sayılmaz (silince
+  yenisi açılabilir). "Ayır" (2.0.21) yeni şirket açmaz, sınırdan etkilenmez.
+  YAPILDI (dal `claude/kind-newton-fpmx3f`, yayımlanmadı — sıradaki sürüme girer): `server/lib/companies.mjs` MAX_COMPANIES = 2,
+  create() sınırda 409 "En fazla 2 şirket kurulabilir. Yeni şirket açmak için önce bir şirketi silin."; /api/companies `limit`
+  ({ max, count, canCreate, reason }); sol üst seçicide ve Yönetim → Şirketler'de "+ Yeni Şirket" pasif + nedeni görünür yazı.
+  Test `test/sirket-siniri-225.test.mjs` (çalışıyor mu + nasıl bozarım: başka kod, aynı anda iki istek, personel; 3 şirketli
+  eski kurulum). 2'den çok şirket açan eski testler `startTestServer({ maxCompanies })` ile (eski kurulumu canlandırır).
 - 2.0.20 YAPILACAKLAR (kullanıcı "yapılacaklara not al" dedi, 03.10.2026; "yap" denince başlanır; ayrıntı ve
   kanıt hemen altındaki ADAYI maddesinde):
   [x] 1. Bütün raporların (43) tablosunun altında kalın TOPLAM satırı — ekran, PDF, Excel aynı; yalnız toplanabilir

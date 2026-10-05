@@ -84,7 +84,8 @@ describe("veri dosyası ya da klasörü kaybolan şirket boş açılmaz", () => 
   // dolu yedekleri budayabiliyordu. Klasör tamamen silinmişse yedekten geri yükleme de çalışmıyordu (geçici dosya yazılacak
   // klasör yok). Artık: 503 company-unavailable (001'e düşmez, boş dosya açılmaz); Yedekler'den geri yükleme veriyi getirir.
   test("dosya silinmiş: 503, boş dosya oluşmaz; klasör silinmiş: 503, geri yükleme çalışır; yeni şirket yine açılır", async () => {
-    const server = await startTestServer();
+    // Kaybolan 002 kayıtta durur; "yeni şirket yine açılır" denetimi için sınır (en fazla 2) burada yükseltilir.
+    const server = await startTestServer({ maxCompanies: 3 });
     try {
       const admin = await loginAdmin(server);
       const company = data(await admin.post("/api/companies", { code: "002", name: "Kaybolan", select: true })).company;

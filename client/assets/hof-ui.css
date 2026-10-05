@@ -3473,10 +3473,20 @@ html.hof-no-haciz .filter-strip { display: none !important; }
 .hof-session-new {
   color: var(--do-accent);
 }
+.hof-session-foot button:disabled {
+  color: var(--do-faint);
+  cursor: not-allowed;
+}
+.hof-session-limit {
+  flex-basis: 100%;
+  margin: 0 8px 2px;
+  color: var(--do-muted);
+  font-size: 11.5px;
+}
 .hof-session-manage {
   color: var(--do-muted);
 }
-.hof-session-foot button:hover,
+.hof-session-foot button:not(:disabled):hover,
 .hof-session-foot button:focus-visible {
   background: var(--do-surface-soft);
   outline: none;

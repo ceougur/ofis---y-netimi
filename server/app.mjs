@@ -92,7 +92,8 @@ export function createApp(overrides = {}) {
   const store = createStore(db);
   // Şirket kayıt defteri yalnız hub'da; çocuklar hub'ınkini görür. (v2.0.20: göçlerden önce kurulur; göç öncesi yedek de
   // şirketin kendi yedek klasörüne gider.)
-  const companies = hub ? hub.companies : createCompanyRegistry({ dataDir: config.dataDir, backupDir: config.backupDir, hubStore: store, log });
+  // maxCompanies yalnız programdan verilir (çok şirketli eski kurulumu canlandıran testler); kurulumda hep MAX_COMPANIES.
+  const companies = hub ? hub.companies : createCompanyRegistry({ dataDir: config.dataDir, backupDir: config.backupDir, hubStore: store, log, ...(overrides.maxCompanies ? { maxCompanies: overrides.maxCompanies } : {}) });
   const companyId = overrides.companyId || ROOT_COMPANY_ID;
   // Bu örneğin şirketi ve yedek klasörü (<yedek kökü>/<kod> - <ad>; ad/kod değişince yeni klasör — her kullanımda çözülür).
   const selfCompany = () => companies.get(companyId) || { id: companyId, code: "001", name: "", dir: "" };

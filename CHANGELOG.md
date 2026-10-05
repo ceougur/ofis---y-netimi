@@ -2,6 +2,13 @@
 
 Sürümler [anlamsal sürümleme](https://semver.org/lang/tr/) kurallarına uyar.
 
+## Sıradaki sürüm (hazırlanıyor)
+
+- **En fazla 2 şirket.** Yeni şirket ancak 2'den az şirket varken açılır; Standart ve Pro'da aynı (kullanıcı kararı, 05.10.2026).
+  Sınırdayken sol üst seçicide ve Yönetim → Şirketler'de "+ Yeni Şirket" pasiftir ve nedeni altında yazar; doğrudan istek de
+  reddedilir. Daha önce açılmış 3 ve üstü şirket kalır, hiçbir veri silinmez; yalnız yenisi açılmaz. Silinen şirket sayılmaz.
+  Test: `test/sirket-siniri-225.test.mjs`.
+
 ## 2.0.24 — İade ile taksit kartı, çek/senet tarih ve dönem kilidi, iki rapor düzeltmesi
 
 Kaynak: 2.0.23'te ertelenen testler (kullanıcı kararı, 05.10.2026: "yap", "önerdiğin gibi yap"). Ayrıntı ve denenen / denenmeyen / bilinen sınırlar: `docs/2.0.24-KANIT.md`.
