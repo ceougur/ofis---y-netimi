@@ -604,6 +604,15 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   sha256 5e598bfd… (210 dosya, HEAD ile bayt bayt), kurulum .exe 692a1bb0… (29,4 MB), kılavuz PDF 2f16c0a3… (değişti → yayından
   sonra site PR'ı); güncelleyici 2.0.22/21/20/19/2.0.4/1.7.0 (API ve yedek yol) "available", kurcalanmış bildirge reddedildi.
   5 dosya zipsiz + arşiv zip (29 MB) gönderildi.
+  YAYIMLANDI (05.10.2026; PR #23 CI 12/12 yeşil → kullanıcının "birleştir"iyle squash, `master` = 58798e9 (ağaç teslimdeki
+  c2f7e9a ile aynı), `v2.0.23`; dal master'a sıfırlandı). Yayında yükleme sırasında indirilen güncelleme paketinin adı
+  kullanıcının bilgisayarında "DestekOfis-2.0.22-Arsiv-…zip" olarak inmişti (boyut 4.632.079 = paket); yayımlamadan önce
+  yakalandı, doğru adla yeniden yüklendi. DERS: yayımdan önce kullanıcının ekranındaki 5 dosya adı + boyutu teslimle
+  karşılaştırılır. Yayındaki 5 dosya + latest/ (exe, json, zip, pdf) bayt bayt aynı, exe .sha256 OK, etiket 58798e9; gerçek
+  güncelleyici canlı GitHub'da 2.0.22/21/20/19/18/17/2.0.4/1.7.0 olarak (API ve yedek yol) 2.0.23'ü "available" gördü,
+  indirme sha256 5e598bfd… eşleşti; 2.0.23 kurulu → "up-to-date". Site kılavuz PR'ı ceougur/destekofis#10 açık (PDF
+  2f16c0a3…); birleştirme kullanıcının "birleştir"iyle. Sırada (kullanıcıyla): ertelenen testler (iade/iptal/düzenleme/silme,
+  çek tahsil/ciro, Kasa↔Banka, dönem kilidi, yetkisiz kullanıcı, 29 rapor) ve iade kartı küçültme düzeltmesi.
   BULGU 2 (04.10.2026, ek işlemlerde bulundu; KOD DEĞİŞTİRİLMEDİ, karar kullanıcıda): aynı caride açık satış faturası +
   Taksit penceresinden "Yeni Borç" ile AYRI taksit kartı varsa fatura kapama (`server/lib/invoice-settle.mjs`) kartın
   tahsilatını (plan-in) ve kartın borcunu genel FIFO'ya katıyor; taksit modülü ise kartın ödenenini ayrı sayıyor → iki hesap
