@@ -628,7 +628,11 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   yeni faturadan iadede çift sayım, G3 avans iadesi Mevcut Borç kartını kırpmıyordu, G4 çek yolları kartı eşitlemiyordu) →
   hepsi önce kırmızı test, düzeltildi; G5 (geri büyüyen kartta taksit vadesi bugün) ve G6 (uç veride hız) Bilinen Sınırlar.
   senaryo-224 53/53 (pencere içi bildirim okunmuyordu → düzeltildi, CI'ye eklendi). npm test 1.059/1.059, mutabakat 2 tohum,
-  güvenilirlik 1.000. Sürüm 2.0.24, kanıt `docs/2.0.24-KANIT.md`, kılavuz iade cümleleri değişti (PDF 3206709e…). Sırada (kullanıcıyla): ertelenen testler (iade/iptal/düzenleme/silme,
+  güvenilirlik 1.000. Sürüm 2.0.24, kanıt `docs/2.0.24-KANIT.md`, kılavuz iade cümleleri değişti (PDF 3206709e…).
+  TESLİM (05.10.2026 ~05:5x; kullanıcı: "limit %2 kaldı, zipi teslim et"): 5 dosya zipsiz + arşiv zip (26,7 MB) gönderildi;
+  paket sha256 a926aed5… (210 dosya), kurulum .exe 115d04b8… (29,4 MB); güncelleyici 2.0.23/22/21/20/19/2.0.4/1.7.0 (API ve
+  yedek yol) "available". PR ceougur/ofis---y-netimi#24 açık. Sırada: CI → kullanıcının "birleştir"i → yayın (v2.0.24, 5 dosya;
+  yükleme ekranında adlar/boyutlar teslimle karşılaştırılır) → "yayımladım" → bayt bayt + güncelleyici → site kılavuz PR'ı. Sırada (kullanıcıyla): ertelenen testler (iade/iptal/düzenleme/silme,
   çek tahsil/ciro, Kasa↔Banka, dönem kilidi, yetkisiz kullanıcı, 29 rapor) ve iade kartı küçültme düzeltmesi.
   BULGU 2 (04.10.2026, ek işlemlerde bulundu; KOD DEĞİŞTİRİLMEDİ, karar kullanıcıda): aynı caride açık satış faturası +
   Taksit penceresinden "Yeni Borç" ile AYRI taksit kartı varsa fatura kapama (`server/lib/invoice-settle.mjs`) kartın
