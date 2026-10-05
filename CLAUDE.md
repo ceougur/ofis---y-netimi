@@ -637,7 +637,7 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   kullanıcı tarafından silindi, latest yeniden 2.0.23 doğrulandı; PR #24 CI 12/12 → kullanıcının "birleştir"iyle squash,
   `master` = 9c09f3c (ağaç teslimle aynı), `v2.0.24`. Yayındaki 5 dosya + latest/ bayt bayt aynı, exe .sha256 OK; gerçek
   güncelleyici canlı GitHub'da 2.0.23/22/21/20/19/18/17/2.0.4/1.7.0 (API ve yedek yol) "available", sha256 a926aed5…;
-  2.0.24 → "up-to-date". Site kılavuz PR'ı ceougur/destekofis#11 açık (PDF 3206709e…). DERS: yayın bağlantısı birleştirmeden
+  2.0.24 → "up-to-date". Site kılavuz PR'ı ceougur/destekofis#11 kullanıcının "birleştir"iyle BİRLEŞTİRİLDİ (main 514d29b, PDF 3206709e…). 2.0.24 KAPANDI. DERS: yayın bağlantısı birleştirmeden
   ÖNCE verilmez; verildiyse "Publish'e basmayın" en başta yazılır. Sırada (kullanıcıyla): ertelenen testler (iade/iptal/düzenleme/silme,
   çek tahsil/ciro, Kasa↔Banka, dönem kilidi, yetkisiz kullanıcı, 29 rapor) ve iade kartı küçültme düzeltmesi.
   BULGU 2 (04.10.2026, ek işlemlerde bulundu; KOD DEĞİŞTİRİLMEDİ, karar kullanıcıda): aynı caride açık satış faturası +
