@@ -229,7 +229,11 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
       const inv = (await api("GET", `/api/workspace/invoices/${m.invoiceId}`)).data;
       if (!inv || inv.status !== "issued") continue;
       const left = Math.max(0, centsOf(p.totals.total) - Math.max(0, centsOf(p.totals.paid)));
-      if (Math.abs(centsOf(inv.open) - left) > 1) problems.push(`Taksitli fatura ${inv.number}: açık ${inv.open} ≠ kartın kalanı ${tl(left)} · kapatanlar ${(inv.closers || []).map(c => `${c.date}:${c.amount}:${c.label}`).join(" | ")}`);
+      // Parası geri verilen iade borcu düşürmez: kartın kalanı = açık + geri ödenen (taksite kalanı aşmadan).
+      const mi = M.invoices.get(m.invoiceId);
+      const refunds = [...M.invoices.values()].filter(x => x.kind === "sale_return" && x.status === "issued" && x.originalId === m.invoiceId).reduce((sum, x) => sum + x.cashRows.filter(row => row.kind === "out").reduce((t, row) => t + row.amount, 0), 0);
+      const want = Math.min(centsOf(inv.open) + refunds, Math.max(0, (mi?.rest ?? Infinity) - Math.max(0, centsOf(p.totals.paid))));
+      if (Math.abs(want - left) > 1) problems.push(`Taksitli fatura ${inv.number}: açık ${inv.open} (+ geri ödenen ${tl(refunds)}) ≠ kartın kalanı ${tl(left)} · kapatanlar ${(inv.closers || []).map(c => `${c.date}:${c.amount}:${c.label}`).join(" | ")}`);
     }
     // Fatura: her belge programda ve modelde aynı durumda, aynı TL ödenecekle; programda olup modelde olmayan (yetim) belge yok.
     const invs = (await api("GET", "/api/workspace/invoices?tab=all&limit=5000")).data.invoices || [];
