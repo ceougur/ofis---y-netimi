@@ -29,7 +29,7 @@ const collator = new Intl.Collator("tr", { numeric: true, sensitivity: "base" })
 // Geri çevrilebilir etkilerin yazılabileceği tablolar (effects_json'dan gelen ad SQL'e yalnız bu listeden girer).
 const EFFECT_TABLES = new Set(["account_entries", "plan_entries"]);
 
-export function registerChequeRoutes(router, { store, auth, audit, events, cash = null, accounts = () => null, plans = () => null }) {
+export function registerChequeRoutes(router, { store, auth, audit, events, period = null, cash = null, accounts = () => null, plans = () => null }) {
   const now = () => new Date().toISOString();
   const today = () => isoDay(new Date());
   const newId = prefix => `${prefix}-${randomUUID()}`;
@@ -355,7 +355,8 @@ export function registerChequeRoutes(router, { store, auth, audit, events, cash 
       if (body.status && body.status !== cheque.status) throw new HttpError(409, `Bu ${kindName(cheque).toLocaleLowerCase("tr-TR")} bu arada “${STATUSES[cheque.status]?.label}” oldu. Kartı yenileyin.`, { code: "cheque-stale" });
       const rule = transition(cheque, action);
       if (!rule.ok) throw new HttpError(409, rule.reason);
-      const date = dateOf(body.date, "İşlem tarihi", today());
+      // v2.0.24: işlem tarihi Kasa/cari hareketleriyle aynı kurala bağlı: ileri tarihli olamaz, kilitli döneme yazılmaz.
+      const date = period ? period.movementDate({ date: text(body.date) || today() }, { label: "İşlem tarihi" }) : dateOf(body.date, "İşlem tarihi", today());
       // v2.0.13: çek/senet tahsili ya da ödemesi çoğunlukla bankadan geçer (varsayılan Banka); elden ise Nakit.
       const method = methodInput(body.method, "bank");
       if (rule.cash === "out") cash?.guardOut?.(cheque.amount, date, body.cashForce === true, method);
@@ -397,6 +398,8 @@ export function registerChequeRoutes(router, { store, auth, audit, events, cash 
       if (history.length < 2) throw new HttpError(409, "Geri alınacak işlem yok. Kaydı kaldırmak için Sil'i kullanın.");
       if (last.invoiceId) throw new HttpError(409, "Bu ciro bir faturanın ödemesidir; geri almak için faturayı iptal edin.", { code: "invoice-linked", invoiceId: last.invoiceId });
       if (body.eventId && body.eventId !== last.id) throw new HttpError(409, "Bu evrakta bu arada başka bir işlem yapıldı. Kartı yenileyin.", { code: "cheque-stale" });
+      // v2.0.24: kilitli dönemdeki işlem geri alınmaz (Kasa/cari etkisi kapanmış ayı değiştirirdi).
+      period?.assertOpen(last.date, "Bu çek/senet işlemi");
       const effects = effectsOf(last);
       revertEffects(effects);
       store.run("DELETE FROM cheque_events WHERE id = ?", last.id);

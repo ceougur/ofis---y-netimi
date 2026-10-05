@@ -351,7 +351,7 @@ describe("2.0.24 ertelenen alanlar", () => {
       await integrity("bozuk çek");
     });
 
-    test("HATA: çek/senet işlemi ileri tarihle (2099) yapılabiliyor; Kasa'ya ileri tarihli hareket yazılıyor", async () => {
+    test("çek/senet işlemi ileri tarihle (2099) reddedilir; Kasa'ya ileri tarihli hareket yazılmaz (2.0.23'te yazılıyordu)", async () => {
       const acc = await account("Çek İleri");
       const ch = await receive(acc, 120);
       const c0 = await cash();
@@ -532,6 +532,7 @@ describe("2.0.24 ertelenen alanlar", () => {
     let oldGoods;
     let oldCh;
     let oldCash;
+    let oldCollected;
     let oldPlan;
     let trashCash;
     let lockDate;
@@ -545,6 +546,9 @@ describe("2.0.24 ertelenen alanlar", () => {
       await must("kasa sil", api.del(`/api/workspace/cash/${del.id}`));
       trashCash = (await must("silinenler", api.get("/api/admin/trash"))).find(t => t.kind === "cash" && t.title === "silinecek-kilit");
       oldPlan = old.planId;
+      // Açık dönemde tahsil edilmiş çek; dönem kilitlenince bu işlem geri alınamamalı.
+      oldCollected = await must("tahsil edilecek çek", api.post("/api/workspace/cheques", { instrument: "cheque", direction: "in", accountId: acc.id, amount: 40, issueDate: d(), dueDate: "2025-12-31", serialNo: `CK-DU-${n}`, bank: "Z" }));
+      await must("açık dönemde tahsil", api.post(`/api/workspace/cheques/${oldCollected.id}/actions`, { action: "collect", date: d(), method: "cash" }));
       lockDate = d();
       await must("kilitle", api.put("/api/admin/period-lock", { lockedUntil: lockDate }));
     });
@@ -557,7 +561,7 @@ describe("2.0.24 ertelenen alanlar", () => {
       const later = d();
       await must("yeni kasa", api.post("/api/workspace/cash", { kind: "in", amount: 1, date: later, description: "yeni" }));
       await must("yeni fatura", sale(acc, later, { rest: "open", dueDate: later }));
-      assert.equal(await balance(acc), 1000 + 700 + 200 - 100);
+      assert.equal(await balance(acc), 1000 + 700 + 200 - 100 - 40); // − 40: kilitten önce alınıp tahsil edilen çek
       await integrity("kilit sonrası");
     });
 
@@ -596,7 +600,19 @@ describe("2.0.24 ertelenen alanlar", () => {
       await integrity("kilitli geri yükleme");
     });
 
-    test("HATA: çek/senet işlemleri dönem kilidine bakmıyor — kilitli tarihe giriş, tahsil, kilitli dönemdeki evrakı silme", async () => {
+    test("nasıl bozarım: kilitli dönemdeki çek tahsili geri alınamaz (409; Kasa ve çek durumu değişmez — 2.0.23'te geri alınıyordu)", async () => {
+      const s0 = await state();
+      const c0 = await cash();
+      const r = await api.post(`/api/workspace/cheques/${oldCollected.id}/undo`, {});
+      assert.equal(r.status, 409, `kilitli dönemdeki işlem geri alınmamalıydı: ${r.status} ${JSON.stringify(r.data).slice(0, 200)}`);
+      assert.equal(r.data?.code, "period-locked");
+      assert.equal((await must("çek", api.get(`/api/workspace/cheques/${oldCollected.id}`))).status, "collected");
+      assert.equal(await cash(), c0, "Kasa değişmemeli");
+      assert.deepEqual(await state(), s0);
+      await integrity("kilitli geri alma");
+    });
+
+    test("çek/senet işlemleri dönem kilidine bağlı — kilitli tarihe giriş, tahsil, kilitli dönemdeki evrakı silme (2.0.23'te tahsil geçiyordu)", async () => {
       const s0 = await state();
       const wrong = [];
       const attempts = [

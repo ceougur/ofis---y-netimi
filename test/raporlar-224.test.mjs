@@ -727,7 +727,7 @@ describe("2.0.24 Rapor Merkezi: bütün raporlar, bütün süzgeçler, ekran/PDF
     assert.equal(moneyOf(aging.footer.at(-1)), 4380, "780 müşteri bakiyesi + 3.600 portföydeki senet");
   });
 
-  test("HATA: Cari Mizanı 'Geciken Taksiti Olan' süzgeci yok sayılıyor (bütün cariler listeleniyor)", async () => {
+  test("Cari Mizanı 'Geciken Taksiti Olan' süzgeci yalnız gecikeni listeler (2.0.23'te bütün cariler)", async () => {
     // Ekran (client/assets/hof-report-center.js:50) Cari Mizanı'nda da "Geciken Taksiti Olan" seçeneğini sunar;
     // sunucu (server/routes/overview.mjs:180) side listesinde "overdue" yok → süzgeç sessizce kalkar.
     const data = await must("mizan geciken", get("mizan", { preset: "all", side: "overdue" }));
@@ -735,11 +735,12 @@ describe("2.0.24 Rapor Merkezi: bütün raporlar, bütün süzgeçler, ekran/PDF
     assert.deepEqual(data.rows.map(r => r[1]).sort(), overdue.sort(), "yalnız geciken taksiti olan cari(ler)");
   });
 
-  test("HATA: Ürün Satış Kârlılığı — TOPLAM satırındaki Brüt Kâr özetteki Brüt Kâr ile çelişiyor", async () => {
+  test("Ürün Satış Kârlılığı — özet Brüt Kâr TOPLAM satırıyla aynı (2.0.23'te çelişiyordu)", async () => {
     // Satırlarda hizmetin maliyeti/kârı boş (bilinmiyor) → TOPLAM Brüt Kâr yalnız stoklu ürünler; özet ise Net Satış − Maliyet
     // (hizmeti %100 kâr sayar). Aynı sayfada iki farklı "Brüt Kâr" (server/routes/report-center.mjs:733 ↔ 735-740).
     const data = await must("kârlılık", get("urun-satis-karlilik", { preset: "all" }));
-    assert.equal(moneyOf(data.footer[col(data, "Brüt Kâr")]), summaryOf(data, "Brüt Kâr"), "TOPLAM Brüt Kâr = özet Brüt Kâr");
+    assert.equal(moneyOf(data.footer[col(data, "Brüt Kâr")]), summaryOf(data, "Brüt Kâr (Stoklu Ürünler)"), "TOPLAM Brüt Kâr = özet Brüt Kâr (2.0.24: özet de yalnız stoklu kalemler)");
+    assert.equal(summaryOf(data, "Net Satış"), moneyOf(data.footer[col(data, "Net Satış")]), "özet Net Satış = TOPLAM Net Satış");
   });
 
   test("yetki: rapor yetkisi olmayan personel bütün raporlarda 403 (ekran, PDF, Excel); işlem geçmişi ayrı yetki", async () => {

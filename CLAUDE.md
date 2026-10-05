@@ -615,7 +615,13 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
 - 2.0.24 (kullanıcı, 05.10.2026: "yap"): (1) ERTELENEN TESTLER ekrandan, aynı hafta verisiyle, bağımsız beklenenle:
   iade, iptal, düzenleme, silme; çek tahsil/ciro; Kasa↔Banka; dönem kilidi; yetkisiz kullanıcı; 29 rapor (her süzgeç).
   Her alan için "çalışıyor mu" + "nasıl bozarım". (2) İADE kartı küçültme hatası (trimCovers) düzeltmesi. Kural: önce
-  kırmızı test, sonra düzeltme; bulunan her hata önce kullanıcıya listelenir; DENENEN/DENENMEYEN/BİLİNEN SINIRLAR. Sırada (kullanıcıyla): ertelenen testler (iade/iptal/düzenleme/silme,
+  kırmızı test, sonra düzeltme; bulunan her hata önce kullanıcıya listelenir; DENENEN/DENENMEYEN/BİLİNEN SINIRLAR.
+  DURUM (05.10.2026): iade düzeltmesi yapıldı (987a6b9 + 0a3bb0f; `test/iade-224` 2.0.23'te 7'nin 5'i kırmızı; iadede genel
+  bakiye kırpması kaldırıldı — avans faturanın kartını küçültüyordu). Ertelenen testler API'den (`test/ertelenen-224` 34,
+  `test/raporlar-224` 51; 43 rapor × 1.187 süzgeç × ekran/PDF/Excel). BULGULAR → KARAR (kullanıcı, 05.10.2026: "önerdiğin
+  gibi yap"): [ ] 1. çek/senet işlemi + geri alma dönem kilidine bakmıyor (Yüksek) [ ] 2. çek/senet işlemi ileri tarihle
+  (Orta) [ ] 3. Cari Mizanı "Geciken Taksiti Olan" süzgeci yok sayılıyor [ ] 4. Ürün Satış Kârlılığı özet Brüt Kâr ≠ TOPLAM
+  (özet yalnız maliyeti bilinen kalemlerden) [ ] 5. taksit tahsilatı silinince kart ≠ fatura açığı (kart faturaya göre). Sırada (kullanıcıyla): ertelenen testler (iade/iptal/düzenleme/silme,
   çek tahsil/ciro, Kasa↔Banka, dönem kilidi, yetkisiz kullanıcı, 29 rapor) ve iade kartı küçültme düzeltmesi.
   BULGU 2 (04.10.2026, ek işlemlerde bulundu; KOD DEĞİŞTİRİLMEDİ, karar kullanıcıda): aynı caride açık satış faturası +
   Taksit penceresinden "Yeni Borç" ile AYRI taksit kartı varsa fatura kapama (`server/lib/invoice-settle.mjs`) kartın

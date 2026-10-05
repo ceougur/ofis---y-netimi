@@ -730,7 +730,15 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
           headers: ["Stok Kodu", "Ürün / Hizmet", "Net Miktar", "Birim", "Net Satış", "Maliyet", "Brüt Kâr", "Kâr %"],
           types: ["", "", "number", "", "money", "money", "money", ""],
           rows: list.map(row => [row.code || "", row.name, qty(row.qty), row.unit, money(roundMoney(row.net)), row.goods ? money(roundMoney(row.cost)) : "", row.goods ? money(roundMoney(row.net - row.cost)) : "", row.goods ? percent(row.net - row.cost, row.net) : ""]),
-          summary: [["Net Satış", money(roundMoney(total.net))], ["Maliyet", money(roundMoney(total.cost))], ["Brüt Kâr", money(roundMoney(total.net - total.cost))]],
+          // v2.0.24: özet de TOPLAM satırı gibi — Brüt Kâr yalnız maliyeti bilinen (stoklu) kalemlerden; hizmet satışı ayrı
+          // satırda (maliyeti yok, kâr sayılmaz). Önceden özet hizmeti %100 kâr sayıyor, TOPLAM'la çelişiyordu.
+          summary: (() => {
+            const goods = list.filter(row => row.goods);
+            const net = goods.reduce((sum, row) => sum + row.net, 0);
+            const cost = goods.reduce((sum, row) => sum + row.cost, 0);
+            const services = roundMoney(total.net - net);
+            return [["Net Satış", money(roundMoney(total.net))], ...(services > 0.005 ? [["Hizmet Satışı (Maliyetsiz)", money(services)]] : []), ["Maliyet", money(roundMoney(cost))], ["Brüt Kâr (Stoklu Ürünler)", money(roundMoney(net - cost))]];
+          })(),
           // Toplam kâr oranı: maliyeti bilinen (stoklu) kalemlerin brüt kârı / net satışı.
           footer: (() => {
             const goods = list.filter(row => row.goods);
