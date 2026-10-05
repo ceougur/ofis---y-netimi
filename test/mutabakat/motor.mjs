@@ -188,16 +188,36 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
       const m = M.plans.get(p.id);
       if (!m) continue;
       seen.add(p.id);
+      // v2.0.24: iade, asıl faturayı kapsayan Mevcut Borç kartını faturadaki payı kadar küçültür; model kapsamı (FIFO) tutmaz.
+      // Bu kartta program değeri [model − bu karttaki iadeler, model] aralığında ve ödenenin altında değilse benimsenir.
+      if (m.slack && centsOf(p.totals.paid) === m.paid) {
+        const got = centsOf(p.totals.total);
+        if (got <= m.total && got >= m.total - m.slack && got >= Math.max(0, m.paid)) { m.slack -= m.total - got; m.total = got; }
+      }
+      // Faturanın kendi kartı tümüyle ödenmişse (kalan 0) iade iptali sonrası "toplam" farkı anlamsızdır: kalan ve ödenen karşılaştırılır.
+      if (m.invoiceId && centsOf(p.totals.paid) === m.paid && centsOf(p.totals.total) <= m.paid && m.total <= m.paid) m.total = centsOf(p.totals.total);
       if (centsOf(p.totals.total) !== m.total || centsOf(p.totals.paid) !== m.paid) {
         // Teşhis için kartın taksitleri ve tahsilatları da yazılır (hangi satırın saptığı görünsün).
         const d = (await api("GET", `/api/workspace/plans/${p.id}`)).data || {};
         const items = (d.items || d.ledger?.items || []).map(i => `${i.dueDate}:${i.amount}/${i.paid ?? i.paidAmount ?? "-"}`).join(" ");
         const ents = (d.entries || []).map(e => `${e.date}:${e.amount}`).join(" ");
+        const invId = d.invoiceId || m.invoiceId;
+        const inv = invId ? (await api("GET", `/api/workspace/invoices/${invId}`)).data : null;
+        if (inv) problems.push(`  fatura ${inv.number} ${inv.issueDate}: ödenecek ${inv.payable} açık ${inv.open} ödenen ${inv.paid} · kapatanlar ${(inv.closers || []).map(c => `${c.date}:${c.amount}:${c.mode}:${c.label}`).join(" | ")}`);
         problems.push(`Taksit kartı ${p.name} (${p.id}, fatura ${d.invoiceId || d.invoice?.number || "-"}, durum ${p.status}): program ${p.totals.total}/${p.totals.paid} · model ${tl(m.total)}/${tl(m.paid)} · taksitler [${items}] · tahsilatlar [${ents}]`);
       }
       if ((p.status === "closed") !== (m.status === "closed")) problems.push(`Taksit kartı ${p.name}: durum ${p.status} · model ${m.status}`);
     }
     for (const [id, p] of M.plans) if (!seen.has(id)) problems.push(`Taksit kartı ${id}: programda yok (model ${tl(p.total)})`);
+    // v2.0.24 değişmezi: taksitli faturanın açığı = kendi kartının kalanı (program içi; iade/iptal/düzenleme sonrası).
+    for (const p of plans) {
+      const m = M.plans.get(p.id);
+      if (!m?.invoiceId || p.status === "closed") continue;
+      const inv = (await api("GET", `/api/workspace/invoices/${m.invoiceId}`)).data;
+      if (!inv || inv.status !== "issued") continue;
+      const left = Math.max(0, centsOf(p.totals.total) - Math.max(0, centsOf(p.totals.paid)));
+      if (Math.abs(centsOf(inv.open) - left) > 1) problems.push(`Taksitli fatura ${inv.number}: açık ${inv.open} ≠ kartın kalanı ${tl(left)} · kapatanlar ${(inv.closers || []).map(c => `${c.date}:${c.amount}:${c.label}`).join(" | ")}`);
+    }
     // Fatura: her belge programda ve modelde aynı durumda, aynı TL ödenecekle; programda olup modelde olmayan (yetim) belge yok.
     const invs = (await api("GET", "/api/workspace/invoices?tab=all&limit=5000")).data.invoices || [];
     const invSeen = new Set();
@@ -306,7 +326,7 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
 
   // Taksitlendirilmiş borç iadeden (alacaktan) sonra borçtan büyük kalmaz: en yeni karttan başlayarak kırpılır.
   function trimCovers(accountId) {
-    const covering = [...M.plans.values()].filter(p => p.accountId === accountId && p.covers && p.status === "active");
+    const covering = [...M.plans.values()].filter(p => p.accountId === accountId && p.covers && !p.invoiceId && p.status === "active");
     let excess = covering.reduce((s, p) => s + planLeft(p), 0) - Math.max(0, M.cari.get(accountId));
     for (const p of covering.sort((a, b) => b.order - a.order)) {
       if (excess <= 0) break;
@@ -477,7 +497,13 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
       inv.planId = data.plan.id;
       M.plans.set(data.plan.id, { accountId, total: pay.left, paid: 0, covers: true, status: "active", order: ++planSeq, registeredOn: day, invoiceId: inv.id });
     }
-    if (kind === "sale_return") trimCovers(accountId);
+    if (kind === "sale_return") {
+      // v2.0.24: iade önce asıl faturanın kendi kartını küçültür (kartın kalanı = faturanın açığı); sonra genel kırpma.
+      const own = originalId && M.invoices.get(originalId)?.planId ? M.plans.get(M.invoices.get(originalId).planId) : null;
+      const ownCut = own && own.status === "active" ? Math.min(planLeft(own), calc.tryPayable) : 0;
+      if (ownCut) own.total -= ownCut;
+      for (const pl of M.plans.values()) if (pl !== own && pl.accountId === accountId && pl.covers && !pl.invoiceId && pl.status === "active") pl.slack = (pl.slack || 0) + calc.tryPayable - ownCut;
+    }
     if (series) lastSeries[series] = day > lastSeries[series] ? day : lastSeries[series];
     M.invoices.set(inv.id, inv);
     return inv;

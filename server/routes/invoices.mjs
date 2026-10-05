@@ -1401,9 +1401,10 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, conf
         touched.plans.add(planId);
       }
       // Satıştan iade: müşterinin borcu düştü; taksitlendirilmiş borç kalandan büyük kalmasın (kart küçülür).
-      // v2.0.24: önce asıl faturayı taksitlendiren kart küçülür (kendi kartı / kapsayan Mevcut Borç kartı); sonra genel güvenlik.
+      // v2.0.24: asıl faturayı taksitlendiren kart küçülür (kendi kartı / kapsayan Mevcut Borç kartı). Carinin bakiyesine
+      // göre genel kırpma (trimCovers) faturada yapılmaz: müşterinin başka yerdeki avansı faturanın kartını küçültüyordu
+      // (fatura açığı ≠ kartın kalanı). Asıl faturanın açığını aşan iade avans olur (kartlarla netleşmez; 2.0.23 kuralı).
       if (doc.kind === "sale_return") retarget(user, before, touched, `İade ${number}`, invoiceId);
-      if (doc.kind === "sale_return" && plans()?.trimCovers) for (const plan of plans().trimCovers(doc.account.id, user, what)) touched.plans.add(plan.id);
       if (!edit) audit(user, id ? "invoice.issued" : "invoice.created", invoiceId, { kind: doc.kind, number, accountId: doc.account.id, payable: c2(money.payable), currency: doc.currency, date: doc.date, originalId: doc.original?.id || "", payment: { cash: payment.cash.length, cheques: payment.cheques.length, endorse: payment.endorse.length, mode: payment.mode } });
       return { id: invoiceId, number };
     });

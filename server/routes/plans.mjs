@@ -459,8 +459,9 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
     const covering = [];
     for (const plan of account.plans || []) {
       if (plan.status === "closed") continue;
-      const row = store.get("SELECT covers_balance AS c, total, created_at AS createdAt FROM plans WHERE id = ?", plan.id);
-      if (row?.c) covering.push({ id: plan.id, name: plan.name, total: Number(row.total) || 0, createdAt: row.createdAt, left: Math.min(Number(row.total) || 0, Math.max(0, (Number(plan.totals?.total) || 0) - Math.max(0, Number(plan.totals?.paid) || 0))) });
+      const row = store.get("SELECT covers_balance AS c, total, created_at AS createdAt, invoice_id AS invoiceId FROM plans WHERE id = ?", plan.id);
+      // v2.0.24: faturanın kendi kartı faturanın açığını izler (iade faturasıyla küçülür); bakiyeye göre kırpılmaz.
+      if (row?.c && !row.invoiceId) covering.push({ id: plan.id, name: plan.name, total: Number(row.total) || 0, createdAt: row.createdAt, left: Math.min(Number(row.total) || 0, Math.max(0, (Number(plan.totals?.total) || 0) - Math.max(0, Number(plan.totals?.paid) || 0))) });
     }
     const covered = covering.reduce((sum, plan) => roundMoney(sum + plan.left), 0);
     let excess = roundMoney(covered - Math.max(0, Number(account.totals?.balance) || 0));
