@@ -733,6 +733,18 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   ({ max, count, canCreate, reason }); sol üst seçicide ve Yönetim → Şirketler'de "+ Yeni Şirket" pasif + nedeni görünür yazı.
   Test `test/sirket-siniri-225.test.mjs` (çalışıyor mu + nasıl bozarım: başka kod, aynı anda iki istek, personel; 3 şirketli
   eski kurulum). 2'den çok şirket açan eski testler `startTestServer({ maxCompanies })` ile (eski kurulumu canlandırır).
+  2.0.25 HAZIRLANDI, YAYIMLANMADI (05.10.2026): PR ceougur/ofis---y-netimi#25 açık, CI 12/12 yeşil, BİRLEŞTİRİLMEDİ; paket
+  `dist/teslim-2.0.25/` (bu kod; düzeltmeden sonra YENİDEN üretilecek). Bağımsız gözden geçirme bulguları: (1) Orta — `limit`
+  (şirket sayısı) yetkisiz personele de dönüyor, gizli şirketin varlığı sızıyor → yalnız yöneticiye; (2) Düşük — 3+ şirketli
+  kurulumda "önce bir şirketi silin" yanıltıcı; (3) Düşük — sınırda bozuk girdi 409 alıyor (dokunulmaz); (4) test aracı
+  `test/excel-denetim/saldiri.mjs:108` 3. şirket açmaya çalışıp çöküyor (Cuma testinde kullanılacak); (5) test eksikleri:
+  rastgele testin bir turu gerçek sınırla, sirket-siniri-225 "ikisi silinince yenisi açılır" adımı, senaryo-217 silince düğme
+  geri gelir; (6) pasif düğme rengi.
+  KARAR (kullanıcı, 05.10.2026: "bu haliyle yüklemeyelim, düzeltelim; haftalık limitim %99, Perşembe Türkiye saatiyle 09:00'a
+  kur"; "hem Dashboard'da hem Yönetim bölümünde 2. şirket varsa Yeni Şirket ve yanındaki + işareti GELMESİN, çözümü böyle
+  olsun"): sınırdayken "+ Yeni Şirket" PASİF DEĞİL, HİÇ GÖRÜNMEZ (sol üst seçici + Yönetim → Şirketler); 6. bulgu bununla
+  kalkar. Neden yazısı gerekirse yalnız Yönetim'de kısa bilgi satırı olarak (öneri; düğme yok). 1, 2, 4, 5 de yapılır. Sonra:
+  testler → paket/kurulum/PDF yeniden → CI → birleştir → 5 dosya + bağlantı. Hatırlatma: 08.10.2026 06:00 UTC (send_later).
 - 2.0.20 YAPILACAKLAR (kullanıcı "yapılacaklara not al" dedi, 03.10.2026; "yap" denince başlanır; ayrıntı ve
   kanıt hemen altındaki ADAYI maddesinde):
   [x] 1. Bütün raporların (43) tablosunun altında kalın TOPLAM satırı — ekran, PDF, Excel aynı; yalnız toplanabilir
