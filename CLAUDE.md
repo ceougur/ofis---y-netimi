@@ -643,7 +643,11 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   ÖLÇEK SORUSU (kullanıcı, 05.10.2026: "ne ölçekte firma rahat kullanır?") → cevap (ölçülenle): 5–10 eşzamanlı kullanıcı,
   birkaç şirket, şirket başına birkaç bin cari, yılda birkaç bin–on bin fatura; üstü ÖLÇÜLMEDİ. KARAR ("ekle"): ölçek/yük testi
   (10/20/30 eşzamanlı kullanıcı, 10.000–50.000 cari + 100.000+ fatura, 10 şirket + yedekleme sırasında yük) aynı Cuma planına
-  eklendi; çıktı "şu ölçeğe kadar rahat, şurada darboğaz" tablosu + düzeltme önerisi. DERS: yayın bağlantısı birleştirmeden
+  eklendi; çıktı "şu ölçeğe kadar rahat, şurada darboğaz" tablosu + düzeltme önerisi.
+  EK (kullanıcı, 05.10.2026: "bu ölçümü sadece koddan yapma, arayüz kaldırıyor mu ona da bak"): ölçek testi ARAYÜZDEN de
+  yapılır — aynı anda açık gerçek tarayıcı pencereleri (her biri bir personel), aynı büyük veride: pencere açılışı, Cari
+  aramasında harf gecikmesi, uzun listelerde kaydırma/donma, rapor ön izleme + PDF/Excel, Kaydet → listede görünme, başka
+  personel yazarken açık pencere donuyor mu, tarayıcı belleği. Sonuç tablosu her ölçümde sunucu + ekran iki sütun. DERS: yayın bağlantısı birleştirmeden
   ÖNCE verilmez; verildiyse "Publish'e basmayın" en başta yazılır. Sırada (kullanıcıyla): ertelenen testler (iade/iptal/düzenleme/silme,
   çek tahsil/ciro, Kasa↔Banka, dönem kilidi, yetkisiz kullanıcı, 29 rapor) ve iade kartı küçültme düzeltmesi.
   BULGU 2 (04.10.2026, ek işlemlerde bulundu; KOD DEĞİŞTİRİLMEDİ, karar kullanıcıda): aynı caride açık satış faturası +
