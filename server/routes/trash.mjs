@@ -340,6 +340,8 @@ export function registerTrashRoutes(router, { store, auth, audit, events, datase
           );
         }
         trash.markRestored(item.id, user);
+        // v2.0.24: faturanın kendi kartıysa kartın kalanı faturanın açığına eşitlenir.
+        plans?.syncInvoiceCard?.(user, plan.id);
         audit(user, "plan.entry.restored", item.ref, { planId: plan.id, kind: payload.kind, amount: payload.amount, date: payload.date });
       });
       publish(user, { kind: "plans", planId: plan.id });

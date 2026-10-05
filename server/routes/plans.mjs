@@ -19,7 +19,7 @@ const MAX_ITEMS = 360;
 const MAX_IMPORT = 100_000;
 
 // accounts (v2.0.6): cari servisi daha sonra kurulur; her taksit kartı bir cariye aittir (plans.account_id).
-export function registerPlanRoutes(router, { store, auth, audit, events, trash, dataset = null, cash = null, period = null, accounts = () => null, cheques = () => null }) {
+export function registerPlanRoutes(router, { store, auth, audit, events, trash, dataset = null, cash = null, period = null, accounts = () => null, cheques = () => null, invoices = () => null }) {
   const now = () => new Date().toISOString();
   const today = () => isoDay(new Date());
   const newId = prefix => `${prefix}-${randomUUID()}`;
@@ -712,6 +712,12 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
     const after = roundMoney(netPaid(planId, exceptId) + change);
     if (after < -0.005) throw new HttpError(400, `Bu kartta tahsil edilen net tutar ${tl(roundMoney(after - change))}; iade ya da düzeltme sonrası ${tl(after)} olur. İade tahsil edilenden fazla olamaz.`, { code: "refund-exceeds" });
   };
+  // v2.0.24 (mutabakat bulgusu): faturanın kendi kartında tahsilat eklenince/düzeltilince/silinince kartın kalanı faturanın
+  // açığına eşitlenir (iade avansa taşmışken tahsilat silinirse kart, iadenin düşürdüğü kısmı da geri istiyordu).
+  const syncInvoiceCard = (user, planId) => {
+    const invoiceId = store.get("SELECT invoice_id AS id FROM plans WHERE id = ?", planId)?.id;
+    if (invoiceId) invoices()?.syncOwnCard?.(user, invoiceId);
+  };
   router.post("/api/workspace/plans/:id/entries", async ({ req, res, params }) => {
     const user = auth.requirePermission(req, "plans.collect");
     const plan = planRow(params.id);
@@ -725,6 +731,7 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
       const receiptNo = input.kind === "in" ? nextReceipt() : null;
       store.run("INSERT INTO plan_entries (id, plan_id, item_id, kind, amount, date, note, receipt_no, method, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", id, plan.id, input.itemId, input.kind, input.amount, input.date, input.note, receiptNo, input.method, user.id, now());
       audit(user, input.kind === "in" ? "plan.collected" : "plan.refunded", id, { planId: plan.id, planName: plan.name, ...input, receiptNo });
+      syncInvoiceCard(user, plan.id);
     });
     changed(user, { planId: plan.id });
     changed(user, { kind: "cash" });
@@ -744,6 +751,7 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
     store.tx(() => {
       store.run("UPDATE plan_entries SET item_id = ?, amount = ?, date = ?, note = ?, method = ?, updated_by = ?, updated_at = ? WHERE id = ?", input.itemId, input.amount, input.date, input.note, input.method, user.id, now(), previous.id);
       audit(user, "plan.entry.updated", previous.id, { planId: plan.id, previous, ...input });
+      syncInvoiceCard(user, plan.id);
     });
     changed(user, { planId: plan.id });
     changed(user, { kind: "cash" });
@@ -762,6 +770,7 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
       store.run("DELETE FROM plan_entries WHERE id = ?", previous.id);
       trash?.add({ kind: "plan-entry", ref: previous.id, title: plan.name, detail: previous.note || (previous.opening ? "Açılış (devir)" : previous.kind === "in" ? "Taksit tahsilatı" : "Taksit ödemesi/iadesi"), payload: { ...previous, opening: previous.opening ? 1 : 0, planId: plan.id, planName: plan.name }, user });
       audit(user, "plan.entry.deleted", previous.id, { planId: plan.id, ...previous });
+      syncInvoiceCard(user, plan.id);
     });
     changed(user, { planId: plan.id });
     changed(user, { kind: "cash" });
@@ -1277,5 +1286,5 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
   // ikinci kez saymaz; aktarma "kartı var" der.
   const linkedCases = source => new Set(store.all("SELECT case_key AS k FROM plans WHERE deleted_at IS NULL AND case_key <> '' AND case_source = ?", source || "").map(row => row.k));
 
-  return { uncoveredDebt, assertRestorable, trimCovers, shrinkPlan, leftOf, cashEntries, cashSource, dueItems, openItems, fingerprint, ledgerPlansByAccount, list, detail, forCase, entriesForCase, summariesByAccount, forAccount, createForAccount, removeForInvoice, growForInvoice, followAccount, countForAccount, receiptSeq, nextRef, validDistribution: distributionInput, resolveGroups, groupTree, ensureGroup, createScheduled, adoptPayment, linkedCases };
+  return { uncoveredDebt, assertRestorable, trimCovers, shrinkPlan, leftOf, syncInvoiceCard, cashEntries, cashSource, dueItems, openItems, fingerprint, ledgerPlansByAccount, list, detail, forCase, entriesForCase, summariesByAccount, forAccount, createForAccount, removeForInvoice, growForInvoice, followAccount, countForAccount, receiptSeq, nextRef, validDistribution: distributionInput, resolveGroups, groupTree, ensureGroup, createScheduled, adoptPayment, linkedCases };
 }

@@ -24,6 +24,7 @@ describe("2.0.24 iade → doğru taksit kartı", () => {
       get: async url => unwrap(await client.get(url)),
       post: async (url, body) => unwrap(await client.post(url, body)),
       put: async (url, body) => unwrap(await client.put(url, body)),
+      del: async url => unwrap(await client.del(url)),
     };
     item = (await api.post("/api/workspace/stock", { kind: "service", code: "HZM", name: "Hizmet", unit: "Adet", salePrice: "1000" })).data;
   });
@@ -114,5 +115,22 @@ describe("2.0.24 iade → doğru taksit kartı", () => {
     assert.equal((await card(k.id)).remaining, 1000);
     await must("iade iptali", api.post(`/api/workspace/invoices/${ret.id}/cancel`, {}));
     assert.deepEqual([(await card(k.id)).remaining, await balance(acc), await aging(acc)], [2000, 2000, 2000]);
+  });
+  test("iade avansa taşmışken kart tahsilatı silinince/düzeltilince kartın kalanı faturanın açığına eşit kalır (mutabakat bulgusu)", async () => {
+    const acc = await customer("Tahsilat Sil");
+    const own = await sale(acc, d(), 3, true);
+    const pay = await must("taksit tahsilatı", api.post(`/api/workspace/plans/${own.planId}/entries`, { kind: "in", amount: 2500, date: d(), method: "cash" }));
+    await giveBack(own, d(), 1); // açık 500'dü: 500 faturayı kapatır, 500 avans; kart 0
+    assert.deepEqual([(await invoice(own.id)).open, (await card(own.planId)).remaining], [0, 0]);
+    await must("tahsilatı düzelt", api.put(`/api/workspace/plans/${own.planId}/entries/${pay.entryId}`, { amount: 1500 }));
+    assert.deepEqual([(await invoice(own.id)).open, (await card(own.planId)).remaining, await balance(acc)], [500, 500, 500], "düzeltme sonrası");
+    await must("tahsilatı sil", api.del(`/api/workspace/plans/${own.planId}/entries/${pay.entryId}`));
+    assert.deepEqual([(await invoice(own.id)).open, (await card(own.planId)).remaining, await balance(acc)], [2000, 2000, 2000], "silme sonrası");
+    assert.equal(await aging(acc), 2000);
+    const planName = (await must("kart", api.get(`/api/workspace/plans/${own.planId}`))).name;
+    const trashed = (await must("silinenler", api.get("/api/admin/trash"))).find(t => t.kind === "plan-entry" && t.title === planName);
+    assert.ok(trashed, "silinen tahsilat Silinenler'de olmalı");
+    await must("geri yükle", api.post("/api/admin/trash/restore", { id: trashed.id }));
+    assert.deepEqual([(await invoice(own.id)).open, (await card(own.planId)).remaining, await balance(acc)], [500, 500, 500], "geri yükleme sonrası");
   });
 });

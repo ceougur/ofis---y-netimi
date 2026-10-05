@@ -2742,5 +2742,10 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, conf
     return `${row.f}|${entries.f}`;
   };
   const countForAccount = accountId => store.get("SELECT COUNT(*) AS n FROM invoices WHERE account_id = ? AND status <> 'cancelled'", accountId).n;
-  return { cashEntries, cashSource, openItems, dueItems, fingerprint, countForAccount, list, detail, settings, paymentStates, lastPrices, returnable, cancel, deleteInvoice, restoreDeleted };
+  // Taksit kartı tahsilatı değişince (plans.mjs) faturanın kendi kartı faturanın açığına eşitlenir; aynı işlemin içinde.
+  const syncOwnCard = (user, invoiceId) => {
+    const row = store.get("SELECT id, plan_id AS planId, payment_json AS paymentJson, status FROM invoices WHERE id = ?", invoiceId);
+    if (row?.status === "issued" && row.planId) ownCard(user, row, { plans: new Set() }, "Taksit tahsilatı değişti");
+  };
+  return { cashEntries, cashSource, openItems, dueItems, fingerprint, countForAccount, list, detail, settings, paymentStates, lastPrices, returnable, cancel, deleteInvoice, restoreDeleted, syncOwnCard };
 }
