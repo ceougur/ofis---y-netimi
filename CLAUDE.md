@@ -647,7 +647,15 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   EK (kullanıcı, 05.10.2026: "bu ölçümü sadece koddan yapma, arayüz kaldırıyor mu ona da bak"): ölçek testi ARAYÜZDEN de
   yapılır — aynı anda açık gerçek tarayıcı pencereleri (her biri bir personel), aynı büyük veride: pencere açılışı, Cari
   aramasında harf gecikmesi, uzun listelerde kaydırma/donma, rapor ön izleme + PDF/Excel, Kaydet → listede görünme, başka
-  personel yazarken açık pencere donuyor mu, tarayıcı belleği. Sonuç tablosu her ölçümde sunucu + ekran iki sütun. DERS: yayın bağlantısı birleştirmeden
+  personel yazarken açık pencere donuyor mu, tarayıcı belleği. Sonuç tablosu her ölçümde sunucu + ekran iki sütun.
+- SIRADAKİ DÜZENLEME — ŞİRKET SAYISI EN FAZLA 2 (kullanıcı, 05.10.2026: "en fazla 2 şirket kurulabilsin; şu an sürekli yeni
+  şirket açılabiliyor"). YAPILMADI, not; "yap" denince uygulanır. Bu karar 2.0.17'deki "şirket sayısı lisansa bağlı değil,
+  herkese sınırsız" kararını DEĞİŞTİRİR. Önerim (yap'ta): + Yeni Şirket sunucuda 2 şirket varken 409 ("En fazla 2 şirket
+  kurulabilir"), arayüzde düğme pasif + nedeni görünür yazıyla; silinen şirket sayıya girmez (silince yenisi açılabilir);
+  "Ayır" (2.0.21, aynı dosyayı paylaşan şirketleri ayırma) sınırı aşmaz ya da yalnız onarım için istisna. Karar bekleyen
+  sorular: (a) bugün 3+ şirketi olan kurulumlar ne olur — önerim: mevcutlar KALIR, hiçbir veri silinmez, yalnız yenisi
+  açılmaz; (b) Pro lisansta sınır farklı mı (ör. Pro'da daha fazla) — önerim: kullanıcı söylemedikçe herkese 2.
+  Test: 2 şirketle 3.'sü 409 (API ve ekran), birini silince yenisi açılır, 3 şirketli eski veride göç sonrası hepsi çalışır. DERS: yayın bağlantısı birleştirmeden
   ÖNCE verilmez; verildiyse "Publish'e basmayın" en başta yazılır. Sırada (kullanıcıyla): ertelenen testler (iade/iptal/düzenleme/silme,
   çek tahsil/ciro, Kasa↔Banka, dönem kilidi, yetkisiz kullanıcı, 29 rapor) ve iade kartı küçültme düzeltmesi.
   BULGU 2 (04.10.2026, ek işlemlerde bulundu; KOD DEĞİŞTİRİLMEDİ, karar kullanıcıda): aynı caride açık satış faturası +
