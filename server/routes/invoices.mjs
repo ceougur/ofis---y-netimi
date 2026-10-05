@@ -546,9 +546,12 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, conf
     }
     const result = store.tx(() => {
       period?.assertOpen(existing.issueDate, "Bu fatura");
+      // v2.0.24: eski iadenin küçülttüğü kartlar önce geri büyür; yeni iade kaydedilirken yeniden hesaplanır.
+      if (existing.kind === "sale_return" && existing.originalId) restoreCuts(user, { id: existing.id }, touched, `İade düzenlendi ${existing.number}`);
       reverseEffects(user, existing, touched, { force, edit: true });
+      const pre = existing.kind === "sale_return" && existing.originalId ? coverState(existing.originalId) : null;
       const payment = paymentInput(body, doc, user);
-      const written = writeIssued(user, doc, payment, { id: existing.id, force, edit: existing });
+      const written = writeIssued(user, doc, payment, { id: existing.id, force, edit: existing, pre });
       // Son durum denetimi — stok: düzenleme bir ürünü eksiye düşürdüyse (ya da eksiyi büyüttüyse) sorulur.
       if (!force.stock) {
         for (const [itemId, was] of stockBefore) {
@@ -1167,7 +1170,79 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, conf
 
   // edit (v2.0.16): kaydedilmiş belgenin satırı; numara, seri, ETTN ve ilk kayıt bilgisi korunur, çağıran (editInvoice)
   // aynı işlemde önce eski etkileri geri alır.
-  function writeIssued(user, doc, payment, { id = null, force = {}, defer = false, edit = null } = {}) {
+  // ---------- İade ↔ taksit kartı (v2.0.24) ----------
+  // Asıl faturanın açığı ve onu kapsayan Mevcut Borç kartlarının payı (kart kimliği → tutar).
+  function coverState(originalId) {
+    const row = store.get("SELECT id, account_id AS accountId, try_payable AS tryPayable, plan_id AS planId, payment_json AS paymentJson FROM invoices WHERE id = ?", originalId);
+    if (!row || !plans()?.shrinkPlan) return null;
+    const state = paymentStates([row]).get(row.id) || {};
+    return { row, open: Number(state.open) || 0, coveredBy: { ...(state.coveredBy || {}) } };
+  }
+  // İade (kaydı, düzenlemesi, iptali) sonrası asıl faturayı taksitlendiren kart yeni duruma getirilir:
+  //  - faturanın kendi kartının kalanı = faturanın açığı (küçülür; iade azaldıysa/iptal edildiyse fatura kalanına kadar büyür);
+  //  - kapsayan Mevcut Borç kartı, faturadaki payı ne kadar azaldıysa o kadar küçülür. Küçülen tutar iade belgesinde
+  //    (payment_json.coverCuts) saklanır; iade iptal edilince ya da düzenlenince kart aynı tutarda geri büyür.
+  // Başka kartlara dokunulmaz. Aynı veri tabanı işleminin içinde çalışır.
+  // Parası geri verilen iade (nakit/banka/POS iadesi) müşterinin borcunu düşürmez: iade satırı faturayı kapatır, geri ödeme
+  // satırı (çıkış) yeniden borçlandırır. Kart bu tutar kadar küçülmez (gözden geçirme G1).
+  const refundOf = returnId => roundMoney(store.all("SELECT amount FROM account_entries WHERE source = 'invoice' AND source_id = ? AND kind = 'out'", returnId).reduce((sum, row) => sum + (Number(row.amount) || 0), 0));
+  const refundsFor = originalId => roundMoney(store.all("SELECT id FROM invoices WHERE kind = 'sale_return' AND status = 'issued' AND original_id = ?", originalId).reduce((sum, row) => sum + refundOf(row.id), 0));
+  function ownCard(user, original, touched, note) {
+    if (!original?.planId) return;
+    const p = plans();
+    const open = roundMoney((coverState(original.id)?.open ?? 0) + refundsFor(original.id));
+    const left = p.leftOf(original.planId);
+    if (left > open + 0.005) {
+      if (p.shrinkPlan(user, original.planId, roundMoney(left - open), note) > 0) touched.plans.add(original.planId);
+    } else if (open > left + 0.005 && p.growForInvoice) {
+      const rest = Number(parseJson(original.paymentJson, {}).rest) || 0;
+      if (p.growForInvoice(user, original.planId, roundMoney(open - left), rest, note)) touched.plans.add(original.planId);
+    }
+  }
+  function retarget(user, pre, touched, note, returnId) {
+    if (!pre) return;
+    const post = coverState(pre.row.id);
+    if (!post) return;
+    ownCard(user, pre.row, touched, note);
+    const cuts = {};
+    // Geri ödenen kısım borcu düşürmez: önce kartın payındaki azalıştan düşülür (G1).
+    let refund = returnId ? refundOf(returnId) : 0;
+    for (const planId of Object.keys(pre.coveredBy)) {
+      let delta = roundMoney((pre.coveredBy[planId] || 0) - (post.coveredBy[planId] || 0));
+      const offset = Math.min(refund, Math.max(0, delta));
+      delta = roundMoney(delta - offset);
+      refund = roundMoney(refund - offset);
+      if (!(delta > 0.005)) continue;
+      const cut = plans().shrinkPlan(user, planId, delta, note);
+      if (cut > 0) {
+        cuts[planId] = cut;
+        touched.plans.add(planId);
+      }
+    }
+    // Asıl faturanın açığını aşan iade avans olur; carinin borcundan büyük kalan Mevcut Borç kartları en yeniden başlayarak
+    // küçülür (2.0.23 davranışı; faturanın kendi kartına dokunulmaz — trimCovers onları atlar). Kesinti de iadeye yazılır (G3).
+    if (plans()?.trimCovers) {
+      for (const plan of plans().trimCovers(pre.row.accountId, user, note)) {
+        cuts[plan.id] = roundMoney((cuts[plan.id] || 0) + plan.cut);
+        touched.plans.add(plan.id);
+      }
+    }
+    if (returnId && Object.keys(cuts).length) {
+      const payment = parseJson(store.get("SELECT payment_json AS j FROM invoices WHERE id = ?", returnId)?.j, {});
+      store.run("UPDATE invoices SET payment_json = ? WHERE id = ?", JSON.stringify({ ...payment, coverCuts: cuts }), returnId);
+    }
+  }
+  // İadenin küçülttüğü Mevcut Borç kartları geri büyür (iade iptali / düzenlemesi).
+  function restoreCuts(user, returnRow, touched, note) {
+    const cuts = parseJson(returnRow?.paymentJson ?? store.get("SELECT payment_json AS j FROM invoices WHERE id = ?", returnRow?.id)?.j, {}).coverCuts || {};
+    for (const [planId, cut] of Object.entries(cuts)) {
+      const total = Number(store.get("SELECT total FROM plans WHERE id = ? AND deleted_at IS NULL", planId)?.total);
+      if (!Number.isFinite(total) || !plans()?.growForInvoice) continue;
+      if (plans().growForInvoice(user, planId, Number(cut) || 0, roundMoney(total + (Number(cut) || 0)), note)) touched.plans.add(planId);
+    }
+  }
+
+  function writeIssued(user, doc, payment, { id = null, force = {}, defer = false, edit = null, pre = undefined } = {}) {
     const s = doc.settings;
     const meta = doc.meta;
     // "Kes, Sonra Gönder" (e-Belge): bütün etkiler şimdi işlenir; resmî numara entegratöre gönderilirken verilir.
@@ -1181,6 +1256,8 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, conf
     const touched = { accounts: new Set([doc.account.id]), items: new Set(), cash: false, cheques: { accountIds: [], chequeIds: [] }, plans: new Set() };
     const result = store.tx(() => {
       period?.assertOpen(doc.date, "Fatura");
+      // v2.0.24: iadeden önce asıl faturanın açığı ve onu kapsayan kartlar (düzenlemede eski iade geri alınmadan önce).
+      const before = pre !== undefined ? pre : doc.kind === "sale_return" && doc.original?.id ? coverState(doc.original.id) : null;
       ensureNewItems(user, doc, invoiceId, touched);
       // Numara (kesme anında; iki kişi aynı anda kesse de BEGIN IMMEDIATE sıraya sokar).
       let series = "";
@@ -1341,7 +1418,10 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, conf
         touched.plans.add(planId);
       }
       // Satıştan iade: müşterinin borcu düştü; taksitlendirilmiş borç kalandan büyük kalmasın (kart küçülür).
-      if (doc.kind === "sale_return" && plans()?.trimCovers) for (const plan of plans().trimCovers(doc.account.id, user, what)) touched.plans.add(plan.id);
+      // v2.0.24: asıl faturayı taksitlendiren kart küçülür (kendi kartı / kapsayan Mevcut Borç kartı). Carinin bakiyesine
+      // göre genel kırpma (trimCovers) faturada yapılmaz: müşterinin başka yerdeki avansı faturanın kartını küçültüyordu
+      // (fatura açığı ≠ kartın kalanı). Asıl faturanın açığını aşan iade avans olur (kartlarla netleşmez; 2.0.23 kuralı).
+      if (doc.kind === "sale_return") retarget(user, before, touched, `İade ${number}`, invoiceId);
       if (!edit) audit(user, id ? "invoice.issued" : "invoice.created", invoiceId, { kind: doc.kind, number, accountId: doc.account.id, payable: c2(money.payable), currency: doc.currency, date: doc.date, originalId: doc.original?.id || "", payment: { cash: payment.cash.length, cheques: payment.cheques.length, endorse: payment.endorse.length, mode: payment.mode } });
       return { id: invoiceId, number };
     });
@@ -1480,15 +1560,13 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, conf
       if (returns) throw new HttpError(409, `Bu faturanın ${returns} iade faturası var; önce iade faturalarını iptal edin.`, { code: "invoice-has-returns" });
       if (["sent", "accepted"].includes(invoice.eStatus) && !confirmExternal) throw new HttpError(409, `Bu belge ${E_STATES[invoice.eStatus].toLocaleLowerCase("tr-TR")}. Önce GİB / entegratör tarafında iptal edin (e-Arşiv iptali ya da e-Fatura iade/itiraz), sonra burada onaylayın.`, { code: "einvoice-sent" });
       reverseEffects(user, invoice, touched, { force });
-      // İade iptali: asıl faturanın taksit kartı iadeyle küçüldüyse geri büyür (müşteri borcu yine taksitlerde izlenir).
-      if (invoice.kind === "sale_return" && invoice.originalId && plans()?.growForInvoice) {
-        const original = store.get("SELECT plan_id AS planId, payment_json AS paymentJson FROM invoices WHERE id = ?", invoice.originalId);
-        const rest = Number(parseJson(original?.paymentJson, {}).rest) || 0;
-        const grown = original?.planId ? plans().growForInvoice(user, original.planId, invoice.tryPayable, rest, `İade iptali ${invoice.number}`) : null;
-        if (grown) touched.plans.add(grown.id);
-      }
       const stamp = now();
       store.run("UPDATE invoices SET status = 'cancelled', cancelled_by = ?, cancelled_at = ?, cancel_reason = ?, updated_by = ?, updated_at = ? WHERE id = ?", user.id, stamp, limited(reason, 300, "İptal nedeni"), user.id, stamp, invoice.id);
+      // İade iptali: asıl faturanın taksit kartı iadeyle küçüldüyse geri büyür (müşteri borcu yine taksitlerde izlenir).
+      if (invoice.kind === "sale_return" && invoice.originalId && plans()?.shrinkPlan) {
+        restoreCuts(user, { id: invoice.id }, touched, `İade iptali ${invoice.number}`);
+        ownCard(user, store.get("SELECT id, plan_id AS planId, payment_json AS paymentJson FROM invoices WHERE id = ?", invoice.originalId), touched, `İade iptali ${invoice.number}`);
+      }
       // v2.0.17: iptal edilen belgenin mahsup fişleri ve ona bağlanmış tahsilat/ödemelerin bağı kalkar (satırlar kalır,
       // kapama yeniden hesaplanır: otomatik en eski açık faturaya).
       store.run("DELETE FROM invoice_offsets WHERE invoice_id = ? OR (counter_type = 'invoice' AND counter_id = ?)", invoice.id, invoice.id);
@@ -2681,5 +2759,10 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, conf
     return `${row.f}|${entries.f}`;
   };
   const countForAccount = accountId => store.get("SELECT COUNT(*) AS n FROM invoices WHERE account_id = ? AND status <> 'cancelled'", accountId).n;
-  return { cashEntries, cashSource, openItems, dueItems, fingerprint, countForAccount, list, detail, settings, paymentStates, lastPrices, returnable, cancel, deleteInvoice, restoreDeleted };
+  // Taksit kartı tahsilatı değişince (plans.mjs) faturanın kendi kartı faturanın açığına eşitlenir; aynı işlemin içinde.
+  const syncOwnCard = (user, invoiceId) => {
+    const row = store.get("SELECT id, plan_id AS planId, payment_json AS paymentJson, status FROM invoices WHERE id = ?", invoiceId);
+    if (row?.status === "issued" && row.planId) ownCard(user, row, { plans: new Set() }, "Taksit tahsilatı değişti");
+  };
+  return { cashEntries, cashSource, openItems, dueItems, fingerprint, countForAccount, list, detail, settings, paymentStates, lastPrices, returnable, cancel, deleteInvoice, restoreDeleted, syncOwnCard };
 }

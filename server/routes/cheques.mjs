@@ -29,7 +29,7 @@ const collator = new Intl.Collator("tr", { numeric: true, sensitivity: "base" })
 // Geri çevrilebilir etkilerin yazılabileceği tablolar (effects_json'dan gelen ad SQL'e yalnız bu listeden girer).
 const EFFECT_TABLES = new Set(["account_entries", "plan_entries"]);
 
-export function registerChequeRoutes(router, { store, auth, audit, events, cash = null, accounts = () => null, plans = () => null }) {
+export function registerChequeRoutes(router, { store, auth, audit, events, period = null, cash = null, accounts = () => null, plans = () => null }) {
   const now = () => new Date().toISOString();
   const today = () => isoDay(new Date());
   const newId = prefix => `${prefix}-${randomUUID()}`;
@@ -206,10 +206,16 @@ export function registerChequeRoutes(router, { store, auth, audit, events, cash 
         done.push({ op: "delete", table: "plan_entries", row, planId: row.plan_id });
       }
     }
+    syncCards(user, done);
     return done;
   }
+  // v2.0.24 (gözden geçirme G4): çekin karta sayılan tahsilatı eklenince/kalkınca faturanın kendi kartı faturanın açığına eşitlenir.
+  const SYSTEM = { id: "system", role: "admin" };
+  function syncCards(user, effects) {
+    for (const planId of new Set(effects.filter(effect => effect.table === "plan_entries").map(effect => effect.planId || effect.row?.plan_id).filter(Boolean))) plans()?.syncInvoiceCard?.(user || SYSTEM, planId);
+  }
   // Etkileri tersine çevirir (son yapılan önce). Eklenen satır silinir; silinen satır aynı kimlikle geri eklenir.
-  function revertEffects(effects) {
+  function revertEffects(effects, user = null) {
     for (const effect of [...effects].reverse()) {
       if (!EFFECT_TABLES.has(effect.table)) continue;
       if (effect.op === "insert") store.run(`DELETE FROM ${effect.table} WHERE id = ?`, effect.id);
@@ -218,6 +224,7 @@ export function registerChequeRoutes(router, { store, auth, audit, events, cash 
         store.run(`INSERT INTO ${effect.table} (${columns.join(", ")}) VALUES (${columns.map(() => "?").join(", ")})`, ...columns.map(column => effect.row[column]));
       }
     }
+    syncCards(user, effects);
   }
   const touchedBy = effects => ({
     accountIds: effects.map(effect => effect.accountId).filter(Boolean),
@@ -325,7 +332,7 @@ export function registerChequeRoutes(router, { store, auth, audit, events, cash 
         // Tek olaylı (alındı/verildi) kayıt: eski defter etkileri geri alınır, yenileri yazılır (aynı işlem bloğunda).
         const first = history[0];
         const oldEffects = effectsOf(first);
-        revertEffects(oldEffects);
+        revertEffects(oldEffects, user);
         const cheque = { ...previous, ...input };
         const kind = initialEvent(previous.direction);
         const posted = oldEffects.length > 0 || !first.note.startsWith("Açılış");
@@ -355,7 +362,8 @@ export function registerChequeRoutes(router, { store, auth, audit, events, cash 
       if (body.status && body.status !== cheque.status) throw new HttpError(409, `Bu ${kindName(cheque).toLocaleLowerCase("tr-TR")} bu arada “${STATUSES[cheque.status]?.label}” oldu. Kartı yenileyin.`, { code: "cheque-stale" });
       const rule = transition(cheque, action);
       if (!rule.ok) throw new HttpError(409, rule.reason);
-      const date = dateOf(body.date, "İşlem tarihi", today());
+      // v2.0.24: işlem tarihi Kasa/cari hareketleriyle aynı kurala bağlı: ileri tarihli olamaz, kilitli döneme yazılmaz.
+      const date = period ? period.movementDate({ date: text(body.date) || today() }, { label: "İşlem Tarihi" }) : dateOf(body.date, "İşlem Tarihi", today());
       // v2.0.13: çek/senet tahsili ya da ödemesi çoğunlukla bankadan geçer (varsayılan Banka); elden ise Nakit.
       const method = methodInput(body.method, "bank");
       if (rule.cash === "out") cash?.guardOut?.(cheque.amount, date, body.cashForce === true, method);
@@ -397,8 +405,10 @@ export function registerChequeRoutes(router, { store, auth, audit, events, cash 
       if (history.length < 2) throw new HttpError(409, "Geri alınacak işlem yok. Kaydı kaldırmak için Sil'i kullanın.");
       if (last.invoiceId) throw new HttpError(409, "Bu ciro bir faturanın ödemesidir; geri almak için faturayı iptal edin.", { code: "invoice-linked", invoiceId: last.invoiceId });
       if (body.eventId && body.eventId !== last.id) throw new HttpError(409, "Bu evrakta bu arada başka bir işlem yapıldı. Kartı yenileyin.", { code: "cheque-stale" });
+      // v2.0.24: kilitli dönemdeki işlem geri alınmaz (Kasa/cari etkisi kapanmış ayı değiştirirdi).
+      period?.assertOpen(last.date, "Bu çek/senet işlemi");
       const effects = effectsOf(last);
-      revertEffects(effects);
+      revertEffects(effects, user);
       store.run("DELETE FROM cheque_events WHERE id = ?", last.id);
       const previousEndorse = last.kind === "endorse" ? "" : cheque.endorseAccountId;
       const statusDate = history.at(-2).date;
@@ -420,7 +430,7 @@ export function registerChequeRoutes(router, { store, auth, audit, events, cash 
       if (history.length > 1) throw new HttpError(409, `Tahsil, ciro ya da ödeme yapılmış ${kindName(cheque).toLocaleLowerCase("tr-TR")} silinemez. Önce işlemleri geri alın.`);
       if (cheque.invoiceId) throw new HttpError(409, `Bu evrak ${cheque.invoiceNumber || "bir fatura"} ile kaydedildi; silmek için faturayı iptal edin.`, { code: "invoice-linked", invoiceId: cheque.invoiceId });
       const effects = effectsOf(history[0]);
-      revertEffects(effects);
+      revertEffects(effects, user);
       store.run("UPDATE cheque_events SET effects_json = ? WHERE id = ?", JSON.stringify({ reverted: effects.length > 0 }), history[0].id);
       store.run("UPDATE cheques SET deleted_by = ?, deleted_at = ? WHERE id = ?", user.id, now(), cheque.id);
       audit(user, "cheque.deleted", cheque.id, { serialNo: cheque.serialNo, amount: cheque.amount, dueDate: cheque.dueDate, direction: cheque.direction });
@@ -706,7 +716,7 @@ export function registerChequeRoutes(router, { store, auth, audit, events, cash 
         const last = history.at(-1);
         if (last.id !== event.id) throw new HttpError(409, `Faturayla ciro edilen ${title(cheque)} sonradan ${EVENT_LABELS[last.kind]?.toLocaleLowerCase("tr-TR") || "işlem gördü"}; önce o işlemi Çek/Senet'ten geri alın.`, { code: "cheque-moved", chequeId: cheque.id });
         const effects = effectsOf(last);
-        revertEffects(effects);
+        revertEffects(effects, user);
         store.run("DELETE FROM cheque_events WHERE id = ?", last.id);
         store.run("UPDATE cheques SET status = ?, status_date = ?, endorse_account_id = '', updated_by = ?, updated_at = ? WHERE id = ?", last.fromStatus, history.at(-2).date, user.id, now(), cheque.id);
         touched.accountIds.push(...touchedBy(effects).accountIds);
@@ -718,7 +728,7 @@ export function registerChequeRoutes(router, { store, auth, audit, events, cash 
         const history = eventsOf(cheque.id);
         if (history.length > 1) throw new HttpError(409, `Faturayla ${cheque.direction === "in" ? "alınan" : "verilen"} ${title(cheque)} ${STATUSES[cheque.status]?.label?.toLocaleLowerCase("tr-TR") || "işlem gördü"}; önce o işlemi Çek/Senet'ten geri alın.`, { code: "cheque-moved", chequeId: cheque.id });
         const effects = effectsOf(history[0]);
-        revertEffects(effects);
+        revertEffects(effects, user);
         store.run("UPDATE cheque_events SET effects_json = ? WHERE id = ?", JSON.stringify({ reverted: effects.length > 0, invoiceCancelled: true }), history[0].id);
         store.run("UPDATE cheques SET deleted_by = ?, deleted_at = ? WHERE id = ?", user.id, now(), cheque.id);
         touched.accountIds.push(...touchedBy(effects).accountIds);

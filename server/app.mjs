@@ -283,7 +283,7 @@ export function createApp(overrides = {}) {
   // Tablodan taksit kartına aktarma (v2.0.8): "/api/workspace/plans/from-table" ve "/imports" kalıpları kartın
   // "/api/workspace/plans/:id" kalıbından önce kaydedilir (yönlendirici ilk eşleşeni seçer).
   context.planTransfer = registerPlanTransfer(router, { ...context, plans: () => context.plans, accounts: () => context.accounts });
-  context.plans = registerPlanRoutes(router, { ...context, accounts: () => context.accounts, cheques: () => context.cheques });
+  context.plans = registerPlanRoutes(router, { ...context, accounts: () => context.accounts, cheques: () => context.cheques, invoices: () => context.invoices });
   context.accounts = registerAccountRoutes(router, { ...context, plans: () => context.plans, cheques: () => context.cheques });
   context.stock = registerStockRoutes(router, { ...context, accounts: () => context.accounts, plans: () => context.plans });
   // Çek / Senet (v2.0.7): cari ve taksit defterine bağlı; Kasa tahsil/ödeme olaylarını okur.

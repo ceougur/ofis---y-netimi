@@ -604,6 +604,36 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   sha256 5e598bfd… (210 dosya, HEAD ile bayt bayt), kurulum .exe 692a1bb0… (29,4 MB), kılavuz PDF 2f16c0a3… (değişti → yayından
   sonra site PR'ı); güncelleyici 2.0.22/21/20/19/2.0.4/1.7.0 (API ve yedek yol) "available", kurcalanmış bildirge reddedildi.
   5 dosya zipsiz + arşiv zip (29 MB) gönderildi.
+  YAYIMLANDI (05.10.2026; PR #23 CI 12/12 yeşil → kullanıcının "birleştir"iyle squash, `master` = 58798e9 (ağaç teslimdeki
+  c2f7e9a ile aynı), `v2.0.23`; dal master'a sıfırlandı). Yayında yükleme sırasında indirilen güncelleme paketinin adı
+  kullanıcının bilgisayarında "DestekOfis-2.0.22-Arsiv-…zip" olarak inmişti (boyut 4.632.079 = paket); yayımlamadan önce
+  yakalandı, doğru adla yeniden yüklendi. DERS: yayımdan önce kullanıcının ekranındaki 5 dosya adı + boyutu teslimle
+  karşılaştırılır. Yayındaki 5 dosya + latest/ (exe, json, zip, pdf) bayt bayt aynı, exe .sha256 OK, etiket 58798e9; gerçek
+  güncelleyici canlı GitHub'da 2.0.22/21/20/19/18/17/2.0.4/1.7.0 olarak (API ve yedek yol) 2.0.23'ü "available" gördü,
+  indirme sha256 5e598bfd… eşleşti; 2.0.23 kurulu → "up-to-date". Site kılavuz PR'ı ceougur/destekofis#10 açık (PDF
+  2f16c0a3…) kullanıcının "birleştir"iyle BİRLEŞTİRİLDİ (main 0e280bd). 2.0.23 KAPANDI.
+- 2.0.24 (kullanıcı, 05.10.2026: "yap"): (1) ERTELENEN TESTLER ekrandan, aynı hafta verisiyle, bağımsız beklenenle:
+  iade, iptal, düzenleme, silme; çek tahsil/ciro; Kasa↔Banka; dönem kilidi; yetkisiz kullanıcı; 29 rapor (her süzgeç).
+  Her alan için "çalışıyor mu" + "nasıl bozarım". (2) İADE kartı küçültme hatası (trimCovers) düzeltmesi. Kural: önce
+  kırmızı test, sonra düzeltme; bulunan her hata önce kullanıcıya listelenir; DENENEN/DENENMEYEN/BİLİNEN SINIRLAR.
+  DURUM (05.10.2026): iade düzeltmesi yapıldı (987a6b9 + 0a3bb0f; `test/iade-224` 2.0.23'te 7'nin 5'i kırmızı; iadede genel
+  bakiye kırpması kaldırıldı — avans faturanın kartını küçültüyordu). Ertelenen testler API'den (`test/ertelenen-224` 34,
+  `test/raporlar-224` 51; 43 rapor × 1.187 süzgeç × ekran/PDF/Excel). BULGULAR → KARAR (kullanıcı, 05.10.2026: "önerdiğin
+  gibi yap"): [x] 1. çek/senet işlemi + geri alma dönem kilidine bakmıyor (Yüksek) [x] 2. çek/senet işlemi ileri tarihle
+  (Orta) [x] 3. Cari Mizanı "Geciken Taksiti Olan" süzgeci yok sayılıyor [x] 4. Ürün Satış Kârlılığı özet Brüt Kâr ≠ TOPLAM
+  (özet yalnız maliyeti bilinen kalemlerden) [x] 5. taksit tahsilatı silinince kart ≠ fatura açığı (kart faturaya göre).
+  YAPILDI 8f012e3 (1–4; 2.0.23'te 5 test kırmızı) + 6b14b74 (5; iade-224 #8). Sırada: npm test/mutabakat/güvenilirlik,
+  arayüz senaryosu senaryo-224 (yardımcı ajan), bağımsız gözden geçirme, sonra sürüm 2.0.24 + teslim A/B.
+  DURUM (05.10.2026): bağımsız gözden geçirme 4 bulgu (G1 paralı iade kartı küçültüyordu — bu sürümün gerilemesi, G2
+  yeni faturadan iadede çift sayım, G3 avans iadesi Mevcut Borç kartını kırpmıyordu, G4 çek yolları kartı eşitlemiyordu) →
+  hepsi önce kırmızı test, düzeltildi; G5 (geri büyüyen kartta taksit vadesi bugün) ve G6 (uç veride hız) Bilinen Sınırlar.
+  senaryo-224 53/53 (pencere içi bildirim okunmuyordu → düzeltildi, CI'ye eklendi). npm test 1.059/1.059, mutabakat 2 tohum,
+  güvenilirlik 1.000. Sürüm 2.0.24, kanıt `docs/2.0.24-KANIT.md`, kılavuz iade cümleleri değişti (PDF 3206709e…).
+  TESLİM (05.10.2026 ~05:5x; kullanıcı: "limit %2 kaldı, zipi teslim et"): 5 dosya zipsiz + arşiv zip (26,7 MB) gönderildi;
+  paket sha256 a926aed5… (210 dosya), kurulum .exe 115d04b8… (29,4 MB); güncelleyici 2.0.23/22/21/20/19/2.0.4/1.7.0 (API ve
+  yedek yol) "available". PR ceougur/ofis---y-netimi#24 açık. Sırada: CI → kullanıcının "birleştir"i → yayın (v2.0.24, 5 dosya;
+  yükleme ekranında adlar/boyutlar teslimle karşılaştırılır) → "yayımladım" → bayt bayt + güncelleyici → site kılavuz PR'ı. Sırada (kullanıcıyla): ertelenen testler (iade/iptal/düzenleme/silme,
+  çek tahsil/ciro, Kasa↔Banka, dönem kilidi, yetkisiz kullanıcı, 29 rapor) ve iade kartı küçültme düzeltmesi.
   BULGU 2 (04.10.2026, ek işlemlerde bulundu; KOD DEĞİŞTİRİLMEDİ, karar kullanıcıda): aynı caride açık satış faturası +
   Taksit penceresinden "Yeni Borç" ile AYRI taksit kartı varsa fatura kapama (`server/lib/invoice-settle.mjs`) kartın
   tahsilatını (plan-in) ve kartın borcunu genel FIFO'ya katıyor; taksit modülü ise kartın ödenenini ayrı sayıyor → iki hesap

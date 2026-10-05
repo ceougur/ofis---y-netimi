@@ -435,6 +435,16 @@ html.hof-auth-required #root {
   width: min(380px, calc(100vw - 36px));
   pointer-events: none;
 }
+/* v2.0.24: pencere açıkken bildirim (ör. "kilitli dönem" reddi) bulanık arka planın altında okunmuyordu. Pencere açıkken
+   üstte ortada, pencerenin üstünde görünür; alt köşedeki Kaydet/İptal düğmelerini örtmez. */
+body:has(.hof-modal-backdrop.is-visible) .hof-toasts {
+  top: 14px;
+  right: auto;
+  bottom: auto;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 99990;
+}
 .hof-toast {
   position: static;
   display: flex;

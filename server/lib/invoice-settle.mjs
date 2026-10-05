@@ -329,7 +329,10 @@ export function settleInvoices({ lines, invoices, links = new Map(), chequeEvent
       const open = Math.max(0, Math.min(payable, items.reduce((sum, item) => sum + partsLeft(item), 0)));
       // covered: açığın Mevcut Borç kartlarınca kapsanan kısmı (birleşik listelerde kartın taksitleri gösterir; iki kez sayılmaz).
       const covered = Math.min(open, items.reduce((sum, item) => sum + [...item.covered.values()].reduce((total, value) => total + value, 0), 0));
-      out.set(invoiceId, { payable: roundMoney(payable / 100), paid: roundMoney((payable - open) / 100), open: roundMoney(open / 100), covered: roundMoney(covered / 100), closers: items.flatMap(item => item.closers) });
+      // coveredBy (v2.0.24): kart kart kapsanan kısım; iade faturası faturayı kapsayan kartı bu farkla küçültür.
+      const coveredBy = {};
+      for (const item of items) for (const [planId, value] of item.covered) if (value > 0) coveredBy[planId] = roundMoney((coveredBy[planId] || 0) + value / 100);
+      out.set(invoiceId, { payable: roundMoney(payable / 100), paid: roundMoney((payable - open) / 100), open: roundMoney(open / 100), covered: roundMoney(covered / 100), coveredBy, closers: items.flatMap(item => item.closers) });
     }
   }
   for (const invoice of invoices) {

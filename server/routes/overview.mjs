@@ -177,7 +177,7 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
   function mizan(params) {
     const range = rangeOf(params, { preset: "thisYear" });
     const type = TYPE_TEXT[text(params.get("type"))] ? text(params.get("type")) : "";
-    const side = ["debtor", "creditor", "zero", "nonzero"].includes(text(params.get("side"))) ? text(params.get("side")) : "";
+    const side = ["debtor", "creditor", "zero", "nonzero", "overdue"].includes(text(params.get("side"))) ? text(params.get("side")) : "";
     const q = text(params.get("q")).toLocaleLowerCase("tr-TR").slice(0, 120);
     const includeIdle = params.get("idle") === "1";
     const ledgers = accounts()?.allLedgers ? accounts().allLedgers() : { accounts: [], lines: new Map() };
@@ -187,7 +187,11 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
     const list = ledgers.accounts.filter(account => (!type || account.type === type) && hit(account));
     const result = trialBalance(list, ledgers.lines, { ...range, includeIdle });
     let rows = result.rows;
-    if (side) rows = rows.filter(row => (side === "nonzero" ? row.side !== "zero" : row.side === side));
+    // v2.0.24: "Geciken Taksiti Olan" (ekran bu seçeneği sunuyordu; sunucu yok sayıp bütün carileri listeliyordu).
+    if (side === "overdue") {
+      const late = new Set((accounts()?.list ? accounts().list({ id: "", role: "admin" }, { status: "all", balance: "overdue", limit: 1e9 }).accounts : []).map(account => account.id));
+      rows = rows.filter(row => late.has(row.id));
+    } else if (side) rows = rows.filter(row => (side === "nonzero" ? row.side !== "zero" : row.side === side));
     rows.sort((a, b) => collator.compare(String(a.refNo || "~"), String(b.refNo || "~")) || collator.compare(a.name, b.name));
     const totals = side ? trialBalance(list.filter(account => rows.some(row => row.id === account.id)), ledgers.lines, { ...range, includeIdle: true }).totals : result.totals;
     return { ...range, type, side, q, includeIdle, rows, totals, today: today(), accountCount: ledgers.accounts.length };
@@ -200,7 +204,7 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
   });
   // Durum (v2.0.10): muhasebe programlarındaki gibi yalın — Borçlu (cari bize borçlu) · Alacaklı (biz cariye borçluyuz).
   const sideText = value => (value > 0.005 ? "Borçlu" : value < -0.005 ? "Alacaklı" : "Kapalı");
-  const SIDE_FILTER = { debtor: "Borçlular", creditor: "Alacaklılar", nonzero: "Sadece bakiyesi olanlar", zero: "Bakiyesi sıfır" };
+  const SIDE_FILTER = { debtor: "Borçlular", creditor: "Alacaklılar", nonzero: "Sadece bakiyesi olanlar", zero: "Bakiyesi sıfır", overdue: "Geciken taksiti olan" };
   const mizanTable = data => ({
     headers: ["Cari No", "Cari", "Tür", "Devir", "Borç", "Alacak", "Bakiye", "Durum"],
     types: ["", "", "", "money", "money", "money", "money", ""],
