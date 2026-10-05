@@ -544,6 +544,92 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   1.613 işlem cari açılışından önce, kısmi ödeme tutarı yok, 165 "Tamamlandı" taksitlinin tahsilatı yok, Özet sayfası yanlış).
   Kullanıcı sorusu (aynı gün): "gerçek muhasebeci gibi değil de koddan mı yapıyorsun?" → evet, hacim API'den; önerildi:
   bir ayın tamamı (Ocak 2024) ekrandan ayrı şirkete girilip API ile girilenle sayı sayı karşılaştırılsın (karar kullanıcıda).
+  KARAR (kullanıcı, 04.10.2026, 2.0.22 yayınından sonra; haftalık kullanım limitini sordu → önerim: limit dar olabilir, BİR
+  HAFTA + TEK ŞİRKET, kısa karşılaştırma tablosu; fark çıkmazsa genişletilmez) → "önerini yap". Kod değiştirilmez; fark
+  çıkarsa önce kullanıcıya bildirilir.
+  SONUÇ (04.10.2026 18:0x; `test/excel-denetim/ekran-hafta.mjs`, sonuç `cikti/ekran-hafta-sonuc.json`): 20–26 Ocak 2025 haftası
+  (51 işlem, 30 türün 25'i) aynı başlangıçlı iki şirkete — 001 API, 002 EKRANDAN (fatura formu, cari kartı, Çek/Senet penceresi,
+  taksit) — girildi: 51/51 ekrandan (ort. 7 sn/işlem, 6 dk); 373 cari borç/alacak/bakiye, 50 ürün stoğu + stok değeri, faturalar,
+  çek/senet, taksit kartları, Kasa/banka/POS, mutabakat 59/59 ×2 → FARK YOK. BULGU (gerçek ekran hatası, 2.0.21'de de var,
+  KOD DEĞİŞTİRİLMEDİ, karar kullanıcıda): fatura formunda ödeme tutarı faturayı tamamen karşılayınca ödeme alanları ~0,6 sn
+  sonra yeniden çiziliyor (`hof-invoices.js` refreshRest → renderPayLater); bu sürede seçilen Vade tarihi ya da yazılan
+  Banka/Şube siliniyor ("No yaz → Tab → Banka yaz" normal hızda Banka boş kalıyor). Kaydet "1. evrakın vade tarihini seçin"
+  der, veri bozulmaz. Yeniden üretim: `test/excel-denetim/form-insan.mjs` (TARIH=100 → vade boş; TARIH=2000 → dolu).
+  KULLANICI SORUSU (04.10.2026): "maaş, fatura, kira ödemeleri, cari açma, taksit yapma, stok ekleme, tahsilat yapıldı mı;
+  raporlarda doğru sonuca ulaşıldığı doğrulandı mı?" → dürüst cevap: maaş/fatura/gider/tahsilat ekrandan EVET; kira o hafta
+  yok; cari ve stok Excel'den toplu (form değil); taksit yalnız taksitli faturadan; Rapor Merkezi AÇILMADI, bağımsız beklenen
+  hesapla karşılaştırılmadı. KARAR (kullanıcı): "testin eksiğini tamamla, düzeltmeyi ondan sonra değerlendirelim" → aynı
+  haftaya ekrandan: + Yeni Cari, stok kartı + stok giriş/çıkış, Taksit formundan taksit kartı + tahsilatı, kira gideri;
+  sonra Rapor Merkezi raporları EKRANDAN açılıp programdan bağımsız beklenen hesapla (ve PDF/Excel ekranla) karşılaştırılır.
+  Kod değiştirilmez; ödeme alanı hatasının düzeltmesi bu testten sonra konuşulur.
+  SONUÇ (04.10.2026 19:0x; `docs/EKRAN-HAFTA-TESTI-2026-10-04.md`, commit 93974d1): 51 Excel işi + 16 ek işlem her biri kendi
+  gününde; ekrandan 67/67 (7,8 dk), API şirketiyle FARK YOK, mutabakat 59/59 ×2, sayfa hatası yok. Rapor Merkezi'nden 14 rapor
+  (16 görünüm) + ANLIK DURUM iki şirkette ekrandan ↔ bağımsız beklenen (`model-hafta.py`): 57 kalemin 51'i tuttu, 6'sı bilinen
+  bulgulardan (Bulgu 2: Satış Kalan 3.290,60 / Açık Alacak 3.000; Bulgu 4: Yol = Banka/POS), açıklanmamış 0; stok 51/51;
+  PDF/Excel 64/64 ekranla aynı ve şirketli. Düzeltme kararı kullanıcıda (öneriler belgenin 6. bölümünde).
+  BAĞIMSIZ GÖZDEN GEÇİRME (04.10.2026; hepsi tarafımdan yeniden üretildi, belgenin 7. bölümü): (1) BULGU 1 CİDDİ — "veri
+  bozulmaz" YANLIŞTI: fatura formunda çek/senet satırında alan değişince ödeme bölümü anında yeniden çiziliyor
+  (hof-invoices.js:1171-1174 → :901), odak sayfaya düşüyor; klavyeyle (Tab) girilen senet tutarın üstüne yazılıyor, Kaydet
+  UYARISIZ "Açık 240", senet YOK (`test/excel-denetim/odeme-alani-kaydet.mjs`, tam ve kısmi); fareyle girişte vade/banka
+  kayboluyor, kayıt "vade seçin" ile duruyor. Önem YÜKSEK. (2) Bulgu 2'ye F (Kapatılacak Fatura ile bağlı tahsilat da taksitli
+  faturanın kartını kapatmıyor) ve G (kart kapatma — kalanın silinmesi — ödenmemiş faturayı kapatıyor; kod yorumu tersini
+  söylüyor) eklendi; yaşlandırma cari başına yanlış, toplamda sıfırlanabiliyor (57.160 = 57.160). C0122'nin 290,60'ı KURAL
+  FARKI (cari alacaklı; fatura FIFO ile kapanabilir, yanlış olan kart); "başka iş için" bilgisi veride yoktu. (3) Bulgu 3: tek
+  dönem tıklaması 6 istek. (4) Bulgu 4 doğru, başka düşen parametre yok. Test betiği işaretli karşılaştırmaya geçti.
+  KULLANICI SORUSU (aynı gün): "denenmeyenleri (iade/iptal/düzenleme/silme, çek tahsil/ciro, Kasa↔Banka, dönem kilidi, yetkisiz
+  kullanıcı, 29 rapor) de ayrıca teste tabi tutman gerekecek mi?" → cevap: evet, kanıt yok; ÖNERİM: düzeltmeden ÖNCE aynı hafta
+  testine ekleyip ekrandan koşmak (iade/iptal/düzenleme Bulgu 2'nin koduyla iç içe; bütün hatalar görülünce düzeltme tek
+  tasarımla), 29 rapor her süzgeç seçeneğiyle; düzeltmelerden sonra hepsi bir kez daha. Kullanıcının "yap"ı bekleniyor.
+  KARAR (kullanıcı, 04.10.2026): "kullanım limitimden dolayı test yarım kalabilir; önce tespit ettiğin hataları düzelt ve
+  GitHub'a yüklenecek imzalı 5 dosyayı ver, diğer testleri bundan sonra değerlendirelim" → 2.0.23 = Bulgu 1, 2 (A–G), 3, 4 +
+  PDF özet başlığı. Her hata: önce kırmızı test → düzeltme → kanıt; hafta testi yeniden (beklenen: açıklanmamış fark 0, Bulgu 4
+  satırları da tutar); bağımsız gözden geçirme; teslim A (5 dosya) + B (arşiv zip). Denenmeyen 6 alan sonra konuşulacak.
+  [x] 1. çek/senet satırı   [x] 2. taksit ↔ fatura   [x] 3. dönem düğmesi   [x] 4. Yol süzgeci   [x] 5. PDF başlık
+  DURUM (04.10.2026 20:xx): 5 düzeltme yapıldı. Kırmızı → yeşil: `test/bulgu-223.test.mjs` (2.0.22'de 13'ün 11'i kırmızı,
+  dalda 13/13), `npm run test:senaryo-223` (arayüz; 2.0.22'de 21'in 19'u kırmızı, dalda 21/21; CI ve yayın iş akışına eklendi).
+  Bulgu 1'de ikinci yol bulundu ve kapandı: peşin tutar yazılıp fareyle doğrudan Kalan → Vade Tarihi'ne tıklanınca yazılan
+  vade kayboluyor, fatura SESSİZCE bugünün vadesiyle kaydediliyordu (2.0.22'de de var). Sırada: npm test + diğer arayüz
+  senaryoları + hafta testi yeniden, bağımsız gözden geçirme, sürüm 2.0.23, imzalı paket + kurulum, teslim A + B.
+  DURUM (04/05.10.2026): ÜÇ bağımsız gözden geçirme (11 + 12 + 4 bulgu), hepsi yeniden üretildi, önce kırmızı test. Kapama
+  modeli son hali: "Carinin Mevcut Borcu" kartı açıldığı anda AÇIK olan borcu kapsar (kartın açılış anına kadar kayıtlı
+  satırlarla kapama yapılır; açık borçlar en son kaydedilenden; kapasite = min(tutar, taksitler)); birleşik listelerde kartın
+  payı kalanını aşmaz; Mevcut Borç kartı BÜYÜTÜLEMEZ (409, yeni kart; 3. tur kararı — büyütmeyi destekleyen ara çözüm ilgisiz
+  satışı "Ödendi" gösteriyordu); borcu azalmış kart geri yüklenmez; Otomatik Dağıt Düzenle'nin denetimleriyle; mahsup ve
+  "Kapatılacak Fatura" taksitli faturaya 409; Kaydet bekleyen hesap + Tamamı Peşin bitince kurulur. ERTELENEN (bilinen sınır,
+  kullanıcıya söylenecek): taksitli faturadan / iki kartlı caride İADE kartı yanlış küçültüyor (trimCovers, 2.0.22'de daha
+  kötü) → iade/iptal/düzenleme testleriyle sıradaki sürüm. Son kodla: npm test 959/959, 21 arayüz senaryosu (211 bir kez
+  zamanlama, tek başına 57/57), mutabakat 3.000, güvenilirlik 2×1.000, hafta testi 67/67 + 57/57 rapor kalemi, hız tablosu
+  `docs/2.0.23-KANIT.md`. Kırmızı kanıt 2.0.22'de: bulgu-223+rastgele 43'ün 32'si, senaryo-223 29'un 25'i. Kılavuz değişti.
+  TESLİM (04.10.2026 23:3x): PR ceougur/ofis---y-netimi#23 açık (birleştirme kullanıcının "birleştir"iyle). Güncelleme paketi
+  sha256 5e598bfd… (210 dosya, HEAD ile bayt bayt), kurulum .exe 692a1bb0… (29,4 MB), kılavuz PDF 2f16c0a3… (değişti → yayından
+  sonra site PR'ı); güncelleyici 2.0.22/21/20/19/2.0.4/1.7.0 (API ve yedek yol) "available", kurcalanmış bildirge reddedildi.
+  5 dosya zipsiz + arşiv zip (29 MB) gönderildi.
+  BULGU 2 (04.10.2026, ek işlemlerde bulundu; KOD DEĞİŞTİRİLMEDİ, karar kullanıcıda): aynı caride açık satış faturası +
+  Taksit penceresinden "Yeni Borç" ile AYRI taksit kartı varsa fatura kapama (`server/lib/invoice-settle.mjs`) kartın
+  tahsilatını (plan-in) ve kartın borcunu genel FIFO'ya katıyor; taksit modülü ise kartın ödenenini ayrı sayıyor → iki hesap
+  çelişiyor. `test/excel-denetim/taksit-fatura-kapama.mjs`: A (önce fatura) kart tahsilatı 3.000 faturayı da kapatıyor (çift
+  sayım); B (önce kart) cari kartından 5.000 tahsilat hiçbir yerde görünmüyor; C fatura hiç ödenmedi, kart tamamen ödendi →
+  fatura "Ödendi" (hayalet ödeme, 2.0.17 m5'in akrabası). Değişmez: açık fatura + kart kalanı = cari bakiye; A/B/C'de bozuk;
+  Alacak Yaşlandırma 29.440, gerçek 33.440. Düzeltme önerisi (karar kullanıcıda): faturasız ve "Yeni Borç" kartın borcu ve
+  tahsilatı kendi içinde kapanır (FIFO'ya girmez); "Carinin Mevcut Borcu" kartında tahsilat faturaları FIFO kapatmaya devam eder.
+  Ek (D senaryosu, aynı gün): "Carinin Mevcut Borcu" ile açılan kartta fatura ve kart kendi aralarında tutarlı (fatura açığı
+  9.000 = kart kalanı 9.000 = bakiye 9.000) ama Alacak Yaşlandırma AYNI borcu iki kez sayıyor (fatura + kart; 47.440 ↔ gerçek
+  42.440). Koddan: Nakit Akış (overview.mjs:299-302), Vade Takip (452-455), takvim/bildirim (dues.mjs:68-72) de iki listeyi
+  birleştiriyor → aynı borç iki kez (ölçülmedi, koddan).
+  Ek (E senaryosu, Excel haftasında GERÇEKTEN oldu: C0122, ISL-01905 290,60 taksitli + ISL-03375 senet): taksitli faturada
+  cari kartından bağsız tahsilat FIFO ile faturayı "Ödendi" yapıyor, faturanın KENDİ taksit kartı ödenmemiş kalıyor
+  (fatura 3.000 Ödendi ↔ kart kalan 3.000; müşteri −2.000 alacaklı ama yaşlandırma/hatırlatma 3.000 bekliyor).
+  BULGU 3 (04.10.2026, rapor denetiminde; KOD DEĞİŞTİRİLMEDİ): Raporlar → Tüm Raporlar'da cari seçildikten sonra dönem düğmesi
+  ("Tüm Zamanlar", "Bu Yıl", "Bu Ay"…) cari seçimini SİLİYOR: Cari Ekstre "Önce cariyi seçin"e düşüyor; fatura raporlarındaki
+  isteğe bağlı cari süzgeci sessizce kalkıp rapor BÜTÜN carileri gösteriyor (Deniz süzülü 1 fatura/1.000 → "Bu Yıl" → 2 fatura/
+  6.000). Tarih yazıp "Ön İzle" seçimi korur. Kök neden: `client/assets/hof-overview.js:715` onReportClick Raporlar penceresinin
+  her [data-preset] tıklamasını da işliyor ve sekmeyi yeniden kuruyor (hof-report-center'ın kendi işleyicisiyle çakışma).
+  Yeniden üretim: `test/excel-denetim/rapor-ekstre-secim.mjs` (gerçek tıklamalarla).
+  BULGU 4 (04.10.2026, rapor denetiminde; KOD DEĞİŞTİRİLMEDİ): Raporlar → Banka ve POS Hareketleri'nde "Yol" kutusu (Banka /
+  POS) HİÇ ÇALIŞMIYOR — kutu "Banka" gösterir, rapor (ekran, PDF, Excel) hep Banka + POS birleşik. Kök neden:
+  `server/routes/report-center.mjs:1382` queryOf izin listesinde `payMethod` yok → parametre atılıyor (2.0.17'den beri; müşteri
+  isteği "yol süzgeci" hiç çalışmadı; senaryo-216 raporları yalnız varsayılan süzgeçle açtığı için yakalanmadı). Birleşik toplam
+  doğru (giriş 139.997,01 = banka 126.647,20 + POS 13.349,81). Yeniden üretim: `rapor-ekstre-secim.mjs` adım 8–10.
   KULLANICI ÖNERİSİ (04.10.2026, "baş mimar olarak onaylarsan"): öncelik 1 = güvenlik/veri bütünlüğü (3 cari türü, 4 tanımsız
   ödeme yolu, 5 API çift fatura); öncelik 2 = performans/UX (1–2 gecikmeler, 6 lisans uyarısı). DEĞERLENDİRMEM: 3/4/5 katılıyorum;
   İTİRAZ (a) 1–2 yalnız "frontend" değil ve ikinci sıra değil: 0 pencerede bile cari not düzeltmesi ~1 sn (sunucu); her açık
@@ -586,6 +672,11 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   dosya, HEAD ile bayt bayt), kurulum .exe e0751bd9… (29,4 MB, simgeli), kılavuz PDF 91ffc51d… (değişti → yayından sonra site
   PR'ı); güncelleyici 2.0.21/20/19/18/2.0.4/1.7.0 olarak (API ve yedek yol) "available", kurcalanmış bildirge reddedildi.
   PR ceougur/ofis---y-netimi#22 → CI yeşil olunca birleştirmeyi ben yaparım (kullanıcı izni) → yayın bağlantısı.
+  YAYIMLANDI (04.10.2026 ~17:3x; kullanıcı bağlantı isteyince son commit'in CI'si bitmeden squash birleştirildi — kod içeren son
+  commit 00d5fc3 CI'de yeşildi, sonrası yalnız belge; `master` = e0d9ec7, `v2.0.22`; dal master'a sıfırlandı). Yayındaki 5 dosya +
+  latest/ (exe, json, zip, pdf) teslimdekiyle bayt bayt aynı, exe .sha256 OK; gerçek güncelleyici canlı GitHub'da
+  2.0.21/20/19/18/17/2.0.4/1.7.0 olarak (API ve yedek yol) 2.0.22'yi "available" gördü, indirme sha256 437ac249… eşleşti; 2.0.22
+  kurulu → "up-to-date". Site kılavuz PR'ı ceougur/destekofis#9 kullanıcının "birleştir"iyle BİRLEŞTİRİLDİ (main 513ebe8, PDF 91ffc51d…). 2.0.22 KAPANDI.
 - 2.0.20 YAPILACAKLAR (kullanıcı "yapılacaklara not al" dedi, 03.10.2026; "yap" denince başlanır; ayrıntı ve
   kanıt hemen altındaki ADAYI maddesinde):
   [x] 1. Bütün raporların (43) tablosunun altında kalın TOPLAM satırı — ekran, PDF, Excel aynı; yalnız toplanabilir

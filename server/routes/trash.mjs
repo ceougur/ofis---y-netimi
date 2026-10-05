@@ -28,7 +28,7 @@ const KIND_LABELS = {
 };
 const SEQUENCE = /^(sıra|sira|sıra no|no|#|sn|s\.?\s?no|nr)$/i;
 
-export function registerTrashRoutes(router, { store, auth, audit, events, dataset, profile, free, trash, documents, accounts = null, stock = null, cheques = null, invoices = null }) {
+export function registerTrashRoutes(router, { store, auth, audit, events, dataset, profile, free, trash, documents, accounts = null, stock = null, cheques = null, invoices = null, plans = null }) {
   const now = () => new Date().toISOString();
   const publish = (user, detail) => events?.publish("workspace.changed", { actorId: user.id, actorName: user.display_name, ...detail }, { except: user.id });
   const sessionNames = () => {
@@ -242,6 +242,7 @@ export function registerTrashRoutes(router, { store, auth, audit, events, datase
     if (source === "plan") {
       const plan = store.get("SELECT id, name FROM plans WHERE id = ? AND deleted_at IS NOT NULL", ref);
       if (!plan) throw new HttpError(404, "Bu taksit kartı zaten geri yüklenmiş.");
+      plans?.assertRestorable?.(plan.id, user);
       store.tx(() => {
         store.run("UPDATE plans SET deleted_at = NULL, deleted_by = NULL, updated_by = ?, updated_at = ? WHERE id = ?", user.id, now(), plan.id);
         // Kartın carisi (v2.0.6) sonradan silindiyse o da geri gelir; kart sahipsiz kalmaz.

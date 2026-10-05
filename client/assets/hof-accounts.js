@@ -716,7 +716,8 @@
     try {
       const data = await HOF.api(`/api/workspace/invoices?tab=all&status=issued&pay=open&side=${type === "in" ? "sale" : "purchase"}&account=${encodeURIComponent(account.id)}&limit=200`);
       return (data.invoices || [])
-        .filter(item => !item.kind.endsWith("_return") && item.open > 0.004)
+        // v2.0.23: taksitli fatura kendi taksit kartıyla kapanır; burada seçilemez (tahsilat kartın taksitine girilir).
+        .filter(item => !item.kind.endsWith("_return") && !item.planId && item.open > 0.004)
         .map(item => ({ value: item.id, label: `${item.kindLabel} ${item.displayNo} · ${HOF.formatDate(item.issueDate)} · açık ${money(item.open)}` }));
     } catch {
       return [];

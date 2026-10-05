@@ -582,7 +582,8 @@
         ...(plan
           ? []
           : [{ name: "source", label: "Borcun Kaynağı", type: "select", value: Number(preset?.balance) > 0.005 ? "balance" : "new", options: [{ value: "balance", label: "Carinin Mevcut Borcu (veresiye satış, açılış)" }, { value: "new", label: "Yeni Borç (bu kartla borçlanır)" }], help: "" }]),
-        { name: "total", label: "Toplam Tutar (₺)", required: true, inputmode: "decimal", value: plan ? amountText(plan.total) : Number(preset?.balance) > 0.005 ? amountText(preset.balance) : "", placeholder: "Örn. 12.000,00", autofocus: Boolean(preset) },
+        // v2.0.23: faturanın kartının tutarı faturadan gelir (sunucu da değiştirmez); fatura Düzenle ya da iadeyle değişir.
+        { name: "total", label: "Toplam Tutar (₺)", required: true, inputmode: "decimal", value: plan ? amountText(plan.total) : Number(preset?.balance) > 0.005 ? amountText(preset.balance) : "", placeholder: "Örn. 12.000,00", autofocus: Boolean(preset), ...(plan?.invoiceId ? { readonly: true, help: `Tutar ${plan.invoiceNumber ? `${plan.invoiceNumber} faturasından` : "faturadan"} gelir; değiştirmek için faturada Düzenle'yi ya da iade faturasını kullanın.` } : {}) },
         // v2.0.12: taksit bilgileri tutarın hemen altında; Taksit Sayısı ile İlk Vade yan yana (müşteri: "ilk vade aşağıda kalıyor").
         ...(plan
           ? []
@@ -713,7 +714,7 @@
       eyebrow: plan.name,
       intro: `Toplam tutar eşit taksitlere bölünür; her ay aynı gün, kuruş farkı son taksitte.${plan.items.length ? " <b>Mevcut taksitler silinir</b>; girilen tahsilatlar yeni taksitlere en eski vadeden başlayarak sayılır." : ""}`,
       fields: [
-        { name: "total", label: "Toplam Tutar (₺)", required: true, inputmode: "decimal", value: amountText(plan.total) },
+        { name: "total", label: "Toplam Tutar (₺)", required: true, inputmode: "decimal", value: amountText(plan.total), ...(plan.invoiceId ? { readonly: true, help: `Tutar ${plan.invoiceNumber ? `${plan.invoiceNumber} faturasından` : "faturadan"} gelir; burada taksit sayısı ve vadeler değişir.` } : {}) },
         { name: "count", label: "Taksit Sayısı", required: true, inputmode: "numeric", value: plan.items.length ? String(plan.items.length) : "", placeholder: "Örn. 9", autofocus: true },
         { name: "firstDue", label: "İlk Vade", type: "date", required: true, value: plan.items[0]?.dueDate || todayIso() },
         { name: "everyMonths", label: "Taksit Aralığı", type: "select", value: "1", options: [{ value: "1", label: "Her Ay" }, { value: "2", label: "2 Ayda Bir" }, { value: "3", label: "3 Ayda Bir" }, { value: "6", label: "6 Ayda Bir" }, { value: "12", label: "Yılda Bir" }] },

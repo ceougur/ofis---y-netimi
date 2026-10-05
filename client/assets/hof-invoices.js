@@ -15,6 +15,9 @@
   const lists = HOF.listGate();
   let calcTicket = 0;
   let calcTimer = 0;
+  // v2.0.23 (gözden geçirme): bekleyen (zamanlanmış) ve süren hesap; "Tamamı Peşin" güncel toplamla çalışsın.
+  let calcPending = false;
+  let calcRunning = null;
   const view = { mode: "list", tab: "sale", q: "", from: "", to: "", preset: "", pay: "", profile: "", account: null, list: null, selected: new Set(), id: "", doc: null, form: null, pickSide: "", inbox: null, inboxState: "new", inboxItem: null, settings: null };
 
   const money = value => HOF.formatMoney(value);
@@ -31,6 +34,19 @@
     if (!text) return 0;
     const clean = text.includes(",") ? text.replace(/\./g, "").replace(",", ".") : text;
     const n = Number(clean.replace(/[^\d.-]/g, ""));
+    return Number.isFinite(n) ? n : 0;
+  };
+  // v2.0.23 (gözden geçirme): ödeme tutarı sunucunun parseAmount'ıyla (server/lib/money.mjs) aynı okunur: "1.250,50",
+  // "40.000 TL", "₺ 3.000", "1250.5". Eskiden "40.000" 40 okunuyor (Kalan yanlış), "100 TL" reddediliyordu.
+  const parseTl = value => {
+    let raw = String(value ?? "").trim().replace(/[₺$€\s]|tl|try/gi, "");
+    if (!raw) return Number.NaN;
+    if (raw.includes(",")) raw = raw.replace(/\./g, "").replace(",", ".");
+    else if (/^-?\d{1,3}(\.\d{3})+$/.test(raw)) raw = raw.replace(/\./g, "");
+    return /^-?\d+(\.\d+)?$/.test(raw) ? Number(raw) : Number.NaN;
+  };
+  const amountNum = value => {
+    const n = parseTl(value);
     return Number.isFinite(n) ? n : 0;
   };
   const amountText = value => (value === "" || value === null || value === undefined ? "" : String(value).replace(".", ","));
@@ -58,6 +74,7 @@
         onClose: () => {
           modal = null;
           clearTimeout(calcTimer);
+          calcPending = false;
           Object.assign(view, { mode: "list", id: "", doc: null, form: null, inboxItem: null, settings: null });
         },
       });
@@ -853,7 +870,7 @@
     return base;
   };
   const methodOptions = value => Object.entries(refundMethods(view.form?.kind)).map(([id, label]) => `<option value="${esc(id)}" ${id === value ? "selected" : ""}>${esc(typeof label === "string" ? label : label.label || id)}</option>`).join("");
-  const paidSum = form => [...form.pay.cash, ...form.pay.cheques].reduce((sum, item) => sum + num(item.amount), 0) + (form.portfolio || []).filter(item => form.pay.endorse.includes(item.id)).reduce((sum, item) => sum + Number(item.amount || 0), 0);
+  const paidSum = form => [...form.pay.cash, ...form.pay.cheques].reduce((sum, item) => sum + amountNum(item.amount), 0) + (form.portfolio || []).filter(item => form.pay.endorse.includes(item.id)).reduce((sum, item) => sum + Number(item.amount || 0), 0);
   function renderPay() {
     const form = view.form;
     const slot = body()?.querySelector("[data-pay]");
@@ -862,8 +879,6 @@
     const sale = form.side === "sale";
     const payable = form.calc ? form.calc.try?.payable ?? form.calc.totals.payable : 0;
     const chequeOk = meta.canCheques && ["sale", "smm", "purchase"].includes(form.kind);
-    const planOk = meta.canPlans && ["sale", "smm"].includes(form.kind);
-    const rest = Math.round((payable - paidSum(form)) * 100) / 100;
     const cashWord = ret ? (form.kind === "sale_return" ? "Müşteriye İade Ödemesi" : "Tedarikçiden İade Tahsilatı") : sale ? "Peşin Tahsilat" : "Peşin Ödeme";
     const cashRows = form.pay.cash
       .map((item, index) => `<div class="hof-inv-pay-row"><label><span>${esc(cashWord)} (₺)</span><input data-pay="cash" data-i="${index}" data-f="amount" inputmode="decimal" value="${esc(item.amount)}" placeholder="0,00"></label><label><span>${sale ? "Tahsilat Yolu" : "Ödeme Yolu"}</span><select data-pay="cash" data-i="${index}" data-f="method">${methodOptions(item.method)}</select></label><button type="button" class="hof-mini hof-mini-danger" data-act="pay-remove" data-pay="cash" data-i="${index}" aria-label="Sil" title="Sil">×</button></div>`)
@@ -881,7 +896,29 @@
             : '<p class="hof-muted">Portföyde ciro edilebilecek evrak yok.</p>'
           : ""
         : "";
-    const restBlock = ret
+    const restBlock = restHtml(form);
+    slot.innerHTML = `<h4>${ret ? "İade Ödemesi" : "Ödeme"}</h4>
+      ${cashRows}${chequeRows}${endorse}
+      <div class="hof-inv-pay-add">
+        <button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="pay-add-cash">+ ${esc(cashWord)}</button>
+        ${!ret ? `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="pay-all-cash" ${payable > 0 ? "" : "disabled"}>Tamamı Peşin</button>` : ""}
+        ${chequeOk ? `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="pay-add-cheque">+ Çek / Senet</button>` : ""}
+        ${form.kind === "purchase" && chequeOk && !form.portfolio ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="pay-endorse">Portföyden Ciro Et</button>' : ""}
+      </div>
+      <div data-pay-rest>${restBlock}</div>`;
+    const box = slot.querySelector("[data-pay-rest]");
+    if (box) box.hofHtml = restBlock;
+  }
+  // v2.0.23 (Bulgu 1): "Kalan" kutusu ayrı çizilir. Ödeme satırındaki bir alan değişince (tutar, vade, no, banka, yol) yalnız
+  // bu kutu yenilenir; satırlar yeniden çizilmez. Önceden bütün bölüm yeniden çiziliyordu: Tab ile ya da fareyle gidilen
+  // alan sayfadan kopuyor, yazılanlar başka kutuya (ör. tutara) gidiyordu.
+  function restHtml(form) {
+    const ret = isReturn(form.kind);
+    const sale = form.side === "sale";
+    const payable = form.calc ? form.calc.try?.payable ?? form.calc.totals.payable : 0;
+    const planOk = meta.canPlans && ["sale", "smm"].includes(form.kind);
+    const rest = Math.round((payable - paidSum(form)) * 100) / 100;
+    return ret
       ? rest > 0.004
         ? `<p class="hof-inv-rest">Kalan <b>${esc(money(rest))}</b> carinin bakiyesinden düşülür (mahsup).</p>`
         : ""
@@ -898,15 +935,17 @@
         : form.calc
           ? `<p class="hof-inv-rest is-done">${sale ? "Tamamı tahsil edildi." : "Tamamı ödendi."}</p>`
           : "";
-    slot.innerHTML = `<h4>${ret ? "İade Ödemesi" : "Ödeme"}</h4>
-      ${cashRows}${chequeRows}${endorse}
-      <div class="hof-inv-pay-add">
-        <button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="pay-add-cash">+ ${esc(cashWord)}</button>
-        ${!ret ? `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="pay-all-cash" ${payable > 0 ? "" : "disabled"}>Tamamı Peşin</button>` : ""}
-        ${chequeOk ? `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="pay-add-cheque">+ Çek / Senet</button>` : ""}
-        ${form.kind === "purchase" && chequeOk && !form.portfolio ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="pay-endorse">Portföyden Ciro Et</button>' : ""}
-      </div>
-      ${restBlock}`;
+  }
+  // İçerik değişmediyse kutu yeniden çizilmez: tutardan fareyle doğrudan kutudaki bir alana (Vade Tarihi, Taksit Sayısı)
+  // geçilirken tutarın "change" olayı tıklanan alanı yok etmesin.
+  function renderRest() {
+    const form = view.form;
+    const box = body()?.querySelector("[data-pay] [data-pay-rest]");
+    if (!form || !box) return renderPay();
+    const html = restHtml(form);
+    if (box.hofHtml === html) return;
+    box.hofHtml = html;
+    box.innerHTML = html;
   }
 
   // ---------- Toplamlar (sunucunun hesap motorundan) ----------
@@ -961,8 +1000,8 @@
     lines: usedLines(form).map(lineBody),
   });
   const payBody = form => ({
-    cash: form.pay.cash.filter(item => num(item.amount) > 0).map(item => ({ amount: item.amount, method: item.method })),
-    cheques: form.pay.cheques.filter(item => num(item.amount) > 0).map(item => ({ ...item })),
+    cash: form.pay.cash.filter(item => amountNum(item.amount) > 0).map(item => ({ amount: item.amount, method: item.method })),
+    cheques: form.pay.cheques.filter(item => amountNum(item.amount) > 0).map(item => ({ ...item })),
     endorse: [...form.pay.endorse],
     rest: form.pay.rest,
     dueDate: form.pay.dueDate,
@@ -970,16 +1009,46 @@
   });
   function scheduleCalc(delay = 300) {
     clearTimeout(calcTimer);
-    calcTimer = setTimeout(runCalc, delay);
+    calcPending = true;
+    calcTimer = setTimeout(() => {
+      calcPending = false;
+      runCalc();
+    }, delay);
   }
-  async function runCalc() {
+  // Bekleyen ya da süren hesabı bitirir; bu arada yenisi başladıysa (ör. Kaydet'in hesabı) onu da bekler.
+  async function flushCalc() {
+    for (let round = 0; round < 6 && (calcPending || calcRunning); round += 1) {
+      if (calcPending) {
+        clearTimeout(calcTimer);
+        calcPending = false;
+        await runCalc();
+      } else await calcRunning;
+    }
+  }
+  function runCalc() {
+    const run = calcOnce();
+    calcRunning = run;
+    run.finally(() => {
+      if (calcRunning === run) calcRunning = null;
+    });
+    return run;
+  }
+  // v2.0.23 (gözden geçirme, Bulgu 1'in kalan yolu): hesap dönünce ödeme satırları yeniden çizilmez (kalemden doğrudan ödeme
+  // alanına geçen kullanıcının yazdığı rakamlar kayboluyordu); hesaba bağlı olan yalnız "Kalan" kutusu ve "Tamamı Peşin".
+  function refreshPayAfterCalc() {
+    const form = view.form;
+    const button = body()?.querySelector('[data-pay] [data-act="pay-all-cash"]');
+    if (button && form) button.disabled = !((form.calc ? form.calc.try?.payable ?? form.calc.totals.payable : 0) > 0);
+    renderRest();
+  }
+  async function calcOnce() {
     const form = view.form;
     if (!form) return;
     if (!form.account || !usedLines(form).length) {
       form.calc = null;
       form.calcError = "";
       renderTotals();
-      renderPay();
+      refreshPayAfterCalc();
       return;
     }
     const ticket = ++calcTicket;
@@ -997,7 +1066,7 @@
       if (!form.pay.dueDate && calc.dueDays) form.pay.dueDate = new Date(Date.parse(`${form.issueDate}T12:00:00`) + calc.dueDays * 86_400_000).toISOString().slice(0, 10);
       renderProfile();
       renderTotals();
-      renderPay();
+      refreshPayAfterCalc();
       const next = body()?.querySelector("[data-next]");
       if (next) next.innerHTML = calc.nextNumber ? `<span>Kaydedilince Verilecek No</span><b>${esc(calc.nextNumber)}</b>` : "";
     } catch (error) {
@@ -1005,7 +1074,7 @@
       form.calc = null;
       form.calcError = error.message;
       renderTotals();
-      renderPay();
+      refreshPayAfterCalc();
     }
   }
   // Belge türü (e-Belge açıksa): GİB kuralına göre izin verilenler; tek seçenekse gizli.
@@ -1081,33 +1150,10 @@
       if (target.dataset.f !== "note") scheduleCalc();
     }
   }
-  // Kalanı ödeme alanını yeniden çizmeden günceller (yazarken odak kaçmasın).
+  // Kalanı ödeme satırlarını yeniden çizmeden günceller (yazarken ve alan değiştirirken odak kaçmasın).
   function refreshRest() {
-    const form = view.form;
-    const slot = body()?.querySelector("[data-pay] .hof-inv-rest b");
-    if (!form?.calc || !slot) return renderPayLater();
-    const payable = form.calc.try?.payable ?? form.calc.totals.payable;
-    const rest = Math.round((payable - paidSum(form)) * 100) / 100;
-    if (rest > 0.004) slot.textContent = money(rest);
-    else renderPayLater();
+    renderRest();
   }
-  let payTimer = 0;
-  const renderPayLater = () => {
-    clearTimeout(payTimer);
-    payTimer = setTimeout(() => {
-      const active = document.activeElement;
-      const key = active?.dataset ? { pay: active.dataset.pay, i: active.dataset.i, f: active.dataset.f, payf: active.dataset.payf } : null;
-      renderPay();
-      if (key && (key.pay || key.payf)) {
-        const selector = key.payf ? `[data-payf="${key.payf}"]` : `[data-pay="${key.pay}"][data-i="${key.i}"][data-f="${key.f}"]`;
-        const again = body()?.querySelector(selector);
-        if (again) {
-          again.focus();
-          if (again.setSelectionRange && again.type !== "date") again.setSelectionRange(again.value.length, again.value.length);
-        }
-      }
-    }, 600);
-  };
   function formChange(event) {
     const form = view.form;
     const target = event.target;
@@ -1171,7 +1217,7 @@
     if (target.dataset.pay !== undefined && target.dataset.f) {
       const item = form.pay[target.dataset.pay]?.[Number(target.dataset.i)];
       if (item) item[target.dataset.f] = target.value;
-      return renderPay();
+      return refreshRest();
     }
     if (target.dataset.f && HEAD_FIELDS.has(target.dataset.f)) {
       form[target.dataset.f] = target.value;
@@ -1279,10 +1325,24 @@
       return body()?.querySelector(`[data-pay="cash"][data-i="${form.pay.cash.length - 1}"][data-f="amount"]`)?.focus();
     }
     if (act === "pay-all-cash") {
-      const payable = form.calc ? form.calc.try?.payable ?? form.calc.totals.payable : 0;
-      const others = form.pay.cheques.reduce((sum, item) => sum + num(item.amount), 0) + (form.portfolio || []).filter(item => form.pay.endorse.includes(item.id)).reduce((sum, item) => sum + Number(item.amount || 0), 0);
-      form.pay.cash = [{ amount: amountText(Math.max(0, Math.round((payable - others) * 100) / 100)), method: form.pay.cash[0]?.method || "cash" }];
-      return renderPay();
+      // Fiyat yeni değiştiyse hesap bitmeden eski toplam kullanılıyordu (288'lik fatura 24 peşinle kaydedildi). Kaydet bu işin
+      // bitmesini bekler (2. gözden geçirme: yük, peşin tutar yazılmadan kuruluyor; ekranda peşin görünen fatura 0 peşinle
+      // kaydediliyordu).
+      const job = (async () => {
+        await flushCalc();
+        if (view.form !== form) return;
+        const payable = form.calc ? form.calc.try?.payable ?? form.calc.totals.payable : 0;
+        const others = form.pay.cheques.reduce((sum, item) => sum + amountNum(item.amount), 0) + (form.portfolio || []).filter(item => form.pay.endorse.includes(item.id)).reduce((sum, item) => sum + Number(item.amount || 0), 0);
+        form.pay.cash = [{ amount: amountText(Math.max(0, Math.round((payable - others) * 100) / 100)), method: form.pay.cash[0]?.method || "cash" }];
+        renderPay();
+      })();
+      form.payPending = job;
+      try {
+        await job;
+      } finally {
+        if (form.payPending === job) form.payPending = null;
+      }
+      return;
     }
     if (act === "pay-add-cheque") {
       form.pay.cheques.push({ instrument: "cheque", amount: "", dueDate: "", serialNo: "", bank: "", drawer: "" });
@@ -1356,9 +1416,28 @@
       HOF.toast(message, { type: "error" });
     };
     if (error) error.textContent = "";
+    // v2.0.23 (2. gözden geçirme): yük, bekleyen hesap ve "Tamamı Peşin" bitmeden kuruluyordu (sunucu yavaşken ekranda peşin
+    // görünen fatura 0 peşinle kaydedildi). Önce ikisi biter, kayıt ekranda görünenle yapılır.
+    if (form.payPending || calcPending || calcRunning) {
+      form.busy = true;
+      try {
+        if (form.payPending) await form.payPending.catch(() => null);
+        await flushCalc();
+      } finally {
+        form.busy = false;
+      }
+      if (view.form !== form) return;
+    }
     if (isReturn(form.kind) && !form.original) return fail("İade edilecek faturayı üstteki arama kutusundan seçin.");
     if (!form.account) return fail(`${form.side === "purchase" ? "Tedarikçiyi" : "Müşteriyi"} (cariyi) seçin.`);
     if (!usedLines(form).length) return fail("En az bir kalem yazın.");
+    // v2.0.23 (Bulgu 1): tutarı yazılmamış ya da geçersiz ödeme satırı sessizce atılmaz (önceden evrak kayıtta düşüyordu,
+    // fatura "Açık" kaydediliyordu). Peşin satırında boş tutar olabilir (satır yok sayılır); evrak satırında tutar zorunlu.
+    const amountOk = value => parseTl(value) > 0;
+    const badCash = form.pay.cash.findIndex(item => String(item.amount ?? "").trim() && !amountOk(item.amount));
+    if (badCash >= 0) return fail(`${badCash + 1}. peşin ödeme satırındaki tutar geçerli değil ("${String(form.pay.cash[badCash].amount).trim()}"). Tutarı düzeltin ya da satırı × ile silin.`);
+    const badCheque = form.pay.cheques.findIndex(item => !amountOk(item.amount));
+    if (badCheque >= 0) return fail(`${badCheque + 1}. evrakın (${form.pay.cheques[badCheque].instrument === "note" ? "senet" : "çek"}) tutarı ${String(form.pay.cheques[badCheque].amount ?? "").trim() ? `geçerli değil ("${String(form.pay.cheques[badCheque].amount).trim()}")` : "yazılmadı"}. Tutarı yazın ya da satırı × ile silin.`);
     const payload = { ...docBody(form), payment: payBody(form) };
     form.busy = true;
     body()?.querySelectorAll(".hof-actions .hof-button").forEach(button => (button.disabled = true));
@@ -1369,6 +1448,8 @@
         // Aynı formun yinelenen isteği (yanıt kaybolmuştu): taslak o arada kaydedilip deftere işlendiyse bu söylenir.
         HOF.toast(saved?.replayed && saved.status !== "draft" ? `Bu form daha önce kaydedilmiş ve deftere işlenmiş (${saved.number || "kayıtlı belge"}).` : saved?.replayed ? "Taslak zaten kaydedilmişti; ikinci taslak açılmadı." : "Taslak kaydedildi; deftere işlenmedi.", { type: saved?.replayed ? "info" : "success" });
       } else {
+        clearTimeout(calcTimer);
+        calcPending = false;
         await runCalc();
         const c = form.calc;
         if (!c) throw new Error(form.calcError || "Toplamlar hesaplanamadı; kalemleri kontrol edin.");
@@ -1467,8 +1548,10 @@
       const offsetId = item.id.startsWith("offset:") ? item.id.slice(7) : "";
       return `<li><span>${esc(HOF.formatDate(item.date))} · ${esc(item.label || "Ödeme")}${item.methodLabel ? ` (${esc(item.methodLabel)})` : ""}${item.note && !offsetId ? ` <small>${esc(item.note)}</small>` : ""}</span><b>${esc(money(item.amount))}</b><em class="hof-plan-badge is-${item.mode === "auto" ? "muted" : item.mode === "offset" ? "soon" : "info"}">${esc(item.modeLabel || "")}</em>${offsetId && doc.canManage ? `<button type="button" class="hof-link-button" data-act="offset-remove" data-offset="${esc(offsetId)}">Kaldır</button>` : ""}</li>`;
     });
-    const canOffset = doc.canManage && doc.open > 0.004;
-    return `<div class="hof-inv-closers"><h5>Bu Faturayı Kapatanlar</h5>${rows.length ? `<ul>${rows.join("")}</ul>` : `<p class="hof-muted">Henüz kapatan yok.${sideOf(doc.kind) === "sale" ? " Aynı cariye kesilen alış faturası ve Alacak Yaz satırı kendiliğinden ödeme sayılmaz; karşılıklı kapama için Mahsup Et." : " Aynı cariye kesilen satış faturası ve Borç Yaz satırı kendiliğinden ödeme sayılmaz; karşılıklı kapama için Mahsup Et."}</p>`}${canOffset ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="offset">Mahsup Et</button>' : ""}</div>`;
+    // v2.0.23: taksitli fatura kendi taksit kartıyla kapanır; mahsup edilmez (sunucu da reddeder).
+    const canOffset = doc.canManage && doc.open > 0.004 && !doc.planId;
+    const hint = doc.planId ? " Taksitli fatura kendi taksit kartıyla kapanır; tahsilat taksit kartından girilir." : sideOf(doc.kind) === "sale" ? " Aynı cariye kesilen alış faturası ve Alacak Yaz satırı kendiliğinden ödeme sayılmaz; karşılıklı kapama için Mahsup Et." : " Aynı cariye kesilen satış faturası ve Borç Yaz satırı kendiliğinden ödeme sayılmaz; karşılıklı kapama için Mahsup Et.";
+    return `<div class="hof-inv-closers"><h5>Bu Faturayı Kapatanlar</h5>${rows.length ? `<ul>${rows.join("")}</ul>` : `<p class="hof-muted">Henüz kapatan yok.${hint}</p>`}${canOffset ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="offset">Mahsup Et</button>' : ""}</div>`;
   }
   function renderCard() {
     const root = body();

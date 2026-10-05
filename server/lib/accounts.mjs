@@ -73,7 +73,12 @@ export function accountLedger(entries = [], plans = []) {
     // v2.0.13: mevcut borcu taksitlendiren kart (veresiye satış, açılış ya da borç yaz zaten defterde) ikinci kez borç
     // yazmaz; satır iz olarak kalır (tutar 0), tahsilatları borçtan düşer.
     const covers = Boolean(plan.coversBalance);
-    lines.push({ id: `plan:${plan.id}`, origin: "plan", planId: plan.id, kind: "plan", covers, date: opened, at: plan.createdAt || "", label: covers ? "Taksit Planı (mevcut borç)" : "Taksit Planı", note: `${plan.name}${plan.itemCount ? ` · ${plan.itemCount} taksit` : ""}${covers ? ` · ${tlText(total)} borç taksitlendirildi` : ""}`, debit: covers ? 0 : total, credit: 0 });
+    // coverTotal (v2.0.23): mevcut borcu taksitlendiren kartın kapsadığı tutar (fatura kapaması, lib/invoice-settle.mjs).
+    // Birleşik listelerde kart taksitleriyle görünür: taksitlere bölünmemiş kısım ("Şimdilik yok", elle eksik taksit) kapsanmaz,
+    // borcun o kısmı faturada görünmeye devam eder (2. gözden geçirme: taksitsiz kartta borç listelerden düşüyordu).
+    const planned = Number(plan.planned ?? plan.totals?.planned);
+    const coverTotal = covers ? roundMoney(Math.min(total, Number.isFinite(planned) ? Math.max(0, planned) : total)) : 0;
+    lines.push({ id: `plan:${plan.id}`, origin: "plan", planId: plan.id, kind: "plan", covers, coverTotal, date: opened, at: plan.createdAt || "", label: covers ? "Taksit Planı (mevcut borç)" : "Taksit Planı", note: `${plan.name}${plan.itemCount ? ` · ${plan.itemCount} taksit` : ""}${covers ? ` · ${tlText(total)} borç taksitlendirildi` : ""}`, debit: covers ? 0 : total, credit: 0 });
     for (const entry of plan.entries || []) {
       const amount = roundMoney(Number(entry.amount) || 0);
       const incoming = entry.kind === "in";
