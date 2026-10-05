@@ -363,7 +363,7 @@ export function registerChequeRoutes(router, { store, auth, audit, events, perio
       const rule = transition(cheque, action);
       if (!rule.ok) throw new HttpError(409, rule.reason);
       // v2.0.24: işlem tarihi Kasa/cari hareketleriyle aynı kurala bağlı: ileri tarihli olamaz, kilitli döneme yazılmaz.
-      const date = period ? period.movementDate({ date: text(body.date) || today() }, { label: "İşlem tarihi" }) : dateOf(body.date, "İşlem tarihi", today());
+      const date = period ? period.movementDate({ date: text(body.date) || today() }, { label: "İşlem Tarihi" }) : dateOf(body.date, "İşlem Tarihi", today());
       // v2.0.13: çek/senet tahsili ya da ödemesi çoğunlukla bankadan geçer (varsayılan Banka); elden ise Nakit.
       const method = methodInput(body.method, "bank");
       if (rule.cash === "out") cash?.guardOut?.(cheque.amount, date, body.cashForce === true, method);
