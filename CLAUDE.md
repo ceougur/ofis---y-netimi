@@ -632,7 +632,13 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   TESLİM (05.10.2026 ~05:5x; kullanıcı: "limit %2 kaldı, zipi teslim et"): 5 dosya zipsiz + arşiv zip (26,7 MB) gönderildi;
   paket sha256 a926aed5… (210 dosya), kurulum .exe 115d04b8… (29,4 MB); güncelleyici 2.0.23/22/21/20/19/2.0.4/1.7.0 (API ve
   yedek yol) "available". PR ceougur/ofis---y-netimi#24 açık. Sırada: CI → kullanıcının "birleştir"i → yayın (v2.0.24, 5 dosya;
-  yükleme ekranında adlar/boyutlar teslimle karşılaştırılır) → "yayımladım" → bayt bayt + güncelleyici → site kılavuz PR'ı. Sırada (kullanıcıyla): ertelenen testler (iade/iptal/düzenleme/silme,
+  yükleme ekranında adlar/boyutlar teslimle karşılaştırılır) → "yayımladım" → bayt bayt + güncelleyici → site kılavuz PR'ı.
+  YAYIMLANDI (05.10.2026 ~06:1x): kullanıcı önce yanlışlıkla dosyasız yayımladı (etiket 2.0.23 koduna) → yayın + etiket
+  kullanıcı tarafından silindi, latest yeniden 2.0.23 doğrulandı; PR #24 CI 12/12 → kullanıcının "birleştir"iyle squash,
+  `master` = 9c09f3c (ağaç teslimle aynı), `v2.0.24`. Yayındaki 5 dosya + latest/ bayt bayt aynı, exe .sha256 OK; gerçek
+  güncelleyici canlı GitHub'da 2.0.23/22/21/20/19/18/17/2.0.4/1.7.0 (API ve yedek yol) "available", sha256 a926aed5…;
+  2.0.24 → "up-to-date". Site kılavuz PR'ı ceougur/destekofis#11 açık (PDF 3206709e…). DERS: yayın bağlantısı birleştirmeden
+  ÖNCE verilmez; verildiyse "Publish'e basmayın" en başta yazılır. Sırada (kullanıcıyla): ertelenen testler (iade/iptal/düzenleme/silme,
   çek tahsil/ciro, Kasa↔Banka, dönem kilidi, yetkisiz kullanıcı, 29 rapor) ve iade kartı küçültme düzeltmesi.
   BULGU 2 (04.10.2026, ek işlemlerde bulundu; KOD DEĞİŞTİRİLMEDİ, karar kullanıcıda): aynı caride açık satış faturası +
   Taksit penceresinden "Yeni Borç" ile AYRI taksit kartı varsa fatura kapama (`server/lib/invoice-settle.mjs`) kartın
