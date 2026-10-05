@@ -185,7 +185,7 @@
   <li><b>+ Yeni Ürün:</b> <b>Stok Kodu</b> (isteğe bağlı; barkod okutabilirsiniz, her ürünün kodu ayrıdır), ad, <b>birim</b> (Adet, Kg, Lt, Metre, M², Paket, Koli, Saat…; listede yoksa kendiniz yazın), kategori, kritik seviye, birim fiyat. Açılış miktarı yazıp <i>Kasa'ya yansıt</i>'ı işaretlerseniz miktar × birim fiyat Kasa'dan gider olarak düşer. Toplu açılış için <b>Excel / Sheets’ten Yükle</b>.</li>
   <li><b>Alış ve satış fiyatı:</b> ürün kartında ikisini ayrı yazın; <b>− Çıkış</b> satış fiyatıyla, <b>+ Giriş</b> alış fiyatıyla açılır.</li>
   <li><b>+ Giriş / − Çıkış:</b> miktar ve birim fiyatı yazınca tutar hesaplanır. Para <b>Nakit</b>, <b>POS</b> (alımda <b>Kredi Kartı</b>) ya da <b>Havale / EFT</b> ile Kasa'ya/Banka'ya yazılır ya da <b>Açık Hesap</b> ile cariye.</li>
-  <li><b>↩ Müşteri İadesi:</b> geri gelen ürün stoğa girer; parası müşteriye geri ödenir ya da borcundan düşülür. Taksitlendirilmiş satıştan iade gelirse taksit kartı da o kadar küçülür.</li>
+  <li><b>↩ Müşteri İadesi:</b> geri gelen ürün stoğa girer; parası müşteriye geri ödenir ya da borcundan düşülür. Taksitlendirilmiş satıştan iade borçtan düşülürse taksit kartı da o kadar küçülür; para geri verilirse kart değişmez.</li>
   <li><b>Kasiyer:</b> <i>Yönetim → Yeni Rol</i>'de <b>Satış Yapma</b> yetkisi verilen kişi ürün kartına dokunmadan satış ve iade girer.</li>
   <li><b>Kritik seviye:</b> ürün bu miktara inince listede üstte kırmızı görünür, sol menüde rozet çıkar.</li>
 </ol>
@@ -218,7 +218,7 @@
   <li><b>Düzeltme:</b> kaydedilmiş faturanın kartında <b>Düzenle</b> → değiştirin → <b>Değişiklikleri Kaydet</b>. Numara aynı kalır; stok, cari, Kasa ve taksit yeni hale göre yazılır. İadesi olan, kilitli dönemdeki ya da taksitinden tahsilat alınmış faturada Düzenle kapalıdır (nedeni düğmenin üstünde yazar); o zaman <b>İptal Et</b> ya da <b>İade</b>.</li>
 </ol>
 <ul>
-  <li><b>İade:</b> kartta <b>İade</b> pili ya da senaryoda <i>Satıştan / Alıştan İade</i>; en üstteki arama ile iade edilecek faturayı bulun, kalem ve miktarı seçin. Para Kasa'dan geri verilir ya da cari borcundan düşer; taksitli satışta taksit kartı iade kadar küçülür.</li>
+  <li><b>İade:</b> kartta <b>İade</b> pili ya da senaryoda <i>Satıştan / Alıştan İade</i>; en üstteki arama ile iade edilecek faturayı bulun, kalem ve miktarı seçin. Para Kasa'dan geri verilir ya da cari borcundan düşer. Borçtan düşülen iade, faturayı taksitlendiren kartı (faturanın kendi kartı ya da Carinin Mevcut Borcu kartı) o kadar küçültür; iade iptal edilince kart geri büyür.</li>
   <li><b>Belgeyi verin:</b> kartta <b>Satış Faturası - PDF</b> / <b>Yazdır</b>, <b>WhatsApp</b> (PDF iner, sohbet açılır) ve <b>E-Posta</b> (PDF iner, cari kartındaki adrese hazır metinle e-posta penceresi açılır). Resmî e-Fatura bağlantısı açılana kadar belge <b>Müşteri Fişi</b> başlığıyla basılır; resmî fatura yerine geçmez.</li>
   <li><b>Toplu işler:</b> listede soldaki kutularla belgeleri seçin → <b>Seçilenleri PDF / Excel</b>; Taslaklar sekmesinde <b>Seçilenleri Kaydet</b> (eski tarihli önce), Satış/Alış sekmesinde <b>Seçilenleri İptal Et</b>. Kaydedilemeyen ya da iptal edilemeyen belge nedeniyle bildirilir ve seçili kalır.</li>
   <li><b>Tekrarla:</b> kira, aidat, abonelik gibi her ay düzenlenen fatura için kartta <b>Tekrarla</b>; her dönem taslak hazır gelir, Taslaklar'dan toplu kaydedersiniz.</li>

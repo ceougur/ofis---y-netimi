@@ -2,6 +2,23 @@
 
 Sürümler [anlamsal sürümleme](https://semver.org/lang/tr/) kurallarına uyar.
 
+## 2.0.24 — İade ile taksit kartı, çek/senet tarih ve dönem kilidi, iki rapor düzeltmesi
+
+Kaynak: 2.0.23'te ertelenen testler (kullanıcı kararı, 05.10.2026: "yap", "önerdiğin gibi yap"). Ayrıntı ve denenen / denenmeyen / bilinen sınırlar: `docs/2.0.24-KANIT.md`.
+
+- **İade faturası doğru taksit kartını küçültür (2.0.23 bilinen sınırı).**
+  - İade, asıl faturayı taksitlendiren kartı küçültür: faturanın kendi kartı ya da faturayı kapsayan "Carinin Mevcut Borcu" kartı. Caride başka açık borç ya da daha yeni bir kart olması sonucu değiştirmez (önceden en yeni kart küçülüyor ya da hiçbiri küçülmüyordu).
+  - Parası müşteriye geri verilen iade (nakit, havale, POS) müşterinin borcunu düşürmez; kart küçülmez.
+  - İade düzenlenince kart yeni iadeye göre ayarlanır; iade iptal edilince ya da silinince kart geri büyür.
+  - Kartın kapsadığı yeni faturadan iade, yaşlandırmada aynı borcu iki kez saydırmaz.
+  - Asıl faturanın açığını aşan iade avans olur; carinin borcundan büyük kalan "Mevcut Borç" kartı küçülür (iade iptalinde geri büyür). Faturanın kendi kartı carinin başka yerdeki avansıyla küçülmez (önceden küçülüyordu: fatura açığı ≠ kartın kalanı).
+- **Taksitli faturanın kartında tahsilat eklenince, düzeltilince, silinince ya da geri yüklenince** — çekle karta sayılan tahsilatın karşılıksız çıkması, silinmesi ya da tutarının düzeltilmesi dahil — kartın kalanı faturanın açığına eşitlenir.
+- **Çek/senet işlemleri (tahsil, ciro, karşılıksız, ödeme) ileri tarihle yapılamaz ve kilitli döneme yazılamaz; kilitli dönemdeki işlem geri alınamaz (önem: yüksek).** Önceden kapanmış aya Kasa hareketi yazılıp silinebiliyordu.
+- **Cari Mizanı'nda "Geciken Taksiti Olan" süzgeci** yalnız taksiti geciken carileri listeler (önceden bütün cariler listeleniyordu).
+- **Ürün Satış Kârlılığı özeti** TOPLAM satırıyla aynı: "Brüt Kâr (Stoklu Ürünler)" yalnız maliyeti bilinen kalemlerden; hizmet satışı "Hizmet Satışı (Maliyetsiz)" satırında (önceden özet hizmeti %100 kâr sayıyordu).
+- **Pencere açıkken çıkan bildirim** (ör. "kilitli dönem" reddi) bulanık arka planın altında kalıp okunmuyordu; artık üstte ortada görünür.
+- **Testler:** `test/iade-224.test.mjs` (14; 2.0.23'te 9'u kırmızı), `test/ertelenen-224.test.mjs` (35: fatura iade/iptal/düzenleme/silme, çek/senet, Kasa ↔ Banka, dönem kilidi, yetkisiz kullanıcı ve şirket — her alan "çalışıyor mu" ve "nasıl bozarım"), `test/raporlar-224.test.mjs` (51: 43 rapor × 1.187 süzgeç birleşimi × ekran/PDF/Excel, bağımsız beklenen hesap, yetki). İkisinde 2.0.23 kodunda 5 test kırmızı. `npm run test:senaryo-224` (arayüzden 53 denetim; CI'de). Mutabakat simülasyonuna "taksitli faturanın açığı = kartın kalanı" değişmezi eklendi.
+
 ## 2.0.23 — Fatura formunda çek/senet satırı, taksit kartı ile fatura kapaması, rapor süzgeçleri
 
 Kaynak: ekrandan bir haftalık iş testi (04.10.2026; `docs/EKRAN-HAFTA-TESTI-2026-10-04.md`). Excel iş listesindeki bir hafta ve 16 ek işlem iki şirkete girildi: biri API'den, biri ekrandan. Rapor Merkezi raporları ekrandan açılıp programdan bağımsız bir hesapla karşılaştırıldı. Kullanıcı kararı: "önce tespit ettiğin hataları düzelt". Ayrıntı ve denenen / denenmeyen / bilinen sınırlar: `docs/2.0.23-KANIT.md`.
