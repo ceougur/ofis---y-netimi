@@ -99,6 +99,21 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
   let planSeq = 0;
   const cariAdd = (id, cents) => M.cari.set(id, (M.cari.get(id) || 0) + cents);
   const planLeft = p => Math.max(0, p.total - Math.max(0, p.paid));
+  // v2.0.24: taksitli faturanın kendi kartı faturanın açığını izler (iade, iade iptali, kart tahsilatı/iadesi/silmesi sonrası).
+  // Bağımsız hesap: açık = taksite kalan − kartın net tahsilatı − asıl faturaya kesilmiş iadeler (0'ın altına inmez);
+  // kartın kalanı açığa eşit olacak biçimde toplam = ödenen + açık (büyürken taksite kalanı aşmaz).
+  function syncOwn(p) {
+    if (!p || !p.invoiceId || p.status !== "active") return;
+    const inv = M.invoices.get(p.invoiceId);
+    if (!inv || inv.status !== "issued") return;
+    const rets = [...M.invoices.values()].filter(x => x.kind === "sale_return" && x.status === "issued" && x.originalId === inv.id);
+    const returns = rets.reduce((sum, x) => sum + x.tryPayable, 0);
+    // Parası geri verilen iade borcu düşürmez (geri ödeme satırı yeniden borçlandırır).
+    const refunds = rets.reduce((sum, x) => sum + x.cashRows.filter(row => row.kind === "out").reduce((t, row) => t + row.amount, 0), 0);
+    const open = Math.max(0, inv.rest - Math.max(0, p.paid) - returns) + refunds;
+    if (planLeft(p) === open) return;
+    p.total = Math.min(inv.rest, Math.max(0, p.paid) + open);
+  }
   const uncovered = accountId => Math.max(0, (M.cari.get(accountId) || 0) - [...M.plans.values()].filter(p => p.accountId === accountId && p.covers && p.status === "active").reduce((s, p) => s + planLeft(p), 0));
   // Kasa'ya etkiler (tarihli): nakit eksi korumasının modeli ve işlem zinciri denetimi bunlardan hesaplanır.
   function cashEffects() {
@@ -194,8 +209,6 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
         const got = centsOf(p.totals.total);
         if (got <= m.total && got >= m.total - m.slack && got >= Math.max(0, m.paid)) { m.slack -= m.total - got; m.total = got; }
       }
-      // Faturanın kendi kartı tümüyle ödenmişse (kalan 0) iade iptali sonrası "toplam" farkı anlamsızdır: kalan ve ödenen karşılaştırılır.
-      if (m.invoiceId && centsOf(p.totals.paid) === m.paid && centsOf(p.totals.total) <= m.paid && m.total <= m.paid) m.total = centsOf(p.totals.total);
       if (centsOf(p.totals.total) !== m.total || centsOf(p.totals.paid) !== m.paid) {
         // Teşhis için kartın taksitleri ve tahsilatları da yazılır (hangi satırın saptığı görünsün).
         const d = (await api("GET", `/api/workspace/plans/${p.id}`)).data || {};
@@ -500,12 +513,13 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
     if (kind === "sale_return") {
       // v2.0.24: iade önce asıl faturanın kendi kartını küçültür (kartın kalanı = faturanın açığı); sonra genel kırpma.
       const own = originalId && M.invoices.get(originalId)?.planId ? M.plans.get(M.invoices.get(originalId).planId) : null;
-      const ownCut = own && own.status === "active" ? Math.min(planLeft(own), calc.tryPayable) : 0;
-      if (ownCut) own.total -= ownCut;
-      for (const pl of M.plans.values()) if (pl !== own && pl.accountId === accountId && pl.covers && !pl.invoiceId && pl.status === "active") pl.slack = (pl.slack || 0) + calc.tryPayable - ownCut;
+      // İade modele aşağıda (M.invoices.set) yazılır; kendi kartı o zaman eşitlenir.
+      for (const pl of M.plans.values()) if (pl !== own && pl.accountId === accountId && pl.covers && !pl.invoiceId && pl.status === "active") pl.slack = (pl.slack || 0) + calc.tryPayable;
+      trimCovers(accountId);
     }
     if (series) lastSeries[series] = day > lastSeries[series] ? day : lastSeries[series];
     M.invoices.set(inv.id, inv);
+    if (kind === "sale_return" && originalId) syncOwn(M.plans.get(M.invoices.get(originalId)?.planId));
     return inv;
   }
   // Kesme isteği + beklenti + modele yazma. Dönüş: kesilen faturanın modeli ya da null (beklenen ret).
@@ -548,14 +562,10 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
     if (inv.planId) M.plans.delete(inv.planId);
     if (inv.kind === "sale_return" && inv.originalId) {
       const orig = M.invoices.get(inv.originalId);
-      const p = orig?.planId ? M.plans.get(orig.planId) : null;
-      if (p && p.status === "active") {
-        const grow = Math.min(inv.tryPayable, orig.rest - p.total);
-        if (grow > 0) p.total += grow;
-      }
       for (const l of inv.lines) orig.returned.set(l.originLineId, (orig.returned.get(l.originLineId) || 0) - l.qty);
     }
     inv.status = "cancelled";
+    if (inv.kind === "sale_return" && inv.originalId) syncOwn(M.plans.get(M.invoices.get(inv.originalId)?.planId));
   }
   // İade kalemleri: asıl faturanın iade edilebilir kalanından.
   function returnLines(orig, { exceed = false } = {}) {
@@ -823,6 +833,7 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
           if (negative(r, [[method, amount, day]], force, kind)) return;
           mustOk(r, kind);
           p.paid -= amount;
+          syncOwn(p);
           cariAdd(p.accountId, amount);
           M.kasa[method] -= amount;
           M.planEntries.push({ id: r.data.entryId, planId: id, kind: "out", amount, method, date: day });
@@ -832,6 +843,7 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
         const r = await api("POST", `/api/workspace/plans/${id}/entries`, { kind: "in", amount: tl(amount), method, date: day });
         mustOk(r, kind);
         p.paid += amount;
+        syncOwn(p);
         cariAdd(p.accountId, -amount);
         M.kasa[method] += amount;
         M.planEntries.push({ id: r.data.entryId, planId: id, kind: "in", amount, method, date: day });
@@ -847,6 +859,7 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
         if (e.kind === "in" && negative(r, [[e.method, e.amount, e.date]], force, kind)) return;
         mustOk(r, kind);
         p.paid += e.kind === "in" ? -e.amount : e.amount;
+        syncOwn(p);
         cariAdd(p.accountId, e.kind === "in" ? e.amount : -e.amount);
         M.kasa[e.method] += e.kind === "in" ? -e.amount : e.amount;
         M.planEntries.splice(M.planEntries.indexOf(e), 1);

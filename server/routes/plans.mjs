@@ -1139,6 +1139,22 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
     }
     return out;
   }
+  // v2.0.24: iadelerin Mevcut Borç kartlarından düştüğü tutar (iade belgesinde payment_json.coverCuts; iptal/silinen iade
+  // sayılmaz). Kartın kapsamı açıldığı andaki tutarla kurulur (lib/accounts.mjs coverTotal): iadenin kapattığı borç kartın
+  // payından düşer; küçülen tutar başka (daha eski) bir faturayı kapsamdan çıkarıp aynı borcu iki kez saydırmaz.
+  function returnCuts() {
+    const out = new Map();
+    for (const row of store.all("SELECT payment_json AS j FROM invoices WHERE kind = 'sale_return' AND status = 'issued' AND payment_json LIKE '%coverCuts%'")) {
+      let cuts = {};
+      try {
+        cuts = JSON.parse(row.j || "{}").coverCuts || {};
+      } catch {
+        cuts = {};
+      }
+      for (const [planId, cut] of Object.entries(cuts)) out.set(planId, roundMoney((out.get(planId) || 0) + (Number(cut) || 0)));
+    }
+    return out;
+  }
   // Mizan (v2.0.7): tüm carilerin kartları, hareketleriyle; carinin defteri (accountLedger) Cari kartıyla aynı girdiyi alır.
   function ledgerPlansByAccount() {
     const out = new Map();
@@ -1157,20 +1173,22 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
       if (!entries.has(entry.planId)) entries.set(entry.planId, []);
       entries.get(entry.planId).push({ ...entry, opening: Boolean(entry.opening), itemSeq: entry.itemId ? seqs.get(entry.itemId) || null : null });
     }
+    const cutsOf = returnCuts();
     for (const plan of plans) {
       const own = entries.get(plan.id) || [];
       const paid = roundMoney(own.reduce((sum, entry) => sum + (entry.kind === "in" ? Number(entry.amount) || 0 : -(Number(entry.amount) || 0)), 0));
       if (!out.has(plan.accountId)) out.set(plan.accountId, []);
-      out.get(plan.accountId).push({ ...plan, itemCount: counts.get(plan.id) || 0, planned: roundMoney(planned.get(plan.id) || 0), totals: { paid }, entries: own });
+      out.get(plan.accountId).push({ ...plan, itemCount: counts.get(plan.id) || 0, planned: roundMoney(planned.get(plan.id) || 0), returnCuts: cutsOf.get(plan.id) || 0, totals: { paid }, entries: own });
     }
     return out;
   }
   function forAccount(accountId, user) {
     if (!accountId) return [];
+    const cutsOf = returnCuts();
     return store.all(`${PLAN_SQL} WHERE p.deleted_at IS NULL AND p.account_id = ? ORDER BY (p.status = 'active') DESC, p.created_at`, accountId).map(plan => {
       const shaped = shape(plan, user);
       const seqOf = new Map(shaped.items.map(item => [item.id, item.seq]));
-      return { ...shaped, itemCount: shaped.items.length, entries: shaped.entries.map(entry => ({ ...entry, itemSeq: entry.itemId ? seqOf.get(entry.itemId) || null : null })) };
+      return { ...shaped, itemCount: shaped.items.length, returnCuts: cutsOf.get(plan.id) || 0, entries: shaped.entries.map(entry => ({ ...entry, itemSeq: entry.itemId ? seqOf.get(entry.itemId) || null : null })) };
     });
   }
   // Carinin toplu taksitlendirmesi (routes/accounts.mjs): kartı cariye bağlı açar, isterse taksitleri dağıtır.

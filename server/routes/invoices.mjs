@@ -1183,10 +1183,14 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, conf
   //  - kapsayan Mevcut Borç kartı, faturadaki payı ne kadar azaldıysa o kadar küçülür. Küçülen tutar iade belgesinde
   //    (payment_json.coverCuts) saklanır; iade iptal edilince ya da düzenlenince kart aynı tutarda geri büyür.
   // Başka kartlara dokunulmaz. Aynı veri tabanı işleminin içinde çalışır.
+  // Parası geri verilen iade (nakit/banka/POS iadesi) müşterinin borcunu düşürmez: iade satırı faturayı kapatır, geri ödeme
+  // satırı (çıkış) yeniden borçlandırır. Kart bu tutar kadar küçülmez (gözden geçirme G1).
+  const refundOf = returnId => roundMoney(store.all("SELECT amount FROM account_entries WHERE source = 'invoice' AND source_id = ? AND kind = 'out'", returnId).reduce((sum, row) => sum + (Number(row.amount) || 0), 0));
+  const refundsFor = originalId => roundMoney(store.all("SELECT id FROM invoices WHERE kind = 'sale_return' AND status = 'issued' AND original_id = ?", originalId).reduce((sum, row) => sum + refundOf(row.id), 0));
   function ownCard(user, original, touched, note) {
     if (!original?.planId) return;
     const p = plans();
-    const open = coverState(original.id)?.open ?? 0;
+    const open = roundMoney((coverState(original.id)?.open ?? 0) + refundsFor(original.id));
     const left = p.leftOf(original.planId);
     if (left > open + 0.005) {
       if (p.shrinkPlan(user, original.planId, roundMoney(left - open), note) > 0) touched.plans.add(original.planId);
@@ -1201,13 +1205,26 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, conf
     if (!post) return;
     ownCard(user, pre.row, touched, note);
     const cuts = {};
+    // Geri ödenen kısım borcu düşürmez: önce kartın payındaki azalıştan düşülür (G1).
+    let refund = returnId ? refundOf(returnId) : 0;
     for (const planId of Object.keys(pre.coveredBy)) {
-      const delta = roundMoney((pre.coveredBy[planId] || 0) - (post.coveredBy[planId] || 0));
+      let delta = roundMoney((pre.coveredBy[planId] || 0) - (post.coveredBy[planId] || 0));
+      const offset = Math.min(refund, Math.max(0, delta));
+      delta = roundMoney(delta - offset);
+      refund = roundMoney(refund - offset);
       if (!(delta > 0.005)) continue;
       const cut = plans().shrinkPlan(user, planId, delta, note);
       if (cut > 0) {
         cuts[planId] = cut;
         touched.plans.add(planId);
+      }
+    }
+    // Asıl faturanın açığını aşan iade avans olur; carinin borcundan büyük kalan Mevcut Borç kartları en yeniden başlayarak
+    // küçülür (2.0.23 davranışı; faturanın kendi kartına dokunulmaz — trimCovers onları atlar). Kesinti de iadeye yazılır (G3).
+    if (plans()?.trimCovers) {
+      for (const plan of plans().trimCovers(pre.row.accountId, user, note)) {
+        cuts[plan.id] = roundMoney((cuts[plan.id] || 0) + plan.cut);
+        touched.plans.add(plan.id);
       }
     }
     if (returnId && Object.keys(cuts).length) {

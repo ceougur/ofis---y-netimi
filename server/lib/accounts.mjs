@@ -77,7 +77,8 @@ export function accountLedger(entries = [], plans = []) {
     // Birleşik listelerde kart taksitleriyle görünür: taksitlere bölünmemiş kısım ("Şimdilik yok", elle eksik taksit) kapsanmaz,
     // borcun o kısmı faturada görünmeye devam eder (2. gözden geçirme: taksitsiz kartta borç listelerden düşüyordu).
     const planned = Number(plan.planned ?? plan.totals?.planned);
-    const coverTotal = covers ? roundMoney(Math.min(total, Number.isFinite(planned) ? Math.max(0, planned) : total)) : 0;
+    // v2.0.24: iadenin karttan düştüğü tutar kapsama geri eklenir (kapsam kartın açıldığı andaki borçtur; routes/plans.mjs returnCuts).
+    const coverTotal = covers ? roundMoney(Math.min(total, Number.isFinite(planned) ? Math.max(0, planned) : total) + Math.max(0, Number(plan.returnCuts) || 0)) : 0;
     lines.push({ id: `plan:${plan.id}`, origin: "plan", planId: plan.id, kind: "plan", covers, coverTotal, date: opened, at: plan.createdAt || "", label: covers ? "Taksit Planı (mevcut borç)" : "Taksit Planı", note: `${plan.name}${plan.itemCount ? ` · ${plan.itemCount} taksit` : ""}${covers ? ` · ${tlText(total)} borç taksitlendirildi` : ""}`, debit: covers ? 0 : total, credit: 0 });
     for (const entry of plan.entries || []) {
       const amount = roundMoney(Number(entry.amount) || 0);

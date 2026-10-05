@@ -206,10 +206,16 @@ export function registerChequeRoutes(router, { store, auth, audit, events, perio
         done.push({ op: "delete", table: "plan_entries", row, planId: row.plan_id });
       }
     }
+    syncCards(user, done);
     return done;
   }
+  // v2.0.24 (gözden geçirme G4): çekin karta sayılan tahsilatı eklenince/kalkınca faturanın kendi kartı faturanın açığına eşitlenir.
+  const SYSTEM = { id: "system", role: "admin" };
+  function syncCards(user, effects) {
+    for (const planId of new Set(effects.filter(effect => effect.table === "plan_entries").map(effect => effect.planId || effect.row?.plan_id).filter(Boolean))) plans()?.syncInvoiceCard?.(user || SYSTEM, planId);
+  }
   // Etkileri tersine çevirir (son yapılan önce). Eklenen satır silinir; silinen satır aynı kimlikle geri eklenir.
-  function revertEffects(effects) {
+  function revertEffects(effects, user = null) {
     for (const effect of [...effects].reverse()) {
       if (!EFFECT_TABLES.has(effect.table)) continue;
       if (effect.op === "insert") store.run(`DELETE FROM ${effect.table} WHERE id = ?`, effect.id);
@@ -218,6 +224,7 @@ export function registerChequeRoutes(router, { store, auth, audit, events, perio
         store.run(`INSERT INTO ${effect.table} (${columns.join(", ")}) VALUES (${columns.map(() => "?").join(", ")})`, ...columns.map(column => effect.row[column]));
       }
     }
+    syncCards(user, effects);
   }
   const touchedBy = effects => ({
     accountIds: effects.map(effect => effect.accountId).filter(Boolean),
@@ -325,7 +332,7 @@ export function registerChequeRoutes(router, { store, auth, audit, events, perio
         // Tek olaylı (alındı/verildi) kayıt: eski defter etkileri geri alınır, yenileri yazılır (aynı işlem bloğunda).
         const first = history[0];
         const oldEffects = effectsOf(first);
-        revertEffects(oldEffects);
+        revertEffects(oldEffects, user);
         const cheque = { ...previous, ...input };
         const kind = initialEvent(previous.direction);
         const posted = oldEffects.length > 0 || !first.note.startsWith("Açılış");
@@ -401,7 +408,7 @@ export function registerChequeRoutes(router, { store, auth, audit, events, perio
       // v2.0.24: kilitli dönemdeki işlem geri alınmaz (Kasa/cari etkisi kapanmış ayı değiştirirdi).
       period?.assertOpen(last.date, "Bu çek/senet işlemi");
       const effects = effectsOf(last);
-      revertEffects(effects);
+      revertEffects(effects, user);
       store.run("DELETE FROM cheque_events WHERE id = ?", last.id);
       const previousEndorse = last.kind === "endorse" ? "" : cheque.endorseAccountId;
       const statusDate = history.at(-2).date;
@@ -423,7 +430,7 @@ export function registerChequeRoutes(router, { store, auth, audit, events, perio
       if (history.length > 1) throw new HttpError(409, `Tahsil, ciro ya da ödeme yapılmış ${kindName(cheque).toLocaleLowerCase("tr-TR")} silinemez. Önce işlemleri geri alın.`);
       if (cheque.invoiceId) throw new HttpError(409, `Bu evrak ${cheque.invoiceNumber || "bir fatura"} ile kaydedildi; silmek için faturayı iptal edin.`, { code: "invoice-linked", invoiceId: cheque.invoiceId });
       const effects = effectsOf(history[0]);
-      revertEffects(effects);
+      revertEffects(effects, user);
       store.run("UPDATE cheque_events SET effects_json = ? WHERE id = ?", JSON.stringify({ reverted: effects.length > 0 }), history[0].id);
       store.run("UPDATE cheques SET deleted_by = ?, deleted_at = ? WHERE id = ?", user.id, now(), cheque.id);
       audit(user, "cheque.deleted", cheque.id, { serialNo: cheque.serialNo, amount: cheque.amount, dueDate: cheque.dueDate, direction: cheque.direction });
@@ -709,7 +716,7 @@ export function registerChequeRoutes(router, { store, auth, audit, events, perio
         const last = history.at(-1);
         if (last.id !== event.id) throw new HttpError(409, `Faturayla ciro edilen ${title(cheque)} sonradan ${EVENT_LABELS[last.kind]?.toLocaleLowerCase("tr-TR") || "işlem gördü"}; önce o işlemi Çek/Senet'ten geri alın.`, { code: "cheque-moved", chequeId: cheque.id });
         const effects = effectsOf(last);
-        revertEffects(effects);
+        revertEffects(effects, user);
         store.run("DELETE FROM cheque_events WHERE id = ?", last.id);
         store.run("UPDATE cheques SET status = ?, status_date = ?, endorse_account_id = '', updated_by = ?, updated_at = ? WHERE id = ?", last.fromStatus, history.at(-2).date, user.id, now(), cheque.id);
         touched.accountIds.push(...touchedBy(effects).accountIds);
@@ -721,7 +728,7 @@ export function registerChequeRoutes(router, { store, auth, audit, events, perio
         const history = eventsOf(cheque.id);
         if (history.length > 1) throw new HttpError(409, `Faturayla ${cheque.direction === "in" ? "alınan" : "verilen"} ${title(cheque)} ${STATUSES[cheque.status]?.label?.toLocaleLowerCase("tr-TR") || "işlem gördü"}; önce o işlemi Çek/Senet'ten geri alın.`, { code: "cheque-moved", chequeId: cheque.id });
         const effects = effectsOf(history[0]);
-        revertEffects(effects);
+        revertEffects(effects, user);
         store.run("UPDATE cheque_events SET effects_json = ? WHERE id = ?", JSON.stringify({ reverted: effects.length > 0, invoiceCancelled: true }), history[0].id);
         store.run("UPDATE cheques SET deleted_by = ?, deleted_at = ? WHERE id = ?", user.id, now(), cheque.id);
         touched.accountIds.push(...touchedBy(effects).accountIds);

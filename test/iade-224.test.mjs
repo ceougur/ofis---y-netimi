@@ -133,4 +133,64 @@ describe("2.0.24 iade → doğru taksit kartı", () => {
     await must("geri yükle", api.post("/api/admin/trash/restore", { id: trashed.id }));
     assert.deepEqual([(await invoice(own.id)).open, (await card(own.planId)).remaining, await balance(acc)], [500, 500, 500], "geri yükleme sonrası");
   });
+  // ---------- Bağımsız gözden geçirme (2.0.24) bulguları ----------
+  const giveBackPaid = async (inv, date, qty, amount, method = "cash") => must("paralı iade", api.post("/api/workspace/invoices", { kind: "sale_return", originalId: inv.id, issueDate: date, lines: [{ originLineId: inv.lines[0].id, qty }], payment: { cash: [{ amount, method }], rest: "open" } }));
+
+  test("G1: parası geri verilen iade kartı küçültmez (müşteri borcu değişmedi)", async () => {
+    const acc = await customer("Nakit İade");
+    const own = await sale(acc, d(), 3, true);
+    await giveBackPaid(own, d(), 1, 1000);
+    assert.deepEqual([(await card(own.planId)).remaining, await balance(acc), await aging(acc)], [3000, 3000, 3000]);
+  });
+
+  test("G1: karttan tahsilattan sonra paralı iade — kart borç kadar kalır", async () => {
+    const acc = await customer("Tahsil Sonra İade");
+    const own = await sale(acc, d(), 3, true);
+    await must("taksit tahsilatı", api.post(`/api/workspace/plans/${own.planId}/entries`, { kind: "in", amount: 1000, date: d(), method: "cash" }));
+    await giveBackPaid(own, d(), 1, 1000, "bank");
+    assert.deepEqual([(await card(own.planId)).remaining, await balance(acc), await aging(acc)], [2000, 2000, 2000]);
+  });
+
+  test("G1: Mevcut Borç kartının kapsadığı faturadan paralı iade kartı küçültmez", async () => {
+    const acc = await customer("Kapsam Nakit İade");
+    const a = await sale(acc, d(), 2);
+    const k = await cover(acc, d(), 2000);
+    await giveBackPaid(a, d(), 1, 1000);
+    assert.deepEqual([(await card(k.id)).remaining, await balance(acc), await aging(acc)], [2000, 2000, 2000]);
+  });
+
+  test("G2: kartın kapsadığı YENİ faturadan iade — yaşlandırma = bakiye (aynı borç iki kez sayılmaz)", async () => {
+    const acc = await customer("Yeni Fatura İade");
+    await sale(acc, d(), 2);
+    const b = await sale(acc, d(), 1);
+    const k = await cover(acc, d(), 2000);
+    await must("iade", api.post("/api/workspace/invoices", { kind: "sale_return", originalId: b.id, issueDate: d(), lines: [{ originLineId: b.lines[0].id, qty: 0.5 }], payment: {} }));
+    assert.deepEqual([(await card(k.id)).remaining, await balance(acc), await aging(acc)], [1500, 2500, 2500]);
+    await must("iade 2", api.post("/api/workspace/invoices", { kind: "sale_return", originalId: b.id, issueDate: d(), lines: [{ originLineId: b.lines[0].id, qty: 0.5 }], payment: {} }));
+    assert.deepEqual([(await card(k.id)).remaining, await balance(acc), await aging(acc)], [1000, 2000, 2000]);
+  });
+
+  test("G3: faturanın açığını aşan iade (avans) başka faturayı kapsayan kartı da küçültür — 2.0.23'teki gibi", async () => {
+    const acc = await customer("Avans Kapsam");
+    const a = await sale(acc, d(), 2);
+    assert.equal((await api.post(`/api/workspace/accounts/${acc.id}/entries`, { kind: "in", amount: 1500, date: d(), method: "cash", invoiceId: a.id })).status, 200);
+    await sale(acc, d(), 1);
+    const k = await cover(acc, d(), 1000);
+    const ret = await must("iade", api.post("/api/workspace/invoices", { kind: "sale_return", originalId: a.id, issueDate: d(), lines: [{ originLineId: a.lines[0].id, qty: 1 }], payment: {} }));
+    assert.deepEqual([(await card(k.id)).remaining, await balance(acc), await aging(acc)], [500, 500, 500]);
+    await must("iade iptali", api.post(`/api/workspace/invoices/${ret.id}/cancel`, {}));
+    assert.deepEqual([(await card(k.id)).remaining, await balance(acc), await aging(acc)], [1000, 1500, 1500], "iptal kartı geri büyütür");
+  });
+
+  test("G4: karta sayılan çek karşılıksız / silinir / tutarı düzeltilir → kart = fatura açığı", async () => {
+    const acc = await customer("Çek Kart");
+    const own = await sale(acc, d(), 3, true);
+    const ch = await must("çek", api.post("/api/workspace/cheques", { instrument: "cheque", direction: "in", accountId: acc.id, planId: own.planId, amount: 2500, issueDate: d(), dueDate: "2026-12-31", serialNo: `G4-${n}`, bank: "Z" }));
+    await giveBack(own, d(), 1);
+    assert.deepEqual([(await invoice(own.id)).open, (await card(own.planId)).remaining], [0, 0], "iade sonrası");
+    await must("çek tutarı", api.put(`/api/workspace/cheques/${ch.id}`, { amount: 1500 }));
+    assert.deepEqual([(await invoice(own.id)).open, (await card(own.planId)).remaining, await balance(acc)], [500, 500, 500], "çek düzeltme sonrası");
+    await must("karşılıksız", api.post(`/api/workspace/cheques/${ch.id}/actions`, { action: "bounce", date: d() }));
+    assert.deepEqual([(await invoice(own.id)).open, (await card(own.planId)).remaining, await balance(acc)], [2000, 2000, 2000], "karşılıksız sonrası");
+  });
 });
