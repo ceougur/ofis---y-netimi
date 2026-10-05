@@ -2,7 +2,10 @@
 
 Sürümler [anlamsal sürümleme](https://semver.org/lang/tr/) kurallarına uyar.
 
-## Sıradaki sürüm (hazırlanıyor)
+## 2.0.25 — En fazla 2 şirket
+
+Kaynak: kullanıcı kararı, 05.10.2026 ("en fazla 2 şirket kurulabilsin"; "3 olanlar kalsın, Pro'da da olmasın"). Ayrıntı ve
+denenen / denenmeyen / bilinen sınırlar: `docs/2.0.25-KANIT.md`.
 
 - **En fazla 2 şirket.** Yeni şirket ancak 2'den az şirket varken açılır; Standart ve Pro'da aynı (kullanıcı kararı, 05.10.2026).
   Sınırdayken sol üst seçicide ve Yönetim → Şirketler'de "+ Yeni Şirket" pasiftir ve nedeni altında yazar; doğrudan istek de
