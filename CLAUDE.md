@@ -763,6 +763,15 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   başlangıç ekranına döner; silinen sayfanın uyarıları zil/takvimden kalkar. Önceki not (13. madde): "Sayfa silme yalnız
   yönetici, Silinenler'e gider" — varsa yeri görünür değil, yoksa eklenir; Perşembe koddan doğrulanır. Test: 2 sayfa → 2.'nin
   sekmesini sil → pil 0; Sayfayı Sil → pil kalkar, 1. sayfa açılır, uyarılar kalkar; Silinenler'den geri yükle → 109 geri.
+  EK 3 (müşteri, 06.10.2026; Perşembe işlerine; ekran: Yönetim → Şirketler → "Şirket Verisini Sıfırla · 001 · Şirket 1";
+  "Onay: şirket kodunu (001) ya da adını yazın" kutusunda "admin" yazılı, altında Parolanız dolu): "isim kısmına direkt admin
+  atmasın; yapabilirsen üzerinde bulunduğumuz şirketin kodunu atsın, direkt 001". Olası kök neden (Perşembe koddan doğrulanır):
+  tarayıcının kayıtlı giriş bilgisini doldurması — parola alanının hemen üstündeki metin kutusunu kullanıcı adı sanıp
+  "admin" yazıyor. YAPILACAK: onay kutusu açılışta şirketin KODUYLA dolu gelir (001), tarayıcı otomatik doldurması kapatılır
+  (autocomplete="off" / alan adı kullanıcı adı gibi görünmez; parola alanı "current-password"). Aynı düzeltme aynı kalıptaki
+  öbür onay pencerelerine de: Şirketi Sil, Ayır, Geri Yükle. Not: onay kutusu yanlışlıkla sıfırlamaya karşı korumaydı;
+  parola sorusu kaldığı için kod önceden dolu gelse de koruma sürer (kullanıcıya söylenecek). Test (arayüz): pencere
+  açılınca kutu "001", parola boş; tarayıcının kayıtlı girişi olsa da "admin" gelmez; 002'de "002".
 - 2.0.20 YAPILACAKLAR (kullanıcı "yapılacaklara not al" dedi, 03.10.2026; "yap" denince başlanır; ayrıntı ve
   kanıt hemen altındaki ADAYI maddesinde):
   [x] 1. Bütün raporların (43) tablosunun altında kalın TOPLAM satırı — ekran, PDF, Excel aynı; yalnız toplanabilir
