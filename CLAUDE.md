@@ -753,6 +753,16 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   olduğu gibi). Kök neden Perşembe koddan bulunacak (sayfa değişince liste yeniden yüklenirken kayıt seçimi kayboluyor
   olabilir). Test: iki sayfa, 2. sayfadaki kaydın uyarısı 1. sayfadayken → Kayda Git → 2. sayfa açık, kayıt seçili ve
   detay kartında; zil/takvimdeki "Kayda Git" yolları da aynı; çok sayfada kayıt listenin derininde (kaydırma) de.
+  EK 2 (müşteri, 06.10.2026; Perşembe işlerine; ekran: SAYFALAR 2 · "Müşteriler Yeni 109 kayıt" seçili, altında liste boş
+  "Aramanızla eşleşen kayıt bulunamadı", "Gösterilen 0 / 0 kayıt", Kaynak: Müşteriler Yeni.xlsx): "ikinci sayfanın altındaki
+  sekmeyi komple sildim, yukarıda hâlâ sayfada 109 kayıt diyor; aslında yukarıdan sayfayı komple sil koymamız lazım".
+  İKİ İŞ: (a) HATA — sekme silinince üstteki sayfa pilindeki kayıt sayısı güncellenmiyor (109 kalıyor; gerçek 0); boş
+  kalan sayfa da "kayıt bulunamadı" ile duruyor. Kök neden Perşembe koddan. (b) İSTEK — sayfa pilinin menüsünde (kalem
+  işaretinin yanında/içinde) "Sayfayı Sil": sayfanın tamamı (bütün sekmeleri, kaynak bağı) tek seferde silinir; yalnız
+  yönetici; onay penceresinde sayfa adı + kayıt sayısı; Silinenler'e gider (geri yüklenebilir); son kalan sayfa silinirse
+  başlangıç ekranına döner; silinen sayfanın uyarıları zil/takvimden kalkar. Önceki not (13. madde): "Sayfa silme yalnız
+  yönetici, Silinenler'e gider" — varsa yeri görünür değil, yoksa eklenir; Perşembe koddan doğrulanır. Test: 2 sayfa → 2.'nin
+  sekmesini sil → pil 0; Sayfayı Sil → pil kalkar, 1. sayfa açılır, uyarılar kalkar; Silinenler'den geri yükle → 109 geri.
 - 2.0.20 YAPILACAKLAR (kullanıcı "yapılacaklara not al" dedi, 03.10.2026; "yap" denince başlanır; ayrıntı ve
   kanıt hemen altındaki ADAYI maddesinde):
   [x] 1. Bütün raporların (43) tablosunun altında kalın TOPLAM satırı — ekran, PDF, Excel aynı; yalnız toplanabilir
