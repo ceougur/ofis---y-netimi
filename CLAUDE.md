@@ -745,6 +745,14 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   olsun"): sınırdayken "+ Yeni Şirket" PASİF DEĞİL, HİÇ GÖRÜNMEZ (sol üst seçici + Yönetim → Şirketler); 6. bulgu bununla
   kalkar. Neden yazısı gerekirse yalnız Yönetim'de kısa bilgi satırı olarak (öneri; düğme yok). 1, 2, 4, 5 de yapılır. Sonra:
   testler → paket/kurulum/PDF yeniden → CI → birleştir → 5 dosya + bağlantı. Hatırlatma: 08.10.2026 06:00 UTC (send_later).
+  EK (müşteri, 06.10.2026; kullanıcı "Perşembe yapılacaklara ekle"; ekran: SAYFALAR "TÜM REHBER.xlsx 9.176" seçili +
+  "Müşteriler Yeni 109"; sağ altta "SON GÜNE 42 GÜN · Envar Turizm Tarım Taşımacılık İnşaa… · 202092758 · Lisans Bitiş Tarihi ·
+  17.11.2026" uyarısı, "Gerçekleştirildi" / "Kayda Git"): "birden fazla sayfa olduğunda birinci sayfadayken ikinci sayfadan
+  bir gecikme uyarısı verdiğinde Kayda Git deyince sadece ikinci sayfayı açıyor, o kayda gitmiyor". İSTENEN: Kayda Git =
+  uyarının sayfasına geç + o kaydı listede seç, görünür yere kaydır ve sağdaki detay kartında aç (aynı sayfadaki uyarıda
+  olduğu gibi). Kök neden Perşembe koddan bulunacak (sayfa değişince liste yeniden yüklenirken kayıt seçimi kayboluyor
+  olabilir). Test: iki sayfa, 2. sayfadaki kaydın uyarısı 1. sayfadayken → Kayda Git → 2. sayfa açık, kayıt seçili ve
+  detay kartında; zil/takvimdeki "Kayda Git" yolları da aynı; çok sayfada kayıt listenin derininde (kaydırma) de.
 - 2.0.20 YAPILACAKLAR (kullanıcı "yapılacaklara not al" dedi, 03.10.2026; "yap" denince başlanır; ayrıntı ve
   kanıt hemen altındaki ADAYI maddesinde):
   [x] 1. Bütün raporların (43) tablosunun altında kalın TOPLAM satırı — ekran, PDF, Excel aynı; yalnız toplanabilir
