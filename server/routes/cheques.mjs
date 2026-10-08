@@ -105,6 +105,28 @@ export function registerChequeRoutes(router, { store, auth, audit, events, perio
     const last = history.at(-1);
     const lock = period?.lockedUntil?.() || "";
     const coreLocked = Boolean(lock && cheque.issueDate && cheque.issueDate <= lock);
+    const canEditCore = manage && history.length === 1 && !cheque.invoiceId && !coreLocked;
+    // v2.0.26 (2. gözden geçirme İ3): formun giriş metni ve kartın kilit notu sunucuda, sunucunun gerçek kuralıyla (PUT/DELETE/undo)
+    // aynı sırada seçilir: faturadan gelen → faturayı iptal; işlem görmüş → önce son işlemi geri al (son işlem ya da evrak kilitli
+    // dönemdeyse bunun için önce kilit açılmalı); yalnız ilk olaylı ve kilitli → kilit. Önceden istemci kilit metnini öne alıyordu:
+    // kilitli dönemde tahsil edilmiş çekte "kilidi açın" deniyor, kilit açılınca "önce son işlemi geri alın" 409'u geliyordu.
+    const received = cheque.direction === "in" ? "alındı" : "verildi";
+    const undoLocked = Boolean(lock && history.length > 1 && last.date <= lock);
+    let coreNote = "";
+    if (manage && !canEditCore) {
+      if (cheque.invoiceId) coreNote = `Bu evrak ${cheque.invoiceNumber || "bir fatura"} ile kaydedildi; yalnız vade, no, banka ve açıklama değiştirilebilir. Tutar, cari ve tarih faturadan gelir; değiştirmek için faturayı iptal edin.`;
+      else if (history.length > 1)
+        coreNote = `İşlem görmüş evrakta yalnız vade, no, banka ve açıklama değiştirilebilir. Tutar, cari ve tarih için önce son işlemi geri alın.${
+          undoLocked ? ` Son işlem (${EVENT_LABELS[last.kind] || last.kind}, ${dayText(last.date)}) kapatılmış (kilitli) dönemde (${dayText(lock)} ve öncesi); geri almak için önce yönetici dönem kilidini açmalı.`
+          : coreLocked ? ` Evrak kapatılmış (kilitli) dönemde ${received} (${dayText(cheque.issueDate)}); işlem geri alınsa da tutar, cari ve tarih için yönetici dönem kilidini açmalı.`
+          : ""}`;
+      else if (coreLocked) coreNote = `Bu evrak kapatılmış (kilitli) dönemde ${received}; yalnız vade, no, banka ve açıklama değiştirilebilir. Tutar, cari ve tarih için yönetici dönem kilidini açmalı.`;
+    }
+    // Kartta, işlem düğmelerinin altında görünür neden (pasif/eksik düğmenin nedeni yalnız düğme ipucunda kalmasın).
+    const lockNote = !manage ? ""
+      : history.length === 1 && !cheque.invoiceId && coreLocked ? `Bu evrak kapatılmış (kilitli) dönemde (${dayText(lock)} ve öncesi) ${received}; silinemez, tutarı, carisi ve tarihi değişmez. Vade, no, banka ve açıklama Düzenle ile düzeltilir.`
+      : undoLocked ? `Son işlem (${EVENT_LABELS[last.kind] || last.kind}, ${dayText(last.date)}) kapatılmış (kilitli) dönemde (${dayText(lock)} ve öncesi); geri alınamaz.`
+      : "";
     return {
       ...cheque,
       events: history.map(({ effectsJson, ...event }) => ({ ...event, label: EVENT_LABELS[event.kind] || event.kind, fromLabel: STATUSES[event.fromStatus]?.label || "", toLabel: STATUSES[event.toStatus]?.label || "", ledger: effectsOf({ effectsJson }).length })),
@@ -114,9 +136,12 @@ export function registerChequeRoutes(router, { store, auth, audit, events, perio
       undoLabel: history.length > 1 && !last.invoiceId ? `“${EVENT_LABELS[last.kind]}” İşlemini Geri Al` : "",
       // v2.0.26 (gözden geçirme G3): kapanmış dönemde alınan/verilen evrakta form tutar, cari ve tarih alanlarını açmaz (sunucu
       // zaten 409 verir); yalnız vade, no, banka ve açıklama düzeltilir. coreLocked formun giriş metnini seçer.
-      canEditCore: manage && history.length === 1 && !cheque.invoiceId && !coreLocked,
+      canEditCore,
       coreLocked,
-      canDelete: manage && history.length === 1 && !cheque.invoiceId,
+      coreNote,
+      lockNote,
+      // İ3: kapanmış dönemdeki evrak silinmez (DELETE 409 period-locked); düğme sunulmaz, nedeni lockNote'ta.
+      canDelete: manage && history.length === 1 && !cheque.invoiceId && !coreLocked,
       canManage: manage,
     };
   }

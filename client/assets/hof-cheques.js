@@ -192,6 +192,7 @@
         ${fact("Açıklama", esc(cheque.note))}
       </dl>
       <div class="hof-chq-actions" role="toolbar" aria-label="Evrak işlemleri">${actionButtons}${cheque.canUndo ? `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="undo">↶ ${esc(cheque.undoLabel)}</button>` : ""}${cheque.canManage ? `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="edit">Düzenle</button>` : ""}${cheque.canDelete ? `<button type="button" class="hof-button hof-button-small hof-button-danger-ghost" data-act="delete">Sil</button>` : ""}</div>
+      ${cheque.lockNote ? `<p class="hof-rep-note hof-chq-lock-note">${esc(cheque.lockNote)}</p>` : ""}
       <p class="hof-rep-note">${cheque.direction === "in" ? "Alınınca carinin borcu düşer (ya da taksite sayılır); para Kasa'ya tahsil edilince girer. Ciro edilince tedarikçiye olan borç düşer. Karşılıksız çıkarsa müşteri yeniden borçlanır." : "Verilince tedarikçiye olan borç düşer; para Kasa'dan ödenince çıkar."}</p>
       <h4 class="hof-chq-subtitle">İşlem Geçmişi</h4>
       <ol class="hof-chq-history">${history}</ol>`);
@@ -215,12 +216,12 @@
     HOF.formModal({
       title: edit ? `${cheque.directionLabel} ${cheque.instrumentLabel} Düzenle` : direction === "in" ? "Çek / Senet Al" : "Çek / Senet Ver",
       eyebrow: moduleName().toLocaleUpperCase("tr-TR"),
+      // v2.0.26 (2. gözden geçirme İ3): çekirdek kapalıyken metin sunucudan (coreNote): faturadan gelen, işlem görmüş, kilitli
+      // dönemde — sunucunun gerçek kuralıyla aynı sırada.
       intro: edit
         ? core
           ? "Tahsil, ciro ya da ödeme yapılmadıkça tutar, cari ve tarihler değiştirilebilir; cari/taksit kaydı birlikte düzeltilir."
-          : cheque.coreLocked
-            ? `Bu evrak kapatılmış (kilitli) dönemde ${direction === "in" ? "alındı" : "verildi"}; yalnız vade, no, banka ve açıklama değiştirilebilir. Tutar, cari ve tarih için yönetici dönem kilidini açmalı.`
-            : "İşlem görmüş evrakta yalnız vade, no, banka ve açıklama değiştirilebilir. Tutar ya da cari için önce son işlemi geri alın."
+          : cheque.coreNote || "Bu evrakta yalnız vade, no, banka ve açıklama değiştirilebilir."
         : direction === "in"
           ? "Müşteriden aldığınız evrak portföye girer. Cari seçerseniz carinin borcu düşer; taksit kartı seçerseniz o taksit ödenmiş sayılır. Para Kasa'ya tahsil edildiğinde girer."
           : "Tedarikçiye verdiğiniz kendi çekiniz/senediniz. Cari seçerseniz tedarikçiye olan borcunuz düşer; para Kasa'dan vadesinde ödendiğinde çıkar.",
