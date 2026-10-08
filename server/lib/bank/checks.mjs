@@ -68,27 +68,29 @@ export function createBankChecks({ store, money }) {
     if (!ready()) return [];
     const out = [];
     const list = events ? JSON.stringify([...events]) : null;
-    const eventFilter = list ? " AND e.id IN (SELECT value FROM json_each(?))" : "";
-    const rowFilter = list ? " AND r.event_id IN (SELECT value FROM json_each(?))" : "";
+    // Olay listesiyle (COMMIT'te dokunulanlar) okuma listeden başlar (CROSS JOIN sırayı belirler): istatistiksiz planlayıcı status/src_table
+    // indeksiyle bütün olayları dolaşıyordu (100.000 satırda ~20–150 ms/sorgu). Tam taramada (list yok) sorgular 2.1.0 dilim 4'teki gibidir.
+    const events_ = list ? "json_each(?) j CROSS JOIN fin_events e ON e.id = j.value" : "fin_events e";
     const args = list ? [list] : [];
     for (const table of MODULE_TABLES) {
       if (!hasColumn(table, "event_id")) continue;
       // Etkin olay: satırı yok ya da kopyası satırla uyuşmuyor.
       for (const row of store.all(
         `SELECT e.id, e.bank_ref AS ref, CASE WHEN r.id IS NULL THEN 'satırı yok' ELSE 'kopya satırla uyuşmuyor' END AS why
-         FROM fin_events e LEFT JOIN ${table} r ON r.id = e.src_id AND r.event_id = e.id
-         WHERE e.status = 'active' AND e.src_table = '${table}' AND e.type NOT IN (${NON_MONEY_SQL})${eventFilter} AND ${copyMismatchSql(table)}`,
+         FROM ${events_} LEFT JOIN ${table} r ON r.id = e.src_id AND r.event_id = e.id
+         WHERE e.status = 'active' AND e.src_table = '${table}' AND e.type NOT IN (${NON_MONEY_SQL}) AND ${copyMismatchSql(table)}`,
         ...args,
       )) out.push({ key: row.id, ref: row.ref, sample: `${row.id}: ${row.why}` });
       // İptal edilmiş olayın etkin (yerinde duran) satırı.
-      for (const row of store.all(`SELECT DISTINCT r.event_id AS id, e.bank_ref AS ref FROM ${table} r JOIN fin_events e ON e.id = r.event_id WHERE r.event_id <> ''${rowFilter} AND e.status = 'cancelled'`, ...args)) out.push({ key: row.id, ref: row.ref, sample: `${row.id}: iptal edilmiş olayın satırı var (${table})` });
+      const rows_ = list ? `json_each(?) j CROSS JOIN ${table} r ON r.event_id = j.value CROSS JOIN fin_events e ON e.id = r.event_id` : `${table} r JOIN fin_events e ON e.id = r.event_id`;
+      for (const row of store.all(`SELECT DISTINCT r.event_id AS id, e.bank_ref AS ref FROM ${rows_} WHERE r.event_id <> '' AND e.status = 'cancelled'`, ...args)) out.push({ key: row.id, ref: row.ref, sample: `${row.id}: iptal edilmiş olayın satırı var (${table})` });
       if (list) continue;
       // Hesaba bağlı satırın olayı yok; satırın gösterdiği olay kayıtlı değil (tam tarama).
       for (const row of store.all(`SELECT r.id, r.fin_ref AS ref FROM ${table} r WHERE r.fin_ref <> '' AND r.event_id = ''`)) out.push({ key: `${table}:${row.id}`, ref: row.ref, sample: `${table}:${row.id}: hesaba bağlı, işlem başlığı yok` });
       for (const row of store.all(`SELECT r.id, r.fin_ref AS ref, r.event_id AS eventId FROM ${table} r WHERE r.event_id <> '' AND NOT EXISTS (SELECT 1 FROM fin_events e WHERE e.id = r.event_id)`)) out.push({ key: `${table}:${row.id}`, ref: row.ref, sample: `${table}:${row.id}: işlem başlığı (${row.eventId}) kayıtlı değil` });
     }
     // Ters kaydedilmiş olayın ters kaydı var.
-    for (const row of store.all(`SELECT e.id, e.bank_ref AS ref FROM fin_events e WHERE e.status = 'reversed'${eventFilter} AND NOT EXISTS (SELECT 1 FROM fin_events x WHERE x.id = e.reversed_by AND x.reversal_of = e.id)`, ...args)) out.push({ key: row.id, ref: row.ref, sample: `${row.id}: ters kaydı yok` });
+    for (const row of store.all(`SELECT e.id, e.bank_ref AS ref FROM ${events_} WHERE e.status = 'reversed' AND NOT EXISTS (SELECT 1 FROM fin_events x WHERE x.id = e.reversed_by AND x.reversal_of = e.id)`, ...args)) out.push({ key: row.id, ref: row.ref, sample: `${row.id}: ters kaydı yok` });
     return out;
   }
 

@@ -35,31 +35,40 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, pe
       payments: list("m_payments", filter.money?.payments), cash: list("m_cash", filter.money?.cash_entries), entries: list("m_entries", filter.money?.account_entries),
       planEntries: list("m_plan_entries", filter.money?.plan_entries), moves: list("m_moves", filter.money?.stock_moves), chequeEvents: list("m_cheque_events", filter.money?.cheque_events),
     } : null;
-    // Tablonun süzgeci: koşullardan (null olmayanlar) en az biri; filter var ama hiçbiri yoksa satır yok.
-    const where = (parts, glue = "WHERE") => {
+    // Tablonun süzgeci: koşullardan (null olmayanlar) en az biri; filter var ama hiçbiri yoksa satır yok. Koşullar satır kimliği kümesine
+    // çevrilir (alias.id IN (alt sorgu UNION alt sorgu …)): her alt sorgu kendi indeksini kullanır. Kolonlar arası OR (e.account_id IN …
+    // OR e.id IN …) indekssiz tam taramaya düşüyordu (100.000 satırda fatura sorgusu ~60 ms). keys: [değer, alt sorgu ($ = liste)].
+    const where = (alias, keys, glue = "WHERE") => {
       if (!filter) return "";
-      const kept = parts.filter(([value]) => value).map(([value, sql]) => sql.replace("$", value));
-      return ` ${glue} (${kept.length ? kept.join(" OR ") : "0"})`;
+      const kept = keys.filter(([value]) => value).map(([value, sql]) => sql.replace("$", value));
+      return ` ${glue} ${kept.length ? `${alias}.id IN (${kept.join(" UNION ")})` : "0"}`;
     };
+    const own = name => `SELECT value FROM json_each(:${name})`;
+    // Süzgeçte satır tablosu dış döngüdür (CROSS JOIN yalnız sırayı belirler; sonuç aynı iç birleşim): istatistiksiz planlayıcı aksi hâlde
+    // görünürlük JOIN'inin indeksiyle (accounts.deleted_at) bütün tabloyu dolaşabilir. Süzgeçsiz sorgular 2.1.0 dilim 4'teki gibidir.
+    const J = filter ? "CROSS JOIN" : "JOIN";
+    // Aynı nedenle süzgeçte durum kolonlarının indeksi kapatılır (tekli +: değer aynı, yalnız indeks seçilmez): i.status = 'issued'
+    // indeksi, kimlik kümesinin birincil anahtarından önce seçiliyordu (100.000 satırda ~55 ms).
+    const X = filter ? "+" : "";
     // Yalnız sorguda geçen adlı parametreler verilir (node:sqlite bilinmeyen adı reddeder).
     const all = (sql, query = true) => (query ? store.all(sql, Object.fromEntries(Object.entries(params).filter(([name]) => sql.includes(`:${name})`)))) : []);
     const wanted = (...values) => !filter || values.some(Boolean);
-    out.payments = all(`SELECT id, amount, date, note, method, ${refOf("payments", "p")} AS ref FROM payments p${where([[set?.payments, "p.id IN $"]])}`, wanted(set?.payments));
+    out.payments = all(`SELECT id, amount, date, note, method, ${refOf("payments", "p")} AS ref FROM payments p${where("p", [[set?.payments, own("m_payments")]])}`, wanted(set?.payments));
     // Kasa ↔ Banka transferinin nakit bacağı banka bacağının hesabını (ikiz satırın fin_ref'i) taşır: madde tek, banka tarafı onun hesabıdır.
     const cashRef = refOf("cash_entries", "c");
     out.cashEntries = all(
       `SELECT c.id, c.kind, c.amount, c.date, c.description, c.method, c.transfer_id AS transferId, ${cashRef} AS ref,
               CASE WHEN c.transfer_id <> '' THEN COALESCE((SELECT ${cashRef === "''" ? "''" : "t.fin_ref"} FROM cash_entries t WHERE t.transfer_id = c.transfer_id AND t.id <> c.id LIMIT 1), '') ELSE '' END AS bankRef
-       FROM cash_entries c${where([[set?.cash, "c.id IN $"]])}`,
+       FROM cash_entries c${where("c", [[set?.cash, own("m_cash")]])}`,
       wanted(set?.cash),
     );
     if (has("accounts")) {
       out.accountEntries = all(
         `SELECT e.id, e.kind, e.amount, e.date, e.note, e.source, e.method, ${refOf("account_entries", "e")} AS ref, a.type AS accountType, e.account_id AS party,
                 COALESCE(c.direction, '') AS chequeDirection, COALESCE(m.reason, '') AS moveReason
-         FROM account_entries e JOIN accounts a ON a.id = e.account_id AND a.deleted_at IS NULL
+         FROM account_entries e ${J} accounts a ON a.id = e.account_id AND a.deleted_at IS NULL
            LEFT JOIN cheques c ON e.source = 'cheque' AND c.id = e.source_id
-           LEFT JOIN stock_moves m ON e.source = 'stock' AND m.id = e.source_id${where([[set?.parties, "e.account_id IN $"], [set?.entries, "e.id IN $"], [set?.cheques, "(e.source = 'cheque' AND e.source_id IN $)"]])}`,
+           LEFT JOIN stock_moves m ON e.source = 'stock' AND m.id = e.source_id${where("e", [[set?.parties, "SELECT id FROM account_entries WHERE account_id IN $"], [set?.entries, own("m_entries")], [set?.cheques, "SELECT id FROM account_entries WHERE source = 'cheque' AND source_id IN $"]])}`,
         wanted(set?.parties, set?.entries, set?.cheques),
       );
     }
@@ -69,12 +78,12 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, pe
         `SELECT p.id, p.total, p.status, p.covers_balance AS coversBalance, COALESCE(NULLIF(p.registered_on, ''), substr(p.created_at, 1, 10)) AS date, COALESCE(p.closed_at, substr(p.updated_at, 1, 10)) AS closedOn,
                 COALESCE(a.type, '') AS accountType, COALESCE(a.id, '') AS party,
                 COALESCE((SELECT SUM(CASE WHEN e.kind = 'in' THEN e.amount ELSE -e.amount END) FROM plan_entries e WHERE e.plan_id = p.id), 0) AS paid
-         FROM plans p LEFT JOIN accounts a ON a.id = p.account_id AND a.deleted_at IS NULL WHERE p.deleted_at IS NULL${where([[set?.parties, "p.account_id IN $"], [set?.plans, "p.id IN $"]], "AND")}`,
+         FROM plans p LEFT JOIN accounts a ON a.id = p.account_id AND a.deleted_at IS NULL WHERE ${X}p.deleted_at IS NULL${where("p", [[set?.parties, "SELECT id FROM plans WHERE account_id IN $"], [set?.plans, own("plans")]], "AND")}`,
         wanted(set?.parties, set?.plans),
       );
       out.planEntries = all(
         `SELECT e.id, e.plan_id AS planId, e.kind, e.amount, e.date, e.note, e.method, ${refOf("plan_entries", "e")} AS ref, e.cheque_id AS chequeId, e.opening, COALESCE(a.type, '') AS accountType, COALESCE(a.id, '') AS party
-         FROM plan_entries e JOIN plans p ON p.id = e.plan_id AND p.deleted_at IS NULL LEFT JOIN accounts a ON a.id = p.account_id AND a.deleted_at IS NULL${where([[set?.parties, "p.account_id IN $"], [set?.plans, "e.plan_id IN $"], [set?.planEntries, "e.id IN $"], [set?.cheques, "e.cheque_id IN $"]])}`,
+         FROM plan_entries e ${J} plans p ON p.id = e.plan_id AND p.deleted_at IS NULL LEFT JOIN accounts a ON a.id = p.account_id AND a.deleted_at IS NULL${where("e", [[set?.parties, "SELECT pe.id FROM plans pp JOIN plan_entries pe ON pe.plan_id = pp.id WHERE pp.account_id IN $"], [set?.plans, "SELECT id FROM plan_entries WHERE plan_id IN $"], [set?.planEntries, own("m_plan_entries")], [set?.cheques, "SELECT id FROM plan_entries WHERE cheque_id IN $"]])}`,
         wanted(set?.parties, set?.plans, set?.planEntries, set?.cheques),
       );
     }
@@ -83,17 +92,17 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, pe
       out.invoices = all(
         `SELECT i.id, i.kind, i.issue_date AS date, i.number, i.gl_json AS glJson, i.try_vat AS tryVat, i.try_withheld AS tryWithheld, i.try_stoppage AS tryStoppage,
                 i.try_payable AS tryPayable, a.type AS accountType, a.id AS party
-         FROM invoices i JOIN accounts a ON a.id = i.account_id AND a.deleted_at IS NULL WHERE i.status = 'issued'${where([[set?.parties, "i.account_id IN $"], [set?.invoices, "i.id IN $"]], "AND")}`,
+         FROM invoices i ${J} accounts a ON a.id = i.account_id AND a.deleted_at IS NULL WHERE ${X}i.status = 'issued'${where("i", [[set?.parties, "SELECT id FROM invoices WHERE account_id IN $"], [set?.invoices, own("invoices")]], "AND")}`,
         wanted(set?.parties, set?.invoices),
       );
     }
-    if (has("stock_moves")) out.stockMoves = all(`SELECT m.id, m.kind, m.amount, m.date, m.note, m.pay, m.method, m.reason, ${refOf("stock_moves", "m")} AS ref FROM stock_moves m WHERE m.pay = 'cash' AND m.amount > 0${where([[set?.moves, "m.id IN $"]], "AND")}`, wanted(set?.moves));
+    if (has("stock_moves")) out.stockMoves = all(`SELECT m.id, m.kind, m.amount, m.date, m.note, m.pay, m.method, m.reason, ${refOf("stock_moves", "m")} AS ref FROM stock_moves m WHERE ${X}m.pay = 'cash' AND m.amount > 0${where("m", [[set?.moves, own("m_moves")]], "AND")}`, wanted(set?.moves));
     // Banka Fişi satırları (v2.1.0): THP kodu, alt hesap ve kuruş yazım anında saklanır.
     if (has("bank_lines") && has("fin_events")) {
-      out.bankLines = all(`SELECT l.event_id AS eventId, l.seq, l.gl, l.sub, l.side, l.try_minor AS tryMinor, e.date, e.no, e.description FROM bank_lines l JOIN fin_events e ON e.id = l.event_id${where([[set?.events, "l.event_id IN $"]])} ORDER BY e.date, l.event_id, l.seq`, wanted(set?.events));
+      out.bankLines = all(`SELECT l.event_id AS eventId, l.seq, l.gl, l.sub, l.side, l.try_minor AS tryMinor, e.date, e.no, e.description FROM bank_lines l ${J} fin_events e ON e.id = l.event_id${filter ? ` WHERE ${set?.events ? `l.event_id IN ${set.events}` : "0"}` : ""} ORDER BY e.date, l.event_id, l.seq`, wanted(set?.events));
     }
     if (has("cheques")) {
-      out.chequeEvents = all(`SELECT ev.id, ev.kind, ev.amount, ev.date, ev.note, ev.method, ${refOf("cheque_events", "ev")} AS ref FROM cheque_events ev JOIN cheques c ON c.id = ev.cheque_id AND c.deleted_at IS NULL WHERE ev.kind IN ('collect', 'pay')${where([[set?.chequeEvents, "ev.id IN $"], [set?.cheques, "ev.cheque_id IN $"]], "AND")}`, wanted(set?.chequeEvents, set?.cheques));
+      out.chequeEvents = all(`SELECT ev.id, ev.kind, ev.amount, ev.date, ev.note, ev.method, ${refOf("cheque_events", "ev")} AS ref FROM cheque_events ev ${J} cheques c ON c.id = ev.cheque_id AND c.deleted_at IS NULL WHERE ${X}ev.kind IN ('collect', 'pay')${where("ev", [[set?.chequeEvents, own("m_cheque_events")], [set?.cheques, "SELECT id FROM cheque_events WHERE cheque_id IN $"]], "AND")}`, wanted(set?.chequeEvents, set?.cheques));
       // Cariye işlenmemiş evrak: carisi/kartı olmayan (ör. cari açılmamış bir kişiden alınan çek) ya da Excel'den
       // "carilere dokunmadan" alınan açılış portföyü. Cari etkisi yoktur; portföye girişi ve karşılıksız/iade çıkışı ana
       // defterde doğrudan gelir/gider karşılığıyla izlenir (portföy mutabakatı tutsun).
@@ -103,11 +112,11 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, pe
                 EXISTS (SELECT 1 FROM account_entries e JOIN accounts a ON a.id = e.account_id AND a.deleted_at IS NULL
                         WHERE e.source = 'cheque' AND e.source_id = c.id AND e.account_id = c.account_id AND e.kind = 'debt') AS hasDebt
          FROM cheques c
-         WHERE c.deleted_at IS NULL
+         WHERE ${X}c.deleted_at IS NULL
            AND NOT EXISTS (SELECT 1 FROM plan_entries pe JOIN plans p ON p.id = pe.plan_id AND p.deleted_at IS NULL WHERE pe.cheque_id = c.id)
            AND NOT EXISTS (SELECT 1 FROM account_entries e JOIN accounts a ON a.id = e.account_id AND a.deleted_at IS NULL
                            WHERE e.source = 'cheque' AND e.source_id = c.id AND e.account_id = c.account_id
-                             AND e.kind = CASE WHEN c.direction = 'in' THEN 'credit' ELSE 'debt' END)${where([[set?.cheques, "c.id IN $"]], "AND")}`,
+                             AND e.kind = CASE WHEN c.direction = 'in' THEN 'credit' ELSE 'debt' END)${where("c", [[set?.cheques, own("cheques")]], "AND")}`,
         wanted(set?.cheques),
       )) {
         const note = `Cariye işlenmemiş evrak${row.serialNo ? ` No ${row.serialNo}` : ""}`;

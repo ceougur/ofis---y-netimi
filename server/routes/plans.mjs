@@ -236,7 +236,8 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
   // ids (v2.1.0, §3.11): yalnız bu kartlar (mutabakat kapısı dokunulan kartları denetler); kartın hesabı aynıdır.
   function list(user, { q = "", group = "", subgroup = "", status = "active", sort = "no", caseKey = "", caseSource = "", account = "", ids = null } = {}) {
     const only = ids ? JSON.stringify([...ids]) : null;
-    let plans = only ? store.all(`${PLAN_SQL} WHERE p.deleted_at IS NULL AND p.id IN (SELECT value FROM json_each(?)) ORDER BY p.name COLLATE NOCASE, p.created_at`, only) : store.all(`${PLAN_SQL} WHERE p.deleted_at IS NULL ORDER BY p.name COLLATE NOCASE, p.created_at`);
+    // ids: tekli + deleted_at indeksini kapatır (birincil anahtar seçilir; değer aynı).
+    let plans = only ? store.all(`${PLAN_SQL} WHERE +p.deleted_at IS NULL AND p.id IN (SELECT value FROM json_each(?)) ORDER BY p.name COLLATE NOCASE, p.created_at`, only) : store.all(`${PLAN_SQL} WHERE p.deleted_at IS NULL ORDER BY p.name COLLATE NOCASE, p.created_at`);
     if (caseKey) plans = plans.filter(plan => plan.caseKey === caseKey && (!caseSource || plan.caseSource === caseSource));
     if (account) plans = plans.filter(plan => plan.accountId === account);
     const items = new Map();
@@ -1223,7 +1224,7 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
   // accountIds (v2.1.0, §3.11): yalnız bu carilerin kartları (mutabakat kapısı dokunulan carileri denetler).
   function summariesByAccount(accountIds = null) {
     const only = accountIds ? JSON.stringify([...accountIds]) : null;
-    const plans = only ? store.all(`${PLAN_SQL} WHERE p.deleted_at IS NULL AND p.account_id <> '' AND p.account_id IN (SELECT value FROM json_each(?))`, only) : store.all(`${PLAN_SQL} WHERE p.deleted_at IS NULL AND p.account_id <> ''`);
+    const plans = only ? store.all(`${PLAN_SQL} WHERE +p.deleted_at IS NULL AND p.account_id <> '' AND p.account_id IN (SELECT value FROM json_each(?))`, only) : store.all(`${PLAN_SQL} WHERE p.deleted_at IS NULL AND p.account_id <> ''`);
     const out = new Map();
     if (!plans.length) return out;
     const planIds = only ? JSON.stringify(plans.map(plan => plan.id)) : null;

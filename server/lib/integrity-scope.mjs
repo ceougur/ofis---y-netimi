@@ -215,9 +215,9 @@ export function createScopedGate({ store, ledger, accounts, plans, stock, money,
     };
     if (s.visible.parties.size) {
       const list = json(s.visible.parties);
-      add(s.money.account_entries, all(`SELECT id FROM account_entries WHERE account_id IN ${IN} AND source IN ('', 'invoice', 'bank') AND kind IN ('in', 'out')`, list));
-      add(s.cheques, all(`SELECT source_id AS id FROM account_entries WHERE account_id IN ${IN} AND source = 'cheque'`, list));
-      add(s.cheques, all(`SELECT id FROM cheques WHERE account_id IN ${IN} OR endorse_account_id IN ${IN}`, list, list));
+      add(s.money.account_entries, all(`SELECT id FROM account_entries WHERE account_id IN ${IN} AND +source IN ('', 'invoice', 'bank') AND +kind IN ('in', 'out')`, list));
+      add(s.cheques, all(`SELECT source_id AS id FROM account_entries WHERE account_id IN ${IN} AND +source = 'cheque'`, list));
+      add(s.cheques, all(`SELECT id FROM cheques WHERE account_id IN ${IN} UNION SELECT id FROM cheques WHERE endorse_account_id IN ${IN}`, list, list));
       add(s.plans, all(`SELECT id FROM plans WHERE account_id IN ${IN}`, list));
       add(s.invoices, all(`SELECT id FROM invoices WHERE account_id IN ${IN}`, list));
     }
@@ -229,11 +229,11 @@ export function createScopedGate({ store, ledger, accounts, plans, stock, money,
     if (s.plans.size) {
       const list = json(s.plans);
       add(s.parties, all(`SELECT account_id AS id FROM plans WHERE id IN ${IN}`, list));
-      add(s.money.plan_entries, all(`SELECT id FROM plan_entries WHERE plan_id IN ${IN} AND cheque_id = '' AND opening = 0`, list));
+      add(s.money.plan_entries, all(`SELECT id FROM plan_entries WHERE plan_id IN ${IN} AND +cheque_id = '' AND opening = 0`, list));
       // Kartla sayılan çekin 101 satırı ve "cariye işlenmemiş evrak" durumu kartın silinmesine bağlıdır.
-      add(s.cheques, all(`SELECT cheque_id AS id FROM plan_entries WHERE plan_id IN ${IN} AND cheque_id <> ''`, list));
+      add(s.cheques, all(`SELECT cheque_id AS id FROM plan_entries WHERE plan_id IN ${IN} AND +cheque_id <> ''`, list));
     }
-    if (s.cheques.size) add(s.money.cheque_events, all(`SELECT id FROM cheque_events WHERE cheque_id IN ${IN} AND kind IN ('collect', 'pay')`, json(s.cheques)));
+    if (s.cheques.size) add(s.money.cheque_events, all(`SELECT id FROM cheque_events WHERE cheque_id IN ${IN} AND +kind IN ('collect', 'pay')`, json(s.cheques)));
     if (s.visible.items.size) {
       const list = json(s.visible.items);
       add(s.money.stock_moves, all(`SELECT id FROM stock_moves WHERE item_id IN ${IN} AND pay = 'cash' AND amount > 0`, list));
@@ -243,7 +243,7 @@ export function createScopedGate({ store, ledger, accounts, plans, stock, money,
     // Para satırının işlem başlığı (bank:event / money:report dokunulan olaylarla aynı).
     for (const table of MODULE_TABLES) {
       if (!s.money[table].size || !hasColumn(table, "event_id")) continue;
-      add(s.events, all(`SELECT event_id AS id FROM ${table} WHERE id IN ${IN} AND event_id <> ''`, json(s.money[table])));
+      add(s.events, all(`SELECT event_id AS id FROM ${table} WHERE id IN ${IN} AND +event_id <> ''`, json(s.money[table])));
     }
   }
 
@@ -347,7 +347,7 @@ export function createScopedGate({ store, ledger, accounts, plans, stock, money,
       // Banka Fişi stopajı (193): yevmiye = fişin satırları.
       if (events.length && has("bank_lines")) {
         const got = sumAccount(fromLedger, "193");
-        const want = Number(store.get(`SELECT COALESCE(SUM(CASE side WHEN 'D' THEN try_minor ELSE -try_minor END), 0) AS n FROM bank_lines WHERE gl = '193' AND event_id IN ${IN}`, json(events)).n);
+        const want = Number(store.get(`SELECT COALESCE(SUM(CASE side WHEN 'D' THEN try_minor ELSE -try_minor END), 0) AS n FROM bank_lines WHERE +gl = '193' AND event_id IN ${IN}`, json(events)).n);
         if (got !== want) find("gl:193", `fiş ${got / 100} / satırlar ${want / 100}`);
       }
       // Tanınmayan yol: eski satırlar tabanla (açılıştaki kimlikler); yenisi engellenir.
@@ -382,7 +382,7 @@ export function createScopedGate({ store, ledger, accounts, plans, stock, money,
       const want = store.get(
         `SELECT COALESCE(SUM(CASE WHEN direction = 'in' AND status = 'portfolio' THEN CAST(ROUND(amount * 100) AS INTEGER) END), 0) AS portfolio,
                 COALESCE(SUM(CASE WHEN direction = 'out' AND status = 'pending' THEN CAST(ROUND(amount * 100) AS INTEGER) END), 0) AS pending
-         FROM cheques WHERE deleted_at IS NULL AND id IN ${IN}`,
+         FROM cheques WHERE +deleted_at IS NULL AND id IN ${IN}`,
         list,
       );
       if (sumAccount(fromLedger, "101") !== Number(want.portfolio)) find("gl:101", `defter ${sumAccount(fromLedger, "101") / 100} / portföy ${want.portfolio / 100}`);
@@ -391,7 +391,8 @@ export function createScopedGate({ store, ledger, accounts, plans, stock, money,
         const entryIds = json(s.entries);
         for (const row of all(
           `SELECT e.id FROM account_entries e LEFT JOIN cheques c ON c.id = e.source_id
-           WHERE e.source = 'cheque' AND (c.id IS NULL OR ABS(c.amount - e.amount) > 0.004) AND (e.source_id IN ${IN} OR e.id IN ${IN}) LIMIT 5`,
+           WHERE +e.source = 'cheque' AND (c.id IS NULL OR ABS(c.amount - e.amount) > 0.004)
+             AND e.id IN (SELECT id FROM account_entries WHERE source = 'cheque' AND source_id IN ${IN} UNION SELECT value FROM json_each(?)) LIMIT 5`,
           list, entryIds,
         )) find("cheque:account", row.id);
       }
@@ -404,7 +405,7 @@ export function createScopedGate({ store, ledger, accounts, plans, stock, money,
       const orphanPlans = all(
         `SELECT p.id, p.name, p.total, p.status, p.covers_balance AS coversBalance,
                 COALESCE((SELECT SUM(CASE WHEN e.kind = 'in' THEN e.amount ELSE -e.amount END) FROM plan_entries e WHERE e.plan_id = p.id), 0) AS paid
-         FROM plans p LEFT JOIN accounts a ON a.id = p.account_id AND a.deleted_at IS NULL WHERE p.deleted_at IS NULL AND a.id IS NULL AND p.id IN ${IN}`,
+         FROM plans p LEFT JOIN accounts a ON a.id = p.account_id AND a.deleted_at IS NULL WHERE +p.deleted_at IS NULL AND a.id IS NULL AND p.id IN ${IN}`,
         list,
       );
       if (orphanPlans.length) {
@@ -418,7 +419,7 @@ export function createScopedGate({ store, ledger, accounts, plans, stock, money,
         }
       }
       if (plans()?.list) {
-        const raw = new Map(all(`SELECT p.id, p.total, COALESCE((SELECT SUM(CASE WHEN e.kind = 'in' THEN e.amount ELSE -e.amount END) FROM plan_entries e WHERE e.plan_id = p.id), 0) AS paid FROM plans p WHERE p.deleted_at IS NULL AND p.id IN ${IN}`, list).map(row => [row.id, row]));
+        const raw = new Map(all(`SELECT p.id, p.total, COALESCE((SELECT SUM(CASE WHEN e.kind = 'in' THEN e.amount ELSE -e.amount END) FROM plan_entries e WHERE e.plan_id = p.id), 0) AS paid FROM plans p WHERE +p.deleted_at IS NULL AND p.id IN ${IN}`, list).map(row => [row.id, row]));
         for (const plan of plans().list(AUDITOR, { status: "all", ids: [...s.plans] }).plans || []) {
           const row = raw.get(plan.id);
           if (!row) continue;
@@ -427,7 +428,7 @@ export function createScopedGate({ store, ledger, accounts, plans, stock, money,
         }
       }
       if (hasColumn("plan_items", "due_date") && hasColumn("plans", "registered_on")) {
-        for (const row of all(`SELECT i.id FROM plan_items i JOIN plans p ON p.id = i.plan_id AND p.deleted_at IS NULL WHERE p.registered_on <> '' AND i.due_date < p.registered_on AND p.id IN ${IN} LIMIT 5`, list)) find("dates:due-before-start", row.id);
+        for (const row of all(`SELECT i.id FROM plans p CROSS JOIN plan_items i ON i.plan_id = p.id WHERE +p.deleted_at IS NULL AND p.registered_on <> '' AND i.due_date < p.registered_on AND p.id IN ${IN} LIMIT 5`, list)) find("dates:due-before-start", row.id);
       }
       lap("plan");
     }
@@ -442,7 +443,7 @@ export function createScopedGate({ store, ledger, accounts, plans, stock, money,
                 COALESCE(SUM(CASE WHEN kind IN ('sale', 'smm') THEN -(${c("try_vat")} - ${c("try_withheld")}) WHEN kind = 'sale_return' THEN ${c("try_vat")} - ${c("try_withheld")} END), 0) AS v391,
                 COALESCE(SUM(CASE kind WHEN 'purchase' THEN -(${c("try_withheld")} + ${c("try_stoppage")}) WHEN 'purchase_return' THEN ${c("try_withheld")} + ${c("try_stoppage")} END), 0) AS v360,
                 COALESCE(SUM(CASE WHEN kind IN ('sale', 'smm') THEN ${c("try_stoppage")} END), 0) AS v193
-         FROM invoices i WHERE i.status = 'issued' AND EXISTS (SELECT 1 FROM accounts a WHERE a.id = i.account_id AND a.deleted_at IS NULL) AND i.id IN ${IN}`,
+         FROM invoices i WHERE +i.status = 'issued' AND EXISTS (SELECT 1 FROM accounts a WHERE a.id = i.account_id AND a.deleted_at IS NULL) AND i.id IN ${IN}`,
         list,
       );
       for (const [account, want] of [["191", sums.v191], ["391", sums.v391], ["360", sums.v360], ["193", sums.v193]]) {
@@ -468,12 +469,13 @@ export function createScopedGate({ store, ledger, accounts, plans, stock, money,
         const items = json(s.visible.items);
         for (const row of all(
           `SELECT m.id FROM stock_moves m
-             JOIN stock_items i ON i.id = m.item_id AND i.deleted_at IS NULL
+             CROSS JOIN stock_items i ON i.id = m.item_id AND i.deleted_at IS NULL
              LEFT JOIN account_entries e ON e.source = 'stock' AND e.source_id = m.id
-           WHERE m.pay = 'account' AND m.amount > 0 AND (e.id IS NULL OR ABS(e.amount - m.amount) > 0.004) AND (m.id IN ${IN} OR m.item_id IN ${IN}) LIMIT 5`,
+           WHERE +m.pay = 'account' AND m.amount > 0 AND (e.id IS NULL OR ABS(e.amount - m.amount) > 0.004)
+             AND m.id IN (SELECT value FROM json_each(?) UNION SELECT id FROM stock_moves WHERE item_id IN ${IN}) LIMIT 5`,
           moves, items,
         )) find("stock:account", row.id);
-        for (const row of all(`SELECT e.id FROM account_entries e LEFT JOIN stock_moves m ON m.id = e.source_id WHERE e.source = 'stock' AND m.id IS NULL AND (e.source_id IN ${IN} OR e.id IN ${IN}) LIMIT 5`, moves, json(s.entries))) find("stock:orphan", row.id);
+        for (const row of all(`SELECT e.id FROM account_entries e LEFT JOIN stock_moves m ON m.id = e.source_id WHERE +e.source = 'stock' AND m.id IS NULL AND e.id IN (SELECT id FROM account_entries WHERE source = 'stock' AND source_id IN ${IN} UNION SELECT value FROM json_each(?)) LIMIT 5`, moves, json(s.entries))) find("stock:orphan", row.id);
         for (const row of all(`SELECT id FROM stock_moves WHERE NOT (qty > 0) AND id IN ${IN} LIMIT 5`, moves)) find("stock:qty", row.id);
       }
       lap("stock");
@@ -483,7 +485,7 @@ export function createScopedGate({ store, ledger, accounts, plans, stock, money,
     for (const [table, column, where] of amountColumns) {
       const ids = touchedRows(table).map(row => row.id);
       if (!ids.length || !hasColumn(table, column)) continue;
-      for (const row of all(`SELECT id FROM ${table} WHERE (ABS(${column} * 100 - ROUND(${column} * 100)) > 0.0001 OR ${column} < 0)${where ? ` AND ${where}` : ""} AND id IN ${IN} LIMIT 5`, json(ids))) find(`cents:${table}`, row.id);
+      for (const row of all(`SELECT t.id FROM json_each(?) j CROSS JOIN ${table} t ON t.id = j.value WHERE (ABS(${column} * 100 - ROUND(${column} * 100)) > 0.0001 OR ${column} < 0)${where ? ` AND ${where}` : ""} LIMIT 5`, json(ids))) find(`cents:${table}`, row.id);
     }
     const today = period()?.today?.() || now.today();
     for (const table of dated) {
@@ -491,9 +493,9 @@ export function createScopedGate({ store, ledger, accounts, plans, stock, money,
       if (!ids.length || !hasColumn(table, "date")) continue;
       if (datedWhenUsed.has(table) && !store.get(datedWhenUsed.get(table))) continue;
       const list = json(ids);
-      for (const row of all(`SELECT id FROM ${table} WHERE (date IS NULL OR trim(date) = '' OR date NOT GLOB '[0-9][0-9][0-9][0-9]-[01][0-9]-[0-3][0-9]' OR date(date) IS NULL OR date(date) <> date) AND id IN ${IN} LIMIT 5`, list)) find(`dates:format:${table}`, row.id);
+      for (const row of all(`SELECT t.id FROM json_each(?) j CROSS JOIN ${table} t ON t.id = j.value WHERE (t.date IS NULL OR trim(t.date) = '' OR t.date NOT GLOB '[0-9][0-9][0-9][0-9]-[01][0-9]-[0-3][0-9]' OR date(t.date) IS NULL OR date(t.date) <> t.date) LIMIT 5`, list)) find(`dates:format:${table}`, row.id);
       const known = legacy.future().get(table);
-      for (const row of all(`SELECT id FROM ${table} WHERE date > ? AND id IN ${IN}`, today, list)) if (!known?.has(row.id)) find(`dates:future:${table}`, row.id);
+      for (const row of all(`SELECT t.id FROM json_each(?) j CROSS JOIN ${table} t ON t.id = j.value WHERE t.date > ?`, list, today)) if (!known?.has(row.id)) find(`dates:future:${table}`, row.id);
     }
     lap("rows");
 
@@ -547,38 +549,40 @@ export function createScopedGate({ store, ledger, accounts, plans, stock, money,
          WHERE (status = 'issued' AND (posted <> hpayable OR postedRows <> 1)) OR (status <> 'issued' AND anyRows > 0) LIMIT 5`,
         list,
       )) find("invoice:account", row.id);
-      for (const row of all(`SELECT e.id FROM account_entries e LEFT JOIN invoices i ON i.id = e.source_id WHERE e.source = 'invoice' AND i.id IS NULL AND (e.source_id IN ${IN} OR e.id IN ${IN}) LIMIT 5`, list, json(s.entries))) find("invoice:orphan", row.id);
+      for (const row of all(`SELECT e.id FROM account_entries e LEFT JOIN invoices i ON i.id = e.source_id WHERE +e.source = 'invoice' AND i.id IS NULL AND e.id IN (SELECT id FROM account_entries WHERE source = 'invoice' AND source_id IN ${IN} UNION SELECT value FROM json_each(?)) LIMIT 5`, list, json(s.entries))) find("invoice:orphan", row.id);
       if (has("invoice_offsets") && hasColumn("account_entries", "invoice_id")) {
         const entries = json(s.entries);
         const offsets = json(s.offsets);
-        for (const row of all(`SELECT e.id FROM account_entries e LEFT JOIN invoices i ON i.id = e.invoice_id WHERE e.invoice_id <> '' AND (i.id IS NULL OR i.status <> 'issued' OR i.account_id <> e.account_id) AND (e.invoice_id IN ${IN} OR e.id IN ${IN}) LIMIT 5`, list, entries)) find("invoice:offset", `bağ ${row.id}`);
+        for (const row of all(`SELECT e.id FROM account_entries e LEFT JOIN invoices i ON i.id = e.invoice_id WHERE +e.invoice_id <> '' AND (i.id IS NULL OR i.status <> 'issued' OR i.account_id <> e.account_id) AND e.id IN (SELECT id FROM account_entries WHERE invoice_id IN ${IN} UNION SELECT value FROM json_each(?)) LIMIT 5`, list, entries)) find("invoice:offset", `bağ ${row.id}`);
         for (const row of all(
           `SELECT o.id FROM invoice_offsets o LEFT JOIN invoices i ON i.id = o.invoice_id
              LEFT JOIN invoices ci ON ci.id = o.counter_id AND o.counter_type = 'invoice' LEFT JOIN account_entries ce ON ce.id = o.counter_id AND o.counter_type = 'entry'
            WHERE (i.id IS NULL OR i.status <> 'issued' OR i.account_id <> o.account_id OR (o.counter_type = 'invoice' AND (ci.id IS NULL OR ci.status <> 'issued' OR ci.account_id <> o.account_id))
                   OR (o.counter_type = 'entry' AND (ce.id IS NULL OR ce.account_id <> o.account_id)) OR o.amount <= 0)
-             AND (o.invoice_id IN ${IN} OR o.counter_id IN ${IN} OR o.counter_id IN ${IN} OR o.id IN ${IN}) LIMIT 5`,
+             AND o.id IN (SELECT id FROM invoice_offsets WHERE invoice_id IN ${IN} UNION SELECT id FROM invoice_offsets WHERE counter_id IN ${IN} UNION SELECT id FROM invoice_offsets WHERE counter_id IN ${IN} UNION SELECT value FROM json_each(?)) LIMIT 5`,
           list, list, entries, offsets,
         )) find("invoice:offset", `mahsup ${row.id}`);
-        for (const row of all(`SELECT i.id FROM invoices i WHERE i.status = 'issued' AND i.id IN ${IN} AND (SELECT COALESCE(SUM(${c("o.amount")}), 0) FROM invoice_offsets o WHERE o.invoice_id = i.id OR (o.counter_type = 'invoice' AND o.counter_id = i.id)) > ${c("i.try_payable")} LIMIT 5`, list)) find("invoice:offset", `mahsup toplamı ${row.id}`);
+        for (const row of all(`SELECT i.id FROM invoices i WHERE +i.status = 'issued' AND i.id IN ${IN} AND (SELECT COALESCE(SUM(${c("o.amount")}), 0) FROM invoice_offsets o WHERE o.invoice_id = i.id OR (o.counter_type = 'invoice' AND o.counter_id = i.id)) > ${c("i.try_payable")} LIMIT 5`, list)) find("invoice:offset", `mahsup toplamı ${row.id}`);
       }
     }
     if (has("stock_moves")) {
       for (const row of all(
-        `SELECT l.id FROM invoice_lines l JOIN invoices i ON i.id = l.invoice_id AND i.status = 'issued'
+        `SELECT l.id FROM invoice_lines l CROSS JOIN invoices i ON i.id = l.invoice_id AND i.status = 'issued'
            LEFT JOIN stock_moves m ON m.id = l.move_id AND m.invoice_id = i.id
-         WHERE l.move_id <> '' AND (m.id IS NULL OR ABS(m.qty - l.qty) > 0.0005) AND (i.id IN ${IN} OR l.move_id IN ${IN}) LIMIT 5`,
+         WHERE +l.move_id <> '' AND (m.id IS NULL OR ABS(m.qty - l.qty) > 0.0005)
+           AND l.id IN (SELECT id FROM invoice_lines WHERE invoice_id IN ${IN} UNION SELECT id FROM invoice_lines WHERE move_id IN ${IN} AND move_id <> '') LIMIT 5`,
         list, json(s.moves),
       )) find("invoice:stock", row.id);
-      for (const row of all(`SELECT m.id FROM stock_moves m LEFT JOIN invoices i ON i.id = m.invoice_id WHERE m.invoice_id <> '' AND (i.id IS NULL OR i.status <> 'issued') AND (m.invoice_id IN ${IN} OR m.id IN ${IN}) LIMIT 5`, list, json(s.moves))) find("invoice:stock", row.id);
+      for (const row of all(`SELECT m.id FROM stock_moves m LEFT JOIN invoices i ON i.id = m.invoice_id WHERE +m.invoice_id <> '' AND (i.id IS NULL OR i.status <> 'issued') AND m.id IN (SELECT id FROM stock_moves WHERE invoice_id IN ${IN} UNION SELECT value FROM json_each(?)) LIMIT 5`, list, json(s.moves))) find("invoice:stock", row.id);
     }
-    if (has("cheques")) for (const row of all(`SELECT c.id FROM cheques c LEFT JOIN invoices i ON i.id = c.invoice_id WHERE c.invoice_id <> '' AND c.deleted_at IS NULL AND (i.id IS NULL OR i.status <> 'issued') AND (c.invoice_id IN ${IN} OR c.id IN ${IN}) LIMIT 5`, list, json(s.cheques))) find("invoice:cheque", row.id);
-    if (hasColumn("plans", "invoice_id")) for (const row of all(`SELECT p.id FROM plans p LEFT JOIN invoices i ON i.id = p.invoice_id WHERE p.invoice_id <> '' AND p.deleted_at IS NULL AND (i.id IS NULL OR i.status <> 'issued') AND (p.invoice_id IN ${IN} OR p.id IN ${IN}) LIMIT 5`, list, json(s.plans))) find("invoice:plan", row.id);
+    if (has("cheques")) for (const row of all(`SELECT c.id FROM cheques c LEFT JOIN invoices i ON i.id = c.invoice_id WHERE +c.invoice_id <> '' AND +c.deleted_at IS NULL AND (i.id IS NULL OR i.status <> 'issued') AND c.id IN (SELECT id FROM cheques WHERE invoice_id IN ${IN} UNION SELECT value FROM json_each(?)) LIMIT 5`, list, json(s.cheques))) find("invoice:cheque", row.id);
+    if (hasColumn("plans", "invoice_id")) for (const row of all(`SELECT p.id FROM plans p LEFT JOIN invoices i ON i.id = p.invoice_id WHERE +p.invoice_id <> '' AND +p.deleted_at IS NULL AND (i.id IS NULL OR i.status <> 'issued') AND p.id IN (SELECT id FROM plans WHERE invoice_id IN ${IN} UNION SELECT value FROM json_each(?)) LIMIT 5`, list, json(s.plans))) find("invoice:plan", row.id);
     // İade: kapsamdaki faturaların kalemleri asıl kalem olarak ya da iade kalemi olarak (asıl kalemleri).
     for (const row of all(
-      `SELECT o.id FROM invoice_lines r JOIN invoices ri ON ri.id = r.invoice_id AND ri.status = 'issued'
-         JOIN invoice_lines o ON o.id = r.origin_line_id JOIN invoices i ON i.id = o.invoice_id
-       WHERE r.origin_line_id <> '' AND (o.invoice_id IN ${IN} OR o.id IN (SELECT origin_line_id FROM invoice_lines WHERE invoice_id IN ${IN}))
+      `SELECT o.id FROM (SELECT id FROM invoice_lines WHERE invoice_id IN ${IN} UNION SELECT origin_line_id FROM invoice_lines WHERE invoice_id IN ${IN}) k
+         CROSS JOIN invoice_lines o ON o.id = k.id CROSS JOIN invoices i ON i.id = o.invoice_id
+         CROSS JOIN invoice_lines r ON r.origin_line_id = o.id CROSS JOIN invoices ri ON ri.id = r.invoice_id AND ri.status = 'issued'
+       WHERE r.origin_line_id <> ''
        GROUP BY o.id HAVING SUM(r.qty) > o.qty + 0.0005 LIMIT 5`,
       list, list,
     )) find("invoice:returns", row.id);

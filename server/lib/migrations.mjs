@@ -1139,6 +1139,8 @@ export const MIGRATIONS = [
         }
         // Fatura kurunun kaynağı (TCMB / elle); boş = eski fatura.
         if (store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'invoices'")) addColumn(store, "invoices", "rate_source", "TEXT NOT NULL DEFAULT ''");
+        // Mutabakat kapısı (§3.11, dilim 5): dokunulan stok hareketine bağlı fatura kalemi indeksle bulunur (yalnız indeks; satır değişmez).
+        if (store.all("PRAGMA table_info(invoice_lines)").some(column => column.name === "move_id")) store.exec("CREATE INDEX IF NOT EXISTS idx_invoice_lines_move ON invoice_lines(move_id) WHERE move_id <> ''");
         // Yetki göçü yalnız ortak katmanda (001): şirketlerin kullanıcı tablosu ortak katmandan aynalanır. Şirketi bilinmeyen çağrı
         // (yedeğin geri yüklenmesi) ortak katman sayılır; şirket kopyasında da çalışsa zararsızdır (aynalama üstüne yazar).
         if (!company || company.id === "sirket-001") migrateBankGrants(store);

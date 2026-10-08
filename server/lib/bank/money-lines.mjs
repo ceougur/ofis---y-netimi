@@ -237,12 +237,16 @@ export function createMoneyLines(store) {
       );
     }
     const where = [conditionSql(source, a)];
+    // Süzgeçli okumada (ids/events: kapının dokunulan satırları) satır tablosu dış döngüdür: istatistiksiz planlayıcı görünürlük JOIN'inin
+    // indeksini (accounts.deleted_at gibi) seçip bütün tabloyu dolaşıyordu (100.000 satırda ~100 ms/kaynak). CROSS JOIN yalnız sırayı
+    // belirler; sonuç aynı iç birleşimdir.
+    const from = ids || events ? r.from.replace(/(^|\s)JOIN\s/g, "$1CROSS JOIN ") : r.from;
     if (after) where.push(`${date} > :after`);
     if (ids) {
       if (source.table === "bank_lines") where.push(events ? `${eventId} IN (SELECT value FROM json_each(:events))` : "0");
       else where.push(ids[source.table]?.length ? `${a}.id IN (SELECT value FROM json_each(:ids_${source.table}))` : "0");
     } else if (events) where.push(`${eventId} IN (SELECT value FROM json_each(:events)) AND ${eventId} <> ''`);
-    return `SELECT ${parts.join(", ")} FROM ${r.from}${light || !r.rowJoin ? "" : ` ${r.rowJoin}`} WHERE ${where.join(" AND ")}`;
+    return `SELECT ${parts.join(", ")} FROM ${from}${light || !r.rowJoin ? "" : ` ${r.rowJoin}`} WHERE ${where.join(" AND ")}`;
   }
   const WAY_SQL = bank => `CASE
       WHEN u.way_hint IS NOT NULL THEN u.way_hint
@@ -254,7 +258,11 @@ export function createMoneyLines(store) {
   /** Yol türetilmiş tek SQL (w): src, id, event_id, kind, amount, cents, date, method, ref, party_id, internal, way, created_at (+ satır alanları). */
   function waySql(options) {
     const { bankAccounts } = load();
-    const union = MONEY_SOURCES.map(source => select(source, options)).filter(Boolean).join("\n UNION ALL ");
+    // ids kipinde (kapı) satırı verilmeyen kaynak sorguya hiç girmez (koşulu "0" olurdu; plan yine de tabloyu dolaşan bir döngü gösterir).
+    // Hiçbir kaynak kalmazsa ilk kaynağın boş sorgusu (koşul "0") kalır: SQL geçerli, satır yok.
+    const needed = source => !options.ids || (source.table === "bank_lines" ? Boolean(options.events) : Boolean(options.ids[source.table]?.length));
+    const chosen = MONEY_SOURCES.filter(needed);
+    const union = (chosen.length ? chosen : MONEY_SOURCES.slice(0, 1)).map(source => select(source, options)).filter(Boolean).join("\n UNION ALL ");
     return `SELECT u.*, ${WAY_SQL(bankAccounts)} AS way FROM (${union}) u${bankAccounts ? " LEFT JOIN bank_accounts ba ON u.ref <> '' AND ba.id = u.ref" : ""}`;
   }
   const params = ({ after, events, ids }) => ({

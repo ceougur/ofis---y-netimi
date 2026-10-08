@@ -136,7 +136,8 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
   // cari için aynıdır.
   function list(user, { q = "", group = "", subgroup = "", type = "", status = "active", balance = "all", sort = "no", plan = "", ids = null } = {}) {
     const only = ids ? JSON.stringify([...ids]) : null;
-    const rows = only ? store.all(`${ACCOUNT_SQL} WHERE a.deleted_at IS NULL AND a.id IN (SELECT value FROM json_each(?)) ORDER BY a.name COLLATE NOCASE`, only) : store.all(`${ACCOUNT_SQL} WHERE a.deleted_at IS NULL ORDER BY a.name COLLATE NOCASE`);
+    // ids: tekli + deleted_at indeksini kapatır (birincil anahtar seçilir; değer aynı).
+    const rows = only ? store.all(`${ACCOUNT_SQL} WHERE +a.deleted_at IS NULL AND a.id IN (SELECT value FROM json_each(?)) ORDER BY a.name COLLATE NOCASE`, only) : store.all(`${ACCOUNT_SQL} WHERE a.deleted_at IS NULL ORDER BY a.name COLLATE NOCASE`);
     const sums = new Map();
     for (const row of only ? store.all("SELECT account_id AS accountId, kind, SUM(amount) AS amount FROM account_entries WHERE account_id IN (SELECT value FROM json_each(?)) GROUP BY account_id, kind", only) : store.all("SELECT account_id AS accountId, kind, SUM(amount) AS amount FROM account_entries GROUP BY account_id, kind")) {
       if (!sums.has(row.accountId)) sums.set(row.accountId, { debt: 0, credit: 0, in: 0, out: 0 });
@@ -263,7 +264,8 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
       if (row.groupId) counts.set(row.groupId, (counts.get(row.groupId) || 0) + 1);
       if (row.subgroupId) counts.set(row.subgroupId, (counts.get(row.subgroupId) || 0) + 1);
     }
-    const tree = (plans()?.groupTree ? plans().groupTree() : []).map(item => ({ ...item, count: counts.get(item.id) || 0, subgroups: item.subgroups.map(sub => ({ ...sub, count: counts.get(sub.id) || 0 })) }));
+    // ids (kapı): grup ağacı istenmez (bütün kartları sayar; 100.000 satırda ~5 ms/yazım).
+    const tree = (!only && plans()?.groupTree ? plans().groupTree() : []).map(item => ({ ...item, count: counts.get(item.id) || 0, subgroups: item.subgroups.map(sub => ({ ...sub, count: counts.get(sub.id) || 0 })) }));
     return { accounts: out, totals, sort, groups: tree, fieldLabels: [...labels].slice(0, 200), canManage: canUser(user, "accounts.manage"), canCollect: canUser(user, "accounts.collect"), canPlan: canUser(user, "plans.manage"), today: today() };
   }
 
