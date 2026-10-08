@@ -218,7 +218,9 @@
       intro: edit
         ? core
           ? "Tahsil, ciro ya da ödeme yapılmadıkça tutar, cari ve tarihler değiştirilebilir; cari/taksit kaydı birlikte düzeltilir."
-          : "İşlem görmüş evrakta yalnız vade, no, banka ve açıklama değiştirilebilir. Tutar ya da cari için önce son işlemi geri alın."
+          : cheque.coreLocked
+            ? `Bu evrak kapatılmış (kilitli) dönemde ${direction === "in" ? "alındı" : "verildi"}; yalnız vade, no, banka ve açıklama değiştirilebilir. Tutar, cari ve tarih için yönetici dönem kilidini açmalı.`
+            : "İşlem görmüş evrakta yalnız vade, no, banka ve açıklama değiştirilebilir. Tutar ya da cari için önce son işlemi geri alın."
         : direction === "in"
           ? "Müşteriden aldığınız evrak portföye girer. Cari seçerseniz carinin borcu düşer; taksit kartı seçerseniz o taksit ödenmiş sayılır. Para Kasa'ya tahsil edildiğinde girer."
           : "Tedarikçiye verdiğiniz kendi çekiniz/senediniz. Cari seçerseniz tedarikçiye olan borcunuz düşer; para Kasa'dan vadesinde ödendiğinde çıkar.",

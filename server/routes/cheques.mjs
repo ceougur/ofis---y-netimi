@@ -103,6 +103,8 @@ export function registerChequeRoutes(router, { store, auth, audit, events, perio
     const manage = canUser(user, "cheques.manage");
     const actions = manage ? Object.entries(ACTIONS).filter(([, rule]) => rule.from.includes(cheque.status)).map(([key, rule]) => ({ key, label: rule.label })) : [];
     const last = history.at(-1);
+    const lock = period?.lockedUntil?.() || "";
+    const coreLocked = Boolean(lock && cheque.issueDate && cheque.issueDate <= lock);
     return {
       ...cheque,
       events: history.map(({ effectsJson, ...event }) => ({ ...event, label: EVENT_LABELS[event.kind] || event.kind, fromLabel: STATUSES[event.fromStatus]?.label || "", toLabel: STATUSES[event.toStatus]?.label || "", ledger: effectsOf({ effectsJson }).length })),
@@ -110,7 +112,10 @@ export function registerChequeRoutes(router, { store, auth, audit, events, perio
       // v2.0.15: faturayla alınan/verilen evrak ve faturayla yapılan ciro faturanın parçasıdır (fatura iptaliyle geri alınır).
       canUndo: manage && history.length > 1 && !last.invoiceId,
       undoLabel: history.length > 1 && !last.invoiceId ? `“${EVENT_LABELS[last.kind]}” İşlemini Geri Al` : "",
-      canEditCore: manage && history.length === 1 && !cheque.invoiceId,
+      // v2.0.26 (gözden geçirme G3): kapanmış dönemde alınan/verilen evrakta form tutar, cari ve tarih alanlarını açmaz (sunucu
+      // zaten 409 verir); yalnız vade, no, banka ve açıklama düzeltilir. coreLocked formun giriş metnini seçer.
+      canEditCore: manage && history.length === 1 && !cheque.invoiceId && !coreLocked,
+      coreLocked,
       canDelete: manage && history.length === 1 && !cheque.invoiceId,
       canManage: manage,
     };
@@ -311,6 +316,17 @@ export function registerChequeRoutes(router, { store, auth, audit, events, perio
     return { id, effects };
   }
 
+  // v2.0.26 (gözden geçirme G3): para alanları değeriyle karşılaştırılır. Form tutarı "2500,5" gönderir, kayıtta 2500.5 durur;
+  // metin karşılaştırması bunu "tutar değişti" sayıyor, kilitli dönemdeki evrakta yalnız vade düzeltmesi 409 alıyor, açık dönemde
+  // de cari/taksit satırını gereksiz yere yeniden yazıyordu. Okunamayan tutar değişiklik sayılır (coreInput 400 verir).
+  function coreChanged(body, previous) {
+    if (body.amount !== undefined) {
+      const amount = parseAmount(body.amount);
+      if (!Number.isFinite(amount) || roundMoney(amount) !== roundMoney(Number(previous.amount) || 0)) return true;
+    }
+    return ["accountId", "planId", "itemId", "issueDate", "instrument"].some(key => body[key] !== undefined && text(body[key] ?? "") !== text(previous[key] ?? ""));
+  }
+
   // ---------- Yazma ----------
   router.post("/api/workspace/cheques", async ({ req, res }) => {
     const user = auth.requirePermission(req, "cheques.manage");
@@ -334,7 +350,7 @@ export function registerChequeRoutes(router, { store, auth, audit, events, perio
       const previous = chequeRow(params.id);
       if (body.updatedAt && body.updatedAt !== previous.updatedAt) throw new HttpError(409, "Bu çek siz bakarken değişti. Kartı yenileyip yeniden deneyin.", { code: "cheque-stale" });
       const history = eventsOf(previous.id);
-      const coreChange = ["amount", "accountId", "planId", "itemId", "issueDate", "instrument"].some(key => body[key] !== undefined && String(body[key] ?? "") !== String(previous[key] ?? ""));
+      const coreChange = coreChanged(body, previous);
       if (coreChange && previous.invoiceId) throw new HttpError(409, `Bu evrak ${previous.invoiceNumber || "bir fatura"} ile kaydedildi; tutarı, carisi ve tarihi faturadan gelir. Değiştirmek için faturayı iptal edin.`, { code: "invoice-linked", invoiceId: previous.invoiceId });
       if (coreChange && history.length > 1) throw new HttpError(409, "Tahsil, ciro ya da ödeme yapılmış evrakın tutarı, carisi ve tarihi değiştirilemez. Önce son işlemi geri alın.");
       // v2.0.26 (A6): kapanmış dönemdeki evrakın tutarı, carisi, kartı ve tarihi değişmez; yeni tarih de kilitli/ileri olamaz.
