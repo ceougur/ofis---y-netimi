@@ -240,13 +240,18 @@ export function registerChequeRoutes(router, { store, auth, audit, events, perio
   }
 
   // ---------- Giriş doğrulama ----------
-  function coreInput(body, previous = null, { checkLinks = true } = {}) {
+  // dated (v2.0.26, A6): alış/veriliş tarihi bir hareket tarihidir (portföye giriş, cari etkisi): Kasa/cari ile aynı kural —
+  // ileri tarih 400 date-future, kilitli dönem 409 period-locked (lib/period.mjs). Önceden ileri tarihli ve kilitli döneme
+  // evrak girilebiliyordu. Yalnız vade/not gibi para dışı alanlar düzeltilirken (dated: false) eski tarih yeniden denetlenmez.
+  function coreInput(body, previous = null, { checkLinks = true, dated = false } = {}) {
     const direction = previous ? previous.direction : text(body.direction);
     if (!DIRECTIONS[direction]) throw new HttpError(400, "Alınan mı verilen mi olduğunu seçin.");
     const instrument = text(body.instrument) || previous?.instrument || "cheque";
     if (!INSTRUMENTS[instrument]) throw new HttpError(400, "Evrak türü çek ya da senet olmalı.");
     const amount = amountOf(body.amount ?? previous?.amount);
-    const issueDate = dateOf(body.issueDate ?? previous?.issueDate, direction === "in" ? "Alış tarihi" : "Veriliş tarihi", today());
+    const issueLabel = direction === "in" ? "Alış tarihi" : "Veriliş tarihi";
+    const rawIssue = text(body.issueDate ?? previous?.issueDate) || today();
+    const issueDate = dated && period ? period.movementDate({ issueDate: rawIssue }, { field: "issueDate", label: issueLabel }) : dateOf(rawIssue, issueLabel, today());
     const dueDate = dateOf(body.dueDate ?? previous?.dueDate, "Vade tarihi");
     let accountId = text(body.accountId ?? previous?.accountId ?? "").slice(0, 120);
     let planId = direction === "in" ? text(body.planId ?? "").slice(0, 120) : "";
@@ -305,7 +310,7 @@ export function registerChequeRoutes(router, { store, auth, audit, events, perio
     const user = auth.requirePermission(req, "cheques.manage");
     const body = await readJson(req);
     const created = store.tx(() => {
-      const input = coreInput(body);
+      const input = coreInput(body, null, { dated: true });
       if (body.allowDuplicate !== true) assertUnique(input);
       const result = insertCheque(user, input);
       audit(user, "cheque.created", result.id, { direction: input.direction, instrument: input.instrument, serialNo: input.serialNo, amount: input.amount, dueDate: input.dueDate, accountId: input.accountId, planId: input.planId });
@@ -326,7 +331,9 @@ export function registerChequeRoutes(router, { store, auth, audit, events, perio
       const coreChange = ["amount", "accountId", "planId", "itemId", "issueDate", "instrument"].some(key => body[key] !== undefined && String(body[key] ?? "") !== String(previous[key] ?? ""));
       if (coreChange && previous.invoiceId) throw new HttpError(409, `Bu evrak ${previous.invoiceNumber || "bir fatura"} ile kaydedildi; tutarı, carisi ve tarihi faturadan gelir. Değiştirmek için faturayı iptal edin.`, { code: "invoice-linked", invoiceId: previous.invoiceId });
       if (coreChange && history.length > 1) throw new HttpError(409, "Tahsil, ciro ya da ödeme yapılmış evrakın tutarı, carisi ve tarihi değiştirilemez. Önce son işlemi geri alın.");
-      const input = coreInput({ ...previous, ...body }, previous, { checkLinks: coreChange });
+      // v2.0.26 (A6): kapanmış dönemdeki evrakın tutarı, carisi, kartı ve tarihi değişmez; yeni tarih de kilitli/ileri olamaz.
+      if (coreChange) period?.assertOpen(previous.issueDate, "Bu çek/senet");
+      const input = coreInput({ ...previous, ...body }, previous, { checkLinks: coreChange, dated: coreChange });
       if (body.allowDuplicate !== true) assertUnique(input, previous.id);
       if (coreChange) {
         // Tek olaylı (alındı/verildi) kayıt: eski defter etkileri geri alınır, yenileri yazılır (aynı işlem bloğunda).
@@ -429,6 +436,8 @@ export function registerChequeRoutes(router, { store, auth, audit, events, perio
       const history = eventsOf(cheque.id);
       if (history.length > 1) throw new HttpError(409, `Tahsil, ciro ya da ödeme yapılmış ${kindName(cheque).toLocaleLowerCase("tr-TR")} silinemez. Önce işlemleri geri alın.`);
       if (cheque.invoiceId) throw new HttpError(409, `Bu evrak ${cheque.invoiceNumber || "bir fatura"} ile kaydedildi; silmek için faturayı iptal edin.`, { code: "invoice-linked", invoiceId: cheque.invoiceId });
+      // v2.0.26 (A6): kapanmış dönemde alınan/verilen evrak silinmez (portföy ve cari etkisi kilitli mizandadır).
+      period?.assertOpen(cheque.issueDate, "Bu çek/senet");
       const effects = effectsOf(history[0]);
       revertEffects(effects, user);
       store.run("UPDATE cheque_events SET effects_json = ? WHERE id = ?", JSON.stringify({ reverted: effects.length > 0 }), history[0].id);
@@ -563,6 +572,12 @@ export function registerChequeRoutes(router, { store, auth, audit, events, perio
         if (serialNo && (seen.has(key) || store.get("SELECT 1 AS found FROM cheques WHERE deleted_at IS NULL AND serial_no = ? AND direction = ? AND instrument = ? AND bank = ? COLLATE NOCASE", serialNo, direction, instrument, bank))) return skip(index, `No ${serialNo} zaten kayıtlı`);
         seen.add(key);
         const issue = parseDay(cell(row, col.issue)) || today();
+        // v2.0.26 (A6): alış/veriliş tarihi ileri tarihli ya da kapatılmış dönemde olan satır nedeniyle atlanır (tek tek
+        // girişteki kuralın aynısı; bütün aktarım kapıda geri alınmasın).
+        const issueLabel = direction === "in" ? "Alış tarihi" : "Veriliş tarihi";
+        if (issue > today()) return skip(index, `${issueLabel} ileri tarihli (${dayText(issue)}); ileri tarihli hareket girilmez`);
+        const lock = period?.lockedUntil?.() || "";
+        if (lock && issue <= lock) return skip(index, `${issueLabel} (${dayText(issue)}) kapatılmış (kilitli) dönemde; ${dayText(lock)} ve öncesine evrak girilmez`);
         const input = { direction, instrument, amount: roundMoney(amount), issueDate: issue, dueDate: due, accountId, planId: "", itemId: "", drawer, serialNo, bank, note: cell(row, col.note).slice(0, 500) };
         const created = insertCheque(user, input, { post: post && Boolean(accountId), eventNote: post && accountId ? "" : "Açılış portföyü (Excel/Sheets)" });
         report.created += 1;
@@ -656,6 +671,8 @@ export function registerChequeRoutes(router, { store, auth, audit, events, perio
     const raw = store.get(`${CHEQUE_SQL.replace("AND a.deleted_at IS NULL", "")} WHERE c.id = ? AND c.deleted_at IS NOT NULL`, id);
     if (!raw) throw new HttpError(404, "Bu evrak zaten geri yüklenmiş.");
     let effects = [];
+    // v2.0.26 (A6): kapanmış dönemde alınan/verilen evrak geri yüklenmez (silmedeki kuralın aynısı).
+    period?.assertOpen(raw.issueDate, "Bu çek/senet");
     store.tx(() => {
       if (raw.accountId && !accounts()?.exists?.(raw.accountId)) throw new HttpError(409, "Evrakın carisi silinmiş. Önce cariyi geri yükleyin.");
       if (raw.serialNo && store.get("SELECT 1 AS found FROM cheques WHERE deleted_at IS NULL AND serial_no = ? AND direction = ? AND instrument = ? AND bank = ? COLLATE NOCASE", raw.serialNo, raw.direction, raw.instrument, raw.bank)) {
@@ -687,7 +704,7 @@ export function registerChequeRoutes(router, { store, auth, audit, events, perio
   //            gördüyse iptal durdurulur (önce o işlem geri alınmalı; para gerçekten el değiştirmiştir).
   const invoiceCheques = {
     create(user, body, { invoiceId, note = "" }) {
-      const input = coreInput(body);
+      const input = coreInput(body, null, { dated: true });
       if (input.dueDate < input.issueDate) throw new HttpError(400, `${INSTRUMENTS[input.instrument]} vadesi (${dayText(input.dueDate)}) fatura tarihinden (${dayText(input.issueDate)}) önce olamaz.`, { code: "cheque-due-before-issue" });
       assertUnique(input);
       const result = insertCheque(user, input, { invoiceId, effectNote: note });

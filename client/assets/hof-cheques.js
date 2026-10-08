@@ -206,7 +206,7 @@
       { name: "instrument", label: "Evrak", type: "select", value: cheque?.instrument || "cheque", options: [{ value: "cheque", label: "Çek" }, { value: "note", label: "Senet" }] },
       { name: "amount", label: "Tutar (₺)", required: true, autofocus: !edit, value: cheque ? String(cheque.amount).replace(".", ",") : preset?.amount ? String(preset.amount) : "", inputmode: "decimal", placeholder: "ör. 12.500,00" },
       { name: "dueDate", label: "Vade Tarihi", type: "date", required: true, value: cheque?.dueDate || "" },
-      { name: "issueDate", label: direction === "in" ? "Alış Tarihi" : "Veriliş Tarihi", type: "date", required: true, value: cheque?.issueDate || todayIso() },
+      { name: "issueDate", label: direction === "in" ? "Alış Tarihi" : "Veriliş Tarihi", type: "date", required: true, max: "today", value: cheque?.issueDate || todayIso() },
       { name: "serialNo", label: "Çek / Senet No", value: cheque?.serialNo || "", maxlength: 60 },
       { name: "bank", label: "Banka / Şube", value: cheque?.bank || "", maxlength: 120, placeholder: "ör. Ziraat Bankası Meram" },
       { name: "drawer", label: direction === "in" ? "Keşideci / Borçlu (cari seçilmezse)" : "Lehtar (cari seçilmezse)", value: cheque?.drawer || "", maxlength: 160 },
