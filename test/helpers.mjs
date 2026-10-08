@@ -33,6 +33,9 @@ export async function startTestServer(options = {}) {
     // Para yazımı denetimi (K6) test kipinde: bank.post dışından para satırı ya da ham düzeltme/silme hata verir (üretimde günlük).
     // Üretim davranışını sınayan testler { moneyStrict: false } verir.
     moneyStrict: options.moneyStrict ?? true,
+    // Mutabakat kapısı eşdeğerlik denetimi (v2.1.0, §3.11): tam kapı her işlemde de çalışır; dokunulan varlıklar yolu temiz deyip tam
+    // kapı reddederse 500 "gate-equivalence". Üretim yolunu (yalnız süzgeç) sınayan testler { gateVerify: false } verir.
+    gateVerify: options.gateVerify ?? true,
   });
   const address = await app.listen(0, "127.0.0.1");
   const base = `http://127.0.0.1:${address.port}`;
