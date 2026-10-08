@@ -105,7 +105,8 @@ describe("İşlem No (meta.bank.seq.<yıl>)", () => {
   it("olaylar silinse de numara geri gitmez; sayaç silinse en büyük sıradan sürer", () => {
     assert.ok(lib, "kütüphane yok");
     const store = server.app.store;
-    store.tx(() => store.run("DELETE FROM fin_events WHERE year = 2026 AND seq = 4"));
+    // K6 (c, dilim 3): işlem başlığını bank.post dışından silmek yalnız store.raw kapsamında (test: elle silinmiş olay).
+    store.raw("test: olay silme", () => store.tx(() => store.run("DELETE FROM fin_events WHERE year = 2026 AND seq = 4")));
     assert.equal(record(store, "2026-10-08").seq, 5, "silinen 4 yeniden verilmez");
     store.tx(() => store.run("DELETE FROM settings WHERE key = 'meta.bank.seq.2026'"));
     assert.equal(record(store, "2026-10-08").seq, 6, "sayaç yoksa en büyük sıra + 1");

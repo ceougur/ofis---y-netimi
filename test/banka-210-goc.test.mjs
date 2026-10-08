@@ -236,7 +236,8 @@ describe("v20 şeması (yeni kurulum)", () => {
         // Geri alındığı için kapı çalışmadı; kapıya giren tablo listesi bir sonraki gerçek yazımda görülür.
         store.tx(() => store.run(`INSERT INTO ${table} (${cols.join(", ")}) VALUES (${cols.map(() => "?").join(", ")})`, ...cols.map(col => row[col])));
         assert.ok(seen.some(list => list.split(",").includes(table)), `${table} yazımı mutabakat kapısından geçmedi`);
-        store.tx(() => store.run(`DELETE FROM ${table}`));
+        // K6 (c, dilim 3): para tablosuna bank.post dışından ham DELETE yalnız store.raw kapsamında (test temizliği).
+        store.raw("test: kapı listesi temizliği", () => store.tx(() => store.run(`DELETE FROM ${table}`)));
       }
       store.tx(() => store.run("INSERT INTO bank_accounts (id, code, gl, gl_sub, kind, bank_name, name, opening_date, created_by, created_at) VALUES ('ba-k', 'K1', '102', '102.09', 'deposit', 'Ziraat', 'Kapı', '2026-10-01', 'u', ?)", T0));
       seen.length = 0;
@@ -257,7 +258,7 @@ describe("v20 şeması (yeni kurulum)", () => {
     assert.throws(() => insertEvent("ev-future", 2, "2026-10-12"), error => error.status === 409 && error.extra?.code === "ledger-integrity" && error.failures.some(item => item.code === "dates:future:fin_events"));
     assert.throws(() => insertEvent("ev-bad", 3, "2026-02-30"), error => error.status === 409 && error.failures.some(item => item.code === "dates:format:fin_events"));
     assert.equal(store.get("SELECT COUNT(*) AS n FROM fin_events").n, 1, "geri alınan işlem başlığı yazılmadı");
-    store.tx(() => store.run("DELETE FROM fin_events"));
+    store.raw("test: olay temizliği", () => store.tx(() => store.run("DELETE FROM fin_events")));
   });
 
   it("kilit izi: kilitli dönemdeki eski satıra hesap/işlem bağı (fin_ref, event_id) yazmak 409 period-lock; açık dönemde serbest", async () => {
@@ -270,7 +271,8 @@ describe("v20 şeması (yeni kurulum)", () => {
     for (const column of ["fin_ref", "event_id"]) {
       assert.throws(() => store.tx(() => store.run(`UPDATE account_entries SET ${column} = ? WHERE id = ?`, "ba-x", old.entryId)), error => error.status === 409 && error.failures?.some(item => item.code === "period-lock"), `kilitli satıra ${column}`);
     }
-    store.tx(() => store.run("UPDATE account_entries SET fin_ref = ?, event_id = ? WHERE id = ?", "ba-x", "ev-x", fresh.entryId));
+    // K6 (c, dilim 3): hesap/işlem bağı yazmak gerçek kodda bank.post (op 'assign'); test ham kapsamla yazar.
+    store.raw("test: açık dönemde bağ", () => store.tx(() => store.run("UPDATE account_entries SET fin_ref = ?, event_id = ? WHERE id = ?", "ba-x", "ev-x", fresh.entryId)));
     assert.equal(store.get("SELECT fin_ref FROM account_entries WHERE id = ?", old.entryId).fin_ref, "", "kilitli satır değişmedi");
     assert.equal((await admin.put("/api/admin/period-lock", { lockedUntil: "" })).status, 200);
   });
