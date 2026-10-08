@@ -1022,10 +1022,17 @@
     try {
       const result = await HOF.api("/api/workspace/ledger/integrity");
       const rolled = (result.log || []).filter(row => row.action === "rolled-back").length;
+      // v2.0.26 (2. gözden geçirme İ8): yalnız eski sürümden kalan satır varsa (yeni işlem engellenmez) kırmızı hata değil sarı uyarı
+      // ve ne yapılacağı (sunucunun hint'i, ör. çek/senette Düzenle ile alış tarihini gerçek güne çekmek).
+      const legacyOnly = item => item.legacy && item.legacy >= item.count;
+      const onlyLegacy = !result.ok && result.failures.every(legacyOnly);
       health.textContent = result.ok
         ? `Mutabakat: ${result.checks.length} denetim tamam — ana defter ile Kasa, Cari, Stok ve Taksit kuruşu kuruşuna tutarlı.${rolled ? ` Son kayıtlarda ${rolled} işlem sapma yaratacağı için geri alındı (Raporlar › Mutabakat Günlüğü).` : ""}`
-        : `Mutabakat: ${result.failures.length} denetimde sapma var (${result.failures.map(item => (item.legacy && item.legacy >= item.count ? `${item.name} — eski sürümden kalan ${item.legacy} satır; yeni işlemler engellenmez` : item.name)).join(", ")}). Raporlar › Defter Mutabakatı'nda ayrıntıyı görün.`;
-      health.classList.toggle("adm-error-text", !result.ok);
+        : onlyLegacy
+          ? `Mutabakat: ${result.failures.length} denetimde eski sürümden kalan satır var; yeni işlemler engellenmez (${result.failures.map(item => `${item.name}: ${item.legacy} satır`).join(", ")}). ${result.failures.map(item => item.hint || "").filter(Boolean).join(" ")} Raporlar › Defter Mutabakatı'nda ayrıntıyı görün.`.replace(/\s+/g, " ")
+          : `Mutabakat: ${result.failures.length} denetimde sapma var (${result.failures.map(item => (legacyOnly(item) ? `${item.name} — eski sürümden kalan ${item.legacy} satır; yeni işlemler engellenmez` : item.name)).join(", ")}). Raporlar › Defter Mutabakatı'nda ayrıntıyı görün.`;
+      health.classList.toggle("adm-error-text", !result.ok && !onlyLegacy);
+      health.classList.toggle("adm-warn-text", onlyLegacy);
     } catch {
       health.textContent = "";
     }

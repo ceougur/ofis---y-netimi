@@ -366,8 +366,10 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
         // yeni işlemler onu büyütemez, engellenmez de.
         const legacyOnly = check => !check.ok && check.legacy > 0 && check.legacy >= check.count;
         const onlyLegacy = !ok && reconciliation.ok && extra.filter(check => !check.ok).every(legacyOnly);
+        // 2. gözden geçirme İ8: eski satırda ne yapılacağı (ör. çek/senette Düzenle ile alış tarihini gerçek güne çekmek).
+        const hints = extra.filter(check => legacyOnly(check) && check.hint).map(check => check.hint).join(" ");
         return {
-          subtitle: ok ? "Tüm hesaplar tutarlı; borç toplamı alacak toplamına eşit. Her kayıt yazılmadan önce bu denetimden geçer." : onlyLegacy ? "Eski sürümden kalan satır var (aşağıda “Eski Sürümden Kalan”). Yeni işlemler engellenmez ve bu satırları büyütemez." : "Fark bulunan hesap var; yöneticiye bildirin. Yeni işlemler bu farkı büyütemez.",
+          subtitle: `${ok ? "Tüm hesaplar tutarlı; borç toplamı alacak toplamına eşit. Her kayıt yazılmadan önce bu denetimden geçer." : onlyLegacy ? "Eski sürümden kalan satır var (aşağıda “Eski Sürümden Kalan”). Yeni işlemler engellenmez ve bu satırları büyütemez." : "Fark bulunan hesap var; yöneticiye bildirin. Yeni işlemler bu farkı büyütemez."}${hints ? ` ${hints}` : ""}`,
           headers: ["Hesap", "Hesap Adı", "Ana Defter", "Alt Defter", "Fark", "Durum"],
           types: ["", "", "money", "money", "money", ""],
           rows: [

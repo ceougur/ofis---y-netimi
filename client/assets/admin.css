@@ -958,6 +958,7 @@ td.adm-row-actions > .hof-button + .hof-button {
 .adm-period { margin-bottom: 16px; }
 .adm-period .adm-inline { align-items: end; flex-wrap: wrap; }
 .adm-error-text { color: var(--do-danger); }
+.adm-warn-text { color: var(--do-warn); }
 .adm-negative { margin-bottom: 16px; }
 .adm-negative .adm-inline { align-items: end; flex-wrap: wrap; }
 

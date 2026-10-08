@@ -335,12 +335,12 @@ describe("G4 — eski sürümden kalan satır Mutabakat Testi'nde, Defter Mutaba
   });
   it("çalışıyor mu: Defter Mutabakatı satırı 'Eski Sürümden Kalan' der; Mutabakat Günlüğü'nde açılış sapması (baseline) var", async () => {
     const report = await must("rapor", ctx.api.get("/api/workspace/report-center/defter-mutabakati"));
-    const row = report.rows.find(cells => String(cells[1]).includes("İleri tarihli hareket (payments)"));
+    const row = report.rows.find(cells => String(cells[1]).includes("İleri tarihli hareket (Kayıt Tahsilatları)"));
     assert.ok(row, JSON.stringify(report.rows).slice(0, 500));
     assert.equal(row.at(-1), "Eski Sürümden Kalan");
     assert.equal(report.summary.find(cells => cells[0] === "Sonuç")[1], "Fark Var");
     const log = ctx.store.all("SELECT action, summary FROM integrity_log WHERE action = 'baseline'");
-    assert.ok(log.some(entry => /İleri tarihli hareket \(payments\)/.test(entry.summary) && /Tanınmayan ödeme yolu/.test(entry.summary)), JSON.stringify(log));
+    assert.ok(log.some(entry => /İleri tarihli hareket \(Kayıt Tahsilatları\)/.test(entry.summary) && /Tanınmayan ödeme yolu/.test(entry.summary)), JSON.stringify(log));
   });
   it("nasıl bozarım: eski satır varken yeni ileri tarihli / tanınmayan yollu satır kapıda yine 409", () => {
     const { store } = ctx;

@@ -63,6 +63,21 @@ const KNOWN_METHODS = "('cash', 'bank', 'card')";
 // v2.0.26 (A6): çek/senet olayları da (alındı/verildi, tahsil, ciro, ödeme, karşılıksız) tarihli harekettir; eski veride kalan
 // ileri tarihli olaylar A13 kuralıyla (açılıştaki kimlikler taban) yeni işlemleri engellemez.
 const DATED = ["payments", "cash_entries", "account_entries", "stock_moves", "plan_entries", "cheque_events"];
+// 2. gözden geçirme İ8: denetim adlarında tablo adı yerine kullanıcının bildiği ad (Yönetim'de, Defter Mutabakatı'nda, günlükte görünür).
+const TABLE_LABEL = {
+  payments: "Kayıt Tahsilatları",
+  cash_entries: "Kasa Hareketleri",
+  account_entries: "Cari Hareketleri",
+  stock_moves: "Stok Hareketleri",
+  plan_entries: "Taksit Tahsilatları",
+  plan_items: "Taksitler",
+  plans: "Taksit Kartları",
+  cheque_events: "Çek/Senet Hareketleri",
+  cheques: "Çek/Senet",
+  invoices: "Faturalar",
+  invoice_lines: "Fatura Kalemleri",
+};
+const labelOf = table => TABLE_LABEL[table] || table;
 // Kapanmış dönemin parmak izi: kilit tarihi ve öncesindeki her para satırı (tutar, yön, yol, tarih, cari/kalem bağı) ve
 // o dönemde cariye borç yazan kartlar. Kilit altındaki tek bir satır değişirse, silinirse ya da eklenirse iz değişir.
 const LOCK_SQL = {
@@ -119,6 +134,16 @@ const LOCK_SQL = {
 export function createIntegrity({ store, ledger, accounts = () => null, stock = () => null, plans = () => null, period = () => null, log = null, newId = () => `int-${crypto.randomUUID()}` }) {
   const has = table => Boolean(store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = ?", table));
   const hasColumn = (table, column) => has(table) && store.all(`PRAGMA table_info(${table})`).some(row => row.name === column);
+  // İ8: eski sürümden kalan ileri tarihli satır için kullanıcının yapacağı (tablo adı yok). Çek/senet: 2.0.25'te ileri alış/veriliş
+  // tarihi girilebiliyordu; Düzenle ile gerçek güne çekilir (işlem görmemiş evrakta), tahsil/ciro/ödeme tarihi ileriyse geri alınıp
+  // doğru tarihle yeniden yapılır.
+  function futureHint(table, rows, today) {
+    if (table === "cheque_events") {
+      const cheques = store.get("SELECT COUNT(DISTINCT cheque_id) AS n FROM cheque_events WHERE date > ?", today).n;
+      return `Çek/Senet'te ${cheques} evrakta tarihi ileri hareket var (eski sürümden). Alış/Veriliş Tarihi ileriyse evrakın kartında Düzenle ile gerçek güne çekin; tahsil, ciro ya da ödeme tarihi ileriyse o işlemi geri alıp doğru tarihle yeniden yapın. Düzeltilmezse tarihi gelince kendiliğinden kalkar.`;
+    }
+    return `${labelOf(table)} içinde tarihi ileri ${rows.length} eski hareket var. Tarihi gelince kendiliğinden kalkar; tarih yanlışsa hareketi kendi kartında düzeltin.`;
+  }
 
   /** Tüm denetimler; her biri { code, name, ok, difference?, count?, sample? }. */
   function run() {
@@ -193,7 +218,7 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
     for (const [table, column, where] of AMOUNT_COLUMNS) {
       if (!hasColumn(table, column)) continue;
       const rows = store.all(`SELECT id, ${column} AS amount FROM ${table} WHERE (ABS(${column} * 100 - ROUND(${column} * 100)) > 0.0001 OR ${column} < 0)${where ? ` AND ${where}` : ""} LIMIT 5`);
-      checks.push({ code: `cents:${table}`, name: `Kuruş ve işaret (${table})`, ok: rows.length === 0, count: rows.length, sample: rows.map(row => `${row.id}=${row.amount}`) });
+      checks.push({ code: `cents:${table}`, name: `Kuruş ve işaret (${labelOf(table)})`, ok: rows.length === 0, count: rows.length, sample: rows.map(row => `${row.id}=${row.amount}`) });
     }
     if (has("stock_moves") && has("account_entries")) {
       // Açık hesaba yazılmış stok hareketi → carideki karşılığı aynı tutarda (sızıntı yok).
@@ -303,7 +328,7 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
     for (const table of DATED) {
       if (!hasColumn(table, "date")) continue;
       const bad = store.all(`SELECT id, date FROM ${table} WHERE date IS NULL OR trim(date) = '' OR date NOT GLOB '[0-9][0-9][0-9][0-9]-[01][0-9]-[0-3][0-9]' OR date(date) IS NULL OR date(date) <> date LIMIT 5`);
-      checks.push({ code: `dates:format:${table}`, name: `Tarihsiz ya da geçersiz tarihli hareket (${table})`, ok: bad.length === 0, count: bad.length, sample: bad.map(row => `${row.id}=${row.date}`) });
+      checks.push({ code: `dates:format:${table}`, name: `Tarihsiz ya da geçersiz tarihli hareket (${labelOf(table)})`, ok: bad.length === 0, count: bad.length, sample: bad.map(row => `${row.id}=${row.date}`) });
       // v2.0.26 (A13): açılışta bulunan ileri tarihli satırlar (eski sürümden kalan) kimlikleriyle tabandır; kapının imzası yalnız
       // tabanda olmayan (yeni) ileri tarihli satırları sayar (gateCount). Önceden SAYI imzadaydı: gün geçip eski satır geçmişe
       // düştükçe sayı küçülüyor, imza tabanda olmuyor ve yeniden başlatmaya kadar bütün para işlemleri 409 alıyordu.
@@ -312,7 +337,9 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
       const known = legacyFuture.get(table);
       const rows = store.all(`SELECT id FROM ${table} WHERE date > ?`, today);
       const fresh = known ? rows.filter(row => !known.has(row.id)).length : rows.length;
-      checks.push({ code: `dates:future:${table}`, name: `İleri tarihli hareket (${table})`, ok: rows.length === 0, count: rows.length, gateCount: fresh, ...(rows.length > fresh ? { legacy: rows.length - fresh } : {}) });
+      // 2. gözden geçirme İ8: yalnız eski satır kaldıysa düzey uyarı (severity) ve ne yapılacağı (hint); ok yine false (G4: gizlenmez).
+      const legacyOnly = rows.length > 0 && fresh === 0;
+      checks.push({ code: `dates:future:${table}`, name: `İleri tarihli hareket (${labelOf(table)})`, ok: rows.length === 0, count: rows.length, gateCount: fresh, ...(rows.length > fresh ? { legacy: rows.length - fresh } : {}), ...(legacyOnly ? { severity: "warning", hint: futureHint(table, rows, today) } : {}) });
     }
     {
       const wrong = [];
@@ -326,7 +353,7 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
       }
       // Gözden geçirme G4: eski sürümden kalan satırlar sonuçta görünür (legacy); kapı yalnız yenilere bakar (gateCount).
       const count = wrong.length + legacy;
-      checks.push({ code: "money:method", name: "Tanınmayan ödeme yolu (nakit, havale/EFT, POS/kredi kartı dışında)", ok: count === 0, count, gateCount: wrong.length, ...(legacy ? { legacy } : {}), sample: wrong.slice(0, 5) });
+      checks.push({ code: "money:method", name: "Tanınmayan ödeme yolu (nakit, havale/EFT, POS/kredi kartı dışında)", ok: count === 0, count, gateCount: wrong.length, ...(legacy ? { legacy } : {}), ...(legacy && !wrong.length ? { severity: "warning" } : {}), sample: wrong.slice(0, 5) });
     }
     if (hasColumn("plan_items", "due_date") && hasColumn("plans", "registered_on")) {
       const early = store.all("SELECT i.id, i.due_date AS due, p.registered_on AS start, p.name FROM plan_items i JOIN plans p ON p.id = i.plan_id AND p.deleted_at IS NULL WHERE p.registered_on <> '' AND i.due_date < p.registered_on LIMIT 5");

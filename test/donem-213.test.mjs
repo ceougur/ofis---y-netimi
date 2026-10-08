@@ -175,7 +175,7 @@ describe("dört çekirdekte tarih, dönem kilidi ve iade sınırı (API)", () =>
     const hash = createHash("sha256").update(readFileSync(file)).digest("hex");
     const dirty = run();
     assert.equal(dirty.status, 1, dirty.stdout + dirty.stderr);
-    assert.match(dirty.stdout, /Kuruş ve işaret \(cash_entries\)/);
+    assert.match(dirty.stdout, /Kuruş ve işaret \(Kasa Hareketleri\)/);
     assert.equal(createHash("sha256").update(readFileSync(file)).digest("hex"), hash, "kaynak veritabanı değişmedi");
     store.db.prepare("DELETE FROM cash_entries WHERE id = 'eski-bozuk'").run();
   });
