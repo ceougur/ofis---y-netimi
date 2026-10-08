@@ -46,7 +46,10 @@ describe("silinenler ve geri yükleme (v2.0.2)", () => {
     const key = encodeURIComponent("2026/1");
     const payment = (await admin.post(`/api/workspace/cases/${key}/payments`, { amount: "1.500", date: "2026-09-10", note: "Elden", caseTitle: "Ali Veli" })).data.data;
     const entry = (await admin.post("/api/workspace/cash", { kind: "out", amount: "200", date: "2026-09-11", description: "Kırtasiye" })).data.data;
-    assert.equal((await admin.del(`/api/workspace/payments/${payment.id}`)).status, 200);
+    // 2.0.26 (A1): kayıt tahsilatı silme de eksi bakiye denetiminden geçer. 1.500 tahsilat silinince Kasa 1.300'den −200'e
+    // düşer → sunucu 409 cash-negative ile sorar, ekran onay ister; kullanıcı onaylar (cashForce=1).
+    assert.equal((await admin.del(`/api/workspace/payments/${payment.id}`)).data.code, "cash-negative");
+    assert.equal((await admin.del(`/api/workspace/payments/${payment.id}?cashForce=1`)).status, 200);
     assert.equal((await admin.del(`/api/workspace/cash/${entry.id}`)).status, 200);
     assert.equal((await admin.get("/api/workspace/cash")).data.data.totals.balance, 0);
     const items = await trash();
