@@ -48,7 +48,7 @@ describe("A13 — eski ileri tarihli satırlar yaşlanınca para işlemleri kili
     assert.equal(res.status, 200, `${res.status} ${res.error}`);
   });
 
-  it("çalışıyor mu: 2 gün sonra (eski satırların ikisi geçmişe düştü) tahsilat, Kasa girişi ve çek 200; Mutabakat Testi ok", async () => {
+  it("çalışıyor mu: 2 gün sonra (eski satırların ikisi geçmişe düştü) tahsilat, Kasa girişi ve çek 200; Mutabakat Testi kalan eski satırı gösterir", async () => {
     mock.timers.setTime(at(2).getTime());
     const payment = await api.post("/api/workspace/cases/YENI-2/payments", { amount: "60", caseTitle: "Yeni" });
     assert.equal(payment.status, 200, `tahsilat: ${payment.status} ${payment.code} ${payment.error} ${JSON.stringify(payment.failures || "").slice(0, 300)}`);
@@ -57,8 +57,11 @@ describe("A13 — eski ileri tarihli satırlar yaşlanınca para işlemleri kili
     assert.equal(cash.status, 200, `Kasa: ${cash.status} ${cash.error}`);
     const cheque = await api.post("/api/workspace/cheques", { direction: "in", instrument: "cheque", amount: "80", dueDate: dayOf(at(30)), drawer: "Yeni Keşideci", serialNo: "YN-1" });
     assert.equal(cheque.status, 200, `çek: ${cheque.status} ${cheque.error}`);
+    // Gözden geçirme G4: 3. günün eski satırı hâlâ ileri tarihli; Mutabakat Testi onu gizlemez (eski sürümden kalan: legacy),
+    // yalnız yeni işlemleri engellemez. Kapının yeni satır sayısı (gateCount) 0.
     const integrity = await api.get("/api/workspace/ledger/integrity");
-    assert.equal(integrity.data.ok, true, JSON.stringify(integrity.data.failures).slice(0, 500));
+    const failures = integrity.data.failures.map(item => ({ code: item.code, count: item.count, legacy: item.legacy, gateCount: item.gateCount }));
+    assert.deepEqual(failures, [{ code: "dates:future:payments", count: 1, legacy: 1, gateCount: 0 }]);
   });
 
   it("nasıl bozarım: aynı anda yeni ileri tarihli satır API'den 400, doğrudan işlemle kapıda 409 (dates:future)", async () => {

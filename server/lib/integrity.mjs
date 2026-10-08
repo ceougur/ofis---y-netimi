@@ -302,23 +302,29 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
       if (!hasColumn(table, "date")) continue;
       const bad = store.all(`SELECT id, date FROM ${table} WHERE date IS NULL OR trim(date) = '' OR date NOT GLOB '[0-9][0-9][0-9][0-9]-[01][0-9]-[0-3][0-9]' OR date(date) IS NULL OR date(date) <> date LIMIT 5`);
       checks.push({ code: `dates:format:${table}`, name: `Tarihsiz ya da geçersiz tarihli hareket (${table})`, ok: bad.length === 0, count: bad.length, sample: bad.map(row => `${row.id}=${row.date}`) });
-      // v2.0.26 (A13): açılışta bulunan ileri tarihli satırlar (eski sürümden kalan) kimlikleriyle tabandır; sayılan yalnız
-      // tabanda olmayan (yeni) ileri tarihli satırlardır. Önceden SAYI imzadaydı: gün geçip eski satır geçmişe düştükçe sayı
-      // küçülüyor, imza tabanda olmuyor ve yeniden başlatmaya kadar bütün para işlemleri 409 alıyordu.
+      // v2.0.26 (A13): açılışta bulunan ileri tarihli satırlar (eski sürümden kalan) kimlikleriyle tabandır; kapının imzası yalnız
+      // tabanda olmayan (yeni) ileri tarihli satırları sayar (gateCount). Önceden SAYI imzadaydı: gün geçip eski satır geçmişe
+      // düştükçe sayı küçülüyor, imza tabanda olmuyor ve yeniden başlatmaya kadar bütün para işlemleri 409 alıyordu.
+      // Gözden geçirme G4: eski satır denetim sonucundan gizlenmez (ok false, count hepsi, legacy eskiler): Mutabakat Testi, Defter
+      // Mutabakatı ve Mutabakat Günlüğü'nde görünür; yalnız yeni işlemleri engellemez.
       const known = legacyFuture.get(table);
       const rows = store.all(`SELECT id FROM ${table} WHERE date > ?`, today);
-      const future = known ? rows.filter(row => !known.has(row.id)).length : rows.length;
-      checks.push({ code: `dates:future:${table}`, name: `İleri tarihli hareket (${table})`, ok: future === 0, count: future, ...(rows.length > future ? { legacy: rows.length - future } : {}) });
+      const fresh = known ? rows.filter(row => !known.has(row.id)).length : rows.length;
+      checks.push({ code: `dates:future:${table}`, name: `İleri tarihli hareket (${table})`, ok: rows.length === 0, count: rows.length, gateCount: fresh, ...(rows.length > fresh ? { legacy: rows.length - fresh } : {}) });
     }
     {
       const wrong = [];
+      let legacy = 0;
       for (const table of METHOD_TABLES) {
         if (!hasColumn(table, "method")) continue;
         for (const row of store.all(`SELECT id, method FROM ${table} WHERE method IS NULL OR method NOT IN ${KNOWN_METHODS}`)) {
-          if (!legacyMethod.has(`${table}:${row.id}`)) wrong.push(`${table}:${row.id}=${row.method}`);
+          if (legacyMethod.has(`${table}:${row.id}`)) legacy += 1;
+          else wrong.push(`${table}:${row.id}=${row.method}`);
         }
       }
-      checks.push({ code: "money:method", name: "Tanınmayan ödeme yolu (nakit, havale/EFT, POS/kredi kartı dışında)", ok: wrong.length === 0, count: wrong.length, sample: wrong.slice(0, 5) });
+      // Gözden geçirme G4: eski sürümden kalan satırlar sonuçta görünür (legacy); kapı yalnız yenilere bakar (gateCount).
+      const count = wrong.length + legacy;
+      checks.push({ code: "money:method", name: "Tanınmayan ödeme yolu (nakit, havale/EFT, POS/kredi kartı dışında)", ok: count === 0, count, gateCount: wrong.length, ...(legacy ? { legacy } : {}), sample: wrong.slice(0, 5) });
     }
     if (hasColumn("plan_items", "due_date") && hasColumn("plans", "registered_on")) {
       const early = store.all("SELECT i.id, i.due_date AS due, p.registered_on AS start, p.name FROM plan_items i JOIN plans p ON p.id = i.plan_id AND p.deleted_at IS NULL WHERE p.registered_on <> '' AND i.due_date < p.registered_on LIMIT 5");
@@ -348,7 +354,8 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
     return out;
   };
   // Sapmanın kimliği: hangi denetim, ne kadar/kaç satır. Aynı sapma sürüyorsa işlem engellenmez; yenisi ya da büyüyeni engellenir.
-  const signature = item => `${item.code}|${roundMoney(item.difference || 0)}|${item.count || 0}`;
+  // gateCount (G4): eski sürümden kalan satırları taşıyan denetimlerde kapının saydığı (yeni) satırlar; sonuçta count hepsidir.
+  const signature = item => `${item.code}|${roundMoney(item.difference || 0)}|${item.gateCount ?? item.count ?? 0}`;
   let baseline = new Set();
   let pending = null;
   const write = (action, tables, failures) => {

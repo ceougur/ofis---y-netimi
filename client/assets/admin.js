@@ -1024,7 +1024,7 @@
       const rolled = (result.log || []).filter(row => row.action === "rolled-back").length;
       health.textContent = result.ok
         ? `Mutabakat: ${result.checks.length} denetim tamam — ana defter ile Kasa, Cari, Stok ve Taksit kuruşu kuruşuna tutarlı.${rolled ? ` Son kayıtlarda ${rolled} işlem sapma yaratacağı için geri alındı (Raporlar › Mutabakat Günlüğü).` : ""}`
-        : `Mutabakat: ${result.failures.length} denetimde sapma var (${result.failures.map(item => item.name).join(", ")}). Raporlar › Defter Mutabakatı'nda ayrıntıyı görün.`;
+        : `Mutabakat: ${result.failures.length} denetimde sapma var (${result.failures.map(item => (item.legacy && item.legacy >= item.count ? `${item.name} — eski sürümden kalan ${item.legacy} satır; yeni işlemler engellenmez` : item.name)).join(", ")}). Raporlar › Defter Mutabakatı'nda ayrıntıyı görün.`;
       health.classList.toggle("adm-error-text", !result.ok);
     } catch {
       health.textContent = "";
