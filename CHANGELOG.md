@@ -23,7 +23,8 @@ denenmeyen / bilinen sınırlar: `docs/2.0.26-KANIT.md`. Sürüm numarası paket
   değiştirilmez; adı, telefonu ve diğer bilgileri düzeltilir. Kayıt Tarihi kapatılmış dönemdeki silinmiş taksit kartı ve
   kapatılmış dönemdeki tahsilat, Kasa, cari, taksit ve stok hareketleri Silinenler'den geri yüklenmez.
 - **Çek/senet: alış/veriliş tarihi.** İleri tarihle ya da kapatılmış döneme çek/senet girilmez. Kapatılmış dönemde alınmış
-  evrak silinmez, tutarı/carisi/tarihi değiştirilmez (vadesi ve notu düzeltilir, bugün tahsil edilir). Excel'den toplu alımda
+  evrak silinmez, tutarı/carisi/tarihi değiştirilmez (vadesi, numarası, bankası ve notu düzeltilir, bugün tahsil edilir; kuruşlu
+  tutarlı evrakta da). Böyle evrakta Düzenle penceresi tutar ve tarih alanlarını göstermez, nedenini yazar. Excel'den toplu alımda
   böyle satırlar nedeniyle atlanır.
 - **Silinenler'den geri yüklenen cari hareketi eksiksiz döner.** "Kapatılacak Fatura" bağı ve ödeme yolu korunur; tutar kuruşa
   yuvarlanır. Bağlı olduğu fatura bu arada iptal edildiyse bağsız döner ve bu söylenir.
@@ -33,12 +34,26 @@ denenmeyen / bilinen sınırlar: `docs/2.0.26-KANIT.md`. Sürüm numarası paket
   (onay penceresi yazar, işlem geçmişine kaydedilir, bildirimde kaldırılan kilit tarihi görünür).
 - **Eski veride ileri tarihli kayıt varsa program kilitlenmez.** Eski sürümlerden kalan ileri tarihli bir hareket (ör. ileri
   alış tarihli çek) gün geçtikçe bugüne yaklaşırken bütün para işlemleri yeniden başlatmaya kadar reddediliyordu; artık
-  sürer. Yeni ileri tarihli hareket yine girilmez.
+  sürer. Yeni ileri tarihli hareket yine girilmez. Eski satır gizlenmez: Mutabakat Testi'nde ve Raporlar › Defter
+  Mutabakatı'nda "Eski Sürümden Kalan" olarak görünür, Mutabakat Günlüğü'ne yazılır. Böyle bir hareket silinirse Silinenler'den
+  ileri tarihiyle geri yüklenmez (nedeni yazar; tarihi gelince geri yüklenir).
 - **Tanınmayan ödeme yolu nakit sayılmaz.** Program içinde yazılan (fatura, stok, çek/senet, Silinenler) hareketlerde nakit,
   havale/EFT, POS/kredi kartı dışındaki yol reddedilir; mutabakat kapısı da böyle bir satırı nedeniyle geri alır.
+- **Kapatılmış dönemde kapatılan taksit kartı korunur.** Kartın kapatıldığı gün (kalan alacaktan vazgeçilen gün) kilitli
+  dönemdeyse kart yeniden açılmaz, silinmez, Silinenler'den geri yüklenmez; tutarı, carisi, tahsilatı ve karta sayılan çekin
+  durumu değişmez; ekranda nedeni yazar. Dönem bugüne kadar kilitliyse kart bugün kapatılamaz. Kilitli dönemde tahsilatı olan
+  kartın carisi değiştirilemez (Mevcut Borç kartında da). Adı, notu, grubu düzeltilir.
+- **Kilit varken Taksite Aktar ve Excel'den taksit yükleme durmaz.** İlk vadesi ya da taşınacak kayıt tahsilatı kapatılmış
+  dönemde olan kişi aktarılmaz, nedeni aktarım raporunda yazar; öbürleri aktarılır. Kilitten önce yapılmış bir aktarım,
+  kilitli döneme düşen kaydı varsa geri alınmaz (nedeni yazar).
+- **Sorular ve uyarılar nedenini söyler.** Silerken Kasa eksiye düşecekse soru neyin düştüğünü yazar ("Bu cari silinince
+  tahsilat ve ödemeleriyle birlikte Nakit Kasa'dan 500,00 TL düşer; Nakit Kasa 200,00 TL iken -300,00 TL olur. Yine de silinsin
+  mi?"). Mahsuptaki satır silinirken mesaj yolu söyler (faturayı açın → Bu Faturayı Kapatanlar → Kaldır). Geri yüklenen
+  tahsilat faturasına bağlanamazsa hangi fatura ve neden yazar.
 - Testler: `test/asama0-226.test.mjs` (54), `test/asama0-226-saat.test.mjs` (5; gün ilerletmeli), `test/asama0-226-kesinti.test.mjs`
   (2; gerçek SIGKILL). 2.0.25 kodunda 61 testin 42'si kırmızı. Üç eski test bilinçli güncellendi (`raporlar-209`, `trash`, arayüz
-  `e2e`: tahsilat silmede eksi bakiye sorusu artık çıkıyor ve onaylanıyor).
+  `e2e`: tahsilat silmede eksi bakiye sorusu artık çıkıyor ve onaylanıyor). Bağımsız gözden geçirme: `test/inceleme-226.test.mjs`
+  (35; düzeltmeden önce 27'si kırmızı) ve arayüz senaryosu `npm run test:senaryo-226` (12 denetim; önce 9'u kırmızı).
 
 ## 2.0.25 — En fazla 2 şirket; başka sayfadaki uyarıdan kayda git; Sayfayı Sil
 

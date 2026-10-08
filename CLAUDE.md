@@ -814,6 +814,17 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   (mevcut hatalar A1, A2, A3, A4, A6, A7, A9, B5, B7, A12, A13 — kullanıcıya listelendi) → 2.1.0 banka ilk teslim (kabul
   1–16) → 2.2.0 POS → 2.3.0 ekstre/mutabakat + ölçek → 3.0.0 REAL→INTEGER (ayrı karar). Kullanıcının "sorma, önerini uygula"
   kararı gereği plan sunuldu ve Aşama 0'a başlandı; itiraz gelirse ilgili aşama başlamadan plan güncellenir.
+  DURUM — AŞAMA 0 (2.0.26) YAPILDI (08.10.2026; dal `claude/kind-newton-fpmx3f`, commit'ler 77dc3ad … a25751f; sürüm no paketlemede):
+  11 madde (A1, A2, A3, A4, A6, A7, A9, B5, B7, A12, A13), kanıt `docs/2.0.26-KANIT.md`, CHANGELOG → 2.0.26. Testler
+  `test/asama0-226*.test.mjs` 61 (2.0.25'te 42'si kırmızı); npm test 1.127/1.127, mutabakat 2.000 işlem, güvenilirlik 2×1.000,
+  21 arayüz senaryosu 0 hata (`senaryo-whatsapp`, `ui-ux-217` koşulmadı). Bilinen sınırlar KANIT'ta.
+  BAĞIMSIZ GÖZDEN GEÇİRME (08.10.2026): 4 doğrulanmış hata (G1 yüksek: kilitli günde kapatılmış kart açılıyor/siliniyor/geri
+  yükleniyor, kilitli 689 sessizce değişiyordu; G2 yüksek: kilitli tahsilatlı kartın carisi değişiyordu; G3 orta: kilitli kuruşlu
+  çekte arayüzden vade düzeltilemiyordu — gerileme; G4 orta: eski satır Mutabakat Testi'nde gizleniyordu — gerileme) + 5 düşük
+  (G5 ileri tarihli eski hareketin geri yüklenmesi, G6 Taksite Aktar/Excel taksit kilitte nedensiz 409, G7 silme sorusu metni,
+  G8 mahsup/geri yükleme mesajı, G9 bu satır). HEPSİ yeniden üretildi ve düzeltildi (c4a19a7 … 762bb54, 8104c55); kırmızı kanıt
+  `test/inceleme-226.test.mjs` a25751f'de 35'in 27'si, `senaryo-226` (CI'de) 12'nin 9'u. Kanıt `docs/2.0.26-KANIT.md` 3. bölüm.
+  Düzeltmeler ikinci bir bağımsız gözden geçirmeden geçmedi. Sırada: kullanıcı onayıyla paket/PR (2.0.26) ya da Aşama 2.
 - 2.0.20 YAPILACAKLAR (kullanıcı "yapılacaklara not al" dedi, 03.10.2026; "yap" denince başlanır; ayrıntı ve
   kanıt hemen altındaki ADAYI maddesinde):
   [x] 1. Bütün raporların (43) tablosunun altında kalın TOPLAM satırı — ekran, PDF, Excel aynı; yalnız toplanabilir
