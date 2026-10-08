@@ -12,6 +12,7 @@
 //   - Tek işlem bloğu: yarıda kesilirse hiçbir şey yazılmaz. Aktarım kaydı tutulur; geri alınabilir (aktarımdan sonra
 //     kartlarda işlem yapılmadıysa).
 import { randomUUID } from "node:crypto";
+import { methodInput } from "../lib/pay-method.mjs";
 import { HttpError, limited, ok, readJson, text } from "../lib/http.mjs";
 import { extractSchedules } from "../lib/insight/schedules.mjs";
 import { monthsInText } from "../lib/insight/installments.mjs";
@@ -437,9 +438,10 @@ export function registerPlanTransfer(router, { store, auth, audit, events, datas
         store.run("DELETE FROM plan_entries WHERE id = ?", moved.entryId);
         const row = moved.row || {};
         if (row.id && !store.get("SELECT 1 AS found FROM payments WHERE id = ?", row.id)) {
+          // v2.0.26 (A2): ödeme yolu da döner (önceden yazılmıyor, havale/POS tahsilatı kayda nakit olarak dönüyordu).
           store.run(
-            "INSERT INTO payments (id, case_key, case_title, amount, date, note, created_by, created_at, updated_by, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-            row.id, row.case_key, row.case_title || "", row.amount, row.date, row.note || "", row.created_by, row.created_at, row.updated_by || null, row.updated_at || null,
+            "INSERT INTO payments (id, case_key, case_title, amount, date, note, method, created_by, created_at, updated_by, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            row.id, row.case_key, row.case_title || "", row.amount, row.date, row.note || "", methodInput(row.method), row.created_by, row.created_at, row.updated_by || null, row.updated_at || null,
           );
           report.payments += 1;
         }

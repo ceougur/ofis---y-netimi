@@ -1291,12 +1291,13 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
     return { id, openingIds };
   }
   // Programda kayıt kartından girilmiş tahsilatı karta taşır (Kasa toplamı değişmez: kayıt tahsilatı olarak çıkar, taksit
-  // tahsilatı olarak aynı tarih ve tutarla girer; giren kişi ve giriş zamanı korunur).
+  // tahsilatı olarak aynı tarih ve tutarla girer; giren kişi ve giriş zamanı korunur). v2.0.26 (A2): ödeme yolu da korunur
+  // (önceden kolon yazılmıyor, havale/POS tahsilatı karta nakit olarak geçiyordu). Tanınmayan yol hata verir (B7).
   function adoptPayment(user, planId, payment, itemId = null) {
     const entryId = newId("entry");
     store.run(
-      "INSERT INTO plan_entries (id, plan_id, item_id, kind, amount, date, note, receipt_no, opening, created_by, created_at, updated_by, updated_at) VALUES (?, ?, ?, 'in', ?, ?, ?, NULL, 0, ?, ?, ?, ?)",
-      entryId, planId, itemId, roundMoney(payment.amount), payment.date, String(payment.note || "Kayıt kartından tahsilat").slice(0, 300), payment.created_by || user.id, payment.created_at || now(), user.id, now(),
+      "INSERT INTO plan_entries (id, plan_id, item_id, kind, amount, date, note, receipt_no, opening, method, created_by, created_at, updated_by, updated_at) VALUES (?, ?, ?, 'in', ?, ?, ?, NULL, 0, ?, ?, ?, ?, ?)",
+      entryId, planId, itemId, roundMoney(payment.amount), payment.date, String(payment.note || "Kayıt kartından tahsilat").slice(0, 300), methodInput(payment.method), payment.created_by || user.id, payment.created_at || now(), user.id, now(),
     );
     return entryId;
   }
