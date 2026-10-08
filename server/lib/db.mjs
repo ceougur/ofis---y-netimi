@@ -24,7 +24,10 @@ export function createStore(db) {
   // v2.0.13 — mutabakat kapısı: para taşıyan tablolara yazan her işlem, en dış COMMIT'ten hemen önce kayıtlı
   // denetimlerden (store.addCommitGuard) geçer; denetim hata fırlatırsa işlem ROLLBACK edilir (yarım/sapmalı kayıt
   // diske hiç yazılmaz). İşlem dışında (tek satır) yapılan para yazımı da kendiliğinden bir işleme alınır.
-  const FINANCIAL = new Set(["payments", "cash_entries", "accounts", "account_entries", "plans", "plan_items", "plan_entries", "stock_items", "stock_moves", "cheques", "cheque_events"]);
+  // v2.1.0 (§5.5): banka çekirdeği tabloları da para taşır (işlem başlığı, banka fişi, hesap ve POS kartı, POS satışı ve valör
+  // takvimi, bankaya tahsile verilen çek). Kur, tatil, ekstre, eşleşme, plan, iş kuyruğu ve istek kimliği kapı dışında.
+  const FINANCIAL = new Set(["payments", "cash_entries", "accounts", "account_entries", "plans", "plan_items", "plan_entries", "stock_items", "stock_moves", "cheques", "cheque_events",
+    "fin_events", "bank_lines", "bank_accounts", "pos_terminals", "pos_sales", "pos_items", "cheque_collections"]);
   const WRITE = /^\s*(?:INSERT(?:\s+OR\s+\w+)?\s+INTO|UPDATE(?:\s+OR\s+\w+)?|DELETE\s+FROM|REPLACE\s+INTO)\s+["`]?(\w+)/i;
   const guards = [];
   // v2.0.22 (yük ölçümü): carinin yalnız BİLGİ kolonlarına (ad, telefon, adres, not, grup, ek alan, vergi bilgisi…) yazan
@@ -34,6 +37,10 @@ export function createStore(db) {
   const INFO_COLUMNS = {
     accounts: new Set(["ref_no", "name", "phone", "email", "address", "registered_on", "group_id", "subgroup_id", "note", "fields_json", "case_key", "case_source", "case_title", "updated_by", "updated_at",
       "tax_no", "tax_office", "mersis_no", "trade_registry", "party_kind", "first_name", "family_name", "city", "district", "postal_code", "country", "website", "iban", "due_days", "e_invoice", "e_alias", "e_profile"]),
+    // v2.1.0 (§5.5): işlem başlığının açıklaması ve karşı taraf metni; hesap ve POS kartlarının adı, banka bilgisi, sırası.
+    fin_events: new Set(["description", "reference", "counter_name", "counter_iban", "channel", "updated_by", "updated_at"]),
+    bank_accounts: new Set(["name", "bank_name", "iban", "account_no", "branch_name", "branch_code", "swift", "holder", "description", "position", "statement_template_json", "statement_day", "due_day", "show_on_invoice", "integration", "updated_by", "updated_at"]),
+    pos_terminals: new Set(["name", "merchant_no", "terminal_no", "description", "updated_by", "updated_at"]),
   };
   const SET_CLAUSE = /^\s*UPDATE\s+["`]?\w+["`]?\s+SET\s+([\s\S]+?)\s+WHERE\s/i;
   const infoOnly = (table, sql) => {
@@ -45,6 +52,10 @@ export function createStore(db) {
     return parts.length > 0 && parts.every(part => /^\s*["`]?\w+["`]?\s*=\s*\?\s*$/.test(part) && allowed.has(part.split("=")[0].replace(/["`\s]/g, "").toLowerCase()));
   };
   let touched = new Set();
+  // Ham yazım kapsamı (v2.1.0; plan §3.3/c): göç, şirket sıfırlaması ve açılış onarımı para tablolarına bank.post dışından yazar;
+  // store.raw(gerekçe, fn) bu yazımları gerekçesiyle işaretler. (Kapsam dışındaki UPDATE/DELETE denetimi ve günlüğe yazım bank.post
+  // diliminde bağlanır; şimdilik kapsamın kendisi.)
+  const rawScope = [];
   const writesTo = sql => {
     const match = WRITE.exec(sql);
     return match ? match[1].toLowerCase() : "";
@@ -69,6 +80,19 @@ export function createStore(db) {
     },
     get inTransaction() {
       return depth > 0;
+    },
+    raw(reason, fn) {
+      if (typeof reason !== "string" || !reason.trim()) throw new TypeError("store.raw: gerekçe gerekli");
+      rawScope.push(reason);
+      try {
+        return fn();
+      } finally {
+        rawScope.pop();
+      }
+    },
+    /** Etkin ham yazım kapsamının gerekçesi ("" = kapsam dışı). */
+    get rawReason() {
+      return rawScope.at(-1) || "";
     },
     // İç içe çağrılabilen işlem; iç seviyelerde SAVEPOINT kullanılır.
     tx(fn) {

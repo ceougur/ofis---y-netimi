@@ -129,7 +129,7 @@ export function createApp(overrides = {}) {
       log.warn(`Yedekler şirket klasörlerine taşınamadı: ${error.message}`);
     }
   }
-  const migration = runMigrations(store, { backupDir: backupDirNow(), keep: config.backupKeep, log, company: companyIdentity() });
+  const migration = runMigrations(store, { backupDir: backupDirNow(), keep: config.backupKeep, log, company: companyIdentity(), now: config.now });
   // 2.0.21 öncesinden gelen şirketler (gözden geçirme bulgusu): veri dosyası olan her şirket "açılmış" sayılır; dosyası
   // sonradan kaybolursa sessizce boş veri tabanı açılmaz (2.0.21'deki ilk açılışını beklemeden).
   if (!hub) {
@@ -522,12 +522,18 @@ export function createApp(overrides = {}) {
   // çek/senet, Ana Defter, işlem geçmişi silinir). mode "all": şirket ilk açıldığı gibi boş (şirket adı/kodu, unvan/VKN/logo,
   // fatura serisi kalır). Önce ZORUNLU yedek (Yedekler'den geri yüklenir). Lisans, kullanıcılar, öbür şirketler ortak
   // katmanda; etkilenmez.
-  const MOVEMENT_TABLES = ["cash_entries", "payments", "account_entries", "stock_moves", "invoice_offsets", "invoice_repeats", "invoice_lines", "invoices", "einvoice_inbox", "plan_entries", "plan_items", "plan_imports", "plans", "cheque_events", "cheques", "integrity_log", "message_sends", "trash", "audit_events"];
-  const CARD_TABLES = ["accounts", "stock_items", "plan_groups", "dataset_rows", "dataset_imports", "records", "overrides", "deleted_records", "notes", "phones", "liens", "tasks", "case_notes", "case_documents", "source_snapshots", "free_cells", "free_rows", "free_history", "free_sheets", "messages"];
+  // v2.1.0 (§5.6): banka hareketleri (işlem başlığı, banka fişi, POS satışı ve valör takvimi, bankaya tahsile verilen çek, ekstre ve
+  // eşleşmeler, planlı işlemler, iş kuyruğu, istek kimlikleri) hareketle silinir; hesap ve POS kartları ile komisyon oranları kart
+  // gibi ("Tümünü Sıfırla"da) silinir. Kur (fx_rates) ve banka tatilleri başvuru verisidir: silinmez. İşlem No sayacı "meta." önekiyle
+  // korunur (sıfırlamadan sonra numara yeniden kullanılmaz).
+  const MOVEMENT_TABLES = ["cash_entries", "payments", "account_entries", "stock_moves", "invoice_offsets", "invoice_repeats", "invoice_lines", "invoices", "einvoice_inbox", "plan_entries", "plan_items", "plan_imports", "plans", "cheque_events", "cheques", "integrity_log", "message_sends", "trash", "audit_events",
+    "fin_events", "bank_lines", "pos_sales", "pos_items", "cheque_collections", "bank_statements", "bank_statement_lines", "bank_matches", "bank_plans", "bank_jobs", "request_keys", "ledger_snapshots"];
+  const CARD_TABLES = ["accounts", "stock_items", "plan_groups", "dataset_rows", "dataset_imports", "records", "overrides", "deleted_records", "notes", "phones", "liens", "tasks", "case_notes", "case_documents", "source_snapshots", "free_cells", "free_rows", "free_history", "free_sheets", "messages",
+    "bank_accounts", "pos_terminals", "pos_rates"];
   // v2.0.21 (rastgele sıra testi bulgusu): 001'in veri tabanı aynı zamanda ortak katmandır; kullanıcıların şirket seçimi ve
   // ŞİRKET YETKİLERİ (company.*) ile parola kurtarma anahtarı (auth.*) "Tümünü Sıfırla"da silinmez (geri yüklemedeki ortak
   // katman listesiyle aynı: company-backups.mjs COMMON_SETTINGS).
-  const KEEP_SETTINGS = ["office.", "meta.", "sectors.", "client.", "invoice", "einvoice", "edoc", "whatsapp", "backup", "cloud", "drive", "license.", "update", "company.", "auth."];
+  const KEEP_SETTINGS = ["office.", "meta.", "sectors.", "client.", "invoice", "einvoice", "edoc", "whatsapp", "backup", "cloud", "drive", "license.", "update", "company.", "auth.", "bank.settings"];
   function resetData(user, { mode = "movements", resetNumbers = true } = {}) {
     if (!["movements", "all"].includes(mode)) throw new HttpError(400, "Sıfırlama türü 'movements' ya da 'all' olmalı.");
     const company = companies.get(companyId);
@@ -539,13 +545,15 @@ export function createApp(overrides = {}) {
     // kapısı işlemi geri alıyordu (409). Sıfırlamada kilit de kaldırılır (onay penceresinde yazar) ve işlem geçmişine
     // "ledger.period.unlocked" yazılır. "Tümünü Sıfırla" kilit ayarını zaten siliyordu; o da aynı kaydı bırakır.
     const unlocked = context.period?.lockedUntil?.() || "";
-    store.tx(() => {
+    store.raw("company.reset", () => store.tx(() => {
       const tables = mode === "all" ? [...MOVEMENT_TABLES, ...CARD_TABLES] : MOVEMENT_TABLES;
       for (const table of tables) {
         if (!has(table)) continue;
         counts[table] = store.get(`SELECT COUNT(*) AS n FROM ${table}`).n;
         store.run(`DELETE FROM ${table}`);
       }
+      // Hesap kartları kalırken açılışları silindi: "Bakiye Doğrulandı" kalkar, kartta "Açılış Bakiyesi Gir" açılır (§5.6).
+      if (mode !== "all" && has("bank_accounts")) store.run("UPDATE bank_accounts SET balance_confirmed = 0 WHERE balance_confirmed <> 0");
       if (resetNumbers) store.run("DELETE FROM settings WHERE key = 'plans.receiptSeq'");
       if (unlocked) {
         store.run("DELETE FROM settings WHERE key = ?", LOCK_KEY);
@@ -557,7 +565,7 @@ export function createApp(overrides = {}) {
         }
       }
       audit(user, "company.reset", companyId, { mode, resetNumbers, backup: backup?.name || "", counts, unlocked });
-    });
+    }));
     // Kapı tabanı yeniden ölçülür (kilit kalktı, eski satırlar silindi; dönem kilidi değişikliğindeki gibi).
     context.integrity?.start?.();
     try {

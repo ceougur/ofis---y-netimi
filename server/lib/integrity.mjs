@@ -63,7 +63,11 @@ const METHOD_TABLES = ["payments", "cash_entries", "account_entries", "plan_entr
 const KNOWN_METHODS = "('cash', 'bank', 'card')";
 // v2.0.26 (A6): çek/senet olayları da (alındı/verildi, tahsil, ciro, ödeme, karşılıksız) tarihli harekettir; eski veride kalan
 // ileri tarihli olaylar A13 kuralıyla (açılıştaki kimlikler taban) yeni işlemleri engellemez.
-const DATED = ["payments", "cash_entries", "account_entries", "stock_moves", "plan_entries", "cheque_events"];
+// v2.1.0 (§5.5): fin_events (İşlem No'lu işlem başlığı) de tarihli harekettir. Denetim satırları tabloda kayıt olduğunda görünür
+// (Banka modülü kullanılmayan kurulumda Mutabakat Testi'nin denetim listesi ve sayısı değişmesin); satır yazıldığı anda kapı
+// tarihi denetler.
+const DATED = ["payments", "cash_entries", "account_entries", "stock_moves", "plan_entries", "cheque_events", "fin_events"];
+const DATED_WHEN_USED = new Set(["fin_events"]);
 // 2. gözden geçirme İ8: denetim adlarında tablo adı yerine kullanıcının bildiği ad (Yönetim'de, Defter Mutabakatı'nda, günlükte görünür).
 const TABLE_LABEL = {
   payments: "Kayıt Tahsilatları",
@@ -77,6 +81,7 @@ const TABLE_LABEL = {
   cheques: "Çek/Senet",
   invoices: "Faturalar",
   invoice_lines: "Fatura Kalemleri",
+  fin_events: "Finansal İşlemler",
 };
 const labelOf = table => TABLE_LABEL[table] || table;
 // Kapanmış dönemin parmak izi: kilit tarihi ve öncesindeki her para satırı (tutar, yön, yol, tarih, cari/kalem bağı) ve
@@ -130,7 +135,60 @@ const LOCK_SQL = {
             WHERE p.deleted_at IS NULL AND p.status = 'closed')
           WHERE closed_on <= ?1 ORDER BY id`,
   },
+  // v2.1.0 (v20, §5.5): banka girdileri. Eski veride satır üretmezler (yeni kolonlar boş, yeni tablolar boş): göçten sonra kilit izi
+  // göç öncesiyle birebir aynıdır (K11). "tablo.kolon" gereksinimi kolonun varlığını da arar (v19 dosyasında atlanır).
+  // money_refs: kapanmış dönemdeki para satırının hesap/POS bağı ve İşlem No'su — kilitli satıra "Bu Hesaba Ata" 409 alır.
+  money_refs: {
+    requires: ["payments.fin_ref", "cash_entries.fin_ref", "account_entries.fin_ref", "plan_entries.fin_ref", "stock_moves.fin_ref", "cheque_events.fin_ref"],
+    sql: ["payments", "cash_entries", "account_entries", "plan_entries", "stock_moves", "cheque_events"]
+      .map(table => `SELECT '${table}' AS t, id, fin_ref, event_id FROM ${table} WHERE date <= ?1 AND (fin_ref <> '' OR event_id <> '')`)
+      .join(" UNION ALL ")
+      .concat(" ORDER BY t, id"),
+  },
+  // fx_refs: döviz hesabına cari tahsilatı/ödemesi (13b) satırının döviz tutarı ve kuru.
+  fx_refs: {
+    requires: ["account_entries.fx_minor"],
+    sql: "SELECT id, fx_currency, fx_minor, fx_rate_e6, fx_source FROM account_entries WHERE date <= ?1 AND (fx_currency <> '' OR fx_minor <> 0 OR fx_rate_e6 <> 0 OR fx_source <> '') ORDER BY id",
+  },
+  // İşlem başlığının değişmeyen alanları (durum ve ters kayıt bağı girmez: kilitli işlem bugün ters kaydedilebilir) ve fişi.
+  fin_events_lock: { requires: ["fin_events"], sql: "SELECT id, type, date, reversal_of, bank_ref, counter_ref, amount_minor, try_minor FROM fin_events WHERE date <= ?1 ORDER BY id" },
+  bank_lines_lock: {
+    requires: ["bank_lines", "fin_events"],
+    sql: "SELECT l.id, l.event_id, l.seq, l.role, l.gl, l.sub, l.ref, l.side, l.try_minor, l.currency, l.fx_minor, l.rate_e6 FROM bank_lines l JOIN fin_events e ON e.id = l.event_id WHERE e.date <= ?1 ORDER BY l.id",
+  },
+  // POS satışının değişmeyen alanları (durum, güncelleme ve sonradan değişebilen iade/bloke alanları girmez).
+  pos_sales_lock: {
+    requires: ["pos_sales"],
+    sql: "SELECT id, event_id, pos_id, kind, src, origin_id, date, installments, rate_ppm, tax_kind, tax_mode, tax_ppm, fixed_minor, refund_commission, payout, block_days, bank_account_id, provider_account_id, gross_minor, commission_minor, tax_minor, net_minor, auth_code FROM pos_sales WHERE date <= ?1 ORDER BY id",
+  },
+  // Bankaya Tahsile Ver (§3.14): verilme ve kapanış ayrı (kilitli ayda verilen çek açık ayda tahsil edilebilir).
+  cheque_collections_given: { requires: ["cheque_collections"], sql: "SELECT id, cheque_id, bank_account_id, given_date FROM cheque_collections WHERE given_date <= ?1 ORDER BY id" },
+  cheque_collections_closed: { requires: ["cheque_collections"], sql: "SELECT id, status, closed_date, close_event_id FROM cheque_collections WHERE closed_date <> '' AND closed_date <= ?1 ORDER BY id" },
 };
+
+/**
+ * Kapanmış dönemin parmak izi (sha256): LOCK_SQL'in her girdisi, kilit tarihi (ve öncesi) için. Gereksinim "tablo" ya da
+ * "tablo.kolon"; karşılanmayan girdi atlanır (eski şema). Göç testleri ve araçlar da kullanır (v2.1.0; K11 ölçütü).
+ */
+export function lockDigestOf(store, lock) {
+  if (!lock) return "";
+  const tables = new Set(store.all("SELECT name FROM sqlite_master WHERE type = 'table'").map(row => row.name));
+  const columns = new Map();
+  const has = requirement => {
+    const [table, column] = requirement.split(".");
+    if (!tables.has(table)) return false;
+    if (!column) return true;
+    if (!columns.has(table)) columns.set(table, new Set(store.all(`PRAGMA table_info(${table})`).map(row => row.name)));
+    return columns.get(table).has(column);
+  };
+  const hash = createHash("sha256");
+  for (const [name, entry] of Object.entries(LOCK_SQL)) {
+    const { requires, sql } = typeof entry === "string" ? { requires: [name], sql: entry } : entry;
+    if (!requires.every(has)) continue;
+    for (const row of store.all(sql, lock)) hash.update(`${name}|${Object.values(row).join("|")}\n`);
+  }
+  return hash.digest("hex");
+}
 
 export function createIntegrity({ store, ledger, accounts = () => null, stock = () => null, plans = () => null, period = () => null, log = null, newId = () => `int-${crypto.randomUUID()}`, now = systemClock }) {
   const has = table => Boolean(store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = ?", table));
@@ -328,6 +386,7 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
     const today = period()?.today?.() || now.today();
     for (const table of DATED) {
       if (!hasColumn(table, "date")) continue;
+      if (DATED_WHEN_USED.has(table) && !store.get(`SELECT 1 AS found FROM ${table} LIMIT 1`)) continue;
       const bad = store.all(`SELECT id, date FROM ${table} WHERE date IS NULL OR trim(date) = '' OR date NOT GLOB '[0-9][0-9][0-9][0-9]-[01][0-9]-[0-3][0-9]' OR date(date) IS NULL OR date(date) <> date LIMIT 5`);
       checks.push({ code: `dates:format:${table}`, name: `Tarihsiz ya da geçersiz tarihli hareket (${labelOf(table)})`, ok: bad.length === 0, count: bad.length, sample: bad.map(row => `${row.id}=${row.date}`) });
       // v2.0.26 (A13): açılışta bulunan ileri tarihli satırlar (eski sürümden kalan) kimlikleriyle tabandır; kapının imzası yalnız
@@ -399,16 +458,7 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
     }
   };
 
-  const lockDigest = lock => {
-    if (!lock) return "";
-    const hash = createHash("sha256");
-    for (const [name, entry] of Object.entries(LOCK_SQL)) {
-      const { requires, sql } = typeof entry === "string" ? { requires: [name], sql: entry } : entry;
-      if (!requires.every(has)) continue;
-      for (const row of store.all(sql, lock)) hash.update(`${name}|${Object.values(row).join("|")}\n`);
-    }
-    return hash.digest("hex");
-  };
+  const lockDigest = lock => lockDigestOf(store, lock);
   let lockState = { lock: "", digest: "" };
   let pendingLock = null;
   let stop = null;

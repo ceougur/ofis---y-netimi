@@ -4,6 +4,8 @@
 // güncelleme düzeni yeni sürüm açılamazsa şema sürümü değiştiği için veritabanını kendiliğinden yedekten geri yükler.
 import { randomUUID } from "node:crypto";
 import { createBackup } from "./backup.mjs";
+import { migrateBankGrants } from "./bank/grants.mjs";
+import { systemClock } from "./clock.mjs";
 import { DEFAULT_ADMIN_PASSWORD } from "./config.mjs";
 import { rowHash, rowIdentities } from "./dataset-identity.mjs";
 import { parseJson } from "./http.mjs";
@@ -1106,11 +1108,255 @@ export const MIGRATIONS = [
       `);
     },
   },
+  {
+    version: 20,
+    name: "v2.1.0 banka ve POS çekirdeği: işlem başlığı (İşlem No), banka fişi, hesap ve POS kartları, ekstre, kur, tatil, kalıcı istek kimliği; para satırlarına hesap ve işlem bağı; banka yetki göçü",
+    up(store, { company = null, now = systemClock } = {}) {
+      // docs/BANKA-MODULU-PLAN.md §5.2–§5.4, §9.1, §10.2. YALNIZ EKLEYİCİ (K11): hiçbir mevcut satır değişmez (yeni kolonların
+      // varsayılanı boş/sıfır; eski satırlar "Hesabı Atanmamış" kovasında kalır). İzinli tek değişiklikler: meta.schema.v20At damgası
+      // ve ortak katmanda (001) özel rollere/kişilere banka yetkisi EKLENMESİ. Eski sürüm (2.0.26) aynı dosyayı açar: yeni tabloları
+      // ve kolonları okumaz (§10.6'daki açılış onarımı bunu ayrıca ele alır).
+      store.raw("migration.v20", () => {
+        store.exec(BANK_SCHEMA_V20);
+        for (const table of ["payments", "cash_entries", "account_entries", "plan_entries", "stock_moves", "cheque_events"]) {
+          if (!store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = ?", table)) continue;
+          // fin_ref: banka hesabı / POS / kurumsal kart kimliği ('' = Hesabı Atanmamış); event_id: İşlem No'lu işlem başlığı.
+          addColumn(store, table, "fin_ref", "TEXT NOT NULL DEFAULT ''");
+          addColumn(store, table, "event_id", "TEXT NOT NULL DEFAULT ''");
+          store.exec(`CREATE INDEX IF NOT EXISTS idx_${table}_fin_ref ON ${table}(fin_ref, date) WHERE fin_ref <> ''`);
+          store.exec(`CREATE INDEX IF NOT EXISTS idx_${table}_event_id ON ${table}(event_id) WHERE event_id <> ''`);
+        }
+        // Döviz hesabına cari tahsilatı/ödemesi (13b): satırın döviz tutarı (sent), kuru (×10^6) ve kurun kaynağı. Tablo STRICT
+        // değil; fx_minor'ın tamsayı olduğunu kapı (bank:refs) denetler.
+        if (store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'account_entries'")) {
+          addColumn(store, "account_entries", "fx_currency", "TEXT NOT NULL DEFAULT ''");
+          addColumn(store, "account_entries", "fx_minor", "INTEGER NOT NULL DEFAULT 0");
+          addColumn(store, "account_entries", "fx_rate_e6", "INTEGER NOT NULL DEFAULT 0");
+          addColumn(store, "account_entries", "fx_source", "TEXT NOT NULL DEFAULT ''");
+        }
+        // Fatura kurunun kaynağı (TCMB / elle); boş = eski fatura.
+        if (store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'invoices'")) addColumn(store, "invoices", "rate_source", "TEXT NOT NULL DEFAULT ''");
+        // Yetki göçü yalnız ortak katmanda (001): şirketlerin kullanıcı tablosu ortak katmandan aynalanır. Şirketi bilinmeyen çağrı
+        // (yedeğin geri yüklenmesi) ortak katman sayılır; şirket kopyasında da çalışsa zararsızdır (aynalama üstüne yazar).
+        if (!company || company.id === "sirket-001") migrateBankGrants(store);
+        if (!store.get("SELECT 1 AS found FROM settings WHERE key = 'meta.schema.v20At'")) {
+          const at = now().toISOString();
+          store.run("INSERT INTO settings (key, value, updated_at) VALUES ('meta.schema.v20At', ?, ?)", at, at);
+        }
+      });
+    },
+  },
 ];
+
+// v20 (§5.2): hepsi STRICT (tutar INTEGER kuruş, oran INTEGER ppm, kur INTEGER ×10^6; kesirli ya da metin tutar yazılamaz);
+// yabancı anahtar yok (bağlar mutabakat kapısında denetlenir); tür ve durum kolonlarında CHECK yok, CHECK yalnız değişmeyecek
+// kurallarda (işaret, yön/taraf, kart son 4 hanesi, rol); tekil indeksler yalnız ETKİN satıra uygulanır (iptal/silinmiş satırda
+// aynı değer serbest). Zaman kolonları: created_by, created_at, updated_by, updated_at.
+const BANK_SCHEMA_V20 = `
+  -- İşlem başlığı + kapının doğruladığı salt okuma kopyası (para kaynağı DEĞİL; sayfalama ve süzgeç dizini). İşlem No: BNK-yıl-sıra.
+  CREATE TABLE IF NOT EXISTS fin_events (
+    id TEXT PRIMARY KEY, year INTEGER NOT NULL, seq INTEGER NOT NULL, no TEXT NOT NULL,
+    type TEXT NOT NULL,
+    date TEXT NOT NULL, value_date TEXT NOT NULL DEFAULT '',
+    status TEXT NOT NULL DEFAULT 'active',
+    reversal_of TEXT NOT NULL DEFAULT '', reversed_by TEXT NOT NULL DEFAULT '',
+    origin TEXT NOT NULL DEFAULT 'manual',
+    origin_key TEXT NOT NULL DEFAULT '', channel TEXT NOT NULL DEFAULT '',
+    src_table TEXT NOT NULL DEFAULT '', src_id TEXT NOT NULL DEFAULT '',
+    bank_ref TEXT NOT NULL DEFAULT '', counter_ref TEXT NOT NULL DEFAULT '', pos_id TEXT NOT NULL DEFAULT '',
+    direction TEXT NOT NULL DEFAULT '',
+    amount_minor INTEGER NOT NULL DEFAULT 0 CHECK (amount_minor >= 0),
+    try_minor INTEGER NOT NULL DEFAULT 0 CHECK (try_minor >= 0), currency TEXT NOT NULL DEFAULT 'TRY',
+    method TEXT NOT NULL DEFAULT '', party_id TEXT NOT NULL DEFAULT '',
+    invoice_id TEXT NOT NULL DEFAULT '', plan_id TEXT NOT NULL DEFAULT '', cheque_id TEXT NOT NULL DEFAULT '',
+    description TEXT NOT NULL DEFAULT '', reference TEXT NOT NULL DEFAULT '', external_id TEXT NOT NULL DEFAULT '',
+    counter_name TEXT NOT NULL DEFAULT '', counter_iban TEXT NOT NULL DEFAULT '', request_key TEXT NOT NULL DEFAULT '',
+    created_by TEXT NOT NULL, created_at TEXT NOT NULL, updated_by TEXT, updated_at TEXT
+  ) STRICT;
+  CREATE UNIQUE INDEX IF NOT EXISTS idx_fin_events_year_seq ON fin_events(year, seq);
+  CREATE UNIQUE INDEX IF NOT EXISTS idx_fin_events_no ON fin_events(no);
+  CREATE UNIQUE INDEX IF NOT EXISTS idx_fin_events_origin_key ON fin_events(origin_key) WHERE origin_key <> '' AND status = 'active';
+  CREATE INDEX IF NOT EXISTS idx_fin_events_bank ON fin_events(bank_ref, date, id);
+  CREATE INDEX IF NOT EXISTS idx_fin_events_counter ON fin_events(counter_ref, date, id) WHERE counter_ref <> '';
+  CREATE INDEX IF NOT EXISTS idx_fin_events_party ON fin_events(party_id, date);
+  CREATE INDEX IF NOT EXISTS idx_fin_events_status ON fin_events(status, date);
+  CREATE INDEX IF NOT EXISTS idx_fin_events_pos ON fin_events(pos_id, date) WHERE pos_id <> '';
+  CREATE INDEX IF NOT EXISTS idx_fin_events_invoice ON fin_events(invoice_id) WHERE invoice_id <> '';
+  CREATE INDEX IF NOT EXISTS idx_fin_events_plan ON fin_events(plan_id) WHERE plan_id <> '';
+  CREATE INDEX IF NOT EXISTS idx_fin_events_cheque ON fin_events(cheque_id) WHERE cheque_id <> '';
+  CREATE INDEX IF NOT EXISTS idx_fin_events_src ON fin_events(src_table, src_id);
+  CREATE INDEX IF NOT EXISTS idx_fin_events_type ON fin_events(type, date);
+
+  -- Banka Fişi satırı; THP kodu yazım anında çözülür ve saklanır.
+  CREATE TABLE IF NOT EXISTS bank_lines (
+    id TEXT PRIMARY KEY, event_id TEXT NOT NULL, seq INTEGER NOT NULL,
+    role TEXT NOT NULL,
+    gl TEXT NOT NULL, sub TEXT NOT NULL DEFAULT '', ref TEXT NOT NULL DEFAULT '',
+    side TEXT NOT NULL CHECK (side IN ('D', 'C')), try_minor INTEGER NOT NULL CHECK (try_minor > 0),
+    currency TEXT NOT NULL DEFAULT 'TRY', fx_minor INTEGER NOT NULL DEFAULT 0 CHECK (fx_minor >= 0),
+    rate_e6 INTEGER NOT NULL DEFAULT 1000000 CHECK (rate_e6 > 0), rate_source TEXT NOT NULL DEFAULT '',
+    memo TEXT NOT NULL DEFAULT ''
+  ) STRICT;
+  CREATE INDEX IF NOT EXISTS idx_bank_lines_event ON bank_lines(event_id);
+  CREATE INDEX IF NOT EXISTS idx_bank_lines_ref ON bank_lines(ref, event_id);
+  CREATE INDEX IF NOT EXISTS idx_bank_lines_gl ON bank_lines(gl, sub);
+
+  CREATE TABLE IF NOT EXISTS bank_accounts (
+    id TEXT PRIMARY KEY, code TEXT NOT NULL, gl TEXT NOT NULL, gl_sub TEXT NOT NULL,
+    kind TEXT NOT NULL, bank_name TEXT NOT NULL, name TEXT NOT NULL, currency TEXT NOT NULL DEFAULT 'TRY',
+    iban TEXT NOT NULL DEFAULT '', account_no TEXT NOT NULL DEFAULT '', branch_name TEXT NOT NULL DEFAULT '',
+    branch_code TEXT NOT NULL DEFAULT '', swift TEXT NOT NULL DEFAULT '', holder TEXT NOT NULL DEFAULT '',
+    description TEXT NOT NULL DEFAULT '', opening_date TEXT NOT NULL,
+    balance_confirmed INTEGER NOT NULL DEFAULT 0 CHECK (balance_confirmed IN (0, 1)),
+    credit_limit_minor INTEGER NOT NULL DEFAULT 0 CHECK (credit_limit_minor >= 0),
+    negative_policy TEXT NOT NULL DEFAULT '', statement_day INTEGER NOT NULL DEFAULT 0, due_day INTEGER NOT NULL DEFAULT 0,
+    show_on_invoice INTEGER NOT NULL DEFAULT 0, statement_template_json TEXT NOT NULL DEFAULT '{}',
+    integration TEXT NOT NULL DEFAULT 'manual', status TEXT NOT NULL DEFAULT 'active', position INTEGER NOT NULL DEFAULT 0,
+    created_by TEXT NOT NULL, created_at TEXT NOT NULL, updated_by TEXT, updated_at TEXT, deleted_by TEXT, deleted_at TEXT
+  ) STRICT;
+  CREATE UNIQUE INDEX IF NOT EXISTS idx_bank_accounts_gl_sub ON bank_accounts(gl_sub);
+  CREATE UNIQUE INDEX IF NOT EXISTS idx_bank_accounts_code ON bank_accounts(code) WHERE deleted_at IS NULL;
+  CREATE UNIQUE INDEX IF NOT EXISTS idx_bank_accounts_iban ON bank_accounts(iban) WHERE iban <> '' AND deleted_at IS NULL;
+
+  CREATE TABLE IF NOT EXISTS pos_terminals (
+    id TEXT PRIMARY KEY, code TEXT NOT NULL, gl_sub TEXT NOT NULL, name TEXT NOT NULL, bank_name TEXT NOT NULL DEFAULT '',
+    bank_account_id TEXT NOT NULL, kind TEXT NOT NULL, provider_kind TEXT NOT NULL DEFAULT 'bank',
+    merchant_no TEXT NOT NULL DEFAULT '', terminal_no TEXT NOT NULL DEFAULT '', currency TEXT NOT NULL DEFAULT 'TRY',
+    valor_rule TEXT NOT NULL DEFAULT 'business', valor_days INTEGER NOT NULL DEFAULT 1,
+    provision_days INTEGER NOT NULL DEFAULT 0, block_days INTEGER NOT NULL DEFAULT 0, installment_payout TEXT NOT NULL DEFAULT 'monthly',
+    tax_kind TEXT NOT NULL DEFAULT 'bsmv', tax_mode TEXT NOT NULL DEFAULT 'included', tax_ppm INTEGER NOT NULL DEFAULT 50000,
+    provider_account_id TEXT NOT NULL DEFAULT '', refund_commission TEXT NOT NULL DEFAULT 'none',
+    settle_mode TEXT NOT NULL DEFAULT 'inherit', fixed_fee_minor INTEGER NOT NULL DEFAULT 0 CHECK (fixed_fee_minor >= 0),
+    integration TEXT NOT NULL DEFAULT 'manual', status TEXT NOT NULL DEFAULT 'active', description TEXT NOT NULL DEFAULT '',
+    created_by TEXT NOT NULL, created_at TEXT NOT NULL, updated_by TEXT, updated_at TEXT, deleted_by TEXT, deleted_at TEXT
+  ) STRICT;
+  CREATE UNIQUE INDEX IF NOT EXISTS idx_pos_terminals_gl_sub ON pos_terminals(gl_sub);
+
+  CREATE TABLE IF NOT EXISTS pos_rates (
+    id TEXT PRIMARY KEY, pos_id TEXT NOT NULL,
+    installments INTEGER NOT NULL CHECK (installments BETWEEN 1 AND 36),
+    rate_ppm INTEGER NOT NULL CHECK (rate_ppm BETWEEN 0 AND 1000000), valor_days INTEGER, valid_from TEXT NOT NULL,
+    created_by TEXT NOT NULL, created_at TEXT NOT NULL
+  ) STRICT;
+  CREATE UNIQUE INDEX IF NOT EXISTS idx_pos_rates_key ON pos_rates(pos_id, installments, valid_from);
+
+  CREATE TABLE IF NOT EXISTS pos_sales (
+    id TEXT PRIMARY KEY, event_id TEXT NOT NULL, pos_id TEXT NOT NULL, kind TEXT NOT NULL,
+    src TEXT NOT NULL DEFAULT 'module',
+    origin_id TEXT NOT NULL DEFAULT '',
+    date TEXT NOT NULL, installments INTEGER NOT NULL DEFAULT 1, rate_ppm INTEGER NOT NULL, tax_kind TEXT NOT NULL,
+    tax_mode TEXT NOT NULL, tax_ppm INTEGER NOT NULL, fixed_minor INTEGER NOT NULL DEFAULT 0, refund_commission TEXT NOT NULL,
+    payout TEXT NOT NULL, block_days INTEGER NOT NULL DEFAULT 0,
+    bank_account_id TEXT NOT NULL, provider_account_id TEXT NOT NULL DEFAULT '',
+    gross_minor INTEGER NOT NULL CHECK (gross_minor > 0), commission_minor INTEGER NOT NULL DEFAULT 0 CHECK (commission_minor >= 0),
+    tax_minor INTEGER NOT NULL DEFAULT 0 CHECK (tax_minor >= 0), net_minor INTEGER NOT NULL CHECK (net_minor >= 0),
+    commission_refund_minor INTEGER NOT NULL DEFAULT 0 CHECK (commission_refund_minor >= 0), blocked INTEGER NOT NULL DEFAULT 0,
+    auth_code TEXT NOT NULL DEFAULT '',
+    card_last4 TEXT NOT NULL DEFAULT '' CHECK (card_last4 = '' OR (length(card_last4) = 4 AND card_last4 GLOB '[0-9][0-9][0-9][0-9]')),
+    status TEXT NOT NULL DEFAULT 'active',
+    created_by TEXT NOT NULL, created_at TEXT NOT NULL, updated_by TEXT, updated_at TEXT
+  ) STRICT;
+  CREATE UNIQUE INDEX IF NOT EXISTS idx_pos_sales_event ON pos_sales(event_id) WHERE kind = 'sale' AND status = 'active';
+  CREATE UNIQUE INDEX IF NOT EXISTS idx_pos_sales_auth ON pos_sales(pos_id, auth_code, date) WHERE auth_code <> '' AND status = 'active';
+  CREATE INDEX IF NOT EXISTS idx_pos_sales_origin ON pos_sales(origin_id);
+
+  CREATE TABLE IF NOT EXISTS pos_items (
+    id TEXT PRIMARY KEY, sale_id TEXT NOT NULL, pos_id TEXT NOT NULL, seq INTEGER NOT NULL,
+    role TEXT NOT NULL CHECK (role IN ('sale', 'refund', 'fee')), value_date TEXT NOT NULL, blocked INTEGER NOT NULL DEFAULT 0,
+    gross_minor INTEGER NOT NULL CHECK (gross_minor >= 0), commission_minor INTEGER NOT NULL DEFAULT 0 CHECK (commission_minor >= 0),
+    tax_minor INTEGER NOT NULL DEFAULT 0 CHECK (tax_minor >= 0), fee_minor INTEGER NOT NULL DEFAULT 0 CHECK (fee_minor >= 0),
+    net_minor INTEGER NOT NULL CHECK (net_minor >= 0), planned_net_minor INTEGER NOT NULL,
+    status TEXT NOT NULL DEFAULT 'pending', event_id TEXT NOT NULL DEFAULT '', settled_on TEXT NOT NULL DEFAULT '',
+    late INTEGER NOT NULL DEFAULT 0, settle_error TEXT NOT NULL DEFAULT '',
+    created_by TEXT NOT NULL, created_at TEXT NOT NULL, updated_by TEXT, updated_at TEXT
+  ) STRICT;
+  CREATE INDEX IF NOT EXISTS idx_pos_items_status ON pos_items(status, value_date);
+  CREATE INDEX IF NOT EXISTS idx_pos_items_sale ON pos_items(sale_id);
+
+  -- Bankaya Tahsile Ver / Bankadan Geri Al'ın tek izi (fin_events ile); cheque_events'e satır yazılmaz, cheques.status değişmez.
+  CREATE TABLE IF NOT EXISTS cheque_collections (
+    id TEXT PRIMARY KEY, cheque_id TEXT NOT NULL, bank_account_id TEXT NOT NULL,
+    given_date TEXT NOT NULL, status TEXT NOT NULL DEFAULT 'pending',
+    closed_date TEXT NOT NULL DEFAULT '', event_id TEXT NOT NULL, close_event_id TEXT NOT NULL DEFAULT '',
+    created_by TEXT NOT NULL, created_at TEXT NOT NULL, updated_by TEXT, updated_at TEXT
+  ) STRICT;
+  CREATE UNIQUE INDEX IF NOT EXISTS idx_cheque_collections_pending ON cheque_collections(cheque_id) WHERE status = 'pending';
+  CREATE INDEX IF NOT EXISTS idx_cheque_collections_cheque ON cheque_collections(cheque_id);
+
+  CREATE TABLE IF NOT EXISTS bank_jobs (
+    id TEXT PRIMARY KEY, kind TEXT NOT NULL,
+    due_date TEXT NOT NULL, ref TEXT NOT NULL DEFAULT '', payload_json TEXT NOT NULL DEFAULT '{}',
+    status TEXT NOT NULL DEFAULT 'pending', done_ref TEXT NOT NULL DEFAULT '', error TEXT NOT NULL DEFAULT '',
+    created_by TEXT NOT NULL, created_at TEXT NOT NULL, updated_by TEXT, updated_at TEXT
+  ) STRICT;
+  CREATE UNIQUE INDEX IF NOT EXISTS idx_bank_jobs_pending ON bank_jobs(kind, ref) WHERE status = 'pending';
+  CREATE INDEX IF NOT EXISTS idx_bank_jobs_due ON bank_jobs(status, due_date);
+
+  CREATE TABLE IF NOT EXISTS fx_rates (
+    date TEXT NOT NULL, currency TEXT NOT NULL, kind TEXT NOT NULL,
+    rate_e6 INTEGER NOT NULL CHECK (rate_e6 > 0), unit INTEGER NOT NULL DEFAULT 1, source TEXT NOT NULL,
+    fetched_at TEXT NOT NULL, created_by TEXT NOT NULL DEFAULT '',
+    PRIMARY KEY (date, currency, kind, source)
+  ) STRICT, WITHOUT ROWID;
+
+  CREATE TABLE IF NOT EXISTS bank_holidays (
+    date TEXT PRIMARY KEY, kind TEXT NOT NULL, name TEXT NOT NULL DEFAULT '',
+    created_by TEXT NOT NULL, created_at TEXT NOT NULL
+  ) STRICT, WITHOUT ROWID;
+
+  CREATE TABLE IF NOT EXISTS bank_statements (
+    id TEXT PRIMARY KEY, bank_account_id TEXT NOT NULL, source TEXT NOT NULL DEFAULT 'file',
+    file_name TEXT NOT NULL DEFAULT '', file_sha256 TEXT NOT NULL DEFAULT '', format TEXT NOT NULL DEFAULT '',
+    period_from TEXT NOT NULL DEFAULT '', period_to TEXT NOT NULL DEFAULT '',
+    opening_minor INTEGER, closing_minor INTEGER, line_count INTEGER NOT NULL DEFAULT 0, duplicate_count INTEGER NOT NULL DEFAULT 0,
+    status TEXT NOT NULL DEFAULT 'active',
+    created_by TEXT NOT NULL, created_at TEXT NOT NULL, updated_by TEXT, updated_at TEXT
+  ) STRICT;
+  CREATE UNIQUE INDEX IF NOT EXISTS idx_bank_statements_file ON bank_statements(bank_account_id, file_sha256) WHERE file_sha256 <> '' AND status = 'active';
+
+  CREATE TABLE IF NOT EXISTS bank_statement_lines (
+    id TEXT PRIMARY KEY, statement_id TEXT NOT NULL, bank_account_id TEXT NOT NULL,
+    line_no INTEGER NOT NULL, date TEXT NOT NULL, value_date TEXT NOT NULL DEFAULT '', direction TEXT NOT NULL CHECK (direction IN ('in', 'out')),
+    amount_minor INTEGER NOT NULL CHECK (amount_minor > 0), balance_minor INTEGER, description TEXT NOT NULL DEFAULT '',
+    reference TEXT NOT NULL DEFAULT '', counter_iban TEXT NOT NULL DEFAULT '', counter_name TEXT NOT NULL DEFAULT '',
+    external_id TEXT NOT NULL DEFAULT '', fingerprint TEXT NOT NULL, status TEXT NOT NULL DEFAULT 'unmatched',
+    score INTEGER NOT NULL DEFAULT 0, suggestion_json TEXT NOT NULL DEFAULT '[]',
+    created_by TEXT NOT NULL, created_at TEXT NOT NULL, updated_by TEXT, updated_at TEXT
+  ) STRICT;
+  CREATE INDEX IF NOT EXISTS idx_bank_statement_lines_account ON bank_statement_lines(bank_account_id, status, date);
+  -- Parmak izi tekil değil ("Mükerrer Değil" ile aynı gün aynı tutarda iki gerçek EFT girilebilir).
+  CREATE INDEX IF NOT EXISTS idx_bank_statement_lines_fingerprint ON bank_statement_lines(bank_account_id, fingerprint);
+  CREATE UNIQUE INDEX IF NOT EXISTS idx_bank_statement_lines_external ON bank_statement_lines(bank_account_id, external_id) WHERE external_id <> '';
+
+  CREATE TABLE IF NOT EXISTS bank_matches (
+    id TEXT PRIMARY KEY, line_id TEXT NOT NULL, bank_account_id TEXT NOT NULL,
+    event_id TEXT NOT NULL, amount_minor INTEGER NOT NULL CHECK (amount_minor > 0), digest TEXT NOT NULL,
+    kind TEXT NOT NULL, score INTEGER NOT NULL DEFAULT 0, created_by TEXT NOT NULL, created_at TEXT NOT NULL,
+    undone_by TEXT, undone_at TEXT, undo_reason TEXT NOT NULL DEFAULT ''
+  ) STRICT;
+  CREATE INDEX IF NOT EXISTS idx_bank_matches_event ON bank_matches(event_id) WHERE undone_at IS NULL;
+  CREATE INDEX IF NOT EXISTS idx_bank_matches_line ON bank_matches(line_id);
+
+  CREATE TABLE IF NOT EXISTS bank_plans (
+    id TEXT PRIMARY KEY, kind TEXT NOT NULL, bank_account_id TEXT NOT NULL,
+    to_account_id TEXT NOT NULL DEFAULT '', party_id TEXT NOT NULL DEFAULT '', amount_minor INTEGER NOT NULL CHECK (amount_minor > 0),
+    currency TEXT NOT NULL DEFAULT 'TRY', planned_date TEXT NOT NULL, repeat TEXT NOT NULL DEFAULT 'none',
+    description TEXT NOT NULL DEFAULT '', status TEXT NOT NULL DEFAULT 'planned', done_event_id TEXT NOT NULL DEFAULT '',
+    created_by TEXT NOT NULL, created_at TEXT NOT NULL, updated_by TEXT, updated_at TEXT
+  ) STRICT;
+
+  -- Kalıcı istek kimliği (§3.10/1): anahtar = kullanıcı|kapsam|kimlik; yazımla aynı işlemde; 30 günden eskiler budanır.
+  CREATE TABLE IF NOT EXISTS request_keys (
+    key TEXT PRIMARY KEY, scope TEXT NOT NULL, user_id TEXT NOT NULL,
+    body_hash TEXT NOT NULL, ref_id TEXT NOT NULL, created_at TEXT NOT NULL
+  ) STRICT;
+  CREATE INDEX IF NOT EXISTS idx_request_keys_created ON request_keys(created_at);
+`;
 
 export const LATEST_VERSION = MIGRATIONS.at(-1).version;
 
-export function runMigrations(store, { backupDir, keep = 30, log, company = null } = {}) {
+// now: iş saati (config.now) — göç damgaları (meta.schema.v20At) sahte saatte de iş gününü taşır.
+export function runMigrations(store, { backupDir, keep = 30, log, company = null, now = systemClock } = {}) {
   const current = store.get("PRAGMA user_version").user_version;
   const pending = MIGRATIONS.filter(item => item.version > current);
   if (!pending.length) return { from: current, to: current, applied: [], backup: null };
@@ -1123,7 +1369,7 @@ export function runMigrations(store, { backupDir, keep = 30, log, company = null
   }
   for (const migration of pending) {
     store.tx(() => {
-      migration.up(store);
+      migration.up(store, { company, now });
       store.exec(`PRAGMA user_version = ${migration.version}`);
     });
     log?.info(`Veritabanı göçü uygulandı: ${migration.version} (${migration.name})`);
