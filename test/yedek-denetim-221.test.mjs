@@ -185,7 +185,11 @@ describe("2.0.21 · yedek denetimi: gerçek v2.0.19 verisinden güncelleme", { s
       const result = data(await client.get("/api/admin/backups/audit"));
       assert.deepEqual(result.errors, [], result.errors.join("\n"));
       const byCode = Object.fromEntries(result.companies.map(item => [item.code, item]));
-      assert.equal(byCode["001"].count, 1, "001'in 2.0.19 yedeği 001'in klasöründe");
+      // v2.1.0: güncel kod açılırken v20 göçünden önce tam yedek alır (pre-migration-v20; 001'in klasörüne, 001'in kimliğiyle).
+      // 2.0.19'un bıraktığı yedek ondan ayrı sayılır.
+      const migration001 = byCode["001"].files.filter(file => /^pre-migration-v\d+$/.test(file.label));
+      assert.ok(migration001.every(file => file.state === "ok" && file.identity?.id === "sirket-001"), JSON.stringify(migration001));
+      assert.equal(byCode["001"].count - migration001.length, 1, "001'in 2.0.19 yedeği 001'in klasöründe");
       // 2.0.19 yedekleri kimliksizdir; 005'in (eski 002) yedekleri 005'in klasörüne taşınır, yeni 002'ye geçmez.
       assert.ok(byCode["005"].count >= 1, JSON.stringify(byCode["005"]));
       for (const row of result.companies) for (const file of row.files) assert.notEqual(file.state, "baska-sirket", `${row.folder}\\${file.name}`);
