@@ -14,6 +14,8 @@ import { tablePdf, tl } from "../lib/report-pdf.mjs";
 import { methodInput } from "../lib/pay-method.mjs";
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
+// v2.0.26 (G6): toplu aktarımda bir satırın iç işlemini geri alıp nedeniyle atlamak için (kapanmış dönem).
+export class SkippedRow extends Error {}
 const validDate = value => DATE.test(value) && !Number.isNaN(new Date(value).getTime());
 const MAX_ITEMS = 360;
 const MAX_IMPORT = 100_000;
@@ -1017,13 +1019,30 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
         const registeredOn = excelDay || today();
         const person = { name, phone, note: cell(row, col.note).slice(0, 1000), registeredOn, groupId, subgroupId, caseKey: record?.key || "", caseSource: record ? source : "", caseTitle: record?.title || "" };
         // Cari (v2.0.6): aynı ad ve telefonla (ya da telefonsuz aynı ad ve grupla) tek bir cari varsa ona bağlanır; yoksa açılır.
-        const outcome = {};
-        const accountId = accounts()?.createFromPlan(user, person, outcome) || "";
+        // v2.0.26 (G6): cari ve kart iç işlemde (SAVEPOINT) açılır; kartın Kayıt Tarihi kapanmış dönemdeyse ikisi de geri alınır, satır
+        // nedeniyle atlanır (yükleme durmaz).
+        let outcome;
+        let accountId;
+        let start;
+        try {
+          ({ outcome, accountId, start } = store.tx(() => {
+            const result = {};
+            const id = accounts()?.createFromPlan(user, person, result) || "";
+            const ownerDay = !excelDay && id && !result.created ? store.get("SELECT registered_on AS day FROM accounts WHERE id = ?", id)?.day || "" : "";
+            const day = scheduledStart(ownerDay || registeredOn, items);
+            const reason = lockedStartReason(day);
+            if (reason) throw new SkippedRow(reason);
+            return { outcome: result, accountId: id, start: day };
+          }));
+        } catch (error) {
+          if (!(error instanceof SkippedRow)) throw error;
+          if (!cell(row, col.seq)) autoRef -= 1;
+          return skip(index, error.message);
+        }
         if (accountId && !outcome.created) report.linked += 1;
         if (outcome.created) undo.accounts.push(accountId);
         if (outcome.linked) undo.accountLinks.push({ accountId, caseKey: person.caseKey });
-        const ownerDay = !excelDay && accountId && !outcome.created ? store.get("SELECT registered_on AS day FROM accounts WHERE id = ?", accountId)?.day || "" : "";
-        const created = createScheduled(user, { ...person, registeredOn: ownerDay || registeredOn, accountId, refNo, total }, { importId, items, openingDate: today(), openingNote: "Excel'de ödenmiş (açılış)" });
+        const created = createScheduled(user, { ...person, registeredOn: start, accountId, refNo, total }, { importId, items, openingDate: today(), openingNote: "Excel'de ödenmiş (açılış)" });
         if (!items.length && total > 0) store.run("UPDATE plans SET total = ? WHERE id = ?", roundMoney(total), created.id);
         undo.plans.push(created.id);
         undo.openings.push(...created.openingIds);
@@ -1311,14 +1330,24 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
   // Kartı taksitleriyle açar; Excel'e göre ödenmiş kısım her taksit için bir açılış (devir) kaydıdır: taksiti kapatır,
   // carinin bakiyesine sayılır, Kasa'ya girmez, makbuzu yoktur. Çağıran tek işlem bloğu (store.tx) içinde çağırır.
   // items: [{ dueDate, amount, paid, label }] (vade sırasıyla). Dönüş: { id, openingIds }.
+  // v2.0.13: aktarılan (tarihsel) kartın işlem tarihi en geç ilk vadesidir: Kayıt Tarihi bilinmiyorsa ya da ilk
+  // vadeden sonraysa ilk vade alınır (vade, kartın işlem tarihinden önce olamaz).
+  function scheduledStart(registeredOn, items = []) {
+    const firstDue = items.map(item => item.dueDate).filter(Boolean).sort()[0] || "";
+    let start = registeredOn && registeredOn <= today() ? registeredOn : today();
+    if (firstDue && firstDue < start) start = firstDue;
+    return start;
+  }
+  // v2.0.26 (gözden geçirme G6): aktarılan kart cariye Kayıt Tarihi'nde borç yazar; o gün kapanmış dönemdeyse kişi aktarılmaz,
+  // nedeni aktarım raporuna yazılır (önceden bütün aktarım kapıda nedensiz 409 ile duruyordu).
+  function lockedStartReason(start) {
+    const lock = period?.lockedUntil?.() || "";
+    return lock && start && start <= lock ? `Kartın Kayıt Tarihi (${dayText(start)}; ilk vade ya da kayıt günü) kapatılmış (kilitli) dönemde (${dayText(lock)} ve öncesi); kart açılmadı. Yönetici dönem kilidini açarsa yeniden aktarın.` : "";
+  }
   function createScheduled(user, input, { importId = "", items = [], openingDate = today(), openingNote = "Excel'de ödenmiş" } = {}) {
     const id = newId("plan");
     const total = roundMoney(items.reduce((sum, item) => sum + (Number(item.amount) || 0), 0));
-    // v2.0.13: aktarılan (tarihsel) kartın işlem tarihi en geç ilk vadesidir: Kayıt Tarihi bilinmiyorsa ya da ilk
-    // vadeden sonraysa ilk vade alınır (vade, kartın işlem tarihinden önce olamaz).
-    const firstDue = items.map(item => item.dueDate).filter(Boolean).sort()[0] || "";
-    let registeredOn = input.registeredOn && input.registeredOn <= today() ? input.registeredOn : today();
-    if (firstDue && firstDue < registeredOn) registeredOn = firstDue;
+    const registeredOn = scheduledStart(input.registeredOn, items);
     // Kart, taksitleri ve açılış kayıtları tek damga taşır: geri alma denetimi (plan-transfer.mjs) "created_at =
     // updated_at" ile kartın aktarımdan sonra dokunulmadığını anlar; iki ayrı now() milisaniye sınırında ayrışabiliyordu.
     const stamp = now();
@@ -1355,5 +1384,5 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
   // ikinci kez saymaz; aktarma "kartı var" der.
   const linkedCases = source => new Set(store.all("SELECT case_key AS k FROM plans WHERE deleted_at IS NULL AND case_key <> '' AND case_source = ?", source || "").map(row => row.k));
 
-  return { uncoveredDebt, assertRestorable, assertCloseOpen, trimCovers, shrinkPlan, leftOf, syncInvoiceCard, cashEntries, cashSource, dueItems, openItems, fingerprint, ledgerPlansByAccount, list, detail, forCase, entriesForCase, summariesByAccount, forAccount, createForAccount, removeForInvoice, growForInvoice, followAccount, countForAccount, receiptSeq, nextRef, validDistribution: distributionInput, resolveGroups, groupTree, ensureGroup, createScheduled, adoptPayment, linkedCases };
+  return { uncoveredDebt, assertRestorable, assertCloseOpen, trimCovers, shrinkPlan, leftOf, syncInvoiceCard, cashEntries, cashSource, dueItems, openItems, fingerprint, ledgerPlansByAccount, list, detail, forCase, entriesForCase, summariesByAccount, forAccount, createForAccount, removeForInvoice, growForInvoice, followAccount, countForAccount, receiptSeq, nextRef, validDistribution: distributionInput, resolveGroups, groupTree, ensureGroup, createScheduled, scheduledStart, lockedStartReason, adoptPayment, linkedCases };
 }
