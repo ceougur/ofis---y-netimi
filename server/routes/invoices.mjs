@@ -103,7 +103,8 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, conf
   const newId = prefix => `${prefix}-${randomUUID()}`;
   const AUDITOR = { id: "invoices", role: "admin", permissions: [] };
   const publish = (user, detail) => events?.publish("workspace.changed", { actorId: user.id, actorName: user.display_name, ...detail }, { except: user.id });
-  const requests = createIdempotency({ now: () => clock().getTime() });
+  // İstek kimliği (v2.1.0): şirketin veri tabanında (request_keys), belge yazımıyla aynı işlemde; yeniden başlatmada da hatırlanır.
+  const requests = createIdempotency({ store, now: clock });
 
   // ---------- Ayarlar ----------
   function settings() {
@@ -1870,17 +1871,24 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, conf
       if (!store.get("SELECT 1 AS found FROM invoices WHERE id = ?", prior.refId)) throw gone();
       return ok(res, { ...detail(prior.refId, user), replayed: true });
     }
+    // Kimlik belgeyle AYNI işlemde yazılır (v2.1.0): biri geri alınırsa (kapı sapması, kimlik yazılamadı) ikisi birden.
     if (body.status === "draft") {
       const doc = documentInput(body, { mode: "draft" });
       doc.paymentDraft = body.payment && typeof body.payment === "object" ? body.payment : {};
-      const id = writeDraft(user, doc);
-      requests.remember(requestKey, hash, id);
+      const id = store.tx(() => {
+        const written = writeDraft(user, doc);
+        requests.remember(requestKey, hash, written);
+        return written;
+      });
       return ok(res, detail(id, user));
     }
     const doc = documentInput(body, { mode: "issue" });
     const payment = paymentInput(body, doc, user);
-    const result = writeIssued(user, doc, payment, { force: forceOf(body), defer: body.eSend === "later" });
-    requests.remember(requestKey, hash, result.id);
+    const result = store.tx(() => {
+      const written = writeIssued(user, doc, payment, { force: forceOf(body), defer: body.eSend === "later" });
+      requests.remember(requestKey, hash, written.id);
+      return written;
+    });
     const autoSend = await sendChoice(user, result.id, body.eSend);
     ok(res, { ...detail(result.id, user), ...(autoSend ? { autoSend } : {}) });
   });
