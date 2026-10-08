@@ -50,10 +50,27 @@ denenmeyen / bilinen sınırlar: `docs/2.0.26-KANIT.md`. Sürüm numarası paket
   tahsilat ve ödemeleriyle birlikte Nakit Kasa'dan 500,00 TL düşer; Nakit Kasa 200,00 TL iken -300,00 TL olur. Yine de silinsin
   mi?"). Mahsuptaki satır silinirken mesaj yolu söyler (faturayı açın → Bu Faturayı Kapatanlar → Kaldır). Geri yüklenen
   tahsilat faturasına bağlanamazsa hangi fatura ve neden yazar.
+- **Düzeltmede de soru nedenini söyler.** Kayıt, cari, taksit, stok ya da Kasa hareketi düzeltilirken Kasa eksiye düşecekse soru
+  düzeltmeyi anlatır ("Bu tahsilat 1.000,00 TL'den 500,00 TL'ye düzeltilince Nakit Kasa'dan 500,00 TL düşer; …"; yol
+  değişikliğinde "Bu tahsilatın yolu Havale / EFT olarak değiştirilince …"); "yolu değiştirin" önerisi yalnız yeni ödemede çıkar.
+  Silmede soruya Vazgeç denince "Silinmedi" bilgisi çıkar (kırmızı hata değil).
+- **Çek/senet kartı doğru yolu söyler.** Düzenle penceresinin metni evrakın durumuna göre: faturadan gelen evrakta "faturayı iptal
+  edin", tahsil/ciro/ödeme görmüş evrakta "önce son işlemi geri alın" (son işlem kapatılmış dönemdeyse bunun için önce kilit
+  açılmalı), kapatılmış dönemde alınmışta kilit. Kapatılmış dönemde alınmış evrakta Sil düğmesi gösterilmez; nedeni kartta yazar.
+- **Taksite Aktar ve kapatılmış kart.** Bağlanacak bağsız kart kapatılmış dönemde kapatıldıysa (kalandan vazgeçilmiş) kayıt
+  tahsilatları o karta taşınamaz: ön izleme kişiyi aktarılamaz gösterir ve nedenini yazar, öbür kişiler aktarılır; tahsilatları
+  taşımadan aktarma çalışır. Excel'den taksit yüklemede kilit yüzünden atlanan satır boş grup bırakmaz.
+- **Mahsuplu satırın açıklaması düzeltilir.** Eski sürümde tarihi ya da tutarı mahsupla uyuşmaz hâle gelmiş satırda yalnız
+  açıklama (ya da değişmeyen alan) düzeltmesi artık reddedilmez; tarih ya da tutar değiştirilirse kural aynı.
+- **Eski sürümden kalan ileri tarihli çek/senet.** Yönetim → Sistem'de kırmızı hata yerine sarı uyarı olarak ve ne yapılacağıyla
+  görünür (Düzenle ile alış/veriliş tarihini gerçek güne çekin; tarihi gelince kendiliğinden kalkar); denetim adlarında iç tablo
+  adı yerine "Çek/Senet Hareketleri", "Kasa Hareketleri" gibi adlar.
 - Testler: `test/asama0-226.test.mjs` (54), `test/asama0-226-saat.test.mjs` (5; gün ilerletmeli), `test/asama0-226-kesinti.test.mjs`
   (2; gerçek SIGKILL). 2.0.25 kodunda 61 testin 42'si kırmızı. Üç eski test bilinçli güncellendi (`raporlar-209`, `trash`, arayüz
   `e2e`: tahsilat silmede eksi bakiye sorusu artık çıkıyor ve onaylanıyor). Bağımsız gözden geçirme: `test/inceleme-226.test.mjs`
-  (35; düzeltmeden önce 27'si kırmızı) ve arayüz senaryosu `npm run test:senaryo-226` (12 denetim; önce 9'u kırmızı).
+  (35; düzeltmeden önce 27'si kırmızı) ve arayüz senaryosu `npm run test:senaryo-226` (12 denetim; önce 9'u kırmızı). İkinci
+  bağımsız gözden geçirme: `test/inceleme-226-2.test.mjs` (27; düzeltmeden önce 17'si kırmızı) ve `senaryo-226`'ya 13 denetim
+  (önce 10'u kırmızı); denetim adı değiştiği için `inceleme-226` ve `donem-213` beklenen adları güncellendi.
 
 ## 2.0.25 — En fazla 2 şirket; başka sayfadaki uyarıdan kayda git; Sayfayı Sil
 

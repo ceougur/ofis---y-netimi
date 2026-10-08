@@ -825,7 +825,14 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   (G5 ileri tarihli eski hareketin geri yüklenmesi, G6 Taksite Aktar/Excel taksit kilitte nedensiz 409, G7 silme sorusu metni,
   G8 mahsup/geri yükleme mesajı, G9 bu satır). HEPSİ yeniden üretildi ve düzeltildi (c4a19a7 … 762bb54, 8104c55); kırmızı kanıt
   `test/inceleme-226.test.mjs` a25751f'de 35'in 27'si, `senaryo-226` (CI'de) 12'nin 9'u. Kanıt `docs/2.0.26-KANIT.md` 3. bölüm.
-  Düzeltmeler ikinci bir bağımsız gözden geçirmeden geçmedi. Sırada: kullanıcı onayıyla paket/PR (2.0.26) ya da Aşama 2.
+  İKİNCİ BAĞIMSIZ GÖZDEN GEÇİRME (08.10.2026; düzeltmelerin kendisi): 8 doğrulanmış hata (İ1 orta: Taksite Aktar kilitli günde
+  kapatılmış karta tahsilat taşırken bütün aktarım nedensiz 409; İ2 Excel taksitte boş grup; İ3 çek formu yanlış yol + kilitli Sil;
+  İ5 düzeltme sorusu "çıkış" metni; İ6 silmede Vazgeç kırmızı "Kaydedilmedi"; İ7 mahsuplu satırda değişmeyen alan sınanıyordu;
+  İ8 eski ileri tarihli çek kırmızı + tablo adı; İ10 Kasa özeti iki kez) + 2 ölçüm (İ4, İ9: yeni kapı sorguları ~+14–16 ms /
+  10.000 cari; kapının kendisi ~1 sn/COMMIT → Aşama 2). HEPSİ düzeltildi (6ed1d40 … 4b5c76d); kırmızı kanıt
+  `test/inceleme-226-2.test.mjs` bdd1be6'da 27'nin 17'si, `senaryo-226` 25'in 10'u. Son kodla npm test 1.189/1.189, mutabakat
+  2.000 işlem, güvenilirlik 2×1.000, 7 arayüz senaryosu 0 hata. Kanıt `docs/2.0.26-KANIT.md` 4. bölüm.
+  Sırada: kullanıcı onayıyla paket/PR (2.0.26) ya da Aşama 2.
 - 2.0.20 YAPILACAKLAR (kullanıcı "yapılacaklara not al" dedi, 03.10.2026; "yap" denince başlanır; ayrıntı ve
   kanıt hemen altındaki ADAYI maddesinde):
   [x] 1. Bütün raporların (43) tablosunun altında kalın TOPLAM satırı — ekran, PDF, Excel aynı; yalnız toplanabilir
