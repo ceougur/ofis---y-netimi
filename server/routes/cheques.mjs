@@ -693,8 +693,9 @@ export function registerChequeRoutes(router, { store, auth, audit, events, perio
     const raw = store.get(`${CHEQUE_SQL.replace("AND a.deleted_at IS NULL", "")} WHERE c.id = ? AND c.deleted_at IS NOT NULL`, id);
     if (!raw) throw new HttpError(404, "Bu evrak zaten geri yüklenmiş.");
     let effects = [];
-    // v2.0.26 (A6): kapanmış dönemde alınan/verilen evrak geri yüklenmez (silmedeki kuralın aynısı).
-    period?.assertOpen(raw.issueDate, "Bu çek/senet");
+    // v2.0.26 (A6): kapanmış dönemde alınan/verilen evrak geri yüklenmez (silmedeki kuralın aynısı). Gözden geçirme G5: ileri
+    // alış/veriliş tarihli eski evrak da (2.0.25 girebiliyordu) nedenli 400 alır; cari satırı yeni kimlikle ileri tarihe yazılırdı.
+    period?.restoreDate(raw.issueDate, "Bu çek/senet");
     store.tx(() => {
       if (raw.accountId && !accounts()?.exists?.(raw.accountId)) throw new HttpError(409, "Evrakın carisi silinmiş. Önce cariyi geri yükleyin.");
       if (raw.serialNo && store.get("SELECT 1 AS found FROM cheques WHERE deleted_at IS NULL AND serial_no = ? AND direction = ? AND instrument = ? AND bank = ? COLLATE NOCASE", raw.serialNo, raw.direction, raw.instrument, raw.bank)) {

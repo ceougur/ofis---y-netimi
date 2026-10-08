@@ -1200,7 +1200,7 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     if (account.deletedAt) throw new HttpError(409, `“${payload.accountName}” carisi silinmiş. Önce cariyi geri yükleyin.`);
     // v2.0.26 (A7): kapanmış dönemdeki hareket geri yüklenmez; bütün kolonlar (yol, Kapatılacak Fatura bağı) taşınır, tutar
     // kuruşa yuvarlanır. Önceden kaynak boş, fatura bağı yok yazılıyor, tutar olduğu gibi alınıyordu.
-    period?.assertOpen(payload.date, "Bu cari hareketi");
+    period?.restoreDate(payload.date, "Bu cari hareketi");
     // Silinenler'e yalnız elle girilen satır gider (stok, çek, fatura satırı kendi modülünden silinir).
     if (payload.source) throw new HttpError(409, "Bu hareket başka bir modülden (stok, çek/senet, fatura) geliyordu; o modülden yeniden girin.");
     const method = methodInput(payload.method);

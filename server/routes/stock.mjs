@@ -646,7 +646,7 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
     if (item.deletedAt) throw new HttpError(409, `“${payload.itemName}” ürünü silinmiş. Önce ürünü geri yükleyin.`);
     // v2.0.26 (A7, B7): kapanmış dönemdeki hareket geri yüklenmez; tutar kuruşa yuvarlanır; yol katı okunur (tanınmayan yol
     // 400 — önceden sessizce nakit sayılıyordu).
-    period?.assertOpen(payload.date, "Bu stok hareketi");
+    period?.restoreDate(payload.date, "Bu stok hareketi");
     const pay = payload.pay === "account" && !accounts()?.exists(payload.accountId) ? "none" : PAY.has(payload.pay) ? payload.pay : "none";
     const move = { kind: payload.kind, qty: Number(payload.qty) || 0, unitPrice: Number(payload.unitPrice) || 0, amount: roundMoney(Number(payload.amount) || 0), date: payload.date, note: payload.note || "", pay, reason: payload.reason === "return" ? "return" : "", method: pay === "cash" ? methodInput(payload.method) : "cash", accountId: pay === "account" ? payload.accountId : "" };
     store.tx(() => {

@@ -49,6 +49,15 @@ export function createPeriod({ store, now = () => new Date() }) {
     assertOpen(date, "Hareket");
     return date;
   }
+  /**
+   * Silinenler'den geri yükleme (v2.0.26, gözden geçirme G5): hareket kendi tarihiyle döner. Kilitli dönemde (409 period-locked)
+   * ya da ileri tarihli (400 date-future) olamaz. İleri tarihli satır yalnız eski sürümden kalabilir (bugün girilemez); geri yükleme
+   * onu yeni kimlikle ya da yeniden başlatmadan sonra tabanda olmayan bir satır olarak yazardı (kapıda nedensiz 409).
+   */
+  function restoreDate(date, what = "Bu hareket") {
+    assertOpen(date, what);
+    if (date && date > today()) throw new HttpError(400, `${what} ${dayText(date)} tarihli (ileri tarih); ileri tarihli hareket geri yüklenmez. Tarihi gelince geri yükleyin ya da hareketi bugünün tarihiyle yeniden girin.`, { code: "date-future" });
+  }
   /** Vade: işlem (kayıt/satış) tarihinden önce olamaz; geçerli takvim günü olmalı. */
   function dueDate(value, { from, label = "Vade" } = {}) {
     const date = String(value ?? "").trim();
@@ -63,5 +72,5 @@ export function createPeriod({ store, now = () => new Date() }) {
     store.setSetting(LOCK_KEY, date);
     return date;
   }
-  return { today, lockedUntil, assertOpen, movementDate, dueDate, setLock };
+  return { today, lockedUntil, assertOpen, restoreDate, movementDate, dueDate, setLock };
 }

@@ -277,9 +277,11 @@ export function registerTrashRoutes(router, { store, auth, audit, events, datase
     // v2.0.26 (A7): para hareketi kapanmış dönemdeyse geri yüklenmez (silmedeki kuralın aynısı; önceden kapıda nedensiz 409).
     // Tutar kuruşa yuvarlanır, ödeme yolu katı okunur (B7: tanınmayan yol 400; sessizce nakit sayılmaz).
     const money = value => roundMoney(Number(value) || 0);
+    // G5: kilitli dönem 409, ileri tarih 400 (eski sürümden kalan ileri tarihli satır; kapıdaki nedensiz 409 yerine).
+    const restoreDate = (date, what) => period?.restoreDate(date, what);
 
     if (item.kind === "payment") {
-      period?.assertOpen(payload.date, "Bu tahsilat");
+      restoreDate(payload.date, "Bu tahsilat");
       const method = methodInput(payload.method);
       store.tx(() => {
         if (!store.get("SELECT 1 AS found FROM payments WHERE id = ?", item.ref)) {
@@ -306,8 +308,8 @@ export function registerTrashRoutes(router, { store, auth, audit, events, datase
       message = "Tahsilat geri eklendi; Kasa ve tahsilat takvimi güncellendi.";
     } else if (item.kind === "cash") {
       if (!["in", "out"].includes(payload.kind)) throw new HttpError(409, "Kasa hareketinin bilgisi eksik; geri yüklenemez.");
-      period?.assertOpen(payload.date, "Bu kasa hareketi");
-      if (payload.twin) period?.assertOpen(payload.twin.date, "Bu transferin öbür tarafı");
+      restoreDate(payload.date, "Bu kasa hareketi");
+      if (payload.twin) restoreDate(payload.twin.date, "Bu transferin öbür tarafı");
       // Yol işlemden önce doğrulanır (bozuk yükte hiçbir satır yazılmaz).
       methodInput(payload.method);
       if (payload.twin) methodInput(payload.twin.method);
@@ -342,7 +344,7 @@ export function registerTrashRoutes(router, { store, auth, audit, events, datase
       const plan = store.get("SELECT id, deleted_at AS deletedAt FROM plans WHERE id = ?", payload.planId);
       if (!plan) throw new HttpError(409, "Hareketin taksit kartı artık yok; geri yüklenemez.");
       if (plan.deletedAt) throw new HttpError(409, `“${payload.planName}” kartı silinmiş. Önce kartı geri yükleyin.`);
-      period?.assertOpen(payload.date, "Bu taksit hareketi");
+      restoreDate(payload.date, "Bu taksit hareketi");
       plans?.assertCloseOpen?.(plan.id, "Kartın tahsilatı ve iadesi geri yüklenemez.");
       const method = methodInput(payload.method);
       store.tx(() => {
