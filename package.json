@@ -32,6 +32,7 @@
     "test:senaryo-223": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-223.mjs",
     "test:senaryo-224": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-224.mjs",
     "test:senaryo-225": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-225.mjs",
+    "test:senaryo-226": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-226.mjs",
     "test:senaryo-whatsapp": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-whatsapp.mjs",
     "test:mutabakat": "node --disable-warning=ExperimentalWarning test/mutabakat/kos.mjs",
     "test:guvenilirlik": "node --disable-warning=ExperimentalWarning test/guvenilirlik/kos.mjs",
