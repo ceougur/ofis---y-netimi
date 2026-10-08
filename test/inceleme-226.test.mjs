@@ -158,6 +158,11 @@ describe("G1 — 01.05.2025'te kapatılmış kart (kilit 30.06.2025): tahsilat, 
     const g = await account(api, "G1b Gül", "customer", "2025-01-01");
     cards.later = await newCard(api, g.id, "G1b Sonradan Kapanan", "800", OPEN_DAY);
     await must("kapat", api.put(`/api/workspace/plans/${cards.later.id}`, { status: "closed" }));
+    // 2.0.13 öncesi kapatılmış kart: closed_at boş, kapanış günü son güncelleme günü (01.05.2025).
+    const h = await account(api, "G1b Hakan", "customer", "2025-03-01");
+    cards.legacy = await newCard(api, h.id, "G1b Eski Sürüm Kartı", "600", "2025-03-02");
+    await must("kapat", api.put(`/api/workspace/plans/${cards.legacy.id}`, { status: "closed" }));
+    store.run("UPDATE plans SET closed_at = NULL, updated_at = '2025-05-01T09:00:00.000Z' WHERE id = ?", cards.legacy.id);
     await setLock(api, LOCK);
     ctx.before = await trialAt(api, LOCK, ["120", "689", "101"]);
   });
@@ -177,6 +182,12 @@ describe("G1 — 01.05.2025'te kapatılmış kart (kilit 30.06.2025): tahsilat, 
       () => store.tx(() => store.run("INSERT INTO plan_entries (id, plan_id, kind, amount, date, method, created_by, created_at) VALUES ('pe-saldiri', ?, 'in', 100, ?, 'cash', 'x', ?)", cards.old.id, TODAY, new Date().toISOString())),
       lockFailure,
     );
+  });
+  it("nasıl bozarım: 2.0.13 öncesi kapatılmış kartın (kapanış günü boş) adı düzeltilince vazgeçilen kalanın günü kaymaz", async () => {
+    const renamed = await must("ad", ctx.api.put(`/api/workspace/plans/${cards.legacy.id}`, { name: "G1b Eski Sürüm Kartı (ad)" }));
+    assert.equal(renamed.status, "closed");
+    assert.equal(ctx.store.get("SELECT closed_at AS c FROM plans WHERE id = ?", cards.legacy.id).c, "2025-05-01", "kapanış günü düzenlemeden önceki gün olarak yazıldı");
+    await refusedWith("yeniden aç", ctx.api.put(`/api/workspace/plans/${cards.legacy.id}`, { status: "active" }), 409, "period-locked");
   });
   it("çalışıyor mu: kilitten sonra kapatılmış kart yeniden açılır, tahsilat alır, yeniden kapanır (200)", async () => {
     const { api } = ctx;

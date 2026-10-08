@@ -19,7 +19,7 @@ import { monthsInText } from "../lib/insight/installments.mjs";
 import { roundMoney } from "../lib/money.mjs";
 import { canUser } from "../lib/permissions.mjs";
 import { dayText, isoDay } from "../lib/plans.mjs";
-import { SkippedRow } from "./plans.mjs";
+import { FREEZE_CLOSE, SkippedRow } from "./plans.mjs";
 
 const SETTLED_KEY = "dues.settled";
 const DISMISSED_KEY = "plans.transfer.dismissed";
@@ -317,7 +317,7 @@ export function registerPlanTransfer(router, { store, auth, audit, events, datas
             report.skipped.push({ key: record.key, name: record.name, reason: "Bağlanacak kart bu arada değişti." });
             continue;
           }
-          store.run("UPDATE plans SET case_key = ?, case_source = ?, case_title = ?, updated_by = ?, updated_at = ? WHERE id = ? AND case_key = ''", record.key, key, record.name, user.id, now(), plan.id);
+          store.run(`UPDATE plans SET ${FREEZE_CLOSE}, case_key = ?, case_source = ?, case_title = ?, updated_by = ?, updated_at = ? WHERE id = ? AND case_key = ''`, record.key, key, record.name, user.id, now(), plan.id);
           undo.links.push({ planId: plan.id, caseKey: record.key });
           // Kartın carisi bir kayda bağlı değilse bu kayda bağlanır (kişi bir kez).
           if (plan.accountId && store.get("SELECT 1 AS found FROM accounts WHERE id = ? AND deleted_at IS NULL AND case_key = ''", plan.accountId)) {
@@ -498,7 +498,7 @@ export function registerPlanTransfer(router, { store, auth, audit, events, datas
         report.plans += 1;
       }
       for (const link of undo.links || []) {
-        store.run("UPDATE plans SET case_key = '', case_source = '', case_title = '', updated_by = ?, updated_at = ? WHERE id = ? AND case_key = ?", user.id, now(), link.planId, link.caseKey);
+        store.run(`UPDATE plans SET ${FREEZE_CLOSE}, case_key = '', case_source = '', case_title = '', updated_by = ?, updated_at = ? WHERE id = ? AND case_key = ?`, user.id, now(), link.planId, link.caseKey);
         report.links += 1;
       }
       for (const link of undo.accountLinks || []) store.run("UPDATE accounts SET case_key = '', case_source = '', case_title = '', updated_by = ?, updated_at = ? WHERE id = ? AND case_key = ?", user.id, now(), link.accountId, link.caseKey);

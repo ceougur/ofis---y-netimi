@@ -100,17 +100,19 @@ const LOCK_SQL = {
           WHERE p.deleted_at IS NULL AND EXISTS (SELECT 1 FROM plan_entries pe WHERE pe.plan_id = p.id AND pe.date <= ?1)
           ORDER BY p.id`,
   },
-  // Gözden geçirme G1 — kapanmış dönemde kapatılmış kart: vazgeçilen kalan (689) kapatıldığı gün yazılır (routes/ledger.mjs). Kartın
-  // yeniden açılması, silinmesi, tutarı, carisi (ve carinin türü) ya da sonradan gelen tahsilatı kilitli mizanı değiştirir.
-  // closed_at'i boş eski kartlar (2.0.13 öncesi kapatılmış) izde değildir; rota denetimi onları da kapsar (plans.mjs closeDayOf).
+  // Gözden geçirme G1 — kapanmış dönemde kapatılmış kart: vazgeçilen kalan (689) kapatıldığı gün yazılır (routes/ledger.mjs: closed_at,
+  // 2.0.13 öncesi kapatılmışta son güncelleme günü; Kayıt Tarihi'nden önce değil — aynı ifade). Kartın yeniden açılması, silinmesi,
+  // tutarı, carisi (ve carinin türü) ya da sonradan gelen tahsilatı kilitli mizanı değiştirir. Kart güncellenirken eski kartın
+  // kapanış günü yazılır (plans.mjs FREEZE_CLOSE); gün aynı kaldığı için iz değişmez.
   plans_close_lock: {
     requires: ["plans", "plan_entries", "accounts"],
-    sql: `SELECT p.id, p.account_id, COALESCE(a.type, '') AS party, p.total, p.closed_at,
-                 ROUND(p.total - COALESCE((SELECT SUM(CASE WHEN e.kind = 'in' THEN e.amount ELSE -e.amount END) FROM plan_entries e WHERE e.plan_id = p.id), 0), 2) AS waived
-          FROM plans p LEFT JOIN accounts a ON a.id = p.account_id AND a.deleted_at IS NULL
-          WHERE p.deleted_at IS NULL AND p.status = 'closed' AND COALESCE(p.closed_at, '') <> ''
-            AND MAX(p.closed_at, COALESCE(NULLIF(p.registered_on, ''), substr(p.created_at, 1, 10))) <= ?1
-          ORDER BY p.id`,
+    sql: `SELECT * FROM (
+            SELECT p.id, p.account_id, COALESCE(a.type, '') AS party, p.total,
+                   MAX(COALESCE(p.closed_at, substr(p.updated_at, 1, 10)), COALESCE(NULLIF(p.registered_on, ''), substr(p.created_at, 1, 10))) AS closed_on,
+                   ROUND(p.total - COALESCE((SELECT SUM(CASE WHEN e.kind = 'in' THEN e.amount ELSE -e.amount END) FROM plan_entries e WHERE e.plan_id = p.id), 0), 2) AS waived
+            FROM plans p LEFT JOIN accounts a ON a.id = p.account_id AND a.deleted_at IS NULL
+            WHERE p.deleted_at IS NULL AND p.status = 'closed')
+          WHERE closed_on <= ?1 ORDER BY id`,
   },
 };
 

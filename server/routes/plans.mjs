@@ -16,6 +16,10 @@ import { methodInput } from "../lib/pay-method.mjs";
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 // v2.0.26 (G6): toplu aktarımda bir satırın iç işlemini geri alıp nedeniyle atlamak için (kapanmış dönem).
 export class SkippedRow extends Error {}
+// v2.0.26 (G1): 2.0.13 öncesi kapatılmış kartta closed_at boştur; kapanış günü (vazgeçilen kalanın, 689, tarihi) son güncelleme
+// gününden okunur (routes/ledger.mjs). Kart güncellenince o gün kaymasın diye UPDATE'e eklenir: güncellemeden önceki gün yazılır
+// (SQLite UPDATE'te sağ taraf eski satırı okur).
+export const FREEZE_CLOSE = "closed_at = CASE WHEN status = 'closed' AND closed_at IS NULL THEN substr(updated_at, 1, 10) ELSE closed_at END";
 const validDate = value => DATE.test(value) && !Number.isNaN(new Date(value).getTime());
 const MAX_ITEMS = 360;
 const MAX_IMPORT = 100_000;
@@ -432,7 +436,7 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
       rest = roundMoney(rest - take);
     }
     const total = roundMoney(plan.total - cut);
-    store.run("UPDATE plans SET total = ?, updated_by = ?, updated_at = ? WHERE id = ?", total, user.id, now(), plan.id);
+    store.run(`UPDATE plans SET ${FREEZE_CLOSE}, total = ?, updated_by = ?, updated_at = ? WHERE id = ?`, total, user.id, now(), plan.id);
     audit(user, "plan.trimmed", plan.id, { accountId, from: plan.total, to: total, reason });
     return total;
   }
@@ -503,9 +507,6 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
   // closed_at, 2.0.13 öncesi kapatılmışta son güncelleme günü; Kayıt Tarihi'nden önce değil). O gün kapanmış dönemdeyse kart yeniden
   // açılmaz, silinmez, geri yüklenmez; tutarı, carisi, tahsilatı ve iadesi değişmez (vazgeçilen tutar kilitli mizandadır; kilit izi
   // integrity.mjs "plans_close_lock"). Önceden yalnız Kayıt Tarihi ve ilk tahsilat soruluyor, kilitli mizan sessizce değişiyordu.
-  // 2.0.13 öncesi kapatılmış kartta closed_at boştur; kapanış günü son güncelleme gününden okunur. Kart düzenlenince o gün
-  // kaymasın (689 başka güne geçmesin) diye güncellemeden önceki gün yazılır (SQLite UPDATE'te sağ taraf eski satırı okur).
-  const FREEZE_CLOSE = "closed_at = CASE WHEN status = 'closed' AND closed_at IS NULL THEN substr(updated_at, 1, 10) ELSE closed_at END";
   const closeDayOf = planId => {
     const row = store.get("SELECT status, COALESCE(closed_at, substr(updated_at, 1, 10)) AS closedOn, COALESCE(NULLIF(registered_on, ''), substr(created_at, 1, 10)) AS startOn FROM plans WHERE id = ?", planId);
     if (!row || row.status !== "closed") return "";
@@ -658,7 +659,7 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
         if (!plan.coversBalance) period?.assertOpen(plan.registeredOn, "Bu kartın Kayıt Tarihi");
         else if (total > roundMoney(Number(plan.total) || 0) + 0.005) throw new HttpError(409, GROW_COVER, { code: "cover-grow" });
         assertCloseOpen(plan.id, "Kartın tutarı değiştirilemez.");
-        store.run("UPDATE plans SET total = ?, updated_by = ?, updated_at = ? WHERE id = ?", total, user.id, now(), plan.id);
+        store.run(`UPDATE plans SET ${FREEZE_CLOSE}, total = ?, updated_by = ?, updated_at = ? WHERE id = ?`, total, user.id, now(), plan.id);
       }
       const items = distributionInput(body, total, plan.registeredOn);
       replaceItems(plan.id, items);

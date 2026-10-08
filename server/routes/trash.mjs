@@ -8,6 +8,7 @@
 import { HttpError, ok, readJson, text } from "../lib/http.mjs";
 import { roundMoney } from "../lib/money.mjs";
 import { methodInput } from "../lib/pay-method.mjs";
+import { FREEZE_CLOSE } from "./plans.mjs";
 
 const KIND_LABELS = {
   row: "Tablo kaydı",
@@ -246,7 +247,7 @@ export function registerTrashRoutes(router, { store, auth, audit, events, datase
       if (!plan) throw new HttpError(404, "Bu taksit kartı zaten geri yüklenmiş.");
       plans?.assertRestorable?.(plan.id, user);
       store.tx(() => {
-        store.run("UPDATE plans SET deleted_at = NULL, deleted_by = NULL, updated_by = ?, updated_at = ? WHERE id = ?", user.id, now(), plan.id);
+        store.run(`UPDATE plans SET ${FREEZE_CLOSE}, deleted_at = NULL, deleted_by = NULL, updated_by = ?, updated_at = ? WHERE id = ?`, user.id, now(), plan.id);
         // Kartın carisi (v2.0.6) sonradan silindiyse o da geri gelir; kart sahipsiz kalmaz.
         store.run("UPDATE accounts SET deleted_at = NULL, deleted_by = NULL, updated_by = ?, updated_at = ? WHERE deleted_at IS NOT NULL AND id = (SELECT account_id FROM plans WHERE id = ?)", user.id, now(), plan.id);
         audit(user, "plan.restored", plan.id, { name: plan.name });
