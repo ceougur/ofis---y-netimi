@@ -1386,5 +1386,1388 @@
     "sirket-68751ff0-3cc0-45da-a83f-bfd28e343166"
    ]
   }
- ]
+ ],
+ "oncesi": {
+  "version": "v2.0.26",
+  "commit": "5346ff8442612aaa429783e59ae478d9d6a5fc07",
+  "today": "2026-10-08",
+  "companies": {
+   "sirket-001": {
+    "code": "001",
+    "name": "Merkez Danışmanlık Ltd. Şti.",
+    "today": "2026-10-08",
+    "lockedUntil": "",
+    "integrity": [],
+    "checksOk": [
+     "balance",
+     "cents:account_entries",
+     "cents:cash_entries",
+     "cents:cheque_events",
+     "cents:cheques",
+     "cents:invoice_lines",
+     "cents:invoice_lines",
+     "cents:invoices",
+     "cents:invoices",
+     "cents:invoices",
+     "cents:invoices",
+     "cents:invoices",
+     "cents:invoices",
+     "cents:payments",
+     "cents:plan_entries",
+     "cents:plan_items",
+     "cents:plans",
+     "cents:stock_moves",
+     "cheque:account",
+     "dates:due-before-start",
+     "dates:format:account_entries",
+     "dates:format:cash_entries",
+     "dates:format:cheque_events",
+     "dates:format:payments",
+     "dates:format:plan_entries",
+     "dates:format:stock_moves",
+     "dates:future:account_entries",
+     "dates:future:cash_entries",
+     "dates:future:cheque_events",
+     "dates:future:payments",
+     "dates:future:plan_entries",
+     "dates:future:stock_moves",
+     "gl:100",
+     "gl:101",
+     "gl:102",
+     "gl:103",
+     "gl:108",
+     "gl:120",
+     "gl:127",
+     "gl:191",
+     "gl:193",
+     "gl:320",
+     "gl:336",
+     "gl:360",
+     "gl:391",
+     "invoice:account",
+     "invoice:cheque",
+     "invoice:lines",
+     "invoice:offset",
+     "invoice:orphan",
+     "invoice:plan",
+     "invoice:returns",
+     "invoice:stock",
+     "invoice:try",
+     "money:method",
+     "party:accounts",
+     "party:plans",
+     "plans:totals",
+     "stock:account",
+     "stock:orphan",
+     "stock:qty",
+     "stock:qty"
+    ],
+    "trial": [
+     "100|22729781|1501355|21228426",
+     "102|5010530|0|5010530",
+     "120|90597505|26976451|63621054",
+     "191|435400|0|435400",
+     "320|1040724|2612400|-1571676",
+     "391|0|5073200|-5073200",
+     "500|0|11480000|-11480000",
+     "600|0|39589000|-39589000",
+     "602|0|34848378|-34848378",
+     "649|0|763860|-763860",
+     "770|3030704|0|3030704"
+    ],
+    "trialTotals": [
+     122844644,
+     122844644,
+     0
+    ],
+    "reconciliation": [
+     "100|21228426|21228426|true",
+     "101|0|0|true",
+     "102|5010530|5010530|true",
+     "103|0|0|true",
+     "108|0|0|true",
+     "120|63621054|63621054|true",
+     "127|0|0|true",
+     "191|435400|435400|true",
+     "193|0|0|true",
+     "320|-1571676|-1571676|true",
+     "336|0|0|true",
+     "360|0|0|true",
+     "391|-5073200|-5073200|true"
+    ],
+    "cash": {
+     "totals": {
+      "in": 277403.11,
+      "out": 15013.55,
+      "balance": 262389.56
+     },
+     "byMethod": {
+      "cash": 212284.26,
+      "bank": 50105.3,
+      "card": 0
+     },
+     "all": "daa50e2c8b377ff1eb4996900eff5755",
+     "window": "e46905ee8b60d2b12f1b742a8300e699",
+     "windowCount": 106,
+     "windowTotals": {
+      "in": 227297.81,
+      "out": 15013.55,
+      "balance": 212284.26
+     }
+    },
+    "overview": "dd2d6fa09d214898c38777822b4677c6",
+    "overviewCash": {
+     "balance": 212284.26,
+     "allEntries": 212284.26,
+     "today": {
+      "in": 0,
+      "out": 0
+     },
+     "month": {
+      "in": 0,
+      "out": 0
+     },
+     "futureEntries": 0,
+     "byMethod": {
+      "cash": 212284.26,
+      "bank": 50105.3,
+      "card": 0
+     },
+     "byMethodAt": {
+      "cash": 212284.26,
+      "bank": 50105.3,
+      "card": 0
+     },
+     "bank": {
+      "balance": 50105.3,
+      "allEntries": 50105.3,
+      "today": {
+       "in": 0,
+       "out": 0
+      }
+     }
+    },
+    "accounts": {
+     "count": 160,
+     "balance": 62049378,
+     "hash": "8ccf1d367be04db016279b56853b76e0"
+    },
+    "invoices": "45765f97ec37248df1b072720192f383",
+    "invoiceCount": 48,
+    "reports": {
+     "kasa-hareketleri": {
+      "total": 107,
+      "rows": "4969e5730f1da33db6b7b77ee71aa1a8",
+      "footer": [
+       "TOPLAM",
+       "",
+       "",
+       "227.297,81 TL",
+       "15.013,55 TL",
+       "",
+       ""
+      ],
+      "summary": [
+       [
+        "Devir",
+        "0,00 TL"
+       ],
+       [
+        "Dönem Giriş",
+        "227.297,81 TL"
+       ],
+       [
+        "Dönem Çıkış",
+        "15.013,55 TL"
+       ],
+       [
+        "Dönem Net",
+        "212.284,26 TL"
+       ],
+       [
+        "Dönem Sonu Kasa",
+        "212.284,26 TL"
+       ],
+       [
+        "Güncel Kasa (tüm hareketler)",
+        "212.284,26 TL"
+       ]
+      ]
+     },
+     "banka-pos-hareketleri": {
+      "total": 22,
+      "rows": "23518d5943a66a4e9c987aa321b05431",
+      "footer": [
+       "TOPLAM",
+       "",
+       "",
+       "",
+       "50.105,30 TL",
+       "",
+       "",
+       ""
+      ],
+      "summary": [
+       [
+        "Devir",
+        "0,00 TL"
+       ],
+       [
+        "Dönem Giriş",
+        "50.105,30 TL"
+       ],
+       [
+        "Dönem Çıkış",
+        "0,00 TL"
+       ],
+       [
+        "Dönem Net",
+        "50.105,30 TL"
+       ],
+       [
+        "Dönem Sonu",
+        "50.105,30 TL"
+       ],
+       [
+        "Banka (tüm hareketler)",
+        "50.105,30 TL"
+       ],
+       [
+        "POS / Kredi Kartı (tüm hareketler)",
+        "0,00 TL"
+       ]
+      ]
+     },
+     "hesap-mizani": {
+      "total": 11,
+      "rows": "a2cbbdf9652f0cd6a0c43489e058b23e",
+      "footer": [
+       "TOPLAM",
+       "",
+       "0,00 TL",
+       "1.228.446,44 TL",
+       "1.228.446,44 TL",
+       "",
+       ""
+      ],
+      "summary": [
+       [
+        "Dönem Borç",
+        "1.228.446,44 TL"
+       ],
+       [
+        "Dönem Alacak",
+        "1.228.446,44 TL"
+       ],
+       [
+        "Fark",
+        "0,00 TL"
+       ]
+      ]
+     },
+     "cari-listesi": {
+      "total": 160,
+      "rows": "29ffc7292a3396e3744a8a0ddef61438",
+      "footer": [
+       "TOPLAM",
+       "",
+       "",
+       "",
+       "",
+       "916.382,29 TL",
+       "295.888,51 TL",
+       "620.493,78 TL",
+       "Borçlu",
+       "236.644,30 TL"
+      ],
+      "summary": [
+       [
+        "Cari",
+        "160"
+       ],
+       [
+        "Toplam Borç (Anlaşılan)",
+        "916.382,29 TL"
+       ],
+       [
+        "Toplam Alacak (Ödenen)",
+        "295.888,51 TL"
+       ],
+       [
+        "Kalan (Borçlu)",
+        "620.493,78 TL"
+       ],
+       [
+        "Borçlular",
+        "695.826,48 TL"
+       ],
+       [
+        "Alacaklılar",
+        "75.332,70 TL"
+       ],
+       [
+        "Geciken Taksit",
+        "236.644,30 TL"
+       ]
+      ]
+     },
+     "acik-faturalar": {
+      "total": 36,
+      "rows": "6c867cdc78d2799a977d4652e1c54db9",
+      "footer": null,
+      "summary": [
+       [
+        "Açık Alacak",
+        "265.047,48 TL"
+       ],
+       [
+        "Açık Borç",
+        "19.647,49 TL"
+       ]
+      ]
+     }
+    },
+    "file": {
+     "version": 19,
+     "lock": "",
+     "lockAll": "f995da2a4ee3184038dcc2213b941376dcc17139837949f7549db54445f13d3a",
+     "lockAt": "",
+     "baselines": 0,
+     "rolledBack": 0
+    }
+   },
+   "sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b": {
+    "code": "002",
+    "name": "Şahin İnşaat ve Ticaret Ltd. Şti.",
+    "today": "2026-10-08",
+    "lockedUntil": "",
+    "integrity": [],
+    "checksOk": [
+     "balance",
+     "cents:account_entries",
+     "cents:cash_entries",
+     "cents:cheque_events",
+     "cents:cheques",
+     "cents:invoice_lines",
+     "cents:invoice_lines",
+     "cents:invoices",
+     "cents:invoices",
+     "cents:invoices",
+     "cents:invoices",
+     "cents:invoices",
+     "cents:invoices",
+     "cents:payments",
+     "cents:plan_entries",
+     "cents:plan_items",
+     "cents:plans",
+     "cents:stock_moves",
+     "cheque:account",
+     "dates:due-before-start",
+     "dates:format:account_entries",
+     "dates:format:cash_entries",
+     "dates:format:cheque_events",
+     "dates:format:payments",
+     "dates:format:plan_entries",
+     "dates:format:stock_moves",
+     "dates:future:account_entries",
+     "dates:future:cash_entries",
+     "dates:future:cheque_events",
+     "dates:future:payments",
+     "dates:future:plan_entries",
+     "dates:future:stock_moves",
+     "gl:100",
+     "gl:101",
+     "gl:102",
+     "gl:103",
+     "gl:108",
+     "gl:120",
+     "gl:127",
+     "gl:191",
+     "gl:193",
+     "gl:320",
+     "gl:336",
+     "gl:360",
+     "gl:391",
+     "invoice:account",
+     "invoice:cheque",
+     "invoice:lines",
+     "invoice:offset",
+     "invoice:orphan",
+     "invoice:plan",
+     "invoice:returns",
+     "invoice:stock",
+     "invoice:try",
+     "money:method",
+     "party:accounts",
+     "party:plans",
+     "plans:totals",
+     "stock:account",
+     "stock:orphan",
+     "stock:qty",
+     "stock:qty"
+    ],
+    "trial": [
+     "100|15233561|1199135|14034426",
+     "102|3901989|0|3901989",
+     "120|68633941|18309991|50323950",
+     "191|306600|0|306600",
+     "320|7757743|1886351|5871392",
+     "391|0|5049820|-5049820",
+     "500|0|1640000|-1640000",
+     "600|0|40535000|-40535000",
+     "602|0|28574961|-28574961",
+     "649|0|778808|-778808",
+     "770|2140232|0|2140232"
+    ],
+    "trialTotals": [
+     97974066,
+     97974066,
+     0
+    ],
+    "reconciliation": [
+     "100|14034426|14034426|true",
+     "101|0|0|true",
+     "102|3901989|3901989|true",
+     "103|0|0|true",
+     "108|0|0|true",
+     "120|50323950|50323950|true",
+     "127|0|0|true",
+     "191|306600|306600|true",
+     "193|0|0|true",
+     "320|5871392|5871392|true",
+     "336|0|0|true",
+     "360|0|0|true",
+     "391|-5049820|-5049820|true"
+    ],
+    "cash": {
+     "totals": {
+      "in": 191355.5,
+      "out": 11991.35,
+      "balance": 179364.15
+     },
+     "byMethod": {
+      "cash": 140344.26,
+      "bank": 39019.89,
+      "card": 0
+     },
+     "all": "3f1df5fde46dbfce7d9c5b6247026b51",
+     "window": "1c8badd75cd9a1f91fe91af2b20808ee",
+     "windowCount": 74,
+     "windowTotals": {
+      "in": 152335.61,
+      "out": 11991.35,
+      "balance": 140344.26
+     }
+    },
+    "overview": "a7292fadda53f5bb3f8b992afbdfdbe8",
+    "overviewCash": {
+     "balance": 140344.26,
+     "allEntries": 140344.26,
+     "today": {
+      "in": 0,
+      "out": 0
+     },
+     "month": {
+      "in": 0,
+      "out": 0
+     },
+     "futureEntries": 0,
+     "byMethod": {
+      "cash": 140344.26,
+      "bank": 39019.89,
+      "card": 0
+     },
+     "byMethodAt": {
+      "cash": 140344.26,
+      "bank": 39019.89,
+      "card": 0
+     },
+     "bank": {
+      "balance": 39019.89,
+      "allEntries": 39019.89,
+      "today": {
+       "in": 0,
+       "out": 0
+      }
+     }
+    },
+    "accounts": {
+     "count": 54,
+     "balance": 56195342,
+     "hash": "d7b4321faa7ff3dd505ae37c43df59a6"
+    },
+    "invoices": "30d5dcba24757b3302f10b7185826254",
+    "invoiceCount": 36,
+    "reports": {
+     "kasa-hareketleri": {
+      "total": 75,
+      "rows": "ca881913a911efa136201ee1181dd9f1",
+      "footer": [
+       "TOPLAM",
+       "",
+       "",
+       "152.335,61 TL",
+       "11.991,35 TL",
+       "",
+       ""
+      ],
+      "summary": [
+       [
+        "Devir",
+        "0,00 TL"
+       ],
+       [
+        "Dönem Giriş",
+        "152.335,61 TL"
+       ],
+       [
+        "Dönem Çıkış",
+        "11.991,35 TL"
+       ],
+       [
+        "Dönem Net",
+        "140.344,26 TL"
+       ],
+       [
+        "Dönem Sonu Kasa",
+        "140.344,26 TL"
+       ],
+       [
+        "Güncel Kasa (tüm hareketler)",
+        "140.344,26 TL"
+       ]
+      ]
+     },
+     "banka-pos-hareketleri": {
+      "total": 17,
+      "rows": "e82c7cd946319a1e2ef05e50d61a6ebd",
+      "footer": [
+       "TOPLAM",
+       "",
+       "",
+       "",
+       "39.019,89 TL",
+       "",
+       "",
+       ""
+      ],
+      "summary": [
+       [
+        "Devir",
+        "0,00 TL"
+       ],
+       [
+        "Dönem Giriş",
+        "39.019,89 TL"
+       ],
+       [
+        "Dönem Çıkış",
+        "0,00 TL"
+       ],
+       [
+        "Dönem Net",
+        "39.019,89 TL"
+       ],
+       [
+        "Dönem Sonu",
+        "39.019,89 TL"
+       ],
+       [
+        "Banka (tüm hareketler)",
+        "39.019,89 TL"
+       ],
+       [
+        "POS / Kredi Kartı (tüm hareketler)",
+        "0,00 TL"
+       ]
+      ]
+     },
+     "hesap-mizani": {
+      "total": 11,
+      "rows": "091d87b0dee26155c46d0820116f2d84",
+      "footer": [
+       "TOPLAM",
+       "",
+       "0,00 TL",
+       "979.740,66 TL",
+       "979.740,66 TL",
+       "",
+       ""
+      ],
+      "summary": [
+       [
+        "Dönem Borç",
+        "979.740,66 TL"
+       ],
+       [
+        "Dönem Alacak",
+        "979.740,66 TL"
+       ],
+       [
+        "Fark",
+        "0,00 TL"
+       ]
+      ]
+     },
+     "cari-listesi": {
+      "total": 54,
+      "rows": "38667cdc5a4eaf56b73c7bd23a3a4e2a",
+      "footer": [
+       "TOPLAM",
+       "",
+       "",
+       "",
+       "",
+       "763.916,84 TL",
+       "201.963,42 TL",
+       "561.953,42 TL",
+       "Borçlu",
+       "204.078,53 TL"
+      ],
+      "summary": [
+       [
+        "Cari",
+        "54"
+       ],
+       [
+        "Toplam Borç (Anlaşılan)",
+        "763.916,84 TL"
+       ],
+       [
+        "Toplam Alacak (Ödenen)",
+        "201.963,42 TL"
+       ],
+       [
+        "Kalan (Borçlu)",
+        "561.953,42 TL"
+       ],
+       [
+        "Borçlular",
+        "599.362,87 TL"
+       ],
+       [
+        "Alacaklılar",
+        "37.409,45 TL"
+       ],
+       [
+        "Geciken Taksit",
+        "204.078,53 TL"
+       ]
+      ]
+     },
+     "acik-faturalar": {
+      "total": 29,
+      "rows": "c7d9857a2bbd76ab1f4fc87d30303e2a",
+      "footer": null,
+      "summary": [
+       [
+        "Açık Alacak",
+        "302.790,40 TL"
+       ],
+       [
+        "Açık Borç",
+        "15.768,05 TL"
+       ]
+      ]
+     }
+    },
+    "file": {
+     "version": 19,
+     "lock": "",
+     "lockAll": "50977a3aa9b931c4b771e02c8514960e5b7126de06b1d22d6e72b6c487288913",
+     "lockAt": "",
+     "baselines": 0,
+     "rolledBack": 0
+    }
+   },
+   "sirket-8e986639-c54d-40c5-a15c-c6d612cb250c": {
+    "code": "007",
+    "name": "Mavi Gıda A.Ş.",
+    "today": "2026-10-08",
+    "lockedUntil": "",
+    "integrity": [],
+    "checksOk": [
+     "balance",
+     "cents:account_entries",
+     "cents:cash_entries",
+     "cents:cheque_events",
+     "cents:cheques",
+     "cents:invoice_lines",
+     "cents:invoice_lines",
+     "cents:invoices",
+     "cents:invoices",
+     "cents:invoices",
+     "cents:invoices",
+     "cents:invoices",
+     "cents:invoices",
+     "cents:payments",
+     "cents:plan_entries",
+     "cents:plan_items",
+     "cents:plans",
+     "cents:stock_moves",
+     "cheque:account",
+     "dates:due-before-start",
+     "dates:format:account_entries",
+     "dates:format:cash_entries",
+     "dates:format:cheque_events",
+     "dates:format:payments",
+     "dates:format:plan_entries",
+     "dates:format:stock_moves",
+     "dates:future:account_entries",
+     "dates:future:cash_entries",
+     "dates:future:cheque_events",
+     "dates:future:payments",
+     "dates:future:plan_entries",
+     "dates:future:stock_moves",
+     "gl:100",
+     "gl:101",
+     "gl:102",
+     "gl:103",
+     "gl:108",
+     "gl:120",
+     "gl:127",
+     "gl:191",
+     "gl:193",
+     "gl:320",
+     "gl:336",
+     "gl:360",
+     "gl:391",
+     "invoice:account",
+     "invoice:cheque",
+     "invoice:lines",
+     "invoice:offset",
+     "invoice:orphan",
+     "invoice:plan",
+     "invoice:returns",
+     "invoice:stock",
+     "invoice:try",
+     "money:method",
+     "party:accounts",
+     "party:plans",
+     "plans:totals",
+     "stock:account",
+     "stock:orphan",
+     "stock:qty",
+     "stock:qty"
+    ],
+    "trial": [
+     "100|12004330|1036057|10968273",
+     "102|4512125|0|4512125",
+     "120|67964053|15445795|52518258",
+     "191|314600|0|314600",
+     "320|5072104|2356853|2715251",
+     "391|0|4976750|-4976750",
+     "500|0|4030000|-4030000",
+     "600|0|38269000|-38269000",
+     "602|0|25337430|-25337430",
+     "649|0|601407|-601407",
+     "770|2186080|0|2186080"
+    ],
+    "trialTotals": [
+     92053292,
+     92053292,
+     0
+    ],
+    "reconciliation": [
+     "100|10968273|10968273|true",
+     "101|0|0|true",
+     "102|4512125|4512125|true",
+     "103|0|0|true",
+     "108|0|0|true",
+     "120|52518258|52518258|true",
+     "127|0|0|true",
+     "191|314600|314600|true",
+     "193|0|0|true",
+     "320|2715251|2715251|true",
+     "336|0|0|true",
+     "360|0|0|true",
+     "391|-4976750|-4976750|true"
+    ],
+    "cash": {
+     "totals": {
+      "in": 165164.55,
+      "out": 10360.57,
+      "balance": 154803.98
+     },
+     "byMethod": {
+      "cash": 109682.73,
+      "bank": 45121.25,
+      "card": 0
+     },
+     "all": "0a103babc0bd858d023d678bb825535e",
+     "window": "8166037bbf727d200c27342c1e05e754",
+     "windowCount": 74,
+     "windowTotals": {
+      "in": 120043.3,
+      "out": 10360.57,
+      "balance": 109682.73
+     }
+    },
+    "overview": "c0f5ba7968555bf8f69532b0cea5c3bf",
+    "overviewCash": {
+     "balance": 109682.73,
+     "allEntries": 109682.73,
+     "today": {
+      "in": 0,
+      "out": 0
+     },
+     "month": {
+      "in": 0,
+      "out": 0
+     },
+     "futureEntries": 0,
+     "byMethod": {
+      "cash": 109682.73,
+      "bank": 45121.25,
+      "card": 0
+     },
+     "byMethodAt": {
+      "cash": 109682.73,
+      "bank": 45121.25,
+      "card": 0
+     },
+     "bank": {
+      "balance": 45121.25,
+      "allEntries": 45121.25,
+      "today": {
+       "in": 0,
+       "out": 0
+      }
+     }
+    },
+    "accounts": {
+     "count": 54,
+     "balance": 55233509,
+     "hash": "340393af46f931b7086406a40593fd35"
+    },
+    "invoices": "053e9714d186c2331643494fd86a2758",
+    "invoiceCount": 36,
+    "reports": {
+     "kasa-hareketleri": {
+      "total": 75,
+      "rows": "d1f503f5f1a2877fa18a235358e2b16e",
+      "footer": [
+       "TOPLAM",
+       "",
+       "",
+       "120.043,30 TL",
+       "10.360,57 TL",
+       "",
+       ""
+      ],
+      "summary": [
+       [
+        "Devir",
+        "0,00 TL"
+       ],
+       [
+        "Dönem Giriş",
+        "120.043,30 TL"
+       ],
+       [
+        "Dönem Çıkış",
+        "10.360,57 TL"
+       ],
+       [
+        "Dönem Net",
+        "109.682,73 TL"
+       ],
+       [
+        "Dönem Sonu Kasa",
+        "109.682,73 TL"
+       ],
+       [
+        "Güncel Kasa (tüm hareketler)",
+        "109.682,73 TL"
+       ]
+      ]
+     },
+     "banka-pos-hareketleri": {
+      "total": 18,
+      "rows": "6a33ff8746d3dc93f26fd8ca4b353799",
+      "footer": [
+       "TOPLAM",
+       "",
+       "",
+       "",
+       "45.121,25 TL",
+       "",
+       "",
+       ""
+      ],
+      "summary": [
+       [
+        "Devir",
+        "0,00 TL"
+       ],
+       [
+        "Dönem Giriş",
+        "45.121,25 TL"
+       ],
+       [
+        "Dönem Çıkış",
+        "0,00 TL"
+       ],
+       [
+        "Dönem Net",
+        "45.121,25 TL"
+       ],
+       [
+        "Dönem Sonu",
+        "45.121,25 TL"
+       ],
+       [
+        "Banka (tüm hareketler)",
+        "45.121,25 TL"
+       ],
+       [
+        "POS / Kredi Kartı (tüm hareketler)",
+        "0,00 TL"
+       ]
+      ]
+     },
+     "hesap-mizani": {
+      "total": 11,
+      "rows": "709607da97dac9a699fb513c690ce010",
+      "footer": [
+       "TOPLAM",
+       "",
+       "0,00 TL",
+       "920.532,92 TL",
+       "920.532,92 TL",
+       "",
+       ""
+      ],
+      "summary": [
+       [
+        "Dönem Borç",
+        "920.532,92 TL"
+       ],
+       [
+        "Dönem Alacak",
+        "920.532,92 TL"
+       ],
+       [
+        "Fark",
+        "0,00 TL"
+       ]
+      ]
+     },
+     "cari-listesi": {
+      "total": 54,
+      "rows": "7938d75f854c978296fc0bfbe1bd80ec",
+      "footer": [
+       "TOPLAM",
+       "",
+       "",
+       "",
+       "",
+       "730.361,57 TL",
+       "178.026,48 TL",
+       "552.335,09 TL",
+       "Borçlu",
+       "212.119,90 TL"
+      ],
+      "summary": [
+       [
+        "Cari",
+        "54"
+       ],
+       [
+        "Toplam Borç (Anlaşılan)",
+        "730.361,57 TL"
+       ],
+       [
+        "Toplam Alacak (Ödenen)",
+        "178.026,48 TL"
+       ],
+       [
+        "Kalan (Borçlu)",
+        "552.335,09 TL"
+       ],
+       [
+        "Borçlular",
+        "576.530,53 TL"
+       ],
+       [
+        "Alacaklılar",
+        "24.195,44 TL"
+       ],
+       [
+        "Geciken Taksit",
+        "212.119,90 TL"
+       ]
+      ]
+     },
+     "acik-faturalar": {
+      "total": 30,
+      "rows": "d99a44af523cb8d099aeac570e747f46",
+      "footer": null,
+      "summary": [
+       [
+        "Açık Alacak",
+        "311.443,04 TL"
+       ],
+       [
+        "Açık Borç",
+        "14.646,23 TL"
+       ]
+      ]
+     }
+    },
+    "file": {
+     "version": 19,
+     "lock": "",
+     "lockAll": "f7e2a4705a059c593e25798906d2e2297bc1be52302a226586d80583014f1bbd",
+     "lockAt": "",
+     "baselines": 0,
+     "rolledBack": 0
+    }
+   },
+   "sirket-68751ff0-3cc0-45da-a83f-bfd28e343166": {
+    "code": "004",
+    "name": "Çağdaş Eğitim Kurumları",
+    "today": "2026-10-08",
+    "lockedUntil": "",
+    "integrity": [],
+    "checksOk": [
+     "balance",
+     "cents:account_entries",
+     "cents:cash_entries",
+     "cents:cheque_events",
+     "cents:cheques",
+     "cents:invoice_lines",
+     "cents:invoice_lines",
+     "cents:invoices",
+     "cents:invoices",
+     "cents:invoices",
+     "cents:invoices",
+     "cents:invoices",
+     "cents:invoices",
+     "cents:payments",
+     "cents:plan_entries",
+     "cents:plan_items",
+     "cents:plans",
+     "cents:stock_moves",
+     "cheque:account",
+     "dates:due-before-start",
+     "dates:format:account_entries",
+     "dates:format:cash_entries",
+     "dates:format:cheque_events",
+     "dates:format:payments",
+     "dates:format:plan_entries",
+     "dates:format:stock_moves",
+     "dates:future:account_entries",
+     "dates:future:cash_entries",
+     "dates:future:cheque_events",
+     "dates:future:payments",
+     "dates:future:plan_entries",
+     "dates:future:stock_moves",
+     "gl:100",
+     "gl:101",
+     "gl:102",
+     "gl:103",
+     "gl:108",
+     "gl:120",
+     "gl:127",
+     "gl:191",
+     "gl:193",
+     "gl:320",
+     "gl:336",
+     "gl:360",
+     "gl:391",
+     "invoice:account",
+     "invoice:cheque",
+     "invoice:lines",
+     "invoice:offset",
+     "invoice:orphan",
+     "invoice:plan",
+     "invoice:returns",
+     "invoice:stock",
+     "invoice:try",
+     "money:method",
+     "party:accounts",
+     "party:plans",
+     "plans:totals",
+     "stock:account",
+     "stock:orphan",
+     "stock:qty",
+     "stock:qty"
+    ],
+    "trial": [
+     "100|11788222|615882|11172340",
+     "102|2509168|0|2509168",
+     "120|40612117|13527786|27084331",
+     "191|237800|0|237800",
+     "320|358202|1806533|-1448331",
+     "391|0|2304980|-2304980",
+     "500|0|2610000|-2610000",
+     "600|0|17560000|-17560000",
+     "602|0|18137137|-18137137",
+     "649|0|389871|-389871",
+     "770|1446680|0|1446680"
+    ],
+    "trialTotals": [
+     56952189,
+     56952189,
+     0
+    ],
+    "reconciliation": [
+     "100|11172340|11172340|true",
+     "101|0|0|true",
+     "102|2509168|2509168|true",
+     "103|0|0|true",
+     "108|0|0|true",
+     "120|27084331|27084331|true",
+     "127|0|0|true",
+     "191|237800|237800|true",
+     "193|0|0|true",
+     "320|-1448331|-1448331|true",
+     "336|0|0|true",
+     "360|0|0|true",
+     "391|-2304980|-2304980|true"
+    ],
+    "cash": {
+     "totals": {
+      "in": 142973.9,
+      "out": 6158.82,
+      "balance": 136815.08
+     },
+     "byMethod": {
+      "cash": 111723.4,
+      "bank": 25091.68,
+      "card": 0
+     },
+     "all": "4395e38946914c3bdb4622795c9afe33",
+     "window": "e9442f686af7aabf50d2aa076508585f",
+     "windowCount": 52,
+     "windowTotals": {
+      "in": 117882.22,
+      "out": 6158.82,
+      "balance": 111723.4
+     }
+    },
+    "overview": "968adff72023cbaddfdc942ed30dfba8",
+    "overviewCash": {
+     "balance": 111723.4,
+     "allEntries": 111723.4,
+     "today": {
+      "in": 0,
+      "out": 0
+     },
+     "month": {
+      "in": 0,
+      "out": 0
+     },
+     "futureEntries": 0,
+     "byMethod": {
+      "cash": 111723.4,
+      "bank": 25091.68,
+      "card": 0
+     },
+     "byMethodAt": {
+      "cash": 111723.4,
+      "bank": 25091.68,
+      "card": 0
+     },
+     "bank": {
+      "balance": 25091.68,
+      "allEntries": 25091.68,
+      "today": {
+       "in": 0,
+       "out": 0
+      }
+     }
+    },
+    "accounts": {
+     "count": 49,
+     "balance": 25636000,
+     "hash": "79d85113a3e18b638498fc327bc2d621"
+    },
+    "invoices": "27873f79bdb664b1e498fc18e66601ae",
+    "invoiceCount": 24,
+    "reports": {
+     "kasa-hareketleri": {
+      "total": 53,
+      "rows": "9b4aca802f38c05cbf9f2311d896529f",
+      "footer": [
+       "TOPLAM",
+       "",
+       "",
+       "117.882,22 TL",
+       "6.158,82 TL",
+       "",
+       ""
+      ],
+      "summary": [
+       [
+        "Devir",
+        "0,00 TL"
+       ],
+       [
+        "Dönem Giriş",
+        "117.882,22 TL"
+       ],
+       [
+        "Dönem Çıkış",
+        "6.158,82 TL"
+       ],
+       [
+        "Dönem Net",
+        "111.723,40 TL"
+       ],
+       [
+        "Dönem Sonu Kasa",
+        "111.723,40 TL"
+       ],
+       [
+        "Güncel Kasa (tüm hareketler)",
+        "111.723,40 TL"
+       ]
+      ]
+     },
+     "banka-pos-hareketleri": {
+      "total": 13,
+      "rows": "3fcdfe6e5920a81b2065b61127dca674",
+      "footer": [
+       "TOPLAM",
+       "",
+       "",
+       "",
+       "25.091,68 TL",
+       "",
+       "",
+       ""
+      ],
+      "summary": [
+       [
+        "Devir",
+        "0,00 TL"
+       ],
+       [
+        "Dönem Giriş",
+        "25.091,68 TL"
+       ],
+       [
+        "Dönem Çıkış",
+        "0,00 TL"
+       ],
+       [
+        "Dönem Net",
+        "25.091,68 TL"
+       ],
+       [
+        "Dönem Sonu",
+        "25.091,68 TL"
+       ],
+       [
+        "Banka (tüm hareketler)",
+        "25.091,68 TL"
+       ],
+       [
+        "POS / Kredi Kartı (tüm hareketler)",
+        "0,00 TL"
+       ]
+      ]
+     },
+     "hesap-mizani": {
+      "total": 11,
+      "rows": "3c7a60918df49291a8187b78914a79fa",
+      "footer": [
+       "TOPLAM",
+       "",
+       "0,00 TL",
+       "569.521,89 TL",
+       "569.521,89 TL",
+       "",
+       ""
+      ],
+      "summary": [
+       [
+        "Dönem Borç",
+        "569.521,89 TL"
+       ],
+       [
+        "Dönem Alacak",
+        "569.521,89 TL"
+       ],
+       [
+        "Fark",
+        "0,00 TL"
+       ]
+      ]
+     },
+     "cari-listesi": {
+      "total": 49,
+      "rows": "ff7808edd9bfe515d65d2cef37b9f01d",
+      "footer": [
+       "TOPLAM",
+       "",
+       "",
+       "",
+       "",
+       "409.703,19 TL",
+       "153.343,19 TL",
+       "256.360,00 TL",
+       "Borçlu",
+       "109.385,21 TL"
+      ],
+      "summary": [
+       [
+        "Cari",
+        "49"
+       ],
+       [
+        "Toplam Borç (Anlaşılan)",
+        "409.703,19 TL"
+       ],
+       [
+        "Toplam Alacak (Ödenen)",
+        "153.343,19 TL"
+       ],
+       [
+        "Kalan (Borçlu)",
+        "256.360,00 TL"
+       ],
+       [
+        "Borçlular",
+        "294.687,44 TL"
+       ],
+       [
+        "Alacaklılar",
+        "38.327,44 TL"
+       ],
+       [
+        "Geciken Taksit",
+        "109.385,21 TL"
+       ]
+      ]
+     },
+     "acik-faturalar": {
+      "total": 20,
+      "rows": "2c3624b6f7dc94f45161340874ef4dc7",
+      "footer": null,
+      "summary": [
+       [
+        "Açık Alacak",
+        "98.317,10 TL"
+       ],
+       [
+        "Açık Borç",
+        "10.685,98 TL"
+       ]
+      ]
+     }
+    },
+    "file": {
+     "version": 19,
+     "lock": "",
+     "lockAll": "6152f76afa25405707e0f8d5147a43750256539300404c62e5a34096ea655056",
+     "lockAt": "",
+     "baselines": 0,
+     "rolledBack": 0
+    }
+   }
+  }
+ }
 }

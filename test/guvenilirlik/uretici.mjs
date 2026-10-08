@@ -10,6 +10,7 @@ import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import path from "node:path";
 import { addDays, rng } from "../mutabakat/motor.mjs";
 import { CITY, EXPENSE, FIRST, LAST, SERVICE, SUPPLIER } from "./adlar.mjs";
+import { unpackFixture } from "./fikstur.mjs";
 import { apiFacts, dbFacts, sha256File } from "./olgular.mjs";
 import { bootProcess, bootVersion } from "./surumler.mjs";
 
@@ -28,6 +29,17 @@ export const CHAINS = {
     { version: "v2.0.18", actions: [{ do: "create", key: "D", code: "004", name: "Çağdaş Eğitim Kurumları" }, { do: "work" }, { do: "backup" }] },
     { version: "v2.0.19", actions: [{ do: "rename", key: "B", name: "Şahin İnşaat ve Ticaret Ltd. Şti." }, { do: "work" }, { do: "backup" }] },
     { version: "v2.0.20", actions: [{ do: "work" }, { do: "backup" }, { do: "delete", key: "D" }, { do: "create", key: "E", code: "004", name: "Işık Turizm ve Seyahat" }, { do: "work", keys: ["E"] }, { do: "backup", keys: ["E"] }] },
+    // v2.1.0 banka göçü (docs/BANKA-MODULU-PLAN.md §10.5): 2.0.21 → 2.0.26 aynı kurulumda sürer (4 şirket: 2.0.25'ten beri sınır 2,
+    // eski kurulumdakiler kalır). Para işi 001 ve 002'de: her modülde havale/EFT ve POS/kredi kartı satırı, Kasa ↔ Banka,
+    // silinip geri yüklenen tahsilat, iade ve iptal, yalnız Borç Yaz satırı olan cari; 2.0.21'de özel rol ve kişiye özel yetkili
+    // kullanıcılar (yetki göçü K4), 2.0.24'te dönem kilidi, 2.0.25'te o sürümün kabul ettiği ileri tarihli çek.
+    // Kaldığı yerden devam: node tools/surum-verisi.mjs --fikstur zincir --devam v2.0.20 (2.0.16–2.0.20 fikstürleri değişmez).
+    { version: "v2.0.21", actions: [{ do: "people" }, { do: "finance", keys: ["A", "B"] }, { do: "backup", keys: ["A", "B"] }] },
+    { version: "v2.0.22", actions: [{ do: "finance", keys: ["A", "B"] }] },
+    { version: "v2.0.23", actions: [{ do: "finance", keys: ["A", "B"] }, { do: "backup", keys: ["A"] }] },
+    { version: "v2.0.24", actions: [{ do: "finance", keys: ["A", "B"] }, { do: "lock", keys: ["A"], daysBefore: 1 }] },
+    { version: "v2.0.25", actions: [{ do: "finance", keys: ["A", "B"] }, { do: "future", keys: ["A"] }, { do: "backup", keys: ["A", "B"] }] },
+    { version: "v2.0.26", actions: [{ do: "finance", keys: ["A", "B"] }, { do: "backup", keys: ["A", "B"] }] },
   ],
   // 2.0.17–2.0.19 hatası, GERÇEK v2.0.19 koduyla: 002'nin kodu 005 yapılır, sonra 002 koduyla yeni şirket açılır — eski kod
   // yeni şirkete aynı veri klasörünü (sirketler/002) verir; iki şirketin carileri aynı veri tabanına yazılır.
@@ -76,12 +88,16 @@ export function findBackup(backupDir, name) {
   return null;
 }
 
-export async function runChain({ chain, dataDir, backupDir, seed = 1, volume = "kucuk", log = () => {}, stopAfter = null, onPhaseEnd = null }) {
+/**
+ * resume: zinciri bir fikstürün kesitinden sürdürür (ör. "surum-2.0.20-zincir"): fikstür dataDir/backupDir'in üst klasörüne
+ * açılır, manifest ve şirketler oradan alınır, kesit sürümüne kadarki adımlar atlanır. Önceki fikstürler değişmez.
+ */
+export async function runChain({ chain, dataDir, backupDir, seed = 1, volume = "kucuk", log = () => {}, stopAfter = null, onPhaseEnd = null, resume = null }) {
   const steps = typeof chain === "string" ? CHAINS[chain] : chain;
   const V = VOLUMES[volume];
   if (!steps || !V) throw new Error(`Bilinmeyen zincir/hacim: ${chain}/${volume}`);
-  const R = rng(seed);
-  const manifest = { chain: typeof chain === "string" ? chain : "ozel", seed, volume, node: process.version, versions: [], backups: [], deleted: [], timings: {} };
+  let R = rng(seed);
+  let manifest = { chain: typeof chain === "string" ? chain : "ozel", seed, volume, node: process.version, versions: [], backups: [], deleted: [], timings: {} };
   // Mantıksal şirketler: { key, id, code, name, rehber: [satırlar], accounts: [{ id, name, type, registeredOn }], refSeq, phoneSeq, supplierNo }
   const companies = new Map();
   const ensureCompany = (key, init) => {
@@ -91,8 +107,27 @@ export async function runChain({ chain, dataDir, backupDir, seed = 1, volume = "
   ensureCompany("A", { id: "sirket-001", code: "001", name: "" });
   let today = new Date().toISOString().slice(0, 10);
   const totalPhases = steps.length;
+  // Kaldığı yerden devam: fikstürün kesiti ve şirketleri; atlanan adımlar; yeni adımların günleri kesitten sonra (aşağıda).
+  let resumeAt = -1;
+  if (resume) {
+    const root = path.dirname(dataDir);
+    if (path.dirname(backupDir) !== root || path.basename(dataDir) !== "data" || path.basename(backupDir) !== "backups") throw new Error("Devam için veri ve yedek klasörleri aynı kökte data/ ve backups/ olmalı.");
+    const base = unpackFixture(resume, { root });
+    const { files, name, final, registry, cut, generator, ...rest } = base.fixture;
+    manifest = { ...rest, chain: manifest.chain, seed, volume, node: process.version, resumedFrom: resume };
+    resumeAt = steps.findIndex(item => item.version === cut);
+    if (resumeAt < 0) throw new Error(`${resume}: kesit ${cut} zincirde yok.`);
+    for (const item of final) Object.assign(ensureCompany(item.key, {}), { id: item.id, code: item.code, name: item.name, resumed: true });
+    for (const item of manifest.deleted || []) {
+      const key = [...companies.values()].find(company => company.id === item.id)?.key;
+      if (key) companies.get(key).deleted = item.version;
+    }
+    R = rng(seed * 1000 + resumeAt + 1);
+    log(`— ${resume} kesitinden (${cut}) devam: ${final.map(item => `${item.code} · ${item.name}`).join(", ")}`);
+  }
 
   for (const [phaseIndex, step] of steps.entries()) {
+    if (phaseIndex <= resumeAt) continue;
     const started = performance.now();
     // 1.x ayrı süreç (kendi ortam değişkenleriyle); 2.x aynı süreçte kendi createApp'i.
     const legacy = /^v1\./.test(step.version);
@@ -107,8 +142,10 @@ export async function runChain({ chain, dataDir, backupDir, seed = 1, volume = "
     } catch {
       // bugünü sunucudan okuyamazsa yerel tarih
     }
-    const windowStart = addDays(today, -SPAN_DAYS + Math.floor((SPAN_DAYS * phaseIndex) / totalPhases));
-    const windowEnd = addDays(today, -SPAN_DAYS + Math.floor((SPAN_DAYS * (phaseIndex + 1)) / totalPhases) - 1);
+    // Sürümün iş günleri: zincir baştan üretilirken 15 aylık çizelgenin payı; devamda kesitten sonraki son günler (her sürüme
+    // bir gün, son sürüm bugün): faturalar seri sırasıyla kesilir, kesitteki son faturadan önceki güne fatura yazılamaz.
+    const windowStart = resumeAt >= 0 ? addDays(today, phaseIndex - totalPhases + 1) : addDays(today, -SPAN_DAYS + Math.floor((SPAN_DAYS * phaseIndex) / totalPhases));
+    const windowEnd = resumeAt >= 0 ? windowStart : addDays(today, -SPAN_DAYS + Math.floor((SPAN_DAYS * (phaseIndex + 1)) / totalPhases) - 1);
     const live = () => [...companies.values()].filter(item => !item.deleted && (multi || item.key === "A"));
     const pick = keys => (keys ? keys.map(key => companies.get(key)) : live());
     const select = async company => {
@@ -141,10 +178,38 @@ export async function runChain({ chain, dataDir, backupDir, seed = 1, volume = "
         log(`  şirket silindi ${company.code} · ${company.name} (silme öncesi yedek ${removed.backup})`);
       } else if (action.do === "work") {
         for (const company of pick(action.keys)) {
+          // Kesitten sürdürülen şirketin REHBER satırları ve carileri bellekte yok: "work" tabloyu baştan yazardı (replace).
+          if (company.resumed) throw new Error(`${step.version}: devam eden zincirde ${company.code} için "work" kullanılamaz ("finance" kullanın).`);
           await select(company);
           const t = performance.now();
           await work({ api, R, V, company, windowStart, windowEnd, today, version: step.version });
           log(`  ${company.code} · ${company.name}: veri girildi (${Math.round(performance.now() - t)} ms)`);
+        }
+      } else if (action.do === "finance") {
+        for (const company of pick(action.keys)) {
+          await select(company);
+          const t = performance.now();
+          await workFinance({ api, R, company, windowStart, windowEnd, version: step.version });
+          log(`  ${company.code} · ${company.name}: para işleri girildi (${Math.round(performance.now() - t)} ms)`);
+        }
+      } else if (action.do === "people") {
+        await workPeople({ api, version: step.version, manifest });
+        log(`  özel roller ve kişiye özel yetkili kullanıcılar açıldı (${manifest.people.users.length} kullanıcı)`);
+      } else if (action.do === "lock") {
+        for (const company of pick(action.keys)) {
+          await select(company);
+          const lockedUntil = addDays(windowStart, -(action.daysBefore || 1));
+          must(await api.put("/api/admin/period-lock", { lockedUntil }), `${step.version} dönem kilidi ${company.code}`);
+          log(`  ${company.code}: dönem kilidi ${lockedUntil}`);
+        }
+      } else if (action.do === "future") {
+        // O sürümün kabul ettiği ileri tarihli hareket (2.0.26 A6 bunu reddeder): çek alış tarihi. (İleri tarihli kayıt tahsilatı
+        // 2.0.25'te de girilemiyordu: kapı 409 veriyordu; A1 yalnız yanıtı 400'e çevirdi.)
+        for (const company of pick(action.keys)) {
+          await select(company);
+          // Cariye işlenmemiş evrak (yalnız keşideci adı): 2.0.25'te ileri tarihli cari satırı kapıda reddedilir, evrakın kendisi girer.
+          must(await api.post("/api/workspace/cheques", { direction: "in", instrument: "cheque", amount: "750", issueDate: addDays(today, 5), dueDate: addDays(today, 40), drawer: "İleri Tarihli Keşideci", serialNo: `ILERI-${company.code}`, bank: "Vakıfbank" }), `${step.version} ileri tarihli çek`);
+          log(`  ${company.code}: ileri tarihli çek (${addDays(today, 5)})`);
         }
       } else if (action.do === "kayit1x") {
         // v1.3.1: tabloya elle kayıt (Kayıtlar) ve görev. O sürümde cari/fatura yoktu.
@@ -283,6 +348,80 @@ async function work({ api, R, V, company, windowStart, windowEnd, version }) {
     const pays = sortedDays(V.planPays).map(pay => (pay < day ? day : pay));
     for (const pay of pays) must(await api.post(`/api/workspace/plans/${plan.id}/entries`, { kind: "in", amount: String(Math.round(total / 10)), date: pay, method: "cash" }), `${version} taksit tahsilatı`);
   }
+}
+
+// Banka göçünün kaynak verisi (v2.0.21+; §10.5): bir şirkette bir günlük para işi, o sürümün kendi API'sinden. Her modülde
+// havale/EFT ve POS/kredi kartı satırı; Kasa ↔ Banka; silinip geri yüklenen tahsilat; satıştan iade ve fatura iptali; yalnız
+// Borç Yaz satırı olan cari; kayıt tahsilatı; taksit; stoktan POS'lu satış; bankaya tahsil edilen çek.
+async function workFinance({ api, R, company, windowStart, windowEnd, version }) {
+  const day = windowEnd;
+  const tag = `${version.slice(1)}-${company.code}`;
+  const person = () => `${R.pick(FIRST)} ${R.pick(LAST)}`;
+  const open = async (name, type) => must(await api.post("/api/workspace/accounts", { name, type, registeredOn: windowStart, phone: `05${R.int(30, 59)} ${R.int(100, 999)} ${R.int(10, 99)} ${R.int(10, 99)}` }), `${version} cari aç`);
+  const c1 = await open(`${person()} (${tag})`, "customer");
+  const c2 = await open(`${person()} (${tag})`, "customer");
+  const s1 = await open(`${R.pick(SUPPLIER)} ${tag}`, "supplier");
+  const debtOnly = await open(`${person()} Yalnız Borç (${tag})`, "customer");
+  must(await api.post(`/api/workspace/accounts/${debtOnly.id}/entries`, { kind: "debt", amount: String(R.int(3, 30) * 100), date: day, note: "Borç kaydı" }), `${version} yalnız borç`);
+  // Stok: ürün, girişi (parasız) ve POS'la peşin satış.
+  const item = must(await api.post("/api/workspace/stock", { name: `Ürün ${tag}`, code: `STK-${tag}`, unit: "Adet", unitPrice: "100", salePrice: "150" }), `${version} stok kartı`);
+  must(await api.post(`/api/workspace/stock/${item.id}/moves`, { kind: "in", qty: "20", unitPrice: "100", pay: "none", date: day }), `${version} stok girişi`);
+  must(await api.post(`/api/workspace/stock/${item.id}/moves`, { kind: "out", qty: "1", unitPrice: "150", pay: "cash", method: "card", date: day, force: true }), `${version} POS'la stok satışı`);
+  // Faturalar: mal satışı (havale peşin + açık) → satıştan iade; hizmet satışı POS'la tam peşin; gider alışı kredi kartıyla;
+  // taksitli hizmet satışı; havale peşinli fatura → iptal.
+  const goods = must(await api.post("/api/workspace/invoices", { scenario: "goods_sale", accountId: c1.id, issueDate: day, lines: [{ itemId: item.id, qty: 2, unitPrice: 150, vatRate: 20 }], payment: { cash: [{ amount: 100, method: "bank" }], rest: "open" }, force: true }), `${version} mal satışı`);
+  must(await api.post("/api/workspace/invoices", { scenario: "service_sale", accountId: c2.id, issueDate: day, lines: [{ name: R.pick(SERVICE), qty: 1, unitPrice: 1000, vatRate: 20 }], payment: { cash: [{ amount: 1200, method: "card" }], rest: "open" } }), `${version} POS'lu satış`);
+  must(await api.post("/api/workspace/invoices", { scenario: "expense_purchase", accountId: s1.id, number: `ALS-${tag}`, issueDate: day, lines: [{ name: R.pick(EXPENSE), qty: 1, unitPrice: 500, vatRate: 20, expenseCode: "other" }], payment: { cash: [{ amount: 600, method: "card" }], rest: "open" }, cashForce: true }), `${version} kredi kartıyla alış`);
+  must(await api.post("/api/workspace/invoices", { scenario: "service_sale", accountId: c1.id, issueDate: day, lines: [{ name: R.pick(SERVICE), qty: 1, unitPrice: 3000, vatRate: 20 }], payment: { rest: "installments", installments: { count: 3, firstDue: addDays(day, 30), everyMonths: 1 } } }), `${version} taksitli satış`);
+  const toCancel = must(await api.post("/api/workspace/invoices", { scenario: "service_sale", accountId: c2.id, issueDate: day, lines: [{ name: R.pick(SERVICE), qty: 1, unitPrice: 500, vatRate: 20 }], payment: { cash: [{ amount: 600, method: "bank" }], rest: "open" } }), `${version} iptal edilecek fatura`);
+  must(await api.post(`/api/workspace/invoices/${toCancel.id}/cancel`, { reason: "Göç verisi: iptal", force: true, cashForce: true }), `${version} fatura iptali`);
+  must(await api.post("/api/workspace/invoices", { kind: "sale_return", originalId: goods.id, issueDate: day, lines: [{ originLineId: goods.lines[0].id, qty: 1 }], payment: {}, force: true }), `${version} satıştan iade`);
+  // Cari tahsilat/ödeme: havale, POS; tedarikçiye havale.
+  must(await api.post(`/api/workspace/accounts/${c1.id}/entries`, { kind: "in", amount: "300", date: day, method: "bank", note: "Havale tahsilatı" }), `${version} havale tahsilatı`);
+  must(await api.post(`/api/workspace/accounts/${c2.id}/entries`, { kind: "in", amount: "200", date: day, method: "card", note: "POS tahsilatı" }), `${version} POS tahsilatı`);
+  must(await api.post(`/api/workspace/accounts/${s1.id}/entries`, { kind: "out", amount: "150", date: day, method: "bank", note: "Tedarikçiye havale", cashForce: true }), `${version} havale ödemesi`);
+  // Silinip Silinenler'den geri yüklenen havale tahsilatı.
+  const removed = must(await api.post(`/api/workspace/accounts/${c2.id}/entries`, { kind: "in", amount: "77", date: day, method: "bank", note: "Silinip geri yüklenecek" }), `${version} silinecek tahsilat`);
+  must(await api.del(`/api/workspace/accounts/${c2.id}/entries/${removed.entryId || removed.id}?cashForce=1`), `${version} tahsilat sil`);
+  const trash = must(await api.get("/api/admin/trash"), `${version} Silinenler`);
+  const item77 = (Array.isArray(trash) ? trash : trash.items || []).find(entry => entry.kind === "account-entry" && /77/.test(entry.detail || ""));
+  if (!item77) throw new Error(`${version}: silinen tahsilat Silinenler'de yok`);
+  must(await api.post("/api/admin/trash/restore", { id: item77.id }), `${version} tahsilatı geri yükle`);
+  // Kasa (nakit) ve Kasa ↔ Banka.
+  must(await api.post("/api/workspace/cash", { kind: "in", amount: "500", date: day, description: "Elden tahsilat" }), `${version} Kasa girişi`);
+  must(await api.post("/api/workspace/cash/transfer", { direction: "to-bank", amount: "200", date: day, description: "Kasadan bankaya", cashForce: true }), `${version} Kasadan bankaya`);
+  must(await api.post("/api/workspace/cash/transfer", { direction: "to-cash", amount: "100", date: day, description: "Bankadan kasaya" }), `${version} bankadan kasaya`);
+  // Taksit kartı: havale ve POS tahsilatı.
+  const plan = must(await api.post("/api/workspace/plans", { accountId: c1.id, name: c1.name, total: "3000", mode: "auto", count: 3, firstDue: addDays(day, 30), registeredOn: windowStart }), `${version} taksit kartı`);
+  must(await api.post(`/api/workspace/plans/${plan.id}/entries`, { kind: "in", amount: "500", date: day, method: "bank" }), `${version} taksit havale`);
+  must(await api.post(`/api/workspace/plans/${plan.id}/entries`, { kind: "in", amount: "250", date: day, method: "card" }), `${version} taksit POS`);
+  // Çek: alınan çek bankadan tahsil.
+  const cheque = must(await api.post("/api/workspace/cheques", { direction: "in", instrument: "cheque", amount: "400", issueDate: day, dueDate: day, accountId: c1.id, serialNo: `C-${tag}`, bank: "Ziraat" }), `${version} çek alındı`);
+  must(await api.post(`/api/workspace/cheques/${cheque.id}/actions`, { action: "collect", date: day, method: "bank" }), `${version} çek bankadan tahsil`);
+  // Kayıt tahsilatı (kişi kartından) havaleyle.
+  must(await api.post(`/api/workspace/cases/${encodeURIComponent(`DOSYA-${tag}`)}/payments`, { amount: "250", date: day, method: "bank", note: "Kayıt tahsilatı (havale)" }), `${version} kayıt tahsilatı`);
+}
+
+// Özel roller ve kişiye özel yetkili kullanıcılar (ortak katman; yetki göçü K4, §9.1). Beklenen banka yetkileri test tarafında
+// kuraldan hesaplanır; manifestte yalnız ne açıldığı durur.
+const PEOPLE_PASSWORD = "Personel-2026!";
+async function workPeople({ api, version, manifest }) {
+  const roles = [
+    { name: "Tahsilat Sorumlusu", permissions: ["accounts.view", "accounts.collect", "accounts.manage", "plans.view", "plans.collect", "cash.view"] },
+    { name: "Kasa Görevlisi", permissions: ["cash.view", "cash.manage", "payments.create", "records.create"] },
+  ];
+  const created = [];
+  for (const role of roles) created.push({ ...role, id: must(await api.post("/api/admin/roles", { ...role, description: "Göç verisi" }), `${version} rol ${role.name}`).id });
+  const users = [
+    { username: "ayse", name: "Ayşe Fatura", role: "personel", grants: { add: ["invoices.view", "invoices.manage"], remove: [] } },
+    { username: "mehmet", name: "Mehmet Muhasebe", role: "muhasebe", grants: { add: [], remove: ["cash.view"] } },
+    { username: "zeynep", name: "Zeynep Tahsilat", role: created[0].id, grants: { add: [], remove: [] } },
+    { username: "ali", name: "Ali Personel", role: "personel", grants: { add: [], remove: [] } },
+    { username: "fatma", name: "Fatma Avukat", role: "avukat", grants: { add: [], remove: ["accounts.manage", "invoices.manage", "stock.manage", "stock.sell", "cheques.manage", "plans.manage"] } },
+    { username: "kasa1", name: "Kasa Görevlisi Bir", role: created[1].id, grants: { add: ["stock.sell"], remove: [] } },
+  ];
+  for (const user of users) must(await api.post("/api/admin/users", { ...user, password: PEOPLE_PASSWORD, mustChangePassword: false }), `${version} kullanıcı ${user.username}`);
+  manifest.people = { version, roles: created, users };
 }
 
 /** Yedek klasöründeki her dosya (göreli yol, sha256, boyut, değişme zamanı). */

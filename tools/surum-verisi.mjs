@@ -18,6 +18,12 @@
 //   Seçenekler: --zincir zincir|cakisma|eski, --hacim kucuk|buyuk, --tohum N, --cikti <klasör> (verilmezse geçici), --dogrula,
 //   --dur v2.0.19 (zinciri o sürümden sonra durdurur). Çıktı klasörü rastgele sıra testine taban olabilir:
 //     npm run test:guvenilirlik -- --taban <klasör> --islem 1000
+//
+//   v2.1.0 banka göçü (docs/BANKA-MODULU-PLAN.md §10.5):
+//     --fikstur zincir --devam v2.0.20   zinciri 2.0.20 kesitinden sürdürür → surum-2.0.21-zincir … surum-2.0.26-zincir
+//                                        (2.0.16–2.0.20 fikstürleri değişmez; v2.0.21+ adımları uretici.mjs CHAINS.zincir)
+//     --oncesi [ad,ad…] [--taban v2.0.26]  her fikstürü GERÇEK v2.0.26 koduyla açar, v20 göçünden önceki para olgularını ve
+//                                        kilit izini fikstur.json'a "oncesi" olarak yazar (test: banka-210-goc-zinciri)
 import { cpSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
@@ -31,16 +37,73 @@ const value = (name, fallback) => {
   return at >= 0 && args[at + 1] && !args[at + 1].startsWith("--") ? args[at + 1] : fallback;
 };
 const log = line => console.log(line);
+const compareVersions = (a, b) => {
+  const left = String(a).split(".").map(Number);
+  const right = String(b).split(".").map(Number);
+  for (let i = 0; i < Math.max(left.length, right.length); i += 1) if ((left[i] || 0) !== (right[i] || 0)) return (left[i] || 0) - (right[i] || 0);
+  return 0;
+};
 const started = performance.now();
 
-if (flag("fikstur")) {
+if (flag("oncesi")) {
+  // --oncesi [ad,ad…]: v20 (banka) göçünün "önce" ölçütü (docs/BANKA-MODULU-PLAN.md §10.5): her fikstür GERÇEK v2.0.26 koduyla
+  // açılır (2.0.16 verisi o sürümün göçleriyle v19'a gelir) ve her şirketin para olguları (kapı imzası, mizan, Kasa, raporlar,
+  // cari, fatura; test/guvenilirlik/defter-olgulari.mjs) ile veri dosyasının kilit izi fikstur.json'a "oncesi" olarak yazılır.
+  // Fikstürün dosyaları değişmez. Test (banka-210-goc-zinciri) güncel kodla aynı olguları okuyup karşılaştırır.
+  const { ledgerFacts, fileFacts } = await import("../test/guvenilirlik/defter-olgulari.mjs");
+  const { unpackFixture } = await import("../test/guvenilirlik/fikstur.mjs");
+  const { bootVersion } = await import("../test/guvenilirlik/surumler.mjs");
+  const { companyDbFile, readRegistry } = await import("../test/guvenilirlik/uretici.mjs");
+  const { lockDigestOf } = await import("../server/lib/integrity.mjs");
+  const base = value("taban", "v2.0.26");
+  const wanted = value("oncesi", null);
+  const names = (wanted ? wanted.split(",") : readdirSync(FIXTURES).filter(item => item.startsWith("surum-") && item !== "surum-nesneler")).map(item => item.trim()).filter(Boolean).sort();
+  for (const name of names) {
+    const started2 = performance.now();
+    const fixture = unpackFixture(name);
+    try {
+      const server = await bootVersion(base, { dataDir: fixture.dataDir, backupDir: fixture.backupDir, maxCompanies: 10 });
+      const companies = {};
+      let today = "";
+      try {
+        const api = await server.login();
+        const listed = (await api.get("/api/companies")).data.all;
+        for (const company of listed) {
+          if ((await api.post("/api/companies/select", { id: company.id })).status !== 200) throw new Error(`${name}: ${company.code} seçilemedi`);
+          const facts = await ledgerFacts(api);
+          today = facts.today;
+          companies[company.id] = { code: company.code, name: company.name, ...facts };
+        }
+        await api.post("/api/companies/select", { id: "sirket-001" });
+      } finally {
+        await server.close();
+      }
+      const registry = readRegistry(fixture.dataDir) || [{ id: "sirket-001", dir: "" }];
+      for (const [id, item] of Object.entries(companies)) item.file = fileFacts(companyDbFile(fixture.dataDir, registry.find(entry => entry.id === id) || { id, dir: "" }), lockDigestOf);
+      const file = path.join(FIXTURES, name, "fikstur.json");
+      const json = JSON.parse(readFileSync(file, "utf8"));
+      json.oncesi = { version: base, commit: server.commit, today, companies };
+      writeFileSync(file, `${JSON.stringify(json, null, 1)}\n`);
+      log(`  ▸ ${name}: ${Object.keys(companies).length} şirket, ${base} ile ölçüldü (${((performance.now() - started2) / 1000).toFixed(1)} sn)`);
+    } finally {
+      fixture.cleanup();
+    }
+  }
+} else if (flag("fikstur")) {
   // --fikstur [zincir,cakisma,eski]: verilen zincirlerin fikstürleri yeniden üretilir (öbürlerine dokunulmaz); sonda hiçbir
   // fikstürün kullanmadığı içerik nesneleri silinir.
   const seed = Number(value("tohum", 7));
   const chains = value("fikstur", "zincir,cakisma,eski").split(",").map(item => item.trim()).filter(Boolean);
+  // --devam v2.0.20: zincir o sürümün fikstüründen sürer; o ve önceki kesitler (fikstürler) DEĞİŞMEZ, yalnız sonrakiler üretilir.
+  const resumeFrom = value("devam", null);
+  const versionOf = name => /^surum-(.+)-[a-z]+$/.exec(name)?.[1] || "";
+  const after = (name, version) => compareVersions(versionOf(name), version) > 0;
   mkdirSync(STORE, { recursive: true });
   for (const chain of chains) {
-    for (const name of readdirSync(FIXTURES).filter(item => item.startsWith("surum-") && item.endsWith(`-${chain}`))) rmSync(path.join(FIXTURES, name), { recursive: true, force: true });
+    for (const name of readdirSync(FIXTURES).filter(item => item.startsWith("surum-") && item.endsWith(`-${chain}`))) {
+      if (resumeFrom && !after(name, resumeFrom.slice(1))) continue;
+      rmSync(path.join(FIXTURES, name), { recursive: true, force: true });
+    }
     const root = mkdtempSync(path.join(tmpdir(), `surum-verisi-${chain}-`));
     const dataDir = path.join(root, "data");
     const backupDir = path.join(root, "backups");
@@ -50,6 +113,7 @@ if (flag("fikstur")) {
       backupDir,
       seed,
       volume: "kucuk",
+      resume: resumeFrom ? `surum-${resumeFrom.slice(1)}-${chain}` : null,
       log,
       // Zincirin her kesiti fikstür olur; çakışma ve eski kurulum zincirlerinde yalnız son hâl.
       onPhaseEnd: ({ version, last, manifest }) => {
