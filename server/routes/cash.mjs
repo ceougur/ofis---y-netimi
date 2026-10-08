@@ -109,7 +109,12 @@ export function registerCashRoutes(router, context) {
     store.setSetting(NEGATIVE_KEY, JSON.stringify(next));
     return next;
   }
-  function guardOut(amount, day, force = false, method = "cash") {
+  // v2.0.26 (gözden geçirme G7): silmede soru nedenini söyler. subject verilirse ("Bu tahsilat silinince", "Bu cari silinince
+  // tahsilat ve ödemeleriyle birlikte") metin "çıkış" değil:
+  // "Bu tahsilat silinince Nakit Kasa'dan 1.000,00 TL düşer; Nakit Kasa 200,00 TL iken −800,00 TL olur."
+  const FROM = { cash: "Nakit Kasa'dan", bank: "banka hesabından (Havale / EFT)", card: "POS / Kredi Kartı hesabından" };
+  const NAME = { cash: "Nakit Kasa", bank: "Banka hesabı (Havale / EFT)", card: "POS / Kredi Kartı hesabı" };
+  function guardOut(amount, day, force = false, method = "cash", subject = "") {
     const key = methodOf(method);
     if (!NEGATIVE_GUARDED.includes(key)) return;
     const policy = negativePolicy()[key];
@@ -118,24 +123,27 @@ export function registerCashRoutes(router, context) {
     const after = roundMoney(balance - amount);
     if (after < -0.005) {
       const money = value => `${new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value)} TL`;
-      const base = `${PLACE[key]} ${money(balance)} var; ${money(amount)} çıkış bakiyeyi ${money(after)} eksiye düşürür.`;
+      const base = subject
+        ? `${subject} ${FROM[key]} ${money(amount)} düşer; ${NAME[key]} ${money(balance)} iken ${money(after)} olur.`
+        : `${PLACE[key]} ${money(balance)} var; ${money(amount)} çıkış bakiyeyi ${money(after)} eksiye düşürür.`;
       if (policy === "block") throw new HttpError(409, `${base} Bu hesapta eksi bakiyeye izin verilmiyor (Yönetim → Sistem → Eksi Bakiye Denetimi).`, { code: "cash-blocked", method: key, balance, after });
       throw new HttpError(409, base, { code: "cash-negative", method: key, balance, after });
     }
   }
   // Düzeltme ve silmede de: before/after { kind: "in"|"out" (Kasa'ya giriş/çıkış yönü), amount, method, date } ya da null
   // (yeni/silinen). Her yol ayrı: nakitten bankaya taşınan bir tahsilat nakit hesabını azaltır, o denetlenir.
-  function guardChange(before, after, force = false) {
+  // subject (G7): silmede (after null) sorunun öznesi, ör. "Bu tahsilat silinince".
+  function guardChange(before, after, force = false, subject = "") {
     for (const key of Object.keys(METHODS)) {
       const effect = entry => (entry && methodOf(entry.method) === key ? (entry.kind === "in" ? 1 : -1) * (Number(entry.amount) || 0) : 0);
       const delta = roundMoney(effect(after) - effect(before));
-      if (delta < -0.005) guardOut(-delta, after?.date || before?.date || "", force, key);
+      if (delta < -0.005) guardOut(-delta, after?.date || before?.date || "", force, key, after ? "" : subject);
     }
   }
   // v2.0.26 (A3, A4): birden çok hareket birlikte düşerken (cari ya da taksit kartı silme) her yolun NET etkisi denetlenir
   // (tek tek değil: ikisi ayrı ayrı geçip toplamı eksiye düşürmesin). Gün: düşen hareketlerin en sonuncusu (o güne kadarki
   // bakiye hepsini içerir; tek hareket silmedeki kuralla aynı).
-  function guardRemove(list, force = false) {
+  function guardRemove(list, force = false, subject = "") {
     const by = new Map();
     for (const entry of list || []) {
       if (!entry || (entry.kind !== "in" && entry.kind !== "out")) continue;
@@ -145,7 +153,7 @@ export function registerCashRoutes(router, context) {
       if (entry.date > current.date) current.date = entry.date;
       by.set(key, current);
     }
-    for (const [key, { delta, date }] of by) if (delta < -0.005) guardOut(-delta, date, force, key);
+    for (const [key, { delta, date }] of by) if (delta < -0.005) guardOut(-delta, date, force, key, subject);
   }
   // method: "cash" (Kasa penceresi), "bank" | "card" | "noncash" (banka tarafı), "" (hepsi — Ana Defter, eski raporlar).
   function report(user, from, to, method = "") {
@@ -306,9 +314,9 @@ export function registerCashRoutes(router, context) {
     const user = auth.requirePermission(req, "cash.manage");
     const previous = existing(params.id);
     context.period?.assertOpen(previous.date, "Bu kasa hareketi");
-    guardChange(previous, null, url.searchParams.get("cashForce") === "1");
+    guardChange(previous, null, url.searchParams.get("cashForce") === "1", "Bu Kasa hareketi silinince");
     const twin = twinOf(previous);
-    if (twin) guardChange(twin, null, url.searchParams.get("cashForce") === "1");
+    if (twin) guardChange(twin, null, url.searchParams.get("cashForce") === "1", "Bu transferin öbür tarafı silinince");
     const full = store.get("SELECT id, kind, amount, date, description, method, transfer_id AS transferId, created_by AS createdBy, created_at AS createdAt FROM cash_entries WHERE id = ?", previous.id);
     const twinFull = twin ? store.get("SELECT id, kind, amount, date, description, method, transfer_id AS transferId, created_by AS createdBy, created_at AS createdAt FROM cash_entries WHERE id = ?", twin.id) : null;
     // Silme, Silinenler kaydı ve işlem geçmişi tek işlemde (v2.0.26, B5): yarıda kesilirse hiçbiri yazılmaz (önceden hareket

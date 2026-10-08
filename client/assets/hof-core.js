@@ -149,7 +149,9 @@
       if (error?.status !== 409 || error.data?.code !== "cash-negative" || (!removing && (!body || typeof body !== "object"))) throw error;
       // Yola göre başlık ve öneri (Nakit Kasa, Banka, Kredi Kartı). "Engelle" ayarında sunucu cash-blocked döner, sorulmaz.
       const where = { cash: ["Kasa Eksiye Düşecek", "Ödeme bankadan ya da başka bir kasadan yapıldıysa yolu değiştirin."], bank: ["Banka Bakiyesi Eksiye Düşecek", "Hesapta kredili mevduat varsa ya da tahsilat henüz girilmediyse kaydedebilirsiniz."], card: ["Kredi Kartı Bakiyesi Eksiye Düşecek", "İade tutarını ve ödeme yolunu kontrol edin."] }[error.data?.method] || ["Bakiye Eksiye Düşecek", ""];
-      const go = await HOF.confirm({ title: where[0], message: `${error.message} ${where[1]} Yine de kaydedilsin mi?`.replace(/\s+/g, " "), confirmLabel: removing ? "Yine de Sil" : "Yine de Kaydet", danger: true });
+      // v2.0.26 (G7): silmede sunucu nedeni söyler ("… silinince Nakit Kasa'dan … düşer"); yol değiştirme önerisi silmeye uymaz.
+      const question = removing ? `${error.message} Yine de silinsin mi?` : `${error.message} ${where[1]} Yine de kaydedilsin mi?`;
+      const go = await HOF.confirm({ title: where[0], message: question.replace(/\s+/g, " "), confirmLabel: removing ? "Yine de Sil" : "Yine de Kaydet", danger: true });
       if (!go) throw new ApiError("Kaydedilmedi: bakiye eksiye düşecekti.", 409, { code: "cash-negative-cancelled" });
       // Silmede gövde yok: onay adrese eklenir.
       if (removing) return rawApi(`${path}${path.includes("?") ? "&" : "?"}cashForce=1`, options);

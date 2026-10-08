@@ -634,7 +634,7 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
     if (linked) throw new HttpError(409, `Bu karta sayılmış ${linked} çek/senet var. Önce Çek/Senet'ten evrakı silin ya da başka karta taşıyın.`);
     // v2.0.26 (A4): kartın tahsilat ve iadeleri Kasa'dan/bankadan düşer; toplam etki eksi bakiye denetiminden geçer (açılış/devir
     // ve çekle gelen tahsilat Kasa'ya hiç girmemişti, sayılmaz).
-    cash?.guardRemove?.(store.all("SELECT kind, amount, method, date FROM plan_entries WHERE plan_id = ? AND opening = 0 AND cheque_id = ''", plan.id), url.searchParams.get("cashForce") === "1");
+    cash?.guardRemove?.(store.all("SELECT kind, amount, method, date FROM plan_entries WHERE plan_id = ? AND opening = 0 AND cheque_id = ''", plan.id), url.searchParams.get("cashForce") === "1", "Bu kart silinince tahsilat ve iadeleriyle birlikte");
     store.tx(() => {
       // Yumuşak silme: taksitler ve hareketler yerinde durur; yönetim panelinden geri yüklenir. Kasa'dan düşer.
       store.run("UPDATE plans SET deleted_by = ?, deleted_at = ? WHERE id = ?", user.id, now(), plan.id);
@@ -817,7 +817,7 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
     period?.assertOpen(previous.date, "Bu taksit hareketi");
     assertCloseOpen(plan.id, "Kartın tahsilatı ve iadesi değiştirilemez.");
     if (previous.kind === "in") assertNetPaid(plan.id, 0, previous.id);
-    if (!previous.opening && !previous.chequeId) cash?.guardChange?.(previous, null, url.searchParams.get("cashForce") === "1");
+    if (!previous.opening && !previous.chequeId) cash?.guardChange?.(previous, null, url.searchParams.get("cashForce") === "1", previous.kind === "in" ? "Bu taksit tahsilatı silinince" : "Bu taksit iadesi silinince");
     store.tx(() => {
       store.run("DELETE FROM plan_entries WHERE id = ?", previous.id);
       trash?.add({ kind: "plan-entry", ref: previous.id, title: plan.name, detail: previous.note || (previous.opening ? "Açılış (devir)" : previous.kind === "in" ? "Taksit tahsilatı" : "Taksit ödemesi/iadesi"), payload: { ...previous, opening: previous.opening ? 1 : 0, planId: plan.id, planName: plan.name }, user });

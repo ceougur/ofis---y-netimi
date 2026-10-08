@@ -470,7 +470,7 @@ describe("G7 — silmede eksi bakiye sorusu nedenini söyler", () => {
     assert.match(first.error, /200,00 TL iken -?−?800,00 TL olur/);
     assert.doesNotMatch(first.error, /çıkış/);
     const second = await refusedWith("cari sil", api.del(`/api/workspace/accounts/${acc.id}`), 409, "cash-negative");
-    assert.match(second.error, /Bu carinin tahsilat ve ödemeleri silinince Nakit Kasa'dan 500,00 TL düşer/);
+    assert.match(second.error, /Bu cari silinince tahsilat ve ödemeleriyle birlikte Nakit Kasa'dan 500,00 TL düşer/);
   });
   it("çalışıyor mu: kayıtta çıkış sorusu (yeni ödeme) eski metniyle kalır", async () => {
     const res = await refusedWith("ödeme", ctx.api.post("/api/workspace/cash", { kind: "out", amount: "5000", description: "Büyük ödeme" }), 409, "cash-negative");

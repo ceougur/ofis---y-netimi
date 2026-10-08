@@ -414,7 +414,7 @@ export function registerWorkspaceRoutes(router, { store, auth, access = null, au
   router.delete("/api/workspace/payments/:id", async ({ req, res, params, url }) => {
     const { user, payment } = editablePayment(req, params.id);
     period?.assertOpen(payment.date, "Bu tahsilat");
-    cash()?.guardChange?.(cashSide(payment), null, url.searchParams.get("cashForce") === "1");
+    cash()?.guardChange?.(cashSide(payment), null, url.searchParams.get("cashForce") === "1", "Bu tahsilat silinince");
     store.tx(() => {
       // Silme, Silinenler kaydı ve işlem geçmişi tek işlemde (v2.0.26, B5): yarıda kesilirse üçü birden yazılmaz; önceden
       // satır silinip Silinenler'e yazılamadan kesinti olursa tahsilat iz bırakmadan kayboluyordu. Yükte ödeme yolu da

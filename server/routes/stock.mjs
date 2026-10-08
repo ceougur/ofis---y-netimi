@@ -419,7 +419,7 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
     const previous = moveOf(item.id, params.moveId);
     requireMoveRight(user, previous);
     period?.assertOpen(previous.date, "Bu stok hareketi");
-    cash?.guardChange?.(cashSide(previous), null, url.searchParams.get("cashForce") === "1");
+    cash?.guardChange?.(cashSide(previous), null, url.searchParams.get("cashForce") === "1", "Bu stok hareketi silinince");
     let accountId = "";
     store.tx(() => {
       store.run("DELETE FROM stock_moves WHERE id = ?", previous.id);
