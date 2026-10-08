@@ -156,7 +156,9 @@ describe("Raporlar penceresi uçları (tam yığın)", () => {
     assert.equal(await promiseOf(), undefined, "kalan borç 0: söz listeden kalkar");
     assert.equal((await admin.post("/api/workspace/overrides", { caseKey: key, field: "KALAN BORÇ", value: "1.200,00" })).status, 200);
     const paymentId = payment.data.data.payment?.id ?? payment.data.data.id;
-    assert.equal((await admin.del(`/api/workspace/payments/${paymentId}`)).status, 200);
+    // 2.0.26 (A1): kayıt tahsilatı silme de eksi bakiye denetiminden geçer. Bu veride Kasa zaten eksi (−2.000); nakit tahsilatı
+    // silmek onu −2.500'e düşürür → ekran sorar, kullanıcı onaylar (cashForce=1). Testin konusu Vade Takip önbelleği.
+    assert.equal((await admin.del(`/api/workspace/payments/${paymentId}?cashForce=1`)).status, 200);
     assert.equal((await promiseOf()).amount, 1200, "düzeltme ve tahsilat geri alınınca eski hâli");
   });
 

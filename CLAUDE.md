@@ -639,7 +639,8 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   güncelleyici canlı GitHub'da 2.0.23/22/21/20/19/18/17/2.0.4/1.7.0 (API ve yedek yol) "available", sha256 a926aed5…;
   2.0.24 → "up-to-date". Site kılavuz PR'ı ceougur/destekofis#11 kullanıcının "birleştir"iyle BİRLEŞTİRİLDİ (main 514d29b, PDF 3206709e…). 2.0.24 KAPANDI.
   KARAR (kullanıcı, 05.10.2026): 2.0.24'ün DENENMEYEN ve BİLİNEN SINIRLAR listesi Cuma 09.10.2026 planlı teste eklendi
-  (hatırlatma trig_0144BJLRwsZFizXTTYrJVszA, 06:00 UTC; içerik docs/2.0.24-KANIT.md).
+  (hatırlatma trig_0144BJLRwsZFizXTTYrJVszA, 06:00 UTC; içerik docs/2.0.24-KANIT.md). ERTELENDİ (kullanıcı, 08.10.2026: "cuma
+  günü için planladığımız testleri pazar gününe ertele") → Pazar 11.10.2026 09:00 TR (06:00 UTC), aynı hatırlatma.
   ÖLÇEK SORUSU (kullanıcı, 05.10.2026: "ne ölçekte firma rahat kullanır?") → cevap (ölçülenle): 5–10 eşzamanlı kullanıcı,
   birkaç şirket, şirket başına birkaç bin cari, yılda birkaç bin–on bin fatura; üstü ÖLÇÜLMEDİ. KARAR ("ekle"): ölçek/yük testi
   (10/20/30 eşzamanlı kullanıcı, 10.000–50.000 cari + 100.000+ fatura, 10 şirket + yedekleme sırasında yük) aynı Cuma planına
@@ -784,6 +785,57 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   kendi silmesinde yanlış bildirim/yedek adı yok, "ilk sayfa" metni, öbür pencerede eski şerit sayısı, Kaydı Sil sayılıyor,
   gizli sekmeli sayım önbelleksiz, silinmiş sayfanın uyarısında yanlış hata, kayıtlı parola kendiliğinden dolabiliyor
   (parola alanı `one-time-code`; gerçek kayıtlı parolayla DENENMEDİ). Eski kodda 7 denetim kırmızı; senaryo-225 45/45; npm test 1.066/1.066.
+  TESLİM + BİRLEŞTİRME (08.10.2026 ~06:5x): PR ceougur/ofis---y-netimi#25 CI 12/12 yeşil → squash, `master` = c2206bc (ağaç
+  paketlenen fc21059 ile aynı); dal master'a sıfırlandı. Güncelleme paketi sha256 02597e7d… (210 dosya, HEAD ile bayt bayt),
+  kurulum .exe c5f644c6… (29,4 MB, simgeli), kılavuz PDF f02e7bc5… (DEĞİŞTİ → yayından sonra site PR'ı); güncelleyici
+  2.0.24/23/22/21/20/2.0.4/1.7.0 (API ve yedek yol) "available", kurcalanmış bildirge reddedildi. 5 dosya zipsiz + arşiv zip
+  (34,8 MB) gönderildi. Sırada: kullanıcı yayın açar (v2.0.25, 5 dosya; adlar/boyutlar teslimle karşılaştırılır) →
+  "yayımladım" → bayt bayt + güncelleyici "available" → site kılavuz PR'ı.
+  YAYIMLANDI (08.10.2026 ~06:5x; `v2.0.25` = c2206bc): yayındaki 5 dosya + latest/ (exe, json, zip, pdf) teslimle bayt bayt
+  aynı, exe .sha256 OK; gerçek güncelleyici canlı GitHub'da 2.0.24/23/22/21/20/19/18/17/2.0.4/1.7.0 olarak (API ve yedek yol)
+  2.0.25'i "available" gördü, indirme sha256 02597e7d… eşleşti; 2.0.25 → "up-to-date". Arşiv 30 MiB gönderim sınırını aştı →
+  2 parça (kaynak paketi bölündü, birleştirip klonlandı). Site kılavuz PR'ı ceougur/destekofis#12 açık (PDF f02e7bc5…);
+  birleştirme kullanıcının "birleştir"iyle.
+- BANKA + POS MODÜLÜ (kullanıcı, 08.10.2026; talimat aynen `docs/BANKA-MODULU-TALIMAT.md`, 45 madde + ekler): "muhasebe programına
+  banka modülü yapıp entegre edeceğiz; baş mimar ve baş mühendis şapkanla yap". Ekler: tutarlar float DEĞİL (kesin ondalık);
+  POS komisyonunun KDV'si + masraf faturası; banka masraflarında KDV dahil/hariç; TCMB kuru (otomatik ya da elle); dönem sonu
+  kur farkı değerlemesi altyapısı; blokeli/teminatlı POS ayrı kategori; POS iadesinde komisyon iadesi/şirkete kalması.
+  KULLANICI KARARLARI: arayüz içinden çıkılmaz olmasın — Banka modülünde AYARLAR: standartlar seçili gelir, profesyonel kullanıcı
+  istediğini açar; sorulacak hususlarda "en yaygın ve modern" önerim uygulanır (sorulmaz); sol sabit menüde TAKSİTLER'İN
+  ALTINDA "Banka". Süreç (talimat 42/45): önce mevcut mimari analizi + 12 başlıklı plan (`docs/BANKA-MODULU-PLAN.md`), sonra
+  aşama aşama; mevcut çalışanı bozma, gereksiz bağımlılık yok. Önceki kararlarla bağ: 2.0.17 m9 (Kasa yalnız nakit; banka/POS
+  hareketleri `method` ile tutuluyor, Raporlar → Banka ve POS Hareketleri; Kasa ↔ Banka transferi) ve m11 (eksi bakiye denetimi
+  banka modülü gelince banka için geri açılır).
+  PLAN HAZIR (08.10.2026): `docs/BANKA-MODULU-PLAN.md` (Sürüm 3: 10 alt sistem analizi → 3 mimari öneri + 3 yargıç → sentez →
+  2 eleştiri (43 açık) → revizyon → denetim 2 → sürüm 3; açık madde yok) + kullanıcı özeti `docs/BANKA-MODULU-PLAN-OZET.md`.
+  Baş mimar kararları K1–K13 (planın Özet'i): yeni tablolar INTEGER kuruş, mevcut REAL kolonlar bu projede değişmez (talimat
+  Ek 1'den BİLİNÇLİ SAPMA, ayrı proje Aşama 17); banka POS'u ve masrafında varsayılan BSMV (KDVK 17/4-e), ödeme kuruluşunda
+  KDV %20 (talimat Ek 2'den BİLİNÇLİ SAPMA, KDV seçeneği tam); valör gerçek satırla, GET yazmaz; yetki göçünde bugün yapılan
+  hiçbir para işlemi kesilmez; tek kaynak (`moneyLines`) ve tek sarmalayıcı (`bank.post`). Teslim sırası: 2.0.26 = Aşama 0
+  (mevcut hatalar A1, A2, A3, A4, A6, A7, A9, B5, B7, A12, A13 — kullanıcıya listelendi) → 2.1.0 banka ilk teslim (kabul
+  1–16) → 2.2.0 POS → 2.3.0 ekstre/mutabakat + ölçek → 3.0.0 REAL→INTEGER (ayrı karar). Kullanıcının "sorma, önerini uygula"
+  kararı gereği plan sunuldu ve Aşama 0'a başlandı; itiraz gelirse ilgili aşama başlamadan plan güncellenir.
+  KARAR (kullanıcı, 08.10.2026): "2.0.26 paketini bitirip teslim ettiğinde birlikte yükleyip canlıya alalım; 2.1.0 banka
+  kodlamasına öyle başla" → sıra: 2.0.26 paket + PR + CI → birleştir → 5 dosya + bağlantı → kullanıcı yayımlar → bayt bayt +
+  güncelleyici → ANCAK SONRA 2.1.0 (Aşama 2+) kodlaması.
+  DURUM — AŞAMA 0 (2.0.26) YAPILDI (08.10.2026; dal `claude/kind-newton-fpmx3f`, commit'ler 77dc3ad … a25751f; sürüm no paketlemede):
+  11 madde (A1, A2, A3, A4, A6, A7, A9, B5, B7, A12, A13), kanıt `docs/2.0.26-KANIT.md`, CHANGELOG → 2.0.26. Testler
+  `test/asama0-226*.test.mjs` 61 (2.0.25'te 42'si kırmızı); npm test 1.127/1.127, mutabakat 2.000 işlem, güvenilirlik 2×1.000,
+  21 arayüz senaryosu 0 hata (`senaryo-whatsapp`, `ui-ux-217` koşulmadı). Bilinen sınırlar KANIT'ta.
+  BAĞIMSIZ GÖZDEN GEÇİRME (08.10.2026): 4 doğrulanmış hata (G1 yüksek: kilitli günde kapatılmış kart açılıyor/siliniyor/geri
+  yükleniyor, kilitli 689 sessizce değişiyordu; G2 yüksek: kilitli tahsilatlı kartın carisi değişiyordu; G3 orta: kilitli kuruşlu
+  çekte arayüzden vade düzeltilemiyordu — gerileme; G4 orta: eski satır Mutabakat Testi'nde gizleniyordu — gerileme) + 5 düşük
+  (G5 ileri tarihli eski hareketin geri yüklenmesi, G6 Taksite Aktar/Excel taksit kilitte nedensiz 409, G7 silme sorusu metni,
+  G8 mahsup/geri yükleme mesajı, G9 bu satır). HEPSİ yeniden üretildi ve düzeltildi (c4a19a7 … 762bb54, 8104c55); kırmızı kanıt
+  `test/inceleme-226.test.mjs` a25751f'de 35'in 27'si, `senaryo-226` (CI'de) 12'nin 9'u. Kanıt `docs/2.0.26-KANIT.md` 3. bölüm.
+  İKİNCİ BAĞIMSIZ GÖZDEN GEÇİRME (08.10.2026; düzeltmelerin kendisi): 8 doğrulanmış hata (İ1 orta: Taksite Aktar kilitli günde
+  kapatılmış karta tahsilat taşırken bütün aktarım nedensiz 409; İ2 Excel taksitte boş grup; İ3 çek formu yanlış yol + kilitli Sil;
+  İ5 düzeltme sorusu "çıkış" metni; İ6 silmede Vazgeç kırmızı "Kaydedilmedi"; İ7 mahsuplu satırda değişmeyen alan sınanıyordu;
+  İ8 eski ileri tarihli çek kırmızı + tablo adı; İ10 Kasa özeti iki kez) + 2 ölçüm (İ4, İ9: yeni kapı sorguları ~+14–16 ms /
+  10.000 cari; kapının kendisi ~1 sn/COMMIT → Aşama 2). HEPSİ düzeltildi (6ed1d40 … 4b5c76d); kırmızı kanıt
+  `test/inceleme-226-2.test.mjs` bdd1be6'da 27'nin 17'si, `senaryo-226` 25'in 10'u. Son kodla npm test 1.189/1.189, mutabakat
+  2.000 işlem, güvenilirlik 2×1.000, 7 arayüz senaryosu 0 hata. Kanıt `docs/2.0.26-KANIT.md` 4. bölüm.
+  Sırada: kullanıcı onayıyla paket/PR (2.0.26) ya da Aşama 2.
 - 2.0.20 YAPILACAKLAR (kullanıcı "yapılacaklara not al" dedi, 03.10.2026; "yap" denince başlanır; ayrıntı ve
   kanıt hemen altındaki ADAYI maddesinde):
   [x] 1. Bütün raporların (43) tablosunun altında kalın TOPLAM satırı — ekran, PDF, Excel aynı; yalnız toplanabilir

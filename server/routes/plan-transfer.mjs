@@ -12,12 +12,14 @@
 //   - Tek işlem bloğu: yarıda kesilirse hiçbir şey yazılmaz. Aktarım kaydı tutulur; geri alınabilir (aktarımdan sonra
 //     kartlarda işlem yapılmadıysa).
 import { randomUUID } from "node:crypto";
+import { methodInput } from "../lib/pay-method.mjs";
 import { HttpError, limited, ok, readJson, text } from "../lib/http.mjs";
 import { extractSchedules } from "../lib/insight/schedules.mjs";
 import { monthsInText } from "../lib/insight/installments.mjs";
 import { roundMoney } from "../lib/money.mjs";
 import { canUser } from "../lib/permissions.mjs";
-import { isoDay } from "../lib/plans.mjs";
+import { dayText, isoDay } from "../lib/plans.mjs";
+import { FREEZE_CLOSE, SkippedRow } from "./plans.mjs";
 
 const SETTLED_KEY = "dues.settled";
 const DISMISSED_KEY = "plans.transfer.dismissed";
@@ -28,7 +30,7 @@ const digits = value => String(value ?? "").replace(/\D/g, "");
 const MONEY = new Intl.NumberFormat("tr-TR", { style: "currency", currency: "TRY", minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const money = value => MONEY.format(Number(value) || 0);
 
-export function registerPlanTransfer(router, { store, auth, audit, events, dataset, profile, plans = () => null, accounts = () => null }) {
+export function registerPlanTransfer(router, { store, auth, audit, events, dataset, profile, period = null, plans = () => null, accounts = () => null }) {
   const now = () => new Date().toISOString();
   const today = () => isoDay(new Date());
   const source = () => (dataset?.currentKey ? dataset.currentKey() : "");
@@ -150,6 +152,17 @@ export function registerPlanTransfer(router, { store, auth, audit, events, datas
       if (sameName.get(fold(record.name)) > 1) add("warning", "same-name", `Tabloda “${record.name}” adıyla ${sameName.get(fold(record.name))} kayıt var; her biri ayrı kart ve ayrı cari olur.`);
       // Programda girilmiş kayıt tahsilatları.
       const countPayments = options.payments && own.length && (status === "ready" || status === "warning" || status === "link" || status === "closed");
+      // v2.0.26 (2. gözden geçirme İ1): bağlanacak bağsız kart kapanmış dönemde kapatıldıysa (kalandan vazgeçildi, 689 kilitli mizanda)
+      // kayıt tahsilatı o karta taşınamaz: vazgeçilen kalan değişirdi. Önceden ön izleme "bağlanır" diyor, aktarım bütünüyle kapıda
+      // nedensiz 409 alıyordu (geri almada da). Tahsilatlar taşınmadan (seçenek kapalı) bağlanabilir.
+      if (status === "link" && countPayments) {
+        const lock = period?.lockedUntil?.() || "";
+        const closedOn = lock ? plans()?.closeDayOf?.(linkPlan.id) || "" : "";
+        if (closedOn && closedOn <= lock) {
+          status = "error";
+          add("error", "link-closed-locked", `Taksitler'deki bağsız kartı (“${linkPlan.name}”) ${dayText(closedOn)} tarihinde kapatıldı (kalan alacaktan vazgeçildi); ${dayText(lock)} ve öncesi kapatılmış (kilitli) dönemdir. Kayıt tahsilatları bu karta taşınamaz, kişi aktarılmaz. Tahsilatları taşımadan aktarabilir ya da yönetici dönem kilidini açınca yeniden deneyebilirsiniz.`);
+        }
+      }
       if (own.length) {
         if (options.payments) add("info", "payments", `Kayıt kartından girilmiş ${own.length} tahsilat (${money(programPaid)}) karta taşınır; Kasa toplamı değişmez.`);
         else add("warning", "payments-left", `Kayıt kartında ${own.length} tahsilat (${money(programPaid)}) var; seçiminize göre karta sayılmaz, kayıt tahsilatı olarak kalır.`);
@@ -299,6 +312,14 @@ export function registerPlanTransfer(router, { store, auth, audit, events, datas
           report.skipped.push({ key: record.key, name: record.name, reason: record.issues.find(entry => entry.level === "error" || entry.code === "exists")?.text || "Aktarılamaz." });
           continue;
         }
+        // v2.0.26 (gözden geçirme G6): kapanmış dönemdeki kayıt tahsilatı karta taşınmaz (kilitli dönemin kayıt tahsilatı ve taksit
+        // hareketi değişirdi); kişi nedeniyle atlanır, tahsilat kayıtta kalır. Önceden bütün aktarım kapıda nedensiz 409 alıyordu.
+        const lock = period?.lockedUntil?.() || "";
+        const lockedPay = lock && options.payments ? store.get("SELECT MIN(date) AS day FROM payments WHERE case_key = ? AND date <= ?", record.key, lock)?.day : "";
+        if (lockedPay) {
+          report.skipped.push({ key: record.key, name: record.name, reason: `${dayText(lockedPay)} tarihli kayıt tahsilatı kapatılmış (kilitli) dönemde (${dayText(lock)} ve öncesi); karta taşınamaz, kişi aktarılmadı. Tahsilatları taşımadan aktarabilir ya da yönetici dönem kilidini açınca yeniden deneyebilirsiniz.` });
+          continue;
+        }
         let planId;
         let items = [];
         if (record.status === "link") {
@@ -307,7 +328,7 @@ export function registerPlanTransfer(router, { store, auth, audit, events, datas
             report.skipped.push({ key: record.key, name: record.name, reason: "Bağlanacak kart bu arada değişti." });
             continue;
           }
-          store.run("UPDATE plans SET case_key = ?, case_source = ?, case_title = ?, updated_by = ?, updated_at = ? WHERE id = ? AND case_key = ''", record.key, key, record.name, user.id, now(), plan.id);
+          store.run(`UPDATE plans SET ${FREEZE_CLOSE}, case_key = ?, case_source = ?, case_title = ?, updated_by = ?, updated_at = ? WHERE id = ? AND case_key = ''`, record.key, key, record.name, user.id, now(), plan.id);
           undo.links.push({ planId: plan.id, caseKey: record.key });
           // Kartın carisi bir kayda bağlı değilse bu kayda bağlanır (kişi bir kez).
           if (plan.accountId && store.get("SELECT 1 AS found FROM accounts WHERE id = ? AND deleted_at IS NULL AND case_key = ''", plan.accountId)) {
@@ -319,12 +340,34 @@ export function registerPlanTransfer(router, { store, auth, audit, events, datas
           planId = plan.id;
           report.linked += 1;
         } else {
-          const group = groupId(record.groupName);
-          const subgroup = group && record.subgroupName ? groupId(record.subgroupName, group) : null;
           const full = analysis.raw.get(record.key);
-          const person = { name: record.name, phone: record.phone, note: "", registeredOn: full.registeredOn || "", groupId: group, subgroupId: subgroup, caseKey: record.key, caseSource: key, caseTitle: record.name };
-          const outcome = {};
-          const accountId = accountsService?.createFromPlan ? accountsService.createFromPlan(user, person, outcome) : "";
+          // v2.0.26 (G6): grup, cari ve Kayıt Tarihi iç işlemde (SAVEPOINT) belirlenir; kartın Kayıt Tarihi (ilk vade ya da kayıt
+          // günü) kapanmış dönemdeyse hepsi geri alınır, kişi nedeniyle atlanır.
+          const groupsBefore = undo.groups.length;
+          let group;
+          let subgroup;
+          let outcome;
+          let accountId;
+          let start;
+          try {
+            ({ group, subgroup, outcome, accountId, start } = store.tx(() => {
+              const g = groupId(record.groupName);
+              const sg = g && record.subgroupName ? groupId(record.subgroupName, g) : null;
+              const person = { name: record.name, phone: record.phone, note: "", registeredOn: full.registeredOn || "", groupId: g, subgroupId: sg, caseKey: record.key, caseSource: key, caseTitle: record.name };
+              const result = {};
+              const id = accountsService?.createFromPlan ? accountsService.createFromPlan(user, person, result) : "";
+              const day = plansService.scheduledStart(full.registeredOn || (id && !result.created ? store.get("SELECT registered_on AS day FROM accounts WHERE id = ?", id)?.day : "") || today(), full.items);
+              const reason = plansService.lockedStartReason(day);
+              if (reason) throw new SkippedRow(reason);
+              return { group: g, subgroup: sg, outcome: result, accountId: id, start: day };
+            }));
+          } catch (error) {
+            if (!(error instanceof SkippedRow)) throw error;
+            undo.groups.length = groupsBefore;
+            report.skipped.push({ key: record.key, name: record.name, reason: error.message });
+            continue;
+          }
+          const person = { name: record.name, phone: record.phone, note: "", registeredOn: start, groupId: group, subgroupId: subgroup, caseKey: record.key, caseSource: key, caseTitle: record.name };
           if (outcome.created) {
             undo.accounts.push(accountId);
             report.accountsCreated += 1;
@@ -334,7 +377,7 @@ export function registerPlanTransfer(router, { store, auth, audit, events, datas
             report.accountsLinked += 1;
           }
           items = full.items;
-          const created = plansService.createScheduled(user, { ...person, accountId, note: full.note, refNo: refFor(full.refNo), registeredOn: full.registeredOn || (accountId && !outcome.created ? store.get("SELECT registered_on AS day FROM accounts WHERE id = ?", accountId)?.day : "") || today() }, { importId, items, openingDate: today(), openingNote: "Excel'de ödenmiş (açılış)" });
+          const created = plansService.createScheduled(user, { ...person, accountId, note: full.note, refNo: refFor(full.refNo), registeredOn: start }, { importId, items, openingDate: today(), openingNote: "Excel'de ödenmiş (açılış)" });
           planId = created.id;
           undo.plans.push(planId);
           undo.openings.push(...created.openingIds);
@@ -430,6 +473,27 @@ export function registerPlanTransfer(router, { store, auth, audit, events, datas
     }
     const blocked = blockers(undo);
     if (blocked.length) throw new HttpError(409, `Aktarımdan sonra ${blocked.length} kartta işlem yapılmış (${blocked.slice(0, 5).join(", ")}${blocked.length > 5 ? "…" : ""}). Geri almak için önce bu işlemleri kaldırın ya da kartları tek tek silin.`, { code: "touched", names: blocked.slice(0, 50) });
+    // v2.0.26 (gözden geçirme G6): aktarımın açtığı kartın Kayıt Tarihi, açılışı ya da taşınan kayıt tahsilatı kapanmış dönemdeyse geri
+    // alınmaz (kilitli dönemin cari borcu, taksit hareketi ve kayıt tahsilatı değişirdi; önceden kapıda nedensiz 409).
+    const lock = period?.lockedUntil?.() || "";
+    if (lock) {
+      const hits = [];
+      for (const planId of undo.plans || []) {
+        const plan = store.get("SELECT name, registered_on AS registeredOn, covers_balance AS covers FROM plans WHERE id = ?", planId);
+        const entry = store.get("SELECT MIN(date) AS day FROM plan_entries WHERE plan_id = ?", planId)?.day || "";
+        const day = [plan && !plan.covers ? plan.registeredOn : "", entry].filter(Boolean).sort()[0] || "";
+        if (plan && day && day <= lock) hits.push(`${plan.name}, ${dayText(day)}`);
+      }
+      for (const moved of undo.payments || []) {
+        if (moved.row?.date && moved.row.date <= lock) hits.push(`${moved.row.case_title || "kayıt tahsilatı"}, ${dayText(moved.row.date)}`);
+        // 2. gözden geçirme İ1: tahsilat kapanmış dönemde kapatılmış (bağlanan bağsız) karta taşındıysa geri almak kartın vazgeçilen
+        // kalanını (689, kilitli mizan) değiştirir; önceden kapıda nedensiz 409 ledger-integrity.
+        const entry = moved.entryId ? store.get("SELECT e.plan_id AS planId, p.name FROM plan_entries e JOIN plans p ON p.id = e.plan_id WHERE e.id = ?", moved.entryId) : null;
+        const closedOn = entry ? plans()?.closeDayOf?.(entry.planId) || "" : "";
+        if (closedOn && closedOn <= lock) hits.push(`${entry.name}, ${dayText(closedOn)} tarihinde kapatıldı`);
+      }
+      if (hits.length) throw new HttpError(409, `Bu aktarımın kartlarında ya da taşınan tahsilatlarında kapatılmış (kilitli) döneme (${dayText(lock)} ve öncesi) düşen kayıt var (${[...new Set(hits)].slice(0, 5).join("; ")}); aktarım geri alınamaz. Gerekirse yönetici dönem kilidini açmalı.`, { code: "period-locked", lockedUntil: lock });
+    }
     const report = { plans: 0, links: 0, payments: 0, accounts: 0, accountsKept: 0 };
     store.tx(() => {
       // Karta taşınan kayıt tahsilatları kayıt kartına aynen döner (kimlik, tarih, giren kişi).
@@ -437,9 +501,10 @@ export function registerPlanTransfer(router, { store, auth, audit, events, datas
         store.run("DELETE FROM plan_entries WHERE id = ?", moved.entryId);
         const row = moved.row || {};
         if (row.id && !store.get("SELECT 1 AS found FROM payments WHERE id = ?", row.id)) {
+          // v2.0.26 (A2): ödeme yolu da döner (önceden yazılmıyor, havale/POS tahsilatı kayda nakit olarak dönüyordu).
           store.run(
-            "INSERT INTO payments (id, case_key, case_title, amount, date, note, created_by, created_at, updated_by, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-            row.id, row.case_key, row.case_title || "", row.amount, row.date, row.note || "", row.created_by, row.created_at, row.updated_by || null, row.updated_at || null,
+            "INSERT INTO payments (id, case_key, case_title, amount, date, note, method, created_by, created_at, updated_by, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            row.id, row.case_key, row.case_title || "", row.amount, row.date, row.note || "", methodInput(row.method), row.created_by, row.created_at, row.updated_by || null, row.updated_at || null,
           );
           report.payments += 1;
         }
@@ -451,7 +516,7 @@ export function registerPlanTransfer(router, { store, auth, audit, events, datas
         report.plans += 1;
       }
       for (const link of undo.links || []) {
-        store.run("UPDATE plans SET case_key = '', case_source = '', case_title = '', updated_by = ?, updated_at = ? WHERE id = ? AND case_key = ?", user.id, now(), link.planId, link.caseKey);
+        store.run(`UPDATE plans SET ${FREEZE_CLOSE}, case_key = '', case_source = '', case_title = '', updated_by = ?, updated_at = ? WHERE id = ? AND case_key = ?`, user.id, now(), link.planId, link.caseKey);
         report.links += 1;
       }
       for (const link of undo.accountLinks || []) store.run("UPDATE accounts SET case_key = '', case_source = '', case_title = '', updated_by = ?, updated_at = ? WHERE id = ? AND case_key = ?", user.id, now(), link.accountId, link.caseKey);

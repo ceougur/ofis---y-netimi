@@ -2,6 +2,76 @@
 
 Sürümler [anlamsal sürümleme](https://semver.org/lang/tr/) kurallarına uyar.
 
+## 2.0.26 — Ön düzeltmeler (banka modülü öncesi)
+
+Kaynak: banka + POS modülü planı (`docs/BANKA-MODULU-PLAN.md` §11.1, §12.3 "Aşama 0"; kullanıcı kararı 08.10.2026). Banka
+kodu yok; yalnız mevcut hataların düzeltmesi. Her madde önce 2.0.25'te kırmızı testle gösterildi. Ayrıntı ve denenen /
+denenmeyen / bilinen sınırlar: `docs/2.0.26-KANIT.md`.
+
+- **Kayıt (detay kartı) tahsilatı da tarih kuralına bağlı.** İleri tarihli ya da takvimde olmayan günle tahsilat girilmez;
+  kapatılmış (kilitli) döneme tahsilat girilmez, oradaki tahsilat düzeltilmez ve silinmez. Önceden işlem yine geri alınıyordu
+  ama ekranda nedeni yazmıyordu ("kayıt defterler arasında sapma…"); artık nedeni söylenir.
+- **Tahsilat silme ve düzeltmede eksi bakiye sorusu.** Nakit tahsilatı silmek ya da azaltmak Kasa'yı eksiye düşürecekse
+  (Uyar ayarında) önce sorulur; Engelle'de yapılmaz. Aynısı cari ve taksit kartı silinirken de (kartın/carinin tahsilatları
+  Kasa'dan düşer).
+- **Silinip geri yüklenen havale/POS tahsilatı nakde dönmez.** Silinenler'e ödeme yolu da yazılır. Taksite Aktar'da kayıt
+  tahsilatı karta yoluyla taşınır; aktarım geri alınınca kayda yine aynı yolla döner. Eski sürümde nakde dönmüş olanlar
+  düzelmez.
+- **Silme yarıda kalmaz.** Tahsilat ya da Kasa hareketi silinirken elektrik kesilse bile ya silinir ve Silinenler'de görünür
+  ya da hiç silinmemiş olur; önceden iz bırakmadan kaybolabiliyordu.
+- **Kapatılmış dönem korunur.** O dönemde hareketi olan cari silinmez, geri yüklenmez, türü (Müşteri/Tedarikçi/Diğer)
+  değiştirilmez; adı, telefonu ve diğer bilgileri düzeltilir. Kayıt Tarihi kapatılmış dönemdeki silinmiş taksit kartı ve
+  kapatılmış dönemdeki tahsilat, Kasa, cari, taksit ve stok hareketleri Silinenler'den geri yüklenmez.
+- **Çek/senet: alış/veriliş tarihi.** İleri tarihle ya da kapatılmış döneme çek/senet girilmez. Kapatılmış dönemde alınmış
+  evrak silinmez, tutarı/carisi/tarihi değiştirilmez (vadesi, numarası, bankası ve notu düzeltilir, bugün tahsil edilir; kuruşlu
+  tutarlı evrakta da). Böyle evrakta Düzenle penceresi tutar ve tarih alanlarını göstermez, nedenini yazar. Excel'den toplu alımda
+  böyle satırlar nedeniyle atlanır.
+- **Silinenler'den geri yüklenen cari hareketi eksiksiz döner.** "Kapatılacak Fatura" bağı ve ödeme yolu korunur; tutar kuruşa
+  yuvarlanır. Bağlı olduğu fatura bu arada iptal edildiyse bağsız döner ve bu söylenir.
+- **Mahsuptaki satır.** Bir faturayla mahsup edilmiş Alacak Yaz / Borç Yaz satırı silinmek istenirse "Önce mahsubu kaldırın"
+  denir (fatura numarası ve tutarla); yönü değiştirilemez, tutarı mahsup edilenin altına indirilemez. Açıklaması düzeltilir.
+- **Dönem kilidi varken Şirket Verisini Sıfırla.** "Tüm Hareketleri Sil" kilit varken çalışmıyordu; artık kilit de kaldırılır
+  (onay penceresi yazar, işlem geçmişine kaydedilir, bildirimde kaldırılan kilit tarihi görünür).
+- **Eski veride ileri tarihli kayıt varsa program kilitlenmez.** Eski sürümlerden kalan ileri tarihli bir hareket (ör. ileri
+  alış tarihli çek) gün geçtikçe bugüne yaklaşırken bütün para işlemleri yeniden başlatmaya kadar reddediliyordu; artık
+  sürer. Yeni ileri tarihli hareket yine girilmez. Eski satır gizlenmez: Mutabakat Testi'nde ve Raporlar › Defter
+  Mutabakatı'nda "Eski Sürümden Kalan" olarak görünür, Mutabakat Günlüğü'ne yazılır. Böyle bir hareket silinirse Silinenler'den
+  ileri tarihiyle geri yüklenmez (nedeni yazar; tarihi gelince geri yüklenir).
+- **Tanınmayan ödeme yolu nakit sayılmaz.** Program içinde yazılan (fatura, stok, çek/senet, Silinenler) hareketlerde nakit,
+  havale/EFT, POS/kredi kartı dışındaki yol reddedilir; mutabakat kapısı da böyle bir satırı nedeniyle geri alır.
+- **Kapatılmış dönemde kapatılan taksit kartı korunur.** Kartın kapatıldığı gün (kalan alacaktan vazgeçilen gün) kilitli
+  dönemdeyse kart yeniden açılmaz, silinmez, Silinenler'den geri yüklenmez; tutarı, carisi, tahsilatı ve karta sayılan çekin
+  durumu değişmez; ekranda nedeni yazar. Dönem bugüne kadar kilitliyse kart bugün kapatılamaz. Kilitli dönemde tahsilatı olan
+  kartın carisi değiştirilemez (Mevcut Borç kartında da). Adı, notu, grubu düzeltilir.
+- **Kilit varken Taksite Aktar ve Excel'den taksit yükleme durmaz.** İlk vadesi ya da taşınacak kayıt tahsilatı kapatılmış
+  dönemde olan kişi aktarılmaz, nedeni aktarım raporunda yazar; öbürleri aktarılır. Kilitten önce yapılmış bir aktarım,
+  kilitli döneme düşen kaydı varsa geri alınmaz (nedeni yazar).
+- **Sorular ve uyarılar nedenini söyler.** Silerken Kasa eksiye düşecekse soru neyin düştüğünü yazar ("Bu cari silinince
+  tahsilat ve ödemeleriyle birlikte Nakit Kasa'dan 500,00 TL düşer; Nakit Kasa 200,00 TL iken -300,00 TL olur. Yine de silinsin
+  mi?"). Mahsuptaki satır silinirken mesaj yolu söyler (faturayı açın → Bu Faturayı Kapatanlar → Kaldır). Geri yüklenen
+  tahsilat faturasına bağlanamazsa hangi fatura ve neden yazar.
+- **Düzeltmede de soru nedenini söyler.** Kayıt, cari, taksit, stok ya da Kasa hareketi düzeltilirken Kasa eksiye düşecekse soru
+  düzeltmeyi anlatır ("Bu tahsilat 1.000,00 TL'den 500,00 TL'ye düzeltilince Nakit Kasa'dan 500,00 TL düşer; …"; yol
+  değişikliğinde "Bu tahsilatın yolu Havale / EFT olarak değiştirilince …"); "yolu değiştirin" önerisi yalnız yeni ödemede çıkar.
+  Silmede soruya Vazgeç denince "Silinmedi" bilgisi çıkar (kırmızı hata değil).
+- **Çek/senet kartı doğru yolu söyler.** Düzenle penceresinin metni evrakın durumuna göre: faturadan gelen evrakta "faturayı iptal
+  edin", tahsil/ciro/ödeme görmüş evrakta "önce son işlemi geri alın" (son işlem kapatılmış dönemdeyse bunun için önce kilit
+  açılmalı), kapatılmış dönemde alınmışta kilit. Kapatılmış dönemde alınmış evrakta Sil düğmesi gösterilmez; nedeni kartta yazar.
+- **Taksite Aktar ve kapatılmış kart.** Bağlanacak bağsız kart kapatılmış dönemde kapatıldıysa (kalandan vazgeçilmiş) kayıt
+  tahsilatları o karta taşınamaz: ön izleme kişiyi aktarılamaz gösterir ve nedenini yazar, öbür kişiler aktarılır; tahsilatları
+  taşımadan aktarma çalışır. Excel'den taksit yüklemede kilit yüzünden atlanan satır boş grup bırakmaz.
+- **Mahsuplu satırın açıklaması düzeltilir.** Eski sürümde tarihi ya da tutarı mahsupla uyuşmaz hâle gelmiş satırda yalnız
+  açıklama (ya da değişmeyen alan) düzeltmesi artık reddedilmez; tarih ya da tutar değiştirilirse kural aynı.
+- **Eski sürümden kalan ileri tarihli çek/senet.** Yönetim → Sistem'de kırmızı hata yerine sarı uyarı olarak ve ne yapılacağıyla
+  görünür (Düzenle ile alış/veriliş tarihini gerçek güne çekin; tarihi gelince kendiliğinden kalkar); denetim adlarında iç tablo
+  adı yerine "Çek/Senet Hareketleri", "Kasa Hareketleri" gibi adlar.
+- Testler: `test/asama0-226.test.mjs` (54), `test/asama0-226-saat.test.mjs` (5; gün ilerletmeli), `test/asama0-226-kesinti.test.mjs`
+  (2; gerçek SIGKILL). 2.0.25 kodunda 61 testin 42'si kırmızı. Üç eski test bilinçli güncellendi (`raporlar-209`, `trash`, arayüz
+  `e2e`: tahsilat silmede eksi bakiye sorusu artık çıkıyor ve onaylanıyor). Bağımsız gözden geçirme: `test/inceleme-226.test.mjs`
+  (35; düzeltmeden önce 27'si kırmızı) ve arayüz senaryosu `npm run test:senaryo-226` (12 denetim; önce 9'u kırmızı). İkinci
+  bağımsız gözden geçirme: `test/inceleme-226-2.test.mjs` (27; düzeltmeden önce 17'si kırmızı) ve `senaryo-226`'ya 13 denetim
+  (önce 10'u kırmızı); denetim adı değiştiği için `inceleme-226` ve `donem-213` beklenen adları güncellendi.
+
 ## 2.0.25 — En fazla 2 şirket; başka sayfadaki uyarıdan kayda git; Sayfayı Sil
 
 Kaynak: kullanıcı kararı, 05.10.2026 ("en fazla 2 şirket kurulabilsin"; "3 olanlar kalsın, Pro'da da olmasın"; "2. şirket varsa

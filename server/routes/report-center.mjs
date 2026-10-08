@@ -362,13 +362,19 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
         const { reconciliation } = ledger().check();
         const extra = integrity()?.run ? integrity().run().checks.filter(check => !check.code.startsWith("gl:") && check.code !== "balance") : [];
         const ok = reconciliation.ok && extra.every(check => check.ok);
+        // Gözden geçirme G4: eski sürümden kalan satır (ileri tarihli, tanınmayan yol) "Fark Var" yerine kendi adıyla görünür;
+        // yeni işlemler onu büyütemez, engellenmez de.
+        const legacyOnly = check => !check.ok && check.legacy > 0 && check.legacy >= check.count;
+        const onlyLegacy = !ok && reconciliation.ok && extra.filter(check => !check.ok).every(legacyOnly);
+        // 2. gözden geçirme İ8: eski satırda ne yapılacağı (ör. çek/senette Düzenle ile alış tarihini gerçek güne çekmek).
+        const hints = extra.filter(check => legacyOnly(check) && check.hint).map(check => check.hint).join(" ");
         return {
-          subtitle: ok ? "Tüm hesaplar tutarlı; borç toplamı alacak toplamına eşit. Her kayıt yazılmadan önce bu denetimden geçer." : "Fark bulunan hesap var; yöneticiye bildirin. Yeni işlemler bu farkı büyütemez.",
+          subtitle: `${ok ? "Tüm hesaplar tutarlı; borç toplamı alacak toplamına eşit. Her kayıt yazılmadan önce bu denetimden geçer." : onlyLegacy ? "Eski sürümden kalan satır var (aşağıda “Eski Sürümden Kalan”). Yeni işlemler engellenmez ve bu satırları büyütemez." : "Fark bulunan hesap var; yöneticiye bildirin. Yeni işlemler bu farkı büyütemez."}${hints ? ` ${hints}` : ""}`,
           headers: ["Hesap", "Hesap Adı", "Ana Defter", "Alt Defter", "Fark", "Durum"],
           types: ["", "", "money", "money", "money", ""],
           rows: [
             ...reconciliation.checks.map(check => [check.code, check.name, money(check.ledger), money(check.subledger), money(check.difference), check.ok ? "Tutarlı" : "Fark Var"]),
-            ...extra.map(check => ["Denetim", check.name, "", "", check.ok ? "" : `${check.count} satır`, check.ok ? "Tutarlı" : "Fark Var"]),
+            ...extra.map(check => ["Denetim", check.name, "", "", check.ok ? "" : `${check.count} satır`, check.ok ? "Tutarlı" : legacyOnly(check) ? "Eski Sürümden Kalan" : "Fark Var"]),
           ],
           summary: [["Çift Yönlü Denge", reconciliation.balanced ? "Borç = Alacak" : "Dengesiz"], ["Sonuç", ok ? "Tutarlı" : "Fark Var"]],
           footer: false, // farklı hesapların (Kasa, Banka, Cari…) bakiyeleri toplanmaz

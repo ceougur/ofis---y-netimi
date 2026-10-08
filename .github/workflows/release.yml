@@ -41,6 +41,7 @@ jobs:
       - run: npm run test:senaryo-223
       - run: npm run test:senaryo-224
       - run: npm run test:senaryo-225
+      - run: npm run test:senaryo-226
 
   windows:
     name: Windows kurulum paketi

@@ -11,7 +11,7 @@ import { HttpError, limited, ok, readJson, sendBuffer, text } from "../lib/http.
 import { parseAmount, roundMoney } from "../lib/money.mjs";
 import { canUser } from "../lib/permissions.mjs";
 import { dayText, isoDay } from "../lib/plans.mjs";
-import { methodOf, methodInput } from "../lib/pay-method.mjs";
+import { methodInput } from "../lib/pay-method.mjs";
 import { tablePdf, tl } from "../lib/report-pdf.mjs";
 import { unitLabel } from "../lib/units.mjs";
 import { buildXlsx } from "../lib/xlsx-write.mjs";
@@ -297,7 +297,7 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
     const id = newId("smove");
     store.run(
       "INSERT INTO stock_moves (id, item_id, kind, qty, unit_price, amount, date, note, pay, reason, method, account_id, invoice_id, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-      id, itemId, move.kind, move.qty, move.unitPrice, move.amount, move.date, move.note, move.pay, move.reason || "", move.pay === "cash" ? methodOf(move.method) : "cash", move.accountId || "", move.invoiceId || "", user.id, now(),
+      id, itemId, move.kind, move.qty, move.unitPrice, move.amount, move.date, move.note, move.pay, move.reason || "", move.pay === "cash" ? methodInput(move.method) : "cash", move.accountId || "", move.invoiceId || "", user.id, now(),
     );
     return id;
   }
@@ -419,7 +419,7 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
     const previous = moveOf(item.id, params.moveId);
     requireMoveRight(user, previous);
     period?.assertOpen(previous.date, "Bu stok hareketi");
-    cash?.guardChange?.(cashSide(previous), null, url.searchParams.get("cashForce") === "1");
+    cash?.guardChange?.(cashSide(previous), null, url.searchParams.get("cashForce") === "1", "Bu stok hareketi silinince");
     let accountId = "";
     store.tx(() => {
       store.run("DELETE FROM stock_moves WHERE id = ?", previous.id);
@@ -644,8 +644,11 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
     const item = store.get("SELECT id, name, unit, deleted_at AS deletedAt FROM stock_items WHERE id = ?", payload.itemId);
     if (!item) throw new HttpError(409, "Hareketin ürünü artık yok; geri yüklenemez.");
     if (item.deletedAt) throw new HttpError(409, `“${payload.itemName}” ürünü silinmiş. Önce ürünü geri yükleyin.`);
+    // v2.0.26 (A7, B7): kapanmış dönemdeki hareket geri yüklenmez; tutar kuruşa yuvarlanır; yol katı okunur (tanınmayan yol
+    // 400 — önceden sessizce nakit sayılıyordu).
+    period?.restoreDate(payload.date, "Bu stok hareketi");
     const pay = payload.pay === "account" && !accounts()?.exists(payload.accountId) ? "none" : PAY.has(payload.pay) ? payload.pay : "none";
-    const move = { kind: payload.kind, qty: Number(payload.qty) || 0, unitPrice: Number(payload.unitPrice) || 0, amount: Number(payload.amount) || 0, date: payload.date, note: payload.note || "", pay, reason: payload.reason === "return" ? "return" : "", method: methodOf(payload.method), accountId: pay === "account" ? payload.accountId : "" };
+    const move = { kind: payload.kind, qty: Number(payload.qty) || 0, unitPrice: Number(payload.unitPrice) || 0, amount: roundMoney(Number(payload.amount) || 0), date: payload.date, note: payload.note || "", pay, reason: payload.reason === "return" ? "return" : "", method: pay === "cash" ? methodInput(payload.method) : "cash", accountId: pay === "account" ? payload.accountId : "" };
     store.tx(() => {
       if (!store.get("SELECT 1 AS found FROM stock_moves WHERE id = ?", entry.ref)) {
         store.run(

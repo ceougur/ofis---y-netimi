@@ -5,7 +5,7 @@
 // aynı adla "ek alan" olur; taksit sorulmaz. Toplu taksitlendirme: seçilen carilere tek seferde taksit kartı.
 // Hesap kuralı server/lib/accounts.mjs içinde (saf, testli); burada doğrulama, kayıt ve yetki vardır.
 import { randomUUID } from "node:crypto";
-import { methodOf, methodInput } from "../lib/pay-method.mjs";
+import { methodInput } from "../lib/pay-method.mjs";
 import { ACCOUNT_TYPES, TYPE_DEFAULT, accountLedger, accountTypeKey, balanceSide, classifyAccountType, isAccountType, mapAccountHeaders } from "../lib/accounts.mjs";
 import { HttpError, limited, ok, readJson, sendBuffer, text } from "../lib/http.mjs";
 import { parseAmount, roundMoney } from "../lib/money.mjs";
@@ -442,6 +442,8 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
       if (wantedRef && wantedRef !== previous.refNo && store.get("SELECT 1 AS found FROM accounts WHERE deleted_at IS NULL AND ref_no = ? AND id <> ?", wantedRef, previous.id)) throw new HttpError(409, `${wantedRef} numarası başka bir caride kullanılıyor.`);
       // Görünen grup adları birleştirilmez: grup boşaltılınca eski adla yeniden açılmasın.
       const input = accountInput({ ...previous, groupName: "", subgroupName: "", ...body }, user, previous);
+      // v2.0.26 (A3): kapanmış dönemde hareketi olan carinin türü değişmez (kilitli mizanda 120/320/336 sınıfı kayardı).
+      if (input.type !== previous.type) assertUnlocked(previous.id, "türü değiştirilemez");
       // v2.0.22: bilgi kolonları ayrı yazılır; tür ve durum yalnız değiştiyse (bilgi düzeltmesi mutabakat kapısını
       // tetiklemez — lib/db.mjs INFO_COLUMNS).
       store.run(
@@ -463,7 +465,7 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     if (money || followed) changed(user, { kind: "plans" });
     ok(res, result);
   });
-  router.delete("/api/workspace/accounts/:id", async ({ req, res, params }) => {
+  router.delete("/api/workspace/accounts/:id", async ({ req, res, params, url }) => {
     const user = auth.requirePermission(req, "accounts.manage");
     const account = accountRow(params.id);
     const planCount = plans()?.countForAccount ? plans().countForAccount(account.id) : 0;
@@ -478,6 +480,10 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     // v2.0.15: faturası olan cari silinmez (fatura yasal belgedir; Logo/Netsis'teki gibi hareketli cari silinemez).
     const invoiceCount = store.get("SELECT COUNT(*) AS n FROM sqlite_master WHERE type = 'table' AND name = 'invoices'").n ? store.get("SELECT COUNT(*) AS n FROM invoices WHERE account_id = ? AND status = 'issued'", account.id).n : 0;
     if (invoiceCount) throw new HttpError(409, `Bu carinin ${invoiceCount} faturası var; faturası olan cari silinemez. Cariyi pasife alın.`, { code: "account-has-invoices" });
+    // v2.0.26 (A3): kapanmış dönemde hareketi olan cari silinmez (silinen carinin satırları defterden düşer). Silinen carinin
+    // tahsilat/ödemeleri Kasa'dan ve bankadan düşer: eksi bakiye denetimi (Uyar/Engelle) toplam etkiyle sorar.
+    assertUnlocked(account.id, "silinemez");
+    cash?.guardRemove?.(store.all("SELECT kind, amount, method, date FROM account_entries WHERE account_id = ? AND kind IN ('in', 'out') AND source = ''", account.id), url.searchParams.get("cashForce") === "1", "Bu cari silinince tahsilat ve ödemeleriyle birlikte");
     store.tx(() => {
       // Yumuşak silme: hareketleri yerinde durur (Kasa'dan düşer); yönetim panelindeki Silinenler'den geri gelir.
       store.run("UPDATE accounts SET deleted_by = ?, deleted_at = ? WHERE id = ?", user.id, now(), account.id);
@@ -487,6 +493,28 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     changed(user, { kind: "cash" });
     ok(res, { id: account.id });
   });
+
+  // v2.0.26 (A3): carinin kapanmış dönemde (kilit tarihi ve öncesi) hareketi var mı — cari satırı (tahsilat/ödeme, Borç Yaz/
+  // Alacak Yaz, açılış) ya da taksit kartının borcu/tahsilatı. Varsa silme, geri yükleme ve tür değişikliği kilitli mizanı
+  // değiştirir; mutabakat kapısındaki kilit izi (party_lock) aynı tanımı kullanır.
+  function lockedSince(accountId) {
+    const lock = period?.lockedUntil?.() || "";
+    if (!lock) return "";
+    const hit = store.get(
+      `SELECT 1 AS found WHERE EXISTS (SELECT 1 FROM account_entries WHERE account_id = ?1 AND date <= ?2)
+          OR EXISTS (SELECT 1 FROM plans p WHERE p.account_id = ?1 AND p.deleted_at IS NULL
+                       AND ((p.covers_balance = 0 AND p.registered_on <> '' AND p.registered_on <= ?2)
+                            OR EXISTS (SELECT 1 FROM plan_entries pe WHERE pe.plan_id = p.id AND pe.date <= ?2)
+                            -- gözden geçirme G1: kapanmış dönemde kapatılmış kartın vazgeçilen kalanı (689) carinin türüne göre yazılır
+                            OR (p.status = 'closed' AND MAX(COALESCE(p.closed_at, substr(p.updated_at, 1, 10)), COALESCE(NULLIF(p.registered_on, ''), substr(p.created_at, 1, 10))) <= ?2)))`,
+      accountId, lock,
+    );
+    return hit ? lock : "";
+  }
+  function assertUnlocked(accountId, what) {
+    const lock = lockedSince(accountId);
+    if (lock) throw new HttpError(409, `Bu carinin ${dayText(lock)} ve öncesinde (kapatılmış dönem) hareketi var; cari ${what}. Kapanmış dönemin mizanı değişirdi. Gerekirse yönetici dönem kilidini açmalı.`, { code: "period-locked", lockedUntil: lock });
+  }
 
   // ---------- Hareketler ----------
   const receiptNumber = () => {
@@ -502,7 +530,7 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     const receiptNo = kind === "in" && source !== "stock" && source !== "invoice" ? receiptNumber() : null;
     store.run(
       "INSERT INTO account_entries (id, account_id, kind, amount, date, note, receipt_no, source, source_id, method, invoice_id, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-      id, accountId, kind, amount, date, note || "", receiptNo, source, sourceId, methodOf(method), invoiceId || "", user.id, now(),
+      id, accountId, kind, amount, date, note || "", receiptNo, source, sourceId, methodInput(method), invoiceId || "", user.id, now(),
     );
     return { id, receiptNo };
   }
@@ -551,6 +579,33 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     requireKindRight(user, entry.kind);
   };
 
+  // v2.0.26 (A9): mahsup fişinde karşı belge olan Alacak Yaz / Borç Yaz satırı. Silinirse ya da tutarı mahsubun altına
+  // iner, yönü değişir, tarihi mahsuptan sonraya kayarsa mahsup fişi boşa düşer (kapı bunu nedensiz 409 ile durduruyordu).
+  // Nedenli 409 "offset-linked": önce mahsup kaldırılır.
+  const offsetsOf = entryId =>
+    hasOffsets()
+      ? store.all("SELECT o.amount, o.date, COALESCE(i.number, '') AS number FROM invoice_offsets o LEFT JOIN invoices i ON i.id = o.invoice_id WHERE o.counter_type = 'entry' AND o.counter_id = ? ORDER BY o.date", entryId)
+      : [];
+  let offsetTable = null;
+  const hasOffsets = () => (offsetTable ??= Boolean(store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'invoice_offsets'")));
+  function assertOffsetFree(previous, next = null) {
+    const offsets = offsetsOf(previous.id);
+    if (!offsets.length) return;
+    const used = roundMoney(offsets.reduce((sum, row) => sum + (Number(row.amount) || 0), 0));
+    const list = [...new Set(offsets.map(row => row.number).filter(Boolean))];
+    const numbers = list.join(", ") || "bir fatura";
+    const head = `Bu satır ${numbers} faturasıyla ${tl(used)} mahsup edilmiş.`;
+    // v2.0.26 (gözden geçirme G8): mahsup, faturanın kartındaki "Bu Faturayı Kapatanlar" listesinden Kaldır ile kalkar (arayüzde
+    // "Fatura → Mahsup" diye bir yer yok).
+    const how = `${list.length ? `${numbers} ${list.length > 1 ? "faturalarını" : "faturasını"}` : "Faturayı"} açın; Bu Faturayı Kapatanlar listesindeki mahsup satırında Kaldır'a basın`;
+    if (!next) throw new HttpError(409, `${head} Önce mahsubu kaldırın: ${how}, sonra satırı silin.`, { code: "offset-linked", used });
+    if (next.kind !== previous.kind) throw new HttpError(409, `${head} Yönü değiştirilemez; önce mahsubu kaldırın: ${how}.`, { code: "offset-linked", used });
+    // 2. gözden geçirme İ7: tutar ve tarih kuralı yalnız DEĞİŞEN alana uygulanır. 2.0.25 mahsuplu satırın tarihini mahsuptan sonraya
+    // ya da tutarını mahsubun altına çekmeye izin veriyordu; böyle eski bir satırda yalnız açıklama düzeltmesi bile 409 alıyordu.
+    const amountChanged = Math.abs(roundMoney(next.amount) - roundMoney(previous.amount)) > 0.004;
+    if (amountChanged && next.amount < used - 0.005) throw new HttpError(409, `${head} Tutar mahsup edilenden (${tl(used)}) az olamaz; önce mahsubu kaldırın ya da azaltın: ${how}.`, { code: "offset-linked", used });
+    if (next.date !== previous.date && next.date > offsets[0].date) throw new HttpError(409, `${head} Tarih mahsup tarihinden (${dayText(offsets[0].date)}) sonra olamaz; önce mahsubu kaldırın: ${how}.`, { code: "offset-linked", used });
+  }
   router.post("/api/workspace/accounts/:id/entries", async ({ req, res, params }) => {
     const user = auth.requirePermission(req, "accounts.view");
     const account = accountRow(params.id);
@@ -577,6 +632,7 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     // v2.0.13: borç ↔ alacak yönü düzeltilebilir (yanlış yönde yazılan açılış bakiyesi gibi); tahsilat/ödeme yön değiştirmez.
     const flip = ["debt", "credit"].includes(previous.kind) && ["debt", "credit"].includes(text(body.kind)) ? text(body.kind) : previous.kind;
     const input = entryInput({ ...previous, ...body, kind: flip }, account.id, previous);
+    assertOffsetFree(previous, input);
     const cashSide = e => (e.kind === "in" || e.kind === "out" ? e : null);
     cash?.guardChange?.(cashSide(previous), cashSide(input), body.cashForce === true);
     store.tx(() => {
@@ -593,7 +649,8 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     const previous = entryOf(account.id, params.entryId);
     requireEntryRight(user, previous);
     period?.assertOpen(previous.date, "Bu cari hareketi");
-    if (previous.kind === "in" || previous.kind === "out") cash?.guardChange?.(previous, null, url.searchParams.get("cashForce") === "1");
+    assertOffsetFree(previous);
+    if (previous.kind === "in" || previous.kind === "out") cash?.guardChange?.(previous, null, url.searchParams.get("cashForce") === "1", previous.kind === "in" ? "Bu tahsilat silinince" : "Bu ödeme silinince");
     store.tx(() => {
       store.run("DELETE FROM account_entries WHERE id = ?", previous.id);
       trash?.add({ kind: "account-entry", ref: previous.id, title: account.name, detail: previous.note || KIND_TEXT[previous.kind], payload: { ...previous, accountId: account.id, accountName: account.name }, user });
@@ -1130,6 +1187,8 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
   function restoreDeleted(user, id) {
     const account = store.get("SELECT id, name FROM accounts WHERE id = ? AND deleted_at IS NOT NULL", id);
     if (!account) throw new HttpError(404, "Bu cari zaten geri yüklenmiş.");
+    // v2.0.26 (A3): kapanmış dönemde hareketi olan cari geri yüklenmez (satırları kilitli mizana geri dönerdi).
+    assertUnlocked(account.id, "geri yüklenemez");
     store.tx(() => {
       // Numara bu arada başka bir cariye verildiyse geri gelen cari sıradaki boş numarayı alır (iki carinin aynı numarası olmaz).
       const current = store.get("SELECT ref_no AS refNo FROM accounts WHERE id = ?", account.id)?.refNo || "";
@@ -1146,20 +1205,43 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     const account = store.get("SELECT id, deleted_at AS deletedAt FROM accounts WHERE id = ?", payload.accountId);
     if (!account) throw new HttpError(409, "Hareketin carisi artık yok; geri yüklenemez.");
     if (account.deletedAt) throw new HttpError(409, `“${payload.accountName}” carisi silinmiş. Önce cariyi geri yükleyin.`);
+    // v2.0.26 (A7): kapanmış dönemdeki hareket geri yüklenmez; bütün kolonlar (yol, Kapatılacak Fatura bağı) taşınır, tutar
+    // kuruşa yuvarlanır. Önceden kaynak boş, fatura bağı yok yazılıyor, tutar olduğu gibi alınıyordu.
+    period?.restoreDate(payload.date, "Bu cari hareketi");
+    // Silinenler'e yalnız elle girilen satır gider (stok, çek, fatura satırı kendi modülünden silinir).
+    if (payload.source) throw new HttpError(409, "Bu hareket başka bir modülden (stok, çek/senet, fatura) geliyordu; o modülden yeniden girin.");
+    const method = methodInput(payload.method);
+    const amount = roundMoney(Number(payload.amount) || 0);
+    if (!(amount > 0)) throw new HttpError(409, "Hareketin tutarı okunamadı; geri yüklenemez.");
+    // Kapatılacak Fatura bağı: fatura hâlâ aynı carinin, kaydedilmiş, aynı yöndeki taksitsiz faturasıysa korunur; değilse bağsız döner.
+    let invoiceId = "";
+    if (payload.invoiceId) {
+      try {
+        invoiceId = invoiceLink(account.id, payload.kind, payload.invoiceId);
+      } catch {
+        invoiceId = "";
+      }
+    }
     store.tx(() => {
       if (!store.get("SELECT 1 AS found FROM account_entries WHERE id = ?", item.ref)) {
         store.run(
-          "INSERT INTO account_entries (id, account_id, kind, amount, date, note, receipt_no, source, source_id, method, created_by, created_at, updated_by, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, '', '', ?, ?, ?, ?, ?)",
-          item.ref, account.id, payload.kind, Number(payload.amount) || 0, payload.date, payload.note || "", payload.receiptNo || null, payload.method || "cash", payload.createdBy || user.id, payload.createdAt || now(), user.id, now(),
+          "INSERT INTO account_entries (id, account_id, kind, amount, date, note, receipt_no, source, source_id, method, invoice_id, created_by, created_at, updated_by, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, '', '', ?, ?, ?, ?, ?, ?)",
+          item.ref, account.id, payload.kind, amount, payload.date, payload.note || "", payload.receiptNo || null, method, invoiceId, payload.createdBy || user.id, payload.createdAt || now(), user.id, now(),
         );
       }
       trash.markRestored(item.id, user);
-      audit(user, "account.entry.restored", item.ref, { accountId: account.id, kind: payload.kind, amount: payload.amount, date: payload.date });
+      audit(user, "account.entry.restored", item.ref, { accountId: account.id, kind: payload.kind, amount, date: payload.date, method, invoiceId, droppedInvoice: payload.invoiceId && !invoiceId ? payload.invoiceId : "" });
     });
     changed(user, { accountId: account.id });
     changed(user, { kind: "cash" });
+    if (payload.invoiceId && !invoiceId) {
+      // v2.0.26 (gözden geçirme G8): hangi fatura ve neden bağlanmadığı söylenir (önceki cümle yarım kalıyordu).
+      const dropped = store.get("SELECT number, status, plan_id AS planId FROM invoices WHERE id = ?", payload.invoiceId);
+      const why = !dropped ? "silindiği için" : dropped.status === "cancelled" ? "iptal edildiği için" : dropped.status !== "issued" ? "kaydedilmiş olmadığı için" : dropped.planId ? "taksitli olduğu (kendi taksit kartıyla kapandığı) için" : "artık bu hareketle kapatılamadığı için";
+      return `Cari hareketi geri eklendi. Bağlı olduğu ${dropped?.number ? `${dropped.number} faturası` : "fatura"} ${why} faturaya bağlanmadı; otomatik kapamaya girer.`;
+    }
     return "Cari hareketi geri eklendi; bakiye ve Kasa yeniden hesaplandı.";
   }
 
-  return { exists, accountRow, createFromPlan, matchPerson, cashEntries, cashSource, stockEntry, invoiceEntry, taxIdentity, fingerprint, deletedList, restoreDeleted, restoreEntry, detail, list, allLedgers };
+  return { exists, accountRow, createFromPlan, matchPerson, cashEntries, cashSource, stockEntry, invoiceEntry, taxIdentity, fingerprint, deletedList, restoreDeleted, restoreEntry, detail, list, allLedgers, assertUnlocked };
 }

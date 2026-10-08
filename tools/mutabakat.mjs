@@ -75,7 +75,10 @@ try {
       for (const item of result.failures) {
         const money = item.difference ? ` · fark ${tl(item.difference)}` : "";
         const sides = item.ledger !== undefined ? ` · defter ${tl(item.ledger)} / alt defter ${tl(item.subledger)}` : "";
-        console.log(`  ✗ ${item.name}${sides}${money}${item.count ? ` · ${item.count} kayıt` : ""}`);
+        // v2.0.26 (2. gözden geçirme İ8): yalnız eski sürümden kalan satır: uyarı (⚠) ve ne yapılacağı.
+        const legacy = item.legacy && item.legacy >= item.count;
+        console.log(`  ${legacy ? "⚠" : "✗"} ${item.name}${sides}${money}${item.count ? ` · ${item.count} kayıt` : ""}${legacy ? " · eski sürümden kalan, yeni işlemler engellenmez" : ""}`);
+        if (item.hint) console.log(`      ${item.hint}`);
         for (const line of item.sample || []) console.log(`      ${line}`);
       }
       console.log("\nVeri değiştirilmedi. Sapmalar eski sürümlerden kalmış olabilir; program yeni sapmaya izin vermez.");

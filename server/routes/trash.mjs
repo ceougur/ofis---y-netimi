@@ -6,6 +6,9 @@
 //  - Serbest sayfa satırı/kolonu: eski sırasına ARAYA eklenir; o arada eklenenler kayar, üzerine yazılmaz.
 //  - Tahsilat ve kasa hareketi: aynı kimlikle geri eklenir (Kasa ve tahsilat takvimi yeniden hesaplanır).
 import { HttpError, ok, readJson, text } from "../lib/http.mjs";
+import { roundMoney } from "../lib/money.mjs";
+import { methodInput } from "../lib/pay-method.mjs";
+import { FREEZE_CLOSE } from "./plans.mjs";
 
 const KIND_LABELS = {
   row: "Tablo kaydı",
@@ -28,7 +31,7 @@ const KIND_LABELS = {
 };
 const SEQUENCE = /^(sıra|sira|sıra no|no|#|sn|s\.?\s?no|nr)$/i;
 
-export function registerTrashRoutes(router, { store, auth, audit, events, dataset, profile, free, trash, documents, accounts = null, stock = null, cheques = null, invoices = null, plans = null }) {
+export function registerTrashRoutes(router, { store, auth, audit, events, dataset, profile, free, trash, documents, accounts = null, stock = null, cheques = null, invoices = null, plans = null, period = null }) {
   const now = () => new Date().toISOString();
   const publish = (user, detail) => events?.publish("workspace.changed", { actorId: user.id, actorName: user.display_name, ...detail }, { except: user.id });
   const sessionNames = () => {
@@ -244,7 +247,7 @@ export function registerTrashRoutes(router, { store, auth, audit, events, datase
       if (!plan) throw new HttpError(404, "Bu taksit kartı zaten geri yüklenmiş.");
       plans?.assertRestorable?.(plan.id, user);
       store.tx(() => {
-        store.run("UPDATE plans SET deleted_at = NULL, deleted_by = NULL, updated_by = ?, updated_at = ? WHERE id = ?", user.id, now(), plan.id);
+        store.run(`UPDATE plans SET ${FREEZE_CLOSE}, deleted_at = NULL, deleted_by = NULL, updated_by = ?, updated_at = ? WHERE id = ?`, user.id, now(), plan.id);
         // Kartın carisi (v2.0.6) sonradan silindiyse o da geri gelir; kart sahipsiz kalmaz.
         store.run("UPDATE accounts SET deleted_at = NULL, deleted_by = NULL, updated_by = ?, updated_at = ? WHERE deleted_at IS NOT NULL AND id = (SELECT account_id FROM plans WHERE id = ?)", user.id, now(), plan.id);
         audit(user, "plan.restored", plan.id, { name: plan.name });
@@ -272,8 +275,15 @@ export function registerTrashRoutes(router, { store, auth, audit, events, datase
     if (!item) throw new HttpError(404, "Bu öğe zaten geri yüklenmiş.");
     const payload = JSON.parse(item.payload_json || "{}");
     let message = "";
+    // v2.0.26 (A7): para hareketi kapanmış dönemdeyse geri yüklenmez (silmedeki kuralın aynısı; önceden kapıda nedensiz 409).
+    // Tutar kuruşa yuvarlanır, ödeme yolu katı okunur (B7: tanınmayan yol 400; sessizce nakit sayılmaz).
+    const money = value => roundMoney(Number(value) || 0);
+    // G5: kilitli dönem 409, ileri tarih 400 (eski sürümden kalan ileri tarihli satır; kapıdaki nedensiz 409 yerine).
+    const restoreDate = (date, what) => period?.restoreDate(date, what);
 
     if (item.kind === "payment") {
+      restoreDate(payload.date, "Bu tahsilat");
+      const method = methodInput(payload.method);
       store.tx(() => {
         if (!store.get("SELECT 1 AS found FROM payments WHERE id = ?", item.ref)) {
           store.run(
@@ -281,10 +291,10 @@ export function registerTrashRoutes(router, { store, auth, audit, events, datase
             item.ref,
             payload.caseKey || "",
             payload.caseTitle || "",
-            Number(payload.amount) || 0,
+            money(payload.amount),
             payload.date,
             payload.note || "",
-            payload.method || "cash",
+            method,
             payload.createdBy || user.id,
             payload.createdAt || now(),
             user.id,
@@ -299,6 +309,11 @@ export function registerTrashRoutes(router, { store, auth, audit, events, datase
       message = "Tahsilat geri eklendi; Kasa ve tahsilat takvimi güncellendi.";
     } else if (item.kind === "cash") {
       if (!["in", "out"].includes(payload.kind)) throw new HttpError(409, "Kasa hareketinin bilgisi eksik; geri yüklenemez.");
+      restoreDate(payload.date, "Bu kasa hareketi");
+      if (payload.twin) restoreDate(payload.twin.date, "Bu transferin öbür tarafı");
+      // Yol işlemden önce doğrulanır (bozuk yükte hiçbir satır yazılmaz).
+      methodInput(payload.method);
+      if (payload.twin) methodInput(payload.twin.method);
       store.tx(() => {
         // v2.0.17: Kasa ↔ Banka transferi iki bağlı hareket; ikisi birlikte geri gelir (payload.twin).
         const insert = row => {
@@ -307,10 +322,10 @@ export function registerTrashRoutes(router, { store, auth, audit, events, datase
             "INSERT INTO cash_entries (id, kind, amount, date, description, method, transfer_id, created_by, created_at, updated_by, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
             row.id,
             row.kind,
-            Number(row.amount) || 0,
+            money(row.amount),
             row.date,
             row.description || "",
-            row.method || "cash",
+            methodInput(row.method),
             row.transferId || "",
             row.createdBy || user.id,
             row.createdAt || now(),
@@ -330,13 +345,16 @@ export function registerTrashRoutes(router, { store, auth, audit, events, datase
       const plan = store.get("SELECT id, deleted_at AS deletedAt FROM plans WHERE id = ?", payload.planId);
       if (!plan) throw new HttpError(409, "Hareketin taksit kartı artık yok; geri yüklenemez.");
       if (plan.deletedAt) throw new HttpError(409, `“${payload.planName}” kartı silinmiş. Önce kartı geri yükleyin.`);
+      restoreDate(payload.date, "Bu taksit hareketi");
+      plans?.assertCloseOpen?.(plan.id, "Kartın tahsilatı ve iadesi geri yüklenemez.");
+      const method = methodInput(payload.method);
       store.tx(() => {
         if (!store.get("SELECT 1 AS found FROM plan_entries WHERE id = ?", item.ref)) {
           const itemId = payload.itemId && store.get("SELECT 1 AS found FROM plan_items WHERE id = ?", payload.itemId) ? payload.itemId : null;
           store.run(
             // Açılış (devir) kaydı geri gelince yine açılıştır (v2.0.8): Kasa'ya girmez.
             "INSERT INTO plan_entries (id, plan_id, item_id, kind, amount, date, note, receipt_no, opening, method, created_by, created_at, updated_by, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-            item.ref, plan.id, itemId, payload.kind, Number(payload.amount) || 0, payload.date, payload.note || "", payload.receiptNo || null, payload.opening ? 1 : 0, payload.method || "cash", payload.createdBy || user.id, payload.createdAt || now(), user.id, now(),
+            item.ref, plan.id, itemId, payload.kind, money(payload.amount), payload.date, payload.note || "", payload.receiptNo || null, payload.opening ? 1 : 0, method, payload.createdBy || user.id, payload.createdAt || now(), user.id, now(),
           );
         }
         trash.markRestored(item.id, user);

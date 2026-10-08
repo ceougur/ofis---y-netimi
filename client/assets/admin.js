@@ -1022,10 +1022,17 @@
     try {
       const result = await HOF.api("/api/workspace/ledger/integrity");
       const rolled = (result.log || []).filter(row => row.action === "rolled-back").length;
+      // v2.0.26 (2. gözden geçirme İ8): yalnız eski sürümden kalan satır varsa (yeni işlem engellenmez) kırmızı hata değil sarı uyarı
+      // ve ne yapılacağı (sunucunun hint'i, ör. çek/senette Düzenle ile alış tarihini gerçek güne çekmek).
+      const legacyOnly = item => item.legacy && item.legacy >= item.count;
+      const onlyLegacy = !result.ok && result.failures.every(legacyOnly);
       health.textContent = result.ok
         ? `Mutabakat: ${result.checks.length} denetim tamam — ana defter ile Kasa, Cari, Stok ve Taksit kuruşu kuruşuna tutarlı.${rolled ? ` Son kayıtlarda ${rolled} işlem sapma yaratacağı için geri alındı (Raporlar › Mutabakat Günlüğü).` : ""}`
-        : `Mutabakat: ${result.failures.length} denetimde sapma var (${result.failures.map(item => item.name).join(", ")}). Raporlar › Defter Mutabakatı'nda ayrıntıyı görün.`;
-      health.classList.toggle("adm-error-text", !result.ok);
+        : onlyLegacy
+          ? `Mutabakat: ${result.failures.length} denetimde eski sürümden kalan satır var; yeni işlemler engellenmez (${result.failures.map(item => `${item.name}: ${item.legacy} satır`).join(", ")}). ${result.failures.map(item => item.hint || "").filter(Boolean).join(" ")} Raporlar › Defter Mutabakatı'nda ayrıntıyı görün.`.replace(/\s+/g, " ")
+          : `Mutabakat: ${result.failures.length} denetimde sapma var (${result.failures.map(item => (legacyOnly(item) ? `${item.name} — eski sürümden kalan ${item.legacy} satır; yeni işlemler engellenmez` : item.name)).join(", ")}). Raporlar › Defter Mutabakatı'nda ayrıntıyı görün.`;
+      health.classList.toggle("adm-error-text", !result.ok && !onlyLegacy);
+      health.classList.toggle("adm-warn-text", onlyLegacy);
     } catch {
       health.textContent = "";
     }
@@ -1493,7 +1500,7 @@
     HOF.formModal({
       title: `Şirket Verisini Sıfırla · ${item.code} · ${item.name}`,
       eyebrow: "ŞİRKET",
-      intro: "Önce zorunlu yedek alınır (Yedekler'den geri yüklenebilir). Lisans, kullanıcılar ve öbür şirketler etkilenmez. Geri alınamaz; onay için şirket kodunu ve parolanızı yazın.",
+      intro: "Önce zorunlu yedek alınır (Yedekler'den geri yüklenebilir). Lisans, kullanıcılar ve öbür şirketler etkilenmez. Dönem kilidi varsa o da kaldırılır; kapatılmış dönemin hareketleri de silinir, yeniden girdikten sonra kilidi yeniden koyun. Geri alınamaz; onay için şirket kodunu ve parolanızı yazın.",
       fields: [
         { name: "mode", label: "Ne Silinsin", type: "select", value: "movements", options: [{ value: "movements", label: "Tüm Hareketleri Sil (cari/stok kartları, Kasa hesapları ve ayarlar kalır; bakiyeler sıfır)" }, { value: "all", label: "Tümünü Sıfırla (şirket ilk açıldığı gibi boş; ad/kod, unvan/VKN/logo, fatura serisi kalır)" }] },
         { name: "resetNumbers", label: "Fatura Serisi Sayaçları da Sıfırlansın", type: "checkbox", value: true },
@@ -1502,7 +1509,8 @@
       submitLabel: "Veriyi Sıfırla",
       onSubmit: async values => {
         const result = await HOF.api(`/api/companies/${encodeURIComponent(item.id)}/reset`, { method: "POST", body: { mode: values.mode, confirm: values.confirm, password: values.password, resetNumbers: Boolean(values.resetNumbers) } });
-        HOF.toast(`“${item.code} · ${item.name}” verisi sıfırlandı. Yedek: ${result.backup || "—"}`, { type: "success", timeout: 8000 });
+        const unlocked = result.unlocked ? ` Dönem kilidi (${result.unlocked.split("-").reverse().join(".")}) kaldırıldı.` : "";
+        HOF.toast(`“${item.code} · ${item.name}” verisi sıfırlandı. Yedek: ${result.backup || "—"}.${unlocked}`, { type: "success", timeout: 8000 });
         loadCompanies();
       },
     });

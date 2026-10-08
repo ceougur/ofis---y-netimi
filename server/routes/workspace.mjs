@@ -9,7 +9,7 @@ import { canUser } from "../lib/permissions.mjs";
 
 const CASE_KEY_MAX = 300;
 
-export function registerWorkspaceRoutes(router, { store, auth, access = null, audit, dataset, clientState, config, events, chat, profile, free, trash, plans = () => null }) {
+export function registerWorkspaceRoutes(router, { store, auth, access = null, audit, dataset, clientState, config, events, chat, profile, free, trash, plans = () => null, period = null, cash = () => null }) {
   const now = () => new Date().toISOString();
   // Görev kişiye kimliğiyle bağlıysa yalnızca kimlik belirler (ad değiştirerek başkasının görevi görülemez);
   // serbest yazılmış, kişiye bağlanamamış eski görevlerde ad eşleşmesi geçerlidir.
@@ -48,10 +48,18 @@ export function registerWorkspaceRoutes(router, { store, auth, access = null, au
   const paymentInput = body => {
     const amount = parseAmount(body.amount);
     if (!Number.isFinite(amount) || amount <= 0 || amount > 1e12) throw new HttpError(400, "Geçerli bir tahsilat tutarı gerekli.");
-    const date = text(body.date) || new Date().toISOString().slice(0, 10);
+    // v2.0.26 (A1): tarih Kasa, cari, stok ve taksitle aynı kurala bağlı (lib/period.mjs): geçersiz tarih 400, ileri tarih 400,
+    // kilitli dönem 409 "period-locked". Önceden yalnız mutabakat kapısı yakalıyordu ve kullanıcı nedeni belirsiz bir 409
+    // görüyordu; "2025-02-30" gibi takvimde olmayan gün de geçiyordu. Tarih boş bırakılırsa bugün (eski davranış).
+    const raw = text(body.date);
+    const date = period
+      ? period.movementDate(raw ? { date: raw } : {}, { label: "Tahsilat Tarihi" })
+      : raw || new Date().toISOString().slice(0, 10);
     if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || Number.isNaN(new Date(date).getTime())) throw new HttpError(400, "Geçerli bir tahsilat tarihi gerekli.");
     return { amount: roundMoney(amount), date };
   };
+  // Kasa etkisi (eksi bakiye denetimi): kayıt tahsilatı her zaman Kasa'ya/bankaya giriştir.
+  const cashSide = payment => (payment ? { kind: "in", amount: payment.amount, method: payment.method || "cash", date: payment.date } : null);
 
 
   // ---- Geriye dönük uyumlu toplu durum ----
@@ -362,12 +370,15 @@ export function registerWorkspaceRoutes(router, { store, auth, access = null, au
     const body = await readJson(req);
     const key = caseKeyOf(params.key);
     const { amount, date } = paymentInput(body);
+    const method = methodInput(body.method);
     const itemId = newId("payment");
-    store.run(
-      "INSERT INTO payments (id, case_key, amount, date, note, case_title, method, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
-      itemId, key, amount, date, limited(body.note, 500, "Açıklama"), limited(body.caseTitle, 200, "Kayıt adı"), methodInput(body.method), user.id, now(),
-    );
-    audit(user, "case.payment.created", itemId, { caseKey: key, amount });
+    store.tx(() => {
+      store.run(
+        "INSERT INTO payments (id, case_key, amount, date, note, case_title, method, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        itemId, key, amount, date, limited(body.note, 500, "Açıklama"), limited(body.caseTitle, 200, "Kayıt adı"), method, user.id, now(),
+      );
+      audit(user, "case.payment.created", itemId, { caseKey: key, amount, date, method });
+    });
     changed(user, "activity", { caseKey: key });
     changed(user, "cash");
     ok(res, { id: itemId });
@@ -382,24 +393,39 @@ export function registerWorkspaceRoutes(router, { store, auth, access = null, au
     if (payment.createdBy !== user.id && !canUser(user, "cash.manage")) throw new HttpError(403, "Başkasının girdiği tahsilatı yalnızca kasa yetkisi olanlar (yönetici, muhasebe) değiştirebilir.");
     return { user, payment };
   };
+  // v2.0.26 (A1): düzeltme ve silme dönem kilidine (kilitli dönemdeki tahsilat değişmez, kilitli tarihe taşınmaz) ve eksi
+  // bakiye denetimine (Uyar/Engelle; nakitten çıkan tahsilat Kasa'yı eksiye düşürecekse sorulur) bağlı.
   router.put("/api/workspace/payments/:id", async ({ req, res, params }) => {
     const { user, payment } = editablePayment(req, params.id);
+    period?.assertOpen(payment.date, "Bu tahsilat");
     const body = await readJson(req);
     const { amount, date } = paymentInput(body);
     const note = limited(body.note, 500, "Açıklama");
-    store.run("UPDATE payments SET amount = ?, date = ?, note = ?, method = ?, updated_by = ?, updated_at = ? WHERE id = ?", amount, date, note, methodInput(body.method, payment.method || "cash"), user.id, now(), payment.id);
-    audit(user, "case.payment.updated", payment.id, { caseKey: payment.caseKey, previous: { amount: payment.amount, date: payment.date, note: payment.note }, amount, date, note });
+    const method = methodInput(body.method, payment.method || "cash");
+    cash()?.guardChange?.(cashSide(payment), cashSide({ amount, date, method }), body.cashForce === true);
+    store.tx(() => {
+      store.run("UPDATE payments SET amount = ?, date = ?, note = ?, method = ?, updated_by = ?, updated_at = ? WHERE id = ?", amount, date, note, method, user.id, now(), payment.id);
+      audit(user, "case.payment.updated", payment.id, { caseKey: payment.caseKey, previous: { amount: payment.amount, date: payment.date, note: payment.note, method: payment.method || "cash" }, amount, date, note, method });
+    });
     changed(user, "activity", { caseKey: payment.caseKey });
     changed(user, "cash");
     ok(res, { id: payment.id });
   });
-  router.delete("/api/workspace/payments/:id", async ({ req, res, params }) => {
+  router.delete("/api/workspace/payments/:id", async ({ req, res, params, url }) => {
     const { user, payment } = editablePayment(req, params.id);
-    const full = store.get("SELECT id, case_key AS caseKey, case_title AS caseTitle, amount, date, note, created_by AS createdBy, created_at AS createdAt FROM payments WHERE id = ?", payment.id);
-    store.run("DELETE FROM payments WHERE id = ?", payment.id);
-    // Silinenler (v2.0.2): yönetim panelinden geri yüklenebilir.
-    trash?.add({ kind: "payment", ref: payment.id, title: full.caseTitle || full.caseKey || "Tahsilat", detail: full.note, payload: full, user });
-    audit(user, "case.payment.deleted", payment.id, { caseKey: payment.caseKey, amount: payment.amount, date: payment.date, note: payment.note });
+    period?.assertOpen(payment.date, "Bu tahsilat");
+    cash()?.guardChange?.(cashSide(payment), null, url.searchParams.get("cashForce") === "1", "Bu tahsilat silinince");
+    store.tx(() => {
+      // Silme, Silinenler kaydı ve işlem geçmişi tek işlemde (v2.0.26, B5): yarıda kesilirse üçü birden yazılmaz; önceden
+      // satır silinip Silinenler'e yazılamadan kesinti olursa tahsilat iz bırakmadan kayboluyordu. Yükte ödeme yolu da
+      // var (A1): geri yüklenen havale/POS tahsilatı nakde dönmez.
+      const full = store.get("SELECT id, case_key AS caseKey, case_title AS caseTitle, amount, date, note, method, created_by AS createdBy, created_at AS createdAt FROM payments WHERE id = ?", payment.id);
+      if (!full) throw new HttpError(404, "Tahsilat bulunamadı. Başka biri silmiş olabilir.");
+      store.run("DELETE FROM payments WHERE id = ?", payment.id);
+      // Silinenler (v2.0.2): yönetim panelinden geri yüklenebilir.
+      trash?.add({ kind: "payment", ref: payment.id, title: full.caseTitle || full.caseKey || "Tahsilat", detail: full.note, payload: full, user });
+      audit(user, "case.payment.deleted", payment.id, { caseKey: payment.caseKey, amount: payment.amount, date: payment.date, note: payment.note, method: full.method });
+    });
     changed(user, "activity", { caseKey: payment.caseKey });
     changed(user, "cash");
     ok(res, { id: payment.id });

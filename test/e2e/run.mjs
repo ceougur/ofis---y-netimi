@@ -508,6 +508,10 @@ try {
     await admin.click('.hof-modal [data-close]');
     await admin.click("#hof-activity [data-payment-delete]");
     await admin.click('.hof-modal [data-answer="yes"]');
+    // 2.0.26 (A1): tahsilat silme de eksi bakiye denetiminden geçer. Kasa 1.300; 1.500 tahsilat silinince −200 olur → program
+    // "Kasa Eksiye Düşecek" diye sorar (Uyar); "Yine de Sil" ile silinir.
+    await admin.waitForFunction(() => [...document.querySelectorAll(".hof-modal-backdrop.is-visible")].some(modal => /Kasa Eksiye Düşecek/.test(modal.textContent) && /-200,00|−200,00/.test(modal.textContent)), null, { timeout: 10000 });
+    await admin.click('.hof-modal-backdrop.is-visible [data-answer="yes"]');
     await admin.waitForFunction(() => !document.querySelector("#hof-activity li[data-type=payment]"), null, { timeout: 10000 });
     const cash = (await admin.evaluate(() => fetch("/api/workspace/cash").then(response => response.json()))).data;
     expect(cash.totals.balance === -200, `tahsilat silinince kasadan düşer: ${cash.totals.balance}`);
@@ -1752,7 +1756,9 @@ try {
 
   await step("tarayıcı konsolunda hata ve CSP ihlali yok", async () => {
     expect(!csp.length, csp.join("\n"));
-    const other = problems.filter(item => !/401 \(Unauthorized\)|status of 401|status of 400|status of 403/.test(item));
+    // 2.0.26 (A1): tahsilat silmede Kasa eksiye düşecekken sunucunun 409 cash-negative yanıtı beklenen sorudur (ekran
+    // "Kasa Eksiye Düşecek" diye sorar, onayla yeniden gönderir); yalnız o adres hata sayılmaz.
+    const other = problems.filter(item => !/401 \(Unauthorized\)|status of 401|status of 400|status of 403/.test(item) && !/status of 409 \(Conflict\) \S+\/api\/workspace\/payments\/payment-/.test(item));
     expect(!other.length, other.join("\n"));
   });
   console.log(`\n${passed} adım başarılı.`);
