@@ -784,6 +784,12 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   kendi silmesinde yanlış bildirim/yedek adı yok, "ilk sayfa" metni, öbür pencerede eski şerit sayısı, Kaydı Sil sayılıyor,
   gizli sekmeli sayım önbelleksiz, silinmiş sayfanın uyarısında yanlış hata, kayıtlı parola kendiliğinden dolabiliyor
   (parola alanı `one-time-code`; gerçek kayıtlı parolayla DENENMEDİ). Eski kodda 7 denetim kırmızı; senaryo-225 45/45; npm test 1.066/1.066.
+  TESLİM + BİRLEŞTİRME (08.10.2026 ~06:5x): PR ceougur/ofis---y-netimi#25 CI 12/12 yeşil → squash, `master` = c2206bc (ağaç
+  paketlenen fc21059 ile aynı); dal master'a sıfırlandı. Güncelleme paketi sha256 02597e7d… (210 dosya, HEAD ile bayt bayt),
+  kurulum .exe c5f644c6… (29,4 MB, simgeli), kılavuz PDF f02e7bc5… (DEĞİŞTİ → yayından sonra site PR'ı); güncelleyici
+  2.0.24/23/22/21/20/2.0.4/1.7.0 (API ve yedek yol) "available", kurcalanmış bildirge reddedildi. 5 dosya zipsiz + arşiv zip
+  (34,8 MB) gönderildi. Sırada: kullanıcı yayın açar (v2.0.25, 5 dosya; adlar/boyutlar teslimle karşılaştırılır) →
+  "yayımladım" → bayt bayt + güncelleyici "available" → site kılavuz PR'ı.
 - 2.0.20 YAPILACAKLAR (kullanıcı "yapılacaklara not al" dedi, 03.10.2026; "yap" denince başlanır; ayrıntı ve
   kanıt hemen altındaki ADAYI maddesinde):
   [x] 1. Bütün raporların (43) tablosunun altında kalın TOPLAM satırı — ekran, PDF, Excel aynı; yalnız toplanabilir
