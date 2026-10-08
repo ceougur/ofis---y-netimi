@@ -2,6 +2,44 @@
 
 Sürümler [anlamsal sürümleme](https://semver.org/lang/tr/) kurallarına uyar.
 
+## 2.0.26 — Ön düzeltmeler (banka modülü öncesi)
+
+Kaynak: banka + POS modülü planı (`docs/BANKA-MODULU-PLAN.md` §11.1, §12.3 "Aşama 0"; kullanıcı kararı 08.10.2026). Banka
+kodu yok; yalnız mevcut hataların düzeltmesi. Her madde önce 2.0.25'te kırmızı testle gösterildi. Ayrıntı ve denenen /
+denenmeyen / bilinen sınırlar: `docs/2.0.26-KANIT.md`. Sürüm numarası paketlemede verilecek.
+
+- **Kayıt (detay kartı) tahsilatı da tarih kuralına bağlı.** İleri tarihli ya da takvimde olmayan günle tahsilat girilmez;
+  kapatılmış (kilitli) döneme tahsilat girilmez, oradaki tahsilat düzeltilmez ve silinmez. Önceden işlem yine geri alınıyordu
+  ama ekranda nedeni yazmıyordu ("kayıt defterler arasında sapma…"); artık nedeni söylenir.
+- **Tahsilat silme ve düzeltmede eksi bakiye sorusu.** Nakit tahsilatı silmek ya da azaltmak Kasa'yı eksiye düşürecekse
+  (Uyar ayarında) önce sorulur; Engelle'de yapılmaz. Aynısı cari ve taksit kartı silinirken de (kartın/carinin tahsilatları
+  Kasa'dan düşer).
+- **Silinip geri yüklenen havale/POS tahsilatı nakde dönmez.** Silinenler'e ödeme yolu da yazılır. Taksite Aktar'da kayıt
+  tahsilatı karta yoluyla taşınır; aktarım geri alınınca kayda yine aynı yolla döner. Eski sürümde nakde dönmüş olanlar
+  düzelmez.
+- **Silme yarıda kalmaz.** Tahsilat ya da Kasa hareketi silinirken elektrik kesilse bile ya silinir ve Silinenler'de görünür
+  ya da hiç silinmemiş olur; önceden iz bırakmadan kaybolabiliyordu.
+- **Kapatılmış dönem korunur.** O dönemde hareketi olan cari silinmez, geri yüklenmez, türü (Müşteri/Tedarikçi/Diğer)
+  değiştirilmez; adı, telefonu ve diğer bilgileri düzeltilir. Kayıt Tarihi kapatılmış dönemdeki silinmiş taksit kartı ve
+  kapatılmış dönemdeki tahsilat, Kasa, cari, taksit ve stok hareketleri Silinenler'den geri yüklenmez.
+- **Çek/senet: alış/veriliş tarihi.** İleri tarihle ya da kapatılmış döneme çek/senet girilmez. Kapatılmış dönemde alınmış
+  evrak silinmez, tutarı/carisi/tarihi değiştirilmez (vadesi ve notu düzeltilir, bugün tahsil edilir). Excel'den toplu alımda
+  böyle satırlar nedeniyle atlanır.
+- **Silinenler'den geri yüklenen cari hareketi eksiksiz döner.** "Kapatılacak Fatura" bağı ve ödeme yolu korunur; tutar kuruşa
+  yuvarlanır. Bağlı olduğu fatura bu arada iptal edildiyse bağsız döner ve bu söylenir.
+- **Mahsuptaki satır.** Bir faturayla mahsup edilmiş Alacak Yaz / Borç Yaz satırı silinmek istenirse "Önce mahsubu kaldırın"
+  denir (fatura numarası ve tutarla); yönü değiştirilemez, tutarı mahsup edilenin altına indirilemez. Açıklaması düzeltilir.
+- **Dönem kilidi varken Şirket Verisini Sıfırla.** "Tüm Hareketleri Sil" kilit varken çalışmıyordu; artık kilit de kaldırılır
+  (onay penceresi yazar, işlem geçmişine kaydedilir, bildirimde kaldırılan kilit tarihi görünür).
+- **Eski veride ileri tarihli kayıt varsa program kilitlenmez.** Eski sürümlerden kalan ileri tarihli bir hareket (ör. ileri
+  alış tarihli çek) gün geçtikçe bugüne yaklaşırken bütün para işlemleri yeniden başlatmaya kadar reddediliyordu; artık
+  sürer. Yeni ileri tarihli hareket yine girilmez.
+- **Tanınmayan ödeme yolu nakit sayılmaz.** Program içinde yazılan (fatura, stok, çek/senet, Silinenler) hareketlerde nakit,
+  havale/EFT, POS/kredi kartı dışındaki yol reddedilir; mutabakat kapısı da böyle bir satırı nedeniyle geri alır.
+- Testler: `test/asama0-226.test.mjs` (54), `test/asama0-226-saat.test.mjs` (5; gün ilerletmeli), `test/asama0-226-kesinti.test.mjs`
+  (2; gerçek SIGKILL). 2.0.25 kodunda 61 testin 42'si kırmızı. Üç eski test bilinçli güncellendi (`raporlar-209`, `trash`, arayüz
+  `e2e`: tahsilat silmede eksi bakiye sorusu artık çıkıyor ve onaylanıyor).
+
 ## 2.0.25 — En fazla 2 şirket; başka sayfadaki uyarıdan kayda git; Sayfayı Sil
 
 Kaynak: kullanıcı kararı, 05.10.2026 ("en fazla 2 şirket kurulabilsin"; "3 olanlar kalsın, Pro'da da olmasın"; "2. şirket varsa
