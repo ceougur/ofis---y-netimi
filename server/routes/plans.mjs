@@ -480,6 +480,15 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
   // edildi, iptal edildi) geri yüklenmez; yükleniyordu ve ödenmiş fatura yeniden açık görünüyordu.
   const GROW_COVER = "Bu kart carinin açıldığı günkü borcunu taksitlendirir; tutarı büyütülemez (küçültülebilir). Sonradan doğan borç için cari kartında + Taksit Planı → Carinin Mevcut Borcu ile yeni kart açın.";
   function assertRestorable(planId, user) {
+    // v2.0.26 (A4): silinen kart geri gelince borcu ve tahsilatları deftere döner; kapanmış dönemdeyse geri yüklenmez
+    // (silmedeki kuralın aynısı). Kartla birlikte geri gelecek silinmiş cari de kapanmış dönemde hareketliyse durur.
+    const head = store.get("SELECT registered_on AS registeredOn, covers_balance AS covers, account_id AS accountId FROM plans WHERE id = ?", planId);
+    if (head) {
+      if (!head.covers) period?.assertOpen(head.registeredOn, "Bu kartın Kayıt Tarihi");
+      const firstEntry = store.get("SELECT MIN(date) AS day FROM plan_entries WHERE plan_id = ?", planId)?.day;
+      if (firstEntry) period?.assertOpen(firstEntry, "Bu kartın ilk tahsilatı");
+      if (head.accountId && store.get("SELECT 1 AS found FROM accounts WHERE id = ? AND deleted_at IS NOT NULL", head.accountId)) accounts()?.assertUnlocked?.(head.accountId, "kartla birlikte geri yüklenemez");
+    }
     const plan = store.get("SELECT id, account_id AS accountId, total, status, covers_balance AS covers, invoice_id AS invoiceId FROM plans WHERE id = ?", planId);
     if (!plan || !plan.covers || plan.invoiceId || plan.status === "closed" || !plan.accountId || !accounts()?.exists?.(plan.accountId)) return;
     const left = roundMoney(Math.max(0, (Number(plan.total) || 0) - netPaid(plan.id)));
@@ -577,7 +586,7 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
     ok(res, result);
   });
 
-  router.delete("/api/workspace/plans/:id", async ({ req, res, params }) => {
+  router.delete("/api/workspace/plans/:id", async ({ req, res, params, url }) => {
     const user = auth.requirePermission(req, "plans.manage");
     const plan = planRow(params.id);
     if (plan.invoiceId) throw new HttpError(409, `Bu kart ${plan.invoiceNumber || "bir fatura"} ile açıldı (vadeli satışın taksitleri). Kaldırmak için faturayı iptal edin ya da iade faturası kesin.`, { code: "invoice-linked", invoiceId: plan.invoiceId });
@@ -587,6 +596,9 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
     const firstEntry = store.get("SELECT MIN(date) AS day FROM plan_entries WHERE plan_id = ?", plan.id)?.day;
     if (firstEntry) period?.assertOpen(firstEntry, "Bu kartın ilk tahsilatı");
     if (linked) throw new HttpError(409, `Bu karta sayılmış ${linked} çek/senet var. Önce Çek/Senet'ten evrakı silin ya da başka karta taşıyın.`);
+    // v2.0.26 (A4): kartın tahsilat ve iadeleri Kasa'dan/bankadan düşer; toplam etki eksi bakiye denetiminden geçer (açılış/devir
+    // ve çekle gelen tahsilat Kasa'ya hiç girmemişti, sayılmaz).
+    cash?.guardRemove?.(store.all("SELECT kind, amount, method, date FROM plan_entries WHERE plan_id = ? AND opening = 0 AND cheque_id = ''", plan.id), url.searchParams.get("cashForce") === "1");
     store.tx(() => {
       // Yumuşak silme: taksitler ve hareketler yerinde durur; yönetim panelinden geri yüklenir. Kasa'dan düşer.
       store.run("UPDATE plans SET deleted_by = ?, deleted_at = ? WHERE id = ?", user.id, now(), plan.id);
