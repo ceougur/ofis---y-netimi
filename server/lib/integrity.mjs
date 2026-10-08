@@ -67,6 +67,20 @@ const LOCK_SQL = {
   plans: "SELECT id, total, account_id, registered_on FROM plans WHERE deleted_at IS NULL AND covers_balance = 0 AND registered_on <> '' AND registered_on <= ? ORDER BY id",
   // v2.0.15: kapanmış dönemde kesilmiş fatura iptal edilemez, o döneme fatura eklenemez (taslak deftere girmez, sayılmaz).
   invoices: "SELECT id, kind, status, account_id, issue_date, try_payable, try_vat FROM invoices WHERE status <> 'draft' AND issue_date <= ? ORDER BY id",
+  // v2.0.26: yukarıdaki 7 girdinin SQL'i ve sırası değişmez; yeni girdiler sona eklenir ve { requires, sql } biçimindedir
+  // (anahtar tablo adı değildir). SQL'deki ?1 kilit tarihidir.
+  // A3 — party_lock: kapanmış dönemde HERHANGİ bir hareketi (tahsilat/ödeme, Borç Yaz/Alacak Yaz, açılış; taksit kartı borcu
+  // ya da tahsilatı) olan her cari, türü ve silinmemiş olduğu bilgisiyle. Silinmiş carinin bütün satırları yevmiyeden düşer
+  // (routes/ledger.mjs rows), tür değişikliği 120/320/336 sınıfını kaydırır: ikisi de kilitli mizanı değiştirir.
+  party_lock: {
+    requires: ["accounts", "account_entries", "plans", "plan_entries"],
+    sql: `SELECT a.id, a.type, a.deleted_at IS NULL AS live FROM accounts a
+          WHERE EXISTS (SELECT 1 FROM account_entries e WHERE e.account_id = a.id AND e.date <= ?1)
+             OR EXISTS (SELECT 1 FROM plans p WHERE p.account_id = a.id AND p.deleted_at IS NULL
+                          AND ((p.covers_balance = 0 AND p.registered_on <> '' AND p.registered_on <= ?1)
+                               OR EXISTS (SELECT 1 FROM plan_entries pe WHERE pe.plan_id = p.id AND pe.date <= ?1)))
+          ORDER BY a.id`,
+  },
 };
 
 export function createIntegrity({ store, ledger, accounts = () => null, stock = () => null, plans = () => null, period = () => null, log = null, newId = () => `int-${crypto.randomUUID()}` }) {
@@ -300,9 +314,10 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
   const lockDigest = lock => {
     if (!lock) return "";
     const hash = createHash("sha256");
-    for (const [table, sql] of Object.entries(LOCK_SQL)) {
-      if (!has(table)) continue;
-      for (const row of store.all(sql, lock)) hash.update(`${table}|${Object.values(row).join("|")}\n`);
+    for (const [name, entry] of Object.entries(LOCK_SQL)) {
+      const { requires, sql } = typeof entry === "string" ? { requires: [name], sql: entry } : entry;
+      if (!requires.every(has)) continue;
+      for (const row of store.all(sql, lock)) hash.update(`${name}|${Object.values(row).join("|")}\n`);
     }
     return hash.digest("hex");
   };

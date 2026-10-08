@@ -132,6 +132,21 @@ export function registerCashRoutes(router, context) {
       if (delta < -0.005) guardOut(-delta, after?.date || before?.date || "", force, key);
     }
   }
+  // v2.0.26 (A3, A4): birden çok hareket birlikte düşerken (cari ya da taksit kartı silme) her yolun NET etkisi denetlenir
+  // (tek tek değil: ikisi ayrı ayrı geçip toplamı eksiye düşürmesin). Gün: düşen hareketlerin en sonuncusu (o güne kadarki
+  // bakiye hepsini içerir; tek hareket silmedeki kuralla aynı).
+  function guardRemove(list, force = false) {
+    const by = new Map();
+    for (const entry of list || []) {
+      if (!entry || (entry.kind !== "in" && entry.kind !== "out")) continue;
+      const key = methodOf(entry.method);
+      const current = by.get(key) || { delta: 0, date: "" };
+      current.delta = roundMoney(current.delta - (entry.kind === "in" ? 1 : -1) * (Number(entry.amount) || 0));
+      if (entry.date > current.date) current.date = entry.date;
+      by.set(key, current);
+    }
+    for (const [key, { delta, date }] of by) if (delta < -0.005) guardOut(-delta, date, force, key);
+  }
   // method: "cash" (Kasa penceresi), "bank" | "card" | "noncash" (banka tarafı), "" (hepsi — Ana Defter, eski raporlar).
   function report(user, from, to, method = "") {
     const filter = methodFilter(method);
@@ -324,5 +339,5 @@ export function registerCashRoutes(router, context) {
   });
 
   // ANLIK DURUM (v2.0.7): Kasa ekranıyla aynı hesap (tek kaynak).
-  return { entries, report, balanceAt, summary, guardOut, guardChange, negativePolicy };
+  return { entries, report, balanceAt, summary, guardOut, guardChange, guardRemove, negativePolicy };
 }

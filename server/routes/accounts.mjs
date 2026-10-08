@@ -442,6 +442,8 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
       if (wantedRef && wantedRef !== previous.refNo && store.get("SELECT 1 AS found FROM accounts WHERE deleted_at IS NULL AND ref_no = ? AND id <> ?", wantedRef, previous.id)) throw new HttpError(409, `${wantedRef} numarası başka bir caride kullanılıyor.`);
       // Görünen grup adları birleştirilmez: grup boşaltılınca eski adla yeniden açılmasın.
       const input = accountInput({ ...previous, groupName: "", subgroupName: "", ...body }, user, previous);
+      // v2.0.26 (A3): kapanmış dönemde hareketi olan carinin türü değişmez (kilitli mizanda 120/320/336 sınıfı kayardı).
+      if (input.type !== previous.type) assertUnlocked(previous.id, "türü değiştirilemez");
       // v2.0.22: bilgi kolonları ayrı yazılır; tür ve durum yalnız değiştiyse (bilgi düzeltmesi mutabakat kapısını
       // tetiklemez — lib/db.mjs INFO_COLUMNS).
       store.run(
@@ -463,7 +465,7 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     if (money || followed) changed(user, { kind: "plans" });
     ok(res, result);
   });
-  router.delete("/api/workspace/accounts/:id", async ({ req, res, params }) => {
+  router.delete("/api/workspace/accounts/:id", async ({ req, res, params, url }) => {
     const user = auth.requirePermission(req, "accounts.manage");
     const account = accountRow(params.id);
     const planCount = plans()?.countForAccount ? plans().countForAccount(account.id) : 0;
@@ -478,6 +480,10 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     // v2.0.15: faturası olan cari silinmez (fatura yasal belgedir; Logo/Netsis'teki gibi hareketli cari silinemez).
     const invoiceCount = store.get("SELECT COUNT(*) AS n FROM sqlite_master WHERE type = 'table' AND name = 'invoices'").n ? store.get("SELECT COUNT(*) AS n FROM invoices WHERE account_id = ? AND status = 'issued'", account.id).n : 0;
     if (invoiceCount) throw new HttpError(409, `Bu carinin ${invoiceCount} faturası var; faturası olan cari silinemez. Cariyi pasife alın.`, { code: "account-has-invoices" });
+    // v2.0.26 (A3): kapanmış dönemde hareketi olan cari silinmez (silinen carinin satırları defterden düşer). Silinen carinin
+    // tahsilat/ödemeleri Kasa'dan ve bankadan düşer: eksi bakiye denetimi (Uyar/Engelle) toplam etkiyle sorar.
+    assertUnlocked(account.id, "silinemez");
+    cash?.guardRemove?.(store.all("SELECT kind, amount, method, date FROM account_entries WHERE account_id = ? AND kind IN ('in', 'out') AND source = ''", account.id), url.searchParams.get("cashForce") === "1");
     store.tx(() => {
       // Yumuşak silme: hareketleri yerinde durur (Kasa'dan düşer); yönetim panelindeki Silinenler'den geri gelir.
       store.run("UPDATE accounts SET deleted_by = ?, deleted_at = ? WHERE id = ?", user.id, now(), account.id);
@@ -487,6 +493,26 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     changed(user, { kind: "cash" });
     ok(res, { id: account.id });
   });
+
+  // v2.0.26 (A3): carinin kapanmış dönemde (kilit tarihi ve öncesi) hareketi var mı — cari satırı (tahsilat/ödeme, Borç Yaz/
+  // Alacak Yaz, açılış) ya da taksit kartının borcu/tahsilatı. Varsa silme, geri yükleme ve tür değişikliği kilitli mizanı
+  // değiştirir; mutabakat kapısındaki kilit izi (party_lock) aynı tanımı kullanır.
+  function lockedSince(accountId) {
+    const lock = period?.lockedUntil?.() || "";
+    if (!lock) return "";
+    const hit = store.get(
+      `SELECT 1 AS found WHERE EXISTS (SELECT 1 FROM account_entries WHERE account_id = ?1 AND date <= ?2)
+          OR EXISTS (SELECT 1 FROM plans p WHERE p.account_id = ?1 AND p.deleted_at IS NULL
+                       AND ((p.covers_balance = 0 AND p.registered_on <> '' AND p.registered_on <= ?2)
+                            OR EXISTS (SELECT 1 FROM plan_entries pe WHERE pe.plan_id = p.id AND pe.date <= ?2)))`,
+      accountId, lock,
+    );
+    return hit ? lock : "";
+  }
+  function assertUnlocked(accountId, what) {
+    const lock = lockedSince(accountId);
+    if (lock) throw new HttpError(409, `Bu carinin ${dayText(lock)} ve öncesinde (kapatılmış dönem) hareketi var; cari ${what}. Kapanmış dönemin mizanı değişirdi. Gerekirse yönetici dönem kilidini açmalı.`, { code: "period-locked", lockedUntil: lock });
+  }
 
   // ---------- Hareketler ----------
   const receiptNumber = () => {
@@ -1130,6 +1156,8 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
   function restoreDeleted(user, id) {
     const account = store.get("SELECT id, name FROM accounts WHERE id = ? AND deleted_at IS NOT NULL", id);
     if (!account) throw new HttpError(404, "Bu cari zaten geri yüklenmiş.");
+    // v2.0.26 (A3): kapanmış dönemde hareketi olan cari geri yüklenmez (satırları kilitli mizana geri dönerdi).
+    assertUnlocked(account.id, "geri yüklenemez");
     store.tx(() => {
       // Numara bu arada başka bir cariye verildiyse geri gelen cari sıradaki boş numarayı alır (iki carinin aynı numarası olmaz).
       const current = store.get("SELECT ref_no AS refNo FROM accounts WHERE id = ?", account.id)?.refNo || "";
@@ -1161,5 +1189,5 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     return "Cari hareketi geri eklendi; bakiye ve Kasa yeniden hesaplandı.";
   }
 
-  return { exists, accountRow, createFromPlan, matchPerson, cashEntries, cashSource, stockEntry, invoiceEntry, taxIdentity, fingerprint, deletedList, restoreDeleted, restoreEntry, detail, list, allLedgers };
+  return { exists, accountRow, createFromPlan, matchPerson, cashEntries, cashSource, stockEntry, invoiceEntry, taxIdentity, fingerprint, deletedList, restoreDeleted, restoreEntry, detail, list, allLedgers, assertUnlocked };
 }
