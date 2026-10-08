@@ -805,6 +805,15 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   aşama aşama; mevcut çalışanı bozma, gereksiz bağımlılık yok. Önceki kararlarla bağ: 2.0.17 m9 (Kasa yalnız nakit; banka/POS
   hareketleri `method` ile tutuluyor, Raporlar → Banka ve POS Hareketleri; Kasa ↔ Banka transferi) ve m11 (eksi bakiye denetimi
   banka modülü gelince banka için geri açılır).
+  PLAN HAZIR (08.10.2026): `docs/BANKA-MODULU-PLAN.md` (Sürüm 3: 10 alt sistem analizi → 3 mimari öneri + 3 yargıç → sentez →
+  2 eleştiri (43 açık) → revizyon → denetim 2 → sürüm 3; açık madde yok) + kullanıcı özeti `docs/BANKA-MODULU-PLAN-OZET.md`.
+  Baş mimar kararları K1–K13 (planın Özet'i): yeni tablolar INTEGER kuruş, mevcut REAL kolonlar bu projede değişmez (talimat
+  Ek 1'den BİLİNÇLİ SAPMA, ayrı proje Aşama 17); banka POS'u ve masrafında varsayılan BSMV (KDVK 17/4-e), ödeme kuruluşunda
+  KDV %20 (talimat Ek 2'den BİLİNÇLİ SAPMA, KDV seçeneği tam); valör gerçek satırla, GET yazmaz; yetki göçünde bugün yapılan
+  hiçbir para işlemi kesilmez; tek kaynak (`moneyLines`) ve tek sarmalayıcı (`bank.post`). Teslim sırası: 2.0.26 = Aşama 0
+  (mevcut hatalar A1, A2, A3, A4, A6, A7, A9, B5, B7, A12, A13 — kullanıcıya listelendi) → 2.1.0 banka ilk teslim (kabul
+  1–16) → 2.2.0 POS → 2.3.0 ekstre/mutabakat + ölçek → 3.0.0 REAL→INTEGER (ayrı karar). Kullanıcının "sorma, önerini uygula"
+  kararı gereği plan sunuldu ve Aşama 0'a başlandı; itiraz gelirse ilgili aşama başlamadan plan güncellenir.
 - 2.0.20 YAPILACAKLAR (kullanıcı "yapılacaklara not al" dedi, 03.10.2026; "yap" denince başlanır; ayrıntı ve
   kanıt hemen altındaki ADAYI maddesinde):
   [x] 1. Bütün raporların (43) tablosunun altında kalın TOPLAM satırı — ekran, PDF, Excel aynı; yalnız toplanabilir
