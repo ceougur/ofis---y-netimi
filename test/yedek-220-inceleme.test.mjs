@@ -26,7 +26,7 @@ const LICENSE = { enforce: false, machineId: "0123456789abcdef0123456789abcdef" 
 
 // Aynı klasörlerle yeniden açılabilen sunucu (yeniden başlatma, göç ve 001 geri yüklemesi için).
 async function boot(dirs, { env = {}, ...overrides } = {}) {
-  const app = createApp({ dataDir: dirs.dataDir, backupDir: dirs.backupDir, logLevel: "silent", scheduleBackups: false, env: { HUKUK_ADMIN_PASSWORD: ADMIN_PASSWORD, HUKUK_DATASET_AUTOSYNC: "0", ...env }, license: LICENSE, startLicenseTimers: false, ...overrides });
+  const app = createApp({ dataDir: dirs.dataDir, backupDir: dirs.backupDir, logLevel: "silent", scheduleBackups: false, env: { HUKUK_ADMIN_PASSWORD: ADMIN_PASSWORD, HUKUK_DATASET_AUTOSYNC: "0", ...env }, license: LICENSE, startLicenseTimers: false, maxCompanies: 10, ...overrides }); // sınırdan (en fazla 2 şirket) önceki çok şirketli kurulum
   const address = await app.listen(0, "127.0.0.1");
   const base = `http://127.0.0.1:${address.port}`;
   const login = async (username = "admin", password = ADMIN_PASSWORD) => {

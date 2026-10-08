@@ -9836,6 +9836,11 @@ input[type="search"]::-webkit-search-cancel-button {
   background: var(--do-accent-soft);
   color: var(--do-accent);
 }
+.hof-page-delete:hover,
+.hof-page-delete:focus-visible {
+  background: var(--do-danger-soft, #fde8e8);
+  color: var(--do-danger, #b42318);
+}
 .hof-page-edit {
   display: inline-flex;
   align-items: center;
@@ -9946,4 +9951,17 @@ input[type="search"]::-webkit-search-cancel-button {
 /* v2.0.17 UI/UX denetimi: özet kartlarındaki yardımcı yazı okunur kontrastta (eski 2,9:1). */
 .stat-card .text-\[\#768187\] {
   color: var(--do-faint) !important;
+}
+
+/* Parola yöneticisine ayrılmış görünmeyen kullanıcı adı alanı (onay pencereleri) */
+.hof-autofill-trap {
+  position: absolute;
+  box-sizing: border-box;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
 }

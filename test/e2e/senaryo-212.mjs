@@ -9,6 +9,12 @@ import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
 import { createApp } from "../../server/app.mjs";
 import { buildXlsx } from "../../server/lib/xlsx-write.mjs";
+// Tarihe bağlı olmasın (CLAUDE.md): ilk vade bugünden ileri.
+const isoAhead = days => {
+  const d = new Date();
+  d.setDate(d.getDate() + days);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+};
 
 const OUT = path.join(path.dirname(fileURLToPath(import.meta.url)), "artifacts", "senaryo-212");
 fs.rmSync(OUT, { recursive: true, force: true });
@@ -97,7 +103,7 @@ const pickCari = async name => {
 const saveCard = async (total = "12000") => {
   await admin.fill(`${top} input[name="total"]`, total);
   await admin.fill(`${top} input[name="count"]`, "4");
-  await admin.fill(`${top} input[name="firstDue"]`, "2026-10-10");
+  await admin.fill(`${top} input[name="firstDue"]`, isoAhead(10));
   await admin.click(`${top} button[type="submit"]`);
   await admin.waitForFunction(() => [...document.querySelectorAll(".hof-modal-backdrop.is-visible dt")].some(node => node.textContent.trim() === "Kayıt Tarihi"), null, { timeout: 8000 });
 };
@@ -176,7 +182,7 @@ try {
     await admin.selectOption(`${top} select[name="amountMode"]`, "fixed").catch(() => {});
     await admin.fill(`${top} input[name="total"]`, "9000");
     await admin.fill(`${top} input[name="count"]`, "3");
-    await admin.fill(`${top} input[name="firstDue"]`, "2026-10-10");
+    await admin.fill(`${top} input[name="firstDue"]`, isoAhead(10));
     await admin.click(`${top} button[type="submit"]`);
     await admin.waitForFunction(() => [...document.querySelectorAll(".hof-modal-title")].some(node => node.textContent.includes("Açılsın mı")), null, { timeout: 8000 });
     await admin.getByRole("button", { name: /Kartı Aç/ }).click();

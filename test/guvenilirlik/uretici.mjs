@@ -96,7 +96,7 @@ export async function runChain({ chain, dataDir, backupDir, seed = 1, volume = "
     const started = performance.now();
     // 1.x ayrı süreç (kendi ortam değişkenleriyle); 2.x aynı süreçte kendi createApp'i.
     const legacy = /^v1\./.test(step.version);
-    const server = legacy ? await bootProcess(step.version, { dataDir, backupDir }) : await bootVersion(step.version, { dataDir, backupDir });
+    const server = legacy ? await bootProcess(step.version, { dataDir, backupDir }) : await bootVersion(step.version, { dataDir, backupDir, maxCompanies: 10 }); // eski sürümler sınırsızdı; bugünkü kod için sınır yükseltilir
     manifest.versions.push({ version: step.version, commit: server.commit });
     const api = await server.login();
     const multi = !legacy && step.version !== "v2.0.16";

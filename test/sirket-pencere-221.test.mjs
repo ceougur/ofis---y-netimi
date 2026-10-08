@@ -18,7 +18,7 @@ describe("2.0.21 · aynı hesap iki pencerede: kayıt sayfanın şirketine yazı
   let windowB; // ikinci bilgisayar, aynı hesap
   let second;
   before(async () => {
-    server = await startTestServer();
+    server = await startTestServer({ maxCompanies: 3 }); // sınırdan (en fazla 2 şirket) önceki çok şirketli kurulum
     windowA = await loginAdmin(server);
     windowB = server.client();
     assert.equal((await windowB.login("admin", ADMIN_PASSWORD)).status, 200);

@@ -63,13 +63,14 @@ export async function runRandom({ seed = 1, operations = 200, base = "bos", log 
     dirs = fixture;
   }
   const opLog = [];
-  const report = { seed, base, operations: 0, byKind: {}, checks: 0, restarts: 0, restores: 0, wrongRestores: 0, backups: 0, ms: 0 };
+  const report = { seed, base, operations: 0, byKind: {}, checks: 0, restarts: 0, restores: 0, wrongRestores: 0, backups: 0, limitRefusals: 0, ms: 0 };
   const count = kind => (report.byKind[kind] = (report.byKind[kind] || 0) + 1);
   let server;
   let actor;
   let checker;
   const boot = async () => {
-    server = await bootVersion(CURRENT, { dataDir: dirs.dataDir, backupDir: dirs.backupDir });
+    // Program en fazla 2 şirkete izin verir (05.10.2026); bu test sınırdan önce çok şirket açmış kurulumu canlandırır.
+    server = await bootVersion(CURRENT, { dataDir: dirs.dataDir, backupDir: dirs.backupDir, maxCompanies });
     actor = await server.login();
     checker = await server.login(CHECKER.username, CHECKER.password).catch(() => null);
   };
@@ -214,7 +215,17 @@ export async function runRandom({ seed = 1, operations = 200, base = "bos", log 
       const freed = [...M.freedCodes].filter(code => !codeTaken(code));
       let code = roll < 0.35 ? "" : roll < 0.7 && freed.length ? R.pick(freed) : roll < 0.8 ? R.pick(live()).code : roll < 0.85 ? R.pick(["12", "abc", "1000", ""]) || "x" : randomCode();
       const invalid = code !== "" && !/^\d{3}$/.test(code);
-      if (live().length >= maxCompanies && !invalid && !(code && codeTaken(code))) return ops.remove();
+      // Şirket sınırı (2.0.25): sınırdayken her açma denemesi (geçerli, geçersiz ya da dolu kodla) 409 company-limit alır;
+      // sınır denetimi kod denetiminden önce gelir. Yarısında sınır denenir, yarısında bir şirket silinir.
+      if (live().length >= maxCompanies) {
+        if (R.chance(0.5)) return ops.remove();
+        opLog.push(`#${report.operations} sınırda şirket aç: kod "${code || "(sıradaki)"}" → 409 beklenir`);
+        const refused = await actor.post("/api/companies", { code, name: companyName() });
+        expectStatus(refused, 409, `sınırda (${live().length}/${maxCompanies}) şirket aç`);
+        if (refused.data?.code !== "company-limit") fail(`sınır yanıtının kodu company-limit değil: ${JSON.stringify(refused.data).slice(0, 200)}`);
+        report.limitRefusals += 1;
+        return;
+      }
       const label = companyName();
       opLog.push(`#${report.operations} şirket aç: kod "${code || "(sıradaki)"}" ad "${label}"`);
       const response = await actor.post("/api/companies", { code, name: label });

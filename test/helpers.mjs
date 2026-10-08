@@ -25,6 +25,8 @@ export async function startTestServer(options = {}) {
     // e-Belge bağlantısı programda kapalıdır; yalnız entegratör testleri açar.
     ...(options.edocEnabled ? { edocEnabled: true } : {}),
     ...(options.supervisorLink ? { supervisorLink: options.supervisorLink } : {}),
+    // Şirket sınırı (en fazla 2): 2'den çok şirketi olan eski kurulumu canlandıran testler sınırı yükseltir.
+    ...(options.maxCompanies ? { maxCompanies: options.maxCompanies } : {}),
   });
   const address = await app.listen(0, "127.0.0.1");
   const base = `http://127.0.0.1:${address.port}`;

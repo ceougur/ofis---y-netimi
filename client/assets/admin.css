@@ -965,3 +965,18 @@ td.adm-row-actions > .hof-button + .hof-button {
 .adm-company-conflicts { border-color: #f1b8b2; background: #fff6f5; }
 .adm-company-conflicts h2 { color: #b42318; }
 .adm-company-conflicts p { margin: 0 0 10px; line-height: 1.6; }
+/* Şirket sınırı (en fazla 2): sınırda "+ Yeni Şirket" gizli, yerine nedeni */
+.adm-company-new-box {
+  display: grid;
+  justify-items: end;
+  gap: 4px;
+}
+.adm-panel-head .adm-company-limit {
+  max-width: 280px;
+  margin: 0;
+  font-size: 12.5px;
+  text-align: right;
+}
+#adm-company-new[hidden] {
+  display: none;
+}

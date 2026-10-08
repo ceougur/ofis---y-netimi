@@ -38,7 +38,8 @@ function harness() {
   const h = { fixture: null, server: null, api: null };
   h.start = async () => {
     h.fixture = h.fixture || unpackFixture("surum-2.0.19-zincir");
-    h.server = await bootVersion(CURRENT, { dataDir: h.fixture.dataDir, backupDir: h.fixture.backupDir });
+    // Fikstür sınırdan (en fazla 2 şirket, 05.10.2026) önce çok şirket açmış kurulumdur; burada yeni şirket açılışı da sınanır.
+    h.server = await bootVersion(CURRENT, { dataDir: h.fixture.dataDir, backupDir: h.fixture.backupDir, maxCompanies: 10 });
     h.api = await h.server.login();
   };
   h.restart = async () => {

@@ -9,6 +9,12 @@ import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
 import { createApp } from "../../server/app.mjs";
 import { buildXlsx } from "../../server/lib/xlsx-write.mjs";
+// Tarihe bağlı olmasın (CLAUDE.md): ilk vade bugünden ileri.
+const isoAhead = days => {
+  const d = new Date();
+  d.setDate(d.getDate() + days);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+};
 
 const OUT = path.join(path.dirname(fileURLToPath(import.meta.url)), "artifacts", "senaryo-213");
 fs.rmSync(OUT, { recursive: true, force: true });
@@ -329,7 +335,7 @@ try {
     await admin.locator(`${top} .hof-case-picker-list li[data-id]`, { hasText: "Kemal Bakkal" }).first().click();
     await admin.check(`${top} input[name="planIt"]`);
     await admin.fill(`${top} input[name="planCount"]`, "3");
-    await admin.fill(`${top} input[name="planFirstDue"]`, "2026-10-15");
+    await admin.fill(`${top} input[name="planFirstDue"]`, isoAhead(15));
     await shot(admin, "satisi-taksitlendir");
     await saveMove();
     const kemal = (await call(admin, `/api/workspace/accounts/${ids.kemal}`)).data;
@@ -345,7 +351,7 @@ try {
     ok((await admin.$eval(`${top} select[name="source"]`, node => node.value)) === "balance", "Borcun Kaynağı: Carinin Mevcut Borcu");
     ok((await admin.$eval(`${top} input[name="total"]`, node => node.value)) === "850,00", "tutar bakiyeden: 850,00");
     await admin.fill(`${top} input[name="count"]`, "2");
-    await admin.fill(`${top} input[name="firstDue"]`, "2026-10-20");
+    await admin.fill(`${top} input[name="firstDue"]`, isoAhead(20));
     await shot(admin, "mevcut-borcu-taksitlendir");
     await admin.click(`${top} button[type="submit"]`);
     await admin.waitForTimeout(1200);

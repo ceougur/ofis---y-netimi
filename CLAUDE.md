@@ -632,7 +632,23 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   TESLİM (05.10.2026 ~05:5x; kullanıcı: "limit %2 kaldı, zipi teslim et"): 5 dosya zipsiz + arşiv zip (26,7 MB) gönderildi;
   paket sha256 a926aed5… (210 dosya), kurulum .exe 115d04b8… (29,4 MB); güncelleyici 2.0.23/22/21/20/19/2.0.4/1.7.0 (API ve
   yedek yol) "available". PR ceougur/ofis---y-netimi#24 açık. Sırada: CI → kullanıcının "birleştir"i → yayın (v2.0.24, 5 dosya;
-  yükleme ekranında adlar/boyutlar teslimle karşılaştırılır) → "yayımladım" → bayt bayt + güncelleyici → site kılavuz PR'ı. Sırada (kullanıcıyla): ertelenen testler (iade/iptal/düzenleme/silme,
+  yükleme ekranında adlar/boyutlar teslimle karşılaştırılır) → "yayımladım" → bayt bayt + güncelleyici → site kılavuz PR'ı.
+  YAYIMLANDI (05.10.2026 ~06:1x): kullanıcı önce yanlışlıkla dosyasız yayımladı (etiket 2.0.23 koduna) → yayın + etiket
+  kullanıcı tarafından silindi, latest yeniden 2.0.23 doğrulandı; PR #24 CI 12/12 → kullanıcının "birleştir"iyle squash,
+  `master` = 9c09f3c (ağaç teslimle aynı), `v2.0.24`. Yayındaki 5 dosya + latest/ bayt bayt aynı, exe .sha256 OK; gerçek
+  güncelleyici canlı GitHub'da 2.0.23/22/21/20/19/18/17/2.0.4/1.7.0 (API ve yedek yol) "available", sha256 a926aed5…;
+  2.0.24 → "up-to-date". Site kılavuz PR'ı ceougur/destekofis#11 kullanıcının "birleştir"iyle BİRLEŞTİRİLDİ (main 514d29b, PDF 3206709e…). 2.0.24 KAPANDI.
+  KARAR (kullanıcı, 05.10.2026): 2.0.24'ün DENENMEYEN ve BİLİNEN SINIRLAR listesi Cuma 09.10.2026 planlı teste eklendi
+  (hatırlatma trig_0144BJLRwsZFizXTTYrJVszA, 06:00 UTC; içerik docs/2.0.24-KANIT.md).
+  ÖLÇEK SORUSU (kullanıcı, 05.10.2026: "ne ölçekte firma rahat kullanır?") → cevap (ölçülenle): 5–10 eşzamanlı kullanıcı,
+  birkaç şirket, şirket başına birkaç bin cari, yılda birkaç bin–on bin fatura; üstü ÖLÇÜLMEDİ. KARAR ("ekle"): ölçek/yük testi
+  (10/20/30 eşzamanlı kullanıcı, 10.000–50.000 cari + 100.000+ fatura, 10 şirket + yedekleme sırasında yük) aynı Cuma planına
+  eklendi; çıktı "şu ölçeğe kadar rahat, şurada darboğaz" tablosu + düzeltme önerisi.
+  EK (kullanıcı, 05.10.2026: "bu ölçümü sadece koddan yapma, arayüz kaldırıyor mu ona da bak"): ölçek testi ARAYÜZDEN de
+  yapılır — aynı anda açık gerçek tarayıcı pencereleri (her biri bir personel), aynı büyük veride: pencere açılışı, Cari
+  aramasında harf gecikmesi, uzun listelerde kaydırma/donma, rapor ön izleme + PDF/Excel, Kaydet → listede görünme, başka
+  personel yazarken açık pencere donuyor mu, tarayıcı belleği. Sonuç tablosu her ölçümde sunucu + ekran iki sütun. DERS: yayın bağlantısı birleştirmeden
+  ÖNCE verilmez; verildiyse "Publish'e basmayın" en başta yazılır. Sırada (kullanıcıyla): ertelenen testler (iade/iptal/düzenleme/silme,
   çek tahsil/ciro, Kasa↔Banka, dönem kilidi, yetkisiz kullanıcı, 29 rapor) ve iade kartı küçültme düzeltmesi.
   BULGU 2 (04.10.2026, ek işlemlerde bulundu; KOD DEĞİŞTİRİLMEDİ, karar kullanıcıda): aynı caride açık satış faturası +
   Taksit penceresinden "Yeni Borç" ile AYRI taksit kartı varsa fatura kapama (`server/lib/invoice-settle.mjs`) kartın
@@ -707,6 +723,67 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   latest/ (exe, json, zip, pdf) teslimdekiyle bayt bayt aynı, exe .sha256 OK; gerçek güncelleyici canlı GitHub'da
   2.0.21/20/19/18/17/2.0.4/1.7.0 olarak (API ve yedek yol) 2.0.22'yi "available" gördü, indirme sha256 437ac249… eşleşti; 2.0.22
   kurulu → "up-to-date". Site kılavuz PR'ı ceougur/destekofis#9 kullanıcının "birleştir"iyle BİRLEŞTİRİLDİ (main 513ebe8, PDF 91ffc51d…). 2.0.22 KAPANDI.
+- ŞİRKET SAYISI EN FAZLA 2 (kullanıcı, 05.10.2026: "en fazla 2 şirket kurulabilsin; şu an sürekli yeni şirket açılabiliyor").
+  Bu karar 2.0.17'deki "şirket sayısı lisansa bağlı değil, herkese sınırsız" kararını DEĞİŞTİRİR. KARAR (kullanıcı, aynı gün:
+  "3 olanlar kalsın, Pro'da da olmasın, en fazla 2 şirket açılabilsin"): (a) bugün 3+ şirketi olan kurulumlarda mevcutlar
+  KALIR, hiçbir veri silinmez, yalnız yenisi açılmaz; (b) Pro'da da istisna YOK, herkese 2. Silinen şirket sayılmaz (silince
+  yenisi açılabilir). "Ayır" (2.0.21) yeni şirket açmaz, sınırdan etkilenmez.
+  YAPILDI (dal `claude/kind-newton-fpmx3f`, yayımlanmadı — sıradaki sürüme girer): `server/lib/companies.mjs` MAX_COMPANIES = 2,
+  create() sınırda 409 "En fazla 2 şirket kurulabilir. Yeni şirket açmak için önce bir şirketi silin."; /api/companies `limit`
+  ({ max, count, canCreate, reason }); sol üst seçicide ve Yönetim → Şirketler'de "+ Yeni Şirket" pasif + nedeni görünür yazı.
+  Test `test/sirket-siniri-225.test.mjs` (çalışıyor mu + nasıl bozarım: başka kod, aynı anda iki istek, personel; 3 şirketli
+  eski kurulum). 2'den çok şirket açan eski testler `startTestServer({ maxCompanies })` ile (eski kurulumu canlandırır).
+  2.0.25 HAZIRLANDI, YAYIMLANMADI (05.10.2026): PR ceougur/ofis---y-netimi#25 açık, CI 12/12 yeşil, BİRLEŞTİRİLMEDİ; paket
+  `dist/teslim-2.0.25/` (bu kod; düzeltmeden sonra YENİDEN üretilecek). Bağımsız gözden geçirme bulguları: (1) Orta — `limit`
+  (şirket sayısı) yetkisiz personele de dönüyor, gizli şirketin varlığı sızıyor → yalnız yöneticiye; (2) Düşük — 3+ şirketli
+  kurulumda "önce bir şirketi silin" yanıltıcı; (3) Düşük — sınırda bozuk girdi 409 alıyor (dokunulmaz); (4) test aracı
+  `test/excel-denetim/saldiri.mjs:108` 3. şirket açmaya çalışıp çöküyor (Cuma testinde kullanılacak); (5) test eksikleri:
+  rastgele testin bir turu gerçek sınırla, sirket-siniri-225 "ikisi silinince yenisi açılır" adımı, senaryo-217 silince düğme
+  geri gelir; (6) pasif düğme rengi.
+  KARAR (kullanıcı, 05.10.2026: "bu haliyle yüklemeyelim, düzeltelim; haftalık limitim %99, Perşembe Türkiye saatiyle 09:00'a
+  kur"; "hem Dashboard'da hem Yönetim bölümünde 2. şirket varsa Yeni Şirket ve yanındaki + işareti GELMESİN, çözümü böyle
+  olsun"): sınırdayken "+ Yeni Şirket" PASİF DEĞİL, HİÇ GÖRÜNMEZ (sol üst seçici + Yönetim → Şirketler); 6. bulgu bununla
+  kalkar. Neden yazısı gerekirse yalnız Yönetim'de kısa bilgi satırı olarak (öneri; düğme yok). 1, 2, 4, 5 de yapılır. Sonra:
+  testler → paket/kurulum/PDF yeniden → CI → birleştir → 5 dosya + bağlantı. Hatırlatma: 08.10.2026 06:00 UTC (send_later).
+  EK (müşteri, 06.10.2026; kullanıcı "Perşembe yapılacaklara ekle"; ekran: SAYFALAR "TÜM REHBER.xlsx 9.176" seçili +
+  "Müşteriler Yeni 109"; sağ altta "SON GÜNE 42 GÜN · Envar Turizm Tarım Taşımacılık İnşaa… · 202092758 · Lisans Bitiş Tarihi ·
+  17.11.2026" uyarısı, "Gerçekleştirildi" / "Kayda Git"): "birden fazla sayfa olduğunda birinci sayfadayken ikinci sayfadan
+  bir gecikme uyarısı verdiğinde Kayda Git deyince sadece ikinci sayfayı açıyor, o kayda gitmiyor". İSTENEN: Kayda Git =
+  uyarının sayfasına geç + o kaydı listede seç, görünür yere kaydır ve sağdaki detay kartında aç (aynı sayfadaki uyarıda
+  olduğu gibi). Kök neden Perşembe koddan bulunacak (sayfa değişince liste yeniden yüklenirken kayıt seçimi kayboluyor
+  olabilir). Test: iki sayfa, 2. sayfadaki kaydın uyarısı 1. sayfadayken → Kayda Git → 2. sayfa açık, kayıt seçili ve
+  detay kartında; zil/takvimdeki "Kayda Git" yolları da aynı; çok sayfada kayıt listenin derininde (kaydırma) de.
+  EK 2 (müşteri, 06.10.2026; Perşembe işlerine; ekran: SAYFALAR 2 · "Müşteriler Yeni 109 kayıt" seçili, altında liste boş
+  "Aramanızla eşleşen kayıt bulunamadı", "Gösterilen 0 / 0 kayıt", Kaynak: Müşteriler Yeni.xlsx): "ikinci sayfanın altındaki
+  sekmeyi komple sildim, yukarıda hâlâ sayfada 109 kayıt diyor; aslında yukarıdan sayfayı komple sil koymamız lazım".
+  İKİ İŞ: (a) HATA — sekme silinince üstteki sayfa pilindeki kayıt sayısı güncellenmiyor (109 kalıyor; gerçek 0); boş
+  kalan sayfa da "kayıt bulunamadı" ile duruyor. Kök neden Perşembe koddan. (b) İSTEK — sayfa pilinin menüsünde (kalem
+  işaretinin yanında/içinde) "Sayfayı Sil": sayfanın tamamı (bütün sekmeleri, kaynak bağı) tek seferde silinir; yalnız
+  yönetici; onay penceresinde sayfa adı + kayıt sayısı; Silinenler'e gider (geri yüklenebilir); son kalan sayfa silinirse
+  başlangıç ekranına döner; silinen sayfanın uyarıları zil/takvimden kalkar. Önceki not (13. madde): "Sayfa silme yalnız
+  yönetici, Silinenler'e gider" — varsa yeri görünür değil, yoksa eklenir; Perşembe koddan doğrulanır. Test: 2 sayfa → 2.'nin
+  sekmesini sil → pil 0; Sayfayı Sil → pil kalkar, 1. sayfa açılır, uyarılar kalkar; Silinenler'den geri yükle → 109 geri.
+  EK 3 (müşteri, 06.10.2026; Perşembe işlerine; ekran: Yönetim → Şirketler → "Şirket Verisini Sıfırla · 001 · Şirket 1";
+  "Onay: şirket kodunu (001) ya da adını yazın" kutusunda "admin" yazılı, altında Parolanız dolu): "isim kısmına direkt admin
+  atmasın; yapabilirsen üzerinde bulunduğumuz şirketin kodunu atsın, direkt 001". Olası kök neden (Perşembe koddan doğrulanır):
+  tarayıcının kayıtlı giriş bilgisini doldurması — parola alanının hemen üstündeki metin kutusunu kullanıcı adı sanıp
+  "admin" yazıyor. YAPILACAK: onay kutusu açılışta şirketin KODUYLA dolu gelir (001), tarayıcı otomatik doldurması kapatılır
+  (autocomplete="off" / alan adı kullanıcı adı gibi görünmez; parola alanı "current-password"). Aynı düzeltme aynı kalıptaki
+  öbür onay pencerelerine de: Şirketi Sil, Ayır, Geri Yükle. Not: onay kutusu yanlışlıkla sıfırlamaya karşı korumaydı;
+  parola sorusu kaldığı için kod önceden dolu gelse de koruma sürer (kullanıcıya söylenecek). Test (arayüz): pencere
+  açılınca kutu "001", parola boş; tarayıcının kayıtlı girişi olsa da "admin" gelmez; 002'de "002".
+  PERŞEMBE İŞLERİ YAPILDI (kullanıcı 08.10.2026 sabah "şimdi başla"; hatırlatma kapatıldı; commit 480068f, kanıt
+  `docs/2.0.25-KANIT.md`): A düğme gizli · B1 limit yalnız yöneticiye · B2 3+ mesaj · B4 saldiri.mjs (sınır 3) · B5 rastgele
+  testte gerçek sınır turu (sınırda geçersiz kodla açma 400 değil 409 — test düzeltildi) · C Kayda Git (kök neden: sayfa geçişi
+  yeniden yükleme, kayıt taşınmıyordu → sessionStorage "hof-reveal") · YENİ BULGU (kullanıcıya bildirildi): başka sayfanın
+  uyarısında "Gerçekleştirildi" açık sayfaya yazıyordu → başka sayfa uyarısında düğme yok · D-a gizli sekme sayılmaz
+  (`visibleRowCount`, `totalRowCount`) · D-b "Sayfayı Sil" şeritte (mevcut silme: önce tam yedek, Silinenler'e GİTMEZ — notumdaki
+  "Silinenler'e gider" yapılmadı, kullanıcıya söylenecek) · E onay kutusu kodla dolu + görünmeyen kullanıcı adı alanı. Testler:
+  sayfa-225, sirket-siniri-225, senaryo-225 (eski kodda 19/37 kırmızı; CI'de).
+  İKİNCİ BAĞIMSIZ GÖZDEN GEÇİRME (08.10.2026): 7 bulgu (G1–G7, `docs/2.0.25-KANIT.md` 1b), kullanıcıya listelendi, hepsi düzeltildi:
+  kendi silmesinde yanlış bildirim/yedek adı yok, "ilk sayfa" metni, öbür pencerede eski şerit sayısı, Kaydı Sil sayılıyor,
+  gizli sekmeli sayım önbelleksiz, silinmiş sayfanın uyarısında yanlış hata, kayıtlı parola kendiliğinden dolabiliyor
+  (parola alanı `one-time-code`; gerçek kayıtlı parolayla DENENMEDİ). Eski kodda 7 denetim kırmızı; senaryo-225 45/45; npm test 1.066/1.066.
 - 2.0.20 YAPILACAKLAR (kullanıcı "yapılacaklara not al" dedi, 03.10.2026; "yap" denince başlanır; ayrıntı ve
   kanıt hemen altındaki ADAYI maddesinde):
   [x] 1. Bütün raporların (43) tablosunun altında kalın TOPLAM satırı — ekran, PDF, Excel aynı; yalnız toplanabilir

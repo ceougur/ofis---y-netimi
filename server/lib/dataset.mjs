@@ -392,6 +392,28 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
   const recordCount = () => store.get("SELECT COUNT(*) AS count FROM records WHERE source_name = ?", activeKey()).count;
   const rowCount = () => store.get("SELECT COUNT(*) AS count FROM dataset_rows WHERE dataset_key = ?", activeKey()).count;
   const hasData = () => rowCount() > 0 || recordCount() > 0 || Boolean(linkedUrl());
+  // Sayfa şeridindeki sayı (2.0.25, müşteri: "sekmeyi sildim, yukarıda hâlâ 109 kayıt diyor"): "Sekmeyi Sil" sekmeyi
+  // ekrandan kaldırır, veri durur; şerit gizli sekmenin satırlarını ve "Kaydı Sil" ile silinen satırları saymaz.
+  // Sekmesiz eski satırın yerleşimi (placeRecord) burada izlenmez. Gizli sekme sayımı bütün satırları tarar; sonuç
+  // satır sayısı, silinen sayısı, veri değişim zamanı ve gizli sekme ayarıyla önbellekte tutulur.
+  const visibleCounts = new Map();
+  function visibleRowCount() {
+    const key = activeKey();
+    const total = rowCount();
+    const removed = store.get("SELECT COUNT(*) AS count FROM deleted_records d JOIN dataset_rows r ON r.dataset_key = d.source_name AND r.case_key = d.case_key WHERE d.source_name = ?", key).count;
+    const { hidden } = tabSettings();
+    if (!Object.keys(hidden).length) return total - removed;
+    const stamp = `${total}|${removed}|${sget(S.changedAt, "")}|${JSON.stringify(hidden)}`;
+    const cached = visibleCounts.get(key);
+    if (cached?.stamp === stamp) return cached.count;
+    let count = 0;
+    const sql = "SELECT COALESCE(NULLIF(r.tab, ''), json_extract(r.values_json, '$.__sheet'), '') AS tab, COUNT(*) AS count FROM dataset_rows r WHERE r.dataset_key = ? AND NOT EXISTS (SELECT 1 FROM deleted_records d WHERE d.source_name = r.dataset_key AND d.case_key = r.case_key) GROUP BY 1";
+    for (const row of store.all(sql, key)) if (!isHiddenTab(row.tab, hidden)) count += row.count;
+    visibleCounts.set(key, { stamp, count });
+    return count;
+  }
+  // Şeritteki "yeni kayıt" sayısı: uygulamada eklenip silinmemiş kayıtlar.
+  const liveRecordCount = () => store.get("SELECT COUNT(*) AS count FROM records r WHERE r.source_name = ? AND NOT EXISTS (SELECT 1 FROM deleted_records d WHERE d.source_name = r.source_name AND d.case_key = r.case_key)", activeKey()).count;
 
   function tabsOf(rows) {
     const tabs = [];
@@ -1342,8 +1364,10 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
           key: item.key,
           name: item.name || label || (item.key === DATASET_KEY ? "İlk Sayfa" : "Sayfa"),
           label,
-          rowCount: rowCount(),
-          recordCount: recordCount(),
+          rowCount: visibleRowCount(),
+          // totalRowCount: gizlenen sekmeler dahil bütün satırlar (sayfa silinirken bunların hepsi silinir).
+          totalRowCount: rowCount(),
+          recordCount: liveRecordCount(),
           linked: Boolean(linkedUrl()),
           changedAt: sget(S.changedAt, "") || null,
           createdAt: item.createdAt || null,
@@ -1352,7 +1376,7 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
       }),
     );
     // Boş kalmış ilk oturum, başka oturum varken ve seçili değilken listelenmez.
-    return list.filter(item => item.key !== DATASET_KEY || item.current || !extra.length || item.rowCount || item.recordCount);
+    return list.filter(item => item.key !== DATASET_KEY || item.current || !extra.length || item.totalRowCount || item.recordCount);
   }
 
   function selectSession(user, datasetKey) {
@@ -1408,6 +1432,7 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
       audit(user, "dataset.session.deleted", target, { rows: removed, backupName });
     });
     caches.delete(target);
+    visibleCounts.delete(target);
     const scope = currentScope();
     if (scope?.datasetKey === target) scope.datasetKey = null;
     bumpClientState(user.id);

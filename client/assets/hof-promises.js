@@ -17,7 +17,7 @@
 
   const money = value => (value === null || value === undefined ? "" : HOF.formatMoney(value));
   const who = item => item.person || item.caseNo || "Kayıt";
-  // v2.0.17: öbür sayfanın kalemi (item.foreign) pilde sayfa adıyla görünür; "Kayda Git" o sayfaya geçer.
+  // v2.0.17: öbür sayfanın kalemi (item.foreign) pilde sayfa adıyla görünür; "Kayda Git" o sayfaya geçer ve (2.0.25) kaydı açar.
   const pageTag = item => (item.foreign && item.pageName ? ` · ${item.pageName}` : "");
   const stateText = item => {
     if (item.state === "overdue") return `${Math.abs(item.days)} gün gecikti`;
@@ -138,7 +138,7 @@
         ${canSettle ? `<button type="button" data-act="paid" class="hof-payment-mark" title="Tahsilat girmeden kapatır (ör. başka yoldan ödendi)">Ödendi Say</button>` : ""}
         ${canSettle && item.promise ? '<button type="button" data-act="cancelled" class="hof-payment-cancelled">Söz İptal</button>' : ""}
       </div>
-      <button type="button" class="hof-payment-go" data-act="go">${cheque ? "Çek / Senet Kartını Aç →" : plan ? "Taksit Kartını Aç →" : item.foreign ? `“${esc(item.pageName || "Sayfa")}” Sayfasına Geç →` : "Kayda Git →"}</button>`,
+      <button type="button" class="hof-payment-go" data-act="go">${cheque ? "Çek / Senet Kartını Aç →" : plan ? "Taksit Kartını Aç →" : item.foreign ? `Kayda Git (“${esc(item.pageName || "Sayfa")}”) →` : "Kayda Git →"}</button>`,
     );
     card.addEventListener("click", event => {
       const button = event.target.closest("[data-act]");
@@ -149,7 +149,7 @@
         closeCard();
         if (cheque) HOF.cheques?.open({ id: item.chequeId });
         else if (plan) HOF.plans?.open(item.planId);
-        else if (item.foreign) HOF.sessions?.select?.(item.session);
+        else if (item.foreign) HOF.sessions?.select?.(item.session, { reveal: { caseKey: item.caseKey, tab: item.tab || "" } });
         else HOF.revealRecord?.(item.caseKey, { tab: item.tab });
       } else settle(item, act, button);
     });
@@ -254,7 +254,7 @@
     const liveSoon = HOF.refresher(load, { delay: 800, gap: 4000 });
     HOF.on("live:workspace.changed", change => {
       if (!change || change.info) return;
-      if (["dues", "activity", "cash", "records", "source", "plans", "cheques", "accounts", "documents", "invoices"].includes(change.kind) || change.dataset) liveSoon();
+      if (["dues", "activity", "cash", "records", "source", "sessions", "plans", "cheques", "accounts", "documents", "invoices"].includes(change.kind) || change.dataset) liveSoon();
     });
     // Sunucu para/evrak değişikliğini işlemi yapan dahil herkese "overview.changed" ile de duyurur (başka bilgisayarda
     // ödenen çek bu ekranda da düşer).

@@ -243,6 +243,9 @@
   const canDone = alert => {
     if (alert.type === "task") return Boolean(alert.taskId) && HOF.can("tasks.complete");
     if (!alert.item || !HOF.can("records.edit") || isPlan(alert.item) || isCheque(alert.item)) return false;
+    // Başka sayfanın kaydı (2.0.25): işaret açık sayfaya yazılırdı (yanlış sayfa, uyarı kapanmazdı); "Kayda Git" ile o
+    // sayfaya geçilip orada işaretlenir.
+    if (alert.item.foreign) return false;
     return alert.item.recurring ? String(alert.item.id || "").startsWith("due|") : Boolean(alert.item.column);
   };
   const doneHint = alert =>
@@ -349,7 +352,7 @@
       const act = button.dataset.act;
       if (act === "done") markDone(alert);
       else if (act === "pay") pay(alert.due);
-      else if (act === "go") (alert.item?.foreign || alert.due?.foreign ? HOF.sessions?.select?.((alert.item || alert.due).session) : HOF.revealRecord?.(alert.caseKey, { tab: alert.tab || "" }));
+      else if (act === "go") (alert.item?.foreign || alert.due?.foreign ? HOF.sessions?.select?.((alert.item || alert.due).session, { reveal: { caseKey: alert.caseKey, tab: alert.tab || (alert.item || alert.due).tab || "" } }) : HOF.revealRecord?.(alert.caseKey, { tab: alert.tab || "" }));
       else if (act === "plan") HOF.plans?.open(alert.planId);
       else if (act === "list") openPanel();
       else if (act === "tasks") HOF.workspace?.openTasks?.();
@@ -536,7 +539,7 @@
       modal.close();
       if (button.dataset.pay) pay(item.due);
       else if (button.dataset.plan) HOF.plans?.open(item.planId);
-      else if (item.item?.foreign || item.due?.foreign) HOF.sessions?.select?.((item.item || item.due).session);
+      else if (item.item?.foreign || item.due?.foreign) HOF.sessions?.select?.((item.item || item.due).session, { reveal: { caseKey: item.caseKey, tab: item.tab || (item.item || item.due).tab || "" } });
       else HOF.revealRecord?.(item.caseKey, { tab: item.tab || "" });
     });
     modal.dialog.querySelector(".hof-alert-mute input").addEventListener("change", event => {

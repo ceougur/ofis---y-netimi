@@ -570,6 +570,9 @@
 
   // Alan tanımlarından erişilebilir form penceresi üretir.
   HOF.fieldHtml = field => {
+    // Parola yöneticisine ayrılmış görünmeyen kullanıcı adı alanı (onay pencereleri, 2.0.25): tarayıcı kayıtlı kullanıcı
+    // adını buraya yazar; ekranda ve klavye sırasında yoktur, gönderilen değer kullanılmaz.
+    if (field.type === "username-hidden") return `<input type="text" class="hof-autofill-trap" name="${HOF.esc(field.name)}" value="${HOF.esc(field.value ?? "")}" autocomplete="username" tabindex="-1" aria-hidden="true">`;
     const id = `hof-f-${field.name}-${Math.random().toString(36).slice(2, 7)}`;
     const common = `id="${id}" name="${HOF.esc(field.name)}" ${field.required ? "required" : ""} ${field.autofocus ? "autofocus" : ""} ${field.readonly ? 'readonly aria-readonly="true"' : ""} ${field.maxlength ? `maxlength="${field.maxlength}"` : ""}`;
     let control;
