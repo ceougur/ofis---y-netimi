@@ -2,21 +2,36 @@
 // Kasa'dan düşen hareket ana defterde de yoktur), yevmiyeyi ve mizanı kurar, mutabakat kapısını çalıştırır.
 //   GET /api/workspace/ledger?from=&to=  → mizan + mutabakat (Finans raporları yetkisi)
 // Rapor merkezi "Hesap Planı Mizanı", "Yevmiye Defteri" ve "Defter Mutabakatı" raporlarını bu servisten üretir.
-import { journal, reconcile, trialBalance } from "../lib/general-ledger.mjs";
+import { journal, moneyAccount, reconcile, trialBalance } from "../lib/general-ledger.mjs";
 import { HttpError, ok, readJson, text } from "../lib/http.mjs";
 import { roundMoney } from "../lib/money.mjs";
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 
-export function registerLedgerRoutes(router, { store, auth, audit = () => {}, period = null, cash = () => null, accounts = () => null, integrity = () => null }) {
+export function registerLedgerRoutes(router, { store, auth, audit = () => {}, period = null, cash = () => null, accounts = () => null, integrity = () => null, money = null }) {
   const has = table => Boolean(store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = ?", table));
+  // v2.1.0 (§3.11): para satırının hesap bağı (fin_ref; '' = Hesabı Atanmamış). v19 dosyasında (araçlar) kolon yoktur: ''.
+  const refOf = (table, alias) => (store.all(`PRAGMA table_info(${table})`).some(column => column.name === "fin_ref") ? `${alias}.fin_ref` : "''");
+  // Banka hesabı ve POS kartları (alt hesap kodları): yevmiyede moneyAccount, beklenenlerde yolun alt hesabı.
+  function refs() {
+    const out = { accounts: {}, pos: {} };
+    if (has("bank_accounts")) for (const row of store.all("SELECT id, kind, gl, gl_sub AS glSub FROM bank_accounts")) out.accounts[row.id] = { kind: row.kind, gl: row.gl, glSub: row.glSub };
+    if (has("pos_terminals")) for (const row of store.all("SELECT id, gl_sub AS glSub FROM pos_terminals")) out.pos[row.id] = { glSub: row.glSub };
+    return out;
+  }
   function rows() {
-    const out = { payments: [], cashEntries: [], accountEntries: [], plans: [], planEntries: [], stockMoves: [], chequeEvents: [], invoices: [] };
-    out.payments = store.all("SELECT id, amount, date, note, method FROM payments");
-    out.cashEntries = store.all("SELECT id, kind, amount, date, description, method, transfer_id AS transferId FROM cash_entries");
+    const out = { payments: [], cashEntries: [], accountEntries: [], plans: [], planEntries: [], stockMoves: [], chequeEvents: [], invoices: [], bankLines: [], refs: refs() };
+    out.payments = store.all(`SELECT id, amount, date, note, method, ${refOf("payments", "p")} AS ref FROM payments p`);
+    // Kasa ↔ Banka transferinin nakit bacağı banka bacağının hesabını (ikiz satırın fin_ref'i) taşır: madde tek, banka tarafı onun hesabıdır.
+    const cashRef = refOf("cash_entries", "c");
+    out.cashEntries = store.all(
+      `SELECT c.id, c.kind, c.amount, c.date, c.description, c.method, c.transfer_id AS transferId, ${cashRef} AS ref,
+              CASE WHEN c.transfer_id <> '' THEN COALESCE((SELECT ${cashRef === "''" ? "''" : "t.fin_ref"} FROM cash_entries t WHERE t.transfer_id = c.transfer_id AND t.id <> c.id LIMIT 1), '') ELSE '' END AS bankRef
+       FROM cash_entries c`,
+    );
     if (has("accounts")) {
       out.accountEntries = store.all(
-        `SELECT e.id, e.kind, e.amount, e.date, e.note, e.source, e.method, a.type AS accountType, e.account_id AS party,
+        `SELECT e.id, e.kind, e.amount, e.date, e.note, e.source, e.method, ${refOf("account_entries", "e")} AS ref, a.type AS accountType, e.account_id AS party,
                 COALESCE(c.direction, '') AS chequeDirection, COALESCE(m.reason, '') AS moveReason
          FROM account_entries e JOIN accounts a ON a.id = e.account_id AND a.deleted_at IS NULL
            LEFT JOIN cheques c ON e.source = 'cheque' AND c.id = e.source_id
@@ -32,7 +47,7 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, pe
          FROM plans p LEFT JOIN accounts a ON a.id = p.account_id AND a.deleted_at IS NULL WHERE p.deleted_at IS NULL`,
       );
       out.planEntries = store.all(
-        `SELECT e.id, e.plan_id AS planId, e.kind, e.amount, e.date, e.note, e.method, e.cheque_id AS chequeId, e.opening, COALESCE(a.type, '') AS accountType, COALESCE(a.id, '') AS party
+        `SELECT e.id, e.plan_id AS planId, e.kind, e.amount, e.date, e.note, e.method, ${refOf("plan_entries", "e")} AS ref, e.cheque_id AS chequeId, e.opening, COALESCE(a.type, '') AS accountType, COALESCE(a.id, '') AS party
          FROM plan_entries e JOIN plans p ON p.id = e.plan_id AND p.deleted_at IS NULL LEFT JOIN accounts a ON a.id = p.account_id AND a.deleted_at IS NULL`,
       );
     }
@@ -44,9 +59,13 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, pe
          FROM invoices i JOIN accounts a ON a.id = i.account_id AND a.deleted_at IS NULL WHERE i.status = 'issued'`,
       );
     }
-    if (has("stock_moves")) out.stockMoves = store.all("SELECT id, kind, amount, date, note, pay, method, reason FROM stock_moves WHERE pay = 'cash' AND amount > 0");
+    if (has("stock_moves")) out.stockMoves = store.all(`SELECT m.id, m.kind, m.amount, m.date, m.note, m.pay, m.method, m.reason, ${refOf("stock_moves", "m")} AS ref FROM stock_moves m WHERE m.pay = 'cash' AND m.amount > 0`);
+    // Banka Fişi satırları (v2.1.0): THP kodu, alt hesap ve kuruş yazım anında saklanır.
+    if (has("bank_lines") && has("fin_events")) {
+      out.bankLines = store.all("SELECT l.event_id AS eventId, l.seq, l.gl, l.sub, l.side, l.try_minor AS tryMinor, e.date, e.no, e.description FROM bank_lines l JOIN fin_events e ON e.id = l.event_id ORDER BY e.date, l.event_id, l.seq");
+    }
     if (has("cheques")) {
-      out.chequeEvents = store.all("SELECT ev.id, ev.kind, ev.amount, ev.date, ev.note, ev.method FROM cheque_events ev JOIN cheques c ON c.id = ev.cheque_id AND c.deleted_at IS NULL WHERE ev.kind IN ('collect', 'pay')");
+      out.chequeEvents = store.all(`SELECT ev.id, ev.kind, ev.amount, ev.date, ev.note, ev.method, ${refOf("cheque_events", "ev")} AS ref FROM cheque_events ev JOIN cheques c ON c.id = ev.cheque_id AND c.deleted_at IS NULL WHERE ev.kind IN ('collect', 'pay')`);
       // Cariye işlenmemiş evrak: carisi/kartı olmayan (ör. cari açılmamış bir kişiden alınan çek) ya da Excel'den
       // "carilere dokunmadan" alınan açılış portföyü. Cari etkisi yoktur; portföye girişi ve karşılıksız/iade çıkışı ana
       // defterde doğrudan gelir/gider karşılığıyla izlenir (portföy mutabakatı tutsun).
@@ -84,9 +103,17 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, pe
   }
   // Alt defterlerin kendi hesabı (beklenen bakiyeler): Kasa ve Banka yola göre, cariler türe göre, portföy durumuna göre.
   // accountList (v2.0.22): mutabakat denetimi aynı anda (aynı veriyle) cari listesini zaten hesapladıysa yeniden hesaplanmaz.
-  function expected(accountList = null) {
-    const by = cash()?.summary ? cash().summary("9999-12-31").byMethod || {} : {};
-    const out = { 100: by.cash || 0, 102: by.bank || 0, 108: by.card || 0, 120: 0, 320: 0, 336: 0 };
+  // v2.1.0 (K5, §3.11): Kasa ve banka tarafı TEK KAYNAKTAN (lib/bank/money-lines.mjs) yol bazında: 100 = nakit, 102 = havale, 108 = POS,
+  // 309 = kurumsal kart, 300 = kredi. 300/309 satırı yalnız kullanıldığında (kart/kredi hesabı tanımlı ya da hareketi var) açılır: banka
+  // kullanmayan kurulumun Defter Mutabakatı ve Mutabakat Testi'nin denetim listesi 2.0.26 ile aynı kalır. Tanınmayan yol hiçbir beklenene
+  // girmez (yevmiye onu 100'e yazar; fark 2.0.26'daki gibi görünür ve money:method yakalar).
+  const groupsOf = () => (money ? money.groups() : []);
+  function expected(accountList = null, groups = groupsOf()) {
+    const way = name => groups.filter(group => group.way === name).reduce((sum, group) => sum + Number(group.cents), 0);
+    const used = kind => has("bank_accounts") && Boolean(store.get("SELECT 1 AS found FROM bank_accounts WHERE kind = ? LIMIT 1", kind));
+    const out = { 100: roundMoney(way("cash") / 100), 102: roundMoney(way("bank") / 100), 108: roundMoney(way("card") / 100), 120: 0, 320: 0, 336: 0 };
+    if (used("card") || groups.some(group => group.way === "ccard")) out[309] = roundMoney(way("ccard") / 100);
+    if (used("loan") || groups.some(group => group.way === "loan")) out[300] = roundMoney(way("loan") / 100);
     const list = accountList || (accounts()?.list ? accounts().list({ id: "ledger", role: "admin", permissions: [] }, { status: "all" }).accounts : []);
     for (const account of list) {
       const code = { customer: "120", supplier: "320", other: "336" }[account.type] || "120";
@@ -129,14 +156,30 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, pe
       out[360] = roundMoney(sums.v360 / 100);
       out[193] = roundMoney(sums.v193 / 100);
     }
+    // Banka Fişi'nin stopaj satırı (faizden kesilen; §3.11): 193'e eklenir.
+    if (has("bank_lines")) {
+      const stoppage = store.get("SELECT COALESCE(SUM(CASE side WHEN 'D' THEN try_minor ELSE -try_minor END), 0) AS n FROM bank_lines WHERE gl = '193'").n;
+      if (stoppage) out[193] = roundMoney((out[193] || 0) + stoppage / 100);
+    }
+    return out;
+  }
+  // Alt hesap beklenenleri (§3.11 bank:sub): tek kaynağın (yol, hesap) grupları yevmiyeyle aynı kuralla (moneyAccount) alt hesaba.
+  function expectedSubs(groups = groupsOf(), refList = refs()) {
+    const out = new Map();
+    for (const group of groups) {
+      if (!["bank", "card", "ccard"].includes(group.way)) continue;
+      const { sub } = moneyAccount(group.way === "ccard" ? "card" : group.way, group.ref, refList);
+      if (sub) out.set(sub, (out.get(sub) || 0) + Number(group.cents));
+    }
     return out;
   }
   function check({ from = "", to = "", accountList = null } = {}) {
     const entries = build();
     const trial = trialBalance(entries, { from, to });
+    const groups = groupsOf();
     // Mutabakat tüm zamanlarla yapılır (alt defter bakiyeleri bugüne kadarki her şeyi içerir).
-    const reconciliation = reconcile(from || to ? trialBalance(entries) : trial, expected(accountList));
-    return { entries, trial, reconciliation };
+    const reconciliation = reconcile(from || to ? trialBalance(entries) : trial, expected(accountList, groups));
+    return { entries, trial, reconciliation, groups };
   }
   router.get("/api/workspace/ledger", async ({ req, res, url }) => {
     auth.requirePermission(req, "overview.view");
@@ -168,5 +211,5 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, pe
     if (!service) throw new HttpError(503, "Mutabakat katmanı hazır değil.");
     ok(res, { ...service.run(), log: service.recent(50).map(row => ({ ...row, detail: JSON.parse(row.detail || "[]") })) });
   });
-  return { build, check, expected };
+  return { build, check, expected, expectedSubs, refs };
 }

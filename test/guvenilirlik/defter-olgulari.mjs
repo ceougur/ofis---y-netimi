@@ -35,7 +35,11 @@ export async function ledgerFacts(api) {
   const reports = {};
   for (const id of REPORTS) {
     const report = must(await api.get(`/api/workspace/report-center/${id}?from=2000-01-01&to=2099-12-31`), `rapor ${id}`);
-    reports[id] = { total: report.total, rows: digest(report.rows), footer: report.footer, summary: report.summary };
+    // 2.1.0 (plan §3.11, bilerek): 649'un adı "Diğer Olağan Gelirler (Kasaya Elle)" → "Diğer Olağan Gelir ve Kârlar" (Banka Fişi de 649'a
+    // yazar). Ad sürümden bağımsız olgu değildir: yeni ad eski ada çevrilir (fikstürlerdeki "öncesi" olguları 2.0.26 adıyla saklı);
+    // hesap kodu, tutarlar ve satır sırası birebir karşılaştırılır.
+    const rows = id === "hesap-mizani" ? report.rows.map(row => (String(row[0]) === "649" && row[1] === "Diğer Olağan Gelir ve Kârlar" ? [row[0], "Diğer Olağan Gelirler (Kasaya Elle)", ...row.slice(2)] : row)) : report.rows;
+    reports[id] = { total: report.total, rows: digest(rows), footer: report.footer, summary: report.summary };
   }
   const { at, ...overviewStable } = overview;
   return {

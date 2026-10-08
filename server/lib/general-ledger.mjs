@@ -22,6 +22,9 @@ export const CHART = Object.freeze({
   191: "İndirilecek KDV",
   193: "Peşin Ödenen Vergiler (Stopaj)",
   255: "Demirbaşlar",
+  // v2.1.0 (§3.11): banka kredisi ve kurumsal kredi kartı borcu.
+  300: "Banka Kredileri",
+  309: "Diğer Mali Borçlar (Kurumsal Kredi Kartları)",
   320: "Satıcılar (Tedarikçi Carileri)",
   336: "Diğer Cariler (Personel vb.)",
   360: "Ödenecek Vergi ve Fonlar (Tevkifat, Stopaj)",
@@ -30,17 +33,44 @@ export const CHART = Object.freeze({
   600: "Yurt İçi Satışlar (Stok)",
   602: "Diğer Gelirler (Hizmet, Taksitli Satış, Kayıt Tahsilatları)",
   610: "Satıştan İadeler",
-  649: "Diğer Olağan Gelirler (Kasaya Elle)",
+  // v2.1.0 (§3.11): faiz geliri ve kambiyo kârı (banka fişi, döviz değerlemesi).
+  642: "Faiz Gelirleri",
+  646: "Kambiyo Kârları",
+  // v2.1.0 (§3.11): Tekdüzen Hesap Planı'ndaki adı (tutar değişmez; Kasa'ya elle girilen gelirler burada kalır).
+  649: "Diğer Olağan Gelir ve Kârlar",
+  // v2.1.0 (§3.11): POS komisyonu, kambiyo zararı, diğer olağan giderler, finansman giderleri.
+  653: "Komisyon Giderleri",
+  656: "Kambiyo Zararları",
+  659: "Diğer Olağan Gider ve Zararlar",
   689: "Kapatılan Kartlardan Vazgeçilen Alacaklar",
   760: "Pazarlama, Satış ve Dağıtım Giderleri",
   770: "Genel Giderler ve Alış Faturaları",
+  780: "Finansman Giderleri",
 });
-const CASH_ACCOUNT = { cash: "100", bank: "102", card: "108" };
 const PARTY_ACCOUNTS = new Set(["120", "127", "320", "336"]);
 const CONTROL = { customer: "120", supplier: "320", other: "336" };
 const cents = value => Math.round((Number(value) || 0) * 100);
-const cashAccount = method => CASH_ACCOUNT[method] || CASH_ACCOUNT.cash;
 const opening = note => /^açılış/i.test(String(note || "").trim());
+/** Hesabı atanmamış (fin_ref '') eski ve yeni banka/POS hareketlerinin alt hesapları (§3.11). */
+export const UNASSIGNED_SUBS = Object.freeze({ "102.00": "Hesabı Atanmamış Eski Hareketler", "108.00": "Hesabı Atanmamış Eski Hareketler" });
+
+/**
+ * Para hareketinin ana ve alt hesabı (v2.1.0, §3.11; 2.0.26'daki cashAccount'un yerine): yol + bağ (fin_ref).
+ *   nakit → 100 · havale → 102 (banka hesabının alt hesabı; bağsız 102.00) · POS → 108 (POS'un alt hesabı; bağsız 108.00) ·
+ *   kurumsal kartla ödeme (kart hesabına bağlı) → 309 (kartın alt hesabı). Tanınmayan yol 2.0.26'daki gibi 100'e yazılır (eski
+ *   verinin mizanı değişmez; money:method bu satırı ayrıca yakalar).
+ * refs: { accounts: { [id]: { kind, gl, glSub } }, pos: { [id]: { glSub } } } — banka hesabı ve POS kartları.
+ */
+export function moneyAccount(method, ref = "", refs = {}) {
+  const account = ref ? refs?.accounts?.[ref] : null;
+  if (method === "bank") return { account: "102", sub: account && !["card", "loan"].includes(account.kind) ? account.glSub : "102.00" };
+  if (method === "card") {
+    if (account?.kind === "card") return { account: "309", sub: account.glSub };
+    const pos = ref ? refs?.pos?.[ref] : null;
+    return { account: "108", sub: pos ? pos.glSub : "108.00" };
+  }
+  return { account: "100", sub: "" };
+}
 
 /**
  * Yevmiye maddeleri.
@@ -67,24 +97,35 @@ export function journal(rows) {
   // party: cari kimliği. Kontrol hesaplarına (120/127/320/336) düşen satır hangi cariye/karta aitse onu taşır; cari
   // bazında mutabakat (her carinin ana defter bakiyesi = cari kartındaki bakiye) bununla yapılır.
   let party = "";
+  // debit/credit: hesap kodu ya da { account, sub } (para hesapları alt hesabı taşır: 102.01, 108.00 …).
   const post = (id, date, source, text, debit, credit, amount) => {
     const value = cents(amount);
     if (!value) return;
-    const line = (account, dr, cr) => (PARTY_ACCOUNTS.has(account) && party ? { account, debit: dr, credit: cr, party } : { account, debit: dr, credit: cr });
+    const line = (target, dr, cr) => {
+      const { account, sub } = typeof target === "string" ? { account: target, sub: "" } : target;
+      const out = { account, debit: dr, credit: cr };
+      if (sub) out.sub = sub;
+      if (PARTY_ACCOUNTS.has(account) && party) out.party = party;
+      return out;
+    };
     out.push({ id, date, source, text, lines: [line(debit, value, 0), line(credit, 0, value)] });
   };
-  for (const row of rows.payments || []) post(`payment:${row.id}`, row.date, "Kayıt tahsilatı", row.note || "Tahsilat", cashAccount(row.method), "602", row.amount);
+  const refs = rows.refs || {};
+  const moneyOf = row => moneyAccount(row.method, row.ref || "", refs);
+  for (const row of rows.payments || []) post(`payment:${row.id}`, row.date, "Kayıt tahsilatı", row.note || "Tahsilat", moneyOf(row), "602", row.amount);
   for (const row of rows.cashEntries || []) {
-    // v2.0.17: Kasa ↔ Banka transferi gelir/gider değildir — tek fiş, 100 ↔ 102 (nakit tarafı yazılır, banka tarafı atlanır).
+    // v2.0.17: Kasa ↔ Banka transferi gelir/gider değildir — tek fiş, 100 ↔ 102 (nakit tarafı yazılır, banka tarafı atlanır). v2.1.0: banka
+    // tarafının hesabı ikiz satırdan (bankRef; routes/ledger.mjs rows).
     if (row.transferId) {
       if (row.method !== "cash") continue;
-      const bank = cashAccount("bank");
-      if (row.kind === "in") post(`transfer:${row.transferId}`, row.date, "Kasa ↔ Banka", row.description || "Bankadan Kasaya Aktarım", cashAccount("cash"), bank, row.amount);
-      else post(`transfer:${row.transferId}`, row.date, "Kasa ↔ Banka", row.description || "Kasadan Bankaya Yatırma", bank, cashAccount("cash"), row.amount);
+      const bank = moneyAccount("bank", row.bankRef || "", refs);
+      const cash = moneyAccount("cash");
+      if (row.kind === "in") post(`transfer:${row.transferId}`, row.date, "Kasa ↔ Banka", row.description || "Bankadan Kasaya Aktarım", cash, bank, row.amount);
+      else post(`transfer:${row.transferId}`, row.date, "Kasa ↔ Banka", row.description || "Kasadan Bankaya Yatırma", bank, cash, row.amount);
       continue;
     }
-    if (row.kind === "in") post(`cash:${row.id}`, row.date, "Kasa", row.description || "Kasaya giriş", cashAccount(row.method), "649", row.amount);
-    else post(`cash:${row.id}`, row.date, "Kasa", row.description || "Kasadan ödeme", "770", cashAccount(row.method), row.amount);
+    if (row.kind === "in") post(`cash:${row.id}`, row.date, "Kasa", row.description || "Kasaya giriş", moneyOf(row), "649", row.amount);
+    else post(`cash:${row.id}`, row.date, "Kasa", row.description || "Kasadan ödeme", "770", moneyOf(row), row.amount);
   }
   for (const row of rows.accountEntries || []) {
     party = row.party || "";
@@ -106,8 +147,8 @@ export function journal(rows) {
     }
     if (row.kind === "debt") post(id, row.date, "Cari (borç yaz)", row.note, control, opening(row.note) ? "500" : "602", row.amount);
     else if (row.kind === "credit") post(id, row.date, "Cari (alacak yaz)", row.note, opening(row.note) ? "500" : "770", control, row.amount);
-    else if (row.kind === "in") post(id, row.date, "Cari tahsilat", row.note, cashAccount(row.method), control, row.amount);
-    else if (row.kind === "out") post(id, row.date, "Cari ödeme", row.note, control, cashAccount(row.method), row.amount);
+    else if (row.kind === "in") post(id, row.date, "Cari tahsilat", row.note, moneyOf(row), control, row.amount);
+    else if (row.kind === "out") post(id, row.date, "Cari ödeme", row.note, control, moneyOf(row), row.amount);
   }
   for (const plan of rows.plans || []) {
     party = plan.party || (plan.accountType ? "" : `plan:${plan.id}`);
@@ -121,16 +162,16 @@ export function journal(rows) {
     const control = row.accountType ? CONTROL[row.accountType] || CONTROL.customer : "127";
     const id = `plan-entry:${row.id}`;
     if (row.kind === "in") {
-      const debit = row.opening ? "500" : row.chequeId ? "101" : cashAccount(row.method);
+      const debit = row.opening ? "500" : row.chequeId ? "101" : moneyOf(row);
       post(id, row.date, row.opening ? "Taksit açılışı (devir)" : row.chequeId ? "Taksit (çek/senetle)" : "Taksit tahsilatı", row.note, debit, control, row.amount);
-    } else post(id, row.date, "Taksit iadesi", row.note, control, cashAccount(row.method), row.amount);
+    } else post(id, row.date, "Taksit iadesi", row.note, control, moneyOf(row), row.amount);
   }
   party = "";
   for (const row of rows.stockMoves || []) {
     const id = `stock:${row.id}`;
-    if (row.kind === "out") post(id, row.date, "Stok (peşin satış)", row.note, cashAccount(row.method), "600", row.amount);
-    else if (row.reason === "return") post(id, row.date, "Stok (peşin satış iadesi)", row.note, "610", cashAccount(row.method), row.amount);
-    else post(id, row.date, "Stok (peşin alım)", row.note, "153", cashAccount(row.method), row.amount);
+    if (row.kind === "out") post(id, row.date, "Stok (peşin satış)", row.note, moneyOf(row), "600", row.amount);
+    else if (row.reason === "return") post(id, row.date, "Stok (peşin satış iadesi)", row.note, "610", moneyOf(row), row.amount);
+    else post(id, row.date, "Stok (peşin alım)", row.note, "153", moneyOf(row), row.amount);
   }
   // Çok satırlı madde (kuruş). Borç ve alacak toplamı eşit değilse madde yine yazılır; mizan "dengesiz" der (kapı yakalar).
   const postLines = (id, date, source, text, lines) => {
@@ -187,11 +228,55 @@ export function journal(rows) {
   party = "";
   for (const row of rows.chequeEvents || []) {
     const id = `cheque:${row.id}`;
-    if (row.kind === "collect") post(id, row.date, "Çek / senet tahsili", row.note, cashAccount(row.method), "101", row.amount);
-    else post(id, row.date, "Çek / senet ödemesi", row.note, "103", cashAccount(row.method), row.amount);
+    if (row.kind === "collect") post(id, row.date, "Çek / senet tahsili", row.note, moneyOf(row), "101", row.amount);
+    else post(id, row.date, "Çek / senet ödemesi", row.note, "103", moneyOf(row), row.amount);
+  }
+  // Banka Fişi (v2.1.0, §3.11/3): her işlem başlığının satırları tek madde; THP kodu ve alt hesap yazım anında saklanmıştır, kuruş doğrudan.
+  const fis = new Map();
+  for (const row of rows.bankLines || []) {
+    if (!fis.has(row.eventId)) fis.set(row.eventId, { date: row.date, text: row.description || row.no || "Banka fişi", lines: [] });
+    fis.get(row.eventId).lines.push(row);
+  }
+  for (const [eventId, item] of fis) {
+    const lines = item.lines
+      .slice()
+      .sort((a, b) => a.seq - b.seq)
+      .filter(line => Number(line.tryMinor) > 0)
+      .map(line => ({ account: String(line.gl), debit: line.side === "D" ? Number(line.tryMinor) : 0, credit: line.side === "C" ? Number(line.tryMinor) : 0, ...(line.sub ? { sub: String(line.sub) } : {}) }));
+    if (lines.length) out.push({ id: `bank:${eventId}`, date: item.date, source: "Banka fişi", text: item.text, lines });
   }
   out.sort((a, b) => (a.date === b.date ? (a.id < b.id ? -1 : 1) : a.date < b.date ? -1 : 1));
   return out;
+}
+
+/** Alt hesap bakiyeleri (v2.1.0, §3.11): alt hesap kodu (102.01, 108.00 …) → kuruş (borç artı). Σ alt hesap = ana hesap. */
+export function subBalances(entries) {
+  const out = new Map();
+  for (const entry of entries) for (const line of entry.lines) if (line.sub) out.set(line.sub, (out.get(line.sub) || 0) + line.debit - line.credit);
+  return out;
+}
+
+/** Alt Hesap Mizanı (v2.1.0; rapor ekranı Aşama 3): alt hesap başına devir, dönem borç/alacak ve bakiye (TL). names: alt hesap → ad. */
+export function subTrial(entries, { from = "", to = "", names = {} } = {}) {
+  const subs = new Map();
+  for (const entry of entries) {
+    if (to && entry.date > to) continue;
+    const before = from && entry.date < from;
+    for (const line of entry.lines) {
+      if (!line.sub) continue;
+      const row = subs.get(line.sub) || { sub: line.sub, account: line.account, opening: 0, debit: 0, credit: 0 };
+      if (before) row.opening += line.debit - line.credit;
+      else {
+        row.debit += line.debit;
+        row.credit += line.credit;
+      }
+      subs.set(line.sub, row);
+    }
+  }
+  const tl = value => roundMoney(value / 100);
+  return [...subs.values()]
+    .sort((a, b) => a.sub.localeCompare(b.sub))
+    .map(row => ({ sub: row.sub, account: row.account, name: names[row.sub] || UNASSIGNED_SUBS[row.sub] || "", opening: tl(row.opening), debit: tl(row.debit), credit: tl(row.credit), balance: tl(row.opening + row.debit - row.credit) }));
 }
 
 /** Cari (ve carisiz kart) bazında kontrol hesabı bakiyeleri: party → kuruş (borç artı). */
