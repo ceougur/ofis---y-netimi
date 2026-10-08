@@ -790,6 +790,11 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   2.0.24/23/22/21/20/2.0.4/1.7.0 (API ve yedek yol) "available", kurcalanmış bildirge reddedildi. 5 dosya zipsiz + arşiv zip
   (34,8 MB) gönderildi. Sırada: kullanıcı yayın açar (v2.0.25, 5 dosya; adlar/boyutlar teslimle karşılaştırılır) →
   "yayımladım" → bayt bayt + güncelleyici "available" → site kılavuz PR'ı.
+  YAYIMLANDI (08.10.2026 ~06:5x; `v2.0.25` = c2206bc): yayındaki 5 dosya + latest/ (exe, json, zip, pdf) teslimle bayt bayt
+  aynı, exe .sha256 OK; gerçek güncelleyici canlı GitHub'da 2.0.24/23/22/21/20/19/18/17/2.0.4/1.7.0 olarak (API ve yedek yol)
+  2.0.25'i "available" gördü, indirme sha256 02597e7d… eşleşti; 2.0.25 → "up-to-date". Arşiv 30 MiB gönderim sınırını aştı →
+  2 parça (kaynak paketi bölündü, birleştirip klonlandı). Site kılavuz PR'ı ceougur/destekofis#12 açık (PDF f02e7bc5…);
+  birleştirme kullanıcının "birleştir"iyle.
 - 2.0.20 YAPILACAKLAR (kullanıcı "yapılacaklara not al" dedi, 03.10.2026; "yap" denince başlanır; ayrıntı ve
   kanıt hemen altındaki ADAYI maddesinde):
   [x] 1. Bütün raporların (43) tablosunun altında kalın TOPLAM satırı — ekran, PDF, Excel aynı; yalnız toplanabilir
