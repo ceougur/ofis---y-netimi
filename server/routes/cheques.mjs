@@ -249,7 +249,7 @@ export function registerChequeRoutes(router, { store, auth, audit, events, perio
     const instrument = text(body.instrument) || previous?.instrument || "cheque";
     if (!INSTRUMENTS[instrument]) throw new HttpError(400, "Evrak türü çek ya da senet olmalı.");
     const amount = amountOf(body.amount ?? previous?.amount);
-    const issueLabel = direction === "in" ? "Alış tarihi" : "Veriliş tarihi";
+    const issueLabel = direction === "in" ? "Alış Tarihi" : "Veriliş Tarihi";
     const rawIssue = text(body.issueDate ?? previous?.issueDate) || today();
     const issueDate = dated && period ? period.movementDate({ issueDate: rawIssue }, { field: "issueDate", label: issueLabel }) : dateOf(rawIssue, issueLabel, today());
     const dueDate = dateOf(body.dueDate ?? previous?.dueDate, "Vade tarihi");
@@ -574,7 +574,7 @@ export function registerChequeRoutes(router, { store, auth, audit, events, perio
         const issue = parseDay(cell(row, col.issue)) || today();
         // v2.0.26 (A6): alış/veriliş tarihi ileri tarihli ya da kapatılmış dönemde olan satır nedeniyle atlanır (tek tek
         // girişteki kuralın aynısı; bütün aktarım kapıda geri alınmasın).
-        const issueLabel = direction === "in" ? "Alış tarihi" : "Veriliş tarihi";
+        const issueLabel = direction === "in" ? "Alış Tarihi" : "Veriliş Tarihi";
         if (issue > today()) return skip(index, `${issueLabel} ileri tarihli (${dayText(issue)}); ileri tarihli hareket girilmez`);
         const lock = period?.lockedUntil?.() || "";
         if (lock && issue <= lock) return skip(index, `${issueLabel} (${dayText(issue)}) kapatılmış (kilitli) dönemde; ${dayText(lock)} ve öncesine evrak girilmez`);

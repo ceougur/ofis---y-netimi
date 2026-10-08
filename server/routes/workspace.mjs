@@ -53,7 +53,7 @@ export function registerWorkspaceRoutes(router, { store, auth, access = null, au
     // görüyordu; "2025-02-30" gibi takvimde olmayan gün de geçiyordu. Tarih boş bırakılırsa bugün (eski davranış).
     const raw = text(body.date);
     const date = period
-      ? period.movementDate(raw ? { date: raw } : {}, { label: "Tahsilat tarihi" })
+      ? period.movementDate(raw ? { date: raw } : {}, { label: "Tahsilat Tarihi" })
       : raw || new Date().toISOString().slice(0, 10);
     if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || Number.isNaN(new Date(date).getTime())) throw new HttpError(400, "Geçerli bir tahsilat tarihi gerekli.");
     return { amount: roundMoney(amount), date };
