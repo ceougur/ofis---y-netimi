@@ -12,6 +12,7 @@ import { tabContext } from "../lib/insight/dues.mjs";
 import { planStatementPdf, receiptPdf } from "../lib/plan-report.mjs";
 import { tablePdf, tl } from "../lib/report-pdf.mjs";
 import { methodInput } from "../lib/pay-method.mjs";
+import { systemClock } from "../lib/clock.mjs";
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 // v2.0.26 (G6): toplu aktarımda bir satırın iç işlemini geri alıp nedeniyle atlamak için (kapanmış dönem).
@@ -25,9 +26,10 @@ const MAX_ITEMS = 360;
 const MAX_IMPORT = 100_000;
 
 // accounts (v2.0.6): cari servisi daha sonra kurulur; her taksit kartı bir cariye aittir (plans.account_id).
-export function registerPlanRoutes(router, { store, auth, audit, events, trash, dataset = null, cash = null, period = null, accounts = () => null, cheques = () => null, invoices = () => null }) {
-  const now = () => new Date().toISOString();
-  const today = () => isoDay(new Date());
+export function registerPlanRoutes(router, { store, auth, audit, events, trash, dataset = null, cash = null, period = null, accounts = () => null, cheques = () => null, invoices = () => null, now: clock = systemClock }) {
+  // İş saati (v2.1.0): context.now (config.now).
+  const now = () => clock().toISOString();
+  const today = () => isoDay(clock());
   const newId = prefix => `${prefix}-${randomUUID()}`;
   const changed = (user, detail = {}) => events?.publish("workspace.changed", { kind: "plans", actorId: user.id, actorName: user.display_name, ...detail }, { except: user.id });
   // Kayda bağlı kartın hareketi kişinin işlem geçmişini de değiştirir (v2.0.6): açık ekranlardaki kart yenilensin.
@@ -335,6 +337,7 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
     const title = limited(url.searchParams.get("title"), 60, "Başlık") || "Taksitler";
     const subtitle = [STATUS_TEXT[query.status], query.group ? groupName(query.group) : "Tüm gruplar", query.subgroup ? groupName(query.subgroup) : "", query.q ? `“${query.q}”` : ""].filter(Boolean).join(" · ");
     const pdf = tablePdf({
+      now: clock(),
       title: `${title} listesi`,
       subtitle,
       // v2.0.6: kayıt tarihi ve bilgi notu da basılır (yatay sayfada notun yeri var; uzun not satır içinde sarılır).
@@ -836,7 +839,7 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
   router.get("/api/workspace/plans/:id/ekstre.pdf", async ({ req, res, params, url }) => {
     const user = auth.requirePermission(req, "plans.view");
     const plan = detail(params.id, user);
-    const pdf = planStatementPdf(plan, { officeName: office(), userName: user.display_name || user.username || "" });
+    const pdf = planStatementPdf(plan, { officeName: office(), userName: user.display_name || user.username || "", now: clock() });
     audit(user, "plan.statement.exported", plan.id, { name: plan.name });
     sendBuffer(res, pdf, { type: "application/pdf", name: `Taksit-ekstresi ${plan.name}.pdf`, inline: url.searchParams.get("download") !== "1" });
   });
@@ -847,7 +850,7 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
     if (!entry) throw new HttpError(404, "Hareket bulunamadı.");
     // Açılış (devir) kaydı programda alınmış bir tahsilat değildir; makbuzu kesilmez (v2.0.8).
     if (entry.opening) throw new HttpError(409, "Açılış (devir) kaydının makbuzu olmaz: bu tutar programa girmeden önce ödenmişti.");
-    const pdf = receiptPdf(plan, entry, { officeName: office(), userName: user.display_name || user.username || "" });
+    const pdf = receiptPdf(plan, entry, { officeName: office(), userName: user.display_name || user.username || "", now: clock() });
     sendBuffer(res, pdf, { type: "application/pdf", name: `Makbuz ${entry.receiptNo ? `No ${entry.receiptNo} ` : ""}${plan.name} ${dayText(entry.date)}.pdf`, inline: url.searchParams.get("download") !== "1" });
   });
 
@@ -870,7 +873,7 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
     });
   const scheduleShape = (matrix, headerAt, headers, { dueDay = 1, firstDue = "" } = {}) => {
     const objects = matrixRows(matrix, headerAt, headers);
-    const { tabs, records } = extractSchedules({ rows: objects, tabs: [SHEET_KEY], now: new Date(), dueDay, defaultFirstDue: firstDue });
+    const { tabs, records } = extractSchedules({ rows: objects, tabs: [SHEET_KEY], now: clock(), dueDay, defaultFirstDue: firstDue });
     const tab = tabs[0] || null;
     // Toplam + taksit sayısı biçimi Excel yüklemesinde kullanıcının eşlemesiyle kurulur (aşağıdaki yol); motor yalnız
     // ay ve sıralı taksit kolonları için kullanılır.
@@ -915,7 +918,7 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
     const fold = value => String(value ?? "").normalize("NFC").toLocaleLowerCase("tr-TR").replace(/\s+/g, " ").trim();
     const digits = value => String(value ?? "").replace(/\D/g, "");
     const index = new Map();
-    const now = new Date();
+    const now = clock();
     for (const [tab, scope] of byTab) {
       const context = tabContext(scope, { now });
       const nameColumn = context.primary.person;

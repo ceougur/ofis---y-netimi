@@ -7,6 +7,7 @@ import { cariEkstre, dayText, flattenTable, nakitAkis, normalizeFilters, normali
 import { tablePdf } from "../lib/report-pdf.mjs";
 import { columnOrder } from "../lib/sources.mjs";
 import { buildXlsx } from "../lib/xlsx-write.mjs";
+import { systemClock } from "../lib/clock.mjs";
 
 // Raporlar ileriye bir yıl bakar (takvim ve bildirimler bu ay + 7 gün): açıkça tarihi yazılı ödeme ve sözler aralık
 // seçilince görünür. Geçmiş için takvimin kuralı geçerlidir (90 gün; son tarihler 30 gün).
@@ -14,7 +15,7 @@ const AHEAD = Object.freeze({ aheadDays: 366, promiseDays: 366 });
 const TITLES = { "cari-ekstre": "Cari ekstre", "vade-takip": "Vade takip", "nakit-akis": "Nakit akış" };
 const ascii = value => String(value).replace(/[ıİşŞğĞçÇöÖüÜ]/g, char => ({ ı: "i", İ: "I", ş: "s", Ş: "S", ğ: "g", Ğ: "G", ç: "c", Ç: "C", ö: "o", Ö: "O", ü: "u", Ü: "U" })[char]);
 
-export function registerReportRoutes(router, { auth, store, dataset, profile, plans }) {
+export function registerReportRoutes(router, { auth, store, dataset, profile, plans, now: clock = systemClock }) {
   const parseSettled = key => {
     try {
       const value = JSON.parse(store.setting(key, "{}") || "{}");
@@ -70,7 +71,7 @@ export function registerReportRoutes(router, { auth, store, dataset, profile, pl
   // Tüm oturumların takvimi önbellekte: oturumlar, tahsilatlar, taksit kartları ve gün değişmedikçe yeniden hesaplanmaz
   // (birleşik Vade takip ve Nakit akış her süzgeç değişiminde buradan okur).
   let cache = { key: "", value: null, pending: null };
-  async function allCalendar(now = new Date()) {
+  async function allCalendar(now = clock()) {
     const key = [now.toDateString(), paymentsState(), plans?.fingerprint ? plans.fingerprint() : "", ...dataset.sessions().map(sessionState)].join("|");
     if (cache.key === key && cache.value) return cache.value;
     if (cache.key === key && cache.pending) return cache.pending;
@@ -95,7 +96,7 @@ export function registerReportRoutes(router, { auth, store, dataset, profile, pl
 
   async function build(kind, input) {
     if (!REPORT_KINDS.includes(kind)) throw new HttpError(400, "Bilinmeyen rapor türü.");
-    const now = new Date();
+    const now = clock();
     const filters = normalizeFilters(input);
     const data = await backbone(filters, now);
     let report;
@@ -136,16 +137,16 @@ export function registerReportRoutes(router, { auth, store, dataset, profile, pl
     const format = text(body.format) || "xlsx";
     const result = await build(kind, body.filters || {});
     const flat = flattenTable(result.report.table);
-    const stamp = new Date().toISOString().slice(0, 10);
+    const stamp = clock().toISOString().slice(0, 10);
     const title = TITLES[kind];
     if (format === "xlsx") {
       const columns = result.report.table.columns.map(column => column.key);
       const rows = result.report.table.rows.map(row => Object.fromEntries(result.report.table.columns.map(column => [column.key, column.type === "date" ? dayText(row[column.key]) : row[column.key] ?? ""])));
-      const buffer = buildXlsx([{ name: title.slice(0, 31), columns, headers: flat.headers, rows }], { title: `${title} · DestekOfis` });
+      const buffer = buildXlsx([{ name: title.slice(0, 31), columns, headers: flat.headers, rows }], { now: clock(), title: `${title} · DestekOfis` });
       return sendBuffer(res, buffer, { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", name: `${ascii(title)} ${stamp}.xlsx` });
     }
     if (format === "pdf") {
-      const buffer = tablePdf({ title, subtitle: subtitle(result.filters, result.sessions), headers: flat.headers, rows: flat.rows, types: result.report.table.columns.map(column => column.type || ""), summary: summaryOf(result.report), officeName: store.setting("office.name", ""), userName: user.display_name || user.username || "" });
+      const buffer = tablePdf({ now: clock(), title, subtitle: subtitle(result.filters, result.sessions), headers: flat.headers, rows: flat.rows, types: result.report.table.columns.map(column => column.type || ""), summary: summaryOf(result.report), officeName: store.setting("office.name", ""), userName: user.display_name || user.username || "" });
       return sendBuffer(res, buffer, { type: "application/pdf", name: `${ascii(title)} ${stamp}.pdf`, inline: body.inline === true });
     }
     throw new HttpError(400, "Biçim xlsx ya da pdf olmalı.");

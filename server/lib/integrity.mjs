@@ -20,6 +20,7 @@
 import { createHash } from "node:crypto";
 import { HttpError } from "./http.mjs";
 import { partyBalances } from "./general-ledger.mjs";
+import { systemClock } from "./clock.mjs";
 import { roundMoney, toCents } from "./money.mjs";
 
 const AMOUNT_COLUMNS = [
@@ -131,7 +132,7 @@ const LOCK_SQL = {
   },
 };
 
-export function createIntegrity({ store, ledger, accounts = () => null, stock = () => null, plans = () => null, period = () => null, log = null, newId = () => `int-${crypto.randomUUID()}` }) {
+export function createIntegrity({ store, ledger, accounts = () => null, stock = () => null, plans = () => null, period = () => null, log = null, newId = () => `int-${crypto.randomUUID()}`, now = systemClock }) {
   const has = table => Boolean(store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = ?", table));
   const hasColumn = (table, column) => has(table) && store.all(`PRAGMA table_info(${table})`).some(row => row.name === column);
   // İ8: eski sürümden kalan ileri tarihli satır için kullanıcının yapacağı (tablo adı yok). Çek/senet: 2.0.25'te ileri alış/veriliş
@@ -324,7 +325,7 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
     }
     // Tarih: her para hareketinin tarihi dolu ve geçerli takvim günü; ileri tarihli hareket yok (eski sürümden kalanlar
     // taban sayılır, yenisi eklenemez); taksit vadesi kartın Kayıt Tarihi'nden önce değil.
-    const today = period()?.today?.() || new Date().toISOString().slice(0, 10);
+    const today = period()?.today?.() || now.today();
     for (const table of DATED) {
       if (!hasColumn(table, "date")) continue;
       const bad = store.all(`SELECT id, date FROM ${table} WHERE date IS NULL OR trim(date) = '' OR date NOT GLOB '[0-9][0-9][0-9][0-9]-[01][0-9]-[0-3][0-9]' OR date(date) IS NULL OR date(date) <> date LIMIT 5`);
@@ -367,7 +368,7 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
   // Açılıştaki ileri tarihli satırların kimlikleri (tablo → Set); start() ölçer (A13).
   let legacyFuture = new Map();
   const measureLegacyFuture = () => {
-    const today = period()?.today?.() || new Date().toISOString().slice(0, 10);
+    const today = period()?.today?.() || now.today();
     const out = new Map();
     for (const table of DATED) if (hasColumn(table, "date")) out.set(table, new Set(store.all(`SELECT id FROM ${table} WHERE date > ?`, today).map(row => row.id)));
     return out;
@@ -391,7 +392,7 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
     try {
       store.run(
         "INSERT INTO integrity_log (id, at, action, tables, summary, detail_json) VALUES (?, ?, ?, ?, ?, ?)",
-        newId(), new Date().toISOString(), action, [...tables].join(","), failures.map(item => item.name).join("; ").slice(0, 500), JSON.stringify(failures).slice(0, 20000),
+        newId(), now().toISOString(), action, [...tables].join(","), failures.map(item => item.name).join("; ").slice(0, 500), JSON.stringify(failures).slice(0, 20000),
       );
     } catch {
       // Günlük yazılamasa da (eski şema) işlem kararı değişmez.

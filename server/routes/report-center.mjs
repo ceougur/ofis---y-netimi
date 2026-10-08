@@ -17,6 +17,7 @@ import { canUser } from "../lib/permissions.mjs";
 import { allocate, dayText, isoDay } from "../lib/plans.mjs";
 import { tablePdf, tl } from "../lib/report-pdf.mjs";
 import { buildXlsx } from "../lib/xlsx-write.mjs";
+import { systemClock } from "../lib/clock.mjs";
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 const validDate = value => {
@@ -129,7 +130,7 @@ export function footerRow({ headers = [], types = [], rows = [], footer, footerU
   return out;
 }
 
-export function registerReportCenter(router, { store, auth, audit, dataset, cash = () => null, accounts = () => null, plans = () => null, stock = () => null, cheques = () => null, invoices = () => null, overview = () => null, ledger = () => null, integrity = () => null, now: clock = () => new Date() }) {
+export function registerReportCenter(router, { store, auth, audit, dataset, cash = () => null, accounts = () => null, plans = () => null, stock = () => null, cheques = () => null, invoices = () => null, overview = () => null, ledger = () => null, integrity = () => null, now: clock = systemClock }) {
   const today = () => isoDay(clock());
   const office = () => store.setting("office.name", "");
   const admin = { id: "", role: "admin" };
@@ -1428,6 +1429,7 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
     const data = await run(user, params.id, url.searchParams);
     const clipped = data.rows.length > PDF_ROWS;
     const pdf = tablePdf({
+      now: clock(),
       title: data.title,
       subtitle: [data.subtitle, clipped ? `ilk ${PDF_ROWS.toLocaleString("tr-TR")} satır (tamamı Excel'de)` : ""].filter(Boolean).join(" · "),
       headers: data.headers,
@@ -1450,8 +1452,8 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
     const rows = data.rows.map(row => Object.fromEntries(unique.map((header, index) => [header, row[index] ?? ""])));
     const footer = data.footer ? Object.fromEntries(unique.map((header, index) => [header, data.footer[index] ?? ""])) : null;
     const sheets = [{ name: data.title.slice(0, 31), columns: unique, rows, footer }];
-    if (data.summary.length) sheets.push({ name: "Özet", columns: ["Kalem", "Değer"], rows: [{ Kalem: "Rapor", Değer: data.title }, { Kalem: "Kapsam", Değer: data.subtitle }, { Kalem: "Hazırlanma", Değer: stamp(new Date().toISOString()) }, ...data.summary.map(([label, value]) => ({ Kalem: label, Değer: value }))] });
-    const buffer = buildXlsx(sheets, { title: data.title });
+    if (data.summary.length) sheets.push({ name: "Özet", columns: ["Kalem", "Değer"], rows: [{ Kalem: "Rapor", Değer: data.title }, { Kalem: "Kapsam", Değer: data.subtitle }, { Kalem: "Hazırlanma", Değer: stamp(clock().toISOString()) }, ...data.summary.map(([label, value]) => ({ Kalem: label, Değer: value }))] });
+    const buffer = buildXlsx(sheets, { now: clock(), title: data.title });
     audit(user, "report.exported", data.id, { format: "xlsx", rows: data.total, ...data.query });
     sendBuffer(res, buffer, { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", name: `${fileBase(data)}.xlsx` });
   });

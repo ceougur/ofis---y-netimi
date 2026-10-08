@@ -3,6 +3,7 @@
 import path from "node:path";
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
+import { createClock } from "./clock.mjs";
 import { resolveDbPath } from "./db-path.mjs";
 import { DEFAULT_LICENSE_SERVICES } from "./license.mjs";
 
@@ -60,5 +61,8 @@ export function loadConfig(overrides = {}) {
     // e-Belge seçenekleri ekranda görünmez. Yalnız testler (overrides.edocEnabled) açabilir; ortam değişkeniyle açılmaz.
     edocEnabled: overrides.edocEnabled === true,
     scheduleBackups: overrides.scheduleBackups ?? true,
+    // Sunucunun iş saati (v2.1.0; lib/clock.mjs): "bugün" ve iş kayıtlarının zaman damgaları tek kaynaktan. Üretimde gerçek
+    // saat; sahte saat yalnız programdan (testler, kabul senaryoları) verilir — ortam değişkeni yok. Şirketler aynı saati paylaşır.
+    now: createClock(overrides.now),
   });
 }

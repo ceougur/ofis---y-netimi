@@ -3,6 +3,7 @@
 import { HttpError, ok, readJson, text } from "../lib/http.mjs";
 import { computeDeadlines, computeDues } from "../lib/insight/dues.mjs";
 import { canUser } from "../lib/permissions.mjs";
+import { systemClock } from "../lib/clock.mjs";
 
 const SETTLED_KEY = "dues.settled";
 const MAX_SETTLED = 5000;
@@ -10,7 +11,7 @@ const MAX_SETTLED = 5000;
 // calendar (v2.0.17): raporların tüm sayfalar takvimi (routes/reports.mjs allCalendar; tembel, çünkü raporlar sonra kaydolur).
 // Sayfa düzeninde şirketin BÜTÜN sayfalarının tarih uyarıları zile/takvime girer: öbür sayfaların kalemleri "foreign"
 // işaretiyle ve sayfa adıyla eklenir (madde 13: "tarih uyarısı vermiyor" şikâyeti kökten kapanır).
-export function registerDueRoutes(router, { auth, store, dataset, profile, events, audit, plans, cheques, invoices, calendar = null }) {
+export function registerDueRoutes(router, { auth, store, dataset, profile, events, audit, plans, cheques, invoices, calendar = null, now: clock = systemClock }) {
   const cache = new Map(); // oturum → { key, result }
   const settingKey = () => (dataset.settingKey ? dataset.settingKey(SETTLED_KEY) : SETTLED_KEY);
   const readSettled = () => {
@@ -31,7 +32,7 @@ export function registerDueRoutes(router, { auth, store, dataset, profile, event
   // yeniden hesaplanır (önceden binlerce satırlık tablo her kayıtta baştan işleniyordu). Sonuç aynıdır.
   const tableCache = new Map(); // oturum → { key, value: { computed, deadlines } }
   async function compute() {
-    const now = new Date();
+    const now = clock();
     const settledRaw = store.setting(settingKey(), "{}") || "{}";
     // Sekme adları ve gizlenen sekmeler (v2.0.2) görünümü değiştirir; anahtara girer.
     const tabState = ["dataset.tabs.alias", "dataset.tabs.hidden"].map(name => store.setting(dataset.settingKey ? dataset.settingKey(name) : name, "") || "").join("|");
@@ -112,7 +113,7 @@ export function registerDueRoutes(router, { auth, store, dataset, profile, event
     const write = () => {
       const map = readSettled();
       if (body.undo) delete map[id];
-      else map[id] = { reason, by: user.id, at: new Date().toISOString() };
+      else map[id] = { reason, by: user.id, at: clock().toISOString() };
       let entries = Object.entries(map);
       if (entries.length > MAX_SETTLED) entries = entries.sort((a, b) => String(a[1].at).localeCompare(String(b[1].at))).slice(-MAX_SETTLED);
       store.setSetting(settingKey(), JSON.stringify(Object.fromEntries(entries)), user.id);
@@ -149,9 +150,9 @@ export function registerDueRoutes(router, { auth, store, dataset, profile, event
     if (!id) throw new HttpError(400, "Bildirim seçilmedi.");
     const map = readDismissed(user);
     if (body.undo) delete map[id];
-    else map[id] = new Date().toISOString();
+    else map[id] = clock().toISOString();
     // En yeni 3000 kaldırma saklanır; bir yıldan eskiler düşer.
-    const cutoff = new Date(Date.now() - 400 * 86_400_000).toISOString();
+    const cutoff = new Date(clock().getTime() - 400 * 86_400_000).toISOString();
     const entries = Object.entries(map).filter(([, at]) => at >= cutoff).sort((a, b) => a[1].localeCompare(b[1])).slice(-3000);
     store.setSetting(dismissedKey(user), JSON.stringify(Object.fromEntries(entries)), user.id);
     ok(res, { ids: entries.map(([key]) => key) });

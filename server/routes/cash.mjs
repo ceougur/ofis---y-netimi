@@ -10,6 +10,7 @@ import { HttpError, limited, ok, readJson, sendBuffer, text } from "../lib/http.
 import { parseAmount, roundMoney } from "../lib/money.mjs";
 import { canUser } from "../lib/permissions.mjs";
 import { METHODS, NEGATIVE_GUARDED, NEGATIVE_KEY, NEGATIVE_POLICIES, methodFilter, methodOf, readNegativePolicy, methodInput } from "../lib/pay-method.mjs";
+import { systemClock } from "../lib/clock.mjs";
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 // Kasa'nın kendi kaynakları (kayıt tahsilatları ve elle girilen hareketler); diğerleri modüllerin cashSource'u.
@@ -19,7 +20,9 @@ const validDate = value => DATE.test(value) && !Number.isNaN(new Date(value).get
 
 export function registerCashRoutes(router, context) {
   const { store, auth, audit, events, trash } = context;
-  const now = () => new Date().toISOString();
+  // İş saati (v2.1.0): context.now (config.now).
+  const clock = context.now || systemClock;
+  const now = () => clock().toISOString();
   const changed = user => events?.publish("workspace.changed", { kind: "cash", actorId: user.id, actorName: user.display_name }, { except: user.id });
 
   // after: yalnız bu tarihten SONRAKİ hareketler (nakit akışı için ileri tarihli Kasa kayıtları).
@@ -239,7 +242,7 @@ export function registerCashRoutes(router, context) {
     const from = text(url.searchParams.get("from"));
     const to = text(url.searchParams.get("to"));
     const data = report(user, from, to, methodParam(url));
-    const pdf = cashPdf(data, { from, to, officeName: store.setting("office.name", ""), userName: user.display_name || user.username || "" });
+    const pdf = cashPdf(data, { from, to, officeName: store.setting("office.name", ""), userName: user.display_name || user.username || "", now: clock() });
     audit(user, "cash.exported", rangeLabel(from, to), { from, to, count: data.entries.length });
     sendBuffer(res, pdf, { type: "application/pdf", name: cashPdfName(from, to), inline: url.searchParams.get("download") !== "1" });
   });
@@ -250,7 +253,7 @@ export function registerCashRoutes(router, context) {
     const amount = parseAmount(body.amount);
     if (!Number.isFinite(amount) || amount <= 0 || amount > 1e12) throw new HttpError(400, "Geçerli bir tutar girin.");
     // v2.0.13: tarih boş/geçersiz olamaz, ileri tarihli ve kilitli döneme hareket girilemez (lib/period.mjs).
-    const date = context.period ? context.period.movementDate(body) : text(body.date) || now().slice(0, 10);
+    const date = context.period ? context.period.movementDate(body) : text(body.date) || clock.today();
     if (!validDate(date)) throw new HttpError(400, "Geçerli bir tarih girin.");
     const description = limited(body.description, 300, "Açıklama");
     if (!description) throw new HttpError(400, kind === "in" ? "Tahsilatın kimden/ne için alındığını yazın." : "Ödemenin kime/ne için yapıldığını yazın.");
@@ -293,7 +296,7 @@ export function registerCashRoutes(router, context) {
     if (!TRANSFER_TEXT[direction]) throw new HttpError(400, "Transfer yönü seçin: Bankadan Kasaya ya da Kasadan Bankaya.", { field: "direction" });
     const amount = parseAmount(body.amount);
     if (!Number.isFinite(amount) || amount <= 0 || amount > 1e12) throw new HttpError(400, "Geçerli bir tutar girin.");
-    const date = context.period ? context.period.movementDate(body) : text(body.date) || now().slice(0, 10);
+    const date = context.period ? context.period.movementDate(body) : text(body.date) || clock.today();
     if (!validDate(date)) throw new HttpError(400, "Geçerli bir tarih girin.");
     const description = limited(body.description, 300, "Açıklama") || TRANSFER_TEXT[direction];
     const cashKind = direction === "to-cash" ? "in" : "out";

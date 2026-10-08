@@ -145,7 +145,7 @@ export function createApp(overrides = {}) {
   if (!hub) ensureInitialAdmin(store, config, log);
   else mirrorUsers(hub.store, store);
 
-  const audit = createAudit(store);
+  const audit = createAudit(store, { now: config.now });
   // Roller ve etkin yetkiler (v2.0.10): yerleşik 4 rol + ofisin tanımladığı roller + kişiye özel ekle/çıkar.
   const access = hub ? hub.access : createAccess({ store });
   const auth = hub ? hub.auth : createAuth({ store, config, audit, access });
@@ -215,13 +215,13 @@ export function createApp(overrides = {}) {
   });
   clientState.useDataset(() => dataset.info());
   // Serbest sayfalar (v2.0.1): kullanıcının "+" ile açtığı Excel benzeri sekmeler; tablo görünümüne satır olarak girer.
-  const trash = createTrash(store);
+  const trash = createTrash(store, { now: config.now });
   const free = createFreeSheets({ store, audit, dataset, trash });
   dataset.setFreeProvider(free);
   // Ofis profili: sektör, kelime dağarcığı, kalemle değiştirilen başlıklar ve verinin önbellekli analizi.
   // Analiz ayrı iş parçacığında koşar; sunucu bu sırada istekleri yanıtlar (yerel-önce: ofis bilgisayarı kilitlenmez).
   const analysisRunner = createAnalysisRunner({ log, enabled: overrides.analysisWorker !== false });
-  const profile = createProfileService({ store, dataset, audit, events, log, free, runner: analysisRunner });
+  const profile = createProfileService({ store, dataset, audit, events, log, free, runner: analysisRunner, clock: config.now });
   profile.init();
   dataset.onChange(() => profile.invalidate());
   const licenseOptions = overrides.license || {};
@@ -253,6 +253,8 @@ export function createApp(overrides = {}) {
   };
   const context = {
     config, log, store, auth, access, recovery, audit, clientState, startedAt, supervisorLink, events, chat, chatArchive, dataset, profile, license, free, trash, cloudBackup, companies, companyId, company: () => companies.get(companyId),
+    // İş saati (v2.1.0; lib/clock.mjs): modüller "bugün"ü ve zaman damgalarını buradan okur (config.now; testlerde sahte saat).
+    now: config.now,
     // Şirket yedekleri (v2.0.20): bütün şirketler, kendi klasörlerinde; Drive kopyası sıralı.
     backups, backupDir: backupDirNow, withCompanyDb, mirrorNow: hub ? hub.mirrorNow : mirrorNow, closeCompany: id => closeCompany(id), busyCompanies, requestRestart,
   };
@@ -275,7 +277,7 @@ export function createApp(overrides = {}) {
   if (!hub) registerCompanyRoutes(router, { ...context, appFor: company => appFor(company), resetData: (company, ...args) => appFor(company).resetData(...args), closeCompany: id => closeCompany(id) });
   // Hareket tarihi ve dönem kilidi (v2.0.13): Kasa, Cari, Stok ve Taksit aynı kuralla. v2.0.26 (A1): kayıt tahsilatı da
   // (çalışma alanı rotaları) aynı kurala bağlı; bu yüzden onlardan önce kurulur.
-  context.period = createPeriod({ store });
+  context.period = createPeriod({ store, now: config.now });
   // Taksit servisi (context.plans) daha sonra kurulur; işlem geçmişi ona istek anında ulaşır (v2.0.6). Kasa (eksi bakiye
   // denetimi) da sonra kurulur; istek anında okunur.
   registerWorkspaceRoutes(router, { ...context, plans: () => context.plans, cash: () => context.cash });
@@ -297,7 +299,7 @@ export function createApp(overrides = {}) {
   context.ledger = registerLedgerRoutes(router, { ...context, cash: () => context.cash, accounts: () => context.accounts, integrity: () => context.integrity });
   // Mutabakat kapısı (v2.0.13): para taşıyan her işlem COMMIT'ten önce alt defter ↔ ana defter denetiminden geçer;
   // sapma yaratacaksa ROLLBACK edilir ve günlüğe yazılır (lib/integrity.mjs).
-  context.integrity = createIntegrity({ store, ledger: () => context.ledger, accounts: () => context.accounts, stock: () => context.stock, plans: () => context.plans, period: () => context.period, log });
+  context.integrity = createIntegrity({ store, ledger: () => context.ledger, accounts: () => context.accounts, stock: () => context.stock, plans: () => context.plans, period: () => context.period, log, now: config.now });
   context.integrity.start();
   // WhatsApp ile ekstre ve mesaj (v2.0.13): tek ya da toplu; alıcıları sunucu hazırlar, gönderimler cari kartına yazılır.
   registerWhatsappRoutes(router, { ...context, accounts: () => context.accounts });
@@ -392,6 +394,8 @@ export function createApp(overrides = {}) {
         startLicenseTimers: false,
         // Otomatik yedek ortak katmanın zamanlayıcısında (bütün şirketler); çocuk kendi zamanlayıcısını kurmaz.
         scheduleBackups: false,
+        // Şirketler aynı iş saatini paylaşır (sahte saatte de: hub'ın saati ilerleyince 002'nin de ilerler).
+        now: config.now,
         hub: { store, auth, access, recovery, license, supervisorLink, companies, appFor, withCompanyDb, busyCompanies, backups, cloudBackup, mirrorBackup, mirrorNow, requestRestart, closeCompany },
       });
       child.usersStamp = usersFingerprint(store);
@@ -482,7 +486,7 @@ export function createApp(overrides = {}) {
     : () => {};
   if (overrides.startLicenseTimers !== false && !hub) license.start();
   // Gün dönümünde tüm ekranlara "alerts.refresh" (olay tabanlı uyarı akışı, v2.0.2).
-  const alertScheduler = createAlertScheduler({ events, log });
+  const alertScheduler = createAlertScheduler({ events, log, clock: config.now });
   if (overrides.alertScheduler !== false) alertScheduler.start();
   auth.purgeExpiredSessions();
   const sessionTimer = setInterval(() => auth.purgeExpiredSessions(), 3_600_000);

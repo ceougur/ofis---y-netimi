@@ -6,11 +6,13 @@ import { buildXlsx } from "../lib/xlsx-write.mjs";
 import { foldName, nameConflict, resolveUserByName } from "../lib/names.mjs";
 import { parseAmount, roundMoney } from "../lib/money.mjs";
 import { canUser } from "../lib/permissions.mjs";
+import { systemClock } from "../lib/clock.mjs";
 
 const CASE_KEY_MAX = 300;
 
-export function registerWorkspaceRoutes(router, { store, auth, access = null, audit, dataset, clientState, config, events, chat, profile, free, trash, plans = () => null, period = null, cash = () => null }) {
-  const now = () => new Date().toISOString();
+export function registerWorkspaceRoutes(router, { store, auth, access = null, audit, dataset, clientState, config, events, chat, profile, free, trash, plans = () => null, period = null, cash = () => null, now: clock = systemClock }) {
+  // İş saati (v2.1.0): context.now (config.now).
+  const now = () => clock().toISOString();
   // Görev kişiye kimliğiyle bağlıysa yalnızca kimlik belirler (ad değiştirerek başkasının görevi görülemez);
   // serbest yazılmış, kişiye bağlanamamış eski görevlerde ad eşleşmesi geçerlidir.
   const assignedTo = (user, task) => {
@@ -54,7 +56,7 @@ export function registerWorkspaceRoutes(router, { store, auth, access = null, au
     const raw = text(body.date);
     const date = period
       ? period.movementDate(raw ? { date: raw } : {}, { label: "Tahsilat Tarihi" })
-      : raw || new Date().toISOString().slice(0, 10);
+      : raw || clock.today();
     if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || Number.isNaN(new Date(date).getTime())) throw new HttpError(400, "Geçerli bir tahsilat tarihi gerekli.");
     return { amount: roundMoney(amount), date };
   };
@@ -449,7 +451,7 @@ export function registerWorkspaceRoutes(router, { store, auth, access = null, au
   router.get("/api/workspace/liens", async ({ req, res, url }) => {
     auth.requireUser(req);
     const days = Math.max(1, Math.min(365, Number(url.searchParams.get("days") || 7)));
-    const current = Date.now();
+    const current = clock().getTime();
     const threshold = current + days * 86_400_000;
     const items = store.all(`SELECT l.id, l.case_key AS caseKey, l.title, l.placed_at AS placedAt, l.expires_at AS expiresAt, l.status, l.created_by AS actorId, COALESCE(u.display_name, '') AS actorName FROM liens l LEFT JOIN users u ON u.id = l.created_by WHERE l.status = 'active' ORDER BY l.expires_at`)
       .filter(item => {
@@ -641,7 +643,7 @@ export function registerWorkspaceRoutes(router, { store, auth, access = null, au
       sheet.headers = sheet.columns.map(column => aliases[column] || column);
     }
     const total = sheets.reduce((sum, sheet) => sum + sheet.rows.length, 0);
-    const file = buildXlsx(sheets, { title: label });
+    const file = buildXlsx(sheets, { now: clock(), title: label });
     audit(user, "dataset.exported", dataset.currentKey(), { tab: all ? "" : tab, all, rows: total, sheets: sheets.length });
     const suffix = all ? "tüm sekmeler" : tab && sheets[0].name !== label ? sheets[0].name : "";
     sendBuffer(res, file, {

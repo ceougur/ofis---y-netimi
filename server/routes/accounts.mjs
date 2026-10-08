@@ -17,6 +17,7 @@ import { readSheetMatrices } from "../lib/sheets.mjs";
 import { inferRolesByValues, findHeaderRow, sanitizeCell, validateRows } from "../lib/import-gate.mjs";
 import { buildXlsx } from "../lib/xlsx-write.mjs";
 import { ANONYMOUS_TCKN, classifyTaxId, isValidIban, isValidMersis, normalizeIban } from "../lib/tax-id.mjs";
+import { systemClock } from "../lib/clock.mjs";
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 const validDate = value => DATE.test(value) && !Number.isNaN(new Date(value).getTime());
@@ -30,9 +31,10 @@ const collator = new Intl.Collator("tr", { numeric: true, sensitivity: "base" })
 
 const MONEY_FORMAT = new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-export function registerAccountRoutes(router, { store, auth, audit, events, trash, config = {}, dataset = null, cash = null, period = null, plans = () => null, cheques = () => null, invoices = () => null }) {
-  const now = () => new Date().toISOString();
-  const today = () => isoDay(new Date());
+export function registerAccountRoutes(router, { store, auth, audit, events, trash, config = {}, dataset = null, cash = null, period = null, plans = () => null, cheques = () => null, invoices = () => null, now: clock = systemClock }) {
+  // İş saati (v2.1.0): context.now (config.now); sahte saatli testlerde de tek kaynak.
+  const now = () => clock().toISOString();
+  const today = () => isoDay(clock());
   const newId = prefix => `${prefix}-${randomUUID()}`;
   const office = () => store.setting("office.name", "");
   const currentSource = () => (dataset?.currentKey ? dataset.currentKey() : "");
@@ -668,6 +670,7 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     const account = detail(params.id, user);
     const t = account.totals;
     const pdf = tablePdf({
+      now: clock(),
       title: `Cari Ekstre · ${account.name}`,
       subtitle: [account.refNo ? `Cari No ${account.refNo}` : "", ACCOUNT_TYPES[account.type], [account.groupName, account.subgroupName].filter(Boolean).join(" › "), account.phone, account.address].filter(Boolean).join(" · "),
       headers: ["Tarih", "İşlem", "Açıklama", "Borç", "Alacak", "Bakiye"],
@@ -689,7 +692,7 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     const pdf = receiptPdf(
       { name: account.name, refNo: account.refNo, refLabel: "Cari No", phone: account.phone, groupName: account.groupName, subgroupName: account.subgroupName, items: [], balanceOnly: true, totals: { total: account.totals.debit, paid: account.totals.collected, remaining: account.totals.balance } },
       { ...entry, label: entry.kind === "in" ? "Cari tahsilat" : "Cariye ödeme" },
-      { officeName: office(), userName: user.display_name || user.username || "" },
+      { officeName: office(), userName: user.display_name || user.username || "", now: clock() },
     );
     sendBuffer(res, pdf, { type: "application/pdf", name: `Makbuz ${entry.receiptNo ? `No ${entry.receiptNo} ` : ""}${account.name} ${dayText(entry.date)}.pdf`, inline: url.searchParams.get("download") !== "1" });
   });
@@ -704,6 +707,7 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     if (clipped) data.accounts = data.accounts.slice(0, PDF_ROWS);
     const title = limited(url.searchParams.get("title"), 60, "Başlık") || "Cari";
     const pdf = tablePdf({
+      now: clock(),
       title: `${title} listesi`,
       subtitle: [STATUS_TEXT[query.status], query.type ? ACCOUNT_TYPES[query.type] : "", query.q ? `“${query.q}”` : "", clipped ? `ilk ${PDF_ROWS.toLocaleString("tr-TR")} satır (tamamı Excel'de)` : ""].filter(Boolean).join(" · "),
       headers: ["No", "Ad / Unvan", "Tür", "Grup", "Telefon", "Kayıt", "Borç", "Alacak", "Bakiye", "Taksitten Kalan", "Bilgi Notu"],
@@ -749,7 +753,7 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
       return row;
     });
     const title = limited(url.searchParams.get("title"), 60, "Başlık") || "Cari";
-    const buffer = buildXlsx([{ name: title.slice(0, 31), columns: [...base, ...extras], rows }], { title: `${title} listesi` });
+    const buffer = buildXlsx([{ name: title.slice(0, 31), columns: [...base, ...extras], rows }], { now: clock(), title: `${title} listesi` });
     audit(user, "account.list.exported", "xlsx", { ...query, count: rows.length });
     sendBuffer(res, buffer, { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", name: `${title}-listesi ${dayText(today())}.xlsx` });
   });

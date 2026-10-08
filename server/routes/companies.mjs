@@ -6,8 +6,9 @@ import { roundMoney } from "../lib/money.mjs";
 import { tablePdf, tl } from "../lib/report-pdf.mjs";
 import { buildXlsx } from "../lib/xlsx-write.mjs";
 import { separateCompany } from "../lib/company-separate.mjs";
+import { systemClock } from "../lib/clock.mjs";
 
-export function registerCompanyRoutes(router, { store, auth, audit, companies, appFor, resetData, config, events, backups, closeCompany, busyCompanies, withCompanyDb, log }) {
+export function registerCompanyRoutes(router, { store, auth, audit, companies, appFor, resetData, config, events, backups, closeCompany, busyCompanies, withCompanyDb, log, now: clock = systemClock }) {
   const requireManage = req => auth.requirePermission(req, "system.manage");
   // Geri yüklenen ya da silinen şirkette aynı anda ikinci işlem (ad değiştirme, sıfırlama, silme) yapılmaz.
   const notBusy = company => {
@@ -194,7 +195,7 @@ export function registerCompanyRoutes(router, { store, auth, audit, companies, a
     const keys = ["cash", "bank", "receivable", "payable", "overdue", "stock", "invoiceOpenSale", "invoiceOpenPurchase", "monthSale", "monthPurchase"];
     const table = rows.map(row => [`${row.code} · ${row.name}`, ...keys.map(key => row[key])]);
     const totals = ["TOPLAM", ...keys.map(sum)];
-    return { headers, keys, rows, table, totals, types: ["", ...keys.map(() => "money")], generatedAt: new Date().toISOString() };
+    return { headers, keys, rows, table, totals, types: ["", ...keys.map(() => "money")], generatedAt: clock().toISOString() };
   }
   const idsOf = url => text(url.searchParams.get("ids")).split(",").map(value => value.trim()).filter(Boolean);
   router.get("/api/companies/report", async ({ req, res, url }) => {
@@ -205,8 +206,9 @@ export function registerCompanyRoutes(router, { store, auth, audit, companies, a
     const user = auth.requireUser(req);
     const report = buildReport(user, idsOf(url));
     const pdf = tablePdf({
+      now: clock(),
       title: "Şirketler Birleşik Raporu",
-      subtitle: `${report.rows.length} şirket · ${new Date().toLocaleDateString("tr-TR")}`,
+      subtitle: `${report.rows.length} şirket · ${clock().toLocaleDateString("tr-TR")}`,
       headers: report.headers,
       types: ["text", ...report.keys.map(() => "money")],
       rows: [...report.table.map(row => row.map((cell, index) => (index ? tl(cell) : cell))), report.totals.map((cell, index) => (index ? tl(cell) : cell))],
@@ -222,7 +224,7 @@ export function registerCompanyRoutes(router, { store, auth, audit, companies, a
     const report = buildReport(user, idsOf(url));
     const columns = report.headers;
     const rowsOf = row => Object.fromEntries(columns.map((column, index) => [column, row[index]]));
-    const xlsx = buildXlsx([{ name: "Birleşik Rapor", columns, rows: [...report.table.map(rowsOf), rowsOf(report.totals)] }], { title: "Şirketler Birleşik Raporu" });
+    const xlsx = buildXlsx([{ name: "Birleşik Rapor", columns, rows: [...report.table.map(rowsOf), rowsOf(report.totals)] }], { now: clock(), title: "Şirketler Birleşik Raporu" });
     sendBuffer(res, xlsx, { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", name: "Sirketler Birlesik Raporu.xlsx" });
   });
 }

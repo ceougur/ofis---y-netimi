@@ -16,6 +16,7 @@ import { canUser } from "../lib/permissions.mjs";
 import { dayText, isoDay, parseDay } from "../lib/plans.mjs";
 import { tablePdf, tl } from "../lib/report-pdf.mjs";
 import { buildXlsx } from "../lib/xlsx-write.mjs";
+import { systemClock } from "../lib/clock.mjs";
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 const validDate = value => {
@@ -29,9 +30,10 @@ const collator = new Intl.Collator("tr", { numeric: true, sensitivity: "base" })
 // Geri çevrilebilir etkilerin yazılabileceği tablolar (effects_json'dan gelen ad SQL'e yalnız bu listeden girer).
 const EFFECT_TABLES = new Set(["account_entries", "plan_entries"]);
 
-export function registerChequeRoutes(router, { store, auth, audit, events, period = null, cash = null, accounts = () => null, plans = () => null }) {
-  const now = () => new Date().toISOString();
-  const today = () => isoDay(new Date());
+export function registerChequeRoutes(router, { store, auth, audit, events, period = null, cash = null, accounts = () => null, plans = () => null, now: clock = systemClock }) {
+  // İş saati (v2.1.0): context.now (config.now).
+  const now = () => clock().toISOString();
+  const today = () => isoDay(clock());
   const newId = prefix => `${prefix}-${randomUUID()}`;
   const office = () => store.setting("office.name", "");
   const publish = (user, detail) => events?.publish("workspace.changed", { actorId: user.id, actorName: user.display_name, ...detail }, { except: user.id });
@@ -512,6 +514,7 @@ export function registerChequeRoutes(router, { store, auth, audit, events, perio
     const data = list(user, query);
     const rows = data.cheques.slice(0, PDF_ROWS);
     const pdf = tablePdf({
+      now: clock(),
       title: "Çek / Senet Portföyü",
       subtitle: [filterText(query) || "Tüm evrak", `${data.cheques.length} kayıt`, data.cheques.length > PDF_ROWS ? "ilk 20.000 satır (tamamı Excel'de)" : ""].filter(Boolean).join(" · "),
       headers: ["Vade", "Yön", "Tür", "No", "Banka", "Kimden / Kime", "Durum", "Tutar"],
@@ -535,7 +538,7 @@ export function registerChequeRoutes(router, { store, auth, audit, events, perio
     const money = value => new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value || 0);
     const columns = ["Vade", "Yön", "Tür", "Seri No", "Banka / Şube", "Keşideci / Lehtar", "Cari", "Taksit Kartı", "Ciro Edilen", "Alış / Veriliş", "Durum", "Durum Tarihi", "Tutar", "Açıklama"];
     const rows = data.cheques.map(row => ({ Vade: dayText(row.dueDate), Yön: row.directionLabel, Tür: row.instrumentLabel, "Seri No": row.serialNo, "Banka / Şube": row.bank, "Keşideci / Lehtar": row.drawer, Cari: row.accountName, "Taksit Kartı": row.planName, "Ciro Edilen": row.endorseAccountName, "Alış / Veriliş": dayText(row.issueDate), Durum: row.statusLabel, "Durum Tarihi": dayText(row.statusDate), Tutar: money(row.amount), Açıklama: row.note }));
-    const buffer = buildXlsx([{ name: "Çek-Senet", columns, rows }], { title: "Çek / Senet Portföyü" });
+    const buffer = buildXlsx([{ name: "Çek-Senet", columns, rows }], { now: clock(), title: "Çek / Senet Portföyü" });
     audit(user, "cheque.exported", "xlsx", { count: rows.length });
     sendBuffer(res, buffer, { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", name: "Cek-Senet-Portfoyu.xlsx", inline: false });
   });

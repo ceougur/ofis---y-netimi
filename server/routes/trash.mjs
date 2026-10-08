@@ -9,6 +9,7 @@ import { HttpError, ok, readJson, text } from "../lib/http.mjs";
 import { roundMoney } from "../lib/money.mjs";
 import { methodInput } from "../lib/pay-method.mjs";
 import { FREEZE_CLOSE } from "./plans.mjs";
+import { systemClock } from "../lib/clock.mjs";
 
 const KIND_LABELS = {
   row: "Tablo kaydı",
@@ -31,8 +32,8 @@ const KIND_LABELS = {
 };
 const SEQUENCE = /^(sıra|sira|sıra no|no|#|sn|s\.?\s?no|nr)$/i;
 
-export function registerTrashRoutes(router, { store, auth, audit, events, dataset, profile, free, trash, documents, accounts = null, stock = null, cheques = null, invoices = null, plans = null, period = null }) {
-  const now = () => new Date().toISOString();
+export function registerTrashRoutes(router, { store, auth, audit, events, dataset, profile, free, trash, documents, accounts = null, stock = null, cheques = null, invoices = null, plans = null, period = null, now: clock = systemClock }) {
+  const now = () => clock().toISOString();
   const publish = (user, detail) => events?.publish("workspace.changed", { actorId: user.id, actorName: user.display_name, ...detail }, { except: user.id });
   const sessionNames = () => {
     const names = new Map();

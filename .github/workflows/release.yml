@@ -42,6 +42,7 @@ jobs:
       - run: npm run test:senaryo-224
       - run: npm run test:senaryo-225
       - run: npm run test:senaryo-226
+      - run: npm run test:banka-210-saat
 
   windows:
     name: Windows kurulum paketi

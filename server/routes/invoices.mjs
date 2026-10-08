@@ -32,6 +32,7 @@ import { ANONYMOUS_TCKN, classifyTaxId, isValidIban, isValidMersis, normalizeIba
 import { UNITS, unitLabel } from "../lib/units.mjs";
 import { buildXlsx } from "../lib/xlsx-write.mjs";
 import { createZip } from "../lib/zip.mjs";
+import { systemClock } from "../lib/clock.mjs";
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 const TIME = /^([01]\d|2[0-3]):[0-5]\d$/;
@@ -79,15 +80,11 @@ const fail400 = (message, field = "", extra = {}) => {
   throw new HttpError(400, message, { code: "invoice-invalid", field, ...extra });
 };
 const pad2 = value => String(value).padStart(2, "0");
-const nowTime = () => {
-  const d = new Date();
-  return `${pad2(d.getHours())}:${pad2(d.getMinutes())}`;
-};
 const moneyText = (value, currency = "TRY") => `${new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(Number(value) || 0)} ${currency === "TRY" ? "TL" : currency}`;
 const c2 = value => roundMoney((Number(value) || 0) / 100);
 const toCents = value => Math.round((Number(value) || 0) * 100);
 
-export function registerInvoiceRoutes(router, { store, auth, audit, events, config = {}, period = null, cash = null, trash = null, accounts = () => null, stock = () => null, plans = () => null, cheques = () => null }) {
+export function registerInvoiceRoutes(router, { store, auth, audit, events, config = {}, period = null, cash = null, trash = null, accounts = () => null, stock = () => null, plans = () => null, cheques = () => null, now: clock = systemClock }) {
   // e-Belge bağlantısı kapalıyken (varsayılan; program sahibi açana kadar) her belge kâğıt/bilgi fişidir: e-Fatura,
   // e-Arşiv, XML ve entegratör uçları çalışmaz, ekranda görünmez.
   const edocEnabled = config.edocEnabled === true;
@@ -96,12 +93,17 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, conf
   };
   let box = null;
   const secrets = () => (box ||= createSecretBox(config.dataDir || "."));
-  const now = () => new Date().toISOString();
-  const today = () => (period ? period.today() : isoDay(new Date()));
+  // İş saati (v2.1.0): context.now (config.now); fatura saati de buradan.
+  const now = () => clock().toISOString();
+  const today = () => (period ? period.today() : isoDay(clock()));
+  const nowTime = () => {
+    const d = clock();
+    return `${pad2(d.getHours())}:${pad2(d.getMinutes())}`;
+  };
   const newId = prefix => `${prefix}-${randomUUID()}`;
   const AUDITOR = { id: "invoices", role: "admin", permissions: [] };
   const publish = (user, detail) => events?.publish("workspace.changed", { actorId: user.id, actorName: user.display_name, ...detail }, { except: user.id });
-  const requests = createIdempotency();
+  const requests = createIdempotency({ now: () => clock().getTime() });
 
   // ---------- Ayarlar ----------
   function settings() {
@@ -2496,7 +2498,7 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, conf
     const buffer = buildXlsx([
       { name: "Faturalar", columns, rows },
       { name: "Kalemler", columns: ["Fatura No", "Tarih", "Cari", "Stok Kodu", "Kalem", "Miktar", "Birim", "Birim Fiyat", "İskonto %", "Matrah", "KDV %", "KDV", "Tevkifat", "Toplam"], rows: lineRows },
-    ], { title: "Faturalar" });
+    ], { now: clock(), title: "Faturalar" });
     audit(user, "invoice.exported", "xlsx", { count: rows.length });
     sendBuffer(res, buffer, { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", name: "Faturalar.xlsx", inline: false });
   });
@@ -2505,6 +2507,7 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, conf
     const query = listQuery(url.searchParams);
     const data = list(user, query);
     const pdf = tablePdf({
+      now: clock(),
       title: "Fatura Listesi",
       subtitle: [query.from || query.to ? `${query.from ? dayText(query.from) : "…"} – ${query.to ? dayText(query.to) : "…"}` : "Tüm tarihler", `${data.invoices.length} belge`].join(" · "),
       headers: ["Tarih", "Fatura No", "Tür", "Cari", "Durum", "Matrah", "KDV", "Ödenecek", "Kalan"],

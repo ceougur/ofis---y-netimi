@@ -20,6 +20,7 @@ import { roundMoney } from "../lib/money.mjs";
 import { canUser } from "../lib/permissions.mjs";
 import { dayText, isoDay } from "../lib/plans.mjs";
 import { FREEZE_CLOSE, SkippedRow } from "./plans.mjs";
+import { systemClock } from "../lib/clock.mjs";
 
 const SETTLED_KEY = "dues.settled";
 const DISMISSED_KEY = "plans.transfer.dismissed";
@@ -30,9 +31,10 @@ const digits = value => String(value ?? "").replace(/\D/g, "");
 const MONEY = new Intl.NumberFormat("tr-TR", { style: "currency", currency: "TRY", minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const money = value => MONEY.format(Number(value) || 0);
 
-export function registerPlanTransfer(router, { store, auth, audit, events, dataset, profile, period = null, plans = () => null, accounts = () => null }) {
-  const now = () => new Date().toISOString();
-  const today = () => isoDay(new Date());
+export function registerPlanTransfer(router, { store, auth, audit, events, dataset, profile, period = null, plans = () => null, accounts = () => null, now: clock = systemClock }) {
+  // İş saati (v2.1.0): context.now (config.now).
+  const now = () => clock().toISOString();
+  const today = () => isoDay(clock());
   const source = () => (dataset?.currentKey ? dataset.currentKey() : "");
   const settingKey = name => (dataset?.settingKey ? dataset.settingKey(name) : name);
   const readJsonSetting = (name, fallback) => {
@@ -78,7 +80,7 @@ export function registerPlanTransfer(router, { store, auth, audit, events, datas
     const rows = view.rows || [];
     const tabs = (view.tabs || []).map(item => item.title);
     const key = source();
-    const nowDate = new Date();
+    const nowDate = clock();
     const { tabs: planTabs, records } = extractSchedules({ rows, tabs, settled: readJsonSetting(SETTLED_KEY, {}), now: nowDate, forced: profile?.roles ? profile.roles() : null, dueDay: options.dueDay, defaultFirstDue: options.firstDue });
     if (!records.length) return { tabs: [], records: [], raw: new Map(), totals: emptyTotals(), fingerprint: fingerprint(), source: key, sessionName: sessionName() };
 

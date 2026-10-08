@@ -7,6 +7,7 @@
 //   · Dönem kilidi: yönetici bir tarih kilitler (ör. ay kapanışı 30.09.2026); o tarih ve öncesine hareket eklenemez,
 //     o dönemdeki hareket düzeltilemez, silinemez, başka tarihe taşınamaz (409, code "period-locked").
 // Mutabakat kapısı aynı kuralları veritabanı düzeyinde ikinci kez denetler (lib/integrity.mjs).
+import { systemClock } from "./clock.mjs";
 import { HttpError } from "./http.mjs";
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
@@ -20,7 +21,8 @@ const pad = value => String(value).padStart(2, "0");
 const dayText = iso => `${iso.slice(8, 10)}.${iso.slice(5, 7)}.${iso.slice(0, 4)}`;
 export const LOCK_KEY = "ledger.lockedUntil";
 
-export function createPeriod({ store, now = () => new Date() }) {
+// now: iş saati (config.now; lib/clock.mjs). Verilmezse gerçek saat.
+export function createPeriod({ store, now = systemClock }) {
   const today = () => {
     const d = now();
     return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;

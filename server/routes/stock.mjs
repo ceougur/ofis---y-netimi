@@ -15,6 +15,7 @@ import { methodInput } from "../lib/pay-method.mjs";
 import { tablePdf, tl } from "../lib/report-pdf.mjs";
 import { unitLabel } from "../lib/units.mjs";
 import { buildXlsx } from "../lib/xlsx-write.mjs";
+import { systemClock } from "../lib/clock.mjs";
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 const validDate = value => DATE.test(value) && !Number.isNaN(new Date(value).getTime());
@@ -28,9 +29,10 @@ const qtyText = value => qtyFormat.format(Number(value) || 0);
 const afterText = (qty, unit) => `Kayıttan sonra stok: ${qtyText(qty)} ${unit} olacak.`;
 const collator = new Intl.Collator("tr", { numeric: true, sensitivity: "base" });
 
-export function registerStockRoutes(router, { store, auth, audit, events, trash, cash = null, period = null, accounts = () => null, plans = () => null }) {
-  const now = () => new Date().toISOString();
-  const today = () => isoDay(new Date());
+export function registerStockRoutes(router, { store, auth, audit, events, trash, cash = null, period = null, accounts = () => null, plans = () => null, now: clock = systemClock }) {
+  // İş saati (v2.1.0): context.now (config.now).
+  const now = () => clock().toISOString();
+  const today = () => isoDay(clock());
   const newId = prefix => `${prefix}-${randomUUID()}`;
   const office = () => store.setting("office.name", "");
   const changed = (user, detail = {}) => events?.publish("workspace.changed", { kind: "stock", actorId: user.id, actorName: user.display_name, ...detail }, { except: user.id });
@@ -232,6 +234,7 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
     if (clipped) data.items = data.items.slice(0, PDF_ROWS);
     const title = limited(url.searchParams.get("title"), 60, "Başlık") || "Stok";
     const pdf = tablePdf({
+      now: clock(),
       title: `${title} durumu`,
       subtitle: [query.state === "low" ? "Kritik seviyede" : query.state === "out" ? "Tükenen" : query.state === "negative" ? "Eksi stoktakiler" : "Tüm ürünler", query.category, query.q ? `“${query.q}”` : "", clipped ? `ilk ${PDF_ROWS.toLocaleString("tr-TR")} satır (tamamı Excel'de)` : ""].filter(Boolean).join(" · "),
       headers: ["Stok Kodu", "Ürün", "Kategori", "Mevcut", "Birim", "Kritik Seviye", "Birim Fiyat", "Değer", "Son Hareket", "Durum"],
@@ -253,7 +256,7 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
     const money = value => moneyFormat.format(value || 0);
     const columns = ["Stok Kodu", "Ürün", "Kategori", "Birim", "Mevcut", "Toplam Giriş", "Toplam Çıkış", "Kritik Seviye", "Birim Fiyat", "Değer", "Son Hareket", "Not"];
     const rows = data.items.map(item => ({ Kod: item.code, Ürün: item.name, Kategori: item.category, Birim: item.unit, Mevcut: number(item.qty), "Toplam Giriş": number(item.qtyIn), "Toplam Çıkış": number(item.qtyOut), "Kritik Seviye": number(item.minQty), "Birim Fiyat": money(item.unitPrice), Değer: money(item.value), "Son Hareket": dayText(item.lastMove), Not: item.note }));
-    const buffer = buildXlsx([{ name: title.slice(0, 31), columns, rows }], { title: `${title} durumu` });
+    const buffer = buildXlsx([{ name: title.slice(0, 31), columns, rows }], { now: clock(), title: `${title} durumu` });
     audit(user, "stock.list.exported", "xlsx", { count: rows.length });
     sendBuffer(res, buffer, { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", name: `${title}-durumu ${dayText(today())}.xlsx` });
   });
@@ -437,6 +440,7 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
     const item = detail(params.id, user);
     const payText = move => (move.pay === "cash" ? (move.kind === "in" ? (move.reason === "return" ? "Kasa'dan iade edildi" : "Kasa'dan ödendi") : "Kasa'ya tahsil") : move.pay === "account" ? `Cari: ${move.accountName}` : "");
     const pdf = tablePdf({
+      now: clock(),
       title: `Stok Hareketleri · ${item.name}`,
       subtitle: [item.code ? `Kod ${item.code}` : "", item.category, `Birim: ${item.unit}`].filter(Boolean).join(" · "),
       headers: ["Tarih", "İşlem", "Açıklama", "Giriş", "Çıkış", "Kalan", "Birim Fiyat", "Tutar", "Ödeme"],

@@ -16,6 +16,7 @@ import { canUser } from "../lib/permissions.mjs";
 import { dayText, isoDay } from "../lib/plans.mjs";
 import { tablePdf, tl } from "../lib/report-pdf.mjs";
 import { buildXlsx } from "../lib/xlsx-write.mjs";
+import { systemClock } from "../lib/clock.mjs";
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 const validDate = value => {
@@ -37,7 +38,7 @@ const GROUPS = new Set(["day", "week", "month"]);
 
 const MONEY_FORMAT = new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-export function registerOverviewRoutes(router, { store, auth, audit, events, dataset = null, cash = () => null, accounts = () => null, plans = () => null, stock = () => null, cheques = () => null, invoices = () => null, tables = () => null, now: clock = () => new Date() }) {
+export function registerOverviewRoutes(router, { store, auth, audit, events, dataset = null, cash = () => null, accounts = () => null, plans = () => null, stock = () => null, cheques = () => null, invoices = () => null, tables = () => null, now: clock = systemClock }) {
   const today = () => isoDay(clock());
   const office = () => store.setting("office.name", "");
   const userName = user => user.display_name || user.username || "";
@@ -53,7 +54,7 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
     timer = setTimeout(() => {
       const list = [...kinds];
       kinds.clear();
-      events.publish("overview.changed", { kinds: list, at: new Date().toISOString() });
+      events.publish("overview.changed", { kinds: list, at: clock().toISOString() });
     }, 250);
     timer.unref?.();
   });
@@ -80,7 +81,7 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
     const key = fingerprint(day);
     if (cache.key === key && cache.value) return cache.value;
     const admin = { id: "", role: "admin" };
-    const started = Date.now();
+    const started = Date.now(); // saat: gerçek (süre ölçümü)
     // Kasa: Kasa ekranıyla aynı kaynak tanımlarından SQL toplamı (satırlar belleğe alınmaz). Bakiye, Kasa ekranındaki
     // "güncel kasa" gibi tüm hareketleri kapsar.
     const cashSummary = cash()?.summary ? cash().summary(day) : { balance: 0, today: { in: 0, out: 0 }, month: { in: 0, out: 0 }, futureEntries: 0 };
@@ -140,7 +141,7 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
         drafts: store.get("SELECT COUNT(*) AS n FROM invoices WHERE status = 'draft'").n,
       };
     }
-    const value = { today: day, at: new Date().toISOString(), cash: cashBlock, stock: stockBlock, receivable, payable, cheques: chequeSummary, invoices: invoiceBlock, tookMs: Date.now() - started };
+    const value = { today: day, at: clock().toISOString(), cash: cashBlock, stock: stockBlock, receivable, payable, cheques: chequeSummary, invoices: invoiceBlock, tookMs: Date.now() - started }; // saat: gerçek (tookMs süre ölçümü)
     cache = { key, value };
     return value;
   }
@@ -225,7 +226,7 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
     const data = mizan(url.searchParams);
     const clipped = data.rows.length > PDF_ROWS;
     const table = mizanTable({ ...data, rows: data.rows.slice(0, PDF_ROWS) });
-    const pdf = tablePdf({ title: "Cari Mizanı", subtitle: [rangeText(data), data.type ? TYPE_TEXT[data.type] : "Tüm cariler", SIDE_FILTER[data.side] || "", clipped ? "ilk 20.000 satır (tamamı Excel'de)" : ""].filter(Boolean).join(" · "), ...table, officeName: office(), userName: userName(user), brand: office() || "DestekOfis" });
+    const pdf = tablePdf({ now: clock(), title: "Cari Mizanı", subtitle: [rangeText(data), data.type ? TYPE_TEXT[data.type] : "Tüm cariler", SIDE_FILTER[data.side] || "", clipped ? "ilk 20.000 satır (tamamı Excel'de)" : ""].filter(Boolean).join(" · "), ...table, officeName: office(), userName: userName(user), brand: office() || "DestekOfis" });
     audit(user, "overview.exported", "mizan.pdf", { from: data.from, to: data.to, count: data.rows.length });
     sendBuffer(res, pdf, { type: "application/pdf", name: `Mizan ${fileRange(data)}.pdf`, inline: url.searchParams.get("download") !== "1" });
   });
@@ -237,7 +238,7 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
     const rows = data.rows.map(row => ({ "Cari No": row.refNo, Cari: row.name, Tür: TYPE_TEXT[row.type] || "", Grup: [row.groupName, row.subgroupName].filter(Boolean).join(" › "), Devir: money(row.opening), "Dönem Borç": money(row.debit), "Dönem Alacak": money(row.credit), Bakiye: money(row.closing), Durum: sideText(row.closing) }));
     // TOPLAM satırı (v2.0.20): kalın, süzgeç alanı dışında (sıralayınca yerinden oynamaz).
     const footer = { "Cari No": "", Cari: "TOPLAM", Tür: "", Grup: "", Devir: money(data.totals.opening), "Dönem Borç": money(data.totals.debit), "Dönem Alacak": money(data.totals.credit), Bakiye: money(data.totals.closing), Durum: `Borçlular ${money(data.totals.closingDebtor)} · Alacaklılar ${money(data.totals.closingCreditor)}` };
-    const buffer = buildXlsx([{ name: "Mizan", columns, rows, footer }], { title: `Cari Mizanı ${rangeText(data)}` });
+    const buffer = buildXlsx([{ name: "Mizan", columns, rows, footer }], { now: clock(), title: `Cari Mizanı ${rangeText(data)}` });
     audit(user, "overview.exported", "mizan.xlsx", { from: data.from, to: data.to, count: data.rows.length });
     sendBuffer(res, buffer, { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", name: `Mizan ${fileRange(data)}.xlsx` });
   });
@@ -263,6 +264,7 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
     const user = auth.requirePermission(req, "overview.view");
     const data = ekstre(user, url.searchParams);
     const pdf = tablePdf({
+      now: clock(),
       title: `Cari Ekstre · ${data.account.name}`,
       subtitle: [data.account.refNo ? `Cari No ${data.account.refNo}` : "", rangeText(data), "B: borçlu · A: alacaklı"].filter(Boolean).join(" · "),
       headers: ["Tarih", "İşlem", "Açıklama", "Borç", "Alacak", "Bakiye"],
@@ -287,7 +289,7 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
       ...data.lines.map(line => ({ Tarih: dayText(line.date), İşlem: line.label, Açıklama: line.note, "Makbuz No": line.receiptNo ? String(line.receiptNo) : "", Borç: line.debit ? money(line.debit) : "", Alacak: line.credit ? money(line.credit) : "", Bakiye: money(line.balance) })),
     ];
     const footer = { Tarih: dayText(data.to), İşlem: "TOPLAM", Açıklama: `Dönem sonu · ${sideText(data.closing)}`, "Makbuz No": "", Borç: money(data.debit), Alacak: money(data.credit), Bakiye: money(data.closing) };
-    const buffer = buildXlsx([{ name: "Ekstre", columns, rows, footer }], { title: `Cari Ekstre ${data.account.name}` });
+    const buffer = buildXlsx([{ name: "Ekstre", columns, rows, footer }], { now: clock(), title: `Cari Ekstre ${data.account.name}` });
     audit(user, "overview.exported", "ekstre.xlsx", { accountId: data.account.id, from: data.from, to: data.to });
     sendBuffer(res, buffer, { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", name: `Ekstre ${data.account.name} ${fileRange(data)}.xlsx` });
   });
@@ -341,6 +343,7 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
     const user = auth.requirePermission(req, "overview.view");
     const data = await cashflow(user, url.searchParams);
     const pdf = tablePdf({
+      now: clock(),
       title: "Nakit Akış Projeksiyonu",
       subtitle: [`${dayText(data.from)} – ${dayText(data.to)}`, `Taksit, çek/senet${data.withTable ? ", tablodaki ödeme günleri" : ""} ve ileri tarihli Kasa hareketleri`, data.group ? `${GROUP_TEXT[data.group]} toplamlar` : "Aynı gün önce çıkışlar yazılır"].join(" · "),
       ...(data.group
@@ -374,7 +377,7 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
         { name: "Gecikmiş", columns, rows: overdue },
         { name: "Özet", columns: ["Kalem", "Tutar"], rows: summary },
       ],
-      { title: "Nakit Akış Projeksiyonu" },
+      { now: clock(), title: "Nakit Akış Projeksiyonu" },
     );
     audit(user, "overview.exported", "nakit-akisi.xlsx", { from: data.from, to: data.to, count: data.rows.length });
     sendBuffer(res, buffer, { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", name: `Nakit-akisi ${dayText(data.from)}-${dayText(data.to)}.xlsx` });
@@ -500,6 +503,7 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
     const data = await vadeTakip(user, url.searchParams);
     const clipped = data.rows.length > PDF_ROWS;
     const pdf = tablePdf({
+      now: clock(),
       title: "Vade Takip",
       subtitle: [vadeRange(data), data.direction === "in" ? "Tahsil edilecekler" : data.direction === "out" ? "Ödenecekler" : "", clipped ? "ilk 20.000 satır (tamamı Excel'de)" : ""].filter(Boolean).join(" · "),
       headers: ["Vade", "Durum", "Kimden / Kime", "Kaynak", "Açıklama", "Tahsil Edilecek", "Ödenecek"],
@@ -522,7 +526,7 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
     const sheets = [{ name: "Vade Takip", columns, rows }];
     if (data.dormant.length) sheets.push({ name: "Ödemesi kesilmiş olabilir", columns: ["Kişi", "Son Ödeme", "Boş Ay", "Kaynak"], rows: data.dormant.map(item => ({ Kişi: item.party, "Son Ödeme": item.lastPaidText, "Boş Ay": String(item.emptyMonths), Kaynak: item.detail })) });
     sheets.push({ name: "Özet", columns: ["Kalem", "Değer"], rows: [{ Kalem: "Kapsam", Değer: vadeRange(data) }, ...vadeSummary(data).map(([label, value]) => ({ Kalem: label.trim(), Değer: value }))] });
-    const buffer = buildXlsx(sheets, { title: "Vade Takip" });
+    const buffer = buildXlsx(sheets, { now: clock(), title: "Vade Takip" });
     audit(user, "overview.exported", "vade-takip.xlsx", { from: data.from, to: data.to, count: data.rows.length });
     sendBuffer(res, buffer, { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", name: `Vade-takip ${dayText(data.today)}.xlsx` });
   });
