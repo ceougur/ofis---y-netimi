@@ -13,6 +13,13 @@ import { readZip } from "../../server/lib/zip.mjs";
 import { createReferenceLicenseService } from "../../tools/lib/license-service.mjs";
 import { okulServisiXlsx } from "../fixtures/okul-servisi-ornek.mjs";
 import { acilirListelerXlsx } from "../fixtures/acilir-listeler.mjs";
+// Tarihe bağlı olmasın (CLAUDE.md): ilk vade bugünden ileri.
+const isoAhead = days => {
+  const d = new Date();
+  d.setDate(d.getDate() + days);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+};
+const ahead30 = isoAhead(30);
 
 // v2.0.2: ilk yüklemede veri doğrudan yazılmaz; "Ön izleme ve eşleme" penceresi açılır, "Yükle" ile onaylanır.
 async function firstUpload(page, input, files) {
@@ -673,10 +680,10 @@ try {
     expect(planned.length === 1, "2026/101 tek cari (taksit kartının carisi)");
     // Açık taksit kartı varken cari kartındaki Tahsilat önce "taksite mi?" diye sorar.
     const other = accounts.find(item => !item.caseKey);
-    await admin.evaluate(async account => {
-      const response = await fetch("/api/workspace/plans", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ accountId: account.id, name: account.name, total: "1.200", mode: "auto", count: 2, firstDue: "2026-11-01" }) });
+    await admin.evaluate(async ({ account, firstDue }) => {
+      const response = await fetch("/api/workspace/plans", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ accountId: account.id, name: account.name, total: "1.200", mode: "auto", count: 2, firstDue }) });
       if (!response.ok) throw new Error(await response.text());
-    }, other);
+    }, { account: other, firstDue: ahead30 });
     await admin.evaluate(id => window.HOF.accounts.open(id), other.id);
     await admin.waitForFunction(() => document.querySelector(".hof-accounts-modal .hof-plans-items tbody tr"), null, { timeout: 10000 });
     await admin.click('.hof-accounts-modal [data-entry="in"]');
