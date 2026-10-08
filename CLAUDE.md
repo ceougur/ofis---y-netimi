@@ -835,7 +835,12 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   10.000 cari; kapının kendisi ~1 sn/COMMIT → Aşama 2). HEPSİ düzeltildi (6ed1d40 … 4b5c76d); kırmızı kanıt
   `test/inceleme-226-2.test.mjs` bdd1be6'da 27'nin 17'si, `senaryo-226` 25'in 10'u. Son kodla npm test 1.189/1.189, mutabakat
   2.000 işlem, güvenilirlik 2×1.000, 7 arayüz senaryosu 0 hata. Kanıt `docs/2.0.26-KANIT.md` 4. bölüm.
-  Sırada: kullanıcı onayıyla paket/PR (2.0.26) ya da Aşama 2.
+  TESLİM + BİRLEŞTİRME (08.10.2026 ~16:1x; kullanıcı: "2.0.26 paketini bitirip teslim ettiğinde birlikte yükleyip canlıya
+  alalım"): PR ceougur/ofis---y-netimi#26 CI 12/12 yeşil → squash, `master` = 5346ff8 (ağaç paketlenen b4c9853 ile aynı); dal
+  master'a sıfırlandı. Güncelleme paketi sha256 ee76d7f4… (HEAD ile bayt bayt), kurulum .exe 191feb6a… (30,9 MB, simgeli),
+  kılavuz PDF 63d536ad… (DEĞİŞTİ → yayından sonra site PR'ı); 24 arayüz senaryosu son kodla 0 hata. Arşiv 2 parça (30 MiB
+  sınırı). Sırada: kullanıcı yayın açar (v2.0.26, 5 dosya; adlar/boyutlar teslimle karşılaştırılır) → "yayımladım" → bayt
+  bayt + güncelleyici "available" → site kılavuz PR'ı → ANCAK SONRA 2.1.0 (Aşama 2+).
 - 2.0.20 YAPILACAKLAR (kullanıcı "yapılacaklara not al" dedi, 03.10.2026; "yap" denince başlanır; ayrıntı ve
   kanıt hemen altındaki ADAYI maddesinde):
   [x] 1. Bütün raporların (43) tablosunun altında kalın TOPLAM satırı — ekran, PDF, Excel aynı; yalnız toplanabilir
