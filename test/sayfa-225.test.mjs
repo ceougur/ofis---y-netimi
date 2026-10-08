@@ -62,4 +62,21 @@ describe("sayfa şeridindeki kayıt sayısı gizlenen sekmeyi saymaz", () => {
     assert.equal(list.find(item => item.name === "Müşteriler Yeni")?.rowCount, 1);
     assert.equal((await admin.post("/api/workspace/tabs/unhide", { original: "Müşteriler" })).status, 200);
   });
+
+  // 2.0.25 ikinci gözden geçirme: "Kaydı Sil" ile silinen satır şeritte sayılıyordu (tablo 3, şerit 4).
+  it("nasıl bozarım: Kaydı Sil ile silinen satır sayılmaz; gizli sekmedeki silinen satır iki kez düşülmez", async () => {
+    const count = async () => (await pages()).find(item => item.name === "Müşteriler Yeni").rowCount;
+    const raw = (await admin.get(`/api/trpc/sheets.getRows?input=${encodeURIComponent(JSON.stringify({ json: {} }))}`)).data;
+    const result = (Array.isArray(raw) ? raw[0] : raw)?.result?.data;
+    const rows = (result?.json ?? result).rows;
+    const current = (await pages()).find(item => item.current).key;
+    const pick = name => rows.find(row => Object.values(row).includes(name)).__hofKey;
+    assert.equal((await admin.post("/api/workspace/deleted", { sourceName: current, caseKey: pick("Ali Veli") })).status, 200);
+    assert.equal(await count(), 3, "silinen kayıt sayılmaz");
+    assert.equal((await admin.post("/api/workspace/deleted", { sourceName: current, caseKey: pick("Deniz Ak") })).status, 200);
+    assert.equal(await count(), 2);
+    assert.equal((await admin.post("/api/workspace/tabs/hide", { tab: "Arşiv" })).status, 200);
+    assert.equal(await count(), 2, "gizli sekmedeki silinmiş satır ikinci kez düşülmez");
+    assert.equal((await admin.post("/api/workspace/tabs/unhide", { original: "Arşiv" })).status, 200);
+  });
 });

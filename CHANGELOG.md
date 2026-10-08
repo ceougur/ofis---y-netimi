@@ -17,14 +17,16 @@ Yeni Şirket ve + işareti gelmesin") ve müşteri istekleri (06.10.2026). Ayrı
   Tahsilat Takvimi). Başka sayfanın uyarısında "Gerçekleştirildi" gösterilmez: işaret açık sayfaya yazılıyor, uyarı kapanmıyordu;
   önce Kayda Git ile o sayfaya geçilir.
 - **Sayfa şeridindeki kayıt sayısı (müşteri).** Sekme silinince (ekrandan kaldırılınca) şeritteki sayı düşer; sekme geri gelince
-  geri gelir.
+  geri gelir. Öbür pencere ve bilgisayarlarda da yenilenir; "Kaydı Sil" ile silinen kayıtlar da sayılmaz.
 - **Sayfayı Sil (müşteri).** Sayfa şeridinde açık sayfanın pilinde çöp kutusu: sayfanın bütün sekmeleri tek seferde silinir
-  (yalnız veri yöneticisi; ilk sayfa silinmez; önce tam yedek; onayda sayfa adı ve kayıt sayısı).
+  (yalnız veri yöneticisi; ilk sayfa silinmez; önce tam yedek; onayda sayfa adı ve kayıt sayısı). Silen kişiye yedeğin adı ve
+  açılan sayfa söylenir; o sayfada çalışan öbür ekranlar hangi sayfaya geçtiklerini görür; silinen sayfanın uyarıları kalkar.
 - **Onay kutusu şirket koduyla dolu (müşteri).** Şirket Verisini Sıfırla, Şirketi Sil, Ayır ve Yedekten Geri Yükle onayında kutu
-  şirketin koduyla dolu gelir, imleç paroladadır; tarayıcının kayıtlı kullanıcı adını ("admin") bu kutuya yazmasının önüne
-  geçmek için ayrı, görünmeyen bir kullanıcı adı alanı vardır.
+  şirketin koduyla dolu gelir, imleç paroladadır. Parola alanı tarayıcının kayıtlı parolasıyla kendiliğinden doldurulmaz (kod
+  hazır geldiği için tek koruma paroladır); kayıtlı kullanıcı adı ("admin") onay kutusuna yazılmaz.
 - Testler: `test/sirket-siniri-225.test.mjs`, `test/sayfa-225.test.mjs`, rastgele sıra testinde gerçek sınır turu,
-  `npm run test:senaryo-225` (arayüz; eski kodda 37 denetimin 19'u kırmızı).
+  `npm run test:senaryo-225` (arayüz; eski kodda 37 denetimin 19'u kırmızı; ikinci gözden geçirmenin bulguları için eklenen
+  7 denetim düzeltmeden önceki kodda kırmızı).
 
 ## 2.0.24 — İade ile taksit kartı, çek/senet tarih ve dönem kilidi, iki rapor düzeltmesi
 

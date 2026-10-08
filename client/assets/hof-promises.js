@@ -254,7 +254,7 @@
     const liveSoon = HOF.refresher(load, { delay: 800, gap: 4000 });
     HOF.on("live:workspace.changed", change => {
       if (!change || change.info) return;
-      if (["dues", "activity", "cash", "records", "source", "plans", "cheques", "accounts", "documents", "invoices"].includes(change.kind) || change.dataset) liveSoon();
+      if (["dues", "activity", "cash", "records", "source", "sessions", "plans", "cheques", "accounts", "documents", "invoices"].includes(change.kind) || change.dataset) liveSoon();
     });
     // Sunucu para/evrak değişikliğini işlemi yapan dahil herkese "overview.changed" ile de duyurur (başka bilgisayarda
     // ödenen çek bu ekranda da düşer).

@@ -27,6 +27,9 @@ export function registerWorkspaceRoutes(router, { store, auth, access = null, au
     const scoped = kind === "records" || kind === "source" ? { datasetKey: dataset.currentKey() } : {};
     return events?.publish("workspace.changed", { kind, actorId: user.id, actorName: user.display_name, ...scoped, ...detail }, { except: user.id, users });
   };
+  // Sayfa şeridindeki kayıt sayısı (2.0.25 gözden geçirme): sekme gizlenince/geri gelince aynı kullanıcının öbür pencereleri
+  // dahil bütün açık ekranlar şeridi yeniler ("source" olayı işlemi yapan kullanıcıya gitmez).
+  const pageCounts = user => events?.publish("workspace.changed", { kind: "sessions", counts: true, actorId: user.id, actorName: user.display_name });
   // Görev olayları (başlık, atanan) yalnızca o görevi görebilenlere gider: tüm görevleri görme yetkisi olanlar,
   // görevin atandığı ve görevi oluşturan kişi. Personel başkalarının görevlerini canlı kanaldan da öğrenemez.
   const taskAudience = task => store.all("SELECT id, role, role_key, grants_json, display_name FROM users WHERE active = 1 AND deleted_at IS NULL")
@@ -165,6 +168,7 @@ export function registerWorkspaceRoutes(router, { store, auth, access = null, au
     const body = await readJson(req);
     const result = dataset.hideTab(user, text(body.tab).slice(0, 300));
     changed(user, "source", { tab: result.name });
+    pageCounts(user);
     ok(res, result);
   });
   router.post("/api/workspace/tabs/unhide", async ({ req, res }) => {
@@ -172,6 +176,7 @@ export function registerWorkspaceRoutes(router, { store, auth, access = null, au
     const body = await readJson(req);
     const result = dataset.unhideTab(user, text(body.original).slice(0, 300));
     changed(user, "source", { tab: result.name });
+    pageCounts(user);
     ok(res, result);
   });
 

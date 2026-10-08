@@ -25,6 +25,13 @@ const { port } = await app.listen(0, "127.0.0.1");
 const BASE = `http://127.0.0.1:${port}`;
 const browser = await chromium.launch();
 const context = await browser.newContext({ viewport: { width: 1440, height: 1000 }, locale: "tr-TR" });
+// Ekrandaki bildirimler (yeniden yüklemeden sonraki "hof-flash" dahil) her pencerede window.__toasts'a yazılır.
+await context.addInitScript(() => {
+  window.__toasts = [];
+  new MutationObserver(list => {
+    for (const entry of list) for (const node of entry.addedNodes) if (node.nodeType === 1 && node.classList?.contains("hof-toast")) window.__toasts.push(node.textContent);
+  }).observe(document, { childList: true, subtree: true });
+});
 const page = await context.newPage();
 const errors = [];
 page.on("pageerror", error => errors.push(`pageerror ${error.message}`));
@@ -142,8 +149,13 @@ try {
     ok(/Müşteriler Yeni/.test(await currentPill()) && (await selectedRowText()).includes(TARGET), "zilden Kayda Git → 2. sayfa ve kayıt seçili");
   }
 
-  console.log("\n■ D. 2. sayfada “Arşiv” sekmesi silinince sayfa şeridindeki sayı 65 → 60");
+  console.log("\n■ D. 2. sayfada “Arşiv” sekmesi silinince sayfa şeridindeki sayı 65 → 60 (aynı kullanıcının ikinci penceresinde de)");
   ok(/65 kayıt/.test(await currentPill()), `önce: ${await currentPill()}`);
+  const peer = await context.newPage();
+  await peer.goto(`${BASE}/`, { waitUntil: "load" });
+  await peer.waitForSelector(".dynamic-table tbody tr", { timeout: 30000 });
+  await peer.waitForTimeout(800);
+  const peerPill = () => peer.$eval("#hof-pages .hof-page.is-current .hof-page-pick", node => node.textContent.replace(/\s+/g, " ").trim()).catch(() => "");
   await page.evaluate(() => window.HOF.selectTab?.("Arşiv"));
   await page.waitForSelector("#hof-tab-edit", { timeout: 10000 });
   await page.click("#hof-tab-edit");
@@ -151,6 +163,8 @@ try {
   await page.click(`${modal} [data-answer="yes"]`);
   await page.waitForFunction(() => /60 kayıt/.test(document.querySelector("#hof-pages .hof-page.is-current .hof-page-pick")?.textContent || ""), null, { timeout: 15000 }).catch(() => {});
   ok(/60 kayıt/.test(await currentPill()), `sekme silinince şerit: ${await currentPill()}`);
+  await peer.waitForFunction(() => /60 kayıt/.test(document.querySelector("#hof-pages .hof-page.is-current .hof-page-pick")?.textContent || ""), null, { timeout: 15000 }).catch(() => {});
+  ok(/60 kayıt/.test(await peerPill()), `ikinci pencerede şerit: ${await peerPill()}`);
   await shot("d-sekme-silindi-60");
 
   console.log("\n■ D. Sayfa şeridinden Sayfayı Sil");
@@ -161,7 +175,14 @@ try {
     const confirmText = await page.$eval(modal, node => node.textContent);
     ok(/Müşteriler Yeni/.test(confirmText) && /65 kayıt/.test(confirmText), "onayda sayfa adı ve (gizli sekme dahil) 65 kayıt");
     await shot("d-sayfayi-sil-onay");
-    await Promise.all([page.waitForEvent("load", { timeout: 30000 }), page.click(`${modal} [data-answer="yes"]`)]);
+    await Promise.all([page.waitForEvent("load", { timeout: 30000 }), peer.waitForEvent("load", { timeout: 30000 }).catch(() => {}), page.click(`${modal} [data-answer="yes"]`)]);
+    await page.waitForTimeout(1500);
+    const own = await page.evaluate(() => window.__toasts.join(" | "));
+    ok(/Müşteriler Yeni” sayfası silindi/.test(own) && /Yedek: destekofis/.test(own) && /Açılan sayfa: “TÜM REHBER/.test(own) && !/veri yöneticisi/.test(own), `silen pencerenin bildirimi kendi silmesini ve yedeği söyler: “${own}”`);
+    await peer.waitForSelector(".dynamic-table tbody tr", { timeout: 30000 }).catch(() => {});
+    await peer.waitForTimeout(1500);
+    const other = await peer.evaluate(() => window.__toasts.join(" | ")).catch(() => "");
+    ok(/silindi; “TÜM REHBER\.xlsx” sayfasına geçildi/.test(other), `öbür pencere açılan sayfanın adını söyler: “${other}”`);
   } else {
     // Düğme yoksa (eski kod) sayfa Ayarlar'daki yoldan silinir; sonraki adımlar yine koşar.
     await api("/api/workspace/sessions/delete", { key: p2.key });
@@ -175,6 +196,15 @@ try {
   const dues = (await api("/api/workspace/dues")).data;
   ok(![...(dues.items || []), ...(dues.deadlines || [])].some(entry => String(entry.person || entry.title || "").includes(TARGET) || entry.caseNo === TARGET_NO), "silinen sayfanın uyarısı zil/takvimden kalktı");
   await shot("d-sayfa-silindi");
+  await peer.close();
+  // Silinmiş sayfanın (eski) uyarısından Kayda Git: kayıt açık sayfada aranmaz, "sayfa silinmiş" denir.
+  await page.evaluate(() => {
+    window.__toasts = [];
+    return window.HOF.sessions.select("silinmis-sayfa", { reveal: { caseKey: "yok-boyle-bir-kayit" } });
+  });
+  await page.waitForTimeout(800);
+  const gone = await page.evaluate(() => window.__toasts.join(" | "));
+  ok(/sayfası silinmiş/.test(gone) && !/tabloda bulunamadı/.test(gone), `silinmiş sayfanın uyarısında Kayda Git: “${gone}”`);
 
   console.log("\n■ E. Şirket Verisini Sıfırla / Şirketi Sil onayı");
   const created = await api("/api/companies", { name: "İkinci Şirket" });
@@ -194,8 +224,10 @@ try {
       const password = form.querySelector('input[name="password"]');
       const trap = form.querySelector('input.hof-autofill-trap[autocomplete="username"]');
       const fields = [...form.querySelectorAll("input")];
-      return { confirm: confirm.value, password: password.value, focused: document.activeElement === password, trap: Boolean(trap), trapBeforePassword: trap ? fields.indexOf(trap) === fields.indexOf(password) - 1 : false, trapVisible: trap ? trap.getBoundingClientRect().width > 2 : true };
+      return { confirm: confirm.value, password: password.value, focused: document.activeElement === password, trap: Boolean(trap), trapBeforePassword: trap ? fields.indexOf(trap) === fields.indexOf(password) - 1 : false, trapVisible: trap ? trap.getBoundingClientRect().width > 2 : true, trapValue: trap?.value ?? null, passwordAutocomplete: password.getAttribute("autocomplete") };
     });
+    // Kod kutusu dolu geldiği için parola tek korumadır: parola yöneticisi doldurmasın, görünmeyen alan kullanıcı adı taşımasın.
+    ok(state.passwordAutocomplete === "one-time-code" && state.trapValue === "", `${label}: parola alanı kayıtlı parolayla doldurulmaz (autocomplete=${state.passwordAutocomplete}, gizli alan “${state.trapValue}”)`);
     ok(state.confirm === code, `${label}: onay kutusu “${state.confirm}” (beklenen ${code})`);
     ok(state.password === "" && state.focused, `${label}: parola boş ve odakta`);
     ok(state.trap && state.trapBeforePassword && !state.trapVisible, `${label}: parolanın hemen önünde görünmeyen kullanıcı adı alanı`);

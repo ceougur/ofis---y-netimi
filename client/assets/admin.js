@@ -759,8 +759,11 @@
   // görünmeyen kullanıcı adı alanı (autocomplete="username") o işi üstlenir, onay kutusuna dokunulmaz.
   const confirmFields = code => [
     { name: "confirm", label: `Onay: şirket kodunu (${code}) ya da adını yazın`, required: true, value: code, autocomplete: "off" },
-    { name: "username", type: "username-hidden", value: HOF.user?.username || "" },
-    { name: "password", label: "Parolanız", type: "password", required: true, autofocus: true, autocomplete: "current-password" },
+    // Kod kutusu dolu geldiği için tek koruma paroladır: tarayıcı kayıtlı parolayı kendiliğinden doldurmasın
+    // ("one-time-code" alanı parola yöneticisince doldurulmaz). Görünmeyen alan, yine de doldurmaya kalkan tarayıcının
+    // kullanıcı adını onay kutusu yerine üstlenir.
+    { name: "username", type: "username-hidden" },
+    { name: "password", label: "Parolanız", type: "password", required: true, autofocus: true, autocomplete: "one-time-code" },
   ];
   function restoreBackup(item) {
     const root = (backupFolders?.companies || []).find(company => company.id === item.companyId)?.root;

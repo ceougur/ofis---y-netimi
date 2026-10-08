@@ -780,6 +780,10 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   (`visibleRowCount`, `totalRowCount`) · D-b "Sayfayı Sil" şeritte (mevcut silme: önce tam yedek, Silinenler'e GİTMEZ — notumdaki
   "Silinenler'e gider" yapılmadı, kullanıcıya söylenecek) · E onay kutusu kodla dolu + görünmeyen kullanıcı adı alanı. Testler:
   sayfa-225, sirket-siniri-225, senaryo-225 (eski kodda 19/37 kırmızı; CI'de).
+  İKİNCİ BAĞIMSIZ GÖZDEN GEÇİRME (08.10.2026): 7 bulgu (G1–G7, `docs/2.0.25-KANIT.md` 1b), kullanıcıya listelendi, hepsi düzeltildi:
+  kendi silmesinde yanlış bildirim/yedek adı yok, "ilk sayfa" metni, öbür pencerede eski şerit sayısı, Kaydı Sil sayılıyor,
+  gizli sekmeli sayım önbelleksiz, silinmiş sayfanın uyarısında yanlış hata, kayıtlı parola kendiliğinden dolabiliyor
+  (parola alanı `one-time-code`; gerçek kayıtlı parolayla DENENMEDİ). Eski kodda 7 denetim kırmızı; senaryo-225 45/45.
 - 2.0.20 YAPILACAKLAR (kullanıcı "yapılacaklara not al" dedi, 03.10.2026; "yap" denince başlanır; ayrıntı ve
   kanıt hemen altındaki ADAYI maddesinde):
   [x] 1. Bütün raporların (43) tablosunun altında kalın TOPLAM satırı — ekran, PDF, Excel aynı; yalnız toplanabilir

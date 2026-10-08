@@ -19,6 +19,7 @@
 
   let state = null; // { current, sessions: [...], canManage }
   let pending = null;
+  let removing = null; // bu pencerenin silmekte olduğu sayfa: kendi silme olayı "başkası sildi" sayılmaz
   let editing = ""; // adı düzenlenen sayfanın anahtarı (şeritte)
 
   const canManage = () => Boolean(state?.canManage);
@@ -47,7 +48,14 @@
   // ---------- Sayfaya geçiş ----------
   async function select(key, { reveal = null } = {}) {
     const target = state?.sessions.find(item => item.key === key);
-    if (reveal?.caseKey && (!target || target.current)) return HOF.revealRecord?.(reveal.caseKey, { tab: reveal.tab || "" });
+    if (reveal?.caseKey && !target) {
+      // Uyarının sayfası silinmiş (başka bir yönetici, başka bilgisayar): kayıt açık sayfada aranmaz, takvim yenilenir.
+      HOF.toast("Bu uyarının sayfası silinmiş; uyarı listeden kaldırılıyor.", { type: "warn" });
+      HOF.emit("dues:refresh");
+      load().catch(() => {});
+      return;
+    }
+    if (reveal?.caseKey && target.current) return HOF.revealRecord?.(reveal.caseKey, { tab: reveal.tab || "" });
     if (!target || target.current) return;
     const pill = document.querySelector(`#hof-pages [data-pick="${CSS.escape(key)}"]`);
     pill?.classList.add("is-busy");
@@ -100,23 +108,28 @@
     if (!target || key === FIRST_KEY) return false;
     const ok = await HOF.confirm({
       title: "Sayfayı Sil",
-      message: `“${nameOf(target)}” sayfası ve içindeki ${number(target.totalRowCount ?? target.rowCount)} kayıt, düzeltmeler ve uygulamada eklenen kayıtlar kalıcı olarak silinir. Cari, Kasa, stok, taksit, fatura, kullanıcılar, notlar ve görevler silinmez. Silmeden önce veritabanının tam yedeği alınır; bu sayfada çalışan kişiler ilk sayfaya döner.`,
+      message: `“${nameOf(target)}” sayfası ve içindeki ${number(target.totalRowCount ?? target.rowCount)} kayıt, düzeltmeler ve uygulamada eklenen kayıtlar kalıcı olarak silinir. Cari, Kasa, stok, taksit, fatura, kullanıcılar, notlar ve görevler silinmez. Silmeden önce veritabanının tam yedeği alınır; bu sayfada çalışan kişiler başka bir sayfaya geçer.`,
       confirmLabel: "Sayfayı Sil",
       danger: true,
     });
     if (!ok) return false;
+    removing = key;
     try {
       const result = await HOF.api("/api/workspace/sessions/delete", { method: "POST", body: { key } });
       const message = `“${nameOf(target)}” sayfası silindi (${number(result.removed)} kayıt). Yedek: ${result.backupName || "—"}`;
       if (target.current) {
-        sessionStorage.setItem("hof-flash", message);
+        const data = await load().catch(() => null);
+        const next = data?.sessions.find(item => item.key === data.current);
+        sessionStorage.setItem("hof-flash", next ? `${message}. Açılan sayfa: “${nameOf(next)}”.` : message);
         location.reload();
         return true;
       }
       HOF.toast(message, { type: "success", timeout: 6000 });
       await load();
+      removing = null;
       return true;
     } catch (error) {
+      removing = null;
       HOF.toastError(error);
       return false;
     }
@@ -349,12 +362,17 @@
   }
 
   // ---------- Canlı değişiklikler ----------
+  // Başka bilgisayardaki veri değişikliği (yükleme, eşitleme, sekme) şeritteki kayıt sayısını değiştirebilir.
+  const countsSoon = HOF.refresher(() => load(), { delay: 800, gap: 4000 });
   HOF.on("live:workspace.changed", change => {
+    if (change?.kind === "source" || change?.kind === "records") return countsSoon();
     if (change?.kind !== "sessions") return;
+    if (removing) return; // bu pencerenin kendi silmesi: remove() bildirir ve yeniden açar
     load().then(data => {
-      // Çalışılan sayfa başka bir bilgisayarda silindiyse ekran ilk sayfayla yeniden açılır.
-      if (data && HOF.datasetKey && data.current !== HOF.datasetKey) {
-        sessionStorage.setItem("hof-flash", "Çalıştığınız sayfa veri yöneticisi tarafından silindi; ilk sayfaya geçildi.");
+      // Çalışılan sayfa başka bir bilgisayarda silindiyse ekran sunucunun açtığı sayfayla yeniden açılır.
+      if (data && HOF.datasetKey && data.current !== HOF.datasetKey && !removing) {
+        const next = data.sessions.find(item => item.key === data.current);
+        sessionStorage.setItem("hof-flash", `Çalıştığınız sayfa veri yöneticisi tarafından silindi; ${next ? `“${nameOf(next)}” sayfasına` : "başka bir sayfaya"} geçildi.`);
         location.reload();
       } else if (change.created && change.actorId !== HOF.user?.id) {
         HOF.toast(`${change.actorName || "Bir kullanıcı"} yeni bir sayfa açtı: “${change.created}”. Ortadaki sayfa şeridinden geçebilirsiniz.`, { timeout: 7000 });
