@@ -150,9 +150,12 @@
       // Yola göre başlık ve öneri (Nakit Kasa, Banka, Kredi Kartı). "Engelle" ayarında sunucu cash-blocked döner, sorulmaz.
       const where = { cash: ["Kasa Eksiye Düşecek", "Ödeme bankadan ya da başka bir kasadan yapıldıysa yolu değiştirin."], bank: ["Banka Bakiyesi Eksiye Düşecek", "Hesapta kredili mevduat varsa ya da tahsilat henüz girilmediyse kaydedebilirsiniz."], card: ["Kredi Kartı Bakiyesi Eksiye Düşecek", "İade tutarını ve ödeme yolunu kontrol edin."] }[error.data?.method] || ["Bakiye Eksiye Düşecek", ""];
       // v2.0.26 (G7): silmede sunucu nedeni söyler ("… silinince Nakit Kasa'dan … düşer"); yol değiştirme önerisi silmeye uymaz.
-      const question = removing ? `${error.message} Yine de silinsin mi?` : `${error.message} ${where[1]} Yine de kaydedilsin mi?`;
+      // 2. gözden geçirme İ5: düzeltmede de sunucu nedeni söyler (explained: "… düzeltilince …"); öneri eklenmez.
+      const explained = removing || error.data?.explained === true;
+      const question = removing ? `${error.message} Yine de silinsin mi?` : `${error.message} ${explained ? "" : where[1]} Yine de kaydedilsin mi?`;
       const go = await HOF.confirm({ title: where[0], message: question.replace(/\s+/g, " "), confirmLabel: removing ? "Yine de Sil" : "Yine de Kaydet", danger: true });
-      if (!go) throw new ApiError("Kaydedilmedi: bakiye eksiye düşecekti.", 409, { code: "cash-negative-cancelled" });
+      // İ6: silmede "Silinmedi"; kullanıcı bilerek vazgeçtiği için bildirim hata değil bilgi (HOF.toastError, aşağıda).
+      if (!go) throw new ApiError(removing ? "Silinmedi: bakiye eksiye düşecekti." : "Kaydedilmedi: bakiye eksiye düşecekti.", 409, { code: "cash-negative-cancelled" });
       // Silmede gövde yok: onay adrese eklenir.
       if (removing) return rawApi(`${path}${path.includes("?") ? "&" : "?"}cashForce=1`, options);
       return rawApi(path, { ...options, body: { ...body, cashForce: true } });
@@ -469,7 +472,8 @@
     }, action ? Math.max(timeout, 7000) : timeout);
     return node;
   };
-  HOF.toastError = error => HOF.toast((error && error.message) || String(error), { type: "error", timeout: 5200 });
+  // v2.0.26 (2. gözden geçirme İ6): eksi bakiye sorusunda "Vazgeç" bir hata değil, kullanıcının kararı: bilgi bildirimi.
+  HOF.toastError = error => (error?.data?.code === "cash-negative-cancelled" ? HOF.toast(error.message, { type: "info" }) : HOF.toast((error && error.message) || String(error), { type: "error", timeout: 5200 }));
 
   // ---------- Pencereler ----------
   const openModals = [];

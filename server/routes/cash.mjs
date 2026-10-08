@@ -112,32 +112,53 @@ export function registerCashRoutes(router, context) {
   // v2.0.26 (gözden geçirme G7): silmede soru nedenini söyler. subject verilirse ("Bu tahsilat silinince", "Bu cari silinince
   // tahsilat ve ödemeleriyle birlikte") metin "çıkış" değil:
   // "Bu tahsilat silinince Nakit Kasa'dan 1.000,00 TL düşer; Nakit Kasa 200,00 TL iken −800,00 TL olur."
+  // 2. gözden geçirme İ5: düzeltmede de (guardChange) özne kurulur ("Bu tahsilat 1.000,00 TL'den 500,00 TL'ye düzeltilince",
+  // "Bu tahsilatın yolu Havale / EFT olarak değiştirilince"); yanıtta explained: true — istemci "ödeme bankadan yapıldıysa yolu
+  // değiştirin" önerisini eklemez (düzeltmeye uymuyordu).
   const FROM = { cash: "Nakit Kasa'dan", bank: "banka hesabından (Havale / EFT)", card: "POS / Kredi Kartı hesabından" };
   const NAME = { cash: "Nakit Kasa", bank: "Banka hesabı (Havale / EFT)", card: "POS / Kredi Kartı hesabı" };
+  const money = value => `${new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value)} TL`;
   function guardOut(amount, day, force = false, method = "cash", subject = "") {
     const key = methodOf(method);
     if (!NEGATIVE_GUARDED.includes(key)) return;
     const policy = negativePolicy()[key];
     if (!(amount > 0) || policy === "off" || (policy === "warn" && force)) return;
-    const balance = Math.min(summary(day || "9999-12-31").byMethodAt[key], summary("9999-12-31").byMethod[key] || 0);
+    // Hareketin günündeki bakiye ile (ileri tarihliler dahil) son bakiyeden azı. Tek özet: summary(gün) son bakiyeyi de (byMethod,
+    // bütün tarihler) verir — 2. gözden geçirme İ10: önceden aynı özet iki kez hesaplanıyordu (10.000 caride ~70 ms/işlem).
+    const totals = summary(day || "9999-12-31");
+    const balance = Math.min(totals.byMethodAt[key], totals.byMethod[key] || 0);
     const after = roundMoney(balance - amount);
     if (after < -0.005) {
-      const money = value => `${new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value)} TL`;
       const base = subject
         ? `${subject} ${FROM[key]} ${money(amount)} düşer; ${NAME[key]} ${money(balance)} iken ${money(after)} olur.`
         : `${PLACE[key]} ${money(balance)} var; ${money(amount)} çıkış bakiyeyi ${money(after)} eksiye düşürür.`;
-      if (policy === "block") throw new HttpError(409, `${base} Bu hesapta eksi bakiyeye izin verilmiyor (Yönetim → Sistem → Eksi Bakiye Denetimi).`, { code: "cash-blocked", method: key, balance, after });
-      throw new HttpError(409, base, { code: "cash-negative", method: key, balance, after });
+      const extra = subject ? { explained: true } : {};
+      if (policy === "block") throw new HttpError(409, `${base} Bu hesapta eksi bakiyeye izin verilmiyor (Yönetim → Sistem → Eksi Bakiye Denetimi).`, { code: "cash-blocked", method: key, balance, after, ...extra });
+      throw new HttpError(409, base, { code: "cash-negative", method: key, balance, after, ...extra });
     }
+  }
+  // Düzeltmede sorunun öznesi (İ5): aynı yolda tutar/yön düzeltmesi ya da yol değişikliği.
+  const NOUN = { in: ["Bu tahsilat", "Bu tahsilatın"], out: ["Bu ödeme", "Bu ödemenin"] };
+  function changeSubject(before, after, key) {
+    const [noun, owner] = NOUN[(before || after)?.kind === "out" ? "out" : "in"];
+    const wasHere = before && methodOf(before.method) === key;
+    const isHere = after && methodOf(after.method) === key;
+    if (wasHere && isHere) {
+      if (before.kind !== after.kind) return `${noun} ${after.kind === "out" ? "ödemeye" : "tahsilata"} çevrilince`;
+      return `${noun} ${money(Number(before.amount) || 0)}'den ${money(Number(after.amount) || 0)}'ye düzeltilince`;
+    }
+    if (wasHere) return `${owner} yolu ${METHODS[methodOf(after.method)]} olarak değiştirilince`;
+    if (before) return `${owner} yolu ${METHODS[key]} olarak değiştirilince`;
+    return "";
   }
   // Düzeltme ve silmede de: before/after { kind: "in"|"out" (Kasa'ya giriş/çıkış yönü), amount, method, date } ya da null
   // (yeni/silinen). Her yol ayrı: nakitten bankaya taşınan bir tahsilat nakit hesabını azaltır, o denetlenir.
-  // subject (G7): silmede (after null) sorunun öznesi, ör. "Bu tahsilat silinince".
+  // subject (G7): silmede (after null) sorunun öznesi, ör. "Bu tahsilat silinince"; düzeltmede özne kendiliğinden kurulur (İ5).
   function guardChange(before, after, force = false, subject = "") {
     for (const key of Object.keys(METHODS)) {
       const effect = entry => (entry && methodOf(entry.method) === key ? (entry.kind === "in" ? 1 : -1) * (Number(entry.amount) || 0) : 0);
       const delta = roundMoney(effect(after) - effect(before));
-      if (delta < -0.005) guardOut(-delta, after?.date || before?.date || "", force, key, after ? "" : subject);
+      if (delta < -0.005) guardOut(-delta, after?.date || before?.date || "", force, key, after ? changeSubject(before, after, key) : subject);
     }
   }
   // v2.0.26 (A3, A4): birden çok hareket birlikte düşerken (cari ya da taksit kartı silme) her yolun NET etkisi denetlenir
