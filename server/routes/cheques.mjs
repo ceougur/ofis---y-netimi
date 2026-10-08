@@ -6,7 +6,7 @@
 // değişen çek ve olayın defter etkileri (cari hareketi, taksit tahsilatı) birlikte yazılır; biri başarısız olursa hepsi
 // geri alınır. Etkiler effects_json'da tutulur; "Geri al" bunları birebir tersine çevirir (silinen satır aynı kimlikle
 // geri eklenir). İki kişi aynı çeki aynı anda işlerse ikincisi "bu arada değişti" (409) alır (beklenen durum denetimi).
-import { methodOf, methodInput } from "../lib/pay-method.mjs";
+import { methodInput } from "../lib/pay-method.mjs";
 import { randomUUID } from "node:crypto";
 import { ACTIONS, DIRECTIONS, EVENT_LABELS, INSTRUMENTS, STATUSES, dueState, initialEvent, initialStatus, mapChequeHeaders, parseDirection, parseInstrument, parseStatus, plannedEffects, portfolioSummary, transition } from "../lib/cheques.mjs";
 import { HttpError, limited, ok, readJson, sendBuffer, text } from "../lib/http.mjs";
@@ -234,7 +234,7 @@ export function registerChequeRoutes(router, { store, auth, audit, events, perio
     const id = newId("cevent");
     store.run(
       "INSERT INTO cheque_events (id, cheque_id, kind, date, amount, account_id, from_status, to_status, note, effects_json, method, invoice_id, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-      id, cheque.id, kind, date, amount, accountId, fromStatus, toStatus, note, JSON.stringify(effects), methodOf(method), invoiceId, user.id, now(),
+      id, cheque.id, kind, date, amount, accountId, fromStatus, toStatus, note, JSON.stringify(effects), methodInput(method), invoiceId, user.id, now(),
     );
     return id;
   }

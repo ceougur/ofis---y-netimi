@@ -55,6 +55,11 @@ export class IntegrityError extends HttpError {
  * @param {{ store, ledger: () => ({ check, expected }), log?, newId? }} options
  */
 const AUDITOR = { id: "integrity", role: "admin", permissions: [] };
+// v2.0.26 (B7): ödeme yolu kolonu olan para tabloları. Tanınmayan yol (nakit/havale/kart dışı) üç okuma yolunda üç ayrı biçimde
+// sayılıyordu (Kasa özeti: bakiyede var, yol kırılımında yok; Kasa satırları: nakit; yevmiye: 100). Yeni işlem böyle satır
+// yazamaz ("money:method"); açılışta bulunan eski satırlar kimlikleriyle tabandır (A13 kuralı), okunmaya devam eder.
+const METHOD_TABLES = ["payments", "cash_entries", "account_entries", "plan_entries", "stock_moves", "cheque_events"];
+const KNOWN_METHODS = "('cash', 'bank', 'card')";
 // v2.0.26 (A6): çek/senet olayları da (alındı/verildi, tahsil, ciro, ödeme, karşılıksız) tarihli harekettir; eski veride kalan
 // ileri tarihli olaylar A13 kuralıyla (açılıştaki kimlikler taban) yeni işlemleri engellemez.
 const DATED = ["payments", "cash_entries", "account_entries", "stock_moves", "plan_entries", "cheque_events"];
@@ -285,6 +290,16 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
       const future = known ? rows.filter(row => !known.has(row.id)).length : rows.length;
       checks.push({ code: `dates:future:${table}`, name: `İleri tarihli hareket (${table})`, ok: future === 0, count: future, ...(rows.length > future ? { legacy: rows.length - future } : {}) });
     }
+    {
+      const wrong = [];
+      for (const table of METHOD_TABLES) {
+        if (!hasColumn(table, "method")) continue;
+        for (const row of store.all(`SELECT id, method FROM ${table} WHERE method IS NULL OR method NOT IN ${KNOWN_METHODS}`)) {
+          if (!legacyMethod.has(`${table}:${row.id}`)) wrong.push(`${table}:${row.id}=${row.method}`);
+        }
+      }
+      checks.push({ code: "money:method", name: "Tanınmayan ödeme yolu (nakit, havale/EFT, POS/kredi kartı dışında)", ok: wrong.length === 0, count: wrong.length, sample: wrong.slice(0, 5) });
+    }
     if (hasColumn("plan_items", "due_date") && hasColumn("plans", "registered_on")) {
       const early = store.all("SELECT i.id, i.due_date AS due, p.registered_on AS start, p.name FROM plan_items i JOIN plans p ON p.id = i.plan_id AND p.deleted_at IS NULL WHERE p.registered_on <> '' AND i.due_date < p.registered_on LIMIT 5");
       const count = early.length ? store.get("SELECT COUNT(*) AS n FROM plan_items i JOIN plans p ON p.id = i.plan_id AND p.deleted_at IS NULL WHERE p.registered_on <> '' AND i.due_date < p.registered_on").n : 0;
@@ -300,6 +315,16 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
     const today = period()?.today?.() || new Date().toISOString().slice(0, 10);
     const out = new Map();
     for (const table of DATED) if (hasColumn(table, "date")) out.set(table, new Set(store.all(`SELECT id FROM ${table} WHERE date > ?`, today).map(row => row.id)));
+    return out;
+  };
+  // Açılıştaki tanınmayan yollu eski satırlar ("tablo:id"); start() ölçer (B7).
+  let legacyMethod = new Set();
+  const measureLegacyMethod = () => {
+    const out = new Set();
+    for (const table of METHOD_TABLES) {
+      if (!hasColumn(table, "method")) continue;
+      for (const row of store.all(`SELECT id FROM ${table} WHERE method IS NULL OR method NOT IN ${KNOWN_METHODS}`)) out.add(`${table}:${row.id}`);
+    }
     return out;
   };
   // Sapmanın kimliği: hangi denetim, ne kadar/kaç satır. Aynı sapma sürüyorsa işlem engellenmez; yenisi ya da büyüyeni engellenir.
@@ -334,6 +359,7 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
   function start() {
     stop?.();
     legacyFuture = measureLegacyFuture();
+    legacyMethod = measureLegacyMethod();
     const result = run();
     baseline = new Set(result.failures.map(signature));
     const lock = period()?.lockedUntil?.() || "";

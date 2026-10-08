@@ -11,7 +11,7 @@ import { HttpError, limited, ok, readJson, sendBuffer, text } from "../lib/http.
 import { parseAmount, roundMoney } from "../lib/money.mjs";
 import { canUser } from "../lib/permissions.mjs";
 import { dayText, isoDay } from "../lib/plans.mjs";
-import { methodOf, methodInput } from "../lib/pay-method.mjs";
+import { methodInput } from "../lib/pay-method.mjs";
 import { tablePdf, tl } from "../lib/report-pdf.mjs";
 import { unitLabel } from "../lib/units.mjs";
 import { buildXlsx } from "../lib/xlsx-write.mjs";
@@ -297,7 +297,7 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
     const id = newId("smove");
     store.run(
       "INSERT INTO stock_moves (id, item_id, kind, qty, unit_price, amount, date, note, pay, reason, method, account_id, invoice_id, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-      id, itemId, move.kind, move.qty, move.unitPrice, move.amount, move.date, move.note, move.pay, move.reason || "", move.pay === "cash" ? methodOf(move.method) : "cash", move.accountId || "", move.invoiceId || "", user.id, now(),
+      id, itemId, move.kind, move.qty, move.unitPrice, move.amount, move.date, move.note, move.pay, move.reason || "", move.pay === "cash" ? methodInput(move.method) : "cash", move.accountId || "", move.invoiceId || "", user.id, now(),
     );
     return id;
   }

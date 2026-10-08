@@ -5,7 +5,7 @@
 // aynı adla "ek alan" olur; taksit sorulmaz. Toplu taksitlendirme: seçilen carilere tek seferde taksit kartı.
 // Hesap kuralı server/lib/accounts.mjs içinde (saf, testli); burada doğrulama, kayıt ve yetki vardır.
 import { randomUUID } from "node:crypto";
-import { methodOf, methodInput } from "../lib/pay-method.mjs";
+import { methodInput } from "../lib/pay-method.mjs";
 import { ACCOUNT_TYPES, TYPE_DEFAULT, accountLedger, accountTypeKey, balanceSide, classifyAccountType, isAccountType, mapAccountHeaders } from "../lib/accounts.mjs";
 import { HttpError, limited, ok, readJson, sendBuffer, text } from "../lib/http.mjs";
 import { parseAmount, roundMoney } from "../lib/money.mjs";
@@ -528,7 +528,7 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     const receiptNo = kind === "in" && source !== "stock" && source !== "invoice" ? receiptNumber() : null;
     store.run(
       "INSERT INTO account_entries (id, account_id, kind, amount, date, note, receipt_no, source, source_id, method, invoice_id, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-      id, accountId, kind, amount, date, note || "", receiptNo, source, sourceId, methodOf(method), invoiceId || "", user.id, now(),
+      id, accountId, kind, amount, date, note || "", receiptNo, source, sourceId, methodInput(method), invoiceId || "", user.id, now(),
     );
     return { id, receiptNo };
   }
