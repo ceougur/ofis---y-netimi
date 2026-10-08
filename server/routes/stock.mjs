@@ -644,8 +644,11 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
     const item = store.get("SELECT id, name, unit, deleted_at AS deletedAt FROM stock_items WHERE id = ?", payload.itemId);
     if (!item) throw new HttpError(409, "Hareketin ürünü artık yok; geri yüklenemez.");
     if (item.deletedAt) throw new HttpError(409, `“${payload.itemName}” ürünü silinmiş. Önce ürünü geri yükleyin.`);
+    // v2.0.26 (A7, B7): kapanmış dönemdeki hareket geri yüklenmez; tutar kuruşa yuvarlanır; yol katı okunur (tanınmayan yol
+    // 400 — önceden sessizce nakit sayılıyordu).
+    period?.assertOpen(payload.date, "Bu stok hareketi");
     const pay = payload.pay === "account" && !accounts()?.exists(payload.accountId) ? "none" : PAY.has(payload.pay) ? payload.pay : "none";
-    const move = { kind: payload.kind, qty: Number(payload.qty) || 0, unitPrice: Number(payload.unitPrice) || 0, amount: Number(payload.amount) || 0, date: payload.date, note: payload.note || "", pay, reason: payload.reason === "return" ? "return" : "", method: methodOf(payload.method), accountId: pay === "account" ? payload.accountId : "" };
+    const move = { kind: payload.kind, qty: Number(payload.qty) || 0, unitPrice: Number(payload.unitPrice) || 0, amount: roundMoney(Number(payload.amount) || 0), date: payload.date, note: payload.note || "", pay, reason: payload.reason === "return" ? "return" : "", method: pay === "cash" ? methodInput(payload.method) : "cash", accountId: pay === "account" ? payload.accountId : "" };
     store.tx(() => {
       if (!store.get("SELECT 1 AS found FROM stock_moves WHERE id = ?", entry.ref)) {
         store.run(

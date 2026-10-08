@@ -1174,19 +1174,36 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     const account = store.get("SELECT id, deleted_at AS deletedAt FROM accounts WHERE id = ?", payload.accountId);
     if (!account) throw new HttpError(409, "Hareketin carisi artık yok; geri yüklenemez.");
     if (account.deletedAt) throw new HttpError(409, `“${payload.accountName}” carisi silinmiş. Önce cariyi geri yükleyin.`);
+    // v2.0.26 (A7): kapanmış dönemdeki hareket geri yüklenmez; bütün kolonlar (yol, Kapatılacak Fatura bağı) taşınır, tutar
+    // kuruşa yuvarlanır. Önceden kaynak boş, fatura bağı yok yazılıyor, tutar olduğu gibi alınıyordu.
+    period?.assertOpen(payload.date, "Bu cari hareketi");
+    // Silinenler'e yalnız elle girilen satır gider (stok, çek, fatura satırı kendi modülünden silinir).
+    if (payload.source) throw new HttpError(409, "Bu hareket başka bir modülden (stok, çek/senet, fatura) geliyordu; o modülden yeniden girin.");
+    const method = methodInput(payload.method);
+    const amount = roundMoney(Number(payload.amount) || 0);
+    if (!(amount > 0)) throw new HttpError(409, "Hareketin tutarı okunamadı; geri yüklenemez.");
+    // Kapatılacak Fatura bağı: fatura hâlâ aynı carinin, kaydedilmiş, aynı yöndeki taksitsiz faturasıysa korunur; değilse bağsız döner.
+    let invoiceId = "";
+    if (payload.invoiceId) {
+      try {
+        invoiceId = invoiceLink(account.id, payload.kind, payload.invoiceId);
+      } catch {
+        invoiceId = "";
+      }
+    }
     store.tx(() => {
       if (!store.get("SELECT 1 AS found FROM account_entries WHERE id = ?", item.ref)) {
         store.run(
-          "INSERT INTO account_entries (id, account_id, kind, amount, date, note, receipt_no, source, source_id, method, created_by, created_at, updated_by, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, '', '', ?, ?, ?, ?, ?)",
-          item.ref, account.id, payload.kind, Number(payload.amount) || 0, payload.date, payload.note || "", payload.receiptNo || null, payload.method || "cash", payload.createdBy || user.id, payload.createdAt || now(), user.id, now(),
+          "INSERT INTO account_entries (id, account_id, kind, amount, date, note, receipt_no, source, source_id, method, invoice_id, created_by, created_at, updated_by, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, '', '', ?, ?, ?, ?, ?, ?)",
+          item.ref, account.id, payload.kind, amount, payload.date, payload.note || "", payload.receiptNo || null, method, invoiceId, payload.createdBy || user.id, payload.createdAt || now(), user.id, now(),
         );
       }
       trash.markRestored(item.id, user);
-      audit(user, "account.entry.restored", item.ref, { accountId: account.id, kind: payload.kind, amount: payload.amount, date: payload.date });
+      audit(user, "account.entry.restored", item.ref, { accountId: account.id, kind: payload.kind, amount, date: payload.date, method, invoiceId, droppedInvoice: payload.invoiceId && !invoiceId ? payload.invoiceId : "" });
     });
     changed(user, { accountId: account.id });
     changed(user, { kind: "cash" });
-    return "Cari hareketi geri eklendi; bakiye ve Kasa yeniden hesaplandı.";
+    return payload.invoiceId && !invoiceId ? "Cari hareketi geri eklendi; kapattığı fatura artık uygun olmadığı için faturaya bağlanmadan (otomatik kapama ile)." : "Cari hareketi geri eklendi; bakiye ve Kasa yeniden hesaplandı.";
   }
 
   return { exists, accountRow, createFromPlan, matchPerson, cashEntries, cashSource, stockEntry, invoiceEntry, taxIdentity, fingerprint, deletedList, restoreDeleted, restoreEntry, detail, list, allLedgers, assertUnlocked };
