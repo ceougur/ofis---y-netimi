@@ -4,6 +4,12 @@ import assert from "node:assert/strict";
 import { after, before, describe, it } from "node:test";
 import { loginAdmin, startTestServer } from "./helpers.mjs";
 import { okulServisiWorkbook } from "./fixtures/okul-servisi-ornek.mjs";
+// İlk vade bugünden ileri (sabit tarih zamanla geçmişe düşüp "işlem tarihinden önce" diye reddediliyordu — 08.10.2026).
+const soonDue = (() => {
+  const d = new Date();
+  d.setDate(d.getDate() + 10);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+})();
 
 const data = response => response.data.data;
 const today = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`; };
@@ -27,7 +33,7 @@ describe("taksit kartının kayıt tarihi carinin tarihidir (2.0.12)", () => {
 
   it("tek kart: tarih yazılmazsa carinin tarihi; yazılırsa yazılan; carisiz kart bugün", async () => {
     const [acc] = data(await admin.get("/api/workspace/accounts/search?q=Yasemin"));
-    const card = data(await admin.post("/api/workspace/plans", { name: "Yasemin Taşkıran", accountId: acc.id, total: "12000", count: 4, firstDue: "2026-10-10" }));
+    const card = data(await admin.post("/api/workspace/plans", { name: "Yasemin Taşkıran", accountId: acc.id, total: "12000", count: 4, firstDue: soonDue }));
     assert.equal(card.registeredOn, "2026-03-05", "carinin tarihi");
     const own = data(await admin.post("/api/workspace/plans", { name: "Yasemin Taşkıran", accountId: acc.id, total: "100", registeredOn: "2026-04-01" }));
     assert.equal(own.registeredOn, "2026-04-01", "kullanıcının yazdığı tarih korunur");
@@ -43,7 +49,7 @@ describe("taksit kartının kayıt tarihi carinin tarihidir (2.0.12)", () => {
   it("toplu taksitlendirme: her kart kendi carisinin tarihini alır", async () => {
     const a = data(await admin.post("/api/workspace/accounts", { name: "Kerem Aydın", type: "customer", registeredOn: "2026-02-10" }));
     const b = data(await admin.post("/api/workspace/accounts", { name: "Selin Yurt", type: "customer", registeredOn: "2026-06-21" }));
-    const done = data(await admin.post("/api/workspace/accounts/bulk-plan", { ids: [a.id, b.id], amountMode: "fixed", total: "9000", count: "3", firstDue: "2026-10-10", everyMonths: "1", skipExisting: true }));
+    const done = data(await admin.post("/api/workspace/accounts/bulk-plan", { ids: [a.id, b.id], amountMode: "fixed", total: "9000", count: "3", firstDue: soonDue, everyMonths: "1", skipExisting: true }));
     assert.equal(done.created, 2);
     const plans = data(await admin.get("/api/workspace/plans?status=all")).plans;
     assert.equal(plans.find(plan => plan.name === "Kerem Aydın").registeredOn, "2026-02-10");

@@ -6,6 +6,12 @@ import { MIGRATIONS } from "../server/lib/migrations.mjs";
 import { titleCase } from "../server/lib/text-case.mjs";
 import { unitLabel } from "../server/lib/units.mjs";
 import { createUser, loginAdmin, startTestServer } from "./helpers.mjs";
+// İlk vade bugünden ileri (sabit tarih zamanla geçmişe düşüp "işlem tarihinden önce" diye reddediliyordu — 08.10.2026).
+const soonDue = (() => {
+  const d = new Date();
+  d.setDate(d.getDate() + 10);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+})();
 
 const data = response => response.data.data;
 const excel = (fileName, sheets) => ({ kind: "excel", fileName, sheets: Object.entries(sheets).map(([name, matrix]) => ({ name, matrix })) });
@@ -77,7 +83,7 @@ describe("2.0.11 tam yığın", () => {
     await make("Zeynep Ak", "42 C 0348");
     await admin.post("/api/workspace/plans/groups", { name: "34 AB 111" });
     // Cariye tek kart: grup seçilmedi → carinin grubu alınır.
-    const single = await admin.post("/api/workspace/plans", { name: "Mehmet Yıldız", accountId: mehmet.id, total: "9000", count: 3, firstDue: "2026-10-05" });
+    const single = await admin.post("/api/workspace/plans", { name: "Mehmet Yıldız", accountId: mehmet.id, total: "9000", count: 3, firstDue: soonDue });
     assert.equal(single.status, 200, JSON.stringify(single.data));
     let groups = data(await admin.get("/api/workspace/plans/groups"));
     const g79 = groups.find(item => item.name === "42 C 0079");
@@ -89,7 +95,7 @@ describe("2.0.11 tam yığın", () => {
     assert.deepEqual(has.accounts.map(item => item.name), ["Mehmet Yıldız"]);
     const count = async () => data(await admin.get("/api/workspace/plans?status=all")).plans.length;
     const before = await count();
-    const body = { ids: [ali.id, ayse.id, mehmet.id], amountMode: "fixed", total: "12000", count: "4", firstDue: "2026-10-10", everyMonths: "1", skipExisting: true };
+    const body = { ids: [ali.id, ayse.id, mehmet.id], amountMode: "fixed", total: "12000", count: "4", firstDue: soonDue, everyMonths: "1", skipExisting: true };
     const preview = data(await admin.post("/api/workspace/accounts/bulk-plan", { ...body, dryRun: true }));
     assert.equal(preview.dryRun, true);
     assert.equal(preview.created, 2);
@@ -103,7 +109,7 @@ describe("2.0.11 tam yığın", () => {
     const after79 = groups.find(item => item.name === "42 C 0079");
     assert.deepEqual([after79.count, after79.accounts, after79.withoutPlan], [3, 3, 0]);
     // "Süzgeçteki hepsi" + yalnız kartı olmayanlar: kalan yok → ön izleme 0 kart.
-    const again = await admin.post("/api/workspace/accounts/bulk-plan", { all: true, group: g79.id, plan: "none", amountMode: "fixed", total: "100", count: "1", firstDue: "2026-10-10", dryRun: true });
+    const again = await admin.post("/api/workspace/accounts/bulk-plan", { all: true, group: g79.id, plan: "none", amountMode: "fixed", total: "100", count: "1", firstDue: soonDue, dryRun: true });
     assert.equal(again.status, 400, "grupta kartsız cari kalmadı: seçim boş");
   });
 

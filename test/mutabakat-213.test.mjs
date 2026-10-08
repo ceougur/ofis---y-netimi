@@ -4,6 +4,12 @@ import assert from "node:assert/strict";
 import { after, before, describe, it } from "node:test";
 import { IntegrityError } from "../server/lib/integrity.mjs";
 import { createUser, loginAdmin, startTestServer } from "./helpers.mjs";
+// İlk vade bugünden ileri (sabit tarih zamanla geçmişe düşüp "işlem tarihinden önce" diye reddediliyordu — 08.10.2026).
+const soonDue = (() => {
+  const d = new Date();
+  d.setDate(d.getDate() + 10);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+})();
 
 const ok = (response, label) => {
   assert.equal(response.status, 200, `${label}: ${JSON.stringify(response.data)}`);
@@ -85,7 +91,7 @@ describe("mutabakat kapısı", () => {
 
   it("taksitlendirilmiş veresiye satıştan iade: taksit kartı iade kadar küçülür (kart borçtan büyük kalmaz)", async () => {
     const deniz = ok(await admin.post("/api/workspace/accounts", { name: "Deniz Ak" }), "cari");
-    ok(await admin.post(`/api/workspace/stock/${item.id}/moves`, { kind: "out", qty: "3", unitPrice: "30", pay: "account", accountId: deniz.id, installments: { count: 3, firstDue: "2026-10-10" } }), "taksitli satış");
+    ok(await admin.post(`/api/workspace/stock/${item.id}/moves`, { kind: "out", qty: "3", unitPrice: "30", pay: "account", accountId: deniz.id, installments: { count: 3, firstDue: soonDue } }), "taksitli satış");
     const back = ok(await admin.post(`/api/workspace/stock/${item.id}/moves`, { kind: "in", qty: "1", unitPrice: "30", pay: "account", accountId: deniz.id, reason: "return" }), "iade");
     assert.equal(back.trimmedPlans.length, 1);
     assert.equal(back.trimmedPlans[0].to, 60);
