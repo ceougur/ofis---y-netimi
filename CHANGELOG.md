@@ -6,7 +6,7 @@ Sürümler [anlamsal sürümleme](https://semver.org/lang/tr/) kurallarına uyar
 
 Kaynak: banka + POS modülü planı (`docs/BANKA-MODULU-PLAN.md` §11.1, §12.3 "Aşama 0"; kullanıcı kararı 08.10.2026). Banka
 kodu yok; yalnız mevcut hataların düzeltmesi. Her madde önce 2.0.25'te kırmızı testle gösterildi. Ayrıntı ve denenen /
-denenmeyen / bilinen sınırlar: `docs/2.0.26-KANIT.md`. Sürüm numarası paketlemede verilecek.
+denenmeyen / bilinen sınırlar: `docs/2.0.26-KANIT.md`.
 
 - **Kayıt (detay kartı) tahsilatı da tarih kuralına bağlı.** İleri tarihli ya da takvimde olmayan günle tahsilat girilmez;
   kapatılmış (kilitli) döneme tahsilat girilmez, oradaki tahsilat düzeltilmez ve silinmez. Önceden işlem yine geri alınıyordu
