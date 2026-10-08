@@ -84,7 +84,7 @@ const moneyText = (value, currency = "TRY") => `${new Intl.NumberFormat("tr-TR",
 const c2 = value => roundMoney((Number(value) || 0) / 100);
 const toCents = value => Math.round((Number(value) || 0) * 100);
 
-export function registerInvoiceRoutes(router, { store, auth, audit, events, config = {}, period = null, cash = null, trash = null, accounts = () => null, stock = () => null, plans = () => null, cheques = () => null, now: clock = systemClock }) {
+export function registerInvoiceRoutes(router, { store, bank, auth, audit, events, config = {}, period = null, cash = null, trash = null, accounts = () => null, stock = () => null, plans = () => null, cheques = () => null, now: clock = systemClock }) {
   // e-Belge bağlantısı kapalıyken (varsayılan; program sahibi açana kadar) her belge kâğıt/bilgi fişidir: e-Fatura,
   // e-Arşiv, XML ve entegratör uçları çalışmaz, ekranda görünmez.
   const edocEnabled = config.edocEnabled === true;
@@ -547,7 +547,8 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, conf
         // silinmiş ürün: denetlenmez
       }
     }
-    const result = store.tx(() => {
+    // v2.1.0 (bank.post op 'update'): eski peşin satırların işlem başlıkları iptal olur, yenileri açılır (tek işlemde).
+    const result = bank.post({ user, module: "invoice", op: "update", prev: existing, write: () => {
       period?.assertOpen(existing.issueDate, "Bu fatura");
       // v2.0.24: eski iadenin küçülttüğü kartlar önce geri büyür; yeni iade kaydedilirken yeniden hesaplanır.
       if (existing.kind === "sale_return" && existing.originalId) restoreCuts(user, { id: existing.id }, touched, `İade düzenlendi ${existing.number}`);
@@ -583,7 +584,7 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, conf
         after: { accountId: doc.account.id, date: doc.date, payable: c2(doc.money.payable), lines: after.map(line => ({ name: line.name, qty: line.qty, unitPrice: line.unitPrice, vatRate: line.vatRate })) },
       });
       return written;
-    });
+    } });
     publishAll(user, touched, result.id);
     return result;
   }
@@ -1257,7 +1258,9 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, conf
     }
     const invoiceId = id || newId("invoice");
     const touched = { accounts: new Set([doc.account.id]), items: new Set(), cash: false, cheques: { accountIds: [], chequeIds: [] }, plans: new Set() };
-    const result = store.tx(() => {
+    // v2.1.0 (bank.post): fatura, stok, cari, peşin tahsilat/ödeme (her peşin satır kendi İşlem No'lu işlem başlığıyla), çek/senet
+    // ve taksit kartı tek işlemde. Düzenlemede (edit) çağıran editInvoice'ın bank.post işleminin içindedir.
+    const result = bank.post({ user, module: "invoice", op: edit ? "update" : "create", prev: edit || undefined, write: () => {
       period?.assertOpen(doc.date, "Fatura");
       // v2.0.24: iadeden önce asıl faturanın açığı ve onu kapsayan kartlar (düzenlemede eski iade geri alınmadan önce).
       const before = pre !== undefined ? pre : doc.kind === "sale_return" && doc.original?.id ? coverState(doc.original.id) : null;
@@ -1427,7 +1430,7 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, conf
       if (doc.kind === "sale_return") retarget(user, before, touched, `İade ${number}`, invoiceId);
       if (!edit) audit(user, id ? "invoice.issued" : "invoice.created", invoiceId, { kind: doc.kind, number, accountId: doc.account.id, payable: c2(money.payable), currency: doc.currency, date: doc.date, originalId: doc.original?.id || "", payment: { cash: payment.cash.length, cheques: payment.cheques.length, endorse: payment.endorse.length, mode: payment.mode } });
       return { id: invoiceId, number };
-    });
+    } });
     publishAll(user, touched, result.id);
     return result;
   }
@@ -1554,7 +1557,8 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, conf
     publishAll(user, touched, row.id);
     return row;
     function runCancel() {
-      return store.tx(() => {
+      // v2.1.0 (bank.post op 'delete'): peşin satırların işlem başlıkları iptal olur (kopyası kalır).
+      return bank.post({ user, module: "invoice", op: "delete", prev: { invoiceId: id }, write: () => {
       const invoice = invoiceRow(id);
       if (invoice.status === "draft") throw new HttpError(409, "Taslak iptal edilmez; silinir.", { code: "invoice-draft" });
       if (invoice.status === "cancelled") throw new HttpError(409, "Bu fatura zaten iptal edilmiş.", { code: "invoice-cancelled" });
@@ -1577,7 +1581,7 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, conf
       audit(user, "invoice.cancelled", invoice.id, { number: invoice.number, kind: invoice.kind, payable: invoice.tryPayable, reason });
       if (dryRun) throw DRY_RUN;
       return invoice;
-      });
+      } });
     }
   }
 
@@ -2006,7 +2010,7 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, conf
     return "";
   }
   function deleteInvoice(user, id, { reason = "", force = {} } = {}) {
-    const row = store.tx(() => {
+    const row = bank.post({ user, module: "invoice", op: "delete", prev: { invoiceId: id }, write: () => {
       let invoice = invoiceRow(id);
       const activeReturns = store.get("SELECT COUNT(*) AS n FROM invoices WHERE original_id = ? AND status = 'issued'", invoice.id).n;
       const block = deleteBlock(invoice, activeReturns);
@@ -2033,7 +2037,7 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, conf
       store.run("UPDATE invoice_repeats SET active = 0, updated_at = ? WHERE template_id = ? AND active = 1", now(), invoice.id);
       audit(user, invoice.status === "draft" ? "invoice.draft.deleted" : "invoice.deleted", invoice.id, { number: invoice.number, kind: invoice.kind, accountId: invoice.accountId, payable: invoice.tryPayable, wasStatus: invoice.status, reason });
       return invoice;
-    });
+    } });
     publish(user, { kind: "invoices", invoiceId: row.id, accountId: row.accountId });
     return row;
   }
@@ -2251,13 +2255,13 @@ export function registerInvoiceRoutes(router, { store, auth, audit, events, conf
   // Faturadan doğan satırların açıklamasındaki "(gönderilecek)" yer tutucusu verilen numarayla değişir (cari ekstre,
   // stok kartı, taksit kartı, çek/senet ve Kasa aynı numarayı gösterir).
   const PENDING_TAG = "(gönderilecek)";
+  // Yalnız açıklama (note) değişir: para satırının parası ve işlem başlığı değişmez (K6 (c): para alanı olmayan kolon).
   function renumberNotes(id, number) {
-    const swap = "note = REPLACE(note, ?, ?)";
-    store.run(`UPDATE account_entries SET ${swap} WHERE source = 'invoice' AND source_id = ?`, PENDING_TAG, number, id);
-    store.run(`UPDATE stock_moves SET ${swap} WHERE invoice_id = ?`, PENDING_TAG, number, id);
-    store.run(`UPDATE plans SET ${swap} WHERE invoice_id = ?`, PENDING_TAG, number, id);
-    store.run(`UPDATE cheques SET ${swap} WHERE invoice_id = ?`, PENDING_TAG, number, id);
-    store.run(`UPDATE account_entries SET ${swap} WHERE source = 'cheque' AND source_id IN (SELECT id FROM cheques WHERE invoice_id = ?)`, PENDING_TAG, number, id);
+    store.run("UPDATE account_entries SET note = REPLACE(note, ?, ?) WHERE source = 'invoice' AND source_id = ?", PENDING_TAG, number, id);
+    store.run("UPDATE stock_moves SET note = REPLACE(note, ?, ?) WHERE invoice_id = ?", PENDING_TAG, number, id);
+    store.run("UPDATE plans SET note = REPLACE(note, ?, ?) WHERE invoice_id = ?", PENDING_TAG, number, id);
+    store.run("UPDATE cheques SET note = REPLACE(note, ?, ?) WHERE invoice_id = ?", PENDING_TAG, number, id);
+    store.run("UPDATE account_entries SET note = REPLACE(note, ?, ?) WHERE source = 'cheque' AND source_id IN (SELECT id FROM cheques WHERE invoice_id = ?)", PENDING_TAG, number, id);
   }
   // Sonra gönderilecek (ya da listeden silinip yeniden gönderilen) belgeye e-Belge numarası: gönderim anında, serinin
   // sırasıyla. Belge serideki son gönderilen belgeden eski tarihliyse gönderilmez (VUK 231 / GİB: numara ve tarih sırası).

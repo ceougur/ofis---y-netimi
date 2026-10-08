@@ -63,11 +63,13 @@ const METHOD_TABLES = ["payments", "cash_entries", "account_entries", "plan_entr
 const KNOWN_METHODS = "('cash', 'bank', 'card')";
 // v2.0.26 (A6): çek/senet olayları da (alındı/verildi, tahsil, ciro, ödeme, karşılıksız) tarihli harekettir; eski veride kalan
 // ileri tarihli olaylar A13 kuralıyla (açılıştaki kimlikler taban) yeni işlemleri engellemez.
-// v2.1.0 (§5.5): fin_events (İşlem No'lu işlem başlığı) de tarihli harekettir. Denetim satırları tabloda kayıt olduğunda görünür
-// (Banka modülü kullanılmayan kurulumda Mutabakat Testi'nin denetim listesi ve sayısı değişmesin); satır yazıldığı anda kapı
-// tarihi denetler.
+// v2.1.0 (§5.5): fin_events (İşlem No'lu işlem başlığı) de tarihli harekettir. Denetim satırları Banka Fişi olayı (kaynak modül
+// satırı olmayan, src_table '') yazılınca görünür: bugünkü modüllerin (Kasa, cari, fatura, taksit, stok, çek) her para satırı da
+// olay alır (bank.post, Aşama 2) ama olayın tarihi satırın tarihinin kopyasıdır ve satırın kendi tarih denetimi zaten var; Banka
+// modülü kullanılmayan kurulumda Mutabakat Testi'nin denetim listesi ve sayısı ("N denetim tamam") değişmez. Banka Fişi yazıldığı
+// anda kapı tarihi denetler.
 const DATED = ["payments", "cash_entries", "account_entries", "stock_moves", "plan_entries", "cheque_events", "fin_events"];
-const DATED_WHEN_USED = new Set(["fin_events"]);
+const DATED_WHEN_USED = new Map([["fin_events", "SELECT 1 AS found FROM fin_events WHERE src_table = '' LIMIT 1"]]);
 // 2. gözden geçirme İ8: denetim adlarında tablo adı yerine kullanıcının bildiği ad (Yönetim'de, Defter Mutabakatı'nda, günlükte görünür).
 const TABLE_LABEL = {
   payments: "Kayıt Tahsilatları",
@@ -386,7 +388,7 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
     const today = period()?.today?.() || now.today();
     for (const table of DATED) {
       if (!hasColumn(table, "date")) continue;
-      if (DATED_WHEN_USED.has(table) && !store.get(`SELECT 1 AS found FROM ${table} LIMIT 1`)) continue;
+      if (DATED_WHEN_USED.has(table) && !store.get(DATED_WHEN_USED.get(table))) continue;
       const bad = store.all(`SELECT id, date FROM ${table} WHERE date IS NULL OR trim(date) = '' OR date NOT GLOB '[0-9][0-9][0-9][0-9]-[01][0-9]-[0-3][0-9]' OR date(date) IS NULL OR date(date) <> date LIMIT 5`);
       checks.push({ code: `dates:format:${table}`, name: `Tarihsiz ya da geçersiz tarihli hareket (${labelOf(table)})`, ok: bad.length === 0, count: bad.length, sample: bad.map(row => `${row.id}=${row.date}`) });
       // v2.0.26 (A13): açılışta bulunan ileri tarihli satırlar (eski sürümden kalan) kimlikleriyle tabandır; kapının imzası yalnız

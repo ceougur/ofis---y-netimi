@@ -19,7 +19,7 @@ const MANUAL = { table: "cash_entries c", where: "1 = 1", kind: "c.kind", amount
 const validDate = value => DATE.test(value) && !Number.isNaN(new Date(value).getTime());
 
 export function registerCashRoutes(router, context) {
-  const { store, auth, audit, events, trash } = context;
+  const { store, auth, audit, events, trash, bank } = context;
   // İş saati (v2.1.0): context.now (config.now).
   const clock = context.now || systemClock;
   const now = () => clock().toISOString();
@@ -270,19 +270,27 @@ export function registerCashRoutes(router, context) {
     const entry = input(body);
     if (entry.kind === "out") guardOut(entry.amount, entry.date, body.cashForce === true, entry.method);
     const id = auth.newId("cash");
-    store.run("INSERT INTO cash_entries (id, kind, amount, date, description, method, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", id, entry.kind, entry.amount, entry.date, entry.description, entry.method, user.id, now());
-    audit(user, "cash.entry.created", id, entry);
+    // v2.1.0 (bank.post, plan §3.3): satır, İşlem No'lu işlem başlığı ve işlem geçmişi tek işlemde.
+    bank.post({
+      user,
+      module: "cash",
+      op: "create",
+      write: () => {
+        store.run("INSERT INTO cash_entries (id, kind, amount, date, description, method, event_id, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", id, entry.kind, entry.amount, entry.date, entry.description, entry.method, bank.eventFor("cash_entries", entry), user.id, now());
+        audit(user, "cash.entry.created", id, entry);
+      },
+    });
     changed(user);
     ok(res, { id });
   });
 
   const existing = id => {
-    const entry = store.get("SELECT id, kind, amount, date, description, method, transfer_id AS transferId FROM cash_entries WHERE id = ?", limited(id, 120, "Hareket"));
+    const entry = store.get("SELECT id, kind, amount, date, description, method, transfer_id AS transferId, event_id AS eventId FROM cash_entries WHERE id = ?", limited(id, 120, "Hareket"));
     if (!entry) throw new HttpError(404, "Kasa hareketi bulunamadı. Başka biri silmiş olabilir.");
     return entry;
   };
   // Transferin öbür yarısı (nakit tarafının bankası, banka tarafının nakdi).
-  const twinOf = entry => (entry.transferId ? store.get("SELECT id, kind, amount, date, description, method, transfer_id AS transferId FROM cash_entries WHERE transfer_id = ? AND id <> ?", entry.transferId, entry.id) : null);
+  const twinOf = entry => (entry.transferId ? store.get("SELECT id, kind, amount, date, description, method, transfer_id AS transferId, event_id AS eventId FROM cash_entries WHERE transfer_id = ? AND id <> ?", entry.transferId, entry.id) : null);
 
   // ---------- Kasa ↔ Banka transferi (v2.0.17) ----------
   // direction: "to-cash" (bankadan kasaya nakit çekildi) | "to-bank" (kasadaki nakit bankaya yatırıldı).
@@ -305,10 +313,17 @@ export function registerCashRoutes(router, context) {
     const cashId = auth.newId("cash");
     const bankId = auth.newId("cash");
     const stamp = now();
-    store.tx(() => {
-      store.run("INSERT INTO cash_entries (id, kind, amount, date, description, method, transfer_id, created_by, created_at) VALUES (?, ?, ?, ?, ?, 'cash', ?, ?, ?)", cashId, cashKind, roundMoney(amount), date, description, transferId, user.id, stamp);
-      store.run("INSERT INTO cash_entries (id, kind, amount, date, description, method, transfer_id, created_by, created_at) VALUES (?, ?, ?, ?, ?, 'bank', ?, ?, ?)", bankId, cashKind === "in" ? "out" : "in", roundMoney(amount), date, description, transferId, user.id, stamp);
-      audit(user, "cash.transfer.created", transferId, { direction, amount: roundMoney(amount), date, description, cashId, bankId });
+    // İki bacak tek işlem başlığında (cash_transfer; plan §3.7 #10).
+    bank.post({
+      user,
+      module: "cash",
+      op: "create",
+      write: () => {
+        const eventId = bank.eventFor("cash_entries", { kind: cashKind, date, method: "cash", transfer_id: transferId });
+        store.run("INSERT INTO cash_entries (id, kind, amount, date, description, method, transfer_id, event_id, created_by, created_at) VALUES (?, ?, ?, ?, ?, 'cash', ?, ?, ?, ?)", cashId, cashKind, roundMoney(amount), date, description, transferId, eventId, user.id, stamp);
+        store.run("INSERT INTO cash_entries (id, kind, amount, date, description, method, transfer_id, event_id, created_by, created_at) VALUES (?, ?, ?, ?, ?, 'bank', ?, ?, ?, ?)", bankId, cashKind === "in" ? "out" : "in", roundMoney(amount), date, description, transferId, eventId, user.id, stamp);
+        audit(user, "cash.transfer.created", transferId, { direction, amount: roundMoney(amount), date, description, cashId, bankId });
+      },
     });
     changed(user);
     ok(res, { id: cashId, bankId, transferId, direction, amount: roundMoney(amount), date });
@@ -325,10 +340,18 @@ export function registerCashRoutes(router, context) {
     guardChange(previous, entry, body.cashForce === true);
     const twin = twinOf(previous);
     if (twin) guardChange(twin, { ...twin, amount: entry.amount, date: entry.date }, body.cashForce === true);
-    store.tx(() => {
-      store.run("UPDATE cash_entries SET kind = ?, amount = ?, date = ?, description = ?, method = ?, updated_by = ?, updated_at = ? WHERE id = ?", entry.kind, entry.amount, entry.date, entry.description, entry.method, user.id, now(), previous.id);
-      if (twin) store.run("UPDATE cash_entries SET amount = ?, date = ?, description = ?, updated_by = ?, updated_at = ? WHERE id = ?", entry.amount, entry.date, entry.description, user.id, now(), twin.id);
-      audit(user, previous.transferId ? "cash.transfer.updated" : "cash.entry.updated", previous.transferId || previous.id, { previous, ...entry });
+    bank.post({
+      user,
+      module: "cash",
+      op: "update",
+      prev: [previous, twin].filter(Boolean),
+      write: () => {
+        // Eski (olaysız) satır düzeltilince olay alır; transferin iki bacağı aynı olayda kalır.
+        const eventId = bank.eventFor("cash_entries", { ...entry, transfer_id: previous.transferId, event_id: previous.eventId || twin?.eventId || "" });
+        store.run("UPDATE cash_entries SET kind = ?, amount = ?, date = ?, description = ?, method = ?, event_id = ?, updated_by = ?, updated_at = ? WHERE id = ?", entry.kind, entry.amount, entry.date, entry.description, entry.method, eventId, user.id, now(), previous.id);
+        if (twin) store.run("UPDATE cash_entries SET amount = ?, date = ?, description = ?, event_id = ?, updated_by = ?, updated_at = ? WHERE id = ?", entry.amount, entry.date, entry.description, eventId, user.id, now(), twin.id);
+        audit(user, previous.transferId ? "cash.transfer.updated" : "cash.entry.updated", previous.transferId || previous.id, { previous, ...entry });
+      },
     });
     changed(user);
     ok(res, { id: previous.id });
@@ -341,16 +364,23 @@ export function registerCashRoutes(router, context) {
     guardChange(previous, null, url.searchParams.get("cashForce") === "1", "Bu Kasa hareketi silinince");
     const twin = twinOf(previous);
     if (twin) guardChange(twin, null, url.searchParams.get("cashForce") === "1", "Bu transferin öbür tarafı silinince");
-    const full = store.get("SELECT id, kind, amount, date, description, method, transfer_id AS transferId, created_by AS createdBy, created_at AS createdAt FROM cash_entries WHERE id = ?", previous.id);
-    const twinFull = twin ? store.get("SELECT id, kind, amount, date, description, method, transfer_id AS transferId, created_by AS createdBy, created_at AS createdAt FROM cash_entries WHERE id = ?", twin.id) : null;
+    const full = store.get("SELECT id, kind, amount, date, description, method, transfer_id AS transferId, event_id AS eventId, created_by AS createdBy, created_at AS createdAt FROM cash_entries WHERE id = ?", previous.id);
+    const twinFull = twin ? store.get("SELECT id, kind, amount, date, description, method, transfer_id AS transferId, event_id AS eventId, created_by AS createdBy, created_at AS createdAt FROM cash_entries WHERE id = ?", twin.id) : null;
     // Silme, Silinenler kaydı ve işlem geçmişi tek işlemde (v2.0.26, B5): yarıda kesilirse hiçbiri yazılmaz (önceden hareket
-    // silinip Silinenler'e yazılamadan kesinti olursa geri getirilemiyordu).
-    store.tx(() => {
-      store.run("DELETE FROM cash_entries WHERE id = ?", previous.id);
-      if (twin) store.run("DELETE FROM cash_entries WHERE id = ?", twin.id);
-      // Silinenler (v2.0.2): yönetim panelinden geri yüklenebilir. Transferde iki taraf birlikte (payload.twin).
-      trash?.add({ kind: "cash", ref: previous.id, title: full.description || (previous.transferId ? "Kasa ↔ Banka Transferi" : "Kasa Hareketi"), payload: { ...full, twin: twinFull }, user });
-      audit(user, previous.transferId ? "cash.transfer.deleted" : "cash.entry.deleted", previous.transferId || previous.id, previous);
+    // silinip Silinenler'e yazılamadan kesinti olursa geri getirilemiyordu). v2.1.0: işlem başlığı "iptal" olur (kopyası kalır);
+    // Silinenler'den geri yüklenince aynı olay yeniden etkinleşir.
+    bank.post({
+      user,
+      module: "cash",
+      op: "delete",
+      prev: [full, twinFull].filter(Boolean),
+      write: () => {
+        store.run("DELETE FROM cash_entries WHERE id = ?", previous.id);
+        if (twin) store.run("DELETE FROM cash_entries WHERE id = ?", twin.id);
+        // Silinenler (v2.0.2): yönetim panelinden geri yüklenebilir. Transferde iki taraf birlikte (payload.twin).
+        trash?.add({ kind: "cash", ref: previous.id, title: full.description || (previous.transferId ? "Kasa ↔ Banka Transferi" : "Kasa Hareketi"), payload: { ...full, twin: twinFull }, user });
+        audit(user, previous.transferId ? "cash.transfer.deleted" : "cash.entry.deleted", previous.transferId || previous.id, previous);
+      },
     });
     changed(user);
     ok(res, { id: previous.id });

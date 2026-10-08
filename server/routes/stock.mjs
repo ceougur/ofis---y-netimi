@@ -29,7 +29,7 @@ const qtyText = value => qtyFormat.format(Number(value) || 0);
 const afterText = (qty, unit) => `Kayıttan sonra stok: ${qtyText(qty)} ${unit} olacak.`;
 const collator = new Intl.Collator("tr", { numeric: true, sensitivity: "base" });
 
-export function registerStockRoutes(router, { store, auth, audit, events, trash, cash = null, period = null, accounts = () => null, plans = () => null, now: clock = systemClock }) {
+export function registerStockRoutes(router, { store, bank, auth, audit, events, trash, cash = null, period = null, accounts = () => null, plans = () => null, now: clock = systemClock }) {
   // İş saati (v2.1.0): context.now (config.now).
   const now = () => clock().toISOString();
   const today = () => isoDay(clock());
@@ -200,7 +200,8 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
     const body = await readJson(req);
     let openingMove = null;
     let touched = [];
-    const result = store.tx(() => {
+    // v2.1.0 (bank.post): ilk alım peşinse (Kasa/banka/POS) para satırıdır ve İşlem No'lu işlem başlığı alır.
+    const result = bank.post({ user, module: "stock", op: "create", write: () => {
       const input = itemInput(body);
       if (store.get("SELECT 1 AS found FROM stock_items WHERE deleted_at IS NULL AND name = ? COLLATE NOCASE AND unit = ? COLLATE NOCASE", input.name, input.unit)) throw new HttpError(409, `“${input.name}” (${input.unit}) zaten var. Aynı ürüne giriş yapın.`);
       assertCodeFree(input.code);
@@ -220,7 +221,7 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
       }
       audit(user, "stock.item.created", id, { name: input.name, unit: input.unit, opening, openingPay: openingMove?.pay || "none", amount: openingMove?.amount || 0 });
       return detail(id, user);
-    });
+    } });
     changed(user, { itemId: result.id });
     if (openingMove?.pay === "cash") changed(user, { kind: "cash" });
     publishAccounts(user, touched);
@@ -298,9 +299,13 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
   // ---------- Hareketler ----------
   function insertMove(user, itemId, move) {
     const id = newId("smove");
+    const method = move.pay === "cash" ? methodInput(move.method) : "cash";
+    // v2.1.0 (bank.post): peşin (Kasa/banka/POS) hareket para satırıdır ve İşlem No'lu işlem başlığı alır; yalnız miktar ya da açık
+    // hesap hareketi para satırı değildir.
+    const eventId = bank.eventFor("stock_moves", { kind: move.kind, pay: move.pay, amount: move.amount, date: move.date, method });
     store.run(
-      "INSERT INTO stock_moves (id, item_id, kind, qty, unit_price, amount, date, note, pay, reason, method, account_id, invoice_id, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-      id, itemId, move.kind, move.qty, move.unitPrice, move.amount, move.date, move.note, move.pay, move.reason || "", move.pay === "cash" ? methodInput(move.method) : "cash", move.accountId || "", move.invoiceId || "", user.id, now(),
+      "INSERT INTO stock_moves (id, item_id, kind, qty, unit_price, amount, date, note, pay, reason, method, account_id, invoice_id, event_id, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+      id, itemId, move.kind, move.qty, move.unitPrice, move.amount, move.date, move.note, move.pay, move.reason || "", method, move.accountId || "", move.invoiceId || "", eventId, user.id, now(),
     );
     return id;
   }
@@ -355,7 +360,7 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
     if (input.kind === "in" && input.pay === "cash") cash?.guardOut?.(input.amount, input.date, body.cashForce === true, input.method);
     let touched = [];
     let trimmed = [];
-    const id = store.tx(() => {
+    const id = bank.post({ user, module: "stock", op: "create", write: () => {
       const moveId = insertMove(user, item.id, input);
       touched = syncAccount(user, item, moveId, input);
       // Alımda birim fiyat verildiyse ürünün son birim fiyatı güncellenir (stok değeri güncel kalsın).
@@ -376,7 +381,7 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
       // Açık hesaba müşteri iadesi: borç azalır; taksitlendirilmiş borç kalandan büyük kalmasın (kart da küçülür).
       if (input.reason === "return" && input.pay === "account" && plans()?.trimCovers) trimmed = plans().trimCovers(input.accountId, user, accountNote(item, input));
       return moveId;
-    });
+    } });
     changed(user, { itemId: item.id });
     if (input.pay === "cash") changed(user, { kind: "cash" });
     publishAccounts(user, touched);
@@ -384,7 +389,7 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
     ok(res, { ...detail(item.id, user), moveId: id, trimmedPlans: trimmed });
   });
   const moveOf = (itemId, moveId) => {
-    const move = store.get("SELECT id, kind, qty, unit_price AS unitPrice, amount, date, note, pay, reason, method, account_id AS accountId, invoice_id AS invoiceId, created_by AS createdBy, created_at AS createdAt FROM stock_moves WHERE item_id = ? AND id = ?", itemId, limited(moveId, 120, "Hareket"));
+    const move = store.get("SELECT id, kind, qty, unit_price AS unitPrice, amount, date, note, pay, reason, method, account_id AS accountId, invoice_id AS invoiceId, event_id AS eventId, created_by AS createdBy, created_at AS createdAt FROM stock_moves WHERE item_id = ? AND id = ?", itemId, limited(moveId, 120, "Hareket"));
     if (!move) throw new HttpError(404, "Stok hareketi bulunamadı. Başka biri silmiş olabilir.");
     return move;
   };
@@ -406,10 +411,18 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
     assertAvailable(item, input, previous, body.force === true);
     cash?.guardChange?.(cashSide(previous), cashSide(input), body.cashForce === true);
     let touched = [];
-    store.tx(() => {
-      store.run("UPDATE stock_moves SET qty = ?, unit_price = ?, amount = ?, date = ?, note = ?, pay = ?, reason = ?, method = ?, account_id = ?, updated_by = ?, updated_at = ? WHERE id = ?", input.qty, input.unitPrice, input.amount, input.date, input.note, input.pay, input.reason || "", input.method || "cash", input.accountId, user.id, now(), previous.id);
-      touched = syncAccount(user, item, previous.id, input, previous.accountId);
-      audit(user, "stock.move.updated", previous.id, { itemId: item.id, previous, ...input });
+    bank.post({
+      user,
+      module: "stock",
+      op: "update",
+      prev: previous,
+      write: () => {
+        // Peşin ↔ açık hesap geçişi: para satırı olmaktan çıkan hareketin olayı iptal olur, yeniden peşin olan yeni olay alır.
+        const eventId = bank.eventFor("stock_moves", { kind: previous.kind, pay: input.pay, amount: input.amount, date: input.date, method: input.method || "cash", event_id: previous.eventId });
+        store.run("UPDATE stock_moves SET qty = ?, unit_price = ?, amount = ?, date = ?, note = ?, pay = ?, reason = ?, method = ?, account_id = ?, event_id = ?, updated_by = ?, updated_at = ? WHERE id = ?", input.qty, input.unitPrice, input.amount, input.date, input.note, input.pay, input.reason || "", input.method || "cash", input.accountId, eventId, user.id, now(), previous.id);
+        touched = syncAccount(user, item, previous.id, input, previous.accountId);
+        audit(user, "stock.move.updated", previous.id, { itemId: item.id, previous, ...input });
+      },
     });
     changed(user, { itemId: item.id });
     changed(user, { kind: "cash" });
@@ -424,11 +437,17 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
     period?.assertOpen(previous.date, "Bu stok hareketi");
     cash?.guardChange?.(cashSide(previous), null, url.searchParams.get("cashForce") === "1", "Bu stok hareketi silinince");
     let accountId = "";
-    store.tx(() => {
-      store.run("DELETE FROM stock_moves WHERE id = ?", previous.id);
-      accountId = accounts()?.stockEntry ? accounts().stockEntry.remove(previous.id) : "";
-      trash?.add({ kind: "stock-move", ref: previous.id, title: item.name, detail: `${previous.kind === "in" ? "Giriş" : "Çıkış"} ${qtyText(previous.qty)} ${item.unit}${previous.note ? ` · ${previous.note}` : ""}`, payload: { ...previous, itemId: item.id, itemName: item.name, unit: item.unit }, user });
-      audit(user, "stock.move.deleted", previous.id, { itemId: item.id, ...previous });
+    bank.post({
+      user,
+      module: "stock",
+      op: "delete",
+      prev: previous,
+      write: () => {
+        store.run("DELETE FROM stock_moves WHERE id = ?", previous.id);
+        accountId = accounts()?.stockEntry ? accounts().stockEntry.remove(previous.id) : "";
+        trash?.add({ kind: "stock-move", ref: previous.id, title: item.name, detail: `${previous.kind === "in" ? "Giriş" : "Çıkış"} ${qtyText(previous.qty)} ${item.unit}${previous.note ? ` · ${previous.note}` : ""}`, payload: { ...previous, itemId: item.id, itemName: item.name, unit: item.unit }, user });
+        audit(user, "stock.move.deleted", previous.id, { itemId: item.id, ...previous });
+      },
     });
     changed(user, { itemId: item.id });
     if (previous.pay === "cash") changed(user, { kind: "cash" });
@@ -653,16 +672,23 @@ export function registerStockRoutes(router, { store, auth, audit, events, trash,
     period?.restoreDate(payload.date, "Bu stok hareketi");
     const pay = payload.pay === "account" && !accounts()?.exists(payload.accountId) ? "none" : PAY.has(payload.pay) ? payload.pay : "none";
     const move = { kind: payload.kind, qty: Number(payload.qty) || 0, unitPrice: Number(payload.unitPrice) || 0, amount: roundMoney(Number(payload.amount) || 0), date: payload.date, note: payload.note || "", pay, reason: payload.reason === "return" ? "return" : "", method: pay === "cash" ? methodInput(payload.method) : "cash", accountId: pay === "account" ? payload.accountId : "" };
-    store.tx(() => {
-      if (!store.get("SELECT 1 AS found FROM stock_moves WHERE id = ?", entry.ref)) {
-        store.run(
-          "INSERT INTO stock_moves (id, item_id, kind, qty, unit_price, amount, date, note, pay, reason, method, account_id, created_by, created_at, updated_by, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-          entry.ref, item.id, move.kind, move.qty, move.unitPrice, move.amount, move.date, move.note, move.pay, move.reason, move.method, move.accountId, payload.createdBy || user.id, payload.createdAt || now(), user.id, now(),
-        );
-        syncAccount(user, item, entry.ref, move);
-      }
-      trash.markRestored(entry.id, user);
-      audit(user, "stock.move.restored", entry.ref, { itemId: item.id, kind: move.kind, qty: move.qty });
+    bank.post({
+      user,
+      module: "stock",
+      op: "restore",
+      prev: payload,
+      write: () => {
+        if (!store.get("SELECT 1 AS found FROM stock_moves WHERE id = ?", entry.ref)) {
+          store.run(
+            "INSERT INTO stock_moves (id, item_id, kind, qty, unit_price, amount, date, note, pay, reason, method, account_id, event_id, created_by, created_at, updated_by, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            entry.ref, item.id, move.kind, move.qty, move.unitPrice, move.amount, move.date, move.note, move.pay, move.reason, move.method, move.accountId,
+            bank.eventFor("stock_moves", { kind: move.kind, pay: move.pay, amount: move.amount, date: move.date, method: move.method, event_id: payload.eventId || "" }), payload.createdBy || user.id, payload.createdAt || now(), user.id, now(),
+          );
+          syncAccount(user, item, entry.ref, move);
+        }
+        trash.markRestored(entry.id, user);
+        audit(user, "stock.move.restored", entry.ref, { itemId: item.id, kind: move.kind, qty: move.qty });
+      },
     });
     changed(user, { itemId: item.id });
     changed(user, { kind: "cash" });

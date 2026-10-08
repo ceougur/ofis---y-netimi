@@ -32,7 +32,7 @@ const KIND_LABELS = {
 };
 const SEQUENCE = /^(sıra|sira|sıra no|no|#|sn|s\.?\s?no|nr)$/i;
 
-export function registerTrashRoutes(router, { store, auth, audit, events, dataset, profile, free, trash, documents, accounts = null, stock = null, cheques = null, invoices = null, plans = null, period = null, now: clock = systemClock }) {
+export function registerTrashRoutes(router, { store, bank, auth, audit, events, dataset, profile, free, trash, documents, accounts = null, stock = null, cheques = null, invoices = null, plans = null, period = null, now: clock = systemClock }) {
   const now = () => clock().toISOString();
   const publish = (user, detail) => events?.publish("workspace.changed", { actorId: user.id, actorName: user.display_name, ...detail }, { except: user.id });
   const sessionNames = () => {
@@ -285,25 +285,34 @@ export function registerTrashRoutes(router, { store, auth, audit, events, datase
     if (item.kind === "payment") {
       restoreDate(payload.date, "Bu tahsilat");
       const method = methodInput(payload.method);
-      store.tx(() => {
-        if (!store.get("SELECT 1 AS found FROM payments WHERE id = ?", item.ref)) {
-          store.run(
-            "INSERT INTO payments (id, case_key, case_title, amount, date, note, method, created_by, created_at, updated_by, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-            item.ref,
-            payload.caseKey || "",
-            payload.caseTitle || "",
-            money(payload.amount),
-            payload.date,
-            payload.note || "",
-            method,
-            payload.createdBy || user.id,
-            payload.createdAt || now(),
-            user.id,
-            now(),
-          );
-        }
-        trash.markRestored(item.id, user);
-        audit(user, "case.payment.restored", item.ref, { caseKey: payload.caseKey, amount: payload.amount, date: payload.date });
+      // v2.1.0 (bank.post op 'restore'): satır silinmeden önceki işlem başlığıyla (payload.eventId) döner, olay yeniden etkin; eski
+      // (olaysız silinmiş) satır yeni olay alır.
+      bank.post({
+        user,
+        module: "payment",
+        op: "restore",
+        prev: payload,
+        write: () => {
+          if (!store.get("SELECT 1 AS found FROM payments WHERE id = ?", item.ref)) {
+            store.run(
+              "INSERT INTO payments (id, case_key, case_title, amount, date, note, method, event_id, created_by, created_at, updated_by, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+              item.ref,
+              payload.caseKey || "",
+              payload.caseTitle || "",
+              money(payload.amount),
+              payload.date,
+              payload.note || "",
+              method,
+              bank.eventFor("payments", { date: payload.date, method, event_id: payload.eventId || "" }),
+              payload.createdBy || user.id,
+              payload.createdAt || now(),
+              user.id,
+              now(),
+            );
+          }
+          trash.markRestored(item.id, user);
+          audit(user, "case.payment.restored", item.ref, { caseKey: payload.caseKey, amount: payload.amount, date: payload.date });
+        },
       });
       publish(user, { kind: "activity", caseKey: payload.caseKey });
       publish(user, { kind: "cash" });
@@ -315,29 +324,40 @@ export function registerTrashRoutes(router, { store, auth, audit, events, datase
       // Yol işlemden önce doğrulanır (bozuk yükte hiçbir satır yazılmaz).
       methodInput(payload.method);
       if (payload.twin) methodInput(payload.twin.method);
-      store.tx(() => {
-        // v2.0.17: Kasa ↔ Banka transferi iki bağlı hareket; ikisi birlikte geri gelir (payload.twin).
-        const insert = row => {
-          if (store.get("SELECT 1 AS found FROM cash_entries WHERE id = ?", row.id)) return;
-          store.run(
-            "INSERT INTO cash_entries (id, kind, amount, date, description, method, transfer_id, created_by, created_at, updated_by, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-            row.id,
-            row.kind,
-            money(row.amount),
-            row.date,
-            row.description || "",
-            methodInput(row.method),
-            row.transferId || "",
-            row.createdBy || user.id,
-            row.createdAt || now(),
-            user.id,
-            now(),
-          );
-        };
-        insert({ ...payload, id: item.ref });
-        if (payload.twin && ["in", "out"].includes(payload.twin.kind)) insert(payload.twin);
-        trash.markRestored(item.id, user);
-        audit(user, "cash.entry.restored", item.ref, { kind: payload.kind, amount: payload.amount, date: payload.date, description: payload.description });
+      bank.post({
+        user,
+        module: "cash",
+        op: "restore",
+        prev: payload,
+        write: () => {
+          // v2.0.17: Kasa ↔ Banka transferi iki bağlı hareket; ikisi birlikte geri gelir (payload.twin). v2.1.0: ikisi aynı işlem
+          // başlığında (silinmeden önceki olay; eski yükte yoksa yeni olay ikisine birden).
+          let shared = "";
+          const insert = row => {
+            if (store.get("SELECT 1 AS found FROM cash_entries WHERE id = ?", row.id)) return;
+            const method = methodInput(row.method);
+            shared = bank.eventFor("cash_entries", { kind: row.kind, date: row.date, method, transfer_id: row.transferId || "", event_id: row.eventId || shared });
+            store.run(
+              "INSERT INTO cash_entries (id, kind, amount, date, description, method, transfer_id, event_id, created_by, created_at, updated_by, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+              row.id,
+              row.kind,
+              money(row.amount),
+              row.date,
+              row.description || "",
+              method,
+              row.transferId || "",
+              shared,
+              row.createdBy || user.id,
+              row.createdAt || now(),
+              user.id,
+              now(),
+            );
+          };
+          insert({ ...payload, id: item.ref });
+          if (payload.twin && ["in", "out"].includes(payload.twin.kind)) insert(payload.twin);
+          trash.markRestored(item.id, user);
+          audit(user, "cash.entry.restored", item.ref, { kind: payload.kind, amount: payload.amount, date: payload.date, description: payload.description });
+        },
       });
       publish(user, { kind: "cash" });
       message = "Kasa hareketi geri eklendi.";
@@ -349,19 +369,27 @@ export function registerTrashRoutes(router, { store, auth, audit, events, datase
       restoreDate(payload.date, "Bu taksit hareketi");
       plans?.assertCloseOpen?.(plan.id, "Kartın tahsilatı ve iadesi geri yüklenemez.");
       const method = methodInput(payload.method);
-      store.tx(() => {
-        if (!store.get("SELECT 1 AS found FROM plan_entries WHERE id = ?", item.ref)) {
-          const itemId = payload.itemId && store.get("SELECT 1 AS found FROM plan_items WHERE id = ?", payload.itemId) ? payload.itemId : null;
-          store.run(
-            // Açılış (devir) kaydı geri gelince yine açılıştır (v2.0.8): Kasa'ya girmez.
-            "INSERT INTO plan_entries (id, plan_id, item_id, kind, amount, date, note, receipt_no, opening, method, created_by, created_at, updated_by, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-            item.ref, plan.id, itemId, payload.kind, money(payload.amount), payload.date, payload.note || "", payload.receiptNo || null, payload.opening ? 1 : 0, method, payload.createdBy || user.id, payload.createdAt || now(), user.id, now(),
-          );
-        }
-        trash.markRestored(item.id, user);
-        // v2.0.24: faturanın kendi kartıysa kartın kalanı faturanın açığına eşitlenir.
-        plans?.syncInvoiceCard?.(user, plan.id);
-        audit(user, "plan.entry.restored", item.ref, { planId: plan.id, kind: payload.kind, amount: payload.amount, date: payload.date });
+      bank.post({
+        user,
+        module: "plan",
+        op: "restore",
+        prev: payload,
+        write: () => {
+          if (!store.get("SELECT 1 AS found FROM plan_entries WHERE id = ?", item.ref)) {
+            const itemId = payload.itemId && store.get("SELECT 1 AS found FROM plan_items WHERE id = ?", payload.itemId) ? payload.itemId : null;
+            const opening = payload.opening ? 1 : 0;
+            store.run(
+              // Açılış (devir) kaydı geri gelince yine açılıştır (v2.0.8): Kasa'ya girmez (para satırı değil, olay almaz).
+              "INSERT INTO plan_entries (id, plan_id, item_id, kind, amount, date, note, receipt_no, opening, method, event_id, created_by, created_at, updated_by, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+              item.ref, plan.id, itemId, payload.kind, money(payload.amount), payload.date, payload.note || "", payload.receiptNo || null, opening, method,
+              bank.eventFor("plan_entries", { kind: payload.kind, date: payload.date, method, opening, cheque_id: "", event_id: payload.eventId || "" }), payload.createdBy || user.id, payload.createdAt || now(), user.id, now(),
+            );
+          }
+          trash.markRestored(item.id, user);
+          // v2.0.24: faturanın kendi kartıysa kartın kalanı faturanın açığına eşitlenir.
+          plans?.syncInvoiceCard?.(user, plan.id);
+          audit(user, "plan.entry.restored", item.ref, { planId: plan.id, kind: payload.kind, amount: payload.amount, date: payload.date });
+        },
       });
       publish(user, { kind: "plans", planId: plan.id });
       publish(user, { kind: "cash" });
