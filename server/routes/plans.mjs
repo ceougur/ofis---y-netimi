@@ -1006,40 +1006,42 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
             if (left > 0.004) return skip(index, `Ödenen tutar taksitlerin toplamından ${roundMoney(left)} fazla`);
           }
         }
-        // Gruplar yalnızca kart açılacak satırlar için tanımlanır (atlanan satır boş grup bırakmaz).
-        const groupId = groupName ? ensureGroup(user, groupName) : null;
-        const subgroupId = groupId && subgroupName ? ensureGroup(user, subgroupName, groupId) : null;
-        const duplicate = store.get("SELECT id FROM plans WHERE deleted_at IS NULL AND name = ? COLLATE NOCASE AND COALESCE(group_id, '') = ?", name, groupId || "");
-        if (duplicate) return skip(index, "Aynı adla açık kart var");
         // Tablodaki kayıt: kesin tek eşleşme bağlanır; o kaydın kartı zaten varsa satır atlanır (çift kart yok).
         const record = records ? records.find(name, phone) : null;
-        if (record?.carded) return skip(index, "Tablodaki kaydının taksit kartı zaten var");
-        const refNo = cell(row, col.seq).slice(0, 30) || String((autoRef += 1));
         // Kayıt tarihi kolonu yoksa ya da okunamıyorsa yükleme günü; v2.0.12: kart mevcut bir cariye bağlanırsa onun tarihi.
         const excelDay = parseDay(cell(row, col.registered)) || (scheduled?.registeredOn || "");
         const registeredOn = excelDay || today();
-        const person = { name, phone, note: cell(row, col.note).slice(0, 1000), registeredOn, groupId, subgroupId, caseKey: record?.key || "", caseSource: record ? source : "", caseTitle: record?.title || "" };
-        // Cari (v2.0.6): aynı ad ve telefonla (ya da telefonsuz aynı ad ve grupla) tek bir cari varsa ona bağlanır; yoksa açılır.
-        // v2.0.26 (G6): cari ve kart iç işlemde (SAVEPOINT) açılır; kartın Kayıt Tarihi kapanmış dönemdeyse ikisi de geri alınır, satır
-        // nedeniyle atlanır (yükleme durmaz).
+        // Gruplar yalnızca kart açılacak satırlar için tanımlanır (atlanan satır boş grup bırakmaz). v2.0.26 (G6): grup, cari ve kart
+        // iç işlemde (SAVEPOINT) açılır; kartın Kayıt Tarihi kapanmış dönemdeyse hepsi geri alınır, satır nedeniyle atlanır (yükleme
+        // durmaz). 2. gözden geçirme İ2: grup önceden iç işlemin DIŞINDA açılıyordu; kilit yüzünden atlanan satır boş grup bırakıyor
+        // (Geri Al'sız; aktarım kaydı yoktu) ve rapor "groups: 1" diyordu.
+        let person;
         let outcome;
         let accountId;
         let start;
         try {
-          ({ outcome, accountId, start } = store.tx(() => {
+          ({ person, outcome, accountId, start } = store.tx(() => {
+            const g = groupName ? ensureGroup(user, groupName) : null;
+            const sg = g && subgroupName ? ensureGroup(user, subgroupName, g) : null;
+            const duplicate = store.get("SELECT id FROM plans WHERE deleted_at IS NULL AND name = ? COLLATE NOCASE AND COALESCE(group_id, '') = ?", name, g || "");
+            if (duplicate) throw new SkippedRow("Aynı adla açık kart var");
+            if (record?.carded) throw new SkippedRow("Tablodaki kaydının taksit kartı zaten var");
+            const who = { name, phone, note: cell(row, col.note).slice(0, 1000), registeredOn, groupId: g, subgroupId: sg, caseKey: record?.key || "", caseSource: record ? source : "", caseTitle: record?.title || "" };
+            // Cari (v2.0.6): aynı ad ve telefonla (ya da telefonsuz aynı ad ve grupla) tek bir cari varsa ona bağlanır; yoksa açılır.
             const result = {};
-            const id = accounts()?.createFromPlan(user, person, result) || "";
+            const id = accounts()?.createFromPlan(user, who, result) || "";
             const ownerDay = !excelDay && id && !result.created ? store.get("SELECT registered_on AS day FROM accounts WHERE id = ?", id)?.day || "" : "";
             const day = scheduledStart(ownerDay || registeredOn, items);
             const reason = lockedStartReason(day);
             if (reason) throw new SkippedRow(reason);
-            return { outcome: result, accountId: id, start: day };
+            return { person: who, outcome: result, accountId: id, start: day };
           }));
         } catch (error) {
           if (!(error instanceof SkippedRow)) throw error;
-          if (!cell(row, col.seq)) autoRef -= 1;
           return skip(index, error.message);
         }
+        // Sıra No: tablodaki numara ya da (atlanan satır numara yemesin diye kart açılacağı kesinleşince) sıradaki numara.
+        const refNo = cell(row, col.seq).slice(0, 30) || String((autoRef += 1));
         if (accountId && !outcome.created) report.linked += 1;
         if (outcome.created) undo.accounts.push(accountId);
         if (outcome.linked) undo.accountLinks.push({ accountId, caseKey: person.caseKey });
@@ -1385,5 +1387,5 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
   // ikinci kez saymaz; aktarma "kartı var" der.
   const linkedCases = source => new Set(store.all("SELECT case_key AS k FROM plans WHERE deleted_at IS NULL AND case_key <> '' AND case_source = ?", source || "").map(row => row.k));
 
-  return { uncoveredDebt, assertRestorable, assertCloseOpen, trimCovers, shrinkPlan, leftOf, syncInvoiceCard, cashEntries, cashSource, dueItems, openItems, fingerprint, ledgerPlansByAccount, list, detail, forCase, entriesForCase, summariesByAccount, forAccount, createForAccount, removeForInvoice, growForInvoice, followAccount, countForAccount, receiptSeq, nextRef, validDistribution: distributionInput, resolveGroups, groupTree, ensureGroup, createScheduled, scheduledStart, lockedStartReason, adoptPayment, linkedCases };
+  return { uncoveredDebt, assertRestorable, assertCloseOpen, closeDayOf, trimCovers, shrinkPlan, leftOf, syncInvoiceCard, cashEntries, cashSource, dueItems, openItems, fingerprint, ledgerPlansByAccount, list, detail, forCase, entriesForCase, summariesByAccount, forAccount, createForAccount, removeForInvoice, growForInvoice, followAccount, countForAccount, receiptSeq, nextRef, validDistribution: distributionInput, resolveGroups, groupTree, ensureGroup, createScheduled, scheduledStart, lockedStartReason, adoptPayment, linkedCases };
 }

@@ -4,6 +4,12 @@
 //  G7. Cari kartında nakit tahsilat silinirken Kasa eksiye düşecekse soru nedenini söyler ("Bu tahsilat silinince Nakit Kasa'dan …
 //      düşer"), "yolu değiştirin" önerisi yok, "Yine de silinsin mi?"; onaylanınca silinir, Kasa sayısı doğru.
 //  G1. Kilitli günde kapatılmış taksit kartında Yeniden Aç → ekranda nedenli ret ("… kapatıldı … Kart yeniden açılamaz."); kart Kapalı.
+// İkinci bağımsız gözden geçirme (docs/2.0.26-KANIT.md 4. bölüm):
+//  İ3. Kilitli dönemdeki çekin kartında Sil düğmesi yok; nedeni kartta yazılı (form giriş metni sunucudan, doğru yolu söyler).
+//  İ5. Kasa'da kayıt tahsilatını düzeltirken eksi bakiye sorusu düzeltmeyi anlatır ("… düzeltilince Nakit Kasa'dan … düşer");
+//      "yolu değiştirin" önerisi ve "çıkış" yok.
+//  İ6. Silmede soruya "Vazgeç" → bildirim "Silinmedi: …" (kırmızı hata değil); tahsilat yerinde.
+//  İ8. Eski sürümden kalan ileri tarihli çek/senet: Yönetim'de Mutabakat satırı sarı uyarı, ne yapılacağını söyler, tablo adı yok.
 // Çalıştırma: npm run test:senaryo-226
 import fs, { mkdtempSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -90,6 +96,7 @@ const lastToast = async pattern => {
   return (await page.$$eval(".hof-toast .hof-toast-text", nodes => nodes.map(n => n.textContent.trim()))).join(" | ");
 };
 const cashApi = async () => (await must("kasa", api.get("/api/workspace/cash?method=cash"))).totals.balance;
+const ctxUi = {};
 
 try {
   await api.login("admin", PASS);
@@ -120,6 +127,10 @@ try {
     await page.waitForSelector(`${modal} tr[data-cheque="${cheque.id}"]`, { timeout: 15000 });
     await page.click(`${modal} tr[data-cheque="${cheque.id}"]`);
     await page.waitForSelector(`${modal} .hof-chq-actions [data-act="edit"]`, { timeout: 15000 });
+    // İ3: kilitli evrakta Sil sunulmaz (sunucu 409 verirdi); nedeni kartta görünür yazı.
+    ok(!(await page.$(`${modal} .hof-chq-actions [data-act="delete"]`)), "İ3: kilitli dönemdeki çekte Sil düğmesi yok");
+    const lockNote = await page.$eval(`${modal} .hof-chq-lock-note`, n => n.textContent.trim()).catch(() => "");
+    ok(/kapatılmış \(kilitli\) dönemde/.test(lockNote) && /silinemez/.test(lockNote), `İ3: kartta neden yazılı: "${lockNote}"`);
     await page.click(`${modal} .hof-chq-actions [data-act="edit"]`);
     await page.waitForSelector(`${top} form input[name="dueDate"]`, { timeout: 10000 });
     const amountField = await page.$(`${top} form input[name="amount"]`);
@@ -166,6 +177,48 @@ try {
     ok(cash === -800, `onaylanınca silindi; Nakit Kasa ${cash}`);
   });
 
+  await step("İ5. Kasa'da kayıt tahsilatı düzeltilirken Kasa eksiye düşecek: soru düzeltmeyi anlatır; Vazgeç ile yazılmaz", async () => {
+    const pay = await must("kayıt tahsilatı", api.post("/api/workspace/cases/K-226/payments", { amount: "1000", date: TODAY, method: "cash", caseTitle: "Ali Kayıt" }));
+    ctxUi.pay = pay.id;
+    ok((await cashApi()) === 200, `Nakit Kasa 200 (${await cashApi()})`);
+    await closeAll();
+    await page.click('#hof-sidecard [data-action="cash"]');
+    await page.waitForSelector(`${top} button[data-edit="${pay.id}"]`, { timeout: 15000 });
+    await page.click(`${top} button[data-edit="${pay.id}"]`);
+    await page.waitForSelector(`${top} form input[name="amount"]`);
+    await page.fill(`${top} form input[name="amount"]`, "500");
+    await page.click(`${top} form button[type="submit"]`);
+    await page.waitForFunction(() => [...document.querySelectorAll(".hof-modal-backdrop.is-visible")].some(m => /Eksiye Düşecek/.test(m.textContent)), null, { timeout: 10000 });
+    const text = await page.$eval(top, n => n.innerText.replace(/\s+/g, " "));
+    await shot("i5-duzeltme-sorusu");
+    ok(/Bu tahsilat 1\.000,00 TL'den 500,00 TL'ye düzeltilince Nakit Kasa'dan 500,00 TL düşer/.test(text), `soru düzeltmeyi anlatıyor: "${text.slice(0, 220)}"`);
+    ok(/200,00 TL iken [−-]300,00 TL olur/.test(text) && /Yine de kaydedilsin mi\?/.test(text), "önce/sonra bakiye ve kaydetme sorusu");
+    ok(!/yolu değiştirin/.test(text) && !/çıkış/.test(text), "yol önerisi ve 'çıkış' yok");
+    await page.click(`${top} [data-answer="no"]`);
+    await page.waitForTimeout(500);
+    const amount = (await must("tahsilat oku", api.get("/api/workspace/cash?method=cash"))).entries.find(entry => entry.id === pay.id)?.amount;
+    ok(amount === 1000, `Vazgeç: tahsilat değişmedi (${amount})`);
+    await page.click(`${top} [data-cancel]`).catch(() => null);
+    await page.waitForTimeout(300);
+  });
+
+  await step("İ6. Kasa'da kayıt tahsilatı silinirken soruya Vazgeç: 'Silinmedi' bilgisi (kırmızı hata değil); tahsilat yerinde", async () => {
+    await page.waitForSelector(`${top} button[data-delete="${ctxUi.pay}"]`, { timeout: 15000 });
+    await page.$$eval(".hof-toast", nodes => nodes.forEach(n => n.remove()));
+    await page.click(`${top} button[data-delete="${ctxUi.pay}"]`);
+    await page.waitForSelector(`${top} [data-answer="yes"]`);
+    await page.click(`${top} [data-answer="yes"]`); // "Tahsilatı Sil" onayı
+    await page.waitForFunction(() => [...document.querySelectorAll(".hof-modal-backdrop.is-visible")].some(m => /Eksiye Düşecek/.test(m.textContent)), null, { timeout: 10000 });
+    await page.click(`${top} [data-answer="no"]`);
+    const toast = await lastToast(/Silinmedi|Kaydedilmedi/);
+    const kinds = await page.$$eval(".hof-toast", nodes => nodes.map(n => n.className));
+    await shot("i6-silme-vazgec");
+    ok(/^Silinmedi: bakiye eksiye düşecekti\.$/.test(toast), `bildirim silmeye uygun: "${toast}"`);
+    ok(!kinds.some(name => /hof-toast-error/.test(name)), `kırmızı hata bildirimi yok (${kinds.join(" | ")})`);
+    const still = (await must("kasa", api.get("/api/workspace/cash?method=cash"))).entries.some(entry => entry.id === ctxUi.pay);
+    ok(still, "tahsilat yerinde");
+  });
+
   await step("G1. Kilitli günde kapatılmış kartta Yeniden Aç: ekranda nedenli ret, kart Kapalı kalır", async () => {
     await must("kilit bugün", api.put("/api/admin/period-lock", { lockedUntil: TODAY }));
     await closeAll();
@@ -188,6 +241,32 @@ try {
   await step("Mutabakat", async () => {
     const result = await must("mutabakat", api.get("/api/workspace/ledger/integrity"));
     ok(result.ok, `ana defter ↔ Kasa/Cari/Taksit/Çek tutarlı${result.ok ? "" : `: ${JSON.stringify(result.failures).slice(0, 300)}`}`);
+  });
+  await step("İ8. Eski sürümden kalan ileri tarihli çek/senet: Yönetim'de Mutabakat sarı uyarı, yolu söyler, tablo adı yok", async () => {
+    // 2.0.25'te girilebilen ileri alış tarihli çek (bugünkü kod engeller): doğrudan yazılır; güncelleme sonrası açılış gibi taban ölçülür.
+    const future = iso(new Date(Date.now() + 10 * 86_400_000));
+    const stamp = new Date().toISOString();
+    app.db.prepare("INSERT INTO cheques (id, direction, instrument, serial_no, bank, drawer, account_id, plan_id, amount, issue_date, due_date, status, status_date, note, created_by, created_at, updated_at) VALUES ('cek-eski-ui', 'in', 'cheque', 'IL-UI', '', 'Portföy Müşterisi', '', '', 700, ?, '2027-01-31', 'portfolio', ?, '', 'eski', ?, ?)").run(future, future, stamp, stamp);
+    app.db.prepare("INSERT INTO cheque_events (id, cheque_id, kind, date, amount, account_id, from_status, to_status, note, effects_json, method, created_by, created_at) VALUES ('cev-eski-ui', 'cek-eski-ui', 'receive', ?, 700, '', '', 'portfolio', '', '[]', 'cash', 'eski', ?)").run(future, stamp);
+    app.integrity.start();
+    const admin = await context.newPage();
+    admin.on("pageerror", e => errors.push(`admin pageerror ${e.message}`));
+    try {
+      await admin.goto(`${BASE}/admin.html#system`, { waitUntil: "load" });
+      await admin.click('.adm-tabs [data-tab="system"]');
+      await admin.waitForFunction(() => /Mutabakat/.test(document.querySelector("#adm-integrity-status")?.textContent || ""), null, { timeout: 15000 });
+      const text = await admin.textContent("#adm-integrity-status");
+      const classes = await admin.$eval("#adm-integrity-status", n => n.className);
+      await admin.screenshot({ path: path.join(OUT, `${String(++shotNo).padStart(2, "0")}-i8-yonetim-mutabakat.png`) });
+      ok(/Çek\/Senet Hareketleri/.test(text) && !/cheque_events/.test(text), `tablo adı yok, kullanıcı adı var: "${text.slice(0, 260)}"`);
+      ok(/Düzenle/.test(text) && /tarihi gelince kendiliğinden kalkar/.test(text), "ne yapılacağı yazılı (Düzenle; tarihi gelince kalkar)");
+      ok(/adm-warn-text/.test(classes) && !/adm-error-text/.test(classes), `sarı uyarı, kırmızı hata değil (${classes})`);
+    } finally {
+      await admin.close();
+    }
+    app.db.prepare("DELETE FROM cheque_events WHERE id = 'cev-eski-ui'").run();
+    app.db.prepare("DELETE FROM cheques WHERE id = 'cek-eski-ui'").run();
+    app.integrity.start();
   });
   ok(!errors.length, `sayfa hatası yok${errors.length ? `: ${errors.join(" | ")}` : ""}`);
 } catch (error) {

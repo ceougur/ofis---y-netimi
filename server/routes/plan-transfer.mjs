@@ -152,6 +152,17 @@ export function registerPlanTransfer(router, { store, auth, audit, events, datas
       if (sameName.get(fold(record.name)) > 1) add("warning", "same-name", `Tabloda “${record.name}” adıyla ${sameName.get(fold(record.name))} kayıt var; her biri ayrı kart ve ayrı cari olur.`);
       // Programda girilmiş kayıt tahsilatları.
       const countPayments = options.payments && own.length && (status === "ready" || status === "warning" || status === "link" || status === "closed");
+      // v2.0.26 (2. gözden geçirme İ1): bağlanacak bağsız kart kapanmış dönemde kapatıldıysa (kalandan vazgeçildi, 689 kilitli mizanda)
+      // kayıt tahsilatı o karta taşınamaz: vazgeçilen kalan değişirdi. Önceden ön izleme "bağlanır" diyor, aktarım bütünüyle kapıda
+      // nedensiz 409 alıyordu (geri almada da). Tahsilatlar taşınmadan (seçenek kapalı) bağlanabilir.
+      if (status === "link" && countPayments) {
+        const lock = period?.lockedUntil?.() || "";
+        const closedOn = lock ? plans()?.closeDayOf?.(linkPlan.id) || "" : "";
+        if (closedOn && closedOn <= lock) {
+          status = "error";
+          add("error", "link-closed-locked", `Taksitler'deki bağsız kartı (“${linkPlan.name}”) ${dayText(closedOn)} tarihinde kapatıldı (kalan alacaktan vazgeçildi); ${dayText(lock)} ve öncesi kapatılmış (kilitli) dönemdir. Kayıt tahsilatları bu karta taşınamaz, kişi aktarılmaz. Tahsilatları taşımadan aktarabilir ya da yönetici dönem kilidini açınca yeniden deneyebilirsiniz.`);
+        }
+      }
       if (own.length) {
         if (options.payments) add("info", "payments", `Kayıt kartından girilmiş ${own.length} tahsilat (${money(programPaid)}) karta taşınır; Kasa toplamı değişmez.`);
         else add("warning", "payments-left", `Kayıt kartında ${own.length} tahsilat (${money(programPaid)}) var; seçiminize göre karta sayılmaz, kayıt tahsilatı olarak kalır.`);
@@ -473,7 +484,14 @@ export function registerPlanTransfer(router, { store, auth, audit, events, datas
         const day = [plan && !plan.covers ? plan.registeredOn : "", entry].filter(Boolean).sort()[0] || "";
         if (plan && day && day <= lock) hits.push(`${plan.name}, ${dayText(day)}`);
       }
-      for (const moved of undo.payments || []) if (moved.row?.date && moved.row.date <= lock) hits.push(`${moved.row.case_title || "kayıt tahsilatı"}, ${dayText(moved.row.date)}`);
+      for (const moved of undo.payments || []) {
+        if (moved.row?.date && moved.row.date <= lock) hits.push(`${moved.row.case_title || "kayıt tahsilatı"}, ${dayText(moved.row.date)}`);
+        // 2. gözden geçirme İ1: tahsilat kapanmış dönemde kapatılmış (bağlanan bağsız) karta taşındıysa geri almak kartın vazgeçilen
+        // kalanını (689, kilitli mizan) değiştirir; önceden kapıda nedensiz 409 ledger-integrity.
+        const entry = moved.entryId ? store.get("SELECT e.plan_id AS planId, p.name FROM plan_entries e JOIN plans p ON p.id = e.plan_id WHERE e.id = ?", moved.entryId) : null;
+        const closedOn = entry ? plans()?.closeDayOf?.(entry.planId) || "" : "";
+        if (closedOn && closedOn <= lock) hits.push(`${entry.name}, ${dayText(closedOn)} tarihinde kapatıldı`);
+      }
       if (hits.length) throw new HttpError(409, `Bu aktarımın kartlarında ya da taşınan tahsilatlarında kapatılmış (kilitli) döneme (${dayText(lock)} ve öncesi) düşen kayıt var (${[...new Set(hits)].slice(0, 5).join("; ")}); aktarım geri alınamaz. Gerekirse yönetici dönem kilidini açmalı.`, { code: "period-locked", lockedUntil: lock });
     }
     const report = { plans: 0, links: 0, payments: 0, accounts: 0, accountsKept: 0 };
