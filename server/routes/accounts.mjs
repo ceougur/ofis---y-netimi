@@ -577,6 +577,26 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     requireKindRight(user, entry.kind);
   };
 
+  // v2.0.26 (A9): mahsup fişinde karşı belge olan Alacak Yaz / Borç Yaz satırı. Silinirse ya da tutarı mahsubun altına
+  // iner, yönü değişir, tarihi mahsuptan sonraya kayarsa mahsup fişi boşa düşer (kapı bunu nedensiz 409 ile durduruyordu).
+  // Nedenli 409 "offset-linked": önce mahsup kaldırılır.
+  const offsetsOf = entryId =>
+    hasOffsets()
+      ? store.all("SELECT o.amount, o.date, COALESCE(i.number, '') AS number FROM invoice_offsets o LEFT JOIN invoices i ON i.id = o.invoice_id WHERE o.counter_type = 'entry' AND o.counter_id = ? ORDER BY o.date", entryId)
+      : [];
+  let offsetTable = null;
+  const hasOffsets = () => (offsetTable ??= Boolean(store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'invoice_offsets'")));
+  function assertOffsetFree(previous, next = null) {
+    const offsets = offsetsOf(previous.id);
+    if (!offsets.length) return;
+    const used = roundMoney(offsets.reduce((sum, row) => sum + (Number(row.amount) || 0), 0));
+    const numbers = [...new Set(offsets.map(row => row.number).filter(Boolean))].join(", ") || "bir fatura";
+    const head = `Bu satır ${numbers} faturasıyla ${tl(used)} mahsup edilmiş.`;
+    if (!next) throw new HttpError(409, `${head} Önce mahsubu kaldırın (Fatura → Mahsup), sonra satırı silin.`, { code: "offset-linked", used });
+    if (next.kind !== previous.kind) throw new HttpError(409, `${head} Yönü değiştirilemez; önce mahsubu kaldırın.`, { code: "offset-linked", used });
+    if (next.amount < used - 0.005) throw new HttpError(409, `${head} Tutar mahsup edilenden (${tl(used)}) az olamaz; önce mahsubu kaldırın ya da azaltın.`, { code: "offset-linked", used });
+    if (next.date > offsets[0].date) throw new HttpError(409, `${head} Tarih mahsup tarihinden (${dayText(offsets[0].date)}) sonra olamaz; önce mahsubu kaldırın.`, { code: "offset-linked", used });
+  }
   router.post("/api/workspace/accounts/:id/entries", async ({ req, res, params }) => {
     const user = auth.requirePermission(req, "accounts.view");
     const account = accountRow(params.id);
@@ -603,6 +623,7 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     // v2.0.13: borç ↔ alacak yönü düzeltilebilir (yanlış yönde yazılan açılış bakiyesi gibi); tahsilat/ödeme yön değiştirmez.
     const flip = ["debt", "credit"].includes(previous.kind) && ["debt", "credit"].includes(text(body.kind)) ? text(body.kind) : previous.kind;
     const input = entryInput({ ...previous, ...body, kind: flip }, account.id, previous);
+    assertOffsetFree(previous, input);
     const cashSide = e => (e.kind === "in" || e.kind === "out" ? e : null);
     cash?.guardChange?.(cashSide(previous), cashSide(input), body.cashForce === true);
     store.tx(() => {
@@ -619,6 +640,7 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     const previous = entryOf(account.id, params.entryId);
     requireEntryRight(user, previous);
     period?.assertOpen(previous.date, "Bu cari hareketi");
+    assertOffsetFree(previous);
     if (previous.kind === "in" || previous.kind === "out") cash?.guardChange?.(previous, null, url.searchParams.get("cashForce") === "1");
     store.tx(() => {
       store.run("DELETE FROM account_entries WHERE id = ?", previous.id);
