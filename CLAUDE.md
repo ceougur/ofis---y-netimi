@@ -841,6 +841,11 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   kılavuz PDF 63d536ad… (DEĞİŞTİ → yayından sonra site PR'ı); 24 arayüz senaryosu son kodla 0 hata. Arşiv 2 parça (30 MiB
   sınırı). Sırada: kullanıcı yayın açar (v2.0.26, 5 dosya; adlar/boyutlar teslimle karşılaştırılır) → "yayımladım" → bayt
   bayt + güncelleyici "available" → site kılavuz PR'ı → ANCAK SONRA 2.1.0 (Aşama 2+).
+  YAYIMLANDI (08.10.2026 ~16:3x; `v2.0.26` = 5346ff8; yayımdan önce kullanıcının ekranındaki 5 ad/boyut teslimle karşılaştırıldı):
+  yayındaki 5 dosya + latest/ (exe, json, zip, pdf) teslimle bayt bayt aynı, exe .sha256 OK; gerçek güncelleyici canlı GitHub'da
+  2.0.25/24/23/22/21/20/19/18/17/2.0.4/1.7.0 olarak (API ve yedek yol) 2.0.26'yı "available" gördü, indirme sha256 ee76d7f4…
+  eşleşti; 2.0.26 → "up-to-date". Site kılavuz PR'ı ceougur/destekofis#12 2.0.26 PDF'iyle (63d536ad…) güncellendi (başlık
+  "Kılavuz PDF 2.0.26"); birleştirme kullanıcının "birleştir"iyle. 2.0.26 KAPANDI → 2.1.0 banka kodlaması başladı.
 - 2.0.20 YAPILACAKLAR (kullanıcı "yapılacaklara not al" dedi, 03.10.2026; "yap" denince başlanır; ayrıntı ve
   kanıt hemen altındaki ADAYI maddesinde):
   [x] 1. Bütün raporların (43) tablosunun altında kalın TOPLAM satırı — ekran, PDF, Excel aynı; yalnız toplanabilir
