@@ -2,15 +2,29 @@
 
 Sürümler [anlamsal sürümleme](https://semver.org/lang/tr/) kurallarına uyar.
 
-## 2.0.25 — En fazla 2 şirket
+## 2.0.25 — En fazla 2 şirket; başka sayfadaki uyarıdan kayda git; Sayfayı Sil
 
-Kaynak: kullanıcı kararı, 05.10.2026 ("en fazla 2 şirket kurulabilsin"; "3 olanlar kalsın, Pro'da da olmasın"). Ayrıntı ve
-denenen / denenmeyen / bilinen sınırlar: `docs/2.0.25-KANIT.md`.
+Kaynak: kullanıcı kararı, 05.10.2026 ("en fazla 2 şirket kurulabilsin"; "3 olanlar kalsın, Pro'da da olmasın"; "2. şirket varsa
+Yeni Şirket ve + işareti gelmesin") ve müşteri istekleri (06.10.2026). Ayrıntı ve denenen / denenmeyen / bilinen sınırlar:
+`docs/2.0.25-KANIT.md`.
 
-- **En fazla 2 şirket.** Yeni şirket ancak 2'den az şirket varken açılır; Standart ve Pro'da aynı (kullanıcı kararı, 05.10.2026).
-  Sınırdayken sol üst seçicide ve Yönetim → Şirketler'de "+ Yeni Şirket" pasiftir ve nedeni altında yazar; doğrudan istek de
-  reddedilir. Daha önce açılmış 3 ve üstü şirket kalır, hiçbir veri silinmez; yalnız yenisi açılmaz. Silinen şirket sayılmaz.
-  Test: `test/sirket-siniri-225.test.mjs`.
+- **En fazla 2 şirket.** Yeni şirket ancak 2'den az şirket varken açılır; Standart ve Pro'da aynı. Sınırdayken sol üst seçicide
+  ve Yönetim → Şirketler'de "+ Yeni Şirket" hiç görünmez (Yönetim'de kısa bilgi satırı); doğrudan istek de reddedilir. Daha önce
+  açılmış 3 ve üstü şirket kalır, hiçbir veri silinmez; yalnız yenisi açılmaz (mesaj kaç şirket olduğunu söyler). Silinen şirket
+  sayılmaz. Şirket sayısı yalnız yöneticiye gönderilir.
+- **Başka sayfadaki uyarıdan Kayda Git kayda gider (müşteri).** Birinci sayfadayken ikinci sayfadaki kaydın tarih uyarısında
+  "Kayda Git" artık sayfaya geçer, kaydı listede seçer, görünür yere kaydırır ve detay kartında açar (sağ alttaki bildirim, zil,
+  Tahsilat Takvimi). Başka sayfanın uyarısında "Gerçekleştirildi" gösterilmez: işaret açık sayfaya yazılıyor, uyarı kapanmıyordu;
+  önce Kayda Git ile o sayfaya geçilir.
+- **Sayfa şeridindeki kayıt sayısı (müşteri).** Sekme silinince (ekrandan kaldırılınca) şeritteki sayı düşer; sekme geri gelince
+  geri gelir.
+- **Sayfayı Sil (müşteri).** Sayfa şeridinde açık sayfanın pilinde çöp kutusu: sayfanın bütün sekmeleri tek seferde silinir
+  (yalnız veri yöneticisi; ilk sayfa silinmez; önce tam yedek; onayda sayfa adı ve kayıt sayısı).
+- **Onay kutusu şirket koduyla dolu (müşteri).** Şirket Verisini Sıfırla, Şirketi Sil, Ayır ve Yedekten Geri Yükle onayında kutu
+  şirketin koduyla dolu gelir, imleç paroladadır; tarayıcının kayıtlı kullanıcı adını ("admin") bu kutuya yazmasının önüne
+  geçmek için ayrı, görünmeyen bir kullanıcı adı alanı vardır.
+- Testler: `test/sirket-siniri-225.test.mjs`, `test/sayfa-225.test.mjs`, rastgele sıra testinde gerçek sınır turu,
+  `npm run test:senaryo-225` (arayüz; eski kodda 37 denetimin 19'u kırmızı).
 
 ## 2.0.24 — İade ile taksit kartı, çek/senet tarih ve dönem kilidi, iki rapor düzeltmesi
 

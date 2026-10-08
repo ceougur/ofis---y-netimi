@@ -772,6 +772,14 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   öbür onay pencerelerine de: Şirketi Sil, Ayır, Geri Yükle. Not: onay kutusu yanlışlıkla sıfırlamaya karşı korumaydı;
   parola sorusu kaldığı için kod önceden dolu gelse de koruma sürer (kullanıcıya söylenecek). Test (arayüz): pencere
   açılınca kutu "001", parola boş; tarayıcının kayıtlı girişi olsa da "admin" gelmez; 002'de "002".
+  PERŞEMBE İŞLERİ YAPILDI (kullanıcı 08.10.2026 sabah "şimdi başla"; hatırlatma kapatıldı; commit 480068f, kanıt
+  `docs/2.0.25-KANIT.md`): A düğme gizli · B1 limit yalnız yöneticiye · B2 3+ mesaj · B4 saldiri.mjs (sınır 3) · B5 rastgele
+  testte gerçek sınır turu (sınırda geçersiz kodla açma 400 değil 409 — test düzeltildi) · C Kayda Git (kök neden: sayfa geçişi
+  yeniden yükleme, kayıt taşınmıyordu → sessionStorage "hof-reveal") · YENİ BULGU (kullanıcıya bildirildi): başka sayfanın
+  uyarısında "Gerçekleştirildi" açık sayfaya yazıyordu → başka sayfa uyarısında düğme yok · D-a gizli sekme sayılmaz
+  (`visibleRowCount`, `totalRowCount`) · D-b "Sayfayı Sil" şeritte (mevcut silme: önce tam yedek, Silinenler'e GİTMEZ — notumdaki
+  "Silinenler'e gider" yapılmadı, kullanıcıya söylenecek) · E onay kutusu kodla dolu + görünmeyen kullanıcı adı alanı. Testler:
+  sayfa-225, sirket-siniri-225, senaryo-225 (eski kodda 19/37 kırmızı; CI'de).
 - 2.0.20 YAPILACAKLAR (kullanıcı "yapılacaklara not al" dedi, 03.10.2026; "yap" denince başlanır; ayrıntı ve
   kanıt hemen altındaki ADAYI maddesinde):
   [x] 1. Bütün raporların (43) tablosunun altında kalın TOPLAM satırı — ekran, PDF, Excel aynı; yalnız toplanabilir
