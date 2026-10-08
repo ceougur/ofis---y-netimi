@@ -592,12 +592,16 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     const offsets = offsetsOf(previous.id);
     if (!offsets.length) return;
     const used = roundMoney(offsets.reduce((sum, row) => sum + (Number(row.amount) || 0), 0));
-    const numbers = [...new Set(offsets.map(row => row.number).filter(Boolean))].join(", ") || "bir fatura";
+    const list = [...new Set(offsets.map(row => row.number).filter(Boolean))];
+    const numbers = list.join(", ") || "bir fatura";
     const head = `Bu satır ${numbers} faturasıyla ${tl(used)} mahsup edilmiş.`;
-    if (!next) throw new HttpError(409, `${head} Önce mahsubu kaldırın (Fatura → Mahsup), sonra satırı silin.`, { code: "offset-linked", used });
-    if (next.kind !== previous.kind) throw new HttpError(409, `${head} Yönü değiştirilemez; önce mahsubu kaldırın.`, { code: "offset-linked", used });
-    if (next.amount < used - 0.005) throw new HttpError(409, `${head} Tutar mahsup edilenden (${tl(used)}) az olamaz; önce mahsubu kaldırın ya da azaltın.`, { code: "offset-linked", used });
-    if (next.date > offsets[0].date) throw new HttpError(409, `${head} Tarih mahsup tarihinden (${dayText(offsets[0].date)}) sonra olamaz; önce mahsubu kaldırın.`, { code: "offset-linked", used });
+    // v2.0.26 (gözden geçirme G8): mahsup, faturanın kartındaki "Bu Faturayı Kapatanlar" listesinden Kaldır ile kalkar (arayüzde
+    // "Fatura → Mahsup" diye bir yer yok).
+    const how = `${list.length ? `${numbers} ${list.length > 1 ? "faturalarını" : "faturasını"}` : "Faturayı"} açın; Bu Faturayı Kapatanlar listesindeki mahsup satırında Kaldır'a basın`;
+    if (!next) throw new HttpError(409, `${head} Önce mahsubu kaldırın: ${how}, sonra satırı silin.`, { code: "offset-linked", used });
+    if (next.kind !== previous.kind) throw new HttpError(409, `${head} Yönü değiştirilemez; önce mahsubu kaldırın: ${how}.`, { code: "offset-linked", used });
+    if (next.amount < used - 0.005) throw new HttpError(409, `${head} Tutar mahsup edilenden (${tl(used)}) az olamaz; önce mahsubu kaldırın ya da azaltın: ${how}.`, { code: "offset-linked", used });
+    if (next.date > offsets[0].date) throw new HttpError(409, `${head} Tarih mahsup tarihinden (${dayText(offsets[0].date)}) sonra olamaz; önce mahsubu kaldırın: ${how}.`, { code: "offset-linked", used });
   }
   router.post("/api/workspace/accounts/:id/entries", async ({ req, res, params }) => {
     const user = auth.requirePermission(req, "accounts.view");
@@ -1227,7 +1231,13 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     });
     changed(user, { accountId: account.id });
     changed(user, { kind: "cash" });
-    return payload.invoiceId && !invoiceId ? "Cari hareketi geri eklendi; kapattığı fatura artık uygun olmadığı için faturaya bağlanmadan (otomatik kapama ile)." : "Cari hareketi geri eklendi; bakiye ve Kasa yeniden hesaplandı.";
+    if (payload.invoiceId && !invoiceId) {
+      // v2.0.26 (gözden geçirme G8): hangi fatura ve neden bağlanmadığı söylenir (önceki cümle yarım kalıyordu).
+      const dropped = store.get("SELECT number, status, plan_id AS planId FROM invoices WHERE id = ?", payload.invoiceId);
+      const why = !dropped ? "silindiği için" : dropped.status === "cancelled" ? "iptal edildiği için" : dropped.status !== "issued" ? "kaydedilmiş olmadığı için" : dropped.planId ? "taksitli olduğu (kendi taksit kartıyla kapandığı) için" : "artık bu hareketle kapatılamadığı için";
+      return `Cari hareketi geri eklendi. Bağlı olduğu ${dropped?.number ? `${dropped.number} faturası` : "fatura"} ${why} faturaya bağlanmadı; otomatik kapamaya girer.`;
+    }
+    return "Cari hareketi geri eklendi; bakiye ve Kasa yeniden hesaplandı.";
   }
 
   return { exists, accountRow, createFromPlan, matchPerson, cashEntries, cashSource, stockEntry, invoiceEntry, taxIdentity, fingerprint, deletedList, restoreDeleted, restoreEntry, detail, list, allLedgers, assertUnlocked };
