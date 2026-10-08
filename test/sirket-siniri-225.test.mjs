@@ -74,6 +74,11 @@ describe("Şirket sınırı: en fazla 2", () => {
     assert.equal((await staff.post("/api/auth/login", { username: "personel9", password: "Personel-2026!" })).status, 200);
     assert.equal((await staff.post("/api/companies", { name: "Personelin Şirketi" })).status, 403);
     assert.equal(registryCount(server.dataDir), 2);
+    // Gözden geçirme bulgusu (2.0.25): yalnız 001'e yetkili personel şirket sayısını görmez (gizli şirketin varlığı sızmaz).
+    const seen = unwrap(await staff.get("/api/companies")).data;
+    assert.deepEqual(seen.companies.map(item => item.code), ["001"]);
+    assert.equal(seen.limit, undefined, "personele sınır/sayı dönmez");
+    assert.equal(seen.all, undefined);
   });
 
   test("eski kurulum: sınırdan önce açılmış 3 şirket kalır ve çalışır; yenisi açılmaz", async () => {
@@ -96,10 +101,21 @@ describe("Şirket sınırı: en fazla 2", () => {
     assert.equal((await api.post("/api/companies/select", { id: third.id })).status, 200);
     assert.deepEqual((await api.get("/api/workspace/accounts")).data.accounts.map(item => item.name), ["Üçüncüdeki Cari"]);
     assert.equal((await api.post("/api/workspace/cash", { kind: "in", amount: 100, date: new Date().toISOString().slice(0, 10), description: "Çalışıyor" })).status, 200);
-    assert.equal((await api.post("/api/companies", { name: "Dört" })).status, 409);
+    const four = await api.post("/api/companies", { name: "Dört" });
+    assert.equal(four.status, 409);
+    // 3+ şirkette mesaj doğru yolu söyler (gözden geçirme bulgusu): "bir şirketi silin" yetmez.
+    assert.match(message(four), /Şu an 3 şirket var/);
+    assert.match(list.limit.reason, /Şu an 3 şirket var/);
     // Birini silmek yetmez (2 kalır, sınır dolu); ikisi silinince yenisi açılır.
     assert.equal((await api.del(`/api/companies/${third.id}`, { confirm: "003", password: ADMIN_PASSWORD })).status, 200);
-    assert.equal((await api.post("/api/companies", { name: "Dört" })).status, 409);
+    const two = await api.post("/api/companies", { name: "Dört" });
+    assert.equal(two.status, 409);
+    assert.match(message(two), /önce bir şirketi silin/);
+    assert.equal(registryCount(dataDir), 2);
+    const second = (await api.get("/api/companies")).data.companies.find(item => item.code === "002");
+    assert.equal((await api.del(`/api/companies/${second.id}`, { confirm: "002", password: ADMIN_PASSWORD })).status, 200);
+    const reopened = await api.post("/api/companies", { name: "Dört" });
+    assert.equal(reopened.status, 200, JSON.stringify(reopened.data));
     assert.equal(registryCount(dataDir), 2);
   });
 });

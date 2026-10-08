@@ -28,7 +28,11 @@ const REGISTRY_SETTING = "company.registry";
 // Şirket sayısı sınırı (kullanıcı kararı, 05.10.2026): en fazla 2 şirket açılır; Standart ve Pro aynı. Sınırdan önce açılmış
 // şirketler (3 ve üstü) kalır, hiçbiri silinmez; yalnız yenisi açılmaz. Silinen şirket sayılmaz (silince yenisi açılabilir).
 export const MAX_COMPANIES = 2;
-export const companyLimitMessage = max => `En fazla ${max} şirket kurulabilir. Yeni şirket açmak için önce bir şirketi silin.`;
+// 3+ şirketi olan eski kurulumda "bir şirketi silin" yanıltırdı (bir silme yetmez): kaç şirket kaldığı söylenir.
+export const companyLimitMessage = (max, count = max) =>
+  count > max
+    ? `En fazla ${max} şirket kurulabilir. Şu an ${count} şirket var; yeni şirket açmak için şirket sayısının ${max}'nin altına inmesi gerekir.`
+    : `En fazla ${max} şirket kurulabilir. Yeni şirket açmak için önce bir şirketi silin.`;
 /** Kayıt defteri dosyasını okur: geçerli ({ companies: [...] }, en az bir şirket) ise döner, yoksa null. */
 export function readRegistryFile(file) {
   try {
@@ -312,10 +316,11 @@ export function createCompanyRegistry({ dataDir, backupDir, hubStore, log = { in
   // Sınır durumu: sayı, üst sınır ve yenisi açılabilir mi (arayüz düğmeyi buna göre pasif yapar, nedenini yazar).
   function limit() {
     const count = registry.companies.length;
-    return { max: maxCompanies, count, canCreate: count < maxCompanies, reason: count < maxCompanies ? "" : companyLimitMessage(maxCompanies) };
+    return { max: maxCompanies, count, canCreate: count < maxCompanies, reason: count < maxCompanies ? "" : companyLimitMessage(maxCompanies, count) };
   }
   function create(user, { code, name }) {
-    if (!limit().canCreate) throw new HttpError(409, companyLimitMessage(maxCompanies), { code: "company-limit" });
+    const state = limit();
+    if (!state.canCreate) throw new HttpError(409, state.reason, { code: "company-limit" });
     const safeCode = codeInput(code || nextCode());
     const safeName = nameInput(name);
     const dir = freeDataDir(safeCode);

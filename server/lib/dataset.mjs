@@ -392,6 +392,17 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
   const recordCount = () => store.get("SELECT COUNT(*) AS count FROM records WHERE source_name = ?", activeKey()).count;
   const rowCount = () => store.get("SELECT COUNT(*) AS count FROM dataset_rows WHERE dataset_key = ?", activeKey()).count;
   const hasData = () => rowCount() > 0 || recordCount() > 0 || Boolean(linkedUrl());
+  // Sayfa şeridindeki sayı (2.0.25, müşteri: "sekmeyi sildim, yukarıda hâlâ 109 kayıt diyor"): "Sekmeyi Sil" sekmeyi
+  // ekrandan kaldırır, veri durur; şerit ekranda görünen kayıtları sayar, gizli sekmenin satırları sayılmaz.
+  function visibleRowCount() {
+    const { hidden } = tabSettings();
+    if (!Object.keys(hidden).length) return rowCount();
+    let total = 0;
+    for (const row of store.all("SELECT COALESCE(NULLIF(tab, ''), json_extract(values_json, '$.__sheet'), '') AS tab, COUNT(*) AS count FROM dataset_rows WHERE dataset_key = ? GROUP BY 1", activeKey())) {
+      if (!isHiddenTab(row.tab, hidden)) total += row.count;
+    }
+    return total;
+  }
 
   function tabsOf(rows) {
     const tabs = [];
@@ -1342,7 +1353,9 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
           key: item.key,
           name: item.name || label || (item.key === DATASET_KEY ? "İlk Sayfa" : "Sayfa"),
           label,
-          rowCount: rowCount(),
+          rowCount: visibleRowCount(),
+          // totalRowCount: gizlenen sekmeler dahil bütün satırlar (sayfa silinirken bunların hepsi silinir).
+          totalRowCount: rowCount(),
           recordCount: recordCount(),
           linked: Boolean(linkedUrl()),
           changedAt: sget(S.changedAt, "") || null,
@@ -1352,7 +1365,7 @@ export function createDatasetService({ store, audit, readGoogleSheet, bumpClient
       }),
     );
     // Boş kalmış ilk oturum, başka oturum varken ve seçili değilken listelenmez.
-    return list.filter(item => item.key !== DATASET_KEY || item.current || !extra.length || item.rowCount || item.recordCount);
+    return list.filter(item => item.key !== DATASET_KEY || item.current || !extra.length || item.totalRowCount || item.recordCount);
   }
 
   function selectSession(user, datasetKey) {

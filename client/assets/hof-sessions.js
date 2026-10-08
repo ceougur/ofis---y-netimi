@@ -11,6 +11,10 @@
   const FIRST_KEY = "dataset://ofis";
   const number = value => new Intl.NumberFormat("tr-TR").format(Number(value) || 0);
   const PENCIL = '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg>';
+  const TRASH = '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16"/><path d="M10 11v6M14 11v6"/><path d="M6 7l1 13h10l1-13"/><path d="M9 7V4h6v3"/></svg>';
+  // Başka sayfadaki kayda git (2.0.25, müşteri: "Kayda Git yalnız ikinci sayfayı açıyor, o kayda gitmiyor"): sayfa
+  // değişince ekran yeniden yüklenir; gidilecek kayıt sekme oturumuna yazılır, tablo gelince açılır.
+  const REVEAL = "hof-reveal";
   const CHEVRON = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m7 10 5 5 5-5"/></svg>';
 
   let state = null; // { current, sessions: [...], canManage }
@@ -41,8 +45,9 @@
   }
 
   // ---------- Sayfaya geçiş ----------
-  async function select(key) {
+  async function select(key, { reveal = null } = {}) {
     const target = state?.sessions.find(item => item.key === key);
+    if (reveal?.caseKey && (!target || target.current)) return HOF.revealRecord?.(reveal.caseKey, { tab: reveal.tab || "" });
     if (!target || target.current) return;
     const pill = document.querySelector(`#hof-pages [data-pick="${CSS.escape(key)}"]`);
     pill?.classList.add("is-busy");
@@ -50,6 +55,13 @@
     try {
       const result = await HOF.api("/api/workspace/sessions/select", { method: "POST", body: { key } });
       if (result.state) HOF.applyClientState(result.state);
+      if (reveal?.caseKey) {
+        try {
+          sessionStorage.setItem(REVEAL, JSON.stringify({ key, caseKey: reveal.caseKey, tab: reveal.tab || "", at: Date.now() }));
+        } catch {
+          // depolama kapalıysa yalnız sayfaya geçilir
+        }
+      }
       sessionStorage.setItem("hof-flash", `“${nameOf(target)}” sayfasına geçtiniz. Bu seçim yalnızca sizin ekranınızı değiştirir.`);
       location.reload();
     } catch (error) {
@@ -88,7 +100,7 @@
     if (!target || key === FIRST_KEY) return false;
     const ok = await HOF.confirm({
       title: "Sayfayı Sil",
-      message: `“${nameOf(target)}” sayfası ve içindeki ${number(target.rowCount)} kayıt, düzeltmeler ve uygulamada eklenen kayıtlar kalıcı olarak silinir. Cari, Kasa, stok, taksit, fatura, kullanıcılar, notlar ve görevler silinmez. Silmeden önce veritabanının tam yedeği alınır; bu sayfada çalışan kişiler ilk sayfaya döner.`,
+      message: `“${nameOf(target)}” sayfası ve içindeki ${number(target.totalRowCount ?? target.rowCount)} kayıt, düzeltmeler ve uygulamada eklenen kayıtlar kalıcı olarak silinir. Cari, Kasa, stok, taksit, fatura, kullanıcılar, notlar ve görevler silinmez. Silmeden önce veritabanının tam yedeği alınır; bu sayfada çalışan kişiler ilk sayfaya döner.`,
       confirmLabel: "Sayfayı Sil",
       danger: true,
     });
@@ -157,6 +169,7 @@
             <b>${esc(item.name)}</b><small>${esc(meta(item))}</small>
           </button>
           ${canManage() && item.current ? `<button type="button" class="hof-page-rename" data-rename="${esc(item.key)}" title="Sayfanın adını değiştir" aria-label="“${esc(item.name)}” sayfasının adını değiştir">${PENCIL}</button>` : ""}
+          ${canManage() && item.current && item.key !== FIRST_KEY ? `<button type="button" class="hof-page-rename hof-page-delete" data-remove-page="${esc(item.key)}" title="Sayfayı Sil" aria-label="“${esc(item.name)}” sayfasını sil">${TRASH}</button>` : ""}
         </li>`;
       })
       .join("");
@@ -242,6 +255,7 @@
       else openAdd();
     } else if (target.dataset.addSource) openNew(target.dataset.addSource);
     else if (target.dataset.pick) select(target.dataset.pick);
+    else if (target.dataset.removePage) remove(target.dataset.removePage);
     else if (target.dataset.rename) {
       editing = target.dataset.rename;
       render();
@@ -350,9 +364,39 @@
   HOF.on("live:resync", () => load().catch(() => {}));
   HOF.on("data", () => render());
 
+  // Yeniden yüklemeden sonra: bekleyen kayıt bu sayfanın tablosu gelince seçilir, görünür yere kaydırılır, detay kartı açılır.
+  function revealPending() {
+    let wish = null;
+    try {
+      wish = JSON.parse(sessionStorage.getItem(REVEAL) || "null");
+      sessionStorage.removeItem(REVEAL);
+    } catch {
+      return;
+    }
+    if (!wish?.caseKey || Date.now() - Number(wish.at || 0) > 120_000) return;
+    if (HOF.datasetKey && wish.key && HOF.datasetKey !== wish.key) return;
+    let done = false;
+    const go = () => {
+      if (done) return;
+      done = true;
+      stop();
+      setTimeout(() => HOF.revealRecord?.(wish.caseKey, { tab: wish.tab || "" }), 150);
+    };
+    const has = data => (data?.rows || []).some(row => row.__hofKey === wish.caseKey);
+    const stop = HOF.on("rows", data => has(data) && go());
+    if (has(HOF.data)) go();
+    setTimeout(() => {
+      if (done) return;
+      stop();
+      done = true;
+      HOF.revealRecord?.(wish.caseKey, { tab: wish.tab || "" });
+    }, 20_000);
+  }
+
   HOF.whenReady(() => {
     load().catch(() => {});
     HOF.onDom(place);
+    revealPending();
   });
   HOF.sessions = { load, select, rename, remove, openNew, section, pages: () => state?.sessions || [] };
 })();

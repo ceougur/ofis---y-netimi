@@ -55,6 +55,8 @@
 
   async function afterChange(select) {
     HOF.refreshData();
+    // Sayfa şeridindeki kayıt sayısı sekme silinince/geri gelince güncellenir (2.0.25).
+    HOF.sessions?.load?.().catch?.(() => {});
     if (!select) return;
     // Veri yenilenince yeni adıyla sekmeye geçilir.
     for (let attempt = 0; attempt < 60; attempt += 1) {

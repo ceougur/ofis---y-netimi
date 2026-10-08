@@ -17,4 +17,9 @@ describe("şirket ve yedek işlemleri rastgele sırayla: değişmez kurallar her
     assert.equal(report.checks, 81);
     assert.ok(report.backups > 0, JSON.stringify(report.byKind));
   });
+  test("gerçek şirket sınırıyla (en fazla 2, 2.0.25), boş kurulum, tohum 3, 120 işlem: sınırda açma her zaman 409", async () => {
+    const report = await runRandom({ seed: 3, operations: 120, base: "bos", maxCompanies: 2 });
+    assert.equal(report.checks, 121);
+    assert.ok(report.limitRefusals > 0, `sınır denendi: ${report.limitRefusals}`);
+  });
 });

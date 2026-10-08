@@ -47,6 +47,7 @@ jobs:
       - run: npm run test:senaryo-222
       - run: npm run test:senaryo-223
       - run: npm run test:senaryo-224
+      - run: npm run test:senaryo-225
       - uses: actions/upload-artifact@v4
         if: always()
         with:

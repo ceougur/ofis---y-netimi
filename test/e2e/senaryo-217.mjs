@@ -415,12 +415,10 @@ try {
     await admin.waitForSelector("#hof-start", { timeout: 15000 });
     ok(!(await admin.$("#hof-pages")), "002'de veri yok: başlangıç ekranı; sayfa şeridi boş veriyle gizli");
     await shot(admin, "sirket-002-bos");
-    // Şirket sınırı (05.10.2026, en fazla 2): seçicide "+ Yeni Şirket" pasif, nedeni görünür yazıyla.
+    // Şirket sınırı (kullanıcı kararı, en fazla 2): seçicide "+ Yeni Şirket" hiç görünmez.
     await admin.click("#hof-company [data-toggle]");
     await admin.waitForSelector("#hof-company .hof-session-menu:not([hidden])");
-    ok(await admin.$eval("#hof-company [data-new]", node => node.disabled), "2 şirketle seçicide + Yeni Şirket pasif");
-    const limitText = await admin.$eval("#hof-company .hof-session-limit", node => (node.offsetParent ? node.textContent : "")).catch(() => "");
-    ok(/En fazla 2 şirket kurulabilir/.test(limitText), `seçicide nedeni görünür: “${limitText}”`);
+    ok(!(await admin.$("#hof-company [data-new]")), "2 şirketle seçicide + Yeni Şirket yok");
     await shot(admin, "sirket-siniri-secici");
     await admin.keyboard.press("Escape");
     // Sol alttaki senkron kartında şirket satırı.
@@ -431,7 +429,7 @@ try {
     await admin.waitForSelector('.adm-panel[data-panel="companies"]:not([hidden]) #adm-companies tr[data-company]', { timeout: 20000 });
     const codes = await admin.$$eval("#adm-companies tr[data-company] td:first-child", nodes => nodes.map(node => node.textContent.trim()));
     ok(codes.join(",") === "001,002", `Yönetim → Şirketler listesi: ${codes.join(", ")}`);
-    ok(await admin.$eval("#adm-company-new", node => node.disabled), "Yönetim → Şirketler: + Yeni Şirket pasif");
+    ok(await admin.$eval("#adm-company-new", node => node.hidden), "Yönetim → Şirketler: + Yeni Şirket görünmüyor");
     const admLimit = await admin.$eval("#adm-company-limit", node => (node.hidden ? "" : node.textContent)).catch(() => "");
     ok(/En fazla 2 şirket kurulabilir/.test(admLimit), `Yönetim'de nedeni görünür: “${admLimit}”`);
     await admin.waitForSelector("#adm-company-access thead th", { timeout: 10000 });

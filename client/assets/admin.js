@@ -754,6 +754,14 @@
       button.disabled = false;
     }
   });
+  // Onay alanları (2.0.25, müşteri: "isim kısmına admin atmasın, şirketin kodunu atsın"): kutu şirket koduyla dolu gelir,
+  // odak parolada. Tarayıcının parola yöneticisi kayıtlı kullanıcı adını parola alanının hemen üstündeki kutuya yazıyordu;
+  // görünmeyen kullanıcı adı alanı (autocomplete="username") o işi üstlenir, onay kutusuna dokunulmaz.
+  const confirmFields = code => [
+    { name: "confirm", label: `Onay: şirket kodunu (${code}) ya da adını yazın`, required: true, value: code, autocomplete: "off" },
+    { name: "username", type: "username-hidden", value: HOF.user?.username || "" },
+    { name: "password", label: "Parolanız", type: "password", required: true, autofocus: true, autocomplete: "current-password" },
+  ];
   function restoreBackup(item) {
     const root = (backupFolders?.companies || []).find(company => company.id === item.companyId)?.root;
     const code = item.companyCode || "";
@@ -762,8 +770,7 @@
       eyebrow: "YEDEKLER",
       intro: `${esc(item.name)} yedeği yalnız kendi şirketine (${esc(item.company)}) geri yüklenir. Şirketin bugünkü verisi önce yedeklenir, sonra bu yedekteki hâline döner; yedekten sonra girilen kayıtlar geri yüklenen veride olmaz (bugünkü veri yedekte kalır). Lisans, kullanıcılar ve öbür şirketler etkilenmez.${root ? " İlk şirket sunucu yeniden açılırken geri yüklenir; bağlantı birkaç saniye kesilir." : ""}`,
       fields: [
-        { name: "confirm", label: `Onay: şirket kodunu (${code}) ya da adını yazın`, required: true, autofocus: true, autocomplete: "off" },
-        { name: "password", label: "Parolanız", type: "password", required: true, autocomplete: "current-password" },
+        ...confirmFields(code),
       ],
       submitLabel: "Geri Yükle",
       onSubmit: async values => {
@@ -1312,11 +1319,9 @@
     try {
       const [data, access] = await Promise.all([HOF.api("/api/companies"), HOF.api("/api/companies/access")]);
       companyData = data;
-      // Şirket sınırı (en fazla 2): sınırdayken düğme pasif, nedeni altında görünür yazıyla.
+      // Şirket sınırı (kullanıcı kararı: en fazla 2): sınırdayken düğme hiç görünmez; nedeni kısa bilgi satırında.
       const full = data.limit && !data.limit.canCreate;
-      $("#adm-company-new").disabled = Boolean(full);
-      $("#adm-company-new").toggleAttribute("aria-describedby", false);
-      if (full) $("#adm-company-new").setAttribute("aria-describedby", "adm-company-limit");
+      $("#adm-company-new").hidden = Boolean(full);
       $("#adm-company-limit").textContent = full ? data.limit.reason : "";
       $("#adm-company-limit").hidden = !full;
       const list = data.all || data.companies;
@@ -1366,8 +1371,7 @@
       eyebrow: "ŞİRKET",
       intro: "Önce ortak veri dosyasının yedeği alınır. Sonra bu şirket, ortak verinin bugünkü kopyasıyla kendi klasörüne taşınır; bundan sonra öbür şirketle hiçbir kayıt paylaşmaz. Hiçbir kayıt silinmez. Onay için şirket kodunu ve parolanızı yazın.",
       fields: [
-        { name: "confirm", label: `Onay: şirket kodunu (${item.code}) ya da adını yazın`, required: true, autofocus: true, autocomplete: "off" },
-        { name: "password", label: "Parolanız", type: "password", required: true, autocomplete: "current-password" },
+        ...confirmFields(item.code),
       ],
       submitLabel: "Şirketi Ayır",
       onSubmit: async values => {
@@ -1490,8 +1494,7 @@
       fields: [
         { name: "mode", label: "Ne Silinsin", type: "select", value: "movements", options: [{ value: "movements", label: "Tüm Hareketleri Sil (cari/stok kartları, Kasa hesapları ve ayarlar kalır; bakiyeler sıfır)" }, { value: "all", label: "Tümünü Sıfırla (şirket ilk açıldığı gibi boş; ad/kod, unvan/VKN/logo, fatura serisi kalır)" }] },
         { name: "resetNumbers", label: "Fatura Serisi Sayaçları da Sıfırlansın", type: "checkbox", value: true },
-        { name: "confirm", label: `Onay: şirket kodunu (${item.code}) ya da adını yazın`, required: true, autofocus: true, autocomplete: "off" },
-        { name: "password", label: "Parolanız", type: "password", required: true, autocomplete: "current-password" },
+        ...confirmFields(item.code),
       ],
       submitLabel: "Veriyi Sıfırla",
       onSubmit: async values => {
@@ -1507,8 +1510,7 @@
       eyebrow: "ŞİRKET",
       intro: "Şirketin bütün verisi (cari, Kasa, stok, taksit, çek/senet, fatura, sayfalar) kaldırılır. Önce yedek alınır ve klasör “silinen-sirketler” altında saklanır. Onay için şirket kodunu ve parolanızı yazın.",
       fields: [
-        { name: "confirm", label: `Onay: şirket kodunu (${item.code}) ya da adını yazın`, required: true, autofocus: true, autocomplete: "off" },
-        { name: "password", label: "Parolanız", type: "password", required: true, autocomplete: "current-password" },
+        ...confirmFields(item.code),
       ],
       submitLabel: "Şirketi Sil",
       onSubmit: async values => {

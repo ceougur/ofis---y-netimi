@@ -12,7 +12,9 @@ const SP = process.env.SP || path.join(HERE, "calisma");
 const ROOT = path.join(SP, "canli");
 const OUT = path.join(HERE, "cikti");
 const state = JSON.parse(fs.readFileSync(path.join(ROOT, "durum.json"), "utf8"));
-const app = startServer(ROOT, { fresh: false });
+// 001 ve 002 gerçek veri; veri bozan denemeler 003 deneme şirketinde. Program en fazla 2 şirkete izin verdiği için
+// (2.0.25; sınırın kendisi test/sirket-siniri-225'te sınanır) bu araç sınırı 3'e yükseltir.
+const app = startServer(ROOT, { fresh: false, maxCompanies: 3 });
 const { port } = await app.listen(0, "127.0.0.1");
 const BASE = `http://127.0.0.1:${port}`;
 const C1 = state.companies["001"];
@@ -106,6 +108,7 @@ try {
   const old3 = ((await admin.get("/api/companies")).data.companies || []).find(c => c.code === "003");
   if (old3) await admin.raw("DELETE", `/api/companies/${old3.id}`, { body: JSON.stringify({ confirm: "003", password: PASS }), headers: { "content-type": "application/json" } });
   const made = await admin.post("/api/companies", { code: "003", name: "Saldırı Deneme Şirketi" });
+  if (made.status !== 200 || !made.data?.company?.id) throw new Error(`003 deneme şirketi açılamadı: ${made.status} ${JSON.stringify(made.data)}`);
   const C3 = made.data.company.id;
   const t = admin.withCompany(C3);
   const cust = (await t.post("/api/workspace/accounts", { name: "Deneme Müşteri", type: "customer" })).data;

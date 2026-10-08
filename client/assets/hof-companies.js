@@ -15,7 +15,7 @@
   let warnNode = null;
 
   const canManage = () => Boolean(state?.canManage);
-  // Şirket sınırı (05.10.2026: en fazla 2): sınırdayken "+ Yeni Şirket" pasif, nedeni altında yazılı.
+  // Şirket sınırı (kullanıcı kararı 05.10.2026: en fazla 2): sınırdayken "+ Yeni Şirket" hiç görünmez.
   const limitReason = () => (state?.limit && !state.limit.canCreate ? state.limit.reason : "");
   // Bu sayfanın şirketi (v2.0.21): sunucudaki seçim başka pencereden değişmiş olabilir; kutu ve "Açık" işareti her zaman
   // bu pencerenin çalıştığı şirketi gösterir (istekler de oraya gider).
@@ -95,7 +95,7 @@
       .join("");
     return `<p class="hof-session-menu-title">Şirketler</p>
       <ul class="hof-session-list" role="menu">${rows}</ul>
-      ${canManage() ? `<div class="hof-session-foot"><button type="button" class="hof-session-new" data-new${limitReason() ? ' disabled aria-describedby="hof-company-limit"' : ""}>+ Yeni Şirket</button><a class="hof-session-manage" href="/admin.html#companies" data-manage>Şirketleri Yönet</a>${limitReason() ? `<p class="hof-session-limit" id="hof-company-limit">${esc(limitReason())}</p>` : ""}</div>` : ""}
+      ${canManage() ? `<div class="hof-session-foot">${limitReason() ? "" : '<button type="button" class="hof-session-new" data-new>+ Yeni Şirket</button>'}<a class="hof-session-manage" href="/admin.html#companies" data-manage>Şirketleri Yönet</a></div>` : ""}
       <p class="hof-session-note">Her şirketin verisi ayrıdır; seçim yalnızca sizin ekranınızı değiştirir.</p>`;
   }
 
