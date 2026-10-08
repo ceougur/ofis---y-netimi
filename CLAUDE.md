@@ -795,6 +795,16 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   2.0.25'i "available" gördü, indirme sha256 02597e7d… eşleşti; 2.0.25 → "up-to-date". Arşiv 30 MiB gönderim sınırını aştı →
   2 parça (kaynak paketi bölündü, birleştirip klonlandı). Site kılavuz PR'ı ceougur/destekofis#12 açık (PDF f02e7bc5…);
   birleştirme kullanıcının "birleştir"iyle.
+- BANKA + POS MODÜLÜ (kullanıcı, 08.10.2026; talimat aynen `docs/BANKA-MODULU-TALIMAT.md`, 45 madde + ekler): "muhasebe programına
+  banka modülü yapıp entegre edeceğiz; baş mimar ve baş mühendis şapkanla yap". Ekler: tutarlar float DEĞİL (kesin ondalık);
+  POS komisyonunun KDV'si + masraf faturası; banka masraflarında KDV dahil/hariç; TCMB kuru (otomatik ya da elle); dönem sonu
+  kur farkı değerlemesi altyapısı; blokeli/teminatlı POS ayrı kategori; POS iadesinde komisyon iadesi/şirkete kalması.
+  KULLANICI KARARLARI: arayüz içinden çıkılmaz olmasın — Banka modülünde AYARLAR: standartlar seçili gelir, profesyonel kullanıcı
+  istediğini açar; sorulacak hususlarda "en yaygın ve modern" önerim uygulanır (sorulmaz); sol sabit menüde TAKSİTLER'İN
+  ALTINDA "Banka". Süreç (talimat 42/45): önce mevcut mimari analizi + 12 başlıklı plan (`docs/BANKA-MODULU-PLAN.md`), sonra
+  aşama aşama; mevcut çalışanı bozma, gereksiz bağımlılık yok. Önceki kararlarla bağ: 2.0.17 m9 (Kasa yalnız nakit; banka/POS
+  hareketleri `method` ile tutuluyor, Raporlar → Banka ve POS Hareketleri; Kasa ↔ Banka transferi) ve m11 (eksi bakiye denetimi
+  banka modülü gelince banka için geri açılır).
 - 2.0.20 YAPILACAKLAR (kullanıcı "yapılacaklara not al" dedi, 03.10.2026; "yap" denince başlanır; ayrıntı ve
   kanıt hemen altındaki ADAYI maddesinde):
   [x] 1. Bütün raporların (43) tablosunun altında kalın TOPLAM satırı — ekran, PDF, Excel aynı; yalnız toplanabilir
