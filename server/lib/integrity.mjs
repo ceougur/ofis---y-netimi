@@ -257,8 +257,13 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
       if (!hasColumn(table, "date")) continue;
       const bad = store.all(`SELECT id, date FROM ${table} WHERE date IS NULL OR trim(date) = '' OR date NOT GLOB '[0-9][0-9][0-9][0-9]-[01][0-9]-[0-3][0-9]' OR date(date) IS NULL OR date(date) <> date LIMIT 5`);
       checks.push({ code: `dates:format:${table}`, name: `Tarihsiz ya da geçersiz tarihli hareket (${table})`, ok: bad.length === 0, count: bad.length, sample: bad.map(row => `${row.id}=${row.date}`) });
-      const future = store.get(`SELECT COUNT(*) AS n FROM ${table} WHERE date > ?`, today).n;
-      checks.push({ code: `dates:future:${table}`, name: `İleri tarihli hareket (${table})`, ok: future === 0, count: future });
+      // v2.0.26 (A13): açılışta bulunan ileri tarihli satırlar (eski sürümden kalan) kimlikleriyle tabandır; sayılan yalnız
+      // tabanda olmayan (yeni) ileri tarihli satırlardır. Önceden SAYI imzadaydı: gün geçip eski satır geçmişe düştükçe sayı
+      // küçülüyor, imza tabanda olmuyor ve yeniden başlatmaya kadar bütün para işlemleri 409 alıyordu.
+      const known = legacyFuture.get(table);
+      const rows = store.all(`SELECT id FROM ${table} WHERE date > ?`, today);
+      const future = known ? rows.filter(row => !known.has(row.id)).length : rows.length;
+      checks.push({ code: `dates:future:${table}`, name: `İleri tarihli hareket (${table})`, ok: future === 0, count: future, ...(rows.length > future ? { legacy: rows.length - future } : {}) });
     }
     if (hasColumn("plan_items", "due_date") && hasColumn("plans", "registered_on")) {
       const early = store.all("SELECT i.id, i.due_date AS due, p.registered_on AS start, p.name FROM plan_items i JOIN plans p ON p.id = i.plan_id AND p.deleted_at IS NULL WHERE p.registered_on <> '' AND i.due_date < p.registered_on LIMIT 5");
@@ -269,6 +274,14 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
     return { ok: failures.length === 0, checks, failures, durationMs: Math.round(performance.now() - started) };
   }
 
+  // Açılıştaki ileri tarihli satırların kimlikleri (tablo → Set); start() ölçer (A13).
+  let legacyFuture = new Map();
+  const measureLegacyFuture = () => {
+    const today = period()?.today?.() || new Date().toISOString().slice(0, 10);
+    const out = new Map();
+    for (const table of DATED) if (hasColumn(table, "date")) out.set(table, new Set(store.all(`SELECT id FROM ${table} WHERE date > ?`, today).map(row => row.id)));
+    return out;
+  };
   // Sapmanın kimliği: hangi denetim, ne kadar/kaç satır. Aynı sapma sürüyorsa işlem engellenmez; yenisi ya da büyüyeni engellenir.
   const signature = item => `${item.code}|${roundMoney(item.difference || 0)}|${item.count || 0}`;
   let baseline = new Set();
@@ -299,6 +312,7 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
   // Kapıyı kurar (yeniden çağrılırsa öncekini söküp taban durumu yeniden ölçer).
   function start() {
     stop?.();
+    legacyFuture = measureLegacyFuture();
     const result = run();
     baseline = new Set(result.failures.map(signature));
     const lock = period()?.lockedUntil?.() || "";
