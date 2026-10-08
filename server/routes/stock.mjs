@@ -561,26 +561,8 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
   });
 
   // ---------- Diğer modüller için ----------
-  // Kasa: Kasa'dan ödenen alımlar (çıkış) ve Kasa'ya tahsil edilen satışlar (giriş). Ürün silinse de para gerçektir; kalır.
-  // Kasa kaynağı: aynı tablo/koşul hem Kasa satırlarında hem Kasa toplamında (ANLIK DURUM) kullanılır.
-  // Stok girişi (alım) Kasa'dan çıkış, stok çıkışı (satış) Kasa'ya giriştir.
-  const cashSource = { table: "stock_moves m JOIN stock_items i ON i.id = m.item_id", where: "m.pay = 'cash' AND m.amount > 0", kind: "CASE m.kind WHEN 'in' THEN 'out' ELSE 'in' END", amount: "m.amount", date: "m.date", method: "m.method" };
-  const cashEntries = (after = "") =>
-    store
-      .all(
-        `SELECT m.id, m.kind AS moveKind, m.reason, m.method, m.qty, m.note, m.amount, m.date, m.item_id AS itemId, i.name AS itemName, i.unit,
-                m.created_by AS actorId, COALESCE(u.display_name, '') AS actorName, m.created_at AS createdAt, m.updated_at AS updatedAt
-         FROM ${cashSource.table} LEFT JOIN users u ON u.id = m.created_by
-         WHERE ${cashSource.where}${after ? ` AND ${cashSource.date} > ?` : ""}`,
-        ...(after ? [after] : []),
-      )
-      .map(({ moveKind, reason, qty, note, unit, ...row }) => ({
-        ...row,
-        kind: moveKind === "in" ? "out" : "in",
-        source: "stock",
-        // Alım Kasa'dan gider: "Stok ödemesi" (v2.0.8 adı; önceden "Stok alımı").
-        description: `${reason === "return" ? "Satış iadesi" : moveKind === "in" ? "Stok ödemesi (alım)" : "Stok satışı"} · ${row.itemName} ${qtyText(qty)} ${unit}${note ? ` · ${note}` : ""}`,
-      }));
+  // Kasa (v2.1.0, K5): Kasa'dan ödenen alımlar (çıkış) ve Kasa'ya tahsil edilen satışlar (giriş) tek kaynaktan (lib/bank/money-lines.mjs,
+  // kaynak 7) okunur. Ürün silinse de para gerçektir; kalır.
   // v2.0.15: faturanın stoklu kalemleri. Hareket faturaya bağlıdır (invoice_id); para faturadan yazılır (pay = 'none').
   // reason: '' (alış girişi / satış çıkışı), 'return' (satıştan iade: giriş), 'preturn' (alıştan iade: çıkış).
   // Alışta ürünün birim fiyatı (stok değeri ve maliyet) faturanın iskontolu TL birim maliyetiyle güncellenir.
@@ -699,5 +681,5 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
     return `${row.m}|${row.i}`;
   };
 
-  return { cashEntries, cashSource, alerts, deletedList, restoreDeleted, restoreMove, fingerprint, list, detail, invoiceStock, itemRow };
+  return { alerts, deletedList, restoreDeleted, restoreMove, fingerprint, list, detail, invoiceStock, itemRow };
 }

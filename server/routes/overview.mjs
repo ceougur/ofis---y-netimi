@@ -64,6 +64,8 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
     const row = store.get(`SELECT COUNT(*) || '/' || COALESCE(MAX(COALESCE(updated_at, created_at)), '') AS state FROM ${table}`);
     return row?.state || "";
   };
+  let eventsTable = null;
+  const hasEvents = () => (eventsTable ??= Boolean(store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'fin_events'")));
   const fingerprint = day =>
     [
       day,
@@ -74,6 +76,8 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
       stock()?.fingerprint?.() || "",
       cheques()?.fingerprint?.() || "",
       invoices()?.fingerprint?.() || "",
+      // v2.1.0: işlem başlıkları (Banka Fişi dahil; tek kaynağın 9. kaynağı banka fişi satırlarıdır).
+      hasEvents() ? tableState("fin_events") : "",
     ].join("|");
   let cache = { key: "", value: null };
   function compute() {

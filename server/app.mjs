@@ -36,6 +36,7 @@ import { registerWhatsappRoutes } from "./routes/whatsapp.mjs";
 import { createIntegrity } from "./lib/integrity.mjs";
 import { createIdempotency } from "./lib/idempotency.mjs";
 import { createBank } from "./lib/bank/post.mjs";
+import { createMoneyLines } from "./lib/bank/money-lines.mjs";
 import { LOCK_KEY, createPeriod } from "./lib/period.mjs";
 import { registerDueRoutes } from "./routes/dues.mjs";
 import { registerPlanRoutes } from "./routes/plans.mjs";
@@ -259,6 +260,8 @@ export function createApp(overrides = {}) {
     config, log, store, bank, auth, access, recovery, audit, clientState, startedAt, supervisorLink, events, chat, chatArchive, dataset, profile, license, free, trash, cloudBackup, companies, companyId, company: () => companies.get(companyId),
     // İş saati (v2.1.0; lib/clock.mjs): modüller "bugün"ü ve zaman damgalarını buradan okur (config.now; testlerde sahte saat).
     now: config.now,
+    // Tek kaynak (v2.1.0, K5; lib/bank/money-lines.mjs): Kasa, Banka ve POS, ANLIK DURUM ve Ana Defter'in beklenenleri buradan okur.
+    money: createMoneyLines(store),
     // Şirket yedekleri (v2.0.20): bütün şirketler, kendi klasörlerinde; Drive kopyası sıralı.
     backups, backupDir: backupDirNow, withCompanyDb, mirrorNow: hub ? hub.mirrorNow : mirrorNow, closeCompany: id => closeCompany(id), busyCompanies, requestRestart,
   };

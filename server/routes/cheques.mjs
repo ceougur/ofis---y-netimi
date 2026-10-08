@@ -653,24 +653,8 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
   });
 
   // ---------- Diğer modüller için ----------
-  // Kasa: tahsil edilen alınan evrak (giriş), ödenen verilen evrak (çıkış). Silinen evrakın olayları Kasa'dan düşer.
-  // Kasa kaynağı: aynı tablo/koşul hem Kasa satırlarında hem Kasa toplamında (ANLIK DURUM) kullanılır.
-  const cashSource = { table: "cheque_events ev JOIN cheques c ON c.id = ev.cheque_id AND c.deleted_at IS NULL", where: "ev.kind IN ('collect', 'pay')", kind: "CASE ev.kind WHEN 'collect' THEN 'in' ELSE 'out' END", amount: "ev.amount", date: "ev.date", method: "ev.method" };
-  const cashEntries = (after = "") =>
-    store
-      .all(
-        `SELECT ev.id, ev.kind AS eventKind, ev.method, ev.amount, ev.date, ev.note, c.id AS chequeId, c.instrument, c.serial_no AS serialNo, c.drawer, COALESCE(a.name, '') AS accountName,
-                ev.created_by AS actorId, COALESCE(u.display_name, '') AS actorName, ev.created_at AS createdAt, ev.created_at AS updatedAt
-         FROM ${cashSource.table} LEFT JOIN accounts a ON a.id = c.account_id LEFT JOIN users u ON u.id = ev.created_by
-         WHERE ${cashSource.where}${after ? ` AND ${cashSource.date} > ?` : ""}`,
-        ...(after ? [after] : []),
-      )
-      .map(({ eventKind, instrument, serialNo, drawer, accountName, note, ...row }) => ({
-        ...row,
-        kind: eventKind === "collect" ? "in" : "out",
-        source: "cheque",
-        description: `${INSTRUMENTS[instrument] || "Çek"} ${eventKind === "collect" ? "tahsili" : "ödemesi"}${serialNo ? ` · No ${serialNo}` : ""} · ${accountName || drawer || "—"}${note ? ` · ${note}` : ""}`,
-      }));
+  // Kasa (v2.1.0, K5): tahsil edilen alınan evrak (giriş), ödenen verilen evrak (çıkış) tek kaynaktan (lib/bank/money-lines.mjs, kaynak 8)
+  // okunur; silinen evrakın olayları düşer.
   // ANLIK DURUM ve nakit akışı: açık evrak (portföydeki alınan, ödenecek verilen).
   const openRows = () => store.all(`${CHEQUE_SQL} WHERE c.deleted_at IS NULL AND c.status IN ('portfolio', 'pending')`);
   const summary = (day = today()) => portfolioSummary(store.all("SELECT direction, status, amount, due_date AS dueDate FROM cheques WHERE deleted_at IS NULL"), day);
@@ -824,5 +808,5 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
     },
   };
 
-  return { cashEntries, cashSource, summary, flows, dueItems, fingerprint, countForAccount, countForPlan, deletedList, restoreDeleted, list, detail, invoiceCheques };
+  return { summary, flows, dueItems, fingerprint, countForAccount, countForPlan, deletedList, restoreDeleted, list, detail, invoiceCheques };
 }

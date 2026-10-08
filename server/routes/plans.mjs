@@ -1092,8 +1092,8 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
   });
 
   // ---------- Diğer modüller için ----------
-  // Kasa: taksit hareketleri (silinmemiş kartların) tahsilat/ödeme olarak.
-  // Kasa kaynağı: aynı tablo/koşul hem Kasa satırlarında hem Kasa toplamında (ANLIK DURUM) kullanılır.
+  // Kasa (v2.1.0, K5): taksit hareketleri Kasa'ya tek kaynaktan (lib/bank/money-lines.mjs, kaynak 6) düşer. Bu satır listesi yalnız eski
+  // tablo raporunun (routes/reports.mjs) nakit akışı içindir (plan §11.1 A11, Aşama 14).
   // Açılış (devir) kaydı (v2.0.8) Kasa'ya girmez: o para bu programın kasasından geçmedi.
   const cashSource = { table: "plan_entries e JOIN plans p ON p.id = e.plan_id AND p.deleted_at IS NULL", where: "e.cheque_id = '' AND e.opening = 0", kind: "e.kind", amount: "e.amount", date: "e.date", method: "e.method" };
   const cashEntries = (after = "") =>
@@ -1416,5 +1416,5 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
   // ikinci kez saymaz; aktarma "kartı var" der.
   const linkedCases = source => new Set(store.all("SELECT case_key AS k FROM plans WHERE deleted_at IS NULL AND case_key <> '' AND case_source = ?", source || "").map(row => row.k));
 
-  return { uncoveredDebt, assertRestorable, assertCloseOpen, closeDayOf, trimCovers, shrinkPlan, leftOf, syncInvoiceCard, cashEntries, cashSource, dueItems, openItems, fingerprint, ledgerPlansByAccount, list, detail, forCase, entriesForCase, summariesByAccount, forAccount, createForAccount, removeForInvoice, growForInvoice, followAccount, countForAccount, receiptSeq, nextRef, validDistribution: distributionInput, resolveGroups, groupTree, ensureGroup, createScheduled, scheduledStart, lockedStartReason, adoptPayment, linkedCases };
+  return { uncoveredDebt, assertRestorable, assertCloseOpen, closeDayOf, trimCovers, shrinkPlan, leftOf, syncInvoiceCard, cashEntries, dueItems, openItems, fingerprint, ledgerPlansByAccount, list, detail, forCase, entriesForCase, summariesByAccount, forAccount, createForAccount, removeForInvoice, growForInvoice, followAccount, countForAccount, receiptSeq, nextRef, validDistribution: distributionInput, resolveGroups, groupTree, ensureGroup, createScheduled, scheduledStart, lockedStartReason, adoptPayment, linkedCases };
 }

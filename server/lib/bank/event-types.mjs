@@ -14,6 +14,13 @@ export const EVENT_TYPES = new Set([
   "cheque_deposit", "cheque_withdraw", "legacy_assign", "reversal",
 ]);
 
+// İç hareket (§3.4 internal): şirketin kendi hesapları arasında para geçişi (Kasa ↔ Banka, bankalar arası, kredi kullanımı/geri ödemesi,
+// döviz al/sat, POS valör geçişi, kurumsal kart borcunun ödenmesi). Banka görünümlerinin "Bugün/Bu Ay" giriş-çıkışında sayılmaz.
+export const INTERNAL_TYPES = new Set(["cash_transfer", "transfer", "loan_draw", "loan_repay", "fx_exchange", "pos_settlement", "card_payment"]);
+// Para satırı taşımayan işlem başlıkları (§3.11 bank:event): kendi tablolarıyla denetlenir (tahsile verilen çek, eski hareket atama, POS
+// iptal iadesi); kopya = satır denetimine girmez.
+export const NON_MONEY_TYPES = new Set(["cheque_deposit", "cheque_withdraw", "legacy_assign", "pos_cancel_refund"]);
+
 /** Modül satırının olay türü (tablo + satırın kolonlarından). */
 export function typeOf(table, row = {}) {
   switch (table) {

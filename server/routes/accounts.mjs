@@ -1140,17 +1140,8 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     for (const row of rows) lines.set(row.id, accountLedger(entries.get(row.id) || [], planMap.get(row.id) || []).lines);
     return { accounts: rows, lines };
   }
-  // Kasa: cari tahsilatları (giriş) ve ödemeleri (çıkış). Silinen carinin hareketi Kasa'dan düşer (taksit kartıyla aynı).
-  // Kasa kaynağı: aynı tablo/koşul hem Kasa satırlarında hem Kasa toplamında (ANLIK DURUM) kullanılır.
-  const cashSource = { table: "account_entries e JOIN accounts a ON a.id = e.account_id AND a.deleted_at IS NULL", where: "e.kind IN ('in', 'out') AND e.source = ''", kind: "e.kind", amount: "e.amount", date: "e.date", method: "e.method" };
-  const cashEntries = (after = "") =>
-    store.all(
-      `SELECT e.id, e.kind, 'account' AS source, e.method, e.amount, e.date, e.note AS description, e.account_id AS accountId, a.name AS accountName,
-              e.created_by AS actorId, COALESCE(u.display_name, '') AS actorName, e.created_at AS createdAt, e.updated_at AS updatedAt
-       FROM ${cashSource.table} LEFT JOIN users u ON u.id = e.created_by
-       WHERE ${cashSource.where}${after ? ` AND ${cashSource.date} > ?` : ""}`,
-      ...(after ? [after] : []),
-    );
+  // Kasa (v2.1.0, K5): cari tahsilat ve ödemeleri Kasa'ya tek kaynaktan (lib/bank/money-lines.mjs, kaynak 3) düşer; silinen carinin
+  // hareketi orada da düşer.
   // Stok hareketi cariye yazılınca (routes/stock.mjs): borç/alacak satırı stok hareketine bağlı açılır, düzeltilir, silinir.
   const stockEntry = {
     upsert(user, move, { accountId, kind, amount, date, note }) {
@@ -1279,5 +1270,5 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     return "Cari hareketi geri eklendi; bakiye ve Kasa yeniden hesaplandı.";
   }
 
-  return { exists, accountRow, createFromPlan, matchPerson, cashEntries, cashSource, stockEntry, invoiceEntry, taxIdentity, fingerprint, deletedList, restoreDeleted, restoreEntry, detail, list, allLedgers, assertUnlocked };
+  return { exists, accountRow, createFromPlan, matchPerson, stockEntry, invoiceEntry, taxIdentity, fingerprint, deletedList, restoreDeleted, restoreEntry, detail, list, allLedgers, assertUnlocked };
 }

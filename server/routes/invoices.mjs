@@ -2719,17 +2719,8 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   });
 
   // ---------- Diğer modüller için ----------
-  // Kasa: faturanın peşin tahsilat ve ödemeleri (cari satırı, source = 'invoice'). İptal edilen faturanınki silinmiştir.
-  const cashSource = { table: "account_entries e JOIN accounts a ON a.id = e.account_id AND a.deleted_at IS NULL JOIN invoices i ON i.id = e.source_id", where: "e.source = 'invoice' AND e.kind IN ('in', 'out')", kind: "e.kind", amount: "e.amount", date: "e.date", method: "e.method" };
-  const cashEntries = (after = "") =>
-    store
-      .all(
-        `SELECT e.id, e.kind, e.method, e.amount, e.date, e.note, e.account_id AS accountId, a.name AS accountName, i.id AS invoiceId, i.number, i.kind AS invoiceKind,
-                e.created_by AS actorId, COALESCE(u.display_name, '') AS actorName, e.created_at AS createdAt, e.updated_at AS updatedAt
-         FROM ${cashSource.table} LEFT JOIN users u ON u.id = e.created_by WHERE ${cashSource.where}${after ? ` AND ${cashSource.date} > ?` : ""}`,
-        ...(after ? [after] : []),
-      )
-      .map(({ note, number, invoiceKind, ...row }) => ({ ...row, source: "invoice", description: `${INVOICE_KINDS[invoiceKind]?.short || "Fatura"} ${number} · ${row.kind === "in" ? "tahsilat" : "ödeme"} · ${row.accountName}` }));
+  // Kasa (v2.1.0, K5): faturanın peşin tahsilat ve ödemeleri (cari satırı, source = 'invoice') tek kaynaktan (lib/bank/money-lines.mjs,
+  // kaynak 4) okunur. İptal edilen faturanınki silinmiştir.
   // Vade takip ve nakit akışı: açık (kısmen ödenmiş dahil) vadeli faturalar. Taksitli olanlar taksit kartından gelir.
   // v2.0.23 (Bulgu 2 D): "Carinin Mevcut Borcu" kartı (ya da stoktan taksitli satışın kartı) açık faturanın borcunu
   // taksitlendirebilir; fatura açığının kartça kapsanan kısmı (kapama, covered) kartın taksitleriyle aynı paradır. Birleşik
@@ -2779,5 +2770,5 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     const row = store.get("SELECT id, plan_id AS planId, payment_json AS paymentJson, status FROM invoices WHERE id = ?", invoiceId);
     if (row?.status === "issued" && row.planId) ownCard(user, row, { plans: new Set() }, "Taksit tahsilatı değişti");
   };
-  return { cashEntries, cashSource, openItems, dueItems, fingerprint, countForAccount, list, detail, settings, paymentStates, lastPrices, returnable, cancel, deleteInvoice, restoreDeleted, syncOwnCard };
+  return { openItems, dueItems, fingerprint, countForAccount, list, detail, settings, paymentStates, lastPrices, returnable, cancel, deleteInvoice, restoreDeleted, syncOwnCard };
 }

@@ -9,13 +9,11 @@ import { cashPdf, cashPdfName, rangeLabel } from "../lib/cash-report.mjs";
 import { HttpError, limited, ok, readJson, sendBuffer, text } from "../lib/http.mjs";
 import { parseAmount, roundMoney } from "../lib/money.mjs";
 import { canUser } from "../lib/permissions.mjs";
-import { METHODS, NEGATIVE_GUARDED, NEGATIVE_KEY, NEGATIVE_POLICIES, methodFilter, methodOf, readNegativePolicy, methodInput } from "../lib/pay-method.mjs";
+import { METHODS, NEGATIVE_GUARDED, NEGATIVE_KEY, NEGATIVE_POLICIES, methodOf, readNegativePolicy, methodInput } from "../lib/pay-method.mjs";
 import { systemClock } from "../lib/clock.mjs";
+import { createMoneyLines, waysFor } from "../lib/bank/money-lines.mjs";
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
-// Kasa'nın kendi kaynakları (kayıt tahsilatları ve elle girilen hareketler); diğerleri modüllerin cashSource'u.
-const PAYMENTS = { table: "payments p", where: "1 = 1", kind: "'in'", amount: "p.amount", date: "p.date", method: "p.method" };
-const MANUAL = { table: "cash_entries c", where: "1 = 1", kind: "c.kind", amount: "c.amount", date: "c.date", method: "c.method" };
 const validDate = value => DATE.test(value) && !Number.isNaN(new Date(value).getTime());
 
 export function registerCashRoutes(router, context) {
@@ -25,74 +23,16 @@ export function registerCashRoutes(router, context) {
   const now = () => clock().toISOString();
   const changed = user => events?.publish("workspace.changed", { kind: "cash", actorId: user.id, actorName: user.display_name }, { except: user.id });
 
-  // after: yalnız bu tarihten SONRAKİ hareketler (nakit akışı için ileri tarihli Kasa kayıtları).
-  function entries({ after = "" } = {}) {
-    // Taksit kartlarının hareketleri (v2.0.4): kasaya tahsilat/ödeme olarak düşer; düzeltme kartın kendisinden yapılır.
-    const plans = context.plans?.cashEntries ? context.plans.cashEntries(after) : [];
-    // Cari tahsilat/ödemeleri ve Kasa'dan ödenen/Kasa'ya tahsil edilen stok hareketleri (v2.0.6).
-    const accounts = context.accounts?.cashEntries ? context.accounts.cashEntries(after) : [];
-    const stock = context.stock?.cashEntries ? context.stock.cashEntries(after) : [];
-    // Çek/senet (v2.0.7): alınan evrak tahsil edilince giriş, verilen evrak ödenince çıkış. Alınca/verilince Kasa değişmez.
-    const cheques = context.cheques?.cashEntries ? context.cheques.cashEntries(after) : [];
-    // Fatura (v2.0.15): kesilirken peşin alınan/ödenen tutar (nakit, banka, kredi kartı). Düzeltme faturadan (iptal/iade).
-    const invoices = context.invoices?.cashEntries ? context.invoices.cashEntries(after) : [];
-    const payments = store.all(
-      `SELECT p.id, 'in' AS kind, 'payment' AS source, p.method, p.amount, p.date, p.note AS description, p.case_key AS caseKey, p.case_title AS caseTitle,
-              p.created_by AS actorId, COALESCE(u.display_name, '') AS actorName, p.created_at AS createdAt, p.updated_at AS updatedAt
-       FROM ${PAYMENTS.table} LEFT JOIN users u ON u.id = p.created_by${after ? ` WHERE ${PAYMENTS.date} > ?` : ""}`,
-      ...(after ? [after] : []),
-    );
-    const manual = store.all(
-      `SELECT c.id, c.kind, 'manual' AS source, c.method, c.amount, c.date, c.description, '' AS caseKey, '' AS caseTitle, c.transfer_id AS transferId,
-              c.created_by AS actorId, COALESCE(u.display_name, '') AS actorName, c.created_at AS createdAt, c.updated_at AS updatedAt
-       FROM ${MANUAL.table} LEFT JOIN users u ON u.id = c.created_by${after ? ` WHERE ${MANUAL.date} > ?` : ""}`,
-      ...(after ? [after] : []),
-    );
-    // Tarih sırası; aynı gün içinde giriş sırası (yeni eklenen en altta).
-    return [...payments, ...manual, ...plans, ...accounts, ...stock, ...cheques, ...invoices].sort((a, b) => (a.date === b.date ? (a.createdAt < b.createdAt ? -1 : a.createdAt > b.createdAt ? 1 : 0) : a.date < b.date ? -1 : 1));
-  }
-
-  // Kasa toplamları SQL'de, Kasa satırlarıyla aynı kaynak tanımlarından (tablo + koşul) hesaplanır; satırlar belleğe
-  // alınmaz. Kuruş tamsayısıyla toplanır (kayan nokta birikimi yok). ANLIK DURUM ve nakit akışı başlangıcı buradan okur.
-  function sources() {
-    return [PAYMENTS, MANUAL, context.plans?.cashSource, context.accounts?.cashSource, context.stock?.cashSource, context.cheques?.cashSource, context.invoices?.cashSource].filter(Boolean);
-  }
-  function summary(day, monthStart = `${day.slice(0, 7)}-01`) {
-    const union = sources()
-      .map(source => `SELECT ${source.kind} AS kind, CAST(ROUND(${source.amount} * 100) AS INTEGER) AS cents, ${source.date} AS date, COALESCE(${source.method || "'cash'"}, 'cash') AS method FROM ${source.table} WHERE ${source.where}`)
-      .join(" UNION ALL ");
-    const row = store.get(
-      `SELECT COALESCE(SUM(CASE WHEN kind = 'in' THEN cents ELSE -cents END), 0) AS balance,
-              COALESCE(SUM(CASE WHEN date <= ? THEN (CASE WHEN kind = 'in' THEN cents ELSE -cents END) END), 0) AS balanceToday,
-              COALESCE(SUM(CASE WHEN date = ? AND kind = 'in' THEN cents END), 0) AS todayIn,
-              COALESCE(SUM(CASE WHEN date = ? AND kind = 'out' THEN cents END), 0) AS todayOut,
-              COALESCE(SUM(CASE WHEN date >= ? AND date <= ? AND kind = 'in' THEN cents END), 0) AS monthIn,
-              COALESCE(SUM(CASE WHEN date >= ? AND date <= ? AND kind = 'out' THEN cents END), 0) AS monthOut,
-              COUNT(CASE WHEN date > ? THEN 1 END) AS future,
-              COUNT(*) AS count,
-              COALESCE(SUM(CASE WHEN method = 'cash' THEN (CASE WHEN kind = 'in' THEN cents ELSE -cents END) END), 0) AS cashAll,
-              COALESCE(SUM(CASE WHEN method = 'bank' THEN (CASE WHEN kind = 'in' THEN cents ELSE -cents END) END), 0) AS bankAll,
-              COALESCE(SUM(CASE WHEN method = 'card' THEN (CASE WHEN kind = 'in' THEN cents ELSE -cents END) END), 0) AS cardAll,
-              COALESCE(SUM(CASE WHEN method = 'cash' AND date <= ? THEN (CASE WHEN kind = 'in' THEN cents ELSE -cents END) END), 0) AS cashToday,
-              COALESCE(SUM(CASE WHEN method = 'bank' AND date <= ? THEN (CASE WHEN kind = 'in' THEN cents ELSE -cents END) END), 0) AS bankToday,
-              COALESCE(SUM(CASE WHEN method = 'card' AND date <= ? THEN (CASE WHEN kind = 'in' THEN cents ELSE -cents END) END), 0) AS cardToday,
-              COALESCE(SUM(CASE WHEN method = 'cash' AND date = ? AND kind = 'in' THEN cents END), 0) AS cashTodayIn,
-              COALESCE(SUM(CASE WHEN method = 'cash' AND date = ? AND kind = 'out' THEN cents END), 0) AS cashTodayOut,
-              COALESCE(SUM(CASE WHEN method = 'cash' AND date >= ? AND date <= ? AND kind = 'in' THEN cents END), 0) AS cashMonthIn,
-              COALESCE(SUM(CASE WHEN method = 'cash' AND date >= ? AND date <= ? AND kind = 'out' THEN cents END), 0) AS cashMonthOut,
-              COUNT(CASE WHEN method = 'cash' AND date > ? THEN 1 END) AS cashFuture,
-              COALESCE(SUM(CASE WHEN method <> 'cash' AND date = ? AND kind = 'in' THEN cents END), 0) AS otherTodayIn,
-              COALESCE(SUM(CASE WHEN method <> 'cash' AND date = ? AND kind = 'out' THEN cents END), 0) AS otherTodayOut
-       FROM (${union})`,
-      day, day, day, monthStart, day, monthStart, day, day, day, day, day, day, day, monthStart, day, monthStart, day, day, day, day,
-    );
-    const tl = cents => roundMoney(Number(cents || 0) / 100);
-    // v2.0.13: yola göre bakiyeler (Nakit Kasa, Banka, Kredi Kartı); toplam = üçünün toplamı.
-    // v2.0.17: ANLIK DURUM için nakit kasa (cashOnly) ile banka tarafı (noncash: havale/EFT + POS/kredi kartı) ayrı.
-    const cashOnly = { balance: tl(row.cashAll), balanceToday: tl(row.cashToday), today: { in: tl(row.cashTodayIn), out: tl(row.cashTodayOut) }, month: { in: tl(row.cashMonthIn), out: tl(row.cashMonthOut) }, futureEntries: row.cashFuture };
-    const noncash = { balance: roundMoney(tl(row.bankAll) + tl(row.cardAll)), balanceToday: roundMoney(tl(row.bankToday) + tl(row.cardToday)), today: { in: tl(row.otherTodayIn), out: tl(row.otherTodayOut) } };
-    return { byMethod: { cash: tl(row.cashAll), bank: tl(row.bankAll), card: tl(row.cardAll) }, byMethodAt: { cash: tl(row.cashToday), bank: tl(row.bankToday), card: tl(row.cardToday) }, cashToday: tl(row.cashToday), balance: tl(row.balance), balanceToday: tl(row.balanceToday), today: { in: tl(row.todayIn), out: tl(row.todayOut) }, month: { in: tl(row.monthIn), out: tl(row.monthOut) }, futureEntries: row.future, count: row.count, cashOnly, noncash };
-  }
+  // v2.1.0 (K5, plan §3.4): Kasa'nın satırları ve toplamları TEK KAYNAKTAN (lib/bank/money-lines.mjs: 9 kaynağın tek SQL'i). Önceden
+  // satırlar modüllerin cashEntries'inden (JS), toplamlar cashSource'larından (SQL) ayrı ayrı okunuyor, tanınmayan yol satırda nakit
+  // sayılıp özette sayılmıyordu (B7). Görünen satırlar, alanlar, sıra ve sayılar 2.0.26 ile aynı (test/banka-210-altin.test.mjs).
+  const lines = context.money || createMoneyLines(store);
+  // after: yalnız bu tarihten SONRAKİ hareketler (nakit akışı ve vade takip için ileri tarihli Kasa kayıtları); bütün yollar.
+  // Tarih sırası; aynı gün içinde giriş sırası (yeni eklenen en altta; aynı anda yazılanlar yazım sırasıyla).
+  const entries = ({ after = "" } = {}) => lines.rows({ after });
+  // Kasa toplamları SQL'de, kuruş tamsayısıyla (kayan nokta birikimi yok). ANLIK DURUM, nakit akışı başlangıcı, eksi bakiye denetimi
+  // ve Ana Defter'in beklenenleri buradan okur.
+  const summary = (day, monthStart) => lines.summary(day, monthStart);
   // Tarihe kadarki kasa (dahil): nakit akış projeksiyonunun başlangıcı. Kasa ekranıyla aynı hareketlerden.
   const balanceAt = day => (day ? summary(day).balanceToday : summary("9999-12-31").balance);
   // v2.0.13: eksi bakiye denetimi — Logo/Netsis'teki gibi yol başına ayar (Nakit Kasa, Banka, Kredi Kartı):
@@ -181,8 +121,8 @@ export function registerCashRoutes(router, context) {
   }
   // method: "cash" (Kasa penceresi), "bank" | "card" | "noncash" (banka tarafı), "" (hepsi — Ana Defter, eski raporlar).
   function report(user, from, to, method = "") {
-    const filter = methodFilter(method);
-    method = filter ? String(method) : "";
+    const ways = waysFor(method);
+    method = ways ? String(method) : "";
     if ((from && !validDate(from)) || (to && !validDate(to))) throw new HttpError(400, "Geçerli bir tarih aralığı seçin.");
     if (from && to && from > to) throw new HttpError(400, "Başlangıç tarihi bitiş tarihinden sonra olamaz.");
     let balance = 0;
@@ -190,11 +130,11 @@ export function registerCashRoutes(router, context) {
     const period = { in: 0, out: 0 };
     const totals = { in: 0, out: 0 };
     const list = [];
-    const byMethod = { cash: 0, bank: 0, card: 0 };
-    for (const raw of entries()) {
-      const entry = { ...raw, method: methodOf(raw.method) };
-      byMethod[entry.method] = roundMoney(byMethod[entry.method] + (entry.kind === "in" ? entry.amount : -entry.amount));
-      if (filter && !filter.has(entry.method)) continue;
+    // Yola göre bakiyeler (bütün satırlar; süzgeçten bağımsız): tek kaynağın özetinden. Tanınmayan yollu eski satır hiçbir yola
+    // katılmaz (2.0.26'da satır listesi onu nakit sayıyordu, özet saymıyordu; artık ikisi aynı).
+    const totalsByWay = lines.balances();
+    const byMethod = { cash: roundMoney(totalsByWay.cash / 100), bank: roundMoney(totalsByWay.bank / 100), card: roundMoney((totalsByWay.card + totalsByWay.ccard) / 100) };
+    for (const entry of lines.rows({ ways })) {
       const signed = entry.kind === "in" ? entry.amount : -entry.amount;
       balance = roundMoney(balance + signed);
       totals[entry.kind] = roundMoney(totals[entry.kind] + entry.amount);
@@ -210,7 +150,7 @@ export function registerCashRoutes(router, context) {
         entry.source === "plan" ? canUser(user, "plans.manage") || (own && canUser(user, "plans.collect"))
         : entry.source === "account" ? canUser(user, "accounts.manage") || (own && canUser(user, "accounts.collect"))
         : entry.source === "stock" ? canUser(user, "stock.manage")
-        : entry.source === "cheque" || entry.source === "invoice" ? false
+        : entry.source === "cheque" || entry.source === "invoice" || entry.source === "bank" || entry.source === "bankLine" ? false
         : canUser(user, "cash.manage") || (entry.source === "payment" && own && canUser(user, "payments.create"));
       list.push({ ...entry, balance, editable });
     }
