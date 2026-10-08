@@ -34,7 +34,7 @@ import { registerCashRoutes } from "./routes/cash.mjs";
 import { registerLedgerRoutes } from "./routes/ledger.mjs";
 import { registerWhatsappRoutes } from "./routes/whatsapp.mjs";
 import { createIntegrity } from "./lib/integrity.mjs";
-import { createPeriod } from "./lib/period.mjs";
+import { LOCK_KEY, createPeriod } from "./lib/period.mjs";
 import { registerDueRoutes } from "./routes/dues.mjs";
 import { registerPlanRoutes } from "./routes/plans.mjs";
 import { registerPlanTransfer } from "./routes/plan-transfer.mjs";
@@ -531,6 +531,10 @@ export function createApp(overrides = {}) {
     const backup = takeBackup(`sifirlama-oncesi-${company?.code || "001"}`, Math.max(config.backupKeep, 10));
     const has = table => Boolean(store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = ?", table));
     const counts = {};
+    // v2.0.26 (A12): dönem kilidi varken "Tüm Hareketleri Sil" kapanmış dönemin hareketlerini de siler; kilit kalsaydı mutabakat
+    // kapısı işlemi geri alıyordu (409). Sıfırlamada kilit de kaldırılır (onay penceresinde yazar) ve işlem geçmişine
+    // "ledger.period.unlocked" yazılır. "Tümünü Sıfırla" kilit ayarını zaten siliyordu; o da aynı kaydı bırakır.
+    const unlocked = context.period?.lockedUntil?.() || "";
     store.tx(() => {
       const tables = mode === "all" ? [...MOVEMENT_TABLES, ...CARD_TABLES] : MOVEMENT_TABLES;
       for (const table of tables) {
@@ -539,13 +543,19 @@ export function createApp(overrides = {}) {
         store.run(`DELETE FROM ${table}`);
       }
       if (resetNumbers) store.run("DELETE FROM settings WHERE key = 'plans.receiptSeq'");
+      if (unlocked) {
+        store.run("DELETE FROM settings WHERE key = ?", LOCK_KEY);
+        audit(user, "ledger.period.unlocked", "period", { previous: unlocked, lockedUntil: "", reason: "company.reset", mode });
+      }
       if (mode === "all") {
         for (const row of store.all("SELECT key FROM settings")) {
           if (!KEEP_SETTINGS.some(prefix => row.key.startsWith(prefix))) store.run("DELETE FROM settings WHERE key = ?", row.key);
         }
       }
-      audit(user, "company.reset", companyId, { mode, resetNumbers, backup: backup?.name || "", counts });
+      audit(user, "company.reset", companyId, { mode, resetNumbers, backup: backup?.name || "", counts, unlocked });
     });
+    // Kapı tabanı yeniden ölçülür (kilit kalktı, eski satırlar silindi; dönem kilidi değişikliğindeki gibi).
+    context.integrity?.start?.();
     try {
       profile.invalidate?.();
       clientState.bump?.(user?.id || "");
@@ -554,7 +564,7 @@ export function createApp(overrides = {}) {
     }
     events?.publish("workspace.changed", { kind: "reset", actorId: user?.id, actorName: user?.display_name, mode });
     log.info(`Şirket verisi sıfırlandı (${company?.code || "001"}, ${mode}); yedek: ${backup?.name}`);
-    return { mode, backup: backup?.name || "", counts };
+    return { mode, backup: backup?.name || "", counts, unlocked };
   }
 
   let closed = false;

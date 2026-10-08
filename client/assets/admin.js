@@ -1493,7 +1493,7 @@
     HOF.formModal({
       title: `Şirket Verisini Sıfırla · ${item.code} · ${item.name}`,
       eyebrow: "ŞİRKET",
-      intro: "Önce zorunlu yedek alınır (Yedekler'den geri yüklenebilir). Lisans, kullanıcılar ve öbür şirketler etkilenmez. Geri alınamaz; onay için şirket kodunu ve parolanızı yazın.",
+      intro: "Önce zorunlu yedek alınır (Yedekler'den geri yüklenebilir). Lisans, kullanıcılar ve öbür şirketler etkilenmez. Dönem kilidi varsa o da kaldırılır; kapatılmış dönemin hareketleri de silinir, yeniden girdikten sonra kilidi yeniden koyun. Geri alınamaz; onay için şirket kodunu ve parolanızı yazın.",
       fields: [
         { name: "mode", label: "Ne Silinsin", type: "select", value: "movements", options: [{ value: "movements", label: "Tüm Hareketleri Sil (cari/stok kartları, Kasa hesapları ve ayarlar kalır; bakiyeler sıfır)" }, { value: "all", label: "Tümünü Sıfırla (şirket ilk açıldığı gibi boş; ad/kod, unvan/VKN/logo, fatura serisi kalır)" }] },
         { name: "resetNumbers", label: "Fatura Serisi Sayaçları da Sıfırlansın", type: "checkbox", value: true },
@@ -1502,7 +1502,8 @@
       submitLabel: "Veriyi Sıfırla",
       onSubmit: async values => {
         const result = await HOF.api(`/api/companies/${encodeURIComponent(item.id)}/reset`, { method: "POST", body: { mode: values.mode, confirm: values.confirm, password: values.password, resetNumbers: Boolean(values.resetNumbers) } });
-        HOF.toast(`“${item.code} · ${item.name}” verisi sıfırlandı. Yedek: ${result.backup || "—"}`, { type: "success", timeout: 8000 });
+        const unlocked = result.unlocked ? ` Dönem kilidi (${result.unlocked.split("-").reverse().join(".")}) kaldırıldı.` : "";
+        HOF.toast(`“${item.code} · ${item.name}” verisi sıfırlandı. Yedek: ${result.backup || "—"}.${unlocked}`, { type: "success", timeout: 8000 });
         loadCompanies();
       },
     });
