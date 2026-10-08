@@ -172,7 +172,7 @@ async function grow(file, target) {
             next.ettn = randomUUID();
             if (row.seq > 0) {
               next.year = Number(next.issue_date.slice(0, 4));
-              // (seri, yıl, sıra) tekil: tohumdaki (yıl, sıra) çifti kopya içinde tekildir; yıl kaydırılınca da çakışmasın diye kodlanır.
+              // (seri, yıl, sıra) tekil olsun diye geçici sıra; kopyalama bitince renumberInvoices tarih sırasıyla 1'den yeniden verir.
               next.seq = k * 1_000_000 + (row.year - 2000) * 10_000 + row.seq;
               const match = /^(.*?)(\d{4})(\d{9})$/.exec(row.number);
               next.number = match ? `${match[1]}${next.year}${String(next.seq).padStart(9, "0")}` : `${row.number}-${k}`;
@@ -195,12 +195,25 @@ async function grow(file, target) {
       if (k % 50 === 0) process.stdout.write(`  kopya ${k}/${copies} (${Math.round((performance.now() - started) / 1000)} sn)\r`);
     }
     for (const [year, seq] of maxSeq) db.prepare("INSERT INTO settings (key, value, updated_at) VALUES (?, ?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value").run(`meta.bank.seq.${year}`, String(seq), new Date(NOW).toISOString());
+    renumberInvoices(db);
     db.exec("PRAGMA wal_checkpoint(TRUNCATE)");
     const counts = await countMoney(db);
     return { copies, seedMoney, ...counts, seconds: Math.round((performance.now() - started) / 1000) };
   } finally {
     db.close();
   }
+}
+// Kendi serilerimizin (FIS, IAD, SMM) numaraları seri ve yıl içinde tarih sırasıyla 1'den boşluksuz (programın kuralı; kopyaların sırası
+// tarih sırasına göre yeniden verilir: en büyük numara en yeni tarihli belgede, yeni fatura kronoloji denetimine takılmaz).
+export function renumberInvoices(db) {
+  db.exec(`BEGIN;
+    UPDATE invoices SET seq = -seq WHERE seq > 0;
+    CREATE TEMP TABLE IF NOT EXISTS renum (rid INTEGER PRIMARY KEY, n INTEGER NOT NULL);
+    DELETE FROM renum;
+    INSERT INTO renum (rid, n) SELECT rowid, ROW_NUMBER() OVER (PARTITION BY series, year ORDER BY issue_date, issue_time, rowid) FROM invoices WHERE seq < 0;
+    UPDATE invoices SET seq = (SELECT n FROM renum WHERE rid = invoices.rowid) WHERE seq < 0;
+    UPDATE invoices SET number = series || year || printf('%09d', seq) WHERE seq > 0;
+    COMMIT;`);
 }
 async function fixture(target) {
   const seedDir = path.join(DIR, "tohum");
@@ -337,6 +350,21 @@ function summarize(target, info, result) {
 }
 
 const report = [];
+if (flag("numara-duzelt")) {
+  for (const target of TARGETS) {
+    for (const company of companyFiles(path.join(DIR, `n-${target}`, "data"))) {
+      const db = new DatabaseSync(company.file);
+      try {
+        renumberInvoices(db);
+        db.exec("PRAGMA wal_checkpoint(TRUNCATE)");
+      } finally {
+        db.close();
+      }
+      log(`${target} ${company.code}: fatura numaraları yeniden verildi`);
+    }
+  }
+  process.exit(0);
+}
 for (const target of TARGETS) {
   const { dir, info } = await fixture(target);
   if (flag("yalniz-kur")) {
