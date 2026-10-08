@@ -273,10 +273,12 @@ export function createApp(overrides = {}) {
   registerAuthRoutes(router, context);
   registerAdminRoutes(router, context);
   if (!hub) registerCompanyRoutes(router, { ...context, appFor: company => appFor(company), resetData: (company, ...args) => appFor(company).resetData(...args), closeCompany: id => closeCompany(id) });
-  // Taksit servisi (context.plans) daha sonra kurulur; işlem geçmişi ona istek anında ulaşır (v2.0.6).
-  registerWorkspaceRoutes(router, { ...context, plans: () => context.plans });
-  // Hareket tarihi ve dönem kilidi (v2.0.13): Kasa, Cari, Stok ve Taksit aynı kuralla.
+  // Hareket tarihi ve dönem kilidi (v2.0.13): Kasa, Cari, Stok ve Taksit aynı kuralla. v2.0.26 (A1): kayıt tahsilatı da
+  // (çalışma alanı rotaları) aynı kurala bağlı; bu yüzden onlardan önce kurulur.
   context.period = createPeriod({ store });
+  // Taksit servisi (context.plans) daha sonra kurulur; işlem geçmişi ona istek anında ulaşır (v2.0.6). Kasa (eksi bakiye
+  // denetimi) da sonra kurulur; istek anında okunur.
+  registerWorkspaceRoutes(router, { ...context, plans: () => context.plans, cash: () => context.cash });
   context.cash = registerCashRoutes(router, context);
   // Taksitler (v2.0.4): Kasa ve tahsilat takvimi bu servisin hareketlerini ve gecikmelerini okur.
   // Cari ve Stok (v2.0.6): taksit kartları cariye bağlıdır; stok hareketi Kasa'ya ya da cariye yazılabilir. Servisler

@@ -296,13 +296,15 @@ export function registerCashRoutes(router, context) {
     if (twin) guardChange(twin, null, url.searchParams.get("cashForce") === "1");
     const full = store.get("SELECT id, kind, amount, date, description, method, transfer_id AS transferId, created_by AS createdBy, created_at AS createdAt FROM cash_entries WHERE id = ?", previous.id);
     const twinFull = twin ? store.get("SELECT id, kind, amount, date, description, method, transfer_id AS transferId, created_by AS createdBy, created_at AS createdAt FROM cash_entries WHERE id = ?", twin.id) : null;
+    // Silme, Silinenler kaydı ve işlem geçmişi tek işlemde (v2.0.26, B5): yarıda kesilirse hiçbiri yazılmaz (önceden hareket
+    // silinip Silinenler'e yazılamadan kesinti olursa geri getirilemiyordu).
     store.tx(() => {
       store.run("DELETE FROM cash_entries WHERE id = ?", previous.id);
       if (twin) store.run("DELETE FROM cash_entries WHERE id = ?", twin.id);
+      // Silinenler (v2.0.2): yönetim panelinden geri yüklenebilir. Transferde iki taraf birlikte (payload.twin).
+      trash?.add({ kind: "cash", ref: previous.id, title: full.description || (previous.transferId ? "Kasa ↔ Banka Transferi" : "Kasa Hareketi"), payload: { ...full, twin: twinFull }, user });
+      audit(user, previous.transferId ? "cash.transfer.deleted" : "cash.entry.deleted", previous.transferId || previous.id, previous);
     });
-    // Silinenler (v2.0.2): yönetim panelinden geri yüklenebilir. Transferde iki taraf birlikte (payload.twin).
-    trash?.add({ kind: "cash", ref: previous.id, title: full.description || (previous.transferId ? "Kasa ↔ Banka Transferi" : "Kasa Hareketi"), payload: { ...full, twin: twinFull }, user });
-    audit(user, previous.transferId ? "cash.transfer.deleted" : "cash.entry.deleted", previous.transferId || previous.id, previous);
     changed(user);
     ok(res, { id: previous.id });
   });
