@@ -177,6 +177,9 @@ export function registerChequeRoutes(router, { store, auth, audit, events, perio
     const head = { receive: `${kindName(cheque)} alındı`, issue: `${kindName(cheque)} verildi`, endorse: `${kindName(cheque)} ciro edildi`, bounce: `${kindName(cheque)} karşılıksız / iade` }[kind] || kindName(cheque);
     return [head, cheque.serialNo ? `No ${cheque.serialNo}` : "", cheque.bank, `vade ${dayText(cheque.dueDate)}`, extra].filter(Boolean).join(" · ").slice(0, 300);
   };
+  // v2.0.26 (gözden geçirme G1): evrakın karta sayılan tahsilatı, kart kapanmış dönemde kapatıldıysa eklenmez/kalkmaz (karşılıksız,
+  // geri al, sil, düzenle): vazgeçilen kalan (689) kilitli günde değişirdi.
+  const CLOSED_CARD = "Bu evrakın sayıldığı taksit tahsilatı değiştirilemez (karşılıksız, geri alma, silme ve düzenleme kartı değiştirir).";
   function applyEffects(user, cheque, planned) {
     const done = [];
     for (const effect of planned) {
@@ -191,6 +194,7 @@ export function registerChequeRoutes(router, { store, auth, audit, events, perio
       } else if (effect.type === "plan-entry") {
         const plan = store.get("SELECT id, account_id AS accountId, status FROM plans WHERE id = ? AND deleted_at IS NULL", effect.planId);
         if (!plan) throw new HttpError(409, "Çekin sayıldığı taksit kartı silinmiş. Çekte taksit kartını kaldırın.");
+        plans()?.assertCloseOpen?.(plan.id, CLOSED_CARD);
         const id = newId("entry");
         const receiptNo = plans()?.receiptSeq ? plans().receiptSeq() : null;
         const itemId = effect.itemId && store.get("SELECT 1 AS found FROM plan_items WHERE id = ? AND plan_id = ?", effect.itemId, plan.id) ? effect.itemId : null;
@@ -202,6 +206,7 @@ export function registerChequeRoutes(router, { store, auth, audit, events, perio
       } else if (effect.type === "remove-plan-entry") {
         const row = store.get("SELECT * FROM plan_entries WHERE id = ?", effect.id);
         if (!row) continue;
+        plans()?.assertCloseOpen?.(row.plan_id, CLOSED_CARD);
         store.run("DELETE FROM plan_entries WHERE id = ?", effect.id);
         done.push({ op: "delete", table: "plan_entries", row, planId: row.plan_id });
       }
@@ -218,6 +223,7 @@ export function registerChequeRoutes(router, { store, auth, audit, events, perio
   function revertEffects(effects, user = null) {
     for (const effect of [...effects].reverse()) {
       if (!EFFECT_TABLES.has(effect.table)) continue;
+      if (effect.table === "plan_entries") plans()?.assertCloseOpen?.(effect.planId || effect.row?.plan_id, CLOSED_CARD);
       if (effect.op === "insert") store.run(`DELETE FROM ${effect.table} WHERE id = ?`, effect.id);
       else if (effect.op === "delete" && effect.row && !store.get(`SELECT 1 AS found FROM ${effect.table} WHERE id = ?`, effect.row.id)) {
         const columns = Object.keys(effect.row).filter(column => /^[a-z_]+$/.test(column));

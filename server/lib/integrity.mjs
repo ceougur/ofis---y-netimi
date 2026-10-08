@@ -92,6 +92,26 @@ const LOCK_SQL = {
   // evrakın tutarı, tarihi ve silinmemiş olduğu. Evrakın durumu (status) girmez: kilitli ayda alınan çek bugün tahsil edilir.
   cheque_events_lock: { requires: ["cheque_events"], sql: "SELECT id, cheque_id, kind, amount, date, method FROM cheque_events WHERE date <= ?1 ORDER BY id" },
   cheques_lock: { requires: ["cheques"], sql: "SELECT id, direction, amount, issue_date, deleted_at IS NULL AS live FROM cheques WHERE issue_date <= ?1 ORDER BY id" },
+  // Gözden geçirme G2 — kapanmış dönemde tahsilatı olan kartın carisi: tahsilat carinin hesabına (120/320/336) yazılır; kart başka
+  // cariye taşınırsa (iki cari de party_lock'ta olsa bile) kilitli dönemin cari bakiyeleri kayar. Silinen kart da izden düşer.
+  plans_party_lock: {
+    requires: ["plans", "plan_entries"],
+    sql: `SELECT p.id, p.account_id FROM plans p
+          WHERE p.deleted_at IS NULL AND EXISTS (SELECT 1 FROM plan_entries pe WHERE pe.plan_id = p.id AND pe.date <= ?1)
+          ORDER BY p.id`,
+  },
+  // Gözden geçirme G1 — kapanmış dönemde kapatılmış kart: vazgeçilen kalan (689) kapatıldığı gün yazılır (routes/ledger.mjs). Kartın
+  // yeniden açılması, silinmesi, tutarı, carisi (ve carinin türü) ya da sonradan gelen tahsilatı kilitli mizanı değiştirir.
+  // closed_at'i boş eski kartlar (2.0.13 öncesi kapatılmış) izde değildir; rota denetimi onları da kapsar (plans.mjs closeDayOf).
+  plans_close_lock: {
+    requires: ["plans", "plan_entries", "accounts"],
+    sql: `SELECT p.id, p.account_id, COALESCE(a.type, '') AS party, p.total, p.closed_at,
+                 ROUND(p.total - COALESCE((SELECT SUM(CASE WHEN e.kind = 'in' THEN e.amount ELSE -e.amount END) FROM plan_entries e WHERE e.plan_id = p.id), 0), 2) AS waived
+          FROM plans p LEFT JOIN accounts a ON a.id = p.account_id AND a.deleted_at IS NULL
+          WHERE p.deleted_at IS NULL AND p.status = 'closed' AND COALESCE(p.closed_at, '') <> ''
+            AND MAX(p.closed_at, COALESCE(NULLIF(p.registered_on, ''), substr(p.created_at, 1, 10))) <= ?1
+          ORDER BY p.id`,
+  },
 };
 
 export function createIntegrity({ store, ledger, accounts = () => null, stock = () => null, plans = () => null, period = () => null, log = null, newId = () => `int-${crypto.randomUUID()}` }) {

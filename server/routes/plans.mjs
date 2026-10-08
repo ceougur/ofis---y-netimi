@@ -487,6 +487,7 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
       if (!head.covers) period?.assertOpen(head.registeredOn, "Bu kartın Kayıt Tarihi");
       const firstEntry = store.get("SELECT MIN(date) AS day FROM plan_entries WHERE plan_id = ?", planId)?.day;
       if (firstEntry) period?.assertOpen(firstEntry, "Bu kartın ilk tahsilatı");
+      assertCloseOpen(planId, "Kart geri yüklenemez.");
       if (head.accountId && store.get("SELECT 1 AS found FROM accounts WHERE id = ? AND deleted_at IS NOT NULL", head.accountId)) accounts()?.assertUnlocked?.(head.accountId, "kartla birlikte geri yüklenemez");
     }
     const plan = store.get("SELECT id, account_id AS accountId, total, status, covers_balance AS covers, invoice_id AS invoiceId FROM plans WHERE id = ?", planId);
@@ -495,6 +496,30 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
     // Kart silinmişken tahsilatları bakiyede yok: geri gelince bakiye net tahsilat kadar düşer (3. gözden geçirme).
     const free = roundMoney(uncoveredDebt(plan.accountId, user, plan.id) - netPaid(plan.id));
     if (left > free + 0.005) throw new HttpError(409, `Bu kart carinin o günkü borcunu taksitlendiriyordu; borç bu arada azaldı (taksitlendirilebilecek borç ${tl(free)}, kartın kalanı ${tl(left)}). Kart geri yüklenmez; kalan borç için cari kartında + Taksit Planı → Carinin Mevcut Borcu ile yeni kart açın.`, { code: "cover-exceeds", free });
+  }
+  // v2.0.26 (gözden geçirme G1): kapatılan kartın vazgeçilen kalanı ana defterde kapatıldığı gün 689'a yazılır (routes/ledger.mjs:
+  // closed_at, 2.0.13 öncesi kapatılmışta son güncelleme günü; Kayıt Tarihi'nden önce değil). O gün kapanmış dönemdeyse kart yeniden
+  // açılmaz, silinmez, geri yüklenmez; tutarı, carisi, tahsilatı ve iadesi değişmez (vazgeçilen tutar kilitli mizandadır; kilit izi
+  // integrity.mjs "plans_close_lock"). Önceden yalnız Kayıt Tarihi ve ilk tahsilat soruluyor, kilitli mizan sessizce değişiyordu.
+  // 2.0.13 öncesi kapatılmış kartta closed_at boştur; kapanış günü son güncelleme gününden okunur. Kart düzenlenince o gün
+  // kaymasın (689 başka güne geçmesin) diye güncellemeden önceki gün yazılır (SQLite UPDATE'te sağ taraf eski satırı okur).
+  const FREEZE_CLOSE = "closed_at = CASE WHEN status = 'closed' AND closed_at IS NULL THEN substr(updated_at, 1, 10) ELSE closed_at END";
+  const closeDayOf = planId => {
+    const row = store.get("SELECT status, COALESCE(closed_at, substr(updated_at, 1, 10)) AS closedOn, COALESCE(NULLIF(registered_on, ''), substr(created_at, 1, 10)) AS startOn FROM plans WHERE id = ?", planId);
+    if (!row || row.status !== "closed") return "";
+    return row.closedOn && row.closedOn > row.startOn ? row.closedOn : row.startOn;
+  };
+  function assertCloseOpen(planId, what) {
+    const lock = period?.lockedUntil?.() || "";
+    const day = lock ? closeDayOf(planId) : "";
+    if (day && day <= lock) throw new HttpError(409, `Bu kart ${dayText(day)} tarihinde kapatıldı (kalan alacaktan vazgeçildi); ${dayText(lock)} ve öncesi kapatılmış (kilitli) dönemdir. ${what} Gerekirse yönetici dönem kilidini açmalı.`, { code: "period-locked", lockedUntil: lock });
+  }
+  // v2.0.26 (gözden geçirme G2): kartın tahsilatları kartın carisinin hesabına (120/320/336) yazılır; kapanmış dönemde tahsilatı
+  // olan kartın carisi değişirse kilitli dönemin cari bakiyeleri kayar (kilit izi integrity.mjs "plans_party_lock").
+  function assertPartyOpen(planId) {
+    const lock = period?.lockedUntil?.() || "";
+    const first = lock ? store.get("SELECT MIN(date) AS day FROM plan_entries WHERE plan_id = ? AND date <= ?", planId, lock)?.day : "";
+    if (first) throw new HttpError(409, `Bu kartın ${dayText(lock)} ve öncesinde (kapatılmış dönem) tahsilatı var (${dayText(first)}); carisi değiştirilemez. Kapanmış dönemin cari bakiyeleri değişirdi. Gerekirse yönetici dönem kilidini açmalı.`, { code: "period-locked", lockedUntil: lock });
   }
   function assertCoverable(accountId, total, user, exceptPlanId = "") {
     if (!accountId) throw new HttpError(400, "Mevcut borcu taksitlendirmek için cari seçin.");
@@ -565,6 +590,14 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
       }
       // Cari boşaltılamaz: eski kartta (göç öncesinden kalma, cari yoksa) ilk düzenlemede cari açılır.
       const accountId = input.accountId || previous.accountId || accounts()?.createFromPlan(user, input) || "";
+      // v2.0.26 (gözden geçirme G1, G2): kapanmış dönemde kapatılmış kart yeniden açılmaz; tutarı, carisi, Kayıt Tarihi değişmez.
+      // Kapanmış dönemde tahsilatı olan kartın carisi değişmez (Mevcut Borç kartında da). Kilit bugünse kart bugün kapatılamaz
+      // (vazgeçilen kalan kilitli güne yazılırdı).
+      const moneyChange = roundMoney(input.total) !== roundMoney(Number(previous.total) || 0) || accountId !== previous.accountId || input.registeredOn !== previous.registeredOn;
+      if (previous.status === "closed" && status !== "closed") assertCloseOpen(previous.id, "Kart yeniden açılamaz.");
+      else if (previous.status === "closed" && moneyChange) assertCloseOpen(previous.id, "Kartın tutarı, carisi ve Kayıt Tarihi değiştirilemez.");
+      if (previous.status !== "closed" && status === "closed") period?.assertOpen(today(), "Kartın kapatılma günü");
+      if (accountId !== previous.accountId) assertPartyOpen(previous.id);
       // v2.0.23 (3. gözden geçirme): Mevcut Borç kartı açıldığı andaki borcu taksitlendirir; tutarı sonradan büyütülünce kart
       // yeni borcu da sayıyor ya da başka faturayı "ödenmiş" gösteriyordu. Yeni borç için yeni kart açılır.
       if (previous.coversBalance && !previous.invoiceId && input.total > roundMoney(Number(previous.total) || 0) + 0.005) throw new HttpError(409, GROW_COVER, { code: "cover-grow" });
@@ -573,7 +606,7 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
         assertCoverable(accountId, roundMoney(input.total - paid), user, previous.id);
       }
       store.run(
-        "UPDATE plans SET account_id = ?, ref_no = ?, registered_on = ?, case_key = ?, case_source = ?, case_title = ?, group_id = ?, subgroup_id = ?, name = ?, note = ?, phone = ?, total = ?, status = ?, updated_by = ?, updated_at = ? WHERE id = ?",
+        `UPDATE plans SET ${FREEZE_CLOSE}, account_id = ?, ref_no = ?, registered_on = ?, case_key = ?, case_source = ?, case_title = ?, group_id = ?, subgroup_id = ?, name = ?, note = ?, phone = ?, total = ?, status = ?, updated_by = ?, updated_at = ? WHERE id = ?`,
         accountId, input.refNo, input.registeredOn, input.caseKey, input.caseSource, input.caseTitle, input.groupId, input.subgroupId, input.name, input.note, input.phone, input.total, status, user.id, now(), previous.id,
       );
       // Kapatma tarihi (v2.0.13): vazgeçilen kalan ana defterde bu tarihte yazılır; yeniden açılınca silinir.
@@ -595,6 +628,7 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
     if (!plan.coversBalance) period?.assertOpen(plan.registeredOn, "Bu kartın Kayıt Tarihi");
     const firstEntry = store.get("SELECT MIN(date) AS day FROM plan_entries WHERE plan_id = ?", plan.id)?.day;
     if (firstEntry) period?.assertOpen(firstEntry, "Bu kartın ilk tahsilatı");
+    assertCloseOpen(plan.id, "Kart silinemez.");
     if (linked) throw new HttpError(409, `Bu karta sayılmış ${linked} çek/senet var. Önce Çek/Senet'ten evrakı silin ya da başka karta taşıyın.`);
     // v2.0.26 (A4): kartın tahsilat ve iadeleri Kasa'dan/bankadan düşer; toplam etki eksi bakiye denetiminden geçer (açılış/devir
     // ve çekle gelen tahsilat Kasa'ya hiç girmemişti, sayılmaz).
@@ -621,6 +655,7 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
         if (plan.invoiceId) throw new HttpError(409, `Bu kart ${plan.invoiceNumber || "bir fatura"} ile açıldı; tutarı faturadan gelir. Taksit sayısı ve vadeleri buradan değişir; tutar için faturada Düzenle'yi ya da iade faturasını kullanın.`, { code: "invoice-linked", invoiceId: plan.invoiceId });
         if (!plan.coversBalance) period?.assertOpen(plan.registeredOn, "Bu kartın Kayıt Tarihi");
         else if (total > roundMoney(Number(plan.total) || 0) + 0.005) throw new HttpError(409, GROW_COVER, { code: "cover-grow" });
+        assertCloseOpen(plan.id, "Kartın tutarı değiştirilemez.");
         store.run("UPDATE plans SET total = ?, updated_by = ?, updated_at = ? WHERE id = ?", total, user.id, now(), plan.id);
       }
       const items = distributionInput(body, total, plan.registeredOn);
@@ -733,6 +768,7 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
   router.post("/api/workspace/plans/:id/entries", async ({ req, res, params }) => {
     const user = auth.requirePermission(req, "plans.collect");
     const plan = planRow(params.id);
+    assertCloseOpen(plan.id, "Kartın tahsilatı ve iadesi değiştirilemez.");
     const body = await readJson(req);
     const input = store.tx(() => entryInput(body, plan.id));
     if (input.kind === "out" && !canUser(user, "plans.manage")) throw new HttpError(403, "Ödeme/iade girişi yönetici, uzman ve muhasebe yetkisidir.");
@@ -756,6 +792,7 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
     const previous = entryOf(plan.id, params.entryId);
     requireEntryRight(user, previous);
     period?.assertOpen(previous.date, "Bu taksit hareketi");
+    assertCloseOpen(plan.id, "Kartın tahsilatı ve iadesi değiştirilemez.");
     const body = await readJson(req);
     const input = entryInput({ ...previous, ...body, kind: previous.kind }, plan.id);
     assertNetPaid(plan.id, previous.kind === "in" ? input.amount : -input.amount, previous.id);
@@ -776,6 +813,7 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
     const previous = entryOf(plan.id, params.entryId);
     requireEntryRight(user, previous);
     period?.assertOpen(previous.date, "Bu taksit hareketi");
+    assertCloseOpen(plan.id, "Kartın tahsilatı ve iadesi değiştirilemez.");
     if (previous.kind === "in") assertNetPaid(plan.id, 0, previous.id);
     if (!previous.opening && !previous.chequeId) cash?.guardChange?.(previous, null, url.searchParams.get("cashForce") === "1");
     store.tx(() => {
@@ -1263,8 +1301,8 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
   }
   // Cari adı/telefonu değişince, adı/telefonu eski cariyle aynı olan kartlar da güncellenir (farklı adlı kart dokunulmaz).
   function followAccount(accountId, previous, next) {
-    if (previous.name !== next.name) store.run("UPDATE plans SET name = ?, updated_at = ? WHERE account_id = ? AND name = ?", next.name, now(), accountId, previous.name);
-    if (previous.phone !== next.phone) store.run("UPDATE plans SET phone = ?, updated_at = ? WHERE account_id = ? AND phone = ?", next.phone, now(), accountId, previous.phone);
+    if (previous.name !== next.name) store.run(`UPDATE plans SET ${FREEZE_CLOSE}, name = ?, updated_at = ? WHERE account_id = ? AND name = ?`, next.name, now(), accountId, previous.name);
+    if (previous.phone !== next.phone) store.run(`UPDATE plans SET ${FREEZE_CLOSE}, phone = ?, updated_at = ? WHERE account_id = ? AND phone = ?`, next.phone, now(), accountId, previous.phone);
   }
   const countForAccount = accountId => store.get("SELECT COUNT(*) AS n FROM plans WHERE deleted_at IS NULL AND account_id = ?", accountId).n;
   const receiptSeq = () => nextReceipt();
@@ -1317,5 +1355,5 @@ export function registerPlanRoutes(router, { store, auth, audit, events, trash, 
   // ikinci kez saymaz; aktarma "kartı var" der.
   const linkedCases = source => new Set(store.all("SELECT case_key AS k FROM plans WHERE deleted_at IS NULL AND case_key <> '' AND case_source = ?", source || "").map(row => row.k));
 
-  return { uncoveredDebt, assertRestorable, trimCovers, shrinkPlan, leftOf, syncInvoiceCard, cashEntries, cashSource, dueItems, openItems, fingerprint, ledgerPlansByAccount, list, detail, forCase, entriesForCase, summariesByAccount, forAccount, createForAccount, removeForInvoice, growForInvoice, followAccount, countForAccount, receiptSeq, nextRef, validDistribution: distributionInput, resolveGroups, groupTree, ensureGroup, createScheduled, adoptPayment, linkedCases };
+  return { uncoveredDebt, assertRestorable, assertCloseOpen, trimCovers, shrinkPlan, leftOf, syncInvoiceCard, cashEntries, cashSource, dueItems, openItems, fingerprint, ledgerPlansByAccount, list, detail, forCase, entriesForCase, summariesByAccount, forAccount, createForAccount, removeForInvoice, growForInvoice, followAccount, countForAccount, receiptSeq, nextRef, validDistribution: distributionInput, resolveGroups, groupTree, ensureGroup, createScheduled, adoptPayment, linkedCases };
 }

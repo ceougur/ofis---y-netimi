@@ -504,7 +504,9 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
       `SELECT 1 AS found WHERE EXISTS (SELECT 1 FROM account_entries WHERE account_id = ?1 AND date <= ?2)
           OR EXISTS (SELECT 1 FROM plans p WHERE p.account_id = ?1 AND p.deleted_at IS NULL
                        AND ((p.covers_balance = 0 AND p.registered_on <> '' AND p.registered_on <= ?2)
-                            OR EXISTS (SELECT 1 FROM plan_entries pe WHERE pe.plan_id = p.id AND pe.date <= ?2)))`,
+                            OR EXISTS (SELECT 1 FROM plan_entries pe WHERE pe.plan_id = p.id AND pe.date <= ?2)
+                            -- gözden geçirme G1: kapanmış dönemde kapatılmış kartın vazgeçilen kalanı (689) carinin türüne göre yazılır
+                            OR (p.status = 'closed' AND MAX(COALESCE(p.closed_at, substr(p.updated_at, 1, 10)), COALESCE(NULLIF(p.registered_on, ''), substr(p.created_at, 1, 10))) <= ?2)))`,
       accountId, lock,
     );
     return hit ? lock : "";

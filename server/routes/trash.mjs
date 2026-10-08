@@ -343,6 +343,7 @@ export function registerTrashRoutes(router, { store, auth, audit, events, datase
       if (!plan) throw new HttpError(409, "Hareketin taksit kartı artık yok; geri yüklenemez.");
       if (plan.deletedAt) throw new HttpError(409, `“${payload.planName}” kartı silinmiş. Önce kartı geri yükleyin.`);
       period?.assertOpen(payload.date, "Bu taksit hareketi");
+      plans?.assertCloseOpen?.(plan.id, "Kartın tahsilatı ve iadesi geri yüklenemez.");
       const method = methodInput(payload.method);
       store.tx(() => {
         if (!store.get("SELECT 1 AS found FROM plan_entries WHERE id = ?", item.ref)) {
