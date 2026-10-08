@@ -211,8 +211,9 @@ export function createMoneyLines(store) {
     return schema;
   };
 
-  // Kaynağın SELECT'i. light: yalnız özet kolonları; filter: kaynağa itilen koşullar (:after, :events).
-  function select(source, { light, after, events }) {
+  // Kaynağın SELECT'i. light: yalnız özet kolonları; filter: kaynağa itilen koşullar (:after, :events, :ids_<tablo>).
+  // ids (v2.1.0, §3.11 mutabakat kapısı): yalnız bu satırlar ({ tablo: kimlikler }); Banka Fişi satırları events ile (verilmezse yok).
+  function select(source, { light, after, events, ids }) {
     const { has, tables } = load();
     const r = source.read;
     const a = r.alias;
@@ -237,7 +238,10 @@ export function createMoneyLines(store) {
     }
     const where = [conditionSql(source, a)];
     if (after) where.push(`${date} > :after`);
-    if (events) where.push(`${eventId} IN (SELECT value FROM json_each(:events)) AND ${eventId} <> ''`);
+    if (ids) {
+      if (source.table === "bank_lines") where.push(events ? `${eventId} IN (SELECT value FROM json_each(:events))` : "0");
+      else where.push(ids[source.table]?.length ? `${a}.id IN (SELECT value FROM json_each(:ids_${source.table}))` : "0");
+    } else if (events) where.push(`${eventId} IN (SELECT value FROM json_each(:events)) AND ${eventId} <> ''`);
     return `SELECT ${parts.join(", ")} FROM ${r.from}${light || !r.rowJoin ? "" : ` ${r.rowJoin}`} WHERE ${where.join(" AND ")}`;
   }
   const WAY_SQL = bank => `CASE
@@ -253,21 +257,25 @@ export function createMoneyLines(store) {
     const union = MONEY_SOURCES.map(source => select(source, options)).filter(Boolean).join("\n UNION ALL ");
     return `SELECT u.*, ${WAY_SQL(bankAccounts)} AS way FROM (${union}) u${bankAccounts ? " LEFT JOIN bank_accounts ba ON u.ref <> '' AND ba.id = u.ref" : ""}`;
   }
-  const params = ({ after, events }) => ({ ...(after ? { after } : {}), ...(events ? { events: JSON.stringify([...events]) } : {}) });
+  const params = ({ after, events, ids }) => ({
+    ...(after ? { after } : {}),
+    ...(events ? { events: JSON.stringify([...events]) } : {}),
+    ...(ids ? Object.fromEntries(Object.entries(ids).filter(([, list]) => list?.length).map(([table, list]) => [`ids_${table}`, JSON.stringify([...list])])) : {}),
+  });
   const wayFilter = ways => (ways ? `w.way IN (${ways.map(quote).join(", ")})` : "");
 
   /** Ham satırlar (yol, hesap, iç hareket, İşlem No); tarih ve giriş sırasıyla. ways: yol listesi (null = hepsi); after: tarihten sonra; events: olay kimlikleri. */
-  function lines({ ways = null, after = "", events = null, light = false } = {}) {
+  function lines({ ways = null, after = "", events = null, ids = null, light = false } = {}) {
     const filter = wayFilter(ways);
-    const sql = `SELECT w.*${light ? "" : ", COALESCE(usr.display_name, '') AS actor_name"} FROM (${waySql({ light, after, events })}) w${light ? "" : " LEFT JOIN users usr ON usr.id = w.actor_id"}${filter ? ` WHERE ${filter}` : ""} ORDER BY w.date, w.created_at, w.rank, w.rid`;
-    return store.all(sql, params({ after, events }));
+    const sql = `SELECT w.*${light ? "" : ", COALESCE(usr.display_name, '') AS actor_name"} FROM (${waySql({ light, after, events, ids })}) w${light ? "" : " LEFT JOIN users usr ON usr.id = w.actor_id"}${filter ? ` WHERE ${filter}` : ""} ORDER BY w.date, w.created_at, w.rank, w.rid`;
+    return store.all(sql, params({ after, events, ids }));
   }
   /** Kasa'nın satır nesneleri (2.0.26 ile aynı biçim). */
   const rows = (options = {}) => lines({ ...options, light: false }).map(shape);
 
-  /** Yol ve hesap bazında toplam (kuruş): [{ way, ref, cents, count }]. */
-  function groups({ events = null } = {}) {
-    return store.all(`SELECT w.way AS way, w.ref AS ref, COALESCE(SUM(CASE WHEN w.kind = 'in' THEN w.cents ELSE -w.cents END), 0) AS cents, COUNT(*) AS count FROM (${waySql({ light: true, events })}) w GROUP BY w.way, w.ref ORDER BY w.way, w.ref`, params({ events }));
+  /** Yol ve hesap bazında toplam (kuruş): [{ way, ref, cents, count }]. ids: yalnız bu satırlar ({ tablo: kimlikler }; Banka Fişi events ile). */
+  function groups({ events = null, ids = null } = {}) {
+    return store.all(`SELECT w.way AS way, w.ref AS ref, COALESCE(SUM(CASE WHEN w.kind = 'in' THEN w.cents ELSE -w.cents END), 0) AS cents, COUNT(*) AS count FROM (${waySql({ light: true, events, ids })}) w GROUP BY w.way, w.ref ORDER BY w.way, w.ref`, params({ events, ids }));
   }
   /** Yol bazında bakiye (kuruş): { cash, bank, card, ccard, loan, unknown, all }. */
   function balances(list = groups()) {

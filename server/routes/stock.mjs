@@ -102,10 +102,12 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
     state: ["all", "low", "out", "negative", "product", "service"].includes(text(params.get("state"))) ? text(params.get("state")) : "all",
     sort: ["name", "code", "qty", "value", "category"].includes(text(params.get("sort"))) ? text(params.get("sort")) : "name",
   });
-  function list(user, { q = "", category = "", state = "all", sort = "name" } = {}) {
-    const items = store.all(`${ITEM_SQL} WHERE i.deleted_at IS NULL ORDER BY i.name COLLATE NOCASE`);
+  // ids (v2.1.0, §3.11): yalnız bu ürünler (mutabakat kapısı dokunulan ürünleri denetler); miktar hesabı aynıdır.
+  function list(user, { q = "", category = "", state = "all", sort = "name", ids = null } = {}) {
+    const only = ids ? JSON.stringify([...ids]) : null;
+    const items = only ? store.all(`${ITEM_SQL} WHERE i.deleted_at IS NULL AND i.id IN (SELECT value FROM json_each(?)) ORDER BY i.name COLLATE NOCASE`, only) : store.all(`${ITEM_SQL} WHERE i.deleted_at IS NULL ORDER BY i.name COLLATE NOCASE`);
     const moves = new Map();
-    for (const move of store.all("SELECT item_id AS itemId, kind, qty, date FROM stock_moves ORDER BY date, created_at")) {
+    for (const move of only ? store.all("SELECT item_id AS itemId, kind, qty, date FROM stock_moves WHERE item_id IN (SELECT value FROM json_each(?)) ORDER BY date, created_at", only) : store.all("SELECT item_id AS itemId, kind, qty, date FROM stock_moves ORDER BY date, created_at")) {
       if (!moves.has(move.itemId)) moves.set(move.itemId, []);
       moves.get(move.itemId).push(move);
     }

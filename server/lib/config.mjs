@@ -67,5 +67,9 @@ export function loadConfig(overrides = {}) {
     // Para yazımı denetimi (K6; lib/bank/post.mjs) test kipi: ihlal hata verir ve işlemi geri alır. Üretimde (varsayılan) iş durmaz,
     // sunucu günlüğüne ve meta.bank.integrity'ye yazılır. Yalnız programdan (testler) açılır.
     moneyStrict: overrides.moneyStrict === true,
+    // Mutabakat kapısının eşdeğerlik denetimi (v2.1.0, §3.11; lib/integrity-scope.mjs): testlerde tam kapı HER işlemde çalışır ve
+    // dokunulan varlıklar yolu "temiz" deyip tam kapı reddederse işlem 500 "gate-equivalence" ile kırılır. Üretimde kapalı (yalnız
+    // programdan açılır; ortam değişkeni yok).
+    gateVerify: overrides.gateVerify === true,
   });
 }

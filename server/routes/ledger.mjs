@@ -19,57 +19,85 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, pe
     if (has("pos_terminals")) for (const row of store.all("SELECT id, gl_sub AS glSub FROM pos_terminals")) out.pos[row.id] = { glSub: row.glSub };
     return out;
   }
-  function rows() {
+  // filter (v2.1.0, §3.11 mutabakat kapısı "dokunulan varlıklar"): yalnız bu varlıkların satırları — { parties, plans, cheques, invoices,
+  // events, money: { tablo: kimlikler } }. Her tabloda verilen varlıklardan birine ait satırlar (VEYA); hiçbiri o tabloya uymuyorsa tablo
+  // boş gelir. filter yoksa sorgular 2.0.26'dakiyle aynıdır (bütün satırlar).
+  function rows(filter = null) {
     const out = { payments: [], cashEntries: [], accountEntries: [], plans: [], planEntries: [], stockMoves: [], chequeEvents: [], invoices: [], bankLines: [], refs: refs() };
-    out.payments = store.all(`SELECT id, amount, date, note, method, ${refOf("payments", "p")} AS ref FROM payments p`);
+    const params = {};
+    const list = (name, values) => {
+      if (!values || !values.length) return null;
+      params[name] = JSON.stringify([...values]);
+      return `(SELECT value FROM json_each(:${name}))`;
+    };
+    const set = filter ? {
+      parties: list("parties", filter.parties), plans: list("plans", filter.plans), cheques: list("cheques", filter.cheques), invoices: list("invoices", filter.invoices), events: list("events", filter.events),
+      payments: list("m_payments", filter.money?.payments), cash: list("m_cash", filter.money?.cash_entries), entries: list("m_entries", filter.money?.account_entries),
+      planEntries: list("m_plan_entries", filter.money?.plan_entries), moves: list("m_moves", filter.money?.stock_moves), chequeEvents: list("m_cheque_events", filter.money?.cheque_events),
+    } : null;
+    // Tablonun süzgeci: koşullardan (null olmayanlar) en az biri; filter var ama hiçbiri yoksa satır yok.
+    const where = (parts, glue = "WHERE") => {
+      if (!filter) return "";
+      const kept = parts.filter(([value]) => value).map(([value, sql]) => sql.replace("$", value));
+      return ` ${glue} (${kept.length ? kept.join(" OR ") : "0"})`;
+    };
+    // Yalnız sorguda geçen adlı parametreler verilir (node:sqlite bilinmeyen adı reddeder).
+    const all = (sql, query = true) => (query ? store.all(sql, Object.fromEntries(Object.entries(params).filter(([name]) => sql.includes(`:${name})`)))) : []);
+    const wanted = (...values) => !filter || values.some(Boolean);
+    out.payments = all(`SELECT id, amount, date, note, method, ${refOf("payments", "p")} AS ref FROM payments p${where([[set?.payments, "p.id IN $"]])}`, wanted(set?.payments));
     // Kasa ↔ Banka transferinin nakit bacağı banka bacağının hesabını (ikiz satırın fin_ref'i) taşır: madde tek, banka tarafı onun hesabıdır.
     const cashRef = refOf("cash_entries", "c");
-    out.cashEntries = store.all(
+    out.cashEntries = all(
       `SELECT c.id, c.kind, c.amount, c.date, c.description, c.method, c.transfer_id AS transferId, ${cashRef} AS ref,
               CASE WHEN c.transfer_id <> '' THEN COALESCE((SELECT ${cashRef === "''" ? "''" : "t.fin_ref"} FROM cash_entries t WHERE t.transfer_id = c.transfer_id AND t.id <> c.id LIMIT 1), '') ELSE '' END AS bankRef
-       FROM cash_entries c`,
+       FROM cash_entries c${where([[set?.cash, "c.id IN $"]])}`,
+      wanted(set?.cash),
     );
     if (has("accounts")) {
-      out.accountEntries = store.all(
+      out.accountEntries = all(
         `SELECT e.id, e.kind, e.amount, e.date, e.note, e.source, e.method, ${refOf("account_entries", "e")} AS ref, a.type AS accountType, e.account_id AS party,
                 COALESCE(c.direction, '') AS chequeDirection, COALESCE(m.reason, '') AS moveReason
          FROM account_entries e JOIN accounts a ON a.id = e.account_id AND a.deleted_at IS NULL
            LEFT JOIN cheques c ON e.source = 'cheque' AND c.id = e.source_id
-           LEFT JOIN stock_moves m ON e.source = 'stock' AND m.id = e.source_id`,
+           LEFT JOIN stock_moves m ON e.source = 'stock' AND m.id = e.source_id${where([[set?.parties, "e.account_id IN $"], [set?.entries, "e.id IN $"], [set?.cheques, "(e.source = 'cheque' AND e.source_id IN $)"]])}`,
+        wanted(set?.parties, set?.entries, set?.cheques),
       );
     }
     if (has("plans")) {
       // Kartın carisi silindiyse kart cari defterinde görünmez: ana defterde "carisiz kart" hesabında izlenir.
-      out.plans = store.all(
+      out.plans = all(
         `SELECT p.id, p.total, p.status, p.covers_balance AS coversBalance, COALESCE(NULLIF(p.registered_on, ''), substr(p.created_at, 1, 10)) AS date, COALESCE(p.closed_at, substr(p.updated_at, 1, 10)) AS closedOn,
                 COALESCE(a.type, '') AS accountType, COALESCE(a.id, '') AS party,
                 COALESCE((SELECT SUM(CASE WHEN e.kind = 'in' THEN e.amount ELSE -e.amount END) FROM plan_entries e WHERE e.plan_id = p.id), 0) AS paid
-         FROM plans p LEFT JOIN accounts a ON a.id = p.account_id AND a.deleted_at IS NULL WHERE p.deleted_at IS NULL`,
+         FROM plans p LEFT JOIN accounts a ON a.id = p.account_id AND a.deleted_at IS NULL WHERE p.deleted_at IS NULL${where([[set?.parties, "p.account_id IN $"], [set?.plans, "p.id IN $"]], "AND")}`,
+        wanted(set?.parties, set?.plans),
       );
-      out.planEntries = store.all(
+      out.planEntries = all(
         `SELECT e.id, e.plan_id AS planId, e.kind, e.amount, e.date, e.note, e.method, ${refOf("plan_entries", "e")} AS ref, e.cheque_id AS chequeId, e.opening, COALESCE(a.type, '') AS accountType, COALESCE(a.id, '') AS party
-         FROM plan_entries e JOIN plans p ON p.id = e.plan_id AND p.deleted_at IS NULL LEFT JOIN accounts a ON a.id = p.account_id AND a.deleted_at IS NULL`,
+         FROM plan_entries e JOIN plans p ON p.id = e.plan_id AND p.deleted_at IS NULL LEFT JOIN accounts a ON a.id = p.account_id AND a.deleted_at IS NULL${where([[set?.parties, "p.account_id IN $"], [set?.plans, "e.plan_id IN $"], [set?.planEntries, "e.id IN $"], [set?.cheques, "e.cheque_id IN $"]])}`,
+        wanted(set?.parties, set?.plans, set?.planEntries, set?.cheques),
       );
     }
     // Fatura (v2.0.15): yalnız kesilmiş olanlar (taslak ve iptal deftere girmez). Carisi silinmiş fatura olamaz (silme engelli).
     if (has("invoices")) {
-      out.invoices = store.all(
+      out.invoices = all(
         `SELECT i.id, i.kind, i.issue_date AS date, i.number, i.gl_json AS glJson, i.try_vat AS tryVat, i.try_withheld AS tryWithheld, i.try_stoppage AS tryStoppage,
                 i.try_payable AS tryPayable, a.type AS accountType, a.id AS party
-         FROM invoices i JOIN accounts a ON a.id = i.account_id AND a.deleted_at IS NULL WHERE i.status = 'issued'`,
+         FROM invoices i JOIN accounts a ON a.id = i.account_id AND a.deleted_at IS NULL WHERE i.status = 'issued'${where([[set?.parties, "i.account_id IN $"], [set?.invoices, "i.id IN $"]], "AND")}`,
+        wanted(set?.parties, set?.invoices),
       );
     }
-    if (has("stock_moves")) out.stockMoves = store.all(`SELECT m.id, m.kind, m.amount, m.date, m.note, m.pay, m.method, m.reason, ${refOf("stock_moves", "m")} AS ref FROM stock_moves m WHERE m.pay = 'cash' AND m.amount > 0`);
+    if (has("stock_moves")) out.stockMoves = all(`SELECT m.id, m.kind, m.amount, m.date, m.note, m.pay, m.method, m.reason, ${refOf("stock_moves", "m")} AS ref FROM stock_moves m WHERE m.pay = 'cash' AND m.amount > 0${where([[set?.moves, "m.id IN $"]], "AND")}`, wanted(set?.moves));
     // Banka Fişi satırları (v2.1.0): THP kodu, alt hesap ve kuruş yazım anında saklanır.
     if (has("bank_lines") && has("fin_events")) {
-      out.bankLines = store.all("SELECT l.event_id AS eventId, l.seq, l.gl, l.sub, l.side, l.try_minor AS tryMinor, e.date, e.no, e.description FROM bank_lines l JOIN fin_events e ON e.id = l.event_id ORDER BY e.date, l.event_id, l.seq");
+      out.bankLines = all(`SELECT l.event_id AS eventId, l.seq, l.gl, l.sub, l.side, l.try_minor AS tryMinor, e.date, e.no, e.description FROM bank_lines l JOIN fin_events e ON e.id = l.event_id${where([[set?.events, "l.event_id IN $"]])} ORDER BY e.date, l.event_id, l.seq`, wanted(set?.events));
     }
     if (has("cheques")) {
-      out.chequeEvents = store.all(`SELECT ev.id, ev.kind, ev.amount, ev.date, ev.note, ev.method, ${refOf("cheque_events", "ev")} AS ref FROM cheque_events ev JOIN cheques c ON c.id = ev.cheque_id AND c.deleted_at IS NULL WHERE ev.kind IN ('collect', 'pay')`);
+      out.chequeEvents = all(`SELECT ev.id, ev.kind, ev.amount, ev.date, ev.note, ev.method, ${refOf("cheque_events", "ev")} AS ref FROM cheque_events ev JOIN cheques c ON c.id = ev.cheque_id AND c.deleted_at IS NULL WHERE ev.kind IN ('collect', 'pay')${where([[set?.chequeEvents, "ev.id IN $"], [set?.cheques, "ev.cheque_id IN $"]], "AND")}`, wanted(set?.chequeEvents, set?.cheques));
       // Cariye işlenmemiş evrak: carisi/kartı olmayan (ör. cari açılmamış bir kişiden alınan çek) ya da Excel'den
       // "carilere dokunmadan" alınan açılış portföyü. Cari etkisi yoktur; portföye girişi ve karşılıksız/iade çıkışı ana
       // defterde doğrudan gelir/gider karşılığıyla izlenir (portföy mutabakatı tutsun).
-      for (const row of store.all(
+      for (const row of all(
         `SELECT c.id, c.direction, c.amount, c.issue_date AS date, c.status, c.serial_no AS serialNo,
                 (SELECT ev.date FROM cheque_events ev WHERE ev.cheque_id = c.id AND ev.kind = 'bounce' ORDER BY ev.created_at DESC LIMIT 1) AS bouncedOn,
                 EXISTS (SELECT 1 FROM account_entries e JOIN accounts a ON a.id = e.account_id AND a.deleted_at IS NULL
@@ -79,7 +107,8 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, pe
            AND NOT EXISTS (SELECT 1 FROM plan_entries pe JOIN plans p ON p.id = pe.plan_id AND p.deleted_at IS NULL WHERE pe.cheque_id = c.id)
            AND NOT EXISTS (SELECT 1 FROM account_entries e JOIN accounts a ON a.id = e.account_id AND a.deleted_at IS NULL
                            WHERE e.source = 'cheque' AND e.source_id = c.id AND e.account_id = c.account_id
-                             AND e.kind = CASE WHEN c.direction = 'in' THEN 'credit' ELSE 'debt' END)`,
+                             AND e.kind = CASE WHEN c.direction = 'in' THEN 'credit' ELSE 'debt' END)${where([[set?.cheques, "c.id IN $"]], "AND")}`,
+        wanted(set?.cheques),
       )) {
         const note = `Cariye işlenmemiş evrak${row.serialNo ? ` No ${row.serialNo}` : ""}`;
         if (row.direction === "in") {
@@ -91,8 +120,8 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, pe
     return out;
   }
   // Carisiz evrakın karşı hesabı gelir/gider (602 / 770): journal() cariyi kontrol hesabı sayar; burada düzeltilir.
-  function build() {
-    const source = rows();
+  function build(filter = null) {
+    const source = rows(filter);
     const entries = journal(source);
     const free = new Set(source.accountEntries.filter(row => row.free).map(row => `account:${row.id}`));
     for (const entry of entries) {

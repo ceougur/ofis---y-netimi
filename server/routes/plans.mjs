@@ -233,17 +233,19 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
   });
 
   // Liste: her kart için özet (taksitler ve hareketler bellekte tek geçişte eşlenir; 5 bin kartta da hızlıdır).
-  function list(user, { q = "", group = "", subgroup = "", status = "active", sort = "no", caseKey = "", caseSource = "", account = "" } = {}) {
-    let plans = store.all(`${PLAN_SQL} WHERE p.deleted_at IS NULL ORDER BY p.name COLLATE NOCASE, p.created_at`);
+  // ids (v2.1.0, §3.11): yalnız bu kartlar (mutabakat kapısı dokunulan kartları denetler); kartın hesabı aynıdır.
+  function list(user, { q = "", group = "", subgroup = "", status = "active", sort = "no", caseKey = "", caseSource = "", account = "", ids = null } = {}) {
+    const only = ids ? JSON.stringify([...ids]) : null;
+    let plans = only ? store.all(`${PLAN_SQL} WHERE p.deleted_at IS NULL AND p.id IN (SELECT value FROM json_each(?)) ORDER BY p.name COLLATE NOCASE, p.created_at`, only) : store.all(`${PLAN_SQL} WHERE p.deleted_at IS NULL ORDER BY p.name COLLATE NOCASE, p.created_at`);
     if (caseKey) plans = plans.filter(plan => plan.caseKey === caseKey && (!caseSource || plan.caseSource === caseSource));
     if (account) plans = plans.filter(plan => plan.accountId === account);
     const items = new Map();
-    for (const item of store.all("SELECT id, plan_id AS planId, seq, due_date AS dueDate, amount FROM plan_items ORDER BY due_date, seq")) {
+    for (const item of only ? store.all("SELECT id, plan_id AS planId, seq, due_date AS dueDate, amount FROM plan_items WHERE plan_id IN (SELECT value FROM json_each(?)) ORDER BY due_date, seq", only) : store.all("SELECT id, plan_id AS planId, seq, due_date AS dueDate, amount FROM plan_items ORDER BY due_date, seq")) {
       if (!items.has(item.planId)) items.set(item.planId, []);
       items.get(item.planId).push(item);
     }
     const entries = new Map();
-    for (const entry of store.all("SELECT id, plan_id AS planId, item_id AS itemId, kind, amount, date FROM plan_entries ORDER BY date, created_at, rowid")) {
+    for (const entry of only ? store.all("SELECT id, plan_id AS planId, item_id AS itemId, kind, amount, date FROM plan_entries WHERE plan_id IN (SELECT value FROM json_each(?)) ORDER BY date, created_at, rowid", only) : store.all("SELECT id, plan_id AS planId, item_id AS itemId, kind, amount, date FROM plan_entries ORDER BY date, created_at, rowid")) {
       if (!entries.has(entry.planId)) entries.set(entry.planId, []);
       entries.get(entry.planId).push(entry);
     }
@@ -1218,17 +1220,20 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
   }
 
   // Cari (v2.0.6): carilerin taksit özetleri tek geçişte (liste ve bakiye için) ve bir carinin kartları ayrıntılı.
-  function summariesByAccount() {
-    const plans = store.all(`${PLAN_SQL} WHERE p.deleted_at IS NULL AND p.account_id <> ''`);
+  // accountIds (v2.1.0, §3.11): yalnız bu carilerin kartları (mutabakat kapısı dokunulan carileri denetler).
+  function summariesByAccount(accountIds = null) {
+    const only = accountIds ? JSON.stringify([...accountIds]) : null;
+    const plans = only ? store.all(`${PLAN_SQL} WHERE p.deleted_at IS NULL AND p.account_id <> '' AND p.account_id IN (SELECT value FROM json_each(?))`, only) : store.all(`${PLAN_SQL} WHERE p.deleted_at IS NULL AND p.account_id <> ''`);
     const out = new Map();
     if (!plans.length) return out;
+    const planIds = only ? JSON.stringify(plans.map(plan => plan.id)) : null;
     const items = new Map();
-    for (const item of store.all("SELECT id, plan_id AS planId, seq, due_date AS dueDate, amount FROM plan_items ORDER BY due_date, seq")) {
+    for (const item of planIds ? store.all("SELECT id, plan_id AS planId, seq, due_date AS dueDate, amount FROM plan_items WHERE plan_id IN (SELECT value FROM json_each(?)) ORDER BY due_date, seq", planIds) : store.all("SELECT id, plan_id AS planId, seq, due_date AS dueDate, amount FROM plan_items ORDER BY due_date, seq")) {
       if (!items.has(item.planId)) items.set(item.planId, []);
       items.get(item.planId).push(item);
     }
     const entries = new Map();
-    for (const entry of store.all("SELECT id, plan_id AS planId, item_id AS itemId, kind, amount, date FROM plan_entries ORDER BY date, created_at, rowid")) {
+    for (const entry of planIds ? store.all("SELECT id, plan_id AS planId, item_id AS itemId, kind, amount, date FROM plan_entries WHERE plan_id IN (SELECT value FROM json_each(?)) ORDER BY date, created_at, rowid", planIds) : store.all("SELECT id, plan_id AS planId, item_id AS itemId, kind, amount, date FROM plan_entries ORDER BY date, created_at, rowid")) {
       if (!entries.has(entry.planId)) entries.set(entry.planId, []);
       entries.get(entry.planId).push(entry);
     }

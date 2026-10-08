@@ -17,10 +17,18 @@
 // Eski veri: güncellemeden önce oluşmuş bir sapma (ör. eski sürümde kalmış kuruş farkı) açılışta bulunur ve günlüğe
 // "baseline" olarak yazılır; o sapma yüzünden ilgisiz işlemler engellenmez. Kural: hiçbir işlem YENİ bir sapma
 // eklemez ve var olanı büyütemez (denetim her işlemde "işlem öncesi durum" ile karşılaştırır).
+//
+// v2.1.0 (docs/BANKA-MODULU-PLAN.md §3.11 kararı; ölçüm tools/kapi-olcum.mjs, docs/2.1.0-KANIT.md): yukarıdaki tam denetim veriyle doğrusal
+// büyür (10.000 para satırında ~0,7 sn, 100.000'de ~8 sn / COMMIT). COMMIT'te önce "dokunulan varlıklar" süzgeci (lib/integrity-scope.mjs)
+// çalışır: yalnız işlemin dokunduğu cari, kart, çek, fatura, ürün ve para satırları aynı kurallarla denetlenir. Süzgeç temizse tam
+// denetim çalışmaz; bir şey görürse (sapma, açılış sapması olan alan, kilit izine giren satır, store dışı yazım, çözülemeyen yazım)
+// karar tam denetimindir (aynı kural, aynı hata metni). Testlerde (config.gateVerify) ikisi de her işlemde çalışır: süzgeç "temiz" deyip
+// tam denetim reddederse işlem 500 "gate-equivalence" ile kırılır. Tam tarama (açılış, Mutabakat Testi, 15 dakikada bir) değişmedi.
 import { createHash } from "node:crypto";
 import { HttpError } from "./http.mjs";
 import { UNASSIGNED_SUBS, partyBalances, subBalances } from "./general-ledger.mjs";
 import { byEntity, createBankChecks } from "./bank/checks.mjs";
+import { createScopedGate, familyOf } from "./integrity-scope.mjs";
 import { systemClock } from "./clock.mjs";
 import { roundMoney, toCents } from "./money.mjs";
 
@@ -44,6 +52,13 @@ const AMOUNT_COLUMNS = [
   ["invoice_lines", "vat", ""],
 ];
 const money = value => `${new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(Number(value) || 0)} TL`;
+
+/** Testlerde (gateVerify) dokunulan varlıklar yolu "temiz" dedi ama tam kapı reddetti: süzgeç eksik (eşdeğerlik ihlali). */
+export class GateEquivalenceError extends HttpError {
+  constructor(failures, decision) {
+    super(500, `Kapı eşdeğerlik ihlali: dokunulan varlıklar yolu temiz dedi, tam kapı reddetti (${failures.map(item => item.code).join(", ")}).`, { code: "gate-equivalence", failures, decision });
+  }
+}
 
 export class IntegrityError extends HttpError {
   constructor(failures) {
@@ -192,7 +207,7 @@ export function lockDigestOf(store, lock) {
   return hash.digest("hex");
 }
 
-export function createIntegrity({ store, ledger, accounts = () => null, stock = () => null, plans = () => null, period = () => null, money = () => null, events = null, strict = false, log = null, newId = () => `int-${crypto.randomUUID()}`, now = systemClock }) {
+export function createIntegrity({ store, ledger, accounts = () => null, stock = () => null, plans = () => null, period = () => null, money = () => null, events = null, strict = false, verify = false, log = null, newId = () => `int-${crypto.randomUUID()}`, now = systemClock }) {
   const has = table => Boolean(store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = ?", table));
   // v2.1.0 (§3.11): banka çekirdeğinin denetimleri (lib/bank/checks.mjs) — olay bazlı (COMMIT'te dokunulan olaylar) ve tam tarama.
   let bankChecks = null;
@@ -216,6 +231,14 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
    */
   function run({ events: touched = null, includeHidden = false } = {}) {
     const started = performance.now();
+    // Bölüm süreleri (v2.1.0, §3.11 kapı ölçümü; tools/kapi-olcum.mjs): stats() ile okunur, sonuca ve API'ye girmez.
+    const timings = {};
+    let lapAt = started;
+    const lap = name => {
+      const at = performance.now();
+      timings[name] = (timings[name] || 0) + at - lapAt;
+      lapAt = at;
+    };
     const checks = [];
     const bankItems = [];
     const service = ledger();
@@ -224,8 +247,10 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
       // Cari listesi bir kez hesaplanır: Ana Defter'in beklenen bakiyeleri (120/320/336) ve cari bazında denetim aynı
       // listeyi kullanır (v2.0.22; önceden her yazmada iki kez hesaplanıyordu — aynı veri, aynı sonuç).
       const list = accounts()?.list ? accounts().list(AUDITOR, { status: "all" }).accounts : null;
+      lap("accounts");
       const { reconciliation, entries, groups: moneyGroups } = service.check({ accountList: list });
       groups = moneyGroups || null;
+      lap("ledger");
       checks.push({ code: "balance", name: "Çift yönlü kayıt (borç = alacak)", ok: reconciliation.balanced, difference: 0 });
       // v2.1.0 (§3.11 bank:sub, E1.16): alt hesap mutabakatı — yevmiyedeki alt hesap (102.01, 108.00 …) = tek kaynağın (yol, hesap) grubu.
       // Varlık bazında kod: bir hesaptaki sapma yalnız kendi kodunu (bank:sub:<alt hesap>) kilitler.
@@ -240,6 +265,7 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
           const want = fromSource.get(sub) || 0;
           bankItems.push({ code: `bank:sub:${sub}`, name: `Alt Hesap Mutabakatı (${sub}${names[sub] || UNASSIGNED_SUBS[sub] ? ` ${names[sub] || UNASSIGNED_SUBS[sub]}` : ""})`, ok: got === want, difference: roundMoney((got - want) / 100), ledger: roundMoney(got / 100), subledger: roundMoney(want / 100) });
         }
+        lap("bank");
       }
       for (const item of reconciliation.checks) checks.push({ code: `gl:${item.code}`, name: `${item.code} ${item.name}`, ok: item.ok, difference: item.difference, ledger: item.ledger, subledger: item.subledger });
       // Cari bazında: her carinin ana defterdeki bakiyesi = cari kartındaki bakiye (toplamlar tutup kişiler arasında
@@ -272,6 +298,7 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
         }
         checks.push({ code: "party:plans", name: "Carisiz taksit kartları (kart bazında)", ok: wrong.length === 0, count: wrong.length, sample: wrong.slice(0, 5) });
       }
+      lap("parties");
     }
     // Taksit alt defteri: Taksitler ekranının her kart için gösterdiği toplam ve tahsilat = kartın satırları.
     if (plans()?.list && has("plans")) {
@@ -287,6 +314,7 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
         else if (plan.status !== "closed" && toCents(plan.totals.remaining) !== Math.max(0, toCents(row.total) - toCents(row.paid))) wrong.push(`${plan.refNo || plan.id} ${plan.name}: kalan ${plan.totals.remaining}`);
       }
       checks.push({ code: "plans:totals", name: "Taksit kartları (tutar, tahsilat, kalan)", ok: wrong.length === 0, count: wrong.length, sample: wrong.slice(0, 5) });
+      lap("plans");
     }
     // Stok: ekrandaki mevcut = girişler − çıkışlar (hareketlerin kendisinden, bağımsız toplam).
     if (stock()?.list && has("stock_moves")) {
@@ -298,6 +326,7 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
         if (Math.round((Number(item.qty) || 0) * 1000) !== want) wrong.push(`${item.name}: ekran ${item.qty} / hareketler ${want / 1000}`);
       }
       checks.push({ code: "stock:qty", name: "Stok miktarı (girişler − çıkışlar)", ok: wrong.length === 0, count: wrong.length, sample: wrong.slice(0, 5) });
+      lap("stock");
     }
     // Kuruş ve işaret: 12,345 TL ya da −5 TL gibi tutar yok.
     for (const [table, column, where] of AMOUNT_COLUMNS) {
@@ -305,6 +334,7 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
       const rows = store.all(`SELECT id, ${column} AS amount FROM ${table} WHERE (ABS(${column} * 100 - ROUND(${column} * 100)) > 0.0001 OR ${column} < 0)${where ? ` AND ${where}` : ""} LIMIT 5`);
       checks.push({ code: `cents:${table}`, name: `Kuruş ve işaret (${labelOf(table)})`, ok: rows.length === 0, count: rows.length, sample: rows.map(row => `${row.id}=${row.amount}`) });
     }
+    lap("cents");
     if (has("stock_moves") && has("account_entries")) {
       // Açık hesaba yazılmış stok hareketi → carideki karşılığı aynı tutarda (sızıntı yok).
       const leaks = store.all(
@@ -407,6 +437,7 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
       );
       checks.push({ code: "invoice:returns", name: "İade miktarı ≤ faturadaki miktar", ok: over.length === 0, count: over.length, sample: over.map(row => `${row.number}: ${row.qty} satıldı / ${row.returned} iade`) });
     }
+    lap("links");
     // Tarih: her para hareketinin tarihi dolu ve geçerli takvim günü; ileri tarihli hareket yok (eski sürümden kalanlar
     // taban sayılır, yenisi eklenemez); taksit vadesi kartın Kayıt Tarihi'nden önce değil.
     const today = period()?.today?.() || now.today();
@@ -427,6 +458,7 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
       const legacyOnly = rows.length > 0 && fresh === 0;
       checks.push({ code: `dates:future:${table}`, name: `İleri tarihli hareket (${labelOf(table)})`, ok: rows.length === 0, count: rows.length, gateCount: fresh, ...(rows.length > fresh ? { legacy: rows.length - fresh } : {}), ...(legacyOnly ? { severity: "warning", hint: futureHint(table, rows, today) } : {}) });
     }
+    lap("dates");
     {
       const wrong = [];
       let legacy = 0;
@@ -439,11 +471,13 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
       // Gözden geçirme G4: eski sürümden kalan satırlar sonuçta görünür (legacy); kapı yalnız yenilere bakar (gateCount).
       const count = wrong.length + legacy;
       checks.push({ code: "money:method", name: "Tanınmayan ödeme yolu (nakit, havale/EFT, POS/kredi kartı dışında)", ok: count === 0, count, gateCount: wrong.length, ...(legacy ? { legacy } : {}), ...(legacy && !wrong.length ? { severity: "warning" } : {}), sample: wrong.slice(0, 5) });
+      lap("bank");
     }
     if (hasColumn("plan_items", "due_date") && hasColumn("plans", "registered_on")) {
       const early = store.all("SELECT i.id, i.due_date AS due, p.registered_on AS start, p.name FROM plan_items i JOIN plans p ON p.id = i.plan_id AND p.deleted_at IS NULL WHERE p.registered_on <> '' AND i.due_date < p.registered_on LIMIT 5");
       const count = early.length ? store.get("SELECT COUNT(*) AS n FROM plan_items i JOIN plans p ON p.id = i.plan_id AND p.deleted_at IS NULL WHERE p.registered_on <> '' AND i.due_date < p.registered_on").n : 0;
       checks.push({ code: "dates:due-before-start", name: "Kayıt Tarihi'nden önceki taksit vadesi", ok: count === 0, count, sample: early.map(row => `${row.name}: vade ${row.due} < kayıt ${row.start}`) });
+      lap("dates");
     }
     // v2.1.0 (§3.11): banka çekirdeğinin denetimleri. Olay bazlılar (bank:event, money:report) COMMIT'te yalnız dokunulan olaylara
     // (scoped: kapı tabanı değil, "eski olmayan her sapma engeller" kuralı); tam taramada (açılış, Mutabakat Testi, 15 dakikalık tarama)
@@ -467,10 +501,17 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
       // hesap / POS / Banka Fişi tanımlanınca ya da sapma bulununca görünür.
       const visible = includeHidden || bank().inUse();
       for (const item of bankItems) if (visible || !item.ok) checks.push(item);
+      lap("bank");
     }
     const failures = checks.filter(item => !item.ok);
-    return { ok: failures.length === 0, checks, failures, durationMs: Math.round(performance.now() - started) };
+    const total = performance.now() - started;
+    lastRun = { scoped: Boolean(touched), ms: total, sections: timings };
+    return { ok: failures.length === 0, checks, failures, durationMs: Math.round(total) };
   }
+  let lastRun = null;
+  let lastGate = null;
+  // Süzgecin kararları (sayı): temiz | bulgu | tam denetim nedeni (ölçüm ve testler için).
+  const gateTally = {};
 
   // Açılıştaki ileri tarihli satırların kimlikleri (tablo → Set); start() ölçer (A13).
   let legacyFuture = new Map();
@@ -492,6 +533,27 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
     legacyEvents = new Set(bank().brokenEvents().map(item => item.key));
     legacyEventless = new Set(bank().eventless().map(item => item.key));
   };
+  // Dokunulan varlıklar yolu (v2.1.0, §3.11 kararı; lib/integrity-scope.mjs): COMMIT'te önce bu süzgeç; temizse tam kapı çalışmaz.
+  let scopedGate = null;
+  const gateOf = () =>
+    (scopedGate ??= createScopedGate({
+      store, ledger, accounts, plans, stock, money, period, now, has, hasColumn,
+      amountColumns: AMOUNT_COLUMNS, dated: DATED, datedWhenUsed: DATED_WHEN_USED,
+      legacy: { future: () => legacyFuture, method: () => legacyMethod, events: () => legacyEvents },
+      bankChecks: bank,
+    }));
+  // Store dışı yazımı görmek için: kayıtlı yazımların sayısı ↔ total_changes(), data_version (start/after/rolledBack'te eşitlenir).
+  let counters = null;
+  const syncCounters = () => {
+    try {
+      counters = store.changeCounters ? store.changeCounters() : null;
+    } catch {
+      counters = null;
+    }
+  };
+  // Taban sapması olan denetimlerin alanları: işlem bu alanlara dokunursa karar tam kapınındır.
+  let baselineFamilies = new Set();
+  const familiesOf = signatures => new Set([...signatures].map(signature => familyOf(signature.slice(0, signature.indexOf("|")))).filter(Boolean));
   // Sapmanın kimliği: hangi denetim, ne kadar/kaç satır. Aynı sapma sürüyorsa işlem engellenmez; yenisi ya da büyüyeni engellenir.
   // gateCount (G4): eski sürümden kalan satırları taşıyan denetimlerde kapının saydığı (yeni) satırlar; sonuçta count hepsidir.
   const signature = item => `${item.code}|${roundMoney(item.difference || 0)}|${item.gateCount ?? item.count ?? 0}`;
@@ -520,24 +582,66 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
     measureLegacyBank();
     const result = run();
     baseline = new Set(result.failures.map(signature));
+    baselineFamilies = familiesOf(baseline);
     known = new Set(baseline);
     const lock = period()?.lockedUntil?.() || "";
     lockState = { lock, digest: lockDigest(lock) };
+    syncCounters();
     if (result.failures.length) {
       log?.warn?.(`Mutabakat: güncelleme öncesinden kalan ${result.failures.length} sapma var (${result.failures.map(item => item.name).join("; ")}). Yeni işlemler bu sapmayı büyütemez.`);
       const last = has("integrity_log") ? store.get("SELECT detail_json AS detail FROM integrity_log WHERE action = 'baseline' ORDER BY at DESC LIMIT 1") : null;
       if (last?.detail !== JSON.stringify(result.failures).slice(0, 20000)) write("baseline", [], result.failures);
     }
     const remove = store.addCommitGuard({
-      check({ tables, events: touched }) {
+      check({ tables, events: touched, scope: capture }) {
+        const gateStarted = performance.now();
+        const currentLock = period()?.lockedUntil?.() || "";
+        // 1) Dokunulan varlıklar süzgeci. Temizse (sapma yok, taban alanına/kilide dokunulmuyor, store dışı yazım yok) tam kapı çalışmaz.
+        let decision;
+        try {
+          const current = store.changeCounters ? store.changeCounters() : null;
+          let full = "";
+          if (!current || !counters) full = "sayaç yok";
+          else if (current.version !== counters.version) full = "başka bağlantı yazdı";
+          else if (current.total - counters.total !== current.tracked - counters.tracked) full = "store dışı yazım";
+          else if (currentLock !== lockState.lock) full = "kilit değişti";
+          if (full) decision = { full, findings: [], sections: {}, ms: 0 };
+          else {
+            const engine = gateOf();
+            decision = engine.evaluate(engine.derive(capture), { lock: currentLock, baselineFamilies });
+          }
+        } catch (error) {
+          if (verify) throw error;
+          log?.warn?.(`Mutabakat: dokunulan varlıklar süzgeci çalışmadı (${error.message}); tam denetim.`);
+          decision = { full: `süzgeç hatası: ${error.message}`, findings: [], sections: {}, ms: 0 };
+        }
+        const clean = !decision.full && !decision.findings.length;
+        const tally = clean ? "temiz" : decision.full ? decision.full.replace(/ \(.*$/, "").replace(/:.*$/, "") : "bulgu";
+        gateTally[tally] = (gateTally[tally] || 0) + 1;
+        if (clean && !verify) {
+          pending = null;
+          pendingLock = null;
+          lastGate = { path: "scoped", ms: performance.now() - gateStarted, runMs: 0, lockMs: 0, sections: { scoped: decision.ms, ...Object.fromEntries(Object.entries(decision.sections || {}).map(([key, value]) => [`s.${key}`, value])) }, events: touched?.size || 0, tables: [...tables], rejected: false, scope: decision.scope };
+          return;
+        }
+        // 2) Tam kapı (2.0.26 kuralı): karar bunun.
         const result = run({ events: touched || new Set() });
+        const runMs = performance.now() - gateStarted;
         // Olay bazlı (scoped) denetim tabana bakmaz: dokunulan olayda eski olmayan her sapma engeller.
         const fresh = result.failures.filter(item => (item.scoped ? (item.gateCount ?? item.count ?? 0) > 0 : !baseline.has(signature(item))));
         // Kapanmış dönem: kilit aynıyken kilit altındaki satırlar değişmiş olamaz.
         const lock = period()?.lockedUntil?.() || "";
+        const lockStarted = performance.now();
         const digest = lock ? lockDigest(lock) : "";
+        const lockMs = performance.now() - lockStarted;
         if (lock && lock === lockState.lock && digest !== lockState.digest) fresh.push({ code: "period-lock", name: `Kapanmış dönem (${lock} ve öncesi) değişemez`, ok: false, count: 1 });
         pendingLock = { lock, digest };
+        lastGate = { path: "full", reason: decision.full || (decision.findings.length ? `bulgu: ${[...new Set(decision.findings.map(item => item.code))].join(", ")}` : "doğrulama"), ms: performance.now() - gateStarted, runMs, lockMs, sections: { ...(lastRun?.sections || {}), lock: lockMs, scoped: decision.ms || 0 }, events: touched?.size || 0, tables: [...tables], rejected: fresh.length > 0, scope: decision.scope };
+        // Testler (gateVerify): süzgeç temiz dediyse tam kapı da kabul etmeli (yoksa süzgeç eksik: eşdeğerlik ihlali).
+        if (verify && clean && fresh.length) {
+          pending = null;
+          throw new GateEquivalenceError(fresh, decision);
+        }
         if (fresh.length) {
           pending = null;
           throw new IntegrityError(fresh.map(item => ({ ...item, tables: [...tables] })));
@@ -545,13 +649,18 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
         pending = result;
       },
       after() {
-        if (pending) baseline = new Set(pending.failures.map(signature));
+        if (pending) {
+          baseline = new Set(pending.failures.map(signature));
+          baselineFamilies = familiesOf(baseline);
+        }
         if (pendingLock) lockState = pendingLock;
         pending = null;
         pendingLock = null;
+        syncCounters();
       },
       rolledBack({ tables, error }) {
         pending = null;
+        syncCounters();
         if (error instanceof IntegrityError) {
           write("rolled-back", tables, error.failures);
           log?.warn?.(`Mutabakat: işlem geri alındı (${error.failures.map(item => item.name).join("; ")}).`);
@@ -597,6 +706,10 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
     get lastScan() {
       return lastScan;
     },
+    /** Son çalışmanın ve son kapının süreleri (ms; bölüm bölüm). Ölçüm aracı (tools/kapi-olcum.mjs) ve testler okur. */
+    stats: () => ({ run: lastRun, gate: lastGate, tally: { ...gateTally } }),
+    /** Dokunulan varlıklar süzgeci (lib/integrity-scope.mjs; ölçüm aracı ve eşdeğerlik testleri). */
+    scopedGate: () => gateOf(),
     recent: (limit = 200) => (has("integrity_log") ? store.all("SELECT id, at, action, tables, summary, detail_json AS detail FROM integrity_log ORDER BY at DESC LIMIT ?", limit) : []),
   };
 }

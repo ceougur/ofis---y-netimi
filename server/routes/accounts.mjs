@@ -132,14 +132,17 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     const { fieldsJson, ...rest } = item;
     return { ...rest, extra: parseFields(fieldsJson).slice(0, 3) };
   };
-  function list(user, { q = "", group = "", subgroup = "", type = "", status = "active", balance = "all", sort = "no", plan = "" } = {}) {
-    const rows = store.all(`${ACCOUNT_SQL} WHERE a.deleted_at IS NULL ORDER BY a.name COLLATE NOCASE`);
+  // ids (v2.1.0, §3.11 mutabakat kapısı): yalnız bu carilerin satırları ve bakiyeleri (kapı dokunulan carileri denetler); hesap her
+  // cari için aynıdır.
+  function list(user, { q = "", group = "", subgroup = "", type = "", status = "active", balance = "all", sort = "no", plan = "", ids = null } = {}) {
+    const only = ids ? JSON.stringify([...ids]) : null;
+    const rows = only ? store.all(`${ACCOUNT_SQL} WHERE a.deleted_at IS NULL AND a.id IN (SELECT value FROM json_each(?)) ORDER BY a.name COLLATE NOCASE`, only) : store.all(`${ACCOUNT_SQL} WHERE a.deleted_at IS NULL ORDER BY a.name COLLATE NOCASE`);
     const sums = new Map();
-    for (const row of store.all("SELECT account_id AS accountId, kind, SUM(amount) AS amount FROM account_entries GROUP BY account_id, kind")) {
+    for (const row of only ? store.all("SELECT account_id AS accountId, kind, SUM(amount) AS amount FROM account_entries WHERE account_id IN (SELECT value FROM json_each(?)) GROUP BY account_id, kind", only) : store.all("SELECT account_id AS accountId, kind, SUM(amount) AS amount FROM account_entries GROUP BY account_id, kind")) {
       if (!sums.has(row.accountId)) sums.set(row.accountId, { debt: 0, credit: 0, in: 0, out: 0 });
       sums.get(row.accountId)[row.kind] = Number(row.amount) || 0;
     }
-    const planMap = plans()?.summariesByAccount ? plans().summariesByAccount() : new Map();
+    const planMap = plans()?.summariesByAccount ? plans().summariesByAccount(ids) : new Map();
     const needle = String(q || "").toLocaleLowerCase("tr-TR").trim();
     const numbers = needle.replace(/\D/g, "");
     const totals = { count: 0, debtor: 0, creditor: 0, debtorCount: 0, creditorCount: 0, balance: 0, overdue: 0, overdueCount: 0, planRemaining: 0 };

@@ -71,6 +71,8 @@ export function createStore(db) {
   // durmaz). bank.post bağlamındaki UPDATE/DELETE'in etkilediği işlem başlıkları bank.post'a bildirilir (kopya yenilenir, boşalan olay
   // iptal olur).
   let policy = null;
+  // Son en dış işlemin kapı süreleri (ms): K6 işaretleri, mutabakat kapısı, K6 money:event denetimi (§3.11 ölçümü; store.lastTx).
+  let txStats = { marksMs: 0, guardMs: 0, moneyMs: 0 };
   const posts = [];
   let money = null;
   let touchedEvents = new Set();
@@ -127,15 +129,67 @@ export function createStore(db) {
     const set = money.written.get(table);
     for (const rowid of rowids) set.add(Number(rowid));
   };
-  function beforeLedgerWrite(table, sql, args) {
+  function beforeLedgerWrite(table, sql, args, before = null) {
     const parsed = parseWrite(sql);
     if (parsed.verb === "INSERT" || parsed.verb === "REPLACE" || rawScope.length) return;
     if (parsed.verb === "UPDATE" && parsed.set.length && parsed.set.every(column => policy.free[table]?.has(column))) return;
     if (!posts.length) money?.violations.push({ code: "money-raw", table, sql: sql.replace(/\s+/g, " ").trim().slice(0, 200) });
     if (!policy.sources.has(table) || table === "bank_lines") return;
-    const rows = store.all(`SELECT rowid AS r, event_id AS e FROM ${table}${parsed.where ? ` WHERE ${parsed.where}` : ""}`, ...args.slice(parsed.setParams));
+    const rows = before ? before.map(row => ({ r: row.__rowid, e: row.event_id })) : store.all(`SELECT rowid AS r, event_id AS e FROM ${table}${parsed.where ? ` WHERE ${parsed.where}` : ""}`, ...args.slice(parsed.setParams));
     if (parsed.verb === "UPDATE") noteRows(table, rows.map(row => row.r));
     if (posts.length) posts.at(-1).affected(rows.map(row => row.e).filter(Boolean));
+  }
+  // ---------- Kapı kapsamı (v2.1.0, §3.11 kararı; lib/integrity.mjs "dokunulan varlıklar") ----------
+  // En dış işlemde para tablolarına ve fatura tablolarına yazılan satırlar: eklenen/düzeltilen satırların rowid'i (COMMIT'te güncel hâli
+  // okunur) ve UPDATE/DELETE'ten ÖNCEKİ hâli (bütün kolonlar). Kapı yalnız bu satırların dokunduğu varlıkları (cari, kart, çek, fatura,
+  // ürün, para satırı) denetler. Çözülemeyen yazım (SQL ayrıştırılamadı, upsert/REPLACE) "unknown" işaretlenir: kapı tam denetime döner.
+  // Kayıtlı yazımların değişen satır sayısı (tracked) SQLite'ın total_changes()'ıyla karşılaştırılır: store dışından (aynı bağlantıda
+  // db.prepare/db.exec) yazım olduysa kapı bunu görür ve tam denetime döner; başka bağlantının yazımı PRAGMA data_version'dan görünür.
+  const SCOPE_TABLES = new Set([...FINANCIAL, "invoices", "invoice_lines", "invoice_offsets"]);
+  let scope = null;
+  let trackedChanges = 0;
+  const freshScope = () => ({ rows: new Map(), before: new Map(), unknown: "" });
+  const scopeRows = table => {
+    if (!scope.rows.has(table)) scope.rows.set(table, new Set());
+    return scope.rows.get(table);
+  };
+  const UPSERT = /\bOR\s+REPLACE\b|^\s*REPLACE\s+INTO|\bON\s+CONFLICT\b/i;
+  function readBefore(table, sql, args) {
+    let parsed;
+    try {
+      parsed = parseWrite(sql);
+    } catch {
+      scope.unknown ||= `${table}: yazım çözülemedi`;
+      return null;
+    }
+    if (parsed.verb === "INSERT" || parsed.verb === "REPLACE") {
+      if (UPSERT.test(sql)) scope.unknown ||= `${table}: upsert`;
+      return null;
+    }
+    if (parsed.verb !== "UPDATE" && parsed.verb !== "DELETE") {
+      scope.unknown ||= `${table}: ${parsed.verb}`;
+      return null;
+    }
+    try {
+      const rows = store.all(`SELECT rowid AS __rowid, * FROM ${table}${parsed.where ? ` WHERE ${parsed.where}` : ""}`, ...args.slice(parsed.setParams));
+      if (!scope.before.has(table)) scope.before.set(table, new Map());
+      const before = scope.before.get(table);
+      for (const row of rows) {
+        if (!before.has(row.__rowid)) before.set(row.__rowid, row);
+        if (parsed.verb === "UPDATE") scopeRows(table).add(row.__rowid);
+      }
+      return rows;
+    } catch {
+      scope.unknown ||= `${table}: önceki hâl okunamadı`;
+      return null;
+    }
+  }
+  function afterScopedInsert(table, sql, result) {
+    if (!/^\s*(INSERT|REPLACE)/i.test(sql)) return;
+    const changes = Number(result?.changes) || 0;
+    const last = Number(result?.lastInsertRowid) || 0;
+    if (changes > 0 && last > 0) for (let k = 0; k < changes; k += 1) scopeRows(table).add(last - changes + 1 + k);
+    else if (changes > 0) scope.unknown ||= `${table}: eklenen satır kimliği yok`;
   }
   function afterLedgerInsert(table, sql, result) {
     if (!policy.sources.has(table) || !/^\s*(INSERT|REPLACE)/i.test(sql)) return;
@@ -163,9 +217,13 @@ export function createStore(db) {
         touched.add(table);
       }
       const watched = Boolean(policy && depth > 0 && table && policy.ledger.has(table));
-      if (watched) beforeLedgerWrite(table, sql, args);
+      const scoped = Boolean(scope && depth > 0 && table && SCOPE_TABLES.has(table) && !infoOnly(table, sql));
+      const before = scoped ? readBefore(table, sql, args) : null;
+      if (watched) beforeLedgerWrite(table, sql, args, before);
       const result = prepare(sql).run(...args);
+      trackedChanges += Number(result?.changes) || 0;
       if (watched) afterLedgerInsert(table, sql, result);
+      if (scoped) afterScopedInsert(table, sql, result);
       return result;
     },
     exec: sql => db.exec(sql),
@@ -176,6 +234,14 @@ export function createStore(db) {
     },
     get inTransaction() {
       return depth > 0;
+    },
+    /** Kayıtlı yazımların değişen satır sayısı ↔ bağlantının total_changes()'ı ve data_version (store dışı yazımı görmek için). */
+    changeCounters() {
+      return { tracked: trackedChanges, total: Number(prepare("SELECT total_changes() AS n").get().n) || 0, version: Number(prepare("PRAGMA data_version").get().data_version) || 0 };
+    },
+    /** Son en dış işlemin kapı süreleri (ms): { marksMs, guardMs, moneyMs }. */
+    get lastTx() {
+      return { ...txStats };
     },
     /** K6 politikasını kurar (lib/bank/post.mjs moneyPolicy); null kaldırır. */
     setMoneyPolicy(next) {
@@ -220,8 +286,12 @@ export function createStore(db) {
         touched = new Set();
         touchedEvents = new Set();
         money = policy ? freshMoney() : null;
+        txStats = { marksMs: 0, guardMs: 0, moneyMs: 0 };
+        scope = guards.length ? freshScope() : null;
         // money:event işareti: işlem başındaki en büyük rowid (indeksin sonu; ucuz).
+        const marksAt = performance.now();
         if (money) for (const table of policy.sources.keys()) money.marks.set(table, Number(prepare(`SELECT COALESCE(MAX(rowid), 0) AS m FROM ${table}`).get().m) || 0);
+        txStats.marksMs = performance.now() - marksAt;
       } else db.exec(`SAVEPOINT ${savepoint}`);
       // İç işlem (SAVEPOINT) geri alınırsa onun içinde görülen K6 ihlali de düşer.
       const violationsAt = money ? money.violations.length : 0;
@@ -230,18 +300,26 @@ export function createStore(db) {
         const result = fn();
         if (depth === 1 && touched.size && guards.length) {
           const tables = new Set(touched);
-          for (const guard of guards) guard.check({ tables, events: new Set(touchedEvents) });
+          const guardAt = performance.now();
+          try {
+            for (const guard of guards) guard.check({ tables, events: new Set(touchedEvents), scope });
+          } finally {
+            txStats.guardMs = performance.now() - guardAt;
+          }
         }
         // K6: kapı denetimlerinden sonra (kapının nedeni önce söylenir), COMMIT'ten önce.
         if (depth === 1 && money && touched.size) {
+          const moneyAt = performance.now();
           const violations = moneyViolations();
           money.violations = [];
+          txStats.moneyMs = performance.now() - moneyAt;
           if (violations.length) policy.onViolations(violations);
         }
         depth -= 1;
         if (depth === 0) {
           db.exec("COMMIT");
           money = null;
+          scope = null;
           if (touched.size) {
             const tables = new Set(touched);
             touched = new Set();
@@ -254,6 +332,7 @@ export function createStore(db) {
         if (depth === 0) {
           db.exec("ROLLBACK");
           money = null;
+          scope = null;
           const tables = new Set(touched);
           touched = new Set();
           if (tables.size) for (const guard of guards) guard.rolledBack?.({ tables, error });
@@ -269,8 +348,9 @@ export function createStore(db) {
       return row ? row.value : fallback;
     },
     setSetting(key, value, userId = null) {
-      prepare("INSERT INTO settings (key, value, updated_at, updated_by) VALUES (?, ?, ?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = excluded.updated_at, updated_by = excluded.updated_by")
+      const result = prepare("INSERT INTO settings (key, value, updated_at, updated_by) VALUES (?, ?, ?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = excluded.updated_at, updated_by = excluded.updated_by")
         .run(key, String(value ?? ""), new Date().toISOString(), userId);
+      trackedChanges += Number(result?.changes) || 0;
     },
   };
   return store;
