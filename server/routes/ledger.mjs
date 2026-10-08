@@ -209,7 +209,9 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, pe
     auth.requirePermission(req, "overview.view");
     const service = integrity();
     if (!service) throw new HttpError(503, "Mutabakat katmanı hazır değil.");
-    ok(res, { ...service.run(), log: service.recent(50).map(row => ({ ...row, detail: JSON.parse(row.detail || "[]") })) });
+    // v2.1.0 (§3.11): Mutabakat Testi tam taramadır — kapının görmediği yeni sapma integrity_log'a ("scan") ve zile yazılır.
+    const result = service.scan ? service.scan().result : service.run();
+    ok(res, { ...result, log: service.recent(50).map(row => ({ ...row, detail: JSON.parse(row.detail || "[]") })) });
   });
   return { build, check, expected, expectedSubs, refs };
 }

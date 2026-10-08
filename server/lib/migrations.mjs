@@ -1118,6 +1118,9 @@ export const MIGRATIONS = [
       // ve kolonları okumaz (§10.6'daki açılış onarımı bunu ayrıca ele alır).
       store.raw("migration.v20", () => {
         store.exec(BANK_SCHEMA_V20);
+        // Mutabakat günlüğüne tam tarama ('scan') ve açılış onarımı ('repair') kayıtları (§3.11, §10.6): CHECK genişler; satırlar ve
+        // rowid'ler aynı kalır (eski sürüm yalnız 'rolled-back' / 'baseline' yazar, yeni CHECK'i geçer).
+        widenIntegrityLog(store);
         for (const table of ["payments", "cash_entries", "account_entries", "plan_entries", "stock_moves", "cheque_events"]) {
           if (!store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = ?", table)) continue;
           // fin_ref: banka hesabı / POS / kurumsal kart kimliği ('' = Hesabı Atanmamış); event_id: İşlem No'lu işlem başlığı.
@@ -1147,6 +1150,27 @@ export const MIGRATIONS = [
     },
   },
 ];
+
+function widenIntegrityLog(store) {
+  const row = store.get("SELECT sql FROM sqlite_master WHERE type = 'table' AND name = 'integrity_log'");
+  if (!row || String(row.sql).includes("'scan'")) return;
+  const columns = store.all("PRAGMA table_info(integrity_log)").map(column => column.name);
+  if (columns.join(",") !== "id,at,action,tables,summary,detail_json") throw new Error(`integrity_log beklenmeyen kolonlar: ${columns.join(", ")}`);
+  store.exec(`
+    CREATE TABLE integrity_log_v20 (
+      id TEXT PRIMARY KEY,
+      at TEXT NOT NULL,
+      action TEXT NOT NULL CHECK (action IN ('rolled-back', 'baseline', 'scan', 'repair')),
+      tables TEXT NOT NULL DEFAULT '',
+      summary TEXT NOT NULL DEFAULT '',
+      detail_json TEXT NOT NULL DEFAULT '[]'
+    );
+    INSERT INTO integrity_log_v20 (rowid, id, at, action, tables, summary, detail_json) SELECT rowid, id, at, action, tables, summary, detail_json FROM integrity_log ORDER BY rowid;
+    DROP TABLE integrity_log;
+    ALTER TABLE integrity_log_v20 RENAME TO integrity_log;
+    CREATE INDEX IF NOT EXISTS idx_integrity_log_at ON integrity_log(at);
+  `);
+}
 
 // v20 (§5.2): hepsi STRICT (tutar INTEGER kuruş, oran INTEGER ppm, kur INTEGER ×10^6; kesirli ya da metin tutar yazılamaz);
 // yabancı anahtar yok (bağlar mutabakat kapısında denetlenir); tür ve durum kolonlarında CHECK yok, CHECK yalnız değişmeyecek

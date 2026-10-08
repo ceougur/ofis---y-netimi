@@ -617,6 +617,12 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
       );
       // Kapatma tarihi (v2.0.13): vazgeçilen kalan ana defterde bu tarihte yazılır; yeniden açılınca silinir.
       if (status !== previous.status) store.run("UPDATE plans SET closed_at = ? WHERE id = ?", status === "closed" ? today() : null, previous.id);
+      // v2.1.0 (§3.11 bank:event): tahsilatların işlem başlığı kopyasındaki cari (party_id) kartın carisinden gelir; cari değişince
+      // kopyalar aynı işlemde yenilenir (bank.post "assign"; para satırı değişmez).
+      if (accountId !== previous.accountId && bank) {
+        const eventIds = store.all("SELECT DISTINCT event_id AS id FROM plan_entries WHERE plan_id = ? AND event_id <> ''", previous.id).map(row => row.id);
+        if (eventIds.length) bank.post({ user, module: "plans", op: "assign", prev: { accountId: previous.accountId }, write: ctx => ctx.affected(eventIds) });
+      }
       audit(user, "plan.updated", previous.id, { previous: { name: previous.name, total: previous.total, status: previous.status, accountId: previous.accountId }, ...input, accountId, status });
       return detail(previous.id, user);
     });

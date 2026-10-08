@@ -19,7 +19,8 @@
 // eklemez ve var olanı büyütemez (denetim her işlemde "işlem öncesi durum" ile karşılaştırır).
 import { createHash } from "node:crypto";
 import { HttpError } from "./http.mjs";
-import { partyBalances } from "./general-ledger.mjs";
+import { UNASSIGNED_SUBS, partyBalances, subBalances } from "./general-ledger.mjs";
+import { byEntity, createBankChecks } from "./bank/checks.mjs";
 import { systemClock } from "./clock.mjs";
 import { roundMoney, toCents } from "./money.mjs";
 
@@ -56,11 +57,10 @@ export class IntegrityError extends HttpError {
  * @param {{ store, ledger: () => ({ check, expected }), log?, newId? }} options
  */
 const AUDITOR = { id: "integrity", role: "admin", permissions: [] };
-// v2.0.26 (B7): ödeme yolu kolonu olan para tabloları. Tanınmayan yol (nakit/havale/kart dışı) üç okuma yolunda üç ayrı biçimde
-// sayılıyordu (Kasa özeti: bakiyede var, yol kırılımında yok; Kasa satırları: nakit; yevmiye: 100). Yeni işlem böyle satır
-// yazamaz ("money:method"); açılışta bulunan eski satırlar kimlikleriyle tabandır (A13 kuralı), okunmaya devam eder.
-const METHOD_TABLES = ["payments", "cash_entries", "account_entries", "plan_entries", "stock_moves", "cheque_events"];
-const KNOWN_METHODS = "('cash', 'bank', 'card')";
+// v2.0.26 (B7): tanınmayan yol (nakit/havale/kart dışı) üç okuma yolunda üç ayrı biçimde sayılıyordu (Kasa özeti: bakiyede var, yol
+// kırılımında yok; Kasa satırları: nakit; yevmiye: 100). Yeni işlem böyle satır yazamaz ("money:method"); açılışta bulunan eski satırlar
+// kimlikleriyle tabandır (A13 kuralı). v2.1.0 (K5): denetim tek kaynaktan (moneyLines'ın yol türetmesi "unknown" veren para satırları;
+// havale yolunun kurumsal kart / kredi hesabına bağlanması da).
 // v2.0.26 (A6): çek/senet olayları da (alındı/verildi, tahsil, ciro, ödeme, karşılıksız) tarihli harekettir; eski veride kalan
 // ileri tarihli olaylar A13 kuralıyla (açılıştaki kimlikler taban) yeni işlemleri engellemez.
 // v2.1.0 (§5.5): fin_events (İşlem No'lu işlem başlığı) de tarihli harekettir. Denetim satırları Banka Fişi olayı (kaynak modül
@@ -192,8 +192,11 @@ export function lockDigestOf(store, lock) {
   return hash.digest("hex");
 }
 
-export function createIntegrity({ store, ledger, accounts = () => null, stock = () => null, plans = () => null, period = () => null, log = null, newId = () => `int-${crypto.randomUUID()}`, now = systemClock }) {
+export function createIntegrity({ store, ledger, accounts = () => null, stock = () => null, plans = () => null, period = () => null, money = () => null, events = null, strict = false, log = null, newId = () => `int-${crypto.randomUUID()}`, now = systemClock }) {
   const has = table => Boolean(store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = ?", table));
+  // v2.1.0 (§3.11): banka çekirdeğinin denetimleri (lib/bank/checks.mjs) — olay bazlı (COMMIT'te dokunulan olaylar) ve tam tarama.
+  let bankChecks = null;
+  const bank = () => (bankChecks ??= createBankChecks({ store, money: money() }));
   const hasColumn = (table, column) => has(table) && store.all(`PRAGMA table_info(${table})`).some(row => row.name === column);
   // İ8: eski sürümden kalan ileri tarihli satır için kullanıcının yapacağı (tablo adı yok). Çek/senet: 2.0.25'te ileri alış/veriliş
   // tarihi girilebiliyordu; Düzenle ile gerçek güne çekilir (işlem görmemiş evrakta), tahsil/ciro/ödeme tarihi ileriyse geri alınıp
@@ -206,17 +209,38 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
     return `${labelOf(table)} içinde tarihi ileri ${rows.length} eski hareket var. Tarihi gelince kendiliğinden kalkar; tarih yanlışsa hareketi kendi kartında düzeltin.`;
   }
 
-  /** Tüm denetimler; her biri { code, name, ok, difference?, count?, sample? }. */
-  function run() {
+  /**
+   * Tüm denetimler; her biri { code, name, ok, difference?, count?, sample? }.
+   * scope.events: COMMIT'te dokunulan işlem başlıkları (olay bazlı denetimler yalnız bunlara; null = tam tarama). includeHidden: banka
+   * kullanılmayan kurulumda gizlenen (tamam olan) banka denetimlerini de döndür (tanı ve testler için; API döndürmez).
+   */
+  function run({ events: touched = null, includeHidden = false } = {}) {
     const started = performance.now();
     const checks = [];
+    const bankItems = [];
     const service = ledger();
+    let groups = null;
     if (service?.check) {
       // Cari listesi bir kez hesaplanır: Ana Defter'in beklenen bakiyeleri (120/320/336) ve cari bazında denetim aynı
       // listeyi kullanır (v2.0.22; önceden her yazmada iki kez hesaplanıyordu — aynı veri, aynı sonuç).
       const list = accounts()?.list ? accounts().list(AUDITOR, { status: "all" }).accounts : null;
-      const { reconciliation, entries } = service.check({ accountList: list });
+      const { reconciliation, entries, groups: moneyGroups } = service.check({ accountList: list });
+      groups = moneyGroups || null;
       checks.push({ code: "balance", name: "Çift yönlü kayıt (borç = alacak)", ok: reconciliation.balanced, difference: 0 });
+      // v2.1.0 (§3.11 bank:sub, E1.16): alt hesap mutabakatı — yevmiyedeki alt hesap (102.01, 108.00 …) = tek kaynağın (yol, hesap) grubu.
+      // Varlık bazında kod: bir hesaptaki sapma yalnız kendi kodunu (bank:sub:<alt hesap>) kilitler.
+      if (service.expectedSubs && groups) {
+        const fromLedger = subBalances(entries);
+        const fromSource = service.expectedSubs(groups);
+        const names = {};
+        if (has("bank_accounts")) for (const row of store.all("SELECT gl_sub AS sub, code, name FROM bank_accounts")) names[row.sub] = `${row.code} · ${row.name}`;
+        if (has("pos_terminals")) for (const row of store.all("SELECT gl_sub AS sub, code, name FROM pos_terminals")) names[row.sub] = `${row.code} · ${row.name}`;
+        for (const sub of [...new Set([...fromLedger.keys(), ...fromSource.keys()])].sort()) {
+          const got = fromLedger.get(sub) || 0;
+          const want = fromSource.get(sub) || 0;
+          bankItems.push({ code: `bank:sub:${sub}`, name: `Alt Hesap Mutabakatı (${sub}${names[sub] || UNASSIGNED_SUBS[sub] ? ` ${names[sub] || UNASSIGNED_SUBS[sub]}` : ""})`, ok: got === want, difference: roundMoney((got - want) / 100), ledger: roundMoney(got / 100), subledger: roundMoney(want / 100) });
+        }
+      }
       for (const item of reconciliation.checks) checks.push({ code: `gl:${item.code}`, name: `${item.code} ${item.name}`, ok: item.ok, difference: item.difference, ledger: item.ledger, subledger: item.subledger });
       // Cari bazında: her carinin ana defterdeki bakiyesi = cari kartındaki bakiye (toplamlar tutup kişiler arasında
       // kayma olmasın). Carisiz taksit kartları da kart bazında: kalan alacak = kart tutarı − net tahsilat.
@@ -406,12 +430,11 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
     {
       const wrong = [];
       let legacy = 0;
-      for (const table of METHOD_TABLES) {
-        if (!hasColumn(table, "method")) continue;
-        for (const row of store.all(`SELECT id, method FROM ${table} WHERE method IS NULL OR method NOT IN ${KNOWN_METHODS}`)) {
-          if (legacyMethod.has(`${table}:${row.id}`)) legacy += 1;
-          else wrong.push(`${table}:${row.id}=${row.method}`);
-        }
+      // Tek kaynağın grupları zaten hesaplandı (Ana Defter'in beklenenleri): tanınmayan yol yoksa satırlar ayrıca okunmaz.
+      const unknown = groups ? groups.some(group => group.way === "unknown") : true;
+      for (const item of unknown ? bank().unknownWays() : []) {
+        if (legacyMethod.has(item.key)) legacy += 1;
+        else wrong.push(item.sample);
       }
       // Gözden geçirme G4: eski sürümden kalan satırlar sonuçta görünür (legacy); kapı yalnız yenilere bakar (gateCount).
       const count = wrong.length + legacy;
@@ -421,6 +444,29 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
       const early = store.all("SELECT i.id, i.due_date AS due, p.registered_on AS start, p.name FROM plan_items i JOIN plans p ON p.id = i.plan_id AND p.deleted_at IS NULL WHERE p.registered_on <> '' AND i.due_date < p.registered_on LIMIT 5");
       const count = early.length ? store.get("SELECT COUNT(*) AS n FROM plan_items i JOIN plans p ON p.id = i.plan_id AND p.deleted_at IS NULL WHERE p.registered_on <> '' AND i.due_date < p.registered_on").n : 0;
       checks.push({ code: "dates:due-before-start", name: "Kayıt Tarihi'nden önceki taksit vadesi", ok: count === 0, count, sample: early.map(row => `${row.name}: vade ${row.due} < kayıt ${row.start}`) });
+    }
+    // v2.1.0 (§3.11): banka çekirdeğinin denetimleri. Olay bazlılar (bank:event, money:report) COMMIT'te yalnız dokunulan olaylara
+    // (scoped: kapı tabanı değil, "eski olmayan her sapma engeller" kuralı); tam taramada (açılış, Mutabakat Testi, 15 dakikalık tarama)
+    // bütün veriye uygulanır. money:event yalnız tam taramada (COMMIT'teki karşılığı store'daki K6 denetimi).
+    if (bank().ready()) {
+      const scoped = Boolean(touched);
+      const scope = scoped ? { events: touched } : {};
+      const broken = scoped && !touched.size ? [] : bank().brokenEvents(scope);
+      const label = ref => store.get("SELECT code || ' · ' || name AS label FROM bank_accounts WHERE id = ?", ref)?.label || store.get("SELECT code || ' · ' || name AS label FROM pos_terminals WHERE id = ?", ref)?.label || ref;
+      const eventItems = byEntity("bank:event", "İşlem Başlığı (kopya = satır)", broken, { legacy: legacyEvents, label });
+      bankItems.push(...(eventItems.length ? eventItems.map(item => (scoped ? { ...item, scoped: true } : item)) : [{ code: "bank:event", name: "İşlem Başlığı (kopya = satır)", ok: true, count: 0 }]));
+      const report = scoped && !touched.size ? [] : bank().reportMismatches(scope);
+      bankItems.push({ code: "money:report", name: "Rapor = Özet (satır toplamı = özet, yol ve hesap bazında)", ok: report.length === 0, count: report.length, ...(scoped ? { scoped: true, gateCount: report.length } : {}), sample: report.slice(0, 5).map(item => `${item.key}: satırlar ${item.rows / 100} / özet ${item.summary / 100}`) });
+      if (!scoped) {
+        const eventless = bank().eventless();
+        const fresh = eventless.filter(item => !legacyEventless.has(item.key));
+        const old = eventless.length - fresh.length;
+        bankItems.push({ code: "money:event", name: "İşlem Başlığı Olmayan Para Satırı (v20'den sonra)", ok: eventless.length === 0, count: eventless.length, gateCount: fresh.length, ...(old ? { legacy: old } : {}), ...(old && !fresh.length ? { severity: "warning", hint: "Eski sürümle girilmiş hareketler (Hesabı Belirsiz Yeni Hareketler). Banka modülünde hesaba atanabilir." } : {}), sample: eventless.slice(0, 5).map(item => item.key) });
+      }
+      // Görünürlük: banka kullanılmayan kurulumda Mutabakat Testi'nin denetim listesi ve sayısı 2.0.26 ile aynı kalır; banka denetimleri
+      // hesap / POS / Banka Fişi tanımlanınca ya da sapma bulununca görünür.
+      const visible = includeHidden || bank().inUse();
+      for (const item of bankItems) if (visible || !item.ok) checks.push(item);
     }
     const failures = checks.filter(item => !item.ok);
     return { ok: failures.length === 0, checks, failures, durationMs: Math.round(performance.now() - started) };
@@ -436,13 +482,15 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
   };
   // Açılıştaki tanınmayan yollu eski satırlar ("tablo:id"); start() ölçer (B7).
   let legacyMethod = new Set();
-  const measureLegacyMethod = () => {
-    const out = new Set();
-    for (const table of METHOD_TABLES) {
-      if (!hasColumn(table, "method")) continue;
-      for (const row of store.all(`SELECT id FROM ${table} WHERE method IS NULL OR method NOT IN ${KNOWN_METHODS}`)) out.add(`${table}:${row.id}`);
-    }
-    return out;
+  const measureLegacyMethod = () => new Set(bank().unknownWays().map(item => item.key));
+  // v2.1.0: açılıştaki bozuk işlem başlıkları (eski sürümün yazdığı, onarımın düzeltemediği — kilitli dönem) ve olaysız para satırları.
+  // A13 kuralı: kapı yalnız bunların dışındaki (yeni) sapmalara bakar.
+  let legacyEvents = new Set();
+  let legacyEventless = new Set();
+  const measureLegacyBank = () => {
+    if (!bank().ready()) return;
+    legacyEvents = new Set(bank().brokenEvents().map(item => item.key));
+    legacyEventless = new Set(bank().eventless().map(item => item.key));
   };
   // Sapmanın kimliği: hangi denetim, ne kadar/kaç satır. Aynı sapma sürüyorsa işlem engellenmez; yenisi ya da büyüyeni engellenir.
   // gateCount (G4): eski sürümden kalan satırları taşıyan denetimlerde kapının saydığı (yeni) satırlar; sonuçta count hepsidir.
@@ -469,8 +517,10 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
     stop?.();
     legacyFuture = measureLegacyFuture();
     legacyMethod = measureLegacyMethod();
+    measureLegacyBank();
     const result = run();
     baseline = new Set(result.failures.map(signature));
+    known = new Set(baseline);
     const lock = period()?.lockedUntil?.() || "";
     lockState = { lock, digest: lockDigest(lock) };
     if (result.failures.length) {
@@ -479,9 +529,10 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
       if (last?.detail !== JSON.stringify(result.failures).slice(0, 20000)) write("baseline", [], result.failures);
     }
     const remove = store.addCommitGuard({
-      check({ tables }) {
-        const result = run();
-        const fresh = result.failures.filter(item => !baseline.has(signature(item)));
+      check({ tables, events: touched }) {
+        const result = run({ events: touched || new Set() });
+        // Olay bazlı (scoped) denetim tabana bakmaz: dokunulan olayda eski olmayan her sapma engeller.
+        const fresh = result.failures.filter(item => (item.scoped ? (item.gateCount ?? item.count ?? 0) > 0 : !baseline.has(signature(item))));
         // Kapanmış dönem: kilit aynıyken kilit altındaki satırlar değişmiş olamaz.
         const lock = period()?.lockedUntil?.() || "";
         const digest = lock ? lockDigest(lock) : "";
@@ -511,5 +562,41 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
     return { remove, baseline: result };
   }
 
-  return { run, start, recent: (limit = 200) => (has("integrity_log") ? store.all("SELECT id, at, action, tables, summary, detail_json AS detail FROM integrity_log ORDER BY at DESC LIMIT ?", limit) : []) };
+  // ---------- Tam tarama (v2.1.0, §3.11 "Kapı ölçeği" 1) ----------
+  // Açılışta (start), Mutabakat Testi'nde ve 15 dakikada bir arka planda SALT OKUMA olarak koşar. Kapının görmediği değişikliği (eski
+  // sürüm, elle düzenleme, üretim kipinde K6'nın yalnız günlüğe yazdığı ham yazım) yakalar. Bulduğu yeni sapma geri alınamaz: integrity_log
+  // ("scan") + zil olayı (integrity.alert, yöneticiler) + sunucu günlüğü; aynı sapma bir sonraki taramada yinelenmez. known: açılışta ve
+  // önceki taramalarda görülen sapma imzaları (COMMIT tabanından bağımsız; olay bazlı denetimlerin taban olmaması tarama sonucunu değiştirmez).
+  let known = new Set();
+  let lastScan = null;
+  function scan() {
+    const result = run();
+    const current = new Set(result.failures.map(signature));
+    const findings = result.failures.filter(item => !known.has(signature(item)));
+    known = current;
+    if (findings.length) {
+      write("scan", [], findings);
+      const names = findings.map(item => item.name).join("; ");
+      (strict ? log?.error : log?.warn)?.call(log, `Mutabakat taraması: kapının görmediği ${findings.length} yeni sapma (${names}).`);
+      try {
+        // Zil yalnız yöneticilere (sapmanın adı ve tutarı yönetim bilgisidir).
+        const admins = has("users") ? store.all("SELECT id FROM users WHERE role = 'admin' AND active = 1").map(row => row.id) : [];
+        events?.publish?.("integrity.alert", { at: now().toISOString(), findings: findings.map(item => ({ code: item.code, name: item.name, count: item.count ?? 0, difference: item.difference ?? 0 })) }, { users: admins });
+      } catch {
+        // zil yayımlanamasa da kayıt yazıldı
+      }
+    }
+    lastScan = { at: now().toISOString(), findings: findings.map(item => item.code) };
+    return { findings, result };
+  }
+
+  return {
+    run,
+    start,
+    scan,
+    get lastScan() {
+      return lastScan;
+    },
+    recent: (limit = 200) => (has("integrity_log") ? store.all("SELECT id, at, action, tables, summary, detail_json AS detail FROM integrity_log ORDER BY at DESC LIMIT ?", limit) : []),
+  };
 }

@@ -77,6 +77,9 @@ const percent = (part, whole) => (whole > 0.005 ? `%${new Intl.NumberFormat("tr-
 const NO_SUM = /^(Bakiye|Gün Sonu Kasa|Ay Başı Kasa|Ay Sonu Kasa|Birim Fiyat|KDV %|Stopaj %|Kritik Seviye)$/;
 const MONEY_CELL = /^(-?)((?:\d{1,3}(?:\.\d{3})*|\d+)),(\d{2}) TL$/;
 const NUMBER_CELL = /^-?(?:\d{1,3}(?:\.\d{3})+|\d+)(?:,\d+)?$/;
+// Mutabakat Günlüğü olay adları (integrity_log.action).
+const INTEGRITY_ACTIONS = { "rolled-back": "Geri Alındı", baseline: "Açılışta Bulunan Sapma", scan: "Taramada Bulunan Sapma", repair: "Açılış Onarımı" };
+
 export function cellNumber(value, type) {
   const raw = String(value ?? "").trim().replace(/−/g, "-");
   if (!raw) return null;
@@ -394,7 +397,8 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
           subtitle: rows.length ? `${rows.length} kayıt. Geri alınan işlemlerin hiçbir satırı yazılmadı.` : "Geri alınan işlem yok.",
           headers: ["Zaman", "Olay", "Etkilenen Tablolar", "Denetim"],
           types: ["", "", "", ""],
-          rows: rows.map(row => [row.at.replace("T", " ").slice(0, 19), row.action === "rolled-back" ? "Geri Alındı" : "Açılışta Bulunan Sapma", row.tables, row.summary]),
+          // v2.1.0: tam tarama ("scan", kapının görmediği değişiklik) ve eski sürümden dönüşte açılış onarımı ("repair") da bu günlükte.
+          rows: rows.map(row => [row.at.replace("T", " ").slice(0, 19), INTEGRITY_ACTIONS[row.action] || "Açılışta Bulunan Sapma", row.tables, row.summary]),
           summary: [["Geri Alınan", String(rows.filter(row => row.action === "rolled-back").length)]],
         };
       },

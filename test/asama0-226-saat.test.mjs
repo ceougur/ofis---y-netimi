@@ -7,6 +7,7 @@
 import assert from "node:assert/strict";
 import { after, before, describe, it, mock } from "node:test";
 import { loginAdmin, startTestServer } from "./helpers.mjs";
+import { markLegacyRows } from "../server/lib/bank/repair.mjs";
 
 const pad = n => String(n).padStart(2, "0");
 const T0 = new Date(2026, 9, 8, 12, 0, 0); // 08.10.2026 12:00 yerel
@@ -36,6 +37,11 @@ describe("A13 — eski ileri tarihli satırlar yaşlanınca para işlemleri kili
     insert.run("pay-ileri-3", 300, dayOf(at(3)), stamp);
     server.app.db.prepare("INSERT INTO cheques (id, direction, instrument, serial_no, bank, drawer, account_id, plan_id, amount, issue_date, due_date, status, status_date, note, created_by, created_at, updated_at) VALUES ('cek-ileri', 'in', 'cheque', 'IL-1', '', 'Eski Keşideci', '', '', 750, ?, ?, 'portfolio', ?, '', 'eski', ?, ?)").run(dayOf(at(2)), dayOf(at(40)), dayOf(at(2)), stamp, stamp);
     server.app.db.prepare("INSERT INTO cheque_events (id, cheque_id, kind, date, amount, account_id, from_status, to_status, note, effects_json, method, created_by, created_at) VALUES ('cev-ileri', 'cek-ileri', 'receive', ?, 750, '', '', 'portfolio', 'Açılış portföyü', '[]', 'cash', 'eski', ?)").run(dayOf(at(2)), stamp);
+    // 2.1.0 (bilerek): bu satırlar GÜNCELLEME ÖNCESİNDEN kalan satırlardır. v20'den sonraki ilk açılış eski satır işaretini
+    // (meta.bank.legacyMarks: her para tablosunun en büyük rowid'i) yazar; işaretin üstündeki olaysız para satırı "eski sürümün
+    // yeni yazdığı" sayılır (money:event, Hesabı Belirsiz Yeni Hareketler). Test yeniden başlatmayı canlandırırken işaret de
+    // güncelleme anındaki gibi yeniden yazılır.
+    markLegacyRows(server.app.store);
     server.app.integrity.start();
   });
   after(async () => {

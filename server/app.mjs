@@ -37,6 +37,7 @@ import { createIntegrity } from "./lib/integrity.mjs";
 import { createIdempotency } from "./lib/idempotency.mjs";
 import { createBank } from "./lib/bank/post.mjs";
 import { createMoneyLines } from "./lib/bank/money-lines.mjs";
+import { markLegacyRows, repairBank } from "./lib/bank/repair.mjs";
 import { LOCK_KEY, createPeriod } from "./lib/period.mjs";
 import { registerDueRoutes } from "./routes/dues.mjs";
 import { registerPlanRoutes } from "./routes/plans.mjs";
@@ -76,6 +77,9 @@ function ensureInitialAdmin(store, config, log) {
   );
   log.info(`İlk yönetici hesabı oluşturuldu: ${config.adminUsername}${mustChange ? " (ilk girişte parola değiştirilecek)" : ""}`);
 }
+
+// Mutabakat kapısının tam taraması (v2.1.0, §3.11): arka planda bu aralıkla salt okuma.
+const INTEGRITY_SCAN_MINUTES = 15;
 
 export function createApp(overrides = {}) {
   const config = loadConfig(overrides);
@@ -306,8 +310,25 @@ export function createApp(overrides = {}) {
   context.ledger = registerLedgerRoutes(router, { ...context, cash: () => context.cash, accounts: () => context.accounts, integrity: () => context.integrity });
   // Mutabakat kapısı (v2.0.13): para taşıyan her işlem COMMIT'ten önce alt defter ↔ ana defter denetiminden geçer;
   // sapma yaratacaksa ROLLBACK edilir ve günlüğe yazılır (lib/integrity.mjs).
-  context.integrity = createIntegrity({ store, ledger: () => context.ledger, accounts: () => context.accounts, stock: () => context.stock, plans: () => context.plans, period: () => context.period, log, now: config.now });
+  context.integrity = createIntegrity({ store, ledger: () => context.ledger, accounts: () => context.accounts, stock: () => context.stock, plans: () => context.plans, period: () => context.period, money: () => context.money, events, strict: config.moneyStrict, log, now: config.now });
+  // Açılış onarımı (v2.1.0, §10.6): eski sürüme (2.0.25/2.0.26) dönülüp yeniden güncellenen dosyada eski sürümün izleri kapı kurulmadan
+  // toplanır (tek işlem; yalnız ilgili kayıtlar). Onarım başarısız olsa da program açılır; sapmalar kapının tabanı ve Mutabakat Testi'nde.
+  try {
+    repairBank({ store, now: config.now, period: context.period, log });
+  } catch (error) {
+    log.error?.("Açılış onarımı çalışmadı", error);
+  }
   context.integrity.start();
+  // Tam tarama (§3.11 "Kapı ölçeği" 1): 15 dakikada bir arka planda salt okuma; yeni sapma integrity_log + zil.
+  context.integrity.scanMinutes = INTEGRITY_SCAN_MINUTES;
+  context.integrity.scanTimer = overrides.integrityScan === false ? null : setInterval(() => {
+    try {
+      context.integrity.scan();
+    } catch (error) {
+      log.error?.("Mutabakat taraması çalışmadı", error);
+    }
+  }, INTEGRITY_SCAN_MINUTES * 60_000);
+  context.integrity.scanTimer?.unref?.();
   // WhatsApp ile ekstre ve mesaj (v2.0.13): tek ya da toplu; alıcıları sunucu hazırlar, gönderimler cari kartına yazılır.
   registerWhatsappRoutes(router, { ...context, accounts: () => context.accounts });
   // ANLIK DURUM (v2.0.7): Kasa, Cari, Stok ve Çek/Senet'in kendi hesaplarını okur (tek kaynak); raporlar.
@@ -571,6 +592,8 @@ export function createApp(overrides = {}) {
           if (!KEEP_SETTINGS.some(prefix => row.key.startsWith(prefix))) store.run("DELETE FROM settings WHERE key = ?", row.key);
         }
       }
+      // Eski satır işareti yenilenir: silinen para tablolarında rowid baştan başlar (v2.1.0; lib/bank/repair.mjs).
+      if (has("fin_events")) markLegacyRows(store);
       audit(user, "company.reset", companyId, { mode, resetNumbers, backup: backup?.name || "", counts, unlocked });
     }));
     // Kapı tabanı yeniden ölçülür (kilit kalktı, eski satırlar silindi; dönem kilidi değişikliğindeki gibi).
@@ -635,6 +658,7 @@ export function createApp(overrides = {}) {
       closed = true;
       stopBackups();
       clearInterval(sessionTimer);
+      clearInterval(context.integrity?.scanTimer);
       clearTimeout(archiveStart);
       clearInterval(archiveTimer);
       alertScheduler.stop();

@@ -29,11 +29,11 @@ import { HttpError } from "../http.mjs";
 import { systemClock } from "../clock.mjs";
 import { bodyHash } from "../idempotency.mjs";
 import { canUser } from "../permissions.mjs";
-import { toMinor } from "../minor.mjs";
 import { nextEventNo } from "./event-no.mjs";
 import { BANK_PERMISSIONS } from "./grants.mjs";
-import { directionOf, typeOf } from "./event-types.mjs";
-import { FREE_COLUMNS, LEDGER_TABLES, MODULE_TABLES, SOURCE_TABLES, isMoneyRow, moneyWhere } from "./money-lines.mjs";
+import { typeOf } from "./event-types.mjs";
+import { FREE_COLUMNS, LEDGER_TABLES, SOURCE_TABLES, isMoneyRow, moneyWhere } from "./money-lines.mjs";
+import { refreshEvent } from "./event-copy.mjs";
 
 export const OPS = Object.freeze(["create", "update", "delete", "move", "restore", "assign"]);
 const OP_SET = new Set(OPS);
@@ -89,7 +89,7 @@ export function createBank({ store, now = systemClock, log = null, strict = fals
   store.setMoneyPolicy(policy);
   const stack = [];
   const current = () => stack.at(-1) || null;
-  const stamp = () => now().toISOString();
+  const stamp_ = () => now().toISOString();
 
   function openEvent(ctx, table, row) {
     const date = String(row.date || "");
@@ -97,7 +97,7 @@ export function createBank({ store, now = systemClock, log = null, strict = fals
     const id = `ev-${randomUUID()}`;
     store.run(
       "INSERT INTO fin_events (id, year, seq, no, type, date, status, origin, src_table, method, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, 'active', ?, ?, ?, ?, ?)",
-      id, year, seq, no, typeOf(table, row), date, ctx.origin, table, String(row.method || ""), ctx.user?.id || "system", stamp(),
+      id, year, seq, no, typeOf(table, row), date, ctx.origin, table, String(row.method || ""), ctx.user?.id || "system", stamp_(),
     );
     ctx.events.add(id);
     ctx.created.add(id);
@@ -130,57 +130,10 @@ export function createBank({ store, now = systemClock, log = null, strict = fals
     return false;
   }
 
-  // ---------- Olay kopyası (salt okuma dizini; para kaynağı satırın kendisidir) ----------
-  const partyOf = (table, row) => {
-    if (table === "account_entries" || table === "stock_moves") return String(row.account_id || "");
-    if (table === "plan_entries") return String(store.get("SELECT account_id AS a FROM plans WHERE id = ?", row.plan_id)?.a || "");
-    if (table === "cheque_events") return String(store.get("SELECT account_id AS a FROM cheques WHERE id = ?", row.cheque_id)?.a || "");
-    return "";
-  };
-  const invoiceOf = (table, row) => {
-    if (table === "account_entries") return row.source === "invoice" ? String(row.source_id || "") : "";
-    if (table === "stock_moves" || table === "cheque_events") return String(row.invoice_id || "");
-    return "";
-  };
-  const amountMinor = value => toMinor(Math.abs(Number(value) || 0));
-  function copyOf(table, row) {
-    const amount = amountMinor(row.amount);
-    return {
-      src_table: table,
-      src_id: String(row.id),
-      direction: directionOf(table, row),
-      amount_minor: amount,
-      try_minor: amount,
-      currency: "TRY",
-      method: String(row.method || "cash"),
-      party_id: partyOf(table, row),
-      invoice_id: invoiceOf(table, row),
-      plan_id: table === "plan_entries" ? String(row.plan_id || "") : "",
-      cheque_id: table === "cheque_events" ? String(row.cheque_id || "") : "",
-      date: String(row.date || ""),
-      bank_ref: String(row.fin_ref || ""),
-    };
-  }
-  // Transferde iki bacak aynı olayda: kopya banka bacağından (olayın "direction"ı bank_ref'e göre, §5.2).
-  const primaryOf = rows => rows.find(item => item.table === "cash_entries" && item.row.method && item.row.method !== "cash") || rows[0];
+  // ---------- Olay kopyası (salt okuma dizini; para kaynağı satırın kendisidir; tek tanım: lib/bank/event-copy.mjs) ----------
   function finalize(ctx) {
-    for (const id of ctx.events) {
-      const event = store.get("SELECT * FROM fin_events WHERE id = ?", id);
-      if (!event) continue;
-      // "event_id <> ''" kısmi indeksin (idx_<tablo>_event_id) kullanılması için yazılı (parametreden çıkarılamaz).
-      const rows = MODULE_TABLES.flatMap(table => store.all(`SELECT * FROM ${table} WHERE event_id = ? AND event_id <> ''`, id).map(row => ({ table, row })));
-      if (!rows.length) {
-        if (event.status !== "cancelled") store.run("UPDATE fin_events SET status = 'cancelled', updated_by = ?, updated_at = ? WHERE id = ?", ctx.user?.id || "system", stamp(), id);
-        continue;
-      }
-      const primary = primaryOf(rows);
-      const copy = { status: "active", ...copyOf(primary.table, primary.row) };
-      const changed = Object.keys(copy).filter(key => event[key] !== copy[key]);
-      if (!changed.length) continue;
-      const touch = ctx.created.has(id) ? {} : { updated_by: ctx.user?.id || "system", updated_at: stamp() };
-      const columns = { ...Object.fromEntries(changed.map(key => [key, copy[key]])), ...touch };
-      store.run(`UPDATE fin_events SET ${Object.keys(columns).map(key => `${key} = ?`).join(", ")} WHERE id = ?`, ...Object.values(columns), id);
-    }
+    const stamp = { by: ctx.user?.id || "system", at: stamp_() };
+    for (const id of ctx.events) refreshEvent(store, id, { stamp: ctx.created.has(id) ? null : stamp });
   }
 
   // Adım 3 (iskelet): hesaba bağlı satır (fin_ref) değişiyorsa çapraz yetki; ekstreyle eşleşmiş olay değişmez.
