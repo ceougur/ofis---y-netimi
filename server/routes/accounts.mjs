@@ -600,8 +600,11 @@ export function registerAccountRoutes(router, { store, auth, audit, events, tras
     const how = `${list.length ? `${numbers} ${list.length > 1 ? "faturalarını" : "faturasını"}` : "Faturayı"} açın; Bu Faturayı Kapatanlar listesindeki mahsup satırında Kaldır'a basın`;
     if (!next) throw new HttpError(409, `${head} Önce mahsubu kaldırın: ${how}, sonra satırı silin.`, { code: "offset-linked", used });
     if (next.kind !== previous.kind) throw new HttpError(409, `${head} Yönü değiştirilemez; önce mahsubu kaldırın: ${how}.`, { code: "offset-linked", used });
-    if (next.amount < used - 0.005) throw new HttpError(409, `${head} Tutar mahsup edilenden (${tl(used)}) az olamaz; önce mahsubu kaldırın ya da azaltın: ${how}.`, { code: "offset-linked", used });
-    if (next.date > offsets[0].date) throw new HttpError(409, `${head} Tarih mahsup tarihinden (${dayText(offsets[0].date)}) sonra olamaz; önce mahsubu kaldırın: ${how}.`, { code: "offset-linked", used });
+    // 2. gözden geçirme İ7: tutar ve tarih kuralı yalnız DEĞİŞEN alana uygulanır. 2.0.25 mahsuplu satırın tarihini mahsuptan sonraya
+    // ya da tutarını mahsubun altına çekmeye izin veriyordu; böyle eski bir satırda yalnız açıklama düzeltmesi bile 409 alıyordu.
+    const amountChanged = Math.abs(roundMoney(next.amount) - roundMoney(previous.amount)) > 0.004;
+    if (amountChanged && next.amount < used - 0.005) throw new HttpError(409, `${head} Tutar mahsup edilenden (${tl(used)}) az olamaz; önce mahsubu kaldırın ya da azaltın: ${how}.`, { code: "offset-linked", used });
+    if (next.date !== previous.date && next.date > offsets[0].date) throw new HttpError(409, `${head} Tarih mahsup tarihinden (${dayText(offsets[0].date)}) sonra olamaz; önce mahsubu kaldırın: ${how}.`, { code: "offset-linked", used });
   }
   router.post("/api/workspace/accounts/:id/entries", async ({ req, res, params }) => {
     const user = auth.requirePermission(req, "accounts.view");
