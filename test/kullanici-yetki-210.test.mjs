@@ -190,7 +190,9 @@ describe("yetki havuzu ve kullanıcı yönetimi (API)", () => {
     assert.equal((await expert.get("/api/admin/users")).status, 403, "uzman kullanıcı listesine erişemez");
     const list = await expert.get("/api/workspace/report-center");
     assert.equal(list.status, 200);
-    assert.deepEqual(list.data.data.reports.map(report => report.id), ["islem-gecmisi"], "yalnız İşlem geçmişi");
+    // v2.1.0 Aşama 14 (bilerek güncellendi): uzman (avukat) Banka Raporları yetkisiyle (bank.reports, plan §9.1) Banka grubunu da görür.
+    assert.deepEqual(list.data.data.reports.filter(report => report.group !== "Banka").map(report => report.id), ["islem-gecmisi"], "finans raporlarından yalnız İşlem geçmişi");
+    assert.deepEqual(list.data.data.reports.filter(report => report.group === "Banka").map(report => report.id), ["banka-bakiye", "banka-hareket", "banka-masraf", "alt-hesap-mizani"], "Banka grubu");
     const log = await expert.get("/api/workspace/report-center/islem-gecmisi?preset=all");
     assert.equal(log.status, 200);
     assert.ok(log.data.data.total > 0, "denetim kaydı satırları gelir");
@@ -198,7 +200,7 @@ describe("yetki havuzu ve kullanıcı yönetimi (API)", () => {
     assert.equal((await expert.get("/api/workspace/report-center/mizan")).status, 403, "finans raporu kapalı");
     // İşlem geçmişi yetkisi kaldırılınca rapor merkezi tümden kapanır; personel hiç göremez.
     const users = (await admin.get("/api/admin/users")).data.data;
-    await admin.patch(`/api/admin/users/${users.find(user => user.username === "uzman1").id}`, { grants: { remove: ["audit.view"] } });
+    await admin.patch(`/api/admin/users/${users.find(user => user.username === "uzman1").id}`, { grants: { remove: ["audit.view", "bank.reports"] } });
     assert.equal((await expert.get("/api/workspace/report-center")).status, 403);
     const staff = await createUser(server, admin, { username: "personel4", name: "Personel Dört" });
     assert.equal((await staff.get("/api/workspace/report-center")).status, 403);

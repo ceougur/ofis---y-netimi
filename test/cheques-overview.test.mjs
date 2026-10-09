@@ -559,6 +559,13 @@ describe("rapor merkezi: programdaki her bilgi ön izleme, PDF ve Excel olarak a
     assert.ok(table.headers.includes("AD SOYAD"));
     assert.equal((await admin.get("/api/workspace/report-center/yok")).status, 404);
     const staff = await createUser(server, admin, { username: "raporsuz", role: "muhasebe" });
-    assert.equal((await staff.get("/api/workspace/report-center")).status, 403);
+    // v2.1.0 Aşama 14 (bilerek güncellendi): muhasebe Banka Raporları yetkisiyle (bank.reports, plan §9.1) yalnız Banka grubunu görür; finans
+    // raporları (overview.view) kapalı kalır.
+    const staffCatalog = (await staff.get("/api/workspace/report-center")).data.data;
+    assert.deepEqual([...new Set(staffCatalog.reports.map(report => report.group))], ["Banka"], "muhasebe yalnız Banka raporlarını görür");
+    assert.equal((await staff.get("/api/workspace/report-center/kasa-hareketleri")).status, 403, "finans raporu kapalı");
+    const users = (await admin.get("/api/admin/users")).data.data;
+    await admin.patch(`/api/admin/users/${users.find(user => user.username === "raporsuz").id}`, { grants: { remove: ["bank.reports"] } });
+    assert.equal((await staff.get("/api/workspace/report-center")).status, 403, "Banka Raporları yetkisi de kaldırılınca rapor merkezi kapalı");
   });
 });

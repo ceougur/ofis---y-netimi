@@ -22,6 +22,66 @@ const must = (response, what) => {
 };
 const REPORTS = ["kasa-hareketleri", "banka-pos-hareketleri", "hesap-mizani", "cari-listesi", "acik-faturalar"];
 
+// ---------- 2.1.0 Aşama 14 (bilerek değişen iki görünümün 2.0.26 karşılığı; plan §11.4) ----------
+// (1) ANLIK DURUM Banka kutusu (K10): ana değer artık Gerçek Banka; eski "Banka / POS" (havale + POS, hesaba atanmış ya da değil; bugüne kadar
+//     bakiye, tüm hareketler, bugün giriş/çıkış) aynı tek kaynağın banka tarafı satırlarından (Kasa ?method=noncash) yeniden kurulur. Kabul (§10.5):
+//     Gerçek Banka + Hesabı Atanmamış Eski Hareketler = eski "tüm hareketler" değeri (bankK10'da, testler ayrıca karşılaştırır).
+// (2) Banka ve POS Hareketleri (§3.4): iç hareketin (Kasa ↔ Banka, bankalar arası transfer) tutarı Giriş/Çıkış kolonunda değil açıklamada
+//     "(Transfer Giriş|Çıkış: …)" ve özette "Transfer Giriş/Çıkış". Ters dönüşüm: tutar kolonuna geri eklenir, özet ve TOPLAM eski tanımla kurulur.
+const minorOf = cell => {
+  const match = /^(-|−)?((?:\d{1,3}(?:\.\d{3})*|\d+)),(\d{2}) TL$/.exec(String(cell ?? "").trim());
+  return match ? Math.round(Number(`${match[2].replace(/\./g, "")}.${match[3]}`) * 100) * (match[1] ? -1 : 1) : 0;
+};
+const tlOf = minor => {
+  const abs = Math.abs(minor);
+  return `${minor < 0 ? "-" : ""}${String(Math.trunc(abs / 100)).replace(/\B(?=(\d{3})+(?!\d))/g, ".")},${String(abs % 100).padStart(2, "0")} TL`;
+};
+export function legacyBankPos(report) {
+  if (!report?.summary?.some(([key]) => key === "Transfer Giriş" || key === "Transfer Çıkış")) return report;
+  const at = header => report.headers.indexOf(header);
+  const [note, inIndex, outIndex] = [at("Açıklama"), at("Giriş"), at("Çıkış")];
+  const rows = report.rows.map(row => {
+    const match = /^(.*) \(Transfer (Giriş|Çıkış): ([^)]+ TL)\)$/.exec(String(row[note] ?? ""));
+    if (!match) return row;
+    const copy = [...row];
+    copy[note] = match[1];
+    const index = match[2] === "Giriş" ? inIndex : outIndex;
+    copy[index] = tlOf(minorOf(copy[index]) + minorOf(match[3]));
+    return copy;
+  });
+  const value = key => minorOf(report.summary.find(([name]) => name === key)?.[1]);
+  const inMinor = value("Dönem Giriş") + value("Transfer Giriş");
+  const outMinor = value("Dönem Çıkış") + value("Transfer Çıkış");
+  const summary = report.summary.filter(([key]) => key !== "Transfer Giriş" && key !== "Transfer Çıkış").map(([key, cell]) => [key, key === "Dönem Giriş" ? tlOf(inMinor) : key === "Dönem Çıkış" ? tlOf(outMinor) : key === "Dönem Net" ? tlOf(inMinor - outMinor) : cell]);
+  const footer = report.footer ? report.footer.map((cell, index) => (index === inIndex ? tlOf(rows.reduce((sum, row) => sum + minorOf(row[inIndex]), 0)) : index === outIndex ? tlOf(rows.reduce((sum, row) => sum + minorOf(row[outIndex]), 0)) : cell)) : report.footer;
+  return { ...report, rows, summary, footer };
+}
+/** ANLIK DURUM'un 2.0.26 biçimindeki "Banka / POS" kutusu (aynı satırlardan) ve K10 alanları. */
+export async function legacyBankBox(api, overview) {
+  const bank = overview?.cash?.bank;
+  if (!bank?.labels) return { box: bank, k10: null };
+  const noncash = must(await api.get("/api/workspace/cash?method=noncash"), "Kasa (banka tarafı)");
+  const day = overview.today;
+  let all = 0;
+  let upTo = 0;
+  let todayIn = 0;
+  let todayOut = 0;
+  for (const entry of noncash.entries) {
+    const minor = cents(entry.amount);
+    const signed = entry.kind === "in" ? minor : -minor;
+    all += signed;
+    if (entry.date <= day) upTo += signed;
+    if (entry.date === day) {
+      if (entry.kind === "in") todayIn += minor;
+      else todayOut += minor;
+    }
+  }
+  return {
+    box: { balance: upTo / 100, allEntries: all / 100, today: { in: todayIn / 100, out: todayOut / 100 } },
+    k10: { defined: bank.defined, realBank: cents(bank.balance), unassigned: cents(bank.unassigned?.total), debt: cents(bank.debt?.total), legacyAll: all },
+  };
+}
+
 /** Seçili şirketin para olguları (API). */
 export async function ledgerFacts(api) {
   const integrity = must(await api.get("/api/workspace/ledger/integrity"), "Mutabakat Testi");
@@ -38,10 +98,13 @@ export async function ledgerFacts(api) {
     // 2.1.0 Aşama 4 (plan §3.11, bilerek): 649'un adı "Diğer Olağan Gelirler (Kasaya Elle)" → "Diğer Olağan Gelir ve Kârlar" (Banka Fişi
     // de 649'a yazar). Ad sürümden bağımsız olgu değildir: yeni ad eski ada çevrilir (fikstürlerdeki "öncesi" olguları 2.0.26 adıyla saklı);
     // hesap kodu, tutarlar ve satır sırası birebir karşılaştırılır.
-    const rows = id === "hesap-mizani" ? report.rows.map(row => (String(row[0]) === "649" && row[1] === "Diğer Olağan Gelir ve Kârlar" ? [row[0], "Diğer Olağan Gelirler (Kasaya Elle)", ...row.slice(2)] : row)) : report.rows;
-    reports[id] = { total: report.total, rows: digest(rows), footer: report.footer, summary: report.summary };
+    const legacy = id === "banka-pos-hareketleri" ? legacyBankPos(report) : report;
+    const rows = id === "hesap-mizani" ? report.rows.map(row => (String(row[0]) === "649" && row[1] === "Diğer Olağan Gelir ve Kârlar" ? [row[0], "Diğer Olağan Gelirler (Kasaya Elle)", ...row.slice(2)] : row)) : legacy.rows;
+    reports[id] = { total: legacy.total, rows: digest(rows), footer: legacy.footer, summary: legacy.summary };
   }
-  const { at, ...overviewStable } = overview;
+  const { at, ...overviewLive } = overview;
+  const { box, k10 } = await legacyBankBox(api, overview);
+  const overviewStable = overviewLive.cash ? { ...overviewLive, cash: { ...overviewLive.cash, bank: box } } : overviewLive;
   return {
     today: lock.today,
     lockedUntil: lock.lockedUntil || "",
@@ -53,6 +116,7 @@ export async function ledgerFacts(api) {
     cash: { totals: cashAll.totals, byMethod: cashAll.byMethod, all: digest(rows(cashAll.entries)), window: digest(rows(cash.entries)), windowCount: cash.entries.length, windowTotals: cash.totals },
     overview: digest(overviewStable),
     overviewCash: overviewStable.cash,
+    bankK10: k10,
     accounts: (await apiFacts(api)).accounts,
     invoices: digest(invoices.invoices.map(item => [item.id, item.kind, item.status, item.number, item.issueDate, item.accountId, cents(item.payableTotal), cents(item.tryPayable), item.payState, cents(item.paid), cents(item.open)].join("|")).sort()),
     invoiceCount: invoices.invoices.length,

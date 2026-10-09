@@ -25,7 +25,9 @@ async function indicators(api) {
   const combined = await must("birleşik", api.get("/api/companies/report"));
   const all = summaryOf(await report(api));
   const pos = summaryOf(await report(api, "&payMethod=card"));
-  return { bankBox: overview.cash.bank.balance, bankToday: overview.cash.bank.today, flowStart: flow.cashToday, byMethod: cash.byMethod, combined: combined.rows[0].bank, reportEnd: money(all["Dönem Sonu"]), reportIn: money(all["Dönem Giriş"]), reportOut: money(all["Dönem Çıkış"]), posIn: money(pos["Dönem Giriş"]), posOut: money(pos["Dönem Çıkış"]), posEnd: money(pos["Dönem Sonu"]) };
+  // Aşama 14 (K10, bilerek güncellendi): ANLIK DURUM kutusu ve Birleşik Rapor "Gerçek Banka" (realBank); Banka ve POS Hareketleri'nde iç hareket
+  // (kredi kullanımı, kart borcu ödemesi) Dönem Giriş/Çıkış'a değil Transfer Giriş/Çıkış'a yazılır (§3.4).
+  return { bankBox: overview.cash.bank.balance, bankToday: overview.cash.bank.today, flowStart: flow.cashToday, byMethod: cash.byMethod, combined: combined.rows[0].realBank, combinedDebt: combined.rows[0].bankDebt, reportEnd: money(all["Dönem Sonu"]), reportIn: money(all["Dönem Giriş"]), reportOut: money(all["Dönem Çıkış"]), reportTrIn: money(all["Transfer Giriş"]), reportTrOut: money(all["Transfer Çıkış"]), posIn: money(pos["Dönem Giriş"]), posOut: money(pos["Dönem Çıkış"]), posEnd: money(pos["Dönem Sonu"]) };
 }
 
 describe("GG2 — kart borcu ve kredi varlık göstergelerine karışmaz", () => {
@@ -75,8 +77,12 @@ describe("GG2 — kart borcu ve kredi varlık göstergelerine karışmaz", () =>
     assert.equal(now.byMethod.card, 0);
     assert.equal(now.combined, expectedAssets);
     assert.equal(now.reportEnd, expectedAssets, "rapor Dönem Sonu (hepsi)");
-    assert.equal(now.reportIn, 30000, "rapor Dönem Giriş: açılış giriş değil, kredi bacağı giriş");
-    assert.equal(now.reportOut, 2000, "rapor Dönem Çıkış: kart ödemesinin banka bacağı");
+    // Aşama 14 (§3.4): kredi kullanımı ve kart borcu ödemesi iç harekettir — Dönem Giriş/Çıkış 0, Transfer Giriş 30.000 / Çıkış 2.000.
+    assert.equal(now.reportIn, 0, "rapor Dönem Giriş: açılış giriş değil; kredi bacağı iç hareket (Transfer Giriş)");
+    assert.equal(now.reportOut, 0, "rapor Dönem Çıkış: kart ödemesinin banka bacağı iç hareket (Transfer Çıkış)");
+    assert.equal(now.reportTrIn, 30000, "rapor Transfer Giriş: kredi kullanımı");
+    assert.equal(now.reportTrOut, 2000, "rapor Transfer Çıkış: kart borcu ödemesi");
+    assert.equal(now.combinedDebt, 33000, "Birleşik Rapor Kart ve Kredi Borcu (kart 3.000 + kredi 30.000)");
     assert.equal(now.posIn, 0, "POS görünümünde kart ödemesi yok");
     assert.equal(now.posEnd, 0);
     const summary = await must("özet", ctx.api.get(`${BANK}/summary`));

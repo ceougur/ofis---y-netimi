@@ -49,7 +49,9 @@ const invoice = async id => (await api.get(`/api/workspace/invoices/${id}`)).dat
 const report = async (id, q = "preset=thisMonth") => (await api.get(`/api/workspace/report-center/${id}?${q}`)).data;
 const summaryOf = (rep, key) => { const row = (rep.summary || []).find(([k]) => k === key); return row ? money(row[1]) : null; };
 const money = text => { const t = String(text ?? "").replace(/[^\d,.-]/g, "").replace(/\./g, "").replace(",", "."); return Number(t) || 0; };
-const bank = async () => (await overview()).cash.bank.balance;
+// 2.1.0 Aşama 14 (K10): Banka kutusu Gerçek Banka; hesap tanımlanmadan girilen havale/POS Hesabı Atanmamış'tadır. Eski "Banka / POS" = ikisinin toplamı.
+const bankBox = view => Math.round(((view.cash.bank.balance || 0) + (view.cash.bank.unassigned?.total || 0)) * 100) / 100;
+const bank = async () => bankBox(await overview());
 
 // ---------- BAĞIMSIZ MODEL (mali müşavirin defteri) ----------
 const M = { cash: 0, bank: 0, stock: {}, cost: {}, cari: {}, kdvOut: 0, kdvIn: 0, saleNet: 0, purchaseNet: 0 };
@@ -310,7 +312,7 @@ try {
   section("Raporlar: ANLIK DURUM, Kasa, banka/POS, cari mizan, stok, KDV özeti, hesap mizanı, açık faturalar, çek, taksit");
   const ov = await overview();
   check("ANLIK DURUM Nakit Kasa", M.cash, ov.cash.balance);
-  check("ANLIK DURUM Banka/POS", M.bank, ov.cash.bank.balance);
+  check("ANLIK DURUM Banka/POS (Gerçek Banka + Hesabı Atanmamış)", M.bank, bankBox(ov));
   const debtors = Object.values(M.cari).filter(v => v > 0).reduce((a, b) => a + b, 0);
   const creditors = -Object.values(M.cari).filter(v => v < 0).reduce((a, b) => a + b, 0);
   check("ANLIK DURUM Toplam Alacak (cari borçlular, portföy çeki yok)", R(debtors), ov.receivable.total);
