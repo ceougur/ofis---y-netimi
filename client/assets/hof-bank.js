@@ -968,7 +968,8 @@
     try {
       const [summary, list] = await Promise.all([api("/summary"), api("/accounts?status=all")]);
       Object.assign(view, { summary, list });
-      if (modal) render();
+      // Ayarlar'da kaydedilmemiş değişiklik varsa pencere yeniden çizilmez (reload ile aynı kural).
+      if (modal && !(view.mode === "tab" && view.tab === "settings" && view.dirty)) render();
     } catch {
       // Ana pencere kendi yenilemesinde tekrar dener.
     }

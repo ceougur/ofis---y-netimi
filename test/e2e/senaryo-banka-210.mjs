@@ -327,6 +327,24 @@ try {
     await shot(admin, "acilisi-duzelt");
     await correct("2026-10-01", "100.000");
     ok(has(await textOf(admin, `${bankWin} [data-bank-balance]`), "100.000,00") && (await must("özet", api.get("/api/workspace/bank/summary"))).realBank.minor === 15_000_000, "geri düzeltildi: Ziraat 100.000, Gerçek Banka 150.000");
+    // Düzenle: açılışı olan hesapta tür ve para birimi salt okunur; başka hesabın kodu → ekranda hata, Hesap Kodu işaretli; şube kaydedilir.
+    await admin.click(`${bankWin} [data-act="edit"]`);
+    await admin.waitForSelector(`${top} form [name="branchName"]`);
+    ok(await admin.$eval(`${top} form [name="kind"]`, node => node.hasAttribute("readonly")), "açılışı olan hesapta Hesap Türü salt okunur");
+    await auditLabels(admin, "Banka Hesabını Düzenle");
+    await admin.fill(`${top} form [name="code"]`, "gar-tl");
+    await admin.click(`${top} form button[type="submit"]`);
+    await admin.waitForTimeout(800);
+    const codeError = await textOf(admin, `${top} form .hof-form-error`);
+    ok(has(codeError, "başka bir hesapta kullanılıyor") && (await admin.$eval(`${top} form [name="code"]`, node => node.classList.contains("is-invalid"))), `başka hesabın kodu (harf büyüklüğü farkıyla) ekranda hata: “${codeError}”`);
+    await admin.fill(`${top} form [name="code"]`, "ZIR-TL");
+    await admin.fill(`${top} form [name="branchName"]`, "Kızılay Şubesi");
+    await admin.click(`${top} form button[type="submit"]`);
+    await admin.waitForTimeout(900);
+    ok(has(await textOf(admin, `${bankWin} .hof-chq-facts`), "Kızılay Şubesi") && has(await textOf(admin, `${bankWin} .hof-bank-confirm`), "Bakiye Doğrulandı"), "Düzenle: şube kaydedildi, Bakiye Doğrulandı korundu");
+    const edited = (await must("hesaplar", api.get("/api/workspace/bank/accounts?status=all"))).accounts.find(account => account.bankName === "Ziraat Bankası");
+    ok(edited.branchName === "Kızılay Şubesi" && edited.code === "ZIR-TL" && edited.balanceMinor === 10_000_000, "sunucuda şube Kızılay Şubesi, kod ve bakiye aynı");
+    await shot(admin, "hesap-duzenle");
   });
 
   await step("4. Nasıl bozarım: HTML adlı hesap kaçışlı; sil → aynı adla yeniden aç (yeni alt hesap kodu)", async () => {
