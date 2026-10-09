@@ -861,8 +861,8 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
       veride v2.0.26 kadar sürer; Mutabakat Testi düğmesi 100.000'de ~10 sn bekletir; 1M bellek ölçülmedi.
   CANLI HATA (gözden geçirmede bulundu, v2.0.26'da da VAR, gerçek v2.0.26 koduyla yeniden üretildi): Taksite Aktar (var olan
   bağsız karta) → taşınan tahsilatı sil → aktarımı geri al → Silinenler'den geri yükle → Kasa ÇİFT sayılır (1.000 yerine 2.000),
-  Mutabakat Testi "tamam" der. 2.1.0'da düzeldi (bir olay = bir para hareketi, 409 `event-in-use`). Kullanıcıya bildirildi;
-  ayrı 2.0.27 düzeltme sürümü (ayrı dal izni gerekir) ya da 2.1.0'ı bekleme kararı kullanıcıda.
+  Mutabakat Testi "tamam" der. 2.1.0'da düzeldi (bir olay = bir para hareketi, 409 `event-in-use`). Kullanıcıya bildirildi.
+  KARAR (kullanıcı, 09.10.2026): "2.1.0 ile gelsin" → ayrı 2.0.27 YOK; 2.1.0 teslim notunda/CHANGELOG'da bu düzeltme ayrıca yazılır.
 - 2.0.20 YAPILACAKLAR (kullanıcı "yapılacaklara not al" dedi, 03.10.2026; "yap" denince başlanır; ayrıntı ve
   kanıt hemen altındaki ADAYI maddesinde):
   [x] 1. Bütün raporların (43) tablosunun altında kalın TOPLAM satırı — ekran, PDF, Excel aynı; yalnız toplanabilir
