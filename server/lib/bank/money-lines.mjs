@@ -20,6 +20,11 @@ import { INVOICE_KINDS } from "../invoice-math.mjs";
 import { roundMoney, toCents } from "../money.mjs";
 import { INTERNAL_TYPES, typeLabel } from "./event-types.mjs";
 
+const INTERNAL_SQL = [...INTERNAL_TYPES].map(type => `'${type}'`).join(", ");
+// Banka görünümlerinin "Bugün / Bu Ay" giriş-çıkışına girmeyen düzeltme fişleri (açılış, Devir Kapanışı, eski bakiye aktarımı ve ters kayıtları;
+// Banka ve POS Hareketleri raporundaki "Açılış ve Devir Düzeltmeleri" ile aynı küme).
+const ADJUST_SQL = ["opening", "carry_close", "legacy_reclass"].map(type => `'${type}'`).join(", ");
+
 /**
  * Kaynak: tablo + koşullar ([kolon, izinli değerler, boşluk değeri]) + isteğe bağlı "sıfırdan büyük" kolon (para satırı yüklemi) ve okuma
  * tanımı (read): takma ad, görünürlük JOIN'leri, yön (Kasa/banka tarafına giriş-çıkış), cari, iç hareket, görüntü alanları, sıra (rank:
@@ -68,7 +73,8 @@ export const MONEY_SOURCES = Object.freeze([
     read: {
       name: "bankLine", rank: 9, alias: "l", from: "bank_lines l JOIN fin_events fe ON fe.id = l.event_id", kind: "CASE l.side WHEN 'D' THEN 'in' ELSE 'out' END",
       amount: "l.try_minor / 100.0", cents: "l.try_minor", date: "fe.date", method: "CASE l.role WHEN 'bank' THEN 'bank' WHEN 'loan' THEN 'loan' ELSE 'card' END", ref: "l.ref",
-      party: "COALESCE(fe.party_id, '')", internal: `CASE WHEN fe.type IN (${[...INTERNAL_TYPES].map(type => `'${type}'`).join(", ")}) THEN 1 ELSE 0 END`,
+      // Aşama 9: iç hareketin (transfer, Kasa ↔ Banka, kredi, kart borcu) ters kaydı da iç harekettir (asıl işlemin türüyle; dış giriş/çıkış sayılmaz).
+      party: "COALESCE(fe.party_id, '')", internal: `CASE WHEN fe.type IN (${INTERNAL_SQL}) THEN 1 WHEN fe.type = 'reversal' AND EXISTS (SELECT 1 FROM fin_events io WHERE io.id = fe.reversal_of AND io.type IN (${INTERNAL_SQL})) THEN 1 ELSE 0 END`,
       wayHint: "CASE l.role WHEN 'bank' THEN 'bank' WHEN 'pos' THEN 'card' WHEN 'card' THEN 'ccard' ELSE 'loan' END",
       created: "fe.created_at", updated: "fe.updated_at", actor: "fe.created_by", eventId: "l.event_id", valueDate: "fe.value_date", fxMinor: "l.fx_minor", currency: "l.currency",
       // baseType: ters kaydın asıl işlem türü (raporlarda açılış/Devir Kapanışı zincirinin ters kaydı da düzeltme sayılır).
@@ -492,6 +498,51 @@ export function createMoneyLines(store, { verify = false } = {}) {
   }
 
   /**
+   * Banka görünümlerinin Bugün ve Bu Ay giriş-çıkışı (§3.4 "Bugün ve Bu Ay toplamlarında iç hareket", §8.4 K10; Aşama 9), kuruş:
+   *   { today | month: { inMinor, outMinor, transferInMinor, transferOutMinor } }.
+   * Yalnız Gerçek Banka (hesaba atanmış 102; hesabı atanmamış eski hareketler ve kart/kredi borcu girmez). Giriş/Çıkış dış hareketlerdir
+   * (internal = 0); iç hareketler (Kasa ↔ Banka, bankalar arası transfer, kredi kullanımı ve geri ödemesi, kart borcu ödemesi ve ters kayıtları)
+   * ayrı "Transfer" satırındadır, iki kez sayılmaz. İç hareketin gider satırları (transfer ücreti ve BSMV'si, kredi faizi) şirketten gerçekten
+   * çıkan paradır: Çıkış'a sayılır, Transfer'den düşülür (ters kaydında Giriş'e). Açılış ve Devir düzeltmeleri hiçbirine girmez.
+   */
+  function flows(day, monthStart = `${day.slice(0, 7)}-01`) {
+    const { tables } = load();
+    if (!tables.has("bank_accounts")) return null;
+    const row = store.get(
+      `SELECT
+         COALESCE(SUM(CASE WHEN w.date = :day AND w.internal = 0 AND w.kind = 'in' THEN w.cents END), 0) AS todayIn,
+         COALESCE(SUM(CASE WHEN w.date = :day AND w.internal = 0 AND w.kind = 'out' THEN w.cents END), 0) AS todayOut,
+         COALESCE(SUM(CASE WHEN w.date = :day AND w.internal = 1 AND w.kind = 'in' THEN w.cents END), 0) AS todayTrIn,
+         COALESCE(SUM(CASE WHEN w.date = :day AND w.internal = 1 AND w.kind = 'out' THEN w.cents END), 0) AS todayTrOut,
+         COALESCE(SUM(CASE WHEN w.internal = 0 AND w.kind = 'in' THEN w.cents END), 0) AS monthIn,
+         COALESCE(SUM(CASE WHEN w.internal = 0 AND w.kind = 'out' THEN w.cents END), 0) AS monthOut,
+         COALESCE(SUM(CASE WHEN w.internal = 1 AND w.kind = 'in' THEN w.cents END), 0) AS monthTrIn,
+         COALESCE(SUM(CASE WHEN w.internal = 1 AND w.kind = 'out' THEN w.cents END), 0) AS monthTrOut
+       FROM (${waySql({ light: true, since: monthStart, until: day })}) w
+       LEFT JOIN fin_events fe ON w.src = 9 AND fe.id = w.event_id
+       LEFT JOIN fin_events fo ON fe.type = 'reversal' AND fo.id = fe.reversal_of
+       WHERE w.way = 'bank' AND w.ref <> '' AND COALESCE(fo.type, fe.type, '') NOT IN (${ADJUST_SQL})`,
+      { ...params({ since: monthStart, until: day }), day },
+    );
+    // İç hareketin gider satırları (gönderen hesabı Gerçek Banka'da olan): borç → Çıkış, alacak (ters kayıt) → Giriş.
+    const fee = store.get(
+      `SELECT COALESCE(SUM(CASE WHEN fe.date = :day AND l.side = 'D' THEN l.try_minor END), 0) AS todayOut, COALESCE(SUM(CASE WHEN fe.date = :day AND l.side = 'C' THEN l.try_minor END), 0) AS todayIn,
+              COALESCE(SUM(CASE WHEN l.side = 'D' THEN l.try_minor END), 0) AS monthOut, COALESCE(SUM(CASE WHEN l.side = 'C' THEN l.try_minor END), 0) AS monthIn
+       FROM fin_events fe JOIN bank_lines l ON l.event_id = fe.id AND l.role IN ('expense', 'tax')
+       JOIN bank_accounts ba ON ba.id = fe.bank_ref AND ba.kind NOT IN ('card', 'loan')
+       LEFT JOIN fin_events fo ON fe.type = 'reversal' AND fo.id = fe.reversal_of
+       WHERE fe.date >= :month AND fe.date <= :day AND fe.src_table = '' AND COALESCE(fo.type, fe.type) IN (${INTERNAL_SQL})`,
+      { day, month: monthStart },
+    );
+    const n = value => Number(value) || 0;
+    const shape = (inMinor, outMinor, trIn, trOut, feeIn, feeOut) => ({ inMinor: n(inMinor) + n(feeIn), outMinor: n(outMinor) + n(feeOut), transferInMinor: n(trIn) - n(feeIn), transferOutMinor: n(trOut) - n(feeOut) });
+    return {
+      today: shape(row.todayIn, row.todayOut, row.todayTrIn, row.todayTrOut, fee.todayIn, fee.todayOut),
+      month: shape(row.monthIn, row.monthOut, row.monthTrIn, row.monthTrOut, fee.monthIn, fee.monthOut),
+    };
+  }
+
+  /**
    * money:report (§3.4): satır yolunun (Kasa penceresi, raporlar) JS toplamı = özet SQL'i (yol ve hesap bazında). events verilirse yalnız o
    * olayların satırları (COMMIT'te dokunulan olaylar). Dönüş: uyuşmayan gruplar [{ key, rows, summary }].
    */
@@ -510,7 +561,7 @@ export function createMoneyLines(store, { verify = false } = {}) {
     return out;
   }
 
-  return { lines, rows, shape, groups, periodGroups, refTotal, eventsTotal, lastDate, afterIsEmpty, prime, unassigned, unassignedWays, balances, summary, verifyReport, signedCents, reset: () => {
+  return { lines, rows, shape, groups, periodGroups, refTotal, eventsTotal, lastDate, afterIsEmpty, prime, unassigned, unassignedWays, balances, summary, flows, verifyReport, signedCents, reset: () => {
     schema = null;
     totals.clear();
   } };

@@ -93,6 +93,7 @@
     "bank.settings.reset": "Banka ayarlarını varsayılana döndürdü",
     // Aşama 4 (Banka Hareketleri): Banka Fişi, Ters Kaydet, Düzelt, açıklama ve Planlı İşlemler.
     "bank.voucher.created": "Banka fişi kaydetti",
+    "bank.transfer.created": "Bankalar arası transfer yaptı",
     "bank.voucher.reversed": "Banka fişini ters kaydetti",
     "bank.voucher.corrected": "Banka fişini düzeltti",
     "bank.event.info": "Banka işleminin açıklamasını düzeltti",

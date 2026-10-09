@@ -545,6 +545,9 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
       bankItems.push(...(openingItems.length ? openingItems : [{ code: "bank:opening", name: "Açılış Kuralı", ok: true, count: 0 }]));
       const voucherItems = byEntity("bank:voucher", "Banka Fişi Dengesi", bank().voucherProblems(), { label });
       bankItems.push(...(voucherItems.length ? voucherItems : [{ code: "bank:voucher", name: "Banka Fişi Dengesi", ok: true, count: 0 }]));
+      // Aşama 9 (§3.11): bankalar arası transfer ve Kasa ↔ Banka ikizi (hesap bazında; gönderen hesap / banka bacağının hesabı).
+      const transferItems = byEntity("bank:transfer", "Transfer ve Kasa ile Banka İkizi", bank().transferProblems(), { label });
+      bankItems.push(...(transferItems.length ? transferItems : [{ code: "bank:transfer", name: "Transfer ve Kasa ile Banka İkizi", ok: true, count: 0 }]));
       // GG2: Devir Kapanışı sırası (şirket bazında sınır; daha erken tarihli ikinci kapanış aynı eski bakiyeyi iki kez kapatır).
       const carry = bank().carryProblems();
       bankItems.push({ code: "bank:carry", name: "Devir Kapanışı Sırası", ok: carry.length === 0, count: carry.length, sample: carry.slice(0, 5).map(item => item.sample) });

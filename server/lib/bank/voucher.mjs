@@ -123,6 +123,18 @@ const plainLine = (role, gl, side, tryMinor, memo = "") => ({ role, gl: String(g
  * Dönüş: { lines, base, tax, total } (kuruş).
  */
 export function feeLines({ account, amountMinor, tax = "bsmv_incl", ratePpm = 50_000, gl = "770", feeName = "" }) {
+  const { base, taxMinor, total } = feeSplit({ amountMinor, tax, ratePpm });
+  const lines = [plainLine("expense", gl, "D", base, feeName)];
+  if (taxMinor > 0) lines.push(plainLine("tax", gl, "D", taxMinor, bsmvMemo(ratePpm)));
+  lines.push(moneyLine(account, "C", total));
+  return { lines, base, tax: taxMinor, total };
+}
+const bsmvMemo = ratePpm => `BSMV %${String(ratePpm / 10_000).replace(".", ",")}`;
+/**
+ * Masraf tutarının matrah ve BSMV'si (kuruş): bsmv_incl → matrah = tutar / (1 + oran), BSMV = tutar − matrah; bsmv_excl → BSMV = tutar × oran;
+ * none → BSMV 0. Masraf fişi ve transfer ücreti aynı kuralı kullanır.
+ */
+export function feeSplit({ amountMinor, tax = "bsmv_incl", ratePpm = 50_000 }) {
   let base = amountMinor;
   let taxMinor = 0;
   if (tax === "bsmv_incl") {
@@ -131,11 +143,20 @@ export function feeLines({ account, amountMinor, tax = "bsmv_incl", ratePpm = 50
   } else if (tax === "bsmv_excl") {
     taxMinor = mulDivRound(amountMinor, ratePpm, 1_000_000);
   }
-  const total = base + taxMinor;
-  const lines = [plainLine("expense", gl, "D", base, feeName)];
-  if (taxMinor > 0) lines.push(plainLine("tax", gl, "D", taxMinor, `BSMV %${String(ratePpm / 10_000).replace(".", ",")}`));
-  lines.push(moneyLine(account, "C", total));
-  return { lines, base, tax: taxMinor, total };
+  return { base, taxMinor, total: base + taxMinor };
+}
+/**
+ * Bankalar arası transfer (§3.7 #11): B 102.alıcı tutar · (ücret varsa) B 770 matrah · B 770 BSMV (rol tax) / A 102.gönderen tutar + ücret.
+ * Ücretsiz: B 102.02 20.000 / A 102.01 20.000. Ücretli (EFT 5,00 + BSMV 0,25): B 102.02 20.000 · B 770 5,00 · B 770 0,25 / A 102.01 20.005,25.
+ * Tek borç ve tek alacak para satırı (kapı bank:transfer); iki hesap aynı para biriminde (TL). fee: { base, tax, gl, name, ratePpm } | null.
+ */
+export function transferLines({ from, to, amountMinor, fee = null }) {
+  const lines = [moneyLine(to, "D", amountMinor)];
+  const feeTotal = fee ? fee.base + fee.tax : 0;
+  if (fee?.base > 0) lines.push(plainLine("expense", fee.gl, "D", fee.base, fee.name));
+  if (fee?.tax > 0) lines.push(plainLine("tax", fee.gl, "D", fee.tax, bsmvMemo(fee.ratePpm)));
+  lines.push(moneyLine(from, "C", amountMinor + feeTotal));
+  return lines;
 }
 // round(a × b / c), artı tamsayılar: çarpım BigInt'te (1e12 TL × 1e6 güvenli tamsayıyı aşar), yarım birim yukarı (sıfırdan uzağa).
 function mulDivRound(a, b, c) {

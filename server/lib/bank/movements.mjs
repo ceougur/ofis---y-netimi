@@ -20,7 +20,7 @@ import { isIsoDate } from "../period.mjs";
 import { addCalendarDays } from "../business-days.mjs";
 import { parseMinor, toMinor } from "../minor.mjs";
 import { buildXlsx } from "../xlsx-write.mjs";
-import { EVENT_TYPES, INTERNAL_TYPES, NON_MONEY_TYPES, STATUS_LABELS, TYPE_GROUPS, isVoucherType, typeLabel } from "./event-types.mjs";
+import { EVENT_TYPES, INTERNAL_TYPES, NON_MONEY_TYPES, STATUS_LABELS, TYPE_GROUPS, isBankVoucherType, typeLabel } from "./event-types.mjs";
 import { MONEY_ROLES } from "./voucher.mjs";
 
 const q = value => `'${String(value).replace(/'/g, "''")}'`;
@@ -51,6 +51,8 @@ const MODULE_REASONS = Object.freeze({
   cheque_events: "Bu hareket Çek / Senet penceresinden girildi; oradan geri alınır.",
 });
 const WIZARD_TYPES = new Set(["carry_close", "legacy_assign", "legacy_reclass"]);
+// Transferin kanalı (fin_events.channel adla saklanır) → Düzelt formunun anahtarı.
+const CHANNEL_KEY = Object.freeze({ EFT: "eft", FAST: "fast", Havale: "havale", Virman: "virman" });
 const ROLE_OF_GL = { 100: "cash", 102: "bank", 108: "pos", 309: "card", 300: "loan" };
 
 /** "1.234,56" (kuruştan; Excel'de sayıya çevrilir, ekranda aynı). */
@@ -152,7 +154,7 @@ export function createBankMovements({ store, money, accounts, ledger, period, no
       return { status: 409, code: "bank-already-reversed", reason: `Bu işlem ters kaydedilmiş${by?.no ? ` (${by.no})` : ""}; yeniden ters kaydedilmez.` };
     }
     if (event.status === "cancelled") return { status: 409, code: "bank-already-reversed", reason: "Bu işlem iptal edilmiş." };
-    if (!isVoucherType(event.type)) return { status: 409, code: "bank-event-other", reason: `${typeLabel(event.type, event.direction)} bu yoldan ters kaydedilmez.` };
+    if (!isBankVoucherType(event.type)) return { status: 409, code: "bank-event-other", reason: `${typeLabel(event.type, event.direction)} bu yoldan ters kaydedilmez.` };
     const header = isFeeHeader(event);
     const payment = header ? feePaymentOf(event) : null;
     if (reconciled(event.id) || reconciled(payment?.id)) return { status: 409, code: "bank-reconciled", reason: "Bu işlem banka ekstresiyle eşleşmiş; önce eşleşmeyi kaldırın." };
@@ -258,10 +260,28 @@ export function createBankMovements({ store, money, accounts, ledger, period, no
       case "loan_repay":
         Object.assign(form, { amount: minorPlain(moneyOf(event.counter_ref)), interestAmount: minorPlain(sum("expense", "D")), loanAccountId: event.counter_ref });
         break;
+      case "transfer": {
+        // Aşama 9: alıcıya giren tutar, ücret (matrah + BSMV, BSMV Dahil olarak), masraf türü, kanal ve valör.
+        const info = transferInfo(event, lines);
+        Object.assign(form, { toAccountId: event.counter_ref, amount: minorPlain(info.amountMinor), feeAmount: info.feeMinor ? minorPlain(info.feeMinor) : "0", feeTax: info.feeTaxMinor ? "bsmv_incl" : "none", ...(info.feeTaxMinor ? { feeRate: String(info.feeRatePpm / 10_000).replace(".", ",") } : {}), feeType: info.feeType, channel: CHANNEL_KEY[event.channel] || "", valueDate: event.value_date || "" });
+        break;
+      }
       default:
         break;
     }
     return form;
+  }
+  /**
+   * Bankalar arası transferin özeti (Aşama 9): alıcıya giren tutar (alıcının borç para satırı), ücret (gider + BSMV satırları), gönderenden çıkan
+   * (alacak para satırı). Ters kaydında satırlar aynadır: tutarlar aynı, yön ters.
+   */
+  function transferInfo(event, lines) {
+    const money = ref => lines.filter(line => MONEY_ROLES.has(line.role) && line.ref === ref).reduce((total, line) => total + line.tryMinor, 0);
+    const roleSum = role => lines.filter(line => line.role === role).reduce((total, line) => total + line.tryMinor, 0);
+    const expense = lines.find(line => line.role === "expense");
+    const tax = lines.find(line => line.role === "tax");
+    const feeTypeKey = feeTypes().find(type => type.name === expense?.memo)?.key || "";
+    return { amountMinor: money(event.counter_ref), outMinor: money(event.bank_ref), feeMinor: roleSum("expense") + roleSum("tax"), feeBaseMinor: roleSum("expense"), feeTaxMinor: roleSum("tax"), feeRatePpm: tax ? ppmOfMemo(tax.memo) : 0, feeType: feeTypeKey, feeTypeName: expense?.memo || "", gl: expense?.gl || "" };
   }
   function historyOf(event) {
     const ids = [event.id, event.reversal_of, event.reversed_by, event.src_id].filter(Boolean);
@@ -278,6 +298,13 @@ export function createBankMovements({ store, money, accounts, ledger, period, no
       });
   }
 
+  // İşlem Kartı'ndaki transfer özeti: transfer ve transferin ters kaydı (asıl işlemin türüyle).
+  const baseTypeOf = event => (event.type === "reversal" && event.reversal_of ? store.get("SELECT type FROM fin_events WHERE id = ?", event.reversal_of)?.type || "" : event.type);
+  function transferOf(event, lines) {
+    if (event.src_table || baseTypeOf(event) !== "transfer") return null;
+    const info = transferInfo(event, lines);
+    return { amountMinor: info.amountMinor, feeMinor: info.feeMinor, feeBaseMinor: info.feeBaseMinor, feeTaxMinor: info.feeTaxMinor, feeRatePpm: info.feeRatePpm, feeTypeName: info.feeTypeName, gl: info.gl, outMinor: info.outMinor };
+  }
   /** İşlem Kartı (§7 "/bank/events/:no"): İşlem No ya da kimlikle. */
   function card(ref) {
     const event = mustEvent(ref);
@@ -339,6 +366,7 @@ export function createBankMovements({ store, money, accounts, ledger, period, no
       party: party ? { id: party.id, name: party.name } : event.party_id ? { id: event.party_id, name: "" } : null,
       invoice: invoice ? { id: invoice.id, number: invoice.number, status: invoice.status, kind: invoice.kind, date: invoice.date } : null,
       fee,
+      transfer: transferOf(event, lines),
       payment: payment ? { id: payment.id, no: payment.no, status: payment.status } : null,
       linkedFee: linked ? { id: linked.id, no: linked.no, status: linked.status } : null,
       reversal: { of: relation(event.reversal_of), by: relation(event.reversed_by) },
@@ -755,10 +783,12 @@ export function createBankMovements({ store, money, accounts, ledger, period, no
       where.push("e.bank_ref = ?");
       args.push(account);
     }
+    // Aşama 9: bankalar arası transferin ücreti (gider + BSMV satırları, 770) da banka masrafıdır; transferin kendisi (para satırları) rapora
+    // girmez. Ücretsiz transfer satır üretmez (aşağıda gider satırı yoksa atlanır).
     const events = store.all(
-      `SELECT e.* FROM fin_events e WHERE e.type = 'fee' AND +e.status IN ('active', 'reversed') AND ${where.join(" AND ")}
+      `SELECT e.* FROM fin_events e WHERE e.type IN ('fee', 'transfer') AND +e.status IN ('active', 'reversed') AND ${where.join(" AND ")}
        UNION ALL
-       SELECT e.* FROM fin_events e WHERE e.type = 'reversal' AND EXISTS (SELECT 1 FROM fin_events o WHERE o.id = e.reversal_of AND o.type = 'fee') AND ${where.join(" AND ")}
+       SELECT e.* FROM fin_events e WHERE e.type = 'reversal' AND EXISTS (SELECT 1 FROM fin_events o WHERE o.id = e.reversal_of AND o.type IN ('fee', 'transfer')) AND ${where.join(" AND ")}
        ORDER BY date, year, seq`,
       ...args, ...args,
     );
@@ -786,6 +816,7 @@ export function createBankMovements({ store, money, accounts, ledger, period, no
         row = { gl: line?.gl || "", feeTypeName: line?.name || "", baseMinor: base, bsmvMinor: 0, vatMinor: vat, totalMinor: base + vat, invoiceId: invoice.id, invoiceNo: invoice.number };
       } else {
         const expense = lines.find(line => line.role === "expense");
+        if (!expense && !lines.some(line => line.role === "tax")) continue;
         const base = signed("expense");
         const bsmv = signed("tax");
         row = { gl: expense?.gl || "", feeTypeName: expense?.memo || "", baseMinor: base, bsmvMinor: bsmv, vatMinor: 0, totalMinor: base + bsmv, invoiceId: "", invoiceNo: "" };

@@ -57,6 +57,8 @@ export function directionOf(table, row = {}) {
 export const VOUCHER_TYPES = Object.freeze(["fee", "interest_in", "interest_out", "other_in", "other_out", "card_payment", "loan_draw", "loan_repay"]);
 const VOUCHER_SET = new Set(VOUCHER_TYPES);
 export const isVoucherType = type => VOUCHER_SET.has(type);
+/** Banka Fişi (satırları bank_lines'ta, Ters Kaydet / Düzelt ile değişen): Banka Fişi türleri + Bankalar Arası Transfer (Aşama 9; ayrı uçtan). */
+export const isBankVoucherType = type => VOUCHER_SET.has(type) || type === "transfer";
 
 /** İşlem türünün adı (ekranda, İşlem Kartı'nda, Hareketler'de; başlık yazımı). Yöne bağlı türlerde yön verilir. */
 const TYPE_LABELS = Object.freeze({
@@ -123,10 +125,7 @@ export const TYPE_GROUPS = Object.freeze({
   legacy: ["carry_close", "legacy_reclass"],
 });
 
-/**
- * Süzgeç türlerinin adları (Hareketler → İşlem Türü; başlık yazımı). Liste 2.1.0'da kaydı olabilen türlerdir: Bankalar Arası Transfer
- * (Aşama 9) o özellik gelince eklenir (yarım özellik görünmez, §12.1).
- */
+/** Süzgeç türlerinin adları (Hareketler → İşlem Türü; başlık yazımı). Liste 2.1.0'da kaydı olabilen türlerdir (yarım özellik görünmez, §12.1). */
 export const GROUP_LABELS = Object.freeze({
   fee: "Banka Masrafı",
   interest: "Faiz",
@@ -142,5 +141,6 @@ export const GROUP_LABELS = Object.freeze({
   stock: "Stok Satış ve Alımı",
   cheque: "Çek ve Senet",
   cash: "Kasa ile Banka Arası",
+  transfer: "Bankalar Arası Transfer",
   legacy: "Kurulum ve Aktarım",
 });

@@ -97,7 +97,7 @@ export function familyOf(code) {
   if (code.startsWith("dates:future:") || code === "money:method" || code === "money:report" || code === "money:event" || code.startsWith("bank:event")) return null;
   // Aşama 3: açılış kuralı ve fiş dengesi hesap/olay bazında; süzgeç dokunulan hesap ve olaylarda kendisi denetler (eski sapmaya dokunan yazım
   // bulgu verir → tam kapı imzayla karar verir).
-  if (code.startsWith("bank:opening") || code.startsWith("bank:voucher") || code.startsWith("bank:carry") || code.startsWith("bank:ref")) return null;
+  if (code.startsWith("bank:opening") || code.startsWith("bank:voucher") || code.startsWith("bank:transfer") || code.startsWith("bank:carry") || code.startsWith("bank:ref")) return null;
   return "all";
 }
 
@@ -646,6 +646,9 @@ export function createScopedGate({ store, ledger, accounts, plans, stock, money,
       // GG2: Devir Kapanışı sırası (dokunulan olaylardan biri Devir Kapanışı ya da ters kaydıysa).
       for (const item of bank.carryProblems({ events: s.events })) find("bank:carry", item.sample || item.key);
     }
+    // Aşama 9: bankalar arası transfer ve Kasa ↔ Banka ikizi (dokunulan olaylar ve Kasa transfer kimlikleri; eski sürümün olaysız ikizi
+    // transfer kimliğinden).
+    if (bank.ready() && (s.events.size || s.transfers.size)) for (const item of bank.transferProblems({ events: s.events, transfers: s.transfers })) find("bank:transfer", item.sample || item.key);
     // Açılış kuralı (Aşama 3): dokunulan hesaplar (hesap kartı, satır bağı, olayın ya da fiş satırının hesabı).
     if (bank.ready() && s.banks.size) for (const item of bank.openingProblems({ refs: s.banks })) find("bank:opening", item.sample || item.key);
     // GG2 (bank:ref): dokunulan modül satırlarından hesaba bağlı olanların yolu hesabın türüne uyar.

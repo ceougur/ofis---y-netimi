@@ -1361,6 +1361,7 @@
   // İşlem Kartı'ndaki İşlem Geçmişi'nin adları (Yönetim → İşlem Geçmişi'yle aynı türler; cümle düzeninde).
   const HISTORY_LABELS = {
     "bank.voucher.created": "Fiş kaydedildi",
+    "bank.transfer.created": "Transfer kaydedildi",
     "bank.voucher.reversed": "Ters kaydedildi",
     "bank.voucher.corrected": "Düzeltildi (ters kayıt ve yeni fiş)",
     "bank.event.info": "Açıklama düzeltildi",

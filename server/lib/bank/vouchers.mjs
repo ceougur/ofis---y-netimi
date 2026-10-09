@@ -29,11 +29,14 @@ import { mulPpm, parseMinor, parsePpm } from "../minor.mjs";
 import { ACCOUNT_KINDS } from "./accounts.mjs";
 import { GROUP_LABELS, VOUCHER_TYPES, isVoucherType, typeLabel } from "./event-types.mjs";
 import { CHART } from "../general-ledger.mjs";
-import { ROLE_GL, assertLines, cardPaymentLines, feeLines, interestInLines, interestOutLines, loanDrawLines, loanRepayLines, otherLines, roleOfAccount } from "./voucher.mjs";
+import { ROLE_GL, assertLines, cardPaymentLines, feeLines, feeSplit, interestInLines, interestOutLines, loanDrawLines, loanRepayLines, otherLines, roleOfAccount, transferLines } from "./voucher.mjs";
 import { minorPlain } from "./movements.mjs";
 import { FEE_GL } from "./settings.mjs";
 
 const BANK_KINDS = new Set(["demand", "commercial", "other"]);
+// Bankalar arası transfer (Aşama 9; §3.5: vadeli hesap "yalnız transfer ve faiz"): 102 ailesinin TL hesapları. Kredi (300) kullanımı/geri ödemesi
+// ve kurumsal kart (309) borcu kendi türleriyle (Kredi Kullanımı, Kredi Geri Ödemesi, Kart Borcu Ödemesi) girilir.
+const TRANSFER_KINDS = new Set([...BANK_KINDS, "time"]);
 const TYPE_RULES = Object.freeze({
   fee: { main: BANK_KINDS, purpose: "banka masrafı Vadesiz, Ticari ya da Diğer TL hesaptan girilir" },
   interest_in: { main: new Set([...BANK_KINDS, "time"]), purpose: "faiz geliri vadesiz, ticari, diğer ya da vadeli TL hesaba girilir" },
@@ -43,12 +46,22 @@ const TYPE_RULES = Object.freeze({
   card_payment: { main: BANK_KINDS, purpose: "kart borcu Vadesiz, Ticari ya da Diğer TL hesaptan ödenir", counter: { field: "cardAccountId", kinds: new Set(["card"]), label: "Kurumsal Kredi Kartı", purpose: "kurumsal kredi kartı hesabı değil" } },
   loan_draw: { main: BANK_KINDS, purpose: "kredi Vadesiz, Ticari ya da Diğer TL hesaba kullanılır", counter: { field: "loanAccountId", kinds: new Set(["loan"]), label: "Kredi Hesabı", purpose: "kredi hesabı değil" } },
   loan_repay: { main: BANK_KINDS, purpose: "kredi Vadesiz, Ticari ya da Diğer TL hesaptan ödenir", counter: { field: "loanAccountId", kinds: new Set(["loan"]), label: "Kredi Hesabı", purpose: "kredi hesabı değil" } },
+  transfer: { main: TRANSFER_KINDS, purpose: "bankalar arası transfer Vadesiz, Ticari, Vadeli ya da Diğer TL hesaptan yapılır (kredi kullanımı ve kart borcu kendi işlem türüyle)", counter: { field: "toAccountId", kinds: TRANSFER_KINDS, label: "Alıcı Hesap", purpose: "bankalar arası transfer Vadesiz, Ticari, Vadeli ya da Diğer TL hesaba yapılır (kredi geri ödemesi ve kart borcu kendi işlem türüyle)" } },
 });
 /** Masrafın vergi kipleri (Ek A.1/24: hesabı masraf türü belirler, kip yalnız vergi satırını değiştirir). */
 export const FEE_TAXES = Object.freeze({ bsmv_incl: "BSMV Dahil", bsmv_excl: "BSMV Hariç", vat_incl: "KDV Dahil (Faturalı)", vat_excl: "KDV Hariç (Faturalı)", none: "Yok" });
 const VAT_TAXES = new Set(["vat_incl", "vat_excl"]);
-/** Kredi işlemleri Transfer Yapma yetkisi ister (§9.1: kredi kullanımı). */
-export const TRANSFER_TYPES = Object.freeze(new Set(["loan_draw", "loan_repay"]));
+/** Transfer Yapma yetkisi isteyen türler (§9.1: bankalar arası transfer, kredi kullanımı ve geri ödemesi). */
+export const TRANSFER_TYPES = Object.freeze(new Set(["transfer", "loan_draw", "loan_repay"]));
+/** POST /bank/transfers'ın türleri (§7: "Bankalar arası, kredi kullanımı/geri ödeme"). Bankalar arası transfer yalnız bu uçtan girilir. */
+export const TRANSFER_ENDPOINT_TYPES = Object.freeze(["transfer", "loan_draw", "loan_repay"]);
+/** Transferin kanalı (fin_events.channel; ekranda ve İşlem Kartı'nda adıyla; ekstre eşleştirmesinde ipucu). İsteğe bağlı (Ek A). */
+export const TRANSFER_CHANNELS = Object.freeze({ eft: "EFT", fast: "FAST", havale: "Havale", virman: "Virman" });
+const CHANNEL_KEYS = Object.freeze(Object.fromEntries(Object.entries(TRANSFER_CHANNELS).map(([key, label]) => [label, key])));
+/** Transfer ücretinin vergi kipleri: BSMV'li ya da vergisiz (KDV'li, faturalı masraf Banka → + Masraf'tan; fatura numarası gerekir). */
+const TRANSFER_FEE_TAXES = new Set(["bsmv_incl", "bsmv_excl", "none"]);
+/** Valör en çok işlem tarihinden bu kadar gün sonra olabilir (EFT/FAST'te ertesi iş günü; hafta sonu ve bayram araları dahil). */
+export const VALUE_DATE_MAX_DAYS = 30;
 export const PLAN_REPEATS = Object.freeze({ none: "Tekrar Yok", weekly: "Haftalık", monthly: "Aylık", quarterly: "Üç Aylık", yearly: "Yıllık" });
 export const PLAN_STATUS = Object.freeze({ planned: "Planlı", done: "Gerçekleşti", cancelled: "İptal Edildi" });
 const MANUAL_ROLES = new Set(["bank", "expense", "tax", "income", "fx_gain", "fx_loss", "stoppage"]);
@@ -71,18 +84,19 @@ export function createBankVouchers({ store, bank, period, money, accounts, movem
   const today = () => period.today();
 
   // ---------- Girdi ----------
-  function accountFor(id, { field = "accountId", label = "Banka Hesabı", kinds, purpose }) {
+  function accountFor(id, { field = "accountId", label = "Banka Hesabı", kinds, purpose, currencyText = "" }) {
     const key = text(id);
     if (!key) throw bad(400, `${label} seçin.`, "bank-account-required", { field });
     const row = accounts.rowOf(key);
     if (!row) throw bad(404, "Banka hesabı bulunamadı. Silinmiş ya da başka şirkete ait olabilir.", "bank-account-missing", { field });
     if (row.status !== "active") throw bad(400, `${labelOf(row)} pasif; işlem girmek için önce Etkinleştir.`, "bank-account-invalid", { field });
-    if (row.currency !== "TRY") throw bad(400, `${labelOf(row)} ${row.currency} hesabı; bu işlem yalnız TL hesapta girilir (döviz işlemleri Döviz Alım Satımı'nda).`, "bank-currency", { field });
+    if (row.currency !== "TRY") throw bad(400, currencyText || `${labelOf(row)} ${row.currency} hesabı; bu işlem yalnız TL hesapta girilir (döviz işlemleri Döviz Alım Satımı'nda).`, "bank-currency", { field });
     if (!kinds.has(row.kind)) throw bad(400, `${labelOf(row)} (${ACCOUNT_KINDS[row.kind]?.label || row.kind}): ${purpose}.`, "bank-account-invalid", { field });
     return row;
   }
-  const typeOf = value => {
+  const typeOf = (value, { transfer = false } = {}) => {
     const type = text(value);
+    if (type === "transfer" && transfer) return type;
     if (!isVoucherType(type)) throw bad(400, `İşlem türü tanınmadı ya da bu formdan girilmez (${type.slice(0, 30) || "boş"}). Banka Masrafı, Faiz Geliri, Faiz Gideri, Diğer Gelir, Diğer Gider, Kart Borcu Ödemesi, Kredi Kullanımı ya da Kredi Geri Ödemesi seçin.`, "bank-voucher-type", { field: "type" });
     return type;
   };
@@ -103,9 +117,44 @@ export function createBankVouchers({ store, bank, period, money, accounts, movem
     const gl = FEE_GL.includes(mapped) ? mapped : feeType.gl;
     return { feeType, tax, vat, ratePpm, gl };
   }
+  /**
+   * Bankalar arası transferin ücreti (Aşama 9; §3.7 #11 "Ücretli (EFT 5,00 + BSMV 0,25)"): isteğe bağlı; yoksa ya da sıfırsa null. Vergi kipi
+   * BSMV Dahil, BSMV Hariç ya da Yok (varsayılan Banka Ayarları → Masraf Vergisi; KDV'li kip seçiliyse BSMV Dahil). Masraf türü verilmezse
+   * kanalın türü (EFT, FAST, Havale), yoksa EFT. Hesabı masraf türü belirler (Hesap Eşlemeleri; masraf fişiyle aynı kural). `fee` nesnesi de
+   * kabul edilir (plan §7 "fee isteğe bağlı"): { amount, tax, rate, type }.
+   */
+  function transferFeeOf(body, values, channelKey) {
+    const raw = body.fee && typeof body.fee === "object" ? { feeAmount: body.fee.amount, feeTax: body.fee.tax, feeRate: body.fee.rate, feeType: body.fee.type } : body;
+    if (!given(raw.feeAmount)) return null;
+    const amountMinor = amountOf(raw.feeAmount, "Ücret", { allowZero: true });
+    if (!amountMinor) return null;
+    const fallbackTax = TRANSFER_FEE_TAXES.has(values.fee.tax) ? values.fee.tax : "bsmv_incl";
+    const tax = text(raw.feeTax) || fallbackTax;
+    if (!TRANSFER_FEE_TAXES.has(tax)) throw bad(400, "Transfer ücretinin vergisi BSMV Dahil, BSMV Hariç ya da Yok olmalı. KDV'li (faturalı) banka masrafını Banka → + Masraf ile girin (fatura numarasıyla).", "bank-tax", { field: "feeTax" });
+    const types = values.fee.types || [];
+    const key = text(raw.feeType) || (types.find(type => type.key === channelKey) ? channelKey : types.find(type => type.key === "eft") ? "eft" : (types.find(type => type.key === "diger") || types[0])?.key || "");
+    const feeType = types.find(type => type.key === key);
+    if (!feeType) throw bad(400, `Ücret türü tanınmadı (${key.slice(0, 40)}). Banka Ayarları → Masraf Türleri'nden seçin.`, "bank-fee-type", { field: "feeType" });
+    const ratePpm = tax === "none" ? 0 : parsePpm(given(raw.feeRate) ? raw.feeRate : "5", { label: "BSMV Oranı" });
+    const mapped = feeType.gl === "653" ? values.gl.commission : values.gl.fee;
+    const gl = FEE_GL.includes(mapped) ? mapped : feeType.gl;
+    return { ...feeSplit({ amountMinor, tax, ratePpm }), tax, ratePpm, gl, feeType };
+  }
+  /** Transferin kanalı: anahtar (eft) ya da ad (EFT); boş → "". Tanınmazsa 400. */
+  function channelOf(value) {
+    if (!given(value)) return { key: "", label: "" };
+    const raw = text(value);
+    const key = Object.hasOwn(TRANSFER_CHANNELS, raw.toLocaleLowerCase("tr-TR")) ? raw.toLocaleLowerCase("tr-TR") : CHANNEL_KEYS[raw] || "";
+    if (!key) throw bad(400, `Kanal tanınmadı (${raw.slice(0, 20)}). ${Object.values(TRANSFER_CHANNELS).join(", ")} seçin ya da boş bırakın.`, "bank-channel", { field: "channel" });
+    return { key, label: TRANSFER_CHANNELS[key] };
+  }
   /** Düz banka fişi alanı ya da { vat } (faturalı masraf) — satırlar. */
-  function linesOf(type, body, { account, counter, amountMinor, values }) {
+  function linesOf(type, body, { account, counter, amountMinor, values, channelKey = "" }) {
     switch (type) {
+      case "transfer": {
+        const fee = transferFeeOf(body, values, channelKey);
+        return { transferFee: fee, lines: transferLines({ from: shape(account), to: shape(counter), amountMinor, fee: fee ? { base: fee.base, tax: fee.taxMinor, gl: fee.gl, name: fee.feeType.name, ratePpm: fee.ratePpm } : null }) };
+      }
       case "fee": {
         const fee = feeOf(body, values);
         if (fee.vat) return { fee };
@@ -170,15 +219,25 @@ export function createBankVouchers({ store, bank, period, money, accounts, movem
    */
   function specOf(body = {}, { dateMode = "move", fallbackDate = "", forPlan = false } = {}) {
     if (!body || typeof body !== "object" || Array.isArray(body)) throw bad(400, "İşlem bilgisi okunamadı.", "bank-voucher");
-    const type = typeOf(body.type);
+    const type = typeOf(body.type, { transfer: true });
     const rule = TYPE_RULES[type];
     const values = settings();
-    const account = accountFor(body.accountId, { kinds: rule.main, purpose: rule.purpose });
+    const isTransfer = type === "transfer";
+    // Aşama 9 (plan Aşama 9 Nasıl Bozarım, kullanıcı kararı: döviz ertelendi): farklı para birimli hesaplar arasında transfer 400; ertelenen
+    // döviz al/sat ekranda önerilmez. Aynı para birimli döviz hesapları da bu sürümde transfer edilmez (Banka Fişi yalnız TL hesapta).
+    if (isTransfer) {
+      const from = accounts.rowOf(text(body.accountId));
+      const to = accounts.rowOf(text(body[rule.counter.field]));
+      if (from && to && from.currency !== to.currency) throw bad(400, `Farklı para birimli hesaplar arasında transfer yapılamaz (${labelOf(from)} ${from.currency === "TRY" ? "TL" : from.currency}, ${labelOf(to)} ${to.currency === "TRY" ? "TL" : to.currency}).`, "bank-currency", { field: rule.counter.field });
+    }
+    const currencyText = isTransfer ? "Bankalar arası transfer yalnız TL hesaplar arasında yapılır." : "";
+    const account = accountFor(body.accountId, { kinds: rule.main, purpose: rule.purpose, currencyText, ...(isTransfer ? { label: "Gönderen Hesap" } : {}) });
     let counter = null;
     if (rule.counter) {
-      counter = accountFor(body[rule.counter.field], { field: rule.counter.field, label: rule.counter.label, kinds: rule.counter.kinds, purpose: rule.counter.purpose });
-      if (counter.id === account.id) throw bad(400, "Aynı hesap iki tarafta olamaz.", "bank-account-invalid", { field: rule.counter.field });
+      counter = accountFor(body[rule.counter.field], { field: rule.counter.field, label: rule.counter.label, kinds: rule.counter.kinds, purpose: rule.counter.purpose, currencyText });
+      if (counter.id === account.id) throw bad(400, isTransfer ? "Gönderen ve alıcı hesap aynı olamaz; transfer iki farklı hesap arasında yapılır." : "Aynı hesap iki tarafta olamaz.", "bank-account-invalid", { field: rule.counter.field });
     }
+    const channel = isTransfer ? channelOf(body.channel) : { key: "", label: "" };
     let date;
     if (dateMode === "plan") {
       date = text(body.plannedDate ?? body.date);
@@ -190,14 +249,26 @@ export function createBankVouchers({ store, bank, period, money, accounts, movem
     const manual = Array.isArray(body.lines);
     if (manual && !values.other.manualVoucher) throw bad(409, "Elle Banka Fişi kapalı. Banka Ayarları → Gelişmiş → Diğer → Elle Banka Fişi'nden açılır.", "bank-manual-off", { field: "lines" });
     if (manual && forPlan) throw bad(400, "Elle fiş planlanmaz.", "bank-voucher", { field: "lines" });
+    if (manual && isTransfer) throw bad(400, "Transferde elle satır girilmez.", "bank-voucher", { field: "lines" });
+    // Valör (Aşama 9): transferde paranın alıcı hesaba geçtiği gün (EFT mesai dışında ertesi iş günü). Bilgidir; satır işlem tarihinde yazılır.
+    let valueDate = "";
+    if (isTransfer && dateMode !== "plan" && given(body.valueDate)) {
+      valueDate = text(body.valueDate);
+      const last = addCalendarDays(date, VALUE_DATE_MAX_DAYS);
+      if (!isIsoDate(valueDate) || valueDate < date || valueDate > last) throw bad(400, `Valör tarihi işlem tarihi (${dayText(date)}) ile ${dayText(last)} arasında olmalı.`, "bank-value-date", { field: "valueDate" });
+      if (valueDate === date) valueDate = "";
+    }
     const amountMinor = manual ? 0 : amountOf(body.amount);
-    const built = manual ? { lines: manualLines(type, body.lines, account) } : linesOf(type, body, { account, counter, amountMinor, values });
+    const built = manual ? { lines: manualLines(type, body.lines, account) } : linesOf(type, body, { account, counter, amountMinor, values, channelKey: channel.key });
     if (built.lines) assertLines(built.lines);
     const spec = {
       type,
       account,
       counter,
       date,
+      valueDate,
+      channel: channel.label,
+      transferFee: built.transferFee || null,
       amountMinor,
       lines: built.lines || null,
       fee: built.fee || null,
@@ -259,7 +330,7 @@ export function createBankVouchers({ store, bank, period, money, accounts, movem
       const header = bank.voucher({ type: "fee", date: spec.date, bankRef: spec.account.id, partyId: spec.vat.partyId, invoiceId: invoice.id, description: spec.description, reference: spec.reference, originKey: `fee-invoice:${invoice.id}` }, []);
       return { id: header.id, no: header.no, invoiceId: invoice.id, invoiceNo: invoice.number, paymentEventId: invoice.paymentEventId, tryMinor: invoice.payableMinor };
     }
-    const event = bank.voucher({ type: spec.type, date: spec.date, bankRef: spec.account.id, counterRef: spec.counter?.id || "", description: spec.description, reference: spec.reference }, spec.lines);
+    const event = bank.voucher({ type: spec.type, date: spec.date, valueDate: spec.valueDate || "", channel: spec.channel || "", bankRef: spec.account.id, counterRef: spec.counter?.id || "", description: spec.description, reference: spec.reference }, spec.lines);
     return { id: event.id, no: event.no };
   }
   const auditOf = (spec, written) => ({
@@ -270,12 +341,14 @@ export function createBankVouchers({ store, bank, period, money, accounts, movem
     counterAccountId: spec.counter?.id || "",
     amountMinor: spec.amountMinor,
     ...(spec.fee ? { feeType: spec.fee.feeType.key, tax: spec.fee.tax } : {}),
+    ...(spec.type === "transfer" ? { toAccountId: spec.counter?.id || "", channel: spec.channel || "", valueDate: spec.valueDate || "", feeMinor: spec.transferFee ? spec.transferFee.base + spec.transferFee.taxMinor : 0, ...(spec.transferFee ? { feeType: spec.transferFee.feeType.key, feeTax: spec.transferFee.tax } : {}) } : {}),
     ...(written.invoiceId ? { invoiceId: written.invoiceId, invoiceNo: written.invoiceNo } : {}),
     ...(spec.lines ? { lines: spec.lines.map(line => `${line.side} ${line.gl}${line.sub ? `/${line.sub}` : ""} ${line.tryMinor}`) } : {}),
   });
 
   // ---------- K7: eksi bakiye (GG2; plan §3.9) ----------
-  const GUARDED_KINDS = new Set(["demand", "commercial", "other", "card"]);
+  // Aşama 9: vadeli hesaptan transfer çıkışı da denetlenir (vadeli hesap eksiye düşmez; bakiyesini artıran faiz denetlenmez).
+  const GUARDED_KINDS = new Set(["demand", "commercial", "other", "time", "card"]);
   const tlText = minor => `${minorPlain(minor).replace(/^-/, "−")} TL`;
   /**
    * İşlemin dokunacağı hesapların yazımdan ÖNCEKİ bakiyesi (moneyLines refTotal; aynı işlemin içinde, yazımdan hemen önce). guardNegative
@@ -347,17 +420,25 @@ export function createBankVouchers({ store, bank, period, money, accounts, movem
     }
   }
 
-  /** POST /bank/vouchers: Banka Fişi (ya da faturalı masraf). Dönüş: İşlem Kartı (+ replayed). */
-  function create(user, body = {}, { requestId = "" } = {}) {
-    const auditEntry = { type: "bank.voucher.created", entityId: "", payload: {} };
+  /**
+   * POST /bank/vouchers: Banka Fişi (ya da faturalı masraf); POST /bank/transfers (endpoint "transfers"; Aşama 9): Bankalar Arası Transfer,
+   * Kredi Kullanımı ve Kredi Geri Ödemesi. Bankalar arası transfer yalnız Transfer ucundan girilir (§7). Dönüş: İşlem Kartı (+ replayed).
+   */
+  function create(user, body = {}, { requestId = "", endpoint = "vouchers" } = {}) {
+    const transfers = endpoint === "transfers";
+    const kind = text(body?.type) || (transfers ? "transfer" : "");
+    if (transfers && !TRANSFER_ENDPOINT_TYPES.includes(kind)) throw bad(400, `Transfer formundan Bankalar Arası Transfer, Kredi Kullanımı ya da Kredi Geri Ödemesi girilir (${kind.slice(0, 30)}). Masraf, faiz ve diğer işlemler Banka Fişi'nden.`, "bank-voucher-type", { field: "type" });
+    if (!transfers) typeOf(body?.type);
+    const input = transfers ? { ...(body || {}), type: kind } : body;
+    const auditEntry = kind === "transfer" ? { type: "bank.transfer.created", entityId: "", payload: {} } : { type: "bank.voucher.created", entityId: "", payload: {} };
     const similarOk = body?.similarOk === true;
     let date = "";
     let before = null;
     const settled = new Map();
     const result = bank.post({
-      user, module: "bank", op: "create", requestId, scope: "bank.voucher.create", body, similarOk,
+      user, module: "bank", op: "create", requestId, scope: kind === "transfer" ? "bank.transfer.create" : "bank.voucher.create", body, similarOk,
       write: () => {
-        const spec = specOf(body);
+        const spec = specOf(input);
         date = spec.date;
         before = balancesOf([spec.account.id, spec.counter?.id]);
         const written = writeSpec(user, spec, { similarOk });
@@ -557,7 +638,7 @@ export function createBankVouchers({ store, bank, period, money, accounts, movem
       status: row.status,
       statusLabel: PLAN_STATUS[row.status] || row.status,
       due: row.status === "planned" && row.planned_date <= today(),
-      spec: { feeType: payload.feeType || "", tax: payload.tax || "", taxRate: payload.taxRate || "", gl: payload.gl || "", stoppageRate: payload.stoppageRate || "", stoppageAmount: payload.stoppageAmount || "", taxAmount: payload.taxAmount || "", interestAmount: payload.interestAmount || "", reference: payload.reference || "" },
+      spec: { feeType: payload.feeType || "", tax: payload.tax || "", taxRate: payload.taxRate || "", gl: payload.gl || "", stoppageRate: payload.stoppageRate || "", stoppageAmount: payload.stoppageAmount || "", taxAmount: payload.taxAmount || "", interestAmount: payload.interestAmount || "", reference: payload.reference || "", feeAmount: payload.feeAmount || "", feeTax: payload.feeTax || "", feeRate: payload.feeRate || "", channel: payload.channel || "" },
       doneEventId: row.done_event_id,
       doneEventNo: done?.no || "",
       runs,
@@ -593,9 +674,10 @@ export function createBankVouchers({ store, bank, period, money, accounts, movem
   const dueCount = () => Number(store.get("SELECT COUNT(*) AS n FROM bank_plans WHERE status = 'planned' AND planned_date <= ?", today()).n) || 0;
   // Planın türe özgü alanları (payload_json). Aşama 4 dilim 4: kredi geri ödemesinin faizi (interestAmount) ve referans da saklanır;
   // önceden saklanmadığı için planlı kredi taksiti faizsiz gerçekleşiyordu.
-  const PLAN_FIELDS = ["feeType", "tax", "taxRate", "gl", "stoppageRate", "stoppageAmount", "taxAmount", "interestAmount", "reference"];
+  // Aşama 9: planlı transferin ücreti ve kanalı da saklanır (feeAmount, feeTax, feeRate, channel; masraf türü feeType ortak).
+  const PLAN_FIELDS = ["feeType", "tax", "taxRate", "gl", "stoppageRate", "stoppageAmount", "taxAmount", "interestAmount", "reference", "feeAmount", "feeTax", "feeRate", "channel"];
   function createPlan(user, body = {}) {
-    const kind = typeOf(body?.kind ?? body?.type);
+    const kind = typeOf(body?.kind ?? body?.type, { transfer: true });
     const repeat = text(body?.repeat) || "none";
     if (!Object.hasOwn(PLAN_REPEATS, repeat)) throw bad(400, "Tekrar Yok, Haftalık, Aylık, Üç Aylık ya da Yıllık seçin.", "bank-plan-repeat", { field: "repeat" });
     const rule = TYPE_RULES[kind];
@@ -605,6 +687,7 @@ export function createBankVouchers({ store, bank, period, money, accounts, movem
     const payload = { anchorDay: Number(spec.date.slice(8, 10)) };
     for (const key of PLAN_FIELDS) if (given(body?.[key])) payload[key] = text(body[key]);
     if (spec.fee) Object.assign(payload, { feeType: spec.fee.feeType.key, tax: spec.fee.tax });
+    if (spec.transferFee) Object.assign(payload, { feeType: spec.transferFee.feeType.key, feeTax: spec.transferFee.tax });
     const id = `bplan-${randomUUID()}`;
     store.tx(() => {
       store.run(
@@ -622,7 +705,7 @@ export function createBankVouchers({ store, bank, period, money, accounts, movem
     const out = { type: plan.kind, accountId: plan.bank_account_id, amount: minorPlain(Number(plan.amount_minor)).replace(/\./g, ""), description: plan.description };
     if (rule?.counter) out[rule.counter.field] = plan.to_account_id;
     for (const key of PLAN_FIELDS) if (given(payload[key])) out[key] = payload[key];
-    for (const key of ["amount", "description", "reference", "interestAmount", "taxAmount", "stoppageRate", "stoppageAmount", "taxRate", "gl", "feeType"]) if (given(body?.[key])) out[key] = body[key];
+    for (const key of ["amount", "description", "reference", "interestAmount", "taxAmount", "stoppageRate", "stoppageAmount", "taxRate", "gl", "feeType", "feeAmount", "feeTax", "feeRate", "channel", "valueDate"]) if (given(body?.[key])) out[key] = body[key];
     out.date = given(body?.date) ? body.date : plan.planned_date;
     return out;
   }
@@ -720,6 +803,11 @@ export function createBankVouchers({ store, bank, period, money, accounts, movem
       feeTypes: (values.fee.types || []).map(type => ({ key: type.key, name: type.name, gl: type.gl })),
       taxes: Object.entries(FEE_TAXES).map(([key, label]) => ({ key, label, invoice: VAT_TAXES.has(key) })),
       repeats: Object.entries(PLAN_REPEATS).map(([key, label]) => ({ key, label })),
+      // Aşama 9: Transfer formu — kanallar ve ücretin vergi kipleri (KDV'li kip yok: faturalı masraf + Masraf'tan).
+      channels: Object.entries(TRANSFER_CHANNELS).map(([key, label]) => ({ key, label })),
+      transferFeeTaxes: Object.entries(FEE_TAXES).filter(([key]) => TRANSFER_FEE_TAXES.has(key)).map(([key, label]) => ({ key, label })),
+      transferFeeTax: TRANSFER_FEE_TAXES.has(values.fee.tax) ? values.fee.tax : "bsmv_incl",
+      valueDateMaxDays: VALUE_DATE_MAX_DAYS,
       gl: { income: ROLE_GL.income, expense: ROLE_GL.expense },
       defaults: { tax: values.fee.tax, bsmvRate: "5", vatRate: "20", stoppageRate: lastStoppageRate(), otherIncome: values.gl.otherIncome, otherExpense: values.gl.otherExpense, interestIncome: values.gl.interestIncome, interestExpense: values.gl.interestExpense, fee: values.gl.fee, commission: values.gl.commission },
       manualVoucher: Boolean(values.other.manualVoucher),

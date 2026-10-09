@@ -18,6 +18,7 @@
 // Aşama 4 (Banka Hareketleri; lib/bank/vouchers.mjs, lib/bank/movements.mjs):
 //   GET  /bank/voucher-meta                  bank.view       fiş formunun seçenekleri (türler, masraf türleri, vergi kipleri, tekrarlar)
 //   POST /bank/vouchers                      bank.move (+ kredi: bank.transfer; KDV'li masraf: invoices.manage)  Banka Fişi → İşlem Kartı
+//   POST /bank/transfers                     bank.transfer   Bankalar Arası Transfer (ücret, kanal, valör), Kredi Kullanımı/Geri Ödemesi (Aşama 9)
 //   GET  /bank/movements?account=&type=&dir=&status=&from=&to=&q=&planned=1&limit=&cursor=  bank.view  Hareketler (imleçli)
 //   GET  /bank/events/:ref                   bank.view       İşlem Kartı (İşlem No ya da kimlik)
 //   POST /bank/events/:id/reverse            bank.cancel (+ KDV'li masraf: invoices.manage)  Ters Kaydet
@@ -60,7 +61,13 @@ export function registerBankRoutes(router, context) {
   router.get(`${BASE}/summary`, async ({ req, res }) => {
     const user = auth.requirePermission(req, "bank.view");
     const summary = service.summary();
-    ok(res, { ...summary, setup: { ...summary.setup, dismissed: service.setupDismissed(user) } });
+    // Aşama 9 (§8.4 K10, §12.3 Aşama 6 "Banka Bugün Çıkış transferi saymaz, Transfer satırında"): Bugün ve Bu Ay giriş-çıkışı tek kaynaktan;
+    // Bu Ay'ın Banka Masrafları Banka Masraf Raporu'yla aynı tanım (masraf fişleri, KDV'li masraf ve transfer ücretleri).
+    const today = period.today();
+    const monthStart = `${today.slice(0, 7)}-01`;
+    const flows = money?.flows?.(today, monthStart) || null;
+    if (flows) flows.month.feeMinor = movements.feeReport({ from: monthStart, to: today }).totals.totalMinor;
+    ok(res, { ...summary, setup: { ...summary.setup, dismissed: service.setupDismissed(user) }, ...(flows ? { flows: { ...flows, day: today, monthStart } } : {}) });
   });
   router.get(`${BASE}/badge`, async ({ req, res }) => {
     auth.requirePermission(req, "bank.view");
@@ -224,6 +231,15 @@ export function registerBankRoutes(router, context) {
     const body = await readJson(req);
     const user = voucherPermissions(req, body);
     const result = vouchers.create(user, body, { requestId: requestIdOf(req, body) });
+    if (!result.replayed) changed(user, { eventId: result.id });
+    ok(res, result);
+  });
+  // Aşama 9 (§7 POST /bank/transfers; §9.1 bank.transfer): Bankalar Arası Transfer (ücret, kanal, valör), Kredi Kullanımı ve Kredi Geri Ödemesi.
+  // Yalnız "Transfer Yapma" yetkisi (§3.7 #11, #17). Ters Kaydet / Düzelt İşlem Kartı'ndan (bank.cancel + bank.transfer).
+  router.post(`${BASE}/transfers`, async ({ req, res }) => {
+    const user = auth.requirePermission(req, "bank.transfer");
+    const body = await readJson(req);
+    const result = vouchers.create(user, body, { requestId: requestIdOf(req, body), endpoint: "transfers" });
     if (!result.replayed) changed(user, { eventId: result.id });
     ok(res, result);
   });

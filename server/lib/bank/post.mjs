@@ -379,7 +379,7 @@ export function createBank({ store, now = systemClock, log = null, strict = fals
 
   // ---------- Adım 4: Benzer İşlem Uyarısı (K8; §3.10/2; Aşama 4) ----------
   // Yalnız hesaba bağlı (bank_ref dolu) ve parası olan yeni olaylarda (create): aynı iş günü, aynı hesap, aynı tür, aynı yön, aynı tutar, aynı
-  // cari ve aynı hedef (fatura, taksit kartı, çek) etkin bir olay varsa 409 bank-similar (önceki İşlem No, giren, tarih). "Yine de Kaydet"
+  // cari ve aynı hedef (fatura, taksit kartı, çek; Aşama 9: transferde ve kart/kredi işleminde karşı hesap) etkin bir olay varsa 409 bank-similar (önceki İşlem No, giren, tarih). "Yine de Kaydet"
   // (similarOk) geçer. Nakit ve hesabı atanmamış satır denetlenmez (güvenilir hedef yok; aynı gün aynı tutarda iki nakit hareket olağan).
   // Olay kopyası yazımdan sonra yenilendiği için denetim finalize'dan sonra, aynı işlemde (BEGIN IMMEDIATE) yapılır: aynı anda gelen iki
   // istekten ikincisi birincinin olayını görür. Ayar: Banka Ayarları → Mükerrer → Benzer İşlem Uyarısı (varsayılan Açık).
@@ -419,7 +419,7 @@ export function createBank({ store, now = systemClock, log = null, strict = fals
     if (similarOk || ctx.op !== "create" || !ctx.created.size || !similarEnabled()) return;
     let businessDay = null;
     for (const id of ctx.created) {
-      const event = store.get("SELECT id, no, type, date, status, bank_ref AS bankRef, direction, try_minor AS tryMinor, party_id AS partyId, invoice_id AS invoiceId, plan_id AS planId, cheque_id AS chequeId FROM fin_events WHERE id = ?", id);
+      const event = store.get("SELECT id, no, type, date, status, bank_ref AS bankRef, counter_ref AS counterRef, direction, try_minor AS tryMinor, party_id AS partyId, invoice_id AS invoiceId, plan_id AS planId, cheque_id AS chequeId FROM fin_events WHERE id = ?", id);
       if (!event || event.status !== "active" || !event.bankRef || !event.direction || !(Number(event.tryMinor) > 0) || SKIP_SIMILAR.has(event.type)) continue;
       businessDay ??= businessDayOf();
       const day = businessDay(event.date);
@@ -428,9 +428,9 @@ export function createBank({ store, now = systemClock, log = null, strict = fals
         `SELECT e.id, e.no, e.date, e.created_by AS createdBy, e.created_at AS createdAt, COALESCE(u.display_name, '') AS createdByName
          FROM fin_events e LEFT JOIN users u ON u.id = e.created_by
          WHERE e.bank_ref = ? AND e.date BETWEEN ? AND ? AND +e.status = 'active' AND +e.type = ? AND +e.direction = ? AND +e.try_minor = ?
-           AND +e.party_id = ? AND +e.invoice_id = ? AND +e.plan_id = ? AND +e.cheque_id = ? AND e.id <> ?
+           AND +e.party_id = ? AND +e.invoice_id = ? AND +e.plan_id = ? AND +e.cheque_id = ? AND +e.counter_ref = ? AND e.id <> ?
          ORDER BY e.date, e.created_at`,
-        event.bankRef, addCalendarDays(event.date, -12), addCalendarDays(event.date, 12), event.type, event.direction, event.tryMinor, event.partyId, event.invoiceId, event.planId, event.chequeId, event.id,
+        event.bankRef, addCalendarDays(event.date, -12), addCalendarDays(event.date, 12), event.type, event.direction, event.tryMinor, event.partyId, event.invoiceId, event.planId, event.chequeId, event.counterRef || "", event.id,
       );
       // Masrafta "hedef" masraf türüdür (gider hesabı + tür adı; Ek A): aynı gün aynı tutarda EFT ücreti ile havale ücreti ayrı masraftır.
       const feeKey = id => store.get("SELECT gl || '|' || memo AS k FROM bank_lines WHERE event_id = ? AND role = 'expense' ORDER BY seq LIMIT 1", id)?.k || "";
