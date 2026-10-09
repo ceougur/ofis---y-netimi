@@ -304,8 +304,19 @@ async function measure(fixtureDir, info) {
     const scan = app.integrity.scan ? app.integrity.scan() : { findings: [] };
     out.scanMs = performance.now() - scanAt;
     out.scanFindings = scan.findings?.map(item => item.code) || [];
+    // Tam tarama olay döngüsünü taramanın süresince tutar (1.000.000 satırda ~2,5 dk): istemcinin bekleyen keep-alive bağlantısı bu sırada
+    // sunucuda kapanır ve ardından gelen ilk istek ECONNRESET alır (ölçümde görüldü; BİLİNEN SINIRLAR). Bir kez yeniden denenir, kaydedilir.
+    const again = async fn => {
+      try {
+        return await fn();
+      } catch (error) {
+        if (error?.cause?.code !== "ECONNRESET") throw error;
+        out.resetAfterScan = (out.resetAfterScan || 0) + 1;
+        return fn();
+      }
+    };
     // 002: aynı süreçte ikinci şirkete yazım (HTTP süresi).
-    const second = (await must("şirketler", client.get("/api/companies"))).companies?.find(company => company.code === "002");
+    const second = (await must("şirketler", again(() => client.get("/api/companies")))).companies?.find(company => company.code === "002");
     if (second) {
       const api = scoped(client, second.id);
       for (let k = 0; k < Math.min(rounds, 3); k += 1) {
@@ -338,7 +349,7 @@ function summarize(target, info, result) {
   }
   const c1 = info.companies["001"];
   lines.push(`\n=== ${target.toLocaleString("tr-TR")} hedef · kod ${result.kod} · 001: ${c1.money.toLocaleString("tr-TR")} para satırı / ${c1.rows.toLocaleString("tr-TR")} defter satırı · 002: ${info.companies["002"]?.money?.toLocaleString("tr-TR") ?? "—"} para satırı`);
-  lines.push(`açılış ${ms(result.openMs)} ms · kapı kurulumu (taban taraması) ${ms(result.startMs)} ms · kilit koyma ${ms(result.lockMs)} ms · tam tarama ${ms(result.scanMs)} ms${result.scanFindings?.length ? ` (bulgu: ${result.scanFindings.join(", ")})` : ""}`);
+  lines.push(`açılış ${ms(result.openMs)} ms · kapı kurulumu (taban taraması) ${ms(result.startMs)} ms · kilit koyma ${ms(result.lockMs)} ms · tam tarama ${ms(result.scanMs)} ms${result.scanFindings?.length ? ` (bulgu: ${result.scanFindings.join(", ")})` : ""}${result.resetAfterScan ? ` · taramadan sonra bağlantı sıfırlandı (${result.resetAfterScan})` : ""}`);
   for (const [phase, row] of Object.entries(rows)) {
     lines.push(`${phase}: ${row.count} yazım · kapı ortanca ${ms(row.gateMedian)} ms, p95 ${ms(row.gateP95)}, en çok ${ms(row.gateMax)} · HTTP ortanca ${ms(row.httpMedian)} ms · K6 ${ms(row.moneyMedian)} ms`);
     lines.push(`  tür: ${Object.entries(row.byKind).map(([kind, value]) => `${kind} ${ms(value)}`).join(" · ")}`);
@@ -374,6 +385,6 @@ for (const target of TARGETS) {
   const result = await measure(dir, info);
   const { text, rows } = summarize(target, info, result);
   log(text);
-  report.push({ target, info, kod: result.kod, openMs: result.openMs, startMs: result.startMs, lockMs: result.lockMs, scanMs: result.scanMs, rows, writes: result.writes, second: result.second });
+  report.push({ target, info, kod: result.kod, openMs: result.openMs, startMs: result.startMs, lockMs: result.lockMs, scanMs: result.scanMs, resetAfterScan: result.resetAfterScan || 0, rows, writes: result.writes, second: result.second });
 }
 if (JSON_OUT) writeFileSync(JSON_OUT, JSON.stringify(report, null, 2));

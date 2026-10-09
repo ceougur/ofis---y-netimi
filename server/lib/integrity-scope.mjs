@@ -22,6 +22,11 @@
 // dokunuluyor; kilit izine giren bir şeye dokunuluyor; kilit değişti; store dışından yazım görüldü (total_changes / data_version);
 // çözülemeyen yazım (upsert, ayrıştırılamayan SQL); bilinmeyen tabloya yazım. Testlerde (config.gateVerify) tam kapı HER işlemde çalışır ve bu
 // yol "temiz" deyip tam kapı reddederse test kırılır (eşdeğerlik denetimi; test/banka-210-kapi-kapsam.test.mjs).
+//
+// Hız kuralı: bu yolun her sorgusu dokunulan KİMLİK kümesinden başlar (veriyle büyümez; ölçüm 100.000'de ~7 ms, 1.000.000'da ~9 ms).
+// İstatistiksiz SQLite planlayıcısı kolonlar arası OR'da (a IN … OR b IN …) ya da durum/silinme kolonunun indeksi (deleted_at, status,
+// src_table …) seçilebildiğinde bütün tabloyu dolaşır: koşul kimlik kümesine çevrilir (id IN (… UNION …)), satır tablosu CROSS JOIN ile dış
+// döngü yapılır, durum kolonu tekli + ile indeksten çıkarılır. test/banka-210-kapi-plan.test.mjs bu kuralı EXPLAIN QUERY PLAN ile denetler.
 import { isMoneyRow, MODULE_TABLES } from "./bank/money-lines.mjs";
 import { moneyAccount, partyBalances, subBalances } from "./general-ledger.mjs";
 import { toCents } from "./money.mjs";
@@ -483,13 +488,13 @@ export function createScopedGate({ store, ledger, accounts, plans, stock, money,
 
     // Satır kuralları: kuruş ve işaret; tarih biçimi ve ileri tarih (eski ileri tarihli satırlar tabanla).
     for (const [table, column, where] of amountColumns) {
-      const ids = touchedRows(table).map(row => row.id);
+      const ids = [...new Set(touchedRows(table).map(row => row.id))];
       if (!ids.length || !hasColumn(table, column)) continue;
       for (const row of all(`SELECT t.id FROM json_each(?) j CROSS JOIN ${table} t ON t.id = j.value WHERE (ABS(${column} * 100 - ROUND(${column} * 100)) > 0.0001 OR ${column} < 0)${where ? ` AND ${where}` : ""} LIMIT 5`, json(ids))) find(`cents:${table}`, row.id);
     }
     const today = period()?.today?.() || now.today();
     for (const table of dated) {
-      const ids = touchedRows(table).map(row => row.id);
+      const ids = [...new Set(touchedRows(table).map(row => row.id))];
       if (!ids.length || !hasColumn(table, "date")) continue;
       if (datedWhenUsed.has(table) && !store.get(datedWhenUsed.get(table))) continue;
       const list = json(ids);
