@@ -83,7 +83,11 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
     // Kısmi indeksten (idx_fin_events_opening): hesabın bütün olayları dolaşılmaz (1.000.000 harekette ~0,8 sn idi).
     const event = store.get("SELECT id, no, date, direction, amount_minor AS amountMinor, try_minor AS tryMinor FROM fin_events WHERE bank_ref = ? AND type = 'opening' AND +status = 'active' ORDER BY created_at DESC LIMIT 1", id);
     if (!event) return null;
-    const sign = event.direction === "out" ? -1 : 1;
+    // GG2 (F3): tutar formdaki gibi işaretlenir. 102 ailesinde bakiye yönü (KMH'de eksi); kurumsal kart ve kredide açılıştaki BORÇ artıdır
+    // (fişte 309/300 alacak, olay yönü "out"). Önceden kartta −5.000 dönüyordu: Hesap Detayı "Açılıştaki Borç −₺5.000", Açılışı Düzelt formu eksi
+    // ön değerle açılıp "eksi olamaz" diyordu; değişiklik yokken de (−5.000 ≠ 5.000) ters kayıt + yeni açılış yazılıyordu.
+    const kind = store.get("SELECT kind FROM bank_accounts WHERE id = ?", id)?.kind || "";
+    const sign = KIND_GL[kind] && KIND_GL[kind] !== "102" ? 1 : event.direction === "out" ? -1 : 1;
     const lines = store.get("SELECT COUNT(*) AS n FROM bank_lines WHERE event_id = ?", event.id).n;
     return { eventId: event.id, no: event.no, date: event.date, amountMinor: sign * Number(event.amountMinor), tryMinor: sign * Number(event.tryMinor), direction: event.direction, lines: Number(lines) || 0 };
   }
@@ -107,6 +111,22 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
     take(store.get(`SELECT COUNT(*) AS n, MIN(e.date) AS first, MAX(e.date) AS last FROM bank_lines l CROSS JOIN fin_events e ON e.id = l.event_id WHERE l.ref = ? AND NOT ${OPENING_CHAIN}`, id));
     return { count, first, last };
   }
+  // ---------- Devir Kapanışı sınırı ve kurulum kayıtları (GG2) ----------
+  /**
+   * Etkin en geç Devir Kapanışı günü (şirket bazında; '' = yok). Devir Kapanışı bir SINIRDIR: o günden önceki hesabı atanmamış eski hareketler
+   * açılış bakiyelerinin içinde sayılıp 500'e kapanmıştır. Daha erken açılışlı bir hesabın sihirbazı onları yeniden kapatmaz, "Bu Hesaba Ata"
+   * onları bağlamaz (bağlarsa aynı para hem kapanışta hem hesapta sayılırdı: 102.00 eksiye düşüyordu).
+   */
+  function carryBoundary() {
+    return store.get("SELECT MAX(date) AS d FROM fin_events WHERE type = 'carry_close' AND +status = 'active'")?.d || "";
+  }
+  /** Hesabın etkin (geri alınmamış) en yeni kurulum kaydı: { ref, no } ya da null. */
+  function activeSetupOf(id) {
+    return store.get("SELECT j.ref, COALESCE(e.no, '') AS no FROM bank_jobs j LEFT JOIN fin_events e ON e.id = j.ref WHERE j.kind = 'setup' AND j.status = 'done' AND json_extract(j.payload_json, '$.accountId') = ? ORDER BY j.rowid DESC LIMIT 1", String(id || "")) || null;
+  }
+  /** Hesabın bekleyen planlı işlem sayısı (silinecek hesabın planı sahipsiz kalmasın; GG2 düşük bulgu). */
+  const plannedCount = id => Number(store.get("SELECT COUNT(*) AS n FROM bank_plans WHERE status = 'planned' AND (bank_account_id = ? OR to_account_id = ?)", id, id)?.n) || 0;
+
   /** Hesap bazında TL bakiyesi (tek kaynak, kuruş): ref → kuruş. */
   const balances = (groups = money.groups()) => {
     const out = new Map();
@@ -158,7 +178,10 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
       showOnInvoice: Boolean(row.show_on_invoice),
       status: row.status,
       position: row.position,
-      opening: opening ? { eventId: opening.eventId, no: opening.no, date: opening.date, amountMinor: opening.amountMinor, tryMinor: opening.tryMinor, direction: opening.direction } : null,
+      // hasLines: sıfır açılış satırsızdır; satırsız açılışın yerine ilk açılışı girmek ters kayıt yazmaz (bank.cancel istemez; GG2 düşük bulgu).
+      opening: opening ? { eventId: opening.eventId, no: opening.no, date: opening.date, amountMinor: opening.amountMinor, tryMinor: opening.tryMinor, direction: opening.direction, hasLines: opening.lines > 0 } : null,
+      // Kurulum Sihirbazı kaydı (etkin): hesap silinmez, açılış tarihi değişmez (önce Kurulum Geçmişi → Geri Al).
+      setupNo: activeSetupOf(row.id)?.no || "",
       // Açılış kilitli dönemde: Açılışı Düzelt ve (açılışlı) Sil ekranda pasif, nedeni yanında (sunucu yine 409 verir).
       openingLocked: Boolean(opening && locked && opening.date <= locked),
       lockedUntil: locked,
@@ -167,7 +190,8 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
       movementCount: moves.count,
       firstMovementDate: moves.first,
       lastMovementDate: moves.last,
-      deletable: moves.count === 0,
+      deletable: moves.count === 0 && !activeSetupOf(row.id) && !plannedCount(row.id),
+      plannedCount: plannedCount(row.id),
       createdAt: row.created_at,
       updatedAt: row.updated_at,
     };
@@ -440,6 +464,12 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
     const row = mustRow(id);
     const moves = movementInfo(row.id);
     if (moves.count) throw new HttpError(409, `Bu hesaba bağlı ${moves.count} hareket var; hesap silinmez. Kullanılmayacaksa Pasife Alın.`, { code: "bank-account-has-movements", count: moves.count });
+    // GG2: kurulumlu hesap silinince Devir Kapanışı etkin kalıyordu (eski bakiye açılışı olmayan bir hesap adına kapalı); aynı adla yeniden açılıp
+    // sihirbaz çalışınca aynı bakiye ikinci kez kapanıyordu. Önce kurulum geri alınır.
+    const setupRun = activeSetupOf(row.id);
+    if (setupRun) throw new HttpError(409, `Bu hesabın Kurulum Sihirbazı kaydı var${setupRun.no ? ` (${setupRun.no})` : ""}; hesap silinmez. Önce Hesabı Atanmamış Eski Hareketler → Kurulum Geçmişi'nden Geri Al'ın.`, { code: "bank-account-has-setup", eventNo: setupRun.no });
+    const plans = plannedCount(row.id);
+    if (plans) throw new HttpError(409, `Bu hesabın ${plans} planlı işlemi var; hesap silinmez. Önce Hareketler → Planlı İşlemler'den silin.`, { code: "bank-account-has-plans", count: plans });
     const opening = openingOf(row.id);
     if (opening) period?.assertOpen(opening.date, "Bu hesabın açılışı");
     let reversed = null;
@@ -465,6 +495,10 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
     const opening = openingInput(body, row, { confirmedDefault: Boolean(row.balance_confirmed) });
     if (existing) {
       period?.assertOpen(existing.date, "Bu hesabın açılışı");
+      // GG2: kurulumlu hesabın açılış TARİHİ değişirse Devir Kapanışı başka bir güne göre kalırdı (aralıktaki eski hareket hem kapanmış hem
+      // bağlanabilir olurdu). Tutar aynı günde düzeltilir; tarih için önce kurulum geri alınır.
+      const setupRun = opening.date !== existing.date ? activeSetupOf(row.id) : null;
+      if (setupRun) throw new HttpError(409, `Bu hesabın Kurulum Sihirbazı kaydı var${setupRun.no ? ` (${setupRun.no})` : ""}; açılış tarihi değiştirilemez (tutar aynı günde düzeltilir). Tarihi değiştirmek için önce Kurulum Geçmişi'nden Geri Al'ın.`, { code: "bank-opening-setup", eventNo: setupRun.no, field: "date" });
       if (existing.date === opening.date && existing.amountMinor === opening.amount && existing.tryMinor === opening.tryMinor) {
         if (Boolean(row.balance_confirmed) !== opening.confirmed) update(user, row.id, { balanceConfirmed: opening.confirmed });
         return { account: view(rowOf(row.id)), reversed: null };
@@ -529,6 +563,32 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
       return {};
     }
   }
+  /**
+   * Hesabı Belirsiz Yeni Hareketler (rozet, Genel Bakış): açılış onarımının bulduğu eski sürüm satırlarından HÂLÂ hesaba bağlanmamış olanlar.
+   * GG2 (düşük bulgu): önceden onarımın sayısı olduğu gibi okunuyordu; satırlar atandıktan sonra rozet sunucu yeniden açılana kadar düşmüyordu.
+   */
+  function newCount() {
+    const report = repairReport();
+    const total = Number(report.unassigned) || 0;
+    const ids = Array.isArray(report.unassignedIds) ? report.unassignedIds : null;
+    if (!ids) return total;
+    const byTable = new Map();
+    for (const key of ids) {
+      const at = String(key).indexOf(":");
+      const table = String(key).slice(0, at);
+      if (!MODULE_TABLES.includes(table)) continue;
+      if (!byTable.has(table)) byTable.set(table, []);
+      byTable.get(table).push(String(key).slice(at + 1));
+    }
+    let open = 0;
+    for (const [table, list] of byTable) open += Number(store.get(`SELECT COUNT(*) AS n FROM ${table} WHERE id IN (SELECT value FROM json_each(?)) AND fin_ref = ''`, JSON.stringify(list)).n) || 0;
+    // Listenin sınırını aşan (çok eski veride) satırlar sayılı kalır.
+    return open + Math.max(0, total - ids.length);
+  }
+  /** Hesabı Atanmamış Eski Hareketler'in bakiyesi (kuruş, işaretli): { bank (102.00), card (108.00) } — yalnız bağsız satırlardan. */
+  const unassignedTotals = () => money.unassigned();
+  /** Menü rozeti: yalnız sayılar (özetin bütün hesaplarını hesaplamaz; GG2 1.000.000 hareket ölçümü). */
+  const badgeCount = () => newCount();
   function summary() {
     const rows = store.all("SELECT * FROM bank_accounts WHERE deleted_at IS NULL");
     const totals = totalsOf(money.groups(), rows);
@@ -540,7 +600,7 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
       realBank: { minor: totals.realBankMinor, defined: bankRows.length > 0 },
       posPending: { netMinor: 0, blockedMinor: 0 },
       debt: { cardMinor: totals.cardDebtMinor, loanMinor: totals.loanDebtMinor, totalMinor: totals.cardDebtMinor + totals.loanDebtMinor },
-      unassigned: { bankMinor: totals.unassignedBankMinor, cardMinor: totals.unassignedCardMinor, totalMinor: unassigned, newCount: Number(repairReport().unassigned) || 0 },
+      unassigned: { bankMinor: totals.unassignedBankMinor, cardMinor: totals.unassignedCardMinor, totalMinor: unassigned, newCount: newCount() },
       byCurrency: totals.byCurrency,
       accounts: { count: rows.length, active: rows.filter(row => row.status === "active").length },
       setup: { needed: bankRows.length === 0 || (unassigned !== 0 && !runs), runs: Number(runs) || 0, suggestions: invoiceBankSuggestions(rows) },
@@ -579,20 +639,26 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
   // ---------- Hesabı Atanmamış Eski Hareketler ----------
   const tableOfLine = line => SOURCE_TABLE.get(Number(line.src));
   /** Hesabı atanmamış satırlar (tek kaynaktan; bağsız havale ve POS/kart). way: bank | card | "" (ikisi). */
-  function legacyLines(way = "") {
+  function legacyLines(way = "", { light = false, since = "", until = "" } = {}) {
     const ways = way === "bank" ? ["bank"] : way === "card" ? ["card"] : ["bank", "card"];
-    return money.lines({ ways }).filter(line => !line.ref && Number(line.src) !== 9);
+    return money.lines({ ways, unbound: true, light, since, until }).filter(line => !line.ref && Number(line.src) !== 9);
   }
+  const dayText = iso => (iso ? iso.split("-").reverse().join(".") : "");
+  const closedText = closed => `${dayText(closed)} tarihli Devir Kapanışı'yla kapandı (açılış bakiyelerinin içinde)`;
   function legacy({ way = "", limit = 1000 } = {}) {
     if (way && !["bank", "card"].includes(way)) throw new HttpError(400, "Yol Banka (bank) ya da POS / Kart (card) olmalı.", { code: "bank-legacy-way" });
     const max = Math.max(1, Math.min(10000, Number(limit) || 1000));
     const locked = lock();
+    const closed = carryBoundary();
     const lines = legacyLines(way).sort((a, b) => (a.date === b.date ? (a.id < b.id ? 1 : -1) : a.date < b.date ? 1 : -1));
     const ids = [...new Set(lines.map(line => line.event_id).filter(Boolean))];
     const numbers = new Map(ids.length ? store.all("SELECT id, no FROM fin_events WHERE id IN (SELECT value FROM json_each(?))", JSON.stringify(ids)).map(row => [row.id, row.no]) : []);
     const rows = lines.slice(0, max).map(line => {
       const extra = parseExtra(line.extra);
       const isLocked = Boolean(locked) && line.date <= locked;
+      const isClosed = Boolean(closed) && line.date < closed;
+      // Atanamazlığın nedeni ekranda (pasif kutunun yanında): kilitli dönem, Devir Kapanışı'nda kapanmış, POS / kart.
+      const reason = line.way !== "bank" ? "POS / kart hareketi: Bankaya Geçmiş Say ya da Kart Borcuna Aktar ile aktarılır." : isLocked ? "Kilitli dönemde; atanamaz." : isClosed ? `${closedText(closed)}; hesaba bağlanmaz.` : "";
       return {
         table: tableOfLine(line),
         id: line.id,
@@ -607,12 +673,13 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
         eventId: line.event_id || "",
         eventNo: numbers.get(line.event_id) || "",
         locked: isLocked,
-        assignable: line.way === "bank" && !isLocked,
+        closed: isClosed,
+        assignable: line.way === "bank" && !isLocked && !isClosed,
+        reason,
       };
     });
-    const groups = money.groups();
-    const sum = target => groups.filter(group => group.way === target && !group.ref).reduce((total, group) => total + Number(group.cents), 0);
-    return { rows, count: lines.length, lockedCount: lines.filter(line => locked && line.date <= locked).length, totals: { bankMinor: sum("bank"), cardMinor: sum("card") }, newCount: Number(repairReport().unassigned) || 0 };
+    const totals = unassignedTotals();
+    return { rows, count: lines.length, lockedCount: lines.filter(line => locked && line.date <= locked).length, closedThrough: closed, totals: { bankMinor: totals.bank, cardMinor: totals.card }, newCount: newCount() };
   }
   /** Havale seçicisinde seçilebilen (eski havaleyi alabilen) hesap: etkin, TL, Vadesiz/Ticari/Diğer. */
   function bindable(id) {
@@ -633,6 +700,8 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
     if (line.way !== "bank") throw new HttpError(400, "Yalnız havale/EFT hareketi banka hesabına bağlanır; POS ve kart hareketleri için Bankaya Geçmiş Say ya da Kart Borcuna Aktar.", { code: "bank-legacy-way", id });
     if (row.fin_ref) throw new HttpError(409, "Bu hareket zaten bir banka hesabına bağlı.", { code: "bank-already-assigned", id });
     if (row.date < account.opening_date) throw new HttpError(409, `Hareket (${row.date.split("-").reverse().join(".")}) hesabın açılışından (${account.opening_date.split("-").reverse().join(".")}) önce; açılış bakiyesinin içindedir. Kurulum Sihirbazı'ndaki Devir Kapanışı'yla kapanır.`, { code: "bank-before-opening", id });
+    const closed = carryBoundary();
+    if (closed && row.date < closed) throw new HttpError(409, `Hareket (${dayText(row.date)}) ${closedText(closed)}; hesaba bağlanırsa iki kez sayılır. Gerekirse önce Kurulum Geçmişi'nden o kurulumu Geri Al'ın.`, { code: "bank-carry-closed", id, closedThrough: closed });
     period?.assertOpen(row.date, "Bu hareket");
     return { table, row };
   }
@@ -673,11 +742,17 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
   function carryChainIds(date) {
     return new Set(store.all("SELECT e.id FROM fin_events e WHERE e.date = ? AND (e.type = 'carry_close' OR (e.type = 'reversal' AND EXISTS (SELECT 1 FROM fin_events o WHERE o.id = e.reversal_of AND o.type = 'carry_close')))", date).map(row => row.id));
   }
-  /** D'den önceki Hesabı Atanmamış bakiyeler (kuruş, işaretli): { bank (102.00), card (108.00) }. */
+  /**
+   * D'den önceki Hesabı Atanmamış bakiyeler (kuruş, işaretli): { bank (102.00), card (108.00), closedThrough }.
+   * GG2: etkin en geç Devir Kapanışı günü C D'den SONRAYSA D'den önceki bakiye zaten kapanmıştır (C'den önceki her şey kapandı): 0. Önceden yalnız
+   * aynı gündeki kapanış zinciri görülüyordu; daha erken açılışlı ikinci hesabın sihirbazı aynı bakiyeyi ikinci kez kapatıyordu.
+   */
   function carryOf(date) {
+    const closed = carryBoundary();
+    if (closed && date < closed) return { bank: 0, card: 0, closedThrough: closed };
     const chain = carryChainIds(date);
-    const out = { bank: 0, card: 0 };
-    for (const line of money.lines({ ways: ["bank", "card"], light: true })) {
+    const out = { bank: 0, card: 0, closedThrough: closed };
+    for (const line of money.lines({ ways: ["bank", "card"], light: true, unbound: true, until: date })) {
       if (line.ref) continue;
       if (line.date < date || (Number(line.src) === 9 && line.date === date && chain.has(line.event_id))) out[line.way === "bank" ? "bank" : "card"] += (line.kind === "in" ? 1 : -1) * Number(line.cents);
     }
@@ -690,7 +765,9 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
     const date = opening.date;
     const carry = body.carryClose === false ? { bank: 0, card: 0 } : carryOf(date);
     const locked = lock();
-    const candidates = legacyLines("bank").filter(line => line.date >= date);
+    // Bağlanabilir eski satırlar: açılıştan ve etkin Devir Kapanışı gününden (şirket bazında) sonra.
+    const from = carry.closedThrough && carry.closedThrough > date ? carry.closedThrough : date;
+    const candidates = legacyLines("bank", { since: from });
     let rows;
     if (body.assign === "none" || body.assign === false) rows = [];
     else if (Array.isArray(body.assign)) {
@@ -701,8 +778,7 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
     const skipped = { locked: rows.filter(line => locked && line.date <= locked).length };
     rows = rows.filter(line => !(locked && line.date <= locked));
     const net = rows.reduce((sum, line) => sum + (line.kind === "in" ? 1 : -1) * Number(line.cents), 0);
-    const groups = money.groups();
-    const sum = (way, ref) => groups.filter(group => group.way === way && group.ref === ref).reduce((total, group) => total + Number(group.cents), 0);
+    const unassigned = unassignedTotals();
     return {
       account,
       opening,
@@ -713,9 +789,10 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
         accountId: account.id,
         date,
         carry: { bankMinor: carry.bank, cardMinor: carry.card },
+        closedThrough: carry.closedThrough || "",
         assign: { rows: rows.map(line => ({ table: tableOfLine(line), id: line.id, date: line.date, kind: line.kind, amountMinor: Number(line.cents) })), count: rows.length, amountMinor: net },
         skipped,
-        after: { unassignedBankMinor: sum("bank", "") - carry.bank - net, unassignedCardMinor: sum("card", "") - carry.card, accountMinor: sum("bank", account.id) + net },
+        after: { unassignedBankMinor: unassigned.bank - carry.bank - net, unassignedCardMinor: unassigned.card - carry.card, accountMinor: money.refTotal({ ref: account.id }).cents + net },
       },
     };
   }
@@ -770,9 +847,19 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
   }
   /** Sihirbazı (ya da Bankaya Geçmiş Say / Kart Borcuna Aktar'ı) Geri Al: fişler ters kaydedilir, bağlar kaldırılır; tek işlem. */
   function undo(user, id) {
-    const job = store.get("SELECT * FROM bank_jobs WHERE kind = 'setup' AND ref = ?", String(id || ""));
+    const job = store.get("SELECT rowid AS seq, * FROM bank_jobs WHERE kind = 'setup' AND ref = ?", String(id || ""));
     if (!job) throw new HttpError(404, "Kurulum kaydı bulunamadı.", { code: "bank-setup-missing" });
     if (job.status !== "done") throw new HttpError(409, "Bu kurulum zaten geri alınmış.", { code: "bank-setup-undone" });
+    // GG2: kurulumlar sondan başa geri alınır. Sonraki bir kurulumun Devir Kapanışı bu kurulumdan SONRAKİ duruma göre hesaplandı (bu kurulumun
+    // kapattığı ya da bağladığı satırları içermez); bu kurulum önce geri alınırsa o satırlar kapanmamış ve bağsız kalırdı (102.00/108.00 eski
+    // tarihte açık, sınırın gerisinde bağlanamaz).
+    const later = store
+      .all("SELECT j.ref, j.payload_json AS payload, COALESCE(e.no, '') AS no FROM bank_jobs j LEFT JOIN fin_events e ON e.id = j.ref WHERE j.kind = 'setup' AND j.status = 'done' AND j.rowid > ? ORDER BY j.rowid", job.seq)
+      .find(row => {
+        const carryId = parseExtra(row.payload).carryEventId;
+        return carryId && store.get("SELECT 1 AS found FROM fin_events WHERE id = ? AND status = 'active'", carryId);
+      });
+    if (later) throw new HttpError(409, `Bu kurulumdan sonra Devir Kapanışı yazan bir kurulum var${later.no ? ` (${later.no})` : ""}; kurulumlar sondan başa geri alınır. Önce onu geri alın.`, { code: "bank-setup-order", eventNo: later.no });
     const payload = parseExtra(job.payload_json);
     period?.assertOpen(payload.date, "Bu kurulum");
     const reversed = [];
@@ -824,10 +911,21 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
     const result = bank.post({
       user, module: "bank", op: "assign", requestId, scope: "bank.legacy.reclass", body, prev: { mode, accountId: account.id },
       write: () => {
-        // 108.00'ın bu tarihe kadarki bakiyesi işlemin içinde okunur (aynı anda iki aktarım aynı bakiyeyi iki kez taşıyamaz).
-        const pending = money.lines({ ways: ["card"], light: true }).filter(line => !line.ref && line.date <= date).reduce((sum, line) => sum + (line.kind === "in" ? 1 : -1) * Number(line.cents), 0);
-        const available = mode === "bank" ? pending : -pending;
-        if (amount > available) throw new HttpError(409, `Hesabı Atanmamış POS / Kart bakiyesi (108.00) ${mode === "bank" ? "tahsilat" : "kart borcu"} yönünde ${moneyText(Math.max(0, available))}; daha fazlası aktarılamaz.`, { code: "bank-legacy-exceeds", availableMinor: Math.max(0, available) });
+        // Aktarılabilir tutar işlemin içinde okunur (aynı anda iki aktarım aynı bakiyeyi iki kez taşıyamaz). GG2 (plan §10.3 "D'den sonraki eski POS
+        // ve kart satırları"): yalnız hedef hesabın açılışından (ve etkin Devir Kapanışı gününden) sonra, verilen tarihe kadar; tahsilat ('in')
+        // Bankaya Geçmiş Say'ın, kartla ödeme ('out') Kart Borcuna Aktar'ın havuzu (önceden 108.00'ın bütün bakiyesi netlenip aktarılıyordu:
+        // açılıştan önceki POS parası açılışın içinde iki kez sayılıyor, kart borcu bankaya mahsup ediliyordu). Önceki aktarımlar (etkin) havuzdan düşer.
+        const closed = carryBoundary();
+        const since = closed && closed > account.opening_date ? closed : account.opening_date;
+        const side = mode === "bank" ? "in" : "out";
+        const pool = legacyLines("card", { light: true, since, until: date }).filter(line => line.kind === side).reduce((sum, line) => sum + Number(line.cents), 0);
+        const used = Number(store.get(
+          `SELECT COALESCE(SUM(l.try_minor), 0) AS n FROM fin_events e JOIN bank_lines l ON l.event_id = e.id
+           WHERE e.type = 'legacy_reclass' AND +e.status = 'active' AND l.role = 'pos' AND l.ref = '' AND l.side = ?`,
+          mode === "bank" ? "C" : "D",
+        ).n) || 0;
+        const available = Math.max(0, pool - used);
+        if (amount > available) throw new HttpError(409, `Hesabı Atanmamış POS / Kart hareketlerinden (108.00) bu hesabın açılışından (${dayText(since)}) sonra ${mode === "bank" ? "bankaya geçmemiş POS tahsilatı" : "kart borcuna aktarılmamış kartla ödeme"} ${moneyText(available)}; daha fazlası aktarılamaz. Açılıştan önceki hareketler Kurulum Sihirbazı'ndaki Devir Kapanışı'yla kapanır.`, { code: "bank-legacy-exceeds", availableMinor: available });
         const header = bank.voucher({ type: "legacy_assign", date, bankRef: account.id, origin: "wizard", description: `${mode === "bank" ? "Bankaya Geçmiş Say" : "Kart Borcuna Aktar"} · ${labelOf(account)}` }, []);
         const event = bank.voucher({ type: "legacy_reclass", date, bankRef: account.id, origin: "wizard", description: `${mode === "bank" ? "Bankaya Geçmiş Say" : "Kart Borcuna Aktar"} · Hesabı Atanmamış POS / Kart` }, lines);
         writeJob(user, header, { accountId: account.id, date, reclass: { mode, amountMinor: amount }, reclassEventId: event.id, rows: [] });
@@ -857,5 +955,5 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
     return { rows, mains, from, to };
   }
 
-  return { create, update, setStatus, remove, setOpening, list, summary, choices, legacy, assign, setup, runs, undo, reclass, subTrialData, settings, view, recent, setupDismissed, dismissSetup, rowOf, openingOf, movementInfo, movementInfoPlain };
+  return { create, update, setStatus, remove, setOpening, list, summary, choices, legacy, assign, setup, runs, undo, reclass, subTrialData, settings, view, recent, setupDismissed, dismissSetup, rowOf, openingOf, movementInfo, movementInfoPlain, newCount, badgeCount, carryBoundary };
 }

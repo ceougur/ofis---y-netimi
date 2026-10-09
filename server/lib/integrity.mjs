@@ -545,6 +545,9 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
       bankItems.push(...(openingItems.length ? openingItems : [{ code: "bank:opening", name: "Açılış Kuralı", ok: true, count: 0 }]));
       const voucherItems = byEntity("bank:voucher", "Banka Fişi Dengesi", bank().voucherProblems(), { label });
       bankItems.push(...(voucherItems.length ? voucherItems : [{ code: "bank:voucher", name: "Banka Fişi Dengesi", ok: true, count: 0 }]));
+      // GG2: Devir Kapanışı sırası (şirket bazında sınır; daha erken tarihli ikinci kapanış aynı eski bakiyeyi iki kez kapatır).
+      const carry = bank().carryProblems();
+      bankItems.push({ code: "bank:carry", name: "Devir Kapanışı Sırası", ok: carry.length === 0, count: carry.length, sample: carry.slice(0, 5).map(item => item.sample) });
       const report = scoped && !touched.size ? [] : bank().reportMismatches(scope);
       bankItems.push({ code: "money:report", name: "Rapor = Özet (satır toplamı = özet, yol ve hesap bazında)", ok: report.length === 0, count: report.length, ...(scoped ? { scoped: true, gateCount: report.length } : {}), sample: report.slice(0, 5).map(item => `${item.key}: satırlar ${item.rows / 100} / özet ${item.summary / 100}`) });
       if (!scoped) {

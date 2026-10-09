@@ -320,7 +320,32 @@ export function createBankChecks({ store, money }) {
     return out;
   }
 
-  return { ready, inUse, marks, eventless, unknownWays, brokenEvents, reportMismatches, openingProblems, voucherProblems };
+  /**
+   * bank:carry (GG2) — Devir Kapanışı sırası: etkin Devir Kapanışları yazım sırasıyla tarihçe geriye gitmez. Devir Kapanışı şirket bazında bir
+   * sınırdır (o günden önceki hesabı atanmamış eski hareketler kapanmıştır); daha erken tarihli yeni bir kapanış aynı bakiyeyi ikinci kez kapatır
+   * (102.00 eksiye düşer). events verilirse yalnız dokunulan olaylardan biri Devir Kapanışı ya da onun ters kaydıysa denetlenir.
+   */
+  function carryProblems({ events = null } = {}) {
+    if (!ready()) return [];
+    if (events) {
+      const list = JSON.stringify([...events]);
+      const touched = store.get("SELECT 1 AS found FROM json_each(?) j CROSS JOIN fin_events e ON e.id = j.value WHERE e.type = 'carry_close' OR (e.type = 'reversal' AND EXISTS (SELECT 1 FROM fin_events o WHERE o.id = e.reversal_of AND o.type = 'carry_close')) LIMIT 1", list);
+      if (!touched) return [];
+    }
+    const out = [];
+    let latest = "";
+    let latestNo = "";
+    for (const row of store.all("SELECT id, no, date FROM fin_events WHERE type = 'carry_close' AND +status = 'active' ORDER BY rowid")) {
+      if (latest && row.date < latest) out.push({ key: `${row.id}:carry-order`, ref: "", sample: `${row.no}: Devir Kapanışı ${row.date}, daha önce yazılmış etkin ${latestNo} ${latest} tarihli (aynı eski bakiye iki kez kapanır)` });
+      if (row.date > latest) {
+        latest = row.date;
+        latestNo = row.no;
+      }
+    }
+    return out;
+  }
+
+  return { ready, inUse, marks, eventless, unknownWays, brokenEvents, reportMismatches, openingProblems, voucherProblems, carryProblems };
 }
 
 /** Hesap bazında gruplanmış denetim kalemleri (varlık kodu): '' (Hesabı Atanmamış) → code, hesap → code:hesap. */

@@ -67,7 +67,7 @@ export function repairBank({ store, now = systemClock, period = null, log = null
       return {};
     }
   })();
-  const report = { at, unassigned: 0, unassignedSample: [], undoneMatches: [], voidedSales: [], cancelledEvents: [], clearedRefs: [], refreshedEvents: [], closedCollections: [], pending: [] };
+  const report = { at, unassigned: 0, unassignedSample: [], unassignedIds: [], undoneMatches: [], voidedSales: [], cancelledEvents: [], clearedRefs: [], refreshedEvents: [], closedCollections: [], pending: [] };
   const pending = (kind, id, reason) => report.pending.push({ kind, id, reason });
 
   store.raw("repair", () =>
@@ -88,6 +88,8 @@ export function repairBank({ store, now = systemClock, period = null, log = null
         for (const row of store.all(`SELECT r.id FROM ${table} r WHERE r.event_id = '' AND (r.rowid > ? OR r.created_at > ?) AND ${moneyWhere(table, "r")}`, Number(marks[table]) || 0, marksAt)) {
           report.unassigned += 1;
           if (report.unassignedSample.length < 20) report.unassignedSample.push(`${table}:${row.id}`);
+          // GG2: rozet ve Genel Bakış atanmamış olanları canlı sayar (lib/bank/accounts.mjs newCount); 10.000'i aşan sayılı kalır.
+          if (report.unassignedIds.length < 10_000) report.unassignedIds.push(`${table}:${row.id}`);
         }
       }
 
@@ -206,7 +208,7 @@ export function repairBank({ store, now = systemClock, period = null, log = null
           report.closedCollections.length ? `kapanan tahsil kaydı ${report.closedCollections.length}` : "",
           report.pending.length ? `Onarım Bekliyor ${report.pending.length}` : "",
         ].filter(Boolean).join("; ");
-        store.run("INSERT INTO integrity_log (id, at, action, tables, summary, detail_json) VALUES (?, ?, 'repair', '', ?, ?)", newId(), at, `Açılış onarımı (eski sürümden): ${summary}`.slice(0, 500), JSON.stringify(report).slice(0, 20000));
+        store.run("INSERT INTO integrity_log (id, at, action, tables, summary, detail_json) VALUES (?, ?, 'repair', '', ?, ?)", newId(), at, `Açılış onarımı (eski sürümden): ${summary}`.slice(0, 500), JSON.stringify({ ...report, unassignedIds: undefined }).slice(0, 20000));
       }
     }),
   );

@@ -213,7 +213,7 @@ export function createMoneyLines(store) {
 
   // Kaynağın SELECT'i. light: yalnız özet kolonları; filter: kaynağa itilen koşullar (:after, :events, :ids_<tablo>).
   // ids (v2.1.0, §3.11 mutabakat kapısı): yalnız bu satırlar ({ tablo: kimlikler }); Banka Fişi satırları events ile (verilmezse yok).
-  function select(source, { light, after, events, ids, ref = null, lean = false }) {
+  function select(source, { light, after, events, ids, ref = null, lean = false, unbound = false, since = "", until = "" }) {
     const { has, tables } = load();
     const r = source.read;
     const a = r.alias;
@@ -245,6 +245,16 @@ export function createMoneyLines(store) {
     const byRef = ref !== null && ref !== undefined && String(ref) !== "";
     const from = ids || events || byRef ? r.from.replace(/(^|\s)JOIN\s/g, "$1CROSS JOIN ") : r.from;
     if (after) where.push(`${date} > :after`);
+    if (since) where.push(`${date} >= :since`);
+    if (until) where.push(`${date} <= :until`);
+    // GG2 (Hesabı Atanmamış Eski Hareketler, 1.000.000 hareket ölçümü): yalnız hesabı atanmamış havale/POS satırları. Koşul DÜZ metinle yazılır
+    // (kısmi indeks idx_<tablo>_unbound … WHERE fin_ref = '' AND method IN ('bank', 'card') yalnız aynı metinle seçilir); fiş satırında bağsız
+    // para satırı (Devir Kapanışı, Eski Bakiye Aktarımı) idx_bank_lines_ref ile. Önceden bütün para satırları okunup dışarıda süzülüyordu.
+    if (unbound) {
+      if (source.table === "bank_lines") where.push("l.ref = ''");
+      else if (has(source.table, "fin_ref")) where.push(`${a}.fin_ref = '' AND ${a}.method IN ('bank', 'card')`);
+      else where.push(`${a}.method IN ('bank', 'card')`);
+    }
     // Hesap süzgeci kaynağa itilir (v2.1.0 Aşama 4): satır tablosunun (fin_ref, date) / bank_lines (ref, event_id) indeksiyle okunur; önceden
     // bütün para satırları okunup dışarıda süzülüyordu (Hesap Detayı, Hareketler'in bakiyesi).
     // Kısmi indeks (idx_<tablo>_fin_ref … WHERE fin_ref <> '') parametreli eşitlikten çıkarılamaz: "<> ''" ayrıca yazılır.
@@ -275,8 +285,10 @@ export function createMoneyLines(store) {
     const union = (chosen.length ? chosen : MONEY_SOURCES.slice(0, 1)).map(source => select(source, options)).filter(Boolean).join("\n UNION ALL ");
     return `SELECT u.*, ${WAY_SQL(bankAccounts)} AS way FROM (${union}) u${bankAccounts ? " LEFT JOIN bank_accounts ba ON u.ref <> '' AND ba.id = u.ref" : ""}`;
   }
-  const params = ({ after, events, ids, ref = null }) => ({
+  const params = ({ after, events, ids, ref = null, since = "", until = "" }) => ({
     ...(after ? { after } : {}),
+    ...(since ? { since } : {}),
+    ...(until ? { until } : {}),
     ...(ref !== null && ref !== undefined ? { ref: String(ref) } : {}),
     ...(events ? { events: JSON.stringify([...events]) } : {}),
     ...(ids ? Object.fromEntries(Object.entries(ids).filter(([, list]) => list?.length).map(([table, list]) => [`ids_${table}`, JSON.stringify([...list])])) : {}),
@@ -287,10 +299,10 @@ export function createMoneyLines(store) {
    * Ham satırlar (yol, hesap, iç hareket, İşlem No); tarih ve giriş sırasıyla. ways: yol listesi (null = hepsi); after: tarihten sonra; events:
    * olay kimlikleri; ref: yalnız bu hesabın (ya da POS'un) satırları (v2.1.0 Aşama 3: Hesap Detayı'ndaki son hareketler).
    */
-  function lines({ ways = null, after = "", events = null, ids = null, light = false, ref = null } = {}) {
+  function lines({ ways = null, after = "", events = null, ids = null, light = false, ref = null, unbound = false, since = "", until = "" } = {}) {
     const filters = [wayFilter(ways)].filter(Boolean);
-    const sql = `SELECT w.*${light ? "" : ", COALESCE(usr.display_name, '') AS actor_name"} FROM (${waySql({ light, after, events, ids, ref })}) w${light ? "" : " LEFT JOIN users usr ON usr.id = w.actor_id"}${filters.length ? ` WHERE ${filters.join(" AND ")}` : ""} ORDER BY w.date, w.created_at, w.rank, w.rid`;
-    return store.all(sql, params({ after, events, ids, ref }));
+    const sql = `SELECT w.*${light ? "" : ", COALESCE(usr.display_name, '') AS actor_name"} FROM (${waySql({ light, after, events, ids, ref, unbound, since, until })}) w${light ? "" : " LEFT JOIN users usr ON usr.id = w.actor_id"}${filters.length ? ` WHERE ${filters.join(" AND ")}` : ""} ORDER BY w.date, w.created_at, w.rank, w.rid`;
+    return store.all(sql, params({ after, events, ids, ref, since, until }));
   }
   /** Kasa'nın satır nesneleri (2.0.26 ile aynı biçim). */
   const rows = (options = {}) => lines({ ...options, light: false }).map(shape);
@@ -317,6 +329,26 @@ export function createMoneyLines(store) {
     if (stamp) {
       if (totals.size > 200) totals.clear();
       totals.set(key, { stamp, ...out });
+    }
+    return out;
+  }
+  /**
+   * Hesabı Atanmamış Eski Hareketler'in bakiyesi (kuruş, işaretli): { bank (102.00), card (108.00) }. Yalnız bağsız havale/POS satırları okunur
+   * (kısmi indeks; select'in unbound süzgeci); sonuç refTotal gibi saklanır (veri değişince yeniden). GG2: önceden Genel Bakış, rozet, Hesaplar
+   * ve sihirbaz bütün para satırlarını grupluyordu (1.000.000 harekette istek başına ~4 sn, sunucu o sürede başka isteğe yanıt vermiyordu).
+   */
+  function unassigned() {
+    const counters = typeof store.changeCounters === "function" ? store.changeCounters() : null;
+    const stamp = counters ? `${counters.total}|${counters.version}` : "";
+    const hit = stamp ? totals.get("|unassigned|") : null;
+    if (hit && hit.stamp === stamp) return { bank: hit.bank, card: hit.card };
+    const out = { bank: 0, card: 0 };
+    for (const group of store.all(`SELECT w.way AS way, COALESCE(SUM(CASE WHEN w.kind = 'in' THEN w.cents ELSE -w.cents END), 0) AS cents FROM (${waySql({ light: true, unbound: true })}) w WHERE w.ref = '' GROUP BY w.way`)) {
+      if (group.way === "bank" || group.way === "card") out[group.way] += Number(group.cents) || 0;
+    }
+    if (stamp) {
+      if (totals.size > 200) totals.clear();
+      totals.set("|unassigned|", { stamp, ...out });
     }
     return out;
   }
@@ -383,7 +415,7 @@ export function createMoneyLines(store) {
     return out;
   }
 
-  return { lines, rows, shape, groups, refTotal, balances, summary, verifyReport, signedCents, reset: () => {
+  return { lines, rows, shape, groups, refTotal, unassigned, balances, summary, verifyReport, signedCents, reset: () => {
     schema = null;
     totals.clear();
   } };

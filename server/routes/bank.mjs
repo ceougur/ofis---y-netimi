@@ -65,7 +65,7 @@ export function registerBankRoutes(router, context) {
     auth.requirePermission(req, "bank.view");
     // 2.1.0'da rozet Hesabı Belirsiz Yeni Hareketler'i (eski sürümün yazdığı, açılış onarımının bulduğu satırlar) ve vadesi gelen Planlı
     // İşlemler'i (Aşama 4) sayar; eşleşmeyen ekstre satırı (2.3.0) ve onay bekleyen valör (2.2.0) o sürümlerde eklenir. Yazmaz.
-    ok(res, { count: service.summary().unassigned.newCount + vouchers.dueCount() });
+    ok(res, { count: service.badgeCount() + vouchers.dueCount() });
   });
   router.get(`${BASE}/choices`, async ({ req, res }) => {
     const user = auth.requireUser(req);
@@ -183,7 +183,8 @@ export function registerBankRoutes(router, context) {
     const user = auth.requirePermission(req, "bank.accounts");
     mustAccount(params.id);
     // Açılışı Düzelt eski açılışı ters kaydeder: Banka Hareketi Silme, İptal ve Ters Kayıt yetkisi de gerekir (§9.1).
-    if (service.openingOf(params.id)) auth.requirePermission(req, "bank.cancel");
+    // GG2 (düşük bulgu): sıfır (satırsız) açılışın yerine ilk açılışı girmek ters kayıt yazmaz → bank.cancel istemez (silme kuralıyla aynı).
+    if (service.openingOf(params.id)?.lines) auth.requirePermission(req, "bank.cancel");
     const body = await readJson(req);
     const result = service.setOpening(user, params.id, body);
     changed(user);
