@@ -222,3 +222,32 @@ describe("D10 — para dışı yazıcı yazdığı GERÇEK satırla denetlenir (
     assert.equal(store.get("SELECT COUNT(*) AS n FROM stock_moves WHERE item_id = ? AND kind = 'out'", item.id).n, 1);
   });
 });
+
+describe("D2 — fatura düzenlemesinde özeti aynı kalan peşin satırın İşlem No'su korunur", () => {
+  let ctx;
+  before(async () => {
+    ctx = await boot();
+  });
+  after(() => ctx.server.close());
+
+  it("yalnız Not değişince peşin olay aynı; peşin tutarı değişince eski olay iptal, yenisi açılır; Mutabakat Testi temiz", async () => {
+    const { api, store } = ctx;
+    const account = await must("cari", api.post("/api/workspace/accounts", { name: "Düzenleme Cari", type: "customer", registeredOn: TODAY }));
+    const service = await must("hizmet", api.post("/api/workspace/stock", { kind: "service", code: "H-D2", name: "Hizmet", unit: "Adet", salePrice: "1000" }));
+    const body = (note, amount = 400) => ({ scenario: "service_sale", accountId: account.id, issueDate: TODAY, note, lines: [{ itemId: service.id, qty: 1, unitPrice: 1000, vatRate: 0 }], payment: { cash: [{ amount, method: "bank" }], rest: "open", dueDate: TODAY } });
+    const invoice = await must("fatura", api.post("/api/workspace/invoices", body("ilk")));
+    const prepaid = () => store.all("SELECT r.event_id AS eventId, e.no, e.status FROM account_entries r JOIN fin_events e ON e.id = r.event_id WHERE r.source = 'invoice' AND r.source_id = ? AND r.kind = 'in'", invoice.id);
+    const [first] = prepaid();
+    assert.ok(first?.no, "peşin satırın İşlem No'su");
+    await must("yalnız not", api.post(`/api/workspace/invoices/${invoice.id}/edit`, body("not değişti")));
+    const [second] = prepaid();
+    assert.equal(second.eventId, first.eventId, "olay aynı");
+    assert.equal(second.no, first.no, "İşlem No aynı");
+    assert.equal(store.get("SELECT COUNT(*) AS n FROM fin_events").n, 1, "yeni olay açılmadı");
+    await must("peşin tutarı değişti", api.post(`/api/workspace/invoices/${invoice.id}/edit`, body("tutar", 500)));
+    const [third] = prepaid();
+    assert.notEqual(third.eventId, first.eventId, "özeti değişen peşin yeni olay");
+    assert.equal(store.get("SELECT status FROM fin_events WHERE id = ?", first.eventId).status, "cancelled");
+    await integrityOk(api, "fatura düzenlemeleri");
+  });
+});

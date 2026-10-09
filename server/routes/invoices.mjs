@@ -537,7 +537,13 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     }
     const force = forceOf(body);
     const before = linesOf(existing.id);
-    const oldCash = store.all("SELECT kind, amount, method, date FROM account_entries WHERE source = 'invoice' AND source_id = ? AND kind IN ('in', 'out')", existing.id);
+    const oldCash = store.all("SELECT kind, amount, method, date, event_id AS eventId FROM account_entries WHERE source = 'invoice' AND source_id = ? AND kind IN ('in', 'out')", existing.id);
+    // Gözden geçirme D2 (Aşama 2): özeti (yön, tutar, yol, tarih) aynı kalan peşin satır eski işlem başlığını (İşlem No) korur; yalnız Not ya
+    // da kalem düzeltmesi peşini yeni numarayla yeniden açmaz (plan §3.8). Aynı özetli birden çok satır sırayla eşlenir.
+    const keyOf = row => `${row.kind}|${Math.round((Number(row.amount) || 0) * 100)}|${row.method || "cash"}|${row.date}`;
+    const pool = new Map();
+    for (const row of oldCash) if (row.eventId) pool.set(keyOf(row), [...(pool.get(keyOf(row)) || []), row.eventId]);
+    const keepEvents = { take: row => pool.get(keyOf(row))?.shift() || "" };
     const touched = { accounts: new Set([existing.accountId]), items: new Set(), cash: false, cheques: { accountIds: [], chequeIds: [] }, plans: new Set() };
     const stockBefore = new Map();
     for (const itemId of new Set(before.filter(line => line.itemId && line.goods).map(line => line.itemId))) {
@@ -555,7 +561,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       reverseEffects(user, existing, touched, { force, edit: true });
       const pre = existing.kind === "sale_return" && existing.originalId ? coverState(existing.originalId) : null;
       const payment = paymentInput(body, doc, user);
-      const written = writeIssued(user, doc, payment, { id: existing.id, force, edit: existing, pre });
+      const written = writeIssued(user, doc, payment, { id: existing.id, force, edit: existing, pre, keepEvents });
       // Son durum denetimi — stok: düzenleme bir ürünü eksiye düşürdüyse (ya da eksiyi büyüttüyse) sorulur.
       if (!force.stock) {
         for (const [itemId, was] of stockBefore) {
@@ -1246,7 +1252,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     }
   }
 
-  function writeIssued(user, doc, payment, { id = null, force = {}, defer = false, edit = null, pre = undefined } = {}) {
+  function writeIssued(user, doc, payment, { id = null, force = {}, defer = false, edit = null, pre = undefined, keepEvents = null } = {}) {
     const s = doc.settings;
     const meta = doc.meta;
     // "Kes, Sonra Gönder" (e-Belge): bütün etkiler şimdi işlenir; resmî numara entegratöre gönderilirken verilir.
@@ -1403,7 +1409,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       for (const item of payment.cash) {
         const into = inflow(doc.kind);
         if (!into) cash?.guardOut?.(item.amount, doc.date, force.cash === true, item.method);
-        service.invoiceEntry.add(user, doc.account.id, { kind: into ? "in" : "out", amount: item.amount, date: doc.date, note: `${what} · ${doc.meta.return ? (into ? "iade tahsilatı" : "iade ödemesi") : into ? "peşin tahsilat" : "peşin ödeme"}`, invoiceId, method: item.method });
+        service.invoiceEntry.add(user, doc.account.id, { kind: into ? "in" : "out", amount: item.amount, date: doc.date, note: `${what} · ${doc.meta.return ? (into ? "iade tahsilatı" : "iade ödemesi") : into ? "peşin tahsilat" : "peşin ödeme"}`, invoiceId, method: item.method, eventId: keepEvents?.take({ kind: into ? "in" : "out", amount: item.amount, method: item.method, date: doc.date }) || "" });
         touched.cash = true;
       }
       // Çek / senet: satışta alınan (portföy), alışta verilen; carinin bakiyesiyle mahsup çek olayından gelir.
