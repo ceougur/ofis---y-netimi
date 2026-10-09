@@ -874,6 +874,9 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   İSTEK (kullanıcı, 09.10.2026): "hızlı bir şekilde nasıl bozarım testi de yaptır, düzeltilmesi gereken yerler olursa düzelt"
       → Aşama 7–8 doğrulaması bitince hesap seçimi işi (cari, Kasa↔Banka, fatura peşini, taksit/kayıt, stok, çek) için ayrı
       bağımsız saldırgan test ajanı; bulunan her açık önce kırmızı test, sonra düzeltme; sonuç kullanıcıya listelenir.
+      EK (kullanıcı, aynı gün): "yargıç ve eleştirmenden de geçsin" → saldırgan test bitince iki bağımsız, kod değiştirmeyen
+      ajan: ELEŞTİRMEN (düzeltmelerin ve testlerin açığını, kaçan bozma yollarını arar) + YARGIÇ (her bulgu/iddiayı yeniden
+      üreterek doğrular, önem ve "teslime engel mi" kararını verir); engel bulgular kırmızı test → düzeltme; sonuç kullanıcıya.
   CANLI HATA (gözden geçirmede bulundu, v2.0.26'da da VAR, gerçek v2.0.26 koduyla yeniden üretildi): Taksite Aktar (var olan
   bağsız karta) → taşınan tahsilatı sil → aktarımı geri al → Silinenler'den geri yükle → Kasa ÇİFT sayılır (1.000 yerine 2.000),
   Mutabakat Testi "tamam" der. 2.1.0'da düzeldi (bir olay = bir para hareketi, 409 `event-in-use`). Kullanıcıya bildirildi.
