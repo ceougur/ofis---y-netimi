@@ -871,6 +871,9 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   [x] AŞAMA 5–6 daraltılmış (09.10.2026; 63f8aae, d000df3): cari tahsilat/ödeme ve Kasa↔Banka'da hesap seçimi (tek hesapta
       kendiliğinden, çok hesapta zorunlu, döviz/pasif 400, açılış/Devir öncesi 409), K7 eksi bakiye, istek kimliği, Benzer İşlem,
       banka bağlı cari silinmez (Pasife Al). npm test 1.630/1.630; senaryo-banka-210 257/257 (kabul 5, 9–14 ekrandan).
+  İSTEK (kullanıcı, 09.10.2026): "hızlı bir şekilde nasıl bozarım testi de yaptır, düzeltilmesi gereken yerler olursa düzelt"
+      → Aşama 7–8 doğrulaması bitince hesap seçimi işi (cari, Kasa↔Banka, fatura peşini, taksit/kayıt, stok, çek) için ayrı
+      bağımsız saldırgan test ajanı; bulunan her açık önce kırmızı test, sonra düzeltme; sonuç kullanıcıya listelenir.
   CANLI HATA (gözden geçirmede bulundu, v2.0.26'da da VAR, gerçek v2.0.26 koduyla yeniden üretildi): Taksite Aktar (var olan
   bağsız karta) → taşınan tahsilatı sil → aktarımı geri al → Silinenler'den geri yükle → Kasa ÇİFT sayılır (1.000 yerine 2.000),
   Mutabakat Testi "tamam" der. 2.1.0'da düzeldi (bir olay = bir para hareketi, 409 `event-in-use`). Kullanıcıya bildirildi.
