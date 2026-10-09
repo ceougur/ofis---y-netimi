@@ -5,14 +5,16 @@
 // harf farklı adlar), kod değiştir (ilk şirket dahil), ad değiştir, sil (yanlış onay → 400, 001 → 409), şirket seç, cari aç,
 // cari hareketi (borç / alacak / tahsilat / ödeme; nakit eksiye düşecekse 409), Kasa (giriş/çıkış), yedek (tek / Tüm
 // Şirketler), geri yükle (002+ hemen; 001 yeniden açılışta), yanlış şirkete geri yükleme (hedef farklı ya da dosya elle öbür
-// şirketin klasörüne kopyalanmış → 409), şirket verisini sıfırla (hareketler / tümü), sunucuyu yeniden başlat.
+// şirketin klasörüne kopyalanmış → 409), şirket verisini sıfırla (hareketler / tümü), sunucuyu yeniden başlat; v2.1.0: banka hesabı
+// aç (açılış bakiyesiyle), Banka Fişi (Diğer Gelir / Gider, Banka Masrafı BSMV Dahil / Yok), Ters Kaydet ve başka şirketin banka
+// hesabına fiş denemesi (404; şirketler ayrı).
 //
 // Yanında programdan BAĞIMSIZ bir model tutar: her şirketin (iç kimliğiyle) carileri, bakiyeleri, nakit Kasa'sı ve alınan
 // her yedeğin o anki kopyası. HER işlemden sonra değişmez kurallar denetlenir (ikinci bir yönetici hesabıyla — işlemi yapanın
 // seçili şirketi bozulmasın):
 //   1. Kayıt defterinde iki şirket aynı veri klasörünü göstermez (Windows gibi büyük/küçük harf ayrımsız); 001 dışı hiçbir
 //      şirket kök klasörü göstermez; program çakışma bildirmez.
-//   2. Her şirketin carileri (kimlik, ad, bakiye) ve nakit Kasa'sı modelle BİRE BİR — bir şirkete girilen kayıt öbüründe
+//   2. Her şirketin carileri (kimlik, ad, bakiye), nakit Kasa'sı ve banka hesapları (kimlik, bakiye) modelle BİRE BİR — bir şirkete girilen kayıt öbüründe
 //      görünmez; silinen şirketin verisi aynı kodla açılan yeni şirkette görünmez.
 //   3. Her yedek kendi şirketinin klasöründe, içindeki kimlik o şirket; Yedekler listesinde her şirketin altında yalnız onun
 //      yedekleri; modelin bildiği ve diskte duran her yedek listede; iki şirket aynı yedek klasörünü kullanmaz; silinen
@@ -86,9 +88,11 @@ export async function runRandom({ seed = 1, operations = 200, base = "bos", log 
   };
 
   // ---------- Model ----------
-  // companies: kimlik → { id, code, name, accounts: Map(kimlik → { name, cents }), cash }
+  // companies: kimlik → { id, code, name, accounts: Map(kimlik → { name, cents }), cash, banks: Map(kimlik → { name, cents }),
+  //   vouchers: [{ id, bankId, cents, status }] } (v2.1.0: banka hesapları ve Banka Fişleri)
   const M = { companies: new Map(), deleted: [], freedCodes: new Set(), backups: new Map(), actorSelected: ROOT_ID };
-  const snapshotOf = company => ({ accounts: new Map([...company.accounts].map(([id, item]) => [id, { ...item }])), cash: company.cash });
+  const copyMap = map => new Map([...map].map(([id, item]) => [id, { ...item }]));
+  const snapshotOf = company => ({ accounts: copyMap(company.accounts), cash: company.cash, banks: copyMap(company.banks), vouchers: company.vouchers.map(item => ({ ...item })) });
   const live = () => [...M.companies.values()];
   const nonRoot = () => live().filter(item => item.id !== ROOT_ID);
   const registryFile = () => JSON.parse(readFileSync(path.join(dirs.dataDir, "sirketler.json"), "utf8")).companies;
@@ -104,7 +108,13 @@ export async function runRandom({ seed = 1, operations = 200, base = "bos", log 
     const accounts = await apiAccounts(client);
     const cash = await client.get("/api/workspace/cash");
     expectStatus(cash, 200, "Kasa");
-    return { accounts: new Map(accounts.map(item => [item.id, { name: item.name, cents: cents(item.balance) }])), cash: cents(cash.data.totals.balance) };
+    const bank = await client.get("/api/workspace/bank/accounts?status=all");
+    expectStatus(bank, 200, "Banka hesapları");
+    return {
+      accounts: new Map(accounts.map(item => [item.id, { name: item.name, cents: cents(item.balance) }])),
+      cash: cents(cash.data.totals.balance),
+      banks: new Map(bank.data.accounts.map(item => [item.id, { name: item.label, cents: Number(item.balanceMinor) }])),
+    };
   };
 
   await boot();
@@ -120,7 +130,7 @@ export async function runRandom({ seed = 1, operations = 200, base = "bos", log 
     if ((listed.conflicts || []).length) fail(`başlangıçta veri dosyası çakışması: ${JSON.stringify(listed.conflicts)}`);
     for (const company of listed.all) {
       const seen = await observe(checker, company.id);
-      M.companies.set(company.id, { id: company.id, code: company.code, name: company.name, ...seen });
+      M.companies.set(company.id, { id: company.id, code: company.code, name: company.name, ...seen, vouchers: [] });
     }
     for (const item of (await checker.get("/api/admin/backups")).data) preexisting.set(item.name, item.companyId);
     // Eski sürümün aldığı yedekler: geri yükleme sonrası beklenen hâl manifestte (ekrandaki cari özeti).
@@ -159,6 +169,9 @@ export async function runRandom({ seed = 1, operations = 200, base = "bos", log 
         fail(`${label}: ${company.code} · ${company.name} carileri modelden farklı (model ${want.length}, ekranda ${got.length})\n  fazla: ${extra.join("; ")}\n  eksik: ${missing.join("; ")}`);
       }
       if (seen.cash !== company.cash) fail(`${label}: ${company.code} · ${company.name} nakit Kasa ${tl(seen.cash)} ≠ model ${tl(company.cash)}`);
+      const wantBanks = [...company.banks].map(([id, item]) => `${id}|${item.cents}`).sort();
+      const gotBanks = [...seen.banks].map(([id, item]) => `${id}|${item.cents}`).sort();
+      if (JSON.stringify(wantBanks) !== JSON.stringify(gotBanks)) fail(`${label}: ${company.code} · ${company.name} banka hesapları modelden farklı\n  model: ${wantBanks.join("; ")}\n  ekranda: ${gotBanks.join("; ")}`);
     }
     // 3. Yedekler
     const folders = new Map();
@@ -233,7 +246,7 @@ export async function runRandom({ seed = 1, operations = 200, base = "bos", log 
       if (code && codeTaken(code)) return expectStatus(response, 409, `dolu kodla (${code}) şirket`);
       const data = expectStatus(response, 200, "şirket aç");
       if (code && data.company.code !== code) fail(`istenen kod ${code}, açılan ${data.company.code}`);
-      M.companies.set(data.company.id, { id: data.company.id, code: data.company.code, name: data.company.name, accounts: new Map(), cash: 0 });
+      M.companies.set(data.company.id, { id: data.company.id, code: data.company.code, name: data.company.name, accounts: new Map(), cash: 0, banks: new Map(), vouchers: [] });
       M.freedCodes.delete(data.company.code);
       opLog[opLog.length - 1] += ` → ${tag(data.company)}`;
     },
@@ -412,6 +425,56 @@ export async function runRandom({ seed = 1, operations = 200, base = "bos", log 
       if (mode === "all") company.accounts.clear();
       else for (const account of company.accounts.values()) account.cents = 0;
       company.cash = 0;
+      // v2.1.0 (§5.6): "Tüm Hareketleri Sil" hesap kartlarını bırakır (açılış dahil hareketler silinir, bakiye 0); "Tümünü Sıfırla" siler.
+      if (mode === "all") company.banks.clear();
+      else for (const bank of company.banks.values()) bank.cents = 0;
+      company.vouchers = [];
+    },
+    // ---------- v2.1.0 banka ----------
+    async bankAccount() {
+      const company = selected();
+      const opening = R.int(0, 2_000_000);
+      const today = expectStatus(await actor.get("/api/workspace/ledger/lock"), 200, "bugün").today;
+      const bankName = R.pick(["Ziraat Bankası", "Garanti BBVA", "İş Bankası", "Yapı Kredi"]);
+      opLog.push(`#${report.operations} banka hesabı aç (${tag(company)}): ${bankName} açılış ${tl(opening)}`);
+      const data = expectStatus(await actor.post("/api/workspace/bank/accounts", { bankName, name: `Hesap ${report.operations}`, kind: "demand", currency: "TRY", opening: { date: today, amount: tl(opening).replace(".", ","), confirmed: true } }), 200, "banka hesabı aç");
+      company.banks.set(data.id, { name: data.label, cents: opening });
+    },
+    async bankVoucher() {
+      const company = selected();
+      if (!company.banks.size) return ops.bankAccount();
+      const [bankId, bank] = R.pick([...company.banks]);
+      const type = R.pick(["other_in", "other_out", "fee"]);
+      const value = amountCents();
+      const tax = type === "fee" ? R.pick(["none", "bsmv_incl"]) : "";
+      const today = expectStatus(await actor.get("/api/workspace/ledger/lock"), 200, "bugün").today;
+      opLog.push(`#${report.operations} Banka Fişi (${tag(company)}): ${bank.name} ${type}${tax ? ` ${tax}` : ""} ${tl(value)}`);
+      const data = expectStatus(await actor.post("/api/workspace/bank/vouchers", { type, accountId: bankId, date: today, amount: tl(value).replace(".", ","), ...(tax ? { tax } : {}), similarOk: true }), 200, "Banka Fişi");
+      const signed = type === "other_in" ? value : -value;
+      const got = (data.lines || []).filter(line => line.role === "bank").reduce((sum, line) => sum + (line.side === "D" ? 1 : -1) * Number(line.tryMinor), 0);
+      if (got !== signed) fail(`Banka Fişi ${data.no}: banka etkisi ${tl(got)} ≠ model ${tl(signed)}`);
+      bank.cents += signed;
+      company.vouchers.push({ id: data.id, bankId, cents: signed, status: "active" });
+    },
+    async bankReverse() {
+      const company = selected();
+      const voucher = R.pick(company.vouchers.filter(item => item.status === "active" && company.banks.has(item.bankId)));
+      if (!voucher) return ops.bankVoucher();
+      opLog.push(`#${report.operations} Ters Kaydet (${tag(company)}): ${voucher.id}`);
+      expectStatus(await actor.post(`/api/workspace/bank/events/${encodeURIComponent(voucher.id)}/reverse`, {}), 200, "Ters Kaydet");
+      voucher.status = "reversed";
+      company.banks.get(voucher.bankId).cents -= voucher.cents;
+    },
+    async bankWrongCompany() {
+      // Başka şirketin banka hesabına (seçili şirket bu değilken) fiş: 404, hiçbir şirkette iz yok.
+      const company = selected();
+      const other = R.pick(live().filter(item => item.id !== company.id && item.banks.size));
+      if (!other) return ops.bankAccount();
+      const [bankId] = R.pick([...other.banks]);
+      const today = expectStatus(await actor.get("/api/workspace/ledger/lock"), 200, "bugün").today;
+      opLog.push(`#${report.operations} YANLIŞ şirket Banka Fişi: seçili ${tag(company)}, hesap ${tag(other)}`);
+      const response = await actor.post("/api/workspace/bank/vouchers", { type: "other_in", accountId: bankId, date: today, amount: "100,00", similarOk: true });
+      expectStatus(response, 404, "başka şirketin banka hesabına fiş");
     },
     async restart() {
       opLog.push(`#${report.operations} sunucuyu yeniden başlat`);
@@ -427,8 +490,10 @@ export async function runRandom({ seed = 1, operations = 200, base = "bos", log 
   }
   async function applyRestored(company, record) {
     if (record.snapshot) {
-      company.accounts = new Map([...record.snapshot.accounts].map(([id, item]) => [id, { ...item }]));
+      company.accounts = copyMap(record.snapshot.accounts);
       company.cash = record.snapshot.cash;
+      company.banks = copyMap(record.snapshot.banks || new Map());
+      company.vouchers = (record.snapshot.vouchers || []).map(item => ({ ...item }));
       return;
     }
     // Eski sürümün yedeği: manifestteki ekran özeti ve veri tabanı olguları tutmalı; sonra model gözlemden kurulur.
@@ -440,6 +505,8 @@ export async function runRandom({ seed = 1, operations = 200, base = "bos", log 
     if (!sameFacts(facts, record.facts)) fail(`eski sürüm yedeği ${record.name}: veri tabanı olguları yedek anındaki gibi değil`);
     company.accounts = seen.accounts;
     company.cash = seen.cash;
+    company.banks = seen.banks;
+    company.vouchers = [];
   }
   async function restart() {
     await server.close();
@@ -450,6 +517,7 @@ export async function runRandom({ seed = 1, operations = 200, base = "bos", log 
   const WEIGHTS = [
     ["account", 14], ["entry", 18], ["cash", 7], ["select", 8], ["create", 7], ["rename", 5], ["recode", 5], ["remove", 4],
     ["backupOne", 7], ["backupAll", 3], ["restore", 7], ["restoreRoot", 2], ["wrongRestore", 4], ["reset", 3], ["restart", 2],
+    ["bankAccount", 3], ["bankVoucher", 6], ["bankReverse", 2], ["bankWrongCompany", 2],
   ];
   const total = WEIGHTS.reduce((sum, [, weight]) => sum + weight, 0);
   const choose = () => {

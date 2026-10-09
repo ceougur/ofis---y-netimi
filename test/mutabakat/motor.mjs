@@ -36,6 +36,12 @@
 //     (satış Kasa'ya düştü mü, tahsilat Kasa'ya düştü mü; havada asılı ya da eksik kalan halka yok)
 //   · programın mutabakat kapısı: çift yönlü denge, ana defter ↔ alt defterler (toplam ve cari bazında), tarih denetimleri
 //   · ana defter kasa ve cari hesapları = model
+// v2.1.0 banka ekseni (Aşama 3–4): iki vadesiz banka hesabı (açılış çizelgenin ilk günü) ve Banka Fişleri — Banka Masrafı (BSMV
+//   Dahil / Hariç / Yok), Faiz Geliri (stopaj oranı ya da tutarı), Faiz Gideri (BSMV/KKDF), Diğer Gelir / Gider; Ters Kaydet (kilitli
+//   günün fişi bugünün tarihiyle ters kaydedilir), Düzelt (ters + yeni fiş tek işlemde), Benzer İşlem (onaysız 409 bank-similar, "Yine
+//   de Kaydet" ile ikinci kayıt), kilitli/ileri/boş tarih, sıfır/eksi/bozuk tutar, açılıştan önce tarih, ters kaydı ters kaydetme. Model
+//   her fişin banka etkisini kendi hesaplar (BSMV ve stopaj tam sayı yarım-yukarı); Kasa/banka toplamı, 102 ve Banka ve POS Hareketleri
+//   bu satırlarla karşılaştırılır.
 // Belirli aralıklarla ve sonda: raporlar (Kasa Hareketleri, Stok Hareketleri, Cari Listesi, Taksit Kartları, Hesap Planı
 // Mizanı, Yevmiye) veri varken boş dönmemeli, tutarları modelle aynı olmalı; veri olmayan aralıkta gerçekten boş dönmeli.
 
@@ -91,7 +97,7 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
   const open = date => !lock || date > lock;
 
   // ---------- Bağımsız model ----------
-  const M = { kasa: { cash: 0, bank: 0, card: 0 }, cari: new Map(), stok: new Map(), plans: new Map(), cash: [], entries: [], moves: [], planEntries: [], invoices: new Map(), drafts: new Map(), cheques: new Map(), invCash: [], chqCash: [] };
+  const M = { kasa: { cash: 0, bank: 0, card: 0 }, cari: new Map(), stok: new Map(), plans: new Map(), cash: [], entries: [], moves: [], planEntries: [], invoices: new Map(), drafts: new Map(), cheques: new Map(), invCash: [], chqCash: [], bankLines: [] };
   const report = { seed, operations: 0, byKind: {}, rejectedAsExpected: 0, rejections: {}, mismatches: [], checks: 0, reportChecks: 0, integrityMs: [], timeline: { from: D0, to: T }, locks: [] };
   const count = kind => (report.byKind[kind] = (report.byKind[kind] || 0) + 1);
   const accounts = [];
@@ -124,6 +130,8 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
     for (const e of M.planEntries) out.push({ source: "plan", date: e.date, method: e.method, cents: e.kind === "in" ? e.amount : -e.amount });
     for (const e of M.invCash) out.push({ source: "invoice", date: e.date, method: e.method, cents: e.kind === "in" ? e.amount : -e.amount });
     for (const e of M.chqCash) out.push({ source: "cheque", date: e.date, method: e.method, cents: e.kind === "in" ? e.amount : -e.amount });
+    // v2.1.0: Banka Fişi para satırları (açılış, fiş, ters kayıt) — her biri tek banka satırı.
+    for (const e of M.bankLines) out.push({ source: "bankLine", date: e.date, method: "bank", cents: e.cents });
     return out;
   }
   const balAt = (method, date) => cashEffects().filter(x => x.method === method && (!date || x.date <= date)).reduce((s, x) => s + x.cents, 0);
@@ -168,6 +176,17 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
   }
   const customers = accounts.filter(a => a.type === "customer");
   const suppliers = accounts.filter(a => a.type === "supplier");
+  // v2.1.0: iki vadesiz banka hesabı, açılış çizelgenin ilk günü (Bakiye Doğrulandı). Açılış 102.k borç / 500 alacak; banka etkisi modelde.
+  const banks = [];
+  for (const bankName of ["Ziraat Bankası", "Garanti BBVA"]) {
+    const opening = R.int(20_000, 80_000) * 100 + R.int(0, 99);
+    const r = await api("POST", "/api/workspace/bank/accounts", { bankName, name: `Ana TL Hesabı T${seed}`, kind: "demand", currency: "TRY", opening: { date: D0, amount: tl(opening), confirmed: true } });
+    if (r.status !== 200) throw new Error(`banka hesabı açılamadı: ${r.status} ${r.text}`);
+    banks.push({ id: r.data.id, name: bankName });
+    M.kasa.bank += opening;
+    if (!r.data.opening?.eventId || r.data.opening.date !== D0) throw new Error(`banka hesabının açılışı yazılmadı: ${r.text}`);
+    M.bankLines.push({ id: r.data.opening.eventId, bankId: r.data.id, type: "opening", date: D0, cents: opening, status: "active" });
+  }
 
   // ---------- Doğrulama ----------
   async function verify(where) {
@@ -189,7 +208,7 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
       k.n += 1; k.cents += e.kind === "in" ? centsOf(e.amount) : -centsOf(e.amount);
       got.set(e.source, k);
     }
-    for (const source of ["manual", "account", "stock", "plan", "invoice", "cheque"]) {
+    for (const source of ["manual", "account", "stock", "plan", "invoice", "cheque", "bankLine"]) {
       const a = got.get(source) || { n: 0, cents: 0 }, b = want.get(source) || { n: 0, cents: 0 };
       if (a.n !== b.n || a.cents !== b.cents) problems.push(`İşlem zinciri Kasa/${source}: program ${a.n} satır ${tl(a.cents)} · model ${b.n} satır ${tl(b.cents)}`);
     }
@@ -207,7 +226,12 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
       // Bu kartta program değeri [model − bu karttaki iadeler, model] aralığında ve ödenenin altında değilse benimsenir.
       if (m.slack && centsOf(p.totals.paid) === m.paid) {
         const got = centsOf(p.totals.total);
-        if (got <= m.total && got >= m.total - m.slack && got >= Math.max(0, m.paid)) { m.slack -= m.total - got; m.total = got; }
+        if (got <= m.total && got >= m.total - m.slack && got >= Math.max(0, m.paid)) {
+          // Benimsenen kesinti en son iadeye yazılır (iade iptalinde geri büyüyecek tutar; programın coverCuts'ı gibi).
+          if (m.slackBy?.coverCuts && got < m.total) m.slackBy.coverCuts.set(m, (m.slackBy.coverCuts.get(m) || 0) + m.total - got);
+          m.slack -= m.total - got;
+          m.total = got;
+        }
       }
       if (centsOf(p.totals.total) !== m.total || centsOf(p.totals.paid) !== m.paid) {
         // Teşhis için kartın taksitleri ve tahsilatları da yazılır (hangi satırın saptığı görünsün).
@@ -256,6 +280,13 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
       if (c.status !== m.status || centsOf(c.amount) !== m.amount) problems.push(`Çek/senet ${c.serialNo}: ${c.status} ${c.amount} · model ${m.status} ${tl(m.amount)}`);
     }
     for (const [id, m] of M.cheques) if (!chSeen.has(id)) problems.push(`Çek/senet ${m.serialNo}: modelde var, programda yok`);
+    // v2.1.0: her banka hesabının bakiyesi = modeldeki banka satırlarının toplamı (açılış + fişler + ters kayıtlar).
+    const bankList = (await api("GET", "/api/workspace/bank/accounts?status=all")).data.accounts || [];
+    for (const b of banks) {
+      const got = bankList.find(x => x.id === b.id);
+      const want = M.bankLines.filter(x => x.bankId === b.id).reduce((t, x) => t + x.cents, 0);
+      if (!got || Number(got.balanceMinor) !== want) problems.push(`Banka hesabı ${b.name}: program ${got ? tl(Number(got.balanceMinor)) : "yok"} · model ${tl(want)}`);
+    }
     const integrity = (await api("GET", "/api/workspace/ledger/integrity")).data;
     report.integrityMs.push(integrity.durationMs);
     if (!integrity.ok) problems.push(`Mutabakat kapısı: ${integrity.failures.map(f => `${f.name}${f.difference ? ` (${f.difference})` : ""}${f.sample?.length ? ` [${f.sample.join("; ")}]` : ""}`).join(" | ")}`);
@@ -342,7 +373,10 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
   }
 
   // Taksitlendirilmiş borç iadeden (alacaktan) sonra borçtan büyük kalmaz: en yeni karttan başlayarak kırpılır.
+  // Dönüş: kart → kesilen tutar (iade faturası bunu saklar; iade iptal edilince kart aynı tutarda geri büyür — programın
+  // payment_json.coverCuts kuralı, 2.0.24 G3).
   function trimCovers(accountId) {
+    const cuts = new Map();
     const covering = [...M.plans.values()].filter(p => p.accountId === accountId && p.covers && !p.invoiceId && p.status === "active");
     let excess = covering.reduce((s, p) => s + planLeft(p), 0) - Math.max(0, M.cari.get(accountId));
     for (const p of covering.sort((a, b) => b.order - a.order)) {
@@ -350,7 +384,9 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
       const cut = Math.min(excess, planLeft(p), p.total);
       p.total -= cut;
       excess -= cut;
+      if (cut > 0) cuts.set(p, (cuts.get(p) || 0) + cut);
     }
+    return cuts;
   }
 
   // ---------- Fatura (v2.0.15): bağımsız model ----------
@@ -518,8 +554,11 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
       // v2.0.24: iade önce asıl faturanın kendi kartını küçültür (kartın kalanı = faturanın açığı); sonra genel kırpma.
       const own = originalId && M.invoices.get(originalId)?.planId ? M.plans.get(M.invoices.get(originalId).planId) : null;
       // İade modele aşağıda (M.invoices.set) yazılır; kendi kartı o zaman eşitlenir.
-      for (const pl of M.plans.values()) if (pl !== own && pl.accountId === accountId && pl.covers && !pl.invoiceId && pl.status === "active") pl.slack = (pl.slack || 0) + calc.tryPayable;
-      trimCovers(accountId);
+      for (const pl of M.plans.values()) if (pl !== own && pl.accountId === accountId && pl.covers && !pl.invoiceId && pl.status === "active") {
+        pl.slack = (pl.slack || 0) + calc.tryPayable;
+        pl.slackBy = inv;
+      }
+      inv.coverCuts = trimCovers(accountId);
     }
     if (series) lastSeries[series] = day > lastSeries[series] ? day : lastSeries[series];
     M.invoices.set(inv.id, inv);
@@ -564,6 +603,12 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
     for (const id of inv.chequesCreated) M.cheques.delete(id);
     for (const id of inv.endorsed) { const c = M.cheques.get(id); c.status = "portfolio"; c.events -= 1; c.endorseTo = ""; }
     if (inv.planId) M.plans.delete(inv.planId);
+    // İade iptali: iadenin küçülttüğü Mevcut Borç kartları aynı tutarda geri büyür (kapatılmış ya da silinmiş kart değişmez).
+    // Not (2.1.0 dilim 4): model bunu önceden yapmıyordu; banka işlemleri rastgele sırayı değiştirince tohum 2'de ortaya çıktı.
+    if (inv.kind === "sale_return" && inv.coverCuts) {
+      const live = new Set(M.plans.values());
+      for (const [pl, cut] of inv.coverCuts) if (live.has(pl) && pl.status !== "closed") pl.total += cut;
+    }
     if (inv.kind === "sale_return" && inv.originalId) {
       const orig = M.invoices.get(inv.originalId);
       for (const l of inv.lines) orig.returned.set(l.originLineId, (orig.returned.get(l.originLineId) || 0) - l.qty);
@@ -583,6 +628,54 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
     }
     return out;
   }
+  // ---------- v2.1.0 Banka Fişi: tam tanımlı gövde (sunucunun form ön değerlerine dayanmaz) + bağımsız banka etkisi ----------
+  // Banka etkisi kuruş, giriş artı: masrafta BSMV Hariç ise tutar + yarım-yukarı BSMV, Dahil ise tutar; faiz gelirinde brüt − stopaj
+  // (oranla yarım-yukarı ya da elle tutar); faiz giderinde tutar + BSMV/KKDF; diğer gelir/giderde tutar.
+  let feeKeys = ["diger"];
+  let incomeGl = ["649"];
+  let expenseGl = ["659"];
+  const BANK_TYPES = ["fee", "fee", "interest_in", "interest_out", "other_in", "other_out"];
+  function voucherBody(type, b, amount, date) {
+    const body = { type, accountId: b.id, date, amount: tl(amount), description: `Banka ${type} T${seed}` };
+    let cents;
+    if (type === "fee") {
+      body.tax = R.pick(["bsmv_incl", "bsmv_incl", "bsmv_excl", "none"]);
+      body.feeType = R.pick(feeKeys);
+      if (body.tax !== "none") body.taxRate = R.pick(["5", "5", "10"]);
+      const ppm = body.tax === "none" ? 0 : Number(body.taxRate) * 10_000;
+      cents = -(body.tax === "bsmv_excl" ? amount + halfAway(amount * ppm, 1_000_000) : amount);
+    } else if (type === "interest_in") {
+      if (R.chance(0.25)) {
+        const stoppage = R.int(0, amount - 1);
+        body.stoppageAmount = tl(stoppage);
+        cents = amount - stoppage;
+      } else {
+        body.stoppageRate = R.pick(["15", "15", "17,5", "0"]);
+        cents = amount - halfAway(amount * Math.round(Number(body.stoppageRate.replace(",", ".")) * 10_000), 1_000_000);
+      }
+    } else if (type === "interest_out") {
+      const tax = R.chance(0.4) ? R.int(1, Math.max(1, Math.floor(amount / 10))) : 0;
+      body.taxAmount = tl(tax);
+      cents = -(amount + tax);
+    } else {
+      body.gl = R.pick(type === "other_in" ? incomeGl : expenseGl);
+      cents = type === "other_in" ? amount : -amount;
+    }
+    return { body, cents };
+  }
+  /** İşlem Kartı'ndaki banka satırlarının net etkisi (borç +, alacak −). */
+  const bankSigned = card => (card?.lines || []).filter(line => line.role === "bank").reduce((t, line) => t + (line.side === "D" ? 1 : -1) * Number(line.tryMinor), 0);
+  function bankAdd(row) {
+    M.kasa.bank += row.cents;
+    M.bankLines.push(row);
+  }
+  /** Ters kaydın tarihi: kilitli günün fişi bugünün tarihiyle, açık günün fişi kendi tarihiyle ters kaydedilir. */
+  const reversalDate = e => (lock && e.date <= lock ? T : e.date);
+  function rejectedWith(r, status, kind) {
+    if (r.status !== status) throw Object.assign(new Error(`${kind}: ${status} beklenirken ${r.status} ${r.text}`), { unexpected: true });
+    expectReject(r, [], kind);
+  }
+
   async function op(kind) {
     count(kind);
     const acc = R.pick(accounts);
@@ -1149,6 +1242,89 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
         if (which === "cek-iade") return post({ kind: "sale_return", originalId: orig.id, lines: returnLines(orig).slice(0, 1).map(l => ({ originLineId: l.originLineId, qty: l.qty / 1000 })), payment: { cheques: [{ amount: 1, dueDate: day, serialNo: "Z1", bank: "Ziraat" }] } }, ["payment.cheques", "çek/senet"]);
         return;
       }
+      // ---------- v2.1.0 Banka Fişi (Aşama 4) ----------
+      case "banka-fis": {
+        const b = R.pick(banks);
+        const type = R.pick(BANK_TYPES);
+        const amount = moneyCents(1, 4000);
+        const { body, cents } = voucherBody(type, b, amount, day);
+        // Saha hataları (%25): kilitli gün, ileri/boş/bozuk tarih, açılıştan önce, sıfır/eksi/bozuk tutar, olmayan hesap, tanınmayan tür.
+        if (R.chance(0.25)) {
+          const which = R.pick(["kilit", "ileri", "bos", "bozuk", "acilis-once", "sifir", "eksi", "metin", "hesap", "tur"]);
+          if (which === "kilit") {
+            if (!lock) return;
+            const back = Math.min(20, Math.round((Date.parse(lock) - Date.parse(D0)) / 864e5));
+            return void expectReject(await api("POST", "/api/workspace/bank/vouchers", { ...body, date: addDays(lock, -R.int(0, back)) }), "period-locked", kind);
+          }
+          if (which === "ileri") return void expectReject(await api("POST", "/api/workspace/bank/vouchers", { ...body, date: addDays(T, R.int(1, 30)) }), "date-future", kind);
+          if (which === "bos") return void expectReject(await api("POST", "/api/workspace/bank/vouchers", { ...body, date: "" }), "date-missing", kind);
+          if (which === "bozuk") return void expectReject(await api("POST", "/api/workspace/bank/vouchers", { ...body, date: R.pick(["2026-13-40", "31.12.2026", "abc", "2026-02-30"]) }), "date-invalid", kind);
+          if (which === "acilis-once") return void expectReject(await api("POST", "/api/workspace/bank/vouchers", { ...body, date: addDays(D0, -R.int(1, 10)) }), ["bank-before-opening", "period-locked"], kind);
+          if (which === "sifir" || which === "eksi" || which === "metin") return void rejectedWith(await api("POST", "/api/workspace/bank/vouchers", { ...body, amount: which === "sifir" ? "0" : which === "eksi" ? "-5,00" : "on bin" }), 400, kind);
+          if (which === "hesap") return void expectReject(await api("POST", "/api/workspace/bank/vouchers", { ...body, accountId: `yok-${R.int(1, 1e6)}` }), [], kind);
+          return void rejectedWith(await api("POST", "/api/workspace/bank/vouchers", { ...body, type: R.pick(["transfer_x", "", "opening", "reversal"]) }), 400, kind);
+        }
+        const r = await api("POST", "/api/workspace/bank/vouchers", { ...body, similarOk: true });
+        mustOk(r, kind);
+        if (bankSigned(r.data) !== cents) throw Object.assign(new Error(`${kind} ${type} ${body.tax || ""}: İşlem Kartı banka etkisi ${tl(bankSigned(r.data))} · model ${tl(cents)}`), { unexpected: true });
+        if (r.data.date !== day) throw Object.assign(new Error(`${kind}: fiş tarihi ${r.data.date} · istenen ${day}`), { unexpected: true });
+        bankAdd({ id: r.data.id, bankId: b.id, type, date: day, cents, status: "active", voucher: true, body });
+        return;
+      }
+      case "banka-ters": {
+        // Saha hatası (%20): ters kaydı, ters kaydedilmişi ya da açılışı ters kaydetme → 409, hiçbir iz yok.
+        if (R.chance(0.2)) {
+          const wrong = R.pick(M.bankLines.filter(x => x.type === "reversal" || x.status === "reversed" || x.type === "opening"));
+          if (!wrong) return;
+          const code = wrong.type === "reversal" ? "bank-reversal-of-reversal" : wrong.type === "opening" ? "bank-event-opening" : "bank-already-reversed";
+          return void expectReject(await api("POST", `/api/workspace/bank/events/${encodeURIComponent(wrong.id)}/reverse`, {}), code, kind);
+        }
+        const e = R.pick(M.bankLines.filter(x => x.status === "active" && x.voucher));
+        if (!e) return;
+        const r = await api("POST", `/api/workspace/bank/events/${encodeURIComponent(e.id)}/reverse`, { reason: `Motor T${seed}` });
+        mustOk(r, kind);
+        const date = reversalDate(e);
+        if (r.data.reversal?.date !== date || bankSigned(r.data.reversal) !== -e.cents) throw Object.assign(new Error(`${kind}: ters kayıt ${r.data.reversal?.date} ${tl(bankSigned(r.data.reversal))} · model ${date} ${tl(-e.cents)} (kilit ${lock || "yok"})`), { unexpected: true });
+        e.status = "reversed";
+        bankAdd({ id: r.data.reversal.id, bankId: e.bankId, type: "reversal", date, cents: -e.cents, status: "active" });
+        return;
+      }
+      case "banka-duzelt": {
+        const e = R.pick(M.bankLines.filter(x => x.status === "active" && x.voucher));
+        if (!e) return;
+        const b = R.chance(0.3) ? R.pick(banks) : banks.find(x => x.id === e.bankId);
+        const amount = moneyCents(1, 4000);
+        const given = R.chance(0.3) ? cur : "";
+        const { body, cents } = voucherBody(e.type, b, amount, given);
+        if (!given) delete body.date;
+        // Saha hatası (%15): yeni tarih kilitli güne → 409 period-locked; eski fiş etkin kalır.
+        if (lock && R.chance(0.15)) return void expectReject(await api("POST", `/api/workspace/bank/events/${encodeURIComponent(e.id)}/correct`, { ...body, date: lock }), "period-locked", kind);
+        // Saha hatası (%10): türü değiştirmek → 400 bank-correct-type.
+        if (R.chance(0.1)) return void expectReject(await api("POST", `/api/workspace/bank/events/${encodeURIComponent(e.id)}/correct`, { ...body, type: e.type === "other_in" ? "other_out" : "other_in" }), "bank-correct-type", kind);
+        const r = await api("POST", `/api/workspace/bank/events/${encodeURIComponent(e.id)}/correct`, body);
+        mustOk(r, kind);
+        const back = reversalDate(e);
+        const date = given || back;
+        if (r.data.reversal?.date !== back || bankSigned(r.data.reversal) !== -e.cents) throw Object.assign(new Error(`${kind}: ters kayıt ${r.data.reversal?.date} ${tl(bankSigned(r.data.reversal))} · model ${back} ${tl(-e.cents)}`), { unexpected: true });
+        if (r.data.next?.date !== date || bankSigned(r.data.next) !== cents) throw Object.assign(new Error(`${kind} ${e.type} ${body.tax || ""}: yeni fiş ${r.data.next?.date} ${tl(bankSigned(r.data.next))} · model ${date} ${tl(cents)}`), { unexpected: true });
+        e.status = "reversed";
+        bankAdd({ id: r.data.reversal.id, bankId: e.bankId, type: "reversal", date: back, cents: -e.cents, status: "active" });
+        bankAdd({ id: r.data.next.id, bankId: b.id, type: e.type, date, cents, status: "active", voucher: true, body: { ...body, date } });
+        return;
+      }
+      case "banka-benzer": {
+        // Aynı iş günü, aynı hesap, aynı tür ve tutar: onaysız 409 bank-similar (hiçbir şey yazılmaz); "Yine de Kaydet" ile ikinci kayıt.
+        const e = R.pick(M.bankLines.filter(x => x.status === "active" && x.voucher && x.body && open(x.body.date)));
+        if (!e) return;
+        const r1 = await api("POST", "/api/workspace/bank/vouchers", e.body);
+        expectReject(r1, "bank-similar", kind);
+        if (R.chance(0.4)) return;
+        const r2 = await api("POST", "/api/workspace/bank/vouchers", { ...e.body, similarOk: true });
+        mustOk(r2, kind);
+        if (bankSigned(r2.data) !== e.cents) throw Object.assign(new Error(`${kind}: ikinci kayıt ${tl(bankSigned(r2.data))} · model ${tl(e.cents)}`), { unexpected: true });
+        bankAdd({ id: r2.data.id, bankId: e.bankId, type: e.type, date: e.body.date, cents: e.cents, status: "active", voucher: true, body: e.body });
+        return;
+      }
       default:
         throw new Error(kind);
     }
@@ -1162,8 +1338,16 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
     // Fatura (v2.0.15): kesme, iade, iptal, taslak, çek/senet; kasıtlı yarıda kalan işlemler ve saha hataları.
     ["fatura-satis", 14], ["fatura-alis", 9], ["fatura-iade", 6], ["fatura-iptal", 5], ["fatura-taslak", 3], ["cek-tahsil", 3], ["cek-ode", 3],
     ["fatura-acid", 4], ["fatura-hatasi", 9], ["fatura-bagli", 1],
+    // Banka Fişi (v2.1.0 Aşama 4): fiş (+ saha hataları), Ters Kaydet, Düzelt, Benzer İşlem.
+    ["banka-fis", 7], ["banka-ters", 2], ["banka-duzelt", 2], ["banka-benzer", 1],
   ];
   const bag = WEIGHTS.flatMap(([k, w]) => Array(w).fill(k));
+  {
+    const meta = (await api("GET", "/api/workspace/bank/voucher-meta")).data || {};
+    if (meta.feeTypes?.length) feeKeys = meta.feeTypes.map(x => x.key);
+    if (meta.gl?.income?.length) incomeGl = meta.gl.income;
+    if (meta.gl?.expense?.length) expenseGl = meta.gl.expense;
+  }
   // Açılış (çizelgenin ilk günü): stok ve kasa dolsun.
   for (let i = 0; i < items.length; i++) await op("alim").catch(() => {});
   await op("kasa").catch(() => {});
@@ -1279,7 +1463,7 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
   }
   const invList = [...M.invoices.values()];
   report.invoices = { kesilen: invList.filter(x => x.status === "issued").length, iptal: invList.filter(x => x.status === "cancelled").length, taslak: M.drafts.size, turler: invList.reduce((o, x) => ((o[x.kind] = (o[x.kind] || 0) + 1), o), {}), cek: M.cheques.size };
-  report.model = { kasa: Object.fromEntries(MONEY.map(m => [m, tl(M.kasa[m])])), cariler: accounts.length, urunler: items.length, kartlar: M.plans.size, kasaHareketi: M.cash.length, cariHareketi: M.entries.length, stokHareketi: M.moves.length, taksitHareketi: M.planEntries.length };
+  report.model = { kasa: Object.fromEntries(MONEY.map(m => [m, tl(M.kasa[m])])), cariler: accounts.length, urunler: items.length, kartlar: M.plans.size, kasaHareketi: M.cash.length, bankaSatiri: M.bankLines.length, bankaTersKayit: M.bankLines.filter(x => x.type === "reversal").length, cariHareketi: M.entries.length, stokHareketi: M.moves.length, taksitHareketi: M.planEntries.length };
   // Deney sonrası kilidi kaldır (aynı veritabanında başka koşu olabilir).
   if (lock) await api("PUT", "/api/admin/period-lock", { lockedUntil: "" });
   await api("PUT", "/api/admin/negative-policy", { cash: "warn", bank: "warn", card: "warn" });
