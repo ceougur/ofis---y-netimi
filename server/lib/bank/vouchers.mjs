@@ -284,18 +284,42 @@ export function createBankVouchers({ store, bank, period, money, accounts, movem
    */
   function balancesOf(refs) {
     const out = new Map();
-    for (const ref of refs) if (ref && !out.has(ref)) out.set(ref, money.refTotal({ ref }).cents);
+    for (const ref of refs) if (ref && !out.has(ref)) out.set(ref, money.refTotal({ ref }));
+    // Yazımdan önceki son işlem başlığı: bundan sonrakiler bu işlemde açılanlardır (iç bank.post'lar dahil; totalAfter).
+    out.eventMark = Number(store.get("SELECT COALESCE(MAX(rowid), 0) AS m FROM fin_events").m) || 0;
     return out;
+  }
+  /**
+   * Yazımdan sonraki toplam (GG2 ölçümü, 1.000.000 harekette fiş başına ~2,3 sn): işlemde dokunulan olayların hepsi bu işlemde AÇILDIYSA (yeni
+   * fiş, faturalı masraf, Gerçekleştir) toplam = önceki + yeni olayların satırları (olay dizininden). Var olan bir olaya dokunulduysa (Ters
+   * Kaydet, Düzelt, faturalı masrafın iadesi) hesabın bütün satırları yeniden toplanır. K6 gereği işlemde yazılan ya da değiştirilen her para
+   * satırı bir olaya bağlıdır ve o olay bank.post'ta dokunulmuş sayılır.
+   */
+  function totalAfter(ref, was, ctx, mark) {
+    if (!ctx || !Number.isInteger(mark)) return money.refTotal({ ref });
+    const created = new Set(store.all("SELECT id FROM fin_events WHERE rowid > ?", mark).map(row => row.id));
+    const touched = new Set([...store.touchedEventIds, ...ctx.events]);
+    if (!created.size || [...touched].some(id => !created.has(id))) return money.refTotal({ ref });
+    const added = money.eventsTotal({ ref, events: created });
+    return { cents: was.cents + added.cents, count: was.count + added.count, debit: was.debit + added.debit, credit: was.credit + added.credit };
+  }
+  /** COMMIT'ten sonra: K7'nin bulduğu toplamlar saklanır (bir sonraki okuma ve fiş hesabın bütün satırlarını yeniden toplamaz). */
+  function primeTotals(settled, result) {
+    if (!settled?.size || result?.replayed) return;
+    for (const [ref, values] of settled) money.prime(ref, values);
   }
   /**
    * bank.post adım 8 (guard): hesap bazında son durum. Bakiyesi azalan hesapta bakiye = min(date günündeki, bütün hareketlerle) + limit (KMH ya da
    * kart limiti) eksiyse Uyar → 409 bank-negative (negativeOk geçer), Engelle → 409 bank-blocked. Kredi hesabında anapara kalan borcu aşamaz.
    */
-  function guardNegative(before, { date, force = false }) {
+  function guardNegative(before, { date, force = false, ctx = null, settled = null }) {
     if (!before?.size || !date) return;
     const fallback = settings().negative?.policy || "warn";
-    for (const [ref, was] of before) {
-      const total = money.refTotal({ ref }).cents;
+    for (const [ref, wasTotal] of before) {
+      const next = totalAfter(ref, wasTotal, ctx, before.eventMark);
+      settled?.set(ref, next);
+      const was = wasTotal.cents;
+      const total = next.cents;
       const change = total - was;
       if (change > 0) {
         // GG2 (düşük): Kredi Geri Ödemesi'nde anapara kalan kredi borcunu aşamaz (300 borç bakiyesi artıya geçmez).
@@ -309,7 +333,8 @@ export function createBankVouchers({ store, bank, period, money, accounts, movem
       if (!row || !GUARDED_KINDS.has(row.kind) || row.currency !== "TRY") continue;
       const policy = row.balance_confirmed ? row.negative_policy || fallback : "off";
       if (policy === "off" || (policy === "warn" && force)) continue;
-      const atDay = total - money.refTotal({ ref, after: date }).cents;
+      // İşlem tarihinden sonra satır yoksa (bugün tarihli fişte olağan) o günkü bakiye = bütün bakiye; ayrıca okunmaz.
+      const atDay = money.afterIsEmpty(ref, date) ? total : total - money.refTotal({ ref, after: date }).cents;
       const after = Math.min(total, atDay);
       const limit = Number(row.credit_limit_minor) || 0;
       if (after + limit >= 0) continue;
@@ -328,6 +353,7 @@ export function createBankVouchers({ store, bank, period, money, accounts, movem
     const similarOk = body?.similarOk === true;
     let date = "";
     let before = null;
+    const settled = new Map();
     const result = bank.post({
       user, module: "bank", op: "create", requestId, scope: "bank.voucher.create", body, similarOk,
       write: () => {
@@ -339,9 +365,10 @@ export function createBankVouchers({ store, bank, period, money, accounts, movem
         Object.assign(auditEntry.payload, auditOf(spec, written));
         return { id: written.id };
       },
-      guard: () => guardNegative(before, { date, force: body?.negativeOk === true }),
+      guard: (_, ctx) => guardNegative(before, { date, force: body?.negativeOk === true, ctx, settled }),
       audit: auditEntry,
     });
+    primeTotals(settled, result);
     const id = result?.replayed ? result.refId : result.id;
     return { ...movements.card(id), ...(result?.replayed ? { replayed: true } : {}) };
   }
@@ -388,10 +415,11 @@ export function createBankVouchers({ store, bank, period, money, accounts, movem
     const auditEntry = { type: "bank.voucher.reversed", entityId: event.id, payload: {} };
     let date = "";
     let before = null;
+    const settled = new Map();
     const result = bank.post({
       user, module: "bank", op: "delete", requestId, scope: "bank.event.reverse", body: { ...(body || {}), eventId: event.id }, prev: prevOf(event),
       // K7: gelir fişinin (faiz geliri, kredi kullanımı…) ters kaydı da hesabı eksiye düşürebilir.
-      guard: () => guardNegative(before, { date, force: body?.negativeOk === true }),
+      guard: (_, ctx) => guardNegative(before, { date, force: body?.negativeOk === true, ctx, settled }),
       write: () => {
         const current = fresh(event.id);
         before = balancesOf([current.bank_ref, current.counter_ref]);
@@ -402,6 +430,7 @@ export function createBankVouchers({ store, bank, period, money, accounts, movem
       },
       audit: auditEntry,
     });
+    primeTotals(settled, result);
     const refId = result?.replayed ? result.refId : result.id;
     const row = fresh(refId);
     const reversalId = row?.type === "reversal" ? row.id : "";
@@ -416,9 +445,10 @@ export function createBankVouchers({ store, bank, period, money, accounts, movem
     let reversalId = "";
     let date = "";
     let before = null;
+    const settled = new Map();
     const result = bank.post({
       user, module: "bank", op: "update", requestId, scope: "bank.event.correct", body: { ...(body || {}), eventId: event.id }, prev: prevOf(event),
-      guard: () => guardNegative(before, { date, force: body?.negativeOk === true }),
+      guard: (_, ctx) => guardNegative(before, { date, force: body?.negativeOk === true, ctx, settled }),
       write: () => {
         const current = fresh(event.id);
         assertReversible(current);
@@ -444,6 +474,7 @@ export function createBankVouchers({ store, bank, period, money, accounts, movem
       },
       audit: auditEntry,
     });
+    primeTotals(settled, result);
     if (result?.replayed) return { replayed: true, next: movements.card(result.refId) };
     return { original: movements.card(event.id), reversal: reversalId ? movements.card(reversalId) : null, next: movements.card(result.id) };
   }
@@ -602,9 +633,10 @@ export function createBankVouchers({ store, bank, period, money, accounts, movem
     const similarOk = body?.similarOk === true;
     let date = "";
     let before = null;
+    const settled = new Map();
     const result = bank.post({
       user, module: "bank", op: "create", requestId, scope: "bank.plan.execute", body: { ...(body || {}), planId: id }, similarOk,
-      guard: () => guardNegative(before, { date, force: body?.negativeOk === true }),
+      guard: (_, ctx) => guardNegative(before, { date, force: body?.negativeOk === true, ctx, settled }),
       write: () => {
         const plan = mustPlan(id);
         if (plan.status === "done") throw bad(409, "Bu planlı işlem zaten gerçekleşti.", "bank-plan-done", { planId: id });
@@ -623,6 +655,7 @@ export function createBankVouchers({ store, bank, period, money, accounts, movem
       },
       audit: auditEntry,
     });
+    primeTotals(settled, result);
     const eventId = result?.replayed ? result.refId : result.id;
     return { plan: planView(mustPlan(id)), event: movements.card(eventId), ...(result?.replayed ? { replayed: true } : {}) };
   }

@@ -200,7 +200,7 @@ const tl = cents => roundMoney(Number(cents || 0) / 100);
 /**
  * Tek kaynak okuyucusu. Şema bir kez okunur (göçlerden sonra kurulur): eksik tablo kaynaktan, eksik kolon boş değerle düşer.
  */
-export function createMoneyLines(store) {
+export function createMoneyLines(store, { verify = false } = {}) {
   let schema = null;
   const load = () => {
     if (schema) return schema;
@@ -329,20 +329,81 @@ export function createMoneyLines(store) {
     return counters ? `${counters.total}|${counters.version}` : "";
   };
   const keep = () => !store.inTransaction;
+  const TOTAL_SQL = union => `SELECT COALESCE(SUM(CASE WHEN u.kind = 'in' THEN u.cents ELSE -u.cents END), 0) AS cents, COUNT(*) AS count, COALESCE(SUM(CASE WHEN u.kind = 'in' THEN u.cents ELSE 0 END), 0) AS debit, COALESCE(SUM(CASE WHEN u.kind = 'in' THEN 0 ELSE u.cents END), 0) AS credit FROM (${union}) u`;
+  const totalOf = row => ({ cents: Number(row?.cents) || 0, count: Number(row?.count) || 0, debit: Number(row?.debit) || 0, credit: Number(row?.credit) || 0 });
+  /** Hesabın para satırlarının toplamı (saklanmadan; refTotal ve doğrulama). */
+  function computeRefTotal(ref, after = "") {
+    const union = MONEY_SOURCES.map(source => select(source, { lean: true, after, ref })).filter(Boolean).join("\n UNION ALL ");
+    // debit / credit (GG2): giriş ve çıkış toplamları da aynı geçişte (Alt Hesap Mizanı tüm zamanlar bunları saklı değerden okur).
+    return totalOf(store.get(TOTAL_SQL(union), params({ after, ref })));
+  }
   function refTotal({ ref, after = "" } = {}) {
     const key = `${ref}|${after}`;
     const stamp = stampOf();
     const hit = stamp ? totals.get(key) : null;
     if (hit && hit.stamp === stamp) return { cents: hit.cents, count: hit.count, debit: hit.debit, credit: hit.credit };
-    const union = MONEY_SOURCES.map(source => select(source, { lean: true, after, ref })).filter(Boolean).join("\n UNION ALL ");
-    // debit / credit (GG2): giriş ve çıkış toplamları da aynı geçişte (Alt Hesap Mizanı tüm zamanlar bunları saklı değerden okur).
-    const row = store.get(`SELECT COALESCE(SUM(CASE WHEN u.kind = 'in' THEN u.cents ELSE -u.cents END), 0) AS cents, COUNT(*) AS count, COALESCE(SUM(CASE WHEN u.kind = 'in' THEN u.cents ELSE 0 END), 0) AS debit, COALESCE(SUM(CASE WHEN u.kind = 'in' THEN 0 ELSE u.cents END), 0) AS credit FROM (${union}) u`, params({ after, ref }));
-    const out = { cents: Number(row.cents) || 0, count: Number(row.count) || 0, debit: Number(row.debit) || 0, credit: Number(row.credit) || 0 };
+    const out = computeRefTotal(ref, after);
     if (stamp && keep()) {
       if (totals.size > 200) totals.clear();
       totals.set(key, { stamp, ...out });
     }
     return out;
+  }
+  /**
+   * Verilen olayların bu hesaptaki para satırlarının toplamı (refTotal'ın alanları; olay dizininden). K7 (GG2 ölçümü): Banka Fişi kaydında
+   * hesabın bütün satırlarını ikinci kez toplamak yerine işlemin YENİ olaylarının satırları eklenir (1.000.000 harekette fiş başına ~2,3 sn idi).
+   */
+  function eventsTotal({ ref, events }) {
+    const list = [...(events || [])].filter(Boolean);
+    if (!ref || !list.length) return { cents: 0, count: 0, debit: 0, credit: 0 };
+    const union = MONEY_SOURCES.map(source => select(source, { lean: true, events: list, ref })).filter(Boolean).join("\n UNION ALL ");
+    return totalOf(store.get(TOTAL_SQL(union), params({ events: list, ref })));
+  }
+  /**
+   * Hesabın en geç para satırının tarihi ya da daha geç bir tarih ("" = satır yok): modül satırlarında (fin_ref, date) dizini, fiş satırlarında
+   * işlem başlığının (bank_ref | counter_ref, date) dizini. Fiş satırının hesabı her zaman başlığın bank_ref ya da counter_ref'idir (bank.voucher
+   * yazar; doğrulama kipinde afterIsEmpty bunu tam sorguyla denetler). K7: işlem tarihinden sonra satır yoksa "o günkü bakiye" ayrıca okunmaz.
+   */
+  function lastDate(ref) {
+    if (!ref) return "";
+    const { has, tables } = load();
+    let last = "";
+    const take = date => {
+      if (date && date > last) last = String(date);
+    };
+    for (const table of new Set(MONEY_SOURCES.map(source => source.table))) {
+      if (table === "bank_lines" || !tables.has(table) || !has(table, "fin_ref") || !has(table, "date")) continue;
+      take(store.get(`SELECT MAX(date) AS d FROM ${table} WHERE fin_ref = ? AND fin_ref <> ''`, ref)?.d);
+    }
+    if (tables.has("bank_lines") && tables.has("fin_events")) {
+      for (const column of ["bank_ref", "counter_ref"]) {
+        take(store.get(`SELECT e.date AS d FROM fin_events e WHERE e.${column} = ?1 AND e.${column} <> '' AND EXISTS (SELECT 1 FROM bank_lines l WHERE l.ref = ?1 AND l.event_id = e.id) ORDER BY e.date DESC LIMIT 1`, ref)?.d);
+      }
+    }
+    return last;
+  }
+  /** after'dan sonra hesabın para satırı var mı? (lastDate ile; doğrulama kipinde tam sorguyla karşılaştırılır.) */
+  function afterIsEmpty(ref, after) {
+    const empty = !after || !ref ? false : after >= lastDate(ref);
+    if (verify && empty && computeRefTotal(ref, after).count !== 0) throw new Error(`money-lines doğrulama: ${ref} hesabında ${after} sonrasında satır var ama lastDate ${lastDate(ref)}`);
+    return empty;
+  }
+  /**
+   * Yazımdan sonra hesabın toplamını saklar (işlem dışında, COMMIT'ten hemen sonra çağrılır; K7'nin yazımda hesapladığı değer). Bir sonraki
+   * okuma (Hareketler'in bakiyesi, Genel Bakış, bir sonraki fişin "önceki bakiye"si) hesabın bütün satırlarını yeniden toplamaz. Doğrulama
+   * kipinde (testler) değer tam sorguyla karşılaştırılır.
+   */
+  function prime(ref, values) {
+    if (!ref || !values || !keep()) return;
+    const stamp = stampOf();
+    if (!stamp) return;
+    const out = totalOf(values);
+    if (verify) {
+      const fresh = computeRefTotal(ref);
+      if (fresh.cents !== out.cents || fresh.count !== out.count || fresh.debit !== out.debit || fresh.credit !== out.credit) throw new Error(`money-lines doğrulama: ${ref} saklanacak toplam ${JSON.stringify(out)} ≠ tam sorgu ${JSON.stringify(fresh)}`);
+    }
+    if (totals.size > 200) totals.clear();
+    totals.set(`${ref}|`, { stamp, ...out });
   }
   /**
    * Hesabı Atanmamış Eski Hareketler'in bakiyesi (kuruş, işaretli): { bank (102.00), card (108.00) }. Yalnız bağsız havale/POS satırları okunur
@@ -449,7 +510,7 @@ export function createMoneyLines(store) {
     return out;
   }
 
-  return { lines, rows, shape, groups, periodGroups, refTotal, unassigned, unassignedWays, balances, summary, verifyReport, signedCents, reset: () => {
+  return { lines, rows, shape, groups, periodGroups, refTotal, eventsTotal, lastDate, afterIsEmpty, prime, unassigned, unassignedWays, balances, summary, verifyReport, signedCents, reset: () => {
     schema = null;
     totals.clear();
   } };

@@ -126,3 +126,54 @@ describe("GG2 — ölçüm aracı yeni olay kimliğiyle çalışır (küçük ha
     }
   });
 });
+
+// GG2 düzeltmesinin ölçümü (1.000.000 harekette Banka Fişi kaydı 8,7 ms → 2,3 sn): K7 (eksi bakiye) her fişte hesabın bütün satırlarını iki kez
+// topluyordu (yazımdan önce ve sonra) ve sonucu saklamıyordu. Düzeltme: yazımdan sonraki toplam = önceki + işlemde AÇILAN olayların satırları;
+// COMMIT'ten sonra saklanır (bir sonraki fiş ve okuma yeniden toplamaz); işlem tarihinden sonra satır yoksa o günkü bakiye ayrıca okunmaz.
+// Doğruluk: testlerde (gateVerify) saklanan her toplam ve "sonra satır yok" kısayolu tam sorguyla karşılaştırılır (uyuşmazsa istek düşer).
+describe("GG2 — Banka Fişi kaydında hesabın bütün satırları yeniden toplanmaz (K7), toplam doğru kalır", () => {
+  let ctx;
+  before(async () => {
+    // Üretim yolu (doğrulama kipi saklanan toplamı tam sorguyla karşılaştırdığı için sayımı bozardı; doğruluğu öbür testler denetler).
+    ctx = await boot({ now: NOW, gateVerify: false });
+  });
+  after(() => ctx.server.close());
+
+  it("fiş, fiş, okuma: tam toplam sorgusu yok; Ters Kaydet'te tam toplam; bakiyeler bağımsız hesapla aynı; eksi bakiye yine sorulur", async () => {
+    const api = ctx.api;
+    const account = await openAccount(api, { bankName: "Ziraat Bankası", name: "Hız", kind: "demand", opening: { date: "2026-10-01", amount: "1.000", confirmed: true } });
+    const store = ctx.app.context.store;
+    const original = store.get.bind(store);
+    let full = 0;
+    store.get = (sql, ...args) => {
+      const named = args[0] && typeof args[0] === "object" ? args[0] : {};
+      if (typeof sql === "string" && sql.includes("AS credit FROM (") && named.ref === account.id && !named.events && !named.after) full += 1;
+      return original(sql, ...args);
+    };
+    try {
+      const balance = async () => (await must("hesap", api.get(`${BANK}/accounts/${account.id}`))).balanceMinor;
+      assert.equal(await balance(), 100_000);
+      full = 0;
+      const one = await must("fiş 1", api.post(`${BANK}/vouchers`, { type: "other_out", accountId: account.id, amount: "100", description: "Bir", similarOk: true }));
+      await must("fiş 2", api.post(`${BANK}/vouchers`, { type: "other_out", accountId: account.id, amount: "50,25", description: "İki", similarOk: true }));
+      assert.equal(await balance(), 84_975);
+      assert.equal(full, 0, "iki fiş ve okuma hesabın bütün satırlarını toplamadı");
+      await must("ters", api.post(`${BANK}/events/${one.id}/reverse`, { reason: "Yanlış" }));
+      assert.ok(full >= 1, "Ters Kaydet var olan olaya dokunur: tam toplam");
+      assert.equal(await balance(), 94_975);
+      let mark = full;
+      const blocked = await api.post(`${BANK}/vouchers`, { type: "other_out", accountId: account.id, amount: "1.000", description: "Fazla", similarOk: true });
+      expectStatus(blocked, 409, "bank-negative", "eksi bakiye");
+      assert.equal(full, mark, "reddedilen fiş tam toplam istemedi");
+      assert.equal(await balance(), 94_975, "reddedilen fiş bakiyeyi değiştirmedi (saklanan toplam geri alınan işlemden gelmez)");
+      mark = full;
+      await must("Yine de Kaydet", api.post(`${BANK}/vouchers`, { type: "other_out", accountId: account.id, amount: "1.000", description: "Fazla", similarOk: true, negativeOk: true }));
+      assert.equal(await balance(), -5_025);
+      assert.equal(full, mark, "onaylanan fiş ve sonraki okuma tam toplam istemedi");
+      const integrity = await must("Mutabakat Testi", api.get("/api/workspace/ledger/integrity"));
+      assert.equal(integrity.ok, true);
+    } finally {
+      store.get = original;
+    }
+  });
+});

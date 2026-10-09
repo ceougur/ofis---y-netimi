@@ -291,6 +291,10 @@ export function createStore(db) {
     touchEvent(id) {
       if (id) touchedEvents.add(id);
     },
+    /** Bu işlemde şimdiye kadar dokunulan işlem başlıkları (iç bank.post'ların adım 11'i dahil; K7'nin yazım toplamı, GG2). */
+    get touchedEventIds() {
+      return depth > 0 ? new Set(touchedEvents) : new Set();
+    },
     raw(reason, fn) {
       if (typeof reason !== "string" || !reason.trim()) throw new TypeError("store.raw: gerekçe gerekli");
       rawScope.push(reason);
