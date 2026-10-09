@@ -165,4 +165,35 @@ describe("kapı süzgeci — sorgu planı veriyle büyümez (EXPLAIN QUERY PLAN)
     total += await check("çek cirosu", () => must("ciro", api.post(`/api/workspace/cheques/${cheque2.id}/actions`, { action: "endorse", date: TODAY, accountId: supplier.id })));
     assert.ok(total > 50, `süzgeç yolunda kaydedilen sorgu sayısı ${total}`);
   });
+
+  // 2.1.0 Aşama 3 (dilim 1): banka hesabı yazımları (hesap kartı, açılış fişi, Bu Hesaba Ata, Kurulum Sihirbazı ve geri alması, Bankaya Geçmiş
+  // Say, pasife alma, silme) tam kapıya düşmez ve süzgeçte büyük tablo dolaşılmaz (bank_accounts süzgeç kapsamında; bank:opening / bank:voucher
+  // denetimleri hesap ve olay kimliğinden başlar).
+  it("banka hesabı yazımları da süzgeç yolunda ve büyük tablo dolaşılmadan", async () => {
+    const { api, store } = ctx;
+    const BANK = "/api/workspace/bank";
+    let account = null;
+    let total = 0;
+    total += await check("hesap aç (açılış fişi)", async () => {
+      account = await must("hesap", api.post(`${BANK}/accounts`, { bankName: "Ziraat Bankası", name: "Plan Hesabı", kind: "demand", opening: { date: day(-7), amount: "1.000", confirmed: true } }));
+    });
+    total += await check("Açılışı Düzelt (ters + yeni)", () => must("düzelt", api.post(`${BANK}/accounts/${account.id}/opening`, { date: day(-7), amount: "1.200", confirmed: true })));
+    total += await check("Bakiye Doğrulandı / hesap politikası", () => must("politika", api.put(`${BANK}/accounts/${account.id}`, { negativePolicy: "block", balanceConfirmed: false })));
+    const legacy = store.get("SELECT id FROM account_entries WHERE account_id = ? AND method = 'bank' AND kind = 'in' AND fin_ref = '' LIMIT 1", customer.id);
+    total += await check("Bu Hesaba Ata", () => must("ata", api.post(`${BANK}/legacy/assign`, { accountId: account.id, rows: [{ table: "account_entries", id: legacy.id }] })));
+    await must("yeni havale", api.post(`/api/workspace/accounts/${customer.id}/entries`, { kind: "in", amount: "80", method: "bank", date: TODAY }));
+    let run = null;
+    total += await check("Kurulum Sihirbazı", async () => {
+      run = await must("sihirbaz", api.post(`${BANK}/setup`, { accountId: account.id, carryClose: true, assign: "all" }));
+    });
+    total += await check("Sihirbazı Geri Al", () => must("geri al", api.post(`${BANK}/setup/${run.id}/undo`, {})));
+    total += await check("Bankaya Geçmiş Say", () => must("aktar", api.post(`${BANK}/legacy/reclass`, { mode: "bank", accountId: account.id, amount: "40", date: TODAY })));
+    total += await check("Pasife Al", () => must("pasif", api.post(`${BANK}/accounts/${account.id}/status`, { status: "passive" })));
+    let spare = null;
+    total += await check("ikinci hesap", async () => {
+      spare = await must("yedek", api.post(`${BANK}/accounts`, { bankName: "Garanti BBVA", name: "Silinecek", kind: "demand", opening: { date: day(-1), amount: "50" } }));
+    });
+    total += await check("hesap sil (açılış ters kayıt)", () => must("sil", api.del(`${BANK}/accounts/${spare.id}`)));
+    assert.ok(total > 20, `süzgeç yolunda kaydedilen sorgu sayısı ${total}`);
+  });
 });
