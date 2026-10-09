@@ -641,6 +641,7 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   KARAR (kullanıcı, 05.10.2026): 2.0.24'ün DENENMEYEN ve BİLİNEN SINIRLAR listesi Cuma 09.10.2026 planlı teste eklendi
   (hatırlatma trig_0144BJLRwsZFizXTTYrJVszA, 06:00 UTC; içerik docs/2.0.24-KANIT.md). ERTELENDİ (kullanıcı, 08.10.2026: "cuma
   günü için planladığımız testleri pazar gününe ertele") → Pazar 11.10.2026 09:00 TR (06:00 UTC), aynı hatırlatma.
+  YİNE ERTELENDİ (kullanıcı, 09.10.2026: "pazar günkü testi ertele cumaya"; haftalık limit) → Cuma 16.10.2026 09:00 TR.
   ÖLÇEK SORUSU (kullanıcı, 05.10.2026: "ne ölçekte firma rahat kullanır?") → cevap (ölçülenle): 5–10 eşzamanlı kullanıcı,
   birkaç şirket, şirket başına birkaç bin cari, yılda birkaç bin–on bin fatura; üstü ÖLÇÜLMEDİ. KARAR ("ekle"): ölçek/yük testi
   (10/20/30 eşzamanlı kullanıcı, 10.000–50.000 cari + 100.000+ fatura, 10 şirket + yedekleme sırasında yük) aynı Cuma planına
@@ -871,7 +872,9 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   Tahsile Ver, fatura iade/iptalinin bankalı ayrıntısı + TCMB önerisi, K8 taksit kuralları (plan-paid/plan-overpay), toplu
   kesim ayrıntısı, kalan banka raporları; POS 2.2.0, ekstre 2.3.0 (zaten planlı). Ertelenenler 2.1.0'da GÖRÜNMEZ.
   Kullanıcı sorusu: daraltılmış 2.1.0 bitince canlıya mı, yoksa Perşembe sonrası tamamı mı? → önerim: daraltılmış 2.1.0
-  testler + kabul 1–16 + gözden geçirme temizse canlıya (Kasa çift sayım düzeltmesi de erken gider); cevap bekleniyor.
+  testler + kabul 1–16 + gözden geçirme temizse canlıya (Kasa çift sayım düzeltmesi de erken gider). KARAR (kullanıcı,
+  09.10.2026: "önerdiğin yoldan devam edelim") → daraltılmış 2.1.0 temiz çıkınca CANLIYA; ertelenenler 15.10 sonrası.
+  Planlı test (trig_0144BJLRwsZFizXTTYrJVszA) kullanıcı isteğiyle Pazar 11.10'dan CUMA 16.10.2026 09:00 TR'ye (06:00 UTC) ertelendi.
 - 2.0.20 YAPILACAKLAR (kullanıcı "yapılacaklara not al" dedi, 03.10.2026; "yap" denince başlanır; ayrıntı ve
   kanıt hemen altındaki ADAYI maddesinde):
   [x] 1. Bütün raporların (43) tablosunun altında kalın TOPLAM satırı — ekran, PDF, Excel aynı; yalnız toplanabilir
