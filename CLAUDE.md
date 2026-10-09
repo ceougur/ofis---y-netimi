@@ -878,8 +878,19 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
       ajan: ELEŞTİRMEN (düzeltmelerin ve testlerin açığını, kaçan bozma yollarını arar) + YARGIÇ (her bulgu/iddiayı yeniden
       üreterek doğrular, önem ve "teslime engel mi" kararını verir); engel bulgular kırmızı test → düzeltme; sonuç kullanıcıya.
       KARAR (kullanıcı, 09.10.2026: "plana uy her koşulda"): karar gerektiren bulgularda `docs/BANKA-MODULU-PLAN.md` neyi
-      söylüyorsa o uygulanır, kullanıcıya sorulmaz (ör. §5.1: 2'den çok ondalık tutar 400, sessizce yuvarlanmaz). Plan susuyorsa
-      en yaygın ve modern seçenek (önceki karar). Kapsam daraltması (ertelenenler) kullanıcı kararı olarak geçerli kalır.
+      söylüyorsa o uygulanır, kullanıcıya sorulmaz. Plan susuyorsa en yaygın ve modern seçenek (önceki karar). Kapsam daraltması
+      (ertelenenler) kullanıcı kararı olarak geçerli kalır. DÜZELTME (yargıç): §5.1'in "2'den çok ondalık 400" kuralı yalnız BANKA
+      uçları içindir; modül uçları (cari, fatura, taksit…) plana göre "bugünkü gibi" 1,005 → 1,01 yuvarlar (kullanıcıya düzeltildi).
+      Yargıç (09.10.2026): H1–H3b doğrulandı, kapalı; K1 geri yükleme K7/pasif hesabı deliyor (Ziraat −50.000) → 2.1.0'da düzeltilir;
+      Y1 pasif hesap silme/taşıma, Y2/K3 toplu iptal-silme negativeOk, K2 lineKey yinelenmesi → aynı düzeltme turunda.
+  İSTEK (kullanıcı, 09.10.2026): "yapılan işlemlerin tutarlılığı, tüm raporlarla uyumluluğu için raporda yazan uzman yazılım ve
+      muhasebe mühendisi testleri atlanmasın, rapora uy" → planın (`docs/BANKA-MODULU-PLAN.md`) test maddeleri HİÇBİRİ atlanmaz:
+      §12.2 (npm test, test:mutabakat, test:guvenilirlik, göç zinciri, arayüz senaryoları; iş akışı testi sıfırdan, ARAYÜZDEN,
+      bağımsız beklenenle, ekran görüntüsüyle), teslim edilen her aşamanın "Çalışıyor Mu / Nasıl Bozarım / Kabul" satırları (2.1.0
+      kapsamına giren her madde), §12.4 Nasıl Bozarım ana listesi (kapsamdaki maddeler), §12.5 kabul 1–16 sayılarla + mizan bağımsız
+      modelle, Aşama 14 (her rapor × süzgeç × ekran/PDF/Excel; bağımsız beklenenle açıklanmamış fark 0; TOPLAM = satırlar),
+      Aşama 15 (yetki matrisi, ?hofCompany=, salt okunur), Aşama 16 dilimleri. Kapsam dışı (ertelenen) maddeler "DENENMEYEN —
+      ertelendi" diye KANIT'ta tek tek listelenir; sessizce düşülmez. Teslimden önce plan-test eşleme tablosu (madde → test → sonuç).
   CANLI HATA (gözden geçirmede bulundu, v2.0.26'da da VAR, gerçek v2.0.26 koduyla yeniden üretildi): Taksite Aktar (var olan
   bağsız karta) → taşınan tahsilatı sil → aktarımı geri al → Silinenler'den geri yükle → Kasa ÇİFT sayılır (1.000 yerine 2.000),
   Mutabakat Testi "tamam" der. 2.1.0'da düzeldi (bir olay = bir para hareketi, 409 `event-in-use`). Kullanıcıya bildirildi.
