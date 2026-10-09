@@ -83,7 +83,9 @@ export const addDays = (iso, days) => {
   return `${x.getUTCFullYear()}-${String(x.getUTCMonth() + 1).padStart(2, "0")}-${String(x.getUTCDate()).padStart(2, "0")}`;
 };
 
-export async function runReconciliation({ client, seed = 1, operations = 500, verifyEvery = 1, reportEvery = 50, burst = 40, span = 120, log = () => {} }) {
+// bank: banka ekseni (v2.1.0; banka hesabı ve Banka Fişi). Banka modülü olmayan eski sürüme karşı koşan testler (altın test: v2.0.26)
+// false verir; o zaman rastgele sıra da eski motorla birebir aynıdır.
+export async function runReconciliation({ client, seed = 1, operations = 500, verifyEvery = 1, reportEvery = 50, burst = 40, span = 120, bank = true, log = () => {} }) {
   const R = rng(seed);
   const api = async (method, url, body) => {
     const response = await (method === "GET" ? client.get(url) : method === "DELETE" ? client.del(url) : method === "PUT" ? client.put(url, body) : client.post(url, body));
@@ -178,7 +180,7 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
   const suppliers = accounts.filter(a => a.type === "supplier");
   // v2.1.0: iki vadesiz banka hesabı, açılış çizelgenin ilk günü (Bakiye Doğrulandı). Açılış 102.k borç / 500 alacak; banka etkisi modelde.
   const banks = [];
-  for (const bankName of ["Ziraat Bankası", "Garanti BBVA"]) {
+  for (const bankName of bank ? ["Ziraat Bankası", "Garanti BBVA"] : []) {
     const opening = R.int(20_000, 80_000) * 100 + R.int(0, 99);
     const r = await api("POST", "/api/workspace/bank/accounts", { bankName, name: `Ana TL Hesabı T${seed}`, kind: "demand", currency: "TRY", opening: { date: D0, amount: tl(opening), confirmed: true } });
     if (r.status !== 200) throw new Error(`banka hesabı açılamadı: ${r.status} ${r.text}`);
@@ -224,12 +226,19 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
       seen.add(p.id);
       // v2.0.24: iade, asıl faturayı kapsayan Mevcut Borç kartını faturadaki payı kadar küçültür; model kapsamı (FIFO) tutmaz.
       // Bu kartta program değeri [model − bu karttaki iadeler, model] aralığında ve ödenenin altında değilse benimsenir.
-      if (m.slack && centsOf(p.totals.paid) === m.paid) {
+      if ((m.slack || m.over) && centsOf(p.totals.paid) === m.paid) {
         const got = centsOf(p.totals.total);
-        if (got <= m.total && got >= m.total - m.slack && got >= Math.max(0, m.paid)) {
-          // Benimsenen kesinti en son iadeye yazılır (iade iptalinde geri büyüyecek tutar; programın coverCuts'ı gibi).
-          if (m.slackBy?.coverCuts && got < m.total) m.slackBy.coverCuts.set(m, (m.slackBy.coverCuts.get(m) || 0) + m.total - got);
-          m.slack -= m.total - got;
+        if (got <= m.total + (m.over || 0) && got >= m.total - (m.slack || 0) && got >= Math.max(0, m.paid)) {
+          // Benimsenen fark en son iadeye yazılır (iade iptalinde geri büyüyecek tutar; programın coverCuts'ı gibi): program daha
+          // çok kestiyse kesinti artar, modelin kestiğini program kesmediyse azalır.
+          const cuts = m.slackBy?.coverCuts;
+          if (cuts && got !== m.total) {
+            const next = Math.max(0, (cuts.get(m) || 0) + m.total - got);
+            if (next) cuts.set(m, next);
+            else cuts.delete(m);
+          }
+          if (got < m.total) m.slack -= m.total - got;
+          else m.over -= got - m.total;
           m.total = got;
         }
       }
@@ -244,6 +253,8 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
         problems.push(`Taksit kartı ${p.name} (${p.id}, fatura ${d.invoiceId || d.invoice?.number || "-"}, durum ${p.status}): program ${p.totals.total}/${p.totals.paid} · model ${tl(m.total)}/${tl(m.paid)} · taksitler [${items}] · tahsilatlar [${ents}]`);
       }
       if ((p.status === "closed") !== (m.status === "closed")) problems.push(`Taksit kartı ${p.name}: durum ${p.status} · model ${m.status}`);
+      // Yukarı yönlü pay (over) yalnız iadenin ardından programın ilk gözlemine kadar geçerli; gözlendikten sonra kalkar.
+      m.over = 0;
     }
     for (const [id, p] of M.plans) if (!seen.has(id)) problems.push(`Taksit kartı ${id}: programda yok (model ${tl(p.total)})`);
     // v2.0.24 değişmezi: taksitli faturanın açığı = kendi kartının kalanı (program içi; iade/iptal/düzenleme sonrası).
@@ -281,7 +292,7 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
     }
     for (const [id, m] of M.cheques) if (!chSeen.has(id)) problems.push(`Çek/senet ${m.serialNo}: modelde var, programda yok`);
     // v2.1.0: her banka hesabının bakiyesi = modeldeki banka satırlarının toplamı (açılış + fişler + ters kayıtlar).
-    const bankList = (await api("GET", "/api/workspace/bank/accounts?status=all")).data.accounts || [];
+    const bankList = bank ? (await api("GET", "/api/workspace/bank/accounts?status=all")).data.accounts || [] : [];
     for (const b of banks) {
       const got = bankList.find(x => x.id === b.id);
       const want = M.bankLines.filter(x => x.bankId === b.id).reduce((t, x) => t + x.cents, 0);
@@ -559,6 +570,9 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
         pl.slackBy = inv;
       }
       inv.coverCuts = trimCovers(accountId);
+      // Model kapsamı (FIFO) tutmaz: genel kırpmayı en yeni karttan yapar; program önce iadenin asıl faturasını kapsayan kartı küçültür.
+      // Modelin kestiği kartı program kesmemiş olabilir → o kartta program değeri model + bu kesinti kadar yukarıda olabilir (over).
+      for (const [pl, cut] of inv.coverCuts) pl.over = (pl.over || 0) + cut;
     }
     if (series) lastSeries[series] = day > lastSeries[series] ? day : lastSeries[series];
     M.invoices.set(inv.id, inv);
@@ -1340,9 +1354,9 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
     ["fatura-acid", 4], ["fatura-hatasi", 9], ["fatura-bagli", 1],
     // Banka Fişi (v2.1.0 Aşama 4): fiş (+ saha hataları), Ters Kaydet, Düzelt, Benzer İşlem.
     ["banka-fis", 7], ["banka-ters", 2], ["banka-duzelt", 2], ["banka-benzer", 1],
-  ];
+  ].filter(([k]) => bank || !k.startsWith("banka-"));
   const bag = WEIGHTS.flatMap(([k, w]) => Array(w).fill(k));
-  {
+  if (bank) {
     const meta = (await api("GET", "/api/workspace/bank/voucher-meta")).data || {};
     if (meta.feeTypes?.length) feeKeys = meta.feeTypes.map(x => x.key);
     if (meta.gl?.income?.length) incomeGl = meta.gl.income;
