@@ -226,6 +226,18 @@ describe("2.1.0 Canlı Hata 2 — iade + peşin geri ödemesi taksit kartını b
     await expectCard(ctx, acc, inv, { left: 0, balance: 0 }, "J iade");
   }));
 
+  test("K (korunur): peşinli açık fatura + Mevcut Borç kartı (500) → 500 + 250 geri, 500 + 250 geri → kart 250, sonra 0", () => scenario(async ctx => {
+    const acc = await customer(ctx.api, "K Müşteri");
+    const doc = await must("satış", ctx.api.post("/api/workspace/invoices", { kind: "sale", accountId: acc.id, issueDate: SALE_DAY, lines: [{ name: "Hizmet", qty: 10, unitPrice: 100, vatRate: 0 }], payment: { cash: nakit(500), cheques: [], endorse: [], rest: "open", dueDate: SALE_DAY }, force: true, cashForce: true }));
+    const plan = await must("kart", ctx.api.post("/api/workspace/plans", { name: "K kart", registeredOn: "2026-08-04", total: "500", accountId: acc.id, mode: "auto", count: "2", firstDue: "2026-09-01", coversBalance: true }));
+    const inv = { id: doc.id, planId: plan.id, lineId: doc.lines[0].id };
+    await giveBack(ctx.api, acc, inv, 5, nakit(250));
+    // Faturanın kendisi kapanır (peşin 500 + iade 500); geri ödenen 250 carinin borcudur ve kartta kalır.
+    await expectCard(ctx, acc, inv, { left: 250, balance: 250 }, "K iade-1");
+    await giveBack(ctx.api, acc, inv, 5, nakit(250));
+    await expectCard(ctx, acc, inv, { left: 0, balance: 0 }, "K iade-2");
+  }));
+
   test("Mutabakat Testi her senaryodan sonra tutarlı (C + B + A aynı şirkette)", () => scenario(async ctx => {
     const c = await customer(ctx.api, "M C");
     const ci = await sale(ctx.api, c, { cash: nakit(500) });
