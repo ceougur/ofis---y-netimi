@@ -898,6 +898,11 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
       yalnız cari + fiş; yetki matrisi, `previous` statik taraması, salt okunur lisans, iki oturumlu eşzamanlılık; ekrandan kayıt
       tahsilatı/stok peşini/çek ödemesi/Düzenle'de hesap taşıma; Banka "Bugün Çıkış"/"Transfer" satırı (kabul 13–14) yok. Eleştirmen
       + eşleme ayrı ayrı buldu: taksit KARTI silme bağlı banka tahsilatını sessizce düşürüyor (yüksek) → düzeltme turunda.
+  İSTEK (kullanıcı, 09.10.2026): "tüm işlemler bitince bağımsız yargıç ve yargıç kararını eleştirmenden tekrar geçir, sonra plana
+      uy!" → 2.1.0'ın BÜTÜN işleri (düzeltme turu, eksik testler, transfer, raporlar, K10, yetki, kabul 1–16, kılavuz) bitince, paketten
+      ÖNCE: (1) bağımsız YARGIÇ (kod değiştirmez; bütün 2.1.0'ı ve bulguları yeniden üreterek doğrular, önem + teslime engel kararı);
+      (2) ELEŞTİRMEN yargıcın KARARINI denetler (yanlış "engel değil", kaçan yol, zayıf kanıt); (3) ikisinin sonucuna göre plana uyulur
+      (karar gerektiren yerde plan, plan susarsa en yaygın/modern); engel bulgular kırmızı test → düzeltme → sonra paket.
   CANLI HATA (gözden geçirmede bulundu, v2.0.26'da da VAR, gerçek v2.0.26 koduyla yeniden üretildi): Taksite Aktar (var olan
   bağsız karta) → taşınan tahsilatı sil → aktarımı geri al → Silinenler'den geri yükle → Kasa ÇİFT sayılır (1.000 yerine 2.000),
   Mutabakat Testi "tamam" der. 2.1.0'da düzeldi (bir olay = bir para hareketi, 409 `event-in-use`). Kullanıcıya bildirildi.
