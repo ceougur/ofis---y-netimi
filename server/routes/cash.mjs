@@ -13,6 +13,9 @@ import { METHODS, NEGATIVE_GUARDED, NEGATIVE_KEY, NEGATIVE_POLICIES, methodOf, r
 import { systemClock } from "../lib/clock.mjs";
 import { createMoneyLines, waysFor } from "../lib/bank/money-lines.mjs";
 
+// Banka Fişi'nin para hareketi olmayan türleri (açılış, Devir Kapanışı, eski bakiye aktarımı): raporda "Açılış ve Devir Düzeltmeleri".
+const ADJUST_TYPES = new Set(["opening", "carry_close", "legacy_reclass"]);
+
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 const validDate = value => DATE.test(value) && !Number.isNaN(new Date(value).getTime());
 
@@ -133,7 +136,9 @@ export function registerCashRoutes(router, context) {
     // Yola göre bakiyeler (bütün satırlar; süzgeçten bağımsız): tek kaynağın özetinden. Tanınmayan yollu eski satır hiçbir yola
     // katılmaz (2.0.26'da satır listesi onu nakit sayıyordu, özet saymıyordu; artık ikisi aynı).
     const totalsByWay = lines.balances();
-    const byMethod = { cash: roundMoney(totalsByWay.cash / 100), bank: roundMoney(totalsByWay.bank / 100), card: roundMoney((totalsByWay.card + totalsByWay.ccard) / 100) };
+    // GG2: POS / Kredi Kartı (card) yalnız POS ve Hesabı Atanmamış POS'tur; kurumsal kart borcu (ccard) ve kredi (loan) varlık değildir.
+    const byMethod = { cash: roundMoney(totalsByWay.cash / 100), bank: roundMoney(totalsByWay.bank / 100), card: roundMoney(totalsByWay.card / 100) };
+    let adjust = 0;
     for (const entry of lines.rows({ ways })) {
       const signed = entry.kind === "in" ? entry.amount : -entry.amount;
       balance = roundMoney(balance + signed);
@@ -143,6 +148,13 @@ export function registerCashRoutes(router, context) {
         continue;
       }
       if (to && entry.date > to) continue;
+      // GG2: açılış bakiyesi, Devir Kapanışı ve eski bakiye aktarımı (ve bunların ters kaydı) para hareketi değildir: bakiyeye girer, dönem
+      // giriş/çıkışına girmez ("Açılış ve Devir Düzeltmeleri"). Önceden sihirbaz → Geri Al döngüsü raporun giriş/çıkışını şişiriyordu.
+      if (entry.source === "bankLine" && ADJUST_TYPES.has(entry.baseType || entry.eventType)) {
+        adjust = roundMoney(adjust + signed);
+        list.push({ ...entry, balance, editable: false, adjust: true });
+        continue;
+      }
       period[entry.kind] = roundMoney(period[entry.kind] + entry.amount);
       const own = entry.actorId === user.id;
       // Taksit, cari ve stok hareketleri kendi kartlarından düzeltilir (Kasa'da yalnız kart açılır).
@@ -157,7 +169,8 @@ export function registerCashRoutes(router, context) {
     return {
       entries: list,
       opening: from ? opening : 0,
-      period: { ...period, net: roundMoney(period.in - period.out) },
+      // adjust yalnız banka fişi düzeltmesi varsa (2.0.26 ile aynı JSON: altın test).
+      period: { ...period, net: roundMoney(period.in - period.out), ...(list.some(entry => entry.adjust) ? { adjust } : {}) },
       totals: { ...totals, balance: roundMoney(totals.in - totals.out) },
       byMethod,
       method,

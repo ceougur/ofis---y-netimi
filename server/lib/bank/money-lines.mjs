@@ -18,7 +18,7 @@
 import { INSTRUMENTS } from "../cheques.mjs";
 import { INVOICE_KINDS } from "../invoice-math.mjs";
 import { roundMoney, toCents } from "../money.mjs";
-import { INTERNAL_TYPES } from "./event-types.mjs";
+import { INTERNAL_TYPES, typeLabel } from "./event-types.mjs";
 
 /**
  * Kaynak: tablo + koşullar ([kolon, izinli değerler, boşluk değeri]) + isteğe bağlı "sıfırdan büyük" kolon (para satırı yüklemi) ve okuma
@@ -71,7 +71,8 @@ export const MONEY_SOURCES = Object.freeze([
       party: "COALESCE(fe.party_id, '')", internal: `CASE WHEN fe.type IN (${[...INTERNAL_TYPES].map(type => `'${type}'`).join(", ")}) THEN 1 ELSE 0 END`,
       wayHint: "CASE l.role WHEN 'bank' THEN 'bank' WHEN 'pos' THEN 'card' WHEN 'card' THEN 'ccard' ELSE 'loan' END",
       created: "fe.created_at", updated: "fe.updated_at", actor: "fe.created_by", eventId: "l.event_id", valueDate: "fe.value_date", fxMinor: "l.fx_minor", currency: "l.currency",
-      extra: "json_object('description', fe.description, 'eventType', fe.type, 'eventNo', fe.no)",
+      // baseType: ters kaydın asıl işlem türü (raporlarda açılış/Devir Kapanışı zincirinin ters kaydı da düzeltme sayılır).
+      extra: "json_object('description', fe.description, 'eventType', fe.type, 'eventNo', fe.no, 'baseType', CASE WHEN fe.type = 'reversal' THEN (SELECT o.type FROM fin_events o WHERE o.id = fe.reversal_of) ELSE fe.type END)",
     },
   },
 ]);
@@ -91,10 +92,12 @@ export function waysFor(method) {
       return ["cash"];
     case "bank":
       return ["bank"];
+    // GG2: kurumsal kart (309) ve kredi (300) BORÇTUR; "POS / Kredi Kartı" ve "Banka ve POS" görünümleri varlıktır (102 + 108). Önceden kart
+    // borcu POS altında "çıkış", kredi bacağı banka ve POS toplamında görünüyordu.
     case "card":
-      return ["card", "ccard"];
+      return ["card"];
     case "noncash":
-      return ["bank", "card", "ccard", "loan"];
+      return ["bank", "card"];
     default:
       return null;
   }
@@ -186,7 +189,8 @@ function shape(line) {
         description: `${INSTRUMENTS[x.instrument] || "Çek"} ${x.eventKind === "collect" ? "tahsili" : "ödemesi"}${x.serialNo ? ` · No ${x.serialNo}` : ""} · ${x.accountName || x.drawer || "—"}${x.note ? ` · ${x.note}` : ""}`,
       };
     default:
-      return { ...head, kind: line.kind, source: "bankLine", method: line.method, amount: line.amount, date: line.date, description: x.description || "", eventId: line.event_id, eventNo: x.eventNo || "", ...tail };
+      // GG2: açıklamasız Banka Fişi satırında işlem türü ve İşlem No (raporda Açıklama boş kalıyordu).
+      return { ...head, kind: line.kind, source: "bankLine", method: line.method, amount: line.amount, date: line.date, description: x.description || [typeLabel(x.eventType || ""), x.eventNo].filter(Boolean).join(" · "), eventId: line.event_id, eventNo: x.eventNo || "", eventType: x.eventType || "", baseType: x.baseType || x.eventType || "", ...tail };
   }
 }
 
@@ -366,34 +370,39 @@ export function createMoneyLines(store) {
    * sayılır (fiziki nakit girer/çıkar; §3.4).
    */
   function summary(day, monthStart = `${day.slice(0, 7)}-01`) {
+    // GG2: "Kasa ve Banka" toplamları VARLIKTIR (nakit, banka, POS / Hesabı Atanmamış POS); kurumsal kart (ccard, 309) ve kredi (loan, 300)
+    // borçtur — ayrı (debt). Önceden kart açılış borcu ANLIK DURUM'un Banka / POS kutusundan ve nakit akış başlangıcından düşüyor, kredi kullanımı
+    // nakit akışta görünmüyordu.
     const row = store.get(
-      `SELECT COALESCE(SUM(CASE WHEN kind = 'in' THEN cents ELSE -cents END), 0) AS balance,
-              COALESCE(SUM(CASE WHEN date <= :day THEN (CASE WHEN kind = 'in' THEN cents ELSE -cents END) END), 0) AS balanceToday,
-              COALESCE(SUM(CASE WHEN date = :day AND kind = 'in' THEN cents END), 0) AS todayIn,
-              COALESCE(SUM(CASE WHEN date = :day AND kind = 'out' THEN cents END), 0) AS todayOut,
-              COALESCE(SUM(CASE WHEN date >= :month AND date <= :day AND kind = 'in' THEN cents END), 0) AS monthIn,
-              COALESCE(SUM(CASE WHEN date >= :month AND date <= :day AND kind = 'out' THEN cents END), 0) AS monthOut,
+      `SELECT COALESCE(SUM(CASE WHEN way IN ('ccard', 'loan') THEN 0 WHEN kind = 'in' THEN cents ELSE -cents END), 0) AS balance,
+              COALESCE(SUM(CASE WHEN way IN ('ccard', 'loan') THEN 0 WHEN date <= :day THEN (CASE WHEN kind = 'in' THEN cents ELSE -cents END) END), 0) AS balanceToday,
+              COALESCE(SUM(CASE WHEN way NOT IN ('ccard', 'loan') AND date = :day AND kind = 'in' THEN cents END), 0) AS todayIn,
+              COALESCE(SUM(CASE WHEN way NOT IN ('ccard', 'loan') AND date = :day AND kind = 'out' THEN cents END), 0) AS todayOut,
+              COALESCE(SUM(CASE WHEN way NOT IN ('ccard', 'loan') AND date >= :month AND date <= :day AND kind = 'in' THEN cents END), 0) AS monthIn,
+              COALESCE(SUM(CASE WHEN way NOT IN ('ccard', 'loan') AND date >= :month AND date <= :day AND kind = 'out' THEN cents END), 0) AS monthOut,
+              COALESCE(SUM(CASE WHEN way = 'ccard' THEN (CASE WHEN kind = 'in' THEN cents ELSE -cents END) END), 0) AS ccardAll,
+              COALESCE(SUM(CASE WHEN way = 'loan' THEN (CASE WHEN kind = 'in' THEN cents ELSE -cents END) END), 0) AS loanAll,
               COUNT(CASE WHEN date > :day THEN 1 END) AS future,
               COUNT(*) AS count,
               COALESCE(SUM(CASE WHEN way = 'cash' THEN (CASE WHEN kind = 'in' THEN cents ELSE -cents END) END), 0) AS cashAll,
               COALESCE(SUM(CASE WHEN way = 'bank' THEN (CASE WHEN kind = 'in' THEN cents ELSE -cents END) END), 0) AS bankAll,
-              COALESCE(SUM(CASE WHEN way IN ('card', 'ccard') THEN (CASE WHEN kind = 'in' THEN cents ELSE -cents END) END), 0) AS cardAll,
+              COALESCE(SUM(CASE WHEN way = 'card' THEN (CASE WHEN kind = 'in' THEN cents ELSE -cents END) END), 0) AS cardAll,
               COALESCE(SUM(CASE WHEN way = 'cash' AND date <= :day THEN (CASE WHEN kind = 'in' THEN cents ELSE -cents END) END), 0) AS cashToday,
               COALESCE(SUM(CASE WHEN way = 'bank' AND date <= :day THEN (CASE WHEN kind = 'in' THEN cents ELSE -cents END) END), 0) AS bankToday,
-              COALESCE(SUM(CASE WHEN way IN ('card', 'ccard') AND date <= :day THEN (CASE WHEN kind = 'in' THEN cents ELSE -cents END) END), 0) AS cardToday,
+              COALESCE(SUM(CASE WHEN way = 'card' AND date <= :day THEN (CASE WHEN kind = 'in' THEN cents ELSE -cents END) END), 0) AS cardToday,
               COALESCE(SUM(CASE WHEN way = 'cash' AND date = :day AND kind = 'in' THEN cents END), 0) AS cashTodayIn,
               COALESCE(SUM(CASE WHEN way = 'cash' AND date = :day AND kind = 'out' THEN cents END), 0) AS cashTodayOut,
               COALESCE(SUM(CASE WHEN way = 'cash' AND date >= :month AND date <= :day AND kind = 'in' THEN cents END), 0) AS cashMonthIn,
               COALESCE(SUM(CASE WHEN way = 'cash' AND date >= :month AND date <= :day AND kind = 'out' THEN cents END), 0) AS cashMonthOut,
               COUNT(CASE WHEN way = 'cash' AND date > :day THEN 1 END) AS cashFuture,
-              COALESCE(SUM(CASE WHEN way <> 'cash' AND date = :day AND kind = 'in' THEN cents END), 0) AS otherTodayIn,
-              COALESCE(SUM(CASE WHEN way <> 'cash' AND date = :day AND kind = 'out' THEN cents END), 0) AS otherTodayOut
+              COALESCE(SUM(CASE WHEN way IN ('bank', 'card') AND date = :day AND kind = 'in' THEN cents END), 0) AS otherTodayIn,
+              COALESCE(SUM(CASE WHEN way IN ('bank', 'card') AND date = :day AND kind = 'out' THEN cents END), 0) AS otherTodayOut
        FROM (${waySql({ light: true })}) w`,
       { day, month: monthStart },
     );
     const cashOnly = { balance: tl(row.cashAll), balanceToday: tl(row.cashToday), today: { in: tl(row.cashTodayIn), out: tl(row.cashTodayOut) }, month: { in: tl(row.cashMonthIn), out: tl(row.cashMonthOut) }, futureEntries: row.cashFuture };
     const noncash = { balance: roundMoney(tl(row.bankAll) + tl(row.cardAll)), balanceToday: roundMoney(tl(row.bankToday) + tl(row.cardToday)), today: { in: tl(row.otherTodayIn), out: tl(row.otherTodayOut) } };
-    return { byMethod: { cash: tl(row.cashAll), bank: tl(row.bankAll), card: tl(row.cardAll) }, byMethodAt: { cash: tl(row.cashToday), bank: tl(row.bankToday), card: tl(row.cardToday) }, cashToday: tl(row.cashToday), balance: tl(row.balance), balanceToday: tl(row.balanceToday), today: { in: tl(row.todayIn), out: tl(row.todayOut) }, month: { in: tl(row.monthIn), out: tl(row.monthOut) }, futureEntries: row.future, count: row.count, cashOnly, noncash };
+    return { byMethod: { cash: tl(row.cashAll), bank: tl(row.bankAll), card: tl(row.cardAll) }, byMethodAt: { cash: tl(row.cashToday), bank: tl(row.bankToday), card: tl(row.cardToday) }, cashToday: tl(row.cashToday), balance: tl(row.balance), balanceToday: tl(row.balanceToday), today: { in: tl(row.todayIn), out: tl(row.todayOut) }, month: { in: tl(row.monthIn), out: tl(row.monthOut) }, futureEntries: row.future, count: row.count, cashOnly, noncash, debt: { card: tl(-row.ccardAll), loan: tl(-row.loanAll) } };
   }
 
   /**

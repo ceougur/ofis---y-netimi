@@ -31,7 +31,7 @@ const MAX_ROWS = 500_000;
 const collator = new Intl.Collator("tr", { numeric: true, sensitivity: "base" });
 // Kalıtımsız (v2.0.22): süzgeçteki "constructor" gibi adlar tür sayılmaz.
 const TYPE_TEXT = Object.freeze(Object.assign(Object.create(null), { customer: "Müşteri", supplier: "Tedarikçi", other: "Diğer" }));
-const CASH_SOURCE = { payment: "Kayıt tahsilatı", manual: "Kasa", plan: "Taksit", account: "Cari", stock: "Stok", cheque: "Çek / senet", invoice: "Fatura" };
+const CASH_SOURCE = { payment: "Kayıt tahsilatı", manual: "Kasa", plan: "Taksit", account: "Cari", stock: "Stok", cheque: "Çek / senet", invoice: "Fatura", bankLine: "Banka Fişi" };
 const PRIORITY = { high: "Yüksek", normal: "Normal", low: "Düşük", urgent: "Acil" };
 const TASK_STATUS = { open: "Açık", done: "Tamamlandı", completed: "Tamamlandı", cancelled: "İptal" };
 const money = value => (value === "" || value === null || value === undefined ? "" : tl(value));
@@ -417,14 +417,19 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
         const data = cash().report(admin, range.from, range.to, method);
         const which = { bank: "Banka (Havale / EFT)", card: "POS / Kredi Kartı" }[method] || "Banka ve POS";
         const rows = [[openingDay(range.from), "", "Devir", `Dönem başı ${which.toLocaleLowerCase("tr-TR")}`, "", "", money(data.opening), ""]];
-        for (const entry of data.entries) rows.push([dayText(entry.date), methodLabel(entry.method, entry.kind), entry.transferId ? "Kasa ↔ Banka" : CASH_SOURCE[entry.source] || entry.source, cashLabel(entry), entry.kind === "in" ? money(entry.amount) : "", entry.kind === "out" ? money(entry.amount) : "", money(entry.balance), entry.actorName || ""]);
-        const closing = roundMoney(data.opening + data.period.in - data.period.out);
+        // GG2: açılış ve Devir Kapanışı satırları giriş/çıkış kolonuna yazılmaz (TOPLAM = dönem giriş/çıkış); tutarı açıklamada, bakiyede.
+        for (const entry of data.entries) {
+          const label = entry.adjust ? `${cashLabel(entry)} (Açılış ve Devir Düzeltmesi: ${entry.kind === "in" ? "+" : "−"}${money(entry.amount)})` : cashLabel(entry);
+          rows.push([dayText(entry.date), methodLabel(entry.method, entry.kind), entry.transferId ? "Kasa ↔ Banka" : CASH_SOURCE[entry.source] || entry.source, label, !entry.adjust && entry.kind === "in" ? money(entry.amount) : "", !entry.adjust && entry.kind === "out" ? money(entry.amount) : "", money(entry.balance), entry.actorName || ""]);
+        }
+        const adjust = data.period.adjust || 0;
+        const closing = roundMoney(data.opening + data.period.in - data.period.out + adjust);
         return {
           subtitle: `${which} · ${rangeText(range)}`,
           headers: ["Tarih", "Yol", "Kaynak", "Açıklama", "Giriş", "Çıkış", "Bakiye", "Giren"],
           types: ["", "", "", "", "money", "money", "money", ""],
           rows,
-          summary: [["Devir", money(data.opening)], ["Dönem Giriş", money(data.period.in)], ["Dönem Çıkış", money(data.period.out)], ["Dönem Net", money(data.period.net)], ["Dönem Sonu", money(closing)], ["Banka (tüm hareketler)", money(data.byMethod.bank)], ["POS / Kredi Kartı (tüm hareketler)", money(data.byMethod.card)]],
+          summary: [["Devir", money(data.opening)], ["Dönem Giriş", money(data.period.in)], ["Dönem Çıkış", money(data.period.out)], ["Dönem Net", money(data.period.net)], ...(adjust || data.entries.some(entry => entry.adjust) ? [["Açılış ve Devir Düzeltmeleri", money(adjust)]] : []), ["Dönem Sonu", money(closing)], ["Banka (tüm hareketler)", money(data.byMethod.bank)], ["POS / Kredi Kartı (tüm hareketler)", money(data.byMethod.card)]],
         };
       },
     },
