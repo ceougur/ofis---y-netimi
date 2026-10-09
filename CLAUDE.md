@@ -877,6 +877,9 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
       EK (kullanıcı, aynı gün): "yargıç ve eleştirmenden de geçsin" → saldırgan test bitince iki bağımsız, kod değiştirmeyen
       ajan: ELEŞTİRMEN (düzeltmelerin ve testlerin açığını, kaçan bozma yollarını arar) + YARGIÇ (her bulgu/iddiayı yeniden
       üreterek doğrular, önem ve "teslime engel mi" kararını verir); engel bulgular kırmızı test → düzeltme; sonuç kullanıcıya.
+      KARAR (kullanıcı, 09.10.2026: "plana uy her koşulda"): karar gerektiren bulgularda `docs/BANKA-MODULU-PLAN.md` neyi
+      söylüyorsa o uygulanır, kullanıcıya sorulmaz (ör. §5.1: 2'den çok ondalık tutar 400, sessizce yuvarlanmaz). Plan susuyorsa
+      en yaygın ve modern seçenek (önceki karar). Kapsam daraltması (ertelenenler) kullanıcı kararı olarak geçerli kalır.
   CANLI HATA (gözden geçirmede bulundu, v2.0.26'da da VAR, gerçek v2.0.26 koduyla yeniden üretildi): Taksite Aktar (var olan
   bağsız karta) → taşınan tahsilatı sil → aktarımı geri al → Silinenler'den geri yükle → Kasa ÇİFT sayılır (1.000 yerine 2.000),
   Mutabakat Testi "tamam" der. 2.1.0'da düzeldi (bir olay = bir para hareketi, 409 `event-in-use`). Kullanıcıya bildirildi.
