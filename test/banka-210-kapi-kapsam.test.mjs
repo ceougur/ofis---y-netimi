@@ -315,12 +315,16 @@ describe("kapı süzgeci — store dışı yazım, çözülemeyen yazım, taban 
     store.raw("test: temizlik", () => store.tx(() => store.run("DELETE FROM cash_entries WHERE id = 'upsert-1'")));
   });
 
-  it("taban sapması: açılışta kuruşu bozuk Kasa satırı → Kasa'ya dokunan yazım tam kapıda geçer (sapma büyümedi), cari yazımı süzgeç yolunda", async () => {
+  // Gözden geçirme B9 (Aşama 2; bilerek güncellendi): taban sapması kuruş/tarih biçimi olan tablolarda eski satırların KİMLİKLERİ tabandır —
+  // yeni Kasa yazımı artık süzgeç yolunda (önceden tam kapıdaydı: 100.000 satırda ~7 sn); eski satıra dokunan yazım tam kapıda geçer.
+  it("taban sapması: açılışta kuruşu bozuk Kasa satırı → yeni Kasa yazımı süzgeç yolunda, eski satıra dokunan yazım tam kapıda geçer (sapma büyümedi), cari yazımı süzgeç yolunda", async () => {
     const { api, app, db } = ctx;
     db.prepare("INSERT INTO cash_entries (id, kind, amount, date, description, method, created_by, created_at) VALUES ('eski-kurus', 'in', 2.222, ?, 'eski sürüm', 'cash', 'test', ?)").run(day(-3), `${TODAY}T09:00:00Z`);
     const restarted = app.integrity.start();
     assert.equal(restarted.baseline.ok, false, "açılışta sapma bulundu");
     await must("Kasa yazımı", api.post("/api/workspace/cash", { kind: "in", amount: "5", date: TODAY, description: "taban alanı" }));
+    assert.equal(gateOf(app).path, "scoped", `yeni Kasa yazımı süzgeçte (${gateOf(app).reason || ""})`);
+    ctx.store.tx(() => ctx.store.run("UPDATE cash_entries SET description = 'eski sürüm (not)' WHERE id = 'eski-kurus'"));
     assert.equal(gateOf(app).path, "full");
     assert.match(gateOf(app).reason, /taban sapması/);
     await must("cari yazımı", api.post(`/api/workspace/accounts/${data.customer.id}/entries`, { kind: "debt", amount: "7", date: TODAY, note: "başka alan" }));

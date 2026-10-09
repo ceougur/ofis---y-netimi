@@ -229,6 +229,42 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
    * scope.events: COMMIT'te dokunulan işlem başlıkları (olay bazlı denetimler yalnız bunlara; null = tam tarama). includeHidden: banka
    * kullanılmayan kurulumda gizlenen (tamam olan) banka denetimlerini de döndür (tanı ve testler için; API döndürmez).
    */
+  // Gözden geçirme B6 (bozma bulanıklaştırması, Aşama 2): çek/senet tek tek (evrak bazında 101/103 = evrakın durumu) — tam kapı yalnız
+  // TOPLAMI denetler, süzgeç dokunulan evrakı tek tek. Toplamda birbirini götüren iki evrak sapması (ör. bir evrakın olayı ötekine
+  // taşınmış) tam kapıdan geçer; sonra yalnız birine dokunan yazımda süzgeç "temiz", tam kapı "sapma" der. Bu evrakların kimlikleri her tam
+  // çalışmada ölçülür; süzgeç onlara dokunan yazımı tam kapıya bırakır.
+  let drift = new Set();
+  function chequeDriftOf(entries) {
+    const out = new Set();
+    if (!has("cheques")) return out;
+    const owner = new Map();
+    if (has("account_entries")) for (const row of store.all("SELECT id, source_id AS c FROM account_entries WHERE source = 'cheque'")) owner.set(`account:${row.id}`, row.c);
+    if (has("cheque_events")) for (const row of store.all("SELECT id, cheque_id AS c FROM cheque_events")) owner.set(`cheque:${row.id}`, row.c);
+    if (has("plan_entries")) for (const row of store.all("SELECT id, cheque_id AS c FROM plan_entries WHERE cheque_id <> ''")) owner.set(`plan-entry:${row.id}`, row.c);
+    const got = new Map();
+    for (const entry of entries) {
+      const cheque = owner.get(entry.id) || /^account:free-(?:in|out|bounce):(.+)$/.exec(entry.id)?.[1];
+      if (!cheque) continue;
+      for (const line of entry.lines) {
+        if (line.account !== "101" && line.account !== "103") continue;
+        const sums = got.get(cheque) || { 101: 0, 103: 0 };
+        sums[line.account] += line.debit - line.credit;
+        got.set(cheque, sums);
+      }
+    }
+    const seen = new Set();
+    for (const row of store.all("SELECT id, direction, status, amount, deleted_at AS deletedAt FROM cheques")) {
+      seen.add(row.id);
+      const live = !row.deletedAt;
+      const want101 = live && row.direction === "in" && row.status === "portfolio" ? Math.round((Number(row.amount) || 0) * 100) : 0;
+      const want103 = live && row.direction === "out" && row.status === "pending" ? -Math.round((Number(row.amount) || 0) * 100) : 0;
+      const sums = got.get(row.id) || { 101: 0, 103: 0 };
+      if (sums[101] !== want101 || sums[103] !== want103) out.add(row.id);
+    }
+    for (const [cheque, sums] of got) if (!seen.has(cheque) && (sums[101] || sums[103])) out.add(cheque);
+    return out;
+  }
+
   function run({ events: touched = null, includeHidden = false } = {}) {
     const started = performance.now();
     // Bölüm süreleri (v2.1.0, §3.11 kapı ölçümü; tools/kapi-olcum.mjs): stats() ile okunur, sonuca ve API'ye girmez.
@@ -251,6 +287,8 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
       const { reconciliation, entries, groups: moneyGroups } = service.check({ accountList: list });
       groups = moneyGroups || null;
       lap("ledger");
+      drift = chequeDriftOf(entries);
+      lap("cheques");
       checks.push({ code: "balance", name: "Çift yönlü kayıt (borç = alacak)", ok: reconciliation.balanced, difference: 0 });
       // v2.1.0 (§3.11 bank:sub, E1.16): alt hesap mutabakatı — yevmiyedeki alt hesap (102.01, 108.00 …) = tek kaynağın (yol, hesap) grubu.
       // Varlık bazında kod: bir hesaptaki sapma yalnız kendi kodunu (bank:sub:<alt hesap>) kilitler.
@@ -505,7 +543,7 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
     }
     const failures = checks.filter(item => !item.ok);
     const total = performance.now() - started;
-    lastRun = { scoped: Boolean(touched), ms: total, sections: timings };
+    lastRun = { scoped: Boolean(touched), ms: total, sections: timings, drift };
     return { ok: failures.length === 0, checks, failures, durationMs: Math.round(total) };
   }
   let lastRun = null;
@@ -533,13 +571,39 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
     legacyEvents = new Set(bank().brokenEvents().map(item => item.key));
     legacyEventless = new Set(bank().eventless().map(item => item.key));
   };
+  // Gözden geçirme B9 (Aşama 2): taban sapması "kuruş" ya da "tarih biçimi" olan tablolarda bozuk eski satırların KİMLİKLERİ (tablo → Set). Bu
+  // satırlardan birine dokunmayan yazım o tablonun tabanını değiştiremez: süzgeç kararı verir (önceden tek bir eski kuruşlu Kasa satırı her
+  // Kasa yazımını tam kapıya gönderiyordu; 100.000 satırda ~7 sn). Taban değişince (açılış, tam kapı yolundan geçen işlem) yeniden ölçülür.
+  let legacyRows = new Map();
+  // Evrak bazında sapan çek/senetler (chequeDriftOf; açılışta ve tam kapı yolundan geçen her işlemde yenilenir).
+  let legacyCheques = new Set();
+  // Süzgecin bir şey bulup tam kapının yine de kabul ettiği alanlar (yalnız tam kapının bildiği, toplamda tutan bir durum): yeniden açılışa
+  // kadar bu alanlara dokunan yazımda karar tam kapının (gözden geçirme B6; genel güvenlik ağı).
+  let distrust = new Set();
+  const measureLegacyRows = signatures => {
+    const out = new Map();
+    const add = (table, ids) => {
+      if (!out.has(table)) out.set(table, new Set());
+      for (const row of ids) out.get(table).add(String(row.id));
+    };
+    for (const code of new Set([...signatures].map(item => item.slice(0, item.indexOf("|"))))) {
+      if (code.startsWith("cents:")) {
+        const table = code.slice(6);
+        for (const [name, column, where] of AMOUNT_COLUMNS) if (name === table && hasColumn(table, column)) add(table, store.all(`SELECT id FROM ${table} WHERE (ABS(${column} * 100 - ROUND(${column} * 100)) > 0.0001 OR ${column} < 0)${where ? ` AND ${where}` : ""}`));
+      } else if (code.startsWith("dates:format:")) {
+        const table = code.slice(13);
+        if (hasColumn(table, "date")) add(table, store.all(`SELECT id FROM ${table} WHERE date IS NULL OR trim(date) = '' OR date NOT GLOB '[0-9][0-9][0-9][0-9]-[01][0-9]-[0-3][0-9]' OR date(date) IS NULL OR date(date) <> date`));
+      }
+    }
+    return out;
+  };
   // Dokunulan varlıklar yolu (v2.1.0, §3.11 kararı; lib/integrity-scope.mjs): COMMIT'te önce bu süzgeç; temizse tam kapı çalışmaz.
   let scopedGate = null;
   const gateOf = () =>
     (scopedGate ??= createScopedGate({
       store, ledger, accounts, plans, stock, money, period, now, has, hasColumn,
       amountColumns: AMOUNT_COLUMNS, dated: DATED, datedWhenUsed: DATED_WHEN_USED,
-      legacy: { future: () => legacyFuture, method: () => legacyMethod, events: () => legacyEvents },
+      legacy: { future: () => legacyFuture, method: () => legacyMethod, events: () => legacyEvents, rows: () => legacyRows, cheques: () => legacyCheques },
       bankChecks: bank,
     }));
   // Store dışı yazımı görmek için: kayıtlı yazımların sayısı ↔ total_changes(), data_version (start/after/rolledBack'te eşitlenir).
@@ -559,6 +623,7 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
   const signature = item => `${item.code}|${roundMoney(item.difference || 0)}|${item.gateCount ?? item.count ?? 0}`;
   let baseline = new Set();
   let pending = null;
+  let pendingDecision = null;
   const write = (action, tables, failures) => {
     try {
       store.run(
@@ -583,6 +648,9 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
     const result = run();
     baseline = new Set(result.failures.map(signature));
     baselineFamilies = familiesOf(baseline);
+    legacyRows = measureLegacyRows(baseline);
+    legacyCheques = new Set(drift);
+    distrust = new Set();
     known = new Set(baseline);
     const lock = period()?.lockedUntil?.() || "";
     lockState = { lock, digest: lockDigest(lock) };
@@ -608,7 +676,7 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
           if (full) decision = { full, findings: [], sections: {}, ms: 0 };
           else {
             const engine = gateOf();
-            decision = engine.evaluate(engine.derive(capture), { lock: currentLock, baselineFamilies });
+            decision = engine.evaluate(engine.derive(capture), { lock: currentLock, baselineFamilies: distrust.size ? new Set([...baselineFamilies, ...distrust]) : baselineFamilies });
           }
         } catch (error) {
           if (verify) throw error;
@@ -647,19 +715,30 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
           throw new IntegrityError(fresh.map(item => ({ ...item, tables: [...tables] })));
         }
         pending = result;
+        pendingDecision = decision;
       },
       after() {
         if (pending) {
+          legacyCheques = new Set(drift);
+          // Süzgeç bulgu verdi, tam kapı kabul etti: o alanlara güven kalmadı (yeniden açılışa kadar).
+          for (const finding of pendingDecision?.findings || []) {
+            const family = familyOf(finding.code);
+            if (family) distrust.add(family);
+          }
           baseline = new Set(pending.failures.map(signature));
           baselineFamilies = familiesOf(baseline);
+          // Yalnız kuruş / tarih biçimi sapması olan tablolar okunur (yoksa sorgu yok).
+          legacyRows = measureLegacyRows(baseline);
         }
         if (pendingLock) lockState = pendingLock;
         pending = null;
+        pendingDecision = null;
         pendingLock = null;
         syncCounters();
       },
       rolledBack({ tables, error }) {
         pending = null;
+        pendingDecision = null;
         syncCounters();
         if (error instanceof IntegrityError) {
           write("rolled-back", tables, error.failures);
@@ -680,6 +759,16 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
   let lastScan = null;
   function scan() {
     const result = run();
+    // Kilit izi (gözden geçirme D8; plan §3.11/4 "sha256 tam taramaya kalır"): süzgeç kilit izini yalnız kilide giren bir dokunuşta, tam kapı
+    // yalnız kendi yolunda hesaplar; kapının görmediği (store dışı, eski sürüm, elle) kilitli dönem değişikliği taramada görünür. Taban
+    // değişmez: 2.0.26'daki gibi sonraki tam kapı yolu "Kapanmış dönem" 409'u verir (yeniden başlatmaya ya da kilit değişimine kadar).
+    const lock = period()?.lockedUntil?.() || "";
+    if (lock && lock === lockState.lock && lockState.digest && lockDigest(lock) !== lockState.digest) {
+      const item = { code: "period-lock", name: `Kapanmış dönem (${lock} ve öncesi) kapının görmediği bir yolla değişti`, ok: false, count: 1 };
+      result.checks.push(item);
+      result.failures.push(item);
+      result.ok = false;
+    }
     const current = new Set(result.failures.map(signature));
     const findings = result.failures.filter(item => !known.has(signature(item)));
     known = current;

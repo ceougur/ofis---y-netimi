@@ -44,11 +44,26 @@ const LOCK_FIELDS = {
   stock_moves: { date: row => row.date, fields: ["item_id", "kind", "qty", "amount", "date", "pay", "method", "account_id", "fin_ref", "event_id"] },
   plan_entries: { date: row => row.date, fields: ["plan_id", "kind", "amount", "date", "method", "fin_ref", "event_id"] },
   cheque_events: { date: row => row.date, fields: ["cheque_id", "kind", "amount", "date", "method", "fin_ref", "event_id"] },
-  invoices: { date: row => (row.status !== "draft" ? row.issue_date : ""), fields: ["kind", "status", "account_id", "issue_date", "try_payable", "try_vat"] },
+  invoices: { date: row => (row.status !== "draft" ? row.issue_date : null), fields: ["kind", "status", "account_id", "issue_date", "try_payable", "try_vat"] },
   cheques: { date: row => row.issue_date, fields: ["direction", "amount", "issue_date", "deleted_at"] },
   fin_events: { date: row => row.date, fields: ["type", "date", "reversal_of", "bank_ref", "counter_ref", "amount_minor", "try_minor"] },
 };
+// Cari satırının kaynakları: '' (elle), fatura, çek/senet, stok, banka (POS kesintisi, Aşama 10). Kaynaklı satır kaynağına bağlıdır.
+const ENTRY_SOURCES = new Set(["", "invoice", "cheque", "stock", "bank"]);
+const LINKED_SOURCES = new Set(["invoice", "cheque", "stock"]);
+// Kimliği değişen satır (UPDATE … SET id): bağlı satırlar (cari, kart, ürün, kilit izi) yetim kalır; bu yol modellemez (gözden geçirme D8).
 const day = value => String(value || "").slice(0, 10);
+// Satırın yevmiye para hesabı (lib/general-ledger.mjs moneyAccount ile aynı kural; hesaba bağlı satırda hesabın türü bilinmez: "*").
+const wayAccountOf = row => {
+  if (row.fin_ref) return "*";
+  const method = String(row.method ?? "");
+  if (method === "" || method === "cash") return "100";
+  if (method === "bank") return "102";
+  if (method === "card") return "108";
+  return "*";
+};
+const LINE_ACCOUNT = { bank: "102", pos: "108", card: "309", loan: "300" };
+const MONEY_ROLES = new Set(Object.keys(LINE_ACCOUNT));
 const differs = (pre, post, fields) => !pre || !post || fields.some(field => String(pre[field] ?? "") !== String(post[field] ?? ""));
 const json = values => JSON.stringify([...values]);
 const IN = "(SELECT value FROM json_each(?))";
@@ -58,13 +73,16 @@ export function familyOf(code) {
   if (code === "balance") return "balance";
   if (code.startsWith("gl:")) {
     const account = code.slice(3);
-    if (MONEY_ACCOUNTS.has(account)) return "money";
+    // Gözden geçirme B9 (Aşama 2): para alanı hesap bazında (varlık kodu ilkesi, E1.16): 100'deki eski bir sapma yalnız nakit satırına
+    // dokunan yazımı tam kapıya gönderir; havale/POS yazımı süzgeçte kalır.
+    if (MONEY_ACCOUNTS.has(account)) return `money:${account}`;
     if (account === "101" || account === "103") return "cheque";
     if (["120", "320", "336"].includes(account)) return "party";
     if (account === "127") return "plan";
     if (["191", "391", "360", "193"].includes(account)) return "invoice";
     return "all";
   }
+  if (code.startsWith("bank:sub:")) return `money:${code.slice(9, 12)}`;
   if (code.startsWith("bank:sub")) return "money";
   if (code === "party:accounts") return "party";
   if (code === "party:plans" || code === "plans:totals" || code === "dates:due-before-start") return "plan";
@@ -105,6 +123,7 @@ export function createScopedGate({ store, ledger, accounts, plans, stock, money,
       const list = [];
       for (const rowid of new Set([...posts.keys(), ...pres.keys()])) list.push({ pre: pres.get(rowid) || null, post: posts.get(rowid) || null });
       s.rows.set(table, list);
+      for (const { pre, post } of list) if (pre && post && String(pre.id ?? "") !== String(post.id ?? "")) s.reason ||= `${table}: kimlik değişti`;
       for (const { pre, post } of list) for (const row of [pre, post]) if (row) keys(s, table, row);
       for (const { pre, post } of list) visibility(s, table, pre, post);
     }
@@ -124,6 +143,10 @@ export function createScopedGate({ store, ledger, accounts, plans, stock, money,
         if (row.source === "cheque") add(s.cheques, row.source_id);
         if (row.source === "invoice") add(s.invoices, row.source_id);
         if (row.source === "stock") add(s.moves, row.source_id);
+        // Gözden geçirme B6 (Aşama 2): kaynağı (çek, stok, fatura) yazılı ama kaynak kimliği boş ya da kaynağı tanınmayan cari satırı bu yolda
+        // modellenmez (bağlı olduğu varlık kümesi boş kalıyor, çek/stok/fatura bağ denetimleri hiç çalışmıyordu): karar tam kapının.
+        if (!ENTRY_SOURCES.has(String(row.source ?? ""))) s.reason ||= `account_entries: tanınmayan kaynak (${row.source})`;
+        else if (LINKED_SOURCES.has(row.source) && !row.source_id) s.reason ||= `account_entries: kaynak kimliği boş (${row.source})`;
         add(s.invoices, row.invoice_id);
         add(s.events, row.event_id);
         break;
@@ -256,10 +279,12 @@ export function createScopedGate({ store, ledger, accounts, plans, stock, money,
   function lockRelevant(s, lock) {
     if (!lock) return "";
     const locked = value => Boolean(value) && day(value) <= lock;
+    // Kilit izinin SQL'i "tarih <= kilit" der: boş tarih ('') de izin içindedir (yalnız NULL dışında); taslak fatura izde yoktur (null).
+    const inTrace = value => value !== null && value !== undefined && day(value) <= lock;
     for (const [table, list] of s.rows) {
       const rule = LOCK_FIELDS[table];
       for (const { pre, post } of list) {
-        if (rule && (locked(pre && rule.date(pre)) || locked(post && rule.date(post))) && differs(pre, post, rule.fields)) return `${table} kilitli dönem`;
+        if (rule && (inTrace(pre ? rule.date(pre) : null) || inTrace(post ? rule.date(post) : null)) && differs(pre, post, rule.fields)) return `${table} kilitli dönem`;
         if (table === "plans") {
           const plain = row => row && !row.deleted_at && Number(row.covers_balance) === 0 && row.registered_on && locked(row.registered_on);
           const closedOn = row => (row.status === "closed" && !row.deleted_at ? [day(row.closed_at || row.updated_at), day(row.registered_on || row.created_at)].sort().at(-1) : "");
@@ -307,19 +332,60 @@ export function createScopedGate({ store, ledger, accounts, plans, stock, money,
     lap("scope");
     const touchedRows = table => (s.rows.get(table) || []).filter(item => item.post).map(item => item.post);
     const anyMoney = Object.values(s.money).some(set => set.size) || s.events.size > 0;
+    // Gözden geçirme B9 (Aşama 2): dokunulan para satırlarının (önceki ve şimdiki hâli; kapanıştaki satırlar görünürlükten bağımsız, ham
+    // kolonlarından) yevmiye para hesapları. "*" = belirsiz (hesaba bağlı satır, tanınmayan yol, görünürlüğü değişen cari/ürün).
+    let accountsTouched = null;
+    const moneyAccounts = () => {
+      if (accountsTouched) return accountsTouched;
+      const out = new Set();
+      if (s.visible.parties.size || s.visible.items.size) out.add("*");
+      for (const [table, set] of Object.entries(s.money)) {
+        if (!set.size) continue;
+        const ref = hasColumn(table, "fin_ref") ? "fin_ref" : "'' AS fin_ref";
+        for (const row of all(`SELECT method, ${ref} FROM ${table} WHERE id IN ${IN}`, json(set))) out.add(wayAccountOf(row));
+      }
+      for (const [table, list] of s.rows) {
+        for (const { pre, post } of list) {
+          for (const row of [pre, post]) {
+            if (!row) continue;
+            if (table === "bank_lines") out.add(LINE_ACCOUNT[row.role] || (MONEY_ROLES.has(row.role) ? "*" : ""));
+            else if (s.money[table] && isMoneyRow(table, row)) out.add(wayAccountOf(row));
+          }
+        }
+      }
+      out.delete("");
+      return (accountsTouched = out);
+    };
+    // Eski satır kimlikleri (açılışta kuruşu/tarihi bozuk bulunanlar; tablo → Set): bu satırlardan birine dokunmayan yazım o alanın tabanını
+    // değiştiremez (süzgeç dokunulan satırların kuruşunu ve tarihini kendisi denetler).
+    const legacyRows = legacy.rows?.() || new Map();
     // Taban sapması olan alan dokunuluyorsa bu yol karar veremez (sapmanın "büyümediğini" yalnız tam kapı bilir).
     const touchedFamily = family => {
       if (family === "all" || family === "balance") return true;
       if (family === "money") return anyMoney;
+      if (family.startsWith("money:")) {
+        if (!anyMoney) return false;
+        const set = moneyAccounts();
+        return set.has("*") || set.has(family.slice(6));
+      }
       if (family === "party") return s.parties.size > 0;
       if (family === "cheque") return s.cheques.size > 0;
       if (family === "plan") return s.plans.size > 0;
       if (family === "invoice") return s.invoices.size > 0;
       if (family === "stock") return s.items.size > 0 || s.moves.size > 0;
-      if (family.startsWith("rows:")) return (s.rows.get(family.slice(5)) || []).length > 0;
+      if (family.startsWith("rows:")) {
+        const table = family.slice(5);
+        const list = s.rows.get(table) || [];
+        const bad = legacyRows.get(table);
+        if (!bad) return list.length > 0;
+        return list.some(({ pre, post }) => (pre && bad.has(String(pre.id))) || (post && bad.has(String(post.id))));
+      }
       return true;
     };
     for (const family of baselineFamilies) if (touchedFamily(family)) return { full: `taban sapması (${family})`, findings, sections, ms: performance.now() - started };
+    // Evrak bazında sapan çek/senede dokunuluyor (toplamda tutan eski durum; integrity.mjs chequeDriftOf): karar tam kapının.
+    const drifting = legacy.cheques?.() || new Set();
+    if (drifting.size) for (const id of s.cheques) if (drifting.has(id)) return { full: "evrak bazında eski sapma (çek/senet)", findings, sections, ms: performance.now() - started };
     const lockReason = lockRelevant(s, lock);
     lap("lock");
     const service = ledger();
@@ -484,6 +550,16 @@ export function createScopedGate({ store, ledger, accounts, plans, stock, money,
         for (const row of all(`SELECT id FROM stock_moves WHERE NOT (qty > 0) AND id IN ${IN} LIMIT 5`, moves)) find("stock:qty", row.id);
       }
       lap("stock");
+    }
+
+    // Dokunulan cari satırlarının kaynak bağları (gözden geçirme B6): çek, stok ve fatura kaynaklı satır var olan kaynağına (ve çekte tutarına)
+    // bağlı — kaynak varlık kümesi boş kalsa da (kaynak kimliği boş satır) denetlenir.
+    if (s.entries.size && has("account_entries")) {
+      const entryIds = json(s.entries);
+      if (has("cheques")) for (const row of all(`SELECT e.id FROM json_each(?) j CROSS JOIN account_entries e ON e.id = j.value LEFT JOIN cheques c ON c.id = e.source_id WHERE +e.source = 'cheque' AND (c.id IS NULL OR ABS(c.amount - e.amount) > 0.004) LIMIT 5`, entryIds)) find("cheque:account", row.id);
+      if (has("stock_moves")) for (const row of all(`SELECT e.id FROM json_each(?) j CROSS JOIN account_entries e ON e.id = j.value LEFT JOIN stock_moves m ON m.id = e.source_id WHERE +e.source = 'stock' AND m.id IS NULL LIMIT 5`, entryIds)) find("stock:orphan", row.id);
+      if (has("invoices")) for (const row of all(`SELECT e.id FROM json_each(?) j CROSS JOIN account_entries e ON e.id = j.value LEFT JOIN invoices i ON i.id = e.source_id WHERE +e.source = 'invoice' AND i.id IS NULL LIMIT 5`, entryIds)) find("invoice:orphan", row.id);
+      lap("links");
     }
 
     // Satır kuralları: kuruş ve işaret; tarih biçimi ve ileri tarih (eski ileri tarihli satırlar tabanla).
