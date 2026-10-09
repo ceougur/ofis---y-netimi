@@ -802,12 +802,14 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
       preset: "thisYear",
       build(query) {
         const range = rangeOf(query, "thisYear");
-        const EXPENSE = { rent: "Kira", utilities: "Elektrik, Su ve Doğalgaz", telecom: "İnternet ve Telefon", office: "Kırtasiye ve Ofis Malzemesi", fuel: "Yakıt ve Ulaşım", repair: "Bakım ve Onarım", advisory: "Danışmanlık, Muhasebe ve Hukuk", food: "Yemek ve İkram", insurance: "Sigorta", software: "Yazılım ve Abonelik", cleaning: "Temizlik ve Güvenlik", marketing: "Reklam ve Pazarlama", freight: "Nakliye ve Kargo", asset: "Demirbaş (Bilgisayar, Mobilya, Cihaz)", other: "Diğer Giderler" };
+        const EXPENSE = { rent: "Kira", utilities: "Elektrik, Su ve Doğalgaz", telecom: "İnternet ve Telefon", office: "Kırtasiye ve Ofis Malzemesi", fuel: "Yakıt ve Ulaşım", repair: "Bakım ve Onarım", advisory: "Danışmanlık, Muhasebe ve Hukuk", food: "Yemek ve İkram", insurance: "Sigorta", software: "Yazılım ve Abonelik", cleaning: "Temizlik ve Güvenlik", marketing: "Reklam ve Pazarlama", freight: "Nakliye ve Kargo", asset: "Demirbaş (Bilgisayar, Mobilya, Cihaz)", bank: "Banka Masrafları", commission: "POS ve Ödeme Kuruluşu Komisyonları", other: "Diğer Giderler" };
+        // v2.1.0 (R2): gruplama l.expense_code ile ("GROUP BY code" takma ad yerine invoice_lines.code kolonunu alıyor, bütün türler tek satırda
+        // birleşiyordu); KDV'li banka masrafı ve komisyon faturasının türleri adıyla.
         const list = store.all(
           `SELECT substr(i.issue_date, 1, 7) AS month, l.expense_code AS code, l.gl_account AS account, SUM(CASE WHEN i.kind = 'purchase_return' THEN -l.net ELSE l.net END * i.rate) AS net,
                   SUM(CASE WHEN i.kind = 'purchase_return' THEN -l.vat ELSE l.vat END * i.rate) AS vat, COUNT(DISTINCT i.id) AS count
            FROM invoice_lines l JOIN invoices i ON i.id = l.invoice_id AND i.status = 'issued' AND i.kind IN ('purchase', 'purchase_return')
-           WHERE l.goods = 0 AND (? = '' OR i.issue_date >= ?) AND (? = '' OR i.issue_date <= ?) GROUP BY month, code ORDER BY month, net DESC`,
+           WHERE l.goods = 0 AND (? = '' OR i.issue_date >= ?) AND (? = '' OR i.issue_date <= ?) GROUP BY month, l.expense_code ORDER BY month, net DESC`,
           range.from, range.from, range.to, range.to,
         );
         const total = roundMoney(list.reduce((sum, row) => sum + row.net, 0));
