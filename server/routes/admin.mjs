@@ -7,7 +7,7 @@ import { auditBackups } from "../lib/backup-audit.mjs";
 import { HttpError, SECURITY_HEADERS, limited, ok, parseJson, readJson, text } from "../lib/http.mjs";
 import { nameConflict } from "../lib/names.mjs";
 import { hashPassword, passwordProblem, verifyPassword } from "../lib/passwords.mjs";
-import { ADMIN_ONLY, GRANTABLE, PERMISSION_GROUPS, ROLE_LABELS, grantsOf, isGrantable, parseGrants } from "../lib/permissions.mjs";
+import { ADMIN_ONLY, GRANTABLE, NOT_YET_PERMISSIONS, PERMISSION_GROUPS, ROLE_LABELS, grantsOf, isGrantable, parseGrants } from "../lib/permissions.mjs";
 import { migrateBankGrants, withGrantsDone } from "../lib/bank/grants.mjs";
 import { compareVersions } from "../lib/semver.mjs";
 
@@ -249,7 +249,7 @@ export function registerAdminRoutes(router, context) {
 
   // ---------- Roller ve yetki havuzu (v2.0.10) ----------
   const catalog = () =>
-    PERMISSION_GROUPS.map(group => ({ id: group.id, label: group.label, items: group.items.map(([key, label, help]) => ({ key, label, help, locked: ADMIN_ONLY.includes(key) })) }));
+    PERMISSION_GROUPS.map(group => ({ id: group.id, label: group.label, items: group.items.filter(([key]) => !NOT_YET_PERMISSIONS.has(key)).map(([key, label, help]) => ({ key, label, help, locked: ADMIN_ONLY.includes(key) })) }));
   router.get("/api/admin/roles", async ({ req, res }) => {
     auth.requirePermission(req, "users.manage");
     const labels = context.profile?.profile?.()?.roleLabels;

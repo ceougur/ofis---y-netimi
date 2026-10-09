@@ -16,7 +16,10 @@
 //   - Açıklama ve referans para alanı değildir: kilitli dönemde de düzeltilir (kapı dışı).
 //   - Planlı İşlem (K3): DEFTERE GİRMEZ (bank_plans); günü gelince Vadesi Gelen kuyruğuna düşer, "Gerçekleştir" ile planlı tarihle (ya da
 //     verilen tarihle) fiş yazılır. Kendiliğinden deftere yazma yok (bankanın talimatı gerçekten işleyip işlemediği ekstreyle görülür).
-//   - Fiş yalnız TL hesapta (döviz hesabı Aşama 13'te); eksi bakiye denetimi (K7) Aşama 5'te.
+//   - Fiş yalnız TL hesapta (döviz hesabı Aşama 13'te).
+//   - Eksi bakiye (K7, plan §3.9; GG2): fiş, Düzelt ve Planlı Gerçekleştir yazımdan SONRAKİ son durumla, hesap bazında denetlenir: bakiye =
+//     min(işlem günündeki, bütün hareketlerle) + KMH / kart limiti. Bakiye Doğrulandı olmayan hesapta Kontrol Yok; Uyar → 409 bank-negative
+//     ("Yine de Kaydet" = negativeOk), Engelle → 409 bank-blocked (onayla da geçmez). Bakiyeyi artıran hesap denetlenmez.
 import { randomUUID } from "node:crypto";
 import { HttpError, limited, text } from "../http.mjs";
 import { systemClock } from "../clock.mjs";
@@ -28,6 +31,7 @@ import { GROUP_LABELS, VOUCHER_TYPES, isVoucherType, typeLabel } from "./event-t
 import { CHART } from "../general-ledger.mjs";
 import { ROLE_GL, assertLines, cardPaymentLines, feeLines, interestInLines, interestOutLines, loanDrawLines, loanRepayLines, otherLines, roleOfAccount } from "./voucher.mjs";
 import { minorPlain } from "./movements.mjs";
+import { FEE_GL } from "./settings.mjs";
 
 const BANK_KINDS = new Set(["demand", "commercial", "other"]);
 const TYPE_RULES = Object.freeze({
@@ -61,7 +65,7 @@ const given = value => value !== undefined && value !== null && !(typeof value =
  *   accounts: banka hesap servisi (rowOf, settings); movements: İşlem Kartı ve olay okuyucusu; invoices: Fatura servisi (issueBankFee, cancel);
  *   parties: Cari servisi (exists)
  */
-export function createBankVouchers({ store, bank, period, accounts, movements, invoices = () => null, parties = () => null, audit = () => {}, now = systemClock }) {
+export function createBankVouchers({ store, bank, period, money, accounts, movements, invoices = () => null, parties = () => null, audit = () => {}, now = systemClock }) {
   const stamp = () => now().toISOString();
   const settings = () => accounts.settings.read();
   const today = () => period.today();
@@ -94,7 +98,9 @@ export function createBankVouchers({ store, bank, period, accounts, movements, i
     const vat = VAT_TAXES.has(tax);
     const ratePpm = tax === "none" ? 0 : parsePpm(given(body.taxRate) ? body.taxRate : vat ? "20" : "5", { label: vat ? "KDV Oranı" : "BSMV Oranı" });
     // Hesap eşlemesi (Banka Ayarları → Hesap Eşlemeleri): masraf türünün ailesi (770 banka masrafı / 653 komisyon) eşlemedeki koda gider.
-    const gl = feeType.gl === "653" ? values.gl.commission : values.gl.fee;
+    // Eski sürümden kalan izinsiz eşleme (770/653 dışı) türün kendi hesabına düşer: BSMV'li ve faturalı kip aynı hesapta kalır (GG2).
+    const mapped = feeType.gl === "653" ? values.gl.commission : values.gl.fee;
+    const gl = FEE_GL.includes(mapped) ? mapped : feeType.gl;
     return { feeType, tax, vat, ratePpm, gl };
   }
   /** Düz banka fişi alanı ya da { vat } (faturalı masraf) — satırlar. */
@@ -268,19 +274,72 @@ export function createBankVouchers({ store, bank, period, accounts, movements, i
     ...(spec.lines ? { lines: spec.lines.map(line => `${line.side} ${line.gl}${line.sub ? `/${line.sub}` : ""} ${line.tryMinor}`) } : {}),
   });
 
+  // ---------- K7: eksi bakiye (GG2; plan §3.9) ----------
+  const GUARDED_KINDS = new Set(["demand", "commercial", "other", "card"]);
+  const tlText = minor => `${minorPlain(minor).replace(/^-/, "−")} TL`;
+  /**
+   * İşlemin dokunacağı hesapların yazımdan ÖNCEKİ bakiyesi (moneyLines refTotal; aynı işlemin içinde, yazımdan hemen önce). guardNegative
+   * değişimi bununla bulur: Düzelt'te asıl fişin ters kaydı ve yeni fiş birlikte (yalnız yeni satırlar sayılsaydı tutarı küçültülen faiz geliri
+   * hesabı eksiye düşürürken denetlenmezdi).
+   */
+  function balancesOf(refs) {
+    const out = new Map();
+    for (const ref of refs) if (ref && !out.has(ref)) out.set(ref, money.refTotal({ ref }).cents);
+    return out;
+  }
+  /**
+   * bank.post adım 8 (guard): hesap bazında son durum. Bakiyesi azalan hesapta bakiye = min(date günündeki, bütün hareketlerle) + limit (KMH ya da
+   * kart limiti) eksiyse Uyar → 409 bank-negative (negativeOk geçer), Engelle → 409 bank-blocked. Kredi hesabında anapara kalan borcu aşamaz.
+   */
+  function guardNegative(before, { date, force = false }) {
+    if (!before?.size || !date) return;
+    const fallback = settings().negative?.policy || "warn";
+    for (const [ref, was] of before) {
+      const total = money.refTotal({ ref }).cents;
+      const change = total - was;
+      if (change > 0) {
+        // GG2 (düşük): Kredi Geri Ödemesi'nde anapara kalan kredi borcunu aşamaz (300 borç bakiyesi artıya geçmez).
+        const loan = accounts.rowOf(ref);
+        if (loan?.kind !== "loan" || total <= 0) continue;
+        const left = Math.max(0, -was);
+        throw bad(409, `Kredi Geri Ödemesi'nde anapara (${tlText(change)}) ${labelOf(loan)} kredisinin kalan borcunu (${tlText(left)}) aşamaz. Faiz ayrı alana (Faiz) yazılır.`, "bank-loan-exceeds", { accountId: loan.id, leftMinor: left, field: "amount" });
+      }
+      if (change === 0) continue;
+      const row = accounts.rowOf(ref);
+      if (!row || !GUARDED_KINDS.has(row.kind) || row.currency !== "TRY") continue;
+      const policy = row.balance_confirmed ? row.negative_policy || fallback : "off";
+      if (policy === "off" || (policy === "warn" && force)) continue;
+      const atDay = total - money.refTotal({ ref, after: date }).cents;
+      const after = Math.min(total, atDay);
+      const limit = Number(row.credit_limit_minor) || 0;
+      if (after + limit >= 0) continue;
+      const prior = after - change;
+      const limitText = limit ? ` (${row.kind === "card" ? "kart" : "KMH"} limiti ${tlText(limit)} dahil kullanılabilir ${tlText(prior + limit)})` : "";
+      const base = `${labelOf(row)} hesabında ${tlText(prior)} var${limitText}; bu işlemle bakiye ${tlText(-change)} azalır ve ${tlText(after)} olur (eksi bakiye).`;
+      const extra = { accountId: row.id, balanceMinor: prior, afterMinor: after, limitMinor: limit, field: "amount" };
+      if (policy === "block") throw bad(409, `${base} Bu hesapta eksi bakiyeye izin verilmiyor (Hesap Detayı → Düzenle → Eksi Bakiye ya da Banka Ayarları → Eksi Bakiye).`, "bank-blocked", extra);
+      throw bad(409, `${base} Yine de kaydedilsin mi?`, "bank-negative", extra);
+    }
+  }
+
   /** POST /bank/vouchers: Banka Fişi (ya da faturalı masraf). Dönüş: İşlem Kartı (+ replayed). */
   function create(user, body = {}, { requestId = "" } = {}) {
     const auditEntry = { type: "bank.voucher.created", entityId: "", payload: {} };
     const similarOk = body?.similarOk === true;
+    let date = "";
+    let before = null;
     const result = bank.post({
       user, module: "bank", op: "create", requestId, scope: "bank.voucher.create", body, similarOk,
       write: () => {
         const spec = specOf(body);
+        date = spec.date;
+        before = balancesOf([spec.account.id, spec.counter?.id]);
         const written = writeSpec(user, spec, { similarOk });
         auditEntry.entityId = written.id;
         Object.assign(auditEntry.payload, auditOf(spec, written));
         return { id: written.id };
       },
+      guard: () => guardNegative(before, { date, force: body?.negativeOk === true }),
       audit: auditEntry,
     });
     const id = result?.replayed ? result.refId : result.id;
@@ -303,13 +362,20 @@ export function createBankVouchers({ store, bank, period, accounts, movements, i
   /** Ters Kaydet'in kendisi (yazım işleminin içinde). Dönüş: { id: ters fiş ya da (KDV'li masrafta) başlık, reversalId, cancelled }. */
   function reverseInside(user, event, { reason = "" } = {}) {
     assertReversible(event);
+    const lock = period.lockedUntil();
     if (movements.isFeeHeader(event)) {
-      period.assertOpen(event.date, "Bu faturalı masraf");
+      if (lock && event.date <= lock) {
+        // GG2: kilitli dönemdeki KDV'li masraf — fatura kilitli dönemde iptal edilmez; bugün tarihli Alıştan İade faturası + bu hesaba iade
+        // tahsilatı yazılır, başlık satırsız ters kayıtla (iade faturasına bağlı) "ters kaydedildi" olur. Kapanmış dönem değişmez.
+        const date = today();
+        const back = invoices().issueBankFeeReturn(user, { invoiceId: event.invoice_id, date, bankAccountId: event.bank_ref, note: reason || `Banka'dan Ters Kaydet · ${event.no}` });
+        const reversal = bank.reverse(event.id, { date, description: `Ters Kayıt · ${event.no} · İade Faturası ${back.number}`, returnInvoiceId: back.id });
+        return { id: reversal.id, reversalId: reversal.id, cancelled: false };
+      }
       invoices().cancel(user, event.invoice_id, { reason: reason || `Banka'dan Ters Kaydet · ${event.no}`, fromBank: true });
       bank.cancelBare(event.id);
       return { id: event.id, reversalId: "", cancelled: true };
     }
-    const lock = period.lockedUntil();
     const date = lock && event.date <= lock ? today() : event.date;
     const reversal = bank.reverse(event.id, { date, description: `Ters Kayıt · ${event.no}` });
     return { id: reversal.id, reversalId: reversal.id, cancelled: false };
@@ -320,11 +386,17 @@ export function createBankVouchers({ store, bank, period, accounts, movements, i
   function reverse(user, ref, body = {}, { requestId = "" } = {}) {
     const event = movements.mustEvent(ref);
     const auditEntry = { type: "bank.voucher.reversed", entityId: event.id, payload: {} };
+    let date = "";
+    let before = null;
     const result = bank.post({
       user, module: "bank", op: "delete", requestId, scope: "bank.event.reverse", body: { ...(body || {}), eventId: event.id }, prev: prevOf(event),
+      // K7: gelir fişinin (faiz geliri, kredi kullanımı…) ters kaydı da hesabı eksiye düşürebilir.
+      guard: () => guardNegative(before, { date, force: body?.negativeOk === true }),
       write: () => {
         const current = fresh(event.id);
+        before = balancesOf([current.bank_ref, current.counter_ref]);
         const done = reverseInside(user, current, { reason: limited(body?.reason, 300, "Neden") });
+        date = fresh(done.id)?.date || current.date;
         Object.assign(auditEntry.payload, { no: current.no, type: current.type, date: current.date, reversalId: done.reversalId, cancelled: done.cancelled, reason: limited(body?.reason, 300, "Neden") });
         return { id: done.id };
       },
@@ -342,8 +414,11 @@ export function createBankVouchers({ store, bank, period, accounts, movements, i
     const event = movements.mustEvent(ref);
     const auditEntry = { type: "bank.voucher.corrected", entityId: event.id, payload: {} };
     let reversalId = "";
+    let date = "";
+    let before = null;
     const result = bank.post({
       user, module: "bank", op: "update", requestId, scope: "bank.event.correct", body: { ...(body || {}), eventId: event.id }, prev: prevOf(event),
+      guard: () => guardNegative(before, { date, force: body?.negativeOk === true }),
       write: () => {
         const current = fresh(event.id);
         assertReversible(current);
@@ -359,6 +434,8 @@ export function createBankVouchers({ store, bank, period, accounts, movements, i
         // Faiz gelirinde yalnız brüt değiştiyse stopaj formdaki ORANLA yeniden hesaplanır (eski tutar yeni brütü aşabilirdi).
         if (current.type === "interest_in" && given(body?.amount) && !given(body?.stoppageAmount)) delete merged.stoppageAmount;
         const spec = specOf(merged, { fallbackDate });
+        date = spec.date;
+        before = balancesOf([current.bank_ref, current.counter_ref, spec.account.id, spec.counter?.id]);
         const done = reverseInside(user, current, { reason: `Düzeltildi · ${current.no}` });
         reversalId = done.reversalId;
         const written = writeSpec(user, spec, { similarOk: true, checkSimilar: false });
@@ -374,6 +451,10 @@ export function createBankVouchers({ store, bank, period, accounts, movements, i
   /** PUT /bank/events/:id/info: açıklama ve referans (para alanı değil; kilitli dönemde de, eşleşmiş olayda da). */
   function info(user, ref, body = {}) {
     const event = movements.mustEvent(ref);
+    if (event.src_table) {
+      const block = movements.blockOf(event);
+      throw bad(409, `${block?.reason || "Bu hareket kendi penceresinden düzeltilir."} Açıklaması da orada değiştirilir.`, "bank-event-module", { eventId: event.id, eventNo: event.no });
+    }
     const next = {
       description: body?.description === undefined ? event.description : limited(body.description, 500, "Açıklama"),
       reference: body?.reference === undefined ? event.reference : limited(body.reference, 100, "Referans"),
@@ -519,13 +600,19 @@ export function createBankVouchers({ store, bank, period, accounts, movements, i
     mustPlan(id);
     const auditEntry = { type: "bank.plan.executed", entityId: id, payload: {} };
     const similarOk = body?.similarOk === true;
+    let date = "";
+    let before = null;
     const result = bank.post({
       user, module: "bank", op: "create", requestId, scope: "bank.plan.execute", body: { ...(body || {}), planId: id }, similarOk,
+      guard: () => guardNegative(before, { date, force: body?.negativeOk === true }),
       write: () => {
         const plan = mustPlan(id);
         if (plan.status === "done") throw bad(409, "Bu planlı işlem zaten gerçekleşti.", "bank-plan-done", { planId: id });
         if (plan.status === "cancelled") throw bad(409, "Bu planlı işlem iptal edilmiş.", "bank-plan-cancelled", { planId: id });
+        assertExpected(plan, body);
         const spec = specOf(planBody(plan, body));
+        date = spec.date;
+        before = balancesOf([spec.account.id, spec.counter?.id]);
         const written = writeSpec(user, spec, { similarOk });
         const payload = payloadOf(plan);
         const next = plan.repeat === "none" ? null : advance(plan.planned_date, plan.repeat, payload.anchorDay);
@@ -539,17 +626,29 @@ export function createBankVouchers({ store, bank, period, accounts, movements, i
     const eventId = result?.replayed ? result.refId : result.id;
     return { plan: planView(mustPlan(id)), event: movements.card(eventId), ...(result?.replayed ? { replayed: true } : {}) };
   }
+  /**
+   * GG2 (çift tık): Atla ve Gerçekleştir ekranda gördüğü planlı tarihi (expectedDate) taşır; plan bu arada ilerlediyse (ikinci tıklama, başka
+   * kullanıcı) 409 bank-plan-moved — bir dönemin talimatı sessizce atlanmaz. Denetim yazımla aynı işlemde (BEGIN IMMEDIATE).
+   */
+  function assertExpected(plan, body) {
+    if (!given(body?.expectedDate)) return;
+    const expected = text(body.expectedDate);
+    if (expected === plan.planned_date) return;
+    throw bad(409, `Bu planlı işlem bu arada ilerledi (${dayText(expected)} → ${dayText(plan.planned_date)}); ikinci kez işlenmedi. Liste yenilendi; yeni tarihi denetleyin.`, "bank-plan-moved", { planId: plan.id, plannedDate: plan.planned_date });
+  }
   /** POST /bank/plans/:id/skip: tekrarlı planın bu dönemi atlanır (fiş yazılmaz). */
-  function skipPlan(user, id) {
-    const plan = mustPlan(id);
-    if (plan.status !== "planned") throw bad(409, plan.status === "done" ? "Bu planlı işlem gerçekleşti." : "Bu planlı işlem iptal edilmiş.", plan.status === "done" ? "bank-plan-done" : "bank-plan-cancelled");
-    if (plan.repeat === "none") throw bad(409, "Tekrarsız plan atlanmaz; Gerçekleştir ya da Sil.", "bank-plan-skip");
-    const next = advance(plan.planned_date, plan.repeat, payloadOf(plan).anchorDay);
-    store.tx(() => {
+  function skipPlan(user, id, body = {}) {
+    mustPlan(id);
+    return store.tx(() => {
+      const plan = mustPlan(id);
+      if (plan.status !== "planned") throw bad(409, plan.status === "done" ? "Bu planlı işlem gerçekleşti." : "Bu planlı işlem iptal edilmiş.", plan.status === "done" ? "bank-plan-done" : "bank-plan-cancelled");
+      if (plan.repeat === "none") throw bad(409, "Tekrarsız plan atlanmaz; Gerçekleştir ya da Sil.", "bank-plan-skip");
+      assertExpected(plan, body);
+      const next = advance(plan.planned_date, plan.repeat, payloadOf(plan).anchorDay);
       store.run("UPDATE bank_plans SET planned_date = ?, updated_by = ?, updated_at = ? WHERE id = ?", next, user.id, stamp(), plan.id);
       audit(user, "bank.plan.skipped", plan.id, { previous: { plannedDate: plan.planned_date }, next: { plannedDate: next } });
+      return planView(planRow(plan.id));
     });
-    return planView(planRow(plan.id));
   }
   /** DELETE /bank/plans/:id: plan İptal Edildi (gerçekleşmiş fişler değişmez). */
   function cancelPlan(user, id) {

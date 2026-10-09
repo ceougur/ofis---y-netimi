@@ -96,6 +96,13 @@ export const PERMISSIONS = Object.freeze({
 export const ADMIN_ONLY = Object.freeze(["overview.card", "users.manage", "system.manage", "license.manage"]);
 
 // Yetki havuzu (v2.0.10): Yönetim → Kullanıcılar ve Roller ekranı bu sırayla ve bu açıklamalarla gösterir.
+/**
+ * GG2 (orta; kullanıcı kararı 09.10.2026 "Ertelenenler 2.1.0'da GÖRÜNMEZ"): bu sürümde olmayan özelliklerin yetkileri (POS 2.2.0, Ekstre ve
+ * Mutabakat 2.3.0) Roller ve Kişiye Özel Yetki ekranlarında görünmez. Değerleri korunur: yerleşik rollerin matrisi aynıdır; özel rol
+ * düzenlenirken (ekran bu yetkileri göndermez) kayıtlı değerleri kalır (access.updateRole).
+ */
+export const NOT_YET_PERMISSIONS = Object.freeze(new Set(["bank.pos", "bank.commission", "bank.statement", "bank.reconcile"]));
+
 export const PERMISSION_GROUPS = Object.freeze([
   {
     id: "records",
@@ -145,12 +152,12 @@ export const PERMISSION_GROUPS = Object.freeze([
       ["bank.accounts", "Banka Hesabı Tanımlama ve Açılış", "Hesap açar, açılış bakiyesini girer ve düzeltir; eski hareketleri hesaba aktarır."],
       ["bank.move", "Banka Hareketi Girme ve Bankadan Çıkış", "Masraf, faiz ve diğer hareketler; bankadan her çıkış; banka bağlı hareketin tutarını, tarihini, yolunu ya da hesabını değiştirme."],
       ["bank.cancel", "Banka Hareketi Silme, İptal ve Ters Kayıt", "Banka bağlı hareketi siler, ters kaydeder; açılışı düzeltir."],
-      ["bank.transfer", "Transfer Yapma", "Bankalar arası, Kasa ile banka arası, döviz alım satımı ve kredi kullanımı."],
+      ["bank.transfer", "Transfer Yapma", "Bankalar arası, Kasa ile banka arası transfer, kredi kullanımı ve geri ödemesi."],
       ["bank.pos", "POS Tanımlama", "POS kartı, valör, bloke ve vergi kipi."],
       ["bank.commission", "Komisyon Oranlarını Değiştirme", "Komisyon oranları ve komisyon faturası taslağı."],
       ["bank.statement", "Ekstre Aktarma", "Banka ekstresi yükler; eşleşmesiz ekstreyi siler."],
       ["bank.reconcile", "Mutabakat Yapma", "Ekstre satırını hareketle eşleştirir, eşleşmeyi kaldırır, ekstreden hareket oluşturur."],
-      ["bank.settings", "Banka Ayarları", "Banka ayarları, elle kur, tatiller ve hesap eşlemesi."],
+      ["bank.settings", "Banka Ayarları", "Banka ayarları: eksi bakiye, masraf türleri, tatil ve hesap eşlemesi."],
     ],
   },
   {

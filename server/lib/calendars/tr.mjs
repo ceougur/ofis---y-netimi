@@ -58,6 +58,6 @@ export function trHolidays(year) {
 }
 
 /** Türkiye takvimi: hafta sonu Cumartesi–Pazar, 2429 sayılı Kanun tatilleri, Diyanet bayram tablosu, yarım gün iş günü. */
-export function createTrCalendar({ halfDayIsBusiness = true, added = [], removed = [] } = {}) {
-  return createCalendar({ weekend: [6, 0], holidays: trHolidays, halfDayIsBusiness, added, removed, coverage: TR_COVERAGE });
+export function createTrCalendar({ halfDayIsBusiness = true, added = [], removed = [], weekend = [6, 0] } = {}) {
+  return createCalendar({ weekend, holidays: trHolidays, halfDayIsBusiness, added, removed, coverage: TR_COVERAGE });
 }

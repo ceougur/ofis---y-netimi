@@ -297,16 +297,19 @@ export function createBank({ store, now = systemClock, log = null, strict = fals
    * Ters Kayıt (§3.8): asıl fişin aynası (satırlar aynı, taraflar ters) "reversal" türüyle yazılır; asıl fiş "reversed" olur. Satırı olmayan
    * fiş (sıfır açılış) ters kaydedilmez, iptal edilir (cancelBareEvent). date: ters fişin tarihi (çağıran kilit kuralını uygular).
    */
-  function reverseVoucher(eventId, { date = "", description = "" } = {}) {
+  // returnInvoiceId (GG2): kilitli dönemdeki KDV'li masrafın başlığı (satırsız) iptal edilmez, ters kaydedilir: ters kaydın parası bugün tarihli
+  // Alıştan İade faturasındadır (iade tahsilatı bu hesaba); ters kayıt satırsızdır ve o iade faturasına bağlıdır.
+  function reverseVoucher(eventId, { date = "", description = "", returnInvoiceId = "" } = {}) {
     const ctx = needContext("reverse");
     const event = store.get("SELECT * FROM fin_events WHERE id = ?", eventId);
     if (!event || event.src_table !== "") throw new HttpError(404, "Banka fişi bulunamadı.", { code: "bank-event-missing" });
     if (event.status !== "active") throw new HttpError(409, `Bu işlem (${event.no}) zaten ters kaydedilmiş ya da iptal edilmiş.`, { code: "bank-already-reversed", eventNo: event.no });
     if (event.type === "reversal") throw new HttpError(409, "Ters kayıt ters kaydedilmez; asıl işlemi düzeltin.", { code: "bank-reversal-of-reversal" });
     const lines = store.all("SELECT * FROM bank_lines WHERE event_id = ? ORDER BY seq", eventId);
-    if (!lines.length) return cancelBareEvent(eventId);
+    if (!lines.length && !returnInvoiceId) return cancelBareEvent(eventId);
+    if (returnInvoiceId && (lines.length || event.type !== "fee" || !event.invoice_id)) throw new TypeError("bank.reverse: iade faturalı ters kayıt yalnız KDV'li masraf başlığında");
     const mirror = lines.map(line => ({ role: line.role, gl: line.gl, sub: line.sub, ref: line.ref, side: line.side === "D" ? "C" : "D", tryMinor: line.try_minor, currency: line.currency, fxMinor: line.fx_minor, rateE6: line.rate_e6, rateSource: line.rate_source, memo: line.memo }));
-    const reversal = openVoucher({ type: "reversal", date: date || event.date, bankRef: event.bank_ref, counterRef: event.counter_ref, reversalOf: eventId, partyId: event.party_id, invoiceId: event.invoice_id, currency: event.currency, description: description || `Ters Kayıt · ${event.no}` }, mirror);
+    const reversal = openVoucher({ type: "reversal", date: date || event.date, bankRef: event.bank_ref, counterRef: event.counter_ref, reversalOf: eventId, partyId: event.party_id, invoiceId: returnInvoiceId || event.invoice_id, currency: event.currency, description: description || `Ters Kayıt · ${event.no}` }, mirror);
     store.run("UPDATE fin_events SET status = 'reversed', reversed_by = ?, updated_by = ?, updated_at = ? WHERE id = ?", reversal.id, ctx.user?.id || "system", stamp_(), eventId);
     ctx.events.add(eventId);
     return reversal;
@@ -344,6 +347,8 @@ export function createBank({ store, now = systemClock, log = null, strict = fals
       const raw = JSON.parse(store.setting("bank.settings", "") || "{}");
       const rows = store.all("SELECT date, kind, name FROM bank_holidays");
       calendar = createTrCalendar({
+        // GG2 (orta): Banka Ayarları → Gelişmiş → Tatil → Hafta Sonu ("Yalnız Pazar": Cumartesi iş günü); önceden okunmuyordu.
+        weekend: raw?.holidayAdvanced?.weekend === "sun" ? [0] : [6, 0],
         halfDayIsBusiness: raw?.holidayAdvanced?.halfDay !== "holiday",
         added: rows.filter(row => row.kind !== "removed").map(row => ({ date: row.date, name: row.name, half: row.kind === "half" })),
         removed: rows.filter(row => row.kind === "removed").map(row => row.date),

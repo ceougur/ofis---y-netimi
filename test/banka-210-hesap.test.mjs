@@ -31,7 +31,7 @@ describe("Aşama 3 — banka hesap kartı", () => {
   let ctx;
   let accounts;
   before(async () => {
-    ctx = await bootBank();
+    ctx = await bootBank({ fxEnabled: true });
     accounts = await openAcceptanceAccounts(ctx.api);
   });
   after(() => ctx.server.close());

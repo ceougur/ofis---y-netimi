@@ -198,14 +198,22 @@ describe("Aşama 4 — KDV'li masrafın yaşam döngüsü", () => {
     await integrityOk(ctx.api, "KDV'li masraf ters");
   });
 
-  it("kilitli dönemdeki KDV'li masraf Ters Kaydet → 409 (fatura kilitli dönemde iptal edilmez)", async () => {
+  // GG2 (orta): önceden 409 period-locked idi ve kilitli KDV'li masrafın hiçbir düzeltme yolu yoktu. Kural (yaygın uygulama): fatura kilitli
+  // dönemde iptal edilmez; Ters Kaydet bugün tarihli Alıştan İade faturası + bu hesaba iade tahsilatı yazar (ayrıntı banka-210-gg2-fis).
+  it("kilitli dönemdeki KDV'li masraf Ters Kaydet → asıl fatura kalır, bugün tarihli Alıştan İade ve satırsız ters kayıt", async () => {
     const z = set.ziraat;
     const party = await supplier(ctx.api, "Garanti Ödeme");
     const fee = await voucher(ctx.api, { type: "fee", accountId: z.id, date: "2026-10-02", amount: "60", feeType: "eft", tax: "vat_incl", partyId: party.id, invoiceNo: "GO-1" });
+    const balance = (await accountView(ctx.api, z.id)).balanceMinor;
     await lockPeriod(ctx.api, "2026-10-03");
     try {
-      expectStatus(await ctx.api.post(`${BANK}/events/${fee.id}/reverse`, {}), 409, "period-locked", "kilitli KDV'li masraf");
-      assert.equal((await eventCard(ctx.api, fee.id)).status, "active");
+      const done = await must("kilitli KDV'li masraf", ctx.api.post(`${BANK}/events/${fee.id}/reverse`, {}));
+      assert.equal(done.original.status, "reversed");
+      assert.equal(done.original.invoice.status, "issued", "kilitli dönemdeki fatura iptal edilmez");
+      assert.equal(done.reversal.invoice.kind, "purchase_return");
+      assert.ok(done.reversal.date > "2026-10-03", "iade bugün tarihli");
+      assert.equal((await accountView(ctx.api, z.id)).balanceMinor, balance + 6000, "iade tahsilatı bu hesaba");
+      await integrityOk(ctx.api, "kilitli KDV'li masraf iadesi");
     } finally {
       await lockPeriod(ctx.api, "");
     }

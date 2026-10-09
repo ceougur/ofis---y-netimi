@@ -59,7 +59,7 @@ const parseExtra = value => {
 /**
  * @param {{ store, bank, period, money, ledger: () => object, now? }} options  ledger: Ana Defter servisi (istek anında; Alt Hesap Mizanı)
  */
-export function createBankAccounts({ store, bank, period, money, ledger, now = systemClock }) {
+export function createBankAccounts({ store, bank, period, money, ledger, now = systemClock, fxEnabled = () => false }) {
   const stamp = () => now().toISOString();
   const today = () => (period ? period.today() : now().toISOString().slice(0, 10));
   const lock = () => period?.lockedUntil?.() || "";
@@ -259,6 +259,9 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
     let kind = text(kindValue);
     if (!Object.hasOwn(ACCOUNT_KINDS, kind)) throw new HttpError(400, "Hesap türü Vadesiz, Ticari, Vadeli, Döviz, Kredi Hesabı, Kurumsal Kredi Kartı ya da Diğer olmalı.", { code: "bank-kind", field: "kind" });
     const currency = currencyOf(currencyValue);
+    // GG2 (orta; kullanıcı kararı "Ertelenenler 2.1.0'da GÖRÜNMEZ"): döviz hesabı, kuru ve değerlemesiyle birlikte sonraki sürümde (Aşama 13).
+    // Bu sürümde yalnız TL hesap açılır; döviz hesabı testlerde (config.fxEnabled) açılır.
+    if (currency !== "TRY" && !fxEnabled()) throw new HttpError(400, "Döviz hesabı bu sürümde açılmaz; yalnız TL hesap açılır.", { code: "bank-currency-later", field: "currency" });
     if (currency !== "TRY" && BANK_FORM_KINDS.has(kind)) kind = "fx";
     if (kind === "fx" && currency === "TRY") throw new HttpError(400, "Döviz hesabının para birimi TL olamaz; TL hesap için Vadesiz ya da Ticari seçin.", { code: "bank-currency", field: "currency" });
     if (["loan", "card", "time"].includes(kind) && currency !== "TRY") throw new HttpError(400, `${ACCOUNT_KINDS[kind].label} yalnız TL olabilir.`, { code: "bank-currency", field: "currency" });

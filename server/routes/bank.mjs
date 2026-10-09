@@ -38,9 +38,9 @@ const CHOICE_PERMISSIONS = ["bank.view", "accounts.collect", "plans.collect", "p
 
 export function registerBankRoutes(router, context) {
   const { store, auth, audit, events, bank, period, money } = context;
-  const service = createBankAccounts({ store, bank, period, money, ledger: () => context.ledger, now: context.now });
+  const service = createBankAccounts({ store, bank, period, money, ledger: () => context.ledger, now: context.now, fxEnabled: () => context.config?.fxEnabled === true });
   const movements = createBankMovements({ store, money, accounts: service, ledger: () => context.ledger, period, now: context.now });
-  const vouchers = createBankVouchers({ store, bank, period, accounts: service, movements, invoices: () => context.invoices, parties: () => context.accounts, audit, now: context.now });
+  const vouchers = createBankVouchers({ store, bank, period, money, accounts: service, movements, invoices: () => context.invoices, parties: () => context.accounts, audit, now: context.now });
   const changed = (user, extra = {}) => events?.publish("workspace.changed", { kind: "bank", actorId: user.id, actorName: user.display_name, ...extra }, { except: user.id });
   const requestIdOf = (req, body) => text(req.headers["x-hof-request"]) || text(body?.requestId);
   const mustAccount = id => {
@@ -282,7 +282,8 @@ export function registerBankRoutes(router, context) {
   });
   router.post(`${BASE}/plans/:id/skip`, async ({ req, res, params }) => {
     const user = auth.requirePermission(req, "bank.move");
-    const result = vouchers.skipPlan(user, params.id);
+    const body = await readJson(req);
+    const result = vouchers.skipPlan(user, params.id, body);
     changed(user, { planId: params.id });
     ok(res, result);
   });

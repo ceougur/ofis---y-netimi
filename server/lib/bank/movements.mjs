@@ -156,8 +156,7 @@ export function createBankMovements({ store, money, accounts, ledger, period, no
     const header = isFeeHeader(event);
     const payment = header ? feePaymentOf(event) : null;
     if (reconciled(event.id) || reconciled(payment?.id)) return { status: 409, code: "bank-reconciled", reason: "Bu işlem banka ekstresiyle eşleşmiş; önce eşleşmeyi kaldırın." };
-    const lock = lockDate();
-    if (header && lock && event.date <= lock) return { status: 409, code: "period-locked", reason: `Faturalı masraf ${dayText(event.date)} tarihli; ${dayText(lock)} ve öncesi kilitli dönem. Fatura kilitli dönemde iptal edilmez.` };
+    // GG2: kilitli dönemdeki KDV'li masraf da ters kaydedilir (bugün tarihli Alıştan İade faturasıyla; vouchers.reverseInside).
     return null;
   }
 
@@ -286,7 +285,9 @@ export function createBankMovements({ store, money, accounts, ledger, period, no
   }
   function cardOf(event) {
     const map = accountMap();
-    const header = isFeeHeader(event);
+    // GG2: kilitli dönemdeki KDV'li masrafın ters kaydı satırsızdır; parası iade faturasında (yevmiyesi ve iade tahsilatı burada gösterilir).
+    const returnReversal = event.type === "reversal" && event.src_table === "" && Boolean(event.invoice_id);
+    const header = isFeeHeader(event) || returnReversal;
     const payment = header ? feePaymentOf(event) : null;
     let lines;
     let linesSource;
@@ -356,7 +357,9 @@ export function createBankMovements({ store, money, accounts, ledger, period, no
       actions: {
         reverse: { allowed: !block, reason: block?.reason || "", code: block?.code || "" },
         correct: { allowed: !block, reason: block?.reason || "", code: block?.code || "" },
-        info: { allowed: true, reason: "" },
+        // GG2 (düşük): modülden gelen hareketin açıklaması kendi penceresinde (Cari, Kasa, Taksit…); Banka'da değiştirilseydi iki ekranda iki
+        // açıklama olurdu. Banka Fişi'nin açıklaması burada (kilitli dönemde de).
+        info: event.src_table ? { allowed: false, reason: `${block?.reason || MODULE_REASONS[event.src_table] || ""} Açıklaması da orada değiştirilir.`.trim(), code: "bank-event-module" } : { allowed: true, reason: "" },
       },
     };
   }

@@ -688,6 +688,24 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
     M.kasa.bank += row.cents;
     M.bankLines.push(row);
   }
+  /**
+   * K7 (GG2): Banka Fişi'nde eksi bakiye — hesap bazında, yazımdan sonraki son durum. Motorun hesapları "Bakiye Doğrulandı" açılır (politika
+   * varsayılan Uyar, limit yok): işlem hesabı azaltıyor ve min(işlem günündeki, bütün hareketlerle) bakiye eksiye düşüyorsa 409 bank-negative;
+   * "Yine de Kaydet" (negativeOk) geçer. changes: [{ bankId, cents, date }] (bu işlemin yazacağı banka satırları); date: yeni fişin tarihi.
+   */
+  const bankNet = (bankId, until = "") => M.bankLines.filter(x => x.bankId === bankId && (!until || x.date <= until)).reduce((t, x) => t + x.cents, 0);
+  function bankGoesNegative(changes, date) {
+    const delta = new Map();
+    for (const c of changes) delta.set(c.bankId, (delta.get(c.bankId) || 0) + c.cents);
+    for (const [bankId, change] of delta) {
+      if (change >= 0) continue;
+      const mine = changes.filter(c => c.bankId === bankId);
+      const total = bankNet(bankId) + change;
+      const atDay = bankNet(bankId, date) + mine.filter(c => c.date <= date).reduce((t, c) => t + c.cents, 0);
+      if (Math.min(total, atDay) < 0) return true;
+    }
+    return false;
+  }
   /** Ters kaydın tarihi: kilitli günün fişi bugünün tarihiyle, açık günün fişi kendi tarihiyle ters kaydedilir. */
   const reversalDate = e => (lock && e.date <= lock ? T : e.date);
   function rejectedWith(r, status, kind) {
@@ -1283,7 +1301,11 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
           if (which === "hesap") return void expectReject(await api("POST", "/api/workspace/bank/vouchers", { ...body, accountId: `yok-${R.int(1, 1e6)}` }), [], kind);
           return void rejectedWith(await api("POST", "/api/workspace/bank/vouchers", { ...body, type: R.pick(["transfer_x", "", "opening", "reversal"]) }), 400, kind);
         }
-        const r = await api("POST", "/api/workspace/bank/vouchers", { ...body, similarOk: true });
+        // K7: eksiye düşürecek çıkış onaysız 409 bank-negative (hiçbir şey yazılmaz); "Yine de Kaydet" geçer.
+        const negative = bankGoesNegative([{ bankId: b.id, cents, date: day }], day);
+        const negativeOk = negative && R.chance(0.6);
+        if (negative && !negativeOk) return void expectReject(await api("POST", "/api/workspace/bank/vouchers", { ...body, similarOk: true }), "bank-negative", kind);
+        const r = await api("POST", "/api/workspace/bank/vouchers", { ...body, similarOk: true, ...(negativeOk ? { negativeOk: true } : {}) });
         mustOk(r, kind);
         if (bankSigned(r.data) !== cents) throw Object.assign(new Error(`${kind} ${type} ${body.tax || ""}: İşlem Kartı banka etkisi ${tl(bankSigned(r.data))} · model ${tl(cents)}`), { unexpected: true });
         if (r.data.date !== day) throw Object.assign(new Error(`${kind}: fiş tarihi ${r.data.date} · istenen ${day}`), { unexpected: true });
@@ -1300,7 +1322,11 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
         }
         const e = R.pick(M.bankLines.filter(x => x.status === "active" && x.voucher));
         if (!e) return;
-        const r = await api("POST", `/api/workspace/bank/events/${encodeURIComponent(e.id)}/reverse`, { reason: `Motor T${seed}` });
+        // K7: gelir fişinin ters kaydı hesabı eksiye düşürebilir.
+        const negative = bankGoesNegative([{ bankId: e.bankId, cents: -e.cents, date: reversalDate(e) }], reversalDate(e));
+        const negativeOk = negative && R.chance(0.6);
+        if (negative && !negativeOk) return void expectReject(await api("POST", `/api/workspace/bank/events/${encodeURIComponent(e.id)}/reverse`, { reason: `Motor T${seed}` }), "bank-negative", kind);
+        const r = await api("POST", `/api/workspace/bank/events/${encodeURIComponent(e.id)}/reverse`, { reason: `Motor T${seed}`, ...(negativeOk ? { negativeOk: true } : {}) });
         mustOk(r, kind);
         const date = reversalDate(e);
         if (r.data.reversal?.date !== date || bankSigned(r.data.reversal) !== -e.cents) throw Object.assign(new Error(`${kind}: ters kayıt ${r.data.reversal?.date} ${tl(bankSigned(r.data.reversal))} · model ${date} ${tl(-e.cents)} (kilit ${lock || "yok"})`), { unexpected: true });
@@ -1320,10 +1346,14 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
         if (lock && R.chance(0.15)) return void expectReject(await api("POST", `/api/workspace/bank/events/${encodeURIComponent(e.id)}/correct`, { ...body, date: lock }), "period-locked", kind);
         // Saha hatası (%10): türü değiştirmek → 400 bank-correct-type.
         if (R.chance(0.1)) return void expectReject(await api("POST", `/api/workspace/bank/events/${encodeURIComponent(e.id)}/correct`, { ...body, type: e.type === "other_in" ? "other_out" : "other_in" }), "bank-correct-type", kind);
-        const r = await api("POST", `/api/workspace/bank/events/${encodeURIComponent(e.id)}/correct`, body);
-        mustOk(r, kind);
         const back = reversalDate(e);
         const date = given || back;
+        // K7: ters kayıt + yeni fiş birlikte (iki hesap olabilir).
+        const negative = bankGoesNegative([{ bankId: e.bankId, cents: -e.cents, date: back }, { bankId: b.id, cents, date }], date);
+        const negativeOk = negative && R.chance(0.6);
+        if (negative && !negativeOk) return void expectReject(await api("POST", `/api/workspace/bank/events/${encodeURIComponent(e.id)}/correct`, body), "bank-negative", kind);
+        const r = await api("POST", `/api/workspace/bank/events/${encodeURIComponent(e.id)}/correct`, { ...body, ...(negativeOk ? { negativeOk: true } : {}) });
+        mustOk(r, kind);
         if (r.data.reversal?.date !== back || bankSigned(r.data.reversal) !== -e.cents) throw Object.assign(new Error(`${kind}: ters kayıt ${r.data.reversal?.date} ${tl(bankSigned(r.data.reversal))} · model ${back} ${tl(-e.cents)}`), { unexpected: true });
         if (r.data.next?.date !== date || bankSigned(r.data.next) !== cents) throw Object.assign(new Error(`${kind} ${e.type} ${body.tax || ""}: yeni fiş ${r.data.next?.date} ${tl(bankSigned(r.data.next))} · model ${date} ${tl(cents)}`), { unexpected: true });
         e.status = "reversed";
@@ -1338,7 +1368,8 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
         const r1 = await api("POST", "/api/workspace/bank/vouchers", e.body);
         expectReject(r1, "bank-similar", kind);
         if (R.chance(0.4)) return;
-        const r2 = await api("POST", "/api/workspace/bank/vouchers", { ...e.body, similarOk: true });
+        // K7: ikinci kayıt hesabı eksiye düşürecekse "Yine de Kaydet" de seçilir (Benzer İşlem denetimi eksi bakiyeden önce gelir).
+        const r2 = await api("POST", "/api/workspace/bank/vouchers", { ...e.body, similarOk: true, ...(bankGoesNegative([{ bankId: e.bankId, cents: e.cents, date: e.body.date }], e.body.date) ? { negativeOk: true } : {}) });
         mustOk(r2, kind);
         if (bankSigned(r2.data) !== e.cents) throw Object.assign(new Error(`${kind}: ikinci kayıt ${tl(bankSigned(r2.data))} · model ${tl(e.cents)}`), { unexpected: true });
         bankAdd({ id: r2.data.id, bankId: e.bankId, type: e.type, date: e.body.date, cents: e.cents, status: "active", voucher: true, body: e.body });

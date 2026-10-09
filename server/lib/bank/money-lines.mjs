@@ -321,16 +321,23 @@ export function createMoneyLines(store) {
    * 1.000.000 satırlık hesapta toplam bir kez okunur, sayfalar arasında yeniden okunmaz.
    */
   const totals = new Map();
+  // GG2: işlemin İÇİNDE hesaplanan değer saklanmaz. Geri alınan işlemde (409) total_changes geri gitmez; içeride saklanan (yazılmış ama geri
+  // alınmış satırları sayan) toplam, geri almadan sonraki ilk okumada aynı damgayla "geçerli" görünüyordu (Banka Fişi'nin eksi bakiye denetimi
+  // ikinci denemede eski toplamı okuyup geçiyordu). İşlemin içinde okunan saklı değer yazımdan önceki son kesin durumdur (yazımla damga değişir).
+  const stampOf = () => {
+    const counters = typeof store.changeCounters === "function" ? store.changeCounters() : null;
+    return counters ? `${counters.total}|${counters.version}` : "";
+  };
+  const keep = () => !store.inTransaction;
   function refTotal({ ref, after = "" } = {}) {
     const key = `${ref}|${after}`;
-    const counters = typeof store.changeCounters === "function" ? store.changeCounters() : null;
-    const stamp = counters ? `${counters.total}|${counters.version}` : "";
+    const stamp = stampOf();
     const hit = stamp ? totals.get(key) : null;
     if (hit && hit.stamp === stamp) return { cents: hit.cents, count: hit.count };
     const union = MONEY_SOURCES.map(source => select(source, { lean: true, after, ref })).filter(Boolean).join("\n UNION ALL ");
     const row = store.get(`SELECT COALESCE(SUM(CASE WHEN u.kind = 'in' THEN u.cents ELSE -u.cents END), 0) AS cents, COUNT(*) AS count FROM (${union}) u`, params({ after, ref }));
     const out = { cents: Number(row.cents) || 0, count: Number(row.count) || 0 };
-    if (stamp) {
+    if (stamp && keep()) {
       if (totals.size > 200) totals.clear();
       totals.set(key, { stamp, ...out });
     }
@@ -342,15 +349,14 @@ export function createMoneyLines(store) {
    * ve sihirbaz bütün para satırlarını grupluyordu (1.000.000 harekette istek başına ~4 sn, sunucu o sürede başka isteğe yanıt vermiyordu).
    */
   function unassigned() {
-    const counters = typeof store.changeCounters === "function" ? store.changeCounters() : null;
-    const stamp = counters ? `${counters.total}|${counters.version}` : "";
+    const stamp = stampOf();
     const hit = stamp ? totals.get("|unassigned|") : null;
     if (hit && hit.stamp === stamp) return { bank: hit.bank, card: hit.card };
     const out = { bank: 0, card: 0 };
     for (const group of store.all(`SELECT w.way AS way, COALESCE(SUM(CASE WHEN w.kind = 'in' THEN w.cents ELSE -w.cents END), 0) AS cents FROM (${waySql({ light: true, unbound: true })}) w WHERE w.ref = '' GROUP BY w.way`)) {
       if (group.way === "bank" || group.way === "card") out[group.way] += Number(group.cents) || 0;
     }
-    if (stamp) {
+    if (stamp && keep()) {
       if (totals.size > 200) totals.clear();
       totals.set("|unassigned|", { stamp, ...out });
     }

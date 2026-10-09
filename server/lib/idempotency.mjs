@@ -17,7 +17,7 @@ import { HttpError } from "./http.mjs";
 const FORMAT = /^[A-Za-z0-9_-]{16,100}$/;
 // Zorlama bayrakları (eksi stok / eksi Kasa onayı, v2.1.0: Benzer İşlem "Yine de Kaydet") içerik sayılmaz: onaydan sonraki yeniden gönderim
 // aynı istektir (banka planı §3.10/2).
-const VOLATILE = new Set(["force", "stockForce", "cashForce", "requestId", "similarOk"]);
+const VOLATILE = new Set(["force", "stockForce", "cashForce", "requestId", "similarOk", "negativeOk"]);
 
 const stable = value => {
   if (Array.isArray(value)) return `[${value.map(stable).join(",")}]`;

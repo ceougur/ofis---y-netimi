@@ -232,8 +232,27 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     return next;
   }
   const sellerProblems = (profile, s = settings()) => partyProblems(sellerParty(s), { profile: profile === "KAGIT" ? "KAGIT" : profile === "EARSIVFATURA" ? "EARSIV" : profile === "ESMM" ? "EARSIV" : "EFATURA", role: "seller" });
+  // GG2 (orta; plan §8.9): Banka hesap kartındaki "IBAN Faturada Gösterilsin" işaretli hesaplar faturanın satıcı banka listesine girer (önce Banka
+  // hesapları, sonra Fatura Ayarları'ndaki liste; aynı IBAN bir kez; en çok 4). Önceden kutunun hiçbir etkisi yoktu.
+  const invoiceBanks = list => {
+    let rows = [];
+    try {
+      rows = store.all("SELECT bank_name AS name, iban FROM bank_accounts WHERE show_on_invoice = 1 AND iban <> '' AND status = 'active' AND deleted_at IS NULL ORDER BY position, created_at");
+    } catch {
+      rows = [];
+    }
+    const seen = new Set();
+    const out = [];
+    for (const bank of [...rows, ...(list || [])]) {
+      const key = normalizeIban(bank?.iban || "");
+      if (key && seen.has(key)) continue;
+      if (key) seen.add(key);
+      out.push({ name: String(bank?.name || ""), iban: key });
+    }
+    return out.slice(0, 4);
+  };
   const sellerParty = s => {
-    const seller = { ...s.seller };
+    const seller = { ...s.seller, banks: invoiceBanks(s.seller?.banks) };
     delete seller.logo;
     if (seller.partyKind === "person" && (!seller.firstName || !seller.familyName)) Object.assign(seller, { ...splitPersonName(seller.name), ...(seller.firstName ? { firstName: seller.firstName } : {}), ...(seller.familyName ? { familyName: seller.familyName } : {}) });
     return seller;
@@ -497,8 +516,14 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   // v2.1.0 Aşama 4 (banka planı §3.7 #13, K2): Banka penceresinden girilen KDV'li masrafın faturası (masraf başlığı faturaya bağlı, ödeme bu
   // hesaptan havale). Fatura penceresinden düzenlenmez, iptal edilmez, silinmez, iadesi kesilmez: Banka → İşlem Kartı → Ters Kaydet faturayı ve
   // masraf başlığını TEK işlemde iptal eder (yalnız fatura iptal edilirse banka başlığı ödemesiz kalırdı; kapı bank:voucher reddeder).
-  const bankFeeOf = invoiceId => (invoiceId ? store.get("SELECT id, no, bank_ref AS bankRef FROM fin_events WHERE invoice_id = ? AND invoice_id <> '' AND +type = 'fee' AND +src_table = '' AND +status = 'active' LIMIT 1", invoiceId) || null : null);
-  const bankFeeText = fee => `Bu fatura Banka penceresinden girilen masrafın faturasıdır (İşlem No ${fee.no}); Banka → İşlem Kartı → Ters Kaydet ile iptal edilir.`;
+  // GG2: kilitli dönemdeki KDV'li masrafın Ters Kaydet'i bugün tarihli Alıştan İade faturası keser (başlık "ters kaydedildi"); asıl fatura ve iade
+  // faturası da Fatura penceresinden değiştirilmez (iade iptal edilseydi Banka'da ters kaydedilmiş görünen masraf geri gelirdi).
+  const bankFeeOf = invoiceId => (invoiceId ? store.get("SELECT id, no, type, status, bank_ref AS bankRef FROM fin_events WHERE invoice_id = ? AND invoice_id <> '' AND +src_table = '' AND ((+type = 'fee' AND +status IN ('active', 'reversed')) OR (+type = 'reversal' AND +status = 'active')) LIMIT 1", invoiceId) || null : null);
+  const bankFeeText = fee => {
+    if (fee.type === "reversal") return `Bu iade faturası Banka masrafının Ters Kaydet'iyle kesildi (İşlem No ${fee.no}); Fatura penceresinden iptal edilmez, silinmez, düzenlenmez.`;
+    if (fee.status === "reversed") return `Bu fatura Banka penceresinden girilen masrafın faturasıdır (İşlem No ${fee.no}); masraf Ters Kaydet ile iade faturasıyla geri alındı. Fatura penceresinden değiştirilmez.`;
+    return `Bu fatura Banka penceresinden girilen masrafın faturasıdır (İşlem No ${fee.no}); Banka → İşlem Kartı → Ters Kaydet ile iptal edilir (kilitli dönemde bugün tarihli iade faturasıyla).`;
+  };
   function modifyBlock(row, activeReturns = 0, plan = null) {
     const fee = row.status === "issued" ? bankFeeOf(row.id) : null;
     if (fee) return bankFeeText(fee);
@@ -917,7 +942,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
    * İstek gövdesinden belge. mode: "draft" (eksik ödeme ve stok denetimi yok) ya da "issue".
    * Dönüş: { kind, scenario, account, party, date, time, profile, currency, rate, … lines, computed, money }.
    */
-  function documentInput(body, { mode = "issue", existing = null } = {}) {
+  function documentInput(body, { mode = "issue", existing = null, fromBank = false } = {}) {
     const s = settings();
     const scenario = SCENARIOS[text(body.scenario)] ? text(body.scenario) : existing?.scenario || "";
     const kind = INVOICE_KINDS[text(body.kind)] ? text(body.kind) : SCENARIOS[scenario]?.kind || existing?.kind || "";
@@ -933,7 +958,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       if (original.kind !== meta.of) fail400(`${meta.label} yalnız ${INVOICE_KINDS[meta.of].label.toLocaleLowerCase("tr-TR")} için kaydedilir.`, "originalId");
       if (original.status !== "issued") fail400("İptal edilmiş ya da taslak faturanın iadesi olmaz.", "originalId");
       if (original.eStatus === "waiting") fail400("Bu belge henüz entegratöre gönderilmedi (Gönderilecekler). İadeden önce gönderin ya da listeden silin.", "originalId", { code: "invoice-waiting" });
-      const fee = bankFeeOf(original.id);
+      const fee = fromBank ? null : bankFeeOf(original.id);
       if (fee) throw new HttpError(409, bankFeeText(fee), { code: "invoice-bank-fee", eventNo: fee.no });
     }
     const account = accountOf(original ? original.accountId : text(body.accountId) || existing?.accountId || "");
@@ -2807,5 +2832,20 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     const paymentRow = store.get("SELECT event_id AS eventId FROM account_entries WHERE source = 'invoice' AND source_id = ? AND kind = 'out' AND method = 'bank' LIMIT 1", written.id);
     return { id: written.id, number: written.number, netMinor: Math.round(Number(doc.money.net) || 0), vatMinor: Math.round(Number(doc.money.vat) || 0), payableMinor: Math.round(Number(doc.money.payable) || 0), paymentEventId: paymentRow?.eventId || "" };
   }
-  return { openItems, dueItems, fingerprint, countForAccount, list, detail, settings, paymentStates, lastPrices, returnable, cancel, deleteInvoice, restoreDeleted, syncOwnCard, issueBankFee };
+  /**
+   * GG2 (Banka → Ters Kaydet, kilitli dönemdeki KDV'li masraf): asıl faturanın bütün kalemleri için bugün (date) tarihli Alıştan İade faturası +
+   * bu banka hesabına iade tahsilatı (havale, fin_ref). Kapanmış dönem değişmez (yaygın uygulama: kilitli dönemdeki faturanın düzeltmesi açık
+   * dönemde iade faturasıyla). Banka servisi kendi bank.post işleminin İÇİNDEN çağırır. Dönüş: { id, number, payableMinor, paymentEventId }.
+   */
+  function issueBankFeeReturn(user, { invoiceId, date, bankAccountId, note = "" }) {
+    const original = invoiceRow(invoiceId);
+    const lines = linesOf(original.id).map(line => ({ originLineId: line.id, qty: line.qty }));
+    const doc = documentInput({ kind: "purchase_return", originalId: original.id, issueDate: date, note, lines }, { mode: "issue", fromBank: true });
+    const payable = c2(doc.money.payable);
+    const payment = { cash: [{ amount: payable, method: "bank", bankAccountId }], cheques: [], endorse: [], paid: payable, rest: 0, mode: "none", installments: null, dueDate: doc.date };
+    const written = writeIssued(user, doc, payment, {});
+    const paymentRow = store.get("SELECT event_id AS eventId FROM account_entries WHERE source = 'invoice' AND source_id = ? AND kind = 'in' AND method = 'bank' LIMIT 1", written.id);
+    return { id: written.id, number: written.number, payableMinor: Math.round(Number(doc.money.payable) || 0), paymentEventId: paymentRow?.eventId || "" };
+  }
+  return { openItems, dueItems, fingerprint, countForAccount, list, detail, settings, paymentStates, lastPrices, returnable, cancel, deleteInvoice, restoreDeleted, syncOwnCard, issueBankFee, issueBankFeeReturn };
 }

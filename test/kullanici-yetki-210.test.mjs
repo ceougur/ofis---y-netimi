@@ -6,7 +6,7 @@ import path from "node:path";
 import { after, before, describe, it } from "node:test";
 import { createStore, openDatabase } from "../server/lib/db.mjs";
 import { MIGRATIONS } from "../server/lib/migrations.mjs";
-import { ADMIN_ONLY, PERMISSIONS, PERMISSION_ORDER, parseGrants, resolvePermissions } from "../server/lib/permissions.mjs";
+import { ADMIN_ONLY, NOT_YET_PERMISSIONS, PERMISSIONS, PERMISSION_ORDER, parseGrants, resolvePermissions } from "../server/lib/permissions.mjs";
 import { createUser, loginAdmin, startTestServer } from "./helpers.mjs";
 
 const SOURCE = "https://docs.google.com/spreadsheets/d/YETKI210/edit";
@@ -47,7 +47,9 @@ describe("yetki havuzu ve kullanıcı yönetimi (API)", () => {
     assert.deepEqual(result.builtIn.map(role => role.key), ["admin", "avukat", "personel", "muhasebe"]);
     assert.ok(result.builtIn.every(role => role.builtIn && Array.isArray(role.permissions)));
     const items = result.groups.flatMap(group => group.items);
-    assert.equal(items.length, Object.keys(PERMISSIONS).length);
+    // GG2: bu sürümde olmayan özelliklerin yetkileri (POS, Komisyon, Ekstre, Mutabakat) Roller ekranında görünmez.
+    assert.equal(items.length, Object.keys(PERMISSIONS).length - NOT_YET_PERMISSIONS.size);
+    assert.ok(items.every(item => !NOT_YET_PERMISSIONS.has(item.key)));
     assert.ok(items.filter(item => item.locked).map(item => item.key).sort().join() === [...ADMIN_ONLY].sort().join());
     assert.ok(items.every(item => item.label && item.help), "her yetkinin Türkçe adı ve açıklaması var");
   });

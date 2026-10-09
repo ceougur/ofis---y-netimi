@@ -23,7 +23,7 @@ import { BANK, bootBank, expectStatus, must, openAccount } from "./banka-210-hes
 describe("Aşama 3 — Banka Ayarları", () => {
   let ctx;
   before(async () => {
-    ctx = await bootBank();
+    ctx = await bootBank({ fxEnabled: true });
   });
   after(() => ctx.server.close());
 
@@ -71,10 +71,11 @@ describe("Aşama 3 — Banka Ayarları", () => {
   it("değiştir → okunur ve hesap kartına yansır; Varsayılanlara Dön (bölüm ve tümü); işlem geçmişi önceki/yeni", async () => {
     const account = await openAccount(ctx.api, { bankName: "Ziraat Bankası", name: "Ana TL Hesabı", kind: "demand", opening: { date: "2026-10-01", amount: "100", confirmed: true } });
     assert.equal(account.policy, "warn");
-    const updated = await must("değiştir", ctx.api.put(`${BANK}/settings`, { values: { negative: { policy: "block" }, statement: { toleranceDays: 5 }, gl: { fee: "780" } } }));
+    const updated = await must("değiştir", ctx.api.put(`${BANK}/settings`, { values: { negative: { policy: "block" }, statement: { toleranceDays: 5 }, gl: { fee: "653" } } }));
     assert.equal(updated.values.negative.policy, "block");
     assert.equal(updated.values.statement.toleranceDays, 5);
-    assert.equal(updated.values.gl.fee, "780");
+    // GG2: Banka Masrafları eşlemesi yalnız 770 ya da 653 (faturalı masrafın gider kalemi; ayrıntı banka-210-gg2-fis).
+    assert.equal(updated.values.gl.fee, "653");
     assert.equal(updated.values.similar.enabled, true, "değiştirilmeyen ayar korunur");
     assert.equal((await must("hesap", ctx.api.get(`${BANK}/accounts/${account.id}`))).policy, "block", "hesap politikası ayardan");
     const reset = await must("bölüm varsayılan", ctx.api.post(`${BANK}/settings/reset`, { section: "negative" }));

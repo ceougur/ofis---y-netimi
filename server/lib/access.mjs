@@ -5,7 +5,7 @@
 import { randomUUID } from "node:crypto";
 import { HttpError, limited, text } from "./http.mjs";
 import { foldName } from "./names.mjs";
-import { ROLES, ROLE_LABELS, isGrantable, permissionsFor, resolvePermissions } from "./permissions.mjs";
+import { NOT_YET_PERMISSIONS, ROLES, ROLE_LABELS, isGrantable, permissionsFor, resolvePermissions } from "./permissions.mjs";
 import { withGrantsDone } from "./bank/grants.mjs";
 
 const now = () => new Date().toISOString();
@@ -97,6 +97,8 @@ export function createAccess({ store }) {
     const current = customRole(id);
     if (!current) throw new HttpError(404, "Rol bulunamadı.");
     const input = roleInput({ name: current.name, description: current.description, permissions: current.permissions, ...body }, id);
+    // GG2: ekranda görünmeyen (henüz olmayan özelliklerin) yetkileri ekran göndermez; kayıtlı değerleri kalır.
+    if (Array.isArray(body?.permissions)) input.permissions = [...input.permissions.filter(key => !NOT_YET_PERMISSIONS.has(key)), ...(current.permissions || []).filter(key => NOT_YET_PERMISSIONS.has(key))];
     store.run("UPDATE roles SET name = ?, description = ?, permissions_json = ?, updated_at = ? WHERE id = ?", input.name, input.description, JSON.stringify(withGrantsDone(input.permissions)), now(), id);
     invalidate();
     return { id, ...input };

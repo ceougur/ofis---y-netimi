@@ -42,7 +42,7 @@ describe("Aşama 3 — Hesabı Atanmamış Eski Hareketler ve Kurulum Sihirbazı
   const rows = {};
   const entryOf = (date, kind) => ctx.store.get("SELECT id, event_id AS eventId FROM account_entries WHERE account_id = ? AND date = ? AND kind = ?", party.id, date, kind);
   before(async () => {
-    ctx = await bootBank();
+    ctx = await bootBank({ fxEnabled: true });
     const api = ctx.api;
     party = await must("cari", api.post("/api/workspace/accounts", { name: "ABC Ltd.", type: "customer", registeredOn: "2026-09-01" }));
     await must("20.09 havale", api.post(`/api/workspace/accounts/${party.id}/entries`, { kind: "in", amount: "5.000", method: "bank", date: "2026-09-20" }));

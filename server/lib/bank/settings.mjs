@@ -16,6 +16,8 @@ export const SETTINGS_KEY = "bank.settings";
 
 const EXPENSE_GL = ROLE_GL.expense;
 const INCOME_GL = ROLE_GL.income;
+/** Masraf ve komisyon eşlemesi: faturalı masrafın gider kalemi olabilen hesaplar (770 Genel Giderler, 653 Komisyon Giderleri). */
+export const FEE_GL = Object.freeze(["770", "653"]);
 
 // Masraf türleri (§8.11 Temel → Masraf): hesabı masraf türü belirler (vergi kipinden bağımsız; Ek A.1/24).
 const FEE_TYPES = [
@@ -87,7 +89,7 @@ export const SPEC = Object.freeze([
   },
   {
     id: "holiday", level: "basic", label: "Tatil",
-    items: [["calendar", "Takvim", fixed("tr", "Türkiye Resmî Tatilleri"), "Şirketin eklediği ve çıkardığı günler Tatiller listesinde."]],
+    items: [["calendar", "Takvim", fixed("tr", "Türkiye Resmî Tatilleri"), "Resmî tatiller ve arife yarım günleri programda hazır gelir; hafta sonu ve arife ayarı Gelişmiş → Tatil'de."]],
   },
   {
     id: "posAdvanced", level: "advanced", label: "POS",
@@ -137,8 +139,10 @@ export const SPEC = Object.freeze([
   {
     id: "gl", level: "advanced", label: "Hesap Eşlemeleri",
     items: [
-      ["fee", "Banka Masrafları", { type: "gl", default: "770", allowed: EXPENSE_GL }, ""],
-      ["commission", "POS ve Ödeme Kuruluşu Komisyonları", { type: "gl", default: "653", allowed: EXPENSE_GL }, ""],
+      // GG2 (düşük): faturalı (KDV'li) masraf da eşlemedeki hesaba yazılır; fatura gider kalemi yalnız 770 ya da 653 olabildiği için iki eşleme bu
+      // iki hesapla sınırlı (önceden 659 seçilince BSMV'li masraf 659'a, KDV'li masraf 770'e gidiyordu: aynı masraf türü iki hesapta).
+      ["fee", "Banka Masrafları", { type: "gl", default: "770", allowed: FEE_GL }, "BSMV'li ve faturalı (KDV'li) masraf aynı hesaba yazılır: 770 ya da 653."],
+      ["commission", "POS ve Ödeme Kuruluşu Komisyonları", { type: "gl", default: "653", allowed: FEE_GL }, "BSMV'li ve faturalı (KDV'li) komisyon aynı hesaba yazılır: 770 ya da 653."],
       ["interestIncome", "Faiz Geliri", { type: "gl", default: "642", allowed: INCOME_GL }, ""],
       ["interestExpense", "Faiz Gideri", { type: "gl", default: "780", allowed: EXPENSE_GL }, ""],
       ["fxGain", "Kambiyo Kârı", { type: "gl", default: "646", allowed: ROLE_GL.fx_gain }, ".01 değerleme, .02 gerçekleşen."],
@@ -163,9 +167,14 @@ export const SPEC = Object.freeze([
   },
 ]);
 
-// Bu sürümde olmayan özelliklerin ayarları (yarım özellik görünmez; plan §12.1): POS 2.2.0'da, Ekstre ve Mutabakat 2.3.0'da gelir. Değerleri
-// saklanır ve doğrulanır (Varsayılanlara Dön de kapsar); arayüz "available: false" bölümü ve kalemi göstermez.
-const NOT_YET = Object.freeze({ sections: new Set(["pos", "posAdvanced", "statement"]), items: new Set(["account.defaultPosId", "holidayAdvanced.shift"]) });
+// Bu sürümde olmayan özelliklerin ayarları (yarım özellik görünmez; plan §12.1): POS 2.2.0'da, Ekstre ve Mutabakat 2.3.0'da, döviz ve değerleme
+// (Kambiyo Kârı/Zararı eşlemeleri dahil) 2.1.x'te gelir. GG2: Kanal Alanı (ekstre ve POS kanalıyla gelir) ve Elle Banka Fişi (formu yok)
+// etkisiz görünüyordu; onlar da gizli. Değerleri saklanır ve doğrulanır (Varsayılanlara Dön de kapsar); arayüz "available: false" bölümü ve
+// kalemi göstermez.
+const NOT_YET = Object.freeze({
+  sections: new Set(["pos", "posAdvanced", "statement", "fx", "fxAdvanced", "movement"]),
+  items: new Set(["account.defaultPosId", "holidayAdvanced.shift", "gl.fxGain", "gl.fxLoss", "other.manualVoucher"]),
+});
 
 const bad = (message, extra = {}) => new HttpError(400, message, { code: "bank-setting", ...extra });
 const clone = value => JSON.parse(JSON.stringify(value));

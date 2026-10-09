@@ -24,6 +24,7 @@ export async function startTestServer(options = {}) {
     startLicenseTimers: options.startLicenseTimers ?? false,
     // e-Belge bağlantısı programda kapalıdır; yalnız entegratör testleri açar.
     ...(options.edocEnabled ? { edocEnabled: true } : {}),
+    ...(options.fxEnabled ? { fxEnabled: true } : {}),
     ...(options.supervisorLink ? { supervisorLink: options.supervisorLink } : {}),
     // Şirket sınırı (en fazla 2): 2'den çok şirketi olan eski kurulumu canlandıran testler sınırı yükseltir.
     ...(options.maxCompanies ? { maxCompanies: options.maxCompanies } : {}),
