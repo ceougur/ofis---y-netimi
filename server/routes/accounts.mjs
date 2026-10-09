@@ -530,7 +530,7 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     store.setSetting("plans.receiptSeq", String(current + 1));
     return current + 1;
   };
-  function addEntry(user, accountId, { kind, amount, date, note, source = "", sourceId = "", method = "cash", invoiceId = "", eventId: keepEvent = "" }) {
+  function addEntry(user, accountId, { kind, amount, date, note, source = "", sourceId = "", method = "cash", invoiceId = "", eventId: keepEvent = "", finRef = "" }) {
     // Açılış bakiyesi, stoktan ve çekten gelen satırlar dahil: kapanmış döneme cari satırı yazılmaz.
     period?.assertOpen(date, "Cari hareketi");
     const id = newId("aentry");
@@ -540,10 +540,12 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     // stoktan gelen satır para satırı değildir (olay yok). Para satırı yalnız bank.post'un write geri çağrısında yazılır (K6).
     // keepEvent (gözden geçirme D2): fatura düzenlenirken özeti (yön, tutar, yol, tarih) aynı kalan peşin satır eski işlem başlığıyla yeniden
     // yazılır (İşlem No değişmez); bank.post satırı kalmayan olayı iptal eder, satırı geri gelen olayı yeniden etkin yapar.
-    const eventId = bank.eventFor("account_entries", { kind, source, date, method: way, event_id: keepEvent });
+    const eventId = bank.eventFor("account_entries", { kind, source, date, method: way, event_id: keepEvent, fin_ref: finRef });
+    // finRef (v2.1.0 Aşama 4): banka hesabına bağlı satır (şimdilik yalnız Banka → KDV'li masrafın faturasının havale ödemesi; modül formlarındaki
+    // hesap seçimi Aşama 5/7).
     store.run(
-      "INSERT INTO account_entries (id, account_id, kind, amount, date, note, receipt_no, source, source_id, method, invoice_id, event_id, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-      id, accountId, kind, amount, date, note || "", receiptNo, source, sourceId, way, invoiceId || "", eventId, user.id, now(),
+      "INSERT INTO account_entries (id, account_id, kind, amount, date, note, receipt_no, source, source_id, method, invoice_id, fin_ref, event_id, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+      id, accountId, kind, amount, date, note || "", receiptNo, source, sourceId, way, invoiceId || "", finRef || "", eventId, user.id, now(),
     );
     return { id, receiptNo };
   }
@@ -1189,8 +1191,8 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
   // v2.0.15: faturadan doğan cari satırları (borç/alacak + varsa peşin tahsilat/ödeme). source = 'invoice', source_id = fatura.
   // Kasa'ya etkisi fatura modülünün kendi kaynağından gelir (routes/invoices.mjs cashSource); cari kartından düzeltilemez.
   const invoiceEntry = {
-    add(user, accountId, { kind, amount, date, note, invoiceId, method = "cash", eventId = "" }) {
-      return addEntry(user, accountId, { kind, amount, date, note, source: "invoice", sourceId: invoiceId, method, eventId });
+    add(user, accountId, { kind, amount, date, note, invoiceId, method = "cash", eventId = "", finRef = "" }) {
+      return addEntry(user, accountId, { kind, amount, date, note, source: "invoice", sourceId: invoiceId, method, eventId, finRef });
     },
     removeFor(invoiceId) {
       return store.run("DELETE FROM account_entries WHERE source = 'invoice' AND source_id = ?", invoiceId).changes;

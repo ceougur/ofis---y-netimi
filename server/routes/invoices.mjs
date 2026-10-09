@@ -494,7 +494,14 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     }
     return ids;
   }
+  // v2.1.0 Aşama 4 (banka planı §3.7 #13, K2): Banka penceresinden girilen KDV'li masrafın faturası (masraf başlığı faturaya bağlı, ödeme bu
+  // hesaptan havale). Fatura penceresinden düzenlenmez, iptal edilmez, silinmez, iadesi kesilmez: Banka → İşlem Kartı → Ters Kaydet faturayı ve
+  // masraf başlığını TEK işlemde iptal eder (yalnız fatura iptal edilirse banka başlığı ödemesiz kalırdı; kapı bank:voucher reddeder).
+  const bankFeeOf = invoiceId => (invoiceId ? store.get("SELECT id, no, bank_ref AS bankRef FROM fin_events WHERE invoice_id = ? AND invoice_id <> '' AND +type = 'fee' AND +src_table = '' AND +status = 'active' LIMIT 1", invoiceId) || null : null);
+  const bankFeeText = fee => `Bu fatura Banka penceresinden girilen masrafın faturasıdır (İşlem No ${fee.no}); Banka → İşlem Kartı → Ters Kaydet ile iptal edilir.`;
   function modifyBlock(row, activeReturns = 0, plan = null) {
+    const fee = row.status === "issued" ? bankFeeOf(row.id) : null;
+    if (fee) return bankFeeText(fee);
     if (activeReturns) return `Bu faturanın ${activeReturns} iade faturası var; düzenlenmez. Önce iadeleri iptal edin.`;
     if (E_SENT.has(row.eStatus)) return `Bu belge e-Belge olarak ${(E_STATES[row.eStatus] || "gönderildi").toLocaleLowerCase("tr-TR")}; düzenlenmez. İptal ya da iade faturasıyla düzeltin.`;
     const lock = period?.lockedUntil?.();
@@ -614,6 +621,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     const manage = canUser(user, "invoices.manage");
     const kind = INVOICE_KINDS[row.kind];
     const activeReturns = returns.filter(item => item.status === "issued").length;
+    const bankFee = row.status === "issued" ? bankFeeOf(row.id) : null;
     const returnable = lines.map(line => ({ id: line.id, left: Math.max(0, Math.round((line.qty - (returned.get(line.id) || 0)) * 1000) / 1000) }));
     return {
       ...shape(row, state),
@@ -660,11 +668,11 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       // v2.0.17 (müşteri): her belge silinebilir — taslak, kaydedilmiş (etkiler iptaldeki gibi geri alınır), iptal edilmiş.
       canDelete: manage && !deleteBlock(row, activeReturns, plan),
       deleteBlock: manage ? deleteBlock(row, activeReturns, plan) : "",
-      canCancel: manage && row.status === "issued" && activeReturns === 0,
-      cancelBlock: row.status === "issued" && activeReturns ? `Bu faturanın ${activeReturns} iade faturası var; önce iadeleri iptal edin.` : "",
-      canReturn: manage && row.status === "issued" && !kind?.return && row.kind !== "smm" && returnable.some(item => item.left > 0),
+      canCancel: manage && row.status === "issued" && activeReturns === 0 && !bankFee,
+      cancelBlock: row.status === "issued" && bankFee ? bankFeeText(bankFee) : row.status === "issued" && activeReturns ? `Bu faturanın ${activeReturns} iade faturası var; önce iadeleri iptal edin.` : "",
+      canReturn: manage && row.status === "issued" && !kind?.return && row.kind !== "smm" && returnable.some(item => item.left > 0) && !bankFee,
       // v2.0.17: pasif düğmenin nedeni ekranda yazılı (yalnız title değil).
-      returnBlock: row.status !== "issued" ? "" : kind?.return ? "" : row.kind === "smm" ? "Serbest meslek makbuzundan iade belgesi olmaz; yanlışsa iptal edin." : returnable.some(item => item.left > 0) ? "" : "İade edilebilecek kalem kalmadı; faturanın tamamı iade edildi.",
+      returnBlock: row.status !== "issued" ? "" : bankFee ? bankFeeText(bankFee) : kind?.return ? "" : row.kind === "smm" ? "Serbest meslek makbuzundan iade belgesi olmaz; yanlışsa iptal edin." : returnable.some(item => item.left > 0) ? "" : "İade edilebilecek kalem kalmadı; faturanın tamamı iade edildi.",
       repeat: repeatOf(row.id),
       canRepeat: manage && row.status === "issued" && !kind?.return,
       canSend: edocEnabled && manage && row.status === "issued" && kind?.send && (row.profile !== "KAGIT" || row.eStatus === "withdrawn") && E_SENDABLE.has(row.eStatus || "none") && !sendBlockOf(row),
@@ -925,6 +933,8 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       if (original.kind !== meta.of) fail400(`${meta.label} yalnız ${INVOICE_KINDS[meta.of].label.toLocaleLowerCase("tr-TR")} için kaydedilir.`, "originalId");
       if (original.status !== "issued") fail400("İptal edilmiş ya da taslak faturanın iadesi olmaz.", "originalId");
       if (original.eStatus === "waiting") fail400("Bu belge henüz entegratöre gönderilmedi (Gönderilecekler). İadeden önce gönderin ya da listeden silin.", "originalId", { code: "invoice-waiting" });
+      const fee = bankFeeOf(original.id);
+      if (fee) throw new HttpError(409, bankFeeText(fee), { code: "invoice-bank-fee", eventNo: fee.no });
     }
     const account = accountOf(original ? original.accountId : text(body.accountId) || existing?.accountId || "");
     const date = text(body.issueDate ?? body.date ?? existing?.issueDate ?? today());
@@ -1409,7 +1419,9 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       for (const item of payment.cash) {
         const into = inflow(doc.kind);
         if (!into) cash?.guardOut?.(item.amount, doc.date, force.cash === true, item.method);
-        service.invoiceEntry.add(user, doc.account.id, { kind: into ? "in" : "out", amount: item.amount, date: doc.date, note: `${what} · ${doc.meta.return ? (into ? "iade tahsilatı" : "iade ödemesi") : into ? "peşin tahsilat" : "peşin ödeme"}`, invoiceId, method: item.method, eventId: keepEvents?.take({ kind: into ? "in" : "out", amount: item.amount, method: item.method, date: doc.date }) || "" });
+        // bankAccountId (v2.1.0 Aşama 4): yalnız Banka → KDV'li masraf (issueBankFee) verir; satır o hesaba bağlı yazılır (fin_ref). Fatura formundaki
+        // banka hesabı seçimi Aşama 7'de.
+        service.invoiceEntry.add(user, doc.account.id, { kind: into ? "in" : "out", amount: item.amount, date: doc.date, note: `${what} · ${doc.meta.return ? (into ? "iade tahsilatı" : "iade ödemesi") : into ? "peşin tahsilat" : "peşin ödeme"}`, invoiceId, method: item.method, eventId: keepEvents?.take({ kind: into ? "in" : "out", amount: item.amount, method: item.method, date: doc.date }) || "", finRef: item.bankAccountId || "" });
         touched.cash = true;
       }
       // Çek / senet: satışta alınan (portföy), alışta verilen; carinin bakiyesiyle mahsup çek olayından gelir.
@@ -1551,7 +1563,8 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   // dryRun: bütün engeller ve yazımlar denenir, sonra geri alınır (e-Arşiv iptali entegratöre gitmeden önce programda
   // iptalin yapılabildiği kesinleşsin diye).
   const DRY_RUN = Symbol("dry-run");
-  function cancel(user, id, { reason = "", force = {}, confirmExternal = false, dryRun = false } = {}) {
+  // fromBank (v2.1.0 Aşama 4): Banka → Ters Kaydet'in KDV'li masraf faturasını iptali (masraf başlığı aynı işlemde iptal edilir); başka yol 409.
+  function cancel(user, id, { reason = "", force = {}, confirmExternal = false, dryRun = false, fromBank = false } = {}) {
     const touched = { accounts: new Set(), items: new Set(), cash: false, cheques: { accountIds: [], chequeIds: [] }, plans: new Set() };
     let row;
     try {
@@ -1568,6 +1581,8 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       const invoice = invoiceRow(id);
       if (invoice.status === "draft") throw new HttpError(409, "Taslak iptal edilmez; silinir.", { code: "invoice-draft" });
       if (invoice.status === "cancelled") throw new HttpError(409, "Bu fatura zaten iptal edilmiş.", { code: "invoice-cancelled" });
+      const fee = fromBank ? null : bankFeeOf(invoice.id);
+      if (fee) throw new HttpError(409, bankFeeText(fee), { code: "invoice-bank-fee", eventNo: fee.no });
       period?.assertOpen(invoice.issueDate, "Bu fatura");
       const returns = store.get("SELECT COUNT(*) AS n FROM invoices WHERE original_id = ? AND status = 'issued'", invoice.id).n;
       if (returns) throw new HttpError(409, `Bu faturanın ${returns} iade faturası var; önce iade faturalarını iptal edin.`, { code: "invoice-has-returns" });
@@ -2009,6 +2024,8 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     const lock = period?.lockedUntil?.();
     if (lock && row.issueDate <= lock) return `Belge ${dayText(row.issueDate)} tarihli; ${dayText(lock)} ve öncesi kilitli dönem. Silmek için dönem kilidi açılmalı.`;
     if (row.status === "cancelled") return "";
+    const fee = bankFeeOf(row.id);
+    if (fee) return bankFeeText(fee);
     if (activeReturns) return `Bu faturanın ${activeReturns} iade faturası var; önce iade faturalarını silin ya da iptal edin.`;
     if (["sent", "accepted"].includes(row.eStatus)) return `Bu belge e-Belge olarak ${(E_STATES[row.eStatus] || "gönderildi").toLocaleLowerCase("tr-TR")}; silinmez. Önce entegratör tarafında iptal edin.`;
     const planId = plan?.id || row.planId;
@@ -2776,5 +2793,19 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     const row = store.get("SELECT id, plan_id AS planId, payment_json AS paymentJson, status FROM invoices WHERE id = ?", invoiceId);
     if (row?.status === "issued" && row.planId) ownCard(user, row, { plans: new Set() }, "Taksit tahsilatı değişti");
   };
-  return { openItems, dueItems, fingerprint, countForAccount, list, detail, settings, paymentStates, lastPrices, returnable, cancel, deleteInvoice, restoreDeleted, syncOwnCard };
+  /**
+   * Banka → Masraf, KDV'li (faturalı) kip (v2.1.0 Aşama 4; banka planı §3.7 #13, K2): Hizmet ve Gider Alışı faturası (tek kalem, masraf türünün
+   * adıyla; hesap 770 Banka Masrafları ya da 653 Komisyon) + bu banka hesabından peşin havale ödemesi. Çağıran Banka servisidir ve kendi
+   * bank.post işleminin İÇİNDEN çağırır (fatura, cari, ödeme satırı ve masraf başlığı tek işlem). Tutarlar faturanın kendi hesabından gelir
+   * (KDV dahilde ödenecek = girilen tutar). Dönüş: { id, number, netMinor, vatMinor, payableMinor, paymentEventId }.
+   */
+  function issueBankFee(user, { partyId, number, date, name, expenseCode, vatRate, unitPrice, pricesIncludeVat, bankAccountId, note = "" }) {
+    const doc = documentInput({ kind: "purchase", scenario: "expense_purchase", accountId: partyId, number, issueDate: date, pricesIncludeVat, discountRate: 0, stoppageRate: 0, note, lines: [{ name, qty: 1, unitPrice, vatRate, expenseCode }] }, { mode: "issue" });
+    const payable = c2(doc.money.payable);
+    const payment = { cash: [{ amount: payable, method: "bank", bankAccountId }], cheques: [], endorse: [], paid: payable, rest: 0, mode: "none", installments: null, dueDate: doc.date };
+    const written = writeIssued(user, doc, payment, {});
+    const paymentRow = store.get("SELECT event_id AS eventId FROM account_entries WHERE source = 'invoice' AND source_id = ? AND kind = 'out' AND method = 'bank' LIMIT 1", written.id);
+    return { id: written.id, number: written.number, netMinor: Math.round(Number(doc.money.net) || 0), vatMinor: Math.round(Number(doc.money.vat) || 0), payableMinor: Math.round(Number(doc.money.payable) || 0), paymentEventId: paymentRow?.eventId || "" };
+  }
+  return { openItems, dueItems, fingerprint, countForAccount, list, detail, settings, paymentStates, lastPrices, returnable, cancel, deleteInvoice, restoreDeleted, syncOwnCard, issueBankFee };
 }

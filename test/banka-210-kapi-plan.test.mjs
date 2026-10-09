@@ -17,6 +17,8 @@
 //   1. Süzgece kolonlar arası OR'lu ya da durum indeksine kayan bir denetim eklemek → bu test o sorgunun planında "SCAN" görür ve kırılır.
 //   2. İndeksi kaldırmak (idx_invoice_lines_move) → fatura denetimi invoice_lines'ı dolaşır → kırılır.
 //   3. Süzgeçli okumada CROSS JOIN'i geri almak (money-lines, ledger) → cari/taksit/çek satırları görünürlük tablosundan dolaşılır → kırılır.
+//   4. (Aşama 4) Kapıya hesabın bütün satırlarını hesap kolonuyla dolaşan bir denetim eklemek (açılış kuralının eski biçimi: hesabın bütün
+//      fiş satırları işlem başlığıyla birleştirilip sayılıyordu) → accountWide o sorguyu görür ve kırılır.
 import assert from "node:assert/strict";
 import { after, before, describe, it } from "node:test";
 import { boot, must } from "./banka-210-ortak.mjs";
@@ -108,6 +110,31 @@ function fullScans(prepare, { sql, args }) {
     });
 }
 
+// v2.1.0 Aşama 4 (1.000.000 hareket ölçümü): hesap kolonuyla (bank_ref, counter_ref, ref, fin_ref) yapılan indeks araması "SEARCH" görünür
+// ama o hesabın BÜTÜN satırlarını dolaşır — tek hesapta milyon hareket olunca süre hesabın büyüklüğüyle büyür (açılış kuralı kapısı her Banka
+// Fişi kaydında ~3 sn'ye çıkmıştı). Kapıda bu biçim yalnız ilk satırda duran aramada (LIMIT 1), MIN/MAX alt sorgusunda (dizinin ucu) ya da
+// hesap başına birkaç satır tutan kısmi indekste (açılış fişleri) kabul edilir.
+const ACCOUNT_REF = new Set(["bank_ref", "counter_ref", "ref", "fin_ref"]);
+const BOUNDED_INDEXES = new Set(["idx_fin_events_opening"]);
+function accountWide(prepare, { sql, args }) {
+  if (/^\s*PRAGMA/i.test(sql) || /\bLIMIT 1\b/.test(sql) || /\(SELECT (MIN|MAX)\(/.test(sql)) return [];
+  const names = aliases(sql);
+  let plan;
+  try {
+    plan = prepare(`EXPLAIN QUERY PLAN ${sql}`).all(...(args ?? []));
+  } catch {
+    plan = prepare(`EXPLAIN QUERY PLAN ${sql}`).all(Object.fromEntries([...sql.matchAll(/:([a-z_]+)/gi)].map(match => [match[1], "[]"])));
+  }
+  return plan
+    .map(row => row.detail)
+    .filter(detail => {
+      const search = /^SEARCH (\w+) USING (?:COVERING )?INDEX (\S+) \((.+)\)$/.exec(detail);
+      if (!search || !BIG.has(names.get(search[1]) || search[1]) || BOUNDED_INDEXES.has(search[2])) return false;
+      const columns = [...search[3].matchAll(/(\w+)(?:[=<>]|\s+IN)/g)].map(match => match[1]);
+      return columns.some(column => ACCOUNT_REF.has(column)) && columns.every(column => ACCOUNT_REF.has(column) || LOW.has(column));
+    });
+}
+
 describe("kapı süzgeci — sorgu planı veriyle büyümez (EXPLAIN QUERY PLAN)", () => {
   let ctx;
   let rec;
@@ -132,6 +159,8 @@ describe("kapı süzgeci — sorgu planı veriyle büyümez (EXPLAIN QUERY PLAN)
     assert.ok(queries.length > 0, `${label}: süzgeç sorgusu kaydedilmedi`);
     const bad = queries.map(query => ({ sql: query.sql.replace(/\s+/g, " ").slice(0, 220), scans: fullScans(rec.prepare, query) })).filter(item => item.scans.length);
     assert.deepEqual(bad, [], `${label}: süzgeç yolunda tam tarama`);
+    const wide = queries.map(query => ({ sql: query.sql.replace(/\s+/g, " ").slice(0, 220), scans: accountWide(rec.prepare, query) })).filter(item => item.scans.length);
+    assert.deepEqual(wide, [], `${label}: süzgeç yolunda hesabın bütün satırlarını dolaşan arama`);
     return queries.length;
   };
 
@@ -194,6 +223,36 @@ describe("kapı süzgeci — sorgu planı veriyle büyümez (EXPLAIN QUERY PLAN)
       spare = await must("yedek", api.post(`${BANK}/accounts`, { bankName: "Garanti BBVA", name: "Silinecek", kind: "demand", opening: { date: day(-1), amount: "50" } }));
     });
     total += await check("hesap sil (açılış ters kayıt)", () => must("sil", api.del(`${BANK}/accounts/${spare.id}`)));
+    assert.ok(total > 20, `süzgeç yolunda kaydedilen sorgu sayısı ${total}`);
+  });
+
+  // 2.1.0 Aşama 4 (dilim 3): Banka Fişi yazımları (masraf BSMV ve KDV'li — fatura + havale tek işlemde —, faiz, diğer, kart borcu, kredi,
+  // Ters Kaydet, Düzelt, açıklama) ve Planlı İşlem Gerçekleştir süzgeç yolunda; yeni denetimler (bank:voucher hesap bağı, satırsız masraf
+  // başlığı, bank:event fiş/modül ayrımı) büyük tabloyu dolaşmaz.
+  it("Banka Fişi yazımları da süzgeç yolunda ve büyük tablo dolaşılmadan", async () => {
+    const { api } = ctx;
+    const BANK = "/api/workspace/bank";
+    const bank = await must("hesap", api.post(`${BANK}/accounts`, { bankName: "Halkbank", name: "Fiş Hesabı", kind: "demand", opening: { date: day(-10), amount: "50.000", confirmed: true } }));
+    const card = await must("kart", api.post(`${BANK}/accounts`, { bankName: "Halkbank", name: "Fiş Kartı", kind: "card", opening: { date: day(-10), amount: "1.000" } }));
+    const loan = await must("kredi", api.post(`${BANK}/accounts`, { bankName: "Halkbank", name: "Fiş Kredisi", kind: "loan", opening: { date: day(-10), amount: "0" } }));
+    let total = 0;
+    let fee = null;
+    total += await check("masraf (BSMV)", async () => {
+      fee = await must("masraf", api.post(`${BANK}/vouchers`, { type: "fee", accountId: bank.id, amount: "10,50", feeType: "eft", tax: "bsmv_incl" }));
+    });
+    total += await check("masraf (KDV: fatura + havale)", () => must("KDV'li masraf", api.post(`${BANK}/vouchers`, { type: "fee", accountId: bank.id, amount: "120", feeType: "eft", tax: "vat_incl", partyId: supplier.id, invoiceNo: "PLN-FIS-1" })));
+    total += await check("faiz geliri", () => must("faiz", api.post(`${BANK}/vouchers`, { type: "interest_in", accountId: bank.id, amount: "1.000", stoppageRate: "15" })));
+    total += await check("diğer gider", () => must("gider", api.post(`${BANK}/vouchers`, { type: "other_out", accountId: bank.id, amount: "75" })));
+    total += await check("kart borcu ödemesi", () => must("kart", api.post(`${BANK}/vouchers`, { type: "card_payment", accountId: bank.id, cardAccountId: card.id, amount: "500" })));
+    total += await check("kredi kullanımı", () => must("kredi", api.post(`${BANK}/vouchers`, { type: "loan_draw", accountId: bank.id, loanAccountId: loan.id, amount: "5.000" })));
+    total += await check("Ters Kaydet", () => must("ters", api.post(`${BANK}/events/${fee.id}/reverse`, {})));
+    let other = null;
+    total += await check("diğer gelir", async () => {
+      other = await must("gelir", api.post(`${BANK}/vouchers`, { type: "other_in", accountId: bank.id, amount: "40" }));
+    });
+    total += await check("Düzelt (ters + yeni)", () => must("düzelt", api.post(`${BANK}/events/${other.id}/correct`, { amount: "45" })));
+    const plan = await must("plan", api.post(`${BANK}/plans`, { kind: "other_out", accountId: bank.id, amount: "30", plannedDate: TODAY }));
+    total += await check("Planlı İşlem Gerçekleştir", () => must("gerçekleştir", api.post(`${BANK}/plans/${plan.id}/execute`, {})));
     assert.ok(total > 20, `süzgeç yolunda kaydedilen sorgu sayısı ${total}`);
   });
 });

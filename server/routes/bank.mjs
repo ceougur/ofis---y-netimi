@@ -15,9 +15,21 @@
 //   GET  /bank/legacy · POST /assign · /reclass  view · accounts  Hesabı Atanmamış Eski Hareketler; Bu Hesaba Ata; Bankaya Geçmiş Say
 //   POST /bank/setup?dryRun=1 · GET · POST /setup/:id/undo  accounts · view · accounts  Kurulum ve Aktarım Sihirbazı
 //   GET  /bank/sub-trial?from=&to=           bank.reports    Alt Hesap Mizanı
-import { HttpError, ok, readJson, text } from "../lib/http.mjs";
+// Aşama 4 (Banka Hareketleri; lib/bank/vouchers.mjs, lib/bank/movements.mjs):
+//   GET  /bank/voucher-meta                  bank.view       fiş formunun seçenekleri (türler, masraf türleri, vergi kipleri, tekrarlar)
+//   POST /bank/vouchers                      bank.move (+ kredi: bank.transfer; KDV'li masraf: invoices.manage)  Banka Fişi → İşlem Kartı
+//   GET  /bank/movements?account=&type=&dir=&status=&from=&to=&q=&planned=1&limit=&cursor=  bank.view  Hareketler (imleçli)
+//   GET  /bank/events/:ref                   bank.view       İşlem Kartı (İşlem No ya da kimlik)
+//   POST /bank/events/:id/reverse            bank.cancel (+ KDV'li masraf: invoices.manage)  Ters Kaydet
+//   POST /bank/events/:id/correct            bank.move + bank.cancel (+ kredi / KDV'li masraf)  Düzelt (ters + yeni, tek işlem)
+//   PUT  /bank/events/:id/info               bank.move       açıklama ve referans (kilitli dönemde de)
+//   GET  /bank/plans · POST · /:id/execute · /:id/skip · DELETE /:id   view · move  Planlı İşlemler (deftere girmez; Gerçekleştir fiş yazar)
+//   GET  /bank/reports/fees?from=&to=&account=&format=xlsx  bank.reports  Banka Masraf Raporu verisi (Excel: metin hücreleri)
+import { HttpError, ok, readJson, sendBuffer, text } from "../lib/http.mjs";
 import { canUser } from "../lib/permissions.mjs";
 import { createBankAccounts } from "../lib/bank/accounts.mjs";
+import { createBankMovements } from "../lib/bank/movements.mjs";
+import { TRANSFER_TYPES, createBankVouchers } from "../lib/bank/vouchers.mjs";
 import { CHART } from "../lib/general-ledger.mjs";
 
 const BASE = "/api/workspace/bank";
@@ -27,6 +39,8 @@ const CHOICE_PERMISSIONS = ["bank.view", "accounts.collect", "plans.collect", "p
 export function registerBankRoutes(router, context) {
   const { store, auth, audit, events, bank, period, money } = context;
   const service = createBankAccounts({ store, bank, period, money, ledger: () => context.ledger, now: context.now });
+  const movements = createBankMovements({ store, money, accounts: service, ledger: () => context.ledger, period, now: context.now });
+  const vouchers = createBankVouchers({ store, bank, period, accounts: service, movements, invoices: () => context.invoices, parties: () => context.accounts, audit, now: context.now });
   const changed = (user, extra = {}) => events?.publish("workspace.changed", { kind: "bank", actorId: user.id, actorName: user.display_name, ...extra }, { except: user.id });
   const requestIdOf = (req, body) => text(req.headers["x-hof-request"]) || text(body?.requestId);
   const mustAccount = id => {
@@ -49,9 +63,9 @@ export function registerBankRoutes(router, context) {
   });
   router.get(`${BASE}/badge`, async ({ req, res }) => {
     auth.requirePermission(req, "bank.view");
-    // 2.1.0'da rozet yalnız Hesabı Belirsiz Yeni Hareketler'i sayar (eski sürümün yazdığı, açılış onarımının bulduğu satırlar); eşleşmeyen
-    // ekstre satırı (2.3.0) ve onay bekleyen valör (2.2.0) o sürümlerde eklenir.
-    ok(res, { count: service.summary().unassigned.newCount });
+    // 2.1.0'da rozet Hesabı Belirsiz Yeni Hareketler'i (eski sürümün yazdığı, açılış onarımının bulduğu satırlar) ve vadesi gelen Planlı
+    // İşlemler'i (Aşama 4) sayar; eşleşmeyen ekstre satırı (2.3.0) ve onay bekleyen valör (2.2.0) o sürümlerde eklenir. Yazmaz.
+    ok(res, { count: service.summary().unassigned.newCount + vouchers.dueCount() });
   });
   router.get(`${BASE}/choices`, async ({ req, res }) => {
     const user = auth.requireUser(req);
@@ -182,6 +196,106 @@ export function registerBankRoutes(router, context) {
     const result = service.remove(user, params.id);
     changed(user);
     ok(res, result);
+  });
+
+  // ---------- Aşama 4: Banka Fişi, Hareketler, İşlem Kartı, Planlı İşlemler, Banka Masraf Raporu ----------
+  // Fişin ek yetkileri: kredi kullanımı/geri ödemesi Transfer Yapma (§9.1), KDV'li masraf (gider faturası keser) Fatura Yönetimi.
+  const voucherPermissions = (req, body) => {
+    const user = auth.requirePermission(req, "bank.move");
+    if (TRANSFER_TYPES.has(text(body?.type))) auth.requirePermission(req, "bank.transfer");
+    if (vouchers.needsInvoice(body)) auth.requirePermission(req, "invoices.manage");
+    return user;
+  };
+  const eventPermissions = (req, ref, { cancel = false, move = false } = {}) => {
+    let user = auth.requirePermission(req, cancel ? "bank.cancel" : "bank.move");
+    if (move) user = auth.requirePermission(req, "bank.move");
+    const event = movements.eventRow(ref);
+    if (event && TRANSFER_TYPES.has(event.type)) auth.requirePermission(req, "bank.transfer");
+    if (event && movements.isFeeHeader(event)) auth.requirePermission(req, "invoices.manage");
+    return user;
+  };
+  router.get(`${BASE}/voucher-meta`, async ({ req, res }) => {
+    auth.requirePermission(req, "bank.view");
+    ok(res, vouchers.meta());
+  });
+  router.post(`${BASE}/vouchers`, async ({ req, res }) => {
+    const body = await readJson(req);
+    const user = voucherPermissions(req, body);
+    const result = vouchers.create(user, body, { requestId: requestIdOf(req, body) });
+    if (!result.replayed) changed(user, { eventId: result.id });
+    ok(res, result);
+  });
+  router.get(`${BASE}/movements`, async ({ req, res, url }) => {
+    auth.requirePermission(req, "bank.view");
+    ok(res, movements.list(url.searchParams));
+  });
+  router.get(`${BASE}/events/:ref`, async ({ req, res, params }) => {
+    auth.requirePermission(req, "bank.view");
+    ok(res, movements.card(params.ref));
+  });
+  router.post(`${BASE}/events/:ref/reverse`, async ({ req, res, params }) => {
+    const user = eventPermissions(req, params.ref, { cancel: true });
+    const body = await readJson(req);
+    const result = vouchers.reverse(user, params.ref, body, { requestId: requestIdOf(req, body) });
+    if (!result.replayed) changed(user, { eventId: result.original?.id });
+    ok(res, result);
+  });
+  router.post(`${BASE}/events/:ref/correct`, async ({ req, res, params }) => {
+    const user = eventPermissions(req, params.ref, { cancel: true, move: true });
+    const body = await readJson(req);
+    const result = vouchers.correct(user, params.ref, body, { requestId: requestIdOf(req, body) });
+    if (!result.replayed) changed(user, { eventId: result.next?.id });
+    ok(res, result);
+  });
+  router.put(`${BASE}/events/:ref/info`, async ({ req, res, params }) => {
+    const user = auth.requirePermission(req, "bank.move");
+    const body = await readJson(req);
+    const result = vouchers.info(user, params.ref, body);
+    changed(user, { eventId: result.id });
+    ok(res, result);
+  });
+  router.get(`${BASE}/plans`, async ({ req, res, url }) => {
+    auth.requirePermission(req, "bank.view");
+    ok(res, vouchers.listPlans(url.searchParams));
+  });
+  router.post(`${BASE}/plans`, async ({ req, res }) => {
+    const body = await readJson(req);
+    const user = auth.requirePermission(req, "bank.move");
+    if (TRANSFER_TYPES.has(text(body?.kind ?? body?.type))) auth.requirePermission(req, "bank.transfer");
+    const result = vouchers.createPlan(user, body);
+    changed(user, { planId: result.id });
+    ok(res, result);
+  });
+  router.post(`${BASE}/plans/:id/execute`, async ({ req, res, params }) => {
+    const user = auth.requirePermission(req, "bank.move");
+    const plan = vouchers.mustPlan(params.id);
+    if (TRANSFER_TYPES.has(plan.kind)) auth.requirePermission(req, "bank.transfer");
+    const body = await readJson(req);
+    const result = vouchers.executePlan(user, params.id, body, { requestId: requestIdOf(req, body) });
+    if (!result.replayed) changed(user, { planId: params.id, eventId: result.event?.id });
+    ok(res, result);
+  });
+  router.post(`${BASE}/plans/:id/skip`, async ({ req, res, params }) => {
+    const user = auth.requirePermission(req, "bank.move");
+    const result = vouchers.skipPlan(user, params.id);
+    changed(user, { planId: params.id });
+    ok(res, result);
+  });
+  router.delete(`${BASE}/plans/:id`, async ({ req, res, params }) => {
+    const user = auth.requirePermission(req, "bank.move");
+    const result = vouchers.cancelPlan(user, params.id);
+    changed(user, { planId: params.id });
+    ok(res, result);
+  });
+  router.get(`${BASE}/reports/fees`, async ({ req, res, url }) => {
+    const user = auth.requirePermission(req, "bank.reports");
+    const report = movements.feeReport(url.searchParams);
+    if (text(url.searchParams.get("format")) === "xlsx") {
+      const buffer = movements.feeXlsx(report);
+      audit(user, "report.exported", "bank-fees", { format: "xlsx", rows: report.rows.length, from: report.from, to: report.to });
+      return sendBuffer(res, buffer, { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", name: "Banka Masraf Raporu.xlsx" });
+    }
+    ok(res, report);
   });
 
   return service;
