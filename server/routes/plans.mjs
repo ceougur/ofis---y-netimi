@@ -1401,8 +1401,9 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
       if (paid > 0.004) {
         const entryId = newId("entry");
         // Excel'de ödenmiş (açılış/devir): Kasa'ya girmez, para satırı değildir.
-        bank.assertNonMoney("plan_entries", { kind: "in", opening: 1, cheque_id: "" });
         store.run("INSERT INTO plan_entries (id, plan_id, item_id, kind, amount, date, note, receipt_no, opening, created_by, created_at) VALUES (?, ?, ?, 'in', ?, ?, ?, NULL, 1, ?, ?)", entryId, id, itemId, paid, openingDate, openingNote, user.id, stamp);
+        // Yazılan satırın kendisi denetlenir (gözden geçirme D10).
+        bank.assertWrittenNonMoney("plan_entries", entryId);
         openingIds.push(entryId);
       }
     });

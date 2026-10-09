@@ -139,6 +139,14 @@ export function createBank({ store, now = systemClock, log = null, strict = fals
     policy.onViolations([{ code: "money-nonmoney", table, reason: "para dışı yazıcı para satırı yazmak istedi", id: String(row.id || "") }]);
     return false;
   }
+  /**
+   * Gözden geçirme D10 (Aşama 2): para dışı yazıcı yazdığı satırı YAZIMDAN SONRA veri tabanından okuyup denetletir (INSERT'e giden gerçek
+   * değerler; önceden yazıcıların çoğu denetime INSERT'teki sabitlerin bir kopyasını veriyordu — yazıcı bozulsa denetim görmezdi).
+   */
+  function assertWrittenNonMoney(table, id) {
+    const row = store.get(`SELECT * FROM ${table} WHERE id = ?`, id);
+    return row ? assertNonMoney(table, row) : true;
+  }
 
   // ---------- Olay kopyası (salt okuma dizini; para kaynağı satırın kendisidir; tek tanım: lib/bank/event-copy.mjs) ----------
   // Gözden geçirme B2 (Aşama 2; K11 "bir olay = bir para hareketi"): yazımdan sonra dokunulan her olayın EN ÇOK bir etkin satırı olur
@@ -222,7 +230,7 @@ export function createBank({ store, now = systemClock, log = null, strict = fals
     });
   }
 
-  return { post, eventFor, assertNonMoney, isMoney: isMoneyRow, policy, get inPost() {
+  return { post, eventFor, assertNonMoney, assertWrittenNonMoney, isMoney: isMoneyRow, policy, get inPost() {
     return stack.length > 0;
   } };
 }

@@ -1151,10 +1151,12 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
   const stockEntry = {
     upsert(user, move, { accountId, kind, amount, date, note }) {
       // Açık hesaba yazılan stok hareketinin cari borcu/alacağı para satırı değildir (Kasa'yı değiştirmez).
-      bank.assertNonMoney("account_entries", { kind, source: "stock" });
       const existing = store.get("SELECT id FROM account_entries WHERE source = 'stock' AND source_id = ?", move);
+      let id = existing?.id;
       if (existing) store.run("UPDATE account_entries SET account_id = ?, kind = ?, amount = ?, date = ?, note = ?, updated_by = ?, updated_at = ? WHERE id = ?", accountId, kind, amount, date, note, user.id, now(), existing.id);
-      else addEntry(user, accountId, { kind, amount, date, note, source: "stock", sourceId: move });
+      else id = addEntry(user, accountId, { kind, amount, date, note, source: "stock", sourceId: move }).id;
+      // Yazılan satırın kendisi denetlenir (gözden geçirme D10).
+      bank.assertWrittenNonMoney("account_entries", id);
     },
     remove(move) {
       const existing = store.get("SELECT account_id AS accountId FROM account_entries WHERE source = 'stock' AND source_id = ?", move);

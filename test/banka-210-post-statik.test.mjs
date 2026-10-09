@@ -104,13 +104,14 @@ describe("K6 statik: para tablosuna yazan her yer bank.post içinde ya da izinli
     assert.deepEqual(stale, [], "listede artık kodda olmayan girdi (listeyi güncelleyin)");
   });
 
-  it("'para-disi' yazıcılar yazımdan önce assertNonMoney, 'yardimci' yazıcılar olayı eventFor ile yazar; 'bag' yalnız para alanı olmayan kolona", () => {
+  it("'para-disi' yazıcılar yazdıkları satırı assertWrittenNonMoney ile denetletir, 'yardimci' yazıcılar olayı eventFor ile yazar; 'bag' yalnız para alanı olmayan kolona", () => {
     for (const entry of ALLOW.filter(item => ["para-disi", "yardimci", "bag"].includes(item.tur))) {
       const sites = sitesOf(entry);
       assert.ok(sites.length, `${entry.file} ${entry.function}: yazım yeri bulunamadı`);
       const writes = sites.some(site => site.verb !== "DELETE");
       const body = functionBodies(readFileSync(path.join(ROOT, entry.file), "utf8"), entry.function);
-      if (entry.tur === "para-disi" && writes) assert.match(body, /assertNonMoney\s*\(/, `${entry.file} ${entry.function}: assertNonMoney yok`);
+      // Gözden geçirme D10 (bilerek güncellendi): para dışı yazıcı yazdığı satırı yazımdan SONRA okuyup denetletir (assertWrittenNonMoney).
+      if (entry.tur === "para-disi" && writes) assert.match(body, /assertWrittenNonMoney\s*\(/, `${entry.file} ${entry.function}: assertWrittenNonMoney yok`);
       if (entry.tur === "yardimci" && writes) assert.match(body, /eventFor\s*\(/, `${entry.file} ${entry.function}: olay yazımı (bank.eventFor) yok`);
       if (entry.tur === "bag") {
         for (const site of sites) {

@@ -219,11 +219,12 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
         if (!accounts()?.exists?.(effect.accountId)) throw new HttpError(409, "Çekin bağlı olduğu cari silinmiş. Önce cariyi geri yükleyin ya da çekte cariyi değiştirin.");
         const id = newId("aentry");
         // Evrakın cari etkisi (borç/alacak) para satırı değildir: para çek tahsil/ödeme olayında el değiştirir.
-        bank.assertNonMoney("account_entries", { kind: effect.kind, source: "cheque" });
         store.run(
           "INSERT INTO account_entries (id, account_id, kind, amount, date, note, receipt_no, source, source_id, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, NULL, 'cheque', ?, ?, ?)",
           id, effect.accountId, effect.kind, effect.amount, effect.date, effect.note || "", cheque.id, user.id, now(),
         );
+        // Yazılan satırın kendisi denetlenir (gözden geçirme D10).
+        bank.assertWrittenNonMoney("account_entries", id);
         done.push({ op: "insert", table: "account_entries", id, accountId: effect.accountId });
       } else if (effect.type === "plan-entry") {
         const plan = store.get("SELECT id, account_id AS accountId, status FROM plans WHERE id = ? AND deleted_at IS NULL", effect.planId);
@@ -233,11 +234,12 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
         const receiptNo = plans()?.receiptSeq ? plans().receiptSeq() : null;
         const itemId = effect.itemId && store.get("SELECT 1 AS found FROM plan_items WHERE id = ? AND plan_id = ?", effect.itemId, plan.id) ? effect.itemId : null;
         // Çekle sayılan taksit tahsilatı (cheque_id dolu) para satırı değildir: Kasa'ya çek tahsil edilince düşer.
-        bank.assertNonMoney("plan_entries", { kind: "in", opening: 0, cheque_id: cheque.id });
         store.run(
           "INSERT INTO plan_entries (id, plan_id, item_id, kind, amount, date, note, receipt_no, cheque_id, created_by, created_at) VALUES (?, ?, ?, 'in', ?, ?, ?, ?, ?, ?, ?)",
           id, plan.id, itemId, effect.amount, effect.date, effect.note || "", receiptNo, cheque.id, user.id, now(),
         );
+        // Yazılan satırın kendisi denetlenir (gözden geçirme D10).
+        bank.assertWrittenNonMoney("plan_entries", id);
         done.push({ op: "insert", table: "plan_entries", id, planId: plan.id, accountId: plan.accountId });
       } else if (effect.type === "remove-plan-entry") {
         const row = store.get("SELECT * FROM plan_entries WHERE id = ?", effect.id);
@@ -263,9 +265,9 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
       if (effect.op === "insert") store.run(`DELETE FROM ${effect.table} WHERE id = ?`, effect.id);
       else if (effect.op === "delete" && effect.row && !store.get(`SELECT 1 AS found FROM ${effect.table} WHERE id = ?`, effect.row.id)) {
         // Geri eklenen evrak etkisi (çekli taksit satırı) para satırı değildir.
-        bank.assertNonMoney(effect.table, effect.row);
         const columns = Object.keys(effect.row).filter(column => /^[a-z_]+$/.test(column));
         store.run(`INSERT INTO ${effect.table} (${columns.join(", ")}) VALUES (${columns.map(() => "?").join(", ")})`, ...columns.map(column => effect.row[column]));
+        bank.assertWrittenNonMoney(effect.table, effect.row.id);
       }
     }
     syncCards(user, effects);

@@ -185,3 +185,40 @@ describe("D1 — işlem başlığının türü satırı izler; İşlem No kalıc
     assert.ok(result.failures.some(item => item.code.startsWith("bank:event")), JSON.stringify(result.failures));
   });
 });
+
+describe("D10 — para dışı yazıcı yazdığı GERÇEK satırla denetlenir (mutasyon)", () => {
+  let ctx;
+  before(async () => {
+    ctx = await boot();
+  });
+  after(() => ctx.server.close());
+
+  it("açık hesap stok satışının cari satırı bozulup tahsilat (para satırı) yazılırsa → money-nonmoney; hiçbir şey yazılmaz", async () => {
+    const { api, store } = ctx;
+    const account = await must("cari", api.post("/api/workspace/accounts", { name: "Mutasyon Cari", type: "customer", registeredOn: "2026-01-01" }));
+    const item = await must("ürün", api.post("/api/workspace/stock", { name: "Mutasyon Ürünü", unit: "Adet", unitPrice: "10", salePrice: "20", openingQty: "10" }));
+    // Doğru kullanım: açık hesap satışı cariye borç yazar (para satırı değil, olay yok).
+    await must("açık hesap satış", api.post(`/api/workspace/stock/${item.id}/moves`, { kind: "out", qty: "1", unitPrice: "20", pay: "account", accountId: account.id, date: TODAY }));
+    // Mutasyon: yazıcının INSERT'i stok kaynağı yerine elle tahsilat (source '', kind 'in') yazar.
+    const original = store.run;
+    store.run = (sql, ...args) => {
+      if (/^\s*INSERT INTO account_entries/.test(sql) && args[7] === "stock") {
+        args[2] = "in";
+        args[7] = "";
+      }
+      return original(sql, ...args);
+    };
+    let response;
+    try {
+      response = await api.post(`/api/workspace/stock/${item.id}/moves`, { kind: "out", qty: "1", unitPrice: "20", pay: "account", accountId: account.id, date: TODAY });
+    } finally {
+      store.run = original;
+    }
+    assert.equal(response.status, 500, JSON.stringify(response.data).slice(0, 300));
+    assert.equal(response.code, "money-guard");
+    // Yazıcının kendi denetimi (yazılan satır) yakalar; önceden yalnız COMMIT'teki money:event (olaysız para satırı) yakalıyordu.
+    assert.ok((response.data?.violations || []).some(item => item.code === "money-nonmoney" && item.table === "account_entries"), JSON.stringify(response.data?.violations));
+    assert.equal(store.get("SELECT COUNT(*) AS n FROM account_entries WHERE account_id = ?", account.id).n, 1, "bozuk satır yazılmadı");
+    assert.equal(store.get("SELECT COUNT(*) AS n FROM stock_moves WHERE item_id = ? AND kind = 'out'", item.id).n, 1);
+  });
+});
