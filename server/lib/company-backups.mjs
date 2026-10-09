@@ -31,7 +31,14 @@ const UPDATE_LABEL = /^(?:guncelleme-oncesi|basarisiz-guncelleme)(?:-|$)/;
 const HOLD_UPDATE_MS = 7 * 86_400_000;
 // Ortak katman: geri yüklemede dosyadaki değil, o anki hâli kalır.
 const COMMON_TABLES = ["users", "roles", "sessions"];
-const COMMON_SETTINGS = "(key LIKE 'license.%' OR key LIKE 'meta.%' OR key LIKE 'auth.%' OR key LIKE 'company.%' OR key = 'backup.cloud' OR key = 'office.name')";
+// v2.1.0 (gözden geçirme B3/B4): "meta.bank.%" (eski satır işareti, açılış onarımı raporu, K6 günlüğü, İşlem No sayacı) ve "meta.schema.%"
+// (göç damgaları) geri yüklenen dosyanın KENDİ verisinin parçasıdır: canlıdan aktarılmaz. Önceden sıfırlanmış canlı dosyanın işareti geri
+// yüklenen dosyaya yazılıyor, güncelleme öncesi satırlar "eski sürümün yeni yazdığı olaysız para satırı" sayılıyordu.
+const COMMON_SETTINGS = "(key LIKE 'license.%' OR (key LIKE 'meta.%' AND key NOT LIKE 'meta.bank.%' AND key NOT LIKE 'meta.schema.%') OR key LIKE 'auth.%' OR key LIKE 'company.%' OR key = 'backup.cloud' OR key = 'office.name')";
+// İşlem No sayacı (lib/bank/event-no.mjs): geri yüklemede canlı ile yedeğin BÜYÜĞÜ (numara hiçbir zaman ikinci kez verilmez); 001 ve 002 aynı.
+const EVENT_COUNTERS = "key LIKE 'meta.bank.seq.%'";
+const maxCounterSql = schema => `INSERT INTO main.settings (key, value, updated_at) SELECT key, value, updated_at FROM ${schema}.settings WHERE ${EVENT_COUNTERS} AND true
+  ON CONFLICT(key) DO UPDATE SET value = CASE WHEN CAST(excluded.value AS INTEGER) > CAST(main.settings.value AS INTEGER) THEN excluded.value ELSE main.settings.value END`;
 
 const identityOf = company => ({ id: company.id, code: company.code, name: company.name });
 const labelOf = company => `${company.code} · ${company.name}`;
@@ -126,6 +133,7 @@ function transplantCommon(db, fromFile) {
         const columns = columnsOf(db, "main", "settings").filter(name => liveColumns.has(name)).map(quoteName).join(", ");
         db.exec(`DELETE FROM main.settings WHERE ${COMMON_SETTINGS}`);
         db.exec(`INSERT INTO main.settings (${columns}) SELECT ${columns} FROM live.settings WHERE ${COMMON_SETTINGS}`);
+        db.exec(maxCounterSql("live"));
       }
       db.exec("COMMIT");
     } catch (error) {
@@ -143,7 +151,7 @@ function transplantCommon(db, fromFile) {
  * kimliği tablosu kaldırılır → (001'de) ortak katman aktarılır → istemcilerin yenilenmesi için durum sayacı artırılır.
  * Hazırlık sırasında canlı dosyaya dokunulmaz; hata olursa hazırlık dosyası silinir.
  */
-export function prepareRestoreFile({ source, dbPath, transplantFrom = null, clientStateFloor = 0, keepSettings = {}, log = null }) {
+export function prepareRestoreFile({ source, dbPath, transplantFrom = null, clientStateFloor = 0, keepSettings = {}, counterFloor = {}, log = null }) {
   const temp = `${dbPath}.geri-yukleme`;
   const clean = () => {
     for (const suffix of ["", "-wal", "-shm", "-journal"]) rmSync(`${temp}${suffix}`, { force: true });
@@ -164,6 +172,12 @@ export function prepareRestoreFile({ source, dbPath, transplantFrom = null, clie
     for (const [key, value] of Object.entries(keepSettings || {})) {
       if (value === undefined || value === null || value === "") continue;
       db.prepare("INSERT INTO settings (key, value, updated_at, updated_by) VALUES (?, ?, ?, NULL) ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = excluded.updated_at").run(key, String(value), new Date().toISOString());
+    }
+    // İşlem No sayacı (002 ve aktarımsız geri yüklemeler; 001'de transplantCommon yapar): canlının sayacı yedeğinkinden büyükse o kalır.
+    for (const [key, value] of Object.entries(counterFloor || {})) {
+      if (!/^meta\.bank\.seq\.\d{4}$/.test(key) || !(Number.parseInt(value, 10) > 0)) continue;
+      const own = Number.parseInt(db.prepare("SELECT value FROM settings WHERE key = ?").get(key)?.value || "0", 10) || 0;
+      if (Number.parseInt(value, 10) > own) db.prepare("INSERT INTO settings (key, value, updated_at) VALUES (?, ?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = excluded.updated_at").run(key, String(Number.parseInt(value, 10)), new Date().toISOString());
     }
     const current = Number(db.prepare("SELECT value FROM settings WHERE key = 'meta.clientStateVersion'").get()?.value || 0) || 0;
     const next = Math.max(current, Number(clientStateFloor) || 0) + 1;
@@ -641,14 +655,20 @@ export function createCompanyBackups({ registry, dataDir, keep = 30, log = null,
       const dbPath = resolveDbPath(registry.dirsOf(target).dataDir);
       let floor = 0;
       let officeName = "";
+      let counters = {};
       try {
         [floor, officeName] = withDb(target, db => [Number(db.prepare("SELECT value FROM settings WHERE key = 'meta.clientStateVersion'").get()?.value) || 0, db.prepare("SELECT value FROM settings WHERE key = 'office.name'").get()?.value || ""]) || [0, ""];
       } catch {
         floor = 0;
       }
+      try {
+        counters = withDb(target, db => Object.fromEntries(db.prepare(`SELECT key, value FROM settings WHERE ${EVENT_COUNTERS}`).all().map(row => [row.key, row.value]))) || {};
+      } catch {
+        counters = {};
+      }
       let temp;
       try {
-        temp = prepareRestoreFile({ source: file, dbPath, clientStateFloor: floor, keepSettings: { "office.name": officeName }, log });
+        temp = prepareRestoreFile({ source: file, dbPath, clientStateFloor: floor, keepSettings: { "office.name": officeName }, counterFloor: counters, log });
       } catch (error) {
         throw new HttpError(500, `Yedek hazırlanamadı; şirketin verisi değişmedi (${error.message}).`);
       }

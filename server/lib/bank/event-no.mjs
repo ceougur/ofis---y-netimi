@@ -5,8 +5,8 @@
 //   - Numara BEGIN IMMEDIATE işleminin İÇİNDE verilir: max(sayaç, o yılın en büyük sırası) + 1; sayaç (settings
 //     "meta.bank.seq.<yıl>") aynı işlemde yazılır. İşlem geri alınırsa sayaç da geri alınır (numara hiçbir yere basılmadı).
 //   - Sayaç yalnız artar: olaylar silinse ya da şirket sıfırlansa da ("meta." öneki sıfırlamada korunur) numara yeniden
-//     kullanılmaz; sayaç kaybolsa (elle silinse) en büyük sıradan sürer. Yedekten geri yüklemede sayaç yedekteki değere döner
-//     (fatura serisiyle aynı; BİLİNEN SINIR).
+//     kullanılmaz; sayaç kaybolsa (elle silinse) en büyük sıradan sürer. Yedekten geri yüklemede sayaç canlı ile yedeğin BÜYÜĞÜ olur
+//     (lib/company-backups.mjs; 001 ve 002 aynı kural — gözden geçirme B4): numara ikinci kez verilmez.
 //   - Her şirketin veri tabanı ayrı: şirketlerin sayaçları ayrı.
 import { systemClock } from "../clock.mjs";
 import { HttpError } from "../http.mjs";
