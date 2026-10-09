@@ -33,7 +33,17 @@ import { nextEventNo } from "./event-no.mjs";
 import { BANK_PERMISSIONS } from "./grants.mjs";
 import { typeOf } from "./event-types.mjs";
 import { FREE_COLUMNS, LEDGER_TABLES, SOURCE_TABLES, isMoneyRow, moneyWhere } from "./money-lines.mjs";
-import { refreshEvent } from "./event-copy.mjs";
+import { eventRows, isTransferPair, refreshEvent } from "./event-copy.mjs";
+
+// Olayın satırının bulunduğu yer (kullanıcının bildiği ad; 409 metni).
+const ROW_LABEL = {
+  payments: "Kayıt Tahsilatı",
+  cash_entries: "Kasa Hareketi",
+  account_entries: "Cari Hareketi",
+  plan_entries: "Taksit Tahsilatı",
+  stock_moves: "Stok Hareketi",
+  cheque_events: "Çek/Senet Hareketi",
+};
 
 export const OPS = Object.freeze(["create", "update", "delete", "move", "restore", "assign"]);
 const OP_SET = new Set(OPS);
@@ -131,9 +141,20 @@ export function createBank({ store, now = systemClock, log = null, strict = fals
   }
 
   // ---------- Olay kopyası (salt okuma dizini; para kaynağı satırın kendisidir; tek tanım: lib/bank/event-copy.mjs) ----------
+  // Gözden geçirme B2 (Aşama 2; K11 "bir olay = bir para hareketi"): yazımdan sonra dokunulan her olayın EN ÇOK bir etkin satırı olur
+  // (Kasa ↔ Banka transferinin iki bacağı tek istisna). Önceden Taksite Aktar → taşınan tahsilatı sil → aktarımı geri al → Silinenler'den
+  // geri yükle sırası aynı olaya iki satır (kayıt tahsilatı + taksit tahsilatı) veriyordu: Kasa çift sayılıyordu (2.0.26'dan beri).
   function finalize(ctx) {
     const stamp = { by: ctx.user?.id || "system", at: stamp_() };
-    for (const id of ctx.events) refreshEvent(store, id, { stamp: ctx.created.has(id) ? null : stamp });
+    for (const id of ctx.events) {
+      const rows = eventRows(store, id);
+      if (rows.length > 1 && !isTransferPair(rows)) {
+        const event = store.get("SELECT no FROM fin_events WHERE id = ?", id);
+        const where = [...new Set(rows.map(item => ROW_LABEL[item.table] || item.table))].join(", ");
+        throw new HttpError(409, `Bu para hareketi${event?.no ? ` (İşlem No ${event.no})` : ""} zaten kayıtlı (${where}); aynı hareket ikinci kez yazılamaz. Hiçbir değişiklik yapılmadı.`, { code: "event-in-use", eventId: id, rows: rows.map(item => `${item.table}:${item.row.id}`) });
+      }
+      refreshEvent(store, id, { stamp: ctx.created.has(id) ? null : stamp });
+    }
   }
 
   // Adım 3 (iskelet): hesaba bağlı satır (fin_ref) değişiyorsa çapraz yetki; ekstreyle eşleşmiş olay değişmez.

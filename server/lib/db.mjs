@@ -131,7 +131,13 @@ export function createStore(db) {
   };
   function beforeLedgerWrite(table, sql, args, before = null) {
     const parsed = parseWrite(sql);
-    if (parsed.verb === "INSERT" || parsed.verb === "REPLACE" || rawScope.length) return;
+    if (rawScope.length) return;
+    if (parsed.verb === "INSERT" || parsed.verb === "REPLACE") {
+      // Gözden geçirme B1 (Aşama 2): INSERT OR REPLACE / REPLACE INTO / ON CONFLICT DO UPDATE çakışan satırı (ve olayını) sessizce siler ya da
+      // düzeltir — UPDATE/DELETE gibi (c) kapsamındadır: bank.post bağlamı ve store.raw dışında money-raw.
+      if (!posts.length && UPSERT.test(sql)) money?.violations.push({ code: "money-raw", table, sql: sql.replace(/\s+/g, " ").trim().slice(0, 200) });
+      return;
+    }
     if (parsed.verb === "UPDATE" && parsed.set.length && parsed.set.every(column => policy.free[table]?.has(column))) return;
     if (!posts.length) money?.violations.push({ code: "money-raw", table, sql: sql.replace(/\s+/g, " ").trim().slice(0, 200) });
     if (!policy.sources.has(table) || table === "bank_lines") return;
@@ -197,12 +203,21 @@ export function createStore(db) {
     const last = Number(result?.lastInsertRowid) || 0;
     if (changes > 0 && last > 0) noteRows(table, Array.from({ length: changes }, (_, k) => last - changes + 1 + k));
   }
+  // Gözden geçirme B1 (Aşama 2): bu işlemde yazılan para satırının olayı (event_id) yalnız "boş değil" diye kabul edilmez: olay kayıtlı
+  // (fin_events) VE bu işlemde bank.post'tan geçmiş (açtığı ya da bağladığı; touchEvent) olmalıdır. Önceden bank.post dışından uydurma ya
+  // da BAŞKA satırın etkin olayıyla eklenen para satırı COMMIT'ten geçiyordu (ikincisi hiçbir denetimde görünmüyordu).
   function moneyViolations() {
     const out = [...money.violations];
+    const passed = JSON.stringify([...touchedEvents]);
     for (const [table, where] of policy.sources) {
       const mark = money.marks.get(table) ?? Number.MAX_SAFE_INTEGER;
       const written = [...(money.written.get(table) || [])];
-      for (const row of store.all(`SELECT id FROM ${table} WHERE (rowid > ? OR rowid IN (SELECT value FROM json_each(?))) AND ${where} AND COALESCE(event_id, '') = '' LIMIT 5`, mark, JSON.stringify(written))) out.push({ code: "money-event", table, id: row.id });
+      for (const row of store.all(
+        `SELECT ${table}.id AS id, COALESCE(${table}.event_id, '') AS eventId, EXISTS (SELECT 1 FROM fin_events f WHERE f.id = ${table}.event_id) AS known
+         FROM ${table} WHERE (${table}.rowid > ? OR ${table}.rowid IN (SELECT value FROM json_each(?))) AND ${where}
+           AND (COALESCE(${table}.event_id, '') = '' OR ${table}.event_id NOT IN (SELECT value FROM json_each(?)) OR NOT EXISTS (SELECT 1 FROM fin_events f WHERE f.id = ${table}.event_id)) LIMIT 5`,
+        mark, JSON.stringify(written), passed,
+      )) out.push({ code: "money-event", table, id: row.id, ...(row.eventId ? { eventId: row.eventId, reason: !row.known ? "olay kayıtlı değil" : "olay bu işlemde bank.post'tan geçmedi" } : {}) });
     }
     return out;
   }

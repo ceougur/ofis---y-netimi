@@ -91,7 +91,31 @@ export function createBankChecks({ store, money }) {
     }
     // Ters kaydedilmiş olayın ters kaydı var.
     for (const row of store.all(`SELECT e.id, e.bank_ref AS ref FROM ${events_} WHERE e.status = 'reversed' AND NOT EXISTS (SELECT 1 FROM fin_events x WHERE x.id = e.reversed_by AND x.reversal_of = e.id)`, ...args)) out.push({ key: row.id, ref: row.ref, sample: `${row.id}: ters kaydı yok` });
+    // Gözden geçirme B1/B2 (Aşama 2; K11 "bir olay = bir para hareketi"): bir olayın birden çok etkin satırı olamaz (tek istisna Kasa ↔ Banka
+    // transferinin aynı transfer_id'li iki bacağı). Önceden bank.post dışından başka satırın olayıyla eklenen para satırı ve Silinenler'den
+    // geri yüklenen taşınmış tahsilat hiçbir denetimde görünmüyordu (Kasa çift sayılıyordu).
+    for (const row of multiRowEvents(list)) out.push({ key: row.id, ref: row.ref, sample: `${row.id}: olayın birden çok etkin satırı var (${row.n} satır: ${row.tables})` });
     return out;
+  }
+
+  /** Birden çok etkin satırı olan olaylar [{ id, ref, n, tables }]; list (JSON) verilirse yalnız o olaylar. */
+  function multiRowEvents(list = null) {
+    const tables = MODULE_TABLES.filter(table => hasColumn(table, "event_id"));
+    if (!tables.length) return [];
+    const transfer = hasColumn("cash_entries", "transfer_id");
+    // Her satır: olay, tablo, transfer kimliği (yalnız Kasa). Kısmi indeks (idx_<tablo>_event_id) "event_id <> ''" ile seçilir.
+    const part = (table, where, args) => ({ sql: `SELECT event_id AS e, '${table}' AS t, ${table === "cash_entries" && transfer ? "COALESCE(transfer_id, '')" : "''"} AS x FROM ${table} WHERE ${where}`, args });
+    const parts = list
+      ? tables.map(table => part(table, "event_id IN (SELECT value FROM json_each(?)) AND event_id <> ''", [list]))
+      : tables.map(table => part(table, "event_id <> ''", []));
+    return store.all(
+      `SELECT g.e AS id, COALESCE(f.bank_ref, '') AS ref, g.n, g.tables FROM (
+         SELECT e, COUNT(*) AS n, group_concat(DISTINCT t) AS tables, SUM(CASE WHEN t = 'cash_entries' AND x <> '' THEN 1 ELSE 0 END) AS legs, COUNT(DISTINCT x) AS transfers
+         FROM (${parts.map(item => item.sql).join(" UNION ALL ")}) GROUP BY e
+       ) g LEFT JOIN fin_events f ON f.id = g.e
+       WHERE g.n > 1 AND NOT (g.n = 2 AND g.legs = 2 AND g.transfers = 1)`,
+      ...parts.flatMap(item => item.args),
+    );
   }
 
   /** money:report: satır yolu ↔ özet uyuşmazlıkları (yol|hesap). */

@@ -6,12 +6,14 @@
 // bağımsız ikinci yol: JS kopyası ile SQL beklenenin eşitliği denetlenir).
 import { createHash } from "node:crypto";
 import { toMinor } from "../minor.mjs";
-import { NON_MONEY_TYPES, directionOf } from "./event-types.mjs";
+import { NON_MONEY_TYPES, directionOf, typeOf } from "./event-types.mjs";
 import { MODULE_TABLES } from "./money-lines.mjs";
 
 const MODULE_SET = new Set(MODULE_TABLES);
-/** Olay kopyasının alanları (fin_events kolonları). */
-export const COPY_FIELDS = Object.freeze(["src_table", "src_id", "direction", "amount_minor", "try_minor", "currency", "method", "party_id", "invoice_id", "plan_id", "cheque_id", "date", "bank_ref"]);
+/** Olay kopyasının alanları (fin_events kolonları). Gözden geçirme D1 (Aşama 2): tür (type) de satırdan türetilir — Kasa girişi çıkışa
+ * çevrilince tür cash_in → cash_out, Taksite Aktar'da kayıt tahsilatı karta geçince record_in → plan_in. İşlem No (no, year, seq) kalıcı
+ * kimliktir: tarih başka yıla düzeltilse de değişmez (§5.4 notu). */
+export const COPY_FIELDS = Object.freeze(["src_table", "src_id", "type", "direction", "amount_minor", "try_minor", "currency", "method", "party_id", "invoice_id", "plan_id", "cheque_id", "date", "bank_ref"]);
 
 const partyOf = (store, table, row) => {
   if (table === "account_entries" || table === "stock_moves") return String(row.account_id || "");
@@ -31,6 +33,7 @@ export function eventCopy(store, table, row) {
   return {
     src_table: table,
     src_id: String(row.id),
+    type: typeOf(table, row),
     direction: directionOf(table, row),
     amount_minor: amount,
     try_minor: amount,
@@ -47,6 +50,9 @@ export function eventCopy(store, table, row) {
 
 // Transferde iki bacak aynı olayda: kopya banka bacağından (olayın "direction"ı bank_ref'e göre, §5.2).
 export const primaryRow = rows => rows.find(item => item.table === "cash_entries" && item.row.method && item.row.method !== "cash") || rows[0];
+
+/** Kasa ↔ Banka transferinin iki bacağı mı (tek olayı paylaşan tek meşru satır çifti)? */
+export const isTransferPair = rows => rows.length === 2 && rows.every(item => item.table === "cash_entries" && item.row.transfer_id) && rows[0].row.transfer_id === rows[1].row.transfer_id;
 
 /** Olayın para satırları (bütün modül tablolarında; Taksite Aktar satırı tablo değiştirir). */
 export function eventRows(store, id) {
@@ -96,17 +102,18 @@ export function eventDigest(copy) {
 const KIND_DIRECTION = "CASE WHEN r.kind = 'out' THEN 'out' ELSE 'in' END";
 /** Kopyanın satırdan beklenen değerleri (SQL). JS karşılıkları yukarıda (eventCopy); ikisi bağımsız yazılmıştır. */
 export const COPY_SQL = Object.freeze({
-  payments: { direction: "'in'", party: "''" },
-  cash_entries: { direction: KIND_DIRECTION, party: "''" },
-  account_entries: { direction: KIND_DIRECTION, party: "COALESCE(r.account_id, '')" },
-  plan_entries: { direction: KIND_DIRECTION, party: "COALESCE((SELECT p.account_id FROM plans p WHERE p.id = r.plan_id), '')" },
-  stock_moves: { direction: "CASE WHEN r.kind = 'in' THEN 'out' ELSE 'in' END", party: "COALESCE(r.account_id, '')" },
-  cheque_events: { direction: "CASE WHEN r.kind = 'pay' THEN 'out' ELSE 'in' END", party: "COALESCE((SELECT c.account_id FROM cheques c WHERE c.id = r.cheque_id), '')" },
+  payments: { type: "'record_in'", direction: "'in'", party: "''" },
+  cash_entries: { type: "CASE WHEN COALESCE(r.transfer_id, '') <> '' THEN 'cash_transfer' WHEN r.kind = 'out' THEN 'cash_out' ELSE 'cash_in' END", direction: KIND_DIRECTION, party: "''" },
+  account_entries: { type: "CASE WHEN r.source = 'invoice' THEN 'invoice_cash' WHEN r.kind = 'out' THEN 'party_out' ELSE 'party_in' END", direction: KIND_DIRECTION, party: "COALESCE(r.account_id, '')" },
+  plan_entries: { type: "CASE WHEN r.kind = 'out' THEN 'plan_out' ELSE 'plan_in' END", direction: KIND_DIRECTION, party: "COALESCE((SELECT p.account_id FROM plans p WHERE p.id = r.plan_id), '')" },
+  stock_moves: { type: "'stock_cash'", direction: "CASE WHEN r.kind = 'in' THEN 'out' ELSE 'in' END", party: "COALESCE(r.account_id, '')" },
+  cheque_events: { type: "CASE WHEN r.kind = 'pay' THEN 'cheque_pay' ELSE 'cheque_collect' END", direction: "CASE WHEN r.kind = 'pay' THEN 'out' ELSE 'in' END", party: "COALESCE((SELECT c.account_id FROM cheques c WHERE c.id = r.cheque_id), '')" },
 });
 /** Olay kopyası ↔ satır uyuşmazlığının SQL koşulu (e = fin_events, r = kaynak satır; LEFT JOIN). */
 export function copyMismatchSql(table) {
   const spec = COPY_SQL[table];
   return `(r.id IS NULL
+    OR e.type <> ${spec.type}
     OR e.amount_minor <> CAST(ROUND(ABS(r.amount) * 100) AS INTEGER)
     OR e.direction <> ${spec.direction}
     OR e.method <> CASE WHEN COALESCE(r.method, '') = '' THEN 'cash' ELSE r.method END

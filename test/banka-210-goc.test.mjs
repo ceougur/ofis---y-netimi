@@ -227,7 +227,10 @@ describe("v20 şeması (yeni kurulum)", () => {
     try {
       for (const table of ["fin_events", "bank_lines", "bank_accounts", "pos_terminals", "pos_sales", "pos_items", "cheque_collections"]) {
         seen.length = 0;
-        const row = { ...TEMPLATE[table] };
+        // Gözden geçirme B1 (Aşama 2; bilerek güncellendi): para rolündeki banka fişi satırı (role 'bank') olayı bank.post'tan geçmeden
+        // yazılamaz (K6 money-event; olay kayıtlı ve bu işlemde bank.post'tan geçmiş olmalı). Bu test yalnız kapı listesini sınar: satır
+        // para dışı rolle (gider, 770) yazılır.
+        const row = { ...TEMPLATE[table], ...(table === "bank_lines" ? { role: "expense", gl: "770" } : {}) };
         const cols = Object.keys(row);
         assert.throws(() => store.tx(() => {
           store.run(`INSERT INTO ${table} (${cols.join(", ")}) VALUES (${cols.map(() => "?").join(", ")})`, ...cols.map(col => row[col]));
