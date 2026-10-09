@@ -871,6 +871,13 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   [x] AŞAMA 5–6 daraltılmış (09.10.2026; 63f8aae, d000df3): cari tahsilat/ödeme ve Kasa↔Banka'da hesap seçimi (tek hesapta
       kendiliğinden, çok hesapta zorunlu, döviz/pasif 400, açılış/Devir öncesi 409), K7 eksi bakiye, istek kimliği, Benzer İşlem,
       banka bağlı cari silinmez (Pasife Al). npm test 1.630/1.630; senaryo-banka-210 257/257 (kabul 5, 9–14 ekrandan).
+  [x] AŞAMA 7–8 hesap seçimi (fatura peşini, taksit/kayıt, stok, çek; 8fa8236, fc939d2) + hızlı Nasıl Bozarım (e69e1b9) + yargıç/
+      eleştirmen düzeltmeleri (cd4e7ac..cdb3646: kart silme 409 plan-bank-linked, geri yükleme K7/pasif, pasif hesap, Vazgeç, toplu
+      iptal, lineKey) + Canlı Hata 2 (aa2520d: iade+geri ödeme kartı büyütmesi, açılış onarımı, model). npm test 1.691.
+  [x] AŞAMA 9 bankalar arası transfer (ac5305b..825b198): ücret/BSMV, kanal, valör, planlı, Ters Kaydet/Düzelt, kredi, bank:transfer
+      kapısı, Genel Bakış "Bugün ve Bu Ay"; kabul 13–16 ekrandan; transfer 23 test (eski kodda 22 kırmızı); npm test 1.714; mutabakat
+      tohum 1/2/3 tutarlı; güvenilirlik 2×1.000; senaryo-banka-210 330/330. Sırada: banka raporları + K10 (ANLIK DURUM, Birleşik Rapor,
+      Banka ve POS Hareketleri'nde transfer bacakları), eşleme tablosundaki eksik testler, kabul 1–16, kılavuz, son yargıç+eleştirmen.
   İSTEK (kullanıcı, 09.10.2026): "hızlı bir şekilde nasıl bozarım testi de yaptır, düzeltilmesi gereken yerler olursa düzelt"
       → Aşama 7–8 doğrulaması bitince hesap seçimi işi (cari, Kasa↔Banka, fatura peşini, taksit/kayıt, stok, çek) için ayrı
       bağımsız saldırgan test ajanı; bulunan her açık önce kırmızı test, sonra düzeltme; sonuç kullanıcıya listelenir.
