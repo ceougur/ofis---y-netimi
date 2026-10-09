@@ -2137,6 +2137,83 @@ try {
     ok(integrity.ok === true, "son durumda mutabakat ok");
     ok(errors.length === 0, errors.length ? `tarayıcı hataları: ${errors.join(" | ")}` : "hiçbir ekranda tarayıcı hatası yok");
   });
+  // ---------- Kabul 1–16 sonu mizanı EKRANDAN (plan §12.5 "Adım 33 sonunda mizan"ın 2.1.0'a düşen adımlarla karşılığı) ----------
+  // Bu dosyanın Kabul Şirketi adım 32–40'la ilerlediği için (aynı gün) adım 16 sonu ayrıca kurulur: ayrı sunucu, boş şirket, plan
+  // §12.5 ön koşulları (Ürün A 10, Ürün B 25 parasız), kabul 1–16 API'den (ekrandan sınanışı adım 26–31b); mizan EKRANDAN okunur:
+  // Raporlar → Tüm Raporlar → Hesap Planı Mizanı ve Banka → Alt Hesap Mizanı. Bağımsız beklenen: plan tablosu (elle yazıldı).
+  await step("41. Kabul 1–16 sonu mizanı ekrandan: Hesap Planı Mizanı 100 = 10.000 B · 102 = 160.000 B · 120 = 0 · 391 = 3.333,33 A · 500 = 150.000 A · 600 = 16.666,67 A; Fark 0; Alt Hesap Mizanı 102.01 = 90.000, 102.02 = 70.000", async () => {
+    const root2 = mkdtempSync(path.join(tmpdir(), "destekofis-banka-210-mizan-"));
+    const app2 = createApp({ dataDir: path.join(root2, "data"), backupDir: path.join(root2, "backups"), logLevel: "warn", scheduleBackups: false, now: NOW, env: { HUKUK_ADMIN_PASSWORD: PASS, HUKUK_DATASET_AUTOSYNC: "0" }, license: { enforce: false, machineId: "a1b2c3d4e5f60718293a4b5c6d7e8f41" } });
+    const base2 = `http://127.0.0.1:${(await app2.listen(0, "127.0.0.1")).port}`;
+    const api2 = createClient(base2);
+    try {
+      await api2.login("admin", PASS);
+      await must("sihirbazı kapat", api2.post("/api/workspace/bank/setup/dismiss", {}));
+      const z = await must("Ziraat", api2.post("/api/workspace/bank/accounts", { bankName: "Ziraat Bankası", name: "Ana TL Hesabı", kind: "demand", currency: "TRY", iban: ZIRAAT_IBAN, opening: { date: "2026-10-01", amount: "100.000", confirmed: true } }));
+      const g = await must("Garanti", api2.post("/api/workspace/bank/accounts", { bankName: "Garanti BBVA", name: "Ana TL Hesabı", kind: "demand", currency: "TRY", iban: GARANTI_IBAN, opening: { date: "2026-10-01", amount: "50.000", confirmed: true } }));
+      const a = await must("Ürün A", api2.post("/api/workspace/stock", { kind: "goods", code: "A", name: "Ürün A", unit: "Adet", openingQty: "10" }));
+      await must("Ürün B", api2.post("/api/workspace/stock", { kind: "goods", code: "B", name: "Ürün B", unit: "Adet", openingQty: "25" }));
+      const abc = await must("ABC", api2.post("/api/workspace/accounts", { name: "ABC Ltd.", type: "customer", registeredOn: "2026-10-01" }));
+      await must("fatura", api2.post("/api/workspace/invoices", { kind: "sale", accountId: abc.id, issueDate: "2026-10-08", pricesIncludeVat: true, lines: [{ itemId: a.id, name: "Ürün A", qty: 1, unitPrice: 20000, discountRate: 0, vatRate: 20 }], payment: { cash: [], cheques: [], endorse: [], rest: "open" }, force: true }));
+      await must("tahsilat", api2.post(`/api/workspace/accounts/${abc.id}/entries`, { kind: "in", amount: "20.000", method: "bank", bankAccountId: z.id, date: "2026-10-08" }));
+      await must("bankadan kasaya", api2.post("/api/workspace/cash/transfer", { direction: "to-cash", amount: "10.000", date: "2026-10-08", bankAccountId: z.id }));
+      await must("transfer", api2.post("/api/workspace/bank/transfers", { accountId: z.id, toAccountId: g.id, amount: "20.000", date: "2026-10-08", channel: "virman" }));
+      const page = await newPage();
+      current = page;
+      await page.goto(`${base2}/`);
+      await page.fill("#hof-auth input[name=username]", "admin");
+      await page.fill("#hof-auth input[name=password]", PASS);
+      await Promise.all([page.waitForEvent("load"), page.click('#hof-auth button[type="submit"]')]);
+      await page.waitForSelector("#hof-sidecard", { timeout: 60000 });
+      await page.waitForTimeout(700);
+      await page.click('#hof-sidecard [data-action="analytics"]');
+      await page.waitForSelector(`${modal} .hof-rep-tab[data-tab="all"]`, { timeout: 15000 });
+      await page.click(`${modal} .hof-rep-tab[data-tab="all"]`);
+      await page.waitForSelector(`${modal} [data-rc-list] [data-report="hesap-mizani"]`, { timeout: 15000 });
+      await page.click(`${modal} [data-rc-list] [data-report="hesap-mizani"]`);
+      await page.waitForSelector(`${modal} [data-rc-main] .hof-rc-table tbody tr`, { timeout: 15000 });
+      await page.waitForTimeout(600);
+      const screen = await page.$eval(`${modal} [data-rc-main]`, box => {
+        const heads = [...box.querySelectorAll(".hof-rc-table thead th")].map(th => th.textContent.trim());
+        const rows = [...box.querySelectorAll(".hof-rc-table tbody tr")].map(tr => [...tr.querySelectorAll("td")].map(td => td.textContent.replace(/\s+/g, " ").trim()));
+        const cards = Object.fromEntries([...box.querySelectorAll(".hof-rc-summary span")].map(span => [span.querySelector("small")?.innerText.trim(), span.querySelector("b")?.innerText.trim()]));
+        return { heads, rows, cards };
+      });
+      const at = name => screen.heads.indexOf(name);
+      const tl = cell => Number(String(cell || "").replace(/[^0-9,-]/g, "").replace(",", ".")) || 0;
+      // Bağımsız beklenen (plan §12.5'in 2.1.0 karşılığı; elle): bakiye ve yön.
+      const want = { 100: [10000, "Borç"], 102: [160000, "Borç"], 391: [3333.33, "Alacak"], 500: [150000, "Alacak"], 600: [16666.67, "Alacak"] };
+      for (const [code, [value, side]] of Object.entries(want)) {
+        const row = screen.rows.find(cells => cells[0] === code);
+        ok(row && tl(row[at("Bakiye")]) === value && row[at("Yön")] === side, `ekranda ${code}: ${row ? `${row[at("Bakiye")]} ${row[at("Yön")]}` : "satır yok"} (beklenen ${value} ${side})`);
+      }
+      const r120 = screen.rows.find(cells => cells[0] === "120");
+      ok(!r120 || (tl(r120[at("Bakiye")]) === 0 && tl(r120[at("Borç")]) === 20000 && tl(r120[at("Alacak")]) === 20000), `ekranda 120 ABC: ${r120 ? `borç ${r120[at("Borç")]} · alacak ${r120[at("Alacak")]} · bakiye ${r120[at("Bakiye")]}` : "satır yok"} (beklenen 20.000 / 20.000 / 0)`);
+      const extra = screen.rows.filter(cells => /^\d{3}$/.test(cells[0]) && !want[cells[0]] && cells[0] !== "120" && tl(cells[at("Bakiye")]) !== 0);
+      ok(extra.length === 0, extra.length ? `beklenmeyen bakiyeli hesap: ${extra.map(cells => `${cells[0]} ${cells[at("Bakiye")]}`).join(", ")}` : "başka bakiyeli hesap yok (770 = 0, 153/621 yok)");
+      ok(tl(screen.cards["Fark"]) === 0 && screen.cards["Dönem Borç"] === screen.cards["Dönem Alacak"], `özet: Dönem Borç ${screen.cards["Dönem Borç"]} = Dönem Alacak ${screen.cards["Dönem Alacak"]} · Fark ${screen.cards["Fark"]}`);
+      await shot(page, "kabul16-hesap-plani-mizani");
+      for (let index = 0; index < 4 && (await page.$(modal)); index += 1) await closeTop(page);
+      await page.click('#hof-sidecard [data-action="bank"]');
+      await page.waitForSelector(bankWin, { timeout: 15000 });
+      await page.waitForTimeout(500);
+      await tab(page, "accounts");
+      await page.click(`${bankWin} [data-act="subtrial"]`);
+      await page.waitForSelector(`${top} .hof-bank-subtrial tbody tr`, { timeout: 8000 });
+      const sub = await textOf(page, `${top} [data-subtrial]`);
+      ok(has(sub, "102.01") && has(sub, "90.000,00") && has(sub, "102.02") && has(sub, "70.000,00") && has(sub, "✓") && !has(sub, "✗"), "ekranda Alt Hesap Mizanı: 102.01 = 90.000, 102.02 = 70.000; ana hesap = alt hesaplar (✓)");
+      await shot(page, "kabul16-alt-hesap-mizani");
+      const stock = unwrap(await api2.get(`/api/workspace/stock/${a.id}`));
+      ok(stock.qty === 9, `Ürün A ${stock.qty} (beklenen 9)`);
+      const integrity = unwrap(await api2.get("/api/workspace/ledger/integrity"));
+      ok(integrity.ok === true, "kabul 16 sonu mutabakat ok");
+      await page.context().close();
+    } finally {
+      await app2.close();
+      fs.rmSync(root2, { recursive: true, force: true });
+    }
+  });
+
 } catch (error) {
   failed += 1;
   console.log(`✗ senaryo durdu: ${error.stack || error.message}`);
