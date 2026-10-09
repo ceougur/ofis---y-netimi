@@ -105,6 +105,19 @@ export function createScopedGate({ store, ledger, accounts, plans, stock, money,
   const all = (sql, ...args) => store.all(sql, ...args);
 
   // ---------- Kapsam: dokunulan satırlar → varlıklar ----------
+  // Hesaba bağlı bir para satırı (Banka Fişi satırı ya da modül satırının hesap bağı) var mı? İndeksli; ilk satırda durur.
+  const BOUND_TABLES = ["payments", "cash_entries", "account_entries", "stock_moves", "plan_entries", "cheque_events"];
+  function accountUsed(id) {
+    if (!id) return true;
+    try {
+      if (has("bank_lines") && store.get("SELECT 1 AS found FROM bank_lines WHERE ref = ? LIMIT 1", id)) return true;
+      if (has("pos_terminals") && store.get("SELECT 1 AS found FROM pos_terminals WHERE bank_account_id = ? LIMIT 1", id)) return true;
+      for (const table of BOUND_TABLES) if (has(table) && hasColumn(table, "fin_ref") && store.get(`SELECT 1 AS found FROM ${table} WHERE fin_ref = ? AND fin_ref <> '' LIMIT 1`, id)) return true;
+      return false;
+    } catch {
+      return true;
+    }
+  }
   function derive(capture) {
     const s = {
       reason: capture?.unknown || "",
@@ -134,7 +147,9 @@ export function createScopedGate({ store, ledger, accounts, plans, stock, money,
       for (const { pre, post } of list) if (pre && post && String(pre.id ?? "") !== String(post.id ?? "")) s.reason ||= `${table}: kimlik değişti`;
       // Hesap kartının türü / para birimi / ana ve alt hesabı değişti: bağlı satırların yolu ve alt hesabı başka hesaba geçer (rota hareketli
       // hesapta bunu reddeder; hareketsiz hesapta da karar tam kapının — seyrek iş).
-      if (table === "bank_accounts") for (const { pre, post } of list) if (pre && post && differs(pre, post, ACCOUNT_LEDGER_FIELDS)) s.reason ||= "bank_accounts: hesap türü / para birimi / alt hesap";
+      // GG2 (orta): hiç para satırı olmayan hesabın türü değişince (Vadesiz → Ticari) yevmiyede değişen satır yoktur; tam kapıya düşmek 100.000
+      // satırda ~10 sn, 1.000.000'da ~2 dk bütün sunucuyu bekletiyordu. Satırı olan hesapta karar yine tam kapının (rota zaten 409 verir).
+      if (table === "bank_accounts") for (const { pre, post } of list) if (pre && post && differs(pre, post, ACCOUNT_LEDGER_FIELDS) && accountUsed(pre.id)) s.reason ||= "bank_accounts: hesap türü / para birimi / alt hesap";
       for (const { pre, post } of list) for (const row of [pre, post]) if (row) keys(s, table, row);
       for (const { pre, post } of list) visibility(s, table, pre, post);
     }

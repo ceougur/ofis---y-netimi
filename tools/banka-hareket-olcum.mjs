@@ -11,7 +11,13 @@
 // Raporu (bir ay; Excel), hesap kartı; bir Banka Fişi kaydı (kapı dahil) ve kayıttan hemen sonra ilk sayfa, hesap kartı ve arama (hesap bakiyesi
 // her yeni kayıtta bir kez yeniden okunur).
 //
+// GG2 (Aşama 3–4 bağımsız gözden geçirme): Banka penceresinin öbür uçları da ölçülür (Genel Bakış, rozet, Hesaplar, Hesabı Atanmamış, Alt Hesap
+// Mizanı, sihirbaz önizlemesi, bir yıllık Masraf Raporu; kayıttan hemen sonra Genel Bakış ve Hesaplar) ve ağır istek sürerken başka bir
+// kullanıcının isteğinin bekleme süresi (sunucu tek iş parçacığında: uzun istek herkesi bekletir).
+//
 // Kullanım: node tools/banka-hareket-olcum.mjs --hedef 1000000 [--klasor <dir>] [--tekrar 5] [--json <dosya>] [--yeniden] [--tohum-yeniden]
+//           [--gun 360] (tohumun gün sayısı; npm test'teki küçük koşu az günle)
+import { fork } from "node:child_process";
 import { cpSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
@@ -29,6 +35,7 @@ const TARGET = Number(opt("hedef", "1000000")) || 1_000_000;
 const DIR = path.resolve(opt("klasor", path.join(os.tmpdir(), "destekofis-hareket-olcum")));
 const REPEAT = Number(opt("tekrar", "5")) || 5;
 const JSON_OUT = opt("json", "");
+const SEED_DAYS = Math.max(10, Number(opt("gun", "360")) || 360);
 const NOW = "2026-10-08T12:00:00+03:00";
 const TODAY = NOW.slice(0, 10);
 const OPENING = "2022-01-03";
@@ -92,7 +99,7 @@ async function buildSeed(seedDir) {
     const party = await must("cari", client.post("/api/workspace/accounts", { name: "Ölçüm Müşterisi A.Ş.", type: "customer", registeredOn: "2022-01-01" }));
     const voucher = body => must(`fiş ${body.type}`, client.post(`${BANK}/vouchers`, { similarOk: true, ...body }));
     let n = 0;
-    for (let day = 360; day >= 1; day -= 1) {
+    for (let day = SEED_DAYS; day >= 1; day -= 1) {
       const date = addDays(TODAY, -day);
       n += 1;
       await voucher({ type: "fee", accountId: ziraat.id, date, amount: `${10 + (n % 50)},${String(n % 100).padStart(2, "0")}`, feeType: n % 3 ? "eft" : "havale", tax: "bsmv_incl", description: `EFT ücreti ${n}`, reference: `DEK-${n}` });
@@ -136,7 +143,10 @@ async function grow(file, accounts, target) {
     };
     const insert = { fin_events: statement("fin_events", events[0]), bank_lines: statement("bank_lines", lines[0]), account_entries: statement("account_entries", entries[0]) };
     const maxSeq = new Map(db.prepare("SELECT year, MAX(seq) AS seq FROM fin_events GROUP BY year").all().map(row => [row.year, row.seq]));
-    const ID = /\b[a-z]+-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\b/g;
+    // Kimlikler: eski biçim "<önek>-<uuid>" ve olay kimliğinin sıralı biçimi (Aşama 4 dilim 4; lib/bank/event-no.mjs newEventId:
+    // "ev-" + 13 hane (zaman + sayaç, 36 tabanı) + "-" + uuid'nin ilk 18 karakteri). GG2: araç yalnız ilkini tanıyordu; yeni kimlikler
+    // kopyada değişmediği için ilk kopyada "UNIQUE constraint failed: fin_events.id" ile duruyordu.
+    const ID = /\b(?:[a-z]+-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}|ev-[0-9a-z]{13}-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4})\b/g;
     const DAY = /^\d{4}-\d{2}-\d{2}/;
     const started = performance.now();
     for (let k = 1; k <= copies; k += 1) {
@@ -179,7 +189,7 @@ async function grow(file, accounts, target) {
 }
 
 async function fixture() {
-  const seedDir = path.join(DIR, "tohum");
+  const seedDir = path.join(DIR, `tohum-${SEED_DAYS}`);
   let accounts;
   if (!existsSync(path.join(seedDir, "hazir.json")) || flag("tohum-yeniden")) {
     accounts = await buildSeed(seedDir);
@@ -255,6 +265,37 @@ async function measure({ dir, accounts, info }) {
       return null;
     });
     await timeIt("Hesap kartı (bakiye)", () => must("hesap", client.get(`${BANK}/accounts/${z}`)));
+    await timeIt("Genel Bakış (özet)", () => must("özet", client.get(`${BANK}/summary`)));
+    await timeIt("Menü rozeti", () => must("rozet", client.get(`${BANK}/badge`)));
+    await timeIt("Hesaplar listesi", () => must("hesaplar", client.get(`${BANK}/accounts`)));
+    await timeIt("Hesabı Atanmamış Eski Hareketler", () => must("eski", client.get(`${BANK}/legacy`)));
+    await timeIt("Alt Hesap Mizanı (tüm zamanlar)", () => must("alt mizan", client.get(`${BANK}/sub-trial`)));
+    await timeIt("Alt Hesap Mizanı (bir ay)", () => must("alt mizan ay", client.get(`${BANK}/sub-trial?from=2026-09-01&to=2026-09-30`)));
+    await timeIt("Kurulum Sihirbazı önizlemesi (Garanti)", () => must("sihirbaz", client.post(`${BANK}/setup?dryRun=1`, { accountId: accounts.garanti, carryClose: true, assign: "all" })));
+    await timeIt("Banka Masraf Raporu (bir yıl)", () => must("rapor yıl", client.get(`${BANK}/reports/fees?from=2025-10-01&to=2026-09-30`)));
+    // Ağır istek sürerken başka kullanıcının en hafif isteği (oturum bilgisi) ne kadar bekliyor? Başka kullanıcı AYRI süreçte
+    // (tools/banka-olcum-bekleme.mjs); aynı süreçte ağır istek ölçüm saatini de durdururdu.
+    const other = fork(path.join(ROOT, "tools", "banka-olcum-bekleme.mjs"), [`http://127.0.0.1:${port}`, "admin", PASS], { stdio: ["ignore", "inherit", "inherit", "ipc"] });
+    const nextMessage = () => new Promise(resolve => other.once("message", resolve));
+    await nextMessage();
+    const blocked = async (label, heavy) => {
+      const times = [];
+      for (let k = 0; k < REPEAT; k += 1) {
+        const answer = nextMessage();
+        other.send("git");
+        const pending = heavy();
+        const result = await answer;
+        await pending;
+        if (result.status !== 200) throw new Error(`başka kullanıcı: ${result.status}`);
+        times.push(result.ms);
+      }
+      out.rows.push({ label, median: median(times), max: Math.max(...times), rows: null });
+      log(`${label.padEnd(56)} ortanca ${ms(median(times)).padStart(6)} ms · en çok ${ms(Math.max(...times)).padStart(6)} ms`);
+    };
+    await blocked("Başka kullanıcı bekler: Genel Bakış sürerken", () => must("özet", client.get(`${BANK}/summary`)));
+    await blocked("Başka kullanıcı bekler: Alt Hesap Mizanı sürerken", () => must("alt mizan", client.get(`${BANK}/sub-trial`)));
+    await blocked("Başka kullanıcı bekler: Masraf Raporu (yıl) sürerken", () => must("rapor yıl", client.get(`${BANK}/reports/fees?from=2025-10-01&to=2026-09-30`)));
+    other.send("kapat");
     // Yazımdan sonra: hesabın bakiyesi (tek kaynak, saklanan toplam) her yeni kayıtta bir kez yeniden okunur — ilk sayfa ve hesap kartı bu
     // okumayı öder. Kaydın kendisi (Banka Fişi, kapı dahil) ayrı ölçülür.
     let seq = 0;
@@ -277,6 +318,9 @@ async function measure({ dir, accounts, info }) {
     await afterWrite("Kayıttan hemen sonra ilk sayfa (bakiye yeniden)", () => list(`account=${z}&limit=50`));
     await afterWrite("Kayıttan hemen sonra hesap kartı", () => must("hesap", client.get(`${BANK}/accounts/${z}`)));
     await afterWrite("Kayıttan hemen sonra arama (nadir, hesap seçili)", () => list(`account=${z}&q=${RARE}&limit=50`));
+    await afterWrite("Kayıttan hemen sonra Genel Bakış", () => must("özet", client.get(`${BANK}/summary`)));
+    await afterWrite("Kayıttan hemen sonra Hesaplar listesi", () => must("hesaplar", client.get(`${BANK}/accounts`)));
+    await afterWrite("Kayıttan hemen sonra menü rozeti", () => must("rozet", client.get(`${BANK}/badge`)));
   } finally {
     await app.close();
     rmSync(work, { recursive: true, force: true });

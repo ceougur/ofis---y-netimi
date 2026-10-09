@@ -20,7 +20,7 @@ import { HttpError, limited, text } from "../http.mjs";
 import { systemClock } from "../clock.mjs";
 import { CURRENCY_DIGITS, minorText, mulRate, parseMinor, parseRate } from "../minor.mjs";
 import { isValidIban, ibanText, normalizeIban } from "../tax-id.mjs";
-import { UNASSIGNED_SUBS, subTrial, trialBalance } from "../general-ledger.mjs";
+import { CHART, UNASSIGNED_SUBS, moneyAccount } from "../general-ledger.mjs";
 import { KIND_GL, accountSpan } from "./checks.mjs";
 import { NON_MONEY_TYPES } from "./event-types.mjs";
 import { MODULE_TABLES, MONEY_SOURCES } from "./money-lines.mjs";
@@ -127,10 +127,15 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
   /** Hesabın bekleyen planlı işlem sayısı (silinecek hesabın planı sahipsiz kalmasın; GG2 düşük bulgu). */
   const plannedCount = id => Number(store.get("SELECT COUNT(*) AS n FROM bank_plans WHERE status = 'planned' AND (bank_account_id = ? OR to_account_id = ?)", id, id)?.n) || 0;
 
-  /** Hesap bazında TL bakiyesi (tek kaynak, kuruş): ref → kuruş. */
-  const balances = (groups = money.groups()) => {
+  /**
+   * Hesap bazında TL bakiyesi (tek kaynak, kuruş): id → kuruş. GG2 (1.000.000 hareket): her hesabın kendi saklanan toplamı (moneyLines refTotal;
+   * hesabın indeksiyle, veri değişene kadar saklanır). Önceden bütün para satırları yol ve hesap bazında gruplanıyordu (Genel Bakış, rozet ve
+   * Hesaplar istek başına ~4 sn; o sürede sunucu başka isteğe yanıt vermiyordu). Hesaba bağlı satırın yolu hesabın türüne uyar (kapı bank:ref);
+   * bu yüzden hesabın toplamı = o hesabın yolundaki bakiye.
+   */
+  const balances = rows => {
     const out = new Map();
-    for (const group of groups) if (group.ref) out.set(group.ref, (out.get(group.ref) || 0) + Number(group.cents));
+    for (const row of rows) out.set(row.id, money.refTotal({ ref: row.id }).cents);
     return out;
   };
   /** Döviz hesabının kendi para birimindeki bakiyesi (Banka Fişi satırları + 13b cari satırları; sent). */
@@ -140,10 +145,10 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
     const entries = store.get("SELECT COALESCE(SUM(CASE kind WHEN 'in' THEN fx_minor WHEN 'out' THEN -fx_minor ELSE 0 END), 0) AS n FROM account_entries WHERE fin_ref = ? AND fin_ref <> '' AND fx_currency <> ''", row.id).n;
     return Number(lines) + Number(entries);
   }
-  function view(row, { groups = null } = {}) {
+  function view(row, { tl = null } = {}) {
     const confirmed = Boolean(row.balance_confirmed);
-    // Tek hesap kartında yalnız o hesabın toplamı (moneyLines refTotal; saklanır). Hesap listesinde bütün hesaplar tek grup sorgusundan.
-    const balance = groups ? balances(groups).get(row.id) || 0 : money.refTotal({ ref: row.id }).cents;
+    // Hesabın toplamı (moneyLines refTotal; saklanır). Hesap listesinde hesapların toplamları bir kez okunur (tl).
+    const balance = tl?.has(row.id) ? tl.get(row.id) : money.refTotal({ ref: row.id }).cents;
     const opening = openingOf(row.id);
     const moves = movementInfo(row.id);
     const policy = confirmed ? row.negative_policy || settings.read().negative.policy : "off";
@@ -528,26 +533,27 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
   // ---------- Liste, özet, seçici ----------
   function list({ status = "" } = {}) {
     const rows = store.all("SELECT * FROM bank_accounts WHERE deleted_at IS NULL ORDER BY position, created_at");
-    const groups = money.groups();
+    const tl = balances(rows);
     const shown = rows.filter(row => !status || status === "all" || row.status === status);
-    return { accounts: shown.map(row => view(row, { groups })), totals: totalsOf(groups, rows) };
+    return { accounts: shown.map(row => view(row, { tl })), totals: totalsOf(tl, rows) };
   }
-  function totalsOf(groups = money.groups(), rows = store.all("SELECT * FROM bank_accounts WHERE deleted_at IS NULL")) {
-    const kindOf = new Map(store.all("SELECT id, kind FROM bank_accounts").map(row => [row.id, row.kind]));
+  /**
+   * Gerçek Banka (102.k), kart ve kredi borcu (309/300) ve Hesabı Atanmamış (102.00 / 108.00). Hesaplar kendi toplamlarından (tl), hesabı
+   * atanmamış satırlar bağsız satırların kısmi indeksinden (moneyLines unassigned) okunur: bütün para satırları taranmaz (GG2).
+   */
+  function totalsOf(tl, rows = store.all("SELECT * FROM bank_accounts WHERE deleted_at IS NULL")) {
     let realBank = 0;
-    let unassignedBank = 0;
-    let unassignedCard = 0;
     let cardDebt = 0;
     let loanDebt = 0;
-    for (const group of groups) {
-      const cents = Number(group.cents);
-      if (group.way === "bank" && group.ref && KIND_GL[kindOf.get(group.ref)] === "102") realBank += cents;
-      else if (group.way === "bank" && !group.ref) unassignedBank += cents;
-      else if (group.way === "card" && !group.ref) unassignedCard += cents;
-      else if (group.way === "ccard") cardDebt -= cents;
-      else if (group.way === "loan") loanDebt -= cents;
+    for (const row of rows) {
+      const cents = tl.get(row.id) || 0;
+      if (KIND_GL[row.kind] === "102") realBank += cents;
+      else if (row.kind === "card") cardDebt -= cents;
+      else if (row.kind === "loan") loanDebt -= cents;
     }
-    const tl = balances(groups);
+    const loose = money.unassigned();
+    const unassignedBank = loose.bank;
+    const unassignedCard = loose.card;
     const byCurrency = new Map();
     for (const row of rows) {
       if (KIND_GL[row.kind] !== "102") continue;
@@ -594,7 +600,7 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
   const badgeCount = () => newCount();
   function summary() {
     const rows = store.all("SELECT * FROM bank_accounts WHERE deleted_at IS NULL");
-    const totals = totalsOf(money.groups(), rows);
+    const totals = totalsOf(balances(rows), rows);
     const bankRows = rows.filter(row => KIND_GL[row.kind] === "102");
     const runs = store.get("SELECT COUNT(*) AS n FROM bank_jobs WHERE kind = 'setup' AND status = 'done'").n;
     const unassigned = totals.unassignedBankMinor + totals.unassignedCardMinor;
@@ -941,19 +947,58 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
   }
 
   // ---------- Alt Hesap Mizanı (rapor verisi) ----------
+  /**
+   * Alt Hesap Mizanı (102/108/300/309 alt hesapları; dönem). GG2 (1.000.000 hareket): para satırları tek kaynaktan tek geçişte toplanır
+   * (moneyLines periodGroups) — önceden bütün Ana Defter kuruluyordu (100.000 satırda ~1,7 sn, 1.000.000'da ~40 sn; o sürede sunucu başka isteğe
+   * yanıt vermiyordu). Alt hesap, Ana Defter'in kuralıyla (moneyAccount: yol + bağ) bulunur; ana hesap yoldan (havale 102, POS 108, kurumsal kart
+   * 309, kredi 300). Ana Defter ↔ tek kaynak eşitliğini kapı her yazımda ve Mutabakat Testi denetler.
+   */
+  const MAIN_OF_WAY = Object.freeze({ bank: "102", card: "108", ccard: "309", loan: "300" });
   function subTrialData({ from = "", to = "" } = {}) {
     if ((from && !isDate(from)) || (to && !isDate(to))) throw new HttpError(400, "Geçerli bir tarih aralığı seçin.", { code: "date-invalid" });
-    const entries = ledger().build();
     const names = { ...UNASSIGNED_SUBS };
-    for (const row of store.all("SELECT gl_sub AS sub, bank_name AS bankName, name FROM bank_accounts")) names[row.sub] = `${row.bankName} · ${row.name}`;
-    for (const row of store.all("SELECT gl_sub AS sub, name FROM pos_terminals")) names[row.sub] = row.name;
-    const rows = subTrial(entries, { from, to, names });
-    const trial = trialBalance(entries, { from, to });
+    const refs = { accounts: {}, pos: {} };
+    for (const row of store.all("SELECT id, kind, gl, gl_sub AS sub, bank_name AS bankName, name FROM bank_accounts")) {
+      names[row.sub] = `${row.bankName} · ${row.name}`;
+      refs.accounts[row.id] = { kind: row.kind, gl: row.gl, glSub: row.sub };
+    }
+    for (const row of store.all("SELECT id, gl_sub AS sub, name FROM pos_terminals")) {
+      names[row.sub] = row.name;
+      refs.pos[row.id] = { glSub: row.sub };
+    }
+    const subs = new Map();
+    const mainsOf = new Map();
+    // Tüm zamanlar (ekranın açılışı): hesapların ve POS'ların saklanan toplamları + bağsız satırların yol toplamları (veri değişmedikçe yeniden
+    // okunmaz). Dönem verilirse tek geçişte dönem toplamları.
+    const WAY_OF_KIND = kind => (kind === "card" ? "ccard" : kind === "loan" ? "loan" : "bank");
+    const groups = from || to
+      ? money.periodGroups({ from, to })
+      : [
+        ...Object.entries(refs.accounts).map(([id, account]) => ({ way: WAY_OF_KIND(account.kind), ref: id, ...money.refTotal({ ref: id }) })),
+        ...Object.keys(refs.pos).map(id => ({ way: "card", ref: id, ...money.refTotal({ ref: id }) })),
+        ...Object.entries(money.unassignedWays()).map(([way, sums]) => ({ way, ref: "", ...sums })),
+      ].filter(group => group.count === undefined || group.count > 0).map(group => ({ way: group.way, ref: group.ref, opening: 0, debit: group.debit, credit: group.credit }));
+    for (const group of groups) {
+      const main = MAIN_OF_WAY[group.way];
+      if (!main) continue;
+      const method = group.way === "bank" ? "bank" : group.way === "loan" ? "loan" : "card";
+      const target = moneyAccount(method, group.ref || "", refs);
+      if (!target.sub) continue;
+      const row = subs.get(target.sub) || { sub: target.sub, account: target.account, opening: 0, debit: 0, credit: 0 };
+      row.opening += Number(group.opening);
+      row.debit += Number(group.debit);
+      row.credit += Number(group.credit);
+      subs.set(target.sub, row);
+      mainsOf.set(main, (mainsOf.get(main) || 0) + Number(group.opening) + Number(group.debit) - Number(group.credit));
+    }
+    const tl = value => Math.round(value) / 100;
+    const rows = [...subs.values()]
+      .sort((a, b) => a.sub.localeCompare(b.sub))
+      .map(row => ({ sub: row.sub, account: row.account, name: names[row.sub] || "", opening: tl(row.opening), debit: tl(row.debit), credit: tl(row.credit), balance: tl(row.opening + row.debit - row.credit) }));
     const mains = ["102", "108", "300", "309"].map(account => {
-      const main = trial.accounts.find(row => row.code === account);
-      const subs = rows.filter(row => row.account === account);
-      const subTotal = Math.round(subs.reduce((sum, row) => sum + Math.round(row.balance * 100), 0)) / 100;
-      return { account, name: main?.name || "", balance: main?.balance || 0, subTotal, ok: Math.round((main?.balance || 0) * 100) === Math.round(subTotal * 100) };
+      const balanceMinor = mainsOf.get(account) || 0;
+      const subMinor = [...subs.values()].filter(row => row.account === account).reduce((sum, row) => sum + row.opening + row.debit - row.credit, 0);
+      return { account, name: CHART[account] || "", balance: tl(balanceMinor), subTotal: tl(subMinor), ok: balanceMinor === subMinor };
     }).filter(item => item.balance || item.subTotal);
     return { rows, mains, from, to };
   }
