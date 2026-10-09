@@ -7,6 +7,8 @@ import { tablePdf, tl } from "../lib/report-pdf.mjs";
 import { buildXlsx } from "../lib/xlsx-write.mjs";
 import { separateCompany } from "../lib/company-separate.mjs";
 import { systemClock } from "../lib/clock.mjs";
+import { canUser } from "../lib/permissions.mjs";
+import { K10_LABELS } from "../lib/bank/accounts.mjs";
 
 export function registerCompanyRoutes(router, { store, auth, audit, companies, appFor, resetData, config, events, backups, closeCompany, busyCompanies, withCompanyDb, log, now: clock = systemClock }) {
   const requireManage = req => auth.requirePermission(req, "system.manage");
@@ -166,20 +168,28 @@ export function registerCompanyRoutes(router, { store, auth, audit, companies, a
   });
 
   // ---------- Birleşik rapor (m2 kararı: ilk sürümde) ----------
-  // Seçilen şirketlerin Kasa, banka/POS, cari alacak/borç, stok değeri, açık fatura ve çek/senet toplamları yan yana + toplam.
+  // Seçilen şirketlerin Kasa, banka, cari alacak/borç, stok değeri, açık fatura ve çek/senet toplamları yan yana + toplam.
+  // v2.1.0 Aşama 14 (K10; plan §8.9): eski tek "Banka / POS" sütunu yerine ANLIK DURUM ve Banka Genel Bakış'la AYNI adlarla ayrı sütunlar:
+  // Gerçek Banka, Kart ve Kredi Borcu, Hesabı Atanmamış Eski Hareketler (POS Bekleyen ve Blokeli POS 2.2.0'da, POS ile). Banka sütunları yalnız
+  // Banka Görüntüleme ya da Finans Raporları yetkisi olana dolu döner (öbürüne boş: "—"); öbür sütunların yetkisi ayrı karar (plan §11.2).
+  const bankVisible = user => canUser(user, "bank.view") || canUser(user, "overview.view");
   function buildReport(user, ids) {
     const allowed = companies.listFor(user);
     const chosen = ids.length ? allowed.filter(item => ids.includes(item.id)) : allowed;
     if (!chosen.length) throw new HttpError(400, "Rapor için en az bir şirket seçin (yetkili olduğunuz şirketler).");
+    const showBank = bankVisible(user);
     const rows = chosen.map(item => {
       const app = appFor(companies.get(item.id));
       const view = app.context.overview?.compute?.() || {};
+      const bank = view.cash?.bank || {};
       return {
         id: item.id,
         code: item.code,
         name: item.name,
         cash: view.cash?.balance ?? 0,
-        bank: view.cash?.bank?.balance ?? 0,
+        realBank: showBank ? (bank.balance ?? 0) : null,
+        bankDebt: showBank ? (bank.debt?.total ?? 0) : null,
+        bankUnassigned: showBank ? (bank.unassigned?.total ?? 0) : null,
         receivable: view.receivable?.total ?? 0,
         payable: view.payable?.total ?? 0,
         overdue: view.receivable?.overdue ?? 0,
@@ -190,13 +200,15 @@ export function registerCompanyRoutes(router, { store, auth, audit, companies, a
         monthPurchase: view.invoices?.month?.purchase ?? 0,
       };
     });
-    const sum = key => roundMoney(rows.reduce((total, row) => total + (Number(row[key]) || 0), 0));
-    const headers = ["Şirket", "Nakit Kasa", "Banka / POS", "Cari Alacak", "Cari Borç", "Geciken Taksit", "Stok Değeri", "Açık Satış Faturası", "Açık Alış Faturası", "Bu Ay Satış", "Bu Ay Alış"];
-    const keys = ["cash", "bank", "receivable", "payable", "overdue", "stock", "invoiceOpenSale", "invoiceOpenPurchase", "monthSale", "monthPurchase"];
+    const sum = key => (rows.some(row => row[key] !== null) ? roundMoney(rows.reduce((total, row) => total + (Number(row[key]) || 0), 0)) : null);
+    const headers = ["Şirket", "Nakit Kasa", K10_LABELS.realBank, K10_LABELS.debt, K10_LABELS.unassigned, "Cari Alacak", "Cari Borç", "Geciken Taksit", "Stok Değeri", "Açık Satış Faturası", "Açık Alış Faturası", "Bu Ay Satış", "Bu Ay Alış"];
+    const keys = ["cash", "realBank", "bankDebt", "bankUnassigned", "receivable", "payable", "overdue", "stock", "invoiceOpenSale", "invoiceOpenPurchase", "monthSale", "monthPurchase"];
     const table = rows.map(row => [`${row.code} · ${row.name}`, ...keys.map(key => row[key])]);
     const totals = ["TOPLAM", ...keys.map(sum)];
-    return { headers, keys, rows, table, totals, types: ["", ...keys.map(() => "money")], generatedAt: clock().toISOString() };
+    return { headers, keys, rows, table, totals, types: ["", ...keys.map(() => "money")], labels: K10_LABELS, bankVisible: showBank, generatedAt: clock().toISOString() };
   }
+  // Yetkisiz banka sütunu (null) PDF ve Excel'de "—".
+  const moneyCell = value => (value === null || value === undefined ? "—" : tl(value));
   const idsOf = url => text(url.searchParams.get("ids")).split(",").map(value => value.trim()).filter(Boolean);
   router.get("/api/companies/report", async ({ req, res, url }) => {
     const user = auth.requireUser(req);
@@ -211,8 +223,8 @@ export function registerCompanyRoutes(router, { store, auth, audit, companies, a
       subtitle: `${report.rows.length} şirket · ${clock().toLocaleDateString("tr-TR")}`,
       headers: report.headers,
       types: ["text", ...report.keys.map(() => "money")],
-      rows: [...report.table.map(row => row.map((cell, index) => (index ? tl(cell) : cell))), report.totals.map((cell, index) => (index ? tl(cell) : cell))],
-      summary: [["Şirket", String(report.rows.length)], ["Toplam Nakit Kasa", tl(report.totals[1])], ["Toplam Cari Alacak", tl(report.totals[3])], ["Toplam Cari Borç", tl(report.totals[4])]],
+      rows: [...report.table.map(row => row.map((cell, index) => (index ? moneyCell(cell) : cell))), report.totals.map((cell, index) => (index ? moneyCell(cell) : cell))],
+      summary: [["Şirket", String(report.rows.length)], ["Toplam Nakit Kasa", tl(report.totals[1])], ...(report.bankVisible ? [[`Toplam ${K10_LABELS.realBank}`, tl(report.totals[2])]] : []), ["Toplam Cari Alacak", tl(report.totals[report.keys.indexOf("receivable") + 1])], ["Toplam Cari Borç", tl(report.totals[report.keys.indexOf("payable") + 1])]],
       officeName: store.setting("office.name", ""),
       userName: user.display_name || user.username || "",
       brand: config.productName,
@@ -223,7 +235,7 @@ export function registerCompanyRoutes(router, { store, auth, audit, companies, a
     const user = auth.requireUser(req);
     const report = buildReport(user, idsOf(url));
     const columns = report.headers;
-    const rowsOf = row => Object.fromEntries(columns.map((column, index) => [column, row[index]]));
+    const rowsOf = row => Object.fromEntries(columns.map((column, index) => [column, row[index] === null ? "—" : row[index]]));
     const xlsx = buildXlsx([{ name: "Birleşik Rapor", columns, rows: [...report.table.map(rowsOf), rowsOf(report.totals)] }], { now: clock(), title: "Şirketler Birleşik Raporu" });
     sendBuffer(res, xlsx, { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", name: "Sirketler Birlesik Raporu.xlsx" });
   });

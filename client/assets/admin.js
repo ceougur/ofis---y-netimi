@@ -1485,7 +1485,8 @@
     out.innerHTML = '<p class="adm-muted">Hesaplanıyor…</p>';
     try {
       const report = await HOF.api(`/api/companies/report?ids=${encodeURIComponent(chosenReportIds().join(","))}`);
-      const cell = (value, index) => (index ? `<td class="adm-right">${esc(HOF.formatMoney(value))}</td>` : `<td><b>${esc(value)}</b></td>`);
+      // v2.1.0 (K10): banka sütunları yetkisi olmayana boş (null) gelir; "—" yazılır.
+      const cell = (value, index) => (index ? `<td class="adm-right">${value === null || value === undefined ? "—" : esc(HOF.formatMoney(value))}</td>` : `<td><b>${esc(value)}</b></td>`);
       out.innerHTML = `<table class="adm-table"><thead><tr>${report.headers.map(header => `<th>${esc(header)}</th>`).join("")}</tr></thead>
         <tbody>${report.table.map(row => `<tr>${row.map(cell).join("")}</tr>`).join("")}</tbody>
         <tfoot><tr>${report.totals.map(cell).join("")}</tr></tfoot></table>`;

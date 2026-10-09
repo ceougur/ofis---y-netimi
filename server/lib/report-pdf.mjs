@@ -74,10 +74,19 @@ export function tablePdf({ title, subtitle = "", headers, rows, types = [], summ
 
   let page = null;
   let top = 0;
+  // v2.1.0 Aşama 14: sığmayan kolon başlığı kesilmez, sözcük sınırından en çok iki satıra iner (K10 adları — "Hesabı Atanmamış Eski Hareketler"
+  // — Birleşik Rapor'un dar kolonunda "Hesabı Atan…" diye kesiliyordu). Sığan başlık bugünkü gibi tek satırdır (satır yüksekliği aynı).
+  const headerLines = headers.map((text, index) => {
+    const width = cols[index] - cellPad * 2;
+    if (doc.measure(text, "bold", fontSize) <= width) return [text];
+    const lines = doc.wrap(text, width, "bold", fontSize);
+    return lines.length > 2 ? [lines[0], doc.fit(lines.slice(1).join(" "), width, "bold", fontSize)] : lines.length ? lines : [doc.fit(text, width, "bold", fontSize)];
+  });
+  const headerHeight = headerLines.some(lines => lines.length > 1) ? 18 + fontSize + 2 : 18;
   const header = () => {
-    page.rect(M, top, W, 18, { fill: "#f3f4f6" });
-    headers.forEach((text, index) => page.text(lefts[index] + cellPad, top + 12, doc.fit(text, cols[index] - cellPad * 2, "bold", fontSize), { font: "bold", size: fontSize, color: "#374151", align: align(index), width: align(index) === "right" ? cols[index] - cellPad * 2 : undefined }));
-    top += 18;
+    page.rect(M, top, W, headerHeight, { fill: "#f3f4f6" });
+    headerLines.forEach((lines, index) => lines.forEach((line, lineIndex) => page.text(lefts[index] + cellPad, top + 12 + lineIndex * (fontSize + 2), lineIndex || lines.length > 1 ? line : doc.fit(line, cols[index] - cellPad * 2, "bold", fontSize), { font: "bold", size: fontSize, color: "#374151", align: align(index), width: align(index) === "right" ? cols[index] - cellPad * 2 : undefined })));
+    top += headerHeight;
   };
   const created = `${pad(now.getDate())}.${pad(now.getMonth() + 1)}.${now.getFullYear()} ${pad(now.getHours())}:${pad(now.getMinutes())}`;
   const newPage = first => {
@@ -92,7 +101,10 @@ export function tablePdf({ title, subtitle = "", headers, rows, types = [], summ
       top += subtitle ? 58 : 44;
       if (summary.length) {
         const gap = 6;
-        const cardWidth = (W - gap * (summary.length - 1)) / summary.length;
+        // v2.1.0 Aşama 14: altıdan çok özet kutusu iki (ya da daha çok) sıraya dizilir; tek sırada tutar kutuya sığmayıp kesiliyordu
+        // ("33.114,2…"). Altı ve daha az kutu bugünkü gibi tek sıradadır.
+        const perRow = summary.length > 6 ? Math.ceil(summary.length / Math.ceil(summary.length / 6)) : summary.length;
+        const cardWidth = (W - gap * (perRow - 1)) / perRow;
         // v2.0.23: uzun özet başlığı ("Güncel Kasa (tüm hareketler)") kesilmez, sözcük sınırından en çok iki satıra iner;
         // kutular aynı boyda. Tek başına sığmayan sözcükte yazı küçülür (en az 6 punto); yine sığmazsa sözcük tireyle bölünür
         // ("Taksitlendiril-" / "miş"), harf ortasından sessizce kesilmez.
@@ -125,13 +137,15 @@ export function tablePdf({ title, subtitle = "", headers, rows, types = [], summ
         const twoLines = labels.some(label => label.lines.length > 1);
         const cardHeight = twoLines ? 45 : 36;
         summary.forEach(([, value], index) => {
-          const left = M + index * (cardWidth + gap);
-          page.rect(left, top, cardWidth, cardHeight, { fill: "#f9fafb", stroke: "#e5e7eb", radius: 5 });
+          const row = Math.floor(index / perRow);
+          const left = M + (index % perRow) * (cardWidth + gap);
+          const y = top + row * (cardHeight + gap);
+          page.rect(left, y, cardWidth, cardHeight, { fill: "#f9fafb", stroke: "#e5e7eb", radius: 5 });
           const { size, lines } = labels[index];
-          lines.forEach((line, lineIndex) => page.text(left + 8, top + 13 + lineIndex * (size + 1.5), line, { size, color: muted }));
-          page.text(left + 8, top + cardHeight - 8, doc.fit(value, cardWidth - 16, "bold", 10), { font: "bold", size: 10, color: ink });
+          lines.forEach((line, lineIndex) => page.text(left + 8, y + 13 + lineIndex * (size + 1.5), line, { size, color: muted }));
+          page.text(left + 8, y + cardHeight - 8, doc.fit(value, cardWidth - 16, "bold", 10), { font: "bold", size: 10, color: ink });
         });
-        top += cardHeight + 10;
+        top += Math.ceil(summary.length / perRow) * (cardHeight + gap) - gap + 10;
       }
     } else {
       page.text(M, top + 8, `${title}${subtitle ? ` · ${subtitle}` : ""}`, { font: "bold", size: 8, color: muted });
