@@ -10367,6 +10367,160 @@ input[type="search"]::-webkit-search-cancel-button {
   color: var(--do-muted);
   font: 600 12px var(--do-font);
 }
+/* Hareketler, İşlem Kartı, fiş formları ve Planlı İşlemler (v2.1.0 Aşama 4; §8.6). */
+.hof-bank-subhead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 6px 12px;
+}
+.hof-bank-filters {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  align-items: end;
+  gap: 8px 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--do-border);
+  border-radius: var(--do-radius-small);
+  background: var(--do-surface-soft);
+}
+.hof-bank-filter {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+  color: var(--do-muted);
+  font: 700 11px var(--do-font);
+}
+.hof-bank-filter.is-wide {
+  grid-column: span 2;
+}
+.hof-bank-filter select,
+.hof-bank-filter input {
+  width: 100%;
+  min-width: 0;
+  height: 34px;
+  padding: 0 8px;
+  border: 1px solid var(--do-border);
+  border-radius: 9px;
+  background: #fff;
+  color: var(--do-ink);
+  font: 500 13px var(--do-font);
+}
+.hof-bank-filters .hof-link-button {
+  justify-self: start;
+  align-self: center;
+}
+.hof-bank-moves-wrap {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+.hof-bank-table tbody tr[data-event] {
+  cursor: pointer;
+}
+.hof-bank-moves td.num,
+.hof-bank-moves .hof-plan-refno,
+.hof-bank-plans td.num {
+  white-space: nowrap;
+}
+.hof-bank-table tbody tr[data-event]:hover td,
+.hof-bank-table tbody tr[data-event]:focus-visible td {
+  background: #f4f9f6;
+}
+.hof-bank-table tbody tr[data-event]:focus-visible {
+  outline: 2px solid var(--do-accent);
+  outline-offset: -2px;
+}
+.hof-bank-table tr.is-muted td {
+  color: var(--do-muted);
+}
+.hof-bank-table tr.is-muted td.num b {
+  color: var(--do-muted);
+}
+.hof-bank-more {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+}
+.hof-bank-more small {
+  color: var(--do-muted);
+  font-size: 12px;
+}
+.hof-bank-row.is-due {
+  border-color: #ecd3a7;
+  background: var(--do-warn-soft);
+}
+.hof-bank-plans tr.is-due td {
+  background: #fffaf0;
+}
+.hof-bank-actions-cell {
+  white-space: nowrap;
+}
+.hof-bank-actions-cell .hof-link-button {
+  min-width: 28px;
+  min-height: 28px;
+  padding: 2px 4px;
+}
+.hof-bank-actions-cell .hof-link-button + .hof-link-button {
+  margin-left: 6px;
+}
+.hof-link-button.is-danger {
+  color: var(--do-danger);
+}
+.hof-bank-links {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  padding: 10px 14px;
+  border: 1px solid var(--do-border);
+  border-radius: var(--do-radius-small);
+  background: var(--do-surface-soft);
+  color: var(--do-ink-soft);
+  font-size: 13px;
+  list-style: none;
+}
+.hof-bank-history {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  padding-left: 20px;
+  color: var(--do-ink-soft);
+  font-size: 13px;
+}
+.hof-bank-history small {
+  color: var(--do-muted);
+}
+.hof-bank-adv {
+  grid-column: 1 / -1;
+  border: 1px dashed var(--do-border-strong);
+  border-radius: var(--do-radius-small);
+  padding: 6px 12px;
+}
+.hof-bank-adv summary {
+  cursor: pointer;
+  color: var(--do-ink);
+  font: 700 13px var(--do-font);
+}
+.hof-bank-adv-body {
+  display: grid;
+  gap: 8px;
+  padding: 8px 0 4px;
+}
+.hof-bank-preview-line {
+  grid-column: 1 / -1;
+  min-height: 1.4em;
+  margin: 0;
+  padding: 8px 12px;
+  border-radius: var(--do-radius-small);
+  background: var(--do-accent-soft);
+  color: var(--do-ink);
+  font: 700 13px var(--do-font);
+}
+.hof-bank-preview-line:empty {
+  display: none;
+}
 /* Mobil (§8.12): 720 px'te tablolar karta döner; yatay kaydırma yok. */
 @media (max-width: 720px) {
   .hof-bank-table thead {
@@ -10436,6 +10590,15 @@ input[type="search"]::-webkit-search-cancel-button {
 @media (max-width: 640px) {
   .hof-bank-sets {
     grid-template-columns: minmax(0, 1fr);
+  }
+  .hof-bank-filters {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+  .hof-bank-filter.is-wide {
+    grid-column: 1 / -1;
+  }
+  .hof-bank-actions-cell {
+    white-space: normal;
   }
   .hof-bank-fee {
     grid-template-columns: minmax(0, 1fr) auto;

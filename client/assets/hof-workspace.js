@@ -888,7 +888,7 @@
         HOF.can("invoices.view") ? HOF.api("/api/workspace/invoices?tab=sale&pay=overdue&limit=1", background).catch(() => null) : null,
         HOF.can("bank.view") ? HOF.api("/api/workspace/bank/badge?count=1", background).catch(() => null) : null,
       ]);
-      // Banka rozeti (v2.1.0): Hesabı Belirsiz Yeni Hareketler sayısı.
+      // Banka rozeti (v2.1.0): Hesabı Belirsiz Yeni Hareketler ve vadesi gelen Planlı İşlemler sayısı.
       if (bank) setBadge("bank", bank.count);
       // Fatura rozeti (v2.0.15): vadesi geçmiş, tahsil edilmemiş satış faturası sayısı.
       if (invoices) setBadge("invoices", invoices.total);
@@ -1038,9 +1038,11 @@
     // v2.0.22: yalnız bilgi düzeltmesi (cari notu, adresi…) taksit bölümünü ve rozetleri değiştirmez.
     if (change.info) return;
     if (change.kind === "plans" || change.kind === "accounts" || (change.kind === "activity" && change.caseKey && HOF.selectedCase()?.key === change.caseKey)) casePlanSoon();
-    if (change.kind === "plans" || change.kind === "cash") badges();
+    if (change.kind === "plans" || change.kind === "cash" || change.kind === "bank") badges();
   });
   HOF.on("plans-changed", refreshBadges);
+  // v2.1.0 Aşama 4: banka yazımı (fiş, ters kayıt, planlı işlem) menüdeki Banka rozetini (vadesi gelen planlı işlemler) hemen yeniler.
+  HOF.on("bank-changed", refreshBadges);
   // Detay kartındaki taksit bölümü: başka bilgisayardaki değişiklikte birleştirilerek (kayıt seçiliyse) yenilenir.
   const casePlanSoon = HOF.refresher(() => (HOF.selectedCase() ? renderCasePlan(true) : null));
   // v2.0.11: Kasa'ya yazan her kaynak (Kasa, detay kartı tahsilatı, cari, taksit, stok, çek/senet, geri yükleme) değişince

@@ -1,6 +1,11 @@
 /* DestekOfis — Banka (v2.1.0; docs/BANKA-MODULU-PLAN.md §8). Sol menüde Taksitler'in hemen altında (kullanıcı kararı, K13).
- * Pencere sekmeleri: Genel Bakış · Hesaplar · Ayarlar. Hareketler sekmesi (İşlem Kartı) Aşama 4'te gelir; POS ile Ekstre ve Mutabakat
- * sekmeleri o özellikler gelince görünür (yarım özellik görünmez, §12.1).
+ * Pencere sekmeleri: Genel Bakış · Hesaplar · Hareketler · Ayarlar. POS ile Ekstre ve Mutabakat sekmeleri o özellikler gelince görünür
+ * (yarım özellik görünmez, §12.1).
+ *  - Hareketler (Aşama 4; §8.6): sunucuda sayfalanan dizin (imleçli "Daha Fazla Göster", HOF.listGate), süzgeçler (hesap, tür, giriş/çıkış,
+ *    durum, tarih, tutar, arama), yürüyen bakiye (tek hesap seçili ve başka süzgeç yokken), "Planlı İşlemler" görünümü (deftere girmez;
+ *    Gerçekleştir / Atla / Sil) ve "+ Masraf", "+ Faiz", "+ Diğer İşlem", "+ Planlı İşlem". Satır → İşlem Kartı: fiş satırları, bağlar,
+ *    Ters Kaydet, Düzelt, Açıklamayı Düzelt; pasif düğmenin nedeni görünür yazıyla. Benzer İşlem'de (409 bank-similar) "Yine de Kaydet"
+ *    aynı istek kimliğiyle gönderilir (similarOk). Fiş formunun vergi ve hesap varsayılanları Banka Ayarları'ndan (voucher-meta).
  *  - Genel Bakış (K10): ana değer Gerçek Banka (banka hesaplarının 102 bakiyeleri); Kart ve Kredi Borcu yalnız kart/kredi hesabı varsa;
  *    Hesabı Atanmamış Eski Hareketler ayrı satırda, hiçbir toplama girmez ("Şimdi Düzenle").
  *  - Hesaplar: liste, hesap kartı (aç, düzelt, Pasife Al, sil), Hesap Detayı (son hareketler, Açılışı Düzelt), Alt Hesap Mizanı.
@@ -15,10 +20,11 @@
   const HOF = window.HOF;
   const { esc } = HOF;
   const BASE = "/api/workspace/bank";
-  // Sekme sırası (§8.2). "movements" (Hareketler) Aşama 4'te bu listeye Hesaplar'dan sonra eklenir.
+  // Sekme sırası (§8.2): Hareketler Hesaplar'dan hemen sonra (Aşama 4). POS ve Ekstre ve Mutabakat o sürümlerde eklenir.
   const TABS = [
     ["overview", "Genel Bakış"],
     ["accounts", "Hesaplar"],
+    ["movements", "Hareketler"],
     ["settings", "Ayarlar"],
   ];
   const KINDS = [
@@ -64,7 +70,14 @@
   let ticket = 0;
   let wizardOffered = false;
   let choicesCache = null;
-  const view = { tab: "overview", mode: "tab", accountId: "", status: "active", summary: null, list: null, account: null, settings: null, choices: null, legacy: null, runs: null, error: "", advanced: false, dirty: false, selected: new Set(), legacyTarget: "" };
+  let metaCache = null;
+  const view = { tab: "overview", mode: "tab", accountId: "", status: "active", summary: null, list: null, account: null, settings: null, choices: null, legacy: null, runs: null, error: "", advanced: false, dirty: false, selected: new Set(), legacyTarget: "", eventRef: "", event: null, eventBack: "movements", meta: null, due: null, latest: null };
+  // Hareket listeleri (Aşama 4): Hareketler sekmesi ve Hesap Detayı ayrı durum ve ayrı liste kapısıyla (HOF.listGate: eski yanıt yeni
+  // süzgeci ezmez; süzgeç yüklenirken "Daha Fazla" yok sayılır).
+  const PAGE = 50;
+  const newMoves = (key, filter = {}) => ({ key, filter: { account: "", type: "", dir: "", status: "", from: "", to: "", min: "", max: "", q: "", ...filter }, planned: false, rows: [], plans: [], balance: false, hasMore: false, cursor: null, loaded: false, error: "", account: "", gate: HOF.listGate() });
+  const moves = newMoves("main");
+  let accountMoves = newMoves("account");
 
   const moduleName = () => HOF.uiLabel?.("side.bank", "Banka") || "Banka";
   const root = () => modal?.dialog.querySelector("[data-bank]");
@@ -103,18 +116,19 @@
           view.mode = "tab";
           view.accountId = "";
           view.account = null;
+          view.eventRef = "";
+          view.event = null;
           view.dirty = false;
           view.selected = new Set();
+          // Pencere her açılışta baştan (son sekme hatırlanmaz): Hareketler'in süzgeçleri ve Planlı görünümü de.
+          Object.assign(moves, { filter: newMoves("main").filter, planned: false, rows: [], plans: [], loaded: false, cursor: null, hasMore: false, error: "" });
         },
       });
       modal.dialog.classList.add("hof-bank-modal");
       modal.dialog.addEventListener("click", onClick);
       modal.dialog.addEventListener("change", onChange);
       modal.dialog.addEventListener("input", onInput);
-      modal.dialog.addEventListener("keydown", event => {
-        const row = event.target.closest?.("tr[data-account]");
-        if (event.key === "Enter" && row) openAccount(row.dataset.account);
-      });
+      modal.dialog.addEventListener("keydown", onKey);
     }
     if (tab) setTab(tab, { load: false });
     if (accountId) {
@@ -124,7 +138,7 @@
     render();
     return reload({ first: true });
   }
-  const viewKey = () => `${view.mode}|${view.tab}|${view.accountId}`;
+  const viewKey = () => `${view.mode}|${view.tab}|${view.accountId}|${view.eventRef}`;
 
   /** Pencerenin verisi: özet ve hesaplar her zaman; görünüme göre hesap kartı, eski hareketler ya da ayarlar. */
   async function reload({ quiet = false, first = false } = {}) {
@@ -134,10 +148,24 @@
     try {
       const [summary, list] = await Promise.all([api("/summary", options), api("/accounts?status=all", options)]);
       const next = { summary, list };
-      if (view.mode === "account" && view.accountId) next.account = await api(`/accounts/${encodeURIComponent(view.accountId)}`, options);
+      if (view.mode === "account" && view.accountId) {
+        next.account = await api(`/accounts/${encodeURIComponent(view.accountId)}`, options);
+        // Hesap Detayı'nda hesabın hareketleri (yürüyen bakiyeli dizin; §8.5): ilk çizimde boş görünmesin diye hesapla birlikte yüklenir.
+        if (accountMoves.filter.account !== view.accountId) accountMoves = newMoves("account", { account: view.accountId });
+        await loadMoves(accountMoves, { quiet, paint: false });
+      }
       if (view.mode === "legacy") [next.legacy, next.runs] = await Promise.all([api("/legacy", options), api("/setup", options).then(data => data.runs)]);
       const settingsTab = view.mode === "tab" && view.tab === "settings";
       if (settingsTab && !view.dirty) [next.settings, next.choices] = await Promise.all([api("/settings", options), api("/choices", options)]);
+      if (view.mode === "tab" && view.tab === "overview") {
+        // Vadesi gelen planlı işlemler (rozetin nedeni) ve son banka hareketleri (§8.4 "Son Banka Hareketleri"); ikisi de yalnız okur.
+        [next.due, next.latest] = await Promise.all([api("/plans?due=1", options).then(data => data.plans).catch(() => []), api(`/movements?limit=10`, options).then(data => data.rows).catch(() => [])]);
+      }
+      if (view.mode === "tab" && view.tab === "movements") {
+        next.meta = await voucherMeta().catch(() => view.meta);
+        await loadMoves(moves, { quiet, paint: false });
+      }
+      if (view.mode === "event" && view.eventRef) next.event = await api(`/events/${encodeURIComponent(view.eventRef)}`, options);
       if (!modal || own !== ticket || key !== viewKey()) return;
       // Ayarlar düzenlenirken arka plan yenilemesi formu ezmez (kaydedilmemiş değişiklik kaybolmasın): veri alınır, ekran çizilmez.
       const keepForm = settingsTab && view.dirty;
@@ -157,6 +185,12 @@
         view.account = null;
         return reload();
       }
+      if (view.mode === "event" && error.status === 404) {
+        HOF.toastError(error);
+        view.eventRef = "";
+        view.event = null;
+        return goBack();
+      }
       view.error = error.message;
       render();
     }
@@ -168,6 +202,8 @@
     view.mode = "tab";
     view.accountId = "";
     view.account = null;
+    view.eventRef = "";
+    view.event = null;
     if (tab !== "settings") view.dirty = false;
     if (load) {
       render();
@@ -178,14 +214,36 @@
     view.mode = "account";
     view.accountId = id;
     view.account = null;
+    view.eventRef = "";
+    view.event = null;
     render();
     reload();
+  }
+  /** İşlem Kartı (§8.6): İşlem No ya da kimlikle. Geri dönüş açıldığı yere (Hareketler, Hesap Detayı, Genel Bakış); kart → kart geçişinde değişmez. */
+  function openEvent(ref, { back = "" } = {}) {
+    if (!ref) return;
+    if (view.mode !== "event") view.eventBack = back || (view.mode === "account" ? "account" : view.mode === "tab" ? view.tab : "movements");
+    view.mode = "event";
+    view.eventRef = ref;
+    view.event = null;
+    render();
+    reload();
+  }
+  function goBack() {
+    view.eventRef = "";
+    view.event = null;
+    if (view.eventBack === "account" && view.accountId) {
+      view.mode = "account";
+      render();
+      return reload();
+    }
+    return setTab(TABS.some(([id]) => id === view.eventBack) ? view.eventBack : "movements");
   }
 
   function render() {
     const node = root();
     if (!node) return;
-    const content = view.mode === "account" ? accountHtml() : view.mode === "legacy" ? legacyHtml() : view.tab === "accounts" ? accountsHtml() : view.tab === "settings" ? settingsHtml() : overviewHtml();
+    const content = view.mode === "account" ? accountHtml() : view.mode === "legacy" ? legacyHtml() : view.mode === "event" ? eventHtml() : view.tab === "accounts" ? accountsHtml() : view.tab === "movements" ? movementsHtml() : view.tab === "settings" ? settingsHtml() : overviewHtml();
     const tabs = `<div class="hof-bank-tabs" role="tablist" aria-label="Banka bölümleri">${TABS.map(([id, label]) => `<button type="button" role="tab" class="hof-rep-chip ${view.mode === "tab" && view.tab === id ? "is-on" : ""}" aria-selected="${view.mode === "tab" && view.tab === id}" data-tab="${id}">${esc(label)}</button>`).join("")}</div>`;
     HOF.swap(node, `${tabs}<div class="hof-bank-body">${content}</div>`);
   }
@@ -216,6 +274,12 @@
       rows.push(`<div class="hof-bank-row is-unassigned" data-bank-unassigned><div><b>${esc(labels.unassigned || "Hesabı Atanmamış Eski Hareketler")}</b> <strong>${esc(fmt(unassigned.totalMinor))}</strong>
         <small>Havale / EFT (102.00) ${esc(fmt(unassigned.bankMinor))} · POS / Kart (108.00) ${esc(fmt(unassigned.cardMinor))} — Gerçek Banka'ya ve hiçbir toplama girmez.${unassigned.newCount ? ` Hesabı belirsiz yeni hareket: ${unassigned.newCount}.` : ""}</small></div>
         <button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="legacy">Şimdi Düzenle</button></div>`);
+    }
+    // Vadesi gelen planlı işlemler (rozette sayılır; Aşama 4): deftere kendiliğinden yazılmaz, kullanıcı Gerçekleştir ile kaydeder.
+    if (view.due?.length) {
+      rows.push(`<div class="hof-bank-row is-due" data-bank-due><div><b>Vadesi Gelen Planlı İşlemler</b> <strong>${view.due.length}</strong>
+        <small>Planlı işlemler deftere kendiliğinden yazılmaz; bankada gerçekleştiyse Hareketler → Planlı İşlemler'den “Gerçekleştir” ile kaydedin.</small></div>
+        <button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="plans-due">Planlı İşlemleri Aç</button></div>`);
     }
     let table = "";
     if (mains.length) {
@@ -252,7 +316,12 @@
     const empty = accounts.length
       ? ""
       : '<div class="hof-bank-empty" data-bank-empty><h4>Henüz Banka Hesabı Yok</h4><p>Banka hesaplarınızı ve açılış bakiyelerini Kurulum Sihirbazı ile birkaç adımda girin. Hesap tanımlanana kadar havale / EFT ile girilen tahsilat ve ödemeler “Hesabı Atanmamış Eski Hareketler”de toplanır.</p></div>';
-    return `<div class="hof-rep-stats hof-bank-stats">${tiles.join("")}</div>${rows.join("")}${empty}${table}
+    // Son Banka Hareketleri (§8.4; 10 satır, tek kaynaktan): satır İşlem Kartı'nı açar.
+    const latest = view.latest?.length
+      ? `<div class="hof-bank-subhead"><h4 class="hof-bank-subtitle">Son Banka Hareketleri</h4><button type="button" class="hof-link-button" data-act="mv-open">Tüm Hareketler</button></div>
+        <div class="hof-bank-table-wrap">${moveTableHtml(view.latest, { showAccount: true, showBalance: false, extraClass: "hof-bank-latest" })}</div>`
+      : "";
+    return `<div class="hof-rep-stats hof-bank-stats">${tiles.join("")}</div>${rows.join("")}${empty}${table}${latest}
       <p class="hof-rep-note">Gerçek Banka: banka hesaplarınızın (102) defter bakiyelerinin toplamı. Hesabı atanmamış eski hareketler bu toplama girmez.</p>`;
   }
 
@@ -311,25 +380,29 @@
       if (openingBlock) blocks.push([opening ? "Açılışı Düzelt" : "Açılış Bakiyesi Gir", openingBlock]);
       if (deleteBlock) blocks.push(["Sil", deleteBlock]);
     }
+    // Hesap Detayı'ndan hareket girişi (§8.5: + Masraf, + Faiz, …): hesabın türüne göre; pasif hesapta pasif ve nedeni yazılı. Döviz
+    // hesabında fiş Aşama 13'te (yarım özellik görünmez).
+    const moveButtons = [];
+    if (HOF.can("bank.move") && a.currency === "TRY") {
+      const why = a.status === "active" ? "" : "Hesap pasif; işlem girmek için önce Etkinleştir.";
+      if (["demand", "commercial", "other"].includes(a.kind)) moveButtons.push(["v-fee", "+ Masraf", why, ""], ["v-interest", "+ Faiz", why], ["v-other", "+ Diğer İşlem", why]);
+      else if (a.kind === "time") moveButtons.push(["v-interest", "+ Faiz", why, ""]);
+      else if (a.kind === "card") moveButtons.push(["v-card", "+ Kart Borcu Ödemesi", why, ""]);
+      else if (a.kind === "loan" && HOF.can("bank.transfer")) moveButtons.push(["v-loan", "+ Kredi İşlemi", why, ""]);
+      if (why && moveButtons.length) blocks.push(["Hareket Girişi", why]);
+    }
     const button = (act, label, why = "", cls = "hof-button-ghost") => `<button type="button" class="hof-button hof-button-small ${cls}" data-act="${act}" ${why ? `disabled aria-disabled="true" title="${esc(why)}"` : ""}>${esc(label)}</button>`;
-    const actions = canAccounts()
-      ? [
-          button("edit", "Düzenle"),
-          button("opening", opening ? "Açılışı Düzelt" : "Açılış Bakiyesi Gir", openingBlock, opening ? "hof-button-ghost" : ""),
-          button("status", a.status === "active" ? "Pasife Al" : "Etkinleştir"),
-          button("delete", "Sil", deleteBlock, "hof-button-danger-ghost"),
-        ].join("")
-      : "";
-    const recent = (a.recent || [])
-      .map(
-        item => `<tr class="${item.signedMinor >= 0 ? "is-in" : "is-out"}">
-          ${td("Tarih", esc(dateText(item.date)))}
-          ${td("Açıklama", esc(item.description || "—"))}
-          ${td("İşlem No", item.eventNo ? `<span class="hof-plan-refno">${esc(item.eventNo)}</span>` : "—")}
-          ${td("Tutar", `<b>${esc(signed(item.signedMinor))}</b>`, "num")}
-        </tr>`,
-      )
-      .join("");
+    const actions = [
+      ...moveButtons.map(([act, label, why, cls]) => button(act, label, why, cls)),
+      ...(canAccounts()
+        ? [
+            button("edit", "Düzenle"),
+            button("opening", opening ? "Açılışı Düzelt" : "Açılış Bakiyesi Gir", openingBlock, opening ? "hof-button-ghost" : ""),
+            button("status", a.status === "active" ? "Pasife Al" : "Etkinleştir"),
+            button("delete", "Sil", deleteBlock, "hof-button-danger-ghost"),
+          ]
+        : []),
+    ].join("");
     return `<div class="hof-bank-detail-head">${back}
         <div class="hof-plan-title"><h3>${esc(accountLabel(a))} <span class="hof-plan-refno">${esc(a.code)}</span> ${a.status === "active" ? '<span class="hof-plan-badge is-done">Etkin</span>' : '<span class="hof-plan-badge is-muted">Pasif</span>'}</h3><small>${esc(a.kindLabel)} · ${esc(currencyLabel(a.currency))} · Alt Hesap ${esc(a.glSub)}</small></div>
         <div class="hof-chq-amount"><span>${main ? "Gerçek Bakiye" : "Borç"}</span><strong data-bank-balance>${esc(fmt(balance, a.currency))}</strong>${a.currency !== "TRY" && main ? `<small>TL karşılığı ${esc(fmt(a.balanceMinor))}</small>` : ""}</div>
@@ -351,9 +424,9 @@
       </dl>
       ${actions ? `<div class="hof-chq-actions" role="toolbar" aria-label="Hesap işlemleri">${actions}</div>` : ""}
       ${blocks.length ? `<ul class="hof-inv-blocks" data-bank-blocks>${blocks.map(([name, why]) => `<li><b>${esc(name)} kapalı:</b> ${esc(why)}</li>`).join("")}</ul>` : ""}
-      <h4 class="hof-bank-subtitle">Son Hareketler</h4>
-      <div class="hof-bank-table-wrap"><table class="hof-table hof-bank-table hof-bank-recent"><thead><tr><th>Tarih</th><th>Açıklama</th><th>İşlem No</th><th class="num">Tutar</th></tr></thead><tbody>${recent || '<tr><td colspan="4" class="hof-empty">Bu hesapta hareket yok.</td></tr>'}</tbody></table></div>
-      ${a.recentTotal > (a.recent || []).length ? `<p class="hof-rep-note">Son ${(a.recent || []).length} hareket gösteriliyor (toplam ${a.recentTotal}).</p>` : ""}`;
+      <div class="hof-bank-subhead"><h4 class="hof-bank-subtitle">Hesap Hareketleri</h4><button type="button" class="hof-link-button" data-act="mv-account">Hareketler'de Süz</button></div>
+      <div class="hof-bank-moves-wrap" data-moves="account" data-account="${esc(accountMoves.account)}">${movesListHtml(accountMoves)}</div>
+      <p class="hof-rep-note">Yürüyen bakiye en yeni hareketten geriye doğru; satıra tıklayınca İşlem Kartı açılır.</p>`;
   }
 
   // ---------- Hesabı Atanmamış Eski Hareketler (§10.3) ----------
@@ -1045,6 +1118,681 @@
     loadPreview(state);
   }
 
+  // ---------- Hareketler (Aşama 4; §8.6) ----------
+  /** Fiş formunun seçenekleri (türler, masraf türleri, vergi kipleri, tekrarlar, hesap adları, varsayılanlar); banka değişince boşalır. */
+  function voucherMeta(force = false) {
+    if (!metaCache || force)
+      metaCache = api("/voucher-meta").catch(error => {
+        metaCache = null;
+        throw error;
+      });
+    return metaCache;
+  }
+  const STATUS_FILTERS = [
+    ["", "Etkin ve Ters Kaydedilen"],
+    ["active", "Yalnız Etkin"],
+    ["reversed", "Ters Kaydedilen"],
+    ["cancelled", "İptal Edilen"],
+    ["all", "Hepsi"],
+  ];
+  const DIR_FILTERS = [
+    ["", "Tümü"],
+    ["in", "Giriş"],
+    ["out", "Çıkış"],
+  ];
+  const filtered = state => Object.entries(state.filter).some(([key, value]) => key !== "account" && String(value || "").trim());
+  /**
+   * Liste yüklemesi (HOF.listGate kuralı): kullanıcının yüklemesi eski yanıtları geçersiz kılar; arka plan yenilemesi (quiet) kılmaz ve
+   * yüklenmiş satır sayısını korur (en çok 200); "Daha Fazla" imleçle sonraki sayfayı ekler, süzgeç yüklenirken yok sayılır. İmleç geçersizse
+   * (sunucu yeniden başladı ya da süzgeç değişti) liste baştan açılır. paint: false → yalnız veri (pencere çizimiyle birlikte gösterilir).
+   */
+  async function loadMoves(state, { more = false, quiet = false, paint = true } = {}) {
+    const run = state.gate.start({ quiet, more });
+    if (!run) return;
+    const options = quiet ? { background: true } : {};
+    try {
+      if (state.planned) {
+        const query = new URLSearchParams();
+        if (state.filter.account) query.set("account", state.filter.account);
+        const data = await api(`/plans${String(query) ? `?${query}` : ""}`, options);
+        if (!run.current()) return;
+        run.applied();
+        Object.assign(state, { plans: data.plans || [], loaded: true, error: "", account: state.filter.account, hasMore: false });
+      } else {
+        const query = new URLSearchParams();
+        for (const [key, value] of Object.entries(state.filter)) if (String(value ?? "").trim()) query.set(key, String(value).trim());
+        if (more) query.set("cursor", state.cursor || "");
+        else if (quiet && state.rows.length > PAGE) query.set("limit", String(Math.min(200, state.rows.length)));
+        const data = await api(`/movements?${query}`, options);
+        if (!run.current()) return;
+        run.applied();
+        Object.assign(state, { rows: more ? [...state.rows, ...data.rows] : data.rows, cursor: data.nextCursor || null, hasMore: Boolean(data.hasMore), balance: Boolean(data.balance), loaded: true, error: "", account: data.account || "" });
+      }
+    } catch (error) {
+      if (!run.current()) return;
+      if (more) {
+        HOF.toastError(error);
+        if (error?.data?.code === "bank-cursor") return loadMoves(state, { paint });
+        return;
+      }
+      if (quiet && !HOF.lostRecord(error)) throw error;
+      Object.assign(state, { rows: [], plans: [], loaded: true, error: error.message, hasMore: false, cursor: null });
+    } finally {
+      run.done();
+    }
+    if (paint) paintMoves(state);
+  }
+  function paintMoves(state) {
+    const node = root()?.querySelector(`[data-moves="${state.key}"]`);
+    if (!node) return;
+    node.dataset.account = state.account || "";
+    HOF.swap(node, movesListHtml(state));
+  }
+  /** Hareket satırları: tarih, İşlem No, tür (durum rozetiyle), [hesap], açıklama (cari, açıklama, referans, fatura), tutar, [bakiye]. */
+  function moveTableHtml(rows, { showAccount = false, showBalance = false, extraClass = "" } = {}) {
+    const body = rows
+      .map(row => {
+        const desc = [row.partyName, row.description, row.reference ? `Ref. ${row.reference}` : "", row.invoiceNo ? `Fatura ${row.invoiceNo}` : "", row.feeNo ? `Masraf ${row.feeNo}` : ""].filter(Boolean).join(" · ");
+        const badge = row.status === "active" ? "" : ` <span class="hof-plan-badge is-muted">${esc(row.statusLabel)}</span>`;
+        const cls = row.status !== "active" ? "is-muted" : row.signedMinor >= 0 ? "is-in" : "is-out";
+        return `<tr data-event="${esc(row.eventId)}" data-no="${esc(row.no)}" data-type="${esc(row.type)}" data-state="${esc(row.status)}" data-signed="${Number(row.signedMinor) || 0}" data-balance="${row.balanceAfterMinor === null || row.balanceAfterMinor === undefined ? "" : row.balanceAfterMinor}" tabindex="0" class="${cls}">
+          ${td("Tarih", esc(dateText(row.date)))}
+          ${td("İşlem No", `<span class="hof-plan-refno">${esc(row.no)}</span>`)}
+          ${td("Tür", `${esc(row.typeLabel)}${badge}`)}
+          ${showAccount ? td("Hesap", esc(row.accountLabel || "—")) : ""}
+          ${td("Açıklama", esc(desc || "—"))}
+          ${td("Tutar", `<b>${esc(signed(row.signedMinor))}</b>`, "num")}
+          ${showBalance ? td("Bakiye", esc(fmt(row.balanceAfterMinor)), "num") : ""}
+        </tr>`;
+      })
+      .join("");
+    return `<table class="hof-table hof-bank-table hof-bank-moves ${extraClass}"><thead><tr><th>Tarih</th><th>İşlem No</th><th>Tür</th>${showAccount ? "<th>Hesap</th>" : ""}<th>Açıklama</th><th class="num">Tutar</th>${showBalance ? '<th class="num">Bakiye</th>' : ""}</tr></thead><tbody>${body}</tbody></table>`;
+  }
+  function movesListHtml(state) {
+    if (!state.loaded || state.error) return HOF.listPending(state.error);
+    if (state.planned) return plansHtml(state);
+    if (!state.rows.length) return `<p class="hof-empty" data-moves-empty>${filtered(state) ? "Bu süzgeçte hareket yok." : state.key === "account" ? "Bu hesapta hareket yok." : "Henüz banka hareketi yok."}</p>`;
+    const more = state.hasMore ? `<div class="hof-bank-more"><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="mv-more" data-moves-key="${esc(state.key)}">Daha Fazla Göster</button><small>${state.rows.length} hareket gösteriliyor</small></div>` : state.rows.length > PAGE ? `<p class="hof-rep-note">${state.rows.length} hareketin hepsi gösteriliyor.</p>` : "";
+    return `<div class="hof-bank-table-wrap">${moveTableHtml(state.rows, { showAccount: !state.account, showBalance: state.balance, extraClass: state.key === "account" ? "hof-bank-recent" : "" })}</div>${more}`;
+  }
+  const PLAN_OUT = new Set(["fee", "interest_out", "other_out", "card_payment", "loan_repay"]);
+  function plansHtml(state) {
+    if (!state.plans.length) return '<p class="hof-empty" data-moves-empty>Planlı işlem yok. Kira, kredi taksiti ya da masraf talimatı gibi tekrar eden ödemeleri “+ Planlı İşlem” ile ekleyin.</p>';
+    const canMove = HOF.can("bank.move");
+    const rows = state.plans
+      .map(plan => {
+        const allowed = canMove && (!TRANSFER_KINDS.has(plan.kind) || HOF.can("bank.transfer"));
+        const amount = (PLAN_OUT.has(plan.kind) ? -1 : 1) * plan.amountMinor;
+        const actions = allowed ? `<button type="button" class="hof-link-button" data-act="plan-run" data-plan="${esc(plan.id)}">Gerçekleştir</button>${plan.repeat !== "none" ? `<button type="button" class="hof-link-button" data-act="plan-skip" data-plan="${esc(plan.id)}">Atla</button>` : ""}<button type="button" class="hof-link-button is-danger" data-act="plan-cancel" data-plan="${esc(plan.id)}">Sil</button>` : "";
+        return `<tr data-plan="${esc(plan.id)}" class="${plan.due ? "is-due" : ""}">
+          ${td("Planlı Tarih", esc(dateText(plan.plannedDate)))}
+          ${td("Tür", esc(plan.typeLabel))}
+          ${td("Hesap", `${esc(plan.accountLabel || "—")}${plan.toAccountLabel ? `<small>${esc(plan.toAccountLabel)}</small>` : ""}`)}
+          ${td("Tekrar", esc(plan.repeatLabel))}
+          ${td("Açıklama", esc(plan.description || "—"))}
+          ${td("Tutar", `<b>${esc(signed(amount))}</b>`, "num")}
+          ${td("Durum", plan.due ? '<span class="hof-plan-badge is-soon">Vadesi Geldi</span>' : '<span class="hof-plan-badge is-info">Planlı</span>')}
+          <td class="hof-bank-actions-cell">${actions}</td>
+        </tr>`;
+      })
+      .join("");
+    return `<div class="hof-bank-table-wrap"><table class="hof-table hof-bank-table hof-bank-plans"><thead><tr><th>Planlı Tarih</th><th>Tür</th><th>Hesap</th><th>Tekrar</th><th>Açıklama</th><th class="num">Tutar</th><th>Durum</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>`;
+  }
+  /** Hareketler sekmesi: işlem düğmeleri, süzgeçler, liste (ya da Planlı İşlemler). */
+  function movementsHtml() {
+    const s = moves;
+    const canMove = HOF.can("bank.move");
+    const accounts = view.list?.accounts || [];
+    const option = (value, label, current) => `<option value="${esc(value)}" ${String(value) === String(current ?? "") ? "selected" : ""}>${esc(label)}</option>`;
+    const banks = new Map();
+    for (const account of accounts) {
+      if (!banks.has(account.bankName)) banks.set(account.bankName, []);
+      banks.get(account.bankName).push(account);
+    }
+    const accountSelect = `<select data-mv="account" aria-label="Hesap">${option("", "Tüm Hesaplar", s.filter.account)}${[...banks.entries()].map(([bank, list]) => `<optgroup label="${esc(bank)}">${list.map(account => option(account.id, `${account.name} (${account.code})${account.status === "passive" ? " · Pasif" : ""}`, s.filter.account)).join("")}</optgroup>`).join("")}</select>`;
+    const groups = view.meta?.groups || [];
+    const filter = (label, control, wide = false) => `<label class="hof-bank-filter${wide ? " is-wide" : ""}"><span>${esc(label)}</span>${control}</label>`;
+    const tools = canMove
+      ? `<button type="button" class="hof-button hof-button-small" data-act="v-fee">+ Masraf</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="v-interest">+ Faiz</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="v-other">+ Diğer İşlem</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="plan-new">+ Planlı İşlem</button>`
+      : "";
+    const filters = s.planned
+      ? filter("Hesap", accountSelect)
+      : [
+          filter("Hesap", accountSelect),
+          filter("İşlem Türü", `<select data-mv="type">${option("", "Tümü", s.filter.type)}${groups.map(item => option(item.key, item.label, s.filter.type)).join("")}</select>`),
+          filter("Giriş ve Çıkış", `<select data-mv="dir">${DIR_FILTERS.map(([value, label]) => option(value, label, s.filter.dir)).join("")}</select>`),
+          filter("Durum", `<select data-mv="status">${STATUS_FILTERS.map(([value, label]) => option(value, label, s.filter.status)).join("")}</select>`),
+          filter("Başlangıç", `<input type="date" data-mv="from" value="${esc(s.filter.from)}" max="${esc(HOF.localToday())}">`),
+          filter("Bitiş", `<input type="date" data-mv="to" value="${esc(s.filter.to)}">`),
+          filter("En Az Tutar", `<input type="text" inputmode="decimal" data-mv="min" value="${esc(s.filter.min)}" placeholder="ör. 100">`),
+          filter("En Çok Tutar", `<input type="text" inputmode="decimal" data-mv="max" value="${esc(s.filter.max)}" placeholder="ör. 5.000">`),
+          filter("Ara", `<input type="search" data-mv="q" value="${esc(s.filter.q)}" maxlength="100" placeholder="Cari adı, açıklama, referans ya da İşlem No">`, true),
+        ].join("");
+    return `<div class="hof-bank-toolbar">${tools}<div class="hof-rep-presets" role="group" aria-label="Görünüm"><button type="button" class="hof-rep-chip ${s.planned ? "is-on" : ""}" aria-pressed="${s.planned}" data-act="mv-planned">Planlı İşlemler</button></div></div>
+      <div class="hof-bank-filters" data-mv-filters>${filters}${filtered(s) && !s.planned ? '<button type="button" class="hof-link-button" data-act="mv-clear">Süzgeçleri Temizle</button>' : ""}</div>
+      <div class="hof-bank-moves-wrap" data-moves="main" data-account="${esc(s.account)}">${movesListHtml(s)}</div>
+      <p class="hof-rep-note">${s.planned ? "Planlı işlemler deftere kendiliğinden yazılmaz; bankada gerçekleşince “Gerçekleştir” ile planlı ya da gerçek tarihle kaydedilir." : "Yürüyen bakiye tek hesap seçiliyken ve başka süzgeç yokken görünür. Satıra tıklayınca İşlem Kartı açılır."}</p>`;
+  }
+  let searchTimer = 0;
+  /**
+   * Süzgeç değişti: ekrandaki bütün süzgeç alanları birlikte okunur (bekleyen arama yazısı da kaybolmaz), liste baştan yüklenir (imleç
+   * bırakılır; HOF.listGate eski yanıtı yok sayar). Hiçbir değer değişmediyse yeniden yüklenmez.
+   */
+  function applyFilters() {
+    clearTimeout(searchTimer);
+    let changed = false;
+    for (const node of root()?.querySelectorAll("[data-mv-filters] [data-mv]") || []) {
+      const key = node.dataset.mv;
+      const clean = String(node.value ?? "").trim();
+      if (!Object.hasOwn(moves.filter, key) || moves.filter[key] === clean) continue;
+      moves.filter[key] = clean;
+      changed = true;
+    }
+    if (!changed) return;
+    moves.cursor = null;
+    const clear = root()?.querySelector('[data-act="mv-clear"]');
+    if (!clear && filtered(moves)) root()?.querySelector("[data-mv-filters]")?.insertAdjacentHTML("beforeend", '<button type="button" class="hof-link-button" data-act="mv-clear">Süzgeçleri Temizle</button>');
+    loadMoves(moves);
+  }
+  /** Hareketler sekmesini (ya da Planlı İşlemler'i) bir hesapla açar. */
+  function openMovements({ account = moves.filter.account, planned = false } = {}) {
+    moves.filter = { ...newMoves("main").filter, account: account || "" };
+    moves.planned = planned;
+    moves.cursor = null;
+    moves.rows = [];
+    moves.plans = [];
+    moves.loaded = false;
+    setTab("movements");
+  }
+
+  // ---------- İşlem Kartı (§8.6) ----------
+  const TRANSFER_KINDS = new Set(["loan_draw", "loan_repay"]);
+  const PERM_NAMES = { "bank.cancel": "Banka Hareketi Silme, İptal ve Ters Kayıt", "bank.move": "Banka Hareketi Girme ve Bankadan Çıkış", "bank.transfer": "Transfer Yapma", "invoices.manage": "Fatura Yönetimi" };
+  /** Yetki nedeni (pasif düğmenin yanında yazılır): eksik yetkilerin adları. */
+  const permWhy = (action, list) => {
+    const missing = list.filter(permission => !HOF.can(permission));
+    return missing.length ? `${action} için ${missing.map(permission => PERM_NAMES[permission] || permission).join(" ve ")} yetkisi gerekir.` : "";
+  };
+  // İşlem Kartı'ndaki İşlem Geçmişi'nin adları (Yönetim → İşlem Geçmişi'yle aynı türler; cümle düzeninde).
+  const HISTORY_LABELS = {
+    "bank.voucher.created": "Fiş kaydedildi",
+    "bank.voucher.reversed": "Ters kaydedildi",
+    "bank.voucher.corrected": "Düzeltildi (ters kayıt ve yeni fiş)",
+    "bank.event.info": "Açıklama düzeltildi",
+    "bank.plan.created": "Planlı işlem eklendi",
+    "bank.plan.executed": "Planlı işlem gerçekleştirildi",
+    "bank.plan.skipped": "Planlı işlemin bu dönemi atlandı",
+    "bank.plan.cancelled": "Planlı işlem silindi",
+    "bank.account.created": "Hesap açıldı",
+    "bank.account.opening.entered": "Açılış bakiyesi girildi",
+    "bank.account.opening.corrected": "Açılış düzeltildi",
+    "bank.legacy.assigned": "Hesaba atandı",
+    "bank.legacy.reclassed": "Eski bakiye aktarıldı",
+    "bank.setup": "Kurulum Sihirbazı çalıştı",
+    "bank.setup.undone": "Kurulum geri alındı",
+  };
+  const isVat = tax => tax === "vat_incl" || tax === "vat_excl";
+  /** İşlemin tutarı: faturalı (KDV'li) masrafın başlığı satırsızdır (parası faturanın havalesinde); tutarı faturanın ödenecek tutarıdır. */
+  const eventAmount = c => (c?.fee?.taxKind === "vat" && !c.source ? c.fee.totalMinor : c?.tryMinor || 0);
+  /** "Kaynak → Hedef" (ABC Ltd. (Cari) → Ziraat · Ana TL Hesabı (Banka)). */
+  function flowText(c) {
+    if (!c.account) return "";
+    const account = `${c.account.label} (Banka)`;
+    const counter = c.counterAccount ? `${c.counterAccount.label} (${kindLabel(c.counterAccount.kind)})` : "";
+    const party = c.party?.name ? `${c.party.name} (Cari)` : "";
+    const line = role => c.lines.find(item => item.role === role);
+    const other = party || counter || (c.direction === "in" ? (line("income") ? `${line("income").gl} ${line("income").glName}` : "") : line("expense") ? `${line("expense").gl} ${line("expense").glName}` : "");
+    return c.direction === "in" ? `${other || "—"} → ${account}` : `${account} → ${other || "—"}`;
+  }
+  const backLabel = () => (view.eventBack === "account" ? "Hesap" : view.eventBack === "overview" ? "Genel Bakış" : "Hareketler");
+  function eventHtml() {
+    const back = `<button type="button" class="hof-plan-back" data-act="ev-back">← ${esc(backLabel())}</button>`;
+    const c = view.event;
+    if (!c) return `<div class="hof-bank-detail-head">${back}</div>${HOF.listPending(view.error)}`;
+    const feeHeader = c.fee?.taxKind === "vat" && !c.source;
+    const extra = [...(TRANSFER_KINDS.has(c.type) ? ["bank.transfer"] : []), ...(feeHeader ? ["invoices.manage"] : [])];
+    const reverseWhy = (c.actions?.reverse?.allowed === false && c.actions.reverse.reason) || permWhy("Ters Kaydet", ["bank.cancel", ...extra]);
+    const correctWhy = (c.actions?.correct?.allowed === false && c.actions.correct.reason) || permWhy("Düzelt", ["bank.move", "bank.cancel", ...extra]);
+    const infoWhy = permWhy("Açıklamayı Düzelt", ["bank.move"]);
+    const blocks = [];
+    if (reverseWhy && reverseWhy === correctWhy) blocks.push(["Ters Kaydet ve Düzelt", reverseWhy]);
+    else {
+      if (reverseWhy) blocks.push(["Ters Kaydet", reverseWhy]);
+      if (correctWhy) blocks.push(["Düzelt", correctWhy]);
+    }
+    if (infoWhy) blocks.push(["Açıklamayı Düzelt", infoWhy]);
+    const button = (act, label, why, cls = "hof-button-ghost") => `<button type="button" class="hof-button hof-button-small ${cls}" data-act="${act}" ${why ? `disabled aria-disabled="true" title="${esc(why)}"` : ""}>${esc(label)}</button>`;
+    const toolbar = HOF.can("bank.move") || HOF.can("bank.cancel") ? `<div class="hof-chq-actions" role="toolbar" aria-label="İşlem işlemleri">${button("ev-reverse", "Ters Kaydet", reverseWhy, "hof-button-danger-ghost")}${button("ev-correct", "Düzelt", correctWhy)}${button("ev-info", "Açıklamayı Düzelt", infoWhy)}</div>` : "";
+    const fact = (label, value) => (value ? `<div><dt>${esc(label)}</dt><dd>${value}</dd></div>` : "");
+    const link = (item, label = item.no) => `<button type="button" class="hof-link-button" data-event-link="${esc(item.id)}">${esc(label)}</button>`;
+    const fee = c.fee;
+    const rate = ppm => String((Number(ppm) || 0) / 10_000).replace(".", ",");
+    const relations = [
+      c.reversal?.by ? `<li>Ters Kaydı: ${link(c.reversal.by)} · ${esc(dateText(c.reversal.by.date))}</li>` : "",
+      c.reversal?.of ? `<li>Ters Kaydettiği İşlem: ${link(c.reversal.of)} · ${esc(dateText(c.reversal.of.date))}</li>` : "",
+      c.linkedFee ? `<li>Masrafın İşlem Kartı: ${link(c.linkedFee)}</li>` : "",
+      c.payment ? `<li>Bankadan Ödeme: ${link(c.payment)}</li>` : "",
+    ].filter(Boolean);
+    const debit = c.lines.filter(line => line.side === "D").reduce((sum, line) => sum + line.tryMinor, 0);
+    const credit = c.lines.filter(line => line.side === "C").reduce((sum, line) => sum + line.tryMinor, 0);
+    const lines = c.lines.length
+      ? `<div class="hof-bank-table-wrap"><table class="hof-table hof-bank-table hof-bank-lines"><thead><tr><th>Hesap</th><th>Alt Hesap</th><th>Açıklama</th><th class="num">Borç</th><th class="num">Alacak</th></tr></thead><tbody>${c.lines
+          .map(line => `<tr data-gl="${esc(line.gl)}" data-side="${esc(line.side)}" data-minor="${Number(line.tryMinor) || 0}">${td("Hesap", `<b>${esc(line.gl)}</b> ${esc(line.glName)}`)}${td("Alt Hesap", line.sub ? `${esc(line.sub)}${line.subName ? `<small>${esc(line.subName)}</small>` : ""}` : "—")}${td("Açıklama", esc(line.memo || "—"))}${td("Borç", line.side === "D" ? esc(fmt(line.tryMinor)) : "", "num")}${td("Alacak", line.side === "C" ? esc(fmt(line.tryMinor)) : "", "num")}</tr>`)
+          .join("")}</tbody><tfoot><tr class="hof-bank-total"><td colspan="3" data-label="Toplam">Toplam</td>${td("Borç", esc(fmt(debit)), "num")}${td("Alacak", esc(fmt(credit)), "num")}</tr></tfoot></table></div>`
+      : '<p class="hof-empty">Bu işlemin yevmiye satırı yok.</p>';
+    const history = (c.history || []).map(item => `<li><b>${esc(HISTORY_LABELS[item.type] || item.type)}</b> <small>${esc([item.actorName, HOF.formatDateTime(item.at)].filter(Boolean).join(" · "))}</small></li>`).join("");
+    return `<div data-bank-event><div class="hof-bank-detail-head">${back}
+        <div class="hof-plan-title"><h3>${esc(c.typeLabel)} <span class="hof-plan-refno" data-event-no>${esc(c.no)}</span> <span class="hof-plan-badge ${c.status === "active" ? "is-done" : "is-muted"}" data-event-status>${esc(c.statusLabel)}</span></h3><small>${esc(flowText(c))}</small></div>
+        <div class="hof-chq-amount"><span>Tutar</span><strong data-event-amount>${esc(fmt(eventAmount(c)))}</strong></div>
+      </div>
+      ${c.locked ? `<p class="hof-bank-confirm is-warn">Bu işlem kilitli dönemde (${esc(dateText(c.lockedUntil))} ve öncesi); kendisi değişmez. Ters Kaydet ve Düzelt'te ters kaydı bugün tarihli yazılır, kilitli dönem aynı kalır.</p>` : ""}
+      <dl class="hof-chq-facts">
+        ${fact("İşlem No", `<span class="hof-plan-refno">${esc(c.no)}</span>`)}
+        ${fact("Tür", esc(c.typeLabel))}
+        ${fact("Tarih", esc(dateText(c.date)))}
+        ${c.valueDate && c.valueDate !== c.date ? fact("Valör", esc(dateText(c.valueDate))) : ""}
+        ${fact("Durum", esc(c.statusLabel))}
+        ${fact("Hesap", c.account ? `${esc(c.account.label)} <small>${esc(c.account.glSub)}</small>` : "")}
+        ${fact("Karşı Hesap", c.counterAccount ? `${esc(c.counterAccount.label)} <small>${esc(c.counterAccount.glSub)}</small>` : "")}
+        ${fact("Cari", c.party?.name ? (HOF.can("accounts.view") ? `<button type="button" class="hof-link-button" data-open-party="${esc(c.party.id)}">${esc(c.party.name)}</button>` : esc(c.party.name)) : "")}
+        ${fact("Fatura", c.invoice ? `<button type="button" class="hof-link-button" data-open-invoice="${esc(c.invoice.id)}">${esc(c.invoice.number)}</button>` : "")}
+        ${fee ? fact("Masraf Türü", `${esc(fee.feeTypeName || "—")} <small>${esc(fee.gl)} ${esc(view.meta?.glNames?.[fee.gl] || "")}</small>`) : ""}
+        ${fee ? fact("Matrah", esc(fmt(fee.baseMinor))) : ""}
+        ${fee && fee.taxKind === "bsmv" ? fact("BSMV", `${esc(fmt(fee.taxMinor))} <small>%${esc(rate(fee.ratePpm))}</small>`) : ""}
+        ${fee && fee.taxKind === "vat" ? fact("KDV", `${esc(fmt(fee.vatMinor))} <small>%${esc(rate(fee.ratePpm))}</small>`) : ""}
+        ${fact("Referans", esc(c.reference))}
+        ${fact("Açıklama", esc(c.description))}
+        ${fact("Kanal", esc(c.channel))}
+        ${fact("Kaynak", c.source ? esc(c.source.label) : "")}
+        ${fact("Giren", esc([c.createdByName, HOF.formatDateTime(c.createdAt)].filter(Boolean).join(" · ")))}
+        ${c.updatedAt ? fact("Son Değişiklik", esc(HOF.formatDateTime(c.updatedAt))) : ""}
+      </dl>
+      ${relations.length ? `<ul class="hof-bank-links">${relations.join("")}</ul>` : ""}
+      ${toolbar}
+      ${blocks.length ? `<ul class="hof-inv-blocks" data-bank-event-blocks>${blocks.map(([name, why]) => `<li><b>${esc(name)} kapalı:</b> ${esc(why)}</li>`).join("")}</ul>` : ""}
+      <h4 class="hof-bank-subtitle">${c.linesSource === "voucher" ? "Fiş Satırları" : "Yevmiye Satırları"}</h4>
+      ${lines}
+      ${history ? `<h4 class="hof-bank-subtitle">İşlem Geçmişi</h4><ol class="hof-bank-history">${history}</ol>` : ""}
+      </div>`;
+  }
+
+  // ---------- Fiş formları (masraf, faiz, diğer, kart borcu, kredi; Düzelt; Planlı İşlem) ----------
+  const VOUCHER_GROUPS = {
+    fee: { title: "Banka Masrafı", types: ["fee"] },
+    interest: { title: "Faiz", types: ["interest_in", "interest_out"] },
+    other: { title: "Diğer İşlem", types: ["other_in", "other_out", "card_payment", "loan_draw", "loan_repay"] },
+  };
+  const ALL_TYPES = ["fee", "interest_in", "interest_out", "other_in", "other_out", "card_payment", "loan_draw", "loan_repay"];
+  const TYPE_NAMES = { fee: "Banka Masrafı", interest_in: "Faiz Geliri", interest_out: "Faiz Gideri", other_in: "Diğer Gelir", other_out: "Diğer Gider", card_payment: "Kart Borcu Ödemesi", loan_draw: "Kredi Kullanımı", loan_repay: "Kredi Geri Ödemesi" };
+  const mainKinds = type => (type === "interest_in" ? ["demand", "commercial", "other", "time"] : ["demand", "commercial", "other"]);
+  // Sunucunun alan adı (HttpError field) → formdaki alan; alanı yazmayan hatalar koddan.
+  const VOUCHER_FIELD = { amount: "amount", Tutar: "amount", "Stopaj Tutarı": "stoppageRate", stoppageAmount: "stoppageRate", "Stopaj Oranı": "stoppageRate", stoppageRate: "stoppageRate", "BSMV / KKDF": "taxAmount", taxAmount: "taxAmount", Faiz: "interestAmount", interestAmount: "interestAmount", "BSMV Oranı": "taxRate", "KDV Oranı": "taxRate", taxRate: "taxRate", vatRate: "taxRate", date: "date", plannedDate: "plannedDate", accountId: "accountId", cardAccountId: "cardAccountId", loanAccountId: "loanAccountId", feeType: "feeType", tax: "tax", gl: "gl", invoiceNo: "invoiceNo", "Fatura No": "invoiceNo", partyId: "partyId", type: "type", Açıklama: "description", Referans: "reference", repeat: "repeat" };
+  const VOUCHER_CODE = { "date-future": "date", "date-invalid": "date", "date-missing": "date", "period-locked": "date", "bank-before-opening": "date", "bank-fee-party": "partyId", "bank-party-missing": "partyId", "bank-fee-invoice": "invoiceNo", "invoice-duplicate": "invoiceNo", "bank-stoppage": "stoppageRate", "bank-gl-forbidden": "gl" };
+  /** "1.234,56" / "1.000" / "10,5" → kuruş (yalnız önizleme; kural ve yuvarlama sunucuda). Geçersizse null. */
+  function previewMinor(value) {
+    let text = String(value ?? "").replace(/[\s₺]/g, "");
+    if (!text) return null;
+    if (text.includes(",")) text = text.replace(/\./g, "").replace(",", ".");
+    else if (/^\d{1,3}(\.\d{3})+$/.test(text)) text = text.replace(/\./g, "");
+    if (!/^\d+(\.\d{1,2})?$/.test(text)) return null;
+    return Math.round(Number(text) * 100);
+  }
+  const previewPpm = value => {
+    const text = String(value ?? "").trim().replace(",", ".");
+    if (!text || !/^\d+(\.\d+)?$/.test(text)) return null;
+    return Math.round(Number(text) * 10_000);
+  };
+  // round(a × b / c), yarım birim yukarı (sunucunun mulDiv'i gibi; BigInt).
+  const mulDiv = (a, b, c) => Number((2n * BigInt(a) * BigInt(b) + BigInt(c)) / (2n * BigInt(c)));
+  function activeTlAccounts() {
+    return (view.list?.accounts || []).filter(account => account.status === "active" && account.currency === "TRY");
+  }
+  const accountOption = account => ({ value: account.id, label: `${account.bankName} · ${account.name} (${account.code})` });
+  /**
+   * Fiş formu. mode: create (yeni fiş), correct (Düzelt: tür değişmez, ön değerler İşlem Kartı'ndan), plan (+ Planlı İşlem; KDV'li masraf
+   * planlanmaz). group: fee | interest | other. Benzer İşlem (409 bank-similar) → "Yine de Kaydet" aynı istek kimliğiyle similarOk:true.
+   */
+  async function voucherForm({ mode = "create", group = "fee", accountId = "", counterId = "", type = "", card = null } = {}) {
+    if (!HOF.can("bank.move")) return HOF.toast("Banka hareketi girmek Banka Hareketi Girme ve Bankadan Çıkış yetkisi ister.", { type: "error" });
+    let meta;
+    try {
+      meta = await voucherMeta();
+      view.meta = meta;
+    } catch (error) {
+      return HOF.toastError(error);
+    }
+    const accounts = activeTlAccounts();
+    const cards = accounts.filter(account => account.kind === "card");
+    const loans = accounts.filter(account => account.kind === "loan");
+    let types = mode === "correct" ? [card.type] : mode === "plan" ? ALL_TYPES : VOUCHER_GROUPS[group].types;
+    if (mode !== "correct") types = types.filter(item => (item !== "card_payment" || cards.length) && (!TRANSFER_KINDS.has(item) || (loans.length && HOF.can("bank.transfer"))) && accounts.some(account => mainKinds(item).includes(account.kind)));
+    if (!types.length) return HOF.toast("Bu işlem için uygun, etkin bir TL banka hesabı yok. Önce Hesaplar'dan hesap açın.", { type: "error" });
+    const form0 = mode === "correct" ? card.form || {} : {};
+    const initialType = type && types.includes(type) ? type : form0.type || types[0];
+    const canVat = mode !== "plan" && HOF.can("invoices.manage");
+    const taxes = (meta.taxes || []).filter(item => !item.invoice || canVat);
+    const defaultTax = taxes.some(item => item.key === (form0.tax || meta.defaults.tax)) ? form0.tax || meta.defaults.tax : taxes[0]?.key || "none";
+    const requestId = HOF.requestId();
+    const glLabel = code => `${code} · ${meta.glNames?.[code] || code}`;
+    const fields = [
+      types.length > 1 || mode === "correct" ? { name: "type", label: "İşlem Türü", type: "select", value: initialType, options: types.map(item => ({ value: item, label: TYPE_NAMES[item] || item })), readonly: mode === "correct", help: mode === "correct" ? "Düzelt'te işlemin türü değişmez; başka türde işlem için Ters Kaydet ile iptal edip yeni işlem girin." : "" } : null,
+      { name: "accountId", label: "Banka Hesabı", type: "select", required: true, value: "", options: [] },
+      { name: "cardAccountId", label: "Kurumsal Kredi Kartı", type: "select", value: form0.cardAccountId || counterId || cards[0]?.id || "", options: cards.map(accountOption) },
+      { name: "loanAccountId", label: "Kredi Hesabı", type: "select", value: form0.loanAccountId || counterId || loans[0]?.id || "", options: loans.map(accountOption) },
+      mode === "plan" ? { name: "plannedDate", label: "Planlı Tarih", type: "date", required: true, value: HOF.localToday(), help: "Planlı işlem deftere kendiliğinden yazılmaz; günü gelince Vadesi Gelen Planlı İşlemler'de görünür." } : { name: "date", label: "İşlem Tarihi", type: "date", required: true, max: "today", value: mode === "correct" ? (card.locked ? HOF.localToday() : card.date) : HOF.localToday() },
+      mode === "plan" ? { name: "repeat", label: "Tekrar", type: "select", value: "none", options: (meta.repeats || []).map(item => ({ value: item.key, label: item.label })) } : null,
+      { name: "feeType", label: "Masraf Türü", type: "select", value: form0.feeType || (meta.feeTypes || []).find(item => item.key === "eft")?.key || meta.feeTypes?.[0]?.key || "", options: (meta.feeTypes || []).map(item => ({ value: item.key, label: `${item.name} (${item.gl})` })) },
+      { name: "tax", label: "Vergi", type: "select", value: defaultTax, options: taxes.map(item => ({ value: item.key, label: item.label })) },
+      { name: "taxRate", label: "BSMV Oranı (%)", value: form0.taxRate || "", inputmode: "decimal" },
+      { name: "invoiceNo", label: "Fatura No", value: form0.invoiceNo || "", maxlength: 40, placeholder: "Bankanın kestiği masraf faturasının numarası" },
+      { name: "amount", label: "Tutar", required: true, value: form0.amount || "", inputmode: "decimal", placeholder: "ör. 1.250,00" },
+      { name: "stoppageRate", label: "Stopaj Oranı (%)", value: mode === "correct" ? form0.stoppageRate || "" : meta.defaults?.stoppageRate || "", inputmode: "decimal", help: "Bankanın kestiği mevduat stopajı; son kullanılan oran önerilir." },
+      { name: "taxAmount", label: "BSMV / KKDF Tutarı", value: form0.taxAmount && form0.taxAmount !== "0,00" ? form0.taxAmount : "", inputmode: "decimal" },
+      { name: "interestAmount", label: "Faiz Tutarı", value: form0.interestAmount && form0.interestAmount !== "0,00" ? form0.interestAmount : "", inputmode: "decimal" },
+      { name: "description", label: "Açıklama", value: form0.description || "", maxlength: 500 },
+      { name: "reference", label: "Referans", value: form0.reference || "", maxlength: 100, placeholder: "Dekont ya da talimat no" },
+    ].filter(Boolean);
+    const hiddenType = types.length === 1 && mode !== "correct" ? `<input type="hidden" name="type" value="${esc(initialType)}">` : "";
+    const extraHtml = `${hiddenType}<details class="hof-bank-adv" data-adv><summary>Gelişmiş Seçenekler</summary><div class="hof-bank-adv-body">${HOF.fieldHtml({ name: "gl", label: "Gelir Hesabı", type: "select", value: form0.gl || "", options: [] })}<p class="hof-rep-note" data-gl-note></p></div></details><p class="hof-bank-preview-line" data-voucher-preview aria-live="polite"></p>`;
+    let formNode = null;
+    let picker = null;
+    const rateTouched = { value: Boolean(form0.taxRate) };
+    HOF.formModal({
+      title: mode === "correct" ? "İşlemi Düzelt" : mode === "plan" ? "Planlı İşlem" : VOUCHER_GROUPS[group].title,
+      eyebrow: mode === "correct" ? card.no : moduleName().toLocaleUpperCase("tr-TR"),
+      intro: mode === "correct" ? `${card.no} ters kaydedilir ve düzeltilmiş hâliyle yeni işlem yazılır (tek işlemde); ikisi de hareketlerde ve İşlem Geçmişi'nde kalır.${card.locked ? " Asıl işlem kilitli dönemde; ters kaydı bugün tarihli yazılır." : ""}` : mode === "plan" ? "Kira, kredi taksiti, kart borcu ya da masraf talimatı gibi tekrar eden işlemleri planlayın. Planlı işlem bakiyeyi değiştirmez; bankada gerçekleşince “Gerçekleştir” ile kaydedilir." : "",
+      size: "wide",
+      fields,
+      extraHtml,
+      submitLabel: mode === "correct" ? "Düzelt ve Kaydet" : mode === "plan" ? "Planla" : "Kaydet",
+      onOpen: dialog => {
+        formNode = dialog.querySelector("form");
+        formNode.classList.add("hof-bank-form", "hof-bank-voucher");
+        const field = name => formNode.querySelector(`[name="${name}"]`);
+        if (mode === "correct") field("type")?.setAttribute("disabled", "");
+        // Faturayı kesen cari (KDV'li masraf): Cari seçicisi (Fatura formundaki gibi "+ Yeni Cari" ile).
+        const invoiceField = field("invoiceNo")?.closest(".hof-field");
+        if (invoiceField) {
+          picker = HOF.can("accounts.view") && HOF.accounts?.picker ? HOF.accounts.picker({ name: "partyId", label: "Faturayı Kesen (Cari)", required: true, prefer: "supplier", allowNew: { type: "supplier" }, value: form0.partyId ? { id: form0.partyId, name: card?.party?.name || "" } : {}, help: "Masraf faturasını kesen banka ya da ödeme kuruluşu." }) : null;
+          if (picker) invoiceField.before(picker);
+          else invoiceField.insertAdjacentHTML("beforebegin", '<p class="hof-rep-note" data-party-note>Faturalı masrafta cari seçmek için Carileri Görme yetkisi gerekir.</p>');
+        }
+        wireVoucher(formNode, { meta, accounts, initialType, accountId: accountId || form0.accountId || "", defaultTax, rateTouched, glLabel, picker, mode });
+      },
+      onSubmit: async data => {
+        const kind = data.type || initialType;
+        const body = { type: kind, accountId: data.accountId, amount: data.amount, description: data.description, reference: data.reference };
+        if (mode === "plan") Object.assign(body, { kind, plannedDate: data.plannedDate, repeat: data.repeat });
+        else body.date = data.date;
+        if (kind === "fee") {
+          Object.assign(body, { feeType: data.feeType, tax: data.tax });
+          if (data.tax !== "none" && String(data.taxRate || "").trim()) body.taxRate = data.taxRate;
+          if (isVat(data.tax)) Object.assign(body, { partyId: data.partyId || "", invoiceNo: data.invoiceNo });
+        }
+        if (kind === "interest_in" && String(data.stoppageRate || "").trim()) body.stoppageRate = data.stoppageRate;
+        if (kind === "interest_out") body.taxAmount = String(data.taxAmount || "").trim() || "0";
+        if (kind === "loan_repay") body.interestAmount = String(data.interestAmount || "").trim() || "0";
+        if (kind === "other_in" || kind === "other_out") body.gl = data.gl;
+        if (kind === "card_payment") body.cardAccountId = data.cardAccountId;
+        if (TRANSFER_KINDS.has(kind)) body.loanAccountId = data.loanAccountId;
+        try {
+          if (kind === "fee" && isVat(data.tax) && !body.partyId) throw new HOF.ApiError("Faturalı masrafta faturayı kesen cariyi seçin.", 400, { code: "bank-fee-party", field: "partyId" });
+          const send = similarOk => {
+            const payload = similarOk ? { ...body, similarOk: true } : body;
+            if (mode === "plan") return api("/plans", { method: "POST", body: payload });
+            if (mode === "correct") return api(`/events/${encodeURIComponent(card.id)}/correct`, { method: "POST", body: payload, requestId });
+            return api("/vouchers", { method: "POST", body: payload, requestId });
+          };
+          const result = await withSimilar(send);
+          afterWrite();
+          if (mode === "plan") {
+            HOF.toast("Planlı işlem eklendi. Bakiye değişmedi; bankada gerçekleşince “Gerçekleştir” ile kaydedin.", { type: "success" });
+            openMovements({ account: moves.filter.account, planned: true });
+          } else if (mode === "correct") {
+            HOF.toast(result.replayed ? "Bu düzeltme zaten kaydedildi; ikinci kez yazılmadı." : `Düzeltildi: ${card.no} ters kaydedildi, yeni işlem ${result.next?.no || ""}.`, { type: "success" });
+            if (result.next?.id) openEvent(result.next.id);
+          } else {
+            HOF.toast(result.replayed ? `Bu işlem zaten kaydedildi (${result.no}); ikinci kez yazılmadı.` : `Kaydedildi: ${result.no} · ${result.typeLabel} ${fmt(eventAmount(result))}`, { type: "success" });
+            await reload();
+          }
+        } catch (error) {
+          markVoucherField(formNode, error, mode);
+          throw error;
+        }
+      },
+    });
+  }
+  /** Benzer İşlem (409 bank-similar): önceki işlemin İşlem No'su ve gireniyle sorar; "Yine de Kaydet" aynı istek kimliğiyle similarOk. */
+  async function withSimilar(send) {
+    try {
+      return await send(false);
+    } catch (error) {
+      if (error?.data?.code !== "bank-similar") throw error;
+      const go = await HOF.confirm({ title: "Benzer İşlem", message: error.message, confirmLabel: "Yine de Kaydet", cancelLabel: "Vazgeç" });
+      if (!go) throw new HOF.ApiError("Kaydedilmedi: aynı gün aynı tutarda benzer işlem kayıtlı. Gerçekten ikinci bir işlemse yeniden kaydedip “Yine de Kaydet”i seçin.", 409, { code: "bank-similar-cancelled" });
+      return send(true);
+    }
+  }
+  function markVoucherField(form, error, mode) {
+    if (!form) return;
+    form.querySelectorAll(".is-invalid").forEach(node => {
+      node.classList.remove("is-invalid");
+      node.removeAttribute("aria-invalid");
+    });
+    let name = VOUCHER_FIELD[error?.data?.field] || VOUCHER_CODE[error?.data?.code] || "";
+    if (name === "date" && mode === "plan") name = "plannedDate";
+    const node = name === "partyId" ? form.querySelector("[data-acc-query]") : name ? form.querySelector(`[name="${name}"]`) : null;
+    if (!node) return;
+    node.classList.add("is-invalid");
+    node.setAttribute("aria-invalid", "true");
+    node.closest("details")?.setAttribute("open", "");
+    node.closest(".hof-field")?.removeAttribute("hidden");
+    node.focus?.();
+  }
+  /** Türe ve vergiye göre alanları açar/kapatır, hesap listesini kurar, önizlemeyi günceller (yalnız gösterir; kural sunucuda). */
+  function wireVoucher(form, { meta, accounts, initialType, accountId, defaultTax, rateTouched, glLabel, picker, mode }) {
+    const field = name => form.querySelector(`[name="${name}"]`);
+    const show = (name, visible) => {
+      const node = name === "partyId" ? picker || form.querySelector("[data-party-note]") : field(name)?.closest(".hof-field");
+      if (node) node.hidden = !visible;
+    };
+    const label = (name, text) => {
+      const span = field(name)?.closest(".hof-field")?.querySelector(":scope > span");
+      if (span && span.firstChild) span.firstChild.textContent = `${text}${/\s$/.test(span.firstChild.textContent) ? " " : ""}`;
+    };
+    const typeNow = () => field("type")?.value || initialType;
+    let lastType = "";
+    const sync = () => {
+      const kind = typeNow();
+      const select = field("accountId");
+      if (select && kind !== lastType) {
+        const allowed = accounts.filter(account => mainKinds(kind).includes(account.kind));
+        const current = select.value || accountId;
+        const pick = allowed.find(account => account.id === current) || allowed.find(account => account.kind === "demand") || allowed[0];
+        select.innerHTML = allowed.map(account => `<option value="${esc(account.id)}" ${account.id === pick?.id ? "selected" : ""}>${esc(accountOption(account).label)}</option>`).join("");
+        const gl = field("gl");
+        const options = kind === "other_in" ? meta.gl?.income || [] : kind === "other_out" ? meta.gl?.expense || [] : [];
+        if (gl) {
+          const wanted = gl.value || (kind === "other_in" ? meta.defaults.otherIncome : meta.defaults.otherExpense);
+          gl.innerHTML = options.map(code => `<option value="${esc(code)}" ${code === wanted ? "selected" : ""}>${esc(glLabel(code))}</option>`).join("");
+          if (!options.includes(gl.value)) gl.value = kind === "other_in" ? meta.defaults.otherIncome : meta.defaults.otherExpense;
+        }
+        lastType = kind;
+      }
+      show("cardAccountId", kind === "card_payment");
+      show("loanAccountId", TRANSFER_KINDS.has(kind));
+      const fee = kind === "fee";
+      show("feeType", fee);
+      show("tax", fee);
+      const tax = field("tax")?.value || defaultTax;
+      const vat = fee && isVat(tax);
+      show("taxRate", fee && tax !== "none");
+      label("taxRate", vat ? "KDV Oranı (%)" : "BSMV Oranı (%)");
+      if (!rateTouched.value && field("taxRate")) field("taxRate").value = vat ? meta.defaults.vatRate || "20" : meta.defaults.bsmvRate || "5";
+      show("partyId", vat);
+      show("invoiceNo", vat);
+      show("stoppageRate", kind === "interest_in");
+      show("taxAmount", kind === "interest_out");
+      show("interestAmount", kind === "loan_repay");
+      label("amount", fee ? (tax === "none" ? "Tutar" : tax.endsWith("_excl") ? "Tutar (Vergi Hariç)" : "Tutar (Vergi Dahil)") : kind === "interest_in" ? "Brüt Faiz" : kind === "interest_out" ? "Faiz Tutarı" : kind === "loan_repay" ? "Anapara" : "Tutar");
+      const glNode = field("gl")?.closest(".hof-field");
+      if (glNode) glNode.hidden = !(kind === "other_in" || kind === "other_out");
+      label("gl", kind === "other_in" ? "Gelir Hesabı" : "Gider Hesabı");
+      const note = form.querySelector("[data-gl-note]");
+      if (note) {
+        const feeType = (meta.feeTypes || []).find(item => item.key === field("feeType")?.value);
+        const code = fee ? (feeType?.gl === "653" ? meta.defaults.commission : meta.defaults.fee) : kind === "interest_in" ? meta.defaults.interestIncome : kind === "interest_out" || kind === "loan_repay" ? meta.defaults.interestExpense : "";
+        note.textContent = code ? `Hesap: ${glLabel(code)} (Banka Ayarları → Hesap Eşlemeleri).${kind === "interest_in" ? " Stopaj 193 Peşin Ödenen Vergiler ve Fonlar." : ""}` : kind === "card_payment" || TRANSFER_KINDS.has(kind) ? "Şirketin kendi hesapları arasında: gelir ya da gider hesabı yoktur." : "Gelir ve gider hesabı yalnız Banka Ayarları'ndaki izinli hesaplardan seçilir.";
+      }
+      preview();
+    };
+    const preview = () => {
+      const node = form.querySelector("[data-voucher-preview]");
+      if (!node) return;
+      const kind = typeNow();
+      const amount = previewMinor(field("amount")?.value);
+      if (amount === null) return (node.textContent = "");
+      const tax = field("tax")?.value || defaultTax;
+      const parts = [];
+      if (kind === "fee") {
+        const feeType = (meta.feeTypes || []).find(item => item.key === field("feeType")?.value);
+        const gl = feeType?.gl === "653" ? meta.defaults.commission : meta.defaults.fee;
+        const ppm = previewPpm(field("taxRate")?.value) ?? previewPpm(isVat(tax) ? meta.defaults.vatRate : meta.defaults.bsmvRate) ?? 0;
+        let base = amount;
+        let taxMinor = 0;
+        if (tax.endsWith("_incl")) {
+          base = mulDiv(amount, 1_000_000, 1_000_000 + ppm);
+          taxMinor = amount - base;
+        } else if (tax.endsWith("_excl")) taxMinor = mulDiv(amount, ppm, 1_000_000);
+        if (isVat(tax)) parts.push(`Matrah ${fmt(base)}`, `KDV ${fmt(taxMinor)}`, `Bankadan Çıkan ${fmt(base + taxMinor)}`, "Hizmet ve Gider Alışı faturası kaydedilir");
+        else parts.push(`Gider ${fmt(base)}`, ...(taxMinor ? [`BSMV ${fmt(taxMinor)}`] : []), `Bankadan Çıkan ${fmt(base + taxMinor)}`, `Hesap ${glLabel(gl)}`);
+      } else if (kind === "interest_in") {
+        const ppm = previewPpm(field("stoppageRate")?.value) ?? 0;
+        const stoppage = mulDiv(amount, ppm, 1_000_000);
+        parts.push(`Bankaya Giren (Net) ${fmt(amount - stoppage)}`, `Stopaj ${fmt(stoppage)} (193)`, `Faiz Geliri ${fmt(amount)}`);
+      } else if (kind === "interest_out") {
+        const extra = previewMinor(field("taxAmount")?.value) || 0;
+        parts.push(`Bankadan Çıkan ${fmt(amount + extra)}`, `Faiz ${fmt(amount)}`, ...(extra ? [`BSMV / KKDF ${fmt(extra)}`] : []));
+      } else if (kind === "loan_repay") {
+        const interest = previewMinor(field("interestAmount")?.value) || 0;
+        parts.push(`Bankadan Çıkan ${fmt(amount + interest)}`, `Anapara ${fmt(amount)}`, ...(interest ? [`Faiz ${fmt(interest)}`] : []));
+      } else if (kind === "card_payment") parts.push(`Bankadan Çıkan ${fmt(amount)}`, "Kart borcu azalır");
+      else if (kind === "loan_draw") parts.push(`Bankaya Giren ${fmt(amount)}`, "Kredi borcu artar");
+      else parts.push(`${kind === "other_in" ? "Bankaya Giren" : "Bankadan Çıkan"} ${fmt(amount)}`, `Hesap ${glLabel(field("gl")?.value || "")}`);
+      node.textContent = parts.join(" · ");
+    };
+    // Vergi kipi BSMV ↔ KDV değişince oran o kipin varsayılanına döner (Düzelt'te BSMV %5'in KDV'ye taşınmaması için).
+    let lastVat = isVat(field("tax")?.value || defaultTax);
+    form.addEventListener("change", event => {
+      if (event.target.matches?.('[name="taxRate"]')) rateTouched.value = true;
+      if (event.target.matches?.('[name="tax"]')) {
+        const vatNow = isVat(event.target.value);
+        if (vatNow !== lastVat) rateTouched.value = false;
+        lastVat = vatNow;
+      }
+      sync();
+    });
+    form.addEventListener("input", event => {
+      if (event.target.matches?.('[name="taxRate"]')) rateTouched.value = true;
+      preview();
+    });
+    // Salt okunur açılır liste (Düzelt'te işlem türü): değer değişmesin.
+    for (const select of form.querySelectorAll("select[readonly]")) {
+      const value = select.value;
+      select.addEventListener("change", () => (select.value = value));
+    }
+    void mode;
+    sync();
+  }
+  /** Yerel yazımdan sonra: form seçenekleri (son stopaj oranı) ve menü rozeti yenilenir. */
+  function afterWrite() {
+    metaCache = null;
+    HOF.emit("bank-changed");
+  }
+  function reverseForm(c) {
+    const feeHeader = c.fee?.taxKind === "vat" && !c.source;
+    const requestId = HOF.requestId();
+    const parts = [`${c.no} (${c.typeLabel}, ${fmt(eventAmount(c))}) ters kaydedilir: aynı tutarda ters fiş yazılır, hesabın bakiyesi işlemden önceki hâline döner. İşlem silinmez; asıl işlem ve ters kaydı hareketlerde ve İşlem Geçmişi'nde kalır.`];
+    if (feeHeader) parts.push(`Masrafın faturası (${c.invoice?.number || ""}) iptal edilir; KDV ve cari etkisi de geri alınır.`);
+    else if (c.locked) parts.push(`İşlem kilitli dönemde (${dateText(c.lockedUntil)} ve öncesi); ters fiş bugün (${dateText(HOF.localToday())}) tarihli yazılır, kilitli dönem değişmez.`);
+    HOF.formModal({
+      title: "Ters Kaydet",
+      eyebrow: c.no,
+      intro: parts.join(" "),
+      fields: [{ name: "reason", label: "Neden", maxlength: 300, placeholder: "İsteğe bağlı; İşlem Geçmişi'ne yazılır" }],
+      submitLabel: "Ters Kaydet",
+      onSubmit: async data => {
+        const result = await api(`/events/${encodeURIComponent(c.id)}/reverse`, { method: "POST", body: { reason: data.reason }, requestId });
+        afterWrite();
+        HOF.toast(result.replayed ? "Bu işlem zaten ters kaydedilmişti; ikinci kez yazılmadı." : result.reversal ? `Ters kaydedildi: ${result.reversal.no}` : `Masraf ve faturası iptal edildi (${c.no}).`, { type: "success" });
+        await reload();
+      },
+    });
+  }
+  function infoForm(c) {
+    HOF.formModal({
+      title: "Açıklamayı Düzelt",
+      eyebrow: c.no,
+      intro: "Açıklama ve referans tutarı değiştirmez; kilitli dönemdeki işlemde de düzeltilir ve İşlem Geçmişi'ne yazılır.",
+      fields: [
+        { name: "description", label: "Açıklama", type: "textarea", rows: 3, value: c.description || "", maxlength: 500 },
+        { name: "reference", label: "Referans", value: c.reference || "", maxlength: 100 },
+      ],
+      submitLabel: "Kaydet",
+      onSubmit: async data => {
+        await api(`/events/${encodeURIComponent(c.id)}/info`, { method: "PUT", body: { description: data.description, reference: data.reference } });
+        HOF.toast("Açıklama kaydedildi.", { type: "success" });
+        await reload();
+      },
+    });
+  }
+
+  // ---------- Planlı İşlemler (K3; §3.7 #23) ----------
+  const planOf = id => moves.plans.find(plan => plan.id === id) || null;
+  function planRunForm(plan) {
+    const today = HOF.localToday();
+    const requestId = HOF.requestId();
+    HOF.formModal({
+      title: "Planlı İşlemi Gerçekleştir",
+      eyebrow: plan.typeLabel.toLocaleUpperCase("tr-TR"),
+      intro: `${plan.accountLabel} · ${fmt(plan.amountMinor)} · planlı tarih ${dateText(plan.plannedDate)}. Bankada gerçekleşen tarih ve tutarla kaydedin.${plan.repeat !== "none" ? " Plan bir sonraki döneme geçer." : ""}`,
+      fields: [
+        { name: "date", label: "İşlem Tarihi", type: "date", required: true, max: "today", value: plan.plannedDate <= today ? plan.plannedDate : today },
+        { name: "amount", label: "Tutar", required: true, value: amountInput(plan.amountMinor), inputmode: "decimal" },
+        { name: "description", label: "Açıklama", value: plan.description || "", maxlength: 500 },
+      ],
+      submitLabel: "Gerçekleştir",
+      onSubmit: async data => {
+        const result = await withSimilar(similarOk => api(`/plans/${encodeURIComponent(plan.id)}/execute`, { method: "POST", body: { date: data.date, amount: data.amount, description: data.description, ...(similarOk ? { similarOk: true } : {}) }, requestId }));
+        afterWrite();
+        HOF.toast(result.replayed ? "Bu planlı işlem zaten gerçekleştirildi; ikinci kez yazılmadı." : `Gerçekleştirildi: ${result.event?.no || ""}${result.plan?.status === "planned" ? ` · sonraki ${dateText(result.plan.plannedDate)}` : ""}`, { type: "success" });
+        await reload();
+      },
+    });
+  }
+  async function planSkip(plan) {
+    try {
+      const next = await api(`/plans/${encodeURIComponent(plan.id)}/skip`, { method: "POST", body: {} });
+      afterWrite();
+      HOF.toast(`Bu dönem atlandı; sonraki tarih ${dateText(next.plannedDate)}.`, { type: "success" });
+      await reload();
+    } catch (error) {
+      HOF.toastError(error);
+    }
+  }
+  async function planCancel(plan) {
+    const go = await HOF.confirm({ title: "Planlı İşlemi Sil", message: `${plan.typeLabel} · ${fmt(plan.amountMinor)} (${dateText(plan.plannedDate)}) planı silinsin mi? Bu plandan daha önce gerçekleşmiş işlemler değişmez.`, confirmLabel: "Sil", danger: true });
+    if (!go) return;
+    try {
+      await api(`/plans/${encodeURIComponent(plan.id)}`, { method: "DELETE" });
+      afterWrite();
+      HOF.toast("Planlı işlem silindi.", { type: "success" });
+      await reload();
+    } catch (error) {
+      HOF.toastError(error);
+    }
+  }
+
   // ---------- Olaylar ----------
   function onClick(event) {
     const tab = event.target.closest("[data-tab]")?.dataset.tab;
@@ -1121,15 +1869,82 @@
           act.closest("[data-fee]")?.remove();
           view.dirty = true;
           return;
+        // ----- Aşama 4: Hareketler, İşlem Kartı, fiş formları, Planlı İşlemler -----
+        case "mv-more":
+          return loadMoves(act.dataset.movesKey === "account" ? accountMoves : moves, { more: true });
+        case "mv-planned":
+          moves.planned = !moves.planned;
+          moves.loaded = false;
+          render();
+          return loadMoves(moves);
+        case "mv-clear":
+          moves.filter = { ...newMoves("main").filter, account: moves.filter.account };
+          moves.loaded = false;
+          render();
+          return loadMoves(moves);
+        case "mv-open":
+          return openMovements({ account: "" });
+        case "mv-account":
+          return openMovements({ account: view.accountId });
+        case "plans-due":
+          return openMovements({ account: "", planned: true });
+        case "v-fee":
+          return voucherForm({ group: "fee", accountId: contextAccount() });
+        case "v-interest":
+          return voucherForm({ group: "interest", accountId: contextAccount() });
+        case "v-other":
+          return voucherForm({ group: "other", accountId: contextAccount() });
+        case "v-card":
+          return voucherForm({ group: "other", type: "card_payment", counterId: view.accountId });
+        case "v-loan":
+          return voucherForm({ group: "other", type: "loan_draw", counterId: view.accountId });
+        case "plan-new":
+          return voucherForm({ mode: "plan", accountId: contextAccount() });
+        case "ev-back":
+          return goBack();
+        case "ev-reverse":
+          return view.event && reverseForm(view.event);
+        case "ev-correct":
+          return view.event && voucherForm({ mode: "correct", card: view.event });
+        case "ev-info":
+          return view.event && infoForm(view.event);
+        case "plan-run":
+        case "plan-skip":
+        case "plan-cancel": {
+          const plan = planOf(act.dataset.plan);
+          if (!plan) return;
+          return act.dataset.act === "plan-run" ? planRunForm(plan) : act.dataset.act === "plan-skip" ? planSkip(plan) : planCancel(plan);
+        }
         default:
           return;
       }
     }
+    const link = event.target.closest("[data-event-link]");
+    if (link) return openEvent(link.dataset.eventLink);
+    const party = event.target.closest("[data-open-party]");
+    if (party) return HOF.accounts?.open?.(party.dataset.openParty);
+    const moveRow = event.target.closest("tr[data-event]");
+    if (moveRow) return openEvent(moveRow.dataset.event);
     const row = event.target.closest("tr[data-account]");
+    if (row) openAccount(row.dataset.account);
+  }
+  /** Formun hesabı: Hesap Detayı'ndan açılırsa o hesap; Hareketler'den açılırsa süzgeçteki hesap (yoksa varsayılan). */
+  const contextAccount = () => (view.mode === "account" ? view.accountId : moves.filter.account);
+  function onKey(event) {
+    if (event.key !== "Enter") return;
+    const input = event.target.closest?.("input[data-mv]");
+    if (input) {
+      event.preventDefault();
+      return applyFilters();
+    }
+    const moveRow = event.target.closest?.("tr[data-event]");
+    if (moveRow && event.target === moveRow) return openEvent(moveRow.dataset.event);
+    const row = event.target.closest?.("tr[data-account]");
     if (row) openAccount(row.dataset.account);
   }
   function onChange(event) {
     const target = event.target;
+    if (target.matches("[data-mv]")) return applyFilters();
     if (target.matches("[data-pick]")) {
       if (target.checked) view.selected.add(target.dataset.pick);
       else view.selected.delete(target.dataset.pick);
@@ -1148,6 +1963,12 @@
     if (target.closest("[data-settings]")) markDirty();
   }
   function onInput(event) {
+    // Arama yazdıkça (300 ms bekleyerek) süzülür; tutar ve tarih alanları Enter'da ya da alandan çıkınca.
+    if (event.target.matches?.('input[data-mv="q"]')) {
+      clearTimeout(searchTimer);
+      searchTimer = setTimeout(applyFilters, 300);
+      return;
+    }
     if (event.target.closest("[data-settings]")) markDirty();
   }
   function markDirty() {
@@ -1198,7 +2019,7 @@
     }
   }
 
-  HOF.bank = { open, openWizard, choices, pickerHtml, mountPicker };
+  HOF.bank = { open, openWizard, openEvent: ref => (modal ? openEvent(ref) : open().then(() => openEvent(ref))), choices, pickerHtml, mountPicker };
   HOF.whenReady(() => {
     // Canlı yenileme (v2.0.22 kuralı): başka bilgisayardaki banka değişikliği ve para gösteren modüllerin değişikliği açık pencereyi tek
     // yenileme kapısından yeniler; bu penceredeki banka yazımı zaten kendini yeniler.
@@ -1206,6 +2027,7 @@
     HOF.on("live:workspace.changed", change => {
       if (change?.kind !== "bank") return;
       choicesCache = null;
+      metaCache = null;
       if (modal) refreshOpen();
     });
     HOF.onLedger(["bank", "cash", "accounts", "invoices", "plans", "cheques"], detail => {
