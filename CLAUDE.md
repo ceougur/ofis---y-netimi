@@ -860,6 +860,14 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
       (D7, D9 bilinen sınır). Son kod: npm test 1.421/1.421 (benim koşumum da, 7 dk 53 sn), mutabakat 2.000, güvenilirlik 1.000,
       14 arayüz koşusu 0 hata. Bilinen sınırlar: tam kapıya düşen işlem (kilit koyma, kilitli satıra dokunan düzeltme) büyük
       veride v2.0.26 kadar sürer; Mutabakat Testi düğmesi 100.000'de ~10 sn bekletir; 1M bellek ölçülmedi.
+  [x] AŞAMA 3–4 banka hesapları + banka fişleri (09.10.2026; f46f748..b44d133): menüde Taksitler altında Banka, pencere, Kurulum
+      Sihirbazı (geri alınabilir), Hesaplar/hesap kartı (IBAN), açılış + Bakiye Doğrulandı, Hesabı Atanmamış + Bu Hesaba Ata, Alt
+      Hesap Mizanı verisi, Ayarlar (Temel/Gelişmiş, Varsayılanlara Dön); Banka Fişi (masraf BSMV/KDV dahil-hariç, faiz+stopaj, kart
+      borcu, kredi), Ters Kaydet/Düzelt, Hareketler, İşlem Kartı, Benzer İşlem, Planlı İşlemler; 649 Tekdüzen adı. Gözden geçirme
+      33 kayıt (28 ayrı: 5 yüksek) → 27 düzeltildi, 1 kısmen (Banka Masraf Raporu ekranı yok). npm test 1.598/1.598, mutabakat 2.000,
+      güvenilirlik 2×1.000, senaryo-banka-210 238/238. Bilinen sınır: 1M harekette dönemli Alt Hesap Mizanı ~4 sn, yıllık Banka
+      Masraf Raporu ~5 sn (tarih indeksi yok → 2.3.0 ölçek işi). Sırada (daraltılmış): modül ekranlarında hesap seçimi (+ eksi
+      bakiye denetimi ve money.prime modül yazımlarında), transfer, raporlar, kabul 1–16 ekrandan, kılavuz, tek gözden geçirme, paket.
   CANLI HATA (gözden geçirmede bulundu, v2.0.26'da da VAR, gerçek v2.0.26 koduyla yeniden üretildi): Taksite Aktar (var olan
   bağsız karta) → taşınan tahsilatı sil → aktarımı geri al → Silinenler'den geri yükle → Kasa ÇİFT sayılır (1.000 yerine 2.000),
   Mutabakat Testi "tamam" der. 2.1.0'da düzeldi (bir olay = bir para hareketi, 409 `event-in-use`). Kullanıcıya bildirildi.
