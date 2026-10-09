@@ -1996,7 +1996,7 @@
           <div class="hof-inv-logo-row"><div class="hof-inv-logo-box" data-logo-preview>${logoNow() ? `<img src="${esc(logoNow())}" alt="Logo">` : '<small>Logo yok</small>'}</div>
           <div class="hof-inv-logo-tools"><label class="hof-button hof-button-small hof-button-ghost">Logo Seç<input type="file" accept="image/*" data-logo-file hidden></label>${logoNow() ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="logo-clear">Logoyu Kaldır</button>' : ""}<small>PNG ya da JPEG seçin; program JPEG'e çevirip küçültür (en çok 150 KB). Kaydedince bundan sonraki PDF'lere basılır.</small></div></div></div>
       </div></section>
-      <section class="hof-inv-settings"><h4>Banka Hesapları <small>(belgenin altına basılır)</small></h4><div class="hof-inv-banks">
+      <section class="hof-inv-settings"><h4>Banka Hesapları <small>(belgenin altına basılır)</small></h4><p class="hof-muted">Banka penceresinde “IBAN faturada gösterilsin” işaretli hesaplar da belgeye basılır (önce onlar; en çok 4 hesap).</p><div class="hof-inv-banks">
         ${banks.map((bank, index) => `<div class="hof-inv-pay-row"><label><span>Banka</span><input data-bank="${index}" data-k="name" maxlength="80" value="${esc(bank.name || "")}"></label><label><span>IBAN</span><input data-bank="${index}" data-k="iban" maxlength="34" value="${esc(bank.iban || "")}" placeholder="TR00 0000 0000 0000 0000 0000 00"></label></div>`).join("")}
       </div></section>
       <section class="hof-inv-settings"><h4>Numaralar</h4><p class="hof-muted">Numara: seri (3 harf) + yıl + 9 hane, ör. FIS2026000000001. Sıradaki numarayı yalnız ileri alabilirsiniz (kâğıt faturadan geçişte kaldığınız yerden devam etmek için).</p><div class="hof-inv-head">

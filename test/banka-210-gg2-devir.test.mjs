@@ -220,11 +220,17 @@ describe("GG2 — Bankaya Geçmiş Say / Kart Borcuna Aktar: yalnız açılışt
     expectStatus(res, 409, "bank-legacy-exceeds", "açılış öncesi POS");
     const card1 = await ctx.api.post(`${BANK}/legacy/reclass`, { mode: "card", accountId: card.id, amount: "1.000" });
     expectStatus(card1, 409, "bank-legacy-exceeds", "açılış öncesi kart ödemesi");
+    // Ekranın formu dolduracağı tutar sunucunun aktaracağıyla aynı (önceden 108.00'ın bütün bakiyesi öneriliyordu).
+    const legacy = await must("eski", ctx.api.get(`${BANK}/legacy`));
+    assert.deepEqual(legacy.reclassable[ziraat.id], { mode: "bank", minor: 0 });
+    assert.deepEqual(legacy.reclassable[card.id], { mode: "card", minor: 0 });
   });
 
   it("açılıştan sonra POS 3.000 + kartla ödeme 1.000: bankaya 3.000 ve karta 1.000 ayrı ayrı aktarılır, fazlası 409", async () => {
     await entry(ctx.api, party, "2026-10-05", "3.000", { method: "card" });
     await entry(ctx.api, party, "2026-10-06", "1.000", { kind: "out", method: "card" });
+    const offered = (await must("eski", ctx.api.get(`${BANK}/legacy`))).reclassable;
+    assert.deepEqual([offered[ziraat.id], offered[card.id]], [{ mode: "bank", minor: 300_000 }, { mode: "card", minor: 100_000 }], "ekranın önerdiği tutarlar");
     const over = await ctx.api.post(`${BANK}/legacy/reclass`, { mode: "bank", accountId: ziraat.id, amount: "3.000,01" });
     expectStatus(over, 409, "bank-legacy-exceeds", "POS havuzundan fazla");
     await must("bankaya geçmiş say", ctx.api.post(`${BANK}/legacy/reclass`, { mode: "bank", accountId: ziraat.id, amount: "3.000" }));

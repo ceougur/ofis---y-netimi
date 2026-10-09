@@ -405,7 +405,8 @@ try {
     await tab(admin, "settings");
     await admin.waitForSelector(`${bankWin} [data-settings]`);
     const legends = await admin.$$eval(`${bankWin} .hof-bank-set:not([hidden]) legend`, list => list.filter(node => node.offsetParent).map(node => node.textContent.trim()));
-    ok(["Hesap", "Eksi Bakiye", "Mükerrer", "Masraf", "Döviz", "Tatil"].every(name => legends.includes(name)) && !legends.includes("POS") && !legends.includes("Ekstre"), `Temel bölümler: ${legends.join(", ")}`);
+    // GG2 (F10/F12): bu sürümde olmayan özelliklerin ayarları (POS, Ekstre, Döviz, Kanal Alanı, Elle Banka Fişi) görünmez.
+    ok(["Hesap", "Eksi Bakiye", "Mükerrer", "Masraf", "Tatil"].every(name => legends.includes(name)) && !["POS", "Ekstre", "Döviz"].some(name => legends.includes(name)), `Temel bölümler: ${legends.join(", ")}`);
     ok(await admin.$eval(`${bankWin} [data-advanced]`, node => node.hidden), "Gelişmiş ayarlar kapalı gelir");
     ok(!(await admin.$(`${bankWin} [data-set="account.defaultPosId"]`)) && !(await admin.$(`${bankWin} [data-set="holidayAdvanced.shift"]`)), "Varsayılan POS ve Tatile Düşen Valör görünmez");
     ok((await admin.$eval(`${bankWin} [data-set="negative.policy"]`, node => node.value)) === "warn" && (await admin.$eval(`${bankWin} [data-set="similar.enabled"]`, node => node.value)) === "true", "standartlar seçili: Uyar, Benzer İşlem Açık");
@@ -415,6 +416,14 @@ try {
     await admin.waitForTimeout(300);
     const advanced = await textOf(admin, `${bankWin} [data-advanced]`);
     ok(has(advanced, "Hesap Eşlemeleri") && has(advanced, "770 · Genel Giderler ve Alış Faturaları") && has(advanced, "102 · Bankalar (Havale / EFT)") && !has(advanced, "Ekstre"), "Gelişmiş: hesap eşlemeleri adlarıyla; Ekstre bölümü yok");
+    const hiddenKeys = ["fx.source", "fxAdvanced.exchangeTaxPermille", "movement.channel", "other.manualVoucher", "gl.fxGain", "gl.fxLoss"];
+    const shownHidden = [];
+    for (const key of hiddenKeys) if (await admin.$(`${bankWin} [data-set="${key}"]`)) shownHidden.push(key);
+    const itemLabels = await admin.$$eval(`${bankWin} .hof-bank-set-item > label`, list => list.map(node => node.textContent.trim()));
+    const hiddenNames = ["Kambiyo Kârı", "Kambiyo Zararı", "Kanal Alanı", "Elle Banka Fişi", "Kur Kaynağı"].filter(name => itemLabels.some(label => label.startsWith(name)));
+    ok(shownHidden.length === 0 && hiddenNames.length === 0, `etkisiz/ertelenen ayarlar görünmez (Döviz, Kanal Alanı, Elle Banka Fişi, Kambiyo eşlemeleri)${shownHidden.length || hiddenNames.length ? `: ${[...shownHidden, ...hiddenNames].join(", ")}` : ""}`);
+    const feeGl = await admin.$$eval(`${bankWin} [data-set="gl.fee"] option`, list => list.map(node => node.value));
+    ok([...feeGl].sort().join(",") === "653,770", `Banka Masrafları eşlemesi yalnız 770 ya da 653 (${feeGl.join(", ")})`);
     await auditLabels(admin, "Ayarlar (Gelişmiş)");
     await shot(admin, "ayarlar-gelismis");
     await admin.selectOption(`${bankWin} [data-set="negative.policy"]`, "block");
@@ -430,19 +439,19 @@ try {
     await admin.waitForTimeout(800);
     let values = (await must("ayarlar", api.get("/api/workspace/bank/settings"))).values;
     ok(values.negative.policy === "block" && values.similar.enabled === false, "Kaydet: Engelle ve Benzer İşlem Kapalı sunucuda");
-    await admin.fill(`${bankWin} [data-set="fxAdvanced.exchangeTaxPermille"]`, "200");
+    await admin.fill(`${bankWin} [data-set="other.eventPrefix"]`, "b1");
     await admin.click(`${bankWin} [data-act="save-settings"]`);
     await admin.waitForTimeout(700);
     const error = await textOf(admin, `${bankWin} [data-settings] .hof-form-error`);
-    ok(has(error, "Kambiyo Vergisi Oranı"), `geçersiz değer ekranda: “${error}”`);
-    ok(await admin.$eval(`${bankWin} [data-set="fxAdvanced.exchangeTaxPermille"]`, node => node.classList.contains("is-invalid")), "hatalı alan işaretli");
-    ok((await must("ayarlar", api.get("/api/workspace/bank/settings"))).values.fxAdvanced.exchangeTaxPermille === null, "geçersiz değer kaydedilmedi");
+    ok(has(error, "İşlem No Öneki"), `geçersiz değer ekranda: “${error}”`);
+    ok(await admin.$eval(`${bankWin} [data-set="other.eventPrefix"]`, node => node.classList.contains("is-invalid")), "hatalı alan işaretli");
+    ok((await must("ayarlar", api.get("/api/workspace/bank/settings"))).values.other.eventPrefix === "BNK", "geçersiz değer kaydedilmedi");
     await shot(admin, "ayarlar-gecersiz-deger");
     await admin.click(`${bankWin} [data-act="reset-all"]`);
     await answerYes(admin);
     await admin.waitForTimeout(700);
     values = (await must("ayarlar", api.get("/api/workspace/bank/settings"))).values;
-    ok(values.negative.policy === "warn" && values.similar.enabled === true && values.fxAdvanced.exchangeTaxPermille === null, "Tümünü Varsayılanlara Dön: Uyar, Benzer İşlem Açık");
+    ok(values.negative.policy === "warn" && values.similar.enabled === true && values.other.eventPrefix === "BNK", "Tümünü Varsayılanlara Dön: Uyar, Benzer İşlem Açık");
     ok((await admin.$eval(`${bankWin} [data-set="negative.policy"]`, node => node.value)) === "warn", "ekran da varsayılana döndü");
     await shot(admin, "ayarlar-varsayilan");
   });
@@ -614,15 +623,24 @@ try {
     await admin.waitForTimeout(900);
     let summary = await must("özet", api.get(`/api/workspace/bank/summary?${q}`));
     ok(summary.realBank.minor === 10_200_000 && summary.unassigned.bankMinor === 500_000, `Bu Hesaba Ata: Gerçek Banka ${summary.realBank.minor / 100}, Hesabı Atanmamış havale ${summary.unassigned.bankMinor / 100}`);
-    // Bankaya Geçmiş Say: 108.00'daki 3.000 hesaba.
+    // Bankaya Geçmiş Say (GG2 F4): yalnız hesabın açılışından sonraki POS tahsilatı aktarılır. 22.09'daki 3.000 açılıştan (01.10) önce:
+    // açılış bakiyesinin içinde, Devir Kapanışı'nın konusu — form açılmaz, nedeni söylenir.
+    await admin.click(`${bankWin} [data-act="reclass-bank"]`);
+    await admin.waitForTimeout(500);
+    ok(!(await admin.$(`${top} form [name="amount"]`)) && has(await textOf(admin, "#hof-toasts .hof-toast:last-child"), "açılışından sonra bankaya geçmemiş POS tahsilatı yok"), `açılıştan önceki POS için form açılmaz: ${await textOf(admin, "#hof-toasts .hof-toast:last-child")}`);
+    // Açılıştan sonra (05.10) 1.500 POS: form 1.500 ile dolar (108.00'ın bütün bakiyesi 4.500 değil).
+    await must("05.10 POS", api.post(`/api/workspace/accounts/${party.id}/entries?${q}`, { kind: "in", amount: "1.500", method: "card", date: "2026-10-05" }));
+    await tab(admin, "accounts");
+    await admin.click(`${bankWin} [data-act="legacy"]`);
+    await admin.waitForSelector(`${bankWin} [data-act="reclass-bank"]`, { timeout: 8000 });
     await admin.click(`${bankWin} [data-act="reclass-bank"]`);
     await admin.waitForSelector(`${top} form [name="amount"]`);
-    ok((await admin.$eval(`${top} form [name="amount"]`, node => node.value)) === "3.000,00", "Bankaya Geçmiş Say tutarı 108.00 bakiyesiyle önerili (3.000,00)");
+    ok((await admin.$eval(`${top} form [name="amount"]`, node => node.value)) === "1.500,00" && has(await textOf(admin, `${top} .hof-modal-text`), "en çok ₺1.500,00"), `Bankaya Geçmiş Say tutarı açılıştan sonraki POS ile önerili (1.500,00): ${await textOf(admin, `${top} .hof-modal-text`)}`);
     await auditLabels(admin, "Bankaya Geçmiş Say");
     await admin.click(`${top} form button[type="submit"]`);
     await admin.waitForTimeout(900);
     summary = await must("özet", api.get(`/api/workspace/bank/summary?${q}`));
-    ok(summary.realBank.minor === 10_500_000 && summary.unassigned.cardMinor === 0, `Bankaya Geçmiş Say: Gerçek Banka ${summary.realBank.minor / 100}, POS 108.00 ${summary.unassigned.cardMinor / 100}`);
+    ok(summary.realBank.minor === 10_350_000 && summary.unassigned.cardMinor === 300_000, `Bankaya Geçmiş Say: Gerçek Banka ${summary.realBank.minor / 100} (102.000 + 1.500), POS 108.00 ${summary.unassigned.cardMinor / 100} (açılış öncesi 3.000 kalır)`);
     await shot(admin, "eski-hareketler-sonra");
     integrity = await must("Mutabakat Testi", api.get(`/api/workspace/ledger/integrity?${q}`));
     ok(integrity.ok === true, "ikinci şirkette mutabakat ok (geri al, ata, aktar)");
@@ -1223,6 +1241,209 @@ try {
     for (const code of [CARD?.glSub, LOAN?.glSub].filter(Boolean)) ok((sub[code] || 0) === (model.get(code) || 0), `alt hesap ${code}: program ${(sub[code] || 0) / 100} · model ${(model.get(code) || 0) / 100}`);
     const integrity = await must("Mutabakat Testi", api.get("/api/workspace/ledger/integrity"));
     ok(integrity.ok === true, "mutabakat ok (bölüm 2 sonu)");
+  });
+
+  // ==================== Bölüm 3 (Aşama 3–4 bağımsız gözden geçirme GG2: arayüzde görünen bulgular) ====================
+  const eventsOf = async id => (await must("hesabın hareketleri", api.get(`/api/workspace/bank/movements?account=${id}&status=all&limit=200`))).rows.length;
+  const closeAll = async page => {
+    for (let index = 0; index < 6 && (await page.$(modal)); index += 1) await closeTop(page);
+  };
+  await step("24b. GG2 (F3/L7): kart hesabında Borç artı; Açılışı Düzelt formu artı borçla dolu; değiştirmeden kaydet yeni fiş yazmaz", async () => {
+    current = admin;
+    await admin.goto(`${BASE}/`, { waitUntil: "load" });
+    await admin.waitForSelector("#hof-sidecard", { timeout: 30000 });
+    await admin.waitForTimeout(700);
+    await openBank(admin);
+    await tab(admin, "accounts");
+    await admin.click(`${bankWin} .hof-bank-accounts tbody tr[data-account="${CARD.id}"]`);
+    await admin.waitForSelector(`${bankWin} [data-bank-balance]`);
+    await admin.waitForSelector(`${bankWin} .hof-bank-moves tbody tr[data-event]`, { timeout: 8000 });
+    const head = await textOf(admin, `${bankWin} .hof-chq-amount`);
+    const facts = await textOf(admin, `${bankWin} .hof-chq-facts`);
+    ok(has(head, "Borç") && has(head, "₺3.000,00") && !has(head, "-") && !has(head, "−"), `başlık: ${head} (kart borcu 3.000 artı)`);
+    ok(has(facts, "Açılıştaki Borç") && has(facts, "₺5.000,00") && !/[-−]₺?5\.000/.test(facts), `Açılıştaki Borç artı 5.000: ${facts.slice(0, 200)}`);
+    const balanceHead = await admin.$$eval(`${bankWin} .hof-bank-moves thead th`, list => list.map(node => node.textContent.trim()));
+    const firstDebt = await admin.$eval(`${bankWin} .hof-bank-moves tbody tr[data-event] td:last-child`, node => node.textContent.trim());
+    ok(balanceHead.at(-1) === "Borç" && firstDebt === "₺3.000,00", `hesabın hareketlerinde yürüyen kolon "Borç" ve artı (${balanceHead.at(-1)}: ${firstDebt})`);
+    await shot(admin, "gg2-kart-borc-arti");
+    const before = await eventsOf(CARD.id);
+    await admin.click(`${bankWin} [data-act="opening"]`);
+    await admin.waitForSelector(`${top} form [name="openingAmount"]`);
+    ok((await textOf(admin, `${top} .hof-modal-title`)) === "Açılışı Düzelt", "Açılışı Düzelt formu");
+    ok((await admin.$eval(`${top} form [name="openingAmount"]`, node => node.value)) === "5.000,00", `form artı borçla dolu: ${await admin.$eval(`${top} form [name="openingAmount"]`, node => node.value)}`);
+    await shot(admin, "gg2-kart-acilis-formu");
+    await admin.click(`${top} form button[type="submit"]`);
+    await admin.waitForSelector(`${top} form [name="openingAmount"]`, { state: "detached", timeout: 8000 });
+    await admin.waitForTimeout(500);
+    ok((await eventsOf(CARD.id)) === before && (await balanceOf(CARD.id)) === -300_000, `değiştirmeden kaydet: yeni fiş yok (${before} → ${await eventsOf(CARD.id)}), kart borcu aynı`);
+  });
+
+  let HTML_ACCOUNT = null;
+  let NEG = null;
+  await step("24c. GG2 (F12/L12): + Yeni Hesap'ta Para Birimi yok; sıfır açılışlı hesapta Açılış Bakiyesi Gir (Açılışı Düzelt değil)", async () => {
+    await tab(admin, "accounts");
+    await admin.click(`${bankWin} [data-act="new"]`);
+    await admin.waitForSelector(`${top} form [name="bankName"]`);
+    ok(!(await admin.$(`${top} form [name="currency"]`)) && !(await admin.isVisible(`${top} form [name="openingRate"]`)), "hesap formunda Para Birimi yok, Açılış Kuru görünmez (döviz hesabı bu sürümde kapalı)");
+    await auditLabels(admin, "Hesap Formu (GG2)");
+    await closeTop(admin);
+    const usd = await api.post("/api/workspace/bank/accounts", { bankName: "Ziraat Bankası", name: "Döviz", kind: "demand", currency: "USD" });
+    ok(usd.status === 400 && JSON.stringify(usd.data).includes("bank-currency-later"), `API'den USD hesap 400 bank-currency-later (${usd.status})`);
+    HTML_ACCOUNT = await must("HTML adlı hesap", api.post("/api/workspace/bank/accounts", { bankName: "Ziraat Bankası", name: '<img src=x onerror="window.__gg2xss=1">', kind: "demand", opening: { date: "2026-10-01", amount: "0", confirmed: false } }));
+    await admin.goto(`${BASE}/`, { waitUntil: "load" });
+    await admin.waitForSelector("#hof-sidecard", { timeout: 30000 });
+    await admin.waitForTimeout(700);
+    await openBank(admin);
+    await tab(admin, "accounts");
+    await admin.click(`${bankWin} .hof-bank-accounts tbody tr[data-account="${HTML_ACCOUNT.id}"]`);
+    await admin.waitForSelector(`${bankWin} [data-bank-balance]`);
+    const label = await textOf(admin, `${bankWin} [data-act="opening"]`);
+    ok(label === "Açılış Bakiyesi Gir" && (await admin.$eval(`${bankWin} [data-act="opening"]`, node => !node.disabled)), `sıfır açılışlı hesapta düğme “${label}”, etkin`);
+    ok(!(await admin.evaluate(() => window.__gg2xss)) && !(await admin.$(`${bankWin} .hof-plan-title img`)), "HTML adlı hesap kaçışlı (img öğesi yok, betik çalışmadı)");
+  });
+
+  await step("24d. GG2 (F7/F6): HTML adlı hesabın planında Gerçekleştir giriş metni kaçışlı; Atla çift tıklamada tek dönem ilerler", async () => {
+    const plan = await must("aylık plan", api.post("/api/workspace/bank/plans", { kind: "other_out", accountId: HTML_ACCOUNT.id, amount: "40", plannedDate: "2026-10-08", repeat: "monthly", description: "Aidat" }));
+    await tab(admin, "movements");
+    await admin.waitForSelector(`${bankWin} [data-moves]`);
+    await admin.click(`${bankWin} [data-act="mv-planned"]`);
+    await admin.waitForSelector(`${bankWin} .hof-bank-plans`, { timeout: 8000 });
+    await admin.selectOption(`${bankWin} [data-mv="account"]`, HTML_ACCOUNT.id);
+    await admin.waitForSelector(`${bankWin} .hof-bank-plans tbody tr[data-plan="${plan.id}"]`, { timeout: 8000 });
+    await admin.click(`${bankWin} .hof-bank-plans tr[data-plan="${plan.id}"] [data-act="plan-run"]`);
+    await admin.waitForSelector(`${top} form [name="date"]`);
+    const intro = await admin.$eval(top, node => ({ text: node.textContent, imgs: node.querySelectorAll("img").length }));
+    ok(intro.imgs === 0 && intro.text.includes('<img src=x onerror="window.__gg2xss=1">') && !(await admin.evaluate(() => window.__gg2xss)), "Gerçekleştir giriş metninde hesap adı düz yazı (öğe değil)");
+    await shot(admin, "gg2-plan-giris-kacisli");
+    await closeTop(admin);
+    await admin.waitForSelector(`${bankWin} .hof-bank-plans tr[data-plan="${plan.id}"] [data-act="plan-skip"]`);
+    await admin.dblclick(`${bankWin} .hof-bank-plans tr[data-plan="${plan.id}"] [data-act="plan-skip"]`);
+    await admin.waitForFunction(id => document.querySelector(`.hof-bank-modal .hof-bank-plans tr[data-plan="${id}"]`)?.textContent.includes("08.11.2026"), plan.id, { timeout: 10000 });
+    await admin.waitForTimeout(800);
+    const after = (await must("plan", api.get("/api/workspace/bank/plans?status=all"))).plans.find(item => item.id === plan.id);
+    ok(after.plannedDate === "2026-11-08", `çift tıklama tek dönem: sonraki tarih ${after.plannedDate} (beklenen 2026-11-08, 2026-12-08 değil)`);
+    const second = await api.post(`/api/workspace/bank/plans/${plan.id}/skip`, { expectedDate: "2026-10-08" });
+    ok(second.status === 409 && (second.data?.code === "bank-plan-moved" || second.data?.error?.code === "bank-plan-moved" || JSON.stringify(second.data).includes("bank-plan-moved")), `eski ekrandan ikinci Atla 409 bank-plan-moved (${second.status})`);
+    await must("plan sil", api.del(`/api/workspace/bank/plans/${plan.id}`));
+    await admin.click(`${bankWin} [data-act="mv-planned"]`);
+    await admin.waitForFunction(() => !document.querySelector(".hof-bank-modal .hof-bank-plans") && document.querySelector(".hof-bank-modal [data-moves]"), null, { timeout: 8000 });
+  });
+
+  await step("24e. GG2 (F9): Banka Fişi K7 eksi bakiye: Bakiye Doğrulandı hesapta çıkış soru sorar; Vazgeç yazmaz; Yine de Kaydet tek fiş", async () => {
+    NEG = await must("eksi deneme hesabı", api.post("/api/workspace/bank/accounts", { bankName: "Garanti BBVA", name: "Eksi Deneme", kind: "demand", opening: { date: "2026-10-01", amount: "100", confirmed: true } }));
+    await admin.goto(`${BASE}/`, { waitUntil: "load" });
+    await admin.waitForSelector("#hof-sidecard", { timeout: 30000 });
+    await admin.waitForTimeout(700);
+    await openBank(admin);
+    await tab(admin, "movements");
+    await admin.waitForSelector(`${bankWin} [data-act="v-other"]`);
+    const before = await eventsOf(NEG.id);
+    await admin.click(`${bankWin} [data-act="v-other"]`);
+    await admin.waitForSelector("form.hof-bank-voucher [name=\"type\"]");
+    await fillVoucher(admin, { type: "other_out", accountId: NEG.id, amount: "500", description: "Eksi bakiye denemesi" });
+    await submitVoucher(admin);
+    await admin.waitForFunction(() => [...document.querySelectorAll(".hof-modal-backdrop.is-visible .hof-modal-title")].some(node => node.textContent.trim() === "Eksi Bakiye"), null, { timeout: 8000 });
+    const question = await textOf(admin, `${top} .hof-modal-text`);
+    ok(/eksi/i.test(question) && has(question, "100,00"), `soru: ${question}`);
+    await shot(admin, "gg2-eksi-bakiye-sorusu");
+    await admin.click(`${top} [data-answer="no"]`);
+    await admin.waitForTimeout(600);
+    ok(Boolean(await admin.$("form.hof-bank-voucher")) && (await eventsOf(NEG.id)) === before && (await balanceOf(NEG.id)) === 10_000, "Vazgeç: form açık, fiş yok, bakiye 100");
+    await submitVoucher(admin);
+    await answerYes(admin);
+    await voucherClosed(admin);
+    ok((await eventsOf(NEG.id)) === before + 1 && (await balanceOf(NEG.id)) === -40_000, `Yine de Kaydet: tek fiş, bakiye −400 (${(await balanceOf(NEG.id)) / 100})`);
+    // Engelle (hesap bazında): soru yok, kayıt yok.
+    await must("Engelle", api.put(`/api/workspace/bank/accounts/${NEG.id}`, { negativePolicy: "block" }));
+    const blocked = await api.post("/api/workspace/bank/vouchers", { type: "other_out", accountId: NEG.id, amount: "1", description: "Engelli", negativeOk: true });
+    ok(blocked.status === 409 && JSON.stringify(blocked.data).includes("bank-blocked") && (await balanceOf(NEG.id)) === -40_000, `Engelle: negativeOk ile bile 409 bank-blocked (${blocked.status})`);
+  });
+
+  await step("24f. GG2 (L6/L9/F10): Ayarlar'da kaydedilmemiş değişiklikle Esc soru sorar; Vazgeç pencerede kalır; yeniden açılışta Gelişmiş kapalı", async () => {
+    await tab(admin, "settings");
+    await admin.waitForSelector(`${bankWin} [data-settings]`);
+    await admin.click(`${bankWin} [data-act="advanced"]`);
+    await admin.waitForTimeout(300);
+    await admin.selectOption(`${bankWin} [data-set="similar.enabled"]`, "false");
+    await admin.keyboard.press("Escape");
+    await admin.waitForFunction(() => [...document.querySelectorAll(".hof-modal-backdrop.is-visible .hof-modal-title")].some(node => node.textContent.trim() === "Kaydedilmemiş Değişiklik"), null, { timeout: 8000 });
+    await shot(admin, "gg2-ayarlar-kaydedilmemis");
+    await admin.click(`${top} [data-answer="no"]`);
+    await admin.waitForTimeout(400);
+    ok(Boolean(await admin.$(`${bankWin} [data-settings]`)) && (await admin.$eval(`${bankWin} [data-set="similar.enabled"]`, node => node.value)) === "false", "Vazgeç: Banka penceresi açık, değişiklik duruyor");
+    await admin.keyboard.press("Escape");
+    await answerYes(admin);
+    await admin.waitForSelector(bankWin, { state: "detached", timeout: 8000 });
+    ok((await must("ayarlar", api.get("/api/workspace/bank/settings"))).values.similar.enabled === true, "Kaydetmeden Çık: ayar değişmedi");
+    await openBank(admin);
+    await tab(admin, "settings");
+    await admin.waitForSelector(`${bankWin} [data-settings]`);
+    ok(await admin.$eval(`${bankWin} [data-advanced]`, node => node.hidden), "yeniden açılışta Gelişmiş Ayarlar kapalı");
+    await closeTop(admin);
+  });
+
+  await step("24g. GG2 (sihirbaz): doldurulmuş hesap formunda Bu Adımı Atla soru sorar; Kaydetmeden Atla hesap açmaz", async () => {
+    await openBank(admin);
+    await tab(admin, "accounts");
+    const count = (await accountsNow()).length;
+    await admin.click(`${bankWin} [data-act="wizard"]`);
+    await admin.waitForSelector(`${wiz} [data-wiz-form]`);
+    await admin.fill(`${wiz} [data-wiz-form] [name="bankName"]`, "Akbank");
+    await admin.fill(`${wiz} [data-wiz-form] [name="name"]`, "Atlanacak Hesap");
+    await admin.click(`${wiz} [data-wiz="skip"]`);
+    await admin.waitForFunction(() => [...document.querySelectorAll(".hof-modal-backdrop.is-visible .hof-modal-title")].some(node => node.textContent.trim() === "Bu Adımı Atla"), null, { timeout: 8000 });
+    await admin.click(`${top} [data-answer="no"]`);
+    await admin.waitForTimeout(400);
+    ok((await admin.$eval(`${wiz} [data-wiz-form] [name="name"]`, node => node.value)) === "Atlanacak Hesap", "Vazgeç: form ve yazılanlar duruyor");
+    await admin.click(`${wiz} [data-wiz="skip"]`);
+    await answerYes(admin);
+    await admin.waitForSelector(`${wiz} [data-wiz-done], ${wiz} [data-wiz-preview], ${wiz} [data-wiz="transfer"]`, { timeout: 8000 });
+    ok((await accountsNow()).length === count, "Kaydetmeden Atla: hesap açılmadı");
+    await closeAll(admin);
+  });
+
+  await step("24h. GG2 (L4/L8): 390 px Hesabı Atanmamış Eski Hareketler yatay kaydırmasız; hesaba bağlanan cari havalesinde Açıklamayı Düzelt pasif ve nedeni", async () => {
+    const party = await must("cari", api.post("/api/workspace/accounts", { name: "GG2 Havale Müşterisi", type: "customer", registeredOn: "2026-10-01" }));
+    await must("havale", api.post(`/api/workspace/accounts/${party.id}/entries`, { kind: "in", amount: "750", method: "bank", date: "2026-10-05", note: "Ekim tahsilatı" }));
+    const phone = await newPage({ width: 390, height: 844 });
+    current = phone;
+    await login(phone, "admin", PASS);
+    await phone.evaluate(() => HOF.bank.open({ legacy: true }));
+    await phone.waitForSelector(`${bankWin} [data-pick], ${bankWin} .hof-bank-table tbody tr`, { timeout: 15000 });
+    await phone.waitForTimeout(500);
+    const check = await noHorizontalScroll(phone);
+    ok(check.page && check.dialog, `Hesabı Atanmamış Eski Hareketler 390 px'te yatay kaydırmasız ${JSON.stringify(check.wide)}`);
+    await shot(phone, "gg2-mobil-eski-hareketler", { fullPage: true });
+    await phone.context().close();
+    current = admin;
+    const legacy = await must("eski", api.get("/api/workspace/bank/legacy"));
+    const row = legacy.rows.find(item => item.partyName === "GG2 Havale Müşterisi");
+    await must("ata", api.post("/api/workspace/bank/legacy/assign", { accountId: ZIRAAT.id, rows: [{ table: row.table, id: row.id }] }));
+    await openBank(admin);
+    await tab(admin, "movements");
+    await admin.waitForSelector(`${bankWin} [data-moves]`);
+    await selectMovesAccount(admin, ZIRAAT.id);
+    await openEventFromList(admin, item => item.text.includes("GG2 Havale Müşterisi"));
+    const why = await textOf(admin, `${bankWin} [data-bank-event-blocks]`);
+    ok(await admin.$eval(`${bankWin} [data-act="ev-info"]`, node => node.disabled) && has(why, "Açıklamayı Düzelt") && has(why, "Açıklaması da orada değiştirilir"), `cari havalesinde Açıklamayı Düzelt pasif: ${why}`);
+    await shot(admin, "gg2-modul-hareketi-aciklama-pasif");
+    await closeAll(admin);
+  });
+
+  await step("24i. GG2 (L10): KDV Özeti Rapor Merkezi ekranından: İndirilecek KDV (191) = Ana Defter 191 = model", async () => {
+    await admin.click('#hof-sidecard [data-action="analytics"]');
+    await admin.waitForSelector(`${modal} .hof-rep-tab[data-tab="all"]`, { timeout: 15000 });
+    await admin.click(`${modal} .hof-rep-tab[data-tab="all"]`);
+    await admin.waitForSelector(`${modal} [data-rc-list] [data-report="kdv-ozeti"]`, { timeout: 15000 });
+    await admin.click(`${modal} [data-rc-list] [data-report="kdv-ozeti"]`);
+    await admin.waitForSelector(`${modal} [data-rc-main] .hof-rc-summary`, { timeout: 15000 });
+    await admin.waitForTimeout(600);
+    const cards = await admin.$$eval(`${modal} [data-rc-main] .hof-rc-summary span`, spans => Object.fromEntries(spans.map(span => [span.querySelector("small")?.innerText.trim(), span.querySelector("b")?.innerText.trim()])));
+    const shown = cards["İndirilecek KDV (191)"] || "";
+    const t = await trial();
+    ok(shown && shown.includes(HOF_MONEY(model.get("191"))) && t["191"] === model.get("191"), `ekranda İndirilecek KDV ${shown} = Ana Defter 191 ${(t["191"] || 0) / 100} = model ${model.get("191") / 100}`);
+    await shot(admin, "gg2-kdv-ozeti-ekran");
+    await closeAll(admin);
   });
 
   await step("25. Kalemle ad (side.bank) ve yazım düzeni", async () => {

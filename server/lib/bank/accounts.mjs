@@ -613,6 +613,8 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
       byCurrency: totals.byCurrency,
       accounts: { count: rows.length, active: rows.filter(row => row.status === "active").length },
       setup: { needed: bankRows.length === 0 || (unassigned !== 0 && !runs), runs: Number(runs) || 0, suggestions: invoiceBankSuggestions(rows) },
+      // Bu sürümde açık özellikler (GG2): döviz hesabı kapalı — ekranda Para Birimi ve Açılış Kuru görünmez.
+      features: { fx: fxEnabled() },
     };
   }
   /** Fatura Ayarları'ndaki eski banka listesi (E2.16): henüz hesap olarak açılmamış IBAN'lar "Hesap Olarak Aç" önerisi. */
@@ -688,7 +690,15 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
       };
     });
     const totals = unassignedTotals();
-    return { rows, count: lines.length, lockedCount: lines.filter(line => locked && line.date <= locked).length, closedThrough: closed, totals: { bankMinor: totals.bank, cardMinor: totals.card }, newCount: newCount() };
+    // Hesap bazında aktarılabilir POS / kart tutarı (bugüne kadar): Bankaya Geçmiş Say ve Kart Borcuna Aktar formu bununla dolar.
+    const reclassable = {};
+    if (totals.card) {
+      for (const row of store.all("SELECT * FROM bank_accounts WHERE deleted_at IS NULL AND status = 'active' AND currency = 'TRY'")) {
+        if (bankFormOk(row)) reclassable[row.id] = { mode: "bank", minor: reclassAvailable("bank", row, today()).available };
+        else if (row.kind === "card") reclassable[row.id] = { mode: "card", minor: reclassAvailable("card", row, today()).available };
+      }
+    }
+    return { rows, count: lines.length, lockedCount: lines.filter(line => locked && line.date <= locked).length, closedThrough: closed, totals: { bankMinor: totals.bank, cardMinor: totals.card }, reclassable, newCount: newCount() };
   }
   /** Havale seçicisinde seçilebilen (eski havaleyi alabilen) hesap: etkin, TL, Vadesiz/Ticari/Diğer. */
   function bindable(id) {
@@ -906,6 +916,23 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
    * Hesabı atanmamış POS/kart bakiyesinin aktarımı (§10.3): mode "bank" = Bankaya Geçmiş Say (B 102.k / A 108.00; 108.00'ın artı bakiyesinden),
    * "card" = Kart Borcuna Aktar (B 108.00 / A 309.k; 108.00'ın eksi bakiyesinden). Geri alınabilir (Kurulum kaydı).
    */
+  /**
+   * Aktarılabilir tutar (kuruş): hedef hesabın açılışından (ve etkin Devir Kapanışı gününden) sonra, verilen tarihe kadar; tahsilat ('in')
+   * Bankaya Geçmiş Say'ın, kartla ödeme ('out') Kart Borcuna Aktar'ın havuzu; etkin önceki aktarımlar düşer. Ekran (Hesabı Atanmamış Eski
+   * Hareketler) aynı değeri hesap bazında gösterir ve formu onunla doldurur (GG2: önceden 108.00'ın bütün bakiyesi öneriliyordu).
+   */
+  function reclassAvailable(mode, account, date) {
+    const closed = carryBoundary();
+    const since = closed && closed > account.opening_date ? closed : account.opening_date;
+    const side = mode === "bank" ? "in" : "out";
+    const pool = legacyLines("card", { light: true, since, until: date }).filter(line => line.kind === side).reduce((sum, line) => sum + Number(line.cents), 0);
+    const used = Number(store.get(
+      `SELECT COALESCE(SUM(l.try_minor), 0) AS n FROM fin_events e JOIN bank_lines l ON l.event_id = e.id
+       WHERE e.type = 'legacy_reclass' AND +e.status = 'active' AND l.role = 'pos' AND l.ref = '' AND l.side = ?`,
+      mode === "bank" ? "C" : "D",
+    ).n) || 0;
+    return { since, available: Math.max(0, pool - used) };
+  }
   function reclass(user, body = {}, { requestId = "" } = {}) {
     const mode = text(body.mode);
     if (!["bank", "card"].includes(mode)) throw new HttpError(400, "Aktarım Bankaya Geçmiş Say (bank) ya da Kart Borcuna Aktar (card) olmalı.", { code: "bank-legacy-mode", field: "mode" });
@@ -924,16 +951,7 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
         // ve kart satırları"): yalnız hedef hesabın açılışından (ve etkin Devir Kapanışı gününden) sonra, verilen tarihe kadar; tahsilat ('in')
         // Bankaya Geçmiş Say'ın, kartla ödeme ('out') Kart Borcuna Aktar'ın havuzu (önceden 108.00'ın bütün bakiyesi netlenip aktarılıyordu:
         // açılıştan önceki POS parası açılışın içinde iki kez sayılıyor, kart borcu bankaya mahsup ediliyordu). Önceki aktarımlar (etkin) havuzdan düşer.
-        const closed = carryBoundary();
-        const since = closed && closed > account.opening_date ? closed : account.opening_date;
-        const side = mode === "bank" ? "in" : "out";
-        const pool = legacyLines("card", { light: true, since, until: date }).filter(line => line.kind === side).reduce((sum, line) => sum + Number(line.cents), 0);
-        const used = Number(store.get(
-          `SELECT COALESCE(SUM(l.try_minor), 0) AS n FROM fin_events e JOIN bank_lines l ON l.event_id = e.id
-           WHERE e.type = 'legacy_reclass' AND +e.status = 'active' AND l.role = 'pos' AND l.ref = '' AND l.side = ?`,
-          mode === "bank" ? "C" : "D",
-        ).n) || 0;
-        const available = Math.max(0, pool - used);
+        const { since, available } = reclassAvailable(mode, account, date);
         if (amount > available) throw new HttpError(409, `Hesabı Atanmamış POS / Kart hareketlerinden (108.00) bu hesabın açılışından (${dayText(since)}) sonra ${mode === "bank" ? "bankaya geçmemiş POS tahsilatı" : "kart borcuna aktarılmamış kartla ödeme"} ${moneyText(available)}; daha fazlası aktarılamaz. Açılıştan önceki hareketler Kurulum Sihirbazı'ndaki Devir Kapanışı'yla kapanır.`, { code: "bank-legacy-exceeds", availableMinor: available });
         const header = bank.voucher({ type: "legacy_assign", date, bankRef: account.id, origin: "wizard", description: `${mode === "bank" ? "Bankaya Geçmiş Say" : "Kart Borcuna Aktar"} · ${labelOf(account)}` }, []);
         const event = bank.voucher({ type: "legacy_reclass", date, bankRef: account.id, origin: "wizard", description: `${mode === "bank" ? "Bankaya Geçmiş Say" : "Kart Borcuna Aktar"} · Hesabı Atanmamış POS / Kart` }, lines);

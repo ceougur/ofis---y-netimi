@@ -482,7 +482,9 @@
   const openModals = [];
   let lastPressed = null;
   document.addEventListener("pointerdown", event => { lastPressed = event.target?.closest?.("button, a, [tabindex]") || null; }, true);
-  HOF.modal = ({ title, eyebrow = "DESTEKOFİS", body = "", size = "", dismissible = true, onOpen, onClose } = {}) => {
+  // beforeClose (v2.1.0 GG2): kullanıcı kapatırken (Kapat, Esc, dışına tıklama) çağrılır; false ya da false'a çözülen söz kapanmayı durdurur
+  // (ör. kaydedilmemiş değişiklik sorusu). Programın kendi close() çağrısı sorusuz kapatır.
+  HOF.modal = ({ title, eyebrow = "DESTEKOFİS", body = "", size = "", dismissible = true, onOpen, onClose, beforeClose = null } = {}) => {
     // v2.0.14: açan öğe. Tıklama odak vermemişse (ör. panel mousedown'ı yutuyor) son basılan düğme alınır; pencere
     // açıkken o düğme yeniden kurulmuş olabilir (canlı yenileme) — kapanınca odak aynı anahtarlı yeni düğmeye döner, boşa
     // (body) düşmez.
@@ -501,7 +503,8 @@
     );
     const dialog = node.querySelector(".hof-modal");
     let closed = false;
-    const close = result => {
+    let asking = false;
+    const finish = result => {
       if (closed) return;
       closed = true;
       node.classList.remove("is-visible");
@@ -512,12 +515,31 @@
       if (back && back.focus && back !== document.body) back.focus({ preventScroll: true });
       if (onClose) onClose(result);
     };
+    // Kullanıcının kapatması (Kapat düğmesi, Esc, dışına tıklama): beforeClose sorabilir.
+    const userClose = () => {
+      if (closed || asking) return;
+      if (!beforeClose) return finish();
+      const answer = beforeClose();
+      if (answer === false) return;
+      if (answer && typeof answer.then === "function") {
+        asking = true;
+        answer.then(ok => {
+          asking = false;
+          if (ok !== false) finish();
+        }, () => {
+          asking = false;
+        });
+        return;
+      }
+      finish();
+    };
+    const close = result => finish(result);
     const focusables = () => [...dialog.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])')].filter(item => !item.disabled && item.offsetParent !== null);
     const onKey = event => {
       if (openModals[openModals.length - 1] !== api) return;
       if (event.key === "Escape" && dismissible) {
         event.preventDefault();
-        close();
+        userClose();
       } else if (event.key === "Tab") {
         const items = focusables();
         if (!items.length) return;
@@ -536,9 +558,9 @@
     openModals.push(api);
     document.addEventListener("keydown", onKey, true);
     if (dismissible) {
-      node.querySelector(".hof-modal-close").onclick = () => close();
+      node.querySelector(".hof-modal-close").onclick = () => userClose();
       node.addEventListener("mousedown", event => {
-        if (event.target === node) close();
+        if (event.target === node) userClose();
       });
     }
     document.body.appendChild(node);

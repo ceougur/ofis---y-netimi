@@ -97,6 +97,10 @@
   const td = (label, html, cls = "") => `<td data-label="${esc(label)}"${cls ? ` class="${cls}"` : ""}>${html}</td>`;
   const accountLabel = account => `${account.bankName} · ${account.name}`;
   const openingLabel = kind => (kind === "card" || kind === "loan" ? "Açılıştaki Borç" : "Açılış Bakiyesi");
+  /** Döviz hesabı bu sürümde kapalı (sunucu config.fxEnabled; Genel Bakış features.fx). */
+  const fxOn = () => Boolean(view.summary?.features?.fx);
+  // GG2 (düşük): salt okunur lisansta yöneticiye yanlış neden (yetki) gösterilmez.
+  const READ_ONLY_TEXT = "Program salt okunur çalışıyor (lisans); kayıt değiştirilemez.";
   const limitLabel = kind => (kind === "card" ? "Kart Limiti" : kind === "loan" ? "Kredi Limiti" : "KMH Limiti");
 
   // ---------- Pencere ----------
@@ -111,8 +115,12 @@
         eyebrow: "OPERASYON",
         size: "wide",
         body: '<div class="hof-bank" data-bank><p class="hof-empty">Yükleniyor…</p></div>',
+        // GG2 (düşük): Ayarlar'da kaydedilmemiş değişiklik varken pencere sorusuz kapanmaz (sekme değişimindeki aynı soru).
+        beforeClose: () => (view.dirty && view.tab === "settings" ? HOF.confirm({ title: "Kaydedilmemiş Değişiklik", message: "Banka ayarlarında kaydedilmemiş değişiklik var. Kaydetmeden çıkılsın mı?", confirmLabel: "Kaydetmeden Çık", danger: true }) : true),
         onClose: () => {
           modal = null;
+          // Gelişmiş Ayarlar her açılışta kapalı gelir (GG2 düşük bulgu).
+          view.advanced = false;
           view.mode = "tab";
           view.accountId = "";
           view.account = null;
@@ -266,7 +274,7 @@
       rows.push(
         canAccounts()
           ? `<div class="hof-bank-row is-setup" data-bank-setup><div><b>Kurulumu Tamamla</b><small>Banka hesaplarınızı ve açılış bakiyelerini girin; hesap tanımlanmadan girilmiş eski hareketleri hesaba aktarın.</small></div><button type="button" class="hof-button hof-button-small" data-act="wizard">Kurulumu Tamamla</button></div>`
-          : '<div class="hof-bank-row is-setup"><div><b>Kurulum Bekliyor</b><small>Banka hesaplarını Banka Hesabı Tanımlama yetkisi olan kişi tanımlar.</small></div></div>',
+          : `<div class="hof-bank-row is-setup"><div><b>Kurulum Bekliyor</b><small>${esc(HOF.license?.writable === false ? READ_ONLY_TEXT : "Banka hesaplarını Banka Hesabı Tanımlama yetkisi olan kişi tanımlar.")}</small></div></div>`,
       );
     }
     const unassigned = s.unassigned || { totalMinor: 0 };
@@ -315,7 +323,7 @@
     // Boş durum yalnız anlatır; tek düğme yukarıdaki "Kurulumu Tamamla" satırında (kart kalabalığı yok, talimat 35).
     const empty = accounts.length
       ? ""
-      : '<div class="hof-bank-empty" data-bank-empty><h4>Henüz Banka Hesabı Yok</h4><p>Banka hesaplarınızı ve açılış bakiyelerini Kurulum Sihirbazı ile birkaç adımda girin. Hesap tanımlanana kadar havale / EFT ile girilen tahsilat ve ödemeler “Hesabı Atanmamış Eski Hareketler”de toplanır.</p></div>';
+      : `<div class="hof-bank-empty" data-bank-empty><h4>Henüz Banka Hesabı Yok</h4><p>${canAccounts() ? "Banka hesaplarınızı ve açılış bakiyelerini Kurulum Sihirbazı ile birkaç adımda girin. " : ""}Hesap tanımlanana kadar havale / EFT ile girilen tahsilat ve ödemeler “Hesabı Atanmamış Eski Hareketler”de toplanır.</p></div>`;
     // Son Banka Hareketleri (§8.4; 10 satır, tek kaynaktan): satır İşlem Kartı'nı açar.
     const latest = view.latest?.length
       ? `<div class="hof-bank-subhead"><h4 class="hof-bank-subtitle">Son Banka Hareketleri</h4><button type="button" class="hof-link-button" data-act="mv-open">Tüm Hareketler</button></div>
@@ -365,19 +373,26 @@
     const balance = main ? (a.currency === "TRY" ? a.balanceMinor : a.fxBalanceMinor) : -a.balanceMinor;
     const fact = (label, value) => (value ? `<div><dt>${esc(label)}</dt><dd>${value}</dd></div>` : "");
     const opening = a.opening;
+    // GG2 (düşük): satırsız (sıfır) açılış "girilmemiş" sayılır — yerine ilk açılışı girmek ters kayıt yazmaz, bank.cancel istemez.
+    const openingSet = Boolean(opening?.hasLines);
+    const openingAction = openingSet ? "Açılışı Düzelt" : "Açılış Bakiyesi Gir";
     const policy = a.balanceConfirmed ? `${esc(POLICY_LABELS[a.policy] || a.policy)}${a.negativePolicy ? "" : " <small>(Banka Ayarlarındaki)</small>"}` : `Kontrol Yok <small>(${esc(a.policyNote)})</small>`;
     const blocks = [];
     const canCancel = HOF.can("bank.cancel");
-    const hasOpeningMoney = Boolean(opening && opening.amountMinor);
+    const readOnly = HOF.license?.writable === false;
     let openingBlock = "";
-    if (opening && a.openingLocked) openingBlock = `Açılış (${dateText(opening.date)}) kilitli dönemde; ${dateText(a.lockedUntil)} tarihine kadar kayıtlar değiştirilemez.`;
-    else if (opening && !canCancel) openingBlock = "Eski açılış ters kaydedilir; Banka Hareketi Silme, İptal ve Ters Kayıt yetkisi gerekir.";
+    if (readOnly) openingBlock = READ_ONLY_TEXT;
+    else if (opening && a.openingLocked) openingBlock = `Açılış (${dateText(opening.date)}) kilitli dönemde; ${dateText(a.lockedUntil)} tarihine kadar kayıtlar değiştirilemez.`;
+    else if (openingSet && !canCancel) openingBlock = "Eski açılış ters kaydedilir; Banka Hareketi Silme, İptal ve Ters Kayıt yetkisi gerekir.";
     let deleteBlock = "";
-    if (a.movementCount) deleteBlock = `Bu hesaba bağlı ${a.movementCount} hareket var; kullanılmayacaksa Pasife Alın.`;
-    else if (hasOpeningMoney && a.openingLocked) deleteBlock = "Hesabın açılışı kilitli dönemde; hesap silinemez.";
-    else if (hasOpeningMoney && !canCancel) deleteBlock = "Açılışı olan hesabı silmek için Banka Hareketi Silme, İptal ve Ters Kayıt yetkisi gerekir.";
+    if (readOnly) deleteBlock = READ_ONLY_TEXT;
+    else if (a.movementCount) deleteBlock = `Bu hesaba bağlı ${a.movementCount} hareket var; kullanılmayacaksa Pasife Alın.`;
+    else if (a.setupNo) deleteBlock = `Hesap Kurulum Sihirbazı'yla kuruldu (${a.setupNo}); önce Ayarlar → Kurulum Geçmişi'nden Geri Al.`;
+    else if (a.plannedCount) deleteBlock = `Bu hesapta ${a.plannedCount} planlı işlem var; önce Planlı İşlemler'den silin.`;
+    else if (openingSet && a.openingLocked) deleteBlock = "Hesabın açılışı kilitli dönemde; hesap silinemez.";
+    else if (openingSet && !canCancel) deleteBlock = "Açılışı olan hesabı silmek için Banka Hareketi Silme, İptal ve Ters Kayıt yetkisi gerekir.";
     if (canAccounts()) {
-      if (openingBlock) blocks.push([opening ? "Açılışı Düzelt" : "Açılış Bakiyesi Gir", openingBlock]);
+      if (openingBlock) blocks.push([openingAction, openingBlock]);
       if (deleteBlock) blocks.push(["Sil", deleteBlock]);
     }
     // Hesap Detayı'ndan hareket girişi (§8.5: + Masraf, + Faiz, …): hesabın türüne göre; pasif hesapta pasif ve nedeni yazılı. Döviz
@@ -397,7 +412,7 @@
       ...(canAccounts()
         ? [
             button("edit", "Düzenle"),
-            button("opening", opening ? "Açılışı Düzelt" : "Açılış Bakiyesi Gir", openingBlock, opening ? "hof-button-ghost" : ""),
+            button("opening", openingAction, openingBlock, openingSet ? "hof-button-ghost" : ""),
             button("status", a.status === "active" ? "Pasife Al" : "Etkinleştir"),
             button("delete", "Sil", deleteBlock, "hof-button-danger-ghost"),
           ]
@@ -417,7 +432,7 @@
         ${fact(limitLabel(a.kind), a.creditLimitMinor ? esc(fmt(a.creditLimitMinor)) : "")}
         ${fact("Ekstre Kesim Günü", a.statementDay ? esc(String(a.statementDay)) : "")}
         ${fact("Son Ödeme Günü", a.dueDay ? esc(String(a.dueDay)) : "")}
-        ${fact(openingLabel(a.kind), opening ? `${esc(fmt(opening.amountMinor, a.currency))} · ${esc(dateText(opening.date))}${opening.no ? ` · <span class="hof-plan-refno">${esc(opening.no)}</span>` : ""}` : "Girilmedi")}
+        ${fact(openingLabel(a.kind), opening ? `${esc(fmt(opening.amountMinor, a.currency))} · ${esc(dateText(opening.date))}${opening.no && openingSet ? ` · <span class="hof-plan-refno">${esc(opening.no)}</span>` : ""}` : "Girilmedi")}
         ${fact("Eksi Bakiye Denetimi", policy)}
         ${fact("Faturada", a.showOnInvoice ? "IBAN faturada gösterilir" : "")}
         ${fact("Açıklama", esc(a.description))}
@@ -454,7 +469,7 @@
           ${td("Cari / Açıklama", `${esc(row.partyName || "—")}${row.description ? `<small>${esc(row.description)}</small>` : ""}`)}
           ${td("İşlem No", row.eventNo ? `<span class="hof-plan-refno">${esc(row.eventNo)}</span>` : "—")}
           ${td("Tutar", `<b>${esc(signed(row.kind === "in" ? row.amountMinor : -row.amountMinor))}</b>`, "num")}
-          ${td("Durum", row.locked ? '<span class="hof-plan-badge is-muted">Kilitli Dönem — Atanamaz</span>' : row.way !== "bank" ? '<span class="hof-plan-badge is-info">Bankaya Geçmiş Say</span>' : target && row.date < target.openingDate ? `<span class="hof-plan-badge is-muted" title="Hesabın açılışı ${esc(dateText(target.openingDate))}; bu hareket açılış bakiyesinin içindedir (Kurulum Sihirbazı'ndaki Devir Kapanışı'yla kapanır).">Açılıştan Önce</span>` : "")}
+          ${td("Durum", row.locked ? '<span class="hof-plan-badge is-muted">Kilitli Dönem — Atanamaz</span>' : row.closed ? `<span class="hof-plan-badge is-muted" title="${esc(row.reason || "")}">Devir Kapanışı'yla Kapandı</span>` : row.way !== "bank" ? '<span class="hof-plan-badge is-info">Bankaya Geçmiş Say</span>' : target && row.date < target.openingDate ? `<span class="hof-plan-badge is-muted" title="Hesabın açılışı ${esc(dateText(target.openingDate))}; bu hareket açılış bakiyesinin içindedir (Kurulum Sihirbazı'ndaki Devir Kapanışı'yla kapanır).">Açılıştan Önce</span>` : "")}
         </tr>`,
       )
       .join("");
@@ -535,7 +550,7 @@
     const chart = data.chart || {};
     const shown = level => data.sections.filter(section => section.level === level && section.available !== false);
     return `<p class="hof-modal-text">Standartlar seçili gelir; çoğu ofisin bir şeyi değiştirmesi gerekmez. Ayarlar yalnız bundan sonraki kayıtlara uygulanır.</p>
-      ${editable ? "" : '<p class="hof-bank-confirm is-warn">Banka ayarlarını yalnız Banka Ayarları yetkisi olanlar değiştirir.</p>'}
+      ${editable ? "" : `<p class="hof-bank-confirm is-warn">${esc(HOF.license?.writable === false ? READ_ONLY_TEXT : "Banka ayarlarını yalnız Banka Ayarları yetkisi olanlar değiştirir.")}</p>`}
       <form class="hof-bank-settings" data-settings novalidate>
         <h4 class="hof-bank-subtitle">Temel Ayarlar</h4>
         <div class="hof-bank-sets">${shown("basic").map(section => sectionHtml(section, data.values, editable, chart)).join("")}</div>
@@ -621,8 +636,10 @@
     const fields = [
       { name: "bankName", label: "Banka Adı", required: true, autofocus: true, value: account?.bankName || "", maxlength: 120, list: BANK_NAMES, placeholder: "ör. Ziraat Bankası" },
       { name: "name", label: "Hesap Adı", required: true, value: account?.name || "", maxlength: 120, placeholder: "ör. Ana TL Hesabı" },
-      { name: "kind", label: "Hesap Türü", type: "select", value: kind === "fx" ? "demand" : kind, options: KINDS.filter(([id]) => id !== "fx").map(([value, label]) => ({ value, label })), readonly: locked, help: locked ? "Hareketi ya da açılış bakiyesi olan hesabın türü ve para birimi değişmez; gerekirse yeni hesap açın." : "Döviz hesabı için Vadesiz seçip para birimini değiştirin." },
-      { name: "currency", label: "Para Birimi", type: "select", value: account?.currency || "TRY", options: CURRENCIES.map(([value, label]) => ({ value, label })), readonly: locked },
+      { name: "kind", label: "Hesap Türü", type: "select", value: kind === "fx" ? "demand" : kind, options: KINDS.filter(([id]) => id !== "fx").map(([value, label]) => ({ value, label })), readonly: locked, help: locked ? "Hareketi ya da açılış bakiyesi olan hesabın türü ve para birimi değişmez; gerekirse yeni hesap açın." : fxOn() ? "Döviz hesabı için Vadesiz seçip para birimini değiştirin." : "" },
+      // GG2 (kullanıcı kararı "Ertelenenler 2.1.0'da GÖRÜNMEZ"): döviz hesabı sonraki sürümde; alan yalnız döviz açıkken (testler) ya da var olan
+      // döviz hesabında (salt okunur) görünür.
+      ...(fxOn() || (account && account.currency !== "TRY") ? [{ name: "currency", label: "Para Birimi", type: "select", value: account?.currency || "TRY", options: CURRENCIES.map(([value, label]) => ({ value, label })), readonly: locked || !fxOn() }] : []),
       { name: "code", label: "Hesap Kodu", value: account?.code || "", maxlength: 30, placeholder: "Boş bırakılırsa önerilir (ör. ZIR-TL)" },
       { name: "iban", label: "IBAN", value: account?.ibanText || "", maxlength: 40, placeholder: "TR00 0000 0000 0000 0000 0000 00", autocomplete: "off" },
       { name: "branchName", label: "Şube", value: account?.branchName || "", maxlength: 120 },
@@ -712,9 +729,11 @@
       showOnInvoice: Boolean(data.showOnInvoice),
       opening: { date: data.openingDate, amount: String(data.openingAmount ?? "").trim() || "0", confirmed: Boolean(data.confirmed) },
     };
-    if (data.currency !== "TRY" && String(data.openingAmount || "").trim()) body.opening.rate = data.openingRate;
+    const currency = data.currency || "TRY";
+    body.currency = currency;
+    if (currency !== "TRY" && String(data.openingAmount || "").trim()) body.opening.rate = data.openingRate;
     if (data.kind === "card") Object.assign(body, { statementDay: data.statementDay, dueDay: data.dueDay });
-    if (["demand", "card", "loan"].includes(data.kind) && data.currency === "TRY") body.creditLimit = data.creditLimit;
+    if (["demand", "card", "loan"].includes(data.kind) && currency === "TRY") body.creditLimit = data.creditLimit;
     return body;
   }
   function accountForm(account = null) {
@@ -738,8 +757,9 @@
         try {
           if (edit) {
             const body = { bankName: data.bankName, name: data.name, code: data.code, iban: data.iban, branchName: data.branchName, branchCode: data.branchCode, accountNo: data.accountNo, description: data.description, negativePolicy: data.negativePolicy, showOnInvoice: Boolean(data.showOnInvoice), balanceConfirmed: Boolean(data.balanceConfirmed) };
-            if (!(account.movementCount > 0 || account.opening?.amountMinor)) Object.assign(body, { kind: data.kind, currency: data.currency });
-            if (["demand", "card", "loan"].includes(data.kind) && data.currency === "TRY") body.creditLimit = data.creditLimit;
+            const currency = data.currency || account.currency || "TRY";
+            if (!(account.movementCount > 0 || account.opening?.amountMinor)) Object.assign(body, { kind: data.kind, ...(data.currency ? { currency: data.currency } : {}) });
+            if (["demand", "card", "loan"].includes(data.kind) && currency === "TRY") body.creditLimit = data.creditLimit;
             if (data.kind === "card") Object.assign(body, { statementDay: data.statementDay, dueDay: data.dueDay });
             await api(`/accounts/${encodeURIComponent(account.id)}`, { method: "PUT", body });
             HOF.toast("Banka hesabı güncellendi.", { type: "success" });
@@ -759,7 +779,7 @@
     });
   }
   function openingForm(account) {
-    const correct = Boolean(account.opening);
+    const correct = Boolean(account.opening?.hasLines);
     let formNode = null;
     HOF.formModal({
       title: correct ? "Açılışı Düzelt" : "Açılış Bakiyesi Gir",
@@ -837,17 +857,32 @@
   function reclassForm(mode) {
     const accounts = mode === "bank" ? bindableAccounts() : (view.list?.accounts || []).filter(account => account.kind === "card" && account.status === "active");
     if (!accounts.length) return HOF.toast(mode === "bank" ? "Önce etkin bir TL vadesiz, ticari ya da diğer banka hesabı açın." : "Önce Kurumsal Kredi Kartı türünde hesap açın.", { type: "error" });
-    const available = Math.abs(view.legacy?.totals?.cardMinor || 0);
+    // GG2: aktarılabilir tutar hesap bazında (açılıştan ve Devir Kapanışı'ndan sonraki satırlar; tahsilat ve kartla ödeme ayrı) — sunucunun hesabı.
+    const availableOf = id => Math.abs(view.legacy?.reclassable?.[id]?.minor || 0);
+    const first = accounts.find(account => availableOf(account.id) > 0) || accounts[0];
+    if (!accounts.some(account => availableOf(account.id) > 0)) {
+      return HOF.toast(mode === "bank" ? "Hesapların açılışından sonra bankaya geçmemiş POS tahsilatı yok. Açılıştan önceki hareketler açılış bakiyesinin içindedir (Kurulum Sihirbazı'ndaki Devir Kapanışı'yla kapanır)." : "Kart hesaplarının açılışından sonra kart borcuna aktarılmamış kartla ödeme yok. Açılıştan önceki hareketler açılış bakiyesinin içindedir (Kurulum Sihirbazı'ndaki Devir Kapanışı'yla kapanır).", { type: "error" });
+    }
+    const introOf = id => (mode === "bank" ? `Hesap tanımlanmadan girilmiş POS tahsilatlarının bankaya geçmiş tutarını hesaba aktarır. Seçilen hesabın açılışından sonraki satırlar aktarılır (en çok ${fmt(availableOf(id))}).` : `Hesap tanımlanmadan kredi kartıyla yapılmış ödemeleri kurumsal kart borcuna aktarır. Seçilen kartın açılışından sonraki satırlar aktarılır (en çok ${fmt(availableOf(id))}).`);
     const requestId = HOF.requestId();
     HOF.formModal({
       title: mode === "bank" ? "Bankaya Geçmiş Say" : "Kart Borcuna Aktar",
       eyebrow: "HESABI ATANMAMIŞ POS / KART",
-      intro: mode === "bank" ? `Hesap tanımlanmadan girilmiş POS tahsilatlarının bankaya geçmiş tutarını hesaba aktarır (en çok ${fmt(available)}).` : `Hesap tanımlanmadan kredi kartıyla yapılmış ödemeleri kurumsal kart borcuna aktarır (en çok ${fmt(available)}).`,
+      intro: esc(introOf(first.id)),
       fields: [
-        { name: "accountId", label: mode === "bank" ? "Banka Hesabı" : "Kurumsal Kredi Kartı", type: "select", value: accounts[0].id, options: accounts.map(account => ({ value: account.id, label: `${accountLabel(account)} (${account.code})` })) },
+        { name: "accountId", label: mode === "bank" ? "Banka Hesabı" : "Kurumsal Kredi Kartı", type: "select", value: first.id, options: accounts.map(account => ({ value: account.id, label: `${accountLabel(account)} (${account.code}) · en çok ${fmt(availableOf(account.id))}` })) },
         { name: "date", label: "Tarih", type: "date", required: true, max: "today", value: HOF.localToday() },
-        { name: "amount", label: "Tutar", required: true, value: amountInput(available), inputmode: "decimal" },
+        { name: "amount", label: "Tutar", required: true, value: amountInput(availableOf(first.id)), inputmode: "decimal" },
       ],
+      onOpen: dialog => {
+        const form = dialog.querySelector("form");
+        form?.querySelector('[name="accountId"]')?.addEventListener("change", event => {
+          const amount = form.querySelector('[name="amount"]');
+          if (amount) amount.value = amountInput(availableOf(event.target.value));
+          const intro = dialog.querySelector(".hof-modal-text, .hof-form-intro");
+          if (intro) intro.textContent = introOf(event.target.value);
+        });
+      },
       submitLabel: "Aktar",
       onSubmit: async data => {
         await api("/legacy/reclass", { method: "POST", body: { mode, ...data }, requestId });
@@ -943,7 +978,7 @@
         { name: "bankName", label: "Banka Adı", required: true, autofocus: true, maxlength: 120, list: BANK_NAMES, placeholder: "ör. Ziraat Bankası" },
         { name: "name", label: "Hesap Adı", required: true, maxlength: 120, placeholder: "ör. Ana TL Hesabı" },
         { name: "kind", label: "Hesap Türü", type: "select", value: "demand", options: KINDS.filter(([id]) => id !== "fx").map(([value, label]) => ({ value, label })) },
-        { name: "currency", label: "Para Birimi", type: "select", value: "TRY", options: CURRENCIES.map(([value, label]) => ({ value, label })) },
+        ...(fxOn() ? [{ name: "currency", label: "Para Birimi", type: "select", value: "TRY", options: CURRENCIES.map(([value, label]) => ({ value, label })) }] : []),
         { name: "iban", label: "IBAN", maxlength: 40, placeholder: "TR00 0000 0000 0000 0000 0000 00" },
         ...openingFields(),
       ];
@@ -1089,7 +1124,14 @@
   function onWizardClick(event, state) {
     const act = event.target.closest("[data-wiz]")?.dataset.wiz;
     if (!act) return;
-    if (act === "skip") goWizard(state, state.step === "account" && state.legacy ? "legacy" : "done");
+    if (act === "skip") {
+      // GG2 (düşük): doldurulmuş hesap formu sorusuz atılmaz.
+      const form = state.step === "account" ? wizardForm() : null;
+      const typed = form && ["bankName", "name", "iban", "openingAmount"].some(name => String(form.querySelector(`[name="${name}"]`)?.value || "").trim());
+      const next = state.step === "account" && state.legacy ? "legacy" : "done";
+      if (!typed) return goWizard(state, next);
+      return HOF.confirm({ title: "Bu Adımı Atla", message: "Forma girilenler kaydedilmeyecek. Bu adım atlansın mı?", confirmLabel: "Kaydetmeden Atla", danger: true }).then(go => go && goWizard(state, next));
+    }
     else if (act === "back") goWizard(state, "account");
     else if (act === "save-more") saveWizardAccount(state);
     else if (act === "suggest") {
@@ -1189,7 +1231,8 @@
     HOF.swap(node, movesListHtml(state));
   }
   /** Hareket satırları: tarih, İşlem No, tür (durum rozetiyle), [hesap], açıklama (cari, açıklama, referans, fatura), tutar, [bakiye]. */
-  function moveTableHtml(rows, { showAccount = false, showBalance = false, extraClass = "" } = {}) {
+  // debt (GG2 düşük): kurumsal kart ve kredi hesabında yürüyen bakiye "Borç" kolonunda artı gösterilir (başlıktaki Borç ve Açılıştaki Borç gibi).
+  function moveTableHtml(rows, { showAccount = false, showBalance = false, extraClass = "", debt = false } = {}) {
     const body = rows
       .map(row => {
         const desc = [row.partyName, row.description, row.reference ? `Ref. ${row.reference}` : "", row.invoiceNo ? `Fatura ${row.invoiceNo}` : "", row.feeNo ? `Masraf ${row.feeNo}` : ""].filter(Boolean).join(" · ");
@@ -1202,18 +1245,20 @@
           ${showAccount ? td("Hesap", esc(row.accountLabel || "—")) : ""}
           ${td("Açıklama", esc(desc || "—"))}
           ${td("Tutar", `<b>${esc(signed(row.signedMinor))}</b>`, "num")}
-          ${showBalance ? td("Bakiye", esc(fmt(row.balanceAfterMinor)), "num") : ""}
+          ${showBalance ? td(debt ? "Borç" : "Bakiye", esc(fmt(debt ? -row.balanceAfterMinor : row.balanceAfterMinor)), "num") : ""}
         </tr>`;
       })
       .join("");
-    return `<table class="hof-table hof-bank-table hof-bank-moves ${extraClass}"><thead><tr><th>Tarih</th><th>İşlem No</th><th>Tür</th>${showAccount ? "<th>Hesap</th>" : ""}<th>Açıklama</th><th class="num">Tutar</th>${showBalance ? '<th class="num">Bakiye</th>' : ""}</tr></thead><tbody>${body}</tbody></table>`;
+    return `<table class="hof-table hof-bank-table hof-bank-moves ${extraClass}"><thead><tr><th>Tarih</th><th>İşlem No</th><th>Tür</th>${showAccount ? "<th>Hesap</th>" : ""}<th>Açıklama</th><th class="num">Tutar</th>${showBalance ? `<th class="num">${debt ? "Borç" : "Bakiye"}</th>` : ""}</tr></thead><tbody>${body}</tbody></table>`;
   }
   function movesListHtml(state) {
     if (!state.loaded || state.error) return HOF.listPending(state.error);
     if (state.planned) return plansHtml(state);
     if (!state.rows.length) return `<p class="hof-empty" data-moves-empty>${filtered(state) ? "Bu süzgeçte hareket yok." : state.key === "account" ? "Bu hesapta hareket yok." : "Henüz banka hareketi yok."}</p>`;
     const more = state.hasMore ? `<div class="hof-bank-more"><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="mv-more" data-moves-key="${esc(state.key)}">Daha Fazla Göster</button><small>${state.rows.length} hareket gösteriliyor</small></div>` : state.rows.length > PAGE ? `<p class="hof-rep-note">${state.rows.length} hareketin hepsi gösteriliyor.</p>` : "";
-    return `<div class="hof-bank-table-wrap">${moveTableHtml(state.rows, { showAccount: !state.account, showBalance: state.balance, extraClass: state.key === "account" ? "hof-bank-recent" : "" })}</div>${more}`;
+    const account = state.account ? (view.account?.id === state.account ? view.account : (view.list?.accounts || []).find(item => item.id === state.account)) : null;
+    const debt = Boolean(account) && !MAIN_KINDS.has(account.kind);
+    return `<div class="hof-bank-table-wrap">${moveTableHtml(state.rows, { showAccount: !state.account, showBalance: state.balance, extraClass: state.key === "account" ? "hof-bank-recent" : "", debt })}</div>${more}`;
   }
   const PLAN_OUT = new Set(["fee", "interest_out", "other_out", "card_payment", "loan_repay"]);
   function plansHtml(state) {
@@ -1353,7 +1398,8 @@
     const extra = [...(TRANSFER_KINDS.has(c.type) ? ["bank.transfer"] : []), ...(feeHeader ? ["invoices.manage"] : [])];
     const reverseWhy = (c.actions?.reverse?.allowed === false && c.actions.reverse.reason) || permWhy("Ters Kaydet", ["bank.cancel", ...extra]);
     const correctWhy = (c.actions?.correct?.allowed === false && c.actions.correct.reason) || permWhy("Düzelt", ["bank.move", "bank.cancel", ...extra]);
-    const infoWhy = permWhy("Açıklamayı Düzelt", ["bank.move"]);
+    // GG2 (düşük): modülden gelen harekette açıklama kendi penceresinde (sunucu actions.info kapalı ve nedeni).
+    const infoWhy = (c.actions?.info?.allowed === false && c.actions.info.reason) || permWhy("Açıklamayı Düzelt", ["bank.move"]);
     const blocks = [];
     if (reverseWhy && reverseWhy === correctWhy) blocks.push(["Ters Kaydet ve Düzelt", reverseWhy]);
     else {
@@ -1537,13 +1583,13 @@
         if (TRANSFER_KINDS.has(kind)) body.loanAccountId = data.loanAccountId;
         try {
           if (kind === "fee" && isVat(data.tax) && !body.partyId) throw new HOF.ApiError("Faturalı masrafta faturayı kesen cariyi seçin.", 400, { code: "bank-fee-party", field: "partyId" });
-          const send = similarOk => {
-            const payload = similarOk ? { ...body, similarOk: true } : body;
+          const send = flags => {
+            const payload = { ...body, ...flags };
             if (mode === "plan") return api("/plans", { method: "POST", body: payload });
             if (mode === "correct") return api(`/events/${encodeURIComponent(card.id)}/correct`, { method: "POST", body: payload, requestId });
             return api("/vouchers", { method: "POST", body: payload, requestId });
           };
-          const result = await withSimilar(send);
+          const result = await withConfirms(send);
           afterWrite();
           if (mode === "plan") {
             HOF.toast("Planlı işlem eklendi. Bakiye değişmedi; bankada gerçekleşince “Gerçekleştir” ile kaydedin.", { type: "success" });
@@ -1563,15 +1609,33 @@
     });
   }
   /** Benzer İşlem (409 bank-similar): önceki işlemin İşlem No'su ve gireniyle sorar; "Yine de Kaydet" aynı istek kimliğiyle similarOk. */
-  async function withSimilar(send) {
-    try {
-      return await send(false);
-    } catch (error) {
-      if (error?.data?.code !== "bank-similar") throw error;
-      const go = await HOF.confirm({ title: "Benzer İşlem", message: error.message, confirmLabel: "Yine de Kaydet", cancelLabel: "Vazgeç" });
-      if (!go) throw new HOF.ApiError("Kaydedilmedi: aynı gün aynı tutarda benzer işlem kayıtlı. Gerçekten ikinci bir işlemse yeniden kaydedip “Yine de Kaydet”i seçin.", 409, { code: "bank-similar-cancelled" });
-      return send(true);
+  /**
+   * Benzer İşlem (409 bank-similar) ve eksi bakiye uyarısı (409 bank-negative, K7; GG2) aynı kalıpla sorulur: "Yine de Kaydet" aynı istek
+   * kimliğiyle similarOk / negativeOk gönderir. Engelle (409 bank-blocked) sorulmaz, nedeni formda görünür. send(flags) gövdeye flags'i ekler.
+   */
+  async function withConfirms(send) {
+    const flags = {};
+    for (let round = 0; round < 3; round += 1) {
+      try {
+        return await send({ ...flags });
+      } catch (error) {
+        const code = error?.data?.code;
+        if (code === "bank-similar" && !flags.similarOk) {
+          const go = await HOF.confirm({ title: "Benzer İşlem", message: error.message, confirmLabel: "Yine de Kaydet", cancelLabel: "Vazgeç" });
+          if (!go) throw new HOF.ApiError("Kaydedilmedi: aynı gün aynı tutarda benzer işlem kayıtlı. Gerçekten ikinci bir işlemse yeniden kaydedip “Yine de Kaydet”i seçin.", 409, { code: "bank-similar-cancelled" });
+          flags.similarOk = true;
+          continue;
+        }
+        if (code === "bank-negative" && !flags.negativeOk) {
+          const go = await HOF.confirm({ title: "Eksi Bakiye", message: error.message, confirmLabel: "Yine de Kaydet", cancelLabel: "Vazgeç" });
+          if (!go) throw new HOF.ApiError("Kaydedilmedi: işlem hesabın bakiyesini eksiye düşürüyor.", 409, { code: "bank-negative-cancelled", field: "amount" });
+          flags.negativeOk = true;
+          continue;
+        }
+        throw error;
+      }
     }
+    throw new HOF.ApiError("Kaydedilemedi; yeniden deneyin.", 409, {});
   }
   function markVoucherField(form, error, mode) {
     if (!form) return;
@@ -1712,9 +1776,11 @@
   function reverseForm(c) {
     const feeHeader = c.fee?.taxKind === "vat" && !c.source;
     const requestId = HOF.requestId();
-    const parts = [`${c.no} (${c.typeLabel}, ${fmt(eventAmount(c))}) ters kaydedilir: aynı tutarda ters fiş yazılır, hesabın bakiyesi işlemden önceki hâline döner. İşlem silinmez; asıl işlem ve ters kaydı hareketlerde ve İşlem Geçmişi'nde kalır.`];
-    if (feeHeader) parts.push(`Masrafın faturası (${c.invoice?.number || ""}) iptal edilir; KDV ve cari etkisi de geri alınır.`);
-    else if (c.locked) parts.push(`İşlem kilitli dönemde (${dateText(c.lockedUntil)} ve öncesi); ters fiş bugün (${dateText(HOF.localToday())}) tarihli yazılır, kilitli dönem değişmez.`);
+    // GG2: kullanıcı verisi (Fatura No, hesap adı) kaçışlı; intro HTML olarak basılır.
+    const parts = [`${esc(c.no)} (${esc(c.typeLabel)}, ${esc(fmt(eventAmount(c)))}) ters kaydedilir: aynı tutarda ters fiş yazılır, hesabın bakiyesi işlemden önceki hâline döner. İşlem silinmez; asıl işlem ve ters kaydı hareketlerde ve İşlem Geçmişi'nde kalır.`];
+    if (feeHeader && c.locked) parts.push(`Masrafın faturası (${esc(c.invoice?.number || "")}) kilitli dönemde (${esc(dateText(c.lockedUntil))} ve öncesi) olduğu için iptal edilmez: bugün (${esc(dateText(HOF.localToday()))}) tarihli Alıştan İade faturası kesilir ve tutar bu hesaba iade girişi olarak yazılır; kilitli dönem değişmez.`);
+    else if (feeHeader) parts.push(`Masrafın faturası (${esc(c.invoice?.number || "")}) iptal edilir; KDV ve cari etkisi de geri alınır.`);
+    else if (c.locked) parts.push(`İşlem kilitli dönemde (${esc(dateText(c.lockedUntil))} ve öncesi); ters fiş bugün (${esc(dateText(HOF.localToday()))}) tarihli yazılır, kilitli dönem değişmez.`);
     HOF.formModal({
       title: "Ters Kaydet",
       eyebrow: c.no,
@@ -1722,9 +1788,9 @@
       fields: [{ name: "reason", label: "Neden", maxlength: 300, placeholder: "İsteğe bağlı; İşlem Geçmişi'ne yazılır" }],
       submitLabel: "Ters Kaydet",
       onSubmit: async data => {
-        const result = await api(`/events/${encodeURIComponent(c.id)}/reverse`, { method: "POST", body: { reason: data.reason }, requestId });
+        const result = await withConfirms(flags => api(`/events/${encodeURIComponent(c.id)}/reverse`, { method: "POST", body: { reason: data.reason, ...flags }, requestId }));
         afterWrite();
-        HOF.toast(result.replayed ? "Bu işlem zaten ters kaydedilmişti; ikinci kez yazılmadı." : result.reversal ? `Ters kaydedildi: ${result.reversal.no}` : `Masraf ve faturası iptal edildi (${c.no}).`, { type: "success" });
+        HOF.toast(result.replayed ? "Bu işlem zaten ters kaydedilmişti; ikinci kez yazılmadı." : result.reversal?.invoice?.kind === "purchase_return" ? `Ters kaydedildi: ${result.reversal.no} · İade Faturası ${result.reversal.invoice.number}` : result.reversal ? `Ters kaydedildi: ${result.reversal.no}` : `Masraf ve faturası iptal edildi (${c.no}).`, { type: "success" });
         await reload();
       },
     });
@@ -1755,7 +1821,7 @@
     HOF.formModal({
       title: "Planlı İşlemi Gerçekleştir",
       eyebrow: plan.typeLabel.toLocaleUpperCase("tr-TR"),
-      intro: `${plan.accountLabel} · ${fmt(plan.amountMinor)} · planlı tarih ${dateText(plan.plannedDate)}. Bankada gerçekleşen tarih ve tutarla kaydedin.${plan.repeat !== "none" ? " Plan bir sonraki döneme geçer." : ""}`,
+      intro: `${esc(plan.accountLabel)} · ${esc(fmt(plan.amountMinor))} · planlı tarih ${esc(dateText(plan.plannedDate))}. Bankada gerçekleşen tarih ve tutarla kaydedin.${plan.repeat !== "none" ? " Plan bir sonraki döneme geçer." : ""}`,
       fields: [
         { name: "date", label: "İşlem Tarihi", type: "date", required: true, max: "today", value: plan.plannedDate <= today ? plan.plannedDate : today },
         { name: "amount", label: "Tutar", required: true, value: amountInput(plan.amountMinor), inputmode: "decimal" },
@@ -1763,22 +1829,39 @@
       ],
       submitLabel: "Gerçekleştir",
       onSubmit: async data => {
-        const result = await withSimilar(similarOk => api(`/plans/${encodeURIComponent(plan.id)}/execute`, { method: "POST", body: { date: data.date, amount: data.amount, description: data.description, ...(similarOk ? { similarOk: true } : {}) }, requestId }));
+        // expectedDate (GG2): ekrandaki planlı tarih; plan bu arada ilerlediyse sunucu 409 bank-plan-moved verir (ikinci kez işlenmez).
+        const result = await withConfirms(flags => api(`/plans/${encodeURIComponent(plan.id)}/execute`, { method: "POST", body: { date: data.date, amount: data.amount, description: data.description, expectedDate: plan.plannedDate, ...flags }, requestId }));
         afterWrite();
         HOF.toast(result.replayed ? "Bu planlı işlem zaten gerçekleştirildi; ikinci kez yazılmadı." : `Gerçekleştirildi: ${result.event?.no || ""}${result.plan?.status === "planned" ? ` · sonraki ${dateText(result.plan.plannedDate)}` : ""}`, { type: "success" });
         await reload();
       },
     });
   }
-  async function planSkip(plan) {
+  /**
+   * Atla (GG2): satırın düğmeleri istek bitene kadar pasif (çift tık ikinci isteği göndermez); ekranda görülen planlı tarih (expectedDate)
+   * gönderilir — plan bu arada ilerlediyse (başka pencere) sunucu 409 bank-plan-moved verir, liste yenilenir.
+   */
+  async function planSkip(plan, button = null) {
+    const row = button?.closest("tr") || null;
+    const buttons = row ? [...row.querySelectorAll("button[data-act]")] : button ? [button] : [];
+    if (buttons.some(node => node.disabled)) return;
+    buttons.forEach(node => {
+      node.disabled = true;
+      node.setAttribute("aria-busy", "true");
+    });
     try {
-      const next = await api(`/plans/${encodeURIComponent(plan.id)}/skip`, { method: "POST", body: {} });
+      const next = await api(`/plans/${encodeURIComponent(plan.id)}/skip`, { method: "POST", body: { expectedDate: plan.plannedDate } });
       afterWrite();
       HOF.toast(`Bu dönem atlandı; sonraki tarih ${dateText(next.plannedDate)}.`, { type: "success" });
-      await reload();
     } catch (error) {
       HOF.toastError(error);
+    } finally {
+      buttons.forEach(node => {
+        node.disabled = false;
+        node.removeAttribute("aria-busy");
+      });
     }
+    await reload();
   }
   async function planCancel(plan) {
     const go = await HOF.confirm({ title: "Planlı İşlemi Sil", message: `${plan.typeLabel} · ${fmt(plan.amountMinor)} (${dateText(plan.plannedDate)}) planı silinsin mi? Bu plandan daha önce gerçekleşmiş işlemler değişmez.`, confirmLabel: "Sil", danger: true });
@@ -1913,7 +1996,7 @@
         case "plan-cancel": {
           const plan = planOf(act.dataset.plan);
           if (!plan) return;
-          return act.dataset.act === "plan-run" ? planRunForm(plan) : act.dataset.act === "plan-skip" ? planSkip(plan) : planCancel(plan);
+          return act.dataset.act === "plan-run" ? planRunForm(plan) : act.dataset.act === "plan-skip" ? planSkip(plan, act) : planCancel(plan);
         }
         default:
           return;

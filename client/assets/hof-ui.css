@@ -10580,11 +10580,26 @@ input[type="search"]::-webkit-search-cancel-button {
   .hof-bank-form {
     grid-template-columns: minmax(0, 1fr);
   }
+  /* GG2 (düşük): Hesabı Atanmamış Eski Hareketler 390 px'te yatay taşıyordu (Hedef Hesap seçicisinin uzun seçenek metni). */
   .hof-bank-inline {
+    display: flex;
     flex-wrap: wrap;
+    width: 100%;
+    min-width: 0;
   }
   .hof-bank-inline select {
+    width: 100%;
+    min-width: 0;
     max-width: 100%;
+  }
+  .hof-bank-toolbar > * {
+    max-width: 100%;
+  }
+  .hof-bank-toolbar .hof-button {
+    white-space: normal;
+  }
+  .hof-bank-table td .hof-plan-badge {
+    white-space: normal;
   }
 }
 @media (max-width: 640px) {
