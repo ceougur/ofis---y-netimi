@@ -205,7 +205,7 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, pe
   function expectedSubs(groups = groupsOf(), refList = refs()) {
     const out = new Map();
     for (const group of groups) {
-      if (!["bank", "card", "ccard"].includes(group.way)) continue;
+      if (!["bank", "card", "ccard", "loan"].includes(group.way)) continue;
       const { sub } = moneyAccount(group.way === "ccard" ? "card" : group.way, group.ref, refList);
       if (sub) out.set(sub, (out.get(sub) || 0) + Number(group.cents));
     }

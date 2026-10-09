@@ -15,11 +15,25 @@ export const EVENT_NO_PREFIX = "BNK";
 const DAY = /^(\d{4})-(\d{2})-(\d{2})$/;
 export const eventCounterKey = year => `meta.bank.seq.${year}`;
 
-/** "BNK-2026-000123"; 999.999'dan sonra hane eklenir (kırpılmaz). */
-export function eventNoText(year, seq) {
+/** İşlem No öneki: 2–6 büyük Latin harfi (Banka Ayarları → Gelişmiş → Diğer). */
+export const EVENT_PREFIX_RULE = /^[A-Z]{2,6}$/;
+/** "BNK-2026-000123"; 999.999'dan sonra hane eklenir (kırpılmaz). prefix: Banka Ayarları'ndaki önek (varsayılan BNK). */
+export function eventNoText(year, seq, prefix = EVENT_NO_PREFIX) {
   if (!Number.isSafeInteger(year) || year < 1000 || year > 9999) throw new TypeError(`Geçersiz yıl: ${year}`);
   if (!Number.isSafeInteger(seq) || seq < 1) throw new TypeError(`Geçersiz sıra: ${seq}`);
-  return `${EVENT_NO_PREFIX}-${year}-${String(seq).padStart(6, "0")}`;
+  return `${EVENT_PREFIX_RULE.test(prefix) ? prefix : EVENT_NO_PREFIX}-${year}-${String(seq).padStart(6, "0")}`;
+}
+/**
+ * Banka Ayarları'ndaki İşlem No öneki (v2.1.0 Aşama 3; plan Ek A.1/4 "Önek (Gelişmiş)"). Sıra numarası önekten bağımsızdır (yıl içinde tek
+ * sayaç): önek değişince numara BNK-2026-000041 → ZRT-2026-000042 diye sürer, aynı sıra iki kez verilmez. Ayar okunamazsa BNK.
+ */
+export function eventPrefixOf(store) {
+  try {
+    const value = JSON.parse(store.get("SELECT value FROM settings WHERE key = 'bank.settings'")?.value || "{}")?.other?.eventPrefix;
+    return typeof value === "string" && EVENT_PREFIX_RULE.test(value) ? value : EVENT_NO_PREFIX;
+  } catch {
+    return EVENT_NO_PREFIX;
+  }
 }
 
 function yearOf(date) {
@@ -46,5 +60,5 @@ export function nextEventNo(store, date, { now = systemClock } = {}) {
   const seq = Math.max(Number.isSafeInteger(counter) && counter > 0 ? counter : 0, Number(highest) || 0) + 1;
   // Sayaç işlemle birlikte yazılır (settings para tablosu değil: kapıyı tetiklemez).
   store.run("INSERT INTO settings (key, value, updated_at) VALUES (?, ?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = excluded.updated_at", key, String(seq), now().toISOString());
-  return { year, seq, no: eventNoText(year, seq) };
+  return { year, seq, no: eventNoText(year, seq, eventPrefixOf(store)) };
 }

@@ -78,7 +78,9 @@ const T0 = "2026-10-01T09:00:00.000Z";
 const TEMPLATE = {
   fin_events: { id: "ev-1", year: 2026, seq: 1, no: "BNK-2026-000001", type: "bank_fee", date: "2026-10-01", created_by: "u", created_at: T0 },
   bank_lines: { id: "bl-1", event_id: "ev-1", seq: 1, role: "bank", gl: "102", side: "D", try_minor: 100 },
-  bank_accounts: { id: "ba-1", code: "BNK-01", gl: "102", gl_sub: "102.01", kind: "deposit", bank_name: "Ziraat", name: "Ana TL", opening_date: "2026-10-01", created_by: "u", created_at: T0 },
+  // Bilerek güncellendi (Aşama 3, dilim 1): hesap türü plan §3.5'in sözlüğünden ("deposit" yer tutucuydu; kapı bank:opening türü ana/alt hesapla
+  // karşılaştırır — Vadesiz → 102).
+  bank_accounts: { id: "ba-1", code: "BNK-01", gl: "102", gl_sub: "102.01", kind: "demand", bank_name: "Ziraat", name: "Ana TL", opening_date: "2026-10-01", created_by: "u", created_at: T0 },
   pos_terminals: { id: "pos-1", code: "POS-01", gl_sub: "108.01", name: "Ziraat POS", bank_account_id: "ba-1", kind: "physical", created_by: "u", created_at: T0 },
   pos_rates: { id: "pr-1", pos_id: "pos-1", installments: 1, rate_ppm: 25000, valid_from: "2026-10-01", created_by: "u", created_at: T0 },
   pos_sales: { id: "ps-1", event_id: "ev-1", pos_id: "pos-1", kind: "sale", date: "2026-10-01", rate_ppm: 25000, tax_kind: "bsmv", tax_mode: "included", tax_ppm: 50000, refund_commission: "none", payout: "monthly", bank_account_id: "ba-1", gross_minor: 1000000, net_minor: 975000, created_by: "u", created_at: T0 },
@@ -242,7 +244,7 @@ describe("v20 şeması (yeni kurulum)", () => {
         // K6 (c, dilim 3): para tablosuna bank.post dışından ham DELETE yalnız store.raw kapsamında (test temizliği).
         store.raw("test: kapı listesi temizliği", () => store.tx(() => store.run(`DELETE FROM ${table}`)));
       }
-      store.tx(() => store.run("INSERT INTO bank_accounts (id, code, gl, gl_sub, kind, bank_name, name, opening_date, created_by, created_at) VALUES ('ba-k', 'K1', '102', '102.09', 'deposit', 'Ziraat', 'Kapı', '2026-10-01', 'u', ?)", T0));
+      store.tx(() => store.run("INSERT INTO bank_accounts (id, code, gl, gl_sub, kind, bank_name, name, opening_date, created_by, created_at) VALUES ('ba-k', 'K1', '102', '102.09', 'demand', 'Ziraat', 'Kapı', '2026-10-01', 'u', ?)", T0));
       seen.length = 0;
       store.run("UPDATE bank_accounts SET name = ?, updated_at = ? WHERE id = ?", "Yeni Ad", T0, "ba-k");
       assert.deepEqual(seen, [], "hesap adı düzeltmesi kapıyı tetiklememeli (bilgi kolonu)");

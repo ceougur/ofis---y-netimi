@@ -12,11 +12,14 @@ export const EVENT_TYPES = new Set([
   "cash_transfer", "cash_in", "cash_out", "party_in", "party_out", "invoice_cash", "plan_in", "plan_out", "record_in", "stock_cash", "cheque_collect", "cheque_pay",
   // Çek tahsile verme (Aşama 8), eski hareket atama (Aşama 3), ters kayıt (Aşama 4)
   "cheque_deposit", "cheque_withdraw", "legacy_assign", "reversal",
+  // Aşama 3 (plana ek, bilinçli): Hesabı Atanmamış POS/kart bakiyesinin aktarımı — "Bankaya Geçmiş Say" (B 102.k / A 108.00) ve "Kart
+  // Borcuna Aktar" (B 108.00 / A 309.k), §10.3. Şirketin kendi hesapları arasında iç harekettir.
+  "legacy_reclass",
 ]);
 
 // İç hareket (§3.4 internal): şirketin kendi hesapları arasında para geçişi (Kasa ↔ Banka, bankalar arası, kredi kullanımı/geri ödemesi,
 // döviz al/sat, POS valör geçişi, kurumsal kart borcunun ödenmesi). Banka görünümlerinin "Bugün/Bu Ay" giriş-çıkışında sayılmaz.
-export const INTERNAL_TYPES = new Set(["cash_transfer", "transfer", "loan_draw", "loan_repay", "fx_exchange", "pos_settlement", "card_payment"]);
+export const INTERNAL_TYPES = new Set(["cash_transfer", "transfer", "loan_draw", "loan_repay", "fx_exchange", "pos_settlement", "card_payment", "legacy_reclass"]);
 // Para satırı taşımayan işlem başlıkları (§3.11 bank:event): kendi tablolarıyla denetlenir (tahsile verilen çek, eski hareket atama, POS
 // iptal iadesi); kopya = satır denetimine girmez.
 export const NON_MONEY_TYPES = new Set(["cheque_deposit", "cheque_withdraw", "legacy_assign", "pos_cancel_refund"]);

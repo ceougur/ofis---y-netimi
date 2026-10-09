@@ -71,6 +71,8 @@ export function moneyAccount(method, ref = "", refs = {}) {
     const pos = ref ? refs?.pos?.[ref] : null;
     return { account: "108", sub: pos ? pos.glSub : "108.00" };
   }
+  // Kredi (v2.1.0 Aşama 3): yalnız Banka Fişi satırında (rol "loan", kredi hesabına bağlı); modül satırında kredi yolu yoktur.
+  if (method === "loan") return { account: "300", sub: account?.kind === "loan" ? account.glSub : "300.00" };
   return { account: "100", sub: "" };
 }
 

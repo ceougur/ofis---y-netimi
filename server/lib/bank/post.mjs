@@ -30,7 +30,8 @@ import { systemClock } from "../clock.mjs";
 import { bodyHash } from "../idempotency.mjs";
 import { canUser } from "../permissions.mjs";
 import { nextEventNo } from "./event-no.mjs";
-import { typeOf } from "./event-types.mjs";
+import { EVENT_TYPES, typeOf } from "./event-types.mjs";
+import { voucherCopy } from "./voucher.mjs";
 import { FREE_COLUMNS, LEDGER_TABLES, SOURCE_TABLES, isMoneyRow, moneyWhere } from "./money-lines.mjs";
 import { eventRows, isTransferPair, refreshEvent } from "./event-copy.mjs";
 
@@ -181,6 +182,75 @@ export function createBank({ store, now = systemClock, log = null, strict = fals
       if (finRef && need && !permitted(user, need)) throw new HttpError(403, "Banka hesabına bağlı hareketi değiştirme yetkiniz yok.", { code: "bank-permission", permission: need });
     }
   }
+  // ---------- Banka Fişi (v2.1.0 Aşama 3; plan §3.6, §3.7, §3.8) ----------
+  // Bankanın doğurduğu olay (açılış, Devir Kapanışı, eski bakiye aktarımı; Aşama 4'te masraf, faiz, transfer …): işlem başlığı + satırları
+  // (bank_lines; THP kodu, alt hesap ve kuruş yazım anında saklanır). Satır kuralları (beyaz liste, denge) lib/bank/voucher.mjs'te kurulur ve
+  // kapıda (bank:voucher) ayrıca denetlenir. Yalnız bank.post'un write geri çağrısında; olay dokunulan olaylara girer (kapı ve K6).
+  function needContext(what) {
+    const ctx = current();
+    if (!ctx) throw new TypeError(`bank.${what} yalnız bank.post'un write geri çağrısında çağrılır`);
+    return ctx;
+  }
+  /**
+   * fields: { type, date, bankRef, counterRef, reversalOf, description, reference, partyId, valueDate, origin, originKey }
+   * lines: [{ role, gl, sub, ref, side ('D'|'C'), tryMinor, currency, fxMinor, rateE6, rateSource, memo }] — boş olabilir (sıfır açılış).
+   * Dönüş: { id, no, year, seq }.
+   */
+  function openVoucher(fields = {}, lines = []) {
+    const ctx = needContext("voucher");
+    if (!EVENT_TYPES.has(fields.type)) throw new TypeError(`bank.voucher: bilinmeyen işlem türü "${fields.type}"`);
+    const date = String(fields.date || "");
+    const { year, seq, no } = nextEventNo(store, date, { now });
+    const id = `ev-${randomUUID()}`;
+    const copy = voucherCopy(lines, fields.bankRef || "");
+    store.run(
+      `INSERT INTO fin_events (id, year, seq, no, type, date, value_date, status, reversal_of, origin, origin_key, src_table, src_id, bank_ref, counter_ref, direction, amount_minor, try_minor, currency, method, party_id, description, reference, created_by, created_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, 'active', ?, ?, ?, '', '', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      id, year, seq, no, fields.type, date, String(fields.valueDate || ""), String(fields.reversalOf || ""), fields.origin || ctx.origin, String(fields.originKey || ""),
+      String(fields.bankRef || ""), String(fields.counterRef || ""), copy.direction, copy.amountMinor, copy.tryMinor, fields.currency || copy.currency, copy.method, String(fields.partyId || ""),
+      String(fields.description || ""), String(fields.reference || ""), ctx.user?.id || "system", stamp_(),
+    );
+    lines.forEach((line, index) => {
+      store.run(
+        "INSERT INTO bank_lines (id, event_id, seq, role, gl, sub, ref, side, try_minor, currency, fx_minor, rate_e6, rate_source, memo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        `bl-${randomUUID()}`, id, index + 1, line.role, String(line.gl), String(line.sub || ""), String(line.ref || ""), line.side, line.tryMinor, line.currency || "TRY",
+        line.fxMinor ?? line.tryMinor, line.rateE6 || 1_000_000, String(line.rateSource || ""), String(line.memo || ""),
+      );
+    });
+    ctx.events.add(id);
+    ctx.created.add(id);
+    return { id, no, year, seq };
+  }
+  /**
+   * Ters Kayıt (§3.8): asıl fişin aynası (satırlar aynı, taraflar ters) "reversal" türüyle yazılır; asıl fiş "reversed" olur. Satırı olmayan
+   * fiş (sıfır açılış) ters kaydedilmez, iptal edilir (cancelBareEvent). date: ters fişin tarihi (çağıran kilit kuralını uygular).
+   */
+  function reverseVoucher(eventId, { date = "", description = "" } = {}) {
+    const ctx = needContext("reverse");
+    const event = store.get("SELECT * FROM fin_events WHERE id = ?", eventId);
+    if (!event || event.src_table !== "") throw new HttpError(404, "Banka fişi bulunamadı.", { code: "bank-event-missing" });
+    if (event.status !== "active") throw new HttpError(409, `Bu işlem (${event.no}) zaten ters kaydedilmiş ya da iptal edilmiş.`, { code: "bank-already-reversed", eventNo: event.no });
+    if (event.type === "reversal") throw new HttpError(409, "Ters kayıt ters kaydedilmez; asıl işlemi düzeltin.", { code: "bank-reversal-of-reversal" });
+    const lines = store.all("SELECT * FROM bank_lines WHERE event_id = ? ORDER BY seq", eventId);
+    if (!lines.length) return cancelBareEvent(eventId);
+    const mirror = lines.map(line => ({ role: line.role, gl: line.gl, sub: line.sub, ref: line.ref, side: line.side === "D" ? "C" : "D", tryMinor: line.try_minor, currency: line.currency, fxMinor: line.fx_minor, rateE6: line.rate_e6, rateSource: line.rate_source, memo: line.memo }));
+    const reversal = openVoucher({ type: "reversal", date: date || event.date, bankRef: event.bank_ref, counterRef: event.counter_ref, reversalOf: eventId, partyId: event.party_id, currency: event.currency, description: description || `Ters Kayıt · ${event.no}` }, mirror);
+    store.run("UPDATE fin_events SET status = 'reversed', reversed_by = ?, updated_by = ?, updated_at = ? WHERE id = ?", reversal.id, ctx.user?.id || "system", stamp_(), eventId);
+    ctx.events.add(eventId);
+    return reversal;
+  }
+  /** Satırı olmayan işlem başlığını (sıfır açılış, sihirbaz başlığı) iptal eder; kopyası kalır. Satırı olan fiş iptal edilmez (ters kaydedilir). */
+  function cancelBareEvent(eventId) {
+    const ctx = needContext("cancelBare");
+    const event = store.get("SELECT id, no, status, src_table AS srcTable FROM fin_events WHERE id = ?", eventId);
+    if (!event || event.srcTable !== "") throw new HttpError(404, "Banka fişi bulunamadı.", { code: "bank-event-missing" });
+    if (store.get("SELECT 1 AS found FROM bank_lines WHERE event_id = ? LIMIT 1", eventId)) throw new HttpError(409, `Satırı olan banka fişi (${event.no}) iptal edilmez; ters kaydedilir.`, { code: "bank-event-has-lines" });
+    if (event.status !== "active") throw new HttpError(409, `Bu işlem (${event.no}) zaten iptal edilmiş ya da ters kaydedilmiş.`, { code: "bank-already-reversed", eventNo: event.no });
+    store.run("UPDATE fin_events SET status = 'cancelled', updated_by = ?, updated_at = ? WHERE id = ?", ctx.user?.id || "system", stamp_(), eventId);
+    ctx.events.add(eventId);
+    return { id: eventId, no: event.no, cancelled: true };
+  }
+
   // Adım 4 ve 7: Benzer İşlem ve POS kancaları — hesaba bağlı satır ve POS satışı bu aşamada yazılmaz.
   const similar = () => {};
   const posHooks = () => {};
@@ -231,7 +301,7 @@ export function createBank({ store, now = systemClock, log = null, strict = fals
     });
   }
 
-  return { post, eventFor, assertNonMoney, assertWrittenNonMoney, isMoney: isMoneyRow, policy, get inPost() {
+  return { post, eventFor, assertNonMoney, assertWrittenNonMoney, voucher: openVoucher, reverse: reverseVoucher, cancelBare: cancelBareEvent, isMoney: isMoneyRow, policy, get inPost() {
     return stack.length > 0;
   } };
 }

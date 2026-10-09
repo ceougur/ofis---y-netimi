@@ -53,6 +53,8 @@ const AMOUNT_COLUMNS = [
   ["invoice_lines", "vat", ""],
 ];
 const money = value => `${new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(Number(value) || 0)} TL`;
+// Alt hesabı olan para hesapları (v2.1.0 §3.11): banka, POS, kurumsal kart, kredi.
+const SUB_ACCOUNTS = new Set(["102", "108", "309", "300"]);
 
 /** Testlerde (gateVerify) dokunulan varlıklar yolu "temiz" dedi ama tam kapı reddetti: süzgeç eksik (eşdeğerlik ihlali). */
 export class GateEquivalenceError extends HttpError {
@@ -304,6 +306,15 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
           const want = fromSource.get(sub) || 0;
           bankItems.push({ code: `bank:sub:${sub}`, name: `Alt Hesap Mutabakatı (${sub}${names[sub] || UNASSIGNED_SUBS[sub] ? ` ${names[sub] || UNASSIGNED_SUBS[sub]}` : ""})`, ok: got === want, difference: roundMoney((got - want) / 100), ledger: roundMoney(got / 100), subledger: roundMoney(want / 100) });
         }
+        // Aşama 3 (§3.11, kabul "Mizanda 102 = Σ102.*"): para hesaplarının (102, 108, 309, 300) her yevmiye satırı bir alt hesaba yazılır;
+        // alt hesabı boş satır ana hesabı alt hesapların toplamından ayırırdı.
+        const bare = [];
+        let bareCents = 0;
+        for (const entry of entries) for (const line of entry.lines) if (SUB_ACCOUNTS.has(line.account) && !line.sub) {
+          bare.push(`${entry.id} (${line.account})`);
+          bareCents += line.debit - line.credit;
+        }
+        bankItems.push({ code: "bank:sub", name: "Alt Hesap Toplamı (102, 108, 300, 309 = Σ alt hesaplar)", ok: bare.length === 0, count: bare.length, difference: roundMoney(bareCents / 100), sample: bare.slice(0, 5) });
         lap("bank");
       }
       for (const item of reconciliation.checks) checks.push({ code: `gl:${item.code}`, name: `${item.code} ${item.name}`, ok: item.ok, difference: item.difference, ledger: item.ledger, subledger: item.subledger });
@@ -528,6 +539,12 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
       const label = ref => store.get("SELECT code || ' · ' || name AS label FROM bank_accounts WHERE id = ?", ref)?.label || store.get("SELECT code || ' · ' || name AS label FROM pos_terminals WHERE id = ?", ref)?.label || ref;
       const eventItems = byEntity("bank:event", "İşlem Başlığı (kopya = satır)", broken, { legacy: legacyEvents, label });
       bankItems.push(...(eventItems.length ? eventItems.map(item => (scoped ? { ...item, scoped: true } : item)) : [{ code: "bank:event", name: "İşlem Başlığı (kopya = satır)", ok: true, count: 0 }]));
+      // Aşama 3 (§3.11): açılış kuralı (hesap bazında) ve Banka Fişi dengesi (olay bazında; varlık kodu hesabın). Taban kuralı olağan
+      // (imza): eski bir sapma yalnız kendi hesabının kodunu kilitler.
+      const openingItems = byEntity("bank:opening", "Açılış Kuralı", bank().openingProblems(), { label });
+      bankItems.push(...(openingItems.length ? openingItems : [{ code: "bank:opening", name: "Açılış Kuralı", ok: true, count: 0 }]));
+      const voucherItems = byEntity("bank:voucher", "Banka Fişi Dengesi", bank().voucherProblems(), { label });
+      bankItems.push(...(voucherItems.length ? voucherItems : [{ code: "bank:voucher", name: "Banka Fişi Dengesi", ok: true, count: 0 }]));
       const report = scoped && !touched.size ? [] : bank().reportMismatches(scope);
       bankItems.push({ code: "money:report", name: "Rapor = Özet (satır toplamı = özet, yol ve hesap bazında)", ok: report.length === 0, count: report.length, ...(scoped ? { scoped: true, gateCount: report.length } : {}), sample: report.slice(0, 5).map(item => `${item.key}: satırlar ${item.rows / 100} / özet ${item.summary / 100}`) });
       if (!scoped) {

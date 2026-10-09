@@ -34,8 +34,11 @@ import { toCents } from "./money.mjs";
 const AUDITOR = { id: "integrity", role: "admin", permissions: [] };
 const MONEY_ACCOUNTS = new Set(["100", "102", "108", "309", "300"]);
 const WAY_ACCOUNT = { cash: "100", bank: "102", card: "108", ccard: "309", loan: "300" };
-// Bu tablolara yazım bu yolda henüz modellenmedi (Aşama 10+ POS, §3.14 tahsile verme; hesap kartının türü/alt hesabı): tam kapı.
-const FULL_TABLES = new Set(["bank_accounts", "pos_terminals", "pos_sales", "pos_items", "cheque_collections"]);
+// Bu tablolara yazım bu yolda henüz modellenmedi (Aşama 10+ POS, §3.14 tahsile verme): tam kapı. Banka hesap kartı (bank_accounts) Aşama 3'ten
+// beri bu yolda: dokunulan hesabın açılış kuralı (bank:opening) denetlenir; hareketli hesabın türü/para birimi/alt hesabı değişirse tam kapı.
+const FULL_TABLES = new Set(["pos_terminals", "pos_sales", "pos_items", "cheque_collections"]);
+// Hesap kartında yevmiyeyi etkileyen alanlar (yol türetmesi ve alt hesap): değişirse karar tam kapının.
+const ACCOUNT_LEDGER_FIELDS = ["kind", "gl", "gl_sub", "currency"];
 // Kilit izinin (lib/integrity.mjs LOCK_SQL) satır alanları: kilitli dönemdeki satırda bunlardan biri değişirse, satır eklenir ya da silinirse iz değişir.
 const LOCK_FIELDS = {
   payments: { date: row => row.date, fields: ["amount", "date", "method", "fin_ref", "event_id"] },
@@ -92,6 +95,9 @@ export function familyOf(code) {
   if (code.startsWith("invoice:")) return "invoice";
   if (code.startsWith("dates:format:")) return `rows:${code.slice(13)}`;
   if (code.startsWith("dates:future:") || code === "money:method" || code === "money:report" || code === "money:event" || code.startsWith("bank:event")) return null;
+  // Aşama 3: açılış kuralı ve fiş dengesi hesap/olay bazında; süzgeç dokunulan hesap ve olaylarda kendisi denetler (eski sapmaya dokunan yazım
+  // bulgu verir → tam kapı imzayla karar verir).
+  if (code.startsWith("bank:opening") || code.startsWith("bank:voucher")) return null;
   return "all";
 }
 
@@ -103,6 +109,8 @@ export function createScopedGate({ store, ledger, accounts, plans, stock, money,
     const s = {
       reason: capture?.unknown || "",
       parties: new Set(), plans: new Set(), cheques: new Set(), invoices: new Set(), items: new Set(), moves: new Set(), transfers: new Set(), events: new Set(), entries: new Set(), offsets: new Set(),
+      // Aşama 3: dokunulan banka hesapları (hesap kartı, satırın bağı, olayın hesabı, fiş satırının bağı) → açılış kuralı.
+      banks: new Set(),
       money: Object.fromEntries(MODULE_TABLES.map(table => [table, new Set()])),
       rows: new Map(), // tablo → [{ pre, post }]
       visible: { parties: new Set(), items: new Set() },
@@ -124,6 +132,9 @@ export function createScopedGate({ store, ledger, accounts, plans, stock, money,
       for (const rowid of new Set([...posts.keys(), ...pres.keys()])) list.push({ pre: pres.get(rowid) || null, post: posts.get(rowid) || null });
       s.rows.set(table, list);
       for (const { pre, post } of list) if (pre && post && String(pre.id ?? "") !== String(post.id ?? "")) s.reason ||= `${table}: kimlik değişti`;
+      // Hesap kartının türü / para birimi / ana ve alt hesabı değişti: bağlı satırların yolu ve alt hesabı başka hesaba geçer (rota hareketli
+      // hesapta bunu reddeder; hareketsiz hesapta da karar tam kapının — seyrek iş).
+      if (table === "bank_accounts") for (const { pre, post } of list) if (pre && post && differs(pre, post, ACCOUNT_LEDGER_FIELDS)) s.reason ||= "bank_accounts: hesap türü / para birimi / alt hesap";
       for (const { pre, post } of list) for (const row of [pre, post]) if (row) keys(s, table, row);
       for (const { pre, post } of list) visibility(s, table, pre, post);
     }
@@ -220,13 +231,21 @@ export function createScopedGate({ store, ledger, accounts, plans, stock, money,
         add(s.invoices, row.invoice_id);
         add(s.plans, row.plan_id);
         add(s.cheques, row.cheque_id);
+        add(s.banks, row.bank_ref);
+        add(s.banks, row.counter_ref);
         break;
       case "bank_lines":
         add(s.events, row.event_id);
+        add(s.banks, row.ref);
+        break;
+      case "bank_accounts":
+        add(s.banks, row.id);
         break;
       default:
         s.reason ||= `${table} yazımı (kapsam dışı)`;
     }
+    // Para satırının hesap bağı (fin_ref): o hesabın açılış kuralı (Aşama 3).
+    if (s.money[table]) add(s.banks, row.fin_ref);
     // Para satırı (post: güncel hâli; silinen satır iki yoldan da düşer): tek kaynağın aynı satırları denetlenir.
     if (s.money[table] && isMoneyRow(table, row)) s.money[table].add(String(row.id));
   }
@@ -415,6 +434,8 @@ export function createScopedGate({ store, ledger, accounts, plans, stock, money,
       const subsLedger = subBalances(fromLedger);
       const subsSource = service.expectedSubs(groups);
       for (const sub of new Set([...subsLedger.keys(), ...subsSource.keys()])) if ((subsLedger.get(sub) || 0) !== (subsSource.get(sub) || 0)) find(`bank:sub:${sub}`, `defter ${(subsLedger.get(sub) || 0) / 100} / kaynak ${(subsSource.get(sub) || 0) / 100}`);
+      // Alt hesap toplamı (Aşama 3): para hesabına alt hesapsız yevmiye satırı yok.
+      for (const entry of fromLedger) for (const line of entry.lines) if (["102", "108", "309", "300"].includes(line.account) && !line.sub) find("bank:sub", `${entry.id} (${line.account})`);
       // Banka Fişi stopajı (193): yevmiye = fişin satırları.
       if (events.length && has("bank_lines")) {
         const got = sumAccount(fromLedger, "193");
@@ -602,7 +623,11 @@ export function createScopedGate({ store, ledger, accounts, plans, stock, money,
     if (bank.ready() && s.events.size) {
       for (const item of bank.brokenEvents({ events: s.events })) if (!legacy.events().has(item.key)) find("bank:event", item.sample || item.key);
       for (const item of bank.reportMismatches({ events: s.events })) find("money:report", item.key);
+      // Banka Fişi dengesi ve kuralları (Aşama 3; dokunulan olaylardan Banka Fişi olanlar).
+      for (const item of bank.voucherProblems({ events: s.events })) find("bank:voucher", item.sample || item.key);
     }
+    // Açılış kuralı (Aşama 3): dokunulan hesaplar (hesap kartı, satır bağı, olayın ya da fiş satırının hesabı).
+    if (bank.ready() && s.banks.size) for (const item of bank.openingProblems({ refs: s.banks })) find("bank:opening", item.sample || item.key);
     lap("bank");
     return { full: lockReason ? `kilit (${lockReason})` : "", findings, sections, ms: performance.now() - started, scope: { parties: s.parties.size, plans: s.plans.size, cheques: s.cheques.size, invoices: s.invoices.size, items: s.items.size, money: Object.values(s.money).reduce((sum, set) => sum + set.size, 0), events: s.events.size, heavyParties, built: entries.length } };
   }

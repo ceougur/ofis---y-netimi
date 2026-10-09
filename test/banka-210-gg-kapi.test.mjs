@@ -51,9 +51,10 @@ describe("B6 — kaynağı boş cari satırı süzgeçten geçmez", () => {
         assert.match(gateOf(app).reason || "", /tanınmayan kaynak/);
         store.raw("test: temizlik", () => store.tx(() => store.run("DELETE FROM account_entries WHERE note = 'yetim'")));
         assert.equal(app.integrity.run().ok, true, "tam kapı temiz");
-        // Aşama 3'ün banka hesabı kartı yazımı (tam kapı yolu): kabul edilmiş gizli sapma yok → 409 almaz.
+        // Banka hesabı kartı yazımı: kabul edilmiş gizli sapma yok → 409 almaz. Bilerek güncellendi (Aşama 3, dilim 1): bank_accounts artık
+        // süzgeç kapsamında (bank:opening hesap kimliğinden; banka-210-kapi-plan) — üretim kipinde süzgeç yolu, test kipinde doğrulama için tam kapı.
         store.tx(() => store.run("INSERT INTO bank_accounts (id, code, gl, gl_sub, kind, bank_name, name, currency, opening_date, created_by, created_at) VALUES ('acc-z', 'B01', '102', '102.01', 'demand', 'Test', 'Ana TL', 'TRY', '2026-01-01', 'admin', ?)", new Date().toISOString()));
-        assert.equal(gateOf(app).path, "full");
+        assert.equal(gateOf(app).path, options === PROD ? "scoped" : "full", `banka hesabı kartı (${gateOf(app).reason || ""})`);
         await integrityOk(api, "yetim denemelerinden sonra");
       } finally {
         await ctx.server.close();
