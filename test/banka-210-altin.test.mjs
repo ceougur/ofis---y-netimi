@@ -9,8 +9,9 @@
 //     Mizanı, Defter Mutabakatı: ekran JSON'u, PDF metni ve Excel sayfaları;
 //   - ANLIK DURUM (Kasa bugün / bu ay, Banka / POS kutusu dahil), Nakit Akış Projeksiyonu, Vade Takip;
 //   - Ana Defter (mizan + mutabakat) ve Mutabakat Testi'nin denetim listesi ("N denetim tamam" aynı kalır).
-// Tek fark izni: oluşturma saati (PDF/Excel damgası). Gözden geçirme D3 (Aşama 2; bilerek güncellendi): 649'un adı Aşama 2'de değişmez —
-// ad izni ve Hesap Planı Mizanı PDF'indeki satır kırılımı izni kaldırıldı (her metin birebir).
+// Tek fark izni: oluşturma saati (PDF/Excel damgası) ve 649'un adı — Aşama 4'te (Banka Fişi 649'a yazmaya başlayınca; bilerek güncellendi)
+// Tekdüzen adı "Diğer Olağan Gelir ve Kârlar" (plan §3.11; tutarı aynı). Hesap Planı Mizanı PDF'inde adın uzunluğu kolon genişliğini,
+// dolayısıyla satır kırılımını değiştirir (o PDF'te kırılım boşluk sayılır). Aşama 2'de (gözden geçirme D3) ad 2.0.26'daki gibi kalmıştı.
 // Veri: (1) zincir fikstürü surum-2.0.26-zincir (2.0.16 → 2.0.26 gerçek sürüm koduyla, 4 şirket); (2) v2.0.26'nın KENDİ koduyla
 // mutabakat motoruyla (test/mutabakat/motor.mjs) bu test sırasında üretilen veri: 120 güne yayılmış rastgele işlemler (Kasa, cari,
 // stok, taksit, çek/senet, fatura, iade, iptal, transfer, dönem kilidi).
@@ -32,9 +33,12 @@ const skip = tagsAvailable([OLD]) ? false : `${OLD} etiketi bu depoda yok (git f
 const TODAY = localDay(0);
 const MONTH = `${TODAY.slice(0, 7)}-01`;
 const PAST = { from: localDay(-75), to: localDay(-8) };
+const OLD_649 = "Diğer Olağan Gelirler (Kasaya Elle)";
+const NEW_649 = "Diğer Olağan Gelir ve Kârlar";
 const STAMP = /\d{2}\.\d{2}\.\d{4} \d{2}:\d{2}(:\d{2})?/g;
 
-const textNorm = value => value.replace(STAMP, "TARİH SAAT");
+const norm649 = value => JSON.parse(JSON.stringify(value).split(OLD_649).join("649-AD").split(NEW_649).join("649-AD"));
+const textNorm = value => value.replace(STAMP, "TARİH SAAT").split(OLD_649).join("649-AD").split(NEW_649).join("649-AD");
 const strip = (value, keys) => {
   if (Array.isArray(value)) return value.map(item => strip(item, keys));
   if (value && typeof value === "object") return Object.fromEntries(Object.entries(value).filter(([key]) => !keys.includes(key)).map(([key, item]) => [key, strip(item, keys)]));
@@ -77,14 +81,19 @@ function requests() {
 async function fetchOne(api, request) {
   if (request.kind === "json") {
     const response = unwrap(await api.client.get(request.url));
-    return { status: response.status, body: strip(response.data, request.drop || []) };
+    return { status: response.status, body: norm649(strip(response.data, request.drop || [])) };
   }
   const response = await api.client.raw("GET", request.url);
   if (response.status !== 200) return { status: response.status, body: response.data };
-  if (request.kind === "pdf") return { status: 200, body: textNorm(pdfText(response.buffer)) };
+  // Hesap Planı Mizanı PDF'inde "Hesap Adı" kolonunun genişliği en uzun hesap adına göre (649'un yeni adı kısaldı): aynı metin
+  // başka yerden satır kırar. Bu raporda satır kırılımı boşluğa indirgenir; sözcükler ve sıraları birebir karşılaştırılır.
+  if (request.kind === "pdf") {
+    const text = pdfText(response.buffer);
+    return { status: 200, body: textNorm(request.url.includes("/hesap-mizani/") ? text.replace(/\s+/g, " ") : text) };
+  }
   const sheets = xlsxSheets(response.buffer);
   for (const rows of Object.values(sheets)) for (let k = rows.length - 1; k >= 0; k -= 1) if (rows[k][0] === "Hazırlanma") rows.splice(k, 1);
-  return { status: 200, body: sheets };
+  return { status: 200, body: norm649(sheets) };
 }
 
 async function login(server, who) {

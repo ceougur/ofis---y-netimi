@@ -8,7 +8,8 @@
 //    2  prepare(ctx): modülün hedef kuralları (Aşama 2'de modüller bugünkü kurallarını kendi rotalarında uygular; kanca)
 //    3  assertMutable: hesaba bağlı (fin_ref dolu) satırda çapraz yetki (bank.move / bank.cancel), eşleşmiş olayda 409 (iskelet:
 //       Aşama 2'de hesaba bağlı satır yazılmaz; Aşama 5'te etkin)
-//    4  similar: Benzer İşlem (K8) — boş kanca (yalnız hesaba bağlı satırda çalışır; Aşama 5)
+//    4  similar: Benzer İşlem (K8; Aşama 4) — yalnız hesaba bağlı yeni olaylarda; olay kopyası yazımdan sonra kurulduğu için 5'ten SONRA, aynı
+//       işlemde çalışır (aynı iş günü, hesap, tür, yön, tutar, cari, hedef — masrafta masraf türü → 409 bank-similar; similarOk geçer)
 //    5  olay: write içinde bank.eventFor(tablo, satır) para satırına işlem başlığı açar (İşlem No, §5.4) ya da satırın mevcut
 //       olayını verir; yazımdan sonra her olayın salt okuma kopyası satırdan yenilenir — satırı kalmayan olay "cancelled" (kopyası
 //       kalır), satırı geri gelen (Silinenler, Taksite Aktar geri alması) olay yeniden "active"
@@ -29,8 +30,10 @@ import { HttpError } from "../http.mjs";
 import { systemClock } from "../clock.mjs";
 import { bodyHash } from "../idempotency.mjs";
 import { canUser } from "../permissions.mjs";
+import { addCalendarDays } from "../business-days.mjs";
+import { createTrCalendar } from "../calendars/tr.mjs";
 import { nextEventNo } from "./event-no.mjs";
-import { EVENT_TYPES, typeOf } from "./event-types.mjs";
+import { EVENT_TYPES, NON_MONEY_TYPES, typeOf } from "./event-types.mjs";
 import { voucherCopy } from "./voucher.mjs";
 import { FREE_COLUMNS, LEDGER_TABLES, SOURCE_TABLES, isMoneyRow, moneyWhere } from "./money-lines.mjs";
 import { eventRows, isTransferPair, refreshEvent } from "./event-copy.mjs";
@@ -192,7 +195,7 @@ export function createBank({ store, now = systemClock, log = null, strict = fals
     return ctx;
   }
   /**
-   * fields: { type, date, bankRef, counterRef, reversalOf, description, reference, partyId, valueDate, origin, originKey }
+   * fields: { type, date, bankRef, counterRef, reversalOf, description, reference, partyId, invoiceId, channel, valueDate, origin, originKey }
    * lines: [{ role, gl, sub, ref, side ('D'|'C'), tryMinor, currency, fxMinor, rateE6, rateSource, memo }] — boş olabilir (sıfır açılış).
    * Dönüş: { id, no, year, seq }.
    */
@@ -204,11 +207,11 @@ export function createBank({ store, now = systemClock, log = null, strict = fals
     const id = `ev-${randomUUID()}`;
     const copy = voucherCopy(lines, fields.bankRef || "");
     store.run(
-      `INSERT INTO fin_events (id, year, seq, no, type, date, value_date, status, reversal_of, origin, origin_key, src_table, src_id, bank_ref, counter_ref, direction, amount_minor, try_minor, currency, method, party_id, description, reference, created_by, created_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, 'active', ?, ?, ?, '', '', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      id, year, seq, no, fields.type, date, String(fields.valueDate || ""), String(fields.reversalOf || ""), fields.origin || ctx.origin, String(fields.originKey || ""),
+      `INSERT INTO fin_events (id, year, seq, no, type, date, value_date, status, reversal_of, origin, origin_key, channel, src_table, src_id, bank_ref, counter_ref, direction, amount_minor, try_minor, currency, method, party_id, invoice_id, description, reference, created_by, created_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, 'active', ?, ?, ?, ?, '', '', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      id, year, seq, no, fields.type, date, String(fields.valueDate || ""), String(fields.reversalOf || ""), fields.origin || ctx.origin, String(fields.originKey || ""), String(fields.channel || ""),
       String(fields.bankRef || ""), String(fields.counterRef || ""), copy.direction, copy.amountMinor, copy.tryMinor, fields.currency || copy.currency, copy.method, String(fields.partyId || ""),
-      String(fields.description || ""), String(fields.reference || ""), ctx.user?.id || "system", stamp_(),
+      String(fields.invoiceId || ""), String(fields.description || ""), String(fields.reference || ""), ctx.user?.id || "system", stamp_(),
     );
     lines.forEach((line, index) => {
       store.run(
@@ -234,7 +237,7 @@ export function createBank({ store, now = systemClock, log = null, strict = fals
     const lines = store.all("SELECT * FROM bank_lines WHERE event_id = ? ORDER BY seq", eventId);
     if (!lines.length) return cancelBareEvent(eventId);
     const mirror = lines.map(line => ({ role: line.role, gl: line.gl, sub: line.sub, ref: line.ref, side: line.side === "D" ? "C" : "D", tryMinor: line.try_minor, currency: line.currency, fxMinor: line.fx_minor, rateE6: line.rate_e6, rateSource: line.rate_source, memo: line.memo }));
-    const reversal = openVoucher({ type: "reversal", date: date || event.date, bankRef: event.bank_ref, counterRef: event.counter_ref, reversalOf: eventId, partyId: event.party_id, currency: event.currency, description: description || `Ters Kayıt · ${event.no}` }, mirror);
+    const reversal = openVoucher({ type: "reversal", date: date || event.date, bankRef: event.bank_ref, counterRef: event.counter_ref, reversalOf: eventId, partyId: event.party_id, invoiceId: event.invoice_id, currency: event.currency, description: description || `Ters Kayıt · ${event.no}` }, mirror);
     store.run("UPDATE fin_events SET status = 'reversed', reversed_by = ?, updated_by = ?, updated_at = ? WHERE id = ?", reversal.id, ctx.user?.id || "system", stamp_(), eventId);
     ctx.events.add(eventId);
     return reversal;
@@ -251,12 +254,78 @@ export function createBank({ store, now = systemClock, log = null, strict = fals
     return { id: eventId, no: event.no, cancelled: true };
   }
 
-  // Adım 4 ve 7: Benzer İşlem ve POS kancaları — hesaba bağlı satır ve POS satışı bu aşamada yazılmaz.
-  const similar = () => {};
+  // ---------- Adım 4: Benzer İşlem Uyarısı (K8; §3.10/2; Aşama 4) ----------
+  // Yalnız hesaba bağlı (bank_ref dolu) ve parası olan yeni olaylarda (create): aynı iş günü, aynı hesap, aynı tür, aynı yön, aynı tutar, aynı
+  // cari ve aynı hedef (fatura, taksit kartı, çek) etkin bir olay varsa 409 bank-similar (önceki İşlem No, giren, tarih). "Yine de Kaydet"
+  // (similarOk) geçer. Nakit ve hesabı atanmamış satır denetlenmez (güvenilir hedef yok; aynı gün aynı tutarda iki nakit hareket olağan).
+  // Olay kopyası yazımdan sonra yenilendiği için denetim finalize'dan sonra, aynı işlemde (BEGIN IMMEDIATE) yapılır: aynı anda gelen iki
+  // istekten ikincisi birincinin olayını görür. Ayar: Banka Ayarları → Mükerrer → Benzer İşlem Uyarısı (varsayılan Açık).
+  const SKIP_SIMILAR = new Set(["opening", "reversal", "carry_close", "legacy_assign", "legacy_reclass", ...NON_MONEY_TYPES]);
+  const similarEnabled = () => {
+    try {
+      return JSON.parse(store.setting("bank.settings", "") || "{}")?.similar?.enabled !== false;
+    } catch {
+      return true;
+    }
+  };
+  /** İş günü: tatil ve hafta sonu bir sonraki iş gününe (Cumartesi ↔ Pazartesi aynı iş günü). Şirketin tatil ekleri (bank_holidays) dahil. */
+  function businessDayOf() {
+    let calendar;
+    try {
+      const raw = JSON.parse(store.setting("bank.settings", "") || "{}");
+      const rows = store.all("SELECT date, kind, name FROM bank_holidays");
+      calendar = createTrCalendar({
+        halfDayIsBusiness: raw?.holidayAdvanced?.halfDay !== "holiday",
+        added: rows.filter(row => row.kind !== "removed").map(row => ({ date: row.date, name: row.name, half: row.kind === "half" })),
+        removed: rows.filter(row => row.kind === "removed").map(row => row.date),
+      });
+    } catch {
+      calendar = createTrCalendar();
+    }
+    return iso => {
+      try {
+        return calendar.adjust(iso, "following");
+      } catch {
+        return iso;
+      }
+    };
+  }
+  function similar(ctx, similarOk) {
+    if (similarOk || ctx.op !== "create" || !ctx.created.size || !similarEnabled()) return;
+    let businessDay = null;
+    for (const id of ctx.created) {
+      const event = store.get("SELECT id, no, type, date, status, bank_ref AS bankRef, direction, try_minor AS tryMinor, party_id AS partyId, invoice_id AS invoiceId, plan_id AS planId, cheque_id AS chequeId FROM fin_events WHERE id = ?", id);
+      if (!event || event.status !== "active" || !event.bankRef || !event.direction || !(Number(event.tryMinor) > 0) || SKIP_SIMILAR.has(event.type)) continue;
+      businessDay ??= businessDayOf();
+      const day = businessDay(event.date);
+      // İndeks (bank_ref, date, id) ile; tür/yön/tutar/hedef satırda denetlenir (+ işareti durum ve tür indekslerini kapatır).
+      const candidates = store.all(
+        `SELECT e.id, e.no, e.date, e.created_by AS createdBy, e.created_at AS createdAt, COALESCE(u.display_name, '') AS createdByName
+         FROM fin_events e LEFT JOIN users u ON u.id = e.created_by
+         WHERE e.bank_ref = ? AND e.date BETWEEN ? AND ? AND +e.status = 'active' AND +e.type = ? AND +e.direction = ? AND +e.try_minor = ?
+           AND +e.party_id = ? AND +e.invoice_id = ? AND +e.plan_id = ? AND +e.cheque_id = ? AND e.id <> ?
+         ORDER BY e.date, e.created_at`,
+        event.bankRef, addCalendarDays(event.date, -12), addCalendarDays(event.date, 12), event.type, event.direction, event.tryMinor, event.partyId, event.invoiceId, event.planId, event.chequeId, event.id,
+      );
+      // Masrafta "hedef" masraf türüdür (gider hesabı + tür adı; Ek A): aynı gün aynı tutarda EFT ücreti ile havale ücreti ayrı masraftır.
+      const feeKey = id => store.get("SELECT gl || '|' || memo AS k FROM bank_lines WHERE event_id = ? AND role = 'expense' ORDER BY seq LIMIT 1", id)?.k || "";
+      const own = event.type === "fee" ? feeKey(event.id) : "";
+      const match = candidates.find(row => !ctx.created.has(row.id) && businessDay(row.date) === day && (event.type !== "fee" || feeKey(row.id) === own));
+      if (match) throw similarError(match, event);
+    }
+  }
+  /** 409 bank-similar: önceki işlemin İşlem No'su, tarihi ve gireni (KDV'li masrafın kendi denetimi de bu biçimi kullanır). */
+  function similarError(match, event = null) {
+    const when = String(match.date || "").split("-").reverse().join(".");
+    return new HttpError(409, `Aynı iş gününde aynı hesapta aynı tutarda benzer bir işlem kayıtlı (${match.no}, ${when}${match.createdByName ? `, ${match.createdByName}` : ""}). Gerçekten ikinci bir işlemse "Yine de Kaydet" ile kaydedin.`, {
+      code: "bank-similar", eventId: match.id, eventNo: match.no, date: match.date, createdBy: match.createdBy || "", createdByName: match.createdByName || "", createdAt: match.createdAt || "", ...(event ? { newDate: event.date } : {}),
+    });
+  }
+  // Adım 7: POS kancaları — POS satışı bu aşamada yazılmaz (Aşama 9–10).
   const posHooks = () => {};
 
   function post(options = {}) {
-    const { user = null, scope = "", requestId = "", module = "", op, body, prev, write, prepare = null, guard = null, audit: auditEntry = null, origin = "manual" } = options;
+    const { user = null, scope = "", requestId = "", module = "", op, body, prev, write, prepare = null, guard = null, audit: auditEntry = null, origin = "manual", similarOk = false } = options;
     if (!OP_SET.has(op)) throw new TypeError(`bank.post: bilinmeyen işlem türü "${op}" (${OPS.join(", ")})`);
     if (typeof write !== "function") throw new TypeError("bank.post: write geri çağrısı gerekli");
     if (op !== "create" && prev === undefined) throw new TypeError(`bank.post: "${op}" işleminde önceki hâl (prev) zorunlu (işlem geçmişinin "previous" alanı)`);
@@ -279,9 +348,9 @@ export function createBank({ store, now = systemClock, log = null, strict = fals
       try {
         prepare?.(ctx); // 2
         assertMutable(user, op, prev); // 3
-        similar(ctx); // 4
         const result = write(ctx); // 5–6
         finalize(ctx); // 5: olay kopyası, iptal, yeniden etkin
+        similar(ctx, similarOk); // 4: yeni olayların kopyası üzerinden (aynı işlemde; yukarıdaki not)
         posHooks(ctx); // 7
         guard?.(result, ctx); // 8
         if (auditEntry) {
@@ -301,7 +370,7 @@ export function createBank({ store, now = systemClock, log = null, strict = fals
     });
   }
 
-  return { post, eventFor, assertNonMoney, assertWrittenNonMoney, voucher: openVoucher, reverse: reverseVoucher, cancelBare: cancelBareEvent, isMoney: isMoneyRow, policy, get inPost() {
+  return { post, eventFor, assertNonMoney, assertWrittenNonMoney, voucher: openVoucher, reverse: reverseVoucher, cancelBare: cancelBareEvent, similarError, businessDayOf, isMoney: isMoneyRow, policy, get inPost() {
     return stack.length > 0;
   } };
 }

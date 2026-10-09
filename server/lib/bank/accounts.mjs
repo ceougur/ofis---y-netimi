@@ -21,7 +21,8 @@ import { systemClock } from "../clock.mjs";
 import { CURRENCY_DIGITS, minorText, mulRate, parseMinor, parseRate } from "../minor.mjs";
 import { isValidIban, ibanText, normalizeIban } from "../tax-id.mjs";
 import { UNASSIGNED_SUBS, subTrial, trialBalance } from "../general-ledger.mjs";
-import { KIND_GL } from "./checks.mjs";
+import { KIND_GL, accountSpan } from "./checks.mjs";
+import { NON_MONEY_TYPES } from "./event-types.mjs";
 import { MODULE_TABLES, MONEY_SOURCES } from "./money-lines.mjs";
 import { createBankSettings } from "./settings.mjs";
 import { assertLines, carryLines, openingLines, reclassLines } from "./voucher.mjs";
@@ -79,16 +80,21 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
 
   /** Etkin açılış: { eventId, no, date, amountMinor (hesabın para biriminde, işaretli), tryMinor (işaretli), direction, lines } ya da null. */
   function openingOf(id) {
-    const event = store.get("SELECT id, no, date, direction, amount_minor AS amountMinor, try_minor AS tryMinor FROM fin_events WHERE bank_ref = ? AND +type = 'opening' AND +status = 'active' ORDER BY created_at DESC LIMIT 1", id);
+    // Kısmi indeksten (idx_fin_events_opening): hesabın bütün olayları dolaşılmaz (1.000.000 harekette ~0,8 sn idi).
+    const event = store.get("SELECT id, no, date, direction, amount_minor AS amountMinor, try_minor AS tryMinor FROM fin_events WHERE bank_ref = ? AND type = 'opening' AND +status = 'active' ORDER BY created_at DESC LIMIT 1", id);
     if (!event) return null;
     const sign = event.direction === "out" ? -1 : 1;
     const lines = store.get("SELECT COUNT(*) AS n FROM bank_lines WHERE event_id = ?", event.id).n;
     return { eventId: event.id, no: event.no, date: event.date, amountMinor: sign * Number(event.amountMinor), tryMinor: sign * Number(event.tryMinor), direction: event.direction, lines: Number(lines) || 0 };
   }
-  // Açılış zinciri (açılış fişleri ve ters kayıtları) hareket sayılmaz (lib/bank/checks.mjs openingProblems ile aynı tanım).
+  // Açılış zinciri (açılış fişleri ve ters kayıtları) hareket sayılmaz (lib/bank/checks.mjs accountSpan ile aynı tanım; burada yalnız düz biçim).
   const OPENING_CHAIN = "(e.type = 'opening' OR (e.type = 'reversal' AND EXISTS (SELECT 1 FROM fin_events o WHERE o.id = e.reversal_of AND o.type = 'opening')))";
   /** Hesaba bağlı hareketler (modül satırları + Banka Fişi satırları; açılış zinciri hariç): { count, first, last }. */
   function movementInfo(id) {
+    return accountSpan(store, id);
+  }
+  /** Aynı tanımın düz (dizinsiz) biçimi: yalnız testlerin eşdeğerlik denetimi için (movementInfo ile her veride aynı sonucu verir). */
+  function movementInfoPlain(id) {
     let count = 0;
     let first = "";
     let last = "";
@@ -116,7 +122,8 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
   }
   function view(row, { groups = null } = {}) {
     const confirmed = Boolean(row.balance_confirmed);
-    const balance = balances(groups || money.groups()).get(row.id) || 0;
+    // Tek hesap kartında yalnız o hesabın toplamı (moneyLines refTotal; saklanır). Hesap listesinde bütün hesaplar tek grup sorgusundan.
+    const balance = groups ? balances(groups).get(row.id) || 0 : money.refTotal({ ref: row.id }).cents;
     const opening = openingOf(row.id);
     const moves = movementInfo(row.id);
     const policy = confirmed ? row.negative_policy || settings.read().negative.policy : "off";
@@ -171,9 +178,25 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
    * Tahsilat"), İşlem No. Başka hesabın satırı gelmez (ref süzgeci).
    */
   const RECENT_LABELS = { payment: ["Kayıt Tahsilatı", "Kayıt Tahsilatı"], manual: ["Kasadan Bankaya", "Bankadan Kasaya"], account: ["Tahsilat", "Ödeme"], bank: ["Banka Hareketi", "Banka Hareketi"], plan: ["Taksit Tahsilatı", "Taksit Ödemesi"] };
+  // v2.1.0 Aşama 4 (1.000.000 hareket ölçümü): son hareketler hesabın bütün satırları okunmadan bulunur — işlem başlığı dizininden (hesap, tarih)
+  // en yeni `limit` olayın tarihi, o tarih ve sonrasındaki olayların satırları tek kaynaktan; sıralama ve kesim önceki gibi (tarih, giriş zamanı).
+  // Toplam satır sayısı moneyLines refTotal'ından (saklanır).
+  const POSTED = `+status IN ('active', 'reversed') AND +try_minor > 0 AND +type NOT IN (${[...NON_MONEY_TYPES].map(type => `'${type}'`).join(", ")})`;
+  function recentEvents(id, limit) {
+    const boundary = store.get(
+      `SELECT date FROM (SELECT * FROM (SELECT date, id FROM fin_events WHERE bank_ref = ?1 AND ${POSTED} ORDER BY date DESC, id DESC LIMIT ?2)
+         UNION ALL SELECT * FROM (SELECT date, id FROM fin_events WHERE counter_ref = ?1 AND counter_ref <> '' AND ${POSTED} ORDER BY date DESC, id DESC LIMIT ?2)
+         ORDER BY date DESC, id DESC LIMIT ?2) ORDER BY date LIMIT 1`,
+      id, limit,
+    );
+    if (!boundary) return [];
+    return store.all(`SELECT id FROM fin_events WHERE bank_ref = ?1 AND date >= ?2 AND ${POSTED} UNION SELECT id FROM fin_events WHERE counter_ref = ?1 AND counter_ref <> '' AND date >= ?2 AND ${POSTED}`, id, boundary.date).map(item => item.id);
+  }
   function recent(row, limit = 20) {
-    const list = money.lines({ ref: row.id });
-    const shown = list.slice(-Math.max(1, limit)).reverse();
+    const count = Math.max(1, limit);
+    const events = recentEvents(row.id, count);
+    const list = events.length ? money.lines({ ref: row.id, events }) : [];
+    const shown = list.slice(-count).reverse();
     const ids = [...new Set(shown.map(line => line.event_id).filter(Boolean))];
     const numbers = new Map(ids.length ? store.all("SELECT id, no FROM fin_events WHERE id IN (SELECT value FROM json_each(?))", JSON.stringify(ids)).map(item => [item.id, item.no]) : []);
     const items = shown.map(line => {
@@ -183,7 +206,7 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
       const description = label ? [party, label, shaped.description].filter(Boolean).join(" · ") : shaped.description || "";
       return { id: line.id, source: shaped.source, date: line.date, signedMinor: (line.kind === "in" ? 1 : -1) * Number(line.cents), description, eventId: line.event_id || "", eventNo: numbers.get(line.event_id) || "", internal: Boolean(Number(line.internal)) };
     });
-    return { items, total: list.length };
+    return { items, total: money.refTotal({ ref: row.id }).count };
   }
 
   // ---------- Kurulum Sihirbazı: ilk girişte bir kez (kişi ve şirket bazında) ----------
@@ -834,5 +857,5 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
     return { rows, mains, from, to };
   }
 
-  return { create, update, setStatus, remove, setOpening, list, summary, choices, legacy, assign, setup, runs, undo, reclass, subTrialData, settings, view, recent, setupDismissed, dismissSetup, rowOf, openingOf, movementInfo };
+  return { create, update, setStatus, remove, setOpening, list, summary, choices, legacy, assign, setup, runs, undo, reclass, subTrialData, settings, view, recent, setupDismissed, dismissSetup, rowOf, openingOf, movementInfo, movementInfoPlain };
 }

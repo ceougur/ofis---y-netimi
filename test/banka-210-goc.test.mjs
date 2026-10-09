@@ -68,7 +68,8 @@ export const V20_TABLES = {
   bank_statements: ["id", "bank_account_id", "source", "file_name", "file_sha256", "format", "period_from", "period_to", "opening_minor", "closing_minor", "line_count", "duplicate_count", "status", ...STAMP],
   bank_statement_lines: ["id", "statement_id", "bank_account_id", "line_no", "date", "value_date", "direction", "amount_minor", "balance_minor", "description", "reference", "counter_iban", "counter_name", "external_id", "fingerprint", "status", "score", "suggestion_json", ...STAMP],
   bank_matches: ["id", "line_id", "bank_account_id", "event_id", "amount_minor", "digest", "kind", "score", "created_by", "created_at", "undone_by", "undone_at", "undo_reason"],
-  bank_plans: ["id", "kind", "bank_account_id", "to_account_id", "party_id", "amount_minor", "currency", "planned_date", "repeat", "description", "status", "done_event_id", ...STAMP],
+  // Aşama 4 (bilerek güncellendi): payload_json — Planlı İşlemin fiş türüne özgü alanları (masraf türü, vergi kipi, stopaj, hesap; tekrarlı planın ay günü).
+  bank_plans: ["id", "kind", "bank_account_id", "to_account_id", "party_id", "amount_minor", "currency", "planned_date", "repeat", "description", "status", "done_event_id", "payload_json", ...STAMP],
   request_keys: ["key", "scope", "user_id", "body_hash", "ref_id", "created_at"],
 };
 const MONEY_TABLES = ["payments", "cash_entries", "account_entries", "plan_entries", "stock_moves", "cheque_events"];

@@ -1141,6 +1141,8 @@ export const MIGRATIONS = [
         if (store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'invoices'")) addColumn(store, "invoices", "rate_source", "TEXT NOT NULL DEFAULT ''");
         // Mutabakat kapısı (§3.11, dilim 5): dokunulan stok hareketine bağlı fatura kalemi indeksle bulunur (yalnız indeks; satır değişmez).
         if (store.all("PRAGMA table_info(invoice_lines)").some(column => column.name === "move_id")) store.exec("CREATE INDEX IF NOT EXISTS idx_invoice_lines_move ON invoice_lines(move_id) WHERE move_id <> ''");
+        // Aşama 4: İşlem Kartı'nın işlem geçmişi (işlem başlığına göre; yalnız indeks).
+        ensureBankSchema(store);
         // Yetki göçü yalnız ortak katmanda (001): şirketlerin kullanıcı tablosu ortak katmandan aynalanır. Şirketi bilinmeyen çağrı
         // (yedeğin geri yüklenmesi) ortak katman sayılır; şirket kopyasında da çalışsa zararsızdır (aynalama üstüne yazar).
         if (!company || company.id === "sirket-001") migrateBankGrants(store);
@@ -1212,6 +1214,10 @@ const BANK_SCHEMA_V20 = `
   CREATE INDEX IF NOT EXISTS idx_fin_events_cheque ON fin_events(cheque_id) WHERE cheque_id <> '';
   CREATE INDEX IF NOT EXISTS idx_fin_events_src ON fin_events(src_table, src_id);
   CREATE INDEX IF NOT EXISTS idx_fin_events_type ON fin_events(type, date);
+  -- Aşama 4: Banka Fişi satırının tarihi (fin_events.date) kimlikten tablo satırı okunmadan (tarih süzgeçli bakiye).
+  CREATE INDEX IF NOT EXISTS idx_fin_events_id_date ON fin_events(id, date);
+  -- Aşama 4: hesabın açılış fişleri (açılış kuralı kapısı, hesap kartı): hesabın bütün olayları dolaşılmadan (1.000.000 harekette ~0,8 sn).
+  CREATE INDEX IF NOT EXISTS idx_fin_events_opening ON fin_events(bank_ref) WHERE type = 'opening';
 
   -- Banka Fişi satırı; THP kodu yazım anında çözülür ve saklanır.
   CREATE TABLE IF NOT EXISTS bank_lines (
@@ -1224,7 +1230,8 @@ const BANK_SCHEMA_V20 = `
     memo TEXT NOT NULL DEFAULT ''
   ) STRICT;
   CREATE INDEX IF NOT EXISTS idx_bank_lines_event ON bank_lines(event_id);
-  CREATE INDEX IF NOT EXISTS idx_bank_lines_ref ON bank_lines(ref, event_id);
+  -- Aşama 4: (ref, event_id) + rol, taraf ve kuruş: hesabın bakiyesi (moneyLines total) tablo satırı okunmadan toplanır (1.000.000 satırda ölçüm).
+  CREATE INDEX IF NOT EXISTS idx_bank_lines_ref ON bank_lines(ref, event_id, role, side, try_minor);
   CREATE INDEX IF NOT EXISTS idx_bank_lines_gl ON bank_lines(gl, sub);
 
   CREATE TABLE IF NOT EXISTS bank_accounts (
@@ -1368,8 +1375,11 @@ const BANK_SCHEMA_V20 = `
     to_account_id TEXT NOT NULL DEFAULT '', party_id TEXT NOT NULL DEFAULT '', amount_minor INTEGER NOT NULL CHECK (amount_minor > 0),
     currency TEXT NOT NULL DEFAULT 'TRY', planned_date TEXT NOT NULL, repeat TEXT NOT NULL DEFAULT 'none',
     description TEXT NOT NULL DEFAULT '', status TEXT NOT NULL DEFAULT 'planned', done_event_id TEXT NOT NULL DEFAULT '',
+    -- Aşama 4: fiş türünün ek alanları (masraf türü, vergi kipi, stopaj, hesap; tekrarlı planın ay günü).
+    payload_json TEXT NOT NULL DEFAULT '{}',
     created_by TEXT NOT NULL, created_at TEXT NOT NULL, updated_by TEXT, updated_at TEXT
   ) STRICT;
+  CREATE INDEX IF NOT EXISTS idx_bank_plans_due ON bank_plans(status, planned_date);
 
   -- Kalıcı istek kimliği (§3.10/1): anahtar = kullanıcı|kapsam|kimlik; yazımla aynı işlemde; 30 günden eskiler budanır.
   CREATE TABLE IF NOT EXISTS request_keys (
@@ -1381,11 +1391,32 @@ const BANK_SCHEMA_V20 = `
 
 export const LATEST_VERSION = MIGRATIONS.at(-1).version;
 
+/**
+ * v20'nin Aşama 4 eklemeleri (yalnız ekleyici; idempotent): İşlem Kartı'nın işlem geçmişi indeksi, Planlı İşlemlerin ek alanı ve vade indeksi.
+ * 2.1.0 yayımlanmadan önce bu dalda v20'ye geçmiş geliştirme dosyaları da açılışta tamamlanır (runMigrations her açılışta çağırır).
+ */
+export function ensureBankSchema(store) {
+  const has = table => Boolean(store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = ?", table));
+  if (has("audit_events")) store.exec("CREATE INDEX IF NOT EXISTS idx_audit_entity ON audit_events(entity_id)");
+  // Hesap bakiyesinin kapsayan indeksleri (Aşama 4 ölçümü): eski biçimli (ref, event_id) indeks yenisiyle değişir.
+  if (has("bank_lines") && store.all("PRAGMA index_info(idx_bank_lines_ref)").length !== 5) {
+    store.exec("DROP INDEX IF EXISTS idx_bank_lines_ref; CREATE INDEX idx_bank_lines_ref ON bank_lines(ref, event_id, role, side, try_minor)");
+  }
+  if (has("fin_events")) store.exec("CREATE INDEX IF NOT EXISTS idx_fin_events_id_date ON fin_events(id, date); CREATE INDEX IF NOT EXISTS idx_fin_events_opening ON fin_events(bank_ref) WHERE type = 'opening'");
+  if (has("bank_plans")) {
+    addColumn(store, "bank_plans", "payload_json", "TEXT NOT NULL DEFAULT '{}'");
+    store.exec("CREATE INDEX IF NOT EXISTS idx_bank_plans_due ON bank_plans(status, planned_date)");
+  }
+}
+
 // now: iş saati (config.now) — göç damgaları (meta.schema.v20At) sahte saatte de iş gününü taşır.
 export function runMigrations(store, { backupDir, keep = 30, log, company = null, now = systemClock } = {}) {
   const current = store.get("PRAGMA user_version").user_version;
   const pending = MIGRATIONS.filter(item => item.version > current);
-  if (!pending.length) return { from: current, to: current, applied: [], backup: null };
+  if (!pending.length) {
+    if (current >= 20) store.raw("migration.v20.ensure", () => ensureBankSchema(store));
+    return { from: current, to: current, applied: [], backup: null };
+  }
   const hasData = Boolean(store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'users'"));
   let backup = null;
   if (hasData && backupDir) {

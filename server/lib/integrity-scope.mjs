@@ -272,6 +272,9 @@ export function createScopedGate({ store, ledger, accounts, plans, stock, money,
       const list = json(s.invoices);
       add(s.parties, all(`SELECT account_id AS id FROM invoices WHERE id IN ${IN}`, list));
       add(s.money.account_entries, all(`SELECT id FROM account_entries WHERE source = 'invoice' AND source_id IN ${IN} AND kind IN ('in', 'out')`, list));
+      // Aşama 4: faturaya bağlı KDV'li masraf başlığı (satırsız Masraf fişi): faturanın durumu ve havale ödemesi başlığın kuralıdır
+      // (bank:voucher); fatura ya da ödemesi değişince başlık da denetlenir.
+      if (has("fin_events")) add(s.events, all(`SELECT id FROM fin_events WHERE invoice_id IN ${IN} AND invoice_id <> '' AND +type = 'fee' AND +src_table = ''`, list));
     }
     if (s.plans.size) {
       const list = json(s.plans);

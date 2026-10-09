@@ -213,7 +213,7 @@ export function createMoneyLines(store) {
 
   // Kaynağın SELECT'i. light: yalnız özet kolonları; filter: kaynağa itilen koşullar (:after, :events, :ids_<tablo>).
   // ids (v2.1.0, §3.11 mutabakat kapısı): yalnız bu satırlar ({ tablo: kimlikler }); Banka Fişi satırları events ile (verilmezse yok).
-  function select(source, { light, after, events, ids }) {
+  function select(source, { light, after, events, ids, ref = null, lean = false }) {
     const { has, tables } = load();
     const r = source.read;
     const a = r.alias;
@@ -222,13 +222,15 @@ export function createMoneyLines(store) {
     const col = (column, fallback) => (has(source.table, column) ? `${a}.${column}` : fallback);
     const eventId = r.eventId || col("event_id", "''");
     const date = r.date || `${a}.date`;
-    const parts = [
+    // lean (v2.1.0 Aşama 4, total): yalnız yön ve kuruş — hesap bakiyesi için okunan kolon en aza iner (Banka Fişi satırında kapsayan indeks
+    // idx_bank_lines_ref ile tablo satırı okunmaz; fin_events yalnız varlık için birleşir).
+    const parts = lean ? [`${r.kind} AS kind`, `${r.cents || `CAST(ROUND(${a}.amount * 100) AS INTEGER)`} AS cents`] : [
       `${source.id} AS src`, `${r.rank} AS rank`, `${a}.rowid AS rid`, `${a}.id AS id`, `${eventId} AS event_id`, `${r.kind} AS kind`,
       `${r.amount || `${a}.amount`} AS amount`, `${r.cents || `CAST(ROUND(${a}.amount * 100) AS INTEGER)`} AS cents`, `${date} AS date`,
       `${r.method || `${a}.method`} AS method`, `${r.ref || col("fin_ref", "''")} AS ref`, `${r.party} AS party_id`, `${r.internal} AS internal`,
       `${r.wayHint || "NULL"} AS way_hint`, `${r.created || `${a}.created_at`} AS created_at`,
     ];
-    if (!light) {
+    if (!light && !lean) {
       parts.push(
         `${r.updated || `${a}.updated_at`} AS updated_at`, `${r.actor || `${a}.created_by`} AS actor_id`, `${r.extra} AS extra`,
         `${r.valueDate || "''"} AS value_date`,
@@ -240,13 +242,21 @@ export function createMoneyLines(store) {
     // Süzgeçli okumada (ids/events: kapının dokunulan satırları) satır tablosu dış döngüdür: istatistiksiz planlayıcı görünürlük JOIN'inin
     // indeksini (accounts.deleted_at gibi) seçip bütün tabloyu dolaşıyordu (100.000 satırda ~100 ms/kaynak). CROSS JOIN yalnız sırayı
     // belirler; sonuç aynı iç birleşimdir.
-    const from = ids || events ? r.from.replace(/(^|\s)JOIN\s/g, "$1CROSS JOIN ") : r.from;
+    const byRef = ref !== null && ref !== undefined && String(ref) !== "";
+    const from = ids || events || byRef ? r.from.replace(/(^|\s)JOIN\s/g, "$1CROSS JOIN ") : r.from;
     if (after) where.push(`${date} > :after`);
+    // Hesap süzgeci kaynağa itilir (v2.1.0 Aşama 4): satır tablosunun (fin_ref, date) / bank_lines (ref, event_id) indeksiyle okunur; önceden
+    // bütün para satırları okunup dışarıda süzülüyordu (Hesap Detayı, Hareketler'in bakiyesi).
+    // Kısmi indeks (idx_<tablo>_fin_ref … WHERE fin_ref <> '') parametreli eşitlikten çıkarılamaz: "<> ''" ayrıca yazılır.
+    // Olay ya da satır kimliği süzgeci de varsa (Hareketler'in sayfası: 50 olayın tutarı) hesap koşulu indeks DIŞINDA (+) kalır: istatistiksiz
+    // planlayıcı aksi hâlde hesabın indeksini seçip hesabın bütün satırlarını dolaşıyordu (1.000.000 satırlık hesapta sayfa başına ~650 ms).
+    const refColumn = r.ref || col("fin_ref", "''");
+    if (ref !== null && ref !== undefined) where.push(ids || events ? `+${refColumn} = :ref` : byRef ? `${refColumn} = :ref AND ${refColumn} <> ''` : `${refColumn} = :ref`);
     if (ids) {
       if (source.table === "bank_lines") where.push(events ? `${eventId} IN (SELECT value FROM json_each(:events))` : "0");
       else where.push(ids[source.table]?.length ? `${a}.id IN (SELECT value FROM json_each(:ids_${source.table}))` : "0");
     } else if (events) where.push(`${eventId} IN (SELECT value FROM json_each(:events)) AND ${eventId} <> ''`);
-    return `SELECT ${parts.join(", ")} FROM ${from}${light || !r.rowJoin ? "" : ` ${r.rowJoin}`} WHERE ${where.join(" AND ")}`;
+    return `SELECT ${parts.join(", ")} FROM ${from}${light || lean || !r.rowJoin ? "" : ` ${r.rowJoin}`} WHERE ${where.join(" AND ")}`;
   }
   const WAY_SQL = bank => `CASE
       WHEN u.way_hint IS NOT NULL THEN u.way_hint
@@ -265,8 +275,9 @@ export function createMoneyLines(store) {
     const union = (chosen.length ? chosen : MONEY_SOURCES.slice(0, 1)).map(source => select(source, options)).filter(Boolean).join("\n UNION ALL ");
     return `SELECT u.*, ${WAY_SQL(bankAccounts)} AS way FROM (${union}) u${bankAccounts ? " LEFT JOIN bank_accounts ba ON u.ref <> '' AND ba.id = u.ref" : ""}`;
   }
-  const params = ({ after, events, ids }) => ({
+  const params = ({ after, events, ids, ref = null }) => ({
     ...(after ? { after } : {}),
+    ...(ref !== null && ref !== undefined ? { ref: String(ref) } : {}),
     ...(events ? { events: JSON.stringify([...events]) } : {}),
     ...(ids ? Object.fromEntries(Object.entries(ids).filter(([, list]) => list?.length).map(([table, list]) => [`ids_${table}`, JSON.stringify([...list])])) : {}),
   });
@@ -277,16 +288,37 @@ export function createMoneyLines(store) {
    * olay kimlikleri; ref: yalnız bu hesabın (ya da POS'un) satırları (v2.1.0 Aşama 3: Hesap Detayı'ndaki son hareketler).
    */
   function lines({ ways = null, after = "", events = null, ids = null, light = false, ref = null } = {}) {
-    const filters = [wayFilter(ways), ref === null ? "" : "w.ref = :ref"].filter(Boolean);
-    const sql = `SELECT w.*${light ? "" : ", COALESCE(usr.display_name, '') AS actor_name"} FROM (${waySql({ light, after, events, ids })}) w${light ? "" : " LEFT JOIN users usr ON usr.id = w.actor_id"}${filters.length ? ` WHERE ${filters.join(" AND ")}` : ""} ORDER BY w.date, w.created_at, w.rank, w.rid`;
-    return store.all(sql, { ...params({ after, events, ids }), ...(ref === null ? {} : { ref: String(ref) }) });
+    const filters = [wayFilter(ways)].filter(Boolean);
+    const sql = `SELECT w.*${light ? "" : ", COALESCE(usr.display_name, '') AS actor_name"} FROM (${waySql({ light, after, events, ids, ref })}) w${light ? "" : " LEFT JOIN users usr ON usr.id = w.actor_id"}${filters.length ? ` WHERE ${filters.join(" AND ")}` : ""} ORDER BY w.date, w.created_at, w.rank, w.rid`;
+    return store.all(sql, params({ after, events, ids, ref }));
   }
   /** Kasa'nın satır nesneleri (2.0.26 ile aynı biçim). */
   const rows = (options = {}) => lines({ ...options, light: false }).map(shape);
 
   /** Yol ve hesap bazında toplam (kuruş): [{ way, ref, cents, count }]. ids: yalnız bu satırlar ({ tablo: kimlikler }; Banka Fişi events ile). */
-  function groups({ events = null, ids = null } = {}) {
-    return store.all(`SELECT w.way AS way, w.ref AS ref, COALESCE(SUM(CASE WHEN w.kind = 'in' THEN w.cents ELSE -w.cents END), 0) AS cents, COUNT(*) AS count FROM (${waySql({ light: true, events, ids })}) w GROUP BY w.way, w.ref ORDER BY w.way, w.ref`, params({ events, ids }));
+  function groups({ events = null, ids = null, ref = null } = {}) {
+    return store.all(`SELECT w.way AS way, w.ref AS ref, COALESCE(SUM(CASE WHEN w.kind = 'in' THEN w.cents ELSE -w.cents END), 0) AS cents, COUNT(*) AS count FROM (${waySql({ light: true, events, ids, ref })}) w GROUP BY w.way, w.ref ORDER BY w.way, w.ref`, params({ events, ids, ref }));
+  }
+  /**
+   * Hesabın (ya da POS'un) bakiyesi, tek kaynaktan, en az kolonla (v2.1.0 Aşama 4; Hareketler'in yürüyen bakiyesi, Hesap Detayı): { cents, count }.
+   * after: yalnız bu tarihten SONRAKİ satırlar. Aynı veri için sonuç saklanır (bağlantının total_changes'ı ve data_version değişince yeniden):
+   * 1.000.000 satırlık hesapta toplam bir kez okunur, sayfalar arasında yeniden okunmaz.
+   */
+  const totals = new Map();
+  function refTotal({ ref, after = "" } = {}) {
+    const key = `${ref}|${after}`;
+    const counters = typeof store.changeCounters === "function" ? store.changeCounters() : null;
+    const stamp = counters ? `${counters.total}|${counters.version}` : "";
+    const hit = stamp ? totals.get(key) : null;
+    if (hit && hit.stamp === stamp) return { cents: hit.cents, count: hit.count };
+    const union = MONEY_SOURCES.map(source => select(source, { lean: true, after, ref })).filter(Boolean).join("\n UNION ALL ");
+    const row = store.get(`SELECT COALESCE(SUM(CASE WHEN u.kind = 'in' THEN u.cents ELSE -u.cents END), 0) AS cents, COUNT(*) AS count FROM (${union}) u`, params({ after, ref }));
+    const out = { cents: Number(row.cents) || 0, count: Number(row.count) || 0 };
+    if (stamp) {
+      if (totals.size > 200) totals.clear();
+      totals.set(key, { stamp, ...out });
+    }
+    return out;
   }
   /** Yol bazında bakiye (kuruş): { cash, bank, card, ccard, loan, unknown, all }. */
   function balances(list = groups()) {
@@ -351,5 +383,8 @@ export function createMoneyLines(store) {
     return out;
   }
 
-  return { lines, rows, shape, groups, balances, summary, verifyReport, signedCents, reset: () => (schema = null) };
+  return { lines, rows, shape, groups, refTotal, balances, summary, verifyReport, signedCents, reset: () => {
+    schema = null;
+    totals.clear();
+  } };
 }

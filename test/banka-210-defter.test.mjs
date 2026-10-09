@@ -8,8 +8,8 @@
 //  - Yevmiye satırları alt hesabı taşır; Kasa ↔ Banka transferinin banka bacağının hesabı ikiz satırdan okunur; Banka Fişi
 //    (bank_lines) kendi THP kodu ve alt hesabıyla madde olur.
 //  - subBalances / subTrial: Σ alt hesap = ana hesap (102 = Σ102.*); dönem süzgeci mizanla aynı.
-//  - Hesap planı: 300, 309, 642, 646, 653, 656, 659, 780 eklenir; tutarlar değişmez. 649'un adı Aşama 2'de DEĞİŞMEZ (gözden geçirme D3;
-//    "Diğer Olağan Gelir ve Kârlar" Aşama 4'te, Banka Fişi 649'a yazmaya başlayınca).
+//  - Hesap planı: 300, 309, 642, 646, 653, 656, 659, 780 eklenir; tutarlar değişmez. 649'un adı Aşama 2'de değişmemişti (gözden geçirme D3);
+//    Aşama 4'te (Banka Fişi 649'a yazmaya başlayınca) Tekdüzen adı "Diğer Olağan Gelir ve Kârlar" (bilerek güncellendi).
 //  - 300/309 beklenenleri (mutabakat satırı) yalnız kullanıldığında: banka kullanmayan kurulumun Defter Mutabakatı aynı kalır.
 // NASIL BOZARIM:
 //  1. Havale satırı hesaba bağlıyken yevmiye onu 102.00'a yazarsa alt hesap bakiyesi Σ ≠ ana hesap → subBalances testi kırılır.
@@ -80,10 +80,10 @@ describe("Ana Defter — moneyAccount ve alt hesaplar (birim)", () => {
     assert.deepEqual([row.account, Math.round(row.opening * 100), Math.round(row.debit * 100), Math.round(row.balance * 100)], ["102", 200000, 235000, 435000], "alt hesap mizanı: devir + dönem");
   });
 
-  it("hesap planı: yeni hesaplar; 649'un adı değişmez", async () => {
+  it("hesap planı: yeni hesaplar; 649'un Tekdüzen adı (Aşama 4)", async () => {
     const { CHART } = await ledgerLib();
     for (const code of ["300", "309", "642", "646", "653", "656", "659", "780"]) assert.ok(CHART[code], `${code} hesap planında yok`);
-    assert.equal(CHART[649], "Diğer Olağan Gelirler (Kasaya Elle)", "649'un adı Aşama 2'de değişmez (gözden geçirme D3)");
+    assert.equal(CHART[649], "Diğer Olağan Gelir ve Kârlar", "649'un Tekdüzen adı (Aşama 4; plan §3.11)");
     assert.equal(CHART[102], "Bankalar (Havale / EFT)", "102 adı değişmez");
     assert.equal(CHART[108], "Kredi Kartı Tahsilatları (POS)", "108 adı değişmez");
   });
@@ -104,7 +104,7 @@ describe("Ana Defter — uçtan uca (gerçek veri)", () => {
     const codes = ledger.reconciliation.checks.map(item => item.code);
     assert.ok(!codes.includes("300") && !codes.includes("309"), `kullanılmayan 300/309 mutabakat satırı açılmaz: ${codes}`);
     const row649 = ledger.trial.accounts.find(row => row.code === "649");
-    assert.equal(row649?.name, "Diğer Olağan Gelirler (Kasaya Elle)");
+    assert.equal(row649?.name, "Diğer Olağan Gelir ve Kârlar");
     assert.equal(row649?.balance, -5000, "649'un tutarı değişmez");
     await integrityOk(api, "banka kullanmayan kurulum");
   });

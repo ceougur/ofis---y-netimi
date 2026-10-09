@@ -36,10 +36,9 @@ export const CHART = Object.freeze({
   // v2.1.0 (§3.11): faiz geliri ve kambiyo kârı (banka fişi, döviz değerlemesi).
   642: "Faiz Gelirleri",
   646: "Kambiyo Kârları",
-  // Gözden geçirme D3 (Aşama 2): plan §3.11 bu hesaba Tekdüzen Hesap Planı'ndaki adını ("Diğer Olağan Gelir ve Kârlar") verir; ad, Banka Fişi
-  // 649'a yazmaya başladığında (Aşama 4) değişecek. Aşama 2'de kullanıcının gördüğü hiçbir metin değişmez (Ana Defter, Hesap Planı Mizanı,
-  // PDF/Excel 2.0.26 ile aynı).
-  649: "Diğer Olağan Gelirler (Kasaya Elle)",
+  // v2.1.0 Aşama 4 (plan §3.11): Tekdüzen Hesap Planı'ndaki adı. Kasa'ya elle giriş ve Banka Fişi'nin "Diğer Gelir"i buraya yazar (2.0.26'daki
+  // ad "Diğer Olağan Gelirler (Kasaya Elle)"; tutarlar değişmez). Aşama 2'de (gözden geçirme D3) ad bilinçli olarak eski kalmıştı.
+  649: "Diğer Olağan Gelir ve Kârlar",
   // v2.1.0 (§3.11): POS komisyonu, kambiyo zararı, diğer olağan giderler, finansman giderleri.
   653: "Komisyon Giderleri",
   656: "Kambiyo Zararları",

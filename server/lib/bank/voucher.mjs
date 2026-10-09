@@ -11,6 +11,7 @@
 // Para rolleri (bank, pos, card, loan) hesap/POS bağı (ref) ve alt hesap (sub) taşır; bağsız 102/108 satırı Hesabı Atanmamış kovasıdır
 // (102.00 / 108.00). Para dışı roller bağ ve alt hesap taşımaz (kur farkı alt hesapları .01/.02 Aşama 13'te).
 import { HttpError } from "../http.mjs";
+import { mulDiv } from "../minor.mjs";
 
 export const ROLE_GL = Object.freeze({
   bank: ["102"],
@@ -107,4 +108,70 @@ export function reclassLines(mode, account, amount) {
   const pos = { role: "pos", gl: "108", sub: UNASSIGNED_SUB.pos, ref: "", currency: "TRY", tryMinor: amount, fxMinor: amount };
   const target = { role: roleOfAccount(account), gl: account.gl, sub: account.glSub, ref: account.id, currency: "TRY", tryMinor: amount, fxMinor: amount };
   return mode === "card" ? [{ ...pos, side: "D" }, { ...target, side: "C" }] : [{ ...target, side: "D" }, { ...pos, side: "C" }];
+}
+
+// ---------- Aşama 4: Banka Fişi kurucuları (§3.7 #12, #14–18; K2) ----------
+// Hepsi saf: satırları kuruş tamsayısıyla kurar; denge ve beyaz liste assertLines'tadır (çağıran ayrıca denetler, kapı bank:voucher yeniden).
+// account/bank/card/loan: { id, kind, gl, glSub, currency } (hesap kartı). Para satırı hesabın alt hesabını ve bağını (ref) taşır.
+const moneyLine = (account, side, tryMinor) => ({ role: roleOfAccount(account), gl: account.gl, sub: account.glSub, ref: account.id, side, tryMinor, currency: "TRY", fxMinor: tryMinor });
+const plainLine = (role, gl, side, tryMinor, memo = "") => ({ role, gl: String(gl), side, tryMinor, currency: "TRY", fxMinor: tryMinor, ...(memo ? { memo } : {}) });
+
+/**
+ * Banka masrafı (BSMV ya da vergisiz; KDV'li masraf faturayla yazılır, bu kurucuya gelmez). Hesabı masraf türü belirler (gl: 770 / 653),
+ * vergi kipi yalnız vergi satırını değiştirir (Ek A.1/24). tax: bsmv_incl (girilen tutar BSMV dahil: matrah = tutar / (1 + oran)),
+ * bsmv_excl (girilen tutar matrah: BSMV = matrah × oran), none. ratePpm: BSMV oranı (varsayılan %5 = 50.000 ppm).
+ * Dönüş: { lines, base, tax, total } (kuruş).
+ */
+export function feeLines({ account, amountMinor, tax = "bsmv_incl", ratePpm = 50_000, gl = "770", feeName = "" }) {
+  let base = amountMinor;
+  let taxMinor = 0;
+  if (tax === "bsmv_incl") {
+    base = mulDivRound(amountMinor, 1_000_000, 1_000_000 + ratePpm);
+    taxMinor = amountMinor - base;
+  } else if (tax === "bsmv_excl") {
+    taxMinor = mulDivRound(amountMinor, ratePpm, 1_000_000);
+  }
+  const total = base + taxMinor;
+  const lines = [plainLine("expense", gl, "D", base, feeName)];
+  if (taxMinor > 0) lines.push(plainLine("tax", gl, "D", taxMinor, `BSMV %${String(ratePpm / 10_000).replace(".", ",")}`));
+  lines.push(moneyLine(account, "C", total));
+  return { lines, base, tax: taxMinor, total };
+}
+// round(a × b / c), artı tamsayılar: çarpım BigInt'te (1e12 TL × 1e6 güvenli tamsayıyı aşar), yarım birim yukarı (sıfırdan uzağa).
+function mulDivRound(a, b, c) {
+  return mulDiv(a, b, c);
+}
+
+/** Faiz geliri (§3.7 #14): B 102.k net · B 193 stopaj / A 642 brüt. Stopaj tutarı çağırandan (oran kullanıcıdan; koda gömülmez). */
+export function interestInLines({ account, grossMinor, stoppageMinor = 0, gl = "642" }) {
+  const lines = [moneyLine(account, "D", grossMinor - stoppageMinor)];
+  if (stoppageMinor > 0) lines.push(plainLine("stoppage", "193", "D", stoppageMinor));
+  lines.push(plainLine("income", gl, "C", grossMinor));
+  return lines;
+}
+/** Faiz / KMH gideri (§3.7 #15): B 780 faiz · B 780 BSMV/KKDF (rol tax) / A 102.k. */
+export function interestOutLines({ account, amountMinor, taxMinor = 0, gl = "780" }) {
+  const lines = [plainLine("expense", gl, "D", amountMinor)];
+  if (taxMinor > 0) lines.push(plainLine("tax", gl, "D", taxMinor, "BSMV / KKDF"));
+  lines.push(moneyLine(account, "C", amountMinor + taxMinor));
+  return lines;
+}
+/** Diğer gelir / gider (§3.7 #18): giriş B 102.k / A gelir (642, 646, 649); çıkış B gider (653, 656, 659, 770, 780) / A 102.k. */
+export function otherLines({ account, direction, amountMinor, gl }) {
+  return direction === "in" ? [moneyLine(account, "D", amountMinor), plainLine("income", gl, "C", amountMinor)] : [plainLine("expense", gl, "D", amountMinor), moneyLine(account, "C", amountMinor)];
+}
+/** Kurumsal kart borcu ödemesi (§3.7 #16): B 309.k / A 102.k (iç hareket). */
+export function cardPaymentLines({ bank, card, amountMinor }) {
+  return [moneyLine(card, "D", amountMinor), moneyLine(bank, "C", amountMinor)];
+}
+/** Kredi kullanımı (§3.7 #17): B 102.k / A 300.k. */
+export function loanDrawLines({ bank, loan, amountMinor }) {
+  return [moneyLine(bank, "D", amountMinor), moneyLine(loan, "C", amountMinor)];
+}
+/** Kredi geri ödemesi (§3.7 #17): B 300.k anapara · B 780 faiz / A 102.k toplam. */
+export function loanRepayLines({ bank, loan, principalMinor, interestMinor = 0, gl = "780" }) {
+  const lines = [moneyLine(loan, "D", principalMinor)];
+  if (interestMinor > 0) lines.push(plainLine("expense", gl, "D", interestMinor, "Kredi Faizi"));
+  lines.push(moneyLine(bank, "C", principalMinor + interestMinor));
+  return lines;
 }

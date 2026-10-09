@@ -51,3 +51,74 @@ export function directionOf(table, row = {}) {
   if (table === "cheque_events") return row.kind === "pay" ? "out" : "in";
   return row.kind === "out" ? "out" : "in";
 }
+
+// ---------- Aşama 4: Banka Fişi türleri ve adlar ----------
+/** Banka penceresinden (POST /bank/vouchers) girilen Banka Fişi türleri (§3.7 #12, #14–18). transfer (Aşama 9) ve döviz (Aşama 13) ayrı uçta. */
+export const VOUCHER_TYPES = Object.freeze(["fee", "interest_in", "interest_out", "other_in", "other_out", "card_payment", "loan_draw", "loan_repay"]);
+const VOUCHER_SET = new Set(VOUCHER_TYPES);
+export const isVoucherType = type => VOUCHER_SET.has(type);
+
+/** İşlem türünün adı (ekranda, İşlem Kartı'nda, Hareketler'de; başlık yazımı). Yöne bağlı türlerde yön verilir. */
+const TYPE_LABELS = Object.freeze({
+  opening: "Açılış Bakiyesi",
+  fee: "Banka Masrafı",
+  interest_in: "Faiz Geliri",
+  interest_out: "Faiz Gideri",
+  other_in: "Diğer Gelir",
+  other_out: "Diğer Gider",
+  card_payment: "Kart Borcu Ödemesi",
+  loan_draw: "Kredi Kullanımı",
+  loan_repay: "Kredi Geri Ödemesi",
+  transfer: "Bankalar Arası Transfer",
+  fx_exchange: "Döviz Alım Satımı",
+  revaluation: "Kur Değerlemesi",
+  carry_close: "Devir Kapanışı",
+  pos_settlement: "POS Valör Geçişi",
+  pos_sale: "POS Satışı",
+  pos_refund: "POS İadesi",
+  pos_cancel_refund: "POS İptal İadesi",
+  cash_transfer: "Kasa ile Banka Arası",
+  cash_in: "Kasa Girişi",
+  cash_out: "Kasa Çıkışı",
+  party_in: "Cari Tahsilatı",
+  party_out: "Cari Ödemesi",
+  plan_in: "Taksit Tahsilatı",
+  plan_out: "Taksit İadesi",
+  record_in: "Kayıt Tahsilatı",
+  cheque_collect: "Çek ve Senet Tahsili",
+  cheque_pay: "Çek ve Senet Ödemesi",
+  cheque_deposit: "Bankaya Tahsile Ver",
+  cheque_withdraw: "Bankadan Geri Al",
+  legacy_assign: "Kurulum ve Aktarım",
+  legacy_reclass: "Eski Bakiye Aktarımı",
+  reversal: "Ters Kayıt",
+});
+export function typeLabel(type, direction = "") {
+  if (type === "invoice_cash") return direction === "out" ? "Fatura Ödemesi" : "Fatura Tahsilatı";
+  if (type === "stock_cash") return direction === "out" ? "Stok Alımı" : "Stok Satışı";
+  return TYPE_LABELS[type] || type;
+}
+export const STATUS_LABELS = Object.freeze({ active: "Etkin", reversed: "Ters Kaydedildi", cancelled: "İptal Edildi" });
+
+/**
+ * Hareketler süzgecindeki tür grupları (?type=): bir ya da birden çok işlem türü. "fee" ayrıca KDV'li masrafın (fatura + havale) ödeme
+ * satırını kapsar (masraf başlığı faturaya bağlı; lib/bank/movements.mjs).
+ */
+export const TYPE_GROUPS = Object.freeze({
+  fee: ["fee"],
+  interest: ["interest_in", "interest_out"],
+  other: ["other_in", "other_out"],
+  card: ["card_payment"],
+  loan: ["loan_draw", "loan_repay"],
+  opening: ["opening"],
+  reversal: ["reversal"],
+  party: ["party_in", "party_out"],
+  invoice: ["invoice_cash"],
+  plan: ["plan_in", "plan_out"],
+  record: ["record_in"],
+  stock: ["stock_cash"],
+  cheque: ["cheque_collect", "cheque_pay"],
+  cash: ["cash_transfer"],
+  transfer: ["transfer"],
+  legacy: ["carry_close", "legacy_reclass"],
+});

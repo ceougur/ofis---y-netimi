@@ -77,6 +77,10 @@ export const EXPENSES = Object.freeze({
   marketing: { label: "Reklam ve Pazarlama", account: "760" },
   freight: { label: "Nakliye ve Kargo", account: "760" },
   asset: { label: "Demirbaş (Bilgisayar, Mobilya, Cihaz)", account: "255" },
+  // v2.1.0 (banka planı §3.7 #13, K2): KDV'li banka masrafı ve ödeme kuruluşu komisyonu faturası (Banka → Masraf; faturalı kip). Hesabı
+  // masraf türü belirler: banka masrafları 770, POS ve ödeme kuruluşu komisyonları 653.
+  bank: { label: "Banka Masrafları", account: "770" },
+  commission: { label: "POS ve Ödeme Kuruluşu Komisyonları", account: "653" },
   other: { label: "Diğer Giderler", account: "770" },
 });
 /**

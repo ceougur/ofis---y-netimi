@@ -197,10 +197,16 @@ describe("geri yükleme sağlamlığı: bozuk canlı dosya, eşzamanlı istek, u
     const registry = JSON.parse(readFileSync(path.join(dirs.dataDir, "sirketler.json"), "utf8")).companies;
     const file = path.join(dirs.dataDir, registry.find(item => item.id === second.id).dir, "destekofis.sqlite");
     await server.app.context.closeCompany(second.id);
-    const { openSync, writeSync, closeSync, statSync } = await import("node:fs");
+    const { openSync, writeSync, closeSync } = await import("node:fs");
+    // Bozulan yer, VACUUM'un okuduğu bir tablonun (cari kartları) kök sayfası. 2.1.0 Aşama 4 (bilerek güncellendi): önceden dosyanın ortası
+    // bozuluyordu; banka indeksleri (v20) dosya düzenini değiştirince orta yer bir indeks sayfasına düştü — VACUUM INTO indeksleri tablodan
+    // yeniden kurduğu için o bozulmayı görmez (sağlam yedek alır) ve test ham kopya yolunu sınamaz olurdu.
+    const probe = new DatabaseSync(file, { readOnly: true });
+    const pageSize = probe.prepare("PRAGMA page_size").get().page_size;
+    const root = probe.prepare("SELECT rootpage FROM sqlite_master WHERE type = 'table' AND name = 'accounts'").get().rootpage;
+    probe.close();
     const fd = openSync(file, "r+");
-    const middle = Math.floor(statSync(file).size / 2);
-    writeSync(fd, Buffer.alloc(32 * 1024, 0x5a), 0, 32 * 1024, middle);
+    writeSync(fd, Buffer.alloc(pageSize, 0x5a), 0, pageSize, (root - 1) * pageSize);
     closeSync(fd);
     const restored = await api.post("/api/admin/backups/restore", { name: backup002.name, company: second.id, confirm: "002", password: ADMIN_PASSWORD });
     assert.equal(restored.status, 200, JSON.stringify(restored.data));

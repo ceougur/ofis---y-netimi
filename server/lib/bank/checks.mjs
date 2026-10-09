@@ -17,15 +17,56 @@
 // Varlık bazında kod (E1.16): bank:event ve bank:sub sapması hesabın koduyla raporlanır (bank:event:<hesap>, bank:sub:<alt hesap>); bir
 // hesaptaki taban sapması öbür hesaptaki işlemi engellemez (B3 imza kuralı yalnız kendi kodunu kilitler).
 import { copyMismatchSql } from "./event-copy.mjs";
-import { NON_MONEY_TYPES } from "./event-types.mjs";
+import { NON_MONEY_TYPES, isVoucherType } from "./event-types.mjs";
 import { MODULE_TABLES, MONEY_SOURCES, moneyWhere } from "./money-lines.mjs";
 import { FORBIDDEN_GL, MONEY_ROLES, ROLE_GL, UNASSIGNED_SUB } from "./voucher.mjs";
 
 // Hesap türü → ana hesap (Aşama 3, §3.5): 102 ailesi, kredi 300, kurumsal kart 309.
 export const KIND_GL = Object.freeze({ demand: "102", commercial: "102", time: "102", fx: "102", other: "102", loan: "300", card: "309" });
 const ROLE_OF_KIND = kind => (kind === "card" ? "card" : kind === "loan" ? "loan" : "bank");
-// Açılış zinciri: açılış fişleri ve onların ters kayıtları (açılış kuralında "hareket" sayılmaz).
-const OPENING_CHAIN = "(e.type = 'opening' OR (e.type = 'reversal' AND EXISTS (SELECT 1 FROM fin_events o WHERE o.id = e.reversal_of AND o.type = 'opening')))";
+// Açılış zinciri (açılış fişleri ve onların ters kayıtları) açılış kuralında "hareket" sayılmaz: accountSpan.
+
+/**
+ * Hesabın hareket aralığı (açılış zinciri hariç; modül satırları + Banka Fişi satırları): { count, first, last }. Hesap kartı (hareket sayısı,
+ * Sil, tür değişikliği, Açılışı Düzelt) ve açılış kuralı kapısı (bank:opening) aynı tanımı kullanır.
+ * v2.1.0 Aşama 4 (1.000.000 hareket ölçümü): önceden hesabın bütün fiş satırları işlem başlığıyla birleştirilip sayılıyordu (hesap kartı
+ * ~2,2 sn; açılış kuralı kapısı her Banka Fişi kaydında ~3 sn). Şimdi dizinlerle, aynı sonuç:
+ *   - açılış zinciri: hesabın açılış fişleri (kısmi indeks idx_fin_events_opening) ve onların ters kayıtları (reversed_by; kapı ters kaydın
+ *     karşılıklı bağını denetler);
+ *   - satır sayısı: hesabın fiş satırları − zincirin satırları (idx_bank_lines_ref);
+ *   - ilk/son tarih: hesabın ya da karşı hesabın tarih dizininden (idx_fin_events_bank / _counter), bu hesaba fiş satırı olan ilk/son olay
+ *     (kapı: para satırının hesabı olayın hesabı ya da karşı hesabıdır);
+ *   - modül satırları: (fin_ref, date) kısmi indeksinden ilk/son tarih; sayım yalnız istenince.
+ * count: false → sayım yapılmaz (count 0 döner); last: false → son tarih aranmaz. tables: fin_ref kolonu olan modül tabloları.
+ */
+export function accountSpan(store, id, { count: withCount = true, last: withLast = true, tables = MODULE_TABLES } = {}) {
+  let count = 0;
+  let first = "";
+  let last = "";
+  const take = (n, from, to) => {
+    count += Number(n) || 0;
+    if (from && (!first || from < first)) first = from;
+    if (to && to > last) last = to;
+  };
+  for (const table of tables) {
+    const where = `FROM ${table} WHERE fin_ref = ?1 AND fin_ref <> ''`;
+    const row = store.get(`SELECT (SELECT MIN(date) ${where}) AS first${withLast ? `, (SELECT MAX(date) ${where}) AS last` : ""}${withCount ? `, (SELECT COUNT(*) ${where}) AS n` : ""}`, id);
+    take(row?.n, row?.first, row?.last);
+  }
+  const chain = JSON.stringify(store.all("SELECT id, reversed_by AS reversedBy FROM fin_events WHERE bank_ref = ? AND type = 'opening'", id).flatMap(row => [row.id, row.reversedBy]).filter(Boolean));
+  const edge = (column, order) =>
+    store.get(
+      `SELECT e.date AS date FROM fin_events e WHERE e.${column} = ?1 AND e.${column} <> '' AND e.id NOT IN (SELECT value FROM json_each(?2))
+         AND EXISTS (SELECT 1 FROM bank_lines l WHERE l.ref = ?1 AND l.event_id = e.id) ORDER BY e.date ${order} LIMIT 1`,
+      id, chain,
+    )?.date || "";
+  const from = [edge("bank_ref", "ASC"), edge("counter_ref", "ASC")].filter(Boolean).sort()[0] || "";
+  if (!from) return { count, first, last };
+  const to = withLast ? [edge("bank_ref", "DESC"), edge("counter_ref", "DESC")].filter(Boolean).sort().at(-1) || "" : "";
+  const lines = withCount ? (Number(store.get("SELECT COUNT(*) AS n FROM bank_lines WHERE ref = ?", id).n) || 0) - (Number(store.get("SELECT COUNT(*) AS n FROM bank_lines WHERE ref = ? AND event_id IN (SELECT value FROM json_each(?))", id, chain).n) || 0) : 0;
+  take(lines, from, to);
+  return { count, first, last };
+}
 
 export const LEGACY_MARKS_KEY = "meta.bank.legacyMarks";
 export const LEGACY_MARKS_AT_KEY = "meta.bank.legacyMarksAt";
@@ -107,6 +148,18 @@ export function createBankChecks({ store, money }) {
     }
     // Ters kaydedilmiş olayın ters kaydı var.
     for (const row of store.all(`SELECT e.id, e.bank_ref AS ref FROM ${events_} WHERE e.status = 'reversed' AND NOT EXISTS (SELECT 1 FROM fin_events x WHERE x.id = e.reversed_by AND x.reversal_of = e.id)`, ...args)) out.push({ key: row.id, ref: row.ref, sample: `${row.id}: ters kaydı yok` });
+    // Aşama 4 (§3.11 bank:event, Banka Fişi ile modül satırı ayrımı): modül satırı (cari, Kasa, taksit …) bir Banka Fişi'nin işlem başlığını
+    // taşıyamaz; bir modül olayının fiş satırı (bank_lines) olamaz. Önceden bank.post içinden fiş olayına bağlanan cari satırı yalnız kopya
+    // denetiminden (src_table'a göre) kaçıyordu: para iki kez (fişte ve satırda) sayılırdı.
+    for (const table of MODULE_TABLES) {
+      if (!hasColumn(table, "event_id")) continue;
+      const from = list ? `json_each(?) j CROSS JOIN ${table} r ON r.event_id = j.value CROSS JOIN fin_events f ON f.id = r.event_id` : `${table} r JOIN fin_events f ON f.id = r.event_id`;
+      for (const row of store.all(`SELECT r.id, r.event_id AS eventId, f.bank_ref AS ref FROM ${from} WHERE r.event_id <> '' AND +f.src_table = '' LIMIT 20`, ...args)) out.push({ key: row.eventId, ref: row.ref, sample: `${row.eventId}: ${table}:${row.id} Banka Fişi'nin işlem başlığını taşıyor` });
+    }
+    if (tables().has("bank_lines")) {
+      const from = list ? "json_each(?) j CROSS JOIN fin_events f ON f.id = j.value CROSS JOIN bank_lines l ON l.event_id = f.id" : "bank_lines l JOIN fin_events f ON f.id = l.event_id";
+      for (const row of store.all(`SELECT DISTINCT f.id, f.bank_ref AS ref, f.src_table AS src FROM ${from} WHERE +f.src_table <> '' LIMIT 20`, ...args)) out.push({ key: row.id, ref: row.ref, sample: `${row.id}: modül olayının (${row.src}) banka fişi satırı var` });
+    }
     // Gözden geçirme B1/B2 (Aşama 2; K11 "bir olay = bir para hareketi"): bir olayın birden çok etkin satırı olamaz (tek istisna Kasa ↔ Banka
     // transferinin aynı transfer_id'li iki bacağı). Önceden bank.post dışından başka satırın olayıyla eklenen para satırı ve Silinenler'den
     // geri yüklenen taşınmış tahsilat hiçbir denetimde görünmüyordu (Kasa çift sayılıyordu).
@@ -152,19 +205,12 @@ export function createBankChecks({ store, money }) {
     const fail = (account, why) => out.push({ key: `${account.id}:${why}`, ref: account.id, sample: `${account.code}: ${why}` });
     for (const account of accounts) {
       if (KIND_GL[account.kind] !== account.gl || !String(account.glSub).startsWith(`${account.gl}.`) || account.glSub === `${account.gl}.00`) fail(account, `hesap türü (${account.kind}) ile ana/alt hesap (${account.gl} / ${account.glSub}) uyuşmuyor`);
-      const openings = store.all("SELECT e.id, e.date, e.no FROM fin_events e WHERE e.bank_ref = ? AND +e.type = 'opening' AND +e.status = 'active'", account.id);
-      // Hesaba bağlı en erken hareket (açılış zinciri hariç): modül satırları ve Banka Fişi satırları.
-      let first = "";
-      let movements = 0;
-      for (const table of MODULE_TABLES) {
-        if (!hasColumn(table, "fin_ref")) continue;
-        const row = store.get(`SELECT MIN(date) AS d, COUNT(*) AS n FROM ${table} WHERE fin_ref = ? AND fin_ref <> ''`, account.id);
-        movements += Number(row?.n) || 0;
-        if (row?.d && (!first || row.d < first)) first = row.d;
-      }
-      const lines = store.get(`SELECT MIN(e.date) AS d, COUNT(*) AS n FROM bank_lines l CROSS JOIN fin_events e ON e.id = l.event_id WHERE l.ref = ? AND NOT ${OPENING_CHAIN}`, account.id);
-      movements += Number(lines?.n) || 0;
-      if (lines?.d && (!first || lines.d < first)) first = lines.d;
+      // Açılış fişleri kısmi indeksten (idx_fin_events_opening; hesabın bütün olayları dolaşılmaz).
+      const openings = store.all("SELECT e.id, e.date, e.no FROM fin_events e WHERE e.bank_ref = ? AND e.type = 'opening' AND +e.status = 'active'", account.id);
+      // Hesaba bağlı en erken hareket (açılış zinciri hariç): modül satırları ve Banka Fişi satırları (accountSpan; sayım yalnız silinmiş hesapta).
+      const span = accountSpan(store, account.id, { count: Boolean(account.deletedAt), last: false, tables: MODULE_TABLES.filter(table => hasColumn(table, "fin_ref")) });
+      const first = span.first;
+      const movements = span.count;
       if (account.deletedAt) {
         if (openings.length) fail(account, "silinmiş hesabın etkin açılışı var");
         if (movements) fail(account, `silinmiş hesaba bağlı ${movements} hareket var`);
@@ -187,7 +233,8 @@ export function createBankChecks({ store, money }) {
     const list = events ? JSON.stringify([...events]) : null;
     const source = list ? "json_each(?) j CROSS JOIN fin_events e ON e.id = j.value" : "fin_events e";
     const args = list ? [list] : [];
-    const heads = store.all(`SELECT e.id, e.no, e.type, e.status, e.bank_ref AS ref, e.direction, e.amount_minor AS amountMinor, e.try_minor AS tryMinor, e.reversal_of AS reversalOf, e.reversed_by AS reversedBy FROM ${source} WHERE e.src_table = ''`, ...args);
+    const has = tables();
+    const heads = store.all(`SELECT e.id, e.no, e.type, e.status, e.bank_ref AS ref, e.counter_ref AS counterRef, e.invoice_id AS invoiceId, e.direction, e.amount_minor AS amountMinor, e.try_minor AS tryMinor, e.reversal_of AS reversalOf, e.reversed_by AS reversedBy FROM ${source} WHERE e.src_table = ''`, ...args);
     if (!heads.length) return [];
     const ids = JSON.stringify(heads.map(head => head.id));
     const linesOf = new Map();
@@ -212,6 +259,16 @@ export function createBankChecks({ store, money }) {
       if (net !== 0) fail(`borç ≠ alacak (fark ${net / 100})`);
       if (head.status === "cancelled" && lines.length) fail("iptal edilmiş fişin satırı var");
       if (NON_MONEY_TYPES.has(head.type) && lines.length) fail(`${head.type} fişinin para satırı olmaz`);
+      // Aşama 4: satırsız fiş yalnız sıfır açılış, sihirbaz başlığı ve KDV'li masrafın başlığıdır (para faturanın ödeme satırında). KDV'li masraf
+      // başlığı kesilmiş faturaya ve o faturanın bu hesaptan (havale) ödemesine bağlıdır; fatura iptal edilince başlık da iptal edilir.
+      if (!lines.length && head.status === "active" && isVoucherType(head.type)) {
+        if (head.type !== "fee" || !head.invoiceId) fail("satırsız banka fişi (masraf faturası yok)");
+        else {
+          const invoice = has.has("invoices") ? store.get("SELECT status FROM invoices WHERE id = ?", head.invoiceId) : null;
+          if (!invoice || invoice.status !== "issued") fail("masraf başlığının faturası kesilmiş değil");
+          else if (!store.get("SELECT 1 AS found FROM account_entries WHERE source = 'invoice' AND source_id = ? AND +kind = 'out' AND +method = 'bank' AND +fin_ref = ? LIMIT 1", head.invoiceId, head.ref || "")) fail("masraf faturasının bu hesaptan ödemesi yok");
+        }
+      }
       for (const line of lines) {
         const allowed = ROLE_GL[line.role];
         if (!allowed || FORBIDDEN_GL.has(String(line.gl)) || !allowed.includes(String(line.gl))) {
@@ -224,6 +281,9 @@ export function createBankChecks({ store, money }) {
           if (line.ref || line.sub) fail(`${line.role} satırı hesap bağı / alt hesap taşımaz`);
           continue;
         }
+        // Aşama 4: para satırının hesabı olayın hesabı ya da karşı hesabıdır (Hareketler dizini bu iki kolondan okur; başka hesaba yazılan satır
+        // o hesabın listesinde ve bakiyesinde görünmezdi).
+        if (line.ref && line.ref !== (head.ref || "") && line.ref !== (head.counterRef || "")) fail(`para satırının hesabı (${line.sub || line.ref}) olayın hesabı ya da karşı hesabı değil`);
         if (!line.ref) {
           if (line.sub !== UNASSIGNED_SUB[line.role]) fail(`bağsız ${line.role} satırının alt hesabı ${UNASSIGNED_SUB[line.role] || "yok"} olmalı (${line.sub || "boş"})`);
           continue;
