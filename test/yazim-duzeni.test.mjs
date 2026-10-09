@@ -40,6 +40,10 @@ const SENTENCES = new Set([
     // Fatura Ayarları onay kutuları (v2.0.15): cümle.
     "Fiyatlar varsayılan olarak KDV dahil yazılsın",
     "Kaydedilen e-Belge entegratöre hemen gönderilsin",
+    // Banka hesap formu ve Kurulum Sihirbazı onay kutuları (v2.1.0): cümle.
+    "Bu tutar bankadaki gerçek bakiyedir (Bakiye Doğrulandı)",
+    "Açılış bakiyesi bankadaki gerçek bakiyedir (Bakiye Doğrulandı)",
+    "IBAN faturada gösterilsin",
     "Excel/Sheets tablolarınızdaki",
     "Eşleşen kayıt yok",
     "Geçiş dönemi doldu",

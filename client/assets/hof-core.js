@@ -270,6 +270,9 @@
     [/^\/api\/workspace\/invoices\b/, ["invoices", "stock", "cash", "accounts", "cheques", "plans"]],
     [/^\/api\/workspace\/(payments\b|cases\/[^/]+\/(payments|plans|account)\b)/, ["cash", "plans", "accounts", "invoices"]],
     [/^\/api\/(admin\/)?trash\b/, ["cash", "plans", "accounts", "stock", "cheques", "invoices"]],
+    // v2.1.0: banka yazımları (hesap, açılış, sihirbaz; sonraki aşamalarda hareket, transfer) Banka penceresini ve para gösteren her
+    // pencereyi yeniler.
+    [/^\/api\/workspace\/bank\b/, ["bank", "cash", "accounts", "invoices", "plans", "cheques"]],
   ];
   function noteLedgerChange(path) {
     const clean = String(path || "").split("?")[0];

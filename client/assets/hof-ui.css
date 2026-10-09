@@ -1105,6 +1105,11 @@ html:not(.hof-can-cheques-manage) [data-requires="cheques.manage"],
 /* v2.0.15 Fatura. */
 html:not(.hof-can-invoices-view) [data-requires="invoices.view"],
 html:not(.hof-can-invoices-manage) [data-requires="invoices.manage"],
+/* v2.1.0 Banka. */
+html:not(.hof-can-bank-view) [data-requires="bank.view"],
+html:not(.hof-can-bank-accounts) [data-requires="bank.accounts"],
+html:not(.hof-can-bank-settings) [data-requires="bank.settings"],
+html:not(.hof-can-bank-reports) [data-requires="bank.reports"],
 html:not(.hof-can-overview-view) [data-requires="overview.view"],
 html:not(.hof-can-overview-card) [data-requires="overview.card"],
 html:not(.hof-can-tasks-viewAll) [data-requires="tasks.viewAll"],
@@ -9964,4 +9969,478 @@ input[type="search"]::-webkit-search-cancel-button {
   overflow: hidden;
   opacity: 0;
   pointer-events: none;
+}
+
+/* ---------- Banka (v2.1.0; hof-bank.js): Genel Bakış, Hesaplar, Hesap Detayı, Ayarlar, Kurulum Sihirbazı ---------- */
+.hof-modal.hof-bank-modal {
+  width: min(1120px, 100%);
+}
+.hof-bank-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0 0 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--do-border);
+}
+.hof-bank-body {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+}
+.hof-bank-stats .hof-bank-real strong {
+  font-size: 24px;
+}
+.hof-bank-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 16px;
+  padding: 12px 14px;
+  border: 1px solid var(--do-border);
+  border-radius: var(--do-radius-small);
+  background: var(--do-surface-soft);
+}
+.hof-bank-row > div {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+  flex: 1 1 320px;
+}
+.hof-bank-row b {
+  color: var(--do-ink);
+  font-size: 14px;
+}
+.hof-bank-row strong {
+  color: var(--do-ink);
+  font: 800 16px var(--do-display);
+}
+.hof-bank-row small {
+  color: var(--do-muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+.hof-bank-row.is-setup {
+  border-color: #b9d9c6;
+  background: var(--do-accent-soft);
+}
+.hof-bank-row.is-unassigned {
+  border-color: #ecd3a7;
+  background: var(--do-warn-soft);
+}
+.hof-bank-empty {
+  padding: 22px;
+  border: 1px dashed var(--do-border-strong);
+  border-radius: var(--do-radius);
+  background: #fff;
+  text-align: center;
+}
+.hof-bank-empty h4 {
+  margin: 0 0 6px;
+  color: var(--do-ink);
+  font: 800 17px var(--do-display);
+}
+.hof-bank-empty p {
+  max-width: 620px;
+  margin: 0 auto 12px;
+  color: var(--do-muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+.hof-bank-subtitle {
+  margin: 6px 0 0;
+  color: var(--do-ink);
+  font: 800 14px var(--do-display);
+}
+.hof-bank-table-wrap {
+  border: 1px solid var(--do-border);
+  border-radius: 12px;
+  background: #fff;
+  overflow: hidden;
+}
+.hof-bank-table tbody tr[data-account] {
+  cursor: pointer;
+}
+.hof-bank-table tbody tr[data-account]:hover td,
+.hof-bank-table tbody tr[data-account]:focus-visible td {
+  background: #f4f9f6;
+}
+.hof-bank-table tbody tr[data-account]:focus-visible {
+  outline: 2px solid var(--do-accent);
+  outline-offset: -2px;
+}
+.hof-bank-table td small {
+  display: block;
+  margin-top: 2px;
+  color: var(--do-faint);
+  font-size: 11px;
+}
+.hof-bank-table td small.is-warn {
+  color: var(--do-warn);
+}
+.hof-bank-table td small.hof-bank-ok {
+  color: #177245;
+}
+.hof-bank-table tr.is-passive td {
+  color: var(--do-muted);
+}
+.hof-bank-table tr.is-in td.num b {
+  color: #177245;
+}
+.hof-bank-table tr.is-out td.num b {
+  color: var(--do-danger);
+}
+.hof-bank-subtotal td,
+.hof-bank-total td {
+  background: var(--do-surface-soft);
+  color: var(--do-ink);
+  font-weight: 800;
+}
+.hof-bank-total td {
+  border-top: 2px solid var(--do-border-strong);
+}
+.hof-bank-iban {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+.hof-bank-check {
+  width: 34px;
+}
+.hof-bank-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.hof-bank-toolbar .hof-rep-presets {
+  margin-left: auto;
+}
+.hof-bank-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--do-muted);
+  font: 700 12px var(--do-font);
+}
+.hof-bank-inline select {
+  max-width: 460px;
+  height: 34px;
+  padding: 0 8px;
+  border: 1px solid var(--do-border);
+  border-radius: 9px;
+  background: #fff;
+  color: var(--do-ink);
+  font: 500 13px var(--do-font);
+}
+.hof-bank-detail-head {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 8px 14px;
+  align-items: start;
+}
+.hof-bank-confirm {
+  margin: 0;
+  padding: 8px 12px;
+  border-radius: 10px;
+  font: 700 12.5px/1.45 var(--do-font);
+}
+.hof-bank-confirm.is-ok {
+  background: #dcefe3;
+  color: #177245;
+}
+.hof-bank-confirm.is-warn {
+  background: var(--do-warn-soft);
+  color: #7a4a0c;
+}
+.hof-chq-actions .hof-button[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+/* Ayarlar */
+.hof-bank-settings {
+  display: grid;
+  gap: 12px;
+}
+.hof-bank-sets {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 12px;
+  align-items: start;
+}
+.hof-bank-sets[hidden] {
+  display: none;
+}
+.hof-bank-sets > .hof-rep-note {
+  grid-column: 1 / -1;
+  margin: 0;
+}
+.hof-bank-set {
+  position: relative;
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+  margin: 0;
+  padding: 12px 14px 14px;
+  border: 1px solid var(--do-border);
+  border-radius: 12px;
+  background: #fff;
+}
+.hof-bank-set legend {
+  padding: 0 6px;
+  color: var(--do-ink);
+  font: 800 13px var(--do-display);
+}
+.hof-bank-set-reset {
+  position: absolute;
+  top: -2px;
+  right: 10px;
+  font-size: 11.5px;
+}
+.hof-bank-set-item {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+}
+.hof-bank-set-item > label {
+  color: #4d6a5e;
+  font: 700 12px var(--do-font);
+}
+.hof-bank-set-item select,
+.hof-bank-set-item input,
+.hof-bank-keywords input,
+.hof-bank-fee input,
+.hof-bank-fee select {
+  width: 100%;
+  min-width: 0;
+  height: 36px;
+  padding: 0 10px;
+  border: 1px solid var(--do-border);
+  border-radius: 9px;
+  background: #fff;
+  color: var(--do-ink);
+  font: 500 13px var(--do-font);
+}
+.hof-bank-set-item select:disabled,
+.hof-bank-set-item input:disabled {
+  background: var(--do-surface-soft);
+  color: var(--do-muted);
+}
+.hof-bank-set-item small {
+  color: var(--do-faint);
+  font-size: 11.5px;
+  line-height: 1.45;
+}
+.hof-bank-set .is-invalid,
+.hof-bank-form .is-invalid {
+  border-color: var(--do-danger) !important;
+  box-shadow: 0 0 0 3px rgba(179, 71, 58, 0.16);
+}
+.hof-bank-fixed {
+  display: block;
+  padding: 8px 10px;
+  border-radius: 9px;
+  background: var(--do-surface-soft);
+  color: var(--do-ink-soft);
+  font: 600 13px var(--do-font);
+}
+.hof-bank-fees,
+.hof-bank-keywords {
+  display: grid;
+  gap: 6px;
+}
+.hof-bank-fee {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 140px) auto;
+  gap: 6px;
+  align-items: center;
+}
+.hof-bank-keywords label {
+  display: grid;
+  grid-template-columns: 70px minmax(0, 1fr);
+  gap: 8px;
+  align-items: center;
+  color: var(--do-muted);
+  font: 700 12px var(--do-font);
+}
+.hof-bank-advanced-toggle {
+  justify-self: start;
+}
+.hof-bank-dirty {
+  margin: 0;
+  color: var(--do-warn);
+  font: 700 12px var(--do-font);
+  text-align: right;
+}
+/* Hesap formu ve Kurulum Sihirbazı */
+.hof-bank-form {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px 16px;
+  align-items: start;
+}
+.hof-bank-form > .hof-check,
+.hof-bank-form > .hof-form-error,
+.hof-bank-form > .hof-actions {
+  grid-column: 1 / -1;
+}
+.hof-bank-steps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0 0 14px;
+  padding: 0;
+  list-style: none;
+}
+.hof-bank-steps li {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px 6px 6px;
+  border: 1px solid var(--do-border);
+  border-radius: 99px;
+  background: #fff;
+  color: var(--do-muted);
+  font: 700 12px var(--do-font);
+}
+.hof-bank-steps li b {
+  display: inline-grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #eef1ef;
+  color: var(--do-muted);
+  font-size: 11px;
+}
+.hof-bank-steps li.is-on {
+  border-color: var(--do-accent);
+  color: var(--do-accent);
+}
+.hof-bank-steps li.is-on b,
+.hof-bank-steps li.is-done b {
+  background: var(--do-accent);
+  color: #fff;
+}
+.hof-bank-wiz-saved,
+.hof-bank-mains {
+  display: grid;
+  gap: 4px;
+  margin: 0 0 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--do-accent-soft);
+  color: var(--do-ink-soft);
+  font: 600 12.5px/1.5 var(--do-font);
+  list-style: none;
+}
+.hof-bank-mains li.is-bad {
+  color: var(--do-danger);
+}
+.hof-bank-wiz-suggest {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 12px;
+  color: var(--do-muted);
+  font: 700 12px var(--do-font);
+}
+.hof-bank-wiz-done h4 {
+  margin: 0 0 8px;
+  color: var(--do-ink);
+  font: 800 18px var(--do-display);
+}
+.hof-bank-wiz-done p {
+  margin: 6px 0;
+  color: var(--do-ink-soft);
+  font-size: 13px;
+}
+.hof-bank-wiz-real b {
+  font: 800 20px var(--do-display);
+}
+.hof-bank-preview {
+  margin: 0 0 8px;
+}
+.hof-bank-pick-note {
+  margin: -6px 0 0;
+  color: var(--do-muted);
+  font: 600 12px var(--do-font);
+}
+/* Mobil (§8.12): 720 px'te tablolar karta döner; yatay kaydırma yok. */
+@media (max-width: 720px) {
+  .hof-bank-table thead {
+    display: none;
+  }
+  .hof-bank-table,
+  .hof-bank-table tbody,
+  .hof-bank-table tfoot,
+  .hof-bank-table tr,
+  .hof-bank-table td {
+    display: block;
+    width: 100%;
+  }
+  .hof-bank-table tr {
+    padding: 8px 10px;
+    border-bottom: 1px solid #e8efea;
+  }
+  .hof-bank-table td {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 3px 0;
+    border: 0;
+    text-align: right;
+    overflow-wrap: anywhere;
+  }
+  .hof-bank-table td::before {
+    content: attr(data-label);
+    flex: 0 0 auto;
+    color: var(--do-faint);
+    font: 700 11px var(--do-font);
+    text-align: left;
+  }
+  .hof-bank-table td:not([data-label])::before,
+  .hof-bank-table td.hof-bank-blank {
+    display: none;
+  }
+  .hof-bank-table td.num {
+    text-align: right;
+  }
+  .hof-bank-table td small {
+    display: inline;
+    margin-left: 6px;
+  }
+  .hof-bank-iban {
+    white-space: normal;
+  }
+  .hof-bank-detail-head {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .hof-bank-detail-head .hof-chq-amount {
+    justify-items: start;
+  }
+  .hof-bank-toolbar .hof-rep-presets {
+    margin-left: 0;
+  }
+  .hof-bank-form {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .hof-bank-inline {
+    flex-wrap: wrap;
+  }
+  .hof-bank-inline select {
+    max-width: 100%;
+  }
+}
+@media (max-width: 640px) {
+  .hof-bank-sets {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .hof-bank-fee {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+  .hof-bank-fee select {
+    grid-column: 1 / 2;
+  }
 }

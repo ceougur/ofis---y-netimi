@@ -755,6 +755,9 @@
     { action: "cheques", icon: "✎", key: "side.cheques", label: () => "Çek / Senet", requires: "cheques.view", badge: "warn" },
     // Taksitler (v2.0.4): grup › alt grup, taksit kartı, tahsilat, gecikme uyarısı (hof-plans.js).
     { action: "plans", icon: "▤", key: "side.plans", label: () => "Taksitler", requires: "plans.view", badge: "warn" },
+    // Banka (v2.1.0, kullanıcı kararı: Taksitler'in hemen altında): hesaplar, açılış, Kurulum Sihirbazı, Ayarlar (hof-bank.js); rozet =
+    // Hesabı Belirsiz Yeni Hareketler (eski sürümün yazdığı, hesabı belli olmayan banka hareketi).
+    { action: "bank", icon: "▣", key: "side.bank", label: () => "Banka", requires: "bank.view", badge: "warn" },
     { action: "liens", icon: "!", key: "side.liens", label: () => "Haciz Uyarıları", badge: "warn", module: "haciz" },
     // Raporlar (v2.0.9): ANLIK DURUM'daki "Rapor Al" ile aynı pencere (Cari ekstre, Vade takip, Nakit akış, Çek/Senet,
     // modül raporları, Tablo raporları). Rapor yetkisi ya da kişiye verilen ANLIK DURUM yetkisiyle görünür.
@@ -853,6 +856,7 @@
       else if (action === "accounts") HOF.accounts?.open();
       else if (action === "stock") HOF.stock?.open();
       else if (action === "cheques") HOF.cheques?.open();
+      else if (action === "bank") HOF.bank?.open();
       else if (action === "invoices") HOF.invoices?.open({ account: {} });
       else if (action === "editSide") openSideEditor();
       else if (action === "guide") window.open("/kilavuz/DestekOfis-Kullanim-Kilavuzu.pdf", "_blank", "noopener");
@@ -876,13 +880,16 @@
     };
     const background = { background: true };
     try {
-      const [tasks, liens, plans, cheques, invoices] = await Promise.all([
+      const [tasks, liens, plans, cheques, invoices, bank] = await Promise.all([
         HOF.api("/api/workspace/tasks?status=open&mine=1", background),
         HOF.api("/api/workspace/liens?days=7", background),
         HOF.can("plans.view") ? HOF.api("/api/workspace/plans?status=overdue&count=1", background).catch(() => null) : null,
         HOF.can("cheques.view") ? HOF.api("/api/workspace/cheques?status=open&limit=1", background).catch(() => null) : null,
         HOF.can("invoices.view") ? HOF.api("/api/workspace/invoices?tab=sale&pay=overdue&limit=1", background).catch(() => null) : null,
+        HOF.can("bank.view") ? HOF.api("/api/workspace/bank/badge?count=1", background).catch(() => null) : null,
       ]);
+      // Banka rozeti (v2.1.0): Hesabı Belirsiz Yeni Hareketler sayısı.
+      if (bank) setBadge("bank", bank.count);
       // Fatura rozeti (v2.0.15): vadesi geçmiş, tahsil edilmemiş satış faturası sayısı.
       if (invoices) setBadge("invoices", invoices.total);
       // Çek / Senet rozeti: vadesi geçmiş ya da bugün vadesi gelen açık evrak sayısı (v2.0.7).
