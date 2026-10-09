@@ -456,7 +456,8 @@ Bütün düzeltme ve silme audit kayıtlarında `previous {amount, date, method,
 ### 3.11 Ana Defter ve mutabakat kapısı
 
 **Hesap planı** (`CHART`, general-ledger.mjs:13-37) şu hesapları alır: 300 Banka Kredileri, 309 Diğer Mali Borçlar (Kurumsal Kredi Kartları), 642 Faiz Gelirleri, 646 Kambiyo Kârları, 653 Komisyon Giderleri, 656 Kambiyo Zararları, 659 Diğer Olağan Gider ve Zararlar, 780 Finansman Giderleri.
-- 649'un adı "Diğer Olağan Gelir ve Kârlar" olur; tutar değişmez.
+- 649'un adı "Diğer Olağan Gelir ve Kârlar" olur; tutar değişmez. (Aşama 2 gözden geçirmesi D3/D6: ad, Banka Fişi 649'a yazmaya başladığında
+  **Aşama 4'te** değişir; Aşama 2'de 2.0.26'daki "Diğer Olağan Gelirler (Kasaya Elle)" kalır — arayüz değişmez kuralı.)
 - 102 ve 108'in kodu ve adı değişmez; alt hesap adları karttan gelir (102.01 "Ziraat · Ana TL").
 - 102.00 ve 108.00 "Hesabı Atanmamış Eski Hareketler" olarak görünür.
 - 101.01 "Portföydeki Çekler", 101.02 "Tahsile Verilen Çekler".
@@ -1025,11 +1026,16 @@ CREATE TABLE IF NOT EXISTS request_keys (key TEXT PRIMARY KEY, scope TEXT NOT NU
 ### 5.4 Ayar anahtarları
 - `bank.settings` (JSON): okumada kod varsayılanlarıyla birleştirilir (invoices.mjs:107-118 kalıbı). İçindeki hesap/POS kimlikleri okunurken doğrulanır; kartı silinmiş kimlik boş sayılır.
 - `meta.schema.v20At`: göç zamanı; eski sürüm satırı tespitinde kullanılır.
-- `meta.bank.repairStamp`: son onarım taramasının zamanı.
+- `meta.bank.repairStamp`: son onarım taramasının zamanı. (Aşama 2 gözden geçirmesi D7: onarım bu damgayla SINIRLANMAZ — her açılışta bütün
+  para satırlarını ve olayları tarar; eski sürüm damgadan önce yazılmış satırı da düzeltebildiği için damga sınırı onu kaçırırdı. Süre
+  docs/2.1.0-KANIT.md "Aşama 2 — Bağımsız Gözden Geçirme".)
 - **`meta.bank.seq.<yıl>`: İşlem No sayacı (yalnız artar).**
   - Numara işlem içinde `max(sayaç, MAX(seq) of year) + 1` ile verilir; sayaç aynı işlemde güncellenir.
+  - Yıl, olayın AÇILDIĞI tarihin yılıdır. İşlem No kalıcı kimliktir: hareketin tarihi sonradan başka yıla alınsa da numara değişmez (basılı
+    makbuz, dekont ve eşleşme bu numarayla anılır; Aşama 2 gözden geçirmesi D1). Olayın türü ise satırdan türetilir ve düzeltmede güncellenir.
   - `meta.` öneki KEEP_SETTINGS'te korunduğu için "Tüm Hareketleri Sil" ve "Tümünü Sıfırla" sonrası numara yeniden kullanılmaz; eski yedekteki ve basılı belgelerdeki numaralarla çakışma olmaz.
-  - Yedekten geri yüklemede sayaç da yedekteki değere döner (fatura serisiyle aynı davranış; BİLİNEN SINIR).
+  - Yedekten geri yüklemede sayaç canlı dosyadaki ile yedekteki değerin BÜYÜĞÜ olur (001 ve 002 aynı kural; Aşama 2 gözden geçirmesi B4):
+    geri yüklemeden sonra verilen numara, geri yüklemeden önce verilmiş bir numarayla çakışmaz.
 
 ### 5.5 Kapı listeleri (db.mjs, integrity.mjs)
 
@@ -1354,6 +1360,11 @@ Yeni grup "Banka ve POS", Taksitler grubunun ardından (permissions.mjs:85+).
 | bank.settings | Banka Ayarları | admin, muhasebe | — | Ayarlar, elle kur, tatiller, hesap eşlemesi |
 
 - Göç yalnız hub'da ve idempotent. Yerleşik roller yetkiyi matristen kendiliğinden alır.
+- (Aşama 2 gözden geçirmesi D5) Göç her özel role ve kişiye "verildi" işareti (`bank.granted`; katalogda yok, yetki vermez, ekranda görünmez)
+  yazar. Banka anahtarları Aşama 3'e kadar katalogda olmadığından eski sürümün (ve bugünkü Yönetim ekranının) rol/kişi kaydı onları işaretle
+  birlikte siler; işaretsiz rol/kişi ortak katmanın her açılışında ve rol/kişi kaydından hemen sonra bugünkü yetkilerinden YALNIZ EKLEYEREK
+  yeniden değerlendirilir. **Aşama 3:** banka yetkilerini elle düzenleyen ekran işareti korumalı (yöneticinin bilinçli kaldırdığı yetki geri
+  eklenmesin); bu kural o ekranla birlikte yeniden yazılır.
 - `users.grants_json.remove`'da `cash.view` varsa yalnız `bank.view` ve `bank.reports` kaldırılmış sayılır; yazma anahtarlarına yansıtma yok (K4).
 
 ### 9.2 Kurallar
@@ -1427,7 +1438,7 @@ Kullanıcı başlatır. İlk hesap açılırken hesabı atanmamış eski bakiye 
   - `dates:future` taban kümesi kuralı (A13) eski ileri tarihli satırları sayıdan çıkarır; imza göçte ve gün geçtikçe değişmez.
 - **Her fikstürde göç öncesi ve sonrası aynı olmalı:**
   - `run().failures` imza kümesi
-  - Hesap kodu bazında mizan tutarları (649'un adı değişir, tutarı değişmez)
+  - Hesap kodu bazında mizan tutarları (649'un adı Aşama 2'de değişmez — Aşama 4'te değişir; tutarı değişmez)
   - Kilit izi (2.0.26 tanımıyla)
   - `cash.summary` toplamı ve Kasa'nın bugün/bu ay giriş-çıkışı
   - Cari bakiyeleri ve fatura ödeme durumları (kapama değişmez)
@@ -1445,6 +1456,8 @@ Kullanıcı başlatır. İlk hesap açılırken hesabı atanmamış eski bakiye 
 - **Gerçek durum:** 2.0.25 v20 veritabanını açar ve yazar, çünkü `pending` boşsa göç dönüşü yapar (migrations.mjs:1114-1116). Yalnız yedeğin geri yüklenmesi reddedilir (company-backups.mjs:90). Güncelleme deneme açılışı başarısız olursa yalnız 001 göç öncesi yedeğe döner (update-orchestrator.mjs:160-168).
 - **Açılış onarım adımı:**
   - `integrity.start()`'tan önce, `store.raw('repair', …)` kapsamında, kısa sürede çalışır. Yalnız `meta.bank.repairStamp`'tan sonra yazılmış satırları tarar.
+    (Uygulamada: bütün satırları tarar — bilinçli sapma, §5.4 notu; eski sürüm satırı rowid işaretiyle YA DA işaretin zamanından
+    (`meta.bank.legacyMarksAt`) sonra oluşturulmuş olmasıyla tanınır, Aşama 2 gözden geçirmesi D4.)
   - Kuyruklu iş değildir; yazdıkları küçüktür ve kapıdan önce yapılmaları gerekir.
 
 | # | Durum | İşlem |
