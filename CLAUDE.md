@@ -846,6 +846,23 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   2.0.25/24/23/22/21/20/19/18/17/2.0.4/1.7.0 olarak (API ve yedek yol) 2.0.26'yı "available" gördü, indirme sha256 ee76d7f4…
   eşleşti; 2.0.26 → "up-to-date". Site kılavuz PR'ı ceougur/destekofis#12 2.0.26 PDF'iyle (63d536ad…) güncellendi (başlık
   "Kılavuz PDF 2.0.26"); birleştirme kullanıcının "birleştir"iyle. 2.0.26 KAPANDI → 2.1.0 banka kodlaması başladı.
+- 2.1.0 BANKA İLK TESLİM (dal `claude/kind-newton-fpmx3f`; plan §12.1: Aşama 2–9 + 13 + 14–16 dilimleri; kanıt `docs/2.1.0-KANIT.md`).
+  [x] AŞAMA 2 finansal çekirdek (08–09.10.2026; 2cb93c5..72f72a6, 37 commit; arayüz DEĞİŞMEDİ): minor.mjs (kuruş tamsayı,
+      özellik testi 1e12), iş günü + TR takvimi 2024–2031, config.now sahte saat, v20 göçü (banka/POS/ekstre tabloları, fin_ref/
+      event_id, yetki göçü K4 + `bank.granted` işareti), kalıcı request_keys, İşlem No (BNK-yıl-sıra; sıfırlamada geri gitmez;
+      tarih yılı değişse de kalıcı), bank.post + bütün mevcut para yazıcıları ondan geçer, K6 (statik test + izinli liste,
+      money:event, store.raw), moneyLines tek kaynak (Kasa/Banka-POS raporu/ANLIK DURUM/defter; 2.0.26 ile altın test satır
+      satır aynı), açılış onarımı, `npm run mutabakat -- --sirket`, göç zinciri 2.0.16→2.0.26→v20 (2.0.21–2.0.26 fikstürleri
+      gerçek sürüm koduyla). KAPI §3.11 KARARI: iki aşamalı kapı (önce dokunulan varlıklar, şüphede v2.0.26'nın tam kapısı;
+      testlerde ikisi birlikte + eşdeğerlik denetimi) → yazım başına kapı 100.000 satırda 7,96 sn → 7,1 ms, 1.000.000'da 129 sn →
+      8,7 ms; 15 dk tam tarama ayrı iş parçacığında. Bağımsız gözden geçirme 3 bakış: 9 doğrulanmış + 11 düşük → hepsi kapandı
+      (D7, D9 bilinen sınır). Son kod: npm test 1.421/1.421 (benim koşumum da, 7 dk 53 sn), mutabakat 2.000, güvenilirlik 1.000,
+      14 arayüz koşusu 0 hata. Bilinen sınırlar: tam kapıya düşen işlem (kilit koyma, kilitli satıra dokunan düzeltme) büyük
+      veride v2.0.26 kadar sürer; Mutabakat Testi düğmesi 100.000'de ~10 sn bekletir; 1M bellek ölçülmedi.
+  CANLI HATA (gözden geçirmede bulundu, v2.0.26'da da VAR, gerçek v2.0.26 koduyla yeniden üretildi): Taksite Aktar (var olan
+  bağsız karta) → taşınan tahsilatı sil → aktarımı geri al → Silinenler'den geri yükle → Kasa ÇİFT sayılır (1.000 yerine 2.000),
+  Mutabakat Testi "tamam" der. 2.1.0'da düzeldi (bir olay = bir para hareketi, 409 `event-in-use`). Kullanıcıya bildirildi;
+  ayrı 2.0.27 düzeltme sürümü (ayrı dal izni gerekir) ya da 2.1.0'ı bekleme kararı kullanıcıda.
 - 2.0.20 YAPILACAKLAR (kullanıcı "yapılacaklara not al" dedi, 03.10.2026; "yap" denince başlanır; ayrıntı ve
   kanıt hemen altındaki ADAYI maddesinde):
   [x] 1. Bütün raporların (43) tablosunun altında kalın TOPLAM satırı — ekran, PDF, Excel aynı; yalnız toplanabilir
