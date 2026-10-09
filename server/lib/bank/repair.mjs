@@ -18,7 +18,7 @@
 // "Onarım Bekliyor" listesinde kalır ve kapının tabanıdır).
 import { randomUUID } from "node:crypto";
 import { systemClock } from "../clock.mjs";
-import { LEGACY_MARKS_KEY } from "./checks.mjs";
+import { LEGACY_MARKS_AT_KEY, LEGACY_MARKS_KEY } from "./checks.mjs";
 import { copyMismatchSql, eventCopy, eventDigest, eventRows, isModuleEvent, primaryRow, refreshEvent } from "./event-copy.mjs";
 import { NON_MONEY_TYPES } from "./event-types.mjs";
 import { nextEventNo } from "./event-no.mjs";
@@ -30,10 +30,26 @@ const NON_MONEY_SQL = [...NON_MONEY_TYPES].map(type => `'${type}'`).join(", ");
 
 /** Eski satır işaretini (tablo → en büyük rowid) yazar: v20'den sonraki ilk açılışta ve şirket verisi sıfırlanınca (silinen tablolarda rowid
  * baştan başlar; işaret yenilenmezse eski sürümün sıfırlama sonrası yazdığı olaysız satır görünmezdi). */
-export function markLegacyRows(store) {
+export function markLegacyRows(store, { now = systemClock } = {}) {
   const marks = Object.fromEntries(MODULE_TABLES.map(table => [table, Number(store.get(`SELECT COALESCE(MAX(rowid), 0) AS m FROM ${table}`).m) || 0]));
   store.setSetting(LEGACY_MARKS_KEY, JSON.stringify(marks));
+  markLegacyTime(store, { now });
   return marks;
+}
+/**
+ * Gözden geçirme D4 (Aşama 2): işaretin ZAMANI — eski satırların en yenisinin oluşturulma anı (ve işaretin konduğu an; büyüğü). Eski sürüm
+ * (2.0.25/2.0.26) bir tabloyu boşaltıp ("Tüm Hareketleri Sil") yeniden yazarsa rowid baştan başlar, yazdığı satır işaretin ALTINDA kalırdı:
+ * olaysız para satırı, oluşturulma anı işaret zamanından sonraysa da eski sürümün yazdığıdır. Eski satırların hepsi bu andan önce (en geç
+ * bu anda) oluşturulduğundan saat kayması ya da sahte saat onları yanlışlıkla "yeni" saydırmaz.
+ */
+export function markLegacyTime(store, { now = systemClock } = {}) {
+  let at = now().toISOString();
+  for (const table of MODULE_TABLES) {
+    const latest = String(store.get(`SELECT MAX(created_at) AS m FROM ${table}`)?.m || "");
+    if (latest > at) at = latest;
+  }
+  store.setSetting(LEGACY_MARKS_AT_KEY, at);
+  return at;
 }
 
 export function repairBank({ store, now = systemClock, period = null, log = null, newId = () => `int-${randomUUID()}` }) {
@@ -63,11 +79,13 @@ export function repairBank({ store, now = systemClock, period = null, log = null
       } catch {
         marks = null;
       }
-      if (!marks || typeof marks !== "object") marks = markLegacyRows(store);
+      if (!marks || typeof marks !== "object") marks = markLegacyRows(store, { now });
+      // İşaret zamanı yoksa (önceki geliştirme sürümü) bugünkü en yeni satırdan konur.
+      const marksAt = store.setting(LEGACY_MARKS_AT_KEY, "") || markLegacyTime(store, { now });
 
-      // a) eski sürümün yazdığı olaysız para satırları (uyarı)
+      // a) eski sürümün yazdığı olaysız para satırları (uyarı): işaretin üstündeki rowid ya da işaret zamanından sonra oluşturulmuş.
       for (const table of MODULE_TABLES) {
-        for (const row of store.all(`SELECT r.id FROM ${table} r WHERE r.event_id = '' AND r.rowid > ? AND ${moneyWhere(table, "r")}`, Number(marks[table]) || 0)) {
+        for (const row of store.all(`SELECT r.id FROM ${table} r WHERE r.event_id = '' AND (r.rowid > ? OR r.created_at > ?) AND ${moneyWhere(table, "r")}`, Number(marks[table]) || 0, marksAt)) {
           report.unassigned += 1;
           if (report.unassignedSample.length < 20) report.unassignedSample.push(`${table}:${row.id}`);
         }

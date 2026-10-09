@@ -590,7 +590,7 @@ export function createApp(overrides = {}) {
         }
       }
       // Eski satır işareti yenilenir: silinen para tablolarında rowid baştan başlar (v2.1.0; lib/bank/repair.mjs).
-      if (has("fin_events")) markLegacyRows(store);
+      if (has("fin_events")) markLegacyRows(store, { now: config.now });
       audit(user, "company.reset", companyId, { mode, resetNumbers, backup: backup?.name || "", counts, unlocked });
     }));
     // Kapı tabanı yeniden ölçülür (kilit kalktı, eski satırlar silindi; dönem kilidi değişikliğindeki gibi).

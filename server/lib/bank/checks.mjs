@@ -15,6 +15,7 @@ import { NON_MONEY_TYPES } from "./event-types.mjs";
 import { MODULE_TABLES, MONEY_SOURCES, moneyWhere } from "./money-lines.mjs";
 
 export const LEGACY_MARKS_KEY = "meta.bank.legacyMarks";
+export const LEGACY_MARKS_AT_KEY = "meta.bank.legacyMarksAt";
 const NON_MONEY_SQL = [...NON_MONEY_TYPES].map(type => `'${type}'`).join(", ");
 
 export function createBankChecks({ store, money }) {
@@ -47,10 +48,12 @@ export function createBankChecks({ store, money }) {
     if (!ready()) return [];
     const mark = marks();
     if (!mark) return [];
+    // Gözden geçirme D4: işaret zamanından sonra oluşturulmuş olaysız satır da eski sürümün yazdığıdır (boşaltılan tabloda rowid baştan başlar).
+    const at = store.setting(LEGACY_MARKS_AT_KEY, "") || "9999";
     const out = [];
     for (const table of MODULE_TABLES) {
       if (!hasColumn(table, "event_id")) continue;
-      for (const row of store.all(`SELECT r.id, r.fin_ref AS ref FROM ${table} r WHERE r.event_id = '' AND r.rowid > ? AND ${moneyWhere(table, "r")}`, Number(mark[table]) || 0)) out.push({ key: `${table}:${row.id}`, table, id: row.id, ref: row.ref || "" });
+      for (const row of store.all(`SELECT r.id, r.fin_ref AS ref FROM ${table} r WHERE r.event_id = '' AND (r.rowid > ? OR r.created_at > ?) AND ${moneyWhere(table, "r")}`, Number(mark[table]) || 0, at)) out.push({ key: `${table}:${row.id}`, table, id: row.id, ref: row.ref || "" });
     }
     return out;
   }
