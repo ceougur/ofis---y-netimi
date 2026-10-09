@@ -884,7 +884,7 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
       Yargıç (09.10.2026): H1–H3b doğrulandı, kapalı; K1 geri yükleme K7/pasif hesabı deliyor (Ziraat −50.000) → 2.1.0'da düzeltilir;
       Y1 pasif hesap silme/taşıma, Y2/K3 toplu iptal-silme negativeOk, K2 lineKey yinelenmesi → aynı düzeltme turunda.
   İSTEK (kullanıcı, 09.10.2026): "yapılan işlemlerin tutarlılığı, tüm raporlarla uyumluluğu için raporda yazan uzman yazılım ve
-      muhasebe mühendisi testleri atlanmasın, rapora uy" → planın (`docs/BANKA-MODULU-PLAN.md`) test maddeleri HİÇBİRİ atlanmaz:
+      muhasebe mühendisi testleri atlanmasın, rapora uy"; DÜZELTME (aynı gün): "rapora uy yanlış söyledim, plana uy!" → planın (`docs/BANKA-MODULU-PLAN.md`) test maddeleri HİÇBİRİ atlanmaz:
       §12.2 (npm test, test:mutabakat, test:guvenilirlik, göç zinciri, arayüz senaryoları; iş akışı testi sıfırdan, ARAYÜZDEN,
       bağımsız beklenenle, ekran görüntüsüyle), teslim edilen her aşamanın "Çalışıyor Mu / Nasıl Bozarım / Kabul" satırları (2.1.0
       kapsamına giren her madde), §12.4 Nasıl Bozarım ana listesi (kapsamdaki maddeler), §12.5 kabul 1–16 sayılarla + mizan bağımsız
