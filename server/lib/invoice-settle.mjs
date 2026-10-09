@@ -267,6 +267,10 @@ export function settleInvoices({ lines, invoices, links = new Map(), chequeEvent
       const own = payment.owner && target.get(payment.owner);
       if (own) closeInvoice(own, payment, payment.mode || "linked");
     }
+    // v2.1.0 (Canlı Hata 2): faturaya bağlı ödemelerin ve iadelerin faturayı AŞAN kısmı (fazla ödenen / avansa dönen iade).
+    // İmzalı açık = açık − bu tutar; iadenin geri ödemesi önce bundan düşülür (faturanın kendi kartı yeniden büyümesin).
+    const overpaid = new Map();
+    for (const payment of pool) if (payment.left > 0 && payment.owner && target.has(payment.owner)) overpaid.set(payment.owner, (overpaid.get(payment.owner) || 0) + payment.left);
     // 1b. Mevcut Borç kartının tahsilatı ve kapatılması kartın kapsadığı borca (en eskiden); artanı genel sıraya kalır.
     const coveredBy = new Map();
     for (const item of obligations) {
@@ -297,7 +301,7 @@ export function settleInvoices({ lines, invoices, links = new Map(), chequeEvent
       }
       if (cursor >= pool.length) break;
     }
-    return { obligations, target };
+    return { obligations, target, overpaid };
   }
   // Kapsam: kartlar açılış sırasıyla; her kart, kendi açıldığı ana kadar kaydedilmiş satırlarla (önceki kartların kapsamı
   // dahil) kapama yapılınca açık kalan, kapsanmamış borcu en son kaydedilenden başlayarak alır (stoktan taksitli satışın kartı,
@@ -322,7 +326,7 @@ export function settleInvoices({ lines, invoices, links = new Map(), chequeEvent
     coverage.set(plan.planId, parts);
   }
   for (const side of ["receivable", "payable"]) {
-    const { target } = runSide(side, ordered, side === "receivable" ? coverage : new Map(), offsets);
+    const { target, overpaid } = runSide(side, ordered, side === "receivable" ? coverage : new Map(), offsets);
     for (const [invoiceId, items] of target) {
       const invoice = byId.get(invoiceId);
       const payable = cents(invoice.payable);
@@ -332,7 +336,8 @@ export function settleInvoices({ lines, invoices, links = new Map(), chequeEvent
       // coveredBy (v2.0.24): kart kart kapsanan kısım; iade faturası faturayı kapsayan kartı bu farkla küçültür.
       const coveredBy = {};
       for (const item of items) for (const [planId, value] of item.covered) if (value > 0) coveredBy[planId] = roundMoney((coveredBy[planId] || 0) + value / 100);
-      out.set(invoiceId, { payable: roundMoney(payable / 100), paid: roundMoney((payable - open) / 100), open: roundMoney(open / 100), covered: roundMoney(covered / 100), coveredBy, closers: items.flatMap(item => item.closers) });
+      // excess (v2.1.0): bağlı ödeme ve iadelerin faturayı aşan kısmı (açık 0 iken); imzalı açık = open − excess.
+      out.set(invoiceId, { payable: roundMoney(payable / 100), paid: roundMoney((payable - open) / 100), open: roundMoney(open / 100), excess: roundMoney((overpaid.get(invoiceId) || 0) / 100), covered: roundMoney(covered / 100), coveredBy, closers: items.flatMap(item => item.closers) });
     }
   }
   for (const invoice of invoices) {

@@ -1287,7 +1287,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     const row = store.get("SELECT id, account_id AS accountId, try_payable AS tryPayable, plan_id AS planId, payment_json AS paymentJson FROM invoices WHERE id = ?", originalId);
     if (!row || !plans()?.shrinkPlan) return null;
     const state = paymentStates([row]).get(row.id) || {};
-    return { row, open: Number(state.open) || 0, coveredBy: { ...(state.coveredBy || {}) } };
+    return { row, open: Number(state.open) || 0, excess: Number(state.excess) || 0, coveredBy: { ...(state.coveredBy || {}) } };
   }
   // İade (kaydı, düzenlemesi, iptali) sonrası asıl faturayı taksitlendiren kart yeni duruma getirilir:
   //  - faturanın kendi kartının kalanı = faturanın açığı (küçülür; iade azaldıysa/iptal edildiyse fatura kalanına kadar büyür);
@@ -1298,10 +1298,19 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   // satırı (çıkış) yeniden borçlandırır. Kart bu tutar kadar küçülmez (gözden geçirme G1).
   const refundOf = returnId => roundMoney(store.all("SELECT amount FROM account_entries WHERE source = 'invoice' AND source_id = ? AND kind = 'out'", returnId).reduce((sum, row) => sum + (Number(row.amount) || 0), 0));
   const refundsFor = originalId => roundMoney(store.all("SELECT id FROM invoices WHERE kind = 'sale_return' AND status = 'issued' AND original_id = ?", originalId).reduce((sum, row) => sum + refundOf(row.id), 0));
+  // v2.1.0 (Canlı Hata 2, 2.0.24 G1'in gerilemesi): hedef = max(0, imzalı açık + geri ödenen). İmzalı açık, faturaya bağlı
+  // ödemeler ve iadeler faturayı aşınca eksidir (açık 0'da kırpılmaz); geri ödeme önce iadenin faturayı aşıp avansa dönen
+  // kısmından düşülür (yaygın programlardaki iade/geri ödeme mahsubu). 2.0.24–2.0.26'da hedef = açık(0'da kırpılı) + geri
+  // ödenen idi: peşinli taksitli faturada malın tamamı iade edilip peşin geri ödenince kart yeniden büyüyor, borçsuz müşteri
+  // gecikmiş görünüyordu.
+  function ownTarget(originalId) {
+    const state = coverState(originalId);
+    return roundMoney(Math.max(0, (state?.open ?? 0) - (state?.excess ?? 0) + refundsFor(originalId)));
+  }
   function ownCard(user, original, touched, note) {
     if (!original?.planId) return;
     const p = plans();
-    const open = roundMoney((coverState(original.id)?.open ?? 0) + refundsFor(original.id));
+    const open = ownTarget(original.id);
     const left = p.leftOf(original.planId);
     if (left > open + 0.005) {
       if (p.shrinkPlan(user, original.planId, roundMoney(left - open), note) > 0) touched.plans.add(original.planId);
@@ -1309,6 +1318,57 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       const rest = Number(parseJson(original.paymentJson, {}).rest) || 0;
       if (p.growForInvoice(user, original.planId, roundMoney(open - left), rest, note)) touched.plans.add(original.planId);
     }
+  }
+  // Açılış onarımı (v2.1.0, Canlı Hata 2; plan §10.6 düzeni): 2.0.24–2.0.26 eski kuralla (hedef = açık + geri ödenen) yanlış
+  // büyümüş ya da küçülmemiş faturaya ait kartlar, dokunulmadıkça yanlış kalırdı. Sessiz, tek işlem, idempotent: yalnız paralı iadesi
+  // olan taksitli faturanın etkin kartı; kalan yeni hedeften büyük ve eski kuralın hedefini aşmıyorsa (yani fark bu hatadan) kalan
+  // hedefe indirilir (shrinkPlan: yalnız ödenmemiş kısım, son taksitten geriye). Küçülecek taksitlerden biri kilitli dönemdeyse kart
+  // değişmez (kilitli döneme yazılmaz), yalnız sonuçta listelenir. Her değişiklik audit'e (plan.repaired, previous) yazılır.
+  function repairOwnCards({ log = null } = {}) {
+    const p = plans();
+    if (!p?.shrinkPlan || !p.leftOf) return { fixed: [], locked: [] };
+    const actor = { id: "system", role: "admin", display_name: "Açılış onarımı" };
+    const lock = period?.lockedUntil?.() || "";
+    const rows = store.all(`SELECT DISTINCT i.id, i.number, i.plan_id AS planId FROM invoices i
+      JOIN invoices r ON r.original_id = i.id AND r.kind = 'sale_return' AND r.status = 'issued'
+      JOIN plans pl ON pl.id = i.plan_id AND pl.deleted_at IS NULL AND pl.status <> 'closed'
+      WHERE i.status = 'issued' AND i.plan_id <> ''`);
+    const fixed = [];
+    const locked = [];
+    for (const row of rows) {
+      const refunds = refundsFor(row.id);
+      if (!(refunds > 0.005)) continue;
+      const state = coverState(row.id);
+      if (!state) continue;
+      const target = roundMoney(Math.max(0, state.open - state.excess + refunds));
+      const before = roundMoney(state.open + refunds);
+      const left = p.leftOf(row.planId);
+      if (!(left > target + 0.005) || left > before + 0.005) continue;
+      const cut = roundMoney(left - target);
+      const plan = store.get("SELECT total FROM plans WHERE id = ?", row.planId);
+      const items = store.all("SELECT id, due_date AS dueDate, amount FROM plan_items WHERE plan_id = ? ORDER BY due_date, seq", row.planId);
+      // shrinkPlan'ın keseceği taksitler (son taksitten geriye).
+      let rest = cut;
+      const touchedItems = [];
+      for (const item of [...items].reverse()) {
+        if (!(rest > 0.005)) break;
+        touchedItems.push(item);
+        rest = roundMoney(rest - Math.min(rest, Number(item.amount) || 0));
+      }
+      if (lock && touchedItems.some(item => item.dueDate <= lock)) {
+        locked.push({ invoiceId: row.id, number: row.number, planId: row.planId, left, target });
+        continue;
+      }
+      store.tx(() => {
+        const done = p.shrinkPlan(actor, row.planId, cut, `Açılış onarımı (2.1.0): iade geri ödemesi kartı büyütmüştü · ${row.number}`);
+        if (done > 0) {
+          audit(actor, "plan.repaired", row.planId, { invoiceId: row.id, number: row.number, reason: "iade-geri-odeme", previous: { total: Number(plan?.total) || 0, left, items: items.map(item => ({ dueDate: item.dueDate, amount: item.amount })) }, total: roundMoney((Number(plan?.total) || 0) - done), left: target, cut: done });
+          fixed.push({ invoiceId: row.id, number: row.number, planId: row.planId, from: left, to: target });
+        }
+      });
+    }
+    if (fixed.length || locked.length) log?.info?.("Açılış onarımı: iade geri ödemesiyle büyümüş taksit kartları", { fixed: fixed.length, locked: locked.length });
+    return { fixed, locked };
   }
   function retarget(user, pre, touched, note, returnId) {
     if (!pre) return;
@@ -2928,5 +2988,5 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     const paymentRow = store.get("SELECT event_id AS eventId FROM account_entries WHERE source = 'invoice' AND source_id = ? AND kind = 'in' AND method = 'bank' LIMIT 1", written.id);
     return { id: written.id, number: written.number, payableMinor: Math.round(Number(doc.money.payable) || 0), paymentEventId: paymentRow?.eventId || "" };
   }
-  return { openItems, dueItems, fingerprint, countForAccount, list, detail, settings, paymentStates, lastPrices, returnable, cancel, deleteInvoice, restoreDeleted, syncOwnCard, issueBankFee, issueBankFeeReturn };
+  return { openItems, dueItems, fingerprint, countForAccount, list, detail, settings, paymentStates, lastPrices, returnable, cancel, deleteInvoice, restoreDeleted, syncOwnCard, repairOwnCards, issueBankFee, issueBankFeeReturn };
 }

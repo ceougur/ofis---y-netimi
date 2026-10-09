@@ -333,6 +333,13 @@ export function createApp(overrides = {}) {
   } catch (error) {
     log.error?.("Açılış onarımı çalışmadı", error);
   }
+  // Açılış onarımı (v2.1.0, Canlı Hata 2): 2.0.24–2.0.26'da iade + peşin geri ödemesiyle yanlış büyümüş taksit kartları (yalnız ödenmemiş
+  // kısım; kilitli döneme yazılmaz; idempotent). Başarısız olsa da program açılır.
+  try {
+    context.ownCardRepair = context.invoices.repairOwnCards({ log });
+  } catch (error) {
+    log.error?.("Taksit kartı açılış onarımı çalışmadı", error);
+  }
   context.integrity.start();
   // Tam tarama (§3.11 "Kapı ölçeği" 1): 15 dakikada bir arka planda salt okuma; yeni sapma integrity_log + zil.
   context.integrity.scanMinutes = INTEGRITY_SCAN_MINUTES;

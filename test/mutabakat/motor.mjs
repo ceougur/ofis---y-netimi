@@ -109,19 +109,25 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
   const cariAdd = (id, cents) => M.cari.set(id, (M.cari.get(id) || 0) + cents);
   const planLeft = p => Math.max(0, p.total - Math.max(0, p.paid));
   // v2.0.24: taksitli faturanın kendi kartı faturanın açığını izler (iade, iade iptali, kart tahsilatı/iadesi/silmesi sonrası).
-  // Bağımsız hesap: açık = taksite kalan − kartın net tahsilatı − asıl faturaya kesilmiş iadeler (0'ın altına inmez);
-  // kartın kalanı açığa eşit olacak biçimde toplam = ödenen + açık (büyürken taksite kalanı aşmaz).
-  function syncOwn(p) {
-    if (!p || !p.invoiceId || p.status !== "active") return;
-    const inv = M.invoices.get(p.invoiceId);
-    if (!inv || inv.status !== "issued") return;
+  // Bağımsız hesap (v2.1.0, Canlı Hata 2): hedef = max(0, taksite kalan − kartın net tahsilatı − iadeler + geri ödenen) —
+  // geri ödeme önce iadenin faturayı aşıp avansa dönen kısmından düşülür (2.0.24–2.0.26 kodu ve bu model açığı 0'da kırpıp
+  // geri ödemeyi sonra ekliyordu: peşinli kartta tam iade + peşin geri ödemesi kartı yeniden büyütüyordu). Toplam yalnız
+  // (hedef − kalan) farkı kadar değişir: büyürken taksite kalanı aşmaz, küçülürken ödenmemiş kalan kadar küçülür.
+  const ownTarget = (inv, paid) => {
     const rets = [...M.invoices.values()].filter(x => x.kind === "sale_return" && x.status === "issued" && x.originalId === inv.id);
     const returns = rets.reduce((sum, x) => sum + x.tryPayable, 0);
     // Parası geri verilen iade borcu düşürmez (geri ödeme satırı yeniden borçlandırır).
     const refunds = rets.reduce((sum, x) => sum + x.cashRows.filter(row => row.kind === "out").reduce((t, row) => t + row.amount, 0), 0);
-    const open = Math.max(0, inv.rest - Math.max(0, p.paid) - returns) + refunds;
-    if (planLeft(p) === open) return;
-    p.total = Math.min(inv.rest, Math.max(0, p.paid) + open);
+    return { target: Math.max(0, inv.rest - Math.max(0, paid) - returns + refunds), refunds };
+  };
+  function syncOwn(p) {
+    if (!p || !p.invoiceId || p.status !== "active") return;
+    const inv = M.invoices.get(p.invoiceId);
+    if (!inv || inv.status !== "issued") return;
+    const open = ownTarget(inv, p.paid).target;
+    const left = planLeft(p);
+    if (left === open) return;
+    p.total = open > left ? Math.max(p.total, Math.min(inv.rest, p.total + open - left)) : p.total - (left - open);
   }
   const uncovered = accountId => Math.max(0, (M.cari.get(accountId) || 0) - [...M.plans.values()].filter(p => p.accountId === accountId && p.covers && p.status === "active").reduce((s, p) => s + planLeft(p), 0));
   // Kasa'ya etkiler (tarihli): nakit eksi korumasının modeli ve işlem zinciri denetimi bunlardan hesaplanır.
@@ -267,10 +273,14 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
       const inv = (await api("GET", `/api/workspace/invoices/${m.invoiceId}`)).data;
       if (!inv || inv.status !== "issued") continue;
       const left = Math.max(0, centsOf(p.totals.total) - Math.max(0, centsOf(p.totals.paid)));
-      // Parası geri verilen iade borcu düşürmez: kartın kalanı = açık + geri ödenen (taksite kalanı aşmadan).
+      // Parası geri verilen iade borcu düşürmez: kartın kalanı = max(0, imzalı açık + geri ödenen) (Canlı Hata 2: önce
+      // avansa dönen iadeden düşülür), taksite kalanı aşmadan. Programın kendi kart tahsilatıyla hesaplanır; fatura
+      // açığı (0'da kırpılı) yalnız hedef 0'dan büyükken onunla aynı olmalı.
       const mi = M.invoices.get(m.invoiceId);
-      const refunds = [...M.invoices.values()].filter(x => x.kind === "sale_return" && x.status === "issued" && x.originalId === m.invoiceId).reduce((sum, x) => sum + x.cashRows.filter(row => row.kind === "out").reduce((t, row) => t + row.amount, 0), 0);
-      const want = Math.min(centsOf(inv.open) + refunds, Math.max(0, (mi?.rest ?? Infinity) - Math.max(0, centsOf(p.totals.paid))));
+      if (!mi) continue;
+      const { target, refunds } = ownTarget(mi, centsOf(p.totals.paid));
+      const want = Math.min(target, Math.max(0, mi.rest - Math.max(0, centsOf(p.totals.paid))));
+      if (target > refunds && Math.abs(centsOf(inv.open) + refunds - target) > 1) problems.push(`Taksitli fatura ${inv.number}: açık ${inv.open} + geri ödenen ${tl(refunds)} ≠ imzalı açık hedefi ${tl(target)}`);
       if (Math.abs(want - left) > 1) problems.push(`Taksitli fatura ${inv.number}: açık ${inv.open} (+ geri ödenen ${tl(refunds)}) ≠ kartın kalanı ${tl(left)} · kapatanlar ${(inv.closers || []).map(c => `${c.date}:${c.amount}:${c.label}`).join(" | ")}`);
     }
     // Fatura: her belge programda ve modelde aynı durumda, aynı TL ödenecekle; programda olup modelde olmayan (yetim) belge yok.
