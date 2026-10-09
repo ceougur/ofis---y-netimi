@@ -37,6 +37,7 @@ import { createIntegrity } from "./lib/integrity.mjs";
 import { createIdempotency } from "./lib/idempotency.mjs";
 import { createBank } from "./lib/bank/post.mjs";
 import { createMoneyLines } from "./lib/bank/money-lines.mjs";
+import { migrateBankGrants } from "./lib/bank/grants.mjs";
 import { markLegacyRows, repairBank } from "./lib/bank/repair.mjs";
 import { LOCK_KEY, createPeriod } from "./lib/period.mjs";
 import { registerDueRoutes } from "./routes/dues.mjs";
@@ -151,6 +152,15 @@ export function createApp(overrides = {}) {
   }
   if (!hub) ensureInitialAdmin(store, config, log);
   else mirrorUsers(hub.store, store);
+  // Gözden geçirme D5 (K4): eski sürümün (2.0.25/2.0.26) rol ya da kişi kaydında sildiği banka yetkileri ortak katmanın her açılışında geri
+  // gelir (yalnız işaretsiz rol/kişi; yalnız EKLER, bugünkü yetkilerden). Çalışmasa da program açılır.
+  if (!hub) {
+    try {
+      store.tx(() => migrateBankGrants(store));
+    } catch (error) {
+      log.error?.("Banka yetkileri yeniden değerlendirilemedi", error);
+    }
+  }
 
   const audit = createAudit(store, { now: config.now });
   // Merkezi para yazımı (v2.1.0; lib/bank/post.mjs, plan §3.3 K6): bank.post + para yazımı denetimi (K6) bu şirketin store'unda.

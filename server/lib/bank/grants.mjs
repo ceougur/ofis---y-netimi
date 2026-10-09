@@ -27,6 +27,11 @@ export const BANK_PERMISSIONS = Object.freeze({
   "bank.settings": ["admin", "muhasebe"],
 });
 export const BANK_KEYS = Object.freeze(Object.keys(BANK_PERMISSIONS));
+// Gözden geçirme D5 (Aşama 2; K4): "banka yetkileri verildi" işareti. Göç her özel role ve kişiye (ek listesine) yazar. Eski sürüm (2.0.25/
+// 2.0.26) rolü ya da kişiyi kaydederken bilmediği anahtarları (bank.* ve bu işaret) siler: işareti olmayan rol/kişi açılışta yeniden
+// değerlendirilir (yalnız EKLER; bugünkü yetkilerden). Aşama 3'te banka yetkisini elle düzenleyen ekran işareti KORUMALI (yöneticinin
+// bilinçli kaldırması yeniden eklenmesin). Katalogda olmadığı için hiçbir yetki vermez (okurken süzülür).
+export const GRANTS_DONE = "bank.granted";
 // Bankadan çıkış yapabilen modül yönetimi (K4).
 export const OUTFLOW_PERMISSIONS = Object.freeze(["accounts.manage", "invoices.manage", "stock.manage", "stock.sell", "cheques.manage", "plans.manage"]);
 const VIEW_KEYS = ["bank.view", "bank.reports"];
@@ -68,7 +73,9 @@ const withAll = (list, extra) => {
 };
 
 /**
- * Yetki göçü: roles.permissions_json ve users.grants_json'a yalnız banka yetkisi ekler. Bir işlemin içinde çağrılır (göç).
+ * Yetki göçü: roles.permissions_json ve users.grants_json'a yalnız banka yetkisi ekler. Bir işlemin içinde çağrılır (göç ve ortak katmanın
+ * her açılışı). Yalnız işareti (GRANTS_DONE) olmayan rol ve kişiye uygulanır: ilk göçte hepsi; sonra eski sürümün (ya da Aşama 3 öncesi
+ * rol kaydının) işareti silerek sildiği banka yetkileri geri gelir.
  * Dönüş: { roles, users } değişen satır sayıları.
  */
 export function migrateBankGrants(store) {
@@ -83,7 +90,8 @@ export function migrateBankGrants(store) {
       const today = new Set(permissions.filter(known));
       const gives = bankGrantsFor(today);
       roles.set(row.id, { today, gives });
-      const next = withAll(permissions, [...gives]);
+      if (permissions.includes(GRANTS_DONE)) continue;
+      const next = withAll(permissions, [...gives, GRANTS_DONE]);
       if (next.length !== permissions.length) {
         store.run("UPDATE roles SET permissions_json = ? WHERE id = ?", JSON.stringify(next), row.id);
         changed.roles += 1;
@@ -98,13 +106,14 @@ export function migrateBankGrants(store) {
     if (user.role === "admin" && !(user.roleKey && roles.has(user.roleKey))) continue; // yönetici her yetkiye sahip
     const custom = user.roleKey ? roles.get(user.roleKey) : null;
     const grants = rawGrants(user.grantsJson);
+    if (grants.add.includes(GRANTS_DONE)) continue;
     // Bugünkü etkin yetkiler: rol (özel rol kaydı ya da yerleşik matris) + kişiye eklenen − kaldırılan (katalogdakiler).
     const today = new Set(custom ? custom.today : permissionsFor(user.role).filter(known));
     for (const key of grants.add.filter(known)) today.add(key);
     for (const key of grants.remove.filter(known)) today.delete(key);
     const want = bankGrantsFor(today);
     const roleGives = custom ? custom.gives : new Set(BANK_KEYS.filter(key => BANK_PERMISSIONS[key].includes(user.role)));
-    const add = withAll(grants.add, [...want].filter(key => !roleGives.has(key)));
+    const add = withAll(grants.add, [...[...want].filter(key => !roleGives.has(key)), GRANTS_DONE]);
     // K4: kişiden kaldırma yalnız görmeye yansır (rol veriyor ama kişinin bugünkü yetkisi gerektirmiyorsa).
     const remove = withAll(grants.remove, VIEW_KEYS.filter(key => roleGives.has(key) && !want.has(key) && !add.includes(key)));
     if (add.length !== grants.add.length || remove.length !== grants.remove.length) {

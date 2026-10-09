@@ -230,6 +230,8 @@ describe("v2.0.7 ek yetki kayıtları göçü", () => {
     assert.deepEqual(user.grants, { add: ["overview.view"], remove: [] });
     assert.ok(user.permissions.includes("overview.view") && !user.permissions.includes("overview.card"));
     const raw = server.app.store.get("SELECT grants_json FROM users WHERE id = 'user-eski'").grants_json;
-    assert.deepEqual(JSON.parse(raw), { add: ["overview.view"], remove: [] });
+    // 2.1.0 gözden geçirme D5: göç kişiye "banka yetkileri verildi" işaretini (bank.granted) de yazar; katalogda olmadığı için hiçbir yetki
+    // vermez ve yukarıdaki API yanıtında görünmez. Ham kayıtta işaret dışında değişiklik yok.
+    assert.deepEqual(JSON.parse(raw), { add: ["overview.view", "bank.granted"], remove: [] });
   });
 });

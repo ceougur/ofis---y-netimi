@@ -8,6 +8,7 @@ import { HttpError, SECURITY_HEADERS, limited, ok, parseJson, readJson, text } f
 import { nameConflict } from "../lib/names.mjs";
 import { hashPassword, passwordProblem, verifyPassword } from "../lib/passwords.mjs";
 import { ADMIN_ONLY, GRANTABLE, PERMISSION_GROUPS, ROLE_LABELS, grantsOf, isGrantable, parseGrants } from "../lib/permissions.mjs";
+import { migrateBankGrants } from "../lib/bank/grants.mjs";
 import { compareVersions } from "../lib/semver.mjs";
 
 // Personel bilgisayarlarının bağlanabileceği yerel ağ adresleri (sanal/yerel bağdaştırıcılar hariç).
@@ -30,6 +31,9 @@ export function registerAdminRoutes(router, context) {
   // Oturumları silinen kullanıcının açık canlı bağlantıları da hemen kapanır.
   const dropLive = userId => events?.closeWhere(client => client.userId === userId);
   const now = () => new Date().toISOString();
+  // Gözden geçirme D5 (K4): rol ve kişi kaydı katalogdaki yetkileri yazar; Aşama 3'e kadar katalogda olmayan banka yetkileri (ve "verildi"
+  // işareti) bu yazımda düşer. Aynı istekte bugünkü yetkilerden yeniden türetilir (yalnız işaretsiz satırlar; ekranda görünmez).
+  const bankGrants = () => store.tx(() => migrateBankGrants(store));
   const activeAdmins = () => store.get("SELECT COUNT(*) AS count FROM users WHERE role = 'admin' AND active = 1 AND deleted_at IS NULL").count;
 
   // ---------- Kullanıcılar (v2.0.10: özel rol, kişiye özel yetki, ad/kullanıcı adı düzeltme, silme) ----------
@@ -115,6 +119,7 @@ export function registerAdminRoutes(router, context) {
       "INSERT INTO users (id, username, display_name, role, role_key, grants_json, password_hash, must_change_password, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
       userId, username, name, role, roleKey, JSON.stringify(grants), hashPassword(password), mustChange, timestamp, timestamp,
     );
+    bankGrants();
     audit(admin, "user.created", userId, { username, role: roleKey || role, grants });
     ok(res, { id: userId, username, name, role, roleKey: roleKey || role, mustChangePassword: Boolean(mustChange) });
   });
@@ -150,6 +155,7 @@ export function registerAdminRoutes(router, context) {
         role, roleKey, active, name || null, username || null, grants ? JSON.stringify(grants) : null, now(), target.id,
       );
       if (!active) store.run("DELETE FROM sessions WHERE user_id = ?", target.id);
+      bankGrants();
     });
     if (!active) dropLive(target.id);
     if (username && username !== target.username) auth.clearLoginLocks(target.username);
@@ -249,12 +255,14 @@ export function registerAdminRoutes(router, context) {
   router.post("/api/admin/roles", async ({ req, res }) => {
     const admin = auth.requirePermission(req, "users.manage");
     const role = access.createRole(await readJson(req), admin);
+    bankGrants();
     audit(admin, "role.created", role.id, { name: role.name, permissions: role.permissions });
     ok(res, role);
   });
   router.patch("/api/admin/roles/:id", async ({ req, res, params }) => {
     const admin = auth.requirePermission(req, "users.manage");
     const role = access.updateRole(params.id, await readJson(req));
+    bankGrants();
     audit(admin, "role.updated", role.id, { name: role.name, permissions: role.permissions });
     permissionsChanged(access.usersOfRole(role.id));
     ok(res, role);
