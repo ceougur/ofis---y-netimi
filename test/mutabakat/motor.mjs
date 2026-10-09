@@ -99,7 +99,8 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
   const open = date => !lock || date > lock;
 
   // ---------- Bağımsız model ----------
-  const M = { kasa: { cash: 0, bank: 0, card: 0 }, cari: new Map(), stok: new Map(), plans: new Map(), cash: [], entries: [], moves: [], planEntries: [], invoices: new Map(), drafts: new Map(), cheques: new Map(), invCash: [], chqCash: [], bankLines: [] };
+  // deleted: Silinenler'deki cari hareketleri (Yargıç K2: geri yükleme K7'den ve dönem kilidinden geçer).
+  const M = { kasa: { cash: 0, bank: 0, card: 0 }, cari: new Map(), stok: new Map(), plans: new Map(), cash: [], entries: [], moves: [], planEntries: [], invoices: new Map(), drafts: new Map(), cheques: new Map(), invCash: [], chqCash: [], bankLines: [], deleted: [] };
   const report = { seed, operations: 0, byKind: {}, rejectedAsExpected: 0, rejections: {}, mismatches: [], checks: 0, reportChecks: 0, integrityMs: [], timeline: { from: D0, to: T }, locks: [] };
   const count = kind => (report.byKind[kind] = (report.byKind[kind] || 0) + 1);
   const accounts = [];
@@ -854,6 +855,29 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
         if (e.kind === "in") M.kasa[e.method] -= e.amount;
         if (e.kind === "out") M.kasa[e.method] += e.amount;
         M.entries.splice(M.entries.indexOf(e), 1);
+        M.deleted.push(e);
+        return;
+      }
+      case "geri-yukle": {
+        // Yargıç K2 (plan §3.8, §3.9): Silinenler'den cari hareketini geri yükle. Kilitli dönem 409; hesaba bağlı ödeme hesabı eksiye
+        // düşürecekse onaysız 409 bank-negative, %60 "Yine de Geri Yükle" (negativeOk). Nakit tarafında geri yükleme bugünkü gibi sorulmaz.
+        const e = R.pick(M.deleted);
+        if (!e) return;
+        const list = (await api("GET", "/api/admin/trash")).data || [];
+        const item = (Array.isArray(list) ? list : []).find(x => x.kind === "account-entry" && x.ref === e.id && x.restorable);
+        if (!item) throw Object.assign(new Error(`${kind}: silinen hareket Silinenler'de yok (${e.id})`), { unexpected: true });
+        const change = e.bankId && (e.kind === "in" || e.kind === "out") ? [{ bankId: e.bankId, cents: e.kind === "in" ? e.amount : -e.amount, date: e.date }] : [];
+        const goesNegative = change.length && change[0].cents < 0 && bankGoesNegative(change, e.date);
+        const negativeOk = goesNegative && R.chance(0.6);
+        const r = await api("POST", "/api/admin/trash/restore", { id: item.id, ...(negativeOk ? { negativeOk: true } : {}) });
+        if (!open(e.date)) return expectReject(r, "period-locked", kind);
+        if (goesNegative && !negativeOk) return expectReject(r, "bank-negative", kind);
+        mustOk(r, kind);
+        cariAdd(e.accountId, e.kind === "debt" || e.kind === "out" ? e.amount : -e.amount);
+        if (e.kind === "in") M.kasa[e.method] += e.amount;
+        if (e.kind === "out") M.kasa[e.method] -= e.amount;
+        M.deleted.splice(M.deleted.indexOf(e), 1);
+        M.entries.push(e);
         return;
       }
       case "alim": {
@@ -1016,6 +1040,26 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
         cariAdd(p.accountId, e.kind === "in" ? e.amount : -e.amount);
         M.kasa[e.method] += e.kind === "in" ? -e.amount : e.amount;
         M.planEntries.splice(M.planEntries.indexOf(e), 1);
+        return;
+      }
+      case "kart-sil": {
+        // Yargıç K1 (plan §3.8 "Taksit kartı"): banka hesabına bağlı tahsilatı olan kart silinmez (409 plan-bank-linked; kart ve hesap
+        // yerinde). Öbür kart silinir: borcu (yeni borç kartıysa) ve hareketleri cariden ve Kasa'dan düşer. Nakit tahsilatlı kart burada
+        // seçilmez (Kasa eksi denetimi toplam etkiyle yapılır; model satır satır sorar).
+        const [id, p] = R.pick([...M.plans.entries()].filter(([pid, x]) => x.status === "active" && !x.invoiceId && !M.planEntries.some(e => e.planId === pid && e.method === "cash"))) || [];
+        if (!id) return;
+        const rows = M.planEntries.filter(e => e.planId === id);
+        const r = await api("DELETE", `/api/workspace/plans/${id}?cashForce=1`);
+        if ((!p.covers && !open(p.registeredOn)) || rows.some(e => !open(e.date))) return expectReject(r, "period-locked", kind);
+        if (rows.some(e => e.bankId)) return expectReject(r, "plan-bank-linked", kind);
+        mustOk(r, kind);
+        if (!p.covers) cariAdd(p.accountId, -p.total);
+        for (const e of rows) {
+          cariAdd(p.accountId, e.kind === "in" ? e.amount : -e.amount);
+          M.kasa[e.method] += e.kind === "in" ? -e.amount : e.amount;
+          M.planEntries.splice(M.planEntries.indexOf(e), 1);
+        }
+        M.plans.delete(id);
         return;
       }
       case "kart-kapat": {
@@ -1403,6 +1447,8 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
   const WEIGHTS = [
     ["satis", 20], ["alim", 11], ["kasa", 9], ["cari", 11], ["taksit-tahsil", 11], ["kart", 6], ["iade", 5],
     ["kasa-duzelt", 3], ["kasa-sil", 2], ["cari-duzelt", 4], ["cari-sil", 2], ["hareket-duzelt", 3], ["hareket-sil", 2], ["taksit-sil", 3], ["kart-kapat", 2],
+    // Yargıç ve Eleştirmen (2.1.0): taksit kartı silme (banka bağlıysa 409) ve Silinenler'den geri yükleme (K7, dönem kilidi).
+    ["kart-sil", 2], ["geri-yukle", 2],
     // Saha hataları yüksek sıklıkta: her 100 işlemin ~17'si hatalı tarih, vade ya da kapalı dönem denemesi.
     ["tarih-hatasi", 8], ["vade-hatasi", 4], ["kilit-ihlali", 5],
     // Fatura (v2.0.15): kesme, iade, iptal, taslak, çek/senet; kasıtlı yarıda kalan işlemler ve saha hataları.
@@ -1410,7 +1456,7 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
     ["fatura-acid", 4], ["fatura-hatasi", 9], ["fatura-bagli", 1],
     // Banka Fişi (v2.1.0 Aşama 4): fiş (+ saha hataları), Ters Kaydet, Düzelt, Benzer İşlem.
     ["banka-fis", 7], ["banka-ters", 2], ["banka-duzelt", 2], ["banka-benzer", 1],
-  ].filter(([k]) => bank || !k.startsWith("banka-"));
+  ].filter(([k]) => bank || !(k.startsWith("banka-") || k === "kart-sil" || k === "geri-yukle"));
   const bag = WEIGHTS.flatMap(([k, w]) => Array(w).fill(k));
   if (bank) {
     const meta = (await api("GET", "/api/workspace/bank/voucher-meta")).data || {};
