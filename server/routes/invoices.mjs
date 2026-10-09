@@ -1287,7 +1287,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     const row = store.get("SELECT id, account_id AS accountId, try_payable AS tryPayable, plan_id AS planId, payment_json AS paymentJson FROM invoices WHERE id = ?", originalId);
     if (!row || !plans()?.shrinkPlan) return null;
     const state = paymentStates([row]).get(row.id) || {};
-    return { row, open: Number(state.open) || 0, coveredBy: { ...(state.coveredBy || {}) } };
+    return { row, open: Number(state.open) || 0, excess: Number(state.excess) || 0, coveredBy: { ...(state.coveredBy || {}) } };
   }
   // İade (kaydı, düzenlemesi, iptali) sonrası asıl faturayı taksitlendiren kart yeni duruma getirilir:
   //  - faturanın kendi kartının kalanı = faturanın açığı (küçülür; iade azaldıysa/iptal edildiyse fatura kalanına kadar büyür);
@@ -1298,10 +1298,19 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   // satırı (çıkış) yeniden borçlandırır. Kart bu tutar kadar küçülmez (gözden geçirme G1).
   const refundOf = returnId => roundMoney(store.all("SELECT amount FROM account_entries WHERE source = 'invoice' AND source_id = ? AND kind = 'out'", returnId).reduce((sum, row) => sum + (Number(row.amount) || 0), 0));
   const refundsFor = originalId => roundMoney(store.all("SELECT id FROM invoices WHERE kind = 'sale_return' AND status = 'issued' AND original_id = ?", originalId).reduce((sum, row) => sum + refundOf(row.id), 0));
+  // v2.1.0 (Canlı Hata 2, 2.0.24 G1'in gerilemesi): hedef = max(0, imzalı açık + geri ödenen). İmzalı açık, faturaya bağlı
+  // ödemeler ve iadeler faturayı aşınca eksidir (açık 0'da kırpılmaz); geri ödeme önce iadenin faturayı aşıp avansa dönen
+  // kısmından düşülür (yaygın programlardaki iade/geri ödeme mahsubu). 2.0.24–2.0.26'da hedef = açık(0'da kırpılı) + geri
+  // ödenen idi: peşinli taksitli faturada malın tamamı iade edilip peşin geri ödenince kart yeniden büyüyor, borçsuz müşteri
+  // gecikmiş görünüyordu.
+  function ownTarget(originalId) {
+    const state = coverState(originalId);
+    return roundMoney(Math.max(0, (state?.open ?? 0) - (state?.excess ?? 0) + refundsFor(originalId)));
+  }
   function ownCard(user, original, touched, note) {
     if (!original?.planId) return;
     const p = plans();
-    const open = roundMoney((coverState(original.id)?.open ?? 0) + refundsFor(original.id));
+    const open = ownTarget(original.id);
     const left = p.leftOf(original.planId);
     if (left > open + 0.005) {
       if (p.shrinkPlan(user, original.planId, roundMoney(left - open), note) > 0) touched.plans.add(original.planId);
