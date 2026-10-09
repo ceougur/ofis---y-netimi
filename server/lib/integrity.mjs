@@ -29,6 +29,7 @@ import { HttpError } from "./http.mjs";
 import { UNASSIGNED_SUBS, partyBalances, subBalances } from "./general-ledger.mjs";
 import { byEntity, createBankChecks } from "./bank/checks.mjs";
 import { createScopedGate, familyOf } from "./integrity-scope.mjs";
+import { runScanWorker } from "./integrity-scan-runner.mjs";
 import { systemClock } from "./clock.mjs";
 import { roundMoney, toCents } from "./money.mjs";
 
@@ -207,7 +208,7 @@ export function lockDigestOf(store, lock) {
   return hash.digest("hex");
 }
 
-export function createIntegrity({ store, ledger, accounts = () => null, stock = () => null, plans = () => null, period = () => null, money = () => null, events = null, strict = false, verify = false, partyRows = 2000, log = null, newId = () => `int-${crypto.randomUUID()}`, now = systemClock }) {
+export function createIntegrity({ store, ledger, accounts = () => null, stock = () => null, plans = () => null, period = () => null, money = () => null, events = null, strict = false, verify = false, partyRows = 2000, dbPath = "", log = null, newId = () => `int-${crypto.randomUUID()}`, now = systemClock }) {
   const has = table => Boolean(store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = ?", table));
   // v2.1.0 (§3.11): banka çekirdeğinin denetimleri (lib/bank/checks.mjs) — olay bazlı (COMMIT'te dokunulan olaylar) ve tam tarama.
   let bankChecks = null;
@@ -757,13 +758,12 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
   // önceki taramalarda görülen sapma imzaları (COMMIT tabanından bağımsız; olay bazlı denetimlerin taban olmaması tarama sonucunu değiştirmez).
   let known = new Set();
   let lastScan = null;
-  function scan() {
-    const result = run();
+  // Tarama sonucunun işlenmesi (iki yol ortak): kilit izi, yeni sapmanın günlüğü ve zili.
+  function settleScan(result, lock, digest, via) {
     // Kilit izi (gözden geçirme D8; plan §3.11/4 "sha256 tam taramaya kalır"): süzgeç kilit izini yalnız kilide giren bir dokunuşta, tam kapı
     // yalnız kendi yolunda hesaplar; kapının görmediği (store dışı, eski sürüm, elle) kilitli dönem değişikliği taramada görünür. Taban
     // değişmez: 2.0.26'daki gibi sonraki tam kapı yolu "Kapanmış dönem" 409'u verir (yeniden başlatmaya ya da kilit değişimine kadar).
-    const lock = period()?.lockedUntil?.() || "";
-    if (lock && lock === lockState.lock && lockState.digest && lockDigest(lock) !== lockState.digest) {
+    if (lock && lock === lockState.lock && lockState.digest && digest !== lockState.digest) {
       const item = { code: "period-lock", name: `Kapanmış dönem (${lock} ve öncesi) kapının görmediği bir yolla değişti`, ok: false, count: 1 };
       result.checks.push(item);
       result.failures.push(item);
@@ -784,14 +784,77 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
         // zil yayımlanamasa da kayıt yazıldı
       }
     }
-    lastScan = { at: now().toISOString(), findings: findings.map(item => item.code) };
+    lastScan = { at: now().toISOString(), via, findings: findings.map(item => item.code) };
     return { findings, result };
+  }
+  /** Tam tarama bu iş parçacığında (Mutabakat Testi düğmesi: kullanıcı sonucu bekler). */
+  function scan() {
+    const result = run();
+    const lock = period()?.lockedUntil?.() || "";
+    return settleScan(result, lock, lock ? lockDigest(lock) : "", "inline");
+  }
+
+  // ---------- Arka plan taraması (gözden geçirme B7, Aşama 2) ----------
+  // 15 dakikalık tarama ana iş parçacığında koşunca sunucu tarama boyunca istek alamıyordu (100.000 satırda ~9 sn, 1.000.000'da ~139 sn;
+  // Node bağlantıyı kesiyordu). Şimdi: ayrı iş parçacığında (lib/integrity-scan-worker.mjs), salt okunur ayrı bağlantıyla ve tek okuma
+  // işleminde (WAL anlık görüntüsü) aynı run() koşar; sonuç (günlük, zil) burada işlenir. Son taramadan beri veri (total_changes ve
+  // data_version), gün ve dönem kilidi değişmediyse tarama atlanır (boşta CPU yok). Aynı anda tek tarama.
+  const exportLegacy = () => ({
+    future: [...legacyFuture].map(([table, ids]) => [table, [...ids]]),
+    method: [...legacyMethod],
+    events: [...legacyEvents],
+    eventless: [...legacyEventless],
+  });
+  function importLegacy(value = {}) {
+    legacyFuture = new Map((value.future || []).map(([table, ids]) => [table, new Set(ids)]));
+    legacyMethod = new Set(value.method || []);
+    legacyEvents = new Set(value.events || []);
+    legacyEventless = new Set(value.eventless || []);
+  }
+  let backgroundScan = null;
+  let scanFingerprint = "";
+  const fingerprintNow = () => {
+    let counters = null;
+    try {
+      counters = store.changeCounters ? store.changeCounters() : null;
+    } catch {
+      counters = null;
+    }
+    return counters ? `${counters.version}|${counters.total}|${period()?.today?.() || now.today()}|${period()?.lockedUntil?.() || ""}` : "";
+  };
+  const scanStats = { runs: 0, skipped: 0, failed: 0 };
+  async function scanInBackground() {
+    if (!dbPath) return scan();
+    if (backgroundScan) return { skipped: "running" };
+    const fingerprint = fingerprintNow();
+    if (fingerprint && fingerprint === scanFingerprint) {
+      scanStats.skipped += 1;
+      return { skipped: "unchanged" };
+    }
+    backgroundScan = runScanWorker({ dbPath, time: now().toISOString(), legacy: exportLegacy(), partyRows });
+    try {
+      const outcome = await backgroundScan;
+      scanStats.runs += 1;
+      scanFingerprint = fingerprint;
+      return settleScan(outcome.result, outcome.lock, outcome.digest, "worker");
+    } catch (error) {
+      scanStats.failed += 1;
+      log?.warn?.(`Mutabakat taraması arka planda çalışmadı (${error.message}); bir sonraki zamanda yeniden denenecek.`);
+      return { failed: error.message };
+    } finally {
+      backgroundScan = null;
+    }
   }
 
   return {
     run,
     start,
     scan,
+    scanInBackground,
+    importLegacy,
+    get scanStats() {
+      return { ...scanStats, running: Boolean(backgroundScan) };
+    },
     get lastScan() {
       return lastScan;
     },

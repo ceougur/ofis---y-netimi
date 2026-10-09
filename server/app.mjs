@@ -310,7 +310,7 @@ export function createApp(overrides = {}) {
   context.ledger = registerLedgerRoutes(router, { ...context, cash: () => context.cash, accounts: () => context.accounts, integrity: () => context.integrity });
   // Mutabakat kapısı (v2.0.13): para taşıyan her işlem COMMIT'ten önce alt defter ↔ ana defter denetiminden geçer;
   // sapma yaratacaksa ROLLBACK edilir ve günlüğe yazılır (lib/integrity.mjs).
-  context.integrity = createIntegrity({ store, ledger: () => context.ledger, accounts: () => context.accounts, stock: () => context.stock, plans: () => context.plans, period: () => context.period, money: () => context.money, events, strict: config.moneyStrict, verify: config.gateVerify, partyRows: config.scopePartyRows, log, now: config.now });
+  context.integrity = createIntegrity({ store, ledger: () => context.ledger, accounts: () => context.accounts, stock: () => context.stock, plans: () => context.plans, period: () => context.period, money: () => context.money, events, strict: config.moneyStrict, verify: config.gateVerify, partyRows: config.scopePartyRows, dbPath: config.dbPath, log, now: config.now });
   // Açılış onarımı (v2.1.0, §10.6): eski sürüme (2.0.25/2.0.26) dönülüp yeniden güncellenen dosyada eski sürümün izleri kapı kurulmadan
   // toplanır (tek işlem; yalnız ilgili kayıtlar). Onarım başarısız olsa da program açılır; sapmalar kapının tabanı ve Mutabakat Testi'nde.
   try {
@@ -321,12 +321,9 @@ export function createApp(overrides = {}) {
   context.integrity.start();
   // Tam tarama (§3.11 "Kapı ölçeği" 1): 15 dakikada bir arka planda salt okuma; yeni sapma integrity_log + zil.
   context.integrity.scanMinutes = INTEGRITY_SCAN_MINUTES;
+  // Gözden geçirme B7: tarama ayrı iş parçacığında (salt okunur bağlantı); veri, gün ve kilit değişmediyse atlanır.
   context.integrity.scanTimer = overrides.integrityScan === false ? null : setInterval(() => {
-    try {
-      context.integrity.scan();
-    } catch (error) {
-      log.error?.("Mutabakat taraması çalışmadı", error);
-    }
+    context.integrity.scanInBackground().catch(error => log.error?.("Mutabakat taraması çalışmadı", error));
   }, INTEGRITY_SCAN_MINUTES * 60_000);
   context.integrity.scanTimer?.unref?.();
   // WhatsApp ile ekstre ve mesaj (v2.0.13): tek ya da toplu; alıcıları sunucu hazırlar, gönderimler cari kartına yazılır.
