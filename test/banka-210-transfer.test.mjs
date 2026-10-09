@@ -24,7 +24,8 @@
 //   B14 K7 Uyar: gönderen eksiye düşerse 409 bank-negative → "Yine de Kaydet" (negativeOk) 200; Engelle: negativeOk ile de 409
 //   B15 Planlı transfer: bakiye değişmez; Gerçekleştir → iki bacak; plan ilerler; aynı hesaplı plan 400
 //   B16 Kapı bank:transfer: ham yazımla (bank.post dışı) tek B / tek A kuralı bozulan transfer Mutabakat Testi'nde görünür
-//   B17 Bugün Çıkış transferi saymaz; Transfer satırı ayrı; transfer ücreti Çıkış'ta ve Banka Masraf Raporu'nda
+//   B17 Ekstreyle eşleşmiş Kasa ↔ Banka transferini sil / düzelt → 409 bank-reconciled; personel silemez (plan Aşama 6 #80–81)
+//   B18 Bugün Çıkış transferi saymaz; Transfer satırı ayrı; transfer ücreti Çıkış'ta ve Banka Masraf Raporu'nda (kabul 13–14 ve ücretli örnek)
 import assert from "node:assert/strict";
 import http from "node:http";
 import { after, before, describe, it } from "node:test";
