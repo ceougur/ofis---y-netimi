@@ -37,7 +37,7 @@ function compareAll(app, label) {
 
 describe("B8 — carinin defter bakiyesi: SQL toplamı = yevmiye (iki yolun eşdeğerliği)", () => {
   it("rastgele mutabakat motoru (eşik 0: her cari SQL yolunda, eşdeğerlik denetimi açık): her işlem tutarlı, süzgeç bulgusu yok, her cari eşit", async () => {
-    const ctx = await boot({ scopePartyRows: 0 });
+    const ctx = await boot({ scopePartyRows: 0, bankPickLegacy: true });
     try {
       const report = await runReconciliation({ client: await loginAdmin(ctx.server), seed: 5, operations: 400, verifyEvery: 10, burst: 0 });
       assert.deepEqual(report.mismatches.slice(0, 3), [], "motor: her işlemde tutarlı");

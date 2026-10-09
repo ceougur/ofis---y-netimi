@@ -60,7 +60,7 @@ describe("Aşama 4 — Hareketler, İşlem Kartı ve Banka Masraf Raporu", () =>
   let kdvFee;
   let reversedFee;
   before(async () => {
-    ctx = await bootBank();
+    ctx = await bootBank({ bankPickLegacy: true });
     set = await openBankSet(ctx.api);
     const z = set.ziraat.id;
     party = await supplier(ctx.api, "Ziraat Bankası A.Ş.");
@@ -266,7 +266,7 @@ describe("Aşama 4 — Hareketler araması: yakın pencere ve tablo taraması s�
   let ctx;
   let accounts;
   before(async () => {
-    ctx = await bootBank();
+    ctx = await bootBank({ bankPickLegacy: true });
     const open = (bankName, name) => must(`hesap ${name}`, ctx.api.post(`${BANK}/accounts`, { bankName, name, kind: "demand", opening: { date: "2026-01-02", amount: "10.000", confirmed: true } }));
     accounts = { a: await open("Ziraat Bankası", "Eski Hesap"), b: await open("Garanti BBVA", "Eski Hesap") };
     accounts.card = await must("kart", ctx.api.post(`${BANK}/accounts`, { bankName: "Ziraat Bankası", name: "Eski Kart", kind: "card", creditLimit: "50.000", opening: { date: "2026-01-02", amount: "0", confirmed: true } }));

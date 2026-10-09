@@ -27,7 +27,7 @@ describe("Aşama 3 — kabul 1–4 ve açılış kuralları", () => {
   let ctx;
   let accounts;
   before(async () => {
-    ctx = await bootBank();
+    ctx = await bootBank({ bankPickLegacy: true });
     accounts = await openAcceptanceAccounts(ctx.api);
   });
   after(() => ctx.server.close());
@@ -210,7 +210,7 @@ describe("Aşama 3 — kabul 1–4 ve açılış kuralları", () => {
 
 describe("Aşama 3 — sıfırlama ve Açılış Bakiyesi Gir", () => {
   it("Tüm Hareketleri Sil → hesap kalır, Bakiye Doğrulandı kalkar, açılış yok → Açılış Bakiyesi Gir → mutabakat 0; İşlem No geri gitmez", async () => {
-    const ctx = await bootBank();
+    const ctx = await bootBank({ bankPickLegacy: true });
     try {
       const { ziraat } = await openAcceptanceAccounts(ctx.api);
       const lastNo = ctx.store.get("SELECT MAX(seq) AS n FROM fin_events WHERE year = 2026").n;

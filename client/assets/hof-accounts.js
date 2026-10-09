@@ -727,6 +727,9 @@
     const type = entry?.kind || kind;
     const invoiceOptions = type === "in" || type === "out" ? await openInvoiceOptions(account, type) : [];
     if (entry?.invoiceId && !invoiceOptions.some(option => option.value === entry.invoiceId)) invoiceOptions.unshift({ value: entry.invoiceId, label: "Bağlı Fatura (kapanmış)" });
+    // v2.1.0 Aşama 5: istek kimliği form açılışında (aynı gönderim ikinci kez yazılmaz); Havale / EFT seçilince Banka Hesabı (tek hesapta gizli).
+    const requestId = HOF.requestId();
+    const money_ = type === "in" || type === "out";
     HOF.formModal({
       title: entry ? `${ENTRY_LABEL[type]} düzelt` : ENTRY_LABEL[type],
       eyebrow: account.name,
@@ -744,6 +747,9 @@
         { name: "note", label: "Açıklama", maxlength: 300, value: entry?.note || "", placeholder: type === "in" ? "Ör. Eylül ödemesi" : type === "debt" ? "Ör. Eylül aidatı, 3 adet ürün" : "" },
       ],
       submitLabel: entry ? "Kaydet" : ENTRY_LABEL[type],
+      onOpen: dialog => {
+        if (money_ && HOF.bank?.attachPicker) HOF.bank.attachPicker(dialog.querySelector("form"), { methodName: "method", value: entry?.finRef || "", keepLabel: entry && entry.method === "bank" && !entry.finRef ? "Atanmamış (Eski Hareket)" : "" });
+      },
       onSubmit: async data => {
         if (data.method === "cheque") {
           // Çekle/senetle tahsilat ya da ödeme: evrak portföye girer, carinin borcu evrakla düşer (Kasa değişmez).
@@ -751,8 +757,15 @@
           return;
         }
         const url = `/api/workspace/accounts/${encodeURIComponent(account.id)}/entries${entry ? `/${encodeURIComponent(entry.id)}` : ""}`;
-        const result = await HOF.api(url, { method: entry ? "PUT" : "POST", body: { ...data, kind: entry && data.kind ? data.kind : type } });
+        const body = { ...data, kind: entry && data.kind ? data.kind : type };
+        if (data.method !== "bank") delete body.bankAccountId;
+        const send = flags => HOF.api(url, { method: entry ? "PUT" : "POST", body: { ...body, ...flags }, requestId });
+        const result = HOF.bank?.withConfirms ? await HOF.bank.withConfirms(send) : await send({});
         applyAccount(result);
+        if (result.replayed) {
+          HOF.toast("Bu işlem zaten kaydedildi; ikinci kez yazılmadı.", { type: "info" });
+          return;
+        }
         if (type === "in" || type === "out") HOF.emit("cash-changed");
         const receipt = !entry && (type === "in" || type === "out") && result.entryId ? { label: "Makbuz", onClick: () => window.open(`/api/workspace/accounts/${encodeURIComponent(account.id)}/entries/${encodeURIComponent(result.entryId)}/makbuz.pdf`, "_blank", "noopener") } : undefined;
         HOF.toast(`${entry ? "Hareket düzeltildi" : `${ENTRY_LABEL[type]} kaydedildi`}. Bakiye ${money(Math.abs(result.totals.balance))}${sideWord(result.totals.balance) ? ` ${sideWord(result.totals.balance)}` : ""}.`, { type: "success", action: receipt });
@@ -789,7 +802,10 @@
     const ok = await HOF.confirm({ title: "Hareketi Sil", message: `${money(entry.amount)} tutarındaki ${ENTRY_LABEL[entry.kind].toLocaleLowerCase("tr-TR")} silinecek; bakiye${entry.kind === "in" || entry.kind === "out" ? " ve Kasa" : ""} yeniden hesaplanır. Yönetim → Silinenler’den geri yüklenebilir.`, confirmLabel: "Sil", danger: true });
     if (!ok) return;
     try {
-      applyAccount(await HOF.api(`/api/workspace/accounts/${encodeURIComponent(account.id)}/entries/${encodeURIComponent(entry.id)}`, { method: "DELETE" }));
+      // Banka hesabına bağlı tahsilat silinince hesabın bakiyesi düşer: eksi bakiye sorusu (K7) "Yine de Sil" ile adrese eklenir.
+      const path = `/api/workspace/accounts/${encodeURIComponent(account.id)}/entries/${encodeURIComponent(entry.id)}`;
+      const send = flags => HOF.api(flags.negativeOk ? `${path}?negativeOk=1` : path, { method: "DELETE" });
+      applyAccount(HOF.bank?.withConfirms ? await HOF.bank.withConfirms(send) : await send({}));
       HOF.toast("Hareket silindi.", { type: "success" });
     } catch (error) {
       HOF.toastError(error);
@@ -815,6 +831,12 @@
       loadList();
       HOF.emit("accounts-changed", {});
     } catch (error) {
+      // v2.1.0 Aşama 5: banka hesabına bağlı hareketi ya da faturası olan cari silinmez; nedeni söylenir, Pasife Al önerilir.
+      if (["account-bank-linked", "account-has-invoices"].includes(error?.data?.code) && account.status !== "passive") {
+        const passive = await HOF.confirm({ title: "Cari Silinemez", message: error.message, confirmLabel: "Pasife Al", cancelLabel: "Vazgeç" });
+        if (passive) await setStatus(account, "passive");
+        return;
+      }
       HOF.toastError(error);
     }
   }

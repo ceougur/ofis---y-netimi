@@ -727,5 +727,6 @@ export function createBankVouchers({ store, bank, period, money, accounts, movem
     };
   }
 
-  return { meta, specOf, needsInvoice, create, reverse, correct, info, listPlans, createPlan, executePlan, skipPlan, cancelPlan, dueCount, planRow, mustPlan };
+  // negative (Aşama 5–6): K7'nin aynı kuralı modül yazımlarında (cari havale, Kasa ↔ Banka transferi; lib/bank/module-ref.mjs).
+  return { negative: { balancesOf, guardNegative, primeTotals }, meta, specOf, needsInvoice, create, reverse, correct, info, listPlans, createPlan, executePlan, skipPlan, cancelPlan, dueCount, planRow, mustPlan };
 }

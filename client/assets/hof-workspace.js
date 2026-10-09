@@ -404,8 +404,11 @@
   const TRANSFER_TITLE = { "to-cash": "Bankadan Kasaya Aktar", "to-bank": "Kasadan Bankaya Yatır" };
 
   // Kasa ↔ Banka transferi: tek işlemde Kasa'da nakit giriş/çıkış + banka tarafında karşı hareket.
+  // v2.1.0 Aşama 6: banka tarafının hesabı (Banka Hesabı; tek hesapta gizli, hiç hesap yoksa bugünkü görünüm), istek kimliği (aynı gönderim
+  // ikinci kez yazılmaz), Benzer İşlem ve banka hesabının eksi bakiye sorusu (HOF.bank.withConfirms).
   function transferForm(direction, after) {
     const toCash = direction === "to-cash";
+    const requestId = HOF.requestId();
     HOF.formModal({
       title: TRANSFER_TITLE[direction] || "Transfer",
       eyebrow: "KASA",
@@ -416,9 +419,14 @@
         { name: "description", label: "Açıklama", maxlength: 300, placeholder: toCash ? "Ör. ATM'den nakit çekildi" : "Ör. Günlük hasılat bankaya" },
       ],
       submitLabel: toCash ? "Kasaya Aktar" : "Bankaya Yatır",
+      onOpen: dialog => {
+        const form = dialog.querySelector("form");
+        HOF.bank?.attachPicker?.(form, { anchor: form.querySelector('[name="amount"]')?.closest(".hof-field"), label: toCash ? "Çekilen Banka Hesabı" : "Yatırılan Banka Hesabı" });
+      },
       onSubmit: async data => {
-        await HOF.api("/api/workspace/cash/transfer", { method: "POST", body: { ...data, direction } });
-        HOF.toast(toCash ? "Bankadan kasaya aktarım yazıldı." : "Kasadan bankaya yatırma yazıldı.", { type: "success" });
+        const send = flags => HOF.api("/api/workspace/cash/transfer", { method: "POST", body: { ...data, direction, ...flags }, requestId });
+        const result = HOF.bank?.withConfirms ? await HOF.bank.withConfirms(send) : await send({});
+        HOF.toast(result?.replayed ? "Bu transfer zaten kaydedildi; ikinci kez yazılmadı." : toCash ? "Bankadan kasaya aktarım yazıldı." : "Kasadan bankaya yatırma yazıldı.", { type: result?.replayed ? "info" : "success" });
         HOF.emit("cash-changed");
         after?.();
       },
@@ -441,10 +449,18 @@
         { name: "methodLabel", label: incoming ? "Tahsilat Yolu" : "Ödeme Yolu", value: methodText, readonly: true, help: transfer ? "Düzeltme banka tarafındaki karşı hareketi de günceller." : "Kasa'ya yalnız nakit girilir. Havale/EFT ve POS hareketleri cari, fatura, taksit, stok ve çek/senet ekranlarından girilir." },
       ],
       submitLabel: entry ? "Düzeltmeyi Kaydet" : incoming ? "Tahsilatı Ekle" : "Ödemeyi Ekle",
+      // v2.1.0 Aşama 6: transferin banka hesabı değiştirilebilir ("Değiştirme" = mevcut hesap; hesabı atanmamış eski transferde tutar ya da tarih
+      // değişirse program hesap ister).
+      onOpen: dialog => {
+        if (!transfer) return;
+        const form = dialog.querySelector("form");
+        HOF.bank?.attachPicker?.(form, { anchor: form.querySelector('[name="methodLabel"]')?.closest(".hof-field"), keepLabel: "Değiştirme (Mevcut Hesap)", label: "Banka Hesabı" });
+      },
       onSubmit: async data => {
         const { methodLabel: _ignored, ...rest } = data;
         const body = { ...rest, kind: entry?.kind || kind };
-        if (entry) await HOF.api(`/api/workspace/cash/${encodeURIComponent(entry.id)}`, { method: "PUT", body });
+        if (entry && transfer) await HOF.bank.withConfirms(flags => HOF.api(`/api/workspace/cash/${encodeURIComponent(entry.id)}`, { method: "PUT", body: { ...body, ...flags } }));
+        else if (entry) await HOF.api(`/api/workspace/cash/${encodeURIComponent(entry.id)}`, { method: "PUT", body });
         else await HOF.api("/api/workspace/cash", { method: "POST", body });
         HOF.toast(entry ? "Kasa hareketi düzeltildi." : incoming ? "Tahsilat kasaya eklendi." : "Ödeme kasaya işlendi.", { type: "success" });
         HOF.emit("cash-changed");
@@ -457,7 +473,9 @@
     const ok = await HOF.confirm({ title: entry.transferId ? "Transferi Sil" : "Kasa Hareketini Sil", message: entry.transferId ? `${HOF.formatMoney(entry.amount)} tutarındaki transfer (${entry.description}) iki tarafıyla birlikte silinecek: Kasa'daki nakit hareket ve banka tarafındaki karşı hareket. Silinenler'den geri yüklenebilir.` : `${HOF.formatMoney(entry.amount)} tutarındaki ${entry.kind === "in" ? "tahsilat" : "ödeme"} (${entry.description}) silinecek. Silme işlem kayıtlarında saklanır.`, confirmLabel: "Sil", danger: true });
     if (!ok) return;
     try {
-      await HOF.api(`/api/workspace/cash/${encodeURIComponent(entry.id)}`, { method: "DELETE" });
+      const path = `/api/workspace/cash/${encodeURIComponent(entry.id)}`;
+      const send = flags => HOF.api(flags.negativeOk ? `${path}?negativeOk=1` : path, { method: "DELETE" });
+      await (HOF.bank?.withConfirms ? HOF.bank.withConfirms(send) : send({}));
       HOF.toast("Kasa hareketi silindi.", { type: "success" });
       HOF.emit("cash-changed");
       after?.();
@@ -517,7 +535,7 @@
       size: "wide",
       body: `<div class="hof-kpis hof-cash-kpis" data-kpis></div>
         <div class="hof-cash-bar"><div class="hof-tabs" role="group" aria-label="Dönem">${PERIODS.map(item => `<button type="button" data-period="${item.id}">${item.label}</button>`).join("")}</div>
-        <div class="hof-cash-add"><button type="button" class="hof-button hof-button-small hof-button-ghost" data-pdf title="Seçili dönemin nakit kasa hareketlerini PDF olarak indir">Kasa Dökümü - PDF</button>${manage ? '<button type="button" class="hof-button hof-button-small" data-add="in">+ Tahsilat</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-add="out">− Ödeme</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-transfer="to-cash" title="Bankadan çekilen nakit kasaya girer">Bankadan Kasaya Aktar</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-transfer="to-bank" title="Kasadaki nakit bankaya yatırılır">Kasadan Bankaya Yatır</button>' : ""}</div>
+        <div class="hof-cash-add"><button type="button" class="hof-button hof-button-small hof-button-ghost" data-pdf title="Seçili dönemin nakit kasa hareketlerini PDF olarak indir">Kasa Dökümü - PDF</button>${manage ? `<button type="button" class="hof-button hof-button-small" data-add="in">+ Tahsilat</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-add="out">− Ödeme</button>${HOF.can("bank.transfer") ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-transfer="to-cash" title="Bankadan çekilen nakit kasaya girer">Bankadan Kasaya Aktar</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-transfer="to-bank" title="Kasadaki nakit bankaya yatırılır">Kasadan Bankaya Yatır</button>' : ""}` : ""}</div>
         <div class="hof-cash-range" data-range hidden><label><span>Başlangıç</span><input type="date" data-from value="${custom.from}"></label><span aria-hidden="true">–</span><label><span>Bitiş</span><input type="date" data-to value="${custom.to}"></label></div></div>
         <div class="hof-cash-list" data-list><p class="hof-empty">Yükleniyor…</p></div>
         <p class="hof-edit-meta">Kasa'da yalnız nakit hareketler görünür. Havale/EFT, POS ve kredi kartıyla yapılan tahsilat ve ödemeler cari, fatura, taksit, stok ve çek/senet ekranlarından girilir ve Raporlar → Banka ve POS Hareketleri'nde izlenir. Bankayla para geçişi için Bankadan Kasaya Aktar / Kasadan Bankaya Yatır kullanılır. Hareketler eskiden yeniye sıralıdır; en yeni en altta.</p>

@@ -31,6 +31,7 @@ import { createBankAccounts } from "../lib/bank/accounts.mjs";
 import { createBankMovements } from "../lib/bank/movements.mjs";
 import { TRANSFER_TYPES, createBankVouchers } from "../lib/bank/vouchers.mjs";
 import { CHART } from "../lib/general-ledger.mjs";
+import { createModuleBank } from "../lib/bank/module-ref.mjs";
 
 const BASE = "/api/workspace/bank";
 /** Seçiciyi görebilenler (§8.1): banka formu olan her modülün yazma yetkisi ya da banka görüntüleme. */
@@ -304,5 +305,7 @@ export function registerBankRoutes(router, context) {
     ok(res, report);
   });
 
+  // Modül formlarının hesap seçimi ve K7'si (Aşama 5–6; cari, Kasa ↔ Banka): modül rotaları istek anında context.bankAccounts.module'e ulaşır.
+  service.module = createModuleBank({ store, accounts: service, negative: vouchers.negative, legacy: () => context.config?.bankPickLegacy === true });
   return service;
 }

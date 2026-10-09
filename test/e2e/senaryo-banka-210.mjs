@@ -53,7 +53,7 @@ const PASS = "Prova-Admin-2026!";
 const USER_PASS = "Kullanici-2026!";
 const NOW = "2026-10-08T12:00:00+03:00";
 const root = mkdtempSync(path.join(tmpdir(), "destekofis-banka-210-"));
-const app = createApp({ dataDir: path.join(root, "data"), backupDir: path.join(root, "backups"), logLevel: "warn", scheduleBackups: false, now: NOW, env: { HUKUK_ADMIN_PASSWORD: PASS, HUKUK_DATASET_AUTOSYNC: "0" }, license: { enforce: false, machineId: "a1b2c3d4e5f60718293a4b5c6d7e8f40" } });
+const app = createApp({ dataDir: path.join(root, "data"), backupDir: path.join(root, "backups"), logLevel: "warn", scheduleBackups: false, now: NOW, maxCompanies: 3, env: { HUKUK_ADMIN_PASSWORD: PASS, HUKUK_DATASET_AUTOSYNC: "0" }, license: { enforce: false, machineId: "a1b2c3d4e5f60718293a4b5c6d7e8f40" } });
 const { port } = await app.listen(0, "127.0.0.1");
 const BASE = `http://127.0.0.1:${port}`;
 const clock = app.config.now;
@@ -1404,7 +1404,12 @@ try {
 
   await step("24h. GG2 (L4/L8): 390 px Hesabı Atanmamış Eski Hareketler yatay kaydırmasız; hesaba bağlanan cari havalesinde Açıklamayı Düzelt pasif ve nedeni", async () => {
     const party = await must("cari", api.post("/api/workspace/accounts", { name: "GG2 Havale Müşterisi", type: "customer", registeredOn: "2026-10-01" }));
+    // Aşama 5: hesap tanımlıyken havale hesapsız yazılmaz. Hesabı atanmamış eski hareket, hiçbir hesap seçilemezken (hepsi pasif) yazılır —
+    // eski sürümün yazdığı satır gibi; sonra hesaplar yeniden etkinleşir.
+    const usable = (await must("hesaplar", api.get("/api/workspace/bank/accounts"))).accounts.filter(item => item.status === "active");
+    for (const item of usable) await must("pasif", api.post(`/api/workspace/bank/accounts/${item.id}/status`, { status: "passive" }));
     await must("havale", api.post(`/api/workspace/accounts/${party.id}/entries`, { kind: "in", amount: "750", method: "bank", date: "2026-10-05", note: "Ekim tahsilatı" }));
+    for (const item of usable) await must("etkin", api.post(`/api/workspace/bank/accounts/${item.id}/status`, { status: "active" }));
     const phone = await newPage({ width: 390, height: 844 });
     current = phone;
     await login(phone, "admin", PASS);
@@ -1444,6 +1449,189 @@ try {
     ok(shown && shown.includes(HOF_MONEY(model.get("191"))) && t["191"] === model.get("191"), `ekranda İndirilecek KDV ${shown} = Ana Defter 191 ${(t["191"] || 0) / 100} = model ${model.get("191") / 100}`);
     await shot(admin, "gg2-kdv-ozeti-ekran");
     await closeAll(admin);
+  });
+
+  // ---------- Bölüm 3 (Aşama 5–6, daraltılmış: Cari ve Kasa formlarında hesap seçimi; §12.5 kabul 5–14) ----------
+  // Ayrı ve boş "Kabul Şirketi" (003; plan §12.5 ön koşulu: boş şirket, sahte saat 08.10.2026): kabul 1–4 hesapları (ekranı bölüm 1'de
+  // sınandı) ve Ürün A 10 Adet (parasız açılış) API'den; kabul 5–14 EKRANDAN. Bağımsız beklenen: plan tablosundaki sayılar.
+  let kabul = null;
+  const kabulBalance = async name => (await must("hesaplar", api.get("/api/workspace/bank/accounts"))).accounts.find(item => item.bankName === name)?.balanceMinor / 100;
+  await step("26. Kabul Şirketi: boş şirket, Ziraat 100.000 + Garanti 50.000 (Bakiye Doğrulandı), Ürün A 10 Adet", async () => {
+    current = admin;
+    await closeAll(admin);
+    const created = await must("şirket", api.post("/api/companies", { name: "Kabul Şirketi" }));
+    await admin.evaluate(async id => fetch("/api/companies/select", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ id }) }), created.company.id);
+    await must("sihirbazı kapat", api.post("/api/workspace/bank/setup/dismiss", {}));
+    const ziraat = await must("Ziraat", api.post("/api/workspace/bank/accounts", { bankName: "Ziraat Bankası", name: "Ana TL Hesabı", kind: "demand", currency: "TRY", iban: ZIRAAT_IBAN, opening: { date: "2026-10-01", amount: "100.000", confirmed: true } }));
+    const garanti = await must("Garanti", api.post("/api/workspace/bank/accounts", { bankName: "Garanti BBVA", name: "Ana TL Hesabı", kind: "demand", currency: "TRY", iban: GARANTI_IBAN, opening: { date: "2026-10-01", amount: "50.000", confirmed: true } }));
+    await must("Ürün A", api.post("/api/workspace/stock", { name: "Ürün A", unit: "Adet", unitPrice: "10.000", salePrice: "20.000", openingQty: "10", openingDate: "2026-10-01" }));
+    kabul = { company: created.company, ziraat, garanti };
+    await admin.goto(`${BASE}/`, { waitUntil: "load" });
+    await admin.waitForSelector("#hof-sidecard", { timeout: 30000 });
+    await admin.waitForTimeout(800);
+    const summary = await must("özet", api.get("/api/workspace/bank/summary"));
+    ok(summary.realBank.minor === 15_000_000 && (await kabulBalance("Ziraat Bankası")) === 100000 && (await kabulBalance("Garanti BBVA")) === 50000, "kabul 1–4: Ziraat 100.000, Garanti 50.000, Gerçek Banka 150.000");
+  });
+
+  await step("27. Kabul 5: + Yeni Cari ABC Ltd. (Cari penceresinden)", async () => {
+    await admin.click('#hof-sidecard [data-action="accounts"]');
+    await admin.waitForSelector('.hof-accounts-modal [data-act="new"]', { timeout: 10000 });
+    await admin.click('.hof-accounts-modal [data-act="new"]');
+    await admin.waitForSelector(`${top} input[name="name"]`, { timeout: 8000 });
+    await admin.fill(`${top} input[name="name"]`, "ABC Ltd.");
+    await admin.click(`${top} .hof-form button[type="submit"]`);
+    await admin.waitForFunction(() => [...document.querySelectorAll(".hof-accounts-modal")].some(node => node.textContent.includes("ABC Ltd.")), null, { timeout: 10000 });
+    const list = await must("cariler", api.get("/api/workspace/accounts?status=all"));
+    kabul.abc = list.accounts.find(item => item.name === "ABC Ltd.");
+    ok(Boolean(kabul.abc) && list.accounts.length === 1, "ABC Ltd. ekrandan açıldı (tek cari)");
+    await admin.waitForTimeout(700); // pencere açılış geçişi bitsin (ekran görüntüsü)
+    await shot(admin, "kabul-5-yeni-cari");
+    await closeAll(admin);
+  });
+
+  await step("28. Kabul 6–8: Satış Faturası Ürün A 1 Adet × 20.000 (KDV %20 dahil), ödeme açık — ekrandan; Ürün A 9, ABC borçlu 20.000, banka aynı", async () => {
+    const inv = `${modal} .hof-invoices-modal`;
+    await admin.click("#hof-sidecard [data-action=invoices]");
+    await admin.waitForSelector(`${inv} [data-act="new"]`, { timeout: 10000 });
+    await admin.click(`${inv} [data-act="new"]`);
+    await admin.click(`${inv} [data-scenario="goods_sale"]`);
+    await admin.waitForSelector(`${inv} [data-lines]`);
+    await admin.fill(`${inv} [data-acc-query]`, "ABC");
+    await admin.waitForSelector(`${inv} .hof-acc-picker li[data-id="${kabul.abc.id}"]`);
+    await (await admin.$(`${inv} .hof-acc-picker li[data-id="${kabul.abc.id}"]`)).dispatchEvent("mousedown");
+    await admin.click(`${inv} [data-l="0"][data-f="name"]`);
+    await admin.keyboard.type("Ürün A", { delay: 40 });
+    await admin.waitForSelector(`${inv} [data-hits="0"] li[data-item]`);
+    await admin.click(`${inv} [data-hits="0"] li[data-item]`);
+    if (!(await admin.$eval(`${inv} [data-f="pricesIncludeVat"]`, node => node.checked))) await admin.click(`${inv} [data-f="pricesIncludeVat"]`);
+    await admin.click(`${inv} [data-l="0"][data-f="qty"]`);
+    await admin.keyboard.press("Control+A");
+    await admin.keyboard.type("1", { delay: 40 });
+    await admin.click(`${inv} [data-l="0"][data-f="unitPrice"]`);
+    await admin.keyboard.press("Control+A");
+    await admin.keyboard.type("20000", { delay: 40 });
+    await admin.selectOption(`${inv} [data-l="0"][data-f="vatRate"]`, "20").catch(() => null);
+    await admin.waitForTimeout(1200);
+    await shot(admin, "kabul-6-fatura-formu");
+    await admin.click(`${inv} [data-act="issue"]`);
+    let saved = null;
+    for (let i = 0; i < 16 && !saved; i += 1) {
+      await admin.waitForTimeout(500);
+      const yes = await admin.$(`${modal} [data-answer="yes"]`);
+      if (yes) {
+        await yes.click();
+        continue;
+      }
+      saved = (unwrap(await api.get("/api/workspace/invoices?tab=all&limit=20")).invoices || []).find(doc => doc.status === "issued") || null;
+    }
+    ok(Boolean(saved), "fatura kaydedildi");
+    const doc = await must("fatura", api.get(`/api/workspace/invoices/${saved.id}`));
+    kabul.invoice = doc;
+    ok(doc.tryNet === 16666.67 && doc.tryVat === 3333.33 && doc.tryPayable === 20000, `kabul 6: Matrah ${doc.tryNet}, KDV ${doc.tryVat}, Toplam ${doc.tryPayable}`);
+    const stock = (await must("stok", api.get("/api/workspace/stock"))).items.find(item => item.name === "Ürün A");
+    const abc = await must("ABC", api.get(`/api/workspace/accounts/${kabul.abc.id}`));
+    const summary = await must("özet", api.get("/api/workspace/bank/summary"));
+    ok(stock.qty === 9 && abc.totals.balance === 20000 && summary.realBank.minor === 15_000_000, `kabul 7–8: Ürün A ${stock.qty}, ABC ${abc.totals.balance} borçlu, Gerçek Banka ${summary.realBank.minor / 100}`);
+    await closeAll(admin);
+  });
+
+  await step("29. Kabul 9–12: cari kartından Tahsilat 20.000 Havale/EFT → Banka Hesabı seçici (iki hesap: zorunlu; Nakit'te gizli); boş seçim kaydedilmez; Ziraat → Ziraat 120.000, ABC 0, fatura Ödendi", async () => {
+    await admin.click('#hof-sidecard [data-action="accounts"]');
+    await admin.waitForSelector(`.hof-accounts-modal tr[data-account="${kabul.abc.id}"]`, { timeout: 10000 });
+    await admin.click(`.hof-accounts-modal tr[data-account="${kabul.abc.id}"]`);
+    await admin.waitForSelector('.hof-accounts-modal [data-entry="in"]', { timeout: 10000 });
+    await admin.click('.hof-accounts-modal [data-entry="in"]');
+    const form = `${top} .hof-form`;
+    await admin.waitForSelector(`${form} input[name="amount"]`, { timeout: 8000 });
+    ok(!(await admin.$(`${form} [data-bank-pick]:not([hidden])`)), "Nakit seçiliyken Banka Hesabı alanı görünmez");
+    await admin.fill(`${form} input[name="amount"]`, "20.000");
+    await admin.selectOption(`${form} select[name="method"]`, "bank");
+    await admin.waitForSelector(`${form} [data-bank-pick]:not([hidden]) select[name="bankAccountId"]`, { timeout: 8000 });
+    const options = await admin.$$eval(`${form} select[name="bankAccountId"] option`, nodes => nodes.map(node => node.textContent.trim()));
+    ok(options.length === 3 && options[0] === "Hesap Seçin" && options.some(text => text.startsWith("Ziraat Bankası · Ana TL Hesabı")) && options.some(text => text.startsWith("Garanti BBVA · Ana TL Hesabı")), `Havale/EFT'de Banka Hesabı seçici: ${options.join(" | ")}`);
+    await auditLabels(admin, "cari tahsilat formu (havale)");
+    // Nasıl bozarım: hesap boş bırakılır → kaydedilmez.
+    await admin.selectOption(`${form} select[name="bankAccountId"]`, "");
+    await admin.click(`${form} button[type="submit"]`);
+    await admin.waitForTimeout(500);
+    const error = await textOf(admin, `${form} .hof-form-error`);
+    const written = (await must("ABC", api.get(`/api/workspace/accounts/${kabul.abc.id}`))).entries.filter(entry => entry.kind === "in").length;
+    ok(has(error, "Banka Hesabı") && written === 0, `hesap seçilmeden kaydedilmedi: “${error}”`);
+    await admin.selectOption(`${form} select[name="bankAccountId"]`, kabul.ziraat.id);
+    await admin.waitForTimeout(700); // pencere açılış geçişi bitsin (ekran görüntüsü)
+    await shot(admin, "kabul-9-tahsilat-havale-ziraat");
+    await admin.click(`${form} button[type="submit"]`);
+    await admin.waitForFunction(() => !document.querySelector('.hof-modal-backdrop.is-visible input[name="amount"]'), null, { timeout: 10000 });
+    await admin.waitForTimeout(600);
+    const abc = await must("ABC", api.get(`/api/workspace/accounts/${kabul.abc.id}`));
+    const entry = abc.entries.find(item => item.kind === "in");
+    const doc = await must("fatura", api.get(`/api/workspace/invoices/${kabul.invoice.id}`));
+    ok(entry?.method === "bank" && entry?.finRef === kabul.ziraat.id, "tahsilat Ziraat hesabına bağlı (fin_ref)");
+    ok((await kabulBalance("Ziraat Bankası")) === 120000 && (await kabulBalance("Garanti BBVA")) === 50000 && abc.totals.balance === 0 && doc.payState === "paid", `kabul 9–12: Ziraat ${await kabulBalance("Ziraat Bankası")}, Garanti ${await kabulBalance("Garanti BBVA")}, ABC ${abc.totals.balance}, fatura ${doc.payState}`);
+    ok((await must("Kasa", api.get("/api/workspace/cash"))).byMethod.cash === 0, "Kasa 0 (havale Kasa'ya düşmedi)");
+    await shot(admin, "kabul-12-abc-sifir");
+    await closeAll(admin);
+  });
+
+  await step("30. Kabul 13–14: Kasa → Bankadan Kasaya Aktar 10.000 (Ziraat; çift tıklama tek kayıt) → Ziraat 110.000, Kasa 10.000; Kasa'da yalnız nakit satırı; Banka'da Kasa ile Banka Arası", async () => {
+    await admin.evaluate(() => HOF.workspace.openCash());
+    await admin.waitForSelector(`${modal} [data-transfer="to-cash"]`, { timeout: 10000 });
+    await admin.click(`${modal} [data-transfer="to-cash"]`);
+    const form = `${top} .hof-form`;
+    await admin.waitForSelector(`${form} select[name="bankAccountId"]`, { timeout: 8000 });
+    await admin.fill(`${form} input[name="amount"]`, "10.000");
+    await admin.selectOption(`${form} select[name="bankAccountId"]`, kabul.ziraat.id);
+    await auditLabels(admin, "Bankadan Kasaya Aktar formu");
+    await admin.waitForTimeout(700); // pencere açılış geçişi bitsin (ekran görüntüsü)
+    await shot(admin, "kabul-13-bankadan-kasaya");
+    await admin.dblclick(`${form} button[type="submit"]`);
+    await admin.waitForFunction(() => !document.querySelector('.hof-modal-backdrop.is-visible select[name="bankAccountId"]'), null, { timeout: 10000 });
+    await admin.waitForTimeout(900);
+    const cash = await must("Kasa", api.get("/api/workspace/cash"));
+    ok(cash.entries.length === 1 && cash.entries.every(entry => entry.method === "cash") && cash.byMethod.cash === 10000, `çift tıklama tek transfer; Kasa penceresinde yalnız nakit satırı (${cash.entries.length}), Kasa ${cash.byMethod.cash}`);
+    ok((await kabulBalance("Ziraat Bankası")) === 110000 && (await kabulBalance("Garanti BBVA")) === 50000, `kabul 13–14: Ziraat ${await kabulBalance("Ziraat Bankası")}, Garanti 50.000`);
+    const rows = (await admin.$$eval(`${modal} [data-list] tbody tr`, nodes => nodes.map(node => node.textContent.replace(/\s+/g, " ").trim()))).filter(text => !text.startsWith("Devreden Kasa"));
+    const kpis = await textOf(admin, `${modal} [data-kpis]`);
+    ok(rows.length === 1 && has(rows[0], "Bankadan kasaya aktarım") && has(kpis, "10.000,00"), `Kasa penceresi: tek nakit satırı (“${rows[0] || ""}”), Nakit Kasa 10.000 (${kpis})`);
+    const overview = await must("ANLIK DURUM", api.get("/api/workspace/overview"));
+    ok((overview.cash?.cash?.today?.in ?? overview.cash?.today?.in) === 10000, "Kasa Bugün Giriş 10.000 (nakit bacağı)");
+    await shot(admin, "kabul-14-kasa-yalniz-nakit");
+    await closeAll(admin);
+    await openBank(admin);
+    await tab(admin, "movements");
+    await admin.waitForSelector(`${bankWin} [data-moves]`);
+    const moves = await textOf(admin, `${bankWin} [data-moves]`);
+    ok(has(moves, "Kasa ile Banka Arası") && has(moves, "10.000,00"), "Banka → Hareketler'de transfer “Kasa ile Banka Arası” satırında");
+    await shot(admin, "kabul-14-banka-hareketler-transfer");
+    await closeAll(admin);
+  });
+
+  await step("31. Nasıl bozarım (ekrandan): Garanti'den 60.000 aktar → Eksi Bakiye sorusu; Vazgeç yazmaz; mutabakat ok", async () => {
+    await admin.evaluate(() => HOF.workspace.openCash());
+    await admin.waitForSelector(`${modal} [data-transfer="to-cash"]`, { timeout: 10000 });
+    await admin.click(`${modal} [data-transfer="to-cash"]`);
+    const form = `${top} .hof-form`;
+    await admin.waitForSelector(`${form} select[name="bankAccountId"]`, { timeout: 8000 });
+    await admin.fill(`${form} input[name="amount"]`, "60.000");
+    await admin.selectOption(`${form} select[name="bankAccountId"]`, kabul.garanti.id);
+    await admin.click(`${form} button[type="submit"]`);
+    await admin.waitForSelector(`${top} [data-answer]`, { timeout: 8000 });
+    const question = await textOf(admin, top);
+    ok(has(question, "Eksi Bakiye") && has(question, "Garanti BBVA · Ana TL Hesabı hesabında 50.000,00 TL var"), `Eksi Bakiye sorusu: ${question.slice(0, 160)}`);
+    await admin.waitForTimeout(700); // pencere açılış geçişi bitsin (ekran görüntüsü)
+    await shot(admin, "nasil-bozarim-eksi-bakiye-sorusu");
+    await admin.click(`${top} [data-answer="no"]`);
+    await admin.waitForTimeout(600);
+    const error = await textOf(admin, `${form} .hof-form-error`);
+    ok(has(error, "Kaydedilmedi") && (await kabulBalance("Garanti BBVA")) === 50000 && (await must("Kasa", api.get("/api/workspace/cash"))).byMethod.cash === 10000, `Vazgeç: yazılmadı (${error})`);
+    await closeAll(admin);
+    const integrity = await must("Mutabakat Testi", api.get("/api/workspace/ledger/integrity"));
+    ok(integrity.ok === true, "Kabul Şirketi'nde mutabakat ok");
+    const firstCompany = (await must("şirketler", api.get("/api/companies"))).companies.find(company => company.code === "001");
+    await admin.evaluate(async id => fetch("/api/companies/select", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ id }) }), firstCompany.id);
+    await admin.goto(`${BASE}/`, { waitUntil: "load" });
+    await admin.waitForSelector("#hof-sidecard", { timeout: 30000 });
+    await admin.waitForTimeout(700);
   });
 
   await step("25. Kalemle ad (side.bank) ve yazım düzeni", async () => {

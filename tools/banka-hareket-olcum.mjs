@@ -65,6 +65,8 @@ const appOptions = dataDir => ({
   backupDir: path.join(path.dirname(dataDir), "backups"),
   logLevel: "silent",
   scheduleBackups: false,
+  // Tohumun cari havaleleri eski sürümün hesabı atanmamış hareketleri gibi yazılır, sonra "Bu Hesaba Ata" ile bağlanır (2.1.0 Aşama 5–6).
+  bankPickLegacy: true,
   env: { HUKUK_ADMIN_PASSWORD: PASS, HUKUK_DATASET_AUTOSYNC: "0" },
   license: { enforce: false, machineId: "0123456789abcdef0123456789abcdef" },
   startLicenseTimers: false,

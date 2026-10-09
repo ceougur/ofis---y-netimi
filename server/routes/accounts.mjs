@@ -31,7 +31,7 @@ const collator = new Intl.Collator("tr", { numeric: true, sensitivity: "base" })
 
 const MONEY_FORMAT = new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-export function registerAccountRoutes(router, { store, bank, auth, audit, events, trash, config = {}, dataset = null, cash = null, period = null, plans = () => null, cheques = () => null, invoices = () => null, now: clock = systemClock }) {
+export function registerAccountRoutes(router, { store, bank, auth, audit, events, trash, config = {}, dataset = null, cash = null, period = null, plans = () => null, cheques = () => null, invoices = () => null, bankModule = () => null, now: clock = systemClock }) {
   // İş saati (v2.1.0): context.now (config.now); sahte saatli testlerde de tek kaynak.
   const now = () => clock().toISOString();
   const today = () => isoDay(clock());
@@ -83,7 +83,7 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
   const exists = id => Boolean(id && store.get("SELECT 1 AS found FROM accounts WHERE id = ? AND deleted_at IS NULL", id));
   const entriesOf = accountId =>
     store.all(
-      `SELECT e.id, e.kind, e.amount, e.date, e.note, e.method, e.receipt_no AS receiptNo, e.source, e.source_id AS sourceId, e.invoice_id AS invoiceId, e.created_by AS createdBy, e.created_at AS createdAt, e.updated_at AS updatedAt,
+      `SELECT e.id, e.kind, e.amount, e.date, e.note, e.method, e.receipt_no AS receiptNo, e.source, e.source_id AS sourceId, e.invoice_id AS invoiceId, e.fin_ref AS finRef, e.created_by AS createdBy, e.created_at AS createdAt, e.updated_at AS updatedAt,
               COALESCE(u.display_name, '') AS actorName
        FROM account_entries e LEFT JOIN users u ON u.id = e.created_by WHERE e.account_id = ? ORDER BY e.date, e.created_at, e.rowid`,
       accountId,
@@ -487,6 +487,10 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     // v2.0.15: faturası olan cari silinmez (fatura yasal belgedir; Logo/Netsis'teki gibi hareketli cari silinemez).
     const invoiceCount = store.get("SELECT COUNT(*) AS n FROM sqlite_master WHERE type = 'table' AND name = 'invoices'").n ? store.get("SELECT COUNT(*) AS n FROM invoices WHERE account_id = ? AND status = 'issued'", account.id).n : 0;
     if (invoiceCount) throw new HttpError(409, `Bu carinin ${invoiceCount} faturası var; faturası olan cari silinemez. Cariyi pasife alın.`, { code: "account-has-invoices" });
+    // v2.1.0 Aşama 5 (plan §3.8 "Cari kartı"): banka hesabına bağlı hareketi olan cari silinmez (silinirse hareket banka hesabından düşer,
+    // banka bakiyesi bankadakinden ayrılırdı). Pasife Al önerilir.
+    const bankLinked = store.get("SELECT COUNT(*) AS n FROM account_entries WHERE account_id = ? AND fin_ref <> ''", account.id).n;
+    if (bankLinked) throw new HttpError(409, `Bu carinin banka hesabına bağlı ${bankLinked} hareketi var; cari silinirse banka hesabının bakiyesi değişirdi. Cariyi pasife alın (hareketleri korunur).`, { code: "account-bank-linked", count: bankLinked });
     // v2.0.26 (A3): kapanmış dönemde hareketi olan cari silinmez (silinen carinin satırları defterden düşer). Silinen carinin
     // tahsilat/ödemeleri Kasa'dan ve bankadan düşer: eksi bakiye denetimi (Uyar/Engelle) toplam etkiyle sorar.
     assertUnlocked(account.id, "silinemez");
@@ -589,6 +593,7 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
   const requireEntryRight = (user, entry) => {
     if (entry.source === "stock") throw new HttpError(409, "Bu hareket bir stok hareketinden geldi; Stok'taki hareketten düzeltin ya da silin.");
     if (entry.source === "invoice") throw new HttpError(409, "Bu hareket bir faturadan geldi; Fatura ekranından iptal edin ya da iade faturası kesin.", { code: "invoice-linked", invoiceId: entry.sourceId });
+    if (entry.source === "bank") throw new HttpError(409, "Bu hareket Banka penceresinden geldi; Banka → Hareketler'deki işlemden düzeltin (Ters Kaydet ya da Düzelt).", { code: "bank-linked", eventId: entry.eventId || "" });
     if (entry.source === "cheque") throw new HttpError(409, "Bu hareket bir çek/senetten geldi; Çek/Senet'teki evraktan düzeltin (geri al ya da sil).", { code: "cheque-linked", chequeId: entry.sourceId });
     if (entry.createdBy !== user.id && !canUser(user, "accounts.manage")) throw new HttpError(403, "Başkasının girdiği hareketi yalnızca yönetici, uzman ve muhasebe değiştirebilir.");
     requireKindRight(user, entry.kind);
@@ -621,26 +626,54 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     if (amountChanged && next.amount < used - 0.005) throw new HttpError(409, `${head} Tutar mahsup edilenden (${tl(used)}) az olamaz; önce mahsubu kaldırın ya da azaltın: ${how}.`, { code: "offset-linked", used });
     if (next.date !== previous.date && next.date > offsets[0].date) throw new HttpError(409, `${head} Tarih mahsup tarihinden (${dayText(offsets[0].date)}) sonra olamaz; önce mahsubu kaldırın: ${how}.`, { code: "offset-linked", used });
   }
+  // v2.1.0 Aşama 5 (plan §3.5, §3.9, §3.10): havale/EFT tahsilat ve ödemesinin banka hesabı (fin_ref; tek hesapta kendiliğinden, birden çokta
+  // seçim zorunlu), kalıcı istek kimliği (x-hof-request: aynı istek ikinci kez yazılmaz), Benzer İşlem (hesaba bağlı satırda; similarOk),
+  // hesap bazında eksi bakiye (K7; Bakiye Doğrulandı hesapta Uyar/Engelle; negativeOk). Nakit satır bugünkü kuralla (Kasa eksi bakiye).
+  const requestIdOf = (req, body) => text(req.headers["x-hof-request"]) || text(body?.requestId);
+  const banking = () => bankModule?.() || null;
+  const isMoney = kind => kind === "in" || kind === "out";
+  // Bankadan çıkış (havale ödemesi) "Banka Hareketi Girme ve Bankadan Çıkış" ister (plan §3.7 #3, §9.1); hesapsız eski kurulumda bugünkü gibi.
+  const requireBankOut = (user, kind, ref) => {
+    if (kind === "out" && ref && !canUser(user, "bank.move")) throw new HttpError(403, "Bankadan ödeme için \"Banka Hareketi Girme ve Bankadan Çıkış\" yetkisi gerekir.", { code: "bank-permission", permission: "bank.move" });
+  };
+  const refOf = (input, body, previous = null) => {
+    const module = banking();
+    if (!module || !isMoney(input.kind)) return "";
+    const changed = !previous || previous.method !== input.method || Math.abs(roundMoney(previous.amount) - roundMoney(input.amount)) > 0.004 || previous.date !== input.date;
+    return module.pickRef({ method: input.method, value: body.bankAccountId, date: input.date, previous, changed });
+  };
+  const negativeOf = (refs, date, force) => banking()?.negative({ refs, date, force }) || { capture() {}, guard: null, prime() {} };
+  const negativeForced = (body, url) => body?.negativeOk === true || url?.searchParams.get("negativeOk") === "1";
   router.post("/api/workspace/accounts/:id/entries", async ({ req, res, params }) => {
     const user = auth.requirePermission(req, "accounts.view");
     const account = accountRow(params.id);
     const body = await readJson(req);
     const input = entryInput(body, account.id);
     requireKindRight(user, input.kind);
+    const finRef = refOf(input, body);
+    requireBankOut(user, input.kind, finRef);
     if (input.kind === "out") cash?.guardOut?.(input.amount, input.date, body.cashForce === true, input.method);
+    const k7 = negativeOf([finRef], input.date, negativeForced(body));
     const created = bank.post({
       user,
       module: "account",
       op: "create",
+      requestId: requestIdOf(req, body),
+      scope: "account.entry.create",
+      body: { ...body, accountId: account.id },
+      similarOk: body.similarOk === true,
       write: () => {
-        const entry = addEntry(user, account.id, input);
-        audit(user, `account.entry.${input.kind}`, entry.id, { accountId: account.id, accountName: account.name, ...input, receiptNo: entry.receiptNo });
+        k7.capture();
+        const entry = addEntry(user, account.id, { ...input, finRef });
+        audit(user, `account.entry.${input.kind}`, entry.id, { accountId: account.id, accountName: account.name, ...input, finRef, receiptNo: entry.receiptNo });
         return entry;
       },
+      guard: k7.guard,
     });
+    k7.prime(created);
     touched(user, account);
-    if (input.kind === "in" || input.kind === "out") changed(user, { kind: "cash" });
-    ok(res, { ...detail(account.id, user), entryId: created.id });
+    if (isMoney(input.kind) && !created?.replayed) changed(user, { kind: "cash" });
+    ok(res, { ...detail(account.id, user), entryId: created?.replayed ? created.refId : created.id, ...(created?.replayed ? { replayed: true } : {}) });
   });
   router.put("/api/workspace/accounts/:id/entries/:entryId", async ({ req, res, params }) => {
     const user = auth.requirePermission(req, "accounts.view");
@@ -653,22 +686,32 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     const flip = ["debt", "credit"].includes(previous.kind) && ["debt", "credit"].includes(text(body.kind)) ? text(body.kind) : previous.kind;
     const input = entryInput({ ...previous, ...body, kind: flip }, account.id, previous);
     assertOffsetFree(previous, input);
+    const finRef = refOf(input, body, previous);
+    if (finRef !== previous.finRef) requireBankOut(user, input.kind, finRef);
     const cashSide = e => (e.kind === "in" || e.kind === "out" ? e : null);
     cash?.guardChange?.(cashSide(previous), cashSide(input), body.cashForce === true);
-    bank.post({
+    const k7 = negativeOf([previous.finRef, finRef], previous.date < input.date ? previous.date : input.date, negativeForced(body));
+    const result = bank.post({
       user,
       module: "account",
       op: "update",
       prev: previous,
+      requestId: requestIdOf(req, body),
+      scope: "account.entry.update",
+      body: { ...body, entryId: previous.id },
       write: () => {
-        const eventId = bank.eventFor("account_entries", { kind: input.kind, source: previous.source, date: input.date, method: input.method, event_id: previous.eventId });
-        store.run("UPDATE account_entries SET kind = ?, amount = ?, date = ?, note = ?, method = ?, invoice_id = ?, event_id = ?, updated_by = ?, updated_at = ? WHERE id = ?", input.kind, input.amount, input.date, input.note, input.method, input.invoiceId, eventId, user.id, now(), previous.id);
-        audit(user, "account.entry.updated", previous.id, { accountId: account.id, previous, ...input });
+        k7.capture();
+        const eventId = bank.eventFor("account_entries", { kind: input.kind, source: previous.source, date: input.date, method: input.method, event_id: previous.eventId, fin_ref: finRef });
+        store.run("UPDATE account_entries SET kind = ?, amount = ?, date = ?, note = ?, method = ?, invoice_id = ?, fin_ref = ?, event_id = ?, updated_by = ?, updated_at = ? WHERE id = ?", input.kind, input.amount, input.date, input.note, input.method, input.invoiceId, finRef, eventId, user.id, now(), previous.id);
+        audit(user, "account.entry.updated", previous.id, { accountId: account.id, previous, ...input, finRef });
+        return { id: previous.id };
       },
+      guard: k7.guard,
     });
+    k7.prime(result);
     touched(user, account);
     changed(user, { kind: "cash" });
-    ok(res, detail(account.id, user));
+    ok(res, { ...detail(account.id, user), ...(result?.replayed ? { replayed: true } : {}) });
   });
   router.delete("/api/workspace/accounts/:id/entries/:entryId", async ({ req, res, params, url }) => {
     const user = auth.requirePermission(req, "accounts.view");
@@ -678,17 +721,22 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     period?.assertOpen(previous.date, "Bu cari hareketi");
     assertOffsetFree(previous);
     if (previous.kind === "in" || previous.kind === "out") cash?.guardChange?.(previous, null, url.searchParams.get("cashForce") === "1", previous.kind === "in" ? "Bu tahsilat silinince" : "Bu ödeme silinince");
-    bank.post({
+    const k7 = negativeOf([previous.finRef], previous.date, negativeForced(null, url));
+    const result = bank.post({
       user,
       module: "account",
       op: "delete",
       prev: previous,
       write: () => {
+        k7.capture();
         store.run("DELETE FROM account_entries WHERE id = ?", previous.id);
         trash?.add({ kind: "account-entry", ref: previous.id, title: account.name, detail: previous.note || KIND_TEXT[previous.kind], payload: { ...previous, accountId: account.id, accountName: account.name }, user });
         audit(user, "account.entry.deleted", previous.id, { accountId: account.id, ...previous });
+        return { id: previous.id };
       },
+      guard: k7.guard,
     });
+    k7.prime(result);
     touched(user, account);
     changed(user, { kind: "cash" });
     ok(res, detail(account.id, user));

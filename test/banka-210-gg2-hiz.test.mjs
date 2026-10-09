@@ -40,7 +40,7 @@ const strip = data => ({ rows: data.rows.map(row => ({ sub: row.sub, account: ro
 describe("GG2 — Alt Hesap Mizanı ve Genel Bakış tek kaynaktan (Ana Defter kurulmadan) = eski yol", () => {
   let ctx;
   before(async () => {
-    ctx = await boot({ now: NOW });
+    ctx = await boot({ now: NOW, bankPickLegacy: true });
     const report = await runReconciliation({ client: await loginAdmin(ctx.server), seed: 9, operations: 250, verifyEvery: 50, burst: 0 });
     assert.deepEqual(report.mismatches.slice(0, 3), [], "motor tutarlı");
     const api = ctx.api;
@@ -97,7 +97,7 @@ describe("GG2 — Alt Hesap Mizanı ve Genel Bakış tek kaynaktan (Ana Defter k
 describe("GG2 — hareketsiz hesabın türü değişince kapı süzgeçte kalır", () => {
   let ctx;
   before(async () => {
-    ctx = await boot({ now: NOW, gateVerify: false, moneyStrict: false });
+    ctx = await boot({ now: NOW, gateVerify: false, moneyStrict: false, bankPickLegacy: true });
   });
   after(() => ctx.server.close());
 

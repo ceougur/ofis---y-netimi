@@ -39,7 +39,7 @@ describe("GG2 — iki hesap, farklı açılış günü (A 01.10 önce, B 15.09 s
   let a;
   let b;
   before(async () => {
-    ctx = await bootBank();
+    ctx = await bootBank({ bankPickLegacy: true });
     const party = await must("cari", ctx.api.post("/api/workspace/accounts", { name: "ABC Ltd.", type: "customer", registeredOn: "2026-08-01" }));
     await entry(ctx.api, party, "2026-09-10", "5.000");
     await entry(ctx.api, party, "2026-09-20", "3.000");
@@ -88,7 +88,7 @@ describe("GG2 — iki hesap, ters sıra (B 15.09 önce, A 01.10 sonra); kuruluml
   let jobB;
   let jobA;
   before(async () => {
-    ctx = await bootBank();
+    ctx = await bootBank({ bankPickLegacy: true });
     party = await must("cari", ctx.api.post("/api/workspace/accounts", { name: "ABC Ltd.", type: "customer", registeredOn: "2026-08-01" }));
     await entry(ctx.api, party, "2026-09-10", "5.000");
     await entry(ctx.api, party, "2026-09-20", "3.000");
@@ -135,7 +135,7 @@ describe("GG2 — kurulumlu hesapta Açılışı Düzelt (tarih) ve Sil → ayn�
   let a;
   let job;
   before(async () => {
-    ctx = await bootBank();
+    ctx = await bootBank({ bankPickLegacy: true });
     const party = await must("cari", ctx.api.post("/api/workspace/accounts", { name: "ABC Ltd.", type: "customer", registeredOn: "2026-08-01" }));
     await entry(ctx.api, party, "2026-09-10", "5.000");
     await entry(ctx.api, party, "2026-09-20", "3.000");
@@ -171,7 +171,7 @@ describe("GG2 — kapı: etkin Devir Kapanışları tarihçe geriye gitmez (bank
   let a;
   const user = { id: "test", role: "admin", permissions: [] };
   before(async () => {
-    ctx = await bootBank();
+    ctx = await bootBank({ bankPickLegacy: true });
     const party = await must("cari", ctx.api.post("/api/workspace/accounts", { name: "ABC Ltd.", type: "customer", registeredOn: "2026-08-01" }));
     await entry(ctx.api, party, "2026-09-10", "5.000");
     a = await openAccount(ctx.api, { bankName: "Ziraat Bankası", name: "A Hesabı", kind: "demand", opening: { date: "2026-10-01", amount: "100.000", confirmed: true } });
@@ -206,7 +206,7 @@ describe("GG2 — Bankaya Geçmiş Say / Kart Borcuna Aktar: yalnız açılışt
   let card;
   let party;
   before(async () => {
-    ctx = await bootBank();
+    ctx = await bootBank({ bankPickLegacy: true });
     party = await must("cari", ctx.api.post("/api/workspace/accounts", { name: "ABC Ltd.", type: "customer", registeredOn: "2026-08-01" }));
     await entry(ctx.api, party, "2026-09-22", "3.000", { method: "card" });
     await entry(ctx.api, party, "2026-09-23", "1.000", { kind: "out", method: "card" });

@@ -33,7 +33,7 @@ describe("kuruş aritmetiği", () => {
 describe("dört çekirdek mutabakatı (model tabanlı)", () => {
   for (const seed of [1, 2]) {
     it(`tohum ${seed}: 120 günlük sıralı çizelgede 300 rastgele işlem (hatalı tarih, dönem kilidi, eksiye düşürme dahil) ve 40 eşzamanlı istek; her işlemden sonra tutarlı`, async () => {
-      const server = await startTestServer();
+      const server = await startTestServer({ bankPickLegacy: true });
       try {
         const admin = await loginAdmin(server);
         const report = await runReconciliation({ client: admin, seed, operations: 300, burst: 40, reportEvery: 60 });

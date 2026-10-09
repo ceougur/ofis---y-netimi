@@ -62,6 +62,9 @@ export function loadConfig(overrides = {}) {
     edocEnabled: overrides.edocEnabled === true,
     // Döviz banka hesabı (v2.1.0 GG2): kur, değerleme ve döviz fişleriyle birlikte sonraki sürümde; o zamana kadar yalnız testler açar.
     fxEnabled: overrides.fxEnabled === true,
+    // Eski sürüm gibi hesapsız havale (v2.1.0 Aşama 5–6): yalnız testler açar. Aşama 2–4 testleri "eski sürümden gelen hesabı atanmamış
+    // hareketi" banka hesabı tanımlıyken modül uçlarından yazar; açıkken cari/Kasa formunda hesap verilmezse satır hesapsız yazılır.
+    bankPickLegacy: overrides.bankPickLegacy === true,
     scheduleBackups: overrides.scheduleBackups ?? true,
     // Sunucunun iş saati (v2.1.0; lib/clock.mjs): "bugün" ve iş kayıtlarının zaman damgaları tek kaynaktan. Üretimde gerçek
     // saat; sahte saat yalnız programdan (testler, kabul senaryoları) verilir — ortam değişkeni yok. Şirketler aynı saati paylaşır.

@@ -38,7 +38,7 @@ describe("GG2 — bağlı satırın yolu banka dışına çıkınca bağ kalkar 
   let account;
   const ids = {};
   before(async () => {
-    ctx = await bootBank();
+    ctx = await bootBank({ bankPickLegacy: true });
     const api = ctx.api;
     party = await must("cari", api.post("/api/workspace/accounts", { name: "ABC Ltd.", type: "customer", registeredOn: "2026-08-01" }));
     ids.entry = (await must("cari havale", api.post(`/api/workspace/accounts/${party.id}/entries`, { kind: "in", amount: "4.000", method: "bank", date: "2026-10-06" }))).entryId;
@@ -110,7 +110,7 @@ describe("GG2 — Silinenler'den geri yükleme ve Taksite Aktar bağı taşır",
     return (Array.isArray(list) ? list : []).find(item => item.kind === kind && !item.restoredAt);
   };
   before(async () => {
-    ctx = await bootBank();
+    ctx = await bootBank({ bankPickLegacy: true });
     api = ctx.api;
     party = await must("cari", api.post("/api/workspace/accounts", { name: "ABC Ltd.", type: "customer", registeredOn: "2026-08-01" }));
     entryId = (await must("havale", api.post(`/api/workspace/accounts/${party.id}/entries`, { kind: "in", amount: "3.000", method: "bank", date: "2026-10-05", note: "eski havale" }))).entryId;
@@ -159,7 +159,7 @@ describe("GG2 — Silinenler'den geri yükleme ve Taksite Aktar bağı taşır",
 describe("GG2 — Taksite Aktar ve geri alması bağı taşır", () => {
   let ctx;
   it("havale kayıt tahsilatı hesaba bağlı → Taksite Aktar → Geri Al: Gerçek Banka 102.500 kalır", async () => {
-    ctx = await bootBank();
+    ctx = await bootBank({ bankPickLegacy: true });
     const api = ctx.api;
     try {
       const matrix = [
@@ -198,7 +198,7 @@ describe("GG2 — K4: bağlı satırı silmek bank.cancel, parasını değiştir
   let e2;
   let account;
   before(async () => {
-    ctx = await bootBank();
+    ctx = await bootBank({ bankPickLegacy: true });
     accountant = apiOf(await createUser(ctx.server, ctx.api.client, { username: "muhasebe1", role: "muhasebe" }));
     const users = await must("kullanıcılar", ctx.api.get("/api/admin/users"));
     const target = users.find(user => user.username === "muhasebe1");

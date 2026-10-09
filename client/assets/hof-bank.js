@@ -2082,13 +2082,19 @@
    * çokta zorunlu seçim (varsayılan: Banka Ayarları'ndaki Varsayılan Tahsilat Hesabı, yoksa ilk vadesiz). form: bank | card | fx.
    * Dönüş: { mode: "none" | "single" | "many", accountId, html }.
    */
-  function pickerHtml(data, { form = "bank", value = "", name = "bankAccountId", label = "Banka Hesabı" } = {}) {
+  // keepLabel (Aşama 5–6, düzeltme formları): hesabı atanmamış eski hareketin düzeltmesinde ilk seçenek "değiştirme" (boş değer); sunucu yalnız
+  // açıklama değişiyorsa satırı bağsız bırakır, tutar/tarih/yol değişiyorsa hesap ister (plan §3.5 kural 4). value: satırın mevcut hesabı.
+  function pickerHtml(data, { form = "bank", value = "", name = "bankAccountId", label = "Banka Hesabı", keepLabel = "" } = {}) {
     const meta = data?.forms?.[form];
     const accounts = (meta?.ids || []).map(id => data.accounts.find(account => account.id === id)).filter(Boolean);
+    const current = value ? data?.accounts?.find(account => account.id === value) : null;
     if (!accounts.length) return { mode: "none", accountId: "", html: "" };
-    if (accounts.length === 1) return { mode: "single", accountId: accounts[0].id, html: `<input type="hidden" name="${esc(name)}" value="${esc(accounts[0].id)}" data-bank-single><p class="hof-bank-pick-note">${esc(accounts[0].label)} hesabına yazılır.</p>` };
-    const selected = value && meta.ids.includes(value) ? value : meta.defaultId || "";
-    return { mode: "many", accountId: selected, html: HOF.fieldHtml({ name, label, type: "select", required: true, value: selected, options: [{ value: "", label: "Hesap Seçin" }, ...accounts.map(account => ({ value: account.id, label: `${account.label} (${account.code})` }))] }) };
+    if (accounts.length === 1 && !keepLabel && (!value || value === accounts[0].id)) return { mode: "single", accountId: accounts[0].id, html: `<input type="hidden" name="${esc(name)}" value="${esc(accounts[0].id)}" data-bank-single><p class="hof-bank-pick-note">${esc(accounts[0].label)} hesabına yazılır.</p>` };
+    // Satırın hesabı artık seçilemiyorsa (pasif) seçenek olarak kalır: değiştirilmeden kaydedilebilsin.
+    const list = current && !accounts.some(account => account.id === current.id) ? [current, ...accounts] : accounts;
+    const selected = value && list.some(account => account.id === value) ? value : keepLabel ? "" : meta.defaultId || "";
+    const first = keepLabel ? { value: "", label: keepLabel } : { value: "", label: "Hesap Seçin" };
+    return { mode: "many", accountId: selected, html: HOF.fieldHtml({ name, label, type: "select", required: !keepLabel, value: selected, options: [first, ...list.map(account => ({ value: account.id, label: `${account.label} (${account.code})` }))] }) };
   }
   /** Seçiciyi anchor öğesinin ardına yerleştirir; dönüş mode. Yükleme hatasında seçici yoktur (sunucu yine hesap ister). */
   async function mountPicker(anchor, options = {}) {
@@ -2102,7 +2108,33 @@
     }
   }
 
-  HOF.bank = { open, openWizard, openEvent: ref => (modal ? openEvent(ref) : open().then(() => openEvent(ref))), choices, pickerHtml, mountPicker };
+  /**
+   * Modül formuna hesap seçici (Aşama 5–6; §8.9): yol alanı (methodName) "Havale / EFT" olduğunda görünür, başka yolda gizli ve gönderilmez
+   * (zorunlu işareti kalkar). methodName verilmezse (Kasa ↔ Banka transferi) hep görünür. Hiç hesap yoksa hiçbir şey eklenmez (bugünkü görünüm).
+   */
+  async function attachPicker(form, { methodName = "", anchor = null, ...options } = {}) {
+    if (!form) return "none";
+    const methodNode = methodName ? form.querySelector(`[name="${methodName}"]`) : null;
+    const place = anchor || methodNode?.closest(".hof-field") || form.querySelector(".hof-field:last-of-type");
+    const mode = await mountPicker(place, options);
+    const box = form.querySelector("[data-bank-pick]");
+    if (!box || !methodNode) return mode;
+    const select = box.querySelector("select");
+    const required = select?.required;
+    const sync = () => {
+      const on = methodNode.value === "bank";
+      box.hidden = !on;
+      box.querySelectorAll("[name]").forEach(node => {
+        node.disabled = !on;
+      });
+      if (select) select.required = on && required;
+    };
+    methodNode.addEventListener("change", sync);
+    sync();
+    return mode;
+  }
+
+  HOF.bank = { open, openWizard, openEvent: ref => (modal ? openEvent(ref) : open().then(() => openEvent(ref))), choices, pickerHtml, mountPicker, attachPicker, withConfirms };
   HOF.whenReady(() => {
     // Canlı yenileme (v2.0.22 kuralı): başka bilgisayardaki banka değişikliği ve para gösteren modüllerin değişikliği açık pencereyi tek
     // yenileme kapısından yeniler; bu penceredeki banka yazımı zaten kendini yeniler.

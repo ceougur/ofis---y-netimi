@@ -238,20 +238,30 @@ export function registerCashRoutes(router, context) {
   });
 
   const existing = id => {
-    const entry = store.get("SELECT id, kind, amount, date, description, method, transfer_id AS transferId, event_id AS eventId FROM cash_entries WHERE id = ?", limited(id, 120, "Hareket"));
+    const entry = store.get("SELECT id, kind, amount, date, description, method, transfer_id AS transferId, event_id AS eventId, fin_ref AS finRef FROM cash_entries WHERE id = ?", limited(id, 120, "Hareket"));
     if (!entry) throw new HttpError(404, "Kasa hareketi bulunamadı. Başka biri silmiş olabilir.");
     return entry;
   };
   // Transferin öbür yarısı (nakit tarafının bankası, banka tarafının nakdi).
-  const twinOf = entry => (entry.transferId ? store.get("SELECT id, kind, amount, date, description, method, transfer_id AS transferId, event_id AS eventId FROM cash_entries WHERE transfer_id = ? AND id <> ?", entry.transferId, entry.id) : null);
+  const twinOf = entry => (entry.transferId ? store.get("SELECT id, kind, amount, date, description, method, transfer_id AS transferId, event_id AS eventId, fin_ref AS finRef FROM cash_entries WHERE transfer_id = ? AND id <> ?", entry.transferId, entry.id) : null);
 
   // ---------- Kasa ↔ Banka transferi (v2.0.17) ----------
   // direction: "to-cash" (bankadan kasaya nakit çekildi) | "to-bank" (kasadaki nakit bankaya yatırıldı).
   // Nakit tarafı Kasa'da nakit giriş/çıkış olarak görünür; banka tarafı Banka ve POS raporunda karşı hareket. Tek işlem;
   // kasadan bankaya yatırmada nakit eksi bakiye denetimi çalışır.
   const TRANSFER_TEXT = { "to-cash": "Bankadan Kasaya Aktarım", "to-bank": "Kasadan Bankaya Yatırma" };
+  // v2.1.0 Aşama 6 (plan §3.7 #10, §8.9): banka tarafı seçilen banka hesabına bağlanır (tek hesapta kendiliğinden, birden çokta seçim
+  // zorunlu; hiç hesap yoksa bugünkü gibi hesapsız). Yetki: Kasa Yönetimi + Transfer Yapma (göç bugün Kasa yöneteni olan herkese verdi).
+  // Kalıcı istek kimliği (aynı istek ikinci kez yazılmaz); bankadan kasaya aktarımda hesabın eksi bakiye denetimi (K7).
+  const requestIdOf = (req, body) => text(req.headers["x-hof-request"]) || text(body?.requestId);
+  const banking = () => context.bankAccounts?.module || null;
+  const noGuard = { capture() {}, guard: null, prime() {} };
+  const requireTransfer = user => {
+    if (!canUser(user, "bank.transfer")) throw new HttpError(403, "Kasa ile banka arası transfer için \"Transfer Yapma\" yetkisi gerekir.", { code: "bank-permission", permission: "bank.transfer" });
+  };
   router.post("/api/workspace/cash/transfer", async ({ req, res }) => {
     const user = auth.requirePermission(req, "cash.manage");
+    requireTransfer(user);
     const body = await readJson(req);
     const direction = text(body.direction);
     if (!TRANSFER_TEXT[direction]) throw new HttpError(400, "Transfer yönü seçin: Bankadan Kasaya ya da Kasadan Bankaya.", { field: "direction" });
@@ -262,22 +272,37 @@ export function registerCashRoutes(router, context) {
     const description = limited(body.description, 300, "Açıklama") || TRANSFER_TEXT[direction];
     const cashKind = direction === "to-cash" ? "in" : "out";
     if (cashKind === "out") guardOut(roundMoney(amount), date, body.cashForce === true, "cash");
+    const finRef = banking()?.pickRef({ method: "bank", value: body.bankAccountId, date }) || "";
+    // Bankadan kasaya: banka hesabından çıkış (K7). Kasadan bankaya: hesap artar, denetlenmez.
+    const k7 = cashKind === "in" ? banking()?.negative({ refs: [finRef], date, force: body.negativeOk === true }) || noGuard : noGuard;
     const transferId = auth.newId("trf");
     const cashId = auth.newId("cash");
     const bankId = auth.newId("cash");
     const stamp = now();
     // İki bacak tek işlem başlığında (cash_transfer; plan §3.7 #10).
-    bank.post({
+    const result = bank.post({
       user,
       module: "cash",
       op: "create",
+      requestId: requestIdOf(req, body),
+      scope: "cash.transfer.create",
+      body,
+      similarOk: body.similarOk === true,
       write: () => {
+        k7.capture();
         const eventId = bank.eventFor("cash_entries", { kind: cashKind, date, method: "cash", transfer_id: transferId });
         store.run("INSERT INTO cash_entries (id, kind, amount, date, description, method, transfer_id, event_id, created_by, created_at) VALUES (?, ?, ?, ?, ?, 'cash', ?, ?, ?, ?)", cashId, cashKind, roundMoney(amount), date, description, transferId, eventId, user.id, stamp);
-        store.run("INSERT INTO cash_entries (id, kind, amount, date, description, method, transfer_id, event_id, created_by, created_at) VALUES (?, ?, ?, ?, ?, 'bank', ?, ?, ?, ?)", bankId, cashKind === "in" ? "out" : "in", roundMoney(amount), date, description, transferId, eventId, user.id, stamp);
-        audit(user, "cash.transfer.created", transferId, { direction, amount: roundMoney(amount), date, description, cashId, bankId });
+        store.run("INSERT INTO cash_entries (id, kind, amount, date, description, method, transfer_id, fin_ref, event_id, created_by, created_at) VALUES (?, ?, ?, ?, ?, 'bank', ?, ?, ?, ?, ?)", bankId, cashKind === "in" ? "out" : "in", roundMoney(amount), date, description, transferId, finRef, eventId, user.id, stamp);
+        audit(user, "cash.transfer.created", transferId, { direction, amount: roundMoney(amount), date, description, cashId, bankId, finRef });
+        return { id: cashId };
       },
+      guard: k7.guard,
     });
+    k7.prime(result);
+    if (result?.replayed) {
+      const kept = store.get("SELECT c.id, c.transfer_id AS transferId, c.amount, c.date, (SELECT b.id FROM cash_entries b WHERE b.transfer_id = c.transfer_id AND b.id <> c.id) AS bankId FROM cash_entries c WHERE c.id = ?", result.refId);
+      return ok(res, { id: result.refId, bankId: kept?.bankId || "", transferId: kept?.transferId || "", direction, amount: kept?.amount ?? roundMoney(amount), date: kept?.date || date, replayed: true });
+    }
     changed(user);
     ok(res, { id: cashId, bankId, transferId, direction, amount: roundMoney(amount), date });
   });
@@ -293,21 +318,39 @@ export function registerCashRoutes(router, context) {
     guardChange(previous, entry, body.cashForce === true);
     const twin = twinOf(previous);
     if (twin) guardChange(twin, { ...twin, amount: entry.amount, date: entry.date }, body.cashForce === true);
-    bank.post({
+    // v2.1.0 Aşama 6: transferin banka bacağının hesabı (Hesap Seçin verilmezse mevcut bağ; bağsız eski transferde tutar ya da tarih değişirse
+    // seçim — plan §3.5 kural 4) ve banka yönünde eksi bakiye (K7).
+    const bankLeg = previous.transferId ? (previous.method === "bank" ? previous : twin) : null;
+    let finRef = bankLeg?.finRef || "";
+    let k7 = noGuard;
+    if (bankLeg && banking()) {
+      const moved = Math.abs(roundMoney(bankLeg.amount) - entry.amount) > 0.004 || bankLeg.date !== entry.date;
+      finRef = banking().pickRef({ method: "bank", value: body.bankAccountId, date: entry.date, previous: bankLeg, changed: moved });
+      k7 = banking().negative({ refs: [bankLeg.finRef, finRef], date: bankLeg.date < entry.date ? bankLeg.date : entry.date, force: body.negativeOk === true });
+    }
+    const result = bank.post({
       user,
       module: "cash",
       op: "update",
       prev: [previous, twin].filter(Boolean),
+      requestId: requestIdOf(req, body),
+      scope: "cash.entry.update",
+      body: { ...body, id: previous.id },
       write: () => {
+        k7.capture();
         // Eski (olaysız) satır düzeltilince olay alır; transferin iki bacağı aynı olayda kalır.
         const eventId = bank.eventFor("cash_entries", { ...entry, transfer_id: previous.transferId, event_id: previous.eventId || twin?.eventId || "" });
         store.run("UPDATE cash_entries SET kind = ?, amount = ?, date = ?, description = ?, method = ?, event_id = ?, updated_by = ?, updated_at = ? WHERE id = ?", entry.kind, entry.amount, entry.date, entry.description, entry.method, eventId, user.id, now(), previous.id);
         if (twin) store.run("UPDATE cash_entries SET amount = ?, date = ?, description = ?, event_id = ?, updated_by = ?, updated_at = ? WHERE id = ?", entry.amount, entry.date, entry.description, eventId, user.id, now(), twin.id);
-        audit(user, previous.transferId ? "cash.transfer.updated" : "cash.entry.updated", previous.transferId || previous.id, { previous, ...entry });
+        if (bankLeg && finRef !== bankLeg.finRef) store.run("UPDATE cash_entries SET fin_ref = ? WHERE id = ?", finRef, bankLeg.id);
+        audit(user, previous.transferId ? "cash.transfer.updated" : "cash.entry.updated", previous.transferId || previous.id, { previous, ...entry, ...(bankLeg ? { finRef } : {}) });
+        return { id: previous.id };
       },
+      guard: k7.guard,
     });
+    k7.prime(result);
     changed(user);
-    ok(res, { id: previous.id });
+    ok(res, { id: previous.id, ...(result?.replayed ? { replayed: true } : {}) });
   });
 
   router.delete("/api/workspace/cash/:id", async ({ req, res, params, url }) => {
@@ -319,6 +362,9 @@ export function registerCashRoutes(router, context) {
     if (twin) guardChange(twin, null, url.searchParams.get("cashForce") === "1", "Bu transferin öbür tarafı silinince");
     const full = store.get("SELECT id, kind, amount, date, description, method, transfer_id AS transferId, event_id AS eventId, fin_ref AS finRef, created_by AS createdBy, created_at AS createdAt FROM cash_entries WHERE id = ?", previous.id);
     const twinFull = twin ? store.get("SELECT id, kind, amount, date, description, method, transfer_id AS transferId, event_id AS eventId, fin_ref AS finRef, created_by AS createdBy, created_at AS createdAt FROM cash_entries WHERE id = ?", twin.id) : null;
+    // v2.1.0 Aşama 6: kasadan bankaya yatırmanın silinmesi banka hesabını azaltır (K7).
+    const bankLeg = [full, twinFull].find(item => item?.method === "bank" && item.finRef);
+    const k7 = bankLeg ? banking()?.negative({ refs: [bankLeg.finRef], date: bankLeg.date, force: url.searchParams.get("negativeOk") === "1" }) || noGuard : noGuard;
     // Silme, Silinenler kaydı ve işlem geçmişi tek işlemde (v2.0.26, B5): yarıda kesilirse hiçbiri yazılmaz (önceden hareket
     // silinip Silinenler'e yazılamadan kesinti olursa geri getirilemiyordu). v2.1.0: işlem başlığı "iptal" olur (kopyası kalır);
     // Silinenler'den geri yüklenince aynı olay yeniden etkinleşir.
@@ -327,14 +373,18 @@ export function registerCashRoutes(router, context) {
       module: "cash",
       op: "delete",
       prev: [full, twinFull].filter(Boolean),
+      guard: k7.guard,
       write: () => {
+        k7.capture();
         store.run("DELETE FROM cash_entries WHERE id = ?", previous.id);
         if (twin) store.run("DELETE FROM cash_entries WHERE id = ?", twin.id);
         // Silinenler (v2.0.2): yönetim panelinden geri yüklenebilir. Transferde iki taraf birlikte (payload.twin).
         trash?.add({ kind: "cash", ref: previous.id, title: full.description || (previous.transferId ? "Kasa ↔ Banka Transferi" : "Kasa Hareketi"), payload: { ...full, twin: twinFull }, user });
         audit(user, previous.transferId ? "cash.transfer.deleted" : "cash.entry.deleted", previous.transferId || previous.id, previous);
+        return { id: previous.id };
       },
     });
+    k7.prime({ id: previous.id });
     changed(user);
     ok(res, { id: previous.id });
   });
