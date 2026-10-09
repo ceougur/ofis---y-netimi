@@ -7,7 +7,8 @@
 // Şirketler), geri yükle (002+ hemen; 001 yeniden açılışta), yanlış şirkete geri yükleme (hedef farklı ya da dosya elle öbür
 // şirketin klasörüne kopyalanmış → 409), şirket verisini sıfırla (hareketler / tümü), sunucuyu yeniden başlat; v2.1.0: banka hesabı
 // aç (açılış bakiyesiyle), Banka Fişi (Diğer Gelir / Gider, Banka Masrafı BSMV Dahil / Yok), Ters Kaydet ve başka şirketin banka
-// hesabına fiş denemesi (404; şirketler ayrı).
+// hesabına fiş denemesi (404; şirketler ayrı); Aşama 9: Bankalar Arası Transfer (iki hesap arasında, %30 ücretli; başka şirketin hesabına
+// transfer 404) ve Ters Kaydet'i (gönderen ve alıcı birlikte eski hâline).
 //
 // Yanında programdan BAĞIMSIZ bir model tutar: her şirketin (iç kimliğiyle) carileri, bakiyeleri, nakit Kasa'sı ve alınan
 // her yedeğin o anki kopyası. HER işlemden sonra değişmez kurallar denetlenir (ikinci bir yönetici hesabıyla — işlemi yapanın
@@ -89,7 +90,7 @@ export async function runRandom({ seed = 1, operations = 200, base = "bos", log 
 
   // ---------- Model ----------
   // companies: kimlik → { id, code, name, accounts: Map(kimlik → { name, cents }), cash, banks: Map(kimlik → { name, cents }),
-  //   vouchers: [{ id, bankId, cents, status }] } (v2.1.0: banka hesapları ve Banka Fişleri)
+  //   vouchers: [{ id, bankId, cents, status, toId?, toCents? }] } (v2.1.0: banka hesapları ve Banka Fişleri; transferde alıcı ve onun etkisi)
   const M = { companies: new Map(), deleted: [], freedCodes: new Set(), backups: new Map(), actorSelected: ROOT_ID };
   const copyMap = map => new Map([...map].map(([id, item]) => [id, { ...item }]));
   const snapshotOf = company => ({ accounts: copyMap(company.accounts), cash: company.cash, banks: copyMap(company.banks), vouchers: company.vouchers.map(item => ({ ...item })) });
@@ -454,7 +455,7 @@ export async function runRandom({ seed = 1, operations = 200, base = "bos", log 
       const body = { type, accountId: bankId, date: today, amount: tl(value).replace(".", ","), ...(tax ? { tax } : {}), similarOk: true };
       // K7 (2.1.0 GG2): Bakiye Doğrulandı hesapta (açılış "confirmed") bakiyeyi eksiye düşüren çıkış önce 409 bank-negative ("Uyar"),
       // sonra "Yine de Kaydet" (negativeOk) ile tek fiş.
-      if (bank.confirmed && bank.cents + signed < 0) {
+      if (bank.confirmed && signed < 0 && bank.cents + signed < 0) {
         const warned = await actor.post("/api/workspace/bank/vouchers", body);
         expectStatus(warned, 409, "Banka Fişi eksi bakiye");
         if (warned.data?.code !== "bank-negative") fail(`Banka Fişi eksi bakiye: kod ${warned.data?.code}`);
@@ -468,12 +469,16 @@ export async function runRandom({ seed = 1, operations = 200, base = "bos", log 
     },
     async bankReverse() {
       const company = selected();
-      const voucher = R.pick(company.vouchers.filter(item => item.status === "active" && company.banks.has(item.bankId)));
+      const voucher = R.pick(company.vouchers.filter(item => item.status === "active" && company.banks.has(item.bankId) && (!item.toId || company.banks.has(item.toId))));
       if (!voucher) return ops.bankVoucher();
-      opLog.push(`#${report.operations} Ters Kaydet (${tag(company)}): ${voucher.id}`);
+      opLog.push(`#${report.operations} Ters Kaydet (${tag(company)}): ${voucher.id}${voucher.toId ? " (transfer)" : ""}`);
       const bank = company.banks.get(voucher.bankId);
+      const target = voucher.toId ? company.banks.get(voucher.toId) : null;
       const body = {};
-      if (bank.confirmed && bank.cents - voucher.cents < 0) {
+      // Transferin ters kaydı alıcıyı azaltır (gönderen ücret dahil geri alır): K7 alıcıda.
+      // K7 yalnız bakiyesi AZALAN hesapta sorulur (sunucu kuralı): gider fişinin ters kaydı hesabı artırır, eksi kalsa da sorulmaz.
+      const drops = (account, delta) => Boolean(account?.confirmed) && delta < 0 && account.cents + delta < 0;
+      if (drops(bank, -voucher.cents) || drops(target, -(voucher.toCents || 0))) {
         // K7: gelir fişinin ters kaydı da hesabı eksiye düşürebilir.
         const warned = await actor.post(`/api/workspace/bank/events/${encodeURIComponent(voucher.id)}/reverse`, {});
         expectStatus(warned, 409, "Ters Kaydet eksi bakiye");
@@ -483,6 +488,45 @@ export async function runRandom({ seed = 1, operations = 200, base = "bos", log 
       expectStatus(await actor.post(`/api/workspace/bank/events/${encodeURIComponent(voucher.id)}/reverse`, body), 200, "Ters Kaydet");
       voucher.status = "reversed";
       company.banks.get(voucher.bankId).cents -= voucher.cents;
+      if (target) target.cents -= voucher.toCents;
+    },
+    // v2.1.0 Aşama 9: Bankalar Arası Transfer — gönderen −(tutar + ücret), alıcı +tutar; başka şirketin hesabına 404; Bakiye Doğrulandı gönderen
+    // eksiye düşerse 409 bank-negative → "Yine de Kaydet".
+    async bankTransfer() {
+      const company = selected();
+      if (company.banks.size < 2) return ops.bankAccount();
+      const [fromId, from] = R.pick([...company.banks]);
+      const [toId, to] = R.pick([...company.banks].filter(([id]) => id !== fromId));
+      const value = amountCents();
+      const today = expectStatus(await actor.get("/api/workspace/ledger/lock"), 200, "bugün").today;
+      const body = { accountId: fromId, toAccountId: toId, date: today, amount: tl(value).replace(".", ","), similarOk: true };
+      let fee = 0;
+      if (R.chance(0.3)) {
+        const feeIn = R.int(1, 2000);
+        const feeTax = R.pick(["bsmv_excl", "none"]);
+        Object.assign(body, { feeAmount: tl(feeIn).replace(".", ","), feeTax });
+        // BSMV Hariç %5, yarım-yukarı (bağımsız hesap).
+        fee = feeTax === "bsmv_excl" ? feeIn + Math.floor((feeIn * 5 + 50) / 100) : feeIn;
+      }
+      const other = R.chance(0.1) ? R.pick(live().filter(item => item.id !== company.id && item.banks.size)) : null;
+      if (other) {
+        opLog.push(`#${report.operations} YANLIŞ şirket hesabına transfer: seçili ${tag(company)}, alıcı ${tag(other)}`);
+        expectStatus(await actor.post("/api/workspace/bank/transfers", { ...body, toAccountId: R.pick([...other.banks])[0] }), 404, "başka şirketin hesabına transfer");
+        return;
+      }
+      opLog.push(`#${report.operations} transfer (${tag(company)}): ${from.name} → ${to.name} ${tl(value)}${fee ? ` + ücret ${tl(fee)}` : ""}`);
+      if (from.confirmed && from.cents - value - fee < 0) {
+        const warned = await actor.post("/api/workspace/bank/transfers", body);
+        expectStatus(warned, 409, "transfer eksi bakiye");
+        if (warned.data?.code !== "bank-negative") fail(`transfer eksi bakiye: kod ${warned.data?.code}`);
+        body.negativeOk = true;
+      }
+      const data = expectStatus(await actor.post("/api/workspace/bank/transfers", body), 200, "transfer");
+      const leg = ref => (data.lines || []).filter(line => line.role === "bank" && line.ref === ref).reduce((sum, line) => sum + (line.side === "D" ? 1 : -1) * Number(line.tryMinor), 0);
+      if (leg(fromId) !== -(value + fee) || leg(toId) !== value) fail(`transfer ${data.no}: gönderen ${tl(leg(fromId))} ≠ model ${tl(-(value + fee))}; alıcı ${tl(leg(toId))} ≠ ${tl(value)}`);
+      from.cents -= value + fee;
+      to.cents += value;
+      company.vouchers.push({ id: data.id, bankId: fromId, cents: -(value + fee), toId, toCents: value, status: "active" });
     },
     // 2.1.0 Aşama 5–8: modül formundan havale (cari tahsilat/ödeme) seçilen banka hesabına bağlanır; tek hesapta seçimsiz de o hesaba, birden
     // çokta seçimsiz 400 bank-account-required; başka şirketin hesabı 404; Bakiye Doğrulandı hesabı eksiye düşüren ödeme 409 bank-negative →
@@ -515,7 +559,7 @@ export async function runRandom({ seed = 1, operations = 200, base = "bos", log 
       if (!auto) body.bankAccountId = bankId;
       opLog.push(`#${report.operations} havale (${tag(company)}): ${account.name} ${kind} ${tl(value)} → ${bank.name}${auto ? " (tek hesap, seçimsiz)" : ""}`);
       const signed = kind === "in" ? value : -value;
-      if (bank.confirmed && bank.cents + signed < 0) {
+      if (bank.confirmed && signed < 0 && bank.cents + signed < 0) {
         const warned = await actor.post(url, body);
         expectStatus(warned, 409, "havale eksi bakiye");
         if (warned.data?.code !== "bank-negative") fail(`havale eksi bakiye: kod ${warned.data?.code}`);
@@ -577,7 +621,7 @@ export async function runRandom({ seed = 1, operations = 200, base = "bos", log 
   const WEIGHTS = [
     ["account", 14], ["entry", 18], ["cash", 7], ["select", 8], ["create", 7], ["rename", 5], ["recode", 5], ["remove", 4],
     ["backupOne", 7], ["backupAll", 3], ["restore", 7], ["restoreRoot", 2], ["wrongRestore", 4], ["reset", 3], ["restart", 2],
-    ["bankAccount", 3], ["bankVoucher", 6], ["bankReverse", 2], ["bankWrongCompany", 2], ["bankModule", 6],
+    ["bankAccount", 3], ["bankVoucher", 6], ["bankReverse", 2], ["bankWrongCompany", 2], ["bankModule", 6], ["bankTransfer", 4],
   ];
   const total = WEIGHTS.reduce((sum, [, weight]) => sum + weight, 0);
   const choose = () => {

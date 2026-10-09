@@ -42,6 +42,10 @@
 //   de Kaydet" ile ikinci kayıt), kilitli/ileri/boş tarih, sıfır/eksi/bozuk tutar, açılıştan önce tarih, ters kaydı ters kaydetme. Model
 //   her fişin banka etkisini kendi hesaplar (BSMV ve stopaj tam sayı yarım-yukarı); Kasa/banka toplamı, 102 ve Banka ve POS Hareketleri
 //   bu satırlarla karşılaştırılır.
+// v2.1.0 Aşama 9: Bankalar Arası Transfer (iki hesap arasında; %40 ücretli — BSMV Dahil / Hariç / Yok, model ücreti kendi hesaplar) ve Ters
+//   Kaydet'i; saha hataları (aynı hesap 400, ileri tarih, kilitli gün, 3 ondalık, tanınmayan kanal); K7 (gönderen eksiye düşerse onaysız 409
+//   bank-negative, "Yine de Kaydet" geçer; ters kaydı alıcıyı eksiye düşürürse aynı). Model iki bacağı ayrı hesaplarda tutar (gönderen −tutar
+//   −ücret, alıcı +tutar); 102 toplamı ücret kadar düşer.
 // Belirli aralıklarla ve sonda: raporlar (Kasa Hareketleri, Stok Hareketleri, Cari Listesi, Taksit Kartları, Hesap Planı
 // Mizanı, Yevmiye) veri varken boş dönmemeli, tutarları modelle aynı olmalı; veri olmayan aralıkta gerçekten boş dönmeli.
 
@@ -1435,6 +1439,67 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
         bankAdd({ id: r.data.next.id, bankId: b.id, type: e.type, date, cents, status: "active", voucher: true, body: { ...body, date } });
         return;
       }
+      // ---------- v2.1.0 Aşama 9: Bankalar Arası Transfer ----------
+      case "banka-transfer": {
+        if (banks.length < 2) return;
+        const from = R.pick(banks);
+        const to = banks.find(x => x.id !== from.id);
+        const amount = moneyCents(1, 4000);
+        const body = { accountId: from.id, toAccountId: to.id, amount: tl(amount), date: day, similarOk: true, channel: R.pick(["", "eft", "fast", "havale", "virman"]), description: `Transfer T${seed}` };
+        let fee = 0;
+        if (R.chance(0.4)) {
+          const feeIn = R.int(1, 2500);
+          const feeTax = R.pick(["bsmv_incl", "bsmv_excl", "none"]);
+          Object.assign(body, { feeAmount: tl(feeIn), feeTax, feeType: R.pick(["eft", "fast", "havale"]) });
+          // Bağımsız ücret hesabı (BSMV %5, yarım-yukarı): Dahil → matrah = ücret / 1,05, Hariç → ücret + ücret × %5, Yok → ücret.
+          fee = feeTax === "bsmv_excl" ? feeIn + halfAway(feeIn * 50_000, 1_000_000) : feeIn;
+        }
+        // Saha hataları (%20): aynı hesap, ileri tarih, kilitli gün, 3 ondalık tutar, tanınmayan kanal → hiçbir şey yazılmaz.
+        if (R.chance(0.2)) {
+          const which = R.pick(["ayni", "ileri", "kilit", "ondalik", "kanal"]);
+          if (which === "ayni") return void expectReject(await api("POST", "/api/workspace/bank/transfers", { ...body, toAccountId: from.id }), "bank-account-invalid", kind);
+          if (which === "ileri") return void expectReject(await api("POST", "/api/workspace/bank/transfers", { ...body, date: addDays(T, R.int(1, 30)) }), "date-future", kind);
+          if (which === "kilit") {
+            if (!lock) return;
+            return void expectReject(await api("POST", "/api/workspace/bank/transfers", { ...body, date: lock }), "period-locked", kind);
+          }
+          if (which === "ondalik") return void expectReject(await api("POST", "/api/workspace/bank/transfers", { ...body, amount: "1,005" }), "amount-precision", kind);
+          return void expectReject(await api("POST", "/api/workspace/bank/transfers", { ...body, channel: "telgraf" }), "bank-channel", kind);
+        }
+        const out = amount + fee;
+        const negative = bankGoesNegative([{ bankId: from.id, cents: -out, date: day }], day);
+        const negativeOk = negative && R.chance(0.6);
+        if (negative && !negativeOk) return void expectReject(await api("POST", "/api/workspace/bank/transfers", body), "bank-negative", kind);
+        const r = await api("POST", "/api/workspace/bank/transfers", { ...body, ...(negativeOk ? { negativeOk: true } : {}) });
+        mustOk(r, kind);
+        const leg = ref => (r.data.lines || []).filter(line => line.role === "bank" && line.ref === ref).reduce((t, line) => t + (line.side === "D" ? 1 : -1) * Number(line.tryMinor), 0);
+        if (leg(from.id) !== -out || leg(to.id) !== amount || Number(r.data.transfer?.feeMinor) !== fee) throw Object.assign(new Error(`${kind}: gönderen ${tl(leg(from.id))} · model ${tl(-out)}; alıcı ${tl(leg(to.id))} · model ${tl(amount)}; ücret ${r.data.transfer?.feeMinor} · model ${fee}`), { unexpected: true });
+        if (r.data.date !== day) throw Object.assign(new Error(`${kind}: transfer tarihi ${r.data.date} · istenen ${day}`), { unexpected: true });
+        bankAdd({ id: r.data.id, bankId: from.id, type: "transfer", date: day, cents: -out, status: "active", transfer: true });
+        bankAdd({ id: r.data.id, bankId: to.id, type: "transfer", date: day, cents: amount, status: "active", transfer: true });
+        return;
+      }
+      case "banka-transfer-ters": {
+        const first = R.pick(M.bankLines.filter(x => x.transfer && x.type === "transfer" && x.status === "active"));
+        if (!first) return;
+        const legs = M.bankLines.filter(x => x.id === first.id);
+        const date = reversalDate(first);
+        // K7: ters kayıt alıcıyı azaltır (ve gönderene ücret dahil iade eder).
+        const changes = legs.map(x => ({ bankId: x.bankId, cents: -x.cents, date }));
+        const negative = bankGoesNegative(changes, date);
+        const negativeOk = negative && R.chance(0.6);
+        if (negative && !negativeOk) return void expectReject(await api("POST", `/api/workspace/bank/events/${encodeURIComponent(first.id)}/reverse`, { reason: `Motor T${seed}` }), "bank-negative", kind);
+        const r = await api("POST", `/api/workspace/bank/events/${encodeURIComponent(first.id)}/reverse`, { reason: `Motor T${seed}`, ...(negativeOk ? { negativeOk: true } : {}) });
+        mustOk(r, kind);
+        const rev = r.data.reversal;
+        const leg = ref => (rev?.lines || []).filter(line => line.role === "bank" && line.ref === ref).reduce((t, line) => t + (line.side === "D" ? 1 : -1) * Number(line.tryMinor), 0);
+        if (rev?.date !== date || legs.some(x => leg(x.bankId) !== -x.cents)) throw Object.assign(new Error(`${kind}: ters kayıt ${rev?.date} ${legs.map(x => tl(leg(x.bankId))).join("/")} · model ${date} ${legs.map(x => tl(-x.cents)).join("/")}`), { unexpected: true });
+        for (const x of legs) {
+          x.status = "reversed";
+          bankAdd({ id: rev.id, bankId: x.bankId, type: "reversal", date, cents: -x.cents, status: "active", transfer: true });
+        }
+        return;
+      }
       case "banka-benzer": {
         // Aynı iş günü, aynı hesap, aynı tür ve tutar: onaysız 409 bank-similar (hiçbir şey yazılmaz); "Yine de Kaydet" ile ikinci kayıt.
         const e = R.pick(M.bankLines.filter(x => x.status === "active" && x.voucher && x.body && open(x.body.date)));
@@ -1466,6 +1531,8 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
     ["fatura-acid", 4], ["fatura-hatasi", 9], ["fatura-bagli", 1],
     // Banka Fişi (v2.1.0 Aşama 4): fiş (+ saha hataları), Ters Kaydet, Düzelt, Benzer İşlem.
     ["banka-fis", 7], ["banka-ters", 2], ["banka-duzelt", 2], ["banka-benzer", 1],
+    // Bankalar Arası Transfer (v2.1.0 Aşama 9): transfer (+ saha hataları), Ters Kaydet.
+    ["banka-transfer", 3], ["banka-transfer-ters", 1],
   ].filter(([k]) => bank || !(k.startsWith("banka-") || k === "kart-sil" || k === "geri-yukle"));
   const bag = WEIGHTS.flatMap(([k, w]) => Array(w).fill(k));
   if (bank) {
@@ -1589,7 +1656,7 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
   }
   const invList = [...M.invoices.values()];
   report.invoices = { kesilen: invList.filter(x => x.status === "issued").length, iptal: invList.filter(x => x.status === "cancelled").length, taslak: M.drafts.size, turler: invList.reduce((o, x) => ((o[x.kind] = (o[x.kind] || 0) + 1), o), {}), cek: M.cheques.size };
-  report.model = { kasa: Object.fromEntries(MONEY.map(m => [m, tl(M.kasa[m])])), cariler: accounts.length, urunler: items.length, kartlar: M.plans.size, kasaHareketi: M.cash.length, bankaSatiri: M.bankLines.length, bankaTersKayit: M.bankLines.filter(x => x.type === "reversal").length, cariHareketi: M.entries.length, stokHareketi: M.moves.length, taksitHareketi: M.planEntries.length, hesabaBagliModulHavalesi: boundRows().length };
+  report.model = { kasa: Object.fromEntries(MONEY.map(m => [m, tl(M.kasa[m])])), cariler: accounts.length, urunler: items.length, kartlar: M.plans.size, kasaHareketi: M.cash.length, bankaSatiri: M.bankLines.length, bankaTersKayit: M.bankLines.filter(x => x.type === "reversal").length, bankalarArasiTransfer: M.bankLines.filter(x => x.transfer && x.type === "transfer").length / 2, cariHareketi: M.entries.length, stokHareketi: M.moves.length, taksitHareketi: M.planEntries.length, hesabaBagliModulHavalesi: boundRows().length };
   // Deney sonrası kilidi kaldır (aynı veritabanında başka koşu olabilir).
   if (lock) await api("PUT", "/api/admin/period-lock", { lockedUntil: "" });
   await api("PUT", "/api/admin/negative-policy", { cash: "warn", bank: "warn", card: "warn" });
