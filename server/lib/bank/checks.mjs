@@ -18,7 +18,7 @@
 // hesaptaki taban sapması öbür hesaptaki işlemi engellemez (B3 imza kuralı yalnız kendi kodunu kilitler).
 import { copyMismatchSql } from "./event-copy.mjs";
 import { NON_MONEY_TYPES, isVoucherType } from "./event-types.mjs";
-import { MODULE_TABLES, MONEY_SOURCES, moneyWhere } from "./money-lines.mjs";
+import { MODULE_TABLES, MONEY_SOURCES, isMoneyRow, moneyWhere } from "./money-lines.mjs";
 import { FORBIDDEN_GL, MONEY_ROLES, ROLE_GL, UNASSIGNED_SUB } from "./voucher.mjs";
 
 // Hesap türü → ana hesap (Aşama 3, §3.5): 102 ailesi, kredi 300, kurumsal kart 309.
@@ -345,7 +345,41 @@ export function createBankChecks({ store, money }) {
     return out;
   }
 
-  return { ready, inUse, marks, eventless, unknownWays, brokenEvents, reportMismatches, openingProblems, voucherProblems, carryProblems };
+  /**
+   * bank:ref (GG2) — hesaba bağlı (fin_ref dolu) modül satırı hâlâ para satırıdır ve yolu hesabın türünün yoludur: 102 ailesi havale (bank),
+   * kurumsal kart kart yolu (card); kredi hesabına ve silinmiş/bilinmeyen hesaba modül satırı bağlanmaz. Önceden yolu Nakit/POS yapılan havale
+   * hesaba bağlı kalıyor, tutar hem Kasa'da hem hesabın bakiyesinde sayılıyordu. rows: [{ table, row }] verilirse yalnız onlar (COMMIT'te
+   * dokunulan satırların güncel hâli); yoksa bütün bağlı satırlar (tam tarama).
+   */
+  function refProblems({ rows = null } = {}) {
+    if (!ready() || !tables().has("bank_accounts")) return [];
+    const out = [];
+    const fail = (table, row, why) => out.push({ key: `${table}:${row.id}`, ref: row.fin_ref || row.ref || "", sample: `${table}:${row.id}: ${why}` });
+    if (rows) {
+      for (const { table, row } of rows) {
+        if (!row?.fin_ref) continue;
+        const account = store.get("SELECT kind, deleted_at AS deletedAt FROM bank_accounts WHERE id = ?", row.fin_ref) || (tables().has("pos_terminals") ? store.get("SELECT 'pos' AS kind, deleted_at AS deletedAt FROM pos_terminals WHERE id = ?", row.fin_ref) : null);
+        const family = account?.kind === "card" || account?.kind === "pos" ? "card" : account?.kind === "loan" ? "#" : "bank";
+        if (!account || account.deletedAt) fail(table, row, "bağlı olduğu banka hesabı yok ya da silinmiş");
+        else if (!isMoneyRow(table, row)) fail(table, row, "para satırı değil ama banka hesabına bağlı");
+        else if (String(row.method || "") !== family) fail(table, row, `yolu (${row.method}) hesabın türüne (${account.kind}) uymuyor`);
+      }
+      return out;
+    }
+    for (const table of MODULE_TABLES) {
+      if (!hasColumn(table, "fin_ref")) continue;
+      const pos = tables().has("pos_terminals");
+      for (const row of store.all(
+        `SELECT r.id, r.fin_ref AS ref, r.method, COALESCE(a.kind, ${pos ? "CASE WHEN p.id IS NOT NULL THEN 'pos' END" : "NULL"}) AS kind, COALESCE(a.deleted_at, ${pos ? "p.deleted_at" : "NULL"}) AS deletedAt
+         FROM ${table} r LEFT JOIN bank_accounts a ON a.id = r.fin_ref${pos ? " LEFT JOIN pos_terminals p ON p.id = r.fin_ref" : ""}
+         WHERE r.fin_ref <> '' AND (COALESCE(a.id, ${pos ? "p.id" : "NULL"}) IS NULL OR COALESCE(a.deleted_at, ${pos ? "p.deleted_at" : "NULL"}) IS NOT NULL OR NOT ${moneyWhere(table, "r")}
+           OR r.method <> CASE COALESCE(a.kind, ${pos ? "CASE WHEN p.id IS NOT NULL THEN 'pos' END" : "NULL"}) WHEN 'card' THEN 'card' WHEN 'pos' THEN 'card' WHEN 'loan' THEN '#' ELSE 'bank' END) LIMIT 50`,
+      )) fail(table, row, !row.kind ? "bağlı olduğu banka hesabı yok" : row.deletedAt ? "bağlı olduğu banka hesabı silinmiş" : `yolu (${row.method}) ya da türü hesaba (${row.kind}) uymuyor`);
+    }
+    return out;
+  }
+
+  return { ready, inUse, marks, eventless, unknownWays, brokenEvents, reportMismatches, openingProblems, voucherProblems, carryProblems, refProblems };
 }
 
 /** Hesap bazında gruplanmış denetim kalemleri (varlık kodu): '' (Hesabı Atanmamış) → code, hesap → code:hesap. */

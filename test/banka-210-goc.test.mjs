@@ -272,13 +272,15 @@ describe("v20 şeması (yeni kurulum)", () => {
     const account = unwrap(await admin.post("/api/workspace/accounts", { name: "Kilit Carisi", type: "customer", registeredOn: "2026-09-01" }));
     const old = unwrap(await admin.post(`/api/workspace/accounts/${account.id}/entries`, { kind: "in", amount: "300", date: "2026-09-10", method: "bank", note: "Eski havale" }));
     const fresh = unwrap(await admin.post(`/api/workspace/accounts/${account.id}/entries`, { kind: "in", amount: "200", date: "2026-10-05", method: "bank", note: "Yeni havale" }));
+    // GG2: bağ gerçek bir banka hesabına (kapı bank:ref bilinmeyen hesaba bağı reddeder; önceki sürüm "ba-x" yazıyordu).
+    const bankAccount = unwrap(await admin.post("/api/workspace/bank/accounts", { bankName: "Kilit Bankası", name: "Kilit Hesabı", kind: "demand", opening: { date: "2026-09-01", amount: "0" } }));
     assert.equal((await admin.put("/api/admin/period-lock", { lockedUntil: "2026-09-30" })).status, 200);
     const store = server.app.store;
     for (const column of ["fin_ref", "event_id"]) {
-      assert.throws(() => store.tx(() => store.run(`UPDATE account_entries SET ${column} = ? WHERE id = ?`, "ba-x", old.entryId)), error => error.status === 409 && error.failures?.some(item => item.code === "period-lock"), `kilitli satıra ${column}`);
+      assert.throws(() => store.tx(() => store.run(`UPDATE account_entries SET ${column} = ? WHERE id = ?`, column === "fin_ref" ? bankAccount.id : "ev-x", old.entryId)), error => error.status === 409 && error.failures?.some(item => item.code === "period-lock"), `kilitli satıra ${column}`);
     }
     // K6 (c, dilim 3): hesap/işlem bağı yazmak gerçek kodda bank.post (op 'assign'); test ham kapsamla yazar.
-    store.raw("test: açık dönemde bağ", () => store.tx(() => store.run("UPDATE account_entries SET fin_ref = ?, event_id = ? WHERE id = ?", "ba-x", "ev-x", fresh.entryId)));
+    store.raw("test: açık dönemde bağ", () => store.tx(() => store.run("UPDATE account_entries SET fin_ref = ?, event_id = ? WHERE id = ?", bankAccount.id, "ev-x", fresh.entryId)));
     assert.equal(store.get("SELECT fin_ref FROM account_entries WHERE id = ?", old.entryId).fin_ref, "", "kilitli satır değişmedi");
     assert.equal((await admin.put("/api/admin/period-lock", { lockedUntil: "" })).status, 200);
   });

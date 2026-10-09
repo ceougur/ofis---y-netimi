@@ -396,7 +396,7 @@ export function registerWorkspaceRoutes(router, { store, bank, auth, access = nu
   // düzeltebilir/silebilir. Eski ve yeni değerler denetim kaydına yazılır.
   const editablePayment = (req, id) => {
     const user = auth.requirePermission(req, "payments.create");
-    const payment = store.get("SELECT id, case_key AS caseKey, amount, date, note, method, event_id AS eventId, created_by AS createdBy FROM payments WHERE id = ?", limited(id, 120, "Tahsilat"));
+    const payment = store.get("SELECT id, case_key AS caseKey, amount, date, note, method, event_id AS eventId, fin_ref AS finRef, created_by AS createdBy FROM payments WHERE id = ?", limited(id, 120, "Tahsilat"));
     if (!payment) throw new HttpError(404, "Tahsilat bulunamadı. Başka biri silmiş olabilir.");
     if (payment.createdBy !== user.id && !canUser(user, "cash.manage")) throw new HttpError(403, "Başkasının girdiği tahsilatı yalnızca kasa yetkisi olanlar (yönetici, muhasebe) değiştirebilir.");
     return { user, payment };
@@ -438,7 +438,7 @@ export function registerWorkspaceRoutes(router, { store, bank, auth, access = nu
         // Silme, Silinenler kaydı ve işlem geçmişi tek işlemde (v2.0.26, B5): yarıda kesilirse üçü birden yazılmaz; önceden
         // satır silinip Silinenler'e yazılamadan kesinti olursa tahsilat iz bırakmadan kayboluyordu. Yükte ödeme yolu da
         // var (A1): geri yüklenen havale/POS tahsilatı nakde dönmez. v2.1.0: yükte işlem başlığı da var (geri yüklenince aynı olay).
-        const full = store.get("SELECT id, case_key AS caseKey, case_title AS caseTitle, amount, date, note, method, event_id AS eventId, created_by AS createdBy, created_at AS createdAt FROM payments WHERE id = ?", payment.id);
+        const full = store.get("SELECT id, case_key AS caseKey, case_title AS caseTitle, amount, date, note, method, event_id AS eventId, fin_ref AS finRef, created_by AS createdBy, created_at AS createdAt FROM payments WHERE id = ?", payment.id);
         if (!full) throw new HttpError(404, "Tahsilat bulunamadı. Başka biri silmiş olabilir.");
         store.run("DELETE FROM payments WHERE id = ?", payment.id);
         // Silinenler (v2.0.2): yönetim panelinden geri yüklenebilir.

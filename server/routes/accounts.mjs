@@ -578,7 +578,7 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     return { kind, amount, date: period ? period.movementDate(body) : dateOf(body.date, "Tarih", today()), note: limited(body.note, 300, "Açıklama"), method: methodInput(body.method), invoiceId: invoiceLink(accountId, kind, body.invoiceId, previous?.invoiceId || "") };
   };
   const entryOf = (accountId, entryId) => {
-    const entry = store.get("SELECT id, kind, amount, date, note, method, receipt_no AS receiptNo, source, source_id AS sourceId, invoice_id AS invoiceId, event_id AS eventId, created_by AS createdBy, created_at AS createdAt FROM account_entries WHERE account_id = ? AND id = ?", accountId, limited(entryId, 120, "Hareket"));
+    const entry = store.get("SELECT id, kind, amount, date, note, method, receipt_no AS receiptNo, source, source_id AS sourceId, invoice_id AS invoiceId, event_id AS eventId, fin_ref AS finRef, created_by AS createdBy, created_at AS createdAt FROM account_entries WHERE account_id = ? AND id = ?", accountId, limited(entryId, 120, "Hareket"));
     if (!entry) throw new HttpError(404, "Hareket bulunamadı. Başka biri silmiş olabilir.");
     return entry;
   };
@@ -1252,7 +1252,9 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
         invoiceId = "";
       }
     }
-    // v2.1.0 (bank.post op 'restore'): para satırı silinmeden önceki işlem başlığıyla döner (olay yeniden etkin).
+    // v2.1.0 (bank.post op 'restore'): para satırı silinmeden önceki işlem başlığıyla döner (olay yeniden etkin). GG2 (K13/7): banka hesabı
+    // bağıyla döner (önceden bağ düşüyor, tutar hesaptan Hesabı Atanmamış'a geçiyordu); hesap silinmişse bağsız döner ve söylenir.
+    const kept = ["in", "out"].includes(payload.kind) ? bank.keepRef(payload.finRef, { method, date: payload.date }) : { ref: "", dropped: "" };
     bank.post({
       user,
       module: "account",
@@ -1261,8 +1263,8 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
       write: () => {
         if (!store.get("SELECT 1 AS found FROM account_entries WHERE id = ?", item.ref)) {
           store.run(
-            "INSERT INTO account_entries (id, account_id, kind, amount, date, note, receipt_no, source, source_id, method, invoice_id, event_id, created_by, created_at, updated_by, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, '', '', ?, ?, ?, ?, ?, ?, ?)",
-            item.ref, account.id, payload.kind, amount, payload.date, payload.note || "", payload.receiptNo || null, method, invoiceId,
+            "INSERT INTO account_entries (id, account_id, kind, amount, date, note, receipt_no, source, source_id, method, invoice_id, fin_ref, event_id, created_by, created_at, updated_by, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, '', '', ?, ?, ?, ?, ?, ?, ?, ?)",
+            item.ref, account.id, payload.kind, amount, payload.date, payload.note || "", payload.receiptNo || null, method, invoiceId, kept.ref,
             bank.eventFor("account_entries", { kind: payload.kind, source: "", date: payload.date, method, event_id: payload.eventId || "" }), payload.createdBy || user.id, payload.createdAt || now(), user.id, now(),
           );
         }
@@ -1278,7 +1280,7 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
       const why = !dropped ? "silindiği için" : dropped.status === "cancelled" ? "iptal edildiği için" : dropped.status !== "issued" ? "kaydedilmiş olmadığı için" : dropped.planId ? "taksitli olduğu (kendi taksit kartıyla kapandığı) için" : "artık bu hareketle kapatılamadığı için";
       return `Cari hareketi geri eklendi. Bağlı olduğu ${dropped?.number ? `${dropped.number} faturası` : "fatura"} ${why} faturaya bağlanmadı; otomatik kapamaya girer.`;
     }
-    return "Cari hareketi geri eklendi; bakiye ve Kasa yeniden hesaplandı.";
+    return `Cari hareketi geri eklendi; bakiye ve Kasa yeniden hesaplandı.${kept.dropped ? ` ${bank.droppedText(kept.dropped)}` : ""}`;
   }
 
   return { exists, accountRow, createFromPlan, matchPerson, stockEntry, invoiceEntry, taxIdentity, fingerprint, deletedList, restoreDeleted, restoreEntry, detail, list, allLedgers, assertUnlocked };

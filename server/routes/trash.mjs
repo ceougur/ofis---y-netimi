@@ -282,9 +282,17 @@ export function registerTrashRoutes(router, { store, bank, auth, audit, events, 
     // G5: kilitli dönem 409, ileri tarih 400 (eski sürümden kalan ileri tarihli satır; kapıdaki nedensiz 409 yerine).
     const restoreDate = (date, what) => period?.restoreDate(date, what);
 
+    // GG2 (plan §3.5 K13/7): satır banka hesabı bağıyla (fin_ref) döner; hesap silinmişse ya da yol/tarih uymuyorsa bağsız döner ve söylenir.
+    let dropped = "";
+    const keep = (ref, method, date) => {
+      const kept = bank.keepRef(ref, { method, date });
+      dropped ||= kept.dropped;
+      return kept.ref;
+    };
     if (item.kind === "payment") {
       restoreDate(payload.date, "Bu tahsilat");
       const method = methodInput(payload.method);
+      const finRef = keep(payload.finRef, method, payload.date);
       // v2.1.0 (bank.post op 'restore'): satır silinmeden önceki işlem başlığıyla (payload.eventId) döner, olay yeniden etkin; eski
       // (olaysız silinmiş) satır yeni olay alır.
       bank.post({
@@ -295,7 +303,7 @@ export function registerTrashRoutes(router, { store, bank, auth, audit, events, 
         write: () => {
           if (!store.get("SELECT 1 AS found FROM payments WHERE id = ?", item.ref)) {
             store.run(
-              "INSERT INTO payments (id, case_key, case_title, amount, date, note, method, event_id, created_by, created_at, updated_by, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+              "INSERT INTO payments (id, case_key, case_title, amount, date, note, method, fin_ref, event_id, created_by, created_at, updated_by, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
               item.ref,
               payload.caseKey || "",
               payload.caseTitle || "",
@@ -303,6 +311,7 @@ export function registerTrashRoutes(router, { store, bank, auth, audit, events, 
               payload.date,
               payload.note || "",
               method,
+              finRef,
               bank.eventFor("payments", { date: payload.date, method, event_id: payload.eventId || "" }),
               payload.createdBy || user.id,
               payload.createdAt || now(),
@@ -338,7 +347,7 @@ export function registerTrashRoutes(router, { store, bank, auth, audit, events, 
             const method = methodInput(row.method);
             shared = bank.eventFor("cash_entries", { kind: row.kind, date: row.date, method, transfer_id: row.transferId || "", event_id: row.eventId || shared });
             store.run(
-              "INSERT INTO cash_entries (id, kind, amount, date, description, method, transfer_id, event_id, created_by, created_at, updated_by, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+              "INSERT INTO cash_entries (id, kind, amount, date, description, method, transfer_id, fin_ref, event_id, created_by, created_at, updated_by, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
               row.id,
               row.kind,
               money(row.amount),
@@ -346,6 +355,7 @@ export function registerTrashRoutes(router, { store, bank, auth, audit, events, 
               row.description || "",
               method,
               row.transferId || "",
+              keep(row.finRef, method, row.date),
               shared,
               row.createdBy || user.id,
               row.createdAt || now(),
@@ -380,8 +390,8 @@ export function registerTrashRoutes(router, { store, bank, auth, audit, events, 
             const opening = payload.opening ? 1 : 0;
             store.run(
               // Açılış (devir) kaydı geri gelince yine açılıştır (v2.0.8): Kasa'ya girmez (para satırı değil, olay almaz).
-              "INSERT INTO plan_entries (id, plan_id, item_id, kind, amount, date, note, receipt_no, opening, method, event_id, created_by, created_at, updated_by, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-              item.ref, plan.id, itemId, payload.kind, money(payload.amount), payload.date, payload.note || "", payload.receiptNo || null, opening, method,
+              "INSERT INTO plan_entries (id, plan_id, item_id, kind, amount, date, note, receipt_no, opening, method, fin_ref, event_id, created_by, created_at, updated_by, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+              item.ref, plan.id, itemId, payload.kind, money(payload.amount), payload.date, payload.note || "", payload.receiptNo || null, opening, method, opening ? "" : keep(payload.finRef, method, payload.date),
               bank.eventFor("plan_entries", { kind: payload.kind, date: payload.date, method, opening, cheque_id: "", event_id: payload.eventId || "" }), payload.createdBy || user.id, payload.createdAt || now(), user.id, now(),
             );
           }
@@ -417,6 +427,7 @@ export function registerTrashRoutes(router, { store, bank, auth, audit, events, 
           ? `Satır “${result.sheet}” sayfasına ${result.position}. satır olarak eklendi${result.lost.length ? ` (${result.lost.join(", ")} kolonu artık yok)` : ""}.`
           : `“${result.column}” kolonu “${result.sheet}” sayfasına ${result.position}. kolon olarak eklendi${result.lost ? ` (${result.lost} hücrenin satırı artık yok)` : ""}.`;
     } else throw new HttpError(400, "Bu öğe geri yüklenemez.");
+    if (dropped) message = `${message} ${bank.droppedText(dropped)}`;
     return ok(res, { restored: item.kind, message });
   });
 }

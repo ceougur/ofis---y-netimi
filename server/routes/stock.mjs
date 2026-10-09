@@ -392,7 +392,7 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
     ok(res, { ...detail(item.id, user), moveId: id, trimmedPlans: trimmed });
   });
   const moveOf = (itemId, moveId) => {
-    const move = store.get("SELECT id, kind, qty, unit_price AS unitPrice, amount, date, note, pay, reason, method, account_id AS accountId, invoice_id AS invoiceId, event_id AS eventId, created_by AS createdBy, created_at AS createdAt FROM stock_moves WHERE item_id = ? AND id = ?", itemId, limited(moveId, 120, "Hareket"));
+    const move = store.get("SELECT id, kind, qty, unit_price AS unitPrice, amount, date, note, pay, reason, method, account_id AS accountId, invoice_id AS invoiceId, event_id AS eventId, fin_ref AS finRef, created_by AS createdBy, created_at AS createdAt FROM stock_moves WHERE item_id = ? AND id = ?", itemId, limited(moveId, 120, "Hareket"));
     if (!move) throw new HttpError(404, "Stok hareketi bulunamadı. Başka biri silmiş olabilir.");
     return move;
   };
@@ -657,6 +657,8 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
     period?.restoreDate(payload.date, "Bu stok hareketi");
     const pay = payload.pay === "account" && !accounts()?.exists(payload.accountId) ? "none" : PAY.has(payload.pay) ? payload.pay : "none";
     const move = { kind: payload.kind, qty: Number(payload.qty) || 0, unitPrice: Number(payload.unitPrice) || 0, amount: roundMoney(Number(payload.amount) || 0), date: payload.date, note: payload.note || "", pay, reason: payload.reason === "return" ? "return" : "", method: pay === "cash" ? methodInput(payload.method) : "cash", accountId: pay === "account" ? payload.accountId : "" };
+    // GG2 (K13/7): peşin satış/alışın banka hesabı bağı da döner (hesap silinmişse bağsız; söylenir).
+    const kept = pay === "cash" ? bank.keepRef(payload.finRef, { method: move.method, date: move.date }) : { ref: "", dropped: "" };
     bank.post({
       user,
       module: "stock",
@@ -665,8 +667,8 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
       write: () => {
         if (!store.get("SELECT 1 AS found FROM stock_moves WHERE id = ?", entry.ref)) {
           store.run(
-            "INSERT INTO stock_moves (id, item_id, kind, qty, unit_price, amount, date, note, pay, reason, method, account_id, event_id, created_by, created_at, updated_by, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-            entry.ref, item.id, move.kind, move.qty, move.unitPrice, move.amount, move.date, move.note, move.pay, move.reason, move.method, move.accountId,
+            "INSERT INTO stock_moves (id, item_id, kind, qty, unit_price, amount, date, note, pay, reason, method, account_id, fin_ref, event_id, created_by, created_at, updated_by, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            entry.ref, item.id, move.kind, move.qty, move.unitPrice, move.amount, move.date, move.note, move.pay, move.reason, move.method, move.accountId, kept.ref,
             bank.eventFor("stock_moves", { kind: move.kind, pay: move.pay, amount: move.amount, date: move.date, method: move.method, event_id: payload.eventId || "" }), payload.createdBy || user.id, payload.createdAt || now(), user.id, now(),
           );
           syncAccount(user, item, entry.ref, move);
@@ -677,7 +679,7 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
     });
     changed(user, { itemId: item.id });
     changed(user, { kind: "cash" });
-    return `Stok hareketi geri eklendi${pay !== payload.pay ? " (carisi silindiği için yalnız miktar olarak)" : ""}.`;
+    return `Stok hareketi geri eklendi${pay !== payload.pay ? " (carisi silindiği için yalnız miktar olarak)" : ""}.${kept.dropped ? ` ${bank.droppedText(kept.dropped)}` : ""}`;
   }
   const fingerprint = () => {
     const row = store.get("SELECT (SELECT COUNT(*) || '/' || COALESCE(MAX(COALESCE(updated_at, created_at)), '') FROM stock_moves) AS m, (SELECT COUNT(*) || '/' || COALESCE(MAX(updated_at), '') FROM stock_items) AS i");

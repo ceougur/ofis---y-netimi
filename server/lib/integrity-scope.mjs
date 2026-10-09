@@ -97,7 +97,7 @@ export function familyOf(code) {
   if (code.startsWith("dates:future:") || code === "money:method" || code === "money:report" || code === "money:event" || code.startsWith("bank:event")) return null;
   // Aşama 3: açılış kuralı ve fiş dengesi hesap/olay bazında; süzgeç dokunulan hesap ve olaylarda kendisi denetler (eski sapmaya dokunan yazım
   // bulgu verir → tam kapı imzayla karar verir).
-  if (code.startsWith("bank:opening") || code.startsWith("bank:voucher") || code.startsWith("bank:carry")) return null;
+  if (code.startsWith("bank:opening") || code.startsWith("bank:voucher") || code.startsWith("bank:carry") || code.startsWith("bank:ref")) return null;
   return "all";
 }
 
@@ -633,6 +633,11 @@ export function createScopedGate({ store, ledger, accounts, plans, stock, money,
     }
     // Açılış kuralı (Aşama 3): dokunulan hesaplar (hesap kartı, satır bağı, olayın ya da fiş satırının hesabı).
     if (bank.ready() && s.banks.size) for (const item of bank.openingProblems({ refs: s.banks })) find("bank:opening", item.sample || item.key);
+    // GG2 (bank:ref): dokunulan modül satırlarından hesaba bağlı olanların yolu hesabın türüne uyar.
+    if (bank.ready() && s.banks.size) {
+      const bound = MODULE_TABLES.flatMap(table => touchedRows(table).filter(row => row.fin_ref).map(row => ({ table, row })));
+      if (bound.length) for (const item of bank.refProblems({ rows: bound })) find("bank:ref", item.sample || item.key);
+    }
     lap("bank");
     return { full: lockReason ? `kilit (${lockReason})` : "", findings, sections, ms: performance.now() - started, scope: { parties: s.parties.size, plans: s.plans.size, cheques: s.cheques.size, invoices: s.invoices.size, items: s.items.size, money: Object.values(s.money).reduce((sum, set) => sum + set.size, 0), events: s.events.size, heavyParties, built: entries.length } };
   }

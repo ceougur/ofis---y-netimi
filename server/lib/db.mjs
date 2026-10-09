@@ -141,9 +141,15 @@ export function createStore(db) {
     if (parsed.verb === "UPDATE" && parsed.set.length && parsed.set.every(column => policy.free[table]?.has(column))) return;
     if (!posts.length) money?.violations.push({ code: "money-raw", table, sql: sql.replace(/\s+/g, " ").trim().slice(0, 200) });
     if (!policy.sources.has(table) || table === "bank_lines") return;
-    const rows = before ? before.map(row => ({ r: row.__rowid, e: row.event_id })) : store.all(`SELECT rowid AS r, event_id AS e FROM ${table}${parsed.where ? ` WHERE ${parsed.where}` : ""}`, ...args.slice(parsed.setParams));
+    const rows = before ? before.map(row => ({ r: row.__rowid, e: row.event_id, f: row.fin_ref })) : store.all(`SELECT rowid AS r, event_id AS e, COALESCE(fin_ref, '') AS f FROM ${table}${parsed.where ? ` WHERE ${parsed.where}` : ""}`, ...args.slice(parsed.setParams));
     if (parsed.verb === "UPDATE") noteRows(table, rows.map(row => row.r));
-    if (posts.length) posts.at(-1).affected(rows.map(row => row.e).filter(Boolean));
+    if (posts.length) {
+      posts.at(-1).affected(rows.map(row => row.e).filter(Boolean));
+      // GG2 (K4, plan §9.2/4): banka hesabına bağlı (fin_ref dolu) satır düzeltiliyor ya da siliniyor — bank.post yazımdan sonra yetkiyi ve
+      // bağın yolla uyumunu denetler (önceki hâl bu andaki satırdır).
+      const bound = rows.filter(row => row.f).map(row => row.r);
+      if (bound.length) posts.at(-1).bound?.(table, bound);
+    }
   }
   // ---------- Kapı kapsamı (v2.1.0, §3.11 kararı; lib/integrity.mjs "dokunulan varlıklar") ----------
   // En dış işlemde para tablolarına ve fatura tablolarına yazılan satırlar: eklenen/düzeltilen satırların rowid'i (COMMIT'te güncel hâli
@@ -201,7 +207,12 @@ export function createStore(db) {
     if (!policy.sources.has(table) || !/^\s*(INSERT|REPLACE)/i.test(sql)) return;
     const changes = Number(result?.changes) || 0;
     const last = Number(result?.lastInsertRowid) || 0;
-    if (changes > 0 && last > 0) noteRows(table, Array.from({ length: changes }, (_, k) => last - changes + 1 + k));
+    if (changes > 0 && last > 0) {
+      const rowids = Array.from({ length: changes }, (_, k) => last - changes + 1 + k);
+      noteRows(table, rowids);
+      // GG2 (K4): eklenen satırlar (Silinenler'den geri yükleme, Taksite Aktar): bank.post bağlı olanları yetkiye göre denetler.
+      if (posts.length && !rawScope.length && table !== "bank_lines") posts.at(-1).inserted?.(table, rowids);
+    }
   }
   // Gözden geçirme B1 (Aşama 2): bu işlemde yazılan para satırının olayı (event_id) yalnız "boş değil" diye kabul edilmez: olay kayıtlı
   // (fin_events) VE bu işlemde bank.post'tan geçmiş (açtığı ya da bağladığı; touchEvent) olmalıdır. Önceden bank.post dışından uydurma ya

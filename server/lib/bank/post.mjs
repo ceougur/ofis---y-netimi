@@ -168,6 +168,73 @@ export function createBank({ store, now = systemClock, log = null, strict = fals
     }
   }
 
+  // ---------- GG2: banka hesabına bağlı modül satırları (K4 çapraz yetki, bağın yolla uyumu, geri yüklemede bağ) ----------
+  // Bağ bir banka hesabı ya da (POS yolu için) bir POS'tur (108.T; POS kartı 2.2.0'da, şema ve kapı şimdiden tanır).
+  const accountRowOf = id =>
+    id
+      ? store.get("SELECT id, kind, opening_date AS openingDate, deleted_at AS deletedAt FROM bank_accounts WHERE id = ?", id) ||
+        store.get("SELECT id, 'pos' AS kind, '' AS openingDate, deleted_at AS deletedAt FROM pos_terminals WHERE id = ?", id) ||
+        null
+      : null;
+  // Hesap türünün modül satırındaki yolu: 102 ailesi havale (bank), kurumsal kart POS/kart yolu (card); kredi hesabına modül satırı bağlanmaz.
+  const familyOf = kind => (kind === "card" || kind === "pos" ? "card" : kind === "loan" ? "" : kind ? "bank" : "");
+  /** Bağlı satır hesabına uyuyor mu: hâlâ para satırı ve yolu hesabın türünün yolu. */
+  function refFits(table, row) {
+    const account = accountRowOf(row?.fin_ref);
+    return Boolean(account && !account.deletedAt && isMoneyRow(table, row) && familyOf(account.kind) === String(row.method || ""));
+  }
+  /**
+   * Geri yüklenen ya da taşınan satırın bağı (plan §3.5 K13/7: "satır kendi bağını taşır"): hesap hâlâ varsa, satırın yolu hesabın türüne
+   * uyuyorsa ve satır hesabın açılışından önce değilse aynı bağ; değilse '' (Hesabı Atanmamış) ve nedeni. Dönüş: { ref, dropped }.
+   */
+  function keepRef(ref, { method = "", date = "" } = {}) {
+    const id = String(ref || "");
+    if (!id) return { ref: "", dropped: "" };
+    const account = accountRowOf(id);
+    if (!account || account.deletedAt) return { ref: "", dropped: "deleted" };
+    if (familyOf(account.kind) !== String(method || "")) return { ref: "", dropped: "method" };
+    if (date && account.openingDate && date < account.openingDate) return { ref: "", dropped: "before-opening" };
+    return { ref: id, dropped: "" };
+  }
+  /** keepRef'in düştüğü bağın kullanıcıya söylenen nedeni ("" = bağ korundu). */
+  const droppedText = reason => (reason === "deleted" ? "Bağlı olduğu banka hesabı silindiği için hareket Banka → Hesabı Atanmamış Eski Hareketler'e döndü." : reason === "before-opening" ? "Hareket bağlı olduğu banka hesabının açılışından önce olduğu için Hesabı Atanmamış Eski Hareketler'e döndü." : "");
+  // Para alanı sayılmayan kolonlar (K4: yalnız bunlar değiştiyse modül yetkisi yeter): serbest kolonlar + damgalar + olay bağı.
+  const IGNORED = new Set(["updated_by", "updated_at", "event_id", "__rowid"]);
+  const moneyChanged = (table, before, after) => Object.keys(before).some(key => !IGNORED.has(key) && !FREE_COLUMNS[table]?.has(key) && String(before[key] ?? "") !== String(after[key] ?? ""));
+  const BOUND_TEXT = {
+    "bank.cancel": "Bu hareket bir banka hesabına bağlı; silmek için \"Banka Hareketi Silme, İptal ve Ters Kayıt\" yetkisi gerekir.",
+    "bank.move": "Bu hareket bir banka hesabına bağlı; tutarını, tarihini, yolunu ya da hesabını değiştirmek (ya da geri yüklemek, taşımak) için \"Banka Hareketi Girme ve Bankadan Çıkış\" yetkisi gerekir. Açıklama değiştirilebilir.",
+  };
+  /**
+   * Yazımdan sonra (adım 6'dan sonra, olay kopyasından önce): bağlı satırların yetkisi ve yolu.
+   *   - K4: bağlı satır silindiyse (sil işleminde) bank.cancel, parası değiştiyse / taşındıysa bank.move; geri yüklenen ya da taşınan bağlı satır
+   *     bank.move ister. Hesap atama işlemi (op 'assign', Banka penceresi) kendi yetkisiyle (bank.accounts) gelir.
+   *   - Yolu hesabın türüne uymayan satırın (havale → nakit/POS, peşin → açık hesap) bağı kalkar: tutar hem Kasa'da hem hesapta sayılmasın.
+   */
+  function boundRules(ctx) {
+    if (!ctx.boundRows.size && !ctx.insertedRows.size) return;
+    let need = "";
+    for (const before of ctx.boundRows.values()) {
+      const after = store.get(`SELECT rowid AS __rowid, * FROM ${before.__table} WHERE rowid = ?`, before.__rowid);
+      if (!after || after.id !== before.id) {
+        need ||= ctx.op === "delete" ? "bank.cancel" : "bank.move";
+        continue;
+      }
+      if (after.fin_ref && !refFits(before.__table, after)) {
+        store.run(`UPDATE ${before.__table} SET fin_ref = '' WHERE rowid = ?`, after.__rowid);
+        after.fin_ref = "";
+      }
+      const { __table, ...prior } = before;
+      if (moneyChanged(__table, prior, after)) need ||= "bank.move";
+    }
+    if (["restore", "move", "update"].includes(ctx.op)) {
+      for (const [table, rowids] of ctx.insertedRows) {
+        if (store.get(`SELECT 1 AS found FROM ${table} WHERE rowid IN (SELECT value FROM json_each(?)) AND fin_ref <> '' LIMIT 1`, JSON.stringify([...rowids]))) need ||= "bank.move";
+      }
+    }
+    if (need && ctx.op !== "assign" && ctx.user && ctx.user.id !== "system" && !permitted(ctx.user, need)) throw new HttpError(403, BOUND_TEXT[need], { code: "bank-permission", permission: need });
+  }
+
   // Adım 3 (iskelet): hesaba bağlı satır (fin_ref) değişiyorsa çapraz yetki; ekstreyle eşleşmiş olay değişmez.
   // Aşama 3: banka yetkileri katalogda; karar kişinin ETKİN yetkisidir (rol + kişiye eklenen − kaldırılan). Önceden (Aşama 2) anahtarlar
   // katalogda olmadığı için rol matrisine geri düşülüyordu: kişiden bilinçli kaldırılan bank.cancel yine izin veriyordu.
@@ -181,8 +248,10 @@ export function createBank({ store, now = systemClock, log = null, strict = fals
       if (eventId && store.get("SELECT 1 AS found FROM bank_matches WHERE event_id = ? AND undone_at IS NULL", eventId)) {
         throw new HttpError(409, "Bu hareket banka ekstresiyle eşleştirilmiş; önce eşleşmeyi kaldırın.", { code: "bank-reconciled", eventId });
       }
-      const need = op === "delete" ? "bank.cancel" : op === "update" ? "bank.move" : "";
-      if (finRef && need && !permitted(user, need)) throw new HttpError(403, "Banka hesabına bağlı hareketi değiştirme yetkiniz yok.", { code: "bank-permission", permission: need });
+      // GG2: K4 çapraz yetki asıl olarak yazımdan sonra GERÇEK satırla (boundRules): önceki hâl nesnelerinin çoğu fin_ref taşımıyordu (modül
+      // ekranından silme/düzeltme yetkisiz geçiyordu). Burada yalnız silme (önceki hâl bağlıysa her silme parasaldır); düzeltmede yalnız
+      // açıklama değişimi serbest kalsın diye karar boundRules'un satır karşılaştırmasındadır.
+      if (finRef && op === "delete" && !permitted(user, "bank.cancel")) throw new HttpError(403, BOUND_TEXT["bank.cancel"], { code: "bank-permission", permission: "bank.cancel" });
     }
   }
   // ---------- Banka Fişi (v2.1.0 Aşama 3; plan §3.6, §3.7, §3.8) ----------
@@ -340,8 +409,21 @@ export function createBank({ store, now = systemClock, log = null, strict = fals
         const hit = requests.lookup(key, hash);
         if (hit) return { replayed: true, refId: hit.refId };
       }
-      const ctx = { user, module, op, origin, events: new Set(), created: new Set() };
+      const ctx = { user, module, op, origin, events: new Set(), created: new Set(), boundRows: new Map(), insertedRows: new Map() };
       ctx.affected = ids => ids.forEach(id => ctx.events.add(id));
+      // GG2: bağlı satırın önceki hâli (ilk dokunuşta) ve eklenen satırlar (lib/db.mjs kancaları).
+      ctx.bound = (table, rowids) => {
+        for (const rowid of rowids) {
+          const key = `${table}:${rowid}`;
+          if (ctx.boundRows.has(key)) continue;
+          const row = store.get(`SELECT rowid AS __rowid, * FROM ${table} WHERE rowid = ?`, rowid);
+          if (row) ctx.boundRows.set(key, { ...row, __table: table });
+        }
+      };
+      ctx.inserted = (table, rowids) => {
+        if (!ctx.insertedRows.has(table)) ctx.insertedRows.set(table, new Set());
+        for (const rowid of rowids) ctx.insertedRows.get(table).add(rowid);
+      };
       ctx.eventFor = eventFor;
       stack.push(ctx);
       store.enterPost(ctx);
@@ -349,6 +431,7 @@ export function createBank({ store, now = systemClock, log = null, strict = fals
         prepare?.(ctx); // 2
         assertMutable(user, op, prev); // 3
         const result = write(ctx); // 5–6
+        boundRules(ctx); // 3 (GG2): bağlı satırlar — K4 yetkisi ve bağın yolla uyumu (yazımdan sonra, gerçek satırla)
         finalize(ctx); // 5: olay kopyası, iptal, yeniden etkin
         similar(ctx, similarOk); // 4: yeni olayların kopyası üzerinden (aynı işlemde; yukarıdaki not)
         posHooks(ctx); // 7
@@ -370,7 +453,7 @@ export function createBank({ store, now = systemClock, log = null, strict = fals
     });
   }
 
-  return { post, eventFor, assertNonMoney, assertWrittenNonMoney, voucher: openVoucher, reverse: reverseVoucher, cancelBare: cancelBareEvent, similarError, businessDayOf, isMoney: isMoneyRow, policy, get inPost() {
+  return { post, eventFor, assertNonMoney, assertWrittenNonMoney, voucher: openVoucher, reverse: reverseVoucher, cancelBare: cancelBareEvent, similarError, businessDayOf, isMoney: isMoneyRow, keepRef, droppedText, refFits, policy, get inPost() {
     return stack.length > 0;
   } };
 }

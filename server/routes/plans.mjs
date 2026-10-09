@@ -750,7 +750,7 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     return { kind, amount, date, note, itemId, method: methodInput(body.method) };
   };
   const entryOf = (planId, entryId) => {
-    const entry = store.get("SELECT id, item_id AS itemId, kind, amount, date, note, method, receipt_no AS receiptNo, cheque_id AS chequeId, opening, event_id AS eventId, created_by AS createdBy, created_at AS createdAt FROM plan_entries WHERE plan_id = ? AND id = ?", planId, limited(entryId, 120, "Hareket"));
+    const entry = store.get("SELECT id, item_id AS itemId, kind, amount, date, note, method, receipt_no AS receiptNo, cheque_id AS chequeId, opening, event_id AS eventId, fin_ref AS finRef, created_by AS createdBy, created_at AS createdAt FROM plan_entries WHERE plan_id = ? AND id = ?", planId, limited(entryId, 120, "Hareket"));
     if (!entry) throw new HttpError(404, "Hareket bulunamadı. Başka biri silmiş olabilir.");
     return entry;
   };
@@ -1418,9 +1418,11 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
   function adoptPayment(user, planId, payment, itemId = null) {
     const entryId = newId("entry");
     const method = methodInput(payment.method);
+    // GG2 (plan §3.5 K13/7): taşınan tahsilat banka hesabı bağını (fin_ref) taşır; önceden bağ düşüyor, tutar hesaptan Hesabı Atanmamış'a geçiyordu.
+    const finRef = bank.keepRef(payment.fin_ref, { method, date: payment.date }).ref;
     store.run(
-      "INSERT INTO plan_entries (id, plan_id, item_id, kind, amount, date, note, receipt_no, opening, method, event_id, created_by, created_at, updated_by, updated_at) VALUES (?, ?, ?, 'in', ?, ?, ?, NULL, 0, ?, ?, ?, ?, ?, ?)",
-      entryId, planId, itemId, roundMoney(payment.amount), payment.date, String(payment.note || "Kayıt kartından tahsilat").slice(0, 300), method,
+      "INSERT INTO plan_entries (id, plan_id, item_id, kind, amount, date, note, receipt_no, opening, method, fin_ref, event_id, created_by, created_at, updated_by, updated_at) VALUES (?, ?, ?, 'in', ?, ?, ?, NULL, 0, ?, ?, ?, ?, ?, ?, ?)",
+      entryId, planId, itemId, roundMoney(payment.amount), payment.date, String(payment.note || "Kayıt kartından tahsilat").slice(0, 300), method, finRef,
       bank.eventFor("plan_entries", { kind: "in", date: payment.date, method, opening: 0, cheque_id: "", event_id: payment.event_id || "" }), payment.created_by || user.id, payment.created_at || now(), user.id, now(),
     );
     return entryId;

@@ -548,6 +548,9 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
       // GG2: Devir Kapanışı sırası (şirket bazında sınır; daha erken tarihli ikinci kapanış aynı eski bakiyeyi iki kez kapatır).
       const carry = bank().carryProblems();
       bankItems.push({ code: "bank:carry", name: "Devir Kapanışı Sırası", ok: carry.length === 0, count: carry.length, sample: carry.slice(0, 5).map(item => item.sample) });
+      // GG2: hesaba bağlı modül satırının yolu hesabın türüne uyar (havale → 102, kart → 309); bağlı satır nakit/POS olamaz.
+      const refItems = byEntity("bank:ref", "Hesap Bağı ve Yol", bank().refProblems(), { label });
+      bankItems.push(...(refItems.length ? refItems : [{ code: "bank:ref", name: "Hesap Bağı ve Yol", ok: true, count: 0 }]));
       const report = scoped && !touched.size ? [] : bank().reportMismatches(scope);
       bankItems.push({ code: "money:report", name: "Rapor = Özet (satır toplamı = özet, yol ve hesap bazında)", ok: report.length === 0, count: report.length, ...(scoped ? { scoped: true, gateCount: report.length } : {}), sample: report.slice(0, 5).map(item => `${item.key}: satırlar ${item.rows / 100} / özet ${item.summary / 100}`) });
       if (!scoped) {

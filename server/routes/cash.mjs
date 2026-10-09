@@ -317,8 +317,8 @@ export function registerCashRoutes(router, context) {
     guardChange(previous, null, url.searchParams.get("cashForce") === "1", "Bu Kasa hareketi silinince");
     const twin = twinOf(previous);
     if (twin) guardChange(twin, null, url.searchParams.get("cashForce") === "1", "Bu transferin öbür tarafı silinince");
-    const full = store.get("SELECT id, kind, amount, date, description, method, transfer_id AS transferId, event_id AS eventId, created_by AS createdBy, created_at AS createdAt FROM cash_entries WHERE id = ?", previous.id);
-    const twinFull = twin ? store.get("SELECT id, kind, amount, date, description, method, transfer_id AS transferId, event_id AS eventId, created_by AS createdBy, created_at AS createdAt FROM cash_entries WHERE id = ?", twin.id) : null;
+    const full = store.get("SELECT id, kind, amount, date, description, method, transfer_id AS transferId, event_id AS eventId, fin_ref AS finRef, created_by AS createdBy, created_at AS createdAt FROM cash_entries WHERE id = ?", previous.id);
+    const twinFull = twin ? store.get("SELECT id, kind, amount, date, description, method, transfer_id AS transferId, event_id AS eventId, fin_ref AS finRef, created_by AS createdBy, created_at AS createdAt FROM cash_entries WHERE id = ?", twin.id) : null;
     // Silme, Silinenler kaydı ve işlem geçmişi tek işlemde (v2.0.26, B5): yarıda kesilirse hiçbiri yazılmaz (önceden hareket
     // silinip Silinenler'e yazılamadan kesinti olursa geri getirilemiyordu). v2.1.0: işlem başlığı "iptal" olur (kopyası kalır);
     // Silinenler'den geri yüklenince aynı olay yeniden etkinleşir.

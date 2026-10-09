@@ -133,7 +133,9 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
     for (const e of M.invCash) out.push({ source: "invoice", date: e.date, method: e.method, cents: e.kind === "in" ? e.amount : -e.amount });
     for (const e of M.chqCash) out.push({ source: "cheque", date: e.date, method: e.method, cents: e.kind === "in" ? e.amount : -e.amount });
     // v2.1.0: Banka Fişi para satırları (açılış, fiş, ters kayıt) — her biri tek banka satırı.
-    for (const e of M.bankLines) out.push({ source: "bankLine", date: e.date, method: "bank", cents: e.cents });
+    // GG2: açılış (ve Devir Kapanışı, eski bakiye aktarımı) para hareketi değildir — raporda satır olarak görünür, dönem giriş/çıkışına
+    // girmez ("Açılış ve Devir Düzeltmeleri"); bakiyeye girer.
+    for (const e of M.bankLines) out.push({ source: "bankLine", date: e.date, method: "bank", cents: e.cents, adjust: e.type === "opening" });
     return out;
   }
   const balAt = (method, date) => cashEffects().filter(x => x.method === method && (!date || x.date <= date)).reduce((s, x) => s + x.cents, 0);
@@ -329,8 +331,11 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
         const rep = await rc(id, from, to);
         const rows = rep.total - 1; // ilk satır devir
         if (rows !== effects.length) problems.push(`${label} ${from}–${to}: rapor ${rows} satır · model ${effects.length}${effects.length && !rows ? " (VERİ VARKEN BOŞ)" : ""}`);
-        const inCents = effects.filter(x => x.cents > 0).reduce((s, x) => s + x.cents, 0), outCents = -effects.filter(x => x.cents < 0).reduce((s, x) => s + x.cents, 0);
+        const moving = effects.filter(x => !x.adjust);
+        const inCents = moving.filter(x => x.cents > 0).reduce((s, x) => s + x.cents, 0), outCents = -moving.filter(x => x.cents < 0).reduce((s, x) => s + x.cents, 0);
         if (sum(rep, "Dönem Giriş") !== inCents || sum(rep, "Dönem Çıkış") !== outCents) problems.push(`${label} ${from}–${to}: giriş/çıkış ${tl(sum(rep, "Dönem Giriş"))}/${tl(sum(rep, "Dönem Çıkış"))} · model ${tl(inCents)}/${tl(outCents)}`);
+        const adjustCents = effects.filter(x => x.adjust).reduce((s, x) => s + x.cents, 0);
+        if (sum(rep, "Açılış ve Devir Düzeltmeleri") !== adjustCents) problems.push(`${label} ${from}–${to}: açılış ve devir düzeltmeleri ${tl(sum(rep, "Açılış ve Devir Düzeltmeleri"))} · model ${tl(adjustCents)}`);
       }
       const moves = M.moves.filter(m => m.date >= from && m.date <= to);
       const stok = await rc("stok-hareketleri", from, to);
