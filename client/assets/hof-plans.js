@@ -758,6 +758,8 @@
     const incoming = (entry?.kind || kind) === "in";
     const openItems = plan.items.filter(row => row.remaining > 0.005 || row.id === entry?.itemId);
     const suggested = entry ? amountText(entry.amount) : amount ? amountText(amount) : item ? amountText(item.remaining) : plan.next ? amountText(plan.next.remaining) : "";
+    // v2.1.0 Aşama 8: istek kimliği form açılışında (aynı gönderim ikinci kez yazılmaz); Havale / EFT seçilince Banka Hesabı (tek hesapta gizli).
+    const requestId = HOF.requestId();
     HOF.formModal({
       title: entry ? (incoming ? "Tahsilatı Düzelt" : "Ödemeyi Düzelt") : incoming ? "Tahsilat Gir" : "Ödeme / İade Gir",
       eyebrow: plan.name,
@@ -773,9 +775,20 @@
         { name: "note", label: "Açıklama", maxlength: 300, value: entry?.note || "", placeholder: incoming ? "Ör. Ekim taksidi" : "Ne için", list: incoming ? [] : ["İade", "Fazla Alınan", "İndirim"] },
       ],
       submitLabel: entry ? "Kaydet" : incoming ? "Tahsilatı Kaydet" : "Ödemeyi Kaydet",
+      onOpen: dialog => {
+        if (!entry?.opening && HOF.bank?.attachPicker) HOF.bank.attachPicker(dialog.querySelector("form"), { methodName: "method", value: entry?.finRef || "", keepLabel: entry && entry.method === "bank" && !entry.finRef ? "Atanmamış (Eski Hareket)" : "" });
+      },
       onSubmit: async data => {
         const url = `/api/workspace/plans/${encodeURIComponent(plan.id)}/entries${entry ? `/${encodeURIComponent(entry.id)}` : ""}`;
-        const result = await HOF.api(url, { method: entry ? "PUT" : "POST", body: { ...data, kind: entry?.kind || kind } });
+        const body = { ...data, kind: entry?.kind || kind };
+        if (data.method !== "bank") delete body.bankAccountId;
+        const send = flags => HOF.api(url, { method: entry ? "PUT" : "POST", body: { ...body, ...flags }, requestId });
+        const result = HOF.bank?.withConfirms ? await HOF.bank.withConfirms(send) : await send({});
+        if (result.replayed) {
+          applyPlan(result);
+          HOF.toast("Bu işlem zaten kaydedildi; ikinci kez yazılmadı.", { type: "info" });
+          return;
+        }
         HOF.toast(entry ? "Hareket düzeltildi." : incoming ? `Tahsilat kaydedildi. Kalan ${money(result.totals.remaining)}.` : "Ödeme kaydedildi.", {
           type: "success",
           action: !entry && incoming && result.entryId ? { label: "Makbuz", onClick: () => window.open(`/api/workspace/plans/${encodeURIComponent(plan.id)}/entries/${encodeURIComponent(result.entryId)}/makbuz.pdf`, "_blank", "noopener") } : undefined,
@@ -790,7 +803,10 @@
     const ok = await HOF.confirm({ title: "Hareketi Sil", message: `${money(entry.amount)} tutarındaki ${entry.kind === "in" ? "tahsilat" : "ödeme"} silinecek; Kasa ve kart yeniden hesaplanır. Yönetim panelindeki Silinenler’den geri yüklenebilir.`, confirmLabel: "Sil", danger: true });
     if (!ok) return;
     try {
-      applyPlan(await HOF.api(`/api/workspace/plans/${encodeURIComponent(plan.id)}/entries/${encodeURIComponent(entry.id)}`, { method: "DELETE" }));
+      // Banka hesabına bağlı tahsilat silinince hesabın bakiyesi düşer: eksi bakiye sorusu (K7) "Yine de Kaydet" ile adrese eklenir.
+      const path = `/api/workspace/plans/${encodeURIComponent(plan.id)}/entries/${encodeURIComponent(entry.id)}`;
+      const send = flags => HOF.api(flags.negativeOk ? `${path}?negativeOk=1` : path, { method: "DELETE" });
+      applyPlan(HOF.bank?.withConfirms ? await HOF.bank.withConfirms(send) : await send({}));
       HOF.toast("Hareket silindi.", { type: "success" });
     } catch (error) {
       HOF.toastError(error);

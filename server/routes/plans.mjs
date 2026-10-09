@@ -5,6 +5,7 @@
 import { randomUUID } from "node:crypto";
 import { HttpError, limited, ok, readJson, sendBuffer, text } from "../lib/http.mjs";
 import { parseAmount, roundMoney } from "../lib/money.mjs";
+import { bankForm } from "../lib/bank/module-ref.mjs";
 import { canUser } from "../lib/permissions.mjs";
 import { allocate, dayText, distribute, isoDay, mapHeaders, parseDay } from "../lib/plans.mjs";
 import { extractSchedules, spreadPaid } from "../lib/insight/schedules.mjs";
@@ -26,7 +27,7 @@ const MAX_ITEMS = 360;
 const MAX_IMPORT = 100_000;
 
 // accounts (v2.0.6): cari servisi daha sonra kurulur; her taksit kartı bir cariye aittir (plans.account_id).
-export function registerPlanRoutes(router, { store, bank, auth, audit, events, trash, dataset = null, cash = null, period = null, accounts = () => null, cheques = () => null, invoices = () => null, now: clock = systemClock }) {
+export function registerPlanRoutes(router, { store, bank, auth, audit, events, trash, dataset = null, cash = null, period = null, accounts = () => null, cheques = () => null, invoices = () => null, bankModule = () => null, now: clock = systemClock }) {
   // İş saati (v2.1.0): context.now (config.now).
   const now = () => clock().toISOString();
   const today = () => isoDay(clock());
@@ -174,7 +175,7 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
   const itemsOf = planId => store.all("SELECT id, seq, due_date AS dueDate, amount, note FROM plan_items WHERE plan_id = ? ORDER BY due_date, seq", planId);
   const entriesOf = planId =>
     store.all(
-      `SELECT e.id, e.item_id AS itemId, e.kind, e.amount, e.date, e.note, e.method, e.receipt_no AS receiptNo, e.cheque_id AS chequeId, e.opening, e.created_by AS createdBy, e.created_at AS createdAt, e.updated_at AS updatedAt,
+      `SELECT e.id, e.item_id AS itemId, e.kind, e.amount, e.date, e.note, e.method, e.receipt_no AS receiptNo, e.cheque_id AS chequeId, e.opening, e.fin_ref AS finRef, e.created_by AS createdBy, e.created_at AS createdAt, e.updated_at AS updatedAt,
               COALESCE(u.display_name, '') AS actorName
        FROM plan_entries e LEFT JOIN users u ON u.id = e.created_by WHERE e.plan_id = ? ORDER BY e.date, e.created_at, e.rowid`,
       planId,
@@ -780,6 +781,9 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     const invoiceId = store.get("SELECT invoice_id AS id FROM plans WHERE id = ?", planId)?.id;
     if (invoiceId) invoices()?.syncOwnCard?.(user, invoiceId);
   };
+  // v2.1.0 Aşama 8 (plan §3.7 #6): havale/EFT tahsilatı ve iadesi banka hesabına bağlanır (fin_ref), istek kimliği, Benzer İşlem, K7 (iadede ve
+  // düzeltme/silmede hesaptan para çıkar), bankadan iade bank.move ister. K8 hedef kuralları (plan-paid / plan-overpay) sonraki dilimde.
+  const banking = bankForm(bankModule);
   router.post("/api/workspace/plans/:id/entries", async ({ req, res, params }) => {
     const user = auth.requirePermission(req, "plans.collect");
     const plan = planRow(params.id);
@@ -789,23 +793,36 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     if (input.kind === "out" && !canUser(user, "plans.manage")) throw new HttpError(403, "Ödeme/iade girişi yönetici, uzman ve muhasebe yetkisidir.");
     if (input.kind === "out") assertNetPaid(plan.id, -input.amount);
     if (input.kind === "out") cash?.guardOut?.(input.amount, input.date, body.cashForce === true, input.method);
+    const finRef = banking.ref({ method: input.method, value: body.bankAccountId, date: input.date });
+    banking.requireOut(user, input.kind === "out", finRef);
+    const k7 = banking.negative([finRef], input.date, banking.forced(body));
     const id = newId("entry");
     // v2.1.0 (bank.post): tahsilat/iade, İşlem No'lu işlem başlığı ve işlem geçmişi tek işlemde.
-    bank.post({
+    const created = bank.post({
       user,
       module: "plan",
       op: "create",
+      requestId: banking.requestId(req, body),
+      scope: "plan.entry.create",
+      body: { ...body, planId: plan.id },
+      similarOk: body.similarOk === true,
       write: () => {
+        k7.capture();
         const receiptNo = input.kind === "in" ? nextReceipt() : null;
-        store.run("INSERT INTO plan_entries (id, plan_id, item_id, kind, amount, date, note, receipt_no, method, event_id, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", id, plan.id, input.itemId, input.kind, input.amount, input.date, input.note, receiptNo, input.method, bank.eventFor("plan_entries", { ...input, cheque_id: "", opening: 0 }), user.id, now());
-        audit(user, input.kind === "in" ? "plan.collected" : "plan.refunded", id, { planId: plan.id, planName: plan.name, ...input, receiptNo });
+        store.run("INSERT INTO plan_entries (id, plan_id, item_id, kind, amount, date, note, receipt_no, method, fin_ref, event_id, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", id, plan.id, input.itemId, input.kind, input.amount, input.date, input.note, receiptNo, input.method, finRef, bank.eventFor("plan_entries", { ...input, cheque_id: "", opening: 0, fin_ref: finRef }), user.id, now());
+        audit(user, input.kind === "in" ? "plan.collected" : "plan.refunded", id, { planId: plan.id, planName: plan.name, ...input, finRef, receiptNo });
         syncInvoiceCard(user, plan.id);
+        return { id };
       },
+      guard: k7.guard,
     });
-    changed(user, { planId: plan.id });
-    changed(user, { kind: "cash" });
-    touchedCase(user, plan);
-    ok(res, { ...detail(plan.id, user), entryId: id });
+    k7.prime(created);
+    if (!created?.replayed) {
+      changed(user, { planId: plan.id });
+      changed(user, { kind: "cash" });
+      touchedCase(user, plan);
+    }
+    ok(res, { ...detail(plan.id, user), entryId: created?.replayed ? created.refId : id, ...(created?.replayed ? { replayed: true } : {}) });
   });
   router.put("/api/workspace/plans/:id/entries/:entryId", async ({ req, res, params }) => {
     const user = auth.requirePermission(req, "plans.collect");
@@ -818,19 +835,31 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     const input = entryInput({ ...previous, ...body, kind: previous.kind }, plan.id);
     assertNetPaid(plan.id, previous.kind === "in" ? input.amount : -input.amount, previous.id);
     cash?.guardChange?.(previous, input, body.cashForce === true);
-    bank.post({
+    // Açılış (devir) satırı para satırı değildir: hesaba bağlanmaz.
+    const moved = (previous.method || "cash") !== input.method || Math.abs(Number(previous.amount) - input.amount) > 0.004 || previous.date !== input.date;
+    const finRef = previous.opening ? "" : banking.ref({ method: input.method, value: body.bankAccountId, date: input.date, previous: { method: previous.method || "cash", finRef: previous.finRef }, changed: moved });
+    if (finRef !== (previous.finRef || "")) banking.requireOut(user, previous.kind === "out", finRef);
+    const k7 = banking.negative([previous.finRef, finRef], previous.date < input.date ? previous.date : input.date, banking.forced(body));
+    const result = bank.post({
       user,
       module: "plan",
       op: "update",
       prev: previous,
+      requestId: banking.requestId(req, body),
+      scope: "plan.entry.update",
+      body: { ...body, entryId: previous.id },
       write: () => {
+        k7.capture();
         // Açılış (opening) satırı para satırı değildir: olay almaz; eski (olaysız) tahsilat düzeltilince olay alır.
-        const eventId = bank.eventFor("plan_entries", { kind: previous.kind, date: input.date, method: input.method, opening: previous.opening ? 1 : 0, cheque_id: previous.chequeId || "", event_id: previous.eventId });
-        store.run("UPDATE plan_entries SET item_id = ?, amount = ?, date = ?, note = ?, method = ?, event_id = ?, updated_by = ?, updated_at = ? WHERE id = ?", input.itemId, input.amount, input.date, input.note, input.method, eventId, user.id, now(), previous.id);
-        audit(user, "plan.entry.updated", previous.id, { planId: plan.id, previous, ...input });
+        const eventId = bank.eventFor("plan_entries", { kind: previous.kind, date: input.date, method: input.method, opening: previous.opening ? 1 : 0, cheque_id: previous.chequeId || "", fin_ref: finRef, event_id: previous.eventId });
+        store.run("UPDATE plan_entries SET item_id = ?, amount = ?, date = ?, note = ?, method = ?, fin_ref = ?, event_id = ?, updated_by = ?, updated_at = ? WHERE id = ?", input.itemId, input.amount, input.date, input.note, input.method, finRef, eventId, user.id, now(), previous.id);
+        audit(user, "plan.entry.updated", previous.id, { planId: plan.id, previous, ...input, finRef });
         syncInvoiceCard(user, plan.id);
+        return { id: previous.id };
       },
+      guard: k7.guard,
     });
+    k7.prime(result);
     changed(user, { planId: plan.id });
     changed(user, { kind: "cash" });
     touchedCase(user, plan);
@@ -845,18 +874,23 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     assertCloseOpen(plan.id, "Kartın tahsilatı ve iadesi değiştirilemez.");
     if (previous.kind === "in") assertNetPaid(plan.id, 0, previous.id);
     if (!previous.opening && !previous.chequeId) cash?.guardChange?.(previous, null, url.searchParams.get("cashForce") === "1", previous.kind === "in" ? "Bu taksit tahsilatı silinince" : "Bu taksit iadesi silinince");
-    bank.post({
+    const k7 = banking.negative([previous.finRef], previous.date, banking.forced(null, url));
+    const result = bank.post({
       user,
       module: "plan",
       op: "delete",
       prev: previous,
+      guard: k7.guard,
       write: () => {
+        k7.capture();
         store.run("DELETE FROM plan_entries WHERE id = ?", previous.id);
         trash?.add({ kind: "plan-entry", ref: previous.id, title: plan.name, detail: previous.note || (previous.opening ? "Açılış (devir)" : previous.kind === "in" ? "Taksit tahsilatı" : "Taksit ödemesi/iadesi"), payload: { ...previous, opening: previous.opening ? 1 : 0, planId: plan.id, planName: plan.name }, user });
         audit(user, "plan.entry.deleted", previous.id, { planId: plan.id, ...previous });
         syncInvoiceCard(user, plan.id);
+        return { id: previous.id };
       },
     });
+    k7.prime(result);
     changed(user, { planId: plan.id });
     changed(user, { kind: "cash" });
     touchedCase(user, plan);

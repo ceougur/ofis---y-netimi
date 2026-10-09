@@ -16,8 +16,8 @@ const every = arg("her", 1);
 const burst = arg("eszamanli", 60);
 let failed = 0;
 for (let seed = firstSeed; seed < firstSeed + seeds; seed++) {
-  // bankPickLegacy (2.1.0 Aşama 5–6): motor havale/transfer satırlarını hesap seçmeden yazar (eski sürüm gibi hesabı atanmamış); hesap seçimi
-  // ve modül satırlarında K7 ayrı testlerde (banka-210-asama5-cari, -asama6-kasa).
+  // bankPickLegacy (2.1.0 Aşama 5–6): motorun havalelerinin bir kısmı eski sürüm gibi hesap seçmeden yazılır (Hesabı Atanmamış). Aşama 7–8: cari
+  // tahsilat/ödeme, taksit tahsilatı ve çek tahsilinde havalelerin %60'ı bir hesaba bağlanır; hesap bakiyesi ve K7 (bağlı cari ödemesi) modelde.
   const server = await startTestServer({ bankPickLegacy: true });
   const started = performance.now();
   try {

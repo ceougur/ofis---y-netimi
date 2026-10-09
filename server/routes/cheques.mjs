@@ -12,6 +12,7 @@ import { ACTIONS, DIRECTIONS, EVENT_LABELS, INSTRUMENTS, STATUSES, dueState, ini
 import { HttpError, limited, ok, readJson, sendBuffer, text } from "../lib/http.mjs";
 import { findHeaderRow, inferRolesByValues, sanitizeCell, validateRows } from "../lib/import-gate.mjs";
 import { parseAmount, roundMoney } from "../lib/money.mjs";
+import { bankForm } from "../lib/bank/module-ref.mjs";
 import { canUser } from "../lib/permissions.mjs";
 import { dayText, isoDay, parseDay } from "../lib/plans.mjs";
 import { tablePdf, tl } from "../lib/report-pdf.mjs";
@@ -30,7 +31,7 @@ const collator = new Intl.Collator("tr", { numeric: true, sensitivity: "base" })
 // Geri çevrilebilir etkilerin yazılabileceği tablolar (effects_json'dan gelen ad SQL'e yalnız bu listeden girer).
 const EFFECT_TABLES = new Set(["account_entries", "plan_entries"]);
 
-export function registerChequeRoutes(router, { store, bank, auth, audit, events, period = null, cash = null, accounts = () => null, plans = () => null, now: clock = systemClock }) {
+export function registerChequeRoutes(router, { store, bank, auth, audit, events, period = null, cash = null, accounts = () => null, plans = () => null, bankModule = () => null, now: clock = systemClock }) {
   // İş saati (v2.1.0): context.now (config.now).
   const now = () => clock().toISOString();
   const today = () => isoDay(clock());
@@ -86,7 +87,7 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
   };
   const eventsOf = chequeId =>
     store.all(
-      `SELECT ev.id, ev.kind, ev.date, ev.amount, ev.account_id AS accountId, COALESCE(a.name, '') AS accountName, ev.from_status AS fromStatus, ev.to_status AS toStatus, ev.note, ev.invoice_id AS invoiceId,
+      `SELECT ev.id, ev.kind, ev.date, ev.amount, ev.account_id AS accountId, COALESCE(a.name, '') AS accountName, ev.from_status AS fromStatus, ev.to_status AS toStatus, ev.note, ev.invoice_id AS invoiceId, ev.method, ev.fin_ref AS finRef,
               ev.effects_json AS effectsJson, ev.created_by AS createdBy, ev.created_at AS createdAt, COALESCE(u.display_name, '') AS actorName
        FROM cheque_events ev LEFT JOIN users u ON u.id = ev.created_by LEFT JOIN accounts a ON a.id = ev.account_id WHERE ev.cheque_id = ? ORDER BY ev.created_at, ev.rowid`,
       chequeId,
@@ -278,13 +279,13 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
   });
   // v2.1.0 (bank.post): tahsil ve ödeme olayı para satırıdır, İşlem No'lu işlem başlığı alır; alındı/verildi, ciro ve karşılıksız
   // olayları para satırı değildir.
-  function writeEvent(user, cheque, { kind, date, amount, accountId = "", fromStatus = "", toStatus, note = "", effects = [], method = "cash", invoiceId = "" }) {
+  function writeEvent(user, cheque, { kind, date, amount, accountId = "", fromStatus = "", toStatus, note = "", effects = [], method = "cash", invoiceId = "", finRef = "" }) {
     const id = newId("cevent");
     const way = methodInput(method);
-    const eventId = bank.eventFor("cheque_events", { kind, date, method: way });
+    const eventId = bank.eventFor("cheque_events", { kind, date, method: way, fin_ref: finRef });
     store.run(
-      "INSERT INTO cheque_events (id, cheque_id, kind, date, amount, account_id, from_status, to_status, note, effects_json, method, invoice_id, event_id, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-      id, cheque.id, kind, date, amount, accountId, fromStatus, toStatus, note, JSON.stringify(effects), way, invoiceId, eventId, user.id, now(),
+      "INSERT INTO cheque_events (id, cheque_id, kind, date, amount, account_id, from_status, to_status, note, effects_json, method, invoice_id, fin_ref, event_id, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+      id, cheque.id, kind, date, amount, accountId, fromStatus, toStatus, note, JSON.stringify(effects), way, invoiceId, finRef, eventId, user.id, now(),
     );
     return id;
   }
@@ -420,12 +421,17 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
   });
 
   // Durum değişikliği: tahsil, ciro, karşılıksız, ödeme. Gövde: { action, date, note, accountId (ciro), status (beklenen) }.
+  // v2.1.0 Aşama 8 (plan §3.7 #9): tahsil ve ödeme havale/EFT ile bankadan geçiyorsa olay banka hesabına bağlanır (fin_ref; tek hesapta
+  // kendiliğinden, birden çokta seçim zorunlu), istek kimliği, K7 (ödemede ve geri almada hesaptan para çıkar), ödeme bank.move ister.
+  // Bankaya Tahsile Ver sonraki dilimde (görünmez).
+  const banking = bankForm(bankModule);
   router.post("/api/workspace/cheques/:id/actions", async ({ req, res, params }) => {
     const user = auth.requirePermission(req, "cheques.manage");
     const body = await readJson(req);
     const action = text(body.action);
     let result = null;
-    bank.post({ user, module: "cheque", op: "create", write: () => {
+    let k7 = null;
+    const posted = bank.post({ user, module: "cheque", op: "create", requestId: banking.requestId(req, body), scope: "cheque.action", body: { ...body, chequeId: params.id }, similarOk: body.similarOk === true, guard: (written, ctx) => k7?.guard?.(written, ctx), write: () => {
       const cheque = chequeRow(params.id);
       if (body.status && body.status !== cheque.status) throw new HttpError(409, `Bu ${kindName(cheque).toLocaleLowerCase("tr-TR")} bu arada “${STATUSES[cheque.status]?.label}” oldu. Kartı yenileyin.`, { code: "cheque-stale" });
       const rule = transition(cheque, action);
@@ -435,6 +441,10 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
       // v2.0.13: çek/senet tahsili ya da ödemesi çoğunlukla bankadan geçer (varsayılan Banka); elden ise Nakit.
       const method = methodInput(body.method, "bank");
       if (rule.cash === "out") cash?.guardOut?.(cheque.amount, date, body.cashForce === true, method);
+      const finRef = rule.cash ? banking.ref({ method, value: body.bankAccountId, date }) : "";
+      banking.requireOut(user, rule.cash === "out", finRef);
+      k7 = banking.negative([finRef], date, banking.forced(body));
+      k7.capture();
       if (date < cheque.issueDate) throw new HttpError(400, `İşlem tarihi, ${cheque.direction === "in" ? "alış" : "veriliş"} tarihinden (${dayText(cheque.issueDate)}) önce olamaz.`);
       const note = limited(body.note, 300, "Açıklama");
       let endorseAccountId = "";
@@ -449,14 +459,17 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
       const endorseEffects = effectsOf(history.filter(event => event.kind === "endorse").at(-1));
       const planned = plannedEffects({ ...cheque }, action, { date, note: noteFor(cheque, action, note), endorseAccountId, receiveEffects, endorseEffects });
       const effects = applyEffects(user, cheque, planned);
-      writeEvent(user, cheque, { kind: action, date, amount: cheque.amount, accountId: endorseAccountId || (action === "bounce" ? cheque.accountId : ""), fromStatus: cheque.status, toStatus: rule.to, note, effects, method: rule.cash ? method : "cash" });
+      writeEvent(user, cheque, { kind: action, date, amount: cheque.amount, accountId: endorseAccountId || (action === "bounce" ? cheque.accountId : ""), fromStatus: cheque.status, toStatus: rule.to, note, effects, method: rule.cash ? method : "cash", finRef });
       store.run(
         "UPDATE cheques SET status = ?, status_date = ?, endorse_account_id = CASE WHEN ? <> '' THEN ? ELSE endorse_account_id END, updated_by = ?, updated_at = ? WHERE id = ?",
         rule.to, date, endorseAccountId, endorseAccountId, user.id, now(), cheque.id,
       );
       audit(user, `cheque.${action}`, cheque.id, { serialNo: cheque.serialNo, amount: cheque.amount, date, accountId: endorseAccountId || cheque.accountId, from: cheque.status, to: rule.to });
       result = { id: cheque.id, effects, cash: Boolean(rule.cash) };
+      return { id: cheque.id };
     } });
+    k7?.prime(posted);
+    if (posted?.replayed) return ok(res, { ...detail(posted.refId || params.id, user), replayed: true });
     changed(user, { chequeId: result.id, ...touchedBy(result.effects), cash: result.cash });
     ok(res, detail(result.id, user));
   });
@@ -466,8 +479,10 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
     const user = auth.requirePermission(req, "cheques.manage");
     const body = await readJson(req);
     let result = null;
-    // v2.1.0 (bank.post op 'delete'): geri alınan tahsil/ödeme olayının işlem başlığı iptal olur.
-    bank.post({ user, module: "cheque", op: "delete", prev: { chequeId: params.id }, write: () => {
+    let k7 = null;
+    // v2.1.0 (bank.post op 'delete'): geri alınan tahsil/ödeme olayının işlem başlığı iptal olur. Aşama 8: bankaya bağlı tahsilin geri alınması
+    // hesaptan para çıkarır (K7).
+    const posted = bank.post({ user, module: "cheque", op: "delete", prev: { chequeId: params.id }, guard: (written, ctx) => k7?.guard?.(written, ctx), write: () => {
       const cheque = chequeRow(params.id);
       const history = eventsOf(cheque.id);
       const last = history.at(-1);
@@ -476,6 +491,8 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
       if (body.eventId && body.eventId !== last.id) throw new HttpError(409, "Bu evrakta bu arada başka bir işlem yapıldı. Kartı yenileyin.", { code: "cheque-stale" });
       // v2.0.24: kilitli dönemdeki işlem geri alınmaz (Kasa/cari etkisi kapanmış ayı değiştirirdi).
       period?.assertOpen(last.date, "Bu çek/senet işlemi");
+      k7 = banking.negative([store.get("SELECT fin_ref AS f FROM cheque_events WHERE id = ?", last.id)?.f || ""], last.date, body.negativeOk === true);
+      k7.capture();
       const effects = effectsOf(last);
       revertEffects(effects, user);
       store.run("DELETE FROM cheque_events WHERE id = ?", last.id);
@@ -484,7 +501,9 @@ export function registerChequeRoutes(router, { store, bank, auth, audit, events,
       store.run("UPDATE cheques SET status = ?, status_date = ?, endorse_account_id = ?, updated_by = ?, updated_at = ? WHERE id = ?", last.fromStatus, statusDate, previousEndorse, user.id, now(), cheque.id);
       audit(user, "cheque.undone", cheque.id, { event: last.kind, from: last.toStatus, to: last.fromStatus, amount: cheque.amount });
       result = { id: cheque.id, effects, cash: Boolean(ACTIONS[last.kind]?.cash) };
+      return { id: cheque.id };
     } });
+    k7?.prime(posted);
     changed(user, { chequeId: result.id, ...touchedBy(result.effects), cash: result.cash });
     ok(res, detail(result.id, user));
   });

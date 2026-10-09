@@ -12,6 +12,7 @@
 //     önce (bank.post'un write geri çağrısında, aynı işlemde), guard bank.post'un guard adımına, prime(result) COMMIT'ten sonra (saklı hesap
 //     toplamı; bir sonraki okuma hesabın bütün satırlarını yeniden toplamaz — GG2.6 notu).
 import { HttpError, text } from "../http.mjs";
+import { canUser } from "../permissions.mjs";
 
 const BANK_FORM_KINDS = new Set(["demand", "commercial", "other"]);
 const dayText = iso => (iso ? iso.split("-").reverse().join(".") : "");
@@ -45,9 +46,11 @@ export function createModuleBank({ store, accounts, negative, legacy = () => fal
   function pickRef({ method, value = "", date = "", previous = null, changed = true } = {}) {
     if (String(method || "") !== "bank") return "";
     const id = text(value);
+    const before = previous && String(previous.method || "") === "bank" ? String(previous.finRef ?? previous.fin_ref ?? "") : "";
+    // Aşama 7–8: satırın kendi (artık pasif olabilen) hesabı parası değişmeden yeniden gönderilirse bağ olduğu gibi kalır.
+    if (id && before && id === before && !changed) return before;
     if (id) return check(id, date);
     if (previous && String(previous.method || "") === "bank") {
-      const before = String(previous.finRef ?? previous.fin_ref ?? "");
       if (before) return before;
       if (!changed) return "";
     }
@@ -78,4 +81,29 @@ export function createModuleBank({ store, accounts, negative, legacy = () => fal
   }
 
   return { pickRef, negative: negativeGuard, eligible };
+}
+
+const NOOP_GUARD = Object.freeze({ capture() {}, guard: null, prime() {} });
+/**
+ * Modül rotalarının ortak bankalı yazım yardımcıları (Aşama 7–8: fatura peşini, taksit ve kayıt tahsilatı, stok peşini, çek tahsil/ödeme; cari
+ * rotası Aşama 5'te aynı kuralları kendi içinde kurdu). bankModule: istek anında context.bankAccounts.module (rotalar banka rotalarından önce kurulur).
+ *   ref({ method, value, date, previous, changed })  → fin_ref (pickRef; banka modülü yoksa '')
+ *   negative(refs, date, force)                     → K7 { capture, guard, prime } (banka modülü yoksa etkisiz)
+ *   requireOut(user, out, ref)                      → bankadan çıkış "Banka Hareketi Girme ve Bankadan Çıkış" (bank.move) ister (403 bank-permission)
+ *   forced(body, url)                               → negativeOk (gövde ya da ?negativeOk=1)
+ *   requestId(req, body)                            → x-hof-request ya da gövdedeki requestId
+ *   eligible()                                      → seçilebilir hesaplar (K7 ön yakalamada "tek hesapta kendiliğinden" seçimi kapsamak için)
+ */
+export function bankForm(bankModule = () => null) {
+  const module = () => bankModule?.() || null;
+  return {
+    ref: (options = {}) => module()?.pickRef(options) || "",
+    negative: (refs = [], date = "", force = false) => module()?.negative({ refs, date, force }) || NOOP_GUARD,
+    requireOut(user, out, ref) {
+      if (out && ref && !canUser(user, "bank.move")) throw new HttpError(403, "Bankadan ödeme için \"Banka Hareketi Girme ve Bankadan Çıkış\" yetkisi gerekir.", { code: "bank-permission", permission: "bank.move" });
+    },
+    forced: (body, url) => body?.negativeOk === true || url?.searchParams?.get("negativeOk") === "1",
+    requestId: (req, body) => text(req?.headers?.["x-hof-request"]) || text(body?.requestId),
+    eligible: () => module()?.eligible() || [],
+  };
 }

@@ -35,6 +35,8 @@
   function paymentForm(selected, target, { plain = false } = {}) {
     const suggested = target && Number(target.amount) > 0 ? new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(target.amount) : "";
     const offerPlan = !plain && !(target && Number(target.amount) > 0) && Boolean(HOF.plans?.openNew) && HOF.can("plans.manage");
+    // v2.1.0 Aşama 8: istek kimliği form açılışında; Havale / EFT seçilince Banka Hesabı (tek hesapta gizli).
+    const requestId = HOF.requestId();
     HOF.formModal({
       title: "Tahsilat İşle",
       eyebrow: selected.title,
@@ -48,6 +50,7 @@
       extraHtml: offerPlan ? '<p class="hof-form-aside">Bu kişi taksitle mi ödüyor? <button type="button" class="hof-link" data-new-plan>Taksit planı oluşturun</button>; sonra tahsilatlar taksitten düşer ve kartında görünür.</p>' : "",
       submitLabel: "Tahsilatı Kaydet",
       onOpen: (dialog, modal) => {
+        if (HOF.bank?.attachPicker) HOF.bank.attachPicker(dialog.querySelector("form"), { methodName: "method" });
         dialog.querySelector("[data-new-plan]")?.addEventListener("click", () => {
           modal.close();
           const row = (HOF.data?.rows || []).find(item => item.__hofKey === selected.key) || null;
@@ -55,7 +58,11 @@
         });
       },
       onSubmit: async data => {
-        await HOF.api(caseUrl(selected.key, "payments"), { method: "POST", body: { ...data, caseTitle: selected.title } });
+        const body = { ...data, caseTitle: selected.title };
+        if (data.method !== "bank") delete body.bankAccountId;
+        const send = flags => HOF.api(caseUrl(selected.key, "payments"), { method: "POST", body: { ...body, ...flags }, requestId });
+        const result = HOF.bank?.withConfirms ? await HOF.bank.withConfirms(send) : await send({});
+        if (result?.replayed) return HOF.toast("Bu tahsilat zaten kaydedildi; ikinci kez yazılmadı.", { type: "info" });
         HOF.toast(`Tahsilat kaydedildi (${HOF.methodLabel(data.method, "in")}).`, { type: "success" });
         afterCaseChange();
         HOF.emit("payment-saved", { key: selected.key });
@@ -331,6 +338,7 @@
   const amountText = value => AMOUNT_FORMAT.format(Number(value) || 0);
 
   function editPayment(item, { title = "", after } = {}) {
+    const requestId = HOF.requestId();
     HOF.formModal({
       title: "Tahsilatı Düzelt",
       eyebrow: title || "TAHSİLAT",
@@ -342,8 +350,14 @@
         { name: "note", label: "Açıklama", maxlength: 500, value: item.note ?? item.description ?? "" },
       ],
       submitLabel: "Düzeltmeyi Kaydet",
+      onOpen: dialog => {
+        if (HOF.bank?.attachPicker) HOF.bank.attachPicker(dialog.querySelector("form"), { methodName: "method", value: item.finRef || "", keepLabel: item.method === "bank" && !item.finRef ? "Atanmamış (Eski Hareket)" : "" });
+      },
       onSubmit: async data => {
-        await HOF.api(`/api/workspace/payments/${encodeURIComponent(item.id)}`, { method: "PUT", body: data });
+        const body = { ...data };
+        if (data.method !== "bank") delete body.bankAccountId;
+        const send = flags => HOF.api(`/api/workspace/payments/${encodeURIComponent(item.id)}`, { method: "PUT", body: { ...body, ...flags }, requestId });
+        await (HOF.bank?.withConfirms ? HOF.bank.withConfirms(send) : send({}));
         HOF.toast("Tahsilat düzeltildi.", { type: "success" });
         HOF.emit("payment-saved", { key: item.caseKey || "" });
         after?.();
@@ -360,7 +374,9 @@
     });
     if (!ok) return;
     try {
-      await HOF.api(`/api/workspace/payments/${encodeURIComponent(item.id)}`, { method: "DELETE" });
+      const path = `/api/workspace/payments/${encodeURIComponent(item.id)}`;
+      const send = flags => HOF.api(flags.negativeOk ? `${path}?negativeOk=1` : path, { method: "DELETE" });
+      await (HOF.bank?.withConfirms ? HOF.bank.withConfirms(send) : send({}));
       HOF.toast("Tahsilat silindi.", { type: "success" });
       HOF.emit("payment-saved", { key: item.caseKey || "" });
       after?.();

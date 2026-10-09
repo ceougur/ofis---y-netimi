@@ -37,6 +37,8 @@
 //     (faizli) EKRANDAN; önizleme; alt hesaplar (102.02, 309.k, 300.k) ve 646/780 modelle.
 // 24. Son durum bağımsız modelle (alt hesaplar, kart, kredi, 770, 191, 193, 642, 646, 659, 780); mutabakat ok.
 // 25. Yazım düzeni: gezilen her banka ekranında adlar başlık yazımıyla; kalemle ad (side.bank) menüde ve pencere başlığında.
+// Bölüm 4 (Aşama 7–8, daraltılmış): 32. fatura peşini havale Garanti (Tab ile, satır yeniden çizilmez); 33. taksit tahsilatı Ziraat; 34. çek tahsili
+//     Garanti; hesap bakiyeleri sayılarla (Ziraat 114.000, Garanti 58.000, Gerçek Banka 172.000), mutabakat ok.
 // Çalıştırma: npm run test:senaryo-banka-210 (ekran görüntüleri artifacts/senaryo-banka-210/).
 import fs, { mkdtempSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -1627,6 +1629,145 @@ try {
     await closeAll(admin);
     const integrity = await must("Mutabakat Testi", api.get("/api/workspace/ledger/integrity"));
     ok(integrity.ok === true, "Kabul Şirketi'nde mutabakat ok");
+  });
+
+  // ---------- Bölüm 4 (Aşama 7–8, daraltılmış: fatura peşini, taksit tahsilatı ve çek tahsilinde hesap seçimi) ----------
+  // Aynı Kabul Şirketi; başlangıç: Ziraat 110.000, Garanti 50.000, Kasa 10.000, ABC 0, Ürün A 9. Bağımsız beklenen: adım başına plan sayıları.
+  await step("32. Aşama 7: Satış Faturası Ürün A 1 × 5.000 peşin Havale/EFT — satırda Banka Hesabı; Tab ile Garanti seçilir, tutar ve alanlar yeniden çizilmez; Garanti 55.000", async () => {
+    const inv = `${modal} .hof-invoices-modal`;
+    await admin.click("#hof-sidecard [data-action=invoices]");
+    await admin.waitForSelector(`${inv} [data-act="new"]`, { timeout: 10000 });
+    await admin.click(`${inv} [data-act="new"]`);
+    await admin.click(`${inv} [data-scenario="goods_sale"]`);
+    await admin.waitForSelector(`${inv} [data-lines]`);
+    await admin.fill(`${inv} [data-acc-query]`, "ABC");
+    await admin.waitForSelector(`${inv} .hof-acc-picker li[data-id="${kabul.abc.id}"]`);
+    await (await admin.$(`${inv} .hof-acc-picker li[data-id="${kabul.abc.id}"]`)).dispatchEvent("mousedown");
+    await admin.click(`${inv} [data-l="0"][data-f="name"]`);
+    await admin.keyboard.type("Ürün A", { delay: 40 });
+    await admin.waitForSelector(`${inv} [data-hits="0"] li[data-item]`);
+    await admin.click(`${inv} [data-hits="0"] li[data-item]`);
+    if (!(await admin.$eval(`${inv} [data-f="pricesIncludeVat"]`, node => node.checked))) await admin.click(`${inv} [data-f="pricesIncludeVat"]`);
+    await admin.click(`${inv} [data-l="0"][data-f="qty"]`);
+    await admin.keyboard.press("Control+A");
+    await admin.keyboard.type("1", { delay: 40 });
+    await admin.click(`${inv} [data-l="0"][data-f="unitPrice"]`);
+    await admin.keyboard.press("Control+A");
+    await admin.keyboard.type("5000", { delay: 40 });
+    await admin.selectOption(`${inv} [data-l="0"][data-f="vatRate"]`, "20").catch(() => null);
+    await admin.waitForTimeout(1200);
+    const amount = `${inv} [data-pay="cash"][data-i="0"][data-f="amount"]`;
+    const method = `${inv} [data-pay="cash"][data-i="0"][data-f="method"]`;
+    const bankSel = `${inv} [data-bank-cell="0"] select`;
+    await admin.click(`${inv} [data-act="pay-add-cash"]`);
+    await admin.waitForSelector(amount);
+    ok(!(await admin.$(`${inv} [data-bank-cell="0"]:not([hidden])`)), "Nakit yolda satırda Banka Hesabı görünmez");
+    await admin.focus(amount);
+    await admin.keyboard.type("5000", { delay: 40 });
+    await admin.keyboard.press("Tab");
+    ok(await admin.evaluate(() => document.activeElement?.dataset?.f === "method"), "Tab: tutardan Tahsilat Yolu'na");
+    await admin.selectOption(method, "bank");
+    await admin.waitForSelector(`${inv} [data-bank-cell="0"]:not([hidden]) select`, { timeout: 8000 });
+    // Yeniden çizim izi: satırın alanları işaretlenir; hesap seçiminden sonra aynı düğümler yerinde olmalı (2.0.23 Bulgu 1).
+    await admin.evaluate(selectors => selectors.forEach(selector => (document.querySelector(selector).dataset.e2eMark = "1")), [amount, method, bankSel]);
+    const options = await admin.$$eval(`${bankSel} option`, nodes => nodes.map(node => node.textContent.trim()));
+    ok(options.length === 3 && options[0] === "Hesap Seçin" && options.some(text => text.startsWith("Ziraat Bankası · Ana TL Hesabı")) && options.some(text => text.startsWith("Garanti BBVA · Ana TL Hesabı")), `satırda Banka Hesabı seçici: ${options.join(" | ")}`);
+    ok((await admin.$eval(bankSel, node => node.value)) === kabul.ziraat.id, "havaleye geçince varsayılan hesap (Ziraat) önerilir");
+    await admin.focus(method);
+    await admin.keyboard.press("Tab");
+    ok(await admin.evaluate(() => document.activeElement?.dataset?.f === "bankAccountId"), "Tab: Tahsilat Yolu'ndan Banka Hesabı'na");
+    await admin.keyboard.type("Garanti", { delay: 60 });
+    let typed = (await admin.$eval(bankSel, node => node.value)) === kabul.garanti.id;
+    if (!typed) await admin.selectOption(bankSel, kabul.garanti.id);
+    await admin.keyboard.press("Tab");
+    await admin.waitForTimeout(900);
+    const kept = await admin.evaluate(([a, m, b]) => [a, m, b].map(selector => document.querySelector(selector)?.dataset.e2eMark === "1"), [amount, method, bankSel]);
+    ok(kept.every(Boolean), `hesap seçimi ve Tab sonrası satır yeniden çizilmedi (tutar, yol, hesap düğümleri yerinde: ${kept.join("/")}); klavyeyle seçim ${typed ? "yazarak" : "seçimle"}`);
+    ok((await admin.$eval(amount, node => node.value)) === "5000" && (await admin.$eval(method, node => node.value)) === "bank" && (await admin.$eval(bankSel, node => node.value)) === kabul.garanti.id, "tutar 5000, yol Havale/EFT, hesap Garanti kayıpsız");
+    ok(await admin.evaluate(() => document.activeElement && document.activeElement !== document.body), "odak sayfaya düşmedi");
+    await auditLabels(admin, "fatura formu peşin satırı (havale)");
+    await shot(admin, "asama7-fatura-pesin-garanti");
+    await admin.click(`${inv} [data-act="issue"]`);
+    let saved = null;
+    for (let i = 0; i < 16 && !saved; i += 1) {
+      await admin.waitForTimeout(500);
+      const yes = await admin.$(`${modal} [data-answer="yes"]`);
+      if (yes) {
+        await yes.click();
+        continue;
+      }
+      saved = (unwrap(await api.get("/api/workspace/invoices?tab=all&limit=20")).invoices || []).find(doc => doc.status === "issued" && doc.id !== kabul.invoice.id) || null;
+    }
+    ok(Boolean(saved), "peşinli fatura kaydedildi");
+    const doc = await must("fatura", api.get(`/api/workspace/invoices/${saved.id}`));
+    const abc = await must("ABC", api.get(`/api/workspace/accounts/${kabul.abc.id}`));
+    ok(doc.payment?.cash?.[0]?.bankAccountId === kabul.garanti.id && doc.payments?.[0]?.finRef === kabul.garanti.id && doc.payState === "paid", `peşin Garanti hesabına bağlı (fin_ref), fatura ${doc.payState}`);
+    ok((await kabulBalance("Garanti BBVA")) === 55000 && (await kabulBalance("Ziraat Bankası")) === 110000 && abc.totals.balance === 0 && (await must("Kasa", api.get("/api/workspace/cash"))).byMethod.cash === 10000, `Garanti ${await kabulBalance("Garanti BBVA")}, Ziraat ${await kabulBalance("Ziraat Bankası")}, ABC ${abc.totals.balance}, Kasa 10.000`);
+    kabul.cashInvoice = doc;
+    await closeAll(admin);
+  });
+
+  await step("33. Aşama 8: taksit kartı (ABC, 12.000 / 3) → + Tahsilat 4.000 Havale/EFT → Banka Hesabı Ziraat → Ziraat 114.000, ABC 8.000", async () => {
+    const plan = await must("kart", api.post("/api/workspace/plans", { accountId: kabul.abc.id, name: "ABC Ltd.", total: "12.000", mode: "auto", count: 3, firstDue: "2026-10-15" }));
+    kabul.plan = plan;
+    await admin.evaluate(id => HOF.plans.open(id), plan.id);
+    await admin.waitForSelector('.hof-plans-modal [data-act="pay"]', { timeout: 10000 });
+    await admin.click('.hof-plans-modal [data-act="pay"]');
+    const form = `${top} .hof-form`;
+    await admin.waitForSelector(`${form} input[name="amount"]`, { timeout: 8000 });
+    ok(!(await admin.$(`${form} [data-bank-pick]:not([hidden])`)), "Nakit seçiliyken Banka Hesabı görünmez");
+    await admin.fill(`${form} input[name="amount"]`, "4.000");
+    await admin.selectOption(`${form} select[name="method"]`, "bank");
+    await admin.waitForSelector(`${form} [data-bank-pick]:not([hidden]) select[name="bankAccountId"]`, { timeout: 8000 });
+    await admin.selectOption(`${form} select[name="bankAccountId"]`, kabul.ziraat.id);
+    await auditLabels(admin, "taksit tahsilat formu (havale)");
+    await admin.waitForTimeout(700);
+    await shot(admin, "asama8-taksit-tahsilat-ziraat");
+    await admin.click(`${form} button[type="submit"]`);
+    await admin.waitForFunction(() => !document.querySelector('.hof-modal-backdrop.is-visible .hof-form input[name="amount"]'), null, { timeout: 10000 });
+    await admin.waitForTimeout(600);
+    const card = await must("kart", api.get(`/api/workspace/plans/${plan.id}`));
+    const entry = card.entries.find(item => item.kind === "in");
+    const abc = await must("ABC", api.get(`/api/workspace/accounts/${kabul.abc.id}`));
+    ok(entry?.method === "bank" && entry?.finRef === kabul.ziraat.id && card.totals.remaining === 8000, `taksit tahsilatı Ziraat'e bağlı; kalan ${card.totals.remaining}`);
+    ok((await kabulBalance("Ziraat Bankası")) === 114000 && (await kabulBalance("Garanti BBVA")) === 55000 && abc.totals.balance === 8000, `Ziraat ${await kabulBalance("Ziraat Bankası")}, Garanti ${await kabulBalance("Garanti BBVA")}, ABC ${abc.totals.balance}`);
+    await closeAll(admin);
+  });
+
+  await step("34. Aşama 8: Çek (ABC, 3.000) → Tahsil Et → Banka (Havale / EFT) → Banka Hesabı Garanti → Garanti 58.000; Kasa aynı; mutabakat ok", async () => {
+    const cheque = await must("çek", api.post("/api/workspace/cheques", { direction: "in", instrument: "cheque", amount: "3.000", issueDate: "2026-10-08", dueDate: "2026-12-31", accountId: kabul.abc.id, serialNo: "E2E-210", bank: "Akbank" }));
+    await admin.evaluate(id => HOF.cheques.open({ id }), cheque.id);
+    await admin.waitForSelector('.hof-cheques-modal [data-action="collect"]', { timeout: 10000 });
+    await admin.click('.hof-cheques-modal [data-action="collect"]');
+    const form = `${top} .hof-form`;
+    await admin.waitForSelector(`${form} [data-bank-pick]:not([hidden]) select[name="bankAccountId"]`, { timeout: 8000 });
+    await admin.selectOption(`${form} select[name="method"]`, "cash");
+    ok(Boolean(await admin.$(`${form} [data-bank-pick][hidden]`)), "Nakit Kasa seçilince Banka Hesabı gizlenir");
+    await admin.selectOption(`${form} select[name="method"]`, "bank");
+    await admin.selectOption(`${form} select[name="bankAccountId"]`, kabul.garanti.id);
+    await auditLabels(admin, "çek tahsil formu (havale)");
+    await admin.waitForTimeout(700);
+    await shot(admin, "asama8-cek-tahsil-garanti");
+    await admin.click(`${form} button[type="submit"]`);
+    await admin.waitForFunction(() => !document.querySelector('.hof-modal-backdrop.is-visible .hof-form select[name="bankAccountId"]'), null, { timeout: 10000 });
+    await admin.waitForTimeout(600);
+    const detail = await must("çek", api.get(`/api/workspace/cheques/${cheque.id}`));
+    const collect = detail.events.find(item => item.kind === "collect");
+    ok(detail.status === "collected" && collect?.method === "bank" && collect?.finRef === kabul.garanti.id, `çek Tahsil Edildi; olay Garanti'ye bağlı (${collect?.finRef === kabul.garanti.id})`);
+    const abc = await must("ABC", api.get(`/api/workspace/accounts/${kabul.abc.id}`));
+    ok((await kabulBalance("Garanti BBVA")) === 58000 && (await kabulBalance("Ziraat Bankası")) === 114000 && abc.totals.balance === 5000 && (await must("Kasa", api.get("/api/workspace/cash"))).byMethod.cash === 10000, `Garanti ${await kabulBalance("Garanti BBVA")}, Ziraat ${await kabulBalance("Ziraat Bankası")}, ABC ${abc.totals.balance}, Kasa 10.000`);
+    await closeAll(admin);
+    await openBank(admin);
+    await tab(admin, "movements");
+    await admin.waitForSelector(`${bankWin} [data-moves]`);
+    const moves = await textOf(admin, `${bankWin} [data-moves]`);
+    ok(has(moves, "5.000,00") && has(moves, "4.000,00") && has(moves, "3.000,00"), "Banka → Hareketler'de fatura peşini, taksit tahsilatı ve çek tahsili");
+    await shot(admin, "asama8-banka-hareketler");
+    await closeAll(admin);
+    const summary = await must("özet", api.get("/api/workspace/bank/summary"));
+    ok(summary.realBank.minor === 17_200_000, `Gerçek Banka 172.000 (${summary.realBank.minor / 100})`);
+    const integrity = await must("Mutabakat Testi", api.get("/api/workspace/ledger/integrity"));
+    ok(integrity.ok === true, "Kabul Şirketi'nde mutabakat ok (bölüm 4)");
     const firstCompany = (await must("şirketler", api.get("/api/companies"))).companies.find(company => company.code === "001");
     await admin.evaluate(async id => fetch("/api/companies/select", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ id }) }), firstCompany.id);
     await admin.goto(`${BASE}/`, { waitUntil: "load" });

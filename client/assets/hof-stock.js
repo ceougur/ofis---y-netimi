@@ -316,9 +316,13 @@
     const priceOf = () => (move ? move.unitPrice : !incoming || back ? item.salePrice || item.unitPrice : item.unitPrice);
     const canPlan = !incoming && !move && HOF.can?.("plans.manage");
     let accountField = null;
+    // v2.1.0 Aşama 8: istek kimliği form açılışında (aynı gönderim ikinci kez yazılmaz); Havale / EFT seçilince Banka Hesabı; banka hesabının
+    // Benzer İşlem ve Eksi Bakiye soruları ("Yine de Kaydet").
+    const requestId = HOF.requestId();
     const send = async (data, force = false) => {
       const url = `/api/workspace/stock/${encodeURIComponent(item.id)}/moves${move ? `/${encodeURIComponent(move.id)}` : ""}`;
-      return HOF.api(url, { method: move ? "PUT" : "POST", body: { ...data, kind: type, force } });
+      const post = flags => HOF.api(url, { method: move ? "PUT" : "POST", body: { ...data, kind: type, force, ...flags }, requestId });
+      return HOF.bank?.withConfirms ? HOF.bank.withConfirms(post) : post({});
     };
     HOF.formModal({
       title: move ? (back ? "İadeyi Düzelt" : incoming ? "Girişi Düzelt" : "Çıkışı Düzelt") : back ? "Müşteri İadesi" : incoming ? "Stok Girişi" : "Stok Çıkışı",
@@ -349,6 +353,7 @@
         const planBox = dialog.querySelector('input[name="planIt"]')?.closest(".hof-check");
         const planFields = ["planCount", "planFirstDue"].map(name => dialog.querySelector(`[name="${name}"]`)?.closest(".hof-field")).filter(Boolean);
         if (accountField) pay.closest(".hof-field").after(accountField);
+        if (HOF.bank?.attachPicker) HOF.bank.attachPicker(dialog.querySelector("form"), { methodName: "pay", value: move?.finRef || "", keepLabel: move && move.pay === "cash" && move.method === "bank" && !move.finRef ? "Atanmamış (Eski Hareket)" : "" });
         const sync = () => {
           const amount = (parseNumber(qty.value) || 0) * (parseNumber(price.value) || 0);
           const after = (item.qty || 0) + (incoming ? 1 : -1) * (parseNumber(qty.value) || 0) - (move ? (move.kind === "in" ? move.qty : -move.qty) : 0);
@@ -376,6 +381,7 @@
           data.method = data.pay;
           data.pay = "cash";
         }
+        if (data.method !== "bank") delete data.bankAccountId;
         if (back) data.reason = "return";
         if (data.planIt && data.pay === "account") {
           if (!(parseNumber(data.planCount) >= 1)) throw new Error("Taksit sayısını yazın.");
@@ -388,7 +394,7 @@
           result = await send(data);
         } catch (error) {
           // Stok eksiye düşecekse sorulur (sayım farkı olabilir); onaylanırsa kaydedilir.
-          if (!/eksiye/.test(error.message) || String(error.data?.code || "").startsWith("cash-")) throw error;
+          if (!/eksiye/.test(error.message) || /^(cash|bank)-/.test(String(error.data?.code || ""))) throw error;
           const ok = await HOF.confirm({ title: "Stok Eksiye Düşecek", message: `${error.message} Sayım farkı olabilir. Yine de kaydedilsin mi?`, confirmLabel: "Yine de Kaydet", danger: true });
           if (!ok) return true;
           result = await send(data, true);
@@ -405,7 +411,9 @@
     const ok = await HOF.confirm({ title: "Hareketi Sil", message: `${move.kind === "in" ? "Giriş" : "Çıkış"} (${qtyText(move.qty)} ${item.unit}) silinecek; mevcut miktar${move.pay === "cash" ? ", Kasa" : move.pay === "account" ? " ve cari bakiyesi" : ""} yeniden hesaplanır. Yönetim → Silinenler’den geri yüklenebilir.`, confirmLabel: "Sil", danger: true });
     if (!ok) return;
     try {
-      applyItem(await HOF.api(`/api/workspace/stock/${encodeURIComponent(item.id)}/moves/${encodeURIComponent(move.id)}`, { method: "DELETE" }));
+      const path = `/api/workspace/stock/${encodeURIComponent(item.id)}/moves/${encodeURIComponent(move.id)}`;
+      const remove = flags => HOF.api(flags.negativeOk ? `${path}?negativeOk=1` : path, { method: "DELETE" });
+      applyItem(HOF.bank?.withConfirms ? await HOF.bank.withConfirms(remove) : await remove({}));
       HOF.toast("Hareket silindi.", { type: "success" });
       refreshAlerts();
     } catch (error) {

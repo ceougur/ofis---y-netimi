@@ -297,7 +297,7 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
     const bankList = bank ? (await api("GET", "/api/workspace/bank/accounts?status=all")).data.accounts || [] : [];
     for (const b of banks) {
       const got = bankList.find(x => x.id === b.id);
-      const want = M.bankLines.filter(x => x.bankId === b.id).reduce((t, x) => t + x.cents, 0);
+      const want = bankNet(b.id);
       if (!got || Number(got.balanceMinor) !== want) problems.push(`Banka hesabı ${b.name}: program ${got ? tl(Number(got.balanceMinor)) : "yok"} · model ${tl(want)}`);
     }
     const integrity = (await api("GET", "/api/workspace/ledger/integrity")).data;
@@ -693,7 +693,17 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
    * varsayılan Uyar, limit yok): işlem hesabı azaltıyor ve min(işlem günündeki, bütün hareketlerle) bakiye eksiye düşüyorsa 409 bank-negative;
    * "Yine de Kaydet" (negativeOk) geçer. changes: [{ bankId, cents, date }] (bu işlemin yazacağı banka satırları); date: yeni fişin tarihi.
    */
-  const bankNet = (bankId, until = "") => M.bankLines.filter(x => x.bankId === bankId && (!until || x.date <= until)).reduce((t, x) => t + x.cents, 0);
+  // 2.1.0 Aşama 7–8: modül formundan hesaba bağlanan havale satırları (cari tahsilat/ödeme, taksit tahsilatı, çek tahsili; bankId) da hesabın
+  // bakiyesidir. Bağsız (bankId '') havale yalnız 102'nin toplamında (Hesabı Atanmamış).
+  const signedOf = e => (e.kind === "in" ? e.amount : -e.amount);
+  const boundRows = () => [
+    ...M.entries.filter(e => e.bankId && (e.kind === "in" || e.kind === "out")),
+    ...M.planEntries.filter(e => e.bankId),
+    ...M.chqCash.filter(e => e.bankId),
+  ].map(e => ({ bankId: e.bankId, date: e.date, cents: signedOf(e) }));
+  const bankNet = (bankId, until = "") => [...M.bankLines, ...boundRows()].filter(x => x.bankId === bankId && (!until || x.date <= until)).reduce((t, x) => t + x.cents, 0);
+  /** Modül havalesine hesap seçimi (%60; kalan eski sürüm gibi hesapsız — bankPickLegacy). */
+  const bindBank = method => (method === "bank" && banks.length && R.chance(0.6) ? R.pick(banks) : null);
   function bankGoesNegative(changes, date) {
     const delta = new Map();
     for (const c of changes) delta.set(c.bankId, (delta.get(c.bankId) || 0) + c.cents);
@@ -799,13 +809,18 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
         const method = methodPick();
         const amount = moneyCents(1, 60000);
         const force = R.chance(0.5);
-        const r = await api("POST", `/api/workspace/accounts/${acc.id}/entries`, { kind: k, amount: tl(amount), method, note: `Cari ${k}`, date: day, cashForce: force });
+        // Aşama 7–8: havale tahsilat/ödemesi %60 bir banka hesabına bağlanır; K7: bağlı ödeme hesabı eksiye düşürecekse onaysız 409 bank-negative.
+        const b = k === "in" || k === "out" ? bindBank(method) : null;
+        const negativeOk = Boolean(b) && k === "out" && bankGoesNegative([{ bankId: b.id, cents: -amount, date: day }], day) && R.chance(0.6);
+        const bound = b ? { bankAccountId: b.id, similarOk: true, ...(negativeOk ? { negativeOk: true } : {}) } : {};
+        const r = await api("POST", `/api/workspace/accounts/${acc.id}/entries`, { kind: k, amount: tl(amount), method, note: `Cari ${k}`, date: day, cashForce: force, ...bound });
+        if (b && k === "out" && !negativeOk && bankGoesNegative([{ bankId: b.id, cents: -amount, date: day }], day)) return void expectReject(r, "bank-negative", kind);
         if (k === "out" && negative(r, [[method, amount, day]], force, kind)) return;
         mustOk(r, kind);
         cariAdd(acc.id, k === "debt" || k === "out" ? amount : -amount);
         if (k === "in") M.kasa[method] += amount;
         if (k === "out") M.kasa[method] -= amount;
-        M.entries.push({ id: r.data.entryId, accountId: acc.id, kind: k, amount, method, date: day });
+        M.entries.push({ id: r.data.entryId, accountId: acc.id, kind: k, amount, method, date: day, bankId: b?.id || "" });
         return;
       }
       case "cari-duzelt": {
@@ -814,10 +829,11 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
         const amount = moneyCents(1, 60000);
         const method = methodPick();
         const flip = (e.kind === "debt" || e.kind === "credit") && R.chance(0.3) ? (e.kind === "debt" ? "credit" : "debt") : e.kind;
-        const next = { ...e, kind: flip, amount, method };
+        // Aşama 7–8: hesap verilmeden düzeltilen bağlı havale bağını korur (yol havale kaldıkça); başka yola geçen satırın bağı kalkar.
+        const next = { ...e, kind: flip, amount, method, bankId: e.bankId && method === "bank" ? e.bankId : "" };
         const eff = x => ({ method: x.kind === "in" || x.kind === "out" ? x.method : "", cents: x.kind === "in" ? x.amount : -x.amount });
         const force = R.chance(0.5);
-        const r = await api("PUT", `/api/workspace/accounts/${e.accountId}/entries/${e.id}`, { kind: flip, amount: tl(amount), method, note: "Düzeltildi", date: e.date, cashForce: force });
+        const r = await api("PUT", `/api/workspace/accounts/${e.accountId}/entries/${e.id}`, { kind: flip, amount: tl(amount), method, note: "Düzeltildi", date: e.date, cashForce: force, ...(e.bankId ? { negativeOk: true } : {}) });
         if (negative(r, changeOuts(eff(e), eff(next), e.date), force, kind)) return;
         mustOk(r, kind);
         const sign = x => (x.kind === "debt" || x.kind === "out" ? x.amount : -x.amount);
@@ -830,7 +846,8 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
         const e = pickOpen(M.entries);
         if (!e) return;
         const force = R.chance(0.5);
-        const r = await api("DELETE", `/api/workspace/accounts/${e.accountId}/entries/${e.id}${force ? "?cashForce=1" : ""}`);
+        const query = [force ? "cashForce=1" : "", e.bankId ? "negativeOk=1" : ""].filter(Boolean).join("&");
+        const r = await api("DELETE", `/api/workspace/accounts/${e.accountId}/entries/${e.id}${query ? `?${query}` : ""}`);
         if (e.kind === "in" && negative(r, [[e.method, e.amount, e.date]], force, kind)) return;
         mustOk(r, kind);
         cariAdd(e.accountId, e.kind === "debt" || e.kind === "out" ? -e.amount : e.amount);
@@ -974,13 +991,14 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
           return;
         }
         const amount = Math.max(1, Math.min(planLeft(p) || moneyCents(1, 2000), moneyCents(1, 12000)));
-        const r = await api("POST", `/api/workspace/plans/${id}/entries`, { kind: "in", amount: tl(amount), method, date: day });
+        const b = bindBank(method);
+        const r = await api("POST", `/api/workspace/plans/${id}/entries`, { kind: "in", amount: tl(amount), method, date: day, ...(b ? { bankAccountId: b.id, similarOk: true } : {}) });
         mustOk(r, kind);
         p.paid += amount;
         syncOwn(p);
         cariAdd(p.accountId, -amount);
         M.kasa[method] += amount;
-        M.planEntries.push({ id: r.data.entryId, planId: id, kind: "in", amount, method, date: day });
+        M.planEntries.push({ id: r.data.entryId, planId: id, kind: "in", amount, method, date: day, bankId: b?.id || "" });
         return;
       }
       case "taksit-sil": {
@@ -988,7 +1006,8 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
         if (!e) return;
         const p = M.plans.get(e.planId);
         const force = R.chance(0.5);
-        const r = await api("DELETE", `/api/workspace/plans/${e.planId}/entries/${e.id}${force ? "?cashForce=1" : ""}`);
+        const query = [force ? "cashForce=1" : "", e.bankId ? "negativeOk=1" : ""].filter(Boolean).join("&");
+        const r = await api("DELETE", `/api/workspace/plans/${e.planId}/entries/${e.id}${query ? `?${query}` : ""}`);
         if (e.kind === "in" && p.paid - e.amount < 0) return expectReject(r, "refund-exceeds", kind);
         if (e.kind === "in" && negative(r, [[e.method, e.amount, e.date]], force, kind)) return;
         mustOk(r, kind);
@@ -1149,12 +1168,13 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
         const c = R.pick([...M.cheques.values()].filter(x => x.direction === "in" && x.status === "portfolio"));
         if (!c) return;
         const method = R.pick(["bank", "bank", "cash"]);
-        const r = await api("POST", `/api/workspace/cheques/${c.id}/actions`, { action: "collect", date: day, method });
+        const b = bindBank(method);
+        const r = await api("POST", `/api/workspace/cheques/${c.id}/actions`, { action: "collect", date: day, method, ...(b ? { bankAccountId: b.id, similarOk: true } : {}) });
         mustOk(r, kind);
         c.status = "collected";
         c.events += 1;
         M.kasa[method] += c.amount;
-        M.chqCash.push({ chequeId: c.id, kind: "in", amount: c.amount, method, date: day });
+        M.chqCash.push({ chequeId: c.id, kind: "in", amount: c.amount, method, date: day, bankId: b?.id || "" });
         return;
       }
       case "cek-ode": {
@@ -1513,7 +1533,7 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
   }
   const invList = [...M.invoices.values()];
   report.invoices = { kesilen: invList.filter(x => x.status === "issued").length, iptal: invList.filter(x => x.status === "cancelled").length, taslak: M.drafts.size, turler: invList.reduce((o, x) => ((o[x.kind] = (o[x.kind] || 0) + 1), o), {}), cek: M.cheques.size };
-  report.model = { kasa: Object.fromEntries(MONEY.map(m => [m, tl(M.kasa[m])])), cariler: accounts.length, urunler: items.length, kartlar: M.plans.size, kasaHareketi: M.cash.length, bankaSatiri: M.bankLines.length, bankaTersKayit: M.bankLines.filter(x => x.type === "reversal").length, cariHareketi: M.entries.length, stokHareketi: M.moves.length, taksitHareketi: M.planEntries.length };
+  report.model = { kasa: Object.fromEntries(MONEY.map(m => [m, tl(M.kasa[m])])), cariler: accounts.length, urunler: items.length, kartlar: M.plans.size, kasaHareketi: M.cash.length, bankaSatiri: M.bankLines.length, bankaTersKayit: M.bankLines.filter(x => x.type === "reversal").length, cariHareketi: M.entries.length, stokHareketi: M.moves.length, taksitHareketi: M.planEntries.length, hesabaBagliModulHavalesi: boundRows().length };
   // Deney sonrası kilidi kaldır (aynı veritabanında başka koşu olabilir).
   if (lock) await api("PUT", "/api/admin/period-lock", { lockedUntil: "" });
   await api("PUT", "/api/admin/negative-policy", { cash: "warn", bank: "warn", card: "warn" });

@@ -9,6 +9,7 @@ import { mapStockHeaders, parseQty, roundQty, stockLevel } from "../lib/accounts
 import { inferRolesByValues, findHeaderRow, sanitizeCell, validateRows } from "../lib/import-gate.mjs";
 import { HttpError, limited, ok, readJson, sendBuffer, text } from "../lib/http.mjs";
 import { parseAmount, roundMoney } from "../lib/money.mjs";
+import { bankForm } from "../lib/bank/module-ref.mjs";
 import { canUser } from "../lib/permissions.mjs";
 import { dayText, isoDay } from "../lib/plans.mjs";
 import { methodInput } from "../lib/pay-method.mjs";
@@ -29,7 +30,7 @@ const qtyText = value => qtyFormat.format(Number(value) || 0);
 const afterText = (qty, unit) => `Kayıttan sonra stok: ${qtyText(qty)} ${unit} olacak.`;
 const collator = new Intl.Collator("tr", { numeric: true, sensitivity: "base" });
 
-export function registerStockRoutes(router, { store, bank, auth, audit, events, trash, cash = null, period = null, accounts = () => null, plans = () => null, now: clock = systemClock }) {
+export function registerStockRoutes(router, { store, bank, auth, audit, events, trash, cash = null, period = null, accounts = () => null, plans = () => null, bankModule = () => null, now: clock = systemClock }) {
   // İş saati (v2.1.0): context.now (config.now).
   const now = () => clock().toISOString();
   const today = () => isoDay(clock());
@@ -75,7 +76,7 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
   };
   const movesOf = itemId =>
     store.all(
-      `SELECT m.id, m.kind, m.qty, m.unit_price AS unitPrice, m.amount, m.date, m.note, m.pay, m.reason, m.method, m.account_id AS accountId, COALESCE(a.name, '') AS accountName,
+      `SELECT m.id, m.kind, m.qty, m.unit_price AS unitPrice, m.amount, m.date, m.note, m.pay, m.reason, m.method, m.fin_ref AS finRef, m.account_id AS accountId, COALESCE(a.name, '') AS accountName,
               m.invoice_id AS invoiceId, COALESCE(inv.number, '') AS invoiceNumber, COALESCE(inv.kind, '') AS invoiceKind, COALESCE(ia.name, '') AS invoiceAccountName,
               m.created_by AS createdBy, m.created_at AS createdAt, m.updated_at AS updatedAt, COALESCE(u.display_name, '') AS actorName
        FROM stock_moves m LEFT JOIN users u ON u.id = m.created_by LEFT JOIN accounts a ON a.id = m.account_id
@@ -305,10 +306,11 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
     const method = move.pay === "cash" ? methodInput(move.method) : "cash";
     // v2.1.0 (bank.post): peşin (Kasa/banka/POS) hareket para satırıdır ve İşlem No'lu işlem başlığı alır; yalnız miktar ya da açık
     // hesap hareketi para satırı değildir.
-    const eventId = bank.eventFor("stock_moves", { kind: move.kind, pay: move.pay, amount: move.amount, date: move.date, method });
+    const finRef = move.pay === "cash" ? move.finRef || "" : "";
+    const eventId = bank.eventFor("stock_moves", { kind: move.kind, pay: move.pay, amount: move.amount, date: move.date, method, fin_ref: finRef });
     store.run(
-      "INSERT INTO stock_moves (id, item_id, kind, qty, unit_price, amount, date, note, pay, reason, method, account_id, invoice_id, event_id, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-      id, itemId, move.kind, move.qty, move.unitPrice, move.amount, move.date, move.note, move.pay, move.reason || "", method, move.accountId || "", move.invoiceId || "", eventId, user.id, now(),
+      "INSERT INTO stock_moves (id, item_id, kind, qty, unit_price, amount, date, note, pay, reason, method, account_id, invoice_id, fin_ref, event_id, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+      id, itemId, move.kind, move.qty, move.unitPrice, move.amount, move.date, move.note, move.pay, move.reason || "", method, move.accountId || "", move.invoiceId || "", finRef, eventId, user.id, now(),
     );
     return id;
   }
@@ -354,6 +356,10 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
   }
   const publishAccounts = (user, ids) => ids.forEach(id => events?.publish("workspace.changed", { kind: "accounts", accountId: id, actorId: user.id, actorName: user.display_name }, { except: user.id }));
 
+  // v2.1.0 Aşama 8 (plan §3.7 #8): peşin havale/EFT satış, alım ve iade banka hesabına bağlanır (fin_ref); istek kimliği, Benzer İşlem, K7
+  // (alım ve iade bankadan çıkar), bankadan çıkış bank.move ister. Stok girişi (alım ya da müşteri iadesi) = bankadan çıkış.
+  const banking = bankForm(bankModule);
+  const bankOut = move => move.kind === "in";
   router.post("/api/workspace/stock/:id/moves", async ({ req, res, params }) => {
     const user = auth.requirePermission(req, "stock.move");
     const item = itemRow(params.id);
@@ -361,9 +367,13 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
     const input = moveInput(body, user, item);
     assertAvailable(item, input, null, body.force === true);
     if (input.kind === "in" && input.pay === "cash") cash?.guardOut?.(input.amount, input.date, body.cashForce === true, input.method);
+    input.finRef = input.pay === "cash" ? banking.ref({ method: input.method, value: body.bankAccountId, date: input.date }) : "";
+    banking.requireOut(user, bankOut(input), input.finRef);
+    const k7 = banking.negative([input.finRef], input.date, banking.forced(body));
     let touched = [];
     let trimmed = [];
-    const id = bank.post({ user, module: "stock", op: "create", write: () => {
+    const posted = bank.post({ user, module: "stock", op: "create", requestId: banking.requestId(req, body), scope: "stock.move.create", body: { ...body, itemId: item.id }, similarOk: body.similarOk === true, guard: k7.guard, write: () => {
+      k7.capture();
       const moveId = insertMove(user, item.id, input);
       touched = syncAccount(user, item, moveId, input);
       // Alımda birim fiyat verildiyse ürünün son birim fiyatı güncellenir (stok değeri güncel kalsın).
@@ -383,8 +393,11 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
       }
       // Açık hesaba müşteri iadesi: borç azalır; taksitlendirilmiş borç kalandan büyük kalmasın (kart da küçülür).
       if (input.reason === "return" && input.pay === "account" && plans()?.trimCovers) trimmed = plans().trimCovers(input.accountId, user, accountNote(item, input));
-      return moveId;
+      return { id: moveId };
     } });
+    k7.prime(posted);
+    const id = posted?.replayed ? posted.refId : posted.id;
+    if (posted?.replayed) return ok(res, { ...detail(item.id, user), moveId: id, replayed: true, trimmedPlans: [] });
     changed(user, { itemId: item.id });
     if (input.pay === "cash") changed(user, { kind: "cash" });
     publishAccounts(user, touched);
@@ -413,20 +426,32 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
     const input = moveInput({ ...previous, ...body, kind: previous.kind }, user, item, previous);
     assertAvailable(item, input, previous, body.force === true);
     cash?.guardChange?.(cashSide(previous), cashSide(input), body.cashForce === true);
+    const before = { method: previous.pay === "cash" ? previous.method || "cash" : "", finRef: previous.finRef };
+    const moved = previous.pay !== input.pay || (previous.method || "cash") !== (input.method || "cash") || Math.abs(Number(previous.amount) - input.amount) > 0.004 || previous.date !== input.date;
+    const finRef = input.pay === "cash" ? banking.ref({ method: input.method, value: body.bankAccountId, date: input.date, previous: before, changed: moved }) : "";
+    if (finRef !== (previous.finRef || "")) banking.requireOut(user, bankOut(previous), finRef);
+    const k7 = banking.negative([previous.finRef, finRef], previous.date < input.date ? previous.date : input.date, banking.forced(body));
     let touched = [];
-    bank.post({
+    const result = bank.post({
       user,
       module: "stock",
       op: "update",
       prev: previous,
+      requestId: banking.requestId(req, body),
+      scope: "stock.move.update",
+      body: { ...body, moveId: previous.id },
+      guard: k7.guard,
       write: () => {
+        k7.capture();
         // Peşin ↔ açık hesap geçişi: para satırı olmaktan çıkan hareketin olayı iptal olur, yeniden peşin olan yeni olay alır.
-        const eventId = bank.eventFor("stock_moves", { kind: previous.kind, pay: input.pay, amount: input.amount, date: input.date, method: input.method || "cash", event_id: previous.eventId });
-        store.run("UPDATE stock_moves SET qty = ?, unit_price = ?, amount = ?, date = ?, note = ?, pay = ?, reason = ?, method = ?, account_id = ?, event_id = ?, updated_by = ?, updated_at = ? WHERE id = ?", input.qty, input.unitPrice, input.amount, input.date, input.note, input.pay, input.reason || "", input.method || "cash", input.accountId, eventId, user.id, now(), previous.id);
+        const eventId = bank.eventFor("stock_moves", { kind: previous.kind, pay: input.pay, amount: input.amount, date: input.date, method: input.method || "cash", fin_ref: finRef, event_id: previous.eventId });
+        store.run("UPDATE stock_moves SET qty = ?, unit_price = ?, amount = ?, date = ?, note = ?, pay = ?, reason = ?, method = ?, account_id = ?, fin_ref = ?, event_id = ?, updated_by = ?, updated_at = ? WHERE id = ?", input.qty, input.unitPrice, input.amount, input.date, input.note, input.pay, input.reason || "", input.method || "cash", input.accountId, finRef, eventId, user.id, now(), previous.id);
         touched = syncAccount(user, item, previous.id, input, previous.accountId);
-        audit(user, "stock.move.updated", previous.id, { itemId: item.id, previous, ...input });
+        audit(user, "stock.move.updated", previous.id, { itemId: item.id, previous, ...input, finRef });
+        return { id: previous.id };
       },
     });
+    k7.prime(result);
     changed(user, { itemId: item.id });
     changed(user, { kind: "cash" });
     publishAccounts(user, touched);
@@ -440,18 +465,23 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
     period?.assertOpen(previous.date, "Bu stok hareketi");
     cash?.guardChange?.(cashSide(previous), null, url.searchParams.get("cashForce") === "1", "Bu stok hareketi silinince");
     let accountId = "";
-    bank.post({
+    const k7 = banking.negative([previous.finRef], previous.date, banking.forced(null, url));
+    const result = bank.post({
       user,
       module: "stock",
       op: "delete",
       prev: previous,
+      guard: k7.guard,
       write: () => {
+        k7.capture();
         store.run("DELETE FROM stock_moves WHERE id = ?", previous.id);
         accountId = accounts()?.stockEntry ? accounts().stockEntry.remove(previous.id) : "";
         trash?.add({ kind: "stock-move", ref: previous.id, title: item.name, detail: `${previous.kind === "in" ? "Giriş" : "Çıkış"} ${qtyText(previous.qty)} ${item.unit}${previous.note ? ` · ${previous.note}` : ""}`, payload: { ...previous, itemId: item.id, itemName: item.name, unit: item.unit }, user });
         audit(user, "stock.move.deleted", previous.id, { itemId: item.id, ...previous });
+        return { id: previous.id };
       },
     });
+    k7.prime(result);
     changed(user, { itemId: item.id });
     if (previous.pay === "cash") changed(user, { kind: "cash" });
     publishAccounts(user, [accountId].filter(Boolean));

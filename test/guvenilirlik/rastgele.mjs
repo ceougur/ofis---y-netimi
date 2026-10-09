@@ -484,6 +484,47 @@ export async function runRandom({ seed = 1, operations = 200, base = "bos", log 
       voucher.status = "reversed";
       company.banks.get(voucher.bankId).cents -= voucher.cents;
     },
+    // 2.1.0 Aşama 5–8: modül formundan havale (cari tahsilat/ödeme) seçilen banka hesabına bağlanır; tek hesapta seçimsiz de o hesaba, birden
+    // çokta seçimsiz 400 bank-account-required; başka şirketin hesabı 404; Bakiye Doğrulandı hesabı eksiye düşüren ödeme 409 bank-negative →
+    // "Yine de Kaydet". Değişmez: hesap bakiyesi = model (açılış + fiş + bağlı modül havaleleri); şirketler ayrı.
+    async bankModule() {
+      const company = selected();
+      if (!company.banks.size) return ops.bankAccount();
+      if (!company.accounts.size) return ops.account();
+      const [id, account] = R.pick([...company.accounts]);
+      const [bankId, bank] = R.pick([...company.banks]);
+      const kind = R.pick(["in", "in", "out"]);
+      const value = amountCents();
+      const today = expectStatus(await actor.get("/api/workspace/ledger/lock"), 200, "bugün").today;
+      const url = `/api/workspace/accounts/${id}/entries`;
+      const body = { kind, amount: value / 100, method: "bank", date: today, note: "Rastgele havale", similarOk: true };
+      if (company.banks.size > 1 && R.chance(0.15)) {
+        opLog.push(`#${report.operations} HESAPSIZ havale (${tag(company)}): ${account.name} ${kind} ${tl(value)}`);
+        const response = await actor.post(url, body);
+        expectStatus(response, 400, "çok hesapta hesapsız havale");
+        if (response.data?.code !== "bank-account-required") fail(`hesapsız havalede kod ${response.data?.code}`);
+        return;
+      }
+      const other = R.chance(0.1) ? R.pick(live().filter(item => item.id !== company.id && item.banks.size)) : null;
+      if (other) {
+        opLog.push(`#${report.operations} YANLIŞ şirket hesabına havale: seçili ${tag(company)}, hesap ${tag(other)}`);
+        expectStatus(await actor.post(url, { ...body, bankAccountId: R.pick([...other.banks])[0] }), 404, "başka şirketin banka hesabına havale");
+        return;
+      }
+      const auto = company.banks.size === 1 && R.chance(0.4);
+      if (!auto) body.bankAccountId = bankId;
+      opLog.push(`#${report.operations} havale (${tag(company)}): ${account.name} ${kind} ${tl(value)} → ${bank.name}${auto ? " (tek hesap, seçimsiz)" : ""}`);
+      const signed = kind === "in" ? value : -value;
+      if (bank.confirmed && bank.cents + signed < 0) {
+        const warned = await actor.post(url, body);
+        expectStatus(warned, 409, "havale eksi bakiye");
+        if (warned.data?.code !== "bank-negative") fail(`havale eksi bakiye: kod ${warned.data?.code}`);
+        body.negativeOk = true;
+      }
+      expectStatus(await actor.post(url, body), 200, "havale");
+      bank.cents += signed;
+      account.cents += kind === "out" ? value : -value;
+    },
     async bankWrongCompany() {
       // Başka şirketin banka hesabına (seçili şirket bu değilken) fiş: 404, hiçbir şirkette iz yok.
       const company = selected();
@@ -536,7 +577,7 @@ export async function runRandom({ seed = 1, operations = 200, base = "bos", log 
   const WEIGHTS = [
     ["account", 14], ["entry", 18], ["cash", 7], ["select", 8], ["create", 7], ["rename", 5], ["recode", 5], ["remove", 4],
     ["backupOne", 7], ["backupAll", 3], ["restore", 7], ["restoreRoot", 2], ["wrongRestore", 4], ["reset", 3], ["restart", 2],
-    ["bankAccount", 3], ["bankVoucher", 6], ["bankReverse", 2], ["bankWrongCompany", 2],
+    ["bankAccount", 3], ["bankVoucher", 6], ["bankReverse", 2], ["bankWrongCompany", 2], ["bankModule", 6],
   ];
   const total = WEIGHTS.reduce((sum, [, weight]) => sum + weight, 0);
   const choose = () => {

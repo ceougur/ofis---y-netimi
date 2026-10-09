@@ -24,6 +24,7 @@ import { CURRENCIES, EXEMPTIONS, EXPENSES, INVOICE_KINDS, InvoiceInputError, SCE
 import { CLOSER_MODES, PAY_STATES, settleInvoices } from "../lib/invoice-settle.mjs";
 import { parseAmount, roundMoney } from "../lib/money.mjs";
 import { METHODS, METHODS_IN, METHODS_OUT, methodLabel, methodInput } from "../lib/pay-method.mjs";
+import { bankForm } from "../lib/bank/module-ref.mjs";
 import { canUser } from "../lib/permissions.mjs";
 import { createSecretBox } from "../lib/secret-box.mjs";
 import { addMonths, dayText, isoDay } from "../lib/plans.mjs";
@@ -84,7 +85,7 @@ const moneyText = (value, currency = "TRY") => `${new Intl.NumberFormat("tr-TR",
 const c2 = value => roundMoney((Number(value) || 0) / 100);
 const toCents = value => Math.round((Number(value) || 0) * 100);
 
-export function registerInvoiceRoutes(router, { store, bank, auth, audit, events, config = {}, period = null, cash = null, trash = null, accounts = () => null, stock = () => null, plans = () => null, cheques = () => null, now: clock = systemClock }) {
+export function registerInvoiceRoutes(router, { store, bank, auth, audit, events, config = {}, period = null, cash = null, trash = null, accounts = () => null, stock = () => null, plans = () => null, cheques = () => null, bankModule = () => null, now: clock = systemClock }) {
   // e-Belge bağlantısı kapalıyken (varsayılan; program sahibi açana kadar) her belge kâğıt/bilgi fişidir: e-Fatura,
   // e-Arşiv, XML ve entegratör uçları çalışmaz, ekranda görünmez.
   const edocEnabled = config.edocEnabled === true;
@@ -569,13 +570,37 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     }
     const force = forceOf(body);
     const before = linesOf(existing.id);
-    const oldCash = store.all("SELECT kind, amount, method, date, event_id AS eventId FROM account_entries WHERE source = 'invoice' AND source_id = ? AND kind IN ('in', 'out')", existing.id);
-    // Gözden geçirme D2 (Aşama 2): özeti (yön, tutar, yol, tarih) aynı kalan peşin satır eski işlem başlığını (İşlem No) korur; yalnız Not ya
-    // da kalem düzeltmesi peşini yeni numarayla yeniden açmaz (plan §3.8). Aynı özetli birden çok satır sırayla eşlenir.
-    const keyOf = row => `${row.kind}|${Math.round((Number(row.amount) || 0) * 100)}|${row.method || "cash"}|${row.date}`;
+    const oldCash = store.all("SELECT kind, amount, method, date, event_id AS eventId, fin_ref AS finRef FROM account_entries WHERE source = 'invoice' AND source_id = ? AND kind IN ('in', 'out') ORDER BY rowid", existing.id);
+    // Aşama 7 (plan §3.8): eski peşin satırların satır anahtarı (lineKey) payment_json'daki sırayla (satırlar o sırayla yazıldı); anahtarsız eski
+    // faturada i0, i1… (ekran da öyle gönderir). Hesap (fin_ref) satırın kendisinden: Banka'dan "Bu Hesaba Ata" sonradan bağlamış olabilir.
+    const oldPay = (parseJson(existing.paymentJson, {}).cash || []).filter(item => Number(item?.amount) > 0);
+    const oldLines = oldCash.map((row, index) => ({ ...row, lineKey: LINE_KEY.test(String(oldPay[index]?.lineKey || "")) ? oldPay[index].lineKey : `i${index}` }));
+    const previousLines = new Map(oldLines.map(row => [row.lineKey, { method: row.method || "cash", amount: row.amount, date: row.date, finRef: row.finRef || "" }]));
+    // Gözden geçirme D2 (Aşama 2): özeti (yön, tutar, yol, hesap, tarih) aynı kalan peşin satır eski işlem başlığını (İşlem No) korur; yalnız Not ya
+    // da kalem düzeltmesi peşini yeni numarayla yeniden açmaz (plan §3.8). Önce aynı satır anahtarlı satır, yoksa aynı özetli satır sırayla eşlenir.
+    const keyOf = row => `${row.kind}|${Math.round((Number(row.amount) || 0) * 100)}|${row.method || "cash"}|${row.date}|${row.finRef || ""}`;
     const pool = new Map();
-    for (const row of oldCash) if (row.eventId) pool.set(keyOf(row), [...(pool.get(keyOf(row)) || []), row.eventId]);
-    const keepEvents = { take: row => pool.get(keyOf(row))?.shift() || "" };
+    const byLine = new Map();
+    for (const row of oldLines) {
+      if (!row.eventId) continue;
+      pool.set(keyOf(row), [...(pool.get(keyOf(row)) || []), row.eventId]);
+      byLine.set(row.lineKey, { key: keyOf(row), eventId: row.eventId });
+    }
+    const keepEvents = {
+      take: row => {
+        const own = row.lineKey ? byLine.get(row.lineKey) : null;
+        if (own && own.key === keyOf(row) && pool.get(own.key)?.includes(own.eventId)) {
+          pool.set(own.key, pool.get(own.key).filter(id => id !== own.eventId));
+          return own.eventId;
+        }
+        return pool.get(keyOf(row))?.shift() || "";
+      },
+    };
+    // K7 (Aşama 7): eski ve yeni hesapların bakiyesi düzenlemeden önce yakalanır. Yeni hesap ödeme bölümünden (paymentInput işlemin içinde, eski
+    // etkiler geri alındıktan sonra) gelir; ön yakalama gövdedeki hesapları ve tek uygun hesabı (kendiliğinden seçim) kapsar.
+    const askedRefs = (Array.isArray(body?.payment?.cash) ? body.payment.cash : []).map(item => text(item?.bankAccountId)).filter(Boolean);
+    const single = banking.eligible();
+    const k7 = banking.negative([...oldLines.map(row => row.finRef), ...askedRefs, ...(single.length === 1 ? single : [])], existing.issueDate < doc.date ? existing.issueDate : doc.date, force.negative === true);
     const touched = { accounts: new Set([existing.accountId]), items: new Set(), cash: false, cheques: { accountIds: [], chequeIds: [] }, plans: new Set() };
     const stockBefore = new Map();
     for (const itemId of new Set(before.filter(line => line.itemId && line.goods).map(line => line.itemId))) {
@@ -586,13 +611,14 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       }
     }
     // v2.1.0 (bank.post op 'update'): eski peşin satırların işlem başlıkları iptal olur, yenileri açılır (tek işlemde).
-    const result = bank.post({ user, module: "invoice", op: "update", prev: existing, write: () => {
+    const result = bank.post({ user, module: "invoice", op: "update", prev: existing, similarOk: force.similar === true, guard: k7.guard, write: () => {
+      k7.capture();
       period?.assertOpen(existing.issueDate, "Bu fatura");
       // v2.0.24: eski iadenin küçülttüğü kartlar önce geri büyür; yeni iade kaydedilirken yeniden hesaplanır.
       if (existing.kind === "sale_return" && existing.originalId) restoreCuts(user, { id: existing.id }, touched, `İade düzenlendi ${existing.number}`);
       reverseEffects(user, existing, touched, { force, edit: true });
       const pre = existing.kind === "sale_return" && existing.originalId ? coverState(existing.originalId) : null;
-      const payment = paymentInput(body, doc, user);
+      const payment = paymentInput(body, doc, user, { previous: previousLines });
       const written = writeIssued(user, doc, payment, { id: existing.id, force, edit: existing, pre, keepEvents });
       // Son durum denetimi — stok: düzenleme bir ürünü eksiye düşürdüyse (ya da eksiyi büyüttüyse) sorulur.
       if (!force.stock) {
@@ -623,6 +649,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       });
       return written;
     } });
+    k7.prime(result);
     publishAll(user, touched, result.id);
     return result;
   }
@@ -634,6 +661,14 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   };
   // excludeReturnId: bir iade belgesi düzenlenirken asıl faturanın "iade edilebilir kalanı" o iadenin kendi miktarı hariç
   // hesaplanır (yoksa kendi miktarı kadar eksik görünür, artırma yapılamazdı).
+  // Aşama 7: peşin satırın hesabı satırın kendisinden (Banka'dan "Bu Hesaba Ata" sonradan bağlamış olabilir); satırlar payment_json sırasıyla yazıldı.
+  const paymentView = (row, payments) => {
+    const payment = parseJson(row.paymentJson, {});
+    if (row.status !== "issued" || !Array.isArray(payment.cash)) return payment;
+    const cash = payment.cash.filter(item => Number(item?.amount) > 0);
+    if (cash.length !== payments.length) return payment;
+    return { ...payment, cash: cash.map((item, index) => ({ ...item, bankAccountId: payments[index].finRef || "" })) };
+  };
   function detail(id, user, { excludeReturnId = "" } = {}) {
     const row = invoiceRow(id);
     const lines = linesOf(row.id);
@@ -642,7 +677,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     const returns = store.all("SELECT id, number, issue_date AS issueDate, status, try_payable AS tryPayable, kind FROM invoices WHERE original_id = ? ORDER BY issue_date, created_at", row.id);
     const linkedCheques = cheques()?.invoiceCheques ? cheques().invoiceCheques.forInvoice(row.id) : [];
     const plan = row.planId ? store.get("SELECT id, name, total, status, ref_no AS refNo FROM plans WHERE id = ? AND deleted_at IS NULL", row.planId) : null;
-    const payments = store.all("SELECT id, kind, amount, date, method FROM account_entries WHERE source = 'invoice' AND source_id = ? AND kind IN ('in', 'out') ORDER BY created_at", row.id).map(entry => ({ ...entry, methodLabel: refundMethodLabel(row.kind, entry) }));
+    const payments = store.all("SELECT id, kind, amount, date, method, fin_ref AS finRef FROM account_entries WHERE source = 'invoice' AND source_id = ? AND kind IN ('in', 'out') ORDER BY created_at, rowid", row.id).map(entry => ({ ...entry, methodLabel: refundMethodLabel(row.kind, entry) }));
     const manage = canUser(user, "invoices.manage");
     const kind = INVOICE_KINDS[row.kind];
     const activeReturns = returns.filter(item => item.status === "issued").length;
@@ -670,7 +705,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       despatchNo: row.despatchNo,
       despatchDate: row.despatchDate,
       paperNo: row.paperNo,
-      payment: parseJson(row.paymentJson, {}),
+      payment: paymentView(row, payments),
       eMessage: row.eMessage,
       eAt: row.eAt,
       eAdapter: row.eAdapter,
@@ -1121,7 +1156,11 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
 
   // Ödeme: { cash: [{ amount, method }], cheques: [{ instrument, amount, dueDate, serialNo, bank }], endorse: [chequeId],
   //          rest: 'open' | 'installments', dueDate, installments: { count, firstDue, everyMonths } }
-  function paymentInput(body, doc, user) {
+  // v2.1.0 Aşama 7 (plan §3.7 #4, §3.8): peşin satırın banka hesabı. Her peşin satır bir satır anahtarı (lineKey) taşır; Düzenle'de eski satırla
+  // anahtardan eşlenir (satır sırası değişse ya da biri silinse de doğru satır). previous: Map(lineKey → { method, amount, date, finRef }).
+  const banking = bankForm(bankModule);
+  const LINE_KEY = /^[A-Za-z0-9_-]{1,40}$/;
+  function paymentInput(body, doc, user, { previous = null } = {}) {
     const p = body.payment && typeof body.payment === "object" ? body.payment : {};
     const kind = doc.kind;
     const payable = c2(doc.money.payable);
@@ -1129,7 +1168,26 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       const n = numberOf(value, label, field, { min: 0, max: 1e12 });
       return n === null ? 0 : roundMoney(n);
     };
-    const cashList = (Array.isArray(p.cash) ? p.cash : p.cash && typeof p.cash === "object" ? [p.cash] : []).slice(0, 3).map(item => ({ amount: amount(item?.amount, "Peşin tutar", "payment.cash"), method: methodInput(item?.method) })).filter(item => item.amount > 0);
+    const cashList = (Array.isArray(p.cash) ? p.cash : p.cash && typeof p.cash === "object" ? [p.cash] : [])
+      .slice(0, 3)
+      .map((item, index) => ({ amount: amount(item?.amount, "Peşin tutar", "payment.cash"), method: methodInput(item?.method), lineKey: LINE_KEY.test(text(item?.lineKey)) ? text(item.lineKey) : `i${index}`, bankAccountId: text(item?.bankAccountId).slice(0, 120), index }))
+      .filter(item => item.amount > 0);
+    const keys = new Set();
+    for (const item of cashList) {
+      if (keys.has(item.lineKey)) item.lineKey = `${item.lineKey}-${item.index}`;
+      keys.add(item.lineKey);
+      const prev = previous?.get(item.lineKey) || null;
+      const changed = !prev || prev.method !== item.method || Math.abs(Number(prev.amount) - item.amount) > 0.004 || prev.date !== doc.date;
+      try {
+        item.finRef = banking.ref({ method: item.method, value: item.bankAccountId, date: doc.date, previous: prev, changed });
+      } catch (error) {
+        if (error?.extra?.code !== "bank-account-required") throw error;
+        throw new HttpError(400, `Banka hesabı seçilmedi: ${item.index + 1}. peşin satır havale/EFT; hangi hesaba girdiğini ya da hangi hesaptan çıktığını seçin.`, { ...error.extra, field: `payment.cash.${item.index}.bankAccountId`, line: item.index });
+      }
+      if (!inflow(kind) && item.finRef && item.finRef !== (prev?.finRef || "")) banking.requireOut(user, true, item.finRef);
+      delete item.index;
+      delete item.bankAccountId;
+    }
     const chequeAllowed = ["sale", "smm", "purchase"].includes(kind);
     const chequeList = (Array.isArray(p.cheques) ? p.cheques : []).slice(0, 20).map((item, index) => {
       if (!chequeAllowed) fail400("İade faturasında çek/senet alınmaz ya da verilmez; iade Kasa'dan ya da cariden mahsupla yapılır.", "payment.cheques");
@@ -1301,7 +1359,11 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     const touched = { accounts: new Set([doc.account.id]), items: new Set(), cash: false, cheques: { accountIds: [], chequeIds: [] }, plans: new Set() };
     // v2.1.0 (bank.post): fatura, stok, cari, peşin tahsilat/ödeme (her peşin satır kendi İşlem No'lu işlem başlığıyla), çek/senet
     // ve taksit kartı tek işlemde. Düzenlemede (edit) çağıran editInvoice'ın bank.post işleminin içindedir.
-    const result = bank.post({ user, module: "invoice", op: edit ? "update" : "create", prev: edit || undefined, write: () => {
+    // K7 (Aşama 7): formdan seçilen hesaplar (finRef); Düzenle'de çağıran (editInvoice) eski ve yeni hesaplarla kendisi denetler. Banka → masraf
+    // yolu (bankAccountId) Banka servisinin kendi K7'sinden geçer.
+    const k7 = edit ? null : banking.negative(payment.cash.map(item => item.finRef).filter(Boolean), doc.date, force.negative === true);
+    const result = bank.post({ user, module: "invoice", op: edit ? "update" : "create", prev: edit || undefined, similarOk: force.similar === true, guard: k7?.guard || null, write: () => {
+      k7?.capture();
       period?.assertOpen(doc.date, "Fatura");
       // v2.0.24: iadeden önce asıl faturanın açığı ve onu kapsayan kartlar (düzenlemede eski iade geri alınmadan önce).
       const before = pre !== undefined ? pre : doc.kind === "sale_return" && doc.original?.id ? coverState(doc.original.id) : null;
@@ -1371,7 +1433,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
         try_stoppage: c2(money.stoppage),
         try_payable: c2(money.payable),
         gl_json: JSON.stringify(money.byAccount),
-        payment_json: JSON.stringify({ cash: payment.cash, cheques: payment.cheques.map(item => ({ instrument: item.instrument, amount: item.amount, dueDate: item.dueDate, serialNo: item.serialNo, bank: item.bank })), endorse: payment.endorse.map(item => item.id), mode: payment.mode, installments: payment.installments, rest: payment.rest }),
+        payment_json: JSON.stringify({ cash: payment.cash.map(item => ({ amount: item.amount, method: item.method, ...(item.lineKey ? { lineKey: item.lineKey } : {}), ...((item.finRef ?? item.bankAccountId) ? { bankAccountId: item.finRef ?? item.bankAccountId } : {}) })), cheques: payment.cheques.map(item => ({ instrument: item.instrument, amount: item.amount, dueDate: item.dueDate, serialNo: item.serialNo, bank: item.bank })), endorse: payment.endorse.map(item => item.id), mode: payment.mode, installments: payment.installments, rest: payment.rest }),
         due_date: payment.dueDate,
         plan_id: "",
         original_id: doc.original?.id || "",
@@ -1444,9 +1506,10 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       for (const item of payment.cash) {
         const into = inflow(doc.kind);
         if (!into) cash?.guardOut?.(item.amount, doc.date, force.cash === true, item.method);
-        // bankAccountId (v2.1.0 Aşama 4): yalnız Banka → KDV'li masraf (issueBankFee) verir; satır o hesaba bağlı yazılır (fin_ref). Fatura formundaki
-        // banka hesabı seçimi Aşama 7'de.
-        service.invoiceEntry.add(user, doc.account.id, { kind: into ? "in" : "out", amount: item.amount, date: doc.date, note: `${what} · ${doc.meta.return ? (into ? "iade tahsilatı" : "iade ödemesi") : into ? "peşin tahsilat" : "peşin ödeme"}`, invoiceId, method: item.method, eventId: keepEvents?.take({ kind: into ? "in" : "out", amount: item.amount, method: item.method, date: doc.date }) || "", finRef: item.bankAccountId || "" });
+        // bankAccountId (v2.1.0 Aşama 4): Banka → KDV'li masraf (issueBankFee) hesabı kendisi denetleyip verir; fatura formunun satırında hesap
+        // paymentInput'ta seçilir (finRef, Aşama 7). Satır o hesaba bağlı yazılır (fin_ref).
+        const ref = item.finRef !== undefined ? item.finRef : item.bankAccountId || "";
+        service.invoiceEntry.add(user, doc.account.id, { kind: into ? "in" : "out", amount: item.amount, date: doc.date, note: `${what} · ${doc.meta.return ? (into ? "iade tahsilatı" : "iade ödemesi") : into ? "peşin tahsilat" : "peşin ödeme"}`, invoiceId, method: item.method, eventId: keepEvents?.take({ lineKey: item.lineKey, kind: into ? "in" : "out", amount: item.amount, method: item.method, date: doc.date, finRef: ref }) || "", finRef: ref });
         touched.cash = true;
       }
       // Çek / senet: satışta alınan (portföy), alışta verilen; carinin bakiyesiyle mahsup çek olayından gelir.
@@ -1474,6 +1537,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       if (!edit) audit(user, id ? "invoice.issued" : "invoice.created", invoiceId, { kind: doc.kind, number, accountId: doc.account.id, payable: c2(money.payable), currency: doc.currency, date: doc.date, originalId: doc.original?.id || "", payment: { cash: payment.cash.length, cheques: payment.cheques.length, endorse: payment.endorse.length, mode: payment.mode } });
       return { id: invoiceId, number };
     } });
+    k7?.prime(result);
     publishAll(user, touched, result.id);
     return result;
   }
@@ -1710,7 +1774,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   // ---------- Yollar ----------
   const requireView = req => auth.requirePermission(req, "invoices.view");
   const requireManage = req => auth.requirePermission(req, "invoices.manage");
-  const forceOf = body => ({ stock: body?.force === true || body?.stockForce === true, cash: body?.cashForce === true });
+  const forceOf = body => ({ stock: body?.force === true || body?.stockForce === true, cash: body?.cashForce === true, negative: body?.negativeOk === true, similar: body?.similarOk === true });
 
   router.get("/api/workspace/invoices/meta", async ({ req, res }) => {
     const user = requireView(req);

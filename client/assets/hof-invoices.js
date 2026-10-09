@@ -431,8 +431,11 @@
     more: Boolean(line.description || line.withholdingCode || line.exemptionCode),
   });
   const ISSUE_LABELS = { sale: "Faturayı Kaydet", smm: "Makbuzu Kaydet", purchase: "Faturayı Kaydet", sale_return: "İadeyi Kaydet", purchase_return: "İade Faturasını Kaydet" };
-  const payFrom = payment => ({
-    cash: (payment?.cash || []).map(item => ({ amount: amountText(item.amount), method: item.method || "cash" })),
+  // v2.1.0 Aşama 7: peşin satırın satır anahtarı (lineKey; Düzenle'de sunucu eski satırla bu anahtarla eşler) ve banka hesabı. issued: kaydedilmiş
+  // belgenin Düzenle'si — hesapsız eski havale satırı "Atanmamış (Eski Hareket)" olarak açılır (dokunulmazsa bağsız kalır).
+  const lineKey = () => `k${Math.random().toString(36).slice(2, 10)}${Date.now().toString(36).slice(-4)}`;
+  const payFrom = (payment, { issued = false } = {}) => ({
+    cash: (payment?.cash || []).map((item, index) => ({ amount: amountText(item.amount), method: item.method || "cash", lineKey: /^[A-Za-z0-9_-]{1,40}$/.test(String(item.lineKey || "")) ? item.lineKey : `i${index}`, bankAccountId: item.bankAccountId || "", legacy: issued && (item.method || "cash") === "bank" && !item.bankAccountId })),
     cheques: (payment?.cheques || []).map(item => ({ instrument: item.instrument || "cheque", amount: amountText(item.amount), dueDate: item.dueDate || "", serialNo: item.serialNo || "", bank: item.bank || "", drawer: item.drawer || "" })),
     endorse: [...(payment?.endorse || [])],
     rest: payment?.rest === "installments" ? "installments" : "open",
@@ -444,6 +447,7 @@
   function startForm({ scenario, account = null, draft = null, copyOf = null, modify = null }) {
     if (!canManage()) return HOF.toast("Fatura kaydetme yetkiniz yok.", { type: "error" });
     if (modify) draft = { ...modify, id: "" };
+    view.bankChoices = null;
     const source = draft || copyOf;
     const sc = meta.scenarios[scenario || source?.scenario] || meta.scenarios[source?.kind];
     const kind = source?.kind || sc?.kind;
@@ -474,7 +478,7 @@
       stoppageRate: source && ["smm", "purchase"].includes(kind) ? amountText(source.stoppageRate) : "",
       lines: source?.lines?.length ? source.lines.map(line => lineFrom(line, { keepOrigin: Boolean(draft) })) : [blankLine(d.vatRate)],
       note: source?.note || "",
-      pay: payFrom(draft?.payment),
+      pay: payFrom(draft?.payment, { issued: Boolean(modify) }),
       calc: null,
       calcError: "",
       returnHits: null,
@@ -881,7 +885,7 @@
     const chequeOk = meta.canCheques && ["sale", "smm", "purchase"].includes(form.kind);
     const cashWord = ret ? (form.kind === "sale_return" ? "Müşteriye İade Ödemesi" : "Tedarikçiden İade Tahsilatı") : sale ? "Peşin Tahsilat" : "Peşin Ödeme";
     const cashRows = form.pay.cash
-      .map((item, index) => `<div class="hof-inv-pay-row"><label><span>${esc(cashWord)} (₺)</span><input data-pay="cash" data-i="${index}" data-f="amount" inputmode="decimal" value="${esc(item.amount)}" placeholder="0,00"></label><label><span>${sale ? "Tahsilat Yolu" : "Ödeme Yolu"}</span><select data-pay="cash" data-i="${index}" data-f="method">${methodOptions(item.method)}</select></label><button type="button" class="hof-mini hof-mini-danger" data-act="pay-remove" data-pay="cash" data-i="${index}" aria-label="Sil" title="Sil">×</button></div>`)
+      .map((item, index) => `<div class="hof-inv-pay-row"><label><span>${esc(cashWord)} (₺)</span><input data-pay="cash" data-i="${index}" data-f="amount" inputmode="decimal" value="${esc(item.amount)}" placeholder="0,00"></label><label><span>${sale ? "Tahsilat Yolu" : "Ödeme Yolu"}</span><select data-pay="cash" data-i="${index}" data-f="method">${methodOptions(item.method)}</select></label>${bankCell(item, index)}<button type="button" class="hof-mini hof-mini-danger" data-act="pay-remove" data-pay="cash" data-i="${index}" aria-label="Sil" title="Sil">×</button></div>`)
       .join("");
     const chequeRows = form.pay.cheques
       .map(
@@ -908,6 +912,61 @@
       <div data-pay-rest>${restBlock}</div>`;
     const box = slot.querySelector("[data-pay-rest]");
     if (box) box.hofHtml = restBlock;
+    if (!view.bankChoices) loadBankChoices();
+  }
+  // v2.1.0 Aşama 7: peşin satırda Banka Hesabı (yalnız Havale / EFT yolunda görünür). Seçici satırın İÇİNDE çizilir; yol ya da hesap değişince satır
+  // yeniden çizilmez (2.0.23 Bulgu 1: odak ve yazılan değer kaybolmasın) — yalnız hücre gösterilir/gizlenir. Hiç uygun hesap yoksa hücre boş
+  // (bugünkü gibi hesapsız), tek hesapta bilgi satırı (sunucu kendiliğinden o hesaba yazar), birden çokta seçim zorunlu.
+  const bankAccounts = () => {
+    const data = view.bankChoices && view.bankChoices !== "loading" ? view.bankChoices : null;
+    return { data, list: (data?.forms?.bank?.ids || []).map(id => data.accounts.find(account => account.id === id)).filter(Boolean) };
+  };
+  function bankCell(item, index) {
+    const hidden = item.method === "bank" ? "" : " hidden";
+    const { data, list } = bankAccounts();
+    const current = item.bankAccountId ? data?.accounts?.find(account => account.id === item.bankAccountId) : null;
+    if (!data || (!list.length && !current)) return `<span class="hof-inv-bank" data-bank-cell="${index}" hidden></span>`;
+    if (list.length === 1 && !item.legacy && (!item.bankAccountId || item.bankAccountId === list[0].id)) return `<span class="hof-inv-bank hof-bank-pick-note" data-bank-cell="${index}" data-bank-single${hidden}>${esc(list[0].label)} hesabına yazılır.</span>`;
+    const options = current && !list.some(account => account.id === current.id) ? [current, ...list] : list;
+    const first = item.legacy ? "Atanmamış (Eski Hareket)" : "Hesap Seçin";
+    return `<label class="hof-inv-bank" data-bank-cell="${index}"${hidden}><span>Banka Hesabı</span><select data-pay="cash" data-i="${index}" data-f="bankAccountId" aria-label="Banka Hesabı"><option value="">${esc(first)}</option>${options.map(account => `<option value="${esc(account.id)}" ${account.id === item.bankAccountId ? "selected" : ""}>${esc(`${account.label} (${account.code})`)}</option>`).join("")}</select></label>`;
+  }
+  // Hesap listesi gelince yalnız boş hücreler doldurulur (içinde odaklanılacak alan yoktu; satır yeniden çizilmez).
+  function loadBankChoices() {
+    if (!HOF.bank?.choices || view.bankChoices) return;
+    view.bankChoices = "loading";
+    HOF.bank
+      .choices()
+      .then(data => {
+        view.bankChoices = data;
+        const form = view.form;
+        body()
+          ?.querySelectorAll("[data-pay] [data-bank-cell]")
+          .forEach(cell => {
+            const item = form?.pay.cash[Number(cell.dataset.bankCell)];
+            if (!item) return;
+            if (item.method === "bank" && !item.bankAccountId && !item.legacy) item.bankAccountId = defaultBank();
+            cell.outerHTML = bankCell(item, Number(cell.dataset.bankCell));
+          });
+      })
+      .catch(() => {
+        view.bankChoices = null;
+      });
+  }
+  const defaultBank = () => {
+    const { data, list } = bankAccounts();
+    return list.length > 1 ? data.forms.bank.defaultId || "" : "";
+  };
+  // Yol değişince: hücre gösterilir/gizlenir; havaleye geçen yeni satıra varsayılan hesap önerilir (Banka Ayarları → Varsayılan Tahsilat Hesabı).
+  function syncBankCell(target, item) {
+    const cell = target.closest(".hof-inv-pay-row")?.querySelector("[data-bank-cell]");
+    if (!cell) return;
+    if (item.method === "bank" && !item.bankAccountId && !item.legacy) {
+      item.bankAccountId = defaultBank();
+      const select = cell.querySelector("select");
+      if (select) select.value = item.bankAccountId;
+    }
+    cell.hidden = item.method !== "bank" || (!cell.querySelector("select") && !cell.hasAttribute("data-bank-single"));
   }
   // v2.0.23 (Bulgu 1): "Kalan" kutusu ayrı çizilir. Ödeme satırındaki bir alan değişince (tutar, vade, no, banka, yol) yalnız
   // bu kutu yenilenir; satırlar yeniden çizilmez. Önceden bütün bölüm yeniden çiziliyordu: Tab ile ya da fareyle gidilen
@@ -1000,7 +1059,7 @@
     lines: usedLines(form).map(lineBody),
   });
   const payBody = form => ({
-    cash: form.pay.cash.filter(item => amountNum(item.amount) > 0).map(item => ({ amount: item.amount, method: item.method })),
+    cash: form.pay.cash.filter(item => amountNum(item.amount) > 0).map(item => ({ amount: item.amount, method: item.method, lineKey: item.lineKey, ...(item.method === "bank" && item.bankAccountId ? { bankAccountId: item.bankAccountId } : {}) })),
     cheques: form.pay.cheques.filter(item => amountNum(item.amount) > 0).map(item => ({ ...item })),
     endorse: [...form.pay.endorse],
     rest: form.pay.rest,
@@ -1217,6 +1276,8 @@
     if (target.dataset.pay !== undefined && target.dataset.f) {
       const item = form.pay[target.dataset.pay]?.[Number(target.dataset.i)];
       if (item) item[target.dataset.f] = target.value;
+      if (item && target.dataset.pay === "cash" && target.dataset.f === "method") syncBankCell(target, item);
+      if (item && target.dataset.f === "bankAccountId") item.legacy = item.legacy && !target.value;
       return refreshRest();
     }
     if (target.dataset.f && HEAD_FIELDS.has(target.dataset.f)) {
@@ -1320,7 +1381,7 @@
       return renderLines();
     }
     if (act === "pay-add-cash") {
-      form.pay.cash.push({ amount: "", method: "cash" });
+      form.pay.cash.push({ amount: "", method: "cash", lineKey: lineKey(), bankAccountId: "" });
       renderPay();
       return body()?.querySelector(`[data-pay="cash"][data-i="${form.pay.cash.length - 1}"][data-f="amount"]`)?.focus();
     }
@@ -1333,7 +1394,7 @@
         if (view.form !== form) return;
         const payable = form.calc ? form.calc.try?.payable ?? form.calc.totals.payable : 0;
         const others = form.pay.cheques.reduce((sum, item) => sum + amountNum(item.amount), 0) + (form.portfolio || []).filter(item => form.pay.endorse.includes(item.id)).reduce((sum, item) => sum + Number(item.amount || 0), 0);
-        form.pay.cash = [{ amount: amountText(Math.max(0, Math.round((payable - others) * 100) / 100)), method: form.pay.cash[0]?.method || "cash" }];
+        form.pay.cash = [{ ...(form.pay.cash[0] || { method: "cash", lineKey: lineKey(), bankAccountId: "" }), amount: amountText(Math.max(0, Math.round((payable - others) * 100) / 100)) }];
         renderPay();
       })();
       form.payPending = job;
@@ -1495,14 +1556,17 @@
     }
   }
   // Stok eksiye düşecekse sorulur; onaylanırsa aynı istek "force" ile yeniden gönderilir (Kasa eksi uyarısını HOF.api sorar).
+  // v2.1.0 Aşama 7: banka hesabına bağlı peşinde Benzer İşlem ve hesabın Eksi Bakiye sorusu da (HOF.bank.withConfirms; "Yine de Kaydet").
   async function withStockForce(send) {
+    const confirmBank = HOF.bank?.withConfirms || (fn => fn({}));
+    const attempt = force => confirmBank(flags => send({ ...force, ...flags }));
     try {
-      return await send({});
+      return await attempt({});
     } catch (error) {
       if (error?.data?.code !== "stock-negative") throw error;
       const go = await HOF.confirm({ title: "Stok eksiye düşecek", message: `${error.message} Sayım farkı ya da henüz girilmemiş alış varsa kaydedebilirsiniz. Yine de kaydedilsin mi?`, confirmLabel: "Yine de Kaydet", danger: true });
       if (!go) throw new HOF.ApiError("Kaydedilmedi: stok eksiye düşecekti.", 409, { code: "cash-negative-cancelled" });
-      return send({ force: true });
+      return attempt({ force: true });
     }
   }
 
@@ -1681,6 +1745,7 @@
   // ödemeleri faturalara en eski açık faturadan başlayarak sayılır (bu faturadan önce açık fatura varsa önce o kapanır).
   function payForm(doc) {
     const sale = sideOf(doc.kind) === "sale";
+    const requestId = HOF.requestId();
     if (doc.plan && sale && HOF.plans?.open) {
       modal?.close();
       return HOF.plans.open(doc.plan.id);
@@ -1696,8 +1761,14 @@
         { name: "note", label: "Açıklama", maxlength: 300, value: `${doc.displayNo} ${sale ? "tahsilatı" : "ödemesi"}` },
       ],
       submitLabel: sale ? "Tahsilatı Kaydet" : "Ödemeyi Kaydet",
+      // v2.1.0 Aşama 7: Havale / EFT'de Banka Hesabı (tek hesapta gizli); istek kimliği; banka hesabının Benzer İşlem ve Eksi Bakiye soruları.
+      onOpen: dialog => {
+        if (HOF.bank?.attachPicker) HOF.bank.attachPicker(dialog.querySelector("form"), { methodName: "method" });
+      },
       onSubmit: async data => {
-        await HOF.api(`/api/workspace/accounts/${encodeURIComponent(doc.accountId)}/entries`, { method: "POST", body: { kind: sale ? "in" : "out", amount: data.amount, date: data.date, method: data.method, invoiceId: doc.id, note: data.note } });
+        const body = { kind: sale ? "in" : "out", amount: data.amount, date: data.date, method: data.method, invoiceId: doc.id, note: data.note, ...(data.method === "bank" && data.bankAccountId ? { bankAccountId: data.bankAccountId } : {}) };
+        const send = flags => HOF.api(`/api/workspace/accounts/${encodeURIComponent(doc.accountId)}/entries`, { method: "POST", body: { ...body, ...flags }, requestId });
+        await (HOF.bank?.withConfirms ? HOF.bank.withConfirms(send) : send({}));
         HOF.toast(sale ? "Tahsilat kaydedildi." : "Ödeme kaydedildi.", { type: "success" });
         loadDoc(doc.id);
       },

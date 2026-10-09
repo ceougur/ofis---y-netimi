@@ -286,6 +286,9 @@
   };
   function actionForm(cheque, action) {
     const text = ACTION_TEXT[action];
+    // v2.1.0 Aşama 8: istek kimliği form açılışında; tahsil/ödemede Banka seçilince Banka Hesabı (tek hesapta gizli) ve hesabın soruları.
+    const requestId = HOF.requestId();
+    const moneyAction = action === "collect" || action === "pay";
     HOF.formModal({
       title: `${text.title} · ${cheque.instrumentLabel}${cheque.serialNo ? ` No ${cheque.serialNo}` : ""}`,
       eyebrow: money(cheque.amount),
@@ -298,6 +301,7 @@
       ],
       submitLabel: text.submit,
       onOpen: dialog => {
+        if (moneyAction && HOF.bank?.attachPicker) HOF.bank.attachPicker(dialog.querySelector("form"), { methodName: "method" });
         if (action !== "endorse") return;
         // v2.0.17 (müşteri: "cari bulunmuyor"): tür kısıtı yok — bütün cariler aranır, tedarikçiler üstte; "+ Yeni Cari".
         const picker = HOF.accounts?.picker({ label: "Ciro Edilen Cari", required: true, prefer: "supplier", allowNew: { type: "supplier" }, help: "Tedarikçi ya da müşteri: çekin kime verildiği. Bulunamazsa + Yeni Cari ile açın.", name: "accountId" });
@@ -305,7 +309,9 @@
       },
       onSubmit: async data => {
         if (action === "endorse" && !data.accountId) throw new Error("Çeki kime ciro ettiğinizi seçin.");
-        const saved = await HOF.api(`/api/workspace/cheques/${encodeURIComponent(cheque.id)}/actions`, { method: "POST", body: { action, date: data.date, note: data.note, accountId: data.accountId || "", method: data.method || "", status: cheque.status } });
+        const body = { action, date: data.date, note: data.note, accountId: data.accountId || "", method: data.method || "", status: cheque.status, ...(moneyAction && data.method === "bank" && data.bankAccountId ? { bankAccountId: data.bankAccountId } : {}) };
+        const send = flags => HOF.api(`/api/workspace/cheques/${encodeURIComponent(cheque.id)}/actions`, { method: "POST", body: { ...body, ...flags }, requestId });
+        const saved = HOF.bank?.withConfirms ? await HOF.bank.withConfirms(send) : await send({});
         HOF.toast(`${cheque.instrumentLabel} ${ACTION_TEXT[action].past} olarak işlendi.`, { type: "success" });
         apply(saved);
       },
@@ -316,7 +322,9 @@
     if (!ok) return;
     try {
       const last = cheque.events.at(-1);
-      apply(await HOF.api(`/api/workspace/cheques/${encodeURIComponent(cheque.id)}/undo`, { method: "POST", body: { eventId: last?.id } }));
+      // Bankaya bağlı tahsilin geri alınması hesabın bakiyesini düşürür: eksi bakiye sorusu (K7) "Yine de Kaydet" ile.
+      const send = flags => HOF.api(`/api/workspace/cheques/${encodeURIComponent(cheque.id)}/undo`, { method: "POST", body: { eventId: last?.id, ...flags } });
+      apply(HOF.bank?.withConfirms ? await HOF.bank.withConfirms(send) : await send({}));
       HOF.toast("Son işlem geri alındı.", { type: "success" });
     } catch (error) {
       HOF.toastError(error);
