@@ -113,7 +113,7 @@ export async function runRandom({ seed = 1, operations = 200, base = "bos", log 
     return {
       accounts: new Map(accounts.map(item => [item.id, { name: item.name, cents: cents(item.balance) }])),
       cash: cents(cash.data.totals.balance),
-      banks: new Map(bank.data.accounts.map(item => [item.id, { name: item.label, cents: Number(item.balanceMinor) }])),
+      banks: new Map(bank.data.accounts.map(item => [item.id, { name: item.label, cents: Number(item.balanceMinor), confirmed: Boolean(item.balanceConfirmed) }])),
     };
   };
 
@@ -427,7 +427,8 @@ export async function runRandom({ seed = 1, operations = 200, base = "bos", log 
       company.cash = 0;
       // v2.1.0 (§5.6): "Tüm Hareketleri Sil" hesap kartlarını bırakır (açılış dahil hareketler silinir, bakiye 0); "Tümünü Sıfırla" siler.
       if (mode === "all") company.banks.clear();
-      else for (const bank of company.banks.values()) bank.cents = 0;
+      // "Tüm Hareketleri Sil" Bakiye Doğrulandı işaretini de kaldırır (açılış silindi; K7 Kontrol Yok'a döner).
+      else for (const bank of company.banks.values()) Object.assign(bank, { cents: 0, confirmed: false });
       company.vouchers = [];
     },
     // ---------- v2.1.0 banka ----------
@@ -438,7 +439,7 @@ export async function runRandom({ seed = 1, operations = 200, base = "bos", log 
       const bankName = R.pick(["Ziraat Bankası", "Garanti BBVA", "İş Bankası", "Yapı Kredi"]);
       opLog.push(`#${report.operations} banka hesabı aç (${tag(company)}): ${bankName} açılış ${tl(opening)}`);
       const data = expectStatus(await actor.post("/api/workspace/bank/accounts", { bankName, name: `Hesap ${report.operations}`, kind: "demand", currency: "TRY", opening: { date: today, amount: tl(opening).replace(".", ","), confirmed: true } }), 200, "banka hesabı aç");
-      company.banks.set(data.id, { name: data.label, cents: opening });
+      company.banks.set(data.id, { name: data.label, cents: opening, confirmed: true });
     },
     async bankVoucher() {
       const company = selected();
@@ -449,8 +450,17 @@ export async function runRandom({ seed = 1, operations = 200, base = "bos", log 
       const tax = type === "fee" ? R.pick(["none", "bsmv_incl"]) : "";
       const today = expectStatus(await actor.get("/api/workspace/ledger/lock"), 200, "bugün").today;
       opLog.push(`#${report.operations} Banka Fişi (${tag(company)}): ${bank.name} ${type}${tax ? ` ${tax}` : ""} ${tl(value)}`);
-      const data = expectStatus(await actor.post("/api/workspace/bank/vouchers", { type, accountId: bankId, date: today, amount: tl(value).replace(".", ","), ...(tax ? { tax } : {}), similarOk: true }), 200, "Banka Fişi");
       const signed = type === "other_in" ? value : -value;
+      const body = { type, accountId: bankId, date: today, amount: tl(value).replace(".", ","), ...(tax ? { tax } : {}), similarOk: true };
+      // K7 (2.1.0 GG2): Bakiye Doğrulandı hesapta (açılış "confirmed") bakiyeyi eksiye düşüren çıkış önce 409 bank-negative ("Uyar"),
+      // sonra "Yine de Kaydet" (negativeOk) ile tek fiş.
+      if (bank.confirmed && bank.cents + signed < 0) {
+        const warned = await actor.post("/api/workspace/bank/vouchers", body);
+        expectStatus(warned, 409, "Banka Fişi eksi bakiye");
+        if (warned.data?.code !== "bank-negative") fail(`Banka Fişi eksi bakiye: kod ${warned.data?.code}`);
+        body.negativeOk = true;
+      }
+      const data = expectStatus(await actor.post("/api/workspace/bank/vouchers", body), 200, "Banka Fişi");
       const got = (data.lines || []).filter(line => line.role === "bank").reduce((sum, line) => sum + (line.side === "D" ? 1 : -1) * Number(line.tryMinor), 0);
       if (got !== signed) fail(`Banka Fişi ${data.no}: banka etkisi ${tl(got)} ≠ model ${tl(signed)}`);
       bank.cents += signed;
@@ -461,7 +471,16 @@ export async function runRandom({ seed = 1, operations = 200, base = "bos", log 
       const voucher = R.pick(company.vouchers.filter(item => item.status === "active" && company.banks.has(item.bankId)));
       if (!voucher) return ops.bankVoucher();
       opLog.push(`#${report.operations} Ters Kaydet (${tag(company)}): ${voucher.id}`);
-      expectStatus(await actor.post(`/api/workspace/bank/events/${encodeURIComponent(voucher.id)}/reverse`, {}), 200, "Ters Kaydet");
+      const bank = company.banks.get(voucher.bankId);
+      const body = {};
+      if (bank.confirmed && bank.cents - voucher.cents < 0) {
+        // K7: gelir fişinin ters kaydı da hesabı eksiye düşürebilir.
+        const warned = await actor.post(`/api/workspace/bank/events/${encodeURIComponent(voucher.id)}/reverse`, {});
+        expectStatus(warned, 409, "Ters Kaydet eksi bakiye");
+        if (warned.data?.code !== "bank-negative") fail(`Ters Kaydet eksi bakiye: kod ${warned.data?.code}`);
+        body.negativeOk = true;
+      }
+      expectStatus(await actor.post(`/api/workspace/bank/events/${encodeURIComponent(voucher.id)}/reverse`, body), 200, "Ters Kaydet");
       voucher.status = "reversed";
       company.banks.get(voucher.bankId).cents -= voucher.cents;
     },
