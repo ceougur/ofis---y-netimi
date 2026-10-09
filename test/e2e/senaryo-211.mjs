@@ -452,13 +452,21 @@ try {
     await open("cash", "Kasa", async () => {
       await form('[data-add="in"]', "Kasaya Tahsilat Ekle");
     });
-    // v2.1.0 Banka (plan §8.12): ilk açılışta Kurulum Sihirbazı, sonra sekmeler, Gelişmiş Ayarlar ve hesap formu.
+    // v2.1.0 Banka (plan §8.12): ilk açılışta Kurulum Sihirbazı, sonra sekmeler (Hareketler ve Planlı İşlemler dahil), Gelişmiş Ayarlar ve hesap formu.
     await open("bank", "Banka · Kurulum Sihirbazı", async () => {
       if (await admin.$(".hof-bank-wiz-modal")) await closeTop(admin);
-      for (const id of ["overview", "accounts", "settings"]) {
+      // Aşama 4: Hareketler sekmesi (süzgeç adları, boş durum) ve Planlı İşlemler görünümü.
+      for (const id of ["overview", "accounts", "movements", "settings"]) {
         await admin.click(`.hof-bank-tabs [data-tab="${id}"]`);
         await admin.waitForTimeout(600);
         await auditLabels(admin, `Banka › ${id}`);
+        if (id === "movements") {
+          await admin.click('.hof-bank-modal [data-act="mv-planned"]');
+          await admin.waitForTimeout(500);
+          await auditLabels(admin, "Banka › Planlı İşlemler");
+          await admin.click('.hof-bank-modal [data-act="mv-planned"]');
+          await admin.waitForTimeout(400);
+        }
       }
       await admin.click('.hof-bank-modal [data-act="advanced"]');
       await admin.waitForTimeout(300);

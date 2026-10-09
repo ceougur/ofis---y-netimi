@@ -189,12 +189,24 @@ try {
   const bankTab = async id => { await page.click(`${modal} .hof-bank-tabs [data-tab="${id}"]`); await page.waitForTimeout(700); };
   await screen("Banka — Kurulum Sihirbazı (ilk açılış)", async () => { await openWindow("bank"); await page.waitForSelector(".hof-bank-wiz-modal [data-wiz-form]", { timeout: 8000 }); });
   await screen("Banka — Genel Bakış (hesabı atanmamış eski hareket)", async () => { await openWindow("bank"); await page.waitForTimeout(500); });
-  await call("/api/workspace/bank/accounts", { bankName: "Ziraat Bankası", name: "Ana TL Hesabı", kind: "demand", opening: { date: TODAY, amount: "100.000", confirmed: true } });
+  const bankAccount = (await call("/api/workspace/bank/accounts", { bankName: "Ziraat Bankası", name: "Ana TL Hesabı", kind: "demand", opening: { date: TODAY, amount: "100.000", confirmed: true } })).data;
   await screen("Banka — Hesaplar", async () => { await openWindow("bank"); await bankTab("accounts"); });
   await screen("Banka — Hesap Detayı", async () => { await openWindow("bank"); await bankTab("accounts"); await clickFirstRow(); });
   await screen("Banka — yeni hesap formu", async () => { await openWindow("bank"); await bankTab("accounts"); await clickButton(/Yeni Hesap/); });
   await screen("Banka — Ayarlar (Gelişmiş)", async () => { await openWindow("bank"); await bankTab("settings"); await page.click(`${modal} [data-act="advanced"]`); await page.waitForTimeout(400); });
   await screen("Banka — Hesabı Atanmamış Eski Hareketler", async () => { await openWindow("bank"); await page.click(`${modal} [data-bank-unassigned] [data-act="legacy"]`); await page.waitForTimeout(900); });
+  // Banka — Hareketler (v2.1.0 Aşama 4, plan §8.6): liste, İşlem Kartı (etkin ve ters kaydedilmiş: pasif düğme nedeni), masraf ve faiz
+  // formları, Planlı İşlemler.
+  const fee = (await call("/api/workspace/bank/vouchers", { type: "fee", accountId: bankAccount.id, amount: "10,50", feeType: "eft", tax: "bsmv_incl", date: TODAY })).data;
+  await call("/api/workspace/bank/vouchers", { type: "interest_in", accountId: bankAccount.id, amount: "1.000", stoppageRate: "15", date: TODAY });
+  await call("/api/workspace/bank/plans", { kind: "other_out", accountId: bankAccount.id, amount: "5.000", plannedDate: TODAY, repeat: "monthly", description: "Kira" });
+  await screen("Banka — Hareketler", async () => { await openWindow("bank"); await bankTab("movements"); await page.waitForSelector(`${modal} .hof-bank-moves tbody tr[data-event]`, { timeout: 8000 }); });
+  await screen("Banka — İşlem Kartı", async () => { await openWindow("bank"); await bankTab("movements"); await page.click(`${modal} .hof-bank-moves tbody tr[data-event="${fee.id}"]`); await page.waitForSelector(`${modal} [data-event-no]`, { timeout: 8000 }); });
+  await screen("Banka — masraf formu", async () => { await openWindow("bank"); await bankTab("movements"); await clickButton(/\+ Masraf/); await page.fill(".hof-bank-voucher [name=amount]", "10,50"); });
+  await screen("Banka — faiz formu", async () => { await openWindow("bank"); await bankTab("movements"); await clickButton(/\+ Faiz/); });
+  await screen("Banka — Planlı İşlemler", async () => { await openWindow("bank"); await bankTab("movements"); await page.click(`${modal} [data-act="mv-planned"]`); await page.waitForSelector(`${modal} .hof-bank-plans tbody tr[data-plan]`, { timeout: 8000 }); });
+  await call(`/api/workspace/bank/events/${fee.id}/reverse`, {});
+  await screen("Banka — ters kaydedilmiş İşlem Kartı (pasif düğme nedeni)", async () => { await openWindow("bank"); await bankTab("movements"); await page.click(`${modal} .hof-bank-moves tbody tr[data-event="${fee.id}"]`); await page.waitForSelector(`${modal} [data-bank-event-blocks]`, { timeout: 8000 }); });
   const openCenter = async () => { await openWindow("analytics"); await page.click(`${modal} .hof-rep-tab[data-tab="all"]`); await page.waitForSelector(`${modal} .hof-rc-item`, { timeout: 15000 }); await page.waitForTimeout(500); };
   await screen("Raporlar — Vade Takip (ilk sekme)", async () => { await openWindow("analytics"); await page.waitForTimeout(1200); });
   await screen("Raporlar — Rapor Merkezi", openCenter);

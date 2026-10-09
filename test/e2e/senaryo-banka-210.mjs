@@ -1,4 +1,4 @@
-// Senaryo Banka 2.1.0 — bölüm 1 (Aşama 3: Banka Hesapları, arayüz; docs/BANKA-MODULU-PLAN.md §8, §12.3, §12.5 kabul 1–4). Gerçek kullanıcı
+// Senaryo Banka 2.1.0 — bölüm 1 (Aşama 3: Banka Hesapları, arayüz) ve bölüm 2 (Aşama 4: Banka Hareketleri, arayüz; docs/BANKA-MODULU-PLAN.md §8, §12.3, §12.5 kabul 1–4). Gerçek kullanıcı
 // gibi tıklanır; sayılar ekrandan okunur ve sunucudan (API, mizan) doğrulanır. Sahte saat 08.10.2026 Perşembe (sunucu config.now +
 // Playwright page.clock). Sonraki aşamalar bu dosyaya kendi bölümlerini ekler (kabul 5–16).
 //  1. Boş şirket: menüde Banka Taksitler'in hemen altında; Banka'yı ilk açan yöneticiye Kurulum Sihirbazı (POS adımı yok); atlanınca
@@ -14,9 +14,29 @@
 //  6. Ortak hesap seçici: iki hesapta seçim zorunlu, tek hesapta gizli, hiç kart yoksa boş.
 //  7. Yetki: personel menüde Banka'yı görmez (API 403); uzman (avukat) görür ama hesap açamaz, ayarları değiştiremez.
 //  8. Canlı yenileme: muhasebe Hesaplar'ı açıkken yönetici başka yerden hesap açar → muhasebenin listesi kendiliğinden yenilenir.
-//  9. Boş ikinci şirket: sihirbaz o şirkette yine ilk girişte gelir; Genel Bakış boş durum.
+//  9. Boş ikinci şirket: sihirbaz o şirkette yine ilk girişte gelir; Genel Bakış boş durum; Hareketler boş durum, + Masraf form açmaz
+//     (neden bildirimde, hiçbir şey yazılmaz).
 // 10. Mobil (390 px): Genel Bakış, Hesaplar ve Hesap Detayı yatay kaydırmasız.
-// 11. Yazım düzeni: gezilen her banka ekranında adlar başlık yazımıyla; kalemle ad (side.bank) menüde ve pencere başlığında.
+// Bölüm 2 (Aşama 4: Banka Hareketleri, arayüz; §8.5, §8.6, §12.3 Aşama 4, §12.4). Bağımsız beklenen: testin kendi yevmiye modeli.
+// 12. Hareketler sekmesi (Hesaplar'dan sonra); Ziraat'e masraf 10,50 BSMV Dahil EKRANDAN (önizleme 10,00 + 0,50), İşlem Kartı fiş satırları.
+// 13. KDV Dahil 120 (faturalı masraf): cari ve Fatura No zorunlu (boşsa yazılmaz); fatura + havale; KDV Özeti 191 = 20; ödeme satırında
+//     Ters Kaydet pasif + neden; masrafın İşlem Kartı (matrah, KDV); Fatura penceresinde Düzenle/İptal/Sil/İade nedenleri.
+// 14. Faiz geliri 1.000 / %15: net 850, stopaj 150 (193), 642 = 1.000; stopaj önerisi ilk faizde boş.
+// 15. Hareketler: satır tutarları ve yürüyen bakiye bağımsız beklenenle; Masraf süzgeci; boş süzgeç; İşlem No araması; tutar süzgeci
+//     (eksi tutar ekranda hata, süzgeç alanları yerinde).
+// 16. Ters Kaydet → bakiye eski hâl; kart Ters Kaydedildi; Ters Kaydet/Düzelt pasif + neden; ters kaydın kartı.
+// 17. Benzer İşlem: ters kaydedilenle aynı masraf uyarısız; ikinci kez pencere (BNK-…); Vazgeç yazmaz; Yine de Kaydet tek fiş.
+// 18. Düzelt: faiz 1.000 → 2.000 (oran korunur, tür değişmez); mizan.
+// 19. Açıklamayı Düzelt (HTML kaçışlı); kilitli dönemdeki masrafın Ters Kaydet'i bugün tarihli, kilitli günler değişmez.
+// 20. Planlı İşlem: + Planlı İşlem (KDV'li seçenek yok), deftere girmez, Vadesi Geldi, rozet; Gerçekleştir → fiş, plan bir ay ileri; Sil.
+// 21. Daha Fazla Göster: 60 fiş → 50 + 11, tekrarsız, bakiye sayfa sınırında sürekli.
+// 22. Yetki: bank.cancel ve Fatura Yönetimi kaldırılan muhasebe (Ters Kaydet pasif + yetki nedeni; KDV'li seçenek yok); bank.move yokken
+//     + Masraf ve + Planlı İşlem yok.
+// 23. Mobil (390 px): Hareketler, İşlem Kartı, Masraf formu; Hesap Detayı'nda hesabın hareketleri ve + Masraf (hesap seçili).
+// 23b. Diğer Gelir (Gelişmiş Seçenekler'de gelir hesabı 646), Faiz Gideri + BSMV/KKDF, Kart Borcu Ödemesi, Kredi Kullanımı ve Geri Ödemesi
+//     (faizli) EKRANDAN; önizleme; alt hesaplar (102.02, 309.k, 300.k) ve 646/780 modelle.
+// 24. Son durum bağımsız modelle (alt hesaplar, kart, kredi, 770, 191, 193, 642, 646, 659, 780); mutabakat ok.
+// 25. Yazım düzeni: gezilen her banka ekranında adlar başlık yazımıyla; kalemle ad (side.bank) menüde ve pencere başlığında.
 // Çalıştırma: npm run test:senaryo-banka-210 (ekran görüntüleri artifacts/senaryo-banka-210/).
 import fs, { mkdtempSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -197,7 +217,7 @@ try {
     ok(Boolean(await admin.$(`${bankWin} [data-bank-empty]`)), "boş durum metni görünür");
     ok(!(await admin.$(`${bankWin} [data-bank-unassigned]`)), "Hesabı Atanmamış Eski Hareketler satırı yok (eski hareket yok)");
     const tabs = await admin.$$eval(`${bankWin} .hof-bank-tabs [data-tab]`, list => list.map(node => node.textContent.trim()));
-    ok(JSON.stringify(tabs) === JSON.stringify(["Genel Bakış", "Hesaplar", "Ayarlar"]), `sekmeler: ${tabs.join(" · ")} (POS ve Ekstre bu sürümde yok)`);
+    ok(JSON.stringify(tabs) === JSON.stringify(["Genel Bakış", "Hesaplar", "Hareketler", "Ayarlar"]), `sekmeler: ${tabs.join(" · ")} (Hareketler Aşama 4'te; POS ve Ekstre bu sürümde yok)`);
     await auditLabels(admin, "Genel Bakış (boş)");
     await shot(admin, "bos-sirket-genel-bakis");
     ok((await must("özet", api.get("/api/workspace/bank/summary"))).setup.dismissed === true, "sihirbazın kapatıldığı sunucuda kayıtlı");
@@ -516,6 +536,17 @@ try {
     ok(has(await textOf(admin, `${top} [data-subtrial]`), "Banka alt hesabında hareket yok"), "boş şirkette Alt Hesap Mizanı açılır, boş");
     await closeTop(admin);
     await shot(admin, "ikinci-sirket-bos");
+    // Aşama 4 (boş veri): hesapsız şirkette Hareketler boş durum metniyle; + Masraf form açmaz, nedenini söyler (yazım yok).
+    await tab(admin, "movements");
+    await admin.waitForSelector(`${bankWin} [data-moves-empty]`, { timeout: 8000 });
+    ok(has(await textOf(admin, `${bankWin} [data-moves-empty]`), "Henüz banka hareketi yok"), "hesapsız şirkette Hareketler: “Henüz banka hareketi yok.”");
+    await admin.click(`${bankWin} [data-act="v-fee"]`);
+    await admin.waitForSelector(".hof-toast-error", { timeout: 8000 });
+    const why = await textOf(admin, ".hof-toast-error .hof-toast-text");
+    ok(has(why, "uygun, etkin bir TL banka hesabı yok") && !(await admin.$(".hof-bank-voucher")), `hesapsız şirkette + Masraf form açmaz, neden: ${why}`);
+    const events = await must("olay sayısı", api.get(`/api/workspace/bank/movements?hofCompany=${encodeURIComponent(second)}`));
+    ok(events.rows.length === 0, `hesapsız şirkette hiçbir hareket yazılmadı (${events.rows.length})`);
+    await tab(admin, "overview");
     secondCompany = second;
   });
 
@@ -629,7 +660,572 @@ try {
     current = admin;
   });
 
-  await step("11. Kalemle ad (side.bank) ve yazım düzeni", async () => {
+  // ==================== Bölüm 2 (Aşama 4: Banka Hareketleri, arayüz; plan §8.5, §8.6, §12.3 Aşama 4, §12.4) ====================
+  // Bağımsız beklenen: testin KENDİ yevmiye modeli (program çıktısı beklenen olarak kullanılmaz). Kuruş; borç artı.
+  const model = new Map();
+  const book = lines => {
+    let net = 0;
+    for (const [code, side, minor] of lines) {
+      const signedMinor = side === "D" ? minor : -minor;
+      net += signedMinor;
+      model.set(code, (model.get(code) || 0) + signedMinor);
+    }
+    if (net !== 0) throw new Error(`model fişi dengesiz: ${JSON.stringify(lines)}`);
+  };
+  // Bölüm 1 sonunda 001: Ziraat 100.000 (102.01), Garanti 50.000 (102.02), karşılığı 500.
+  book([["102.01", "D", 10_000_000], ["102.02", "D", 5_000_000], ["500", "C", 15_000_000]]);
+  const ziraatMoves = [];
+  const HOF_MONEY = minor => new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(minor / 100);
+  const accountsNow = async () => (await must("hesaplar", api.get("/api/workspace/bank/accounts?status=all"))).accounts;
+  let ZIRAAT = null;
+  let GARANTI = null;
+  const moveRows = (page, scope = bankWin) =>
+    page.$$eval(`${scope} .hof-bank-moves tbody tr[data-event]`, list => list.map(node => ({ id: node.dataset.event, no: node.dataset.no, type: node.dataset.type, status: node.dataset.state, signed: Number(node.dataset.signed), balance: node.dataset.balance === "" ? null : Number(node.dataset.balance), text: node.textContent.replace(/\s+/g, " ").trim() })));
+  const waitMoves = (page, test, arg = null, timeout = 10000) => page.waitForFunction(test, arg, { timeout });
+  const fillVoucher = async (page, values) => {
+    for (const [name, value] of Object.entries(values)) {
+      const selector = `form.hof-bank-voucher [name="${name}"]`;
+      const tag = await page.$eval(selector, node => node.tagName.toLowerCase());
+      if (tag === "select") await page.selectOption(selector, String(value));
+      else await page.fill(selector, String(value));
+    }
+    await page.waitForTimeout(250);
+  };
+  const submitVoucher = async page => {
+    await page.click("form.hof-bank-voucher button[type=\"submit\"]");
+  };
+  const voucherClosed = page => page.waitForSelector("form.hof-bank-voucher", { state: "detached", timeout: 10000 });
+  const balanceOf = async id => (await must("hesap", api.get(`/api/workspace/bank/accounts/${id}`))).balanceMinor;
+  const trial = async () => Object.fromEntries((await must("mizan", api.get("/api/workspace/ledger"))).trial.accounts.map(row => [row.code, Math.round(row.balance * 100)]));
+  const subTrial = async () => Object.fromEntries((await must("alt hesap mizanı", api.get("/api/workspace/bank/sub-trial"))).rows.map(row => [row.sub, Math.round(row.balance * 100)]));
+  const eventCount = async () => (await must("hareketler", api.get(`/api/workspace/bank/movements?status=all&limit=200`))).rows.length;
+  const openEventFromList = async (page, predicate) => {
+    const rows = await moveRows(page);
+    const row = rows.find(predicate);
+    if (!row) throw new Error(`satır yok: ${rows.map(item => `${item.type} ${item.signed}`).join(" | ")}`);
+    await page.click(`${bankWin} .hof-bank-moves tbody tr[data-event="${row.id}"]`);
+    await page.waitForSelector(`${bankWin} [data-bank-event] [data-event-no]`, { timeout: 10000 });
+    await page.waitForTimeout(300);
+    return row;
+  };
+  const selectMovesAccount = async (page, id) => {
+    await page.selectOption(`${bankWin} [data-mv="account"]`, id);
+    await waitMoves(page, accountId => {
+      const rows = [...document.querySelectorAll(".hof-bank-modal .hof-bank-moves tbody tr[data-event]")];
+      return rows.length > 0 && document.querySelector(".hof-bank-modal [data-moves]")?.dataset.account === accountId;
+    }, id);
+    await page.waitForTimeout(300);
+  };
+
+  await step("12. Hareketler sekmesi; Ziraat'e masraf 10,50 BSMV Dahil EKRANDAN (önizleme), İşlem Kartı", async () => {
+    current = admin;
+    await admin.goto(`${BASE}/`, { waitUntil: "load" });
+    await admin.waitForSelector("#hof-sidecard", { timeout: 30000 });
+    await admin.waitForTimeout(700);
+    const list = await accountsNow();
+    ZIRAAT = list.find(account => account.bankName === "Ziraat Bankası");
+    GARANTI = list.find(account => account.bankName === "Garanti BBVA");
+    await openBank(admin);
+    const tabs = await admin.$$eval(`${bankWin} .hof-bank-tabs [data-tab]`, items => items.map(node => node.textContent.trim()));
+    ok(JSON.stringify(tabs) === JSON.stringify(["Genel Bakış", "Hesaplar", "Hareketler", "Ayarlar"]), `sekmeler: ${tabs.join(" · ")} (Hareketler Hesaplar'dan sonra)`);
+    await tab(admin, "movements");
+    await admin.waitForSelector(`${bankWin} [data-moves]`, { timeout: 10000 });
+    await selectMovesAccount(admin, ZIRAAT.id);
+    let rows = await moveRows(admin);
+    // Bölüm 1'de açılış iki kez düzeltildi: 100.000 (ters kaydedildi), ters kayıt, 100.500 (ters kaydedildi), ters kayıt, 100.000.
+    ok(rows.length === 5 && rows[0].balance === 10_000_000 && rows.filter(row => row.type === "opening").length === 3 && rows.filter(row => row.type === "reversal").length === 2, `Ziraat'in hareketleri (açılış ve düzeltmeleri) yürüyen bakiyeyle: ${rows.map(row => `${row.type} ${row.signed / 100} → ${row.balance / 100}`).join(" | ")}`);
+    ziraatMoves.push(...rows.map(row => row.signed).reverse());
+    await auditLabels(admin, "Hareketler");
+    await shot(admin, "hareketler-ziraat");
+    await admin.click(`${bankWin} [data-act="v-fee"]`);
+    await admin.waitForSelector("form.hof-bank-voucher [name=\"amount\"]", { timeout: 8000 });
+    ok((await admin.$eval("form.hof-bank-voucher [name=\"tax\"]", node => node.value)) === "bsmv_incl", "vergi varsayılanı Banka Ayarları'ndan: BSMV Dahil");
+    await fillVoucher(admin, { accountId: ZIRAAT.id, feeType: "eft", amount: "10,50" });
+    const preview = await textOf(admin, "form.hof-bank-voucher [data-voucher-preview]");
+    ok(has(preview, "₺10,00") && has(preview, "BSMV ₺0,50") && has(preview, "₺10,50") && has(preview, "770"), `önizleme: ${preview}`);
+    await auditLabels(admin, "Masraf Formu");
+    await shot(admin, "masraf-formu-bsmv");
+    await submitVoucher(admin);
+    await voucherClosed(admin);
+    await waitMoves(admin, () => document.querySelector(".hof-bank-modal .hof-bank-moves tbody tr[data-event]")?.dataset.type === "fee");
+    rows = await moveRows(admin);
+    book([["770", "D", 1_050], ["102.01", "C", 1_050]]);
+    ziraatMoves.push(-1_050);
+    ok(rows[0].type === "fee" && rows[0].signed === -1_050 && rows[0].balance === 9_998_950 && /BNK-2026-\d{6}/.test(rows[0].no), `ilk satır Banka Masrafı −10,50, bakiye 99.989,50 (${rows[0].text})`);
+    ok((await balanceOf(ZIRAAT.id)) === 9_998_950, "sunucuda Ziraat 99.989,50");
+    await openEventFromList(admin, row => row.type === "fee");
+    const card = await textOf(admin, `${bankWin} [data-bank-event]`);
+    const lines = await admin.$$eval(`${bankWin} .hof-bank-lines tbody tr[data-gl]`, list => list.map(node => `${node.dataset.gl}|${node.dataset.side}|${node.dataset.minor}`).sort());
+    ok(JSON.stringify(lines) === JSON.stringify(["102|C|1050", "770|D|1000", "770|D|50"].sort()), `İşlem Kartı fiş satırları: ${lines.join(", ")} (770 10,00 + 770 0,50 BSMV / 102.01 10,50)`);
+    ok(has(card, "Banka Masrafı") && has(card, "Ziraat Bankası · Ana TL Hesabı") && has(card, "EFT") && /BNK-2026-\d{6}/.test(card) && has(card, "→"), "İşlem Kartı: tür, hesap, masraf türü, İşlem No, Kaynak → Hedef");
+    ok(await admin.$eval(`${bankWin} [data-act="ev-reverse"]`, node => !node.disabled), "Ters Kaydet etkin");
+    await auditLabels(admin, "İşlem Kartı");
+    await shot(admin, "islem-karti-masraf");
+  });
+
+  await step("13. KDV Dahil 120 (faturalı masraf): cari ve Fatura No zorunlu; fatura + havale tek işlemde; KDV 191 = 20; Fatura penceresinde nedenler", async () => {
+    const supplier = await must("cari", api.post("/api/workspace/accounts", { name: "Ziraat Bankası A.Ş.", type: "supplier", registeredOn: "2026-09-01" }));
+    await admin.click(`${bankWin} [data-act="ev-back"]`);
+    await admin.waitForSelector(`${bankWin} [data-moves]`);
+    const before = await eventCount();
+    await admin.click(`${bankWin} [data-act="v-fee"]`);
+    await admin.waitForSelector("form.hof-bank-voucher [name=\"amount\"]");
+    await fillVoucher(admin, { accountId: ZIRAAT.id, feeType: "eft", tax: "vat_incl", amount: "120" });
+    ok(await admin.isVisible("form.hof-bank-voucher [data-acc-query]") && await admin.isVisible("form.hof-bank-voucher [name=\"invoiceNo\"]"), "KDV kipinde Faturayı Kesen (Cari) ve Fatura No alanları açıldı");
+    await submitVoucher(admin);
+    await admin.waitForFunction(() => document.querySelector("form.hof-bank-voucher .hof-form-error")?.textContent.trim(), null, { timeout: 8000 });
+    ok(has(await textOf(admin, "form.hof-bank-voucher .hof-form-error"), "cari"), `cari seçilmeden: “${await textOf(admin, "form.hof-bank-voucher .hof-form-error")}”`);
+    ok((await eventCount()) === before, "hatalı formda hiçbir hareket yazılmadı");
+    await admin.fill("form.hof-bank-voucher [data-acc-query]", "Ziraat Bankası A");
+    await admin.waitForSelector("form.hof-bank-voucher .hof-case-picker-list li[data-id]", { timeout: 8000 });
+    await admin.click("form.hof-bank-voucher .hof-case-picker-list li[data-id]");
+    await fillVoucher(admin, { invoiceNo: "zb2026000000001" });
+    const preview = await textOf(admin, "form.hof-bank-voucher [data-voucher-preview]");
+    ok(has(preview, "Matrah ₺100,00") && has(preview, "KDV ₺20,00") && has(preview, "₺120,00"), `önizleme: ${preview}`);
+    await shot(admin, "masraf-formu-kdv");
+    await submitVoucher(admin);
+    await voucherClosed(admin);
+    book([["770", "D", 10_000], ["191", "D", 2_000], ["320", "C", 12_000]]);
+    book([["320", "D", 12_000], ["102.01", "C", 12_000]]);
+    ziraatMoves.push(-12_000);
+    ok((await balanceOf(ZIRAAT.id)) === 9_986_950, "Ziraat 99.869,50 (−120)");
+    const kdv = await must("KDV Özeti", api.get("/api/workspace/report-center/kdv-ozeti?from=2026-10-01&to=2026-10-31"));
+    const indirilecek = kdv.summary.find(([label]) => label.startsWith("İndirilecek"))?.[1] || "";
+    ok(/20,00/.test(indirilecek), `KDV Özeti indirilecek KDV 20,00 (${indirilecek})`);
+    await waitMoves(admin, () => document.querySelector(".hof-bank-modal .hof-bank-moves tbody tr[data-event]")?.dataset.type === "invoice_cash");
+    await openEventFromList(admin, row => row.type === "invoice_cash");
+    const payment = await textOf(admin, `${bankWin} [data-bank-event]`);
+    ok(await admin.$eval(`${bankWin} [data-act="ev-reverse"]`, node => node.disabled) && has(await textOf(admin, `${bankWin} [data-bank-event-blocks]`), "masrafın İşlem Kartı"), `faturalı masrafın ödeme satırında Ters Kaydet pasif, nedeni yazılı: ${await textOf(admin, `${bankWin} [data-bank-event-blocks]`)}`);
+    ok(has(payment, "ZB2026000000001"), "ödeme kartında fatura numarası");
+    await admin.click(`${bankWin} [data-bank-event] [data-event-link]`);
+    await admin.waitForFunction(() => document.querySelector(".hof-bank-modal [data-bank-event]")?.textContent.includes("Matrah"), null, { timeout: 8000 });
+    const header = await textOf(admin, `${bankWin} [data-bank-event]`);
+    ok(has(header, "Matrah") && has(header, "₺100,00") && has(header, "KDV") && has(header, "₺20,00") && has(header, "Ziraat Bankası A.Ş."), `masrafın İşlem Kartı: matrah, KDV, cari (${header.slice(0, 160)})`);
+    ok(has(await textOf(admin, `${bankWin} [data-event-amount]`), "₺120,00"), "faturalı masrafın İşlem Kartı'nda tutar 120,00 (fatura ödenecek tutarı)");
+    await shot(admin, "islem-karti-kdv-masraf");
+    await admin.click(`${bankWin} [data-bank-event] [data-open-invoice]`);
+    await admin.waitForSelector(".hof-inv-blocks", { timeout: 10000 });
+    const blocks = await textOf(admin, ".hof-inv-blocks");
+    ok(has(blocks, "İptal Et kapalı") && has(blocks, "Ters Kaydet"), `Fatura penceresinde nedenler görünür yazıyla: ${blocks.slice(0, 160)}`);
+    await shot(admin, "fatura-kdv-masraf-nedenler");
+    await closeTop(admin);
+    void supplier;
+  });
+
+  await step("14. Faiz geliri 1.000 / %15 ekrandan: net 850, stopaj 150 (193), 642 = 1.000", async () => {
+    await admin.click(`${bankWin} [data-act="ev-back"]`);
+    await admin.waitForSelector(`${bankWin} [data-moves]`);
+    await admin.click(`${bankWin} [data-act="v-interest"]`);
+    await admin.waitForSelector("form.hof-bank-voucher [name=\"amount\"]");
+    ok((await admin.$eval("form.hof-bank-voucher [name=\"stoppageRate\"]", node => node.value)) === "", "hiç faiz yokken stopaj oranı önerisi boş (koda sabit oran yazılmaz)");
+    await fillVoucher(admin, { type: "interest_in", accountId: ZIRAAT.id, amount: "1.000", stoppageRate: "15" });
+    const preview = await textOf(admin, "form.hof-bank-voucher [data-voucher-preview]");
+    ok(has(preview, "₺850,00") && has(preview, "Stopaj ₺150,00"), `önizleme: ${preview}`);
+    await auditLabels(admin, "Faiz Formu");
+    await shot(admin, "faiz-formu");
+    await submitVoucher(admin);
+    await voucherClosed(admin);
+    book([["102.01", "D", 85_000], ["193", "D", 15_000], ["642", "C", 100_000]]);
+    ziraatMoves.push(85_000);
+    ok((await balanceOf(ZIRAAT.id)) === 10_071_950, "Ziraat 100.719,50 (+850)");
+    const t = await trial();
+    ok(t["642"] === -100_000 && t["193"] === 15_000, `mizan 642 = ${t["642"] / 100}, 193 = ${t["193"] / 100}`);
+  });
+
+  await step("15. Hareketler: satırlar ve yürüyen bakiye bağımsız beklenenle; süzgeçler (tür, arama, İşlem No, tutar); boş süzgeç", async () => {
+    await waitMoves(admin, () => document.querySelector(".hof-bank-modal .hof-bank-moves tbody tr[data-event]")?.dataset.type === "interest_in");
+    const rows = await moveRows(admin);
+    const expected = [...ziraatMoves].reverse();
+    ok(JSON.stringify(rows.map(row => row.signed)) === JSON.stringify(expected), `satır tutarları modelle aynı: ${rows.map(row => row.signed / 100).join(", ")}`);
+    let running = expected.reduce((sum, value) => sum + value, 0);
+    const balanceOk = rows.every(row => {
+      const good = row.balance === running;
+      running -= row.signed;
+      return good;
+    });
+    ok(balanceOk && running === 0 && rows[0].balance === model.get("102.01"), `yürüyen bakiye her satırda bağımsız hesapla aynı (en üst ${rows[0].balance / 100} = model 102.01 ${model.get("102.01") / 100}; en alttan önce 0)`);
+    ok(has(await textOf(admin, `${bankWin} .hof-bank-moves thead`), "Bakiye"), "tek hesap ve süzgeçsizken Bakiye kolonu var");
+    await shot(admin, "hareketler-yuruyen-bakiye");
+    await admin.selectOption(`${bankWin} [data-mv="type"]`, "fee");
+    await waitMoves(admin, () => {
+      const list = [...document.querySelectorAll(".hof-bank-modal .hof-bank-moves tbody tr[data-event]")];
+      return list.length > 0 && list.every(node => ["fee", "invoice_cash"].includes(node.dataset.type));
+    });
+    let filtered = await moveRows(admin);
+    ok(filtered.length === 2 && filtered.every(row => row.balance === null) && !has(await textOf(admin, `${bankWin} .hof-bank-moves thead`), "Bakiye"), `Masraf süzgeci: BSMV'li masraf + faturalı masrafın ödemesi; yürüyen bakiye yok (${filtered.map(row => row.type).join(", ")})`);
+    await admin.selectOption(`${bankWin} [data-mv="type"]`, "loan");
+    await admin.waitForSelector(`${bankWin} [data-moves-empty]`, { timeout: 8000 });
+    ok(has(await textOf(admin, `${bankWin} [data-moves-empty]`), "hareket yok"), "boş süzgeç: boş durum metni");
+    await admin.selectOption(`${bankWin} [data-mv="type"]`, "");
+    const feeNo = (await moveRows(admin).catch(() => [])).find(row => row.type === "fee")?.no || filtered.find(row => row.type === "fee").no;
+    await admin.fill(`${bankWin} [data-mv="q"]`, feeNo);
+    await waitMoves(admin, no => {
+      const list = [...document.querySelectorAll(".hof-bank-modal .hof-bank-moves tbody tr[data-event]")];
+      return list.length === 1 && list[0].dataset.no === no;
+    }, feeNo);
+    ok(true, `İşlem No ile arama: yalnız ${feeNo}`);
+    await admin.fill(`${bankWin} [data-mv="q"]`, "");
+    await admin.fill(`${bankWin} [data-mv="min"]`, "100");
+    await admin.press(`${bankWin} [data-mv="min"]`, "Enter");
+    await waitMoves(admin, () => {
+      const list = [...document.querySelectorAll(".hof-bank-modal .hof-bank-moves tbody tr[data-event]")];
+      return list.length > 0 && list.every(node => Math.abs(Number(node.dataset.signed)) >= 10_000);
+    });
+    filtered = await moveRows(admin);
+    ok(filtered.length === 7 && filtered.every(row => Math.abs(row.signed) >= 10_000), `Tutar süzgeci (en az 100): ${filtered.length} satır`);
+    await admin.fill(`${bankWin} [data-mv="min"]`, "-5");
+    await admin.press(`${bankWin} [data-mv="min"]`, "Enter");
+    await admin.waitForSelector(`${bankWin} [data-moves] .hof-list-error`, { timeout: 8000 });
+    ok(has(await textOf(admin, `${bankWin} [data-moves] .hof-list-error`), "eksi"), `eksi tutar süzgeci ekranda hata: ${await textOf(admin, `${bankWin} [data-moves] .hof-list-error`)}`);
+    ok(await admin.isVisible(`${bankWin} [data-mv="min"]`), "hata alınca süzgeç alanları yerinde");
+    await admin.fill(`${bankWin} [data-mv="min"]`, "");
+    await admin.press(`${bankWin} [data-mv="min"]`, "Enter");
+    await waitMoves(admin, () => document.querySelectorAll(".hof-bank-modal .hof-bank-moves tbody tr[data-event]").length === 8);
+  });
+
+  await step("16. Ters Kaydet: BSMV masrafı → bakiye eski hâl; kart Ters Kaydedildi; düğmeler pasif + nedeni görünür; ters kaydın kartı", async () => {
+    await openEventFromList(admin, row => row.type === "fee");
+    const no = await textOf(admin, `${bankWin} [data-event-no]`);
+    await admin.click(`${bankWin} [data-act="ev-reverse"]`);
+    await admin.waitForSelector(`${top} form button[type="submit"]`);
+    const intro = await textOf(admin, `${top} .hof-modal-text`);
+    ok(has(intro, no) && has(intro, "ters"), `onay penceresi İşlem No'yu ve sonucu söyler: ${intro.slice(0, 140)}`);
+    await auditLabels(admin, "Ters Kaydet");
+    await admin.click(`${top} form button[type="submit"]`);
+    await admin.waitForFunction(() => document.querySelector(".hof-bank-modal [data-event-status]")?.textContent.includes("Ters Kaydedildi"), null, { timeout: 10000 });
+    book([["102.01", "D", 1_050], ["770", "C", 1_050]]);
+    ziraatMoves.push(1_050);
+    ok((await balanceOf(ZIRAAT.id)) === 10_073_000, "Ziraat 100.730,00 (masraf geri)");
+    ok(await admin.$eval(`${bankWin} [data-act="ev-reverse"]`, node => node.disabled) && await admin.$eval(`${bankWin} [data-act="ev-correct"]`, node => node.disabled), "Ters Kaydet ve Düzelt pasif");
+    const blocks = await textOf(admin, `${bankWin} [data-bank-event-blocks]`);
+    ok(has(blocks, "Ters Kaydet") && has(blocks, "kapalı") && has(blocks, "ters kaydedilmiş") && /BNK-2026-\d{6}/.test(blocks), `neden görünür yazıyla: ${blocks}`);
+    await shot(admin, "ters-kaydedildi");
+    await admin.click(`${bankWin} [data-bank-event] [data-event-link]`);
+    await admin.waitForFunction(old => {
+      const text = document.querySelector(".hof-bank-modal [data-event-no]")?.textContent || "";
+      return text && !text.includes(old);
+    }, no, { timeout: 8000 });
+    const reversal = await textOf(admin, `${bankWin} [data-bank-event]`);
+    ok(has(reversal, "Ters Kayıt") && has(reversal, no), "ters kaydın kartı asıl işlemi gösterir");
+    ok(await admin.$eval(`${bankWin} [data-act="ev-reverse"]`, node => node.disabled) && has(await textOf(admin, `${bankWin} [data-bank-event-blocks]`), "Ters kayıt ters kaydedilmez"), "ters kaydın Ters Kaydet'i pasif, nedeni yazılı");
+  });
+
+  await step("17. Benzer İşlem: ters kaydedilenle aynı masraf kaydedilir; ikinci kez → pencere (BNK-… ve giren); Vazgeç yazmaz; Yine de Kaydet tek fiş", async () => {
+    await admin.click(`${bankWin} [data-act="ev-back"]`);
+    await admin.waitForSelector(`${bankWin} [data-moves]`);
+    const newFee = async () => {
+      await admin.click(`${bankWin} [data-act="v-fee"]`);
+      await admin.waitForSelector("form.hof-bank-voucher [name=\"amount\"]");
+      await fillVoucher(admin, { accountId: ZIRAAT.id, feeType: "eft", amount: "10,50" });
+      await submitVoucher(admin);
+    };
+    await newFee();
+    await voucherClosed(admin);
+    book([["770", "D", 1_050], ["102.01", "C", 1_050]]);
+    ziraatMoves.push(-1_050);
+    ok((await balanceOf(ZIRAAT.id)) === 10_071_950, "ters kaydedilen masrafla aynı masraf uyarısız kaydedildi (100.719,50)");
+    const firstNo = (await must("hareketler", api.get(`/api/workspace/bank/movements?account=${ZIRAAT.id}&type=fee&limit=1`))).rows[0].no;
+    const before = await eventCount();
+    await newFee();
+    await admin.waitForFunction(() => [...document.querySelectorAll(".hof-modal-backdrop.is-visible .hof-modal-title")].some(node => node.textContent.trim() === "Benzer İşlem"), null, { timeout: 8000 });
+    const dialog = await textOf(admin, `${top} .hof-modal-text`);
+    ok(has(dialog, firstNo) && has(dialog, "Yine de Kaydet"), `Benzer İşlem penceresi önceki İşlem No'yu söyler: ${dialog.slice(0, 200)}`);
+    ok((await textOf(admin, `${top} [data-answer="yes"]`)) === "Yine de Kaydet", "düğme: Yine de Kaydet");
+    await shot(admin, "benzer-islem");
+    await admin.click(`${top} [data-answer="no"]`);
+    await admin.waitForTimeout(500);
+    ok(await admin.isVisible("form.hof-bank-voucher") && (await eventCount()) === before, "Vazgeç: form açık kalır, hiçbir şey yazılmaz");
+    await submitVoucher(admin);
+    await admin.waitForFunction(() => [...document.querySelectorAll(".hof-modal-backdrop.is-visible .hof-modal-title")].some(node => node.textContent.trim() === "Benzer İşlem"), null, { timeout: 8000 });
+    await admin.click(`${top} [data-answer="yes"]`);
+    await voucherClosed(admin);
+    book([["770", "D", 1_050], ["102.01", "C", 1_050]]);
+    ziraatMoves.push(-1_050);
+    ok((await eventCount()) === before + 1, "Yine de Kaydet: tek yeni fiş (iki değil)");
+    ok((await balanceOf(ZIRAAT.id)) === 10_070_900, "Ziraat 100.709,00");
+  });
+
+  await step("18. Düzelt: faiz 1.000 → 2.000 (stopaj oranı %15 korunur); tür değiştirilemez; mizan", async () => {
+    await waitMoves(admin, () => document.querySelectorAll(".hof-bank-modal .hof-bank-moves tbody tr[data-event]").length >= 10);
+    await openEventFromList(admin, row => row.type === "interest_in" && row.status === "active");
+    await admin.click(`${bankWin} [data-act="ev-correct"]`);
+    await admin.waitForSelector("form.hof-bank-voucher [name=\"amount\"]");
+    ok((await admin.$eval("form.hof-bank-voucher [name=\"amount\"]", node => node.value)) === "1.000,00" && (await admin.$eval("form.hof-bank-voucher [name=\"stoppageRate\"]", node => node.value)) === "15", "Düzelt formu kayıtlı değerlerle açılır (1.000,00 · %15)");
+    ok(await admin.$eval("form.hof-bank-voucher [name=\"type\"]", node => node.disabled || node.hasAttribute("readonly") || node.type === "hidden"), "işlem türü Düzelt'te değiştirilemez");
+    await fillVoucher(admin, { amount: "2.000" });
+    ok(has(await textOf(admin, "form.hof-bank-voucher [data-voucher-preview]"), "₺1.700,00"), "önizleme net 1.700");
+    await auditLabels(admin, "Düzelt Formu");
+    await shot(admin, "duzelt-formu");
+    await submitVoucher(admin);
+    await voucherClosed(admin);
+    book([["642", "D", 100_000], ["102.01", "C", 85_000], ["193", "C", 15_000]]);
+    book([["102.01", "D", 170_000], ["193", "D", 30_000], ["642", "C", 200_000]]);
+    ziraatMoves.push(-85_000, 170_000);
+    ok((await balanceOf(ZIRAAT.id)) === 10_155_900, "Ziraat 101.559,00");
+    const t = await trial();
+    ok(t["642"] === -200_000 && t["193"] === 30_000, `mizan 642 = ${t["642"] / 100}, 193 = ${t["193"] / 100}`);
+  });
+
+  await step("19. Açıklamayı Düzelt (HTML kaçışlı); kilitli dönemdeki masraf: Ters Kaydet bugün tarihli, kilitli dönem değişmez", async () => {
+    await admin.waitForSelector(`${bankWin} [data-bank-event] [data-event-no]`);
+    await admin.click(`${bankWin} [data-act="ev-info"]`);
+    await admin.waitForSelector(`${top} form [name="description"]`);
+    await admin.fill(`${top} form [name="description"]`, '<img src=x onerror="window.__evXss=1">Faiz =1+1');
+    await admin.click(`${top} form button[type="submit"]`);
+    await admin.waitForFunction(() => document.querySelector(".hof-bank-modal [data-bank-event]")?.textContent.includes("<img"), null, { timeout: 8000 });
+    ok(!(await admin.$(`${bankWin} [data-bank-event] img`)) && !(await admin.evaluate(() => window.__evXss)), "HTML açıklama metin olarak görünür, çalışmaz");
+    await admin.click(`${bankWin} [data-act="ev-back"]`);
+    await admin.waitForSelector(`${bankWin} [data-moves]`);
+    await admin.click(`${bankWin} [data-act="v-fee"]`);
+    await admin.waitForSelector("form.hof-bank-voucher [name=\"amount\"]");
+    await fillVoucher(admin, { accountId: ZIRAAT.id, feeType: "havale", amount: "5,25", date: "2026-10-02" });
+    await submitVoucher(admin);
+    await voucherClosed(admin);
+    book([["770", "D", 525], ["102.01", "C", 525]]);
+    ziraatMoves.push(-525);
+    await must("kilit", api.put("/api/admin/period-lock", { lockedUntil: "2026-10-03" }));
+    const lockedBefore = (await must("kilitli günler", api.get(`/api/workspace/bank/movements?account=${ZIRAAT.id}&to=2026-10-03&status=all&limit=200`))).rows.map(row => `${row.no}|${row.signedMinor}|${row.status}`).sort();
+    await admin.fill(`${bankWin} [data-mv="q"]`, "");
+    await waitMoves(admin, () => [...document.querySelectorAll(".hof-bank-modal .hof-bank-moves tbody tr[data-event]")].some(node => node.dataset.signed === "-525"));
+    await openEventFromList(admin, row => row.signed === -525);
+    ok(has(await textOf(admin, `${bankWin} [data-bank-event]`), "kilitli dönem"), "kart kilitli dönemde olduğunu söyler");
+    await admin.click(`${bankWin} [data-act="ev-reverse"]`);
+    await admin.waitForSelector(`${top} form button[type="submit"]`);
+    const intro = await textOf(admin, `${top} .hof-modal-text`);
+    ok(has(intro, "bugün") && has(intro, "08.10.2026"), `onay: ters fiş bugün tarihli (${intro.slice(0, 200)})`);
+    await admin.waitForTimeout(400);
+    await shot(admin, "kilitli-ters-kaydet");
+    await admin.click(`${top} form button[type="submit"]`);
+    await admin.waitForFunction(() => document.querySelector(".hof-bank-modal [data-event-status]")?.textContent.includes("Ters Kaydedildi"), null, { timeout: 10000 });
+    book([["102.01", "D", 525], ["770", "C", 525]]);
+    ziraatMoves.push(525);
+    const card = await must("kart", api.get(`/api/workspace/bank/events/${encodeURIComponent(await textOf(admin, `${bankWin} [data-event-no]`))}`));
+    const reversal = await must("ters kayıt", api.get(`/api/workspace/bank/events/${card.reversal.by.id}`));
+    ok(reversal.date === "2026-10-08", `ters fiş bugün (08.10.2026) tarihli: ${reversal.date}`);
+    const lockedAfter = (await must("kilitli günler", api.get(`/api/workspace/bank/movements?account=${ZIRAAT.id}&to=2026-10-03&status=all&limit=200`))).rows.map(row => `${row.no}|${row.signedMinor}|${row.status === "reversed" ? "active" : row.status}`).sort();
+    ok(JSON.stringify(lockedAfter.map(item => item.split("|").slice(0, 2).join("|"))) === JSON.stringify(lockedBefore.map(item => item.split("|").slice(0, 2).join("|"))), "kilitli dönemde yeni satır yok, tutarlar aynı");
+    await must("kilit kaldır", api.put("/api/admin/period-lock", { lockedUntil: "" }));
+  });
+
+  await step("20. Planlı İşlem: + Planlı İşlem (aylık Hesap İşletim 25) → Planlı görünüm, bakiye değişmez, Vadesi Geldi; Gerçekleştir → fiş, plan bir ay ileri; Sil", async () => {
+    await admin.click(`${bankWin} [data-act="ev-back"]`);
+    await admin.waitForSelector(`${bankWin} [data-moves]`);
+    const balance = await balanceOf(ZIRAAT.id);
+    await admin.click(`${bankWin} [data-act="plan-new"]`);
+    await admin.waitForSelector("form.hof-bank-voucher [name=\"plannedDate\"]");
+    const taxes = await admin.$$eval("form.hof-bank-voucher [name=\"tax\"] option", list => list.map(node => node.value));
+    ok(!taxes.includes("vat_incl") && !taxes.includes("vat_excl"), `planlı formda KDV'li (faturalı) seçenek yok: ${taxes.join(", ")}`);
+    await fillVoucher(admin, { type: "fee", accountId: ZIRAAT.id, feeType: "hesap-isletim", amount: "25", plannedDate: "2026-10-08", repeat: "monthly", description: "Hesap işletim ücreti" });
+    await auditLabels(admin, "Planlı İşlem Formu");
+    await shot(admin, "planli-islem-formu");
+    await submitVoucher(admin);
+    await voucherClosed(admin);
+    await admin.waitForSelector(`${bankWin} .hof-bank-plans tbody tr[data-plan]`, { timeout: 8000 });
+    ok((await balanceOf(ZIRAAT.id)) === balance, "planlı işlem deftere girmez (bakiye aynı)");
+    let plans = await textOf(admin, `${bankWin} .hof-bank-plans tbody`);
+    ok(has(plans, "Vadesi Geldi") && has(plans, "Aylık") && has(plans, "₺25,00"), `Planlı görünüm: ${plans.slice(0, 160)}`);
+    ok((await must("rozet", api.get("/api/workspace/bank/badge?count=1"))).count >= 1, "rozet vadesi gelen planı sayar");
+    await shot(admin, "planli-gorunum");
+    await admin.click(`${bankWin} .hof-bank-plans [data-act="plan-run"]`);
+    await admin.waitForSelector(`${top} form [name="date"]`);
+    ok((await admin.$eval(`${top} form [name="date"]`, node => node.value)) === "2026-10-08", "Gerçekleştir tarihi planlı tarih (08.10.2026)");
+    await admin.click(`${top} form button[type="submit"]`);
+    await admin.waitForFunction(() => document.querySelector(".hof-bank-modal .hof-bank-plans tbody")?.textContent.includes("08.11.2026"), null, { timeout: 10000 });
+    book([["770", "D", 2_500], ["102.01", "C", 2_500]]);
+    ziraatMoves.push(-2_500);
+    ok((await balanceOf(ZIRAAT.id)) === balance - 2_500, "Gerçekleştir: Ziraat −25");
+    plans = await textOf(admin, `${bankWin} .hof-bank-plans tbody`);
+    ok(has(plans, "08.11.2026") && !has(plans, "Vadesi Geldi"), "aylık plan bir ay ileri (08.11.2026), vadesi gelmedi");
+    const future = await must("tekrarsız plan", api.post("/api/workspace/bank/plans", { kind: "other_out", accountId: ZIRAAT.id, amount: "300", plannedDate: "2026-10-20", description: "Kira" }));
+    await admin.click(`${bankWin} [data-act="mv-planned"]`);
+    await admin.click(`${bankWin} [data-act="mv-planned"]`);
+    await admin.waitForSelector(`${bankWin} .hof-bank-plans tbody tr[data-plan="${future.id}"]`, { timeout: 8000 });
+    ok(!(await admin.$(`${bankWin} .hof-bank-plans tr[data-plan="${future.id}"] [data-act="plan-skip"]`)), "tekrarsız planda Atla yok");
+    await admin.click(`${bankWin} .hof-bank-plans tr[data-plan="${future.id}"] [data-act="plan-cancel"]`);
+    await answerYes(admin);
+    await admin.waitForSelector(`${bankWin} .hof-bank-plans tbody tr[data-plan="${future.id}"]`, { state: "detached", timeout: 8000 });
+    ok((await must("plan", api.get("/api/workspace/bank/plans?status=all"))).plans.find(item => item.id === future.id)?.status === "cancelled", "Sil: plan İptal Edildi");
+    await admin.click(`${bankWin} [data-act="mv-planned"]`);
+    await admin.waitForSelector(`${bankWin} .hof-bank-moves`, { timeout: 8000 });
+  });
+
+  await step("21. Daha Fazla Göster: Garanti'de 60 fiş → 50 + 11; tekrar yok; yürüyen bakiye sayfa sınırında sürekli", async () => {
+    const amounts = Array.from({ length: 60 }, (_, index) => index + 1);
+    for (const [index, amount] of amounts.entries()) await must(`fiş ${amount}`, api.post("/api/workspace/bank/vouchers", { type: "other_out", accountId: GARANTI.id, amount: String(amount), date: `2026-10-0${2 + (index % 6)}`, description: `Gider ${amount}`, similarOk: true }));
+    book([["659", "D", 183_000], ["102.02", "C", 183_000]]);
+    await selectMovesAccount(admin, GARANTI.id);
+    let rows = await moveRows(admin);
+    ok(rows.length === 50 && (await admin.isVisible(`${bankWin} [data-act="mv-more"]`)), `ilk sayfa 50 satır, Daha Fazla Göster görünür (${rows.length})`);
+    await admin.click(`${bankWin} [data-act="mv-more"]`);
+    await waitMoves(admin, () => document.querySelectorAll(".hof-bank-modal .hof-bank-moves tbody tr[data-event]").length === 61);
+    rows = await moveRows(admin);
+    const unique = new Set(rows.map(row => row.id)).size === rows.length;
+    let running = rows[0].balance;
+    const continuous = rows.every(row => {
+      const good = row.balance === running;
+      running -= row.signed;
+      return good;
+    });
+    ok(rows.length === 61 && unique && continuous && running === 0 && rows[0].balance === model.get("102.02"), `61 satır, tekrarsız, bakiye sürekli; en üst ${rows[0].balance / 100} = model ${model.get("102.02") / 100}`);
+    ok(!(await admin.isVisible(`${bankWin} [data-act="mv-more"]`)), "son sayfadan sonra Daha Fazla yok");
+    await shot(admin, "daha-fazla");
+  });
+
+  await step("22. Yetki: bank.cancel ve Fatura Yönetimi kaldırılan muhasebe → Ters Kaydet pasif + yetki nedeni, KDV'li seçenek yok; bank.move kaldırılınca + Masraf yok", async () => {
+    const users = await must("kullanıcılar", api.get("/api/admin/users"));
+    const target = users.find(user => user.username === "muhasebe1");
+    const grant = remove => must("yetki", api.patch(`/api/admin/users/${target.id}`, { grants: { add: [], remove } }));
+    await grant(["bank.cancel", "invoices.manage"]);
+    const muhasebe = await newPage();
+    current = muhasebe;
+    await login(muhasebe, "muhasebe1", USER_PASS);
+    await openBank(muhasebe);
+    await tab(muhasebe, "movements");
+    await muhasebe.waitForSelector(`${bankWin} [data-moves]`);
+    await selectMovesAccount(muhasebe, ZIRAAT.id);
+    await openEventFromList(muhasebe, row => row.type === "fee" && row.status === "active");
+    ok(await muhasebe.$eval(`${bankWin} [data-act="ev-reverse"]`, node => node.disabled) && has(await textOf(muhasebe, `${bankWin} [data-bank-event-blocks]`), "Ters Kayıt yetkisi"), `bank.cancel yokken Ters Kaydet pasif: ${await textOf(muhasebe, `${bankWin} [data-bank-event-blocks]`)}`);
+    await shot(muhasebe, "yetki-ters-kaydet-pasif");
+    await muhasebe.click(`${bankWin} [data-act="ev-back"]`);
+    await muhasebe.waitForSelector(`${bankWin} [data-moves]`);
+    await muhasebe.click(`${bankWin} [data-act="v-fee"]`);
+    await muhasebe.waitForSelector("form.hof-bank-voucher [name=\"tax\"]");
+    const taxes = await muhasebe.$$eval("form.hof-bank-voucher [name=\"tax\"] option", list => list.map(node => node.value));
+    ok(!taxes.includes("vat_incl"), `Fatura Yönetimi yokken KDV'li seçenek yok: ${taxes.join(", ")}`);
+    await closeTop(muhasebe);
+    await grant(["bank.move"]);
+    await muhasebe.reload({ waitUntil: "load" });
+    await muhasebe.waitForSelector("#hof-sidecard", { timeout: 30000 });
+    await openBank(muhasebe);
+    await tab(muhasebe, "movements");
+    await muhasebe.waitForSelector(`${bankWin} [data-moves]`);
+    ok(!(await muhasebe.$(`${bankWin} [data-act="v-fee"]`)) && !(await muhasebe.$(`${bankWin} [data-act="plan-new"]`)), "bank.move yokken + Masraf ve + Planlı İşlem yok");
+    await grant([]);
+    await muhasebe.context().close();
+    current = admin;
+  });
+
+  await step("23. Mobil (390 px): Hareketler, İşlem Kartı ve Masraf formu yatay kaydırmasız; Hesap Detayı'nda hesabın hareketleri", async () => {
+    const phone = await newPage({ width: 390, height: 844 });
+    current = phone;
+    await login(phone, "admin", PASS);
+    await phone.evaluate(() => HOF.bank.open({ tab: "movements" }));
+    await phone.waitForSelector(`${bankWin} .hof-bank-moves tbody tr[data-event]`, { timeout: 15000 });
+    let check = await noHorizontalScroll(phone);
+    ok(check.page && check.dialog, `Hareketler yatay kaydırmasız ${JSON.stringify(check.wide)}`);
+    await shot(phone, "mobil-hareketler", { fullPage: true });
+    await phone.click(`${bankWin} .hof-bank-moves tbody tr[data-event]`);
+    await phone.waitForSelector(`${bankWin} [data-bank-event] [data-event-no]`, { timeout: 8000 });
+    check = await noHorizontalScroll(phone);
+    ok(check.page && check.dialog, `İşlem Kartı yatay kaydırmasız ${JSON.stringify(check.wide)}`);
+    await shot(phone, "mobil-islem-karti", { fullPage: true });
+    await phone.click(`${bankWin} [data-act="ev-back"]`);
+    await phone.waitForSelector(`${bankWin} [data-act="v-fee"]`);
+    await phone.click(`${bankWin} [data-act="v-fee"]`);
+    await phone.waitForSelector("form.hof-bank-voucher");
+    const formWide = await phone.evaluate(() => [...document.querySelectorAll("form.hof-bank-voucher *")].filter(node => node.getBoundingClientRect().right > window.innerWidth + 1).length);
+    ok(formWide === 0, `Masraf formu taşmaz (${formWide})`);
+    await shot(phone, "mobil-masraf-formu");
+    await closeTop(phone);
+    await phone.context().close();
+    current = admin;
+    // Hesap Detayı: hesabın hareketleri yürüyen bakiyeyle; satır İşlem Kartı'nı açar; + Masraf hesap seçili açılır.
+    await tab(admin, "accounts");
+    await admin.click(`${bankWin} .hof-bank-accounts tbody tr[data-account="${ZIRAAT.id}"]`);
+    await admin.waitForSelector(`${bankWin} [data-bank-balance]`);
+    await admin.waitForSelector(`${bankWin} .hof-bank-moves tbody tr[data-event]`, { timeout: 8000 });
+    const rows = await moveRows(admin);
+    ok(rows[0].balance === model.get("102.01") && has(await textOf(admin, `${bankWin} [data-bank-balance]`), HOF_MONEY(model.get("102.01"))), `Hesap Detayı: hesabın hareketleri, en üst bakiye ${rows[0].balance / 100} = Gerçek Bakiye`);
+    await admin.click(`${bankWin} [data-act="v-fee"]`);
+    await admin.waitForSelector("form.hof-bank-voucher [name=\"accountId\"]");
+    ok((await admin.$eval("form.hof-bank-voucher [name=\"accountId\"]", node => node.value)) === ZIRAAT.id, "Hesap Detayı'ndan + Masraf o hesap seçili açılır");
+    await closeTop(admin);
+    await shot(admin, "hesap-detayi-hareketler");
+  });
+
+  let CARD = null;
+  let LOAN = null;
+  await step("23b. Diğer Gelir (Gelişmiş: 646), Faiz Gideri (BSMV/KKDF), Kart Borcu Ödemesi, Kredi Kullanımı ve Geri Ödemesi EKRANDAN; alt hesaplar modelle", async () => {
+    // Kurumsal kart (açılış borcu 5.000) ve kredi hesabı (açılış 0) — hesap formu bölüm 1'de sınandı; burada API'den, açılışları modele.
+    CARD = await must("kart", api.post("/api/workspace/bank/accounts", { bankName: "Garanti BBVA", name: "Şirket Kartı", kind: "card", creditLimit: "50.000", opening: { date: "2026-10-01", amount: "5.000", confirmed: true } }));
+    LOAN = await must("kredi", api.post("/api/workspace/bank/accounts", { bankName: "Garanti BBVA", name: "Ticari Kredi", kind: "loan", opening: { date: "2026-10-01", amount: "0", confirmed: true } }));
+    book([["500", "D", 500_000], [CARD.glSub, "C", 500_000]]);
+    await tab(admin, "accounts");
+    await tab(admin, "movements");
+    await admin.waitForSelector(`${bankWin} [data-act="v-other"]`);
+    const sub = async () => subTrial();
+    // 1) Diğer Gelir 250 → Gelişmiş Seçenekler'de gelir hesabı 646 (varsayılan 649 değil).
+    await admin.click(`${bankWin} [data-act="v-other"]`);
+    await admin.waitForSelector("form.hof-bank-voucher [name=\"type\"]");
+    const types = await admin.$$eval("form.hof-bank-voucher [name=\"type\"] option", list => list.map(node => node.textContent.trim()));
+    ok(["Diğer Gelir", "Diğer Gider", "Kart Borcu Ödemesi", "Kredi Kullanımı", "Kredi Geri Ödemesi"].every(name => types.includes(name)), `Diğer İşlem türleri: ${types.join(", ")}`);
+    await fillVoucher(admin, { type: "other_in", accountId: GARANTI.id, amount: "250", description: "Kur farkı geliri" });
+    await admin.click("form.hof-bank-voucher details[data-adv] summary");
+    await admin.waitForTimeout(200);
+    const glOptions = await admin.$$eval("form.hof-bank-voucher [name=\"gl\"] option", list => list.map(node => node.value));
+    ok(glOptions.join(",") === "642,646,649" && (await admin.$eval("form.hof-bank-voucher [name=\"gl\"]", node => node.value)) === "649", `Gelir Hesabı seçenekleri beyaz listeden (${glOptions.join(", ")}), varsayılan 649`);
+    await fillVoucher(admin, { gl: "646" });
+    await auditLabels(admin, "Diğer İşlem Formu");
+    await shot(admin, "diger-gelir-formu");
+    await submitVoucher(admin);
+    await voucherClosed(admin);
+    book([["102.02", "D", 25_000], ["646", "C", 25_000]]);
+    // 2) Faiz Gideri 300 + BSMV/KKDF 15 → 780 = 315, 102.02 −315.
+    await admin.click(`${bankWin} [data-act="v-interest"]`);
+    await admin.waitForSelector("form.hof-bank-voucher [name=\"type\"]");
+    await fillVoucher(admin, { type: "interest_out", accountId: GARANTI.id, amount: "300", taxAmount: "15" });
+    ok(has(await textOf(admin, "form.hof-bank-voucher [data-voucher-preview]"), "₺315,00"), `önizleme toplam 315: ${await textOf(admin, "form.hof-bank-voucher [data-voucher-preview]")}`);
+    await submitVoucher(admin);
+    await voucherClosed(admin);
+    book([["780", "D", 31_500], ["102.02", "C", 31_500]]);
+    // 3) Kart Borcu Ödemesi 2.000 (Garanti → Şirket Kartı): 309.k borç azalır.
+    await admin.click(`${bankWin} [data-act="v-other"]`);
+    await admin.waitForSelector("form.hof-bank-voucher [name=\"type\"]");
+    await fillVoucher(admin, { type: "card_payment", accountId: GARANTI.id, cardAccountId: CARD.id, amount: "2.000" });
+    await shot(admin, "kart-borcu-odemesi-formu");
+    await submitVoucher(admin);
+    await voucherClosed(admin);
+    book([[CARD.glSub, "D", 200_000], ["102.02", "C", 200_000]]);
+    // 4) Kredi Kullanımı 10.000 → Garanti'ye; 5) Kredi Geri Ödemesi 1.000 + faiz 100.
+    await admin.click(`${bankWin} [data-act="v-other"]`);
+    await admin.waitForSelector("form.hof-bank-voucher [name=\"type\"]");
+    await fillVoucher(admin, { type: "loan_draw", accountId: GARANTI.id, loanAccountId: LOAN.id, amount: "10.000" });
+    await submitVoucher(admin);
+    await voucherClosed(admin);
+    book([["102.02", "D", 1_000_000], [LOAN.glSub, "C", 1_000_000]]);
+    await admin.click(`${bankWin} [data-act="v-other"]`);
+    await admin.waitForSelector("form.hof-bank-voucher [name=\"type\"]");
+    await fillVoucher(admin, { type: "loan_repay", accountId: GARANTI.id, loanAccountId: LOAN.id, amount: "1.000", interestAmount: "100" });
+    ok(has(await textOf(admin, "form.hof-bank-voucher [data-voucher-preview]"), "₺1.100,00"), `önizleme toplam 1.100: ${await textOf(admin, "form.hof-bank-voucher [data-voucher-preview]")}`);
+    await shot(admin, "kredi-geri-odemesi-formu");
+    await submitVoucher(admin);
+    await voucherClosed(admin);
+    book([[LOAN.glSub, "D", 100_000], ["780", "D", 10_000], ["102.02", "C", 110_000]]);
+    const s = await sub();
+    for (const code of ["102.02", CARD.glSub, LOAN.glSub]) ok((s[code] || 0) === (model.get(code) || 0), `alt hesap ${code}: program ${(s[code] || 0) / 100} · model ${(model.get(code) || 0) / 100}`);
+    const t = await trial();
+    for (const code of ["646", "780"]) ok((t[code] || 0) === (model.get(code) || 0), `mizan ${code}: program ${(t[code] || 0) / 100} · model ${(model.get(code) || 0) / 100}`);
+    // Kart hesabının Hesap Detayı: borç 3.000 (5.000 − 2.000); kredi 9.000.
+    ok((await balanceOf(CARD.id)) === -300_000 || (await balanceOf(CARD.id)) === 300_000, `kart borcu 3.000 (${(await balanceOf(CARD.id)) / 100})`);
+    ok(Math.abs(await balanceOf(LOAN.id)) === 900_000, `kredi borcu 9.000 (${(await balanceOf(LOAN.id)) / 100})`);
+    await selectMovesAccount(admin, GARANTI.id);
+    const rows = await moveRows(admin);
+    ok(rows[0]?.balance === model.get("102.02"), `Hareketler (Garanti) en üst bakiye ${rows[0]?.balance / 100} = model ${model.get("102.02") / 100}`);
+    const integrity = await must("Mutabakat Testi", api.get("/api/workspace/ledger/integrity"));
+    ok(integrity.ok === true, "mutabakat ok (Diğer İşlem, Faiz Gideri, kart, kredi)");
+  });
+
+  await step("24. Son durum bağımsız modelle: alt hesaplar, 770, 191, 193, 642, 646, 659, 780; kart ve kredi; mutabakat ok", async () => {
+    const t = await trial();
+    const sub = await subTrial();
+    for (const code of ["770", "191", "193", "642", "646", "659", "780"]) ok((t[code] || 0) === (model.get(code) || 0), `mizan ${code}: program ${(t[code] || 0) / 100} · model ${(model.get(code) || 0) / 100}`);
+    ok(sub["102.01"] === model.get("102.01") && sub["102.02"] === model.get("102.02"), `alt hesaplar: 102.01 ${sub["102.01"] / 100} / ${model.get("102.01") / 100}, 102.02 ${sub["102.02"] / 100} / ${model.get("102.02") / 100}`);
+    for (const code of [CARD?.glSub, LOAN?.glSub].filter(Boolean)) ok((sub[code] || 0) === (model.get(code) || 0), `alt hesap ${code}: program ${(sub[code] || 0) / 100} · model ${(model.get(code) || 0) / 100}`);
+    const integrity = await must("Mutabakat Testi", api.get("/api/workspace/ledger/integrity"));
+    ok(integrity.ok === true, "mutabakat ok (bölüm 2 sonu)");
+  });
+
+  await step("25. Kalemle ad (side.bank) ve yazım düzeni", async () => {
     await must("ad", api.put("/api/workspace/labels/batch", { labels: { "side.bank": "Bankalar" } }));
     await admin.goto(`${BASE}/`, { waitUntil: "load" });
     await admin.waitForSelector("#hof-sidecard", { timeout: 30000 });
