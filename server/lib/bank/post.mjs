@@ -30,7 +30,6 @@ import { systemClock } from "../clock.mjs";
 import { bodyHash } from "../idempotency.mjs";
 import { canUser } from "../permissions.mjs";
 import { nextEventNo } from "./event-no.mjs";
-import { BANK_PERMISSIONS } from "./grants.mjs";
 import { typeOf } from "./event-types.mjs";
 import { FREE_COLUMNS, LEDGER_TABLES, SOURCE_TABLES, isMoneyRow, moneyWhere } from "./money-lines.mjs";
 import { eventRows, isTransferPair, refreshEvent } from "./event-copy.mjs";
@@ -166,7 +165,9 @@ export function createBank({ store, now = systemClock, log = null, strict = fals
   }
 
   // Adım 3 (iskelet): hesaba bağlı satır (fin_ref) değişiyorsa çapraz yetki; ekstreyle eşleşmiş olay değişmez.
-  const permitted = (user, key) => canUser(user, key) || Boolean(user?.role && BANK_PERMISSIONS[key]?.includes(user.role));
+  // Aşama 3: banka yetkileri katalogda; karar kişinin ETKİN yetkisidir (rol + kişiye eklenen − kaldırılan). Önceden (Aşama 2) anahtarlar
+  // katalogda olmadığı için rol matrisine geri düşülüyordu: kişiden bilinçli kaldırılan bank.cancel yine izin veriyordu.
+  const permitted = (user, key) => canUser(user, key);
   function assertMutable(user, op, prev) {
     if (op === "create") return;
     for (const item of [prev].flat(Infinity)) {

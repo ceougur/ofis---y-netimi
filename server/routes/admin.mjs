@@ -8,7 +8,7 @@ import { HttpError, SECURITY_HEADERS, limited, ok, parseJson, readJson, text } f
 import { nameConflict } from "../lib/names.mjs";
 import { hashPassword, passwordProblem, verifyPassword } from "../lib/passwords.mjs";
 import { ADMIN_ONLY, GRANTABLE, PERMISSION_GROUPS, ROLE_LABELS, grantsOf, isGrantable, parseGrants } from "../lib/permissions.mjs";
-import { migrateBankGrants } from "../lib/bank/grants.mjs";
+import { migrateBankGrants, withGrantsDone } from "../lib/bank/grants.mjs";
 import { compareVersions } from "../lib/semver.mjs";
 
 // Personel bilgisayarlarının bağlanabileceği yerel ağ adresleri (sanal/yerel bağdaştırıcılar hariç).
@@ -34,6 +34,9 @@ export function registerAdminRoutes(router, context) {
   // Gözden geçirme D5 (K4): rol ve kişi kaydı katalogdaki yetkileri yazar; Aşama 3'e kadar katalogda olmayan banka yetkileri (ve "verildi"
   // işareti) bu yazımda düşer. Aynı istekte bugünkü yetkilerden yeniden türetilir (yalnız işaretsiz satırlar; ekranda görünmez).
   const bankGrants = () => store.tx(() => migrateBankGrants(store));
+  // v2.1.0 Aşama 3: banka yetkileri katalogda; yöneticinin kişi ekranında verdiği/kaldırdığı yetkiler bilinçli karardır. Kayıt "verildi"
+  // işaretini taşır (ekranda görünmez, yetki vermez): ortak katmanın açılışındaki göç kuralı bu kişiye banka yetkisi eklemez.
+  const grantsJson = grants => JSON.stringify({ add: withGrantsDone(grants.add), remove: grants.remove });
   const activeAdmins = () => store.get("SELECT COUNT(*) AS count FROM users WHERE role = 'admin' AND active = 1 AND deleted_at IS NULL").count;
 
   // ---------- Kullanıcılar (v2.0.10: özel rol, kişiye özel yetki, ad/kullanıcı adı düzeltme, silme) ----------
@@ -117,7 +120,7 @@ export function registerAdminRoutes(router, context) {
     const userId = auth.newId("user");
     store.run(
       "INSERT INTO users (id, username, display_name, role, role_key, grants_json, password_hash, must_change_password, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-      userId, username, name, role, roleKey, JSON.stringify(grants), hashPassword(password), mustChange, timestamp, timestamp,
+      userId, username, name, role, roleKey, grantsJson(grants), hashPassword(password), mustChange, timestamp, timestamp,
     );
     bankGrants();
     audit(admin, "user.created", userId, { username, role: roleKey || role, grants });
@@ -152,7 +155,7 @@ export function registerAdminRoutes(router, context) {
     store.tx(() => {
       store.run(
         "UPDATE users SET role = ?, role_key = ?, active = ?, display_name = COALESCE(?, display_name), username = COALESCE(?, username), grants_json = COALESCE(?, grants_json), updated_at = ? WHERE id = ?",
-        role, roleKey, active, name || null, username || null, grants ? JSON.stringify(grants) : null, now(), target.id,
+        role, roleKey, active, name || null, username || null, grants ? grantsJson(grants) : null, now(), target.id,
       );
       if (!active) store.run("DELETE FROM sessions WHERE user_id = ?", target.id);
       bankGrants();

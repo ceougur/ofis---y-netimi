@@ -6,6 +6,7 @@ import { randomUUID } from "node:crypto";
 import { HttpError, limited, text } from "./http.mjs";
 import { foldName } from "./names.mjs";
 import { ROLES, ROLE_LABELS, isGrantable, permissionsFor, resolvePermissions } from "./permissions.mjs";
+import { withGrantsDone } from "./bank/grants.mjs";
 
 const now = () => new Date().toISOString();
 const ROLE_MAX = 60;
@@ -86,7 +87,8 @@ export function createAccess({ store }) {
     const input = roleInput(body);
     const id = `role-${randomUUID()}`;
     const at = now();
-    store.run("INSERT INTO roles (id, name, description, permissions_json, created_by, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)", id, input.name, input.description, JSON.stringify(input.permissions), actor.id, at, at);
+    // v2.1.0 Aşama 3: kayıt "banka yetkileri verildi" işaretini taşır (yöneticinin seçtiği banka yetkileri göçle tamamlanmaz; lib/bank/grants.mjs).
+    store.run("INSERT INTO roles (id, name, description, permissions_json, created_by, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)", id, input.name, input.description, JSON.stringify(withGrantsDone(input.permissions)), actor.id, at, at);
     invalidate();
     return { id, ...input };
   }
@@ -95,7 +97,7 @@ export function createAccess({ store }) {
     const current = customRole(id);
     if (!current) throw new HttpError(404, "Rol bulunamadı.");
     const input = roleInput({ name: current.name, description: current.description, permissions: current.permissions, ...body }, id);
-    store.run("UPDATE roles SET name = ?, description = ?, permissions_json = ?, updated_at = ? WHERE id = ?", input.name, input.description, JSON.stringify(input.permissions), now(), id);
+    store.run("UPDATE roles SET name = ?, description = ?, permissions_json = ?, updated_at = ? WHERE id = ?", input.name, input.description, JSON.stringify(withGrantsDone(input.permissions)), now(), id);
     invalidate();
     return { id, ...input };
   }

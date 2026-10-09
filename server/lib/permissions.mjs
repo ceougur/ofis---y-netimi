@@ -48,6 +48,20 @@ export const PERMISSIONS = Object.freeze({
   "stock.sell": ["admin", "avukat", "muhasebe"],
   "stock.manage": ["admin", "avukat", "muhasebe"],
   // Çek / Senet (v2.0.7): portföy, tahsil, ciro, ödeme; para ve cari bakiyesine dokunduğu için kasa yetkisiyle aynı hesaplar.
+  // Banka ve POS (v2.1.0; docs/BANKA-MODULU-PLAN.md §9.1, K4): Banka penceresi, hesaplar, hareketler, transfer, POS, ekstre ve mutabakat.
+  // Bankaya giriş modülün tahsilat yetkisiyle (bugünkü gibi); bankadan çıkış ve banka bağlı hareketin parasını değiştirmek bank.move,
+  // silmek / ters kaydetmek bank.cancel ister. Göç (v20, lib/bank/grants.mjs) bugün bankadan çıkış yapabilen özel rol ve kişiye verir.
+  "bank.view": ["admin", "avukat", "muhasebe"],
+  "bank.reports": ["admin", "avukat", "muhasebe"],
+  "bank.accounts": ["admin", "muhasebe"],
+  "bank.move": ["admin", "avukat", "muhasebe"],
+  "bank.cancel": ["admin", "avukat", "muhasebe"],
+  "bank.transfer": ["admin", "avukat", "muhasebe"],
+  "bank.pos": ["admin", "muhasebe"],
+  "bank.commission": ["admin", "muhasebe"],
+  "bank.statement": ["admin", "avukat", "muhasebe"],
+  "bank.reconcile": ["admin", "avukat", "muhasebe"],
+  "bank.settings": ["admin", "muhasebe"],
   "cheques.view": ["admin", "avukat", "muhasebe"],
   "cheques.manage": ["admin", "avukat", "muhasebe"],
   // Fatura (v2.0.15): satış/alış faturası ve iadeleri stok, cari, Kasa, taksit ve çek/senede aynı anda yazar; kasa
@@ -120,6 +134,23 @@ export const PERMISSION_GROUPS = Object.freeze([
       ["plans.view", "Taksit Kartlarını Görme", "Taksit kartları ve ödeme durumları."],
       ["plans.collect", "Taksit Tahsilatı Girme", "Karttan taksit tahsilatı girer."],
       ["plans.manage", "Taksit Yönetimi", "Kart açar, düzenler, siler; Excel'den ve tablodan aktarır."],
+    ],
+  },
+  {
+    id: "bank",
+    label: "Banka ve POS",
+    items: [
+      ["bank.view", "Banka Görüntüleme", "Banka penceresi, hesap bakiyeleri, hareketler ve takvim."],
+      ["bank.reports", "Banka Raporları", "Rapor Merkezi'ndeki Banka grubu raporları."],
+      ["bank.accounts", "Banka Hesabı Tanımlama ve Açılış", "Hesap açar, açılış bakiyesini girer ve düzeltir; eski hareketleri hesaba aktarır."],
+      ["bank.move", "Banka Hareketi Girme ve Bankadan Çıkış", "Masraf, faiz ve diğer hareketler; bankadan her çıkış; banka bağlı hareketin tutarını, tarihini, yolunu ya da hesabını değiştirme."],
+      ["bank.cancel", "Banka Hareketi Silme, İptal ve Ters Kayıt", "Banka bağlı hareketi siler, ters kaydeder; açılışı düzeltir."],
+      ["bank.transfer", "Transfer Yapma", "Bankalar arası, Kasa ile banka arası, döviz alım satımı ve kredi kullanımı."],
+      ["bank.pos", "POS Tanımlama", "POS kartı, valör, bloke ve vergi kipi."],
+      ["bank.commission", "Komisyon Oranlarını Değiştirme", "Komisyon oranları ve komisyon faturası taslağı."],
+      ["bank.statement", "Ekstre Aktarma", "Banka ekstresi yükler; eşleşmesiz ekstreyi siler."],
+      ["bank.reconcile", "Mutabakat Yapma", "Ekstre satırını hareketle eşleştirir, eşleşmeyi kaldırır, ekstreden hareket oluşturur."],
+      ["bank.settings", "Banka Ayarları", "Banka ayarları, elle kur, tatiller ve hesap eşlemesi."],
     ],
   },
   {

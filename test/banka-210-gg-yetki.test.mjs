@@ -84,14 +84,20 @@ describe("D5 — banka yetkileri eski sürümün rol/kişi kaydında kaybolmaz",
       assert.deepEqual(back, migrated, "işaretler de geri gelir");
       assert.ok(back.roles["Tahsilat Sorumlusu"].includes(MARK) && back.users.ayse.add.includes(MARK), "rol ve kişi işaretli");
 
-      // Arayüz değişmez: işaret ve banka anahtarları rol listesinde ve kişinin yetkilerinde görünmez.
+      // Bilerek güncellendi (Aşama 3, dilim 1): "Banka ve POS" yetki grubu artık katalogda — rol listesinde banka anahtarları göçün verdiği
+      // gibi GÖRÜNÜR (yönetici görür ve değiştirebilir); işaret (bank.granted) hiçbir yerde görünmez. Personel rolüne banka yetkisi verilmez.
       const rolesAfter = (await api.get("/api/admin/roles")).data;
-      for (const role of rolesAfter.custom) assert.ok(!role.permissions.some(key => key.startsWith("bank.")), `${role.label}: ${role.permissions}`);
+      for (const role of rolesAfter.custom) {
+        assert.ok(!role.permissions.includes(MARK), `${role.label}: işaret görünmemeli`);
+        const expected = withoutMark(migrated).roles[role.label];
+        if (expected) assert.deepEqual(role.permissions.filter(key => key.startsWith("bank.")).sort(), expected, `${role.label}: göçün verdiği banka yetkileri ekranda`);
+      }
       const zeynep = await server.login("zeynep", "Personel-2026!");
       const me = (await zeynep.get("/api/auth/me")).data;
       const perms = me.permissions || me.user?.permissions || [];
       assert.ok(perms.length > 0, JSON.stringify(me).slice(0, 300));
-      assert.ok(!perms.some(key => key.startsWith("bank.")), JSON.stringify(perms));
+      assert.ok(!perms.includes(MARK), JSON.stringify(perms));
+      assert.ok(!perms.some(key => ["bank.accounts", "bank.settings", "bank.pos", "bank.commission"].includes(key)), `personel: banka yönetim yetkisi yok ${JSON.stringify(perms)}`);
       await server.close();
       server = null;
 
@@ -117,20 +123,27 @@ describe("D5 — banka yetkileri eski sürümün rol/kişi kaydında kaybolmaz",
       const before = rawBank(fixture.dataDir);
       assert.equal((await api.client.patch(`/api/admin/roles/${role.key}`, { description: "güncel sürümde düzeltildi" })).status, 200);
       assert.deepEqual(withoutMark(rawBank(fixture.dataDir)).roles, withoutMark(before).roles, "yalnız açıklama düzeltmesi banka yetkilerini değiştirmez");
-      // Rolden bankadan çıkış yetkisi (accounts.manage) kalkar: bank.move/bank.cancel artık türetilmez; görme yetkileri kalır.
+      // Bilerek güncellendi (Aşama 3, dilim 1): banka yetkileri artık rol ekranında görünür ve açıkça seçilir. Rolden bankadan çıkış yetkisi
+      // (accounts.manage) kalkınca ekranda seçili duran bank.move/bank.cancel KALIR (yöneticinin seçimi; türetme yalnız göçte ve işaretsiz
+      // kayıtta); yönetici onları da kaldırırsa düşer ve yeniden başlatmada geri gelmez.
+      assert.deepEqual(role.permissions.filter(key => key.startsWith("bank.")).sort(), ["bank.cancel", "bank.move", "bank.reports", "bank.view"], "rol ekranında banka yetkileri görünür");
       const next = role.permissions.filter(key => key !== "accounts.manage");
       assert.equal((await api.client.patch(`/api/admin/roles/${role.key}`, { permissions: next })).status, 200);
+      assert.deepEqual(withoutMark(rawBank(fixture.dataDir)).roles["Tahsilat Sorumlusu"], ["bank.cancel", "bank.move", "bank.reports", "bank.view"], "ekranda seçili banka yetkileri kalır");
+      const withoutExit = next.filter(key => !["bank.move", "bank.cancel"].includes(key));
+      assert.equal((await api.client.patch(`/api/admin/roles/${role.key}`, { permissions: withoutExit })).status, 200);
       assert.deepEqual(withoutMark(rawBank(fixture.dataDir)).roles["Tahsilat Sorumlusu"], ["bank.reports", "bank.view"]);
       // Kişi düzeltmesi (güncel sürüm): kasa1'in kişiye eklenen bankadan çıkışı yeniden başlatmadan kalır.
       const listed = (await api.get("/api/admin/users")).data;
       const kasa1 = (Array.isArray(listed) ? listed : listed.users).find(item => item.username === "kasa1");
       assert.equal((await api.client.patch(`/api/admin/users/${kasa1.id}`, { name: "Kasa Bir (düz)", grants: kasa1.grants })).status, 200);
       assert.deepEqual(withoutMark(rawBank(fixture.dataDir)).users.kasa1.add, ["bank.cancel", "bank.move"]);
-      // Yeni kişi ve yeni rol de işaretlenir (ortak katmanın sonraki açılışında yeniden yazılmaz).
+      // Yeni rol de işaretlenir (ortak katmanın sonraki açılışında yeniden yazılmaz). Bilerek güncellendi (Aşama 3, dilim 1): banka yetkileri
+      // katalogda olduğundan yeni rolün banka yetkileri yöneticinin ekranda seçtikleridir (türetilmez); burada hiçbiri seçilmedi.
       const created = (await api.post("/api/admin/roles", { name: "Yeni Satış", description: "", permissions: ["stock.view", "stock.sell", "cash.view"] })).data;
       assert.ok(created?.id, JSON.stringify(created));
       const fresh = rawBank(fixture.dataDir).roles["Yeni Satış"];
-      assert.deepEqual(fresh, ["bank.cancel", "bank.granted", "bank.move", "bank.reports", "bank.view"].sort());
+      assert.deepEqual(fresh, ["bank.granted"]);
     } finally {
       await server?.close().catch(() => {});
       fixture.cleanup();

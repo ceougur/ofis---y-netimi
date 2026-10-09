@@ -46,6 +46,10 @@ const MACHINE_SOURCE_TEXT = Object.freeze({
 export const WRITE_PERMISSIONS = Object.freeze([
   "records.create", "records.edit", "records.delete", "notes.write", "phones.create", "payments.create", "liens.create", "cash.manage", "documents.upload", "documents.manage",
   "plans.collect", "plans.manage", "accounts.collect", "accounts.manage", "stock.move", "stock.sell", "stock.manage", "cheques.manage", "tasks.create", "tasks.complete", "messages.create", "sources.manage", "profile.manage",
+  // v2.1.0 (banka planı §9.2/5): fatura yönetimi ve ayarları (2.0.15'ten beri listede yoktu; sunucu yazımı yine reddediyordu, düğmeler
+  // görünüyordu) ve banka yazma yetkileri.
+  "invoices.manage", "invoices.settings",
+  "bank.accounts", "bank.move", "bank.cancel", "bank.transfer", "bank.pos", "bank.commission", "bank.statement", "bank.reconcile", "bank.settings",
 ]);
 
 // Salt okunur modda da izin verilen değiştirici istekler: giriş/çıkış/parola, lisans işlemleri, yönetim (kullanıcılar,

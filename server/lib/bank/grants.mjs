@@ -1,7 +1,7 @@
 // Banka ve POS yetkileri ve yetki göçü (v2.1.0; docs/BANKA-MODULU-PLAN.md §9.1, K4).
 //
-// BANK_PERMISSIONS: yerleşik rollerin banka yetkileri (§9.1 tablosu). Aşama 3'te (Banka penceresi ve Yönetim'deki "Banka ve POS"
-// yetki grubu) permissions.mjs kataloğuna girer; o güne kadar hiçbir ekranda görünmez, hiçbir uç bu anahtarlarla açılmaz.
+// BANK_PERMISSIONS: yerleşik rollerin banka yetkileri (§9.1 tablosu). Aşama 3'ten beri permissions.mjs kataloğundadır (Yönetim →
+// Kullanıcılar ve Roller'de "Banka ve POS" grubu); burada katalogdan okunur (tek tanım).
 //
 // Yetki göçü (v20, yalnız ortak katmanda = 001'in veri tabanı; şirketlerin kullanıcı tablosu oradan aynalanır), K4 kuralı:
 //   - Bugün bankadan çıkış yapabilen (cari, fatura, stok, satış, çek/senet ya da taksit YÖNETİMİ olan) her özel rol ve kişiye
@@ -13,25 +13,16 @@
 //   - Yalnız EKLER (mevcut hiçbir yetki kalkmaz); iki kez çalışınca aynı sonuç.
 import { ADMIN_ONLY, PERMISSIONS, permissionsFor } from "../permissions.mjs";
 
-export const BANK_PERMISSIONS = Object.freeze({
-  "bank.view": ["admin", "avukat", "muhasebe"],
-  "bank.reports": ["admin", "avukat", "muhasebe"],
-  "bank.accounts": ["admin", "muhasebe"],
-  "bank.move": ["admin", "avukat", "muhasebe"],
-  "bank.cancel": ["admin", "avukat", "muhasebe"],
-  "bank.transfer": ["admin", "avukat", "muhasebe"],
-  "bank.pos": ["admin", "muhasebe"],
-  "bank.commission": ["admin", "muhasebe"],
-  "bank.statement": ["admin", "avukat", "muhasebe"],
-  "bank.reconcile": ["admin", "avukat", "muhasebe"],
-  "bank.settings": ["admin", "muhasebe"],
-});
+export const BANK_PERMISSIONS = Object.freeze(Object.fromEntries(Object.entries(PERMISSIONS).filter(([key]) => key.startsWith("bank."))));
 export const BANK_KEYS = Object.freeze(Object.keys(BANK_PERMISSIONS));
 // Gözden geçirme D5 (Aşama 2; K4): "banka yetkileri verildi" işareti. Göç her özel role ve kişiye (ek listesine) yazar. Eski sürüm (2.0.25/
 // 2.0.26) rolü ya da kişiyi kaydederken bilmediği anahtarları (bank.* ve bu işaret) siler: işareti olmayan rol/kişi açılışta yeniden
-// değerlendirilir (yalnız EKLER; bugünkü yetkilerden). Aşama 3'te banka yetkisini elle düzenleyen ekran işareti KORUMALI (yöneticinin
-// bilinçli kaldırması yeniden eklenmesin). Katalogda olmadığı için hiçbir yetki vermez (okurken süzülür).
+// değerlendirilir (yalnız EKLER; bugünkü yetkilerden). Aşama 3: banka yetkileri katalogda; Yönetim'deki rol ve kişi kaydı işareti her
+// kayıtta yazar (lib/access.mjs, routes/admin.mjs — withGrantsDone): yöneticinin bilinçli olarak kaldırdığı banka yetkisi yeniden eklenmez.
+// İşaret katalogda olmadığı için hiçbir yetki vermez (okurken süzülür) ve verilebilir yetki değildir (rol/kişi kaydında gönderilirse 400).
 export const GRANTS_DONE = "bank.granted";
+/** Rolün yetki listesine (permissions_json) ya da kişinin ek listesine (grants_json.add) "verildi" işaretini ekler (Aşama 3 kaydı). */
+export const withGrantsDone = list => (list.includes(GRANTS_DONE) ? [...list] : [...list, GRANTS_DONE]);
 // Bankadan çıkış yapabilen modül yönetimi (K4).
 export const OUTFLOW_PERMISSIONS = Object.freeze(["accounts.manage", "invoices.manage", "stock.manage", "stock.sell", "cheques.manage", "plans.manage"]);
 const VIEW_KEYS = ["bank.view", "bank.reports"];
