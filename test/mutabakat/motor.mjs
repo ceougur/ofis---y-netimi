@@ -104,7 +104,7 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
 
   // ---------- Bağımsız model ----------
   // deleted: Silinenler'deki cari hareketleri (Yargıç K2: geri yükleme K7'den ve dönem kilidinden geçer).
-  const M = { kasa: { cash: 0, bank: 0, card: 0 }, cari: new Map(), stok: new Map(), plans: new Map(), cash: [], entries: [], moves: [], planEntries: [], invoices: new Map(), drafts: new Map(), cheques: new Map(), invCash: [], chqCash: [], bankLines: [], deleted: [] };
+  const M = { kasa: { cash: 0, bank: 0, card: 0 }, cari: new Map(), stok: new Map(), plans: new Map(), cash: [], entries: [], moves: [], planEntries: [], invoices: new Map(), drafts: new Map(), cheques: new Map(), invCash: [], chqCash: [], bankLines: [], deleted: [], payments: [] };
   const report = { seed, operations: 0, byKind: {}, rejectedAsExpected: 0, rejections: {}, mismatches: [], checks: 0, reportChecks: 0, integrityMs: [], timeline: { from: D0, to: T }, locks: [] };
   const count = kind => (report.byKind[kind] = (report.byKind[kind] || 0) + 1);
   const accounts = [];
@@ -143,6 +143,8 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
     for (const e of M.planEntries) out.push({ source: "plan", date: e.date, method: e.method, cents: e.kind === "in" ? e.amount : -e.amount });
     for (const e of M.invCash) out.push({ source: "invoice", date: e.date, method: e.method, cents: e.kind === "in" ? e.amount : -e.amount });
     for (const e of M.chqCash) out.push({ source: "cheque", date: e.date, method: e.method, cents: e.kind === "in" ? e.amount : -e.amount });
+    // 2.1.0 (plan testleri): kayıt (detay kartı) tahsilatı — nakit, havale (hesaba bağlı ya da değil) ya da POS.
+    for (const e of M.payments) out.push({ source: "payment", date: e.date, method: e.method, cents: e.amount });
     // v2.1.0: Banka Fişi para satırları (açılış, fiş, ters kayıt) — her biri tek banka satırı.
     // GG2: açılış (ve Devir Kapanışı, eski bakiye aktarımı) para hareketi değildir — raporda satır olarak görünür, dönem giriş/çıkışına
     // girmez ("Açılış ve Devir Düzeltmeleri"); bakiyeye girer.
@@ -223,7 +225,7 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
       k.n += 1; k.cents += e.kind === "in" ? centsOf(e.amount) : -centsOf(e.amount);
       got.set(e.source, k);
     }
-    for (const source of ["manual", "account", "stock", "plan", "invoice", "cheque", "bankLine"]) {
+    for (const source of ["manual", "account", "stock", "plan", "invoice", "cheque", "bankLine", "payment"]) {
       const a = got.get(source) || { n: 0, cents: 0 }, b = want.get(source) || { n: 0, cents: 0 };
       if (a.n !== b.n || a.cents !== b.cents) problems.push(`İşlem zinciri Kasa/${source}: program ${a.n} satır ${tl(a.cents)} · model ${b.n} satır ${tl(b.cents)}`);
     }
@@ -381,6 +383,28 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
     if (sum(kartlar, "Toplam") !== planTotal || sum(kartlar, "Ödenen") !== planPaid) problems.push(`Taksit Kartları: toplam/ödenen ${tl(sum(kartlar, "Toplam"))}/${tl(sum(kartlar, "Ödenen"))} · model ${tl(planTotal)}/${tl(planPaid)}`);
     const mizan = await rc("hesap-mizani", D0, T);
     if (!mizan.total) problems.push("Hesap Planı Mizanı: veri varken boş");
+    // 2.1.0 (plan testleri): Hesap Planı Mizanı raporu hesap hesap (yalnız "boş değil" değil): 100/102/108 ve cari hesapları modelle; Fark 0.
+    const signedRow = code => {
+      const row = mizan.rows.find(cells => cells[0] === code);
+      if (!row) return 0;
+      const value = centsOfText(row[5]);
+      return row[6] === "Alacak" ? -value : value;
+    };
+    const byTypeR = t => accounts.filter(a => a.type === t).reduce((s, a) => s + (M.cari.get(a.id) || 0), 0);
+    for (const [code, want] of [["100", M.kasa.cash], ["102", M.kasa.bank], ["108", M.kasa.card], ["120", byTypeR("customer")], ["320", byTypeR("supplier")], ["336", byTypeR("other")]]) {
+      if (signedRow(code) !== want) problems.push(`Hesap Planı Mizanı raporu ${code}: ${tl(signedRow(code))} · model ${tl(want)}`);
+    }
+    if (sum(mizan, "Fark") !== 0) problems.push(`Hesap Planı Mizanı raporu: Fark ${tl(sum(mizan, "Fark"))}`);
+    // Cari Listesi ve Bakiyeler: her carinin bakiyesi ve yönü modelle (yalnız satır sayısı değil).
+    for (const a of accounts) {
+      const row = cari.rows.find(cells => cells.includes(a.name) && (a.name.startsWith("Aynı Ad") ? false : true));
+      if (!row) continue;
+      const bal = centsOfText(row[cari.headers.indexOf("Bakiye")]);
+      const side = row[cari.headers.indexOf("Durum")];
+      const want = M.cari.get(a.id) || 0;
+      const signed = side === "Alacaklı" ? -bal : bal;
+      if (signed !== want) problems.push(`Cari Listesi ${a.name}: ${tl(signed)} · model ${tl(want)}`);
+    }
     const yevmiye = await rc("yevmiye", D0, T);
     if (!yevmiye.total) problems.push("Yevmiye Defteri: veri varken boş");
     if (problems.length) report.mismatches.push({ at: where, problems });
@@ -478,7 +502,8 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
       const methods = [...METHOD_ORDER].sort(() => R.next() - 0.5).slice(0, R.int(1, 2));
       for (const method of methods) {
         const amount = mode === "cash" && method === methods.at(-1) ? left : take(R.int(1, Math.max(1, Math.floor(left / 2))));
-        if (amount > 0) { pay.cash.push({ amount, method }); left -= amount; }
+        // 2.1.0: havale peşini %60 bir banka hesabına bağlı (fatura peşini; satış/alış/iade).
+        if (amount > 0) { pay.cash.push({ amount, method, bankId: bindBank(method)?.id || "" }); left -= amount; }
       }
     }
     if ((mode === "cheque" || (mode === "mix" && R.chance(0.6))) && ["sale", "smm", "purchase"].includes(kind) && left > 0) {
@@ -506,7 +531,7 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
     return pay;
   }
   const paymentPayload = pay => ({
-    cash: pay.cash.map(c => ({ amount: c.amount / 100, method: c.method })),
+    cash: pay.cash.map(c => ({ amount: c.amount / 100, method: c.method, ...(c.bankId ? { bankAccountId: c.bankId } : {}) })),
     cheques: pay.cheques.map(c => ({ instrument: c.instrument, amount: c.amount / 100, dueDate: c.dueDate, serialNo: c.serialNo, bank: c.bank })),
     endorse: pay.endorse,
     rest: pay.rest,
@@ -515,7 +540,7 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
   });
   // Fatura kesmenin beklenen retleri (programın işlem sırasıyla): dönem kilidi, kronoloji, mükerrer no, stok eksiye
   // (kalem sırası), Kasa eksiye (çıkışlar). null: kabul edilmeli.
-  function invoiceRejection({ kind, day, lines, pay, force, cashForce, number, accountId, series }) {
+  function invoiceRejection({ kind, day, lines, pay, force, cashForce, number, accountId, series, bankBlocked = false }) {
     if (!open(day)) return ["period-locked"];
     if (series && lastSeries[series] && lastSeries[series] > day) return ["chronology"];
     if (number && issuedInvoices(x => x.kind === kind && x.accountId === accountId && x.number === number).length) return ["invoice-duplicate"];
@@ -529,6 +554,8 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
     if (!INFLOW.has(kind)) {
       const codes = new Set();
       for (const c of pay.cash) if (blocks(c.amount, day, c.method)) { if (policy[c.method] === "block") codes.add("cash-blocked"); else if (!cashForce) codes.add("cash-negative"); }
+      // 2.1.0: hesaba bağlı peşin ödeme / iade geri ödemesi hesabı eksiye düşürüyorsa (K7) — Kasa sorusuyla birlikteyse ikisinden biri.
+      if (bankBlocked) codes.add("bank-negative");
       if (codes.size) return [...codes];
     }
     return null;
@@ -542,7 +569,7 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
     for (const c of pay.cash) {
       fx(accountId, into ? -c.amount : c.amount);
       M.kasa[c.method] += into ? c.amount : -c.amount;
-      const row = { invoiceId: inv.id, kind: into ? "in" : "out", amount: c.amount, method: c.method, date: day };
+      const row = { invoiceId: inv.id, kind: into ? "in" : "out", amount: c.amount, method: c.method, date: day, bankId: c.bankId || "" };
       M.invCash.push(row);
       inv.cashRows.push(row);
     }
@@ -603,16 +630,18 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
   async function issueInvoice({ kind, day, accountId, lines, opts, pay, force = R.chance(0.5), cashForce = R.chance(0.5), number = "", originalId = "", stop = 0, label, extra = {} }) {
     const calc = modelInvoice(lines, { ...opts, stop });
     const series = seriesOf(kind, Boolean(number));
-    const body = { kind, accountId, issueDate: day, issueTime: `${String(R.int(8, 19)).padStart(2, "0")}:${String(R.int(0, 59)).padStart(2, "0")}`, currency: currencyOf(opts.rate6), rate: rateText(opts.rate6), pricesIncludeVat: opts.incl, discountRate: opts.disc, stoppageRate: stop, number, originalId, note: `Motor ${label}`, lines: lines.map(l => (l.originLineId ? { originLineId: l.originLineId, qty: l.qty / 1000 } : linePayload(l))), payment: paymentPayload(pay), force, cashForce, ...extra };
+    // K7: alış peşini ve iade geri ödemesi (bankadan çıkış) bağlı hesabı eksiye düşürecekse; %60 "Yine de Kaydet".
+    const kk = k7(INFLOW.has(kind) ? [] : pay.cash.filter(c => c.bankId).map(c => ({ bankId: c.bankId, cents: -c.amount, date: day })), day);
+    const body = { kind, accountId, issueDate: day, issueTime: `${String(R.int(8, 19)).padStart(2, "0")}:${String(R.int(0, 59)).padStart(2, "0")}`, currency: currencyOf(opts.rate6), rate: rateText(opts.rate6), pricesIncludeVat: opts.incl, discountRate: opts.disc, stoppageRate: stop, number, originalId, note: `Motor ${label}`, lines: lines.map(l => (l.originLineId ? { originLineId: l.originLineId, qty: l.qty / 1000 } : linePayload(l))), payment: paymentPayload(pay), force, cashForce, ...(kk.negativeOk ? { negativeOk: true } : {}), ...extra };
     const r = await api("POST", "/api/workspace/invoices", body);
-    const want = invoiceRejection({ kind, day, lines, pay, force, cashForce, number, accountId, series });
+    const want = invoiceRejection({ kind, day, lines, pay, force, cashForce, number, accountId, series, bankBlocked: kk.negative && !kk.negativeOk });
     if (want) return expectReject(r, want, label), null;
     mustOk(r, label);
     if (centsOf(r.data.tryPayable) !== calc.tryPayable) throw Object.assign(new Error(`${label} ${r.data.number}: program ödenecek ${r.data.tryPayable} · model ${tl(calc.tryPayable)} (KDV ${tl(calc.tryVat)}, tevkifat ${tl(calc.tryWithheld)})`), { unexpected: true });
     return applyInvoice({ kind, day, accountId, lines, calc, pay, data: r.data, opts, number, series, originalId });
   }
   // İptal: beklenen ret sırası programdaki gibi (kilit, iade, kart tahsilatı, çek hareketi, Kasa eksiye, stok eksiye).
-  function cancelRejection(inv, { force, cashForce }) {
+  function cancelRejection(inv, { force, cashForce, bankBlocked = false }) {
     if (inv.status === "cancelled") return ["invoice-cancelled"];
     if (!open(inv.date)) return ["period-locked"];
     if (issuedInvoices(x => x.originalId === inv.id).length) return ["invoice-has-returns"];
@@ -621,13 +650,16 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
     for (const id of inv.chequesCreated) if (M.cheques.get(id).events > 1) return ["cheque-moved"];
     const codes = new Set();
     for (const row of inv.cashRows.filter(x => x.kind === "in")) if (blocks(row.amount, row.date, row.method)) { if (policy[row.method] === "block") codes.add("cash-blocked"); else if (!cashForce) codes.add("cash-negative"); }
-    if (codes.size) return [...codes];
+    if (codes.size) return bankBlocked ? [...codes, "bank-negative"] : [...codes];
     if (!force) {
       for (const m of inv.moves.filter(x => x.kind === "in")) {
         const after = M.stok.get(m.itemId) - inv.moves.filter(x => x.itemId === m.itemId).reduce((s, x) => s + (x.kind === "in" ? x.qty : -x.qty), 0);
-        if (after < 0) return ["stock-negative"];
+        // K7 (yazımdan sonra) ile stok eksiye düşmesi birlikteyse programın sırası belirler: ikisinden biri.
+        if (after < 0) return bankBlocked ? ["stock-negative", "bank-negative"] : ["stock-negative"];
       }
     }
+    // 2.1.0: hesaba bağlı peşin tahsilatın iptali hesaptan para çıkarır (K7; ekranda "Yine de İptal Et").
+    if (bankBlocked) return ["bank-negative"];
     return null;
   }
   function applyCancel(inv) {
@@ -711,14 +743,21 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
   // 2.1.0 Aşama 7–8: modül formundan hesaba bağlanan havale satırları (cari tahsilat/ödeme, taksit tahsilatı, çek tahsili; bankId) da hesabın
   // bakiyesidir. Bağsız (bankId '') havale yalnız 102'nin toplamında (Hesabı Atanmamış).
   const signedOf = e => (e.kind === "in" ? e.amount : -e.amount);
+  // 2.1.0 (plan testleri — eksiklerin tamamlanması): fatura peşini (satış/alış/iade), stok peşini (satış, alım, müşteri iadesi), kayıt tahsilatı ve
+  // verilen çek ödemesi de hesaba bağlanır (önceden bu dört yol yalnız hesapsız yazılıyordu).
   const boundRows = () => [
     ...M.entries.filter(e => e.bankId && (e.kind === "in" || e.kind === "out")),
     ...M.planEntries.filter(e => e.bankId),
     ...M.chqCash.filter(e => e.bankId),
+    ...M.invCash.filter(e => e.bankId),
+    ...M.payments.filter(e => e.bankId).map(e => ({ ...e, kind: "in" })),
+    ...M.moves.filter(m => m.bankId && m.pay === "cash" && m.amount > 0).map(m => ({ bankId: m.bankId, date: m.date, kind: m.kind === "out" ? "in" : "out", amount: m.amount })),
   ].map(e => ({ bankId: e.bankId, date: e.date, cents: signedOf(e) }));
   const bankNet = (bankId, until = "") => [...M.bankLines, ...boundRows()].filter(x => x.bankId === bankId && (!until || x.date <= until)).reduce((t, x) => t + x.cents, 0);
   /** Modül havalesine hesap seçimi (%60; kalan eski sürüm gibi hesapsız — bankPickLegacy). */
   const bindBank = method => (method === "bank" && banks.length && R.chance(0.6) ? R.pick(banks) : null);
+  /** İstek gövdesine hesap alanı (bağlıysa) ve K7 onayı. */
+  const boundBody = (b, negativeOk = false) => (b ? { bankAccountId: b.id || b, similarOk: true, ...(negativeOk ? { negativeOk: true } : {}) } : negativeOk ? { negativeOk: true } : {});
   function bankGoesNegative(changes, date) {
     const delta = new Map();
     for (const c of changes) delta.set(c.bankId, (delta.get(c.bankId) || 0) + c.cents);
@@ -730,6 +769,14 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
       if (Math.min(total, atDay) < 0) return true;
     }
     return false;
+  }
+  /**
+   * K7 (plan §3.9) bağlı satırın yazımı, düzeltmesi ve silmesinde: hesabı azaltan değişiklik son durumda ya da işlem gününde eksiye düşürüyorsa
+   * onaysız 409 bank-negative; %60 "Yine de Kaydet" (negativeOk). changes: [{ bankId, cents, date }]. Dönüş: { negative, negativeOk }.
+   */
+  function k7(changes, date) {
+    const negative = changes.some(c => c.bankId && c.cents) && bankGoesNegative(changes.filter(c => c.bankId && c.cents), date);
+    return { negative, negativeOk: negative && R.chance(0.6) };
   }
   /** Ters kaydın tarihi: kilitli günün fişi bugünün tarihiyle, açık günün fişi kendi tarihiyle ters kaydedilir. */
   const reversalDate = e => (lock && e.date <= lock ? T : e.date);
@@ -902,14 +949,18 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
         const sup = R.pick(suppliers);
         const amount = lineCents(qty, price4);
         const force = R.chance(0.5);
-        const r = await api("POST", `/api/workspace/stock/${item.id}/moves`, { kind: "in", qty: qtyText(qty), unitPrice: priceText(price4), pay, method, accountId: pay === "account" ? sup.id : "", date: day, cashForce: force });
+        // Peşin alım havale %60 bir hesaba bağlı (bankadan çıkış); K7.
+        const b = pay === "cash" && amount > 0 ? bindBank(method) : null;
+        const kk = k7(b ? [{ bankId: b.id, cents: -amount, date: day }] : [], day);
+        const r = await api("POST", `/api/workspace/stock/${item.id}/moves`, { kind: "in", qty: qtyText(qty), unitPrice: priceText(price4), pay, method, accountId: pay === "account" ? sup.id : "", date: day, cashForce: force, ...boundBody(b, kk.negativeOk) });
         if (pay !== "none" && amount === 0) return expectReject(r, null, kind);
         if (pay === "cash" && negative(r, [[method, amount, day]], force, kind)) return;
+        if (kk.negative && !kk.negativeOk) return expectReject(r, "bank-negative", kind);
         mustOk(r, kind);
         M.stok.set(item.id, M.stok.get(item.id) + qty);
         if (pay === "cash") M.kasa[method] -= amount;
         if (pay === "account") cariAdd(sup.id, -amount);
-        M.moves.push({ id: r.data.moveId, itemId: item.id, kind: "in", qty, price4, pay, method: pay === "cash" ? method : "cash", accountId: pay === "account" ? sup.id : "", amount: pay === "none" ? 0 : amount, stored: amount, date: day });
+        M.moves.push({ id: r.data.moveId, itemId: item.id, kind: "in", qty, price4, pay, method: pay === "cash" ? method : "cash", accountId: pay === "account" ? sup.id : "", amount: pay === "none" ? 0 : amount, stored: amount, date: day, bankId: b?.id || "" });
         return;
       }
       case "satis": {
@@ -921,13 +972,15 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
         const force = R.chance(0.6);
         // Vade satış tarihinden sonra (0–45 gün); ileri tarihli vade serbesttir.
         const plan = pay === "account" && R.chance(0.3) ? { count: R.int(2, 6), firstDue: addDays(day, R.int(0, 45)) } : null;
-        const r = await api("POST", `/api/workspace/stock/${item.id}/moves`, { kind: "out", qty: qtyText(qty), unitPrice: priceText(price4), pay: pay === "card" || pay === "bank" ? "cash" : pay, method, accountId: pay === "account" ? cust.id : "", date: day, force, ...(plan ? { installments: plan } : {}) });
+        // Peşin satış havale %60 bir hesaba bağlı (bankaya giriş).
+        const b = pay === "bank" && amount > 0 ? bindBank("bank") : null;
+        const r = await api("POST", `/api/workspace/stock/${item.id}/moves`, { kind: "out", qty: qtyText(qty), unitPrice: priceText(price4), pay: pay === "card" || pay === "bank" ? "cash" : pay, method, accountId: pay === "account" ? cust.id : "", date: day, force, ...(plan ? { installments: plan } : {}), ...boundBody(b) });
         if (!force && M.stok.get(item.id) - qty < 0) return expectReject(r, null, kind);
         mustOk(r, kind);
         M.stok.set(item.id, M.stok.get(item.id) - qty);
         if (pay === "account") cariAdd(cust.id, amount);
         else if (pay !== "none") M.kasa[method] += amount;
-        M.moves.push({ id: r.data.moveId, itemId: item.id, kind: "out", qty, price4, pay: pay === "card" || pay === "bank" ? "cash" : pay, method, accountId: pay === "account" ? cust.id : "", amount: pay === "none" ? 0 : amount, stored: amount, date: day });
+        M.moves.push({ id: r.data.moveId, itemId: item.id, kind: "out", qty, price4, pay: pay === "card" || pay === "bank" ? "cash" : pay, method, accountId: pay === "account" ? cust.id : "", amount: pay === "none" ? 0 : amount, stored: amount, date: day, bankId: b?.id || "" });
         if (plan) {
           const plans = (await api("GET", `/api/workspace/accounts/${cust.id}`)).data.plans;
           const created = plans.find(p => !M.plans.has(p.id));
@@ -944,9 +997,13 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
         const method = src.method;
         const amount = lineCents(qty, src.price4);
         const force = R.chance(0.5);
-        const r = await api("POST", `/api/workspace/stock/${src.itemId}/moves`, { kind: "in", reason: "return", qty: qtyText(qty), unitPrice: priceText(src.price4), pay, method, accountId: src.accountId, date: day, cashForce: force });
+        // Müşteriye havaleyle iade: satışın hesabından (bağlıysa) ya da %60 bir hesaptan; K7 (bankadan çıkış).
+        const b = pay === "cash" && amount > 0 && method === "bank" ? (src.bankId ? banks.find(x => x.id === src.bankId) : bindBank("bank")) : null;
+        const kk = k7(b ? [{ bankId: b.id, cents: -amount, date: day }] : [], day);
+        const r = await api("POST", `/api/workspace/stock/${src.itemId}/moves`, { kind: "in", reason: "return", qty: qtyText(qty), unitPrice: priceText(src.price4), pay, method, accountId: src.accountId, date: day, cashForce: force, ...boundBody(b, kk.negativeOk) });
         if (amount === 0) return expectReject(r, null, kind);
         if (pay === "cash" && negative(r, [[method, amount, day]], force, kind)) return;
+        if (kk.negative && !kk.negativeOk) return expectReject(r, "bank-negative", kind);
         mustOk(r, kind);
         M.stok.set(src.itemId, M.stok.get(src.itemId) + qty);
         if (pay === "cash") M.kasa[method] -= amount;
@@ -954,7 +1011,7 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
           cariAdd(src.accountId, -amount);
           trimCovers(src.accountId);
         }
-        M.moves.push({ id: r.data.moveId, itemId: src.itemId, kind: "in", qty, price4: src.price4, pay, method, accountId: src.accountId, amount, stored: amount, reason: "return", date: day });
+        M.moves.push({ id: r.data.moveId, itemId: src.itemId, kind: "in", qty, price4: src.price4, pay, method, accountId: src.accountId, amount, stored: amount, reason: "return", date: day, bankId: b?.id || "" });
         return;
       }
       case "hareket-sil": {
@@ -963,8 +1020,12 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
         const force = R.chance(0.5);
         const qtyAfter = M.stok.get(m.itemId) + (m.kind === "in" ? -m.qty : m.qty);
         const cashOut = m.pay === "cash" && m.kind === "out" ? m.amount : 0;
-        const r = await api("DELETE", `/api/workspace/stock/${m.itemId}/moves/${m.id}${force ? "?cashForce=1" : ""}`);
+        // Bağlı peşin satışın silinmesi hesaptan para çıkarır (K7); bağlı alımın silinmesi hesaba geri koyar.
+        const kk = k7(m.bankId && cashOut ? [{ bankId: m.bankId, cents: -cashOut, date: m.date }] : [], m.date);
+        const query = [force ? "cashForce=1" : "", kk.negativeOk ? "negativeOk=1" : ""].filter(Boolean).join("&");
+        const r = await api("DELETE", `/api/workspace/stock/${m.itemId}/moves/${m.id}${query ? `?${query}` : ""}`);
         if (cashOut && negative(r, [[m.method, cashOut, m.date]], force, kind)) return;
+        if (kk.negative && !kk.negativeOk) return expectReject(r, "bank-negative", kind);
         mustOk(r, kind);
         M.stok.set(m.itemId, qtyAfter);
         if (m.pay === "cash") M.kasa[m.method] += m.kind === "out" ? -m.amount : m.amount;
@@ -981,9 +1042,13 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
         const qtyAfter = M.stok.get(m.itemId) + (m.kind === "in" ? qty - m.qty : m.qty - qty);
         const eff = (x, a) => ({ method: x.pay === "cash" ? x.method : "", cents: x.kind === "out" ? a : -a });
         const force = R.chance(0.5);
-        const r = await api("PUT", `/api/workspace/stock/${m.itemId}/moves/${m.id}`, { qty: qtyText(qty), unitPrice: priceText(price4), force: true, cashForce: force });
+        // Bağlı peşin satırın tutarı değişir: hesap bazında etki farkı (K7; satış azalırsa ya da alım büyürse hesaptan çıkış).
+        const signedMove = a => (m.kind === "out" ? a : -a);
+        const kk = k7(m.bankId && m.pay === "cash" ? [{ bankId: m.bankId, cents: signedMove(amount) - signedMove(m.amount), date: m.date }] : [], m.date);
+        const r = await api("PUT", `/api/workspace/stock/${m.itemId}/moves/${m.id}`, { qty: qtyText(qty), unitPrice: priceText(price4), force: true, cashForce: force, ...(kk.negativeOk ? { negativeOk: true } : {}) });
         if (amount === 0) return expectReject(r, null, kind);
         if (negative(r, changeOuts(eff(m, m.amount), eff(m, amount), m.date), force, kind)) return;
+        if (kk.negative && !kk.negativeOk) return expectReject(r, "bank-negative", kind);
         mustOk(r, kind);
         M.stok.set(m.itemId, qtyAfter);
         if (m.pay === "cash") M.kasa[m.method] += m.kind === "out" ? amount - m.amount : m.amount - amount;
@@ -1190,8 +1255,9 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
         const inv = R.pick([...M.invoices.values()].filter(x => !(x.planId && M.plans.get(x.planId)?.status === "closed")));
         if (!inv) return;
         const force = R.chance(0.5), cashForce = R.chance(0.5);
-        const r = await api("POST", `/api/workspace/invoices/${inv.id}/cancel`, { reason: "Motor iptal", force, cashForce });
-        const want = cancelRejection(inv, { force, cashForce });
+        const kk = k7(inv.status === "issued" ? inv.cashRows.filter(row => row.bankId).map(row => ({ bankId: row.bankId, cents: row.kind === "in" ? -row.amount : row.amount, date: row.date })) : [], inv.date);
+        const r = await api("POST", `/api/workspace/invoices/${inv.id}/cancel`, { reason: "Motor iptal", force, cashForce, ...(kk.negativeOk ? { negativeOk: true } : {}) });
+        const want = cancelRejection(inv, { force, cashForce, bankBlocked: kk.negative && !kk.negativeOk });
         if (want) return expectReject(r, want, `${kind}/${inv.kind}`);
         mustOk(r, kind);
         applyCancel(inv);
@@ -1240,13 +1306,76 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
         if (!c) return;
         const method = R.pick(["bank", "bank", "cash"]);
         const force = R.chance(0.5);
-        const r = await api("POST", `/api/workspace/cheques/${c.id}/actions`, { action: "pay", date: day, method, cashForce: force });
+        // 2.1.0: verilen çek ödemesi havale %60 bir hesaba bağlı (bankadan çıkış; K7).
+        const b = bindBank(method);
+        const kk = k7(b ? [{ bankId: b.id, cents: -c.amount, date: day }] : [], day);
+        const r = await api("POST", `/api/workspace/cheques/${c.id}/actions`, { action: "pay", date: day, method, cashForce: force, ...boundBody(b, kk.negativeOk) });
         if (negative(r, [[method, c.amount, day]], force, kind)) return;
+        if (kk.negative && !kk.negativeOk) return expectReject(r, "bank-negative", kind);
         mustOk(r, kind);
         c.status = "paid";
         c.events += 1;
         M.kasa[method] -= c.amount;
-        M.chqCash.push({ chequeId: c.id, kind: "out", amount: c.amount, method, date: day });
+        M.chqCash.push({ chequeId: c.id, kind: "out", amount: c.amount, method, date: day, bankId: b?.id || "" });
+        return;
+      }
+      case "cek-geri-al": {
+        // 2.1.0: son tahsil/ödeme işlemini geri al (Çek/Senet kartı → Geri Al). Bağlı tahsilin geri alınması hesaptan para çıkarır (K7);
+        // kilitli dönemdeki işlem geri alınmaz (409). Faturayla gelen çekin yalnız tahsil/ödeme olayı (ilk olay değil) geri alınır.
+        const row = R.pick(M.chqCash.filter(x => M.cheques.get(x.chequeId) && ["collected", "paid"].includes(M.cheques.get(x.chequeId).status)));
+        if (!row) return;
+        const c = M.cheques.get(row.chequeId);
+        const kk = k7(row.bankId && row.kind === "in" ? [{ bankId: row.bankId, cents: -row.amount, date: row.date }] : [], row.date);
+        const r = await api("POST", `/api/workspace/cheques/${c.id}/undo`, kk.negativeOk ? { negativeOk: true } : {});
+        if (!open(row.date)) return expectReject(r, "period-locked", kind);
+        if (kk.negative && !kk.negativeOk) return expectReject(r, "bank-negative", kind);
+        if (r.status !== 200 && row.method === "cash" && row.kind === "in") return expectReject(r, ["cash-negative", "cash-blocked"], kind);
+        mustOk(r, kind);
+        c.status = c.direction === "in" ? "portfolio" : "pending";
+        c.events -= 1;
+        M.kasa[row.method] -= row.kind === "in" ? row.amount : -row.amount;
+        M.chqCash.splice(M.chqCash.indexOf(row), 1);
+        return;
+      }
+      case "kayit-tahsil": {
+        // 2.1.0: kayıt (detay kartı) tahsilatı — nakit, POS ya da havale (%60 bir hesaba bağlı). Cariye yazmaz.
+        const method = R.pick(["cash", "bank", "bank", "card"]);
+        const amount = moneyCents(1, 20000);
+        const b = bindBank(method);
+        const key = `KAYIT-${seed}-${R.int(1, 25)}`;
+        const r = await api("POST", `/api/workspace/cases/${encodeURIComponent(key)}/payments`, { amount: tl(amount), date: day, method, caseTitle: `Kayıt ${key}`, note: `Motor T${seed}`, ...boundBody(b) });
+        mustOk(r, kind);
+        M.kasa[method] += amount;
+        M.payments.push({ id: r.data.id, amount, method, date: day, bankId: b?.id || "" });
+        return;
+      }
+      case "kayit-duzelt": {
+        const e = pickOpen(M.payments);
+        if (!e) return;
+        const amount = moneyCents(1, 20000);
+        const force = R.chance(0.5);
+        // Yol ve hesap aynı; tutar değişir. Nakitte Kasa, bağlıda hesap bazında (K7) azalan etki sorulur.
+        const kk = k7(e.bankId ? [{ bankId: e.bankId, cents: amount - e.amount, date: e.date }] : [], e.date);
+        const r = await api("PUT", `/api/workspace/payments/${e.id}`, { amount: tl(amount), date: e.date, method: e.method, note: "Düzeltildi", cashForce: force, ...(e.bankId ? { bankAccountId: e.bankId } : {}), ...(kk.negativeOk ? { negativeOk: true } : {}) });
+        if (e.method === "cash" && negative(r, changeOuts({ method: "cash", cents: e.amount }, { method: "cash", cents: amount }, e.date), force, kind)) return;
+        if (kk.negative && !kk.negativeOk) return expectReject(r, "bank-negative", kind);
+        mustOk(r, kind);
+        M.kasa[e.method] += amount - e.amount;
+        e.amount = amount;
+        return;
+      }
+      case "kayit-sil": {
+        const e = pickOpen(M.payments);
+        if (!e) return;
+        const force = R.chance(0.5);
+        const kk = k7(e.bankId ? [{ bankId: e.bankId, cents: -e.amount, date: e.date }] : [], e.date);
+        const query = [force ? "cashForce=1" : "", kk.negativeOk ? "negativeOk=1" : ""].filter(Boolean).join("&");
+        const r = await api("DELETE", `/api/workspace/payments/${e.id}${query ? `?${query}` : ""}`);
+        if (e.method === "cash" && negative(r, [["cash", e.amount, e.date]], force, kind)) return;
+        if (kk.negative && !kk.negativeOk) return expectReject(r, "bank-negative", kind);
+        mustOk(r, kind);
+        M.kasa[e.method] -= e.amount;
+        M.payments.splice(M.payments.indexOf(e), 1);
         return;
       }
       case "fatura-acid": {
@@ -1529,6 +1658,8 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
     // Fatura (v2.0.15): kesme, iade, iptal, taslak, çek/senet; kasıtlı yarıda kalan işlemler ve saha hataları.
     ["fatura-satis", 14], ["fatura-alis", 9], ["fatura-iade", 6], ["fatura-iptal", 5], ["fatura-taslak", 3], ["cek-tahsil", 3], ["cek-ode", 3],
     ["fatura-acid", 4], ["fatura-hatasi", 9], ["fatura-bagli", 1],
+    // 2.1.0 plan testleri: kayıt (detay kartı) tahsilatı ve düzeltme/silmesi; çek tahsil/ödemesini geri alma (bağlıda K7).
+    ["kayit-tahsil", 4], ["kayit-duzelt", 2], ["kayit-sil", 2], ["cek-geri-al", 2],
     // Banka Fişi (v2.1.0 Aşama 4): fiş (+ saha hataları), Ters Kaydet, Düzelt, Benzer İşlem.
     ["banka-fis", 7], ["banka-ters", 2], ["banka-duzelt", 2], ["banka-benzer", 1],
     // Bankalar Arası Transfer (v2.1.0 Aşama 9): transfer (+ saha hataları), Ters Kaydet.
