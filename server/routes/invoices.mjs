@@ -1665,8 +1665,14 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     publishAll(user, touched, row.id);
     return row;
     function runCancel() {
+      // Hızlı Nasıl Bozarım (H1/H2): iptal ve silme bağlı peşini hesaptan düşer → K7 (Engelle 409 bank-blocked, Uyar 409 bank-negative →
+      // negativeOk). Önceden iptal Engelle'deki hesabı sessizce eksiye düşürüyordu (taksit/kayıt tahsilatının silmesi 409 veriyordu).
+      const head = invoiceRow(id);
+      const refs = store.all("SELECT DISTINCT fin_ref AS ref FROM account_entries WHERE source = 'invoice' AND source_id = ? AND kind IN ('in', 'out') AND fin_ref <> ''", head.id).map(row => row.ref);
+      const k7 = banking.negative(refs, head.issueDate, force?.negative === true);
       // v2.1.0 (bank.post op 'delete'): peşin satırların işlem başlıkları iptal olur (kopyası kalır).
-      return bank.post({ user, module: "invoice", op: "delete", prev: { invoiceId: id }, write: () => {
+      const result = bank.post({ user, module: "invoice", op: "delete", prev: { invoiceId: id }, guard: k7.guard, write: () => {
+      k7.capture();
       const invoice = invoiceRow(id);
       if (invoice.status === "draft") throw new HttpError(409, "Taslak iptal edilmez; silinir.", { code: "invoice-draft" });
       if (invoice.status === "cancelled") throw new HttpError(409, "Bu fatura zaten iptal edilmiş.", { code: "invoice-cancelled" });
@@ -1692,6 +1698,8 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       if (dryRun) throw DRY_RUN;
       return invoice;
       } });
+      k7.prime(result);
+      return result;
     }
   }
 
@@ -2186,7 +2194,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
   }
   router.delete("/api/workspace/invoices/:id", async ({ req, res, params, url }) => {
     const user = requireManage(req);
-    const row = deleteInvoice(user, params.id, { reason: text(url.searchParams.get("reason")).slice(0, 300), force: { stock: url.searchParams.get("force") === "1", cash: url.searchParams.get("cashForce") === "1" } });
+    const row = deleteInvoice(user, params.id, { reason: text(url.searchParams.get("reason")).slice(0, 300), force: { stock: url.searchParams.get("force") === "1", cash: url.searchParams.get("cashForce") === "1", negative: url.searchParams.get("negativeOk") === "1" } });
     ok(res, { id: row.id, number: row.number, status: row.status });
   });
   // Toplu silme: iade belgeleri önce (yeni tarihli önce), sonra öbürleri yeni tarihliden eskiye (serinin son numarası

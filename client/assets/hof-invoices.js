@@ -1937,7 +1937,7 @@
       submitLabel: "Sil",
       onSubmit: async data => {
         const query = new URLSearchParams({ reason: data.reason || "" });
-        await withStockForce(force => HOF.api(`/api/workspace/invoices/${encodeURIComponent(doc.id)}?${query}${force.force ? "&force=1" : ""}`, { method: "DELETE" }));
+        await withStockForce(force => HOF.api(`/api/workspace/invoices/${encodeURIComponent(doc.id)}?${query}${force.force ? "&force=1" : ""}${force.negativeOk ? "&negativeOk=1" : ""}`, { method: "DELETE" }));
         HOF.toast(`${docTitle(doc)} silindi; Silinenler'den geri alınabilir.`, { type: "success" });
         HOF.emit("invoices-changed", null);
         HOF.emit("accounts-changed");

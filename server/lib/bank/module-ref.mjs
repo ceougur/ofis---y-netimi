@@ -4,7 +4,7 @@
 //   pickRef({ method, value, date, previous, changed }) → fin_ref ('' = hesapsız)
 //     1. Yol havale değilse ''. (POS ve kurumsal kart 2.2.0 / sonraki dilim; bugünkü gibi hesapsız.)
 //     2. Hiç uygun hesap (etkin, TL, Vadesiz/Ticari/Diğer) yoksa ve hesap verilmemişse '' (bugünkü davranış).
-//     3. Hesap verilmemişse: düzeltmede önceki bağ korunur; önceki satır bağsızsa ve parası (yol, tutar, tarih) değişmiyorsa bağsız kalır
+//     3. Hesap verilmemişse: düzeltmede önceki bağ korunur (parası değişirse 4'teki denetimden yeniden geçer); önceki satır bağsızsa ve parası (yol, tutar, tarih) değişmiyorsa bağsız kalır
 //        (§3.5 kural 4). Yoksa tek uygun hesap kendiliğinden seçilir, birden çoksa 400 bank-account-required (alan: bankAccountId).
 //     4. Verilen hesap: yoksa 404, pasifse ya da türü uymuyorsa 400 bank-account-invalid, döviz hesabıysa 400 bank-currency; satır hesabın
 //        açılışından önceyse 409 bank-before-opening, Devir Kapanışı sınırından önceyse 409 bank-carry-closed (aynı para iki kez sayılmasın).
@@ -51,7 +51,9 @@ export function createModuleBank({ store, accounts, negative, legacy = () => fal
     if (id && before && id === before && !changed) return before;
     if (id) return check(id, date);
     if (previous && String(previous.method || "") === "bank") {
-      if (before) return before;
+      // Hızlı Nasıl Bozarım (H3): parası (yol, tutar, tarih) değişen bağlı satır, hesap kimliği gövdede olmasa da hesabın kurallarından geçer
+      // (pasif hesap, açılış ve Devir Kapanışı öncesi tarih). Önceden kimlik gönderilince 400/409, gönderilmeyince denetimsiz kalıyordu.
+      if (before) return changed ? check(before, date) : before;
       if (!changed) return "";
     }
     // Yalnız testler (config.bankPickLegacy): eski sürüm gibi hesap verilmeyen havale hesapsız yazılır (Aşama 2–4 testlerinin eski hareketleri).
