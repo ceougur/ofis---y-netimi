@@ -184,6 +184,17 @@ try {
   await screen("Çek / Senet — ciro formu (cari seçici)", async () => { await openWindow("cheques"); await page.locator(`${modal} tr[data-cheque]`, { hasText: "ALN-1" }).first().click(); await page.waitForTimeout(900); await page.click(`${modal} [data-action="endorse"]`); await page.waitForTimeout(700); });
   await screen("Taksitler — liste", async () => openWindow("plans"));
   await screen("Taksitler — kart", async () => { await openWindow("plans"); await clickFirstRow(); });
+  // Banka (v2.1.0, plan §8.12): ilk açılışta Kurulum Sihirbazı; Genel Bakış (Hesabı Atanmamış Eski Hareketler: faturadaki POS), Hesaplar,
+  // Hesap Detayı, Ayarlar (Gelişmiş açık).
+  const bankTab = async id => { await page.click(`${modal} .hof-bank-tabs [data-tab="${id}"]`); await page.waitForTimeout(700); };
+  await screen("Banka — Kurulum Sihirbazı (ilk açılış)", async () => { await openWindow("bank"); await page.waitForSelector(".hof-bank-wiz-modal [data-wiz-form]", { timeout: 8000 }); });
+  await screen("Banka — Genel Bakış (hesabı atanmamış eski hareket)", async () => { await openWindow("bank"); await page.waitForTimeout(500); });
+  await call("/api/workspace/bank/accounts", { bankName: "Ziraat Bankası", name: "Ana TL Hesabı", kind: "demand", opening: { date: TODAY, amount: "100.000", confirmed: true } });
+  await screen("Banka — Hesaplar", async () => { await openWindow("bank"); await bankTab("accounts"); });
+  await screen("Banka — Hesap Detayı", async () => { await openWindow("bank"); await bankTab("accounts"); await clickFirstRow(); });
+  await screen("Banka — yeni hesap formu", async () => { await openWindow("bank"); await bankTab("accounts"); await clickButton(/Yeni Hesap/); });
+  await screen("Banka — Ayarlar (Gelişmiş)", async () => { await openWindow("bank"); await bankTab("settings"); await page.click(`${modal} [data-act="advanced"]`); await page.waitForTimeout(400); });
+  await screen("Banka — Hesabı Atanmamış Eski Hareketler", async () => { await openWindow("bank"); await page.click(`${modal} [data-bank-unassigned] [data-act="legacy"]`); await page.waitForTimeout(900); });
   const openCenter = async () => { await openWindow("analytics"); await page.click(`${modal} .hof-rep-tab[data-tab="all"]`); await page.waitForSelector(`${modal} .hof-rc-item`, { timeout: 15000 }); await page.waitForTimeout(500); };
   await screen("Raporlar — Vade Takip (ilk sekme)", async () => { await openWindow("analytics"); await page.waitForTimeout(1200); });
   await screen("Raporlar — Rapor Merkezi", openCenter);

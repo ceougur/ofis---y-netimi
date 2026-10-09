@@ -452,6 +452,21 @@ try {
     await open("cash", "Kasa", async () => {
       await form('[data-add="in"]', "Kasaya Tahsilat Ekle");
     });
+    // v2.1.0 Banka (plan §8.12): ilk açılışta Kurulum Sihirbazı, sonra sekmeler, Gelişmiş Ayarlar ve hesap formu.
+    await open("bank", "Banka · Kurulum Sihirbazı", async () => {
+      if (await admin.$(".hof-bank-wiz-modal")) await closeTop(admin);
+      for (const id of ["overview", "accounts", "settings"]) {
+        await admin.click(`.hof-bank-tabs [data-tab="${id}"]`);
+        await admin.waitForTimeout(600);
+        await auditLabels(admin, `Banka › ${id}`);
+      }
+      await admin.click('.hof-bank-modal [data-act="advanced"]');
+      await admin.waitForTimeout(300);
+      await auditLabels(admin, "Banka › Gelişmiş Ayarlar");
+      await admin.click('.hof-bank-tabs [data-tab="accounts"]');
+      await admin.waitForTimeout(500);
+      await form('.hof-bank-modal [data-act="new"]', "Yeni Banka Hesabı");
+    });
     await open("tasks", "Görevler");
     await open("newTask", "Görev Ata");
     await open("reports", "Personel Raporu");
