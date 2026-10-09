@@ -4,7 +4,9 @@
 // (tools/surum-verisi.mjs --fikstur; 2.0.21–2.0.26 kesitleri --devam v2.0.20 ile aynı kurulumun devamı: 4 şirket, her modülde
 // havale/EFT ve POS/kredi kartı satırı, Kasa ↔ Banka, silinip geri yüklenen tahsilat, iade ve iptal, dönem kilidi, 2.0.25'in kabul
 // ettiği ileri tarihli çek, yalnız Borç Yaz satırlı cari, özel rol ve kişiye özel yetkiler). "Önce" ölçüsü GERÇEK v2.0.26 koduyla
-// alındı (--oncesi): göçten hemen önceki sürümün aynı veride gösterdiği.
+// alındı (--oncesi): göçten hemen önceki sürümün aynı veride gösterdiği. surum-2.0.26-turler (gözden geçirme B5): zincirde olmayan
+// para türleri aynı kurulumun devamında gerçek 2.0.26 koduyla — verilen çek/senet ödemesi, ciro, taksit iadesi, Excel'den taksit
+// açılışı (devir), taksit kartına bağlı çek, nakit/havale peşin stok alış ve satışı.
 //
 // ÇALIŞIYOR MU (her fikstürde, her şirkette; güncel kod göç 20'yi uygular):
 //  - kapı imzası (Mutabakat Testi sapmaları: kod, fark, sayı, kapının saydığı, eski satır) birebir aynı; 2.0.26'da tamam olan her
@@ -28,7 +30,7 @@ import { CURRENT, bootVersion } from "./guvenilirlik/surumler.mjs";
 import { companyDbFile, readRegistry } from "./guvenilirlik/uretici.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const FIXTURES = ["2.0.16", "2.0.17", "2.0.18", "2.0.19", "2.0.20", "2.0.21", "2.0.22", "2.0.23", "2.0.24", "2.0.25", "2.0.26"].map(version => `surum-${version}-zincir`).concat(["surum-2.0.19-cakisma", "surum-2.0.19-eski"]);
+const FIXTURES = ["2.0.16", "2.0.17", "2.0.18", "2.0.19", "2.0.20", "2.0.21", "2.0.22", "2.0.23", "2.0.24", "2.0.25", "2.0.26"].map(version => `surum-${version}-zincir`).concat(["surum-2.0.19-cakisma", "surum-2.0.19-eski", "surum-2.0.26-turler"]);
 
 describe("göç zinciri → v20: para defteri 2.0.26'nın gösterdiğiyle birebir (K11)", () => {
   for (const name of FIXTURES) {
@@ -89,9 +91,9 @@ describe("göç zinciri → v20: para defteri 2.0.26'nın gösterdiğiyle birebi
 describe("2.0.21–2.0.26 kesitleri v20 koduyla: hiçbir kayıt ve yedek kaybolmaz, eski yedekler kendi şirketine geri yüklenir", () => {
   // guvenilirlik-221-goc ile aynı denetim (dogrula.mjs): şirket listesi, veri tabanı olguları, ekrandaki cari listesi, her eski yedek
   // kendi şirketinin altında ve geri yüklenince (göçü v20'ye kadar çalışarak) yedek anındaki veri; başka şirkete 409; sonra çalışma.
-  for (const version of ["2.0.21", "2.0.26"]) {
-    it(`surum-${version}-zincir`, async () => {
-      const fixture = unpackFixture(`surum-${version}-zincir`);
+  for (const name of ["surum-2.0.21-zincir", "surum-2.0.26-zincir", "surum-2.0.26-turler"]) {
+    it(name, async () => {
+      const fixture = unpackFixture(name);
       try {
         const report = await verifyUpgrade({ dataDir: fixture.dataDir, backupDir: fixture.backupDir, manifest: fixture.fixture, files: fixture.fixture.files });
         assert.deepEqual(report.failures, [], report.failures.join("\n"));

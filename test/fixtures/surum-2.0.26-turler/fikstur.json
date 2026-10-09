@@ -1,0 +1,4897 @@
+{
+ "name": "surum-2.0.26-turler",
+ "chain": "turler",
+ "seed": 7,
+ "volume": "kucuk",
+ "node": "v22.22.0",
+ "versions": [
+  {
+   "version": "v2.0.16",
+   "commit": "bd777e9648b0fb355c1d9cb310918d00796fd5c2",
+   "state": [
+    {
+     "key": "A",
+     "id": "sirket-001",
+     "code": "001",
+     "name": "Merkez Danışmanlık Ltd. Şti.",
+     "dir": "",
+     "facts": {
+      "accounts": 124,
+      "accountEntries": 71,
+      "accountNet": 16372733,
+      "cashEntries": 5,
+      "cashNet": 4835,
+      "invoices": 12,
+      "invoicePayable": 13072520,
+      "invoiceLines": 21,
+      "plans": 5,
+      "planTotal": 11246500,
+      "planEntries": 4,
+      "planPaid": 1620000,
+      "datasetRows": 240
+     },
+     "api": {
+      "accounts": {
+       "count": 124,
+       "balance": 22852733,
+       "hash": "729aaa5ca5d9e9d1479e6a4629cfbaf7"
+      },
+      "datasetRows": 240
+     }
+    }
+   ]
+  },
+  {
+   "version": "v2.0.17",
+   "commit": "6b0a811d272a37e8c4e583b170743d6b3c5898a5",
+   "state": [
+    {
+     "key": "A",
+     "id": "sirket-001",
+     "code": "001",
+     "name": "Merkez Danışmanlık Ltd. Şti.",
+     "dir": "",
+     "facts": {
+      "accounts": 136,
+      "accountEntries": 116,
+      "accountNet": 27588124,
+      "cashEntries": 10,
+      "cashNet": -276976,
+      "invoices": 24,
+      "invoicePayable": 30117820,
+      "invoiceLines": 46,
+      "plans": 8,
+      "planTotal": 16610100,
+      "planEntries": 8,
+      "planPaid": 2500000,
+      "datasetRows": 260
+     },
+     "api": {
+      "accounts": {
+       "count": 136,
+       "balance": 37588124,
+       "hash": "670a1529be0cbb048ecb9f4582ce68ce"
+      },
+      "datasetRows": 260
+     }
+    },
+    {
+     "key": "B",
+     "id": "sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b",
+     "code": "002",
+     "name": "Şahin İnşaat Ltd. Şti.",
+     "dir": "sirketler/002",
+     "facts": {
+      "accounts": 44,
+      "accountEntries": 46,
+      "accountNet": 10005572,
+      "cashEntries": 5,
+      "cashNet": -373409,
+      "invoices": 12,
+      "invoicePayable": 12856800,
+      "invoiceLines": 17,
+      "plans": 4,
+      "planTotal": 11343100,
+      "planEntries": 4,
+      "planPaid": 1760000,
+      "datasetRows": 60
+     },
+     "api": {
+      "accounts": {
+       "count": 44,
+       "balance": 17045572,
+       "hash": "4cbec5f98a1191d69f769d30d5f49f5b"
+      },
+      "datasetRows": 60
+     }
+    },
+    {
+     "key": "C",
+     "id": "sirket-8e986639-c54d-40c5-a15c-c6d612cb250c",
+     "code": "007",
+     "name": "Mavi Gıda A.Ş.",
+     "dir": "sirketler/003",
+     "facts": {
+      "accounts": 44,
+      "accountEntries": 49,
+      "accountNet": 16001990,
+      "cashEntries": 5,
+      "cashNet": -373,
+      "invoices": 12,
+      "invoicePayable": 17141960,
+      "invoiceLines": 20,
+      "plans": 3,
+      "planTotal": 9453500,
+      "planEntries": 4,
+      "planPaid": 1720000,
+      "datasetRows": 60
+     },
+     "api": {
+      "accounts": {
+       "count": 44,
+       "balance": 22881990,
+       "hash": "276890c68c49c2a8d9365469e74e4de7"
+      },
+      "datasetRows": 60
+     }
+    }
+   ]
+  },
+  {
+   "version": "v2.0.18",
+   "commit": "5e0d2a5cc2757e8660c3675aa571f45d2bc2e1ae",
+   "state": [
+    {
+     "key": "A",
+     "id": "sirket-001",
+     "code": "001",
+     "name": "Merkez Danışmanlık Ltd. Şti.",
+     "dir": "",
+     "facts": {
+      "accounts": 148,
+      "accountEntries": 157,
+      "accountNet": 30939356,
+      "cashEntries": 15,
+      "cashNet": -256537,
+      "invoices": 36,
+      "invoicePayable": 37459160,
+      "invoiceLines": 62,
+      "plans": 11,
+      "planTotal": 26220100,
+      "planEntries": 12,
+      "planPaid": 4200000,
+      "datasetRows": 280
+     },
+     "api": {
+      "accounts": {
+       "count": 148,
+       "balance": 47739356,
+       "hash": "8a9862404c53c91a72d6dbb17d495309"
+      },
+      "datasetRows": 280
+     }
+    },
+    {
+     "key": "B",
+     "id": "sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b",
+     "code": "002",
+     "name": "Şahin İnşaat Ltd. Şti.",
+     "dir": "sirketler/002",
+     "facts": {
+      "accounts": 49,
+      "accountEntries": 87,
+      "accountNet": 14535632,
+      "cashEntries": 10,
+      "cashNet": -169556,
+      "invoices": 24,
+      "invoicePayable": 24006270,
+      "invoiceLines": 35,
+      "plans": 6,
+      "planTotal": 18743100,
+      "planEntries": 8,
+      "planPaid": 3240000,
+      "datasetRows": 66
+     },
+     "api": {
+      "accounts": {
+       "count": 49,
+       "balance": 27495632,
+       "hash": "839faaad1040a069ea370d4eb58b9658"
+      },
+      "datasetRows": 66
+     }
+    },
+    {
+     "key": "C",
+     "id": "sirket-8e986639-c54d-40c5-a15c-c6d612cb250c",
+     "code": "007",
+     "name": "Mavi Gıda A.Ş.",
+     "dir": "sirketler/003",
+     "facts": {
+      "accounts": 49,
+      "accountEntries": 87,
+      "accountNet": 25640670,
+      "cashEntries": 10,
+      "cashNet": 81708,
+      "invoices": 24,
+      "invoicePayable": 30318990,
+      "invoiceLines": 40,
+      "plans": 7,
+      "planTotal": 19962730,
+      "planEntries": 8,
+      "planPaid": 3400000,
+      "datasetRows": 66
+     },
+     "api": {
+      "accounts": {
+       "count": 49,
+       "balance": 39240670,
+       "hash": "0dca052f2a28a36a0836863d007fbe7e"
+      },
+      "datasetRows": 66
+     }
+    },
+    {
+     "key": "D",
+     "id": "sirket-68751ff0-3cc0-45da-a83f-bfd28e343166",
+     "code": "004",
+     "name": "Çağdaş Eğitim Kurumları",
+     "dir": "sirketler/004",
+     "facts": {
+      "accounts": 44,
+      "accountEntries": 49,
+      "accountNet": 7738503,
+      "cashEntries": 5,
+      "cashNet": 207265,
+      "invoices": 12,
+      "invoicePayable": 8827880,
+      "invoiceLines": 19,
+      "plans": 4,
+      "planTotal": 9074280,
+      "planEntries": 4,
+      "planPaid": 1320000,
+      "datasetRows": 60
+     },
+     "api": {
+      "accounts": {
+       "count": 44,
+       "balance": 13018503,
+       "hash": "e231a7f8aae8f7f544b487040ea83d72"
+      },
+      "datasetRows": 60
+     }
+    }
+   ]
+  },
+  {
+   "version": "v2.0.19",
+   "commit": "fb032cf44a173ab20d9e21b70bb7b096da07822a",
+   "state": [
+    {
+     "key": "A",
+     "id": "sirket-001",
+     "code": "001",
+     "name": "Merkez Danışmanlık Ltd. Şti.",
+     "dir": "",
+     "facts": {
+      "accounts": 160,
+      "accountEntries": 196,
+      "accountNet": 38209378,
+      "cashEntries": 20,
+      "cashNet": -89844,
+      "invoices": 48,
+      "invoicePayable": 47274600,
+      "invoiceLines": 85,
+      "plans": 14,
+      "planTotal": 36226100,
+      "planEntries": 16,
+      "planPaid": 5960000,
+      "datasetRows": 300
+     },
+     "api": {
+      "accounts": {
+       "count": 160,
+       "balance": 62049378,
+       "hash": "8ccf1d367be04db016279b56853b76e0"
+      },
+      "datasetRows": 300
+     }
+    },
+    {
+     "key": "B",
+     "id": "sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b",
+     "code": "002",
+     "name": "Şahin İnşaat ve Ticaret Ltd. Şti.",
+     "dir": "sirketler/002",
+     "facts": {
+      "accounts": 54,
+      "accountEntries": 121,
+      "accountNet": 36115342,
+      "cashEntries": 15,
+      "cashNet": 171576,
+      "invoices": 36,
+      "invoicePayable": 47424420,
+      "invoiceLines": 60,
+      "plans": 10,
+      "planTotal": 32333460,
+      "planEntries": 12,
+      "planPaid": 5020000,
+      "datasetRows": 72
+     },
+     "api": {
+      "accounts": {
+       "count": 54,
+       "balance": 56195342,
+       "hash": "d7b4321faa7ff3dd505ae37c43df59a6"
+      },
+      "datasetRows": 72
+     }
+    },
+    {
+     "key": "C",
+     "id": "sirket-8e986639-c54d-40c5-a15c-c6d612cb250c",
+     "code": "007",
+     "name": "Mavi Gıda A.Ş.",
+     "dir": "sirketler/003",
+     "facts": {
+      "accounts": 54,
+      "accountEntries": 127,
+      "accountNet": 37233509,
+      "cashEntries": 15,
+      "cashNet": -11673,
+      "invoices": 36,
+      "invoicePayable": 45133350,
+      "invoiceLines": 63,
+      "plans": 11,
+      "planTotal": 28844720,
+      "planEntries": 12,
+      "planPaid": 4500000,
+      "datasetRows": 72
+     },
+     "api": {
+      "accounts": {
+       "count": 54,
+       "balance": 55233509,
+       "hash": "340393af46f931b7086406a40593fd35"
+      },
+      "datasetRows": 72
+     }
+    },
+    {
+     "key": "D",
+     "id": "sirket-68751ff0-3cc0-45da-a83f-bfd28e343166",
+     "code": "004",
+     "name": "Çağdaş Eğitim Kurumları",
+     "dir": "sirketler/004",
+     "facts": {
+      "accounts": 49,
+      "accountEntries": 89,
+      "accountNet": 13556000,
+      "cashEntries": 10,
+      "cashNet": 132191,
+      "invoices": 24,
+      "invoicePayable": 21291780,
+      "invoiceLines": 38,
+      "plans": 7,
+      "planTotal": 18933880,
+      "planEntries": 8,
+      "planPaid": 3020000,
+      "datasetRows": 66
+     },
+     "api": {
+      "accounts": {
+       "count": 49,
+       "balance": 25636000,
+       "hash": "79d85113a3e18b638498fc327bc2d621"
+      },
+      "datasetRows": 66
+     }
+    }
+   ]
+  },
+  {
+   "version": "v2.0.20",
+   "commit": "d795151c505b79e2d3954681386f1e95c1ca7d08",
+   "state": [
+    {
+     "key": "A",
+     "id": "sirket-001",
+     "code": "001",
+     "name": "Merkez Danışmanlık Ltd. Şti.",
+     "dir": "",
+     "facts": {
+      "accounts": 172,
+      "accountEntries": 236,
+      "accountNet": 50849741,
+      "cashEntries": 25,
+      "cashNet": 43171,
+      "invoices": 60,
+      "invoicePayable": 61454350,
+      "invoiceLines": 111,
+      "plans": 19,
+      "planTotal": 51432000,
+      "planEntries": 20,
+      "planPaid": 7600000,
+      "datasetRows": 320
+     },
+     "api": {
+      "accounts": {
+       "count": 172,
+       "balance": 81249741,
+       "hash": "71e7084e768ffcbcc597d4fa3dfa7316"
+      },
+      "datasetRows": 320
+     }
+    },
+    {
+     "key": "B",
+     "id": "sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b",
+     "code": "002",
+     "name": "Şahin İnşaat ve Ticaret Ltd. Şti.",
+     "dir": "sirketler/002",
+     "facts": {
+      "accounts": 59,
+      "accountEntries": 162,
+      "accountNet": 48082589,
+      "cashEntries": 20,
+      "cashNet": 79974,
+      "invoices": 48,
+      "invoicePayable": 62454130,
+      "invoiceLines": 83,
+      "plans": 13,
+      "planTotal": 43597460,
+      "planEntries": 16,
+      "planPaid": 6780000,
+      "datasetRows": 78
+     },
+     "api": {
+      "accounts": {
+       "count": 59,
+       "balance": 75202589,
+       "hash": "e9649ee26187fde8b5c2d078bfcd5ab9"
+      },
+      "datasetRows": 78
+     }
+    },
+    {
+     "key": "C",
+     "id": "sirket-8e986639-c54d-40c5-a15c-c6d612cb250c",
+     "code": "007",
+     "name": "Mavi Gıda A.Ş.",
+     "dir": "sirketler/003",
+     "facts": {
+      "accounts": 59,
+      "accountEntries": 167,
+      "accountNet": 46831043,
+      "cashEntries": 20,
+      "cashNet": 5870,
+      "invoices": 48,
+      "invoicePayable": 59897120,
+      "invoiceLines": 87,
+      "plans": 15,
+      "planTotal": 37709720,
+      "planEntries": 16,
+      "planPaid": 5740000,
+      "datasetRows": 78
+     },
+     "api": {
+      "accounts": {
+       "count": 59,
+       "balance": 69791043,
+       "hash": "d9f19fcb35974f7eb027658a6f4a08fb"
+      },
+      "datasetRows": 78
+     }
+    },
+    {
+     "key": "E",
+     "id": "sirket-d14a948c-25a2-4969-bc48-1589af813165",
+     "code": "004",
+     "name": "Işık Turizm ve Seyahat",
+     "dir": "sirketler/004",
+     "facts": {
+      "accounts": 44,
+      "accountEntries": 51,
+      "accountNet": 8091977,
+      "cashEntries": 5,
+      "cashNet": 143741,
+      "invoices": 12,
+      "invoicePayable": 9523130,
+      "invoiceLines": 16,
+      "plans": 3,
+      "planTotal": 5276000,
+      "planEntries": 4,
+      "planPaid": 700000,
+      "datasetRows": 60
+     },
+     "api": {
+      "accounts": {
+       "count": 44,
+       "balance": 10891977,
+       "hash": "590c64278000fd69c26dc96663b05c1e"
+      },
+      "datasetRows": 60
+     }
+    }
+   ]
+  },
+  {
+   "version": "v2.0.21",
+   "commit": "863c35a2d48c5bbc1453d3e9ac8c8da0324ef36e",
+   "state": [
+    {
+     "key": "A",
+     "id": "sirket-001",
+     "code": "001",
+     "name": "Merkez Danışmanlık Ltd. Şti.",
+     "dir": "",
+     "facts": {
+      "accounts": 176,
+      "accountEntries": 250,
+      "accountNet": 51175041,
+      "cashEntries": 30,
+      "cashNet": 93171,
+      "invoices": 66,
+      "invoicePayable": 62108350,
+      "invoiceLines": 117,
+      "plans": 21,
+      "planTotal": 52092000,
+      "planEntries": 22,
+      "planPaid": 7675000,
+      "datasetRows": 320,
+      "records": 0,
+      "tasks": 0
+     },
+     "api": {
+      "accounts": {
+       "count": 176,
+       "balance": 81800041,
+       "hash": "841ff5e83919b1b4ac5db1262bb46bc0"
+      },
+      "datasetRows": 320
+     }
+    },
+    {
+     "key": "B",
+     "id": "sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b",
+     "code": "002",
+     "name": "Şahin İnşaat ve Ticaret Ltd. Şti.",
+     "dir": "sirketler/002",
+     "facts": {
+      "accounts": 63,
+      "accountEntries": 176,
+      "accountNet": 48667889,
+      "cashEntries": 25,
+      "cashNet": 129974,
+      "invoices": 54,
+      "invoicePayable": 63108130,
+      "invoiceLines": 89,
+      "plans": 15,
+      "planTotal": 44257460,
+      "planEntries": 18,
+      "planPaid": 6855000,
+      "datasetRows": 78,
+      "records": 0,
+      "tasks": 0
+     },
+     "api": {
+      "accounts": {
+       "count": 63,
+       "balance": 76012889,
+       "hash": "555966c9e7c44164571099469bfb48f2"
+      },
+      "datasetRows": 78
+     }
+    },
+    {
+     "key": "C",
+     "id": "sirket-8e986639-c54d-40c5-a15c-c6d612cb250c",
+     "code": "007",
+     "name": "Mavi Gıda A.Ş.",
+     "dir": "sirketler/003",
+     "facts": {
+      "accounts": 59,
+      "accountEntries": 167,
+      "accountNet": 46831043,
+      "cashEntries": 20,
+      "cashNet": 5870,
+      "invoices": 48,
+      "invoicePayable": 59897120,
+      "invoiceLines": 87,
+      "plans": 15,
+      "planTotal": 37709720,
+      "planEntries": 16,
+      "planPaid": 5740000,
+      "datasetRows": 78,
+      "records": 0,
+      "tasks": 0
+     },
+     "api": {
+      "accounts": {
+       "count": 59,
+       "balance": 69791043,
+       "hash": "d9f19fcb35974f7eb027658a6f4a08fb"
+      },
+      "datasetRows": 78
+     }
+    },
+    {
+     "key": "E",
+     "id": "sirket-d14a948c-25a2-4969-bc48-1589af813165",
+     "code": "004",
+     "name": "Işık Turizm ve Seyahat",
+     "dir": "sirketler/004",
+     "facts": {
+      "accounts": 44,
+      "accountEntries": 51,
+      "accountNet": 8091977,
+      "cashEntries": 5,
+      "cashNet": 143741,
+      "invoices": 12,
+      "invoicePayable": 9523130,
+      "invoiceLines": 16,
+      "plans": 3,
+      "planTotal": 5276000,
+      "planEntries": 4,
+      "planPaid": 700000,
+      "datasetRows": 60,
+      "records": 0,
+      "tasks": 0
+     },
+     "api": {
+      "accounts": {
+       "count": 44,
+       "balance": 10891977,
+       "hash": "590c64278000fd69c26dc96663b05c1e"
+      },
+      "datasetRows": 60
+     }
+    }
+   ]
+  },
+  {
+   "version": "v2.0.22",
+   "commit": "e0d9ec7d11fee0969059c7df7f0f071a520957bc",
+   "state": [
+    {
+     "key": "A",
+     "id": "sirket-001",
+     "code": "001",
+     "name": "Merkez Danışmanlık Ltd. Şti.",
+     "dir": "",
+     "facts": {
+      "accounts": 180,
+      "accountEntries": 264,
+      "accountNet": 51570341,
+      "cashEntries": 35,
+      "cashNet": 143171,
+      "invoices": 72,
+      "invoicePayable": 62762350,
+      "invoiceLines": 123,
+      "plans": 23,
+      "planTotal": 52752000,
+      "planEntries": 24,
+      "planPaid": 7750000,
+      "datasetRows": 320,
+      "records": 0,
+      "tasks": 0
+     },
+     "api": {
+      "accounts": {
+       "count": 180,
+       "balance": 82420341,
+       "hash": "cde0060c610656732dc866e1f2adbace"
+      },
+      "datasetRows": 320
+     }
+    },
+    {
+     "key": "B",
+     "id": "sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b",
+     "code": "002",
+     "name": "Şahin İnşaat ve Ticaret Ltd. Şti.",
+     "dir": "sirketler/002",
+     "facts": {
+      "accounts": 67,
+      "accountEntries": 190,
+      "accountNet": 49103189,
+      "cashEntries": 30,
+      "cashNet": 179974,
+      "invoices": 60,
+      "invoicePayable": 63762130,
+      "invoiceLines": 95,
+      "plans": 17,
+      "planTotal": 44917460,
+      "planEntries": 20,
+      "planPaid": 6930000,
+      "datasetRows": 78,
+      "records": 0,
+      "tasks": 0
+     },
+     "api": {
+      "accounts": {
+       "count": 67,
+       "balance": 76673189,
+       "hash": "6aa0012bc19b146187bdf3ae3a0c1074"
+      },
+      "datasetRows": 78
+     }
+    },
+    {
+     "key": "C",
+     "id": "sirket-8e986639-c54d-40c5-a15c-c6d612cb250c",
+     "code": "007",
+     "name": "Mavi Gıda A.Ş.",
+     "dir": "sirketler/003",
+     "facts": {
+      "accounts": 59,
+      "accountEntries": 167,
+      "accountNet": 46831043,
+      "cashEntries": 20,
+      "cashNet": 5870,
+      "invoices": 48,
+      "invoicePayable": 59897120,
+      "invoiceLines": 87,
+      "plans": 15,
+      "planTotal": 37709720,
+      "planEntries": 16,
+      "planPaid": 5740000,
+      "datasetRows": 78,
+      "records": 0,
+      "tasks": 0
+     },
+     "api": {
+      "accounts": {
+       "count": 59,
+       "balance": 69791043,
+       "hash": "d9f19fcb35974f7eb027658a6f4a08fb"
+      },
+      "datasetRows": 78
+     }
+    },
+    {
+     "key": "E",
+     "id": "sirket-d14a948c-25a2-4969-bc48-1589af813165",
+     "code": "004",
+     "name": "Işık Turizm ve Seyahat",
+     "dir": "sirketler/004",
+     "facts": {
+      "accounts": 44,
+      "accountEntries": 51,
+      "accountNet": 8091977,
+      "cashEntries": 5,
+      "cashNet": 143741,
+      "invoices": 12,
+      "invoicePayable": 9523130,
+      "invoiceLines": 16,
+      "plans": 3,
+      "planTotal": 5276000,
+      "planEntries": 4,
+      "planPaid": 700000,
+      "datasetRows": 60,
+      "records": 0,
+      "tasks": 0
+     },
+     "api": {
+      "accounts": {
+       "count": 44,
+       "balance": 10891977,
+       "hash": "590c64278000fd69c26dc96663b05c1e"
+      },
+      "datasetRows": 60
+     }
+    }
+   ]
+  },
+  {
+   "version": "v2.0.23",
+   "commit": "58798e94c16c59eff049ddccea8288bcc032af1f",
+   "state": [
+    {
+     "key": "A",
+     "id": "sirket-001",
+     "code": "001",
+     "name": "Merkez Danışmanlık Ltd. Şti.",
+     "dir": "",
+     "facts": {
+      "accounts": 184,
+      "accountEntries": 278,
+      "accountNet": 52045641,
+      "cashEntries": 40,
+      "cashNet": 193171,
+      "invoices": 78,
+      "invoicePayable": 63416350,
+      "invoiceLines": 129,
+      "plans": 25,
+      "planTotal": 53412000,
+      "planEntries": 26,
+      "planPaid": 7825000,
+      "datasetRows": 320,
+      "records": 0,
+      "tasks": 0
+     },
+     "api": {
+      "accounts": {
+       "count": 184,
+       "balance": 83120641,
+       "hash": "a2cba92e36314eccabb3b59f882658ee"
+      },
+      "datasetRows": 320
+     }
+    },
+    {
+     "key": "B",
+     "id": "sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b",
+     "code": "002",
+     "name": "Şahin İnşaat ve Ticaret Ltd. Şti.",
+     "dir": "sirketler/002",
+     "facts": {
+      "accounts": 71,
+      "accountEntries": 204,
+      "accountNet": 49568489,
+      "cashEntries": 35,
+      "cashNet": 229974,
+      "invoices": 66,
+      "invoicePayable": 64416130,
+      "invoiceLines": 101,
+      "plans": 19,
+      "planTotal": 45577460,
+      "planEntries": 22,
+      "planPaid": 7005000,
+      "datasetRows": 78,
+      "records": 0,
+      "tasks": 0
+     },
+     "api": {
+      "accounts": {
+       "count": 71,
+       "balance": 77363489,
+       "hash": "dc0448139dd79f58338d91bb5c12590a"
+      },
+      "datasetRows": 78
+     }
+    },
+    {
+     "key": "C",
+     "id": "sirket-8e986639-c54d-40c5-a15c-c6d612cb250c",
+     "code": "007",
+     "name": "Mavi Gıda A.Ş.",
+     "dir": "sirketler/003",
+     "facts": {
+      "accounts": 59,
+      "accountEntries": 167,
+      "accountNet": 46831043,
+      "cashEntries": 20,
+      "cashNet": 5870,
+      "invoices": 48,
+      "invoicePayable": 59897120,
+      "invoiceLines": 87,
+      "plans": 15,
+      "planTotal": 37709720,
+      "planEntries": 16,
+      "planPaid": 5740000,
+      "datasetRows": 78,
+      "records": 0,
+      "tasks": 0
+     },
+     "api": {
+      "accounts": {
+       "count": 59,
+       "balance": 69791043,
+       "hash": "d9f19fcb35974f7eb027658a6f4a08fb"
+      },
+      "datasetRows": 78
+     }
+    },
+    {
+     "key": "E",
+     "id": "sirket-d14a948c-25a2-4969-bc48-1589af813165",
+     "code": "004",
+     "name": "Işık Turizm ve Seyahat",
+     "dir": "sirketler/004",
+     "facts": {
+      "accounts": 44,
+      "accountEntries": 51,
+      "accountNet": 8091977,
+      "cashEntries": 5,
+      "cashNet": 143741,
+      "invoices": 12,
+      "invoicePayable": 9523130,
+      "invoiceLines": 16,
+      "plans": 3,
+      "planTotal": 5276000,
+      "planEntries": 4,
+      "planPaid": 700000,
+      "datasetRows": 60,
+      "records": 0,
+      "tasks": 0
+     },
+     "api": {
+      "accounts": {
+       "count": 44,
+       "balance": 10891977,
+       "hash": "590c64278000fd69c26dc96663b05c1e"
+      },
+      "datasetRows": 60
+     }
+    }
+   ]
+  },
+  {
+   "version": "v2.0.24",
+   "commit": "9c09f3c1a715360dfa6e321a98934cc864bd802a",
+   "state": [
+    {
+     "key": "A",
+     "id": "sirket-001",
+     "code": "001",
+     "name": "Merkez Danışmanlık Ltd. Şti.",
+     "dir": "",
+     "facts": {
+      "accounts": 188,
+      "accountEntries": 292,
+      "accountNet": 52510941,
+      "cashEntries": 45,
+      "cashNet": 243171,
+      "invoices": 84,
+      "invoicePayable": 64070350,
+      "invoiceLines": 135,
+      "plans": 27,
+      "planTotal": 54072000,
+      "planEntries": 28,
+      "planPaid": 7900000,
+      "datasetRows": 320,
+      "records": 0,
+      "tasks": 0
+     },
+     "api": {
+      "accounts": {
+       "count": 188,
+       "balance": 83810941,
+       "hash": "6615be73c66b2c8f88c8199c24c3050d"
+      },
+      "datasetRows": 320
+     }
+    },
+    {
+     "key": "B",
+     "id": "sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b",
+     "code": "002",
+     "name": "Şahin İnşaat ve Ticaret Ltd. Şti.",
+     "dir": "sirketler/002",
+     "facts": {
+      "accounts": 75,
+      "accountEntries": 218,
+      "accountNet": 49883789,
+      "cashEntries": 40,
+      "cashNet": 279974,
+      "invoices": 72,
+      "invoicePayable": 65070130,
+      "invoiceLines": 107,
+      "plans": 21,
+      "planTotal": 46237460,
+      "planEntries": 24,
+      "planPaid": 7080000,
+      "datasetRows": 78,
+      "records": 0,
+      "tasks": 0
+     },
+     "api": {
+      "accounts": {
+       "count": 75,
+       "balance": 77903789,
+       "hash": "8e683501bbd75fd2af6d7c8557c160f9"
+      },
+      "datasetRows": 78
+     }
+    },
+    {
+     "key": "C",
+     "id": "sirket-8e986639-c54d-40c5-a15c-c6d612cb250c",
+     "code": "007",
+     "name": "Mavi Gıda A.Ş.",
+     "dir": "sirketler/003",
+     "facts": {
+      "accounts": 59,
+      "accountEntries": 167,
+      "accountNet": 46831043,
+      "cashEntries": 20,
+      "cashNet": 5870,
+      "invoices": 48,
+      "invoicePayable": 59897120,
+      "invoiceLines": 87,
+      "plans": 15,
+      "planTotal": 37709720,
+      "planEntries": 16,
+      "planPaid": 5740000,
+      "datasetRows": 78,
+      "records": 0,
+      "tasks": 0
+     },
+     "api": {
+      "accounts": {
+       "count": 59,
+       "balance": 69791043,
+       "hash": "d9f19fcb35974f7eb027658a6f4a08fb"
+      },
+      "datasetRows": 78
+     }
+    },
+    {
+     "key": "E",
+     "id": "sirket-d14a948c-25a2-4969-bc48-1589af813165",
+     "code": "004",
+     "name": "Işık Turizm ve Seyahat",
+     "dir": "sirketler/004",
+     "facts": {
+      "accounts": 44,
+      "accountEntries": 51,
+      "accountNet": 8091977,
+      "cashEntries": 5,
+      "cashNet": 143741,
+      "invoices": 12,
+      "invoicePayable": 9523130,
+      "invoiceLines": 16,
+      "plans": 3,
+      "planTotal": 5276000,
+      "planEntries": 4,
+      "planPaid": 700000,
+      "datasetRows": 60,
+      "records": 0,
+      "tasks": 0
+     },
+     "api": {
+      "accounts": {
+       "count": 44,
+       "balance": 10891977,
+       "hash": "590c64278000fd69c26dc96663b05c1e"
+      },
+      "datasetRows": 60
+     }
+    }
+   ]
+  },
+  {
+   "version": "v2.0.25",
+   "commit": "c2206bc95e913b39e3afbf451d32627ce725a13c",
+   "state": [
+    {
+     "key": "A",
+     "id": "sirket-001",
+     "code": "001",
+     "name": "Merkez Danışmanlık Ltd. Şti.",
+     "dir": "",
+     "facts": {
+      "accounts": 192,
+      "accountEntries": 306,
+      "accountNet": 53026241,
+      "cashEntries": 50,
+      "cashNet": 293171,
+      "invoices": 90,
+      "invoicePayable": 64724350,
+      "invoiceLines": 141,
+      "plans": 29,
+      "planTotal": 54732000,
+      "planEntries": 30,
+      "planPaid": 7975000,
+      "datasetRows": 320,
+      "records": 0,
+      "tasks": 0
+     },
+     "api": {
+      "accounts": {
+       "count": 192,
+       "balance": 84551241,
+       "hash": "20075bb79fd5ed82bc3eb7c9935cfdd4"
+      },
+      "datasetRows": 320
+     }
+    },
+    {
+     "key": "B",
+     "id": "sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b",
+     "code": "002",
+     "name": "Şahin İnşaat ve Ticaret Ltd. Şti.",
+     "dir": "sirketler/002",
+     "facts": {
+      "accounts": 79,
+      "accountEntries": 232,
+      "accountNet": 50239089,
+      "cashEntries": 45,
+      "cashNet": 329974,
+      "invoices": 78,
+      "invoicePayable": 65724130,
+      "invoiceLines": 113,
+      "plans": 23,
+      "planTotal": 46897460,
+      "planEntries": 26,
+      "planPaid": 7155000,
+      "datasetRows": 78,
+      "records": 0,
+      "tasks": 0
+     },
+     "api": {
+      "accounts": {
+       "count": 79,
+       "balance": 78484089,
+       "hash": "2ff034fe89ad3f78cd5c13b7e8e1ea52"
+      },
+      "datasetRows": 78
+     }
+    },
+    {
+     "key": "C",
+     "id": "sirket-8e986639-c54d-40c5-a15c-c6d612cb250c",
+     "code": "007",
+     "name": "Mavi Gıda A.Ş.",
+     "dir": "sirketler/003",
+     "facts": {
+      "accounts": 59,
+      "accountEntries": 167,
+      "accountNet": 46831043,
+      "cashEntries": 20,
+      "cashNet": 5870,
+      "invoices": 48,
+      "invoicePayable": 59897120,
+      "invoiceLines": 87,
+      "plans": 15,
+      "planTotal": 37709720,
+      "planEntries": 16,
+      "planPaid": 5740000,
+      "datasetRows": 78,
+      "records": 0,
+      "tasks": 0
+     },
+     "api": {
+      "accounts": {
+       "count": 59,
+       "balance": 69791043,
+       "hash": "d9f19fcb35974f7eb027658a6f4a08fb"
+      },
+      "datasetRows": 78
+     }
+    },
+    {
+     "key": "E",
+     "id": "sirket-d14a948c-25a2-4969-bc48-1589af813165",
+     "code": "004",
+     "name": "Işık Turizm ve Seyahat",
+     "dir": "sirketler/004",
+     "facts": {
+      "accounts": 44,
+      "accountEntries": 51,
+      "accountNet": 8091977,
+      "cashEntries": 5,
+      "cashNet": 143741,
+      "invoices": 12,
+      "invoicePayable": 9523130,
+      "invoiceLines": 16,
+      "plans": 3,
+      "planTotal": 5276000,
+      "planEntries": 4,
+      "planPaid": 700000,
+      "datasetRows": 60,
+      "records": 0,
+      "tasks": 0
+     },
+     "api": {
+      "accounts": {
+       "count": 44,
+       "balance": 10891977,
+       "hash": "590c64278000fd69c26dc96663b05c1e"
+      },
+      "datasetRows": 60
+     }
+    }
+   ]
+  },
+  {
+   "version": "v2.0.26",
+   "commit": "5346ff8442612aaa429783e59ae478d9d6a5fc07",
+   "state": [
+    {
+     "key": "A",
+     "id": "sirket-001",
+     "code": "001",
+     "name": "Merkez Danışmanlık Ltd. Şti.",
+     "dir": "",
+     "facts": {
+      "accounts": 196,
+      "accountEntries": 320,
+      "accountNet": 53491541,
+      "cashEntries": 55,
+      "cashNet": 343171,
+      "invoices": 96,
+      "invoicePayable": 65378350,
+      "invoiceLines": 147,
+      "plans": 31,
+      "planTotal": 55392000,
+      "planEntries": 32,
+      "planPaid": 8050000,
+      "datasetRows": 320,
+      "records": 0,
+      "tasks": 0
+     },
+     "api": {
+      "accounts": {
+       "count": 196,
+       "balance": 85241541,
+       "hash": "274a0ac04d823d169ed788d5c88c7423"
+      },
+      "datasetRows": 320
+     }
+    },
+    {
+     "key": "B",
+     "id": "sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b",
+     "code": "002",
+     "name": "Şahin İnşaat ve Ticaret Ltd. Şti.",
+     "dir": "sirketler/002",
+     "facts": {
+      "accounts": 83,
+      "accountEntries": 246,
+      "accountNet": 50784389,
+      "cashEntries": 50,
+      "cashNet": 379974,
+      "invoices": 84,
+      "invoicePayable": 66378130,
+      "invoiceLines": 119,
+      "plans": 25,
+      "planTotal": 47557460,
+      "planEntries": 28,
+      "planPaid": 7230000,
+      "datasetRows": 78,
+      "records": 0,
+      "tasks": 0
+     },
+     "api": {
+      "accounts": {
+       "count": 83,
+       "balance": 79254389,
+       "hash": "60a8760aa446b6e41f85cb49ca793880"
+      },
+      "datasetRows": 78
+     }
+    },
+    {
+     "key": "C",
+     "id": "sirket-8e986639-c54d-40c5-a15c-c6d612cb250c",
+     "code": "007",
+     "name": "Mavi Gıda A.Ş.",
+     "dir": "sirketler/003",
+     "facts": {
+      "accounts": 59,
+      "accountEntries": 167,
+      "accountNet": 46831043,
+      "cashEntries": 20,
+      "cashNet": 5870,
+      "invoices": 48,
+      "invoicePayable": 59897120,
+      "invoiceLines": 87,
+      "plans": 15,
+      "planTotal": 37709720,
+      "planEntries": 16,
+      "planPaid": 5740000,
+      "datasetRows": 78,
+      "records": 0,
+      "tasks": 0
+     },
+     "api": {
+      "accounts": {
+       "count": 59,
+       "balance": 69791043,
+       "hash": "d9f19fcb35974f7eb027658a6f4a08fb"
+      },
+      "datasetRows": 78
+     }
+    },
+    {
+     "key": "E",
+     "id": "sirket-d14a948c-25a2-4969-bc48-1589af813165",
+     "code": "004",
+     "name": "Işık Turizm ve Seyahat",
+     "dir": "sirketler/004",
+     "facts": {
+      "accounts": 44,
+      "accountEntries": 51,
+      "accountNet": 8091977,
+      "cashEntries": 5,
+      "cashNet": 143741,
+      "invoices": 12,
+      "invoicePayable": 9523130,
+      "invoiceLines": 16,
+      "plans": 3,
+      "planTotal": 5276000,
+      "planEntries": 4,
+      "planPaid": 700000,
+      "datasetRows": 60,
+      "records": 0,
+      "tasks": 0
+     },
+     "api": {
+      "accounts": {
+       "count": 44,
+       "balance": 10891977,
+       "hash": "590c64278000fd69c26dc96663b05c1e"
+      },
+      "datasetRows": 60
+     }
+    }
+   ]
+  },
+  {
+   "version": "v2.0.26",
+   "commit": "5346ff8442612aaa429783e59ae478d9d6a5fc07",
+   "state": [
+    {
+     "key": "A",
+     "id": "sirket-001",
+     "code": "001",
+     "name": "Merkez Danışmanlık Ltd. Şti.",
+     "dir": "",
+     "facts": {
+      "accounts": 201,
+      "accountEntries": 325,
+      "accountNet": 53111541,
+      "cashEntries": 55,
+      "cashNet": 343171,
+      "invoices": 96,
+      "invoicePayable": 65378350,
+      "invoiceLines": 147,
+      "plans": 34,
+      "planTotal": 56112000,
+      "planEntries": 37,
+      "planPaid": 8273000,
+      "datasetRows": 320,
+      "records": 0,
+      "tasks": 0
+     },
+     "api": {
+      "accounts": {
+       "count": 201,
+       "balance": 85358541,
+       "hash": "795a5f8847892ab05130b583f8586108"
+      },
+      "datasetRows": 320
+     }
+    },
+    {
+     "key": "B",
+     "id": "sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b",
+     "code": "002",
+     "name": "Şahin İnşaat ve Ticaret Ltd. Şti.",
+     "dir": "sirketler/002",
+     "facts": {
+      "accounts": 88,
+      "accountEntries": 251,
+      "accountNet": 50404389,
+      "cashEntries": 50,
+      "cashNet": 379974,
+      "invoices": 84,
+      "invoicePayable": 66378130,
+      "invoiceLines": 119,
+      "plans": 28,
+      "planTotal": 48277460,
+      "planEntries": 33,
+      "planPaid": 7453000,
+      "datasetRows": 78,
+      "records": 0,
+      "tasks": 0
+     },
+     "api": {
+      "accounts": {
+       "count": 88,
+       "balance": 79371389,
+       "hash": "80cd263b8a9e22c5828fda4cc066c49f"
+      },
+      "datasetRows": 78
+     }
+    },
+    {
+     "key": "C",
+     "id": "sirket-8e986639-c54d-40c5-a15c-c6d612cb250c",
+     "code": "007",
+     "name": "Mavi Gıda A.Ş.",
+     "dir": "sirketler/003",
+     "facts": {
+      "accounts": 59,
+      "accountEntries": 167,
+      "accountNet": 46831043,
+      "cashEntries": 20,
+      "cashNet": 5870,
+      "invoices": 48,
+      "invoicePayable": 59897120,
+      "invoiceLines": 87,
+      "plans": 15,
+      "planTotal": 37709720,
+      "planEntries": 16,
+      "planPaid": 5740000,
+      "datasetRows": 78,
+      "records": 0,
+      "tasks": 0
+     },
+     "api": {
+      "accounts": {
+       "count": 59,
+       "balance": 69791043,
+       "hash": "d9f19fcb35974f7eb027658a6f4a08fb"
+      },
+      "datasetRows": 78
+     }
+    },
+    {
+     "key": "E",
+     "id": "sirket-d14a948c-25a2-4969-bc48-1589af813165",
+     "code": "004",
+     "name": "Işık Turizm ve Seyahat",
+     "dir": "sirketler/004",
+     "facts": {
+      "accounts": 44,
+      "accountEntries": 51,
+      "accountNet": 8091977,
+      "cashEntries": 5,
+      "cashNet": 143741,
+      "invoices": 12,
+      "invoicePayable": 9523130,
+      "invoiceLines": 16,
+      "plans": 3,
+      "planTotal": 5276000,
+      "planEntries": 4,
+      "planPaid": 700000,
+      "datasetRows": 60,
+      "records": 0,
+      "tasks": 0
+     },
+     "api": {
+      "accounts": {
+       "count": 44,
+       "balance": 10891977,
+       "hash": "590c64278000fd69c26dc96663b05c1e"
+      },
+      "datasetRows": 60
+     }
+    }
+   ]
+  }
+ ],
+ "backups": [
+  {
+   "version": "v2.0.16",
+   "companyKey": "A",
+   "companyId": "sirket-001",
+   "code": "001",
+   "name": "Merkez Danışmanlık Ltd. Şti.",
+   "file": "destekofis-2026-10-03T15-22-46-207Z-manuel.sqlite",
+   "pathAtCreation": "destekofis-2026-10-03T15-22-46-207Z-manuel.sqlite",
+   "sha256": "f2cd031281e37120040d9d637b4d1927096399a4c663ef0f14e40a9ae6197d43",
+   "dataDir": "",
+   "facts": {
+    "accounts": 124,
+    "accountEntries": 71,
+    "accountNet": 16372733,
+    "cashEntries": 5,
+    "cashNet": 4835,
+    "invoices": 12,
+    "invoicePayable": 13072520,
+    "invoiceLines": 21,
+    "plans": 5,
+    "planTotal": 11246500,
+    "planEntries": 4,
+    "planPaid": 1620000,
+    "datasetRows": 240
+   },
+   "api": {
+    "accounts": {
+     "count": 124,
+     "balance": 22852733,
+     "hash": "729aaa5ca5d9e9d1479e6a4629cfbaf7"
+    },
+    "datasetRows": 240
+   },
+   "fileFacts": {
+    "accounts": 124,
+    "accountEntries": 71,
+    "accountNet": 16372733,
+    "cashEntries": 5,
+    "cashNet": 4835,
+    "invoices": 12,
+    "invoicePayable": 13072520,
+    "invoiceLines": 21,
+    "plans": 5,
+    "planTotal": 11246500,
+    "planEntries": 4,
+    "planPaid": 1620000,
+    "datasetRows": 240
+   },
+   "matchesLive": true
+  },
+  {
+   "version": "v2.0.17",
+   "companyKey": "A",
+   "companyId": "sirket-001",
+   "code": "001",
+   "name": "Merkez Danışmanlık Ltd. Şti.",
+   "file": "destekofis-2026-10-03T15-22-50-801Z-manuel.sqlite",
+   "pathAtCreation": "destekofis-2026-10-03T15-22-50-801Z-manuel.sqlite",
+   "sha256": "69337c0f189a5cb35925c7fbe9d1a6bbefb7f53b70363c14f46a83cb2763ae94",
+   "dataDir": "",
+   "facts": {
+    "accounts": 136,
+    "accountEntries": 116,
+    "accountNet": 27588124,
+    "cashEntries": 10,
+    "cashNet": -276976,
+    "invoices": 24,
+    "invoicePayable": 30117820,
+    "invoiceLines": 46,
+    "plans": 8,
+    "planTotal": 16610100,
+    "planEntries": 8,
+    "planPaid": 2500000,
+    "datasetRows": 260
+   },
+   "api": {
+    "accounts": {
+     "count": 136,
+     "balance": 37588124,
+     "hash": "670a1529be0cbb048ecb9f4582ce68ce"
+    },
+    "datasetRows": 260
+   },
+   "fileFacts": {
+    "accounts": 136,
+    "accountEntries": 116,
+    "accountNet": 27588124,
+    "cashEntries": 10,
+    "cashNet": -276976,
+    "invoices": 24,
+    "invoicePayable": 30117820,
+    "invoiceLines": 46,
+    "plans": 8,
+    "planTotal": 16610100,
+    "planEntries": 8,
+    "planPaid": 2500000,
+    "datasetRows": 260
+   },
+   "matchesLive": true
+  },
+  {
+   "version": "v2.0.17",
+   "companyKey": "B",
+   "companyId": "sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b",
+   "code": "002",
+   "name": "Şahin İnşaat Ltd. Şti.",
+   "file": "destekofis-2026-10-03T15-22-50-835Z-manuel.sqlite",
+   "pathAtCreation": "sirket-002/destekofis-2026-10-03T15-22-50-835Z-manuel.sqlite",
+   "sha256": "7b8e540d6fdd9937b672450eb0c66ae6a7cee1c2ab920c1ce3e7860e043c602d",
+   "dataDir": "sirketler/002",
+   "facts": {
+    "accounts": 44,
+    "accountEntries": 46,
+    "accountNet": 10005572,
+    "cashEntries": 5,
+    "cashNet": -373409,
+    "invoices": 12,
+    "invoicePayable": 12856800,
+    "invoiceLines": 17,
+    "plans": 4,
+    "planTotal": 11343100,
+    "planEntries": 4,
+    "planPaid": 1760000,
+    "datasetRows": 60
+   },
+   "api": {
+    "accounts": {
+     "count": 44,
+     "balance": 17045572,
+     "hash": "4cbec5f98a1191d69f769d30d5f49f5b"
+    },
+    "datasetRows": 60
+   },
+   "fileFacts": {
+    "accounts": 44,
+    "accountEntries": 46,
+    "accountNet": 10005572,
+    "cashEntries": 5,
+    "cashNet": -373409,
+    "invoices": 12,
+    "invoicePayable": 12856800,
+    "invoiceLines": 17,
+    "plans": 4,
+    "planTotal": 11343100,
+    "planEntries": 4,
+    "planPaid": 1760000,
+    "datasetRows": 60
+   },
+   "matchesLive": true
+  },
+  {
+   "version": "v2.0.17",
+   "companyKey": "C",
+   "companyId": "sirket-8e986639-c54d-40c5-a15c-c6d612cb250c",
+   "code": "007",
+   "name": "Mavi Gıda A.Ş.",
+   "file": "destekofis-2026-10-03T15-22-50-867Z-manuel.sqlite",
+   "pathAtCreation": "sirket-003/destekofis-2026-10-03T15-22-50-867Z-manuel.sqlite",
+   "sha256": "85fbb0e6a01774955e6ace2f3bc4a0e0daec88b66020b092208bf4d0c017b751",
+   "dataDir": "sirketler/003",
+   "facts": {
+    "accounts": 44,
+    "accountEntries": 49,
+    "accountNet": 16001990,
+    "cashEntries": 5,
+    "cashNet": -373,
+    "invoices": 12,
+    "invoicePayable": 17141960,
+    "invoiceLines": 20,
+    "plans": 3,
+    "planTotal": 9453500,
+    "planEntries": 4,
+    "planPaid": 1720000,
+    "datasetRows": 60
+   },
+   "api": {
+    "accounts": {
+     "count": 44,
+     "balance": 22881990,
+     "hash": "276890c68c49c2a8d9365469e74e4de7"
+    },
+    "datasetRows": 60
+   },
+   "fileFacts": {
+    "accounts": 44,
+    "accountEntries": 49,
+    "accountNet": 16001990,
+    "cashEntries": 5,
+    "cashNet": -373,
+    "invoices": 12,
+    "invoicePayable": 17141960,
+    "invoiceLines": 20,
+    "plans": 3,
+    "planTotal": 9453500,
+    "planEntries": 4,
+    "planPaid": 1720000,
+    "datasetRows": 60
+   },
+   "matchesLive": true
+  },
+  {
+   "version": "v2.0.18",
+   "companyKey": "A",
+   "companyId": "sirket-001",
+   "code": "001",
+   "name": "Merkez Danışmanlık Ltd. Şti.",
+   "file": "destekofis-2026-10-03T15-23-00-663Z-manuel.sqlite",
+   "pathAtCreation": "destekofis-2026-10-03T15-23-00-663Z-manuel.sqlite",
+   "sha256": "4808c12d453c1121df5852f18825fc43b2016bf0311ab929de4135afe483cdff",
+   "dataDir": "",
+   "facts": {
+    "accounts": 148,
+    "accountEntries": 157,
+    "accountNet": 30939356,
+    "cashEntries": 15,
+    "cashNet": -256537,
+    "invoices": 36,
+    "invoicePayable": 37459160,
+    "invoiceLines": 62,
+    "plans": 11,
+    "planTotal": 26220100,
+    "planEntries": 12,
+    "planPaid": 4200000,
+    "datasetRows": 280
+   },
+   "api": {
+    "accounts": {
+     "count": 148,
+     "balance": 47739356,
+     "hash": "8a9862404c53c91a72d6dbb17d495309"
+    },
+    "datasetRows": 280
+   },
+   "fileFacts": {
+    "accounts": 148,
+    "accountEntries": 157,
+    "accountNet": 30939356,
+    "cashEntries": 15,
+    "cashNet": -256537,
+    "invoices": 36,
+    "invoicePayable": 37459160,
+    "invoiceLines": 62,
+    "plans": 11,
+    "planTotal": 26220100,
+    "planEntries": 12,
+    "planPaid": 4200000,
+    "datasetRows": 280
+   },
+   "matchesLive": true
+  },
+  {
+   "version": "v2.0.18",
+   "companyKey": "B",
+   "companyId": "sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b",
+   "code": "002",
+   "name": "Şahin İnşaat Ltd. Şti.",
+   "file": "destekofis-2026-10-03T15-23-00-707Z-manuel.sqlite",
+   "pathAtCreation": "sirket-002/destekofis-2026-10-03T15-23-00-707Z-manuel.sqlite",
+   "sha256": "9cfa6d9b31c43d3b819fb1977b1229738c26a8dd1aa22dba10c3954753dc7cd6",
+   "dataDir": "sirketler/002",
+   "facts": {
+    "accounts": 49,
+    "accountEntries": 87,
+    "accountNet": 14535632,
+    "cashEntries": 10,
+    "cashNet": -169556,
+    "invoices": 24,
+    "invoicePayable": 24006270,
+    "invoiceLines": 35,
+    "plans": 6,
+    "planTotal": 18743100,
+    "planEntries": 8,
+    "planPaid": 3240000,
+    "datasetRows": 66
+   },
+   "api": {
+    "accounts": {
+     "count": 49,
+     "balance": 27495632,
+     "hash": "839faaad1040a069ea370d4eb58b9658"
+    },
+    "datasetRows": 66
+   },
+   "fileFacts": {
+    "accounts": 49,
+    "accountEntries": 87,
+    "accountNet": 14535632,
+    "cashEntries": 10,
+    "cashNet": -169556,
+    "invoices": 24,
+    "invoicePayable": 24006270,
+    "invoiceLines": 35,
+    "plans": 6,
+    "planTotal": 18743100,
+    "planEntries": 8,
+    "planPaid": 3240000,
+    "datasetRows": 66
+   },
+   "matchesLive": true
+  },
+  {
+   "version": "v2.0.18",
+   "companyKey": "C",
+   "companyId": "sirket-8e986639-c54d-40c5-a15c-c6d612cb250c",
+   "code": "007",
+   "name": "Mavi Gıda A.Ş.",
+   "file": "destekofis-2026-10-03T15-23-00-741Z-manuel.sqlite",
+   "pathAtCreation": "sirket-003/destekofis-2026-10-03T15-23-00-741Z-manuel.sqlite",
+   "sha256": "0786c9ea7e78da1f16e807e9e0f97201df470f43af74fd58b2c12c3b7caf4917",
+   "dataDir": "sirketler/003",
+   "facts": {
+    "accounts": 49,
+    "accountEntries": 87,
+    "accountNet": 25640670,
+    "cashEntries": 10,
+    "cashNet": 81708,
+    "invoices": 24,
+    "invoicePayable": 30318990,
+    "invoiceLines": 40,
+    "plans": 7,
+    "planTotal": 19962730,
+    "planEntries": 8,
+    "planPaid": 3400000,
+    "datasetRows": 66
+   },
+   "api": {
+    "accounts": {
+     "count": 49,
+     "balance": 39240670,
+     "hash": "0dca052f2a28a36a0836863d007fbe7e"
+    },
+    "datasetRows": 66
+   },
+   "fileFacts": {
+    "accounts": 49,
+    "accountEntries": 87,
+    "accountNet": 25640670,
+    "cashEntries": 10,
+    "cashNet": 81708,
+    "invoices": 24,
+    "invoicePayable": 30318990,
+    "invoiceLines": 40,
+    "plans": 7,
+    "planTotal": 19962730,
+    "planEntries": 8,
+    "planPaid": 3400000,
+    "datasetRows": 66
+   },
+   "matchesLive": true
+  },
+  {
+   "version": "v2.0.18",
+   "companyKey": "D",
+   "companyId": "sirket-68751ff0-3cc0-45da-a83f-bfd28e343166",
+   "code": "004",
+   "name": "Çağdaş Eğitim Kurumları",
+   "file": "destekofis-2026-10-03T15-23-00-776Z-manuel.sqlite",
+   "pathAtCreation": "sirket-004/destekofis-2026-10-03T15-23-00-776Z-manuel.sqlite",
+   "sha256": "d8266c6688d4647c9a15d3795c364a4d04881cd91ba7f949cea0924bc9c433bf",
+   "dataDir": "sirketler/004",
+   "facts": {
+    "accounts": 44,
+    "accountEntries": 49,
+    "accountNet": 7738503,
+    "cashEntries": 5,
+    "cashNet": 207265,
+    "invoices": 12,
+    "invoicePayable": 8827880,
+    "invoiceLines": 19,
+    "plans": 4,
+    "planTotal": 9074280,
+    "planEntries": 4,
+    "planPaid": 1320000,
+    "datasetRows": 60
+   },
+   "api": {
+    "accounts": {
+     "count": 44,
+     "balance": 13018503,
+     "hash": "e231a7f8aae8f7f544b487040ea83d72"
+    },
+    "datasetRows": 60
+   },
+   "fileFacts": {
+    "accounts": 44,
+    "accountEntries": 49,
+    "accountNet": 7738503,
+    "cashEntries": 5,
+    "cashNet": 207265,
+    "invoices": 12,
+    "invoicePayable": 8827880,
+    "invoiceLines": 19,
+    "plans": 4,
+    "planTotal": 9074280,
+    "planEntries": 4,
+    "planPaid": 1320000,
+    "datasetRows": 60
+   },
+   "matchesLive": true
+  },
+  {
+   "version": "v2.0.19",
+   "companyKey": "A",
+   "companyId": "sirket-001",
+   "code": "001",
+   "name": "Merkez Danışmanlık Ltd. Şti.",
+   "file": "destekofis-2026-10-03T15-23-13-147Z-manuel.sqlite",
+   "pathAtCreation": "destekofis-2026-10-03T15-23-13-147Z-manuel.sqlite",
+   "sha256": "b355a2983af8ef33370537e4b47655cae90cc201a11fe2fbfd420b1d291793b6",
+   "dataDir": "",
+   "facts": {
+    "accounts": 160,
+    "accountEntries": 196,
+    "accountNet": 38209378,
+    "cashEntries": 20,
+    "cashNet": -89844,
+    "invoices": 48,
+    "invoicePayable": 47274600,
+    "invoiceLines": 85,
+    "plans": 14,
+    "planTotal": 36226100,
+    "planEntries": 16,
+    "planPaid": 5960000,
+    "datasetRows": 300
+   },
+   "api": {
+    "accounts": {
+     "count": 160,
+     "balance": 62049378,
+     "hash": "8ccf1d367be04db016279b56853b76e0"
+    },
+    "datasetRows": 300
+   },
+   "fileFacts": {
+    "accounts": 160,
+    "accountEntries": 196,
+    "accountNet": 38209378,
+    "cashEntries": 20,
+    "cashNet": -89844,
+    "invoices": 48,
+    "invoicePayable": 47274600,
+    "invoiceLines": 85,
+    "plans": 14,
+    "planTotal": 36226100,
+    "planEntries": 16,
+    "planPaid": 5960000,
+    "datasetRows": 300
+   },
+   "matchesLive": true
+  },
+  {
+   "version": "v2.0.19",
+   "companyKey": "B",
+   "companyId": "sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b",
+   "code": "002",
+   "name": "Şahin İnşaat ve Ticaret Ltd. Şti.",
+   "file": "destekofis-2026-10-03T15-23-13-187Z-manuel.sqlite",
+   "pathAtCreation": "sirket-002/destekofis-2026-10-03T15-23-13-187Z-manuel.sqlite",
+   "sha256": "ccb42771f9470c458b9578cb93289463bbeb288e05978ff0910e607ba93c1de2",
+   "dataDir": "sirketler/002",
+   "facts": {
+    "accounts": 54,
+    "accountEntries": 121,
+    "accountNet": 36115342,
+    "cashEntries": 15,
+    "cashNet": 171576,
+    "invoices": 36,
+    "invoicePayable": 47424420,
+    "invoiceLines": 60,
+    "plans": 10,
+    "planTotal": 32333460,
+    "planEntries": 12,
+    "planPaid": 5020000,
+    "datasetRows": 72
+   },
+   "api": {
+    "accounts": {
+     "count": 54,
+     "balance": 56195342,
+     "hash": "d7b4321faa7ff3dd505ae37c43df59a6"
+    },
+    "datasetRows": 72
+   },
+   "fileFacts": {
+    "accounts": 54,
+    "accountEntries": 121,
+    "accountNet": 36115342,
+    "cashEntries": 15,
+    "cashNet": 171576,
+    "invoices": 36,
+    "invoicePayable": 47424420,
+    "invoiceLines": 60,
+    "plans": 10,
+    "planTotal": 32333460,
+    "planEntries": 12,
+    "planPaid": 5020000,
+    "datasetRows": 72
+   },
+   "matchesLive": true
+  },
+  {
+   "version": "v2.0.19",
+   "companyKey": "C",
+   "companyId": "sirket-8e986639-c54d-40c5-a15c-c6d612cb250c",
+   "code": "007",
+   "name": "Mavi Gıda A.Ş.",
+   "file": "destekofis-2026-10-03T15-23-13-228Z-manuel.sqlite",
+   "pathAtCreation": "sirket-003/destekofis-2026-10-03T15-23-13-228Z-manuel.sqlite",
+   "sha256": "d222f226aedbb14321ef731164f37a362885e5bf31d71a74837050d0c0e62d86",
+   "dataDir": "sirketler/003",
+   "facts": {
+    "accounts": 54,
+    "accountEntries": 127,
+    "accountNet": 37233509,
+    "cashEntries": 15,
+    "cashNet": -11673,
+    "invoices": 36,
+    "invoicePayable": 45133350,
+    "invoiceLines": 63,
+    "plans": 11,
+    "planTotal": 28844720,
+    "planEntries": 12,
+    "planPaid": 4500000,
+    "datasetRows": 72
+   },
+   "api": {
+    "accounts": {
+     "count": 54,
+     "balance": 55233509,
+     "hash": "340393af46f931b7086406a40593fd35"
+    },
+    "datasetRows": 72
+   },
+   "fileFacts": {
+    "accounts": 54,
+    "accountEntries": 127,
+    "accountNet": 37233509,
+    "cashEntries": 15,
+    "cashNet": -11673,
+    "invoices": 36,
+    "invoicePayable": 45133350,
+    "invoiceLines": 63,
+    "plans": 11,
+    "planTotal": 28844720,
+    "planEntries": 12,
+    "planPaid": 4500000,
+    "datasetRows": 72
+   },
+   "matchesLive": true
+  },
+  {
+   "version": "v2.0.19",
+   "companyKey": "D",
+   "companyId": "sirket-68751ff0-3cc0-45da-a83f-bfd28e343166",
+   "code": "004",
+   "name": "Çağdaş Eğitim Kurumları",
+   "file": "destekofis-2026-10-03T15-23-13-264Z-manuel.sqlite",
+   "pathAtCreation": "sirket-004/destekofis-2026-10-03T15-23-13-264Z-manuel.sqlite",
+   "sha256": "0d7e7ae1d7352f47b82a15773b19a8bfd3a7f9e8f9c41af2982b628f9a0aad99",
+   "dataDir": "sirketler/004",
+   "facts": {
+    "accounts": 49,
+    "accountEntries": 89,
+    "accountNet": 13556000,
+    "cashEntries": 10,
+    "cashNet": 132191,
+    "invoices": 24,
+    "invoicePayable": 21291780,
+    "invoiceLines": 38,
+    "plans": 7,
+    "planTotal": 18933880,
+    "planEntries": 8,
+    "planPaid": 3020000,
+    "datasetRows": 66
+   },
+   "api": {
+    "accounts": {
+     "count": 49,
+     "balance": 25636000,
+     "hash": "79d85113a3e18b638498fc327bc2d621"
+    },
+    "datasetRows": 66
+   },
+   "fileFacts": {
+    "accounts": 49,
+    "accountEntries": 89,
+    "accountNet": 13556000,
+    "cashEntries": 10,
+    "cashNet": 132191,
+    "invoices": 24,
+    "invoicePayable": 21291780,
+    "invoiceLines": 38,
+    "plans": 7,
+    "planTotal": 18933880,
+    "planEntries": 8,
+    "planPaid": 3020000,
+    "datasetRows": 66
+   },
+   "matchesLive": true
+  },
+  {
+   "version": "v2.0.20",
+   "companyKey": "A",
+   "companyId": "sirket-001",
+   "code": "001",
+   "name": "Merkez Danışmanlık Ltd. Şti.",
+   "file": "destekofis-001-2026-10-03T15-23-28-585Z-manuel.sqlite",
+   "pathAtCreation": "001 - Merkez Danışmanlık Ltd. Şti/destekofis-001-2026-10-03T15-23-28-585Z-manuel.sqlite",
+   "sha256": "20c69ba07246dc48e377b32d9d71763b13c3a44430b26496e1ab2bcc13d35913",
+   "dataDir": "",
+   "facts": {
+    "accounts": 172,
+    "accountEntries": 236,
+    "accountNet": 50849741,
+    "cashEntries": 25,
+    "cashNet": 43171,
+    "invoices": 60,
+    "invoicePayable": 61454350,
+    "invoiceLines": 111,
+    "plans": 19,
+    "planTotal": 51432000,
+    "planEntries": 20,
+    "planPaid": 7600000,
+    "datasetRows": 320
+   },
+   "api": {
+    "accounts": {
+     "count": 172,
+     "balance": 81249741,
+     "hash": "71e7084e768ffcbcc597d4fa3dfa7316"
+    },
+    "datasetRows": 320
+   },
+   "fileFacts": {
+    "accounts": 172,
+    "accountEntries": 236,
+    "accountNet": 50849741,
+    "cashEntries": 25,
+    "cashNet": 43171,
+    "invoices": 60,
+    "invoicePayable": 61454350,
+    "invoiceLines": 111,
+    "plans": 19,
+    "planTotal": 51432000,
+    "planEntries": 20,
+    "planPaid": 7600000,
+    "datasetRows": 320
+   },
+   "matchesLive": true
+  },
+  {
+   "version": "v2.0.20",
+   "companyKey": "B",
+   "companyId": "sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b",
+   "code": "002",
+   "name": "Şahin İnşaat ve Ticaret Ltd. Şti.",
+   "file": "destekofis-002-2026-10-03T15-23-28-631Z-manuel.sqlite",
+   "pathAtCreation": "002 - Şahin İnşaat ve Ticaret Ltd. Şti/destekofis-002-2026-10-03T15-23-28-631Z-manuel.sqlite",
+   "sha256": "2da76c86faeba1eaea373663bfa31c32f2a890ce36049e7bba2c1e85bb3c4070",
+   "dataDir": "sirketler/002",
+   "facts": {
+    "accounts": 59,
+    "accountEntries": 162,
+    "accountNet": 48082589,
+    "cashEntries": 20,
+    "cashNet": 79974,
+    "invoices": 48,
+    "invoicePayable": 62454130,
+    "invoiceLines": 83,
+    "plans": 13,
+    "planTotal": 43597460,
+    "planEntries": 16,
+    "planPaid": 6780000,
+    "datasetRows": 78
+   },
+   "api": {
+    "accounts": {
+     "count": 59,
+     "balance": 75202589,
+     "hash": "e9649ee26187fde8b5c2d078bfcd5ab9"
+    },
+    "datasetRows": 78
+   },
+   "fileFacts": {
+    "accounts": 59,
+    "accountEntries": 162,
+    "accountNet": 48082589,
+    "cashEntries": 20,
+    "cashNet": 79974,
+    "invoices": 48,
+    "invoicePayable": 62454130,
+    "invoiceLines": 83,
+    "plans": 13,
+    "planTotal": 43597460,
+    "planEntries": 16,
+    "planPaid": 6780000,
+    "datasetRows": 78
+   },
+   "matchesLive": true
+  },
+  {
+   "version": "v2.0.20",
+   "companyKey": "C",
+   "companyId": "sirket-8e986639-c54d-40c5-a15c-c6d612cb250c",
+   "code": "007",
+   "name": "Mavi Gıda A.Ş.",
+   "file": "destekofis-007-2026-10-03T15-23-28-678Z-manuel.sqlite",
+   "pathAtCreation": "007 - Mavi Gıda A.Ş/destekofis-007-2026-10-03T15-23-28-678Z-manuel.sqlite",
+   "sha256": "b3422a18fbec2adf6567992c95f18098bce443b72d880275ebdb86aaf926cd28",
+   "dataDir": "sirketler/003",
+   "facts": {
+    "accounts": 59,
+    "accountEntries": 167,
+    "accountNet": 46831043,
+    "cashEntries": 20,
+    "cashNet": 5870,
+    "invoices": 48,
+    "invoicePayable": 59897120,
+    "invoiceLines": 87,
+    "plans": 15,
+    "planTotal": 37709720,
+    "planEntries": 16,
+    "planPaid": 5740000,
+    "datasetRows": 78
+   },
+   "api": {
+    "accounts": {
+     "count": 59,
+     "balance": 69791043,
+     "hash": "d9f19fcb35974f7eb027658a6f4a08fb"
+    },
+    "datasetRows": 78
+   },
+   "fileFacts": {
+    "accounts": 59,
+    "accountEntries": 167,
+    "accountNet": 46831043,
+    "cashEntries": 20,
+    "cashNet": 5870,
+    "invoices": 48,
+    "invoicePayable": 59897120,
+    "invoiceLines": 87,
+    "plans": 15,
+    "planTotal": 37709720,
+    "planEntries": 16,
+    "planPaid": 5740000,
+    "datasetRows": 78
+   },
+   "matchesLive": true
+  },
+  {
+   "version": "v2.0.20",
+   "companyKey": "D",
+   "companyId": "sirket-68751ff0-3cc0-45da-a83f-bfd28e343166",
+   "code": "004",
+   "name": "Çağdaş Eğitim Kurumları",
+   "file": "destekofis-004-2026-10-03T15-23-28-727Z-manuel.sqlite",
+   "pathAtCreation": "004 - Çağdaş Eğitim Kurumları/destekofis-004-2026-10-03T15-23-28-727Z-manuel.sqlite",
+   "sha256": "c120e2b983ef0db77892574d3c2aba7a247550ada2a09d5600be7676846c0c71",
+   "dataDir": "sirketler/004",
+   "facts": {
+    "accounts": 54,
+    "accountEntries": 128,
+    "accountNet": 17749809,
+    "cashEntries": 15,
+    "cashNet": -47706,
+    "invoices": 36,
+    "invoicePayable": 28696610,
+    "invoiceLines": 57,
+    "plans": 11,
+    "planTotal": 29925060,
+    "planEntries": 12,
+    "planPaid": 4720000,
+    "datasetRows": 72
+   },
+   "api": {
+    "accounts": {
+     "count": 54,
+     "balance": 36629809,
+     "hash": "9f17ad4253fa584c6c120e0b32bba3a6"
+    },
+    "datasetRows": 72
+   },
+   "fileFacts": {
+    "accounts": 54,
+    "accountEntries": 128,
+    "accountNet": 17749809,
+    "cashEntries": 15,
+    "cashNet": -47706,
+    "invoices": 36,
+    "invoicePayable": 28696610,
+    "invoiceLines": 57,
+    "plans": 11,
+    "planTotal": 29925060,
+    "planEntries": 12,
+    "planPaid": 4720000,
+    "datasetRows": 72
+   },
+   "matchesLive": true
+  },
+  {
+   "version": "v2.0.20",
+   "companyKey": "E",
+   "companyId": "sirket-d14a948c-25a2-4969-bc48-1589af813165",
+   "code": "004",
+   "name": "Işık Turizm ve Seyahat",
+   "file": "destekofis-004-2026-10-03T15-23-29-562Z-manuel.sqlite",
+   "pathAtCreation": "004 - Işık Turizm ve Seyahat/destekofis-004-2026-10-03T15-23-29-562Z-manuel.sqlite",
+   "sha256": "9683b8be05cdfdc2c4f2b3fa0eb18334059b6276f6ab208a6e3179f7572b4fb0",
+   "dataDir": "sirketler/004",
+   "facts": {
+    "accounts": 44,
+    "accountEntries": 51,
+    "accountNet": 8091977,
+    "cashEntries": 5,
+    "cashNet": 143741,
+    "invoices": 12,
+    "invoicePayable": 9523130,
+    "invoiceLines": 16,
+    "plans": 3,
+    "planTotal": 5276000,
+    "planEntries": 4,
+    "planPaid": 700000,
+    "datasetRows": 60
+   },
+   "api": {
+    "accounts": {
+     "count": 44,
+     "balance": 10891977,
+     "hash": "590c64278000fd69c26dc96663b05c1e"
+    },
+    "datasetRows": 60
+   },
+   "fileFacts": {
+    "accounts": 44,
+    "accountEntries": 51,
+    "accountNet": 8091977,
+    "cashEntries": 5,
+    "cashNet": 143741,
+    "invoices": 12,
+    "invoicePayable": 9523130,
+    "invoiceLines": 16,
+    "plans": 3,
+    "planTotal": 5276000,
+    "planEntries": 4,
+    "planPaid": 700000,
+    "datasetRows": 60
+   },
+   "matchesLive": true
+  },
+  {
+   "version": "v2.0.21",
+   "companyKey": "A",
+   "companyId": "sirket-001",
+   "code": "001",
+   "name": "Merkez Danışmanlık Ltd. Şti.",
+   "file": "destekofis-001-2026-10-08T17-37-23-504Z-manuel.sqlite",
+   "pathAtCreation": "001 - Merkez Danışmanlık Ltd. Şti/destekofis-001-2026-10-08T17-37-23-504Z-manuel.sqlite",
+   "sha256": "1b8cffc1af30678b12eb61503972ccf159ee25f402b11224dc838034d7c9ceef",
+   "dataDir": "",
+   "facts": {
+    "accounts": 176,
+    "accountEntries": 250,
+    "accountNet": 51175041,
+    "cashEntries": 30,
+    "cashNet": 93171,
+    "invoices": 66,
+    "invoicePayable": 62108350,
+    "invoiceLines": 117,
+    "plans": 21,
+    "planTotal": 52092000,
+    "planEntries": 22,
+    "planPaid": 7675000,
+    "datasetRows": 320,
+    "records": 0,
+    "tasks": 0
+   },
+   "api": {
+    "accounts": {
+     "count": 176,
+     "balance": 81800041,
+     "hash": "841ff5e83919b1b4ac5db1262bb46bc0"
+    },
+    "datasetRows": 320
+   },
+   "fileFacts": {
+    "accounts": 176,
+    "accountEntries": 250,
+    "accountNet": 51175041,
+    "cashEntries": 30,
+    "cashNet": 93171,
+    "invoices": 66,
+    "invoicePayable": 62108350,
+    "invoiceLines": 117,
+    "plans": 21,
+    "planTotal": 52092000,
+    "planEntries": 22,
+    "planPaid": 7675000,
+    "datasetRows": 320,
+    "records": 0,
+    "tasks": 0
+   },
+   "matchesLive": true
+  },
+  {
+   "version": "v2.0.21",
+   "companyKey": "B",
+   "companyId": "sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b",
+   "code": "002",
+   "name": "Şahin İnşaat ve Ticaret Ltd. Şti.",
+   "file": "destekofis-002-2026-10-08T17-37-23-563Z-manuel.sqlite",
+   "pathAtCreation": "002 - Şahin İnşaat ve Ticaret Ltd. Şti/destekofis-002-2026-10-08T17-37-23-563Z-manuel.sqlite",
+   "sha256": "491c68ac149f346b3bb26e6ec17dcb2306069780b6896fe3ce731820f1bd5713",
+   "dataDir": "sirketler/002",
+   "facts": {
+    "accounts": 63,
+    "accountEntries": 176,
+    "accountNet": 48667889,
+    "cashEntries": 25,
+    "cashNet": 129974,
+    "invoices": 54,
+    "invoicePayable": 63108130,
+    "invoiceLines": 89,
+    "plans": 15,
+    "planTotal": 44257460,
+    "planEntries": 18,
+    "planPaid": 6855000,
+    "datasetRows": 78,
+    "records": 0,
+    "tasks": 0
+   },
+   "api": {
+    "accounts": {
+     "count": 63,
+     "balance": 76012889,
+     "hash": "555966c9e7c44164571099469bfb48f2"
+    },
+    "datasetRows": 78
+   },
+   "fileFacts": {
+    "accounts": 63,
+    "accountEntries": 176,
+    "accountNet": 48667889,
+    "cashEntries": 25,
+    "cashNet": 129974,
+    "invoices": 54,
+    "invoicePayable": 63108130,
+    "invoiceLines": 89,
+    "plans": 15,
+    "planTotal": 44257460,
+    "planEntries": 18,
+    "planPaid": 6855000,
+    "datasetRows": 78,
+    "records": 0,
+    "tasks": 0
+   },
+   "matchesLive": true
+  },
+  {
+   "version": "v2.0.23",
+   "companyKey": "A",
+   "companyId": "sirket-001",
+   "code": "001",
+   "name": "Merkez Danışmanlık Ltd. Şti.",
+   "file": "destekofis-001-2026-10-08T17-37-38-680Z-manuel.sqlite",
+   "pathAtCreation": "001 - Merkez Danışmanlık Ltd. Şti/destekofis-001-2026-10-08T17-37-38-680Z-manuel.sqlite",
+   "sha256": "af3ccf0111ab7224d135319a6824a7fb774dc76cd5d0c3ac50f993e202f38787",
+   "dataDir": "",
+   "facts": {
+    "accounts": 184,
+    "accountEntries": 278,
+    "accountNet": 52045641,
+    "cashEntries": 40,
+    "cashNet": 193171,
+    "invoices": 78,
+    "invoicePayable": 63416350,
+    "invoiceLines": 129,
+    "plans": 25,
+    "planTotal": 53412000,
+    "planEntries": 26,
+    "planPaid": 7825000,
+    "datasetRows": 320,
+    "records": 0,
+    "tasks": 0
+   },
+   "api": {
+    "accounts": {
+     "count": 184,
+     "balance": 83120641,
+     "hash": "a2cba92e36314eccabb3b59f882658ee"
+    },
+    "datasetRows": 320
+   },
+   "fileFacts": {
+    "accounts": 184,
+    "accountEntries": 278,
+    "accountNet": 52045641,
+    "cashEntries": 40,
+    "cashNet": 193171,
+    "invoices": 78,
+    "invoicePayable": 63416350,
+    "invoiceLines": 129,
+    "plans": 25,
+    "planTotal": 53412000,
+    "planEntries": 26,
+    "planPaid": 7825000,
+    "datasetRows": 320,
+    "records": 0,
+    "tasks": 0
+   },
+   "matchesLive": true
+  },
+  {
+   "version": "v2.0.25",
+   "companyKey": "A",
+   "companyId": "sirket-001",
+   "code": "001",
+   "name": "Merkez Danışmanlık Ltd. Şti.",
+   "file": "destekofis-001-2026-10-08T17-37-53-928Z-manuel.sqlite",
+   "pathAtCreation": "001 - Merkez Danışmanlık Ltd. Şti/destekofis-001-2026-10-08T17-37-53-928Z-manuel.sqlite",
+   "sha256": "e57eb06175774b18fcbbbe8ddfb908dba28022fe1f8c62c5761b774b283f0f2a",
+   "dataDir": "",
+   "facts": {
+    "accounts": 192,
+    "accountEntries": 306,
+    "accountNet": 53026241,
+    "cashEntries": 50,
+    "cashNet": 293171,
+    "invoices": 90,
+    "invoicePayable": 64724350,
+    "invoiceLines": 141,
+    "plans": 29,
+    "planTotal": 54732000,
+    "planEntries": 30,
+    "planPaid": 7975000,
+    "datasetRows": 320,
+    "records": 0,
+    "tasks": 0
+   },
+   "api": {
+    "accounts": {
+     "count": 192,
+     "balance": 84551241,
+     "hash": "20075bb79fd5ed82bc3eb7c9935cfdd4"
+    },
+    "datasetRows": 320
+   },
+   "fileFacts": {
+    "accounts": 192,
+    "accountEntries": 306,
+    "accountNet": 53026241,
+    "cashEntries": 50,
+    "cashNet": 293171,
+    "invoices": 90,
+    "invoicePayable": 64724350,
+    "invoiceLines": 141,
+    "plans": 29,
+    "planTotal": 54732000,
+    "planEntries": 30,
+    "planPaid": 7975000,
+    "datasetRows": 320,
+    "records": 0,
+    "tasks": 0
+   },
+   "matchesLive": true
+  },
+  {
+   "version": "v2.0.25",
+   "companyKey": "B",
+   "companyId": "sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b",
+   "code": "002",
+   "name": "Şahin İnşaat ve Ticaret Ltd. Şti.",
+   "file": "destekofis-002-2026-10-08T17-37-53-998Z-manuel.sqlite",
+   "pathAtCreation": "002 - Şahin İnşaat ve Ticaret Ltd. Şti/destekofis-002-2026-10-08T17-37-53-998Z-manuel.sqlite",
+   "sha256": "7dd1b2f0740e74c4fe90c5dcf13d7a67775b0f028553ead2cc06e943e29b0807",
+   "dataDir": "sirketler/002",
+   "facts": {
+    "accounts": 79,
+    "accountEntries": 232,
+    "accountNet": 50239089,
+    "cashEntries": 45,
+    "cashNet": 329974,
+    "invoices": 78,
+    "invoicePayable": 65724130,
+    "invoiceLines": 113,
+    "plans": 23,
+    "planTotal": 46897460,
+    "planEntries": 26,
+    "planPaid": 7155000,
+    "datasetRows": 78,
+    "records": 0,
+    "tasks": 0
+   },
+   "api": {
+    "accounts": {
+     "count": 79,
+     "balance": 78484089,
+     "hash": "2ff034fe89ad3f78cd5c13b7e8e1ea52"
+    },
+    "datasetRows": 78
+   },
+   "fileFacts": {
+    "accounts": 79,
+    "accountEntries": 232,
+    "accountNet": 50239089,
+    "cashEntries": 45,
+    "cashNet": 329974,
+    "invoices": 78,
+    "invoicePayable": 65724130,
+    "invoiceLines": 113,
+    "plans": 23,
+    "planTotal": 46897460,
+    "planEntries": 26,
+    "planPaid": 7155000,
+    "datasetRows": 78,
+    "records": 0,
+    "tasks": 0
+   },
+   "matchesLive": true
+  },
+  {
+   "version": "v2.0.26",
+   "companyKey": "A",
+   "companyId": "sirket-001",
+   "code": "001",
+   "name": "Merkez Danışmanlık Ltd. Şti.",
+   "file": "destekofis-001-2026-10-08T17-38-05-844Z-manuel.sqlite",
+   "pathAtCreation": "001 - Merkez Danışmanlık Ltd. Şti/destekofis-001-2026-10-08T17-38-05-844Z-manuel.sqlite",
+   "sha256": "10f21c900410408ea6437434410b7eb0297a3c35b24a82f00ed5d3b9e67b1242",
+   "dataDir": "",
+   "facts": {
+    "accounts": 196,
+    "accountEntries": 320,
+    "accountNet": 53491541,
+    "cashEntries": 55,
+    "cashNet": 343171,
+    "invoices": 96,
+    "invoicePayable": 65378350,
+    "invoiceLines": 147,
+    "plans": 31,
+    "planTotal": 55392000,
+    "planEntries": 32,
+    "planPaid": 8050000,
+    "datasetRows": 320,
+    "records": 0,
+    "tasks": 0
+   },
+   "api": {
+    "accounts": {
+     "count": 196,
+     "balance": 85241541,
+     "hash": "274a0ac04d823d169ed788d5c88c7423"
+    },
+    "datasetRows": 320
+   },
+   "fileFacts": {
+    "accounts": 196,
+    "accountEntries": 320,
+    "accountNet": 53491541,
+    "cashEntries": 55,
+    "cashNet": 343171,
+    "invoices": 96,
+    "invoicePayable": 65378350,
+    "invoiceLines": 147,
+    "plans": 31,
+    "planTotal": 55392000,
+    "planEntries": 32,
+    "planPaid": 8050000,
+    "datasetRows": 320,
+    "records": 0,
+    "tasks": 0
+   },
+   "matchesLive": true
+  },
+  {
+   "version": "v2.0.26",
+   "companyKey": "B",
+   "companyId": "sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b",
+   "code": "002",
+   "name": "Şahin İnşaat ve Ticaret Ltd. Şti.",
+   "file": "destekofis-002-2026-10-08T17-38-05-900Z-manuel.sqlite",
+   "pathAtCreation": "002 - Şahin İnşaat ve Ticaret Ltd. Şti/destekofis-002-2026-10-08T17-38-05-900Z-manuel.sqlite",
+   "sha256": "fa54a76f4a0e6522bf087d5b07edc0938fc0a9eddf164dad791a451ad0744690",
+   "dataDir": "sirketler/002",
+   "facts": {
+    "accounts": 83,
+    "accountEntries": 246,
+    "accountNet": 50784389,
+    "cashEntries": 50,
+    "cashNet": 379974,
+    "invoices": 84,
+    "invoicePayable": 66378130,
+    "invoiceLines": 119,
+    "plans": 25,
+    "planTotal": 47557460,
+    "planEntries": 28,
+    "planPaid": 7230000,
+    "datasetRows": 78,
+    "records": 0,
+    "tasks": 0
+   },
+   "api": {
+    "accounts": {
+     "count": 83,
+     "balance": 79254389,
+     "hash": "60a8760aa446b6e41f85cb49ca793880"
+    },
+    "datasetRows": 78
+   },
+   "fileFacts": {
+    "accounts": 83,
+    "accountEntries": 246,
+    "accountNet": 50784389,
+    "cashEntries": 50,
+    "cashNet": 379974,
+    "invoices": 84,
+    "invoicePayable": 66378130,
+    "invoiceLines": 119,
+    "plans": 25,
+    "planTotal": 47557460,
+    "planEntries": 28,
+    "planPaid": 7230000,
+    "datasetRows": 78,
+    "records": 0,
+    "tasks": 0
+   },
+   "matchesLive": true
+  },
+  {
+   "version": "v2.0.26",
+   "companyKey": "A",
+   "companyId": "sirket-001",
+   "code": "001",
+   "name": "Merkez Danışmanlık Ltd. Şti.",
+   "file": "destekofis-001-2026-10-09T03-09-45-663Z-manuel.sqlite",
+   "pathAtCreation": "001 - Merkez Danışmanlık Ltd. Şti/destekofis-001-2026-10-09T03-09-45-663Z-manuel.sqlite",
+   "sha256": "f552300a2ae68b00df0d06ddb3237946de15e758d79f44b49ab57195b66d04a0",
+   "dataDir": "",
+   "facts": {
+    "accounts": 201,
+    "accountEntries": 325,
+    "accountNet": 53111541,
+    "cashEntries": 55,
+    "cashNet": 343171,
+    "invoices": 96,
+    "invoicePayable": 65378350,
+    "invoiceLines": 147,
+    "plans": 34,
+    "planTotal": 56112000,
+    "planEntries": 37,
+    "planPaid": 8273000,
+    "datasetRows": 320,
+    "records": 0,
+    "tasks": 0
+   },
+   "api": {
+    "accounts": {
+     "count": 201,
+     "balance": 85358541,
+     "hash": "795a5f8847892ab05130b583f8586108"
+    },
+    "datasetRows": 320
+   },
+   "fileFacts": {
+    "accounts": 201,
+    "accountEntries": 325,
+    "accountNet": 53111541,
+    "cashEntries": 55,
+    "cashNet": 343171,
+    "invoices": 96,
+    "invoicePayable": 65378350,
+    "invoiceLines": 147,
+    "plans": 34,
+    "planTotal": 56112000,
+    "planEntries": 37,
+    "planPaid": 8273000,
+    "datasetRows": 320,
+    "records": 0,
+    "tasks": 0
+   },
+   "matchesLive": true
+  },
+  {
+   "version": "v2.0.26",
+   "companyKey": "B",
+   "companyId": "sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b",
+   "code": "002",
+   "name": "Şahin İnşaat ve Ticaret Ltd. Şti.",
+   "file": "destekofis-002-2026-10-09T03-09-45-705Z-manuel.sqlite",
+   "pathAtCreation": "002 - Şahin İnşaat ve Ticaret Ltd. Şti/destekofis-002-2026-10-09T03-09-45-705Z-manuel.sqlite",
+   "sha256": "372ed0c79755c2d3e19ff9bd20bd204e922bcfe374b44a3b8d494eb5b8481ea6",
+   "dataDir": "sirketler/002",
+   "facts": {
+    "accounts": 88,
+    "accountEntries": 251,
+    "accountNet": 50404389,
+    "cashEntries": 50,
+    "cashNet": 379974,
+    "invoices": 84,
+    "invoicePayable": 66378130,
+    "invoiceLines": 119,
+    "plans": 28,
+    "planTotal": 48277460,
+    "planEntries": 33,
+    "planPaid": 7453000,
+    "datasetRows": 78,
+    "records": 0,
+    "tasks": 0
+   },
+   "api": {
+    "accounts": {
+     "count": 88,
+     "balance": 79371389,
+     "hash": "80cd263b8a9e22c5828fda4cc066c49f"
+    },
+    "datasetRows": 78
+   },
+   "fileFacts": {
+    "accounts": 88,
+    "accountEntries": 251,
+    "accountNet": 50404389,
+    "cashEntries": 50,
+    "cashNet": 379974,
+    "invoices": 84,
+    "invoicePayable": 66378130,
+    "invoiceLines": 119,
+    "plans": 28,
+    "planTotal": 48277460,
+    "planEntries": 33,
+    "planPaid": 7453000,
+    "datasetRows": 78,
+    "records": 0,
+    "tasks": 0
+   },
+   "matchesLive": true
+  }
+ ],
+ "deleted": [
+  {
+   "id": "sirket-68751ff0-3cc0-45da-a83f-bfd28e343166",
+   "code": "004",
+   "name": "Çağdaş Eğitim Kurumları",
+   "version": "v2.0.20",
+   "facts": {
+    "accounts": 54,
+    "accountEntries": 128,
+    "accountNet": 17749809,
+    "cashEntries": 15,
+    "cashNet": -47706,
+    "invoices": 36,
+    "invoicePayable": 28696610,
+    "invoiceLines": 57,
+    "plans": 11,
+    "planTotal": 29925060,
+    "planEntries": 12,
+    "planPaid": 4720000,
+    "datasetRows": 72
+   },
+   "backup": "destekofis-004-2026-10-03T15-23-28-816Z-silme-oncesi-004.sqlite"
+  }
+ ],
+ "timings": {
+  "v2.0.16": 1463,
+  "v2.0.17": 3148,
+  "v2.0.18": 3928,
+  "v2.0.19": 4919,
+  "v2.0.20": 5710,
+  "v2.0.21": 2532,
+  "v2.0.22": 1471,
+  "v2.0.23": 1726,
+  "v2.0.24": 1786,
+  "v2.0.25": 2355,
+  "v2.0.26": 1422
+ },
+ "resumedFrom": "surum-2.0.26-zincir",
+ "people": {
+  "version": "v2.0.21",
+  "roles": [
+   {
+    "name": "Tahsilat Sorumlusu",
+    "permissions": [
+     "accounts.view",
+     "accounts.collect",
+     "accounts.manage",
+     "plans.view",
+     "plans.collect",
+     "cash.view"
+    ],
+    "id": "role-a99987e4-b451-40e1-8beb-d5d11e258fc4"
+   },
+   {
+    "name": "Kasa Görevlisi",
+    "permissions": [
+     "cash.view",
+     "cash.manage",
+     "payments.create",
+     "records.create"
+    ],
+    "id": "role-ebe07607-f77c-4a77-9442-e9659bff101f"
+   }
+  ],
+  "users": [
+   {
+    "username": "ayse",
+    "name": "Ayşe Fatura",
+    "role": "personel",
+    "grants": {
+     "add": [
+      "invoices.view",
+      "invoices.manage"
+     ],
+     "remove": []
+    }
+   },
+   {
+    "username": "mehmet",
+    "name": "Mehmet Muhasebe",
+    "role": "muhasebe",
+    "grants": {
+     "add": [],
+     "remove": [
+      "cash.view"
+     ]
+    }
+   },
+   {
+    "username": "zeynep",
+    "name": "Zeynep Tahsilat",
+    "role": "role-a99987e4-b451-40e1-8beb-d5d11e258fc4",
+    "grants": {
+     "add": [],
+     "remove": []
+    }
+   },
+   {
+    "username": "ali",
+    "name": "Ali Personel",
+    "role": "personel",
+    "grants": {
+     "add": [],
+     "remove": []
+    }
+   },
+   {
+    "username": "fatma",
+    "name": "Fatma Avukat",
+    "role": "avukat",
+    "grants": {
+     "add": [],
+     "remove": [
+      "accounts.manage",
+      "invoices.manage",
+      "stock.manage",
+      "stock.sell",
+      "cheques.manage",
+      "plans.manage"
+     ]
+    }
+   },
+   {
+    "username": "kasa1",
+    "name": "Kasa Görevlisi Bir",
+    "role": "role-ebe07607-f77c-4a77-9442-e9659bff101f",
+    "grants": {
+     "add": [
+      "stock.sell"
+     ],
+     "remove": []
+    }
+   }
+  ]
+ },
+ "oncesi": {
+  "version": "v2.0.26",
+  "commit": "5346ff8442612aaa429783e59ae478d9d6a5fc07",
+  "today": "2026-10-09",
+  "companies": {
+   "sirket-001": {
+    "code": "001",
+    "name": "Merkez Danışmanlık Ltd. Şti.",
+    "today": "2026-10-09",
+    "lockedUntil": "2026-10-05",
+    "integrity": [
+     "dates:future:cheque_events|0|1|0|1"
+    ],
+    "checksOk": [
+     "balance",
+     "cents:account_entries",
+     "cents:cash_entries",
+     "cents:cheque_events",
+     "cents:cheques",
+     "cents:invoice_lines",
+     "cents:invoice_lines",
+     "cents:invoices",
+     "cents:invoices",
+     "cents:invoices",
+     "cents:invoices",
+     "cents:invoices",
+     "cents:invoices",
+     "cents:payments",
+     "cents:plan_entries",
+     "cents:plan_items",
+     "cents:plans",
+     "cents:stock_moves",
+     "cheque:account",
+     "dates:due-before-start",
+     "dates:format:account_entries",
+     "dates:format:cash_entries",
+     "dates:format:cheque_events",
+     "dates:format:payments",
+     "dates:format:plan_entries",
+     "dates:format:stock_moves",
+     "dates:future:account_entries",
+     "dates:future:cash_entries",
+     "dates:future:payments",
+     "dates:future:plan_entries",
+     "dates:future:stock_moves",
+     "gl:100",
+     "gl:101",
+     "gl:102",
+     "gl:103",
+     "gl:108",
+     "gl:120",
+     "gl:127",
+     "gl:191",
+     "gl:193",
+     "gl:320",
+     "gl:336",
+     "gl:360",
+     "gl:391",
+     "invoice:account",
+     "invoice:cheque",
+     "invoice:lines",
+     "invoice:offset",
+     "invoice:orphan",
+     "invoice:plan",
+     "invoice:returns",
+     "invoice:stock",
+     "invoice:try",
+     "money:method",
+     "party:accounts",
+     "party:plans",
+     "plans:totals",
+     "stock:account",
+     "stock:orphan",
+     "stock:qty",
+     "stock:qty"
+    ],
+    "trial": [
+     "100|27776485|1914985|25861500",
+     "101|440000|365000|75000",
+     "102|7152865|332000|6820865",
+     "103|120000|120000|0",
+     "108|1080000|360000|720000",
+     "120|121735262|34585393|87149869",
+     "153|80000|0|80000",
+     "191|528600|0|528600",
+     "320|1880272|3671600|-1791328",
+     "391|18000|6960750|-6942750",
+     "500|115000|12780000|-12665000",
+     "600|0|54904000|-54904000",
+     "602|0|47822585|-47822585",
+     "610|90000|0|90000",
+     "649|0|1255957|-1255957",
+     "770|4055786|0|4055786"
+    ],
+    "trialTotals": [
+     165072270,
+     165072270,
+     0
+    ],
+    "reconciliation": [
+     "100|25861500|25861500|true",
+     "101|75000|75000|true",
+     "102|6820865|6820865|true",
+     "103|0|0|true",
+     "108|720000|720000|true",
+     "120|87149869|87149869|true",
+     "127|0|0|true",
+     "191|528600|528600|true",
+     "193|0|0|true",
+     "320|-1791328|-1791328|true",
+     "336|0|0|true",
+     "360|0|0|true",
+     "391|-6942750|-6942750|true"
+    ],
+    "cash": {
+     "totals": {
+      "in": 360093.5,
+      "out": 26069.85,
+      "balance": 334023.65
+     },
+     "byMethod": {
+      "cash": 258615,
+      "bank": 68208.65,
+      "card": 7200
+     },
+     "all": "80df23da5b83114699c8219429587be1",
+     "window": "8d85d66faa861ac33415c064d6ec3b24",
+     "windowCount": 151,
+     "windowTotals": {
+      "in": 277764.85,
+      "out": 19149.85,
+      "balance": 258615
+     }
+    },
+    "overview": "467faca4d5bba075d6bd3767d70db677",
+    "overviewCash": {
+     "balance": 258615,
+     "allEntries": 258615,
+     "today": {
+      "in": 840,
+      "out": 300
+     },
+     "month": {
+      "in": 4440,
+      "out": 1500
+     },
+     "futureEntries": 0,
+     "byMethod": {
+      "cash": 258615,
+      "bank": 68208.65,
+      "card": 7200
+     },
+     "byMethodAt": {
+      "cash": 258615,
+      "bank": 68208.65,
+      "card": 7200
+     },
+     "bank": {
+      "balance": 75408.65,
+      "allEntries": 75408.65,
+      "today": {
+       "in": 720,
+       "out": 1820
+      }
+     }
+    },
+    "accounts": {
+     "count": 201,
+     "balance": 85358541,
+     "hash": "795a5f8847892ab05130b583f8586108"
+    },
+    "invoices": "4874c2b474df122d7777407055c65364",
+    "invoiceCount": 96,
+    "reports": {
+     "kasa-hareketleri": {
+      "total": 152,
+      "rows": "1f5c2767431471b54c63c1bcb03c0387",
+      "footer": [
+       "TOPLAM",
+       "",
+       "",
+       "277.764,85 TL",
+       "19.149,85 TL",
+       "",
+       ""
+      ],
+      "summary": [
+       [
+        "Devir",
+        "0,00 TL"
+       ],
+       [
+        "Dönem Giriş",
+        "277.764,85 TL"
+       ],
+       [
+        "Dönem Çıkış",
+        "19.149,85 TL"
+       ],
+       [
+        "Dönem Net",
+        "258.615,00 TL"
+       ],
+       [
+        "Dönem Sonu Kasa",
+        "258.615,00 TL"
+       ],
+       [
+        "Güncel Kasa (tüm hareketler)",
+        "258.615,00 TL"
+       ]
+      ]
+     },
+     "banka-pos-hareketleri": {
+      "total": 117,
+      "rows": "c512db14b55352c0f17350669e1b49ad",
+      "footer": [
+       "TOPLAM",
+       "",
+       "",
+       "",
+       "82.328,65 TL",
+       "6.920,00 TL",
+       "",
+       ""
+      ],
+      "summary": [
+       [
+        "Devir",
+        "0,00 TL"
+       ],
+       [
+        "Dönem Giriş",
+        "82.328,65 TL"
+       ],
+       [
+        "Dönem Çıkış",
+        "6.920,00 TL"
+       ],
+       [
+        "Dönem Net",
+        "75.408,65 TL"
+       ],
+       [
+        "Dönem Sonu",
+        "75.408,65 TL"
+       ],
+       [
+        "Banka (tüm hareketler)",
+        "68.208,65 TL"
+       ],
+       [
+        "POS / Kredi Kartı (tüm hareketler)",
+        "7.200,00 TL"
+       ]
+      ]
+     },
+     "hesap-mizani": {
+      "total": 16,
+      "rows": "06a164bd9637d1d55b1184fbe849fe05",
+      "footer": [
+       "TOPLAM",
+       "",
+       "0,00 TL",
+       "1.650.722,70 TL",
+       "1.650.722,70 TL",
+       "",
+       ""
+      ],
+      "summary": [
+       [
+        "Dönem Borç",
+        "1.650.722,70 TL"
+       ],
+       [
+        "Dönem Alacak",
+        "1.650.722,70 TL"
+       ],
+       [
+        "Fark",
+        "0,00 TL"
+       ]
+      ]
+     },
+     "cari-listesi": {
+      "total": 201,
+      "rows": "6e8cb97ffe7a6c0ee1e450a339a50297",
+      "footer": [
+       "TOPLAM",
+       "",
+       "",
+       "",
+       "",
+       "1.236.035,34 TL",
+       "382.449,93 TL",
+       "853.585,41 TL",
+       "Borçlu",
+       "245.694,30 TL"
+      ],
+      "summary": [
+       [
+        "Cari",
+        "201"
+       ],
+       [
+        "Toplam Borç (Anlaşılan)",
+        "1.236.035,34 TL"
+       ],
+       [
+        "Toplam Alacak (Ödenen)",
+        "382.449,93 TL"
+       ],
+       [
+        "Kalan (Borçlu)",
+        "853.585,41 TL"
+       ],
+       [
+        "Borçlular",
+        "946.554,32 TL"
+       ],
+       [
+        "Alacaklılar",
+        "92.968,91 TL"
+       ],
+       [
+        "Geciken Taksit",
+        "245.694,30 TL"
+       ]
+      ]
+     },
+     "acik-faturalar": {
+      "total": 43,
+      "rows": "a0f387beef515d494e588f7fd864e933",
+      "footer": null,
+      "summary": [
+       [
+        "Açık Alacak",
+        "323.079,06 TL"
+       ],
+       [
+        "Açık Borç",
+        "19.597,04 TL"
+       ]
+      ]
+     }
+    },
+    "file": {
+     "version": 19,
+     "lock": "2026-10-05",
+     "lockAll": "bff10b1ca965f33396bcb8c16f06258bc97c21b246536c2d55d745851619dd7e",
+     "lockAt": "93fa83ecf3a9591957ff5d8e212f5cb2414702977f1a706c40db1f465dc3756a",
+     "baselines": 1,
+     "rolledBack": 0
+    }
+   },
+   "sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b": {
+    "code": "002",
+    "name": "Şahin İnşaat ve Ticaret Ltd. Şti.",
+    "today": "2026-10-09",
+    "lockedUntil": "",
+    "integrity": [],
+    "checksOk": [
+     "balance",
+     "cents:account_entries",
+     "cents:cash_entries",
+     "cents:cheque_events",
+     "cents:cheques",
+     "cents:invoice_lines",
+     "cents:invoice_lines",
+     "cents:invoices",
+     "cents:invoices",
+     "cents:invoices",
+     "cents:invoices",
+     "cents:invoices",
+     "cents:invoices",
+     "cents:payments",
+     "cents:plan_entries",
+     "cents:plan_items",
+     "cents:plans",
+     "cents:stock_moves",
+     "cheque:account",
+     "dates:due-before-start",
+     "dates:format:account_entries",
+     "dates:format:cash_entries",
+     "dates:format:cheque_events",
+     "dates:format:payments",
+     "dates:format:plan_entries",
+     "dates:format:stock_moves",
+     "dates:future:account_entries",
+     "dates:future:cash_entries",
+     "dates:future:cheque_events",
+     "dates:future:payments",
+     "dates:future:plan_entries",
+     "dates:future:stock_moves",
+     "gl:100",
+     "gl:101",
+     "gl:102",
+     "gl:103",
+     "gl:108",
+     "gl:120",
+     "gl:127",
+     "gl:191",
+     "gl:193",
+     "gl:320",
+     "gl:336",
+     "gl:360",
+     "gl:391",
+     "invoice:account",
+     "invoice:cheque",
+     "invoice:lines",
+     "invoice:offset",
+     "invoice:orphan",
+     "invoice:plan",
+     "invoice:returns",
+     "invoice:stock",
+     "invoice:try",
+     "money:method",
+     "party:accounts",
+     "party:plans",
+     "plans:totals",
+     "stock:account",
+     "stock:orphan",
+     "stock:qty",
+     "stock:qty"
+    ],
+    "trial": [
+     "100|20249441|1730915|18518526",
+     "101|365000|365000|0",
+     "102|6863122|332000|6531122",
+     "103|120000|120000|0",
+     "108|1080000|360000|720000",
+     "120|101093423|26083851|75009572",
+     "153|80000|0|80000",
+     "191|493200|0|493200",
+     "320|8538910|4177093|4361817",
+     "391|18000|7097930|-7079930",
+     "500|115000|2930000|-2815000",
+     "600|0|55979000|-55979000",
+     "602|0|42516333|-42516333",
+     "610|90000|0|90000",
+     "649|0|1222819|-1222819",
+     "770|3808845|0|3808845"
+    ],
+    "trialTotals": [
+     142914941,
+     142914941,
+     0
+    ],
+    "reconciliation": [
+     "100|18518526|18518526|true",
+     "101|0|0|true",
+     "102|6531122|6531122|true",
+     "103|0|0|true",
+     "108|720000|720000|true",
+     "120|75009572|75009572|true",
+     "127|0|0|true",
+     "191|493200|493200|true",
+     "193|0|0|true",
+     "320|4361817|4361817|true",
+     "336|0|0|true",
+     "360|0|0|true",
+     "391|-7079930|-7079930|true"
+    ],
+    "cash": {
+     "totals": {
+      "in": 281925.63,
+      "out": 24229.15,
+      "balance": 257696.48
+     },
+     "byMethod": {
+      "cash": 185185.26,
+      "bank": 65311.22,
+      "card": 7200
+     },
+     "all": "198cda5db47ad38a8b826131dc378f4a",
+     "window": "8cdd5ce33d300eef9ec26b08aaba83d2",
+     "windowCount": 120,
+     "windowTotals": {
+      "in": 202494.41,
+      "out": 17309.15,
+      "balance": 185185.26
+     }
+    },
+    "overview": "c19c6fa68ab3f8aef0d42ab2eae0fae1",
+    "overviewCash": {
+     "balance": 185185.26,
+     "allEntries": 185185.26,
+     "today": {
+      "in": 840,
+      "out": 300
+     },
+     "month": {
+      "in": 7805.22,
+      "out": 2348.34
+     },
+     "futureEntries": 0,
+     "byMethod": {
+      "cash": 185185.26,
+      "bank": 65311.22,
+      "card": 7200
+     },
+     "byMethodAt": {
+      "cash": 185185.26,
+      "bank": 65311.22,
+      "card": 7200
+     },
+     "bank": {
+      "balance": 72511.22,
+      "allEntries": 72511.22,
+      "today": {
+       "in": 720,
+       "out": 1820
+      }
+     }
+    },
+    "accounts": {
+     "count": 88,
+     "balance": 79371389,
+     "hash": "80cd263b8a9e22c5828fda4cc066c49f"
+    },
+    "invoices": "5596639e0ef627abea5db62d11daf028",
+    "invoiceCount": 84,
+    "reports": {
+     "kasa-hareketleri": {
+      "total": 121,
+      "rows": "fded9b10f2724f95411bb5e744d0e3b7",
+      "footer": [
+       "TOPLAM",
+       "",
+       "",
+       "202.494,41 TL",
+       "17.309,15 TL",
+       "",
+       ""
+      ],
+      "summary": [
+       [
+        "Devir",
+        "0,00 TL"
+       ],
+       [
+        "Dönem Giriş",
+        "202.494,41 TL"
+       ],
+       [
+        "Dönem Çıkış",
+        "17.309,15 TL"
+       ],
+       [
+        "Dönem Net",
+        "185.185,26 TL"
+       ],
+       [
+        "Dönem Sonu Kasa",
+        "185.185,26 TL"
+       ],
+       [
+        "Güncel Kasa (tüm hareketler)",
+        "185.185,26 TL"
+       ]
+      ]
+     },
+     "banka-pos-hareketleri": {
+      "total": 112,
+      "rows": "5e5def390f576b630973aefd029d9db3",
+      "footer": [
+       "TOPLAM",
+       "",
+       "",
+       "",
+       "79.431,22 TL",
+       "6.920,00 TL",
+       "",
+       ""
+      ],
+      "summary": [
+       [
+        "Devir",
+        "0,00 TL"
+       ],
+       [
+        "Dönem Giriş",
+        "79.431,22 TL"
+       ],
+       [
+        "Dönem Çıkış",
+        "6.920,00 TL"
+       ],
+       [
+        "Dönem Net",
+        "72.511,22 TL"
+       ],
+       [
+        "Dönem Sonu",
+        "72.511,22 TL"
+       ],
+       [
+        "Banka (tüm hareketler)",
+        "65.311,22 TL"
+       ],
+       [
+        "POS / Kredi Kartı (tüm hareketler)",
+        "7.200,00 TL"
+       ]
+      ]
+     },
+     "hesap-mizani": {
+      "total": 16,
+      "rows": "b5b812e2c3770034cebe63e28bbbd604",
+      "footer": [
+       "TOPLAM",
+       "",
+       "0,00 TL",
+       "1.429.149,41 TL",
+       "1.429.149,41 TL",
+       "",
+       ""
+      ],
+      "summary": [
+       [
+        "Dönem Borç",
+        "1.429.149,41 TL"
+       ],
+       [
+        "Dönem Alacak",
+        "1.429.149,41 TL"
+       ],
+       [
+        "Fark",
+        "0,00 TL"
+       ]
+      ]
+     },
+     "cari-listesi": {
+      "total": 88,
+      "rows": "fec4185b52aab7e6be6579a82d267c42",
+      "footer": [
+       "TOPLAM",
+       "",
+       "",
+       "",
+       "",
+       "1.096.203,33 TL",
+       "302.489,44 TL",
+       "793.713,89 TL",
+       "Borçlu",
+       "222.061,85 TL"
+      ],
+      "summary": [
+       [
+        "Cari",
+        "88"
+       ],
+       [
+        "Toplam Borç (Anlaşılan)",
+        "1.096.203,33 TL"
+       ],
+       [
+        "Toplam Alacak (Ödenen)",
+        "302.489,44 TL"
+       ],
+       [
+        "Kalan (Borçlu)",
+        "793.713,89 TL"
+       ],
+       [
+        "Borçlular",
+        "841.064,30 TL"
+       ],
+       [
+        "Alacaklılar",
+        "47.350,41 TL"
+       ],
+       [
+        "Geciken Taksit",
+        "222.061,85 TL"
+       ]
+      ]
+     },
+     "acik-faturalar": {
+      "total": 39,
+      "rows": "d5da049c4c939e4b0851ad30562e90bd",
+      "footer": null,
+      "summary": [
+       [
+        "Açık Alacak",
+        "386.363,73 TL"
+       ],
+       [
+        "Açık Borç",
+        "18.986,51 TL"
+       ]
+      ]
+     }
+    },
+    "file": {
+     "version": 19,
+     "lock": "",
+     "lockAll": "a9d165f7904c9b424e199d4f8455f6cf5bf13ed087413106c5dc8b187e123b7e",
+     "lockAt": "",
+     "baselines": 0,
+     "rolledBack": 0
+    }
+   },
+   "sirket-8e986639-c54d-40c5-a15c-c6d612cb250c": {
+    "code": "007",
+    "name": "Mavi Gıda A.Ş.",
+    "today": "2026-10-09",
+    "lockedUntil": "",
+    "integrity": [],
+    "checksOk": [
+     "balance",
+     "cents:account_entries",
+     "cents:cash_entries",
+     "cents:cheque_events",
+     "cents:cheques",
+     "cents:invoice_lines",
+     "cents:invoice_lines",
+     "cents:invoices",
+     "cents:invoices",
+     "cents:invoices",
+     "cents:invoices",
+     "cents:invoices",
+     "cents:invoices",
+     "cents:payments",
+     "cents:plan_entries",
+     "cents:plan_items",
+     "cents:plans",
+     "cents:stock_moves",
+     "cheque:account",
+     "dates:due-before-start",
+     "dates:format:account_entries",
+     "dates:format:cash_entries",
+     "dates:format:cheque_events",
+     "dates:format:payments",
+     "dates:format:plan_entries",
+     "dates:format:stock_moves",
+     "dates:future:account_entries",
+     "dates:future:cash_entries",
+     "dates:future:cheque_events",
+     "dates:future:payments",
+     "dates:future:plan_entries",
+     "dates:future:stock_moves",
+     "gl:100",
+     "gl:101",
+     "gl:102",
+     "gl:103",
+     "gl:108",
+     "gl:120",
+     "gl:127",
+     "gl:191",
+     "gl:193",
+     "gl:320",
+     "gl:336",
+     "gl:360",
+     "gl:391",
+     "invoice:account",
+     "invoice:cheque",
+     "invoice:lines",
+     "invoice:offset",
+     "invoice:orphan",
+     "invoice:plan",
+     "invoice:returns",
+     "invoice:stock",
+     "invoice:try",
+     "money:method",
+     "party:accounts",
+     "party:plans",
+     "plans:totals",
+     "stock:account",
+     "stock:orphan",
+     "stock:qty",
+     "stock:qty"
+    ],
+    "trial": [
+     "100|17772530|1259295|16513235",
+     "102|5858992|0|5858992",
+     "120|89823073|22443061|67380012",
+     "191|385800|0|385800",
+     "320|5195084|2784053|2411031",
+     "391|0|6132320|-6132320",
+     "500|0|4420000|-4420000",
+     "600|0|51450000|-51450000",
+     "602|0|32469880|-32469880",
+     "649|0|719208|-719208",
+     "770|2642338|0|2642338"
+    ],
+    "trialTotals": [
+     121677817,
+     121677817,
+     0
+    ],
+    "reconciliation": [
+     "100|16513235|16513235|true",
+     "101|0|0|true",
+     "102|5858992|5858992|true",
+     "103|0|0|true",
+     "108|0|0|true",
+     "120|67380012|67380012|true",
+     "127|0|0|true",
+     "191|385800|385800|true",
+     "193|0|0|true",
+     "320|2411031|2411031|true",
+     "336|0|0|true",
+     "360|0|0|true",
+     "391|-6132320|-6132320|true"
+    ],
+    "cash": {
+     "totals": {
+      "in": 236315.22,
+      "out": 12592.95,
+      "balance": 223722.27
+     },
+     "byMethod": {
+      "cash": 165132.35,
+      "bank": 58589.92,
+      "card": 0
+     },
+     "all": "1f7e78d0c5df1329a49af7397cabfe85",
+     "window": "79b7681acc9c8bc34159ad13c56f409d",
+     "windowCount": 101,
+     "windowTotals": {
+      "in": 177725.3,
+      "out": 12592.95,
+      "balance": 165132.35
+     }
+    },
+    "overview": "69defd9cffa5d8b18e44479bc7f64a87",
+    "overviewCash": {
+     "balance": 165132.35,
+     "allEntries": 165132.35,
+     "today": {
+      "in": 0,
+      "out": 0
+     },
+     "month": {
+      "in": 0,
+      "out": 0
+     },
+     "futureEntries": 0,
+     "byMethod": {
+      "cash": 165132.35,
+      "bank": 58589.92,
+      "card": 0
+     },
+     "byMethodAt": {
+      "cash": 165132.35,
+      "bank": 58589.92,
+      "card": 0
+     },
+     "bank": {
+      "balance": 58589.92,
+      "allEntries": 58589.92,
+      "today": {
+       "in": 0,
+       "out": 0
+      }
+     }
+    },
+    "accounts": {
+     "count": 59,
+     "balance": 69791043,
+     "hash": "d9f19fcb35974f7eb027658a6f4a08fb"
+    },
+    "invoices": "047b0e143e826df298636dc4e6c29ebb",
+    "invoiceCount": 48,
+    "reports": {
+     "kasa-hareketleri": {
+      "total": 102,
+      "rows": "53209b41d7658b733d417494738c4bc5",
+      "footer": [
+       "TOPLAM",
+       "",
+       "",
+       "177.725,30 TL",
+       "12.592,95 TL",
+       "",
+       ""
+      ],
+      "summary": [
+       [
+        "Devir",
+        "0,00 TL"
+       ],
+       [
+        "Dönem Giriş",
+        "177.725,30 TL"
+       ],
+       [
+        "Dönem Çıkış",
+        "12.592,95 TL"
+       ],
+       [
+        "Dönem Net",
+        "165.132,35 TL"
+       ],
+       [
+        "Dönem Sonu Kasa",
+        "165.132,35 TL"
+       ],
+       [
+        "Güncel Kasa (tüm hareketler)",
+        "165.132,35 TL"
+       ]
+      ]
+     },
+     "banka-pos-hareketleri": {
+      "total": 23,
+      "rows": "9920e9137683977fb2a7348deea47547",
+      "footer": [
+       "TOPLAM",
+       "",
+       "",
+       "",
+       "58.589,92 TL",
+       "",
+       "",
+       ""
+      ],
+      "summary": [
+       [
+        "Devir",
+        "0,00 TL"
+       ],
+       [
+        "Dönem Giriş",
+        "58.589,92 TL"
+       ],
+       [
+        "Dönem Çıkış",
+        "0,00 TL"
+       ],
+       [
+        "Dönem Net",
+        "58.589,92 TL"
+       ],
+       [
+        "Dönem Sonu",
+        "58.589,92 TL"
+       ],
+       [
+        "Banka (tüm hareketler)",
+        "58.589,92 TL"
+       ],
+       [
+        "POS / Kredi Kartı (tüm hareketler)",
+        "0,00 TL"
+       ]
+      ]
+     },
+     "hesap-mizani": {
+      "total": 11,
+      "rows": "44e569f943bc83e9fe11dd324b755272",
+      "footer": [
+       "TOPLAM",
+       "",
+       "0,00 TL",
+       "1.216.778,17 TL",
+       "1.216.778,17 TL",
+       "",
+       ""
+      ],
+      "summary": [
+       [
+        "Dönem Borç",
+        "1.216.778,17 TL"
+       ],
+       [
+        "Dönem Alacak",
+        "1.216.778,17 TL"
+       ],
+       [
+        "Fark",
+        "0,00 TL"
+       ]
+      ]
+     },
+     "cari-listesi": {
+      "total": 59,
+      "rows": "565c9dcb62f4d0c6e7e4d572810f2a93",
+      "footer": [
+       "TOPLAM",
+       "",
+       "",
+       "",
+       "",
+       "950.181,57 TL",
+       "252.271,14 TL",
+       "697.910,43 TL",
+       "Borçlu",
+       "214.330,90 TL"
+      ],
+      "summary": [
+       [
+        "Cari",
+        "59"
+       ],
+       [
+        "Toplam Borç (Anlaşılan)",
+        "950.181,57 TL"
+       ],
+       [
+        "Toplam Alacak (Ödenen)",
+        "252.271,14 TL"
+       ],
+       [
+        "Kalan (Borçlu)",
+        "697.910,43 TL"
+       ],
+       [
+        "Borçlular",
+        "726.555,10 TL"
+       ],
+       [
+        "Alacaklılar",
+        "28.644,67 TL"
+       ],
+       [
+        "Geciken Taksit",
+        "214.330,90 TL"
+       ]
+      ]
+     },
+     "acik-faturalar": {
+      "total": 39,
+      "rows": "b0bbc99efe057630476d6ab37033136e",
+      "footer": null,
+      "summary": [
+       [
+        "Açık Alacak",
+        "392.581,81 TL"
+       ],
+       [
+        "Açık Borç",
+        "17.688,43 TL"
+       ]
+      ]
+     }
+    },
+    "file": {
+     "version": 19,
+     "lock": "",
+     "lockAll": "503569ae9db3f897ef1a4538cb64f613b9b8327055b88ccbc27914925b436ab5",
+     "lockAt": "",
+     "baselines": 0,
+     "rolledBack": 0
+    }
+   },
+   "sirket-d14a948c-25a2-4969-bc48-1589af813165": {
+    "code": "004",
+    "name": "Işık Turizm ve Seyahat",
+    "today": "2026-10-09",
+    "lockedUntil": "",
+    "integrity": [],
+    "checksOk": [
+     "balance",
+     "cents:account_entries",
+     "cents:cash_entries",
+     "cents:cheque_events",
+     "cents:cheques",
+     "cents:invoice_lines",
+     "cents:invoice_lines",
+     "cents:invoices",
+     "cents:invoices",
+     "cents:invoices",
+     "cents:invoices",
+     "cents:invoices",
+     "cents:invoices",
+     "cents:payments",
+     "cents:plan_entries",
+     "cents:plan_items",
+     "cents:plans",
+     "cents:stock_moves",
+     "cheque:account",
+     "dates:due-before-start",
+     "dates:format:account_entries",
+     "dates:format:cash_entries",
+     "dates:format:cheque_events",
+     "dates:format:payments",
+     "dates:format:plan_entries",
+     "dates:format:stock_moves",
+     "dates:future:account_entries",
+     "dates:future:cash_entries",
+     "dates:future:cheque_events",
+     "dates:future:payments",
+     "dates:future:plan_entries",
+     "dates:future:stock_moves",
+     "gl:100",
+     "gl:101",
+     "gl:102",
+     "gl:103",
+     "gl:108",
+     "gl:120",
+     "gl:127",
+     "gl:191",
+     "gl:193",
+     "gl:320",
+     "gl:336",
+     "gl:360",
+     "gl:391",
+     "invoice:account",
+     "invoice:cheque",
+     "invoice:lines",
+     "invoice:offset",
+     "invoice:orphan",
+     "invoice:plan",
+     "invoice:returns",
+     "invoice:stock",
+     "invoice:try",
+     "money:method",
+     "party:accounts",
+     "party:plans",
+     "plans:totals",
+     "stock:account",
+     "stock:orphan",
+     "stock:qty",
+     "stock:qty"
+    ],
+    "trial": [
+     "100|5262129|334140|4927989",
+     "102|1307522|0|1307522",
+     "120|17506947|6260667|11246280",
+     "191|87200|0|87200",
+     "320|168897|523200|-354303",
+     "391|0|1293930|-1293930",
+     "500|0|3220000|-3220000",
+     "600|0|7706000|-7706000",
+     "602|0|5287017|-5287017",
+     "649|0|308984|-308984",
+     "770|601243|0|601243"
+    ],
+    "trialTotals": [
+     24933938,
+     24933938,
+     0
+    ],
+    "reconciliation": [
+     "100|4927989|4927989|true",
+     "101|0|0|true",
+     "102|1307522|1307522|true",
+     "103|0|0|true",
+     "108|0|0|true",
+     "120|11246280|11246280|true",
+     "127|0|0|true",
+     "191|87200|87200|true",
+     "193|0|0|true",
+     "320|-354303|-354303|true",
+     "336|0|0|true",
+     "360|0|0|true",
+     "391|-1293930|-1293930|true"
+    ],
+    "cash": {
+     "totals": {
+      "in": 65696.51,
+      "out": 3341.4,
+      "balance": 62355.11
+     },
+     "byMethod": {
+      "cash": 49279.89,
+      "bank": 13075.22,
+      "card": 0
+     },
+     "all": "d7dc62b49b265d09206346e3a112c453",
+     "window": "807254763013f999fd69dad72d4cacbf",
+     "windowCount": 27,
+     "windowTotals": {
+      "in": 52621.29,
+      "out": 3341.4,
+      "balance": 49279.89
+     }
+    },
+    "overview": "bcbec295fa9b5c9ea725645b6939a838",
+    "overviewCash": {
+     "balance": 49279.89,
+     "allEntries": 49279.89,
+     "today": {
+      "in": 0,
+      "out": 0
+     },
+     "month": {
+      "in": 0,
+      "out": 0
+     },
+     "futureEntries": 0,
+     "byMethod": {
+      "cash": 49279.89,
+      "bank": 13075.22,
+      "card": 0
+     },
+     "byMethodAt": {
+      "cash": 49279.89,
+      "bank": 13075.22,
+      "card": 0
+     },
+     "bank": {
+      "balance": 13075.22,
+      "allEntries": 13075.22,
+      "today": {
+       "in": 0,
+       "out": 0
+      }
+     }
+    },
+    "accounts": {
+     "count": 44,
+     "balance": 10891977,
+     "hash": "590c64278000fd69c26dc96663b05c1e"
+    },
+    "invoices": "c4fd83e99ef8d437f950adda285dbba4",
+    "invoiceCount": 12,
+    "reports": {
+     "kasa-hareketleri": {
+      "total": 28,
+      "rows": "eb376fa9e8be5fd3e4594c9366756013",
+      "footer": [
+       "TOPLAM",
+       "",
+       "",
+       "52.621,29 TL",
+       "3.341,40 TL",
+       "",
+       ""
+      ],
+      "summary": [
+       [
+        "Devir",
+        "0,00 TL"
+       ],
+       [
+        "Dönem Giriş",
+        "52.621,29 TL"
+       ],
+       [
+        "Dönem Çıkış",
+        "3.341,40 TL"
+       ],
+       [
+        "Dönem Net",
+        "49.279,89 TL"
+       ],
+       [
+        "Dönem Sonu Kasa",
+        "49.279,89 TL"
+       ],
+       [
+        "Güncel Kasa (tüm hareketler)",
+        "49.279,89 TL"
+       ]
+      ]
+     },
+     "banka-pos-hareketleri": {
+      "total": 6,
+      "rows": "49c3a030844a6c5143398e0604909123",
+      "footer": [
+       "TOPLAM",
+       "",
+       "",
+       "",
+       "13.075,22 TL",
+       "",
+       "",
+       ""
+      ],
+      "summary": [
+       [
+        "Devir",
+        "0,00 TL"
+       ],
+       [
+        "Dönem Giriş",
+        "13.075,22 TL"
+       ],
+       [
+        "Dönem Çıkış",
+        "0,00 TL"
+       ],
+       [
+        "Dönem Net",
+        "13.075,22 TL"
+       ],
+       [
+        "Dönem Sonu",
+        "13.075,22 TL"
+       ],
+       [
+        "Banka (tüm hareketler)",
+        "13.075,22 TL"
+       ],
+       [
+        "POS / Kredi Kartı (tüm hareketler)",
+        "0,00 TL"
+       ]
+      ]
+     },
+     "hesap-mizani": {
+      "total": 11,
+      "rows": "e00905b519b732bd44ed34b6b0c6d9dd",
+      "footer": [
+       "TOPLAM",
+       "",
+       "0,00 TL",
+       "249.339,38 TL",
+       "249.339,38 TL",
+       "",
+       ""
+      ],
+      "summary": [
+       [
+        "Dönem Borç",
+        "249.339,38 TL"
+       ],
+       [
+        "Dönem Alacak",
+        "249.339,38 TL"
+       ],
+       [
+        "Fark",
+        "0,00 TL"
+       ]
+      ]
+     },
+     "cari-listesi": {
+      "total": 44,
+      "rows": "9688c7d20dce64ddf5353c0656eea4b5",
+      "footer": [
+       "TOPLAM",
+       "",
+       "",
+       "",
+       "",
+       "176.758,44 TL",
+       "67.838,67 TL",
+       "108.919,77 TL",
+       "Borçlu",
+       "8.880,00 TL"
+      ],
+      "summary": [
+       [
+        "Cari",
+        "44"
+       ],
+       [
+        "Toplam Borç (Anlaşılan)",
+        "176.758,44 TL"
+       ],
+       [
+        "Toplam Alacak (Ödenen)",
+        "67.838,67 TL"
+       ],
+       [
+        "Kalan (Borçlu)",
+        "108.919,77 TL"
+       ],
+       [
+        "Borçlular",
+        "129.651,49 TL"
+       ],
+       [
+        "Alacaklılar",
+        "20.731,72 TL"
+       ],
+       [
+        "Geciken Taksit",
+        "8.880,00 TL"
+       ]
+      ]
+     },
+     "acik-faturalar": {
+      "total": 9,
+      "rows": "84f96a6abf1f09838b5ab4e71b9ee785",
+      "footer": null,
+      "summary": [
+       [
+        "Açık Alacak",
+        "49.300,42 TL"
+       ],
+       [
+        "Açık Borç",
+        "4.346,54 TL"
+       ]
+      ]
+     }
+    },
+    "file": {
+     "version": 19,
+     "lock": "",
+     "lockAll": "0e4291520296f11e60fed2710487b7cb604f1b8396a48d8332cb5dae7c1d2041",
+     "lockAt": "",
+     "baselines": 0,
+     "rolledBack": 0
+    }
+   }
+  }
+ },
+ "final": [
+  {
+   "key": "A",
+   "id": "sirket-001",
+   "code": "001",
+   "name": "Merkez Danışmanlık Ltd. Şti.",
+   "dir": "",
+   "facts": {
+    "accounts": 201,
+    "accountEntries": 325,
+    "accountNet": 53111541,
+    "cashEntries": 55,
+    "cashNet": 343171,
+    "invoices": 96,
+    "invoicePayable": 65378350,
+    "invoiceLines": 147,
+    "plans": 34,
+    "planTotal": 56112000,
+    "planEntries": 37,
+    "planPaid": 8273000,
+    "datasetRows": 320,
+    "records": 0,
+    "tasks": 0
+   },
+   "api": {
+    "accounts": {
+     "count": 201,
+     "balance": 85358541,
+     "hash": "795a5f8847892ab05130b583f8586108"
+    },
+    "datasetRows": 320
+   }
+  },
+  {
+   "key": "B",
+   "id": "sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b",
+   "code": "002",
+   "name": "Şahin İnşaat ve Ticaret Ltd. Şti.",
+   "dir": "sirketler/002",
+   "facts": {
+    "accounts": 88,
+    "accountEntries": 251,
+    "accountNet": 50404389,
+    "cashEntries": 50,
+    "cashNet": 379974,
+    "invoices": 84,
+    "invoicePayable": 66378130,
+    "invoiceLines": 119,
+    "plans": 28,
+    "planTotal": 48277460,
+    "planEntries": 33,
+    "planPaid": 7453000,
+    "datasetRows": 78,
+    "records": 0,
+    "tasks": 0
+   },
+   "api": {
+    "accounts": {
+     "count": 88,
+     "balance": 79371389,
+     "hash": "80cd263b8a9e22c5828fda4cc066c49f"
+    },
+    "datasetRows": 78
+   }
+  },
+  {
+   "key": "C",
+   "id": "sirket-8e986639-c54d-40c5-a15c-c6d612cb250c",
+   "code": "007",
+   "name": "Mavi Gıda A.Ş.",
+   "dir": "sirketler/003",
+   "facts": {
+    "accounts": 59,
+    "accountEntries": 167,
+    "accountNet": 46831043,
+    "cashEntries": 20,
+    "cashNet": 5870,
+    "invoices": 48,
+    "invoicePayable": 59897120,
+    "invoiceLines": 87,
+    "plans": 15,
+    "planTotal": 37709720,
+    "planEntries": 16,
+    "planPaid": 5740000,
+    "datasetRows": 78,
+    "records": 0,
+    "tasks": 0
+   },
+   "api": {
+    "accounts": {
+     "count": 59,
+     "balance": 69791043,
+     "hash": "d9f19fcb35974f7eb027658a6f4a08fb"
+    },
+    "datasetRows": 78
+   }
+  },
+  {
+   "key": "E",
+   "id": "sirket-d14a948c-25a2-4969-bc48-1589af813165",
+   "code": "004",
+   "name": "Işık Turizm ve Seyahat",
+   "dir": "sirketler/004",
+   "facts": {
+    "accounts": 44,
+    "accountEntries": 51,
+    "accountNet": 8091977,
+    "cashEntries": 5,
+    "cashNet": 143741,
+    "invoices": 12,
+    "invoicePayable": 9523130,
+    "invoiceLines": 16,
+    "plans": 3,
+    "planTotal": 5276000,
+    "planEntries": 4,
+    "planPaid": 700000,
+    "datasetRows": 60,
+    "records": 0,
+    "tasks": 0
+   },
+   "api": {
+    "accounts": {
+     "count": 44,
+     "balance": 10891977,
+     "hash": "590c64278000fd69c26dc96663b05c1e"
+    },
+    "datasetRows": 60
+   }
+  }
+ ],
+ "registry": [
+  {
+   "id": "sirket-001",
+   "code": "001",
+   "name": "Merkez Danışmanlık Ltd. Şti.",
+   "dir": "",
+   "createdAt": "2026-10-03T15:22:48.041Z",
+   "createdBy": ""
+  },
+  {
+   "id": "sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b",
+   "code": "002",
+   "name": "Şahin İnşaat ve Ticaret Ltd. Şti.",
+   "dir": "sirketler/002",
+   "createdAt": "2026-10-03T15:22:48.163Z",
+   "createdBy": "user-4156061f-3021-45f7-8f42-f9c5f105307e",
+   "updatedAt": "2026-10-03T15:23:09.026Z",
+   "updatedBy": "user-4156061f-3021-45f7-8f42-f9c5f105307e"
+  },
+  {
+   "id": "sirket-8e986639-c54d-40c5-a15c-c6d612cb250c",
+   "code": "007",
+   "name": "Mavi Gıda A.Ş.",
+   "dir": "sirketler/003",
+   "createdAt": "2026-10-03T15:22:48.254Z",
+   "createdBy": "user-4156061f-3021-45f7-8f42-f9c5f105307e",
+   "updatedAt": "2026-10-03T15:22:50.782Z",
+   "updatedBy": "user-4156061f-3021-45f7-8f42-f9c5f105307e"
+  },
+  {
+   "id": "sirket-d14a948c-25a2-4969-bc48-1589af813165",
+   "code": "004",
+   "name": "Işık Turizm ve Seyahat",
+   "dir": "sirketler/004",
+   "createdAt": "2026-10-03T15:23:28.847Z",
+   "createdBy": "user-4156061f-3021-45f7-8f42-f9c5f105307e"
+  }
+ ],
+ "cut": "v2.0.26",
+ "generator": {
+  "command": "node tools/surum-verisi.mjs --fikstur turler --devam v2.0.26 --kaynak zincir",
+  "chain": "turler",
+  "seed": 7,
+  "volume": "kucuk"
+ },
+ "files": [
+  {
+   "path": "veri/destekofis.sqlite",
+   "sha256": "fdda415c60809ec70a2d02acfdfa0043238472fa6a61d19f0168e75931467dbf",
+   "size": 1777664,
+   "mtimeMs": 1791515385855
+  },
+  {
+   "path": "veri/silinen-sirketler/004-2026-10-03T15-23-28-838Z/destekofis.sqlite",
+   "sha256": "e1f810b79480ddb5c242c6895b67ac1e7f7e66ea1ec81a7fdc5844a889ee0c49",
+   "size": 1056768,
+   "mtimeMs": 1791041008803
+  },
+  {
+   "path": "veri/silinen-sirketler/004-2026-10-03T15-23-28-838Z/destekofis.sqlite-wal",
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "size": 0,
+   "mtimeMs": 1791041008811
+  },
+  {
+   "path": "veri/sirketler.json",
+   "sha256": "32d1d3d7651454c4009c73839031f751a9ca2ca0effbcc5fbdd475d8e725643b",
+   "size": 1271,
+   "mtimeMs": 1791041008843
+  },
+  {
+   "path": "veri/sirketler.yedek.json",
+   "sha256": "32d1d3d7651454c4009c73839031f751a9ca2ca0effbcc5fbdd475d8e725643b",
+   "size": 1271,
+   "mtimeMs": 1791481041448
+  },
+  {
+   "path": "veri/sirketler/002/destekofis.sqlite",
+   "sha256": "36b20ff0aaefe1146234f4d0dbdc0368d7cdfc07c512f5a4a2deef45571de2e4",
+   "size": 1478656,
+   "mtimeMs": 1791515385839
+  },
+  {
+   "path": "veri/sirketler/003/destekofis.sqlite",
+   "sha256": "1fd4bd1965b81c783ef3e3f7014cdb25b9a7ae8ba929e5f2bbd9c63934a574fc",
+   "size": 1175552,
+   "mtimeMs": 1791515385847
+  },
+  {
+   "path": "veri/sirketler/004/destekofis.sqlite",
+   "sha256": "763c91310d9fdc9ff9fa600ce4a0c5d3d51457f3e038263c2e0855aa55016fa5",
+   "size": 888832,
+   "mtimeMs": 1791515385851
+  },
+  {
+   "path": "yedek/001 - Merkez Danışmanlık Ltd. Şti/destekofis-001-2026-10-03T15-23-24-436Z-veri-oncesi-ekleme.sqlite",
+   "sha256": "c7fc0722d3ca8588174f4a42b04bfe7f6039d5c223cdb07b83641a02d3c0577a",
+   "size": 1339392,
+   "mtimeMs": 1791041004457,
+   "owners": [
+    "sirket-001"
+   ]
+  },
+  {
+   "path": "yedek/001 - Merkez Danışmanlık Ltd. Şti/destekofis-001-2026-10-03T15-23-28-585Z-manuel.sqlite",
+   "sha256": "20c69ba07246dc48e377b32d9d71763b13c3a44430b26496e1ab2bcc13d35913",
+   "size": 1433600,
+   "mtimeMs": 1791041008606,
+   "owners": [
+    "sirket-001"
+   ]
+  },
+  {
+   "path": "yedek/001 - Merkez Danışmanlık Ltd. Şti/destekofis-001-2026-10-08T17-37-23-504Z-manuel.sqlite",
+   "sha256": "1b8cffc1af30678b12eb61503972ccf159ee25f402b11224dc838034d7c9ceef",
+   "size": 1503232,
+   "mtimeMs": 1791481043525,
+   "owners": [
+    "sirket-001"
+   ]
+  },
+  {
+   "path": "yedek/001 - Merkez Danışmanlık Ltd. Şti/destekofis-001-2026-10-08T17-37-38-680Z-manuel.sqlite",
+   "sha256": "af3ccf0111ab7224d135319a6824a7fb774dc76cd5d0c3ac50f993e202f38787",
+   "size": 1576960,
+   "mtimeMs": 1791481058702,
+   "owners": [
+    "sirket-001"
+   ]
+  },
+  {
+   "path": "yedek/001 - Merkez Danışmanlık Ltd. Şti/destekofis-001-2026-10-08T17-37-53-928Z-manuel.sqlite",
+   "sha256": "e57eb06175774b18fcbbbe8ddfb908dba28022fe1f8c62c5761b774b283f0f2a",
+   "size": 1687552,
+   "mtimeMs": 1791481073955,
+   "owners": [
+    "sirket-001"
+   ]
+  },
+  {
+   "path": "yedek/001 - Merkez Danışmanlık Ltd. Şti/destekofis-001-2026-10-08T17-38-05-844Z-manuel.sqlite",
+   "sha256": "10f21c900410408ea6437434410b7eb0297a3c35b24a82f00ed5d3b9e67b1242",
+   "size": 1744896,
+   "mtimeMs": 1791481085867,
+   "owners": [
+    "sirket-001"
+   ]
+  },
+  {
+   "path": "yedek/001 - Merkez Danışmanlık Ltd. Şti/destekofis-001-2026-10-09T03-09-45-663Z-manuel.sqlite",
+   "sha256": "f552300a2ae68b00df0d06ddb3237946de15e758d79f44b49ab57195b66d04a0",
+   "size": 1777664,
+   "mtimeMs": 1791515385678,
+   "owners": [
+    "sirket-001"
+   ]
+  },
+  {
+   "path": "yedek/001 - Merkez Danışmanlık Ltd. Şti/destekofis-2026-10-03T15-22-46-207Z-manuel.sqlite",
+   "sha256": "f2cd031281e37120040d9d637b4d1927096399a4c663ef0f14e40a9ae6197d43",
+   "size": 983040,
+   "mtimeMs": 1791040966211,
+   "owners": [
+    "sirket-001"
+   ]
+  },
+  {
+   "path": "yedek/001 - Merkez Danışmanlık Ltd. Şti/destekofis-2026-10-03T15-22-48-016Z-pre-migration-v19.sqlite",
+   "sha256": "77f9b4fd89ad35cca6ce39975494bb12c80816a7799e25d2bbdb762cc3cb13d2",
+   "size": 983040,
+   "mtimeMs": 1791040968023,
+   "owners": [
+    "sirket-001"
+   ]
+  },
+  {
+   "path": "yedek/001 - Merkez Danışmanlık Ltd. Şti/destekofis-2026-10-03T15-22-48-454Z-veri-oncesi-ekleme.sqlite",
+   "sha256": "b4e34c727b49ad78a89f1184d90fc59c2a9d0d73ccf2c26a88578817c58aa798",
+   "size": 1015808,
+   "mtimeMs": 1791040968463,
+   "owners": [
+    "sirket-001"
+   ]
+  },
+  {
+   "path": "yedek/001 - Merkez Danışmanlık Ltd. Şti/destekofis-2026-10-03T15-22-50-801Z-manuel.sqlite",
+   "sha256": "69337c0f189a5cb35925c7fbe9d1a6bbefb7f53b70363c14f46a83cb2763ae94",
+   "size": 1122304,
+   "mtimeMs": 1791040970807,
+   "owners": [
+    "sirket-001"
+   ]
+  },
+  {
+   "path": "yedek/001 - Merkez Danışmanlık Ltd. Şti/destekofis-2026-10-03T15-22-57-576Z-veri-oncesi-ekleme.sqlite",
+   "sha256": "f30f3bd453cf34a834d333c448519d589bd24c3570ccfc7e6c72ea9ce565877d",
+   "size": 1122304,
+   "mtimeMs": 1791040977583,
+   "owners": [
+    "sirket-001"
+   ]
+  },
+  {
+   "path": "yedek/001 - Merkez Danışmanlık Ltd. Şti/destekofis-2026-10-03T15-23-00-663Z-manuel.sqlite",
+   "sha256": "4808c12d453c1121df5852f18825fc43b2016bf0311ab929de4135afe483cdff",
+   "size": 1220608,
+   "mtimeMs": 1791040980671,
+   "owners": [
+    "sirket-001"
+   ]
+  },
+  {
+   "path": "yedek/001 - Merkez Danışmanlık Ltd. Şti/destekofis-2026-10-03T15-23-09-176Z-veri-oncesi-ekleme.sqlite",
+   "sha256": "8d937b03287ec944a6498295e64669b36f1770df8222fbfac0aefab358dfde75",
+   "size": 1224704,
+   "mtimeMs": 1791040989195,
+   "owners": [
+    "sirket-001"
+   ]
+  },
+  {
+   "path": "yedek/001 - Merkez Danışmanlık Ltd. Şti/destekofis-2026-10-03T15-23-13-147Z-manuel.sqlite",
+   "sha256": "b355a2983af8ef33370537e4b47655cae90cc201a11fe2fbfd420b1d291793b6",
+   "size": 1327104,
+   "mtimeMs": 1791040993155,
+   "owners": [
+    "sirket-001"
+   ]
+  },
+  {
+   "path": "yedek/002 - Şahin İnşaat ve Ticaret Ltd. Şti/destekofis-002-2026-10-03T15-23-25-803Z-veri-oncesi-ekleme.sqlite",
+   "sha256": "a9b28402cf11184ba65d09dd8829922b17fd2136dcf5c088e82195874bf0f068",
+   "size": 1064960,
+   "mtimeMs": 1791041005824,
+   "owners": [
+    "sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b"
+   ]
+  },
+  {
+   "path": "yedek/002 - Şahin İnşaat ve Ticaret Ltd. Şti/destekofis-002-2026-10-03T15-23-28-631Z-manuel.sqlite",
+   "sha256": "2da76c86faeba1eaea373663bfa31c32f2a890ce36049e7bba2c1e85bb3c4070",
+   "size": 1159168,
+   "mtimeMs": 1791041008650,
+   "owners": [
+    "sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b"
+   ]
+  },
+  {
+   "path": "yedek/002 - Şahin İnşaat ve Ticaret Ltd. Şti/destekofis-002-2026-10-08T17-37-23-563Z-manuel.sqlite",
+   "sha256": "491c68ac149f346b3bb26e6ec17dcb2306069780b6896fe3ce731820f1bd5713",
+   "size": 1216512,
+   "mtimeMs": 1791481043582,
+   "owners": [
+    "sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b"
+   ]
+  },
+  {
+   "path": "yedek/002 - Şahin İnşaat ve Ticaret Ltd. Şti/destekofis-002-2026-10-08T17-37-53-998Z-manuel.sqlite",
+   "sha256": "7dd1b2f0740e74c4fe90c5dcf13d7a67775b0f028553ead2cc06e943e29b0807",
+   "size": 1376256,
+   "mtimeMs": 1791481074016,
+   "owners": [
+    "sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b"
+   ]
+  },
+  {
+   "path": "yedek/002 - Şahin İnşaat ve Ticaret Ltd. Şti/destekofis-002-2026-10-08T17-38-05-900Z-manuel.sqlite",
+   "sha256": "fa54a76f4a0e6522bf087d5b07edc0938fc0a9eddf164dad791a451ad0744690",
+   "size": 1445888,
+   "mtimeMs": 1791481085916,
+   "owners": [
+    "sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b"
+   ]
+  },
+  {
+   "path": "yedek/002 - Şahin İnşaat ve Ticaret Ltd. Şti/destekofis-002-2026-10-09T03-09-45-705Z-manuel.sqlite",
+   "sha256": "372ed0c79755c2d3e19ff9bd20bd204e922bcfe374b44a3b8d494eb5b8481ea6",
+   "size": 1474560,
+   "mtimeMs": 1791515385719,
+   "owners": [
+    "sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b"
+   ]
+  },
+  {
+   "path": "yedek/002 - Şahin İnşaat ve Ticaret Ltd. Şti/destekofis-2026-10-03T15-22-50-835Z-manuel.sqlite",
+   "sha256": "7b8e540d6fdd9937b672450eb0c66ae6a7cee1c2ab920c1ce3e7860e043c602d",
+   "size": 876544,
+   "mtimeMs": 1791040970843,
+   "owners": [
+    "sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b"
+   ]
+  },
+  {
+   "path": "yedek/002 - Şahin İnşaat ve Ticaret Ltd. Şti/destekofis-2026-10-03T15-22-58-626Z-veri-oncesi-ekleme.sqlite",
+   "sha256": "88985051766913a27ab584ed571844ab6f6a0b4d0cac8d3727e84301577c244b",
+   "size": 880640,
+   "mtimeMs": 1791040978639,
+   "owners": [
+    "sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b"
+   ]
+  },
+  {
+   "path": "yedek/002 - Şahin İnşaat ve Ticaret Ltd. Şti/destekofis-2026-10-03T15-23-00-707Z-manuel.sqlite",
+   "sha256": "9cfa6d9b31c43d3b819fb1977b1229738c26a8dd1aa22dba10c3954753dc7cd6",
+   "size": 978944,
+   "mtimeMs": 1791040980715,
+   "owners": [
+    "sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b"
+   ]
+  },
+  {
+   "path": "yedek/002 - Şahin İnşaat ve Ticaret Ltd. Şti/destekofis-2026-10-03T15-23-10-427Z-veri-oncesi-ekleme.sqlite",
+   "sha256": "8c7f691b0563ee5e4df43de9f390f8eb6a91341d25cb982cff3812002e37a4b6",
+   "size": 978944,
+   "mtimeMs": 1791040990443,
+   "owners": [
+    "sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b"
+   ]
+  },
+  {
+   "path": "yedek/002 - Şahin İnşaat ve Ticaret Ltd. Şti/destekofis-2026-10-03T15-23-13-187Z-manuel.sqlite",
+   "sha256": "ccb42771f9470c458b9578cb93289463bbeb288e05978ff0910e607ba93c1de2",
+   "size": 1056768,
+   "mtimeMs": 1791040993199,
+   "owners": [
+    "sirket-0cf39851-d4f7-421d-8c52-ce6e72a12e2b"
+   ]
+  },
+  {
+   "path": "yedek/004 - Işık Turizm ve Seyahat/destekofis-004-2026-10-03T15-23-29-562Z-manuel.sqlite",
+   "sha256": "9683b8be05cdfdc2c4f2b3fa0eb18334059b6276f6ab208a6e3179f7572b4fb0",
+   "size": 897024,
+   "mtimeMs": 1791041009578,
+   "owners": [
+    "sirket-d14a948c-25a2-4969-bc48-1589af813165"
+   ]
+  },
+  {
+   "path": "yedek/004 - Çağdaş Eğitim Kurumları/destekofis-004-2026-10-03T15-23-27-757Z-veri-oncesi-ekleme.sqlite",
+   "sha256": "8beb84ecf9b75f5d95bc102ba51680ef6043afbecabfa3c725d097ef7ebbacdd",
+   "size": 987136,
+   "mtimeMs": 1791041007776,
+   "owners": []
+  },
+  {
+   "path": "yedek/004 - Çağdaş Eğitim Kurumları/destekofis-004-2026-10-03T15-23-28-727Z-manuel.sqlite",
+   "sha256": "c120e2b983ef0db77892574d3c2aba7a247550ada2a09d5600be7676846c0c71",
+   "size": 1064960,
+   "mtimeMs": 1791041008745,
+   "owners": []
+  },
+  {
+   "path": "yedek/004 - Çağdaş Eğitim Kurumları/destekofis-004-2026-10-03T15-23-28-816Z-silme-oncesi-004.sqlite",
+   "sha256": "cad6208030a07e30fe7bf96924ca1f87d67d82e797169bc5e9ffa63bddf13181",
+   "size": 1064960,
+   "mtimeMs": 1791041008836,
+   "owners": []
+  },
+  {
+   "path": "yedek/004 - Çağdaş Eğitim Kurumları/destekofis-2026-10-03T15-23-00-776Z-manuel.sqlite",
+   "sha256": "d8266c6688d4647c9a15d3795c364a4d04881cd91ba7f949cea0924bc9c433bf",
+   "size": 884736,
+   "mtimeMs": 1791040980787,
+   "owners": []
+  },
+  {
+   "path": "yedek/004 - Çağdaş Eğitim Kurumları/destekofis-2026-10-03T15-23-12-335Z-veri-oncesi-ekleme.sqlite",
+   "sha256": "0c7d56619c5b95498cc2e11abd9c040076583c102caa83be5d3a7576f64f266a",
+   "size": 888832,
+   "mtimeMs": 1791040992355,
+   "owners": []
+  },
+  {
+   "path": "yedek/004 - Çağdaş Eğitim Kurumları/destekofis-2026-10-03T15-23-13-264Z-manuel.sqlite",
+   "sha256": "0d7e7ae1d7352f47b82a15773b19a8bfd3a7f9e8f9c41af2982b628f9a0aad99",
+   "size": 978944,
+   "mtimeMs": 1791040993279,
+   "owners": []
+  },
+  {
+   "path": "yedek/007 - Mavi Gıda A.Ş/destekofis-007-2026-10-03T15-23-26-876Z-veri-oncesi-ekleme.sqlite",
+   "sha256": "6dc5c62a5786b25843685a48a92b0d4e07324ed439fddead270f51f1ef005d46",
+   "size": 1056768,
+   "mtimeMs": 1791041006894,
+   "owners": [
+    "sirket-8e986639-c54d-40c5-a15c-c6d612cb250c"
+   ]
+  },
+  {
+   "path": "yedek/007 - Mavi Gıda A.Ş/destekofis-007-2026-10-03T15-23-28-678Z-manuel.sqlite",
+   "sha256": "b3422a18fbec2adf6567992c95f18098bce443b72d880275ebdb86aaf926cd28",
+   "size": 1183744,
+   "mtimeMs": 1791041008701,
+   "owners": [
+    "sirket-8e986639-c54d-40c5-a15c-c6d612cb250c"
+   ]
+  },
+  {
+   "path": "yedek/007 - Mavi Gıda A.Ş/destekofis-2026-10-03T15-22-50-867Z-manuel.sqlite",
+   "sha256": "85fbb0e6a01774955e6ace2f3bc4a0e0daec88b66020b092208bf4d0c017b751",
+   "size": 884736,
+   "mtimeMs": 1791040970875,
+   "owners": [
+    "sirket-8e986639-c54d-40c5-a15c-c6d612cb250c"
+   ]
+  },
+  {
+   "path": "yedek/007 - Mavi Gıda A.Ş/destekofis-2026-10-03T15-22-59-357Z-veri-oncesi-ekleme.sqlite",
+   "sha256": "421d9ce3f2f6a88e9cbd379a321165f6cc371048bc2a4fa7e95e7f3cf3049642",
+   "size": 888832,
+   "mtimeMs": 1791040979367,
+   "owners": [
+    "sirket-8e986639-c54d-40c5-a15c-c6d612cb250c"
+   ]
+  },
+  {
+   "path": "yedek/007 - Mavi Gıda A.Ş/destekofis-2026-10-03T15-23-00-741Z-manuel.sqlite",
+   "sha256": "0786c9ea7e78da1f16e807e9e0f97201df470f43af74fd58b2c12c3b7caf4917",
+   "size": 978944,
+   "mtimeMs": 1791040980747,
+   "owners": [
+    "sirket-8e986639-c54d-40c5-a15c-c6d612cb250c"
+   ]
+  },
+  {
+   "path": "yedek/007 - Mavi Gıda A.Ş/destekofis-2026-10-03T15-23-11-436Z-veri-oncesi-ekleme.sqlite",
+   "sha256": "07c563fde1c242a98ecab7277b7d80c1032a4654ad432bb2740ea01a5353a034",
+   "size": 978944,
+   "mtimeMs": 1791040991451,
+   "owners": [
+    "sirket-8e986639-c54d-40c5-a15c-c6d612cb250c"
+   ]
+  },
+  {
+   "path": "yedek/007 - Mavi Gıda A.Ş/destekofis-2026-10-03T15-23-13-228Z-manuel.sqlite",
+   "sha256": "d222f226aedbb14321ef731164f37a362885e5bf31d71a74837050d0c0e62d86",
+   "size": 1048576,
+   "mtimeMs": 1791040993235,
+   "owners": [
+    "sirket-8e986639-c54d-40c5-a15c-c6d612cb250c"
+   ]
+  }
+ ]
+}

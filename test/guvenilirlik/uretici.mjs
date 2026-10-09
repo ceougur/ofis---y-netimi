@@ -50,6 +50,14 @@ export const CHAINS = {
     { version: "v2.0.16", actions: [{ do: "office", name: "Eski Hukuk Bürosu" }, { do: "work" }, { do: "backup" }] },
     { version: "v2.0.19", actions: [{ do: "create", key: "B", code: "002", name: "Yeni Büro Ltd. Şti." }, { do: "work" }, { do: "backup" }] },
   ],
+  // Gözden geçirme B5 (2.1.0 Aşama 2): zincir fikstürlerinde OLMAYAN para türleri, GERÇEK v2.0.26 koduyla aynı kurulumun devamında
+  // (surum-2.0.26-zincir kesitinden): verilen çek/senet ödemesi, ciro, taksit iadesi, Excel'den taksit açılışı (devir), taksit kartına
+  // bağlı çek, nakit/havale peşin stok alış ve satışı. Üretim:
+  //   node tools/surum-verisi.mjs --fikstur turler --devam v2.0.26 --kaynak zincir   → test/fixtures/surum-2.0.26-turler
+  turler: [
+    { version: "v2.0.26", actions: [] },
+    { version: "v2.0.26", actions: [{ do: "types", keys: ["A", "B"] }, { do: "backup", keys: ["A", "B"] }] },
+  ],
   cakisma: [
     { version: "v2.0.19", actions: [{ do: "office", name: "Merkez Ofis" }, { do: "create", key: "B", code: "002", name: "Resmi Şirket" }, { do: "work" }, { do: "backup" }] },
     { version: "v2.0.19", actions: [{ do: "recode", key: "B", code: "005" }, { do: "create", key: "C", code: "002", name: "Gayri Resmi Şirket", refStart: 500 }, { do: "work", keys: ["C"] }, { do: "backup", keys: ["B", "C"] }] },
@@ -191,6 +199,13 @@ export async function runChain({ chain, dataDir, backupDir, seed = 1, volume = "
           const t = performance.now();
           await workFinance({ api, R, company, windowStart, windowEnd, version: step.version });
           log(`  ${company.code} · ${company.name}: para işleri girildi (${Math.round(performance.now() - t)} ms)`);
+        }
+      } else if (action.do === "types") {
+        for (const company of pick(action.keys)) {
+          await select(company);
+          const t = performance.now();
+          await workTypes({ api, R, company, windowStart, version: step.version });
+          log(`  ${company.code} · ${company.name}: eksik para türleri girildi (${Math.round(performance.now() - t)} ms)`);
         }
       } else if (action.do === "people") {
         await workPeople({ api, version: step.version, manifest });
@@ -400,6 +415,41 @@ async function workFinance({ api, R, company, windowStart, windowEnd, version })
   must(await api.post(`/api/workspace/cheques/${cheque.id}/actions`, { action: "collect", date: day, method: "bank" }), `${version} çek bankadan tahsil`);
   // Kayıt tahsilatı (kişi kartından) havaleyle.
   must(await api.post(`/api/workspace/cases/${encodeURIComponent(`DOSYA-${tag}`)}/payments`, { amount: "250", date: day, method: "bank", note: "Kayıt tahsilatı (havale)" }), `${version} kayıt tahsilatı`);
+}
+
+// Gözden geçirme B5: zincirin "finance" adımında olmayan para türleri (o sürümün API'sinden; her yanıt 200 olmalı).
+async function workTypes({ api, R, company, windowStart, version }) {
+  const day = windowStart;
+  const tag = `${version.slice(1)}-${company.code}-T`;
+  const person = () => `${R.pick(FIRST)} ${R.pick(LAST)}`;
+  const open = async (name, type) => must(await api.post("/api/workspace/accounts", { name, type, registeredOn: day, phone: `05${R.int(30, 59)} ${R.int(100, 999)} ${R.int(10, 99)} ${R.int(10, 99)}` }), `${version} cari aç`);
+  const c1 = await open(`${person()} (${tag})`, "customer");
+  const c2 = await open(`${person()} (${tag})`, "customer");
+  const s1 = await open(`${R.pick(SUPPLIER)} ${tag}`, "supplier");
+  must(await api.post(`/api/workspace/accounts/${s1.id}/entries`, { kind: "credit", amount: "5000", date: day, note: "Tedarikçi alacağı (açılış)" }), `${version} tedarikçi alacağı`);
+  // Verilen çek bankadan ödendi; verilen senet nakit ödendi.
+  const outCheque = must(await api.post("/api/workspace/cheques", { direction: "out", instrument: "cheque", amount: "900", issueDate: day, dueDate: day, accountId: s1.id, serialNo: `VC-${tag}`, bank: "Garanti" }), `${version} verilen çek`);
+  must(await api.post(`/api/workspace/cheques/${outCheque.id}/actions`, { action: "pay", date: day, method: "bank", cashForce: true }), `${version} verilen çek bankadan ödendi`);
+  const outNote = must(await api.post("/api/workspace/cheques", { direction: "out", instrument: "note", amount: "300", issueDate: day, dueDate: day, accountId: s1.id, serialNo: `VS-${tag}` }), `${version} verilen senet`);
+  must(await api.post(`/api/workspace/cheques/${outNote.id}/actions`, { action: "pay", date: day, method: "cash", cashForce: true }), `${version} verilen senet nakit ödendi`);
+  // Müşteri çeki tedarikçiye ciro.
+  const endorsed = must(await api.post("/api/workspace/cheques", { direction: "in", instrument: "cheque", amount: "650", issueDate: day, dueDate: day, accountId: c2.id, serialNo: `CR-${tag}`, bank: "İş Bankası" }), `${version} ciro edilecek çek`);
+  must(await api.post(`/api/workspace/cheques/${endorsed.id}/actions`, { action: "endorse", date: day, accountId: s1.id }), `${version} çek ciro`);
+  // Taksit kartı: havale tahsilatı, havale iadesi (out), karta bağlı çekle tahsilat (nakit tahsil).
+  const plan = must(await api.post("/api/workspace/plans", { accountId: c1.id, name: c1.name, total: "2400", mode: "auto", count: 4, firstDue: addDays(day, 30), registeredOn: day }), `${version} taksit kartı`);
+  must(await api.post(`/api/workspace/plans/${plan.id}/entries`, { kind: "in", amount: "600", date: day, method: "bank" }), `${version} taksit havale`);
+  must(await api.post(`/api/workspace/plans/${plan.id}/entries`, { kind: "out", amount: "120", date: day, method: "bank", note: "Fazla tahsilat iadesi", cashForce: true }), `${version} taksit iadesi`);
+  const planCheque = must(await api.post("/api/workspace/cheques", { direction: "in", instrument: "cheque", amount: "600", issueDate: day, dueDate: day, accountId: c1.id, planId: plan.id, serialNo: `TC-${tag}`, bank: "Akbank" }), `${version} taksit çeki`);
+  must(await api.post(`/api/workspace/cheques/${planCheque.id}/actions`, { action: "collect", date: day, method: "cash" }), `${version} taksit çeki nakit tahsil`);
+  // Excel'den taksit kartı: "Ödenen" kolonu açılış (devir) olur.
+  const matrix = [["Ad Soyad", "Toplam", "Taksit Sayısı", "İlk Vade", "Ödenen"], [`${person()} Devir (${tag})`, "3000", "3", addDays(day, 30), "750"], [`${person()} Devir (${tag})`, "1800", "2", addDays(day, 30), "400"]];
+  const imported = must(await api.post("/api/workspace/plans/import", { matrix, headerAt: 0, roles: { 0: "name", 1: "total", 2: "count", 3: "firstDue", 4: "paid" }, linkRecords: false }), `${version} Excel'den taksit (açılış)`);
+  if (!imported.opening) throw new Error(`${version}: Excel taksit açılışı yazılmadı: ${JSON.stringify(imported).slice(0, 300)}`);
+  // Stok: havaleyle peşin alış, nakit peşin satış, havaleyle peşin satış.
+  const item = must(await api.post("/api/workspace/stock", { name: `Ürün ${tag}`, code: `STK-${tag}`, unit: "Adet", unitPrice: "80", salePrice: "120" }), `${version} stok kartı`);
+  must(await api.post(`/api/workspace/stock/${item.id}/moves`, { kind: "in", qty: "10", unitPrice: "80", pay: "cash", method: "bank", date: day, cashForce: true }), `${version} havaleyle peşin alış`);
+  must(await api.post(`/api/workspace/stock/${item.id}/moves`, { kind: "out", qty: "2", unitPrice: "120", pay: "cash", method: "cash", date: day }), `${version} nakit peşin satış`);
+  must(await api.post(`/api/workspace/stock/${item.id}/moves`, { kind: "out", qty: "1", unitPrice: "120", pay: "cash", method: "bank", date: day }), `${version} havaleyle peşin satış`);
 }
 
 // Özel roller ve kişiye özel yetkili kullanıcılar (ortak katman; yetki göçü K4, §9.1). Beklenen banka yetkileri test tarafında

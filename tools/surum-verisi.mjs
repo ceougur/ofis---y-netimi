@@ -22,6 +22,8 @@
 //   v2.1.0 banka göçü (docs/BANKA-MODULU-PLAN.md §10.5):
 //     --fikstur zincir --devam v2.0.20   zinciri 2.0.20 kesitinden sürdürür → surum-2.0.21-zincir … surum-2.0.26-zincir
 //                                        (2.0.16–2.0.20 fikstürleri değişmez; v2.0.21+ adımları uretici.mjs CHAINS.zincir)
+//     --fikstur turler --devam v2.0.26 --kaynak zincir   surum-2.0.26-zincir kesitinden zincirde olmayan para türleri (gözden
+//                                        geçirme B5) → test/fixtures/surum-2.0.26-turler
 //     --oncesi [ad,ad…] [--taban v2.0.26]  her fikstürü GERÇEK v2.0.26 koduyla açar, v20 göçünden önceki para olgularını ve
 //                                        kilit izini fikstur.json'a "oncesi" olarak yazar (test: banka-210-goc-zinciri)
 import { cpSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from "node:fs";
@@ -96,12 +98,14 @@ if (flag("oncesi")) {
   const chains = value("fikstur", "zincir,cakisma,eski").split(",").map(item => item.trim()).filter(Boolean);
   // --devam v2.0.20: zincir o sürümün fikstüründen sürer; o ve önceki kesitler (fikstürler) DEĞİŞMEZ, yalnız sonrakiler üretilir.
   const resumeFrom = value("devam", null);
+  // --kaynak zincir: devam edilecek kesit başka zincirin fikstürü (ör. turler, surum-2.0.26-zincir'den sürer; gözden geçirme B5).
+  const source = value("kaynak", null);
   const versionOf = name => /^surum-(.+)-[a-z]+$/.exec(name)?.[1] || "";
   const after = (name, version) => compareVersions(versionOf(name), version) > 0;
   mkdirSync(STORE, { recursive: true });
   for (const chain of chains) {
     for (const name of readdirSync(FIXTURES).filter(item => item.startsWith("surum-") && item.endsWith(`-${chain}`))) {
-      if (resumeFrom && !after(name, resumeFrom.slice(1))) continue;
+      if (resumeFrom && !source && !after(name, resumeFrom.slice(1))) continue;
       rmSync(path.join(FIXTURES, name), { recursive: true, force: true });
     }
     const root = mkdtempSync(path.join(tmpdir(), `surum-verisi-${chain}-`));
@@ -113,13 +117,14 @@ if (flag("oncesi")) {
       backupDir,
       seed,
       volume: "kucuk",
-      resume: resumeFrom ? `surum-${resumeFrom.slice(1)}-${chain}` : null,
+      resume: resumeFrom ? `surum-${resumeFrom.slice(1)}-${source || chain}` : null,
       log,
       // Zincirin her kesiti fikstür olur; çakışma ve eski kurulum zincirlerinde yalnız son hâl.
       onPhaseEnd: ({ version, last, manifest }) => {
         if (chain !== "zincir" && !last) return;
         const name = `surum-${version.slice(1)}-${chain}`;
-        const packed = packFixture({ name, dataDir, backupDir, manifest: { ...manifest, generator: { command: `node tools/surum-verisi.mjs --fikstur ${chain}`, chain, seed, volume: "kucuk" } } });
+        const command = `node tools/surum-verisi.mjs --fikstur ${chain}${resumeFrom ? ` --devam ${resumeFrom}` : ""}${source ? ` --kaynak ${source}` : ""}`;
+        const packed = packFixture({ name, dataDir, backupDir, manifest: { ...manifest, generator: { command, chain, seed, volume: "kucuk" } } });
         log(`  ▸ fikstür ${name}: ${packed.files} dosya, ${(packed.bytes / 1e6).toFixed(1)} MB açık`);
       },
     });
