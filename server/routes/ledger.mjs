@@ -251,5 +251,40 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, pe
     const result = service.scan ? service.scan().result : service.run();
     ok(res, { ...result, log: service.recent(50).map(row => ({ ...row, detail: JSON.parse(row.detail || "[]") })) });
   });
-  return { build, check, expected, expectedSubs, refs };
+  // Gözden geçirme B8 (Aşama 2): carinin yevmiyedeki kontrol hesabı (120/320/336) bakiyesi — partyBalances(journal(rows({ parties })))
+  // ile AYNI kural, SQL toplamıyla (kuruş tamsayısı). Mutabakat kapısının süzgeci hareketi çok (binlerce satır) olan carilerde bunu
+  // kullanır: carinin bütün satırlarının yevmiye maddesi kurulmadan (30.000 satırlı caride ~230 ms → ~10 ms). İki yolun eşitliği
+  // test/banka-210-gg-cari.test.mjs'te (her cari, karışık veri) denetlenir. Yalnız silinmemiş cariler (yevmiye de onları okur).
+  //   cari satırı: fatura kaynaklı borç/alacak satırı faturanın kendisinden gelir (0); çek ve stok kaynaklı: borç +, diğer −;
+  //                elle: borç/ödeme +, alacak/tahsilat −
+  //   taksit kartı: Mevcut Borcu taksitlendirmeyen kart + tutar; kapatılmış kart − vazgeçilen kalan; tahsilat −, iade +
+  //   fatura (kesilmiş): satış/SMM/alıştan iade + ödenecek, satıştan iade/alış − ödenecek
+  function partyTotals(ids) {
+    const list = JSON.stringify([...ids]);
+    const c = column => `CAST(ROUND(${column} * 100) AS INTEGER)`;
+    const out = new Map();
+    if (!has("accounts")) return out;
+    const parts = [
+      has("account_entries") ? `COALESCE((SELECT SUM(CASE
+          WHEN e.source = 'invoice' AND e.kind IN ('debt', 'credit') THEN 0
+          WHEN e.source IN ('cheque', 'stock') THEN CASE WHEN e.kind = 'debt' THEN ${c("e.amount")} ELSE -${c("e.amount")} END
+          WHEN e.kind IN ('debt', 'out') THEN ${c("e.amount")}
+          WHEN e.kind IN ('credit', 'in') THEN -${c("e.amount")}
+          ELSE 0 END) FROM account_entries e WHERE e.account_id = a.id), 0)` : "0",
+      has("plans") ? `COALESCE((SELECT SUM(CASE WHEN p.covers_balance THEN 0 ELSE ${c("p.total")} END
+          - CASE WHEN p.status = 'closed' THEN MAX(0, ${c(`(p.total - COALESCE((SELECT SUM(CASE WHEN x.kind = 'in' THEN x.amount ELSE -x.amount END) FROM plan_entries x WHERE x.plan_id = p.id), 0))`)}) ELSE 0 END)
+          FROM plans p WHERE p.account_id = a.id AND +p.deleted_at IS NULL), 0)` : "0",
+      has("plans") && has("plan_entries") ? `COALESCE((SELECT SUM(CASE WHEN pe.kind = 'in' THEN -${c("pe.amount")} ELSE ${c("pe.amount")} END) FROM plans p CROSS JOIN plan_entries pe ON pe.plan_id = p.id WHERE p.account_id = a.id AND +p.deleted_at IS NULL), 0)` : "0",
+      has("invoices") ? `COALESCE((SELECT SUM(CASE WHEN ${c("i.try_payable")} <= 0 THEN 0 WHEN i.kind IN ('sale', 'smm', 'purchase_return') THEN ${c("i.try_payable")} WHEN i.kind IN ('sale_return', 'purchase') THEN -${c("i.try_payable")} ELSE 0 END) FROM invoices i WHERE i.account_id = a.id AND +i.status = 'issued'), 0)` : "0",
+    ];
+    for (const row of store.all(`SELECT a.id, ${parts.join(" + ")} AS cents FROM json_each(?) j CROSS JOIN accounts a ON a.id = j.value WHERE +a.deleted_at IS NULL`, list)) out.set(row.id, Number(row.cents) || 0);
+    return out;
+  }
+  /** Carinin yevmiyeye giren satır sayısı (cari satırı + fatura + taksit tahsilatı): süzgecin "çok hareketli cari" eşiği için. */
+  function partyRowCounts(ids) {
+    const list = JSON.stringify([...ids]);
+    const parts = [has("account_entries") ? "(SELECT COUNT(*) FROM account_entries e WHERE e.account_id = j.value)" : "0", has("invoices") ? "(SELECT COUNT(*) FROM invoices i WHERE i.account_id = j.value)" : "0", has("plans") && has("plan_entries") ? "(SELECT COUNT(*) FROM plans p CROSS JOIN plan_entries pe ON pe.plan_id = p.id WHERE p.account_id = j.value)" : "0"];
+    return new Map(store.all(`SELECT j.value AS id, ${parts.join(" + ")} AS n FROM json_each(?) j`, list).map(row => [row.id, Number(row.n) || 0]));
+  }
+  return { build, check, expected, expectedSubs, refs, partyTotals, partyRowCounts };
 }

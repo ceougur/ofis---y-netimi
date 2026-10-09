@@ -95,7 +95,7 @@ export function familyOf(code) {
   return "all";
 }
 
-export function createScopedGate({ store, ledger, accounts, plans, stock, money, period, now, has, hasColumn, amountColumns, dated, datedWhenUsed, legacy, bankChecks }) {
+export function createScopedGate({ store, ledger, accounts, plans, stock, money, period, now, has, hasColumn, amountColumns, dated, datedWhenUsed, legacy, bankChecks, partyRows = 2000 }) {
   const all = (sql, ...args) => store.all(sql, ...args);
 
   // ---------- Kapsam: dokunulan satırlar → varlıklar ----------
@@ -431,10 +431,18 @@ export function createScopedGate({ store, ledger, accounts, plans, stock, money,
       lap("money");
     }
 
-    // Cari: dokunulan her carinin defter bakiyesi (bütün satırlarıyla) = cari kartının bakiyesi.
+    let heavyParties = 0;
+    // Cari: dokunulan her carinin defter bakiyesi (bütün satırlarıyla) = cari kartının bakiyesi. Gözden geçirme B8 (Aşama 2): yevmiyeye
+    // giren satırı eşikten (partyRows) çok olan carinin defter bakiyesi yevmiye maddeleri kurulmadan, aynı kuralın SQL toplamıyla
+    // (ledger.partyTotals) hesaplanır — önceden süre carinin geçmişiyle doğrusal büyüyordu (30.000 satırlı caride ~300 ms, 100.000'de ~1,1 sn).
     if (s.parties.size && accounts()?.list) {
-      const fromLedger = build({ parties: [...s.parties] });
-      const balances = partyBalances(fromLedger);
+      const ids = [...s.parties];
+      const counts = service.partyRowCounts && service.partyTotals ? service.partyRowCounts(ids) : new Map();
+      const heavy = ids.filter(id => (counts.get(id) || 0) > partyRows);
+      const light = heavy.length ? ids.filter(id => !heavy.includes(id)) : ids;
+      const balances = light.length ? partyBalances(build({ parties: light })) : new Map();
+      if (heavy.length) for (const [id, cents] of service.partyTotals(heavy)) balances.set(id, cents);
+      heavyParties = heavy.length;
       const list = accounts().list(AUDITOR, { status: "all", ids: [...s.parties] }).accounts;
       const seen = new Set();
       for (const account of list) {
@@ -596,7 +604,7 @@ export function createScopedGate({ store, ledger, accounts, plans, stock, money,
       for (const item of bank.reportMismatches({ events: s.events })) find("money:report", item.key);
     }
     lap("bank");
-    return { full: lockReason ? `kilit (${lockReason})` : "", findings, sections, ms: performance.now() - started, scope: { parties: s.parties.size, plans: s.plans.size, cheques: s.cheques.size, invoices: s.invoices.size, items: s.items.size, money: Object.values(s.money).reduce((sum, set) => sum + set.size, 0), events: s.events.size } };
+    return { full: lockReason ? `kilit (${lockReason})` : "", findings, sections, ms: performance.now() - started, scope: { parties: s.parties.size, plans: s.plans.size, cheques: s.cheques.size, invoices: s.invoices.size, items: s.items.size, money: Object.values(s.money).reduce((sum, set) => sum + set.size, 0), events: s.events.size, heavyParties, built: entries.length } };
   }
 
   // Fatura bağları (tam kapının 1–6. fatura denetimleri; yalnız kapsamdaki faturalar ve onlara bağlı satırlar).

@@ -71,5 +71,9 @@ export function loadConfig(overrides = {}) {
     // dokunulan varlıklar yolu "temiz" deyip tam kapı reddederse işlem 500 "gate-equivalence" ile kırılır. Üretimde kapalı (yalnız
     // programdan açılır; ortam değişkeni yok).
     gateVerify: overrides.gateVerify === true,
+    // Kapı süzgecinde "çok hareketli cari" eşiği (gözden geçirme B8): yevmiyeye giren satırı bundan çok olan carinin bakiyesi SQL
+    // toplamıyla (ledger.partyTotals) denetlenir; az olanınki yevmiye maddeleri kurularak (2.0.26 yolu). Testler 0 vererek her cariyi
+    // SQL toplamıyla denetletebilir (iki yolun eşdeğerliği).
+    scopePartyRows: Number.isSafeInteger(overrides.scopePartyRows) && overrides.scopePartyRows >= 0 ? overrides.scopePartyRows : 2000,
   });
 }

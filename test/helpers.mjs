@@ -36,6 +36,7 @@ export async function startTestServer(options = {}) {
     // Mutabakat kapısı eşdeğerlik denetimi (v2.1.0, §3.11): tam kapı her işlemde de çalışır; dokunulan varlıklar yolu temiz deyip tam
     // kapı reddederse 500 "gate-equivalence". Üretim yolunu (yalnız süzgeç) sınayan testler { gateVerify: false } verir.
     gateVerify: options.gateVerify ?? true,
+    ...(options.scopePartyRows !== undefined ? { scopePartyRows: options.scopePartyRows } : {}),
   });
   const address = await app.listen(0, "127.0.0.1");
   const base = `http://127.0.0.1:${address.port}`;

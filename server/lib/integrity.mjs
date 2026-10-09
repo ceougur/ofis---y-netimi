@@ -207,7 +207,7 @@ export function lockDigestOf(store, lock) {
   return hash.digest("hex");
 }
 
-export function createIntegrity({ store, ledger, accounts = () => null, stock = () => null, plans = () => null, period = () => null, money = () => null, events = null, strict = false, verify = false, log = null, newId = () => `int-${crypto.randomUUID()}`, now = systemClock }) {
+export function createIntegrity({ store, ledger, accounts = () => null, stock = () => null, plans = () => null, period = () => null, money = () => null, events = null, strict = false, verify = false, partyRows = 2000, log = null, newId = () => `int-${crypto.randomUUID()}`, now = systemClock }) {
   const has = table => Boolean(store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = ?", table));
   // v2.1.0 (§3.11): banka çekirdeğinin denetimleri (lib/bank/checks.mjs) — olay bazlı (COMMIT'te dokunulan olaylar) ve tam tarama.
   let bankChecks = null;
@@ -602,7 +602,7 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
   const gateOf = () =>
     (scopedGate ??= createScopedGate({
       store, ledger, accounts, plans, stock, money, period, now, has, hasColumn,
-      amountColumns: AMOUNT_COLUMNS, dated: DATED, datedWhenUsed: DATED_WHEN_USED,
+      amountColumns: AMOUNT_COLUMNS, dated: DATED, datedWhenUsed: DATED_WHEN_USED, partyRows,
       legacy: { future: () => legacyFuture, method: () => legacyMethod, events: () => legacyEvents, rows: () => legacyRows, cheques: () => legacyCheques },
       bankChecks: bank,
     }));
