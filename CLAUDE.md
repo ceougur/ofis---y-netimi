@@ -868,6 +868,9 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
       güvenilirlik 2×1.000, senaryo-banka-210 238/238. Bilinen sınır: 1M harekette dönemli Alt Hesap Mizanı ~4 sn, yıllık Banka
       Masraf Raporu ~5 sn (tarih indeksi yok → 2.3.0 ölçek işi). Sırada (daraltılmış): modül ekranlarında hesap seçimi (+ eksi
       bakiye denetimi ve money.prime modül yazımlarında), transfer, raporlar, kabul 1–16 ekrandan, kılavuz, tek gözden geçirme, paket.
+  [x] AŞAMA 5–6 daraltılmış (09.10.2026; 63f8aae, d000df3): cari tahsilat/ödeme ve Kasa↔Banka'da hesap seçimi (tek hesapta
+      kendiliğinden, çok hesapta zorunlu, döviz/pasif 400, açılış/Devir öncesi 409), K7 eksi bakiye, istek kimliği, Benzer İşlem,
+      banka bağlı cari silinmez (Pasife Al). npm test 1.630/1.630; senaryo-banka-210 257/257 (kabul 5, 9–14 ekrandan).
   CANLI HATA (gözden geçirmede bulundu, v2.0.26'da da VAR, gerçek v2.0.26 koduyla yeniden üretildi): Taksite Aktar (var olan
   bağsız karta) → taşınan tahsilatı sil → aktarımı geri al → Silinenler'den geri yükle → Kasa ÇİFT sayılır (1.000 yerine 2.000),
   Mutabakat Testi "tamam" der. 2.1.0'da düzeldi (bir olay = bir para hareketi, 409 `event-in-use`). Kullanıcıya bildirildi.
