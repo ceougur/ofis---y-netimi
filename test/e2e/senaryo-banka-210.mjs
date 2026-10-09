@@ -1631,6 +1631,148 @@ try {
     ok(integrity.ok === true, "Kabul Şirketi'nde mutabakat ok");
   });
 
+  // ---------- Bölüm 3b (Aşama 9: Bankalar Arası Transfer; §12.5 kabul 13–14'ün Banka tarafı ve kabul 15–16; §3.7 #11 ücretli örnek) ----------
+  // Aynı Kabul Şirketi; başlangıç (adım 31 sonu): Ziraat 110.000, Garanti 50.000, Kasa 10.000, ABC 0. Bağımsız beklenen: plan §12.5 sayıları ve
+  // testin kendi mizan modeli. Ücretli örnek ters kaydedilerek kapanır (bölüm 4 adım 31 sonundaki sayılarla başlar).
+  const flowsOnScreen = async page => {
+    await page.waitForSelector(`${bankWin} [data-bank-flows]`, { timeout: 10000 });
+    return page.$$eval(`${bankWin} [data-bank-flows] tr[data-flow]`, rows => Object.fromEntries(rows.map(row => [row.dataset.flow, Object.fromEntries(["in", "out", "tin", "tout", "fee"].map(key => [key, row.querySelector(`[data-flow-${key}]`) ? Number(row.querySelector(`[data-flow-${key}]`).dataset[`flow${key[0].toUpperCase()}${key.slice(1)}`]) : null]))])));
+  };
+  const openTransferForm = async page => {
+    await tab(page, "movements");
+    await page.waitForSelector(`${bankWin} [data-act="v-transfer"]`, { timeout: 10000 });
+    await page.click(`${bankWin} [data-act="v-transfer"]`);
+    await page.waitForSelector('form.hof-bank-voucher select[name="toAccountId"]', { timeout: 10000 });
+    await page.waitForTimeout(300);
+  };
+  const transferReverse = async page => {
+    const no = await textOf(page, `${bankWin} [data-event-no]`);
+    await page.click(`${bankWin} [data-act="ev-reverse"]`);
+    await page.waitForSelector(`${top} form button[type="submit"]`);
+    await page.click(`${top} form button[type="submit"]`);
+    await page.waitForFunction(() => document.querySelector(".hof-bank-modal [data-event-status]")?.textContent.includes("Ters Kaydedildi"), null, { timeout: 10000 });
+    return no;
+  };
+
+  await step("31a. Kabul 13–14 (Banka tarafı): Genel Bakış → Bugün Giriş 20.000 (ABC), Bugün Çıkış 0 — Kasa'ya aktarılan 10.000 Transfer Çıkış'ta", async () => {
+    await openBank(admin);
+    const flows = await flowsOnScreen(admin);
+    ok(flows.today?.in === 2_000_000 && flows.today?.out === 0 && flows.today?.tout === 1_000_000 && flows.today?.tin === 0, `Bugün: Giriş ${flows.today?.in / 100}, Çıkış ${flows.today?.out / 100}, Transfer Çıkış ${flows.today?.tout / 100}`);
+    ok(flows.month?.in === 2_000_000 && flows.month?.out === 0, `Bu Ay: Giriş ${flows.month?.in / 100} (açılışlar giriş sayılmaz), Çıkış ${flows.month?.out / 100}`);
+    await auditLabels(admin, "Genel Bakış · Bugün ve Bu Ay");
+    await admin.waitForTimeout(400);
+    await shot(admin, "kabul-14-banka-bugun-transfer");
+    await closeAll(admin);
+  });
+
+  await step("31b. Kabul 15–16: Banka → Transfer: Ziraat → Garanti 20.000, ücret 0 (Kanal Virman; çift tıklama tek kayıt) → Ziraat 90.000, Garanti 70.000; Kasa + Banka 170.000; mizan bağımsız modelle", async () => {
+    await openBank(admin);
+    await openTransferForm(admin);
+    await fillVoucher(admin, { accountId: kabul.ziraat.id });
+    const targets = await admin.$$eval('form.hof-bank-voucher select[name="toAccountId"] option', list => list.map(node => node.value));
+    ok(!targets.includes(kabul.ziraat.id) && targets.includes(kabul.garanti.id), `Alıcı Hesap listesinde gönderen yok (kaynak = hedef seçilemez): ${targets.length} seçenek`);
+    await fillVoucher(admin, { toAccountId: kabul.garanti.id, amount: "20.000", channel: "virman", description: "Garanti'ye aktarım" });
+    const preview = (await textOf(admin, "form.hof-bank-voucher [data-voucher-preview]")).replace(/₺/g, "");
+    ok(has(preview, "Alıcıya Giren 20.000,00") && has(preview, "Gönderenden Çıkan 20.000,00") && !has(preview, "Ücret"), `önizleme: ${preview}`);
+    const feeHidden = await admin.$eval('form.hof-bank-voucher [name="feeTax"]', node => node.closest(".hof-field").hidden);
+    ok(feeHidden, "ücret yazılmadan Ücret Vergisi gizli");
+    await auditLabels(admin, "Transfer formu");
+    await admin.waitForTimeout(500);
+    await shot(admin, "kabul-15-transfer-formu");
+    await admin.dblclick('form.hof-bank-voucher button[type="submit"]');
+    await voucherClosed(admin);
+    await admin.waitForTimeout(800);
+    const legs = (await must("hareketler", api.get("/api/workspace/bank/movements?type=transfer"))).rows;
+    ok(legs.length === 2 && legs.some(row => row.accountId === kabul.ziraat.id && row.signedMinor === -2_000_000) && legs.some(row => row.accountId === kabul.garanti.id && row.signedMinor === 2_000_000), `çift tıklama tek transfer; iki bacak: ${legs.map(row => `${row.accountLabel} ${row.signedMinor / 100}`).join(" | ")}`);
+    const z = await kabulBalance("Ziraat Bankası");
+    const g = await kabulBalance("Garanti BBVA");
+    const cash = (await must("Kasa", api.get("/api/workspace/cash"))).byMethod.cash;
+    ok(z === 90000 && g === 70000, `kabul 15–16: Ziraat ${z}, Garanti ${g}`);
+    ok(cash + z + g === 170000, `Kasa + Banka ${cash + z + g} (= 150.000 + 20.000)`);
+    // Bağımsız mizan modeli (kabul 16 sonu; plan §12.5'in 2.1.0 karşılığı): 100 10.000 · 102.01 90.000 · 102.02 70.000 · 120 0 · 391 −3.333,33 ·
+    // 500 −150.000 · 600 −16.666,67.
+    const want = { 100: 1_000_000, 102: 16_000_000, 120: 0, 391: -333_333, 500: -15_000_000, 600: -1_666_667 };
+    const got = await trial();
+    const off = Object.entries(want).filter(([code, minor]) => (got[code] || 0) !== minor);
+    ok(!off.length, off.length ? `mizan modelden farklı: ${off.map(([code, minor]) => `${code} program ${(got[code] || 0) / 100} / model ${minor / 100}`).join("; ")}` : "mizan bağımsız modelle aynı (100, 102, 120, 391, 500, 600)");
+    const subs = await subTrial();
+    ok(subs[kabul.ziraat.glSub] === 9_000_000 && subs[kabul.garanti.glSub] === 7_000_000, `alt hesaplar ${kabul.ziraat.glSub} ${subs[kabul.ziraat.glSub] / 100}, ${kabul.garanti.glSub} ${subs[kabul.garanti.glSub] / 100}`);
+    await tab(admin, "overview");
+    const real = await textOf(admin, `${bankWin} [data-bank-real]`);
+    const flows = await flowsOnScreen(admin);
+    ok(has(real, "160.000,00"), `Gerçek Banka ekranda ${real}`);
+    ok(flows.today?.in === 2_000_000 && flows.today?.out === 0 && flows.today?.tin === 2_000_000 && flows.today?.tout === 3_000_000, `Bugün Çıkış transferi saymaz (${flows.today?.out / 100}); Transfer Giriş ${flows.today?.tin / 100} · Çıkış ${flows.today?.tout / 100}`);
+    await shot(admin, "kabul-16-genel-bakis");
+    await tab(admin, "movements");
+    await admin.waitForSelector(`${bankWin} [data-moves]`);
+    const rows = await moveRows(admin);
+    const mine = rows.filter(row => row.type === "transfer");
+    ok(mine.length === 2 && mine.every(row => has(row.text, "Bankalar Arası Transfer") && has(row.text, "Karşı Hesap")), `Hareketler'de iki bacak, karşı hesapla: ${mine.map(row => row.text.slice(0, 90)).join(" | ")}`);
+    await openEventFromList(admin, row => row.type === "transfer" && row.signed < 0);
+    const card = await textOf(admin, `${bankWin} [data-bank-event]`);
+    ok(has(card, "Gönderen Hesap") && has(card, "Alıcı Hesap") && has(card, "Garanti BBVA · Ana TL Hesabı") && has(card, "Virman") && has(card, "Ücret") && has(card, "20.000,00"), `İşlem Kartı: ${card.slice(0, 220)}`);
+    const lines = await admin.$$eval(`${bankWin} .hof-bank-lines tbody tr`, list => list.map(node => `${node.dataset.gl}|${node.dataset.side}|${node.dataset.minor}`).sort());
+    ok(JSON.stringify(lines) === JSON.stringify(["102|C|2000000", "102|D|2000000"]), `fiş satırları B 102.02 / A 102.01: ${lines.join(", ")}`);
+    await auditLabels(admin, "Transfer İşlem Kartı");
+    await shot(admin, "kabul-16-islem-karti");
+    const integrity = await must("Mutabakat Testi", api.get("/api/workspace/ledger/integrity"));
+    const check = integrity.checks.find(item => item.code === "bank:transfer");
+    ok(integrity.ok === true && check?.ok === true, `mutabakat ok; bank:transfer denetimi temiz (${check?.name || "yok"})`);
+  });
+
+  await step("31c. Transferi Ters Kaydet (İşlem Kartı'ndan) → Ziraat 110.000, Garanti 50.000; Bugün Giriş/Çıkış değişmez", async () => {
+    await transferReverse(admin);
+    ok((await kabulBalance("Ziraat Bankası")) === 110000 && (await kabulBalance("Garanti BBVA")) === 50000, "ters kayıtla iki hesap eski hâlinde");
+    await admin.click(`${bankWin} [data-act="ev-back"]`);
+    await closeAll(admin);
+    await openBank(admin);
+    const flows = await flowsOnScreen(admin);
+    ok(flows.today?.in === 2_000_000 && flows.today?.out === 0, `ters kayıt dış giriş/çıkış sayılmaz (Giriş ${flows.today?.in / 100}, Çıkış ${flows.today?.out / 100})`);
+    await closeAll(admin);
+  });
+
+  await step("31d. Ücretli örnek: Transfer 20.000 + Ücret 5,00 BSMV Hariç (EFT) → önizleme 20.005,25; Ziraat 89.994,75, Garanti 70.000; 770 = 5,25; Bugün Çıkış 5,25", async () => {
+    await openBank(admin);
+    await openTransferForm(admin);
+    await fillVoucher(admin, { accountId: kabul.ziraat.id, toAccountId: kabul.garanti.id, amount: "20.000", channel: "eft", feeAmount: "5" });
+    const taxVisible = await admin.$eval('form.hof-bank-voucher [name="feeTax"]', node => !node.closest(".hof-field").hidden);
+    ok(taxVisible, "ücret yazılınca Ücret Vergisi ve Ücret Türü açılır");
+    await fillVoucher(admin, { feeTax: "bsmv_excl", feeType: "eft" });
+    const preview = (await textOf(admin, "form.hof-bank-voucher [data-voucher-preview]")).replace(/₺/g, "");
+    ok(has(preview, "Ücret 5,25") && has(preview, "5,00 + BSMV 0,25") && has(preview, "Gönderenden Çıkan 20.005,25"), `önizleme: ${preview}`);
+    await shot(admin, "ucretli-transfer-formu");
+    await submitVoucher(admin);
+    await voucherClosed(admin);
+    await admin.waitForTimeout(800);
+    const z = await kabulBalance("Ziraat Bankası");
+    const g = await kabulBalance("Garanti BBVA");
+    ok(z === 89994.75 && g === 70000, `Ziraat ${z} (89.994,75), Garanti ${g}`);
+    const got = await trial();
+    ok(got["770"] === 525, `770 Banka Masrafları ${got["770"] / 100}`);
+    await tab(admin, "overview");
+    const flows = await flowsOnScreen(admin);
+    ok(flows.today?.out === 525 && flows.month?.fee === 525, `Bugün Çıkış ${flows.today?.out / 100} (ücret dış çıkış), Bu Ay Banka Masrafları ${flows.month?.fee / 100}`);
+    await tab(admin, "movements");
+    await admin.waitForSelector(`${bankWin} [data-moves]`);
+    await openEventFromList(admin, row => row.type === "transfer" && row.status === "active" && row.signed < 0);
+    const fee = await admin.$eval(`${bankWin} [data-transfer-fee]`, node => Number(node.dataset.transferFee)).catch(() => null);
+    const out = await admin.$eval(`${bankWin} [data-transfer-out]`, node => Number(node.dataset.transferOut)).catch(() => null);
+    const amount = await textOf(admin, `${bankWin} [data-event-amount]`);
+    ok(fee === 525 && out === 2_000_525 && has(amount, "20.000,00"), `İşlem Kartı: Tutar ${amount}, Ücret ${fee / 100}, Gönderenden Çıkan ${out / 100}`);
+    const lines = await admin.$$eval(`${bankWin} .hof-bank-lines tbody tr`, list => list.map(node => `${node.dataset.gl}|${node.dataset.side}|${node.dataset.minor}`).sort());
+    ok(JSON.stringify(lines) === JSON.stringify(["102|C|2000525", "102|D|2000000", "770|D|25", "770|D|500"]), `fiş satırları (plan §3.7 #11): ${lines.join(", ")}`);
+    await shot(admin, "ucretli-transfer-islem-karti");
+  });
+
+  await step("31e. Ücretli transferi Ters Kaydet → Ziraat 110.000, Garanti 50.000, 770 = 0; mutabakat ok (bölüm 4 adım 31 sonundaki sayılarla başlar)", async () => {
+    await transferReverse(admin);
+    const got = await trial();
+    ok((await kabulBalance("Ziraat Bankası")) === 110000 && (await kabulBalance("Garanti BBVA")) === 50000 && (got["770"] || 0) === 0, `Ziraat ${await kabulBalance("Ziraat Bankası")}, Garanti ${await kabulBalance("Garanti BBVA")}, 770 ${(got["770"] || 0) / 100}`);
+    await closeAll(admin);
+    const integrity = await must("Mutabakat Testi", api.get("/api/workspace/ledger/integrity"));
+    ok(integrity.ok === true, "Kabul Şirketi'nde mutabakat ok (bölüm 3b)");
+  });
+
   // ---------- Bölüm 4 (Aşama 7–8, daraltılmış: fatura peşini, taksit tahsilatı ve çek tahsilinde hesap seçimi) ----------
   // Aynı Kabul Şirketi; başlangıç: Ziraat 110.000, Garanti 50.000, Kasa 10.000, ABC 0, Ürün A 9. Bağımsız beklenen: adım başına plan sayıları.
   await step("32. Aşama 7: Satış Faturası Ürün A 1 × 5.000 peşin Havale/EFT — satırda Banka Hesabı; Tab ile Garanti seçilir, tutar ve alanlar yeniden çizilmez; Garanti 55.000", async () => {

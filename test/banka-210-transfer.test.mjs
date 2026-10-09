@@ -387,6 +387,18 @@ describe("Aşama 9 — nasıl bozarım", () => {
     await integrityOk(ctx.api, "B3");
   });
 
+  it("B17 (Aşama 6 #80–81): ekstreyle eşleşmiş Kasa ↔ Banka transferini sil / düzelt → 409 bank-reconciled; personel transferi silemez (403)", async () => {
+    const t = await must("bankadan kasaya", ctx.api.post("/api/workspace/cash/transfer", { direction: "to-cash", amount: "333", date: TODAY, bankAccountId: acc.ziraat.id, similarOk: true }));
+    const leg = ctx.store.get("SELECT event_id FROM cash_entries WHERE id = ?", t.bankId);
+    rawRun(ctx.db, "INSERT INTO bank_matches (id, line_id, bank_account_id, event_id, amount_minor, digest, kind, score, created_by, created_at) VALUES ('bm-k9', 'line-k', ?, ?, 33300, 'x', 'manual', 80, 'test', ?)", acc.ziraat.id, leg.event_id, new Date().toISOString());
+    expectStatus(await ctx.api.del(`/api/workspace/cash/${t.id}?cashForce=1`), 409, "bank-reconciled", "eşleşmiş Kasa transferini sil");
+    expectStatus(await ctx.api.put(`/api/workspace/cash/${t.id}`, { kind: "in", amount: "300", date: TODAY, description: "x" }), 409, "bank-reconciled", "eşleşmiş Kasa transferini düzelt");
+    expectStatus(await staffRole.del(`/api/workspace/cash/${t.id}`), 403, null, "personel Kasa transferini silemez");
+    rawRun(ctx.db, "UPDATE bank_matches SET undone_at = ?, undone_by = 'test' WHERE id = 'bm-k9'", new Date().toISOString());
+    await must("eşleşme kalkınca silinir", ctx.api.del(`/api/workspace/cash/${t.id}?cashForce=1`));
+    await integrityOk(ctx.api, "B17");
+  });
+
   it("B16: kapı bank:transfer — ham yazımla tek B / tek A kuralı bozulan transfer Mutabakat Testi'nde görünür", async () => {
     const t = await transfer(ctx.api, { ...base(), amount: "200" });
     const line = ctx.store.get("SELECT * FROM bank_lines WHERE event_id = ? AND side = 'C'", t.id);
