@@ -6,6 +6,9 @@
  *    Gerçekleştir / Atla / Sil) ve "+ Masraf", "+ Faiz", "+ Diğer İşlem", "+ Planlı İşlem". Satır → İşlem Kartı: fiş satırları, bağlar,
  *    Ters Kaydet, Düzelt, Açıklamayı Düzelt; pasif düğmenin nedeni görünür yazıyla. Benzer İşlem'de (409 bank-similar) "Yine de Kaydet"
  *    aynı istek kimliğiyle gönderilir (similarOk). Fiş formunun vergi ve hesap varsayılanları Banka Ayarları'ndan (voucher-meta).
+ *  - Transfer (Aşama 9; §3.7 #11): Hareketler'de ve Hesap Detayı'nda "Transfer" (Transfer Yapma yetkisi): Gönderen / Alıcı Hesap, tutar, kanal,
+ *    valör, isteğe bağlı ücret (BSMV Dahil / Hariç / Yok); önizleme "Alıcıya Giren · Ücret · Gönderenden Çıkan". Aynı form Düzelt ve Planlı
+ *    İşlem'de. Genel Bakış'ta "Bugün ve Bu Ay": Giriş / Çıkış dış hareketler, Transfer Giriş / Çıkış ayrı (iki kez sayılmaz).
  *  - Genel Bakış (K10): ana değer Gerçek Banka (banka hesaplarının 102 bakiyeleri); Kart ve Kredi Borcu yalnız kart/kredi hesabı varsa;
  *    Hesabı Atanmamış Eski Hareketler ayrı satırda, hiçbir toplama girmez ("Şimdi Düzenle").
  *  - Hesaplar: liste, hesap kartı (aç, düzelt, Pasife Al, sil), Hesap Detayı (son hareketler, Açılışı Düzelt), Alt Hesap Mizanı.
@@ -290,6 +293,17 @@
         <button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="plans-due">Planlı İşlemleri Aç</button></div>`);
     }
     let table = "";
+    // Aşama 9 (§8.4 K10; §12.3 Aşama 6 "Banka Bugün Çıkış transferi saymaz, Transfer satırında"): Bugün ve Bu Ay giriş-çıkışı. Giriş/Çıkış dış
+    // hareketlerdir; şirketin kendi hesapları arasındaki para (Kasa ile Banka Arası, Bankalar Arası Transfer, kredi, kart borcu) ayrı Transfer
+    // kolonlarındadır, iki kez sayılmaz. Transfer ücreti ve kredi faizi Çıkış'tadır.
+    let flowsHtml = "";
+    if (s.flows && s.realBank.defined) {
+      const f = s.flows;
+      const cell = (label, minor, attr) => td(label, `<span data-flow-${attr}="${Number(minor) || 0}">${esc(fmt(minor))}</span>`, "num");
+      const line = (key, label, item, fee) => `<tr data-flow="${key}">${td("Dönem", `<b>${esc(label)}</b>`)}${cell("Giriş", item.inMinor, "in")}${cell("Çıkış", item.outMinor, "out")}${cell("Transfer Giriş", item.transferInMinor, "tin")}${cell("Transfer Çıkış", item.transferOutMinor, "tout")}${fee === null ? td("Banka Masrafları", "—", "num") : cell("Banka Masrafları", fee, "fee")}</tr>`;
+      flowsHtml = `<h4 class="hof-bank-subtitle">Bugün ve Bu Ay</h4><div class="hof-bank-table-wrap"><table class="hof-table hof-bank-table hof-bank-flows" data-bank-flows><thead><tr><th>Dönem</th><th class="num">Giriş</th><th class="num">Çıkış</th><th class="num">Transfer Giriş</th><th class="num">Transfer Çıkış</th><th class="num">Banka Masrafları</th></tr></thead><tbody>${line("today", "Bugün", f.today, null)}${line("month", "Bu Ay", f.month, f.month.feeMinor ?? 0)}</tbody></table></div>
+        <p class="hof-rep-note">Giriş ve Çıkış: cari, fatura, taksit, çek ve banka fişi hareketleri. Transfer: şirketin kendi hesapları arasında (Kasa ile Banka Arası, Bankalar Arası Transfer, kredi, kart borcu); giriş ve çıkışa sayılmaz. Transfer ücreti ve kredi faizi Çıkış'tadır.</p>`;
+    }
     if (mains.length) {
       const groups = new Map();
       for (const account of mains) {
@@ -329,7 +343,7 @@
       ? `<div class="hof-bank-subhead"><h4 class="hof-bank-subtitle">Son Banka Hareketleri</h4><button type="button" class="hof-link-button" data-act="mv-open">Tüm Hareketler</button></div>
         <div class="hof-bank-table-wrap">${moveTableHtml(view.latest, { showAccount: true, showBalance: false, extraClass: "hof-bank-latest" })}</div>`
       : "";
-    return `<div class="hof-rep-stats hof-bank-stats">${tiles.join("")}</div>${rows.join("")}${empty}${table}${latest}
+    return `<div class="hof-rep-stats hof-bank-stats">${tiles.join("")}</div>${rows.join("")}${empty}${table}${flowsHtml}${latest}
       <p class="hof-rep-note">Gerçek Banka: banka hesaplarınızın (102) defter bakiyelerinin toplamı. Hesabı atanmamış eski hareketler bu toplama girmez.</p>`;
   }
 
@@ -404,8 +418,10 @@
       else if (a.kind === "time") moveButtons.push(["v-interest", "+ Faiz", why, ""]);
       else if (a.kind === "card") moveButtons.push(["v-card", "+ Kart Borcu Ödemesi", why, ""]);
       else if (a.kind === "loan" && HOF.can("bank.transfer")) moveButtons.push(["v-loan", "+ Kredi İşlemi", why, ""]);
-      if (why && moveButtons.length) blocks.push(["Hareket Girişi", why]);
     }
+    // Aşama 9 (§8.5 "Transfer"): bankalar arası transfer bu hesaptan (Transfer Yapma yetkisi; vadeli hesap dahil).
+    if (HOF.can("bank.transfer") && a.currency === "TRY" && ["demand", "commercial", "other", "time"].includes(a.kind)) moveButtons.push(["v-transfer", "Transfer", a.status === "active" ? "" : "Hesap pasif; işlem girmek için önce Etkinleştir."]);
+    if (a.status !== "active" && moveButtons.length) blocks.push(["Hareket Girişi", "Hesap pasif; işlem girmek için önce Etkinleştir."]);
     const button = (act, label, why = "", cls = "hof-button-ghost") => `<button type="button" class="hof-button hof-button-small ${cls}" data-act="${act}" ${why ? `disabled aria-disabled="true" title="${esc(why)}"` : ""}>${esc(label)}</button>`;
     const actions = [
       ...moveButtons.map(([act, label, why, cls]) => button(act, label, why, cls)),
@@ -1235,7 +1251,8 @@
   function moveTableHtml(rows, { showAccount = false, showBalance = false, extraClass = "", debt = false } = {}) {
     const body = rows
       .map(row => {
-        const desc = [row.partyName, row.description, row.reference ? `Ref. ${row.reference}` : "", row.invoiceNo ? `Fatura ${row.invoiceNo}` : "", row.feeNo ? `Masraf ${row.feeNo}` : ""].filter(Boolean).join(" · ");
+        // Aşama 9: iki hesaplı işlemde (transfer, kart borcu, kredi) karşı hesap da yazılır.
+        const desc = [row.partyName, row.counterAccountLabel ? `Karşı Hesap ${row.counterAccountLabel}` : "", row.description, row.reference ? `Ref. ${row.reference}` : "", row.invoiceNo ? `Fatura ${row.invoiceNo}` : "", row.feeNo ? `Masraf ${row.feeNo}` : ""].filter(Boolean).join(" · ");
         const badge = row.status === "active" ? "" : ` <span class="hof-plan-badge is-muted">${esc(row.statusLabel)}</span>`;
         const cls = row.status !== "active" ? "is-muted" : row.signedMinor >= 0 ? "is-in" : "is-out";
         return `<tr data-event="${esc(row.eventId)}" data-no="${esc(row.no)}" data-type="${esc(row.type)}" data-state="${esc(row.status)}" data-signed="${Number(row.signedMinor) || 0}" data-balance="${row.balanceAfterMinor === null || row.balanceAfterMinor === undefined ? "" : row.balanceAfterMinor}" tabindex="0" class="${cls}">
@@ -1260,7 +1277,7 @@
     const debt = Boolean(account) && !MAIN_KINDS.has(account.kind);
     return `<div class="hof-bank-table-wrap">${moveTableHtml(state.rows, { showAccount: !state.account, showBalance: state.balance, extraClass: state.key === "account" ? "hof-bank-recent" : "", debt })}</div>${more}`;
   }
-  const PLAN_OUT = new Set(["fee", "interest_out", "other_out", "card_payment", "loan_repay"]);
+  const PLAN_OUT = new Set(["fee", "interest_out", "other_out", "card_payment", "loan_repay", "transfer"]);
   function plansHtml(state) {
     if (!state.plans.length) return '<p class="hof-empty" data-moves-empty>Planlı işlem yok. Kira, kredi taksiti ya da masraf talimatı gibi tekrar eden ödemeleri “+ Planlı İşlem” ile ekleyin.</p>';
     const canMove = HOF.can("bank.move");
@@ -1297,9 +1314,12 @@
     const accountSelect = `<select data-mv="account" aria-label="Hesap">${option("", "Tüm Hesaplar", s.filter.account)}${[...banks.entries()].map(([bank, list]) => `<optgroup label="${esc(bank)}">${list.map(account => option(account.id, `${account.name} (${account.code})${account.status === "passive" ? " · Pasif" : ""}`, s.filter.account)).join("")}</optgroup>`).join("")}</select>`;
     const groups = view.meta?.groups || [];
     const filter = (label, control, wide = false) => `<label class="hof-bank-filter${wide ? " is-wide" : ""}"><span>${esc(label)}</span>${control}</label>`;
-    const tools = canMove
-      ? `<button type="button" class="hof-button hof-button-small" data-act="v-fee">+ Masraf</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="v-interest">+ Faiz</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="v-other">+ Diğer İşlem</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="plan-new">+ Planlı İşlem</button>`
-      : "";
+    const tools = [
+      canMove ? `<button type="button" class="hof-button hof-button-small" data-act="v-fee">+ Masraf</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="v-interest">+ Faiz</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="v-other">+ Diğer İşlem</button>` : "",
+      // Aşama 9: Bankalar Arası Transfer (Transfer Yapma yetkisi; en az iki transfer hesabı formda denetlenir).
+      HOF.can("bank.transfer") ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="v-transfer">Transfer</button>' : "",
+      canMove ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="plan-new">+ Planlı İşlem</button>' : "",
+    ].join("");
     const filters = s.planned
       ? filter("Hesap", accountSelect)
       : [
@@ -1351,7 +1371,9 @@
   }
 
   // ---------- İşlem Kartı (§8.6) ----------
-  const TRANSFER_KINDS = new Set(["loan_draw", "loan_repay"]);
+  // Transfer Yapma yetkisi isteyen türler (§9.1): bankalar arası transfer (Aşama 9), kredi kullanımı ve geri ödemesi.
+  const TRANSFER_KINDS = new Set(["transfer", "loan_draw", "loan_repay"]);
+  const LOAN_KINDS = new Set(["loan_draw", "loan_repay"]);
   const PERM_NAMES = { "bank.cancel": "Banka Hareketi Silme, İptal ve Ters Kayıt", "bank.move": "Banka Hareketi Girme ve Bankadan Çıkış", "bank.transfer": "Transfer Yapma", "invoices.manage": "Fatura Yönetimi" };
   /** Yetki nedeni (pasif düğmenin yanında yazılır): eksik yetkilerin adları. */
   const permWhy = (action, list) => {
@@ -1379,7 +1401,8 @@
   };
   const isVat = tax => tax === "vat_incl" || tax === "vat_excl";
   /** İşlemin tutarı: faturalı (KDV'li) masrafın başlığı satırsızdır (parası faturanın havalesinde); tutarı faturanın ödenecek tutarıdır. */
-  const eventAmount = c => (c?.fee?.taxKind === "vat" && !c.source ? c.fee.totalMinor : c?.tryMinor || 0);
+  // Bankalar arası transferde tutar alıcıya giren tutardır (ücret ayrı satırda; gönderenden çıkan = tutar + ücret).
+  const eventAmount = c => (c?.transfer ? c.transfer.amountMinor : c?.fee?.taxKind === "vat" && !c.source ? c.fee.totalMinor : c?.tryMinor || 0);
   /** "Kaynak → Hedef" (ABC Ltd. (Cari) → Ziraat · Ana TL Hesabı (Banka)). */
   function flowText(c) {
     if (!c.account) return "";
@@ -1439,8 +1462,10 @@
         ${fact("Tarih", esc(dateText(c.date)))}
         ${c.valueDate && c.valueDate !== c.date ? fact("Valör", esc(dateText(c.valueDate))) : ""}
         ${fact("Durum", esc(c.statusLabel))}
-        ${fact("Hesap", c.account ? `${esc(c.account.label)} <small>${esc(c.account.glSub)}</small>` : "")}
-        ${fact("Karşı Hesap", c.counterAccount ? `${esc(c.counterAccount.label)} <small>${esc(c.counterAccount.glSub)}</small>` : "")}
+        ${fact(c.transfer ? "Gönderen Hesap" : "Hesap", c.account ? `${esc(c.account.label)} <small>${esc(c.account.glSub)}</small>` : "")}
+        ${fact(c.transfer ? "Alıcı Hesap" : "Karşı Hesap", c.counterAccount ? `${esc(c.counterAccount.label)} <small>${esc(c.counterAccount.glSub)}</small>` : "")}
+        ${c.transfer ? fact("Ücret", c.transfer.feeMinor ? `<span data-transfer-fee="${c.transfer.feeMinor}">${esc(fmt(c.transfer.feeMinor))}</span> <small>${esc([c.transfer.feeTypeName, c.transfer.feeTaxMinor ? `${fmt(c.transfer.feeBaseMinor)} + BSMV ${fmt(c.transfer.feeTaxMinor)}` : "", c.transfer.gl].filter(Boolean).join(" · "))}</small>` : "Yok") : ""}
+        ${c.transfer ? fact("Gönderenden Çıkan", `<span data-transfer-out="${c.transfer.outMinor}">${esc(fmt(c.transfer.outMinor))}</span>`) : ""}
         ${fact("Cari", c.party?.name ? (HOF.can("accounts.view") ? `<button type="button" class="hof-link-button" data-open-party="${esc(c.party.id)}">${esc(c.party.name)}</button>` : esc(c.party.name)) : "")}
         ${fact("Fatura", c.invoice ? `<button type="button" class="hof-link-button" data-open-invoice="${esc(c.invoice.id)}">${esc(c.invoice.number)}</button>` : "")}
         ${fee ? fact("Masraf Türü", `${esc(fee.feeTypeName || "—")} <small>${esc(fee.gl)} ${esc(view.meta?.glNames?.[fee.gl] || "")}</small>`) : ""}
@@ -1465,16 +1490,18 @@
 
   // ---------- Fiş formları (masraf, faiz, diğer, kart borcu, kredi; Düzelt; Planlı İşlem) ----------
   const VOUCHER_GROUPS = {
+    // Aşama 9: Bankalar Arası Transfer ayrı uçtan (POST /bank/transfers; Transfer Yapma yetkisi); Düzelt ve Planlı İşlem aynı formdan.
+    transfer: { title: "Bankalar Arası Transfer", types: ["transfer"] },
     fee: { title: "Banka Masrafı", types: ["fee"] },
     interest: { title: "Faiz", types: ["interest_in", "interest_out"] },
     other: { title: "Diğer İşlem", types: ["other_in", "other_out", "card_payment", "loan_draw", "loan_repay"] },
   };
-  const ALL_TYPES = ["fee", "interest_in", "interest_out", "other_in", "other_out", "card_payment", "loan_draw", "loan_repay"];
-  const TYPE_NAMES = { fee: "Banka Masrafı", interest_in: "Faiz Geliri", interest_out: "Faiz Gideri", other_in: "Diğer Gelir", other_out: "Diğer Gider", card_payment: "Kart Borcu Ödemesi", loan_draw: "Kredi Kullanımı", loan_repay: "Kredi Geri Ödemesi" };
-  const mainKinds = type => (type === "interest_in" ? ["demand", "commercial", "other", "time"] : ["demand", "commercial", "other"]);
+  const ALL_TYPES = ["fee", "interest_in", "interest_out", "other_in", "other_out", "card_payment", "loan_draw", "loan_repay", "transfer"];
+  const TYPE_NAMES = { transfer: "Bankalar Arası Transfer", fee: "Banka Masrafı", interest_in: "Faiz Geliri", interest_out: "Faiz Gideri", other_in: "Diğer Gelir", other_out: "Diğer Gider", card_payment: "Kart Borcu Ödemesi", loan_draw: "Kredi Kullanımı", loan_repay: "Kredi Geri Ödemesi" };
+  const mainKinds = type => (type === "interest_in" || type === "transfer" ? ["demand", "commercial", "other", "time"] : ["demand", "commercial", "other"]);
   // Sunucunun alan adı (HttpError field) → formdaki alan; alanı yazmayan hatalar koddan.
-  const VOUCHER_FIELD = { amount: "amount", Tutar: "amount", "Stopaj Tutarı": "stoppageRate", stoppageAmount: "stoppageRate", "Stopaj Oranı": "stoppageRate", stoppageRate: "stoppageRate", "BSMV / KKDF": "taxAmount", taxAmount: "taxAmount", Faiz: "interestAmount", interestAmount: "interestAmount", "BSMV Oranı": "taxRate", "KDV Oranı": "taxRate", taxRate: "taxRate", vatRate: "taxRate", date: "date", plannedDate: "plannedDate", accountId: "accountId", cardAccountId: "cardAccountId", loanAccountId: "loanAccountId", feeType: "feeType", tax: "tax", gl: "gl", invoiceNo: "invoiceNo", "Fatura No": "invoiceNo", partyId: "partyId", type: "type", Açıklama: "description", Referans: "reference", repeat: "repeat" };
-  const VOUCHER_CODE = { "date-future": "date", "date-invalid": "date", "date-missing": "date", "period-locked": "date", "bank-before-opening": "date", "bank-fee-party": "partyId", "bank-party-missing": "partyId", "bank-fee-invoice": "invoiceNo", "invoice-duplicate": "invoiceNo", "bank-stoppage": "stoppageRate", "bank-gl-forbidden": "gl" };
+  const VOUCHER_FIELD = { toAccountId: "toAccountId", channel: "channel", valueDate: "valueDate", feeAmount: "feeAmount", Ücret: "feeAmount", feeTax: "feeTax", feeRate: "feeRate", amount: "amount", Tutar: "amount", "Stopaj Tutarı": "stoppageRate", stoppageAmount: "stoppageRate", "Stopaj Oranı": "stoppageRate", stoppageRate: "stoppageRate", "BSMV / KKDF": "taxAmount", taxAmount: "taxAmount", Faiz: "interestAmount", interestAmount: "interestAmount", "BSMV Oranı": "taxRate", "KDV Oranı": "taxRate", taxRate: "taxRate", vatRate: "taxRate", date: "date", plannedDate: "plannedDate", accountId: "accountId", cardAccountId: "cardAccountId", loanAccountId: "loanAccountId", feeType: "feeType", tax: "tax", gl: "gl", invoiceNo: "invoiceNo", "Fatura No": "invoiceNo", partyId: "partyId", type: "type", Açıklama: "description", Referans: "reference", repeat: "repeat" };
+  const VOUCHER_CODE = { "bank-value-date": "valueDate", "bank-channel": "channel", "date-future": "date", "date-invalid": "date", "date-missing": "date", "period-locked": "date", "bank-before-opening": "date", "bank-fee-party": "partyId", "bank-party-missing": "partyId", "bank-fee-invoice": "invoiceNo", "invoice-duplicate": "invoiceNo", "bank-stoppage": "stoppageRate", "bank-gl-forbidden": "gl" };
   /** "1.234,56" / "1.000" / "10,5" → kuruş (yalnız önizleme; kural ve yuvarlama sunucuda). Geçersizse null. */
   function previewMinor(value) {
     let text = String(value ?? "").replace(/[\s₺]/g, "");
@@ -1500,7 +1527,10 @@
    * planlanmaz). group: fee | interest | other. Benzer İşlem (409 bank-similar) → "Yine de Kaydet" aynı istek kimliğiyle similarOk:true.
    */
   async function voucherForm({ mode = "create", group = "fee", accountId = "", counterId = "", type = "", card = null } = {}) {
-    if (!HOF.can("bank.move")) return HOF.toast("Banka hareketi girmek Banka Hareketi Girme ve Bankadan Çıkış yetkisi ister.", { type: "error" });
+    // Aşama 9: bankalar arası transfer yalnız Transfer Yapma ister (§3.7 #11); Düzelt ve plan sunucudaki gibi Banka Hareketi Girme de ister.
+    if (group === "transfer" && mode === "create") {
+      if (!HOF.can("bank.transfer")) return HOF.toast("Bankalar arası transfer Transfer Yapma yetkisi ister.", { type: "error" });
+    } else if (!HOF.can("bank.move")) return HOF.toast("Banka hareketi girmek Banka Hareketi Girme ve Bankadan Çıkış yetkisi ister.", { type: "error" });
     let meta;
     try {
       meta = await voucherMeta();
@@ -1512,8 +1542,9 @@
     const cards = accounts.filter(account => account.kind === "card");
     const loans = accounts.filter(account => account.kind === "loan");
     let types = mode === "correct" ? [card.type] : mode === "plan" ? ALL_TYPES : VOUCHER_GROUPS[group].types;
-    if (mode !== "correct") types = types.filter(item => (item !== "card_payment" || cards.length) && (!TRANSFER_KINDS.has(item) || (loans.length && HOF.can("bank.transfer"))) && accounts.some(account => mainKinds(item).includes(account.kind)));
-    if (!types.length) return HOF.toast("Bu işlem için uygun, etkin bir TL banka hesabı yok. Önce Hesaplar'dan hesap açın.", { type: "error" });
+    const transferable = accounts.filter(account => mainKinds("transfer").includes(account.kind));
+    if (mode !== "correct") types = types.filter(item => (item !== "card_payment" || cards.length) && (!LOAN_KINDS.has(item) || (loans.length && HOF.can("bank.transfer"))) && (item !== "transfer" || (transferable.length > 1 && HOF.can("bank.transfer"))) && accounts.some(account => mainKinds(item).includes(account.kind)));
+    if (!types.length) return HOF.toast(group === "transfer" ? "Transfer için en az iki etkin TL banka hesabı (Vadesiz, Ticari, Vadeli ya da Diğer) gerekir. Önce Hesaplar'dan hesap açın." : "Bu işlem için uygun, etkin bir TL banka hesabı yok. Önce Hesaplar'dan hesap açın.", { type: "error" });
     const form0 = mode === "correct" ? card.form || {} : {};
     const initialType = type && types.includes(type) ? type : form0.type || types[0];
     const canVat = mode !== "plan" && HOF.can("invoices.manage");
@@ -1524,15 +1555,21 @@
     const fields = [
       types.length > 1 || mode === "correct" ? { name: "type", label: "İşlem Türü", type: "select", value: initialType, options: types.map(item => ({ value: item, label: TYPE_NAMES[item] || item })), readonly: mode === "correct", help: mode === "correct" ? "Düzelt'te işlemin türü değişmez; başka türde işlem için Ters Kaydet ile iptal edip yeni işlem girin." : "" } : null,
       { name: "accountId", label: "Banka Hesabı", type: "select", required: true, value: "", options: [] },
+      { name: "toAccountId", label: "Alıcı Hesap", type: "select", value: form0.toAccountId || counterId || "", options: [] },
       { name: "cardAccountId", label: "Kurumsal Kredi Kartı", type: "select", value: form0.cardAccountId || counterId || cards[0]?.id || "", options: cards.map(accountOption) },
       { name: "loanAccountId", label: "Kredi Hesabı", type: "select", value: form0.loanAccountId || counterId || loans[0]?.id || "", options: loans.map(accountOption) },
       mode === "plan" ? { name: "plannedDate", label: "Planlı Tarih", type: "date", required: true, value: HOF.localToday(), help: "Planlı işlem deftere kendiliğinden yazılmaz; günü gelince Vadesi Gelen Planlı İşlemler'de görünür." } : { name: "date", label: "İşlem Tarihi", type: "date", required: true, max: "today", value: mode === "correct" ? (card.locked ? HOF.localToday() : card.date) : HOF.localToday() },
       mode === "plan" ? { name: "repeat", label: "Tekrar", type: "select", value: "none", options: (meta.repeats || []).map(item => ({ value: item.key, label: item.label })) } : null,
+      mode === "plan" ? null : { name: "valueDate", label: "Valör", type: "date", value: form0.valueDate || "", help: `Paranın alıcı hesaba geçtiği gün (EFT mesai dışında ertesi iş günü); boşsa işlem tarihi. En çok ${meta.valueDateMaxDays || 30} gün sonra.` },
+      { name: "channel", label: "Kanal", type: "select", value: form0.channel || "", options: [{ value: "", label: "Belirtilmedi" }, ...(meta.channels || []).map(item => ({ value: item.key, label: item.label }))] },
       { name: "feeType", label: "Masraf Türü", type: "select", value: form0.feeType || (meta.feeTypes || []).find(item => item.key === "eft")?.key || meta.feeTypes?.[0]?.key || "", options: (meta.feeTypes || []).map(item => ({ value: item.key, label: `${item.name} (${item.gl})` })) },
       { name: "tax", label: "Vergi", type: "select", value: defaultTax, options: taxes.map(item => ({ value: item.key, label: item.label })) },
       { name: "taxRate", label: "BSMV Oranı (%)", value: form0.taxRate || "", inputmode: "decimal" },
       { name: "invoiceNo", label: "Fatura No", value: form0.invoiceNo || "", maxlength: 40, placeholder: "Bankanın kestiği masraf faturasının numarası" },
       { name: "amount", label: "Tutar", required: true, value: form0.amount || "", inputmode: "decimal", placeholder: "ör. 1.250,00" },
+      { name: "feeAmount", label: "Ücret", value: form0.feeAmount && form0.feeAmount !== "0" && form0.feeAmount !== "0,00" ? form0.feeAmount : "", inputmode: "decimal", placeholder: "Bankanın kestiği EFT / havale ücreti; yoksa boş", help: "Ücret gönderen hesaptan ayrıca düşer ve Banka Masrafları'na (770) yazılır." },
+      { name: "feeTax", label: "Ücret Vergisi", type: "select", value: form0.feeTax || meta.transferFeeTax || "bsmv_incl", options: (meta.transferFeeTaxes || []).map(item => ({ value: item.key, label: item.label })) },
+      { name: "feeRate", label: "BSMV Oranı (%)", value: form0.feeRate || "", inputmode: "decimal", placeholder: "5" },
       { name: "stoppageRate", label: "Stopaj Oranı (%)", value: mode === "correct" ? form0.stoppageRate || "" : meta.defaults?.stoppageRate || "", inputmode: "decimal", help: "Bankanın kestiği mevduat stopajı; son kullanılan oran önerilir." },
       { name: "taxAmount", label: "BSMV / KKDF Tutarı", value: form0.taxAmount && form0.taxAmount !== "0,00" ? form0.taxAmount : "", inputmode: "decimal" },
       { name: "interestAmount", label: "Faiz Tutarı", value: form0.interestAmount && form0.interestAmount !== "0,00" ? form0.interestAmount : "", inputmode: "decimal" },
@@ -1564,6 +1601,12 @@
           if (picker) invoiceField.before(picker);
           else invoiceField.insertAdjacentHTML("beforebegin", '<p class="hof-rep-note" data-party-note>Faturalı masrafta cari seçmek için Carileri Görme yetkisi gerekir.</p>');
         }
+        const target = field("toAccountId");
+        if (target) target.dataset.initial = form0.toAccountId || counterId || "";
+        // Transfer formunda alan sırası: Tutar → Ücret → Ücret Vergisi → Ücret Türü → BSMV Oranı (masraf formunda Masraf Türü baştadır).
+        const feeTaxBox = field("feeTax")?.closest(".hof-field");
+        const feeTypeBox = field("feeType")?.closest(".hof-field");
+        if (initialType === "transfer" && feeTaxBox && feeTypeBox) feeTaxBox.after(feeTypeBox);
         wireVoucher(formNode, { meta, accounts, initialType, accountId: accountId || form0.accountId || "", defaultTax, rateTouched, glLabel, picker, mode });
       },
       onSubmit: async data => {
@@ -1581,14 +1624,21 @@
         if (kind === "loan_repay") body.interestAmount = String(data.interestAmount || "").trim() || "0";
         if (kind === "other_in" || kind === "other_out") body.gl = data.gl;
         if (kind === "card_payment") body.cardAccountId = data.cardAccountId;
-        if (TRANSFER_KINDS.has(kind)) body.loanAccountId = data.loanAccountId;
+        if (LOAN_KINDS.has(kind)) body.loanAccountId = data.loanAccountId;
+        if (kind === "transfer") {
+          Object.assign(body, { toAccountId: data.toAccountId, channel: data.channel || "" });
+          if (mode !== "plan" && String(data.valueDate || "").trim()) body.valueDate = data.valueDate;
+          const fee = String(data.feeAmount || "").trim();
+          body.feeAmount = fee || "0";
+          if (fee) Object.assign(body, { feeTax: data.feeTax, feeType: data.feeType, ...(data.feeTax !== "none" && String(data.feeRate || "").trim() ? { feeRate: data.feeRate } : {}) });
+        }
         try {
           if (kind === "fee" && isVat(data.tax) && !body.partyId) throw new HOF.ApiError("Faturalı masrafta faturayı kesen cariyi seçin.", 400, { code: "bank-fee-party", field: "partyId" });
           const send = flags => {
             const payload = { ...body, ...flags };
             if (mode === "plan") return api("/plans", { method: "POST", body: payload });
             if (mode === "correct") return api(`/events/${encodeURIComponent(card.id)}/correct`, { method: "POST", body: payload, requestId });
-            return api("/vouchers", { method: "POST", body: payload, requestId });
+            return api(kind === "transfer" ? "/transfers" : "/vouchers", { method: "POST", body: payload, requestId });
           };
           const result = await withConfirms(send);
           afterWrite();
@@ -1675,6 +1725,16 @@
     };
     const typeNow = () => field("type")?.value || initialType;
     let lastType = "";
+    // Aşama 9: alıcı hesap listesi gönderen dışındaki transfer hesaplarıdır (aynı hesaba transfer seçilemez; sunucu da 400 verir).
+    const syncTarget = () => {
+      const target = field("toAccountId");
+      if (!target) return;
+      const from = field("accountId")?.value || "";
+      const allowed = accounts.filter(account => mainKinds("transfer").includes(account.kind) && account.id !== from);
+      const current = target.value || target.dataset.initial || "";
+      const pick = allowed.find(account => account.id === current) || allowed[0];
+      target.innerHTML = allowed.map(account => `<option value="${esc(account.id)}" ${account.id === pick?.id ? "selected" : ""}>${esc(accountOption(account).label)}</option>`).join("");
+    };
     const sync = () => {
       const kind = typeNow();
       const select = field("accountId");
@@ -1692,10 +1752,21 @@
         }
         lastType = kind;
       }
+      const transfer = kind === "transfer";
+      if (transfer) syncTarget();
+      label("accountId", transfer ? "Gönderen Hesap" : "Banka Hesabı");
+      show("toAccountId", transfer);
+      show("channel", transfer);
+      show("valueDate", transfer);
+      show("feeAmount", transfer);
+      const transferFee = transfer && previewMinor(field("feeAmount")?.value) > 0;
+      show("feeTax", transferFee);
+      show("feeRate", transferFee && field("feeTax")?.value !== "none");
       show("cardAccountId", kind === "card_payment");
-      show("loanAccountId", TRANSFER_KINDS.has(kind));
+      show("loanAccountId", LOAN_KINDS.has(kind));
       const fee = kind === "fee";
-      show("feeType", fee);
+      show("feeType", fee || transferFee);
+      label("feeType", transfer ? "Ücret Türü" : "Masraf Türü");
       show("tax", fee);
       const tax = field("tax")?.value || defaultTax;
       const vat = fee && isVat(tax);
@@ -1707,7 +1778,8 @@
       show("stoppageRate", kind === "interest_in");
       show("taxAmount", kind === "interest_out");
       show("interestAmount", kind === "loan_repay");
-      label("amount", fee ? (tax === "none" ? "Tutar" : tax.endsWith("_excl") ? "Tutar (Vergi Hariç)" : "Tutar (Vergi Dahil)") : kind === "interest_in" ? "Brüt Faiz" : kind === "interest_out" ? "Faiz Tutarı" : kind === "loan_repay" ? "Anapara" : "Tutar");
+      label("amount", fee ? (tax === "none" ? "Tutar" : tax.endsWith("_excl") ? "Tutar (Vergi Hariç)" : "Tutar (Vergi Dahil)") : kind === "interest_in" ? "Brüt Faiz" : kind === "interest_out" ? "Faiz Tutarı" : kind === "loan_repay" ? "Anapara" : transfer ? "Tutar (Alıcıya Giren)" : "Tutar");
+      if (transfer) label("feeAmount", field("feeTax")?.value === "bsmv_excl" ? "Ücret (BSMV Hariç)" : field("feeTax")?.value === "none" ? "Ücret" : "Ücret (BSMV Dahil)");
       const glNode = field("gl")?.closest(".hof-field");
       if (glNode) glNode.hidden = !(kind === "other_in" || kind === "other_out");
       label("gl", kind === "other_in" ? "Gelir Hesabı" : "Gider Hesabı");
@@ -1715,7 +1787,7 @@
       if (note) {
         const feeType = (meta.feeTypes || []).find(item => item.key === field("feeType")?.value);
         const code = fee ? (feeType?.gl === "653" ? meta.defaults.commission : meta.defaults.fee) : kind === "interest_in" ? meta.defaults.interestIncome : kind === "interest_out" || kind === "loan_repay" ? meta.defaults.interestExpense : "";
-        note.textContent = code ? `Hesap: ${glLabel(code)} (Banka Ayarları → Hesap Eşlemeleri).${kind === "interest_in" ? " Stopaj 193 Peşin Ödenen Vergiler ve Fonlar." : ""}` : kind === "card_payment" || TRANSFER_KINDS.has(kind) ? "Şirketin kendi hesapları arasında: gelir ya da gider hesabı yoktur." : "Gelir ve gider hesabı yalnız Banka Ayarları'ndaki izinli hesaplardan seçilir.";
+        note.textContent = transfer ? `Şirketin kendi hesapları arasında: gelir ya da gider hesabı yoktur; ücret ${glLabel(meta.defaults.fee)} hesabına yazılır.` : code ? `Hesap: ${glLabel(code)} (Banka Ayarları → Hesap Eşlemeleri).${kind === "interest_in" ? " Stopaj 193 Peşin Ödenen Vergiler ve Fonlar." : ""}` : kind === "card_payment" || TRANSFER_KINDS.has(kind) ? "Şirketin kendi hesapları arasında: gelir ya da gider hesabı yoktur." : "Gelir ve gider hesabı yalnız Banka Ayarları'ndaki izinli hesaplardan seçilir.";
       }
       preview();
     };
@@ -1727,6 +1799,23 @@
       if (amount === null) return (node.textContent = "");
       const tax = field("tax")?.value || defaultTax;
       const parts = [];
+      if (kind === "transfer") {
+        const feeIn = previewMinor(field("feeAmount")?.value) || 0;
+        const feeTax = field("feeTax")?.value || "none";
+        const ppm = previewPpm(field("feeRate")?.value) ?? previewPpm(meta.defaults.bsmvRate) ?? 50_000;
+        let base = feeIn;
+        let taxMinor = 0;
+        if (feeIn && feeTax === "bsmv_incl") {
+          base = mulDiv(feeIn, 1_000_000, 1_000_000 + ppm);
+          taxMinor = feeIn - base;
+        } else if (feeIn && feeTax === "bsmv_excl") taxMinor = mulDiv(feeIn, ppm, 1_000_000);
+        const feeTotal = base + taxMinor;
+        parts.push(`Alıcıya Giren ${fmt(amount)}`);
+        if (feeTotal) parts.push(`Ücret ${fmt(feeTotal)}${taxMinor ? ` (${fmt(base)} + BSMV ${fmt(taxMinor)})` : ""}`);
+        parts.push(`Gönderenden Çıkan ${fmt(amount + feeTotal)}`);
+        node.textContent = parts.join(" · ");
+        return;
+      }
       if (kind === "fee") {
         const feeType = (meta.feeTypes || []).find(item => item.key === field("feeType")?.value);
         const gl = feeType?.gl === "653" ? meta.defaults.commission : meta.defaults.fee;
@@ -1767,6 +1856,8 @@
     });
     form.addEventListener("input", event => {
       if (event.target.matches?.('[name="taxRate"]')) rateTouched.value = true;
+      // Ücret yazılınca vergi ve tür alanları açılır (Aşama 9).
+      if (event.target.matches?.('[name="feeAmount"]')) return sync();
       preview();
     });
     // Salt okunur açılır liste (Düzelt'te işlem türü): değer değişmesin.
@@ -1830,7 +1921,7 @@
     HOF.formModal({
       title: "Planlı İşlemi Gerçekleştir",
       eyebrow: plan.typeLabel.toLocaleUpperCase("tr-TR"),
-      intro: `${esc(plan.accountLabel)} · ${esc(fmt(plan.amountMinor))} · planlı tarih ${esc(dateText(plan.plannedDate))}. Bankada gerçekleşen tarih ve tutarla kaydedin.${plan.repeat !== "none" ? " Plan bir sonraki döneme geçer." : ""}`,
+      intro: `${esc(plan.accountLabel)}${plan.toAccountLabel ? ` → ${esc(plan.toAccountLabel)}` : ""} · ${esc(fmt(plan.amountMinor))} · planlı tarih ${esc(dateText(plan.plannedDate))}. Bankada gerçekleşen tarih ve tutarla kaydedin.${plan.repeat !== "none" ? " Plan bir sonraki döneme geçer." : ""}`,
       fields: [
         { name: "date", label: "İşlem Tarihi", type: "date", required: true, max: "today", value: plan.plannedDate <= today ? plan.plannedDate : today },
         { name: "amount", label: "Tutar", required: true, value: amountInput(plan.amountMinor), inputmode: "decimal" },
@@ -1986,6 +2077,8 @@
           return voucherForm({ group: "interest", accountId: contextAccount() });
         case "v-other":
           return voucherForm({ group: "other", accountId: contextAccount() });
+        case "v-transfer":
+          return voucherForm({ group: "transfer", accountId: contextAccount() });
         case "v-card":
           return voucherForm({ group: "other", type: "card_payment", counterId: view.accountId });
         case "v-loan":
