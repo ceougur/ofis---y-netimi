@@ -863,6 +863,15 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   bağsız karta) → taşınan tahsilatı sil → aktarımı geri al → Silinenler'den geri yükle → Kasa ÇİFT sayılır (1.000 yerine 2.000),
   Mutabakat Testi "tamam" der. 2.1.0'da düzeldi (bir olay = bir para hareketi, 409 `event-in-use`). Kullanıcıya bildirildi.
   KARAR (kullanıcı, 09.10.2026): "2.1.0 ile gelsin" → ayrı 2.0.27 YOK; 2.1.0 teslim notunda/CHANGELOG'da bu düzeltme ayrıca yazılır.
+  KAPSAM DARALDI (kullanıcı, 09.10.2026; haftalık limit %62, yenileme Perşembe 15.10; önerdiğim 1. yol kabul): 2.1.0 =
+  Aşama 2 ✓ + 3–4 (banka hesapları, fişler, ekranlar) + HER FORMDA havale/EFT için HESAP SEÇİMİ (cari, Kasa↔Banka, fatura
+  peşini, taksit/kayıt tahsilatı, stok peşini, çek tahsil/ödeme) + bankalar arası transfer + temel banka raporları (Banka
+  Bakiye, Banka Hareket, Banka Masraf, Alt Hesap Mizanı, ANLIK DURUM K10) + yetki + kabul 1–16 EKRANDAN + kılavuz Banka bölümü
+  + TEK bağımsız gözden geçirme + paket. ERTELENEN (15.10 sonrası, 2.1.x/2.2.0): döviz/kur ve değerleme (Aşama 13), Bankaya
+  Tahsile Ver, fatura iade/iptalinin bankalı ayrıntısı + TCMB önerisi, K8 taksit kuralları (plan-paid/plan-overpay), toplu
+  kesim ayrıntısı, kalan banka raporları; POS 2.2.0, ekstre 2.3.0 (zaten planlı). Ertelenenler 2.1.0'da GÖRÜNMEZ.
+  Kullanıcı sorusu: daraltılmış 2.1.0 bitince canlıya mı, yoksa Perşembe sonrası tamamı mı? → önerim: daraltılmış 2.1.0
+  testler + kabul 1–16 + gözden geçirme temizse canlıya (Kasa çift sayım düzeltmesi de erken gider); cevap bekleniyor.
 - 2.0.20 YAPILACAKLAR (kullanıcı "yapılacaklara not al" dedi, 03.10.2026; "yap" denince başlanır; ayrıntı ve
   kanıt hemen altındaki ADAYI maddesinde):
   [x] 1. Bütün raporların (43) tablosunun altında kalın TOPLAM satırı — ekran, PDF, Excel aynı; yalnız toplanabilir
