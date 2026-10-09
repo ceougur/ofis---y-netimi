@@ -18,7 +18,7 @@ import { systemClock } from "../clock.mjs";
 import { CHART, UNASSIGNED_SUBS } from "../general-ledger.mjs";
 import { isIsoDate } from "../period.mjs";
 import { addCalendarDays } from "../business-days.mjs";
-import { toMinor } from "../minor.mjs";
+import { parseMinor, toMinor } from "../minor.mjs";
 import { buildXlsx } from "../xlsx-write.mjs";
 import { EVENT_TYPES, INTERNAL_TYPES, NON_MONEY_TYPES, STATUS_LABELS, TYPE_GROUPS, isVoucherType, typeLabel } from "./event-types.mjs";
 import { MONEY_ROLES } from "./voucher.mjs";
@@ -376,17 +376,30 @@ export function createBankMovements({ store, money, accounts, ledger, period, no
     const to = get("to");
     for (const [value, field] of [[from, "from"], [to, "to"]]) if (value && !isIsoDate(value)) throw new HttpError(400, "Geçerli bir tarih aralığı seçin.", { code: "date-invalid", field });
     const search = limited(get("q"), 100, "Arama");
+    // Tutar süzgeci (§7 min / max; Aşama 4 dilim 4): olayın tutarı (TL, kuruş) aralıkta; sınır dahil. Eksi, metin ve fazla ondalık 400.
+    const amountFilter = (key, label) => {
+      const value = get(key);
+      if (!value) return null;
+      try {
+        return parseMinor(value, { label, allowZero: true });
+      } catch (error) {
+        throw new HttpError(400, error.message, { code: error.extra?.code || "bank-filter", field: key });
+      }
+    };
+    const min = amountFilter("min", "En Az Tutar");
+    const max = amountFilter("max", "En Çok Tutar");
+    if (min !== null && max !== null && max < min) throw new HttpError(400, "En Çok Tutar, En Az Tutar'dan küçük olamaz.", { code: "bank-filter", field: "max" });
     const rawLimit = get("limit");
     let limit = rawLimit === "" ? LIMIT_DEFAULT : Math.trunc(Number(rawLimit));
     if (!Number.isFinite(limit)) limit = LIMIT_DEFAULT;
     limit = Math.max(1, Math.min(LIMIT_MAX, limit));
     const planned = ["1", "true"].includes(get("planned"));
-    const f = { account, type, dir, status, from, to, q: search, planned };
-    f.hash = createHash("sha256").update(JSON.stringify([account, type, dir, status, from, to, search])).digest("base64url").slice(0, 16);
+    const f = { account, type, dir, status, from, to, q: search, planned, min, max };
+    f.hash = createHash("sha256").update(JSON.stringify([account, type, dir, status, from, to, search, min, max])).digest("base64url").slice(0, 16);
     f.limit = limit;
     f.cursor = get("cursor");
     // Yürüyen bakiye: tek hesap, yalnız tarih süzgeci (durum: varsayılan = Etkin + Ters Kaydedildi).
-    f.balance = Boolean(account) && !type && !dir && !status && !search;
+    f.balance = Boolean(account) && !type && !dir && !status && !search && min === null && max === null;
     return f;
   }
   const badCursor = () => new HttpError(400, "Sayfa imleci geçersiz ya da süresi doldu; listeyi baştan açın.", { code: "bank-cursor" });
@@ -441,6 +454,14 @@ export function createBankMovements({ store, money, accounts, ledger, period, no
       });
       parts.push(`(e.party_id <> '' AND e.party_id IN (SELECT id FROM accounts WHERE ${partyParts.join(" OR ")}))`);
       where.push(`(${parts.join(" OR ")})`);
+    }
+    if (f.min !== null && f.min !== undefined) {
+      where.push("+e.try_minor >= :min");
+      params.min = f.min;
+    }
+    if (f.max !== null && f.max !== undefined) {
+      where.push("+e.try_minor <= :max");
+      params.max = f.max;
     }
     if (f.from) {
       where.push("e.date >= :from");
@@ -603,6 +624,8 @@ export function createBankMovements({ store, money, accounts, ledger, period, no
     if (!f.status ? !["active", "reversed"].includes(row.status) : f.status !== "all" && row.status !== f.status) return false;
     if (f.from && row.date < f.from) return false;
     if (f.to && row.date > f.to) return false;
+    if (f.min !== null && f.min !== undefined && Number(row.try_minor) < f.min) return false;
+    if (f.max !== null && f.max !== undefined && Number(row.try_minor) > f.max) return false;
     if (f.dir && (counter ? (row.direction === "in" ? "out" : "in") : row.direction) !== f.dir) return false;
     if (f.type) {
       const types = TYPE_GROUPS[f.type] || [f.type];
@@ -668,6 +691,14 @@ export function createBankMovements({ store, money, accounts, ledger, period, no
     if (f.to) {
       where.push("p.planned_date <= ?");
       args.push(f.to);
+    }
+    if (f.min !== null && f.min !== undefined) {
+      where.push("p.amount_minor >= ?");
+      args.push(f.min);
+    }
+    if (f.max !== null && f.max !== undefined) {
+      where.push("p.amount_minor <= ?");
+      args.push(f.max);
     }
     const rows = store.all(`SELECT p.* FROM bank_plans p WHERE ${where.join(" AND ")} ORDER BY p.planned_date, p.created_at`, ...args).map(plan => {
       const own = !f.account || plan.bank_account_id === f.account;

@@ -32,7 +32,7 @@ import { bodyHash } from "../idempotency.mjs";
 import { canUser } from "../permissions.mjs";
 import { addCalendarDays } from "../business-days.mjs";
 import { createTrCalendar } from "../calendars/tr.mjs";
-import { nextEventNo } from "./event-no.mjs";
+import { newEventId, nextEventNo } from "./event-no.mjs";
 import { EVENT_TYPES, NON_MONEY_TYPES, typeOf } from "./event-types.mjs";
 import { voucherCopy } from "./voucher.mjs";
 import { FREE_COLUMNS, LEDGER_TABLES, SOURCE_TABLES, isMoneyRow, moneyWhere } from "./money-lines.mjs";
@@ -107,7 +107,7 @@ export function createBank({ store, now = systemClock, log = null, strict = fals
   function openEvent(ctx, table, row) {
     const date = String(row.date || "");
     const { year, seq, no } = nextEventNo(store, date, { now });
-    const id = `ev-${randomUUID()}`;
+    const id = newEventId();
     store.run(
       "INSERT INTO fin_events (id, year, seq, no, type, date, status, origin, src_table, method, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, 'active', ?, ?, ?, ?, ?)",
       id, year, seq, no, typeOf(table, row), date, ctx.origin, table, String(row.method || ""), ctx.user?.id || "system", stamp_(),
@@ -204,7 +204,7 @@ export function createBank({ store, now = systemClock, log = null, strict = fals
     if (!EVENT_TYPES.has(fields.type)) throw new TypeError(`bank.voucher: bilinmeyen işlem türü "${fields.type}"`);
     const date = String(fields.date || "");
     const { year, seq, no } = nextEventNo(store, date, { now });
-    const id = `ev-${randomUUID()}`;
+    const id = newEventId();
     const copy = voucherCopy(lines, fields.bankRef || "");
     store.run(
       `INSERT INTO fin_events (id, year, seq, no, type, date, value_date, status, reversal_of, origin, origin_key, channel, src_table, src_id, bank_ref, counter_ref, direction, amount_minor, try_minor, currency, method, party_id, invoice_id, description, reference, created_by, created_at)

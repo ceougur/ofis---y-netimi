@@ -21,7 +21,7 @@ import { systemClock } from "../clock.mjs";
 import { LEGACY_MARKS_AT_KEY, LEGACY_MARKS_KEY } from "./checks.mjs";
 import { copyMismatchSql, eventCopy, eventDigest, eventRows, isModuleEvent, primaryRow, refreshEvent } from "./event-copy.mjs";
 import { NON_MONEY_TYPES } from "./event-types.mjs";
-import { nextEventNo } from "./event-no.mjs";
+import { newEventId, nextEventNo } from "./event-no.mjs";
 import { MODULE_TABLES, moneyWhere } from "./money-lines.mjs";
 
 export const REPAIR_KEY = "meta.bank.repair";
@@ -181,7 +181,7 @@ export function repairBank({ store, now = systemClock, period = null, log = null
           const status = collected ? "collected" : "withdrawn";
           const why = !item.status ? "çek kaydı yok" : item.deletedAt ? "eski sürümde silindi" : collected ? "eski sürümde tahsil edildi" : `eski sürümde durumu değişti (${item.status})`;
           const { year, seq, no } = nextEventNo(store, date, { now });
-          const eventId = `ev-${randomUUID()}`;
+          const eventId = newEventId();
           store.run(
             "INSERT INTO fin_events (id, year, seq, no, type, date, status, origin, src_table, src_id, bank_ref, cheque_id, amount_minor, try_minor, description, created_by, created_at) VALUES (?, ?, ?, ?, 'cheque_withdraw', ?, 'active', 'repair', 'cheque_collections', ?, ?, ?, ?, ?, ?, 'system', ?)",
             eventId, year, seq, no, date, item.id, item.bankAccountId, item.chequeId, Math.round((Number(item.amount) || 0) * 100), Math.round((Number(item.amount) || 0) * 100), `Tahsildeki çek kapandı: ${why} (eski-surum)`, at,

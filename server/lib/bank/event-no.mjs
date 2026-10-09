@@ -8,8 +8,26 @@
 //     kullanılmaz; sayaç kaybolsa (elle silinse) en büyük sıradan sürer. Yedekten geri yüklemede sayaç canlı ile yedeğin BÜYÜĞÜ olur
 //     (lib/company-backups.mjs; 001 ve 002 aynı kural — gözden geçirme B4): numara ikinci kez verilmez.
 //   - Her şirketin veri tabanı ayrı: şirketlerin sayaçları ayrı.
+import { randomUUID } from "node:crypto";
 import { systemClock } from "../clock.mjs";
 import { HttpError } from "../http.mjs";
+
+/**
+ * Olay kimliği (fin_events.id), Aşama 4 dilim 4: oluşturma sırasıyla artan ("ev-" + 9 hane zaman + 4 hane sayaç + rastgele ek). Hareketler
+ * (tarih, kimlik) sırasıyla sayfalanır; rastgele kimlikte aynı günün hareketleri gelişigüzel sıralanıyor, yürüyen bakiye gün içinde anlamsız
+ * ara değerler (eksi bile) gösteriyordu. Zaman gerçek saatten (sahte iş saatinden değil): yalnız sıradır; aynı milisaniyede sayaç artar,
+ * saat geri alınsa da son değerden devam edilir (süreç içinde hep artan). Eski (rastgele) kimlikli olaylar olduğu gibi kalır.
+ */
+let lastStamp = 0;
+let lastSeq = 0;
+export function newEventId() {
+  const at = Date.now(); // saat: gerçek (yalnız kimlik sırası; iş tarihi değil)
+  if (at > lastStamp) {
+    lastStamp = at;
+    lastSeq = 0;
+  } else lastSeq += 1;
+  return `ev-${lastStamp.toString(36).padStart(9, "0")}${lastSeq.toString(36).padStart(4, "0")}-${randomUUID().slice(0, 18)}`;
+}
 
 export const EVENT_NO_PREFIX = "BNK";
 const DAY = /^(\d{4})-(\d{2})-(\d{2})$/;

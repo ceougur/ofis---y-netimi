@@ -24,7 +24,8 @@ import { addCalendarDays, addMonths } from "../business-days.mjs";
 import { isIsoDate } from "../period.mjs";
 import { mulPpm, parseMinor, parsePpm } from "../minor.mjs";
 import { ACCOUNT_KINDS } from "./accounts.mjs";
-import { VOUCHER_TYPES, isVoucherType, typeLabel } from "./event-types.mjs";
+import { GROUP_LABELS, VOUCHER_TYPES, isVoucherType, typeLabel } from "./event-types.mjs";
+import { CHART } from "../general-ledger.mjs";
 import { ROLE_GL, assertLines, cardPaymentLines, feeLines, interestInLines, interestOutLines, loanDrawLines, loanRepayLines, otherLines, roleOfAccount } from "./voucher.mjs";
 import { minorPlain } from "./movements.mjs";
 
@@ -444,7 +445,7 @@ export function createBankVouchers({ store, bank, period, accounts, movements, i
       status: row.status,
       statusLabel: PLAN_STATUS[row.status] || row.status,
       due: row.status === "planned" && row.planned_date <= today(),
-      spec: { feeType: payload.feeType || "", tax: payload.tax || "", taxRate: payload.taxRate || "", gl: payload.gl || "", stoppageRate: payload.stoppageRate || "", taxAmount: payload.taxAmount || "" },
+      spec: { feeType: payload.feeType || "", tax: payload.tax || "", taxRate: payload.taxRate || "", gl: payload.gl || "", stoppageRate: payload.stoppageRate || "", stoppageAmount: payload.stoppageAmount || "", taxAmount: payload.taxAmount || "", interestAmount: payload.interestAmount || "", reference: payload.reference || "" },
       doneEventId: row.done_event_id,
       doneEventNo: done?.no || "",
       runs,
@@ -478,7 +479,9 @@ export function createBankVouchers({ store, bank, period, accounts, movements, i
   }
   /** Rozet: vadesi gelen planlı işlemler (yazmaz). */
   const dueCount = () => Number(store.get("SELECT COUNT(*) AS n FROM bank_plans WHERE status = 'planned' AND planned_date <= ?", today()).n) || 0;
-  const PLAN_FIELDS = ["feeType", "tax", "taxRate", "gl", "stoppageRate", "stoppageAmount", "taxAmount"];
+  // Planın türe özgü alanları (payload_json). Aşama 4 dilim 4: kredi geri ödemesinin faizi (interestAmount) ve referans da saklanır;
+  // önceden saklanmadığı için planlı kredi taksiti faizsiz gerçekleşiyordu.
+  const PLAN_FIELDS = ["feeType", "tax", "taxRate", "gl", "stoppageRate", "stoppageAmount", "taxAmount", "interestAmount", "reference"];
   function createPlan(user, body = {}) {
     const kind = typeOf(body?.kind ?? body?.type);
     const repeat = text(body?.repeat) || "none";
@@ -560,16 +563,33 @@ export function createBankVouchers({ store, bank, period, accounts, movements, i
     return planView(planRow(plan.id));
   }
 
+  /**
+   * Son kullanılan mevduat stopajı oranı (Banka Ayarları → Faiz → "Son Kullanılan Oran Önerilir"; koda sabit oran yazılmaz): en son
+   * kaydedilen ETKİN faiz gelirinin stopaj / brüt oranı ("15", "17,5"); hiç yoksa boş. Ters kaydedilen faizin oranı önerilmez. Yazmaz.
+   */
+  function lastStoppageRate() {
+    const event = store.get("SELECT id FROM fin_events WHERE type = 'interest_in' AND +status = 'active' AND +src_table = '' ORDER BY created_at DESC, rowid DESC LIMIT 1");
+    if (!event) return "";
+    const sums = store.get("SELECT COALESCE(SUM(CASE WHEN role = 'income' AND side = 'C' THEN try_minor ELSE 0 END), 0) AS gross, COALESCE(SUM(CASE WHEN role = 'stoppage' AND side = 'D' THEN try_minor ELSE 0 END), 0) AS stoppage FROM bank_lines WHERE event_id = ?", event.id);
+    const gross = Number(sums?.gross) || 0;
+    if (!gross) return "";
+    const ppm = Math.round((Number(sums.stoppage) * 1_000_000) / gross);
+    return String(ppm / 10_000).replace(".", ",");
+  }
   /** Fiş formunun seçenekleri (GET /bank/voucher-meta; yazmaz). */
   function meta() {
     const values = settings();
+    // Hareketler süzgecinin türleri ve formların hesap adları (gelir/gider eşlemesi, masraf türlerinin hesapları).
+    const codes = new Set([...ROLE_GL.income, ...ROLE_GL.expense, "102", "191", "193", "300", "309", "320", "500", values.gl.fee, values.gl.commission, values.gl.interestIncome, values.gl.interestExpense]);
     return {
+      groups: Object.entries(GROUP_LABELS).map(([key, label]) => ({ key, label })),
+      glNames: Object.fromEntries([...codes].filter(Boolean).map(code => [code, CHART[code] || code])),
       types: VOUCHER_TYPES.map(type => ({ type, label: typeLabel(type), direction: ["interest_in", "other_in", "loan_draw"].includes(type) ? "in" : "out", transfer: TRANSFER_TYPES.has(type), counter: TYPE_RULES[type].counter ? { field: TYPE_RULES[type].counter.field, label: TYPE_RULES[type].counter.label } : null })),
       feeTypes: (values.fee.types || []).map(type => ({ key: type.key, name: type.name, gl: type.gl })),
       taxes: Object.entries(FEE_TAXES).map(([key, label]) => ({ key, label, invoice: VAT_TAXES.has(key) })),
       repeats: Object.entries(PLAN_REPEATS).map(([key, label]) => ({ key, label })),
       gl: { income: ROLE_GL.income, expense: ROLE_GL.expense },
-      defaults: { tax: values.fee.tax, bsmvRate: "5", vatRate: "20", otherIncome: values.gl.otherIncome, otherExpense: values.gl.otherExpense, interestIncome: values.gl.interestIncome, interestExpense: values.gl.interestExpense },
+      defaults: { tax: values.fee.tax, bsmvRate: "5", vatRate: "20", stoppageRate: lastStoppageRate(), otherIncome: values.gl.otherIncome, otherExpense: values.gl.otherExpense, interestIncome: values.gl.interestIncome, interestExpense: values.gl.interestExpense, fee: values.gl.fee, commission: values.gl.commission },
       manualVoucher: Boolean(values.other.manualVoucher),
       similar: values.similar.enabled !== false,
     };

@@ -122,3 +122,25 @@ export const TYPE_GROUPS = Object.freeze({
   transfer: ["transfer"],
   legacy: ["carry_close", "legacy_reclass"],
 });
+
+/**
+ * Süzgeç türlerinin adları (Hareketler → İşlem Türü; başlık yazımı). Liste 2.1.0'da kaydı olabilen türlerdir: Bankalar Arası Transfer
+ * (Aşama 9) o özellik gelince eklenir (yarım özellik görünmez, §12.1).
+ */
+export const GROUP_LABELS = Object.freeze({
+  fee: "Banka Masrafı",
+  interest: "Faiz",
+  other: "Diğer Gelir ve Gider",
+  card: "Kart Borcu Ödemesi",
+  loan: "Kredi",
+  opening: "Açılış Bakiyesi",
+  reversal: "Ters Kayıt",
+  party: "Cari Tahsilat ve Ödeme",
+  invoice: "Fatura Tahsilat ve Ödeme",
+  plan: "Taksit Tahsilat ve İadesi",
+  record: "Kayıt Tahsilatı",
+  stock: "Stok Satış ve Alımı",
+  cheque: "Çek ve Senet",
+  cash: "Kasa ile Banka Arası",
+  legacy: "Kurulum ve Aktarım",
+});

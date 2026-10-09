@@ -243,6 +243,10 @@ export function registerBankRoutes(router, context) {
   router.post(`${BASE}/events/:ref/correct`, async ({ req, res, params }) => {
     const user = eventPermissions(req, params.ref, { cancel: true, move: true });
     const body = await readJson(req);
+    // Aşama 4 dilim 4 (nasıl bozarım): BSMV'li ya da vergisiz masrafı Düzelt'te "KDV Dahil/Hariç" yapmak gider faturası keser → Fatura
+    // Yönetimi ister (önceden yalnız asıl masraf faturalıysa isteniyordu: yetkisiz kişi Düzelt'le fatura kesebiliyordu).
+    const event = movements.eventRow(params.ref);
+    if (event?.type === "fee" && text(body?.tax) && vouchers.needsInvoice({ type: "fee", tax: text(body.tax) })) auth.requirePermission(req, "invoices.manage");
     const result = vouchers.correct(user, params.ref, body, { requestId: requestIdOf(req, body) });
     if (!result.replayed) changed(user, { eventId: result.next?.id });
     ok(res, result);
