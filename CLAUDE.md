@@ -898,6 +898,14 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
       yalnız cari + fiş; yetki matrisi, `previous` statik taraması, salt okunur lisans, iki oturumlu eşzamanlılık; ekrandan kayıt
       tahsilatı/stok peşini/çek ödemesi/Düzenle'de hesap taşıma; Banka "Bugün Çıkış"/"Transfer" satırı (kabul 13–14) yok. Eleştirmen
       + eşleme ayrı ayrı buldu: taksit KARTI silme bağlı banka tahsilatını sessizce düşürüyor (yüksek) → düzeltme turunda.
+  CANLI HATA 2 (09.10.2026; mutabakat tohum 1 incelemesinde; 2.0.24 G1 düzeltmesinin GERİLEMESİ, v2.0.24/25/26'da VAR, v2.0.23'te yok;
+      gerçek etiket kodlarıyla API'den ölçüldü): peşinli + taksitli satış faturasında iade + peşinin geri ödenmesi taksit kartını
+      yeniden BÜYÜTÜYOR. Ör. 1.000 (500 peşin, 500 taksit) → malın tamamı iade, 500 nakit geri → cari 0, fatura açığı 0, Kasa 0 ama
+      kart Kalan 500, bugün vadeli → Geciken Taksitler, Alacak Yaşlandırma, ANLIK DURUM "Geciken Alacak", cari kartı, Vade Takip,
+      (koddan) takvim/zil/WhatsApp hatırlatma borçsuz müşteriyi gecikmiş gösterir. Para/defter/mutabakat kapısı doğru. Kök neden
+      `invoices.mjs` ~1304 hedef = açık(0'da kırpılı) + Σ geri ödeme → doğrusu max(0, imzalı açık + geri ödeme); model
+      (`test/mutabakat/motor.mjs` 122/124/273) aynı hatayı taşıyıp gizliyordu. Önem YÜKSEK. Öncek kararın örneğiyle (Kasa çift
+      sayım: "2.1.0 ile gelsin") 2.1.0'da düzeltilir + mevcut veride yanlış büyümüş kartlar için açılış onarımı; kullanıcıya bildirildi.
   İSTEK (kullanıcı, 09.10.2026): "tüm işlemler bitince bağımsız yargıç ve yargıç kararını eleştirmenden tekrar geçir, sonra plana
       uy!" → 2.1.0'ın BÜTÜN işleri (düzeltme turu, eksik testler, transfer, raporlar, K10, yetki, kabul 1–16, kılavuz) bitince, paketten
       ÖNCE: (1) bağımsız YARGIÇ (kod değiştirmez; bütün 2.1.0'ı ve bulguları yeniden üreterek doğrular, önem + teslime engel kararı);
