@@ -1549,7 +1549,9 @@
       HOF.emit("invoices-changed", saved);
       showDoc(saved);
     } catch (failure) {
-      if (failure?.data?.code !== "cash-negative-cancelled") fail(failure.message || "İşlem tamamlanamadı.");
+      // Soruya "Vazgeç" kullanıcının kararıdır (kırmızı hata değil); banka sorusunda bilgi bildirimi (2.0.26 İ6 kalıbı).
+      if (!HOF.userCancelled(failure)) fail(failure.message || "İşlem tamamlanamadı.");
+      else if (failure.data.code !== "cash-negative-cancelled") HOF.toast(failure.message, { type: "info" });
     } finally {
       form.busy = false;
       body()?.querySelectorAll(".hof-actions .hof-button").forEach(button => (button.disabled = false));
@@ -1557,16 +1559,33 @@
   }
   // Stok eksiye düşecekse sorulur; onaylanırsa aynı istek "force" ile yeniden gönderilir (Kasa eksi uyarısını HOF.api sorar).
   // v2.1.0 Aşama 7: banka hesabına bağlı peşinde Benzer İşlem ve hesabın Eksi Bakiye sorusu da (HOF.bank.withConfirms; "Yine de Kaydet").
-  async function withStockForce(send) {
-    const confirmBank = HOF.bank?.withConfirms || (fn => fn({}));
+  // Yargıç (2.1.0): verb "cancel" / "delete" — sorunun düğmesi "Yine de İptal Et" / "Yine de Sil", Vazgeç bildirimi "İptal edilmedi" / "Silinmedi".
+  const STOCK_VERBS = {
+    save: ["Yine de kaydedilsin mi?", "Yine de Kaydet", "Kaydedilmedi"],
+    cancel: ["Yine de iptal edilsin mi?", "Yine de İptal Et", "İptal edilmedi"],
+    delete: ["Yine de silinsin mi?", "Yine de Sil", "Silinmedi"],
+  };
+  async function withStockForce(send, verb = "save") {
+    const confirmBank = HOF.bank?.withConfirms ? fn => HOF.bank.withConfirms(fn, { verb }) : fn => fn({});
     const attempt = force => confirmBank(flags => send({ ...force, ...flags }));
+    const [ask, yes, no] = STOCK_VERBS[verb] || STOCK_VERBS.save;
     try {
       return await attempt({});
     } catch (error) {
       if (error?.data?.code !== "stock-negative") throw error;
-      const go = await HOF.confirm({ title: "Stok eksiye düşecek", message: `${error.message} Sayım farkı ya da henüz girilmemiş alış varsa kaydedebilirsiniz. Yine de kaydedilsin mi?`, confirmLabel: "Yine de Kaydet", danger: true });
-      if (!go) throw new HOF.ApiError("Kaydedilmedi: stok eksiye düşecekti.", 409, { code: "cash-negative-cancelled" });
+      const go = await HOF.confirm({ title: "Stok eksiye düşecek", message: `${error.message} Sayım farkı ya da henüz girilmemiş alış varsa ${verb === "save" ? "kaydedebilirsiniz" : "devam edebilirsiniz"}. ${ask}`, confirmLabel: yes, danger: true });
+      if (!go) throw new HOF.ApiError(`${no}: stok eksiye düşecekti.`, 409, { code: "cash-negative-cancelled" });
       return attempt({ force: true });
+    }
+  }
+  /** Kart pencerelerinde (İptal Et, Sil): soruya Vazgeç form hatası değildir; bilgi bildirimi verilir, pencere açık kalır. */
+  async function keepOnCancel(run) {
+    try {
+      return await run();
+    } catch (error) {
+      if (!HOF.userCancelled(error)) throw error;
+      HOF.toast(error.message, { type: "info" });
+      return true;
     }
   }
 
@@ -1850,10 +1869,12 @@
       submitLabel: "İptal Et",
       onSubmit: async data => {
         if (sentEInvoice && !data.confirmExternal) throw new Error("Gönderilmiş e-Fatura önce GİB / alıcı tarafında iptal edilmeli (ret ya da iptal talebi); sonra kutuyu işaretleyin. Gerekirse iade faturası kesin.");
-        const saved = await withStockForce(force => HOF.api(`/api/workspace/invoices/${encodeURIComponent(doc.id)}/cancel`, { method: "POST", body: { reason: data.reason, confirmExternal: data.confirmExternal === true, ...force } }));
-        HOF.toast(`${docTitle(doc)} iptal edildi; etkileri geri alındı.`, { type: "success" });
-        HOF.emit("invoices-changed", saved);
-        showDoc(saved);
+        return keepOnCancel(async () => {
+          const saved = await withStockForce(force => HOF.api(`/api/workspace/invoices/${encodeURIComponent(doc.id)}/cancel`, { method: "POST", body: { reason: data.reason, confirmExternal: data.confirmExternal === true, ...force } }), "cancel");
+          HOF.toast(`${docTitle(doc)} iptal edildi; etkileri geri alındı.`, { type: "success" });
+          HOF.emit("invoices-changed", saved);
+          showDoc(saved);
+        });
       },
     });
   }
@@ -1937,12 +1958,14 @@
       submitLabel: "Sil",
       onSubmit: async data => {
         const query = new URLSearchParams({ reason: data.reason || "" });
-        await withStockForce(force => HOF.api(`/api/workspace/invoices/${encodeURIComponent(doc.id)}?${query}${force.force ? "&force=1" : ""}${force.negativeOk ? "&negativeOk=1" : ""}`, { method: "DELETE" }));
-        HOF.toast(`${docTitle(doc)} silindi; Silinenler'den geri alınabilir.`, { type: "success" });
-        HOF.emit("invoices-changed", null);
-        HOF.emit("accounts-changed");
-        HOF.emit("cash-changed");
-        showList();
+        return keepOnCancel(async () => {
+          await withStockForce(force => HOF.api(`/api/workspace/invoices/${encodeURIComponent(doc.id)}?${query}${force.force ? "&force=1" : ""}${force.negativeOk ? "&negativeOk=1" : ""}`, { method: "DELETE" }), "delete");
+          HOF.toast(`${docTitle(doc)} silindi; Silinenler'den geri alınabilir.`, { type: "success" });
+          HOF.emit("invoices-changed", null);
+          HOF.emit("accounts-changed");
+          HOF.emit("cash-changed");
+          showList();
+        });
       },
     });
   }
@@ -1958,7 +1981,7 @@
       fields: counts.issued ? [{ name: "reason", label: "Silme Nedeni", maxlength: 300, placeholder: "ör. Deneme kayıtları", autofocus: true }] : [],
       submitLabel: `Seçilenleri Sil (${docs.length})`,
       onSubmit: async data => {
-        const result = await HOF.api("/api/workspace/invoices/bulk-delete", { method: "POST", body: { ids: docs.map(doc => doc.id), reason: data.reason, force: true } });
+        const result = await bulkWithNegative("/api/workspace/invoices/bulk-delete", { ids: docs.map(doc => doc.id), reason: data.reason, force: true }, "delete");
         bulkOutcome(result, "silindi (Silinenler'den geri alınabilir)", "silinemedi");
         HOF.emit("invoices-changed", {});
         HOF.emit("accounts-changed");
@@ -1977,12 +2000,28 @@
       fields: [{ name: "reason", label: "İptal Nedeni", maxlength: 300, placeholder: "ör. Yanlış cariye kaydedildi", autofocus: true }],
       submitLabel: "Seçilenleri İptal Et",
       onSubmit: async data => {
-        const result = await HOF.api("/api/workspace/invoices/bulk-cancel", { method: "POST", body: { ids: docs.map(doc => doc.id), reason: data.reason } });
+        const result = await bulkWithNegative("/api/workspace/invoices/bulk-cancel", { ids: docs.map(doc => doc.id), reason: data.reason }, "cancel");
         bulkOutcome(result, "iptal edildi", "iptal edilemedi");
         HOF.emit("invoices-changed", {});
         loadList();
       },
     });
+  }
+  // Yargıç K3: toplu iptal/silmede Uyar'daki banka hesabını eksiye düşüren belgeler (409 bank-negative) için TEK soru; onaylanırsa yalnız o
+  // belgeler negativeOk ile yeniden gönderilir. Engelle'deki (bank-blocked) belge sorulmaz, nedeniyle "yapılamadı" listelenir.
+  async function bulkWithNegative(url, body, verb) {
+    const result = await HOF.api(url, { method: "POST", body });
+    const risky = (result.results || []).filter(item => !item.ok && item.code === "bank-negative");
+    if (!risky.length) return result;
+    const [yes, no, word] = verb === "cancel" ? ["Yine de İptal Et", "İptal edilmedi", "iptal edilsin"] : ["Yine de Sil", "Silinmedi", "silinsin"];
+    const go = await HOF.confirm({ title: "Eksi Bakiye", message: `Seçilenlerden ${risky.length.toLocaleString("tr-TR")} belge banka hesabını eksiye düşürüyor (${risky[0].number || risky[0].displayNo || ""}: ${String(risky[0].message || "").replace(/\s*Yine de kaydedilsin mi\?\s*$/, "")}). Bu belgeler yine de ${word} mi?`, confirmLabel: yes, cancelLabel: "Vazgeç", danger: true });
+    if (!go) {
+      HOF.toast(`${no}: ${risky.length.toLocaleString("tr-TR")} belge banka hesabını eksiye düşürecekti.`, { type: "info" });
+      return result;
+    }
+    const again = await HOF.api(url, { method: "POST", body: { ...body, ids: risky.map(item => item.id), negativeOk: true } });
+    const byId = new Map((again.results || []).map(item => [item.id, item]));
+    return { ...result, results: (result.results || []).map(item => byId.get(item.id) || item) };
   }
   function bulkOutcome(result, doneWord, failWord) {
     const failed = (result.results || []).filter(item => !item.ok);

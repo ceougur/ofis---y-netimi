@@ -476,7 +476,9 @@
     return node;
   };
   // v2.0.26 (2. gözden geçirme İ6): eksi bakiye sorusunda "Vazgeç" bir hata değil, kullanıcının kararı: bilgi bildirimi.
-  HOF.toastError = error => (error?.data?.code === "cash-negative-cancelled" ? HOF.toast(error.message, { type: "info" }) : HOF.toast((error && error.message) || String(error), { type: "error", timeout: 5200 }));
+  // Yargıç (2.1.0): banka sorularındaki "Vazgeç" de (bank-negative-cancelled, bank-similar-cancelled) kullanıcının kararıdır: bilgi bildirimi.
+  HOF.userCancelled = error => /-cancelled$/.test(String(error?.data?.code || ""));
+  HOF.toastError = error => (HOF.userCancelled(error) ? HOF.toast(error.message, { type: "info" }) : HOF.toast((error && error.message) || String(error), { type: "error", timeout: 5200 }));
 
   // ---------- Pencereler ----------
   const openModals = [];

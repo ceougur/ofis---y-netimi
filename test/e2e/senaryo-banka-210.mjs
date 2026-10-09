@@ -1775,6 +1775,210 @@ try {
     await admin.waitForTimeout(700);
   });
 
+  // ---------- Bölüm 5 (Yargıç ve Eleştirmen bulguları; docs/2.1.0-KANIT.md "Yargıç ve Eleştirmen Bulguları") ----------
+  // Aynı Kabul Şirketi (bölüm 4 sonu: Ziraat 114.000, Garanti 58.000, Kasa 10.000, ABC 5.000). Fatura İptal Et / Sil / toplu iptal sorusu
+  // işlemin adıyla ("Yine de İptal Et" / "Yine de Sil"), Vazgeç kırmızı form hatası değil bilgi; negativeOk iletilir. Taksit kartında banka
+  // bağlı tahsilat varken Sil pasif ve nedeni yazılı. Silinenler'den geri yüklemede "Yine de Geri Yükle". Peşin satırların anahtarı tekil.
+  const lastToast = async (page, pattern) => {
+    for (let i = 0; i < 20; i += 1) {
+      const texts = await page.$$eval(".hof-toast .hof-toast-text", nodes => nodes.map(n => n.textContent.trim()));
+      const hit = texts.find(t => pattern.test(t));
+      if (hit) return hit;
+      await page.waitForTimeout(250);
+    }
+    return "";
+  };
+  const selectKabul = async () => {
+    await admin.evaluate(async id => fetch("/api/companies/select", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ id }) }), kabul.company.id);
+    await admin.goto(`${BASE}/`, { waitUntil: "load" });
+    await admin.waitForSelector("#hof-sidecard", { timeout: 30000 });
+    await admin.waitForTimeout(700);
+  };
+  const salePesin = (amount, extra = {}) => must("peşinli satış", api.post("/api/workspace/invoices", { kind: "sale", accountId: kabul.abc.id, issueDate: "2026-10-08", pricesIncludeVat: true, lines: [{ name: `Hizmet ${amount}`, qty: 1, unitPrice: amount, discountRate: 0, vatRate: 0 }], payment: { cash: [{ amount: String(amount), method: "bank", bankAccountId: kabul.garanti.id }], cheques: [], endorse: [], rest: "open" }, force: true, similarOk: true, ...extra }));
+  // Neden penceresi (İptal Et / Sil / toplu): bildirim kutusu sonradan eklenince ":last-of-type" pencereyi bulmaz; forma alanından gidilir.
+  const reasonForm = `${modal} .hof-form:has([name="reason"])`;
+  const docStatus = async id => (await api.get(`/api/workspace/invoices/${id}`)).status === 200 ? (await must("fatura", api.get(`/api/workspace/invoices/${id}`))).status : "silindi";
+  // Kartta İptal Et / Sil → neden penceresi → gönder → Eksi Bakiye sorusu; answer "no" ya da "yes".
+  const cardAction = async (docId, act, answer) => {
+    const inv = `${modal} .hof-invoices-modal`;
+    await admin.evaluate(id => window.HOF.invoices.openDoc(id), docId);
+    await admin.waitForSelector(`${inv} [data-act="${act}"]`, { timeout: 10000 });
+    await admin.click(`${inv} [data-act="${act}"]`);
+    const form = reasonForm;
+    await admin.waitForSelector(`${form} [name="reason"]`, { timeout: 8000 });
+    await admin.fill(`${form} [name="reason"]`, "yargıç ekran denemesi");
+    await admin.click(`${form} button[type="submit"]`);
+    await admin.waitForSelector(`${top} [data-answer="yes"]`, { timeout: 8000 });
+    const question = await textOf(admin, `${top} .hof-modal-text`);
+    const yes = await textOf(admin, `${top} [data-answer="yes"]`);
+    await admin.waitForTimeout(500);
+    await admin.click(`${top} [data-answer="${answer}"]`);
+    await admin.waitForTimeout(900);
+    const error = await textOf(admin, `${reasonForm} .hof-form-error`);
+    return { question, yes, error };
+  };
+
+  await step("35. Yargıç: Fatura İptal Et — Garanti'yi eksiye düşüren iptal sorulur (“Yine de İptal Et”); Vazgeç kırmızı hata yazmaz (bilgi “İptal edilmedi”), fatura yerinde; onayla iptal (negativeOk)", async () => {
+    await selectKabul();
+    kabul.xyz = await must("tedarikçi", api.post("/api/workspace/accounts", { name: "XYZ Tedarik", type: "supplier", registeredOn: "2026-09-01" }));
+    const doc = await salePesin(30000);
+    await must("ödeme", api.post(`/api/workspace/accounts/${kabul.xyz.id}/entries`, { kind: "out", amount: "80.000", method: "bank", bankAccountId: kabul.garanti.id, date: "2026-10-08" }));
+    ok((await kabulBalance("Garanti BBVA")) === 8000, `başlangıç Garanti 8.000 (${await kabulBalance("Garanti BBVA")})`);
+    const no = await cardAction(doc.id, "cancel", "no");
+    ok(has(no.question, "Garanti BBVA · Ana TL Hesabı hesabında 8.000,00 TL var") && has(no.question, "Yine de iptal edilsin mi?"), `soru metni iptale uygun: ${no.question.slice(0, 200)}`);
+    ok(no.yes === "Yine de İptal Et", `onay düğmesi “${no.yes}”`);
+    ok(no.error === "", `Vazgeç: formda kırmızı hata yok (“${no.error}”)`);
+    const info = await lastToast(admin, /İptal edilmedi/);
+    ok(/^İptal edilmedi: /.test(info), `Vazgeç bildirimi bilgi: “${info}”`);
+    ok((await docStatus(doc.id)) === "issued" && (await kabulBalance("Garanti BBVA")) === 8000, "Vazgeç: fatura Kaydedildi, Garanti 8.000");
+    await admin.waitForTimeout(500);
+    await shot(admin, "yargic-iptal-vazgec");
+    await admin.click(`${reasonForm} button[type="submit"]`);
+    await admin.waitForSelector(`${top} [data-answer="yes"]`, { timeout: 8000 });
+    await admin.click(`${top} [data-answer="yes"]`);
+    await admin.waitForTimeout(1200);
+    ok((await docStatus(doc.id)) === "cancelled" && (await kabulBalance("Garanti BBVA")) === -22000, `Yine de İptal Et: fatura İptal Edildi, Garanti −22.000 (${await kabulBalance("Garanti BBVA")})`);
+    await closeAll(admin);
+  });
+
+  await step("36. Yargıç: Fatura Sil — aynı kalıp (“Yine de Sil”; Vazgeç bilgi “Silinmedi”); onayla silinir (?negativeOk=1)", async () => {
+    const doc = await salePesin(15000);
+    ok((await kabulBalance("Garanti BBVA")) === -7000, "satış sonrası Garanti −7.000");
+    const no = await cardAction(doc.id, "delete", "no");
+    ok(has(no.question, "Yine de silinsin mi?") && no.yes === "Yine de Sil", `soru ve düğme silmeye uygun (“${no.yes}”)`);
+    ok(no.error === "", `Vazgeç: formda kırmızı hata yok (“${no.error}”)`);
+    const info = await lastToast(admin, /Silinmedi/);
+    ok(/^Silinmedi: /.test(info), `Vazgeç bildirimi bilgi: “${info}”`);
+    ok((await docStatus(doc.id)) === "issued", "Vazgeç: fatura yerinde");
+    await admin.click(`${reasonForm} button[type="submit"]`);
+    await admin.waitForSelector(`${top} [data-answer="yes"]`, { timeout: 8000 });
+    await admin.click(`${top} [data-answer="yes"]`);
+    await admin.waitForTimeout(1200);
+    ok((await docStatus(doc.id)) === "silindi" && (await kabulBalance("Garanti BBVA")) === -22000, `Yine de Sil: fatura silindi, Garanti −22.000 (${await kabulBalance("Garanti BBVA")})`);
+    await closeAll(admin);
+  });
+
+  await step("37. Yargıç: toplu iptal — eksiye düşüren 2 belge için TEK soru (“Yine de İptal Et”), onayla ikisi iptal; Garanti −22.000", async () => {
+    const a = await salePesin(1000);
+    const b = await salePesin(2000);
+    ok((await kabulBalance("Garanti BBVA")) === -19000, "satışlar sonrası Garanti −19.000");
+    const inv = `${modal} .hof-invoices-modal`;
+    await admin.click("#hof-sidecard [data-action=invoices]");
+    await admin.waitForSelector(`${inv} [data-sel="${a.id}"]`, { timeout: 10000 });
+    await admin.click(`${inv} [data-sel="${a.id}"]`);
+    await admin.click(`${inv} [data-sel="${b.id}"]`);
+    await admin.waitForSelector(`${inv} [data-act="bulk-cancel"]`, { timeout: 8000 });
+    await admin.click(`${inv} [data-act="bulk-cancel"]`);
+    const form = reasonForm;
+    await admin.waitForSelector(`${form} [name="reason"]`, { timeout: 8000 });
+    await admin.fill(`${form} [name="reason"]`, "toplu yargıç denemesi");
+    await admin.click(`${form} button[type="submit"]`);
+    await admin.waitForSelector(`${top} [data-answer="yes"]`, { timeout: 8000 });
+    const question = await textOf(admin, `${top} .hof-modal-text`);
+    const yes = await textOf(admin, `${top} [data-answer="yes"]`);
+    ok(has(question, "Seçilenlerden 2 belge banka hesabını eksiye düşürüyor") && yes === "Yine de İptal Et", `tek soru: ${question.slice(0, 160)} · “${yes}”`);
+    await admin.waitForTimeout(500);
+    await shot(admin, "yargic-toplu-iptal-sorusu");
+    await admin.click(`${top} [data-answer="yes"]`);
+    await admin.waitForTimeout(1500);
+    ok((await docStatus(a.id)) === "cancelled" && (await docStatus(b.id)) === "cancelled" && (await kabulBalance("Garanti BBVA")) === -22000, `iki belge İptal Edildi; Garanti ${await kabulBalance("Garanti BBVA")}`);
+    await closeAll(admin);
+  });
+
+  await step("38. Yargıç: peşin satırların satır anahtarı ekranda tekil (iki peşin satır); kayıt 200", async () => {
+    const inv = `${modal} .hof-invoices-modal`;
+    let sent = null;
+    const listen = request => {
+      if (request.method() === "POST" && /\/api\/workspace\/invoices(\?|$)/.test(request.url())) sent = JSON.parse(request.postData() || "{}");
+    };
+    admin.on("request", listen);
+    await admin.click("#hof-sidecard [data-action=invoices]");
+    await admin.waitForSelector(`${inv} [data-act="new"]`, { timeout: 10000 });
+    await admin.click(`${inv} [data-act="new"]`);
+    await admin.click(`${inv} [data-scenario="service_sale"]`);
+    await admin.waitForSelector(`${inv} [data-lines]`);
+    await admin.fill(`${inv} [data-acc-query]`, "ABC");
+    await admin.waitForSelector(`${inv} .hof-acc-picker li[data-id="${kabul.abc.id}"]`);
+    await (await admin.$(`${inv} .hof-acc-picker li[data-id="${kabul.abc.id}"]`)).dispatchEvent("mousedown");
+    await admin.click(`${inv} [data-l="0"][data-f="name"]`);
+    await admin.keyboard.type("Danışmanlık", { delay: 30 });
+    await admin.click(`${inv} [data-l="0"][data-f="unitPrice"]`);
+    await admin.keyboard.press("Control+A");
+    await admin.keyboard.type("3000", { delay: 30 });
+    await admin.selectOption(`${inv} [data-l="0"][data-f="vatRate"]`, "0").catch(() => null);
+    await admin.waitForTimeout(900);
+    await admin.click(`${inv} [data-act="pay-add-cash"]`);
+    await admin.waitForSelector(`${inv} [data-pay="cash"][data-i="0"][data-f="amount"]`);
+    await admin.fill(`${inv} [data-pay="cash"][data-i="0"][data-f="amount"]`, "1000");
+    await admin.click(`${inv} [data-act="pay-add-cash"]`);
+    await admin.waitForSelector(`${inv} [data-pay="cash"][data-i="1"][data-f="amount"]`);
+    await admin.fill(`${inv} [data-pay="cash"][data-i="1"][data-f="amount"]`, "2000");
+    await admin.waitForTimeout(700);
+    await admin.click(`${inv} [data-act="issue"]`);
+    let saved = null;
+    for (let i = 0; i < 16 && !saved; i += 1) {
+      await admin.waitForTimeout(500);
+      const yesButton = await admin.$(`${modal} [data-answer="yes"]`);
+      if (yesButton) {
+        await yesButton.click();
+        continue;
+      }
+      if (sent) saved = (unwrap(await api.get("/api/workspace/invoices?tab=all&limit=40")).invoices || []).find(doc => doc.status === "issued" && Number(doc.tryPayable) === 3000) || null;
+    }
+    admin.off("request", listen);
+    const keys = (sent?.payment?.cash || []).map(item => item.lineKey);
+    ok(keys.length === 2 && new Set(keys).size === 2 && keys.every(key => /^[A-Za-z0-9_-]{1,40}$/.test(key)), `gönderilen peşin satır anahtarları tekil: ${keys.join(", ")}`);
+    ok(Boolean(saved), "iki peşin satırlı fatura kaydedildi");
+    await closeAll(admin);
+  });
+
+  await step("39. Yargıç: taksit kartında banka bağlı tahsilat varken Sil pasif ve nedeni kartta yazılı (409 plan-bank-linked)", async () => {
+    await admin.evaluate(id => HOF.plans.open(id), kabul.plan.id);
+    await admin.waitForSelector('.hof-plans-modal [data-act="delete"]', { timeout: 10000 });
+    const disabled = await admin.$eval('.hof-plans-modal [data-act="delete"]', node => node.disabled);
+    const why = await textOf(admin, ".hof-plans-modal [data-plan-blocks]");
+    ok(disabled && has(why, "Sil Kapalı:") && has(why, "banka hesabına bağlı 1 tahsilat/iade var"), `Sil pasif; neden: ${why}`);
+    await admin.waitForTimeout(500);
+    await shot(admin, "yargic-taksit-karti-sil-kapali");
+    const res = await api.del(`/api/workspace/plans/${kabul.plan.id}`);
+    ok(res.status === 409 && res.data?.code === "plan-bank-linked", `API de 409 plan-bank-linked (${res.status})`);
+    await closeAll(admin);
+  });
+
+  await step("40. Yargıç: Silinenler'den geri yükleme Garanti'yi eksiye düşürüyor → “Yine de Geri Yükle” sorusu; Vazgeç geri yüklemez; onayla geri gelir; mutabakat ok", async () => {
+    const out = await must("ödeme", api.post(`/api/workspace/accounts/${kabul.xyz.id}/entries`, { kind: "out", amount: "1.000", method: "bank", bankAccountId: kabul.garanti.id, date: "2026-10-08", note: "geri yüklenecek ödeme", negativeOk: true }));
+    const entryId = out.entryId;
+    await must("ödemeyi sil", api.del(`/api/workspace/accounts/${kabul.xyz.id}/entries/${entryId}`));
+    ok((await kabulBalance("Garanti BBVA")) === -22000, "silme sonrası Garanti −22.000");
+    await admin.goto(`${BASE}/admin.html?sirket=${encodeURIComponent(kabul.company.id)}#trash`, { waitUntil: "load" });
+    await admin.waitForSelector("#adm-trash tr[data-id]", { timeout: 15000 });
+    const row = `#adm-trash tr[data-id]:has-text("geri yüklenecek ödeme")`;
+    await admin.waitForSelector(`${row} [data-restore]`, { timeout: 8000 });
+    await admin.click(`${row} [data-restore]`);
+    await admin.waitForSelector(`${top} [data-answer="yes"]`, { timeout: 8000 });
+    const question = await textOf(admin, `${top} .hof-modal-text`);
+    const yes = await textOf(admin, `${top} [data-answer="yes"]`);
+    ok(has(question, "Garanti BBVA · Ana TL Hesabı") && has(question, "Yine de geri yüklensin mi?") && yes === "Yine de Geri Yükle", `soru: ${question.slice(0, 180)} · “${yes}”`);
+    await admin.waitForTimeout(500);
+    await shot(admin, "yargic-silinenler-geri-yukle-sorusu");
+    await admin.click(`${top} [data-answer="no"]`);
+    const info = await lastToast(admin, /Geri yüklenmedi/);
+    ok(/^Geri yüklenmedi: /.test(info), `Vazgeç bildirimi bilgi: “${info}”`);
+    ok((await kabulBalance("Garanti BBVA")) === -22000, "Vazgeç: geri yüklenmedi");
+    await admin.click(`${row} [data-restore]`);
+    await admin.waitForSelector(`${top} [data-answer="yes"]`, { timeout: 8000 });
+    await admin.click(`${top} [data-answer="yes"]`);
+    await admin.waitForTimeout(1200);
+    ok((await kabulBalance("Garanti BBVA")) === -23000, `Yine de Geri Yükle: ödeme geri geldi, Garanti −23.000 (${await kabulBalance("Garanti BBVA")})`);
+    const integrity = await must("Mutabakat Testi", api.get("/api/workspace/ledger/integrity"));
+    ok(integrity.ok === true, "Kabul Şirketi'nde mutabakat ok (bölüm 5)");
+    const firstCompany = (await must("şirketler", api.get("/api/companies"))).companies.find(company => company.code === "001");
+    await admin.evaluate(async id => fetch("/api/companies/select", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ id }) }), firstCompany.id);
+    await admin.goto(`${BASE}/`, { waitUntil: "load" });
+    await admin.waitForSelector("#hof-sidecard", { timeout: 30000 });
+    await admin.waitForTimeout(700);
+  });
+
   await step("25. Kalemle ad (side.bank) ve yazım düzeni", async () => {
     await must("ad", api.put("/api/workspace/labels/batch", { labels: { "side.bank": "Bankalar" } }));
     await admin.goto(`${BASE}/`, { waitUntil: "load" });

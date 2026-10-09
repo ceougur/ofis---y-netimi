@@ -1613,7 +1613,15 @@
    * Benzer İşlem (409 bank-similar) ve eksi bakiye uyarısı (409 bank-negative, K7; GG2) aynı kalıpla sorulur: "Yine de Kaydet" aynı istek
    * kimliğiyle similarOk / negativeOk gönderir. Engelle (409 bank-blocked) sorulmaz, nedeni formda görünür. send(flags) gövdeye flags'i ekler.
    */
-  async function withConfirms(send) {
+  // Yargıç (2.1.0): soru ve "Vazgeç" bildirimi işlemin adıyla (İptal Et / Sil / Geri Yükle); Vazgeç kırmızı hata değil, bilgi (2.0.26 İ6 kalıbı).
+  const CONFIRM_VERBS = {
+    save: { yes: "Yine de Kaydet", no: "Kaydedilmedi", ask: "Yine de kaydedilsin mi?" },
+    cancel: { yes: "Yine de İptal Et", no: "İptal edilmedi", ask: "Yine de iptal edilsin mi?" },
+    delete: { yes: "Yine de Sil", no: "Silinmedi", ask: "Yine de silinsin mi?" },
+    restore: { yes: "Yine de Geri Yükle", no: "Geri yüklenmedi", ask: "Yine de geri yüklensin mi?" },
+  };
+  async function withConfirms(send, { verb = "save" } = {}) {
+    const words = CONFIRM_VERBS[verb] || CONFIRM_VERBS.save;
     const flags = {};
     for (let round = 0; round < 3; round += 1) {
       try {
@@ -1627,8 +1635,8 @@
           continue;
         }
         if (code === "bank-negative" && !flags.negativeOk) {
-          const go = await HOF.confirm({ title: "Eksi Bakiye", message: error.message, confirmLabel: "Yine de Kaydet", cancelLabel: "Vazgeç" });
-          if (!go) throw new HOF.ApiError("Kaydedilmedi: işlem hesabın bakiyesini eksiye düşürüyor.", 409, { code: "bank-negative-cancelled", field: "amount" });
+          const go = await HOF.confirm({ title: "Eksi Bakiye", message: String(error.message || "").replace(/Yine de kaydedilsin mi\?\s*$/, words.ask), confirmLabel: words.yes, cancelLabel: "Vazgeç" });
+          if (!go) throw new HOF.ApiError(`${words.no}: işlem hesabın bakiyesini eksiye düşürüyor.`, 409, { code: "bank-negative-cancelled", field: "amount" });
           flags.negativeOk = true;
           continue;
         }

@@ -970,7 +970,18 @@
     const id = button.closest("tr").dataset.id;
     button.disabled = true;
     try {
-      const result = await HOF.api("/api/admin/trash/restore", { method: "POST", body: { id } });
+      const send = (extra = {}) => HOF.api("/api/admin/trash/restore", { method: "POST", body: { id, ...extra } });
+      let result;
+      try {
+        result = await send();
+      } catch (error) {
+        // Yargıç K2 (plan §3.8, §3.9 K7): banka hesabını eksiye düşüren geri yükleme Uyar'daki hesapta sorulur ("Yine de Geri Yükle" →
+        // negativeOk). Engelle (bank-blocked), pasif hesap ve yetki engeli sorulmaz; nedeni bildirilir.
+        if (error?.data?.code !== "bank-negative") throw error;
+        const go = await HOF.confirm({ title: "Eksi Bakiye", message: String(error.message || "").replace(/Yine de kaydedilsin mi\?\s*$/, "Yine de geri yüklensin mi?"), confirmLabel: "Yine de Geri Yükle", cancelLabel: "Vazgeç", danger: true });
+        if (!go) throw new HOF.ApiError("Geri yüklenmedi: işlem banka hesabının bakiyesini eksiye düşürüyor.", 409, { code: "bank-negative-cancelled" });
+        result = await send({ negativeOk: true });
+      }
       HOF.toast(result.message || "Geri yüklendi.", { type: "success" });
       loadTrash();
     } catch (error) {
