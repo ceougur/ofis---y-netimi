@@ -9,6 +9,7 @@ import { HttpError, ok, readJson, text } from "../lib/http.mjs";
 import { roundMoney } from "../lib/money.mjs";
 import { methodInput } from "../lib/pay-method.mjs";
 import { FREEZE_CLOSE } from "./plans.mjs";
+import { bankForm } from "../lib/bank/module-ref.mjs";
 import { systemClock } from "../lib/clock.mjs";
 
 const KIND_LABELS = {
@@ -32,8 +33,11 @@ const KIND_LABELS = {
 };
 const SEQUENCE = /^(sıra|sira|sıra no|no|#|sn|s\.?\s?no|nr)$/i;
 
-export function registerTrashRoutes(router, { store, bank, auth, audit, events, dataset, profile, free, trash, documents, accounts = null, stock = null, cheques = null, invoices = null, plans = null, period = null, now: clock = systemClock }) {
+export function registerTrashRoutes(router, { store, bank, auth, audit, events, dataset, profile, free, trash, documents, accounts = null, stock = null, cheques = null, invoices = null, plans = null, period = null, bankModule = () => null, now: clock = systemClock }) {
   const now = () => clock().toISOString();
+  // Yargıç K2 (plan §3.8 "Silinenler'den geri yükleme", §9.2/7, §3.9 K7): banka bağlı satır geri yüklenirken kaynak modül yetkisi + bank.move,
+  // pasif hesap 400, eksi bakiye son durumla (Engelle 409 bank-blocked, Uyar 409 bank-negative → "Yine de Geri Yükle" negativeOk).
+  const banking = bankForm(bankModule);
   const publish = (user, detail) => events?.publish("workspace.changed", { actorId: user.id, actorName: user.display_name, ...detail }, { except: user.id });
   const sessionNames = () => {
     const names = new Map();
@@ -160,6 +164,8 @@ export function registerTrashRoutes(router, { store, bank, auth, audit, events, 
       items.push({
         id: `trash:${item.id}`,
         kind: item.kind,
+        // Silinen satırın kendi kimliği (ekranda gösterilmez; testler ve geri yükleme denetimleri satırı bununla bulur).
+        ref: item.ref,
         title: item.title,
         detail: [
           money ? `${new Intl.NumberFormat("tr-TR", { style: "currency", currency: "TRY" }).format(payload.amount || 0)} · ${String(payload.date || "").split("-").reverse().join(".")}` : "",
@@ -247,12 +253,24 @@ export function registerTrashRoutes(router, { store, bank, auth, audit, events, 
       const plan = store.get("SELECT id, name FROM plans WHERE id = ? AND deleted_at IS NOT NULL", ref);
       if (!plan) throw new HttpError(404, "Bu taksit kartı zaten geri yüklenmiş.");
       plans?.assertRestorable?.(plan.id, user);
-      store.tx(() => {
-        store.run(`UPDATE plans SET ${FREEZE_CLOSE}, deleted_at = NULL, deleted_by = NULL, updated_by = ?, updated_at = ? WHERE id = ?`, user.id, now(), plan.id);
-        // Kartın carisi (v2.0.6) sonradan silindiyse o da geri gelir; kart sahipsiz kalmaz.
-        store.run("UPDATE accounts SET deleted_at = NULL, deleted_by = NULL, updated_by = ?, updated_at = ? WHERE deleted_at IS NOT NULL AND id = (SELECT account_id FROM plans WHERE id = ?)", user.id, now(), plan.id);
-        audit(user, "plan.restored", plan.id, { name: plan.name });
+      // Eski veride (2.1.0 öncesi) kart banka bağlı tahsilatıyla silinmiş olabilir: geri gelince o satırlar hesaba döner (K2 kapıları).
+      const bound = store.get("SELECT GROUP_CONCAT(DISTINCT fin_ref) AS refs, MIN(date) AS day FROM plan_entries WHERE plan_id = ? AND fin_ref <> '' AND opening = 0 AND cheque_id = ''", plan.id);
+      const k7 = banking.restore(user, { refs: String(bound?.refs || "").split(","), date: bound?.day || "", force: body.negativeOk === true, permission: "plans.manage" });
+      const result = bank.post({
+        user,
+        module: "plans",
+        op: "restore",
+        prev: { planId: plan.id, name: plan.name },
+        write: () => {
+          k7.capture();
+          store.run(`UPDATE plans SET ${FREEZE_CLOSE}, deleted_at = NULL, deleted_by = NULL, updated_by = ?, updated_at = ? WHERE id = ?`, user.id, now(), plan.id);
+          // Kartın carisi (v2.0.6) sonradan silindiyse o da geri gelir; kart sahipsiz kalmaz.
+          store.run("UPDATE accounts SET deleted_at = NULL, deleted_by = NULL, updated_by = ?, updated_at = ? WHERE deleted_at IS NOT NULL AND id = (SELECT account_id FROM plans WHERE id = ?)", user.id, now(), plan.id);
+          audit(user, "plan.restored", plan.id, { name: plan.name });
+        },
+        guard: k7.guard,
       });
+      k7.prime(result);
       publish(user, { kind: "plans", planId: plan.id });
       publish(user, { kind: "cash" });
       return ok(res, { restored: "plan", message: `“${plan.name}” taksit kartı geri geldi.` });
@@ -293,14 +311,17 @@ export function registerTrashRoutes(router, { store, bank, auth, audit, events, 
       restoreDate(payload.date, "Bu tahsilat");
       const method = methodInput(payload.method);
       const finRef = keep(payload.finRef, method, payload.date);
+      const k7 = banking.restore(user, { refs: [finRef], date: payload.date, force: body.negativeOk === true, permission: "payments.create" });
       // v2.1.0 (bank.post op 'restore'): satır silinmeden önceki işlem başlığıyla (payload.eventId) döner, olay yeniden etkin; eski
       // (olaysız silinmiş) satır yeni olay alır.
-      bank.post({
+      const result = bank.post({
         user,
         module: "payment",
         op: "restore",
         prev: payload,
+        guard: k7.guard,
         write: () => {
+          k7.capture();
           if (!store.get("SELECT 1 AS found FROM payments WHERE id = ?", item.ref)) {
             store.run(
               "INSERT INTO payments (id, case_key, case_title, amount, date, note, method, fin_ref, event_id, created_by, created_at, updated_by, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
@@ -323,6 +344,7 @@ export function registerTrashRoutes(router, { store, bank, auth, audit, events, 
           audit(user, "case.payment.restored", item.ref, { caseKey: payload.caseKey, amount: payload.amount, date: payload.date });
         },
       });
+      k7.prime(result);
       publish(user, { kind: "activity", caseKey: payload.caseKey });
       publish(user, { kind: "cash" });
       message = "Tahsilat geri eklendi; Kasa ve tahsilat takvimi güncellendi.";
@@ -331,14 +353,17 @@ export function registerTrashRoutes(router, { store, bank, auth, audit, events, 
       restoreDate(payload.date, "Bu kasa hareketi");
       if (payload.twin) restoreDate(payload.twin.date, "Bu transferin öbür tarafı");
       // Yol işlemden önce doğrulanır (bozuk yükte hiçbir satır yazılmaz).
-      methodInput(payload.method);
-      if (payload.twin) methodInput(payload.twin.method);
-      bank.post({
+      const cashRefs = [payload, payload.twin].filter(Boolean).map(row => bank.keepRef(row.finRef, { method: methodInput(row.method), date: row.date }).ref);
+      const cashDate = payload.twin && payload.twin.date < payload.date ? payload.twin.date : payload.date;
+      const k7 = banking.restore(user, { refs: cashRefs, date: cashDate, force: body.negativeOk === true, permission: "cash.manage" });
+      const result = bank.post({
         user,
         module: "cash",
         op: "restore",
         prev: payload,
+        guard: k7.guard,
         write: () => {
+          k7.capture();
           // v2.0.17: Kasa ↔ Banka transferi iki bağlı hareket; ikisi birlikte geri gelir (payload.twin). v2.1.0: ikisi aynı işlem
           // başlığında (silinmeden önceki olay; eski yükte yoksa yeni olay ikisine birden).
           let shared = "";
@@ -369,6 +394,7 @@ export function registerTrashRoutes(router, { store, bank, auth, audit, events, 
           audit(user, "cash.entry.restored", item.ref, { kind: payload.kind, amount: payload.amount, date: payload.date, description: payload.description });
         },
       });
+      k7.prime(result);
       publish(user, { kind: "cash" });
       message = "Kasa hareketi geri eklendi.";
     } else if (item.kind === "plan-entry") {
@@ -379,12 +405,16 @@ export function registerTrashRoutes(router, { store, bank, auth, audit, events, 
       restoreDate(payload.date, "Bu taksit hareketi");
       plans?.assertCloseOpen?.(plan.id, "Kartın tahsilatı ve iadesi geri yüklenemez.");
       const method = methodInput(payload.method);
-      bank.post({
+      const planRef = payload.opening ? "" : bank.keepRef(payload.finRef, { method, date: payload.date }).ref;
+      const k7 = banking.restore(user, { refs: [planRef], date: payload.date, force: body.negativeOk === true, permission: "plans.collect" });
+      const result = bank.post({
         user,
         module: "plan",
         op: "restore",
         prev: payload,
+        guard: k7.guard,
         write: () => {
+          k7.capture();
           if (!store.get("SELECT 1 AS found FROM plan_entries WHERE id = ?", item.ref)) {
             const itemId = payload.itemId && store.get("SELECT 1 AS found FROM plan_items WHERE id = ?", payload.itemId) ? payload.itemId : null;
             const opening = payload.opening ? 1 : 0;
@@ -401,13 +431,14 @@ export function registerTrashRoutes(router, { store, bank, auth, audit, events, 
           audit(user, "plan.entry.restored", item.ref, { planId: plan.id, kind: payload.kind, amount: payload.amount, date: payload.date });
         },
       });
+      k7.prime(result);
       publish(user, { kind: "plans", planId: plan.id });
       publish(user, { kind: "cash" });
       message = "Taksit hareketi geri eklendi; kart ve Kasa yeniden hesaplandı.";
     } else if (item.kind === "account-entry" && accounts?.restoreEntry) {
-      message = accounts.restoreEntry(user, item, payload);
+      message = accounts.restoreEntry(user, item, payload, { force: body.negativeOk === true, banking });
     } else if (item.kind === "stock-move" && stock?.restoreMove) {
-      message = stock.restoreMove(user, item, payload);
+      message = stock.restoreMove(user, item, payload, { force: body.negativeOk === true, banking });
     } else if (item.kind === "invoice" && invoices?.restoreDeleted) {
       // v2.0.17: silinen fatura satırlarıyla geri gelir; kaydedilmiş belge "İptal Edildi" olarak (etkisiz) döner.
       message = invoices.restoreDeleted(user, item, payload);

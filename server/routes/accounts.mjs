@@ -1278,7 +1278,7 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     changed(user, { kind: "cash" });
     return `“${account.name}” carisi geri geldi.`;
   }
-  function restoreEntry(user, item, payload) {
+  function restoreEntry(user, item, payload, { force = false, banking = null } = {}) {
     if (!KIND_TEXT[payload.kind]) throw new HttpError(409, "Hareketin bilgisi eksik; geri yüklenemez.");
     const account = store.get("SELECT id, deleted_at AS deletedAt FROM accounts WHERE id = ?", payload.accountId);
     if (!account) throw new HttpError(409, "Hareketin carisi artık yok; geri yüklenemez.");
@@ -1303,12 +1303,16 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
     // v2.1.0 (bank.post op 'restore'): para satırı silinmeden önceki işlem başlığıyla döner (olay yeniden etkin). GG2 (K13/7): banka hesabı
     // bağıyla döner (önceden bağ düşüyor, tutar hesaptan Hesabı Atanmamış'a geçiyordu); hesap silinmişse bağsız döner ve söylenir.
     const kept = ["in", "out"].includes(payload.kind) ? bank.keepRef(payload.finRef, { method, date: payload.date }) : { ref: "", dropped: "" };
-    bank.post({
+    // Yargıç K2 (plan §3.8, §9.2/7, §3.9): banka bağlı satırda kaynak modül yetkisi + bank.move, pasif hesap 400, K7 son durumla.
+    const k7 = banking?.restore(user, { refs: [kept.ref], date: payload.date, force, permission: payload.kind === "in" ? "accounts.collect" : "accounts.manage" }) || { capture() {}, guard: null, prime() {} };
+    const result = bank.post({
       user,
       module: "account",
       op: "restore",
       prev: payload,
+      guard: k7.guard,
       write: () => {
+        k7.capture();
         if (!store.get("SELECT 1 AS found FROM account_entries WHERE id = ?", item.ref)) {
           store.run(
             "INSERT INTO account_entries (id, account_id, kind, amount, date, note, receipt_no, source, source_id, method, invoice_id, fin_ref, event_id, created_by, created_at, updated_by, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, '', '', ?, ?, ?, ?, ?, ?, ?, ?)",
@@ -1320,6 +1324,7 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
         audit(user, "account.entry.restored", item.ref, { accountId: account.id, kind: payload.kind, amount, date: payload.date, method, invoiceId, droppedInvoice: payload.invoiceId && !invoiceId ? payload.invoiceId : "" });
       },
     });
+    k7.prime(result);
     changed(user, { accountId: account.id });
     changed(user, { kind: "cash" });
     if (payload.invoiceId && !invoiceId) {

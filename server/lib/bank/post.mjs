@@ -33,7 +33,9 @@ import { canUser } from "../permissions.mjs";
 import { addCalendarDays } from "../business-days.mjs";
 import { createTrCalendar } from "../calendars/tr.mjs";
 import { newEventId, nextEventNo } from "./event-no.mjs";
-import { EVENT_TYPES, NON_MONEY_TYPES, typeOf } from "./event-types.mjs";
+import { EVENT_TYPES, NON_MONEY_TYPES, directionOf, typeOf } from "./event-types.mjs";
+import { toMinor } from "../minor.mjs";
+import { bankPassiveError } from "./module-ref.mjs";
 import { voucherCopy } from "./voucher.mjs";
 import { FREE_COLUMNS, LEDGER_TABLES, SOURCE_TABLES, isMoneyRow, moneyWhere } from "./money-lines.mjs";
 import { eventRows, isTransferPair, refreshEvent } from "./event-copy.mjs";
@@ -172,8 +174,8 @@ export function createBank({ store, now = systemClock, log = null, strict = fals
   // Bağ bir banka hesabı ya da (POS yolu için) bir POS'tur (108.T; POS kartı 2.2.0'da, şema ve kapı şimdiden tanır).
   const accountRowOf = id =>
     id
-      ? store.get("SELECT id, kind, opening_date AS openingDate, deleted_at AS deletedAt FROM bank_accounts WHERE id = ?", id) ||
-        store.get("SELECT id, 'pos' AS kind, '' AS openingDate, deleted_at AS deletedAt FROM pos_terminals WHERE id = ?", id) ||
+      ? store.get("SELECT id, kind, opening_date AS openingDate, deleted_at AS deletedAt, status, bank_name, name FROM bank_accounts WHERE id = ?", id) ||
+        store.get("SELECT id, 'pos' AS kind, '' AS openingDate, deleted_at AS deletedAt, 'active' AS status, '' AS bank_name, '' AS name FROM pos_terminals WHERE id = ?", id) ||
         null
       : null;
   // Hesap türünün modül satırındaki yolu: 102 ailesi havale (bank), kurumsal kart POS/kart yolu (card); kredi hesabına modül satırı bağlanmaz.
@@ -224,7 +226,7 @@ export function createBank({ store, now = systemClock, log = null, strict = fals
         store.run(`UPDATE ${before.__table} SET fin_ref = '' WHERE rowid = ?`, after.__rowid);
         after.fin_ref = "";
       }
-      const { __table, ...prior } = before;
+      const { __table, __new, ...prior } = before;
       if (moneyChanged(__table, prior, after)) need ||= "bank.move";
     }
     if (["restore", "move", "update"].includes(ctx.op)) {
@@ -233,6 +235,55 @@ export function createBank({ store, now = systemClock, log = null, strict = fals
       }
     }
     if (need && ctx.op !== "assign" && ctx.user && ctx.user.id !== "system" && !permitted(ctx.user, need)) throw new HttpError(403, BOUND_TEXT[need], { code: "bank-permission", permission: need });
+  }
+  // Yargıç Y1 (plan §3.5 "Pasif hesap → 400"): pasif hesabın bakiyesi bu işlemde değişiyorsa 400 bank-account-passive. Hesap bazında net etki
+  // (önceki hâl − sonraki hâl, kuruş) hesaplanır: yalnız açıklaması değişen satır, Düzenle'de aynı tutarla yeniden yazılan peşin satır ya da
+  // Taksite Aktar (op 'move': satır tablo değiştirir, para yerinde) serbesttir; silme, tutar/tarih/yol değişikliği, başka hesaba taşıma, nakde
+  // çevirme, fatura iptali/silmesi ve geri yükleme durur. Önceden pasif hesaba bağlı satır silinebiliyor, Düzenle'de başka hesaba taşınabiliyordu.
+  const signedMinor = (table, row) => (row && isMoneyRow(table, row) ? (directionOf(table, row) === "out" ? -1 : 1) * toMinor(Math.abs(Number(row.amount) || 0)) : 0);
+  // İç içe bank.post (ör. fatura Düzenle'nin içinde cari satırı ekleyen yazıcı) kendi satırlarını en dıştaki işleme devreder: pasif hesap kuralı
+  // işlemin TAMAMI üzerinden (önce silinen, sonra aynı tutarla yeniden yazılan satır net sıfır) en dış bank.post'ta bir kez çalışır.
+  // Devredilen satırlar ayrı tutulur (K4 yetki kararı her bank.post'un kendi satırlarıyla verilmeye devam eder).
+  const insertedIn = (ctx, table, rowid) => Boolean(ctx.insertedRows.get(table)?.has(rowid) || ctx.handedInserted.get(table)?.has(rowid));
+  function handOver(parent, ctx) {
+    for (const source of [ctx.boundRows, ctx.handedBound]) for (const [key, row] of source) if (!parent.boundRows.has(key) && !parent.handedBound.has(key)) parent.handedBound.set(key, row);
+    for (const source of [ctx.insertedRows, ctx.handedInserted]) {
+      for (const [table, rowids] of source) {
+        if (!parent.handedInserted.has(table)) parent.handedInserted.set(table, new Set());
+        for (const rowid of rowids) parent.handedInserted.get(table).add(rowid);
+      }
+    }
+  }
+  function passiveRules(ctx) {
+    if (ctx.op === "assign" || ctx.op === "move") return;
+    const delta = new Map();
+    const add = (ref, value, date) => {
+      if (!ref || !value) return;
+      const item = delta.get(ref) || { minor: 0, dates: new Set() };
+      item.minor += value;
+      item.dates.add(String(date || ""));
+      delta.set(ref, item);
+    };
+    for (const before of [...ctx.boundRows.values(), ...ctx.handedBound.values()]) {
+      const { __table, __new, ...prior } = before;
+      // Bu işlemde eklenip sonra düzeltilen satır (__new) eklenenlerle sayılır.
+      if (__new) continue;
+      add(prior.fin_ref, -signedMinor(__table, prior), prior.date);
+      const after = store.get(`SELECT * FROM ${__table} WHERE rowid = ?`, before.__rowid);
+      if (after && after.id === prior.id && !insertedIn(ctx, __table, before.__rowid)) add(after.fin_ref, signedMinor(__table, after), after.date);
+    }
+    const inserted = new Map();
+    for (const source of [ctx.insertedRows, ctx.handedInserted]) for (const [table, rowids] of source) for (const rowid of rowids) inserted.set(`${table}:${rowid}`, [table, rowid]);
+    for (const [table, rowid] of inserted.values()) {
+      const row = store.get(`SELECT * FROM ${table} WHERE rowid = ?`, rowid);
+      if (row?.fin_ref) add(row.fin_ref, signedMinor(table, row), row.date);
+    }
+    for (const [ref, item] of delta) {
+      // Tutar aynı kalıp tarih değişen satır da para değişikliğidir (pickRef açılış/Devir kuralı); net sıfır + tek tarih serbest.
+      if (!item.minor && item.dates.size <= 1) continue;
+      const account = accountRowOf(ref);
+      if (account && !account.deletedAt && account.status && account.status !== "active" && account.kind !== "pos") throw bankPassiveError(account);
+    }
   }
 
   // Adım 3 (iskelet): hesaba bağlı satır (fin_ref) değişiyorsa çapraz yetki; ekstreyle eşleşmiş olay değişmez.
@@ -414,7 +465,7 @@ export function createBank({ store, now = systemClock, log = null, strict = fals
         const hit = requests.lookup(key, hash);
         if (hit) return { replayed: true, refId: hit.refId };
       }
-      const ctx = { user, module, op, origin, events: new Set(), created: new Set(), boundRows: new Map(), insertedRows: new Map() };
+      const ctx = { user, module, op, origin, events: new Set(), created: new Set(), boundRows: new Map(), insertedRows: new Map(), handedBound: new Map(), handedInserted: new Map() };
       ctx.affected = ids => ids.forEach(id => ctx.events.add(id));
       // GG2: bağlı satırın önceki hâli (ilk dokunuşta) ve eklenen satırlar (lib/db.mjs kancaları).
       ctx.bound = (table, rowids) => {
@@ -422,7 +473,8 @@ export function createBank({ store, now = systemClock, log = null, strict = fals
           const key = `${table}:${rowid}`;
           if (ctx.boundRows.has(key)) continue;
           const row = store.get(`SELECT rowid AS __rowid, * FROM ${table} WHERE rowid = ?`, rowid);
-          if (row) ctx.boundRows.set(key, { ...row, __table: table });
+          // __new: satır bu işlemde (dıştaki bank.post'lar dahil) eklendi; önceki hâli işlem öncesi değil, pasif hesap kuralında eklenenlerle sayılır.
+          if (row) ctx.boundRows.set(key, { ...row, __table: table, __new: stack.some(item => insertedIn(item, table, rowid)) });
         }
       };
       ctx.inserted = (table, rowids) => {
@@ -437,6 +489,8 @@ export function createBank({ store, now = systemClock, log = null, strict = fals
         assertMutable(user, op, prev); // 3
         const result = write(ctx); // 5–6
         boundRules(ctx); // 3 (GG2): bağlı satırlar — K4 yetkisi ve bağın yolla uyumu (yazımdan sonra, gerçek satırla)
+        if (stack.length > 1) handOver(stack[stack.length - 2], ctx);
+        else passiveRules(ctx); // 3 (Yargıç Y1): pasif hesabın bakiyesi değişmez
         finalize(ctx); // 5: olay kopyası, iptal, yeniden etkin
         similar(ctx, similarOk); // 4: yeni olayların kopyası üzerinden (aynı işlemde; yukarıdaki not)
         posHooks(ctx); // 7

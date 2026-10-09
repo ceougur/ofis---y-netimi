@@ -1170,12 +1170,20 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     };
     const cashList = (Array.isArray(p.cash) ? p.cash : p.cash && typeof p.cash === "object" ? [p.cash] : [])
       .slice(0, 3)
-      .map((item, index) => ({ amount: amount(item?.amount, "Peşin tutar", "payment.cash"), method: methodInput(item?.method), lineKey: LINE_KEY.test(text(item?.lineKey)) ? text(item.lineKey) : `i${index}`, bankAccountId: text(item?.bankAccountId).slice(0, 120), index }))
+      .map((item, index) => ({ amount: amount(item?.amount, "Peşin tutar", "payment.cash"), method: methodInput(item?.method), lineKey: LINE_KEY.test(text(item?.lineKey)) ? text(item.lineKey) : `i${index}`, given: LINE_KEY.test(text(item?.lineKey)), bankAccountId: text(item?.bankAccountId).slice(0, 120), index }))
       .filter(item => item.amount > 0);
+    // Yargıç K4: istemcinin verdiği satır anahtarı tekil olmalı (Düzenle'de olay eşleşmesi anahtarla); yinelenen anahtar 400. Anahtarsız satıra
+    // (eski istemci) sunucunun verdiği i<n> başka satırın anahtarıyla çakışırsa tekilleştirilir.
+    const given = new Set();
+    for (const item of cashList.filter(row => row.given)) {
+      if (given.has(item.lineKey)) fail400(`Peşin satırların satır anahtarı (lineKey) tekil olmalı: "${item.lineKey}" iki kez gönderildi.`, "payment.cash", { code: "line-key-duplicate", line: item.index });
+      given.add(item.lineKey);
+    }
     const keys = new Set();
     for (const item of cashList) {
-      if (keys.has(item.lineKey)) item.lineKey = `${item.lineKey}-${item.index}`;
+      if (keys.has(item.lineKey) || (!item.given && given.has(item.lineKey))) item.lineKey = `${item.lineKey}-${item.index}`;
       keys.add(item.lineKey);
+      delete item.given;
       const prev = previous?.get(item.lineKey) || null;
       const changed = !prev || prev.method !== item.method || Math.abs(Number(prev.amount) - item.amount) > 0.004 || prev.date !== doc.date;
       try {
@@ -2086,7 +2094,8 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     const body = await readJson(req);
     const ids = bulkIds(body);
     if (!ids.length) fail400("İptal edilecek belge seçilmedi.", "ids");
-    const options = { reason: text(body.reason), force: body.force === true, cashForce: body.cashForce === true, confirmExternal: body.confirmExternal === true, localOnly: body.localOnly === true };
+    // Yargıç K3: gövdedeki negativeOk (Uyar'daki hesap için "Yine de İptal Et") toplu silmedeki gibi işlenir; Engelle hiçbir koşulda delinmez.
+    const options = { reason: text(body.reason), force: body.force === true, cashForce: body.cashForce === true, negativeOk: body.negativeOk === true, confirmExternal: body.confirmExternal === true, localOnly: body.localOnly === true };
     const results = [];
     // Yeni tarihli belge önce iptal edilir (iade faturası asıl faturadan önce; aynı seçimde ikisi de varsa sıra tutar).
     const rows = ids.map(id => {

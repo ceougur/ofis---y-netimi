@@ -677,7 +677,7 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
     changed(user, { itemId: item.id });
     return `“${item.name}” ürünü geri geldi.`;
   }
-  function restoreMove(user, entry, payload) {
+  function restoreMove(user, entry, payload, { force = false, banking = null } = {}) {
     if (!["in", "out"].includes(payload.kind)) throw new HttpError(409, "Hareketin bilgisi eksik; geri yüklenemez.");
     const item = store.get("SELECT id, name, unit, deleted_at AS deletedAt FROM stock_items WHERE id = ?", payload.itemId);
     if (!item) throw new HttpError(409, "Hareketin ürünü artık yok; geri yüklenemez.");
@@ -689,12 +689,16 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
     const move = { kind: payload.kind, qty: Number(payload.qty) || 0, unitPrice: Number(payload.unitPrice) || 0, amount: roundMoney(Number(payload.amount) || 0), date: payload.date, note: payload.note || "", pay, reason: payload.reason === "return" ? "return" : "", method: pay === "cash" ? methodInput(payload.method) : "cash", accountId: pay === "account" ? payload.accountId : "" };
     // GG2 (K13/7): peşin satış/alışın banka hesabı bağı da döner (hesap silinmişse bağsız; söylenir).
     const kept = pay === "cash" ? bank.keepRef(payload.finRef, { method: move.method, date: move.date }) : { ref: "", dropped: "" };
-    bank.post({
+    // Yargıç K2 (plan §3.8, §9.2/7, §3.9): banka bağlı satırda kaynak modül yetkisi + bank.move, pasif hesap 400, K7 son durumla.
+    const k7 = banking?.restore(user, { refs: [kept.ref], date: move.date, force, permission: "stock.move" }) || { capture() {}, guard: null, prime() {} };
+    const result = bank.post({
       user,
       module: "stock",
       op: "restore",
       prev: payload,
+      guard: k7.guard,
       write: () => {
+        k7.capture();
         if (!store.get("SELECT 1 AS found FROM stock_moves WHERE id = ?", entry.ref)) {
           store.run(
             "INSERT INTO stock_moves (id, item_id, kind, qty, unit_price, amount, date, note, pay, reason, method, account_id, fin_ref, event_id, created_by, created_at, updated_by, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
@@ -707,6 +711,7 @@ export function registerStockRoutes(router, { store, bank, auth, audit, events, 
         audit(user, "stock.move.restored", entry.ref, { itemId: item.id, kind: move.kind, qty: move.qty });
       },
     });
+    k7.prime(result);
     changed(user, { itemId: item.id });
     changed(user, { kind: "cash" });
     return `Stok hareketi geri eklendi${pay !== payload.pay ? " (carisi silindiği için yalnız miktar olarak)" : ""}.${kept.dropped ? ` ${bank.droppedText(kept.dropped)}` : ""}`;

@@ -350,7 +350,7 @@ export function createApp(overrides = {}) {
   context.reportCenter = registerReportCenter(router, { ...context, cash: () => context.cash, accounts: () => context.accounts, plans: () => context.plans, stock: () => context.stock, cheques: () => context.cheques, invoices: () => context.invoices, overview: () => context.overview, ledger: () => context.ledger, integrity: () => context.integrity });
   registerDueRoutes(router, { ...context, calendar: () => context.tableReports?.calendar });
   const documents = registerDocumentRoutes(router, context);
-  registerTrashRoutes(router, { ...context, documents, invoices: context.invoices });
+  registerTrashRoutes(router, { ...context, documents, invoices: context.invoices, bankModule: () => context.bankAccounts?.module });
   registerFreeRoutes(router, { ...context, readGoogleSheet });
   registerChatRoutes(router, context);
   registerDatasetRoutes(router, context);

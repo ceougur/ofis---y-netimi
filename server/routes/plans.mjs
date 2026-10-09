@@ -190,9 +190,12 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     const entries = entriesOf(plan.id);
     const ledger = allocate(plan, items, entries, { today: today() });
     const manage = canUser(user, "plans.manage");
+    const bankLinked = entries.filter(entry => entry.finRef && !entry.opening).length;
     return {
       ...plan,
       ...ledger,
+      // Yargıç K1 (plan §3.8 "Taksit kartı"): banka bağlı tahsilatı olan kart silinmez; Sil'in nedeni kartta görünür yazılır.
+      deleteBlock: bankLinked ? bankLinkedText(bankLinked) : "",
       // Çekle yapılan tahsilat (v2.0.7) çekin kartından yönetilir (tahsil/karşılıksız/geri al); burada düzeltilmez.
       // Açılış (devir) kaydını (v2.0.8) yalnız kart yöneten roller düzeltir.
       entries: entries.map(entry => ({ ...entry, opening: Boolean(entry.opening), editable: !entry.chequeId && (manage || (!entry.opening && entry.createdBy === user.id)) })),
@@ -491,6 +494,7 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
   }
   // v2.0.23 (2. gözden geçirme): silinen "Carinin Mevcut Borcu" kartı, taksitlendirdiği borç bu arada azaldıysa (tahsil
   // edildi, iptal edildi) geri yüklenmez; yükleniyordu ve ödenmiş fatura yeniden açık görünüyordu.
+  const bankLinkedText = count => `Bu kartta banka hesabına bağlı ${count} tahsilat/iade var; kart silinmez. Önce o hareketleri karttan tek tek silin (banka hesabından düşer, eksi bakiye denetlenir), sonra kartı silin.`;
   const GROW_COVER = "Bu kart carinin açıldığı günkü borcunu taksitlendirir; tutarı büyütülemez (küçültülebilir). Sonradan doğan borç için cari kartında + Taksit Planı → Carinin Mevcut Borcu ile yeni kart açın.";
   function assertRestorable(planId, user) {
     // v2.0.26 (A4): silinen kart geri gelince borcu ve tahsilatları deftere döner; kapanmış dönemdeyse geri yüklenmez
@@ -646,14 +650,21 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     if (firstEntry) period?.assertOpen(firstEntry, "Bu kartın ilk tahsilatı");
     assertCloseOpen(plan.id, "Kart silinemez.");
     if (linked) throw new HttpError(409, `Bu karta sayılmış ${linked} çek/senet var. Önce Çek/Senet'ten evrakı silin ya da başka karta taşıyın.`);
+    // Yargıç K1 (plan §3.8 "Taksit kartı", Aşama 8, Ek A 13): banka hesabına bağlı tahsilatı/iadesi olan kart silinmez (kart silinince satırları
+    // hesaptan sessizce düşüyordu: bank.cancel ve eksi bakiye denetimi atlanıyordu). Önce o hareketler tek tek silinir (bank.cancel, K7).
+    const bankLinked = store.get("SELECT COUNT(*) AS n FROM plan_entries WHERE plan_id = ? AND fin_ref <> '' AND opening = 0", plan.id).n;
+    if (bankLinked) throw new HttpError(409, bankLinkedText(bankLinked), { code: "plan-bank-linked", count: bankLinked });
     // v2.0.26 (A4): kartın tahsilat ve iadeleri Kasa'dan/bankadan düşer; toplam etki eksi bakiye denetiminden geçer (açılış/devir
     // ve çekle gelen tahsilat Kasa'ya hiç girmemişti, sayılmaz).
     cash?.guardRemove?.(store.all("SELECT kind, amount, method, date FROM plan_entries WHERE plan_id = ? AND opening = 0 AND cheque_id = ''", plan.id), url.searchParams.get("cashForce") === "1", "Bu kart silinince tahsilat ve iadeleriyle birlikte");
-    store.tx(() => {
+    // Kart silme de merkezi para yazımından geçer (K6; bank.post op 'delete'): kartın nakit hareketleri Kasa'dan düşer.
+    const remove = () => {
       // Yumuşak silme: taksitler ve hareketler yerinde durur; yönetim panelinden geri yüklenir. Kasa'dan düşer.
       store.run("UPDATE plans SET deleted_by = ?, deleted_at = ? WHERE id = ?", user.id, now(), plan.id);
       audit(user, "plan.deleted", plan.id, { name: plan.name, total: plan.total });
-    });
+    };
+    if (bank) bank.post({ user, module: "plans", op: "delete", prev: { planId: plan.id, name: plan.name, total: plan.total }, write: remove });
+    else store.tx(remove);
     changed(user, { planId: plan.id });
     changed(user, { kind: "cash" });
     ok(res, { id: plan.id });

@@ -12,12 +12,21 @@
 //     önce (bank.post'un write geri çağrısında, aynı işlemde), guard bank.post'un guard adımına, prime(result) COMMIT'ten sonra (saklı hesap
 //     toplamı; bir sonraki okuma hesabın bütün satırlarını yeniden toplamaz — GG2.6 notu).
 import { HttpError, text } from "../http.mjs";
-import { canUser } from "../permissions.mjs";
+import { PERMISSION_GROUPS, canUser } from "../permissions.mjs";
 
 const BANK_FORM_KINDS = new Set(["demand", "commercial", "other"]);
 const dayText = iso => (iso ? iso.split("-").reverse().join(".") : "");
 const labelOf = row => `${row.bank_name} · ${row.name}`;
 const bad = (status, message, code, extra = {}) => new HttpError(status, message, { code, field: "bankAccountId", ...extra });
+
+/**
+ * Yargıç Y1 (plan §3.5 "Pasif hesap → 400"; en yaygın kalıp: pasif hesapta önce yeniden etkinleştirme): pasif hesabın bakiyesini değiştiren her
+ * işlem (silme, tutar/yol/hesap değişikliği, nakde çevirme, fatura iptali/silmesi/Düzenle'de satırın kalkması, geri yükleme) 400. Yalnız para
+ * dışı alan (açıklama) değişir. row: bank_accounts satırı (bank_name, name, id).
+ */
+export const bankPassiveError = row =>
+  new HttpError(400, `${row.bank_name} · ${row.name} hesabı pasif; bu hesabın bakiyesini değiştiren işlem (silme, tutar, tarih, yol ya da hesap değişikliği, geri yükleme) yapılmaz. Önce Banka → Hesaplar'dan Etkinleştir.`, { code: "bank-account-passive", field: "bankAccountId", accountId: row.id });
+const PERMISSION_LABEL = new Map(PERMISSION_GROUPS.flatMap(group => group.items.map(([key, label]) => [key, label])));
 
 /**
  * @param {{ store, accounts, negative: { balancesOf, guardNegative, primeTotals } }} options  accounts: banka hesap servisi (rowOf, carryBoundary)
@@ -82,7 +91,13 @@ export function createModuleBank({ store, accounts, negative, legacy = () => fal
     };
   }
 
-  return { pickRef, negative: negativeGuard, eligible };
+  /** Hesap etkin mi (yoksa ya da silinmişse karar keepRef'te; pasifse 400 bank-account-passive). */
+  function assertActive(id) {
+    const row = id ? accounts.rowOf(id) : null;
+    if (row && !row.deleted_at && row.status !== "active") throw bankPassiveError(row);
+  }
+
+  return { pickRef, negative: negativeGuard, eligible, assertActive };
 }
 
 const NOOP_GUARD = Object.freeze({ capture() {}, guard: null, prime() {} });
@@ -95,6 +110,8 @@ const NOOP_GUARD = Object.freeze({ capture() {}, guard: null, prime() {} });
  *   forced(body, url)                               → negativeOk (gövde ya da ?negativeOk=1)
  *   requestId(req, body)                            → x-hof-request ya da gövdedeki requestId
  *   eligible()                                      → seçilebilir hesaplar (K7 ön yakalamada "tek hesapta kendiliğinden" seçimi kapsamak için)
+ *   restore(user, { refs, date, force, permission }) → Silinenler'den geri yükleme (plan §3.8, §9.2/7): banka bağlı satırda kaynak modül yetkisi +
+ *                                                     bank.move, pasif hesap 400, K7 { capture, guard, prime } (yazımdan sonraki son durumla)
  */
 export function bankForm(bankModule = () => null) {
   const module = () => bankModule?.() || null;
@@ -107,5 +124,16 @@ export function bankForm(bankModule = () => null) {
     forced: (body, url) => body?.negativeOk === true || url?.searchParams?.get("negativeOk") === "1",
     requestId: (req, body) => text(req?.headers?.["x-hof-request"]) || text(body?.requestId),
     eligible: () => module()?.eligible() || [],
+    restore(user, { refs = [], date = "", force = false, permission = "" } = {}) {
+      const list = [...new Set(refs.filter(Boolean))];
+      const bank = module();
+      if (!list.length || !bank) return NOOP_GUARD;
+      if (permission && !canUser(user, permission)) {
+        throw new HttpError(403, `Bu hareket bir banka hesabına bağlı; geri yüklemek için hareketin kendi bölümündeki "${PERMISSION_LABEL.get(permission) || permission}" yetkisi de gerekir.`, { code: "module-permission", permission });
+      }
+      if (!canUser(user, "bank.move")) throw new HttpError(403, "Bu hareket bir banka hesabına bağlı; geri yüklemek için \"Banka Hareketi Girme ve Bankadan Çıkış\" yetkisi gerekir.", { code: "bank-permission", permission: "bank.move" });
+      for (const ref of list) bank.assertActive(ref);
+      return bank.negative({ refs: list, date, force });
+    },
   };
 }
