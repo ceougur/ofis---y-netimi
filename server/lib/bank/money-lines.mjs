@@ -272,11 +272,14 @@ export function createMoneyLines(store) {
   });
   const wayFilter = ways => (ways ? `w.way IN (${ways.map(quote).join(", ")})` : "");
 
-  /** Ham satırlar (yol, hesap, iç hareket, İşlem No); tarih ve giriş sırasıyla. ways: yol listesi (null = hepsi); after: tarihten sonra; events: olay kimlikleri. */
-  function lines({ ways = null, after = "", events = null, ids = null, light = false } = {}) {
-    const filter = wayFilter(ways);
-    const sql = `SELECT w.*${light ? "" : ", COALESCE(usr.display_name, '') AS actor_name"} FROM (${waySql({ light, after, events, ids })}) w${light ? "" : " LEFT JOIN users usr ON usr.id = w.actor_id"}${filter ? ` WHERE ${filter}` : ""} ORDER BY w.date, w.created_at, w.rank, w.rid`;
-    return store.all(sql, params({ after, events, ids }));
+  /**
+   * Ham satırlar (yol, hesap, iç hareket, İşlem No); tarih ve giriş sırasıyla. ways: yol listesi (null = hepsi); after: tarihten sonra; events:
+   * olay kimlikleri; ref: yalnız bu hesabın (ya da POS'un) satırları (v2.1.0 Aşama 3: Hesap Detayı'ndaki son hareketler).
+   */
+  function lines({ ways = null, after = "", events = null, ids = null, light = false, ref = null } = {}) {
+    const filters = [wayFilter(ways), ref === null ? "" : "w.ref = :ref"].filter(Boolean);
+    const sql = `SELECT w.*${light ? "" : ", COALESCE(usr.display_name, '') AS actor_name"} FROM (${waySql({ light, after, events, ids })}) w${light ? "" : " LEFT JOIN users usr ON usr.id = w.actor_id"}${filters.length ? ` WHERE ${filters.join(" AND ")}` : ""} ORDER BY w.date, w.created_at, w.rank, w.rid`;
+    return store.all(sql, { ...params({ after, events, ids }), ...(ref === null ? {} : { ref: String(ref) }) });
   }
   /** Kasa'nın satır nesneleri (2.0.26 ile aynı biçim). */
   const rows = (options = {}) => lines({ ...options, light: false }).map(shape);
@@ -348,5 +351,5 @@ export function createMoneyLines(store) {
     return out;
   }
 
-  return { lines, rows, groups, balances, summary, verifyReport, signedCents, reset: () => (schema = null) };
+  return { lines, rows, shape, groups, balances, summary, verifyReport, signedCents, reset: () => (schema = null) };
 }

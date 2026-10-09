@@ -2,11 +2,14 @@
 //
 // Özel yollar ":id"li yollardan önce kaydedilir. Yazan her uç bank.post'tan geçer ve "x-hof-request" (istek kimliği) alır; GET uçları
 // hiçbir koşulda yazmaz. Yanıt { ok, data }; hata Türkçe cümle ve code taşır.
-//   GET  /bank/summary                       bank.view       K10 adları, Gerçek Banka, Hesabı Atanmamış, kart ve kredi borcu
+//   GET  /bank/summary                       bank.view       K10 adları, Gerçek Banka, Hesabı Atanmamış, kart ve kredi borcu; setup.dismissed
+//                                                            (bu kişi Kurulum Sihirbazı'nı bu şirkette kapattı mı)
+//   GET  /bank/badge?count=1                 bank.view       menü rozeti: Hesabı Belirsiz Yeni Hareketler sayısı (yalnız okuma, ucuz)
+//   POST /bank/setup/dismiss                 bank.view       Kurulum Sihirbazı'nı kapat (kişi ve şirket bazında; para yazmaz)
 //   GET  /bank/choices                       (seçici izinleri) form seçicileri; BAKİYE DÖNMEZ
 //   GET  /bank/settings · PUT · POST /reset  view · settings Banka Ayarları (Temel/Gelişmiş, Varsayılanlara Dön)
 //   GET  /bank/accounts · POST               view · accounts hesap listesi; hesap aç (açılış dahil)
-//   GET  /bank/accounts/:id · PUT · DELETE   view · accounts hesap kartı; düzelt; sil (yalnız hareketsiz)
+//   GET  /bank/accounts/:id · PUT · DELETE   view · accounts hesap kartı (+ son hareketler: recent); düzelt; sil (yalnız hareketsiz)
 //   POST /bank/accounts/:id/status           accounts        Pasife Al / Etkinleştir
 //   POST /bank/accounts/:id/opening          accounts (+ düzeltmede cancel)  Açılış Bakiyesi Gir / Açılışı Düzelt
 //   GET  /bank/legacy · POST /assign · /reclass  view · accounts  Hesabı Atanmamış Eski Hareketler; Bu Hesaba Ata; Bankaya Geçmiş Say
@@ -15,6 +18,7 @@
 import { HttpError, ok, readJson, text } from "../lib/http.mjs";
 import { canUser } from "../lib/permissions.mjs";
 import { createBankAccounts } from "../lib/bank/accounts.mjs";
+import { CHART } from "../lib/general-ledger.mjs";
 
 const BASE = "/api/workspace/bank";
 /** Seçiciyi görebilenler (§8.1): banka formu olan her modülün yazma yetkisi ya da banka görüntüleme. */
@@ -33,13 +37,21 @@ export function registerBankRoutes(router, context) {
   const settingsView = () => {
     const values = service.settings.read();
     const sections = service.settings.sections().map(section => ({ ...section, items: section.items.map(item => (item.type === "fixed" ? item : { ...item, value: values[section.id]?.[item.key] })) }));
-    return { values, defaults: service.settings.defaults(), sections };
+    // chart: hesap eşlemelerinde kodun yanında hesap adı (770 Genel Giderler ve Alış Faturaları …).
+    return { values, defaults: service.settings.defaults(), sections, chart: CHART };
   };
 
   // ---------- Özet, seçici, ayarlar ----------
   router.get(`${BASE}/summary`, async ({ req, res }) => {
+    const user = auth.requirePermission(req, "bank.view");
+    const summary = service.summary();
+    ok(res, { ...summary, setup: { ...summary.setup, dismissed: service.setupDismissed(user) } });
+  });
+  router.get(`${BASE}/badge`, async ({ req, res }) => {
     auth.requirePermission(req, "bank.view");
-    ok(res, service.summary());
+    // 2.1.0'da rozet yalnız Hesabı Belirsiz Yeni Hareketler'i sayar (eski sürümün yazdığı, açılış onarımının bulduğu satırlar); eşleşmeyen
+    // ekstre satırı (2.3.0) ve onay bekleyen valör (2.2.0) o sürümlerde eklenir.
+    ok(res, { count: service.summary().unassigned.newCount });
   });
   router.get(`${BASE}/choices`, async ({ req, res }) => {
     const user = auth.requireUser(req);
@@ -102,6 +114,10 @@ export function registerBankRoutes(router, context) {
     if (!dryRun) changed(user);
     ok(res, result);
   });
+  router.post(`${BASE}/setup/dismiss`, async ({ req, res }) => {
+    const user = auth.requirePermission(req, "bank.view");
+    ok(res, service.dismissSetup(user));
+  });
   router.post(`${BASE}/setup/:id/undo`, async ({ req, res, params }) => {
     const user = auth.requirePermission(req, "bank.accounts");
     const result = service.undo(user, params.id);
@@ -129,7 +145,9 @@ export function registerBankRoutes(router, context) {
   });
   router.get(`${BASE}/accounts/:id`, async ({ req, res, params }) => {
     auth.requirePermission(req, "bank.view");
-    ok(res, service.view(mustAccount(params.id)));
+    const row = mustAccount(params.id);
+    const recent = service.recent(row);
+    ok(res, { ...service.view(row), recent: recent.items, recentTotal: recent.total });
   });
   router.put(`${BASE}/accounts/:id`, async ({ req, res, params }) => {
     const user = auth.requirePermission(req, "bank.accounts");

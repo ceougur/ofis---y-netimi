@@ -24,7 +24,8 @@ const validDate = value => {
   const time = Date.parse(`${value}T00:00:00Z`);
   return Number.isFinite(time) && new Date(time).toISOString().slice(0, 10) === value;
 };
-const OVERVIEW_KINDS = new Set(["cash", "accounts", "plans", "stock", "cheques"]);
+// v2.1.0: banka yazımları (hesap, açılış, sihirbaz) da ANLIK DURUM'un Banka kutusunu ve açık pencereleri yeniler.
+const OVERVIEW_KINDS = new Set(["cash", "accounts", "plans", "stock", "cheques", "bank"]);
 const MAX_RANGE_DAYS = 36_600; // 100 yıl (yalnız doğrulama; "tüm zaman" mizanı için geniş aralık serbest)
 const PDF_ROWS = 20_000;
 const collator = new Intl.Collator("tr", { numeric: true, sensitivity: "base" });

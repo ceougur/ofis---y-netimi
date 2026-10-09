@@ -120,6 +120,7 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
     const opening = openingOf(row.id);
     const moves = movementInfo(row.id);
     const policy = confirmed ? row.negative_policy || settings.read().negative.policy : "off";
+    const locked = lock();
     return {
       id: row.id,
       code: row.code,
@@ -151,6 +152,9 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
       status: row.status,
       position: row.position,
       opening: opening ? { eventId: opening.eventId, no: opening.no, date: opening.date, amountMinor: opening.amountMinor, tryMinor: opening.tryMinor, direction: opening.direction } : null,
+      // Açılış kilitli dönemde: Açılışı Düzelt ve (açılışlı) Sil ekranda pasif, nedeni yanında (sunucu yine 409 verir).
+      openingLocked: Boolean(opening && locked && opening.date <= locked),
+      lockedUntil: locked,
       balanceMinor: balance,
       fxBalanceMinor: fxBalanceOf(row, balance),
       movementCount: moves.count,
@@ -160,6 +164,36 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
       createdAt: row.created_at,
       updatedAt: row.updated_at,
     };
+  }
+
+  /**
+   * Hesap Detayı'ndaki son hareketler (tek kaynaktan; açılış ve ters kayıtları dahil, en yenisi önce): işaretli tutar, açıklama ("ABC Ltd. ·
+   * Tahsilat"), İşlem No. Başka hesabın satırı gelmez (ref süzgeci).
+   */
+  const RECENT_LABELS = { payment: ["Kayıt Tahsilatı", "Kayıt Tahsilatı"], manual: ["Kasadan Bankaya", "Bankadan Kasaya"], account: ["Tahsilat", "Ödeme"], bank: ["Banka Hareketi", "Banka Hareketi"], plan: ["Taksit Tahsilatı", "Taksit Ödemesi"] };
+  function recent(row, limit = 20) {
+    const list = money.lines({ ref: row.id });
+    const shown = list.slice(-Math.max(1, limit)).reverse();
+    const ids = [...new Set(shown.map(line => line.event_id).filter(Boolean))];
+    const numbers = new Map(ids.length ? store.all("SELECT id, no FROM fin_events WHERE id IN (SELECT value FROM json_each(?))", JSON.stringify(ids)).map(item => [item.id, item.no]) : []);
+    const items = shown.map(line => {
+      const shaped = money.shape(line);
+      const label = RECENT_LABELS[shaped.source]?.[line.kind === "in" ? 0 : 1] || "";
+      const party = shaped.accountName || shaped.planName || shaped.caseTitle || "";
+      const description = label ? [party, label, shaped.description].filter(Boolean).join(" · ") : shaped.description || "";
+      return { id: line.id, source: shaped.source, date: line.date, signedMinor: (line.kind === "in" ? 1 : -1) * Number(line.cents), description, eventId: line.event_id || "", eventNo: numbers.get(line.event_id) || "", internal: Boolean(Number(line.internal)) };
+    });
+    return { items, total: list.length };
+  }
+
+  // ---------- Kurulum Sihirbazı: ilk girişte bir kez (kişi ve şirket bazında) ----------
+  // Sihirbazı kapatan kişide Banka penceresi yeniden açılınca kendiliğinden gelmez; Genel Bakış'ta "Kurulumu Tamamla" kalır. Ayar şirketin
+  // veri tabanındadır: başka şirkette ve başka kişide sihirbaz yine ilk girişte gelir.
+  const dismissKey = user => `bank.setup.dismissed.${user.id}`;
+  const setupDismissed = user => Boolean(store.setting(dismissKey(user), ""));
+  function dismissSetup(user) {
+    if (!setupDismissed(user)) store.setSetting(dismissKey(user), stamp(), user.id);
+    return { dismissed: true };
   }
 
   // ---------- Girdi ----------
@@ -800,5 +834,5 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
     return { rows, mains, from, to };
   }
 
-  return { create, update, setStatus, remove, setOpening, list, summary, choices, legacy, assign, setup, runs, undo, reclass, subTrialData, settings, view, rowOf, openingOf, movementInfo };
+  return { create, update, setStatus, remove, setOpening, list, summary, choices, legacy, assign, setup, runs, undo, reclass, subTrialData, settings, view, recent, setupDismissed, dismissSetup, rowOf, openingOf, movementInfo };
 }

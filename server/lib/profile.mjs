@@ -34,6 +34,10 @@ export const LABEL_SLOTS = Object.freeze({
   "side.accounts": { max: 32, name: "Operasyon Merkezi: Cari" },
   "side.stock": { max: 32, name: "Operasyon Merkezi: Stok" },
   "side.cheques": { max: 32, name: "Operasyon Merkezi: Çek / Senet" },
+  // v2.1.0: Fatura ve Raporlar düğmeleri kalemle düzenleyicide görünüyordu ama kaydedilemiyordu ("Bu başlık değiştirilemez"); Banka yeni.
+  "side.invoices": { max: 32, name: "Operasyon Merkezi: Fatura" },
+  "side.bank": { max: 32, name: "Operasyon Merkezi: Banka" },
+  "side.analytics": { max: 32, name: "Operasyon Merkezi: Raporlar" },
   "side.liens": { max: 32, name: "Operasyon Merkezi: Haciz Uyarıları" },
   "side.reports": { max: 32, name: "Operasyon Merkezi: Personel Raporu" },
   "side.guide": { max: 32, name: "Operasyon Merkezi: Kullanım Kılavuzu" },

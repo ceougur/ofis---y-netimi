@@ -163,6 +163,10 @@ export const SPEC = Object.freeze([
   },
 ]);
 
+// Bu sürümde olmayan özelliklerin ayarları (yarım özellik görünmez; plan §12.1): POS 2.2.0'da, Ekstre ve Mutabakat 2.3.0'da gelir. Değerleri
+// saklanır ve doğrulanır (Varsayılanlara Dön de kapsar); arayüz "available: false" bölümü ve kalemi göstermez.
+const NOT_YET = Object.freeze({ sections: new Set(["pos", "posAdvanced", "statement"]), items: new Set(["account.defaultPosId", "holidayAdvanced.shift"]) });
+
 const bad = (message, extra = {}) => new HttpError(400, message, { code: "bank-setting", ...extra });
 const clone = value => JSON.parse(JSON.stringify(value));
 
@@ -194,7 +198,11 @@ function validate(sectionId, key, value, { accountOk = () => true, posOk = () =>
       if (typeof value !== "boolean") throw bad(`${label} açık ya da kapalı olmalı.`, { field });
       return value;
     case "number": {
-      if (item.nullable && (value === null || value === "")) return null;
+      // Boş değer yalnız boş bırakılabilen alanda (Kambiyo Vergisi Oranı) "yok"tur; başka alanda Number("") = 0 sessizce kaydedilmez.
+      if (value === null || value === undefined || (typeof value === "string" && !value.trim())) {
+        if (item.nullable) return null;
+        throw bad(`${label} boş bırakılamaz (${item.min}–${item.max}).`, { field });
+      }
       const number = Number(value);
       if (!Number.isInteger(number) || number < item.min || number > item.max) throw bad(`${label} ${item.min}–${item.max} arasında tamsayı olmalı.`, { field });
       return number;
@@ -308,19 +316,25 @@ export function createBankSettings({ store, accountOk = () => false, posOk = () 
     store.setSetting(SETTINGS_KEY, JSON.stringify(next), userId);
     return { previous, next, sections: targets };
   }
-  /** Arayüz için bölümler (ad, düzey, kalemler: anahtar, ad, tür, seçenekler, sınır, yardım). */
+  /**
+   * Arayüz için bölümler (ad, düzey, kalemler: anahtar, ad, tür, seçenekler, sınır, yardım). available: bu sürümde görünür mü (POS ve Ekstre
+   * ayarları o özellikler gelince; NOT_YET).
+   */
   function sections() {
     return SPEC.map(section => ({
       id: section.id,
       level: section.level,
       label: section.label,
+      available: !NOT_YET.sections.has(section.id),
       items: section.items.map(([key, label, item, help]) => ({
         key,
         label,
         type: item.type,
+        available: !NOT_YET.sections.has(section.id) && !NOT_YET.items.has(`${section.id}.${key}`),
         ...(item.options ? { options: item.options } : {}),
         ...(item.type === "fixed" ? { value: item.value, text: item.text } : {}),
         ...(item.min !== undefined ? { min: item.min, max: item.max } : {}),
+        ...(item.nullable ? { nullable: true } : {}),
         ...(item.allowed ? { allowed: item.allowed } : {}),
         ...(item.hint ? { hint: item.hint } : {}),
         help: help || "",
