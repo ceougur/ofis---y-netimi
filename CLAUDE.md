@@ -891,6 +891,13 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
       modelle, Aşama 14 (her rapor × süzgeç × ekran/PDF/Excel; bağımsız beklenenle açıklanmamış fark 0; TOPLAM = satırlar),
       Aşama 15 (yetki matrisi, ?hofCompany=, salt okunur), Aşama 16 dilimleri. Kapsam dışı (ertelenen) maddeler "DENENMEYEN —
       ertelendi" diye KANIT'ta tek tek listelenir; sessizce düşülmez. Teslimden önce plan-test eşleme tablosu (madde → test → sonuç).
+      EŞLEME (09.10.2026, `docs/2.1.0-PLAN-TEST-ESLEME.md`): 268 madde; kapsamda 229 → 148 VAR, 50 KISMEN, 31 YOK (19'u yapılmamış iş:
+      transfer, kabul 15–16, banka raporları, K10 ANLIK DURUM + Birleşik Rapor, kılavuz). Eksik testler: 27 mevcut rapor bankalı veriyle
+      bağımsız modele karşı hiç sınanmadı (raporlar-224 verisine iki hesap + her modülde bağlı havale eklenecek); kabul 16 sonu mizanı
+      bağımsız modelle; mutabakat motoru/rastgele testte fatura/stok/kayıt peşini ve transfer bağlı değil; eşleşmiş satır koruması
+      yalnız cari + fiş; yetki matrisi, `previous` statik taraması, salt okunur lisans, iki oturumlu eşzamanlılık; ekrandan kayıt
+      tahsilatı/stok peşini/çek ödemesi/Düzenle'de hesap taşıma; Banka "Bugün Çıkış"/"Transfer" satırı (kabul 13–14) yok. Eleştirmen
+      + eşleme ayrı ayrı buldu: taksit KARTI silme bağlı banka tahsilatını sessizce düşürüyor (yüksek) → düzeltme turunda.
   CANLI HATA (gözden geçirmede bulundu, v2.0.26'da da VAR, gerçek v2.0.26 koduyla yeniden üretildi): Taksite Aktar (var olan
   bağsız karta) → taşınan tahsilatı sil → aktarımı geri al → Silinenler'den geri yükle → Kasa ÇİFT sayılır (1.000 yerine 2.000),
   Mutabakat Testi "tamam" der. 2.1.0'da düzeldi (bir olay = bir para hareketi, 409 `event-in-use`). Kullanıcıya bildirildi.
