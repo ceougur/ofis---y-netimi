@@ -1,0 +1,60 @@
+
+> destekofis@2.0.26 test:banka-210-kart-onbellek
+> node --disable-warning=ExperimentalWarning test/e2e/banka-210-kart-onbellek-yaris.mjs
+
+
+■ A1 — kurumsal kart ödemesi, ikinci kart form açılmadan ÖNCE (canlı olay yok)
+  ✗ form açılışında seçicide iki kart (0 seçenek)
+  ✗ seçimsiz kaydedilmedi ()
+
+■ B1 — kurumsal kart ödemesi, ikinci kart form AÇIKKEN (canlı olay yok)
+  ✗ ikinci kart varken birinci karta (Kurumsal Kart) SESSİZCE yazılmadı (yazılan kayıt VAR, bakiyesi -1423)
+
+■ C1 — havale tahsilatı, ikinci hesap form açılmadan ÖNCE (canlı olay yok)
+  ✗ form açılışında seçicide iki hesap (0 seçenek)
+
+■ D1 — havale tahsilatı, ikinci hesap form AÇIKKEN (canlı olay yok)
+  ✗ ikinci hesap varken birinci hesaba (Ana TL Hesabı) SESSİZCE yazılmadı (yazılan kayıt VAR, bakiyesi 100312)
+
+■ E1 — alış faturası Düzenle, peşin Kredi Kartı; ikinci kart form AÇIKKEN (canlı olay yok)
+  ✓ kayıt reddedildi, satır Ziraat'te kaldı (Ziraat)
+  ✗ hatadan sonra hücre iki kartlı seçiciye döndü (0 kart)
+
+■ A2 — kurumsal kart ödemesi, ikinci kart form açılmadan ÖNCE (canlı olay yok)
+  ✗ form açılışında seçicide iki kart (0 seçenek)
+  ✗ seçimsiz kaydedilmedi ()
+
+■ B2 — kurumsal kart ödemesi, ikinci kart form AÇIKKEN (canlı olay yok)
+  ✗ ikinci kart varken birinci karta (Kurumsal Kart) SESSİZCE yazılmadı (yazılan kayıt VAR, bakiyesi -2866)
+
+■ C2 — havale tahsilatı, ikinci hesap form açılmadan ÖNCE (canlı olay yok)
+  ✗ form açılışında seçicide iki hesap (0 seçenek)
+
+■ D2 — havale tahsilatı, ikinci hesap form AÇIKKEN (canlı olay yok)
+  ✗ ikinci hesap varken birinci hesaba (Ana TL Hesabı) SESSİZCE yazılmadı (yazılan kayıt VAR, bakiyesi 100233)
+
+■ E2 — alış faturası Düzenle, peşin Kredi Kartı; ikinci kart form AÇIKKEN (canlı olay yok)
+  ✓ kayıt reddedildi, satır Ziraat'te kaldı (Ziraat)
+  ✗ hatadan sonra hücre iki kartlı seçiciye döndü (0 kart)
+
+■ A3 — kurumsal kart ödemesi, ikinci kart form açılmadan ÖNCE (canlı olay yok)
+  ✗ form açılışında seçicide iki kart (0 seçenek)
+  ✗ seçimsiz kaydedilmedi ()
+
+■ B3 — kurumsal kart ödemesi, ikinci kart form AÇIKKEN (canlı olay yok)
+  ✗ ikinci kart varken birinci karta (Kurumsal Kart) SESSİZCE yazılmadı (yazılan kayıt VAR, bakiyesi -4329)
+
+■ C3 — havale tahsilatı, ikinci hesap form açılmadan ÖNCE (canlı olay yok)
+  ✗ form açılışında seçicide iki hesap (0 seçenek)
+
+■ D3 — havale tahsilatı, ikinci hesap form AÇIKKEN (canlı olay yok)
+  ✗ ikinci hesap varken birinci hesaba (Ana TL Hesabı) SESSİZCE yazılmadı (yazılan kayıt VAR, bakiyesi 100163)
+
+■ E3 — alış faturası Düzenle, peşin Kredi Kartı; ikinci kart form AÇIKKEN (canlı olay yok)
+  ✓ kayıt reddedildi, satır Ziraat'te kaldı (Ziraat)
+  ✗ hatadan sonra hücre iki kartlı seçiciye döndü (0 kart)
+  ✓ sayfa hatası yok
+
+ön koşulu oluşmayan deneme: 0; canlı olay isteği kesildi: 30
+
+✗ banka-210-kart-onbellek-yaris: 4 geçti, 18 kaldı

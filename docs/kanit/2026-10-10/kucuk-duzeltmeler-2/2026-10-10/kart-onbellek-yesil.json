@@ -1,0 +1,32 @@
+{
+  "ad": "kart-onbellek-yesil",
+  "komut": "npm run test:banka-210-kart-onbellek",
+  "commit": "b641d632c74906b16d04178acb7832b566af78d6",
+  "dal": "worktree-agent-a52cd8d581e9c0684",
+  "kirli": 0,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T20:17:38.200Z",
+  "sure_sn": 75.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 49,
+    "gecen": 49,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-10/kucuk-duzeltmeler-2/2026-10-10/kart-onbellek-yesil.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a52cd8d581e9c0684",
+  "ham_cikti_sha256": "dc6396dab7a2c89900ab22f70cb30f25a114b6c2cabc3da15dfa26ad29d2bfde",
+  "ham_cikti_bayt": 5463
+}

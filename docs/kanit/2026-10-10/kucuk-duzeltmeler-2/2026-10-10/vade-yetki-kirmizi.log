@@ -1,0 +1,142 @@
+TAP version 13
+# (node:32514) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: m2 Vade Takip kaynak adları: istemci sunucuyla aynı (fatura dahil)
+    # Subtest: sunucunun her kaynağının istemcide adı var; 'invoice' adı PDF/Excel'deki gibi
+    not ok 1 - sunucunun her kaynağının istemcide adı var; 'invoice' adı PDF/Excel'deki gibi
+      ---
+      duration_ms: 2.787674
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-a52cd8d581e9c0684/test/vade-takip-kaynak-yetki-210.test.mjs:54:3'
+      failureType: 'testCodeFailure'
+      error: "istemci SOURCE_LABELS'ta 'invoice' adı yok (ekranda ham 'invoice' yazar)"
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-a52cd8d581e9c0684/test/vade-takip-kaynak-yetki-210.test.mjs:60:42)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.start (node:internal/test_runner/test:944:17)
+        node:internal/test_runner/test:1440:71
+        node:internal/per_context/primordials:464:82
+        new Promise (<anonymous>)
+        new SafePromise (node:internal/per_context/primordials:433:3)
+        node:internal/per_context/primordials:464:9
+        Array.map (<anonymous>)
+      ...
+    1..1
+not ok 1 - m2 Vade Takip kaynak adları: istemci sunucuyla aynı (fatura dahil)
+  ---
+  duration_ms: 3.979386
+  type: 'suite'
+  location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-a52cd8d581e9c0684/test/vade-takip-kaynak-yetki-210.test.mjs:53:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: m6 + m7 Nakit Akış PDF alt başlığı ve Vade Takip banka satırı yetkisi (gerçek v2.0.23 verisi)
+    # Subtest: ön koşul: yönetici Vade Takip'te nakit ve hesapsız eski banka satırını görür (bağımsız defter)
+    ok 1 - ön koşul: yönetici Vade Takip'te nakit ve hesapsız eski banka satırını görür (bağımsız defter)
+      ---
+      duration_ms: 13.24207
+      type: 'test'
+      ...
+    # Subtest: m7 API: banka yetkisiz kişi Kasa satırını görür, hesapsız eski banka satırını görmez (süzgeçli ve süzgeçsiz)
+    not ok 2 - m7 API: banka yetkisiz kişi Kasa satırını görür, hesapsız eski banka satırını görmez (süzgeçli ve süzgeçsiz)
+      ---
+      duration_ms: 12.217463
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-a52cd8d581e9c0684/test/vade-takip-kaynak-yetki-210.test.mjs:110:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        preset=next30&sources=cash: yalnız Kasa'nın ileri tarihli satırı
+        + actual - expected
+        
+          [
+            '2026-10-14 in 300 cash',
+        +   '2026-10-16 in 1000 legacy'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: '2026-10-14 in 300 cash'
+      actual:
+        0: '2026-10-14 in 300 cash'
+        1: '2026-10-16 in 1000 legacy'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-a52cd8d581e9c0684/test/vade-takip-kaynak-yetki-210.test.mjs:116:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: m7 PDF ve Excel: banka yetkisiz kişinin dışa aktarımında da eski banka satırı yok
+    not ok 3 - m7 PDF ve Excel: banka yetkisiz kişinin dışa aktarımında da eski banka satırı yok
+      ---
+      duration_ms: 38.216421
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-a52cd8d581e9c0684/test/vade-takip-kaynak-yetki-210.test.mjs:120:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        PDF'te banka satırı: Vade Takip 10.10.2026 – 09.11.2026 · gecikmişler dahil Oluşturma: 10.10.2026 12:00 Hazırlayan: Kasa Rapor Kalem 2 Tahsil Edilecek 1.300,00 TL gecikmiş 0,00 TL (0) Ödenecek 0,00 TL gecikmiş 0,00 TL (0) Net (tahsil − ödeme) 1.300,00 TL Vade Durum Kimden / Kime Kaynak Açıklama Tahsil Edilecek Ödenecek 14.10.2026 4 gün kaldı Kasa (ileri tarihli) Çek tahsili · No VY-1 · Vade Müşterisi 300,00 TL 16.10.2026 6 gün kaldı Hesabı Atanmamış (ileri tarihli) Çek tahsili · No VY-2 · Vade Müşterisi 1.000,00 TL DestekOfis · Vade Takip Sayfa 1 / 1
+        
+        1 !== 0
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 0
+      actual: 1
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-a52cd8d581e9c0684/test/vade-takip-kaynak-yetki-210.test.mjs:124:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: m7 aşırı düzeltme yok: banka yetkili avukat eski banka satırını görür; Nakit Akış ucu banka yetkisiz kişiye kapalı kalır
+    ok 4 - m7 aşırı düzeltme yok: banka yetkili avukat eski banka satırını görür; Nakit Akış ucu banka yetkisiz kişiye kapalı kalır
+      ---
+      duration_ms: 8.662005
+      type: 'test'
+      ...
+    # Subtest: m6 Nakit Akış PDF alt başlığı kesilmez (başlangıç tanımı tam)
+    not ok 5 - m6 Nakit Akış PDF alt başlığı kesilmez (başlangıç tanımı tam)
+      ---
+      duration_ms: 33.70297
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-a52cd8d581e9c0684/test/vade-takip-kaynak-yetki-210.test.mjs:140:3'
+      failureType: 'testCodeFailure'
+      error: 'alt başlık kesik: Nakit Akış Projeksiyonu 10.10.2026 – 09.11.2026 · Aynı gün önce çıkışlar yazılır · Taksit, çek/senet ve ileri tarihli Kasa hareketleri · Başlangı… Oluşturma: 10.10.2026 12:00 Hazırlayan: Ofis yöneticisi Bugünkü Nakit ve Banka 10.000,00 TL Nakit Kasa 0,00 TL Gerçek Banka 10.000,00 TL Başlangıç (Nakit ve Banka) 10.000,00 TL Beklenen Giriş 1.300,00 TL Beklenen Çıkış 0,00 TL Dönem Sonu Tahmini Nakit ve Banka 11.300,00 TL En Düşük Tahmini Nakit ve Banka 10.000,00 TL (1… Gecikmiş Alacak / Borç 0,00 TL'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-a52cd8d581e9c0684/test/vade-takip-kaynak-yetki-210.test.mjs:144:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..5
+not ok 2 - m6 + m7 Nakit Akış PDF alt başlığı ve Vade Takip banka satırı yetkisi (gerçek v2.0.23 verisi)
+  ---
+  duration_ms: 1078.154922
+  type: 'suite'
+  location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-a52cd8d581e9c0684/test/vade-takip-kaynak-yetki-210.test.mjs:67:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..2
+# tests 6
+# suites 2
+# pass 2
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1557.975765
