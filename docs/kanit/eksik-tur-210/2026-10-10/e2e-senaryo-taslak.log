@@ -1,0 +1,42 @@
+
+■ A. Sıfır kurulum: açılış ekranında taslak Excel kartı
+✓ kart: “Exceliniz yok mu? Sektörünüze uygun taslak Excel'i indirin…”
+✓ Excel yükleme alanı kartın üstünde (önce yükle, yoksa taslak)
+✓ açılışta destek hattı: Teknik Destek ve Satın Alımlar İçin: 0536 771 50 55
+✓ lisans bildiriminde yeni hat; eski numara (0532) programda görünmez
+
+■ B. Taslak indirilir: sektör seçilir, dosya adı ve içi doğru
+✓ sektör seçici açıldı (başlık: Taslak Excel)
+✓ dosya adı: DestekOfis Taslak - Okul Servisi.xlsx
+✓ bildirim: “Taslak Excel indirildi. Satırları doldurup…”
+✓ başlıklar: Öğrenci, Veli Adı, Veli Telefon, Okul, Sınıf, Güzergâh, Servis Plaka, Aylık Ücret, Eylül 2026 …
+✓ sayfa adı: Öğrenciler
+✓ başlık satırı sabit (aşağı kaydırınca görünür)
+✓ Durum kolonu açılır liste: Aktif / Ayrıldı
+✓ başlığa tıklayınca ne yazılacağı görünür (Aylık Ücret notu)
+✓ ay kolonları eğitim yılıyla: Eylül 2026, Ekim 2026, Kasım 2026 …
+✓ veri satırı yok (örnek kişi yazılmaz; kullanıcının verisine karışmaz)
+
+■ C. Taslak doldurulur ve açılış ekranından yüklenir
+✓ ön izleme: taslağın kolonları okundu
+✓ program sektörü kendiliğinden önerir: Okul servisi
+✓ sektör uygulandı: Okul Servisi
+
+■ D. Kişi, telefon, tutar tanındı; ödenmeyen ay takvimde ve Vade takipte
+✓ 5 öğrenci okundu (boş şablon satırı sayılmadı)
+✓ Öğrenci = kişi, Veli Telefon = telefon, Aylık Ücret = tutar
+✓ Ekim 2026: yalnız ödemeyen aktif öğrenciler takvimde (Ali Çelik, Mehmet Demir)
+✓ tutar Aylık Ücret kolonundan (3.000 / 2.500)
+✓ ayrılan öğrenci (Durum: Ayrıldı) takvime girmez
+✓ “Ödendi” yazılan Ekim 2026 takvime girmez
+✓ Vade takip (tablo): “Ekim ödemesi” 2 kalem, 5.500,00, durum “bu ay” (gecikmiş değil)
+✓ Vade takipte veli telefonu (telefonla aranabilir)
+✓ Raporlar › Vade takip ekranında ödemeyenler var, ayrılan yok
+
+■ E. Veri varken: Veri ve eşitleme penceresinden de taslak indirilir
+✓ seçicide mevcut sektör (Okul servisi) “Önerilen” olarak başta
+✓ önerilen sektörün taslağı indi
+✓ taslak indirmek mevcut veriye dokunmaz
+✓ tarayıcı hatası yok
+
+30/30 denetim geçti. Ekran görüntüleri: /home/user/ofis---y-netimi/.claude/worktrees/agent-a9996cccca67b1040/test/e2e/artifacts/senaryo-taslak

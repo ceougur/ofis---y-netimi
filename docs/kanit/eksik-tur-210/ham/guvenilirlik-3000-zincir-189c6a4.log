@@ -1,0 +1,73 @@
+  100 işlem · 5 şirket · 22 yedek · 5 geri yükleme · 40.3 sn
+  200 işlem · 5 şirket · 38 yedek · 13 geri yükleme · 88.2 sn
+  300 işlem · 5 şirket · 45 yedek · 23 geri yükleme · 141.9 sn
+  400 işlem · 5 şirket · 57 yedek · 36 geri yükleme · 183.8 sn
+  500 işlem · 5 şirket · 81 yedek · 42 geri yükleme · 230.3 sn
+  600 işlem · 5 şirket · 103 yedek · 50 geri yükleme · 287.2 sn
+  700 işlem · 6 şirket · 130 yedek · 58 geri yükleme · 336.4 sn
+  800 işlem · 6 şirket · 132 yedek · 71 geri yükleme · 381.2 sn
+  900 işlem · 4 şirket · 137 yedek · 78 geri yükleme · 413.0 sn
+  1000 işlem · 6 şirket · 151 yedek · 84 geri yükleme · 451.7 sn
+  1100 işlem · 6 şirket · 169 yedek · 88 geri yükleme · 491.0 sn
+  1200 işlem · 5 şirket · 194 yedek · 101 geri yükleme · 528.1 sn
+  1300 işlem · 5 şirket · 204 yedek · 112 geri yükleme · 573.9 sn
+  1400 işlem · 5 şirket · 227 yedek · 125 geri yükleme · 632.2 sn
+  1500 işlem · 5 şirket · 257 yedek · 135 geri yükleme · 694.0 sn
+  1600 işlem · 6 şirket · 275 yedek · 142 geri yükleme · 755.2 sn
+  1700 işlem · 4 şirket · 282 yedek · 148 geri yükleme · 805.2 sn
+  1800 işlem · 5 şirket · 299 yedek · 154 geri yükleme · 851.6 sn
+  1900 işlem · 5 şirket · 316 yedek · 160 geri yükleme · 905.7 sn
+  2000 işlem · 6 şirket · 337 yedek · 167 geri yükleme · 961.9 sn
+  2100 işlem · 6 şirket · 379 yedek · 179 geri yükleme · 1017.5 sn
+  2200 işlem · 3 şirket · 400 yedek · 189 geri yükleme · 1068.6 sn
+  2300 işlem · 6 şirket · 415 yedek · 195 geri yükleme · 1121.5 sn
+  2400 işlem · 5 şirket · 428 yedek · 199 geri yükleme · 1173.2 sn
+  2500 işlem · 3 şirket · 445 yedek · 211 geri yükleme · 1221.7 sn
+  2600 işlem · 5 şirket · 459 yedek · 218 geri yükleme · 1266.4 sn
+  2700 işlem · 6 şirket · 492 yedek · 227 geri yükleme · 1321.2 sn
+  2800 işlem · 6 şirket · 513 yedek · 235 geri yükleme · 1375.4 sn
+  2900 işlem · 5 şirket · 521 yedek · 244 geri yükleme · 1427.0 sn
+  3000 işlem · 4 şirket · 534 yedek · 248 geri yükleme · 1475.0 sn
+
+✓ Tohum 1 · taban surum-2.0.19-zincir: 3000 işlem, 3001 değişmez kural turu, 534 yedek, 248 geri yükleme, 103 yanlış şirkete deneme (hepsi 409), 91 yeniden başlatma · 1479.1 sn
+  İşlem türleri: account 337, entry 429, backupAll 70, select 193, backupOne 166, restore 195, bankVoucher 154, recode 126, bankModule 119, bankTransfer 95, wrongRestore 103, bankModuleOther 146, bankReverse 55, rename 99, reset 72, create 168, bankWrongCompany 55, remove 84, restoreRoot 53, restart 38, cash 174, bankAccount 69
+  Son durum: 016 · ışık turizm (10 cari) | 001 · Şahin İnşaat (5 cari) | 030 · Ağaoğlu Yapı? (0 cari) | 012 · Doğu "Batı" Lojistik (1 cari)
+  100 işlem · 5 şirket · 6 yedek · 3 geri yükleme · 31.8 sn
+  200 işlem · 5 şirket · 27 yedek · 8 geri yükleme · 62.7 sn
+  300 işlem · 6 şirket · 45 yedek · 18 geri yükleme · 104.5 sn
+  400 işlem · 4 şirket · 53 yedek · 30 geri yükleme · 145.0 sn
+  500 işlem · 5 şirket · 63 yedek · 34 geri yükleme · 183.8 sn
+  600 işlem · 5 şirket · 81 yedek · 43 geri yükleme · 225.8 sn
+  700 işlem · 5 şirket · 97 yedek · 49 geri yükleme · 267.4 sn
+  800 işlem · 6 şirket · 115 yedek · 56 geri yükleme · 316.6 sn
+  900 işlem · 5 şirket · 124 yedek · 64 geri yükleme · 356.8 sn
+  1000 işlem · 3 şirket · 136 yedek · 74 geri yükleme · 391.0 sn
+  1100 işlem · 4 şirket · 150 yedek · 83 geri yükleme · 427.0 sn
+  1200 işlem · 6 şirket · 162 yedek · 87 geri yükleme · 468.2 sn
+  1300 işlem · 6 şirket · 191 yedek · 93 geri yükleme · 517.5 sn
+  1400 işlem · 4 şirket · 202 yedek · 99 geri yükleme · 564.1 sn
+  1500 işlem · 2 şirket · 210 yedek · 109 geri yükleme · 612.1 sn
+  1600 işlem · 4 şirket · 220 yedek · 119 geri yükleme · 650.0 sn
+  1700 işlem · 6 şirket · 242 yedek · 125 geri yükleme · 694.1 sn
+  1800 işlem · 5 şirket · 251 yedek · 136 geri yükleme · 738.2 sn
+  1900 işlem · 5 şirket · 268 yedek · 143 geri yükleme · 788.4 sn
+  2000 işlem · 6 şirket · 287 yedek · 147 geri yükleme · 832.6 sn
+  2100 işlem · 5 şirket · 309 yedek · 154 geri yükleme · 878.1 sn
+  2200 işlem · 4 şirket · 318 yedek · 161 geri yükleme · 923.2 sn
+  2300 işlem · 6 şirket · 323 yedek · 168 geri yükleme · 971.1 sn
+  2400 işlem · 6 şirket · 349 yedek · 178 geri yükleme · 1020.0 sn
+  2500 işlem · 5 şirket · 374 yedek · 186 geri yükleme · 1073.3 sn
+  2600 işlem · 4 şirket · 388 yedek · 198 geri yükleme · 1130.6 sn
+  2700 işlem · 5 şirket · 397 yedek · 200 geri yükleme · 1175.6 sn
+  2800 işlem · 5 şirket · 417 yedek · 204 geri yükleme · 1212.3 sn
+  2900 işlem · 3 şirket · 439 yedek · 210 geri yükleme · 1240.4 sn
+  3000 işlem · 5 şirket · 458 yedek · 220 geri yükleme · 1270.2 sn
+
+✓ Tohum 2 · taban surum-2.0.19-zincir: 3000 işlem, 3001 değişmez kural turu, 458 yedek, 220 geri yükleme, 102 yanlış şirkete deneme (hepsi 409), 106 yeniden başlatma · 1271.8 sn
+  İşlem türleri: account 323, create 182, select 183, bankModuleOther 145, entry 458, bankVoucher 145, cash 167, restoreRoot 61, restore 165, wrongRestore 102, bankReverse 52, bankModule 139, backupOne 162, reset 65, bankAccount 75, rename 124, bankTransfer 99, remove 97, recode 115, restart 45, backupAll 62, bankWrongCompany 34
+  Son durum: 059 · mavi gıda (166 cari) | 053 · Doğu "Batı" Lojistik (0 cari) | 002 · Işık Turizm (2 cari) | 003 · MAVİ GIDA (6 cari) | 001 · Iğdır Tarım|Hayvancılık (0 cari)
+
+real	45m51.823s
+user	30m31.929s
+sys	1m58.575s
+EXIT 0

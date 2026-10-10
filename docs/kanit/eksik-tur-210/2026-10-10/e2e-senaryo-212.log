@@ -1,0 +1,37 @@
+
+■ Kurulum: yönetici girer, Excel (Kayıt Tarihi kolonlu) yüklenir; Mart, Şubat ve Haziran'da kaydolmuş cariler
+✓ cari: Yasemin Taşkıran (kayıt 2026-03-05)
+✓ cari: Kerem Aydın (kayıt 2026-02-10)
+✓ cari: Selin Yurt (kayıt 2026-06-21)
+✓ cari: Deniz Ak (kayıt 2026-05-15)
+
+■ 1. Taksitler → + Yeni Kart → cari seçilir: Kayıt Tarihi ve Grup cariden gelir; İlk Vade, Taksit Sayısı'nın yanında
+✓ cari seçilmeden: bugün
+✓ yardım metni: Kayıt Tarihi * Kişinin kayıt tarihi: cari seçilince carinin tarihi gelir; carisi yoksa bugün.
+✓ İlk Vade, Taksit Sayısı ile aynı satırda; tutarın hemen altında, grubun üstünde
+✓ cari seçilince Kayıt Tarihi carinin tarihi: 2026-03-05
+✓ grup cariden: 34 SRV 202
+✓ kaydedilen kartta Kayıt Tarihi: 05.03.2026
+
+■ 2. Ad yazılınca aynı adlı cari önerilir: tarih yine cariden; elle değiştirilen tarih korunur
+✓ ad yazıldı → cari önerildi → Kayıt Tarihi 15.05.2026
+✓ kullanıcının elle yazdığı tarih cari seçilince ezilmez
+
+■ 3. Cari kartından "+ Taksit Planı": tarih carinin tarihi
+✓ cari kartından açılan formda: 2026-05-15
+✓ kart 15.05.2026 ile açıldı
+
+■ 4. Toplu taksitlendirme (Cari Seç): her kart kendi carisinin tarihini alır
+✓ toplu kartlar: Kerem 2026-02-10, Selin 2026-06-21
+✓ Taksitler listesinde her kişinin kendi kayıt tarihi
+✓ carilerin kayıt tarihleri hiçbir adımda değişmedi
+
+■ 5. Tablodaki kayıttan Tahsilat → "Taksit planı oluşturun": tarih tablodaki Kayıt Tarihi kolonundan
+✓ tablodaki Kayıt Tarihi (14.01.2026) forma geldi: 2026-01-14
+✓ kart 14.01.2026 ile açıldı; yeni açılan cari de aynı tarihi taşır
+✓ karttan açılan carinin kayıt tarihi: 2026-01-14
+
+■ Tarayıcı hataları
+✓ hiçbir ekranda tarayıcı hatası yok
+
+21/21 denetim geçti. Ekran görüntüleri: /home/user/ofis---y-netimi/.claude/worktrees/agent-a9996cccca67b1040/test/e2e/artifacts/senaryo-212
