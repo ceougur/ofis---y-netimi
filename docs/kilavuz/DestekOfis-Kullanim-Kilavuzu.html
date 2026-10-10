@@ -11,7 +11,7 @@
 <section class="cover">
   <div class="brand"><b>D</b> DestekOfis</div>
   <h1>Kısa Kullanım Kılavuzu</h1>
-  <p class="sub">Sürüm 2.0.15 · Yalnızca bilmeniz gerekenler · 10 dakikada okunur</p>
+  <p class="sub">Sürüm 2.1.0 · Yalnızca bilmeniz gerekenler · 10 dakikada okunur</p>
 </section>
 
 <p>DestekOfis, Excel'de ya da Google Sheets'te tuttuğunuz tabloyu ofisteki herkesin aynı anda kullandığı bir çalışma alanına dönüştürür. Tablonuzu yüklersiniz; program kolonlarınızı tanır, ekranları ona göre kurar. Siz kayıtlara not, tahsilat, görev ve belge eklersiniz; <b>Excel dosyanız hiç bozulmaz</b>.</p>
@@ -36,6 +36,7 @@
   <li>Kayıtla Çalışmak</li>
   <li>Uyarılar</li>
   <li>Kasa</li>
+  <li>Banka</li>
   <li>Cari</li>
   <li>Taksitler</li>
   <li>Stok</li>
@@ -55,7 +56,7 @@
   <li>İlk girişi sunucudan yapın: kullanıcı adı <b>admin</b>, parola <b>Ofis2026!</b>. Program yeni bir parola ister; not edin.</li>
 </ol>
 <figure class="narrow"><img src="ekran/k01-giris.jpg" alt="Giriş ekranı"></figure>
-<div class="box warn"><b class="t">İlk İş: Kurtarma Anahtarı</b><b>Yönetim → Kullanıcılar → Kurtarma Anahtarı Oluştur</b>'a basın, anahtarı <b>yazdırın</b> ve güvenli bir yerde saklayın. Yönetici parolanızı unutursanız giriş ekranındaki <b>Parolamı Unuttum</b> ile bu anahtarla yeni parola belirlersiniz (15. bölüm).</div>
+<div class="box warn"><b class="t">İlk İş: Kurtarma Anahtarı</b><b>Yönetim → Kullanıcılar → Kurtarma Anahtarı Oluştur</b>'a basın, anahtarı <b>yazdırın</b> ve güvenli bir yerde saklayın. Yönetici parolanızı unutursanız giriş ekranındaki <b>Parolamı Unuttum</b> ile bu anahtarla yeni parola belirlersiniz (17. bölüm).</div>
 <div class="box tip"><b class="t">Deneme Kendiliğinden Başlar</b>Sunucu internete bağlıysa 30 günlük deneme birkaç saniyede başlar. Lisans anahtarınızı <b>Yönetim → Lisans</b>'a yazarsınız. Süre dolsa da hiçbir kayıt silinmez.</div>
 
 <h2>2. Verinizi Yükleyin</h2>
@@ -76,7 +77,7 @@
 <figure><img src="ekran/k04-ana-ekran.jpg" alt="Ana ekran"></figure>
 <ul>
   <li><b>Sol üstte Şirket:</b> <b>001 · Unvan ▾</b>. Her şirketin verisi ayrıdır (cari, Kasa, stok, taksit, çek/senet, fatura, sayfalar); seçim yalnız sizin ekranınızı değiştirir. İki pencerede (ya da aynı kullanıcıyla iki bilgisayarda) iki ayrı şirket açık olabilir: her pencere, sol üstte yazan şirkete kaydeder. <b>+ Yeni Şirket</b> ile ikinci şirket (ör. 002) sıfırdan açılır; en fazla 2 şirket açılabilir (yenisi için önce birini silin); yönetimi <b>Yönetim → Şirketler</b>'de.</li>
-  <li><b>Sol menü · Operasyon Merkezi:</b> Görevler, Mesajlar, Görev Ata, Cari, Kasa, Stok, Fatura, Çek / Senet, Taksitler, Raporlar, Personel Raporu ve bu kılavuz. Köşedeki kalemle düğmelere kendi adlarınızı verebilirsiniz. <b>Yeni Kayıt</b> ortadaki tablonun başlığında, <b>Dışa Aktar</b>'ın yanındadır.</li>
+  <li><b>Sol menü · Operasyon Merkezi:</b> Görevler, Mesajlar, Görev Ata, Cari, Kasa, Stok, Fatura, Çek / Senet, Taksitler, Banka, Raporlar, Personel Raporu ve bu kılavuz. Köşedeki kalemle düğmelere kendi adlarınızı verebilirsiniz. <b>Yeni Kayıt</b> ortadaki tablonun başlığında, <b>Dışa Aktar</b>'ın yanındadır.</li>
   <li><b>Kullanıcı kartı:</b> Profil, Parola, Yönetim (yalnız yönetici) ve Çıkış. Hemen altındaki <b>Ayarlar</b> veri kaynağını, eşitlemeyi, sektörü ve görünümü açar (yönetici).</li>
   <li><b>Üstte zil:</b> bekleyen tahsilatlar, son günü yaklaşan işler ve görevleriniz.</li>
   <li><b>ANLIK DURUM</b> (yalnız yönetici) ve <b>özet kartları:</b> toplam kayıt, tutar toplamı, Veri Sağlığı. Karta tıklayınca ilgili liste açılır.</li>
@@ -117,29 +118,102 @@
 <p>Vadesi gelen tahsilatlar, son günü yaklaşan işler ve görevler sağ altta <b>tek tek</b> belirir; her uyarı 20 saniye kalır, üzerine gelirseniz bekler.</p>
 <figure class="half"><img src="ekran/k06-uyari.jpg" alt="Uyarı kartı"></figure>
 <ul>
-  <li><b>Tahsilat Gir:</b> ödemeyi kaydeder; tutar Kasa'ya da düşer.</li>
+  <li><b>Tahsilat Gir:</b> ödemeyi kaydeder; nakit Kasa'ya, havale / EFT seçtiğiniz banka hesabına düşer.</li>
   <li><b>✓ Gerçekleştirildi:</b> iş yapıldıysa basın; hücreye "Gerçekleştirildi" yazılır ve uyarı bir daha gelmez (bildirimdeki <b>Geri Al</b> ile döner).</li>
   <li><b>Kayda Git:</b> ilgili kaydı açar.</li>
 </ul>
 <p><b>Ay sütunlu tablolar (Ocak–Aralık):</b> ay hücresine taksit tutarını yazarsanız program o ayı ödenecek taksit sayar ve ayı gelince uyarır. Tahsilatı kayıttan ya da kayan pilden girin; hücreye "ödendi" yazmak da o ayı kapatır.</p>
 <p><b>Acil görev</b> kırmızı bildirimle gelir ve tamamlanana kadar zilde kalır. Bütün uyarılar üstteki <b>zil</b>dedir; <b>✕</b> ile kendi listenizden kaldırırsınız.</p>
 
-<h2>7. Kasa ve Banka</h2>
-<p>Sol menüden <b>Kasa</b>. Kayıtlara, carilere, taksitlere ve satışlara girdiğiniz tahsilatlar buraya kendiliğinden gelir. Diğer gelir ve giderleri <b>+ Tahsilat</b> ve <b>− Ödeme</b> ile ekleyin. Dönemi <b>Bu Ay</b>, <b>Geçen Ay</b>, <b>Bu Yıl</b>, <b>Tümü</b> ya da <b>Tarih Aralığı</b> ile seçin; <b>PDF İndir</b> ile dökümü alın. Çek / senet ya da stoktan gelen satırın yanındaki <b>↗</b> kaynağını açar.</p>
+<h2>7. Kasa</h2>
+<p>Sol menüden <b>Kasa</b>. Kasa yalnız <b>nakit</b> parayı gösterir (<b>Nakit Kasa</b>). Kayıtlara, carilere, taksitlere ve satışlara nakit girdiğiniz tahsilatlar buraya kendiliğinden gelir. Diğer nakit gelir ve giderleri <b>+ Tahsilat</b> ve <b>− Ödeme</b> ile ekleyin. Dönemi <b>Bu Ay</b>, <b>Geçen Ay</b>, <b>Bu Yıl</b>, <b>Tümü</b> ya da <b>Tarih Aralığı</b> ile seçin; <b>Kasa Dökümü - PDF</b> ile dökümü alın. Çek / senet ya da stoktan gelen satırın yanındaki <b>↗</b> kaynağını açar.</p>
 <ul>
-  <li><b>Ödeme ve tahsilat yolu:</b> her tahsilat ve ödemede <b>Nakit</b>, <b>Havale / EFT</b> ya da kartı seçin: tahsilatta <b>POS</b>, sizin ödemenizde <b>Kredi Kartı</b>. Cari kartında tahsilatta <b>Çek / Senet</b> seçerseniz evrak formu açılır; satışta <b>Açık Hesap</b> tutarı müşterinin borcuna yazar.</li>
-  <li><b>Sekmeler:</b> <b>Nakit Kasa</b>, <b>Banka</b>, <b>POS / Kredi Kartı</b> ya da <b>Tümü</b>. Her sekmenin kendi bakiyesi ve PDF'i vardır.</li>
-  <li><b>Bakiye eksiye düşecekse</b> (nakit kasa, banka ya da kredi kartı) program sorar. Yolu yanlış seçtiyseniz düzeltin; doğruysa <b>Yine de Kaydet</b>. Yönetici bir hesap için sormayı kapatabilir ya da kaydı tamamen engelleyebilir (15. bölüm).</li>
-  <li><b>İleri tarih yok:</b> Kasa, cari, stok ve taksit hareketine bugünden sonraki bir tarih yazılamaz. Gelecekteki ödeme ya da tahsilatı taksit veya çek / senet vadesi olarak girin; günü gelince tahsil edin.</li>
+  <li><b>Ödeme ve tahsilat yolu:</b> cari, fatura, taksit, stok ve çek / senet ekranlarında her tahsilat ve ödemede <b>Nakit</b>, <b>Havale / EFT</b> ya da kartı seçin: tahsilatta <b>POS</b>, sizin ödemenizde <b>Kredi Kartı</b>. Nakit Kasa'ya yazılır; havale / EFT ve şirket kartıyla ödeme Banka'ya (8. bölüm). Cari kartında <b>Çek / Senet</b> seçerseniz evrak formu açılır; satışta <b>Açık Hesap</b> tutarı müşterinin borcuna yazar.</li>
+  <li><b>Kasa ile banka arasında para:</b> bankadan nakit çektiyseniz <b>Bankadan Kasaya Aktar</b>, kasadaki parayı bankaya yatırdıysanız <b>Kasadan Bankaya Yatır</b>; banka hesabını seçin. Kasa ve banka hesabı birlikte değişir.</li>
+  <li><b>Kasa eksiye düşecekse</b> program sorar. Tutarı ya da yolu yanlış seçtiyseniz düzeltin; doğruysa <b>Yine de Kaydet</b>. Yönetici sormayı kapatabilir ya da kaydı tamamen engelleyebilir (17. bölüm).</li>
+  <li><b>İleri tarih yok:</b> Kasa, banka, cari, stok ve taksit hareketine bugünden sonraki bir tarih yazılamaz. Gelecekteki ödeme ya da tahsilatı taksit veya çek / senet vadesi olarak girin; günü gelince tahsil edin.</li>
 </ul>
-<figure class="w80"><img src="ekran/k08-kasa.jpg" alt="Kasa"></figure>
+<figure class="w80"><img src="ekran/k08-kasa.jpg" alt="Kasa"><figcaption>Kasa yalnız nakit; banka ile para geçişi için <b>Bankadan Kasaya Aktar</b> ve <b>Kasadan Bankaya Yatır</b>.</figcaption></figure>
 
-<h2>8. Cari</h2>
+<h2>8. Banka</h2>
+<p>Sol menüde <b>Taksitler</b>'in altında <b>Banka</b>. Banka hesaplarınızın bakiyesi, şirket kredi kartınızın ve kredilerinizin borcu, banka masrafları ve hesaplarınız arasındaki transferler burada. Pencerenin sekmeleri: <b>Genel Bakış</b>, <b>Hesaplar</b>, <b>Hareketler</b>, <b>Ayarlar</b>. <b>Gerçek Banka</b>, banka hesaplarınızın bugünkü toplam bakiyesidir; kart ve kredi borcu ayrı yazılır (<b>Kart ve Kredi Borcu</b>).</p>
+<figure><img src="ekran/k27-banka-genel-bakis.jpg" alt="Banka: Genel Bakış"><figcaption>Genel Bakış: Gerçek Banka, Kart ve Kredi Borcu, hesaplar, <b>Bugün ve Bu Ay</b> ve son banka hareketleri.</figcaption></figure>
+
+<h3>İlk Kurulum: Kurulum Sihirbazı</h3>
+<ol class="steps">
+  <li>Banka'yı ilk açtığınızda <b>Kurulum Sihirbazı</b> gelir. <b>Hesap ve Açılış</b> adımında her hesap için Banka Adı, Hesap Adı, Hesap Türü, IBAN, Açılış Tarihi ve o günün başındaki bakiyeyi (<b>Açılış Bakiyesi</b>) yazın. Tutarı bankadan teyit ettiyseniz <b>Bakiye Doğrulandı</b> kutusunu işaretleyin. Başka hesap için <b>Kaydet ve Yeni Hesap Ekle</b>, bitince <b>Kaydet ve İlerle</b>.</li>
+  <li><b>Eski Hareketleri Aktar</b> (yalnız gerekiyorsa gelir): hesap tanımlanmadan Havale / EFT ile girdiğiniz tahsilat ve ödemeler hesaba bağlanır. Hesabı seçin, <b>Aktar</b>'a basın. Açılış tarihinden önceki hareketler açılış bakiyesinin içindedir; onlar <b>Devir Kapanışı</b> ile kapanır, ikinci kez sayılmaz. Tarihi henüz gelmemiş eski hareket (programın eski sürümünde ileri tarihle girilmiş) atlanır; günü gelince hesaba atarsınız.</li>
+  <li><b>Bitti</b>: <b>Kurulum Tamamlandı</b>. Her adımı <b>Bu Adımı Atla</b> ile geçebilirsiniz; o zaman Genel Bakış'ta <b>Kurulumu Tamamla</b> kalır. Yanlış aktardıysanız Hesabı Atanmamış Eski Hareketler ekranındaki <b>Kurulum Geçmişi</b>'nden <b>Geri Al</b>.</li>
+</ol>
+<div class="pair">
+<figure><img src="ekran/k28-banka-sihirbaz.jpg" alt="Kurulum Sihirbazı: Hesap ve Açılış"><figcaption>Hesap ve Açılış: açılış tarihindeki bakiye ve <b>Bakiye Doğrulandı</b>.</figcaption></figure>
+<figure><img src="ekran/k29-banka-eski-hareketler.jpg" alt="Kurulum Sihirbazı: Eski Hareketleri Aktar"><figcaption>Eski Hareketleri Aktar: önce ne olacağı gösterilir, sonra <b>Aktar</b>.</figcaption></figure>
+</div>
+<p><b>Hesabı Atanmamış Eski Hareketler:</b> hesabı belli olmayan eski havale / EFT ve kart hareketleri Genel Bakış'ta bu satırda görünür; Gerçek Banka'ya ve hiçbir toplama girmez. <b>Şimdi Düzenle</b> → listede hareketleri işaretleyin → <b>Hedef Hesap</b>'ı seçin → <b>Seçilenleri Bu Hesaba Ata</b>. Tarihi henüz gelmemiş hareketin yanında <b>Tarihi Gelince Atanabilir</b> yazar: o gün aynı ekrandan hesaba atayın.</p>
+<figure><img src="ekran/k37-banka-hesabi-atanmamis.jpg" alt="Hesabı Atanmamış Eski Hareketler"><figcaption>Seçip <b>Seçilenleri Bu Hesaba Ata</b>; tarihi gelmemiş satırda <b>Tarihi Gelince Atanabilir</b>.</figcaption></figure>
+
+<h3>Hesap Açmak</h3>
+<ol class="steps">
+  <li><b>Hesaplar</b> → <b>+ Yeni Hesap</b>. <b>Hesap Türü</b>: <i>Vadesiz</i> (kredili mevduatınız varsa <b>KMH Limiti</b>), <i>Ticari</i>, <i>Vadeli</i>, <i>Kredi Hesabı</i>, <i>Kurumsal Kredi Kartı</i> (şirket kartınız: <b>Kart Limiti</b>, <b>Ekstre Kesim Günü</b>, <b>Son Ödeme Günü</b>; açılışta kartın borcu <b>Açılıştaki Borç</b>) ya da <i>Diğer</i>. <b>Hesap Kodu</b>'nu boş bırakırsanız program önerir.</li>
+  <li>Açılış Tarihi ve bakiyeyi yazın; bakiyeyi bankadan teyit ettiyseniz <b>Bakiye Doğrulandı</b>'yı işaretleyin → <b>Hesabı Aç</b>. <b>IBAN faturada gösterilsin</b> işaretliyse IBAN fatura belgesine basılır.</li>
+  <li><b>Hesap ayrıntısı:</b> listede hesaba tıklayın. Bakiye, hesap bilgileri ve hareketler; düğmeler hesabın türüne göre: <b>+ Masraf</b>, <b>+ Faiz</b>, <b>+ Diğer İşlem</b>, <b>Transfer</b> (kartta <b>+ Kart Borcu Ödemesi</b>, kredide <b>+ Kredi İşlemi</b>), <b>Düzenle</b>, <b>Açılışı Düzelt</b>, <b>Pasife Al</b>, <b>Sil</b>. Hareketi olan hesap silinmez; kullanmayacaksanız <b>Pasife Al</b>. Kapalı düğmenin nedeni altında yazar.</li>
+</ol>
+<div class="pair">
+<figure><img src="ekran/k38-banka-kart-hesabi.jpg" alt="Yeni Banka Hesabı: Kurumsal Kredi Kartı"><figcaption>Yeni Banka Hesabı: Kurumsal Kredi Kartı, Kart Limiti ve kart günleri.</figcaption></figure>
+<figure><img src="ekran/k30-banka-hesap-detayi.jpg" alt="Banka hesap ayrıntısı"><figcaption>Hesap ayrıntısı: bakiye, bilgiler, işlem düğmeleri ve hareketler.</figcaption></figure>
+</div>
+
+<h3>Banka Fişi: Masraf, Faiz, Kart Borcu ve Kredi</h3>
+<p>Bankanın kendi yaptığı işlemleri <b>Hareketler</b> sekmesinden ya da hesap ayrıntısından girin:</p>
+<ul>
+  <li><b>+ Masraf:</b> <b>Masraf Türü</b> (EFT, FAST, Havale, Hesap İşletim…), <b>Vergi</b> (<i>BSMV Dahil</i>, <i>BSMV Hariç</i>; banka fatura kestiyse <i>KDV Dahil (Faturalı)</i> ya da <i>KDV Hariç (Faturalı)</i>; <i>Yok</i>) ve tutar. Formun altındaki satır bankadan çıkacak toplamı gösterir.</li>
+  <li><b>+ Faiz:</b> <i>Faiz Geliri</i> (mevduat faizi; bankanın kestiği stopaj oranı önerilir) ya da <i>Faiz Gideri</i>.</li>
+  <li><b>+ Diğer İşlem:</b> <i>Diğer Gelir</i>, <i>Diğer Gider</i>, <i>Kart Borcu Ödemesi</i> (şirket kartının borcunu bankadan ödediniz), <i>Kredi Kullanımı</i> (kredi hesabınıza yatan kredi), <i>Kredi Geri Ödemesi</i>.</li>
+  <li><b>+ Planlı İşlem:</b> kira, kredi taksiti gibi tekrarlanan ödemeleri planlayın. Planlı işlem bakiyeyi değiştirmez; günü gelince Genel Bakış'ta görünür, bankada gerçekleştiyse <b>Planlı İşlemler</b>'den <b>Gerçekleştir</b>.</li>
+  <li><b>Yanlış girdiyseniz:</b> hareketin satırına tıklayın, <b>İşlem Kartı</b> açılır. <b>Ters Kaydet</b> işlemi iptal eder; <b>Düzelt</b> eskisini ters kaydedip doğrusunu yazar; yalnız açıklama için <b>Açıklamayı Düzelt</b>. Hiçbir şey kaybolmaz: eski ve yeni kayıt hareketlerde ve İşlem Geçmişi'nde kalır. Her işlemin bir <b>İşlem No</b>'su vardır (ör. BNK-2026-000010).</li>
+</ul>
+<div class="pair">
+<figure><img src="ekran/k31-banka-masraf.jpg" alt="Banka Masrafı"><figcaption>Banka Masrafı: masraf türü, vergi ve bankadan çıkan toplam.</figcaption></figure>
+<figure><img src="ekran/k33-banka-islem-karti.jpg" alt="İşlem Kartı"><figcaption>İşlem Kartı: <b>Ters Kaydet</b>, <b>Düzelt</b>, <b>Açıklamayı Düzelt</b>.</figcaption></figure>
+</div>
+
+<h3>Bankalar Arası Transfer</h3>
+<p><b>Hareketler</b> ya da hesap ayrıntısında <b>Transfer</b>: <b>Gönderen Hesap</b>, <b>Alıcı Hesap</b>, tutar, <b>Kanal</b> (EFT, FAST, Havale, Virman) ve gerekiyorsa <b>Valör</b> (paranın alıcı hesaba geçtiği gün). Banka ücret kestiyse <b>Ücret</b> ve <b>Ücret Vergisi</b>'ni yazın. Alttaki satır <i>Alıcıya Giren</i>, <i>Ücret</i> ve <i>Gönderenden Çıkan</i> tutarlarını gösterir. Kendi hesaplarınız arasındaki para Genel Bakış'ta ve ANLIK DURUM'da <b>Transfer</b> olarak ayrı yazılır; giriş ve çıkışa sayılmaz. Kasa ile banka arasındaki para için Kasa'daki <b>Bankadan Kasaya Aktar</b> / <b>Kasadan Bankaya Yatır</b>.</p>
+<figure class="w80"><img src="ekran/k32-banka-transfer.jpg" alt="Bankalar Arası Transfer"><figcaption>Bankalar Arası Transfer: ücret gönderen hesaptan ayrıca düşer.</figcaption></figure>
+
+<h3>Tahsilat ve Ödemede Banka Hesabı</h3>
+<p>Cari kartındaki <b>+ Tahsilat</b> / <b>− Ödeme</b>, fatura ödemesi, taksit ve kayıt tahsilatı, stok giriş ve çıkışı, çek / senet tahsil ve ödemesinde yol <b>Havale / EFT</b> seçilince <b>Banka Hesabı</b> alanı çıkar. Tek banka hesabınız varsa para kendiliğinden ona yazılır (altında hangi hesap olduğu yazar); birden çok hesabınız varsa hesap seçilmeden kaydedilmez. Nakit seçildiğinde alan görünmez, para Kasa'ya gider.</p>
+<figure class="half"><img src="ekran/k34-banka-hesap-secimi.jpg" alt="Cari tahsilatında Banka Hesabı"><figcaption>Havale / EFT → <b>Banka Hesabı</b>.</figcaption></figure>
+
+<h3>Şirket Kredi Kartı (Kurumsal Kart)</h3>
+<ol class="steps">
+  <li>Kartınızı Banka'da <b>Hesap Türü</b> <i>Kurumsal Kredi Kartı</i> ile açın, <b>Kart Limiti</b>'ni yazın.</li>
+  <li>Cari kartındaki <b>− Ödeme</b>'de, alış faturasının ödemesinde ve stok alımında (<b>+ Giriş</b>) yol <b>Kredi Kartı</b> seçilince <b>Kurumsal Kart</b> alanı çıkar: tek kartınız varsa kendiliğinden o karta yazılır, birden çok kartınız varsa kartı seçersiniz.</li>
+  <li>Kartla ödeme bankadan para çıkarmaz; kartın borcuna yazılır (Genel Bakış'ta ve ANLIK DURUM'da <b>Kart ve Kredi Borcu</b>). Borcu bankadan ödediğinizde kartın ayrıntısında <b>+ Kart Borcu Ödemesi</b>: hangi banka hesabından ödendiğini seçin; banka bakiyesi düşer, kartın borcu azalır.</li>
+</ol>
+<p>Kart limitini aşacak ödemede <b>Eksi Bakiye</b> sorusu gelir (kullanılabilir tutar yazar). Müşteriden kartla aldığınız tahsilatta yol <b>POS</b>'tur; Kurumsal Kart sorulmaz.</p>
+<figure class="half"><img src="ekran/k39-banka-kurumsal-kart.jpg" alt="Cari ödemesinde Kurumsal Kart"><figcaption>Kredi Kartı → ödeme şirket kartının borcuna yazılır.</figcaption></figure>
+
+<h3>Eksi Bakiye Sorusu</h3>
+<p>Bir çıkış banka hesabını eksiye düşürecekse (vadesizde KMH Limiti, kartta Kart Limiti dahil) program <b>Eksi Bakiye</b> penceresiyle sorar: hesapta ne kadar olduğu ve işlemden sonra ne olacağı yazar. Yanlışsa <b>Vazgeç</b>, doğruysa <b>Yine de Kaydet</b>. Ne olacağını <b>Ayarlar</b> → <b>Eksi Bakiye</b> → <b>Banka Hesapları</b>'nda seçin: <b>Uyar</b> (sorar), <b>Engelle</b> (kaydetmez), <b>Kontrol Yok</b>; tek bir hesap için hesap formundaki <b>Eksi Bakiye Denetimi</b>'nden. Açılış bakiyesi doğrulanmamış (<b>Bakiye Doğrulandı</b> işaretsiz) hesapta soru gelmez.</p>
+<figure class="half"><img src="ekran/k35-banka-eksi-bakiye.jpg" alt="Eksi Bakiye sorusu"></figure>
+
+<h3>Banka Raporları, Ayarlar ve Yetkiler</h3>
+<ul>
+  <li><b>Raporlar → Tüm Raporlar → Banka:</b> <i>Banka Bakiye Raporu</i>, <i>Banka Hareket Raporu</i>, <i>Banka Masraf Raporu</i>, <i>Alt Hesap Mizanı</i>. Hepsi <b>PDF İndir</b> ve <b>Excel İndir</b> ile iner.</li>
+  <li><b>ANLIK DURUM</b>'da <b>Nakit Kasa</b> ile <b>Gerçek Banka</b> ayrı kutulardadır (14. bölüm); Raporlar → <b>Nakit Akış</b> bugünkü nakit ve banka bakiyesinden başlar.</li>
+  <li><b>Ayarlar:</b> standartlar seçili gelir; çoğu ofisin bir şeyi değiştirmesi gerekmez. <b>Varsayılan Tahsilat Hesabı</b>, <b>Eksi Bakiye</b>, <b>Benzer İşlem Uyarısı</b> (aynı gün aynı hesaba, aynı cariye aynı tutar ikinci kez girilince uyarır), <b>Banka Masrafı Vergisi</b> ve <b>Masraf Türleri</b>. Değiştirdiğinizi <b>Ayarları Kaydet</b>; standartlara dönmek için <b>Varsayılanlara Dön</b>.</li>
+  <li><b>Kimler kullanır:</b> yönetici ve muhasebe. Başka birine <b>Yönetim → Kullanıcılar → Yetkiler → Banka ve POS</b> grubundan açılır: <i>Banka Görüntüleme</i>, <i>Banka Raporları</i>, <i>Banka Hesabı Tanımlama ve Açılış</i>, <i>Banka Hareketi Girme ve Bankadan Çıkış</i>, <i>Banka Hareketi Silme, İptal ve Ters Kayıt</i>, <i>Transfer Yapma</i>, <i>Banka Ayarları</i>.</li>
+</ul>
+<figure><img src="ekran/k36-banka-raporu.jpg" alt="Banka Bakiye Raporu"><figcaption>Raporlar → Tüm Raporlar → Banka → Banka Bakiye Raporu.</figcaption></figure>
+<figure class="narrow"><img src="ekran/k40-banka-yetkiler.jpg" alt="Yetkiler: Banka ve POS"><figcaption>Yetkiler → Banka ve POS: bu kişiye Banka Görüntüleme ve Banka Raporları eklendi (yeşil).</figcaption></figure>
+
+<h2>9. Cari</h2>
 <p>Sol menüden <b>Cari</b>. Kiminle para alışverişi yapıyorsanız (müşteri, öğrenci, veli, site sakini, tedarikçi) onun hesap kartı.</p>
 <ol class="steps">
   <li><b>Carileri toplu açın:</b> <b>Excel / Sheets’ten Yükle</b> (binlerce kişi tek seferde). Yüklemeden önce hangi satırın hazır, hangisinde sorun olduğu gösterilir. Aynı kişi ikinci kez açılmaz; Excel'deki ek kolonlar (Veli, Okul, Plaka…) kartta aynı adla görünür. Tür kolonunda "Müşteri/Tedarikçi" gibi iki türü birden yazan ya da tanınmayan değer varsa <b>Tür Değerleri</b> tablosunda sarı görünür; türünü oradan seçin (açılış bakiyesinin yönü türe göre yazılır).</li>
   <li><b>Tek cari:</b> <b>+ Yeni Cari</b>. <b>Tablodaki Kayıt</b> alanı cariyi tablodaki kişiye bağlar; aynı adlı iki kişi varsa program tahmin etmez, listeden siz seçersiniz.</li>
-  <li><b>Hareket girin:</b> kartta <b>+ Tahsilat</b> (Kasa'ya girer, makbuzu alınır), <b>Borç Yaz</b>, <b>Alacak Yaz</b>, <b>− Ödeme</b> (Kasa'dan çıkar). Açık taksit kartı varsa tahsilatı taksite mi yazacağınız sorulur: taksit ödemesiyse <b>Taksite Yaz</b>; <b>Taksit Dışı Tahsilat</b> taksiti ve taksitli faturayı kapatmaz, carinin hesabına yazılır. <b>Satış Faturası</b> ve <b>Alış Faturası</b> pilleri bu cariye fatura keser (bkz. Fatura).</li>
+  <li><b>Hareket girin:</b> kartta <b>+ Tahsilat</b> (nakit Kasa'ya, havale / EFT banka hesabına girer; makbuzu alınır), <b>Borç Yaz</b>, <b>Alacak Yaz</b>, <b>− Ödeme</b> (nakit Kasa'dan, havale / EFT banka hesabından çıkar; <b>Kredi Kartı</b> şirket kartınızın borcuna yazılır). Açık taksit kartı varsa tahsilatı taksite mi yazacağınız sorulur: taksit ödemesiyse <b>Taksite Yaz</b>; <b>Taksit Dışı Tahsilat</b> taksiti ve taksitli faturayı kapatmaz, carinin hesabına yazılır. <b>Satış Faturası</b> ve <b>Alış Faturası</b> pilleri bu cariye fatura keser (bkz. Fatura).</li>
 </ol>
 <ul>
   <li><b>Bakiye</b> = borç − alacak. <b style="color:#177245">Borçlu</b>: cari size borçlu; <b style="color:#b3473a">Alacaklı</b>: siz cariye borçlusunuz; <b>Kapalı</b>: bakiye sıfır. Listede, kartta, raporlarda ve çıktılarda aynı sözcük ve renk.</li>
@@ -157,14 +231,14 @@
 </ol>
 <p>Mesajları sizin WhatsApp'ınız (bilgisayardaki WhatsApp ya da WhatsApp Web) gönderir; ücretli bir hizmet gerekmez.</p>
 
-<h2>9. Taksitler</h2>
+<h2>10. Taksitler</h2>
 <p>Sol menüden <b>Taksitler</b>. Kişilerin taksitli borçlarını takip eder. Kartlar <b>Grup › Alt Grup</b> ile düzenlenir (servis plakası › güzergâh, site › blok, okul › sınıf). Grup listesi her grubun kaç kartı ve kaç carisi olduğunu gösterir: <i>34 SRV 202 · 0 kart · 3 cari</i>.</p>
 <ol class="steps">
   <li><b>Tek kart:</b> <b>+ Yeni Kart</b> → cariyi seçin (ad yazınca bulunur; yoksa bu adla cari açılır); kartın Kayıt Tarihi ve grubu cariden gelir. Toplam tutar, taksit sayısı ve ilk vadeyi yazın. Taksitleri sonra <b>Otomatik Dağıt</b> ya da <b>+ Taksit</b> ile de kurabilirsiniz. İlk vade Kayıt Tarihi'nden önce olamaz; Kayıt Tarihi bugünden ileri olamaz.</li>
   <li><b>Birden çok cariye birden:</b> <b>+ Toplu Taksitlendir</b> ya da süzgeç satırındaki <b>Cari Seç</b>. Açılan pencerede grup, alt grup ve adla süzün, kutularla carileri seçin (başlıktaki kutu hepsini seçer) → <b>Seçilenlere Taksit Planı</b>. Tutarı herkese aynı yazın ya da her carinin kartındaki alandan (ör. <i>Servis Ücreti</i>) okutun; taksit sayısı ve ilk vadeyi girin. Program önce kaç kart, toplam ne kadar ve hangi carilere açılacağını gösterir; <b>N Kartı Aç</b> deyince kartlar açılır. Açık kartı olan cari listeye gelmez; çift kart açılmaz.</li>
   <li><b>Kartsız grup:</b> bir grubu seçtiğinizde carileri olup hiç kartı yoksa liste boş kalmaz; <b>Bu Gruba Toplu Taksitlendir</b> ile o grubun carileri seçili gelir.</li>
   <li><b>Veresiye satışı ya da mevcut borcu taksitlendirme:</b> cari kartında <b>+ Taksit Planı</b> → <b>Borcun Kaynağı: Carinin Mevcut Borcu</b> (tutar bakiyeden gelir). Borç ikinci kez yazılmaz, yalnız vadelere bölünür. Satış anında da yapabilirsiniz: Stok → <b>− Çıkış</b> → <b>Açık Hesap</b> → <b>Bu Satışı Taksitlendir</b>. Yeni bir hizmet ya da satışsa <b>Yeni Borç</b> seçin. Kart açıldığı günkü borcu taksitlendirir; tutarı sonradan büyütülmez, yeni borç için yeni kart açın.</li>
-  <li><b>Tahsilat:</b> kartta <b>+ Tahsilat</b> ya da taksitin yanındaki <b>₺</b>. Tutar sıradaki taksit kadar hazır gelir; en eski açık taksite sayılır, fazlası sonrakine geçer. Kasa'ya düşer; <b>Makbuz</b> A5 boyutundadır. İade için <b>− Ödeme / İade</b>.</li>
+  <li><b>Tahsilat:</b> kartta <b>+ Tahsilat</b> ya da taksitin yanındaki <b>₺</b>. Tutar sıradaki taksit kadar hazır gelir; en eski açık taksite sayılır, fazlası sonrakine geçer. Nakit Kasa'ya, havale / EFT seçtiğiniz banka hesabına düşer; <b>Makbuz</b> A5 boyutundadır. İade için <b>− Ödeme / İade</b>.</li>
   <li><b>Excel'den ya da tablodan:</b> <b>Excel / Sheets’ten Yükle</b> listenizdeki taksitleri gerçek vade ve tutarlarıyla kurar. Yüklediğiniz tabloda ödeme planı varsa (ay kolonları, "1. Taksit Tarihi / Tutarı" ya da toplam + taksit sayısı) <b>Tablodan Aktar</b> her kişiyi ön izlemede gösterir; <b>Aktar</b> deyince kart tablodaki kayda ve cariye bağlanır, Excel'de ödenmiş kısım açılış sayılır (<b>Kasa değişmez</b>). Yanlış aktardıysanız <b>Son Aktarımlar → Geri Al</b>.</li>
 </ol>
 <div class="pair">
@@ -179,25 +253,25 @@
 </ul>
 <figure><img src="ekran/k14-tablodan-aktar.jpg" alt="Tablodan taksit kartına aktarma"><figcaption>Tablodan Aktar: her kişi için taksitler, Excel'e göre ödenen, kalan ve durum; seçip <b>Aktar</b>.</figcaption></figure>
 
-<h2>10. Stok</h2>
+<h2>11. Stok</h2>
 <p>Sol menüden <b>Stok</b>. Ürünler (çay, yağ, kâğıt…) ve giriş/çıkış hareketleri; <b>Mevcut</b> = girişler − çıkışlar.</p>
 <ol class="steps">
   <li><b>+ Yeni Ürün:</b> <b>Stok Kodu</b> (isteğe bağlı; barkod okutabilirsiniz, her ürünün kodu ayrıdır), ad, <b>birim</b> (Adet, Kg, Lt, Metre, M², Paket, Koli, Saat…; listede yoksa kendiniz yazın), kategori, kritik seviye, birim fiyat. Açılış miktarı yazıp <i>Kasa'ya yansıt</i>'ı işaretlerseniz miktar × birim fiyat Kasa'dan gider olarak düşer. Toplu açılış için <b>Excel / Sheets’ten Yükle</b>.</li>
   <li><b>Alış ve satış fiyatı:</b> ürün kartında ikisini ayrı yazın; <b>− Çıkış</b> satış fiyatıyla, <b>+ Giriş</b> alış fiyatıyla açılır.</li>
-  <li><b>+ Giriş / − Çıkış:</b> miktar ve birim fiyatı yazınca tutar hesaplanır. Para <b>Nakit</b>, <b>POS</b> (alımda <b>Kredi Kartı</b>) ya da <b>Havale / EFT</b> ile Kasa'ya/Banka'ya yazılır ya da <b>Açık Hesap</b> ile cariye.</li>
+  <li><b>+ Giriş / − Çıkış:</b> miktar ve birim fiyatı yazınca tutar hesaplanır. Para <b>Nakit</b> (Kasa), <b>Havale / EFT</b> (seçtiğiniz banka hesabı), satışta <b>POS</b>, alımda <b>Kredi Kartı</b> (şirket kartınızın borcu) ile yazılır ya da <b>Açık Hesap</b> ile cariye.</li>
   <li><b>↩ Müşteri İadesi:</b> geri gelen ürün stoğa girer; parası müşteriye geri ödenir ya da borcundan düşülür. Taksitlendirilmiş satıştan iade borçtan düşülürse taksit kartı da o kadar küçülür; para geri verilirse kart değişmez.</li>
   <li><b>Kasiyer:</b> <i>Yönetim → Yeni Rol</i>'de <b>Satış Yapma</b> yetkisi verilen kişi ürün kartına dokunmadan satış ve iade girer.</li>
   <li><b>Kritik seviye:</b> ürün bu miktara inince listede üstte kırmızı görünür, sol menüde rozet çıkar.</li>
 </ol>
 <p><b>Hizmet kalemi:</b> <i>Kalem Türü</i>'nü <i>Hizmet</i> yapın (yıkama, servis ücreti…); stoğu tutulmaz, satışı Kasa'ya ya da cariye yazılır.</p>
 
-<h2>11. Çek / Senet</h2>
+<h2>12. Çek / Senet</h2>
 <p>Sol menüden <b>Çek / Senet</b>. Aldığınız ve verdiğiniz çek ve senetlerin portföyü.</p>
 <figure><img src="ekran/k13-cek-senet.jpg" alt="Çek / Senet"></figure>
 <ol class="steps">
   <li><b>+ Çek / Senet Al:</b> cari, tutar, vade, seri no, banka. İsterseniz <b>Taksite Say</b>: evrak carinin en eski açık taksitlerine sayılır. Evrak <i>Portföyde</i>dir; carinin borcu düşer, para henüz Kasa'da değildir.</li>
-  <li><b>Vadesinde:</b> evrak kartında <b>Tahsil Et</b> (Kasa'ya girer), <b>Ciro Et</b> (tedarikçiye verirsiniz) ya da <b>Karşılıksız / İade</b> (müşteri yeniden borçlanır).</li>
-  <li><b>+ Çek / Senet Ver:</b> tedarikçiye borç yazılır; vadesinde <b>Ödeme Yap</b> Kasa'dan çıkarır.</li>
+  <li><b>Vadesinde:</b> evrak kartında <b>Tahsil Et</b> (nakit Kasa'ya, havale / EFT banka hesabına girer), <b>Ciro Et</b> (tedarikçiye verirsiniz) ya da <b>Karşılıksız / İade</b> (müşteri yeniden borçlanır).</li>
+  <li><b>+ Çek / Senet Ver:</b> tedarikçiye borç yazılır; vadesinde <b>Ödeme Yap</b> Kasa'dan ya da seçtiğiniz banka hesabından çıkarır.</li>
 </ol>
 <ul>
   <li><b>Yanlış işlem:</b> evrak kartındaki <b>“…” İşlemini Geri Al</b> son işlemi ve bağlı kayıtlarını birebir kaldırır; açık Kasa ve Cari pencereleri hemen güncellenir.</li>
@@ -206,14 +280,14 @@
 </ul>
 
 
-<h2>12. Fatura</h2>
+<h2>13. Fatura</h2>
 <p>Sol menüden <b>Fatura</b>. Satış, alış ve iade faturalarınız; her fatura kaydedildiği anda stoğu, cariyi, Kasa'yı, taksit kartını ve çek/senedi birlikte yazar; ayrıca bir yere girmezsiniz.</p>
 <figure><img src="ekran/k24-fatura-formu.jpg" alt="Fatura formu"><figcaption>Satış faturası: cari, kalemler, KDV ve ödeme tek formda.</figcaption></figure>
 <ol class="steps">
   <li><b>+ Yeni Fatura</b> → ne yapacağınızı seçin: <i>Stoktan Satış</i>, <i>Hizmet Satışı</i>, <i>Serbest Meslek Makbuzu</i>, <i>Fiyat Farkı Faturası</i>, <i>Satıştan İade</i>; <i>Stoğa Mal Alışı</i>, <i>Hizmet ve Gider Alışı</i>, <i>Alıştan İade</i>. Stok, KDV ve ödeme kuralları seçtiğiniz senaryodan gelir. Cari kartındaki <b>Satış Faturası</b> / <b>Alış Faturası</b> pili aynı formu cari dolu açar.</li>
   <li><b>Cari:</b> adını yazıp seçin; vergi dairesi, VKN/TCKN ve adres cari kartından gelir. Kayıtlı değilse yanındaki <b>+ Yeni Cari</b> formdan ayrılmadan açar; kaydedince seçili gelir.</li>
   <li><b>Kalemler:</b> <b>Stok Kodu</b> ya da ürün adını yazınca stoktan öneri gelir; kodu yazıp Enter'a basınca (barkod okuyucu da) ürün doğrudan seçilir. Miktar, birim fiyat, iskonto ve KDV; bütün satırlara aynı oran için üstteki <b>Tüm Kalemlere KDV</b>. <i>Stoğa Mal Alışı</i>'nda stokta olmayan ürün için listeden <b>+ Yeni Stok Kartı</b>: kart fatura kaydedilince açılır, ürün stoğa girer. Cari ve ürün seçilince <b>bu müşteriye ve başkalarına son satış/alış fiyatı</b> görünür, tıklayınca fiyata yazılır. <b>Not</b> belgenin altına basılır.</li>
-  <li><b>Ödeme:</b> peşin kısmı <b>Nakit / Havale / POS</b> (alışta <b>Kredi Kartı</b>) ile Kasa'ya, <b>Çek / Senet</b> ile portföye yazılır; kalanı <b>Açık Hesap</b> (vadeli) ya da <b>Taksit</b> (taksit kartı açılır). Taksitli faturanın tahsilatı taksit kartına girilir; faturadaki açık, kartın kalanıdır.</li>
+  <li><b>Ödeme:</b> peşin kısmı <b>Nakit</b> ile Kasa'ya, <b>Havale / EFT</b> ile seçtiğiniz banka hesabına, satışta <b>POS</b>, alışta <b>Kredi Kartı</b> ile şirket kartınızın borcuna (Kurumsal Kart), <b>Çek / Senet</b> ile portföye yazılır; kalanı <b>Açık Hesap</b> (vadeli) ya da <b>Taksit</b> (taksit kartı açılır). Taksitli faturanın tahsilatı taksit kartına girilir; faturadaki açık, kartın kalanıdır.</li>
   <li><b>Faturayı Kaydet</b> (ya da <b>Taslak Olarak Kaydet</b>: deftere işlenmez, Taslaklar sekmesinde bekler).</li>
   <li><b>Düzeltme:</b> kaydedilmiş faturanın kartında <b>Düzenle</b> → değiştirin → <b>Değişiklikleri Kaydet</b>. Numara aynı kalır; stok, cari, Kasa ve taksit yeni hale göre yazılır. İadesi olan, kilitli dönemdeki ya da taksitinden tahsilat alınmış faturada Düzenle kapalıdır (nedeni düğmenin üstünde yazar); o zaman <b>İptal Et</b> ya da <b>İade</b>.</li>
 </ol>
@@ -222,23 +296,23 @@
   <li><b>Belgeyi verin:</b> kartta <b>Satış Faturası - PDF</b> / <b>Yazdır</b>, <b>WhatsApp</b> (PDF iner, sohbet açılır) ve <b>E-Posta</b> (PDF iner, cari kartındaki adrese hazır metinle e-posta penceresi açılır). Resmî e-Fatura bağlantısı açılana kadar belge <b>Müşteri Fişi</b> başlığıyla basılır; resmî fatura yerine geçmez.</li>
   <li><b>Toplu işler:</b> listede soldaki kutularla belgeleri seçin → <b>Seçilenleri PDF / Excel</b>; Taslaklar sekmesinde <b>Seçilenleri Kaydet</b> (eski tarihli önce), Satış/Alış sekmesinde <b>Seçilenleri İptal Et</b>. Kaydedilemeyen ya da iptal edilemeyen belge nedeniyle bildirilir ve seçili kalır.</li>
   <li><b>Tekrarla:</b> kira, aidat, abonelik gibi her ay düzenlenen fatura için kartta <b>Tekrarla</b>; her dönem taslak hazır gelir, Taslaklar'dan toplu kaydedersiniz.</li>
-  <li><b>Fatura Ayarları</b> (dişli): belgenin üstünde yazan firma bilgisi, <b>Logo</b> (seçtiğiniz görsel küçültülüp belgeye basılır), banka IBAN'ları, belge alt notu, varsayılan KDV ve vade günü, belgenin altındaki <b>Teslim Alan / Kaşe-İmza</b> kutuları.</li>
+  <li><b>Fatura Ayarları</b> (dişli): belgenin üstünde yazan firma bilgisi, <b>Logo</b> (seçtiğiniz görsel küçültülüp belgeye basılır), <b>Banka Hesapları</b> (IBAN'lar; Banka'da “IBAN faturada gösterilsin” işaretli hesaplar da basılır), belge alt notu, varsayılan KDV ve vade günü, belgenin altındaki <b>Teslim Alan / Kaşe-İmza</b> kutuları.</li>
   <li><b>Raporlar → Tüm Raporlar:</b> <i>Satış Faturaları</i>, <i>Alış Faturaları</i>, <i>İade Faturaları</i>, <i>KDV Özeti</i>, <i>Açık Faturalar</i>, <i>Ürün Bazında Satış ve Kârlılık</i>. Açık faturalar Vade Takip'te ve ANLIK DURUM'da da görünür.</li>
   <li><b>Kimler görür:</b> yönetici ve muhasebe; başka birine <b>Yönetim → Kullanıcılar → Yetkiler → Fatura</b> ile açılır.</li>
 </ul>
 
-<h2>13. ANLIK DURUM</h2>
-<p>Yalnız <b>yöneticinin</b> ana ekranında: <b>Kasa / Banka</b>, <b>Kritik Stok</b>, <b>Toplam Alacak</b> (carilerin borcu + portföydeki çek/senet + açık satış faturaları) ve <b>Toplam Borç / Ödemeler</b>. Her işlemde sayfa yenilenmeden değişir; rakamlar Kasa, Cari, Stok ve Çek / Senet ekranlarıyla aynıdır. Kutuya tıklayınca ilgili ekran açılır; <b>Rapor Al</b> Raporlar penceresini açar.</p>
-<figure><img src="ekran/k10-anlik-durum.jpg" alt="ANLIK DURUM kartı"></figure>
+<h2>14. ANLIK DURUM</h2>
+<p>Yalnız <b>yöneticinin</b> ana ekranında: <b>Nakit Kasa</b>, <b>Gerçek Banka</b> (banka hesaplarınızın toplamı; altında bugünkü giriş/çıkış, <b>Transfer</b> ve varsa <b>Kart ve Kredi Borcu</b>), <b>Kritik Stok</b>, <b>Toplam Alacak</b> (carilerin borcu + portföydeki çek/senet + açık satış faturaları) ve <b>Toplam Borç / Ödemeler</b>. Her işlemde sayfa yenilenmeden değişir; rakamlar Kasa, Banka, Cari, Stok ve Çek / Senet ekranlarıyla aynıdır. Kutuya tıklayınca ilgili ekran açılır; <b>Rapor Al</b> Raporlar penceresini açar.</p>
+<figure><img src="ekran/k10-anlik-durum.jpg" alt="ANLIK DURUM kartı"><figcaption>Nakit Kasa ve Gerçek Banka ayrı kutularda; kart ve kredi borcu Gerçek Banka'nın altında.</figcaption></figure>
 
-<h2>14. Raporlar</h2>
+<h2>15. Raporlar</h2>
 <p>Sol menüden <b>Raporlar</b> (ya da ANLIK DURUM'daki <b>Rapor Al</b>). Üstteki sekmeden seçin:</p>
 <ul>
   <li><b>Cari Ekstre:</b> tarih aralığı → <b>Raporu Getir</b>: her cari için devir, dönem borç ve alacak, bakiye. Cariye tıklayınca ekstresi açılır. Henüz cari yoksa <b>Cari Ekranını Aç</b>.</li>
   <li><b>Vade Takip:</b> vadesi olan her açık kalem tek listede (taksit, çek/senet, ileri tarihli Kasa, tablodaki ödeme günleri). Gecikmiş, Bugün, 7 / 30 / 90 Gün; satıra tıklayınca kaynağı açılır.</li>
-  <li><b>Nakit Akış:</b> bugünkü kasadan başlayan tahmini kasa; en düşük günü gösterir.</li>
+  <li><b>Nakit Akış:</b> bugünkü nakit kasa ve banka bakiyesinden (<b>Bugünkü Nakit ve Banka</b>) başlayıp beklenen tahsilat ve ödemelerle ilerleyen tahmini bakiye; en düşük günü gösterir.</li>
   <li><b>Çek / Senet:</b> portföy raporu.</li>
-  <li><b>Tüm Raporlar:</b> Kasa, Cari, Taksit, Çek / Senet, Stok, Fatura ve kayıt raporları (ör. <i>Cari Listesi ve Bakiyeler</i>, <i>Tüm Cari Hareketleri</i>, <i>Cari Bazında Tahsilat</i>, <i>Taksit Kartları</i>). Soldan raporu, üstten dönemi seçin; ön izleme gelir.</li>
+  <li><b>Tüm Raporlar:</b> Kasa, Banka, Cari, Taksit, Çek / Senet, Stok, Fatura ve kayıt raporları (ör. <i>Cari Listesi ve Bakiyeler</i>, <i>Tüm Cari Hareketleri</i>, <i>Cari Bazında Tahsilat</i>, <i>Taksit Kartları</i>). Soldan raporu, üstten dönemi seçin; ön izleme gelir.</li>
   <li><b>Tablo Raporları:</b> yalnız Excel tablonuza dayalı raporlar.</li>
   <li><b>Ana Defter</b> (Tüm Raporlar içinde): <i>Hesap Planı Mizanı</i>, <i>Yevmiye Defteri</i> ve <i>Defter Mutabakatı</i>. Mutabakatta her satır <b>Tutarlı</b> olmalıdır; <b>Fark Var</b> görürseniz destek hattını arayın. Defterleri bozacak bir kayıt hiç yazılmaz ve <i>Mutabakat Günlüğü</i>'nde görünür.</li>
 </ul>
@@ -248,6 +322,7 @@
   <li><b>Ciro (satış):</b> <i>Satış Faturaları</i> → <b>Matrah</b> KDV hariç, <b>Ödenecek</b> KDV dahil; iadeler düşülmüş hâli <i>Cari Bazında Satış ve Alış</i> → <b>Net Satış</b>.</li>
   <li><b>Toplam alacak:</b> <i>Cari Listesi ve Bakiyeler</i> → <b>Toplam Borç (Anlaşılan)</b>, <b>Toplam Alacak (Ödenen)</b>, <b>Kalan</b>.</li>
   <li><b>Taksitler:</b> <i>Taksit Kartları</i> → her kartın ve hepsinin <b>Toplam</b>, <b>Ödenen</b>, <b>Kalan</b>, <b>Geciken</b> tutarı.</li>
+  <li><b>Banka:</b> <i>Banka Bakiye Raporu</i> → her banka hesabının dönem başı ve dönem sonu bakiyesi, giriş, çıkış ve transferleri; <b>Hesap Grubu</b> ile <i>Gerçek Banka</i>, <i>Kart ve Kredi Borcu</i> ya da <i>Hesabı Atanmamış Eski Hareketler</i>.</li>
   <li><b>Kimden ne tahsil edildi:</b> <i>Cari Bazında Tahsilat</i>. Taksitleri Excel'den yüklerken "Ödenen" kolonunda yazan tutar <b>Önceden Ödenen (Açılış)</b> kolonunda görünür ve toplama dahildir (Kasa'ya girmez; o para programdan önce alınmıştır).</li>
 </ul></div>
 <div class="pair">
@@ -257,21 +332,21 @@
 <figure><img src="ekran/k12-rapor-merkezi.jpg" alt="Raporlar: Tüm Raporlar"><figcaption>Tüm Raporlar → Cari Bazında Tahsilat.</figcaption></figure>
 <p><b>Kimler görür:</b> yönetici tüm sekmeleri. Başka birine açmak için <b>Yönetim → Kullanıcılar → Yetkiler → Raporlar → Finans Raporları</b>.</p>
 
-<h2>15. Belgeler ve Mesajlar</h2>
+<h2>16. Belgeler ve Mesajlar</h2>
 <p><b>Belge:</b> kartta <b>Belge</b>'ye basın ya da dosyaları kartın üzerine sürükleyin; ekran görüntüsünü <b>Ctrl+V</b> ile yapıştırın. PDF, resim, Word, Excel ve UYAP dosyaları eklenir. Birden çok belge varsa <b>Yan Yana Gör</b>: seçtiklerinizi indirir ya da yazdırırsınız.</p>
 <figure><img src="ekran/k07-belge-karti.jpg" alt="Belge kartı"></figure>
 <p><b>Mesajlar:</b> <b>Ofis Geneli</b> herkese açıktır; kişiye yazdığınızı yalnız o kişi görür. Eski mesajlar için <b>↑ Önceki Günün Mesajlarını Yükle</b>; 30 günden eskileri <b>Arşivi İndir</b> ile açarsınız.</p>
 
-<h2>16. Yönetici İçin</h2>
+<h2>17. Yönetici İçin</h2>
 <ul>
   <li><b>Kullanıcılar:</b> <b>+ Yeni Kullanıcı</b>: ad, kullanıcı adı, rol, ilk parola. Ad ve kullanıcı adını yanlarındaki <b>✎</b> ile düzeltin. <b>Parola Sıfırla</b> personelin parolasını yeniler.</li>
-  <li><b>Yetkiler:</b> satırdaki <b>Yetkiler</b> pili bütün yetkileri açar: rolün verdikleri işaretli gelir; kutuyla o kişiye <b>ekler</b> (yeşil) ya da <b>çıkarırsınız</b> (kırmızı) → <b>Yetkileri Kaydet</b>. <b>+ Yeni Rol</b> ile kendi rolünüzü kurun.</li>
+  <li><b>Yetkiler:</b> satırdaki <b>Yetkiler</b> pili bütün yetkileri açar: rolün verdikleri işaretli gelir; kutuyla o kişiye <b>ekler</b> (yeşil) ya da <b>çıkarırsınız</b> (kırmızı) → <b>Yetkileri Kaydet</b>. <b>+ Yeni Rol</b> ile kendi rolünüzü kurun. Banka yetkileri <b>Banka ve POS</b> grubundadır (8. bölüm).</li>
   <li><b>Sil:</b> kişi giriş yapamaz; yaptıkları geçmişte adıyla kalır. <b>Silinen Kullanıcılar</b>'dan geri alınır.</li>
   <li><b>Kurtarma anahtarı:</b> <b>Kurtarma Anahtarı Oluştur</b> → yazdırın. Parolanızı unutursanız giriş ekranında <b>Parolamı Unuttum</b> → anahtar + yeni parola. Anahtar da kayıpsa <b>sunucu bilgisayarında</b> aynı ekrandan <b>Sunucu Kodu Oluştur</b>; kodu Başlat menüsündeki <b>DestekOfis → Yönetici kurtarma kodunu aç</b> gösterir (10 dakika geçerli).</li>
   <li><b>Yedekler:</b> program 6 saatte bir bütün şirketlerin yedeğini kendiliğinden alır; her şirketin yedeği yedek klasöründe kendi adını taşıyan klasördedir (ör. <i>001 - Şirket 1</i>). <b>Yönetim → Yedekler → Şimdi Yedek Al</b>: <b>Tüm Şirketler</b> ya da yalnız açık şirket. <b>İndir</b> ile indirin. <b>Geri Yükle</b> yedeği yalnız kendi şirketine yükler (onay için şirket kodu ve parolanız; önce bugünkü veri ayrıca yedeklenir); ilk şirket (001) geri yüklenirken program birkaç saniye yeniden başlar, kullanıcılar ve lisans korunur. <b>Yedekleri Denetle</b>, her şirketin yedeklerinin kendi klasöründe ve o şirkete ait olduğunu kontrol eder; hiçbir dosyaya dokunmaz. Yedekler sunucu bilgisayarda <i>backups</i> klasöründedir; dışarıda saklamak için bu klasörü düzenli olarak harici diske kopyalayın.</li>
   <li><b>Silinenler:</b> silinen kayıt, sekme, belge, tahsilat, kasa hareketleri ve faturalar <b>Yönetim → Silinenler</b>'dedir; <b>Geri Yükle</b> eski yerine getirir.</li>
-  <li><b>Şirketler:</b> <b>Yönetim → Şirketler</b>: <b>+ Yeni Şirket</b> (en fazla 2 şirket; kod önerilir: 002), <b>Adını / Kodunu Değiştir</b> (veri aynı şirkette kalır), <b>Kullanıcı Yetkileri</b> (kim hangi şirketi görür; yönetici hepsini), <b>Birleşik Rapor</b> (seçilen şirketlerin Kasa, banka/POS, cari, stok, açık fatura toplamları yan yana + toplam; PDF/Excel). <b>Verisini Sıfırla</b>: <i>Tüm Hareketleri Sil</i> (kartlar ve ayarlar kalır, bakiyeler sıfır; dönem kilidi de kaldırılır) ya da <i>Tümünü Sıfırla</i>; önce zorunlu yedek alınır, onay kutusu şirket koduyla dolu gelir, parolanızı yazarsınız; lisans, kullanıcılar ve öbür şirketler etkilenmez. <b>Sil</b> (001 silinmez): önce yedek, klasör saklanır. <b>Veri ve Yedek Klasörleri</b>: her şirketin veri dosyası, cari sayısı, son yedeği ve yedek klasörü.</li>
-  <li><b>Eksi bakiye denetimi:</b> <b>Yönetim → Sistem → Eksi Bakiye Denetimi</b>'nde Nakit Kasa, Banka ve Kredi Kartı için ayrı ayrı seçin: <b>Uyar</b> (sorar, onayla kaydeder), <b>Engelle</b> (kaydetmez), <b>Kontrol Yok</b> (ör. kredili mevduat hesabı).</li>
+  <li><b>Şirketler:</b> <b>Yönetim → Şirketler</b>: <b>+ Yeni Şirket</b> (en fazla 2 şirket; kod önerilir: 002), <b>Adını / Kodunu Değiştir</b> (veri aynı şirkette kalır), <b>Kullanıcı Yetkileri</b> (kim hangi şirketi görür; yönetici hepsini), <b>Birleşik Rapor</b> (seçilen şirketlerin Nakit Kasa, Gerçek Banka, Kart ve Kredi Borcu, cari, stok ve açık fatura toplamları yan yana + toplam; PDF/Excel). <b>Verisini Sıfırla</b>: <i>Tüm Hareketleri Sil</i> (kartlar ve ayarlar kalır, bakiyeler sıfır; dönem kilidi de kaldırılır) ya da <i>Tümünü Sıfırla</i>; önce zorunlu yedek alınır, onay kutusu şirket koduyla dolu gelir, parolanızı yazarsınız; lisans, kullanıcılar ve öbür şirketler etkilenmez. <b>Sil</b> (001 silinmez): önce yedek, klasör saklanır. <b>Veri ve Yedek Klasörleri</b>: her şirketin veri dosyası, cari sayısı, son yedeği ve yedek klasörü.</li>
+  <li><b>Eksi bakiye denetimi:</b> Nakit Kasa için <b>Yönetim → Sistem → Eksi Bakiye Denetimi</b>: <b>Uyar (Sorulur)</b> (sorar, onayla kaydeder), <b>Engelle</b> (kaydetmez), <b>Kontrol Yok</b>. Banka hesapları için <b>Banka → Ayarlar → Eksi Bakiye</b> ya da hesap formundaki <b>Eksi Bakiye Denetimi</b> (8. bölüm).</li>
   <li><b>Dönem kilidi:</b> ay kapandığında <b>Yönetim → Sistem → Dönem Kilidi ve Mutabakat</b>'ta son günü seçip <b>Kilitle</b>. O tarih ve öncesine hareket eklenemez, düzeltilemez, silinemez. Düzeltme gerekirse <b>Kilidi Kaldır</b>, düzeltin, yeniden kilitleyin. Kilitli dönemde hareketi olan cari, taksit kartı ve çek/senet silinemez, geri yüklenemez; carinin türü de değiştirilemez. Kart, defterlerin tutarlı olup olmadığını da gösterir.</li>
   <li><b>Güncelleme:</b> <b>Yönetim → Sistem → Güncellemeleri Denetle → Şimdi Güncelle</b>. Veriler ve lisans korunur; önce yedek alınır.</li>
   <li><b>Sektör ve görünüm:</b> <b>Ayarlar → Sektör ve Görünüm</b>.</li>
@@ -283,7 +358,7 @@
 <figure><img src="ekran/k18-parolami-unuttum.jpg" alt="Giriş ekranı: Parolamı Unuttum"><figcaption>Parolamı Unuttum: anahtar ya da sunucu kodu ve yeni parola.</figcaption></figure>
 </div>
 
-<h2>17. Bir Sorun mu Var?</h2>
+<h2>18. Bir Sorun mu Var?</h2>
 <table>
   <thead><tr><th>Durum</th><th>Ne Yapmalı?</th></tr></thead>
   <tbody>
@@ -291,7 +366,9 @@
     <tr><td>"Deneme henüz başlamadı" / "Lisans doğrulanamadı"</td><td>Sunucunun internetini kontrol edin; ardından <b>Yönetim → Lisans → Şimdi Doğrula</b>.</td></tr>
     <tr><td>Süre doldu, program salt okunur</td><td>Kayıtlarınız duruyor. Bize ulaşın; lisansınız tanımlanınca kaldığınız yerden devam edersiniz.</td></tr>
     <tr><td>"DestekOfis … sürümüne güncellendi"</td><td>Yazdığınızı kaydedip <b>Yenile</b>'ye basın.</td></tr>
-    <tr><td>Yönetici parolasını unuttum</td><td>Giriş ekranında <b>Parolamı Unuttum</b> (15. bölüm).</td></tr>
+    <tr><td>Yönetici parolasını unuttum</td><td>Giriş ekranında <b>Parolamı Unuttum</b> (17. bölüm).</td></tr>
+    <tr><td>Banka'da “Hesabı Atanmamış Eski Hareketler” görünüyor</td><td>Banka hesabı açılmadan girilmiş havale / EFT hareketleridir. <b>Banka → Genel Bakış → Şimdi Düzenle</b>: hareketleri seçin, <b>Seçilenleri Bu Hesaba Ata</b>. <i>Tarihi Gelince Atanabilir</i> yazanları o gün atayın.</td></tr>
+    <tr><td>Kredi kartıyla ödeme banka bakiyesini düşürmedi</td><td>Doğrudur: kartla ödeme şirket kartının borcuna yazılır (<b>Kart ve Kredi Borcu</b>). Kart borcunu bankadan ödediğinizde kartın ayrıntısında <b>+ Kart Borcu Ödemesi</b> girin.</td></tr>
     <tr><td>Bir şeyi yanlışlıkla sildim</td><td>Hemen çıkan bildirimdeki <b>Geri Al</b>; sonra ise <b>Yönetim → Silinenler → Geri Yükle</b>.</td></tr>
     <tr><td>Şirket kutusunun altında “aynı veri dosyasını kullanıyor” uyarısı</td><td><b>Yönetim → Şirketler</b>'deki kırmızı kutuda <b>Ayır</b>'a basın (önce yedek alınır, hiçbir kayıt silinmez). Sonra her şirkette o şirkete ait olmayan kayıtları silin.</td></tr>
     <tr><td>İnternet kesildi</td><td>Çalışmaya devam edin; program 7 gün internetsiz çalışır.</td></tr>
@@ -300,7 +377,7 @@
 </table>
 <div class="box tip"><b class="t">Teknik Destek ve Satın Alımlar İçin</b>Telefon: <b>0536 771 50 55</b> · E-posta: <b>destekofis@proton.me</b></div>
 
-<p class="foot">DestekOfis 2.0.17 · Kısa Kullanım Kılavuzu · Ekran görüntüleri örnek verilerle hazırlanmıştır.</p>
+<p class="foot">DestekOfis 2.1.0 · Kısa Kullanım Kılavuzu · Ekran görüntüleri örnek verilerle hazırlanmıştır.</p>
 </main>
 </body>
 </html>

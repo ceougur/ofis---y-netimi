@@ -1,0 +1,60 @@
+✓ k28-banka-sihirbaz
+✓ k29-banka-eski-hareketler
+✓ k37-banka-hesabi-atanmamis
+✓ k31-banka-masraf
+✓ k32-banka-transfer
+✓ k33-banka-islem-karti
+✓ k34-banka-hesap-secimi
+✓ k08-kasa
+✓ k35-banka-eksi-bakiye
+✓ k38-banka-kart-hesabi
+✓ k39-banka-kurumsal-kart
+✓ k27-banka-genel-bakis
+✓ k30-banka-hesap-detayi
+✓ k10-anlik-durum
+✓ k36-banka-raporu
+✓ k40-banka-yetkiler
+2026-10-10T19:00:54.615Z [WARN] Mutabakat taraması: kapının görmediği 2 yeni sapma (İleri tarihli hareket (Cari Hareketleri); İleri tarihli hareket (Finansal İşlemler)).
+metinler: docs/kanit/2026-10-10/kilavuz/ekran-banka-metinleri.json 40 ekran
+✓ tarayıcı sahte günde (08.10.2026)
+✓ ileri tarihli eski havale yazıldı (200), saat yeniden 08.10.2026
+✓ sihirbaz kapatılınca Genel Bakış'ta Kurulumu Tamamla
+✓ sihirbaz adımları: 1 Hesap ve Açılış › 2 Eski Hareketleri Aktar › 3 Bitti
+✓ sihirbaz düğmeleri: × | Bu Adımı Atla | Kaydet ve Yeni Hesap Ekle | Kaydet ve İlerle
+✓ sihirbaz önizlemesinde tarihi gelmemiş satır
+✓ eski hareketler adımında Devir Kapanışı kutusu
+✓ Kurulum Tamamlandı
+✓ Ziraat 102.500 (100.000 + 03.10 havalesi 2.500), Garanti 50.000 (102500, 50000)
+✓ Hesabı Atanmamış: Tarihi Gelince Atanabilir + Seçilenleri Bu Hesaba Ata
+✓ masraf önizlemesi: Gider ₺10,00 · BSMV ₺0,50 · Bankadan Çıkan ₺10,50 · Hesap 770 · Genel Giderler ve Alış Faturaları
+✓ transfer önizlemesi: Alıcıya Giren ₺20.000,00 · Ücret ₺5,25 (₺5,00 + BSMV ₺0,25) · Gönderenden Çıkan ₺20.005,25
+✓ İşlem Kartı düğmeleri: ← Hareketler | Ters Kaydet | Düzelt | Açıklamayı Düzelt
+✓ Nakit seçiliyken Banka Hesabı alanı yok
+✓ Banka Hesabı seçenekleri: Hesap Seçin | Ziraat Bankası · Ana TL Hesabı (ZIR-TL) | Garanti BBVA · Ana TL Hesabı (GAR-TL)
+✓ Kasa düğmeleri: Kasa Dökümü - PDF | + Tahsilat | − Ödeme | Bankadan Kasaya Aktar | Kasadan Bankaya Yatır
+✓ Eksi Bakiye sorusu: × ONAY Eksi Bakiye Garanti BBVA · Ana TL Hesabı hesabında 73.000,00 TL var; bu işlemle bakiye 80.000,00 TL azalır ve −7.000,00 TL olur (eksi bakiye). Yine de ka
+✓ soru düğmeleri: Vazgeç | Yine de Kaydet
+✓ Hesap Türü seçenekleri: Vadesiz, Ticari, Vadeli, Kredi Hesabı, Kurumsal Kredi Kartı, Diğer
+✓ Kurumsal Kredi Kartı hesabı açıldı
+✓ Ödeme Yolu seçenekleri: Nakit, Havale / EFT, Kredi Kartı, Çek / Senet (verilir)
+✓ Kurumsal Kart satırı: Garanti BBVA · Şirket Kartı kurumsal kartına yazılır.
+✓ Ödeme Yolu seçenekleri: Nakit, Havale / EFT, Kredi Kartı, Çek / Senet (verilir)
+✓ kart limiti sorusu: × ONAY Eksi Bakiye Garanti BBVA · Şirket Kartı hesabında −2.500,00 TL var (kart limiti 40.000,00 TL dahil kullanılabilir 37.500,00 TL); bu işlemle bakiye 50.000,00 TL azalır ve −52.500,00 TL olur (eks
+✓ kart borcu 2.500 (limit aşan ödeme yazılmadı): -2500
+✓ Stok + Giriş: Kredi Kartı → Kurumsal Kart
+✓ kart borcu 1.500 kaldı: -1500
+✓ Kredi Hesabı açıldı ({"id":"bacc-90288b6d-5a86-480c-b81b-82f9a89f623d","code":"ZIR-KREDI","gl":"300","glSub":"300.01","kind":"loan","kindLabe)
+✓ Diğer İşlem türleri: Diğer Gelir, Diğer Gider, Kart Borcu Ödemesi, Kredi Kullanımı, Kredi Geri Ödemesi
+✓ kredi borcu 50.000: -50000
+✓ Hesap Detayı düğmeleri: + Masraf | + Faiz | + Diğer İşlem | Transfer | Düzenle | Açılışı Düzelt | Pasife Al | Sil
+✓ ANLIK DURUM kutusu: Gerçek Banka
+✓ Banka raporları: Banka Bakiye Raporu, Banka Hareket Raporu, Banka Masraf Raporu, Alt Hesap Mizanı
+✓ Nakit Akış: Bugünkü Nakit ve Banka
+✓ Planlı İşlemler'de Gerçekleştir
+✓ ikinci kurumsal kart (200)
+✓ iki kartta Kurumsal Kart seçimi
+✓ örnek kullanıcı (200)
+✓ Banka yetkileri (Banka ve POS): Banka Görüntüleme, Banka Raporları, Banka Hesabı Tanımlama ve Açılış, Banka Hareketi Girme ve Bankadan Çıkış, Banka Hareketi Silme, İptal ve Ters Kayıt, Transfer Yapma, Banka Ayarları
+sayfa hataları: yok
+başarısız adımlar: yok
+55 denetim geçti, 0 başarısız
