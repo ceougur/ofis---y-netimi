@@ -748,7 +748,9 @@
       ],
       submitLabel: entry ? "Kaydet" : ENTRY_LABEL[type],
       onOpen: dialog => {
-        if (money_ && HOF.bank?.attachPicker) HOF.bank.attachPicker(dialog.querySelector("form"), { methodName: "method", value: entry?.finRef || "", keepLabel: entry && entry.method === "bank" && !entry.finRef ? "Atanmamış (Eski Hareket)" : "" });
+        // K2 (plan §3.7 #3, §8.9): ödemede "Kredi Kartı" seçilince Kurumsal Kart (tahsilatta kart yolu POS'tur; seçici yok).
+        const card = type === "out" ? { value: entry?.method === "card" ? entry.finRef || "" : "", keepLabel: entry && entry.method === "card" && !entry.finRef ? "Atanmamış (Eski Hareket)" : "" } : null;
+        if (money_ && HOF.bank?.attachPicker) HOF.bank.attachPicker(dialog.querySelector("form"), { methodName: "method", value: entry?.method === "bank" ? entry.finRef || "" : "", keepLabel: entry && entry.method === "bank" && !entry.finRef ? "Atanmamış (Eski Hareket)" : "", card });
       },
       onSubmit: async data => {
         if (data.method === "cheque") {
@@ -758,7 +760,8 @@
         }
         const url = `/api/workspace/accounts/${encodeURIComponent(account.id)}/entries${entry ? `/${encodeURIComponent(entry.id)}` : ""}`;
         const body = { ...data, kind: entry && data.kind ? data.kind : type };
-        if (data.method !== "bank") delete body.bankAccountId;
+        if (HOF.bank?.accountBody) HOF.bank.accountBody(body, data.method);
+        else if (data.method !== "bank") delete body.bankAccountId;
         const send = flags => HOF.api(url, { method: entry ? "PUT" : "POST", body: { ...body, ...flags }, requestId });
         const result = HOF.bank?.withConfirms ? await HOF.bank.withConfirms(send) : await send({});
         applyAccount(result);
