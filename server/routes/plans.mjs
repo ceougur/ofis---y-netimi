@@ -466,7 +466,7 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     const row = store.get("SELECT total FROM plans WHERE id = ? AND deleted_at IS NULL", planId);
     return row ? roundMoney(Math.max(0, (Number(row.total) || 0) - Math.max(0, netPaid(planId)))) : 0;
   }
-  // v2.1.0 (Y2): kırpılmamış kalan — fazla tahsilatlı kartta (ödenen > toplam; fazlası avans) eksidir.
+  // v2.1.0 (R5): kırpılmamış kalan — fazla tahsilatlı kartta (ödenen > toplam; fazlası avans) eksidir.
   function signedLeftOf(planId) {
     const row = store.get("SELECT total FROM plans WHERE id = ? AND deleted_at IS NULL", planId);
     return row ? roundMoney((Number(row.total) || 0) - Math.max(0, netPaid(planId))) : 0;

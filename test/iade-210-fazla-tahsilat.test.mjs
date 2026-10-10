@@ -1,7 +1,7 @@
 // 2.1.0 eksik test turu — `test:mutabakat -- --islem 5000` (kullanıcı kararı 10.10: plan alt sınırı) tohum 2, işlem 3414'te bulundu:
 // "Taksitli fatura FIS2026000000095: açık 1211.43 ≠ kartın kalanı 793,81". Önce kırmızı test, sonra en küçük düzeltme.
 //
-// Hata (Y2): faturanın kendi taksit kartı, iade kartı tümüyle küçülttükten (toplam 0) SONRA tahsilat alırsa kart fazla tahsilatlı olur (ödenen >
+// Hata (R5): faturanın kendi taksit kartı, iade kartı tümüyle küçülttükten (toplam 0) SONRA tahsilat alırsa kart fazla tahsilatlı olur (ödenen >
 // toplam; fazlası avans). İade iptal edilince kart faturanın açığına göre yeniden büyütülür; büyüme "hedef − kalan" ile hesaplanıyordu ve kalan
 // 0'da kırpılı okunuyordu (leftOf): avansa dönen tahsilat hesaba katılmadığı için kart bu tutar kadar KISA büyüyordu. Sonuç: fatura açığı ve
 // cari bakiye 1.500 iken kartın kalanı 1.000 — Geciken Taksitler, Vade Takip, Alacak Yaşlandırma (kart payı), hatırlatma borcu eksik gösterir.
@@ -19,7 +19,7 @@ const must = async (label, promise) => {
   return res.data;
 };
 
-describe("Y2 — fazla tahsilatlı kartta iade iptali kartı faturanın açığına kadar büyütür", () => {
+describe("R5 — fazla tahsilatlı kartta iade iptali kartı faturanın açığına kadar büyütür", () => {
   let server;
   let client;
   before(async () => {

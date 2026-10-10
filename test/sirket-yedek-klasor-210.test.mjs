@@ -1,7 +1,7 @@
 // 2.1.0 eksik test turu — rastgele sıra testinin uzun koşusunda bulundu (`npm run test:guvenilirlik -- --islem 3000 --tohumlar 2`, tohum 2, taban
 // boş, işlem 2331: "silinen 013 · Işık Turizm şirketinin yedek klasörü 013 şirketine verildi"). Önce kırmızı test, sonra en küçük düzeltme.
 //
-// Hata (Y1): şirketin adı yalnız BÜYÜK/küçük harf farkıyla değişince ("ışık turizm" → "Işık Turizm") yedek klasörünün yeni adı (`005 - Işık Turizm`)
+// Hata (R4): şirketin adı yalnız BÜYÜK/küçük harf farkıyla değişince ("ışık turizm" → "Işık Turizm") yedek klasörünün yeni adı (`005 - Işık Turizm`)
 // eski adla "aynı" sayılıyor (Windows gibi büyük harfle karşılaştırma) ve boşluğu hiç denetlenmiyordu. Aynı kod ve aynı yazımla açılmış, sonra
 // silinmiş bir şirketin yedek klasörü diskte bu yazımla duruyorsa (silinen şirketin yedekleri klasöründe kalır, v2.0.20) büyük/küçük harf duyarlı
 // dosya sisteminde bu ayrı bir klasördür: yeniden adlandırma şirketin yedeklerini SİLİNMİŞ şirketin klasörüne taşıyor ve klasörü ona veriyordu —
@@ -21,7 +21,7 @@ const must = async (label, promise) => {
   return data(res);
 };
 
-describe("Y1 — yalnız büyük/küçük harf farkıyla ad değişince silinmiş şirketin yedek klasörü verilmez", () => {
+describe("R4 — yalnız büyük/küçük harf farkıyla ad değişince silinmiş şirketin yedek klasörü verilmez", () => {
   let server;
   let api;
   before(async () => {

@@ -352,7 +352,7 @@ export function createCompanyRegistry({ dataDir, backupDir, hubStore, log = { in
     // Yeni yedek klasörü adı başka şirketin klasörüyle ya da içinde yedek olan eski bir klasörle çakışırsa ek alır.
     const base = companyFolderName(entry);
     const current = backupFolderOf(company);
-    // v2.1.0 (Y1, rastgele sıra testinde bulundu): ad yalnız büyük/küçük harf farkıyla değişince yeni yazım eski klasörle "aynı" sayılır
+    // v2.1.0 (R4, rastgele sıra testinde bulundu): ad yalnız büyük/küçük harf farkıyla değişince yeni yazım eski klasörle "aynı" sayılır
     // (Windows'ta aynı klasördür). Büyük/küçük harf duyarlı dosya sisteminde bu yazımla AYRI bir klasör varsa ve içinde (silinmiş şirketten
     // kalma) yedek varsa o klasör verilmez — önceden şirketin yedekleri silinmiş şirketin klasörüne taşınıyordu.
     const caseTaken = sameName(base, current) && base !== current && hasBackups(base) && !sameFolderOnDisk(base, current);

@@ -132,7 +132,7 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
     const open = ownTarget(inv, p.paid).target;
     const left = planLeft(p);
     if (left === open) return;
-    // Y2 (2.1.0): fazla tahsilatlı kartta büyüme imzalı kalandan (toplam − ödenen, eksi olabilir) hesaplanır.
+    // R5 (2.1.0): fazla tahsilatlı kartta büyüme imzalı kalandan (toplam − ödenen, eksi olabilir) hesaplanır.
     const signed = Math.min(left, p.total - Math.max(0, p.paid));
     p.total = open > left ? Math.max(p.total, Math.min(inv.rest, p.total + open - signed)) : p.total - (left - open);
   }
