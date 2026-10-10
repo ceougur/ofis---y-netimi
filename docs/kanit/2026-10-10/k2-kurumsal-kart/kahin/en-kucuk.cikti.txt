@@ -1,0 +1,1 @@
+en-kucuk-KART-HESABI-BAGLANMIYOR: çıkış a=0 b=0 program=0 · karşılaştırılan 23 · atlanan 0 · fark 0 {}

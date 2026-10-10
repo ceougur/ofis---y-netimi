@@ -604,7 +604,9 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     // etkiler geri alındıktan sonra) gelir; ön yakalama gövdedeki hesapları ve tek uygun hesabı (kendiliğinden seçim) kapsar.
     const askedRefs = (Array.isArray(body?.payment?.cash) ? body.payment.cash : []).map(item => text(item?.bankAccountId)).filter(Boolean);
     const single = banking.eligible();
-    const k7 = banking.negative([...oldLines.map(row => row.finRef), ...askedRefs, ...(single.length === 1 ? single : [])], existing.issueDate < doc.date ? existing.issueDate : doc.date, force.negative === true);
+    // K2: alış tarafında tek kurumsal kart da kendiliğinden seçilir (kart limiti K7'de).
+    const singleCard = INVOICE_KINDS[existing.kind]?.side === "purchase" ? banking.eligible("card") : [];
+    const k7 = banking.negative([...oldLines.map(row => row.finRef), ...askedRefs, ...(single.length === 1 ? single : []), ...(singleCard.length === 1 ? singleCard : [])], existing.issueDate < doc.date ? existing.issueDate : doc.date, force.negative === true);
     const touched = { accounts: new Set([existing.accountId]), items: new Set(), cash: false, cheques: { accountIds: [], chequeIds: [] }, plans: new Set() };
     const stockBefore = new Map();
     for (const itemId of new Set(before.filter(line => line.itemId && line.goods).map(line => line.itemId))) {
@@ -1191,10 +1193,13 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       const prev = previous?.get(item.lineKey) || null;
       const changed = !prev || prev.method !== item.method || Math.abs(Number(prev.amount) - item.amount) > 0.004 || prev.date !== doc.date;
       try {
-        item.finRef = banking.ref({ method: item.method, value: item.bankAccountId, date: doc.date, previous: prev, changed });
+        // K2 (plan §3.7 #5, §4.6): alış tarafında (alış faturası, alıştan iade) kart yolu kurumsal kartla ödeme / kurumsal karta iadedir (309);
+        // satış tarafında POS (2.2.0).
+        item.finRef = banking.ref({ method: item.method, value: item.bankAccountId, date: doc.date, previous: prev, changed, corporate: INVOICE_KINDS[kind]?.side === "purchase" });
       } catch (error) {
         if (error?.extra?.code !== "bank-account-required") throw error;
-        throw new HttpError(400, `Banka hesabı seçilmedi: ${item.index + 1}. peşin satır havale/EFT; hangi hesaba girdiğini ya da hangi hesaptan çıktığını seçin.`, { ...error.extra, field: `payment.cash.${item.index}.bankAccountId`, line: item.index });
+        const card = item.method === "card";
+        throw new HttpError(400, card ? `Kurumsal kart seçilmedi: ${item.index + 1}. peşin satır kredi kartı; hangi kurumsal karttan ödendiğini (ya da iadenin hangi karta geldiğini) seçin.` : `Banka hesabı seçilmedi: ${item.index + 1}. peşin satır havale/EFT; hangi hesaba girdiğini ya da hangi hesaptan çıktığını seçin.`, { ...error.extra, field: `payment.cash.${item.index}.bankAccountId`, line: item.index });
       }
       if (!inflow(kind) && item.finRef && item.finRef !== (prev?.finRef || "")) banking.requireOut(user, true, item.finRef);
       delete item.index;

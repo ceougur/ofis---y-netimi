@@ -1,0 +1,32 @@
+{
+  "ad": "guvenilirlik-1000",
+  "komut": "npm run test:guvenilirlik -- --islem 1000 --tohum 1 --tohumlar 1",
+  "commit": "2849d21551d5cd66fed9e32fe1d9e1dd75b6d7de",
+  "dal": "claude/kind-newton-fpmx3f",
+  "kirli": 66,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T17:59:40.374Z",
+  "sure_sn": 447.9,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "guvenilirlik",
+    "toplam": 2,
+    "gecen": 2,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-10/ana-oturum-k2/2026-10-10/guvenilirlik-1000.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "88cbe84f13c3f47196af631f397eb53228313fa2ef63f58853fa0e52e3ea5bb8",
+  "ham_cikti_bayt": 3294
+}

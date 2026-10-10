@@ -1,0 +1,24 @@
+K2 — KART-HESABI-BAGLANMIYOR: bağımsız kâhin (model_a, model_b) ↔ program, düzeltmeden sonra (10.10.2026). Depo kökünden:
+
+  python3 -I test/bagimsiz/fark.py --senaryo test/bagimsiz/cikti/en-kucuk-KART-HESABI-BAGLANMIYOR.json        > en-kucuk.cikti.txt
+      # önce (hakem, ab4ebca): 11 fark (A=B≠P 8, KOSUCU 3) · sonra: 0 fark (23 yaprak karşılaştırıldı; a=0 b=0 program=0)
+  python3 -I test/bagimsiz/fark.py --senaryo test/bagimsiz/cikti/hakem-KART-HESABI-BAGLANMIYOR/en-kucuk-KART-HESABI-BAGLANMIYOR-tani.json > tani.cikti.txt
+      # önce: 11 fark · sonra: 1 fark, BANKA-EKSI-KODU (K5, başka iz: program bank-negative, plan §7 cash-negative) — kart sınıfı yok
+  for t in 1 2 3; do python3 -I test/bagimsiz/fark.py --tohum $t > tohum-$t.cikti.txt; done      # 500 işlem, kontrol 25 (varsayılan)
+  mkdir -p /tmp/k2-onceki && tar xzf docs/kanit/2026-10-10/kahin/fark-tohum-1-33-json.tgz -C /tmp/k2-onceki
+  python3 -I docs/kanit/2026-10-10/k2-kurumsal-kart/kahin/karsilastir.py /tmp/k2-onceki test/bagimsiz/cikti 1 2 3 > karsilastir.cikti.txt
+
+Sonuç (karsilastir.cikti.txt): tohum 1 ve 3'te KART-HESABI-BAGLANMIYOR kalktı; üç tohumda YENİ ana sınıf yok.
+Tohum 2'de 20 yaprak hâlâ bu adla etiketli. Nedeni sınıflayıcı: test/bagimsiz/fark.py birincil_sinif'in son kuralı (desen A=B≠P, senaryoda
+kart adımı ve kart hesabı varsa 108.00 / 309.* / hesabiAtanmamis / kartVeKrediBorcu / kart hesabındaki HER farkı bu sınıfa yazar) — hata
+varken yazılmış genel kural. Yaprakların kökü (elle doğrulandı):
+  - bankaHesaplari.B6 ve mizan.309.01: 1 kuruş. Adım 447 (F86, alış, KDV dahil + %12,5 iskonto, peşin "tamami" kartla; tek kurumsal kart
+    B6'ya kendiliğinden bağlandı). F86 toplamı A=B 2.785,06 / program 2.785,05 → sınıf KDV-DAHIL-ISKONTO (hakem: PROGRAM DOĞRU). Kart
+    bağlandığı için bu kuruş artık 108.00'da değil B6/309.01'de görünüyor.
+  - ozet.kartVeKrediBorcu: fark = −(ΔB6 + ΔB7) her kontrol noktasında birebir (karsilastir.cikti.txt "AÇIKLANDI"); ΔB7 = 9.637,68 kredi
+    hesabında (TUREV:KDV-DAHIL-ISKONTO+KREDI-ANAPARA-ASIMI; hakem: kredi anapara aşımında PROGRAM DOĞRU), ΔB6 = 1 kuruş (yukarıda).
+Açıklanamayan fark: 0. Kâhin aracı notu (DÜZELTİLMEDİ, kâhin sahibine): fark.py'deki genel kart kuralı artık bilinen sınıfların türevlerini
+"KART-HESABI-BAGLANMIYOR" diye etiketliyor; kural kaldırılmalı ya da türev sınıflamasına bağlanmalı.
+
+Sürücü (test/bagimsiz/surucu.mjs, programın yanı; modeller değişmedi): kart yolunda hesap verilince yazılan sabit "eşlenemeyen" notu
+(CARD_NOTE: "programın modül ucu kurumsal kart hesabını bağlamıyor") kaldırıldı — en küçük senaryodaki son 2 KOSUCU farkı bu nottu.

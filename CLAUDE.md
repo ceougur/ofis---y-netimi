@@ -1170,6 +1170,14 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   sonrası eski liste) · 5 kılavuz (Banka bölümü + Drive'ı çıkar) · 6 kâhin güncellemesi (iade kuralı) · 7 yargıç + eleştirmen · 8 son
   doğrulama (Uzun Doğrulama, ölçek 10/20, bütün e2e, göç) · 9 paket (sürüm, CHANGELOG/KANIT, imzalı, kurulum, PDF, PR, elle kabul listesi) ·
   10 yayın (birleştir, 5 dosya, bağlantı, site kılavuz PR'ı).
+  OTOMATİK GÜNCELLEME (kullanıcı, 10.10.2026: "sunucu açıkken aralıklarla sorgulanıp alınıyor mu, açılışta sorguluyor mu, şüphelerim var" →
+  koddan cevap verildi: açılışta + 6 saatte bir (+≤30 dk kayma); "kendiliğinden kur" açıkken boşta (15 dk) ya da mesai dışında kurulur,
+  mesai içinde çalışılıyorsa "hazır" bekler, saatte bir yeniden bakar; güncelleme testleri 30/30. AÇIK: kendiliğinden kur KAPALIYKEN hiç
+  sorulmuyor). KARAR (kullanıcı: "ekle, ayrıca kodda olan, teoride olan, güncelleme uyarısı ya da 15 dk boş kalınca program otomatik
+  güncelleme alıyor mu doğrula"): (11) kapalıyken de açılışta + 6 saatte bir sorulur, kurulmaz, yöneticiye "hazır" bildirimi; (12) GERÇEK
+  ÇALIŞTIRMAYLA doğrulama (sahte saat değil): gerçek servis + yerel sahte yayın kaynağı (imzalı bildirge + paket), kullanıcı etkinliği varken
+  "hazır" uyarısı ekranda (zil/Yönetim, ekran görüntüsü), etkinlik kesilince gerçek 15 dk sonra kendiliğinden kurulum, açılışta sorgu ve
+  kurulum, mesai dışı kuralı; Windows'ta CI kurulum testinde de. Eskimiş kod açıklaması ("gün içinde kendiliğinden güncelleme yapılmaz") düzelir.
 - KREDİ KARTI ÖDEMESİ POS GİBİ GÖRÜNÜYOR (kullanıcı, 10.10.2026; ekran 2.0.26 ANLIK DURUM: "Banka / POS ₺1.343,90 · Banka ₺10.000 ·
   POS −₺8.656"; soru: "banka modülü ile bu sorunlar çözülecek mi?"). KÖK NEDEN (koddan, v2.0.26 `pay-method.mjs`): tek kayıt değeri
   `card` hem POS tahsilatı (para girişi, 108) hem kurumsal kartla ödeme (borç, 309) için; ANLIK DURUM "POS" = Σ kart giriş − Σ kart

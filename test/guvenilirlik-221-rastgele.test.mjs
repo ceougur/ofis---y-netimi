@@ -10,10 +10,15 @@ describe("şirket ve yedek işlemleri rastgele sırayla: değişmez kurallar her
   // Tohum 5 (önceden 1): 2.1.0'da rastgele sıraya hesaba bağlı modül havaleleri (bankModuleOther) girince tohum 1'in sırası değişti ve
   // 120 (160) işlemde "yanlış şirkete geri yükleme" hiç denenemedi (seçildiği anlarda tek şirket vardı: wrongRestores 0). Bu kısa koşunun
   // amacı geri yükleme + yanlış geri yükleme + yedeğin birlikte denenmesi; tohum 5: 9 geri yükleme, 6 yanlış geri yükleme, 10 yedek.
-  test("boş kurulum, tohum 5, 120 işlem", async () => {
-    const report = await runRandom({ seed: 5, operations: 120, base: "bos" });
+  // Tohum 2 (önceden 5): K2'de kurumsal kart işlemi (bankCard) eklenince tohum 5'in sırası değişti, 120 işlemde geri yükleme 0 kaldı.
+  // Tohum 1–14 tarandı; tohum 2: 6 geri yükleme, 7 yanlış geri yükleme, 22 yedek ve kartla ödeme (cari, alış faturası peşini, stok alımı
+  // seçimsiz tek kart), Kart Borcu Ödemesi, POS tahsilatı birlikte.
+  test("boş kurulum, tohum 2, 120 işlem", async () => {
+    const report = await runRandom({ seed: 2, operations: 120, base: "bos" });
     assert.equal(report.checks, 121);
     assert.ok(report.restores > 0 && report.wrongRestores > 0 && report.backups > 0, JSON.stringify(report.byKind));
+    const cardOps = Object.keys(report.byKind).filter(kind => kind.startsWith("bankCard:") && kind !== "bankCard:kart-ac");
+    assert.ok(cardOps.length > 0, `kurumsal kart işlemi denendi: ${JSON.stringify(report.byKind)}`);
   });
   test("gerçek v2.0.19 verisi (2.0.16 → 2.0.19 zinciri, güncel sürüme yükseltilmiş), tohum 2, 80 işlem", async () => {
     const report = await runRandom({ seed: 2, operations: 80, base: "surum-2.0.19-zincir" });

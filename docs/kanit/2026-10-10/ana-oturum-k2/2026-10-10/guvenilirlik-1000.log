@@ -1,0 +1,32 @@
+
+> destekofis@2.0.26 test:guvenilirlik
+> node --disable-warning=ExperimentalWarning test/guvenilirlik/kos.mjs --islem 1000 --tohum 1 --tohumlar 1
+
+  100 işlem · 1 şirket · 15 yedek · 9 geri yükleme · 9.2 sn
+  200 işlem · 1 şirket · 28 yedek · 15 geri yükleme · 21.0 sn
+  300 işlem · 1 şirket · 38 yedek · 23 geri yükleme · 37.4 sn
+  400 işlem · 5 şirket · 65 yedek · 27 geri yükleme · 55.8 sn
+  500 işlem · 5 şirket · 77 yedek · 34 geri yükleme · 82.8 sn
+  600 işlem · 4 şirket · 100 yedek · 40 geri yükleme · 112.7 sn
+  700 işlem · 6 şirket · 111 yedek · 46 geri yükleme · 143.9 sn
+  800 işlem · 6 şirket · 127 yedek · 56 geri yükleme · 171.7 sn
+  900 işlem · 5 şirket · 144 yedek · 60 geri yükleme · 198.8 sn
+  1000 işlem · 4 şirket · 162 yedek · 63 geri yükleme · 226.2 sn
+
+✓ Tohum 1 · taban bos: 1000 işlem, 1001 değişmez kural turu, 162 yedek, 63 geri yükleme, 25 yanlış şirkete deneme (hepsi 409), 28 yeniden başlatma · 226.7 sn
+  İşlem türleri: account 115, entry 132, restore 65, reset 27, bankVoucher 42, bankTransfer 28, wrongRestore 29, bankReverse 15, backupOne 59, bankWrongCompany 9, bankModule 56, bankModuleOther 41, select 72, cash 47, create 47, rename 29, bankAccount 27, remove 24, bankCard 53, bankCard:kart-ac 23, bankCard:stok 2, backupAll 21, bankCard:alis 4, recode 34, bankCard:cari-limit 1, bankCard:cari-secimsiz-limit 1, restoreRoot 11, bankCard:cari-secimsiz 8, bankCard:cari 7, bankCard:borc-odeme 2, restart 17, bankCard:pos-hesapli-400 2, bankCard:yanlis-sirket-404 3
+  Son durum: 045 · Çağ/Öz: Ltd* (0 cari) | 012 · MAVİ GIDA (4 cari) | 004 · Ağaoğlu Yapı? (0 cari) | 054 · Resmi Şirket (0 cari)
+  100 işlem · 2 şirket · 15 yedek · 13 geri yükleme · 16.9 sn
+  200 işlem · 1 şirket · 22 yedek · 24 geri yükleme · 28.3 sn
+  300 işlem · 1 şirket · 33 yedek · 32 geri yükleme · 42.4 sn
+  400 işlem · 5 şirket · 55 yedek · 36 geri yükleme · 58.7 sn
+  500 işlem · 5 şirket · 72 yedek · 43 geri yükleme · 84.9 sn
+  600 işlem · 4 şirket · 94 yedek · 49 geri yükleme · 113.2 sn
+  700 işlem · 6 şirket · 106 yedek · 54 geri yükleme · 142.6 sn
+  800 işlem · 6 şirket · 121 yedek · 62 geri yükleme · 168.0 sn
+  900 işlem · 5 şirket · 138 yedek · 66 geri yükleme · 193.7 sn
+  1000 işlem · 4 şirket · 155 yedek · 69 geri yükleme · 220.1 sn
+
+✓ Tohum 1 · taban surum-2.0.19-zincir: 1000 işlem, 1001 değişmez kural turu, 155 yedek, 69 geri yükleme, 35 yanlış şirkete deneme (hepsi 409), 27 yeniden başlatma · 220.6 sn
+  İşlem türleri: account 111, entry 131, restore 65, backupOne 63, select 70, wrongRestore 35, cash 52, recode 36, bankModule 53, bankModuleOther 41, bankCard 54, bankCard:kart-ac 24, bankAccount 30, rename 29, remove 28, bankCard:cari 7, reset 24, bankWrongCompany 8, create 43, backupAll 20, bankCard:alis 4, bankTransfer 27, bankReverse 17, bankVoucher 36, restoreRoot 10, restart 17, bankCard:pos 2, bankCard:alis-secimsiz 1, bankCard:borc-odeme 3, bankCard:pos-hesapli-400 2, bankCard:cari-secimsiz 8, bankCard:yanlis-sirket-404 3
+  Son durum: 045 · Çağ/Öz: Ltd* (0 cari) | 012 · MAVİ GIDA (4 cari) | 003 · Ağaoğlu Yapı? (0 cari) | 054 · Resmi Şirket (0 cari)

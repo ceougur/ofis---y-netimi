@@ -363,8 +363,9 @@ describe("Aşama 15 — Y3–Y6: eşzamanlılık (iki kullanıcı), ödeme yön�
     const loan = await openAccount(ctx.api, { bankName: "Garanti BBVA", name: "Ticari Kredi", kind: "loan", opening: { date: "2026-10-01", amount: "0", confirmed: true } });
     const time = await openAccount(ctx.api, { bankName: "Ziraat Bankası", name: "Vadeli", kind: "time", opening: { date: "2026-10-01", amount: "10.000", confirmed: true } });
     const card = await openAccount(ctx.api, { bankName: "Ziraat Bankası", name: "Kart", kind: "card", creditLimit: "50.000", opening: { date: "2026-10-01", amount: "0", confirmed: true } });
-    // Not: POS/kart yolu (method "card") 2.1.0'da hesaba bağlanmaz (POS 2.2.0'a ertelendi; satır Hesabı Atanmamış kalır) — burada havale yolu.
-    for (const [label, account, method] of [["kredi", loan, "bank"], ["vadeli", time, "bank"], ["kart (havale yolu)", card, "bank"]]) {
+    // Not (K2): kart yolunda (method "card") ödeme kurumsal kart hesabına bağlanır; kart yolunda kredi/vadeli hesap da 400
+    // (test/banka-210-kurumsal-kart.test.mjs K5). Burada havale yolunda yanlış türde hesap.
+    for (const [label, account, method] of [["kredi", loan, "bank"], ["vadeli", time, "bank"], ["kart (havale yolu)", card, "bank"], ["kredi (kart yolu)", loan, "card"], ["vadeli (kart yolu)", time, "card"]]) {
       const before = fingerprint(ctx.store);
       const res = await ctx.api.post(`/api/workspace/accounts/${party.id}/entries`, { kind: "out", amount: "100", method, bankAccountId: account.id, date: TODAY });
       expectStatus(res, 400, "bank-account-invalid", `${label} hesabından cari ödemesi`);

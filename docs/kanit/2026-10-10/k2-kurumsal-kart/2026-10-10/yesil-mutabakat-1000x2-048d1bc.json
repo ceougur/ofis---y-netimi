@@ -1,0 +1,32 @@
+{
+  "ad": "yesil-mutabakat-1000x2-048d1bc",
+  "komut": "npm run test:mutabakat -- --islem 1000 --tohumlar 2",
+  "commit": "048d1bc1ec539a004f8e9eeab0dfcf5e8d69332a",
+  "dal": "worktree-agent-a8a770a394b1593e7",
+  "kirli": 0,
+  "izlenmeyen": 12,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T16:09:03.865Z",
+  "sure_sn": 344.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "mutabakat",
+    "toplam": 2,
+    "gecen": 2,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-10/k2-kurumsal-kart/2026-10-10/yesil-mutabakat-1000x2-048d1bc.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a8a770a394b1593e7",
+  "ham_cikti_sha256": "aa3a45ef798390abd6fb30bf4480baceb769f208880b79d9aa05c2048444443b",
+  "ham_cikti_bayt": 4433
+}

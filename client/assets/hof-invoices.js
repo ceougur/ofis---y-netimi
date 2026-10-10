@@ -434,8 +434,14 @@
   // v2.1.0 Aşama 7: peşin satırın satır anahtarı (lineKey; Düzenle'de sunucu eski satırla bu anahtarla eşler) ve banka hesabı. issued: kaydedilmiş
   // belgenin Düzenle'si — hesapsız eski havale satırı "Atanmamış (Eski Hareket)" olarak açılır (dokunulmazsa bağsız kalır).
   const lineKey = () => `k${Math.random().toString(36).slice(2, 10)}${Date.now().toString(36).slice(-4)}`;
-  const payFrom = (payment, { issued = false } = {}) => ({
-    cash: (payment?.cash || []).map((item, index) => ({ amount: amountText(item.amount), method: item.method || "cash", lineKey: /^[A-Za-z0-9_-]{1,40}$/.test(String(item.lineKey || "")) ? item.lineKey : `i${index}`, bankAccountId: item.bankAccountId || "", legacy: issued && (item.method || "cash") === "bank" && !item.bankAccountId })),
+  // K2: alış tarafında (alış faturası, alıştan iade) kart yolu kurumsal kartla ödeme / kurumsal karta iadedir; satırın hesabı Kurumsal Kart.
+  // legacyMethod: hesapsız eski satırın yolu ("Atanmamış (Eski Hareket)" seçeneği yalnız o yolda kalır).
+  const payFrom = (payment, { issued = false, corporate = false } = {}) => ({
+    cash: (payment?.cash || []).map((item, index) => {
+      const method = item.method || "cash";
+      const legacy = issued && (method === "bank" || (method === "card" && corporate)) && !item.bankAccountId;
+      return { amount: amountText(item.amount), method, lineKey: /^[A-Za-z0-9_-]{1,40}$/.test(String(item.lineKey || "")) ? item.lineKey : `i${index}`, bankAccountId: item.bankAccountId || "", legacy, legacyMethod: legacy ? method : "" };
+    }),
     cheques: (payment?.cheques || []).map(item => ({ instrument: item.instrument || "cheque", amount: amountText(item.amount), dueDate: item.dueDate || "", serialNo: item.serialNo || "", bank: item.bank || "", drawer: item.drawer || "" })),
     endorse: [...(payment?.endorse || [])],
     rest: payment?.rest === "installments" ? "installments" : "open",
@@ -478,7 +484,7 @@
       stoppageRate: source && ["smm", "purchase"].includes(kind) ? amountText(source.stoppageRate) : "",
       lines: source?.lines?.length ? source.lines.map(line => lineFrom(line, { keepOrigin: Boolean(draft) })) : [blankLine(d.vatRate)],
       note: source?.note || "",
-      pay: payFrom(draft?.payment, { issued: Boolean(modify) }),
+      pay: payFrom(draft?.payment, { issued: Boolean(modify), corporate: sideOf(kind) === "purchase" }),
       calc: null,
       calcError: "",
       returnHits: null,
@@ -917,19 +923,26 @@
   // v2.1.0 Aşama 7: peşin satırda Banka Hesabı (yalnız Havale / EFT yolunda görünür). Seçici satırın İÇİNDE çizilir; yol ya da hesap değişince satır
   // yeniden çizilmez (2.0.23 Bulgu 1: odak ve yazılan değer kaybolmasın) — yalnız hücre gösterilir/gizlenir. Hiç uygun hesap yoksa hücre boş
   // (bugünkü gibi hesapsız), tek hesapta bilgi satırı (sunucu kendiliğinden o hesaba yazar), birden çokta seçim zorunlu.
-  const bankAccounts = () => {
+  // K2 (plan §3.5, §4.6, §8.9): satırın hesap ailesi yoldan ve belge türünden — Havale / EFT → Banka Hesabı; alış tarafında (alış faturası,
+  // alıştan iade) Kredi Kartı → Kurumsal Kart; satış tarafında kart yolu POS'tur (2.2.0; hücre yok).
+  const cellKind = item => (item.method === "bank" ? "bank" : item.method === "card" && view.form?.side === "purchase" ? "card" : "");
+  const bankAccounts = (kind = "bank") => {
     const data = view.bankChoices && view.bankChoices !== "loading" ? view.bankChoices : null;
-    return { data, list: (data?.forms?.bank?.ids || []).map(id => data.accounts.find(account => account.id === id)).filter(Boolean) };
+    return { data, list: (data?.forms?.[kind]?.ids || []).map(id => data.accounts.find(account => account.id === id)).filter(Boolean) };
   };
   function bankCell(item, index) {
-    const hidden = item.method === "bank" ? "" : " hidden";
-    const { data, list } = bankAccounts();
+    const kind = cellKind(item) || "bank";
+    const hidden = cellKind(item) ? "" : " hidden";
+    const card = kind === "card";
+    const legacy = item.legacy && item.legacyMethod === item.method;
+    const { data, list } = bankAccounts(kind);
     const current = item.bankAccountId ? data?.accounts?.find(account => account.id === item.bankAccountId) : null;
-    if (!data || (!list.length && !current)) return `<span class="hof-inv-bank" data-bank-cell="${index}" hidden></span>`;
-    if (list.length === 1 && !item.legacy && (!item.bankAccountId || item.bankAccountId === list[0].id)) return `<span class="hof-inv-bank hof-bank-pick-note" data-bank-cell="${index}" data-bank-single${hidden}>${esc(list[0].label)} hesabına yazılır.</span>`;
+    if (!data || (!list.length && !current)) return `<span class="hof-inv-bank" data-bank-cell="${index}" data-bank-kind="${kind}" hidden></span>`;
+    if (list.length === 1 && !legacy && (!item.bankAccountId || item.bankAccountId === list[0].id)) return `<span class="hof-inv-bank hof-bank-pick-note" data-bank-cell="${index}" data-bank-kind="${kind}" data-bank-single${hidden}>${esc(list[0].label)} ${card ? "kurumsal kartına" : "hesabına"} yazılır.</span>`;
     const options = current && !list.some(account => account.id === current.id) ? [current, ...list] : list;
-    const first = item.legacy ? "Atanmamış (Eski Hareket)" : "Hesap Seçin";
-    return `<label class="hof-inv-bank" data-bank-cell="${index}"${hidden}><span>Banka Hesabı</span><select data-pay="cash" data-i="${index}" data-f="bankAccountId" aria-label="Banka Hesabı"><option value="">${esc(first)}</option>${options.map(account => `<option value="${esc(account.id)}" ${account.id === item.bankAccountId ? "selected" : ""}>${esc(`${account.label} (${account.code})`)}</option>`).join("")}</select></label>`;
+    const first = legacy ? "Atanmamış (Eski Hareket)" : card ? "Kart Seçin" : "Hesap Seçin";
+    const label = card ? "Kurumsal Kart" : "Banka Hesabı";
+    return `<label class="hof-inv-bank" data-bank-cell="${index}" data-bank-kind="${kind}"${hidden}><span>${label}</span><select data-pay="cash" data-i="${index}" data-f="bankAccountId" aria-label="${label}"><option value="">${esc(first)}</option>${options.map(account => `<option value="${esc(account.id)}" ${account.id === item.bankAccountId ? "selected" : ""}>${esc(`${account.label} (${account.code})`)}</option>`).join("")}</select></label>`;
   }
   // Hesap listesi gelince yalnız boş hücreler doldurulur (içinde odaklanılacak alan yoktu; satır yeniden çizilmez).
   function loadBankChoices() {
@@ -953,20 +966,29 @@
         view.bankChoices = null;
       });
   }
+  // Varsayılan yalnız havalede (Banka Ayarları → Varsayılan Tahsilat Hesabı); kurumsal kartta birden çok kart varsa kullanıcı seçer (§3.5/3).
   const defaultBank = () => {
-    const { data, list } = bankAccounts();
+    const { data, list } = bankAccounts("bank");
     return list.length > 1 ? data.forms.bank.defaultId || "" : "";
   };
   // Yol değişince: hücre gösterilir/gizlenir; havaleye geçen yeni satıra varsayılan hesap önerilir (Banka Ayarları → Varsayılan Tahsilat Hesabı).
+  // K2: hesap ailesi değişirse (Havale / EFT ↔ Kredi Kartı) yalnız bu hücre yeniden çizilir (yol kutusu ve satırın öbür alanları yerinde
+  // kalır; odak yol kutusundadır) ve önceki ailenin hesabı satırdan düşer.
   function syncBankCell(target, item) {
     const cell = target.closest(".hof-inv-pay-row")?.querySelector("[data-bank-cell]");
     if (!cell) return;
-    if (item.method === "bank" && !item.bankAccountId && !item.legacy) {
+    const kind = cellKind(item);
+    if (kind && cell.dataset.bankKind !== kind) {
+      item.bankAccountId = kind === "bank" && !(item.legacy && item.legacyMethod === "bank") ? defaultBank() : "";
+      cell.outerHTML = bankCell(item, Number(cell.dataset.bankCell));
+      return;
+    }
+    if (kind === "bank" && !item.bankAccountId && !item.legacy) {
       item.bankAccountId = defaultBank();
       const select = cell.querySelector("select");
       if (select) select.value = item.bankAccountId;
     }
-    cell.hidden = item.method !== "bank" || (!cell.querySelector("select") && !cell.hasAttribute("data-bank-single"));
+    cell.hidden = !kind || (!cell.querySelector("select") && !cell.hasAttribute("data-bank-single"));
   }
   // v2.0.23 (Bulgu 1): "Kalan" kutusu ayrı çizilir. Ödeme satırındaki bir alan değişince (tutar, vade, no, banka, yol) yalnız
   // bu kutu yenilenir; satırlar yeniden çizilmez. Önceden bütün bölüm yeniden çiziliyordu: Tab ile ya da fareyle gidilen
@@ -1059,7 +1081,7 @@
     lines: usedLines(form).map(lineBody),
   });
   const payBody = form => ({
-    cash: form.pay.cash.filter(item => amountNum(item.amount) > 0).map(item => ({ amount: item.amount, method: item.method, lineKey: item.lineKey, ...(item.method === "bank" && item.bankAccountId ? { bankAccountId: item.bankAccountId } : {}) })),
+    cash: form.pay.cash.filter(item => amountNum(item.amount) > 0).map(item => ({ amount: item.amount, method: item.method, lineKey: item.lineKey, ...((item.method === "bank" || (item.method === "card" && form.side === "purchase")) && item.bankAccountId ? { bankAccountId: item.bankAccountId } : {}) })),
     cheques: form.pay.cheques.filter(item => amountNum(item.amount) > 0).map(item => ({ ...item })),
     endorse: [...form.pay.endorse],
     rest: form.pay.rest,
@@ -1789,11 +1811,13 @@
       ],
       submitLabel: sale ? "Tahsilatı Kaydet" : "Ödemeyi Kaydet",
       // v2.1.0 Aşama 7: Havale / EFT'de Banka Hesabı (tek hesapta gizli); istek kimliği; banka hesabının Benzer İşlem ve Eksi Bakiye soruları.
+      // K2 (plan §3.7 #3, #5, §8.9): alış faturasına ödemede "Kredi Kartı" kurumsal kartla ödemedir → Kurumsal Kart seçicisi.
       onOpen: dialog => {
-        if (HOF.bank?.attachPicker) HOF.bank.attachPicker(dialog.querySelector("form"), { methodName: "method" });
+        if (HOF.bank?.attachPicker) HOF.bank.attachPicker(dialog.querySelector("form"), { methodName: "method", card: sale ? null : {} });
       },
       onSubmit: async data => {
-        const body = { kind: sale ? "in" : "out", amount: data.amount, date: data.date, method: data.method, invoiceId: doc.id, note: data.note, ...(data.method === "bank" && data.bankAccountId ? { bankAccountId: data.bankAccountId } : {}) };
+        const account = data.method === "bank" ? data.bankAccountId : data.method === "card" && !sale ? data.cardAccountId : "";
+        const body = { kind: sale ? "in" : "out", amount: data.amount, date: data.date, method: data.method, invoiceId: doc.id, note: data.note, ...(account ? { bankAccountId: account } : {}) };
         const send = flags => HOF.api(`/api/workspace/accounts/${encodeURIComponent(doc.accountId)}/entries`, { method: "POST", body: { ...body, ...flags }, requestId });
         await (HOF.bank?.withConfirms ? HOF.bank.withConfirms(send) : send({}));
         HOF.toast(sale ? "Tahsilat kaydedildi." : "Ödeme kaydedildi.", { type: "success" });

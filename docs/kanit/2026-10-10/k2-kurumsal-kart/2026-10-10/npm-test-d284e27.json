@@ -1,0 +1,32 @@
+{
+  "ad": "npm-test-d284e27",
+  "komut": "npm test",
+  "commit": "d284e27c812bff422c377ca5dce9bd61eee9b4e3",
+  "dal": "worktree-agent-a8a770a394b1593e7",
+  "kirli": 0,
+  "izlenmeyen": 18,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T16:37:08.558Z",
+  "sure_sn": 932.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 1913,
+    "gecen": 1912,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 1
+  },
+  "hukum": "GEÇTİ",
+  "neden": "1 atlanan/todo",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-10/k2-kurumsal-kart/2026-10-10/npm-test-d284e27.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a8a770a394b1593e7",
+  "ham_cikti_sha256": "6e5acebe89ba4f4958490bb452efa73fbe9d0148245a8beb2e00bba22743f5c6",
+  "ham_cikti_bayt": 630075
+}

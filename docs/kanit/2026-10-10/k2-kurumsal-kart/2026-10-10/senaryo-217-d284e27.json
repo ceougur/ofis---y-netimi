@@ -1,0 +1,32 @@
+{
+  "ad": "senaryo-217-d284e27",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-217.mjs",
+  "commit": "d284e27c812bff422c377ca5dce9bd61eee9b4e3",
+  "dal": "worktree-agent-a8a770a394b1593e7",
+  "kirli": 0,
+  "izlenmeyen": 32,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T17:05:36.258Z",
+  "sure_sn": 84.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 65,
+    "gecen": 65,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-10/k2-kurumsal-kart/2026-10-10/senaryo-217-d284e27.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a8a770a394b1593e7",
+  "ham_cikti_sha256": "ccf9385bcedef6cd55b790f0f464ab8eaa08941abb56f3396bb4716e7f19b43a",
+  "ham_cikti_bayt": 6655
+}

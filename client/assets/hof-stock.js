@@ -353,7 +353,10 @@
         const planBox = dialog.querySelector('input[name="planIt"]')?.closest(".hof-check");
         const planFields = ["planCount", "planFirstDue"].map(name => dialog.querySelector(`[name="${name}"]`)?.closest(".hof-field")).filter(Boolean);
         if (accountField) pay.closest(".hof-field").after(accountField);
-        if (HOF.bank?.attachPicker) HOF.bank.attachPicker(dialog.querySelector("form"), { methodName: "pay", value: move?.finRef || "", keepLabel: move && move.pay === "cash" && move.method === "bank" && !move.finRef ? "Atanmamış (Eski Hareket)" : "" });
+        // K2 (plan §3.7 #8, §4.6): stok alımında "Kredi Kartı" kurumsal kartla ödemedir → Kurumsal Kart; satışta ve müşteri iadesinde kart yolu
+        // POS'tur (seçici yok).
+        const card = incoming && !back ? { value: move?.pay === "cash" && move.method === "card" ? move.finRef || "" : "", keepLabel: move && move.pay === "cash" && move.method === "card" && !move.finRef ? "Atanmamış (Eski Hareket)" : "" } : null;
+        if (HOF.bank?.attachPicker) HOF.bank.attachPicker(dialog.querySelector("form"), { methodName: "pay", value: move?.pay === "cash" && move.method === "bank" ? move.finRef || "" : "", keepLabel: move && move.pay === "cash" && move.method === "bank" && !move.finRef ? "Atanmamış (Eski Hareket)" : "", card });
         const sync = () => {
           const amount = (parseNumber(qty.value) || 0) * (parseNumber(price.value) || 0);
           const after = (item.qty || 0) + (incoming ? 1 : -1) * (parseNumber(qty.value) || 0) - (move ? (move.kind === "in" ? move.qty : -move.qty) : 0);
@@ -381,7 +384,8 @@
           data.method = data.pay;
           data.pay = "cash";
         }
-        if (data.method !== "bank") delete data.bankAccountId;
+        if (HOF.bank?.accountBody) HOF.bank.accountBody(data, data.pay === "cash" ? data.method : "");
+        else if (data.method !== "bank") delete data.bankAccountId;
         if (back) data.reason = "return";
         if (data.planIt && data.pay === "account") {
           if (!(parseNumber(data.planCount) >= 1)) throw new Error("Taksit sayısını yazın.");

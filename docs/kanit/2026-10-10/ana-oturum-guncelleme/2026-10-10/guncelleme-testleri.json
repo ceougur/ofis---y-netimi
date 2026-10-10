@@ -1,0 +1,32 @@
+{
+  "ad": "guncelleme-testleri",
+  "komut": "node --test test/guncelleme-217.test.mjs test/update-flow.test.mjs test/updater.test.mjs test/update-guard.test.mjs",
+  "commit": "2849d21551d5cd66fed9e32fe1d9e1dd75b6d7de",
+  "dal": "claude/kind-newton-fpmx3f",
+  "kirli": 65,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T17:49:59.774Z",
+  "sure_sn": 11.9,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 30,
+    "gecen": 30,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-10/ana-oturum-guncelleme/2026-10-10/guncelleme-testleri.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "db8ad713633ddab429157ca98e52efb6d30a231f6d175ef9c4c52d91103a7ec4",
+  "ham_cikti_bayt": 9305
+}

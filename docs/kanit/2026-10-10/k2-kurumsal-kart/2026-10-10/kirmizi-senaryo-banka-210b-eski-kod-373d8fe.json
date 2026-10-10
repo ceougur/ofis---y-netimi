@@ -1,0 +1,78 @@
+{
+  "ad": "kirmizi-senaryo-banka-210b-eski-kod-373d8fe",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-banka-210b.mjs",
+  "commit": "fb20702191c4190f1f6255eba7f6947187406a08",
+  "dal": "worktree-agent-a8a770a394b1593e7",
+  "kirli": 8,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T15:52:10.143Z",
+  "sure_sn": 148.7,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 72,
+    "gecen": 64,
+    "basarisiz": 8,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 8 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "beklenmeyen hata: elementHandle.click: Element is not attached to the DOM",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "beklenmeyen hata: page.waitForSelector: Timeout 8000ms exceeded.",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "beklenmeyen hata: page.waitForSelector: Timeout 8000ms exceeded.",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "beklenmeyen hata: page.waitForSelector: Timeout 10000ms exceeded.",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Kurumsal Kart 0 (750)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Kart ve Kredi Borcu -750 (beklenen 850)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Genel Bakış Kart ve Kredi Borcu: “-₺750,00”",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Banka Bakiye Raporu: Kart ve Kredi Borcu | Yapı Kredi | Kurumsal Kart 2 | 309.02 | 0,00 TL | 0,00 TL | 0,00 TL | 0,00 TL | 0,00 TL | 0,00 TL | 0,00 TL",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "senaryo-banka-210b: 64 geçti, 8 kaldı · ekran görüntüleri /home/user/ofis---y-netimi/.claude/worktrees/agent-a8a770a394b1593e7/test/e2e/artifacts/senaryo-banka-210b",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-10/k2-kurumsal-kart/2026-10-10/kirmizi-senaryo-banka-210b-eski-kod-373d8fe.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a8a770a394b1593e7",
+  "ham_cikti_sha256": "ea7c41032048d69cd4e6d4e17f443b96be5906123405862130191bf8ecf1e52e",
+  "ham_cikti_bayt": 9723
+}

@@ -1,0 +1,32 @@
+{
+  "ad": "senaryo-banka-210-d284e27",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-banka-210.mjs",
+  "commit": "d284e27c812bff422c377ca5dce9bd61eee9b4e3",
+  "dal": "worktree-agent-a8a770a394b1593e7",
+  "kirli": 0,
+  "izlenmeyen": 20,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T16:52:48.823Z",
+  "sure_sn": 313.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 386,
+    "gecen": 386,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-10/k2-kurumsal-kart/2026-10-10/senaryo-banka-210-d284e27.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a8a770a394b1593e7",
+  "ham_cikti_sha256": "fa857a80ca5a34c40e8e116358dc5ad622cfc686e9688262ef2662422fe0066d",
+  "ham_cikti_bayt": 40309
+}

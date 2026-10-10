@@ -1,0 +1,55 @@
+
+■ Bulgu 1: alış faturasında senet satırı klavyeyle (Tab) — tam ödeme
+  ✓ Tab ile Vade → No → Banka sırasıyla gidildi (dueDate → serialNo → bank)
+  ✓ alanlar yazıldığı gibi kaldı (240 · 2026-12-15 · S-K-1 · Ziraat)
+  ✓ fatura "Ödendi", ödenen 240 (Ödendi 240)
+  ✓ senet portföyde: 1 adet, 240 (1)
+
+■ Bulgu 1: kısmi ödeme fareyle
+  ✓ vade ve banka kaldı (100 · 2026-12-15 · S-K-2 · Ziraat)
+  ✓ fatura kısmen ödendi: ödenen 100, açık 140 (100 / 140)
+  ✓ senet portföyde
+
+■ Bulgu 1: peşin tutar yazılıp fareyle doğrudan Kalan → Vade Tarihi'ne geçilir; tarih kalır
+  ✓ Vade Tarihi'ne gidildi ve tarih kaldı (odak dueDate, değer 2026-12-15)
+  ✓ fatura: ödenen 100, açık 140, vade 2026-12-15
+
+■ Bulgu 1: fiyat değiştirilip hemen peşin tutar yazılır (hesap anında); tutar kalır
+  ✓ peşin tutar kaldı (264)
+  ✓ fatura 264, ödenen 264, açık 0
+
+■ Bulgu 1: fiyat değiştirilip hemen peşin tutar yazılır (hesap 400 ms gecikmeli); tutar kalır
+  ✓ peşin tutar kaldı (264)
+  ✓ fatura 264, ödenen 264, açık 0
+
+■ Bulgu 1: fiyat değişir değişmez Tamamı Peşin güncel toplamı yazar
+  ✓ Tamamı Peşin: 288 (beklenen 288)
+  ✓ fatura 288, ödenen 288, açık 0
+
+■ Bulgu 1: fiyat değişir, Tamamı Peşin ve hemen Kaydet (hesap 1.200 ms gecikmeli) — ekrandaki ödemeyle kaydedilir
+  ✓ onay sorulurken peşin tutar güncel toplam (288; beklenen 288)
+  ✓ fatura 288, ödenen 288, açık 0 (ekranda görünenle aynı)
+
+■ Bulgu 1: tutarı geçersiz evrakla kayıt durur (sessizce evraksız kaydedilmez)
+  ✓ kayıt durdu, açık neden: "1. evrakın (senet) tutarı geçerli değil ("Ziraat"). Tutarı yazın ya da satırı × ile silin."
+  ✓ fatura kaydedilmedi
+
+■ Bulgu 2: cari kartında Kapatılacak Fatura taksitli faturayı sunmaz
+  ✓ açık (taksitsiz) fatura listede
+  ✓ taksitli fatura listede yok
+
+■ Bulgu 3: Cari Ekstre — cari seçilip 'Tüm Zamanlar'a basılınca seçim kalır, tek istek gider
+  ✓ cari seçimi kaldı ("Kapama Müşteri")
+  ✓ ekstre görünüyor (Dönem Sonu 5.000,00 TL Borçlu)
+  ✓ tek tıkta tek istek (/api/workspace/report-center/cari-ekstre)
+
+■ Bulgu 3: Satış Faturaları — cari süzgeci 'Bu Yıl'a basınca kalkmaz
+  ✓ süzgeç kaldı ("Başka Müşteri")
+  ✓ yalnız bu carinin faturası (1 → 1)
+
+■ Bulgu 4: Banka ve POS — Yol = Banka ve Yol = POS rapora uygulanır
+  ✓ Banka: Banka (Havale / EFT) · 01.01.2026 – 31.12.2026 · giriş 300,00 TL
+  ✓ POS: POS / Kredi Kartı · 01.01.2026 – 31.12.2026 · giriş 700,00 TL
+  ✓ sayfa hatası yok
+
+TAMAM: 29 denetim geçti, 0 başarısız.

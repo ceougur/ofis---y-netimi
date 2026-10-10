@@ -1,0 +1,842 @@
+TAP version 13
+# (node:7767) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Aşama 7 — fatura peşini: hesap seçimi, satır anahtarı, Düzenle, toplu kesim
+    # Subtest: F1: iki hesapta peşin havale hesap seçilmeden → 400 "Banka hesabı seçilmedi" (alan satırın hesabı); belge yazılmaz
+    ok 1 - F1: iki hesapta peşin havale hesap seçilmeden → 400 "Banka hesabı seçilmedi" (alan satırın hesabı); belge yazılmaz
+      ---
+      duration_ms: 16.555789
+      type: 'test'
+      ...
+    # Subtest: F2: peşin havale Garanti → Garanti 50.000 + 20.000; satır anahtarı ve hesap payment_json'da; nakit satırdaki hesap yok sayılır
+    ok 2 - F2: peşin havale Garanti → Garanti 50.000 + 20.000; satır anahtarı ve hesap payment_json'da; nakit satırdaki hesap yok sayılır
+      ---
+      duration_ms: 101.175944
+      type: 'test'
+      ...
+    # Subtest: F3: iki peşin satırın sırası değişir → olaylar satır anahtarıyla korunur; ilk satır silinir → yalnız onun olayı iptal
+    ok 3 - F3: iki peşin satırın sırası değişir → olaylar satır anahtarıyla korunur; ilk satır silinir → yalnız onun olayı iptal
+      ---
+      duration_ms: 129.772577
+      type: 'test'
+      ...
+    # Subtest: F4: alış peşini Ziraat → Garanti taşınır: Garanti Uyar'da 409 cash-negative → negativeOk; Engelle'de 409 cash-blocked
+    ok 4 - F4: alış peşini Ziraat → Garanti taşınır: Garanti Uyar'da 409 cash-negative → negativeOk; Engelle'de 409 cash-blocked
+      ---
+      duration_ms: 174.631795
+      type: 'test'
+      ...
+    # Subtest: F5: eski (hesapsız) peşinli fatura: yalnız not düzelir → bağsız kalır; tutar değişirse 400 hesap seç; seçince bağlanır
+    ok 5 - F5: eski (hesapsız) peşinli fatura: yalnız not düzelir → bağsız kalır; tutar değişirse 400 hesap seç; seçince bağlanır
+      ---
+      duration_ms: 59.53615
+      type: 'test'
+      ...
+    # Subtest: F6: toplu kesimde hesapsız taslak yalnız kendisi "Banka hesabı seçilmedi" ile düşer; öbürleri kesilir
+    ok 6 - F6: toplu kesimde hesapsız taslak yalnız kendisi "Banka hesabı seçilmedi" ile düşer; öbürleri kesilir
+      ---
+      duration_ms: 78.339889
+      type: 'test'
+      ...
+    # Subtest: F7: bank.move'u olmayan muhasebe alış faturasını peşin havaleyle ödeyemez (403); peşin nakitle öder (200)
+    ok 7 - F7: bank.move'u olmayan muhasebe alış faturasını peşin havaleyle ödeyemez (403); peşin nakitle öder (200)
+      ---
+      duration_ms: 152.361226
+      type: 'test'
+      ...
+    # Subtest: F8: aynı gün aynı müşteriye aynı tutarda Garanti peşinli iki AYRI fatura → hedef (fatura) farklı: Benzer İşlem sorulmaz, ikisi 200
+    ok 8 - F8: aynı gün aynı müşteriye aynı tutarda Garanti peşinli iki AYRI fatura → hedef (fatura) farklı: Benzer İşlem sorulmaz, ikisi 200
+      ---
+      duration_ms: 82.167242
+      type: 'test'
+      ...
+    1..8
+ok 1 - Aşama 7 — fatura peşini: hesap seçimi, satır anahtarı, Düzenle, toplu kesim
+  ---
+  duration_ms: 1360.790466
+  type: 'suite'
+  ...
+# Subtest: Aşama 8 — taksit tahsilatı ve kayıt (detay kartı) tahsilatı
+    # Subtest: T1: seçimsiz 400; Ziraat'e 10.000; aynı istek iki kez → tek satır (replayed); farklı istek aynı tutar → 409 bank-similar
+    ok 1 - T1: seçimsiz 400; Ziraat'e 10.000; aynı istek iki kez → tek satır (replayed); farklı istek aynı tutar → 409 bank-similar
+      ---
+      duration_ms: 48.69145
+      type: 'test'
+      ...
+    # Subtest: T2: Engelle'deki Garanti'ye bağlı tahsilatı silmek eksiye düşürür → 409 cash-blocked; Uyar'da sil → geri yükle → aynı fin_ref ve olay
+    ok 2 - T2: Engelle'deki Garanti'ye bağlı tahsilatı silmek eksiye düşürür → 409 cash-blocked; Uyar'da sil → geri yükle → aynı fin_ref ve olay
+      ---
+      duration_ms: 165.399589
+      type: 'test'
+      ...
+    # Subtest: T3: eski bağsız taksit tahsilatı: açıklama → bağsız kalır; tutar → 400 hesap seç; bankadan iade bank.move'suz 403
+    ok 3 - T3: eski bağsız taksit tahsilatı: açıklama → bağsız kalır; tutar → 400 hesap seç; bankadan iade bank.move'suz 403
+      ---
+      duration_ms: 149.371765
+      type: 'test'
+      ...
+    # Subtest: P1: kayıt tahsilatı seçimsiz 400; Garanti; aynı istek iki kez tek satır; sil → geri yükle → aynı hesap
+    ok 4 - P1: kayıt tahsilatı seçimsiz 400; Garanti; aynı istek iki kez tek satır; sil → geri yükle → aynı hesap
+      ---
+      duration_ms: 96.779289
+      type: 'test'
+      ...
+    1..4
+ok 2 - Aşama 8 — taksit tahsilatı ve kayıt (detay kartı) tahsilatı
+  ---
+  duration_ms: 822.14184
+  type: 'suite'
+  ...
+# Subtest: Aşama 8 — stok peşini ve çek tahsil/ödeme
+    # Subtest: S1: peşin satış havale seçimsiz 400; Ziraat 2 × 1.500 → Ziraat 103.000; peşin alım bank.move'suz 403
+    ok 1 - S1: peşin satış havale seçimsiz 400; Ziraat 2 × 1.500 → Ziraat 103.000; peşin alım bank.move'suz 403
+      ---
+      duration_ms: 59.746534
+      type: 'test'
+      ...
+    # Subtest: S1b: müşteri iadesi (havale) Engelle'deki Garanti'yi eksiye düşürür → 409 cash-blocked; Ziraat'ten iade 200
+    ok 2 - S1b: müşteri iadesi (havale) Engelle'deki Garanti'yi eksiye düşürür → 409 cash-blocked; Ziraat'ten iade 200
+      ---
+      duration_ms: 101.540836
+      type: 'test'
+      ...
+    # Subtest: C1: çek tahsil havale seçimsiz 400; Garanti → 50.000 + 4.000, olay hesaplı; Engelle'de tahsili geri almak 409; verilen çek ödemesi bank.move'suz 403
+    ok 3 - C1: çek tahsil havale seçimsiz 400; Garanti → 50.000 + 4.000, olay hesaplı; Engelle'de tahsili geri almak 409; verilen çek ödemesi bank.move'suz 403
+      ---
+      duration_ms: 153.45614
+      type: 'test'
+      ...
+    1..3
+ok 3 - Aşama 8 — stok peşini ve çek tahsil/ödeme
+  ---
+  duration_ms: 788.114092
+  type: 'suite'
+  ...
+# Subtest: Aşama 7–8 — tek hesapta kendiliğinden; döviz ve pasif hesap
+    # Subtest: X: tek hesapta fatura peşini, kayıt tahsilatı ve stok satışı kendiliğinden o hesaba; USD hesap 400 bank-currency; pasif hesap 400
+    ok 1 - X: tek hesapta fatura peşini, kayıt tahsilatı ve stok satışı kendiliğinden o hesaba; USD hesap 400 bank-currency; pasif hesap 400
+      ---
+      duration_ms: 109.783925
+      type: 'test'
+      ...
+    1..1
+ok 4 - Aşama 7–8 — tek hesapta kendiliğinden; döviz ve pasif hesap
+  ---
+  duration_ms: 373.049242
+  type: 'suite'
+  ...
+# (node:7768) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: K2 · hakemin en küçük senaryosu (birebir sayılar; kâhin A = B)
+    # Subtest: [K2] adım 272: kurumsal kart yokken kart yolunda vadesiz B1 → 400 bank-account-invalid; hiçbir satır yazılmaz
+    ok 1 - [K2] adım 272: kurumsal kart yokken kart yolunda vadesiz B1 → 400 bank-account-invalid; hiçbir satır yazılmaz
+      ---
+      duration_ms: 13.752621
+      type: 'test'
+      ...
+    # Subtest: [K3][K17] k1–k4: kart açılır; 100 (KK verilerek), alış faturası 240 peşin kartla (KK), 50 hesapsız (tek kart) → hepsi KK'ya bağlı
+    ok 2 - [K3][K17] k1–k4: kart açılır; 100 (KK verilerek), alış faturası 240 peşin kartla (KK), 50 hesapsız (tek kart) → hepsi KK'ya bağlı
+      ---
+      duration_ms: 196.743363
+      type: 'test'
+      ...
+    # Subtest: [K21] sayılar (elle): 309.01 alacak 390 · KK −390 · 108.00 = 0 · 320 +150 · 191 = 40 · 770 = 200 · Kart ve Kredi Borcu 390 · Hesabı Atanmamış 0
+    ok 3 - [K21] sayılar (elle): 309.01 alacak 390 · KK −390 · 108.00 = 0 · 320 +150 · 191 = 40 · 770 = 200 · Kart ve Kredi Borcu 390 · Hesabı Atanmamış 0
+      ---
+      duration_ms: 80.153912
+      type: 'test'
+      ...
+    # Subtest: [K21] raporlar: Banka Bakiye (Kart ve Kredi Borcu) KK satırı Çıkış 390 / Dönem Sonu −390; Banka ve POS Hareketleri'nde kart ödemesi yok; mizan raporları 309
+    ok 4 - [K21] raporlar: Banka Bakiye (Kart ve Kredi Borcu) KK satırı Çıkış 390 / Dönem Sonu −390; Banka ve POS Hareketleri'nde kart ödemesi yok; mizan raporları 309
+      ---
+      duration_ms: 37.798636
+      type: 'test'
+      ...
+    1..4
+ok 5 - K2 · hakemin en küçük senaryosu (birebir sayılar; kâhin A = B)
+  ---
+  duration_ms: 824.831461
+  type: 'suite'
+  ...
+# Subtest: K2 · hakemin tanı senaryosu: Kart Borcu Ödemesi, kart limiti, iki kart
+    # Subtest: [K13] 100 kartla ödeme → KK −100; Kart Borcu Ödemesi (B1 → KK) 100 → KK 0 (ters bakiye yok), B1 86.286,39, 309.01 0
+    ok 1 - [K13] 100 kartla ödeme → KK −100; Kart Borcu Ödemesi (B1 → KK) 100 → KK 0 (ters bakiye yok), B1 86.286,39, 309.01 0
+      ---
+      duration_ms: 118.654695
+      type: 'test'
+      ...
+    # Subtest: [K7] limit 20.000: 25.000 → 409 (kart limiti); tam 20.000 → 200; 0,01 fazlası 409; Yine de Kaydet 200; Engelle'de onayla da 409
+    ok 2 - [K7] limit 20.000: 25.000 → 409 (kart limiti); tam 20.000 → 200; 0,01 fazlası 409; Yine de Kaydet 200; Engelle'de onayla da 409
+      ---
+      duration_ms: 138.20805
+      type: 'test'
+      ...
+    # Subtest: [K13][K7] Kart Borcu Ödemesi Ters Kaydet: kart borcu geri gelir; limit aşılıyorsa kartta sorulur (Yine de Kaydet ile)
+    ok 3 - [K13][K7] Kart Borcu Ödemesi Ters Kaydet: kart borcu geri gelir; limit aşılıyorsa kartta sorulur (Yine de Kaydet ile)
+      ---
+      duration_ms: 43.158721
+      type: 'test'
+      ...
+    # Subtest: [K4] ikinci kurumsal kart (KK2): hesapsız kart ödemesi → 400 bank-account-required (alan bankAccountId); KK2 verilince KK2'ye
+    ok 4 - [K4] ikinci kurumsal kart (KK2): hesapsız kart ödemesi → 400 bank-account-required (alan bankAccountId); KK2 verilince KK2'ye
+      ---
+      duration_ms: 59.119225
+      type: 'test'
+      ...
+    1..4
+ok 6 - K2 · hakemin tanı senaryosu: Kart Borcu Ödemesi, kart limiti, iki kart
+  ---
+  duration_ms: 655.810755
+  type: 'suite'
+  ...
+# Subtest: K2 · kart yokken, yanlış tür, pasif kart, POS yolu ve yetki
+    # Subtest: [K1][K16] kart yokken: hesapsız kartla ödeme 108.00'a (fin_ref ''); bank.move'suz muhasebe de öder (bugünkü gibi)
+    ok 1 - [K1][K16] kart yokken: hesapsız kartla ödeme 108.00'a (fin_ref ''); bank.move'suz muhasebe de öder (bugünkü gibi)
+      ---
+      duration_ms: 42.254356
+      type: 'test'
+      ...
+    # Subtest: [K5] kart yolunda vadeli ya da kredi hesabı → 400 bank-account-invalid; bilinmeyen kimlik → 404; havale yolunda kart hesabı → 400
+    ok 2 - [K5] kart yolunda vadeli ya da kredi hesabı → 400 bank-account-invalid; bilinmeyen kimlik → 404; havale yolunda kart hesabı → 400
+      ---
+      duration_ms: 54.760486
+      type: 'test'
+      ...
+    # Subtest: [K6] pasif kart verilirse 400; tek etkin kart kalınca hesapsız ödeme ona gider
+    ok 3 - [K6] pasif kart verilirse 400; tek etkin kart kalınca hesapsız ödeme ona gider
+      ---
+      duration_ms: 69.790427
+      type: 'test'
+      ...
+    # Subtest: [K15] POS tahsilatı değişmez: kart tanımlıyken cari tahsilat (POS) 108.00'a; POS yolunda hesap kimliği → 400 bank-account-invalid
+    ok 4 - [K15] POS tahsilatı değişmez: kart tanımlıyken cari tahsilat (POS) 108.00'a; POS yolunda hesap kimliği → 400 bank-account-invalid
+      ---
+      duration_ms: 27.820361
+      type: 'test'
+      ...
+    # Subtest: [K16] bank.move'suz muhasebe: kart tanımlıyken kartla ödeme 403 bank-permission; satır yazılmaz
+    ok 5 - [K16] bank.move'suz muhasebe: kart tanımlıyken kartla ödeme 403 bank-permission; satır yazılmaz
+      ---
+      duration_ms: 60.18919
+      type: 'test'
+      ...
+    1..5
+ok 7 - K2 · kart yokken, yanlış tür, pasif kart, POS yolu ve yetki
+  ---
+  duration_ms: 665.343558
+  type: 'suite'
+  ...
+# Subtest: K2 · düzelt, sil → geri yükle, pasif kart, eşleşmiş satır, eski bağsız satır
+    # Subtest: [K10] kart tanımlanmadan girilmiş bağsız satır: yalnız açıklama → bağsız; tutar değişirse iki kartta 400, KK seçilince bağlanır
+    ok 1 - [K10] kart tanımlanmadan girilmiş bağsız satır: yalnız açıklama → bağsız; tutar değişirse iki kartta 400, KK seçilince bağlanır
+      ---
+      duration_ms: 55.855183
+      type: 'test'
+      ...
+    # Subtest: [K9][K7] tutar artışı limiti aşarsa 409 (Yine de Kaydet geçer); KK → KK2 taşıma KK2'nin limitinde sorulur
+    ok 2 - [K9][K7] tutar artışı limiti aşarsa 409 (Yine de Kaydet geçer); KK → KK2 taşıma KK2'nin limitinde sorulur
+      ---
+      duration_ms: 178.27084
+      type: 'test'
+      ...
+    # Subtest: [K9] yol değişimi: kart → havale (B1) → kart (KK) → nakit; her adımda kart, banka ve Kasa
+    ok 3 - [K9] yol değişimi: kart → havale (B1) → kart (KK) → nakit; her adımda kart, banka ve Kasa
+      ---
+      duration_ms: 98.069358
+      type: 'test'
+      ...
+    # Subtest: [K11][K6] sil → geri yükle: bağ korunur; pasif kartta silme ve geri yükleme 400; limit aşılıyorsa geri yüklemede sorulur
+    ok 4 - [K11][K6] sil → geri yükle: bağ korunur; pasif kartta silme ve geri yükleme 400; limit aşılıyorsa geri yüklemede sorulur
+      ---
+      duration_ms: 145.270897
+      type: 'test'
+      ...
+    # Subtest: [K12] ekstreyle eşleşmiş kart ödemesi: düzelt ve sil 409 bank-reconciled
+    ok 5 - [K12] ekstreyle eşleşmiş kart ödemesi: düzelt ve sil 409 bank-reconciled
+      ---
+      duration_ms: 22.495773
+      type: 'test'
+      ...
+    1..5
+ok 8 - K2 · düzelt, sil → geri yükle, pasif kart, eşleşmiş satır, eski bağsız satır
+  ---
+  duration_ms: 911.681137
+  type: 'suite'
+  ...
+# Subtest: K2 · alış faturası, alıştan iade, stok alımı; POS yolları değişmez
+    # Subtest: [K17] alış faturası iki kartta kart seçilmeden → 400 bank-account-required (alan 1. peşin satırın hesabı); belge yazılmaz
+    ok 1 - [K17] alış faturası iki kartta kart seçilmeden → 400 bank-account-required (alan 1. peşin satırın hesabı); belge yazılmaz
+      ---
+      duration_ms: 6.947101
+      type: 'test'
+      ...
+    # Subtest: [K17] alış faturası 600 peşin kartla (KK) → KK −600; Düzenle'de KK2'ye taşınır (olay yenilenir, numara aynı)
+    ok 2 - [K17] alış faturası 600 peşin kartla (KK) → KK −600; Düzenle'de KK2'ye taşınır (olay yenilenir, numara aynı)
+      ---
+      duration_ms: 68.769218
+      type: 'test'
+      ...
+    # Subtest: [K17] alıştan iade kurumsal karta (2 adet, 240): seçimsiz 400; KK2'ye → KK2 −360 (309 düşer); iade iptali ve alış iptali kartı sıfırlar
+    ok 3 - [K17] alıştan iade kurumsal karta (2 adet, 240): seçimsiz 400; KK2'ye → KK2 −360 (309 düşer); iade iptali ve alış iptali kartı sıfırlar
+      ---
+      duration_ms: 97.192996
+      type: 'test'
+      ...
+    # Subtest: [K18] stok peşin alımı kartla (KK) → KK −100; müşteri iadesi kartla POS iadesi (bağsız; hesap verilirse 400)
+    ok 4 - [K18] stok peşin alımı kartla (KK) → KK −100; müşteri iadesi kartla POS iadesi (bağsız; hesap verilirse 400)
+      ---
+      duration_ms: 43.778392
+      type: 'test'
+      ...
+    # Subtest: [K15] POS yolları değişmez: satış peşini, satıştan iade, stok satışı, taksit ve kayıt tahsilatı kartla → hepsi bağsız (108.00)
+    ok 5 - [K15] POS yolları değişmez: satış peşini, satıştan iade, stok satışı, taksit ve kayıt tahsilatı kartla → hepsi bağsız (108.00)
+      ---
+      duration_ms: 181.804477
+      type: 'test'
+      ...
+    1..5
+ok 9 - K2 · alış faturası, alıştan iade, stok alımı; POS yolları değişmez
+  ---
+  duration_ms: 744.682036
+  type: 'suite'
+  ...
+# Subtest: K2 · Benzer İşlem, istek kimliği, eşzamanlı limit, açılış öncesi tarih, Kart Borcuna Aktar
+    # Subtest: [K14] Kart Borcuna Aktar eski satırı taşır (108.00 0, KK −400); yeni bağlı kart ödemesi havuza girmez (409 bank-legacy-exceeds)
+    ok 1 - [K14] Kart Borcuna Aktar eski satırı taşır (108.00 0, KK −400); yeni bağlı kart ödemesi havuza girmez (409 bank-legacy-exceeds)
+      ---
+      duration_ms: 67.667636
+      type: 'test'
+      ...
+    # Subtest: [K19] Benzer İşlem: aynı gün, aynı kart, aynı cari, aynı tutar → 409 bank-similar; Yine de Kaydet geçer; istek kimliği tek satır
+    ok 2 - [K19] Benzer İşlem: aynı gün, aynı kart, aynı cari, aynı tutar → 409 bank-similar; Yine de Kaydet geçer; istek kimliği tek satır
+      ---
+      duration_ms: 50.205447
+      type: 'test'
+      ...
+    # Subtest: [K20] kartın açılışından (05.10) önceki tarih → 409 bank-before-opening
+    ok 3 - [K20] kartın açılışından (05.10) önceki tarih → 409 bank-before-opening
+      ---
+      duration_ms: 2.73217
+      type: 'test'
+      ...
+    # Subtest: [K8] aynı anda iki 300'lük ödeme (kalan limit 350): biri 200, öbürü 409; kart limiti delinmez
+    ok 4 - [K8] aynı anda iki 300'lük ödeme (kalan limit 350): biri 200, öbürü 409; kart limiti delinmez
+      ---
+      duration_ms: 41.80623
+      type: 'test'
+      ...
+    1..4
+ok 10 - K2 · Benzer İşlem, istek kimliği, eşzamanlı limit, açılış öncesi tarih, Kart Borcuna Aktar
+  ---
+  duration_ms: 536.854237
+  type: 'suite'
+  ...
+# (node:7772) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Aşama 15 — yetki matrisi: banka uçları ve bankaya bağlı modül uçları × 6 rol
+    # Subtest: kapsam: server/routes/bank.mjs'teki her uç matriste (yeni uç → matrise eklenmeli)
+    ok 1 - kapsam: server/routes/bank.mjs'teki her uç matriste (yeni uç → matrise eklenmeli)
+      ---
+      duration_ms: 1.829156
+      type: 'test'
+      ...
+    # Subtest: banka uçları × yonetici
+    ok 2 - banka uçları × yonetici
+      ---
+      duration_ms: 844.357274
+      type: 'test'
+      ...
+    # Subtest: bankaya bağlı modül uçları × yonetici
+    ok 3 - bankaya bağlı modül uçları × yonetici
+      ---
+      duration_ms: 466.82632
+      type: 'test'
+      ...
+    # Subtest: banka uçları × avukat
+    ok 4 - banka uçları × avukat
+      ---
+      duration_ms: 759.551641
+      type: 'test'
+      ...
+    # Subtest: bankaya bağlı modül uçları × avukat
+    ok 5 - bankaya bağlı modül uçları × avukat
+      ---
+      duration_ms: 483.49958
+      type: 'test'
+      ...
+    # Subtest: banka uçları × muhasebe
+    ok 6 - banka uçları × muhasebe
+      ---
+      duration_ms: 885.339505
+      type: 'test'
+      ...
+    # Subtest: bankaya bağlı modül uçları × muhasebe
+    ok 7 - bankaya bağlı modül uçları × muhasebe
+      ---
+      duration_ms: 585.535687
+      type: 'test'
+      ...
+    # Subtest: banka uçları × personel
+    ok 8 - banka uçları × personel
+      ---
+      duration_ms: 698.641325
+      type: 'test'
+      ...
+    # Subtest: bankaya bağlı modül uçları × personel
+    ok 9 - bankaya bağlı modül uçları × personel
+      ---
+      duration_ms: 363.394503
+      type: 'test'
+      ...
+    # Subtest: banka uçları × ozel
+    ok 10 - banka uçları × ozel
+      ---
+      duration_ms: 972.931335
+      type: 'test'
+      ...
+    # Subtest: bankaya bağlı modül uçları × ozel
+    ok 11 - bankaya bağlı modül uçları × ozel
+      ---
+      duration_ms: 558.0658
+      type: 'test'
+      ...
+    # Subtest: banka uçları × kaldirilmis
+    ok 12 - banka uçları × kaldirilmis
+      ---
+      duration_ms: 1004.26929
+      type: 'test'
+      ...
+    # Subtest: bankaya bağlı modül uçları × kaldirilmis
+    ok 13 - bankaya bağlı modül uçları × kaldirilmis
+      ---
+      duration_ms: 586.439421
+      type: 'test'
+      ...
+# [yetki-matrisi] hücre 336 (izinli 197, izinsiz 139) — 42 banka ucu durumu + 14 modül ucu × 6 rol
+    # Subtest: Y1: kendi girdiği havale tahsilatı (cari, kayıt, taksit): sil → bank.cancel; nakde çevir / başka hesaba taşı → bank.move; açıklama herkese açık
+    ok 14 - Y1: kendi girdiği havale tahsilatı (cari, kayıt, taksit): sil → bank.cancel; nakde çevir / başka hesaba taşı → bank.move; açıklama herkese açık
+      ---
+      duration_ms: 3213.325538
+      type: 'test'
+      ...
+    # Subtest: özet: matris hücre sayısı; Mutabakat Testi tutarlı
+    ok 15 - özet: matris hücre sayısı; Mutabakat Testi tutarlı
+      ---
+      duration_ms: 29.101677
+      type: 'test'
+      ...
+    1..15
+ok 11 - Aşama 15 — yetki matrisi: banka uçları ve bankaya bağlı modül uçları × 6 rol
+  ---
+  duration_ms: 12813.144689
+  type: 'suite'
+  ...
+# Subtest: Aşama 15 — Y3–Y6: eşzamanlılık (iki kullanıcı), ödeme yönünde istek kimliği, kredi/kart hesabından ödeme, şirket ayrımı
+    # Subtest: Y3: iki ayrı muhasebe kullanıcısı (iki oturum, iki bağlantı) aynı anda Engelle'deki Garanti'den XYZ ve KLM'ye 40.000 → biri 200, öbürü 409 cash-blocked
+    ok 1 - Y3: iki ayrı muhasebe kullanıcısı (iki oturum, iki bağlantı) aynı anda Engelle'deki Garanti'den XYZ ve KLM'ye 40.000 → biri 200, öbürü 409 cash-blocked
+      ---
+      duration_ms: 372.820266
+      type: 'test'
+      ...
+    # Subtest: Y4: ödeme yönünde aynı istek kimliği iki kez → tek satır, ikinci yanıt replayed (cari ödeme, alış faturası peşini, çek ödemesi)
+    ok 2 - Y4: ödeme yönünde aynı istek kimliği iki kez → tek satır, ikinci yanıt replayed (cari ödeme, alış faturası peşini, çek ödemesi)
+      ---
+      duration_ms: 157.771299
+      type: 'test'
+      ...
+    # Subtest: Y5: kredi, vadeli ve kurumsal kart hesabından cari ödemesi → 400 bank-account-invalid; hiçbir şey yazılmaz
+    ok 3 - Y5: kredi, vadeli ve kurumsal kart hesabından cari ödemesi → 400 bank-account-invalid; hiçbir şey yazılmaz
+      ---
+      duration_ms: 127.060774
+      type: 'test'
+      ...
+    # Subtest: Y6: ?hofCompany= — yetkisiz şirket 403; başka şirketin hesabı 404; 002'deki işlem 001'i değiştirmez
+    ok 4 - Y6: ?hofCompany= — yetkisiz şirket 403; başka şirketin hesabı 404; 002'deki işlem 001'i değiştirmez
+      ---
+      duration_ms: 328.463056
+      type: 'test'
+      ...
+    1..4
+ok 12 - Aşama 15 — Y3–Y6: eşzamanlılık (iki kullanıcı), ödeme yönünde istek kimliği, kredi/kart hesabından ödeme, şirket ayrımı
+  ---
+  duration_ms: 1415.620054
+  type: 'suite'
+  ...
+# [yetki-matrisi] previous denetlenen banka audit türü: 3
+# Subtest: Aşama 15 — Y2: salt okunur lisansta bankaya bağlı modül havale uçları 403 LICENSE_READ_ONLY
+    # Subtest: veri girilmiş şirket salt okunur açılır: cari/kayıt/taksit/stok/çek/fatura/Kasa ↔ Banka/transfer yazımı 403; okuma 200; hiçbir şey değişmez
+    ok 1 - veri girilmiş şirket salt okunur açılır: cari/kayıt/taksit/stok/çek/fatura/Kasa ↔ Banka/transfer yazımı 403; okuma 200; hiçbir şey değişmez
+      ---
+      duration_ms: 518.088948
+      type: 'test'
+      ...
+    1..1
+ok 13 - Aşama 15 — Y2: salt okunur lisansta bankaya bağlı modül havale uçları 403 LICENSE_READ_ONLY
+  ---
+  duration_ms: 518.366568
+  type: 'suite'
+  ...
+# Subtest: Aşama 15 — Y7: previous alanı olmayan audit (statik tarama)
+    # Subtest: bank.post'a op 'update' | 'delete' | 'move' | 'restore' | 'assign' ile giden her çağrı prev taşır (bank.post prev'siz çağrıyı zaten reddeder; burada kaynakta)
+    ok 1 - bank.post'a op 'update' | 'delete' | 'move' | 'restore' | 'assign' ile giden her çağrı prev taşır (bank.post prev'siz çağrıyı zaten reddeder; burada kaynakta)
+      ---
+      duration_ms: 5.393434
+      type: 'test'
+      ...
+    # Subtest: banka rotalarındaki düzeltme/silme/ters kayıt audit kayıtları previous yazar (kaynak: lib/bank/*.mjs)
+    ok 2 - banka rotalarındaki düzeltme/silme/ters kayıt audit kayıtları previous yazar (kaynak: lib/bank/*.mjs)
+      ---
+      duration_ms: 2.051111
+      type: 'test'
+      ...
+    1..2
+ok 14 - Aşama 15 — Y7: previous alanı olmayan audit (statik tarama)
+  ---
+  duration_ms: 7.694566
+  type: 'suite'
+  ...
+# (node:7862) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: şirket ve yedek işlemleri rastgele sırayla: değişmez kurallar her işlemden sonra
+    # Subtest: boş kurulum, tohum 2, 120 işlem
+    ok 1 - boş kurulum, tohum 2, 120 işlem
+      ---
+      duration_ms: 15272.368121
+      type: 'test'
+      ...
+    # Subtest: gerçek v2.0.19 verisi (2.0.16 → 2.0.19 zinciri, güncel sürüme yükseltilmiş), tohum 2, 80 işlem
+    ok 2 - gerçek v2.0.19 verisi (2.0.16 → 2.0.19 zinciri, güncel sürüme yükseltilmiş), tohum 2, 80 işlem
+      ---
+      duration_ms: 16840.265912
+      type: 'test'
+      ...
+    # Subtest: gerçek şirket sınırıyla (en fazla 2, 2.0.25), boş kurulum, tohum 3, 120 işlem: sınırda açma her zaman 409
+    ok 3 - gerçek şirket sınırıyla (en fazla 2, 2.0.25), boş kurulum, tohum 3, 120 işlem: sınırda açma her zaman 409
+      ---
+      duration_ms: 9875.120814
+      type: 'test'
+      ...
+    1..3
+ok 15 - şirket ve yedek işlemleri rastgele sırayla: değişmez kurallar her işlemden sonra
+  ---
+  duration_ms: 41989.172001
+  type: 'suite'
+  ...
+# (node:7869) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: K3 — Kasa elle hareketi istek kimliği (plan §7, §3.3/1, §3.10/1)
+    # Subtest: B1: aynı kimlik + aynı içerik → 200 replayed, aynı id, tek satır; Kasa 788, 770 = 212
+    ok 1 - B1: aynı kimlik + aynı içerik → 200 replayed, aynı id, tek satır; Kasa 788, 770 = 212
+      ---
+      duration_ms: 48.440332
+      type: 'test'
+      ...
+    # Subtest: B2: aynı kimlik + farklı içerik (250) → 409 request-id-reused; satır yazılmaz
+    ok 2 - B2: aynı kimlik + farklı içerik (250) → 409 request-id-reused; satır yazılmaz
+      ---
+      duration_ms: 18.296909
+      type: 'test'
+      ...
+    # Subtest: B3: aynı kimlikle iki istek AYNI ANDA → tek satır (biri yazar, öbürü onun sonucunu görür)
+    ok 3 - B3: aynı kimlikle iki istek AYNI ANDA → tek satır (biri yazar, öbürü onun sonucunu görür)
+      ---
+      duration_ms: 44.949806
+      type: 'test'
+      ...
+    # Subtest: B4: giriş yönünde aynı kimlik iki kez → tek giriş (Kasa ve 649 bir kez)
+    ok 4 - B4: giriş yönünde aynı kimlik iki kez → tek giriş (Kasa ve 649 bir kez)
+      ---
+      duration_ms: 28.163967
+      type: 'test'
+      ...
+    # Subtest: B5: kimliksiz iki aynı istek iki ayrı ödemedir (eski davranış: ikisi de yazılır)
+    ok 5 - B5: kimliksiz iki aynı istek iki ayrı ödemedir (eski davranış: ikisi de yazılır)
+      ---
+      duration_ms: 41.438535
+      type: 'test'
+      ...
+    # Subtest: Mutabakat Testi tamam
+    ok 6 - Mutabakat Testi tamam
+      ---
+      duration_ms: 12.003569
+      type: 'test'
+      ...
+    1..6
+ok 16 - K3 — Kasa elle hareketi istek kimliği (plan §7, §3.3/1, §3.10/1)
+  ---
+  duration_ms: 645.624871
+  type: 'suite'
+  ...
+# (node:7885) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: K4 — Kasa'yı sıfırlayan nakit çıkışın yinelemesi (Uyar)
+    # Subtest: B1: cari nakit ödemesi 100 (Kasa 100 → 0) aynı kimlikle yeniden → 200 replayed; Kasa 0, tek satır
+    ok 1 - B1: cari nakit ödemesi 100 (Kasa 100 → 0) aynı kimlikle yeniden → 200 replayed; Kasa 0, tek satır
+      ---
+      duration_ms: 418.552777
+      type: 'test'
+      ...
+    # Subtest: B10: Kasa 0 iken ödeme sorulur (409 cash-negative; ön denetim kaybolmadı); onayla (cashForce) yazılır; onaylı isteğin yinelemesi de yinelemedir
+    ok 2 - B10: Kasa 0 iken ödeme sorulur (409 cash-negative; ön denetim kaybolmadı); onayla (cashForce) yazılır; onaylı isteğin yinelemesi de yinelemedir
+      ---
+      duration_ms: 387.357311
+      type: 'test'
+      ...
+    # Subtest: B2: Kasadan Bankaya Yatır 50 (Kasa 50 → 0) aynı kimlikle yeniden → 200 replayed; tek transfer
+    ok 3 - B2: Kasadan Bankaya Yatır 50 (Kasa 50 → 0) aynı kimlikle yeniden → 200 replayed; tek transfer
+      ---
+      duration_ms: 358.573519
+      type: 'test'
+      ...
+    # Subtest: B5: Kasa elle çıkış 40 (Kasa 40 → 0) aynı kimlikle yeniden → 200 replayed
+    ok 4 - B5: Kasa elle çıkış 40 (Kasa 40 → 0) aynı kimlikle yeniden → 200 replayed
+      ---
+      duration_ms: 325.033714
+      type: 'test'
+      ...
+    # Subtest: B4: stok nakit alımı 3 × 10 (Kasa 30 → 0) aynı kimlikle yeniden → 200 replayed; stok 3
+    ok 5 - B4: stok nakit alımı 3 × 10 (Kasa 30 → 0) aynı kimlikle yeniden → 200 replayed; stok 3
+      ---
+      duration_ms: 345.420752
+      type: 'test'
+      ...
+    # Subtest: B6 (komşu): stoğu bitiren satış (3 → 0) aynı kimlikle yeniden → 200 replayed (409 stock-negative değil); stok 0
+    ok 6 - B6 (komşu): stoğu bitiren satış (3 → 0) aynı kimlikle yeniden → 200 replayed (409 stock-negative değil); stok 0
+      ---
+      duration_ms: 366.041196
+      type: 'test'
+      ...
+    # Subtest: B3 (komşu): taksit iadesi 80 (kartın net tahsilatı ve Kasa 80 → 0) aynı kimlikle yeniden → 200 replayed
+    ok 7 - B3 (komşu): taksit iadesi 80 (kartın net tahsilatı ve Kasa 80 → 0) aynı kimlikle yeniden → 200 replayed
+      ---
+      duration_ms: 351.619679
+      type: 'test'
+      ...
+    # Subtest: B8 (karşılaştırma): verilen çekin nakit ödemesi (Kasa 70 → 0) yeniden → 200 replayed (Kasa denetimi yazımın içinde)
+    ok 8 - B8 (karşılaştırma): verilen çekin nakit ödemesi (Kasa 70 → 0) yeniden → 200 replayed (Kasa denetimi yazımın içinde)
+      ---
+      duration_ms: 388.869634
+      type: 'test'
+      ...
+    1..8
+ok 17 - K4 — Kasa'yı sıfırlayan nakit çıkışın yinelemesi (Uyar)
+  ---
+  duration_ms: 2943.931466
+  type: 'suite'
+  ...
+# Subtest: K4 — Engelle politikasında yineleme
+    # Subtest: B7: Kasa Engelle; cari nakit ödemesi Kasa'yı 0'a indirir; aynı kimlikle yeniden → 200 replayed (409 cash-blocked değil)
+    ok 1 - B7: Kasa Engelle; cari nakit ödemesi Kasa'yı 0'a indirir; aynı kimlikle yeniden → 200 replayed (409 cash-blocked değil)
+      ---
+      duration_ms: 68.722173
+      type: 'test'
+      ...
+    1..1
+ok 18 - K4 — Engelle politikasında yineleme
+  ---
+  duration_ms: 346.582354
+  type: 'suite'
+  ...
+# Subtest: K4 — karşılaştırma: banka hesabında aynı durum (K7 bank.post adım 8)
+    # Subtest: B9: havale ödemesi hesabı 100 → 0 indirir; aynı kimlikle yeniden → 200 replayed
+    ok 1 - B9: havale ödemesi hesabı 100 → 0 indirir; aynı kimlikle yeniden → 200 replayed
+      ---
+      duration_ms: 45.359646
+      type: 'test'
+      ...
+    1..1
+ok 19 - K4 — karşılaştırma: banka hesabında aynı durum (K7 bank.post adım 8)
+  ---
+  duration_ms: 400.257188
+  type: 'suite'
+  ...
+# (node:7916) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: K5 — banka hesabının eksi bakiye reddi: cash-negative / cash-blocked + accountId; onay cashForce (negativeOk eşanlamlı)
+    # Subtest: N1: Uyar — 150 havale ödemesi (bakiye 100) → 409 cash-negative + accountId; yalnız cashForce → 200 (planın bayrağı)
+    ok 1 - N1: Uyar — 150 havale ödemesi (bakiye 100) → 409 cash-negative + accountId; yalnız cashForce → 200 (planın bayrağı)
+      ---
+      duration_ms: 61.909069
+      type: 'test'
+      ...
+    # Subtest: N1b: eski istemcinin negativeOk'u eşanlamlı → 200; Banka Fişi'nde de aynı kod ve onay
+    ok 2 - N1b: eski istemcinin negativeOk'u eşanlamlı → 200; Banka Fişi'nde de aynı kod ve onay
+      ---
+      duration_ms: 62.615966
+      type: 'test'
+      ...
+    # Subtest: N4a: cashForce + negativeOk:false (ekranın Kasa onayı) banka hesabını geçmez → 409 cash-negative + accountId
+    ok 3 - N4a: cashForce + negativeOk:false (ekranın Kasa onayı) banka hesabını geçmez → 409 cash-negative + accountId
+      ---
+      duration_ms: 11.99267
+      type: 'test'
+      ...
+    # Subtest: N3: silmede ?cashForce=1 banka hesabını da geçer (HOF.api silmede adrese ekler); ?cashForce=1&negativeOk=0 geçmez
+    ok 4 - N3: silmede ?cashForce=1 banka hesabını da geçer (HOF.api silmede adrese ekler); ?cashForce=1&negativeOk=0 geçmez
+      ---
+      duration_ms: 74.5973
+      type: 'test'
+      ...
+    # Subtest: N2: Engelle — 409 cash-blocked + accountId; cashForce ve negativeOk birlikte de geçmez; hiçbir şey yazılmaz
+    ok 5 - N2: Engelle — 409 cash-blocked + accountId; cashForce ve negativeOk birlikte de geçmez; hiçbir şey yazılmaz
+      ---
+      duration_ms: 64.908305
+      type: 'test'
+      ...
+    # Subtest: N5: Kasa'nın kendi reddi değişmedi — cash-negative, accountId yok, method cash
+    ok 6 - N5: Kasa'nın kendi reddi değişmedi — cash-negative, accountId yok, method cash
+      ---
+      duration_ms: 15.696355
+      type: 'test'
+      ...
+    # Subtest: Mutabakat Testi tamam
+    ok 7 - Mutabakat Testi tamam
+      ---
+      duration_ms: 16.489477
+      type: 'test'
+      ...
+    1..7
+ok 20 - K5 — banka hesabının eksi bakiye reddi: cash-negative / cash-blocked + accountId; onay cashForce (negativeOk eşanlamlı)
+  ---
+  duration_ms: 823.597214
+  type: 'suite'
+  ...
+# Subtest: K5 — aynı istekte Kasa ve banka hesabı eksiye düşerse (satış faturası iptali: nakit + havale peşin)
+    # Subtest: N4b: önce Kasa sorulur (cash-negative, accountId yok); Kasa onayı (cashForce + negativeOk:false) banka hesabını ayrıca sorar; fatura yerinde
+    ok 1 - N4b: önce Kasa sorulur (cash-negative, accountId yok); Kasa onayı (cashForce + negativeOk:false) banka hesabını ayrıca sorar; fatura yerinde
+      ---
+      duration_ms: 12.342897
+      type: 'test'
+      ...
+    # Subtest: N4c: yalnız cashForce (planın tek onayı) ikisini birlikte geçer → fatura iptal; Kasa −100, Garanti −100
+    ok 2 - N4c: yalnız cashForce (planın tek onayı) ikisini birlikte geçer → fatura iptal; Kasa −100, Garanti −100
+      ---
+      duration_ms: 95.165697
+      type: 'test'
+      ...
+    1..2
+ok 21 - K5 — aynı istekte Kasa ve banka hesabı eksiye düşerse (satış faturası iptali: nakit + havale peşin)
+  ---
+  duration_ms: 552.960042
+  type: 'suite'
+  ...
+# (node:7932) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: K7 (a) — KMH limiti yalnız Vadesiz'de (kart ve kredi limiti kendi türünde)
+    # Subtest: N1: Ticari, Diğer, Vadeli ve Döviz hesaba KMH → 400 bank-limit; hesap açılmaz
+    ok 1 - N1: Ticari, Diğer, Vadeli ve Döviz hesaba KMH → 400 bank-limit; hesap açılmaz
+      ---
+      duration_ms: 59.228828
+      type: 'test'
+      ...
+    # Subtest: N2: var olan Ticari hesabı PUT ile KMH'li yapmak → 400; limit 0 kalır
+    ok 2 - N2: var olan Ticari hesabı PUT ile KMH'li yapmak → 400; limit 0 kalır
+      ---
+      duration_ms: 85.607823
+      type: 'test'
+      ...
+    # Subtest: N5: Vadesiz KMH, Kurumsal Kredi Kartı limiti ve Kredi Hesabı limiti → 200 (limit saklanır)
+    ok 3 - N5: Vadesiz KMH, Kurumsal Kredi Kartı limiti ve Kredi Hesabı limiti → 200 (limit saklanır)
+      ---
+      duration_ms: 88.929165
+      type: 'test'
+      ...
+    1..3
+ok 22 - K7 (a) — KMH limiti yalnız Vadesiz'de (kart ve kredi limiti kendi türünde)
+  ---
+  duration_ms: 777.748398
+  type: 'suite'
+  ...
+# Subtest: K7 (b) — Vadesiz → Ticari çevrilince KMH sıfırlanır (gizli KMH Engelle'yi atlatmaz)
+    # Subtest: N4: tür Ticari + creditLimit birlikte → 400 bank-limit; hesap Vadesiz ve KMH'li kalır
+    ok 1 - N4: tür Ticari + creditLimit birlikte → 400 bank-limit; hesap Vadesiz ve KMH'li kalır
+      ---
+      duration_ms: 17.201422
+      type: 'test'
+      ...
+    # Subtest: N3: Düzenle'de tür Ticari (ekranın gövdesi: creditLimit yok) → KMH 0; Engelle'de 12.529,50 Diğer Gider → 409, hesap 0 kalır
+    ok 2 - N3: Düzenle'de tür Ticari (ekranın gövdesi: creditLimit yok) → KMH 0; Engelle'de 12.529,50 Diğer Gider → 409, hesap 0 kalır
+      ---
+      duration_ms: 46.868781
+      type: 'test'
+      ...
+    1..2
+ok 23 - K7 (b) — Vadesiz → Ticari çevrilince KMH sıfırlanır (gizli KMH Engelle'yi atlatmaz)
+  ---
+  duration_ms: 467.378829
+  type: 'suite'
+  ...
+# (node:7946) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: K8 (a) — Kredi Kullanımı'nın Ters Kaydet ve Düzelt'inde ret metni işleme uygun
+    # Subtest: N1a: ödenmiş kredinin kullanımı Ters Kaydet → 409 bank-loan-exceeds; metin Kredi Kullanımı'nın ters kaydını anlatır; hiçbir şey yazılmaz
+    ok 1 - N1a: ödenmiş kredinin kullanımı Ters Kaydet → 409 bank-loan-exceeds; metin Kredi Kullanımı'nın ters kaydını anlatır; hiçbir şey yazılmaz
+      ---
+      duration_ms: 15.337164
+      type: 'test'
+      ...
+    # Subtest: N1b: kullanımı 400'e Düzelt → 409 bank-loan-exceeds; metin Kredi Kullanımı'nın düzeltilmesini anlatır
+    ok 2 - N1b: kullanımı 400'e Düzelt → 409 bank-loan-exceeds; metin Kredi Kullanımı'nın düzeltilmesini anlatır
+      ---
+      duration_ms: 15.041915
+      type: 'test'
+      ...
+    # Subtest: N4a: kalan borcu aşan geri ödeme → 409, metin yine geri ödemeyi anlatır (değişmedi)
+    ok 3 - N4a: kalan borcu aşan geri ödeme → 409, metin yine geri ödemeyi anlatır (değişmedi)
+      ---
+      duration_ms: 9.652346
+      type: 'test'
+      ...
+    1..3
+ok 24 - K8 (a) — Kredi Kullanımı'nın Ters Kaydet ve Düzelt'inde ret metni işleme uygun
+  ---
+  duration_ms: 633.213544
+  type: 'suite'
+  ...
+# Subtest: K8 (b) — geri ödeme işlem günündeki kalan borcu aşamaz (plan §3.9 yaklaşımı)
+    # Subtest: N2: kullanım 07.10, geri ödeme 03.10 → 409 bank-loan-exceeds (03.10'da kalan borç 0); 05.10 mizanında 300 = 0
+    ok 1 - N2: kullanım 07.10, geri ödeme 03.10 → 409 bank-loan-exceeds (03.10'da kalan borç 0); 05.10 mizanında 300 = 0
+      ---
+      duration_ms: 14.034002
+      type: 'test'
+      ...
+    # Subtest: N4b: aynı gün (07.10) geri ödeme → 200; kredi 0
+    ok 2 - N4b: aynı gün (07.10) geri ödeme → 200; kredi 0
+      ---
+      duration_ms: 31.256761
+      type: 'test'
+      ...
+    1..2
+ok 25 - K8 (b) — geri ödeme işlem günündeki kalan borcu aşamaz (plan §3.9 yaklaşımı)
+  ---
+  duration_ms: 399.378918
+  type: 'suite'
+  ...
+# Subtest: K8 (c) — kredi hesabında Açılışı Düzelt ödenen anaparanın altına inemez
+    # Subtest: N3: açılış borcu 5.000 → 3.000 (5.000 ödenmiş) → 409 bank-loan-exceeds; açılış ve bakiye değişmez
+    ok 1 - N3: açılış borcu 5.000 → 3.000 (5.000 ödenmiş) → 409 bank-loan-exceeds; açılış ve bakiye değişmez
+      ---
+      duration_ms: 16.896644
+      type: 'test'
+      ...
+    # Subtest: N4c: açılış borcunu 6.000'e büyüt → 200; kalan borç 1.000
+    ok 2 - N4c: açılış borcunu 6.000'e büyüt → 200; kalan borç 1.000
+      ---
+      duration_ms: 33.215224
+      type: 'test'
+      ...
+    1..2
+ok 26 - K8 (c) — kredi hesabında Açılışı Düzelt ödenen anaparanın altına inemez
+  ---
+  duration_ms: 403.11245
+  type: 'suite'
+  ...
+1..26
+# tests 105
+# suites 26
+# pass 105
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 46198.455959

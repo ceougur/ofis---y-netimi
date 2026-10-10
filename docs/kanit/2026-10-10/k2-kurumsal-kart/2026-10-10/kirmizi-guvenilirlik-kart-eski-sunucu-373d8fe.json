@@ -1,0 +1,38 @@
+{
+  "ad": "kirmizi-guvenilirlik-kart-eski-sunucu-373d8fe",
+  "komut": "npm run test:guvenilirlik -- --islem 400 --tohum 2 --tohumlar 1 --taban bos",
+  "commit": "048d1bc1ec539a004f8e9eeab0dfcf5e8d69332a",
+  "dal": "worktree-agent-a8a770a394b1593e7",
+  "kirli": 4,
+  "izlenmeyen": 10,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T16:08:49.795Z",
+  "sure_sn": 5.5,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "guvenilirlik",
+    "toplam": 1,
+    "gecen": 0,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Rastgele sıra testi başarısız (tohum 2, taban bos, işlem 41): #41 bankCard: 001 · Şirket 1 banka hesapları modelden farklı",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-10/k2-kurumsal-kart/2026-10-10/kirmizi-guvenilirlik-kart-eski-sunucu-373d8fe.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a8a770a394b1593e7",
+  "ham_cikti_sha256": "2200837d97cf47c19ccdeb4354bf09dc6c9e293ac002bedf31707ac161626ca6",
+  "ham_cikti_bayt": 5574
+}
