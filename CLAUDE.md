@@ -1193,6 +1193,12 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   senaryo-banka-210b bir koşuda kırmızı), istemcide "invoice" kaynak adı ham, rapor başlıkları küçük harf (Cari ekstre/Vade takip/Nakit akış),
   fatura Tahsilat/Ödeme formu ve Bankadan Kasaya Aktar açıklaması eskimiş, Gerçek Banka toplamına tarih sınırı yok (üretilebilirliği
   denetlenecek), Nakit Akış PDF alt başlığı kesik, Vade Takip'te hesapsız eski banka satırları banka yetkisi olmayana görünüyor.
+  KAPSAYICI YENİDEN BAŞLADI (10.10.2026 gece): otomatik güncelleme ajanı (worktree aeb30608…, 5 commit: b0bcc78 kapalıyken denetim,
+  1f499e6 gerçek tarayıcı/Windows sınaması, f5039d3) ve küçük bulgular 2 ajanı (worktree a52cd8d5…, kırmızı test 7a6011c + işlenmemiş
+  düzeltme) yarıda kaldı → ikisi de AYNI worktree'lerinde yeniden başlatıldı. ÖLÇÜM (f5039d3, gerçek Chromium + gerçek saat 20 dk): açık
+  duran DestekOfis sayfası GİZLİ sekmede bile 5 dk'da bir istek atıyor (çalışma tablosu eşitleme zamanlayıcısı) → herhangi bir bilgisayarda
+  sayfa açıksa sunucu 15 dk boşta sayılmaz, kendiliğinden kurulum MESAİ DIŞINA (hafta içi 20:00–07:00, hafta sonu) kalır. Ürün kodu
+  değişmedi; önerim: BÖYLE KALSIN (form doldururken servis yeniden başlamasın; güvenli taraf) — kullanıcıya bildirildi, karar onda.
   OTOMATİK GÜNCELLEME (kullanıcı, 10.10.2026: "sunucu açıkken aralıklarla sorgulanıp alınıyor mu, açılışta sorguluyor mu, şüphelerim var" →
   koddan cevap verildi: açılışta + 6 saatte bir (+≤30 dk kayma); "kendiliğinden kur" açıkken boşta (15 dk) ya da mesai dışında kurulur,
   mesai içinde çalışılıyorsa "hazır" bekler, saatte bir yeniden bakar; güncelleme testleri 30/30. AÇIK: kendiliğinden kur KAPALIYKEN hiç
