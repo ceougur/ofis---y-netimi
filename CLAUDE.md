@@ -947,6 +947,13 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
       iade/iptalinin bankalı ayrıntısı + TCMB önerisi, K8 taksit kuralları, toplu kesim ayrıntısı, kalan banka raporları DAHİL).
       POS (2.2.0) ve ekstre (2.3.0) planın kendi sırasında kalır. Not: aynı anda iki ajan "haftalık sınır, 14.10 23:00 UTC'de
       sıfırlanır" hatasıyla durdu (eksik test turu, kılavuz); yarım işleri worktree'de ve ana ağaçta yerinde.
+  KARAR (kullanıcı, 10.10.2026: "limit sorunu ortadan kalktı; arka planda çalışan ajan, yargıç, eleştirici kısıtlamaları kaldıysa
+      kaldır, ihtiyaç duyulan kadar ajanı, yargıcı, eleştirmeni çalıştır. plana tam uy!") → ajan/yargıç/eleştirmen sayısında kısıt
+      YOK; her iz (track) için uygulama → bağımsız yargıç → eleştirmen → düzeltme döngüsü, engel bulgu kalmayana kadar; sonunda
+      bütün 2.1.0 için yargıç + yargıcın kararını denetleyen eleştirmen (önceki istek). Plan (`docs/BANKA-MODULU-PLAN.md`) her koşulda.
+      Kalan izler: Aşama 13 döviz; Aşama 8 kalanı (K8 taksit kuralları, Bankaya Tahsile Ver); Aşama 7 kalanı (iade/iptal bankalı
+      ayrıntı §4.6, Fatura Ayarları → Banka Hesapları, gider türleri 770/653, toplu kesim, bağ türleri, TCMB önerisi); Aşama 14–15
+      kalanı (§8.10 raporları, Nakit Akış K10, Vade Takip/zil, SOURCE_LABELS/EVENT_LABELS, Silinenler kuralı); kılavuz; kabul.
 - 2.0.20 YAPILACAKLAR (kullanıcı "yapılacaklara not al" dedi, 03.10.2026; "yap" denince başlanır; ayrıntı ve
   kanıt hemen altındaki ADAYI maddesinde):
   [x] 1. Bütün raporların (43) tablosunun altında kalın TOPLAM satırı — ekran, PDF, Excel aynı; yalnız toplanabilir
