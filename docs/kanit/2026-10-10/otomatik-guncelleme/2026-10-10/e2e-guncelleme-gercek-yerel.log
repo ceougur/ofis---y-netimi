@@ -19,11 +19,11 @@
   ✓ paket indirilmedi
   ✓ hâlâ meşgul ve 'hazır' bekliyor
 
-■ 3. Sekme gizlenir (arka plan) → istek kesilir → boşta süresi dolunca kendiliğinden kurulur
-  ✓ gizli sekme (65 sn sonra) istek göndermedi (yok)
+■ 3. Sekme kapatılır → istek kesilir → boşta süresi dolunca kendiliğinden kurulur
+  ✓ sekme kapandıktan sonra istek yok (yok)
   ✓ son kullanıcı isteğinden 99 sn sonra kuruldu (≥ 90 sn)
   ✓ boşta süresi dolduktan sonra yeniden bakışta kuruldu (9 sn gecikme)
-  · gizlenmeden kuruluma 66 sn
+  · sekme kapanışından kuruluma 65 sn
 
 ■ 4. Yeni sürüm sağlıklı, veriler aynı, yedek alındı
   ✓ çalışan sürüm 9.0.1

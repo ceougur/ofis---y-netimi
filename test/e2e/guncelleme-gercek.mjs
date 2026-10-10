@@ -7,7 +7,8 @@
 // Üretim süreleriyle bir kezlik koşu: test/guncelleme-gercek/gercek-kos.mjs.
 //  1. Sekme açıkken (personel) yeni sürüm bulunur → kurulmaz, ertelenir; Yönetim → Sistem → Güncellemeler "hazır" (ekran görüntüsü).
 //  2. Sekme açık ve görünür kaldıkça (boşta süresinden uzun) kurulmaz: açık sekme düzenli istek gönderir, sunucu meşgul sayılır.
-//  3. Sekme gizlenince (arka plan / küçültülmüş — görünürlük sayfa içinden taklit) istek kesilir → boşta süresi dolunca kurulur.
+//  3. Sekme kapatılınca istek kesilir → boşta süresi dolunca kurulur. (Yalnız gizlemek yetmez: gizli sekme de 5 dakikada bir
+//     tablo eşitlemesi isteği gönderir — test/guncelleme-gercek/gizli-sekme-olcum.mjs.)
 //  4. Yeni sürüm sağlıklı, eski veriler aynı, yedek alındı; Yönetim ekranında "güncellendi".
 // Çalıştırma: npm run test:guncelleme-gercek
 import { mkdirSync, mkdtempSync, readdirSync, rmSync } from "node:fs";
@@ -123,12 +124,10 @@ try {
   ok(mid.activity.busy === true && mid.updates.deferred?.version === "9.0.1", "hâlâ meşgul ve 'hazır' bekliyor");
   await tab.screenshot({ path: path.join(OUT, "02-personel-acik-sekme.png") });
 
-  console.log("\n■ 3. Sekme gizlenir (arka plan) → istek kesilir → boşta süresi dolunca kendiliğinden kurulur");
-  await tab.evaluate(() => {
-    Object.defineProperty(document, "hidden", { configurable: true, get: () => true });
-    Object.defineProperty(document, "visibilityState", { configurable: true, get: () => "hidden" });
-    document.dispatchEvent(new Event("visibilitychange"));
-  });
+  // Not: sekmeyi yalnız GİZLEMEK (arka plan / küçültme) yetmez — gizli sekme de tablo eşitlemesi için 5 dakikada bir istek gönderir
+  // (ölçüm: test/guncelleme-gercek/gizli-sekme-olcum.mjs, 20 dk'da 8 istek). Bu yüzden burada sekme KAPATILIR.
+  console.log("\n■ 3. Sekme kapatılır → istek kesilir → boşta süresi dolunca kendiliğinden kurulur");
+  await staffContext.close();
   const hiddenAt = Date.now();
   let lastSeen = Date.parse(mid.activity.lastActivityAt);
   const installed = await waitFor(async () => {
@@ -137,11 +136,11 @@ try {
     return status.updates?.lastResult?.outcome === "success" ? status : Promise.reject(new Error(status.updates?.state));
   }, { timeoutMs: IDLE * 3, interval: 1000 });
   const installedAt = Date.parse(installed.updates.lastResult.at);
-  const hiddenRequests = recorder.log.filter(item => item.counts && item.at > hiddenAt + 65_000 && item.at < installedAt - 30_000);
-  ok(hiddenRequests.length === 0, `gizli sekme (65 sn sonra) istek göndermedi (${hiddenRequests.map(item => item.path).join(", ") || "yok"})`);
+  const hiddenRequests = recorder.log.filter(item => item.counts && item.at > hiddenAt + 2_000 && item.at < installedAt - 30_000);
+  ok(hiddenRequests.length === 0, `sekme kapandıktan sonra istek yok (${hiddenRequests.map(item => item.path).join(", ") || "yok"})`);
   ok(installedAt - lastSeen >= IDLE, `son kullanıcı isteğinden ${Math.round((installedAt - lastSeen) / 1000)} sn sonra kuruldu (≥ ${IDLE / 1000} sn)`);
   ok(installedAt - lastSeen < IDLE + 60_000, `boşta süresi dolduktan sonra yeniden bakışta kuruldu (${Math.round((installedAt - lastSeen - IDLE) / 1000)} sn gecikme)`);
-  console.log(`  · gizlenmeden kuruluma ${Math.round((installedAt - hiddenAt) / 1000)} sn`);
+  console.log(`  · sekme kapanışından kuruluma ${Math.round((installedAt - hiddenAt) / 1000)} sn`);
 
   console.log("\n■ 4. Yeni sürüm sağlıklı, veriler aynı, yedek alındı");
   ok((await service.appVersion()) === "9.0.1", "çalışan sürüm 9.0.1");
@@ -154,7 +153,6 @@ try {
   ok(/9\.0\.1 sürümüne güncellendi/.test(await adminPage.textContent("#adm-update")), "Yönetim → Sistem: '9.0.1 sürümüne güncellendi'");
   await adminPage.locator("#adm-update").screenshot({ path: path.join(OUT, "03-guncellendi-yonetim-sistem.png") });
   await adminAfter.close();
-  await staffContext.close();
   ok(!errors.length, `sayfa hatası yok${errors.length ? `: ${errors.join(" | ")}` : ""}`);
 } catch (error) {
   failed += 1;
