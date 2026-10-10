@@ -84,7 +84,9 @@ describe("otomatik güncelleme — gerçek süreçlerle", () => {
       const checksBefore = feed.listHits();
       await sleep(3 * IDLE);
       assert.ok(feed.listHits() - checksBefore >= 5, `çalışırken de denetlendi (${feed.listHits() - checksBefore})`);
-      assert.equal(feed.zipHits(), 0, "kullanıcı çalışırken paket indirilmedi");
+      // 2.1.0: kullanıcı çalışırken paket arka planda BİR KEZ indirilip hazırlanır (kurulmaz; servis durmaz).
+      assert.equal(feed.zipHits(), 1, "kullanıcı çalışırken paket arka planda bir kez indirildi");
+      assert.equal((await service.status()).updates.prepared?.version, "9.0.1", "hazır: sonraki açılışta kurulacak");
       assert.equal(await service.appVersion(), "9.0.0", "kullanıcı çalışırken kurulmadı");
       const lastAt = await activity.stop();
       await waitVersion(service, "9.0.1", 60_000);
@@ -92,6 +94,7 @@ describe("otomatik güncelleme — gerçek süreçlerle", () => {
       const installedAt = Date.parse(status.updates.lastResult.at);
       assert.ok(installedAt - lastAt >= IDLE, `son istekten ${installedAt - lastAt} ms sonra kuruldu; boşta süresi ${IDLE} ms dolmadan kurulmamalı`);
       assert.equal(status.updates.lastResult.outcome, "success");
+      assert.equal(feed.zipHits(), 1, "kurulumda hazır paket kullanıldı, yeniden indirilmedi");
       assert.match(service.log(), /9\.0\.1 sürümü hazır; kullanıcılar çalışıyor/);
       assert.deepEqual(counts(installRoot), before);
     });

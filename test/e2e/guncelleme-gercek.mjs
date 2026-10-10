@@ -97,13 +97,28 @@ try {
   }, { timeoutMs: 60_000, interval: 500 });
   ok(deferred.updates.deferred.version === "9.0.1", "9.0.1 bulundu ve ertelendi (kullanıcı çalışıyor)");
   ok(deferred.activity.busy === true, "servis yöneticisi sunucuyu meşgul görüyor");
+  // 2.1.0: kullanıcılar çalışırken paket arka planda indirilir + doğrulanır + açılır; servis/uygulama durmaz.
+  const prepared = await waitFor(async () => {
+    const status = await service.status();
+    return status.updates?.prepared?.version === "9.0.1" ? status : Promise.reject(new Error("hazırlanmadı"));
+  }, { timeoutMs: 60_000, interval: 500 });
+  ok(prepared.childPid === deferred.childPid && prepared.version === "9.0.0", `paket arka planda hazırlandı; uygulama süreci aynı (${prepared.childPid}), sürüm 9.0.0`);
   const adminContext = await browser.newContext({ viewport: { width: 1440, height: 900 }, locale: "tr-TR" });
   const admin = await login(adminContext, recorder.url, { username: "admin", password: ADMIN_PASSWORD });
+  // Yöneticinin zili: "YENİ SÜRÜM HAZIR · DestekOfis 9.0.1".
+  await admin.click('.hof-modal-backdrop.is-visible button:has-text("Tamam")', { timeout: 3000 }).catch(() => null);
+  await admin.waitForSelector(".topbar .top-actions > .icon-button .hof-bell-badge", { timeout: 30_000 });
+  await admin.click(".topbar .top-actions > .icon-button");
+  await admin.waitForSelector(".hof-alert-list", { timeout: 10_000 });
+  const bellText = (await admin.textContent(".hof-alert-list")).replace(/\s+/g, " ");
+  ok(/Sistem/.test(bellText) && /DestekOfis 9\.0\.1/.test(bellText) && /bir sonraki açılışında kendiliğinden kurar/.test(bellText), "yöneticinin zilinde 'DestekOfis 9.0.1 — İndirildi ve doğrulandı; sunucu bir sonraki açılışında kendiliğinden kurar'");
+  await admin.screenshot({ path: path.join(OUT, "00-zil-yonetici-yeni-surum-hazir.png") });
+  await admin.keyboard.press("Escape").catch(() => null);
   await admin.goto(`${recorder.url}/admin.html#system`);
   await admin.waitForSelector("#adm-update-body .adm-update-available", { timeout: 30_000 });
   const panel = (await admin.textContent("#adm-update")).replace(/\s+/g, " ");
   ok(/Yeni sürüm hazır: DestekOfis 9\.0\.1/.test(panel), "Yönetim → Sistem → Güncellemeler: 'Yeni sürüm hazır: DestekOfis 9.0.1'");
-  ok(/Kullanıcılar çalışırken bulundu, kurulmadı/.test(panel), "neden ekranda: kullanıcılar çalışırken bulundu");
+  ok(/Kullanıcılar çalışırken bulundu; indirildi ve doğrulandı\. Sunucu bir sonraki açılışta/.test(panel), "neden ekranda: kullanıcılar çalışırken bulundu; indirildi, sonraki açılışta kurulacak");
   ok(await admin.isVisible("#adm-update-apply"), "Şimdi Güncelle düğmesi görünür");
   await admin.locator("#adm-update").screenshot({ path: path.join(OUT, "01-hazir-yonetim-sistem.png") });
   await adminContext.close();
@@ -119,7 +134,7 @@ try {
   ok(maxGap < IDLE, `açık sekmenin istekleri arasındaki en uzun ara ${Math.round(maxGap / 1000)} sn < ${IDLE / 1000} sn`);
   ok(feed.listHits() - checksBefore >= 5, `bu sürede denetim/yeniden bakış sürdü (${feed.listHits() - checksBefore} sorgu)`);
   ok((await service.appVersion()) === "9.0.0", "açık sekme varken kurulmadı");
-  ok(feed.zipHits() === 0, "paket indirilmedi");
+  ok(feed.zipHits() === 1, `paket arka planda bir kez indirildi, kurulmadı (${feed.zipHits()})`);
   const mid = await service.status();
   ok(mid.activity.busy === true && mid.updates.deferred?.version === "9.0.1", "hâlâ meşgul ve 'hazır' bekliyor");
   await tab.screenshot({ path: path.join(OUT, "02-personel-acik-sekme.png") });

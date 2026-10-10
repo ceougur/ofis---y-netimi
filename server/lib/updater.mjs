@@ -6,8 +6,13 @@
 //   3. Paket (zip) boyutu ve SHA-256 özeti bildirgeyle birebir tutmalı.
 //   4. Zip içeriği güvenli yollarla ve CRC denetimiyle açılır; paket kendi sürümünü doğru bildirmeli.
 // Güncelleyici yalnızca app\ klasörüne yazar; data\ ve backups\ klasörlerine dokunmaz.
+//
+// Hazır paket (2.1.0, "arka planda indir, sonraki açılışta kur"): sunucu açıkken bulunan ama hemen kurulmayan sürüm
+// (kullanıcılar çalışıyor) indirilir, doğrulanır ve app\<sürüm> klasörüne açılır; imzalı bildirge + paket app\.hazir\<sürüm>\
+// altında saklanır. Hazırda yalnız EN YENİ sürüm durur. Açılışta hazır paket yeniden doğrulanır (bildirge imzası, sürüm, paket
+// SHA-256'sı) ve uygulama başlamadan kurulur; doğrulanamazsa silinir, kurulmaz.
 import { createHash, randomBytes } from "node:crypto";
-import { existsSync, mkdirSync, readFileSync, rmSync, statfsSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, statfsSync, writeFileSync } from "node:fs";
 import { open } from "node:fs/promises";
 import path from "node:path";
 import { readCurrent, readJsonFile, renameWithRetry, writeCurrent, writeJsonAtomic } from "./app-layout.mjs";
@@ -56,6 +61,7 @@ export function createUpdater({
   const statePath = path.join(appsDir, "update-state.json");
   const configPath = path.join(configDir, "guncelleme.json");
   const downloadDir = path.join(appsDir, ".indirilen");
+  const preparedDir = path.join(appsDir, ".hazir");
   // Kurulu sürüm her denetimde yeniden okunur (işlev verilebilir): servis yöneticisi yeniden başlamadan yeni sürüme
   // geçildiğinde de doğru sürümle karşılaştırılır. (2.0.6 sahada: açılıştaki sürüm akılda tutulduğu için kurulu
   // sürüm yeniden "yeni sürüm" sanıldı ve çalışan sürümün klasörü yeniden açılmaya çalışıldı.)
@@ -87,7 +93,7 @@ export function createUpdater({
 
   function state() {
     const stored = readJsonFile(statePath, {}) || {};
-    return { lastCheck: stored.lastCheck || null, failed: stored.failed && typeof stored.failed === "object" ? stored.failed : {}, history: Array.isArray(stored.history) ? stored.history : [] };
+    return { lastCheck: stored.lastCheck || null, failed: stored.failed && typeof stored.failed === "object" ? stored.failed : {}, history: Array.isArray(stored.history) ? stored.history : [], prepared: stored.prepared && typeof stored.prepared === "object" ? stored.prepared : null };
   }
 
   function saveState(mutate) {
@@ -221,8 +227,10 @@ export function createUpdater({
           continue;
         }
         let verified;
+        let envelope;
         try {
-          verified = verifyEnvelope(await fetchJson(candidate.manifestUrl, { limit: MAX_ENVELOPE_BYTES * 2, signal }), trustedKeys);
+          envelope = await fetchJson(candidate.manifestUrl, { limit: MAX_ENVELOPE_BYTES * 2, signal });
+          verified = verifyEnvelope(envelope, trustedKeys);
         } catch (error) {
           // Yedek yol da düşerse asıl (API) hatası bildirilir: "sunucuya ulaşılamadı" yeniden denenebilir kalır.
           if (candidate.fallback && candidate.primaryError && error.code !== "ABORTED") throw candidate.primaryError;
@@ -259,7 +267,7 @@ export function createUpdater({
           packageUrl = asset.url;
         } else if (candidate.packageUrlFor) packageUrl = candidate.packageUrlFor(manifest.package.name);
         else packageUrl = new URL(manifest.package.url || manifest.package.name, candidate.manifestUrl).href;
-        result = { status: "available", version: manifest.version, manifest, packageUrl, keyId, releaseUrl: candidate.htmlUrl || null, viaFallback: Boolean(candidate.fallback) };
+        result = { status: "available", version: manifest.version, manifest, packageUrl, keyId, envelope, releaseUrl: candidate.htmlUrl || null, viaFallback: Boolean(candidate.fallback) };
         break;
       }
       if (!result && incompatible) result = { status: "incompatible", ...incompatible };
@@ -297,6 +305,8 @@ export function createUpdater({
     const size = manifest.package.size;
     mkdirSync(downloadDir, { recursive: true });
     ensureFreeSpace(downloadDir, size * 4 + 64 * 1024 * 1024);
+    // Hazır pakette (arka planda önceden indirilmiş, doğrulanmış) yeniden indirilmez.
+    if (found.zipPath && existsSync(found.zipPath) && sha256File(found.zipPath) === manifest.package.sha256) return found.zipPath;
     const target = path.join(downloadDir, manifest.package.name);
     if (existsSync(target) && sha256File(target) === manifest.package.sha256) return target;
     const part = `${target}.part`;
@@ -402,6 +412,113 @@ export function createUpdater({
     }
   }
 
+  // ---------- Hazır paket (arka planda indirilmiş, sonraki açılışta kurulacak) ----------
+  const sameDir = (a, b) => path.resolve(a).toLowerCase() === path.resolve(b).toLowerCase();
+  // Hazırdaki paketleri ve onların app\<sürüm> açılımlarını siler. all: hepsi; değilse yalnız artık geçersiz olanlar
+  // (kurulu sürümden yeni olmayan ya da "kurulamadı" işaretli) ve keep dışındakiler. Çalışan, etkin ve önceki sürümün
+  // klasörüne asla dokunulmaz.
+  function discardPrepared({ all = false, keep = null, protectedDirs = [] } = {}) {
+    const saved = state();
+    const failed = saved.failed;
+    const current = readCurrent(appsDir) || {};
+    const running = installed();
+    const removed = [];
+    let entries = [];
+    try {
+      entries = readdirSync(preparedDir, { withFileTypes: true });
+    } catch {
+      entries = [];
+    }
+    for (const entry of entries) {
+      if (!entry.isDirectory()) continue;
+      const version = normalizeVersion(entry.name);
+      const stale = all || !version || (keep ? version !== keep : false) || failed[version] || (running && compareVersions(version, running) <= 0);
+      if (!stale) continue;
+      rmSync(path.join(preparedDir, entry.name), { recursive: true, force: true, maxRetries: 3 });
+      removed.push(entry.name);
+      if (!version) continue;
+      const dir = path.join(appsDir, version);
+      const guarded = version === running || version === current.version || version === current.previous || protectedDirs.filter(Boolean).some(item => sameDir(item, dir));
+      if (!guarded && existsSync(dir)) rmSync(dir, { recursive: true, force: true, maxRetries: 3 });
+    }
+    if (saved.prepared && removed.includes(saved.prepared.version)) {
+      saveState(next => {
+        next.prepared = null;
+      });
+    }
+    if (removed.length) log.info?.(`Hazırdaki güncelleme paketi silindi: ${removed.join(", ")}`);
+    return removed;
+  }
+
+  // Arka planda indir + doğrula (SHA-256) + app\<sürüm> klasörüne aç; imzalı bildirge ve paket app\.hazir\<sürüm>\ altında
+  // saklanır. Servis ve uygulama durmaz. Başarılı olunca öbür hazır paketler silinir (yalnız en yeni kalır).
+  async function prepare(found, { signal, onProgress, protectedDirs = [] } = {}) {
+    const { manifest } = found;
+    const version = manifest.version;
+    if (state().failed[version]) throw new UpdateError(`${version} sürümü daha önce kurulamadı; hazırlanmaz.`, "FAILED_VERSION");
+    if (!found.envelope) throw new UpdateError("İmzalı bildirge olmadan paket hazırlanmaz.", "ENVELOPE_INVALID");
+    const saved = state().prepared;
+    const keptZip = path.join(preparedDir, version, manifest.package.name);
+    if (saved?.version === version && saved.sha256 === manifest.package.sha256 && existsSync(keptZip) && existsSync(path.join(appsDir, version, ".paket.json"))) return saved;
+    const zip = await download(found, { signal, onProgress });
+    mkdirSync(preparedDir, { recursive: true });
+    const temp = path.join(preparedDir, `.${version}-${randomBytes(4).toString("hex")}.tmp`);
+    try {
+      mkdirSync(temp, { recursive: true });
+      const tempZip = path.join(temp, manifest.package.name);
+      if (zip === keptZip) writeFileSync(tempZip, readFileSync(zip));
+      else renameWithRetry(zip, tempZip);
+      writeFileSync(path.join(temp, MANIFEST_ASSET), `${JSON.stringify(found.envelope)}\n`);
+      stage(found, tempZip, { protectedDirs });
+      const dir = path.join(preparedDir, version);
+      rmSync(dir, { recursive: true, force: true, maxRetries: 3 });
+      renameWithRetry(temp, dir);
+    } catch (error) {
+      rmSync(temp, { recursive: true, force: true });
+      throw error;
+    }
+    const info = { version, sha256: manifest.package.sha256, keyId: found.keyId || null, package: manifest.package.name, stagedAt: new Date().toISOString() };
+    saveState(next => {
+      next.prepared = info;
+      next.history.push({ at: info.stagedAt, event: "prepared", version });
+    });
+    discardPrepared({ keep: version, protectedDirs });
+    return info;
+  }
+
+  // Açılışta: hazır paket yeniden doğrulanır. { ok: true, found } kurulabilir; { ok: false, reason } reddedildi (silindi);
+  // null: hazır paket yok ya da artık gerekmiyor.
+  function loadPrepared() {
+    const info = state().prepared;
+    if (!info?.version) return null;
+    const reject = reason => {
+      log.error?.(`Hazırdaki güncelleme paketi (${info.version}) kurulmadı: ${reason}`);
+      addHistory("prepared-rejected", { version: info.version, reason: String(reason).slice(0, 500) });
+      discardPrepared({ all: true });
+      return { ok: false, version: info.version, reason };
+    };
+    try {
+      if (compareVersions(info.version, installed()) <= 0) {
+        discardPrepared();
+        return null;
+      }
+      if (state().failed[info.version]) return reject("bu sürüm daha önce kurulamadı");
+      const dir = path.join(preparedDir, info.version);
+      const envelope = readJsonFile(path.join(dir, MANIFEST_ASSET), null);
+      if (!envelope) return reject("imzalı bildirge bulunamadı");
+      const { manifest, keyId } = verifyEnvelope(envelope, trustedKeys);
+      if (manifest.version !== info.version) return reject(`bildirgedeki sürüm (${manifest.version}) hazır sürümle aynı değil`);
+      const assessment = assessManifest(manifest, { currentVersion: installed(), channel: config().channel, nodeVersion, bootstrapVersion });
+      if (!assessment.ok) return reject(assessment.reason);
+      const zipPath = path.join(dir, manifest.package.name);
+      if (!existsSync(zipPath)) return reject("paket dosyası bulunamadı");
+      if (sha256File(zipPath) !== manifest.package.sha256) return reject("paketin özeti (SHA-256) bildirgeyle tutmuyor; paket bozuk veya değiştirilmiş");
+      return { ok: true, found: { status: "available", version: manifest.version, manifest, keyId, envelope, zipPath, packageUrl: null, prepared: true } };
+    } catch (error) {
+      return reject(error.message);
+    }
+  }
+
   // ---------- Etkinleştirme / onay / geri dönüş ----------
   function activate({ version, previous, backup, schemaBefore }) {
     const data = writeCurrent(appsDir, { version, previous, pending: true, backup, schemaBefore, selectedAt: new Date().toISOString() });
@@ -432,5 +549,5 @@ export function createUpdater({
     });
   }
 
-  return { config, saveConfig, state, check, download, stage, activate, confirm, rollback, recordFailure, clearFailure, addHistory, paths: { statePath, configPath, downloadDir } };
+  return { config, saveConfig, state, check, download, stage, prepare, loadPrepared, discardPrepared, activate, confirm, rollback, recordFailure, clearFailure, addHistory, paths: { statePath, configPath, downloadDir, preparedDir } };
 }

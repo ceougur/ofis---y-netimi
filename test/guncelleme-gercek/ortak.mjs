@@ -34,15 +34,17 @@ export const keysOnce = (() => {
 })();
 
 // Depodaki uygulamadan imzalı (test anahtarı) bir güncelleme paketi üretir.
-export function buildTestRelease(work, version) {
-  const source = makeVersion(path.join(work, `kaynak-${version}`), version);
+export function buildTestRelease(work, version, versionOptions = {}) {
+  const source = makeVersion(path.join(work, `kaynak-${version}`), version, versionOptions);
   return buildRelease(source, path.join(work, `yayin-${version}`), keysOnce());
 }
 
 // GitHub Releases biçiminde yanıt veren yerel sahte yayın kaynağı. down: true iken her şeye 503 (sunucu açılırken
-// internet/GitHub yokmuş gibi). Her isteğin zamanı ve yolu kaydedilir.
-export async function startFeed({ releases = [], down = false } = {}) {
-  const state = { releases, down };
+// internet/GitHub yokmuş gibi). Her isteğin zamanı ve yolu kaydedilir. Paket indirmesi bozulabilir (zipMode[sürüm]:
+// "cut" = yarısı gönderilip bağlantı koparılır, "sha" = aynı boyutta bir baytı değişmiş paket) ve yavaşlatılabilir
+// (zipDelayMs: her 64 KB'den sonra bekleme).
+export async function startFeed({ releases = [], down = false, zipMode = {}, zipDelayMs = 0 } = {}) {
+  const state = { releases, down, zipMode: { ...zipMode }, zipDelayMs };
   const hits = [];
   const server = http.createServer((req, res) => {
     const url = new URL(req.url, "http://localhost");
@@ -75,17 +77,45 @@ export async function startFeed({ releases = [], down = false } = {}) {
       res.end(JSON.stringify({ message: "Not Found" }));
       return;
     }
-    record(200);
-    const data = readFileSync(file);
+    const mode = file.endsWith(".zip") ? state.zipMode[match[1]] : null;
+    record(mode ? `200-${mode}` : 200);
+    let data = readFileSync(file);
+    if (mode === "sha") {
+      data = Buffer.from(data);
+      data[Math.floor(data.length / 2)] ^= 0xff;
+    }
     res.writeHead(200, { "content-type": "application/octet-stream", "content-length": data.length });
-    res.end(data);
+    if (mode === "cut") {
+      res.write(data.subarray(0, Math.floor(data.length / 2)), () => setTimeout(() => res.destroy(), 50));
+      return;
+    }
+    if (!state.zipDelayMs || !file.endsWith(".zip")) {
+      res.end(data);
+      return;
+    }
+    let offset = 0;
+    const next = () => {
+      if (res.destroyed) return;
+      if (offset >= data.length) return res.end();
+      res.write(data.subarray(offset, offset + 65536));
+      offset += 65536;
+      setTimeout(next, state.zipDelayMs);
+    };
+    next();
   });
   await new Promise(resolve => server.listen(0, "127.0.0.1", resolve));
   return {
     url: `http://127.0.0.1:${server.address().port}`,
     hits,
     listHits: () => hits.filter(hit => hit.path === "/repos/test/repo/releases").length,
-    zipHits: () => hits.filter(hit => hit.path.endsWith(".zip")).length,
+    zipHits: version => hits.filter(hit => hit.path.endsWith(".zip") && (!version || hit.path.startsWith(`/download/${version}/`))).length,
+    setZipMode(version, mode) {
+      if (mode) state.zipMode[version] = mode;
+      else delete state.zipMode[version];
+    },
+    setZipDelay(ms) {
+      state.zipDelayMs = ms;
+    },
     setReleases(next) {
       state.releases = next;
     },
@@ -99,9 +129,11 @@ export const releaseEntry = built => ({ version: built.version, files: { [path.b
 
 // Kurulum kökü: app\<sürüm> (depodaki uygulamanın kopyası), app\current.json, config\guncelleme.json, data (programın kendi
 // API'siyle girilmiş kullanıcı + cari + Kasa hareketi). Lisans denetimi yalnız bu hazırlıkta kapalıdır (servis açıkken gerçek).
-export async function prepareInstall(installRoot, { version = "9.0.0", config } = {}) {
+// previous: geri dönüş için duran önceki sürüm klasörü (app\<önceki>, current.json'da previous).
+export async function prepareInstall(installRoot, { version = "9.0.0", config, previous = null } = {}) {
   makeVersion(path.join(installRoot, "app", version), version);
-  writeFileSync(path.join(installRoot, "app", "current.json"), JSON.stringify({ version }));
+  if (previous) makeVersion(path.join(installRoot, "app", previous), previous);
+  writeFileSync(path.join(installRoot, "app", "current.json"), JSON.stringify(previous ? { version, previous } : { version }));
   if (config) {
     mkdirSync(path.join(installRoot, "config"), { recursive: true });
     writeFileSync(path.join(installRoot, "config", "guncelleme.json"), JSON.stringify(config));

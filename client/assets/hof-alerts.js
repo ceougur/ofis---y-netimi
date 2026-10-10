@@ -130,6 +130,34 @@
     }
   }
 
+  // 2.1.0: yöneticiye "yeni sürüm hazır" (Yönetim → Sistem → Güncellemeler ile aynı bilgi). Yalnız sistem yönetimi yetkisi
+  // olanlara; sayfa açılışında ve takvim yenilendikçe en çok 30 dakikada bir sorulur (kendi zamanlayıcısı yok).
+  let updateInfo = null;
+  let updateAskedAt = 0;
+  async function loadUpdate() {
+    if (!HOF.user || !HOF.can("system.manage")) return;
+    if (Date.now() - updateAskedAt < 30 * 60_000) return;
+    updateAskedAt = Date.now();
+    try {
+      const info = await HOF.api("/api/admin/update");
+      updateInfo = info?.available ? info : null;
+    } catch {
+      updateInfo = null;
+    }
+  }
+  function updateAlerts() {
+    const info = updateInfo;
+    if (!info?.available || !HOF.can("system.manage")) return [];
+    const version = info.available.version;
+    const ready = info.prepared?.version === version;
+    const text = !info.autoUpdate
+      ? "Kendiliğinden kurulum kapalı; kurmak için Yönetim → Sistem → Şimdi Güncelle."
+      : ready
+        ? "İndirildi ve doğrulandı; sunucu bir sonraki açılışında kendiliğinden kurar. Hemen kurmak için Yönetim → Sistem → Şimdi Güncelle."
+        : "Sunucu boşta ya da mesai dışındayken kendiliğinden kurar. Hemen kurmak için Yönetim → Sistem → Şimdi Güncelle.";
+    return [{ id: `update|${version}`, type: "update", tone: "info", eyebrow: "YENİ SÜRÜM HAZIR", title: `DestekOfis ${version}`, when: ready ? "İndirildi" : "Hazır", text, admin: true, days: 0, rank: 5 }];
+  }
+
   function alerts() {
     const data = HOF.dues?.data() || { items: [], deadlines: [] };
     const out = [];
@@ -182,6 +210,7 @@
       });
     }
     out.push(...taskAlerts());
+    out.push(...updateAlerts());
     // Kişinin zil listesinden kaldırdıkları (v2.0.2) ne listede ne sağ altta görünür.
     for (let index = out.length - 1; index >= 0; index -= 1) if (dismissed.has(out[index].id)) out.splice(index, 1);
     // Önce alınmayan tahsilatlar (en çok gecikenden), sonra geciken görevler, son günler, yaklaşanlar.
@@ -325,7 +354,7 @@
     const node = HOF.el(
       "div",
       { class: `hof-notice is-${alert.tone}`, role: alert.tone === "late" ? "alert" : "status" },
-      `<span class="hof-notice-icon" aria-hidden="true">${alert.type === "unpaid" || alert.type === "upcoming" ? "₺" : alert.urgent ? "!" : alert.type === "task" ? "✓" : alert.summary ? "🔔" : "⏰"}</span>
+      `<span class="hof-notice-icon" aria-hidden="true">${alert.type === "unpaid" || alert.type === "upcoming" ? "₺" : alert.urgent ? "!" : alert.type === "task" ? "✓" : alert.type === "update" ? "↑" : alert.summary ? "🔔" : "⏰"}</span>
       <div class="hof-notice-body">
         <p class="hof-notice-eyebrow">${esc(alert.eyebrow)}</p>
         <b class="hof-notice-title">${esc(alert.title)}</b>
@@ -337,6 +366,7 @@
           ${alert.planId ? '<button type="button" data-act="plan">Taksit Kartı</button>' : ""}
           ${alert.summary ? '<button type="button" data-act="list">Tümünü Gör</button>' : ""}
           ${alert.type === "task" && !alert.caseKey ? '<button type="button" data-act="tasks">Görevler</button>' : ""}
+          ${alert.admin ? '<button type="button" data-act="admin">Yönetim → Sistem</button>' : ""}
         </div>
         ${canDone(alert) ? `<p class="hof-notice-hint">${esc(doneHint(alert))}</p>` : ""}
       </div>
@@ -356,6 +386,7 @@
       else if (act === "plan") HOF.plans?.open(alert.planId);
       else if (act === "list") openPanel();
       else if (act === "tasks") HOF.workspace?.openTasks?.();
+      else if (act === "admin") window.location.assign("/admin.html#system");
       hide(node);
     });
     // Üzerine gelince ya da klavyeyle odaklanınca süre durur.
@@ -489,13 +520,14 @@
       ["Yaklaşan randevu ve planlı tarihler", list.filter(item => item.type === "event")],
       ["Görevler", list.filter(item => item.type === "task" && !item.urgent)],
       ["Yaklaşan tahsilatlar (7 gün)", list.filter(item => item.type === "upcoming")],
+      ["Sistem", list.filter(item => item.type === "update")],
     ].filter(([, items]) => items.length);
     const body = groups.length
       ? groups
           .map(
             ([title, items]) => `<section class="hof-alert-group"><h3>${esc(title)} <span>${items.length}</span></h3><ul>${items
               .map(
-                (item, index) => `<li class="is-${esc(item.tone)}"><span class="hof-alert-when">${esc(item.when || "")}</span><span class="hof-alert-main"><b>${esc(item.title)}</b><small>${esc(item.text)}</small></span><span class="hof-alert-buttons"><button type="button" class="hof-alert-dismiss" data-dismiss="${esc(title)}|${index}" title="Bu bildirimi listemden kaldır" aria-label="Bildirimi kaldır">✕</button>${canDone(item) ? `<button type="button" class="hof-button hof-button-small hof-button-done" data-done="${esc(title)}|${index}" title="${esc(doneHint(item))}">✓ Gerçekleştirildi</button>` : ""}${item.due && canPay(item.due) ? `<button type="button" class="hof-button hof-button-small" data-pay="${esc(title)}|${index}">Tahsilat Gir</button>` : ""}${item.caseKey ? `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-go="${esc(title)}|${index}">Kayda Git</button>` : ""}${item.planId ? `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-plan="${esc(title)}|${index}">Taksit Kartı</button>` : ""}</span></li>`,
+                (item, index) => `<li class="is-${esc(item.tone)}"><span class="hof-alert-when">${esc(item.when || "")}</span><span class="hof-alert-main"><b>${esc(item.title)}</b><small>${esc(item.text)}</small></span><span class="hof-alert-buttons"><button type="button" class="hof-alert-dismiss" data-dismiss="${esc(title)}|${index}" title="Bu bildirimi listemden kaldır" aria-label="Bildirimi kaldır">✕</button>${canDone(item) ? `<button type="button" class="hof-button hof-button-small hof-button-done" data-done="${esc(title)}|${index}" title="${esc(doneHint(item))}">✓ Gerçekleştirildi</button>` : ""}${item.due && canPay(item.due) ? `<button type="button" class="hof-button hof-button-small" data-pay="${esc(title)}|${index}">Tahsilat Gir</button>` : ""}${item.caseKey ? `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-go="${esc(title)}|${index}">Kayda Git</button>` : ""}${item.planId ? `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-plan="${esc(title)}|${index}">Taksit Kartı</button>` : ""}${item.admin ? '<a class="hof-button hof-button-small hof-button-ghost" href="/admin.html#system">Yönetim → Sistem</a>' : ""}</span></li>`,
               )
               .join("")}</ul></section>`,
           )
@@ -554,6 +586,7 @@
     } catch {
       tasks = [];
     }
+    await loadUpdate();
     enqueue();
   }
   const tasksSoon = (() => {
@@ -583,7 +616,7 @@
     // Açılışta ekran yerleşsin diye bir süre beklenir; takvim geldikçe yeni bildirimler kuyruğa girer.
     // Kaldırılanlar önce gelir; ilk bildirim kuyruğu kaldırılanları göstermesin.
     loadDismissed().finally(() => setTimeout(loadTasks, 2500));
-    HOF.on("dues", () => setTimeout(enqueue, 300));
+    HOF.on("dues", () => setTimeout(() => loadUpdate().finally(enqueue), 300));
     // Olay tabanlı akış (v2.0.2): gün dönümünde sunucu "alerts.refresh" gönderir; takvim yeniden alınır (sunucuda
     // parmak izi değiştiği için bir kez hesaplanır). Sekme uzun süre arka planda kaldıysa görünür olunca da yenilenir.
     HOF.on("live:alerts.refresh", () => {

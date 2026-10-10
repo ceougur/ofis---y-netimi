@@ -46,7 +46,7 @@ const clock = () => ({ localTime: new Date().toString(), timeZone: Intl.DateTime
 process.send?.({ type: "hazir", port: supervisor.port, ...clock() });
 process.on("message", async message => {
   if (message?.type === "durum") {
-    process.send({ type: "durum", id: message.id, updates: supervisor.updates?.status() || null, activity: supervisor.activity(), phase: supervisor.state.phase, version: supervisor.state.info.version || null, ...clock() });
+    process.send({ type: "durum", id: message.id, updates: supervisor.updates?.status() || null, activity: supervisor.activity(), phase: supervisor.state.phase, version: supervisor.state.info.version || null, childPid: supervisor.child?.()?.pid || null, ...clock() });
   } else if (message?.type === "dur") {
     await supervisor.stop();
     process.exit(0);

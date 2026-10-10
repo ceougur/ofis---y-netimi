@@ -1,10 +1,10 @@
 // Otomatik güncelleme — ÜRETİM SÜRELERİYLE gerçek koşu (bir kez; kanıt için). Kısaltılmış süre YOK: 15 dk boşta, 60 dk yeniden
-// bakış, açılışta ağ yoksa 60 sn sonra yeniden deneme, 6 saatlik periyodik denetim (bu koşuda süresi dolmaz) — hepsi üretim
-// değerleri. Gerçek: ayrı süreçte servis yöneticisi + uygulama, gerçek Chromium sekmeleri (Playwright), gerçek saat.
+// bakış, açılışta ağ yoksa 60 sn sonra yeniden deneme, saatlik periyodik denetim (2.1.0; önceden 6 sa), açılışta hazır paket
+// varken en çok 60 sn son denetim — hepsi üretim değerleri. Gerçek: ayrı süreçte servis yöneticisi + uygulama, gerçek Chromium sekmeleri (Playwright), gerçek saat.
 // Tek zorlanan koşul S2'de "mesai içi"dir: koşu günü (10.10.2026) Cumartesi olduğundan gerçek saate göre her an mesai dışıdır;
 // mesai içi davranışı (kullanıcı çalışırken kurulmaz) ancak mesai kuralını "hep mesai içi" yaparak gözlenebilir.
 //
-// Senaryolar (--senaryo s1,s4,s5,s2,s6; varsayılan s1,s4,s5,s2 — s6 ~6,5 saat sürdüğü için yalnız açıkça istenirse):
+// Senaryolar (--senaryo s1,s4,s5,s7,s2,s6; varsayılan s1,s4,s5,s7,s2 — s6 ~1,2 saat sürdüğü için yalnız açıkça istenirse):
 //  s1  açılışta yeni sürüm → kimse kullanmıyor → kurulur (gerçek saat).
 //  s4  mesai dışı saat dilimi (TZ) + açık sekme (kullanıcı etkin) → yine de kurulur.
 //  s5  kendiliğinden kur kapalı → açılışta bulunur, "hazır" görünür, 3 dk beklenir kurulmaz → ekrandan Şimdi Güncelle → kurulur.
@@ -14,11 +14,14 @@
 //      sayfa içinden taklit edilir — bu ortamda gerçek pencere küçültme yok). Kurulum anları ölçülür. D'de beklenen (ölçüm,
 //      gizli-sekme-olcum.mjs): gizli sekme 5 dk'da bir tablo eşitlemesi isteği gönderdiği için sunucu hiç 15 dk boş kalmaz →
 //      mesai içinde KURULMAZ (ürün davranışı; karar ana oturumda).
-//  s6  6 saatlik periyodik denetim, ÜRETİM süresiyle (6 sa + 0–30 dk rastgele kayma; kısaltma yok): iki servis (kendiliğinden
+//  s6  saatlik periyodik denetim, ÜRETİM süresiyle (1 sa + 0–5 dk rastgele kayma; kısaltma yok): iki servis (kendiliğinden
 //      kur AÇIK ve KAPALI), kimse bağlı değil. Açılışta kaynakta yeni sürüm YOK; açılış denetimi bitince 9.0.1 yayımlanır →
-//      sonraki sorgu yalnız 6 saatlik zamanlayıcıdan gelebilir. Açıkta kurulur; kapalıda "hazır" görünür, kurulmaz.
+//      sonraki sorgu yalnız saatlik zamanlayıcıdan gelebilir. Açıkta kurulur; kapalıda "hazır" görünür, indirilmez, kurulmaz.
+//  s7  "arka planda indir, sonraki açılışta kur" (2.1.0): mesai içi zorlanır; açılışta internet yok → 60 sn sonra (üretim) yeniden
+//      denemede sürüm bulunur, personel sekmesi açık → kurulmaz, paket arka planda indirilip doğrulanır (uygulama süreci aynı);
+//      servis durdurulur (akşam), internetsiz yeniden başlatılır (sabah) → uygulama eski sürümle hiç açılmadan hazır sürüm kurulur.
 // Çıktı: docs/kanit/2026-10-10/otomatik-guncelleme/gercek/<senaryo>/ (sonuc.json, servis.log, istekler.json, ekran görüntüleri).
-import { copyFileSync, mkdirSync, mkdtempSync, readdirSync, rmSync } from "node:fs";
+import { copyFileSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync } from "node:fs";
 import http from "node:http";
 import { tmpdir } from "node:os";
 import path from "node:path";
@@ -31,7 +34,7 @@ const argOf = name => {
   const index = process.argv.indexOf(name);
   return index >= 0 ? process.argv[index + 1] : null;
 };
-const wanted = (argOf("--senaryo") || "s1,s4,s5,s2").split(",");
+const wanted = (argOf("--senaryo") || "s1,s4,s5,s7,s2").split(",");
 const work = mkdtempSync(path.join(tmpdir(), "destekofis-gercek-kos-"));
 const release = releaseEntry(buildTestRelease(work, "9.0.1"));
 const MIN = 60_000;
@@ -206,11 +209,43 @@ try {
     results.s5 = await finish(ctx, { ozet: { bulunmaSonrasi3DkSurum: stillOld, ucDkIcindePaketIndirme: zipBefore, simdiGuncelleTiklamadanKurulumaSn: Math.round((done - clickedAt) / 1000), surum: await ctx.service.appVersion(), bulunmaAni: new Date(foundAt).toISOString() }, ekran: screens });
   }
 
+  if (wanted.includes("s7")) {
+    // S7: arka planda indir, sonraki açılışta kur — üretim süreleri; yalnız mesai içi zorlanır (Cumartesi).
+    const ctx = await setup("s7-sonraki-acilista-kur", { feed: { releases: [release], down: true }, quiet: "never" });
+    const tab = await openTab(browser, ctx.recorder.url, STAFF);
+    const pidBefore = (await ctx.service.status()).childPid;
+    ctx.feed.setDown(false);
+    const ready = await waitFor(async () => {
+      const value = await ctx.service.status();
+      return value.updates?.prepared?.version === "9.0.1" ? value : Promise.reject(new Error("hazırlanmadı"));
+    }, { timeoutMs: 5 * MIN, interval: 500 });
+    const preparedAt = Date.now();
+    const screens = await adminScreens(browser, ctx.recorder.url, ctx.dir, "1-hazir");
+    await tab.page.screenshot({ path: path.join(ctx.dir, "1-personel-acik-sekme.png") });
+    const day = { surum: ready.version, uygulamaSureciOnce: pidBefore, uygulamaSureciSonra: ready.childPid, mesgul: ready.activity.busy, hazir: ready.updates.prepared, paketIndirme: ctx.feed.zipHits(), acilistanHaziraSn: Math.round((preparedAt - ctx.started) / 1000) };
+    await tab.context.close();
+    // Akşam: servis durur. Sabah: internet yokken açılır.
+    const logOffset = ctx.service.log().length;
+    await ctx.service.stop();
+    ctx.feed.setDown(true);
+    await ctx.recorder.close();
+    const restartAt = Date.now();
+    ctx.service = await startService(ctx.installRoot, { feed: ctx.feed.url, quiet: "never" });
+    ctx.recorder = await startRecorder(ctx.service.base);
+    const boot = readFileSync(ctx.service.logFile, "utf8").split("DestekOfis servis yöneticisi").at(-1);
+    const starts = [...boot.matchAll(/Uygulama başlatılıyor \(([^,]+),/g)].map(match => match[1].replace(/\\/g, "/"));
+    const after = await ctx.service.status();
+    const tab2 = await openTab(browser, ctx.recorder.url, STAFF);
+    await tab2.page.screenshot({ path: path.join(ctx.dir, "2-sabah-personel.png") });
+    await tab2.context.close();
+    results.s7 = await finish(ctx, { ozet: { gunIci: day, sabahSurum: await ctx.service.appVersion(), sabahUygulamaBaslatmalari: starts, sabahSonuc: after.updates?.lastResult || null, yenidenBaslatmadanHazirOlanaSn: Math.round((Date.now() - restartAt) / 1000), paketIndirmeToplam: ctx.feed.zipHits(), dunkuGunlukBoyu: logOffset }, ekran: screens });
+  }
+
   if (wanted.includes("s6")) {
-    // S6: 6 saatlik periyodik denetim — üretim süresi, gerçek saat, kimse bağlı değil.
+    // S6: saatlik periyodik denetim — üretim süresi, gerçek saat, kimse bağlı değil.
     const H = 60 * MIN;
     const runs = [];
-    for (const plan of [{ name: "s6-6sa-kur-acik" }, { name: "s6-6sa-kur-kapali", config: { enabled: false } }]) {
+    for (const plan of [{ name: "s6-1sa-kur-acik" }, { name: "s6-1sa-kur-kapali", config: { enabled: false } }]) {
       const ctx = await setup(plan.name, { config: plan.config, feed: { releases: [] } });
       // Açılış denetimi (kaynakta yeni sürüm yok) bitsin; sonra 9.0.1 yayımlanır.
       const status = await waitFor(async () => {
@@ -225,7 +260,7 @@ try {
       console.log(`[${stamp()}] ${plan.name}: açılış denetimi ${new Date(firstCheck).toISOString()}, 9.0.1 yayımlandı`);
       runs.push(run);
     }
-    const deadline = Math.min(...runs.map(run => run.firstCheck)) + 7 * H;
+    const deadline = Math.min(...runs.map(run => run.firstCheck)) + 1.5 * H;
     const done = run => (run.plan.config ? run.afterCheck : run.installedAt);
     while (Date.now() < deadline && runs.some(run => !done(run))) {
       for (const run of runs) {
@@ -250,8 +285,8 @@ try {
           console.log(`[${stamp()}] ${run.plan.name}: KURULDU`);
         }
         if (run.plan.config && run.foundAt && !run.afterCheck && Date.now() - run.foundAt >= 5 * MIN) {
-          run.afterCheck = { bulunmaSonrasi5DkSurum: await run.ctx.service.appVersion(), paketIndirme: run.ctx.feed.zipHits() };
-          run.screens = await adminScreens(browser, run.ctx.recorder.url, run.ctx.dir, "hazir-6sa-sonra");
+          run.afterCheck = { bulunmaSonrasi5DkSurum: await run.ctx.service.appVersion(), paketIndirme: run.ctx.feed.zipHits(), hazirPaket: (await run.ctx.service.status()).updates?.prepared || null };
+          run.screens = await adminScreens(browser, run.ctx.recorder.url, run.ctx.dir, "hazir-1sa-sonra");
           run.events.push({ at: stamp(), olay: "bulunduktan 5 dk sonra", ...run.afterCheck });
         }
       }
@@ -264,7 +299,7 @@ try {
           ilkSorgu: new Date(run.firstCheck).toISOString(),
           ikinciSorgu: run.periodicHitAt ? new Date(run.periodicHitAt).toISOString() : null,
           ikiSorguArasiSaat: run.periodicHitAt ? Math.round(((run.periodicHitAt - run.firstCheck) / H) * 1000) / 1000 : null,
-          beklenenAralikSaat: "6,000–6,500 (6 sa + 0–30 dk kayma)",
+          beklenenAralikSaat: "1,000–1,083 (1 sa + 0–5 dk kayma)",
           kurulduIlkSorgudanSaat: run.installedAt ? Math.round(((run.installedAt - run.firstCheck) / H) * 1000) / 1000 : null,
           bulunduHazirGorundu: run.plan.config ? Boolean(run.foundAt) : "kendiliğinden kur açık — bulunduğu anda kuruldu",
           ...(run.afterCheck || {}),
