@@ -2178,21 +2178,23 @@ try {
   // Hakem K5 (10.10.2026; plan §7 "cash-negative ve cash-blocked kodlarına accountId", §3.9 cashForce): banka hesabının eksi bakiye reddi Kasa'nınkiyle
   // aynı kod + accountId. Aynı istekte Kasa ve banka hesabı eksiye düşerse önce Kasa sorulur (HOF.api); Kasa'nın onayı banka hesabını sessizce geçmez
   // (HOF.api negativeOk:false ekler) — Garanti'nin sorusu işlemin adıyla ("Yine de İptal Et"), hesabın adı ve bakiyesiyle ayrıca gelir.
-  await step("40b. Hakem K5: aynı iptalde Kasa ve Garanti eksiye düşer → önce Kasa sorusu, Kasa onayı Garanti'yi sessizce geçmez: Garanti'nin Eksi Bakiye sorusu (“Yine de İptal Et”, adı ve bakiyesiyle); onaylarla iptal; Kasa −5.000, Garanti −23.000", async () => {
+  // act: "cancel" (İptal Et; gövdeli istek) ya da "delete" (Sil; silmede onay adrese eklenir: ?cashForce=1&negativeOk=0).
+  const mixedNegative = async act => {
+    const words = act === "cancel" ? { ask: "Yine de iptal edilsin mi?", yes: "Yine de İptal Et", status: "cancelled" } : { ask: "Yine de silinsin mi?", yes: "Yine de Sil", status: "silindi" };
     await selectKabul();
     const kasa = async () => (await must("Kasa", api.get("/api/workspace/cash"))).byMethod.cash;
     const k0 = await kasa();
-    if (k0 > 0) await must("Kasa'yı sıfırla", api.post("/api/workspace/cash", { kind: "out", amount: k0.toFixed(2).replace(".", ","), date: "2026-10-08", description: "K5 sıfırlama" }));
+    if (k0 > 0) await must("Kasa'yı sıfırla", api.post("/api/workspace/cash", { kind: "out", amount: k0.toFixed(2).replace(".", ","), date: "2026-10-08", description: `K5 sıfırlama ${act}` }));
     const g0 = await kabulBalance("Garanti BBVA");
-    const doc = await must("nakit + havale peşinli satış", api.post("/api/workspace/invoices", { kind: "sale", accountId: kabul.abc.id, issueDate: "2026-10-08", pricesIncludeVat: true, lines: [{ name: "Hizmet K5", qty: 1, unitPrice: 10000, discountRate: 0, vatRate: 0 }], payment: { cash: [{ amount: "5000", method: "cash", lineKey: "k5-nakit" }, { amount: "5000", method: "bank", bankAccountId: kabul.garanti.id, lineKey: "k5-havale" }], cheques: [], endorse: [], rest: "open" }, force: true, similarOk: true }));
-    await must("Kasa'dan ödeme", api.post("/api/workspace/cash", { kind: "out", amount: "5000", date: "2026-10-08", description: "K5 kira" }));
+    const doc = await must("nakit + havale peşinli satış", api.post("/api/workspace/invoices", { kind: "sale", accountId: kabul.abc.id, issueDate: "2026-10-08", pricesIncludeVat: true, lines: [{ name: `Hizmet K5 ${act}`, qty: 1, unitPrice: 10000, discountRate: 0, vatRate: 0 }], payment: { cash: [{ amount: "5000", method: "cash", lineKey: `k5-nakit-${act}` }, { amount: "5000", method: "bank", bankAccountId: kabul.garanti.id, lineKey: `k5-havale-${act}` }], cheques: [], endorse: [], rest: "open" }, force: true, similarOk: true }));
+    await must("Kasa'dan ödeme", api.post("/api/workspace/cash", { kind: "out", amount: "5000", date: "2026-10-08", description: `K5 kira ${act}` }));
     ok((await kasa()) === 0 && (await kabulBalance("Garanti BBVA")) === g0 + 5000, `hazırlık: Kasa 0, Garanti ${g0 + 5000} (${await kabulBalance("Garanti BBVA")})`);
     const inv = `${modal} .hof-invoices-modal`;
     await admin.evaluate(id => window.HOF.invoices.openDoc(id), doc.id);
-    await admin.waitForSelector(`${inv} [data-act="cancel"]`, { timeout: 10000 });
-    await admin.click(`${inv} [data-act="cancel"]`);
+    await admin.waitForSelector(`${inv} [data-act="${act}"]`, { timeout: 10000 });
+    await admin.click(`${inv} [data-act="${act}"]`);
     await admin.waitForSelector(`${reasonForm} [name="reason"]`, { timeout: 8000 });
-    await admin.fill(`${reasonForm} [name="reason"]`, "hakem K5 ekran denemesi");
+    await admin.fill(`${reasonForm} [name="reason"]`, `hakem K5 ekran denemesi (${act})`);
     await admin.click(`${reasonForm} button[type="submit"]`);
     // Gelen bütün soruları sırayla oku ve onayla (en çok 4).
     const asked = [];
@@ -2200,7 +2202,7 @@ try {
       const appeared = await admin.waitForSelector(`${top} [data-answer="yes"]`, { timeout: round ? 4000 : 8000 }).then(() => true).catch(() => false);
       if (!appeared) break;
       asked.push({ title: await textOf(admin, `${top} .hof-modal-title`), text: await textOf(admin, `${top} .hof-modal-text`), yes: await textOf(admin, `${top} [data-answer="yes"]`) });
-      if (asked.length === 2) await shot(admin, "hakem-k5-kasa-sonra-garanti-sorusu");
+      if (asked.length === 2) await shot(admin, `hakem-k5-kasa-sonra-garanti-sorusu-${act}`);
       await admin.waitForTimeout(400);
       await admin.click(`${top} [data-answer="yes"]`);
       await admin.waitForTimeout(1000);
@@ -2209,11 +2211,61 @@ try {
     ok(asked[0]?.title === "Kasa Eksiye Düşecek" && !has(asked[0]?.text, "Garanti"), `ilk soru Kasa'nın: ${asked[0]?.title} · ${asked[0]?.text?.slice(0, 120)}`);
     const bankQuestion = asked.find(q => q.title === "Eksi Bakiye");
     ok(Boolean(bankQuestion), `Kasa onayından sonra Garanti ayrıca soruldu: ${asked.map(q => q.title).join(" → ")}`);
-    ok(has(bankQuestion?.text, `Garanti BBVA · Ana TL Hesabı hesabında`) && has(bankQuestion?.text, "Yine de iptal edilsin mi?") && bankQuestion?.yes === "Yine de İptal Et", `Garanti sorusu hesabın adı ve bakiyesiyle, işlemin adıyla: ${bankQuestion?.text?.slice(0, 200)} · “${bankQuestion?.yes}”`);
-    ok((await docStatus(doc.id)) === "cancelled", "onaylarla fatura İptal Edildi");
+    ok(has(bankQuestion?.text, `Garanti BBVA · Ana TL Hesabı hesabında`) && has(bankQuestion?.text, words.ask) && bankQuestion?.yes === words.yes, `Garanti sorusu hesabın adı ve bakiyesiyle, işlemin adıyla: ${bankQuestion?.text?.slice(0, 200)} · “${bankQuestion?.yes}”`);
+    ok((await docStatus(doc.id)) === words.status, `onaylarla fatura ${words.status} (${await docStatus(doc.id)})`);
     ok((await kasa()) === -5000 && (await kabulBalance("Garanti BBVA")) === g0, `Kasa −5.000, Garanti ${g0} (${await kasa()} · ${await kabulBalance("Garanti BBVA")})`);
     const integrity = await must("Mutabakat Testi", api.get("/api/workspace/ledger/integrity"));
-    ok(integrity.ok === true, "Kabul Şirketi'nde mutabakat ok (hakem K5)");
+    ok(integrity.ok === true, `Kabul Şirketi'nde mutabakat ok (hakem K5, ${act})`);
+    await closeAll(admin);
+  };
+  await step("40b. Hakem K5: aynı iptalde Kasa ve Garanti eksiye düşer → önce Kasa sorusu, Kasa onayı Garanti'yi sessizce geçmez: Garanti'nin Eksi Bakiye sorusu (“Yine de İptal Et”, adı ve bakiyesiyle); onaylarla iptal; Kasa −5.000, Garanti aynı", () => mixedNegative("cancel"), { after: backToFirst });
+  await step("40c. Hakem K5: aynı kalıp Fatura Sil'de (onay adreste: ?cashForce=1&negativeOk=0) → Kasa sorusu, sonra Garanti'nin “Yine de Sil” sorusu; onaylarla silinir", () => mixedNegative("delete"), { after: backToFirst });
+
+  // Hakem K3 (10.10.2026; plan §7 "Yazan her uç x-hof-request alır", §3.10/1): Kasa elle hareketi formu istek kimliğini açılışta üretir ve her
+  // gönderimde aynısını yollar. İlk yanıt ağda kaybolur (kayıt sunucuda yazıldı); kullanıcı yeniden Kaydet'e basar → ikinci satır yazılmaz, ekran
+  // "Bu işlem zaten kaydedildi (BNK-…); ikinci kez yazılmadı." der. Önceden kimlik gönderilmiyordu ve sunucu da yok sayıyordu: Kasa ve 770 çift.
+  await step("40d. Hakem K3: Kasadan Ödeme — ilk yanıt ağda kaybolur, Kaydet'e yeniden basılır → aynı istek kimliği, tek satır; “Bu işlem zaten kaydedildi (BNK-…)”", async () => {
+    await selectKabul();
+    const kasa = async () => (await must("Kasa", api.get("/api/workspace/cash"))).byMethod.cash;
+    const rows = async () => (await must("Kasa", api.get("/api/workspace/cash"))).entries.filter(entry => entry.source === "manual" && entry.description === "K3 Kırtasiye").length;
+    const k0 = await kasa();
+    if (k0 < 1000) await must("Kasa'ya giriş", api.post("/api/workspace/cash", { kind: "in", amount: (1000 - k0).toFixed(2).replace(".", ","), date: "2026-10-08", description: "K3 sermaye" }));
+    const k1 = await kasa();
+    await admin.evaluate(() => HOF.workspace.openCash());
+    await admin.waitForSelector(`${modal} [data-add="out"]`, { timeout: 10000 });
+    await admin.click(`${modal} [data-add="out"]`);
+    const form = `${top} .hof-form`;
+    await admin.waitForSelector(`${form} input[name="amount"]`, { timeout: 8000 });
+    await admin.fill(`${form} input[name="amount"]`, "250");
+    await admin.fill(`${form} input[name="description"]`, "K3 Kırtasiye");
+    const isCashPost = url => new URL(url).pathname === "/api/workspace/cash";
+    const headers = [];
+    let dropped = false;
+    await admin.route(isCashPost, async route => {
+      const request = route.request();
+      if (request.method() !== "POST") return route.continue();
+      headers.push(request.headers()["x-hof-request"] || "");
+      if (dropped) return route.continue();
+      dropped = true;
+      await route.fetch(); // istek sunucuya ulaşır ve yazılır; yanıt tarayıcıya ulaşmaz (ağ kopması)
+      return route.abort("connectionreset");
+    });
+    try {
+      await admin.click(`${form} button[type="submit"]`);
+      await admin.waitForTimeout(1500);
+      const firstError = await textOf(admin, `${form} .hof-form-error`);
+      ok((await rows()) === 1 && (await kasa()) === k1 - 250, `ilk gönderim sunucuda yazıldı, yanıt kayboldu; form açık: “${firstError}”`);
+      await admin.click(`${form} button[type="submit"]`);
+      const toast = await lastToast(admin, /zaten kaydedildi/);
+      ok(headers.length === 2 && /^[0-9a-f]{32}$/.test(headers[0]) && headers[0] === headers[1], `iki gönderim aynı istek kimliğiyle: ${headers.join(" · ")}`);
+      ok((await rows()) === 1 && (await kasa()) === k1 - 250, `tek satır, Kasa ${k1 - 250} (${await rows()} satır · ${await kasa()})`);
+      ok(/^Bu işlem zaten kaydedildi \(BNK-\d{4}-\d+\); ikinci kez yazılmadı\.$/.test(toast), `ekran bildirimi: “${toast}”`);
+      await shot(admin, "hakem-k3-kasa-yineleme");
+    } finally {
+      await admin.unroute(isCashPost);
+    }
+    const integrity = await must("Mutabakat Testi", api.get("/api/workspace/ledger/integrity"));
+    ok(integrity.ok === true, "Kabul Şirketi'nde mutabakat ok (hakem K3)");
     await closeAll(admin);
   }, { after: backToFirst });
 
