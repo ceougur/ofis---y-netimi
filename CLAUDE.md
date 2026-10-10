@@ -1207,6 +1207,13 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   sürüm indirilmez. ÖNERİM (kullanıcının onayı bekleniyor): "arka planda indir, sonraki açılışta kur" — gün içinde indir + imza/sha256
   doğrula + hazırla (servis durmaz), zilde "2.x hazır, sonraki açılışta kurulacak / Şimdi Güncelle"; açılışta hazır paket uygulama
   kullanıcılara açılmadan ÖNCE kurulur (ağ gerekmez), deneme açılışı + geri dönüş aynen; mesai dışı kuralı açık kalan sunucularda sürer.
+  KARAR (kullanıcı, 10.10.2026: "önerini yap") + SORU ("bir günde 2 ya da daha fazla güncelleme olursa nasıl davranacak?") → koddan:
+  updater son 10 yayını sürüme göre sıralar, kurulabilen EN YENİSİNİ seçer, başarısız işaretlileri atlar; paket TAM program → ara
+  sürüm atlanabilir, göçler açılışta sırayla. UYGULANACAK (otomatik güncelleme ajanına eklendi): (1) hazırda yalnız EN YENİ paket
+  tutulur, daha yenisi inince eskisi silinir; (2) açılışta hazır paketi kurmadan önce ≤60 sn son denetim — daha yeni sürüm varsa o
+  indirilip kurulur, ağ yoksa hazırdaki kurulur → tek yeniden başlatma, ara sürüm kurulmaz; (3) periyodik denetim 6 sa → 1 sa (gün
+  içi yayın akşamdan önce iner); (4) deneme açılışı/geri dönüş/başarısız sürüm işareti aynen. Yayın kuralı: her yayın tam paket,
+  sürüm numarası öncekinden büyük (release.mjs zaten öyle).
   OTOMATİK GÜNCELLEME (kullanıcı, 10.10.2026: "sunucu açıkken aralıklarla sorgulanıp alınıyor mu, açılışta sorguluyor mu, şüphelerim var" →
   koddan cevap verildi: açılışta + 6 saatte bir (+≤30 dk kayma); "kendiliğinden kur" açıkken boşta (15 dk) ya da mesai dışında kurulur,
   mesai içinde çalışılıyorsa "hazır" bekler, saatte bir yeniden bakar; güncelleme testleri 30/30. AÇIK: kendiliğinden kur KAPALIYKEN hiç
