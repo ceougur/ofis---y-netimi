@@ -1,0 +1,32 @@
+{
+  "ad": "drive-yedek",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/drive-yedek.test.mjs",
+  "commit": "3a65139cc8fcc69dd05c0e4323e3eda878811de4",
+  "dal": "worktree-agent-a9d1d58c56af62f0d",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T17:21:11.131Z",
+  "sure_sn": 2.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 12,
+    "gecen": 12,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-10/sheets-yedek/2026-10-10/drive-yedek.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a9d1d58c56af62f0d",
+  "ham_cikti_sha256": "3d5077cc72802cf00fe0b155ea616226e612010573c80829e084d2a7163c5ea8",
+  "ham_cikti_bayt": 4309
+}

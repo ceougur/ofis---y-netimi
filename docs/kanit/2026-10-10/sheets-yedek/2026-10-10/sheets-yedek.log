@@ -1,0 +1,65 @@
+TAP version 13
+# Subtest: Google Sheets bağlı şirkette yedek: Sheets'e yazılmaz, Sheets satırları yedeğin içinde
+    # Subtest: bağlantı ve eşitleme: Google'a yalnız GET, kimlik bilgisi/gövde yok; Sheets'e yazma isteği YOK
+    ok 1 - bağlantı ve eşitleme: Google'a yalnız GET, kimlik bilgisi/gövde yok; Sheets'e yazma isteği YOK
+      ---
+      duration_ms: 26.166546
+      type: 'test'
+      ...
+    # Subtest: Şimdi Yedek Al (Tüm Şirketler): Google'a HİÇ istek gitmez; 001 yedeğinde Sheets'in 40 satırı değer değer, 002'ninkinde yalnız kendi 5 satırı
+    ok 2 - Şimdi Yedek Al (Tüm Şirketler): Google'a HİÇ istek gitmez; 001 yedeğinde Sheets'in 40 satırı değer değer, 002'ninkinde yalnız kendi 5 satırı
+      ---
+      duration_ms: 95.361642
+      type: 'test'
+      ...
+    # Subtest: otomatik yedek turu da Google'a istek atmaz; 001'in yedeğinde Sheets satırları var
+    ok 3 - otomatik yedek turu da Google'a istek atmaz; 001'in yedeğinde Sheets satırları var
+      ---
+      duration_ms: 86.647492
+      type: 'test'
+      ...
+    # Subtest: Sheets erişilemezken (500): eşitleme hata der, veri yerinde kalır; Yedek Al yine alınır ve son kaydedilen 40 satırı içerir
+    ok 4 - Sheets erişilemezken (500): eşitleme hata der, veri yerinde kalır; Yedek Al yine alınır ve son kaydedilen 40 satırı içerir
+      ---
+      duration_ms: 69.541434
+      type: 'test'
+      ...
+    # Subtest: Sheets erişilemezken (timeout): eşitleme hata der, veri yerinde kalır; Yedek Al yine alınır ve son kaydedilen 40 satırı içerir
+    ok 5 - Sheets erişilemezken (timeout): eşitleme hata der, veri yerinde kalır; Yedek Al yine alınır ve son kaydedilen 40 satırı içerir
+      ---
+      duration_ms: 47.694725
+      type: 'test'
+      ...
+    # Subtest: Sheets erişilemezken (down): eşitleme hata der, veri yerinde kalır; Yedek Al yine alınır ve son kaydedilen 40 satırı içerir
+    ok 6 - Sheets erişilemezken (down): eşitleme hata der, veri yerinde kalır; Yedek Al yine alınır ve son kaydedilen 40 satırı içerir
+      ---
+      duration_ms: 60.400302
+      type: 'test'
+      ...
+    # Subtest: 002 yedekten geri yüklenir (anında): 002 Sheets'siz döner; 001'in Sheets bağı ve 40 satırı etkilenmez
+    ok 7 - 002 yedekten geri yüklenir (anında): 002 Sheets'siz döner; 001'in Sheets bağı ve 40 satırı etkilenmez
+      ---
+      duration_ms: 325.554581
+      type: 'test'
+      ...
+    # Subtest: 001 yedekten geri yüklenir (yeniden açılışta): Sheets adresi, sekmeler ve 40 satır yedektekiyle aynı; eşitleme yeniden çalışır
+    ok 8 - 001 yedekten geri yüklenir (yeniden açılışta): Sheets adresi, sekmeler ve 40 satır yedektekiyle aynı; eşitleme yeniden çalışır
+      ---
+      duration_ms: 347.933131
+      type: 'test'
+      ...
+    1..8
+ok 1 - Google Sheets bağlı şirkette yedek: Sheets'e yazılmaz, Sheets satırları yedeğin içinde
+  ---
+  duration_ms: 1776.893209
+  type: 'suite'
+  ...
+1..1
+# tests 8
+# suites 1
+# pass 8
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2258.366519

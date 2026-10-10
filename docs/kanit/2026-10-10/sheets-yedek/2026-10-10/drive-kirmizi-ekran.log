@@ -1,0 +1,24 @@
+
+■ Drive Bağlantısı yapıştırılır → Kaydet ve Bağla
+    bildirim: Drive yedeği bağlandı. Bir sonraki yedek oraya da kopyalanacak.×
+    durum: Drive klasörü: 1AbC_dEf-GhIjKlMnOpQr · Henüz kopya alınmadı; ilk yedekte alınır. · 0 kopya
+    ekran: /tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/ekran/01-kaydet-ve-bagla.png
+  ✗ KIRMIZI: kaydederken 'Drive yedeği bağlandı' (başarı) DENMEMELİ — servis denenmedi, uç yok
+
+■ Şimdi Yedek Al (tek şirket: pencere sormadan alır)
+2026-10-10T17:21:19.838Z [WARN] Yedek Drive'a kopyalanamadı: Drive yükleme servisi bu sürümde etkin değil; Drive masaüstü klasör yolunu kullanın.
+    bildirim: Yedek alındı: destekofis-001-2026-10-10T17-21-19-803Z-manuel.sqlite×
+    durum (adm-warn): Drive klasörü: 1AbC_dEf-GhIjKlMnOpQr · Henüz kopya alınmadı; ilk yedekte alınır. · 0 kopyaSon Hata: Drive yükleme servisi bu sürümde etkin değil; Drive masaüstü klasör yolunu kullanın.
+    ekran: /tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/ekran/02-yedek-al-sonrasi-sayfa.png
+    ekran: /tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/ekran/03-yedek-al-sonrasi-drive-karti.png
+  ✓ Drive kartında 'Son Hata' satırı var (sayfanın en altında, kart içinde)
+  ✗ KIRMIZI: Yedek Al bildirimi Drive'a GİTMEDİĞİNİ söylemeli (bugün: "Yedek alındı: destekofis-001-2026-10-10T17-21-19-803Z-manuel.sqlite×")
+  ✓ sunucu servisi denedi, dosya yüklenmedi (POST https://destek-ofis.vercel.app/api/lisans/v1/yedek/oturum)
+
+■ Ana ekran: zil (bildirimler) Drive hatasını gösteriyor mu?
+  ✓ zil (vade/tarih uyarıları) Drive hatasını İÇERMİYOR — sistem uyarısı yolu yok (ölçüm)
+    ekran: /tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/ekran/04-ana-ekran.png
+
+# tests 5
+# pass 3
+# fail 2

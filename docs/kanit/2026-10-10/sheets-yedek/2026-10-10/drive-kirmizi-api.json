@@ -1,0 +1,53 @@
+{
+  "ad": "drive-kirmizi-api",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/kirmizi/drive-yedek-kirmizi.mjs",
+  "commit": "3a65139cc8fcc69dd05c0e4323e3eda878811de4",
+  "dal": "worktree-agent-a9d1d58c56af62f0d",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T17:21:13.934Z",
+  "sure_sn": 2.6,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 4,
+    "gecen": 0,
+    "basarisiz": 4,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 4 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "KIRMIZI A — güvenlik yedekleri de Drive'a kopyalanmalı (ekrandaki 'her yedek' sözü) › Şirket Verisini Sıfırla öncesi yedek (sifirlama-oncesi-002) Drive'da da olmalı",
+      "konum": "test/kirmizi/drive-yedek-kirmizi.mjs:59:3",
+      "hata": "Drive'da yok: destekofis-002-2026-10-10T17-21-14-966Z-sifirlama-oncesi-002.sqlite (Drive: boş) (beklenen true, gelen false)"
+    },
+    {
+      "ad": "KIRMIZI A — güvenlik yedekleri de Drive'a kopyalanmalı (ekrandaki 'her yedek' sözü) › Geri yükleme öncesi yedek (geri-yukleme-oncesi-002) Drive'da da olmalı",
+      "konum": "test/kirmizi/drive-yedek-kirmizi.mjs:68:3",
+      "hata": "Drive'da yok: destekofis-002-2026-10-10T17-21-15-471Z-geri-yukleme-oncesi-002.sqlite (beklenen true, gelen false)"
+    },
+    {
+      "ad": "KIRMIZI A — güvenlik yedekleri de Drive'a kopyalanmalı (ekrandaki 'her yedek' sözü) › Şirketi Sil öncesi yedek (silme-oncesi-002) Drive'da da olmalı",
+      "konum": "test/kirmizi/drive-yedek-kirmizi.mjs:78:3",
+      "hata": "Drive'da yok: destekofis-002-2026-10-10T17-21-15-886Z-silme-oncesi-002.sqlite (beklenen true, gelen false)"
+    },
+    {
+      "ad": "KIRMIZI B — Drive bağlantısı kaydedilirken çalışmadığı söylenmeli (üretimde yükleme ucu yok) › Kaydet ve Bağla: servis yükleme oturumu veremiyorsa yanıt 'bağlı ve hatasız' OLMAMALI",
+      "konum": "test/kirmizi/drive-yedek-kirmizi.mjs:99:3",
+      "hata": "yanıt 200 {\"enabled\":true,\"mode\":\"link\",\"value\":\"https://drive.google.com/drive/folders/1AbC_dEf-GhIjKlMnOpQr\",\"folderId\":\"1AbC_dEf-GhIjKlMnOpQr\",\"path\":null,\"lastAt\":null,\"lastError\":null,\"lastErrorAt\":null,\"lastName\":null,\"copies\":0,\"configuredAt\":\"2026-10-10T17:21:16.492Z\"} — kullanıcı \"Drive yedeği bağlandı\" görür, hiçbir yedek gitmez (beklenen true, gelen false)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-10/sheets-yedek/2026-10-10/drive-kirmizi-api.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a9d1d58c56af62f0d",
+  "ham_cikti_sha256": "71046a1f1a54094d6afadb26c312bda0d9175b8ea517c5e41c2f818954f250a6",
+  "ham_cikti_bayt": 5487
+}

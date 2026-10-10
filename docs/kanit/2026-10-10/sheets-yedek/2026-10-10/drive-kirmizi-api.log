@@ -1,0 +1,109 @@
+TAP version 13
+# Subtest: KIRMIZI A — güvenlik yedekleri de Drive'a kopyalanmalı (ekrandaki 'her yedek' sözü)
+    # Subtest: Şirket Verisini Sıfırla öncesi yedek (sifirlama-oncesi-002) Drive'da da olmalı
+    not ok 1 - Şirket Verisini Sıfırla öncesi yedek (sifirlama-oncesi-002) Drive'da da olmalı
+      ---
+      duration_ms: 423.666077
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-a9d1d58c56af62f0d/test/kirmizi/drive-yedek-kirmizi.mjs:59:3'
+      failureType: 'testCodeFailure'
+      error: "Drive'da yok: destekofis-002-2026-10-10T17-21-14-966Z-sifirlama-oncesi-002.sqlite (Drive: boş)"
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-a9d1d58c56af62f0d/test/kirmizi/drive-yedek-kirmizi.mjs:65:12)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: Geri yükleme öncesi yedek (geri-yukleme-oncesi-002) Drive'da da olmalı
+    not ok 2 - Geri yükleme öncesi yedek (geri-yukleme-oncesi-002) Drive'da da olmalı
+      ---
+      duration_ms: 468.538736
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-a9d1d58c56af62f0d/test/kirmizi/drive-yedek-kirmizi.mjs:68:3'
+      failureType: 'testCodeFailure'
+      error: "Drive'da yok: destekofis-002-2026-10-10T17-21-15-471Z-geri-yukleme-oncesi-002.sqlite"
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-a9d1d58c56af62f0d/test/kirmizi/drive-yedek-kirmizi.mjs:75:12)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Şirketi Sil öncesi yedek (silme-oncesi-002) Drive'da da olmalı
+    not ok 3 - Şirketi Sil öncesi yedek (silme-oncesi-002) Drive'da da olmalı
+      ---
+      duration_ms: 430.389048
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-a9d1d58c56af62f0d/test/kirmizi/drive-yedek-kirmizi.mjs:78:3'
+      failureType: 'testCodeFailure'
+      error: "Drive'da yok: destekofis-002-2026-10-10T17-21-15-886Z-silme-oncesi-002.sqlite"
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-a9d1d58c56af62f0d/test/kirmizi/drive-yedek-kirmizi.mjs:85:12)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..3
+not ok 1 - KIRMIZI A — güvenlik yedekleri de Drive'a kopyalanmalı (ekrandaki 'her yedek' sözü)
+  ---
+  duration_ms: 1862.356439
+  type: 'suite'
+  location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-a9d1d58c56af62f0d/test/kirmizi/drive-yedek-kirmizi.mjs:44:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: KIRMIZI B — Drive bağlantısı kaydedilirken çalışmadığı söylenmeli (üretimde yükleme ucu yok)
+    # Subtest: Kaydet ve Bağla: servis yükleme oturumu veremiyorsa yanıt 'bağlı ve hatasız' OLMAMALI
+    not ok 1 - Kaydet ve Bağla: servis yükleme oturumu veremiyorsa yanıt 'bağlı ve hatasız' OLMAMALI
+      ---
+      duration_ms: 7.19512
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-a9d1d58c56af62f0d/test/kirmizi/drive-yedek-kirmizi.mjs:99:3'
+      failureType: 'testCodeFailure'
+      error: 'yanıt 200 {"enabled":true,"mode":"link","value":"https://drive.google.com/drive/folders/1AbC_dEf-GhIjKlMnOpQr","folderId":"1AbC_dEf-GhIjKlMnOpQr","path":null,"lastAt":null,"lastError":null,"lastErrorAt":null,"lastName":null,"copies":0,"configuredAt":"2026-10-10T17:21:16.492Z"} — kullanıcı "Drive yedeği bağlandı" görür, hiçbir yedek gitmez'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-a9d1d58c56af62f0d/test/kirmizi/drive-yedek-kirmizi.mjs:102:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..1
+not ok 2 - KIRMIZI B — Drive bağlantısı kaydedilirken çalışmadığı söylenmeli (üretimde yükleme ucu yok)
+  ---
+  duration_ms: 253.523801
+  type: 'suite'
+  location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-a9d1d58c56af62f0d/test/kirmizi/drive-yedek-kirmizi.mjs:89:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..2
+# tests 4
+# suites 2
+# pass 0
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2551.312813

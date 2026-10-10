@@ -1,0 +1,43 @@
+{
+  "ad": "mutasyon-m3-otomatik-turda-kopya-yok",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/drive-yedek.test.mjs",
+  "commit": "3a65139cc8fcc69dd05c0e4323e3eda878811de4",
+  "dal": "worktree-agent-a9d1d58c56af62f0d",
+  "kirli": 1,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T17:22:17.802Z",
+  "sure_sn": 19,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 12,
+    "gecen": 10,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Drive klasör kipi (masaüstü senkron klasörü): Şimdi Yedek Al, otomatik, veri yüklemesi öncesi, iki şirket › otomatik zamanlayıcı turu: verisi değişen iki şirketin yedeği alınır ve Drive'a da kopyalanır",
+      "konum": "test/drive-yedek.test.mjs:177:3",
+      "hata": "beklenen olmadı (8000 ms): otomatik yedeğin Drive kopyası destekofis-001-2026-10-10T17-22-19-185Z.sqlite"
+    },
+    {
+      "ad": "Drive bağlantı kipi (lisans servisi /v1/yedek/oturum): üretimdeki bugünkü durum ve 'uç olsaydı' › ÜRETİM: otomatik zamanlayıcı ve 'Şimdi Dene' de aynı: yerel yedek var, Drive yok",
+      "konum": "test/drive-yedek.test.mjs:291:3",
+      "hata": "beklenen olmadı (8000 ms): otomatik yedek için yükleme isteği"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-10/sheets-yedek/2026-10-10/mutasyon-m3-otomatik-turda-kopya-yok.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a9d1d58c56af62f0d",
+  "ham_cikti_sha256": "07ce7627f9d4793ad7e6ea11fb81b8fbaaf5ab6bda4cadae8f0dfb459305d487",
+  "ham_cikti_bayt": 6281
+}

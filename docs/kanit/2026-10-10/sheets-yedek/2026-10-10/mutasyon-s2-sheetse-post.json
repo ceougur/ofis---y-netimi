@@ -1,0 +1,43 @@
+{
+  "ad": "mutasyon-s2-sheetse-post",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/sheets-yedek.test.mjs",
+  "commit": "cb95798d2d51e65cf6b6b17bda205c2c898dc42c",
+  "dal": "worktree-agent-a9d1d58c56af62f0d",
+  "kirli": 2,
+  "izlenmeyen": 5,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T17:25:40.182Z",
+  "sure_sn": 2.3,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 8,
+    "gecen": 6,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Google Sheets bağlı şirkette yedek: Sheets'e yazılmaz, Sheets satırları yedeğin içinde › bağlantı ve eşitleme: Google'a yalnız GET, kimlik bilgisi/gövde yok; Sheets'e yazma isteği YOK",
+      "konum": "test/sheets-yedek.test.mjs:149:3",
+      "hata": "Sheets'e POST/PUT/PATCH/DELETE yok · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Google Sheets bağlı şirkette yedek: Sheets'e yazılmaz, Sheets satırları yedeğin içinde › 001 yedekten geri yüklenir (yeniden açılışta): Sheets adresi, sekmeler ve 40 satır yedektekiyle aynı; eşitleme yeniden çalışır",
+      "konum": "test/sheets-yedek.test.mjs:241:3",
+      "hata": "GET https://docs.google.com/spreadsheets/d/1SheetsTakipBelgesi_AbCdEf/edit · POST https://docs.google.com/spreadsheets/d/1SheetsTakipBelgesi_AbCdEf/export?format=csv&gid=0 · POST https://docs.google.com/spreadsheets/d/1SheetsTakipBelgesi_AbCdEf/export?format=csv&gid=777 (beklenen true, gelen false)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-10/sheets-yedek/2026-10-10/mutasyon-s2-sheetse-post.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a9d1d58c56af62f0d",
+  "ham_cikti_sha256": "b16a2ec416e6e627b49a9b46434de7b4c29a40dd5804fb37284bb86cdc19d0a4",
+  "ham_cikti_bayt": 7258
+}

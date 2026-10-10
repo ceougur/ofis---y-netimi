@@ -1,0 +1,32 @@
+{
+  "ad": "yedek-gerileme",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/sheets-yedek.test.mjs test/cloud-backup.test.mjs test/backup.test.mjs test/yedek-220.test.mjs test/yedek-220-inceleme.test.mjs test/yedek-denetim-221.test.mjs test/dataset.test.mjs",
+  "commit": "2b041910702ed6e69e3f169144081482519219cf",
+  "dal": "worktree-agent-a9d1d58c56af62f0d",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T17:26:29.227Z",
+  "sure_sn": 24.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 73,
+    "gecen": 73,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-10/sheets-yedek/2026-10-10/yedek-gerileme.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a9d1d58c56af62f0d",
+  "ham_cikti_sha256": "12d60a3c19a29edb6e5a86382147bbd998e3b6a93c595bc6320c1ec5939bdfef",
+  "ham_cikti_bayt": 25836
+}
