@@ -945,11 +945,13 @@
     return `<label class="hof-inv-bank" data-bank-cell="${index}" data-bank-kind="${kind}"${hidden}><span>${label}</span><select data-pay="cash" data-i="${index}" data-f="bankAccountId" aria-label="${label}"><option value="">${esc(first)}</option>${options.map(account => `<option value="${esc(account.id)}" ${account.id === item.bankAccountId ? "selected" : ""}>${esc(`${account.label} (${account.code})`)}</option>`).join("")}</select></label>`;
   }
   // Hesap listesi gelince yalnız boş hücreler doldurulur (içinde odaklanılacak alan yoktu; satır yeniden çizilmez).
+  // Banka m1 (10.10.2026): liste form açılışında sunucudan TAZE alınır (önbellek yalnız canlı olayla boşalıyordu; başka oturumun açtığı ikinci
+  // kart görünmüyordu). Sunucu "kart/hesap seçin" derse (bank-account-required) hücreler taze listeyle yeniden çizilir (aşağıda).
   function loadBankChoices() {
     if (!HOF.bank?.choices || view.bankChoices) return;
     view.bankChoices = "loading";
     HOF.bank
-      .choices()
+      .choices(true)
       .then(data => {
         view.bankChoices = data;
         const form = view.form;
@@ -2437,6 +2439,13 @@
       if (view.mode === "list") return loadList(false, { quiet: true });
       if (view.mode === "card" && view.id) return loadDoc(view.id, { quiet: true });
       return null;
+    });
+    // Banka m1: sunucu peşin satır için kart/hesap seçimi istedi (ekranın listesi eskiydi) → açık formun hücreleri taze listeyle çizilir;
+    // seçilmiş hesap satırda kalır (yeni listede yoksa bankCell onu da seçenek olarak gösterir).
+    HOF.on("bank-choices-stale", () => {
+      if (!view.form || view.bankChoices === "loading") return;
+      view.bankChoices = null;
+      loadBankChoices();
     });
     HOF.on("live:workspace.changed", change => {
       if (!modal || change?.kind !== "invoices") return;
