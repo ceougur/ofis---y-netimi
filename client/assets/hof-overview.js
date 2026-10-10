@@ -118,7 +118,7 @@
           tone: defined && b.balance < 0 ? "is-bad" : "",
           sub: lines.join("<br>"),
           title: defined
-            ? `${labels.realBank}: banka hesaplarınızın (102) bakiyesi ${money(b.balance)}. Bugün giriş ${money(b.today?.in || 0)}, çıkış ${money(b.today?.out || 0)}; kendi hesaplarınız arasındaki para (Kasa ile Banka Arası, Bankalar Arası Transfer) giriş ve çıkışa sayılmaz.${b.debt?.shown ? ` ${labels.debt} ${money(b.debt.total)} ayrıdır.` : ""}${b.unassigned?.total ? ` ${labels.unassigned} ${money(b.unassigned.total)} hiçbir toplama girmez; Banka → Kurulum ve Aktarım ile hesaba atayın.` : ""}${futureNote(b)}`
+            ? `${labels.realBank}: banka hesaplarınızın (102) bakiyesi ${money(b.balance)}. Bugün giriş ${money(b.today?.in || 0)}, çıkış ${money(b.today?.out || 0)}; kendi hesaplarınız arasındaki para (Kasa ile Banka Arası, Bankalar Arası Transfer) giriş ve çıkışa sayılmaz.${b.debt?.shown ? ` ${labels.debt} ${money(b.debt.total)} ayrıdır.` : ""}${b.unassigned?.total ? ` ${labels.unassigned} ${money(b.unassigned.total)} hiçbir toplama girmez; Banka → Genel Bakış → ${labels.unassigned} → Şimdi Düzenle ile hesaba atayın.` : ""}${futureNote(b)}`
             : `Banka hesabı tanımlanmadı. Banka penceresinden hesaplarınızı ve açılış bakiyelerini girin.${b.unassigned?.total ? ` ${labels.unassigned} ${money(b.unassigned.total)} hiçbir toplama girmez.` : ""}${futureNote(b)}`,
         });
       }
