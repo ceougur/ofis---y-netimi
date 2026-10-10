@@ -1,0 +1,159 @@
+{
+  "kok": "/home/user/ofis---y-netimi",
+  "bugun": "2026-10-10",
+  "vakalar": [
+    {
+      "ad": "P0 GET /api/workspace/bank/accounts",
+      "durum": 200
+    },
+    {
+      "ad": "V açılış",
+      "bakiye": {
+        "balanceConfirmed": false,
+        "balanceMinor": 5000000,
+        "fxBalanceMinor": 5000000
+      }
+    },
+    {
+      "ad": "V fee Yok 10",
+      "durum": 400,
+      "kod": "bank-account-invalid",
+      "ileti": "Garanti BBVA · Vadeli (Vadeli): banka masrafı Vadesiz, Ticari ya da Diğer TL hesaptan girilir.",
+      "bakiyeSonra": {
+        "balanceConfirmed": false,
+        "balanceMinor": 5000000,
+        "fxBalanceMinor": 5000000
+      }
+    },
+    {
+      "ad": "V fee BSMV Dahil 21",
+      "durum": 400,
+      "kod": "bank-account-invalid",
+      "ileti": "Garanti BBVA · Vadeli (Vadeli): banka masrafı Vadesiz, Ticari ya da Diğer TL hesaptan girilir.",
+      "bakiyeSonra": {
+        "balanceConfirmed": false,
+        "balanceMinor": 5000000,
+        "fxBalanceMinor": 5000000
+      }
+    },
+    {
+      "ad": "V other_in 18,57",
+      "durum": 400,
+      "kod": "bank-account-invalid",
+      "ileti": "Garanti BBVA · Vadeli (Vadeli): diğer gelir Vadesiz, Ticari ya da Diğer TL hesaba girilir.",
+      "bakiyeSonra": {
+        "balanceConfirmed": false,
+        "balanceMinor": 5000000,
+        "fxBalanceMinor": 5000000
+      }
+    },
+    {
+      "ad": "V other_out 30",
+      "durum": 400,
+      "kod": "bank-account-invalid",
+      "ileti": "Garanti BBVA · Vadeli (Vadeli): diğer gider Vadesiz, Ticari ya da Diğer TL hesaptan girilir.",
+      "bakiyeSonra": {
+        "balanceConfirmed": false,
+        "balanceMinor": 5000000,
+        "fxBalanceMinor": 5000000
+      }
+    },
+    {
+      "ad": "V interest_out 40",
+      "durum": 400,
+      "kod": "bank-account-invalid",
+      "ileti": "Garanti BBVA · Vadeli (Vadeli): faiz gideri Vadesiz, Ticari ya da Diğer TL hesaptan girilir.",
+      "bakiyeSonra": {
+        "balanceConfirmed": false,
+        "balanceMinor": 5000000,
+        "fxBalanceMinor": 5000000
+      }
+    },
+    {
+      "ad": "V interest_in brüt 50 / %15",
+      "durum": 200,
+      "kod": null,
+      "ileti": null,
+      "bakiyeSonra": {
+        "balanceConfirmed": false,
+        "balanceMinor": 5004250,
+        "fxBalanceMinor": 5004250
+      }
+    },
+    {
+      "ad": "D açılış",
+      "bakiye": {
+        "balanceConfirmed": false,
+        "balanceMinor": 4000000,
+        "fxBalanceMinor": 4000000
+      }
+    },
+    {
+      "ad": "D fee Yok 10",
+      "durum": 200,
+      "kod": null,
+      "ileti": null,
+      "bakiyeSonra": {
+        "balanceConfirmed": false,
+        "balanceMinor": 3999000,
+        "fxBalanceMinor": 3999000
+      }
+    },
+    {
+      "ad": "D fee BSMV Dahil 21",
+      "durum": 200,
+      "kod": null,
+      "ileti": null,
+      "bakiyeSonra": {
+        "balanceConfirmed": false,
+        "balanceMinor": 3996900,
+        "fxBalanceMinor": 3996900
+      }
+    },
+    {
+      "ad": "D other_in 18,57",
+      "durum": 200,
+      "kod": null,
+      "ileti": null,
+      "bakiyeSonra": {
+        "balanceConfirmed": false,
+        "balanceMinor": 3998757,
+        "fxBalanceMinor": 3998757
+      }
+    },
+    {
+      "ad": "D other_out 30",
+      "durum": 200,
+      "kod": null,
+      "ileti": null,
+      "bakiyeSonra": {
+        "balanceConfirmed": false,
+        "balanceMinor": 3995757,
+        "fxBalanceMinor": 3995757
+      }
+    },
+    {
+      "ad": "D interest_out 40",
+      "durum": 200,
+      "kod": null,
+      "ileti": null,
+      "bakiyeSonra": {
+        "balanceConfirmed": false,
+        "balanceMinor": 3991757,
+        "fxBalanceMinor": 3991757
+      }
+    },
+    {
+      "ad": "D interest_in brüt 50 / %15",
+      "durum": 200,
+      "kod": null,
+      "ileti": null,
+      "bakiyeSonra": {
+        "balanceConfirmed": false,
+        "balanceMinor": 3996007,
+        "fxBalanceMinor": 3996007
+      }
+    }
+  ],
+  "bankaModulu": true
+}

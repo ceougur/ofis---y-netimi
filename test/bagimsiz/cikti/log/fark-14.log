@@ -1,0 +1,21 @@
+rastgele-14-500: çıkış a=0 b=0 program=0 · karşılaştırılan 7069 · atlanan 1161 · fark 1030 {'A=B≠P': 836, 'A≠B=P': 120, 'B≠A=P': 68, 'KOSUCU': 6}
+  BANKA-EKSI-KODU                                                 4 yaprak  {'A=B≠P': 4}
+  KAHIN-K4-YINELENEN-AD                                         120 yaprak  {'A≠B=P': 120}
+  KART-HESABI-BAGLANMIYOR                                        90 yaprak  {'A=B≠P': 84, 'KOSUCU': 6}
+  KASA-ACILIS-649                                                40 yaprak  {'A=B≠P': 40}
+  KASA-ISTEK-KIMLIGI                                              2 yaprak  {'A=B≠P': 2}
+  KDV-DAHIL-ISKONTO                                             256 yaprak  {'A=B≠P': 256}
+  KOSUCU-ALIS-YINELEME-NUMARA                                    70 yaprak  {'B≠A=P': 68, 'A=B≠P': 2}
+  KREDI-ANAPARA-ASIMI                                             7 yaprak  {'A=B≠P': 7}
+  TUREV:IADE-KAPAMA+KART-HESABI-BAGLANMIYOR+KDV-DAHIL-ISKONTO     7 yaprak  {'A=B≠P': 7}
+  TUREV:IADE-KAPAMA+KDV-DAHIL-ISKONTO                            28 yaprak  {'A=B≠P': 28}
+  TUREV:KART-HESABI-BAGLANMIYOR                                  20 yaprak  {'A=B≠P': 20}
+  TUREV:KART-HESABI-BAGLANMIYOR+KASA-ISTEK-KIMLIGI+KDV-DAHIL-I   28 yaprak  {'A=B≠P': 28}
+  TUREV:KART-HESABI-BAGLANMIYOR+KASA-ISTEK-KIMLIGI+KDV-DAHIL-I   18 yaprak  {'A=B≠P': 18}
+  TUREV:KART-HESABI-BAGLANMIYOR+KDV-DAHIL-ISKONTO                47 yaprak  {'A=B≠P': 47}
+  TUREV:KASA-ISTEK-KIMLIGI+KDV-DAHIL-ISKONTO+KREDI-ANAPARA-ASI  152 yaprak  {'A=B≠P': 152}
+  TUREV:KASA-ISTEK-KIMLIGI+KDV-DAHIL-ISKONTO+KREDI-ANAPARA-ASI   18 yaprak  {'A=B≠P': 18}
+  TUREV:KDV-DAHIL-ISKONTO                                        68 yaprak  {'A=B≠P': 68}
+  TUREV:KDV-DAHIL-ISKONTO+KREDI-ANAPARA-ASIMI                    20 yaprak  {'A=B≠P': 20}
+  TUREV:KDV-DAHIL-ISKONTO+VADELI-HESAP-FIS                       33 yaprak  {'A=B≠P': 33}
+  VADELI-HESAP-FIS                                                2 yaprak  {'A=B≠P': 2}

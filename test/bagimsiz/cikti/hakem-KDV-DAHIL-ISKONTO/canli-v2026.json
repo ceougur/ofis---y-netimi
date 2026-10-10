@@ -1,0 +1,109 @@
+{
+  "kok": "/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/hakem-kdv/v2026",
+  "vakalar": [
+    {
+      "ad": "F1 82,71 %15 %20",
+      "calcDurum": 200,
+      "calcTotals": {
+        "base": 82.71,
+        "discount": 12.41,
+        "net": 58.58,
+        "vat": 11.72,
+        "payable": 70.3
+      },
+      "kayitDurum": 200,
+      "kayitKod": null,
+      "kayitHata": null,
+      "kart": {
+        "netTotal": 58.58,
+        "vatTotal": 11.72,
+        "payableTotal": 70.3,
+        "open": 70.3
+      },
+      "cariBakiye": null,
+      "cariAnahtar": []
+    },
+    {
+      "ad": "F2 2000 %20 %20",
+      "calcDurum": 200,
+      "calcTotals": {
+        "base": 2000,
+        "discount": 400,
+        "net": 1333.33,
+        "vat": 266.67,
+        "payable": 1600
+      },
+      "kayitDurum": 200,
+      "kayitKod": null,
+      "kayitHata": null,
+      "kart": {
+        "netTotal": 1333.33,
+        "vatTotal": 266.67,
+        "payableTotal": 1600,
+        "open": 1600
+      },
+      "cariBakiye": null,
+      "cariAnahtar": []
+    },
+    {
+      "ad": "F3 82,71 %15 %20 peşin 70,31",
+      "calcDurum": 200,
+      "calcTotals": {
+        "base": 82.71,
+        "discount": 12.41,
+        "net": 58.58,
+        "vat": 11.72,
+        "payable": 70.3
+      },
+      "kayitDurum": 400,
+      "kayitKod": "payment-exceeds",
+      "kayitHata": "Ödemeler (70,31 TL) faturanın ödenecek tutarını (70,30 TL) aşıyor.",
+      "cariBakiye": null,
+      "cariAnahtar": []
+    },
+    {
+      "ad": "F4 82,71 %15 %20 peşin 70,30",
+      "calcDurum": 200,
+      "calcTotals": {
+        "base": 82.71,
+        "discount": 12.41,
+        "net": 58.58,
+        "vat": 11.72,
+        "payable": 70.3
+      },
+      "kayitDurum": 200,
+      "kayitKod": null,
+      "kayitHata": null,
+      "kart": {
+        "netTotal": 58.58,
+        "vatTotal": 11.72,
+        "payableTotal": 70.3,
+        "open": 0
+      },
+      "cariBakiye": null,
+      "cariAnahtar": []
+    },
+    {
+      "ad": "F5 100 %10 %10",
+      "calcDurum": 200,
+      "calcTotals": {
+        "base": 100,
+        "discount": 10,
+        "net": 81.82,
+        "vat": 8.18,
+        "payable": 90
+      },
+      "kayitDurum": 200,
+      "kayitKod": null,
+      "kayitHata": null,
+      "kart": {
+        "netTotal": 81.82,
+        "vatTotal": 8.18,
+        "payableTotal": 90,
+        "open": 90
+      },
+      "cariBakiye": null,
+      "cariAnahtar": []
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+Hakem — fark sınıfı KASA-ISTEK-KIMLIGI (10.10.2026). Depo kökünden:
+  python3 test/bagimsiz/fark.py --senaryo test/bagimsiz/cikti/en-kucuk-KASA-ISTEK-KIMLIGI.json
+      # en küçük (giriş 1.000 + tohum 1 adım 387/388 aynen: çıkış 212 "Temizlik Gideri", istekKimligi ik-13, iki kez): 5 fark, hepsi A=B≠P
+      # A=B: 388 yinelenen, Kasa 78.800, 100 B 78.800, 770 B 21.200 · Program: 388 ikinci kez yazıldı, Kasa 57.600, 770 B 42.400
+  python3 test/bagimsiz/fark.py --senaryo test/bagimsiz/cikti/hakem-KASA-ISTEK-KIMLIGI/en-kucuk-KASA-ISTEK-KIMLIGI-tani.json
+      # tanı: + farklı gövde (250, ik-13) A/B 409 · P geçti; giriş yönünde yineleme (ik-21) A/B yinelenen · P iki kez;
+      # KARŞI DENEY cari nakit tahsilatı ik-20 iki kez → ÜÇÜ DE yinelenen (koşucu başlığı gönderiyor; program o uçta uyguluyor)
+      # A=B Kasa 113.800 · P 72.600; 770 A=B 21.200 · P 67.400; 649 A=B 105.000 · P 110.000
+  git worktree add --detach <yer>/v2026 v2.0.26 && node test/bagimsiz/cikti/hakem-KASA-ISTEK-KIMLIGI/canli.mjs <yer>/v2026 > canli-v2026.json
+  node test/bagimsiz/cikti/hakem-KASA-ISTEK-KIMLIGI/canli.mjs . > canli-head.json
+      # gerçek HTTP API: POST /api/workspace/cash aynı x-hof-request ile 212 ×2 + farklı içerik 250 + aynı anda 10 ×2 → İKİ SÜRÜMDE DE 5 satır yazıldı
+      # (Temizlik 3, Çay 2; hiçbiri replayed/409); karşı deney cari tahsilatı: v2.0.26 iki kez yazdı (o sürümde yalnız faturada kimlik vardı),
+      # HEAD ikinciyi replayed:true döndürdü. Kasa v2.0.26 906 / HEAD 606; doğru (plan) 1.078.
+  node test/bagimsiz/cikti/hakem-KASA-ISTEK-KIMLIGI/komsu.mjs . > komsu-head.json
+      # KOMŞU yol (HEAD): kimliği uygulayan cari nakit ödeme ve Kasadan Bankaya Yatır'da, Kasa'yı 0'a indiren başarılı isteğin aynı kimlikle
+      # yinelenmesi replayed yerine 409 cash-negative alıyor (guardOut bank.post'tan önce). Para çift yazılmıyor; ret önceliği §5.6'ya aykırı.
+commit.txt: 1. satır HEAD (dal), 2. satır v2.0.26.
+Not: fark.py fark dosyalarını cikti/'ye yazar; fark-ozet.json kirlenmesin diye ikisi bu klasöre taşındı. Ham: cikti/ham/en-kucuk-KASA-ISTEK-KIMLIGI*.{a,b,program}.json.

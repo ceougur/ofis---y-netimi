@@ -1,0 +1,145 @@
+{
+  "kok": "/home/user/ofis---y-netimi",
+  "vakalar": {
+    "CO-uyar": {
+      "politika": {
+        "durum": 200,
+        "kod": null
+      },
+      "kasaGirisi": {
+        "durum": 200,
+        "kod": null
+      },
+      "r1": {
+        "durum": 200,
+        "kod": null,
+        "hata": null,
+        "replayed": false,
+        "id": "aentry-d5b17d17-0147-41d1-847b-a17cef54e2b2"
+      },
+      "r2_ayniKimlik": {
+        "durum": 409,
+        "kod": "cash-negative",
+        "hata": "Nakit kasada 0,00 TL var; 100,00 TL çıkış bakiyeyi -100,00 TL eksiye düşürür.",
+        "replayed": null,
+        "id": null
+      },
+      "r3_ayniKimlik_cashForce": {
+        "durum": 200,
+        "kod": null,
+        "hata": null,
+        "replayed": true,
+        "id": "aentry-d5b17d17-0147-41d1-847b-a17cef54e2b2"
+      },
+      "kasaBakiye": 0,
+      "kasaHareketSayisi": 2,
+      "cariBakiye": 100,
+      "mutabakatTesti": true
+    },
+    "CO-engelle": {
+      "politika": {
+        "durum": 200,
+        "kod": null
+      },
+      "kasaGirisi": {
+        "durum": 200,
+        "kod": null
+      },
+      "r1": {
+        "durum": 200,
+        "kod": null,
+        "hata": null,
+        "replayed": false,
+        "id": "aentry-e1ce11e1-dbb7-4e6a-9c98-15fc46e4d88d"
+      },
+      "r2_ayniKimlik": {
+        "durum": 409,
+        "kod": "cash-blocked",
+        "hata": "Nakit kasada 0,00 TL var; 100,00 TL çıkış bakiyeyi -100,00 TL eksiye düşürür. Bu hesapta eksi bakiyeye izin verilmiyor (Yönetim → Sistem → Eksi Bakiye Denetimi)",
+        "replayed": null,
+        "id": null
+      },
+      "r3_ayniKimlik_cashForce": {
+        "durum": 409,
+        "kod": "cash-blocked",
+        "hata": "Nakit kasada 0,00 TL var; 100,00 TL çıkış bakiyeyi -100,00 TL eksiye düşürür. Bu hesapta eksi bakiyeye izin verilmiyor (Yönetim → Sistem → Eksi Bakiye Denetimi)",
+        "replayed": null,
+        "id": null
+      },
+      "kasaBakiye": 0,
+      "kasaHareketSayisi": 2,
+      "cariBakiye": 100,
+      "mutabakatTesti": true
+    },
+    "KB-uyar": {
+      "politika": {
+        "durum": 200,
+        "kod": null
+      },
+      "kasaGirisi": {
+        "durum": 200,
+        "kod": null
+      },
+      "r1": {
+        "durum": 200,
+        "kod": null,
+        "hata": null,
+        "replayed": false,
+        "id": "cash-2631e006-b9b6-4fef-a3f1-ab35e80ea204"
+      },
+      "r2_ayniKimlik": {
+        "durum": 409,
+        "kod": "cash-negative",
+        "hata": "Nakit kasada 0,00 TL var; 100,00 TL çıkış bakiyeyi -100,00 TL eksiye düşürür.",
+        "replayed": null,
+        "id": null
+      },
+      "r3_ayniKimlik_cashForce": {
+        "durum": 200,
+        "kod": null,
+        "hata": null,
+        "replayed": true,
+        "id": "cash-2631e006-b9b6-4fef-a3f1-ab35e80ea204"
+      },
+      "kasaBakiye": 0,
+      "kasaHareketSayisi": 2,
+      "cariBakiye": null,
+      "mutabakatTesti": true
+    },
+    "KB-engelle": {
+      "politika": {
+        "durum": 200,
+        "kod": null
+      },
+      "kasaGirisi": {
+        "durum": 200,
+        "kod": null
+      },
+      "r1": {
+        "durum": 200,
+        "kod": null,
+        "hata": null,
+        "replayed": false,
+        "id": "cash-637fe1b5-b9e0-45f6-8429-f4cb3e5fa793"
+      },
+      "r2_ayniKimlik": {
+        "durum": 409,
+        "kod": "cash-blocked",
+        "hata": "Nakit kasada 0,00 TL var; 100,00 TL çıkış bakiyeyi -100,00 TL eksiye düşürür. Bu hesapta eksi bakiyeye izin verilmiyor (Yönetim → Sistem → Eksi Bakiye Denetimi)",
+        "replayed": null,
+        "id": null
+      },
+      "r3_ayniKimlik_cashForce": {
+        "durum": 409,
+        "kod": "cash-blocked",
+        "hata": "Nakit kasada 0,00 TL var; 100,00 TL çıkış bakiyeyi -100,00 TL eksiye düşürür. Bu hesapta eksi bakiyeye izin verilmiyor (Yönetim → Sistem → Eksi Bakiye Denetimi)",
+        "replayed": null,
+        "id": null
+      },
+      "kasaBakiye": 0,
+      "kasaHareketSayisi": 2,
+      "cariBakiye": null,
+      "mutabakatTesti": true
+    }
+  }
+}

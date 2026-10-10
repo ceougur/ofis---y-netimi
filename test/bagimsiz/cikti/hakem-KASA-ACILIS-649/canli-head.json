@@ -1,0 +1,70 @@
+{
+  "kok": "/home/user/ofis---y-netimi",
+  "adimlar": [
+    {
+      "ad": "1 Kasa elle giriş 49.505 'Açılış Bakiyesi'",
+      "durum": 200,
+      "hata": null
+    },
+    {
+      "ad": "2 Kasa elle giriş 100 'Kasaya Giriş'",
+      "durum": 200,
+      "hata": null
+    },
+    {
+      "ad": "3 Cari açılış bakiyesi 1.000 (müşteri)",
+      "durum": 200,
+      "hata": null
+    }
+  ],
+  "mizan": {
+    "100": {
+      "ad": "Kasa (Nakit)",
+      "borc": 49605,
+      "alacak": 0,
+      "bakiye": 49605
+    },
+    "120": {
+      "ad": "Alıcılar (Müşteri Carileri)",
+      "borc": 1000,
+      "alacak": 0,
+      "bakiye": 1000
+    },
+    "500": {
+      "ad": "Açılış ve Devir Bakiyeleri",
+      "borc": 0,
+      "alacak": 1000,
+      "bakiye": -1000
+    },
+    "649": {
+      "ad": "Diğer Olağan Gelir ve Kârlar",
+      "borc": 0,
+      "alacak": 49605,
+      "bakiye": -49605
+    }
+  },
+  "mutabakat": {
+    "ok": true,
+    "fark": 0
+  },
+  "kasaRaporuBugun": {
+    "devir": 0,
+    "donemGiris": 49605,
+    "donemCikis": 0,
+    "bakiye": 49605,
+    "satirlar": [
+      {
+        "kaynak": "manual",
+        "tur": "in",
+        "tutar": 49505,
+        "aciklama": "Açılış Bakiyesi"
+      },
+      {
+        "kaynak": "manual",
+        "tur": "in",
+        "tutar": 100,
+        "aciklama": "Kasaya Giriş"
+      }
+    ]
+  }
+}

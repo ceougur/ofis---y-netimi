@@ -1,0 +1,158 @@
+{
+  "kok": "/home/user/ofis---y-netimi",
+  "bugun": "2026-10-10",
+  "vakalar": [
+    {
+      "ad": "N-put-cash-warn",
+      "durum": 200
+    },
+    {
+      "ad": "K1 Kasa Uyar: boş Kasa'dan 100 çıkış",
+      "durum": 409,
+      "kod": "cash-negative",
+      "ileti": "Nakit kasada 0,00 TL var; 100,00 TL çıkış bakiyeyi -100,00 TL eksiye düşürür.",
+      "alanlar": {
+        "ok": false,
+        "code": "cash-negative",
+        "method": "cash",
+        "balance": 0,
+        "after": -100
+      }
+    },
+    {
+      "ad": "K2 Kasa Engelle: boş Kasa'dan 100 çıkış",
+      "durum": 409,
+      "kod": "cash-blocked",
+      "ileti": "Nakit kasada 0,00 TL var; 100,00 TL çıkış bakiyeyi -100,00 TL eksiye düşürür. Bu hesapta eksi bakiyeye izin verilmiyor (Yönetim → Sistem → Eksi Bakiye Denetimi).",
+      "alanlar": {
+        "ok": false,
+        "code": "cash-blocked",
+        "method": "cash",
+        "balance": 0,
+        "after": -100
+      }
+    },
+    {
+      "ad": "N0 GET /api/admin/negative-policy",
+      "durum": 200,
+      "govde": {
+        "ok": true,
+        "data": {
+          "cash": "off",
+          "bank": "off",
+          "card": "off"
+        }
+      }
+    },
+    {
+      "ad": "B0 C30'a 50.921,69 havale",
+      "durum": 200,
+      "kod": null,
+      "ileti": null,
+      "alanlar": null,
+      "bakiyeSonra": {
+        "balanceConfirmed": true,
+        "balanceMinor": 4643731,
+        "fxBalanceMinor": 4643731
+      }
+    },
+    {
+      "ad": "B1 Uyar, bayraksız: C28'e 50.921,69 havale",
+      "durum": 409,
+      "kod": "bank-negative",
+      "ileti": "Garanti BBVA · Ana TL Hesabı B6 hesabında 46.437,31 TL var; bu işlemle bakiye 50.921,69 TL azalır ve −4.484,38 TL olur (eksi bakiye). Yine de kaydedilsin mi?",
+      "alanlar": {
+        "ok": false,
+        "code": "bank-negative",
+        "accountId": "bacc-a5f2b82e-5680-494a-a6ad-ed65dca8f7b7",
+        "balanceMinor": 4643731,
+        "afterMinor": -448438,
+        "limitMinor": 0,
+        "field": "amount"
+      },
+      "bakiyeSonra": {
+        "balanceConfirmed": true,
+        "balanceMinor": 4643731,
+        "fxBalanceMinor": 4643731
+      }
+    },
+    {
+      "ad": "B2 Uyar, yalnız cashForce:true (plan §3.9 bayrağı)",
+      "durum": 409,
+      "kod": "bank-negative",
+      "ileti": "Garanti BBVA · Ana TL Hesabı B6 hesabında 46.437,31 TL var; bu işlemle bakiye 50.921,69 TL azalır ve −4.484,38 TL olur (eksi bakiye). Yine de kaydedilsin mi?",
+      "alanlar": {
+        "ok": false,
+        "code": "bank-negative",
+        "accountId": "bacc-a5f2b82e-5680-494a-a6ad-ed65dca8f7b7",
+        "balanceMinor": 4643731,
+        "afterMinor": -448438,
+        "limitMinor": 0,
+        "field": "amount"
+      },
+      "bakiyeSonra": {
+        "balanceConfirmed": true,
+        "balanceMinor": 4643731,
+        "fxBalanceMinor": 4643731
+      }
+    },
+    {
+      "ad": "B3 Uyar, yalnız negativeOk:true (programın bayrağı)",
+      "durum": 200,
+      "kod": null,
+      "ileti": null,
+      "alanlar": null,
+      "bakiyeSonra": {
+        "balanceConfirmed": true,
+        "balanceMinor": -448438,
+        "fxBalanceMinor": -448438
+      }
+    },
+    {
+      "ad": "P hesap Engelle",
+      "durum": 200
+    },
+    {
+      "ad": "B4 Engelle, bayraksız: C28'e 1.000 havale",
+      "durum": 409,
+      "kod": "bank-blocked",
+      "ileti": "Garanti BBVA · Ana TL Hesabı B6 hesabında −4.484,38 TL var; bu işlemle bakiye 1.000,00 TL azalır ve −5.484,38 TL olur (eksi bakiye). Bu hesapta eksi bakiyeye izin verilmiyor (Hesap Detayı → Düzenle → Eksi Bakiye ya da Banka Ayarları → Eksi Bakiye).",
+      "alanlar": {
+        "ok": false,
+        "code": "bank-blocked",
+        "accountId": "bacc-a5f2b82e-5680-494a-a6ad-ed65dca8f7b7",
+        "balanceMinor": -448438,
+        "afterMinor": -548438,
+        "limitMinor": 0,
+        "field": "amount"
+      },
+      "bakiyeSonra": {
+        "balanceConfirmed": true,
+        "balanceMinor": -448438,
+        "fxBalanceMinor": -448438
+      }
+    },
+    {
+      "ad": "B5 Engelle, cashForce + negativeOk: C28'e 1.000 havale",
+      "durum": 409,
+      "kod": "bank-blocked",
+      "ileti": "Garanti BBVA · Ana TL Hesabı B6 hesabında −4.484,38 TL var; bu işlemle bakiye 1.000,00 TL azalır ve −5.484,38 TL olur (eksi bakiye). Bu hesapta eksi bakiyeye izin verilmiyor (Hesap Detayı → Düzenle → Eksi Bakiye ya da Banka Ayarları → Eksi Bakiye).",
+      "alanlar": {
+        "ok": false,
+        "code": "bank-blocked",
+        "accountId": "bacc-a5f2b82e-5680-494a-a6ad-ed65dca8f7b7",
+        "balanceMinor": -448438,
+        "afterMinor": -548438,
+        "limitMinor": 0,
+        "field": "amount"
+      },
+      "bakiyeSonra": {
+        "balanceConfirmed": true,
+        "balanceMinor": -448438,
+        "fxBalanceMinor": -448438
+      }
+    }
+  ],
+  "bankaModulu": true,
+  "hesapId": "bacc-a5f2b82e-5680-494a-a6ad-ed65dca8f7b7"
+}

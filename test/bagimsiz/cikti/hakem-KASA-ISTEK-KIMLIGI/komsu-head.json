@@ -1,0 +1,217 @@
+{
+  "kok": "/home/user/ofis---y-netimi",
+  "adimlar": [
+    {
+      "ad": "A1 Kasa giriş 100",
+      "durum": 200,
+      "veri": {
+        "id": "cash-bbe1b2b8-dd5c-4306-8ed3-c54e20cd331e"
+      },
+      "hata": null
+    },
+    {
+      "ad": "A2 cari aç",
+      "durum": 200,
+      "veri": {
+        "id": "account-13204088-9a9f-43ec-8c3a-a63f82a86f74",
+        "refNo": "1",
+        "type": "supplier",
+        "name": "Hakem Tedarikçi",
+        "phone": "",
+        "email": "",
+        "address": "",
+        "registeredOn": "2026-10-10",
+        "groupId": null,
+        "subgroupId": null,
+        "note": "",
+        "caseKey": "",
+        "caseSource": "",
+        "caseTitle": "",
+        "status": "active",
+        "taxNo": "",
+        "taxOffice": "",
+        "mersisNo": "",
+        "tradeRegistry": "",
+        "partyKind": "",
+        "firstName": "",
+        "familyName": "",
+        "city": "",
+        "district": "",
+        "postalCode": "",
+        "country": "",
+        "website": "",
+        "iban": "",
+        "dueDays": 0,
+        "eInvoice": 0,
+        "eAlias": "",
+        "eProfile": "",
+        "createdBy": "user-2c6e979e-ab8e-4364-92fe-c1b0745d75ae",
+        "createdAt": "2026-10-10T13:28:05.231Z",
+        "updatedAt": "2026-10-10T13:28:05.231Z",
+        "actorName": "Ofis yöneticisi",
+        "groupName": "",
+        "subgroupName": "",
+        "fields": [],
+        "typeLabel": "Tedarikçi",
+        "entries": [],
+        "plans": [],
+        "ledger": [],
+        "totals": {
+          "debit": 0,
+          "credit": 0,
+          "balance": 0,
+          "collected": 0,
+          "planTotal": 0,
+          "planRemaining": 0,
+          "overdue": 0,
+          "overdueCount": 0
+        },
+        "side": "zero",
+        "canManage": true,
+        "canCollect": true
+      },
+      "hata": null
+    },
+    {
+      "ad": "A3 cari nakit ödeme 100, K1",
+      "durum": 200,
+      "veri": {
+        "id": "account-13204088-9a9f-43ec-8c3a-a63f82a86f74",
+        "refNo": "1",
+        "type": "supplier",
+        "name": "Hakem Tedarikçi",
+        "phone": "",
+        "email": "",
+        "address": "",
+        "registeredOn": "2026-10-10",
+        "groupId": null,
+        "subgroupId": null,
+        "note": "",
+        "caseKey": "",
+        "caseSource": "",
+        "caseTitle": "",
+        "status": "active",
+        "taxNo": "",
+        "taxOffice": "",
+        "mersisNo": "",
+        "tradeRegistry": "",
+        "partyKind": "",
+        "firstName": "",
+        "familyName": "",
+        "city": "",
+        "district": "",
+        "postalCode": "",
+        "country": "",
+        "website": "",
+        "iban": "",
+        "dueDays": 0,
+        "eInvoice": 0,
+        "eAlias": "",
+        "eProfile": "",
+        "createdBy": "user-2c6e979e-ab8e-4364-92fe-c1b0745d75ae",
+        "createdAt": "2026-10-10T13:28:05.231Z",
+        "updatedAt": "2026-10-10T13:28:05.231Z",
+        "actorName": "Ofis yöneticisi",
+        "groupName": "",
+        "subgroupName": "",
+        "fields": [],
+        "typeLabel": "Tedarikçi",
+        "entries": [
+          {
+            "id": "aentry-e33ea375-7cf5-4ab0-a245-3d37ec224d98",
+            "kind": "out",
+            "amount": 100,
+            "date": "2026-10-10",
+            "note": "",
+            "method": "cash",
+            "receiptNo": null,
+            "source": "",
+            "sourceId": "",
+            "invoiceId": "",
+            "finRef": "",
+            "createdBy": "user-2c6e979e-ab8e-4364-92fe-c1b0745d75ae",
+            "createdAt": "2026-10-10T13:28:05.254Z",
+            "updatedAt": null,
+            "actorName": "Ofis yöneticisi",
+            "editable": true
+          }
+        ],
+        "plans": [],
+        "ledger": [
+          {
+            "id": "aentry-e33ea375-7cf5-4ab0-a245-3d37ec224d98",
+            "origin": "account",
+            "kind": "out",
+            "date": "2026-10-10",
+            "at": "2026-10-10T13:28:05.254Z",
+            "label": "Ödeme",
+            "sourceId": "",
+            "invoiceId": "",
+            "method": "cash",
+            "note": "",
+            "receiptNo": null,
+            "debit": 100,
+            "credit": 0,
+            "balance": 100
+          }
+        ],
+        "totals": {
+          "debit": 100,
+          "credit": 0,
+          "balance": 100,
+          "collected": 0,
+          "planTotal": 0,
+          "planRemaining": 0,
+          "overdue": 0,
+          "overdueCount": 0
+        },
+        "side": "debtor",
+        "canManage": true,
+        "canCollect": true,
+        "entryId": "aentry-e33ea375-7cf5-4ab0-a245-3d37ec224d98"
+      },
+      "hata": null
+    },
+    {
+      "ad": "A4 aynısı, K1 (yineleme)",
+      "durum": 409,
+      "veri": null,
+      "hata": {
+        "error": "Nakit kasada 0,00 TL var; 100,00 TL çıkış bakiyeyi -100,00 TL eksiye düşürür.",
+        "code": "cash-negative"
+      }
+    },
+    {
+      "ad": "B1 Kasa giriş 100",
+      "durum": 200,
+      "veri": {
+        "id": "cash-a205fe29-0a4f-4c2e-abd0-6bd4f42d6354"
+      },
+      "hata": null
+    },
+    {
+      "ad": "B2 Kasadan Bankaya Yatır 100, K2",
+      "durum": 200,
+      "veri": {
+        "id": "cash-6e4e8afd-33ee-4b17-9be2-52da694f41cd",
+        "bankId": "cash-c941bf9d-d18d-45dd-a085-7f4ea071ac37",
+        "transferId": "trf-a9598ed1-7010-47d7-a81f-7023b4bda7de",
+        "direction": "to-bank",
+        "amount": 100,
+        "date": "2026-10-10"
+      },
+      "hata": null
+    },
+    {
+      "ad": "B3 aynısı, K2 (yineleme)",
+      "durum": 409,
+      "veri": null,
+      "hata": {
+        "error": "Nakit kasada 0,00 TL var; 100,00 TL çıkış bakiyeyi -100,00 TL eksiye düşürür.",
+        "code": "cash-negative"
+      }
+    }
+  ],
+  "kasaBakiye": 0,
+  "kasaSatir": 4
+}

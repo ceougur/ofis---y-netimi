@@ -1,0 +1,46 @@
+{
+  "araDurumlar": {},
+  "atlananlar": [],
+  "bankaHesaplari": {
+    "ZIR": 90000
+  },
+  "belirsizler": [],
+  "cariler": {},
+  "dil": "destekofis-senaryo/1",
+  "eksiBakiyeDenetimi": {
+    "ZIR": "uyar"
+  },
+  "faturalar": {},
+  "hesapKodlari": {
+    "ZIR": "102.01"
+  },
+  "kasa": 10000,
+  "kaynak": "kahin",
+  "mizan": {
+    "100": {
+      "alacak": 0,
+      "borc": 10000
+    },
+    "102.01": {
+      "alacak": 0,
+      "borc": 90000
+    },
+    "500": {
+      "alacak": 100000,
+      "borc": 0
+    }
+  },
+  "ozet": {
+    "gercekBanka": 90000,
+    "hesabiAtanmamis": 0,
+    "kartVeKrediBorcu": 0,
+    "kasaVeGercekBanka": 100000
+  },
+  "retler": [],
+  "senaryo": "komsu-kasa-banka-yineleme",
+  "stok": {},
+  "taksitKartlari": {},
+  "yinelenenler": [
+    "3"
+  ]
+}

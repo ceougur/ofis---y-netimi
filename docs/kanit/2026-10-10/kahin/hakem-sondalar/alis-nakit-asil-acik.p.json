@@ -1,0 +1,198 @@
+{
+  "araDurumlar": {},
+  "atlamaAyrinti": [],
+  "atlananlar": [],
+  "bankaHesaplari": {},
+  "belirsizler": [],
+  "calismaAgaciDegisikDosya": 0,
+  "cariler": {
+    "T1": -120000
+  },
+  "commit": "ab4ebcaf8e8b3392b02737d5553409ebe0d5d87f",
+  "dil": "destekofis-senaryo/1",
+  "ekBilgi": {
+    "programMutabakatTesti": {
+      "basarisizDenetim": 0,
+      "ok": true
+    },
+    "sunucu": "test/helpers.mjs startTestServer: sahte saat (yerel öğlen, akar), lisans denetimi kapalı, moneyStrict ve gateVerify açık (test kipi)."
+  },
+  "eksiBakiyeDenetimi": {},
+  "eslenemeyenler": [],
+  "faturalar": {
+    "F1": {
+      "acik": 96000,
+      "kdv": 20000,
+      "matrah": 100000,
+      "toplam": 120000
+    },
+    "R1": {
+      "acik": 0,
+      "kdv": 4000,
+      "matrah": 20000,
+      "toplam": 24000
+    }
+  },
+  "hesapKodlari": {},
+  "hesaplananAlanlar": [
+    "Program TL sayıları (mizan, Kasa, cari, fatura, taksit) kuruşa çevrildi: round(TL × 100).",
+    "mizan değerleri bakiyeden bakiye sütunlarına ayrıldı (borc/alacak).",
+    "ozet.kasaVeGercekBanka = ANLIK DURUM Nakit Kasa + Gerçek Banka (program bu toplamı tek sayı olarak göstermiyor; iki ekran sayısının toplamı)."
+  ],
+  "kasa": 24000,
+  "kaynak": "program",
+  "kaynakFarklari": [],
+  "kullanilanUclar": [
+    {
+      "islemler": [
+        "okuma"
+      ],
+      "uc": "GET /api/workspace/accounts"
+    },
+    {
+      "islemler": [
+        "okuma"
+      ],
+      "uc": "GET /api/workspace/bank/accounts"
+    },
+    {
+      "islemler": [
+        "okuma"
+      ],
+      "uc": "GET /api/workspace/bank/sub-trial"
+    },
+    {
+      "islemler": [
+        "okuma"
+      ],
+      "uc": "GET /api/workspace/bank/summary"
+    },
+    {
+      "islemler": [
+        "okuma"
+      ],
+      "uc": "GET /api/workspace/cash"
+    },
+    {
+      "islemler": [
+        "iade",
+        "okuma"
+      ],
+      "uc": "GET /api/workspace/invoices/:id"
+    },
+    {
+      "islemler": [
+        "okuma"
+      ],
+      "uc": "GET /api/workspace/ledger"
+    },
+    {
+      "islemler": [
+        "okuma"
+      ],
+      "uc": "GET /api/workspace/ledger/integrity"
+    },
+    {
+      "islemler": [
+        "okuma"
+      ],
+      "uc": "GET /api/workspace/overview"
+    },
+    {
+      "islemler": [
+        "okuma"
+      ],
+      "uc": "GET /api/workspace/stock"
+    },
+    {
+      "islemler": [
+        "cari_ac"
+      ],
+      "uc": "POST /api/workspace/accounts"
+    },
+    {
+      "islemler": [
+        "fatura",
+        "iade"
+      ],
+      "uc": "POST /api/workspace/invoices"
+    },
+    {
+      "islemler": [
+        "iade"
+      ],
+      "uc": "POST /api/workspace/invoices/calc"
+    },
+    {
+      "islemler": [
+        "urun_ac"
+      ],
+      "uc": "POST /api/workspace/stock"
+    },
+    {
+      "islemler": [
+        "stok_giris"
+      ],
+      "uc": "POST /api/workspace/stock/:id/moves"
+    },
+    {
+      "islemler": [
+        "baslangic"
+      ],
+      "uc": "PUT /api/admin/negative-policy"
+    },
+    {
+      "islemler": [
+        "baslangic"
+      ],
+      "uc": "PUT /api/workspace/bank/settings"
+    }
+  ],
+  "mizan": {
+    "100": {
+      "alacak": 0,
+      "borc": 24000
+    },
+    "153": {
+      "alacak": 0,
+      "borc": 80000
+    },
+    "191": {
+      "alacak": 0,
+      "borc": 16000
+    },
+    "320": {
+      "alacak": 120000,
+      "borc": 0
+    }
+  },
+  "okumaHatalari": [],
+  "okumaKaynaklari": {
+    "bankaHesaplari": "GET /api/workspace/bank/accounts?status=all (Banka → Hesaplar, accounts[].balanceMinor); Alt Hesap Mizanı satırıyla karşılaştırılır.",
+    "cariler": "GET /api/workspace/accounts?status=all&limit=5000 (Cari penceresi listesi, accounts[].balance; borçlu +).",
+    "eksiBakiyeDenetimi": "GET /api/workspace/bank/accounts?status=all (accounts[].policy: warn → uyar, block → engelle, off → kontrol_yok; doğrulanmamış hesapta program off döner).",
+    "faturalar": "GET /api/workspace/invoices/:id (fatura kartı: payableTotal → toplam, netTotal → matrah, vatTotal → kdv, open → acik).",
+    "hesapKodlari": "GET /api/workspace/bank/accounts?status=all (accounts[].glSub).",
+    "kasa": "GET /api/workspace/cash (Kasa penceresi, yalnız nakit, totals.balance); ANLIK DURUM (GET /api/workspace/overview cash.allEntries) ile karşılaştırılır.",
+    "mizan": "GET /api/workspace/ledger (Ana Defter → Hesap Planı Mizanı, trial.accounts[].balance; ana hesaplar) + GET /api/workspace/bank/sub-trial (Banka → Alt Hesap Mizanı, rows[].balance; 102/108/300/309 yaprakları). Bakiye TL → kuruş; borc = max(0, bakiye), alacak = max(0, −bakiye).",
+    "ozet": "GET /api/workspace/bank/summary (Banka Genel Bakış K10: realBank.minor → gercekBanka, unassigned.totalMinor → hesabiAtanmamis, debt.totalMinor → kartVeKrediBorcu); kasaVeGercekBanka = GET /api/workspace/overview (ANLIK DURUM) cash.balance + cash.bank.balance.",
+    "retler": "Yanıtın HTTP durumu + gövdedeki code (ret iletisi retAyrinti'de).",
+    "stok": "GET /api/workspace/stock?limit=5000 (Stok penceresi listesi, items[].qty).",
+    "taksitKartlari": "GET /api/workspace/plans?status=all (Taksitler penceresi listesi, plans[].totals: total → toplam, paid → odenen, remaining → kalan)."
+  },
+  "ozet": {
+    "gercekBanka": 0,
+    "hesabiAtanmamis": 0,
+    "kartVeKrediBorcu": 0,
+    "kasaVeGercekBanka": 24000
+  },
+  "programSurumu": "2.0.26",
+  "retAyrinti": [],
+  "retler": [],
+  "senaryo": "mini-iade-alis-nakit-asil-acik",
+  "stok": {
+    "U1": 18
+  },
+  "taksitKartlari": {},
+  "yinelenenler": []
+}

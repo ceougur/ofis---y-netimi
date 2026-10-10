@@ -1,0 +1,11 @@
+Hakem — fark sınıfı KASA-ACILIS-649 (10.10.2026). Depo kökünden:
+  python3 test/bagimsiz/fark.py --senaryo test/bagimsiz/cikti/en-kucuk-KASA-ACILIS-649.json
+      # en küçük (tohum 1 adım 51 aynen: kasa_acilis "49505" = 49.505,00 TL): 2 fark, ikisi A=B≠P
+      # A=B: 100 B 4.950.500 / 500 A 4.950.500 · Program: 100 B 4.950.500 / 649 A 4.950.500 · Kasa, özet, retler üçünde aynı
+  python3 test/bagimsiz/fark.py --senaryo test/bagimsiz/cikti/hakem-KASA-ACILIS-649/en-kucuk-KASA-ACILIS-649-tani.json
+      # tanı: + Kasa elle giriş 100 + banka açılışı 1.000 → ayrışma YALNIZ Kasa açılışında (elle giriş 649 ve banka açılışı 500'de üçü aynı)
+  git worktree add --detach <yer>/v2026 v2.0.26 && node test/bagimsiz/cikti/hakem-KASA-ACILIS-649/canli.mjs <yer>/v2026 > canli-v2026.json
+  node test/bagimsiz/cikti/hakem-KASA-ACILIS-649/canli.mjs . > canli-head.json
+      # gerçek API: Kasa elle giriş "Açılış Bakiyesi" 49.505 → 649; cari "Açılış Bakiyesi" 1.000 → 500 (her iki sürümde aynı)
+commit.txt: 1. satır HEAD (dal), 2. satır v2.0.26.
+Not: fark.py fark dosyalarını cikti/'ye yazar; fark-ozet.json kirlenmesin diye ikisi bu klasöre taşındı. Ham: cikti/ham/en-kucuk-KASA-ACILIS-649*.{a,b,program}.json.

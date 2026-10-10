@@ -1,0 +1,13 @@
+1) cari ödeme kart 579 + bankAccountId: 200 {"ok":true,"data":{"id":"account-6ca34814-64b3-46c1-ae25-9cf0439cd78c","refNo":"1","type":"supplier","name":"Tedarikçi C
+2) cari ödeme kart 100: 200
+3) alış faturası 240 peşin kart: 200 
+4) cari ödeme kart 50: 200
+Mizan (GET /api/workspace/ledger; ağaç /tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/wt-v2026):
+  108 Kredi Kartı Tahsilatları (POS) borç 0 alacak 969 bakiye -969
+  191 İndirilecek KDV borç 40 alacak 0 bakiye 40
+  320 Satıcılar (Tedarikçi Carileri) borç 969 alacak 240 bakiye 729
+  770 Genel Giderler ve Alış Faturaları borç 200 alacak 0 bakiye 200
+ANLIK DURUM Banka/POS (cash.bank): {"balance":-969,"allEntries":-969,"today":{"in":0,"out":969}}
+ANLIK DURUM yol kırılımı (cash.byMethod): {"cash":0,"bank":0,"card":-969}
+Cari bakiye: [["Tedarikçi C25",729]]
+Mutabakat Testi: tamam

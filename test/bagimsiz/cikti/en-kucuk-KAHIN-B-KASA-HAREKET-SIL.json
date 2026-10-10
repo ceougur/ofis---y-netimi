@@ -1,0 +1,32 @@
+{
+  "dil": "destekofis-senaryo/1",
+  "ad": "en-kucuk-KAHIN-B-KASA-HAREKET-SIL",
+  "aciklama": "Hakem — KAHIN-B-KASA-HAREKET-SIL en küçük hâli: adla açılan Kasa elle girişi (carisiz, 100 TL) silinir. mini-kahin-b-kasa-hareket-sil'den Kasa açılışı çıkarıldı (3 → 2 adım); silme Kasa'yı 0'a indirir, eksiye düşürmez (§5.3 denetimi tetiklenmez). Beklenen (dil §4.9 + §4.28): giriş B 100 / A 649 yazılır, silmede ikisi de kalkar → Kasa 0, mizanda 100 ve 649 sıfır.",
+  "dayanak": "SENARYO-DILI §4.9 ('ad: silinecekse zorunlu'), §4.28 (sil hedefi kasa_hareket), §13.3 (takma ad bir kez tanımlı, anılan ad önceden tanımlı); PLAN §2.3 'Elle Kasa girişi | cash_entries, yalnız nakit | 100 ↔ 649/770'",
+  "baslangic": {
+    "bugun": "05.10.2026",
+    "sirket": "bos",
+    "ayarlar": {
+      "kasaEksiBakiye": "uyar",
+      "benzerIslemUyarisi": "acik"
+    },
+    "kullanicilar": {
+      "Y": "yonetici"
+    }
+  },
+  "adimlar": [
+    {
+      "id": "1",
+      "islem": "kasa_hareket",
+      "ad": "H1",
+      "yon": "giris",
+      "tutar": "100",
+      "aciklama": "Hurda Satışı"
+    },
+    {
+      "id": "2",
+      "islem": "sil",
+      "hedef": "H1"
+    }
+  ]
+}

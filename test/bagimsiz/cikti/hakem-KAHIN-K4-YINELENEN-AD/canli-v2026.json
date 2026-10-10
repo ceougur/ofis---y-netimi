@@ -1,0 +1,180 @@
+{
+  "kok": "/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/hakem-k4-v2026",
+  "vakalar": {
+    "S": {
+      "ilk": {
+        "durum": 200,
+        "kod": null,
+        "hata": null,
+        "id": "invoice-e35f3586-8091-43e2-952c-154677603a7e",
+        "planId": "plan-b678c23d-2a03-4578-815f-eb0e5fee1ff1",
+        "numara": "FIS2026000000001",
+        "replayed": false,
+        "odenecek": 600
+      },
+      "ikinci": {
+        "durum": 200,
+        "kod": null,
+        "hata": null,
+        "id": "invoice-e35f3586-8091-43e2-952c-154677603a7e",
+        "planId": "plan-b678c23d-2a03-4578-815f-eb0e5fee1ff1",
+        "numara": "FIS2026000000001",
+        "replayed": true,
+        "odenecek": 600
+      },
+      "ayniBelge": true,
+      "ayniKart": true
+    },
+    "A1": {
+      "ilk": {
+        "durum": 200,
+        "kod": null,
+        "hata": null,
+        "id": "invoice-d899bee5-8788-497b-88e1-43e9f2085f38",
+        "planId": "",
+        "numara": "A-100",
+        "replayed": false,
+        "odenecek": 360
+      },
+      "ikinci": {
+        "durum": 200,
+        "kod": null,
+        "hata": null,
+        "id": "invoice-d899bee5-8788-497b-88e1-43e9f2085f38",
+        "planId": "",
+        "numara": "A-100",
+        "replayed": true,
+        "odenecek": 360
+      },
+      "ayniBelge": true
+    },
+    "A2": {
+      "ilk": {
+        "durum": 200,
+        "kod": null,
+        "hata": null,
+        "id": "invoice-0ff35128-ff76-4f64-91c6-3c4a35aca0af",
+        "planId": "",
+        "numara": "Z3",
+        "replayed": false,
+        "odenecek": 360
+      },
+      "ikinci": {
+        "durum": 409,
+        "kod": "request-id-reused",
+        "hata": "Bu alış faturası zaten kaydedildi (Z3); sonradan yapılan değişiklik yeni belge açmaz. Kayıtlı belgeyi açıp Düzenle'yi kullanın ya da yeni bir fatura başlatın.",
+        "id": null,
+        "planId": null,
+        "numara": null,
+        "replayed": null,
+        "odenecek": null
+      }
+    },
+    "D": {
+      "ilk": {
+        "durum": 200,
+        "kod": null,
+        "hata": null,
+        "id": "invoice-081eaf2b-2e2a-4f2b-b233-311ece065491",
+        "planId": "plan-10bb5e69-6963-43fe-8e03-9ef952809cb6",
+        "numara": "FIS2026000000002",
+        "replayed": false,
+        "odenecek": 600
+      },
+      "ikinci": {
+        "durum": 409,
+        "kod": "request-id-reused",
+        "hata": "Bu satış faturası zaten kaydedildi (FIS2026000000002); sonradan yapılan değişiklik yeni belge açmaz. Kayıtlı belgeyi açıp Düzenle'yi kullanın ya da yeni bir fatura başlatın.",
+        "id": null,
+        "planId": null,
+        "numara": null,
+        "replayed": null,
+        "odenecek": null
+      }
+    }
+  },
+  "faturaListesi": {
+    "durum": 200,
+    "belgeSayisi": 4,
+    "belgeler": [
+      {
+        "id": "invoice-081eaf2b-2e2a-4f2b-b233-311ece065491",
+        "tur": "sale",
+        "numara": "FIS2026000000002",
+        "odenecek": 600
+      },
+      {
+        "id": "invoice-0ff35128-ff76-4f64-91c6-3c4a35aca0af",
+        "tur": "purchase",
+        "numara": "Z3",
+        "odenecek": 360
+      },
+      {
+        "id": "invoice-d899bee5-8788-497b-88e1-43e9f2085f38",
+        "tur": "purchase",
+        "numara": "A-100",
+        "odenecek": 360
+      },
+      {
+        "id": "invoice-e35f3586-8091-43e2-952c-154677603a7e",
+        "tur": "sale",
+        "numara": "FIS2026000000001",
+        "odenecek": 600
+      }
+    ]
+  },
+  "taksitKartlari": {
+    "durum": 200,
+    "kartSayisi": 2,
+    "kartlar": [
+      {
+        "id": "plan-b678c23d-2a03-4578-815f-eb0e5fee1ff1",
+        "toplam": 600,
+        "odenen": 0,
+        "kalan": 600
+      },
+      {
+        "id": "plan-10bb5e69-6963-43fe-8e03-9ef952809cb6",
+        "toplam": 600,
+        "odenen": 0,
+        "kalan": 600
+      }
+    ]
+  },
+  "cariler": {
+    "Hakem Müşteri": 1200,
+    "Hakem Tedarikçi": -720
+  },
+  "mizan": {
+    "120": {
+      "borc": 1200,
+      "alacak": 0,
+      "bakiye": 1200
+    },
+    "191": {
+      "borc": 120,
+      "alacak": 0,
+      "bakiye": 120
+    },
+    "320": {
+      "borc": 0,
+      "alacak": 720,
+      "bakiye": -720
+    },
+    "391": {
+      "borc": 0,
+      "alacak": 200,
+      "bakiye": -200
+    },
+    "600": {
+      "borc": 0,
+      "alacak": 1000,
+      "bakiye": -1000
+    },
+    "770": {
+      "borc": 600,
+      "alacak": 0,
+      "bakiye": 600
+    }
+  }
+}

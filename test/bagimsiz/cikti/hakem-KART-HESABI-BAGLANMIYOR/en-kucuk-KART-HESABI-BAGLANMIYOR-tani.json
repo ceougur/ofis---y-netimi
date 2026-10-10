@@ -1,0 +1,22 @@
+{
+  "dil": "destekofis-senaryo/1",
+  "ad": "en-kucuk-KART-HESABI-BAGLANMIYOR-tani",
+  "aciklama": "Hakem tanısı (en küçük senaryonun sonuçları): kart hesabı bağlanmayınca (1) Kart Borcu Ödemesi kart hesabını ters yöne (borç bakiyesi) götürür, 108.00 eksi kalır; (2) kart limiti (K7) denetlenmez; (3) iki kurumsal kart varken hesapsız kart ödemesi bank-account-required almaz.",
+  "dayanak": "hakem: KART-HESABI-BAGLANMIYOR. PLAN §3.7 #3, #5, #16; §3.5 kural 2–3; §3.9 K7 'KMH ve kurumsal kart limitine kadar serbest'; §3.11 moneyAccount.",
+  "baslangic": {
+    "bugun": "11.03.2025",
+    "sirket": "bos",
+    "ayarlar": { "kasaEksiBakiye": "uyar", "benzerIslemUyarisi": "acik" },
+    "kullanicilar": { "Y": "yonetici" }
+  },
+  "adimlar": [
+    { "id": "45", "islem": "cari_ac", "ad": "C25", "unvan": "Bereket Lojistik Ltd. C25", "tur": "tedarikci" },
+    { "id": "52", "islem": "hesap_ac", "ad": "B1", "banka": "Akbank", "hesapAdi": "Ana TL Hesabı B1", "tur": "vadesiz", "paraBirimi": "TRY", "acilisTarihi": "03.03.2025", "acilisBakiyesi": "86386,39", "bakiyeDogrulandi": true },
+    { "id": "k1", "islem": "hesap_ac", "ad": "KK", "banka": "Garanti BBVA", "hesapAdi": "Kurumsal Kart KK", "tur": "kurumsal_kart", "paraBirimi": "TRY", "acilisTarihi": "01.03.2025", "acilisBakiyesi": "0", "kartLimiti": "20000", "bakiyeDogrulandi": true },
+    { "id": "k2", "islem": "cari_odeme", "cari": "C25", "tutar": "100", "yol": "kart", "hesap": "KK" },
+    { "id": "t1", "islem": "kart_borcu_odeme", "kaynak": "B1", "kart": "KK", "tutar": "100" },
+    { "id": "t2", "islem": "cari_odeme", "cari": "C25", "tutar": "25000", "yol": "kart", "hesap": "KK" },
+    { "id": "t3", "islem": "hesap_ac", "ad": "KK2", "banka": "Yapı Kredi", "hesapAdi": "Kurumsal Kart KK2", "tur": "kurumsal_kart", "paraBirimi": "TRY", "acilisTarihi": "01.03.2025", "acilisBakiyesi": "0", "kartLimiti": "5000" },
+    { "id": "t4", "islem": "cari_odeme", "cari": "C25", "tutar": "10", "yol": "kart" }
+  ]
+}

@@ -1,0 +1,457 @@
+{
+  "kok": "/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/hakem-kik-v2026",
+  "adimlar": [
+    {
+      "ad": "1 Kasa giriş 1.000 (kimliksiz)",
+      "sonuc": {
+        "durum": 200,
+        "ok": true,
+        "veri": {
+          "id": "cash-b4c9b730-872e-49bf-a42c-c31b25bdeaa7"
+        },
+        "hata": null
+      }
+    },
+    {
+      "ad": "2 Kasa çıkış 212, K1",
+      "sonuc": {
+        "durum": 200,
+        "ok": true,
+        "veri": {
+          "id": "cash-30dd2676-2d60-4c37-81c2-9b8eb45c429c"
+        },
+        "hata": null
+      }
+    },
+    {
+      "ad": "3 Kasa çıkış 212, K1 (aynı içerik, yineleme)",
+      "sonuc": {
+        "durum": 200,
+        "ok": true,
+        "veri": {
+          "id": "cash-0be5f447-1ba5-40a0-8fa8-7e3bae5d29e5"
+        },
+        "hata": null
+      }
+    },
+    {
+      "ad": "4 Kasa çıkış 250, K1 (farklı içerik)",
+      "sonuc": {
+        "durum": 200,
+        "ok": true,
+        "veri": {
+          "id": "cash-83519735-f6d8-4218-85ae-7c07843793f1"
+        },
+        "hata": null
+      }
+    },
+    {
+      "ad": "5 Kasa çıkış 10 ×2 AYNI ANDA, K2",
+      "sonuc": [
+        {
+          "durum": 200,
+          "ok": true,
+          "veri": {
+            "id": "cash-8f753d8b-f35f-47fa-9106-b147627cd185"
+          },
+          "hata": null
+        },
+        {
+          "durum": 200,
+          "ok": true,
+          "veri": {
+            "id": "cash-4f2b5331-675f-4267-b555-787a6d6411d1"
+          },
+          "hata": null
+        }
+      ]
+    },
+    {
+      "ad": "6a cari aç (karşı deney)",
+      "sonuc": {
+        "durum": 200,
+        "ok": true,
+        "veri": {
+          "id": "account-4e54e86b-0cfa-473e-b0cc-0c64ab483de2",
+          "refNo": "1",
+          "type": "customer",
+          "name": "Hakem Müşteri",
+          "phone": "",
+          "email": "",
+          "address": "",
+          "registeredOn": "2026-10-10",
+          "groupId": null,
+          "subgroupId": null,
+          "note": "",
+          "caseKey": "",
+          "caseSource": "",
+          "caseTitle": "",
+          "status": "active",
+          "taxNo": "",
+          "taxOffice": "",
+          "mersisNo": "",
+          "tradeRegistry": "",
+          "partyKind": "",
+          "firstName": "",
+          "familyName": "",
+          "city": "",
+          "district": "",
+          "postalCode": "",
+          "country": "",
+          "website": "",
+          "iban": "",
+          "dueDays": 0,
+          "eInvoice": 0,
+          "eAlias": "",
+          "eProfile": "",
+          "createdBy": "user-560662fd-01a1-461e-8226-ad42ed128172",
+          "createdAt": "2026-10-10T13:27:18.639Z",
+          "updatedAt": "2026-10-10T13:27:18.639Z",
+          "actorName": "Ofis yöneticisi",
+          "groupName": "",
+          "subgroupName": "",
+          "fields": [],
+          "typeLabel": "Müşteri",
+          "entries": [],
+          "plans": [],
+          "ledger": [],
+          "totals": {
+            "debit": 0,
+            "credit": 0,
+            "balance": 0,
+            "collected": 0,
+            "planTotal": 0,
+            "planRemaining": 0,
+            "overdue": 0,
+            "overdueCount": 0
+          },
+          "side": "zero",
+          "canManage": true,
+          "canCollect": true
+        },
+        "hata": null
+      }
+    },
+    {
+      "ad": "6b cari nakit tahsilat 300, K3",
+      "sonuc": {
+        "durum": 200,
+        "ok": true,
+        "veri": {
+          "id": "account-4e54e86b-0cfa-473e-b0cc-0c64ab483de2",
+          "refNo": "1",
+          "type": "customer",
+          "name": "Hakem Müşteri",
+          "phone": "",
+          "email": "",
+          "address": "",
+          "registeredOn": "2026-10-10",
+          "groupId": null,
+          "subgroupId": null,
+          "note": "",
+          "caseKey": "",
+          "caseSource": "",
+          "caseTitle": "",
+          "status": "active",
+          "taxNo": "",
+          "taxOffice": "",
+          "mersisNo": "",
+          "tradeRegistry": "",
+          "partyKind": "",
+          "firstName": "",
+          "familyName": "",
+          "city": "",
+          "district": "",
+          "postalCode": "",
+          "country": "",
+          "website": "",
+          "iban": "",
+          "dueDays": 0,
+          "eInvoice": 0,
+          "eAlias": "",
+          "eProfile": "",
+          "createdBy": "user-560662fd-01a1-461e-8226-ad42ed128172",
+          "createdAt": "2026-10-10T13:27:18.639Z",
+          "updatedAt": "2026-10-10T13:27:18.639Z",
+          "actorName": "Ofis yöneticisi",
+          "groupName": "",
+          "subgroupName": "",
+          "fields": [],
+          "typeLabel": "Müşteri",
+          "entries": [
+            {
+              "id": "aentry-5775761a-ba06-4554-8fb3-a471cba212ed",
+              "kind": "in",
+              "amount": 300,
+              "date": "2026-10-10",
+              "note": "",
+              "method": "cash",
+              "receiptNo": 1,
+              "source": "",
+              "sourceId": "",
+              "invoiceId": "",
+              "createdBy": "user-560662fd-01a1-461e-8226-ad42ed128172",
+              "createdAt": "2026-10-10T13:27:18.655Z",
+              "updatedAt": null,
+              "actorName": "Ofis yöneticisi",
+              "editable": true
+            }
+          ],
+          "plans": [],
+          "ledger": [
+            {
+              "id": "aentry-5775761a-ba06-4554-8fb3-a471cba212ed",
+              "origin": "account",
+              "kind": "in",
+              "date": "2026-10-10",
+              "at": "2026-10-10T13:27:18.655Z",
+              "label": "Tahsilat",
+              "sourceId": "",
+              "invoiceId": "",
+              "method": "cash",
+              "note": "",
+              "receiptNo": 1,
+              "debit": 0,
+              "credit": 300,
+              "balance": -300
+            }
+          ],
+          "totals": {
+            "debit": 0,
+            "credit": 300,
+            "balance": -300,
+            "collected": 300,
+            "planTotal": 0,
+            "planRemaining": 0,
+            "overdue": 0,
+            "overdueCount": 0
+          },
+          "side": "creditor",
+          "canManage": true,
+          "canCollect": true,
+          "entryId": "aentry-5775761a-ba06-4554-8fb3-a471cba212ed"
+        },
+        "hata": null
+      }
+    },
+    {
+      "ad": "6c cari nakit tahsilat 300, K3 (aynı içerik, yineleme)",
+      "sonuc": {
+        "durum": 200,
+        "ok": true,
+        "veri": {
+          "id": "account-4e54e86b-0cfa-473e-b0cc-0c64ab483de2",
+          "refNo": "1",
+          "type": "customer",
+          "name": "Hakem Müşteri",
+          "phone": "",
+          "email": "",
+          "address": "",
+          "registeredOn": "2026-10-10",
+          "groupId": null,
+          "subgroupId": null,
+          "note": "",
+          "caseKey": "",
+          "caseSource": "",
+          "caseTitle": "",
+          "status": "active",
+          "taxNo": "",
+          "taxOffice": "",
+          "mersisNo": "",
+          "tradeRegistry": "",
+          "partyKind": "",
+          "firstName": "",
+          "familyName": "",
+          "city": "",
+          "district": "",
+          "postalCode": "",
+          "country": "",
+          "website": "",
+          "iban": "",
+          "dueDays": 0,
+          "eInvoice": 0,
+          "eAlias": "",
+          "eProfile": "",
+          "createdBy": "user-560662fd-01a1-461e-8226-ad42ed128172",
+          "createdAt": "2026-10-10T13:27:18.639Z",
+          "updatedAt": "2026-10-10T13:27:18.639Z",
+          "actorName": "Ofis yöneticisi",
+          "groupName": "",
+          "subgroupName": "",
+          "fields": [],
+          "typeLabel": "Müşteri",
+          "entries": [
+            {
+              "id": "aentry-5775761a-ba06-4554-8fb3-a471cba212ed",
+              "kind": "in",
+              "amount": 300,
+              "date": "2026-10-10",
+              "note": "",
+              "method": "cash",
+              "receiptNo": 1,
+              "source": "",
+              "sourceId": "",
+              "invoiceId": "",
+              "createdBy": "user-560662fd-01a1-461e-8226-ad42ed128172",
+              "createdAt": "2026-10-10T13:27:18.655Z",
+              "updatedAt": null,
+              "actorName": "Ofis yöneticisi",
+              "editable": true
+            },
+            {
+              "id": "aentry-a5b81718-d153-4a84-b6da-fee975942596",
+              "kind": "in",
+              "amount": 300,
+              "date": "2026-10-10",
+              "note": "",
+              "method": "cash",
+              "receiptNo": 2,
+              "source": "",
+              "sourceId": "",
+              "invoiceId": "",
+              "createdBy": "user-560662fd-01a1-461e-8226-ad42ed128172",
+              "createdAt": "2026-10-10T13:27:18.672Z",
+              "updatedAt": null,
+              "actorName": "Ofis yöneticisi",
+              "editable": true
+            }
+          ],
+          "plans": [],
+          "ledger": [
+            {
+              "id": "aentry-5775761a-ba06-4554-8fb3-a471cba212ed",
+              "origin": "account",
+              "kind": "in",
+              "date": "2026-10-10",
+              "at": "2026-10-10T13:27:18.655Z",
+              "label": "Tahsilat",
+              "sourceId": "",
+              "invoiceId": "",
+              "method": "cash",
+              "note": "",
+              "receiptNo": 1,
+              "debit": 0,
+              "credit": 300,
+              "balance": -300
+            },
+            {
+              "id": "aentry-a5b81718-d153-4a84-b6da-fee975942596",
+              "origin": "account",
+              "kind": "in",
+              "date": "2026-10-10",
+              "at": "2026-10-10T13:27:18.672Z",
+              "label": "Tahsilat",
+              "sourceId": "",
+              "invoiceId": "",
+              "method": "cash",
+              "note": "",
+              "receiptNo": 2,
+              "debit": 0,
+              "credit": 300,
+              "balance": -600
+            }
+          ],
+          "totals": {
+            "debit": 0,
+            "credit": 600,
+            "balance": -600,
+            "collected": 600,
+            "planTotal": 0,
+            "planRemaining": 0,
+            "overdue": 0,
+            "overdueCount": 0
+          },
+          "side": "creditor",
+          "canManage": true,
+          "canCollect": true,
+          "entryId": "aentry-a5b81718-d153-4a84-b6da-fee975942596"
+        },
+        "hata": null
+      }
+    }
+  ],
+  "kasa": {
+    "durum": 200,
+    "bakiye": 906,
+    "satirSayisi": 8,
+    "satirlar": [
+      {
+        "kaynak": "manual",
+        "tur": "in",
+        "tutar": 1000,
+        "aciklama": "Kasaya Giriş"
+      },
+      {
+        "kaynak": "manual",
+        "tur": "out",
+        "tutar": 212,
+        "aciklama": "Temizlik Gideri"
+      },
+      {
+        "kaynak": "manual",
+        "tur": "out",
+        "tutar": 212,
+        "aciklama": "Temizlik Gideri"
+      },
+      {
+        "kaynak": "manual",
+        "tur": "out",
+        "tutar": 250,
+        "aciklama": "Temizlik Gideri"
+      },
+      {
+        "kaynak": "manual",
+        "tur": "out",
+        "tutar": 10,
+        "aciklama": "Çay Ocağı"
+      },
+      {
+        "kaynak": "manual",
+        "tur": "out",
+        "tutar": 10,
+        "aciklama": "Çay Ocağı"
+      },
+      {
+        "kaynak": "account",
+        "tur": "in",
+        "tutar": 300,
+        "aciklama": ""
+      },
+      {
+        "kaynak": "account",
+        "tur": "in",
+        "tutar": 300,
+        "aciklama": ""
+      }
+    ],
+    "temizlikGideriSatiri": 3,
+    "cayOcagiSatiri": 2,
+    "cariTahsilatSatiri": 2
+  },
+  "mizan": {
+    "100": {
+      "ad": "Kasa (Nakit)",
+      "borc": 1600,
+      "alacak": 694,
+      "bakiye": 906
+    },
+    "120": {
+      "ad": "Alıcılar (Müşteri Carileri)",
+      "borc": 0,
+      "alacak": 600,
+      "bakiye": -600
+    },
+    "649": {
+      "ad": "Diğer Olağan Gelirler (Kasaya Elle)",
+      "borc": 0,
+      "alacak": 1000,
+      "bakiye": -1000
+    },
+    "770": {
+      "ad": "Genel Giderler ve Alış Faturaları",
+      "borc": 694,
+      "alacak": 0,
+      "bakiye": 694
+    }
+  }
+}

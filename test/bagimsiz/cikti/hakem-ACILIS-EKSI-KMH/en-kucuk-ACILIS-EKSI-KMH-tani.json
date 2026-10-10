@@ -1,0 +1,28 @@
+{
+  "dil": "destekofis-senaryo/1",
+  "ad": "en-kucuk-ACILIS-EKSI-KMH-tani",
+  "aciklama": "Hakem tanısı (ACILIS-EKSI-KMH): aynı tutar ve KMH ile tür değiştirerek eksi açılış (vadesiz karşı deney / ticari / diğer); ticari hesabı artı açıp KMH içinde işlemle aynı eksi bakiyeye düşürme; Açılışı Düzelt ile eksiye çekme (ticari ve vadesiz karşı deney).",
+  "dayanak": "hakem: sınıfın sınırını çizmek için. Bütün adımlar dil §4.4/§4.7/§4.23 içinde; kâhinlerin 'eksi açılış limiti aşıyor' senaryo hatasına düşmemek için her eksi açılış KMH limiti içinde.",
+  "baslangic": {
+    "bugun": "06.01.2026",
+    "sirket": "bos",
+    "ayarlar": {
+      "kasaEksiBakiye": "uyar",
+      "benzerIslemUyarisi": "acik"
+    },
+    "kullanicilar": {
+      "Y": "yonetici",
+      "MU": "muhasebe"
+    }
+  },
+  "adimlar": [
+    { "id": "t1", "islem": "hesap_ac", "ad": "V1", "banka": "Denizbank", "hesapAdi": "Vadesiz KMH V1", "tur": "vadesiz", "paraBirimi": "TRY", "kullanici": "MU", "acilisTarihi": "23.12.2025", "acilisBakiyesi": "-11529,50", "kmhLimiti": "23059" },
+    { "id": "t2", "islem": "hesap_ac", "ad": "T1", "banka": "Denizbank", "hesapAdi": "Ticari Hesap T1", "tur": "ticari", "paraBirimi": "TRY", "kullanici": "MU", "acilisTarihi": "23.12.2025", "acilisBakiyesi": "-11529,50", "kmhLimiti": "23059" },
+    { "id": "t3", "islem": "hesap_ac", "ad": "D1", "banka": "Denizbank", "hesapAdi": "Diğer Hesap D1", "tur": "diger", "paraBirimi": "TRY", "kullanici": "MU", "acilisTarihi": "23.12.2025", "acilisBakiyesi": "-11529,50", "kmhLimiti": "23059" },
+    { "id": "t4", "islem": "hesap_ac", "ad": "T2", "banka": "Akbank", "hesapAdi": "Ticari Hesap T2", "tur": "ticari", "paraBirimi": "TRY", "kullanici": "MU", "acilisTarihi": "01.12.2025", "acilisBakiyesi": "1000", "kmhLimiti": "23059", "bakiyeDogrulandi": true },
+    { "id": "t5", "islem": "diger_gider", "ad": "G1", "hesap": "T2", "tutar": "12529,50", "kullanici": "MU" },
+    { "id": "t6", "islem": "acilis_duzelt", "hesap": "T2", "acilisTarihi": "01.12.2025", "acilisBakiyesi": "-500", "kullanici": "MU" },
+    { "id": "t7", "islem": "hesap_ac", "ad": "V2", "banka": "Akbank", "hesapAdi": "Vadesiz KMH V2", "tur": "vadesiz", "paraBirimi": "TRY", "kullanici": "MU", "acilisTarihi": "01.12.2025", "acilisBakiyesi": "1000", "kmhLimiti": "23059" },
+    { "id": "t8", "islem": "acilis_duzelt", "hesap": "V2", "acilisTarihi": "01.12.2025", "acilisBakiyesi": "-500", "kullanici": "MU" }
+  ]
+}

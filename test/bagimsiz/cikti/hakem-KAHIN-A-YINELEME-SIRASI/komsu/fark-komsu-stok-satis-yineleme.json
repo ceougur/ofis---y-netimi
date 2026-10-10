@@ -1,0 +1,42 @@
+{
+  "a_stderr": "SENARYO GEÇERSİZ: adım 5: BELİRSİZ-14 — stok eksiye düşüyor",
+  "adimSayisi": 5,
+  "cikisKodlari": {
+    "a": 2,
+    "b": 0,
+    "program": 0
+  },
+  "durum": "EKSIK: en az bir taraf çıktı üretmedi; karşılaştırma yapılmadı",
+  "farklar": [],
+  "islemSayisi": 5,
+  "islemTurleri": {
+    "cari_ac": 1,
+    "fatura": 2,
+    "stok_giris": 1,
+    "urun_ac": 1
+  },
+  "komutlar": {
+    "model_a": "python3 -I test/bagimsiz/model_a/model.py test/bagimsiz/cikti/hakem-KAHIN-A-YINELEME-SIRASI/komsu/komsu-stok-satis-yineleme.json",
+    "model_b": "python3 -I test/bagimsiz/model_b/model.py test/bagimsiz/cikti/hakem-KAHIN-A-YINELEME-SIRASI/komsu/komsu-stok-satis-yineleme.json",
+    "program": "node test/bagimsiz/surucu.mjs test/bagimsiz/cikti/hakem-KAHIN-A-YINELEME-SIRASI/komsu/komsu-stok-satis-yineleme.json --cikti test/bagimsiz/cikti/ham/komsu-stok-satis-yineleme.program.json"
+  },
+  "programEk": {
+    "calismaAgaciDegisikDosya": 0,
+    "commit": "ab4ebcaf8e8b3392b02737d5553409ebe0d5d87f",
+    "eslenemeyenler": [],
+    "kaynakFarklari": [],
+    "okumaHatalari": [],
+    "programMutabakatTesti": {
+      "basarisizDenetim": 0,
+      "ok": true
+    },
+    "programSurumu": "2.0.26"
+  },
+  "senaryo": "komsu-stok-satis-yineleme",
+  "senaryoDosyasi": "test/bagimsiz/cikti/hakem-KAHIN-A-YINELEME-SIRASI/komsu/komsu-stok-satis-yineleme.json",
+  "sureler": {
+    "a": 0.07,
+    "b": 0.07,
+    "program": 0.92
+  }
+}

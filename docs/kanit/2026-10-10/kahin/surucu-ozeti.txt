@@ -1,0 +1,40 @@
+**Sonuç:** `/home/user/ofis---y-netimi/test/bagimsiz/surucu.mjs` yazıldı ve kabul-1-16 ile koşuldu. Koşu temiz bitti (çıkış 0): ret 0, atlanan 0, eşlenemeyen 0, okuma hatası 0, kaynak farkı 0. İkinci koşunun çıktısı ilkiyle bayt bayt aynı. Commit ve push yapılmadı.
+
+**Dosyalar (ikisi de commit edilmedi)**
+- Sürücü: `/home/user/ofis---y-netimi/test/bagimsiz/surucu.mjs`
+- Kabul çıktısı: `/home/user/ofis---y-netimi/test/bagimsiz/cikti/kabul-1-16.program.json` (commit 3d5355a, programSurumu 2.0.26)
+- Komut: `node test/bagimsiz/surucu.mjs <senaryo.json> [--cikti <dosya>]`. Çıkış kodu: 0 tamam, 1 koşucu ya da okuma hatası (koşu kanıt sayılmaz), 2 senaryo geçersiz.
+- `model_a` ve `model_b` okunmadı. Sürücü beklenen değer hesaplamıyor.
+
+**Kabul 1–16 çıktısı (son durum, kuruş)**
+- mizan: 100 B 1000000 · 102.01 B 9000000 · 102.02 B 7000000 · 120 0/0 · 391 A 333333 · 500 A 15000000 · 600 A 1666667
+- bankaHesaplari: ZIR 9000000, GAR 7000000
+- hesapKodlari: ZIR 102.01, GAR 102.02 · eksiBakiyeDenetimi: ikisi de uyar
+- kasa 1000000 · cariler: ABC 0 · stok: URA 9, URB 25
+- faturalar.F1: toplam 2000000, matrah 1666667, kdv 333333, açık 0
+- ozet: gercekBanka 16000000, hesabiAtanmamis 0, kartVeKrediBorcu 0, kasaVeGercekBanka 17000000
+- retler, yinelenenler, atlananlar boş; 8 kontrol adımının ara durumu yazıldı.
+- Programın kendi Mutabakat Testi "ok" diyor, başarısız denetim 0 (ek bilgi; kanıt sayılmaz).
+- Ek olarak çıktıyı elle yazılmış `kabul-1-16.beklenen.json` (plan-elle) ile kaba bir betikle karşılaştırdım: 229 yaprak, fark 0. Bu resmi karşılaştırıcı değil; kâhinle karşılaştırma yapılmadı.
+
+**Kullanılan uçlar**
+- Kabul koşusunda kullanılanlar:
+  - Yazma: POST `/api/workspace/stock` (ürün) ve `/stock/:id/moves` (parasız giriş), POST `/api/workspace/bank/accounts`, POST `/api/workspace/accounts` (cari) ve `/accounts/:id/entries` (tahsilat), POST `/api/workspace/invoices`, POST `/api/workspace/cash/transfer`, POST `/api/workspace/bank/transfers`.
+  - Okuma: GET `/api/workspace/ledger` (Ana Defter mizanı), `/bank/sub-trial` (Alt Hesap Mizanı), `/bank/accounts?status=all`, `/bank/summary`, `/api/workspace/cash`, `/overview` (ANLIK DURUM), `/accounts?status=all`, `/stock`, `/invoices/:id`, `/ledger/integrity`.
+- Kataloğun geri kalanı için eşlenen uçlar:
+  - Yönetim: `/api/admin/users`, `/api/admin/negative-policy`, `/api/admin/period-lock`, `/bank/settings`.
+  - Banka: `/bank/accounts/:id` (eksi bakiye politikası), `/bank/accounts/:id/status`, `/bank/accounts/:id/opening`, `/bank/vouchers`, `/bank/events/:id/reverse`, `/bank/movements`.
+  - Fatura: `/invoices/calc` (yalnız ekrandaki "Tamamı" gibi tutarı okumak için).
+  - Taksit ve silme: `/plans`, `/plans/:id`, `/plans/:id/entries`, ayrıca cari hareketi, Kasa ve taksit satırı için DELETE uçları.
+
+**Kabul koşusunda eşlenemeyen işlem yok.** Sürücünün sınırlarını ayrı bir deneme senaryosuyla sınadım (55 adım, depoda değil: `/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/surucu-duman.json`):
+1. **Kurumsal kartla ödeme (cari ödeme, alış peşini):** programın ucu kart hesabını bağlamıyor, satır 108.00'e hesapsız düşüyor. Sürücü hesabı yine gönderiyor ve durumu eslenemeyenler'e not olarak yazıyor.
+2. **Banka Fişi ya da transfer silme:** programda silme ucu yok (ekranda yalnız Ters Kaydet). İstek 405 döndü; ret olarak ve notla kaydediliyor.
+3. **Modül hareketinin ters kaydı:** İşlem Kartı, Banka Hareketler listesinde adım öncesi ve sonrası farkından bulunuyor. Banka olayı olmayan nakit hareket eşlenemeyen sayılıyor.
+4. **Tek faturada karışık KDV dahil/hariç kalemler:** programda bu seçim belge düzeyinde, gönderilemiyor; eşlenemeyen sayılıyor.
+5. **İstek kimliği:** program yalnız 16–100 karakterlik kimlik kabul ediyor; senaryonun kısa etiketi ("abc-1") 400 `request-id-invalid` aldı. Etiket artık belirlenimli 32 haneli bir kimliğe çevriliyor; aynı etiketle yineleme yinelenen olarak kaydedildi.
+6. **Sürücünün yaptığı biçim dönüşümleri** (çıktıda `hesaplananAlanlar` altında yazılı): TL değerini kuruşa çevirme, mizanı borç/alacak sütununa ayırma, ve `kasaVeGercekBanka` = ANLIK DURUM'daki Nakit Kasa + Gerçek Banka. Program bu toplamı tek sayı olarak göstermiyor.
+
+**Karşılaştırıcı için bilgi (deneme senaryosundan, kabulde görülmedi):**
+- Banka hesabında eksi bakiye "Engelle" iken program `bank-blocked` kodu döndürüyor. SENARYO-DILI `cash-blocked` bekliyor (PLAN §12.5 adım 37); "Uyar" için de program kodu `bank-negative`.
+- Açılışa 3 ondalıklı tutar girilince program 400 `amount-precision` döndürüyor; dil bu durumda kod beklemiyor (null).

@@ -1,0 +1,33 @@
+{
+  "dil": "destekofis-senaryo/1",
+  "ad": "en-kucuk-VADELI-HESAP-FIS-tani",
+  "aciklama": "Hakem tanı: vadeli hesapta (V1) bütün Banka Fişi türleri + transfer iki yön + havale tahsilatı; karşı deney aynı türler vadesiz hesapta (D1). Tutarlar ayrık (Benzer İşlem yok).",
+  "dayanak": "hakem: fark sınıfı VADELI-HESAP-FIS; plan §3.5 'Vadeli … Hayır; yalnız transfer ve faiz' sınırının hangi türleri kapsadığı.",
+  "baslangic": {
+    "bugun": "18.08.2025",
+    "sirket": "bos",
+    "ayarlar": { "kasaEksiBakiye": "uyar", "benzerIslemUyarisi": "acik" },
+    "kullanicilar": { "Y": "yonetici" }
+  },
+  "adimlar": [
+    { "id": "h1", "islem": "hesap_ac", "ad": "V1", "banka": "Garanti BBVA", "hesapAdi": "Vadeli", "tur": "vadeli", "paraBirimi": "TRY", "acilisTarihi": "01.08.2025", "acilisBakiyesi": "50000" },
+    { "id": "h2", "islem": "hesap_ac", "ad": "D1", "banka": "Ziraat Bankası", "hesapAdi": "Ana TL", "tur": "vadesiz", "paraBirimi": "TRY", "acilisTarihi": "01.08.2025", "acilisBakiyesi": "40000" },
+    { "id": "c1", "islem": "cari_ac", "ad": "C1", "unvan": "ABC Ltd.", "tur": "musteri" },
+    { "id": "v1", "islem": "banka_masraf", "ad": "VM1", "hesap": "V1", "tutar": "10", "masrafTuru": "EFT", "vergi": "yok" },
+    { "id": "v2", "islem": "banka_masraf", "ad": "VM2", "hesap": "V1", "tutar": "21", "masrafTuru": "Hesap İşletim", "vergi": "bsmv_dahil" },
+    { "id": "v3", "islem": "diger_gelir", "ad": "VG", "hesap": "V1", "tutar": "18,57" },
+    { "id": "v4", "islem": "diger_gider", "ad": "VD", "hesap": "V1", "tutar": "30" },
+    { "id": "v5", "islem": "faiz_gideri", "ad": "VF", "hesap": "V1", "tutar": "40" },
+    { "id": "v6", "islem": "faiz_geliri", "ad": "VI", "hesap": "V1", "brut": "50", "stopajOrani": "15" },
+    { "id": "v7", "islem": "transfer", "ad": "VT1", "kaynak": "V1", "hedef": "D1", "tutar": "1000" },
+    { "id": "v8", "islem": "transfer", "ad": "VT2", "kaynak": "D1", "hedef": "V1", "tutar": "2000" },
+    { "id": "v9", "islem": "cari_tahsilat", "cari": "C1", "tutar": "500", "yol": "havale", "hesap": "V1" },
+    { "id": "d1", "islem": "banka_masraf", "ad": "DM1", "hesap": "D1", "tutar": "11", "masrafTuru": "EFT", "vergi": "yok" },
+    { "id": "d2", "islem": "banka_masraf", "ad": "DM2", "hesap": "D1", "tutar": "22", "masrafTuru": "Hesap İşletim", "vergi": "bsmv_dahil" },
+    { "id": "d3", "islem": "diger_gelir", "ad": "DG", "hesap": "D1", "tutar": "19,57" },
+    { "id": "d4", "islem": "diger_gider", "ad": "DD", "hesap": "D1", "tutar": "31" },
+    { "id": "d5", "islem": "faiz_gideri", "ad": "DF", "hesap": "D1", "tutar": "41" },
+    { "id": "d6", "islem": "faiz_geliri", "ad": "DI", "hesap": "D1", "brut": "51", "stopajOrani": "15" },
+    { "id": "d9", "islem": "cari_tahsilat", "cari": "C1", "tutar": "501", "yol": "havale", "hesap": "D1" }
+  ]
+}

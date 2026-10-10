@@ -1,0 +1,14 @@
+rastgele-31-2000: çıkış a=0 b=0 program=0 · karşılaştırılan 96813 · atlanan 23872 · fark 5952 {'A=B≠P': 4702, 'A≠B=P': 52, 'B≠A=P': 1175, 'KOSUCU': 23}
+  BANKA-EKSI-KODU                                                 4 yaprak  {'A=B≠P': 4}
+  KAHIN-K4-YINELENEN-AD                                          52 yaprak  {'A≠B=P': 52}
+  KART-HESABI-BAGLANMIYOR                                       420 yaprak  {'A=B≠P': 397, 'KOSUCU': 23}
+  KASA-ACILIS-649                                               160 yaprak  {'A=B≠P': 160}
+  KASA-ISTEK-KIMLIGI                                              2 yaprak  {'A=B≠P': 2}
+  KDV-DAHIL-ISKONTO                                            1866 yaprak  {'A=B≠P': 1866}
+  KOSUCU-ALIS-YINELEME-NUMARA                                  1195 yaprak  {'B≠A=P': 1175, 'A=B≠P': 20}
+  TUREV:IADE-KAPAMA+KART-HESABI-BAGLANMIYOR+KDV-DAHIL-ISKONTO   200 yaprak  {'A=B≠P': 200}
+  TUREV:IADE-KAPAMA+KDV-DAHIL-ISKONTO                           577 yaprak  {'A=B≠P': 577}
+  TUREV:KART-HESABI-BAGLANMIYOR+KASA-ISTEK-KIMLIGI+KDV-DAHIL-I   78 yaprak  {'A=B≠P': 78}
+  TUREV:KART-HESABI-BAGLANMIYOR+KDV-DAHIL-ISKONTO               410 yaprak  {'A=B≠P': 410}
+  TUREV:KASA-ISTEK-KIMLIGI+KDV-DAHIL-ISKONTO                    468 yaprak  {'A=B≠P': 468}
+  TUREV:KDV-DAHIL-ISKONTO                                       520 yaprak  {'A=B≠P': 520}

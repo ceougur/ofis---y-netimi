@@ -1,0 +1,22 @@
+{
+  "dil": "destekofis-senaryo/1",
+  "ad": "en-kucuk-KASA-ISTEK-KIMLIGI",
+  "aciklama": "Hakem: en küçük — boş şirket; Kasa'ya istek kimliksiz nakit giriş 1.000 (yalnız eksi bakiye denetimine takılmasın diye), sonra rastgele-1-500 adım 387 ve 388 AYNEN: aynı istek kimliğiyle (ik-13) aynı gövdeli Kasa elle çıkışı 212,00 TL iki kez (Temizlik Gideri). Beklenen: 388 yineleme (etkisiz), Kasa 788,00.",
+  "dayanak": "hakem: fark sınıfı KASA-ISTEK-KIMLIGI (alan yinelenenler.388, A=B≠P; tohum 1 adım 388, 33 tohumun 21'inde). 387/388 adım kimlikleri ve alanları özgün senaryodakiyle aynı; bugün = özgün senaryoda adım 386'nın 'saat' değeri (27.01.2026).",
+  "baslangic": {
+    "bugun": "27.01.2026",
+    "sirket": "bos",
+    "ayarlar": {
+      "kasaEksiBakiye": "uyar",
+      "benzerIslemUyarisi": "acik"
+    },
+    "kullanicilar": {
+      "Y": "yonetici"
+    }
+  },
+  "adimlar": [
+    { "id": "k0", "islem": "kasa_hareket", "yon": "giris", "tutar": "1000", "aciklama": "Kasaya Giriş" },
+    { "id": "387", "islem": "kasa_hareket", "yon": "cikis", "tutar": "212", "aciklama": "Temizlik Gideri", "istekKimligi": "ik-13" },
+    { "id": "388", "islem": "kasa_hareket", "yon": "cikis", "tutar": "212", "aciklama": "Temizlik Gideri", "istekKimligi": "ik-13" }
+  ]
+}

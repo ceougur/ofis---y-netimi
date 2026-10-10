@@ -1,0 +1,9 @@
+rastgele-9-500: çıkış a=0 b=0 program=0 · karşılaştırılan 6912 · atlanan 1620 · fark 444 {'A=B≠P': 381, 'A≠B=P': 60, 'KOSUCU': 3}
+  ACIKLANMAMIS:A=B≠P:faturalar.*.acik                            82 yaprak  {'A=B≠P': 82}
+  KAHIN-K4-YINELENEN-AD                                          60 yaprak  {'A≠B=P': 60}
+  KART-HESABI-BAGLANMIYOR                                        72 yaprak  {'A=B≠P': 69, 'KOSUCU': 3}
+  KASA-ACILIS-649                                                40 yaprak  {'A=B≠P': 40}
+  KDV-DAHIL-ISKONTO                                              94 yaprak  {'A=B≠P': 94}
+  TUREV:KART-HESABI-BAGLANMIYOR                                   7 yaprak  {'A=B≠P': 7}
+  TUREV:KART-HESABI-BAGLANMIYOR+KDV-DAHIL-ISKONTO                34 yaprak  {'A=B≠P': 34}
+  TUREV:KDV-DAHIL-ISKONTO                                        55 yaprak  {'A=B≠P': 55}
