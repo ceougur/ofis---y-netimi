@@ -1,0 +1,2459 @@
+TAP version 13
+# Subtest: altın test: v2.0.26 ile bu dal aynı veride aynı Kasa, Banka ve POS, ANLIK DURUM, Ana Defter ve raporları gösterir
+    # Subtest: zincir fikstürü surum-2.0.26-zincir (2.0.16 → 2.0.26 gerçek sürüm koduyla, 4 şirket)
+    not ok 1 - zincir fikstürü surum-2.0.26-zincir (2.0.16 → 2.0.26 gerçek sürüm koduyla, 4 şirket)
+      ---
+      duration_ms: 12543.569129
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-a40291a1f8b2ba361/test/banka-210-altin.test.mjs:224:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        8 fark:
+        zincir · 001 · admin · json /api/workspace/overview/nakit-akisi: Expected values to be strictly deep-equal:
+        + actual - expected
+        ... Skipped lines
+        
+          {
+            bySource: {
+              'plan:in': 56496.16
+            },
+            carried: {
+        ...
+            },
+        +   cashToday: 258075,
+        +   closing: 314571.16,
+        -   cashToday: 334583.65,
+        -   closing: 391079.81,
+            days: [
+              {
+        +       balance: 265075,
+        -       balance: 341583.65,
+                date: '2026-10-12',
+                in: 7000,
+                out: 0
+              },
+              {
+        +       balance: 271950,
+        -       balance: 348458.65,
+                date: '2026-10-23',
+                in: 6875,
+                out: 0
+              },
+              {
+        +       balance: 280734.5,
+        -       balance: 357243.15,
+                date: '2026-10-25',
+                in: 8784.5,
+                out: 0
+              },
+              {
+        +       balance: 283401.16,
+        -       balance: 359909.81,
+                date: '2026-10-28',
+                in: 2666.66,
+                out: 0
+              },
+              {
+        +       balance: 294021.16,
+        -       balance: 370529.81,
+                date: '2026-10-29',
+                in: 10620,
+                out: 0
+              },
+              {
+        +       balance: 295471.16,
+        -       balance: 371979.81,
+                date: '2026-11-02',
+                in: 1450,
+                out: 0
+              },
+              {
+        +       balance: 296921.16,
+        -       balance: 373429.81,
+                date: '2026-11-03',
+                in: 1450,
+                out: 0
+              },
+              {
+        +       balance: 304621.16,
+        -       balance: 381129.81,
+                date: '2026-11-04',
+                in: 7700,
+                out: 0
+              },
+              {
+        +       balance: 306071.16,
+        -       balance: 382579.81,
+                date: '2026-11-05',
+                in: 1450,
+                out: 0
+              },
+              {
+        +       balance: 
+        
+        zincir · 001 · admin · json /api/workspace/overview/nakit-akisi?preset=next90&overdue=1: Expected values to be strictly deep-equal:
+        + actual - expected
+        ... Skipped lines
+        
+          {
+            bySource: {
+              'cheque:in': 750,
+              'plan:in': 148499.87
+            },
+        ...
+            },
+        +   cashToday: 258075,
+        +   closing: 962101.19,
+        -   cashToday: 334583.65,
+        -   closing: 1038609.84,
+            days: [
+              {
+        +       balance: 819851.32,
+        -       balance: 896359.97,
+                date: '2026-10-12',
+                in: 7000,
+                out: 0
+              },
+              {
+        +       balance: 826726.32,
+        -       balance: 903234.97,
+                date: '2026-10-23',
+                in: 6875,
+                out: 0
+              },
+              {
+        +       balance: 835510.82,
+        -       balance: 912019.47,
+                date: '2026-10-25',
+                in: 8784.5,
+                out: 0
+              },
+              {
+        +       balance: 838177.48,
+        -       balance: 914686.13,
+                date: '2026-10-28',
+                in: 2666.66,
+                out: 0
+              },
+              {
+        +       balance: 848797.48,
+        -       balance: 925306.13,
+                date: '2026-10-29',
+                in: 10620,
+                out: 0
+              },
+              {
+        +       balance: 850247.48,
+        -       balance: 926756.13,
+                date: '2026-11-02',
+                in: 1450,
+                out: 0
+              },
+              {
+        +       balance: 851697.48,
+        -       balance: 928206.13,
+                date: '2026-11-03',
+                in: 1450,
+                out: 0
+              },
+              {
+        +       balance: 859397.48,
+        -       balance: 935906.13,
+                date: '2026-11-04',
+                in: 7700,
+                out: 0
+              },
+              {
+        +       balance: 860847.48,
+        -       balance: 937356.13,
+                date: '2026-11-05',
+                in: 1450,
+                out: 0
+              },
+              {
+        
+        zincir · 002 · admin · json /api/workspace/overview/nakit-akisi: Expected values to be strictly deep-equal:
+        + actual - expected
+        ... Skipped lines
+        
+          {
+            bySource: {
+              'plan:in': 41529.37
+            },
+            carried: {
+        ...
+            },
+        +   cashToday: 184645.26,
+        +   closing: 226174.63,
+        -   cashToday: 258256.48,
+        -   closing: 299785.85,
+            days: [
+              {
+        +       balance: 188478.59,
+        -       balance: 262089.81,
+                date: '2026-10-11',
+                in: 3833.33,
+                out: 0
+              },
+              {
+        +       balance: 194278.59,
+        -       balance: 267889.81,
+                date: '2026-10-13',
+                in: 5800,
+                out: 0
+              },
+              {
+        +       balance: 195878.59,
+        -       balance: 269489.81,
+                date: '2026-10-15',
+                in: 1600,
+                out: 0
+              },
+              {
+        +       balance: 199985.25,
+        -       balance: 273596.47,
+                date: '2026-10-19',
+                in: 4106.66,
+                out: 0
+              },
+              {
+        +       balance: 211807.97,
+        -       balance: 285419.19,
+                date: '2026-11-01',
+                in: 11822.72,
+                out: 0
+              },
+              {
+        +       balance: 213257.97,
+        -       balance: 286869.19,
+                date: '2026-11-02',
+                in: 1450,
+                out: 0
+              },
+              {
+        +       balance: 220374.63,
+        -       balance: 293985.85,
+                date: '2026-11-03',
+                in: 7116.66,
+                out: 0
+              },
+              {
+        +       balance: 221824.63,
+        -       balance: 295435.85,
+                date: '2026-11-04',
+                in: 1450,
+                out: 0
+              },
+              {
+        +       balance: 223274.63,
+        -       balance: 296885.85,
+                date: '2026-11-05',
+                in: 1450,
+                out: 0
+              },
+              {
+        
+        
+        zincir · 002 · admin · json /api/workspace/overview/nakit-akisi?preset=next90&overdue=1: Expected values to be strictly deep-equal:
+        + actual - expected
+        ... Skipped lines
+        
+          {
+            bySource: {
+              'plan:in': 121842.67
+            },
+            carried: {
+        ...
+            },
+        +   cashToday: 184645.26,
+        +   closing: 895927,
+        -   cashToday: 258256.48,
+        -   closing: 969538.22,
+            days: [
+              {
+        +       balance: 777917.66,
+        -       balance: 851528.88,
+                date: '2026-10-11',
+                in: 3833.33,
+                out: 0
+              },
+              {
+        +       balance: 783717.66,
+        -       balance: 857328.88,
+                date: '2026-10-13',
+                in: 5800,
+                out: 0
+              },
+              {
+        +       balance: 785317.66,
+        -       balance: 858928.88,
+                date: '2026-10-15',
+                in: 1600,
+                out: 0
+              },
+              {
+        +       balance: 789424.32,
+        -       balance: 863035.54,
+                date: '2026-10-19',
+                in: 4106.66,
+                out: 0
+              },
+              {
+        +       balance: 801247.04,
+        -       balance: 874858.26,
+                date: '2026-11-01',
+                in: 11822.72,
+                out: 0
+              },
+              {
+        +       balance: 802697.04,
+        -       balance: 876308.26,
+                date: '2026-11-02',
+                in: 1450,
+                out: 0
+              },
+              {
+        +       balance: 809813.7,
+        -       balance: 883424.92,
+                date: '2026-11-03',
+                in: 7116.66,
+                out: 0
+              },
+              {
+        +       balance: 811263.7,
+        -       balance: 884874.92,
+                date: '2026-11-04',
+                in: 1450,
+                out: 0
+              },
+              {
+        +       balance: 812713.7,
+        -       balance: 886324.92,
+                date: '2026-11-05',
+                in: 1450,
+                out: 0
+              },
+              {
+        +    
+        
+        zincir · 007 · admin · json /api/workspace/overview/nakit-akisi: Expected values to be strictly deep-equal:
+        + actual - expected
+        ... Skipped lines
+        
+          {
+            bySource: {
+              'plan:in': 22488.15
+            },
+            carried: {
+        ...
+            },
+        +   cashToday: 165132.35,
+        +   closing: 187620.5,
+        -   cashToday: 223722.27,
+        -   closing: 246210.42,
+            days: [
+              {
+        +       balance: 170689.35,
+        -       balance: 229279.27,
+                date: '2026-10-23',
+                in: 5557,
+                out: 0
+              },
+              {
+        +       balance: 177117.92,
+        -       balance: 235707.84,
+                date: '2026-10-29',
+                in: 6428.57,
+                out: 0
+              },
+              {
+        +       balance: 180509.5,
+        -       balance: 239099.42,
+                date: '2026-11-01',
+                in: 3391.58,
+                out: 0
+              },
+              {
+        +       balance: 182720.5,
+        -       balance: 241310.42,
+                date: '2026-11-04',
+                in: 2211,
+                out: 0
+              },
+              {
+        +       balance: 187620.5,
+        -       balance: 246210.42,
+                date: '2026-11-05',
+                in: 4900,
+                out: 0
+              }
+            ],
+        ...
+            lowest: {
+        +     balance: 165132.35,
+        -     balance: 223722.27,
+              date: '2026-10-10'
+            },
+            negative: false,
+        +   opening: 165132.35,
+        -   opening: 223722.27,
+            overdue: [
+              {
+                amount: 13897.88,
+                date: '2025-10-14',
+                detail: 'Fatura tarihi 14.10.2025',
+        ...
+                amount: 5557,
+        +       balance: 170689.35,
+        -       balance: 229279.27,
+                date: '2026-10-23',
+                direction: 'in',
+                fullAmount: 5557,
+                label: '1. taksit',
+                partial: false,
+        ...
+                amount: 6428.57,
+        +       balance
+        
+        zincir · 007 · admin · json /api/workspace/overview/nakit-akisi?preset=next90&overdue=1: Expected values to be strictly deep-equal:
+        + actual - expected
+        ... Skipped lines
+        
+          {
+            bySource: {
+              'plan:in': 57195.66
+            },
+            carried: {
+        ...
+            },
+        +   cashToday: 165132.35,
+        +   closing: 811552.29,
+        -   cashToday: 223722.27,
+        -   closing: 870142.21,
+            days: [
+              {
+        +       balance: 759913.63,
+        -       balance: 818503.55,
+                date: '2026-10-23',
+                in: 5557,
+                out: 0
+              },
+              {
+        +       balance: 766342.2,
+        -       balance: 824932.12,
+                date: '2026-10-29',
+                in: 6428.57,
+                out: 0
+              },
+              {
+        +       balance: 769733.78,
+        -       balance: 828323.7,
+                date: '2026-11-01',
+                in: 3391.58,
+                out: 0
+              },
+              {
+        +       balance: 771944.78,
+        -       balance: 830534.7,
+                date: '2026-11-04',
+                in: 2211,
+                out: 0
+              },
+              {
+        +       balance: 776844.78,
+        -       balance: 835434.7,
+                date: '2026-11-05',
+                in: 4900,
+                out: 0
+              },
+              {
+        +       balance: 779172.05,
+        -       balance: 837761.97,
+                date: '2026-11-13',
+                in: 2327.27,
+                out: 0
+              },
+              {
+        +       balance: 784729.05,
+        -       balance: 843318.97,
+                date: '2026-11-23',
+                in: 5557,
+                out: 0
+              },
+              {
+        +       balance: 791157.62,
+        -       balance: 849747.54,
+                date: '2026-11-29',
+                in: 6428.57,
+                out: 0
+              },
+              {
+        +       balance: 792407.62,
+        -       balance: 850997.54,
+                date: '2026-12-01',
+                in: 1250,
+                out: 0
+              },
+              {
+        +    
+        
+        zincir · 004 · admin · json /api/workspace/overview/nakit-akisi: Expected values to be strictly deep-equal:
+        + actual - expected
+        ... Skipped lines
+        
+          {
+            bySource: {
+              'plan:in': 12134.54
+            },
+            carried: {
+        ...
+            },
+        +   cashToday: 49279.89,
+        +   closing: 61414.43,
+        -   cashToday: 62355.11,
+        -   closing: 74489.65,
+            days: [
+              {
+        +       balance: 58159.89,
+        -       balance: 71235.11,
+                date: '2026-10-23',
+                in: 8880,
+                out: 0
+              },
+              {
+        +       balance: 58814.43,
+        -       balance: 71889.65,
+                date: '2026-11-01',
+                in: 654.54,
+                out: 0
+              },
+              {
+        +       balance: 61414.43,
+        -       balance: 74489.65,
+                date: '2026-11-08',
+                in: 2600,
+                out: 0
+              }
+            ],
+        ...
+            lowest: {
+        +     balance: 49279.89,
+        -     balance: 62355.11,
+              date: '2026-10-10'
+            },
+            negative: false,
+        +   opening: 49279.89,
+        -   opening: 62355.11,
+            overdue: [
+              {
+                amount: 2160,
+                date: '2026-07-14',
+                detail: 'Fatura tarihi 14.07.2026',
+        ...
+                amount: 8880,
+        +       balance: 58159.89,
+        -       balance: 71235.11,
+                date: '2026-10-23',
+                direction: 'in',
+                fullAmount: 8880,
+                label: '2. taksit',
+                partial: false,
+        ...
+                amount: 654.54,
+        +       balance: 58814.43,
+        -       balance: 71889.65,
+                date: '2026-11-01',
+                direction: 'in',
+                fullAmount: 818.18,
+                label: '3. taksit (kalan)',
+                partial: true,
+        ...
+                amount: 2600,
+        +       balance: 61414.43,
+        -       balance: 74489.65,
+                date: '2026-11-08',
+          
+        
+        zincir · 004 · admin · json /api/workspace/overview/nakit-akisi?preset=next90&overdue=1: Expected values to be strictly deep-equal:
+        + actual - expected
+        ... Skipped lines
+        
+          {
+            bySource: {
+              'plan:in': 18970.9
+            },
+            carried: {
+        ...
+            },
+        +   cashToday: 49279.89,
+        +   closing: 122084.67,
+        -   cashToday: 62355.11,
+        -   closing: 135159.89,
+            days: [
+              {
+        +       balance: 111993.77,
+        -       balance: 125068.99,
+                date: '2026-10-23',
+                in: 8880,
+                out: 0
+              },
+              {
+        +       balance: 112648.31,
+        -       balance: 125723.53,
+                date: '2026-11-01',
+                in: 654.54,
+                out: 0
+              },
+              {
+        +       balance: 115248.31,
+        -       balance: 128323.53,
+                date: '2026-11-08',
+                in: 2600,
+                out: 0
+              },
+              {
+        +       balance: 116066.49,
+        -       balance: 129141.71,
+                date: '2026-12-01',
+                in: 818.18,
+                out: 0
+              },
+              {
+        +       balance: 118666.49,
+        -       balance: 131741.71,
+                date: '2026-12-08',
+                in: 2600,
+                out: 0
+              },
+              {
+        +       balance: 119484.67,
+        -       balance: 132559.89,
+                date: '2027-01-01',
+                in: 818.18,
+                out: 0
+              },
+              {
+        +       balance: 122084.67,
+        -       balance: 135159.89,
+                date: '2027-01-08',
+                in: 2600,
+                out: 0
+              }
+            ],
+        ...
+            lowest: {
+        +     balance: 103113.77,
+        -     balance: 116188.99,
+              date: '2026-10-10'
+            },
+            negative: false,
+        +   opening: 103113.77,
+        -   opening: 116188.99,
+            overdue: [
+              {
+                amount: 2160,
+                date: '2026-07-14',
+                detail: 'Fatura tarihi 14.07
+        + actual - expected
+        
+        + [
+        +   'zincir · 001 · admin · json /api/workspace/overview/nakit-akisi: Expected values to be strictly deep-equal:\n' +
+        +     '+ actual - expected\n' +
+        +     '... Skipped lines\n' +
+        +     '\n' +
+        +     '  {\n' +
+        +     '    bySource: {\n' +
+        +     "      'plan:in': 56496.16\n" +
+        +     '    },\n' +
+        +     '    carried: {\n' +
+        +     '...\n' +
+        +     '    },\n' +
+        +     '+   cashToday: 258075,\n' +
+        +     '+   closing: 314571.16,\n' +
+        +     '-   cashToday: 334583.65,\n' +
+        +     '-   closing: 391079.81,\n' +
+        +     '    days: [\n' +
+        +     '      {\n' +
+        +     '+       balance: 265075,\n' +
+        +     '-       balance: 341583.65,\n' +
+        +     "        date: '2026-10-12',\n" +
+        +     '        in: 7000,\n' +
+        +     '        out: 0\n' +
+        +     '      },\n' +
+        +     '      {\n' +
+        +     '+       balance: 271950,\n' +
+        +     '-       balance: 348458.65,\n' +
+        +     "        date: '2026-10-23',\n" +
+        +     '        in: 6875,\n' +
+        +     '        out: 0\n' +
+        +     '      },\n' +
+        +     '      {\n' +
+        +     '+       balance: 280734.5,\n' +
+        +     '-       balance: 357243.15,\n' +
+        +     "        date: '2026-10-25',\n" +
+        +     '        in: 8784.5,\n' +
+        +     '        out: 0\n' +
+        +     '      },\n' +
+        +     '      {\n' +
+        +     '+       balance: 283401.16,\n' +
+        +     '-       balance: 359909.81,\n' +
+        +     "        date: '2026-10-28',\n" +
+        +     '        in: 2666.66,\n' +
+        +     '        out: 0\n' +
+        +     '      },\n' +
+        +     '      {\n' +
+        +     '+       balance: 294021.16,\n' +
+        +     '-       balance: 370529.81,\n' +
+        +     "        date: '2026-10-29',\n" +
+        +     '        in: 10620,\n' +
+        +     '        out: 0\n' +
+        +     '      },\n' +
+        +     '      {\n' +
+        +     '+       balance: 295471.16,\n' +
+        +     '-       balance: 371979.81,\n' +
+        +     "        date: '2026-11-02',\n" +
+        +     '        in: 1450,\n' +
+        +     '        out: 0\n' +
+        +     '      },\n' +
+        +     '      {\n' +
+        +     '+       balance: 296921.16,\n' +
+        +     '-       balance: 373429.81,\n' +
+        +     "        date: '2026-11-03',\n" +
+        +     '        in: 1450,\n' +
+        +     '        out: 0\n' +
+        +     '      },\n' +
+        +     '      {\n' +
+        +     '+       balance: 304621.16,\n' +
+        +     '-       balance: 381129.81,\n' +
+        +     "        date: '2026-11-04',\n" +
+        +     '        in: 7700,\n' +
+        +     '        out: 0\n' +
+        +     '      },\n' +
+        +     '      {\n' +
+        +     '+       balance: 306071.16,\n' +
+        +     '-       balance: 382579.81,\n' +
+        +     "        date: '2026-11-05',\n" +
+        +     '        in: 1450,\n' +
+        +     '        out: 0\n' +
+        +     '      },\n' +
+        +     '      {\n' +
+        +     '+       balance: ',
+        +   'zincir · 001 · admin · json /api/workspace/overview/nakit-akisi?preset=next90&overdue=1: Expected values to be strictly deep-equal:\n' +
+        +     '+ actual - expected\n' +
+        +     '... Skipped lines\n' +
+        +     '\n' +
+        +     '  {\n' +
+        +     '    bySource: {\n' +
+        +     "      'cheque:in': 750,\n" +
+        +     "      'plan:in': 148499.87\n" +
+        +     '    },\n' +
+        +     '...\n' +
+        +     '    },\n' +
+        +     '+   cashToday: 258075,\n' +
+        +     '+   closing: 962101.19,\n' +
+        +     '-   cashToday: 334583.65,\n' +
+        +     '-   closing: 1038609.84,\n' +
+        +     '    days: [\n' +
+        +     '      {\n' +
+        +     '+       balance: 819851.32,\n' +
+        +     '-       balance: 896359.97,\n' +
+        +     "        date: '2026-10-12',\n" +
+        +     '        in: 7000,\n' +
+        +     '        out: 0\n' +
+        +     '      },\n' +
+        +     '      {\n' +
+        +     '+       balance: 826726.32,\n' +
+        +     '-       balance: 903234.97,\n' +
+        +     "        date: '2026-10-23',\n" +
+        +     '        in: 6875,\n' +
+        +     '        out: 0\n' +
+        +     '      },\n' +
+        +     '      {\n' +
+        +     '+       balance: 835510.82,\n' +
+        +     '-       balance: 912019.47,\n' +
+        +     "        date: '2026-10-25',\n" +
+        +     '        in: 8784.5,\n' +
+        +     '        out: 0\n' +
+        +     '      },\n' +
+        +     '      {\n' +
+        +     '+       balance: 838177.48,\n' +
+        +     '-       balance: 914686.13,\n' +
+        +     "        date: '2026-10-28',\n" +
+        +     '        in: 2666.66,\n' +
+        +     '        out: 0\n' +
+        +     '      },\n' +
+        +     '      {\n' +
+        +     '+       balance: 848797.48,\n' +
+        +     '-       balance: 925306.13,\n' +
+        +     "        date: '2026-10-29',\n" +
+        +     '        in: 10620,\n' +
+        +     '        out: 0\n' +
+        +     '      },\n' +
+        +     '      {\n' +
+        +     '+       balance: 850247.48,\n' +
+        +     '-       balance: 926756.13,\n' +
+        +     "        date: '2026-11-02',\n" +
+        +     '        in: 1450,\n' +
+        +     '        out: 0\n' +
+        +     '      },\n' +
+        +     '      {\n' +
+        +     '+       balance: 851697.48,\n' +
+        +     '-       balance: 928206.13,\n' +
+        +     "        date: '2026-11-03',\n" +
+        +     '        in: 1450,\n' +
+        +     '        out: 0\n' +
+        +     '      },\n' +
+        +     '      {\n' +
+        +     '+       balance: 859397.48,\n' +
+        +     '-       balance: 935906.13,\n' +
+        +     "        date: '2026-11-04',\n" +
+        +     '        in: 7700,\n' +
+        +     '        out: 0\n' +
+        +     '      },\n' +
+        +     '      {\n' +
+        +     '+       balance: 860847.48,\n' +
+        +     '-       balance: 937356.13,\n' +
+        +     "        date: '2026-11-05',\n" +
+        +     '        in: 1450,\n' +
+        +     '        out: 0\n' +
+        +     '      },\n' +
+        +     '      {',
+        +   'zincir · 002 · admin · json /api/workspace/overview/nakit-akisi: Expected values to be strictly deep-equal:\n' +
+        +     '+ actual - expected\n' +
+        +     '... Skipped lines\n' +
+        +     '\n' +
+        +     '  {\n' +
+        +     '    bySource: {\n' +
+        +     "      'plan:in': 41529.37\n" +
+        +     '    },\n' +
+        +     '    carried: {\n' +
+        +     '...\n' +
+        +     '    },\n' +
+        +     '+   cashToday: 184645.26,\n' +
+        +     '+   closing: 226174.63,\n' +
+        +     '-   cashToday: 258256.48,\n' +
+        +     '-   closing: 299785.85,\n' +
+        +     '    days: [\n' +
+        +     '      {\n' +
+        +     '+       balance: 188478.59,\n' +
+        +     '-       balance: 262089.81,\n' +
+        +     "        date: '2026-10-11',\n" +
+        +     '        in: 3833.33,\n' +
+        +     '        out: 0\n' +
+        +     '      },\n' +
+        +     '      {\n' +
+        +     '+       balance: 194278.59,\n' +
+        +     '-       balance: 267889.81,\n' +
+        +     "        date: '2026-10-13',\n" +
+        +     '        in: 5800,\n' +
+        +     '        out: 0\n' +
+        +     '      },\n' +
+        +     '      {\n' +
+        +     '+       balance: 195878.59,\n' +
+        +     '-       balance: 269489.81,\n' +
+        +     "        date: '2026-10-15',\n" +
+        +     '        in: 1600,\n' +
+        +     '        out: 0\n' +
+        +     '      },\n' +
+        +     '      {\n' +
+        +     '+       balance: 199985.25,\n' +
+        +     '-       balance: 273596.47,\n' +
+        +     "        date: '2026-10-19',\n" +
+        +     '        in: 4106.66,\n' +
+        +     '        out: 0\n' +
+        +     '      },\n' +
+        +     '      {\n' +
+        +     '+       balance: 211807.97,\n' +
+        +     '-       balance: 285419.19,\n' +
+        +     "        date: '2026-11-01',\n" +
+        +     '        in: 11822.72,\n' +
+        +     '        out: 0\n' +
+        +     '      },\n' +
+        +     '      {\n' +
+        +     '+       balance: 213257.97,\n' +
+        +     '-       balance: 286869.19,\n' +
+        +     "        date: '2026-11-02',\n" +
+        +     '        in: 1450,\n' +
+        +     '        out: 0\n' +
+        +     '      },\n' +
+        +     '      {\n' +
+        +     '+       balance: 220374.63,\n' +
+        +     '-       balance: 293985.85,\n' +
+        +     "        date: '2026-11-03',\n" +
+        +     '        in: 7116.66,\n' +
+        +     '        out: 0\n' +
+        +     '      },\n' +
+        +     '      {\n' +
+        +     '+       balance: 221824.63,\n' +
+        +     '-       balance: 295435.85,\n' +
+        +     "        date: '2026-11-04',\n" +
+        +     '        in: 1450,\n' +
+        +     '        out: 0\n' +
+        +     '      },\n' +
+        +     '      {\n' +
+        +     '+       balance: 223274.63,\n' +
+        +     '-       balance: 296885.85,\n' +
+        +     "        date: '2026-11-05',\n" +
+        +     '        in: 1450,\n' +
+        +     '        out: 0\n' +
+        +     '      },\n' +
+        +     '      {\n',
+        +   'zincir · 002 · admin · json /api/workspace/overview/nakit-akisi?preset=next90&overdue=1: Expected values to be strictly deep-equal:\n' +
+        +     '+ actual - expected\n' +
+        +     '... Skipped lines\n' +
+        +     '\n' +
+        +     '  {\n' +
+        +     '    bySource: {\n' +
+        +     "      'plan:in': 121842.67\n" +
+        +     '    },\n' +
+        +     '    carried: {\n' +
+        +     '...\n' +
+        +     '    },\n' +
+        +     '+   cashToday: 184645.26,\n' +
+        +     '+   closing: 895927,\n' +
+        +     '-   cashToday: 258256.48,\n' +
+        +     '-   closing: 969538.22,\n' +
+        +     '    days: [\n' +
+        +     '      {\n' +
+        +     '+       balance: 777917.66,\n' +
+        +     '-       balance: 851528.88,\n' +
+        +     "        date: '2026-10-11',\n" +
+        +     '        in: 3833.33,\n' +
+        +     '        out: 0\n' +
+        +     '      },\n' +
+        +     '      {\n' +
+        +     '+       balance: 783717.66,\n' +
+        +     '-       balance: 857328.88,\n' +
+        +     "        date: '2026-10-13',\n" +
+        +     '        in: 5800,\n' +
+        +     '        out: 0\n' +
+        +     '      },\n' +
+        +     '      {\n' +
+        +     '+       balance: 785317.66,\n' +
+        +     '-       balance: 858928.88,\n' +
+        +     "        date: '2026-10-15',\n" +
+        +     '        in: 1600,\n' +
+        +     '        out: 0\n' +
+        +     '      },\n' +
+        +     '      {\n' +
+        +     '+       balance: 789424.32,\n' +
+        +     '-       balance: 863035.54,\n' +
+        +     "        date: '2026-10-19',\n" +
+        +     '        in: 4106.66,\n' +
+        +     '        out: 0\n' +
+        +     '      },\n' +
+        +     '      {\n' +
+        +     '+       balance: 801247.04,\n' +
+        +     '-       balance: 874858.26,\n' +
+        +     "        date: '2026-11-01',\n" +
+        +     '        in: 11822.72,\n' +
+        +     '        out: 0\n' +
+        +     '      },\n' +
+        +     '      {\n' +
+        +     '+       balance: 802697.04,\n' +
+        +     '-       balance: 876308.26,\n' +
+        +     "        date: '2026-11-02',\n" +
+        +     '        in: 1450,\n' +
+        +     '        out: 0\n' +
+        +     '      },\n' +
+        +     '      {\n' +
+        +     '+       balance: 809813.7,\n' +
+        +     '-       balance: 883424.92,\n' +
+        +     "        date: '2026-11-03',\n" +
+        +     '        in: 7116.66,\n' +
+        +     '        out: 0\n' +
+        +     '      },\n' +
+        +     '      {\n' +
+        +     '+       balance: 811263.7,\n' +
+        +     '-       balance: 884874.92,\n' +
+        +     "        date: '2026-11-04',\n" +
+        +     '        in: 1450,\n' +
+        +     '        out: 0\n' +
+        +     '      },\n' +
+        +     '      {\n' +
+        +     '+       balance: 812713.7,\n' +
+        +     '-       balance: 886324.92,\n' +
+        +     "        date: '2026-11-05',\n" +
+        +     '        in: 1450,\n' +
+        +     '        out: 0\n' +
+        +     '      },\n' +
+        +     '      {\n' +
+        +     '+    ',
+        +   'zincir · 007 · admin · json /api/workspace/overview/nakit-akisi: Expected values to be strictly deep-equal:\n' +
+        +     '+ actual - expected\n' +
+        +     '... Skipped lines\n' +
+        +     '\n' +
+        +     '  {\n' +
+        +     '    bySource: {\n' +
+        +     "      'plan:in': 22488.15\n" +
+        +     '    },\n' +
+        +     '    carried: {\n' +
+        +     '...\n' +
+        +     '    },\n' +
+        +     '+   cashToday: 165132.35,\n' +
+        +     '+   closing: 187620.5,\n' +
+        +     '-   cashToday: 223722.27,\n' +
+        +     '-   closing: 246210.42,\n' +
+        +     '    days: [\n' +
+        +     '      {\n' +
+        +     '+       balance: 170689.35,\n' +
+        +     '-       balance: 229279.27,\n' +
+        +     "        date: '2026-10-23',\n" +
+        +     '        in: 5557,\n' +
+        +     '        out: 0\n' +
+        +     '      },\n' +
+        +     '      {\n' +
+        +     '+       balance: 177117.92,\n' +
+        +     '-       balance: 235707.84,\n' +
+        +     "        date: '2026-10-29',\n" +
+        +     '        in: 6428.57,\n' +
+        +     '        out: 0\n' +
+        +     '      },\n' +
+        +     '      {\n' +
+        +     '+       balance: 180509.5,\n' +
+        +     '-       balance: 239099.42,\n' +
+        +     "        date: '2026-11-01',\n" +
+        +     '        in: 3391.58,\n' +
+        +     '        out: 0\n' +
+        +     '      },\n' +
+        +     '      {\n' +
+        +     '+       balance: 182720.5,\n' +
+        +     '-       balance: 241310.42,\n' +
+        +     "        date: '2026-11-04',\n" +
+        +     '        in: 2211,\n' +
+        +     '        out: 0\n' +
+        +     '      },\n' +
+        +     '      {\n' +
+        +     '+       balance: 187620.5,\n' +
+        +     '-       balance: 246210.42,\n' +
+        +     "        date: '2026-11-05',\n" +
+        +     '        in: 4900,\n' +
+        +     '        out: 0\n' +
+        +     '      }\n' +
+        +     '    ],\n' +
+        +     '...\n' +
+        +     '    lowest: {\n' +
+        +     '+     balance: 165132.35,\n' +
+        +     '-     balance: 223722.27,\n' +
+        +     "      date: '2026-10-10'\n" +
+        +     '    },\n' +
+        +     '    negative: false,\n' +
+        +     '+   opening: 165132.35,\n' +
+        +     '-   opening: 223722.27,\n' +
+        +     '    overdue: [\n' +
+        +     '      {\n' +
+        +     '        amount: 13897.88,\n' +
+        +     "        date: '2025-10-14',\n" +
+        +     "        detail: 'Fatura tarihi 14.10.2025',\n" +
+        +     '...\n' +
+        +     '        amount: 5557,\n' +
+        +     '+       balance: 170689.35,\n' +
+        +     '-       balance: 229279.27,\n' +
+        +     "        date: '2026-10-23',\n" +
+        +     "        direction: 'in',\n" +
+        +     '        fullAmount: 5557,\n' +
+        +     "        label: '1. taksit',\n" +
+        +     '        partial: false,\n' +
+        +     '...\n' +
+        +     '        amount: 6428.57,\n' +
+        +     '+       balance',
+        +   'zincir · 007 · admin · json /api/workspace/overview/nakit-akisi?preset=next90&overdue=1: Expected values to be strictly deep-equal:\n' +
+        +     '+ actual - expected\n' +
+        +     '... Skipped lines\n' +
+        +     '\n' +
+        +     '  {\n' +
+        +     '    bySource: {\n' +
+        +     "      'plan:in': 57195.66\n" +
+        +     '    },\n' +
+        +     '    carried: {\n' +
+        +     '...\n' +
+        +     '    },\n' +
+        +     '+   cashToday: 165132.35,\n' +
+        +     '+   closing: 811552.29,\n' +
+        +     '-   cashToday: 223722.27,\n' +
+        +     '-   closing: 870142.21,\n' +
+        +     '    days: [\n' +
+        +     '      {\n' +
+        +     '+       balance: 759913.63,\n' +
+        +     '-       balance: 818503.55,\n' +
+        +     "        date: '2026-10-23',\n" +
+        +     '        in: 5557,\n' +
+        +     '        out: 0\n' +
+        +     '      },\n' +
+        +     '      {\n' +
+        +     '+       balance: 766342.2,\n' +
+        +     '-       balance: 824932.12,\n' +
+        +     "        date: '2026-10-29',\n" +
+        +     '        in: 6428.57,\n' +
+        +     '        out: 0\n' +
+        +     '      },\n' +
+        +     '      {\n' +
+        +     '+       balance: 769733.78,\n' +
+        +     '-       balance: 828323.7,\n' +
+        +     "        date: '2026-11-01',\n" +
+        +     '        in: 3391.58,\n' +
+        +     '        out: 0\n' +
+        +     '      },\n' +
+        +     '      {\n' +
+        +     '+       balance: 771944.78,\n' +
+        +     '-       balance: 830534.7,\n' +
+        +     "        date: '2026-11-04',\n" +
+        +     '        in: 2211,\n' +
+        +     '        out: 0\n' +
+        +     '      },\n' +
+        +     '      {\n' +
+        +     '+       balance: 776844.78,\n' +
+        +     '-       balance: 835434.7,\n' +
+        +     "        date: '2026-11-05',\n" +
+        +     '        in: 4900,\n' +
+        +     '        out: 0\n' +
+        +     '      },\n' +
+        +     '      {\n' +
+        +     '+       balance: 779172.05,\n' +
+        +     '-       balance: 837761.97,\n' +
+        +     "        date: '2026-11-13',\n" +
+        +     '        in: 2327.27,\n' +
+        +     '        out: 0\n' +
+        +     '      },\n' +
+        +     '      {\n' +
+        +     '+       balance: 784729.05,\n' +
+        +     '-       balance: 843318.97,\n' +
+        +     "        date: '2026-11-23',\n" +
+        +     '        in: 5557,\n' +
+        +     '        out: 0\n' +
+        +     '      },\n' +
+        +     '      {\n' +
+        +     '+       balance: 791157.62,\n' +
+        +     '-       balance: 849747.54,\n' +
+        +     "        date: '2026-11-29',\n" +
+        +     '        in: 6428.57,\n' +
+        +     '        out: 0\n' +
+        +     '      },\n' +
+        +     '      {\n' +
+        +     '+       balance: 792407.62,\n' +
+        +     '-       balance: 850997.54,\n' +
+        +     "        date: '2026-12-01',\n" +
+        +     '        in: 1250,\n' +
+        +     '        out: 0\n' +
+        +     '      },\n' +
+        +     '      {\n' +
+        +     '+    ',
+        +   'zincir · 004 · admin · json /api/workspace/overview/nakit-akisi: Expected values to be strictly deep-equal:\n' +
+        +     '+ actual - expected\n' +
+        +     '... Skipped lines\n' +
+        +     '\n' +
+        +     '  {\n' +
+        +     '    bySource: {\n' +
+        +     "      'plan:in': 12134.54\n" +
+        +     '    },\n' +
+        +     '    carried: {\n' +
+        +     '...\n' +
+        +     '    },\n' +
+        +     '+   cashToday: 49279.89,\n' +
+        +     '+   closing: 61414.43,\n' +
+        +     '-   cashToday: 62355.11,\n' +
+        +     '-   closing: 74489.65,\n' +
+        +     '    days: [\n' +
+        +     '      {\n' +
+        +     '+       balance: 58159.89,\n' +
+        +     '-       balance: 71235.11,\n' +
+        +     "        date: '2026-10-23',\n" +
+        +     '        in: 8880,\n' +
+        +     '        out: 0\n' +
+        +     '      },\n' +
+        +     '      {\n' +
+        +     '+       balance: 58814.43,\n' +
+        +     '-       balance: 71889.65,\n' +
+        +     "        date: '2026-11-01',\n" +
+        +     '        in: 654.54,\n' +
+        +     '        out: 0\n' +
+        +     '      },\n' +
+        +     '      {\n' +
+        +     '+       balance: 61414.43,\n' +
+        +     '-       balance: 74489.65,\n' +
+        +     "        date: '2026-11-08',\n" +
+        +     '        in: 2600,\n' +
+        +     '        out: 0\n' +
+        +     '      }\n' +
+        +     '    ],\n' +
+        +     '...\n' +
+        +     '    lowest: {\n' +
+        +     '+     balance: 49279.89,\n' +
+        +     '-     balance: 62355.11,\n' +
+        +     "      date: '2026-10-10'\n" +
+        +     '    },\n' +
+        +     '    negative: false,\n' +
+        +     '+   opening: 49279.89,\n' +
+        +     '-   opening: 62355.11,\n' +
+        +     '    overdue: [\n' +
+        +     '      {\n' +
+        +     '        amount: 2160,\n' +
+        +     "        date: '2026-07-14',\n" +
+        +     "        detail: 'Fatura tarihi 14.07.2026',\n" +
+        +     '...\n' +
+        +     '        amount: 8880,\n' +
+        +     '+       balance: 58159.89,\n' +
+        +     '-       balance: 71235.11,\n' +
+        +     "        date: '2026-10-23',\n" +
+        +     "        direction: 'in',\n" +
+        +     '        fullAmount: 8880,\n' +
+        +     "        label: '2. taksit',\n" +
+        +     '        partial: false,\n' +
+        +     '...\n' +
+        +     '        amount: 654.54,\n' +
+        +     '+       balance: 58814.43,\n' +
+        +     '-       balance: 71889.65,\n' +
+        +     "        date: '2026-11-01',\n" +
+        +     "        direction: 'in',\n" +
+        +     '        fullAmount: 818.18,\n' +
+        +     "        label: '3. taksit (kalan)',\n" +
+        +     '        partial: true,\n' +
+        +     '...\n' +
+        +     '        amount: 2600,\n' +
+        +     '+       balance: 61414.43,\n' +
+        +     '-       balance: 74489.65,\n' +
+        +     "        date: '2026-11-08',\n" +
+        +     '  ',
+        +   'zincir · 004 · admin · json /api/workspace/overview/nakit-akisi?preset=next90&overdue=1: Expected values to be strictly deep-equal:\n' +
+        +     '+ actual - expected\n' +
+        +     '... Skipped lines\n' +
+        +     '\n' +
+        +     '  {\n' +
+        +     '    bySource: {\n' +
+        +     "      'plan:in': 18970.9\n" +
+        +     '    },\n' +
+        +     '    carried: {\n' +
+        +     '...\n' +
+        +     '    },\n' +
+        +     '+   cashToday: 49279.89,\n' +
+        +     '+   closing: 122084.67,\n' +
+        +     '-   cashToday: 62355.11,\n' +
+        +     '-   closing: 135159.89,\n' +
+        +     '    days: [\n' +
+        +     '      {\n' +
+        +     '+       balance: 111993.77,\n' +
+        +     '-       balance: 125068.99,\n' +
+        +     "        date: '2026-10-23',\n" +
+        +     '        in: 8880,\n' +
+        +     '        out: 0\n' +
+        +     '      },\n' +
+        +     '      {\n' +
+        +     '+       balance: 112648.31,\n' +
+        +     '-       balance: 125723.53,\n' +
+        +     "        date: '2026-11-01',\n" +
+        +     '        in: 654.54,\n' +
+        +     '        out: 0\n' +
+        +     '      },\n' +
+        +     '      {\n' +
+        +     '+       balance: 115248.31,\n' +
+        +     '-       balance: 128323.53,\n' +
+        +     "        date: '2026-11-08',\n" +
+        +     '        in: 2600,\n' +
+        +     '        out: 0\n' +
+        +     '      },\n' +
+        +     '      {\n' +
+        +     '+       balance: 116066.49,\n' +
+        +     '-       balance: 129141.71,\n' +
+        +     "        date: '2026-12-01',\n" +
+        +     '        in: 818.18,\n' +
+        +     '        out: 0\n' +
+        +     '      },\n' +
+        +     '      {\n' +
+        +     '+       balance: 118666.49,\n' +
+        +     '-       balance: 131741.71,\n' +
+        +     "        date: '2026-12-08',\n" +
+        +     '        in: 2600,\n' +
+        +     '        out: 0\n' +
+        +     '      },\n' +
+        +     '      {\n' +
+        +     '+       balance: 119484.67,\n' +
+        +     '-       balance: 132559.89,\n' +
+        +     "        date: '2027-01-01',\n" +
+        +     '        in: 818.18,\n' +
+        +     '        out: 0\n' +
+        +     '      },\n' +
+        +     '      {\n' +
+        +     '+       balance: 122084.67,\n' +
+        +     '-       balance: 135159.89,\n' +
+        +     "        date: '2027-01-08',\n" +
+        +     '        in: 2600,\n' +
+        +     '        out: 0\n' +
+        +     '      }\n' +
+        +     '    ],\n' +
+        +     '...\n' +
+        +     '    lowest: {\n' +
+        +     '+     balance: 103113.77,\n' +
+        +     '-     balance: 116188.99,\n' +
+        +     "      date: '2026-10-10'\n" +
+        +     '    },\n' +
+        +     '    negative: false,\n' +
+        +     '+   opening: 103113.77,\n' +
+        +     '-   opening: 116188.99,\n' +
+        +     '    overdue: [\n' +
+        +     '      {\n' +
+        +     '        amount: 2160,\n' +
+        +     "        date: '2026-07-14',\n" +
+        +     "        detail: 'Fatura tarihi 14.07"
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: |-
+          zincir · 001 · admin · json /api/workspace/overview/nakit-akisi: Expected values to be strictly deep-equal:
+          + actual - expected
+          ... Skipped lines
+          
+            {
+              bySource: {
+                'plan:in': 56496.16
+              },
+              carried: {
+          ...
+              },
+          +   cashToday: 258075,
+          +   closing: 314571.16,
+          -   cashToday: 334583.65,
+          -   closing: 391079.81,
+              days: [
+                {
+          +       balance: 265075,
+          -       balance: 341583.65,
+                  date: '2026-10-12',
+                  in: 7000,
+                  out: 0
+                },
+                {
+          +       balance: 271950,
+          -       balance: 348458.65,
+                  date: '2026-10-23',
+                  in: 6875,
+                  out: 0
+                },
+                {
+          +       balance: 280734.5,
+          -       balance: 357243.15,
+                  date: '2026-10-25',
+                  in: 8784.5,
+                  out: 0
+                },
+                {
+          +       balance: 283401.16,
+          -       balance: 359909.81,
+                  date: '2026-10-28',
+                  in: 2666.66,
+                  out: 0
+                },
+                {
+          +       balance: 294021.16,
+          -       balance: 370529.81,
+                  date: '2026-10-29',
+                  in: 10620,
+                  out: 0
+                },
+                {
+          +       balance: 295471.16,
+          -       balance: 371979.81,
+                  date: '2026-11-02',
+                  in: 1450,
+                  out: 0
+                },
+                {
+          +       balance: 296921.16,
+          -       balance: 373429.81,
+                  date: '2026-11-03',
+                  in: 1450,
+                  out: 0
+                },
+                {
+          +       balance: 304621.16,
+          -       balance: 381129.81,
+                  date: '2026-11-04',
+                  in: 7700,
+                  out: 0
+                },
+                {
+          +       balance: 306071.16,
+          -       balance: 382579.81,
+                  date: '2026-11-05',
+                  in: 1450,
+                  out: 0
+                },
+                {
+          +       balance: 
+        1: |-
+          zincir · 001 · admin · json /api/workspace/overview/nakit-akisi?preset=next90&overdue=1: Expected values to be strictly deep-equal:
+          + actual - expected
+          ... Skipped lines
+          
+            {
+              bySource: {
+                'cheque:in': 750,
+                'plan:in': 148499.87
+              },
+          ...
+              },
+          +   cashToday: 258075,
+          +   closing: 962101.19,
+          -   cashToday: 334583.65,
+          -   closing: 1038609.84,
+              days: [
+                {
+          +       balance: 819851.32,
+          -       balance: 896359.97,
+                  date: '2026-10-12',
+                  in: 7000,
+                  out: 0
+                },
+                {
+          +       balance: 826726.32,
+          -       balance: 903234.97,
+                  date: '2026-10-23',
+                  in: 6875,
+                  out: 0
+                },
+                {
+          +       balance: 835510.82,
+          -       balance: 912019.47,
+                  date: '2026-10-25',
+                  in: 8784.5,
+                  out: 0
+                },
+                {
+          +       balance: 838177.48,
+          -       balance: 914686.13,
+                  date: '2026-10-28',
+                  in: 2666.66,
+                  out: 0
+                },
+                {
+          +       balance: 848797.48,
+          -       balance: 925306.13,
+                  date: '2026-10-29',
+                  in: 10620,
+                  out: 0
+                },
+                {
+          +       balance: 850247.48,
+          -       balance: 926756.13,
+                  date: '2026-11-02',
+                  in: 1450,
+                  out: 0
+                },
+                {
+          +       balance: 851697.48,
+          -       balance: 928206.13,
+                  date: '2026-11-03',
+                  in: 1450,
+                  out: 0
+                },
+                {
+          +       balance: 859397.48,
+          -       balance: 935906.13,
+                  date: '2026-11-04',
+                  in: 7700,
+                  out: 0
+                },
+                {
+          +       balance: 860847.48,
+          -       balance: 937356.13,
+                  date: '2026-11-05',
+                  in: 1450,
+                  out: 0
+                },
+                {
+        2: |-
+          zincir · 002 · admin · json /api/workspace/overview/nakit-akisi: Expected values to be strictly deep-equal:
+          + actual - expected
+          ... Skipped lines
+          
+            {
+              bySource: {
+                'plan:in': 41529.37
+              },
+              carried: {
+          ...
+              },
+          +   cashToday: 184645.26,
+          +   closing: 226174.63,
+          -   cashToday: 258256.48,
+          -   closing: 299785.85,
+              days: [
+                {
+          +       balance: 188478.59,
+          -       balance: 262089.81,
+                  date: '2026-10-11',
+                  in: 3833.33,
+                  out: 0
+                },
+                {
+          +       balance: 194278.59,
+          -       balance: 267889.81,
+                  date: '2026-10-13',
+                  in: 5800,
+                  out: 0
+                },
+                {
+          +       balance: 195878.59,
+          -       balance: 269489.81,
+                  date: '2026-10-15',
+                  in: 1600,
+                  out: 0
+                },
+                {
+          +       balance: 199985.25,
+          -       balance: 273596.47,
+                  date: '2026-10-19',
+                  in: 4106.66,
+                  out: 0
+                },
+                {
+          +       balance: 211807.97,
+          -       balance: 285419.19,
+                  date: '2026-11-01',
+                  in: 11822.72,
+                  out: 0
+                },
+                {
+          +       balance: 213257.97,
+          -       balance: 286869.19,
+                  date: '2026-11-02',
+                  in: 1450,
+                  out: 0
+                },
+                {
+          +       balance: 220374.63,
+          -       balance: 293985.85,
+                  date: '2026-11-03',
+                  in: 7116.66,
+                  out: 0
+                },
+                {
+          +       balance: 221824.63,
+          -       balance: 295435.85,
+                  date: '2026-11-04',
+                  in: 1450,
+                  out: 0
+                },
+                {
+          +       balance: 223274.63,
+          -       balance: 296885.85,
+                  date: '2026-11-05',
+                  in: 1450,
+                  out: 0
+                },
+                {
+          
+        3: |-
+          zincir · 002 · admin · json /api/workspace/overview/nakit-akisi?preset=next90&overdue=1: Expected values to be strictly deep-equal:
+          + actual - expected
+          ... Skipped lines
+          
+            {
+              bySource: {
+                'plan:in': 121842.67
+              },
+              carried: {
+          ...
+              },
+          +   cashToday: 184645.26,
+          +   closing: 895927,
+          -   cashToday: 258256.48,
+          -   closing: 969538.22,
+              days: [
+                {
+          +       balance: 777917.66,
+          -       balance: 851528.88,
+                  date: '2026-10-11',
+                  in: 3833.33,
+                  out: 0
+                },
+                {
+          +       balance: 783717.66,
+          -       balance: 857328.88,
+                  date: '2026-10-13',
+                  in: 5800,
+                  out: 0
+                },
+                {
+          +       balance: 785317.66,
+          -       balance: 858928.88,
+                  date: '2026-10-15',
+                  in: 1600,
+                  out: 0
+                },
+                {
+          +       balance: 789424.32,
+          -       balance: 863035.54,
+                  date: '2026-10-19',
+                  in: 4106.66,
+                  out: 0
+                },
+                {
+          +       balance: 801247.04,
+          -       balance: 874858.26,
+                  date: '2026-11-01',
+                  in: 11822.72,
+                  out: 0
+                },
+                {
+          +       balance: 802697.04,
+          -       balance: 876308.26,
+                  date: '2026-11-02',
+                  in: 1450,
+                  out: 0
+                },
+                {
+          +       balance: 809813.7,
+          -       balance: 883424.92,
+                  date: '2026-11-03',
+                  in: 7116.66,
+                  out: 0
+                },
+                {
+          +       balance: 811263.7,
+          -       balance: 884874.92,
+                  date: '2026-11-04',
+                  in: 1450,
+                  out: 0
+                },
+                {
+          +       balance: 812713.7,
+          -       balance: 886324.92,
+                  date: '2026-11-05',
+                  in: 1450,
+                  out: 0
+                },
+                {
+          +    
+        4: |-
+          zincir · 007 · admin · json /api/workspace/overview/nakit-akisi: Expected values to be strictly deep-equal:
+          + actual - expected
+          ... Skipped lines
+          
+            {
+              bySource: {
+                'plan:in': 22488.15
+              },
+              carried: {
+          ...
+              },
+          +   cashToday: 165132.35,
+          +   closing: 187620.5,
+          -   cashToday: 223722.27,
+          -   closing: 246210.42,
+              days: [
+                {
+          +       balance: 170689.35,
+          -       balance: 229279.27,
+                  date: '2026-10-23',
+                  in: 5557,
+                  out: 0
+                },
+                {
+          +       balance: 177117.92,
+          -       balance: 235707.84,
+                  date: '2026-10-29',
+                  in: 6428.57,
+                  out: 0
+                },
+                {
+          +       balance: 180509.5,
+          -       balance: 239099.42,
+                  date: '2026-11-01',
+                  in: 3391.58,
+                  out: 0
+                },
+                {
+          +       balance: 182720.5,
+          -       balance: 241310.42,
+                  date: '2026-11-04',
+                  in: 2211,
+                  out: 0
+                },
+                {
+          +       balance: 187620.5,
+          -       balance: 246210.42,
+                  date: '2026-11-05',
+                  in: 4900,
+                  out: 0
+                }
+              ],
+          ...
+              lowest: {
+          +     balance: 165132.35,
+          -     balance: 223722.27,
+                date: '2026-10-10'
+              },
+              negative: false,
+          +   opening: 165132.35,
+          -   opening: 223722.27,
+              overdue: [
+                {
+                  amount: 13897.88,
+                  date: '2025-10-14',
+                  detail: 'Fatura tarihi 14.10.2025',
+          ...
+                  amount: 5557,
+          +       balance: 170689.35,
+          -       balance: 229279.27,
+                  date: '2026-10-23',
+                  direction: 'in',
+                  fullAmount: 5557,
+                  label: '1. taksit',
+                  partial: false,
+          ...
+                  amount: 6428.57,
+          +       balance
+        5: |-
+          zincir · 007 · admin · json /api/workspace/overview/nakit-akisi?preset=next90&overdue=1: Expected values to be strictly deep-equal:
+          + actual - expected
+          ... Skipped lines
+          
+            {
+              bySource: {
+                'plan:in': 57195.66
+              },
+              carried: {
+          ...
+              },
+          +   cashToday: 165132.35,
+          +   closing: 811552.29,
+          -   cashToday: 223722.27,
+          -   closing: 870142.21,
+              days: [
+                {
+          +       balance: 759913.63,
+          -       balance: 818503.55,
+                  date: '2026-10-23',
+                  in: 5557,
+                  out: 0
+                },
+                {
+          +       balance: 766342.2,
+          -       balance: 824932.12,
+                  date: '2026-10-29',
+                  in: 6428.57,
+                  out: 0
+                },
+                {
+          +       balance: 769733.78,
+          -       balance: 828323.7,
+                  date: '2026-11-01',
+                  in: 3391.58,
+                  out: 0
+                },
+                {
+          +       balance: 771944.78,
+          -       balance: 830534.7,
+                  date: '2026-11-04',
+                  in: 2211,
+                  out: 0
+                },
+                {
+          +       balance: 776844.78,
+          -       balance: 835434.7,
+                  date: '2026-11-05',
+                  in: 4900,
+                  out: 0
+                },
+                {
+          +       balance: 779172.05,
+          -       balance: 837761.97,
+                  date: '2026-11-13',
+                  in: 2327.27,
+                  out: 0
+                },
+                {
+          +       balance: 784729.05,
+          -       balance: 843318.97,
+                  date: '2026-11-23',
+                  in: 5557,
+                  out: 0
+                },
+                {
+          +       balance: 791157.62,
+          -       balance: 849747.54,
+                  date: '2026-11-29',
+                  in: 6428.57,
+                  out: 0
+                },
+                {
+          +       balance: 792407.62,
+          -       balance: 850997.54,
+                  date: '2026-12-01',
+                  in: 1250,
+                  out: 0
+                },
+                {
+          +    
+        6: |-
+          zincir · 004 · admin · json /api/workspace/overview/nakit-akisi: Expected values to be strictly deep-equal:
+          + actual - expected
+          ... Skipped lines
+          
+            {
+              bySource: {
+                'plan:in': 12134.54
+              },
+              carried: {
+          ...
+              },
+          +   cashToday: 49279.89,
+          +   closing: 61414.43,
+          -   cashToday: 62355.11,
+          -   closing: 74489.65,
+              days: [
+                {
+          +       balance: 58159.89,
+          -       balance: 71235.11,
+                  date: '2026-10-23',
+                  in: 8880,
+                  out: 0
+                },
+                {
+          +       balance: 58814.43,
+          -       balance: 71889.65,
+                  date: '2026-11-01',
+                  in: 654.54,
+                  out: 0
+                },
+                {
+          +       balance: 61414.43,
+          -       balance: 74489.65,
+                  date: '2026-11-08',
+                  in: 2600,
+                  out: 0
+                }
+              ],
+          ...
+              lowest: {
+          +     balance: 49279.89,
+          -     balance: 62355.11,
+                date: '2026-10-10'
+              },
+              negative: false,
+          +   opening: 49279.89,
+          -   opening: 62355.11,
+              overdue: [
+                {
+                  amount: 2160,
+                  date: '2026-07-14',
+                  detail: 'Fatura tarihi 14.07.2026',
+          ...
+                  amount: 8880,
+          +       balance: 58159.89,
+          -       balance: 71235.11,
+                  date: '2026-10-23',
+                  direction: 'in',
+                  fullAmount: 8880,
+                  label: '2. taksit',
+                  partial: false,
+          ...
+                  amount: 654.54,
+          +       balance: 58814.43,
+          -       balance: 71889.65,
+                  date: '2026-11-01',
+                  direction: 'in',
+                  fullAmount: 818.18,
+                  label: '3. taksit (kalan)',
+                  partial: true,
+          ...
+                  amount: 2600,
+          +       balance: 61414.43,
+          -       balance: 74489.65,
+                  date: '2026-11-08',
+            
+        7: |-
+          zincir · 004 · admin · json /api/workspace/overview/nakit-akisi?preset=next90&overdue=1: Expected values to be strictly deep-equal:
+          + actual - expected
+          ... Skipped lines
+          
+            {
+              bySource: {
+                'plan:in': 18970.9
+              },
+              carried: {
+          ...
+              },
+          +   cashToday: 49279.89,
+          +   closing: 122084.67,
+          -   cashToday: 62355.11,
+          -   closing: 135159.89,
+              days: [
+                {
+          +       balance: 111993.77,
+          -       balance: 125068.99,
+                  date: '2026-10-23',
+                  in: 8880,
+                  out: 0
+                },
+                {
+          +       balance: 112648.31,
+          -       balance: 125723.53,
+                  date: '2026-11-01',
+                  in: 654.54,
+                  out: 0
+                },
+                {
+          +       balance: 115248.31,
+          -       balance: 128323.53,
+                  date: '2026-11-08',
+                  in: 2600,
+                  out: 0
+                },
+                {
+          +       balance: 116066.49,
+          -       balance: 129141.71,
+                  date: '2026-12-01',
+                  in: 818.18,
+                  out: 0
+                },
+                {
+          +       balance: 118666.49,
+          -       balance: 131741.71,
+                  date: '2026-12-08',
+                  in: 2600,
+                  out: 0
+                },
+                {
+          +       balance: 119484.67,
+          -       balance: 132559.89,
+                  date: '2027-01-01',
+                  in: 818.18,
+                  out: 0
+                },
+                {
+          +       balance: 122084.67,
+          -       balance: 135159.89,
+                  date: '2027-01-08',
+                  in: 2600,
+                  out: 0
+                }
+              ],
+          ...
+              lowest: {
+          +     balance: 103113.77,
+          -     balance: 116188.99,
+                date: '2026-10-10'
+              },
+              negative: false,
+          +   opening: 103113.77,
+          -   opening: 116188.99,
+              overdue: [
+                {
+                  amount: 2160,
+                  date: '2026-07-14',
+                  detail: 'Fatura tarihi 14.07
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-a40291a1f8b2ba361/test/banka-210-altin.test.mjs:240:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: v2.0.26'nın kendi koduyla üretilen veri (mutabakat motoru: 120 güne yayılmış 260 rastgele işlem, dönem kilidi, iade/iptal)
+    not ok 2 - v2.0.26'nın kendi koduyla üretilen veri (mutabakat motoru: 120 güne yayılmış 260 rastgele işlem, dönem kilidi, iade/iptal)
+      ---
+      duration_ms: 6665.196305
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-a40291a1f8b2ba361/test/banka-210-altin.test.mjs:246:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        2 fark:
+        motor · 001 · admin · json /api/workspace/overview/nakit-akisi: Expected values to be strictly deep-equal:
+        + actual - expected
+        ... Skipped lines
+        
+          {
+            bySource: {
+              'invoice:in': 4074.6,
+              'plan:in': 20848.17
+            },
+        ...
+            },
+        +   cashToday: -2611141.62,
+        +   closing: -2586218.85,
+        -   cashToday: -2793746.83,
+        -   closing: -2768824.06,
+            days: [
+              {
+        +       balance: -2610570.5,
+        -       balance: -2793175.71,
+                date: '2026-10-10',
+                in: 571.12,
+                out: 0
+              },
+              {
+        +       balance: -2605043,
+        -       balance: -2787648.21,
+                date: '2026-10-12',
+                in: 5527.5,
+                out: 0
+              },
+              {
+        +       balance: -2604667.78,
+        -       balance: -2787272.99,
+                date: '2026-10-15',
+                in: 375.22,
+                out: 0
+              },
+              {
+        +       balance: -2597967.57,
+        -       balance: -2780572.78,
+                date: '2026-10-16',
+                in: 6700.21,
+                out: 0
+              },
+              {
+        +       balance: -2597856.38,
+        -       balance: -2780461.59,
+                date: '2026-10-19',
+                in: 111.19,
+                out: 0
+              },
+              {
+        +       balance: -2592039.59,
+        -       balance: -2774644.8,
+                date: '2026-10-27',
+                in: 5816.79,
+                out: 0
+              },
+              {
+        +       balance: -2591757.98,
+        -       balance: -2774363.19,
+                date: '2026-10-29',
+                in: 281.61,
+                out: 0
+              },
+              {
+        +       balance: -2587683.38,
+        -       balance: -2770288.59,
+                date: '2026-11-02',
+                in: 4074.6,
+                out: 0
+              },
+              {
+        +       balance: -2586218.85,
+        -       balance: -2768824.06,
+                date: '2026-1
+        
+        motor · 001 · admin · json /api/workspace/overview/nakit-akisi?preset=next90&overdue=1: Expected values to be strictly deep-equal:
+        + actual - expected
+        ... Skipped lines
+        
+          {
+            bySource: {
+              'cheque:in': 7741.73,
+              'cheque:out': 17008.43,
+              'invoice:in': 4074.6,
+        ...
+            },
+        +   cashToday: -2611141.62,
+        +   closing: -2532601.34,
+        -   cashToday: -2793746.83,
+        -   closing: -2715206.55,
+            days: [
+              {
+        +       balance: -2572175.75,
+        -       balance: -2754780.96,
+                date: '2026-10-10',
+                in: 571.12,
+                out: 0
+              },
+              {
+        +       balance: -2566648.25,
+        -       balance: -2749253.46,
+                date: '2026-10-12',
+                in: 5527.5,
+                out: 0
+              },
+              {
+        +       balance: -2566273.03,
+        -       balance: -2748878.24,
+                date: '2026-10-15',
+                in: 375.22,
+                out: 0
+              },
+              {
+        +       balance: -2559572.82,
+        -       balance: -2742178.03,
+                date: '2026-10-16',
+                in: 6700.21,
+                out: 0
+              },
+              {
+        +       balance: -2559461.63,
+        -       balance: -2742066.84,
+                date: '2026-10-19',
+                in: 111.19,
+                out: 0
+              },
+              {
+        +       balance: -2553644.84,
+        -       balance: -2736250.05,
+                date: '2026-10-27',
+                in: 5816.79,
+                out: 0
+              },
+              {
+        +       balance: -2553363.23,
+        -       balance: -2735968.44,
+                date: '2026-10-29',
+                in: 281.61,
+                out: 0
+              },
+              {
+        +       balance: -2549288.63,
+        -       balance: -2731893.84,
+                date: '2026-11-02',
+                in: 4074.6,
+                out: 0
+              },
+              {
+        +       balance: -2547824.1,
+        -       balance: -2730
+        + actual - expected
+        
+        + [
+        +   'motor · 001 · admin · json /api/workspace/overview/nakit-akisi: Expected values to be strictly deep-equal:\n' +
+        +     '+ actual - expected\n' +
+        +     '... Skipped lines\n' +
+        +     '\n' +
+        +     '  {\n' +
+        +     '    bySource: {\n' +
+        +     "      'invoice:in': 4074.6,\n" +
+        +     "      'plan:in': 20848.17\n" +
+        +     '    },\n' +
+        +     '...\n' +
+        +     '    },\n' +
+        +     '+   cashToday: -2611141.62,\n' +
+        +     '+   closing: -2586218.85,\n' +
+        +     '-   cashToday: -2793746.83,\n' +
+        +     '-   closing: -2768824.06,\n' +
+        +     '    days: [\n' +
+        +     '      {\n' +
+        +     '+       balance: -2610570.5,\n' +
+        +     '-       balance: -2793175.71,\n' +
+        +     "        date: '2026-10-10',\n" +
+        +     '        in: 571.12,\n' +
+        +     '        out: 0\n' +
+        +     '      },\n' +
+        +     '      {\n' +
+        +     '+       balance: -2605043,\n' +
+        +     '-       balance: -2787648.21,\n' +
+        +     "        date: '2026-10-12',\n" +
+        +     '        in: 5527.5,\n' +
+        +     '        out: 0\n' +
+        +     '      },\n' +
+        +     '      {\n' +
+        +     '+       balance: -2604667.78,\n' +
+        +     '-       balance: -2787272.99,\n' +
+        +     "        date: '2026-10-15',\n" +
+        +     '        in: 375.22,\n' +
+        +     '        out: 0\n' +
+        +     '      },\n' +
+        +     '      {\n' +
+        +     '+       balance: -2597967.57,\n' +
+        +     '-       balance: -2780572.78,\n' +
+        +     "        date: '2026-10-16',\n" +
+        +     '        in: 6700.21,\n' +
+        +     '        out: 0\n' +
+        +     '      },\n' +
+        +     '      {\n' +
+        +     '+       balance: -2597856.38,\n' +
+        +     '-       balance: -2780461.59,\n' +
+        +     "        date: '2026-10-19',\n" +
+        +     '        in: 111.19,\n' +
+        +     '        out: 0\n' +
+        +     '      },\n' +
+        +     '      {\n' +
+        +     '+       balance: -2592039.59,\n' +
+        +     '-       balance: -2774644.8,\n' +
+        +     "        date: '2026-10-27',\n" +
+        +     '        in: 5816.79,\n' +
+        +     '        out: 0\n' +
+        +     '      },\n' +
+        +     '      {\n' +
+        +     '+       balance: -2591757.98,\n' +
+        +     '-       balance: -2774363.19,\n' +
+        +     "        date: '2026-10-29',\n" +
+        +     '        in: 281.61,\n' +
+        +     '        out: 0\n' +
+        +     '      },\n' +
+        +     '      {\n' +
+        +     '+       balance: -2587683.38,\n' +
+        +     '-       balance: -2770288.59,\n' +
+        +     "        date: '2026-11-02',\n" +
+        +     '        in: 4074.6,\n' +
+        +     '        out: 0\n' +
+        +     '      },\n' +
+        +     '      {\n' +
+        +     '+       balance: -2586218.85,\n' +
+        +     '-       balance: -2768824.06,\n' +
+        +     "        date: '2026-1",
+        +   'motor · 001 · admin · json /api/workspace/overview/nakit-akisi?preset=next90&overdue=1: Expected values to be strictly deep-equal:\n' +
+        +     '+ actual - expected\n' +
+        +     '... Skipped lines\n' +
+        +     '\n' +
+        +     '  {\n' +
+        +     '    bySource: {\n' +
+        +     "      'cheque:in': 7741.73,\n" +
+        +     "      'cheque:out': 17008.43,\n" +
+        +     "      'invoice:in': 4074.6,\n" +
+        +     '...\n' +
+        +     '    },\n' +
+        +     '+   cashToday: -2611141.62,\n' +
+        +     '+   closing: -2532601.34,\n' +
+        +     '-   cashToday: -2793746.83,\n' +
+        +     '-   closing: -2715206.55,\n' +
+        +     '    days: [\n' +
+        +     '      {\n' +
+        +     '+       balance: -2572175.75,\n' +
+        +     '-       balance: -2754780.96,\n' +
+        +     "        date: '2026-10-10',\n" +
+        +     '        in: 571.12,\n' +
+        +     '        out: 0\n' +
+        +     '      },\n' +
+        +     '      {\n' +
+        +     '+       balance: -2566648.25,\n' +
+        +     '-       balance: -2749253.46,\n' +
+        +     "        date: '2026-10-12',\n" +
+        +     '        in: 5527.5,\n' +
+        +     '        out: 0\n' +
+        +     '      },\n' +
+        +     '      {\n' +
+        +     '+       balance: -2566273.03,\n' +
+        +     '-       balance: -2748878.24,\n' +
+        +     "        date: '2026-10-15',\n" +
+        +     '        in: 375.22,\n' +
+        +     '        out: 0\n' +
+        +     '      },\n' +
+        +     '      {\n' +
+        +     '+       balance: -2559572.82,\n' +
+        +     '-       balance: -2742178.03,\n' +
+        +     "        date: '2026-10-16',\n" +
+        +     '        in: 6700.21,\n' +
+        +     '        out: 0\n' +
+        +     '      },\n' +
+        +     '      {\n' +
+        +     '+       balance: -2559461.63,\n' +
+        +     '-       balance: -2742066.84,\n' +
+        +     "        date: '2026-10-19',\n" +
+        +     '        in: 111.19,\n' +
+        +     '        out: 0\n' +
+        +     '      },\n' +
+        +     '      {\n' +
+        +     '+       balance: -2553644.84,\n' +
+        +     '-       balance: -2736250.05,\n' +
+        +     "        date: '2026-10-27',\n" +
+        +     '        in: 5816.79,\n' +
+        +     '        out: 0\n' +
+        +     '      },\n' +
+        +     '      {\n' +
+        +     '+       balance: -2553363.23,\n' +
+        +     '-       balance: -2735968.44,\n' +
+        +     "        date: '2026-10-29',\n" +
+        +     '        in: 281.61,\n' +
+        +     '        out: 0\n' +
+        +     '      },\n' +
+        +     '      {\n' +
+        +     '+       balance: -2549288.63,\n' +
+        +     '-       balance: -2731893.84,\n' +
+        +     "        date: '2026-11-02',\n" +
+        +     '        in: 4074.6,\n' +
+        +     '        out: 0\n' +
+        +     '      },\n' +
+        +     '      {\n' +
+        +     '+       balance: -2547824.1,\n' +
+        +     '-       balance: -2730'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: |-
+          motor · 001 · admin · json /api/workspace/overview/nakit-akisi: Expected values to be strictly deep-equal:
+          + actual - expected
+          ... Skipped lines
+          
+            {
+              bySource: {
+                'invoice:in': 4074.6,
+                'plan:in': 20848.17
+              },
+          ...
+              },
+          +   cashToday: -2611141.62,
+          +   closing: -2586218.85,
+          -   cashToday: -2793746.83,
+          -   closing: -2768824.06,
+              days: [
+                {
+          +       balance: -2610570.5,
+          -       balance: -2793175.71,
+                  date: '2026-10-10',
+                  in: 571.12,
+                  out: 0
+                },
+                {
+          +       balance: -2605043,
+          -       balance: -2787648.21,
+                  date: '2026-10-12',
+                  in: 5527.5,
+                  out: 0
+                },
+                {
+          +       balance: -2604667.78,
+          -       balance: -2787272.99,
+                  date: '2026-10-15',
+                  in: 375.22,
+                  out: 0
+                },
+                {
+          +       balance: -2597967.57,
+          -       balance: -2780572.78,
+                  date: '2026-10-16',
+                  in: 6700.21,
+                  out: 0
+                },
+                {
+          +       balance: -2597856.38,
+          -       balance: -2780461.59,
+                  date: '2026-10-19',
+                  in: 111.19,
+                  out: 0
+                },
+                {
+          +       balance: -2592039.59,
+          -       balance: -2774644.8,
+                  date: '2026-10-27',
+                  in: 5816.79,
+                  out: 0
+                },
+                {
+          +       balance: -2591757.98,
+          -       balance: -2774363.19,
+                  date: '2026-10-29',
+                  in: 281.61,
+                  out: 0
+                },
+                {
+          +       balance: -2587683.38,
+          -       balance: -2770288.59,
+                  date: '2026-11-02',
+                  in: 4074.6,
+                  out: 0
+                },
+                {
+          +       balance: -2586218.85,
+          -       balance: -2768824.06,
+                  date: '2026-1
+        1: |-
+          motor · 001 · admin · json /api/workspace/overview/nakit-akisi?preset=next90&overdue=1: Expected values to be strictly deep-equal:
+          + actual - expected
+          ... Skipped lines
+          
+            {
+              bySource: {
+                'cheque:in': 7741.73,
+                'cheque:out': 17008.43,
+                'invoice:in': 4074.6,
+          ...
+              },
+          +   cashToday: -2611141.62,
+          +   closing: -2532601.34,
+          -   cashToday: -2793746.83,
+          -   closing: -2715206.55,
+              days: [
+                {
+          +       balance: -2572175.75,
+          -       balance: -2754780.96,
+                  date: '2026-10-10',
+                  in: 571.12,
+                  out: 0
+                },
+                {
+          +       balance: -2566648.25,
+          -       balance: -2749253.46,
+                  date: '2026-10-12',
+                  in: 5527.5,
+                  out: 0
+                },
+                {
+          +       balance: -2566273.03,
+          -       balance: -2748878.24,
+                  date: '2026-10-15',
+                  in: 375.22,
+                  out: 0
+                },
+                {
+          +       balance: -2559572.82,
+          -       balance: -2742178.03,
+                  date: '2026-10-16',
+                  in: 6700.21,
+                  out: 0
+                },
+                {
+          +       balance: -2559461.63,
+          -       balance: -2742066.84,
+                  date: '2026-10-19',
+                  in: 111.19,
+                  out: 0
+                },
+                {
+          +       balance: -2553644.84,
+          -       balance: -2736250.05,
+                  date: '2026-10-27',
+                  in: 5816.79,
+                  out: 0
+                },
+                {
+          +       balance: -2553363.23,
+          -       balance: -2735968.44,
+                  date: '2026-10-29',
+                  in: 281.61,
+                  out: 0
+                },
+                {
+          +       balance: -2549288.63,
+          -       balance: -2731893.84,
+                  date: '2026-11-02',
+                  in: 4074.6,
+                  out: 0
+                },
+                {
+          +       balance: -2547824.1,
+          -       balance: -2730
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-a40291a1f8b2ba361/test/banka-210-altin.test.mjs:288:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 1 - altın test: v2.0.26 ile bu dal aynı veride aynı Kasa, Banka ve POS, ANLIK DURUM, Ana Defter ve raporları gösterir
+  ---
+  duration_ms: 19210.618272
+  type: 'suite'
+  location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-a40291a1f8b2ba361/test/banka-210-altin.test.mjs:223:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 2
+# suites 1
+# pass 0
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 19807.40589

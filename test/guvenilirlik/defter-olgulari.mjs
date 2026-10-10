@@ -82,6 +82,40 @@ export async function legacyBankBox(api, overview) {
   };
 }
 
+/**
+ * (3) Nakit Akış başlangıcı (K10, plan §8.9 / karar 32; 2.1.0 temel sürüm, bilerek): yeni başlangıç = Nakit Kasa + Gerçek Banka; 2.0.26'nın
+ * başlangıcı bugüne kadarki bütün yollardı (nakit + havale + POS, hesaba atanmış ya da değil). Yeni yanıt 2.0.26 karşılığına aynı satırlardan
+ * çevrilir: fark = bugüne kadarki banka tarafı (Kasa ?method=noncash) − Gerçek Banka. Başlangıç, bakiye sütunu, günler, en düşük ve dönem sonu bu
+ * farkla kayar (projeksiyonun sırası ve en düşük gün kaymayla değişmez); yeni "start" kırılımı atılır. Dönüş: { flow, problem } — problem: yeni
+ * başlangıç kendi kırılımına (Nakit + Gerçek Banka) eşit değilse.
+ */
+export async function legacyCashFlow(api, flow) {
+  if (!flow?.start) return { flow, problem: "" };
+  const start = flow.start;
+  const problem = cents(flow.cashToday) === cents(start.cash) + cents(start.realBank ?? 0) || start.realBank === null ? "" : `K10 Nakit Akış: başlangıç ${flow.cashToday} ≠ Nakit ${start.cash} + Gerçek Banka ${start.realBank}`;
+  const noncash = must(await api.get("/api/workspace/cash?method=noncash"), "Kasa (banka tarafı)");
+  let upTo = 0;
+  for (const entry of noncash.entries) if (entry.date <= flow.today) upTo += (entry.kind === "in" ? 1 : -1) * cents(entry.amount);
+  const delta = start.realBank === null || start.realBank === undefined ? 0 : upTo - cents(start.realBank);
+  const shift = value => (Math.round(cents(value) + delta) / 100);
+  const { start: _drop, ...rest } = flow;
+  const lowest = { ...flow.lowest, balance: shift(flow.lowest.balance) };
+  return {
+    flow: {
+      ...rest,
+      cashToday: shift(flow.cashToday),
+      opening: shift(flow.opening),
+      closing: shift(flow.closing),
+      rows: flow.rows.map(row => ({ ...row, balance: shift(row.balance) })),
+      days: flow.days.map(day => ({ ...day, balance: shift(day.balance) })),
+      lowest,
+      negative: lowest.balance < -0.005,
+      ...(flow.periods ? { periods: flow.periods.map(period => ({ ...period, closing: shift(period.closing) })) } : {}),
+    },
+    problem,
+  };
+}
+
 /** Seçili şirketin para olguları (API). */
 export async function ledgerFacts(api) {
   const integrity = must(await api.get("/api/workspace/ledger/integrity"), "Mutabakat Testi");

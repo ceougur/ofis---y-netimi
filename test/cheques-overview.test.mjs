@@ -422,8 +422,13 @@ describe("ANLIK DURUM: karttaki rakamlar ekranlarla birebir aynı (rastgele 400 
       const openPlans = (await admin.get("/api/workspace/plans?status=active")).data.data;
       const planRemaining = (openPlans.plans || []).reduce((sum, plan) => sum + Math.max(0, plan.totals?.remaining ?? 0), 0);
       // Nakit akışı tüm parayla (nakit + banka/POS) başlar; Kasa penceresi yalnız nakit (v2.0.17).
+      // 2.1.0 temel sürüm (K10, plan §8.9 / karar 32, bilerek): başlangıç = Nakit Kasa + Gerçek Banka; hesaba atanmamış eski havale/POS (bu testte
+      // banka hesabı yok: bugüne kadarki bütün banka tarafı) başlangıca girmez, ileri tarihli satırları beklenen hareket olarak kalır.
       const allMoney = (await admin.get("/api/workspace/cash?method=all")).data.data;
-      near(flow.closing, allMoney.totals.balance + planRemaining + portfolio.summary.in.open.amount - portfolio.summary.out.open.amount, `${label}: nakit akışı sonu`);
+      const noncash = (await admin.get("/api/workspace/cash?method=noncash")).data.data;
+      const unassignedToday = noncash.entries.filter(entry => entry.date <= TODAY).reduce((sum, entry) => sum + (entry.kind === "in" ? entry.amount : -entry.amount), 0);
+      near(flow.closing, allMoney.totals.balance - unassignedToday + planRemaining + portfolio.summary.in.open.amount - portfolio.summary.out.open.amount, `${label}: nakit akışı sonu`);
+      near(flow.cashToday, cashToday, `${label}: nakit akışı başlangıcı = Nakit Kasa (bugüne kadar; banka hesabı yok, Gerçek Banka 0)`);
     };
     for (let step = 1; step <= 400; step += 1) {
       const op = pick(["cash", "cash", "debt", "credit", "collect", "pay", "plan", "planPay", "stock", "stockCash", "chequeIn", "chequeIn", "chequeOut", "chequeAct", "chequeAct", "undo", "delete"]);

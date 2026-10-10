@@ -794,18 +794,53 @@ describe("2.1.0 Rapor Merkezi BANKALI veriyle: bütün para raporları × bütü
     for (const amount of ["1.000,00", "800,00", "300,00", "200,00", "100,00", "50,00"]) assert.ok(has(amount), `nakit satırı ${amount} Kasa Dökümü'nde`);
   });
 
-  // Plan §8.4 / K10 (§3.4 tablosu "ANLIK DURUM, Genel Bakış, Nakit Akış başlangıcı | özet (K10) | yeni ayrım"): başlangıç = Nakit + Gerçek
-  // Banka; Hesabı Atanmamış Eski Hareketler (102.00 + 108.00; burada hesaba bağlanmamış POS 900) "hiçbir toplama girmez". Bugünkü kod POS
-  // 900'ü de katıyor (152.280 ↔ 151.380). K10 ayrı işte (ANLIK DURUM / Birleşik Rapor / özet) — o iş bitince yeşile döner; o zamana kadar todo.
-  test("Nakit Akış: başlangıç = Nakit + Gerçek Banka (K10: Hesabı Atanmamış POS 900 hariç)", { todo: "K10 (ayrı iş): Nakit Akış başlangıcı Hesabı Atanmamış POS'u da katıyor" }, async () => {
+  // Plan §8.4 / §8.9 / K10 / karar 32 (§3.4 tablosu "ANLIK DURUM, Genel Bakış, Nakit Akış başlangıcı | özet (K10) | yeni ayrım"): başlangıç =
+  // Nakit + Gerçek Banka; Hesabı Atanmamış Eski Hareketler (102.00 + 108.00; burada hesaba bağlanmamış POS 900) ayrı satır, başlangıca girmez.
+  // 2.1.0 temel sürüm öncesi kod POS 900'ü de katıyordu (152.280 ↔ 151.380). Komşular (ders 10): ANLIK DURUM Kasa + Gerçek Banka kutuları,
+  // Birleşik Rapor ve Banka penceresinin Genel Bakış'ı aynı sayıyı verir; PDF ve Excel'in "Bugünkü Nakit ve Banka" satırı ekranla aynı.
+  test("Nakit Akış: başlangıç = Nakit + Gerçek Banka (K10: Hesabı Atanmamış POS 900 hariç)", async () => {
     const flow = await must("nakit akış", api.get("/api/workspace/overview/nakit-akisi?preset=next90&table=0"));
-    assert.equal(flow.cashToday, r2(sum(E.cash, r => r.amt) + sum(E.bank, r => r.amt)), "başlangıç = Kasa 2.050 + Gerçek Banka (POS 900 Hesabı Atanmamış)");
+    const cashBal = sum(E.cash, r => r.amt);
+    const realBank = sum(E.bank, r => r.amt);
+    const unassigned = sum(E.card, r => r.amt);
+    assert.equal(unassigned, 900, "bağımsız defter: hesaba bağlanmamış POS 900");
+    assert.equal(flow.cashToday, r2(cashBal + realBank), "başlangıç = Kasa 2.050 + Gerçek Banka (POS 900 Hesabı Atanmamış)");
+    assert.deepEqual([flow.start?.cash, flow.start?.realBank, flow.start?.unassigned], [cashBal, realBank, unassigned], "başlangıcın kırılımı: Nakit · Gerçek Banka · Hesabı Atanmamış (ayrı, toplama girmez)");
+    // Komşular aynı sayıyı verir (tek kaynak; ikinci formül yok).
+    const overview = await must("ANLIK DURUM", api.get("/api/workspace/overview"));
+    assert.equal(r2(overview.cash.balance + overview.cash.bank.balance), flow.cashToday, "ANLIK DURUM Nakit Kasa + Gerçek Banka = Nakit Akış başlangıcı");
+    assert.equal(overview.cash.bank.unassigned.total, unassigned, "ANLIK DURUM Hesabı Atanmamış = 900");
+    const bankSummary = await must("banka özeti", api.get("/api/workspace/bank/summary"));
+    assert.equal(bankSummary.realBank.minor / 100, realBank, "Banka penceresi Gerçek Banka");
+    const combined = await must("birleşik", api.get("/api/companies/report"));
+    const row = combined.rows[0];
+    assert.equal(r2(row.cash + row.realBank), flow.cashToday, "Birleşik Rapor Nakit Kasa + Gerçek Banka = Nakit Akış başlangıcı");
+    assert.equal(row.bankUnassigned, unassigned, "Birleşik Rapor Hesabı Atanmamış = 900");
+    const bankRep = await must("banka", get("banka-pos-hareketleri", { preset: "all" }));
+    assert.equal(summaryOf(bankRep, "Banka (tüm hareketler)"), realBank, "Banka ve POS Hareketleri: Banka = Gerçek Banka");
+    // PDF ve Excel ekranla aynı başlangıcı yazar; etiket plan §8.9: "Bugünkü Nakit ve Banka"; Hesabı Atanmamış ayrı satır.
+    const money = value => new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value);
+    const pdf = await admin.raw("GET", "/api/workspace/overview/nakit-akisi.pdf?preset=next90&table=0");
+    assert.equal(pdf.status, 200);
+    const text = pdfText(pdf.buffer).replace(/\s+/g, " ");
+    assert.match(text, new RegExp(`Bugünkü Nakit ve Banka ${money(flow.cashToday).replace(/\./g, "\\.")}`), "PDF: Bugünkü Nakit ve Banka = ekran");
+    assert.match(text, new RegExp(`Hesabı Atanmamış Eski Hareketler ${money(unassigned).replace(/\./g, "\\.")}`), "PDF: Hesabı Atanmamış ayrı satır");
+    assert.ok(!/Bugünkü Kasa /.test(text), "PDF: eski 'Bugünkü Kasa' etiketi yok");
+    const xlsx = await admin.raw("GET", "/api/workspace/overview/nakit-akisi.xlsx?preset=next90&table=0");
+    assert.equal(xlsx.status, 200);
+    const sheets = xlsxSheets(xlsx.buffer);
+    const amountOf = cell => (typeof cell === "number" ? cell : (moneyOf(cell) ?? numberOf(cell)));
+    const ozet = Object.fromEntries((sheets["Özet"] || []).map(cells => [cells[0], cells[1]]));
+    assert.equal(amountOf(ozet["Bugünkü Nakit ve Banka"]), flow.cashToday, `Excel Özet: Bugünkü Nakit ve Banka = ekran (${JSON.stringify(ozet)})`);
+    assert.equal(amountOf(ozet["Hesabı Atanmamış Eski Hareketler"]), unassigned, "Excel Özet: Hesabı Atanmamış ayrı satır");
+    const start = (sheets["Nakit Akışı"] || []).find(cells => cells[1] === "Başlangıç") || [];
+    assert.equal(amountOf(start[6]), flow.opening, `Excel Nakit Akışı: Başlangıç satırı = ekranın başlangıcı (${JSON.stringify(start)})`);
   });
 
-  test("Nakit Akış (90 gün): beklenen giriş/çıkış bağımsız (taksit, portföydeki senet, verilen çek); başlangıç Kasa + Banka (+ bugün POS)", async () => {
+  test("Nakit Akış (90 gün): beklenen giriş/çıkış bağımsız (taksit, portföydeki senet, verilen çek); başlangıç Kasa + Gerçek Banka (K10)", async () => {
     const flow = await must("nakit akış", api.get("/api/workspace/overview/nakit-akisi?preset=next90&table=0"));
     const base = r2(sum(E.cash, r => r.amt) + sum(E.bank, r => r.amt));
-    assert.ok([base, r2(base + sum(E.card, r => r.amt))].includes(flow.cashToday), `başlangıç ${flow.cashToday}: Kasa + Gerçek Banka (K10) ya da + POS (bugünkü kod)`);
+    assert.equal(flow.cashToday, base, `başlangıç ${flow.cashToday}: Kasa + Gerçek Banka (K10; Hesabı Atanmamış POS girmez)`);
     // 90 gün içinde: Ayşe'nin kartındaki 3. taksit (kalan 50, vade ~20 gün sonra), SN-1 senet 3.600 (80 gün sonra) giriş; VC-1 600 (70 gün sonra) çıkış.
     const inItems = E.plans.flatMap(p => p.items).filter(it => it.remaining > 0 && it.due >= TODAY && it.due <= ahead(90));
     const expectedIn = r2(sum(inItems, it => it.remaining) + sum(E.cheques.filter(ch => ch.dir === "in" && ch.status === "portfolio" && ch.due >= TODAY && ch.due <= ahead(90)), ch => ch.amount));
