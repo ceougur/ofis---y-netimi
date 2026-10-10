@@ -1,0 +1,115 @@
+TAP version 13
+# Subtest: Doğrulama Kapısı — beklenen liste ↔ CI adımları
+    # Subtest: ci.yml'de koşan her kanıt kaydı kapının --beklenen listesinde, listede koşmayan ad yok
+    ok 1 - ci.yml'de koşan her kanıt kaydı kapının --beklenen listesinde, listede koşmayan ad yok
+      ---
+      duration_ms: 3.716149
+      type: 'test'
+      ...
+    # Subtest: yayın iş akışı CI'nin koştuğu her arayüz senaryosunu koşar
+    ok 2 - yayın iş akışı CI'nin koştuğu her arayüz senaryosunu koşar
+      ---
+      duration_ms: 0.31754
+      type: 'test'
+      ...
+    1..2
+ok 1 - Doğrulama Kapısı — beklenen liste ↔ CI adımları
+  ---
+  duration_ms: 5.107383
+  type: 'suite'
+  ...
+# Subtest: Uzun Doğrulama Kapısı — beklenen liste ↔ matris
+    # Subtest: mutabakat ve güvenilirlik matrislerinin her kaydı kapıda bekleniyor, fazlası yok; plan alt sınırı karşılanıyor
+    not ok 1 - mutabakat ve güvenilirlik matrislerinin her kaydı kapıda bekleniyor, fazlası yok; plan alt sınırı karşılanıyor
+      ---
+      duration_ms: 2.385719
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/test/ci-kapi-listesi.test.mjs:95:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        The input did not match the regular expression /--islem 10000 --tohum \d+ --tohumlar 1\n/. Input:
+        
+        '  mutabakat_uzun:\n' +
+          "    if: (!github.event.repository.private) && (github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[uzun-dogrulama]'))\n" +
+          '    name: Mutabakat (tek sıralı uzun koşu, 10.000 işlem)\n' +
+          '    runs-on: ubuntu-latest\n' +
+          '    timeout-minutes: 345\n' +
+          '    steps:\n' +
+          '      - uses: actions/checkout@v4\n' +
+          '        with:\n' +
+          '          fetch-depth: 0\n' +
+          '          fetch-tags: true\n' +
+          '      - uses: actions/setup-node@v4\n' +
+          '        with:\n' +
+          '          node-version: 24\n' +
+          '          cache: npm\n' +
+          '      - run: npm ci\n' +
+          '      - name: Mutabakat uzun (kanıt kaydıyla)\n' +
+          '        run: node tools/kanit.mjs kos mutabakat-uzun-10000 --sure 330 -- npm run test:mutabakat -- --islem 2000 --tohum 11 --tohumlar 1\n' +
+          '      - uses: actions/upload-artifact@v4\n' +
+          '        if: always()\n' +
+          '        with:\n' +
+          '          name: kanit-mutabakat-uzun\n' +
+          '          path: kanit-cikti/\n' +
+          '          if-no-files-found: warn\n'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual: |-
+          mutabakat_uzun:
+            if: (!github.event.repository.private) && (github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[uzun-dogrulama]'))
+            name: Mutabakat (tek sıralı uzun koşu, 10.000 işlem)
+            runs-on: ubuntu-latest
+            timeout-minutes: 345
+            steps:
+              - uses: actions/checkout@v4
+                with:
+                  fetch-depth: 0
+                  fetch-tags: true
+              - uses: actions/setup-node@v4
+                with:
+                  node-version: 24
+                  cache: npm
+              - run: npm ci
+              - name: Mutabakat uzun (kanıt kaydıyla)
+                run: node tools/kanit.mjs kos mutabakat-uzun-10000 --sure 330 -- npm run test:mutabakat -- --islem 2000 --tohum 11 --tohumlar 1
+              - uses: actions/upload-artifact@v4
+                if: always()
+                with:
+                  name: kanit-mutabakat-uzun
+                  path: kanit-cikti/
+                  if-no-files-found: warn
+        
+      operator: 'match'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/test/ci-kapi-listesi.test.mjs:109:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.start (node:internal/test_runner/test:944:17)
+        node:internal/test_runner/test:1440:71
+        node:internal/per_context/primordials:464:82
+        new Promise (<anonymous>)
+        new SafePromise (node:internal/per_context/primordials:433:3)
+        node:internal/per_context/primordials:464:9
+        Array.map (<anonymous>)
+      ...
+    1..1
+not ok 2 - Uzun Doğrulama Kapısı — beklenen liste ↔ matris
+  ---
+  duration_ms: 2.590721
+  type: 'suite'
+  location: '/home/user/ofis---y-netimi/test/ci-kapi-listesi.test.mjs:61:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..2
+# tests 3
+# suites 2
+# pass 2
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 148.042937

@@ -93,7 +93,7 @@ describe("Uzun Doğrulama Kapısı — beklenen liste ↔ matris", () => {
     }));
   };
   it("mutabakat ve güvenilirlik matrislerinin her kaydı kapıda bekleniyor, fazlası yok; plan alt sınırı karşılanıyor", () => {
-    const ran = new Set([...namesOf("mutabakat"), ...namesOf("guvenilirlik")]);
+    const ran = new Set([...namesOf("mutabakat"), ...namesOf("mutabakat_uzun"), ...namesOf("guvenilirlik")]);
     const expected = new Set((uzun.match(/--beklenen (\S+)/)?.[1] || "").split(","));
     assert.deepEqual([...ran].filter(name => !expected.has(name)), [], "koşuyor ama kapı beklemiyor");
     assert.deepEqual([...expected].filter(name => !ran.has(name)), [], "kapı bekliyor ama koşmuyor");
@@ -104,6 +104,9 @@ describe("Uzun Doğrulama Kapısı — beklenen liste ↔ matris", () => {
     // Hesabın eşzamanlı iş sınırı (Free: 20) normal CI ile paylaşılır: uzun koşular en çok 6 + 6 iş.
     for (const job of ["mutabakat", "guvenilirlik"]) assert.match(blockOf(job), /\n {6}max-parallel: [1-6]\n/, `${job}: max-parallel en çok 6`);
     // Maliyet güvencesi: depo özel yapılırsa (dakikalar ücretli) uzun işler hiç başlamaz.
-    for (const job of ["mutabakat", "guvenilirlik", "kapi"]) assert.match(blockOf(job), /\n {4}if: .*\(!github\.event\.repository\.private\)/, `${job}: yalnız herkese açık depoda`);
+    for (const job of ["mutabakat", "mutabakat_uzun", "guvenilirlik", "kapi"]) assert.match(blockOf(job), /\n {4}if: .*\(!github\.event\.repository\.private\)/, `${job}: yalnız herkese açık depoda`);
+    // Tek sıralı uzun mutabakat (kullanıcı önerisi + baş mimar kararı 10.10.2026): 10.000 işlem, her işlemde doğrulama, kapıda bekleniyor.
+    assert.match(blockOf("mutabakat_uzun"), /--islem 10000 --tohum \d+ --tohumlar 1\n/);
+    assert.ok(expected.has("mutabakat-uzun-10000"));
   });
 });

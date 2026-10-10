@@ -1,0 +1,32 @@
+{
+  "ad": "ci-kapi-listesi-uzun-10000",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/ci-kapi-listesi.test.mjs",
+  "commit": "4175e364489dbfc33a7c8b3c4a57c9ac221fe79c",
+  "dal": "claude/kind-newton-fpmx3f",
+  "kirli": 2,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T15:44:17.750Z",
+  "sure_sn": 0.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 3,
+    "gecen": 3,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-10/ana-oturum-uzun-dogrulama/2026-10-10/ci-kapi-listesi-uzun-10000.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "3279ecfabfdb09865b10eee2b655e41a17a87770f78797e10f3bf41c945dd150",
+  "ham_cikti_bayt": 1345
+}

@@ -1,0 +1,38 @@
+{
+  "ad": "ci-kapi-listesi-uzun-mutasyon-2000",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/ci-kapi-listesi.test.mjs",
+  "commit": "4175e364489dbfc33a7c8b3c4a57c9ac221fe79c",
+  "dal": "claude/kind-newton-fpmx3f",
+  "kirli": 2,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T15:44:24.004Z",
+  "sure_sn": 0.3,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 3,
+    "gecen": 2,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Uzun Doğrulama Kapısı — beklenen liste ↔ matris › mutabakat ve güvenilirlik matrislerinin her kaydı kapıda bekleniyor, fazlası yok; plan alt sınırı karşılanıyor",
+      "konum": "test/ci-kapi-listesi.test.mjs:95:3",
+      "hata": "The input did not match the regular expression /--islem 10000 --tohum \\d+ --tohumlar 1\\n/. Input: · '  mutabakat_uzun:\\n' + · \"    if: (!github.event.repository.private) && (github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[uzun-dogrulama]'))\\n\" + (beklenen , gelen |-)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-10/ana-oturum-uzun-dogrulama/2026-10-10/ci-kapi-listesi-uzun-mutasyon-2000.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "12360ed99d25893243071824601cd6afcba8c0f263f913613d6aa3e861b0c748",
+  "ham_cikti_bayt": 4773
+}
