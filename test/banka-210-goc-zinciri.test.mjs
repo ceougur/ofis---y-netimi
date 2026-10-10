@@ -22,7 +22,7 @@
 import assert from "node:assert/strict";
 import path from "node:path";
 import { describe, it } from "node:test";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { fileFacts, ledgerFacts } from "./guvenilirlik/defter-olgulari.mjs";
 import { verifyUpgrade } from "./guvenilirlik/dogrula.mjs";
 import { fixtureExists, readFixture, unpackFixture } from "./guvenilirlik/fikstur.mjs";
@@ -54,7 +54,7 @@ describe("göç zinciri → v20: para defteri 2.0.26'nın gösterdiğiyle birebi
         } finally {
           await server.close();
         }
-        const { lockDigestOf } = await import(path.join(ROOT, "server/lib/integrity.mjs"));
+        const { lockDigestOf } = await import(pathToFileURL(path.join(ROOT, "server/lib/integrity.mjs")).href);
         assert.equal(typeof lockDigestOf, "function", "integrity.lockDigestOf yok");
         const registry = readRegistry(fixture.dataDir) || [{ id: "sirket-001", dir: "" }];
         for (const [id, expected] of Object.entries(before.companies)) {
