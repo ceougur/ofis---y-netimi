@@ -1093,7 +1093,15 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   (kapsam 10.10'da tam plana döndü, doğrulama çıtası, bulunan ~15 hata, benim madde saymadan verdiğim tahminler) ve öneriler (sürümü böl,
   uzun koşuları GitHub CI'de paralel, ağır doğrulama bir kez, günlük plan↔gerçek tablosu) verildi; seçim sorusu kullanıcı tarafından
   kapatıldı. Ardından: "müşterilerin kullanacağı TEMEL banka modülünü bitirip yüklesek mi, ne kadar sürer? HEMEN YAPMA, ÖNCE KONUŞALIM"
-  → kapsam/süre önerisi verildi; KARAR BEKLENİYOR, başlanmadı.
+  → kapsam/süre önerisi verildi.
+  KARAR (kullanıcı, 10.10.2026: "TEMEL SÜRÜME BAŞLA"): 2.1.0 = TEMEL BANKA SÜRÜMÜ (bitmiş banka kısmı: hesaplar/sihirbaz, fişler, her
+  formda havale hesabı, transfer, 4 banka raporu + ANLIK DURUM Gerçek Banka + Birleşik Rapor, yetki, eşleşme koruması) + bugün bulunan
+  bütün hata düzeltmeleri (R1–R5, D2, K1, K3, K4, K5, K7, K8) + KURUMSAL KART BAĞI (K2; önerim uygulandı — kullanıcı "önerin uygulanır"
+  kararı) + Nakit Akış K10 başlangıcı + ertelenenlerin görünmediği denetimi + kılavuz Banka bölümü + yargıç/eleştirmen + plan alt
+  sınırında son doğrulama (UZUN KOŞULAR GitHub CI'de paralel — önerim; depo herkese açık, dakika ücretsiz) + paket. ERTELENEN 2.1.1/2.2.0:
+  döviz/kur/değerleme (Aşama 13), Bankaya Tahsile Ver, K8 taksit avans/fazla ödeme kuralları, faturanın bankalı iade/iptal ayrıntısı ve
+  toplu kesim, kalan §8.10 raporları, Kasa açılış/devir (K6); POS 2.2.0, ekstre 2.3.0 yerinde. Tahmin 3–4 iş günü. Plan sırası bu
+  kararla değişti (döviz 2.1.0'dan çıktı).
 - KREDİ KARTI ÖDEMESİ POS GİBİ GÖRÜNÜYOR (kullanıcı, 10.10.2026; ekran 2.0.26 ANLIK DURUM: "Banka / POS ₺1.343,90 · Banka ₺10.000 ·
   POS −₺8.656"; soru: "banka modülü ile bu sorunlar çözülecek mi?"). KÖK NEDEN (koddan, v2.0.26 `pay-method.mjs`): tek kayıt değeri
   `card` hem POS tahsilatı (para girişi, 108) hem kurumsal kartla ödeme (borç, 309) için; ANLIK DURUM "POS" = Σ kart giriş − Σ kart
