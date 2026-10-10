@@ -1214,6 +1214,12 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   indirilip kurulur, ağ yoksa hazırdaki kurulur → tek yeniden başlatma, ara sürüm kurulmaz; (3) periyodik denetim 6 sa → 1 sa (gün
   içi yayın akşamdan önce iner); (4) deneme açılışı/geri dönüş/başarısız sürüm işareti aynen. Yayın kuralı: her yayın tam paket,
   sürüm numarası öncekinden büyük (release.mjs zaten öyle).
+  UYARI BULGULARI (10.10.2026 gece; senaryo-225 incelemesinde, kullanıcıya listelendi; karar bekleyenler): (1) sağ alt bildirimde ilk 5'ten
+  sonrası, özet bildirimi ekrana çıkmadan "görüldü" yazılıyor (hof-alerts.js enqueue) → sayfa erken değişirse bunlar 3 sa sağ altta görünmez,
+  yalnız zilde (görmeden görüldü — düzeltilecek: özet gösterilince işaretle); (2) uyarı ufku sayfaya göre tutarsız: açık sayfanın son tarihleri
+  7 gün ufukla, ÖBÜR sayfanınkiler ufuksuz (dues.mjs) → 1. sayfadayken 2. sayfanın 200+ gün sonraki kayıtları "SON GÜNE 2xx GÜN" uyarısı verir
+  (müşterinin "42 gün" ekranı bu yoldan); hangisi doğru kullanıcıya soruldu; (3) iki pencerede sayfa seçimi kullanıcı başına (düşük); (4) yeni
+  sayfa açılınca açık pencerenin takvimi yenilenmiyor (düşük). senaryo-225 C kırmızısı = testin kendi yarışı (216f76e, yalnız test; zorla 6/6).
   OTOMATİK GÜNCELLEME (kullanıcı, 10.10.2026: "sunucu açıkken aralıklarla sorgulanıp alınıyor mu, açılışta sorguluyor mu, şüphelerim var" →
   koddan cevap verildi: açılışta + 6 saatte bir (+≤30 dk kayma); "kendiliğinden kur" açıkken boşta (15 dk) ya da mesai dışında kurulur,
   mesai içinde çalışılıyorsa "hazır" bekler, saatte bir yeniden bakar; güncelleme testleri 30/30. AÇIK: kendiliğinden kur KAPALIYKEN hiç
