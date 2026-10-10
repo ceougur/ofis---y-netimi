@@ -102,7 +102,7 @@ jobs:
           NEEDS_JSON: ${{ toJSON(needs) }}
         run: >-
           node tools/kanit.mjs kapi kanit --commit "$GITHUB_SHA"
-          --beklenen npm-test-ubuntu-latest-node22,npm-test-ubuntu-latest-node24,npm-test-windows-latest-node22,npm-test-windows-latest-node24,e2e-e2e,e2e-senaryo-219,e2e-senaryo-220,e2e-senaryo-220-yedek,e2e-senaryo-221,e2e-senaryo-222,e2e-senaryo-223,e2e-senaryo-224,e2e-senaryo-225,e2e-senaryo-226,e2e-senaryo-banka-210,e2e-banka-210-saat
+          --beklenen npm-test-ubuntu-latest-node22,npm-test-ubuntu-latest-node24,npm-test-windows-latest-node22,npm-test-windows-latest-node24,e2e-e2e,e2e-senaryo-219,e2e-senaryo-220,e2e-senaryo-220-yedek,e2e-senaryo-221,e2e-senaryo-222,e2e-senaryo-223,e2e-senaryo-224,e2e-senaryo-225,e2e-senaryo-226,e2e-senaryo-banka-210,e2e-senaryo-banka-210b,e2e-banka-210-saat
           --ayni-sayi npm-test-
           --atlanan-yok npm-test-
 
