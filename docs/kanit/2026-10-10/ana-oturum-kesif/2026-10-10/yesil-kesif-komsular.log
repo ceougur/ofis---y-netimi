@@ -1,0 +1,161 @@
+TAP version 13
+# Subtest: istemci başlatıcısı (Go)
+    # Subtest: '-kesfet' ağdaki sunucuyu ofis adı ve kurulum kimliğiyle bulur
+    ok 1 - '-kesfet' ağdaki sunucuyu ofis adı ve kurulum kimliğiyle bulur
+      ---
+      duration_ms: 1510.979703
+      type: 'test'
+      ...
+    # Subtest: '-kesfet-dosya' sonucu kurulum sihirbazının okuyacağı dosyaya yazar
+    ok 2 - '-kesfet-dosya' sonucu kurulum sihirbazının okuyacağı dosyaya yazar
+      ---
+      duration_ms: 3023.144156
+      type: 'test'
+      ...
+    # Subtest: aynı bilgisayardaki sunucuyu (HTTP portu = -port) keşifsiz bulur
+    ok 3 - aynı bilgisayardaki sunucuyu (HTTP portu = -port) keşifsiz bulur
+      ---
+      duration_ms: 18.079092
+      type: 'test'
+      ...
+    # Subtest: bulunan sunucuyu kaydeder ve sonraki açılışta doğrudan kullanır
+    ok 4 - bulunan sunucuyu kaydeder ve sonraki açılışta doğrudan kullanır
+      ---
+      duration_ms: 1523.371562
+      type: 'test'
+      ...
+    # Subtest: sunucu yoksa anlaşılır biçimde başarısız olur
+    ok 5 - sunucu yoksa anlaşılır biçimde başarısız olur
+      ---
+      duration_ms: 1511.422643
+      type: 'test'
+      ...
+    # Subtest: Windows için derlenir (GUI alt sistemi)
+    ok 6 - Windows için derlenir (GUI alt sistemi)
+      ---
+      duration_ms: 692.341121
+      type: 'test'
+      ...
+    1..6
+ok 1 - istemci başlatıcısı (Go)
+  ---
+  duration_ms: 9831.751116
+  type: 'suite'
+  ...
+# Subtest: platform taşınabilirliği: Windows'ta kırılan kalıplar kaynakta yok
+    # Subtest: taranan dosya var
+    ok 1 - taranan dosya var
+      ---
+      duration_ms: 0.758444
+      type: 'test'
+      ...
+    # Subtest: import(path.join/resolve(…)) yerine import(pathToFileURL(…).href)
+    ok 2 - import(path.join/resolve(…)) yerine import(pathToFileURL(…).href)
+      ---
+      duration_ms: 144.427986
+      type: 'test'
+      ...
+    # Subtest: new URL(…, import.meta.url).pathname yerine fileURLToPath(…)
+    ok 3 - new URL(…, import.meta.url).pathname yerine fileURLToPath(…)
+      ---
+      duration_ms: 96.33344
+      type: 'test'
+      ...
+    # Subtest: signal === "SIGKILL" iddiası Windows kolu olmadan (process.platform === "win32")
+    ok 4 - signal === "SIGKILL" iddiası Windows kolu olmadan (process.platform === "win32")
+      ---
+      duration_ms: 147.621981
+      type: 'test'
+      ...
+    # Subtest: path.relative(…) bir alana ayırıcısı çevrilmeden atanmaz (.split(path.sep).join("/"))
+    ok 5 - path.relative(…) bir alana ayırıcısı çevrilmeden atanmaz (.split(path.sep).join("/"))
+      ---
+      duration_ms: 197.314753
+      type: 'test'
+      ...
+    1..5
+ok 2 - platform taşınabilirliği: Windows'ta kırılan kalıplar kaynakta yok
+  ---
+  duration_ms: 587.85097
+  type: 'suite'
+  ...
+# (node:15357) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: servis yöneticisi (supervisor)
+    # Subtest: bakım sayfası markalı, otomatik yenilenen bir HTML üretir
+    ok 1 - bakım sayfası markalı, otomatik yenilenen bir HTML üretir
+      ---
+      duration_ms: 1.267015
+      type: 'test'
+      ...
+    # Subtest: istekleri uygulamaya iletir; oturum çerezi ve istemci IP'si korunur
+    ok 2 - istekleri uygulamaya iletir; oturum çerezi ve istemci IP'si korunur
+      ---
+      duration_ms: 106.079642
+      type: 'test'
+      ...
+    # Subtest: canlı olay akışını (SSE) kapıdan geçirir; tarayıcı kapanınca uygulama tarafı da kapanır
+    ok 3 - canlı olay akışını (SSE) kapıdan geçirir; tarayıcı kapanınca uygulama tarafı da kapanır
+      ---
+      duration_ms: 93.116636
+      type: 'test'
+      ...
+    # Subtest: UDP keşif sinyaline sunucu adresiyle yanıt verir
+    ok 4 - UDP keşif sinyaline sunucu adresiyle yanıt verir
+      ---
+      duration_ms: 802.798308
+      type: 'test'
+      ...
+    # Subtest: uygulama çökerse bakım yanıtı verir ve kendini yeniden başlatır
+    ok 5 - uygulama çökerse bakım yanıtı verir ve kendini yeniden başlatır
+      ---
+      duration_ms: 1456.669095
+      type: 'test'
+      ...
+    # Subtest: güncelleme kipinde kullanıcıya 'Sistem güncelleniyor' sayfası gösterir
+    ok 6 - güncelleme kipinde kullanıcıya 'Sistem güncelleniyor' sayfası gösterir
+      ---
+      duration_ms: 554.896921
+      type: 'test'
+      ...
+    1..6
+ok 3 - servis yöneticisi (supervisor)
+  ---
+  duration_ms: 4064.108011
+  type: 'suite'
+  ...
+# Subtest: servis günlükleri
+    # Subtest: nssm'in kenara ayırdığı eski günlüklerden yalnızca en yeni 10 tanesi kalır
+    ok 1 - nssm'in kenara ayırdığı eski günlüklerden yalnızca en yeni 10 tanesi kalır
+      ---
+      duration_ms: 5.331218
+      type: 'test'
+      ...
+    1..1
+ok 4 - servis günlükleri
+  ---
+  duration_ms: 6.029307
+  type: 'suite'
+  ...
+# Subtest: öksüz süreç koruması
+    # Subtest: servis yöneticisi zorla kapatılınca uygulama da kapanır
+    ok 1 - servis yöneticisi zorla kapatılınca uygulama da kapanır
+      ---
+      duration_ms: 7009.751359
+      type: 'test'
+      ...
+    1..1
+ok 5 - öksüz süreç koruması
+  ---
+  duration_ms: 7010.042068
+  type: 'suite'
+  ...
+1..5
+# tests 19
+# suites 5
+# pass 19
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 11462.045566

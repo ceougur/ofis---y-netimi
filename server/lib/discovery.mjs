@@ -41,16 +41,19 @@ export function startDiscoveryResponder({ port = DISCOVERY_PORT, httpPort = 5123
   const buckets = new Map();
   let answered = 0;
 
+  // Kayan pencere: herhangi bir 1 saniyelik aralıkta gönderici başına en çok maxPerSecond yanıt. (Saat saniyesine göre sabit pencere,
+  // saniye sınırını aşan bir dizide 2 × maxPerSecond yanıta izin veriyordu — CI 542, Windows.)
   const allowed = address => {
-    const second = Math.floor(Date.now() / 1000);
-    const bucket = buckets.get(address);
-    if (!bucket || bucket.second !== second) {
-      buckets.set(address, { second, count: 1 });
-      if (buckets.size > 1000) buckets.clear();
-      return true;
+    const now = Date.now();
+    const recent = (buckets.get(address) || []).filter(at => now - at < 1000);
+    if (recent.length >= maxPerSecond) {
+      buckets.set(address, recent);
+      return false;
     }
-    bucket.count += 1;
-    return bucket.count <= maxPerSecond;
+    recent.push(now);
+    if (!buckets.has(address) && buckets.size >= 1000) buckets.clear();
+    buckets.set(address, recent);
+    return true;
   };
 
   socket.on("message", (message, remote) => {
