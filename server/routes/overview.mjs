@@ -32,7 +32,9 @@ const PDF_ROWS = 20_000;
 const collator = new Intl.Collator("tr", { numeric: true, sensitivity: "base" });
 // Kalıtımsız (v2.0.22): süzgeçteki "constructor" gibi adlar tür sayılmaz.
 const TYPE_TEXT = Object.freeze(Object.assign(Object.create(null), { customer: "Müşteri", supplier: "Tedarikçi", other: "Diğer" }));
-const SOURCE_TEXT = { plan: "Taksit", cheque: "Çek", note: "Senet", invoice: "Fatura (vadeli)", cash: "Kasa (ileri tarihli)", table: "Tablo", promise: "Ödeme sözü", deadline: "Son tarih" };
+// legacy (2.1.0 temel sürüm, küçük düzeltmeler): eski sürümden kalan, hesaba atanmamış İLERİ TARİHLİ havale / POS satırı (102.00 / 108.00).
+// Önceden "Kasa (ileri tarihli)" yazılıyordu (Nakit Kasa'da olmayan bir hareket). Ekran (hof-overview.js ROW_LABELS), PDF ve Excel aynı adı yazar.
+const SOURCE_TEXT = { plan: "Taksit", cheque: "Çek", note: "Senet", invoice: "Fatura (vadeli)", cash: "Kasa (ileri tarihli)", legacy: "Hesabı Atanmamış (ileri tarihli)", table: "Tablo", promise: "Ödeme sözü", deadline: "Son tarih" };
 // Vade takip kaynakları (v2.0.9) ve görme koşulu: çek/senet ve Kasa, ANLIK DURUM yetkisi ya da o modülün yetkisiyle.
 const DUE_SOURCES = ["plan", "cheque", "note", "invoice", "cash", "table", "promise", "deadline"];
 const STATE_TEXT = { overdue: "Gecikmiş", today: "Bugün", month: "Bu ay", upcoming: "Yaklaşan" };
@@ -354,10 +356,10 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
     // Tablolardaki ödeme günleri ve ödeme sözleri (v2.0.9, tahsilat takvimiyle aynı kalemler) beklenen giriştir. Taksit
     // kartı olan kişinin sözü kartındaki taksitle aynı parayı anlatır; nakit tahmininde ikinci kez sayılmaz.
     if (withTable) for (const item of await tableItems()) if (!item.deadline && item.amount > 0 && !(item.promise && item.carded)) flows.push(tableFlow(item, { projection: true }));
-    // Kasa'ya ileri tarihle girilmiş hareketler (ör. kira, maaş): kendi tarihinde beklenen hareket sayılır.
-    // Bugünkü kasa SQL toplamından (Kasa ekranıyla aynı kaynaklar); yalnız ileri tarihli satırlar okunur.
+    // İleri tarihli para satırları (ör. Kasa'ya ileri tarihle girilmiş kira, maaş; eski sürümden kalan ileri tarihli havale): kendi tarihinde
+    // beklenen hareket — yalnız tarihi gelince "Nakit ve Banka"ya girecek olanlar, kendi kaynak adıyla (aheadFlows).
     const start = flowStart(day);
-    for (const entry of cash()?.entries ? cash().entries({ after: day }) : []) flows.push(cashFlow(entry));
+    flows.push(...aheadFlows(day));
     const result = projection({ today: day, from: range.from, to: range.to, cashToday: start.total, flows, includeOverdue });
     return { ...result, start, requested: range, withTable, group, periods: group ? groupFlows(result, group) : null };
   }
@@ -414,7 +416,9 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
     const pdf = tablePdf({
       now: clock(),
       title: "Nakit Akış Projeksiyonu",
-      subtitle: [`${dayText(data.from)} – ${dayText(data.to)}`, `Taksit, çek/senet${data.withTable ? ", tablodaki ödeme günleri" : ""} ve ileri tarihli Kasa hareketleri`, "Başlangıç: Nakit Kasa + Gerçek Banka (hesaba atanmamış eski hareketler girmez)", data.group ? `${GROUP_TEXT[data.group]} toplamlar` : "Aynı gün önce çıkışlar yazılır"].join(" · "),
+      // Görünüm adı ekrandaki seçenekle aynı ("Aylık Toplamlar"; yazım düzeni) ve tarih aralığının hemen ardından: alt başlık uzunsa sonu
+      // kesilir ("… Gerçek Banka…"), önceden sonda duran görünüm adı PDF'te hiç görünmüyordu.
+      subtitle: [`${dayText(data.from)} – ${dayText(data.to)}`, data.group ? `${GROUP_TEXT[data.group]} Toplamlar` : "Aynı gün önce çıkışlar yazılır", `Taksit, çek/senet${data.withTable ? ", tablodaki ödeme günleri" : ""} ve ileri tarihli Kasa hareketleri`, "Başlangıç: Nakit Kasa + Gerçek Banka (hesaba atanmamış eski hareketler girmez)"].join(" · "),
       ...(data.group
         ? { headers: [GROUP_HEAD[data.group], "Hareket", "Giriş", "Çıkış", "Net", "Dönem Sonu Nakit ve Banka"], types: ["", "number", "money", "money", "money", "money"], rows: periodRows(data) }
         : { headers: ["Vade", "Kaynak", "Açıklama", "Kimden / Kime", "Giriş", "Çıkış", "Beklenen Nakit ve Banka"], types: ["", "", "", "", "money", "money", "money"], rows: flowRows(data) }),
@@ -441,7 +445,7 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
     const periods = data.group ? periodRows(data).map(row => Object.fromEntries(periodColumns.map((column, index) => [column, row[index]]))) : [];
     const buffer = buildXlsx(
       [
-        ...(data.group ? [{ name: `${GROUP_TEXT[data.group]} toplamlar`.slice(0, 31), columns: periodColumns, rows: periods }] : []),
+        ...(data.group ? [{ name: `${GROUP_TEXT[data.group]} Toplamlar`.slice(0, 31), columns: periodColumns, rows: periods }] : []),
         { name: "Nakit Akışı", columns, rows },
         { name: "Gecikmiş", columns, rows: overdue },
         { name: "Özet", columns: ["Kalem", "Tutar"], rows: summary },
@@ -496,6 +500,28 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
     const month = item.state === "month";
     return { date: forProjection && month ? today() : item.due, month, direction: "in", amount: item.amount, source: item.promise ? "promise" : "table", label: `${item.label || "Ödeme"}${item.partial ? " (kalan)" : ""}`, party: item.person || item.caseNo || "", phone: item.phone || "", detail: tableDetail(item), ref: recordRef(item) };
   }
+  /**
+   * İleri tarihli para satırları → nakit akışı / vade takip kalemleri (2.1.0 temel sürüm, küçük düzeltmeler). Projeksiyonun bakiyesi "Nakit ve Banka"
+   * = Nakit Kasa + Gerçek Banka (K10, plan §8.4, §8.9); satır, tarihi gelince bu iki kalemden birine girecekse projeksiyona kendi gününde girer:
+   *   - Nakit (yol cash) → "Kasa (ileri tarihli)": tarihi gelince Nakit Kasa'dadır (bugünkü Nakit Kasa yalnız bugüne kadarki satırlardır).
+   *   - Hesaba atanmamış eski havale / POS (yol bank | card, hesap ''; 102.00 / 108.00) → "Hesabı Atanmamış (ileri tarihli)" (legacy). Hesabın
+   *     açılışından SONRA gerçekleşen banka hareketidir (açılıştan öncekiler açılış bakiyesinin içindedir, Devir Kapanışı'yla kapanır); tarihi gelince
+   *     "Bu Hesaba Ata" ile Gerçek Banka'ya girer (Eski Hareketler: "Tarihi Gelince Atanabilir"; plan A13 / karar 42). Başlangıca girmez.
+   *   - Hesaba atanmış banka satırı (hesap dolu): Gerçek Banka hesabın bütün satırlarını toplar (refTotal) → ikinci kez girmez. Kurumsal kart (309)
+   *     ve kredi (300) satırı borçtur, Nakit ve Banka değildir → girmez. (Bugünkü kod ileri tarihli banka satırı yazmaz: 400 date-future.)
+   * Önceden Kasa'nın BÜTÜN yollarındaki ileri tarihli satırlar "Kasa (ileri tarihli)" adıyla giriyordu (eski havale Kasa adıyla; hesaba atanmış
+   * satır iki kez; kart borcu nakit çıkışı). Satırlar tek kaynaktan (moneyLines; yol ve hesap orada türetilir); yoksa Kasa'nın satırları.
+   */
+  function aheadFlows(day) {
+    const lines = moneyLines();
+    if (!lines?.lines || !lines?.shape) return (cash()?.entries ? cash().entries({ after: day }) : []).map(cashFlow);
+    const out = [];
+    for (const line of lines.lines({ after: day, ways: ["cash", "bank", "card"] })) {
+      if (line.way === "cash") out.push(cashFlow(lines.shape(line)));
+      else if (!line.ref) out.push({ ...cashFlow(lines.shape(line)), source: "legacy" });
+    }
+    return out;
+  }
   function cashFlow(entry) {
     const ref = entry.source === "account" && entry.accountId ? { type: "account", id: entry.accountId } : entry.source === "plan" && entry.planId ? { type: "plan", id: entry.planId } : entry.source === "cheque" && entry.chequeId ? { type: "cheque", id: entry.chequeId } : { type: "cash" };
     return { date: entry.date, direction: entry.kind === "out" ? "out" : "in", amount: entry.amount, source: "cash", label: entry.description || (entry.kind === "in" ? "Tahsilat" : "Ödeme"), party: entry.accountName || entry.planName || entry.caseTitle || "", ref };
@@ -529,7 +555,7 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
     }
     if ((sources.has("cheque") || sources.has("note")) && cheques()?.flows) for (const flow of cheques().flows()) if (sources.has(flow.source)) items.push(flow);
     if (sources.has("invoice") && invoices()?.openItems) for (const item of invoices().openItems(day, { net: true })) items.push(invoiceFlow(item));
-    if (sources.has("cash") && cash()?.entries) for (const entry of cash().entries({ after: day })) items.push(cashFlow(entry));
+    if (sources.has("cash")) items.push(...aheadFlows(day));
     let dormant = [];
     if (sources.has("table") || sources.has("promise") || sources.has("deadline")) {
       const calendar = tables()?.calendar ? await tables().calendar(clock()) : { items: [], dormant: [] };
