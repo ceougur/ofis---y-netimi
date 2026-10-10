@@ -551,7 +551,8 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
       else if (row.kind === "card") cardDebt -= cents;
       else if (row.kind === "loan") loanDebt -= cents;
     }
-    const loose = money.unassigned();
+    // Hesabı Atanmamış bugüne kadarki satırlardır (bugünkü bakiye); eski sürümden kalan ileri tarihli satırlar ayrı (futureUnassigned).
+    const loose = unassignedTotals();
     const unassignedBank = loose.bank;
     const unassignedCard = loose.card;
     const byCurrency = new Map();
@@ -563,7 +564,7 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
       current.fxMinor += fxBalanceOf(row, cents);
       byCurrency.set(row.currency, current);
     }
-    return { realBankMinor: realBank, unassignedBankMinor: unassignedBank, unassignedCardMinor: unassignedCard, cardDebtMinor: cardDebt, loanDebtMinor: loanDebt, byCurrency: [...byCurrency.values()] };
+    return { realBankMinor: realBank, unassignedBankMinor: unassignedBank, unassignedCardMinor: unassignedCard, futureUnassigned: futureUnassigned(), cardDebtMinor: cardDebt, loanDebtMinor: loanDebt, byCurrency: [...byCurrency.values()] };
   }
   function repairReport() {
     try {
@@ -594,8 +595,17 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
     // Listenin sınırını aşan (çok eski veride) satırlar sayılı kalır.
     return open + Math.max(0, total - ids.length);
   }
-  /** Hesabı Atanmamış Eski Hareketler'in bakiyesi (kuruş, işaretli): { bank (102.00), card (108.00) } — yalnız bağsız satırlardan. */
-  const unassignedTotals = () => money.unassigned();
+  /**
+   * Hesabı Atanmamış Eski Hareketler'in BUGÜNKÜ bakiyesi (kuruş, işaretli): { bank (102.00), card (108.00) } — yalnız bağsız satırlardan, bugüne
+   * kadar (tek formül: Banka Genel Bakış, Hesaplar, Hesabı Atanmamış listesi, sihirbaz ön izlemesi; ANLIK DURUM, Nakit Akış ve Birleşik Rapor
+   * summary() üzerinden). 2.1.0 temel sürüm: önceden eski sürümden kalan ileri tarihli satır da bugünkü bakiyeye giriyordu.
+   */
+  const unassignedTotals = () => money.unassigned({ until: today() });
+  /** Eski sürümden kalan İLERİ TARİHLİ bağsız satırlar (ayrı bilgi; plan A13): { count, bankMinor, cardMinor, totalMinor, firstDate }. */
+  function futureUnassigned() {
+    const ahead = money.unassigned({ after: today() });
+    return { count: ahead.count, bankMinor: ahead.bank, cardMinor: ahead.card, totalMinor: ahead.bank + ahead.card, firstDate: ahead.first };
+  }
   /** Menü rozeti: yalnız sayılar (özetin bütün hesaplarını hesaplamaz; GG2 1.000.000 hareket ölçümü). */
   const badgeCount = () => newCount();
   function summary() {
@@ -609,7 +619,7 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
       realBank: { minor: totals.realBankMinor, defined: bankRows.length > 0 },
       posPending: { netMinor: 0, blockedMinor: 0 },
       debt: { cardMinor: totals.cardDebtMinor, loanMinor: totals.loanDebtMinor, totalMinor: totals.cardDebtMinor + totals.loanDebtMinor },
-      unassigned: { bankMinor: totals.unassignedBankMinor, cardMinor: totals.unassignedCardMinor, totalMinor: unassigned, newCount: newCount() },
+      unassigned: { bankMinor: totals.unassignedBankMinor, cardMinor: totals.unassignedCardMinor, totalMinor: unassigned, newCount: newCount(), future: totals.futureUnassigned },
       byCurrency: totals.byCurrency,
       accounts: { count: rows.length, active: rows.filter(row => row.status === "active").length },
       setup: { needed: bankRows.length === 0 || (unassigned !== 0 && !runs), runs: Number(runs) || 0, suggestions: invoiceBankSuggestions(rows) },
@@ -656,11 +666,21 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
   }
   const dayText = iso => (iso ? iso.split("-").reverse().join(".") : "");
   const closedText = closed => `${dayText(closed)} tarihli Devir Kapanışı'yla kapandı (açılış bakiyelerinin içinde)`;
+  // 2.1.0 temel sürüm (plan A13 / karar 42): eski sürümden kalan İLERİ TARİHLİ satır (v2.0.23'e kadar çek/senet bankaya ileri tarihle tahsil ya da
+  // ödeme) bugün hesaba atanamaz — bağlanınca açılan işlem başlığı ileri tarihli olur ve mutabakat kapısı (yeni ileri tarih yasağı; GEVŞEMEZ)
+  // işlemi haklı olarak geri alırdı (409 ledger-integrity; sihirbazın geçmiş satırları da aktarılamıyordu). Satır hiçbir işlemi kilitlemez:
+  // listede "Tarihi Gelince Atanabilir" görünür, sihirbaz atlar ve söyler; tarihi gelince (bugün dahil) atanır.
+  const futureText = date => `Tarihi gelmedi (${dayText(date)}); o gün hesaba atanabilir.`;
+  const futureError = (lines, id = "") => {
+    const first = lines.map(line => line.date).sort()[0];
+    return new HttpError(409, lines.length > 1 ? `Seçilen hareketlerden ${lines.length} tanesinin tarihi gelmedi (ilk ${dayText(first)}); tarihi gelen gün hesaba atanabilir.` : `Bu hareketin tarihi gelmedi (${dayText(first)}); o gün hesaba atanabilir.`, { code: "bank-legacy-future", date: first, ...(id ? { id } : {}) });
+  };
   function legacy({ way = "", limit = 1000 } = {}) {
     if (way && !["bank", "card"].includes(way)) throw new HttpError(400, "Yol Banka (bank) ya da POS / Kart (card) olmalı.", { code: "bank-legacy-way" });
     const max = Math.max(1, Math.min(10000, Number(limit) || 1000));
     const locked = lock();
     const closed = carryBoundary();
+    const day = today();
     const lines = legacyLines(way).sort((a, b) => (a.date === b.date ? (a.id < b.id ? 1 : -1) : a.date < b.date ? 1 : -1));
     const ids = [...new Set(lines.map(line => line.event_id).filter(Boolean))];
     const numbers = new Map(ids.length ? store.all("SELECT id, no FROM fin_events WHERE id IN (SELECT value FROM json_each(?))", JSON.stringify(ids)).map(row => [row.id, row.no]) : []);
@@ -668,8 +688,9 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
       const extra = parseExtra(line.extra);
       const isLocked = Boolean(locked) && line.date <= locked;
       const isClosed = Boolean(closed) && line.date < closed;
-      // Atanamazlığın nedeni ekranda (pasif kutunun yanında): kilitli dönem, Devir Kapanışı'nda kapanmış, POS / kart.
-      const reason = line.way !== "bank" ? "POS / kart hareketi: Bankaya Geçmiş Say ya da Kart Borcuna Aktar ile aktarılır." : isLocked ? "Kilitli dönemde; atanamaz." : isClosed ? `${closedText(closed)}; hesaba bağlanmaz.` : "";
+      const isFuture = line.date > day;
+      // Atanamazlığın nedeni ekranda (pasif kutunun yanında): kilitli dönem, Devir Kapanışı'nda kapanmış, POS / kart, tarihi gelmemiş.
+      const reason = line.way !== "bank" ? "POS / kart hareketi: Bankaya Geçmiş Say ya da Kart Borcuna Aktar ile aktarılır." : isFuture ? futureText(line.date) : isLocked ? "Kilitli dönemde; atanamaz." : isClosed ? `${closedText(closed)}; hesaba bağlanmaz.` : "";
       return {
         table: tableOfLine(line),
         id: line.id,
@@ -685,7 +706,8 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
         eventNo: numbers.get(line.event_id) || "",
         locked: isLocked,
         closed: isClosed,
-        assignable: line.way === "bank" && !isLocked && !isClosed,
+        future: isFuture,
+        assignable: line.way === "bank" && !isLocked && !isClosed && !isFuture,
         reason,
       };
     });
@@ -698,7 +720,8 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
         else if (row.kind === "card") reclassable[row.id] = { mode: "card", minor: reclassAvailable("card", row, today()).available };
       }
     }
-    return { rows, count: lines.length, lockedCount: lines.filter(line => locked && line.date <= locked).length, closedThrough: closed, totals: { bankMinor: totals.bank, cardMinor: totals.card }, reclassable, newCount: newCount() };
+    // totals: bugüne kadarki bakiye (Banka Genel Bakış ile aynı formül); future: eski sürümden kalan ileri tarihli satırlar (listede, ayrı bilgi).
+    return { rows, count: lines.length, lockedCount: lines.filter(line => locked && line.date <= locked).length, closedThrough: closed, totals: { bankMinor: totals.bank, cardMinor: totals.card }, future: futureUnassigned(), reclassable, newCount: newCount() };
   }
   /** Havale seçicisinde seçilebilen (eski havaleyi alabilen) hesap: etkin, TL, Vadesiz/Ticari/Diğer. */
   function bindable(id) {
@@ -718,6 +741,7 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
     const line = visible[0];
     if (line.way !== "bank") throw new HttpError(400, "Yalnız havale/EFT hareketi banka hesabına bağlanır; POS ve kart hareketleri için Bankaya Geçmiş Say ya da Kart Borcuna Aktar.", { code: "bank-legacy-way", id });
     if (row.fin_ref) throw new HttpError(409, "Bu hareket zaten bir banka hesabına bağlı.", { code: "bank-already-assigned", id });
+    if (line.date > today()) throw futureError([line], id);
     if (row.date < account.opening_date) throw new HttpError(409, `Hareket (${row.date.split("-").reverse().join(".")}) hesabın açılışından (${account.opening_date.split("-").reverse().join(".")}) önce; açılış bakiyesinin içindedir. Kurulum Sihirbazı'ndaki Devir Kapanışı'yla kapanır.`, { code: "bank-before-opening", id });
     const closed = carryBoundary();
     if (closed && row.date < closed) throw new HttpError(409, `Hareket (${dayText(row.date)}) ${closedText(closed)}; hesaba bağlanırsa iki kez sayılır. Gerekirse önce Kurulum Geçmişi'nden o kurulumu Geri Al'ın.`, { code: "bank-carry-closed", id, closedThrough: closed });
@@ -787,14 +811,26 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
     // Bağlanabilir eski satırlar: açılıştan ve etkin Devir Kapanışı gününden (şirket bazında) sonra.
     const from = carry.closedThrough && carry.closedThrough > date ? carry.closedThrough : date;
     const candidates = legacyLines("bank", { since: from });
+    const day = today();
     let rows;
     if (body.assign === "none" || body.assign === false) rows = [];
     else if (Array.isArray(body.assign)) {
       const wanted = new Set(body.assign.map(item => `${text(item?.table)}:${text(item?.id)}`));
       rows = candidates.filter(line => wanted.has(`${tableOfLine(line)}:${line.id}`));
       if (rows.length !== wanted.size) throw new HttpError(400, "Seçilen hareketlerden bazıları bu hesaba bağlanamaz (açılıştan önce, POS/kart ya da zaten bağlı).", { code: "bank-legacy-rows" });
+      // Açıkça seçilen ileri tarihli satır (tekli "Bu Hesaba Ata" ile aynı kural): 409, hiçbir şey yazılmaz.
+      const ahead = rows.filter(line => line.date > day);
+      if (ahead.length) throw futureError(ahead);
     } else rows = candidates;
-    const skipped = { locked: rows.filter(line => locked && line.date <= locked).length };
+    // "Tümü": eski sürümden kalan ileri tarihli satırlar atlanır (tarihi gelince atanır) ve ön izlemede/yanıtta söylenir.
+    const future = rows.filter(line => line.date > day);
+    rows = rows.filter(line => line.date <= day);
+    const skipped = {
+      locked: rows.filter(line => locked && line.date <= locked).length,
+      future: future.length,
+      futureMinor: future.reduce((sum, line) => sum + (line.kind === "in" ? 1 : -1) * Number(line.cents), 0),
+      futureFirst: future.map(line => line.date).sort()[0] || "",
+    };
     rows = rows.filter(line => !(locked && line.date <= locked));
     const net = rows.reduce((sum, line) => sum + (line.kind === "in" ? 1 : -1) * Number(line.cents), 0);
     const unassigned = unassignedTotals();
@@ -804,6 +840,7 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
       date,
       carry,
       rows,
+      skipped,
       preview: {
         accountId: account.id,
         date,
@@ -824,8 +861,9 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
       user, module: "bank", op: "assign", requestId, scope: "bank.setup", body, prev: previous,
       write: () => {
         // Plan işlemin içinde kurulur: istek kimliğiyle yinelenen istek önce yanıtını alır; aynı anda iki sihirbaz aynı bakiyeyi iki kez kapatamaz.
-        const { account, date, carry, rows } = setupPlan(body);
-        if (!carry.bank && !carry.card && !rows.length) throw new HttpError(409, "Aktarılacak eski hareket yok: açılıştan önceki Hesabı Atanmamış bakiye sıfır ve açılıştan sonra bağlanacak havale hareketi yok.", { code: "bank-setup-empty" });
+        const { account, date, carry, rows, skipped } = setupPlan(body);
+        const later = skipped.future ? ` Tarihi gelmemiş ${skipped.future} havale hareketi (ilk ${dayText(skipped.futureFirst)}) var; tarihi gelince Hesabı Atanmamış Eski Hareketler'den atanır.` : "";
+        if (!carry.bank && !carry.card && !rows.length) throw new HttpError(409, `Aktarılacak eski hareket yok: açılıştan önceki Hesabı Atanmamış bakiye sıfır ve açılıştan sonra bağlanacak havale hareketi yok.${later}`, { code: "bank-setup-empty", future: skipped.future, futureFirst: skipped.futureFirst });
         if (carry.bank || carry.card) period?.assertOpen(date, "Devir Kapanışı (açılış günü)");
         for (const line of rows) previous.push({ table: tableOfLine(line), id: line.id, fin_ref: "", event_id: line.event_id });
         Object.assign(auditPayload, { date, carry: { bankMinor: carry.bank, cardMinor: carry.card }, assigned: rows.length });
@@ -845,7 +883,7 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
           bound.push({ table, id: row.id });
         }
         writeJob(user, header, { accountId: account.id, date, carry: { bankMinor: carry.bank, cardMinor: carry.card }, carryEventId: carryEvent?.id || "", rows: bound });
-        return { id: header.id, no: header.no, assigned: bound.length, carryNo: carryEvent?.no || "", carry: { bankMinor: carry.bank, cardMinor: carry.card } };
+        return { id: header.id, no: header.no, assigned: bound.length, carryNo: carryEvent?.no || "", carry: { bankMinor: carry.bank, cardMinor: carry.card }, skipped: { future: skipped.future, futureMinor: skipped.futureMinor, futureFirst: skipped.futureFirst } };
       },
       audit: { type: "bank.setup", entityId: String(body.accountId || ""), payload: auditPayload },
     });

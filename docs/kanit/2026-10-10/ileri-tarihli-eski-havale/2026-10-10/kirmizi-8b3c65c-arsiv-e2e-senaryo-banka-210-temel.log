@@ -1,0 +1,73 @@
+  ✓ kurulum: Gerçek Banka 10000, Hesabı Atanmamış 900
+
+■ 1. Banka penceresi sekmeleri: yalnız Genel Bakış · Hesaplar · Hareketler · Ayarlar
+  ✓ sekmeler: Genel Bakış, Hesaplar, Hareketler, Ayarlar
+
+■ 2. Genel Bakış: Gerçek Banka 10.000; Hesabı Atanmamış ayrı satır (900); POS Bekleyen / Blokeli POS / Güncel Kurla / Eşleşmeyen yok
+  ✓ Gerçek Banka 10.000,00
+  ✓ Hesabı Atanmamış Eski Hareketler 900,00 ayrı satırda
+  ✓ ertelenen özellik görünmüyor
+  ✓ Banka Hesapları sütunları (yalnız TL hesapta döviz sütunu yok): Banka, Hesap, Gerçek Bakiye, Son Hareket, Dönem, Giriş, Çıkış, Transfer Giriş, Transfer Çıkış, Banka Masrafları, Tarih, İşlem No, Tür, Hesap, Açıklama, Tutar
+  ✓ Gerçek Banka kutusunda "TL karşılığı" notu yok (yalnız TL)
+
+■ 3. Hesaplar → + Yeni Hesap: Hesap Türü'nde Döviz yok; Para Birimi ve Açılış Kuru yok (Vadesiz/Ticari/Vadeli/Kredi/Kart/Diğer)
+  ✓ Hesaplar listesinde ertelenen özellik yok
+  ✓ Hesap Türü seçenekleri: Vadesiz, Ticari, Vadeli, Kredi Hesabı, Kurumsal Kredi Kartı, Diğer
+  ✓ Para Birimi alanı yok (yalnız TL)
+  ✓ hiçbir hesap türünde Açılış Kuru (TL) alanı görünmüyor
+  ✓ formda döviz yok
+
+■ 3b. Kurulum Sihirbazı: hesap adımında da Döviz türü ve Para Birimi yok
+  ✓ sihirbaz Hesap Türü: Vadesiz, Ticari, Vadeli, Kredi Hesabı, Kurumsal Kredi Kartı, Diğer
+  ✓ sihirbazda Para Birimi alanı yok
+
+■ 4. Hesap Detayı: + Masraf, + Faiz, + Diğer İşlem, Transfer; Ekstre Yükle / Döviz Al-Sat / POS yok
+  ✓ düğmeler: + Masraf, + Faiz, + Diğer İşlem, Transfer, Düzenle, Açılışı Düzelt, Pasife Al, Sil
+  ✓ Ekstre Yükle, Döviz Al/Sat, POS, Değerleme düğmesi yok
+  ✓ Hesap Detayı'nda ertelenen özellik yok
+
+■ 5. Hareketler: İşlem Türü süzgecinde ve Planlı İşlem formunda döviz, değerleme, POS, tahsile verme yok
+  ✓ İşlem Türü: Tümü, Banka Masrafı, Faiz, Diğer Gelir ve Gider, Kart Borcu Ödemesi, Kredi, Açılış Bakiyesi, Ters Kayıt, Cari Tahsilat ve Ödeme, Fatura Tahsilat ve Ödeme, Taksit Tahsilat ve İadesi, Kayıt Tahsilatı, Stok Satış ve Alımı, Çek ve Senet, Kasa ile Banka Arası, Bankalar Arası Transfer, Kurulum ve Aktarım
+  ✓ Hareketler düğmeleri: Genel Bakış, Hesaplar, Hareketler, Ayarlar, + Masraf, + Faiz, + Diğer İşlem, Transfer, + Planlı İşlem, Planlı İşlemler
+  ✓ Planlı İşlem türleri: Banka Masrafı, Faiz Geliri, Faiz Gideri, Diğer Gelir, Diğer Gider
+  ✓ Diğer İşlem formunda Kambiyo/Elle Banka Fişi yok
+
+■ 6. Ayarlar: Temel ve Gelişmiş — POS, Ekstre, Döviz, Hareket (Kanal Alanı), Elle Banka Fişi, Bağdaştırıcılar, Kambiyo yok
+  ✓ Temel bölümler: Hesap, Eksi Bakiye, Mükerrer, Masraf, Tatil
+  ✓ Temel ayarlarda ertelenen özellik yok
+  ✓ bütün görünen bölümler: Hesap, Eksi Bakiye, Mükerrer, Masraf, Tatil, Faiz, Tatil, Hesap Eşlemeleri, Diğer
+  ✓ Gelişmiş ayarlarda ertelenen özellik yok
+  ✓ Diğer Gelir eşlemesi plan beyaz listesinden (642, 646, 649)
+  ✓ gizli ayar kalemlerinin hiçbiri ekranda yok
+
+■ 7. Raporlar → Tüm Raporlar: Banka grubunda yalnız Banka Bakiye, Banka Hareket, Banka Masraf, Alt Hesap Mizanı
+  ✓ Banka raporları: Banka Bakiye Raporu, Banka Hareket Raporu, Banka Masraf Raporu, Alt Hesap Mizanı
+  ✓ ertelenen §8.10 raporu listede yok
+
+■ 8. Raporlar → Nakit Akış: Bugünkü Nakit ve Banka 12.000 (Nakit 2.000 + Gerçek Banka 10.000); Hesabı Atanmamış 900 ayrı, başlangıca girmez
+  ✓ başlangıç kutusu: Bugünkü Nakit ve Banka ₺12.000,00 Nakit Kasa ₺2.000,00 · Gerçek Banka ₺10.000,00
+  ✓ Hesabı Atanmamış kutusu: Hesabı Atanmamış Eski Hareketler ₺900,00 Başlangıca girmez; Banka → Hesabı Atanmamış'tan hesaba bağlayın
+  ✓ eski 'Bugünkü Kasa' etiketi yok
+  ✗ Nakit Akış adları: Bugünkü Nakit ve Banka | Hesabı Atanmamış Eski Hareketler | Beklenen Giriş | Beklenen Çıkış | Tahmini Kasa · 07.11.2026 | En Düşük Tahmini Kasa | Tahmini kasa · 08.10.2026 – 07.11.2026 | Vade | Kaynak | Açıklama | Giriş | Çıkış | Beklenen Kasa
+  ✗ eski 'kasa' adları yok (Tahmini Kasa, Beklenen Kasa, grafik)
+  ✓ Başlangıç satırı: 08.10.2026 Başlangıç Bugünkü nakit ve banka ₺12.000,00
+  ✓ API: başlangıç 12000 = ANLIK DURUM Nakit 2000 + Gerçek Banka 10000
+
+■ 9. Çek/Senet kartı: Bankaya Tahsile Ver yok (Tahsil Edildi, Ciro Et, Karşılıksız / İade)
+  ✓ çek kartında Bankaya Tahsile Ver yok (× OPERASYON Çek / Senet ← Liste Alınan Çek No TMP-1 Portföyde ABC Ltd. Tutar ₺1.000,00 VADE 05.11.2026 28 gün kaldı ALIŞ TARİHİ 05.10.2026 CARİ ABC Ltd. Tahsil )
+
+■ 10. İleri tarihli eski hesapsız havale (GERÇEK v2.0.23 verisi): liste 'Tarihi Gelince Atanabilir', sihirbaz atlar ve söyler, tarih gelince atanır
+2026-10-10T16:37:03.764Z [WARN] Mutabakat: güncelleme öncesinden kalan 1 sapma var (İleri tarihli hareket (Çek/Senet Hareketleri)). Yeni işlemler bu sapmayı büyütemez.
+  ✗ Genel Bakış: Hesabı Atanmamış 250 (ileri tarihli 1.000 toplama girmez): Hesabı Atanmamış Eski Hareketler ₺1.250,00 Havale / EFT (102.00) ₺1.250,00 · POS / Kart (108.00) ₺0,00 — Gerçek Banka'ya ve hiçbir toplama girmez. Şimdi Düzenle
+  ✗ ileri tarihli satır ayrı bilgi: 
+  ✗ beklenmeyen hata: page.waitForSelector: Timeout 10000ms exceeded.
+Call log:
+[2m  - waiting for locator('.hof-bank-modal [data-legacy-future]') to be visible[22m
+
+    at legacyFutureSection (/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-8b3c65c/test/e2e/senaryo-banka-210-temel.mjs:170:16)
+    at async file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-8b3c65c/test/e2e/senaryo-banka-210-temel.mjs:462:5
+    at async step (/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-8b3c65c/test/e2e/senaryo-banka-210-temel.mjs:71:5)
+    at async file:///tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-8b3c65c/test/e2e/senaryo-banka-210-temel.mjs:461:3
+  ✓ sayfa hatası yok
+
+✗ senaryo-banka-210-temel: 36 geçti, 5 kaldı · ekran görüntüleri /tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/eski-8b3c65c/test/e2e/artifacts/senaryo-banka-210-temel

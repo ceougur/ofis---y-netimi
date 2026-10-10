@@ -96,7 +96,7 @@ async function fetchOne(api, request, side = "eski") {
     let data = response.data;
     if (side === "yeni" && response.status === 200 && request.url.split("?")[0] === "/api/workspace/overview") {
       const { box, k10 } = await legacyBankBox(apiLike(api), data);
-      if (k10 && k10.realBank + k10.unassigned !== k10.legacyAll) k10Problems.push(`K10: Gerçek Banka ${k10.realBank} + Hesabı Atanmamış ${k10.unassigned} ≠ eski Banka / POS ${k10.legacyAll}`);
+      if (k10 && k10.realBank + k10.unassigned + k10.unassignedFuture !== k10.legacyAll) k10Problems.push(`K10: Gerçek Banka ${k10.realBank} + Hesabı Atanmamış ${k10.unassigned} + ileri tarihli ${k10.unassignedFuture} ≠ eski Banka / POS ${k10.legacyAll}`);
       data = { ...data, cash: { ...data.cash, bank: box } };
     }
     if (side === "yeni" && response.status === 200 && request.url.includes("/report-center/banka-pos-hareketleri")) data = legacyBankPos(data);

@@ -10,7 +10,8 @@ import assert from "node:assert/strict";
 import { randomUUID } from "node:crypto";
 import { after, before, describe, it } from "node:test";
 import { bootBank, must, openAccount } from "./banka-210-hesap-ortak.mjs";
-import { rawRun } from "./banka-210-ortak.mjs";
+import { readFileSync } from "node:fs";
+import { pdfText, rawRun, xlsxSheets } from "./banka-210-ortak.mjs";
 
 const AHEAD = "2026-10-18"; // sahte saat 08.10.2026 (banka-210-hesap-ortak NOW)
 
@@ -48,12 +49,56 @@ describe("Nakit Akış başlangıcı (K10): ileri tarihli eski hesapsız havale 
   it("başlangıç = Nakit 2.000 + Gerçek Banka 10.000 = 12.000; kira −1.000 akışta bir kez (18.10), dönem sonu 11.000", async () => {
     const flow = await must("nakit akış", ctx.api.get("/api/workspace/overview/nakit-akisi?preset=next30&table=0"));
     assert.equal(flow.cashToday, 12000, `başlangıç ${flow.cashToday}`);
-    assert.deepEqual([flow.start?.cash, flow.start?.realBank, flow.start?.unassigned], [2000, 10000, -1000], "kırılım: Hesabı Atanmamış ayrı (başlangıca girmez)");
+    // Hesabı Atanmamış bugüne kadarki satırlardır (Banka Genel Bakış ile aynı formül); ileri tarihli eski satır ayrı bilgi (test/banka-210-ileri-tarihli-eski).
+    assert.deepEqual([flow.start?.cash, flow.start?.realBank, flow.start?.unassigned], [2000, 10000, 0], "kırılım: Hesabı Atanmamış ayrı (başlangıca girmez; ileri tarihli satır bugünkü tutara girmez)");
+    assert.deepEqual([flow.start?.unassignedFuture?.count, flow.start?.unassignedFuture?.total, flow.start?.unassignedFuture?.firstDate], [1, -1000, AHEAD], "ileri tarihli eski satır ayrı bilgi");
     const rent = flow.rows.filter(item => item.date === AHEAD && item.direction === "out" && item.amount === 1000);
     assert.equal(rent.length, 1, `ileri tarihli kira akışta bir kez: ${JSON.stringify(flow.rows.map(item => [item.date, item.direction, item.amount, item.label]))}`);
     assert.equal(flow.closing, 11000, "dönem sonu = 12.000 − 1.000");
     assert.equal(flow.lowest.balance, 11000, "en düşük tahmini");
     const overview = await must("ANLIK DURUM", ctx.api.get("/api/workspace/overview"));
     assert.equal(overview.cash.balance + overview.cash.bank.balance, flow.cashToday, "ANLIK DURUM Nakit + Gerçek Banka = başlangıç");
+  });
+});
+
+// 2.1.0 temel sürüm (T4 bulgusu, düşük): başlangıç "Bugünkü Nakit ve Banka" (Nakit Kasa + Gerçek Banka) iken projeksiyonun adları hâlâ "kasa"
+// diyordu ("Başlangıç Kasası", "Tahmini Kasa", "En Düşük Tahmini Kasa", "Beklenen Kasa", "Dönem sonu kasa", grafik "Tahmini kasa"); gösterilen sayı
+// nakit + banka. Ekran (istemci kaynağı), PDF ve Excel aynı adları kullanır; eski adlar hiçbirinde kalmaz.
+describe("Nakit Akış adları (K10): bakiye Nakit ve Banka — ekran, PDF ve Excel aynı", () => {
+  let ctx;
+  before(async () => {
+    ctx = await bootBank();
+    await openAccount(ctx.api, { bankName: "Ziraat Bankası", name: "Ana TL Hesabı", kind: "demand", opening: { date: "2026-10-01", amount: "10.000", confirmed: true } });
+    await must("nakit giriş", ctx.api.post("/api/workspace/cash", { kind: "in", amount: "2.000", date: "2026-10-05", description: "Nakit" }));
+  });
+  after(() => ctx.server.close());
+  const OLD = /Başlangıç Kasası|Tahmini Kasa|Beklenen Kasa|Dönem [Ss]onu [Kk]asa|Tahmini kasa/;
+
+  it("PDF: Başlangıç (Nakit ve Banka) · Dönem Sonu Tahmini Nakit ve Banka · En Düşük Tahmini Nakit ve Banka · Beklenen Nakit ve Banka; aylıkta Dönem Sonu Nakit ve Banka", async () => {
+    for (const [query, heads] of [["preset=next30&table=0", ["Beklenen Nakit ve Banka"]], ["preset=next30&table=0&group=month", ["Dönem Sonu Nakit ve Banka"]]]) {
+      const pdf = await ctx.api.raw("GET", `/api/workspace/overview/nakit-akisi.pdf?${query}`);
+      assert.equal(pdf.status, 200);
+      const text = pdfText(pdf.buffer).replace(/\s+/g, " ");
+      for (const label of ["Başlangıç (Nakit ve Banka)", "Dönem Sonu Tahmini Nakit ve Banka", "En Düşük Tahmini Nakit ve Banka", ...heads]) assert.ok(text.includes(label), `PDF (${query}): "${label}" yok`);
+      assert.doesNotMatch(text, OLD, `PDF (${query}): eski "kasa" adı kaldı`);
+    }
+  });
+
+  it("Excel: Özet ve sütun adları aynı; eski 'kasa' adı yok", async () => {
+    for (const [query, sheet, head] of [["preset=next30&table=0", "Nakit Akışı", "Beklenen Nakit ve Banka"], ["preset=next30&table=0&group=month", "Aylık toplamlar", "Dönem Sonu Nakit ve Banka"]]) {
+      const xlsx = await ctx.api.raw("GET", `/api/workspace/overview/nakit-akisi.xlsx?${query}`);
+      assert.equal(xlsx.status, 200);
+      const sheets = xlsxSheets(xlsx.buffer);
+      const labels = (sheets["Özet"] || []).map(cells => cells[0]);
+      for (const label of ["Başlangıç (Nakit ve Banka)", "Dönem Sonu Tahmini Nakit ve Banka", "En Düşük Tahmini Nakit ve Banka"]) assert.ok(labels.includes(label), `Excel Özet (${query}): "${label}" yok (${labels.join(" | ")})`);
+      assert.ok((sheets[sheet] || []).some(cells => cells.includes(head)), `Excel ${sheet}: "${head}" sütunu yok (${JSON.stringify((sheets[sheet] || []).slice(0, 2))})`);
+      assert.doesNotMatch(JSON.stringify(sheets), OLD, `Excel (${query}): eski "kasa" adı kaldı`);
+    }
+  });
+
+  it("Ekran (istemci kaynağı): Nakit Akış kutuları, tablo başlıkları ve grafik 'Nakit ve Banka' der", () => {
+    const source = readFileSync(new URL("../client/assets/hof-overview.js", import.meta.url), "utf8");
+    for (const label of ["Tahmini Nakit ve Banka · ", "En Düşük Tahmini Nakit ve Banka", "Beklenen Nakit ve Banka</th>", "Dönem Sonu Nakit ve Banka</th>", "<figcaption>Tahmini Nakit ve Banka · "]) assert.ok(source.includes(label), `hof-overview.js: "${label}" yok`);
+    assert.doesNotMatch(source, OLD, "hof-overview.js: eski 'kasa' adı kaldı");
   });
 });

@@ -99,6 +99,8 @@
         // arasındaki para (Kasa ile Banka Arası, Bankalar Arası Transfer) ayrı "Transfer" satırında.
         const b = data.cash.bank;
         const labels = b.labels || { realBank: "Gerçek Banka", debt: "Kart ve Kredi Borcu", unassigned: "Hesabı Atanmamış Eski Hareketler" };
+        // Hesabı Atanmamış bugüne kadarki satırlardır; eski sürümden kalan ileri tarihli satırlar ayrı bilgi (2.1.0 temel sürüm).
+        const futureNote = item => (item.unassigned?.future ? ` Tarihi gelmemiş ${item.unassigned.future.count} eski hareket (${money(item.unassigned.future.total)}, ilk ${HOF.formatDate(item.unassigned.future.firstDate)}) bu tutara girmez; tarihi gelince hesaba atanır.` : "");
         const bankMoved = b.today?.in || b.today?.out;
         const moved = b.transfer && (b.transfer.in || b.transfer.out);
         const defined = b.defined !== false;
@@ -116,8 +118,8 @@
           tone: defined && b.balance < 0 ? "is-bad" : "",
           sub: lines.join("<br>"),
           title: defined
-            ? `${labels.realBank}: banka hesaplarınızın (102) bakiyesi ${money(b.balance)}. Bugün giriş ${money(b.today?.in || 0)}, çıkış ${money(b.today?.out || 0)}; kendi hesaplarınız arasındaki para (Kasa ile Banka Arası, Bankalar Arası Transfer) giriş ve çıkışa sayılmaz.${b.debt?.shown ? ` ${labels.debt} ${money(b.debt.total)} ayrıdır.` : ""}${b.unassigned?.total ? ` ${labels.unassigned} ${money(b.unassigned.total)} hiçbir toplama girmez; Banka → Kurulum ve Aktarım ile hesaba atayın.` : ""}`
-            : `Banka hesabı tanımlanmadı. Banka penceresinden hesaplarınızı ve açılış bakiyelerini girin.${b.unassigned?.total ? ` ${labels.unassigned} ${money(b.unassigned.total)} hiçbir toplama girmez.` : ""}`,
+            ? `${labels.realBank}: banka hesaplarınızın (102) bakiyesi ${money(b.balance)}. Bugün giriş ${money(b.today?.in || 0)}, çıkış ${money(b.today?.out || 0)}; kendi hesaplarınız arasındaki para (Kasa ile Banka Arası, Bankalar Arası Transfer) giriş ve çıkışa sayılmaz.${b.debt?.shown ? ` ${labels.debt} ${money(b.debt.total)} ayrıdır.` : ""}${b.unassigned?.total ? ` ${labels.unassigned} ${money(b.unassigned.total)} hiçbir toplama girmez; Banka → Kurulum ve Aktarım ile hesaba atayın.` : ""}${futureNote(b)}`
+            : `Banka hesabı tanımlanmadı. Banka penceresinden hesaplarınızı ve açılış bakiyelerini girin.${b.unassigned?.total ? ` ${labels.unassigned} ${money(b.unassigned.total)} hiçbir toplama girmez.` : ""}${futureNote(b)}`,
         });
       }
     }
@@ -326,7 +328,7 @@
   const TABS = [
     ["mizan", "Cari Ekstre", "Cari mizanı; satıra tıklayınca o carinin ekstresi (Cari kartındaki defterle aynı)", () => canSee()],
     ["vade", "Vade Takip", "Vadesi olan her açık kalem: taksit, çek/senet, ileri tarihli Kasa, tablodaki ödeme günleri", () => canReports()],
-    ["flow", "Nakit Akış", "Bugünkü kasadan başlayan tahmini kasa: beklenen giriş ve çıkışlar", () => canSee()],
+    ["flow", "Nakit Akış", "Bugünkü nakit ve bankadan başlayan tahmini bakiye: beklenen giriş ve çıkışlar", () => canSee()],
     ["cheques", "Çek / Senet", "Alınan ve verilen evrak portföyü", () => canSee() && HOF.can("cheques.view")],
     // İşlem geçmişi yetkisi olan (uzman) finans yetkisi olmasa da burada yalnız "İşlem geçmişi" raporunu görür (v2.0.10).
     // v2.1.0 Aşama 14: Banka Raporları yetkisi (bank.reports) olan da burada Banka grubunu görür.
@@ -547,31 +549,34 @@
       ${statTiles([
         // K10 (plan §8.9): başlangıç = Nakit Kasa + Gerçek Banka; Hesabı Atanmamış Eski Hareketler ayrı, başlangıca girmez.
         { label: "Bugünkü Nakit ve Banka", html: moneyHtml(d.cashToday), help: d.start && d.start.realBank !== null && d.start.realBank !== undefined ? `Nakit Kasa ${esc(money(d.start.cash))} · ${esc(d.start.labels?.realBank || "Gerçek Banka")} ${d.start.defined ? esc(money(d.start.realBank)) : "—"}` : "" },
-        d.start && Math.abs(d.start.unassigned || 0) > 0.005 ? { label: d.start.labels?.unassigned || "Hesabı Atanmamış Eski Hareketler", html: moneyHtml(d.start.unassigned), help: "Başlangıca girmez; Banka → Hesabı Atanmamış'tan hesaba bağlayın" } : null,
+        // Hesabı Atanmamış: bugüne kadarki satırlar (Banka Genel Bakış ile aynı formül). Eski sürümden kalan ileri tarihli satır ayrı bilgi; akışta
+        // kendi gününde beklenen hareket olarak yer alır.
+        d.start && (Math.abs(d.start.unassigned || 0) > 0.005 || d.start.unassignedFuture) ? { label: d.start.labels?.unassigned || "Hesabı Atanmamış Eski Hareketler", html: moneyHtml(d.start.unassigned || 0), help: `Başlangıca girmez; Banka → Hesabı Atanmamış'tan hesaba bağlayın${d.start.unassignedFuture ? ` · tarihi gelmemiş ${d.start.unassignedFuture.count} eski hareket (${esc(money(d.start.unassignedFuture.total))}, ilk ${esc(HOF.formatDate(d.start.unassignedFuture.firstDate))}) bu tutara girmez` : ""}` } : null,
         { label: "Beklenen Giriş", html: moneyHtml(d.totals.in), tone: "is-in" },
         { label: "Beklenen Çıkış", html: moneyHtml(d.totals.out), tone: "is-out" },
-        { label: `Tahmini Kasa · ${HOF.formatDate(d.to)}`, html: moneyHtml(d.closing), tone: d.closing < 0 ? "is-bad" : "" },
-        { label: "En Düşük Tahmini Kasa", html: moneyHtml(low.balance), help: `${esc(HOF.formatDate(low.date))}${d.negative ? ` · <span class="hof-pulse-flag is-late">${ICONS.warn}kasa eksiye düşüyor</span>` : ""}`, tone: d.negative ? "is-bad" : "" },
+        // 2.1.0 temel sürüm (K10): projeksiyonun bakiyesi Nakit Kasa + Gerçek Banka'dır; adlar "kasa" demez (PDF ve Excel ile aynı).
+        { label: `Tahmini Nakit ve Banka · ${HOF.formatDate(d.to)}`, html: moneyHtml(d.closing), tone: d.closing < 0 ? "is-bad" : "" },
+        { label: "En Düşük Tahmini Nakit ve Banka", html: moneyHtml(low.balance), help: `${esc(HOF.formatDate(low.date))}${d.negative ? ` · <span class="hof-pulse-flag is-late">${ICONS.warn}nakit ve banka eksiye düşüyor</span>` : ""}`, tone: d.negative ? "is-bad" : "" },
       ])}
-      <figure class="hof-rep-chart" data-chart aria-label="Tahmini kasa grafiği"></figure>
+      <figure class="hof-rep-chart" data-chart aria-label="Tahmini nakit ve banka grafiği"></figure>
       ${overdue}
-      ${d.periods ? periodTable(d) : `<div class="hof-rep-table"><table class="hof-table"><thead><tr><th>Vade</th><th>Kaynak</th><th>Açıklama</th><th class="num">Giriş</th><th class="num">Çıkış</th><th class="num">Beklenen Kasa</th></tr></thead><tbody>
+      ${d.periods ? periodTable(d) : `<div class="hof-rep-table"><table class="hof-table"><thead><tr><th>Vade</th><th>Kaynak</th><th>Açıklama</th><th class="num">Giriş</th><th class="num">Çıkış</th><th class="num">Beklenen Nakit ve Banka</th></tr></thead><tbody>
         <tr class="is-opening"><td>${esc(HOF.formatDate(d.from))}</td><td></td><td><b>Başlangıç</b><small>Bugünkü nakit ve banka${d.carried.in || d.carried.out ? " + başlangıca kadar beklenenler" : ""}${d.includeOverdue ? " + gecikmişler" : ""}</small></td><td></td><td></td><td class="num"><b>${esc(money(d.opening))}</b></td></tr>
         ${rows || '<tr><td colspan="6" class="hof-empty">Bu aralıkta beklenen tahsilat ya da ödeme yok.</td></tr>'}
       </tbody></table></div>`}
       ${d.rowTotal > d.rows.length ? `<p class="hof-rep-note">Ekranda ilk ${d.rows.length.toLocaleString("tr-TR")} satır; tamamı PDF ve Excel'de.</p>` : ""}
-      <p class="hof-rep-note">Aynı gün önce ödemeler yazılır (en düşük kasa ihtiyatlı hesaplanır). Tarihler takvim günüdür.</p>`;
+      <p class="hof-rep-note">Aynı gün önce ödemeler yazılır (en düşük bakiye ihtiyatlı hesaplanır). Tarihler takvim günüdür.</p>`;
   }
-  // Dönem toplamları (gün / hafta / ay): giriş, çıkış, net ve dönem sonu tahmini kasa.
+  // Dönem toplamları (gün / hafta / ay): giriş, çıkış, net ve dönem sonu tahmini nakit ve banka.
   function periodTable(d) {
     const head = { day: "Gün", week: "Hafta", month: "Ay" }[d.group] || "Dönem";
     const rows = d.periods.map(period => `<tr><td><b>${esc(period.label)}</b><small>${period.count} hareket</small></td><td class="num hof-cash-in">${period.in ? esc(money(period.in)) : ""}</td><td class="num hof-cash-out">${period.out ? esc(money(period.out)) : ""}</td><td class="num ${period.net < 0 ? "hof-cash-out" : ""}">${esc(money(period.net))}</td><td class="num ${period.closing < 0 ? "hof-cash-out" : ""}"><b>${esc(money(period.closing))}</b></td></tr>`).join("");
-    return `<div class="hof-rep-table"><table class="hof-table"><thead><tr><th>${head}</th><th class="num">Giriş</th><th class="num">Çıkış</th><th class="num">Net</th><th class="num">Dönem Sonu Kasa</th></tr></thead><tbody>
+    return `<div class="hof-rep-table"><table class="hof-table"><thead><tr><th>${head}</th><th class="num">Giriş</th><th class="num">Çıkış</th><th class="num">Net</th><th class="num">Dönem Sonu Nakit ve Banka</th></tr></thead><tbody>
       <tr class="is-opening"><td><b>Başlangıç</b><small>${esc(HOF.formatDate(d.from))}</small></td><td></td><td></td><td></td><td class="num"><b>${esc(money(d.opening))}</b></td></tr>
       ${rows || '<tr><td colspan="5" class="hof-empty">Bu aralıkta beklenen tahsilat ya da ödeme yok.</td></tr>'}</tbody></table></div>`;
   }
-  // Tahmini kasa: basamaklı çizgi (bakiye yalnız hareket günlerinde değişir), sıfır çizgisi, en düşük nokta; üzerine
-  // gelince o günün girişi/çıkışı ve kasası.
+  // Tahmini nakit ve banka: basamaklı çizgi (bakiye yalnız hareket günlerinde değişir), sıfır çizgisi, en düşük nokta; üzerine
+  // gelince o günün girişi/çıkışı ve bakiyesi.
   function wireChart(figure, d) {
     if (!figure) return;
     const points = [{ date: d.from, balance: d.opening, in: 0, out: 0 }, ...d.days.map(day => ({ date: day.date, balance: day.balance, in: day.in, out: day.out }))];
@@ -602,7 +607,7 @@
     const compact = value => COMPACT_NUMBER.format(value);
     const mid = new Date((t0 + t1) / 2).toISOString().slice(0, 10);
     const low = d.lowest;
-    figure.innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Tahmini kasa ${HOF.formatDate(d.from)} – ${HOF.formatDate(end)}; en düşük ${money(low.balance)} (${HOF.formatDate(low.date)})">
+    figure.innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Tahmini nakit ve banka ${HOF.formatDate(d.from)} – ${HOF.formatDate(end)}; en düşük ${money(low.balance)} (${HOF.formatDate(low.date)})">
         ${ticks.map(value => `<line x1="${pad.l}" x2="${W - pad.r}" y1="${y(value).toFixed(1)}" y2="${y(value).toFixed(1)}" class="${value === 0 ? "hof-chart-zero" : "hof-chart-grid"}"/><text x="${pad.l - 8}" y="${(y(value) + 3.5).toFixed(1)}" class="hof-chart-tick" text-anchor="end">${value === 0 ? "0" : esc(compact(value))} ₺</text>`).join("")}
         <path d="${area}" class="hof-chart-area"/>
         <path d="${path}" class="hof-chart-line"/>
@@ -610,7 +615,7 @@
         ${[points[0].date, mid, end].map((date, index) => `<text x="${x(date).toFixed(1)}" y="${H - 7}" class="hof-chart-tick" text-anchor="${index === 0 ? "start" : index === 2 ? "end" : "middle"}">${esc(HOF.formatDate(date))}</text>`).join("")}
         <line class="hof-chart-cross" x1="0" x2="0" y1="${pad.t}" y2="${H - pad.b}" visibility="hidden"/>
         <rect x="${pad.l}" y="${pad.t}" width="${W - pad.l - pad.r}" height="${H - pad.t - pad.b}" fill="transparent" data-hit/>
-      </svg><div class="hof-chart-tip" hidden></div><figcaption>Tahmini kasa · ${esc(HOF.formatDate(d.from))} – ${esc(HOF.formatDate(end))}</figcaption>`;
+      </svg><div class="hof-chart-tip" hidden></div><figcaption>Tahmini Nakit ve Banka · ${esc(HOF.formatDate(d.from))} – ${esc(HOF.formatDate(end))}</figcaption>`;
     const svg = figure.querySelector("svg");
     const tip = figure.querySelector(".hof-chart-tip");
     const cross = figure.querySelector(".hof-chart-cross");

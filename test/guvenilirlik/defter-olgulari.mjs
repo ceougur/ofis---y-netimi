@@ -78,7 +78,8 @@ export async function legacyBankBox(api, overview) {
   }
   return {
     box: { balance: upTo / 100, allEntries: all / 100, today: { in: todayIn / 100, out: todayOut / 100 } },
-    k10: { defined: bank.defined, realBank: cents(bank.balance), unassigned: cents(bank.unassigned?.total), debt: cents(bank.debt?.total), legacyAll: all },
+    // unassigned: bugüne kadarki Hesabı Atanmamış (2.1.0 temel sürüm); unassignedFuture: eski sürümden kalan ileri tarihli bağsız satırlar (ayrı).
+    k10: { defined: bank.defined, realBank: cents(bank.balance), unassigned: cents(bank.unassigned?.total), unassignedFuture: cents(bank.unassigned?.future?.total), debt: cents(bank.debt?.total), legacyAll: all },
   };
 }
 
