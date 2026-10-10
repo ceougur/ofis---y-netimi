@@ -1,0 +1,43 @@
+{
+  "ad": "mutasyon-4-kapaliyken-kur",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/guncelleme-gercek.test.mjs test/guncelleme-217.test.mjs",
+  "commit": "1f499e69458eae7751ddc80c473b2eb7801e8ca5",
+  "dal": "worktree-agent-aeb3060846599b69c",
+  "kirli": 3,
+  "izlenmeyen": 6,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T18:41:18.121Z",
+  "sure_sn": 47.4,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 12,
+    "gecen": 10,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "orkestratör: periyodik denetim ve mesai içinde erteleme › kendiliğinden kur KAPALIYKEN de açılışta ve 6 saatte bir denetlenir; bulunan sürüm kurulmaz, 'hazır' görünür",
+      "konum": "test/guncelleme-217.test.mjs:155:3",
+      "hata": "bulunan sürüm yöneticiye 'hazır' görünür · + actual - expected · + undefined"
+    },
+    {
+      "ad": "otomatik güncelleme — gerçek süreçlerle › S5 'kendiliğinden kur' kapalı: açılışta ve periyodik denetlenir, 'hazır' görünür, boşta ve mesai dışında da KURULMAZ; Şimdi Güncelle ile kurulur",
+      "konum": "test/guncelleme-gercek.test.mjs:121:3",
+      "hata": "Beklenen durum oluşmadı: {\"error\":\"henüz bulunmadı\"}"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-10/otomatik-guncelleme/2026-10-10/mutasyon-4-kapaliyken-kur.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-aeb3060846599b69c",
+  "ham_cikti_sha256": "b39dca7e97af875d3fbe9b549e322e2af7ded7637ef6a8294e0360944fb6d868",
+  "ham_cikti_bayt": 7420
+}

@@ -13,7 +13,7 @@ import { existsSync, mkdtempSync, readdirSync, readFileSync, rmSync } from "node
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { after, before, describe, it } from "node:test";
-import { ADMIN_PASSWORD, buildTestRelease, client, counts, prepareInstall, quietZoneNow, releaseEntry, sleep, startActivity, startFeed, startService, waitFor } from "./guncelleme-gercek/ortak.mjs";
+import { ADMIN_PASSWORD, buildTestRelease, client, counts, prepareInstall, quietZoneNow, releaseEntry, sleep, startActivity, startFeed, startService, stopAllActivity, waitFor } from "./guncelleme-gercek/ortak.mjs";
 
 const work = mkdtempSync(path.join(tmpdir(), "destekofis-gercek-gunc-"));
 let release;
@@ -34,6 +34,7 @@ async function withService(name, { config, feedOptions, ...serviceOptions }, bod
     console.log(`---- ${name} servis günlüğü (son) ----\n${service.log().slice(-6000)}`);
     throw error;
   } finally {
+    await stopAllActivity();
     await service.stop();
     await feed.close();
   }

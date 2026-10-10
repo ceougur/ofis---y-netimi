@@ -218,6 +218,11 @@ export async function startService(installRoot, { feed, timings, quiet, retryDel
 }
 
 // Kullanıcı etkinliği: personel girişi + her `intervalMs`'de bir ekran isteği (dosya takip ekranının düzenli yenilemesi gibi).
+// Test yarıda düşerse döngü süreci açık tutmasın diye hepsi stopAllActivity() ile durdurulur.
+const activities = new Set();
+export async function stopAllActivity() {
+  await Promise.all([...activities].map(activity => activity.stop()));
+}
 export async function startActivity(base, { intervalMs = 500 } = {}) {
   const user = client(base);
   const login = await user.login(STAFF.username, STAFF.password);
@@ -234,7 +239,7 @@ export async function startActivity(base, { intervalMs = 500 } = {}) {
       requests += 1;
     }
   })();
-  return {
+  const activity = {
     get lastAt() {
       return lastAt;
     },
@@ -243,10 +248,13 @@ export async function startActivity(base, { intervalMs = 500 } = {}) {
     },
     async stop() {
       running = false;
+      activities.delete(activity);
       await loop;
       return lastAt;
     },
   };
+  activities.add(activity);
+  return activity;
 }
 
 // Şu an mesai DIŞI olan bir saat dilimi (Etc/GMT±N): hafta içi 20:00–07:00 ya da hafta sonu. Saate göre seçilir (hafta sonuna

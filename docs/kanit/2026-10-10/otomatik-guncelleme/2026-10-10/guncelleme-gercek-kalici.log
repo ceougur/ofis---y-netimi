@@ -3,31 +3,31 @@ TAP version 13
     # Subtest: S1 açılışta: yeni sürüm varken servis açılır, kimse kullanmıyor → kendiliğinden kurulur; yedek alınır, veriler aynı
     ok 1 - S1 açılışta: yeni sürüm varken servis açılır, kimse kullanmıyor → kendiliğinden kurulur; yedek alınır, veriler aynı
       ---
-      duration_ms: 1916.762674
+      duration_ms: 1891.980514
       type: 'test'
       ...
     # Subtest: S2 kullanıcı çalışırken (mesai içi) bulunan sürüm KURULMAZ, 'hazır' görünür; etkinlik kesilince boşta süresi dolunca kurulur
     ok 2 - S2 kullanıcı çalışırken (mesai içi) bulunan sürüm KURULMAZ, 'hazır' görünür; etkinlik kesilince boşta süresi dolunca kurulur
       ---
-      duration_ms: 18657.208242
+      duration_ms: 18239.127507
       type: 'test'
       ...
     # Subtest: S4 mesai dışı (sunucunun gerçek saati; mesai dışındaki bir saat dilimi): kullanıcı çalışırken de kurulur
     ok 3 - S4 mesai dışı (sunucunun gerçek saati; mesai dışındaki bir saat dilimi): kullanıcı çalışırken de kurulur
       ---
-      duration_ms: 2540.22544
+      duration_ms: 2605.553287
       type: 'test'
       ...
     # Subtest: S5 'kendiliğinden kur' kapalı: açılışta ve periyodik denetlenir, 'hazır' görünür, boşta ve mesai dışında da KURULMAZ; Şimdi Güncelle ile kurulur
     ok 4 - S5 'kendiliğinden kur' kapalı: açılışta ve periyodik denetlenir, 'hazır' görünür, boşta ve mesai dışında da KURULMAZ; Şimdi Güncelle ile kurulur
       ---
-      duration_ms: 7636.685733
+      duration_ms: 7362.142814
       type: 'test'
       ...
     1..4
 ok 1 - otomatik güncelleme — gerçek süreçlerle
   ---
-  duration_ms: 30752.507381
+  duration_ms: 30100.209781
   type: 'suite'
   ...
 1..1
@@ -38,4 +38,4 @@ ok 1 - otomatik güncelleme — gerçek süreçlerle
 # cancelled 0
 # skipped 0
 # todo 0
-# duration_ms 32124.545298
+# duration_ms 31297.255324
