@@ -1,0 +1,32 @@
+{
+  "ad": "ci534-yesil-zorla-onkosul-tarih-duzeltmeli-america_los_angeles",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/zz-yaris-yeni-test.mjs",
+  "commit": "507f0e16101462e29f0e30eb18c458eedbe32942",
+  "dal": "worktree-agent-a22d2972509bc7e85",
+  "kirli": 2,
+  "izlenmeyen": 20,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T17:27:41.746Z",
+  "sure_sn": 39.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 56,
+    "gecen": 56,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-10/ileri-tarihli-eski-havale/2026-10-10/ci534-yesil-zorla-onkosul-tarih-duzeltmeli-america_los_angeles.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a22d2972509bc7e85",
+  "ham_cikti_sha256": "ed3cea9f3c897f1f6f6fda31b66313a239fe241a84dd5b23a3561086e8d64c3e",
+  "ham_cikti_bayt": 8274
+}

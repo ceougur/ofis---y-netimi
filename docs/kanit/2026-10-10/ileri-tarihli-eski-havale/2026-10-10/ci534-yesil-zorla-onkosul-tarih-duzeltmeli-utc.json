@@ -1,0 +1,32 @@
+{
+  "ad": "ci534-yesil-zorla-onkosul-tarih-duzeltmeli-utc",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/zz-yaris-yeni-test.mjs",
+  "commit": "507f0e16101462e29f0e30eb18c458eedbe32942",
+  "dal": "worktree-agent-a22d2972509bc7e85",
+  "kirli": 2,
+  "izlenmeyen": 12,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T17:25:06.813Z",
+  "sure_sn": 40.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 56,
+    "gecen": 56,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-10/ileri-tarihli-eski-havale/2026-10-10/ci534-yesil-zorla-onkosul-tarih-duzeltmeli-utc.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a22d2972509bc7e85",
+  "ham_cikti_sha256": "35ec5b700df32fb972019b1f12e5ba081573ec640ec6d941b6cc62639b161f46",
+  "ham_cikti_bayt": 8274
+}

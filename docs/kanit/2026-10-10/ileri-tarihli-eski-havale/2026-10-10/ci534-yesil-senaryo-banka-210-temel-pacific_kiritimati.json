@@ -1,0 +1,32 @@
+{
+  "ad": "ci534-yesil-senaryo-banka-210-temel-pacific_kiritimati",
+  "komut": "npm run test:senaryo-banka-210-temel",
+  "commit": "507f0e16101462e29f0e30eb18c458eedbe32942",
+  "dal": "worktree-agent-a22d2972509bc7e85",
+  "kirli": 2,
+  "izlenmeyen": 18,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T17:27:04.403Z",
+  "sure_sn": 37.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 56,
+    "gecen": 56,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-10/ileri-tarihli-eski-havale/2026-10-10/ci534-yesil-senaryo-banka-210-temel-pacific_kiritimati.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a22d2972509bc7e85",
+  "ham_cikti_sha256": "2ca03b920e4e0b3886bb1e0f5d5a293f30714a787b7c695e0f35579bc6524d77",
+  "ham_cikti_bayt": 8412
+}

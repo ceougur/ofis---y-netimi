@@ -215,16 +215,38 @@ async function legacyFutureSection() {
     await closeAll();
     await openBank();
     await tab("accounts");
+    // CI 534 (ders 20): Eski Hareketler'e dönüşte ekran önce ÖNCEKİ ziyaretin listesini çizer (hof-bank.js "legacy": render, sonra reload;
+    // CI 460 kararı), sunucunun yanıtı gelince yeniden çizer. Önceki ziyarette satır "Tarihi Gelince Atanabilir"di; test yanıtı beklemeden
+    // ekranı okuduğunda (yavaş koşucu) eski işareti görüp kırmızı oluyordu. Ön koşul burada ZORLA oluşturulur (GET 1,5 sn gecikir) ve
+    // oluştuğu denetlenir; denetim TAZE yanıt geldikten ve ekran onunla çizildikten sonra yapılır. Hata iletisinde teşhis: sunucunun bugünü,
+    // yanıttaki satırlar, ekrandaki satırlar, açık Banka penceresi sayısı.
+    const isLegacyGet = url => /\/api\/workspace\/bank\/legacy(\?|$)/.test(url);
+    const slowLegacy = route => (route.request().method() === "GET" ? setTimeout(() => route.continue().catch(() => null), 1500) : route.continue());
+    await page.route(url => isLegacyGet(url.href), slowLegacy);
+    const freshResponse = page.waitForResponse(response => isLegacyGet(response.url()) && response.request().method() === "GET", { timeout: 30000 });
     await page.click(`${bankWin} [data-act="legacy"]`);
-    await page.waitForSelector(`${bankWin} .hof-bank-legacy tbody input[data-pick]`, { timeout: 10000 });
-    ok(!(await page.$(`${bankWin} [data-legacy-future]`)), "tarih gelince 'Tarihi Gelince Atanabilir' işareti kalktı");
+    const staleSeen = await page.waitForSelector(`${bankWin} [data-legacy-future]`, { timeout: 1200 }).then(() => true).catch(() => false);
+    const fresh = await (await freshResponse).json().catch(() => null);
+    await page.unrouteAll({ behavior: "ignoreErrors" });
+    const freshRows = fresh?.data?.rows || [];
+    const settled = await page
+      .waitForFunction(() => !document.querySelector(".hof-bank-modal [data-legacy-future]") && document.querySelector(".hof-bank-modal .hof-bank-legacy tbody input[data-pick]"), null, { timeout: 10000 })
+      .then(() => true)
+      .catch(() => false);
+    const screenRows = await page.$$eval(`${bankWin} .hof-bank-legacy tbody tr`, nodes => nodes.map(node => node.innerText.replace(/\s+/g, " ").trim())).catch(() => []);
+    const windows = await page.$$eval(bankWin, nodes => nodes.length).catch(() => -1);
+    const diagnosis = `sunucunun bugünü ${app2.config.now.today()}; yanıt ${freshRows.length} satır [${freshRows.map(row => `${row.date} ${row.amountMinor / 100} atanabilir=${row.assignable} ileri=${row.future}`).join("; ")}]; ekran [${screenRows.join(" | ")}]; Banka penceresi ${windows}`;
+    ok(staleSeen, `ön koşul oluştu: taze yanıt gelmeden önceki ziyaretin listesi çizildi ("Tarihi Gelince Atanabilir" görüldü) — ${diagnosis}`);
+    ok(freshRows.length === 1 && freshRows[0].date === "2026-10-20" && freshRows[0].assignable === true && freshRows[0].future === false, `tarih gelince sunucu satırı atanabilir der — ${diagnosis}`);
+    ok(settled && !(await page.$(`${bankWin} [data-legacy-future]`)), `tarih gelince (taze listede) 'Tarihi Gelince Atanabilir' işareti kalktı — ${diagnosis}`);
     await page.check(`${bankWin} .hof-bank-legacy tbody input[data-pick]`);
     await pause(300);
     const assigned = page.waitForResponse(response => response.url().includes("/api/workspace/bank/legacy/assign") && response.request().method() === "POST", { timeout: 30000 });
     await page.click(`${bankWin} [data-act="assign"]`);
     await page.waitForSelector(`${top} [data-answer="yes"]`, { timeout: 8000 });
     await page.click(`${top} [data-answer="yes"]`);
-    ok((await assigned).status() === 200, "tarih gelince Bu Hesaba Ata: POST /legacy/assign 200");
+    const assignResponse = await assigned;
+    ok(assignResponse.status() === 200, `tarih gelince Bu Hesaba Ata: POST /legacy/assign ${assignResponse.status()}${assignResponse.status() === 200 ? "" : ` ${(await assignResponse.text().catch(() => "")).slice(0, 300)}`}`);
     await pause(600);
     await shot("ileri-eski-tarih-gelince-atandi");
     summary = await must("özet", api2.get("/api/workspace/bank/summary"));
@@ -425,9 +447,12 @@ try {
     ok(loose.includes(money(900)) && /Başlangıca girmez/.test(loose), `Hesabı Atanmamış kutusu: ${loose}`);
     ok(!tiles.some(item => item.startsWith("Bugünkü Kasa")), "eski 'Bugünkü Kasa' etiketi yok");
     // Adlar (2.1.0 temel sürüm): projeksiyonun bakiyesi Nakit Kasa + Gerçek Banka; kutular, tablo başlığı ve grafik "Nakit ve Banka" der.
+    // Dönem başı sunucunun "bugün"üdür (saat diliminden bağımsız beklenen; TZ=America/Los_Angeles'ta 07.10.2026 — ders 13).
+    const flowFrom = (await must("nakit akış (dönem başı)", api.get("/api/workspace/overview/nakit-akisi?preset=next30"))).from;
+    const dayDots = iso => iso.split("-").reverse().join(".");
     const names = await page.$$eval(`${modal} .hof-rep-stat > span, ${modal} .hof-rep-stat .hof-rep-stat-label, ${modal} .hof-rep-table thead th, ${modal} [data-chart] figcaption`, nodes => nodes.map(node => node.textContent.replace(/\s+/g, " ").trim()));
     const joined = names.join(" | ");
-    ok(/Tahmini Nakit ve Banka · /.test(joined) && /En Düşük Tahmini Nakit ve Banka/.test(joined) && names.includes("Beklenen Nakit ve Banka") && /Tahmini Nakit ve Banka · 08\.10\.2026/.test(joined), `Nakit Akış adları: ${joined}`);
+    ok(/Tahmini Nakit ve Banka · /.test(joined) && /En Düşük Tahmini Nakit ve Banka/.test(joined) && names.includes("Beklenen Nakit ve Banka") && joined.includes(`Tahmini Nakit ve Banka · ${dayDots(flowFrom)}`), `Nakit Akış adları (grafik başlığı sunucunun dönem başıyla: ${flowFrom}): ${joined}`);
     ok(!/Tahmini Kasa|Beklenen Kasa|Tahmini kasa|Dönem Sonu Kasa/.test(`${joined} ${await textOf(modal)}`), "eski 'kasa' adları yok (Tahmini Kasa, Beklenen Kasa, grafik)");
     const opening = await textOf(`${modal} .hof-rep-table tr.is-opening`);
     ok(opening.includes(money(12000)) && /Bugünkü nakit ve banka/.test(opening), `Başlangıç satırı: ${opening}`);
