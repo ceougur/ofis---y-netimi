@@ -148,10 +148,6 @@ def iban_norm(iban):
     return iban.replace(" ", "").upper()
 
 
-def gt(t):
-    return t.strftime("%d.%m.%Y")
-
-
 # ───────────────────────────────────────────────────────────────────────────────────── senaryo şeması (§3, §4)
 
 ORTAK = {"id", "islem", "not", "kullanici", "istekKimligi", "benzerOnay", "yineDeKaydet", "ayniAnda"}
@@ -948,7 +944,15 @@ def _uygun(h, kategori):
 
 
 def govde(a):
-    return json.dumps({k: v for k, v in a.items() if k not in GOVDE_DISI}, sort_keys=True, ensure_ascii=False)
+    """§5.4 gövde: adımın alanları − GOVDE_DISI. K37: yalnız senaryoda var olan takma ad TANIMLARI (fatura
+    ödemesindeki `taksit.ad`, KDV'li masraftaki `fatura`) programa gönderilmez, gövdeye girmez."""
+    g = {k: v for k, v in a.items() if k not in GOVDE_DISI}
+    if a.get("islem") == "banka_masraf":
+        g.pop("fatura", None)
+    if a.get("islem") == "fatura" and isinstance(g.get("odeme"), dict) and isinstance(g["odeme"].get("taksit"), dict):
+        g["odeme"] = dict(g["odeme"])
+        g["odeme"]["taksit"] = {k: v for k, v in g["odeme"]["taksit"].items() if k != "ad"}
+    return json.dumps(g, sort_keys=True, ensure_ascii=False)
 
 
 # ─────────────────────────────────────────────────────────────────────────────── eksi bakiye (§5.3)

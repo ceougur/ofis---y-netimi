@@ -489,6 +489,22 @@ class Mukerrer(unittest.TestCase):
         self.assertEqual(ret_of(c, "s2")["durum"], 404)
         self.assertEqual(c["bankaHesaplari"]["ZIR"], 10000000)
 
+    def test_fatura_yinelemesi_taksit_adi_govdede_degil(self):
+        # Aynı istek kimliği + aynı fatura gövdesi; yalnız senaryo takma adları (ad, taksit.ad) farklı → yineleme.
+        # Yeni takma adlar aynı faturayı ve kartı anar; stok bir kez düşer.
+        f = {"islem": "fatura", "tur": "satis", "cari": "ABC", "istekKimligi": "x",
+             "kalemler": [{"urun": "URA", "miktar": 1, "birimFiyat": "100", "kdvOrani": 20, "kdvDahil": True}]}
+        c = kos("t-fy", [cari("ABC"), *urun("URA", 5),
+                         dict(f, id="b", ad="F1", odeme={"taksit": {"ad": "T1", "sayi": 2}}),
+                         dict(f, id="b2", ad="F2", odeme={"taksit": {"ad": "T2", "sayi": 2}}),
+                         {"id": "t", "islem": "taksit_tahsilat", "kart": "T2", "tutar": "40", "yol": "nakit"}])
+        self.assertEqual(c["yinelenenler"], ["b2"])
+        self.assertEqual(c["stok"]["URA"], 4)
+        self.assertEqual(c["faturalar"]["F1"], c["faturalar"]["F2"])
+        self.assertEqual(c["taksitKartlari"]["T1"], {"toplam": 10000, "odenen": 4000, "kalan": 6000})
+        self.assertEqual(c["taksitKartlari"]["T2"], c["taksitKartlari"]["T1"])
+        self.assertEqual(c["cariler"]["ABC"], 6000)
+
     def test_benzer_islem(self):
         c = kos("t-bz", [hesap("ZIR", "Z"), cari("ABC"),
                          {"id": "a", "islem": "cari_tahsilat", "cari": "ABC", "tutar": "1000", "yol": "havale"},
