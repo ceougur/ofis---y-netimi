@@ -27,6 +27,7 @@ import { localDay, pdfText, unwrap, xlsxSheets } from "./banka-210-ortak.mjs";
 import { fixtureExists, unpackFixture } from "./guvenilirlik/fikstur.mjs";
 import { CURRENT, bootVersion, tagsAvailable } from "./guvenilirlik/surumler.mjs";
 import { runReconciliation } from "./mutabakat/motor.mjs";
+import { legacyBankBox, legacyBankPos } from "./guvenilirlik/defter-olgulari.mjs";
 
 const OLD = "v2.0.26";
 const skip = tagsAvailable([OLD]) ? false : `${OLD} etiketi bu depoda yok (git fetch --tags)`;
@@ -78,10 +79,22 @@ function requests() {
   return out;
 }
 
-async function fetchOne(api, request) {
+// 2.1.0 Aşama 14 (bilerek değişen iki görünüm; plan §11.4, §10.5): yeni tarafta ANLIK DURUM'un Banka kutusu (K10: Gerçek Banka) ve Banka ve POS
+// Hareketleri'nin iç hareket ayrımı (§3.4) 2.0.26 karşılığına aynı satırlardan çevrilir (test/guvenilirlik/defter-olgulari.mjs); K10 kabulü
+// (Gerçek Banka + Hesabı Atanmamış = eski Banka / POS) ayrıca denetlenir. İç hareketi olan Banka ve POS Hareketleri dönemlerinin PDF/Excel'i
+// eski dosyayla değil, aynı dönemin ekranıyla karşılaştırılır (özet ve açıklama biçimi bilerek değişti).
+const k10Problems = [];
+async function fetchOne(api, request, side = "eski") {
   if (request.kind === "json") {
     const response = unwrap(await api.client.get(request.url));
-    return { status: response.status, body: norm649(strip(response.data, request.drop || [])) };
+    let data = response.data;
+    if (side === "yeni" && response.status === 200 && request.url.split("?")[0] === "/api/workspace/overview") {
+      const { box, k10 } = await legacyBankBox(apiLike(api), data);
+      if (k10 && k10.realBank + k10.unassigned !== k10.legacyAll) k10Problems.push(`K10: Gerçek Banka ${k10.realBank} + Hesabı Atanmamış ${k10.unassigned} ≠ eski Banka / POS ${k10.legacyAll}`);
+      data = { ...data, cash: { ...data.cash, bank: box } };
+    }
+    if (side === "yeni" && response.status === 200 && request.url.includes("/report-center/banka-pos-hareketleri")) data = legacyBankPos(data);
+    return { status: response.status, body: norm649(strip(data, request.drop || [])) };
   }
   const response = await api.client.raw("GET", request.url);
   if (response.status !== 200) return { status: response.status, body: response.data };
@@ -89,11 +102,47 @@ async function fetchOne(api, request) {
   // başka yerden satır kırar. Bu raporda satır kırılımı boşluğa indirgenir; sözcükler ve sıraları birebir karşılaştırılır.
   if (request.kind === "pdf") {
     const text = pdfText(response.buffer);
+    // 2.1.0 Aşama 14: altıdan çok özet kutusu iki sıraya dizilir (Banka ve POS Hareketleri'nde 7–8 kutu; tek sırada tutar kesiliyordu) →
+    // tablo sayfalara başka yerden bölünür ve uzun özet başlığı satır kırmaz. Bu raporda sayfa başlıkları (şirket · rapor, "Sayfa n / m", alt
+    // başlık, kolon başlıkları) atılır ve satır kırılımı boşluğa indirgenir; sözcükler ve sıraları birebir karşılaştırılır.
+    if (request.url.includes("/banka-pos-hareketleri/")) return { status: 200, body: textNorm(withoutPageHeads(text).replace(/\s+/g, " ")) };
     return { status: 200, body: textNorm(request.url.includes("/hesap-mizani/") ? text.replace(/\s+/g, " ") : text) };
   }
   const sheets = xlsxSheets(response.buffer);
   for (const rows of Object.values(sheets)) for (let k = rows.length - 1; k >= 0; k -= 1) if (rows[k][0] === "Hazırlanma") rows.splice(k, 1);
   return { status: 200, body: norm649(sheets) };
+}
+
+const COLUMN_HEADS = ["Tarih", "Yol", "Kaynak", "Açıklama", "Giriş", "Çıkış", "Bakiye", "Giren"];
+function withoutPageHeads(text) {
+  const lines = text.split("\n");
+  const out = [];
+  for (let index = 0; index < lines.length; index += 1) {
+    if (/^Sayfa \d+ \/ \d+$/.test(lines[index])) {
+      if (out.length && / · Banka ve POS Hareketleri$/.test(out.at(-1))) out.pop();
+      if (/^Banka ve POS Hareketleri · /.test(lines[index + 1] || "")) index += 1;
+      if (COLUMN_HEADS.every((head, k) => lines[index + 1 + k] === head)) index += COLUMN_HEADS.length;
+      continue;
+    }
+    out.push(lines[index]);
+  }
+  return out.join("\n");
+}
+const apiLike = api => ({ get: async url => unwrap(await api.client.get(url)) });
+const MONEY_CELL = /^−?(?:\d{1,3}(?:\.\d{3})*|\d+),\d{2} TL$/;
+/** Banka ve POS Hareketleri'nin bu dönemi iç hareket içeriyor mu (yeni ekran)? İçeriyorsa PDF/Excel aynı dönemin ekranıyla karşılaştırılır. */
+async function bankPosSelfCheck(api, request) {
+  const json = unwrap(await api.client.get(request.url.replace(/\/(pdf|xlsx)(\?|$)/, "$2")));
+  if (json.status !== 200 || !json.data.summary.some(([key]) => key === "Transfer Giriş")) return null;
+  const cells = [...json.data.rows.flat(), ...(json.data.footer || [])].filter(cell => MONEY_CELL.test(String(cell)));
+  const response = await api.client.raw("GET", request.url);
+  if (request.kind === "pdf") {
+    const text = pdfText(response.buffer).replace(/\s+/g, " ");
+    return cells.filter(cell => !text.includes(cell)).map(cell => `PDF'te yok: ${cell}`);
+  }
+  const values = new Set(Object.values(xlsxSheets(response.buffer)).flat(2).map(value => (typeof value === "number" ? Math.round(value * 100) : value)));
+  const minor = cell => Math.round(Number(String(cell).replace(/[^\d,−-]/g, "").replace(/\./g, "").replace(",", ".").replace("−", "-")) * 100);
+  return cells.filter(cell => !values.has(minor(cell))).map(cell => `Excel'de yok: ${cell}`);
 }
 
 async function login(server, who) {
@@ -113,9 +162,17 @@ async function compare(oldServer, newServer, { companies, label }) {
         for (const api of [a, b]) assert.equal((await api.post("/api/companies/select", { id: company.id })).status, 200, `${company.code} seçilemedi`);
       }
       for (const request of requests().filter(item => (item.who || "admin") === who)) {
-        const [left, right] = [await fetchOne(a, request), await fetchOne(b, request)];
-        compared += 1;
         const where = `${label} · ${company.code} · ${who} · ${request.kind} ${request.url}`;
+        if (request.kind !== "json" && request.url.includes("/banka-pos-hareketleri/")) {
+          const self = await bankPosSelfCheck(b, request);
+          if (self) {
+            compared += 1;
+            if (self.length) problems.push(`${where}: yeni dosya ekranla aynı değil: ${self.slice(0, 5).join("; ")}`);
+            continue;
+          }
+        }
+        const [left, right] = [await fetchOne(a, request), await fetchOne(b, request, "yeni")];
+        compared += 1;
         if (left.status !== right.status) problems.push(`${where}: durum ${left.status} ≠ ${right.status}`);
         else {
           try {
@@ -127,6 +184,7 @@ async function compare(oldServer, newServer, { companies, label }) {
       }
     }
   }
+  problems.push(...k10Problems.splice(0));
   return { problems, compared };
 }
 

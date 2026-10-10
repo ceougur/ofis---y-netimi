@@ -18,6 +18,7 @@
     Stok: "▦",
     Kayıtlar: "≡",
     Ofis: "◷",
+    Banka: "▣",
   };
   const PRESETS = [
     ["thisMonth", "Bu Ay"],
@@ -54,11 +55,15 @@
     planStatus: { label: "Kartlar", options: [["active", "Açık Kartlar"], ["closed", "Kapatılanlar"], ["all", "Tümü"]] },
     taskStatus: { label: "Görevler", options: [["all", "Tümü"], ["open", "Açık"], ["done", "Tamamlanan"]] },
     payMethod: { label: "Yol", options: [["noncash", "Banka ve POS (Tümü)"], ["bank", "Banka (Havale / EFT)"], ["card", "POS / Kredi Kartı"]] },
+    // v2.1.0 Aşama 14 (Banka grubu): hareket türü ve hesap grubu. Hesap seçenekleri (bankAccount, feeAccount) sunucunun katalog yanıtından.
+    bankMove: { label: "Hareket", options: [["", "Tüm Hareketler"], ["external", "Dış Hareketler"], ["internal", "Transfer (İç Hareketler)"]] },
+    bankGroup: { label: "Hesap Grubu", options: [["real", "Gerçek Banka"], ["debt", "Kart ve Kredi Borcu"], ["unassigned", "Hesabı Atanmamış Eski Hareketler"], ["all", "Tümü"]] },
   };
+  const DYNAMIC = { bankAccount: "Banka Hesabı", feeAccount: "Banka Hesabı" };
 
   // Raporlar penceresindeki "Tüm raporlar" sekmesine kurulur (hof-overview.js). Sekme her açılışta yeni düğüm verir.
   async function mount(host, reportId = "") {
-    if (!HOF.can("overview.view") && !HOF.can("audit.view")) {
+    if (!HOF.can("overview.view") && !HOF.can("audit.view") && !HOF.can("bank.reports")) {
       host.innerHTML = '<p class="hof-empty">Bu raporlar yönetici ve yöneticinin finans raporları yetkisi verdiği kişiler içindir.</p>';
       return;
     }
@@ -78,6 +83,7 @@
       const catalog = await HOF.api("/api/workspace/report-center");
       if (center !== state) return;
       center.reports = catalog.reports;
+      center.choices = catalog.choices || {};
       renderShell();
       select(catalog.reports.some(report => report.id === wanted) ? wanted : catalog.reports[0]?.id);
     } catch (error) {
@@ -88,7 +94,7 @@
   }
   // Eski giriş noktası (ANLIK DURUM kutucukları, kısayollar): Raporlar penceresi "Tüm raporlar" sekmesinde açılır.
   function open(reportId = "") {
-    if (!HOF.can("overview.view")) return HOF.toast("Raporlar yalnız yönetici ve yönetici yetki verdiği kişilere açıktır.", { type: "error" });
+    if (!HOF.can("overview.view") && !(HOF.can("bank.reports") && /^(banka-bakiye|banka-hareket|banka-masraf|alt-hesap-mizani)$/.test(reportId))) return HOF.toast("Raporlar yalnız yönetici ve yönetici yetki verdiği kişilere açıktır.", { type: "error" });
     return HOF.overview?.openReports ? HOF.overview.openReports("all", { report: reportId }) : null;
   }
   const root = () => center?.host?.querySelector("[data-rc]");
@@ -165,6 +171,7 @@
     if (report.params.includes("planStatus")) params.planStatus = "active";
     if (report.params.includes("taskStatus")) params.taskStatus = "all";
     if (report.params.includes("payMethod")) params.payMethod = "noncash";
+    if (report.params.includes("bankGroup")) params.bankGroup = "real";
     if (report.id === "cek-portfoy") params.status = "open";
     center.params = params;
     center.account = null;
@@ -192,7 +199,10 @@
         <label class="hof-rep-date"><span>Bitiş</span><input type="date" data-param="to" value="${esc(p.to || "")}"></label></div>`);
     }
     for (const name of report.params) {
-      if (SELECTS[name]) {
+      if (DYNAMIC[name]) {
+        const options = center.choices?.[name] || [["", "Tümü"]];
+        parts.push(`<label class="hof-rc-param"><span>${esc(DYNAMIC[name])}</span><select data-param="${name}">${options.map(([value, label]) => `<option value="${esc(value)}" ${String(p[name] || "") === value ? "selected" : ""}>${esc(label)}</option>`).join("")}</select></label>`);
+      } else if (SELECTS[name]) {
         const spec = SELECTS[name];
         parts.push(`<label class="hof-rc-param"><span>${esc(spec.label)}</span><select data-param="${name}">${spec.options.map(([value, label]) => `<option value="${esc(value)}" ${String(p[name] || "") === value ? "selected" : ""}>${esc(label)}</option>`).join("")}</select></label>`);
       } else if (name === "category") parts.push(`<label class="hof-rc-param"><span>Kategori</span><input type="text" data-param="category" value="${esc(p.category || "")}" placeholder="Tümü" maxlength="80"></label>`);
@@ -345,7 +355,7 @@
   // v2.0.22: başka bilgisayardaki değişikliklerde birleştirilerek (en sık 2 sn'de bir; HOF.refresher).
   HOF.whenReady(() => {
     const previewSoon = HOF.refresher(() => (center?.host?.isConnected && center.preview ? run({ quiet: true }) : null), { delay: 400, gap: 2000 });
-    HOF.onLedger(["cash", "accounts", "plans", "stock", "cheques"], detail => (detail?.local ? previewSoon.now() : previewSoon()), 400);
+    HOF.onLedger(["cash", "accounts", "plans", "stock", "cheques", "bank", "invoices"], detail => (detail?.local ? previewSoon.now() : previewSoon()), 400);
   });
   HOF.reportCenter = { open, mount };
 })();

@@ -913,6 +913,15 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
       `invoices.mjs` ~1304 hedef = açık(0'da kırpılı) + Σ geri ödeme → doğrusu max(0, imzalı açık + geri ödeme); model
       (`test/mutabakat/motor.mjs` 122/124/273) aynı hatayı taşıyıp gizliyordu. Önem YÜKSEK. Öncek kararın örneğiyle (Kasa çift
       sayım: "2.1.0 ile gelsin") 2.1.0'da düzeltilir + mevcut veride yanlış büyümüş kartlar için açılış onarımı; kullanıcıya bildirildi.
+  [x] AŞAMA 14 daraltılmış (0beded4): Banka Bakiye/Hareket/Masraf + Alt Hesap Mizanı; ANLIK DURUM "Gerçek Banka" (K10); Birleşik Rapor 3
+      banka sütunu; Banka ve POS Hareketleri'nde transfer iç hareket; banka-210-raporlar 14 (eski kodda 14 kırmızı). Açık: Nakit Akış
+      başlangıcı K10'a çevrilmedi, Vade Takip/zil banka kalemleri yok.
+  EKSİK TEST TURU (10.10.2026; worktree dalı `worktree-agent-a9996cccca67b1040`, kapsayıcı yeniden başlayınca yarıda kaldı → yeni
+      ajan tamamlıyor, ana dala birleştirilecek) BULDUĞU HATALAR (önce kırmızı test, düzeltildi; kullanıcıya listelendi):
+      R1 CANLI (v2.0.23–2.0.26'da da var): iadenin müşteriye geri ödenen kısmı fatura kapamada BAŞKA açık satış faturasını "Ödendi"
+      gösteriyor / aynı carinin alış faturasını ödüyordu (1249a0c). R2: Gider Raporu bütün gider türlerini TEK satırda birleştiriyordu
+      (SQL takma ad çakışması; b5f2ba3). R3: ekstreyle eşleşmiş satırda çek geri alma ve fatura Düzenle/İptal/Sil 409 yerine 200
+      (31b7117; eşleşme 2.1.0'da ekrandan yapılamadığı için canlı etkisi yok).
   İSTEK (kullanıcı, 09.10.2026): "tüm işlemler bitince bağımsız yargıç ve yargıç kararını eleştirmenden tekrar geçir, sonra plana
       uy!" → 2.1.0'ın BÜTÜN işleri (düzeltme turu, eksik testler, transfer, raporlar, K10, yetki, kabul 1–16, kılavuz) bitince, paketten
       ÖNCE: (1) bağımsız YARGIÇ (kod değiştirmez; bütün 2.1.0'ı ve bulguları yeniden üreterek doğrular, önem + teslime engel kararı);
@@ -933,6 +942,11 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   testler + kabul 1–16 + gözden geçirme temizse canlıya (Kasa çift sayım düzeltmesi de erken gider). KARAR (kullanıcı,
   09.10.2026: "önerdiğin yoldan devam edelim") → daraltılmış 2.1.0 temiz çıkınca CANLIYA; ertelenenler 15.10 sonrası.
   Planlı test (trig_0144BJLRwsZFizXTTYrJVszA) kullanıcı isteğiyle Pazar 11.10'dan CUMA 16.10.2026 09:00 TR'ye (06:00 UTC) ertelendi.
+  KARAR (kullanıcı, 10.10.2026: "limit sorunumuz ortadan kalktı, daraltılmış olarak değil plana uygun olarak devam et") → KAPSAM
+      DARALTMASI KALKTI: 2.1.0 planın §12.1'deki tam hâli (Aşama 2–9 + 13 döviz + 14–16 dilimleri; Bankaya Tahsile Ver, fatura
+      iade/iptalinin bankalı ayrıntısı + TCMB önerisi, K8 taksit kuralları, toplu kesim ayrıntısı, kalan banka raporları DAHİL).
+      POS (2.2.0) ve ekstre (2.3.0) planın kendi sırasında kalır. Not: aynı anda iki ajan "haftalık sınır, 14.10 23:00 UTC'de
+      sıfırlanır" hatasıyla durdu (eksik test turu, kılavuz); yarım işleri worktree'de ve ana ağaçta yerinde.
 - 2.0.20 YAPILACAKLAR (kullanıcı "yapılacaklara not al" dedi, 03.10.2026; "yap" denince başlanır; ayrıntı ve
   kanıt hemen altındaki ADAYI maddesinde):
   [x] 1. Bütün raporların (43) tablosunun altında kalın TOPLAM satırı — ekran, PDF, Excel aynı; yalnız toplanabilir

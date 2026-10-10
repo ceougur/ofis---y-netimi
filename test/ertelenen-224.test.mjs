@@ -393,7 +393,12 @@ describe("2.0.24 ertelenen alanlar", () => {
       assert.ok(kasa.entries.every(e => e.method === "cash"), "Kasa'da yalnız nakit");
       const rep = await must("banka raporu", api.get(`/api/workspace/report-center/banka-pos-hareketleri?from=${date}&to=${date}&payMethod=bank`));
       const rows = rep.rows.filter(r => r[2] === "Kasa ↔ Banka");
-      assert.deepEqual(rows.map(r => [money(r[4]), money(r[5])]).sort(), [[0, 200.25], [1200.5, 0]].sort());
+      // v2.1.0 Aşama 14 (§3.4, bilerek güncellendi): Kasa ↔ Banka iç harekettir — Giriş/Çıkış kolonuna değil açıklamaya "(Transfer Giriş|Çıkış: …)"
+      // ve özetin Transfer satırlarına yazılır; Dönem Giriş/Çıkış'ı şişirmez.
+      assert.deepEqual(rows.map(r => [money(r[4]), money(r[5])]), [[0, 0], [0, 0]]);
+      assert.deepEqual(rows.map(r => /\(Transfer (Giriş|Çıkış): ([\d.,]+ TL)\)/.exec(r[3])?.slice(1, 3).join(" ")).sort(), ["Giriş 1.200,50 TL", "Çıkış 200,25 TL"].sort());
+      const sumOf = key => money(rep.summary.find(([name]) => name === key)?.[1]);
+      assert.deepEqual([sumOf("Transfer Giriş"), sumOf("Transfer Çıkış")], [1200.5, 200.25]);
       // Bir tarafı silmek iki tarafı da siler; geri yüklemek iki tarafı da getirir.
       await must("transfer sil", api.del(`/api/workspace/cash/${t1.id}`));
       assert.equal(r2((await byMethod()).bank - m0.bank), -200.25);

@@ -68,7 +68,8 @@ describe("moneyLines — tek kaynak (çalışıyor mu)", () => {
     const overview = await must("ANLIK DURUM", api.get("/api/workspace/overview"));
     const byMethod = sumBy(all.entries, entry => entry.method);
     assert.equal(cents(overview.cash.allEntries), byMethod.cash || 0, "ANLIK DURUM Nakit Kasa = pencere satırlarının toplamı");
-    assert.equal(cents(overview.cash.bank.allEntries), (byMethod.bank || 0) + (byMethod.card || 0), "Banka / POS kutusu = banka tarafı satırları");
+    // Aşama 14 (K10, bilerek güncellendi): Banka kutusu Gerçek Banka + Hesabı Atanmamış Eski Hareketler = banka tarafı satırları (plan §10.5).
+    assert.equal(cents(overview.cash.bank.balance) + cents(overview.cash.bank.unassigned.total), (byMethod.bank || 0) + (byMethod.card || 0), "Banka kutusu (Gerçek Banka + Hesabı Atanmamış) = banka tarafı satırları");
     assert.equal(cents(window.totals.balance), byMethod.cash || 0, "Kasa penceresi = nakit satırları");
     assert.equal(cents(noncash.totals.balance), (byMethod.bank || 0) + (byMethod.card || 0));
     assert.deepEqual(Object.fromEntries(Object.entries(all.byMethod).map(([key, value]) => [key, cents(value)])), { cash: byMethod.cash || 0, bank: byMethod.bank || 0, card: byMethod.card || 0 });

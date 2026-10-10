@@ -543,6 +543,56 @@ export function createMoneyLines(store, { verify = false } = {}) {
   }
 
   /**
+   * Banka raporlarının satır sınıflaması (§3.4 "Bugün ve Bu Ay toplamlarında iç hareket", §8.10; 2.1.0 Aşama 14): satır yolunun ham satırları
+   * (lines ile aynı ifade, sıra ve görünürlük) + her satırın Giriş/Çıkış (dış), Transfer Giriş/Çıkış (iç) ve Açılış ve Devir Düzeltmesi payı,
+   * flows ile AYNI kuralla:
+   *   - açılış, Devir Kapanışı, eski bakiye aktarımı ve bunların ters kaydı → adjust (hiçbir giriş-çıkışa girmez; bakiyeye girer);
+   *   - iç hareket (Kasa ↔ Banka, bankalar arası transfer, kredi, kart borcu ve ters kayıtları) → transfer; iç hareketin gider satırları (transfer
+   *     ücreti ve BSMV'si, kredi faizi) gönderen hesabın (işlem başlığındaki bank_ref; kart/kredi hesabı değil) satırında dış Çıkış'tır (ters
+   *     kaydında dış Giriş), Transfer'den düşülür;
+   *   - geri kalan her şey dış Giriş/Çıkış.
+   * Dönüş: satır nesneleri (lines'ın kolonları) + { event_type, event_no, base_type, ext_in, ext_out, tr_in, tr_out, adjust } (kuruş; adjust işaretli).
+   * ways / ref / until: lines ile aynı süzgeçler. Dört pay toplamı her satırda satırın işaretli tutarına eşittir (bakiye değişmez).
+   */
+  function classified({ ways = null, ref = null, until = "", light = false } = {}) {
+    const { bankAccounts, tables } = load();
+    const events = tables.has("fin_events");
+    const filters = [wayFilter(ways)].filter(Boolean);
+    const sql = `SELECT w.*, ${events ? "COALESCE(fe.type, '')" : "''"} AS event_type, ${events ? "COALESCE(fe.no, '')" : "''"} AS event_no,
+        ${events ? "COALESCE(fo.type, fe.type, '')" : "''"} AS base_type,
+        ${events && bankAccounts ? `CASE WHEN w.src = 9 AND w.internal = 1 AND w.ref <> '' AND w.ref = fe.bank_ref AND COALESCE(bk.kind, '') NOT IN ('card', 'loan')
+          THEN COALESCE((SELECT SUM(CASE WHEN x.side = 'D' THEN x.try_minor ELSE -x.try_minor END) FROM bank_lines x WHERE x.event_id = fe.id AND x.role IN ('expense', 'tax')), 0) ELSE 0 END` : "0"} AS fee_cents
+      FROM (${waySql({ light, ref, until })}) w
+      ${events ? "LEFT JOIN fin_events fe ON w.event_id <> '' AND fe.id = w.event_id LEFT JOIN fin_events fo ON fe.type = 'reversal' AND fo.id = fe.reversal_of" : ""}
+      ${events && bankAccounts ? "LEFT JOIN bank_accounts bk ON w.ref <> '' AND bk.id = w.ref" : ""}
+      ${filters.length ? `WHERE ${filters.join(" AND ")}` : ""}
+      ORDER BY w.date, w.created_at, w.rank, w.rid`;
+    const ADJUST = new Set(["opening", "carry_close", "legacy_reclass"]);
+    return store.all(sql, params({ ref, until })).map(line => {
+      const cents = Number(line.cents) || 0;
+      const into = line.kind === "in";
+      const out = { ...line, ext_in: 0, ext_out: 0, tr_in: 0, tr_out: 0, adjust: 0 };
+      if (Number(line.src) === 9 && ADJUST.has(line.base_type)) {
+        out.adjust = into ? cents : -cents;
+        return out;
+      }
+      if (Number(line.internal) === 1) {
+        // Gider payı satırın yönündeyse (gönderende çıkış, ters kaydında giriş) dış harekettir; tutarı aşamaz.
+        const fee = Number(line.fee_cents) || 0;
+        const ext = (fee > 0 && !into) || (fee < 0 && into) ? Math.min(Math.abs(fee), cents) : 0;
+        if (into) Object.assign(out, { ext_in: ext, tr_in: cents - ext });
+        else Object.assign(out, { ext_out: ext, tr_out: cents - ext });
+        return out;
+      }
+      if (into) out.ext_in = cents;
+      else out.ext_out = cents;
+      return out;
+    });
+  }
+  /** Satır sorgusunun kaynak adı (shape'teki source) → src numarası: Kasa/rapor satırını classified satırıyla eşlemek için. */
+  const SOURCE_NAMES = Object.freeze({ 1: "payment", 2: "manual", 3: "account", 4: "invoice", 5: "bank", 6: "plan", 7: "stock", 8: "cheque", 9: "bankLine" });
+
+  /**
    * money:report (§3.4): satır yolunun (Kasa penceresi, raporlar) JS toplamı = özet SQL'i (yol ve hesap bazında). events verilirse yalnız o
    * olayların satırları (COMMIT'te dokunulan olaylar). Dönüş: uyuşmayan gruplar [{ key, rows, summary }].
    */
@@ -561,7 +611,7 @@ export function createMoneyLines(store, { verify = false } = {}) {
     return out;
   }
 
-  return { lines, rows, shape, groups, periodGroups, refTotal, eventsTotal, lastDate, afterIsEmpty, prime, unassigned, unassignedWays, balances, summary, flows, verifyReport, signedCents, reset: () => {
+  return { lines, rows, shape, classified, sourceName: src => SOURCE_NAMES[Number(src)] || "", groups, periodGroups, refTotal, eventsTotal, lastDate, afterIsEmpty, prime, unassigned, unassignedWays, balances, summary, flows, verifyReport, signedCents, reset: () => {
     schema = null;
     totals.clear();
   } };

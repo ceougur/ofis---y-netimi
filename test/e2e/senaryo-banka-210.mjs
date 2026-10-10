@@ -39,6 +39,13 @@
 // 25. Yazım düzeni: gezilen her banka ekranında adlar başlık yazımıyla; kalemle ad (side.bank) menüde ve pencere başlığında.
 // Bölüm 4 (Aşama 7–8, daraltılmış): 32. fatura peşini havale Garanti (Tab ile, satır yeniden çizilmez); 33. taksit tahsilatı Ziraat; 34. çek tahsili
 //     Garanti; hesap bakiyeleri sayılarla (Ziraat 114.000, Garanti 58.000, Gerçek Banka 172.000), mutabakat ok.
+// Bölüm 6 (Aşama 14, daraltılmış: Banka Raporları ve K10): ayrı "Rapor Şirketi"nde API'den bilinen veri (Ziraat + Garanti + kurumsal kart; hesapsız eski
+//     havale; cari tahsilatı; Kasa ↔ Banka iki yön; ücretli transfer; masraf; kart borcu). 41. ANLIK DURUM Banka kutusu ekrandan: "Gerçek Banka",
+//     bugün giriş/çıkış ve Transfer ayrı, Kart ve Kredi Borcu ve Hesabı Atanmamış ayrı satır; tıklayınca Banka penceresi. 42. Raporlar → Tüm
+//     Raporlar → Banka grubu: Banka Bakiye Raporu (Hesap Grubu Gerçek Banka / Tümü; TOPLAM), PDF ve Excel indirilir, sayılar dosyada; 43. Banka
+//     Hareket Raporu (Hesap Ziraat, Transfer süzgeci); 44. Banka Masraf Raporu (transfer ücreti + masraf, 770); 45. Alt Hesap Mizanı; 46. Banka ve POS
+//     Hareketleri (transfer Giriş/Çıkış'ı şişirmez); 47. canlı yenileme: başka oturumdan masraf → açık ANLIK DURUM ve açık rapor yeni sayı;
+//     48. Birleşik Rapor (Yönetim → Şirketler) K10 sütunları; 49. muhasebe Raporlar'da yalnız Banka grubunu görür. Bağımsız beklenen elle.
 // Çalıştırma: npm run test:senaryo-banka-210 (ekran görüntüleri artifacts/senaryo-banka-210/).
 import fs, { mkdtempSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -47,6 +54,7 @@ import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
 import { createApp } from "../../server/app.mjs";
 import { createClient, installPageClock } from "../helpers.mjs";
+import { pdfText, xlsxSheets } from "../banka-210-ortak.mjs";
 
 const OUT = path.join(path.dirname(fileURLToPath(import.meta.url)), "artifacts", "senaryo-banka-210");
 fs.rmSync(OUT, { recursive: true, force: true });
@@ -55,7 +63,7 @@ const PASS = "Prova-Admin-2026!";
 const USER_PASS = "Kullanici-2026!";
 const NOW = "2026-10-08T12:00:00+03:00";
 const root = mkdtempSync(path.join(tmpdir(), "destekofis-banka-210-"));
-const app = createApp({ dataDir: path.join(root, "data"), backupDir: path.join(root, "backups"), logLevel: "warn", scheduleBackups: false, now: NOW, maxCompanies: 3, env: { HUKUK_ADMIN_PASSWORD: PASS, HUKUK_DATASET_AUTOSYNC: "0" }, license: { enforce: false, machineId: "a1b2c3d4e5f60718293a4b5c6d7e8f40" } });
+const app = createApp({ dataDir: path.join(root, "data"), backupDir: path.join(root, "backups"), logLevel: "warn", scheduleBackups: false, now: NOW, maxCompanies: 4, env: { HUKUK_ADMIN_PASSWORD: PASS, HUKUK_DATASET_AUTOSYNC: "0" }, license: { enforce: false, machineId: "a1b2c3d4e5f60718293a4b5c6d7e8f40" } });
 const { port } = await app.listen(0, "127.0.0.1");
 const BASE = `http://127.0.0.1:${port}`;
 const clock = app.config.now;
@@ -2114,6 +2122,254 @@ try {
     ok((await kabulBalance("Garanti BBVA")) === -23000, `Yine de Geri Yükle: ödeme geri geldi, Garanti −23.000 (${await kabulBalance("Garanti BBVA")})`);
     const integrity = await must("Mutabakat Testi", api.get("/api/workspace/ledger/integrity"));
     ok(integrity.ok === true, "Kabul Şirketi'nde mutabakat ok (bölüm 5)");
+    const firstCompany = (await must("şirketler", api.get("/api/companies"))).companies.find(company => company.code === "001");
+    await admin.evaluate(async id => fetch("/api/companies/select", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ id }) }), firstCompany.id);
+    await admin.goto(`${BASE}/`, { waitUntil: "load" });
+    await admin.waitForSelector("#hof-sidecard", { timeout: 30000 });
+    await admin.waitForTimeout(700);
+  });
+
+  // ---------- Bölüm 6 (Aşama 14, daraltılmış: Banka Raporları ve K10; plan §8.4, §8.9, §8.10, §3.4) ----------
+  // Bağımsız beklenen (elle): Ziraat 100.000 + 20.000 − 10.000 − 20.005,25 − 10,50 − 2.000 = 87.984,25; Garanti 50.000 + 20.000 + 1.500 + 1.000
+  // = 72.500; Gerçek Banka 160.484,25; Kart ve Kredi Borcu 5.000 − 2.000 = 3.000; Hesabı Atanmamış 5.000 (eski havale). Bu yıl (Gerçek Banka):
+  // Giriş 21.500 (ABC 20.000 + 1.500), Çıkış 15,75 (transfer ücreti 5,25 + masraf 10,50), Transfer Giriş 21.000 (Garanti 20.000 + Kasa'dan 1.000),
+  // Transfer Çıkış 32.000 (Kasa'ya 10.000 + Garanti'ye 20.000 + kart 2.000). Bugün: Giriş 1.500, Çıkış 0, Transfer Giriş 1.000.
+  const R6 = {};
+  const fileText = async (page, href) => {
+    const got = await page.evaluate(async url => {
+      const response = await fetch(url);
+      const bytes = new Uint8Array(await response.arrayBuffer());
+      let binary = "";
+      for (let index = 0; index < bytes.length; index += 1) binary += String.fromCharCode(bytes[index]);
+      return { status: response.status, base64: btoa(binary) };
+    }, href);
+    return { status: got.status, buffer: Buffer.from(got.base64, "base64") };
+  };
+  const openAllReports = async (page, id) => {
+    await closeAll(page);
+    await page.waitForFunction(() => !document.querySelector(".hof-modal-backdrop.is-visible"), null, { timeout: 8000 }).catch(() => null);
+    await page.click('#hof-sidecard [data-action="analytics"]');
+    await page.waitForSelector(`${modal} .hof-rep-tab[data-tab="all"]`, { timeout: 15000 });
+    await page.click(`${modal} .hof-rep-tab[data-tab="all"]`);
+    await page.waitForSelector(`${modal} [data-rc-list] [data-report]`, { timeout: 15000 });
+    if (id) {
+      await page.click(`${modal} [data-rc-list] [data-report="${id}"]`);
+      await page.waitForSelector(`${modal} [data-rc-main] .hof-rc-summary`, { timeout: 15000 });
+      await page.waitForTimeout(400);
+    }
+  };
+  const preview = page =>
+    page.evaluate(selector => {
+      const main = document.querySelector(`${selector} [data-rc-main]`);
+      const text = node => node.textContent.replace(/\s+/g, " ").trim();
+      return {
+        title: main?.querySelector("h3") ? text(main.querySelector("h3")) : "",
+        heads: [...(main?.querySelectorAll("thead th") || [])].map(text),
+        rows: [...(main?.querySelectorAll("tbody tr") || [])].map(row => [...row.querySelectorAll("td")].map(text)),
+        footer: main?.querySelector("tfoot tr") ? [...main.querySelectorAll("tfoot td")].map(text) : null,
+        summary: Object.fromEntries([...(main?.querySelectorAll(".hof-rc-summary span") || [])].map(span => [text(span.querySelector("small")), text(span.querySelector("b"))])),
+        links: [...(main?.querySelectorAll(".hof-rep-out") || [])].map(link => link.getAttribute("href")),
+      };
+    }, modal);
+  const waitPreview = async (page, check, ms = 8000) => {
+    const deadline = Date.now() + ms;
+    let last = await preview(page);
+    while (!check(last) && Date.now() < deadline) {
+      await page.waitForTimeout(250);
+      last = await preview(page);
+    }
+    return last;
+  };
+  await step("41. Rapor Şirketi (bilinen veri) → ANLIK DURUM Banka kutusu: Gerçek Banka 160.484,25; bugün +1.500 · −0, Transfer +1.000; Kart ve Kredi Borcu 3.000; Hesabı Atanmamış 5.000 ayrı; tıklayınca Banka", async () => {
+    current = admin;
+    await closeAll(admin);
+    const created = await must("şirket", api.post("/api/companies", { name: "Rapor Şirketi" }));
+    R6.company = created.company;
+    await admin.evaluate(async id => fetch("/api/companies/select", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ id }) }), created.company.id);
+    await must("sihirbazı kapat", api.post("/api/workspace/bank/setup/dismiss", {}));
+    const abc = await must("ABC", api.post("/api/workspace/accounts", { name: "ABC Ltd.", type: "customer", registeredOn: "2026-09-01" }));
+    await must("eski havale (hesapsız)", api.post(`/api/workspace/accounts/${abc.id}/entries`, { kind: "in", amount: "5.000", method: "bank", date: "2026-09-20" }));
+    R6.ziraat = await must("Ziraat", api.post("/api/workspace/bank/accounts", { bankName: "Ziraat Bankası", name: "Ana TL Hesabı", kind: "demand", currency: "TRY", iban: ZIRAAT_IBAN, opening: { date: "2026-10-01", amount: "100.000", confirmed: true } }));
+    R6.garanti = await must("Garanti", api.post("/api/workspace/bank/accounts", { bankName: "Garanti BBVA", name: "Ana TL Hesabı", kind: "demand", currency: "TRY", iban: GARANTI_IBAN, opening: { date: "2026-10-01", amount: "50.000", confirmed: true } }));
+    R6.card = await must("kart", api.post("/api/workspace/bank/accounts", { bankName: "Ziraat Bankası", name: "Şirket Kartı", kind: "card", creditLimit: "50.000", opening: { date: "2026-10-01", amount: "5.000", confirmed: true } }));
+    await must("ABC tahsilat", api.post(`/api/workspace/accounts/${abc.id}/entries`, { kind: "in", amount: "20.000", method: "bank", bankAccountId: R6.ziraat.id, date: "2026-10-02" }));
+    await must("bankadan kasaya", api.post("/api/workspace/cash/transfer", { direction: "to-cash", amount: "10.000", date: "2026-10-05", bankAccountId: R6.ziraat.id }));
+    await must("ücretli transfer", api.post("/api/workspace/bank/transfers", { accountId: R6.ziraat.id, toAccountId: R6.garanti.id, amount: "20.000", date: "2026-10-06", feeAmount: "5", feeTax: "bsmv_excl", feeType: "eft", channel: "eft" }));
+    await must("masraf", api.post("/api/workspace/bank/vouchers", { type: "fee", accountId: R6.ziraat.id, amount: "10,50", feeType: "eft", tax: "bsmv_incl", date: "2026-10-07" }));
+    await must("kart borcu", api.post("/api/workspace/bank/vouchers", { type: "card_payment", accountId: R6.ziraat.id, cardAccountId: R6.card.id, amount: "2.000", date: "2026-10-07" }));
+    await must("bugünkü tahsilat", api.post(`/api/workspace/accounts/${abc.id}/entries`, { kind: "in", amount: "1.500", method: "bank", bankAccountId: R6.garanti.id, date: "2026-10-08" }));
+    await must("kasadan bankaya", api.post("/api/workspace/cash/transfer", { direction: "to-bank", amount: "1.000", date: "2026-10-08", bankAccountId: R6.garanti.id }));
+    // ANLIK DURUM kartı ana ekrandaki tablonun başlık satırındadır: boş şirkete küçük bir Excel tablosu yüklenir (para verisine dokunmaz).
+    await admin.goto(`${BASE}/`, { waitUntil: "load" });
+    await admin.waitForSelector("#hof-start .hof-drop input[type=file]", { state: "attached", timeout: 30000 });
+    await (await admin.$("#hof-start .hof-drop input[type=file]")).setInputFiles(path.join(path.dirname(fileURLToPath(import.meta.url)), "..", "fixtures", "rehber.xlsx"));
+    await admin.waitForSelector(`${modal} .hof-mapping`, { timeout: 30000 });
+    await Promise.all([admin.waitForEvent("load", { timeout: 30000 }), admin.click(`${modal} [data-mode="replace"]`)]);
+    await admin.goto(`${BASE}/`, { waitUntil: "load" });
+    await admin.waitForSelector("#hof-pulse", { timeout: 30000 });
+    if (await admin.$("#hof-pulse.is-collapsed")) await admin.click("#hof-pulse [data-pulse='toggle']");
+    await admin.waitForSelector('#hof-pulse [data-pulse-go="bank"]', { timeout: 30000 });
+    await admin.waitForTimeout(600);
+    const tile = await admin.$eval('#hof-pulse [data-pulse-go="bank"]', node => ({ label: node.querySelector(".hof-pulse-label").textContent.trim(), sub: node.querySelector(".hof-pulse-sub").textContent.replace(/\s+/g, " ").trim(), title: node.getAttribute("title"), debt: node.querySelector('[data-pulse-bank="debt"]')?.textContent.trim() || "", unassigned: node.querySelector('[data-pulse-bank="unassigned"]')?.textContent.trim() || "", transfer: node.querySelector('[data-pulse-bank="transfer"]')?.textContent.trim() || "" }));
+    ok(tile.label === "Gerçek Banka", `kutunun adı K10 adıyla: “${tile.label}”`);
+    ok(/160\.484,25/.test(tile.title), `Gerçek Banka 160.484,25 (kart borcu ve hesabı atanmamış hariç): ${tile.title.slice(0, 120)}`);
+    ok(/Bugün \+₺?1\.500/.test(tile.sub), `bugün giriş 1.500 (dış): “${tile.sub}”`);
+    ok(/−₺?0\b/.test(tile.sub.split("Transfer")[0]), "bugün çıkış 0 (Kasa'dan gelen 1.000 transfer sayılmaz)");
+    ok(/Transfer \+₺?1\.000/.test(tile.transfer), `Transfer satırı ayrı: “${tile.transfer}”`);
+    ok(/Kart ve Kredi Borcu ₺?3\.000/.test(tile.debt), `Kart ve Kredi Borcu ayrı satır: “${tile.debt}”`);
+    ok(/Hesabı Atanmamış Eski Hareketler ₺?5\.000/.test(tile.unassigned), `Hesabı Atanmamış ayrı satır: “${tile.unassigned}”`);
+    const overview = await must("ANLIK DURUM", api.get("/api/workspace/overview"));
+    ok(overview.cash.bank.balance === 160484.25 && overview.cash.bank.debt.total === 3000 && overview.cash.bank.unassigned.total === 5000 && overview.cash.balance === 9000, `API ile aynı: Gerçek Banka ${overview.cash.bank.balance}, borç ${overview.cash.bank.debt.total}, atanmamış ${overview.cash.bank.unassigned.total}, Nakit Kasa ${overview.cash.balance}`);
+    await shot(admin, "rapor-anlik-durum-banka-k10", { clip: await admin.$eval("#hof-pulse", node => { const box = node.getBoundingClientRect(); return { x: Math.max(0, box.x - 4), y: Math.max(0, box.y - 4), width: box.width + 8, height: box.height + 8 }; }) });
+    await admin.click('#hof-pulse [data-pulse-go="bank"]');
+    ok(await admin.waitForSelector(`${bankWin} [data-bank] .hof-bank-tabs`, { timeout: 10000 }).then(() => true).catch(() => false), "kutuya tıklayınca Banka penceresi açılır");
+    await admin.waitForFunction(() => /\d/.test(document.querySelector(".hof-bank-modal [data-bank-real]")?.textContent || ""), null, { timeout: 10000 }).catch(() => null);
+    const real = await textOf(admin, `${bankWin} [data-bank-real]`);
+    ok(/160\.484,25/.test(real), `Banka Genel Bakış'ta da Gerçek Banka 160.484,25 (${real})`);
+    await closeAll(admin);
+    await admin.waitForFunction(() => !document.querySelector(".hof-modal-backdrop.is-visible"), null, { timeout: 8000 }).catch(() => null);
+    await closeAll(admin);
+  });
+
+  await step("42. Raporlar → Tüm Raporlar → Banka grubu → Banka Bakiye Raporu: Ziraat 87.984,25, Garanti 72.500, TOPLAM 160.484,25; Hesap Grubu Tümü (kart, atanmamış ayrı; TOPLAM yok); PDF ve Excel", async () => {
+    await openAllReports(admin);
+    const groups = await admin.$$eval(`${modal} .hof-rc-group > p`, nodes => nodes.map(node => node.textContent.trim()));
+    ok(groups.some(group => group.endsWith("Banka")), `Banka grubu: ${groups.join(", ")}`);
+    const items = await admin.$$eval(`${modal} .hof-rc-group`, nodes => nodes.filter(node => node.querySelector("p").textContent.trim().endsWith("Banka")).flatMap(node => [...node.querySelectorAll("[data-report]")].map(item => item.textContent.trim())));
+    ok(items.join("|") === "Banka Bakiye Raporu|Banka Hareket Raporu|Banka Masraf Raporu|Alt Hesap Mizanı", `Banka raporları: ${items.join(", ")}`);
+    await admin.click(`${modal} [data-rc-list] [data-report="banka-bakiye"]`);
+    let data = await waitPreview(admin, view => view.rows.length >= 2 && view.footer);
+    const byBank = bank => data.rows.find(cells => cells[1] === bank);
+    const col = header => data.heads.indexOf(header);
+    ok(data.rows.length === 2 && byBank("Ziraat Bankası")?.[col("Dönem Sonu")] === "87.984,25 TL" && byBank("Garanti BBVA")?.[col("Dönem Sonu")] === "72.500,00 TL", `hesaplar: ${data.rows.map(cells => `${cells[1]} ${cells[col("Dönem Sonu")]}`).join(" · ")}`);
+    ok(data.footer?.[col("Dönem Sonu")] === "160.484,25 TL" && data.footer?.[col("Giriş")] === "21.500,00 TL" && data.footer?.[col("Çıkış")] === "15,75 TL" && data.footer?.[col("Transfer Giriş")] === "21.000,00 TL" && data.footer?.[col("Transfer Çıkış")] === "32.000,00 TL", `TOPLAM: ${data.footer?.join(" | ")}`);
+    ok(data.summary["Gerçek Banka"] === "160.484,25 TL" && data.summary["Kart ve Kredi Borcu"] === "3.000,00 TL" && data.summary["Hesabı Atanmamış Eski Hareketler"] === "5.000,00 TL", `özet K10 adlarıyla: ${JSON.stringify(data.summary)}`);
+    await shot(admin, "rapor-banka-bakiye");
+    const [pdfHref, xlsxHref] = data.links;
+    const routed = await admin.evaluate(list => list.map(href => window.HOF.apiUrl(href)), [pdfHref, xlsxHref]);
+    ok(routed.every(href => href.includes(`hofCompany=${encodeURIComponent(R6.company.id)}`) || href.includes(`hofCompany=${R6.company.id}`)), `PDF ve Excel bu pencerenin şirketinden iner (${routed[0]})`);
+    const pdf = await fileText(admin, pdfHref);
+    const text = pdfText(pdf.buffer).replace(/\s+/g, " ");
+    ok(pdf.status === 200 && text.includes("Banka Bakiye Raporu") && text.includes("Rapor Şirketi") && text.includes("87.984,25 TL") && text.includes("160.484,25 TL") && text.includes("Transfer Çıkış"), "PDF: başlık, şirket, hesap ve TOPLAM tutarı");
+    const xlsx = await fileText(admin, xlsxHref);
+    const sheet = Object.values(xlsxSheets(xlsx.buffer))[0];
+    ok(xlsx.status === 200 && sheet[0].join("|") === data.heads.join("|") && sheet.at(-1)[0] === "TOPLAM" && Math.round(sheet.at(-1)[sheet[0].indexOf("Dönem Sonu")] * 100) === 16_048_425, `Excel: kolonlar ekranla aynı, TOPLAM 160.484,25 (${sheet.at(-1).join(" | ")})`);
+    await admin.selectOption(`${modal} [data-param="bankGroup"]`, "all");
+    data = await waitPreview(admin, view => view.rows.length === 4);
+    ok(data.rows.length === 4 && !data.footer && data.rows.some(cells => cells[0] === "Kart ve Kredi Borcu" && cells[col("Dönem Sonu")] === "-3.000,00 TL") && data.rows.some(cells => cells[0] === "Hesabı Atanmamış Eski Hareketler" && cells[3] === "102.00" && cells[col("Dönem Sonu")] === "5.000,00 TL"), `Tümü: kart ve atanmamış ayrı grup, TOPLAM yok (${data.rows.map(cells => `${cells[0]} ${cells[3]} ${cells[col("Dönem Sonu")]}`).join(" · ")})`);
+    await shot(admin, "rapor-banka-bakiye-tumu");
+  });
+
+  await step("43. Banka Hareket Raporu: Hesap Ziraat + Transfer (İç Hareketler) → Kasa'ya 10.000, Garanti'ye 20.000 (ücret 5,25 Çıkış'ta), kart 2.000; yürüyen bakiye", async () => {
+    await admin.click(`${modal} [data-rc-list] [data-report="banka-hareket"]`);
+    let data = await waitPreview(admin, view => view.rows.length > 2);
+    const options = await admin.$$eval(`${modal} [data-param="bankAccount"] option`, nodes => nodes.map(node => node.textContent.trim()));
+    ok(options[0] === "Gerçek Banka (Tüm Hesaplar)" && options.includes("Hesabı Atanmamış Eski Hareketler") && options.some(text => text.startsWith("Ziraat Bankası · Şirket Kartı")), `Banka Hesabı seçenekleri: ${options.join(" | ")}`);
+    await admin.selectOption(`${modal} [data-param="bankAccount"]`, R6.ziraat.id);
+    data = await waitPreview(admin, view => view.rows.length && view.rows.every(cells => cells[2] === "Ziraat Bankası · Ana TL Hesabı"));
+    await admin.selectOption(`${modal} [data-param="bankMove"]`, "internal");
+    data = await waitPreview(admin, view => view.rows.filter(cells => cells[3] !== "Devir").length === 3);
+    const col = header => data.heads.indexOf(header);
+    const body = data.rows.filter(cells => cells[3] !== "Devir");
+    ok(body.map(cells => cells[col("Transfer Çıkış")]).join("|") === "10.000,00 TL|20.000,00 TL|2.000,00 TL", `Transfer Çıkış satırları: ${body.map(cells => `${cells[3]} ${cells[col("Transfer Çıkış")]}`).join(" · ")}`);
+    ok(body[1][col("Çıkış")] === "5,25 TL" && body[1][3] === "Bankalar Arası Transfer", "ücretli transferin ücreti dış Çıkış'ta (5,25)");
+    ok(body.at(-1)[col("Bakiye")] === "87.984,25 TL", `yürüyen bakiye hesabın gerçek bakiyesi (${body.at(-1)[col("Bakiye")]})`);
+    ok(data.summary["Transfer Çıkış"] === "32.000,00 TL" && data.summary["Giriş"] === "20.000,00 TL" && data.summary["Dönem Sonu"] === "87.984,25 TL", `özet: ${JSON.stringify(data.summary)}`);
+    ok(body.every(cells => /^BNK-2026-\d{6}$/.test(cells[col("İşlem No")])), "her satırda İşlem No");
+    await shot(admin, "rapor-banka-hareket-ziraat-transfer");
+  });
+
+  await step("44. Banka Masraf Raporu: transfer ücreti 5,25 (5,00 + BSMV 0,25) + masraf 10,50 (10,00 + 0,50) = 15,75; 770", async () => {
+    await admin.click(`${modal} [data-rc-list] [data-report="banka-masraf"]`);
+    const data = await waitPreview(admin, view => view.rows.length === 2);
+    const col = header => data.heads.indexOf(header);
+    ok(data.rows.length === 2 && data.footer?.[col("Matrah")] === "15,00 TL" && data.footer?.[col("BSMV")] === "0,75 TL" && data.footer?.[col("Toplam")] === "15,75 TL", `masraflar: ${data.rows.map(cells => `${cells[col("Masraf Türü")]} ${cells[col("Toplam")]}`).join(" · ")} · TOPLAM ${data.footer?.[col("Toplam")]}`);
+    ok(data.rows.some(cells => /Transfer Ücreti/.test(cells[col("Masraf Türü")])) && data.rows.every(cells => cells[col("Hesap Kodu")].startsWith("770")), "transfer ücreti satırı; hesap 770");
+    const ledger = await must("mizan", api.get("/api/workspace/ledger"));
+    ok(ledger.trial.accounts.find(item => item.code === "770")?.balance === 15.75, "Hesap Planı Mizanı 770 = 15,75");
+    await shot(admin, "rapor-banka-masraf");
+  });
+
+  await step("45. Alt Hesap Mizanı: 102.00 5.000 · 102.01 87.984,25 · 102.02 72.500 · 309.01 3.000 (Alacak)", async () => {
+    await admin.click(`${modal} [data-rc-list] [data-report="alt-hesap-mizani"]`);
+    const data = await waitPreview(admin, view => view.rows.length === 4);
+    const bal = sub => { const cells = data.rows.find(row => row[0] === sub); return cells ? `${cells[data.heads.indexOf("Bakiye")]} ${cells[data.heads.indexOf("Yön")]}` : "yok"; };
+    ok(bal("102.00") === "5.000,00 TL Borç" && bal(R6.ziraat.glSub) === "87.984,25 TL Borç" && bal(R6.garanti.glSub) === "72.500,00 TL Borç" && bal(R6.card.glSub) === "3.000,00 TL Alacak", `alt hesaplar: ${data.rows.map(row => `${row[0]} ${row[data.heads.indexOf("Bakiye")]} ${row[data.heads.indexOf("Yön")]}`).join(" · ")}`);
+    ok(data.summary["Alt Hesap Mutabakatı"] === "Tutarlı", "ana hesaplar alt hesaplarının toplamına eşit");
+    await shot(admin, "rapor-alt-hesap-mizani");
+  });
+
+  await step("46. Banka ve POS Hareketleri: Dönem Giriş 26.500 (eski havale 5.000 dahil), Çıkış 15,75; Transfer Giriş 21.000 / Çıkış 32.000 ayrı (giriş-çıkış şişmez)", async () => {
+    await admin.click(`${modal} [data-rc-list] [data-report="banka-pos-hareketleri"]`);
+    const data = await waitPreview(admin, view => view.summary["Transfer Giriş"]);
+    // Banka ve POS Hareketleri havale + POS yoludur: kurumsal kart (309) varlık değildir, kart borcu ödemesinin banka bacağı Transfer Çıkış'tadır.
+    ok(data.summary["Dönem Giriş"] === "26.500,00 TL" && data.summary["Dönem Çıkış"] === "15,75 TL" && data.summary["Transfer Giriş"] === "21.000,00 TL" && data.summary["Transfer Çıkış"] === "32.000,00 TL" && data.summary["Dönem Sonu"] === "165.484,25 TL", `özet: ${JSON.stringify(data.summary)}`);
+    const col = header => data.heads.indexOf(header);
+    ok(data.footer?.[col("Giriş")] === "26.500,00 TL" && data.footer?.[col("Çıkış")] === "15,75 TL", `TOPLAM = dış giriş/çıkış (${data.footer?.join(" | ")})`);
+    ok(data.rows.some(cells => /\(Transfer Çıkış: 20\.000,00 TL\)/.test(cells[col("Açıklama")]) && cells[col("Çıkış")] === "5,25 TL"), "ücretli transfer satırı: Çıkış 5,25, transfer tutarı açıklamada");
+    await shot(admin, "rapor-banka-pos-transfer-ayri");
+  });
+
+  await step("47. Canlı yenileme: açık Banka Bakiye Raporu ve ANLIK DURUM — başka oturumdan Garanti'ye masraf 100 → ikisi de yeni sayıyı kendiliğinden gösterir", async () => {
+    await admin.click(`${modal} [data-rc-list] [data-report="banka-bakiye"]`);
+    await waitPreview(admin, view => view.footer);
+    const other = createClient(BASE);
+    await other.login("admin", PASS);
+    const res = unwrap(await other.post("/api/workspace/bank/vouchers", { type: "fee", accountId: R6.garanti.id, amount: "100", feeType: "eft", tax: "none", date: "2026-10-08" }));
+    ok(Boolean(res?.id), "başka oturumdan masraf 100 (Garanti)");
+    const data = await waitPreview(admin, view => view.summary["Gerçek Banka"] === "160.384,25 TL", 10000);
+    ok(data.summary["Gerçek Banka"] === "160.384,25 TL", `açık rapor kendiliğinden yenilendi: ${data.summary["Gerçek Banka"]}`);
+    await shot(admin, "rapor-canli-yenileme");
+    await closeAll(admin);
+    const deadline = Date.now() + 10000;
+    let title = "";
+    while (Date.now() < deadline) {
+      title = await admin.$eval('#hof-pulse [data-pulse-go="bank"]', node => node.getAttribute("title")).catch(() => "");
+      if (/160\.384,25/.test(title)) break;
+      await admin.waitForTimeout(250);
+    }
+    ok(/160\.384,25/.test(title), `ANLIK DURUM kendiliğinden yeni sayı (${title.slice(0, 80)})`);
+  });
+
+  await step("48. Birleşik Rapor (Yönetim → Şirketler): Gerçek Banka, Kart ve Kredi Borcu, Hesabı Atanmamış Eski Hareketler sütunları ANLIK DURUM'la aynı ad ve sayı", async () => {
+    await admin.goto(`${BASE}/admin.html#companies`, { waitUntil: "load" });
+    await admin.waitForSelector("#adm-company-report", { timeout: 20000 });
+    await admin.waitForTimeout(800);
+    await admin.click("#adm-company-report");
+    await admin.waitForSelector("#adm-company-report-out table", { timeout: 15000 });
+    const table = await admin.$eval("#adm-company-report-out table", node => ({ heads: [...node.querySelectorAll("thead th")].map(cell => cell.textContent.trim()), rows: [...node.querySelectorAll("tbody tr")].map(row => [...row.querySelectorAll("td")].map(cell => cell.textContent.trim())) }));
+    ok(["Gerçek Banka", "Kart ve Kredi Borcu", "Hesabı Atanmamış Eski Hareketler"].every(name => table.heads.includes(name)) && !table.heads.includes("Banka / POS"), `sütunlar: ${table.heads.join(" | ")}`);
+    const mine = table.rows.find(cells => cells[0].includes("Rapor Şirketi"));
+    const at = name => mine?.[table.heads.indexOf(name)] || "";
+    ok(/160\.384,25/.test(at("Gerçek Banka")) && /3\.000,00/.test(at("Kart ve Kredi Borcu")) && /5\.000,00/.test(at("Hesabı Atanmamış Eski Hareketler")), `Rapor Şirketi satırı: ${at("Gerçek Banka")} · ${at("Kart ve Kredi Borcu")} · ${at("Hesabı Atanmamış Eski Hareketler")}`);
+    await shot(admin, "rapor-birlesik-k10");
+    await admin.goto(`${BASE}/`, { waitUntil: "load" });
+    await admin.waitForSelector("#hof-sidecard", { timeout: 30000 });
+    await admin.waitForTimeout(600);
+  });
+
+  await step("49. Yetki: muhasebe Raporlar'da yalnız Banka grubunu görür (Finans Raporları yok); personelde Banka raporu 403", async () => {
+    const muhasebe = await newPage();
+    current = muhasebe;
+    await login(muhasebe, "muhasebe1", USER_PASS);
+    const visible = await muhasebe.$eval('#hof-sidecard [data-action="analytics"]', node => getComputedStyle(node).display !== "none").catch(() => false);
+    ok(visible, "muhasebe menüde Raporlar'ı görür (Banka Raporları yetkisi)");
+    await openAllReports(muhasebe);
+    const groups = await muhasebe.$$eval(`${modal} .hof-rc-group > p`, nodes => nodes.map(node => node.textContent.trim()));
+    ok(groups.length === 1 && groups[0].endsWith("Banka"), `muhasebenin Tüm Raporlar'ı: ${groups.join(", ")}`);
+    await muhasebe.click(`${modal} [data-rc-list] [data-report="banka-bakiye"]`);
+    const data = await waitPreview(muhasebe, view => view.rows.length > 0);
+    ok(data.title === "Banka Bakiye Raporu" && data.rows.length > 0, "muhasebe Banka Bakiye Raporu'nu açar");
+    await shot(muhasebe, "rapor-muhasebe-banka-grubu");
+    await muhasebe.context().close();
+    const personel = await newPage();
+    current = personel;
+    await login(personel, "personel1", USER_PASS);
+    const status = await personel.evaluate(() => fetch("/api/workspace/report-center/banka-bakiye").then(response => response.status));
+    ok(status === 403, `personel Banka Bakiye Raporu 403 (${status})`);
+    await personel.context().close();
+    current = admin;
+    // Sonraki adımlar 001'de.
     const firstCompany = (await must("şirketler", api.get("/api/companies"))).companies.find(company => company.code === "001");
     await admin.evaluate(async id => fetch("/api/companies/select", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ id }) }), firstCompany.id);
     await admin.goto(`${BASE}/`, { waitUntil: "load" });

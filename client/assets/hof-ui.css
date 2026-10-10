@@ -1072,7 +1072,7 @@ html:not(.hof-can-records-delete) .hof-float-delete,
 html:not(.hof-can-reports-view) [data-requires="reports.view"],
 /* Raporlar (v2.0.9): rapor yetkisi (yönetici, uzman), kişiye verilen finans raporları yetkisi ya da (v2.0.10)
    işlem geçmişi yetkisi (Raporlar → Tüm raporlar → İşlem geçmişi). */
-html:not(.hof-can-reports-view):not(.hof-can-overview-view):not(.hof-can-audit-view) [data-requires="reports.any"],
+html:not(.hof-can-reports-view):not(.hof-can-overview-view):not(.hof-can-audit-view):not(.hof-can-bank-reports) [data-requires="reports.any"],
 html:not(.hof-can-tasks-create) [data-requires="tasks.create"],
 html:not(.hof-can-users-manage) [data-requires="users.manage"],
 html:not(.hof-can-sources-manage) [data-requires="sources.manage"],

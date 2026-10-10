@@ -94,17 +94,30 @@
         title: `Bugüne kadarki nakit kasa: ${money(data.cash.balance)}.${data.cash.futureEntries ? ` İleri tarihli ${data.cash.futureEntries} hareketle birlikte ${money(data.cash.allEntries)} (Kasa ekranındaki "tüm hareketler").` : ""} Bu ay giriş ${money(data.cash.month.in)}, çıkış ${money(data.cash.month.out)}.`,
       });
       if (data.cash.bank) {
+        // v2.1.0 Aşama 14 (K10; plan §8.4, §8.9): ana değer Gerçek Banka (Banka penceresinin Genel Bakış'ıyla aynı ad ve tanım). Kart ve Kredi
+        // Borcu ile Hesabı Atanmamış Eski Hareketler ayrı satır, hiçbir toplama girmez. Bugün Giriş / Çıkış dış harekettir; kendi hesaplarınız
+        // arasındaki para (Kasa ile Banka Arası, Bankalar Arası Transfer) ayrı "Transfer" satırında.
         const b = data.cash.bank;
-        const at = data.cash.byMethodAt || {};
+        const labels = b.labels || { realBank: "Gerçek Banka", debt: "Kart ve Kredi Borcu", unassigned: "Hesabı Atanmamış Eski Hareketler" };
         const bankMoved = b.today?.in || b.today?.out;
+        const moved = b.transfer && (b.transfer.in || b.transfer.out);
+        const defined = b.defined !== false;
+        const lines = [
+          defined ? (bankMoved ? `Bugün <b class="hof-pulse-up">+${esc(shortMoney(b.today.in))}</b> · <b class="hof-pulse-down">−${esc(shortMoney(b.today.out))}</b>` : "Bugün hareket yok") : "Banka Hesabı Tanımlanmadı",
+          moved ? `<span data-pulse-bank="transfer">Transfer +${esc(shortMoney(b.transfer.in))} · −${esc(shortMoney(b.transfer.out))}</span>` : "",
+          b.debt?.shown ? `<span data-pulse-bank="debt">${esc(labels.debt)} ${esc(shortMoney(b.debt.total))}</span>` : "",
+          b.unassigned && Math.abs(b.unassigned.total) > 0.005 ? `<span class="hof-pulse-flag" data-pulse-bank="unassigned">${ICONS.warn}${esc(labels.unassigned)} ${esc(shortMoney(b.unassigned.total))}</span>` : "",
+        ].filter(Boolean);
         out.push({
           id: "bank",
           icon: ICONS.cash,
-          label: "Banka / POS",
-          value: moneyHtml(b.balance, { compact: true }),
-          tone: "",
-          sub: `${bankMoved ? `Bugün <b class="hof-pulse-up">+${esc(shortMoney(b.today.in))}</b> · <b class="hof-pulse-down">−${esc(shortMoney(b.today.out))}</b>` : "Bugün hareket yok"}<br>Banka ${esc(shortMoney(at.bank || 0))} · POS ${esc(shortMoney(at.card || 0))}`,
-          title: `Havale/EFT ve POS/kredi kartı hareketlerinin programa girilenlerden hesaplanan toplamı: ${money(b.balance)} (banka ekstresi değildir; Banka modülü gelene kadar bilgi amaçlıdır). Ayrıntı: Raporlar → Banka ve POS Hareketleri.`,
+          label: labels.realBank,
+          value: defined ? moneyHtml(b.balance, { compact: true }) : '<span class="hof-num">—</span>',
+          tone: defined && b.balance < 0 ? "is-bad" : "",
+          sub: lines.join("<br>"),
+          title: defined
+            ? `${labels.realBank}: banka hesaplarınızın (102) bakiyesi ${money(b.balance)}. Bugün giriş ${money(b.today?.in || 0)}, çıkış ${money(b.today?.out || 0)}; kendi hesaplarınız arasındaki para (Kasa ile Banka Arası, Bankalar Arası Transfer) giriş ve çıkışa sayılmaz.${b.debt?.shown ? ` ${labels.debt} ${money(b.debt.total)} ayrıdır.` : ""}${b.unassigned?.total ? ` ${labels.unassigned} ${money(b.unassigned.total)} hiçbir toplama girmez; Banka → Kurulum ve Aktarım ile hesaba atayın.` : ""}`
+            : `Banka hesabı tanımlanmadı. Banka penceresinden hesaplarınızı ve açılış bakiyelerini girin.${b.unassigned?.total ? ` ${labels.unassigned} ${money(b.unassigned.total)} hiçbir toplama girmez.` : ""}`,
         });
       }
     }
@@ -216,6 +229,8 @@
     const go = button.dataset.pulseGo;
     // Yetkisi olmayan ekrana gitmez: Kasa yetkisi olmayan kişi Kasa yerine kasa raporunu görür.
     if (go === "cash") HOF.can("cash.view") ? document.querySelector('#hof-sidecard [data-action="cash"]')?.click() : HOF.reportCenter?.open("kasa-hareketleri");
+    // v2.1.0 Aşama 14 (§8.9): Banka kutusu Banka penceresini açar; Banka yetkisi yoksa Banka Bakiye Raporu (ya da Banka ve POS Hareketleri).
+    else if (go === "bank") HOF.can("bank.view") && HOF.bank?.open ? HOF.bank.open() : HOF.reportCenter?.open(HOF.can("bank.reports") ? "banka-bakiye" : "banka-pos-hareketleri");
     else if (go === "stock") HOF.stock?.open();
     else if (go === "receivable") HOF.accounts?.open();
     else if (go === "payable") (HOF.cheques && HOF.can("cheques.view") ? HOF.cheques.open({ direction: "out" }) : HOF.accounts?.open());
@@ -314,7 +329,8 @@
     ["flow", "Nakit Akış", "Bugünkü kasadan başlayan tahmini kasa: beklenen giriş ve çıkışlar", () => canSee()],
     ["cheques", "Çek / Senet", "Alınan ve verilen evrak portföyü", () => canSee() && HOF.can("cheques.view")],
     // İşlem geçmişi yetkisi olan (uzman) finans yetkisi olmasa da burada yalnız "İşlem geçmişi" raporunu görür (v2.0.10).
-    ["all", "Tüm Raporlar", "Kasa, Cari, Taksit, Çek/Senet, Stok ve kayıt raporları: ön izleme, PDF ve Excel", () => canSee() || HOF.can("audit.view")],
+    // v2.1.0 Aşama 14: Banka Raporları yetkisi (bank.reports) olan da burada Banka grubunu görür.
+    ["all", "Tüm Raporlar", "Kasa, Cari, Taksit, Çek/Senet, Stok, Banka ve kayıt raporları: ön izleme, PDF ve Excel", () => canSee() || HOF.can("audit.view") || HOF.can("bank.reports")],
     ["table", "Tablo Raporları", "Yalnız Excel/Sheets tablolarındaki tutar ve tarihlerden", () => HOF.can("reports.view")],
   ];
   const tabsFor = () => TABS.filter(([, , , visible]) => visible());
@@ -786,7 +802,7 @@
     // Raporlar penceresi açıksa (Cari ekstre/mizan, Vade takip, Nakit akışı, Çek/Senet sekmeleri) gösterilen rapor da
     // yenilenir (v2.0.11); "Tüm raporlar" ve "Tablo raporları" sekmeleri kendi yenilemesini yapar.
     const reportSoon = HOF.refresher(() => (report?.modal && !PANE_TABS.has(report.tab) && state()?.data ? run({ quiet: true }) : null), { delay: 400, gap: 2000 });
-    HOF.onLedger(["cash", "accounts", "plans", "stock", "cheques"], detail => (detail?.local ? reportSoon.now() : reportSoon()), 400);
+    HOF.onLedger(["cash", "accounts", "plans", "stock", "cheques", "bank", "invoices"], detail => (detail?.local ? reportSoon.now() : reportSoon()), 400);
     HOF.on("live:resync", () => reloadSoon(200));
     HOF.on("live:hello", () => {
       live = true;

@@ -68,6 +68,11 @@ describe("göç zinciri → v20: para defteri 2.0.26'nın gösterdiğiyle birebi
           assert.equal(got.lockedUntil, expected.lockedUntil, `${label}: dönem kilidi`);
           assert.deepEqual(got.cash, expected.cash, `${label}: Kasa (pencere / tüm yollar) farklı`);
           assert.deepEqual(got.overviewCash, expected.overviewCash, `${label}: ANLIK DURUM Kasa/Banka kutusu farklı`);
+          // Aşama 14 (K10, plan §10.5 kabul): göçten sonra Banka kutusu Gerçek Banka'dır (eski veride hesap yok: "—", 0); Gerçek Banka + Hesabı
+          // Atanmamış Eski Hareketler = 2.0.26'daki "Banka / POS" (tüm hareketler).
+          assert.ok(got.bankK10, `${label}: ANLIK DURUM'da K10 alanları yok`);
+          assert.equal(got.bankK10.defined, false, `${label}: eski veride banka hesabı tanımlı değil`);
+          assert.equal(got.bankK10.realBank + got.bankK10.unassigned, Math.round(Number(expected.overviewCash.bank.allEntries || 0) * 100), `${label}: Gerçek Banka + Hesabı Atanmamış = eski Banka / POS`);
           assert.equal(got.overview, expected.overview, `${label}: ANLIK DURUM farklı`);
           assert.deepEqual(got.accounts, expected.accounts, `${label}: cari bakiyeleri farklı`);
           assert.equal(got.invoiceCount, expected.invoiceCount, `${label}: fatura sayısı`);

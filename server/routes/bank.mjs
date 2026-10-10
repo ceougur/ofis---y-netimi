@@ -323,5 +323,7 @@ export function registerBankRoutes(router, context) {
 
   // Modül formlarının hesap seçimi ve K7'si (Aşama 5–6; cari, Kasa ↔ Banka): modül rotaları istek anında context.bankAccounts.module'e ulaşır.
   service.module = createModuleBank({ store, accounts: service, negative: vouchers.negative, legacy: () => context.config?.bankPickLegacy === true });
+  // Rapor Merkezi'nin Banka grubu (Aşama 14): Banka Masraf Raporu bu uçla aynı kaynaktan (movements.feeReport) okur.
+  service.movements = movements;
   return service;
 }

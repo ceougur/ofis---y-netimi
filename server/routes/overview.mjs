@@ -25,7 +25,8 @@ const validDate = value => {
   return Number.isFinite(time) && new Date(time).toISOString().slice(0, 10) === value;
 };
 // v2.1.0: banka yazımları (hesap, açılış, sihirbaz) da ANLIK DURUM'un Banka kutusunu ve açık pencereleri yeniler.
-const OVERVIEW_KINDS = new Set(["cash", "accounts", "plans", "stock", "cheques", "bank"]);
+// v2.1.0 Aşama 14 (plan §8.9 C10): faturanın peşin tahsilatı/ödemesi (nakit, havale) de Kasa ve Banka kutusunu değiştirir; "invoices" de yeniler.
+const OVERVIEW_KINDS = new Set(["cash", "accounts", "plans", "stock", "cheques", "bank", "invoices"]);
 const MAX_RANGE_DAYS = 36_600; // 100 yıl (yalnız doğrulama; "tüm zaman" mizanı için geniş aralık serbest)
 const PDF_ROWS = 20_000;
 const collator = new Intl.Collator("tr", { numeric: true, sensitivity: "base" });
@@ -39,7 +40,7 @@ const GROUPS = new Set(["day", "week", "month"]);
 
 const MONEY_FORMAT = new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-export function registerOverviewRoutes(router, { store, auth, audit, events, dataset = null, cash = () => null, accounts = () => null, plans = () => null, stock = () => null, cheques = () => null, invoices = () => null, tables = () => null, now: clock = systemClock }) {
+export function registerOverviewRoutes(router, { store, auth, audit, events, dataset = null, cash = () => null, accounts = () => null, plans = () => null, stock = () => null, cheques = () => null, invoices = () => null, tables = () => null, money: moneyApi = null, bankAccounts = null, now: clock = systemClock }) {
   const today = () => isoDay(clock());
   const office = () => store.setting("office.name", "");
   const userName = user => user.display_name || user.username || "";
@@ -79,8 +80,42 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
       invoices()?.fingerprint?.() || "",
       // v2.1.0: işlem başlıkları (Banka Fişi dahil; tek kaynağın 9. kaynağı banka fişi satırlarıdır).
       hasEvents() ? tableState("fin_events") : "",
+      // Aşama 14 (K10): banka hesap kartları (hesap açma/silme, Pasife Al, tür) Banka kutusunu değiştirir.
+      hasEvents() ? tableState("bank_accounts") : "",
     ].join("|");
   let cache = { key: "", value: null };
+  // Banka kutusu (v2.1.0 Aşama 14, K10; plan §8.4, §8.9): ana değer Gerçek Banka (Σ 102, hesaba atanmış) — Banka penceresinin Genel Bakış'ıyla
+  // aynı tanım ve aynı ad (bankAccounts.summary). Kart ve Kredi Borcu (309 + 300) ve Hesabı Atanmamış Eski Hareketler (102.00 + 108.00) ayrı
+  // satırlardır, hiçbir varlık toplamına girmez. Bugün Giriş / Çıkış yalnız dış hareket; iç hareket (Kasa ↔ Banka, bankalar arası transfer, kredi,
+  // kart borcu) "Transfer" satırında (moneyLines.flows; §3.4). POS Bekleyen ve Blokeli POS 2.2.0'da (POS); bu sürümde 0 ve görünmez.
+  // Bilinçli değişiklik (§8.9): cash.bank.balance artık Gerçek Banka'dır; eski "Banka / POS" değeri (havale + POS, hesaba atanmış ya da değil)
+  // = Gerçek Banka + Hesabı Atanmamış Eski Hareketler (+ POS Bekleyen) (§10.5 kabul ölçütü).
+  const bankService = () => (typeof bankAccounts === "function" ? bankAccounts() : bankAccounts);
+  const moneyLines = () => (typeof moneyApi === "function" ? moneyApi() : moneyApi);
+  const minorTl = minor => roundMoney((Number(minor) || 0) / 100);
+  function bankBlock(day, legacy) {
+    const service = bankService();
+    const summary = service?.summary ? service.summary() : null;
+    if (!summary) return { balance: legacy.balanceToday, allEntries: legacy.balance, today: legacy.today };
+    const flows = moneyLines()?.flows ? moneyLines().flows(day, `${day.slice(0, 7)}-01`) : null;
+    const kinds = store.all("SELECT DISTINCT kind FROM bank_accounts WHERE deleted_at IS NULL").map(row => row.kind);
+    const flow = item => ({ in: minorTl(item?.inMinor), out: minorTl(item?.outMinor), transferIn: minorTl(item?.transferInMinor), transferOut: minorTl(item?.transferOutMinor) });
+    const today = flow(flows?.today);
+    const month = flow(flows?.month);
+    return {
+      labels: summary.labels,
+      defined: summary.realBank.defined,
+      balance: minorTl(summary.realBank.minor),
+      today: { in: today.in, out: today.out },
+      transfer: { in: today.transferIn, out: today.transferOut },
+      month,
+      debt: { card: minorTl(summary.debt.cardMinor), loan: minorTl(summary.debt.loanMinor), total: minorTl(summary.debt.totalMinor), shown: kinds.some(kind => kind === "card" || kind === "loan") },
+      unassigned: { bank: minorTl(summary.unassigned.bankMinor), card: minorTl(summary.unassigned.cardMinor), total: minorTl(summary.unassigned.totalMinor) },
+      posNet: minorTl(summary.posPending?.netMinor),
+      posBlocked: minorTl(summary.posPending?.blockedMinor),
+      pos: false,
+    };
+  }
   function compute() {
     const day = today();
     const key = fingerprint(day);
@@ -95,7 +130,7 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
     // v2.0.17 (müşteri): Kasa yalnız nakit → kart "Nakit Kasa"; banka tarafı (havale/EFT + POS/kredi kartı) ayrı kart.
     const nakit = cashSummary.cashOnly || { balance: cashSummary.balance, balanceToday: cashSummary.balanceToday, today: cashSummary.today, month: cashSummary.month, futureEntries: cashSummary.futureEntries };
     const banka = cashSummary.noncash || { balance: 0, balanceToday: 0, today: { in: 0, out: 0 } };
-    const cashBlock = { balance: nakit.balanceToday, allEntries: nakit.balance, today: nakit.today, month: nakit.month, futureEntries: nakit.futureEntries, byMethod: cashSummary.byMethod || null, byMethodAt: cashSummary.byMethodAt || null, bank: { balance: banka.balanceToday, allEntries: banka.balance, today: banka.today } };
+    const cashBlock = { balance: nakit.balanceToday, allEntries: nakit.balance, today: nakit.today, month: nakit.month, futureEntries: nakit.futureEntries, byMethod: cashSummary.byMethod || null, byMethodAt: cashSummary.byMethodAt || null, bank: bankBlock(day, banka) };
     // Stok: Stok listesiyle aynı sayım (hizmet kalemleri kritik/tükendi sayılmaz).
     const stockTotals = stock()?.list ? stock().list(admin, {}).totals : { count: 0, low: 0, out: 0, negative: 0, services: 0, value: 0 };
     const stockBlock = { critical: stockTotals.low, out: stockTotals.out, negative: stockTotals.negative || 0, products: stockTotals.count - (stockTotals.services || 0), services: stockTotals.services || 0, value: stockTotals.value };

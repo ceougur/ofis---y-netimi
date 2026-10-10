@@ -18,6 +18,10 @@ import { allocate, dayText, isoDay } from "../lib/plans.mjs";
 import { tablePdf, tl } from "../lib/report-pdf.mjs";
 import { buildXlsx } from "../lib/xlsx-write.mjs";
 import { systemClock } from "../lib/clock.mjs";
+import { K10_LABELS } from "../lib/bank/accounts.mjs";
+import { typeLabel } from "../lib/bank/event-types.mjs";
+import { waysFor } from "../lib/bank/money-lines.mjs";
+import { CHART } from "../lib/general-ledger.mjs";
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 const validDate = value => {
@@ -133,7 +137,7 @@ export function footerRow({ headers = [], types = [], rows = [], footer, footerU
   return out;
 }
 
-export function registerReportCenter(router, { store, auth, audit, dataset, cash = () => null, accounts = () => null, plans = () => null, stock = () => null, cheques = () => null, invoices = () => null, overview = () => null, ledger = () => null, integrity = () => null, now: clock = systemClock }) {
+export function registerReportCenter(router, { store, auth, audit, dataset, cash = () => null, accounts = () => null, plans = () => null, stock = () => null, cheques = () => null, invoices = () => null, overview = () => null, ledger = () => null, integrity = () => null, money: moneyApi = null, bankAccounts = null, now: clock = systemClock }) {
   const today = () => isoDay(clock());
   const office = () => store.setting("office.name", "");
   const admin = { id: "", role: "admin" };
@@ -190,6 +194,79 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
     if (entry.source === "plan") return [entry.planName, entry.description].filter(Boolean).join(" · ");
     if (entry.source === "account") return [entry.accountName, entry.description].filter(Boolean).join(" · ");
     return entry.description || "";
+  };
+
+  // ---------- Banka raporları (v2.1.0 Aşama 14; plan §8.10, §3.4, K10) ----------
+  // Kaynak tek kaynaktır (moneyLines, K5): satırlar ve Giriş / Çıkış / Transfer / Açılış ve Devir payları money.classified'dan (Banka penceresinin
+  // "Bugün ve Bu Ay"ı ile aynı kural, flows); Banka Masraf Raporu Banka penceresinin masraf verisinden (movements.feeReport), Alt Hesap Mizanı
+  // Banka penceresindeki Alt Hesap Mizanı'nın verisinden (subTrialData).
+  const bankService = () => (typeof bankAccounts === "function" ? bankAccounts() : bankAccounts);
+  const moneyLines = () => (typeof moneyApi === "function" ? moneyApi() : moneyApi);
+  const cents = value => money(roundMoney((Number(value) || 0) / 100));
+  const BANK_MOVES = Object.freeze({ external: "Dış Hareketler", internal: "Transfer (İç Hareketler)" });
+  const BANK_GROUPS = Object.freeze({ real: K10_LABELS.realBank, debt: K10_LABELS.debt, unassigned: K10_LABELS.unassigned, all: "Tümü" });
+  const UNASSIGNED_CHOICE = "unassigned";
+  const isRealKind = kind => kind !== "card" && kind !== "loan";
+  const bankRows = () => {
+    try {
+      return store.all("SELECT id, code, kind, gl, gl_sub AS glSub, bank_name AS bankName, name, status FROM bank_accounts WHERE deleted_at IS NULL ORDER BY position, created_at");
+    } catch {
+      return []; // banka tabloları yoksa (göç öncesi veri) banka raporları boş
+    }
+  };
+  const bankLabel = row => `${row.bankName} · ${row.name}${row.status === "passive" ? " (Pasif)" : ""}`;
+  const UNASSIGNED_WAYS = Object.freeze({ bank: { sub: "102.00", label: "Havale / EFT" }, card: { sub: "108.00", label: "POS / Kart" } });
+  // Satırın işlem türü (İşlem No'su olmayan eski satırda kaynağından).
+  const lineType = line => {
+    if (line.event_type) {
+      if (line.event_type === "reversal") return `${typeLabel("reversal")} · ${typeLabel(line.base_type || "", line.kind === "in" ? "out" : "in")}`;
+      return typeLabel(line.event_type, line.kind);
+    }
+    switch (Number(line.src)) {
+      case 1:
+        return typeLabel("record_in");
+      case 2:
+        return Number(line.internal) === 1 ? typeLabel("cash_transfer") : typeLabel(line.kind === "out" ? "cash_out" : "cash_in");
+      case 3:
+        return typeLabel(line.kind === "out" ? "party_out" : "party_in");
+      case 4:
+        return typeLabel("invoice_cash", line.kind);
+      case 6:
+        return typeLabel(line.kind === "out" ? "plan_out" : "plan_in");
+      case 7:
+        return typeLabel("stock_cash", line.kind);
+      case 8:
+        return typeLabel(line.kind === "out" ? "cheque_pay" : "cheque_collect");
+      default:
+        return "Banka Fişi";
+    }
+  };
+  function bankChoice(value) {
+    const rows = bankRows();
+    const choice = String(value || "");
+    if (!choice) return { rows, refs: new Set(rows.filter(row => isRealKind(row.kind)).map(row => row.id)), title: `${K10_LABELS.realBank} (Tüm Hesaplar)`, single: null };
+    if (choice === UNASSIGNED_CHOICE) return { rows, refs: null, unassigned: true, title: K10_LABELS.unassigned, single: null };
+    const row = rows.find(item => item.id === choice);
+    if (!row) throw new HttpError(404, "Banka hesabı bulunamadı. Silinmiş ya da başka şirkete ait olabilir.", { code: "bank-account-missing" });
+    return { rows, refs: new Set([row.id]), title: `${bankLabel(row)} (${row.glSub})`, single: row };
+  }
+  // Seçimin ham satırları (tarih sırasıyla; to'dan sonrası okunmaz): Hesabı Atanmamış = bağsız havale ve POS satırları (102.00 / 108.00).
+  function bankLinesOf(choice, to) {
+    const lines = moneyLines();
+    if (!lines?.classified) return [];
+    if (choice.unassigned) return lines.classified({ ways: ["bank", "card"], until: to }).filter(line => !line.ref);
+    if (choice.single) return lines.classified({ ref: choice.single.id, until: to });
+    if (!choice.refs.size) return [];
+    return lines.classified({ ways: ["bank"], until: to }).filter(line => line.ref && choice.refs.has(line.ref));
+  }
+  const keyOf = (choice, line) => (choice.unassigned ? `u:${line.way}` : line.ref);
+  const keyLabel = (choice, key) => {
+    if (choice.unassigned) {
+      const way = UNASSIGNED_WAYS[key.slice(2)] || { sub: "", label: key };
+      return `${K10_LABELS.unassigned} · ${way.label} (${way.sub})`;
+    }
+    const row = choice.rows.find(item => item.id === key);
+    return row ? bankLabel(row) : key;
   };
 
   // ---------- Rapor kaydı ----------
@@ -408,7 +485,7 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
       id: "banka-pos-hareketleri",
       group: "Kasa",
       title: "Banka ve POS Hareketleri",
-      description: "Havale/EFT, POS ve kredi kartıyla yapılan tahsilat ve ödemeler (cari, fatura, taksit, stok, çek/senet ekranlarından girilenler ve Kasa ↔ Banka transferleri); devir, yürüyen bakiye, kaynağı.",
+      description: "Havale/EFT, POS ve kredi kartıyla yapılan tahsilat ve ödemeler (cari, fatura, taksit, stok, çek/senet ekranlarından girilenler ve Kasa ↔ Banka transferleri); devir, yürüyen bakiye, kaynağı. Şirketin kendi hesapları arasındaki para (Kasa ile Banka Arası, Bankalar Arası Transfer) giriş ve çıkışa sayılmaz, Transfer satırındadır.",
       params: ["range", "payMethod"],
       preset: "thisYear",
       build(query) {
@@ -416,20 +493,254 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
         const method = ["bank", "card"].includes(query.payMethod) ? query.payMethod : "noncash";
         const data = cash().report(admin, range.from, range.to, method);
         const which = { bank: "Banka (Havale / EFT)", card: "POS / Kredi Kartı" }[method] || "Banka ve POS";
+        // v2.1.0 Aşama 14 (§3.4, K10; Aşama 9 bilinen sınırı): iç hareket (Kasa ↔ Banka, bankalar arası transfer, kredi, kart borcu ve ters kayıtları)
+        // Giriş / Çıkış kolonuna yazılmaz — tutarı açıklamada "(Transfer Giriş / Çıkış: …)", bakiyede; özetin "Transfer Giriş / Çıkış" satırlarında.
+        // İç hareketin gider payı (transfer ücreti, kredi faizi) dış çıkıştır: o satırın Çıkış kolonunda. Payların kuralı Banka penceresinin
+        // "Bugün ve Bu Ay"ı ile aynı (moneyLines.classified ↔ flows).
+        const parts = new Map();
+        for (const line of moneyLines()?.classified ? moneyLines().classified({ ways: waysFor(method), until: range.to, light: true }) : []) parts.set(`${moneyLines().sourceName(line.src)}|${line.id}`, line);
         const rows = [[openingDay(range.from), "", "Devir", `Dönem başı ${which.toLocaleLowerCase("tr-TR")}`, "", "", money(data.opening), ""]];
+        const period = { in: 0, out: 0, trIn: 0, trOut: 0, transfers: 0 };
         // GG2: açılış ve Devir Kapanışı satırları giriş/çıkış kolonuna yazılmaz (TOPLAM = dönem giriş/çıkış); tutarı açıklamada, bakiyede.
         for (const entry of data.entries) {
-          const label = entry.adjust ? `${cashLabel(entry)} (Açılış ve Devir Düzeltmesi: ${entry.kind === "in" ? "+" : "−"}${money(entry.amount)})` : cashLabel(entry);
-          rows.push([dayText(entry.date), methodLabel(entry.method, entry.kind), entry.transferId ? "Kasa ↔ Banka" : CASH_SOURCE[entry.source] || entry.source, label, !entry.adjust && entry.kind === "in" ? money(entry.amount) : "", !entry.adjust && entry.kind === "out" ? money(entry.amount) : "", money(entry.balance), entry.actorName || ""]);
+          const part = parts.get(`${entry.source}|${entry.id}`);
+          let label = cashLabel(entry);
+          let inCents = entry.kind === "in" ? Math.round(entry.amount * 100) : 0;
+          let outCents = entry.kind === "out" ? Math.round(entry.amount * 100) : 0;
+          if (entry.adjust) {
+            label = `${label} (Açılış ve Devir Düzeltmesi: ${entry.kind === "in" ? "+" : "−"}${money(entry.amount)})`;
+            inCents = 0;
+            outCents = 0;
+          } else if (part && (part.tr_in || part.tr_out)) {
+            period.transfers += 1;
+            period.trIn += part.tr_in;
+            period.trOut += part.tr_out;
+            label = `${label} (Transfer ${part.tr_in ? "Giriş" : "Çıkış"}: ${cents(part.tr_in || part.tr_out)})`;
+            inCents = part.ext_in;
+            outCents = part.ext_out;
+          }
+          period.in += inCents;
+          period.out += outCents;
+          rows.push([dayText(entry.date), methodLabel(entry.method, entry.kind), entry.transferId ? "Kasa ↔ Banka" : CASH_SOURCE[entry.source] || entry.source, label, inCents ? cents(inCents) : "", outCents ? cents(outCents) : "", money(entry.balance), entry.actorName || ""]);
         }
         const adjust = data.period.adjust || 0;
         const closing = roundMoney(data.opening + data.period.in - data.period.out + adjust);
+        const transferLines = period.transfers ? [["Transfer Giriş", cents(period.trIn)], ["Transfer Çıkış", cents(period.trOut)]] : [];
         return {
           subtitle: `${which} · ${rangeText(range)}`,
           headers: ["Tarih", "Yol", "Kaynak", "Açıklama", "Giriş", "Çıkış", "Bakiye", "Giren"],
           types: ["", "", "", "", "money", "money", "money", ""],
           rows,
-          summary: [["Devir", money(data.opening)], ["Dönem Giriş", money(data.period.in)], ["Dönem Çıkış", money(data.period.out)], ["Dönem Net", money(data.period.net)], ...(adjust || data.entries.some(entry => entry.adjust) ? [["Açılış ve Devir Düzeltmeleri", money(adjust)]] : []), ["Dönem Sonu", money(closing)], ["Banka (tüm hareketler)", money(data.byMethod.bank)], ["POS / Kredi Kartı (tüm hareketler)", money(data.byMethod.card)]],
+          summary: [["Devir", money(data.opening)], ["Dönem Giriş", cents(period.in)], ["Dönem Çıkış", cents(period.out)], ["Dönem Net", cents(period.in - period.out)], ...transferLines, ...(adjust || data.entries.some(entry => entry.adjust) ? [["Açılış ve Devir Düzeltmeleri", money(adjust)]] : []), ["Dönem Sonu", money(closing)], ["Banka (tüm hareketler)", money(data.byMethod.bank)], ["POS / Kredi Kartı (tüm hareketler)", money(data.byMethod.card)]],
+        };
+      },
+    },
+    // ===== Banka (v2.1.0 Aşama 14; plan §8.10 "Banka" grubu, bank.reports) =====
+    // 2.1.0'da (daraltılmış kapsam) Banka Bakiye, Banka Hareket, Banka Masraf Raporu ve Alt Hesap Mizanı. POS, döviz ve ekstre raporları
+    // kendi sürümlerinde (2.2.0 / 2.3.0) gelir; bu sürümde görünmez.
+    {
+      id: "banka-bakiye",
+      group: "Banka",
+      title: "Banka Bakiye Raporu",
+      description: "Her banka hesabının dönem başı ve dönem sonu bakiyesi; dönemdeki giriş, çıkış ve transferleri. Gerçek Banka, Kart ve Kredi Borcu ve Hesabı Atanmamış Eski Hareketler ayrı gruplardır; kart ve kredi borcu ile hesabı atanmamış hareketler Gerçek Banka toplamına girmez.",
+      params: ["range", "bankGroup"],
+      preset: "thisYear",
+      permission: "bank.reports",
+      standalone: true,
+      build(query) {
+        const range = rangeOf(query, "thisYear");
+        const group = query.bankGroup || "real";
+        if (!Object.hasOwn(BANK_GROUPS, group)) throw new HttpError(400, "Hesap grubu Gerçek Banka, Kart ve Kredi Borcu, Hesabı Atanmamış Eski Hareketler ya da Tümü olmalı.", { code: "bank-filter", field: "bankGroup" });
+        const rows = bankRows();
+        const sums = new Map();
+        const bucket = key => {
+          if (!sums.has(key)) sums.set(key, { opening: 0, in: 0, out: 0, trIn: 0, trOut: 0, adjust: 0, closing: 0, lines: 0 });
+          return sums.get(key);
+        };
+        const lines = moneyLines()?.classified ? moneyLines().classified({ ways: ["bank", "card", "ccard", "loan"], until: range.to, light: true }) : [];
+        for (const line of lines) {
+          const key = line.ref || `u:${line.way}`;
+          const b = bucket(key);
+          const signed = line.kind === "in" ? Number(line.cents) : -Number(line.cents);
+          b.closing += signed;
+          b.lines += 1;
+          if (range.from && line.date < range.from) {
+            b.opening += signed;
+            continue;
+          }
+          b.in += line.ext_in;
+          b.out += line.ext_out;
+          b.trIn += line.tr_in;
+          b.trOut += line.tr_out;
+          b.adjust += line.adjust;
+        }
+        const out = [];
+        const add = (groupName, bankName, accountName, sub, b) => out.push([groupName, bankName, accountName, sub, cents(b.opening), cents(b.in), cents(b.out), cents(b.trIn), cents(b.trOut), cents(b.adjust), cents(b.closing)]);
+        const empty = { opening: 0, in: 0, out: 0, trIn: 0, trOut: 0, adjust: 0, closing: 0, lines: 0 };
+        const total = { real: 0, debt: 0, unassigned: 0 };
+        for (const row of rows) {
+          const b = sums.get(row.id) || empty;
+          const real = isRealKind(row.kind);
+          if (real) total.real += b.closing;
+          else total.debt -= b.closing;
+          if (group === "all" || group === (real ? "real" : "debt")) add(real ? K10_LABELS.realBank : K10_LABELS.debt, row.bankName, `${row.name}${row.status === "passive" ? " (Pasif)" : ""}`, row.glSub, b);
+        }
+        for (const [way, spec] of Object.entries(UNASSIGNED_WAYS)) {
+          const b = sums.get(`u:${way}`);
+          if (!b?.lines) continue;
+          total.unassigned += b.closing;
+          if (group === "all" || group === "unassigned") add(K10_LABELS.unassigned, "—", spec.label, spec.sub, b);
+        }
+        const hasDebt = rows.some(row => !isRealKind(row.kind));
+        const hasReal = rows.some(row => isRealKind(row.kind));
+        return {
+          subtitle: `${BANK_GROUPS[group]} · ${rangeText(range)} · Dönem sonu bakiyeleri ${range.to ? dayText(range.to) : "bugün"} itibarıyla`,
+          headers: ["Grup", "Banka", "Hesap", "Alt Hesap", "Dönem Başı", "Giriş", "Çıkış", "Transfer Giriş", "Transfer Çıkış", "Açılış ve Devir Düzeltmesi", "Dönem Sonu"],
+          types: ["", "", "", "", "money", "money", "money", "money", "money", "money", "money"],
+          rows: out,
+          summary: [
+            [K10_LABELS.realBank, hasReal ? cents(total.real) : "Banka Hesabı Tanımlanmadı"],
+            ...(hasDebt ? [[K10_LABELS.debt, cents(total.debt)]] : []),
+            ...(total.unassigned || sums.has("u:bank") || sums.has("u:card") ? [[K10_LABELS.unassigned, cents(total.unassigned)]] : []),
+            ["Hesap", String(rows.length)],
+          ],
+          // Gruplar (varlık, borç, hesabı atanmamış) birbirine toplanmaz: TOPLAM yalnız tek grup gösterilirken.
+          footerUniform: "Grup",
+        };
+      },
+    },
+    {
+      id: "banka-hareket",
+      group: "Banka",
+      title: "Banka Hareket Raporu",
+      description: "Seçilen banka hesabının (ya da bütün Gerçek Banka hesaplarının) hareketleri: İşlem No, işlem türü, giriş, çıkış, transfer ve hesabın yürüyen bakiyesi. Kendi hesaplarınız arasındaki para (Kasa ile Banka Arası, Bankalar Arası Transfer, kredi, kart borcu) Transfer kolonlarındadır.",
+      params: ["range", "bankAccount", "bankMove"],
+      preset: "thisYear",
+      permission: "bank.reports",
+      standalone: true,
+      build(query) {
+        const range = rangeOf(query, "thisYear");
+        const move = query.bankMove || "";
+        if (move && !Object.hasOwn(BANK_MOVES, move)) throw new HttpError(400, "Hareket süzgeci Dış Hareketler ya da Transfer olmalı.", { code: "bank-filter", field: "bankMove" });
+        const choice = bankChoice(query.bankAccount);
+        const balance = new Map();
+        const opening = new Map();
+        const order = [];
+        const body = [];
+        const totals = { in: 0, out: 0, trIn: 0, trOut: 0, adjust: 0, allIn: 0, allOut: 0, adjusted: false };
+        for (const line of bankLinesOf(choice, range.to)) {
+          const key = keyOf(choice, line);
+          if (!balance.has(key)) {
+            balance.set(key, 0);
+            opening.set(key, 0);
+            order.push(key);
+          }
+          const signed = line.kind === "in" ? Number(line.cents) : -Number(line.cents);
+          balance.set(key, balance.get(key) + signed);
+          if (range.from && line.date < range.from) {
+            opening.set(key, opening.get(key) + signed);
+            continue;
+          }
+          totals.in += line.ext_in;
+          totals.out += line.ext_out;
+          totals.trIn += line.tr_in;
+          totals.trOut += line.tr_out;
+          totals.adjust += line.adjust;
+          if (line.adjust) totals.adjusted = true;
+          if (line.kind === "in") totals.allIn += Number(line.cents);
+          else totals.allOut += Number(line.cents);
+          if (line.adjust ? Boolean(move) : move === "external" ? !(line.ext_in || line.ext_out) : move === "internal" ? !(line.tr_in || line.tr_out) : false) continue;
+          const entry = moneyLines().shape(line);
+          let label = cashLabel(entry) || entry.description || "";
+          if (line.adjust) label = `${label} (Açılış ve Devir Düzeltmesi: ${line.adjust > 0 ? "+" : "−"}${cents(Math.abs(line.adjust))})`;
+          const cell = value => (value ? cents(value) : "");
+          body.push([dayText(line.date), line.event_no || "", keyLabel(choice, key), lineType(line), label, cell(line.ext_in), cell(line.ext_out), cell(line.tr_in), cell(line.tr_out), cents(balance.get(key))]);
+        }
+        // Single hesapta hareket yoksa da devir satırı (bakiyesi) görünür.
+        if (choice.single && !order.length) {
+          order.push(choice.single.id);
+          opening.set(choice.single.id, 0);
+          balance.set(choice.single.id, 0);
+        }
+        const devir = order.map(key => [openingDay(range.from), "", keyLabel(choice, key), "Devir", "Dönem başı bakiye", "", "", "", "", cents(opening.get(key))]);
+        const openingTotal = [...opening.values()].reduce((sum, value) => sum + value, 0);
+        const closingTotal = [...balance.values()].reduce((sum, value) => sum + value, 0);
+        return {
+          subtitle: `${choice.title} · ${rangeText(range)}${move ? ` · ${BANK_MOVES[move]}` : ""}`,
+          headers: ["Tarih", "İşlem No", "Hesap", "İşlem Türü", "Açıklama", "Giriş", "Çıkış", "Transfer Giriş", "Transfer Çıkış", "Bakiye"],
+          types: ["", "", "", "", "", "money", "money", "money", "money", "money"],
+          rows: [...devir, ...body],
+          summary: [
+            ["Hesap", choice.title],
+            ["Devir", cents(openingTotal)],
+            ["Giriş", cents(totals.in)],
+            ["Çıkış", cents(totals.out)],
+            ["Transfer Giriş", cents(totals.trIn)],
+            ["Transfer Çıkış", cents(totals.trOut)],
+            ...(totals.adjusted ? [["Açılış ve Devir Düzeltmeleri", cents(totals.adjust)]] : []),
+            ["Dönem Sonu", cents(closingTotal)],
+            // Tek hesapta banka ekstresi gibi: hesaba giren ve çıkan her tutar (transfer ve açılış dahil).
+            ...(choice.single ? [["Hesaba Giren (Tümü)", cents(totals.allIn)], ["Hesaptan Çıkan (Tümü)", cents(totals.allOut)]] : []),
+          ],
+        };
+      },
+    },
+    {
+      id: "banka-masraf",
+      group: "Banka",
+      title: "Banka Masraf Raporu",
+      description: "Banka masrafları (BSMV'li, vergisiz ve faturalı KDV'li) ve bankalar arası transfer ücretleri: matrah, BSMV ve KDV ayrı kolonlarda; gider hesabı (770 / 653) ve banka hesabı bazında toplamlar. Ters kaydedilen masraf ters kaydının tarihinde eksi yazılır.",
+      params: ["range", "feeAccount"],
+      preset: "thisYear",
+      permission: "bank.reports",
+      standalone: true,
+      build(query) {
+        const range = rangeOf(query, "thisYear");
+        const service = bankService()?.movements;
+        const empty = { subtitle: rangeText(range), headers: ["Tarih", "İşlem No", "Banka Hesabı", "Masraf Türü", "Hesap Kodu", "Matrah", "BSMV", "KDV", "Toplam", "Fatura No", "Açıklama"], types: ["", "", "", "", "", "money", "money", "money", "money", "", ""], rows: [], summary: [] };
+        if (!service?.feeReport) return empty;
+        const account = query.feeAccount || "";
+        const report = service.feeReport({ from: range.from, to: range.to, account });
+        const label = bankRows().find(row => row.id === account);
+        const typeOf = row => `${row.feeTypeName || "Banka Masrafı"}${row.type === "transfer" ? " (Transfer Ücreti)" : row.type === "reversal" ? " (Ters Kayıt)" : ""}`;
+        const glText = gl => (gl ? `${gl} ${CHART[gl] || ""}`.trim() : "");
+        return {
+          ...empty,
+          subtitle: `${label ? bankLabel(label) : "Tüm Banka Hesapları"} · ${rangeText(range)}`,
+          rows: report.rows.map(row => [dayText(row.date), row.no, row.accountLabel, typeOf(row), glText(row.gl), cents(row.baseMinor), cents(row.bsmvMinor), cents(row.vatMinor), cents(row.totalMinor), row.invoiceNo || "", row.description || ""]),
+          summary: [
+            ["Kayıt", String(report.rows.length)],
+            ["Matrah", cents(report.totals.baseMinor)],
+            ["BSMV", cents(report.totals.bsmvMinor)],
+            ["KDV", cents(report.totals.vatMinor)],
+            ["Toplam", cents(report.totals.totalMinor)],
+            ...Object.entries(report.totals.byGl).sort(([a], [b]) => a.localeCompare(b)).map(([gl, item]) => [glText(gl) || "Hesapsız", cents(item.totalMinor)]),
+            ...Object.entries(report.totals.byAccount).map(([id, item]) => [bankRows().find(row => row.id === id) ? bankLabel(bankRows().find(row => row.id === id)) : id, cents(item.totalMinor)]),
+          ],
+        };
+      },
+    },
+    {
+      id: "alt-hesap-mizani",
+      group: "Banka",
+      title: "Alt Hesap Mizanı",
+      description: "Banka hesaplarının Tekdüzen alt hesapları (102.01, 102.02 …, kurumsal kart 309, kredi 300, Hesabı Atanmamış 102.00 / 108.00): devir, dönem borç, dönem alacak ve bakiye; her ana hesap alt hesaplarının toplamına eşittir.",
+      params: ["range"],
+      preset: "thisYear",
+      permission: "bank.reports",
+      standalone: true,
+      build(query) {
+        const range = rangeOf(query, "thisYear");
+        const service = bankService();
+        const data = service?.subTrialData ? service.subTrialData({ from: range.from, to: range.to }) : { rows: [], mains: [] };
+        const yon = value => (value > 0.005 ? "Borç" : value < -0.005 ? "Alacak" : "");
+        const allOk = data.mains.every(main => main.ok);
+        return {
+          subtitle: `${rangeText(range)} · Ana hesaplar alt hesaplarının toplamına ${allOk ? "eşit" : "EŞİT DEĞİL"}`,
+          headers: ["Alt Hesap", "Hesap Adı", "Ana Hesap", "Devir", "Borç", "Alacak", "Bakiye", "Yön"],
+          types: ["", "", "", "money", "money", "money", "money", ""],
+          rows: data.rows.map(row => [row.sub, row.name || "", `${row.account} ${CHART[row.account] || ""}`.trim(), money(row.opening), money(row.debit), money(row.credit), money(Math.abs(row.balance)), yon(row.balance)]),
+          summary: [...data.mains.map(main => [`${main.account} ${main.name}`, `${money(Math.abs(main.balance))}${main.balance < -0.005 ? " (Alacak)" : ""}`]), ["Alt Hesap Mutabakatı", allOk ? "Tutarlı" : "Fark Var"]],
         };
       },
     },
@@ -1406,7 +1717,8 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
   const queryOf = params => {
     const query = {};
     // v2.0.23 (Bulgu 4): payMethod (Banka ve POS Hareketleri → Yol) listede yoktu; süzgeç 2.0.17'den beri yok sayılıyordu.
-    for (const key of ["preset", "from", "to", "account", "type", "side", "status", "direction", "category", "state", "planStatus", "taskStatus", "tab", "payMethod"]) {
+    // v2.1.0 Aşama 14: Banka raporlarının süzgeçleri (bankAccount, bankMove, bankGroup, feeAccount) — Bulgu 4 dersi: listede olmayan parametre düşer.
+    for (const key of ["preset", "from", "to", "account", "type", "side", "status", "direction", "category", "state", "planStatus", "taskStatus", "tab", "payMethod", "bankAccount", "bankMove", "bankGroup", "feeAccount"]) {
       const value = text(params.get(key));
       if (value) query[key] = value.slice(0, 200);
     }
@@ -1424,8 +1736,21 @@ export function registerReportCenter(router, { store, auth, audit, dataset, cash
   }
   router.get("/api/workspace/report-center", async ({ req, res }) => {
     const user = enter(req);
+    const list = REPORTS.filter(report => allowed(user, report));
+    // Banka raporlarının hesap seçenekleri (yalnız Banka Raporları yetkisiyle; bakiye dönmez): Gerçek Banka hesapları, kart ve kredi hesapları,
+    // Hesabı Atanmamış Eski Hareketler. Banka Masraf Raporu'nda yalnız hesaplar (masraf her zaman bir hesabın satırıdır).
+    let choices = null;
+    if (list.some(report => report.group === "Banka")) {
+      const rows = bankRows();
+      const accountsOf = filter => rows.filter(filter).map(row => [row.id, `${bankLabel(row)} · ${row.glSub}${isRealKind(row.kind) ? "" : row.kind === "card" ? " (Kurumsal Kredi Kartı)" : " (Kredi Hesabı)"}`]);
+      choices = {
+        bankAccount: [["", `${K10_LABELS.realBank} (Tüm Hesaplar)`], ...accountsOf(row => isRealKind(row.kind)), ...accountsOf(row => !isRealKind(row.kind)), [UNASSIGNED_CHOICE, K10_LABELS.unassigned]],
+        feeAccount: [["", "Tüm Banka Hesapları"], ...accountsOf(row => isRealKind(row.kind))],
+      };
+    }
     ok(res, {
-      reports: REPORTS.filter(report => allowed(user, report)).map(({ id, group, title, description, params, preset, accountRequired }) => ({ id, group, title, description, params, preset: preset || "", accountRequired: accountRequired === true })),
+      reports: list.map(({ id, group, title, description, params, preset, accountRequired }) => ({ id, group, title, description, params, preset: preset || "", accountRequired: accountRequired === true })),
+      ...(choices ? { choices } : {}),
       today: today(),
     });
   });

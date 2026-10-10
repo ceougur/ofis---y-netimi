@@ -78,7 +78,8 @@ const qtyText = milli => `${Math.floor(milli / 1000)}${milli % 1000 ? `,${String
 const priceText = p4 => `${Math.floor(p4 / 10000)},${String(p4 % 10000).padStart(4, "0")}`;
 const centsOf = value => Math.round(Number(value) * 100);
 const centsOfText = text => {
-  const t = String(text || "").replace(/[^\d,-]/g, "");
+  // Eksi tutar raporda "−" (U+2212) ile yazılır (v2.1.0 Aşama 14: banka raporlarında eksi bakiye ve ters kaydedilmiş masraf).
+  const t = String(text || "").replace(/−/g, "-").replace(/[^\d,-]/g, "");
   return t ? Math.round(Number(t.replace(",", ".")) * 100) : 0;
 };
 export const addDays = (iso, days) => {
@@ -137,7 +138,9 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
   // Kasa'ya etkiler (tarihli): nakit eksi korumasının modeli ve işlem zinciri denetimi bunlardan hesaplanır.
   function cashEffects() {
     const out = [];
-    for (const e of M.cash) out.push({ source: "manual", date: e.date, method: e.method, cents: e.kind === "in" ? e.amount : -e.amount });
+    // v2.1.0 Aşama 14: internal — iç hareket (Kasa ↔ Banka ikizi, bankalar arası transfer ve ters kaydı); feePart — iç hareketin dış payı (gönderen
+    // bacağındaki transfer ücreti; satırın yönünde). Banka ve POS Hareketleri bunları Dönem Giriş/Çıkış'a değil Transfer Giriş/Çıkış'a yazar.
+    for (const e of M.cash) out.push({ source: "manual", date: e.date, method: e.method, cents: e.kind === "in" ? e.amount : -e.amount, internal: Boolean(e.transferId) });
     for (const e of M.entries) if (e.kind === "in" || e.kind === "out") out.push({ source: "account", date: e.date, method: e.method, cents: e.kind === "in" ? e.amount : -e.amount });
     for (const m of M.moves) if (m.pay === "cash" && m.amount > 0) out.push({ source: "stock", date: m.date, method: m.method, cents: m.kind === "out" ? m.amount : -m.amount });
     for (const e of M.planEntries) out.push({ source: "plan", date: e.date, method: e.method, cents: e.kind === "in" ? e.amount : -e.amount });
@@ -148,7 +151,7 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
     // v2.1.0: Banka Fişi para satırları (açılış, fiş, ters kayıt) — her biri tek banka satırı.
     // GG2: açılış (ve Devir Kapanışı, eski bakiye aktarımı) para hareketi değildir — raporda satır olarak görünür, dönem giriş/çıkışına
     // girmez ("Açılış ve Devir Düzeltmeleri"); bakiyeye girer.
-    for (const e of M.bankLines) out.push({ source: "bankLine", date: e.date, method: "bank", cents: e.cents, adjust: e.type === "opening" });
+    for (const e of M.bankLines) out.push({ source: "bankLine", date: e.date, method: "bank", cents: e.cents, adjust: e.type === "opening", internal: Boolean(e.transfer), feePart: e.feePart || 0, bankId: e.bankId, feeTotal: e.feeTotal || 0 });
     return out;
   }
   const balAt = (method, date) => cashEffects().filter(x => x.method === method && (!date || x.date <= date)).reduce((s, x) => s + x.cents, 0);
@@ -199,7 +202,7 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
     const opening = R.int(20_000, 80_000) * 100 + R.int(0, 99);
     const r = await api("POST", "/api/workspace/bank/accounts", { bankName, name: `Ana TL Hesabı T${seed}`, kind: "demand", currency: "TRY", opening: { date: D0, amount: tl(opening), confirmed: true } });
     if (r.status !== 200) throw new Error(`banka hesabı açılamadı: ${r.status} ${r.text}`);
-    banks.push({ id: r.data.id, name: bankName });
+    banks.push({ id: r.data.id, name: bankName, glSub: r.data.glSub });
     M.kasa.bank += opening;
     if (!r.data.opening?.eventId || r.data.opening.date !== D0) throw new Error(`banka hesabının açılışı yazılmadı: ${r.text}`);
     M.bankLines.push({ id: r.data.opening.eventId, bankId: r.data.id, type: "opening", date: D0, cents: opening, status: "active" });
@@ -349,10 +352,53 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
         const rows = rep.total - 1; // ilk satır devir
         if (rows !== effects.length) problems.push(`${label} ${from}–${to}: rapor ${rows} satır · model ${effects.length}${effects.length && !rows ? " (VERİ VARKEN BOŞ)" : ""}`);
         const moving = effects.filter(x => !x.adjust);
-        const inCents = moving.filter(x => x.cents > 0).reduce((s, x) => s + x.cents, 0), outCents = -moving.filter(x => x.cents < 0).reduce((s, x) => s + x.cents, 0);
+        // Kasa görünümü bugünkü tanımla (transferin nakit bacağı giriş/çıkıştır); Banka ve POS Hareketleri iç hareketi Transfer satırına ayırır (§3.4).
+        const split = id === "banka-pos-hareketleri";
+        const part = (x, dir) => (split && x.internal ? ((dir > 0 ? x.cents > 0 : x.cents < 0) ? x.feePart || 0 : 0) : (dir > 0 ? Math.max(x.cents, 0) : Math.max(-x.cents, 0)));
+        const inCents = moving.reduce((s, x) => s + part(x, 1), 0), outCents = moving.reduce((s, x) => s + part(x, -1), 0);
         if (sum(rep, "Dönem Giriş") !== inCents || sum(rep, "Dönem Çıkış") !== outCents) problems.push(`${label} ${from}–${to}: giriş/çıkış ${tl(sum(rep, "Dönem Giriş"))}/${tl(sum(rep, "Dönem Çıkış"))} · model ${tl(inCents)}/${tl(outCents)}`);
+        if (split) {
+          const inner = moving.filter(x => x.internal);
+          const trIn = inner.filter(x => x.cents > 0).reduce((s, x) => s + x.cents - (x.feePart || 0), 0), trOut = inner.filter(x => x.cents < 0).reduce((s, x) => s - x.cents - (x.feePart || 0), 0);
+          const shown = rep.summary.some(([k]) => k === "Transfer Giriş");
+          if (shown !== inner.length > 0 || (shown && (sum(rep, "Transfer Giriş") !== trIn || sum(rep, "Transfer Çıkış") !== trOut))) problems.push(`${label} ${from}–${to}: transfer ${shown ? `${tl(sum(rep, "Transfer Giriş"))}/${tl(sum(rep, "Transfer Çıkış"))}` : "yok"} · model ${inner.length ? `${tl(trIn)}/${tl(trOut)}` : "yok"}`);
+        }
         const adjustCents = effects.filter(x => x.adjust).reduce((s, x) => s + x.cents, 0);
         if (sum(rep, "Açılış ve Devir Düzeltmeleri") !== adjustCents) problems.push(`${label} ${from}–${to}: açılış ve devir düzeltmeleri ${tl(sum(rep, "Açılış ve Devir Düzeltmeleri"))} · model ${tl(adjustCents)}`);
+      }
+      // v2.1.0 Aşama 14: Banka raporları (Banka Bakiye, Banka Hareket, Banka Masraf, Alt Hesap Mizanı) bağımsız modelle: hesap bazında dönem başı,
+      // dış giriş/çıkış, transfer, dönem sonu; masraf toplamı (fiş + transfer ücreti, ters kayıt eksi); alt hesaplar ve 102.00 / 108.00.
+      if (banks.length) {
+        const bound = bankId => [...M.bankLines.map(x => ({ date: x.date, cents: x.cents, adjust: x.type === "opening", internal: Boolean(x.transfer), feePart: x.feePart || 0, bankId: x.bankId })), ...boundRows().map(x => ({ ...x, adjust: false, internal: false, feePart: 0 }))].filter(x => x.bankId === bankId);
+        const flowOf = list => {
+          const inRange = list.filter(x => x.date >= from && x.date <= to && !x.adjust);
+          const ext = dir => inRange.reduce((t, x) => t + (x.internal ? ((dir > 0 ? x.cents > 0 : x.cents < 0) ? x.feePart : 0) : dir > 0 ? Math.max(x.cents, 0) : Math.max(-x.cents, 0)), 0);
+          const trn = dir => inRange.filter(x => x.internal && (dir > 0 ? x.cents > 0 : x.cents < 0)).reduce((t, x) => t + Math.abs(x.cents) - x.feePart, 0);
+          return { opening: list.filter(x => x.date < from).reduce((t, x) => t + x.cents, 0), in: ext(1), out: ext(-1), trIn: trn(1), trOut: trn(-1), closing: list.filter(x => x.date <= to).reduce((t, x) => t + x.cents, 0) };
+        };
+        const q = `&bankGroup=real`;
+        const bakiye = await rc("banka-bakiye", from, to, q);
+        let real = 0;
+        for (const b of banks) {
+          const f = flowOf(bound(b.id));
+          real += f.closing;
+          const row = bakiye.rows.find(r => r[3] === b.glSub);
+          const cell = header => centsOfText(row?.[bakiye.headers.indexOf(header)]);
+          if (!row || cell("Dönem Başı") !== f.opening || cell("Giriş") !== f.in || cell("Çıkış") !== f.out || cell("Transfer Giriş") !== f.trIn || cell("Transfer Çıkış") !== f.trOut || cell("Dönem Sonu") !== f.closing) problems.push(`Banka Bakiye ${b.glSub} ${from}–${to}: ${row ? row.slice(4).join(" / ") : "satır yok"} · model ${[f.opening, f.in, f.out, f.trIn, f.trOut, "?", f.closing].map(v => (typeof v === "number" ? tl(v) : v)).join(" / ")}`);
+        }
+        if (sum(bakiye, "Gerçek Banka") !== real) problems.push(`Banka Bakiye ${from}–${to}: Gerçek Banka ${tl(sum(bakiye, "Gerçek Banka"))} · model ${tl(real)}`);
+        const hareket = await rc("banka-hareket", from, to);
+        const all = flowOf(banks.flatMap(b => bound(b.id)));
+        if (sum(hareket, "Giriş") !== all.in || sum(hareket, "Çıkış") !== all.out || sum(hareket, "Transfer Giriş") !== all.trIn || sum(hareket, "Transfer Çıkış") !== all.trOut || sum(hareket, "Dönem Sonu") !== all.closing) problems.push(`Banka Hareket ${from}–${to}: ${["Giriş", "Çıkış", "Transfer Giriş", "Transfer Çıkış", "Dönem Sonu"].map(k => tl(sum(hareket, k))).join("/")} · model ${[all.in, all.out, all.trIn, all.trOut, all.closing].map(tl).join("/")}`);
+        const masraf = await rc("banka-masraf", from, to);
+        const fees = M.bankLines.filter(x => x.date >= from && x.date <= to && x.feeTotal).reduce((t, x) => t + x.feeTotal, 0);
+        if (sum(masraf, "Toplam") !== fees) problems.push(`Banka Masraf ${from}–${to}: ${tl(sum(masraf, "Toplam"))} · model ${tl(fees)}`);
+        const mizan = await rc("alt-hesap-mizani", from, to);
+        const subOf = code => { const row = mizan.rows.find(r => r[0] === code); return row ? centsOfText(row[6]) * (row[7] === "Alacak" ? -1 : 1) : 0; };
+        for (const b of banks) if (subOf(b.glSub) !== flowOf(bound(b.id)).closing) problems.push(`Alt Hesap Mizanı ${b.glSub} ${from}–${to}: ${tl(subOf(b.glSub))} · model ${tl(flowOf(bound(b.id)).closing)}`);
+        const way = method => cashEffects().filter(x => x.method === method && x.date <= to).reduce((t, x) => t + x.cents, 0);
+        const loose = way("bank") - banks.reduce((t, b) => t + flowOf(bound(b.id)).closing, 0);
+        if (subOf("102.00") !== loose || subOf("108.00") !== way("card")) problems.push(`Alt Hesap Mizanı 102.00 / 108.00 ${from}–${to}: ${tl(subOf("102.00"))} / ${tl(subOf("108.00"))} · model ${tl(loose)} / ${tl(way("card"))}`);
       }
       const moves = M.moves.filter(m => m.date >= from && m.date <= to);
       const stok = await rc("stok-hareketleri", from, to);
@@ -1516,7 +1562,7 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
         mustOk(r, kind);
         if (bankSigned(r.data) !== cents) throw Object.assign(new Error(`${kind} ${type} ${body.tax || ""}: İşlem Kartı banka etkisi ${tl(bankSigned(r.data))} · model ${tl(cents)}`), { unexpected: true });
         if (r.data.date !== day) throw Object.assign(new Error(`${kind}: fiş tarihi ${r.data.date} · istenen ${day}`), { unexpected: true });
-        bankAdd({ id: r.data.id, bankId: b.id, type, date: day, cents, status: "active", voucher: true, body });
+        bankAdd({ id: r.data.id, bankId: b.id, type, date: day, cents, status: "active", voucher: true, body, feeTotal: type === "fee" ? -cents : 0 });
         return;
       }
       case "banka-ters": {
@@ -1538,7 +1584,7 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
         const date = reversalDate(e);
         if (r.data.reversal?.date !== date || bankSigned(r.data.reversal) !== -e.cents) throw Object.assign(new Error(`${kind}: ters kayıt ${r.data.reversal?.date} ${tl(bankSigned(r.data.reversal))} · model ${date} ${tl(-e.cents)} (kilit ${lock || "yok"})`), { unexpected: true });
         e.status = "reversed";
-        bankAdd({ id: r.data.reversal.id, bankId: e.bankId, type: "reversal", date, cents: -e.cents, status: "active" });
+        bankAdd({ id: r.data.reversal.id, bankId: e.bankId, type: "reversal", date, cents: -e.cents, status: "active", feeTotal: -(e.feeTotal || 0) });
         return;
       }
       case "banka-duzelt": {
@@ -1564,8 +1610,8 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
         if (r.data.reversal?.date !== back || bankSigned(r.data.reversal) !== -e.cents) throw Object.assign(new Error(`${kind}: ters kayıt ${r.data.reversal?.date} ${tl(bankSigned(r.data.reversal))} · model ${back} ${tl(-e.cents)}`), { unexpected: true });
         if (r.data.next?.date !== date || bankSigned(r.data.next) !== cents) throw Object.assign(new Error(`${kind} ${e.type} ${body.tax || ""}: yeni fiş ${r.data.next?.date} ${tl(bankSigned(r.data.next))} · model ${date} ${tl(cents)}`), { unexpected: true });
         e.status = "reversed";
-        bankAdd({ id: r.data.reversal.id, bankId: e.bankId, type: "reversal", date: back, cents: -e.cents, status: "active" });
-        bankAdd({ id: r.data.next.id, bankId: b.id, type: e.type, date, cents, status: "active", voucher: true, body: { ...body, date } });
+        bankAdd({ id: r.data.reversal.id, bankId: e.bankId, type: "reversal", date: back, cents: -e.cents, status: "active", feeTotal: -(e.feeTotal || 0) });
+        bankAdd({ id: r.data.next.id, bankId: b.id, type: e.type, date, cents, status: "active", voucher: true, body: { ...body, date }, feeTotal: e.type === "fee" ? -cents : 0 });
         return;
       }
       // ---------- v2.1.0 Aşama 9: Bankalar Arası Transfer ----------
@@ -1604,7 +1650,7 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
         const leg = ref => (r.data.lines || []).filter(line => line.role === "bank" && line.ref === ref).reduce((t, line) => t + (line.side === "D" ? 1 : -1) * Number(line.tryMinor), 0);
         if (leg(from.id) !== -out || leg(to.id) !== amount || Number(r.data.transfer?.feeMinor) !== fee) throw Object.assign(new Error(`${kind}: gönderen ${tl(leg(from.id))} · model ${tl(-out)}; alıcı ${tl(leg(to.id))} · model ${tl(amount)}; ücret ${r.data.transfer?.feeMinor} · model ${fee}`), { unexpected: true });
         if (r.data.date !== day) throw Object.assign(new Error(`${kind}: transfer tarihi ${r.data.date} · istenen ${day}`), { unexpected: true });
-        bankAdd({ id: r.data.id, bankId: from.id, type: "transfer", date: day, cents: -out, status: "active", transfer: true });
+        bankAdd({ id: r.data.id, bankId: from.id, type: "transfer", date: day, cents: -out, status: "active", transfer: true, feePart: fee, feeTotal: fee });
         bankAdd({ id: r.data.id, bankId: to.id, type: "transfer", date: day, cents: amount, status: "active", transfer: true });
         return;
       }
@@ -1625,7 +1671,7 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
         if (rev?.date !== date || legs.some(x => leg(x.bankId) !== -x.cents)) throw Object.assign(new Error(`${kind}: ters kayıt ${rev?.date} ${legs.map(x => tl(leg(x.bankId))).join("/")} · model ${date} ${legs.map(x => tl(-x.cents)).join("/")}`), { unexpected: true });
         for (const x of legs) {
           x.status = "reversed";
-          bankAdd({ id: rev.id, bankId: x.bankId, type: "reversal", date, cents: -x.cents, status: "active", transfer: true });
+          bankAdd({ id: rev.id, bankId: x.bankId, type: "reversal", date, cents: -x.cents, status: "active", transfer: true, feePart: x.feePart || 0, feeTotal: -(x.feeTotal || 0) });
         }
         return;
       }
@@ -1640,7 +1686,7 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
         const r2 = await api("POST", "/api/workspace/bank/vouchers", { ...e.body, similarOk: true, ...(bankGoesNegative([{ bankId: e.bankId, cents: e.cents, date: e.body.date }], e.body.date) ? { negativeOk: true } : {}) });
         mustOk(r2, kind);
         if (bankSigned(r2.data) !== e.cents) throw Object.assign(new Error(`${kind}: ikinci kayıt ${tl(bankSigned(r2.data))} · model ${tl(e.cents)}`), { unexpected: true });
-        bankAdd({ id: r2.data.id, bankId: e.bankId, type: e.type, date: e.body.date, cents: e.cents, status: "active", voucher: true, body: e.body });
+        bankAdd({ id: r2.data.id, bankId: e.bankId, type: e.type, date: e.body.date, cents: e.cents, status: "active", voucher: true, body: e.body, feeTotal: e.type === "fee" ? -e.cents : 0 });
         return;
       }
       default:
