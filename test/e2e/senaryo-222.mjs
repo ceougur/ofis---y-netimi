@@ -217,15 +217,23 @@ try {
         await new Promise(resolve => setTimeout(resolve, 500));
       }
     })();
-    const box = await admin.$(`${modal} input[data-filter=q]`);
-    await box.click();
-    await admin.keyboard.type("Müşteri 07", { delay: 120 });
-    const shown = await admin.waitForFunction(sel => {
-      const rows = [...document.querySelectorAll(`${sel} tr[data-account]`)];
-      return rows.length === 1 && rows[0].innerText.includes("Müşteri 07");
-    }, modal, { timeout: 15000 }).then(() => true, () => false);
-    alive = false;
-    await noise;
+    // Kutu seçiciyle tıklanır (öğe tutamacıyla değil): öbür personelin kayıtları listeyi arka planda yeniden çizer (HOF.swap
+    // kutuyu da yeniden kurar, odağı ve metni korur); yavaş makinede tıklama sürerken eski kutu DOM'dan düşüyor ve tutamaçla
+    // tıklama "Element is not attached to the DOM" ile kırılıyordu (Chromium CPU ×6, docs/kanit/2026-10-10/s222-*-cpu6-*).
+    // Adım yarıda kırılsa da öbür personelin kayıt döngüsü durur: durmazsa sonraki adımlar (ör. S2'nin "ANLIK DURUM yüklenmez"
+    // ölçümü) bu kayıtların olaylarıyla kırmızıya döner ve asıl hatayı gizler.
+    let shown = false;
+    try {
+      await admin.click(`${modal} input[data-filter=q]`);
+      await admin.keyboard.type("Müşteri 07", { delay: 120 });
+      shown = await admin.waitForFunction(sel => {
+        const rows = [...document.querySelectorAll(`${sel} tr[data-account]`)];
+        return rows.length === 1 && rows[0].innerText.includes("Müşteri 07");
+      }, modal, { timeout: 15000 }).then(() => true, () => false);
+    } finally {
+      alive = false;
+      await noise;
+    }
     ok((await admin.$eval(`${modal} input[data-filter=q]`, node => node.value)) === "Müşteri 07", "kutudaki metin eksiksiz (harf kaybolmadı)");
     ok(shown, "listede yalnız Müşteri 07 kaldı (arama sonucu arka plan yenilemesinde kaybolmadı)");
     await shot("arama-yuk-altinda");
