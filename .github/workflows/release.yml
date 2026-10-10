@@ -53,6 +53,7 @@ jobs:
       - run: npm run test:senaryo-banka-210-temel
       - run: npm run test:banka-210-saat
       - run: npm run test:banka-210-kart-onbellek
+      - run: npm run test:acilis-yanit-yaris
       - run: npm run test:banka-210-ekran-aciklama
       - run: npm run test:guncelleme-gercek
 
