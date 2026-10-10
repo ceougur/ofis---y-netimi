@@ -1,0 +1,4 @@
+### mini-iade-alis-acik-asil-odenmis: python3 -I test/bagimsiz/fark.py --senaryo test/bagimsiz/cikti/mini/mini-iade-alis-acik-asil-odenmis.json
+mini-iade-alis-acik-asil-odenmis: çıkış a=0 b=0 program=0 · karşılaştırılan 21 · atlanan 0 · fark 2 {'A=B≠P': 2}
+  KASA-ACILIS-649                                                 2 yaprak  {'A=B≠P': 2}
+### çıkış 0

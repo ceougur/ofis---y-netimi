@@ -1,0 +1,52 @@
+{
+ "senaryo": "rastgele-1-500-notr",
+ "cariSayisi": 2,
+ "hepsiArtanFifo": true,
+ "acikDisiYaprak": 0,
+ "cariler": [
+  {
+   "cari": "C8",
+   "iadeler": {
+    "R20": [
+     107996,
+     "satis_iade"
+    ]
+   },
+   "belgeler": {
+    "F51": [
+     107996,
+     "satis"
+    ]
+   },
+   "iadeToplam": 107996,
+   "belgeToplam": 107996,
+   "desen": "ARTAN-FIFO"
+  },
+  {
+   "cari": "C24",
+   "iadeler": {
+    "R14": [
+     1391827,
+     "alis_iade"
+    ],
+    "R5": [
+     9853400,
+     "alis_iade"
+    ]
+   },
+   "belgeler": {
+    "F56": [
+     9284950,
+     "alis"
+    ],
+    "F69": [
+     1960277,
+     "alis"
+    ]
+   },
+   "iadeToplam": 11245227,
+   "belgeToplam": 11245227,
+   "desen": "ARTAN-FIFO"
+  }
+ ]
+}

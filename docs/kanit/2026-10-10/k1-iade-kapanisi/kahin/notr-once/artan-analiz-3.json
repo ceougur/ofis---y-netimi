@@ -1,0 +1,21 @@
+{
+ "senaryo": "rastgele-3-500-notr",
+ "cariSayisi": 1,
+ "hepsiArtanFifo": false,
+ "acikDisiYaprak": 0,
+ "cariler": [
+  {
+   "cari": "C22",
+   "iadeler": {},
+   "belgeler": {
+    "F50": [
+     55900,
+     "alis"
+    ]
+   },
+   "iadeToplam": 0,
+   "belgeToplam": 55900,
+   "desen": "BASKA"
+  }
+ ]
+}

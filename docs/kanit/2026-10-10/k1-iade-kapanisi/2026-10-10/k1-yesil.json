@@ -1,0 +1,31 @@
+{
+  "ad": "k1-yesil",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/iade-kapama-k1.test.mjs test/iade-210.test.mjs test/iade-210-onarim.test.mjs test/iade-210-fazla-tahsilat.test.mjs test/iade-224.test.mjs test/banka-210-rapor-bulgu.test.mjs test/bulgu-223.test.mjs test/fatura-216.test.mjs test/kapama-rastgele-223.test.mjs",
+  "commit": "4bdfa6539fcfbd4dcded17c28cee60d9e9be4696",
+  "dal": "worktree-agent-ac6660b9cab091377",
+  "kirli": 0,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T15:04:42.610Z",
+  "sure_sn": 17.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 113,
+    "gecen": 113,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "ham_cikti": "docs/kanit/2026-10-10/k1-iade-kapanisi/2026-10-10/k1-yesil.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ac6660b9cab091377",
+  "ham_cikti_sha256": "b8293a5f17811d2dfa992ddf776e1205c8580b682e3d89d3b570c7c50f03a395",
+  "ham_cikti_bayt": 37304
+}

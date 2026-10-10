@@ -1,0 +1,4 @@
+### mini-iade-satis-nakit-asil-acik: python3 -I test/bagimsiz/fark.py --senaryo test/bagimsiz/cikti/mini/mini-iade-satis-nakit-asil-acik.json
+mini-iade-satis-nakit-asil-acik: çıkış a=0 b=0 program=0 · karşılaştırılan 22 · atlanan 0 · fark 2 {'A=B≠P': 2}
+  KASA-ACILIS-649                                                 2 yaprak  {'A=B≠P': 2}
+### çıkış 0

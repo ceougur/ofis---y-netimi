@@ -1,0 +1,12 @@
+### tohum-3-500: python3 -I test/bagimsiz/fark.py --tohum 3 --islem 500
+rastgele-3-500: çıkış a=0 b=0 program=0 · karşılaştırılan 7413 · atlanan 537 · fark 362 {'A=B≠P': 308, 'A≠B=P': 30, 'B≠A=P': 20, 'KOSUCU': 4}
+  KAHIN-K4-YINELENEN-AD                                          30 yaprak  {'A≠B=P': 30}
+  KAHIN-K4-YINELENEN-AD+KOSUCU-ALIS-YINELEME-NUMARA              20 yaprak  {'B≠A=P': 20}
+  KART-HESABI-BAGLANMIYOR                                        97 yaprak  {'A=B≠P': 93, 'KOSUCU': 4}
+  KASA-ACILIS-649                                                40 yaprak  {'A=B≠P': 40}
+  KDV-DAHIL-ISKONTO                                              64 yaprak  {'A=B≠P': 64}
+  KOSUCU-ALIS-YINELEME-NUMARA                                     2 yaprak  {'A=B≠P': 2}
+  TUREV:IADE-KAPAMA+KDV-DAHIL-ISKONTO                             8 yaprak  {'A=B≠P': 8}
+  TUREV:KART-HESABI-BAGLANMIYOR+KDV-DAHIL-ISKONTO                30 yaprak  {'A=B≠P': 30}
+  TUREV:KDV-DAHIL-ISKONTO                                        71 yaprak  {'A=B≠P': 71}
+### çıkış 0

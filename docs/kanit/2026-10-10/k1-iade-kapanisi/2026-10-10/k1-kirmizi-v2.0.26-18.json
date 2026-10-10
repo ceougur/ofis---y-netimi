@@ -1,0 +1,31 @@
+{
+  "ad": "k1-kirmizi-v2.0.26-18",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/iade-kapama-k1.test.mjs",
+  "commit": "5346ff8442612aaa429783e59ae478d9d6a5fc07",
+  "dal": "HEAD",
+  "kirli": 0,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T15:04:27.891Z",
+  "sure_sn": 5,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 18,
+    "gecen": 2,
+    "basarisiz": 16,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 16 başarısız, 0 iptal",
+  "ham_cikti": "../../../../../../home/user/ofis---y-netimi/.claude/worktrees/agent-ac6660b9cab091377/docs/kanit/2026-10-10/k1-iade-kapanisi/2026-10-10/k1-kirmizi-v2.0.26-18.log",
+  "klasor": "/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/v2026",
+  "ham_cikti_sha256": "f06bfbefb3543cc7efa85d4aa191469b4588ca420f70b9a8d2ed3a1696ae129c",
+  "ham_cikti_bayt": 23828
+}
