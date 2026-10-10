@@ -545,7 +545,9 @@
       : "";
     return `${filters}
       ${statTiles([
-        { label: "Bugünkü Kasa", html: moneyHtml(d.cashToday) },
+        // K10 (plan §8.9): başlangıç = Nakit Kasa + Gerçek Banka; Hesabı Atanmamış Eski Hareketler ayrı, başlangıca girmez.
+        { label: "Bugünkü Nakit ve Banka", html: moneyHtml(d.cashToday), help: d.start && d.start.realBank !== null && d.start.realBank !== undefined ? `Nakit Kasa ${esc(money(d.start.cash))} · ${esc(d.start.labels?.realBank || "Gerçek Banka")} ${d.start.defined ? esc(money(d.start.realBank)) : "—"}` : "" },
+        d.start && Math.abs(d.start.unassigned || 0) > 0.005 ? { label: d.start.labels?.unassigned || "Hesabı Atanmamış Eski Hareketler", html: moneyHtml(d.start.unassigned), help: "Başlangıca girmez; Banka → Hesabı Atanmamış'tan hesaba bağlayın" } : null,
         { label: "Beklenen Giriş", html: moneyHtml(d.totals.in), tone: "is-in" },
         { label: "Beklenen Çıkış", html: moneyHtml(d.totals.out), tone: "is-out" },
         { label: `Tahmini Kasa · ${HOF.formatDate(d.to)}`, html: moneyHtml(d.closing), tone: d.closing < 0 ? "is-bad" : "" },
@@ -554,7 +556,7 @@
       <figure class="hof-rep-chart" data-chart aria-label="Tahmini kasa grafiği"></figure>
       ${overdue}
       ${d.periods ? periodTable(d) : `<div class="hof-rep-table"><table class="hof-table"><thead><tr><th>Vade</th><th>Kaynak</th><th>Açıklama</th><th class="num">Giriş</th><th class="num">Çıkış</th><th class="num">Beklenen Kasa</th></tr></thead><tbody>
-        <tr class="is-opening"><td>${esc(HOF.formatDate(d.from))}</td><td></td><td><b>Başlangıç</b><small>Bugünkü kasa${d.carried.in || d.carried.out ? " + başlangıca kadar beklenenler" : ""}${d.includeOverdue ? " + gecikmişler" : ""}</small></td><td></td><td></td><td class="num"><b>${esc(money(d.opening))}</b></td></tr>
+        <tr class="is-opening"><td>${esc(HOF.formatDate(d.from))}</td><td></td><td><b>Başlangıç</b><small>Bugünkü nakit ve banka${d.carried.in || d.carried.out ? " + başlangıca kadar beklenenler" : ""}${d.includeOverdue ? " + gecikmişler" : ""}</small></td><td></td><td></td><td class="num"><b>${esc(money(d.opening))}</b></td></tr>
         ${rows || '<tr><td colspan="6" class="hof-empty">Bu aralıkta beklenen tahsilat ya da ödeme yok.</td></tr>'}
       </tbody></table></div>`}
       ${d.rowTotal > d.rows.length ? `<p class="hof-rep-note">Ekranda ilk ${d.rows.length.toLocaleString("tr-TR")} satır; tamamı PDF ve Excel'de.</p>` : ""}

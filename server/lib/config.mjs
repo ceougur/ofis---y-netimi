@@ -62,6 +62,9 @@ export function loadConfig(overrides = {}) {
     edocEnabled: overrides.edocEnabled === true,
     // Döviz banka hesabı (v2.1.0 GG2): kur, değerleme ve döviz fişleriyle birlikte sonraki sürümde; o zamana kadar yalnız testler açar.
     fxEnabled: overrides.fxEnabled === true,
+    // Bu sürümde olmayan banka özelliklerinin gizli ayarları (POS, Ekstre, Döviz, Elle Banka Fişi; lib/bank/settings.mjs NOT_YET): üretimde
+    // değiştirilemez ve okunurken varsayılandır; yalnız testler (doğrulama kurallarını sınayan) açar. Ortam değişkeni yok.
+    bankLater: overrides.bankLater === true,
     // Eski sürüm gibi hesapsız havale (v2.1.0 Aşama 5–6): yalnız testler açar. Aşama 2–4 testleri "eski sürümden gelen hesabı atanmamış
     // hareketi" banka hesabı tanımlıyken modül uçlarından yazar; açıkken cari/Kasa formunda hesap verilmezse satır hesapsız yazılır.
     bankPickLegacy: overrides.bankPickLegacy === true,

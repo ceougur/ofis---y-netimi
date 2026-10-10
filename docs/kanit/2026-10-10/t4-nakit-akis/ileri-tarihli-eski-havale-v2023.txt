@@ -1,0 +1,10 @@
+v2.0.23 çek alındı → 200
+v2.0.23 çek bankaya İLERİ TARİHLE tahsil (2026-10-20) → 200 
+v2.0.23 geçmiş tarihli havale tahsilat (2026-10-08) → 200
+güncel: hesap aç → 200
+güncel: Hesabı Atanmamış → cheque_events 2026-10-20 in 1000 atanabilir=true | account_entries 2026-10-08 in 250 atanabilir=true
+güncel: Bu Hesaba Ata (ileri tarihli) → 409 {"ok":false,"error":"İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (İleri tarihli hareket (Finansal İşlemler)). Hiçbir değişiklik yazılmadı; yöneticinize bildirin.","code":"ledger-integrity","failures":
+güncel: Kurulum Sihirbazı (tümü) → 409 {"ok":false,"error":"İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (İleri tarihli hareket (Finansal İşlemler)). Hiçbir değişiklik yazılmadı; yöneticinize bildirin.","code":"ledger-integrity","failures":
+güncel: sonra Hesabı Atanmamış satır: 2026-10-20 1000 | 2026-10-08 250
+güncel: Nakit Akış başlangıç 10000 kırılım {"cash":0,"realBank":10000,"unassigned":1250} ileri tarihli satır akışta: 2026-10-20 in 1000 dönem sonu 11000
+güncel: ANLIK DURUM Nakit 0 Gerçek Banka 10000 Hesabı Atanmamış 1250

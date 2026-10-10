@@ -268,8 +268,11 @@
     const debts = accounts.filter(account => !MAIN_KINDS.has(account.kind));
     const labels = s.labels || {};
     const active = mains.filter(account => account.status === "active").length;
+    // Döviz (Aşama 13) bu sürümde yok: Para Birimi ve TL Karşılığı sütunları yalnız döviz açıkken ya da TL dışı hesap varken görünür (bütün hesaplar
+    // TL iken TL Karşılığı = Gerçek Bakiye, aynı sayı iki sütunda; ertelenen özelliği ima ediyordu — 2.1.0 temel sürüm denetimi).
+    const fxCols = fxOn() || mains.some(account => account.currency !== "TRY");
     const tiles = [
-      `<div class="hof-rep-stat hof-bank-real is-in"><span>${esc(labels.realBank || "Gerçek Banka")}</span><strong data-bank-real>${s.realBank.defined ? esc(fmt(s.realBank.minor)) : "—"}</strong><small>${s.realBank.defined ? `${active} etkin hesap · TL karşılığı` : "Banka Hesabı Tanımlanmadı"}</small></div>`,
+      `<div class="hof-rep-stat hof-bank-real is-in"><span>${esc(labels.realBank || "Gerçek Banka")}</span><strong data-bank-real>${s.realBank.defined ? esc(fmt(s.realBank.minor)) : "—"}</strong><small>${s.realBank.defined ? `${active} etkin hesap${fxCols ? " · TL karşılığı" : ""}` : "Banka Hesabı Tanımlanmadı"}</small></div>`,
     ];
     if (debts.length) tiles.push(`<div class="hof-rep-stat is-out"><span>${esc(labels.debt || "Kart ve Kredi Borcu")}</span><strong data-bank-debt>${esc(fmt(s.debt.totalMinor))}</strong><small>Kart ${esc(fmt(s.debt.cardMinor))} · Kredi ${esc(fmt(s.debt.loanMinor))}</small></div>`);
     const rows = [];
@@ -316,18 +319,19 @@
             .map(account => `<tr data-account="${esc(account.id)}" tabindex="0" class="${account.status === "passive" ? "is-passive" : ""}">
               ${td("Banka", esc(bank))}
               ${td("Hesap", `<b>${esc(account.name)}</b> <small>${esc(account.code)} · ${esc(account.glSub)}${account.status === "passive" ? " · Pasif" : ""}</small>`)}
-              ${td("Para Birimi", esc(currencyLabel(account.currency)))}
+              ${fxCols ? td("Para Birimi", esc(currencyLabel(account.currency))) : ""}
               ${td("Gerçek Bakiye", esc(fmt(account.currency === "TRY" ? account.balanceMinor : account.fxBalanceMinor, account.currency)), "num")}
-              ${td("TL Karşılığı", esc(fmt(account.balanceMinor)), "num")}
+              ${fxCols ? td("TL Karşılığı", esc(fmt(account.balanceMinor)), "num") : ""}
               ${td("Son Hareket", esc(account.lastMovementDate ? dateText(account.lastMovementDate) : "—"))}
             </tr>`)
             .join("");
-          const sub = list.length > 1 ? `<tr class="hof-bank-subtotal"><td colspan="4" data-label="Ara Toplam">Ara Toplam · ${esc(bank)}</td>${td("TL Karşılığı", esc(fmt(list.reduce((sum, account) => sum + account.balanceMinor, 0))), "num")}<td class="hof-bank-blank"></td></tr>` : "";
+          const subMinor = list.reduce((sum, account) => sum + account.balanceMinor, 0);
+          const sub = list.length > 1 ? `<tr class="hof-bank-subtotal"><td colspan="${fxCols ? 4 : 2}" data-label="Ara Toplam">Ara Toplam · ${esc(bank)}</td>${td(fxCols ? "TL Karşılığı" : "Gerçek Bakiye", esc(fmt(subMinor)), "num")}<td class="hof-bank-blank"></td></tr>` : "";
           return lines + sub;
         })
         .join("");
-      const totals = (s.byCurrency || []).map(item => `<tr class="hof-bank-total"><td colspan="3" data-label="Toplam">Toplam ${esc(currencyLabel(item.currency))}</td>${td("Gerçek Bakiye", esc(fmt(item.currency === "TRY" ? item.tryMinor : item.fxMinor, item.currency)), "num")}${td("TL Karşılığı", esc(fmt(item.tryMinor)), "num")}<td class="hof-bank-blank"></td></tr>`).join("");
-      table = `<h4 class="hof-bank-subtitle">Banka Hesapları</h4><div class="hof-bank-table-wrap"><table class="hof-table hof-bank-table"><thead><tr><th>Banka</th><th>Hesap</th><th>Para Birimi</th><th class="num">Gerçek Bakiye</th><th class="num">TL Karşılığı</th><th>Son Hareket</th></tr></thead><tbody>${body}</tbody><tfoot>${totals}</tfoot></table></div>`;
+      const totals = (s.byCurrency || []).map(item => (fxCols ? `<tr class="hof-bank-total"><td colspan="3" data-label="Toplam">Toplam ${esc(currencyLabel(item.currency))}</td>${td("Gerçek Bakiye", esc(fmt(item.currency === "TRY" ? item.tryMinor : item.fxMinor, item.currency)), "num")}${td("TL Karşılığı", esc(fmt(item.tryMinor)), "num")}<td class="hof-bank-blank"></td></tr>` : `<tr class="hof-bank-total"><td colspan="2" data-label="Toplam">Toplam</td>${td("Gerçek Bakiye", esc(fmt(item.tryMinor)), "num")}<td class="hof-bank-blank"></td></tr>`)).join("");
+      table = `<h4 class="hof-bank-subtitle">Banka Hesapları</h4><div class="hof-bank-table-wrap"><table class="hof-table hof-bank-table"><thead><tr><th>Banka</th><th>Hesap</th>${fxCols ? "<th>Para Birimi</th>" : ""}<th class="num">Gerçek Bakiye</th>${fxCols ? '<th class="num">TL Karşılığı</th>' : ""}<th>Son Hareket</th></tr></thead><tbody>${body}</tbody><tfoot>${totals}</tfoot></table></div>`;
     }
     if (debts.length) {
       table += `<h4 class="hof-bank-subtitle">Kart ve Kredi Hesapları</h4><div class="hof-bank-table-wrap"><table class="hof-table hof-bank-table"><thead><tr><th>Banka</th><th>Hesap</th><th>Tür</th><th class="num">Borç</th></tr></thead><tbody>${debts

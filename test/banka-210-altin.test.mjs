@@ -27,7 +27,7 @@ import { localDay, pdfText, unwrap, xlsxSheets } from "./banka-210-ortak.mjs";
 import { fixtureExists, unpackFixture } from "./guvenilirlik/fikstur.mjs";
 import { CURRENT, bootVersion, tagsAvailable } from "./guvenilirlik/surumler.mjs";
 import { runReconciliation } from "./mutabakat/motor.mjs";
-import { legacyBankBox, legacyBankPos } from "./guvenilirlik/defter-olgulari.mjs";
+import { legacyBankBox, legacyBankPos, legacyCashFlow } from "./guvenilirlik/defter-olgulari.mjs";
 
 const OLD = "v2.0.26";
 const skip = tagsAvailable([OLD]) ? false : `${OLD} etiketi bu depoda yok (git fetch --tags)`;
@@ -79,7 +79,7 @@ function requests() {
   return out;
 }
 
-// 2.1.0 Aşama 14 (bilerek değişen iki görünüm; plan §11.4, §10.5): yeni tarafta ANLIK DURUM'un Banka kutusu (K10: Gerçek Banka) ve Banka ve POS
+// 2.1.0 Aşama 14 + temel sürüm (bilerek değişen üç görünüm; plan §11.4, §10.5, §8.9 Nakit Akış başlangıcı): yeni tarafta ANLIK DURUM'un Banka kutusu (K10: Gerçek Banka) ve Banka ve POS
 // Hareketleri'nin iç hareket ayrımı (§3.4) 2.0.26 karşılığına aynı satırlardan çevrilir (test/guvenilirlik/defter-olgulari.mjs); K10 kabulü
 // (Gerçek Banka + Hesabı Atanmamış = eski Banka / POS) ayrıca denetlenir. İç hareketi olan Banka ve POS Hareketleri dönemlerinin PDF/Excel'i
 // eski dosyayla değil, aynı dönemin ekranıyla karşılaştırılır (özet ve açıklama biçimi bilerek değişti).
@@ -94,6 +94,12 @@ async function fetchOne(api, request, side = "eski") {
       data = { ...data, cash: { ...data.cash, bank: box } };
     }
     if (side === "yeni" && response.status === 200 && request.url.includes("/report-center/banka-pos-hareketleri")) data = legacyBankPos(data);
+    // 2.1.0 temel sürüm (K10, plan §8.9, bilerek): Nakit Akış başlangıcı Nakit + Gerçek Banka; 2.0.26 karşılığına aynı satırlardan çevrilir.
+    if (side === "yeni" && response.status === 200 && request.url.split("?")[0] === "/api/workspace/overview/nakit-akisi") {
+      const { flow, problem } = await legacyCashFlow(apiLike(api), data);
+      if (problem) k10Problems.push(problem);
+      data = flow;
+    }
     return { status: response.status, body: norm649(strip(data, request.drop || [])) };
   }
   const response = await api.client.raw("GET", request.url);

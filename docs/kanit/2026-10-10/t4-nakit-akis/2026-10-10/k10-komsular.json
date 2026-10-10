@@ -1,0 +1,38 @@
+{
+  "ad": "k10-komsular",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/raporlar-210-banka.test.mjs test/is-akisi.test.mjs test/cheques-overview.test.mjs test/raporlar-209.test.mjs test/bulgu-223.test.mjs test/banka-210-gg2-gosterge.test.mjs test/yazim-duzeni.test.mjs",
+  "commit": "f5259dd0ea2acb3ba24582d38a655f2e3b4676d0",
+  "dal": "worktree-agent-a40291a1f8b2ba361",
+  "kirli": 5,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T15:16:47.885Z",
+  "sure_sn": 44.9,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 137,
+    "gecen": 136,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "ANLIK DURUM: karttaki rakamlar ekranlarla birebir aynı (rastgele 400 işlem) › Kasa, alacak, borç, kritik stok, mizan ve nakit akışı her adımda tutarlı",
+      "konum": "test/cheques-overview.test.mjs:382:3",
+      "hata": "adım 100: nakit akışı sonu: 39112.12 ≠ 43807.119999999995 (beklenen true, gelen false)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-10/t4-nakit-akis/2026-10-10/k10-komsular.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a40291a1f8b2ba361",
+  "ham_cikti_sha256": "c34ba473eea7a3856d6b15ad53c3ad36596747288822412a3c6adf2ab8477294",
+  "ham_cikti_bayt": 45453
+}

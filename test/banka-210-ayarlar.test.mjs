@@ -23,7 +23,7 @@ import { BANK, bootBank, expectStatus, must, openAccount } from "./banka-210-hes
 describe("Aşama 3 — Banka Ayarları", () => {
   let ctx;
   before(async () => {
-    ctx = await bootBank({ fxEnabled: true });
+    ctx = await bootBank({ fxEnabled: true, bankLater: true }); // bankLater: gizli (sonraki sürümün) ayarlarının doğrulaması da sınanır
   });
   after(() => ctx.server.close());
 
