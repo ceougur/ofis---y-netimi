@@ -1,0 +1,2 @@
+en-kucuk-KART-HESABI-BAGLANMIYOR-tani: çıkış a=0 b=0 program=0 · karşılaştırılan 21 · atlanan 0 · fark 1 {'A=B≠P': 1}
+  BANKA-EKSI-KODU                                                 1 yaprak  {'A=B≠P': 1}

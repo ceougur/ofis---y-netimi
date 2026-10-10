@@ -46,9 +46,9 @@ const FEE_TYPE = { EFT: "eft", FAST: "fast", Havale: "havale", SWIFT: "swift", "
 const EXPENSE = { "Banka Masrafları": "bank" };
 const CASH_DIRECTION = { bankadan_kasaya: "to-cash", kasadan_bankaya: "to-bank" };
 const SUBBED_MAINS = new Set(["102", "108", "300", "309"]);
-// Kurumsal kartla ödemede kart hesabı: programın modül uçları (cari ödeme, fatura peşini) 2.1.0'da hesabı yalnız havale/EFT yolunda bağlar
-// (lib/bank/module-ref.mjs pickRef: "Yol havale değilse ''"); gönderilen bankAccountId kart yolunda yok sayılır. Koşucu yine gönderir.
-const CARD_NOTE = "Kart yolunda hesap seçimi: koşucu bankAccountId'yi gönderdi; programın modül ucu kurumsal kart hesabını bağlamıyor (yalnız havale/EFT bağlanır), satır hesapsız kart yolu olarak yazılır.";
+// Kurumsal kartla ödemede kart hesabı (K2, 10.10.2026): koşucu adımdaki hesabı bankAccountId olarak gönderir; program kart yolunda kurumsal kart
+// hesabını bağlar (lib/bank/module-ref.mjs pickRef, corporate). Önceden bağlamadığı için burada sabit bir "eşlenemeyen" notu yazılıyordu (CARD_NOTE);
+// bağ artık programın kendi çıktısından (Banka Bakiye Raporu, Alt Hesap Mizanı) okunur, not kaldırıldı.
 
 // ---------- Senaryo denetimi (§13) ----------
 const COMMON = ["id", "islem", "tarih", "kullanici", "ad", "istekKimligi", "benzerOnay", "yineDeKaydet", "ayniAnda", "not"];
@@ -754,7 +754,7 @@ async function run(scenarioPath, outPath) {
           if (!result.ok) return refused(result);
           const extra = taksit ? [{ alias: taksit.ad, rec: { tur: "taksit", id: result.data.planId } }] : [];
           if (taksit && !result.data.planId) return { created: { tur: "fatura", id: result.data.id }, extra: [], note: `${taksit.ad}: program faturayı kaydetti ama taksit kartı kimliği (planId) dönmedi.` };
-          return { created: { tur: "fatura", id: result.data.id }, extra, replayed: Boolean(result.data.replayed), note: rows.some(row => row.yol === "kart" && row.hesap !== undefined) ? CARD_NOTE : "" };
+          return { created: { tur: "fatura", id: result.data.id }, extra, replayed: Boolean(result.data.replayed) };
         }
         case "iade": {
           const original = await http(Y(), "GET", "/api/workspace/invoices/:id", [idOf(step.asilFatura)], undefined, { islem: step.islem });
@@ -791,7 +791,7 @@ async function run(scenarioPath, outPath) {
           };
           const result = await http(client, "POST", "/api/workspace/accounts/:id/entries", [idOf(step.cari)], body, opt);
           if (!result.ok) return refused(result);
-          return { created: { tur: "hareket", hareket: "cari", id: result.data.entryId, cariId: idOf(step.cari) }, replayed: Boolean(result.data.replayed), note: step.yol === "kart" && step.hesap !== undefined ? CARD_NOTE : "" };
+          return { created: { tur: "hareket", hareket: "cari", id: result.data.entryId, cariId: idOf(step.cari) }, replayed: Boolean(result.data.replayed) };
         }
         case "taksit_tahsilat": {
           const planId = idOf(step.kart);

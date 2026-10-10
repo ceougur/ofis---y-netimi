@@ -1,0 +1,158 @@
+{
+  "ad": "kirmizi-kurumsal-kart-373d8fe",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/banka-210-kurumsal-kart.test.mjs test/banka-210-yetki-matrisi.test.mjs",
+  "commit": "373d8fe35a99f8b21061803b3ed050805ce500ca",
+  "dal": "worktree-agent-a8a770a394b1593e7",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T15:35:18.163Z",
+  "sure_sn": 21.2,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 49,
+    "gecen": 22,
+    "basarisiz": 27,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 27 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "K2 · hakemin en küçük senaryosu (birebir sayılar; kâhin A = B) › [K2] adım 272: kurumsal kart yokken kart yolunda vadesiz B1 → 400 bank-account-invalid; hiçbir satır yazılmaz",
+      "konum": "test/banka-210-kurumsal-kart.test.mjs:99:3",
+      "hata": "kart yolunda vadesiz hesap: 200 {\"id\":\"account-8c669005-2df5-40ce-a267-240ac9b92869\",\"refNo\":\"1\",\"type\":\"supplier\",\"name\":\"Bereket Lojistik Ltd. C25\",\"phone\":\"\",\"email\":\"\",\"address\":\"\",\"registeredOn\":\"2026-10-01\",\"groupId\":null,\"subgroupId\":null,\"note\":\"\",\"caseKey\":\"\",\"caseSource\":\"\",\"caseTitle\":\"\",\"status\":\"active\",\"taxNo\":\"\",\"taxOffice\":\"\",\"mersisNo\":\"\",\"tradeRegistry\":\"\",\"partyKind\":\"\",\"firstName\":\"\",\"familyName\":\"\",\"city\":\"\" · 200 !== 400 (beklenen 400, gelen 200)"
+    },
+    {
+      "ad": "K2 · hakemin en küçük senaryosu (birebir sayılar; kâhin A = B) › [K3][K17] k1–k4: kart açılır; 100 (KK verilerek), alış faturası 240 peşin kartla (KK), 50 hesapsız (tek kart) → hepsi KK'ya bağlı",
+      "konum": "test/banka-210-kurumsal-kart.test.mjs:105:3",
+      "hata": "k2 KK'ya bağlı · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "K2 · hakemin en küçük senaryosu (birebir sayılar; kâhin A = B) › [K21] sayılar (elle): 309.01 alacak 390 · KK −390 · 108.00 = 0 · 320 +150 · 191 = 40 · 770 = 200 · Kart ve Kredi Borcu 390 · Hesabı Atanmamış 0",
+      "konum": "test/banka-210-kurumsal-kart.test.mjs:116:3",
+      "hata": "KK hesap kartı −390,00 · 0 !== -39000 (beklenen -39000, gelen 0)"
+    },
+    {
+      "ad": "K2 · hakemin en küçük senaryosu (birebir sayılar; kâhin A = B) › [K21] raporlar: Banka Bakiye (Kart ve Kredi Borcu) KK satırı Çıkış 390 / Dönem Sonu −390; Banka ve POS Hareketleri'nde kart ödemesi yok; mizan raporları 309",
+      "konum": "test/banka-210-kurumsal-kart.test.mjs:144:3",
+      "hata": "KK Çıkış · + actual - expected · + '0,00 TL' (beklenen 390,00 TL, gelen 0,00 TL)"
+    },
+    {
+      "ad": "K2 · hakemin tanı senaryosu: Kart Borcu Ödemesi, kart limiti, iki kart › [K13] 100 kartla ödeme → KK −100; Kart Borcu Ödemesi (B1 → KK) 100 → KK 0 (ters bakiye yok), B1 86.286,39, 309.01 0",
+      "konum": "test/banka-210-kurumsal-kart.test.mjs:182:3",
+      "hata": "Expected values to be strictly equal: · 0 !== -10000 (beklenen -10000, gelen 0)"
+    },
+    {
+      "ad": "K2 · hakemin tanı senaryosu: Kart Borcu Ödemesi, kart limiti, iki kart › [K7] limit 20.000: 25.000 → 409 (kart limiti); tam 20.000 → 200; 0,01 fazlası 409; Yine de Kaydet 200; Engelle'de onayla da 409",
+      "konum": "test/banka-210-kurumsal-kart.test.mjs:194:3",
+      "hata": "limit aşan 25.000: 200 {\"id\":\"account-ad3e9977-cfde-42f4-9a81-deee6ef88f5a\",\"refNo\":\"1\",\"type\":\"supplier\",\"name\":\"Bereket Lojistik Ltd. C25\",\"phone\":\"\",\"email\":\"\",\"address\":\"\",\"registeredOn\":\"2026-10-01\",\"groupId\":null,\"subgroupId\":null,\"note\":\"\",\"caseKey\":\"\",\"caseSource\":\"\",\"caseTitle\":\"\",\"status\":\"active\",\"taxNo\":\"\",\"ta · 200 !== 409 (beklenen 409, gelen 200)"
+    },
+    {
+      "ad": "K2 · hakemin tanı senaryosu: Kart Borcu Ödemesi, kart limiti, iki kart › [K13][K7] Kart Borcu Ödemesi Ters Kaydet: kart borcu geri gelir; limit aşılıyorsa kartta sorulur (Yine de Kaydet ile)",
+      "konum": "test/banka-210-kurumsal-kart.test.mjs:209:3",
+      "hata": "Cannot read properties of undefined (reading 'id')"
+    },
+    {
+      "ad": "K2 · hakemin tanı senaryosu: Kart Borcu Ödemesi, kart limiti, iki kart › [K4] ikinci kurumsal kart (KK2): hesapsız kart ödemesi → 400 bank-account-required (alan bankAccountId); KK2 verilince KK2'ye",
+      "konum": "test/banka-210-kurumsal-kart.test.mjs:217:3",
+      "hata": "iki kartta seçimsiz: 200 {\"id\":\"account-ad3e9977-cfde-42f4-9a81-deee6ef88f5a\",\"refNo\":\"1\",\"type\":\"supplier\",\"name\":\"Bereket Lojistik Ltd. C25\",\"phone\":\"\",\"email\":\"\",\"address\":\"\",\"registeredOn\":\"2026-10-01\",\"groupId\":null,\"subgroupId\":null,\"note\":\"\",\"caseKey\":\"\",\"caseSource\":\"\",\"caseTitle\":\"\",\"status\":\"active\",\"taxNo\":\"\",\"taxOffice\":\"\",\"mersisNo\":\"\",\"tradeRegistry\":\"\",\"partyKind\":\"\",\"firstName\":\"\",\"familyName\":\"\",\"city\":\"\" · 200 !== 400 (beklenen 400, gelen 200)"
+    },
+    {
+      "ad": "K2 · kart yokken, yanlış tür, pasif kart, POS yolu ve yetki › [K5] kart yolunda vadeli ya da kredi hesabı → 400 bank-account-invalid; bilinmeyen kimlik → 404; havale yolunda kart hesabı → 400",
+      "konum": "test/banka-210-kurumsal-kart.test.mjs:259:3",
+      "hata": "kart yolunda vadeli: 200 {\"id\":\"account-38a2585d-3cce-4a4a-9cc3-abffec1b279a\",\"refNo\":\"1\",\"type\":\"supplier\",\"name\":\"XYZ Tedarik\",\"phone\":\"\",\"email\":\"\",\"address\":\"\",\"registeredOn\":\"2026-10-01\",\"groupId\":null,\"subgroupId\":null,\"note\":\"\",\"caseKey\":\"\",\"caseSource\":\"\",\"caseTitle\":\"\",\"status\":\"active\",\"taxNo\":\"\",\"taxOffice\":\"\",\"mersisNo\":\"\",\"tradeRegistry\":\"\",\"partyKind\":\"\",\"firstName\":\"\",\"familyName\":\"\",\"city\":\"\",\"district\":\"\" · 200 !== 400 (beklenen 400, gelen 200)"
+    },
+    {
+      "ad": "K2 · kart yokken, yanlış tür, pasif kart, POS yolu ve yetki › [K6] pasif kart verilirse 400; tek etkin kart kalınca hesapsız ödeme ona gider",
+      "konum": "test/banka-210-kurumsal-kart.test.mjs:272:3",
+      "hata": "pasif kart: 200 {\"id\":\"account-38a2585d-3cce-4a4a-9cc3-abffec1b279a\",\"refNo\":\"1\",\"type\":\"supplier\",\"name\":\"XYZ Tedarik\",\"phone\":\"\",\"email\":\"\",\"address\":\"\",\"registeredOn\":\"2026-10-01\",\"groupId\":null,\"subgroupId\":null,\"note\":\"\",\"caseKey\":\"\",\"caseSource\":\"\",\"caseTitle\":\"\",\"status\":\"active\",\"taxNo\":\"\",\"taxOffice\":\"\",\"mersisNo\":\"\",\"tradeRegistry\":\"\",\"partyKind\":\"\",\"firstName\":\"\",\"familyName\":\"\",\"city\":\"\",\"district\":\"\" · 200 !== 400 (beklenen 400, gelen 200)"
+    },
+    {
+      "ad": "K2 · kart yokken, yanlış tür, pasif kart, POS yolu ve yetki › [K15] POS tahsilatı değişmez: kart tanımlıyken cari tahsilat (POS) 108.00'a; POS yolunda hesap kimliği → 400 bank-account-invalid",
+      "konum": "test/banka-210-kurumsal-kart.test.mjs:282:3",
+      "hata": "POS tahsilatında kurumsal kart: 200 {\"id\":\"account-c9379c29-1a61-4600-907e-03a580159413\",\"refNo\":\"2\",\"type\":\"customer\",\"name\":\"ABC Ltd.\",\"phone\":\"\",\"email\":\"\",\"address\":\"\",\"registeredOn\":\"2026-10-01\",\"groupId\":null,\"subgroupId\":null,\"note\":\"\",\"caseKey\":\"\",\"caseSource\":\"\",\"caseTitle\":\"\",\"status\":\"active\",\"taxNo\":\"\",\"taxOffice\":\"\",\"mersisNo\":\"\",\"tradeRegistry\":\"\",\"partyKind\":\"\",\"firstName\":\"\",\"familyName\":\"\",\"city\":\"\",\"district\":\"\",\"p · 200 !== 400 (beklenen 400, gelen 200)"
+    },
+    {
+      "ad": "K2 · kart yokken, yanlış tür, pasif kart, POS yolu ve yetki › [K16] bank.move'suz muhasebe: kart tanımlıyken kartla ödeme 403 bank-permission; satır yazılmaz",
+      "konum": "test/banka-210-kurumsal-kart.test.mjs:290:3",
+      "hata": "kartla ödeme bank.move'suz: 200 {\"id\":\"account-38a2585d-3cce-4a4a-9cc3-abffec1b279a\",\"refNo\":\"1\",\"type\":\"supplier\",\"name\":\"XYZ Tedarik\",\"phone\":\"\",\"email\":\"\",\"address\":\"\",\"registeredOn\":\"2026-10-01\",\"groupId\":null,\"subgroupId\":null,\"note\":\"\",\"caseKey\":\"\",\"caseSource\":\"\",\"caseTitle\":\"\",\"status\":\"active\",\"taxNo\":\"\",\"taxOffice\":\"\",\"mersisNo\":\"\",\"tradeRegistry\":\"\",\"partyKind\":\"\",\"firstName\":\"\",\"familyName\":\"\",\"city\":\"\",\"district\":\"\" · 200 !== 403 (beklenen 403, gelen 200)"
+    },
+    {
+      "ad": "K2 · düzelt, sil → geri yükle, pasif kart, eşleşmiş satır, eski bağsız satır › [K10] kart tanımlanmadan girilmiş bağsız satır: yalnız açıklama → bağsız; tutar değişirse iki kartta 400, KK seçilince bağlanır",
+      "konum": "test/banka-210-kurumsal-kart.test.mjs:327:3",
+      "hata": "tutar değişti, iki kart: 200 {\"id\":\"account-e2d8cac1-5f43-4dd3-b70c-099830ff6a81\",\"refNo\":\"1\",\"type\":\"supplier\",\"name\":\"XYZ Tedarik\",\"phone\":\"\",\"email\":\"\",\"address\":\"\",\"registeredOn\":\"2026-10-01\",\"groupId\":null,\"subgroupId\":null,\"note\":\"\",\"caseKey\":\"\",\"caseSource\":\"\",\"caseTitle\":\"\",\"status\":\"active\",\"taxNo\":\"\",\"taxOffice\":\"\",\"mersisNo\":\"\",\"tradeRegistry\":\"\",\"partyKind\":\"\",\"firstName\":\"\",\"familyName\":\"\",\"city\":\"\",\"district\":\"\" · 200 !== 400 (beklenen 400, gelen 200)"
+    },
+    {
+      "ad": "K2 · düzelt, sil → geri yükle, pasif kart, eşleşmiş satır, eski bağsız satır › [K9][K7] tutar artışı limiti aşarsa 409 (Yine de Kaydet geçer); KK → KK2 taşıma KK2'nin limitinde sorulur",
+      "konum": "test/banka-210-kurumsal-kart.test.mjs:337:3",
+      "hata": "KK −9.310 · 0 !== -931000 (beklenen -931000, gelen 0)"
+    },
+    {
+      "ad": "K2 · düzelt, sil → geri yükle, pasif kart, eşleşmiş satır, eski bağsız satır › [K9] yol değişimi: kart → havale (B1) → kart (KK) → nakit; her adımda kart, banka ve Kasa",
+      "konum": "test/banka-210-kurumsal-kart.test.mjs:353:3",
+      "hata": "karta dönüş seçimsiz (iki kart): 200 {\"id\":\"account-e2d8cac1-5f43-4dd3-b70c-099830ff6a81\",\"refNo\":\"1\",\"type\":\"supplier\",\"name\":\"XYZ Tedarik\",\"phone\":\"\",\"email\":\"\",\"address\":\"\",\"registeredOn\":\"2026-10-01\",\"groupId\":null,\"subgroupId\":null,\"note\":\"\",\"caseKey\":\"\",\"caseSource\":\"\",\"caseTitle\":\"\",\"status\":\"active\",\"taxNo\":\"\",\"taxOffice\":\"\",\"mersisNo\":\"\",\"tradeRegistry\":\"\",\"partyKind\":\"\",\"firstName\":\"\",\"familyName\":\"\",\"city\":\"\",\"district\":\"\" · 200 !== 400 (beklenen 400, gelen 200)"
+    },
+    {
+      "ad": "K2 · düzelt, sil → geri yükle, pasif kart, eşleşmiş satır, eski bağsız satır › [K11][K6] sil → geri yükle: bağ korunur; pasif kartta silme ve geri yükleme 400; limit aşılıyorsa geri yüklemede sorulur",
+      "konum": "test/banka-210-kurumsal-kart.test.mjs:368:3",
+      "hata": "pasif kartta silme: 200 {\"id\":\"account-e2d8cac1-5f43-4dd3-b70c-099830ff6a81\",\"refNo\":\"1\",\"type\":\"supplier\",\"name\":\"XYZ Tedarik\",\"phone\":\"\",\"email\":\"\",\"address\":\"\",\"registeredOn\":\"2026-10-01\",\"groupId\":null,\"subgroupId\":null,\"note\":\"\",\"caseKey\":\"\",\"caseSource\":\"\",\"caseTitle\":\"\",\"status\":\"active\",\"taxNo\":\"\",\"taxOffice\":\"\",\"mersisNo\":\"\",\"tradeRegistry\":\"\",\"partyKind\":\"\",\"firstName\":\"\",\"familyName\":\"\",\"city\":\"\",\"district\":\"\" · 200 !== 400 (beklenen 400, gelen 200)"
+    },
+    {
+      "ad": "K2 · düzelt, sil → geri yükle, pasif kart, eşleşmiş satır, eski bağsız satır › [K12] ekstreyle eşleşmiş kart ödemesi: düzelt ve sil 409 bank-reconciled",
+      "konum": "test/banka-210-kurumsal-kart.test.mjs:386:3",
+      "hata": "Cannot read properties of undefined (reading 'eventId')"
+    },
+    {
+      "ad": "K2 · alış faturası, alıştan iade, stok alımı; POS yolları değişmez › [K17] alış faturası iki kartta kart seçilmeden → 400 bank-account-required (alan 1. peşin satırın hesabı); belge yazılmaz",
+      "konum": "test/banka-210-kurumsal-kart.test.mjs:416:3",
+      "hata": "iki kartta seçimsiz peşin: 200 {\"id\":\"invoice-f4f84eba-ce28-4f91-acb1-50062259012a\",\"kind\":\"purchase\",\"kindLabel\":\"Alış Faturası\",\"scenario\":\"goods_purchase\",\"scenarioLabel\":\"Stoğa Mal Alışı\",\"status\":\"issued\",\"statusLabel\":\"Kaydedildi\",\"number\":\"AL-KART-1\",\"displayNo\":\"AL-KART-1\",\"ettn\":\"5725a72d-4b3c-4710-a4e7-7f1e82b6b6d6\",\"issueDate\":\"2026-10-08\",\"issueTime\":\"09:00\",\"accountId\":\"account-6f0b60d3-3e97-403d-aaff-cef9579cc56d\" · 200 !== 400 (beklenen 400, gelen 200)"
+    },
+    {
+      "ad": "K2 · alış faturası, alıştan iade, stok alımı; POS yolları değişmez › [K17] alış faturası 600 peşin kartla (KK) → KK −600; Düzenle'de KK2'ye taşınır (olay yenilenir, numara aynı)",
+      "konum": "test/banka-210-kurumsal-kart.test.mjs:426:3",
+      "hata": "alış: 409 {\"ok\":false,\"error\":\"AL-KART-1 numaralı alış faturası bu caride 08.10.2026 tarihiyle zaten kayıtlı.\",\"code\":\"invoice-duplicate\",\"field\":\"number\"} · 409 !== 200 (beklenen 200, gelen 409)"
+    },
+    {
+      "ad": "K2 · alış faturası, alıştan iade, stok alımı; POS yolları değişmez › [K17] alıştan iade kurumsal karta (2 adet, 240): seçimsiz 400; KK2'ye → KK2 −360 (309 düşer); iade iptali ve alış iptali kartı sıfırlar",
+      "konum": "test/banka-210-kurumsal-kart.test.mjs:436:3",
+      "hata": "Cannot read properties of undefined (reading 'id')"
+    },
+    {
+      "ad": "K2 · alış faturası, alıştan iade, stok alımı; POS yolları değişmez › [K18] stok peşin alımı kartla (KK) → KK −100; müşteri iadesi kartla POS iadesi (bağsız; hesap verilirse 400)",
+      "konum": "test/banka-210-kurumsal-kart.test.mjs:454:3",
+      "hata": "Expected values to be strictly equal: · + actual - expected · + '' (beklenen bacc-e8073842-4b4b-4ebe-9add-2264ff56f06a, gelen )"
+    },
+    {
+      "ad": "K2 · alış faturası, alıştan iade, stok alımı; POS yolları değişmez › [K15] POS yolları değişmez: satış peşini, satıştan iade, stok satışı, taksit ve kayıt tahsilatı kartla → hepsi bağsız (108.00)",
+      "konum": "test/banka-210-kurumsal-kart.test.mjs:463:3",
+      "hata": "POS taksit tahsilatında kurumsal kart: 200 {\"id\":\"plan-08851589-a3c1-47a9-b9b2-c19540b5ce5c\",\"accountId\":\"account-2538645b-690f-473d-b75e-57249674a800\",\"refNo\":\"1\",\"registeredOn\":\"2026-10-01\",\"caseKey\":\"\",\"caseSource\":\"\",\"caseTitle\":\"\",\"groupId\":null,\"subgroupId\":null,\"name\":\"ABC\",\"note\":\"\",\"phone\":\"\",\"total\":300,\"status\":\"active\",\"coversBalance\":0,\"invoiceId\":\"\",\"invoiceNumber\":\"\",\"createdBy\":\"user-d4d3aeb0-d100-40b8-b4e2-9ec30be4b9a1\",\"c · 200 !== 400 (beklenen 400, gelen 200)"
+    },
+    {
+      "ad": "K2 · Benzer İşlem, istek kimliği, eşzamanlı limit, açılış öncesi tarih, Kart Borcuna Aktar › [K14] Kart Borcuna Aktar eski satırı taşır (108.00 0, KK −400); yeni bağlı kart ödemesi havuza girmez (409 bank-legacy-exceeds)",
+      "konum": "test/banka-210-kurumsal-kart.test.mjs:499:3",
+      "hata": "tek kart: kendiliğinden KK · -40000 !== -50000 (beklenen -50000, gelen -40000)"
+    },
+    {
+      "ad": "K2 · Benzer İşlem, istek kimliği, eşzamanlı limit, açılış öncesi tarih, Kart Borcuna Aktar › [K19] Benzer İşlem: aynı gün, aynı kart, aynı cari, aynı tutar → 409 bank-similar; Yine de Kaydet geçer; istek kimliği tek satır",
+      "konum": "test/banka-210-kurumsal-kart.test.mjs:508:3",
+      "hata": "benzer kart ödemesi: 200 {\"id\":\"account-1de2a94d-e61c-4300-ba92-183222e9b535\",\"refNo\":\"1\",\"type\":\"supplier\",\"name\":\"XYZ Tedarik\",\"phone\":\"\",\"email\":\"\",\"address\":\"\",\"registeredOn\":\"2026-10-01\",\"groupId\":null,\"subgroupId\":null,\"note\":\"\",\"caseKey\":\"\",\"caseSource\":\"\",\"caseTitle\":\"\",\"status\":\"active\",\"taxNo\":\"\",\"taxOffice\":\"\",\"mersisNo\":\"\",\"tradeRegistry\":\"\",\"partyKind\":\"\",\"firstName\":\"\",\"familyName\":\"\",\"city\":\"\",\"district\":\"\" · 200 !== 409 (beklenen 409, gelen 200)"
+    },
+    {
+      "ad": "K2 · Benzer İşlem, istek kimliği, eşzamanlı limit, açılış öncesi tarih, Kart Borcuna Aktar › [K20] kartın açılışından (05.10) önceki tarih → 409 bank-before-opening",
+      "konum": "test/banka-210-kurumsal-kart.test.mjs:523:3",
+      "hata": "açılış öncesi: 200 {\"id\":\"account-1de2a94d-e61c-4300-ba92-183222e9b535\",\"refNo\":\"1\",\"type\":\"supplier\",\"name\":\"XYZ Tedarik\",\"phone\":\"\",\"email\":\"\",\"address\":\"\",\"registeredOn\":\"2026-10-01\",\"groupId\":null,\"subgroupId\":null,\"note\":\"\",\"caseKey\":\"\",\"caseSource\":\"\",\"caseTitle\":\"\",\"status\":\"active\",\"taxNo\":\"\",\"taxOffice\":\"\",\"mersisNo\":\"\",\"tradeRegistry\":\"\",\"partyKind\":\"\",\"firstName\":\"\",\"familyName\":\"\",\"city\":\"\",\"district\":\"\" · 200 !== 409 (beklenen 409, gelen 200)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-10-10/k2-kurumsal-kart/2026-10-10/kirmizi-kurumsal-kart-373d8fe.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a8a770a394b1593e7",
+  "ham_cikti_sha256": "dd853d0ae9eddfffc18ed2c9d93186e4d2614657373f983b58bfa82a168dddcf",
+  "ham_cikti_bayt": 49530
+}
