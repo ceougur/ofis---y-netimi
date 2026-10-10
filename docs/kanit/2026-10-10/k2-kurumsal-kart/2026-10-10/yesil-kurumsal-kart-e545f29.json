@@ -1,0 +1,32 @@
+{
+  "ad": "yesil-kurumsal-kart-e545f29",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/banka-210-kurumsal-kart.test.mjs test/banka-210-yetki-matrisi.test.mjs",
+  "commit": "e545f2954399345e354d7b555d219d0595facc8a",
+  "dal": "worktree-agent-a8a770a394b1593e7",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T15:41:58.017Z",
+  "sure_sn": 27.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 49,
+    "gecen": 49,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-10-10/k2-kurumsal-kart/2026-10-10/yesil-kurumsal-kart-e545f29.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a8a770a394b1593e7",
+  "ham_cikti_sha256": "f5b7af5c7271604d0c623edc5f4e057ed44c1d454a6e5203aef1dc875ca2ecea",
+  "ham_cikti_bayt": 17587
+}
