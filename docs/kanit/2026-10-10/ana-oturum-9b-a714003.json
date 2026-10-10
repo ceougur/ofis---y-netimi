@@ -1,0 +1,31 @@
+{
+  "ad": "senaryo-banka-210-a714003",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-banka-210.mjs",
+  "commit": "a714003a318566ac4bc0ebdddd601137a64e5f35",
+  "dal": "HEAD",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v114 x64",
+  "node": "v22.22.0",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-10-10T11:30:32.074Z",
+  "sure_sn": 364.6,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 371,
+    "gecen": 370,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "ham_cikti": "../kanit-9b/2026-10-10/senaryo-banka-210-a714003.log",
+  "klasor": "/tmp/claude-0/-home-user/f3fde27e-cd8e-54af-b1ca-43dd7d833c3d/scratchpad/wt-a714003",
+  "ham_cikti_sha256": "ce79d124ed422858483f5621ab57cfafeec032774a81a781b0413cf50474a576",
+  "ham_cikti_bayt": 39051
+}
