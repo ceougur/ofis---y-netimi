@@ -217,7 +217,17 @@
     } finally {
       clearTimeout(timer);
     }
-    const payload = await response.json().catch(() => ({}));
+    // 10.10.2026 (senaryo-banka-210 adım 41, test/e2e/acilis-yanit-yaris.mjs): başlık gelip gövde okunurken bağlantı kesilirse (sayfa
+    // yeniden yüklendi/gezindi, ağ koptu) okuma TypeError/AbortError ile düşer. Önceden bu da `{}` sayılıyor ve 200 yanıt "başarılı ama boş"
+    // dönüyordu; çağıran beklediği alanı bulamayıp ilgisiz bir TypeError atıyordu ("notes.notes is not iterable"). Artık ağ hatası gibi
+    // ApiError (durum 0). JSON olmayan gövde (SyntaxError) eskisi gibi `{}`.
+    let payload;
+    try {
+      payload = await response.json();
+    } catch (error) {
+      if (error?.name !== "SyntaxError") throw new ApiError("Sunucunun yanıtı yarıda kesildi. Ağ bağlantısını kontrol edip yeniden deneyin.", 0, { code: "response-cut" });
+      payload = {};
+    }
     if (!response.ok || payload.ok === false) {
       const error = new ApiError(payload.error || "İşlem tamamlanamadı.", response.status, payload);
       if (response.status === 401) HOF.emit("unauthorized", error);

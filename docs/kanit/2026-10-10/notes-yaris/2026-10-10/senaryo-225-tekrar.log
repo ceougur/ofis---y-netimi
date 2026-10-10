@@ -1,0 +1,65 @@
+
+> destekofis@2.0.26 test:senaryo-225
+> node --disable-warning=ExperimentalWarning test/e2e/senaryo-225.mjs
+
+
+■ Kurulum: iki sayfa (TÜM REHBER 30 kayıt; Müşteriler Yeni: Müşteriler 60 + Arşiv 5), hedef kayıt listenin derininde
+  ✓ 1. sayfa yüklendi
+  ✓ 2. sayfa (Müşteriler Yeni) yeni sayfa olarak açıldı
+  ✓ 2. sayfa 65 kayıt (65)
+  ✓ 1. sayfadayız (TÜM REHBER.xlsx30 kayıt)
+
+■ C. 1. sayfadayken 2. sayfanın uyarısında Kayda Git (sağ alt bildirim)
+  ✓ 2. sayfadaki kaydın uyarısı 1. sayfada sağ altta göründü
+  ✓ başka sayfanın uyarısında “Gerçekleştirildi” yok (yanlış sayfaya yazılırdı)
+  ✓ Kayda Git → 2. sayfa açıldı
+  ✓ Kayda Git → kayıt listede seçili
+  ✓ seçili kayıt görünür yere kaydırıldı (listenin 45. satırı)
+  ✓ kayıt sağdaki detay kartında açık (başlıkta firma adı)
+
+■ C. Zil listesinden Kayda Git (1. sayfaya dönüp)
+  ✓ zil listesinde 2. sayfanın uyarısı
+  ✓ zil listesinde de başka sayfanın uyarısında “Gerçekleştirildi” yok
+  ✓ zilden Kayda Git → 2. sayfa ve kayıt seçili
+
+■ D. 2. sayfada “Arşiv” sekmesi silinince sayfa şeridindeki sayı 65 → 60 (aynı kullanıcının ikinci penceresinde de)
+  ✓ önce: Müşteriler Yeni65 kayıt
+  ✓ sekme silinince şerit: Müşteriler Yeni60 kayıt
+  ✓ ikinci pencerede şerit: Müşteriler Yeni60 kayıt
+
+■ D. Sayfa şeridinden Sayfayı Sil
+  ✓ açık sayfanın pilinde “Sayfayı Sil” düğmesi
+  ✓ onayda sayfa adı ve (gizli sekme dahil) 65 kayıt
+  ✓ silen pencerenin bildirimi kendi silmesini ve yedeği söyler: ““Müşteriler Yeni” sayfası silindi (65 kayıt). Yedek: destekofis-001-2026-10-10T22-10-35-285Z-sayfa-silme-oncesi.sqlite. Açılan sayfa: “TÜM REHBER.xlsx”.×”
+  ✓ öbür pencere açılan sayfanın adını söyler: “Çalıştığınız sayfa veri yöneticisi tarafından silindi; “TÜM REHBER.xlsx” sayfasına geçildi.×”
+  ✓ sayfa silindi; tek sayfa kaldı
+  ✓ ilk sayfada “Sayfayı Sil” yok
+  ✓ silinen sayfanın uyarısı zil/takvimden kalktı
+  ✓ silinmiş sayfanın uyarısında Kayda Git: “Bu uyarının sayfası silinmiş; uyarı listeden kaldırılıyor.×”
+
+■ E. Şirket Verisini Sıfırla / Şirketi Sil onayı
+  ✓ 002 açıldı
+  ✓ Verisini Sıfırla · 001: parola alanı kayıtlı parolayla doldurulmaz (autocomplete=one-time-code, gizli alan “”)
+  ✓ Verisini Sıfırla · 001: onay kutusu “001” (beklenen 001)
+  ✓ Verisini Sıfırla · 001: parola boş ve odakta
+  ✓ Verisini Sıfırla · 001: parolanın hemen önünde görünmeyen kullanıcı adı alanı
+  ✓ Verisini Sıfırla · 002: parola alanı kayıtlı parolayla doldurulmaz (autocomplete=one-time-code, gizli alan “”)
+  ✓ Verisini Sıfırla · 002: onay kutusu “002” (beklenen 002)
+  ✓ Verisini Sıfırla · 002: parola boş ve odakta
+  ✓ Verisini Sıfırla · 002: parolanın hemen önünde görünmeyen kullanıcı adı alanı
+  ✓ Şirketi Sil · 002: parola alanı kayıtlı parolayla doldurulmaz (autocomplete=one-time-code, gizli alan “”)
+  ✓ Şirketi Sil · 002: onay kutusu “002” (beklenen 002)
+  ✓ Şirketi Sil · 002: parola boş ve odakta
+  ✓ Şirketi Sil · 002: parolanın hemen önünde görünmeyen kullanıcı adı alanı
+
+■ A. 2 şirketle “+ Yeni Şirket” hiç görünmez; biri silinince geri gelir
+  ✓ Yönetim → Şirketler: “+ Yeni Şirket” görünmüyor
+  ✓ Yönetim'de kısa bilgi: “En fazla 2 şirket kurulabilir. Yeni şirket açmak için önce bir şirketi silin.”
+  ✓ sol üst seçicide “+ Yeni Şirket” yok
+  ✓ menüde “+ Yeni Şirket” yazısı da yok
+  ✓ 002 silindi
+  ✓ tek şirketle Yönetim'de “+ Yeni Şirket” geri geldi
+  ✓ tek şirketle seçicide “+ Yeni Şirket” geri geldi
+  ✓ sayfa hatası yok
+
+Senaryo 2.0.25: 45 geçti, 0 kaldı. Ekranlar: test/e2e/artifacts/senaryo-225
