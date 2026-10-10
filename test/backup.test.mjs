@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
-import { execFileSync } from "node:child_process";
-import { existsSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { execFileSync, spawnSync } from "node:child_process";
+import { existsSync, mkdirSync, mkdtempSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -76,6 +76,25 @@ describe("yedekleme", () => {
     }).trim();
     assert.ok(output.startsWith(server.backupDir), output);
     assert.ok(existsSync(output));
+  });
+
+  // CI 532 (Windows): "yedek alınamadı (disk I/O error)" — hangi adımda ve hangi SQLite koduyla düştüğü yazmıyordu, kök neden
+  // okunamadı. Araç artık adımı (açma/kopyalama/kapatma) ve SQLite'ın genişletilmiş hata kodunu yazar; çıkış kodu 1 (ilk şirket).
+  it("npm run backup aracı düşerse adımı ve SQLite hata kodunu yazar, çıkış kodu 1", () => {
+    const dir = mkdtempSync(path.join(tmpdir(), "yedek-bozuk-"));
+    try {
+      mkdirSync(path.join(dir, "data"));
+      writeFileSync(path.join(dir, "data", "destekofis.sqlite"), "bu bir veri tabanı değil ".repeat(400));
+      const result = spawnSync(process.execPath, ["--disable-warning=ExperimentalWarning", path.join(root, "tools", "backup.mjs")], {
+        env: { ...process.env, HUKUK_DATA_DIR: path.join(dir, "data"), HUKUK_BACKUP_DIR: path.join(dir, "backups") },
+        encoding: "utf8",
+      });
+      assert.equal(result.status, 1, result.stderr);
+      assert.match(result.stderr, /001 · .*: yedek alınamadı \(file is not a database; adım: kopyalama; SQLite 26 SQLITE_NOTADB\)/);
+      assert.deepEqual(existsSync(path.join(dir, "backups")) ? readdirSync(path.join(dir, "backups"), { recursive: true }).filter(name => /\.sqlite/.test(name)) : [], [], "yarım yedek kalmaz");
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
   });
 
   it("yönetici yedek alır, listeler ve indirir", async () => {
