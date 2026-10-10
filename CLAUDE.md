@@ -1131,6 +1131,12 @@ Eski düzen — kullanıcı "zip ver" dediğinde şu üç zip + SHA256SUMS veril
   CI ve Uzun Doğrulama Kapısı yeşil) 2.0.26'daki "birlikte yükleyip canlıya alalım" düzeniyle: paket + PR + CI yeşil → birleştir →
   5 dosya + yayın bağlantısı + elle kabul listesi → kullanıcı yayımlar → bayt bayt + güncelleyici → site kılavuz PR'ı. Teslimde
   "bitti" demeden önce kullanıcıya DENENEN / DENENMEYEN / BİLİNEN SINIRLAR ve ertelenenler listesi açıkça verilir.
+  T4 BİRLEŞTİ (10.10.2026; 2f89d81, ana oturum: değişen testler 115/115, eski kodda 8/82 kırmızı; senaryo-banka-210-temel CI'de 8b3c65c):
+  Nakit Akış başlangıcı = Nakit Kasa + Gerçek Banka (K10); ertelenen banka ayarları API'den de değiştirilemez (400 bank-setting-later),
+  Elle Banka Fişi kapalı (önceden API'den Kambiyo Kârı fişi yazılabiliyordu). YENİ BULGU (T4 ajanı, gerçek v2.0.23 koduyla üretildi;
+  kullanıcıya listelendi, düzeltme ajanda): ORTA — ileri tarihli eski hesapsız havale Kurulum Sihirbazı'nı ve "Bu Hesaba Ata"yı 409
+  ledger-integrity ile kilitliyor (geçmiş tarihliler de aktarılamıyor; plan madde 42/A13'e aykırı); DÜŞÜK — Hesabı Atanmamış toplamı
+  ileri tarihliyi sayıyor; DÜŞÜK — Nakit Akış "Tahmini Kasa" adları artık nakit+banka. Kılavuz satırı ("bugünkü kasadan başlayan") T5'e.
 - KREDİ KARTI ÖDEMESİ POS GİBİ GÖRÜNÜYOR (kullanıcı, 10.10.2026; ekran 2.0.26 ANLIK DURUM: "Banka / POS ₺1.343,90 · Banka ₺10.000 ·
   POS −₺8.656"; soru: "banka modülü ile bu sorunlar çözülecek mi?"). KÖK NEDEN (koddan, v2.0.26 `pay-method.mjs`): tek kayıt değeri
   `card` hem POS tahsilatı (para girişi, 108) hem kurumsal kartla ödeme (borç, 309) için; ANLIK DURUM "POS" = Σ kart giriş − Σ kart
