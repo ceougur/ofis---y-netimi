@@ -74,7 +74,9 @@ mekanizmayı uygula, Windows'taki gerçek CI sonucuyla doğrula")
   AÇILDI (kullanıcı, 10.10.2026 09:34 UTC; API'den okundu): kural seti 24836150 "Doğrulama Kapısı", enforcement active, hedef
   ~DEFAULT_BRANCH (yalnız master), bypass_actors [] ve bu oturum için current_user_can_bypass "never"; kurallar: deletion,
   non_fast_forward, pull_request (0 onay), required_status_checks [Doğrulama Kapısı] strict. Çalışma dalında kural 0 (push sürer).
-  AÇIK: durum denetiminin kaynağı "Any source" → ilk kapı koşusu bitince kullanıcı GitHub Actions'a çevirecek (sahte durum önlenir).
+  KAYNAK (kullanıcı, 10.10.2026 09:42 UTC; API'den okundu): required_status_checks [{context "Doğrulama Kapısı", integration_id
+  15368 = GitHub Actions}] — başka uygulama aynı adla durum gönderip kapıyı geçemez. İlk kapı koşusu (CI 474, 180a8a5) gerçek
+  Windows hatasında GEÇMEDİ dedi (Linux 1763/1763, Windows 1760/1763).
 
 ### Geçmiş test hatalarından dersler (kullanıcı, 10.10.2026: "bundan sonraki testlerde geçmişte yapılan hatalardan ders alalım")
 Her test planı bu listeden geçirilerek yazılır; teslimdeki DENENEN/DENENMEYEN bölümü hangi maddelerin uygulandığını söyler.
