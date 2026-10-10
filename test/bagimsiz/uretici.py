@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Rastgele senaryo üreteci — dil `destekofis-senaryo/1` (test/bagimsiz/SENARYO-DILI.md).
+"""Rastgele senaryo üreteci — dil `destekofis-senaryo/2` (test/bagimsiz/SENARYO-DILI.md).
 
 Kullanım:
   python3 -I test/bagimsiz/uretici.py --tohum 7 [--islem 500] [--kontrol 25] [--cikti <dosya>]
@@ -36,15 +36,18 @@ import os
 import random
 import sys
 
-DIL = "destekofis-senaryo/1"
+DIL = "destekofis-senaryo/2"
 PAY = 50000  # 500 TL güvenlik payı (kuruş): başarılı çıkış sonrası en az bu kadar; kasıtlı ihlalde en az bu kadar eksi
-# Kâhinlerle ilgili iki uyum kuralı (fark.py raporunda "kâhin" sınıfı olarak ayrıca yazılır):
-#  1. model_b'nin senaryo doğrulayıcısı `kasa_hareket`in `ad`ını tanımlamıyor ("'Hn' daha önce tanımlanmamış") → Kasa elle
-#     hareketi silinmez (sil hedefi olmaz). Kasa elle hareketine yine ad verilir (iki kâhin ve koşucu için zararsız).
-#  2. model_a, istek kimliği yinelemesini "senaryo kurmaz" denetimlerinden (BELİRSİZ-4/6/10/14) SONRA tanıyor: yineleme ikinci
-#     kez uygulansaydı sınır aşılacaksa senaryoyu geçersiz sayıyor. Bu yüzden yineleme yalnız ikinci uygulama da sınır içinde
-#     kalacaksa kurulur; BELİRSİZ-4 ailesinde (transfer, banka fişleri) yinelemeye benzerOnay eklenir.
-KASA_HAREKET_SILINMEZ = True
+# Kâhinlerle ilgili eski iki uyum kuralı (sürüm 1) KALKTI (10.10.2026, hakem bulguları düzeltildi):
+#  1. model_b artık `kasa_hareket`in `ad`ını tanımlıyor → Kasa elle hareketi de sil hedefi olur.
+#  2. model_a istek kimliği yinelemesini "senaryo kurmaz" denetimlerinden ÖNCE tanıyor (dil §5.4 son madde) → sınırı dolduran
+#     taksit/stok/bağlı tahsilatın yinelemesi de kurulur (programın ön denetimlerinin istek kimliğinden sonra olduğu sınanır).
+#     BELİRSİZ-4 ailesinde (transfer, banka fişleri) yinelemeye benzerOnay eklenmeye devam eder (gövdeye girmez, zararsız).
+# Sürüm 2 dil boşlukları (§12 BELİRSİZ-23/24/25, D5–D7) üreteçte kurulmaz: KMH ve eksi açılış yalnız vadesiz hesapta; vadeli
+# hesapta yalnız transfer ve faiz geliri; kredi anaparası kalan borcu aşmaz, ters kayıt kredi hesabını borç bakiyesine çevirmez.
+# Geri ödenmemiş iadenin artanı (dil §7 kural 6, D1) "bağlı" caride doğarsa o caride bağlı (Kapatılacak Fatura) ödeme bir daha
+# kurulmaz (BELİRSİZ-10'u önlemek için: artan otomatik kapamayla belge açığını küçültebilir).
+KASA_HAREKET_SILINMEZ = False
 
 # Resmî tatiller ve arifeler (bilinen; üstküme). Hafta sonları ayrıca atlanır.
 TATILLER = set()
@@ -164,8 +167,11 @@ def oran_bp(metin):
 # ───────────────────────────────────────────────────────────── üreteç
 
 class Uretec:
-    def __init__(self, tohum, islem, kontrol_araligi, eszamanli=None, notr=()):
+    def __init__(self, tohum, islem, kontrol_araligi, eszamanli=None, notr=(), yogun=False):
         self.R = random.Random(tohum)
+        # Yoğun kip (--yogun; sürüm 2 doğrulaması): iade ×6, kasıtlı ret ×3 ve ret çeşitlerinde eksi bakiye (Kasa, banka,
+        # kurumsal kart; "Yine de Kaydet" = yalnız cashForce, D2/D3) ağırlıklı. Varsayılan koşuların akışı değişmez.
+        self.yogun = bool(yogun)
         # Nötrleştirme (fark.py --notr): bilinen fark kökleri kapatılmış varyant; rastgele akış olabildiğince aynı kalır.
         #   iskonto_dahil   KDV dahil kalemde iskonto yazılmaz (çekiliş yine yapılır)
         #   kasa_acilis     Kasa açılışı yerine aynı tutarda Kasa elle girişi ("Ortaktan Nakit")
@@ -220,6 +226,9 @@ class Uretec:
             "stok_giris": 1, "ret": 5,
         }
         self.agirlik = {k: v * R.uniform(0.4, 1.8) for k, v in taban.items()}
+        if self.yogun:
+            self.agirlik["iade"] *= 6
+            self.agirlik["ret"] *= 3
         # ürün düzeni: yarı tohumlarda alınan ve satılan ürün kümeleri ayrık (153 karşılaştırılabilsin; BELİRSİZ-15)
         self.ayrik_urun = R.random() < 0.5
 
@@ -499,9 +508,13 @@ class Uretec:
             S = self.tutar(20000, 600000, 0.4) if R.random() < 0.9 else 0
             if tur in HAVALE_TURLERI and R.random() < 0.3:
                 limit = self.tutar(10000, 60000, 0)
-                adim["kmhLimiti"] = tl(limit)
-                if R.random() < 0.15:
-                    S = -rh(limit, 2)   # KMH ile eksi açılış (limitin yarısı)
+                eksi = R.random() < 0.15
+                if tur == "vadesiz":    # sürüm 2 D5: KMH yalnız vadesiz (çekilişler akış korunsun diye yine yapılır)
+                    adim["kmhLimiti"] = tl(limit)
+                    if eksi:
+                        S = -rh(limit, 2)   # KMH ile eksi açılış (limitin yarısı)
+                else:
+                    limit = 0
             dogru = R.random() < 0.6
             if dogru and S + limit < PAY:
                 dogru = False
@@ -742,8 +755,7 @@ class Uretec:
                               "tarih": self.bugun, "iade": False}
         if taksit:
             self.kartlar[taksit["ad"]] = {"fatura": ad, "cari": cari, "toplam": T - Pt, "odenen": 0, "sayi": taksit["sayi"]}
-        stok_yeter = tur != "satis" or all(self.urunler[u]["stok"] - d >= 0 for u, d in stok_deg.items())
-        if "istekKimligi" in adim and R.random() < 0.5 and stok_yeter and "fatura_yineleme" not in self.notr:
+        if "istekKimligi" in adim and R.random() < 0.5 and "fatura_yineleme" not in self.notr:   # sürüm 2: stoğu bitirenin de
             # aynı faturanın yeniden gönderilmesi (çift tıklama) → yinelenen. Fatura için `ad` zorunlu olduğundan yinelemeye
             # hiç anılmayan yeni bir ad (Z…) verilir; taksit kartı adı da öyle. (İki kâhin bu adın çıktıya yazılışında
             # ayrışıyor: K-4 / K4; bilinen ayrışma.)
@@ -829,6 +841,8 @@ class Uretec:
             self.urunler[u]["stok"] += d
         f["iade"] = True
         if geri_yol == "acik":
+            if toplamT > max(0, self.kapasite(fa)):
+                self.cariler[f["cari"]]["iade_artan"] = True   # dil §7 kural 6 (D1): artan başka belgeyi kapatabilir
             f["iade_acik"] += toplamT
         self.faturalar[ad] = {"tur": f["tur"] + "_iade", "cari": f["cari"], "T": toplamT, "pesin": 0, "bagli": 0,
                               "iade_acik": 0, "kalemler": [], "iade_q": {}, "taksitli": False, "tarih": self.bugun,
@@ -850,6 +864,8 @@ class Uretec:
             return False
         stil = self.cariler[cari]["stil"]
         kf = None
+        if stil == "bagli" and self.cariler[cari].get("iade_artan"):
+            return False
         if stil == "bagli":
             belge_tur = ("satis", "alis_iade") if yon == "giris" else ("alis", "satis_iade")
             aday = [a for a, f in self.faturalar.items() if f["cari"] == cari and f["tur"] in belge_tur
@@ -924,8 +940,7 @@ class Uretec:
             self.hareket_kaydet(hareket_ad, islem=islem, kullanici=kul, etkiler=etkiler, tarih=self.bugun, kf=kf, tutar=T,
                                 benzer=bkey, nakit_tipi=not bagli_hesap, hesaplar={anahtar} & set(self.hesaplar))
         # yineleme
-        if "istekKimligi" in adim and "tutarHam" not in adim and R.random() < 0.6 and \
-                (kf is None or self.kapasite(kf) >= T):
+        if "istekKimligi" in adim and "tutarHam" not in adim and R.random() < 0.6:   # sürüm 2: açığı dolduranın da
             farkli = kf is None and R.random() < 0.3
             self.yineleme_ekle(adim, farkli=farkli)
         # Benzer İşlem tekrarı (kasıtlı): aynı anahtarla ikinci satır
@@ -998,7 +1013,7 @@ class Uretec:
             self.hareket_kaydet(had, islem="taksit_tahsilat", kullanici=kul, etkiler=etkiler, tarih=self.bugun, kart=k,
                                 tutar=T, benzer=bkey, nakit_tipi=anahtar not in self.hesaplar,
                                 hesaplar={anahtar} & set(self.hesaplar))
-        if "istekKimligi" in adim and R.random() < 0.5 and kart["toplam"] - kart["odenen"] >= T:
+        if "istekKimligi" in adim and R.random() < 0.5:     # sürüm 2: kalanı dolduran tahsilatın yinelemesi de
             self.yineleme_ekle(adim, farkli=False)
         return True
 
@@ -1119,7 +1134,7 @@ class Uretec:
         if not h:
             return False
         H = R.choice(h)
-        if "vadeli" in self.notr and self.hesaplar[H]["tur"] == "vadeli":
+        if self.hesaplar[H]["tur"] == "vadeli":   # sürüm 2 D6 (eski --notr vadeli artık varsayılan)
             h2 = [a for a in h if self.hesaplar[a]["tur"] != "vadeli"]
             if not h2:
                 return False
@@ -1186,7 +1201,7 @@ class Uretec:
             if not h:
                 return False
             H = R.choice(h)
-            if "vadeli" in self.notr and self.hesaplar[H]["tur"] == "vadeli":
+            if self.hesaplar[H]["tur"] == "vadeli":   # sürüm 2 D6 / BELİRSİZ-24
                 h2 = [a for a in h if self.hesaplar[a]["tur"] != "vadeli"]
                 if not h2:
                     return False
@@ -1235,11 +1250,10 @@ class Uretec:
                 return False
             K, Ky = R.choice(kr), R.choice(ky)
             T = self.tutar(1000, 40000, 0.4)
-            if "kredi" in self.notr:
-                borc = -self.bakiye(K)
-                if borc < 100000:
-                    return False
-                T = min(T, borc)
+            borc = -self.bakiye(K)                # sürüm 2 BELİRSİZ-25 (eski --notr kredi artık varsayılan)
+            if borc < 100000:
+                return False
+            T = min(T, borc)
             adim = {"islem": islem}
             if R.random() < 0.6:
                 adim["ad"] = self.yeni_ad("H")
@@ -1288,6 +1302,10 @@ class Uretec:
         ters = [(a, t, -x) for a, t, x in m["etkiler"]]
         if not kasitli_iki and self.eksi_sonuc(ters, d=m["tarih"]) != "ok":
             return False
+        if not kasitli_iki:
+            for a, t, x in ters:                  # BELİRSİZ-25: kredi hesabı borç bakiyesine dönmez
+                if a in self.hesaplar and self.hesaplar[a]["tur"] == "kredi" and self.bakiye(a) + x > 0:
+                    return False
         kul = self.kullanici(["Y", "MU"])
         adim = {"islem": "ters_kayit"}
         if R.random() < 0.3:
@@ -1447,7 +1465,9 @@ class Uretec:
         cesit = R.choice(["yetki", "ileri_tarih", "hesap_gerekli", "hesap_gecersiz", "kaynak_hedef", "ham3",
                           "pesin_fazla", "iade_fazla", "sil_iki", "ters_iki", "eksi_kasa", "eksi_banka",
                           "iban_bozuk", "iban_ayni", "kod_ayni", "acilis_oncesi", "acilis_sonra", "kredi_odeme_hesap",
-                          "kart_yanlis_hesap", "benzer"])
+                          "kart_yanlis_hesap", "benzer"] + (
+                             ["eksi_kasa", "eksi_banka", "eksi_banka", "eksi_kart", "eksi_kart", "eksi_kart"]
+                             if self.yogun else []))
         return getattr(self, "ret_" + cesit)()
 
     def ret_yetki(self):
@@ -1609,6 +1629,47 @@ class Uretec:
             self.hareket_kaydet(had, islem="kasa_hareket", kullanici="Y", etkiler=etkiler, tarih=self.bugun, tutar=T,
                                 benzer=None, nakit_tipi=True, hesaplar=set())
             return True
+        self.ekle(adim)
+        return True
+
+    def ret_eksi_kart(self):
+        """Kurumsal kartla cari ödemesi kart limitini aşar (D3: kart hesabı limit kadar eksiye serbest; aşınca §5.3 retleri).
+        Uyar'da %35 "Yine de Kaydet" (yalnız cashForce; D2)."""
+        R = self.R
+        kartlar = self.uygunlar("kart")
+        h = [a for a in kartlar if self.hesaplar[a]["dogrulandi"]
+             and (self.hesaplar[a]["politika"] or "uyar") != "kontrol_yok"]
+        if not h:
+            return False
+        H = R.choice(h)
+        ted = self.cari_sec("tedarikci", "bagsiz")
+        if ted is None:
+            return False
+        bak = self.bakiye(H) + self.hesaplar[H]["limit"]
+        T = max(bak, 0) + self.tutar(600, 20000, 0.3)
+        etkiler = [(H, self.bugun, -T)]
+        sonuc = self.eksi_sonuc(etkiler)
+        if sonuc not in ("uyar", "engelle") or not self.acilis_tamam(H, self.bugun):
+            return False
+        kul = self.kullanici(["Y", "MU"])
+        adim = {"islem": "cari_odeme", "cari": ted, "tutar": tl(T, R), "yol": "kart"}
+        if len(kartlar) > 1 or R.random() < 0.5:
+            adim["hesap"] = H
+        bkey = self.benzer_anahtar("cikis", "kart", H, ted, T, self.bugun, "hedefsiz")
+        if self.benzer_gerekli(bkey) != "yok":
+            return False
+        if sonuc == "uyar" and R.random() < 0.35:
+            had = self.yeni_ad("H")
+            adim = dict([("islem", "cari_odeme"), ("ad", had)] + [(k, v) for k, v in adim.items() if k != "islem"])
+            adim["yineDeKaydet"] = True
+            self.kullanici_ekle(adim, kul)
+            self.ekle(adim)
+            self.uygula_etkiler(etkiler)
+            self.benzer_ekle(bkey)
+            self.hareket_kaydet(had, islem="cari_odeme", kullanici=kul, etkiler=etkiler, tarih=self.bugun, kf=None,
+                                tutar=T, benzer=bkey, nakit_tipi=False, hesaplar={H})
+            return True
+        self.kullanici_ekle(adim, kul)
         self.ekle(adim)
         return True
 
@@ -1811,7 +1872,8 @@ class Uretec:
                 self.gun_ilerlet()
         return {
             "dil": DIL,
-            "ad": "rastgele-%d-%d" % (self.tohum, self.hedef_islem) + ("-notr" if self.notr else ""),
+            "ad": "rastgele-%d-%d" % (self.tohum, self.hedef_islem) + ("-notr" if self.notr else "") + (
+                "-yogun" if self.yogun else ""),
             "aciklama": ("uretici.py ile tohum %d'den üretildi (%d işlem, kontrol aralığı %d). Gerçekçi sıra, kasıtlı "
                          "retler, istek kimliği yinelemeleri%s.%s" % (
                              self.tohum, self.hedef_islem, self.kontrol_araligi,
@@ -1881,24 +1943,25 @@ class Uretec:
         raise ValueError(op)
 
 
-def uret(tohum, islem=500, kontrol_araligi=25, eszamanli=None, notr=()):
-    u = Uretec(tohum, islem, kontrol_araligi, eszamanli, notr)
+def uret(tohum, islem=500, kontrol_araligi=25, eszamanli=None, notr=(), yogun=False):
+    u = Uretec(tohum, islem, kontrol_araligi, eszamanli, notr, yogun)
     u.ilk_kasa_politika = u.kasa_politika
     u.ilk_benzer = u.benzer_acik
     return u.uret()
 
 
 def main(argv):
-    ap = argparse.ArgumentParser(description="Rastgele senaryo üreteci (destekofis-senaryo/1)")
+    ap = argparse.ArgumentParser(description="Rastgele senaryo üreteci (destekofis-senaryo/2)")
     ap.add_argument("--tohum", type=int, required=True)
     ap.add_argument("--islem", type=int, default=500)
     ap.add_argument("--kontrol", type=int, default=25, help="kaç işlemde bir kontrol adımı")
     ap.add_argument("--cikti", default=None)
     ap.add_argument("--notr", default="", help="virgülle: iskonto_dahil,kasa_acilis,kart,fatura_yineleme")
+    ap.add_argument("--yogun", action="store_true", help="iade, kasıtlı ret ve eksi bakiye (kart/banka/Kasa) ağırlıklı")
     a = ap.parse_args(argv[1:])
     if not 1 <= a.islem <= 100000:
         ap.error("islem 1..100000")
-    sen = uret(a.tohum, a.islem, a.kontrol, notr=[x for x in a.notr.split(",") if x])
+    sen = uret(a.tohum, a.islem, a.kontrol, notr=[x for x in a.notr.split(",") if x], yogun=a.yogun)
     yol = a.cikti or os.path.join(os.path.dirname(os.path.abspath(__file__)), "cikti", "senaryolar", sen["ad"] + ".json")
     os.makedirs(os.path.dirname(yol), exist_ok=True)
     with open(yol, "w", encoding="utf-8") as fh:

@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Bağımsız senaryo koşucusu — program tarafı (test/bagimsiz/SENARYO-DILI.md, dil "destekofis-senaryo/1").
+// Bağımsız senaryo koşucusu — program tarafı (test/bagimsiz/SENARYO-DILI.md, dil "destekofis-senaryo/2").
 //
 //   node test/bagimsiz/surucu.mjs <senaryo.json> [--cikti <dosya>]
 //
@@ -8,8 +8,9 @@
 //   2. Programı geçici veriyle başlatır (test/helpers.mjs startTestServer; sahte saat config.now = senaryonun "bugun"ü, "saat"
 //      adımlarıyla ileri alınır).
 //   3. Her adımı programın GERÇEK HTTP API'siyle (ekranın kullandığı uçlar; istemci dosyaları client/assets/hof-*.js) uygular.
-//      Takma kullanıcılar o rolde açılır, adım o kullanıcının oturumuyla gönderilir. benzerOnay → similarOk, yineDeKaydet → cashForce +
-//      negativeOk ("Yine de Kaydet"), istekKimligi → x-hof-request başlığı (alan yoksa gönderilmez).
+//      Takma kullanıcılar o rolde açılır, adım o kullanıcının oturumuyla gönderilir. benzerOnay → similarOk, yineDeKaydet → YALNIZ
+//      cashForce ("Yine de Kaydet"; dil sürüm 2 D2: cashForce banka/kart Uyar'ını da geçer, negativeOk gönderilmez), istekKimligi →
+//      x-hof-request başlığı (alan yoksa gönderilmez). Yinelenen alış faturasında tedarikçi belge numarası asıl adımınkidir (§10).
 //   4. "kontrol" adımlarında ve sonda durumu programın KENDİ ekran/rapor uçlarından OKUR (kendi muhasebe hesabını yapmaz):
 //      mizan ← Ana Defter mizanı (GET /api/workspace/ledger) + Alt Hesap Mizanı (GET /api/workspace/bank/sub-trial);
 //      banka hesapları ← Banka → Hesaplar; Kasa ← Kasa penceresi; cari ← Cari listesi; stok ← Stok listesi; fatura ← fatura kartı;
@@ -32,7 +33,7 @@ import { ADMIN_PASSWORD, startTestServer } from "../helpers.mjs";
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(HERE, "..", "..");
-const DIL = "destekofis-senaryo/1";
+const DIL = "destekofis-senaryo/2";
 
 // ---------- Senaryo değerleri → program değerleri ----------
 const ROLE = { yonetici: "admin", muhasebe: "muhasebe", personel: "personel" };
@@ -611,8 +612,13 @@ async function run(scenarioPath, outPath) {
     // belirlenimli kimlik. Aynı etiket aynı kimliği, farklı etiket farklı kimliği verir (formun yeniden gönderilmesi gibi).
     const requestIdOf = label => createHash("sha256").update(`${scenario.ad}|${label}`).digest("hex").slice(0, 32);
     const headersOf = step => (step.istekKimligi !== undefined ? { "x-hof-request": requestIdOf(String(step.istekKimligi)) } : {});
-    const flagsOf = step => ({ ...(step.benzerOnay ? { similarOk: true } : {}), ...(step.yineDeKaydet ? { cashForce: true, negativeOk: true } : {}) });
-    const deleteFlags = step => (step.yineDeKaydet ? "?cashForce=1&negativeOk=1" : "");
+    // Dil sürüm 2 (D2): "Yine de Kaydet" yalnız cashForce; banka/kart hesabının Uyar'ını da cashForce geçer (negativeOk gönderilmez).
+    const flagsOf = step => ({ ...(step.benzerOnay ? { similarOk: true } : {}), ...(step.yineDeKaydet ? { cashForce: true } : {}) });
+    const deleteFlags = step => (step.yineDeKaydet ? "?cashForce=1" : "");
+    // Hakem KOSUCU-ALIS-YINELEME-NUMARA: alış faturasında tedarikçi belge numarası takma addan türetilir; istek kimliğiyle yinelenen
+    // adımda (aynı kullanıcı, işlem, kimlik) asıl BAŞARILI adımın numarası yeniden gönderilir (§5.4: `ad` gövdeye girmez).
+    const purchaseNumbers = new Map();
+    const repeatKeyOf = step => (step.istekKimligi !== undefined ? `${step.kullanici || "Y"}|${step.islem}|${step.istekKimligi}` : null);
     const idOf = alias => registry.get(alias)?.id;
     const missing = (step, alias) => ({ skip: `${alias} oluşmadı (${failedAliases.get(alias) || "?"} adımı reddedildi ya da eşlenemedi)` });
     /** Adımın andığı takma adlar oluşmuş mu? */
@@ -733,7 +739,9 @@ async function run(scenarioPath, outPath) {
           const built = invoiceLines(step);
           if (built.error) return { unmapped: built.error };
           const kind = step.tur === "satis" ? "sale" : "purchase";
-          const doc = { kind, accountId: idOf(step.cari), issueDate: date, pricesIncludeVat: built.pricesIncludeVat, lines: built.lines, ...(kind === "purchase" ? { number: step.ad } : {}) };
+          const repeatKey = kind === "purchase" ? repeatKeyOf(step) : null;
+          const purchaseNumber = (repeatKey && purchaseNumbers.get(repeatKey)) || step.ad;
+          const doc = { kind, accountId: idOf(step.cari), issueDate: date, pricesIncludeVat: built.pricesIncludeVat, lines: built.lines, ...(kind === "purchase" ? { number: purchaseNumber } : {}) };
           const rows = step.odeme?.pesin || [];
           const cash = [];
           let whole = null;
@@ -752,6 +760,7 @@ async function run(scenarioPath, outPath) {
           const payment = { cash, ...(taksit ? { rest: "installments", installments: { count: taksit.sayi, firstDue: first, everyMonths: 1 } } : { rest: "open" }) };
           const result = await http(client, "POST", "/api/workspace/invoices", [], { ...doc, payment, ...flags }, opt);
           if (!result.ok) return refused(result);
+          if (repeatKey && !purchaseNumbers.has(repeatKey)) purchaseNumbers.set(repeatKey, purchaseNumber);
           const extra = taksit ? [{ alias: taksit.ad, rec: { tur: "taksit", id: result.data.planId } }] : [];
           if (taksit && !result.data.planId) return { created: { tur: "fatura", id: result.data.id }, extra: [], note: `${taksit.ad}: program faturayı kaydetti ama taksit kartı kimliği (planId) dönmedi.` };
           return { created: { tur: "fatura", id: result.data.id }, extra, replayed: Boolean(result.data.replayed) };

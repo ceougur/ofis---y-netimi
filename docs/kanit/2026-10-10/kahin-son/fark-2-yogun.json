@@ -1,0 +1,9749 @@
+{
+  "adimSayisi": 622,
+  "atlananBelirsizYaprak": 727,
+  "belirsizSayisi": {
+    "a": 745,
+    "b": 745
+  },
+  "cikisKodlari": {
+    "a": 0,
+    "b": 0,
+    "program": 0
+  },
+  "desenSayilari": {
+    "A=B≠P": 417
+  },
+  "durum": "TAMAM",
+  "farkSayisi": 417,
+  "farklar": [
+    {
+      "a": {
+        "alacak": 24800812,
+        "borc": 0
+      },
+      "aile": "mizan.500",
+      "alan": "araDurumlar.k1.mizan.500",
+      "b": {
+        "alacak": 24800812,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "KASA-ACILIS-649",
+      "pencere": [
+        "baslangic",
+        "k1"
+      ],
+      "program": {
+        "alacak": 20798812,
+        "borc": 0
+      },
+      "yol": [
+        "araDurumlar",
+        "k1",
+        "mizan",
+        "500"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 0,
+        "borc": 0
+      },
+      "aile": "mizan.649",
+      "alan": "araDurumlar.k1.mizan.649",
+      "b": {
+        "alacak": 0,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "KASA-ACILIS-649",
+      "pencere": [
+        "baslangic",
+        "k1"
+      ],
+      "program": {
+        "alacak": 4002000,
+        "borc": 0
+      },
+      "yol": [
+        "araDurumlar",
+        "k1",
+        "mizan",
+        "649"
+      ]
+    },
+    {
+      "a": -6411809,
+      "aile": "bankaHesaplari.*",
+      "alan": "araDurumlar.k10.bankaHesaplari.B4",
+      "b": -6411809,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": -6411808,
+      "yol": [
+        "araDurumlar",
+        "k10",
+        "bankaHesaplari",
+        "B4"
+      ]
+    },
+    {
+      "a": -665489,
+      "aile": "cariler.*",
+      "alan": "araDurumlar.k10.cariler.C24",
+      "b": -665489,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": -665488,
+      "yol": [
+        "araDurumlar",
+        "k10",
+        "cariler",
+        "C24"
+      ]
+    },
+    {
+      "a": 4095224,
+      "aile": "faturalar.*.matrah",
+      "alan": "araDurumlar.k10.faturalar.F12.matrah",
+      "b": 4095224,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k3",
+        "k4"
+      ],
+      "program": 4095225,
+      "yol": [
+        "araDurumlar",
+        "k10",
+        "faturalar",
+        "F12",
+        "matrah"
+      ]
+    },
+    {
+      "a": 4791927,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k10.faturalar.F12.toplam",
+      "b": 4791927,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k3",
+        "k4"
+      ],
+      "program": 4791928,
+      "yol": [
+        "araDurumlar",
+        "k10",
+        "faturalar",
+        "F12",
+        "toplam"
+      ]
+    },
+    {
+      "a": 3902,
+      "aile": "faturalar.*.kdv",
+      "alan": "araDurumlar.k10.faturalar.F27.kdv",
+      "b": 3902,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k5",
+        "k6"
+      ],
+      "program": 3901,
+      "yol": [
+        "araDurumlar",
+        "k10",
+        "faturalar",
+        "F27",
+        "kdv"
+      ]
+    },
+    {
+      "a": 42917,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k10.faturalar.F27.toplam",
+      "b": 42917,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k5",
+        "k6"
+      ],
+      "program": 42916,
+      "yol": [
+        "araDurumlar",
+        "k10",
+        "faturalar",
+        "F27",
+        "toplam"
+      ]
+    },
+    {
+      "a": 655978,
+      "aile": "faturalar.*.acik",
+      "alan": "araDurumlar.k10.faturalar.F47.acik",
+      "b": 655978,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": 655977,
+      "yol": [
+        "araDurumlar",
+        "k10",
+        "faturalar",
+        "F47",
+        "acik"
+      ]
+    },
+    {
+      "a": 109330,
+      "aile": "faturalar.*.kdv",
+      "alan": "araDurumlar.k10.faturalar.F47.kdv",
+      "b": 109330,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": 109329,
+      "yol": [
+        "araDurumlar",
+        "k10",
+        "faturalar",
+        "F47",
+        "kdv"
+      ]
+    },
+    {
+      "a": 655978,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k10.faturalar.F47.toplam",
+      "b": 655978,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": 655977,
+      "yol": [
+        "araDurumlar",
+        "k10",
+        "faturalar",
+        "F47",
+        "toplam"
+      ]
+    },
+    {
+      "a": 1145744,
+      "aile": "faturalar.*.matrah",
+      "alan": "araDurumlar.k10.faturalar.R17.matrah",
+      "b": 1145744,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k3",
+        "k4"
+      ],
+      "program": 1145745,
+      "yol": [
+        "araDurumlar",
+        "k10",
+        "faturalar",
+        "R17",
+        "matrah"
+      ]
+    },
+    {
+      "a": 1260179,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k10.faturalar.R17.toplam",
+      "b": 1260179,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k3",
+        "k4"
+      ],
+      "program": 1260180,
+      "yol": [
+        "araDurumlar",
+        "k10",
+        "faturalar",
+        "R17",
+        "toplam"
+      ]
+    },
+    {
+      "a": 3902,
+      "aile": "faturalar.*.kdv",
+      "alan": "araDurumlar.k10.faturalar.R54.kdv",
+      "b": 3902,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": 3901,
+      "yol": [
+        "araDurumlar",
+        "k10",
+        "faturalar",
+        "R54",
+        "kdv"
+      ]
+    },
+    {
+      "a": 42917,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k10.faturalar.R54.toplam",
+      "b": 42917,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": 42916,
+      "yol": [
+        "araDurumlar",
+        "k10",
+        "faturalar",
+        "R54",
+        "toplam"
+      ]
+    },
+    {
+      "a": 13604989,
+      "aile": "kasa",
+      "alan": "araDurumlar.k10.kasa",
+      "b": 13604989,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k5",
+        "k6"
+      ],
+      "program": 13604988,
+      "yol": [
+        "araDurumlar",
+        "k10",
+        "kasa"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 0,
+        "borc": 13604989
+      },
+      "aile": "mizan.100",
+      "alan": "araDurumlar.k10.mizan.100",
+      "b": {
+        "alacak": 0,
+        "borc": 13604989
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k5",
+        "k6"
+      ],
+      "program": {
+        "alacak": 0,
+        "borc": 13604988
+      },
+      "yol": [
+        "araDurumlar",
+        "k10",
+        "mizan",
+        "100"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 6411809,
+        "borc": 0
+      },
+      "aile": "mizan.102.NN",
+      "alan": "araDurumlar.k10.mizan.102.04",
+      "b": {
+        "alacak": 6411809,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": {
+        "alacak": 6411808,
+        "borc": 0
+      },
+      "yol": [
+        "araDurumlar",
+        "k10",
+        "mizan",
+        "102.04"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 0,
+        "borc": 3700213
+      },
+      "aile": "mizan.191",
+      "alan": "araDurumlar.k10.mizan.191",
+      "b": {
+        "alacak": 0,
+        "borc": 3700213
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": {
+        "alacak": 0,
+        "borc": 3700212
+      },
+      "yol": [
+        "araDurumlar",
+        "k10",
+        "mizan",
+        "191"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 35412725,
+        "borc": 0
+      },
+      "aile": "mizan.320",
+      "alan": "araDurumlar.k10.mizan.320",
+      "b": {
+        "alacak": 35412725,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": {
+        "alacak": 35412724,
+        "borc": 0
+      },
+      "yol": [
+        "araDurumlar",
+        "k10",
+        "mizan",
+        "320"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 25397372,
+        "borc": 0
+      },
+      "aile": "mizan.500",
+      "alan": "araDurumlar.k10.mizan.500",
+      "b": {
+        "alacak": 25397372,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "KASA-ACILIS-649",
+      "pencere": [
+        "baslangic",
+        "k1"
+      ],
+      "program": {
+        "alacak": 21395372,
+        "borc": 0
+      },
+      "yol": [
+        "araDurumlar",
+        "k10",
+        "mizan",
+        "500"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 500616,
+        "borc": 0
+      },
+      "aile": "mizan.649",
+      "alan": "araDurumlar.k10.mizan.649",
+      "b": {
+        "alacak": 500616,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "KASA-ACILIS-649",
+      "pencere": [
+        "baslangic",
+        "k1"
+      ],
+      "program": {
+        "alacak": 4502616,
+        "borc": 0
+      },
+      "yol": [
+        "araDurumlar",
+        "k10",
+        "mizan",
+        "649"
+      ]
+    },
+    {
+      "a": 13559735,
+      "aile": "ozet.gercekBanka",
+      "alan": "araDurumlar.k10.ozet.gercekBanka",
+      "b": 13559735,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": 13559736,
+      "yol": [
+        "araDurumlar",
+        "k10",
+        "ozet",
+        "gercekBanka"
+      ]
+    },
+    {
+      "a": -11410800,
+      "aile": "bankaHesaplari.*",
+      "alan": "araDurumlar.k11.bankaHesaplari.B3",
+      "b": -11410800,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k10",
+        "k11"
+      ],
+      "program": -11410801,
+      "yol": [
+        "araDurumlar",
+        "k11",
+        "bankaHesaplari",
+        "B3"
+      ]
+    },
+    {
+      "a": -7269397,
+      "aile": "bankaHesaplari.*",
+      "alan": "araDurumlar.k11.bankaHesaplari.B4",
+      "b": -7269397,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": -7269396,
+      "yol": [
+        "araDurumlar",
+        "k11",
+        "bankaHesaplari",
+        "B4"
+      ]
+    },
+    {
+      "a": -4540614,
+      "aile": "cariler.*",
+      "alan": "araDurumlar.k11.cariler.C24",
+      "b": -4540614,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": -4540613,
+      "yol": [
+        "araDurumlar",
+        "k11",
+        "cariler",
+        "C24"
+      ]
+    },
+    {
+      "a": 4095224,
+      "aile": "faturalar.*.matrah",
+      "alan": "araDurumlar.k11.faturalar.F12.matrah",
+      "b": 4095224,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k3",
+        "k4"
+      ],
+      "program": 4095225,
+      "yol": [
+        "araDurumlar",
+        "k11",
+        "faturalar",
+        "F12",
+        "matrah"
+      ]
+    },
+    {
+      "a": 4791927,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k11.faturalar.F12.toplam",
+      "b": 4791927,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k3",
+        "k4"
+      ],
+      "program": 4791928,
+      "yol": [
+        "araDurumlar",
+        "k11",
+        "faturalar",
+        "F12",
+        "toplam"
+      ]
+    },
+    {
+      "a": 3902,
+      "aile": "faturalar.*.kdv",
+      "alan": "araDurumlar.k11.faturalar.F27.kdv",
+      "b": 3902,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k5",
+        "k6"
+      ],
+      "program": 3901,
+      "yol": [
+        "araDurumlar",
+        "k11",
+        "faturalar",
+        "F27",
+        "kdv"
+      ]
+    },
+    {
+      "a": 42917,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k11.faturalar.F27.toplam",
+      "b": 42917,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k5",
+        "k6"
+      ],
+      "program": 42916,
+      "yol": [
+        "araDurumlar",
+        "k11",
+        "faturalar",
+        "F27",
+        "toplam"
+      ]
+    },
+    {
+      "a": 655978,
+      "aile": "faturalar.*.acik",
+      "alan": "araDurumlar.k11.faturalar.F47.acik",
+      "b": 655978,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": 655977,
+      "yol": [
+        "araDurumlar",
+        "k11",
+        "faturalar",
+        "F47",
+        "acik"
+      ]
+    },
+    {
+      "a": 109330,
+      "aile": "faturalar.*.kdv",
+      "alan": "araDurumlar.k11.faturalar.F47.kdv",
+      "b": 109330,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": 109329,
+      "yol": [
+        "araDurumlar",
+        "k11",
+        "faturalar",
+        "F47",
+        "kdv"
+      ]
+    },
+    {
+      "a": 655978,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k11.faturalar.F47.toplam",
+      "b": 655978,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": 655977,
+      "yol": [
+        "araDurumlar",
+        "k11",
+        "faturalar",
+        "F47",
+        "toplam"
+      ]
+    },
+    {
+      "a": 3169,
+      "aile": "faturalar.*.matrah",
+      "alan": "araDurumlar.k11.faturalar.F54.matrah",
+      "b": 3169,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k10",
+        "k11"
+      ],
+      "program": 3168,
+      "yol": [
+        "araDurumlar",
+        "k11",
+        "faturalar",
+        "F54",
+        "matrah"
+      ]
+    },
+    {
+      "a": 3803,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k11.faturalar.F54.toplam",
+      "b": 3803,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k10",
+        "k11"
+      ],
+      "program": 3802,
+      "yol": [
+        "araDurumlar",
+        "k11",
+        "faturalar",
+        "F54",
+        "toplam"
+      ]
+    },
+    {
+      "a": 1145744,
+      "aile": "faturalar.*.matrah",
+      "alan": "araDurumlar.k11.faturalar.R17.matrah",
+      "b": 1145744,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k3",
+        "k4"
+      ],
+      "program": 1145745,
+      "yol": [
+        "araDurumlar",
+        "k11",
+        "faturalar",
+        "R17",
+        "matrah"
+      ]
+    },
+    {
+      "a": 1260179,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k11.faturalar.R17.toplam",
+      "b": 1260179,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k3",
+        "k4"
+      ],
+      "program": 1260180,
+      "yol": [
+        "araDurumlar",
+        "k11",
+        "faturalar",
+        "R17",
+        "toplam"
+      ]
+    },
+    {
+      "a": 3902,
+      "aile": "faturalar.*.kdv",
+      "alan": "araDurumlar.k11.faturalar.R54.kdv",
+      "b": 3902,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": 3901,
+      "yol": [
+        "araDurumlar",
+        "k11",
+        "faturalar",
+        "R54",
+        "kdv"
+      ]
+    },
+    {
+      "a": 42917,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k11.faturalar.R54.toplam",
+      "b": 42917,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": 42916,
+      "yol": [
+        "araDurumlar",
+        "k11",
+        "faturalar",
+        "R54",
+        "toplam"
+      ]
+    },
+    {
+      "a": 18488405,
+      "aile": "kasa",
+      "alan": "araDurumlar.k11.kasa",
+      "b": 18488405,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k5",
+        "k6"
+      ],
+      "program": 18488404,
+      "yol": [
+        "araDurumlar",
+        "k11",
+        "kasa"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 0,
+        "borc": 18488405
+      },
+      "aile": "mizan.100",
+      "alan": "araDurumlar.k11.mizan.100",
+      "b": {
+        "alacak": 0,
+        "borc": 18488405
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k5",
+        "k6"
+      ],
+      "program": {
+        "alacak": 0,
+        "borc": 18488404
+      },
+      "yol": [
+        "araDurumlar",
+        "k11",
+        "mizan",
+        "100"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 11410800,
+        "borc": 0
+      },
+      "aile": "mizan.102.NN",
+      "alan": "araDurumlar.k11.mizan.102.03",
+      "b": {
+        "alacak": 11410800,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k10",
+        "k11"
+      ],
+      "program": {
+        "alacak": 11410801,
+        "borc": 0
+      },
+      "yol": [
+        "araDurumlar",
+        "k11",
+        "mizan",
+        "102.03"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 7269397,
+        "borc": 0
+      },
+      "aile": "mizan.102.NN",
+      "alan": "araDurumlar.k11.mizan.102.04",
+      "b": {
+        "alacak": 7269397,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": {
+        "alacak": 7269396,
+        "borc": 0
+      },
+      "yol": [
+        "araDurumlar",
+        "k11",
+        "mizan",
+        "102.04"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 0,
+        "borc": 4245928
+      },
+      "aile": "mizan.191",
+      "alan": "araDurumlar.k11.mizan.191",
+      "b": {
+        "alacak": 0,
+        "borc": 4245928
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": {
+        "alacak": 0,
+        "borc": 4245927
+      },
+      "yol": [
+        "araDurumlar",
+        "k11",
+        "mizan",
+        "191"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 38920554,
+        "borc": 0
+      },
+      "aile": "mizan.320",
+      "alan": "araDurumlar.k11.mizan.320",
+      "b": {
+        "alacak": 38920554,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": {
+        "alacak": 38920553,
+        "borc": 0
+      },
+      "yol": [
+        "araDurumlar",
+        "k11",
+        "mizan",
+        "320"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 25397372,
+        "borc": 0
+      },
+      "aile": "mizan.500",
+      "alan": "araDurumlar.k11.mizan.500",
+      "b": {
+        "alacak": 25397372,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "KASA-ACILIS-649",
+      "pencere": [
+        "baslangic",
+        "k1"
+      ],
+      "program": {
+        "alacak": 21395372,
+        "borc": 0
+      },
+      "yol": [
+        "araDurumlar",
+        "k11",
+        "mizan",
+        "500"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 10058651,
+        "borc": 0
+      },
+      "aile": "mizan.600",
+      "alan": "araDurumlar.k11.mizan.600",
+      "b": {
+        "alacak": 10058651,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k10",
+        "k11"
+      ],
+      "program": {
+        "alacak": 10058650,
+        "borc": 0
+      },
+      "yol": [
+        "araDurumlar",
+        "k11",
+        "mizan",
+        "600"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 603649,
+        "borc": 0
+      },
+      "aile": "mizan.649",
+      "alan": "araDurumlar.k11.mizan.649",
+      "b": {
+        "alacak": 603649,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "KASA-ACILIS-649",
+      "pencere": [
+        "baslangic",
+        "k1"
+      ],
+      "program": {
+        "alacak": 4605649,
+        "borc": 0
+      },
+      "yol": [
+        "araDurumlar",
+        "k11",
+        "mizan",
+        "649"
+      ]
+    },
+    {
+      "a": 29118807,
+      "aile": "ozet.kasaVeGercekBanka",
+      "alan": "araDurumlar.k11.ozet.kasaVeGercekBanka",
+      "b": 29118807,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k5",
+        "k6"
+      ],
+      "program": 29118806,
+      "yol": [
+        "araDurumlar",
+        "k11",
+        "ozet",
+        "kasaVeGercekBanka"
+      ]
+    },
+    {
+      "a": -11489522,
+      "aile": "bankaHesaplari.*",
+      "alan": "araDurumlar.k12.bankaHesaplari.B3",
+      "b": -11489522,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k10",
+        "k11"
+      ],
+      "program": -11489523,
+      "yol": [
+        "araDurumlar",
+        "k12",
+        "bankaHesaplari",
+        "B3"
+      ]
+    },
+    {
+      "a": -7280576,
+      "aile": "bankaHesaplari.*",
+      "alan": "araDurumlar.k12.bankaHesaplari.B4",
+      "b": -7280576,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": -7280575,
+      "yol": [
+        "araDurumlar",
+        "k12",
+        "bankaHesaplari",
+        "B4"
+      ]
+    },
+    {
+      "a": -3803,
+      "aile": "cariler.*",
+      "alan": "araDurumlar.k12.cariler.C16",
+      "b": -3803,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k11",
+        "k12"
+      ],
+      "program": -3802,
+      "yol": [
+        "araDurumlar",
+        "k12",
+        "cariler",
+        "C16"
+      ]
+    },
+    {
+      "a": -4540614,
+      "aile": "cariler.*",
+      "alan": "araDurumlar.k12.cariler.C24",
+      "b": -4540614,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": -4540613,
+      "yol": [
+        "araDurumlar",
+        "k12",
+        "cariler",
+        "C24"
+      ]
+    },
+    {
+      "a": 4095224,
+      "aile": "faturalar.*.matrah",
+      "alan": "araDurumlar.k12.faturalar.F12.matrah",
+      "b": 4095224,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k3",
+        "k4"
+      ],
+      "program": 4095225,
+      "yol": [
+        "araDurumlar",
+        "k12",
+        "faturalar",
+        "F12",
+        "matrah"
+      ]
+    },
+    {
+      "a": 4791927,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k12.faturalar.F12.toplam",
+      "b": 4791927,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k3",
+        "k4"
+      ],
+      "program": 4791928,
+      "yol": [
+        "araDurumlar",
+        "k12",
+        "faturalar",
+        "F12",
+        "toplam"
+      ]
+    },
+    {
+      "a": 3902,
+      "aile": "faturalar.*.kdv",
+      "alan": "araDurumlar.k12.faturalar.F27.kdv",
+      "b": 3902,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k5",
+        "k6"
+      ],
+      "program": 3901,
+      "yol": [
+        "araDurumlar",
+        "k12",
+        "faturalar",
+        "F27",
+        "kdv"
+      ]
+    },
+    {
+      "a": 42917,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k12.faturalar.F27.toplam",
+      "b": 42917,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k5",
+        "k6"
+      ],
+      "program": 42916,
+      "yol": [
+        "araDurumlar",
+        "k12",
+        "faturalar",
+        "F27",
+        "toplam"
+      ]
+    },
+    {
+      "a": 655978,
+      "aile": "faturalar.*.acik",
+      "alan": "araDurumlar.k12.faturalar.F47.acik",
+      "b": 655978,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": 655977,
+      "yol": [
+        "araDurumlar",
+        "k12",
+        "faturalar",
+        "F47",
+        "acik"
+      ]
+    },
+    {
+      "a": 109330,
+      "aile": "faturalar.*.kdv",
+      "alan": "araDurumlar.k12.faturalar.F47.kdv",
+      "b": 109330,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": 109329,
+      "yol": [
+        "araDurumlar",
+        "k12",
+        "faturalar",
+        "F47",
+        "kdv"
+      ]
+    },
+    {
+      "a": 655978,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k12.faturalar.F47.toplam",
+      "b": 655978,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": 655977,
+      "yol": [
+        "araDurumlar",
+        "k12",
+        "faturalar",
+        "F47",
+        "toplam"
+      ]
+    },
+    {
+      "a": 3169,
+      "aile": "faturalar.*.matrah",
+      "alan": "araDurumlar.k12.faturalar.F54.matrah",
+      "b": 3169,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k10",
+        "k11"
+      ],
+      "program": 3168,
+      "yol": [
+        "araDurumlar",
+        "k12",
+        "faturalar",
+        "F54",
+        "matrah"
+      ]
+    },
+    {
+      "a": 3803,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k12.faturalar.F54.toplam",
+      "b": 3803,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k10",
+        "k11"
+      ],
+      "program": 3802,
+      "yol": [
+        "araDurumlar",
+        "k12",
+        "faturalar",
+        "F54",
+        "toplam"
+      ]
+    },
+    {
+      "a": 1145744,
+      "aile": "faturalar.*.matrah",
+      "alan": "araDurumlar.k12.faturalar.R17.matrah",
+      "b": 1145744,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k3",
+        "k4"
+      ],
+      "program": 1145745,
+      "yol": [
+        "araDurumlar",
+        "k12",
+        "faturalar",
+        "R17",
+        "matrah"
+      ]
+    },
+    {
+      "a": 1260179,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k12.faturalar.R17.toplam",
+      "b": 1260179,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k3",
+        "k4"
+      ],
+      "program": 1260180,
+      "yol": [
+        "araDurumlar",
+        "k12",
+        "faturalar",
+        "R17",
+        "toplam"
+      ]
+    },
+    {
+      "a": 3902,
+      "aile": "faturalar.*.kdv",
+      "alan": "araDurumlar.k12.faturalar.R54.kdv",
+      "b": 3902,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": 3901,
+      "yol": [
+        "araDurumlar",
+        "k12",
+        "faturalar",
+        "R54",
+        "kdv"
+      ]
+    },
+    {
+      "a": 42917,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k12.faturalar.R54.toplam",
+      "b": 42917,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": 42916,
+      "yol": [
+        "araDurumlar",
+        "k12",
+        "faturalar",
+        "R54",
+        "toplam"
+      ]
+    },
+    {
+      "a": 3803,
+      "aile": "faturalar.*.acik",
+      "alan": "araDurumlar.k12.faturalar.R69.acik",
+      "b": 3803,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k11",
+        "k12"
+      ],
+      "program": 3802,
+      "yol": [
+        "araDurumlar",
+        "k12",
+        "faturalar",
+        "R69",
+        "acik"
+      ]
+    },
+    {
+      "a": 3169,
+      "aile": "faturalar.*.matrah",
+      "alan": "araDurumlar.k12.faturalar.R69.matrah",
+      "b": 3169,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k11",
+        "k12"
+      ],
+      "program": 3168,
+      "yol": [
+        "araDurumlar",
+        "k12",
+        "faturalar",
+        "R69",
+        "matrah"
+      ]
+    },
+    {
+      "a": 3803,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k12.faturalar.R69.toplam",
+      "b": 3803,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k11",
+        "k12"
+      ],
+      "program": 3802,
+      "yol": [
+        "araDurumlar",
+        "k12",
+        "faturalar",
+        "R69",
+        "toplam"
+      ]
+    },
+    {
+      "a": 18793590,
+      "aile": "kasa",
+      "alan": "araDurumlar.k12.kasa",
+      "b": 18793590,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k5",
+        "k6"
+      ],
+      "program": 18793589,
+      "yol": [
+        "araDurumlar",
+        "k12",
+        "kasa"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 0,
+        "borc": 18793590
+      },
+      "aile": "mizan.100",
+      "alan": "araDurumlar.k12.mizan.100",
+      "b": {
+        "alacak": 0,
+        "borc": 18793590
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k5",
+        "k6"
+      ],
+      "program": {
+        "alacak": 0,
+        "borc": 18793589
+      },
+      "yol": [
+        "araDurumlar",
+        "k12",
+        "mizan",
+        "100"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 11489522,
+        "borc": 0
+      },
+      "aile": "mizan.102.NN",
+      "alan": "araDurumlar.k12.mizan.102.03",
+      "b": {
+        "alacak": 11489522,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k10",
+        "k11"
+      ],
+      "program": {
+        "alacak": 11489523,
+        "borc": 0
+      },
+      "yol": [
+        "araDurumlar",
+        "k12",
+        "mizan",
+        "102.03"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 7280576,
+        "borc": 0
+      },
+      "aile": "mizan.102.NN",
+      "alan": "araDurumlar.k12.mizan.102.04",
+      "b": {
+        "alacak": 7280576,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": {
+        "alacak": 7280575,
+        "borc": 0
+      },
+      "yol": [
+        "araDurumlar",
+        "k12",
+        "mizan",
+        "102.04"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 0,
+        "borc": 3086292
+      },
+      "aile": "mizan.120",
+      "alan": "araDurumlar.k12.mizan.120",
+      "b": {
+        "alacak": 0,
+        "borc": 3086292
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k11",
+        "k12"
+      ],
+      "program": {
+        "alacak": 0,
+        "borc": 3086293
+      },
+      "yol": [
+        "araDurumlar",
+        "k12",
+        "mizan",
+        "120"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 0,
+        "borc": 4170611
+      },
+      "aile": "mizan.191",
+      "alan": "araDurumlar.k12.mizan.191",
+      "b": {
+        "alacak": 0,
+        "borc": 4170611
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": {
+        "alacak": 0,
+        "borc": 4170610
+      },
+      "yol": [
+        "araDurumlar",
+        "k12",
+        "mizan",
+        "191"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 40316094,
+        "borc": 0
+      },
+      "aile": "mizan.320",
+      "alan": "araDurumlar.k12.mizan.320",
+      "b": {
+        "alacak": 40316094,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": {
+        "alacak": 40316093,
+        "borc": 0
+      },
+      "yol": [
+        "araDurumlar",
+        "k12",
+        "mizan",
+        "320"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 26329672,
+        "borc": 0
+      },
+      "aile": "mizan.500",
+      "alan": "araDurumlar.k12.mizan.500",
+      "b": {
+        "alacak": 26329672,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "KASA-ACILIS-649",
+      "pencere": [
+        "baslangic",
+        "k1"
+      ],
+      "program": {
+        "alacak": 22327672,
+        "borc": 0
+      },
+      "yol": [
+        "araDurumlar",
+        "k12",
+        "mizan",
+        "500"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 10685450,
+        "borc": 0
+      },
+      "aile": "mizan.600",
+      "alan": "araDurumlar.k12.mizan.600",
+      "b": {
+        "alacak": 10685450,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k10",
+        "k11"
+      ],
+      "program": {
+        "alacak": 10685449,
+        "borc": 0
+      },
+      "yol": [
+        "araDurumlar",
+        "k12",
+        "mizan",
+        "600"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 0,
+        "borc": 3903160
+      },
+      "aile": "mizan.610",
+      "alan": "araDurumlar.k12.mizan.610",
+      "b": {
+        "alacak": 0,
+        "borc": 3903160
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k11",
+        "k12"
+      ],
+      "program": {
+        "alacak": 0,
+        "borc": 3903159
+      },
+      "yol": [
+        "araDurumlar",
+        "k12",
+        "mizan",
+        "610"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 656886,
+        "borc": 0
+      },
+      "aile": "mizan.649",
+      "alan": "araDurumlar.k12.mizan.649",
+      "b": {
+        "alacak": 656886,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "KASA-ACILIS-649",
+      "pencere": [
+        "baslangic",
+        "k1"
+      ],
+      "program": {
+        "alacak": 4658886,
+        "borc": 0
+      },
+      "yol": [
+        "araDurumlar",
+        "k12",
+        "mizan",
+        "649"
+      ]
+    },
+    {
+      "a": 32034498,
+      "aile": "ozet.kasaVeGercekBanka",
+      "alan": "araDurumlar.k12.ozet.kasaVeGercekBanka",
+      "b": 32034498,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k5",
+        "k6"
+      ],
+      "program": 32034497,
+      "yol": [
+        "araDurumlar",
+        "k12",
+        "ozet",
+        "kasaVeGercekBanka"
+      ]
+    },
+    {
+      "a": -14936528,
+      "aile": "bankaHesaplari.*",
+      "alan": "araDurumlar.k13.bankaHesaplari.B3",
+      "b": -14936528,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k10",
+        "k11"
+      ],
+      "program": -14936529,
+      "yol": [
+        "araDurumlar",
+        "k13",
+        "bankaHesaplari",
+        "B3"
+      ]
+    },
+    {
+      "a": -6841950,
+      "aile": "bankaHesaplari.*",
+      "alan": "araDurumlar.k13.bankaHesaplari.B4",
+      "b": -6841950,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": -6841949,
+      "yol": [
+        "araDurumlar",
+        "k13",
+        "bankaHesaplari",
+        "B4"
+      ]
+    },
+    {
+      "a": -3803,
+      "aile": "cariler.*",
+      "alan": "araDurumlar.k13.cariler.C16",
+      "b": -3803,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k11",
+        "k12"
+      ],
+      "program": -3802,
+      "yol": [
+        "araDurumlar",
+        "k13",
+        "cariler",
+        "C16"
+      ]
+    },
+    {
+      "a": -4540614,
+      "aile": "cariler.*",
+      "alan": "araDurumlar.k13.cariler.C24",
+      "b": -4540614,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": -4540613,
+      "yol": [
+        "araDurumlar",
+        "k13",
+        "cariler",
+        "C24"
+      ]
+    },
+    {
+      "a": 4095224,
+      "aile": "faturalar.*.matrah",
+      "alan": "araDurumlar.k13.faturalar.F12.matrah",
+      "b": 4095224,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k3",
+        "k4"
+      ],
+      "program": 4095225,
+      "yol": [
+        "araDurumlar",
+        "k13",
+        "faturalar",
+        "F12",
+        "matrah"
+      ]
+    },
+    {
+      "a": 4791927,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k13.faturalar.F12.toplam",
+      "b": 4791927,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k3",
+        "k4"
+      ],
+      "program": 4791928,
+      "yol": [
+        "araDurumlar",
+        "k13",
+        "faturalar",
+        "F12",
+        "toplam"
+      ]
+    },
+    {
+      "a": 3902,
+      "aile": "faturalar.*.kdv",
+      "alan": "araDurumlar.k13.faturalar.F27.kdv",
+      "b": 3902,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k5",
+        "k6"
+      ],
+      "program": 3901,
+      "yol": [
+        "araDurumlar",
+        "k13",
+        "faturalar",
+        "F27",
+        "kdv"
+      ]
+    },
+    {
+      "a": 42917,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k13.faturalar.F27.toplam",
+      "b": 42917,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k5",
+        "k6"
+      ],
+      "program": 42916,
+      "yol": [
+        "araDurumlar",
+        "k13",
+        "faturalar",
+        "F27",
+        "toplam"
+      ]
+    },
+    {
+      "a": 655978,
+      "aile": "faturalar.*.acik",
+      "alan": "araDurumlar.k13.faturalar.F47.acik",
+      "b": 655978,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": 655977,
+      "yol": [
+        "araDurumlar",
+        "k13",
+        "faturalar",
+        "F47",
+        "acik"
+      ]
+    },
+    {
+      "a": 109330,
+      "aile": "faturalar.*.kdv",
+      "alan": "araDurumlar.k13.faturalar.F47.kdv",
+      "b": 109330,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": 109329,
+      "yol": [
+        "araDurumlar",
+        "k13",
+        "faturalar",
+        "F47",
+        "kdv"
+      ]
+    },
+    {
+      "a": 655978,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k13.faturalar.F47.toplam",
+      "b": 655978,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": 655977,
+      "yol": [
+        "araDurumlar",
+        "k13",
+        "faturalar",
+        "F47",
+        "toplam"
+      ]
+    },
+    {
+      "a": 3169,
+      "aile": "faturalar.*.matrah",
+      "alan": "araDurumlar.k13.faturalar.F54.matrah",
+      "b": 3169,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k10",
+        "k11"
+      ],
+      "program": 3168,
+      "yol": [
+        "araDurumlar",
+        "k13",
+        "faturalar",
+        "F54",
+        "matrah"
+      ]
+    },
+    {
+      "a": 3803,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k13.faturalar.F54.toplam",
+      "b": 3803,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k10",
+        "k11"
+      ],
+      "program": 3802,
+      "yol": [
+        "araDurumlar",
+        "k13",
+        "faturalar",
+        "F54",
+        "toplam"
+      ]
+    },
+    {
+      "a": 1145744,
+      "aile": "faturalar.*.matrah",
+      "alan": "araDurumlar.k13.faturalar.R17.matrah",
+      "b": 1145744,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k3",
+        "k4"
+      ],
+      "program": 1145745,
+      "yol": [
+        "araDurumlar",
+        "k13",
+        "faturalar",
+        "R17",
+        "matrah"
+      ]
+    },
+    {
+      "a": 1260179,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k13.faturalar.R17.toplam",
+      "b": 1260179,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k3",
+        "k4"
+      ],
+      "program": 1260180,
+      "yol": [
+        "araDurumlar",
+        "k13",
+        "faturalar",
+        "R17",
+        "toplam"
+      ]
+    },
+    {
+      "a": 3902,
+      "aile": "faturalar.*.kdv",
+      "alan": "araDurumlar.k13.faturalar.R54.kdv",
+      "b": 3902,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": 3901,
+      "yol": [
+        "araDurumlar",
+        "k13",
+        "faturalar",
+        "R54",
+        "kdv"
+      ]
+    },
+    {
+      "a": 42917,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k13.faturalar.R54.toplam",
+      "b": 42917,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": 42916,
+      "yol": [
+        "araDurumlar",
+        "k13",
+        "faturalar",
+        "R54",
+        "toplam"
+      ]
+    },
+    {
+      "a": 3803,
+      "aile": "faturalar.*.acik",
+      "alan": "araDurumlar.k13.faturalar.R69.acik",
+      "b": 3803,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k11",
+        "k12"
+      ],
+      "program": 3802,
+      "yol": [
+        "araDurumlar",
+        "k13",
+        "faturalar",
+        "R69",
+        "acik"
+      ]
+    },
+    {
+      "a": 3169,
+      "aile": "faturalar.*.matrah",
+      "alan": "araDurumlar.k13.faturalar.R69.matrah",
+      "b": 3169,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k11",
+        "k12"
+      ],
+      "program": 3168,
+      "yol": [
+        "araDurumlar",
+        "k13",
+        "faturalar",
+        "R69",
+        "matrah"
+      ]
+    },
+    {
+      "a": 3803,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k13.faturalar.R69.toplam",
+      "b": 3803,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k11",
+        "k12"
+      ],
+      "program": 3802,
+      "yol": [
+        "araDurumlar",
+        "k13",
+        "faturalar",
+        "R69",
+        "toplam"
+      ]
+    },
+    {
+      "a": 109330,
+      "aile": "faturalar.*.kdv",
+      "alan": "araDurumlar.k13.faturalar.R74.kdv",
+      "b": 109330,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k12",
+        "k13"
+      ],
+      "program": 109329,
+      "yol": [
+        "araDurumlar",
+        "k13",
+        "faturalar",
+        "R74",
+        "kdv"
+      ]
+    },
+    {
+      "a": 655978,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k13.faturalar.R74.toplam",
+      "b": 655978,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k12",
+        "k13"
+      ],
+      "program": 655977,
+      "yol": [
+        "araDurumlar",
+        "k13",
+        "faturalar",
+        "R74",
+        "toplam"
+      ]
+    },
+    {
+      "a": 22870397,
+      "aile": "kasa",
+      "alan": "araDurumlar.k13.kasa",
+      "b": 22870397,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k5",
+        "k6"
+      ],
+      "program": 22870395,
+      "yol": [
+        "araDurumlar",
+        "k13",
+        "kasa"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 0,
+        "borc": 22870397
+      },
+      "aile": "mizan.100",
+      "alan": "araDurumlar.k13.mizan.100",
+      "b": {
+        "alacak": 0,
+        "borc": 22870397
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k5",
+        "k6"
+      ],
+      "program": {
+        "alacak": 0,
+        "borc": 22870395
+      },
+      "yol": [
+        "araDurumlar",
+        "k13",
+        "mizan",
+        "100"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 14936528,
+        "borc": 0
+      },
+      "aile": "mizan.102.NN",
+      "alan": "araDurumlar.k13.mizan.102.03",
+      "b": {
+        "alacak": 14936528,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k10",
+        "k11"
+      ],
+      "program": {
+        "alacak": 14936529,
+        "borc": 0
+      },
+      "yol": [
+        "araDurumlar",
+        "k13",
+        "mizan",
+        "102.03"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 6841950,
+        "borc": 0
+      },
+      "aile": "mizan.102.NN",
+      "alan": "araDurumlar.k13.mizan.102.04",
+      "b": {
+        "alacak": 6841950,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": {
+        "alacak": 6841949,
+        "borc": 0
+      },
+      "yol": [
+        "araDurumlar",
+        "k13",
+        "mizan",
+        "102.04"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 0,
+        "borc": 823703
+      },
+      "aile": "mizan.120",
+      "alan": "araDurumlar.k13.mizan.120",
+      "b": {
+        "alacak": 0,
+        "borc": 823703
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k11",
+        "k12"
+      ],
+      "program": {
+        "alacak": 0,
+        "borc": 823704
+      },
+      "yol": [
+        "araDurumlar",
+        "k13",
+        "mizan",
+        "120"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 40487916,
+        "borc": 0
+      },
+      "aile": "mizan.320",
+      "alan": "araDurumlar.k13.mizan.320",
+      "b": {
+        "alacak": 40487916,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": {
+        "alacak": 40487915,
+        "borc": 0
+      },
+      "yol": [
+        "araDurumlar",
+        "k13",
+        "mizan",
+        "320"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 26329672,
+        "borc": 0
+      },
+      "aile": "mizan.500",
+      "alan": "araDurumlar.k13.mizan.500",
+      "b": {
+        "alacak": 26329672,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "KASA-ACILIS-649",
+      "pencere": [
+        "baslangic",
+        "k1"
+      ],
+      "program": {
+        "alacak": 22327672,
+        "borc": 0
+      },
+      "yol": [
+        "araDurumlar",
+        "k13",
+        "mizan",
+        "500"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 10721828,
+        "borc": 0
+      },
+      "aile": "mizan.600",
+      "alan": "araDurumlar.k13.mizan.600",
+      "b": {
+        "alacak": 10721828,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k10",
+        "k11"
+      ],
+      "program": {
+        "alacak": 10721827,
+        "borc": 0
+      },
+      "yol": [
+        "araDurumlar",
+        "k13",
+        "mizan",
+        "600"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 0,
+        "borc": 3911545
+      },
+      "aile": "mizan.610",
+      "alan": "araDurumlar.k13.mizan.610",
+      "b": {
+        "alacak": 0,
+        "borc": 3911545
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k11",
+        "k12"
+      ],
+      "program": {
+        "alacak": 0,
+        "borc": 3911544
+      },
+      "yol": [
+        "araDurumlar",
+        "k13",
+        "mizan",
+        "610"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 654686,
+        "borc": 0
+      },
+      "aile": "mizan.649",
+      "alan": "araDurumlar.k13.mizan.649",
+      "b": {
+        "alacak": 654686,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "KASA-ACILIS-649",
+      "pencere": [
+        "baslangic",
+        "k1"
+      ],
+      "program": {
+        "alacak": 4656686,
+        "borc": 0
+      },
+      "yol": [
+        "araDurumlar",
+        "k13",
+        "mizan",
+        "649"
+      ]
+    },
+    {
+      "a": 35402621,
+      "aile": "ozet.kasaVeGercekBanka",
+      "alan": "araDurumlar.k13.ozet.kasaVeGercekBanka",
+      "b": 35402621,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k5",
+        "k6"
+      ],
+      "program": 35402619,
+      "yol": [
+        "araDurumlar",
+        "k13",
+        "ozet",
+        "kasaVeGercekBanka"
+      ]
+    },
+    {
+      "a": -14936528,
+      "aile": "bankaHesaplari.*",
+      "alan": "araDurumlar.k14.bankaHesaplari.B3",
+      "b": -14936528,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k10",
+        "k11"
+      ],
+      "program": -14936529,
+      "yol": [
+        "araDurumlar",
+        "k14",
+        "bankaHesaplari",
+        "B3"
+      ]
+    },
+    {
+      "a": -6844048,
+      "aile": "bankaHesaplari.*",
+      "alan": "araDurumlar.k14.bankaHesaplari.B4",
+      "b": -6844048,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": -6844047,
+      "yol": [
+        "araDurumlar",
+        "k14",
+        "bankaHesaplari",
+        "B4"
+      ]
+    },
+    {
+      "a": -3803,
+      "aile": "cariler.*",
+      "alan": "araDurumlar.k14.cariler.C16",
+      "b": -3803,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k11",
+        "k12"
+      ],
+      "program": -3802,
+      "yol": [
+        "araDurumlar",
+        "k14",
+        "cariler",
+        "C16"
+      ]
+    },
+    {
+      "a": -4264360,
+      "aile": "cariler.*",
+      "alan": "araDurumlar.k14.cariler.C24",
+      "b": -4264360,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": -4264359,
+      "yol": [
+        "araDurumlar",
+        "k14",
+        "cariler",
+        "C24"
+      ]
+    },
+    {
+      "a": 4095224,
+      "aile": "faturalar.*.matrah",
+      "alan": "araDurumlar.k14.faturalar.F12.matrah",
+      "b": 4095224,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k3",
+        "k4"
+      ],
+      "program": 4095225,
+      "yol": [
+        "araDurumlar",
+        "k14",
+        "faturalar",
+        "F12",
+        "matrah"
+      ]
+    },
+    {
+      "a": 4791927,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k14.faturalar.F12.toplam",
+      "b": 4791927,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k3",
+        "k4"
+      ],
+      "program": 4791928,
+      "yol": [
+        "araDurumlar",
+        "k14",
+        "faturalar",
+        "F12",
+        "toplam"
+      ]
+    },
+    {
+      "a": 3902,
+      "aile": "faturalar.*.kdv",
+      "alan": "araDurumlar.k14.faturalar.F27.kdv",
+      "b": 3902,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k5",
+        "k6"
+      ],
+      "program": 3901,
+      "yol": [
+        "araDurumlar",
+        "k14",
+        "faturalar",
+        "F27",
+        "kdv"
+      ]
+    },
+    {
+      "a": 42917,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k14.faturalar.F27.toplam",
+      "b": 42917,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k5",
+        "k6"
+      ],
+      "program": 42916,
+      "yol": [
+        "araDurumlar",
+        "k14",
+        "faturalar",
+        "F27",
+        "toplam"
+      ]
+    },
+    {
+      "a": 655978,
+      "aile": "faturalar.*.acik",
+      "alan": "araDurumlar.k14.faturalar.F47.acik",
+      "b": 655978,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": 655977,
+      "yol": [
+        "araDurumlar",
+        "k14",
+        "faturalar",
+        "F47",
+        "acik"
+      ]
+    },
+    {
+      "a": 109330,
+      "aile": "faturalar.*.kdv",
+      "alan": "araDurumlar.k14.faturalar.F47.kdv",
+      "b": 109330,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": 109329,
+      "yol": [
+        "araDurumlar",
+        "k14",
+        "faturalar",
+        "F47",
+        "kdv"
+      ]
+    },
+    {
+      "a": 655978,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k14.faturalar.F47.toplam",
+      "b": 655978,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": 655977,
+      "yol": [
+        "araDurumlar",
+        "k14",
+        "faturalar",
+        "F47",
+        "toplam"
+      ]
+    },
+    {
+      "a": 3169,
+      "aile": "faturalar.*.matrah",
+      "alan": "araDurumlar.k14.faturalar.F54.matrah",
+      "b": 3169,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k10",
+        "k11"
+      ],
+      "program": 3168,
+      "yol": [
+        "araDurumlar",
+        "k14",
+        "faturalar",
+        "F54",
+        "matrah"
+      ]
+    },
+    {
+      "a": 3803,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k14.faturalar.F54.toplam",
+      "b": 3803,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k10",
+        "k11"
+      ],
+      "program": 3802,
+      "yol": [
+        "araDurumlar",
+        "k14",
+        "faturalar",
+        "F54",
+        "toplam"
+      ]
+    },
+    {
+      "a": 1145744,
+      "aile": "faturalar.*.matrah",
+      "alan": "araDurumlar.k14.faturalar.R17.matrah",
+      "b": 1145744,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k3",
+        "k4"
+      ],
+      "program": 1145745,
+      "yol": [
+        "araDurumlar",
+        "k14",
+        "faturalar",
+        "R17",
+        "matrah"
+      ]
+    },
+    {
+      "a": 1260179,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k14.faturalar.R17.toplam",
+      "b": 1260179,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k3",
+        "k4"
+      ],
+      "program": 1260180,
+      "yol": [
+        "araDurumlar",
+        "k14",
+        "faturalar",
+        "R17",
+        "toplam"
+      ]
+    },
+    {
+      "a": 3902,
+      "aile": "faturalar.*.kdv",
+      "alan": "araDurumlar.k14.faturalar.R54.kdv",
+      "b": 3902,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": 3901,
+      "yol": [
+        "araDurumlar",
+        "k14",
+        "faturalar",
+        "R54",
+        "kdv"
+      ]
+    },
+    {
+      "a": 42917,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k14.faturalar.R54.toplam",
+      "b": 42917,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": 42916,
+      "yol": [
+        "araDurumlar",
+        "k14",
+        "faturalar",
+        "R54",
+        "toplam"
+      ]
+    },
+    {
+      "a": 3803,
+      "aile": "faturalar.*.acik",
+      "alan": "araDurumlar.k14.faturalar.R69.acik",
+      "b": 3803,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k11",
+        "k12"
+      ],
+      "program": 3802,
+      "yol": [
+        "araDurumlar",
+        "k14",
+        "faturalar",
+        "R69",
+        "acik"
+      ]
+    },
+    {
+      "a": 3169,
+      "aile": "faturalar.*.matrah",
+      "alan": "araDurumlar.k14.faturalar.R69.matrah",
+      "b": 3169,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k11",
+        "k12"
+      ],
+      "program": 3168,
+      "yol": [
+        "araDurumlar",
+        "k14",
+        "faturalar",
+        "R69",
+        "matrah"
+      ]
+    },
+    {
+      "a": 3803,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k14.faturalar.R69.toplam",
+      "b": 3803,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k11",
+        "k12"
+      ],
+      "program": 3802,
+      "yol": [
+        "araDurumlar",
+        "k14",
+        "faturalar",
+        "R69",
+        "toplam"
+      ]
+    },
+    {
+      "a": 109330,
+      "aile": "faturalar.*.kdv",
+      "alan": "araDurumlar.k14.faturalar.R74.kdv",
+      "b": 109330,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k12",
+        "k13"
+      ],
+      "program": 109329,
+      "yol": [
+        "araDurumlar",
+        "k14",
+        "faturalar",
+        "R74",
+        "kdv"
+      ]
+    },
+    {
+      "a": 655978,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k14.faturalar.R74.toplam",
+      "b": 655978,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k12",
+        "k13"
+      ],
+      "program": 655977,
+      "yol": [
+        "araDurumlar",
+        "k14",
+        "faturalar",
+        "R74",
+        "toplam"
+      ]
+    },
+    {
+      "a": 23135472,
+      "aile": "kasa",
+      "alan": "araDurumlar.k14.kasa",
+      "b": 23135472,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k5",
+        "k6"
+      ],
+      "program": 23135470,
+      "yol": [
+        "araDurumlar",
+        "k14",
+        "kasa"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 0,
+        "borc": 23135472
+      },
+      "aile": "mizan.100",
+      "alan": "araDurumlar.k14.mizan.100",
+      "b": {
+        "alacak": 0,
+        "borc": 23135472
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k5",
+        "k6"
+      ],
+      "program": {
+        "alacak": 0,
+        "borc": 23135470
+      },
+      "yol": [
+        "araDurumlar",
+        "k14",
+        "mizan",
+        "100"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 14936528,
+        "borc": 0
+      },
+      "aile": "mizan.102.NN",
+      "alan": "araDurumlar.k14.mizan.102.03",
+      "b": {
+        "alacak": 14936528,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k10",
+        "k11"
+      ],
+      "program": {
+        "alacak": 14936529,
+        "borc": 0
+      },
+      "yol": [
+        "araDurumlar",
+        "k14",
+        "mizan",
+        "102.03"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 6844048,
+        "borc": 0
+      },
+      "aile": "mizan.102.NN",
+      "alan": "araDurumlar.k14.mizan.102.04",
+      "b": {
+        "alacak": 6844048,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": {
+        "alacak": 6844047,
+        "borc": 0
+      },
+      "yol": [
+        "araDurumlar",
+        "k14",
+        "mizan",
+        "102.04"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 1466259,
+        "borc": 0
+      },
+      "aile": "mizan.120",
+      "alan": "araDurumlar.k14.mizan.120",
+      "b": {
+        "alacak": 1466259,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k11",
+        "k12"
+      ],
+      "program": {
+        "alacak": 1466258,
+        "borc": 0
+      },
+      "yol": [
+        "araDurumlar",
+        "k14",
+        "mizan",
+        "120"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 33398947,
+        "borc": 0
+      },
+      "aile": "mizan.320",
+      "alan": "araDurumlar.k14.mizan.320",
+      "b": {
+        "alacak": 33398947,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": {
+        "alacak": 33398946,
+        "borc": 0
+      },
+      "yol": [
+        "araDurumlar",
+        "k14",
+        "mizan",
+        "320"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 26773572,
+        "borc": 0
+      },
+      "aile": "mizan.500",
+      "alan": "araDurumlar.k14.mizan.500",
+      "b": {
+        "alacak": 26773572,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "KASA-ACILIS-649",
+      "pencere": [
+        "baslangic",
+        "k1"
+      ],
+      "program": {
+        "alacak": 22771572,
+        "borc": 0
+      },
+      "yol": [
+        "araDurumlar",
+        "k14",
+        "mizan",
+        "500"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 13751211,
+        "borc": 0
+      },
+      "aile": "mizan.600",
+      "alan": "araDurumlar.k14.mizan.600",
+      "b": {
+        "alacak": 13751211,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k10",
+        "k11"
+      ],
+      "program": {
+        "alacak": 13751210,
+        "borc": 0
+      },
+      "yol": [
+        "araDurumlar",
+        "k14",
+        "mizan",
+        "600"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 0,
+        "borc": 6274686
+      },
+      "aile": "mizan.610",
+      "alan": "araDurumlar.k14.mizan.610",
+      "b": {
+        "alacak": 0,
+        "borc": 6274686
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k11",
+        "k12"
+      ],
+      "program": {
+        "alacak": 0,
+        "borc": 6274685
+      },
+      "yol": [
+        "araDurumlar",
+        "k14",
+        "mizan",
+        "610"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 679288,
+        "borc": 0
+      },
+      "aile": "mizan.649",
+      "alan": "araDurumlar.k14.mizan.649",
+      "b": {
+        "alacak": 679288,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "KASA-ACILIS-649",
+      "pencere": [
+        "baslangic",
+        "k1"
+      ],
+      "program": {
+        "alacak": 4681288,
+        "borc": 0
+      },
+      "yol": [
+        "araDurumlar",
+        "k14",
+        "mizan",
+        "649"
+      ]
+    },
+    {
+      "a": 39658891,
+      "aile": "ozet.kasaVeGercekBanka",
+      "alan": "araDurumlar.k14.ozet.kasaVeGercekBanka",
+      "b": 39658891,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k5",
+        "k6"
+      ],
+      "program": 39658889,
+      "yol": [
+        "araDurumlar",
+        "k14",
+        "ozet",
+        "kasaVeGercekBanka"
+      ]
+    },
+    {
+      "a": -18789724,
+      "aile": "bankaHesaplari.*",
+      "alan": "araDurumlar.k15.bankaHesaplari.B3",
+      "b": -18789724,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k10",
+        "k11"
+      ],
+      "program": -18789725,
+      "yol": [
+        "araDurumlar",
+        "k15",
+        "bankaHesaplari",
+        "B3"
+      ]
+    },
+    {
+      "a": -5991616,
+      "aile": "bankaHesaplari.*",
+      "alan": "araDurumlar.k15.bankaHesaplari.B4",
+      "b": -5991616,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": -5991614,
+      "yol": [
+        "araDurumlar",
+        "k15",
+        "bankaHesaplari",
+        "B4"
+      ]
+    },
+    {
+      "a": -428804,
+      "aile": "bankaHesaplari.*",
+      "alan": "araDurumlar.k15.bankaHesaplari.B6",
+      "b": -428804,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k14",
+        "k15"
+      ],
+      "program": -428803,
+      "yol": [
+        "araDurumlar",
+        "k15",
+        "bankaHesaplari",
+        "B6"
+      ]
+    },
+    {
+      "a": 7260802,
+      "aile": "bankaHesaplari.*",
+      "alan": "araDurumlar.k15.bankaHesaplari.B7",
+      "b": 7260802,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k14",
+        "k15"
+      ],
+      "program": 7260801,
+      "yol": [
+        "araDurumlar",
+        "k15",
+        "bankaHesaplari",
+        "B7"
+      ]
+    },
+    {
+      "a": -3803,
+      "aile": "cariler.*",
+      "alan": "araDurumlar.k15.cariler.C16",
+      "b": -3803,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k11",
+        "k12"
+      ],
+      "program": -3802,
+      "yol": [
+        "araDurumlar",
+        "k15",
+        "cariler",
+        "C16"
+      ]
+    },
+    {
+      "a": -4264360,
+      "aile": "cariler.*",
+      "alan": "araDurumlar.k15.cariler.C24",
+      "b": -4264360,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": -4264359,
+      "yol": [
+        "araDurumlar",
+        "k15",
+        "cariler",
+        "C24"
+      ]
+    },
+    {
+      "a": 4095224,
+      "aile": "faturalar.*.matrah",
+      "alan": "araDurumlar.k15.faturalar.F12.matrah",
+      "b": 4095224,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k3",
+        "k4"
+      ],
+      "program": 4095225,
+      "yol": [
+        "araDurumlar",
+        "k15",
+        "faturalar",
+        "F12",
+        "matrah"
+      ]
+    },
+    {
+      "a": 4791927,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k15.faturalar.F12.toplam",
+      "b": 4791927,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k3",
+        "k4"
+      ],
+      "program": 4791928,
+      "yol": [
+        "araDurumlar",
+        "k15",
+        "faturalar",
+        "F12",
+        "toplam"
+      ]
+    },
+    {
+      "a": 3902,
+      "aile": "faturalar.*.kdv",
+      "alan": "araDurumlar.k15.faturalar.F27.kdv",
+      "b": 3902,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k5",
+        "k6"
+      ],
+      "program": 3901,
+      "yol": [
+        "araDurumlar",
+        "k15",
+        "faturalar",
+        "F27",
+        "kdv"
+      ]
+    },
+    {
+      "a": 42917,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k15.faturalar.F27.toplam",
+      "b": 42917,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k5",
+        "k6"
+      ],
+      "program": 42916,
+      "yol": [
+        "araDurumlar",
+        "k15",
+        "faturalar",
+        "F27",
+        "toplam"
+      ]
+    },
+    {
+      "a": 655978,
+      "aile": "faturalar.*.acik",
+      "alan": "araDurumlar.k15.faturalar.F47.acik",
+      "b": 655978,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": 655977,
+      "yol": [
+        "araDurumlar",
+        "k15",
+        "faturalar",
+        "F47",
+        "acik"
+      ]
+    },
+    {
+      "a": 109330,
+      "aile": "faturalar.*.kdv",
+      "alan": "araDurumlar.k15.faturalar.F47.kdv",
+      "b": 109330,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": 109329,
+      "yol": [
+        "araDurumlar",
+        "k15",
+        "faturalar",
+        "F47",
+        "kdv"
+      ]
+    },
+    {
+      "a": 655978,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k15.faturalar.F47.toplam",
+      "b": 655978,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": 655977,
+      "yol": [
+        "araDurumlar",
+        "k15",
+        "faturalar",
+        "F47",
+        "toplam"
+      ]
+    },
+    {
+      "a": 3169,
+      "aile": "faturalar.*.matrah",
+      "alan": "araDurumlar.k15.faturalar.F54.matrah",
+      "b": 3169,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k10",
+        "k11"
+      ],
+      "program": 3168,
+      "yol": [
+        "araDurumlar",
+        "k15",
+        "faturalar",
+        "F54",
+        "matrah"
+      ]
+    },
+    {
+      "a": 3803,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k15.faturalar.F54.toplam",
+      "b": 3803,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k10",
+        "k11"
+      ],
+      "program": 3802,
+      "yol": [
+        "araDurumlar",
+        "k15",
+        "faturalar",
+        "F54",
+        "toplam"
+      ]
+    },
+    {
+      "a": 23466,
+      "aile": "faturalar.*.matrah",
+      "alan": "araDurumlar.k15.faturalar.F78.matrah",
+      "b": 23466,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k14",
+        "k15"
+      ],
+      "program": 23467,
+      "yol": [
+        "araDurumlar",
+        "k15",
+        "faturalar",
+        "F78",
+        "matrah"
+      ]
+    },
+    {
+      "a": 28159,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k15.faturalar.F78.toplam",
+      "b": 28159,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k14",
+        "k15"
+      ],
+      "program": 28160,
+      "yol": [
+        "araDurumlar",
+        "k15",
+        "faturalar",
+        "F78",
+        "toplam"
+      ]
+    },
+    {
+      "a": 203930,
+      "aile": "faturalar.*.matrah",
+      "alan": "araDurumlar.k15.faturalar.F79.matrah",
+      "b": 203930,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k14",
+        "k15"
+      ],
+      "program": 203929,
+      "yol": [
+        "araDurumlar",
+        "k15",
+        "faturalar",
+        "F79",
+        "matrah"
+      ]
+    },
+    {
+      "a": 241946,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k15.faturalar.F79.toplam",
+      "b": 241946,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k14",
+        "k15"
+      ],
+      "program": 241945,
+      "yol": [
+        "araDurumlar",
+        "k15",
+        "faturalar",
+        "F79",
+        "toplam"
+      ]
+    },
+    {
+      "a": 1145744,
+      "aile": "faturalar.*.matrah",
+      "alan": "araDurumlar.k15.faturalar.R17.matrah",
+      "b": 1145744,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k3",
+        "k4"
+      ],
+      "program": 1145745,
+      "yol": [
+        "araDurumlar",
+        "k15",
+        "faturalar",
+        "R17",
+        "matrah"
+      ]
+    },
+    {
+      "a": 1260179,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k15.faturalar.R17.toplam",
+      "b": 1260179,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k3",
+        "k4"
+      ],
+      "program": 1260180,
+      "yol": [
+        "araDurumlar",
+        "k15",
+        "faturalar",
+        "R17",
+        "toplam"
+      ]
+    },
+    {
+      "a": 3902,
+      "aile": "faturalar.*.kdv",
+      "alan": "araDurumlar.k15.faturalar.R54.kdv",
+      "b": 3902,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": 3901,
+      "yol": [
+        "araDurumlar",
+        "k15",
+        "faturalar",
+        "R54",
+        "kdv"
+      ]
+    },
+    {
+      "a": 42917,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k15.faturalar.R54.toplam",
+      "b": 42917,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": 42916,
+      "yol": [
+        "araDurumlar",
+        "k15",
+        "faturalar",
+        "R54",
+        "toplam"
+      ]
+    },
+    {
+      "a": 3803,
+      "aile": "faturalar.*.acik",
+      "alan": "araDurumlar.k15.faturalar.R69.acik",
+      "b": 3803,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k11",
+        "k12"
+      ],
+      "program": 3802,
+      "yol": [
+        "araDurumlar",
+        "k15",
+        "faturalar",
+        "R69",
+        "acik"
+      ]
+    },
+    {
+      "a": 3169,
+      "aile": "faturalar.*.matrah",
+      "alan": "araDurumlar.k15.faturalar.R69.matrah",
+      "b": 3169,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k11",
+        "k12"
+      ],
+      "program": 3168,
+      "yol": [
+        "araDurumlar",
+        "k15",
+        "faturalar",
+        "R69",
+        "matrah"
+      ]
+    },
+    {
+      "a": 3803,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k15.faturalar.R69.toplam",
+      "b": 3803,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k11",
+        "k12"
+      ],
+      "program": 3802,
+      "yol": [
+        "araDurumlar",
+        "k15",
+        "faturalar",
+        "R69",
+        "toplam"
+      ]
+    },
+    {
+      "a": 109330,
+      "aile": "faturalar.*.kdv",
+      "alan": "araDurumlar.k15.faturalar.R74.kdv",
+      "b": 109330,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k12",
+        "k13"
+      ],
+      "program": 109329,
+      "yol": [
+        "araDurumlar",
+        "k15",
+        "faturalar",
+        "R74",
+        "kdv"
+      ]
+    },
+    {
+      "a": 655978,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k15.faturalar.R74.toplam",
+      "b": 655978,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k12",
+        "k13"
+      ],
+      "program": 655977,
+      "yol": [
+        "araDurumlar",
+        "k15",
+        "faturalar",
+        "R74",
+        "toplam"
+      ]
+    },
+    {
+      "a": 23466,
+      "aile": "faturalar.*.matrah",
+      "alan": "araDurumlar.k15.faturalar.R91.matrah",
+      "b": 23466,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k14",
+        "k15"
+      ],
+      "program": 23467,
+      "yol": [
+        "araDurumlar",
+        "k15",
+        "faturalar",
+        "R91",
+        "matrah"
+      ]
+    },
+    {
+      "a": 28159,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k15.faturalar.R91.toplam",
+      "b": 28159,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k14",
+        "k15"
+      ],
+      "program": 28160,
+      "yol": [
+        "araDurumlar",
+        "k15",
+        "faturalar",
+        "R91",
+        "toplam"
+      ]
+    },
+    {
+      "a": 27217866,
+      "aile": "kasa",
+      "alan": "araDurumlar.k15.kasa",
+      "b": 27217866,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k5",
+        "k6"
+      ],
+      "program": 27217864,
+      "yol": [
+        "araDurumlar",
+        "k15",
+        "kasa"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 0,
+        "borc": 27217866
+      },
+      "aile": "mizan.100",
+      "alan": "araDurumlar.k15.mizan.100",
+      "b": {
+        "alacak": 0,
+        "borc": 27217866
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k5",
+        "k6"
+      ],
+      "program": {
+        "alacak": 0,
+        "borc": 27217864
+      },
+      "yol": [
+        "araDurumlar",
+        "k15",
+        "mizan",
+        "100"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 18789724,
+        "borc": 0
+      },
+      "aile": "mizan.102.NN",
+      "alan": "araDurumlar.k15.mizan.102.03",
+      "b": {
+        "alacak": 18789724,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k10",
+        "k11"
+      ],
+      "program": {
+        "alacak": 18789725,
+        "borc": 0
+      },
+      "yol": [
+        "araDurumlar",
+        "k15",
+        "mizan",
+        "102.03"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 5991616,
+        "borc": 0
+      },
+      "aile": "mizan.102.NN",
+      "alan": "araDurumlar.k15.mizan.102.04",
+      "b": {
+        "alacak": 5991616,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": {
+        "alacak": 5991614,
+        "borc": 0
+      },
+      "yol": [
+        "araDurumlar",
+        "k15",
+        "mizan",
+        "102.04"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 0,
+        "borc": 7260802
+      },
+      "aile": "mizan.102.NN",
+      "alan": "araDurumlar.k15.mizan.102.06",
+      "b": {
+        "alacak": 0,
+        "borc": 7260802
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k14",
+        "k15"
+      ],
+      "program": {
+        "alacak": 0,
+        "borc": 7260801
+      },
+      "yol": [
+        "araDurumlar",
+        "k15",
+        "mizan",
+        "102.06"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 1560359,
+        "borc": 0
+      },
+      "aile": "mizan.120",
+      "alan": "araDurumlar.k15.mizan.120",
+      "b": {
+        "alacak": 1560359,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k11",
+        "k12"
+      ],
+      "program": {
+        "alacak": 1560358,
+        "borc": 0
+      },
+      "yol": [
+        "araDurumlar",
+        "k15",
+        "mizan",
+        "120"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 428804,
+        "borc": 0
+      },
+      "aile": "mizan.309.NN",
+      "alan": "araDurumlar.k15.mizan.309.01",
+      "b": {
+        "alacak": 428804,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k14",
+        "k15"
+      ],
+      "program": {
+        "alacak": 428803,
+        "borc": 0
+      },
+      "yol": [
+        "araDurumlar",
+        "k15",
+        "mizan",
+        "309.01"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 71901017,
+        "borc": 0
+      },
+      "aile": "mizan.320",
+      "alan": "araDurumlar.k15.mizan.320",
+      "b": {
+        "alacak": 71901017,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": {
+        "alacak": 71901016,
+        "borc": 0
+      },
+      "yol": [
+        "araDurumlar",
+        "k15",
+        "mizan",
+        "320"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 26773572,
+        "borc": 0
+      },
+      "aile": "mizan.500",
+      "alan": "araDurumlar.k15.mizan.500",
+      "b": {
+        "alacak": 26773572,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "KASA-ACILIS-649",
+      "pencere": [
+        "baslangic",
+        "k1"
+      ],
+      "program": {
+        "alacak": 22771572,
+        "borc": 0
+      },
+      "yol": [
+        "araDurumlar",
+        "k15",
+        "mizan",
+        "500"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 1201717,
+        "borc": 0
+      },
+      "aile": "mizan.649",
+      "alan": "araDurumlar.k15.mizan.649",
+      "b": {
+        "alacak": 1201717,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "KASA-ACILIS-649",
+      "pencere": [
+        "baslangic",
+        "k1"
+      ],
+      "program": {
+        "alacak": 5203717,
+        "borc": 0
+      },
+      "yol": [
+        "araDurumlar",
+        "k15",
+        "mizan",
+        "649"
+      ]
+    },
+    {
+      "a": 428804,
+      "aile": "ozet.kartVeKrediBorcu",
+      "alan": "araDurumlar.k15.ozet.kartVeKrediBorcu",
+      "b": 428804,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k14",
+        "k15"
+      ],
+      "program": 428803,
+      "yol": [
+        "araDurumlar",
+        "k15",
+        "ozet",
+        "kartVeKrediBorcu"
+      ]
+    },
+    {
+      "a": 43104600,
+      "aile": "ozet.kasaVeGercekBanka",
+      "alan": "araDurumlar.k15.ozet.kasaVeGercekBanka",
+      "b": 43104600,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k5",
+        "k6"
+      ],
+      "program": 43104598,
+      "yol": [
+        "araDurumlar",
+        "k15",
+        "ozet",
+        "kasaVeGercekBanka"
+      ]
+    },
+    {
+      "a": -18888424,
+      "aile": "bankaHesaplari.*",
+      "alan": "araDurumlar.k16.bankaHesaplari.B3",
+      "b": -18888424,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k10",
+        "k11"
+      ],
+      "program": -18888425,
+      "yol": [
+        "araDurumlar",
+        "k16",
+        "bankaHesaplari",
+        "B3"
+      ]
+    },
+    {
+      "a": -5624828,
+      "aile": "bankaHesaplari.*",
+      "alan": "araDurumlar.k16.bankaHesaplari.B4",
+      "b": -5624828,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": -5624826,
+      "yol": [
+        "araDurumlar",
+        "k16",
+        "bankaHesaplari",
+        "B4"
+      ]
+    },
+    {
+      "a": -404187,
+      "aile": "bankaHesaplari.*",
+      "alan": "araDurumlar.k16.bankaHesaplari.B6",
+      "b": -404187,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k14",
+        "k15"
+      ],
+      "program": -404186,
+      "yol": [
+        "araDurumlar",
+        "k16",
+        "bankaHesaplari",
+        "B6"
+      ]
+    },
+    {
+      "a": 7260802,
+      "aile": "bankaHesaplari.*",
+      "alan": "araDurumlar.k16.bankaHesaplari.B7",
+      "b": 7260802,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k14",
+        "k15"
+      ],
+      "program": 7260801,
+      "yol": [
+        "araDurumlar",
+        "k16",
+        "bankaHesaplari",
+        "B7"
+      ]
+    },
+    {
+      "a": -21503,
+      "aile": "cariler.*",
+      "alan": "araDurumlar.k16.cariler.C16",
+      "b": -21503,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k11",
+        "k12"
+      ],
+      "program": -21502,
+      "yol": [
+        "araDurumlar",
+        "k16",
+        "cariler",
+        "C16"
+      ]
+    },
+    {
+      "a": -4264360,
+      "aile": "cariler.*",
+      "alan": "araDurumlar.k16.cariler.C24",
+      "b": -4264360,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": -4264359,
+      "yol": [
+        "araDurumlar",
+        "k16",
+        "cariler",
+        "C24"
+      ]
+    },
+    {
+      "a": 4095224,
+      "aile": "faturalar.*.matrah",
+      "alan": "araDurumlar.k16.faturalar.F12.matrah",
+      "b": 4095224,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k3",
+        "k4"
+      ],
+      "program": 4095225,
+      "yol": [
+        "araDurumlar",
+        "k16",
+        "faturalar",
+        "F12",
+        "matrah"
+      ]
+    },
+    {
+      "a": 4791927,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k16.faturalar.F12.toplam",
+      "b": 4791927,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k3",
+        "k4"
+      ],
+      "program": 4791928,
+      "yol": [
+        "araDurumlar",
+        "k16",
+        "faturalar",
+        "F12",
+        "toplam"
+      ]
+    },
+    {
+      "a": 3902,
+      "aile": "faturalar.*.kdv",
+      "alan": "araDurumlar.k16.faturalar.F27.kdv",
+      "b": 3902,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k5",
+        "k6"
+      ],
+      "program": 3901,
+      "yol": [
+        "araDurumlar",
+        "k16",
+        "faturalar",
+        "F27",
+        "kdv"
+      ]
+    },
+    {
+      "a": 42917,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k16.faturalar.F27.toplam",
+      "b": 42917,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k5",
+        "k6"
+      ],
+      "program": 42916,
+      "yol": [
+        "araDurumlar",
+        "k16",
+        "faturalar",
+        "F27",
+        "toplam"
+      ]
+    },
+    {
+      "a": 655978,
+      "aile": "faturalar.*.acik",
+      "alan": "araDurumlar.k16.faturalar.F47.acik",
+      "b": 655978,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": 655977,
+      "yol": [
+        "araDurumlar",
+        "k16",
+        "faturalar",
+        "F47",
+        "acik"
+      ]
+    },
+    {
+      "a": 109330,
+      "aile": "faturalar.*.kdv",
+      "alan": "araDurumlar.k16.faturalar.F47.kdv",
+      "b": 109330,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": 109329,
+      "yol": [
+        "araDurumlar",
+        "k16",
+        "faturalar",
+        "F47",
+        "kdv"
+      ]
+    },
+    {
+      "a": 655978,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k16.faturalar.F47.toplam",
+      "b": 655978,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": 655977,
+      "yol": [
+        "araDurumlar",
+        "k16",
+        "faturalar",
+        "F47",
+        "toplam"
+      ]
+    },
+    {
+      "a": 3169,
+      "aile": "faturalar.*.matrah",
+      "alan": "araDurumlar.k16.faturalar.F54.matrah",
+      "b": 3169,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k10",
+        "k11"
+      ],
+      "program": 3168,
+      "yol": [
+        "araDurumlar",
+        "k16",
+        "faturalar",
+        "F54",
+        "matrah"
+      ]
+    },
+    {
+      "a": 3803,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k16.faturalar.F54.toplam",
+      "b": 3803,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k10",
+        "k11"
+      ],
+      "program": 3802,
+      "yol": [
+        "araDurumlar",
+        "k16",
+        "faturalar",
+        "F54",
+        "toplam"
+      ]
+    },
+    {
+      "a": 23466,
+      "aile": "faturalar.*.matrah",
+      "alan": "araDurumlar.k16.faturalar.F78.matrah",
+      "b": 23466,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k14",
+        "k15"
+      ],
+      "program": 23467,
+      "yol": [
+        "araDurumlar",
+        "k16",
+        "faturalar",
+        "F78",
+        "matrah"
+      ]
+    },
+    {
+      "a": 28159,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k16.faturalar.F78.toplam",
+      "b": 28159,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k14",
+        "k15"
+      ],
+      "program": 28160,
+      "yol": [
+        "araDurumlar",
+        "k16",
+        "faturalar",
+        "F78",
+        "toplam"
+      ]
+    },
+    {
+      "a": 203930,
+      "aile": "faturalar.*.matrah",
+      "alan": "araDurumlar.k16.faturalar.F79.matrah",
+      "b": 203930,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k14",
+        "k15"
+      ],
+      "program": 203929,
+      "yol": [
+        "araDurumlar",
+        "k16",
+        "faturalar",
+        "F79",
+        "matrah"
+      ]
+    },
+    {
+      "a": 241946,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k16.faturalar.F79.toplam",
+      "b": 241946,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k14",
+        "k15"
+      ],
+      "program": 241945,
+      "yol": [
+        "araDurumlar",
+        "k16",
+        "faturalar",
+        "F79",
+        "toplam"
+      ]
+    },
+    {
+      "a": 1145744,
+      "aile": "faturalar.*.matrah",
+      "alan": "araDurumlar.k16.faturalar.R17.matrah",
+      "b": 1145744,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k3",
+        "k4"
+      ],
+      "program": 1145745,
+      "yol": [
+        "araDurumlar",
+        "k16",
+        "faturalar",
+        "R17",
+        "matrah"
+      ]
+    },
+    {
+      "a": 1260179,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k16.faturalar.R17.toplam",
+      "b": 1260179,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k3",
+        "k4"
+      ],
+      "program": 1260180,
+      "yol": [
+        "araDurumlar",
+        "k16",
+        "faturalar",
+        "R17",
+        "toplam"
+      ]
+    },
+    {
+      "a": 3902,
+      "aile": "faturalar.*.kdv",
+      "alan": "araDurumlar.k16.faturalar.R54.kdv",
+      "b": 3902,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": 3901,
+      "yol": [
+        "araDurumlar",
+        "k16",
+        "faturalar",
+        "R54",
+        "kdv"
+      ]
+    },
+    {
+      "a": 42917,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k16.faturalar.R54.toplam",
+      "b": 42917,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": 42916,
+      "yol": [
+        "araDurumlar",
+        "k16",
+        "faturalar",
+        "R54",
+        "toplam"
+      ]
+    },
+    {
+      "a": 3169,
+      "aile": "faturalar.*.matrah",
+      "alan": "araDurumlar.k16.faturalar.R69.matrah",
+      "b": 3169,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k11",
+        "k12"
+      ],
+      "program": 3168,
+      "yol": [
+        "araDurumlar",
+        "k16",
+        "faturalar",
+        "R69",
+        "matrah"
+      ]
+    },
+    {
+      "a": 3803,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k16.faturalar.R69.toplam",
+      "b": 3803,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k11",
+        "k12"
+      ],
+      "program": 3802,
+      "yol": [
+        "araDurumlar",
+        "k16",
+        "faturalar",
+        "R69",
+        "toplam"
+      ]
+    },
+    {
+      "a": 109330,
+      "aile": "faturalar.*.kdv",
+      "alan": "araDurumlar.k16.faturalar.R74.kdv",
+      "b": 109330,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k12",
+        "k13"
+      ],
+      "program": 109329,
+      "yol": [
+        "araDurumlar",
+        "k16",
+        "faturalar",
+        "R74",
+        "kdv"
+      ]
+    },
+    {
+      "a": 655978,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k16.faturalar.R74.toplam",
+      "b": 655978,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k12",
+        "k13"
+      ],
+      "program": 655977,
+      "yol": [
+        "araDurumlar",
+        "k16",
+        "faturalar",
+        "R74",
+        "toplam"
+      ]
+    },
+    {
+      "a": 23466,
+      "aile": "faturalar.*.matrah",
+      "alan": "araDurumlar.k16.faturalar.R91.matrah",
+      "b": 23466,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k14",
+        "k15"
+      ],
+      "program": 23467,
+      "yol": [
+        "araDurumlar",
+        "k16",
+        "faturalar",
+        "R91",
+        "matrah"
+      ]
+    },
+    {
+      "a": 28159,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k16.faturalar.R91.toplam",
+      "b": 28159,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k14",
+        "k15"
+      ],
+      "program": 28160,
+      "yol": [
+        "araDurumlar",
+        "k16",
+        "faturalar",
+        "R91",
+        "toplam"
+      ]
+    },
+    {
+      "a": 29402657,
+      "aile": "kasa",
+      "alan": "araDurumlar.k16.kasa",
+      "b": 29402657,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k5",
+        "k6"
+      ],
+      "program": 29402655,
+      "yol": [
+        "araDurumlar",
+        "k16",
+        "kasa"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 0,
+        "borc": 29402657
+      },
+      "aile": "mizan.100",
+      "alan": "araDurumlar.k16.mizan.100",
+      "b": {
+        "alacak": 0,
+        "borc": 29402657
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k5",
+        "k6"
+      ],
+      "program": {
+        "alacak": 0,
+        "borc": 29402655
+      },
+      "yol": [
+        "araDurumlar",
+        "k16",
+        "mizan",
+        "100"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 18888424,
+        "borc": 0
+      },
+      "aile": "mizan.102.NN",
+      "alan": "araDurumlar.k16.mizan.102.03",
+      "b": {
+        "alacak": 18888424,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k10",
+        "k11"
+      ],
+      "program": {
+        "alacak": 18888425,
+        "borc": 0
+      },
+      "yol": [
+        "araDurumlar",
+        "k16",
+        "mizan",
+        "102.03"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 5624828,
+        "borc": 0
+      },
+      "aile": "mizan.102.NN",
+      "alan": "araDurumlar.k16.mizan.102.04",
+      "b": {
+        "alacak": 5624828,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": {
+        "alacak": 5624826,
+        "borc": 0
+      },
+      "yol": [
+        "araDurumlar",
+        "k16",
+        "mizan",
+        "102.04"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 0,
+        "borc": 7260802
+      },
+      "aile": "mizan.102.NN",
+      "alan": "araDurumlar.k16.mizan.102.06",
+      "b": {
+        "alacak": 0,
+        "borc": 7260802
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k14",
+        "k15"
+      ],
+      "program": {
+        "alacak": 0,
+        "borc": 7260801
+      },
+      "yol": [
+        "araDurumlar",
+        "k16",
+        "mizan",
+        "102.06"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 0,
+        "borc": 891053
+      },
+      "aile": "mizan.120",
+      "alan": "araDurumlar.k16.mizan.120",
+      "b": {
+        "alacak": 0,
+        "borc": 891053
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k11",
+        "k12"
+      ],
+      "program": {
+        "alacak": 0,
+        "borc": 891054
+      },
+      "yol": [
+        "araDurumlar",
+        "k16",
+        "mizan",
+        "120"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 404187,
+        "borc": 0
+      },
+      "aile": "mizan.309.NN",
+      "alan": "araDurumlar.k16.mizan.309.01",
+      "b": {
+        "alacak": 404187,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k14",
+        "k15"
+      ],
+      "program": {
+        "alacak": 404186,
+        "borc": 0
+      },
+      "yol": [
+        "araDurumlar",
+        "k16",
+        "mizan",
+        "309.01"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 67039667,
+        "borc": 0
+      },
+      "aile": "mizan.320",
+      "alan": "araDurumlar.k16.mizan.320",
+      "b": {
+        "alacak": 67039667,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": {
+        "alacak": 67039666,
+        "borc": 0
+      },
+      "yol": [
+        "araDurumlar",
+        "k16",
+        "mizan",
+        "320"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 80096972,
+        "borc": 0
+      },
+      "aile": "mizan.500",
+      "alan": "araDurumlar.k16.mizan.500",
+      "b": {
+        "alacak": 80096972,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "KASA-ACILIS-649",
+      "pencere": [
+        "baslangic",
+        "k1"
+      ],
+      "program": {
+        "alacak": 76094972,
+        "borc": 0
+      },
+      "yol": [
+        "araDurumlar",
+        "k16",
+        "mizan",
+        "500"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 1201717,
+        "borc": 0
+      },
+      "aile": "mizan.649",
+      "alan": "araDurumlar.k16.mizan.649",
+      "b": {
+        "alacak": 1201717,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "KASA-ACILIS-649",
+      "pencere": [
+        "baslangic",
+        "k1"
+      ],
+      "program": {
+        "alacak": 5203717,
+        "borc": 0
+      },
+      "yol": [
+        "araDurumlar",
+        "k16",
+        "mizan",
+        "649"
+      ]
+    },
+    {
+      "a": 404187,
+      "aile": "ozet.kartVeKrediBorcu",
+      "alan": "araDurumlar.k16.ozet.kartVeKrediBorcu",
+      "b": 404187,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k14",
+        "k15"
+      ],
+      "program": 404186,
+      "yol": [
+        "araDurumlar",
+        "k16",
+        "ozet",
+        "kartVeKrediBorcu"
+      ]
+    },
+    {
+      "a": 99097524,
+      "aile": "ozet.kasaVeGercekBanka",
+      "alan": "araDurumlar.k16.ozet.kasaVeGercekBanka",
+      "b": 99097524,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k5",
+        "k6"
+      ],
+      "program": 99097522,
+      "yol": [
+        "araDurumlar",
+        "k16",
+        "ozet",
+        "kasaVeGercekBanka"
+      ]
+    },
+    {
+      "a": -27698644,
+      "aile": "bankaHesaplari.*",
+      "alan": "araDurumlar.k17.bankaHesaplari.B3",
+      "b": -27698644,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k10",
+        "k11"
+      ],
+      "program": -27698645,
+      "yol": [
+        "araDurumlar",
+        "k17",
+        "bankaHesaplari",
+        "B3"
+      ]
+    },
+    {
+      "a": -1970108,
+      "aile": "bankaHesaplari.*",
+      "alan": "araDurumlar.k17.bankaHesaplari.B4",
+      "b": -1970108,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": -1970106,
+      "yol": [
+        "araDurumlar",
+        "k17",
+        "bankaHesaplari",
+        "B4"
+      ]
+    },
+    {
+      "a": -455887,
+      "aile": "bankaHesaplari.*",
+      "alan": "araDurumlar.k17.bankaHesaplari.B6",
+      "b": -455887,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k14",
+        "k15"
+      ],
+      "program": -455886,
+      "yol": [
+        "araDurumlar",
+        "k17",
+        "bankaHesaplari",
+        "B6"
+      ]
+    },
+    {
+      "a": 7260802,
+      "aile": "bankaHesaplari.*",
+      "alan": "araDurumlar.k17.bankaHesaplari.B7",
+      "b": 7260802,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k14",
+        "k15"
+      ],
+      "program": 7260801,
+      "yol": [
+        "araDurumlar",
+        "k17",
+        "bankaHesaplari",
+        "B7"
+      ]
+    },
+    {
+      "a": -21503,
+      "aile": "cariler.*",
+      "alan": "araDurumlar.k17.cariler.C16",
+      "b": -21503,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k11",
+        "k12"
+      ],
+      "program": -21502,
+      "yol": [
+        "araDurumlar",
+        "k17",
+        "cariler",
+        "C16"
+      ]
+    },
+    {
+      "a": -4233460,
+      "aile": "cariler.*",
+      "alan": "araDurumlar.k17.cariler.C24",
+      "b": -4233460,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": -4233459,
+      "yol": [
+        "araDurumlar",
+        "k17",
+        "cariler",
+        "C24"
+      ]
+    },
+    {
+      "a": 4095224,
+      "aile": "faturalar.*.matrah",
+      "alan": "araDurumlar.k17.faturalar.F12.matrah",
+      "b": 4095224,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k3",
+        "k4"
+      ],
+      "program": 4095225,
+      "yol": [
+        "araDurumlar",
+        "k17",
+        "faturalar",
+        "F12",
+        "matrah"
+      ]
+    },
+    {
+      "a": 4791927,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k17.faturalar.F12.toplam",
+      "b": 4791927,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k3",
+        "k4"
+      ],
+      "program": 4791928,
+      "yol": [
+        "araDurumlar",
+        "k17",
+        "faturalar",
+        "F12",
+        "toplam"
+      ]
+    },
+    {
+      "a": 3902,
+      "aile": "faturalar.*.kdv",
+      "alan": "araDurumlar.k17.faturalar.F27.kdv",
+      "b": 3902,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k5",
+        "k6"
+      ],
+      "program": 3901,
+      "yol": [
+        "araDurumlar",
+        "k17",
+        "faturalar",
+        "F27",
+        "kdv"
+      ]
+    },
+    {
+      "a": 42917,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k17.faturalar.F27.toplam",
+      "b": 42917,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k5",
+        "k6"
+      ],
+      "program": 42916,
+      "yol": [
+        "araDurumlar",
+        "k17",
+        "faturalar",
+        "F27",
+        "toplam"
+      ]
+    },
+    {
+      "a": 634589,
+      "aile": "faturalar.*.acik",
+      "alan": "araDurumlar.k17.faturalar.F47.acik",
+      "b": 634589,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": 634588,
+      "yol": [
+        "araDurumlar",
+        "k17",
+        "faturalar",
+        "F47",
+        "acik"
+      ]
+    },
+    {
+      "a": 109330,
+      "aile": "faturalar.*.kdv",
+      "alan": "araDurumlar.k17.faturalar.F47.kdv",
+      "b": 109330,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": 109329,
+      "yol": [
+        "araDurumlar",
+        "k17",
+        "faturalar",
+        "F47",
+        "kdv"
+      ]
+    },
+    {
+      "a": 655978,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k17.faturalar.F47.toplam",
+      "b": 655978,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": 655977,
+      "yol": [
+        "araDurumlar",
+        "k17",
+        "faturalar",
+        "F47",
+        "toplam"
+      ]
+    },
+    {
+      "a": 3169,
+      "aile": "faturalar.*.matrah",
+      "alan": "araDurumlar.k17.faturalar.F54.matrah",
+      "b": 3169,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k10",
+        "k11"
+      ],
+      "program": 3168,
+      "yol": [
+        "araDurumlar",
+        "k17",
+        "faturalar",
+        "F54",
+        "matrah"
+      ]
+    },
+    {
+      "a": 3803,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k17.faturalar.F54.toplam",
+      "b": 3803,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k10",
+        "k11"
+      ],
+      "program": 3802,
+      "yol": [
+        "araDurumlar",
+        "k17",
+        "faturalar",
+        "F54",
+        "toplam"
+      ]
+    },
+    {
+      "a": 23466,
+      "aile": "faturalar.*.matrah",
+      "alan": "araDurumlar.k17.faturalar.F78.matrah",
+      "b": 23466,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k14",
+        "k15"
+      ],
+      "program": 23467,
+      "yol": [
+        "araDurumlar",
+        "k17",
+        "faturalar",
+        "F78",
+        "matrah"
+      ]
+    },
+    {
+      "a": 28159,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k17.faturalar.F78.toplam",
+      "b": 28159,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k14",
+        "k15"
+      ],
+      "program": 28160,
+      "yol": [
+        "araDurumlar",
+        "k17",
+        "faturalar",
+        "F78",
+        "toplam"
+      ]
+    },
+    {
+      "a": 203930,
+      "aile": "faturalar.*.matrah",
+      "alan": "araDurumlar.k17.faturalar.F79.matrah",
+      "b": 203930,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k14",
+        "k15"
+      ],
+      "program": 203929,
+      "yol": [
+        "araDurumlar",
+        "k17",
+        "faturalar",
+        "F79",
+        "matrah"
+      ]
+    },
+    {
+      "a": 241946,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k17.faturalar.F79.toplam",
+      "b": 241946,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k14",
+        "k15"
+      ],
+      "program": 241945,
+      "yol": [
+        "araDurumlar",
+        "k17",
+        "faturalar",
+        "F79",
+        "toplam"
+      ]
+    },
+    {
+      "a": 1145744,
+      "aile": "faturalar.*.matrah",
+      "alan": "araDurumlar.k17.faturalar.R17.matrah",
+      "b": 1145744,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k3",
+        "k4"
+      ],
+      "program": 1145745,
+      "yol": [
+        "araDurumlar",
+        "k17",
+        "faturalar",
+        "R17",
+        "matrah"
+      ]
+    },
+    {
+      "a": 1260179,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k17.faturalar.R17.toplam",
+      "b": 1260179,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k3",
+        "k4"
+      ],
+      "program": 1260180,
+      "yol": [
+        "araDurumlar",
+        "k17",
+        "faturalar",
+        "R17",
+        "toplam"
+      ]
+    },
+    {
+      "a": 3902,
+      "aile": "faturalar.*.kdv",
+      "alan": "araDurumlar.k17.faturalar.R54.kdv",
+      "b": 3902,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": 3901,
+      "yol": [
+        "araDurumlar",
+        "k17",
+        "faturalar",
+        "R54",
+        "kdv"
+      ]
+    },
+    {
+      "a": 42917,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k17.faturalar.R54.toplam",
+      "b": 42917,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": 42916,
+      "yol": [
+        "araDurumlar",
+        "k17",
+        "faturalar",
+        "R54",
+        "toplam"
+      ]
+    },
+    {
+      "a": 3169,
+      "aile": "faturalar.*.matrah",
+      "alan": "araDurumlar.k17.faturalar.R69.matrah",
+      "b": 3169,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k11",
+        "k12"
+      ],
+      "program": 3168,
+      "yol": [
+        "araDurumlar",
+        "k17",
+        "faturalar",
+        "R69",
+        "matrah"
+      ]
+    },
+    {
+      "a": 3803,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k17.faturalar.R69.toplam",
+      "b": 3803,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k11",
+        "k12"
+      ],
+      "program": 3802,
+      "yol": [
+        "araDurumlar",
+        "k17",
+        "faturalar",
+        "R69",
+        "toplam"
+      ]
+    },
+    {
+      "a": 109330,
+      "aile": "faturalar.*.kdv",
+      "alan": "araDurumlar.k17.faturalar.R74.kdv",
+      "b": 109330,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k12",
+        "k13"
+      ],
+      "program": 109329,
+      "yol": [
+        "araDurumlar",
+        "k17",
+        "faturalar",
+        "R74",
+        "kdv"
+      ]
+    },
+    {
+      "a": 655978,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k17.faturalar.R74.toplam",
+      "b": 655978,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k12",
+        "k13"
+      ],
+      "program": 655977,
+      "yol": [
+        "araDurumlar",
+        "k17",
+        "faturalar",
+        "R74",
+        "toplam"
+      ]
+    },
+    {
+      "a": 23466,
+      "aile": "faturalar.*.matrah",
+      "alan": "araDurumlar.k17.faturalar.R91.matrah",
+      "b": 23466,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k14",
+        "k15"
+      ],
+      "program": 23467,
+      "yol": [
+        "araDurumlar",
+        "k17",
+        "faturalar",
+        "R91",
+        "matrah"
+      ]
+    },
+    {
+      "a": 28159,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k17.faturalar.R91.toplam",
+      "b": 28159,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k14",
+        "k15"
+      ],
+      "program": 28160,
+      "yol": [
+        "araDurumlar",
+        "k17",
+        "faturalar",
+        "R91",
+        "toplam"
+      ]
+    },
+    {
+      "a": 26865203,
+      "aile": "kasa",
+      "alan": "araDurumlar.k17.kasa",
+      "b": 26865203,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k5",
+        "k6"
+      ],
+      "program": 26865201,
+      "yol": [
+        "araDurumlar",
+        "k17",
+        "kasa"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 0,
+        "borc": 26865203
+      },
+      "aile": "mizan.100",
+      "alan": "araDurumlar.k17.mizan.100",
+      "b": {
+        "alacak": 0,
+        "borc": 26865203
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k5",
+        "k6"
+      ],
+      "program": {
+        "alacak": 0,
+        "borc": 26865201
+      },
+      "yol": [
+        "araDurumlar",
+        "k17",
+        "mizan",
+        "100"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 27698644,
+        "borc": 0
+      },
+      "aile": "mizan.102.NN",
+      "alan": "araDurumlar.k17.mizan.102.03",
+      "b": {
+        "alacak": 27698644,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k10",
+        "k11"
+      ],
+      "program": {
+        "alacak": 27698645,
+        "borc": 0
+      },
+      "yol": [
+        "araDurumlar",
+        "k17",
+        "mizan",
+        "102.03"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 1970108,
+        "borc": 0
+      },
+      "aile": "mizan.102.NN",
+      "alan": "araDurumlar.k17.mizan.102.04",
+      "b": {
+        "alacak": 1970108,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": {
+        "alacak": 1970106,
+        "borc": 0
+      },
+      "yol": [
+        "araDurumlar",
+        "k17",
+        "mizan",
+        "102.04"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 0,
+        "borc": 7260802
+      },
+      "aile": "mizan.102.NN",
+      "alan": "araDurumlar.k17.mizan.102.06",
+      "b": {
+        "alacak": 0,
+        "borc": 7260802
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k14",
+        "k15"
+      ],
+      "program": {
+        "alacak": 0,
+        "borc": 7260801
+      },
+      "yol": [
+        "araDurumlar",
+        "k17",
+        "mizan",
+        "102.06"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 0,
+        "borc": 856119
+      },
+      "aile": "mizan.120",
+      "alan": "araDurumlar.k17.mizan.120",
+      "b": {
+        "alacak": 0,
+        "borc": 856119
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k11",
+        "k12"
+      ],
+      "program": {
+        "alacak": 0,
+        "borc": 856120
+      },
+      "yol": [
+        "araDurumlar",
+        "k17",
+        "mizan",
+        "120"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 455887,
+        "borc": 0
+      },
+      "aile": "mizan.309.NN",
+      "alan": "araDurumlar.k17.mizan.309.01",
+      "b": {
+        "alacak": 455887,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k14",
+        "k15"
+      ],
+      "program": {
+        "alacak": 455886,
+        "borc": 0
+      },
+      "yol": [
+        "araDurumlar",
+        "k17",
+        "mizan",
+        "309.01"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 64474442,
+        "borc": 0
+      },
+      "aile": "mizan.320",
+      "alan": "araDurumlar.k17.mizan.320",
+      "b": {
+        "alacak": 64474442,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": {
+        "alacak": 64474441,
+        "borc": 0
+      },
+      "yol": [
+        "araDurumlar",
+        "k17",
+        "mizan",
+        "320"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 80096972,
+        "borc": 0
+      },
+      "aile": "mizan.500",
+      "alan": "araDurumlar.k17.mizan.500",
+      "b": {
+        "alacak": 80096972,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "KASA-ACILIS-649",
+      "pencere": [
+        "baslangic",
+        "k1"
+      ],
+      "program": {
+        "alacak": 76094972,
+        "borc": 0
+      },
+      "yol": [
+        "araDurumlar",
+        "k17",
+        "mizan",
+        "500"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 1340463,
+        "borc": 0
+      },
+      "aile": "mizan.649",
+      "alan": "araDurumlar.k17.mizan.649",
+      "b": {
+        "alacak": 1340463,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "KASA-ACILIS-649",
+      "pencere": [
+        "baslangic",
+        "k1"
+      ],
+      "program": {
+        "alacak": 5342463,
+        "borc": 0
+      },
+      "yol": [
+        "araDurumlar",
+        "k17",
+        "mizan",
+        "649"
+      ]
+    },
+    {
+      "a": 455887,
+      "aile": "ozet.kartVeKrediBorcu",
+      "alan": "araDurumlar.k17.ozet.kartVeKrediBorcu",
+      "b": 455887,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k14",
+        "k15"
+      ],
+      "program": 455886,
+      "yol": [
+        "araDurumlar",
+        "k17",
+        "ozet",
+        "kartVeKrediBorcu"
+      ]
+    },
+    {
+      "a": 100179481,
+      "aile": "ozet.kasaVeGercekBanka",
+      "alan": "araDurumlar.k17.ozet.kasaVeGercekBanka",
+      "b": 100179481,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k5",
+        "k6"
+      ],
+      "program": 100179479,
+      "yol": [
+        "araDurumlar",
+        "k17",
+        "ozet",
+        "kasaVeGercekBanka"
+      ]
+    },
+    {
+      "a": -27698644,
+      "aile": "bankaHesaplari.*",
+      "alan": "araDurumlar.k18.bankaHesaplari.B3",
+      "b": -27698644,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k10",
+        "k11"
+      ],
+      "program": -27698645,
+      "yol": [
+        "araDurumlar",
+        "k18",
+        "bankaHesaplari",
+        "B3"
+      ]
+    },
+    {
+      "a": -1933903,
+      "aile": "bankaHesaplari.*",
+      "alan": "araDurumlar.k18.bankaHesaplari.B4",
+      "b": -1933903,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": -1933901,
+      "yol": [
+        "araDurumlar",
+        "k18",
+        "bankaHesaplari",
+        "B4"
+      ]
+    },
+    {
+      "a": -455887,
+      "aile": "bankaHesaplari.*",
+      "alan": "araDurumlar.k18.bankaHesaplari.B6",
+      "b": -455887,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k14",
+        "k15"
+      ],
+      "program": -455886,
+      "yol": [
+        "araDurumlar",
+        "k18",
+        "bankaHesaplari",
+        "B6"
+      ]
+    },
+    {
+      "a": 7690285,
+      "aile": "bankaHesaplari.*",
+      "alan": "araDurumlar.k18.bankaHesaplari.B7",
+      "b": 7690285,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k14",
+        "k15"
+      ],
+      "program": 7690284,
+      "yol": [
+        "araDurumlar",
+        "k18",
+        "bankaHesaplari",
+        "B7"
+      ]
+    },
+    {
+      "a": -21503,
+      "aile": "cariler.*",
+      "alan": "araDurumlar.k18.cariler.C16",
+      "b": -21503,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k11",
+        "k12"
+      ],
+      "program": -21502,
+      "yol": [
+        "araDurumlar",
+        "k18",
+        "cariler",
+        "C16"
+      ]
+    },
+    {
+      "a": -4233460,
+      "aile": "cariler.*",
+      "alan": "araDurumlar.k18.cariler.C24",
+      "b": -4233460,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": -4233459,
+      "yol": [
+        "araDurumlar",
+        "k18",
+        "cariler",
+        "C24"
+      ]
+    },
+    {
+      "a": 4095224,
+      "aile": "faturalar.*.matrah",
+      "alan": "araDurumlar.k18.faturalar.F12.matrah",
+      "b": 4095224,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k3",
+        "k4"
+      ],
+      "program": 4095225,
+      "yol": [
+        "araDurumlar",
+        "k18",
+        "faturalar",
+        "F12",
+        "matrah"
+      ]
+    },
+    {
+      "a": 4791927,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k18.faturalar.F12.toplam",
+      "b": 4791927,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k3",
+        "k4"
+      ],
+      "program": 4791928,
+      "yol": [
+        "araDurumlar",
+        "k18",
+        "faturalar",
+        "F12",
+        "toplam"
+      ]
+    },
+    {
+      "a": 3902,
+      "aile": "faturalar.*.kdv",
+      "alan": "araDurumlar.k18.faturalar.F27.kdv",
+      "b": 3902,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k5",
+        "k6"
+      ],
+      "program": 3901,
+      "yol": [
+        "araDurumlar",
+        "k18",
+        "faturalar",
+        "F27",
+        "kdv"
+      ]
+    },
+    {
+      "a": 42917,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k18.faturalar.F27.toplam",
+      "b": 42917,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k5",
+        "k6"
+      ],
+      "program": 42916,
+      "yol": [
+        "araDurumlar",
+        "k18",
+        "faturalar",
+        "F27",
+        "toplam"
+      ]
+    },
+    {
+      "a": 634589,
+      "aile": "faturalar.*.acik",
+      "alan": "araDurumlar.k18.faturalar.F47.acik",
+      "b": 634589,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": 634588,
+      "yol": [
+        "araDurumlar",
+        "k18",
+        "faturalar",
+        "F47",
+        "acik"
+      ]
+    },
+    {
+      "a": 109330,
+      "aile": "faturalar.*.kdv",
+      "alan": "araDurumlar.k18.faturalar.F47.kdv",
+      "b": 109330,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": 109329,
+      "yol": [
+        "araDurumlar",
+        "k18",
+        "faturalar",
+        "F47",
+        "kdv"
+      ]
+    },
+    {
+      "a": 655978,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k18.faturalar.F47.toplam",
+      "b": 655978,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": 655977,
+      "yol": [
+        "araDurumlar",
+        "k18",
+        "faturalar",
+        "F47",
+        "toplam"
+      ]
+    },
+    {
+      "a": 3169,
+      "aile": "faturalar.*.matrah",
+      "alan": "araDurumlar.k18.faturalar.F54.matrah",
+      "b": 3169,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k10",
+        "k11"
+      ],
+      "program": 3168,
+      "yol": [
+        "araDurumlar",
+        "k18",
+        "faturalar",
+        "F54",
+        "matrah"
+      ]
+    },
+    {
+      "a": 3803,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k18.faturalar.F54.toplam",
+      "b": 3803,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k10",
+        "k11"
+      ],
+      "program": 3802,
+      "yol": [
+        "araDurumlar",
+        "k18",
+        "faturalar",
+        "F54",
+        "toplam"
+      ]
+    },
+    {
+      "a": 23466,
+      "aile": "faturalar.*.matrah",
+      "alan": "araDurumlar.k18.faturalar.F78.matrah",
+      "b": 23466,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k14",
+        "k15"
+      ],
+      "program": 23467,
+      "yol": [
+        "araDurumlar",
+        "k18",
+        "faturalar",
+        "F78",
+        "matrah"
+      ]
+    },
+    {
+      "a": 28159,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k18.faturalar.F78.toplam",
+      "b": 28159,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k14",
+        "k15"
+      ],
+      "program": 28160,
+      "yol": [
+        "araDurumlar",
+        "k18",
+        "faturalar",
+        "F78",
+        "toplam"
+      ]
+    },
+    {
+      "a": 203930,
+      "aile": "faturalar.*.matrah",
+      "alan": "araDurumlar.k18.faturalar.F79.matrah",
+      "b": 203930,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k14",
+        "k15"
+      ],
+      "program": 203929,
+      "yol": [
+        "araDurumlar",
+        "k18",
+        "faturalar",
+        "F79",
+        "matrah"
+      ]
+    },
+    {
+      "a": 241946,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k18.faturalar.F79.toplam",
+      "b": 241946,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k14",
+        "k15"
+      ],
+      "program": 241945,
+      "yol": [
+        "araDurumlar",
+        "k18",
+        "faturalar",
+        "F79",
+        "toplam"
+      ]
+    },
+    {
+      "a": 1145744,
+      "aile": "faturalar.*.matrah",
+      "alan": "araDurumlar.k18.faturalar.R17.matrah",
+      "b": 1145744,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k3",
+        "k4"
+      ],
+      "program": 1145745,
+      "yol": [
+        "araDurumlar",
+        "k18",
+        "faturalar",
+        "R17",
+        "matrah"
+      ]
+    },
+    {
+      "a": 1260179,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k18.faturalar.R17.toplam",
+      "b": 1260179,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k3",
+        "k4"
+      ],
+      "program": 1260180,
+      "yol": [
+        "araDurumlar",
+        "k18",
+        "faturalar",
+        "R17",
+        "toplam"
+      ]
+    },
+    {
+      "a": 3902,
+      "aile": "faturalar.*.kdv",
+      "alan": "araDurumlar.k18.faturalar.R54.kdv",
+      "b": 3902,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": 3901,
+      "yol": [
+        "araDurumlar",
+        "k18",
+        "faturalar",
+        "R54",
+        "kdv"
+      ]
+    },
+    {
+      "a": 42917,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k18.faturalar.R54.toplam",
+      "b": 42917,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": 42916,
+      "yol": [
+        "araDurumlar",
+        "k18",
+        "faturalar",
+        "R54",
+        "toplam"
+      ]
+    },
+    {
+      "a": 3169,
+      "aile": "faturalar.*.matrah",
+      "alan": "araDurumlar.k18.faturalar.R69.matrah",
+      "b": 3169,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k11",
+        "k12"
+      ],
+      "program": 3168,
+      "yol": [
+        "araDurumlar",
+        "k18",
+        "faturalar",
+        "R69",
+        "matrah"
+      ]
+    },
+    {
+      "a": 3803,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k18.faturalar.R69.toplam",
+      "b": 3803,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k11",
+        "k12"
+      ],
+      "program": 3802,
+      "yol": [
+        "araDurumlar",
+        "k18",
+        "faturalar",
+        "R69",
+        "toplam"
+      ]
+    },
+    {
+      "a": 109330,
+      "aile": "faturalar.*.kdv",
+      "alan": "araDurumlar.k18.faturalar.R74.kdv",
+      "b": 109330,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k12",
+        "k13"
+      ],
+      "program": 109329,
+      "yol": [
+        "araDurumlar",
+        "k18",
+        "faturalar",
+        "R74",
+        "kdv"
+      ]
+    },
+    {
+      "a": 655978,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k18.faturalar.R74.toplam",
+      "b": 655978,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k12",
+        "k13"
+      ],
+      "program": 655977,
+      "yol": [
+        "araDurumlar",
+        "k18",
+        "faturalar",
+        "R74",
+        "toplam"
+      ]
+    },
+    {
+      "a": 23466,
+      "aile": "faturalar.*.matrah",
+      "alan": "araDurumlar.k18.faturalar.R91.matrah",
+      "b": 23466,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k14",
+        "k15"
+      ],
+      "program": 23467,
+      "yol": [
+        "araDurumlar",
+        "k18",
+        "faturalar",
+        "R91",
+        "matrah"
+      ]
+    },
+    {
+      "a": 28159,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k18.faturalar.R91.toplam",
+      "b": 28159,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k14",
+        "k15"
+      ],
+      "program": 28160,
+      "yol": [
+        "araDurumlar",
+        "k18",
+        "faturalar",
+        "R91",
+        "toplam"
+      ]
+    },
+    {
+      "a": 29636820,
+      "aile": "kasa",
+      "alan": "araDurumlar.k18.kasa",
+      "b": 29636820,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k5",
+        "k6"
+      ],
+      "program": 29636818,
+      "yol": [
+        "araDurumlar",
+        "k18",
+        "kasa"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 0,
+        "borc": 29636820
+      },
+      "aile": "mizan.100",
+      "alan": "araDurumlar.k18.mizan.100",
+      "b": {
+        "alacak": 0,
+        "borc": 29636820
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k5",
+        "k6"
+      ],
+      "program": {
+        "alacak": 0,
+        "borc": 29636818
+      },
+      "yol": [
+        "araDurumlar",
+        "k18",
+        "mizan",
+        "100"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 27698644,
+        "borc": 0
+      },
+      "aile": "mizan.102.NN",
+      "alan": "araDurumlar.k18.mizan.102.03",
+      "b": {
+        "alacak": 27698644,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k10",
+        "k11"
+      ],
+      "program": {
+        "alacak": 27698645,
+        "borc": 0
+      },
+      "yol": [
+        "araDurumlar",
+        "k18",
+        "mizan",
+        "102.03"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 1933903,
+        "borc": 0
+      },
+      "aile": "mizan.102.NN",
+      "alan": "araDurumlar.k18.mizan.102.04",
+      "b": {
+        "alacak": 1933903,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": {
+        "alacak": 1933901,
+        "borc": 0
+      },
+      "yol": [
+        "araDurumlar",
+        "k18",
+        "mizan",
+        "102.04"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 0,
+        "borc": 7690285
+      },
+      "aile": "mizan.102.NN",
+      "alan": "araDurumlar.k18.mizan.102.06",
+      "b": {
+        "alacak": 0,
+        "borc": 7690285
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k14",
+        "k15"
+      ],
+      "program": {
+        "alacak": 0,
+        "borc": 7690284
+      },
+      "yol": [
+        "araDurumlar",
+        "k18",
+        "mizan",
+        "102.06"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 1385073,
+        "borc": 0
+      },
+      "aile": "mizan.120",
+      "alan": "araDurumlar.k18.mizan.120",
+      "b": {
+        "alacak": 1385073,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k11",
+        "k12"
+      ],
+      "program": {
+        "alacak": 1385072,
+        "borc": 0
+      },
+      "yol": [
+        "araDurumlar",
+        "k18",
+        "mizan",
+        "120"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 455887,
+        "borc": 0
+      },
+      "aile": "mizan.309.NN",
+      "alan": "araDurumlar.k18.mizan.309.01",
+      "b": {
+        "alacak": 455887,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k14",
+        "k15"
+      ],
+      "program": {
+        "alacak": 455886,
+        "borc": 0
+      },
+      "yol": [
+        "araDurumlar",
+        "k18",
+        "mizan",
+        "309.01"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 67030037,
+        "borc": 0
+      },
+      "aile": "mizan.320",
+      "alan": "araDurumlar.k18.mizan.320",
+      "b": {
+        "alacak": 67030037,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": {
+        "alacak": 67030036,
+        "borc": 0
+      },
+      "yol": [
+        "araDurumlar",
+        "k18",
+        "mizan",
+        "320"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 88474172,
+        "borc": 0
+      },
+      "aile": "mizan.500",
+      "alan": "araDurumlar.k18.mizan.500",
+      "b": {
+        "alacak": 88474172,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "KASA-ACILIS-649",
+      "pencere": [
+        "baslangic",
+        "k1"
+      ],
+      "program": {
+        "alacak": 84472172,
+        "borc": 0
+      },
+      "yol": [
+        "araDurumlar",
+        "k18",
+        "mizan",
+        "500"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 1355063,
+        "borc": 0
+      },
+      "aile": "mizan.649",
+      "alan": "araDurumlar.k18.mizan.649",
+      "b": {
+        "alacak": 1355063,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "KASA-ACILIS-649",
+      "pencere": [
+        "baslangic",
+        "k1"
+      ],
+      "program": {
+        "alacak": 5357063,
+        "borc": 0
+      },
+      "yol": [
+        "araDurumlar",
+        "k18",
+        "mizan",
+        "649"
+      ]
+    },
+    {
+      "a": 455887,
+      "aile": "ozet.kartVeKrediBorcu",
+      "alan": "araDurumlar.k18.ozet.kartVeKrediBorcu",
+      "b": 455887,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k14",
+        "k15"
+      ],
+      "program": 455886,
+      "yol": [
+        "araDurumlar",
+        "k18",
+        "ozet",
+        "kartVeKrediBorcu"
+      ]
+    },
+    {
+      "a": 109162741,
+      "aile": "ozet.kasaVeGercekBanka",
+      "alan": "araDurumlar.k18.ozet.kasaVeGercekBanka",
+      "b": 109162741,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k5",
+        "k6"
+      ],
+      "program": 109162739,
+      "yol": [
+        "araDurumlar",
+        "k18",
+        "ozet",
+        "kasaVeGercekBanka"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 24800812,
+        "borc": 0
+      },
+      "aile": "mizan.500",
+      "alan": "araDurumlar.k2.mizan.500",
+      "b": {
+        "alacak": 24800812,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "KASA-ACILIS-649",
+      "pencere": [
+        "baslangic",
+        "k1"
+      ],
+      "program": {
+        "alacak": 20798812,
+        "borc": 0
+      },
+      "yol": [
+        "araDurumlar",
+        "k2",
+        "mizan",
+        "500"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 0,
+        "borc": 0
+      },
+      "aile": "mizan.649",
+      "alan": "araDurumlar.k2.mizan.649",
+      "b": {
+        "alacak": 0,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "KASA-ACILIS-649",
+      "pencere": [
+        "baslangic",
+        "k1"
+      ],
+      "program": {
+        "alacak": 4002000,
+        "borc": 0
+      },
+      "yol": [
+        "araDurumlar",
+        "k2",
+        "mizan",
+        "649"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 24800812,
+        "borc": 0
+      },
+      "aile": "mizan.500",
+      "alan": "araDurumlar.k3.mizan.500",
+      "b": {
+        "alacak": 24800812,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "KASA-ACILIS-649",
+      "pencere": [
+        "baslangic",
+        "k1"
+      ],
+      "program": {
+        "alacak": 20798812,
+        "borc": 0
+      },
+      "yol": [
+        "araDurumlar",
+        "k3",
+        "mizan",
+        "500"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 302622,
+        "borc": 0
+      },
+      "aile": "mizan.649",
+      "alan": "araDurumlar.k3.mizan.649",
+      "b": {
+        "alacak": 302622,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "KASA-ACILIS-649",
+      "pencere": [
+        "baslangic",
+        "k1"
+      ],
+      "program": {
+        "alacak": 4304622,
+        "borc": 0
+      },
+      "yol": [
+        "araDurumlar",
+        "k3",
+        "mizan",
+        "649"
+      ]
+    },
+    {
+      "a": 4095224,
+      "aile": "faturalar.*.matrah",
+      "alan": "araDurumlar.k4.faturalar.F12.matrah",
+      "b": 4095224,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k3",
+        "k4"
+      ],
+      "program": 4095225,
+      "yol": [
+        "araDurumlar",
+        "k4",
+        "faturalar",
+        "F12",
+        "matrah"
+      ]
+    },
+    {
+      "a": 4791927,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k4.faturalar.F12.toplam",
+      "b": 4791927,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k3",
+        "k4"
+      ],
+      "program": 4791928,
+      "yol": [
+        "araDurumlar",
+        "k4",
+        "faturalar",
+        "F12",
+        "toplam"
+      ]
+    },
+    {
+      "a": 1145744,
+      "aile": "faturalar.*.matrah",
+      "alan": "araDurumlar.k4.faturalar.R17.matrah",
+      "b": 1145744,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k3",
+        "k4"
+      ],
+      "program": 1145745,
+      "yol": [
+        "araDurumlar",
+        "k4",
+        "faturalar",
+        "R17",
+        "matrah"
+      ]
+    },
+    {
+      "a": 1260179,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k4.faturalar.R17.toplam",
+      "b": 1260179,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k3",
+        "k4"
+      ],
+      "program": 1260180,
+      "yol": [
+        "araDurumlar",
+        "k4",
+        "faturalar",
+        "R17",
+        "toplam"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 25271312,
+        "borc": 0
+      },
+      "aile": "mizan.500",
+      "alan": "araDurumlar.k4.mizan.500",
+      "b": {
+        "alacak": 25271312,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "KASA-ACILIS-649",
+      "pencere": [
+        "baslangic",
+        "k1"
+      ],
+      "program": {
+        "alacak": 21269312,
+        "borc": 0
+      },
+      "yol": [
+        "araDurumlar",
+        "k4",
+        "mizan",
+        "500"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 302622,
+        "borc": 0
+      },
+      "aile": "mizan.649",
+      "alan": "araDurumlar.k4.mizan.649",
+      "b": {
+        "alacak": 302622,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "KASA-ACILIS-649",
+      "pencere": [
+        "baslangic",
+        "k1"
+      ],
+      "program": {
+        "alacak": 4304622,
+        "borc": 0
+      },
+      "yol": [
+        "araDurumlar",
+        "k4",
+        "mizan",
+        "649"
+      ]
+    },
+    {
+      "a": 4095224,
+      "aile": "faturalar.*.matrah",
+      "alan": "araDurumlar.k5.faturalar.F12.matrah",
+      "b": 4095224,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k3",
+        "k4"
+      ],
+      "program": 4095225,
+      "yol": [
+        "araDurumlar",
+        "k5",
+        "faturalar",
+        "F12",
+        "matrah"
+      ]
+    },
+    {
+      "a": 4791927,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k5.faturalar.F12.toplam",
+      "b": 4791927,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k3",
+        "k4"
+      ],
+      "program": 4791928,
+      "yol": [
+        "araDurumlar",
+        "k5",
+        "faturalar",
+        "F12",
+        "toplam"
+      ]
+    },
+    {
+      "a": 1145744,
+      "aile": "faturalar.*.matrah",
+      "alan": "araDurumlar.k5.faturalar.R17.matrah",
+      "b": 1145744,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k3",
+        "k4"
+      ],
+      "program": 1145745,
+      "yol": [
+        "araDurumlar",
+        "k5",
+        "faturalar",
+        "R17",
+        "matrah"
+      ]
+    },
+    {
+      "a": 1260179,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k5.faturalar.R17.toplam",
+      "b": 1260179,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k3",
+        "k4"
+      ],
+      "program": 1260180,
+      "yol": [
+        "araDurumlar",
+        "k5",
+        "faturalar",
+        "R17",
+        "toplam"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 25282276,
+        "borc": 0
+      },
+      "aile": "mizan.500",
+      "alan": "araDurumlar.k5.mizan.500",
+      "b": {
+        "alacak": 25282276,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "KASA-ACILIS-649",
+      "pencere": [
+        "baslangic",
+        "k1"
+      ],
+      "program": {
+        "alacak": 21280276,
+        "borc": 0
+      },
+      "yol": [
+        "araDurumlar",
+        "k5",
+        "mizan",
+        "500"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 419816,
+        "borc": 0
+      },
+      "aile": "mizan.649",
+      "alan": "araDurumlar.k5.mizan.649",
+      "b": {
+        "alacak": 419816,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "KASA-ACILIS-649",
+      "pencere": [
+        "baslangic",
+        "k1"
+      ],
+      "program": {
+        "alacak": 4421816,
+        "borc": 0
+      },
+      "yol": [
+        "araDurumlar",
+        "k5",
+        "mizan",
+        "649"
+      ]
+    },
+    {
+      "a": 4095224,
+      "aile": "faturalar.*.matrah",
+      "alan": "araDurumlar.k6.faturalar.F12.matrah",
+      "b": 4095224,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k3",
+        "k4"
+      ],
+      "program": 4095225,
+      "yol": [
+        "araDurumlar",
+        "k6",
+        "faturalar",
+        "F12",
+        "matrah"
+      ]
+    },
+    {
+      "a": 4791927,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k6.faturalar.F12.toplam",
+      "b": 4791927,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k3",
+        "k4"
+      ],
+      "program": 4791928,
+      "yol": [
+        "araDurumlar",
+        "k6",
+        "faturalar",
+        "F12",
+        "toplam"
+      ]
+    },
+    {
+      "a": 3902,
+      "aile": "faturalar.*.kdv",
+      "alan": "araDurumlar.k6.faturalar.F27.kdv",
+      "b": 3902,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k5",
+        "k6"
+      ],
+      "program": 3901,
+      "yol": [
+        "araDurumlar",
+        "k6",
+        "faturalar",
+        "F27",
+        "kdv"
+      ]
+    },
+    {
+      "a": 42917,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k6.faturalar.F27.toplam",
+      "b": 42917,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k5",
+        "k6"
+      ],
+      "program": 42916,
+      "yol": [
+        "araDurumlar",
+        "k6",
+        "faturalar",
+        "F27",
+        "toplam"
+      ]
+    },
+    {
+      "a": 1145744,
+      "aile": "faturalar.*.matrah",
+      "alan": "araDurumlar.k6.faturalar.R17.matrah",
+      "b": 1145744,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k3",
+        "k4"
+      ],
+      "program": 1145745,
+      "yol": [
+        "araDurumlar",
+        "k6",
+        "faturalar",
+        "R17",
+        "matrah"
+      ]
+    },
+    {
+      "a": 1260179,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k6.faturalar.R17.toplam",
+      "b": 1260179,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k3",
+        "k4"
+      ],
+      "program": 1260180,
+      "yol": [
+        "araDurumlar",
+        "k6",
+        "faturalar",
+        "R17",
+        "toplam"
+      ]
+    },
+    {
+      "a": 9549062,
+      "aile": "kasa",
+      "alan": "araDurumlar.k6.kasa",
+      "b": 9549062,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k5",
+        "k6"
+      ],
+      "program": 9549061,
+      "yol": [
+        "araDurumlar",
+        "k6",
+        "kasa"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 0,
+        "borc": 9549062
+      },
+      "aile": "mizan.100",
+      "alan": "araDurumlar.k6.mizan.100",
+      "b": {
+        "alacak": 0,
+        "borc": 9549062
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k5",
+        "k6"
+      ],
+      "program": {
+        "alacak": 0,
+        "borc": 9549061
+      },
+      "yol": [
+        "araDurumlar",
+        "k6",
+        "mizan",
+        "100"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 332230,
+        "borc": 0
+      },
+      "aile": "mizan.391",
+      "alan": "araDurumlar.k6.mizan.391",
+      "b": {
+        "alacak": 332230,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k5",
+        "k6"
+      ],
+      "program": {
+        "alacak": 332229,
+        "borc": 0
+      },
+      "yol": [
+        "araDurumlar",
+        "k6",
+        "mizan",
+        "391"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 25282276,
+        "borc": 0
+      },
+      "aile": "mizan.500",
+      "alan": "araDurumlar.k6.mizan.500",
+      "b": {
+        "alacak": 25282276,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "KASA-ACILIS-649",
+      "pencere": [
+        "baslangic",
+        "k1"
+      ],
+      "program": {
+        "alacak": 21280276,
+        "borc": 0
+      },
+      "yol": [
+        "araDurumlar",
+        "k6",
+        "mizan",
+        "500"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 498416,
+        "borc": 0
+      },
+      "aile": "mizan.649",
+      "alan": "araDurumlar.k6.mizan.649",
+      "b": {
+        "alacak": 498416,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "KASA-ACILIS-649",
+      "pencere": [
+        "baslangic",
+        "k1"
+      ],
+      "program": {
+        "alacak": 4500416,
+        "borc": 0
+      },
+      "yol": [
+        "araDurumlar",
+        "k6",
+        "mizan",
+        "649"
+      ]
+    },
+    {
+      "a": 29973017,
+      "aile": "ozet.kasaVeGercekBanka",
+      "alan": "araDurumlar.k6.ozet.kasaVeGercekBanka",
+      "b": 29973017,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k5",
+        "k6"
+      ],
+      "program": 29973016,
+      "yol": [
+        "araDurumlar",
+        "k6",
+        "ozet",
+        "kasaVeGercekBanka"
+      ]
+    },
+    {
+      "a": 4095224,
+      "aile": "faturalar.*.matrah",
+      "alan": "araDurumlar.k7.faturalar.F12.matrah",
+      "b": 4095224,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k3",
+        "k4"
+      ],
+      "program": 4095225,
+      "yol": [
+        "araDurumlar",
+        "k7",
+        "faturalar",
+        "F12",
+        "matrah"
+      ]
+    },
+    {
+      "a": 4791927,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k7.faturalar.F12.toplam",
+      "b": 4791927,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k3",
+        "k4"
+      ],
+      "program": 4791928,
+      "yol": [
+        "araDurumlar",
+        "k7",
+        "faturalar",
+        "F12",
+        "toplam"
+      ]
+    },
+    {
+      "a": 3902,
+      "aile": "faturalar.*.kdv",
+      "alan": "araDurumlar.k7.faturalar.F27.kdv",
+      "b": 3902,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k5",
+        "k6"
+      ],
+      "program": 3901,
+      "yol": [
+        "araDurumlar",
+        "k7",
+        "faturalar",
+        "F27",
+        "kdv"
+      ]
+    },
+    {
+      "a": 42917,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k7.faturalar.F27.toplam",
+      "b": 42917,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k5",
+        "k6"
+      ],
+      "program": 42916,
+      "yol": [
+        "araDurumlar",
+        "k7",
+        "faturalar",
+        "F27",
+        "toplam"
+      ]
+    },
+    {
+      "a": 1145744,
+      "aile": "faturalar.*.matrah",
+      "alan": "araDurumlar.k7.faturalar.R17.matrah",
+      "b": 1145744,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k3",
+        "k4"
+      ],
+      "program": 1145745,
+      "yol": [
+        "araDurumlar",
+        "k7",
+        "faturalar",
+        "R17",
+        "matrah"
+      ]
+    },
+    {
+      "a": 1260179,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k7.faturalar.R17.toplam",
+      "b": 1260179,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k3",
+        "k4"
+      ],
+      "program": 1260180,
+      "yol": [
+        "araDurumlar",
+        "k7",
+        "faturalar",
+        "R17",
+        "toplam"
+      ]
+    },
+    {
+      "a": 11092233,
+      "aile": "kasa",
+      "alan": "araDurumlar.k7.kasa",
+      "b": 11092233,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k5",
+        "k6"
+      ],
+      "program": 11092232,
+      "yol": [
+        "araDurumlar",
+        "k7",
+        "kasa"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 0,
+        "borc": 11092233
+      },
+      "aile": "mizan.100",
+      "alan": "araDurumlar.k7.mizan.100",
+      "b": {
+        "alacak": 0,
+        "borc": 11092233
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k5",
+        "k6"
+      ],
+      "program": {
+        "alacak": 0,
+        "borc": 11092232
+      },
+      "yol": [
+        "araDurumlar",
+        "k7",
+        "mizan",
+        "100"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 420910,
+        "borc": 0
+      },
+      "aile": "mizan.391",
+      "alan": "araDurumlar.k7.mizan.391",
+      "b": {
+        "alacak": 420910,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k5",
+        "k6"
+      ],
+      "program": {
+        "alacak": 420909,
+        "borc": 0
+      },
+      "yol": [
+        "araDurumlar",
+        "k7",
+        "mizan",
+        "391"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 25282276,
+        "borc": 0
+      },
+      "aile": "mizan.500",
+      "alan": "araDurumlar.k7.mizan.500",
+      "b": {
+        "alacak": 25282276,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "KASA-ACILIS-649",
+      "pencere": [
+        "baslangic",
+        "k1"
+      ],
+      "program": {
+        "alacak": 21280276,
+        "borc": 0
+      },
+      "yol": [
+        "araDurumlar",
+        "k7",
+        "mizan",
+        "500"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 498416,
+        "borc": 0
+      },
+      "aile": "mizan.649",
+      "alan": "araDurumlar.k7.mizan.649",
+      "b": {
+        "alacak": 498416,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "KASA-ACILIS-649",
+      "pencere": [
+        "baslangic",
+        "k1"
+      ],
+      "program": {
+        "alacak": 4500416,
+        "borc": 0
+      },
+      "yol": [
+        "araDurumlar",
+        "k7",
+        "mizan",
+        "649"
+      ]
+    },
+    {
+      "a": 30627392,
+      "aile": "ozet.kasaVeGercekBanka",
+      "alan": "araDurumlar.k7.ozet.kasaVeGercekBanka",
+      "b": 30627392,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k5",
+        "k6"
+      ],
+      "program": 30627391,
+      "yol": [
+        "araDurumlar",
+        "k7",
+        "ozet",
+        "kasaVeGercekBanka"
+      ]
+    },
+    {
+      "a": 4095224,
+      "aile": "faturalar.*.matrah",
+      "alan": "araDurumlar.k8.faturalar.F12.matrah",
+      "b": 4095224,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k3",
+        "k4"
+      ],
+      "program": 4095225,
+      "yol": [
+        "araDurumlar",
+        "k8",
+        "faturalar",
+        "F12",
+        "matrah"
+      ]
+    },
+    {
+      "a": 4791927,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k8.faturalar.F12.toplam",
+      "b": 4791927,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k3",
+        "k4"
+      ],
+      "program": 4791928,
+      "yol": [
+        "araDurumlar",
+        "k8",
+        "faturalar",
+        "F12",
+        "toplam"
+      ]
+    },
+    {
+      "a": 3902,
+      "aile": "faturalar.*.kdv",
+      "alan": "araDurumlar.k8.faturalar.F27.kdv",
+      "b": 3902,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k5",
+        "k6"
+      ],
+      "program": 3901,
+      "yol": [
+        "araDurumlar",
+        "k8",
+        "faturalar",
+        "F27",
+        "kdv"
+      ]
+    },
+    {
+      "a": 42917,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k8.faturalar.F27.toplam",
+      "b": 42917,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k5",
+        "k6"
+      ],
+      "program": 42916,
+      "yol": [
+        "araDurumlar",
+        "k8",
+        "faturalar",
+        "F27",
+        "toplam"
+      ]
+    },
+    {
+      "a": 1145744,
+      "aile": "faturalar.*.matrah",
+      "alan": "araDurumlar.k8.faturalar.R17.matrah",
+      "b": 1145744,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k3",
+        "k4"
+      ],
+      "program": 1145745,
+      "yol": [
+        "araDurumlar",
+        "k8",
+        "faturalar",
+        "R17",
+        "matrah"
+      ]
+    },
+    {
+      "a": 1260179,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k8.faturalar.R17.toplam",
+      "b": 1260179,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k3",
+        "k4"
+      ],
+      "program": 1260180,
+      "yol": [
+        "araDurumlar",
+        "k8",
+        "faturalar",
+        "R17",
+        "toplam"
+      ]
+    },
+    {
+      "a": 11197384,
+      "aile": "kasa",
+      "alan": "araDurumlar.k8.kasa",
+      "b": 11197384,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k5",
+        "k6"
+      ],
+      "program": 11197383,
+      "yol": [
+        "araDurumlar",
+        "k8",
+        "kasa"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 0,
+        "borc": 11197384
+      },
+      "aile": "mizan.100",
+      "alan": "araDurumlar.k8.mizan.100",
+      "b": {
+        "alacak": 0,
+        "borc": 11197384
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k5",
+        "k6"
+      ],
+      "program": {
+        "alacak": 0,
+        "borc": 11197383
+      },
+      "yol": [
+        "araDurumlar",
+        "k8",
+        "mizan",
+        "100"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 338605,
+        "borc": 0
+      },
+      "aile": "mizan.391",
+      "alan": "araDurumlar.k8.mizan.391",
+      "b": {
+        "alacak": 338605,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k5",
+        "k6"
+      ],
+      "program": {
+        "alacak": 338604,
+        "borc": 0
+      },
+      "yol": [
+        "araDurumlar",
+        "k8",
+        "mizan",
+        "391"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 25282276,
+        "borc": 0
+      },
+      "aile": "mizan.500",
+      "alan": "araDurumlar.k8.mizan.500",
+      "b": {
+        "alacak": 25282276,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "KASA-ACILIS-649",
+      "pencere": [
+        "baslangic",
+        "k1"
+      ],
+      "program": {
+        "alacak": 21280276,
+        "borc": 0
+      },
+      "yol": [
+        "araDurumlar",
+        "k8",
+        "mizan",
+        "500"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 500616,
+        "borc": 0
+      },
+      "aile": "mizan.649",
+      "alan": "araDurumlar.k8.mizan.649",
+      "b": {
+        "alacak": 500616,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "KASA-ACILIS-649",
+      "pencere": [
+        "baslangic",
+        "k1"
+      ],
+      "program": {
+        "alacak": 4502616,
+        "borc": 0
+      },
+      "yol": [
+        "araDurumlar",
+        "k8",
+        "mizan",
+        "649"
+      ]
+    },
+    {
+      "a": 28081951,
+      "aile": "ozet.kasaVeGercekBanka",
+      "alan": "araDurumlar.k8.ozet.kasaVeGercekBanka",
+      "b": 28081951,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k5",
+        "k6"
+      ],
+      "program": 28081950,
+      "yol": [
+        "araDurumlar",
+        "k8",
+        "ozet",
+        "kasaVeGercekBanka"
+      ]
+    },
+    {
+      "a": 4095224,
+      "aile": "faturalar.*.matrah",
+      "alan": "araDurumlar.k9.faturalar.F12.matrah",
+      "b": 4095224,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k3",
+        "k4"
+      ],
+      "program": 4095225,
+      "yol": [
+        "araDurumlar",
+        "k9",
+        "faturalar",
+        "F12",
+        "matrah"
+      ]
+    },
+    {
+      "a": 4791927,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k9.faturalar.F12.toplam",
+      "b": 4791927,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k3",
+        "k4"
+      ],
+      "program": 4791928,
+      "yol": [
+        "araDurumlar",
+        "k9",
+        "faturalar",
+        "F12",
+        "toplam"
+      ]
+    },
+    {
+      "a": 3902,
+      "aile": "faturalar.*.kdv",
+      "alan": "araDurumlar.k9.faturalar.F27.kdv",
+      "b": 3902,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k5",
+        "k6"
+      ],
+      "program": 3901,
+      "yol": [
+        "araDurumlar",
+        "k9",
+        "faturalar",
+        "F27",
+        "kdv"
+      ]
+    },
+    {
+      "a": 42917,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k9.faturalar.F27.toplam",
+      "b": 42917,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k5",
+        "k6"
+      ],
+      "program": 42916,
+      "yol": [
+        "araDurumlar",
+        "k9",
+        "faturalar",
+        "F27",
+        "toplam"
+      ]
+    },
+    {
+      "a": 1145744,
+      "aile": "faturalar.*.matrah",
+      "alan": "araDurumlar.k9.faturalar.R17.matrah",
+      "b": 1145744,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k3",
+        "k4"
+      ],
+      "program": 1145745,
+      "yol": [
+        "araDurumlar",
+        "k9",
+        "faturalar",
+        "R17",
+        "matrah"
+      ]
+    },
+    {
+      "a": 1260179,
+      "aile": "faturalar.*.toplam",
+      "alan": "araDurumlar.k9.faturalar.R17.toplam",
+      "b": 1260179,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k3",
+        "k4"
+      ],
+      "program": 1260180,
+      "yol": [
+        "araDurumlar",
+        "k9",
+        "faturalar",
+        "R17",
+        "toplam"
+      ]
+    },
+    {
+      "a": 13047659,
+      "aile": "kasa",
+      "alan": "araDurumlar.k9.kasa",
+      "b": 13047659,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k5",
+        "k6"
+      ],
+      "program": 13047658,
+      "yol": [
+        "araDurumlar",
+        "k9",
+        "kasa"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 0,
+        "borc": 13047659
+      },
+      "aile": "mizan.100",
+      "alan": "araDurumlar.k9.mizan.100",
+      "b": {
+        "alacak": 0,
+        "borc": 13047659
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k5",
+        "k6"
+      ],
+      "program": {
+        "alacak": 0,
+        "borc": 13047658
+      },
+      "yol": [
+        "araDurumlar",
+        "k9",
+        "mizan",
+        "100"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 338086,
+        "borc": 0
+      },
+      "aile": "mizan.391",
+      "alan": "araDurumlar.k9.mizan.391",
+      "b": {
+        "alacak": 338086,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k5",
+        "k6"
+      ],
+      "program": {
+        "alacak": 338085,
+        "borc": 0
+      },
+      "yol": [
+        "araDurumlar",
+        "k9",
+        "mizan",
+        "391"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 25282276,
+        "borc": 0
+      },
+      "aile": "mizan.500",
+      "alan": "araDurumlar.k9.mizan.500",
+      "b": {
+        "alacak": 25282276,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "KASA-ACILIS-649",
+      "pencere": [
+        "baslangic",
+        "k1"
+      ],
+      "program": {
+        "alacak": 21280276,
+        "borc": 0
+      },
+      "yol": [
+        "araDurumlar",
+        "k9",
+        "mizan",
+        "500"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 500616,
+        "borc": 0
+      },
+      "aile": "mizan.649",
+      "alan": "araDurumlar.k9.mizan.649",
+      "b": {
+        "alacak": 500616,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "KASA-ACILIS-649",
+      "pencere": [
+        "baslangic",
+        "k1"
+      ],
+      "program": {
+        "alacak": 4502616,
+        "borc": 0
+      },
+      "yol": [
+        "araDurumlar",
+        "k9",
+        "mizan",
+        "649"
+      ]
+    },
+    {
+      "a": 24475229,
+      "aile": "ozet.kasaVeGercekBanka",
+      "alan": "araDurumlar.k9.ozet.kasaVeGercekBanka",
+      "b": 24475229,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k5",
+        "k6"
+      ],
+      "program": 24475228,
+      "yol": [
+        "araDurumlar",
+        "k9",
+        "ozet",
+        "kasaVeGercekBanka"
+      ]
+    },
+    {
+      "a": -27765036,
+      "aile": "bankaHesaplari.*",
+      "alan": "bankaHesaplari.B3",
+      "b": -27765036,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "olaylar": [
+        {
+          "degisim": -1,
+          "neden": [
+            "KDV-DAHIL-ISKONTO"
+          ],
+          "pencere": [
+            "k10",
+            "k11"
+          ]
+        }
+      ],
+      "pencere": [
+        "k10",
+        "k11"
+      ],
+      "program": -27765037,
+      "tetik": {
+        "KDV-DAHIL-ISKONTO": "350"
+      },
+      "yol": [
+        "bankaHesaplari",
+        "B3"
+      ]
+    },
+    {
+      "a": -1835156,
+      "aile": "bankaHesaplari.*",
+      "alan": "bankaHesaplari.B4",
+      "b": -1835156,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "olaylar": [
+        {
+          "degisim": 1,
+          "neden": [
+            "KDV-DAHIL-ISKONTO"
+          ],
+          "pencere": [
+            "k9",
+            "k10"
+          ]
+        },
+        {
+          "degisim": 1,
+          "neden": [
+            "KDV-DAHIL-ISKONTO"
+          ],
+          "pencere": [
+            "k14",
+            "k15"
+          ]
+        }
+      ],
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": -1835154,
+      "tetik": {
+        "KDV-DAHIL-ISKONTO": "314"
+      },
+      "yol": [
+        "bankaHesaplari",
+        "B4"
+      ]
+    },
+    {
+      "a": -455887,
+      "aile": "bankaHesaplari.*",
+      "alan": "bankaHesaplari.B6",
+      "b": -455887,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "olaylar": [
+        {
+          "degisim": 1,
+          "neden": [
+            "KDV-DAHIL-ISKONTO"
+          ],
+          "pencere": [
+            "k14",
+            "k15"
+          ]
+        }
+      ],
+      "pencere": [
+        "k14",
+        "k15"
+      ],
+      "program": -455886,
+      "tetik": {
+        "KDV-DAHIL-ISKONTO": "477"
+      },
+      "yol": [
+        "bankaHesaplari",
+        "B6"
+      ]
+    },
+    {
+      "a": 4953467,
+      "aile": "bankaHesaplari.*",
+      "alan": "bankaHesaplari.B7",
+      "b": 4953467,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "olaylar": [
+        {
+          "degisim": -1,
+          "neden": [
+            "KDV-DAHIL-ISKONTO"
+          ],
+          "pencere": [
+            "k14",
+            "k15"
+          ]
+        }
+      ],
+      "pencere": [
+        "k14",
+        "k15"
+      ],
+      "program": 4953466,
+      "tetik": {
+        "KDV-DAHIL-ISKONTO": "477"
+      },
+      "yol": [
+        "bankaHesaplari",
+        "B7"
+      ]
+    },
+    {
+      "a": -21503,
+      "aile": "cariler.*",
+      "alan": "cariler.C16",
+      "b": -21503,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "olaylar": [
+        {
+          "degisim": 1,
+          "neden": [
+            "KDV-DAHIL-ISKONTO"
+          ],
+          "pencere": [
+            "k11",
+            "k12"
+          ]
+        }
+      ],
+      "pencere": [
+        "k11",
+        "k12"
+      ],
+      "program": -21502,
+      "tetik": {
+        "KDV-DAHIL-ISKONTO": "378"
+      },
+      "yol": [
+        "cariler",
+        "C16"
+      ]
+    },
+    {
+      "a": -12776039,
+      "aile": "cariler.*",
+      "alan": "cariler.C24",
+      "b": -12776039,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "olaylar": [
+        {
+          "degisim": 1,
+          "neden": [
+            "KDV-DAHIL-ISKONTO"
+          ],
+          "pencere": [
+            "k9",
+            "k10"
+          ]
+        }
+      ],
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": -12776038,
+      "tetik": {
+        "KDV-DAHIL-ISKONTO": "314"
+      },
+      "yol": [
+        "cariler",
+        "C24"
+      ]
+    },
+    {
+      "a": 4095224,
+      "aile": "faturalar.*.matrah",
+      "alan": "faturalar.F12.matrah",
+      "b": 4095224,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k3",
+        "k4"
+      ],
+      "program": 4095225,
+      "tetik": "124",
+      "yol": [
+        "faturalar",
+        "F12",
+        "matrah"
+      ]
+    },
+    {
+      "a": 4791927,
+      "aile": "faturalar.*.toplam",
+      "alan": "faturalar.F12.toplam",
+      "b": 4791927,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k3",
+        "k4"
+      ],
+      "program": 4791928,
+      "tetik": "124",
+      "yol": [
+        "faturalar",
+        "F12",
+        "toplam"
+      ]
+    },
+    {
+      "a": 3902,
+      "aile": "faturalar.*.kdv",
+      "alan": "faturalar.F27.kdv",
+      "b": 3902,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k5",
+        "k6"
+      ],
+      "program": 3901,
+      "tetik": "191",
+      "yol": [
+        "faturalar",
+        "F27",
+        "kdv"
+      ]
+    },
+    {
+      "a": 42917,
+      "aile": "faturalar.*.toplam",
+      "alan": "faturalar.F27.toplam",
+      "b": 42917,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k5",
+        "k6"
+      ],
+      "program": 42916,
+      "tetik": "191",
+      "yol": [
+        "faturalar",
+        "F27",
+        "toplam"
+      ]
+    },
+    {
+      "a": 634589,
+      "aile": "faturalar.*.acik",
+      "alan": "faturalar.F47.acik",
+      "b": 634589,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "olaylar": [
+        {
+          "degisim": -1,
+          "neden": [
+            "KDV-DAHIL-ISKONTO"
+          ],
+          "pencere": [
+            "k9",
+            "k10"
+          ]
+        }
+      ],
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": 634588,
+      "tetik": {
+        "KDV-DAHIL-ISKONTO": "323"
+      },
+      "yol": [
+        "faturalar",
+        "F47",
+        "acik"
+      ]
+    },
+    {
+      "a": 109330,
+      "aile": "faturalar.*.kdv",
+      "alan": "faturalar.F47.kdv",
+      "b": 109330,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": 109329,
+      "tetik": "323",
+      "yol": [
+        "faturalar",
+        "F47",
+        "kdv"
+      ]
+    },
+    {
+      "a": 655978,
+      "aile": "faturalar.*.toplam",
+      "alan": "faturalar.F47.toplam",
+      "b": 655978,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": 655977,
+      "tetik": "323",
+      "yol": [
+        "faturalar",
+        "F47",
+        "toplam"
+      ]
+    },
+    {
+      "a": 3169,
+      "aile": "faturalar.*.matrah",
+      "alan": "faturalar.F54.matrah",
+      "b": 3169,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k10",
+        "k11"
+      ],
+      "program": 3168,
+      "tetik": "350",
+      "yol": [
+        "faturalar",
+        "F54",
+        "matrah"
+      ]
+    },
+    {
+      "a": 3803,
+      "aile": "faturalar.*.toplam",
+      "alan": "faturalar.F54.toplam",
+      "b": 3803,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k10",
+        "k11"
+      ],
+      "program": 3802,
+      "tetik": "350",
+      "yol": [
+        "faturalar",
+        "F54",
+        "toplam"
+      ]
+    },
+    {
+      "a": 23466,
+      "aile": "faturalar.*.matrah",
+      "alan": "faturalar.F78.matrah",
+      "b": 23466,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k14",
+        "k15"
+      ],
+      "program": 23467,
+      "tetik": "482",
+      "yol": [
+        "faturalar",
+        "F78",
+        "matrah"
+      ]
+    },
+    {
+      "a": 28159,
+      "aile": "faturalar.*.toplam",
+      "alan": "faturalar.F78.toplam",
+      "b": 28159,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k14",
+        "k15"
+      ],
+      "program": 28160,
+      "tetik": "482",
+      "yol": [
+        "faturalar",
+        "F78",
+        "toplam"
+      ]
+    },
+    {
+      "a": 203930,
+      "aile": "faturalar.*.matrah",
+      "alan": "faturalar.F79.matrah",
+      "b": 203930,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k14",
+        "k15"
+      ],
+      "program": 203929,
+      "tetik": "483",
+      "yol": [
+        "faturalar",
+        "F79",
+        "matrah"
+      ]
+    },
+    {
+      "a": 241946,
+      "aile": "faturalar.*.toplam",
+      "alan": "faturalar.F79.toplam",
+      "b": 241946,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k14",
+        "k15"
+      ],
+      "program": 241945,
+      "tetik": "483",
+      "yol": [
+        "faturalar",
+        "F79",
+        "toplam"
+      ]
+    },
+    {
+      "a": 1145744,
+      "aile": "faturalar.*.matrah",
+      "alan": "faturalar.R17.matrah",
+      "b": 1145744,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k3",
+        "k4"
+      ],
+      "program": 1145745,
+      "tetik": "144",
+      "yol": [
+        "faturalar",
+        "R17",
+        "matrah"
+      ]
+    },
+    {
+      "a": 1260179,
+      "aile": "faturalar.*.toplam",
+      "alan": "faturalar.R17.toplam",
+      "b": 1260179,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k3",
+        "k4"
+      ],
+      "program": 1260180,
+      "tetik": "144",
+      "yol": [
+        "faturalar",
+        "R17",
+        "toplam"
+      ]
+    },
+    {
+      "a": 3902,
+      "aile": "faturalar.*.kdv",
+      "alan": "faturalar.R54.kdv",
+      "b": 3902,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": 3901,
+      "tetik": "329",
+      "yol": [
+        "faturalar",
+        "R54",
+        "kdv"
+      ]
+    },
+    {
+      "a": 42917,
+      "aile": "faturalar.*.toplam",
+      "alan": "faturalar.R54.toplam",
+      "b": 42917,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": 42916,
+      "tetik": "329",
+      "yol": [
+        "faturalar",
+        "R54",
+        "toplam"
+      ]
+    },
+    {
+      "a": 3169,
+      "aile": "faturalar.*.matrah",
+      "alan": "faturalar.R69.matrah",
+      "b": 3169,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k11",
+        "k12"
+      ],
+      "program": 3168,
+      "tetik": "387",
+      "yol": [
+        "faturalar",
+        "R69",
+        "matrah"
+      ]
+    },
+    {
+      "a": 3803,
+      "aile": "faturalar.*.toplam",
+      "alan": "faturalar.R69.toplam",
+      "b": 3803,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k11",
+        "k12"
+      ],
+      "program": 3802,
+      "tetik": "387",
+      "yol": [
+        "faturalar",
+        "R69",
+        "toplam"
+      ]
+    },
+    {
+      "a": 109330,
+      "aile": "faturalar.*.kdv",
+      "alan": "faturalar.R74.kdv",
+      "b": 109330,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k12",
+        "k13"
+      ],
+      "program": 109329,
+      "tetik": "428",
+      "yol": [
+        "faturalar",
+        "R74",
+        "kdv"
+      ]
+    },
+    {
+      "a": 655978,
+      "aile": "faturalar.*.toplam",
+      "alan": "faturalar.R74.toplam",
+      "b": 655978,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k12",
+        "k13"
+      ],
+      "program": 655977,
+      "tetik": "428",
+      "yol": [
+        "faturalar",
+        "R74",
+        "toplam"
+      ]
+    },
+    {
+      "a": 23466,
+      "aile": "faturalar.*.matrah",
+      "alan": "faturalar.R91.matrah",
+      "b": 23466,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k14",
+        "k15"
+      ],
+      "program": 23467,
+      "tetik": "501",
+      "yol": [
+        "faturalar",
+        "R91",
+        "matrah"
+      ]
+    },
+    {
+      "a": 28159,
+      "aile": "faturalar.*.toplam",
+      "alan": "faturalar.R91.toplam",
+      "b": 28159,
+      "desen": "A=B≠P",
+      "kokSinif": "KDV-DAHIL-ISKONTO",
+      "pencere": [
+        "k14",
+        "k15"
+      ],
+      "program": 28160,
+      "tetik": "501",
+      "yol": [
+        "faturalar",
+        "R91",
+        "toplam"
+      ]
+    },
+    {
+      "a": 3196700,
+      "aile": "kasa",
+      "alan": "kasa",
+      "b": 3196700,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "olaylar": [
+        {
+          "degisim": -1,
+          "neden": [
+            "KDV-DAHIL-ISKONTO"
+          ],
+          "pencere": [
+            "k5",
+            "k6"
+          ]
+        },
+        {
+          "degisim": -1,
+          "neden": [
+            "KDV-DAHIL-ISKONTO"
+          ],
+          "pencere": [
+            "k12",
+            "k13"
+          ]
+        }
+      ],
+      "pencere": [
+        "k5",
+        "k6"
+      ],
+      "program": 3196698,
+      "tetik": {
+        "KDV-DAHIL-ISKONTO": "186"
+      },
+      "yol": [
+        "kasa"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 0,
+        "borc": 3196700
+      },
+      "aile": "mizan.100",
+      "alan": "mizan.100",
+      "b": {
+        "alacak": 0,
+        "borc": 3196700
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "olaylar": [
+        {
+          "degisim": -1,
+          "neden": [
+            "KDV-DAHIL-ISKONTO"
+          ],
+          "pencere": [
+            "k5",
+            "k6"
+          ]
+        },
+        {
+          "degisim": -1,
+          "neden": [
+            "KDV-DAHIL-ISKONTO"
+          ],
+          "pencere": [
+            "k12",
+            "k13"
+          ]
+        }
+      ],
+      "pencere": [
+        "k5",
+        "k6"
+      ],
+      "program": {
+        "alacak": 0,
+        "borc": 3196698
+      },
+      "tetik": {
+        "KDV-DAHIL-ISKONTO": "186"
+      },
+      "yol": [
+        "mizan",
+        "100"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 27765036,
+        "borc": 0
+      },
+      "aile": "mizan.102.NN",
+      "alan": "mizan.102.03",
+      "b": {
+        "alacak": 27765036,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "olaylar": [
+        {
+          "degisim": -1,
+          "neden": [
+            "KDV-DAHIL-ISKONTO"
+          ],
+          "pencere": [
+            "k10",
+            "k11"
+          ]
+        }
+      ],
+      "pencere": [
+        "k10",
+        "k11"
+      ],
+      "program": {
+        "alacak": 27765037,
+        "borc": 0
+      },
+      "tetik": {
+        "KDV-DAHIL-ISKONTO": "350"
+      },
+      "yol": [
+        "mizan",
+        "102.03"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 1835156,
+        "borc": 0
+      },
+      "aile": "mizan.102.NN",
+      "alan": "mizan.102.04",
+      "b": {
+        "alacak": 1835156,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "olaylar": [
+        {
+          "degisim": 1,
+          "neden": [
+            "KDV-DAHIL-ISKONTO"
+          ],
+          "pencere": [
+            "k9",
+            "k10"
+          ]
+        },
+        {
+          "degisim": 1,
+          "neden": [
+            "KDV-DAHIL-ISKONTO"
+          ],
+          "pencere": [
+            "k14",
+            "k15"
+          ]
+        }
+      ],
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": {
+        "alacak": 1835154,
+        "borc": 0
+      },
+      "tetik": {
+        "KDV-DAHIL-ISKONTO": "314"
+      },
+      "yol": [
+        "mizan",
+        "102.04"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 0,
+        "borc": 4953467
+      },
+      "aile": "mizan.102.NN",
+      "alan": "mizan.102.06",
+      "b": {
+        "alacak": 0,
+        "borc": 4953467
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "olaylar": [
+        {
+          "degisim": -1,
+          "neden": [
+            "KDV-DAHIL-ISKONTO"
+          ],
+          "pencere": [
+            "k14",
+            "k15"
+          ]
+        }
+      ],
+      "pencere": [
+        "k14",
+        "k15"
+      ],
+      "program": {
+        "alacak": 0,
+        "borc": 4953466
+      },
+      "tetik": {
+        "KDV-DAHIL-ISKONTO": "477"
+      },
+      "yol": [
+        "mizan",
+        "102.06"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 0,
+        "borc": 531140
+      },
+      "aile": "mizan.120",
+      "alan": "mizan.120",
+      "b": {
+        "alacak": 0,
+        "borc": 531140
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "olaylar": [
+        {
+          "degisim": 1,
+          "neden": [
+            "KDV-DAHIL-ISKONTO"
+          ],
+          "pencere": [
+            "k11",
+            "k12"
+          ]
+        }
+      ],
+      "pencere": [
+        "k11",
+        "k12"
+      ],
+      "program": {
+        "alacak": 0,
+        "borc": 531141
+      },
+      "tetik": {
+        "KDV-DAHIL-ISKONTO": "378"
+      },
+      "yol": [
+        "mizan",
+        "120"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 455887,
+        "borc": 0
+      },
+      "aile": "mizan.309.NN",
+      "alan": "mizan.309.01",
+      "b": {
+        "alacak": 455887,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "olaylar": [
+        {
+          "degisim": 1,
+          "neden": [
+            "KDV-DAHIL-ISKONTO"
+          ],
+          "pencere": [
+            "k14",
+            "k15"
+          ]
+        }
+      ],
+      "pencere": [
+        "k14",
+        "k15"
+      ],
+      "program": {
+        "alacak": 455886,
+        "borc": 0
+      },
+      "tetik": {
+        "KDV-DAHIL-ISKONTO": "477"
+      },
+      "yol": [
+        "mizan",
+        "309.01"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 75372698,
+        "borc": 0
+      },
+      "aile": "mizan.320",
+      "alan": "mizan.320",
+      "b": {
+        "alacak": 75372698,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "olaylar": [
+        {
+          "degisim": 1,
+          "neden": [
+            "KDV-DAHIL-ISKONTO"
+          ],
+          "pencere": [
+            "k9",
+            "k10"
+          ]
+        }
+      ],
+      "pencere": [
+        "k9",
+        "k10"
+      ],
+      "program": {
+        "alacak": 75372697,
+        "borc": 0
+      },
+      "tetik": {
+        "KDV-DAHIL-ISKONTO": "314"
+      },
+      "yol": [
+        "mizan",
+        "320"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 88474172,
+        "borc": 0
+      },
+      "aile": "mizan.500",
+      "alan": "mizan.500",
+      "b": {
+        "alacak": 88474172,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "KASA-ACILIS-649",
+      "pencere": [
+        "baslangic",
+        "k1"
+      ],
+      "program": {
+        "alacak": 84472172,
+        "borc": 0
+      },
+      "tetik": "47",
+      "yol": [
+        "mizan",
+        "500"
+      ]
+    },
+    {
+      "a": {
+        "alacak": 1313217,
+        "borc": 0
+      },
+      "aile": "mizan.649",
+      "alan": "mizan.649",
+      "b": {
+        "alacak": 1313217,
+        "borc": 0
+      },
+      "desen": "A=B≠P",
+      "kokSinif": "KASA-ACILIS-649",
+      "pencere": [
+        "baslangic",
+        "k1"
+      ],
+      "program": {
+        "alacak": 5315217,
+        "borc": 0
+      },
+      "tetik": "47",
+      "yol": [
+        "mizan",
+        "649"
+      ]
+    },
+    {
+      "a": 455887,
+      "aile": "ozet.kartVeKrediBorcu",
+      "alan": "ozet.kartVeKrediBorcu",
+      "b": 455887,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "olaylar": [
+        {
+          "degisim": -1,
+          "neden": [
+            "KDV-DAHIL-ISKONTO"
+          ],
+          "pencere": [
+            "k14",
+            "k15"
+          ]
+        }
+      ],
+      "pencere": [
+        "k14",
+        "k15"
+      ],
+      "program": 455886,
+      "tetik": {
+        "KDV-DAHIL-ISKONTO": "477"
+      },
+      "yol": [
+        "ozet",
+        "kartVeKrediBorcu"
+      ]
+    },
+    {
+      "a": 80936187,
+      "aile": "ozet.kasaVeGercekBanka",
+      "alan": "ozet.kasaVeGercekBanka",
+      "b": 80936187,
+      "desen": "A=B≠P",
+      "kokSinif": "TUREV:KDV-DAHIL-ISKONTO",
+      "olaylar": [
+        {
+          "degisim": -1,
+          "neden": [
+            "KDV-DAHIL-ISKONTO"
+          ],
+          "pencere": [
+            "k5",
+            "k6"
+          ]
+        },
+        {
+          "degisim": 1,
+          "neden": [
+            "KDV-DAHIL-ISKONTO"
+          ],
+          "pencere": [
+            "k9",
+            "k10"
+          ]
+        },
+        {
+          "degisim": -1,
+          "neden": [
+            "KDV-DAHIL-ISKONTO"
+          ],
+          "pencere": [
+            "k10",
+            "k11"
+          ]
+        },
+        {
+          "degisim": -1,
+          "neden": [
+            "KDV-DAHIL-ISKONTO"
+          ],
+          "pencere": [
+            "k12",
+            "k13"
+          ]
+        }
+      ],
+      "pencere": [
+        "k5",
+        "k6"
+      ],
+      "program": 80936185,
+      "tetik": {
+        "KDV-DAHIL-ISKONTO": "186"
+      },
+      "yol": [
+        "ozet",
+        "kasaVeGercekBanka"
+      ]
+    }
+  ],
+  "islemSayisi": 500,
+  "islemTurleri": {
+    "acilis_duzelt": 6,
+    "banka_masraf": 26,
+    "cari_ac": 33,
+    "cari_odeme": 20,
+    "cari_tahsilat": 32,
+    "diger_gelir": 4,
+    "diger_gider": 3,
+    "faiz_geliri": 13,
+    "faiz_gideri": 10,
+    "fatura": 100,
+    "hesap_ac": 13,
+    "hesap_durum": 3,
+    "hesap_eksi_politika": 2,
+    "iade": 114,
+    "kart_borcu_odeme": 6,
+    "kasa_acilis": 1,
+    "kasa_banka": 14,
+    "kasa_hareket": 29,
+    "kontrol": 18,
+    "saat": 104,
+    "sil": 19,
+    "stok_giris": 13,
+    "taksit_tahsilat": 7,
+    "ters_kayit": 11,
+    "transfer": 12,
+    "urun_ac": 9
+  },
+  "karsilastirilanYaprak": 9548,
+  "komutlar": {
+    "model_a": "python3 -I test/bagimsiz/model_a/model.py test/bagimsiz/cikti/senaryolar/rastgele-2-500-yogun.json",
+    "model_b": "python3 -I test/bagimsiz/model_b/model.py test/bagimsiz/cikti/senaryolar/rastgele-2-500-yogun.json",
+    "program": "node test/bagimsiz/surucu.mjs test/bagimsiz/cikti/senaryolar/rastgele-2-500-yogun.json --cikti test/bagimsiz/cikti/ham/rastgele-2-500-yogun.program.json"
+  },
+  "programEk": {
+    "calismaAgaciDegisikDosya": 17,
+    "commit": "740be0518c71eb92f0cc02c998626c363c060c3a",
+    "eslenemeyenler": [],
+    "kaynakFarklari": [],
+    "okumaHatalari": [],
+    "programMutabakatTesti": {
+      "basarisizDenetim": 0,
+      "ok": true
+    },
+    "programSurumu": "2.0.26"
+  },
+  "senaryo": "rastgele-2-500-yogun",
+  "senaryoDosyasi": "test/bagimsiz/cikti/senaryolar/rastgele-2-500-yogun.json",
+  "siniflar": {
+    "KASA-ACILIS-649": {
+      "aileler": {
+        "mizan.500": 19,
+        "mizan.649": 19
+      },
+      "araDurumYaprak": 36,
+      "desenler": {
+        "A=B≠P": 38
+      },
+      "enErkenPencere": [
+        "baslangic",
+        "k1"
+      ],
+      "ornekler": [
+        {
+          "a": {
+            "alacak": 88474172,
+            "borc": 0
+          },
+          "alan": "mizan.500",
+          "b": {
+            "alacak": 88474172,
+            "borc": 0
+          },
+          "desen": "A=B≠P",
+          "pencere": [
+            "baslangic",
+            "k1"
+          ],
+          "program": {
+            "alacak": 84472172,
+            "borc": 0
+          }
+        },
+        {
+          "a": {
+            "alacak": 1313217,
+            "borc": 0
+          },
+          "alan": "mizan.649",
+          "b": {
+            "alacak": 1313217,
+            "borc": 0
+          },
+          "desen": "A=B≠P",
+          "pencere": [
+            "baslangic",
+            "k1"
+          ],
+          "program": {
+            "alacak": 5315217,
+            "borc": 0
+          }
+        }
+      ],
+      "sonDurumYaprak": 2,
+      "yaprak": 38
+    },
+    "KDV-DAHIL-ISKONTO": {
+      "aileler": {
+        "faturalar.*.kdv": 41,
+        "faturalar.*.matrah": 64,
+        "faturalar.*.toplam": 105
+      },
+      "araDurumYaprak": 188,
+      "desenler": {
+        "A=B≠P": 210
+      },
+      "enErkenPencere": [
+        "k3",
+        "k4"
+      ],
+      "ornekler": [
+        {
+          "a": 4095224,
+          "alan": "faturalar.F12.matrah",
+          "b": 4095224,
+          "desen": "A=B≠P",
+          "pencere": [
+            "k3",
+            "k4"
+          ],
+          "program": 4095225
+        },
+        {
+          "a": 4791927,
+          "alan": "faturalar.F12.toplam",
+          "b": 4791927,
+          "desen": "A=B≠P",
+          "pencere": [
+            "k3",
+            "k4"
+          ],
+          "program": 4791928
+        },
+        {
+          "a": 3902,
+          "alan": "faturalar.F27.kdv",
+          "b": 3902,
+          "desen": "A=B≠P",
+          "pencere": [
+            "k5",
+            "k6"
+          ],
+          "program": 3901
+        },
+        {
+          "a": 42917,
+          "alan": "faturalar.F27.toplam",
+          "b": 42917,
+          "desen": "A=B≠P",
+          "pencere": [
+            "k5",
+            "k6"
+          ],
+          "program": 42916
+        }
+      ],
+      "sonDurumYaprak": 22,
+      "yaprak": 210
+    },
+    "TUREV:KDV-DAHIL-ISKONTO": {
+      "aileler": {
+        "bankaHesaplari.*": 29,
+        "cariler.*": 18,
+        "faturalar.*.acik": 14,
+        "kasa": 14,
+        "mizan.100": 14,
+        "mizan.102.NN": 24,
+        "mizan.120": 8,
+        "mizan.191": 3,
+        "mizan.309.NN": 5,
+        "mizan.320": 10,
+        "mizan.391": 4,
+        "mizan.600": 4,
+        "mizan.610": 3,
+        "ozet.gercekBanka": 1,
+        "ozet.kartVeKrediBorcu": 5,
+        "ozet.kasaVeGercekBanka": 13
+      },
+      "araDurumYaprak": 152,
+      "desenler": {
+        "A=B≠P": 169
+      },
+      "enErkenPencere": [
+        "k5",
+        "k6"
+      ],
+      "ornekler": [
+        {
+          "a": -27765036,
+          "alan": "bankaHesaplari.B3",
+          "b": -27765036,
+          "desen": "A=B≠P",
+          "pencere": [
+            "k10",
+            "k11"
+          ],
+          "program": -27765037
+        },
+        {
+          "a": -1835156,
+          "alan": "bankaHesaplari.B4",
+          "b": -1835156,
+          "desen": "A=B≠P",
+          "pencere": [
+            "k9",
+            "k10"
+          ],
+          "program": -1835154
+        },
+        {
+          "a": -455887,
+          "alan": "bankaHesaplari.B6",
+          "b": -455887,
+          "desen": "A=B≠P",
+          "pencere": [
+            "k14",
+            "k15"
+          ],
+          "program": -455886
+        },
+        {
+          "a": 4953467,
+          "alan": "bankaHesaplari.B7",
+          "b": 4953467,
+          "desen": "A=B≠P",
+          "pencere": [
+            "k14",
+            "k15"
+          ],
+          "program": 4953466
+        }
+      ],
+      "sonDurumYaprak": 17,
+      "yaprak": 169
+    }
+  },
+  "sureler": {
+    "a": 0.17,
+    "b": 5.2,
+    "program": 21.51
+  },
+  "ucTarafSayilari": {
+    "a": {
+      "acikFaturaToplam": 99813204,
+      "atlananSayisi": 0,
+      "bankaToplam": 77283600,
+      "cariToplam": -74841558,
+      "faturaSayisi": 216,
+      "kasa": 3196700,
+      "mizanAlacakToplam": 224436254,
+      "mizanBorcToplam": 224436254,
+      "ozet": {
+        "gercekBanka": 77739487,
+        "hesabiAtanmamis": 0,
+        "kartVeKrediBorcu": 455887,
+        "kasaVeGercekBanka": 80936187
+      },
+      "retSayisi": 29,
+      "taksitKalanToplam": 4415811,
+      "yinelenenSayisi": 6
+    },
+    "b": {
+      "acikFaturaToplam": 99813204,
+      "atlananSayisi": 0,
+      "bankaToplam": 77283600,
+      "cariToplam": -74841558,
+      "faturaSayisi": 216,
+      "kasa": 3196700,
+      "mizanAlacakToplam": 224436254,
+      "mizanBorcToplam": 224436254,
+      "ozet": {
+        "gercekBanka": 77739487,
+        "hesabiAtanmamis": 0,
+        "kartVeKrediBorcu": 455887,
+        "kasaVeGercekBanka": 80936187
+      },
+      "retSayisi": 29,
+      "taksitKalanToplam": 4415811,
+      "yinelenenSayisi": 6
+    },
+    "program": {
+      "acikFaturaToplam": 100626232,
+      "atlananSayisi": 0,
+      "bankaToplam": 77283601,
+      "cariToplam": -74841556,
+      "faturaSayisi": 216,
+      "kasa": 3196698,
+      "mizanAlacakToplam": 224436251,
+      "mizanBorcToplam": 224436251,
+      "ozet": {
+        "gercekBanka": 77739487,
+        "hesabiAtanmamis": 0,
+        "kartVeKrediBorcu": 455886,
+        "kasaVeGercekBanka": 80936185
+      },
+      "retSayisi": 29,
+      "taksitKalanToplam": 4415811,
+      "yinelenenSayisi": 6
+    }
+  }
+}

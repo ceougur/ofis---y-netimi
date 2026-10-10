@@ -1,0 +1,106 @@
+{
+  "adimSayisi": 3,
+  "atlananBelirsizYaprak": 0,
+  "belirsizSayisi": {
+    "a": 0,
+    "b": 0
+  },
+  "cikisKodlari": {
+    "a": 0,
+    "b": 0,
+    "program": 0
+  },
+  "desenSayilari": {},
+  "durum": "TAMAM",
+  "farkSayisi": 0,
+  "farklar": [],
+  "islemSayisi": 3,
+  "islemTurleri": {
+    "hesap_ac": 3
+  },
+  "karsilastirilanYaprak": 12,
+  "komutlar": {
+    "model_a": "python3 -I test/bagimsiz/model_a/model.py test/bagimsiz/senaryolar/surum2/s2-d5-a.json",
+    "model_b": "python3 -I test/bagimsiz/model_b/model.py test/bagimsiz/senaryolar/surum2/s2-d5-a.json",
+    "program": "node test/bagimsiz/surucu.mjs test/bagimsiz/senaryolar/surum2/s2-d5-a.json --cikti test/bagimsiz/cikti/ham/s2-d5-a.program.json"
+  },
+  "programEk": {
+    "calismaAgaciDegisikDosya": 14,
+    "commit": "740be0518c71eb92f0cc02c998626c363c060c3a",
+    "eslenemeyenler": [],
+    "kaynakFarklari": [],
+    "okumaHatalari": [],
+    "programMutabakatTesti": {
+      "basarisizDenetim": 0,
+      "ok": true
+    },
+    "programSurumu": "2.0.26"
+  },
+  "senaryo": "s2-d5-a",
+  "senaryoDosyasi": "test/bagimsiz/senaryolar/surum2/s2-d5-a.json",
+  "siniflar": {},
+  "sureler": {
+    "a": 0.07,
+    "b": 0.06,
+    "program": 1.06
+  },
+  "ucTarafSayilari": {
+    "a": {
+      "acikFaturaToplam": 0,
+      "atlananSayisi": 0,
+      "bankaToplam": -50000,
+      "cariToplam": 0,
+      "faturaSayisi": 0,
+      "kasa": 0,
+      "mizanAlacakToplam": 50000,
+      "mizanBorcToplam": 50000,
+      "ozet": {
+        "gercekBanka": -50000,
+        "hesabiAtanmamis": 0,
+        "kartVeKrediBorcu": 0,
+        "kasaVeGercekBanka": -50000
+      },
+      "retSayisi": 2,
+      "taksitKalanToplam": 0,
+      "yinelenenSayisi": 0
+    },
+    "b": {
+      "acikFaturaToplam": 0,
+      "atlananSayisi": 0,
+      "bankaToplam": -50000,
+      "cariToplam": 0,
+      "faturaSayisi": 0,
+      "kasa": 0,
+      "mizanAlacakToplam": 50000,
+      "mizanBorcToplam": 50000,
+      "ozet": {
+        "gercekBanka": -50000,
+        "hesabiAtanmamis": 0,
+        "kartVeKrediBorcu": 0,
+        "kasaVeGercekBanka": -50000
+      },
+      "retSayisi": 2,
+      "taksitKalanToplam": 0,
+      "yinelenenSayisi": 0
+    },
+    "program": {
+      "acikFaturaToplam": 0,
+      "atlananSayisi": 0,
+      "bankaToplam": -50000,
+      "cariToplam": 0,
+      "faturaSayisi": 0,
+      "kasa": 0,
+      "mizanAlacakToplam": 50000,
+      "mizanBorcToplam": 50000,
+      "ozet": {
+        "gercekBanka": -50000,
+        "hesabiAtanmamis": 0,
+        "kartVeKrediBorcu": 0,
+        "kasaVeGercekBanka": -50000
+      },
+      "retSayisi": 2,
+      "taksitKalanToplam": 0,
+      "yinelenenSayisi": 0
+    }
+  }
+}

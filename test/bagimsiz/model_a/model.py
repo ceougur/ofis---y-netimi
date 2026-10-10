@@ -4,7 +4,7 @@
 
 Kaynak YALNIZ şu üç belgedir:
   docs/BANKA-MODULU-PLAN.md (Sürüm 3), docs/BANKA-MODULU-TALIMAT.md,
-  test/bagimsiz/SENARYO-DILI.md (dil sürümü destekofis-senaryo/1).
+  test/bagimsiz/SENARYO-DILI.md (dil sürümü destekofis-senaryo/2).
 Programın kodu, git geçmişi, KANIT/ESLEME belgeleri ve öbür bağımsız model okunmadı.
 Belirsiz yerlerdeki kararlar ve dayanakları: KARARLAR.md (bu klasörde).
 
@@ -29,13 +29,14 @@ import re
 import sys
 from collections import defaultdict
 
-DIL = "destekofis-senaryo/1"
+DIL = "destekofis-senaryo/2"
 MAX_KURUS = 10 ** 14          # 1e12 TL [PLAN §9.2/9]
 ROLLER = {"yonetici", "muhasebe", "personel"}
 HESAP_TURLERI = {"vadesiz", "ticari", "vadeli", "diger", "kurumsal_kart", "kredi"}
 TUR_102 = {"vadesiz", "ticari", "vadeli", "diger"}
 HAVALE_UYGUN = {"vadesiz", "ticari", "diger"}          # SENARYO-DILI §5.2 [PLAN §3.5 tablo]
-KMH_TURLERI = {"vadesiz", "ticari", "diger"}
+KMH_TURLERI = {"vadesiz", "ticari", "diger"}   # biçim: kmhLimiti / "-" açılış yazılabilen türler (§3.3)
+KMH_GECERLI = {"vadesiz"}                       # sürüm 2 D5: KMH ve eksi açılış yalnız vadesizde geçerli [ÇIKARIM §3.5]
 ANA_KOD = {"vadesiz": "102", "ticari": "102", "vadeli": "102", "diger": "102",
            "kurumsal_kart": "309", "kredi": "300"}
 POLITIKALAR = {"uyar", "engelle", "kontrol_yok"}
@@ -437,7 +438,7 @@ def senaryo_dogrula(sen, dosya):
                     raise SenaryoHatasi("%s: IBAN boşluksuz ve büyük harfle yazılır (K-14)" % yer)
             if "kmhLimiti" in adim:
                 if adim["tur"] not in KMH_TURLERI:
-                    raise SenaryoHatasi("%s: KMH limiti yalnız vadesiz/ticari/diğer" % yer)
+                    raise SenaryoHatasi("%s: KMH limiti alanı yalnız vadesiz/ticari/diğer (biçim; ticari/diğer 4xx)" % yer)
                 tutar_coz(adim["kmhLimiti"], yer + ".kmhLimiti", sifir_olur=True)
             if "kartLimiti" in adim:
                 if adim["tur"] != "kurumsal_kart":
@@ -1127,6 +1128,13 @@ class Model:
             deg = getattr(self, "_i_" + islem)(adim, tarih, ih, rol, kul)
         except Dur:
             deg = None
+        except SenaryoHatasi:
+            # Sürüm 2 (§5.4 son madde; §5.6 sırası 3 → 4): aynı gövdeli yineleme "senaryo kurmaz" denetimlerinden önce
+            # tanınır. İşlem fonksiyonu bir BELİRSİZ (ör. BELİRSİZ-6/10/14/4) ile durduysa ve adım başarılı bir önceki
+            # adımın aynı gövdeli yinelemesiyse adım etkisizdir; değilse senaryo gerçekten geçersizdir.
+            if 2 not in ih.gruplar() and self._yineleme_ise(i, adim, kul, islem, tarih):
+                return
+            raise
         if 2 in ih.gruplar():
             self.ret(i, adim, ih.liste)
             return
@@ -1155,6 +1163,20 @@ class Model:
         self.uygula(deg, adim)
         if "istekKimligi" in adim:
             self.istekler[(kul, islem, adim["istekKimligi"])] = (self.govde(adim, tarih), adim)
+
+    def _yineleme_ise(self, i, adim, kul, islem, tarih):
+        """Adım, başarılı önceki bir adımın aynı gövdeli yinelemesiyse onu yinelenenlere yazar ve True döner."""
+        if "istekKimligi" not in adim:
+            return False
+        anahtar = (kul, islem, adim["istekKimligi"])
+        if anahtar not in self.istekler:
+            return False
+        eski_govde, eski_adim = self.istekler[anahtar]
+        if eski_govde != self.govde(adim, tarih):
+            return False
+        self.yinelenenler.append(i)
+        self._yineleme_adlari(adim, eski_adim)
+        return True
 
     def ret(self, i, adim, liste):
         self.basarisiz.update(self._tanimlar(adim))
@@ -1294,6 +1316,12 @@ class Model:
         dog = adim.get("bakiyeDogrulandi", False)
         kmh = tutar_coz(adim.get("kmhLimiti", "0"), "kmhLimiti", sifir_olur=True)
         kl = tutar_coz(adim.get("kartLimiti", "0"), "kartLimiti", sifir_olur=True)
+        # sürüm 2 D5: KMH limiti ve eksi açılış yalnız vadesiz hesapta [ÇIKARIM §3.5 tablo, §3.7 #1]
+        if tur not in KMH_GECERLI and (kmh > 0 or S < 0):
+            ih.ekle(2, "4xx", None, None, "KMH limiti / eksi açılış vadesiz dışı hesapta (D5)")
+            return None
+        if tur in KMH_GECERLI and S < 0 and -S > kmh:
+            raise SenaryoHatasi("adım %s: BELİRSİZ-23 — eksi açılış KMH limitini aşıyor" % adim["id"])
         ana = ANA_KOD[tur]
         nn = self.alt_sayac[ana] + 1
         if nn > 99:
@@ -1376,6 +1404,12 @@ class Model:
             ih.ekle(4, 409, "bank-opening-after-first", "PLAN", "açılış ilk hareketten sonra")
         if S2 is None:
             return None
+        # sürüm 2 D5: eksi açılış yalnız vadesiz hesapta; KMH'yi aşan eksi açılış tanımsız
+        if S2 < 0 and h["tur"] not in KMH_GECERLI:
+            ih.ekle(2, "4xx", None, None, "eksi açılış vadesiz dışı hesapta (D5)")
+            return None
+        if S2 < 0 and -S2 > h["kmh"]:
+            raise SenaryoHatasi("adım %s: BELİRSİZ-23 — eksi açılış KMH limitini aşıyor" % adim["id"])
         ana = h["gl"].split(".")[0]
         deg = Degisim()
         if h["acilis_fis"] is not None:
@@ -1836,7 +1870,8 @@ class Model:
             self._hareket_kaydet(deg, adim, key, hr)
             self._belirsiz4_kaydet(deg, tarih, U, {h["key"]})
             return deg
-        h = self.banka_hesabi_al(adim["hesap"], TUR_102, ih)
+        # sürüm 2 D6: vadeli hesapta banka masrafı (BSMV/Yok) → 400 bank-account-invalid [ÇIKARIM §3.5]
+        h = self.banka_hesabi_al(adim["hesap"], TUR_102 - {"vadeli"}, ih)
         self._banka_ortak(adim, tarih, ih, [h])
         if vergi == "bsmv_dahil":
             gider = rh(U * 100, 105)
@@ -1876,12 +1911,12 @@ class Model:
         deg.uygula.append(f)
         return deg
 
-    def _tek_hesapli_fis(self, adim, tarih, ih, alan):
+    def _tek_hesapli_fis(self, adim, tarih, ih, alan, izinli=TUR_102):
         try:
             T = self.tutar_al(adim, alan, "banka", ih)
         except Dur:
             T = None
-        h = self.banka_hesabi_al(adim["hesap"], TUR_102, ih)
+        h = self.banka_hesabi_al(adim["hesap"], izinli, ih)
         self._banka_ortak(adim, tarih, ih, [h])
         if T is None:
             raise Dur()
@@ -1900,7 +1935,14 @@ class Model:
         return deg
 
     def _basit_fis(self, adim, tarih, ih, kul, islem, borc, alacak_banka):
-        T, h = self._tek_hesapli_fis(adim, tarih, ih, "tutar")
+        if islem == "faiz_gideri":
+            hv = self.varlik(adim["hesap"])
+            if hv["tur"] == "vadeli":
+                raise SenaryoHatasi("adım %s: BELİRSİZ-24 — vadeli hesapta faiz gideri" % adim["id"])
+            izinli = TUR_102
+        else:
+            izinli = TUR_102 - {"vadeli"}   # sürüm 2 D6: diğer gelir/gider vadelide 400 bank-account-invalid
+        T, h = self._tek_hesapli_fis(adim, tarih, ih, "tutar", izinli)
         self._belirsiz4(adim, tarih, T, {h["key"]})
         deg = Degisim()
         if alacak_banka:
@@ -1927,6 +1969,8 @@ class Model:
             T = self.tutar_al(adim, "tutar", "banka", ih)
         except Dur:
             T = None
+        if self.varlik(adim["kaynak"])["tur"] == "vadeli":
+            raise SenaryoHatasi("adım %s: BELİRSİZ-24 — vadeli hesaptan kart borcu ödemesi" % adim["id"])
         k = self.banka_hesabi_al(adim["kaynak"], TUR_102, ih)
         kr = self.banka_hesabi_al(adim["kart"], {"kurumsal_kart"}, ih)
         self._banka_ortak(adim, tarih, ih, [k, kr])
@@ -1946,6 +1990,8 @@ class Model:
             T = self.tutar_al(adim, "tutar", "banka", ih)
         except Dur:
             T = None
+        if self.varlik(adim["hedef"])["tur"] == "vadeli":
+            raise SenaryoHatasi("adım %s: BELİRSİZ-24 — kredi vadeli hesaba" % adim["id"])
         kr = self.banka_hesabi_al(adim["kredi"], {"kredi"}, ih)
         hd = self.banka_hesabi_al(adim["hedef"], TUR_102, ih)
         self._banka_ortak(adim, tarih, ih, [kr, hd])
@@ -1972,12 +2018,16 @@ class Model:
                 F = self.tutar_al(adim, "faiz", "banka", ih)
             except Dur:
                 hata = True
+        if self.varlik(adim["kaynak"])["tur"] == "vadeli":
+            raise SenaryoHatasi("adım %s: BELİRSİZ-24 — vadeli hesaptan kredi ödemesi" % adim["id"])
         kr = self.banka_hesabi_al(adim["kredi"], {"kredi"}, ih)
         k = self.banka_hesabi_al(adim["kaynak"], TUR_102, ih)
         self._banka_ortak(adim, tarih, ih, [kr, k])
         if hata:
             raise Dur()
         F = F or 0
+        if A > -self.bakiye(kr["gl"]):
+            raise SenaryoHatasi("adım %s: BELİRSİZ-25 — anapara kalan kredi borcunu aşıyor" % adim["id"])
         self._belirsiz4(adim, tarih, A, {kr["key"], k["key"]})
         deg = Degisim()
         deg.yeni.append((tarih, [(kr["gl"], A, 0, None), ("780", F, 0, None), (k["gl"], 0, A + F, None)],
@@ -2010,6 +2060,14 @@ class Model:
         for fid in hd["fisler"]:
             f = self.fisler[fid]
             deg.yeni.append((t, [(kod, al, bo, c) for kod, bo, al, c in f["satirlar"]], "ters"))
+        for hk in hd["hesaplar"]:
+            hh = self.v[hk]
+            if hh["tur"] == "kredi":
+                fark = sum(al - bo for fid in hd["fisler"] for kod, bo, al, _ in self.fisler[fid]["satirlar"]
+                           if kod == hh["gl"])
+                if self.bakiye(hh["gl"]) + fark > 0:
+                    raise SenaryoHatasi("adım %s: BELİRSİZ-25 — ters kayıt kredi hesabını borç bakiyesine çeviriyor"
+                                        % adim["id"])
         key, hr = self._hareket(adim, "ters_kayit", kul, t, hedef=hd["key"], hesaba_bagli=True,
                                 hesaplar=set(hd["hesaplar"]))
         deg.uygula.append(lambda _: hd.__setitem__("ters", True))
@@ -2078,17 +2136,33 @@ class Model:
                 if acik[b["key"]] < 0:
                     raise KahinHatasi("açık eksi: %s" % b["key"])
             iadeler_acik = [b for b in db if b["asil"] is not None and b["geri"] == "acik"]
-            for b in iadeler_acik:                                          # kural 5
+            for b in iadeler_acik:                                          # kural 5 (belge sırasıyla)
                 if any(x["kapatilacak"] == b["key"] for x in ch):
                     belirsiz[ck].add("K-10")
                 d = min(acik[b["key"]], acik[b["asil"]])
                 acik[b["asil"]] -= d
                 acik[b["key"]] -= d
+            # kural 6 (sürüm 2, D1 [KARAR]): iadenin artanı aynı carinin asıl türdeki en eski açık belgelerini kapatır
+            # (satıştan iade → taksitsiz satış faturaları; alıştan iade → alış faturaları ve KDV'li masraf faturaları);
+            # kapatamadığı kalan iade belgesinin açığıdır.
+            artan_satis_iade = False
+            for b in iadeler_acik:
+                if acik[b["key"]] <= 0:
+                    continue
+                if b["tur"] == "satis_iade":
+                    artan_satis_iade = True
+                    hedefler = [x for x in db if x["tur"] == "satis" and x["kart"] is None]
+                else:
+                    hedefler = [x for x in db if x["tur"] == "alis"]
+                for x in hedefler:
+                    d = min(acik[b["key"]], acik[x["key"]])
+                    acik[x["key"]] -= d
+                    acik[b["key"]] -= d
             bg = [x for x in ch if x["islem"] == "cari_tahsilat" and x["kapatilacak"] is None]
             bc = [x for x in ch if x["islem"] == "cari_odeme" and x["kapatilacak"] is None]
             havuz_g = sum(x["tutar"] for x in bg)
             havuz_c = sum(x["tutar"] for x in bc)
-            for b in alacak:                                                # kural 6
+            for b in alacak:                                                # kural 7
                 if b["kart"] is not None:
                     continue
                 d = min(havuz_g, acik[b["key"]])
@@ -2099,11 +2173,9 @@ class Model:
                 acik[b["key"]] -= d
                 havuz_c -= d
             dagitilmamis[ck] = (havuz_g, havuz_c)
-            # kesinlik
-            if bg and any(b["kart"] is not None for b in db):
+            # kesinlik (sürüm 2: BELİRSİZ-9 kalktı; BELİRSİZ-7 iade artanını da kapsar)
+            if (bg or artan_satis_iade) and any(b["kart"] is not None for b in db):
                 belirsiz[ck].add("BELİRSİZ-7")
-            if iadeler_acik and (bg or bc):
-                belirsiz[ck].add("BELİRSİZ-9")
             if (bg and borc) or (bc and alacak):
                 belirsiz[ck].add("BELİRSİZ-11")
             # değişmez
@@ -2135,31 +2207,35 @@ class Model:
         if toplam_b != toplam_a:
             raise KahinHatasi("mizan dengesiz: %d ≠ %d" % (toplam_b, toplam_a))
         hesaplar = self.hesaplar()
-        banka = {self.ad_ilk[h["key"]]: self.bakiye(h["gl"]) for h in hesaplar}
+        # sürüm 2 D4 (§5.4, §8.3): istek kimliğiyle yinelenen adımın takma adları da çıktıda, asıl varlığın değeriyle
+        adlari = defaultdict(list)
+        for alias, key in self.ad.items():
+            adlari[key].append(alias)
+        banka = {ad: self.bakiye(h["gl"]) for h in hesaplar for ad in adlari[h["key"]]}
         kasa = self.bakiye("100")
-        cariler = {self.ad_ilk[c["key"]]: self.cari_bakiye(c["key"]) for c in self.tip("cari")}
-        stok = {self.ad_ilk[u["key"]]: u["miktar"] for u in self.tip("urun")}
+        cariler = {ad: self.cari_bakiye(c["key"]) for c in self.tip("cari") for ad in adlari[c["key"]]}
+        stok = {ad: u["miktar"] for u in self.tip("urun") for ad in adlari[u["key"]]}
         acik, belirsiz, _ = self.aciklar()
         faturalar = {}
         bel = []
         for b in self.tip("fatura"):
-            ad = self.ad_ilk[b["key"]]
-            faturalar[ad] = {"toplam": b["T"], "matrah": b["M"], "kdv": b["K"], "acik": acik[b["key"]]}
-            if belirsiz.get(b["cari"]):
-                bel.append(("faturalar.%s.acik" % ad, ", ".join(sorted(belirsiz[b["cari"]]))))
+            for ad in adlari[b["key"]]:
+                faturalar[ad] = {"toplam": b["T"], "matrah": b["M"], "kdv": b["K"], "acik": acik[b["key"]]}
+                if belirsiz.get(b["cari"]):
+                    bel.append(("faturalar.%s.acik" % ad, ", ".join(sorted(belirsiz[b["cari"]]))))
         kartlar = {}
         for k in self.tip("kart"):
-            ad = self.ad_ilk[k["key"]]
             od = self.kart_odenen(k["key"])
-            kartlar[ad] = {"toplam": k["toplam"], "odenen": od, "kalan": k["toplam"] - od}
-            if belirsiz.get(k["cari"]):
-                for alan in ("toplam", "odenen", "kalan"):
-                    bel.append(("taksitKartlari.%s.%s" % (ad, alan), ", ".join(sorted(belirsiz[k["cari"]]))))
+            for ad in adlari[k["key"]]:
+                kartlar[ad] = {"toplam": k["toplam"], "odenen": od, "kalan": k["toplam"] - od}
+                if belirsiz.get(k["cari"]):
+                    for alan in ("toplam", "odenen", "kalan"):
+                        bel.append(("taksitKartlari.%s.%s" % (ad, alan), ", ".join(sorted(belirsiz[k["cari"]]))))
         if self.alis_urun & self.satis_urun:
             bel.append(("mizan.153", "BELİRSİZ-15"))
             bel.append(("mizan.621", "BELİRSİZ-15"))
-        hk = {self.ad_ilk[h["key"]]: h["gl"] for h in hesaplar}
-        eb = {self.ad_ilk[h["key"]]: self.hesap_etkin_politika(h) for h in hesaplar}
+        hk = {ad: h["gl"] for h in hesaplar for ad in adlari[h["key"]]}
+        eb = {ad: self.hesap_etkin_politika(h) for h in hesaplar for ad in adlari[h["key"]]}
 
         def bk(pred):
             return sum(self.bakiye(k) for k in kodlar if pred(k))

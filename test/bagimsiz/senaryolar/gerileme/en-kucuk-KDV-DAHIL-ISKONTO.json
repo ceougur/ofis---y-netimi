@@ -1,0 +1,43 @@
+{
+  "aciklama": "Hakem: en küçük — tek cari, tek satış faturası, tek kalem: hizmet 82,71 KDV dahil, %15 iskonto, %20 KDV (tohum 5 F4 / mini-kdv-dahil-iskonto'nun stoksuz hâli).",
+  "ad": "en-kucuk-KDV-DAHIL-ISKONTO",
+  "adimlar": [
+    {
+      "ad": "M1",
+      "id": "1",
+      "islem": "cari_ac",
+      "tur": "musteri",
+      "unvan": "Müşteri 1"
+    },
+    {
+      "ad": "F1",
+      "cari": "M1",
+      "id": "2",
+      "islem": "fatura",
+      "kalemler": [
+        {
+          "birimFiyat": "82,71",
+          "hizmet": "Bakım",
+          "iskontoOrani": "15",
+          "kdvDahil": true,
+          "kdvOrani": 20,
+          "miktar": 1
+        }
+      ],
+      "tur": "satis"
+    }
+  ],
+  "baslangic": {
+    "ayarlar": {
+      "benzerIslemUyarisi": "acik",
+      "kasaEksiBakiye": "uyar"
+    },
+    "bugun": "05.10.2026",
+    "kullanicilar": {
+      "Y": "yonetici"
+    },
+    "sirket": "bos"
+  },
+  "dayanak": "hakem küçültmesi (fark sınıfı KDV-DAHIL-ISKONTO)",
+  "dil": "destekofis-senaryo/2"
+}

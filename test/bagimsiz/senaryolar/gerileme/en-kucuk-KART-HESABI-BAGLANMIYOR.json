@@ -1,0 +1,36 @@
+{
+  "dil": "destekofis-senaryo/2",
+  "ad": "en-kucuk-KART-HESABI-BAGLANMIYOR",
+  "aciklama": "Hakem: en küçük. İki alt durum tek senaryoda, sırayla. (1) rastgele-1-500'ün tetik adımı aynen: kurumsal kart hesabı YOKKEN kart yoluyla cari ödemesi ve hesap olarak vadesiz B1 verilmiş (adım 272; ihtiyaç duyduğu 45 ve 52 ile; tarih 11.03.2025'te kalır, saat adımları farkı değiştirmez). (2) Kurumsal kart hesabı KK açılınca: kart yoluyla cari ödemesi hesap KK ile (k2), alış faturası peşini kartla hesap KK ile (k3) ve ekranın gönderdiği biçimde hesapsız kart ödemesi (k4; tek kurumsal kart var).",
+  "dayanak": "hakem: fark sınıfı KART-HESABI-BAGLANMIYOR (tohum 1 adım 272, önek 271'de yok; 33 tohumun 28'inde). Adım 45/52/272 kimlikleri ve değerleri özgün senaryodakiyle aynı (C25'in IBAN'ı çıkarıldı, farkı değiştirmez). k1–k4 hakemin eklediği alt durum (mini-kart-odeme ile aynı kök).",
+  "baslangic": {
+    "bugun": "11.03.2025",
+    "sirket": "bos",
+    "ayarlar": {
+      "kasaEksiBakiye": "uyar",
+      "benzerIslemUyarisi": "acik"
+    },
+    "kullanicilar": {
+      "Y": "yonetici"
+    }
+  },
+  "adimlar": [
+    { "id": "45", "islem": "cari_ac", "ad": "C25", "unvan": "Bereket Lojistik Ltd. C25", "tur": "tedarikci" },
+    { "id": "52", "islem": "hesap_ac", "ad": "B1", "banka": "Akbank", "hesapAdi": "Ana TL Hesabı B1", "tur": "vadesiz", "paraBirimi": "TRY", "acilisTarihi": "03.03.2025", "acilisBakiyesi": "86386,39", "bakiyeDogrulandi": true },
+    { "id": "272", "islem": "cari_odeme", "cari": "C25", "tutar": "579", "yol": "kart", "hesap": "B1" },
+    { "id": "k1", "islem": "hesap_ac", "ad": "KK", "banka": "Garanti BBVA", "hesapAdi": "Kurumsal Kart KK", "tur": "kurumsal_kart", "paraBirimi": "TRY", "acilisTarihi": "01.03.2025", "acilisBakiyesi": "0", "kartLimiti": "20000" },
+    { "id": "k2", "islem": "cari_odeme", "cari": "C25", "tutar": "100", "yol": "kart", "hesap": "KK" },
+    {
+      "id": "k3",
+      "islem": "fatura",
+      "ad": "F1",
+      "tur": "alis",
+      "cari": "C25",
+      "kalemler": [
+        { "hizmet": "Bakım", "giderTuru": "Banka Masrafları", "miktar": 1, "birimFiyat": "200", "kdvOrani": 20, "kdvDahil": false }
+      ],
+      "odeme": { "pesin": [ { "tutar": "tamami", "yol": "kart", "hesap": "KK" } ] }
+    },
+    { "id": "k4", "islem": "cari_odeme", "cari": "C25", "tutar": "50", "yol": "kart" }
+  ]
+}

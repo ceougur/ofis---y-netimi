@@ -1,0 +1,131 @@
+{
+  "adimSayisi": 628,
+  "atlananBelirsizYaprak": 833,
+  "belirsizSayisi": {
+    "a": 851,
+    "b": 851
+  },
+  "cikisKodlari": {
+    "a": 0,
+    "b": 0,
+    "program": 0
+  },
+  "desenSayilari": {},
+  "durum": "TAMAM",
+  "farkSayisi": 0,
+  "farklar": [],
+  "islemSayisi": 500,
+  "islemTurleri": {
+    "acilis_duzelt": 6,
+    "ayar": 2,
+    "banka_masraf": 41,
+    "cari_ac": 32,
+    "cari_odeme": 21,
+    "cari_tahsilat": 43,
+    "diger_gelir": 4,
+    "diger_gider": 8,
+    "faiz_geliri": 11,
+    "faiz_gideri": 6,
+    "fatura": 123,
+    "hesap_ac": 10,
+    "hesap_durum": 1,
+    "hesap_eksi_politika": 4,
+    "iade": 29,
+    "kart_borcu_odeme": 6,
+    "kasa_banka": 18,
+    "kasa_hareket": 27,
+    "kontrol": 18,
+    "saat": 110,
+    "sil": 28,
+    "stok_giris": 10,
+    "taksit_tahsilat": 19,
+    "ters_kayit": 12,
+    "transfer": 30,
+    "urun_ac": 9
+  },
+  "karsilastirilanYaprak": 7917,
+  "komutlar": {
+    "model_a": "python3 -I test/bagimsiz/model_a/model.py test/bagimsiz/cikti/senaryolar/rastgele-2-500-notr.json",
+    "model_b": "python3 -I test/bagimsiz/model_b/model.py test/bagimsiz/cikti/senaryolar/rastgele-2-500-notr.json",
+    "program": "node test/bagimsiz/surucu.mjs test/bagimsiz/cikti/senaryolar/rastgele-2-500-notr.json --cikti test/bagimsiz/cikti/ham/rastgele-2-500-notr.program.json"
+  },
+  "programEk": {
+    "calismaAgaciDegisikDosya": 18,
+    "commit": "740be0518c71eb92f0cc02c998626c363c060c3a",
+    "eslenemeyenler": [],
+    "kaynakFarklari": [],
+    "okumaHatalari": [],
+    "programMutabakatTesti": {
+      "basarisizDenetim": 0,
+      "ok": true
+    },
+    "programSurumu": "2.0.26"
+  },
+  "senaryo": "rastgele-2-500-notr",
+  "senaryoDosyasi": "test/bagimsiz/cikti/senaryolar/rastgele-2-500-notr.json",
+  "siniflar": {},
+  "sureler": {
+    "a": 0.18,
+    "b": 5.37,
+    "program": 20.21
+  },
+  "ucTarafSayilari": {
+    "a": {
+      "acikFaturaToplam": 77087721,
+      "atlananSayisi": 0,
+      "bankaToplam": 210332,
+      "cariToplam": -39654314,
+      "faturaSayisi": 162,
+      "kasa": 13801973,
+      "mizanAlacakToplam": 164910048,
+      "mizanBorcToplam": 164910048,
+      "ozet": {
+        "gercekBanka": 1068493,
+        "hesabiAtanmamis": 0,
+        "kartVeKrediBorcu": 858161,
+        "kasaVeGercekBanka": 14870466
+      },
+      "retSayisi": 13,
+      "taksitKalanToplam": 7649396,
+      "yinelenenSayisi": 10
+    },
+    "b": {
+      "acikFaturaToplam": 77087721,
+      "atlananSayisi": 0,
+      "bankaToplam": 210332,
+      "cariToplam": -39654314,
+      "faturaSayisi": 162,
+      "kasa": 13801973,
+      "mizanAlacakToplam": 164910048,
+      "mizanBorcToplam": 164910048,
+      "ozet": {
+        "gercekBanka": 1068493,
+        "hesabiAtanmamis": 0,
+        "kartVeKrediBorcu": 858161,
+        "kasaVeGercekBanka": 14870466
+      },
+      "retSayisi": 13,
+      "taksitKalanToplam": 7649396,
+      "yinelenenSayisi": 10
+    },
+    "program": {
+      "acikFaturaToplam": 77087721,
+      "atlananSayisi": 0,
+      "bankaToplam": 210332,
+      "cariToplam": -39654314,
+      "faturaSayisi": 162,
+      "kasa": 13801973,
+      "mizanAlacakToplam": 164910048,
+      "mizanBorcToplam": 164910048,
+      "ozet": {
+        "gercekBanka": 1068493,
+        "hesabiAtanmamis": 0,
+        "kartVeKrediBorcu": 858161,
+        "kasaVeGercekBanka": 14870466
+      },
+      "retSayisi": 13,
+      "taksitKalanToplam": 7649396,
+      "yinelenenSayisi": 10
+    }
+  }
+}

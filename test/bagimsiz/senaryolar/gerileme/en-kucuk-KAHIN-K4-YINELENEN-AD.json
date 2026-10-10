@@ -1,0 +1,74 @@
+{
+  "dil": "destekofis-senaryo/2",
+  "ad": "en-kucuk-KAHIN-K4-YINELENEN-AD",
+  "aciklama": "Hakem — KAHIN-K4-YINELENEN-AD en küçük hâli: taksitli satış faturası aynı istek kimliği ve aynı gövdeyle (yalnız `ad` ve `odeme.taksit.ad` farklı) ikinci kez gönderilir. Saf hâl (tohum 1 Z5) ile aynı biçim; ürün/stok yerine hizmet kalemi (adım sayısı 3).",
+  "dayanak": "SENARYO-DILI §5.4 (yineleme), §8.3 (faturalar / taksitKartlari anahtarı); PLAN §3.10/1",
+  "baslangic": {
+    "bugun": "05.10.2026",
+    "sirket": "bos",
+    "ayarlar": {
+      "kasaEksiBakiye": "uyar",
+      "benzerIslemUyarisi": "acik"
+    },
+    "kullanicilar": {
+      "Y": "yonetici"
+    }
+  },
+  "adimlar": [
+    {
+      "id": "1",
+      "islem": "cari_ac",
+      "ad": "M1",
+      "unvan": "Müşteri 1",
+      "tur": "musteri"
+    },
+    {
+      "id": "2",
+      "islem": "fatura",
+      "ad": "F1",
+      "tur": "satis",
+      "cari": "M1",
+      "kalemler": [
+        {
+          "hizmet": "Danışmanlık",
+          "miktar": 1,
+          "birimFiyat": "500",
+          "kdvOrani": 20,
+          "kdvDahil": false
+        }
+      ],
+      "odeme": {
+        "taksit": {
+          "ad": "T1",
+          "sayi": 2,
+          "ilkVade": "05.11.2026"
+        }
+      },
+      "istekKimligi": "y1"
+    },
+    {
+      "id": "3",
+      "islem": "fatura",
+      "ad": "F2",
+      "tur": "satis",
+      "cari": "M1",
+      "kalemler": [
+        {
+          "hizmet": "Danışmanlık",
+          "miktar": 1,
+          "birimFiyat": "500",
+          "kdvOrani": 20,
+          "kdvDahil": false
+        }
+      ],
+      "odeme": {
+        "taksit": {
+          "ad": "T2",
+          "sayi": 2,
+          "ilkVade": "05.11.2026"
+        }
+      },
+      "istekKimligi": "y1"
+    }
+  ]
+}

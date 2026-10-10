@@ -1,5 +1,5 @@
 {
-  "dil": "destekofis-senaryo/1",
+  "dil": "destekofis-senaryo/2",
   "ad": "kabul-1-16",
   "aciklama": "Plan §12.5 kabul testi, 2.1.0 kapsamındaki adım 1–16. Ön koşullar: boş şirket; sahte saat 08.10.2026 Perşembe; Ürün A 10 Adet ve Ürün B 25 Adet parasız giriş; Kasa 0; dönem kilidi yok; satış fiyatları KDV %20 dahil. Kasa'dan çıkış olmadığı için kasaEksiBakiye ayarı gerekmez (SENARYO-DILI §3.1, BELİRSİZ-1).",
   "dayanak": "docs/BANKA-MODULU-PLAN.md §12.5 (ön koşullar ve adım 1–16); docs/BANKA-MODULU-TALIMAT.md madde 43 adım 1–16",
