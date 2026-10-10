@@ -1,0 +1,7 @@
+(node:2999) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+hesap 200
+PUT other.manualVoucher=true → 200  okunan: true
+Kambiyo Kârı (646) elle fişi → 200  BNK-2026-000002
+bank_lines 646 satır: 1 alacak (kuruş): 500
+Hesap Planı Mizanı 646: -5

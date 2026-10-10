@@ -59,7 +59,7 @@ const parseExtra = value => {
 /**
  * @param {{ store, bank, period, money, ledger: () => object, now? }} options  ledger: Ana Defter servisi (istek anında; Alt Hesap Mizanı)
  */
-export function createBankAccounts({ store, bank, period, money, ledger, now = systemClock, fxEnabled = () => false }) {
+export function createBankAccounts({ store, bank, period, money, ledger, now = systemClock, fxEnabled = () => false, laterOk = () => false }) {
   const stamp = () => now().toISOString();
   const today = () => (period ? period.today() : now().toISOString().slice(0, 10));
   const lock = () => period?.lockedUntil?.() || "";
@@ -76,7 +76,7 @@ export function createBankAccounts({ store, bank, period, money, ledger, now = s
   };
   const labelOf = row => `${row.bank_name} · ${row.name}`;
   const bankFormOk = row => Boolean(row) && !row.deleted_at && row.status === "active" && row.currency === "TRY" && BANK_FORM_KINDS.has(row.kind);
-  const settings = createBankSettings({ store, accountOk: id => bankFormOk(rowOf(id)), posOk: id => Boolean(store.get("SELECT 1 AS found FROM pos_terminals WHERE id = ? AND deleted_at IS NULL AND status = 'active'", id)) });
+  const settings = createBankSettings({ store, accountOk: id => bankFormOk(rowOf(id)), posOk: id => Boolean(store.get("SELECT 1 AS found FROM pos_terminals WHERE id = ? AND deleted_at IS NULL AND status = 'active'", id)), laterOk });
 
   /** Etkin açılış: { eventId, no, date, amountMinor (hesabın para biriminde, işaretli), tryMinor (işaretli), direction, lines } ya da null. */
   function openingOf(id) {

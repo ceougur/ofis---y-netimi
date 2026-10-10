@@ -182,7 +182,7 @@ describe("Aşama 4 — Banka Fişi: nasıl bozarım", () => {
   let ctx;
   let set;
   before(async () => {
-    ctx = await bootBank({ fxEnabled: true });
+    ctx = await bootBank({ fxEnabled: true, bankLater: true }); // bankLater: Elle Banka Fişi (bu sürümde gizli ayar) testte açılır
     set = await openBankSet(ctx.api);
   });
   after(() => ctx.server.close());

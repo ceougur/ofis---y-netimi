@@ -97,7 +97,7 @@ describe("Aşama 3 (dilim 2) — Banka arayüzünün sunucu uçları", () => {
   let personel;
   let muhasebe;
   before(async () => {
-    ctx = await bootBank();
+    ctx = await bootBank({ bankLater: true }); // bankLater: gizli ayarların boş değer doğrulaması (Tarih Toleransı, Bloke Süresi, Kambiyo) sınanır
     accounts = await openAcceptanceAccounts(ctx.api);
     personel = apiOf(await createUser(ctx.server, ctx.api.client, { username: "personel1", role: "personel" }));
     muhasebe = apiOf(await createUser(ctx.server, ctx.api.client, { username: "muhasebe1", role: "muhasebe" }));

@@ -169,12 +169,18 @@ export const SPEC = Object.freeze([
 
 // Bu sürümde olmayan özelliklerin ayarları (yarım özellik görünmez; plan §12.1): POS 2.2.0'da, Ekstre ve Mutabakat 2.3.0'da, döviz ve değerleme
 // (Kambiyo Kârı/Zararı eşlemeleri dahil) 2.1.x'te gelir. GG2: Kanal Alanı (ekstre ve POS kanalıyla gelir) ve Elle Banka Fişi (formu yok)
-// etkisiz görünüyordu; onlar da gizli. Değerleri saklanır ve doğrulanır (Varsayılanlara Dön de kapsar); arayüz "available: false" bölümü ve
-// kalemi göstermez.
+// etkisiz görünüyordu; onlar da gizli. Arayüz "available: false" bölümü ve kalemi göstermez.
+// 2.1.0 temel sürüm (ertelenenler denetimi, kullanıcı kararı "ertelenenler sürümde GÖRÜNMEZ"): gizli ayar API'den de DEĞİŞTİRİLEMEZ (400
+// bank-setting-later) ve okunurken kod varsayılanıdır — önceden PUT ile Elle Banka Fişi açılıp gizli fiş (Kambiyo Kârı/Zararı satırları dahil)
+// API'den yazılabiliyordu. Yalnız testler (config.bankLater) değiştirir. Bağdaştırıcılar ("Açık bankacılık ve sanal POS bağlantısı kapalıdır")
+// olmayan özelliği anlattığı için o da gizli.
 const NOT_YET = Object.freeze({
   sections: new Set(["pos", "posAdvanced", "statement", "fx", "fxAdvanced", "movement"]),
-  items: new Set(["account.defaultPosId", "holidayAdvanced.shift", "gl.fxGain", "gl.fxLoss", "other.manualVoucher"]),
+  items: new Set(["account.defaultPosId", "holidayAdvanced.shift", "gl.fxGain", "gl.fxLoss", "other.manualVoucher", "other.adapters"]),
 });
+const hiddenSetting = (sectionId, key) => NOT_YET.sections.has(sectionId) || NOT_YET.items.has(`${sectionId}.${key}`);
+// Gizli ayarın geldiği özellik (ret iletisinde).
+const LATER_FEATURE = { pos: "POS", posAdvanced: "POS", statement: "Ekstre ve Mutabakat", fx: "Döviz", fxAdvanced: "Döviz", movement: "Ekstre ve POS kanalı", "account.defaultPosId": "POS", "holidayAdvanced.shift": "POS valörü", "gl.fxGain": "Döviz", "gl.fxLoss": "Döviz", "other.manualVoucher": "Elle Banka Fişi formu", "other.adapters": "Bağdaştırıcılar" };
 
 const bad = (message, extra = {}) => new HttpError(400, message, { code: "bank-setting", ...extra });
 const clone = value => JSON.parse(JSON.stringify(value));
@@ -269,7 +275,7 @@ function validate(sectionId, key, value, { accountOk = () => true, posOk = () =>
 /**
  * Banka ayarları servisi. accountOk(id): varsayılan tahsilat hesabı olabilir mi (etkin, TL, havale seçicisinde); posOk(id): etkin POS.
  */
-export function createBankSettings({ store, accountOk = () => false, posOk = () => false }) {
+export function createBankSettings({ store, accountOk = () => false, posOk = () => false, laterOk = () => false }) {
   const raw = () => {
     try {
       const value = JSON.parse(store.setting(SETTINGS_KEY, "") || "{}");
@@ -286,6 +292,8 @@ export function createBankSettings({ store, accountOk = () => false, posOk = () 
       for (const [key] of editable(section)) {
         const value = stored?.[section.id]?.[key];
         if (value === undefined) continue;
+        // Gizli (bu sürümde olmayan özelliğin) ayarı etkisizdir: kayıtlı değer okunmaz, varsayılan kalır (testlerde config.bankLater).
+        if (hiddenSetting(section.id, key) && !laterOk()) continue;
         try {
           out[section.id][key] = validate(section.id, key, value, { accountOk, posOk });
         } catch {
@@ -303,7 +311,16 @@ export function createBankSettings({ store, accountOk = () => false, posOk = () 
     for (const [sectionId, items] of Object.entries(values)) {
       if (!SPEC.some(section => section.id === sectionId)) throw bad(`Tanınmayan ayar bölümü: ${sectionId}.`, { field: sectionId });
       if (!items || typeof items !== "object" || Array.isArray(items)) throw bad(`${sectionId} bölümü tanınmadı.`, { field: sectionId });
-      for (const [key, value] of Object.entries(items)) next[sectionId][key] = validate(sectionId, key, value, { accountOk, posOk });
+      for (const [key, value] of Object.entries(items)) {
+        const checked = validate(sectionId, key, value, { accountOk, posOk });
+        // Gizli ayar değiştirilemez (aynı değeri yeniden göndermek serbest): ekranda yok, özelliği bu sürümde yok.
+        if (hiddenSetting(sectionId, key) && !laterOk() && JSON.stringify(checked) !== JSON.stringify(previous[sectionId][key])) {
+          const label = itemOf(sectionId, key)?.[1] || key;
+          const feature = LATER_FEATURE[`${sectionId}.${key}`] || LATER_FEATURE[sectionId] || "ilgili özellik";
+          throw new HttpError(400, `${label} bu sürümde kullanılmıyor (${feature} sonraki sürümde gelir); değiştirilemez.`, { code: "bank-setting-later", field: `${sectionId}.${key}` });
+        }
+        next[sectionId][key] = checked;
+      }
     }
     store.setSetting(SETTINGS_KEY, JSON.stringify(next), userId);
     return { previous, next };
